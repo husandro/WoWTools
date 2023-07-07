@@ -233,6 +233,9 @@ end
 
 --添一个,全学,专业, 按钮, 插件 TrainAll 
 local function set_Blizzard_TrainerU()
+    if Save.disabled then
+        return
+    end
     ClassTrainerFrame.BuyAll= e.Cbtn(ClassTrainerFrame, {type=false, size={ClassTrainerTrainButton:GetSize()}})
     ClassTrainerFrame.BuyAll:SetPoint('RIGHT', ClassTrainerTrainButton, 'LEFT',-2,0)
     ClassTrainerFrame.BuyAll.name=e.onlyChinese and '全部' or ALL
@@ -348,6 +351,40 @@ end
 --初始
 --####
 local function Init()
+    if not ProfessionsFrame then
+        return
+    end
+
+    local btn= e.Cbtn(ProfessionsFrame.TitleContainer, {icon=not Save.disabled, size={20, 20}})
+    if _G['MoveZoomInButtonPerProfessionsFrame'] then
+        btn:SetPoint('LEFT', _G['MoveZoomInButtonPerProfessionsFrame'], 'RIGHT')
+    else
+        btn:SetPoint('RIGHT', ProfessionsFrameTitleText, 'RIGHT', -24, 2)
+    end
+    btn:SetScript('OnMouseDown', function(self2)
+        Save.disabled= not Save.disabled and true or nil
+        self2:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
+        print(id, addName, e.GetEnabeleDisable(not Save.disabled),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+    btn:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, 'Tools')
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(addName, e.GetEnabeleDisable(not Save.disabled)..e.Icon.left)
+        e.tips:Show()
+        self2:SetAlpha(1)
+    end)
+    btn:SetScript('OnLeave', function(self2)
+        e.tips:Hide()
+        self2:SetAlpha(0.5)
+    end)
+    btn:SetAlpha(0.5)
+
+    if Save.disabled then
+        return
+    end
+
     Init_ProfessionsFrame_Button()--专业界面, 按钮
 
     --###
@@ -516,32 +553,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             Save= WoWToolsSave[addName..'Tools'] or Save
 
-            local btn= e.Cbtn(ProfessionsFrame.TitleContainer, {icon=not Save.disabled, size={20, 20}})
-            if _G['MoveZoomInButtonPerProfessionsFrame'] then
-                btn:SetPoint('LEFT', _G['MoveZoomInButtonPerProfessionsFrame'], 'RIGHT')
-            else
-                btn:SetPoint('RIGHT', ProfessionsFrameTitleText, 'RIGHT', -24, 2)
-            end
-            btn:SetScript('OnMouseDown', function(self2)
-                Save.disabled= not Save.disabled and true or nil
-                self2:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-            btn:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(id, 'Tools')
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(addName, e.GetEnabeleDisable(not Save.disabled)..e.Icon.left)
-                e.tips:Show()
-                self2:SetAlpha(1)
-            end)
-            btn:SetScript('OnLeave', function(self2)
-                e.tips:Hide()
-                self2:SetAlpha(0.5)
-            end)
-            btn:SetAlpha(0.5)
-
             if not e.toolsFrame.disabled then
                 C_Timer.After(2.2, function()
                     if UnitAffectingCombat('player') then
@@ -566,6 +577,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1== 'Blizzard_Professions' then --10.1.5
             Init()--初始
+            
         end
 
     elseif event == "PLAYER_LOGOUT" then
