@@ -460,26 +460,8 @@ end
 
 --##################
 --史诗钥石地下城, 界面
---##################
-local function makeAffix(parent, id2)
-    local frame = CreateFrame("Frame", nil, parent)
-    frame:SetSize(24, 24)
-
-    frame.Border= frame:CreateTexture(nil, "OVERLAY")
-    frame.Border:SetAllPoints()
-    frame.Border:SetAtlas("ChallengeMode-AffixRing-Sm")
-    frame.Portrait = frame:CreateTexture(nil, "ARTWORK")
-    frame.Portrait:SetSize(22, 22)
-    frame.Portrait:SetPoint("CENTER", frame.Border)
-    frame.SetUp = ScenarioChallengeModeAffixMixin.SetUp
-    frame:SetScript("OnEnter", ScenarioChallengeModeAffixMixin.OnEnter)
-    frame:SetScript("OnLeave", function() e.tips:Hide() end)
-    frame:SetUp(id2)--Blizzard_ScenarioObjectiveTracker.lua
-    return frame
-end
 --词缀日程表AngryKeystones Schedule.lua
 local function Affix()
-    print(id,addName)
     if IsAddOnLoaded("AngryKeystones") then
         affixSchedule=nil
         return
@@ -495,40 +477,82 @@ local function Affix()
                 if affix.id == affixes[1] or affix.id == affixes[2] or affix.id == affixes[3] then
                     matches = matches + 1
                 end
+                if matches >= 3 then
+                    break
+                end
             end
             if matches >= 3 then
                 currentWeek = index
+                break
             end
         end
     end
 
     if currentWeek then
-        local one= currentWeek==max and  1 or currentWeek
+        local one= currentWeek
         local due=one+1
-            due= due==max and 1 or due
+            due= due>max and 1 or due
         local tre=due+1
-            tre= tre==max and 1 or tre
+            tre= tre>max and 1 or tre
 
         local affixs={affixSchedule[one], affixSchedule[due], affixSchedule[tre]}
         local last
-        for k,v in pairs(affixs) do
+        for index, tab in pairs(affixs) do
             for i=3 ,1, -1 do
-                if not ChallengesFrame['AffixOne'..k..i] then
-                    ChallengesFrame['AffixOne'..k..i]= makeAffix(ChallengesFrame.tipsFrame, v[i])
+                local frame= ChallengesFrame['AffixOne'..index..i]
+                if not frame then
+                    frame = CreateFrame("Frame", nil, ChallengesFrame.tipsFrame)
+                    frame:SetSize(24, 24)
+                    frame.Border= frame:CreateTexture(nil, "OVERLAY")
+                    frame.Border:SetAllPoints()
+                    frame.Border:SetAtlas("ChallengeMode-AffixRing-Sm")
+                    frame.Portrait = frame:CreateTexture(nil, "ARTWORK")
+                    frame.Portrait:SetSize(22, 22)
+                    frame.Portrait:SetPoint("CENTER", frame.Border)
+                    frame.SetUp = ScenarioChallengeModeAffixMixin.SetUp
+                    frame:SetScript("OnEnter", ScenarioChallengeModeAffixMixin.OnEnter)
+                    frame:SetScript("OnLeave", function() e.tips:Hide() end)
+                    frame:SetUp(tab[i])--Blizzard_ScenarioObjectiveTracker.lua
+
                     if not last then
-                        ChallengesFrame['AffixOne'..k..i]:SetPoint('RIGHT', ChallengesFrame, -10, -((k-1)*(24)))
+                        frame:SetPoint('RIGHT', ChallengesFrame, -10, -((index-1)*(24)))
                     else
-                        ChallengesFrame['AffixOne'..k..i]:SetPoint('RIGHT', last, 'LEFT', 0, 0)
+                        frame:SetPoint('RIGHT', last, 'LEFT', 0, 0)
                     end
+                    ChallengesFrame['AffixOne'..index..i]= frame
                     if i==1 then
                         last=nil
+                        local indexText= index==1 and one or index==2 and due or index==3 and tre
+                        frame.Text= e.Cstr(frame, {mouse=true})
+                        frame.Text:SetPoint('RIGHT', frame, 'LEFT')
+                        frame.Text:SetText(indexText or '')
+                        frame.Text.index= indexText
+                        frame.Text:SetScript('OnEnter', function(self2)
+                            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                            e.tips:ClearLines()
+                            e.tips:AddLine(' ')
+                            for i2= 1, affixSchedule.max do
+                                local text=''
+                                local sel= i2==self2.index
+                                for i3=1, 3 do
+                                    local affixID= affixSchedule[i2][i3]
+                                    if affixID>0 then
+                                        local filedataid = select(3, C_ChallengeMode.GetAffixInfo(affixID)) or 0
+                                        text= text..' '..'|T'..filedataid..':0|t'
+                                    else
+                                        text= text..' '..(e.onlyChinese and '无' or NONE)
+                                    end
+                                end
+                                e.tips:AddDoubleLine(i2..(sel and e.Icon.toLeft2 or ''), (sel and e.Icon.toRight2 or '')..text)
+                            end
+                            e.tips:Show()
+                        end)
                     else
-                        last=ChallengesFrame['AffixOne'..k..i]
+                        last=frame
                     end
                 end
-                print(v[i], id,addName)
-                ChallengesFrame['AffixOne'..k..i]:SetShown(not Save.hideIns and v[i]>0)
-                ChallengesFrame['AffixOne'..k..i]:SetScale(Save.tipsScale or 1)
+                frame:SetShown(not Save.hideIns and tab[i]>0)
+                frame:SetScale(Save.tipsScale or 1)
             end
         end
     end
@@ -853,69 +877,91 @@ local function set_All_Text()--所有记录
     end
     ChallengesFrame.tipsAllLabel:SetText(m)
 
-    --#######
-    --货币数量
-    --#######
+    --###############
+    --货币, 物品，数量
+    --###############
     local last
-    for _, v in pairs({1602, 1191}) do
-        local info=C_CurrencyInfo.GetCurrencyInfo(v)
+    local itemS={
+        {id=204194, type='item'},--守护巨龙的暗影烈焰纹章
+        {id=204196, type='item'},
+        {id=204195, type='item'},
+        {id=204193, type='item'},--10.1
+        {id=2245,type='currency'},
+        {id=1602, type='currency'},
+        {id=1191, type='currency'},
+    }
+    for _, tab in pairs(itemS) do
         local text=''
-        local lable= ChallengesFrame['Currency'..v]
-        if info and info.discovered and info.quantity and info.maxQuantity then
-            if info.maxQuantity>0  then
+        local lable= ChallengesFrame['Currency'..tab.id..tab.type]
 
-                if info.quantity==info.maxQuantity then
-                    text=text..'|cnGREEN_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
-                else
-                    text=text..info.quantity.. '/'..info.maxQuantity..' '
-                end
-                if info.useTotalEarnedForMaxQty then--本周还可获取                        
-                    local q
-                    q= info.maxQuantity - info.totalEarned
-                    if q>0 then
-                        q='|cnGREEN_FONT_COLOR:+'..q..'|r'
-                    else
-                        q='|cff828282+0|r'
-                    end
-                    text=text..' ('..q..') '
-                end
-            else
-                if info.maxQuantity==0 then
-                    text=text..info.quantity..'/'.. (e.onlyChinese and '无限制' or UNLIMITED)..' '
-                else
+        if tab.type=='currency' then
+            local info=C_CurrencyInfo.GetCurrencyInfo(tab.id)
+            if info and info.discovered and info.quantity and info.maxQuantity then
+                if info.maxQuantity>0  then
+
                     if info.quantity==info.maxQuantity then
                         text=text..'|cnGREEN_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
                     else
-                        text=text..info.quantity..'/'..info.maxQuantity..' '
+                        text=text..info.quantity.. '/'..info.maxQuantity..' '
+                    end
+                    if info.useTotalEarnedForMaxQty then--本周还可获取                        
+                        local q
+                        q= info.maxQuantity - info.totalEarned
+                        if q>0 then
+                            q='|cnGREEN_FONT_COLOR:+'..q..'|r'
+                        else
+                            q='|cff828282+0|r'
+                        end
+                        text=text..' ('..q..') '
+                    end
+                else
+                    if info.maxQuantity==0 then
+                        text=text..info.quantity..'/'.. (e.onlyChinese and '无限制' or UNLIMITED)..' '
+                    else
+                        if info.quantity==info.maxQuantity then
+                            text=text..'|cnGREEN_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
+                        else
+                            text=text..info.quantity..'/'..info.maxQuantity..' '
+                        end
                     end
                 end
+                text= (info.iconFileID and '|T'..info.iconFileID..':0|t' or '')..text
             end
-            text= (info.iconFileID and '|T'..info.iconFileID..':0|t' or '')..text
-
-            if not lable then
-                lable=e.Cstr(ChallengesFrame.tipsFrame, {mouse=true})
-                if last then
-                    lable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
-                else
-                    lable:SetPoint('TOPLEFT', ChallengesFrame.tipsAllLabel, 'BOTTOMLEFT',0, -12)
-                end
-                lable:SetScript("OnEnter",function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:SetCurrencyByID(self2.currencyID)
-                    e.tips:Show()
-                    self2:SetAlpha(0.5)
-                end)
-                lable:SetScript("OnLeave",function(self2)
-                    e.tips:Hide()
-                    self2:SetAlpha(1)
-                end)
-                ChallengesFrame['Currency'..v]=lable
-                last= lable
-            end
-            ChallengesFrame['Currency'..v].currencyID= v
+        elseif tab.type=='item' then
+            e.LoadDate({id=tab.id, type='item'})
+            local icon= C_Item.GetItemIconByID(tab.id)
+            local num= GetItemCount(tab.id, true)
+            text= (icon and icon>0 and '|T'..icon..':0|t' or (select(2,  GetItemInfo(tab.id)) or C_Item.GetItemNameByID(tab.id) or tab.id))..' x'..num
         end
+        if not lable and text~='' then
+            lable=e.Cstr(ChallengesFrame.tipsFrame, {mouse=true})
+            if last then
+                lable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
+            else
+                lable:SetPoint('TOPLEFT', ChallengesFrame.tipsAllLabel, 'BOTTOMLEFT',0, -12)
+            end
+            lable:SetScript("OnEnter",function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                e.tips:ClearLines()
+                if self2.type=='currency' then
+                    e.tips:SetCurrencyByID(self2.id)
+                elseif self2.type=='item' then
+                    e.tips:SetItemByID(self2.id)
+                end
+                e.tips:Show()
+                self2:SetAlpha(0.5)
+            end)
+            lable:SetScript("OnLeave",function(self2)
+                e.tips:Hide()
+                self2:SetAlpha(1)
+            end)
+            ChallengesFrame['Currency'..tab.id..tab.type]= lable
+            last= lable
+        end
+       
         if lable then
+            lable.id= tab.id
+            lable.type= tab.type
             lable:SetText(text)
         end
     end
