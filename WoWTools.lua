@@ -2,7 +2,7 @@ local id, e = ...
 e.L=e.L or {}--多语言
 e.tips=GameTooltip
 
-e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0")
+e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
 
 local function GetWeek()--周数
     local region= GetCurrentRegion()
@@ -1581,7 +1581,7 @@ e.Magic= function(text)
 end
 
 
-local LibRangeCheck = LibStub("LibRangeCheck-2.0")
+local LibRangeCheck = LibStub("LibRangeCheck-2.0", true)
 e.GetRange= function(unit, checkVisible)--WA Prototypes.lua
     return LibRangeCheck:GetRange(unit, checkVisible);
 end

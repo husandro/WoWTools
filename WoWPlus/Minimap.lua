@@ -543,14 +543,11 @@ end
 --初始
 --####
 local function Init()
-   
     Init_InstanceDifficulty()--副本，难图，指示
-    
+
     --########
     --盟约图标
     --########
-    
-   
     local libDataBroker = LibStub:GetLibrary("LibDataBroker-1.1", true)
     local libDBIcon = LibStub("LibDBIcon-1.0", true)
     if libDataBroker and libDBIcon then
@@ -562,7 +559,7 @@ local function Init()
                 OnClick = tab.func,
                 OnEnter= tab.enter,
             })
-            
+
             libDBIcon:Register(tab.name, bunnyLDB, Save.miniMapPoint)
             return libDBIcon
         end
@@ -572,7 +569,7 @@ local function Init()
             func= click_Func,
             enter= enter_Func,
         })
-        
+
         if ExpansionLandingPageMinimapButton then
             ExpansionLandingPageMinimapButton:SetShown(false)
             ExpansionLandingPageMinimapButton:HookScript('OnShow', function(self2)
@@ -598,7 +595,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.disabled = not Save.disabled and true or nil
                 print(id, addName, e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
              end)
-            
+
             if not Save.disabled then
                 if not e.Player.levelMax then
                     uiMapIDsTab= {}

@@ -689,16 +689,19 @@ local function Init()
         return
 
     elseif IsAddOnLoaded('Inventorian') then
-        local ADDON = LibStub("AceAddon-3.0"):GetAddon("Inventorian")
-        local InvLevel = ADDON:NewModule('InventorianWoWToolsItemInfo')
-        function InvLevel:Update()
-            set_Item_Info(self, {bag={bag=self.bag, slot=self.slot}})
+        local lib = LibStub("AceAddon-3.0", true)
+        if lib then
+            ADDON= lib:GetAddon("Inventorian")
+            local InvLevel = ADDON:NewModule('InventorianWoWToolsItemInfo')
+            function InvLevel:Update()
+                set_Item_Info(self, {bag={bag=self.bag, slot=self.slot}})
+            end
+            function InvLevel:WrapItemButton(item)
+                hooksecurefunc(item, "Update", InvLevel.Update)
+            end
+            hooksecurefunc(ADDON.Item, "WrapItemButton", InvLevel.WrapItemButton)
+            return
         end
-        function InvLevel:WrapItemButton(item)
-            hooksecurefunc(item, "Update", InvLevel.Update)
-        end
-        hooksecurefunc(ADDON.Item, "WrapItemButton", InvLevel.WrapItemButton)
-        return
 
     else
         hooksecurefunc('ContainerFrame_GenerateFrame',function (self)
