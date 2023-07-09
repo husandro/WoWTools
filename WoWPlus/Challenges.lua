@@ -527,6 +527,7 @@ local function Affix()
                         frame.Text:SetPoint('RIGHT', frame, 'LEFT')
                         frame.Text:SetText(indexText or '')
                         frame.Text.index= indexText
+                        frame.Text:SetScript('OnLeave', function(self2) self2:SetAlpha(1) end)
                         frame.Text:SetScript('OnEnter', function(self2)
                             e.tips:SetOwner(self2, "ANCHOR_LEFT")
                             e.tips:ClearLines()
@@ -546,6 +547,7 @@ local function Affix()
                                 e.tips:AddDoubleLine(i2..(sel and e.Icon.toLeft2 or ''), (sel and e.Icon.toRight2 or '')..text)
                             end
                             e.tips:Show()
+                            self2:SetAlpha(0.3)
                         end)
                     else
                         last=frame
@@ -872,7 +874,7 @@ local function set_All_Text()--所有记录
 
 
     if not ChallengesFrame.tipsAllLabel then
-        ChallengesFrame.tipsAllLabel= e.Cstr(ChallengesFrame.tipsFrame, {mouse=true})--最右边, 数据
+        ChallengesFrame.tipsAllLabel= e.Cstr(ChallengesFrame.tipsFrame)--最右边, 数据
         ChallengesFrame.tipsAllLabel:SetPoint('TOPLEFT', ChallengesFrame.runHistoryLable, 'BOTTOMLEFT')
     end
     ChallengesFrame.tipsAllLabel:SetText(m)
