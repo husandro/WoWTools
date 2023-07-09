@@ -33,6 +33,7 @@ local affixSchedule = {
 	[8]  = { [1]=136, [2]=8,   [3]=10,}, -- Fortified  | Incorporeal | Sanguine
 	[9]  = { [1]=134, [2]=11,  [3]=9, }, -- Tyrannical | Entangling  | Bursting
 	[10] = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  | 
+    max=10,
 }
 
 local SpellTabs={
@@ -464,16 +465,12 @@ local function makeAffix(parent, id2)
     local frame = CreateFrame("Frame", nil, parent)
     frame:SetSize(24, 24)
 
-    local border = frame:CreateTexture(nil, "OVERLAY")
-    border:SetAllPoints()
-    border:SetAtlas("ChallengeMode-AffixRing-Sm")
-    frame.Border = border
-
-    local portrait = frame:CreateTexture(nil, "ARTWORK")
-    portrait:SetSize(22, 22)
-    portrait:SetPoint("CENTER", border)
-    frame.Portrait = portrait
-
+    frame.Border= frame:CreateTexture(nil, "OVERLAY")
+    frame.Border:SetAllPoints()
+    frame.Border:SetAtlas("ChallengeMode-AffixRing-Sm")
+    frame.Portrait = frame:CreateTexture(nil, "ARTWORK")
+    frame.Portrait:SetSize(22, 22)
+    frame.Portrait:SetPoint("CENTER", frame.Border)
     frame.SetUp = ScenarioChallengeModeAffixMixin.SetUp
     frame:SetScript("OnEnter", ScenarioChallengeModeAffixMixin.OnEnter)
     frame:SetScript("OnLeave", function() e.tips:Hide() end)
@@ -482,12 +479,14 @@ local function makeAffix(parent, id2)
 end
 --词缀日程表AngryKeystones Schedule.lua
 local function Affix()
+    print(id,addName)
     if IsAddOnLoaded("AngryKeystones") then
         affixSchedule=nil
         return
     end
 
     local currentWeek
+    local max= affixSchedule.max
     local currentAffixes = C_MythicPlus.GetCurrentAffixes()
     if currentAffixes then
         for index, affixes in ipairs(affixSchedule) do
@@ -504,9 +503,12 @@ local function Affix()
     end
 
     if currentWeek then
-        local one= currentWeek ==12 and  1 or currentWeek
-        local due=one+1 due=due==12 and 1 or due
-        local tre=due+1 tre=tre==12 and 1 or tre
+        local one= currentWeek==max and  1 or currentWeek
+        local due=one+1
+            due= due==max and 1 or due
+        local tre=due+1
+            tre= tre==max and 1 or tre
+
         local affixs={affixSchedule[one], affixSchedule[due], affixSchedule[tre]}
         local last
         for k,v in pairs(affixs) do
@@ -524,7 +526,8 @@ local function Affix()
                         last=ChallengesFrame['AffixOne'..k..i]
                     end
                 end
-                ChallengesFrame['AffixOne'..k..i]:SetShown(not Save.hideIns)
+                print(v[i], id,addName)
+                ChallengesFrame['AffixOne'..k..i]:SetShown(not Save.hideIns and v[i]>0)
                 ChallengesFrame['AffixOne'..k..i]:SetScale(Save.tipsScale or 1)
             end
         end
