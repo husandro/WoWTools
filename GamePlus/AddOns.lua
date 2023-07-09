@@ -4,7 +4,7 @@ local panel=e.Cbtn(AddonList, {type=false, size={80,22}})
 
 local Save={
         buttons={
-            [RESISTANCE_FAIR]={
+            [BASE_SETTINGS_TAB]={
                 ['WeakAuras']=true,
                 ['WeakAurasOptions']=true,
                 ['BugSack']=true,
@@ -12,7 +12,8 @@ local Save={
                 ['TextureAtlasViewer']=true,
                 [id]=true,
             },
-        }
+        },
+        fast={}
     }
 
 local function getAddList()--检查列表, 选取数量, 总数, 数量/总数
@@ -74,7 +75,7 @@ local function setButtons()--设置按钮, 和位置
                             whileDead=true,
                             timeout=60,
                             hideOnEscape = true,
-                            OnAccept=function(self2,data)
+                            OnAccept=function(_,data)
                                 Save.buttons[data.name]=nil
                                 data.frame:SetShown(false)
                                 local last2=panel
@@ -198,6 +199,84 @@ local function Init()
     end)
     panel.buttons={}--存放按钮
 
+
+
+    --###############
+    --插件，快捷，选中
+    --###############
+    panel.fast={}
+    local function set_Fast_Button()
+        local newTab={}
+        for name, index in pairs(Save.fast) do
+            table.insert(newTab, {name=name, index= index})
+        end
+        table.sort(newTab, function(a, b) return a.index< b.index end)
+        local last
+        local index= 0
+        for _, tab in pairs(newTab) do
+            local name, title, notes, loadable, reason, security = GetAddOnInfo(tab.name)
+            if tab.name then
+                index= index+1
+                local check= panel.fast[index]
+                if not check then
+                    check= CreateFrame("CheckButton", nil, AddonList, "InterfaceOptionsCheckButtonTemplate")
+                    if not last then
+                        check:SetPoint('TOPRIGHT', AddonList, 'TOPLEFT', 8,0)
+                    else
+                        check:SetPoint('TOPRIGHT', last, 'BOTTOMRIGHT',0,9)
+                    end
+                    check.Text:ClearAllPoints()
+                    check.Text:SetPoint('RIGHT', check, 'LEFT')
+                    check:SetScript('OnClick', function(self2)
+                        if GetAddOnEnableState(nil, self2.name)~=0 then
+                            DisableAddOn(self2.name)
+                        else
+                            EnableAddOn(self2.name)
+                        end
+                        securecall('AddonList_Update')
+                    end)
+                    check:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                    check:SetScript('OnEnter', function(self2)
+                        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                        e.tips:ClearLines()
+                        e.tips:AddDoubleLine(self2.icon..self2.name, self2.index)
+                        e.tips:AddLine(' ')
+                        e.tips:AddLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:Show()
+                        self2:SetAlpha(0.3)
+                    end)
+                    check.index= tab.index
+                    panel.fast[index]= check
+                end
+                local checked= GetAddOnEnableState(nil, name)~=0
+                check:SetChecked(checked)
+                check:SetShown(true)
+                
+                local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
+	            local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
+                local icon= iconTexture and '|T'..iconTexture..':0|t' or (iconAtlas and '|A:'..iconAtlas..':0:0|a') or ''
+                check.Text:SetText(name..icon)
+                if checked then
+                    check.Text:SetTextColor(0,1,0)
+                else
+                    check.Text:SetTextColor(1, 0.82, 0)
+                end
+                check.icon= icon
+                last= check
+                check.name= name
+            end
+        end
+        for i= index+1, #panel.fast, 1 do
+            local check= panel.fast[i]
+            if check then
+                check:SetShown(false)
+            end
+        end
+    end
+    --set_Fast_Button()--插件，快捷，选中
+
+
     setButtons()--设置按钮
     hooksecurefunc('AddonList_HasAnyChanged', function(self)
         local num, all, text = getAddList()--检查列表, 选取数量, 总数, 数量/总数,
@@ -234,6 +313,46 @@ local function Init()
             panel.text:SetPoint('BOTTOM',panel, 'TOP',0,2)
         end
         panel.text:SetText(text)
+        set_Fast_Button()--插件，快捷，选中
+    end)
+
+
+    hooksecurefunc('AddonList_InitButton', function(self, addonIndex)
+        local name= GetAddOnInfo(addonIndex)
+        if Save.fast[name] then
+            Save.fast[name]= addonIndex
+        end
+        local checked= Save.fast[name]
+
+        if not self.check then
+            self.check=CreateFrame("CheckButton", nil, self, "InterfaceOptionsCheckButtonTemplate")
+            self.check:SetCheckedTexture(e.Icon.icon)
+            self.check:SetPoint('RIGHT', self)
+            self.check:SetScript('OnClick', function(self2)
+                Save.fast[self2.name]= not Save.fast[self2.name] and self2.index or nil
+                self2:SetAlpha(Save.fast[self2.name] and 1 or 0.1)
+                set_Fast_Button()
+            end)
+            self.check:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(Save.fast[self2.name] and 1 or 0.1) self2:GetParent():SetAlpha(1) end)
+            self.check:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(self2.icon..self2.name, self2.index)
+                e.tips:AddLine(' ')
+                e.tips:AddLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+                self2:SetAlpha(1)
+                self2:GetParent():SetAlpha(0.3)
+            end)
+        end
+        local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
+        local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
+        self.check.icon= iconTexture and '|T'..iconTexture..':0|t' or (iconAtlas and '|A:'..iconAtlas..':0:0|a') or ''
+        self.check.index= addonIndex
+        self.check.name= name
+        self.check:SetChecked(checked and true or false)
+        self.check:SetAlpha(checked and 1 or 0.1)
     end)
 end
 
@@ -246,6 +365,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
+            Save.fast= Save.fast or {}
+
             if e.Player.husandro then
                 Save.buttons[e.onlyChinese and '宠物对战' or PET_BATTLE_COMBAT_LOG ]={
                     ['BugSack']=true,
@@ -265,6 +386,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                     ['DBM-Challenges']=true,
                     ['DBM-StatusBarTimers']=true,
                     [id]=true,
+                }
+                Save.fast={
+                    ['Auctionator']=18,
+                    ['TextureAtlasViewer']=78,
                 }
             end
             --添加控制面板        

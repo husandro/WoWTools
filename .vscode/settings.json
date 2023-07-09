@@ -2977,7 +2977,9 @@
         "DURABILITY_TEMPLATE",
         "ProfessionsRecipeListRecipeMixin",
         "ProfessionsRecipeListCategoryMixin",
-        "ChallengesFrameWeeklyInfoMixin"
+        "ChallengesFrameWeeklyInfoMixin",
+        "AddonList_OnLoad",
+        "BASE_SETTINGS_TAB"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
