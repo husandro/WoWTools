@@ -23,7 +23,7 @@ local questIDTab= {--世界任务, 监视, ID
    -- [74378]=true,
 }
 
-local panel=CreateFrame("Frame")
+local panel= CreateFrame("Frame")
 
 --###################
 --更新地区时,缩小化地图
@@ -543,36 +543,43 @@ end
 --初始
 --####
 local function Init()
+   
     Init_InstanceDifficulty()--副本，难图，指示
-
+    
     --########
     --盟约图标
     --########
-    local Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
-        local bunnyLDB = LibStub("LibDataBroker-1.1"):NewDataObject(tab.name, {
-            type = "data source",
-            text = tab.name,
-            icon = tab.texture,
-            OnClick = tab.func,
-            OnEnter= tab.enter,
+    
+   
+    local libDataBroker = LibStub:GetLibrary("LibDataBroker-1.1", true)
+    local libDBIcon = LibStub("LibDBIcon-1.0", true)
+    if libDataBroker and libDBIcon then
+        local Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
+            local bunnyLDB = libDataBroker:NewDataObject(tab.name, {
+                type = "data source",
+                text = tab.name,
+                icon = tab.texture,
+                OnClick = tab.func,
+                OnEnter= tab.enter,
+            })
+            
+            libDBIcon:Register(tab.name, bunnyLDB, Save.miniMapPoint)
+            return libDBIcon
+        end
+
+        Save.miniMapPoint= Save.miniMapPoint or {}
+        Set_MinMap_Icon({name= id, texture= 136235,
+            func= click_Func,
+            enter= enter_Func,
         })
-        local icon = LibStub("LibDBIcon-1.0")
-        icon:Register(tab.name, bunnyLDB, Save.miniMapPoint)
-        return icon
+        
+        if ExpansionLandingPageMinimapButton then
+            ExpansionLandingPageMinimapButton:SetShown(false)
+            ExpansionLandingPageMinimapButton:HookScript('OnShow', function(self2)
+                self2:SetShown(false)
+            end)
+        end
     end
-    Save.miniMapPoint= Save.miniMapPoint or {}
-    Set_MinMap_Icon({name= id, texture= 136235,
-        func= click_Func,
-        enter= enter_Func,
-    })
-
-    if ExpansionLandingPageMinimapButton then
-        ExpansionLandingPageMinimapButton:SetShown(false)
-        ExpansionLandingPageMinimapButton:HookScript('OnShow', function(self2)
-            self2:SetShown(false)
-        end)
-    end
-
 end
 
 
@@ -591,10 +598,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.disabled = not Save.disabled and true or nil
                 print(id, addName, e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
              end)
-
-            if Save.disabled then
-                panel:UnregisterAllEvents()
-            else
+            
+            if not Save.disabled then
                 if not e.Player.levelMax then
                     uiMapIDsTab= {}
                     questIDTab= {}
@@ -606,6 +611,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     set_Event_MINIMAP_UPDATE_ZOOM()--当前缩放，显示数值
                 end
                 Init()
+            else
+                panel:UnregisterAllEvents()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 

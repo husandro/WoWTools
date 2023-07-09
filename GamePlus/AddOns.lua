@@ -40,10 +40,14 @@ local function set_Buttons()--设置按钮, 和位置
         local addTab={}
         for name, tab in pairs(Save.buttons) do
             local num=0
-            for _ in pairs(tab) do
+            local load= 0
+            for name2 in pairs(tab) do
                 num=num+1
+                if IsAddOnLoaded(name2) then
+                    load= load+1
+                end
             end
-            table.insert(addTab, {name= name, tab= tab, num=num})
+            table.insert(addTab, {name= name, tab= tab, num=num, load=load})
         end
         table.sort(addTab, function(a,b) return a.num< b.num end)
         return addTab
@@ -126,7 +130,7 @@ local function set_Buttons()--设置按钮, 和位置
                 button:SetScript('OnLeave', function() e.tips:Hide() end)
 
                 button.lable= e.Cstr(button)--插件, 数量
-                button.lable:SetPoint('LEFT')
+                button.lable:SetPoint('LEFT', button, 'RIGHT')
                 button.lable:SetTextColor(1,0,1)
             end
 
@@ -135,7 +139,7 @@ local function set_Buttons()--设置按钮, 和位置
             button:SetText(info.name)
             button.totaleAddons=info.num
             button.name= info.name
-            button.lable:SetText(info.num)
+            button.lable:SetText(info.load..'/'..info.num)
 
             panel.buttons[info.name]=button
             last=button
@@ -278,7 +282,8 @@ local function Init()
 
 
 
-    hooksecurefunc('AddonList_HasAnyChanged', function(self)
+    --hooksecurefunc('AddonList_HasAnyChanged', function(self)
+    hooksecurefunc('AddonList_Update', function()
         local num, all, text = getAddList()--检查列表, 选取数量, 总数, 数量/总数,
         local findButton=nil
         for name, button in pairs(panel.buttons) do
@@ -354,6 +359,10 @@ local function Init()
         self.check.name= name
         self.check:SetChecked(checked and true or false)
         self.check:SetAlpha(checked and 1 or 0.1)
+    end)
+    AddonListDisableAllButton:HookScript('OnClick', function()
+        EnableAddOn(id)
+        securecall('AddonList_Update')
     end)
 end
 
