@@ -2980,7 +2980,8 @@
         "ChallengesFrameWeeklyInfoMixin",
         "AddonList_OnLoad",
         "BASE_SETTINGS_TAB",
-        "AddonListDisableAllButton"
+        "AddonListDisableAllButton",
+        "WEEKS_ABBR"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

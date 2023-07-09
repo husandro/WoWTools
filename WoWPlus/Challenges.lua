@@ -525,11 +525,11 @@ local function Affix()
                         frame.Text:SetPoint('RIGHT', frame, 'LEFT')
                         frame.Text:SetText(indexText or '')
                         frame.Text.index= indexText
-                        frame.Text:SetScript('OnLeave', function(self2) self2:SetAlpha(1) end)
+                        frame.Text.weekIndex= index
                         frame.Text:SetScript('OnEnter', function(self2)
                             e.tips:SetOwner(self2, "ANCHOR_LEFT")
                             e.tips:ClearLines()
-                            e.tips:AddLine(' ')
+                            e.tips:AddLine(self2.weekIndex==1 and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK) or format(e.onlyChinese and '%d周' or WEEKS_ABBR, self2.weekIndex))
                             for i2= 1, affixSchedule.max do
                                 local text=''
                                 local sel= i2==self2.index
@@ -547,6 +547,7 @@ local function Affix()
                             e.tips:Show()
                             self2:SetAlpha(0.3)
                         end)
+                        frame.Text:SetScript('OnLeave', function(self2) self2:SetAlpha(1) end)
                     else
                         last=frame
                     end
