@@ -34,7 +34,7 @@ end
 --####
 --按钮
 --####
-local function setButtons()--设置按钮, 和位置
+local function set_Buttons()--设置按钮, 和位置
 
     local function get_buttons()
         local addTab={}
@@ -172,7 +172,7 @@ local function Init()
                         end
                     end
                 end
-                setButtons()--设置按钮, 和位置
+                set_Buttons()--设置按钮, 和位置
                 AddonList_HasAnyChanged()
             end,
             OnShow=function(self)
@@ -277,7 +277,7 @@ local function Init()
     --set_Fast_Button()--插件，快捷，选中
 
 
-    setButtons()--设置按钮
+
     hooksecurefunc('AddonList_HasAnyChanged', function(self)
         local num, all, text = getAddList()--检查列表, 选取数量, 总数, 数量/总数,
         local findButton=nil
@@ -314,6 +314,7 @@ local function Init()
         end
         panel.text:SetText(text)
         set_Fast_Button()--插件，快捷，选中
+        set_Buttons()--设置按钮
     end)
 
 
