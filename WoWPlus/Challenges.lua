@@ -33,7 +33,7 @@ local affixSchedule = {
 	[8]  = { [1]=136, [2]=8,   [3]=10,}, -- Fortified  | Incorporeal | Sanguine
 	[9]  = { [1]=134, [2]=11,  [3]=9, }, -- Tyrannical | Entangling  | Bursting
 	[10] = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  | 
-    max=10,
+    max= 10,
 }
 
 local SpellTabs={
@@ -993,19 +993,20 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                 if index==1 then
                                     if intimeInfo.completionDate and intimeInfo.level then--完成,日期
                                         local d=intimeInfo.completionDate
-                                        local time= ('%s:%s %d/%d/%d %s'):format(d.hour<10 and '0'..d.hour or d.hour, d.minute<10 and '0'..d.minute or d.minute, d.day, d.month, d.year, '|r('..intimeInfo.level..')')
+                                        local time= format('|cnGREEN_FONT_COLOR:%s:%s %d/%d/%d %s', d.hour<10 and '0'..d.hour or d.hour, d.minute<10 and '0'..d.minute or d.minute, d.day, d.month, d.year, '('..intimeInfo.level..')')
                                         local time2
                                         if overtimeInfo and overtimeInfo.completionDate and overtimeInfo.level then
                                             d=overtimeInfo.completionDate
-                                            time2= ('%s %s:%s %d/%d/%d'):format('('..overtimeInfo.level..')|cffff0000', d.hour<10 and '0'..d.hour or d.hour, d.minute<10 and '0'..d.minute or d.minute, d.day, d.month, d.year)
+                                            time2= format('|cffff0000%s %s:%s %d/%d/%d', '('..overtimeInfo.level..')', d.hour<10 and '0'..d.hour or d.hour, d.minute<10 and '0'..d.minute or d.minute, d.day, d.month, d.year)
                                         end
-                                        e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..time, time2)
+                                        e.tips:AddDoubleLine(time, time2)
                                     end
                                 end
 
                                 local text, text2= '', nil
                                 if info.specID then
-                                    text= '|T'..select(4, GetSpecializationInfoByID(info.specID))..':0|t'
+                                    local icon, role= select(4, GetSpecializationInfoByID(info.specID))
+                                    text= e.Icon[role]..'|T'..icon..':0|t'
                                 end
                                 text= info.name== e.Player.name and text..info.name..e.Icon.star2 or text..info.name
                                 if info.classID then
@@ -1019,7 +1020,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                     local info2= overtimeInfo.members[index]
                                     text2= info2.name== e.Player.name and (e.Icon.star2..info2.name) or info2.name
                                     if info2.specID then
-                                        text2= text2..'|T'..select(4, GetSpecializationInfoByID(info2.specID))..':0|t'
+                                        local icon, role= select(4, GetSpecializationInfoByID(info.specID))
+                                        text2= text2..'|T'..icon..':0|t'..e.Icon[role]
                                     end
                                     if info2.classID then
                                         local classFile= select(2, GetClassInfo(info2.classID))
