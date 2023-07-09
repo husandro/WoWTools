@@ -2976,7 +2976,8 @@
         "RaidFrameAllAssistCheckButton_UpdateAvailable",
         "DURABILITY_TEMPLATE",
         "ProfessionsRecipeListRecipeMixin",
-        "ProfessionsRecipeListCategoryMixin"
+        "ProfessionsRecipeListCategoryMixin",
+        "ChallengesFrameWeeklyInfoMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

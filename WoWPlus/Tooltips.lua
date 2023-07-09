@@ -1374,7 +1374,7 @@ local function Init()
     --挑战, AffixID
     --Blizzard_ScenarioObjectiveTracker.lua
     if ScenarioChallengeModeAffixMixin then
-        hooksecurefunc( ScenarioChallengeModeAffixMixin, 'OnEnter',function(self2)
+        hooksecurefunc( ScenarioChallengeModeAffixMixin, 'OnEnter', function(self2)
             if self2.affixID then
                 local _, _, filedataid = C_ChallengeMode.GetAffixInfo(self2.affixID)
                 GameTooltip:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ');
@@ -1771,7 +1771,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     if self2.affixID then
                         local _, _, filedataid = C_ChallengeMode.GetAffixInfo(self2.affixID)
                         GameTooltip:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ');
-                        GameTooltip:Show();
+                        GameTooltip:Show()
                     end
                 end
             end)
