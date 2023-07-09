@@ -13,7 +13,8 @@ local Save={
                 [id]=true,
             },
         },
-        fast={}
+        fast={},
+        enableAllButtn= e.Player.husandro,--全部禁用时，不禁用本插件
     }
 
 local function getAddList()--检查列表, 选取数量, 总数, 数量/总数
@@ -360,10 +361,34 @@ local function Init()
         self.check:SetChecked(checked and true or false)
         self.check:SetAlpha(checked and 1 or 0.1)
     end)
-    AddonListDisableAllButton:HookScript('OnClick', function()
-        EnableAddOn(id)
-        securecall('AddonList_Update')
+
+    --#############
+    --不禁用，本插件
+    --#############
+    AddonListDisableAllButton.btn= e.Cbtn(AddonListDisableAllButton, {size={18,18}, icon= Save.enableAllButtn})
+    AddonListDisableAllButton.btn:SetPoint('LEFT', AddonListDisableAllButton, 'RIGHT', 2,0)
+    AddonListDisableAllButton.btn:SetScript('OnClick', function(self2)
+        Save.enableAllButtn= not Save.enableAllButtn and true or nil
+        self2:SetNormalAtlas(Save.enableAllButtn and e.Icon.icon or e.Icon.disabled)
     end)
+    AddonListDisableAllButton.btn:SetAlpha(0.3)
+    AddonListDisableAllButton.btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:GetParent():SetAlpha(1) end)
+    AddonListDisableAllButton.btn:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '启用' or ENABLE, id)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+        self2:GetParent():SetAlpha(0.3)
+    end)
+    AddonListDisableAllButton:HookScript('OnClick', function()
+        if Save.enableAllButtn then
+            EnableAddOn(id)
+            securecall('AddonList_Update')
+        end
+    end)
+
 end
 
 --###########
