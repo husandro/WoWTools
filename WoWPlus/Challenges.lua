@@ -499,7 +499,7 @@ local function Affix()
         local last
         for index, tab in pairs(affixs) do
             for i=3 ,1, -1 do
-                local frame= ChallengesFrame['AffixOne'..index..i]
+                local frame= ChallengesFrame['AffixWeek'..index..i]
                 if not frame then
                     frame = CreateFrame("Frame", nil, ChallengesFrame.tipsFrame)
                     frame:SetSize(24, 24)
@@ -513,13 +513,11 @@ local function Affix()
                     frame:SetScript("OnEnter", ScenarioChallengeModeAffixMixin.OnEnter)
                     frame:SetScript("OnLeave", function() e.tips:Hide() end)
                     frame:SetUp(tab[i])--Blizzard_ScenarioObjectiveTracker.lua
-
                     if not last then
                         frame:SetPoint('RIGHT', ChallengesFrame, -10, -((index-1)*(24)))
                     else
                         frame:SetPoint('RIGHT', last, 'LEFT', 0, 0)
                     end
-                    ChallengesFrame['AffixOne'..index..i]= frame
                     if i==1 then
                         last=nil
                         local indexText= index==1 and one or index==2 and due or index==3 and tre
@@ -552,8 +550,9 @@ local function Affix()
                     else
                         last=frame
                     end
+                    ChallengesFrame['AffixWeek'..index..i]= frame
                 end
-                frame:SetShown(not Save.hideIns and tab[i]>0)
+                frame:SetShown(tab[i]>0)
                 frame:SetScale(Save.tipsScale or 1)
             end
         end
@@ -1062,6 +1061,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     local a=GetNum(self2.mapID, true) or RED_FONT_COLOR_CODE..(e.onlyChinese and '无' or NONE)..'|r'--所有
                     local w=GetNum(self2.mapID) or RED_FONT_COLOR_CODE..(e.onlyChinese and '无' or NONE)..'|r'--本周
                     e.tips:AddDoubleLine((e.onlyChinese and '历史' or HISTORY)..': '..a, (e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w)
+                    e.tips:AddLine(' ')
                     e.tips:AddDoubleLine('mapChallengeModeID |cnGREEN_FONT_COLOR:'.. self2.mapID..'|r', timeLimit and (e.onlyChinese and '限时' or GROUP_FINDER_PVE_PLAYSTYLE3)..' '.. SecondsToTime(timeLimit))
                     if texture and backgroundTexture then
                         e.tips:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture)
@@ -1451,7 +1451,10 @@ local function Init()
                local spellLink= GetSpellLink(tab.spell) or GetSpellInfo(tab.spell)
                local icon= GetSpellTexture(tab.spell)
                e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '')..spellLink,
-                                    IsSpellKnown(tab.spell) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已获得' or ACHIEVEMENTFRAME_FILTER_COMPLETED) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未获得' or FOLLOWERLIST_LABEL_UNCOLLECTED)..' '..tab.spell)
+                                    'spellID '..tab.spell..' '..
+                                    (IsSpellKnown(tab.spell) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已获得' or ACHIEVEMENTFRAME_FILTER_COMPLETED)
+                                                            or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未获得' or FOLLOWERLIST_LABEL_UNCOLLECTED))
+                                    )
                                 )
             end
             e.tips:AddLine(' ')
