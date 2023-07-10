@@ -136,7 +136,8 @@ local function InitMenu(self, level, type)--主菜单
                 tooltipTitle=tab.text,
                 tooltipText=tab.date..'|n|n'..(e.onlyChinese and '发送信息' or SEND_MESSAGE)..e.Icon.left,
                 arg1=tab.text,
-                func=function(self2, arg1)
+                keepShownOnClick= true,
+                func=function(_, arg1)
                     e.Chat(arg1)
                 end,
             }
@@ -148,6 +149,7 @@ local function InitMenu(self, level, type)--主菜单
             icon= 'bags-button-autosort-up',
             notCheckable=true,
             colorCode= #Save.save==0 and '|cff606060',
+            keepShownOnClick= true,
             func=function()
                 Save.save={}
             end
@@ -165,6 +167,7 @@ local function InitMenu(self, level, type)--主菜单
             tooltipTitle=tab.text,
             tooltipText=tab.date..'|n|n'..(e.onlyChinese and '发送信息' or SEND_MESSAGE)..e.Icon.left,
             arg1=tab.arg1,
+            keepShownOnClick= true,
             func=function(_, arg1)
                 e.Chat(arg1)
             end,
@@ -187,6 +190,7 @@ local function InitMenu(self, level, type)--主菜单
         colorCode= #Tab==0 and '|cff606060',
         menuList= 'SAVE',
         hasArrow= true,
+        keepShownOnClick= true,
         func=function()
             setRest()--重置
         end
@@ -200,7 +204,7 @@ local function InitMenu(self, level, type)--主菜单
         checked=Save.autoClear,
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '进入战斗时: 清除' or (ENTERING_COMBAT..': '..(SLASH_STOPWATCH_PARAM_STOP2)),
-        --tooltipText= e.onlyChinese and '记录仅限有队伍' or (PVP_RECORD..LFG_LIST_CROSS_FACTION:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
+        keepShownOnClick= true,
         func=function()
             Save.autoClear= not Save.autoClear and true or false
             setAutoClearRegisterEvent()--注册自动清除事件

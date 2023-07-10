@@ -2981,7 +2981,16 @@
         "AddonList_OnLoad",
         "BASE_SETTINGS_TAB",
         "AddonListDisableAllButton",
-        "WEEKS_ABBR"
+        "WEEKS_ABBR",
+        "FriendsFrameStatusDropDownButton",
+        "LOCATION_MOBILE_APP",
+        "RAF_RECRUIT_FRIEND",
+        "RAF_RECRUITER_FRIEND",
+        "FRIENDS_BNET_NAME_COLOR",
+        "FRIENDS_TEXTURE_OFFLINE",
+        "FRIENDS_GRAY_COLOR",
+        "SOCIAL_TWITTER_DISCONNECT",
+        "GetBNPlayerLink"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

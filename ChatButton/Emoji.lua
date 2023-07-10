@@ -102,6 +102,7 @@ local function InitMenu(self, level, type)
                 tooltipOnButton=true,
                 tooltipTitle= e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
                 tooltipText=channel,
+                keepShownOnClick=true,
                 func=function()
                     Save.Channels[channel]= not Save.Channels[channel] and true or nil
                     print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -113,6 +114,7 @@ local function InitMenu(self, level, type)
         info={
             text= e.onlyChinese and '全选' or  MENU_EDIT_SELECT_ALL or ALL,--全选
             notCheckable=true,
+            keepShownOnClick=true,
             func=function()
                 Save.Channels={}
                 print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -123,6 +125,7 @@ local function InitMenu(self, level, type)
             text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,--全清
             icon= 'bags-button-autosort-up',
             notCheckable=true,
+            keepShownOnClick=true,
             func=function()
                 for _, channel in pairs(Channels) do
                     Save.Channels[channel]=true

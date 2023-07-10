@@ -673,6 +673,7 @@ local function partyList(self, level, type)--5人，随机 LFDFrame.lua
                     icon= select(11, GetLFGDungeonInfo(dungeonID)),
                     arg1= dungeonID,
                     arg2= check,
+                    keepShownOnClick=true,
                     func= function(_, arg1, arg2)
                         LFDQueueFrame_SetType(arg1)
                         if arg2 then
@@ -798,6 +799,7 @@ local raidList=function(self, level, type)--团队本
                 tooltipTitle= (e.onlyChinese and '首领' or RAID_BOSSES)..' '..kill..'/'..numEncounters,--击杀数量
                 tooltipText = encounters..(modifiedInstanceTooltipText or '')..'|n|n|cffffffffID '..sortedDungeons[i].id,
                 arg1= {id= sortedDungeons[i].id, name= sortedDungeons[i].name, check= check},
+                keepShownOnClick=true,
                 func= function(_, arg1)
                     if arg1.check then
                         LeaveSingleLFG(LE_LFG_CATEGORY_RF, arg1.id)
@@ -1118,6 +1120,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             checked=Save.leaveInstance,
             tooltipText= (e.onlyChinese and '离开随机(自动 Roll)' or  AUTO_JOIN:gsub(JOIN, LEAVE)..' ('..AUTO_JOIN:gsub(JOIN,'')..LOOT_ROLL) .. ')|n|n|cnGREEN_FONT_COLOR:Alt '..(e.onlyChinese and '取消' or CANCEL)..'|r|n|n'..id..' '..addName,
             icon=e.Icon.toLeft,
+            keepShownOnClick=true,
             func=function()
                 Save.leaveInstance= not Save.leaveInstance and true or nil
                 setQueueStatus()--小眼睛, 信息
@@ -1130,6 +1133,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             text=e.onlyChinese and '列表信息' or SOCIAL_QUEUE_TOOLTIP_HEADER..INFO,
             checked=not Save.hideQueueStatus,
             icon= 'groupfinder-eye-frame',
+            keepShownOnClick=true,
             func=function()
                 Save.hideQueueStatus = not Save.hideQueueStatus and true or nil
                 setQueueStatus()
@@ -1143,6 +1147,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             icon='Interface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47',
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN,''),
+            keepShownOnClick=true,
             func= function()
                 Save.autoROLL= not Save.autoROLL and true or nil
             end
@@ -1164,6 +1169,7 @@ local function InitList(self, level, type)--LFDFrame.lua
         info={
             text= not e.onlyChinese and LFGLIST_NAME..' Plus'  or '预创建队伍增强' ,
             icon='UI-HUD-MicroMenu-Groupfinder-Mouseover',
+            keepShownOnClick=true,
             func=function()
                 Save.LFGPlus = not Save.LFGPlus and true or nil
                 if Save.LFGPlus then
@@ -1180,6 +1186,7 @@ local function InitList(self, level, type)--LFDFrame.lua
         info={
             text= e.onlyChinese and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT),
             checked= Save.ReMe,
+            keepShownOnClick=true,
             func= function()
                 Save.ReMe= not Save.ReMe and true or nil
             end
@@ -1189,6 +1196,7 @@ local function InitList(self, level, type)--LFDFrame.lua
         info={
             text= e.onlyChinese and '职责确认' or ROLE_POLL,
             checked= Save.autoSetPvPRole,
+            keepShownOnClick=true,
             func= function()
                 Save.autoSetPvPRole= not Save.autoSetPvPRole and true or nil
             end
@@ -1228,6 +1236,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             checked= GroupLootHistoryFrame:IsShown(),
             tooltipOnButton= true,
             tooltipTitle= '/loot',
+            keepShownOnClick=true,
             func= function()
                 ToggleLootHistoryFrame()--LootHistory.lua
             end
@@ -1276,6 +1285,7 @@ local function InitList(self, level, type)--LFDFrame.lua
                 text= (e.onlyChinese and '离开列队' or LEAVE_QUEUE)..' |cnGREEN_FONT_COLOR:#'..num..'|r',
                 notCheckable=true,
                 disabled= num==0,
+                keepShownOnClick=true,
                 func=function ()
                     for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
                         LeaveLFG(i)

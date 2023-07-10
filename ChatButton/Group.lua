@@ -135,6 +135,7 @@ local function InitMenu(self, level, type)--主菜单
                 tooltipTitle=tab.text,
                 arg1=tab.text,
                 arg2=tab.type,
+                keepShownOnClick=true,
                 func=function(_, arg1, arg2)
                     StaticPopupDialogs[id..addName..'CUSTOM']={--区域,设置对话框
                         text=id..'    '..addName
@@ -194,6 +195,7 @@ local function InitMenu(self, level, type)--主菜单
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle=tab.type,
+                keepShownOnClick=true,
                 func=function()
                     e.Say(tab.type)
                     button.type=tab.type
@@ -238,6 +240,7 @@ local function InitMenu(self, level, type)--主菜单
             tooltipTitle= 'CVar chatBubblesParty',
             checked= C_CVar.GetCVarBool("chatBubblesParty"),
             disabled= UnitAffectingCombat('player'),
+            keepShownOnClick=true,
             func= function()
                 C_CVar.SetCVar("chatBubblesParty", not C_CVar.GetCVarBool("chatBubblesParty") and '1' or '0')
             end

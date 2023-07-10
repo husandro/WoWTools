@@ -156,6 +156,7 @@ local function InitMenu(self, level, type)--主菜单
                 tooltipText=officerNote or '',
                 icon= status==1 and FRIENDS_TEXTURE_AFK or status==2 and FRIENDS_TEXTURE_DND,
                 arg1=name,
+                keepShownOnClick=true,
                 func=function(self2, arg1)
                     e.Say(nil, arg1)
                 end
@@ -171,6 +172,7 @@ local function InitMenu(self, level, type)--主菜单
         checked=Save.guildInfo,
         tooltipOnButton=true,
         tooltipTitle= WoWDate[e.Player.guid].GuildInfo or NONE,
+        keepShownOnClick=true,
         func=function()
             Save.guildInfo= not Save.guildInfo and true or nil
             set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员

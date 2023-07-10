@@ -137,7 +137,8 @@ local function addMenu(name, channelNumber, level)--添加菜单
         hasArrow= name==Save.world,
         icon=communityTexture,
         arg1={texture=communityTexture, name=name, communityName= communityName, channelNumber= channelNumber},
-        func=function(self, arg1)
+        keepShownOnClick= true,
+        func=function(_, arg1)
             if IsAltKeyDown() then
                 setJoin(arg1.name, nil, nil, true)--加入,移除,屏蔽
             else
@@ -155,6 +156,7 @@ local function InitMenu(self, level, type)--主菜单
         info= {
             text= e.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''),
             notCheckable=true,
+            keepShownOnClick= true,
             func= function()
                 StaticPopupDialogs[id..addName..'changeNamme']={
                     text=(e.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''))..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI ),
@@ -202,6 +204,7 @@ local function InitMenu(self, level, type)--主菜单
                 tooltipTitle= format(e.onlyChinese and "%d次" or COMMUNITIES_INVITE_MANAGER_USES, tab.num),
                 tooltipText=tab.name,
                 arg1= tab.name,
+                keepShownOnClick= true,
                 func= function(_, arg1)
                     if arg1 then
                         e.Say(nil, arg1)
@@ -242,6 +245,7 @@ local function InitMenu(self, level, type)--主菜单
         tooltipOnButton=true,
         tooltipTitle='CHAT_MSG_CHANNEL',
         tooltipText= e.onlyChinese and '内容限70个字符以内' or string.gsub(ERR_VOICE_CHAT_CHANNEL_NAME_TOO_LONG, CHANNEL_CHANNEL_NAME,''):gsub('30','70'),
+        keepShownOnClick= true,
         func= function()
             Save.myChatFilter= not Save.myChatFilter and true or nil
             if Save.myChatFilter then

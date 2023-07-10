@@ -774,6 +774,7 @@ local function InitMenu(self, level, type)
             tooltipOnButton=true,
             tooltipTitle=Save.guildWelcomeText or EMOTE103_CMD1:gsub('/',''),
             colorCode= not IsInGuild() and '|cff606060',--不在公会
+            keepShownOnClick=true,
             func=function()
                 StaticPopup_Show(id..addName..'WELCOME', e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER, nil, {guild= true})
             end,
@@ -787,6 +788,7 @@ local function InitMenu(self, level, type)
             tooltipOnButton=true,
             tooltipTitle=LFG_LIST_CROSS_FACTION:format(PARTY_PROMOTE),
             tooltipText=Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''),
+            keepShownOnClick=true,
             func=function()
                 StaticPopup_Show(id..addName..'WELCOME', e.onlyChinese and '队伍新成员' or SPELL_TARGET_TYPE14_DESC, nil, {group= true})
             end,
@@ -798,6 +800,7 @@ local function InitMenu(self, level, type)
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '随机' or LFG_TYPE_RANDOM_DUNGEON,
             tooltipText= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '不是' or NO),
+            keepShownOnClick=true,
             func= function()
                 Save.welcomeOnlyHomeGroup= not Save.welcomeOnlyHomeGroup and true or nil
             end
@@ -811,6 +814,7 @@ local function InitMenu(self, level, type)
         text= (e.onlyChinese and '超链接图标'or addName),
         icon= 'newplayertutorial-icon-mouse-leftbutton',
         checked=not Save.disabed,
+        keepShownOnClick=true,
         func=function()
             setFunc()--使用，禁用
         end,
@@ -824,6 +828,7 @@ local function InitMenu(self, level, type)
         disabled= UnitAffectingCombat('player'),
         tooltipOnButton=true,
         tooltipTitle='CVar: textToSpeech',
+        keepShownOnClick=true,
         func=function()
             C_CVar.SetCVar("textToSpeech", not C_CVar.GetCVarBool('textToSpeech') and '1' or '0' )
             print(id, addName, e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
@@ -836,6 +841,7 @@ local function InitMenu(self, level, type)
         icon= 'chatframe-button-icon-voicechat',
         checked= Save.setPlayerSound,
         colorCode= (not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0') and '|cff606060',
+        keepShownOnClick=true,
         func= function()
             Save.setPlayerSound= not Save.setPlayerSound and true or nil
             e.setPlayerSound= Save.setPlayerSound
@@ -851,6 +857,7 @@ local function InitMenu(self, level, type)
     info={
         text= e.onlyChinese and '欢迎加入' or (EMOTE103_CMD1:gsub('/','')..JOIN),
         checked= Save.guildWelcome or Save.groupWelcome,
+        keepShownOnClick=true,
         func=function()
             Save.guildWelcome=nil
             Save.groupWelcome=nil
@@ -868,6 +875,7 @@ local function InitMenu(self, level, type)
         checked= IsAddOnLoaded("Blizzard_EventTrace") and EventTrace:IsShown(),
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '事件记录' or EVENTTRACE_HEADER,
+        keepShownOnClick=true,
         func= function()
             if not IsAddOnLoaded('Blizzard_EventTrace') then
                 UIParentLoadAddOn("Blizzard_EventTrace")
@@ -888,6 +896,7 @@ local function InitMenu(self, level, type)
                     ..'|n|cnGREEN_FONT_COLOR:Ctrl|r '..(e.onlyChinese and '显示' or SHOW)
                     ..'|n|cnGREEN_FONT_COLOR:Shift|r '..(e.onlyChinese and '材质信息' or TEXTURES_SUBHEADER..INFO)
                     ..'|n|cnGREEN_FONT_COLOR:Ctrl+C|r '.. (e.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..' \"File\" '..(e.onlyChinese and '类型' or TYPE),
+        keepShownOnClick=true,
         func= function()--Bindings.xml
             if not IsAddOnLoaded("Blizzard_DebugTools") then
                 LoadAddOn("Blizzard_DebugTools")
@@ -905,6 +914,7 @@ local function InitMenu(self, level, type)
         tooltipOnButton=true,
         tooltipTitle='/reload',
         colorCode='|cffff0000',
+        keepShownOnClick=true,
         func=function()
             e.Reload()
         end

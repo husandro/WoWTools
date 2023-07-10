@@ -402,7 +402,7 @@ local function InitList(self, level, type)
             text= e.onlyChinese and '邀请目标' or INVITE..TARGET,
             checked=Save.InvTar,
             disabled=IsInInstance() and true or nil,
-
+            keepShownOnClick=true,
             func=function()
                 Save.InvTar= not Save.InvTar and true or nil
                 set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
@@ -423,6 +423,7 @@ local function InitList(self, level, type)
             tooltipText= e.onlyChinese and '说, 喊, 密语' or (SAY..', '..YELL..', '..WHISPER),
             hasArrow=true,
             menuList='ChannelText',
+            keepShownOnClick=true,
             func= function()
                 Save.Channel = not Save.Channel and true or nil
                 set_Chanell_Event()--设置,频道,事件
@@ -436,6 +437,7 @@ local function InitList(self, level, type)
             notCheckable=true,
             menuList='InvUnitAll',
             hasArrow=true,
+            keepShownOnClick=true,
             func=InvPlateGuidFunc,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '邀请全部' or CALENDAR_INVITE_ALL,
@@ -453,6 +455,7 @@ local function InitList(self, level, type)
                     tooltipTitle= e.onlyChinese and '邀请' or INVITE,
                     tooltipText=name,
                     notCheckable=true,
+                    keepShownOnClick=true,
                     func=function()
                         C_PartyInfo.InviteUnit(name)
                     end,
@@ -475,6 +478,7 @@ local function InitList(self, level, type)
             info={
                 text= '|cff00ff00'..(e.onlyChinese and '邀请全部' or CALENDAR_INVITE_ALL)..'|r',
                 notCheckable=true,
+                keepShownOnClick=true,
                 func= InvPlateGuidFunc,
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -482,6 +486,7 @@ local function InitList(self, level, type)
             info={
                 text='|cffff0000'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|r',
                 notCheckable=true,
+                keepShownOnClick=true,
                 func=function()
                     InvPlateGuid={}
                 end,
@@ -496,6 +501,7 @@ local function InitList(self, level, type)
             checked=Save.FriendAceInvite,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '战网, 好友, 公会' or (COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD),
+            keepShownOnClick=true,
             func=function()
                 Save.FriendAceInvite= not Save.FriendAceInvite and true or nil
                 --setTexture()--设置图标颜色, 是否有权限, 是否转团, 邀请选项提示
@@ -511,6 +517,7 @@ local function InitList(self, level, type)
             tooltipOnButton=true,
             tooltipTitle= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r',
             tooltipText= e.onlyChinese and '战斗中|n离开|nalt' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..'|n'..AFK..'|nalt',
+            keepShownOnClick=true,
             func= function()
                 Save.Summon= not Save.Summon and true or nil
                 set_SummonTips()--召唤，提示
@@ -534,6 +541,7 @@ local function InitList(self, level, type)
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '拒绝' or DECLINE,
             tooltipText= e.onlyChinese and '好友 |cnRED_FONT_COLOR:否|r' or ('|cnRED_FONT_COLOR:'..NO..'|r'..TUTORIAL_TITLE22),
+            keepShownOnClick=true,
             func=function()
                 Save.NoInvInResting= not Save.NoInvInResting and true or nil
             end,
@@ -544,6 +552,7 @@ local function InitList(self, level, type)
         info={
             text= e.onlyChinese and '休息区信息' or CALENDAR_STATUS_OUT..ZONE..INFO,
             checked=Save.restingTips,
+            keepShownOnClick=true,
             func=function()
                 Save.restingTips= not Save.restingTips and true or nil
                 set_PLAYER_UPDATE_RESTING()--设置, 休息区提示
@@ -561,6 +570,7 @@ local function InitList(self, level, type)
                 info={
                     text=all..') '..text..' |cff00ff00'..nu..'|r',
                     notCheckable=true,
+                    keepShownOnClick=true,
                     func=function()
                         Save.InvNoFriend[guid]=nil
                         print(id, addName, '|cff00ff00'..REMOVE..'|r: '..text)
@@ -585,6 +595,7 @@ local function InitList(self, level, type)
                 text=e.onlyChinese and '全部清除' or CLEAR_ALL,
                 colorCode= '|cff00ff00',
                 notCheckable=true,
+                keepShownOnClick=true,
                 func=function()
                     Save.InvNoFriend={}
                     print(id, addName, '|cff00ff00'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|r', e.onlyChinese and '完成' or DONE)
@@ -598,6 +609,7 @@ local function InitList(self, level, type)
         info={
             text= e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT,--在这里输入关键字。
             notCheckable=true,
+            keepShownOnClick=true,
             func= function()
                 StaticPopupDialogs[id..addName..'CHANNEL']={--设置,内容,频道, 邀请,事件
                     text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'|n|n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
@@ -666,6 +678,7 @@ local function InitList(self, level, type)
                 disabled= UnitAffectingCombat('player'),
                 checked= Save.frameList[unit],
                 arg1=unit,
+                keepShownOnClick=true,
                 func= function(self2, arg1)
                     Save.frameList[arg1]= not Save.frameList[arg1] and true or nil
                     set_Frame_Fun()
@@ -709,6 +722,7 @@ local function InitList(self, level, type)
                 checked= Save.focusKey== key,
                 disabled= UnitAffectingCombat('player') or Save.focusKey== key,
                 arg1= key,
+                keepShownOnClick=true,
                 func= function(_, arg1)
                     Save.focusKey= arg1
                     set_Shift_Click_focurs()--Shift+点击设置焦点
@@ -775,6 +789,7 @@ local function InitList(self, level, type)
         checked= Save.setFrameFun,
         hasArrow=true,
         menuList='FRAMEFUNC',
+        keepShownOnClick=true,
         func=function()
             Save.setFrameFun= not Save.setFrameFun and true or nil
             set_Frame_Fun()--日标框, 向上:密语, 向下:跟随
@@ -789,6 +804,7 @@ local function InitList(self, level, type)
         disabled= UnitAffectingCombat('player'),
         hasArrow=true,
         menuList='FOCUSKEY',
+        keepShownOnClick=true,
         func= function()
             Save.setFucus= not Save.setFucus and true or nil
             set_Shift_Click_focurs()--Shift+点击设置焦点

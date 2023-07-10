@@ -360,6 +360,7 @@ local function InitMenu(self, level, type)--主菜单
             tooltipOnButton=true,
             tooltipTitle=  e.onlyChinese and '类型' or TYPE,
             tooltipText='00:35|n'..SecondsToTime(35),
+            keepShownOnClick=true,
             func= function()
                 Save.timeTypeText= not Save.timeTypeText and true or nil
             end
@@ -370,6 +371,7 @@ local function InitMenu(self, level, type)--主菜单
             text= e.onlyChinese and '战斗中缩放 1.3' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..UI_SCALE..' 1.3',
             checked= Save.combatScale,
             disabled= UnitAffectingCombat('player'),
+            keepShownOnClick=true,
             func= function()
                 Save.combatScale= not Save.combatScale and true or nil
                 if Save.combatScale and UnitAffectingCombat('player') then--战斗中缩放
@@ -384,6 +386,7 @@ local function InitMenu(self, level, type)--主菜单
         info={
             text= e.onlyChinese and '隐藏|cnRED_FONT_COLOR:战斗|r文本' or (HIDE..'|cnRED_FONT_COLOR:'..COMBAT..'|r'..LOCALE_TEXT_LABEL),
             checked= Save.hideCombatText,
+            keepShownOnClick=true,
             func= function()
                 Save.hideCombatText= not Save.hideCombatText and true or nil
             end
@@ -395,6 +398,7 @@ local function InitMenu(self, level, type)--主菜单
             checked= Save.Say and true or nil,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '说' or SAY,
+            keepShownOnClick=true,
             func= function()
                 Save.Say= not Save.Say and 120 or nil
             end
@@ -408,6 +412,7 @@ local function InitMenu(self, level, type)--主菜单
             checked= Save.AllOnlineTime,
             menuList='AllOnlineTime',
             hasArrow=true,
+            keepShownOnClick=true,
             func= function()
                 Save.AllOnlineTime = not Save.AllOnlineTime and true or nil
                 if Save.AllOnlineTime then
@@ -425,6 +430,7 @@ local function InitMenu(self, level, type)--主菜单
             tooltipTitle= e.onlyChinese and '重新加载UI' or RELOADUI,
             tooltipText=SLASH_RELOAD1,
             notCheckable=true,
+            keepShownOnClick=true,
             func=function()
                 Save=nil
                 e.Reload()
@@ -434,7 +440,7 @@ local function InitMenu(self, level, type)--主菜单
 
     elseif type=='AllOnlineTime' then--3级,所有角色时间
         local timeAll=0
-        for guid, tab in pairs(WoWDate) do
+        for guid, tab in pairs(WoWDate or {}) do
             local time= tab.Time and tab.Time.totalTime
             if time and time>0 then
                 timeAll= timeAll + time

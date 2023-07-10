@@ -199,7 +199,7 @@ function e.GetFriend(name, guid, unit)--检测, 是否好友
         guid= guid or e.GetGUID(unit, name)
         if guid and guid~=e.Player.guid then
             if C_BattleNet.GetGameAccountInfoByGUID(guid) then--C_BattleNet.GetAccountInfoByGUID(guid)
-                return e.Icon.wow2
+                return '|T-4:0|t'
             elseif C_FriendList.IsFriend(guid) then
                 return '|A:groupfinder-icon-friend:0:0|a'--好友
             elseif IsGuildMember(guid) then
@@ -211,7 +211,7 @@ function e.GetFriend(name, guid, unit)--检测, 是否好友
             return '|A:groupfinder-icon-friend:0:0|a'--好友
         end
         if e.WoWGUID[e.GetUnitName(name)] then
-            return e.Icon.wow2
+            return '|T-4:0|t'--e.Icon.wow2
         end
     end
 end

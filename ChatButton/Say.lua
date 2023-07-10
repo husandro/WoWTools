@@ -142,7 +142,8 @@ local function Init_Menu(self, level, type)--主菜单
                         tooltipOnButton=true,
                         tooltipTitle=wow.note,
                         arg1= wow.accountName,
-                        func=function(self2, arg1)
+                        keepShownOnClick= true,
+                        func=function(_, arg1)
                             e.Say(nil, arg1, true)
                             button.type=nil
                             button.name=arg1
@@ -174,7 +175,8 @@ local function Init_Menu(self, level, type)--主菜单
                         tooltipTitle=game.notes,
                         icon= game.afk and FRIENDS_TEXTURE_AFK or game.dnd and FRIENDS_TEXTURE_DND,
                         arg1= game.name,
-                        func=function(self2, arg1)
+                        keepShownOnClick= true,
+                        func=function(_, arg1)
                             e.Say('/w', arg1)
                             button.type='/w'
                             button.name=arg1
@@ -207,6 +209,7 @@ local function Init_Menu(self, level, type)--主菜单
                     tooltipText=text,
                     arg1= tab.name,
                     arg2= tab.wow,
+                    keepShownOnClick= true,
                     func=function(_, arg1, arg2)
                         e.Say(nil, arg1, arg2)
                         button.type='/w'
@@ -223,6 +226,7 @@ local function Init_Menu(self, level, type)--主菜单
                     text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2 ,--清除, 密语
                     icon= 'bags-button-autosort-up',
                     notCheckable=true,
+                    keepShownOnClick= true,
                     func= function()
                         WhisperTab={}
                     end
@@ -234,6 +238,7 @@ local function Init_Menu(self, level, type)--主菜单
             info={
                 text= e.onlyChinese and '保存' or SAVE,--保存, 密语
                 checked= Save.saveWhisper,
+                keepShownOnClick= true,
                 func= function()
                     Save.saveWhisper= not Save.saveWhisper and true or nil
                 end
@@ -257,7 +262,8 @@ local function Init_Menu(self, level, type)--主菜单
                             tooltipOnButton=true,
                             arg1= zone.fullName,
                             arg2= zone.fullGuildName,
-                            func=function(self2, arg1, arg2)
+                            keepShownOnClick= true,
+                            func=function(_, arg1, arg2)
                                 e.Say(nil, arg1)
                                 button.type='/w'
                                 button.name=arg2
@@ -315,6 +321,7 @@ local function Init_Menu(self, level, type)--主菜单
                 tooltipOnButton= true,
                 tooltipTitle= (e.onlyChinese and '其它' or OTHER)..': '..e.GetEnabeleDisable(true),
                 tooltipText= e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN,''),
+                keepShownOnClick= true,
                 func= function()
                     Save.inInstanceBubblesDisabled= not Save.inInstanceBubblesDisabled and true or nil
                     set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
@@ -333,7 +340,7 @@ local function Init_Menu(self, level, type)--主菜单
                 tooltipTitle=tab.type,
                 arg1= tab.type,
                 arg2= tab.text,
-                func=function(self2, arg1, arg2)
+                func=function(_, arg1, arg2)
                     e.Say(arg1)
                     button.type=arg1
                     button.name=nil
@@ -347,7 +354,7 @@ local function Init_Menu(self, level, type)--主菜单
                     info.text= info.text..' '..text
                     info.arg1= text
                     info.arg2= tab.text
-                    info.func=function(self2, arg1, arg2)
+                    info.func=function(_, arg1, arg2)
                         e.Say('/w', arg1)
                         button.type='/w'
                         button.name=arg1
@@ -357,7 +364,7 @@ local function Init_Menu(self, level, type)--主菜单
                 elseif button.name then--最后密语
                     info.text= info.text..' '.. button.name
                     info.arg1= {name=button.name, wow=button.wow, text=tab.text}
-                    info.func=function(self2, arg1)
+                    info.func=function(_, arg1)
                         e.Say('/w', arg1.name, arg1.wow)
                         button.type='/w'
                         setType(arg1.text)--使用,提示
@@ -370,6 +377,7 @@ local function Init_Menu(self, level, type)--主菜单
                     info.text= '|cnGREEN_FONT_COLOR:'..num..'|r'..info.text
                 end
             end
+            info.keepShownOnClick= true
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
 
@@ -409,6 +417,7 @@ local function Init_Menu(self, level, type)--主菜单
             notCheckable=true,
             menuList='FLOOR',
             hasArrow=true,
+            keepShownOnClick= true,
             func=function()
                 ToggleFriendsFrame(2)
             end
@@ -427,6 +436,7 @@ local function Init_Menu(self, level, type)--主菜单
             hasArrow=true,
             checked= C_CVar.GetCVarBool("chatBubbles"),
             disabled= UnitAffectingCombat('player'),
+            keepShownOnClick= true,
             func= function ()
                 C_CVar.SetCVar("chatBubbles", not C_CVar.GetCVarBool("chatBubbles") and '1' or '0')
             end
