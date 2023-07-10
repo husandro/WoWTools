@@ -415,7 +415,6 @@ local function set_FriendsList_Init()--好友列表, 初始化
 
     hooksecurefunc('FriendsFrame_UpdateFriendButton', function(self)--FriendsFrame.lua
         local m=''
-        local guid, isOnline
         if self.buttonType == FRIENDS_BUTTON_TYPE_WOW then
             local info = C_FriendList.GetFriendInfoByIndex(self.id)
             if not info or not info.guid then
