@@ -180,7 +180,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
 
         if accountInfo.gameAccountInfo.playerGuid then--角色，信息
             text= text..(accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel..' ' or '')--角色等级
-            text= text..e.GetPlayerInfo({guid=accountInfo.gameAccountInfo.playerGuid, reName=true, reRealm=true, faction=accountInfo.gameAccountInfo.factionName})..' '
+            text= text..e.GetPlayerInfo({guid=accountInfo.gameAccountInfo.playerGuid, reLink= accountInfo.gameAccountInfo.factionName==e.Player.faction, reName=true, reRealm=true, faction=accountInfo.gameAccountInfo.factionName})..' '
         end
 
         if accountInfo.gameAccountInfo.clientProgram then
@@ -207,11 +207,9 @@ local function set_FriendsList_Init()--好友列表, 初始化
                 end
                 if (client == BNET_CLIENT_WOW) and (rafLinkType ~= Enum.RafLinkType.None) and not isMobile then
                     if rafLinkType == Enum.RafLinkType.Recruit then
-                        return '|A:recruitafriend_V2_tab_icon:0:0|a'..locationText
-                        --return format(e.onlyChinese and '|cffffd200招募的战友：|r %s' or RAF_RECRUIT_FRIEND, locationText);
+                        return format(e.onlyChinese and '|A:recruitafriend_V2_tab_icon:0:0|a|cffffd200招募的战友：|r %s' or RAF_RECRUIT_FRIEND, locationText);
                     else
-                        return '|A:recruitafriend_friendslist_v2_icon:0:0|a'..locationText
-                        --return format(e.onlyChinese and 'cffffd200招募者：|r %s' or RAF_RECRUITER_FRIEND, locationText);
+                        return format(e.onlyChinese and '|A:recruitafriend_V2_tab_icon:0:0|acffffd200招募者：|r %s' or RAF_RECRUITER_FRIEND, locationText);
                     end
                 end
             end
@@ -223,6 +221,10 @@ local function set_FriendsList_Init()--好友列表, 初始化
             infoText = GetOnlineInfoText(accountInfo.gameAccountInfo.clientProgram, accountInfo.gameAccountInfo.isWowMobile, accountInfo.rafLinkType, accountInfo.gameAccountInfo.areaName);
         end
         text= text..(infoText or '')
+
+        if accountInfo.gameAccountInfo.canSummon then
+            text= text..'|A:socialqueuing-friendlist-summonbutton-up:0:0|a'
+        end
 
         if self.tips~= text then
             self.tips= text

@@ -226,10 +226,10 @@ e.GetUnitFaction= function(unit, faction, all)--检查, 是否同一阵营
 end
 
 
-e.PlayerLink=function(name, guid, slotLink) --玩家超链接
+e.PlayerLink=function(name, guid, onlyLink) --玩家超链接
     guid= guid or e.GetGUID(nil, name)
     if guid==e.Player.guid then--自已
-        return (not slotLink and e.Icon.player)..'|Hplayer:'..e.Player.name_realm..'|h['..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
+        return (not onlyLink and e.Icon.player)..'|Hplayer:'..e.Player.name_realm..'|h['..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
     end
     if guid then
         local _, class, _, race, sex, name2, realm = GetPlayerInfoByGUID(guid)
@@ -238,7 +238,7 @@ e.PlayerLink=function(name, guid, slotLink) --玩家超链接
             if class then
                 showName= '|c'..select(4,GetClassColor(class))..showName..'|r'
             end
-            return (not slotLink and e.GetUnitRaceInfo({unit=nil, guid=guid , race=race , sex=sex , reAtlas=false}) or '')..'|Hplayer:'..name2..(realm and '-'..realm or '')..'|h['..showName..']|h'
+            return (not onlyLink and e.GetUnitRaceInfo({unit=nil, guid=guid , race=race , sex=sex , reAtlas=false}) or '')..'|Hplayer:'..name2..((realm and realm~='') and '-'..realm or '')..'|h['..showName..']|h'
         end
     elseif name then
         return '|Hplayer:'..name..'|h['..GetPlayerNameRemoveRealm(name)..']|h'
@@ -249,10 +249,10 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
     local guid= tab.guid or e.GetGUID(tab.unit, tab.name)
     if guid==e.Player.guid then
         return e.Icon.player..((tab.reName or tab.reLink) and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
-
+    elseif tab.reLink then
+        return e.PlayerLink(tab.name, guid, true) --玩家超链接
     elseif guid and C_PlayerInfo.GUIDIsPlayer(guid) then
         local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
-
         local unit= tab.unit
         if guid and (not tab.faction or unit) then
             if e.GroupGuid[guid] then
@@ -274,11 +274,7 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
         if groupInfo.combatRole=='HEALER' or groupInfo.combatRole=='TANK' then--职业图标
             text= text..e.Icon[groupInfo.combatRole]..(groupInfo.subgroup or '')
         end
-
-        if tab.reLink then
-            return text..e.PlayerLink(name, guid, true) --玩家超链接
-
-        elseif tab.reName and name then
+        if tab.reName and name then
             if tab.reRealm then
                 if not realm or realm=='' or realm==e.Player.realm then
                     text= text..name
