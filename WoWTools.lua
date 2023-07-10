@@ -243,6 +243,7 @@ e.PlayerLink=function(name, guid, onlyLink) --玩家超链接
     elseif name then
         return '|Hplayer:'..name..'|h['..GetPlayerNameRemoveRealm(name)..']|h'
     end
+    return ''
 end
 
 e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, faction=nil, reName=true, reLink=false, reRealm=false, reNotRegion=false})

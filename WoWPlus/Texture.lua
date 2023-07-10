@@ -654,7 +654,7 @@ local function Init_Set_AlphaAndColor()
     set_Alpha(FriendsFrame.NineSlice.TopLeftCorner)
     set_Alpha(FriendsFrame.NineSlice.TopRightCorner)
     set_Alpha(FriendsFrameBg)
-    hide_Texture(FriendsFrameInset.Bg)
+    --hide_Texture(FriendsFrameInset.Bg)
     hide_Texture(FriendsListFrame.ScrollBar.Backplate)
     hide_Texture(IgnoreListFrame.ScrollBar.Backplate)
     if RecruitAFriendFrame and RecruitAFriendFrame.RecruitList then

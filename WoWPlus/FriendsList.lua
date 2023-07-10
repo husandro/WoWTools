@@ -151,6 +151,14 @@ end
 local function set_FriendsList_Init()--好友列表, 初始化
     Save.Friends[e.Player.name_realm]=Save.Friends[e.Player.name_realm] or {}
 
+    local regionNames = {
+        [1] = e.onlyChinese and '北美' or NORTH_AMERICA,
+        [2] = e.onlyChinese and '韩国' or KOREA,
+        [3] = e.onlyChinese and '欧洲' or EUROPE,
+        [4] = e.onlyChinese and '台湾' or TAIWAN,
+        [5] = e.onlyChinese and '中国' or CHINA,
+    };
+
     panel.btn= e.Cbtn(FriendsFrameStatusDropDownButton, {size={20,20}})
     panel.btn:RegisterEvent('BN_FRIEND_INFO_CHANGED')
     panel.btn.gameIcon= panel.btn:CreateTexture()
@@ -160,7 +168,17 @@ local function set_FriendsList_Init()--好友列表, 初始化
             return
         end
         local accountInfo= friendIndex and C_BattleNet.GetFriendAccountInfo(friendIndex) --FriendsFrame_UpdateFriendButton FriendsFrame.lua
-        if not accountInfo or (Save.onlyWoWFriendInfo and accountInfo.gameAccountInfo.isOnline and accountInfo.gameAccountInfo.clientProgram~='WoW') then
+        if not accountInfo
+            or (
+                Save.onlyWoWFriendInfo
+                and accountInfo.gameAccountInfo.isOnline
+                and (
+                        accountInfo.gameAccountInfo.clientProgram ~= BNET_CLIENT_WOW
+                        or accountInfo.gameAccountInfo.wowProjectID ~= WOW_PROJECT_ID
+                        or not accountInfo.gameAccountInfo.isInCurrentRegion
+                    )
+                )
+        then
             return
         end
 
@@ -178,9 +196,25 @@ local function set_FriendsList_Init()--好友列表, 初始化
             text= text..'|T'..FRIENDS_TEXTURE_OFFLINE..':0|t'
         end
 
-        if accountInfo.gameAccountInfo.playerGuid then--角色，信息
-            text= text..(accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel..' ' or '')--角色等级
-            text= text..e.GetPlayerInfo({guid=accountInfo.gameAccountInfo.playerGuid, reLink= accountInfo.gameAccountInfo.factionName==e.Player.faction, reName=true, reRealm=true, faction=accountInfo.gameAccountInfo.factionName})..' '
+        if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= MAX_PLAYER_LEVEL then--角色等级
+            text= text..'|cnGREEN_FONT_COLOR:'..accountInfo.gameAccountInfo.characterLevel..'|r '
+        end
+        
+
+        if accountInfo.gameAccountInfo.isOnline and accountInfo.gameAccountInfo.clientProgram == BNET_CLIENT_WOW then
+            if accountInfo.gameAccountInfo.wowProjectID == WOW_PROJECT_ID  and accountInfo.gameAccountInfo.isInCurrentRegion then
+                text= text..e.GetPlayerInfo({
+                            guid=accountInfo.gameAccountInfo.playerGuid,
+                            reLink= accountInfo.gameAccountInfo.factionName==e.Player.faction,
+                            reName=true,
+                            reRealm=true,
+                            faction=accountInfo.gameAccountInfo.factionName,
+                        })..' '
+            else
+                text= text..(accountInfo.gameAccountInfo.characterName or '')
+                        ..(accountInfo.gameAccountInfo.realmName and accountInfo.gameAccountInfo.realmName~='' and '-'..accountInfo.gameAccountInfo.realmName or '')
+                        ..(accountInfo.gameAccountInfo.className and '('..accountInfo.gameAccountInfo.className..')' or '')
+            end
         end
 
         if accountInfo.gameAccountInfo.clientProgram then
@@ -191,6 +225,14 @@ local function set_FriendsList_Init()--好友列表, 初始化
             end
         end
         self.gameIcon:SetTexture(0)
+
+        if not accountInfo.gameAccountInfo.isInCurrentRegion then
+            if accountInfo.gameAccountInfo.regionID and regionNames[accountInfo.gameAccountInfo.regionID] then
+                text= text..' |cnRED_FONT_COLOR:'..regionNames[accountInfo.gameAccountInfo.regionID]..'|r'
+            end
+        elseif accountInfo.gameAccountInfo.clientProgram == BNET_CLIENT_WOW and accountInfo.gameAccountInfo.wowProjectID ~= WOW_PROJECT_ID then
+            text= text..' |cnRED_FONT_COLOR:CLASSIC'..accountInfo.gameAccountInfo.wowProjectID..'|r'
+        end
 
         local infoText
         local function ShowRichPresenceOnly(client, wowProjectID, faction, realmID)
@@ -231,7 +273,11 @@ local function set_FriendsList_Init()--好友列表, 初始化
             print(text)
         end
     end)
-    local optionText= (e.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"--好友列表
+
+    --#######
+    --好友列表
+    --#######
+    local optionText= (e.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"
     local function set_Status()
         if not BNConnected() then
             return
@@ -375,50 +421,53 @@ local function set_FriendsList_Init()--好友列表, 初始化
             if not info or not info.guid then
                 return
             end
-            guid=info.guid
-            isOnline= info.connected
-            m=e.GetPlayerInfo({guid=info.guid})
-            if info.area and info.connected then
-                m=m..' '..info.area
+            local text=e.GetPlayerInfo({guid=info.guid})
+            if text~='' then
+               text= text..(info.area and info.connected and ' '..info.area or '')
+               self.info:SetText(text)
             end
 
         elseif self.buttonType == FRIENDS_BUTTON_TYPE_BNET then--2战网                
-            local info2 = C_BattleNet.GetFriendAccountInfo(self.id)
-
-            if not info2 or not info2.gameAccountInfo or not info2.gameAccountInfo.playerGuid or info2.gameAccountInfo.wowProjectID~=1 then
+            local accountInfo = C_BattleNet.GetFriendAccountInfo(self.id)
+            if not accountInfo then
                 return
             end
-            local info=info2.gameAccountInfo
-            guid= info.playerGuid
-            isOnline= info.isOnline
-
-            m= (e.GetUnitFaction(nil, info.factionName) or '')--派系
-            if info.characterLevel and info.characterLevel~=MAX_PLAYER_LEVEL and info.characterLevel>0 then--等级
-                m=m..'|cff00ff00'..info.characterLevel..'|r'
+            if accountInfo.note and accountInfo.note:gsub(' ','')~='' then--备注，提示
+                self.name:SetText(accountInfo.accountName..' ('..accountInfo.note..')')
             end
 
-            m= m..e.GetPlayerInfo({guid=guid, reName=true, reRealm=true})
-
-            if isOnline and info.areaName then
-                m=m..' '..info.areaName--区域
-            end
-        end
-        if m~='' then
-            if guid then
-                local _, englishClass= GetPlayerInfoByGUID(guid)
-                if englishClass then
-                    m= '|c'..select(4, GetClassColor(englishClass))..m..'|r'
+            if not accountInfo.gameAccountInfo.isInCurrentRegion then--不在，当前地区
+                if accountInfo.gameAccountInfo.regionID and regionNames[accountInfo.gameAccountInfo.regionID] then
+                    self.info:SetText('|cnRED_FONT_COLOR:'..regionNames[accountInfo.gameAccountInfo.regionID])
                 end
+                return
+            elseif not accountInfo.gameAccountInfo.isOnline then--or accountInfo.gameAccountInfo.wowProjectID~=WOW_PROJECT_ID then
+                return
 
-                if isOnline and self.name then
-                    local class= select(2, GetPlayerInfoByGUID(guid))
-                    if class then
-                        local rPerc, gPerc, bPerc = GetClassColor(class)
-                        self.name:SetTextColor(rPerc, gPerc, bPerc)
-                    end
+            elseif accountInfo.gameAccountInfo.clientProgram ~= BNET_CLIENT_WOW or accountInfo.gameAccountInfo.wowProjectID~= WOW_PROJECT_ID then
+                if accountInfo.gameAccountInfo.wowProjectID and accountInfo.gameAccountInfo.clientProgram then
+                    self.info:SetText('|cnRED_FONT_COLOR:'..accountInfo.gameAccountInfo.clientProgram.. accountInfo.gameAccountInfo.wowProjectID)
+                end
+               return
+            end
+
+            local text=''
+            
+            if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= MAX_PLAYER_LEVEL then--角色等级
+                text= text..'|cnGREEN_FONT_COLOR:'..accountInfo.gameAccountInfo.characterLevel..'|r '
+            end
+            text= text.. e.GetPlayerInfo({guid=accountInfo.gameAccountInfo.playerGuid, reName=true, reRealm=true, faction=accountInfo.gameAccountInfo.factionName })
+
+            if accountInfo.gameAccountInfo.isOnline and accountInfo.gameAccountInfo.areaName then--区域
+                text= text..' '..accountInfo.gameAccountInfo.areaName
+            end
+            if accountInfo.gameAccountInfo.playerGuid then
+                local class= select(2, GetPlayerInfoByGUID(accountInfo.gameAccountInfo.playerGuid))
+                if class then
+                    text= '|c'..select(4, GetClassColor(class))..text..'|r'
                 end
             end
-            self.info:SetText(m)
+            self.info:SetText(text)
         end
     end)
 end

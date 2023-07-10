@@ -2990,7 +2990,12 @@
         "FRIENDS_TEXTURE_OFFLINE",
         "FRIENDS_GRAY_COLOR",
         "SOCIAL_TWITTER_DISCONNECT",
-        "GetBNPlayerLink"
+        "GetBNPlayerLink",
+        "NORTH_AMERICA",
+        "KOREA",
+        "EUROPE",
+        "TAIWAN",
+        "CHINA"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
