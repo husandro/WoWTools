@@ -182,7 +182,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
             return
         end
 
-        local text= ((accountInfo.note and accountInfo.note~='' and accountInfo.note:gsub(' ', '')~='') and accountInfo.note or accountInfo.accountName or accountInfo.battleTag or '')--备注 或名称 战网名称
+        local text= ((accountInfo.note and accountInfo.note:gsub(' ', '')~='') and accountInfo.note or accountInfo.accountName or accountInfo.battleTag or '')--备注 或名称 战网名称
         text= '|cff00ccff['..GetBNPlayerLink(accountInfo.accountName, text, accountInfo.bnetAccountID, 0, 0, 0)..'] '
         if accountInfo.gameAccountInfo.isOnline then--是不在线
             if accountInfo.isAFK or accountInfo.gameAccountInfo.isGameAFK then

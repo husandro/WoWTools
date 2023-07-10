@@ -1078,6 +1078,8 @@ local function Init_Quest()
         acceptButton:Click()
     end)
 
+    
+
     if Save.autoSortQuest then--仅显示本地图任务,事件
         set_Auto_QuestWatch_Event()
     end
@@ -1129,6 +1131,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     s.editBox:SetText(SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING)
                 end
             end)
+
+            --[[Blizzard_PlayerChoice.lua
+            hooksecurefunc(PlayerChoiceFrame, 'SetupOptions', function(self2)
+                print(id,addName)
+                local soloOption = #self2.choiceInfo.options == 1
+                for optionIndex, optionInfo in ipairs(self2.choiceInfo.options) do
+                    local optionFrame = self2.optionPools:Acquire(self2.optionFrameTemplate)
+                    print(optionFrame)
+                    --optionFrame.layoutIndex = optionIndex;
+                    --optionFrame:Setup(optionInfo, self.uiTextureKit, soloOption);
+                end
+            end)]]
         end
 
     elseif event == "PLAYER_LOGOUT" then
