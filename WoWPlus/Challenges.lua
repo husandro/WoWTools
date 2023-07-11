@@ -412,7 +412,10 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     end)
 end
 
-local function set_CHALLENGE_MODE_START()--赏金, 说 Bounty
+--[[local function set_CHALLENGE_MODE_START()--赏金, 说 Bounty
+    if Save.hideKeyUI then
+        return
+    end
     local tab = select(2, C_ChallengeMode.GetActiveKeystoneInfo()) or {}
     for _, info  in pairs(tab) do
         local activeAffixID=select(3, C_ChallengeMode.GetAffixInfo(info))
@@ -453,7 +456,7 @@ local function set_CHALLENGE_MODE_START()--赏金, 说 Bounty
             break
         end
     end
-end
+end]]
 
 
 --##################
@@ -1542,7 +1545,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('CHALLENGE_MODE_START')
+--panel:RegisterEvent('CHALLENGE_MODE_START')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -1588,7 +1591,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event=='CHALLENGE_MODE_START' then
-        set_CHALLENGE_MODE_START()--赏金, 说 Bounty
+    --[[elseif event=='CHALLENGE_MODE_START' then
+        set_CHALLENGE_MODE_START()--赏金, 说 Bounty]]
     end
 end)
