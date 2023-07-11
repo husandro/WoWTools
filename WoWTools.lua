@@ -999,7 +999,7 @@ e.Chat=function(text, name, setPrint)
         elseif IsInGroup() and C_CVar.GetCVarBool("chatBubblesParty") then
             SendChatMessage(text, 'PARTY')
 
-        elseif isIns then
+        elseif isIns and IsInGroup() then
             SendChatMessage(text, 'INSTANCE_CHAT')
 
         elseif not IsResting() then
