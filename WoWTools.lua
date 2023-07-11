@@ -984,7 +984,7 @@ e.ToolsSetButtonPoint=function(self, line, unoLine)--设置位置
     e.toolsFrame.index=e.toolsFrame.index+1
 end
 
-e.Chat=function(text, name, setPrint)
+function e.Chat(text, name, setPrint)
     if text then
         local isIns= IsInInstance()
         if name then

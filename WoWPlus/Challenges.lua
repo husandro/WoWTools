@@ -408,7 +408,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.countdown2:SetSize(100,24)
     self.countdown2:SetScript("OnMouseDown",function()
         C_PartyInfo.DoCountdown(0)
-        e.Chat(CANCEL)
+        e.Chat(e.Player.cn and '停止' or 'Stop! Stop! Stop!')
     end)
 end
 
