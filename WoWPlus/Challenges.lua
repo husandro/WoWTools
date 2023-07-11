@@ -412,52 +412,6 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     end)
 end
 
---[[local function set_CHALLENGE_MODE_START()--赏金, 说 Bounty
-    if Save.hideKeyUI then
-        return
-    end
-    local tab = select(2, C_ChallengeMode.GetActiveKeystoneInfo()) or {}
-    for _, info  in pairs(tab) do
-        local activeAffixID=select(3, C_ChallengeMode.GetAffixInfo(info))
-        if activeAffixID==136177 then
-            C_Timer.After(6, function()
-                local chat={}
-
-                local n=GetNumGroupMembers()
-                local IDs2={373113, 373108, 373116, 373121}
-                for i=1, n do
-                    local u= i==n and 'player' or 'party'..i
-                    local name2=i==n and COMBATLOG_FILTER_STRING_M or UnitName(u)
-                    if UnitExists(u) and name2 then
-                        local buff
-                        for _, v in pairs(IDs2) do
-                            local name=e.WA_GetUnitBuff(u, v)
-                            if  name then
-                                local link=GetSpellLink(v)
-                                if link or name then
-                                    buff=i..')'..name2..': '..(link or name)
-                                    break
-                                end
-                            end
-                        end
-                        buff=buff or (i..')'..name2..': '..NONE)
-                        table.insert(chat, buff)
-                    end
-                end
-
-                for _, v in pairs(chat) do
-                    if not Save.slotKeystoneSay then
-                        print(v)
-                    else
-                        e.Chat(v)
-                    end
-                end
-            end)
-            break
-        end
-    end
-end]]
-
 
 --##################
 --史诗钥石地下城, 界面
@@ -1545,7 +1499,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
---panel:RegisterEvent('CHALLENGE_MODE_START')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -1590,8 +1544,52 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
-
-    --[[elseif event=='CHALLENGE_MODE_START' then
-        set_CHALLENGE_MODE_START()--赏金, 说 Bounty]]
     end
 end)
+
+--panel:RegisterEvent('CHALLENGE_MODE_START')
+--[[elseif event=='CHALLENGE_MODE_START' then -赏金, 说 Bounty
+    if Save.hideKeyUI then
+        return
+    end
+    local tab = select(2, C_ChallengeMode.GetActiveKeystoneInfo()) or {}
+    for _, info  in pairs(tab) do
+        local activeAffixID=select(3, C_ChallengeMode.GetAffixInfo(info))
+        if activeAffixID==136177 then
+            C_Timer.After(6, function()
+                local chat={}
+
+                local n=GetNumGroupMembers()
+                local IDs2={373113, 373108, 373116, 373121}
+                for i=1, n do
+                    local u= i==n and 'player' or 'party'..i
+                    local name2=i==n and COMBATLOG_FILTER_STRING_M or UnitName(u)
+                    if UnitExists(u) and name2 then
+                        local buff
+                        for _, v in pairs(IDs2) do
+                            local name=e.WA_GetUnitBuff(u, v)
+                            if  name then
+                                local link=GetSpellLink(v)
+                                if link or name then
+                                    buff=i..')'..name2..': '..(link or name)
+                                    break
+                                end
+                            end
+                        end
+                        buff=buff or (i..')'..name2..': '..NONE)
+                        table.insert(chat, buff)
+                    end
+                end
+
+                for _, v in pairs(chat) do
+                    if not Save.slotKeystoneSay then
+                        print(v)
+                    else
+                        e.Chat(v)
+                    end
+                end
+            end)
+            break
+        end
+    end
+end]]
