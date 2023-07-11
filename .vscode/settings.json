@@ -2995,7 +2995,13 @@
         "KOREA",
         "EUROPE",
         "TAIWAN",
-        "CHINA"
+        "CHINA",
+        "PlayerChoiceBaseOptionRewardsMixin",
+        "PLAYER_CHOICE_QUALITY_STRING_COMMON",
+        "PLAYER_CHOICE_QUALITY_STRING_EMPTY",
+        "PLAYER_CHOICE_QUALITY_STRING_EPIC",
+        "PLAYER_CHOICE_QUALITY_STRING_RARE",
+        "PLAYER_CHOICE_QUALITY_STRING_UNCOMMON"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -1,15 +1,18 @@
 local id, e = ...
 local addName= ENABLE_DIALOG..QUESTS_LABEL
 local Save={
-        gossip= true,
-        quest= true,
-        unique= true,
-        autoSortQuest= e.Player.husandro,
-        autoSelectReward= e.Player.husandro,
         NPC={},
+
+        gossip= true,
+        unique= true,--唯一对话
         gossipOption={},
+        choice={},--PlayerChoiceFrame
+
+        quest= true,
         questOption={},
         questRewardCheck={},--{任务ID= index}
+        autoSortQuest= e.Player.husandro,--仅显示当前地图任务
+        autoSelectReward= e.Player.husandro,--自动选择奖励
 }
 
 local panel=e.Cbtn(nil, {icon='hide', size={15,15}})--闲话图标
@@ -187,9 +190,10 @@ local function InitMenu_Gossip(self, level, type)
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle='gossipOptionID '..gossipOptionID..'|n|n'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
-                func=function()
-                    Save.gossipOption[gossipOptionID]=nil
-                    print(id, ENABLE_DIALOG, e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', gossipOptionID)
+                arg1= gossipOptionID,
+                func=function(_, arg1)
+                    Save.gossipOption[arg1]=nil
+                    print(id, ENABLE_DIALOG, e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', arg1)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -201,21 +205,57 @@ local function InitMenu_Gossip(self, level, type)
             notCheckable=true,
             func= function()
                 Save.gossipOption={}
-                print(id, ENABLE_DIALOG, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                print(id, addName, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-
+        return
     elseif type=='DISABLE' then--禁用NPC, 闲话,任务, 选项
         for npcID, name in pairs(Save.NPC) do
             info={
                 text=name,
                 tooltipOnButton=true,
                 tooltipTitle= 'NPC '..npcID,
-                tooltipTEXT= e.Icon.left.. (e.onlyChinese and '移除' or REMOVE),
+                tooltipText= e.Icon.left.. (e.onlyChinese and '移除' or REMOVE),
                 notCheckable= true,
-                func= function()
-                    Save.NPC[npcID]=nil
+                arg1= npcID,
+                func= function(_, arg1)
+                    Save.NPC[arg1]=nil
+                    print(id, addName, e.onlyChinese and '移除' or REMOVE, 'NPC:', arg1)
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text=e.onlyChinese and '清除全部' or CLEAR_ALL,
+            func= function()
+                Save.NPC={}
+                print(id, addName, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
+
+    elseif type=='PlayerChoiceFrame' then
+        for spellID, rarity in pairs(Save.choice) do
+            e.LoadDate({id=spellID, type='spell'})
+            local icon= GetSpellTexture(spellID)
+            local name= GetSpellLink(spellID) or ('spellID '..spellID)
+            rarity= rarity+1
+            local hex= select(4, GetItemQualityColor(rarity))
+            local quality=(hex and '|c'..hex or '')..(_G['ITEM_QUALITY'..rarity..'_DESC'] or rarity)
+            info={
+                text=(icon and '|T'..icon..':0|t' or '').. name..' '.. quality,
+                tooltipOnButton=true,
+                tooltipTitle= e.Icon.left.. (e.onlyChinese and '移除' or REMOVE),
+                tooltipText= 'spellID '..spellID,                
+                notCheckable= true,
+
+                arg1=spellID,
+                func= function(_, arg1)
+                    Save.choice[arg1]=nil
+                    print(id, addName, e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '移除' or REMOVE, GetSpellLink(arg1) or ('spellID '..arg1))
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -225,77 +265,92 @@ local function InitMenu_Gossip(self, level, type)
             text=e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
             func= function()
-                Save.NPC={}
-                print(id, ENABLE_DIALOG, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                Save.choice={}
+                print(id, addName, e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '清除全部' or CLEAR_ALL)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-    else
-        info={--启用,禁用
-            text=e.Icon.left..(e.onlyChinese and '自动对话' or AUTO_JOIN:gsub(JOIN, ENABLE_DIALOG)),
-            checked=Save.gossip,
-            func= function()
-                Save.gossip= not Save.gossip and true or nil
-                setTexture()--设置图标
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        info={--唯一
-            text= e.onlyChinese and '唯一对话' or ITEM_UNIQUE..ENABLE_DIALOG,
-            checked= Save.unique,
-            func= function()
-                Save.unique= not Save.unique and true or nil
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={--自定义,闲话,选项
-            text= e.onlyChinese and '自定义对话' or (CUSTOM..ENABLE_DIALOG),
-            menuList='CUSTOM',
-            notCheckable=true,
-            hasArrow=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={--禁用NPC, 闲话,任务, 选项
-            text= e.onlyChinese and '禁用 NPC' or (DISABLE..' NPC'),
-            menuList='DISABLE',
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '对话' or ENABLE_DIALOG,
-            tooltipText= e.onlyChinese and '任务' or QUESTS_LABEL,
-            notCheckable=true,
-            hasArrow=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text=e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
-            notCheckable=true,
-            isTitle=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        info={
-            text= e.onlyChinese and '重置位置' or RESET_POSITION,
-            notCheckable=true,
-            colorCode=not Save.point and '|cff606060',
-            func= function()
-                Save.point=nil
-                panel:ClearAllPoints()
-                setPoint()
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text=id..' '..(e.onlyChinese and '对话' or ENABLE_DIALOG),
-            isTitle=true,
-            notCheckable=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
     end
+
+    info={--启用,禁用
+        text=e.Icon.left..(e.onlyChinese and '自动对话' or AUTO_JOIN:gsub(JOIN, ENABLE_DIALOG)),
+        checked=Save.gossip,
+        keepShownOnClick=true,
+        func= function()
+            Save.gossip= not Save.gossip and true or nil
+            setTexture()--设置图标
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    info={--唯一
+        text= e.onlyChinese and '唯一对话' or ITEM_UNIQUE..ENABLE_DIALOG,
+        checked= Save.unique,
+        keepShownOnClick=true,
+        func= function()
+            Save.unique= not Save.unique and true or nil
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={--自定义,闲话,选项
+        text= e.onlyChinese and '自定义对话' or (CUSTOM..ENABLE_DIALOG),
+        menuList='CUSTOM',
+        notCheckable=true,
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={--禁用NPC, 闲话,任务, 选项
+        text= e.onlyChinese and '禁用 NPC' or (DISABLE..' NPC'),
+        menuList='DISABLE',
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '对话' or ENABLE_DIALOG,
+        tooltipText= e.onlyChinese and '任务' or QUESTS_LABEL,
+        notCheckable=true,
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={--PlayerChoiceFrame
+        text= e.onlyChinese and '选择' or CHOOSE,
+        menuList='PlayerChoiceFrame',
+        tooltipOnButton=true,
+        tooltipTitle='PlayerChoiceFrame',
+        tooltipText= 'Blizzard_PlayerChoice',
+        notCheckable=true,
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
+        text=e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
+        notCheckable=true,
+        isTitle=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    info={
+        text= e.onlyChinese and '重置位置' or RESET_POSITION,
+        notCheckable=true,
+        colorCode=not Save.point and '|cff606060',
+        keepShownOnClick=true,
+        func= function()
+            Save.point=nil
+            panel:ClearAllPoints()
+            setPoint()
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
+        text=id..' '..(e.onlyChinese and '对话' or ENABLE_DIALOG),
+        isTitle=true,
+        notCheckable=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 
@@ -1101,6 +1156,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.questOption = Save.questOption or {}
             Save.gossipOption= Save.gossipOption or {}
             Save.questRewardCheck= Save.questRewardCheck or {}
+            Save.choice= Save.choice or {}
              --添加控制面板        
             local sel=e.CPanel('|A:CampaignAvailableQuestIcon:0:0|a'..(e.onlyChinese and '对话和任务' or addName), not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
@@ -1132,17 +1188,109 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             end)
 
-            --[[Blizzard_PlayerChoice.lua
-            hooksecurefunc(PlayerChoiceFrame, 'SetupOptions', function(self2)
-                print(id,addName)
-                local soloOption = #self2.choiceInfo.options == 1
-                for optionIndex, optionInfo in ipairs(self2.choiceInfo.options) do
-                    local optionFrame = self2.optionPools:Acquire(self2.optionFrameTemplate)
-                    print(optionFrame)
-                    --optionFrame.layoutIndex = optionIndex;
-                    --optionFrame:Setup(optionInfo, self.uiTextureKit, soloOption);
+
+            --自动选择奖励
+            --Blizzard_PlayerChoice.lua
+            panel.Send_Player_Choice_Response= function(optionInfo)
+                if not optionInfo then
+                    return
                 end
-            end)]]
+                C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
+                print(id, addName, (optionInfo.spellID and GetSpellLink(optionInfo.spellID) or ''), '|n',
+                        '|T'..(optionInfo.choiceArtID or 0)..':0|t'..optionInfo.rarityColor:WrapTextInColorCode(optionInfo.description or '')
+                    )
+                PlayerChoiceFrame:OnSelectionMade();
+                C_PlayerChoice.OnUIClosed()
+                for optionFrame in PlayerChoiceFrame.optionPools:EnumerateActiveByTemplate(PlayerChoiceFrame.optionFrameTemplate) do
+                    optionFrame:SetShown(false)
+                end
+            end
+            hooksecurefunc(PlayerChoiceFrame, 'SetupOptions', function(self2)
+                if IsModifierKeyDown() or not Save.gossip
+                then
+                    return
+                end
+                local tab={}
+                local soloOption = (#self2.choiceInfo.options == 1)
+                for optionFrame in self2.optionPools:EnumerateActiveByTemplate(self2.optionFrameTemplate) do
+                    local enabled= not optionFrame.optionInfo.disabledOption and optionFrame.optionInfo.spellID
+                    if not optionFrame.check and enabled then
+                        optionFrame.check= CreateFrame("CheckButton", nil, optionFrame, "InterfaceOptionsCheckButtonTemplate")
+                        optionFrame.check:SetPoint('BOTTOM' ,0, -40)
+                        optionFrame.check:SetScript('OnClick', function(self3)
+                            local optionInfo= self3:GetParent().optionInfo
+                            if optionInfo and optionInfo.spellID then
+                                Save.choice[optionInfo.spellID]= not Save.choice[optionInfo.spellID] and (optionInfo.rarity or 0) or nil
+                                if Save.choice[optionInfo.spellID] then
+                                    panel.Send_Player_Choice_Response(optionInfo)
+                                end
+                            else
+                                print(id, addName,'|cnRED_FONT_COLOR:', not e.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误')
+                            end
+                        end)
+                        optionFrame.check:SetScript('OnLeave', function() e.tips:Hide() end)
+                        optionFrame.check:SetScript('OnEnter', function(self3)
+                            local optionInfo= self3:GetParent().optionInfo
+                            e.tips:SetOwner(self3:GetParent(), "ANCHOR_BOTTOMRIGHT")
+                            e.tips:ClearLines()
+                            if optionInfo and optionInfo.spellID then
+                                e.tips:SetSpellByID(optionInfo.spellID)
+                            end
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine(id, addName)
+                            e.tips:Show()
+                        end)
+                        optionFrame.check.elapsed=0
+                        optionFrame.check.Text2=e.Cstr(optionFrame.check)
+                        optionFrame.check.Text2:SetPoint('RIGHT', optionFrame.check, 'LEFT')
+                        optionFrame.check.Text2:SetTextColor(0,1,0)
+                        optionFrame.check:SetScript('OnUpdate', function(self3, elapsed)
+                            self3.elapsed = self3.elapsed + elapsed
+                            if self3.elapsed>=1 then
+                                local text, count
+                                local aura= self3.spellID and C_UnitAuras.GetPlayerAuraBySpellID(self3.spellID)
+                                if aura then
+                                    local value= aura.expirationTime-aura.duration
+                                    local time= GetTime()
+                                    time= time < value and time + 86400 or time
+                                    time= time - value
+                                    text= SecondsToClock(aura.duration- time)
+                                    count= select(3, e.WA_GetUnitBuff('player', self3.spellID, 'HELPFUL'))
+                                    count= count and count>1 and count or nil
+                                end
+                                self3.Text:SetText(text or '')
+                                self3.Text2:SetText(count or '')
+                                self3.elapsed=0
+                            end
+                        end)
+                    end
+
+                    
+                    if optionFrame.check then
+                        optionFrame.check.elapsed=1.1
+                        optionFrame.check.spellID= optionFrame.optionInfo.spellID
+                        optionFrame.check:SetShown(enabled)
+                        if enabled then
+                            local saveChecked= Save.choice[optionFrame.optionInfo.spellID]
+                            optionFrame.check:SetChecked(saveChecked)
+                            if saveChecked or (soloOption and Save.unique) then
+                                optionFrame.optionInfo.rarity = optionFrame.optionInfo.rarity or 0
+                                table.insert(tab, optionFrame.optionInfo)
+                            end
+                        end
+                    end
+                end
+                if #tab>0 then
+                    table.sort(tab, function(a,b)
+                        if a.rarity== b.rarity then
+                            return a.spellID> b.spellID
+                        else
+                            return a.rarity> b.rarity
+                        end
+                    end)
+                    panel.Send_Player_Choice_Response(tab[1])
+                end
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then
