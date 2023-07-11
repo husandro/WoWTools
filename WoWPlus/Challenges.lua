@@ -46,18 +46,16 @@ local SpellTabs={
     {spell=205379, ins=767, map=206},--传送：奈萨里奥的巢穴
     {spell=88775, ins=68, map=438},--传送到旋云之巅
 }
-for _, tab in pairs(SpellTabs) do
-    e.LoadDate({id=tab.spell, type='spell'})
-end
+
 local function get_Spell_MapChallengeID(mapChallengeID)
     for _, tab in pairs(SpellTabs) do
         e.LoadDate({id=tab.spell, type='spell'})
-        if tab.map==mapChallengeID then
+        if mapChallengeID and tab.map==mapChallengeID then
             return tab.spell
         end
     end
 end
-
+get_Spell_MapChallengeID()
 
 local function getBagKey(self, point, x, y, parent) --KEY链接
     local find=point:find('LEFT')
