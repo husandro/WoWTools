@@ -1213,7 +1213,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 local tab={}
                 local soloOption = (#self2.choiceInfo.options == 1)
                 for optionFrame in self2.optionPools:EnumerateActiveByTemplate(self2.optionFrameTemplate) do
-                    local enabled= not optionFrame.optionInfo.disabledOption and optionFrame.optionInfo.spellID
+                    local enabled= not optionFrame.optionInfo.disabledOption and optionFrame.optionInfo.spellID and optionFrame.optionInfo.spellID>0
                     if not optionFrame.check and enabled then
                         optionFrame.check= CreateFrame("CheckButton", nil, optionFrame, "InterfaceOptionsCheckButtonTemplate")
                         optionFrame.check:SetPoint('BOTTOM' ,0, -40)
