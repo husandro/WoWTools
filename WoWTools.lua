@@ -393,7 +393,7 @@ e.Icon={
 
     TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',
     HEALER='|A:UI-LFG-RoleIcon-Healer:0:0|a',
-    DAMAGER='|A:UI-LFG-RoleIcon-RangedDPS:0:0|a',
+    DAMAGER='|A:UI-LFG-RoleIcon-DPS:0:0|a',
     NONE='|A:UI-LFG-RoleIcon-Pending:0:0|a',
     leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
 

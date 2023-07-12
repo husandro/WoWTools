@@ -288,30 +288,31 @@ local function set_Blizzard_TrainerU()
         end)
 	end)
 
-	hooksecurefunc("ClassTrainerFrame_Update",function(self2)--Blizzard_TrainerUI.lua 
-        local show= IsTradeskillTrainer()
-        if show then
-            local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
-            ClassTrainerFrame.BuyAll.all=0
-            ClassTrainerFrame.BuyAll.cost=0
-            local tradeSkillStepIndex = GetTrainerServiceStepIndex();
-            local category= tradeSkillStepIndex and select(index, GetTrainerServiceInfo(tradeSkillStepIndex))
-            if tradeSkillStepIndex and (category=='used' or category=='available') then
-                for i=1,GetNumTrainerServices() do
-                    if select(index, GetTrainerServiceInfo(i))=="available" then
-                        ClassTrainerFrame.BuyAll.all= ClassTrainerFrame.BuyAll.all +1
-                        ClassTrainerFrame.BuyAll.cost= ClassTrainerFrame.BuyAll.cost +(GetTrainerServiceCost(i) or 0)
-                    end
+	hooksecurefunc("ClassTrainerFrame_Update",function()--Blizzard_TrainerUI.lua 
+        --local show= IsTradeskillTrainer()
+        local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
+        ClassTrainerFrame.BuyAll.all=0
+        ClassTrainerFrame.BuyAll.cost=0
+        local tradeSkillStepIndex = GetTrainerServiceStepIndex();
+        local category= tradeSkillStepIndex and select(index, GetTrainerServiceInfo(tradeSkillStepIndex))
+        
+        if tradeSkillStepIndex and (category=='used' or category=='available') then
+            for i=1, GetNumTrainerServices() do
+                if select(index, GetTrainerServiceInfo(i))=="available" then
+                    ClassTrainerFrame.BuyAll.all= ClassTrainerFrame.BuyAll.all +1
+                    ClassTrainerFrame.BuyAll.cost= ClassTrainerFrame.BuyAll.cost +(GetTrainerServiceCost(i) or 0)
                 end
             end
-            ClassTrainerFrame.BuyAll:SetEnabled(ClassTrainerFrame.BuyAll.all>0)
-            ClassTrainerFrame.BuyAll:SetText(ClassTrainerFrame.BuyAll.all..' '..ClassTrainerFrame.BuyAll.name)
-            ClassTrainerFrame.BuyAll:SetText((ClassTrainerFrame.BuyAll.cost>GetMoney() and '|cnRED_FONT_COLOR:' or '').. ClassTrainerFrame.BuyAll.name)
         end
-        ClassTrainerFrame.BuyAll:SetShown(show and not Save.disabledClassTrainer)
+        
+        ClassTrainerFrame.BuyAll:SetEnabled(ClassTrainerFrame.BuyAll.all>0)
+        local text= ClassTrainerFrame.BuyAll.all..' '..ClassTrainerFrame.BuyAll.name
+        text= (ClassTrainerFrame.BuyAll.all>0 and ClassTrainerFrame.BuyAll.cost>GetMoney() and '|cnRED_FONT_COLOR:' or '')..text
+        ClassTrainerFrame.BuyAll:SetText(text)
+        ClassTrainerFrame.BuyAll:SetShown(not Save.disabledClassTrainer)
 	end)
 
-    local btn2= e.Cbtn(ClassTrainerFrame.TitleContainer, {atlas= Save.disabledClassTrainer and e.Icon.disabled or e.Icon.icon})
+    local btn2= e.Cbtn(ClassTrainerFrame.TitleContainer, {icon= not Save.disabledClassTrainer})
     if _G['MoveZoomInButtonPerClassTrainerFrame'] then
         btn2:SetPoint('RIGHT', _G['MoveZoomInButtonPerClassTrainerFrame'], 'LEFT')
     else

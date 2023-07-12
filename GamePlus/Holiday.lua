@@ -109,8 +109,6 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 		return;
 	end
 
-    local todayTime= GetServerTime()
-
     local events = {};
 	for i = 1, numEvents do
 		local event = C_Calendar.GetDayEvent(monthOffset, day, i);
@@ -128,7 +126,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
             if _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)
                 or info2.monthDay~=day
                 or not Save.onGoing
-                or (Save.onGoing and (event.sequenceType == "ONGOING" or isValid))
+                or (Save.onGoing and  isValid)
             then
                 tinsert(events, event);
             end
@@ -260,11 +258,6 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
         panel:UnregisterEvent('QUEST_COMPLETE')
     end
     button.Text:SetText(Text2)
-
-    button:SetButtonState('PUSHED')
-    C_Timer.After(2, function()
-        button:SetButtonState('NORMAL')
-    end)
 end
 
 local function set_event()--设置事件
@@ -288,12 +281,7 @@ local function Text_Settings()--设置Text
         button.Text:SetJustifyH(Save.left and 'LEFT' or  'RIGHT' )
         button.Text:ClearAllPoints()
         button.Text:SetPoint(Save.left and 'TOPLEFT' or 'TOPRIGHT')
-        if Save.classColor then
-            button.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
-        else
-            button.Text:SetTextColor(0.8, 0.8, 0.8)
-            e.Cstr(nil, {changeFont=button.Text, color=true})--nil,nil,button.Text,true)
-        end
+        e.Cstr(nil, {changeFont=button.Text, color=true})--nil,nil,button.Text,true)
         if Save.scale then
             button.Text:SetScale(Save.scale)
         end
@@ -302,7 +290,11 @@ local function Text_Settings()--设置Text
 end
 
 local function set_Point()--设置, 位置
-    button:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT', -20,0)
+    if e.Player.husandro then
+        button:SetPoint('BOTTOMRIGHT', ObjectiveTrackerBlocksFrame, 'TOPLEFT',-20, -10)
+    else
+        button:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT', -20,0)
+    end
 end
 
 --#####
@@ -316,16 +308,6 @@ local function InitMenu(self, level, type)--主菜单
             checked= Save.left,
             func= function()
                 Save.left= not Save.left and true or nil
-                Text_Settings()--设置Tex
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= e.onlyChinese and '职业颜色' or CLASS_COLORS,
-            checked= Save.classColor,
-            func= function()
-                Save.classColor= not Save.classColor and true or nil
                 Text_Settings()--设置Tex
             end
         }
@@ -433,6 +415,7 @@ local function Init()
     button.texture:SetAllPoints(button)
     button.texture:SetAtlas(e.Icon.icon)
     button.texture:SetAlpha(0.3)
+    button.texture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
     if Save.point then
         button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else

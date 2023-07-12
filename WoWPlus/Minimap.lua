@@ -219,6 +219,8 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
         panel.vigentteButton= e.Cbtn(nil, {icon='hide', size={15,15}})
         if Save.pointVigentteButton then
             panel.vigentteButton:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
+        elseif e.Player.husandro then
+            panel.vigentteButton:SetPoint('BOTTOMRIGHT', PlayerFrame, 'BOTTOMLEFT')
         else
             panel.vigentteButton:SetPoint('CENTER', -330, -240)
         end
