@@ -3101,7 +3101,12 @@
         "AbbreviateLargeNumbers",
         "GetClassAtlas",
         "ProfessionsUtil",
-        "C_ContentTracking"
+        "C_ContentTracking",
+        "SpellBookSpellIconsFrame",
+        "SpellBookProfessionFrame",
+        "SpellBookFramePortrait",
+        "UNLEARN_SKILL_CONFIRMATION",
+        "UNLEARN_SKILL"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

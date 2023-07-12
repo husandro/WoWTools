@@ -1212,6 +1212,21 @@ local function Init()
         end
     end)
 
+    hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(self, slot, unit)--技能收，宠物，技能，提示
+        if unit=='pet' and slot then
+            local icon=GetSpellBookItemTexture(slot, 'pet')
+            local spellID = select(3, GetSpellBookItemName(slot, 'pet'))
+            if spellID then
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, icon and '|T'..icon..':0|t'..icon)
+                local slotType, actionID = GetSpellBookItemInfo(slot, 'pet')
+                if slotType and actionID then
+                    e.tips:AddDoubleLine('slotType '..slotType, 'actionID '..actionID)
+                end
+            end
+        end
+    end)
+
 
     --****
     --位置

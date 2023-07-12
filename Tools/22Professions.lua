@@ -351,10 +351,7 @@ end
 --####
 --初始
 --####
-local function Init()
-    if not ProfessionsFrame then
-        return
-    end
+local function Init_ProfessionsFrame()
 
     local btn= e.Cbtn(ProfessionsFrame.TitleContainer, {icon=not Save.disabled, size={20, 20}})
     if _G['MoveZoomInButtonPerProfessionsFrame'] then
@@ -545,6 +542,33 @@ local function Init()
     end)
 end
 
+local function Init()
+    --########################
+    --自动输入，忘却，文字，专业
+    --########################
+    local btn2= e.Cbtn(SpellBookProfessionFrame, {size={18,18}, icon= not Save.wangquePrefessionText})
+    btn2:SetPoint('TOP', SpellBookFramePortrait, 'BOTTOM')
+    btn2:SetScript("OnDoubleClick", function(self2)
+        Save.wangquePrefessionText= not Save.wangquePrefessionText and true or nil
+        self2:SetNormalAtlas(not Save.wangquePrefessionText and e.Icon.icon or e.Icon.disabled)
+    end)
+    btn2:SetScript('OnLeave', function() e.tips:Hide() end)
+    btn2:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '自动输入 ‘忘却’' or (TRADE_SKILLS ..': '..UNLEARN_SKILL_CONFIRMATION), (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left..e.GetEnabeleDisable(Save.wangquePrefessionText))
+        e.tips:AddLine(' ')
+        e.tips:AddLine(e.onlyChinese and '你确定要忘却%s并遗忘所有已经学会的配方？如果你选择回到此专业，你的专精知识将依然存在。|n|n在框内输入 \"忘却\" 以确认。' or UNLEARN_SKILL, nil,nil,nil, true)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+    hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow",function(self)
+        if Save.wangquePrefessionText then
+            self.editBox:SetText(UNLEARN_SKILL_CONFIRMATION);
+        end
+    end)
+end
 --###########
 --加载保存数据
 --###########
@@ -564,21 +588,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                 end)
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
 
             if Save.disabled then
                 panel:UnregisterEvent('ADDON_LOADED')
-
-            elseif ProfessionsFrame then--10.1.5会出错误，不可删除
+            else
                 Init()
             end
+            panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1== 'Blizzard_TrainerUI' then
             set_Blizzard_TrainerU()--添一个,全学,专业, 按钮
 
         elseif arg1== 'Blizzard_Professions' then --10.1.5
-            Init()--初始
-            
+            Init_ProfessionsFrame()--初始
         end
 
     elseif event == "PLAYER_LOGOUT" then
