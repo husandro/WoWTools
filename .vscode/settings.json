@@ -3112,7 +3112,8 @@
         "CompactPartyFrameMember3",
         "CompactPartyFrameMember4",
         "CompactPartyFrameMember5",
-        "CompactPartyFrameMember2"
+        "CompactPartyFrameMember2",
+        "ActionButton1"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

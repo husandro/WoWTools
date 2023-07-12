@@ -217,13 +217,18 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
     end
     if not panel.vigentteButton then
         panel.vigentteButton= e.Cbtn(nil, {icon='hide', size={15,15}})
-        if Save.pointVigentteButton then
-            panel.vigentteButton:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
-        elseif e.Player.husandro then
-            panel.vigentteButton:SetPoint('BOTTOMRIGHT', PlayerFrame, 'BOTTOMLEFT')
-        else
-            panel.vigentteButton:SetPoint('CENTER', -330, -240)
+
+        function panel.vigentteButton:Set_Point()--设置，位置
+            if Save.pointVigentteButton then
+                panel.vigentteButton:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
+            elseif e.Player.husandro then
+                panel.vigentteButton:SetPoint('BOTTOMRIGHT', ActionButton1, 'BOTTOMLEFT', -25, -25)
+            else
+                panel.vigentteButton:SetPoint('CENTER', -330, -240)
+            end
         end
+        panel.vigentteButton:Set_Point()
+        
         if not Save.vigentteButtonShowText then
             panel.vigentteButton:SetNormalAtlas(e.Icon.disabled)
         end
@@ -253,9 +258,9 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
                 set_vigentteButton_Event()
                 set_vigentteButton_Text()
             elseif d=='RightButton' and key then
-                self:ClearAllPoints()
-                panel.vigentteButton:SetPoint('CENTER', -330, -240)
                 Save.pointVigentteButton=nil
+                panel.vigentteButton:Set_Point()
+
             elseif d=='RightButton' and not key then
                 SetCursor('UI_MOVE_CURSOR')
             end
