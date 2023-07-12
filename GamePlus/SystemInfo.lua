@@ -340,7 +340,7 @@ local function set_Point()
     if Save.point then
         button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
-        button:SetPoint('BOTTOMRIGHT',-24, 0)
+        button:SetPoint('BOTTOMRIGHT',-30, -2)
     end
 end
 
@@ -562,6 +562,7 @@ local function Init()
     button.texture:SetAllPoints(button)
     button.texture:SetAtlas(e.Icon.icon)
     button.texture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    button.texture:SetAlpha(0.3)
 
     set_Point()--设置位置
     button:SetFrameStrata('HIGH')
@@ -619,7 +620,7 @@ local function Init()
         if self2.moveFPSFrame then
             self2.moveFPSFrame:SetButtonState('NORMAL')
         end
-        self2.texture:SetAlpha(0.1)
+        self2.texture:SetAlpha(0.3)
     end)
     button:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -652,7 +653,7 @@ local function Init()
                 FramerateFrame:SetPoint(Save.frameratePoint[1], UIParent, Save.frameratePoint[3], Save.frameratePoint[4], Save.frameratePoint[5])
             end
         end
-        
+
 
         QueueStatusButton:HookScript('OnShow', button.moveFPSFrame.set_Point)
         QueueStatusButton:HookScript('OnHide', button.moveFPSFrame.set_Point)
