@@ -269,30 +269,39 @@ end
 --日标框, 向上:密语, 向下:跟随
 --##########################
 local function set_Frame_Fun()--日标框, 向上:密语, 向下:跟随
-    local tab = {
-        [TargetFrame]='Target',
-        [PartyFrame.MemberFrame1]='Party1',
-        [PartyFrame.MemberFrame2]='Party2',
-        [PartyFrame.MemberFrame3]='Party3',
-        [PartyFrame.MemberFrame4]='Party4',
-    }
-    for frame, unit in pairs(tab) do
-        if Save.setFrameFun and Save.frameList[unit] then--设置, 属性
-            frame:SetScript('OnMouseWheel', function(self, d)
-                if UnitIsUnit('player', 'target') or not UnitIsPlayer('target') or not UnitIsFriend('player', 'target') then
-                    return
-                end
-                if d==1 then
-                    e.Say(nil, UnitName('target'), nil, nil)--密语
-                elseif d==-1 then
-                    FollowUnit('target')--跟随
-                end
-            end)
+    local frames = {
+        ['Target']= {TargetFrame},
 
-        elseif frame:GetScript('OnMouseWheel') then--取消, 属性
-            frame:SetScript('OnMouseWheel', nil)
+        ['Party1']={PartyFrame.MemberFrame1, CompactPartyFrameMember1},
+        ['Party2']={PartyFrame.MemberFrame2, CompactPartyFrameMember3},
+        ['Party3']={PartyFrame.MemberFrame3, CompactPartyFrameMember3},
+        ['Party4']={PartyFrame.MemberFrame4, CompactPartyFrameMember4},
+        ['Party5']={CompactPartyFrameMember5},
+    }
+
+    for unit, tab in pairs(frames) do
+        for _, frame in pairs(tab) do
+            if frame then
+                if Save.setFrameFun and Save.frameList[unit] then--设置, 属性
+                    frame:EnableMouseWheel(true)
+                    frame:SetScript('OnMouseWheel', function(_, d)
+                        if UnitIsUnit('player', 'target') or not UnitIsPlayer('target') or not UnitIsFriend('player', 'target') then
+                            return
+                        end
+                        if d==1 then
+                            e.Say(nil, UnitName('target'), nil, nil)--密语
+                        elseif d==-1 then
+                            FollowUnit('target')--跟随
+                        end
+                    end)
+
+                elseif frame:GetScript('OnMouseWheel') then--取消, 属性
+                    frame:SetScript('OnMouseWheel', nil)
+                end
+            end
         end
     end
+    frames=nil
 end
 
 --#################
@@ -311,6 +320,11 @@ local function set_Shift_Click_focurs()
         PartyFrame.MemberFrame2.potFrame,
         PartyFrame.MemberFrame3.potFrame,
         PartyFrame.MemberFrame4.potFrame,
+        CompactPartyFrameMember1,
+        CompactPartyFrameMember2,
+        CompactPartyFrameMember3,
+        CompactPartyFrameMember4,
+        CompactPartyFrameMember5,
         TargetFrame,
         TargetFrameToT,
         Boss1TargetFrame,
@@ -722,7 +736,6 @@ local function InitList(self, level, type)
                 checked= Save.focusKey== key,
                 disabled= UnitAffectingCombat('player') or Save.focusKey== key,
                 arg1= key,
-                keepShownOnClick=true,
                 func= function(_, arg1)
                     Save.focusKey= arg1
                     set_Shift_Click_focurs()--Shift+点击设置焦点

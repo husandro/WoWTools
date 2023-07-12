@@ -3107,7 +3107,12 @@
         "SpellBookFramePortrait",
         "UNLEARN_SKILL_CONFIRMATION",
         "UNLEARN_SKILL",
-        "ACTION_SPELL_STOLEN_BUFF"
+        "ACTION_SPELL_STOLEN_BUFF",
+        "CompactPartyFrameMember1",
+        "CompactPartyFrameMember3",
+        "CompactPartyFrameMember4",
+        "CompactPartyFrameMember5",
+        "CompactPartyFrameMember2"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

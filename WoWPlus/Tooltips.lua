@@ -568,7 +568,6 @@ end
 --Buff
 --####
 local function set_All_Aura(self, data)--Aura
-    print(self:GetUnit())
     local name, _, icon, _, _, _, spellID = GetSpellInfo(data.id)
    if icon and spellID then
         self:AddLine(' ')
@@ -1235,7 +1234,7 @@ local function Init()
                     end
                 end
 
-            elseif e.Player.husandro and data.type~=7 then
+            elseif e.Player.husandro then
                 tooltip:AddDoubleLine('id '..data.id, 'type '..data.type)
             end
         end
