@@ -32,7 +32,7 @@ local affixSchedule = {
 	[7]  = { [1]=135, [2]=7,   [3]=9, }, -- Tyrannical | Afflicted   | Bolstering
 	[8]  = { [1]=136, [2]=8,   [3]=10,}, -- Fortified  | Incorporeal | Sanguine
 	[9]  = { [1]=134, [2]=11,  [3]=9, }, -- Tyrannical | Entangling  | Bursting
-	[10] = { [1]=0,   [2]=0,   [3]=10,}, -- Fortified  |  | 
+	[10] = { [1]=3,   [2]=123,   [3]=10,}, -- Fortified  |  | 
     max= 10,
 }
 
