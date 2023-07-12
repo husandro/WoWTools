@@ -601,13 +601,6 @@ local function Init()
         print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
     end)
 
-    button.ToggleFramerate= function()
-        if ToggleFramerate then--10.1
-            ToggleFramerate()
-        elseif FramerateFrame and FramerateFrame.Toggle then--10.1.5
-            FramerateFrame:Toggle()
-        end
-    end
     button:SetScript('OnClick', function(self, d)
         if d=='RightButton' then--移动光标
             SetCursor('UI_MOVE_CURSOR')
@@ -617,7 +610,7 @@ local function Init()
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         elseif d=='LeftButton' then
-            self:ToggleFramerate()
+            FramerateFrame:Toggle()
         end
     end)
     button:SetScript('OnLeave', function(self2)
@@ -733,7 +726,7 @@ local function Init()
             end
         end)
         if Save.framerateLogIn and not FramerateFrame:IsShown() then
-            button:ToggleFramerate()
+            FramerateFrame:Toggle()
         end
         C_Timer.After(2, button.moveFPSFrame.set_Point)--设置，位置
     end
