@@ -1,7 +1,7 @@
-## Interface: 100100
+## Interface: 100105
 ## Title: |cffff00ffWoW|r|cff00ff00Tools|r
 ## Author: husandro
-## Version: 1.2
+## Version: 1
 ## Notes: WoW |cffff0000Plus|r
 ## SavedVariables: WoWToolsSave, WoWDate
 ## DefaultState: Enabled
