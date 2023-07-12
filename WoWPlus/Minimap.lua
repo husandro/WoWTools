@@ -207,46 +207,47 @@ local function set_vigentteButton_Text()
 end
 
 local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
+    local btn= panel.vigentteButton
     if not Save.vigentteButton or IsInInstance() then
-        if panel.vigentteButton then
-            panel.vigentteButton.text:SetText('')
-            panel.vigentteButton:SetShown(false)
+        if btn then
+            btn.text:SetText('')
+            btn:SetShown(false)
             set_vigentteButton_Event()
         end
         return
     end
-    if not panel.vigentteButton then
-        panel.vigentteButton= e.Cbtn(nil, {icon='hide', size={15,15}})
-
-        function panel.vigentteButton:Set_Point()--设置，位置
+    if not btn then
+        btn= e.Cbtn(nil, {icon='hide', size={15,15}})
+        panel.vigentteButton=btn
+        function btn:Set_Point()--设置，位置
             if Save.pointVigentteButton then
-                panel.vigentteButton:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
+               self:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
             elseif e.Player.husandro then
-                panel.vigentteButton:SetPoint('BOTTOMRIGHT', ActionButton1, 'BOTTOMLEFT', -20, -20)
+                self:SetPoint('BOTTOMRIGHT', ActionButton1, 'BOTTOMLEFT', -20, -20)
             else
-                panel.vigentteButton:SetPoint('CENTER', -330, -240)
+                self:SetPoint('CENTER', -330, -240)
             end
         end
-        panel.vigentteButton:Set_Point()
+        btn:Set_Point()
         
         if not Save.vigentteButtonShowText then
-            panel.vigentteButton:SetNormalAtlas(e.Icon.disabled)
+            btn:SetNormalAtlas(e.Icon.disabled)
         end
-        panel.vigentteButton:RegisterForDrag("RightButton")
-        panel.vigentteButton:SetMovable(true)
-        panel.vigentteButton:SetClampedToScreen(true)
-        panel.vigentteButton:SetScript("OnDragStart", function(self,d)
+        btn:RegisterForDrag("RightButton")
+        btn:SetMovable(true)
+        btn:SetClampedToScreen(true)
+        btn:SetScript("OnDragStart", function(self,d)
             if d=='RightButton' and not IsModifierKeyDown() then
                 self:StartMoving()
             end
         end)
-        panel.vigentteButton:SetScript("OnDragStop", function(self)
+        btn:SetScript("OnDragStop", function(self)
             self:StopMovingOrSizing()
             Save.pointVigentteButton={self:GetPoint(1)}
             Save.pointVigentteButton[2]=nil
             print(id, addName, 'Alt+'..e.Icon.right, e.onlyChinese and '还原位置' or RESET_POSITION)
         end)
-        panel.vigentteButton:SetScript('OnMouseDown', function(self, d)
+        btn:SetScript('OnMouseDown', function(self, d)
             local key= IsModifierKeyDown()
             if d=='LeftButton' and not key then
                 Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or false
@@ -259,14 +260,14 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
                 set_vigentteButton_Text()
             elseif d=='RightButton' and key then
                 Save.pointVigentteButton=nil
-                panel.vigentteButton:ClearAllPoints()
-                panel.vigentteButton:Set_Point()
+                btn:ClearAllPoints()
+                self:Set_Point()
 
             elseif d=='RightButton' and not key then
                 SetCursor('UI_MOVE_CURSOR')
             end
         end)
-        panel.vigentteButton:SetScript('OnMouseWheel', function(self, d)--缩放
+        btn:SetScript('OnMouseWheel', function(self, d)--缩放
             if IsAltKeyDown() then
                 local size=Save.vigentteButtonSize or 12
                 if d==1 then
@@ -281,10 +282,10 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
                 end
                 print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE, size)
                 Save.vigentteButtonSize= size
-                e.Cstr(nil, {size=size, changeFont=panel.vigentteButton.text, color=true, justifyH='RIGHT'})--size, nil, panel.vigentteButton.text, true ,nil,'RIGHT')
+                e.Cstr(nil, {size=size, changeFont=btn.text, color=true, justifyH='RIGHT'})--size, nil, btn.text, true ,nil,'RIGHT')
             end
         end)
-        panel.vigentteButton:SetScript('OnEnter',function(self)
+        btn:SetScript('OnEnter',function(self)
             set_vigentteButton_Text()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -294,12 +295,12 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
             e.tips:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..': '..(Save.vigentteButtonSize or 12), 'Alt+'..e.Icon.mid)
             e.tips:Show()
         end)
-        panel.vigentteButton:SetScript('OnLeave',function(self)
+        btn:SetScript('OnLeave',function(self)
             self:SetButtonState("NORMAL")
             e.tips:Hide()
             ResetCursor()
         end)
-        panel.vigentteButton:SetScript("OnEvent", function(self, event, arg1, arg2)
+        btn:SetScript("OnEvent", function(self, event, arg1, arg2)
             if event=='QUEST_DATA_LOAD_RESULT' and arg2 and questIDTab[arg1] then
                 set_vigentteButton_Text()
             else
@@ -307,10 +308,10 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
             end
         end)--更新事件
 
-        panel.vigentteButton.text= e.Cstr(panel.vigentteButton, {size=Save.vigentteButtonSize, color=true, justifyH='RIGHT'})
-        panel.vigentteButton.text:SetPoint('BOTTOMRIGHT')
+        btn.text= e.Cstr(btn, {size=Save.vigentteButtonSize, color=true, justifyH='RIGHT'})
+        btn.text:SetPoint('BOTTOMRIGHT')
     end
-    panel.vigentteButton:SetShown(true)
+    btn:SetShown(true)
     set_vigentteButton_Event()
     set_vigentteButton_Text()
 end

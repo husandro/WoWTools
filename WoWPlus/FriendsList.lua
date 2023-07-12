@@ -455,7 +455,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
             if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= MAX_PLAYER_LEVEL then--角色等级
                 text= text..'|cnGREEN_FONT_COLOR:'..accountInfo.gameAccountInfo.characterLevel..'|r '
             end
-            text= text.. e.GetPlayerInfo({guid=accountInfo.gameAccountInfo.playerGuid, reName=true, reRealm=true, faction=accountInfo.gameAccountInfo.factionName })
+            text= text.. e.GetPlayerInfo({guid=accountInfo.gameAccountInfo.playerGuid, reName=true, faction=accountInfo.gameAccountInfo.factionName })
 
             if accountInfo.gameAccountInfo.isOnline and accountInfo.gameAccountInfo.areaName then--区域
                 text= text..' '..accountInfo.gameAccountInfo.areaName
