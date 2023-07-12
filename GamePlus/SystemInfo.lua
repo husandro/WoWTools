@@ -58,9 +58,7 @@ local function set_Label_Size_Color()
     end
 end
 local function create_Set_lable(self, text)--建立,或设置,Labels
-    local label= Labels[text] or e.Cstr(self, {size=Save.size, color=true})--耐久度    
-    if Save.parent then
-        local down
+--[[      
         if text=='fps' then
             label.tooltip= 'FPS'
             down= function() securecallfunction(InterfaceOptionsFrame_OpenToCategory, id) end
@@ -69,8 +67,11 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
                 e.tips:AddLine(format(e.onlyChinese and  "延迟：|n%.0f ms （本地）|n%.0f ms （世界）" or MAINMENUBAR_LATENCY_LABEL, select(3, GetNetStats())))
             end
             down= function() securecallfunction(InterfaceOptionsFrame_OpenToCategory, id) end
-
-        elseif text=='money' then
+]]
+    local down
+    local label= Labels[text] or e.Cstr(self, {size=Save.size, color=true})
+    if Save.parent then
+        if text=='money' then
             label.tooltip= function()
                 local text2, tab2= get_Mony_Tips()
                 e.tips:AddLine(text2)
@@ -96,7 +97,9 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
                 e.tips:AddDoubleLine(str..(e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED), Labels.perksPoints.value)
             end
             down= function() ToggleEncounterJournal() end
-
+        end
+    end
+--[[
         elseif text=='durabiliy' then
             label.tooltip= e.onlyChinese and '耐久度' or DURABILITY
             down= function() ToggleCharacter("PaperDollFrame"); end
@@ -104,7 +107,12 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
             label.tooltip= e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL
             down= function() ToggleCharacter("PaperDollFrame"); end
         end
-
+]]
+    if down  then
+        label:SetScript('OnLeave', function(self2)
+            button:SetButtonState('NORMAL')
+            e.tips:Hide()
+        end)
         label:EnableMouse(true)
         label:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -121,20 +129,13 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
             e.tips:Show()
             button:SetButtonState('PUSHED')
         end)
-        label:SetScript('OnLeave', function(self2)
-            button:SetButtonState('NORMAL')
-            e.tips:Hide()
-        end)
-        if down  then
-            label:SetScript('OnMouseDown', down)
-        end
+        label:SetScript('OnMouseDown', down)
     else
         label:EnableMouse(false)
         label:SetScript('OnEnter', nil)
         label:SetScript('OnLeave', nil)
         label:SetScript('OnMouseDown', nil)
     end
-
     return label
 end
 
@@ -560,7 +561,7 @@ local function Init()
     button.texture= button:CreateTexture()
     button.texture:SetAllPoints(button)
     button.texture:SetAtlas(e.Icon.icon)
-    button.texture:SetAlpha(0.1)
+    button.texture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
     set_Point()--设置位置
     button:SetFrameStrata('HIGH')

@@ -3099,7 +3099,9 @@
         "RAID_TARGET_8",
         "MAINASSIST",
         "AbbreviateLargeNumbers",
-        "GetClassAtlas"
+        "GetClassAtlas",
+        "ProfessionsUtil",
+        "C_ContentTracking"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
