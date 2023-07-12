@@ -58,7 +58,7 @@ local function set_Time_Color(eventTime, hour, minute, init)
         if (init and time< seconds)
           or (not init and time> seconds)
         then
-            return '|cnRED_FONT_COLOR:'..eventTime..'|r', false
+            return '|cff828282'..eventTime..'|r', false
         end
     end
     return eventTime, true
