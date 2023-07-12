@@ -1,7 +1,11 @@
 local id, e = ...
 local addName= CALENDAR_FILTER_HOLIDAYS
-local Save={onGoing=true, disabled= not e.Player.husandro}
-local panel= e.Cbtn(nil, {icon='hide', size={18,18}})
+local Save={
+    onGoing=true,
+    --disabled= not e.Player.husandro
+}
+local panel= CreateFrame('Frame')
+local button
 
 local function _CalendarFrame_SafeGetName(name)
 	if ( not name or name == "" ) then
@@ -50,12 +54,14 @@ local CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT = {
 local function set_Time_Color(eventTime, hour, minute, init)
     if hour and minute then
         local seconds= hour*3600 + minute*60
-        local time=GetTime()
-        if (init and time< seconds) or (not init and time> seconds) then
-            return '|cnRED_FONT_COLOR:'..eventTime..'|r'
+        local time= GetServerTime()
+        if (init and time< seconds)
+          or (not init and time> seconds)
+        then
+            return '|cnRED_FONT_COLOR:'..eventTime..'|r', false
         end
     end
-    return eventTime
+    return eventTime, true
 end
 
 local function set_Quest_Completed(tab)--任务是否完成
@@ -69,11 +75,11 @@ local function set_Quest_Completed(tab)--任务是否完成
 end
 
 local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
-    panel.texture:SetShown(Save.hide)
+    --button.texture:SetShown(Save.hide)
 
     if Save.hide then
-        if panel.Text then
-            panel.Text:SetText('')
+        if button.Text then
+            button.Text:SetText('')
         end
         return
     end
@@ -89,27 +95,40 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
         day= info2.monthDay
     end
     if not day or not monthOffset then
-        if panel.Text then
-            panel.Text:SetText('')
+        if button.Text then
+            button.Text:SetText('')
         end
         return
     end
 
     local numEvents = C_Calendar.GetNumDayEvents(monthOffset, day);
     if ( numEvents <= 0 ) then
-        if panel.Text then
-            panel.Text:SetText('')
+        if button.Text then
+            button.Text:SetText('')
         end
 		return;
 	end
+
+    local todayTime= GetServerTime()
 
     local events = {};
 	for i = 1, numEvents do
 		local event = C_Calendar.GetDayEvent(monthOffset, day, i);
         if event then
+            local isValid
+            if (event.sequenceType == "ONGOING") then
+                event.eventTime = format(CALENDAR_TOOLTIP_DATE_RANGE, FormatShortDate(event.startTime.monthDay, event.startTime.month), FormatShortDate(event.endTime.monthDay, event.endTime.month));
+                isValid=true
+            elseif (event.sequenceType == "END") then
+                event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.endTime.hour, event.endTime.minute, true), event.startTime.hour, event.startTime.minute)
+            else
+                event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.startTime.hour, event.startTime.minute, true), event.startTime.hour, event.startTime.minute, true)
+            end
+
             if _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)
                 or info2.monthDay~=day
-                or (Save.onGoing and event.sequenceType == "ONGOING" or not Save.onGoing)
+                or not Save.onGoing
+                or (Save.onGoing and (event.sequenceType == "ONGOING" or isValid))
             then
                 tinsert(events, event);
             end
@@ -130,7 +149,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 	end)
 
     local Text2=''
-	local eventTime, find_Quest
+	local findQuest
 
     if day and info2.monthDay~=day then
         Text2='|A:UI-HUD-Calendar-'..day..'-Up:0:0|a'
@@ -155,14 +174,14 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
 
                 local tab={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709}
                 msg= msg..set_Quest_Completed(tab)--任务是否完成
-                find_Quest=true
+                findQuest=true
                 msg= msg..'|T463446:0|t'--1166[时空扭曲徽章]
 
             elseif event.eventID==479 then--暗月
                 local tab={36471, 32175}
                 msg= msg..set_Quest_Completed(tab)--任务是否完成
                 msg= msg..'|T134481:0|t'--515[暗月奖券]
-                find_Quest=true
+                findQuest=true
 
             elseif event.eventID==324 then--万圣节
                msg= msg..'|T236546:0|t'--33226[奶糖]
@@ -222,16 +241,7 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
         end
 
         if Save.showDate then
-            if (event.sequenceType == "ONGOING") then
-                eventTime = format(CALENDAR_TOOLTIP_DATE_RANGE, FormatShortDate(event.startTime.monthDay, event.startTime.month), FormatShortDate(event.endTime.monthDay, event.endTime.month));
-            elseif (event.sequenceType == "END") then
-                eventTime = GameTime_GetFormattedTime(event.endTime.hour, event.endTime.minute, true);
-                eventTime= set_Time_Color(eventTime, event.startTime.hour, event.startTime.minute)
-            else
-                eventTime = GameTime_GetFormattedTime(event.startTime.hour, event.startTime.minute, true);
-                eventTime= set_Time_Color(eventTime, event.startTime.hour, event.startTime.minute, true)
-            end
-            msg= msg..' '..eventTime
+            msg= msg..' '..event.eventTime
         end
 
         if Save.showID and event.eventID then--显示 ID
@@ -244,16 +254,16 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
         end
 	end
 
-    if find_Quest then
+    if findQuest then
         panel:RegisterEvent('QUEST_COMPLETE')
     else
         panel:UnregisterEvent('QUEST_COMPLETE')
     end
-    panel.Text:SetText(Text2)
+    button.Text:SetText(Text2)
 
-    panel:SetButtonState('PUSHED')
+    button:SetButtonState('PUSHED')
     C_Timer.After(2, function()
-        panel:SetButtonState('NORMAL')
+        button:SetButtonState('NORMAL')
     end)
 end
 
@@ -274,25 +284,25 @@ local function set_event()--设置事件
 end
 
 local function Text_Settings()--设置Text
-    if panel.Text then
-        panel.Text:SetJustifyH(Save.left and 'LEFT' or  'RIGHT' )
-        panel.Text:ClearAllPoints()
-        panel.Text:SetPoint(Save.left and 'TOPLEFT' or 'TOPRIGHT')
+    if button.Text then
+        button.Text:SetJustifyH(Save.left and 'LEFT' or  'RIGHT' )
+        button.Text:ClearAllPoints()
+        button.Text:SetPoint(Save.left and 'TOPLEFT' or 'TOPRIGHT')
         if Save.classColor then
-            panel.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+            button.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
         else
-            panel.Text:SetTextColor(0.8, 0.8, 0.8)
-            e.Cstr(nil, {changeFont=panel.Text, color=true})--nil,nil,panel.Text,true)
+            button.Text:SetTextColor(0.8, 0.8, 0.8)
+            e.Cstr(nil, {changeFont=button.Text, color=true})--nil,nil,button.Text,true)
         end
         if Save.scale then
-            panel.Text:SetScale(Save.scale)
+            button.Text:SetScale(Save.scale)
         end
     end
     C_Timer.After(2, set_Text)
 end
 
 local function set_Point()--设置, 位置
-    panel:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT', -20,0)
+    button:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT', -20,0)
 end
 
 --#####
@@ -357,7 +367,7 @@ local function InitMenu(self, level, type)--主菜单
             colorCode=not Save.point and '|cff606060',
             func=function()
                 Save.point=nil
-                panel:ClearAllPoints()
+                button:ClearAllPoints()
                 set_Point()
             end,
             tooltipOnButton=true,
@@ -417,33 +427,34 @@ end
 --初始
 --####
 local function Init()
-    panel.Text=e.Cstr(panel, {color=true})--nil,nil,nil,true)
-    panel.texture=panel:CreateTexture()
-    panel.texture:SetAllPoints(panel)
-    panel.texture:SetAtlas(e.Icon.icon)
-    panel.texture:SetAlpha(0.5)
+    button= e.Cbtn(nil, {icon='hide', size={18,18}})
+    button.Text=e.Cstr(button, {color=true})--nil,nil,nil,true)
+    button.texture=button:CreateTexture()
+    button.texture:SetAllPoints(button)
+    button.texture:SetAtlas(e.Icon.icon)
+    button.texture:SetAlpha(0.3)
     if Save.point then
-        panel:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+        button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
         set_Point()
     end
 
-    panel:RegisterForDrag("RightButton")
-    panel:SetMovable(true)
-    panel:SetClampedToScreen(true)
-    panel:SetScript("OnDragStart", function(self,d)
+    button:RegisterForDrag("RightButton")
+    button:SetMovable(true)
+    button:SetClampedToScreen(true)
+    button:SetScript("OnDragStart", function(self,d)
         --if IsAltKeyDown() then
             self:StartMoving()
         --end
     end)
-    panel:SetScript("OnDragStop", function(self)
+    button:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
         e.LibDD:CloseDropDownMenus()
         ResetCursor()
     end)
-    panel:SetScript('OnMouseDown', function(self, d)
+    button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             Save.hide= not Save.hide and true or nil
             set_event()--设置事件
@@ -457,10 +468,10 @@ local function Init()
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
-    panel:SetScript('OnMouseUp', function()
+    button:SetScript('OnMouseUp', function()
         ResetCursor()
     end)
-    panel:SetScript('OnMouseWheel', function(self, d)--缩放
+    button:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             local sacle=Save.scale or 1
             if d==1 then
@@ -709,8 +720,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if  Save.disabled then
                 panel:UnregisterAllEvents()
-                panel:SetShown(false)
             else
+
                 if not IsAddOnLoaded("Blizzard_Calendar") then--加载
                     LoadAddOn("Blizzard_Calendar")
                     Calendar_Toggle()
