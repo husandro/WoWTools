@@ -4,6 +4,7 @@ local Save={
         Friends={},
         --disabledBNFriendInfo=true,--禁用战网，好友信息，提示
         --onlyWoWFriendInfo=true,--仅限，提示，WoW，好友，提示
+        --notInCombatBNFriendInfo,--战斗中，不显示，好友，提示
     }
 local panel=CreateFrame("Frame")
 
@@ -167,6 +168,10 @@ local function set_FriendsList_Init()--好友列表, 初始化
         if Save.disabledBNFriendInfo then
             return
         end
+        if Save.notInCombatBNFriendInfo and UnitAffectingCombat('player') then--战斗中，不显示，好友，提示
+            self.tips=nil
+            return
+        end
         local accountInfo= friendIndex and C_BattleNet.GetFriendAccountInfo(friendIndex) --FriendsFrame_UpdateFriendButton FriendsFrame.lua
         if not accountInfo
             or (
@@ -207,7 +212,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                             guid=accountInfo.gameAccountInfo.playerGuid,
                             reLink= accountInfo.gameAccountInfo.factionName==e.Player.faction,
                             reName=true,
-                            reRealm=true,
+                            --reRealm=true,
                             faction=accountInfo.gameAccountInfo.factionName,
                         })..' '
             else
@@ -322,12 +327,23 @@ local function set_FriendsList_Init()--好友列表, 初始化
                 local info
                 if menuList=='OnlyWOWFriendInfo' then
                     info={
-                        text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, 'WoW|T-16:0|t'..(e.onlyChinese and '好友' or FRIEND)),
+                        text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, 'WoW'..e.Icon.wow2..(e.onlyChinese and '好友' or FRIEND)),
                         disabled= Save.disabledBNFriendInfo,
                         checked= Save.onlyWoWFriendInfo,
                         keepShownOnClick=true,
                         func= function()
                             Save.onlyWoWFriendInfo= not Save.onlyWoWFriendInfo and true or nil
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+                    info={
+                        text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, (e.onlyChinese and '不在战斗中' or LEAVE..'('..COMBAT..')')),
+                        disabled= Save.disabledBNFriendInfo,
+                        checked= Save.notInCombatBNFriendInfo,
+                        keepShownOnClick=true,
+                        func= function()
+                            Save.notInCombatBNFriendInfo= not Save.notInCombatBNFriendInfo and true or nil
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -455,7 +471,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
             if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= MAX_PLAYER_LEVEL then--角色等级
                 text= text..'|cnGREEN_FONT_COLOR:'..accountInfo.gameAccountInfo.characterLevel..'|r '
             end
-            text= text.. e.GetPlayerInfo({guid=accountInfo.gameAccountInfo.playerGuid, reName=true, faction=accountInfo.gameAccountInfo.factionName })
+            text= text.. e.GetPlayerInfo({guid=accountInfo.gameAccountInfo.playerGuid, reName=true, reRealm=true, faction=accountInfo.gameAccountInfo.factionName })
 
             if accountInfo.gameAccountInfo.isOnline and accountInfo.gameAccountInfo.areaName then--区域
                 text= text..' '..accountInfo.gameAccountInfo.areaName

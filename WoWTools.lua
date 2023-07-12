@@ -361,7 +361,8 @@ e.Icon={
 
     map='poi-islands-table',
     map2='|A:poi-islands-table:0:0|a',
-    wow2='|A:Icon-WoW:0:0|a',--136235
+    --wow2='|A:Icon-WoW:0:0|a',--136235
+    wow2='|T-18:0|t',
 
     horde= 'charcreatetest-logo-horde',
     alliance='charcreatetest-logo-alliance',
