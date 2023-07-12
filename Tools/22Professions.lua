@@ -542,6 +542,8 @@ local function Init_ProfessionsFrame()
     end)
 end
 
+
+
 local function Init()
     --########################
     --自动输入，忘却，文字，专业
@@ -569,6 +571,8 @@ local function Init()
         end
     end)
 end
+
+
 --###########
 --加载保存数据
 --###########
