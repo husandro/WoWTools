@@ -563,11 +563,13 @@ local function setQuest(self, questID)
     get_Web_Link({frame=self, type='quest', id=questID, name=info and info.tagName, col=nil, isPetUI=false})--取得网页，数据链接
 end
 
+
 --####
 --Buff
 --####
-local function set_Aura(self, auraID)--Aura
-    local name, _, icon, _, _, _, spellID = GetSpellInfo(auraID)
+local function set_All_Aura(self, data)--Aura
+    print(self:GetUnit())
+    local name, _, icon, _, _, _, spellID = GetSpellInfo(data.id)
    if icon and spellID then
         self:AddLine(' ')
         self:AddDoubleLine((e.onlyChinese and '光环' or AURAS)..' '..spellID, '|T'..icon..':0|t'..icon)
@@ -579,7 +581,34 @@ local function set_Aura(self, auraID)--Aura
         end
     end
 end
-
+local function set_Buff(type, self, ...)
+    local source--local unit= ...
+    if type=='Buff' then
+        source= select(7, UnitBuff(...))
+    elseif type=='Debuff' then
+        source= select(7, UnitDebuff(...))
+    else
+        source= select(7, UnitAura(...))
+    end
+    if source then--来源
+        if source then
+            local r, g ,b , col= GetClassColor(UnitClassBase(source))
+            if r and g and b then
+                self.backgroundColor:SetColorTexture(r, g, b, 0.3)
+                self.backgroundColor:SetShown(true)
+            end
+            if source~='player' then
+                SetPortraitTexture(self.Portrait, source)
+                self.Portrait:SetShown(true)
+            end
+            local text= source=='player' and (e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+                    or source=='pet' and PET
+                    or UnitIsPlayer(source) and e.GetPlayerInfo({unit=source, reName=true, reRealm=true})
+                    or UnitName(source) or _G[source] or source
+            self:AddDoubleLine('|c'..(col or 'ff8500') ..format(e.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r')
+        end
+    end
+end
 
 --####
 --声望
@@ -1146,12 +1175,12 @@ local function Init()
         end
     end)
 
-    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip,date)
+    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip, data)
         if tooltip~=GameTooltip and tooltip~=ItemRefTooltip then
             return
         end
         --25宏, 11动作条, 4矿, 14装备管理
-        if date.type==2 then--单位
+        if data.type==2 then--单位
             if tooltip==e.tips then
                 local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
                 if unit then
@@ -1159,37 +1188,37 @@ local function Init()
                 end
             end
 
-        elseif date.id and date.type then
-            if date.type==0 or date.type==19 then--TooltipUtil.lua 0物品 19玩具
+        elseif data.id and data.type then
+            if data.type==0 or data.type==19 then--TooltipUtil.lua 0物品 19玩具
                 local itemID, itemLink=TooltipUtil.GetDisplayedItem(tooltip)
-                itemLink= itemLink or itemID or date.id
+                itemLink= itemLink or itemID or data.id
                 setItem(tooltip, itemLink)
 
-            elseif date.type==1 then
-                set_Spell(tooltip, date.id)--法术
+            elseif data.type==1 then
+                set_Spell(tooltip, data.id)--法术
 
-            elseif date.type==5 then
-                setCurrency(tooltip, date.id)--货币
+            elseif data.type==5 then
+                setCurrency(tooltip, data.id)--货币
 
-            elseif date.type==7 then--Aura
-                set_Aura(tooltip, date.id)
+            elseif data.type==7 then--Aura
+                set_All_Aura(tooltip, data)
 
-            elseif date.type==8 then--艾泽拉斯之心
-                set_Azerite(tooltip, date.id)
+            elseif data.type==8 then--艾泽拉斯之心
+                set_Azerite(tooltip, data.id)
 
-            elseif date.type==10 then
-                setMount(tooltip, date.id)--坐骑
+            elseif data.type==10 then
+                setMount(tooltip, data.id)--坐骑
 
-            elseif date.type==12 then--成就
-                setAchievement(tooltip, date.id)
+            elseif data.type==12 then--成就
+                setAchievement(tooltip, data.id)
 
-            elseif date.type==22 then--法术弹出框
-                set_FlyoutInfo(tooltip, date.id)
+            elseif data.type==22 then--法术弹出框
+                set_FlyoutInfo(tooltip, data.id)
 
-            elseif date.type==23 then
-                setQuest(tooltip, date.id)--任务
+            elseif data.type==23 then
+                setQuest(tooltip, data.id)--任务
 
-            elseif date.type==25 then--宏
+            elseif data.type==25 then--宏
                 local frame= GetMouseFocus()
                 if frame and frame.action then
                     local type, macroID= GetActionInfo(frame.action)
@@ -1206,8 +1235,8 @@ local function Init()
                     end
                 end
 
-            elseif e.Player.husandro then
-                tooltip:AddDoubleLine('id '..date.id, 'type '..date.type)
+            elseif e.Player.husandro and data.type~=7 then
+                tooltip:AddDoubleLine('id '..data.id, 'type '..data.type)
             end
         end
     end)
@@ -1225,6 +1254,19 @@ local function Init()
                 end
             end
         end
+    end)
+
+    --################
+    --Buff, 来源, 数据, 不可删除，如果删除，目标buff没有数据
+    --################
+    hooksecurefunc(e.tips, "SetUnitBuff", function(...)
+        set_Buff('Buff', ...)
+    end)
+    hooksecurefunc(e.tips, "SetUnitDebuff", function(...)
+        set_Buff('Debuff', ...)
+    end)
+    hooksecurefunc(e.tips, "SetUnitAura", function(...)
+        set_Buff('Aura', ...)
     end)
 
 
@@ -1798,37 +1840,3 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
-
-    --#### 不知什么用,
-    --Buff
-    --[[####
-    local function setBuff(type, self, ...)--Buff
-        local source= type=='Buff' and select(7, UnitBuff(...)) or type=='Debuff' and select(7, UnitDebuff(...)) or select(7, UnitAura(...))
-        if source then
-            local r, g ,b , col= GetClassColor(UnitClassBase(source))
-    
-            if r and g and b then
-                self.backgroundColor:SetColorTexture(r, g, b, 0.3)
-                self.backgroundColor:SetShown(true)
-            end
-            if source~='player' then
-                SetPortraitTexture(self.Portrait, source)
-                self.Portrait:SetShown(true)
-            end
-            local text= source=='player' and (e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
-                    or source=='pet' and PET
-                    or UnitIsPlayer(source) and e.GetPlayerInfo({unit=source, guid=UnitGUID(source), name=nil,  reName=true, reRealm=true, reLink=false})
-                    or UnitName(source) or _G[source] or source
-            self:AddDoubleLine('|c'..(col or 'ffffff')..(e.onlyChinese and '来原: '..text or format(e.onlyChinese and '"来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r'))
-            self:Show()
-        end
-    end
-    [hooksecurefunc(e.tips, "SetUnitBuff", function(...)
-        setBuff('Buff', ...)
-    end)
-    hooksecurefunc(e.tips, "SetUnitDebuff", function(...)
-        setBuff('Debuff', ...)
-    end)
-    hooksecurefunc(e.tips, "SetUnitAura", function(...)
-        setBuff('Aura', ...)
-    end)]]
