@@ -1326,9 +1326,7 @@ local function Init()
 
     set_CompactPartyFrame()--小队, 使用团框架
 
-    if CompactPartyFrame_UpdateVisibility then--10.1.5出错
-        hooksecurefunc('CompactPartyFrame_UpdateVisibility', set_CompactPartyFrame)
-    end
+    hooksecurefunc(CompactPartyFrame,'UpdateVisibility', set_CompactPartyFrame)
 
     set_PlayerFrame()--玩家
     set_TargetFrame()--目标
