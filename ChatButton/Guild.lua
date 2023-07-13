@@ -11,7 +11,7 @@ local panel= CreateFrame("Frame")
 --#######
 --在线人数
 --#######
-local function setMembers()
+local function set_Guild_Members()
     local num = select(2, GetNumGuildMembers())
     num = (num and num>1) and num-1 or nil
     if not button.membersText and num then
@@ -188,7 +188,7 @@ local function Init()
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    setMembers()--在线人数
+    set_Guild_Members()--在线人数
     button.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
     button.texture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
@@ -249,7 +249,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='GUILD_ROSTER_UPDATE' then
-        setMembers()--在线人数
+        set_Guild_Members()--在线人数
 
     elseif event=='CHAT_MSG_SYSTEM' then
         setMsg_CHAT_MSG_SYSTEM(arg1)--欢迎加入, 信息
