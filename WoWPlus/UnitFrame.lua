@@ -1343,9 +1343,17 @@ local function Init()
                 activeTimer.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
                 activeTimer.valueText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
                 activeTimer.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
-                activeTimer:HookScript('OnUpdate', function(self2, elapsed)
+                hooksecurefunc(activeTimer, 'UpdateStatusBarValue', function(self2)
                     self2.valueText:SetText(format('%i', self2.StatusBar:GetValue()))
                 end)
+                --[[activeTimer.elapsed= 0.5
+                activeTimer:HookScript('OnUpdate', function(self2, elapsed)
+                    self2.elapsed= self2.elapsed + elapsed
+                    if self2.elapsed>0.5 then
+                        self2.valueText:SetText(format('%i', self2.StatusBar:GetValue()))
+                        self2.elapsed= 0
+                    end
+                end)]]
 
             end
         end
