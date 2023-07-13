@@ -601,8 +601,8 @@ local function set_Buff(type, self, ...)
                 self.Portrait:SetShown(true)
             end
             local text= source=='player' and (e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
-                    or source=='pet' and PET
-                    or UnitIsPlayer(source) and e.GetPlayerInfo({unit=source, reName=true, reRealm=true})
+                    or source=='pet' and (e.onlyChinese and '宠物' or PET)
+                    or UnitIsPlayer(source) and e.GetPlayerInfo({unit=source, reName=true})
                     or UnitName(source) or _G[source] or source
             self:AddDoubleLine('|c'..(col or 'ff8500') ..format(e.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r')
             self:Show()
