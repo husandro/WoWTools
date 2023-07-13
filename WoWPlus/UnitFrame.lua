@@ -235,15 +235,13 @@ local function set_TargetFrame()
         end
     end)
 
-    TargetFrame.elapsed2= 0
-    if not TargetFrame.rangeText then
-        TargetFrame.rangeText= e.Cstr(TargetFrame, {justifyH='RIGHT'})
-        TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22,0)
-    end
+ 
+    TargetFrame.rangeText= e.Cstr(TargetFrame, {justifyH='RIGHT'})
+    TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22,0)
+    TargetFrame.elapsed2= 0.4
     hooksecurefunc(TargetFrame, 'OnUpdate', function(self, elapsed)
         self.elapsed2= self.elapsed2+ elapsed
         if self.elapsed2>0.3 then
-            self.elapsed2=0
             local mi, ma= e.GetRange('target')
             local text
             if mi and ma then
@@ -265,6 +263,7 @@ local function set_TargetFrame()
                 end
             end
             self.rangeText:SetText(text or '')
+            self.elapsed2=0
         end
     end)
 end
@@ -677,16 +676,20 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             self.classTexture:SetSize(16,16)
 
             if unit=='target' or unit=='focus' then
-                self.classTexture:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',0,10)
-                if unit=='target' then--移动, 队长图标，TargetFrame.lua
-                    local targetFrameContentContextual = TargetFrame.TargetFrameContent.TargetFrameContentContextual
+                if self.TargetFrameContent and self.TargetFrameContent.TargetFrameContentContextual.LeaderIcon then
+                    self.classTexture:SetPoint('RIGHT', self.TargetFrameContent.TargetFrameContentContextual.LeaderIcon, 'LEFT')
+                else
+                    self.classTexture:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',0,10)
+                end
+                 --[[if unit=='target' then--移动, 队长图标，TargetFrame.lua
+                   local targetFrameContentContextual = TargetFrame.TargetFrameContent.TargetFrameContentContextual
                     if targetFrameContentContextual then
                         targetFrameContentContextual.LeaderIcon:ClearAllPoints()
                         targetFrameContentContextual.LeaderIcon:SetPoint('RIGHT', self.classTexture,'LEFT',5,-5)
                         targetFrameContentContextual.GuideIcon:ClearAllPoints()
                         targetFrameContentContextual.GuideIcon:SetPoint('RIGHT', self.classTexture,'LEFT',5,-5)
                     end
-                end
+                end]]
             elseif self.unit=='pet' then
                 self.classTexture:SetPoint('LEFT', self.name,-10,0)
             elseif self.unit=='player' then
@@ -708,7 +711,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             if not unit:find('boss') and self.unit~='player' then
                 self.itemLevel= e.Cstr(self, {size=12})--装等
                 if unit=='target' or unit=='focus' then
-                    self.itemLevel:SetPoint('TOPLEFT', self.classTexture, 'TOPRIGHT')
+                    self.itemLevel:SetPoint('RIGHT', self.classTexture, 'LEFT')
                 else
                     self.itemLevel:SetPoint('TOPRIGHT', self.classTexture, 'TOPLEFT')
                 end
@@ -815,11 +818,14 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 portrait:SetSize(20,20)
                 portrait:SetVertexColor(r,g,b,1)
 
-                self.keystoneText= e.Cstr(self)
+                self.keystoneText= e.Cstr(self, {color=true})
                 if self.PlayerFrameContent and self.PlayerFrameContent.PlayerFrameContentContextual and self.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon then
                     self.keystoneText:SetPoint('LEFT', self.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon, 'RIGHT')
                 end
-                self.keystoneText:SetTextColor(r, g, b)
+                if PlayerFrameGroupIndicatorText then--移动，小队，号
+                    PlayerFrameGroupIndicatorText:ClearAllPoints()
+                    PlayerFrameGroupIndicatorText:SetPoint('LEFT', self.keystoneText, 'RIGHT',12,0)
+                end
             end
 
             e.GroupFrame[unit]= {
