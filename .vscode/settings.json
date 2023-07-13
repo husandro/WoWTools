@@ -3113,7 +3113,8 @@
         "CompactPartyFrameMember4",
         "CompactPartyFrameMember5",
         "CompactPartyFrameMember2",
-        "ActionButton1"
+        "ActionButton1",
+        "MirrorTimerContainer"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

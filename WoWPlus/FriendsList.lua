@@ -4,7 +4,7 @@ local Save={
         Friends={},
         --disabledBNFriendInfo=true,--禁用战网，好友信息，提示
         --onlyWoWFriendInfo=true,--仅限，提示，WoW，好友，提示
-        --notInCombatBNFriendInfo,--战斗中，不显示，好友，提示
+        --showInCombatFriendInfo,--仅限，不在战斗中，好友，提示
     }
 local panel=CreateFrame("Frame")
 
@@ -168,7 +168,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
         if Save.disabledBNFriendInfo then
             return
         end
-        if Save.notInCombatBNFriendInfo and UnitAffectingCombat('player') then--战斗中，不显示，好友，提示
+        if not Save.showInCombatFriendInfo and UnitAffectingCombat('player') then--战斗中，不显示，好友，提示
             self.tips=nil
             return
         end
@@ -340,10 +340,10 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     info={
                         text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, (e.onlyChinese and '不在战斗中' or LEAVE..'('..COMBAT..')')),
                         disabled= Save.disabledBNFriendInfo,
-                        checked= Save.notInCombatBNFriendInfo,
+                        checked= not Save.showInCombatFriendInfo,
                         keepShownOnClick=true,
                         func= function()
-                            Save.notInCombatBNFriendInfo= not Save.notInCombatBNFriendInfo and true or nil
+                            Save.showInCombatFriendInfo= not Save.showInCombatFriendInfo and true or nil
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)

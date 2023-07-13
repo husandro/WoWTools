@@ -1336,24 +1336,21 @@ local function Init()
     --###############
     --MirrorTimer.lua
     --###############
-    if MirrorTimer1 then
-        local elapsedValue=0
-        MirrorTimer1:HookScript('OnUpdate', function(self, elapsed)
-            if elapsedValue>0.5 then
-                if self.value then
-                    if not self.valueText then
-                        self.valueText=e.Cstr(self, {justifyH='RIGHT'})
-                        self.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
-                    end
-                    self.valueText:SetText(format('%i', self.value))
-                end
-                elapsedValue= 0
-            else
-                elapsedValue= elapsedValue+elapsed
-            end
-        end)
-    end
+    hooksecurefunc(MirrorTimerContainer, 'SetupTimer', function(self, value)
+        for _, activeTimer in pairs(self.activeTimers) do
+            if not activeTimer.valueText then
+                activeTimer.valueText=e.Cstr(activeTimer, {justifyH='RIGHT'})
+                activeTimer.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
+                activeTimer.valueText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+                activeTimer.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+                activeTimer:HookScript('OnUpdate', function(self2, elapsed)
+                    self2.valueText:SetText(format('%i', self2.StatusBar:GetValue()))
+                end)
 
+            end
+        end
+    end)
+        
     --#########
     --移动，速度
     --#########
