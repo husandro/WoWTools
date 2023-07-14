@@ -2,7 +2,6 @@ local id, e = ...
 local panel=CreateFrame("Frame")
 --local addName= 'WoWDate'
 WoWDate={}
---e.GroupFrame={}--UnitFrame.lua 设置装等， 专精
 
 --##############
 --战网，好友GUID
@@ -79,38 +78,11 @@ local function get_Player_Info(guid)--取得玩家信息
                     securecall('UnitFrame_Update', frame, true)
                     break
                 end
-                --[[
-                local unit2= frame.unit
-                if UnitIsUnit(unit, unit2) and frame.classFrame then
-                    frame.itemLevel:SetText(hex and (hex..itemLevel) or itemLevel)
-                    local texture= select(4, GetSpecializationInfoByID(specID))
-                    if texture then
-                        SetPortraitToTexture(frame.classFrame.Portrait, texture)
-                    end
-                    break
-                end]]
             end
         end
         if UnitIsUnit(unit, 'target') then
             securecall('UnitFrame_Update', TargetFrame, false)
         end
-        --[[UnitFrame.lua set_UnitFrame_Update()--职业, 图标， 颜色
-        local frame= e.GroupFrame[unit]
-        if frame and frame.unit~='vehicle' then
-            if frame.itemLevel and itemLevel then--装等
-                frame.itemLevel:SetText(hex and (hex..itemLevel) or itemLevel)
-            end
-
-            if frame.classTexture and specID then--专精
-                local texture= select(4, GetSpecializationInfoByID(specID))
-                if texture then
-                    SetPortraitToTexture(frame.classFrame.Portrait, texture)
-                end
-            end
-            if frame.classFrame.Portrait and r and g and b then--外框
-                frame.classPortrait:SetVertexColor(r, g, b, 1)
-            end
-        end]]
     end
 end
 

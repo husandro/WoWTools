@@ -821,12 +821,6 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                     PlayerFrameGroupIndicatorText:SetPoint('LEFT', self.keystoneText, 'RIGHT',12,0)
                 end
             end
-
-            --[[e.GroupFrame[unit]= {
-                    itemLevel= self.itemLevel,
-                    portrait= self.classFrame.Portrait
-            }]]
-
         end
 
         local guid= UnitGUID(unit)--职业, 天赋, 图标
