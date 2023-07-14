@@ -368,7 +368,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     if not targetFrame then
         local last
         targetFrame= CreateFrame("Frame")
-        targetFrame:SetFrameStrata('HIGH')
+        --targetFrame:SetFrameStrata('HIGH')
         setMarkersFrame_Postion()--设置标记框架, 位置
         targetFrame:SetSize(1, size)
         targetFrame:SetMovable(true)

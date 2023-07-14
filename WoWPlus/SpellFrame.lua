@@ -50,7 +50,7 @@ local function Init()
             return t:gsub("([%z\1-\127\194-\244][\128-\191]*)", "%1|n")
         end
     end
-    hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self, reason)
+    hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)
             if self.spellID then
                 local spellName = GetSpellInfo(self.spellID);
                 local petName = select(2, GetCallPetSpellInfo(self.spellID));
@@ -87,17 +87,10 @@ local function Init()
     --#############
     hooksecurefunc('ActionButton_UpdateRangeIndicator', function(self, checksRange, inRange)--ActionButton.lua
         if checksRange then
-            if not inRange then
-                self.icon:SetVertexColor(RED_FONT_COLOR:GetRGB());
-            elseif self.action then
-                local isUsable, notEnoughMana = IsUsableAction(self.action);
-                if ( isUsable ) then
-                    self.icon:SetVertexColor(1.0, 1.0, 1.0);
-                elseif ( notEnoughMana ) then
-                    self.icon:SetVertexColor(0.5, 0.5, 1.0);
-                else
-                    self.icon:SetVertexColor(0.4, 0.4, 0.4);
-                end
+           if not inRange then
+                self.icon:SetVertexColor(RED_FONT_COLOR:GetRGB())
+           elseif self.action then
+                self:UpdateUsable()
             end
         end
     end)
@@ -109,7 +102,7 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save

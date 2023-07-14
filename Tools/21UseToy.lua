@@ -201,7 +201,7 @@ StaticPopupDialogs[id..addName..'RESETALL']={--重置所有,清除全部玩具
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, menuList)--主菜单
+local function InitMenu(_, level, menuList)--主菜单
     local info
     if menuList=='TOY' then
         for _, itemID in pairs(ItemsTab) do

@@ -185,7 +185,9 @@ end
 --初始
 --####
 local function Init()
-    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
+    button= e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+
+    button:SetPoint('LEFT', WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
     set_Guild_Members()--在线人数
@@ -211,7 +213,25 @@ local function Init()
         button.canReplaceGuildMaster:SetText('|cnGREEN_FONT_COLOR:'..GUILD_IMPEACH_POPUP_CONFIRM..'|r')
     end
 
+
     C_Timer.After(2, set_CHAT_MSG_SYSTEM)--事件, 公会新成员, 队伍新成员
+
+
+    --[[button.Emblem= button:CreateTexture(nil, 'ARTWORK', nil, 2)
+    button.Emblem:SetAllPoints(button)
+    button.Emblem:SetTexture('Interface\\GuildFrame\\GuildEmblems_01')
+    hooksecurefunc(GuildMicroButton, 'UpdateTabard', function(self)
+        local emblemFilename = select(10, GetGuildLogoInfo());
+        local tabardInfo = C_GuildInfo.GetGuildTabardInfo("player");
+        local show= emblemFilename and tabardInfo
+        if show then
+            --LoadMicroButtonTextures(button, "GuildCommunities-GuildColor", tabardInfo.backgroundColor);
+            SetSmallGuildTabardTextures("player", button.Emblem)
+        else
+            LoadMicroButtonTextures(button, "GuildCommunities")
+        end
+        button.Emblem:SetShown(show)
+    end)]]
 end
 
 
@@ -227,8 +247,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
-
-                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 
                 Init()
                 panel:RegisterEvent('PLAYER_LOGOUT')

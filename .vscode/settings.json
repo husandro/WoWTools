@@ -3114,7 +3114,10 @@
         "CompactPartyFrameMember5",
         "CompactPartyFrameMember2",
         "ActionButton1",
-        "MirrorTimerContainer"
+        "MirrorTimerContainer",
+        "COOLDOWN_TYPE_NORMAL",
+        "GuildMicroButtonMixin",
+        "SetSmallGuildTabardTextures"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

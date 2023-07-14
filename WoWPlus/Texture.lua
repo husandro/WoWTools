@@ -7,7 +7,7 @@ local Save={
     chatBubbleAlpha= 0.5,--聊天泡泡
     chatBubbleSacal= 0.85,
     classPowerNum= e.Player.husandro,--职业，显示数字
-    --disabledMainMenu= true, --主菜单，颜色，透明度
+    disabledMainMenu= not e.Player.husandro, --主菜单，颜色，透明度
 }
 local panel=CreateFrame("Frame")
 
