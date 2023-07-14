@@ -671,49 +671,43 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         if not UnitExists(unit) or not (r and g and b) then
             return
         end
-        if not self.classTexture then
-            self.classTexture= self:CreateTexture(nil,'OVERLAY', nil, 6)
-            self.classTexture:SetSize(16,16)
+        if not self.classFrame then
+            self.classFrame= CreateFrame('Frame', nil, self)
+            self.classFrame:SetSize(16,16)
+            self.classFrame.Portrait= self.classFrame:CreateTexture(nil, "BACKGROUND")
+            self.classFrame.Portrait:SetAllPoints(self.classFrame)
 
             if unit=='target' or unit=='focus' then
                 if self.TargetFrameContent and self.TargetFrameContent.TargetFrameContentContextual.LeaderIcon then
-                    self.classTexture:SetPoint('RIGHT', self.TargetFrameContent.TargetFrameContentContextual.LeaderIcon, 'LEFT')
+                    self.classFrame:SetPoint('RIGHT', self.TargetFrameContent.TargetFrameContentContextual.LeaderIcon, 'LEFT')
                 else
-                    self.classTexture:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',0,10)
+                    self.classFrame:SetPoint('TOPRIGHT', self.portrait, 'TOPLEFT',0,10)
                 end
-                 --[[if unit=='target' then--移动, 队长图标，TargetFrame.lua
-                   local targetFrameContentContextual = TargetFrame.TargetFrameContent.TargetFrameContentContextual
-                    if targetFrameContentContextual then
-                        targetFrameContentContextual.LeaderIcon:ClearAllPoints()
-                        targetFrameContentContextual.LeaderIcon:SetPoint('RIGHT', self.classTexture,'LEFT',5,-5)
-                        targetFrameContentContextual.GuideIcon:ClearAllPoints()
-                        targetFrameContentContextual.GuideIcon:SetPoint('RIGHT', self.classTexture,'LEFT',5,-5)
-                    end
-                end]]
             elseif self.unit=='pet' then
-                self.classTexture:SetPoint('LEFT', self.name,-10,0)
+                self.classFrame:SetPoint('LEFT', self.name,-10,0)
             elseif self.unit=='player' then
-                self.classTexture:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-14,8)
+                self.classFrame:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-14,8)
             else
-                self.classTexture:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-14,10)
+                self.classFrame:SetPoint('TOPLEFT', self.portrait, 'TOPRIGHT',-14,10)
             end
 
-            self.classPortrait= self:CreateTexture(nil, 'OVERLAY', nil,7)--加个外框
-            self.classPortrait:SetAtlas('DK-Base-Rune-CDFill')
-            self.classPortrait:SetPoint('CENTER', self.classTexture)
-            self.classPortrait:SetSize(20,20)
+            self.classFrame.Texture= self.classFrame:CreateTexture(nil, 'OVERLAY')--加个外框
+            self.classFrame.Texture:SetAtlas('UI-HUD-UnitFrame-TotemFrame-2x')
 
-            self.mask= self:CreateMaskTexture()--mask
-            self.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-            self.mask:SetAllPoints(self.classTexture)
-            self.classTexture:AddMaskTexture(self.mask)
+            self.classFrame.Texture:SetPoint('CENTER', self.classFrame,1,-1)
+            self.classFrame.Texture:SetSize(20,20)
+
+            --[[local mask= self.classFrame:CreateMaskTexture()--mask
+            mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
+            mask:SetAllPoints(self.classTexture)
+            self.classFrame.Portrait:AddMaskTexture(mask)]]
 
             if not unit:find('boss') and self.unit~='player' then
                 self.itemLevel= e.Cstr(self, {size=12})--装等
                 if unit=='target' or unit=='focus' then
-                    self.itemLevel:SetPoint('RIGHT', self.classTexture, 'LEFT')
+                    self.itemLevel:SetPoint('RIGHT', self.classFrame, 'LEFT')
                 else
-                    self.itemLevel:SetPoint('TOPRIGHT', self.classTexture, 'TOPLEFT')
+                    self.itemLevel:SetPoint('TOPRIGHT', self.classFrame, 'TOPLEFT')
                 end
             end
 
@@ -828,32 +822,32 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 end
             end
 
-            e.GroupFrame[unit]= {
+            --[[e.GroupFrame[unit]= {
                     itemLevel= self.itemLevel,
-                    classTexture= self.classTexture
-            }
+                    portrait= self.classFrame.Portrait
+            }]]
 
         end
 
         local guid= UnitGUID(unit)--职业, 天赋, 图标
         if UnitIsPlayer(unit) then
-            if unit~='vehicle' and guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].specID then
+            if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].specID then
                 local texture= select(4, GetSpecializationInfoByID(e.UnitItemLevel[guid].specID))
                 if texture then
-                    SetPortraitToTexture(self.classTexture, texture)
+                    SetPortraitToTexture(self.classFrame.Portrait, texture)
                 end
             else
                 local class= e.Class(unit, nil, true)--职业, 图标
                 if class then
-                    self.classTexture:SetAtlas(class)
+                    self.classFrame.Portrait:SetAtlas(class)
                 else
-                    self.classTexture:SetTexture(0)
+                    self.classFrame.Portrait:SetTexture(0)
                 end
             end
-            self.classPortrait:SetVertexColor(r, g, b, 1)
-            self.classPortrait:SetShown(true)
+            self.classFrame.Texture:SetVertexColor(r, g, b)
+            self.classFrame:SetShown(true)
         else
-            self.classPortrait:SetShown(false)
+            self.classFrame:SetShown(false)
         end
 
         if self==PlayerFrame then
