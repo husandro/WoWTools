@@ -607,22 +607,41 @@ local function Init_Move()
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
         created_Move_Button(UIWidgetPowerBarContainerFrame, {})
 
-       local tab= UIWidgetPowerBarContainerFrame.widgetFrames or {}
-        local find=false
-        for widgetID,_ in pairs(tab) do
-            if widgetID then
-                find=true
-                break
+        function UIWidgetPowerBarContainerFrame:Get_WidgetIsShown()
+            for _, frame in pairs(self.widgetFrames or {}) do
+                if frame then
+                    return true
+                end
             end
+            return false
         end
         if UIWidgetPowerBarContainerFrame.ZoomInOutFrame or UIWidgetPowerBarContainerFrame.moveButton then--and frame.ZoomOut then
+            local show= UIWidgetPowerBarContainerFrame:Get_WidgetIsShown()
             if UIWidgetPowerBarContainerFrame.moveButton then
-                UIWidgetPowerBarContainerFrame.moveButton:SetShown(find)
+                UIWidgetPowerBarContainerFrame.moveButton:SetShown(show)
             end
             if UIWidgetPowerBarContainerFrame.ZoomInOutFrame then
-                UIWidgetPowerBarContainerFrame.ZoomInOutFrame:SetShown(find)
+                UIWidgetPowerBarContainerFrame.ZoomInOutFrame:SetShown(show)
             end
-            hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self, widgetID)--Blizzard_UIWidgetManager.lua frame.ZoomOut:SetShown(find)
+            hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self)
+                local isShow= self:Get_WidgetIsShown()
+                if self.ZoomInOutFrame then
+                    self.ZoomInOutFrame:SetShown(isShow)
+                end
+                if self.moveButton then
+                    self.moveButton:SetShown(isShow)
+                end
+            end)
+            hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self)--Blizzard_UIWidgetManager.lua frame.ZoomOut:SetShown(find)
+                local isShow= self:Get_WidgetIsShown()
+                if self.ZoomInOutFrame then
+                    self.ZoomInOutFrame:SetShown(isShow)
+                end
+                if self.moveButton then
+                    self.moveButton:SetShown(isShow)
+                end
+            end)
+            hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveAllWidgets', function(self)
                 if self.ZoomInOutFrame then
                     self.ZoomInOutFrame:SetShown(false)
                 end
@@ -630,17 +649,8 @@ local function Init_Move()
                     self.moveButton:SetShown(false)
                 end
             end)
-            hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self)
-                if self.ZoomInOutFrame then--and self.ZoomOut then
-                    self.ZoomInOutFrame:SetShown(true)
-                end
-                if self.moveButton then
-                    self.moveButton:SetShown(true)
-                end
-            end)
         end
     end
-
 
     hooksecurefunc('PlayerFrame_ToPlayerArt', function()
         C_Timer.After(0.5, set_classPowerBar)

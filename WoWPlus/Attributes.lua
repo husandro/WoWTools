@@ -21,7 +21,7 @@ local Save={
         ["BLOCK"]= {r=0.75, g=0.53, b=0.78},
         ["STAGGER"]= {r=0.38, g=1, b=0.62},
 
-        ["SPEED"]= {r=1, g=0.82, b=0, current=true},--移动
+        ["SPEED"]= {r=1, g=0.82, b=0},--, current=true},--移动
     },
     --toLeft=true--数值,
     bar= true,--进度条
@@ -100,7 +100,7 @@ local function set_Tabs()
                             or (Save.useNumber and not Tabs[index].usePercent ) and true
                             or Tabs[index].useNumber
         Tabs[index].bit= Save.tab[info.name].bit or Save.bit or 0
-        Tabs[index].current= Save.tab[info.name].current
+        --Tabs[index].current= Save.tab[info.name].current
         Tabs[index].damageAndDefense= Save.tab[info.name].damageAndDefense
         Tabs[index].onlyDefense= Save.tab[info.name].onlyDefense
         Tabs[index].bar= Save.tab[info.name].bar and true or Save.bar and Tabs[index].bar
@@ -625,7 +625,7 @@ local function set_ARMOR_Tooltip(self)
     e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
-    local baselineArmor, effectiveArmor, armor, bonusArmor = UnitArmor('player');
+    local _, effectiveArmor = UnitArmor('player');
     e.tips:AddDoubleLine(frame.nameText, BreakUpLargeNumbers(effectiveArmor), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
 
     local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel('player'));
@@ -730,32 +730,19 @@ end
 local function set_SPEED_Text(frame, elapsed)
     frame.elapsed= frame.elapsed+ elapsed
     if frame.elapsed > 0.3 then
+        local value
         local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
         if isGliding and forwardSpeed then
-            if forwardSpeed==0 then
-                frame.text:SetText('')
-            else
-                frame.text:SetFormattedText('%.0f%%', forwardSpeed*100/BASE_MOVEMENT_SPEED)
-            end
+            value= forwardSpeed
+        elseif UnitExists('vehicle') then
+            value= GetUnitSpeed('vehicle')
         else
-            local unit= UnitExists('vehicle') and 'vehicle' or (frame.current or UnitOnTaxi('player')) and 'player'
-            if unit then
-                local currentSpeed = GetUnitSpeed(unit)
-                if currentSpeed~=0 then
-                    frame.text:SetFormattedText('%.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED)
-                else
-                    frame.text:SetText('')
-                end
-            else
-                local _, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed('player')
-                local value
-                value= IsFlying() and flightSpeed or IsSwimming() and swimSpeed or runSpeed
-                if value~=0 then
-                    frame.text:SetFormattedText('%.0f%%', value*100/BASE_MOVEMENT_SPEED)
-                else
-                    frame.text:SetText('')
-                end
-            end
+            value= GetUnitSpeed('player')
+        end
+        if value==0 then
+            frame.text:SetText('')
+        else
+            frame.text:SetFormattedText('%.0f%%', value*100/BASE_MOVEMENT_SPEED)
         end
         frame.elapsed= 0
     end
@@ -774,7 +761,6 @@ local function set_SPEED_Tooltip(self)
     e.tips:AddDoubleLine((e.onlyChinese and '驭龙术' or LANDING_DRAGONRIDING_PANEL_TITLE)..format(' %.0f%%', 100*100/BASE_MOVEMENT_SPEED), '100', frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     if UnitExists('vehicle') then
         currentSpeed = GetUnitSpeed('vehicle')
-        e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '载具' or 'Vehicle')..format(' %.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     end
     e.tips:Show()
@@ -1080,7 +1066,7 @@ local function frame_Init(rest)--初始， 或设置
                 frame.r, frame.g, frame.b, frame.a= info.r,info.g,info.b,info.a
                 frame.damageAndDefense= info.damageAndDefense--全能5
                 frame.onlyDefense= info.onlyDefense--全能5
-                frame.current= info.current--SPEED 速度12
+                --frame.current= info.current--SPEED 速度12
                 frame.bit= info.bit or 0
                 frame.useNumber= info.useNumber
                 frame.name= info.name
@@ -1304,7 +1290,7 @@ local function set_Panle_Setting()--设置 panel
             end)
 
         elseif info.name=='SPEED' then--速度, 当前速度, 选项
-            local current= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            --[[local current= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             current:SetChecked(Save.tab[info.name].current)
             current:SetPoint('LEFT', text, 'RIGHT',2,0)
             current.text:SetText(e.onlyChinese and '当前' or 'REFORGE_CURRENT')
@@ -1313,12 +1299,12 @@ local function set_Panle_Setting()--设置 panel
                 frame_Init(true)--初始， 或设置
             end)
             current:SetScript('OnEnter', set_SPEED_Tooltip)
-            current:SetScript('OnLeave', function() e.tips:Hide() end)
+            current:SetScript('OnLeave', function() e.tips:Hide() end)]]
 
             --驭龙术UI，速度
             local dragonriding= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             dragonriding:SetChecked(not Save.disabledDragonridingSpeed)
-            dragonriding:SetPoint('LEFT', current.text, 'RIGHT',2,0)
+            dragonriding:SetPoint('LEFT', text, 'RIGHT',2,0)
             dragonriding.text:SetFormattedText('%s|A:dragonriding_vigor_decor:0:0|a%s UI', e.onlyChinese and '驭龙术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE, e.onlyChinese and '速度' or SPEED)
             dragonriding:SetScript('OnClick',function()
                 Save.disabledDragonridingSpeed= not Save.disabledDragonridingSpeed and true or nil
@@ -2011,19 +1997,14 @@ local function Init()
     end
     local tab= UIWidgetPowerBarContainerFrame.widgetFrames or {}
     for widgetID, frame in pairs(tab) do
-        if widgetID==4460  then
+        if widgetID==4460 and frame then
             set_Speed(frame)
             break
         end
     end
-    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self2, widgetID)--Blizzard_UIWidgetManager.lua
-        if widgetID==4460 then
-            set_Speed(self2)
-        end
-    end)
-    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self2, widgetID)
-        if widgetID==4460 and self2.speedBar then
-            self2.speedBar:SetShown(false)
+    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(_, widgetID)--RemoveWidget Blizzard_UIWidgetManager.lua
+        if widgetID==4460 and UIWidgetPowerBarContainerFrame.widgetFrames[widgetID] then
+            set_Speed(UIWidgetPowerBarContainerFrame.widgetFrames[widgetID])
         end
     end)
 end
