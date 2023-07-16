@@ -50,8 +50,8 @@ local Save={
     },
     no={--禁用使用
         [6948]=true,--炉石
-        [140192]=true,--达拉然炉石
-        [110560]=true,--要塞炉石
+        --[140192]=true,--达拉然炉石
+        --[110560]=true,--要塞炉石
         [23247]=true,--燃烧之花
         [168416]=true,
         [109076]=true,
@@ -191,8 +191,8 @@ local function getItems()--取得背包物品信息
 
                 else
                     local dateInfo= e.GetTooltipData({hyperLink=info.hyperlink, red=true, onlyRed=true, text={}})
-
-                    if not dateInfo.red then--不出售, 可以使用
+                    
+                    if not dateInfo.red and C_PlayerInfo.CanUseItem(info.itemID) then--不出售, 可以使用
                         local _, _, _, _, itemMinLevel, _, _, _, itemEquipLoc, _, _, classID2, subclassID= GetItemInfo(info.hyperlink)
                         classID= classID or classID2
 

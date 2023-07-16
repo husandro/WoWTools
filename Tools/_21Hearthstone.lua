@@ -201,7 +201,7 @@ end
 local function setBagHearthstone()
     for type, itemID in pairs(ModifiedTab) do
         local find
-        if GetItemCount(itemID)~=0 then
+        if PlayerHasToy(itemID) or GetItemCount(itemID)>=0 then
             local _, duration, enable = GetItemCooldown(itemID)
             find= duration<2 and enable==1
         end
@@ -235,7 +235,7 @@ local function showTips(self)--显示提示
         e.tips:SetToyByItemID(self.itemID)
         e.tips:AddLine(' ')
         for type, itemID in pairs(ModifiedTab) do
-            if GetItemCount(itemID)~=0 then
+            if PlayerHasToy(itemID) or GetItemCount(itemID)>0 then
                 local name = C_Item.GetItemNameByID(itemID..'') or ('itemID: '..itemID)
                 local icon = C_Item.GetItemIconByID(itemID..'')
                 name= (icon and '|T'..icon..':0|t' or '')..name
@@ -279,7 +279,7 @@ local function Init()
     button:SetSize(30, 30)
 
     for type, itemID in pairs(ModifiedTab) do
-        button:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or itemID)
+        button:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or select(2,  C_ToyBox.GetToyInfo(itemID)) or itemID)
     end
 
     button:SetScript("OnEnter",function(self)
