@@ -39,6 +39,7 @@ local Save={
     --notText=false,--禁用，数值
     textColor= {r=1,g=1,b=1,a=1},--数值，颜色
     bit=0,--数值，位数
+    --disabledDragonridingSpeed=true,--禁用，驭龙术UI，速度
 }
     --hideInPetBattle=true,--宠物战斗中, 隐藏
     --buttonAlpha=0,--专精，图标，透明度
@@ -726,26 +727,35 @@ end
 --####
 --移动
 --####
-local timeElapsed = 0
+local timeElapsed = 0.5
 local function set_SPEED_Text(frame, elapsed)
     timeElapsed = timeElapsed + elapsed
-    if timeElapsed > 0.3 then
-        local unit= UnitExists('vehicle') and 'vehicle' or (frame.current or UnitOnTaxi('player')) and 'player'
-        if unit then
-            local currentSpeed = GetUnitSpeed(unit)
-            if currentSpeed~=0 then
-                frame.text:SetFormattedText('%.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED)
-            else
+    if timeElapsed > 0.4 then
+        local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
+        if isGliding and forwardSpeed then
+            if forwardSpeed==0 then
                 frame.text:SetText('')
+            else
+                frame.text:SetFormattedText('%.0f%%', forwardSpeed*100/BASE_MOVEMENT_SPEED)
             end
         else
-            local _, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed('player')
-            local value
-            value= IsFlying() and flightSpeed or IsSwimming() and swimSpeed or runSpeed
-            if value~=0 then
-                frame.text:SetFormattedText('%.0f%%', value*100/BASE_MOVEMENT_SPEED)
+            local unit= UnitExists('vehicle') and 'vehicle' or (frame.current or UnitOnTaxi('player')) and 'player'
+            if unit then
+                local currentSpeed = GetUnitSpeed(unit)
+                if currentSpeed~=0 then
+                    frame.text:SetFormattedText('%.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED)
+                else
+                    frame.text:SetText('')
+                end
             else
-                frame.text:SetText('')
+                local _, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed('player')
+                local value
+                value= IsFlying() and flightSpeed or IsSwimming() and swimSpeed or runSpeed
+                if value~=0 then
+                    frame.text:SetFormattedText('%.0f%%', value*100/BASE_MOVEMENT_SPEED)
+                else
+                    frame.text:SetText('')
+                end
             end
         end
         timeElapsed = 0
@@ -759,10 +769,10 @@ local function set_SPEED_Tooltip(self)
     e.tips:AddDoubleLine(frame.nameText, 'player', frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     e.tips:AddLine(format(e.onlyChinese and '提升移动速度。|n|n速度：%s [+%.2f%%]' or CR_SPEED_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_SPEED)), GetCombatRatingBonus(CR_SPEED)), frame.r, frame.g, frame.b, true)
     e.tips:AddLine(' ')
-    e.tips:AddDoubleLine((e.onlyChinese and '当前' or REFORGE_CURRENT)..format(' %.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     e.tips:AddDoubleLine((e.onlyChinese and '地面' or MOUNT_JOURNAL_FILTER_GROUND)..format(' %.0f%%', runSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', runSpeed), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     e.tips:AddDoubleLine((e.onlyChinese and '水栖' or MOUNT_JOURNAL_FILTER_AQUATIC )..format(' %.0f%%', swimSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', swimSpeed), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     e.tips:AddDoubleLine((e.onlyChinese and '飞行' or MOUNT_JOURNAL_FILTER_FLYING )..format(' %.0f%%', flightSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', flightSpeed), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
+    e.tips:AddDoubleLine((e.onlyChinese and '驭龙术' or LANDING_DRAGONRIDING_PANEL_TITLE)..format(' %.0f%%', 100*100/BASE_MOVEMENT_SPEED), '100', frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     if UnitExists('vehicle') then
         currentSpeed = GetUnitSpeed('vehicle')
         e.tips:AddLine(' ')
@@ -1308,12 +1318,21 @@ local function set_Panle_Setting()--设置 panel
             current:SetChecked(Save.tab[info.name].current)
             current:SetPoint('LEFT', text, 'RIGHT',2,0)
             current.text:SetText(e.onlyChinese and '当前' or 'REFORGE_CURRENT')
-            current:SetScript('OnMouseUp',function(self)
+            current:SetScript('OnClick',function(self)
                 Save.tab['SPEED'].current= not Save.tab['SPEED'].current and true or false
                 frame_Init(true)--初始， 或设置
             end)
             current:SetScript('OnEnter', set_SPEED_Tooltip)
             current:SetScript('OnLeave', function() e.tips:Hide() end)
+
+            --驭龙术UI，速度
+            local dragonriding= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            dragonriding:SetChecked(not Save.disabledDragonridingSpeed)
+            dragonriding:SetPoint('LEFT', current.text, 'RIGHT',2,0)
+            dragonriding.text:SetFormattedText('%s|A:dragonriding_vigor_decor:0:0|a%s UI', e.onlyChinese and '驭龙术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE, e.onlyChinese and '速度' or SPEED)
+            dragonriding:SetScript('OnClick',function()
+                Save.disabledDragonridingSpeed= not Save.disabledDragonridingSpeed and true or nil
+            end)
 
         elseif info.name=='VERSATILITY' then--全能5
             local check2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅防卫
@@ -1959,6 +1978,58 @@ local function Init()
         set_Show_Hide()--显示， 隐藏
         frame_Init(true)--初始， 或设置
         set_Panle_Setting()--设置 panel
+    end)
+
+    --#############
+    --驭龙术UI，速度
+    --#############
+    local function set_Speed(self2)
+        if not self2.speedBar and not Save.disabledDragonridingSpeed then
+            self2.speedBar= CreateFrame('StatusBar', nil, self2)
+            self2.speedBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+            self2.speedBar:SetStatusBarColor(e.Player.r, e.Player.g, e.Player.b)
+            self2.speedBar:SetPoint('BOTTOM', self2, 'TOP')
+            self2.speedBar:SetMinMaxValues(0, 100)
+            self2.speedBar:SetSize(200, 4)
+
+            self2.speedBar.Text= e.Cstr(self2.speedBar, {size=16, color= true})
+            self2.speedBar.Text:SetPoint('BOTTOM', self2, 'TOP',0, 12)
+            self2.speedBar.elapsed=1
+            self2.speedBar:SetScript('OnUpdate', function(self3, elapsed)
+                self3.elapsed= self3.elapsed+ elapsed
+                if self3.elapsed>0.5 then
+                    local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
+                    local base = isGliding and forwardSpeed or GetUnitSpeed("player") or 0
+                    if base>0 then
+                        local movespeed = Round(base / BASE_MOVEMENT_SPEED * 100)
+                        self3.Text:SetFormattedText('%i',movespeed)
+                    else
+                        self3.Text:SetText('')
+                    end
+                    self3:SetValue(base)
+                end
+            end)
+        end
+        if self2.speedBar then
+            self2.speedBar:SetShown(not Save.disabledDragonridingSpeed)
+        end
+    end
+    local tab= UIWidgetPowerBarContainerFrame.widgetFrames or {}
+    for widgetID, frame in pairs(tab) do
+        if widgetID==4460  then
+            set_Speed(frame)
+            break
+        end
+    end
+    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self2, widgetID)--Blizzard_UIWidgetManager.lua
+        if widgetID==4460 then
+            set_Speed(self2)
+        end
+    end)
+    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self2, widgetID)
+        if widgetID==4460 and self2.speedBar then
+            self2.speedBar:SetShown(false)
+        end
     end)
 end
 

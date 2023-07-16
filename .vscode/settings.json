@@ -3117,7 +3117,9 @@
         "MirrorTimerContainer",
         "COOLDOWN_TYPE_NORMAL",
         "GuildMicroButtonMixin",
-        "SetSmallGuildTabardTextures"
+        "SetSmallGuildTabardTextures",
+        "GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE",
+        "LANDING_DRAGONRIDING_PANEL_TITLE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

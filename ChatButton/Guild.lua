@@ -208,9 +208,9 @@ local function Init()
     end)
 
     if CanReplaceGuildMaster() then--弹劾
-        button.canReplaceGuildMaster=e.Cstr(button, {size=10, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
-        button.canReplaceGuildMaster:SetPoint('TOP')
-        button.canReplaceGuildMaster:SetText('|cnGREEN_FONT_COLOR:'..GUILD_IMPEACH_POPUP_CONFIRM..'|r')
+        local label= e.Cstr(button, {size=10, color=true, justifyH='CENTER'})
+        label:SetPoint('TOP')
+        label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or GUILD_IMPEACH_POPUP_CONFIRM)..'|r')
     end
 
 
