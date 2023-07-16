@@ -727,10 +727,9 @@ end
 --####
 --移动
 --####
-local timeElapsed = 0.5
 local function set_SPEED_Text(frame, elapsed)
-    timeElapsed = timeElapsed + elapsed
-    if timeElapsed > 0.4 then
+    frame.elapsed= frame.elapsed+ elapsed
+    if frame.elapsed > 0.3 then
         local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
         if isGliding and forwardSpeed then
             if forwardSpeed==0 then
@@ -758,7 +757,7 @@ local function set_SPEED_Text(frame, elapsed)
                 end
             end
         end
-        timeElapsed = 0
+        frame.elapsed= 0
     end
 end
 local function set_SPEED_Tooltip(self)
@@ -1039,19 +1038,10 @@ local function frame_Init(rest)--初始， 或设置
                     frame.text:SetScript('OnEnter', set_STAGGER_Tooltip)
 
                 elseif info.name=='SPEED' then--移动12
+                    frame.elapsed=0.4
                     frame:HookScript('OnUpdate', set_SPEED_Text)
                     frame.label:SetScript('OnEnter', set_SPEED_Tooltip)
                     frame.text:SetScript('OnEnter', set_SPEED_Tooltip)
-                    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self, widgetID)
-                        if widgetID==4460 then
-                            frame:SetShown(false)
-                        end
-                    end)
-                    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self, widgetID)
-                        if widgetID==4460 then
-                            frame:SetShown(true)
-                        end
-                    end)
                 end
                 frame.label:HookScript('OnEnter', function(self2) self2:SetAlpha(0.3) end)
                 frame.text:HookScript('OnEnter', function(self2) self2:SetAlpha(0.3) end)
@@ -1983,7 +1973,6 @@ local function Init()
     --#############
     --驭龙术UI，速度
     --#############
-
     local function set_Speed(self2)
         if not self2.speedBar and not Save.disabledDragonridingSpeed then
             self2.speedBar= CreateFrame('StatusBar', nil, self2)
@@ -2002,7 +1991,7 @@ local function Init()
             self2.speedBar.elapsed=1
             self2.speedBar:SetScript('OnUpdate', function(self3, elapsed)
                 self3.elapsed= self3.elapsed+ elapsed
-                if self3.elapsed>0.6 then
+                if self3.elapsed>0.3 then
                     local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
                     local base = isGliding and forwardSpeed or GetUnitSpeed("player") or 0
                     if base>0 then
@@ -2012,6 +2001,7 @@ local function Init()
                         self3.Text:SetText('')
                     end
                     self3:SetValue(base)
+                    self3.elapsed=0
                 end
             end)
         end
