@@ -1301,6 +1301,12 @@ local function Init()
                 e.Set_Item_Stats(self, not Save.hide and link or nil, {point=self.icon})
                 set_PaperDollSidebarTab3_Text()
                 LvTo()--总装等
+                if link then
+                    local a, b= C_ItemUpgrade.GetHighWatermarkForItem(link)
+                    if a~=b then
+                print(C_ItemUpgrade.GetHighWatermarkForItem(link))
+                    end
+                end
             end
             set_Slot_Num_Label(self, slot, link and true or nil)--栏位
         elseif InventSlot_To_ContainerSlot[slot] then
@@ -1359,7 +1365,6 @@ local function Init()
     --############
     --更改,等级文本
     --############
-
     hooksecurefunc('PaperDollFrame_SetLevel', function()--PaperDollFrame.lua
         if Save.hide then
             return
@@ -1374,9 +1379,39 @@ local function Init()
         end
         local faction= e.Player.faction=='Alliance' and '|A:charcreatetest-logo-alliance:26:26|a' or e.Player.faction=='Horde' and '|A:charcreatetest-logo-horde:26:26|a' or ''
         CharacterLevelText:SetText('  '..faction..(race and '|A:'..race..':26:26|a' or '')..(class and '|A:'..class..':26:26|a  ' or '')..level)
-        if not Save.hide and not CharacterLevelText.set then
+        if not CharacterLevelText.set then
             CharacterLevelText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
             CharacterLevelText:SetJustifyH('LEFT')
+            CharacterLevelText:EnableMouse(true)
+            CharacterLevelText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+            CharacterLevelText:SetScript('OnEnter', function(self2)
+                local info = C_PlayerInfo.GetPlayerCharacterData()
+                if Save.hide or not info then
+                    return
+                end
+                
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine('name', info.name)
+                e.tips:AddDoubleLine('fileName', info.fileName)
+                e.tips:AddDoubleLine('createScreenIconAtlas', (info.createScreenIconAtlas and '|A:'..info.createScreenIconAtlas..':0:0|a' or '')..(info.createScreenIconAtlas or ''))
+                e.tips:AddDoubleLine('sex', info.sex)
+
+                if info.alternateFormRaceData then
+                    e.tips:AddLine(' ')
+                    e.tips:AddLine('alternateFormRaceData')
+                    
+                    e.tips:AddDoubleLine('raceID', info.alternateFormRaceData.raceID)
+                    e.tips:AddDoubleLine('name', info.alternateFormRaceData.name)
+                    e.tips:AddDoubleLine('fileName', info.alternateFormRaceData.fileName)
+                    e.tips:AddDoubleLine('createScreenIconAtlas', info.alternateFormRaceData.createScreenIconAtlas)
+                end
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+                self2:SetAlpha(0.3)
+            end)
+
             CharacterLevelText.set=true
         end
     end)
