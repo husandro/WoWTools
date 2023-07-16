@@ -1983,6 +1983,7 @@ local function Init()
     --#############
     --驭龙术UI，速度
     --#############
+
     local function set_Speed(self2)
         if not self2.speedBar and not Save.disabledDragonridingSpeed then
             self2.speedBar= CreateFrame('StatusBar', nil, self2)
@@ -1997,7 +1998,7 @@ local function Init()
             texture:SetAlpha(0.3)
 
             self2.speedBar.Text= e.Cstr(self2.speedBar, {size=16, color= true})
-            self2.speedBar.Text:SetPoint('BOTTOM', self2, 'TOP',0, 12)
+            self2.speedBar.Text:SetPoint('BOTTOM', self2, 'TOP',0, 16)
             self2.speedBar.elapsed=1
             self2.speedBar:SetScript('OnUpdate', function(self3, elapsed)
                 self3.elapsed= self3.elapsed+ elapsed
@@ -2022,8 +2023,6 @@ local function Init()
     for widgetID, frame in pairs(tab) do
         if widgetID==4460  then
             set_Speed(frame)
-            info= frame
-            for k, v in pairs(info) do if v and type(v)=='table' then print('---------',k..'STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---------',k..'END') end print(k,v) end
             break
         end
     end
