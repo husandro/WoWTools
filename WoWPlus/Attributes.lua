@@ -1990,14 +1990,18 @@ local function Init()
             self2.speedBar:SetStatusBarColor(e.Player.r, e.Player.g, e.Player.b)
             self2.speedBar:SetPoint('BOTTOM', self2, 'TOP')
             self2.speedBar:SetMinMaxValues(0, 100)
-            self2.speedBar:SetSize(200, 4)
+            self2.speedBar:SetSize(200, 6)
+            local texture= self2.speedBar:CreateTexture(nil,'BACKGROUND')
+            texture:SetAllPoints(self2.speedBar)
+            texture:SetAtlas('_islands-queue-progressbar-background')
+            texture:SetAlpha(0.3)
 
             self2.speedBar.Text= e.Cstr(self2.speedBar, {size=16, color= true})
             self2.speedBar.Text:SetPoint('BOTTOM', self2, 'TOP',0, 12)
             self2.speedBar.elapsed=1
             self2.speedBar:SetScript('OnUpdate', function(self3, elapsed)
                 self3.elapsed= self3.elapsed+ elapsed
-                if self3.elapsed>0.5 then
+                if self3.elapsed>0.6 then
                     local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
                     local base = isGliding and forwardSpeed or GetUnitSpeed("player") or 0
                     if base>0 then
@@ -2018,6 +2022,8 @@ local function Init()
     for widgetID, frame in pairs(tab) do
         if widgetID==4460  then
             set_Speed(frame)
+            info= frame
+            for k, v in pairs(info) do if v and type(v)=='table' then print('---------',k..'STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---------',k..'END') end print(k,v) end
             break
         end
     end

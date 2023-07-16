@@ -755,7 +755,7 @@ local function Init()
             e.tips:AddLine('isInCurrentRegion '..e.GetYesNo(info.isInCurrentRegion)..region, 1,1,1)
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinesel and '选项' or SETTINGS_TITLE), e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '选项' or SETTINGS_TITLE), e.Icon.mid)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
