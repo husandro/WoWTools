@@ -614,7 +614,7 @@ local function InitMenu(self, level, type)--主菜单
     local info
     if type=='RANDOM' then--三级, 离开时, 随机坐骑
         info={
-            text= '<AFK>'..(e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN, '')),
+            text= '<AFK>'..(e.onlyChinese and '自动' or CLUB_FINDER_LOOKING_FOR_CLASS_SPEC),
             checked= Save.AFKRandom,
             tooltipOnButton=true,
             tooltipTitle=e.onlyChinese and '注意: 掉落' or ('note: '..STRING_ENVIRONMENTAL_DAMAGE_FALLING),

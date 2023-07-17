@@ -316,7 +316,7 @@ local function setMerchantInfo()--设置, 提示, 信息
 					e.tips:ClearLines();
                     e.tips:AddDoubleLine(id, addName)
                     e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine('|T236994:0|t'..(e.onlyChinese and '自动购买物品' or AUTO_JOIN:gsub(JOIN,PURCHASE)), not Save.notAutoBuy and buySave[self2.itemID] or (e.onlyChinese and '无' or NONE))
+                    e.tips:AddDoubleLine('|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), not Save.notAutoBuy and buySave[self2.itemID] or (e.onlyChinese and '无' or NONE))
                     local all= GetItemCount(self2.itemID, true)
                     local bag= GetItemCount(self2.itemID)
                     e.tips:AddDoubleLine(e.Icon.bank2..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL), all..'= '.. e.Icon.bag2.. bag..'+ '..e.Icon.bank2..(all-bag))
@@ -578,7 +578,7 @@ local function Init_Menu(self, level, type)
     end
     e.LibDD:UIDropDownMenu_AddSeparator()
     info={--购买物品
-        text=  (e.onlyChinese and '自动购买物品' or AUTO_JOIN:gsub(JOIN,PURCHASE))..'|cnGREEN_FONT_COLOR: #'..num..'|r',
+        text=  (e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..'|cnGREEN_FONT_COLOR: #'..num..'|r',
         checked=not Save.notAutoBuy,
         func=function ()
             if Save.notAutoBuy then
@@ -712,7 +712,7 @@ local function Init_Button(frame)
                     ..'|n|n'.. (e.onlyChinese and '自动购买' or AUTO_JOIN:gsub(JOIN,PURCHASE))..': '..icon ..itemLink
                     ..'|n|n'..e.Icon.player..e.Player.name_realm..': ' ..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
                     ..'|n|n0: '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
-                    ..(Save.notAutoBuy and '|n|n'..(e.onlyChinese and '自动购买' or AUTO_JOIN:gsub(JOIN,PURCHASE))..': '..e.GetEnabeleDisable(false) or ''),
+                    ..(Save.notAutoBuy and '|n|n'..(e.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..': '..e.GetEnabeleDisable(false) or ''),
                     button1 = e.onlyChinese and '购买' or PURCHASE,
                     button2 = e.onlyChinese and '取消' or CANCEL,
                     hasEditBox=true,whileDead=true,timeout=60,hideOnEscape = 1,

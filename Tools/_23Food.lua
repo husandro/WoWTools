@@ -253,9 +253,9 @@ local function InitMenu(self, level, type)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info= {--自动, 更新物品, 查询
-            text= e.onlyChinese and '自动查找' or UPDATE..ITEMS,
+            text= e.onlyChinese and '自动查找' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, UPDATE),
             tooltipOnButton=true,
-            tooltipTitle=EVENTS_LABEL..': BAG_UPDATE_DELAYED',
+            tooltipTitle=(e.onlyChinese and '事件' or EVENTS_LABEL)..': BAG_UPDATE_DELAYED',
             checked=Save.autoWho,
             func= function()
                 Save.autoWho= not Save.autoWho and true or nil

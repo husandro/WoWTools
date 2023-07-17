@@ -825,7 +825,7 @@ local function InitMenu(_, level, type)--主菜单
         end
     else
         info={
-            text= e.onlyChinese and '自动标记' or (AUTO_JOIN:gsub(JOIN,'')..EVENTTRACE_MARKER)..e.Icon.TANK..e.Icon.HEALER,
+            text= (e.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER))..e.Icon.TANK..e.Icon.HEALER,
             icon= 'Warfronts-BaseMapIcons-Alliance-Workshop-Minimap',
             checked= Save.autoSet,
             disabled= Save.tank==0 and Save.healer==0,

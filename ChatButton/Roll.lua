@@ -199,7 +199,7 @@ local function InitMenu(self, level, type)--主菜单
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
-        text= e.onlyChinese and '自动清除' or AUTO_JOIN:gsub(JOIN,SLASH_STOPWATCH_PARAM_STOP2),
+        text= e.onlyChinese and '自动清除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SLASH_STOPWATCH_PARAM_STOP2),
         icon= 'bags-button-autosort-up',
         checked=Save.autoClear,
         tooltipOnButton=true,

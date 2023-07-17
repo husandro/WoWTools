@@ -274,7 +274,7 @@ local function InitMenu_Gossip(self, level, type)
     end
 
     info={--启用,禁用
-        text=e.Icon.left..(e.onlyChinese and '自动对话' or AUTO_JOIN:gsub(JOIN, ENABLE_DIALOG)),
+        text=e.Icon.left..(e.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG)),
         checked=Save.gossip,
         keepShownOnClick=true,
         func= function()
@@ -786,7 +786,7 @@ local function InitMenu_Quest(self, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={--自动:选择奖励
-        text= e.onlyChinese and '自动选择奖励' or format(TITLE_REWARD, AUTO_JOIN:gsub(JOIN, CHOOSE)),
+        text= e.onlyChinese and '自动选择奖励' or format(TITLE_REWARD, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, CHOOSE)),
         checked= Save.autoSelectReward,
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '最高品质' or format(PROFESSIONS_CRAFTING_QUALITY, VIDEO_OPTIONS_ULTRA_HIGH),

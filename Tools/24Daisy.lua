@@ -85,7 +85,7 @@ local function InitMenu(self, level)--主菜单
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={--自动召唤
-        text= e.onlyChinese and '自动召唤' or (AUTO_JOIN:gsub(JOIN,'')..SUMMONS),
+        text= e.onlyChinese and '自动召唤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SUMMONS),
         checked=Save.autoSummon,
         func=function()
             if Save.autoSummon then

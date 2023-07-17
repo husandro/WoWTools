@@ -489,7 +489,7 @@ local function setMenuList(self, level, menuList)--主菜单
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
-        text= e.onlyChinese and '自动隐藏' or (AUTO_JOIN:gsub(JOIN,'')..HIDE),
+        text= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '未发现物品' or BROWSE_NO_RESULTS,
         func=function()

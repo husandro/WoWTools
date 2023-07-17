@@ -320,7 +320,7 @@ local function Init_Menu(self, level, type)--主菜单
                 checked= Save.inInstanceBubblesDisabled,
                 tooltipOnButton= true,
                 tooltipTitle= (e.onlyChinese and '其它' or OTHER)..': '..e.GetEnabeleDisable(true),
-                tooltipText= e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN,''),
+                tooltipText= e.onlyChinese and '自动' or CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
                 keepShownOnClick= true,
                 func= function()
                     Save.inInstanceBubblesDisabled= not Save.inInstanceBubblesDisabled and true or nil

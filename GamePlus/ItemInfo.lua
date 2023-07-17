@@ -763,7 +763,7 @@ local function Init()
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
 
                 info={
-                    text= e.onlyChinese and '整理背包: 自动' or (BAG_CLEANUP_BAGS..': '..AUTO_JOIN:gsub(JOIN,'')),
+                    text= e.onlyChinese and '整理背包: 自动' or (BAG_CLEANUP_BAGS..': '..CLUB_FINDER_LOOKING_FOR_CLASS_SPEC),
                     icon= 'bags-button-autosort-up',
                     checked=not C_Container.GetBackpackAutosortDisabled(),
                     tooltipOnButton=true,
@@ -775,7 +775,7 @@ local function Init()
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
 
                 info={
-                    text= e.onlyChinese and '整理银行: 自动' or (BAG_CLEANUP_BANK..': '..AUTO_JOIN:gsub(JOIN,'')),
+                    text= e.onlyChinese and '整理银行: 自动' or (BAG_CLEANUP_BANK..': '..CLUB_FINDER_LOOKING_FOR_CLASS_SPEC),
                     icon= 'bags-button-autosort-up',
                     checked=not C_Container.GetBankAutosortDisabled(),
                     tooltipOnButton=true,

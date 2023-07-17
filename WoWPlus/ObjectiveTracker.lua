@@ -534,7 +534,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save.disabled then
                 local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-                sel2.text:SetText(e.onlyChinese and '自动隐藏' or (AUTO_JOIN:gsub(JOIN, HIDE)))
+                sel2.text:SetText(e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
                 sel2:SetPoint('LEFT', sel.Text, 'RIGHT')
                 sel2:SetChecked(Save.autoHide)
                 sel2:SetScript('OnEnter', function(self2)
@@ -556,7 +556,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 sel2:SetScript('OnMouseDown', function ()
                     Save.autoHide= not Save.autoHide and true or nil
-                    print(id, addName, e.onlyChinese and '自动隐藏' or (AUTO_JOIN:gsub(JOIN, '')..HIDE), e.onlyChinese and '任务追踪栏' or QUEST_OBJECTIVES, e.GetEnabeleDisable(Save.autoHide))
+                    print(id, addName, e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE), e.onlyChinese and '任务追踪栏' or QUEST_OBJECTIVES, e.GetEnabeleDisable(Save.autoHide))
                 end)
 
                 Init()
