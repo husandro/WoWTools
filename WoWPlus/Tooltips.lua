@@ -720,6 +720,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             self.Portrait:SetShown(true)
         end
 
+        --InspectFrame,如果显示，查看玩家，天赋，出错
         if not e.UnitItemLevel[guid] and CheckInteractDistance(unit, 1) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then--取得装等
            NotifyInspect(unit)
         end

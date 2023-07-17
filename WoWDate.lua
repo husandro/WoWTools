@@ -99,6 +99,7 @@ e.GetNotifyInspect= function(tab)
         end
         panel.NotifyInspectTicker=C_Timer.NewTicker(4, function()
             local unit=tab[index]
+            --InspectFrame,如果显示，查看玩家，天赋，出错
             if UnitExists(unit) and CheckInteractDistance(unit, 1) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then
                 NotifyInspect(tab[index])
             end
