@@ -460,6 +460,7 @@ local function Init()
         setAtt()--设置属性
         showTips(self)--显示提示
     end)
+    
 end
 
 --###########

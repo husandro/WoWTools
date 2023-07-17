@@ -495,6 +495,53 @@ local function Init()
         self:SetAlpha(0.1)
         e.tips:Hide()
     end)
+--[[
+    for i=1, SPELLS_PER_PAGE  do--SPELLS_PER_PAGE = 12
+        local btn= _G['SpellButton'..i]
+        if btn and btn.UpdateButton then
+            hooksecurefunc(btn, 'UpdateButton', function(self)--SpellBookFrame.lua
+                if SpellBookFrame.bookType~='spell' then
+                    
+                    return
+                end
+                local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self)
+                local spellName, _, spellID = GetSpellBookItemName(slot, SpellBookFrame.bookType);
+                print(SpellBookFrame.bookType)
+                if not self.useSpell then
+                    self.useSpell= e.Cbtn(self,{size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
+                    self.useSpell:SetPoint('BOTTOM', self, 'TOP')
+                    self.useSpell:SetScript('OnLeave', function() e.tips:Hide() end)
+                    self.useSpell:SetScript('OnEnter', function(self2)
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        local itemID=self2:GetParent().spellID
+                        e.tips:AddDoubleLine(itemID and C_ToyBox.GetToyLink(itemID) or itemID, e.GetEnabeleDisable(not findType('item', itemID))..e.Icon.left)
+                        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine(id,'|A:soulbinds_tree_conduit_icon_utility:0:0|a'..addName)
+                        e.tips:Show()
+                    end)
+                    self.useSpell:SetScript('OnClick', function(self2, d)
+                        if d=='LeftButton' then
+                            local frame=self2:GetParent()
+                            local itemID= frame and frame.itemID
+                            local find=findType('spell', itemID)
+                            if find then
+                                table.remove(Save.item, find)
+                            else
+                                table.insert(Save.item, itemID)
+                            end
+                            print(id, addName, C_ToyBox.GetToyLink(itemID), find and (e.onlyChinese and '移除' or REMOVE) or (e.onlyChinese and '添加' or ADD), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                            securecallfunction(ToySpellButton_UpdateButton, frame)
+                        else
+                            e.LibDD:ToggleDropDownMenu(1, nil, panel.Menu, self2, 15, 0)
+                        end
+                    end)
+                end
+                self.useSpell:SetAlpha(findType('spell', self.itemID) and 1 or 0.1)
+            end)
+        end
+    end]]
 end
 
 
@@ -534,7 +581,6 @@ local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
         end)
     end
     self.useItem:SetAlpha(findType('item', self.itemID) and 1 or 0.1)
-
 end
 
 --###########
