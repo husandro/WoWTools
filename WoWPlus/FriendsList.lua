@@ -505,9 +505,13 @@ button.subframes = subframes;
 --local setRaidGroupFrameLabel
 local function set_RaidGroupFrame_Update()--团队, 模块
     if not IsInRaid() then
+        if RaidFrame.groupInfoLable then
+            RaidFrame.groupInfoLable:SetText('')
+        end
         return
     end
     local itemLevel, itemNum, afkNum, deadNum, notOnlineNum= 0,0,0,0,0
+    local getItemLevelTab={}--取得装等
     for i=1, MAX_RAID_MEMBERS do
         local button = _G["RaidGroupButton"..i]
         if button and button.subframes then
@@ -524,7 +528,7 @@ local function set_RaidGroupFrame_Update()--团队, 模块
                 if subframes.name and name then
                     local text
                     if name==e.Player.name then--自己
-                        text= COMBATLOG_FILTER_STRING_ME
+                        text= e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME
                     end
                     if not text then--距离
                         local distance, checkedDistance = UnitDistanceSquared(unit)
@@ -565,7 +569,7 @@ local function set_RaidGroupFrame_Update()--团队, 模块
                             itemLevel= itemLevel+ e.UnitItemLevel[guid].itemLevel
                             itemNum= itemNum+1
                         else
-                            e.GetGroupGuidDate()--队伍数据收集
+                            table.insert(getItemLevelTab, unit)--取得装等
                         end
                         local role2= role or combatRole
                         if role2=='TANK'then
@@ -584,15 +588,17 @@ local function set_RaidGroupFrame_Update()--团队, 模块
             end
         end
     end
-    if FriendsFrameTitleText then
-        local text= '|A:charactercreate-gendericon-male-selected:0:0|a'..(itemNum==0 and 0 or format('%i',itemLevel/itemNum))
-        text= text..'  |cnGREEN_FONT_COLOR:'..itemNum..'|r/'..GetNumGroupMembers()..'|cnRED_FONT_COLOR:'--人数
-        text= text..'  '..format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_DND)..notOnlineNum--不在线, 人数
-        text= text..'  '..format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK)..afkNum--AFK
-        text= text..'  |A:deathrecap-icon-tombstone:0:0|a'..deadNum--死亡
-        FriendsFrameTitleText:SetText(text)
-        FriendsFrameTitleText:SetJustifyH('RIGHT')
+    if not RaidFrame.groupInfoLable then
+        RaidFrame.groupInfoLable= e.Cstr(RaidFrame, {copyFont=FriendsFrameTitleText, justifyH='CENTER'})
+        RaidFrame.groupInfoLable:SetPoint('BOTTOM',FriendsFrame.TitleContainer, 'TOP')
     end
+    local text= '|A:charactercreate-gendericon-male-selected:0:0|a'..(itemNum==0 and 0 or format('%i',itemLevel/itemNum))
+    text= text..'  |cnGREEN_FONT_COLOR:'..itemNum..'|r/'..GetNumGroupMembers()..'|cnRED_FONT_COLOR:'--人数
+    text= text..'  '..format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_DND)..notOnlineNum--不在线, 人数
+    text= text..'  '..format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK)..afkNum--AFK
+    text= text..'  |A:deathrecap-icon-tombstone:0:0|a'..deadNum--死亡
+    RaidFrame.groupInfoLable:SetText(text)
+    e.GetNotifyInspect(getItemLevelTab)--取得装等
 end
 
 local function set_WhoList_Update()--查询, 名单列表

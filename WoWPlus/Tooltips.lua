@@ -24,19 +24,20 @@ local function setInitItem(self, hide)--创建物品
         self.textRight:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT')
     end
     if not self.backgroundColor then--背景颜色
-        self.backgroundColor=self:CreateTexture(nil,'BACKGROUND')
+        self.backgroundColor= self:CreateTexture(nil, 'BACKGROUND',nil, 1)
         self.backgroundColor:SetAllPoints(self)
     end
     if not self.playerModel and not Save.hideModel then
-        self.playerModel=CreateFrame("PlayerModel", nil, self)--DressUpModel PlayerModel
+        self.playerModel= CreateFrame("PlayerModel", nil, self)--DressUpModel PlayerModel
         self.playerModel:SetFacing(-0.35)
-        self.playerModel:SetPoint("BOTTOM", self, 'TOP', 0, -12)
+        self.playerModel:SetPoint("BOTTOM", self, 'TOP', 0, -24)
         self.playerModel:SetSize(Save.modelSize or 100, Save.modelSize or 100)
         self.playerModel:SetShown(false)
+        self.playerModel:SetFrameLevel(self:GetFrameLevel()-1)
     end
 
     if not self.Portrait then--右上角图标
-        self.Portrait=self:CreateTexture(nil, 'BORDER')
+        self.Portrait= self:CreateTexture(nil, 'BACKGROUND',nil, 2)
         self.Portrait:SetPoint('TOPRIGHT',-2, -3)
         self.Portrait:SetSize(40,40)
     end
@@ -62,8 +63,9 @@ local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=nil, guid=n
     if Save.hideModel then
         return
     end
+    
     if tab.unit then
-        if self.playerModel.id~=tab.guid and self.playerModel:CanSetUnit(tab.unit) then
+        if self.playerModel.id~=tab.guid then--and self.playerModel:CanSetUnit(tab.unit) then
             self.playerModel:SetUnit(tab.unit)
             self.playerModel.guid=tab.guid
             self.playerModel.id=tab.guid
@@ -642,7 +644,7 @@ end
 --生命条提示
 --#########
 local function set_Unit_Health_Bar(self, unit)
-    if self:GetWidth()<100 then
+    if self:GetWidth()<100 or not unit then
         return
     end
     local value= unit and UnitHealth(unit)
@@ -964,7 +966,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     end
 
     if not Save.hideHealth then
-        set_Unit_Health_Bar(GameTooltipStatusBar,unit)--生命条提示
+        set_Unit_Health_Bar(GameTooltipStatusBar, unit)--生命条提示
     end
 
     set_Item_Model(self, {unit=unit, guid=guid, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
@@ -1286,10 +1288,7 @@ local function Init()
     --#########
     if not Save.hideHealth then
         GameTooltipStatusBar:SetScript("OnValueChanged", function(self)
-            local unit= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
-            if unit then
-                set_Unit_Health_Bar(self, unit)
-            end
+            set_Unit_Health_Bar(self, select(2, TooltipUtil.GetDisplayedUnit(GameTooltip)))
         end)
     end
 

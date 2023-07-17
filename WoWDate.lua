@@ -73,14 +73,16 @@ local function get_Player_Info(guid)--取得玩家信息
             g=g,
             b=b,
         }
-        if e.GroupGuid[guid] and IsInGroup() and not IsInRaid() then
-            for i=1, 4 do
-                local frame= PartyFrame['MemberFrame'..i]
-                if UnitIsUnit(frame.unit, unit) then
-                    securecall('UnitFrame_Update', frame, true)
-                    break
+        if e.GroupGuid[guid] and not IsInRaid() then
+                for i=1, 4 do
+                    local frame= PartyFrame['MemberFrame'..i]
+                    if UnitIsUnit(frame.unit, unit) then
+                        securecall('UnitFrame_Update', frame, true)
+                        break
+                    end
                 end
-            end
+            --[[elseif not UnitAffectingCombat('player') and RaidFrame and RaidFrame:IsVisible() then
+                securecall('RaidGroupFrame_Update')--出现，错误]]
         end
         if UnitIsUnit(unit, 'target') then
             securecall('UnitFrame_Update', TargetFrame, false)
@@ -141,21 +143,19 @@ function e.GetGroupGuidDate()--队伍数据收集
         local tab
         for index= 1, 4 do
             local unit= 'party'..index
-            if UnitExists(unit) then
-                local guid=UnitGUID(unit)
-                if guid then
-                    tab={
-                        unit= unit,
-                        combatRole= UnitGroupRolesAssigned(unit),
-                        guid=guid,
-                        faction= UnitFactionGroup(unit),
-                    }
-                    e.GroupGuid[guid]= tab
-                    tab.guid= guid
-                    e.GroupGuid[GetUnitName(unit, true)]= tab
-                    if not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel then
-                        table.insert(UnitTab, unit)
-                    end
+            local guid= UnitExists(unit) and UnitGUID(unit)
+            if guid then
+                tab={
+                    unit= unit,
+                    combatRole= UnitGroupRolesAssigned(unit),
+                    guid=guid,
+                    faction= UnitFactionGroup(unit),
+                }
+                e.GroupGuid[guid]= tab
+                tab.guid= guid
+                e.GroupGuid[GetUnitName(unit, true)]= tab
+                if not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel then
+                    table.insert(UnitTab, unit)
                 end
             end
         end
