@@ -987,11 +987,10 @@ end
 
 function e.Chat(text, name, setPrint)
     if text then
-        local isIns= IsInInstance()
         if name then
             SendChatMessage(text, 'WHISPER',nil, name);
 
-        elseif isIns and not UnitIsDeadOrGhost('player') and C_CVar.GetCVarBool("chatBubbles") then
+        elseif IsInInstance() and not UnitIsDeadOrGhost('player') and C_CVar.GetCVarBool("chatBubbles") then
             SendChatMessage(text, 'SAY')
 
         elseif IsInRaid() then
@@ -1000,7 +999,7 @@ function e.Chat(text, name, setPrint)
         elseif IsInGroup() and C_CVar.GetCVarBool("chatBubblesParty") then
             SendChatMessage(text, 'PARTY')
 
-        elseif isIns and IsInGroup() then
+        elseif IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
             SendChatMessage(text, 'INSTANCE_CHAT')
 
         elseif not IsResting() then

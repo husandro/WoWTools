@@ -1798,6 +1798,11 @@ local function Init()
         e.tips:Show()
         self2:SetAlpha(1)
     end)
+    hooksecurefunc( GroupLootHistoryFrame,'DoFullRefresh', function(self)
+        if self.selectedEncounterID and not Save.disabledLootPlus then
+            
+        end
+    end)
 
 
     --[[hooksecurefunc(GroupLootHistoryFrame, 'UpdateTimer', function(self)
