@@ -3119,7 +3119,10 @@
         "GuildMicroButtonMixin",
         "SetSmallGuildTabardTextures",
         "GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE",
-        "LANDING_DRAGONRIDING_PANEL_TITLE"
+        "LANDING_DRAGONRIDING_PANEL_TITLE",
+        "CLUB_FINDER_LOOKING_FOR_CLASS_SPEC",
+        "SELF_CAST_AUTO",
+        "LOOT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

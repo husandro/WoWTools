@@ -4,6 +4,7 @@ local Save={
     leaveInstance=e.Player.husandro,--自动离开,指示图标
     --enterInstance=e.Player.husandro,--10.07无效
     autoROLL= e.Player.husandro,--自动,战利品掷骰
+    --disabledLootPlus=true,--禁用，战利品Plus
     ReMe=true,--仅限战场，释放，复活
     autoSetPvPRole=true,--自动职责确认， 排副本
     LFGPlus=e.Player.husandro,--预创建队伍增强
@@ -1114,11 +1115,12 @@ local function InitList(self, level, type)--LFDFrame.lua
     local info
     if type=='SETTINGS' then
         info={--自动, 离开副本,选项
-            text=e.onlyChinese and '离开副本' or (LEAVE..INSTANCE),
+            text=e.onlyChinese and '离开副本' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,LEAVE, INSTANCE),
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '离开副本和战场' or (LEAVE..INSTANCE..' '..BATTLEFIELDS),
+            tooltipTitle= e.onlyChinese and '离开副本和战场' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LEAVE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INSTANCE, BATTLEFIELDS))),
             checked=Save.leaveInstance,
-            tooltipText= (e.onlyChinese and '离开随机(自动 Roll)' or  AUTO_JOIN:gsub(JOIN, LEAVE)..' ('..AUTO_JOIN:gsub(JOIN,'')..LOOT_ROLL) .. ')|n|n|cnGREEN_FONT_COLOR:Alt '..(e.onlyChinese and '取消' or CANCEL)..'|r|n|n'..id..' '..addName,
+            tooltipText= e.onlyChinese and '离开随机|n自动掷骰'
+                        or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LEAVE,LFG_TYPE_RANDOM_DUNGEON)..'|n'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ROLL),
             icon=e.Icon.toLeft,
             keepShownOnClick=true,
             func=function()
@@ -1141,29 +1143,6 @@ local function InitList(self, level, type)--LFDFrame.lua
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        info={--自动,战利品掷骰
-            text=e.onlyChinese and '战利品掷骰' or LOOT_ROLL,
-            checked=Save.autoROLL,
-            icon='Interface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47',
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '自动' or AUTO_JOIN:gsub(JOIN,''),
-            keepShownOnClick=true,
-            func= function()
-                Save.autoROLL= not Save.autoROLL and true or nil
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        --[[info= {
-            text= e.onlyChinese and '自动打开战利品掷骰窗口' or AUTO_OPEN_LOOT_HISTORY_TEXT,
-            tooltipOnButton= true,
-            tooltipTitle= 'SetCVar|nautoOpenLootHistory',
-            checked= C_CVar.GetCVarBool("autoOpenLootHistory"),
-            func= function ()
-                C_CVar.SetCVar("autoOpenLootHistory", C_CVar.GetCVarBool("autoOpenLootHistory") and '0' or '1')
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)]]
 
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
@@ -1181,6 +1160,7 @@ local function InitList(self, level, type)--LFDFrame.lua
             tooltipOnButton=true,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
 
     elseif type=='BATTLEFIELDS' then--战场
         info={
@@ -1202,101 +1182,129 @@ local function InitList(self, level, type)--LFDFrame.lua
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
 
-    else
-        local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
-        info={
-            text= (e.onlyChinese and '设置' or SETTINGS)..(isLeader and e.Icon.leader or '')--提示信息
-            ..(isTank and e.Icon.TANK or '')
-            ..(isHealer and e.Icon.HEALER or '')
-            ..(isDPS and e.Icon.DAMAGER or '')
-            ..((not isTank and not isHealer and not isDPS) and ' |cnRED_FONT_COLOR:'..ROLE..'|r' or '')
-            ..(not Save.hideQueueStatus and '|A:groupfinder-eye-frame:0:0|a' or '')
-            ..(Save.autoROLL and '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t' or '')--自动,战利品掷骰
-            ..(Save.LFGPlus and '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a' or ''),
-            notCheckable=true,
-            menuList='SETTINGS',
-            hasArrow=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        isTank, isHealer, isDPS = GetPVPRoles()--检测是否选定角色pve
-        info={
-            text=e.onlyChinese and '战场' or BATTLEFIELDS
-            ..(isTank and e.Icon.TANK or '')
-            ..(isHealer and e.Icon.HEALER or '')
-            ..(isDPS and e.Icon.DAMAGER or ''),
-            notCheckable=true,
-            menuList='BATTLEFIELDS',
-            hasArrow=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        info= {
-            text= (e.onlyChinese and '战利品掷骰' or LOOT_ROLL)..'|A:Levelup-Icon-Bag:0:0|a',
-            checked= GroupLootHistoryFrame:IsShown(),
-            tooltipOnButton= true,
-            tooltipTitle= '/loot',
+    elseif type=='LOOT' then
+        info={--自动,战利品掷骰
+            text=e.onlyChinese and '自动掷骰' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ROLL),
+            checked=Save.autoROLL,
+            icon='Interface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47',
+            tooltipOnButton=true,
             keepShownOnClick=true,
             func= function()
-                ToggleLootHistoryFrame()--LootHistory.lua
+                Save.autoROLL= not Save.autoROLL and true or nil
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        local deserterExpiration = GetLFGDeserterExpiration();--LFDQueueFrameRandomCooldownFrame_Update() LFDFrame.lua
-        local hasDeserter=''
-        local myExpireTime;
-        if ( deserterExpiration ) then
-            myExpireTime = deserterExpiration;
-            hasDeserter= (e.onlyChinese and '逃亡者' or DESERTER)..'|T236347:0|t'
-        else
-            myExpireTime = GetLFGRandomCooldownExpiration();
-        end
-        if myExpireTime and myExpireTime>0 then
-            local timeRemaining = myExpireTime - GetTime();
-            if ( timeRemaining > 0 ) then
-                e.LibDD:UIDropDownMenu_AddSeparator(level)
-                info={
-                    text=hasDeserter..SecondsToTime(ceil(timeRemaining)),
-                    colorCode='|cffff0000',
-                    notCheckable=true,
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
+        info={--自动,战利品掷骰
+            text=e.onlyChinese and '战利品 Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOOT, 'Plus'),
+            checked= not Save.disabledLootPlus,
+            icon='communities-icon-notification',
+            tooltipOnButton=true,
+            keepShownOnClick=true,
+            func= function()
+                Save.disabledLootPlus= not Save.disabledLootPlus and true or nil
             end
-        end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
+    end
 
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        if  raidList(self, level, type) then --团本
-            e.LibDD:UIDropDownMenu_AddSeparator(level)
-        end
-        partyList(self, level, type)--随机
+    local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
+    info={
+        text= (e.onlyChinese and '设置' or SETTINGS)..(isLeader and e.Icon.leader or '')--提示信息
+        ..(isTank and e.Icon.TANK or '')
+        ..(isHealer and e.Icon.HEALER or '')
+        ..(isDPS and e.Icon.DAMAGER or '')
+        ..((not isTank and not isHealer and not isDPS) and ' |cnRED_FONT_COLOR:'..(e.onlyChinese and '无职责' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NONE, ROLE))..'|r' or ''),
+        --..(not Save.hideQueueStatus and '|A:groupfinder-eye-frame:0:0|a' or '')
+        --..(Save.autoROLL and '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t' or '')--自动,战利品掷骰
+        --..(Save.LFGPlus and '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a' or ''),
+        notCheckable=true,
+        menuList='SETTINGS',
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        local num, text=0, ''
-        for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-            local listNum, listText= get_Queued_List(i,true)
-            if listNum and listText then
-                text= text~='' and text..'|n'..listText or listText
-                num=num+listNum
-            end
+    isTank, isHealer, isDPS = GetPVPRoles()--检测是否选定角色pve
+    info={
+        text=e.onlyChinese and '战场' or BATTLEFIELDS
+        ..(isTank and e.Icon.TANK or '')
+        ..(isHealer and e.Icon.HEALER or '')
+        ..(isDPS and e.Icon.DAMAGER or ''),
+        notCheckable=true,
+        menuList='BATTLEFIELDS',
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    info= {
+        text= (e.onlyChinese and '战利品掷骰' or LOOT_ROLL)..'|A:Levelup-Icon-Bag:0:0|a',
+        checked= GroupLootHistoryFrame:IsShown(),
+        tooltipOnButton= true,
+        tooltipTitle= '/loot',
+        keepShownOnClick=true,
+        hasArrow=true,
+        menuList= 'LOOT',
+        func= function()
+            ToggleLootHistoryFrame()--LootHistory.lua
         end
-        if num>0 then
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    local deserterExpiration = GetLFGDeserterExpiration();--LFDQueueFrameRandomCooldownFrame_Update() LFDFrame.lua
+    local hasDeserter=''
+    local myExpireTime;
+    if ( deserterExpiration ) then
+        myExpireTime = deserterExpiration;
+        hasDeserter= (e.onlyChinese and '逃亡者' or DESERTER)..'|T236347:0|t'
+    else
+        myExpireTime = GetLFGRandomCooldownExpiration();
+    end
+    if myExpireTime and myExpireTime>0 then
+        local timeRemaining = myExpireTime - GetTime();
+        if ( timeRemaining > 0 ) then
             e.LibDD:UIDropDownMenu_AddSeparator(level)
             info={
-                text= (e.onlyChinese and '离开列队' or LEAVE_QUEUE)..' |cnGREEN_FONT_COLOR:#'..num..'|r',
+                text=hasDeserter..SecondsToTime(ceil(timeRemaining)),
+                colorCode='|cffff0000',
                 notCheckable=true,
-                disabled= num==0,
-                keepShownOnClick=true,
-                func=function ()
-                    for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-                        LeaveLFG(i)
-                    end
-                end,
-                tooltipOnButton=true,
-                tooltipTitle= e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS,
-                tooltipText=text,
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
+    end
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    if  raidList(self, level, type) then --团本
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+    end
+    partyList(self, level, type)--随机
+
+    local num, text=0, ''
+    for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
+        local listNum, listText= get_Queued_List(i,true)
+        if listNum and listText then
+            text= text~='' and text..'|n'..listText or listText
+            num=num+listNum
+        end
+    end
+    if num>0 then
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= (e.onlyChinese and '离开列队' or LEAVE_QUEUE)..' |cnGREEN_FONT_COLOR:#'..num..'|r',
+            notCheckable=true,
+            disabled= num==0,
+            keepShownOnClick=true,
+            func=function ()
+                for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
+                    LeaveLFG(i)
+                end
+            end,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS,
+            tooltipText=text,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 end
 
@@ -1674,7 +1682,7 @@ local function Init()
     --LootHistory.lua
     local function set_LootFrame_btn(btn)
         local playerName, itemSubType
-        local itemLink= btn.dropInfo and btn.dropInfo.itemHyperlink
+        local itemLink= not Save.disabledLootPlus and btn.dropInfo and btn.dropInfo.itemHyperlink
 
         local info=e.GetTooltipData({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=itemLink, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=true, onlyRed=true})--物品提示，信息
 
@@ -1760,6 +1768,38 @@ local function Init()
         end
     end)
 
+    local btn= e.Cbtn(GroupLootHistoryFrame.TitleContainer, {size={18,18}, icon='hide'})
+    if _G['MoveZoomInButtonPerGroupLootHistoryFrame'] then
+        btn:SetPoint('RIGHT', _G['MoveZoomInButtonPerGroupLootHistoryFrame'], 'LEFT')
+    else
+        btn:SetPoint('LEFT')
+    end
+    function btn:Set_Atlas()
+        if Save.disabledLootPlus then
+            self:SetNormalAtlas(e.Icon.disabled)
+        else
+            self:SetNormalAtlas('communities-icon-notification')
+        end
+    end
+    btn:Set_Atlas()
+    btn:SetScript('OnClick', function(self2)
+        Save.disabledLootPlus= not Save.disabledLootPlus and true or nil
+        self2:Set_Atlas()
+        GroupLootHistoryFrame:DoFullRefresh()
+    end)
+    btn:SetAlpha(0.5)
+    btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
+    btn:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '战利品 Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOOT, 'Plus'), e.GetEnabeleDisable(not Save.disabledLootPlus))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, 'Tools '..addName)
+        e.tips:Show()
+        self2:SetAlpha(1)
+    end)
+
+
     --[[hooksecurefunc(GroupLootHistoryFrame, 'UpdateTimer', function(self)
         if self.Timer and self.Timer:IsShown() then
             local text
@@ -1778,7 +1818,10 @@ local function Init()
         end
     end)]]
 
-    hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)--自动 ROLL
+    --#########
+    --自动 ROLL
+    --#########
+    hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)
         set_ROLL_Check(frame)
     end)
 
