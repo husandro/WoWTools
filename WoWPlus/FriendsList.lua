@@ -615,8 +615,8 @@ local function set_RaidGroupFrame_Update()--团队, 模块
 end
 
 local function set_WhoList_Update()--查询, 名单列表
-    for _, button in pairs(WhoFrame.ScrollBox:GetFrames()) do
-        local info= button.index and C_FriendList.GetWhoInfo(button.index)
+    for _, btn in pairs(WhoFrame.ScrollBox:GetFrames()) do
+        local info= btn.index and C_FriendList.GetWhoInfo(btn.index)
         local r,g,b,level
         if info then
             if RAID_CLASS_COLORS[info.filename] then
@@ -625,9 +625,9 @@ local function set_WhoList_Update()--查询, 名单列表
            level= info.level
         end
         if r and g and b then
-            if button.Name and info.fullName then
+            if btn.Name and info.fullName then
                 if info.fullName== e.Player.name then
-                    button.Name:SetText(e.Icon.toRight2..COMBATLOG_FILTER_STRING_ME..e.Icon.toLeft2)
+                    btn.Name:SetText(e.Icon.toRight2..COMBATLOG_FILTER_STRING_ME..e.Icon.toLeft2)
                 else
                     local nameText= e.GetFriend(info.fullName, nil, nil)--检测, 是否好友
                     if nameText then
@@ -635,20 +635,20 @@ local function set_WhoList_Update()--查询, 名单列表
                         if info.fullName== e.Player.name then
                             nameText= nameText..e.Icon.star2
                         end
-                        button.Name:SetText(nameText)
+                        btn.Name:SetText(nameText)
                     end
                 end
-                button.Name:SetTextColor(r,g,b)
+                btn.Name:SetTextColor(r,g,b)
             end
-            if button.Variable then
-                button.Variable:SetTextColor(r,g,b)
+            if btn.Variable then
+                btn.Variable:SetTextColor(r,g,b)
             end
-            if button.Level then
+            if btn.Level then
                 if level==0 or level== MAX_PLAYER_LEVEL then
-                    button.Level:SetTextColor(r,g,b)
-                    button.Level:SetText('')
+                    btn.Level:SetTextColor(r,g,b)
+                    btn.Level:SetText('')
                 else
-                    button.Level:SetTextColor(0,1,0)
+                    btn.Level:SetTextColor(0,1,0)
                 end
             end
         end

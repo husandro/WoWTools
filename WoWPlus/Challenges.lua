@@ -37,16 +37,65 @@ local affixSchedule = {
 }
 
 local SpellTabs={
-    {spell=396129, ins=1196, map=405},--传送：蕨皮山谷
-    {spell=396130, ins=1204, map=406},--传送：注能大厅
-    {spell=396128, ins=1199, map=404},--传送：奈萨鲁斯
-    {spell=396127, ins=1197, map=403},--传送：奥达曼：提尔的遗产
-    {spell=272262, ins=1001, map=245},--传送到自由镇
-    {spell=272269, ins=1022, map=251},--传送：地渊孢林
-    {spell=205379, ins=767, map=206},--传送：奈萨里奥的巢穴
-    {spell=88775, ins=68, map=438},--传送到旋云之巅
-}
+    {spell=393222, ins=1197, map=403},--奥达曼：提尔的遗产
+    {spell=393267, ins=1196, map=405},--蕨皮山谷
+    {spell=393283, ins=1204, map=406},--注能大厅
+    {spell=393276, ins=1199, map=404},--奈萨鲁斯
+    {spell=410071, ins=1001, map=245},--自由镇
+    {spell=410078, ins=767, map=206},--奈萨里奥的巢穴
 
+    {spell=410074, ins=1022, map=251},--地渊孢林
+    {spell=410080, ins=68, map=438},--旋云之巅
+}
+--[[
+{spell=393262, ins=, map=},--诺库德阻击战
+{spell=393222, ins=, map=},--奥达曼：提尔的遗产
+{spell=159897, ins=, map=},--奥金顿
+
+{spell=159901, ins=, map=},--永茂林地
+{spell=354467, ins=, map=},--伤逝剧场
+{spell=373191, ins=, map=},--统御圣所
+{spell=393283, ins=, map=},--注能大厅
+{spell=131232, ins=, map=},--通灵学院
+{spell=354466, ins=, map=},--晋升高塔
+{spell=131228, ins=, map=},--围攻砮皂寺
+{spell=159895, ins=, map=},--血槌炉渣矿井
+{spell=159902, ins=, map=},--黑石塔上层
+{spell=393256, ins=, map=},--红玉新生法池
+{spell=354462, ins=, map=},--通灵战潮
+{spell=159899, ins=, map=},--影月墓地
+{spell=159900, ins=, map=},--恐轨车站
+{spell=393273, ins=, map=},--艾杰斯亚学院
+{spell=410078, ins=, map=},--奈萨里奥的巢穴 
+{spell=373262, ins=, map=},--卡拉赞
+{spell=373192, ins=, map=},--初诞者圣墓
+{spell=410071, ins=, map=},--自由镇
+{spell=393766, ins=, map=},--群星庭院
+{spell=159896, ins=, map=},--钢铁码头
+{spell=131204, ins=, map=},--青龙寺
+{spell=354464, ins=, map=},--塞兹仙林的迷雾
+{spell=131222, ins=, map=},--魔古山宫殿
+{spell=393276, ins=, map=},--奈萨鲁斯
+{spell=354463, ins=, map=},--凋魂之殇
+{spell=393267, ins=, map=},--蕨皮山谷
+{spell=131231, ins=, map=},--血色大厅
+{spell=131229, ins=, map=},--血色修道院
+{spell=354468, ins=, map=},--彼界
+{spell=373274, ins=, map=},--麦卡贡行动
+{spell=131225, ins=, map=},--残阳关
+{spell=131206, ins=, map=},--影踪禅院
+
+{spell=, ins=, map=},--
+{spell=, ins=, map=},--
+{spell=, ins=, map=},--
+{spell=, ins=, map=},--
+{spell=, ins=, map=},--
+{spell=, ins=, map=},--
+
+
+{spell=, ins=, map=},--
+
+]]
 local function get_Spell_MapChallengeID(mapChallengeID)
     for _, tab in pairs(SpellTabs) do
         e.LoadDate({id=tab.spell, type='spell'})
