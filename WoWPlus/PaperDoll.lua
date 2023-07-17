@@ -5,7 +5,7 @@ local Save={
     equipment= e.Player.husandro,--装备管理, 开关,
     --Equipment=nil--装备管理, 位置保存
     equipmentFrameScale=1.1--装备管理, 缩放
-    --hide=true,--隐藏
+    --hide=true,--隐藏CreateTexture
 }
 local panel = CreateFrame("Frame", nil, PaperDollFrame)
 
@@ -34,11 +34,11 @@ local function LvTo()--总装等
     if not Save.hide then
         avgItemLevel,_, avgItemLevelPvp= GetAverageItemLevel()
         if not PaperDollSidebarTab1.itemLevelText then--PVE
-            PaperDollSidebarTab1.itemLevelText=e.Cstr(PaperDollSidebarTab1, {justifyH='CENTER'})
+            PaperDollSidebarTab1.itemLevelText=e.Cstr(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
             PaperDollSidebarTab1.itemLevelText:SetPoint('BOTTOM')
             PaperDollSidebarTab1.itemLevelText:EnableMouse(true)
-            PaperDollSidebarTab1.itemLevelText:SetScript('OnLeave', function() e.tips:Hide() end)
-            PaperDollSidebarTab1.itemLevelText:SetScript('OnMouseDown', function(self)
+            PaperDollSidebarTab1.itemLevelText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+            PaperDollSidebarTab1.itemLevelText:SetScript('OnMouseDown', function()
                 securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
             end)
             PaperDollSidebarTab1.itemLevelText:SetScript('OnEnter', function(self)
@@ -50,16 +50,18 @@ local function LvTo()--总装等
                 e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '物品等级：%d' or CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, self.avgItemLevel or ''))
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
+                self:SetAlpha(0.3)
             end)
         end
         PaperDollSidebarTab1.itemLevelText.avgItemLevel= avgItemLevel
 
         if avgItemLevel~= avgItemLevelPvp and avgItemLevelPvp and not PaperDollSidebarTab1.itemLevelPvPText then--PVP
-            PaperDollSidebarTab1.itemLevelPvPText=e.Cstr(PaperDollSidebarTab1, {justifyH='CENTER'})
+            PaperDollSidebarTab1.itemLevelPvPText=e.Cstr(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
             PaperDollSidebarTab1.itemLevelPvPText:SetPoint('TOP')
             PaperDollSidebarTab1.itemLevelPvPText:SetScript('OnMouseDown', function(self)
                 securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
             end)
+            PaperDollSidebarTab1.itemLevelPvPText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
             PaperDollSidebarTab1.itemLevelPvPText:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
@@ -69,6 +71,7 @@ local function LvTo()--总装等
                 e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and 'PvP物品等级 %d' or ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT, self.avgItemLevel or '0'))
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
+                self:SetAlpha(0.3)
             end)
         end
     end
@@ -184,6 +187,7 @@ local function set_no_Enchant(self, slot, find)--附魔，按钮
                 self.noEnchant:SetPoint('RIGHT', self, 'LEFT', -8, 0)
             end
 
+            self.noEnchant:SetScript('OnLeave',function(self2) e.tips:Hide() self2:SetAlpha(1) end)
             self.noEnchant:SetScript('OnEnter' ,function(self2)
                 if self2.tab then
                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -194,10 +198,10 @@ local function set_no_Enchant(self, slot, find)--附魔，按钮
                         e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
                     end
                     e.tips:Show()
+                    self2:SetAlpha(0.3)
                 end
             end)
-
-            self.noEnchant:SetScript('OnLeave',function() e.tips:Hide() end)
+  
             self.noEnchant:SetScript('OnShow', function(self2)
                 self2:RegisterEvent('BAG_UPDATE_DELAYED')
             end)
@@ -239,7 +243,7 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
 
     if enchant and not self.enchant then--附魔
         local h=self:GetHeight()/3
-        self.enchant=self:CreateTexture()
+        self.enchant= self:CreateTexture()
         self.enchant:SetSize(h,h)
         if is_Left_Slot(slot) then
             self.enchant:SetPoint('LEFT', self, 'RIGHT', 8, 0)
@@ -248,15 +252,16 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
         end
         self.enchant:SetTexture(463531)
         self.enchant:EnableMouse(true)
+        self.enchant:SetScript('OnLeave',function(self2) e.tips:Hide() self2:SetAlpha(1) end)
         self.enchant:SetScript('OnEnter' ,function(self2)
             if self2.tips then
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddLine(self2.tips)
                 e.tips:Show()
+                self2:SetAlpha(0.3)
             end
         end)
-        self.enchant:SetScript('OnLeave',function() e.tips:Hide() end)
     end
     if self.enchant then
         self.enchant.tips= enchant
@@ -267,7 +272,7 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
     use=  link and select(2, GetItemSpell(link))--物品是否可使用
     if use and not self.use then
         local h=self:GetHeight()/3
-        self.use=self:CreateTexture()
+        self.use= self:CreateTexture()
         self.use:SetSize(h,h)
         if is_Left_Slot(slot) then
             self.use:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
@@ -276,15 +281,16 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
         end
         self.use:SetAtlas('soulbinds_tree_conduit_icon_utility')
         self.use:EnableMouse(true)
+        self.use:SetScript('OnLeave',function(self2) e.tips:Hide() self2:SetAlpha(1) end)
         self.use:SetScript('OnEnter' ,function(self2)
             if self2.spellID then
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:SetSpellByID(self2.spellID)
                 e.tips:Show()
+                self2:SetAlpha(0.3)
             end
         end)
-        self.use:SetScript('OnLeave',function() e.tips:Hide() end)
     end
     if self.use then
         self.use.spellID= use
@@ -303,15 +309,16 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
         end
         self.pvpItem:SetAtlas('pvptalents-warmode-swords')
         self.pvpItem:EnableMouse(true)
+        self.pvpItem:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
         self.pvpItem:SetScript('OnEnter', function(self2)
             if self2.tips then
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddLine((e.onlyChinese and "装备：在竞技场和战场中将物品等级提高至%d。" or PVP_ITEM_LEVEL_TOOLTIP):format(self2.tips))
                 e.tips:Show()
+                self2:SetAlpha(0.3)
             end
         end)
-        self.pvpItem:SetScript('OnLeave', function() e.tips:Hide() end)
     end
     if self.pvpItem then
         self.pvpItem.tips= pvpItem
@@ -320,22 +327,22 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
 
     if upgradeItem and not self.upgradeItem then--"升级：%s/%s"
         if is_Left_Slot(slot) then
-            self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}})
+            self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}, mouse=true})
             self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT',1,0)
         else
-            self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT'})
+            self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
             self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT',2,0)
         end
-        self.upgradeItem:EnableMouse(true)
         self.upgradeItem:SetScript('OnEnter', function(self2)
             if self2.tips then
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddLine((e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
                 e.tips:Show()
+                self2:SetAlpha(0.3)
             end
         end)
-        self.upgradeItem:SetScript('OnLeave', function() e.tips:Hide() end)
+        self.upgradeItem:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
     end
     if self.upgradeItem then
         self.upgradeItem.tips=upgradeItem
@@ -361,22 +368,22 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
         if not self.upgradeItemText then
             local h= self:GetHeight()/3
             if is_Left_Slot(slot) then
-                self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}})
+                self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}, mouse=true})
                 self.upgradeItemText:SetPoint('LEFT', self, 'RIGHT',h+8,0)
             else
-                self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT'})
+                self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
                 self.upgradeItemText:SetPoint('RIGHT', self, 'LEFT',-h-8,0)
             end
-            self.upgradeItemText:EnableMouse(true)
             self.upgradeItemText:SetScript('OnEnter', function(self2)
                 if self2.tips then
                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     e.tips:AddLine((e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
                     e.tips:Show()
+                    self2:SetAlpha(0.3)
                 end
             end)
-            self.upgradeItemText:SetScript('OnLeave', function() e.tips:Hide() end)
+            self.upgradeItemText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
         end
         self.upgradeItemText.tips= upgradeItem
         local quality = GetInventoryItemQuality('player', slot)--颜色
@@ -406,9 +413,10 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
                             e.tips:ClearLines()
                             e.tips:SetHyperlink(self2.gemLink)
                             e.tips:Show()
+                            self2:SetAlpha(0.3)
                         end
                     end)
-                    self['gem'..n]:SetScript('OnLeave',function() e.tips:Hide() end)
+                    self['gem'..n]:SetScript('OnLeave',function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                 else
                     self['gem'..n]:ClearAllPoints()
                 end
@@ -495,24 +503,26 @@ end
 
 local function set_Slot_Num_Label(self, slot, isEquipped)--栏位
     if not self.slotText and not Save.hide and not isEquipped then
-        self.slotText=e.Cstr(self, {color=true})
-        self.slotText:SetAlpha(0.5)
+        self.slotText=e.Cstr(self, {color=true, justifyH='CENTER', mouse=true})
         self.slotText:EnableMouse(true)
+        self.slotText:SetAlpha(0.3)
         self.slotText:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine((e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS), self2.slot)
+            local name= self2.name and _G[strupper(strsub(self2.name, 10))] or ''
+            e.tips:AddDoubleLine((e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..name, self2.slot)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
             self2:SetAlpha(1)
         end)
-        self.slotText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
+        self.slotText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.3) end)
         self.slotText:SetPoint('CENTER')
-        self.slotText.slot= slot
-        self.slotText:SetText(slot)
     end
     if self.slotText then
+        self.slotText.slot= slot
+        self.slotText.name= self:GetName()
+        self.slotText:SetText(slot)
         self.slotText:SetShown(not Save.hide and not isEquipped)
     end
 end
@@ -544,20 +554,21 @@ local function Title()--头衔数量
         nu= #to-1
         nu= nu>0 and nu or nil
         if not PaperDollSidebarTab2.titleNumeri then
-            PaperDollSidebarTab2.titleNumeri=e.Cstr(PaperDollSidebarTab2, {justifyH='CENTER'})
+            PaperDollSidebarTab2.titleNumeri= e.Cstr(PaperDollSidebarTab2, {justifyH='CENTER', mouse=true})
             PaperDollSidebarTab2.titleNumeri:SetPoint('BOTTOM')
             PaperDollSidebarTab2.titleNumeri:EnableMouse(true)
-            PaperDollSidebarTab2.titleNumeri:SetScript('OnLeave', function() e.tips:Hide() end)
+            PaperDollSidebarTab2.titleNumeri:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
             PaperDollSidebarTab2.titleNumeri:SetScript('OnMouseDown', function(self)
                 securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab2, 2)--PaperDollFrame.lua
             end)
-            PaperDollSidebarTab2.titleNumeri:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
+            PaperDollSidebarTab2.titleNumeri:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(format(e.onlyChinese and '头衔：%s' or RENOWN_REWARD_TITLE_NAME_FORMAT, self.num or ''), e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, 0,1,0, 0,1,0)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
+                self2:SetAlpha(0.3)
             end)
         end
     end
@@ -573,7 +584,7 @@ end
 --####################
 local function set_set_PaperDollSidebarTab3_Text_Tips(self)
     self:EnableMouse(true)
-    self:SetScript('OnLeave', function() e.tips:Hide() end)
+    self:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
     self:SetScript('OnMouseDown', function()
         securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab3, 3)--PaperDollFrame.lua
     end)
@@ -587,6 +598,7 @@ local function set_set_PaperDollSidebarTab3_Text_Tips(self)
         e.tips:AddDoubleLine(self2.tooltip, self2.tooltip2, 0,1,0,0,1,0)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
+        self2:SetAlpha(0.3)
     end)
 end
 local function set_PaperDollSidebarTab3_Text()--标签, 内容,提示
@@ -882,18 +894,18 @@ end
 --############
 local function GetDurationTotale()
     if not panel.durabilityText then
-        panel.durabilityText= e.Cstr(panel)
+        panel.durabilityText= e.Cstr(panel, {copyFont=CharacterLevelText, mouse=true})
         panel.durabilityText:SetPoint('LEFT', panel.serverText, 'RIGHT')
-        panel.durabilityText:EnableMouse(true)
-        panel.durabilityText:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
+        panel.durabilityText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+        panel.durabilityText:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '耐久度' or DURABILITY, self.value)
+            e.tips:AddDoubleLine(e.onlyChinese and '耐久度' or DURABILITY, self2.value)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
+            self2:SetAlpha(0.3)
         end)
-        panel.durabilityText:SetScript('OnLeave', function() e.tips:Hide() end)
     end
     local du
     if not Save.hide then
@@ -1042,7 +1054,7 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
 	e.LoadDate({id=link, type='item'})--加载 item quest spell
     --set_Gem(self, slot, link)
     set_Item_Tips(self, slot, link)
-    set_Slot_Num_Label(self, slot, link and true or false)--栏位
+    set_Slot_Num_Label(self, slot, link and true or false)--栏位, 帐号最到物品等级
     e.Set_Item_Stats(self, link, {point=self.icon})
     if not self.OnEnter and not Save.hide then
         self:SetScript('OnEnter', function(self2)
@@ -1121,10 +1133,9 @@ end
 --########################
 local function Init_Server_equipmentButton_Lable()
    if not panel.serverText then
-        panel.serverText= e.Cstr(PaperDollItemsFrame,{color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true})--显示服务器名称
+        panel.serverText= e.Cstr(PaperDollItemsFrame,{color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true})--显示服务器名称
         panel.serverText:SetPoint('RIGHT', CharacterLevelText, 'LEFT',-30,0)
-        panel.serverText:EnableMouse(true)
-        panel.serverText:SetScript("OnLeave",function() e.tips:Hide() end)
+        panel.serverText:SetScript("OnLeave",function(self2) e.tips:Hide() self2:SetAlpha(1) end)
         panel.serverText:SetScript("OnEnter",function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -1158,6 +1169,7 @@ local function Init_Server_equipmentButton_Lable()
             end
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
+            self:SetAlpha(0.3)
         end)
     end
     local text
