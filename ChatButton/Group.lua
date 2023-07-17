@@ -256,7 +256,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         return
     end
 
-    local UnitTab={}
+    local UnitTab={}--取得装等
     local raid=IsInRaid()
     local u= raid and 'raid' or 'party'
     local tabT, tabN, tabDPS, totaleHP = {}, {}, {}, 0
@@ -272,7 +272,6 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         local guid= UnitGUID(unit)
         if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLeve) then
             table.insert(UnitTab, unit)
-            NotifyInspect(unit)--取得装等
         end
 
         local maxHP= UnitHealthMax(unit)

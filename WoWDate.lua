@@ -37,20 +37,22 @@ end
 --########
 e.UnitItemLevel={}
 local function get_Player_Info(guid)--取得玩家信息
-    local unit
-    if e.GroupGuid[guid] then
-        unit= e.GroupGuid[guid].unit
-    elseif guid== e.Player.guid then
-        unit= 'player'
-    elseif UnitGUID("mouseover")== guid then
-        unit= 'mouseover'
-    elseif guid== UnitGUID('target') then
-        unit='target'
+    local unit= guid and UnitTokenFromGUID(guid)
+    if not unit and guid then
+        if e.GroupGuid[guid] then
+            unit= e.GroupGuid[guid].unit
+        elseif guid== e.Player.guid then
+            unit= 'player'
+        elseif UnitGUID("mouseover")== guid then
+            unit= 'mouseover'
+        elseif guid== UnitGUID('target') then
+            unit='target'
+        elseif InspectFrame and InspectFrame.unit and guid==UnitGUID(InspectFrame.unit) then
+            unit= InspectFrame.unit
+        end
     end
-
     local itemLevel= unit and C_PaperDollInfo.GetInspectItemLevel(unit)
     if unit then
-
         local r, g, b, hex
         local class= UnitClassBase(unit)
         if class then
@@ -92,10 +94,12 @@ end
 e.GetNotifyInspect= function(tab)
     local num, index= #tab, 1
     if num>0 then
-        if panel.NotifyInspectTicker then panel.NotifyInspectTicker:Cancel() end
+        if panel.NotifyInspectTicker then
+            panel.NotifyInspectTicker:Cancel()
+        end
         panel.NotifyInspectTicker=C_Timer.NewTicker(4, function()
             local unit=tab[index]
-            if UnitExists(unit) and CheckInteractDistance(unit, 1) and CanInspect(unit) then
+            if UnitExists(unit) and CheckInteractDistance(unit, 1) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then
                 NotifyInspect(tab[index])
             end
             index= index+ 1
@@ -511,10 +515,12 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         end
 
     elseif event=='PLAYER_EQUIPMENT_CHANGED' or event=='PLAYER_SPECIALIZATION_CHANGED' or event=='PLAYER_AVG_ITEM_LEVEL_UPDATE' then--更新自已
-        if event=='PLAYER_SPECIALIZATION_CHANGED' and UnitInParty(arg1) then
-            NotifyInspect(arg1)--队伍数据收集
-        else
-            NotifyInspect('player')--取得,自已, 装等
+        if not InspectFrame or not InspectFrame:IsShown() then
+            if event=='PLAYER_SPECIALIZATION_CHANGED' and UnitInParty(arg1) then
+                NotifyInspect(arg1)--队伍数据收集
+            else
+                NotifyInspect('player')--取得,自已, 装等
+            end
         end
 
     elseif event=='ENCOUNTER_START' then-- 给 e.Reload用

@@ -1039,14 +1039,11 @@ local function Init_Target_InspectUI()
             self.ViewButton:SetSize(25,25)
             self.ViewButton:SetText(e.onlyChinese and '试' or e.WA_Utf8Sub(VIEW,1))
         end
-        --[[if InspectPaperDollItemsFrame.InspectTalents then
+        if InspectPaperDollItemsFrame.InspectTalents then
             InspectPaperDollItemsFrame.InspectTalents:SetSize(25,25)
             InspectPaperDollItemsFrame.InspectTalents:SetText(e.onlyChinese and '赋' or e.WA_Utf8Sub(TALENT,1))
-        end]]
-        self.initButton=true
-        if UnitExists(InspectFrame.unit) and CheckInteractDistance(InspectFrame.unit, 1) and CanInspect(InspectFrame.unit) then
-            NotifyInspect(InspectFrame.unit)
         end
+        self.initButton=true
     end
 end
 
@@ -1248,13 +1245,10 @@ panel.Init_Show_Hide_Button= function(self, frame)
         securecall('PaperDollFrame_SetLevel')
         securecall('PaperDollFrame_UpdateStats')
 
-        if InspectFrame and InspectFrame:IsVisible() then
+        if InspectFrame and InspectFrame:IsShown() then
             securecall('InspectPaperDollFrame_UpdateButtons')--InspectPaperDollFrame.lua
             securecall('InspectPaperDollFrame_SetLevel')--目标,天赋 装等
             Init_Target_InspectUI()
-            if UnitExists(InspectFrame.unit) and CheckInteractDistance(InspectFrame.unit, 1) and CanInspect(InspectFrame.unit) then
-                NotifyInspect(InspectFrame.unit)
-            end
         end
     end)
     btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
