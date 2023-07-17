@@ -234,7 +234,7 @@ local function set_no_Enchant(self, slot, find)--附魔，按钮
     end
 end
 
-local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
+local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使用, 属性
     local enchant, use, pvpItem, upgradeItem
     if link and not Save.hide then
         local dateInfo= e.GetTooltipData({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr}, onlyText=true})--物品提示，信息
@@ -449,7 +449,7 @@ local function set_Item_Tips(self, slot, link)--附魔, 使用, 属性
             du=min/max*100
         end
     end
-    if not self.du and du then
+    if not self.du and du and isPaperDollItemSlot then
         self.du= CreateFrame('StatusBar', nil, self)
         local wq= slot==16 or slot==17 or slot==18--武器
         if wq then
@@ -1033,15 +1033,16 @@ local function Init_Target_InspectUI()
 
     if not self.initButton and not Save.hide then
         if self.ViewButton then
+            e.Cstr(nil, {changeFont= InspectLevelText, size=20})
             self.ViewButton:ClearAllPoints()
-            self.ViewButton:SetPoint('LEFT', InspectLevelText, 'RIGHT',4,0)
+            self.ViewButton:SetPoint('LEFT', InspectLevelText, 'RIGHT',20,0)
             self.ViewButton:SetSize(25,25)
             self.ViewButton:SetText(e.onlyChinese and '试' or e.WA_Utf8Sub(VIEW,1))
         end
-        if InspectPaperDollItemsFrame.InspectTalents then
+        --[[if InspectPaperDollItemsFrame.InspectTalents then
             InspectPaperDollItemsFrame.InspectTalents:SetSize(25,25)
             InspectPaperDollItemsFrame.InspectTalents:SetText(e.onlyChinese and '赋' or e.WA_Utf8Sub(TALENT,1))
-        end
+        end]]
         self.initButton=true
         if UnitExists(InspectFrame.unit) and CheckInteractDistance(InspectFrame.unit, 1) and CanInspect(InspectFrame.unit) then
             NotifyInspect(InspectFrame.unit)
@@ -1054,7 +1055,7 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
 	local link= not Save.hide and GetInventoryItemLink(InspectFrame.unit, slot) or nil
 	e.LoadDate({id=link, type='item'})--加载 item quest spell
     --set_Gem(self, slot, link)
-    set_Item_Tips(self, slot, link)
+    set_Item_Tips(self, slot, link, false)
     set_Slot_Num_Label(self, slot, link and true or false)--栏位, 帐号最到物品等级
     e.Set_Item_Stats(self, link, {point=self.icon})
     if not self.OnEnter and not Save.hide then
@@ -1310,7 +1311,7 @@ local function Init()
             local hasItem = textureName ~= nil
             local link=hasItem and GetInventoryItemLink('player', slot) or nil--装等                
             if slot~=4 and slot~=19 then
-                set_Item_Tips(self, slot, link)
+                set_Item_Tips(self, slot, link, true)
                 e.Set_Item_Stats(self, not Save.hide and link or nil, {point=self.icon})
                 set_PaperDollSidebarTab3_Text()
                 LvTo()--总装等
