@@ -1785,7 +1785,9 @@ local function Init()
     btn:SetScript('OnClick', function(self2)
         Save.disabledLootPlus= not Save.disabledLootPlus and true or nil
         self2:Set_Atlas()
-        GroupLootHistoryFrame:DoFullRefresh()
+        if GroupLootHistoryFrame.selectedEncounterID then
+            GroupLootHistoryFrame:DoFullRefresh()
+        end
     end)
     btn:SetAlpha(0.5)
     btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
@@ -1794,17 +1796,22 @@ local function Init()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '战利品 Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOOT, 'Plus'), e.GetEnabeleDisable(not Save.disabledLootPlus))
         e.tips:AddLine(' ')
+        local  encounterID= GroupLootHistoryFrame.selectedEncounterID
+        local info= encounterID and C_LootHistory.GetInfoForEncounter(encounterID)
+        if info then
+            e.tip:AddDoubleLine('encounterName', info.encounterName)
+            e.tip:AddDoubleLine('encounterID', info.encounterID)
+            e.tip:AddDoubleLine('startTime', info.startTime and SecondsToClock(info.startTime))
+            e.tip:AddDoubleLine('duration', info.duration and SecondsToTime(info.duration))
+        else
+            e.tips:AddDoubleLine('encounterID', e.onlyChinese and '无' or NONE)
+        end
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, 'Tools '..addName)
         e.tips:Show()
         self2:SetAlpha(1)
     end)
-    hooksecurefunc( GroupLootHistoryFrame,'DoFullRefresh', function(self)
-        if self.selectedEncounterID and not Save.disabledLootPlus then
-            
-        end
-    end)
-
-
+   
     --[[hooksecurefunc(GroupLootHistoryFrame, 'UpdateTimer', function(self)
         if self.Timer and self.Timer:IsShown() then
             local text
