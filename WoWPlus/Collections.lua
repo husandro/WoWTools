@@ -128,7 +128,7 @@ local function Init_DressUpFrames()--试衣间, 外观列表
         sel:SetAlpha(0.3)
         sel:SetScript('OnMouseDown', function ()
             Save.hideDressUpOutfit= not Save.hideDressUpOutfit and true or nil
-            print(id, addName, e.onlyChinese and '外观列表' or DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.hideDressUpOutfit),e.onlyChinese and '需求刷新' or (NEED..REFRESH))
+            print(id, addName, e.onlyChinese and '外观列表' or DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.hideDressUpOutfit),e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
             sel:SetNormalAtlas(Save.hideDressUpOutfit and e.Icon.disabled or e.Icon.icon)
         end)
         sel:SetScript('OnEnter', function (self2)
@@ -448,7 +448,7 @@ local function Init_Wardrobe_Sets()
                     frame.str:SetShown(false)
                 end
             end
-            print(id, addName, e.GetShowHide(not Save.hideSets), e.onlyChinese and '需求刷新' or (NEED..REFRESH))
+            print(id, addName, e.GetShowHide(not Save.hideSets), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
             setAllSets()--所以有套装情况
             get_Sets_Colleced()--收集所有角色套装数据
             self2:SetNormalAtlas(Save.hideSets and e.Icon.disabled or e.Icon.icon)
@@ -576,7 +576,7 @@ local function Init_Heirloom()
     Heirloomframe.sel:SetAlpha(0.5)
     Heirloomframe.sel:SetScript('OnMouseDown',function (self2)
         Save.hideHeirloom= not Save.hideHeirloom and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.hideHeirloom), e.onlyChinese and '需求刷新' or (NEED..REFRESH))
+        print(id, addName, e.GetEnabeleDisable(not Save.hideHeirloom), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
         self2:SetNormalAtlas(Save.hideHeirloom and e.Icon.disabled or e.Icon.icon)
     end)
     Heirloomframe.sel:SetScript('OnEnter', function (self2)
@@ -742,7 +742,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
     Frame.sel:SetAlpha(0.5)
     Frame.sel:SetScript('OnMouseDown',function (self2)
         Save.hideItems= not Save.hideItems and true or nil
-        print(id, addName,e.GetEnabeleDisable(not Save.hideItems), e.onlyChinese and '需求刷新' or (NEED..REFRESH))
+        print(id, addName,e.GetEnabeleDisable(not Save.hideItems), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
         self2:SetNormalAtlas(Save.hideItems and e.Icon.disabled or e.Icon.icon)
         get_Items_Colleced()
     end)
@@ -927,7 +927,7 @@ local function Init_ToyBox()
     toyframe.sel:SetAlpha(0.5)
     toyframe.sel:SetScript('OnMouseDown',function (self2)
         Save.hideToyBox= not Save.hideToyBox and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.hideToyBox), e.onlyChinese and '需求刷新' or (NEED..REFRESH))
+        print(id, addName, e.GetEnabeleDisable(not Save.hideToyBox), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
         self2:SetNormalAtlas(Save.hideToyBox and e.Icon.disabled or e.Icon.icon)
     end)
     toyframe.sel:SetScript('OnEnter', function (self2)

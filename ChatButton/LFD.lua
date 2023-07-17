@@ -1075,7 +1075,7 @@ local function set_button_LFGPlus_Texture()--预创建队伍增强
             if Save.LFGPlus then
                 set_LFGPlus()--预创建队伍增强
             end
-            print(id,addName, e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求刷新' or (NEED..REFRESH))
+            print(id,addName, e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
         end)
         button.LFGPlus:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
         button.LFGPlus:SetScript('OnEnter', function(self2)
@@ -1154,7 +1154,7 @@ local function InitList(self, level, type)--LFDFrame.lua
                 if Save.LFGPlus then
                     set_LFGPlus()--预创建队伍增强
                 end
-                print(id, addName, e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求刷新' or (NEED..REFRESH))
+                print(id, addName, e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
             end,
             checked=Save.LFGPlus,
             tooltipOnButton=true,

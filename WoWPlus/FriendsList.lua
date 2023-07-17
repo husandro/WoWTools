@@ -412,13 +412,24 @@ local function set_FriendsList_Init()--好友列表, 初始化
 
                 e.LibDD:UIDropDownMenu_AddSeparator()
                 info={
-                    text= '|T-4:0|t'..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' ('..(e.onlyChinese and '好友' or FRIEND)..') '..( e.onlyChinese and '信息' or INFO),
+                    text= '|T-4:0|t'..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' ('..(e.onlyChinese and '好友' or FRIEND)..') '..( e.onlyChinese and '信息' or INFO)..'|A:communities-icon-chat:0:0|a',
                     checked= not Save.disabledBNFriendInfo,
                     hasArrow=true,
                     menuList= 'OnlyWOWFriendInfo',
-                    keepShownOnClick=true,
+                    --keepShownOnClick=true,
                     func= function()
                         Save.disabledBNFriendInfo= not Save.disabledBNFriendInfo and true or nil
+                    end
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+                info={
+                    text= '|A:Battlenet-ClientIcon-App:0:0|a'..(e.onlyChinese and '好友' or FRIEND)..' Plus',
+                    checked= not Save.disabledFriendPlus,
+                    keepShownOnClick=true,
+                    func= function()
+                        Save.disabledFriendPlus= not Save.disabledFriendPlus and true or nil
+                        print(id, addName, e.GetEnabeleDisable(not Save.disabledFriendPlus), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -430,7 +441,9 @@ local function set_FriendsList_Init()--好友列表, 初始化
 
 
     hooksecurefunc('FriendsFrame_UpdateFriendButton', function(self)--FriendsFrame.lua
-        local m=''
+        if Save.disabledFriendPlus then
+            return
+        end
         if self.buttonType == FRIENDS_BUTTON_TYPE_WOW then
             local info = C_FriendList.GetFriendInfoByIndex(self.id)
             if not info or not info.guid then
