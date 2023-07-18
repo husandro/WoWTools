@@ -13,6 +13,7 @@ local Save= {
     h=20,
     x=0,
     y=0,
+    --top=true,--位于，目标血条，上方
 
     creature= true,--怪物数量
     creatureRange=35,
@@ -205,7 +206,7 @@ end
 --设置,指示目标,位置,显示,隐藏
 --##########################
 local function set_Target()
-local plate = C_NamePlate.GetNamePlateForUnit("target")
+    local plate = C_NamePlate.GetNamePlateForUnit("target")
     if plate and plate.UnitFrame then
         local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--IsAddOnLoaded("Plater")
         if not frame then
@@ -219,9 +220,13 @@ local plate = C_NamePlate.GetNamePlateForUnit("target")
         end
 
         targetFrame:ClearAllPoints()
-        targetFrame:SetPoint('RIGHT', frame or plate, 'LEFT',Save.x, Save.y)
+        if Save.top then
+            targetFrame:SetPoint('BOTTOM', frame or plate, 'TOP', Save.x, Save.y)
+        else
+            targetFrame:SetPoint('RIGHT', frame or plate, 'LEFT',Save.x, Save.y)
+        end
         if Save.target then
-            targetFrame.Target:SetShown(true)
+           targetFrame.Target:SetShown(true)
         end
         set_Creature_Num()
     end
@@ -370,6 +375,7 @@ local function set_Option()
         Save.targetInCombat= not Save.targetInCombat and true or nil
         set_Register_Event()
         set_Created_Texture_Text()
+        set_Target()
     end)
     combatCheck.Text:EnableMouse(true)
     combatCheck.Text:SetText(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
@@ -401,6 +407,15 @@ local function set_Option()
         self2:SetAlpha(0.3)
     end)
 
+    local topCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    topCheck:SetPoint('LEFT', combatCheck.Text, 'RIGHT', 15,0)
+    topCheck:SetChecked(Save.top)
+    topCheck.Text:SetText('TOP')
+    topCheck:SetScript('OnClick', function()
+        Save.top= not Save.top and true or nil
+        set_Target()
+    end)
+    
     local sliderX = e.Create_Slider(panel, {min=-250, max=250, value=Save.x, setp=1, w= 100,
     text= 'X',
     func=function(self2, value)
@@ -447,7 +462,7 @@ local function set_Option()
 
     local sel2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     sel2.text:SetText(e.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r'
-                or (e.Player.col..CREATURE..'('..YOU..')'..TARGET..'|r |cnGREEN_FONT_COLOR:'..PLAYERS_IN_GROUP..'('..YOU..')'..TARGET..'|r |cffffffff'..CREATURE..AUCTION_HOUSE_QUANTITY_LABEL..'|r')
+                or (e.Player.col..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, TARGET)..'('..YOU..')|r |cnGREEN_FONT_COLOR:'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)..'('..YOU..')|r |cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)..'|r')
             )
     sel2:SetPoint('TOPLEFT', sel, 'BOTTOMLEFT',0, -60)
     sel2:SetChecked(Save.creature)
@@ -458,7 +473,7 @@ local function set_Option()
     end)
 
     local sliderRange = e.Create_Slider(panel, {min=0, max=60, value=Save.creatureRange, setp=1, w= 100 ,
-    text=e.onlyChinese and '码' or IN_GAME_NAVIGATION_RANGE:gsub('%%s',''),
+    text=format(e.onlyChinese and '码' or IN_GAME_NAVIGATION_RANGE''),
     func=function(self2, value)
         value= math.floor(value)
         self2:SetValue(value)

@@ -1507,7 +1507,7 @@ local function Init()
             if x and y then
                 x=math.modf(x*100) y=math.modf(y*100)
             end
-            e.tips:AddDoubleLine(x and y and 'XY '..x..', '..y,  (e.onlyChinese and '距离' or TRACK_QUEST_PROXIMITY_SORTING)..' '..e.MK(distanceSq))--format(IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
+            e.tips:AddDoubleLine(x and y and 'XY '..x..', '..y,  format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
         end
         if IsInGroup() then
             local n=GetNumGroupMembers()
