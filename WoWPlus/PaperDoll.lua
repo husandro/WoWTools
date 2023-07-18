@@ -1223,7 +1223,7 @@ local function set_ChromieTime()--时空漫游战役, 提示
         panel.ChromieTime:SetPoint('BOTTOMLEFT', PaperDollItemsFrame, 5, 10)
         panel.ChromieTime:SetScript('OnLeave', function() e.tips:Hide() end)
         panel.ChromieTime:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
        
             for _, info in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
@@ -1414,6 +1414,7 @@ local function Init()
     --更改,等级文本
     --############
     hooksecurefunc('PaperDollFrame_SetLevel', function()--PaperDollFrame.lua
+        set_ChromieTime()--时空漫游战役, 提示
         if Save.hide then
             return
         end
