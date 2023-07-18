@@ -75,76 +75,10 @@ local function getFind(ID, spell)
     end
 end
 
-
---###########
---添加, 对话框
---###########
-StaticPopupDialogs[id..addName..'REMOVE']={
-    text=id..' '..addName..'|n|n%s',
-    whileDead=1,
-    hideOnEscape=1,
-    exclusive=1,
-    timeout = 60,
-    button1='|cnRED_FONT_COLOR:'..REMOVE..'|r',
-    button2=CANCEL,
-    OnAccept = function(self, data)
-        if data.clearAll then
-            Save[data.type]={}
-            e.Reload()
-        else
-            if Save[data.type][data.index] and Save[data.type][data.index]==data.ID then
-                table.remove(Save[data.type], data.index)
-                print(id, addName, '|cnGREEN_FONT_COLOR:'..REMOVE..'|r'..COMPLETE, data.name, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD..'|r')
-            else
-                print(id, addName,'|cnGREEN_FONT_COLOR:'..ERROR_CAPS..'|r',	BROWSE_NO_RESULTS, data.name)
-            end
-        end
-    end,
-}
-
-StaticPopupDialogs[id..addName..'RESETALL']={--重置所有
-    text=id..' '..addName..'|n|n'..RESET_ALL_BUTTON_TEXT..'|n|n'..RELOADUI,
-    whileDead=1,
-    hideOnEscape=1,
-    exclusive=1,
-    timeout = 60,
-    button1=RESET,
-    button2=CANCEL,
-    OnAccept = function(self, data)
-        Save=nil
-        e.Reload()
-    end,
-}
-
-StaticPopupDialogs[id..addName..'ADD']={--添加, 移除
-    text=id..' '..addName..'|n|n%s: %s',
-    whileDead=1,
-    hideOnEscape=1,
-    exclusive=1,
-    timeout = 60,
-    button1=ADD,
-    button2=CANCEL,
-    button3=REMOVE,
-    OnShow = function(self, data)
-        local find=find_Type(data.type, data.ID)
-        data.index=find
-        self.button3:SetEnabled(find)
-        self.button1:SetEnabled(not find)
-    end,
-    OnAccept = function(self, data)
-        table.insert(Save[data.type], data.ID)
-        print(id, addName, '|cnGREEN_FONT_COLOR:'..ADD..'|r', COMPLETE, data.name, REQUIRES_RELOAD)
-    end,
-    OnAlt = function(self, data)
-        table.remove(Save[data.type], data.index)
-        print(id, addName, '|cnRED_FONT_COLOR:'..REMOVE..'|r', COMPLETE, data.name, REQUIRES_RELOAD)
-    end,
-}
-
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, type)--主菜单
+local function Init_Menu(_, level, type)--主菜单
     local info
     if type then
         for index, ID in pairs(Save[type]) do
@@ -197,7 +131,7 @@ local function InitMenu(self, level, type)--主菜单
             end
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
-        
+
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         local cleraAllText='|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|r '..(type=='spell' and (e.onlyChinese and '法术' or SPELLS) or type=='item' and (e.onlyChinese and '物品' or ITEMS) or (e.onlyChinese and '装备' or EQUIPSET_EQUIP))..' #'..'|cnGREEN_FONT_COLOR:'..#Save[type]..'|r'
         info={--清除全部
@@ -399,12 +333,116 @@ local function setSpellButton(self)--设置按钮
 end
 
 
+--#############
+--玩具界面, 菜单
+--#############
+local function setToySpellButton_UpdateButton(self2)--标记, 是否已选取
+    if not self2.useItem then
+        self2.useItem= e.Cbtn(self2,{size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
+        self2.useItem:SetPoint('TOPLEFT',self2.name,'BOTTOMLEFT', 32,0)
+        self2.useItem:SetScript('OnLeave', function() e.tips:Hide() end)
+        self2.useItem:SetScript('OnEnter', function(self3)
+            e.tips:SetOwner(self3, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            local itemID=self3:GetParent().itemID
+            e.tips:AddDoubleLine(itemID and C_ToyBox.GetToyLink(itemID) or itemID, e.GetEnabeleDisable(find_Type('item', itemID))..e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id,'Tools |A:soulbinds_tree_conduit_icon_utility:0:0|a'..addName)
+            e.tips:Show()
+        end)
+        self2.useItem:SetScript('OnClick', function(self3, d)
+            if d=='LeftButton' then
+                local frame=self3:GetParent()
+                local itemID= frame and frame.itemID
+                local find=find_Type('item', itemID)
+                if find then
+                    table.remove(Save.item, find)
+                else
+                    table.insert(Save.item, itemID)
+                end
+                print(id, addName, C_ToyBox.GetToyLink(itemID), find and (e.onlyChinese and '移除' or REMOVE) or (e.onlyChinese and '添加' or ADD), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                securecallfunction(ToySpellButton_UpdateButton, frame)
+            else
+                e.LibDD:ToggleDropDownMenu(1, nil, panel.Menu, self3, 15, 0)
+            end
+        end)
+    end
+    self2.useItem:SetAlpha(find_Type('item', self2.itemID) and 1 or 0.1)
+end
+
+
 --###
 --初始
 --###
 local function Init()
+    --###########
+    --添加, 对话框
+    --###########
+    StaticPopupDialogs[id..addName..'REMOVE']={
+        text=id..' '..addName..'|n|n%s',
+        whileDead=1,
+        hideOnEscape=1,
+        exclusive=1,
+        timeout = 60,
+        button1='|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r',
+        button2=e.onlyChinese and '取消' or CANCEL,
+        OnAccept = function(_, data)
+            if data.clearAll then
+                Save[data.type]={}
+                e.Reload()
+            else
+                if Save[data.type][data.index] and Save[data.type][data.index]==data.ID then
+                    table.remove(Save[data.type], data.index)
+                    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'..(e.onlyChinese and '完成' or COMPLETE), data.name, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD..'|r')
+                else
+                    print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '错误' or ERROR_CAPS)..'|r', e.onlyChinese and '未发现物品' or	BROWSE_NO_RESULTS, data.name)
+                end
+            end
+        end,
+    }
+
+    StaticPopupDialogs[id..addName..'RESETALL']={--重置所有
+        text=id..' '..addName..'|n|n'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI),
+        whileDead=1,
+        hideOnEscape=1,
+        exclusive=1,
+        timeout = 60,
+        button1= e.onlyChinese and '重置' or RESET,
+        button2= e.onlyChinese and '取消' or CANCEL,
+        OnAccept = function()
+            Save=nil
+            e.Reload()
+        end,
+    }
+
+    StaticPopupDialogs[id..addName..'ADD']={--添加, 移除
+        text=id..' '..addName..'|n|n%s: %s',
+        whileDead=1,
+        hideOnEscape=1,
+        exclusive=1,
+        timeout = 60,
+        button1= e.onlyChinese and '添加' or ADD,
+        button2= e.onlyChinese and '取消' or CANCEL,
+        button3= e.onlyChinese and '移除' or REMOVE,
+        OnShow = function(self, data)
+            local find=find_Type(data.type, data.ID)
+            data.index=find
+            self.button3:SetEnabled(find)
+            self.button1:SetEnabled(not find)
+        end,
+        OnAccept = function(_, data)
+            table.insert(Save[data.type], data.ID)
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+        OnAlt = function(_, data)
+            table.remove(Save[data.type], data.index)
+            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+    }
+
     panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(panel.Menu, InitMenu, 'MENU')
+    e.LibDD:UIDropDownMenu_Initialize(panel.Menu, Init_Menu, 'MENU')
 
    for _, itemID in pairs(Save.item) do
         local name ,icon
@@ -496,10 +534,10 @@ local function Init()
         e.tips:Hide()
     end)
 
-
+    --#################
+    --法术书，界面, 菜单
+    --#################
     local function set_Use_Spell_Button(self2, spellID)
-        local parent= self2:GetParent()
-
         if not self2.useSpell and spellID then
             self2.useSpell= e.Cbtn(self2, {size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
             self2.useSpell:SetPoint('TOP', self2, 'BOTTOM')
@@ -554,63 +592,28 @@ local function Init()
         local btn= _G['SpellButton'..i]
         if btn and btn.UpdateButton then
             hooksecurefunc(btn, 'UpdateButton', function(self2)--SpellBookFrame.lua
-                local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self2)
+                local slot = SpellBook_GetSpellBookSlot(self2)
                 if not slot or SpellBookFrame.bookType~='spell' then
                     if self2.useSpell then
                         self2.useSpell:SetShown(false)
                     end
                     return
                 end
-                local spellName, _, spellID = GetSpellBookItemName(slot, SpellBookFrame.bookType)
-
-                set_Use_Spell_Button(self2, spellID)
+                set_Use_Spell_Button(self2, select(3, GetSpellBookItemName(slot, SpellBookFrame.bookType))
+            )
             end)
         end
     end
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self2)
         local name = self2:GetParent():GetParent():GetName()
-        local find= (name and name:find('SpellButton')) and true or false
-        set_Use_Spell_Button(self2, find and self2.spellID or nil)
-    end)
-end
-
-
---#############
---玩具界面, 菜单
---#############
-local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
-    if not self.useItem then
-        self.useItem= e.Cbtn(self,{size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
-        self.useItem:SetPoint('TOPLEFT',self.name,'BOTTOMLEFT', 32,0)
-        self.useItem:SetScript('OnLeave', function() e.tips:Hide() end)
-        self.useItem:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            local itemID=self2:GetParent().itemID
-            e.tips:AddDoubleLine(itemID and C_ToyBox.GetToyLink(itemID) or itemID, e.GetEnabeleDisable(find_Type('item', itemID))..e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id,'Tools |A:soulbinds_tree_conduit_icon_utility:0:0|a'..addName)
-            e.tips:Show()
-        end)
-        self.useItem:SetScript('OnClick', function(self2, d)
-            if d=='LeftButton' then
-                local frame=self2:GetParent()
-                local itemID= frame and frame.itemID
-                local find=find_Type('item', itemID)
-                if find then
-                    table.remove(Save.item, find)
-                else
-                    table.insert(Save.item, itemID)
-                end
-                print(id, addName, C_ToyBox.GetToyLink(itemID), find and (e.onlyChinese and '移除' or REMOVE) or (e.onlyChinese and '添加' or ADD), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                securecallfunction(ToySpellButton_UpdateButton, frame)
-            else
-                e.LibDD:ToggleDropDownMenu(1, nil, panel.Menu, self2, 15, 0)
+        if not (name and name:find('SpellButton')) or not self2.spellID then
+            if self2.useSpell then
+                self2.useSpell:SetShown(false)
             end
-        end)
-    end
-    self.useItem:SetAlpha(find_Type('item', self.itemID) and 1 or 0.1)
+            return
+        end
+        set_Use_Spell_Button(self2, self2.spellID)
+    end)
 end
 
 --###########
@@ -620,7 +623,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent("PLAYER_REGEN_ENABLED")
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             if not WoWToolsSave[addName..'Tools'] then
