@@ -1219,9 +1219,15 @@ end
 local function set_ChromieTime()--时空漫游战役, 提示
     local canEnter = C_PlayerInfo.CanPlayerEnterChromieTime()
     if canEnter and not Save.hide and not panel.ChromieTime then
-        panel.ChromieTime= e.Cbtn(PaperDollItemsFrame, {size={20,20}, atlas='ChromieTime-32x32'})
-        panel.ChromieTime:SetPoint('BOTTOMLEFT', PaperDollItemsFrame, 5, 10)
-        panel.ChromieTime:SetScript('OnLeave', function() e.tips:Hide() end)
+        panel.ChromieTime= e.Cbtn(PaperDollItemsFrame, {size={18,18}, atlas='ChromieTime-32x32'})
+        panel.ChromieTime:SetAlpha(0.5)
+        if _G['MoveZoomInButtonPerCharacterFrame'] then
+            panel.ChromieTime:SetPoint('LEFT', _G['MoveZoomInButtonPerCharacterFrame'], 'RIGHT')
+            panel.ChromieTime:SetFrameLevel(CharacterFrame.TitleContainer:GetFrameLevel()+1)
+        else
+            panel.ChromieTime:SetPoint('BOTTOMLEFT', PaperDollItemsFrame, 5, 10)
+        end
+        panel.ChromieTime:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
         panel.ChromieTime:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -1249,6 +1255,7 @@ local function set_ChromieTime()--时空漫游战役, 提示
 
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
+            self2:SetAlpha(1)
         end)
     end
     if panel.ChromieTime then
