@@ -2,7 +2,13 @@ local id, e= ...
 local addName= TARGET
 local Save= {
     target= true,
-    targetInCombat=true,
+    targetTextureTab={
+        ['common-icon-rotateright']='atlas',
+    },
+    targetTextureName='common-icon-rotateright',
+
+    targetInCombat=true,--战斗中，提示
+    targetInCombatColor={r=1, g=0, b=0, a=1},--战斗中，颜色
     w=40,
     h=20,
     x=0,
@@ -13,7 +19,8 @@ local Save= {
     creatureFontSize=10,
 
     quest= true,
-    --questShowAllFaction=nil,
+    --questShowAllFaction=nil,--显示， 所有玩家派系
+    questShowPlayerClass=true,--显示，玩家职业
 }
 
 local panel= CreateFrame("Frame")
@@ -29,6 +36,28 @@ local function get_isAddOnPlater(unit)
         end
     end
 end]]
+
+local function set_Target_Texture(self)--设置，图片
+    if self then
+        if Save.targetTextureTab[Save.targetTextureName]=='atlas' then
+            self:SetAtlas(Save.targetTextureName)
+        else
+            self:SetTexture(Save.targetTextureName)
+        end
+    end
+end
+local function set_Target_Color(self, isInCombat)--设置，颜色
+    if isInCombat then
+        self:SetVertexColor(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a)
+    else
+        self:SetVertexColor(1,1,1,1)
+    end
+end
+local function set_Target_Size(self)--设置，大小
+    if self then
+        self:SetSize(Save.w, Save.h)
+    end
+end
 
 --########################
 --怪物目标, 队员目标, 总怪物
@@ -121,12 +150,18 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
                 return text~=true and text
             end
         end
-    elseif not (isIns and UnitInParty(unit)) then--if not isIns and isPvPZone and not UnitInParty(unit) then
+
+    elseif not UnitInParty(unit) then--if not isIns and isPvPZone and not UnitInParty(unit) then
         local wow= e.GetFriend(nil, UnitGUID(unit), nil)--检测, 是否好友
         local faction= e.GetUnitFaction(unit, nil, Save.questShowAllFaction)--检查, 是否同一阵营
-        if wow or faction then
-            return (wow or '')..(faction or '')
+        local text
+        if Save.questShowPlayerClass then
+            text= e.Class(unit)
         end
+        if wow or faction then
+            text= (text or '')..(wow or '')..(faction or '')
+        end
+        return text
     --[[else
         return e.Class(unit)--职业图标]]
     end
@@ -198,18 +233,14 @@ end
 --设置 targetFrame Target Creature 属性
 --####################################
 local function set_Created_Texture_Text()
-    targetFrame:SetSize(Save.w, Save.h)
+    set_Target_Size(targetFrame)--设置，大小
     if not targetFrame.Target and Save.target then
         targetFrame.Target= targetFrame:CreateTexture(nil, 'BACKGROUND')
         targetFrame.Target:SetAllPoints(targetFrame)
-        targetFrame.Target:SetAtlas('common-icon-rotateright')
     end
+    set_Target_Texture(targetFrame.Target)--设置，图片
     if targetFrame.Target then
-        if UnitAffectingCombat('player') then
-            targetFrame.Target:SetVertexColor(1,0,0)
-        else
-            targetFrame.Target:SetVertexColor(1,1,1)
-        end
+        set_Target_Color(targetFrame.Target, Save.targetInCombat and UnitAffectingCombat('player'))
         targetFrame.Target:SetShown(false)
     end
     if not targetFrame.Creature and Save.creature then
@@ -281,10 +312,10 @@ local function Init()
             end
 
         elseif event=='PLAYER_REGEN_DISABLED' then--颜色
-            targetFrame.Target:SetVertexColor(1,0,0)
+            set_Target_Color(targetFrame.Target, true)
 
         elseif event=='PLAYER_REGEN_ENABLED' then
-            targetFrame.Target:SetVertexColor(1,1,1)
+            set_Target_Color(targetFrame.Target, false)
 
         elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
             C_Timer.After(2, set_check_All_Plates)
@@ -327,21 +358,48 @@ local function set_Option()
     end)
     sel:SetScript('OnLeave', function() e.tips:Hide() end)
 
+    panel.tipTargetTexture= panel:CreateTexture()--目标，图片，提示
+    panel.tipTargetTexture:SetPoint("TOP")
+    set_Target_Texture(panel.tipTargetTexture)--设置，图片
+    set_Target_Size(panel.tipTargetTexture)--设置，大小
+
     local combatCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     combatCheck:SetPoint('LEFT', sel.Text, 'RIGHT', 15,0)
-    combatCheck.Text:SetText(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
     combatCheck:SetChecked(Save.targetInCombat)
     combatCheck:SetScript('OnClick', function()
         Save.targetInCombat= not Save.targetInCombat and true or nil
         set_Register_Event()
         set_Created_Texture_Text()
     end)
-    combatCheck:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:AddDoubleLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '红色' or RED_GEM)..e.Icon.toRight2)
-        e.tips:Show()
+    combatCheck.Text:EnableMouse(true)
+    combatCheck.Text:SetText(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+    combatCheck.Text:SetTextColor(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a)
+    combatCheck.Text:SetScript('OnMouseDown', function(self2)
+        local setR, setG, setB, setA
+        local R,G,B,A= Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a
+        local function func()
+            Save.targetInCombatColor={r=setR, g=setG, b=setB, a=setA}
+            self2:SetTextColor(setR, setG, setB, setA)
+            set_Target_Color(panel.tipTargetTexture, true)
+        end
+        e.ShowColorPicker(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a, function()
+                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+                func()
+            end, function()
+                setR, setG, setB, setA= R,G,B,A
+                func()
+            end
+        )
     end)
-    combatCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+    combatCheck.Text:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+    combatCheck.Text:SetScript('OnEnter', function(self2)
+        local r,g,b,a= Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:AddDoubleLine(e.Icon.toRight2..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), (e.onlyChinese and '颜色' or COLOR)..e.Icon.left, r,g,b, r,g,b)
+        e.tips:AddDoubleLine('r='..r..' g='..g..' b='..b, 'a='..a, r,g,b, r,g,b)
+        e.tips:Show()
+        self2:SetAlpha(0.3)
+    end)
 
     local sliderX = e.Create_Slider(panel, {min=-250, max=250, value=Save.x, setp=1, w= 100,
     text= 'X',
@@ -370,7 +428,8 @@ local function set_Option()
         self2:SetValue(value)
         self2.Text:SetText(value)
         Save.w= value
-        targetFrame:SetWidth(value)
+        set_Target_Size(targetFrame)--设置，大小
+        set_Target_Size(panel.tipTargetTexture)--设置，大小
     end})
     sliderW:SetPoint("LEFT", sliderY, 'RIGHT',15,0)
     local sliderH = e.Create_Slider(panel, {min=10, max=100, value=Save.h, setp=1, w= 100, color=true,
@@ -380,7 +439,8 @@ local function set_Option()
         self2:SetValue(value)
         self2.Text:SetText(value)
         Save.h= value
-        targetFrame:SetHeight(value)
+        set_Target_Size(targetFrame)--设置，大小
+        set_Target_Size(panel.tipTargetTexture)--设置，大小
     end})
     sliderH:SetPoint("LEFT", sliderW, 'RIGHT',15,0)
 
@@ -420,10 +480,8 @@ local function set_Option()
     end})
     sliderCreatureFontSize:SetPoint("LEFT", sliderRange, 'RIGHT',15,0)
 
-
-
     local questCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    questCheck.Text:SetText(e.onlyChinese and '任务进度' or (QUESTS_LABEL..PVP_PROGRESS_REWARDS_HEADER))
+    questCheck.Text:SetText(e.onlyChinese and '任务进度' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, PVP_PROGRESS_REWARDS_HEADER)))
     questCheck:SetPoint('TOPLEFT', sel2, 'BOTTOMLEFT',0,-24)
     questCheck:SetChecked(Save.quest)
     questCheck:SetScript('OnClick', function()
@@ -433,10 +491,19 @@ local function set_Option()
 
     local questAllFactionCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     questAllFactionCheck.Text:SetText((e.onlyChinese and '提示所有阵营' or (SHOW..'('..ALL..')'..FACTION))..e.Icon.horde2..e.Icon.alliance2)
-    questAllFactionCheck:SetPoint('LEFT', questCheck.Text, 'RIGHT')
+    questAllFactionCheck:SetPoint('LEFT', questCheck.Text, 'RIGHT',2,0)
     questAllFactionCheck:SetChecked(Save.questShowAllFaction)
     questAllFactionCheck:SetScript('OnClick', function()
         Save.questShowAllFaction= not Save.questShowAllFaction and true or nil
+        set_check_All_Plates()
+    end)
+
+    local classCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    classCheck.Text:SetText(e.onlyChinese and '职业' or CLASS)
+    classCheck:SetPoint('LEFT', questAllFactionCheck.Text, 'RIGHT',2,0)
+    classCheck:SetChecked(Save.questShowPlayerClass)
+    classCheck:SetScript('OnClick', function()
+        Save.questShowPlayerClass= not Save.questShowPlayerClass and true or nil
         set_check_All_Plates()
     end)
 end
@@ -447,6 +514,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
+            Save.targetTextureTab= Save.targetTexture or {['common-icon-rotateright']='atlas',}
+            Save.targetTextureName= Save.targetTextureName or 'common-icon-rotateright'
+            Save.targetInCombatColor= Save.targetInCombatColor or {r=1, g=0, b=0, a=1}
 
             panel.name = e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName)..'|r'
             panel.parent = id

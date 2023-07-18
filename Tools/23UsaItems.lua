@@ -542,7 +542,7 @@ local function Init()
             self2.useSpell:SetPoint('TOP', self2, 'BOTTOM')
             function self2.useSpell:Set_Alpha()
                 if self.spellID then
-                    self:SetAlpha(find_Type('spell', self.spellID) and 1 or 0.1)
+                    self:SetAlpha(find_Type('spell', self.spellID) and 1 or 0.2)
                 end
             end
             self2.useSpell:SetScript('OnLeave', function(self3) e.tips:Hide() self3:Set_Alpha()  end)

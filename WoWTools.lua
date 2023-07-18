@@ -1534,6 +1534,21 @@ e.Create_Slider= function(self, tab)--e.Create_Slider(self, {w= ,h=, min=, max=,
     slider.Text:SetText(tab.value)
     slider:SetValueStep(tab.setp)
     slider:SetScript('OnValueChanged', tab.func)
+    slider:EnableMouseWheel(true)
+    slider.max= tab.max
+    slider.min= tab.min
+    slider:SetScript('OnMouseWheel', function(self2, d)
+        local setp= self2:GetValueStep() or 1
+        local value= self2:GetValue()
+        if d== -1 then
+            value= value- setp
+        elseif d==1 then
+            value= value+ setp
+        end
+        value= value> self2.max and self2.max or value
+        value= value< self2.min and self2.min or value
+        self2:SetValue(value)
+    end)
     if tab.color then
         slider.Low:SetTextColor(1,0,1)
         slider.High:SetTextColor(1,0,1)

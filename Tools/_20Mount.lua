@@ -610,7 +610,7 @@ end
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, type)--主菜单
+local function InitMenu(_, level, type)--主菜单
     local info
     if type=='RANDOM' then--三级, 离开时, 随机坐骑
         info={
@@ -1135,7 +1135,7 @@ local function Init()
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
     e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
-    
+
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
     button:SetClampedToScreen(true)
@@ -1356,7 +1356,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     end
                 end
 
-                
             else
                 e.toolsFrame.disabled=true
                 panel:UnregisterAllEvents()
