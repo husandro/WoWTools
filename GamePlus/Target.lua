@@ -260,7 +260,7 @@ local function set_Created_Texture_Text()
         targetFrame.Creature:SetPoint('RIGHT', -8, 0)
         targetFrame.Creature:SetTextColor(1,1,1)
     end
-    if targetFrame.Creature and Save.creature then
+    if targetFrame.Creature and not Save.creature then
         targetFrame.Creature:SetText('')
     end
    set_Target()
