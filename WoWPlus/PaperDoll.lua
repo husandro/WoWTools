@@ -1309,12 +1309,6 @@ local function Init()
                 e.Set_Item_Stats(self, not Save.hide and link or nil, {point=self.icon})
                 set_PaperDollSidebarTab3_Text()
                 LvTo()--总装等
-                if link then
-                    local a, b= C_ItemUpgrade.GetHighWatermarkForItem(link)
-                    if a~=b then
-                print(C_ItemUpgrade.GetHighWatermarkForItem(link))
-                    end
-                end
             end
             set_Slot_Num_Label(self, slot, link and true or nil)--栏位
         elseif InventSlot_To_ContainerSlot[slot] then
