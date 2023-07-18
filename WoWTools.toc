@@ -129,7 +129,7 @@ Tools\24Daisy.lua
 ##诺格弗格药剂 Noggenfogger Elixir
 Tools\25NoggenfoggerElixir.lua
 ##挑战者之路
-Tools\26ChallengerPath.lua
+##Tools\26ChallengerPath.lua
 ##法师传送门
 Tools\27MagePortal.lua
 

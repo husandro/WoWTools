@@ -496,10 +496,63 @@ local function Init()
         e.tips:Hide()
     end)
 
+
+    local function set_Use_Spell_Button(self2, spellID)
+        local parent= self2:GetParent()
+
+        if not self2.useSpell and spellID then
+            self2.useSpell= e.Cbtn(self2, {size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
+            self2.useSpell:SetPoint('TOP', self2, 'BOTTOM')
+            function self2.useSpell:Set_Alpha()
+                if self.spellID then
+                    self:SetAlpha(find_Type('spell', self.spellID) and 1 or 0.1)
+                end
+            end
+            self2.useSpell:SetScript('OnLeave', function(self3) e.tips:Hide() self3:Set_Alpha()  end)
+            self2.useSpell:SetScript('OnEnter', function(self3)
+                e.tips:SetOwner(self3, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                if self3.spellID then
+                    local text
+                    local icon= GetSpellTexture(self3.spellID)
+                    text= icon and '|T'..icon..':0|t' or ''
+                    text= text..(C_SpellBook.GetSpellLinkFromSpellID(self3.spellID) or '')..self3.spellID
+                    e.tips:AddDoubleLine(text, e.GetEnabeleDisable(find_Type('spell', self3.spellID))..e.Icon.left)
+                end
+                e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id,'Tools |A:soulbinds_tree_conduit_icon_utility:0:0|a'..addName)
+                e.tips:Show()
+                self3:SetAlpha(1)
+            end)
+            self2.useSpell:SetScript('OnClick', function(self3, d)
+                if d=='LeftButton' then
+                    if self3.spellID then
+                        local findIndex= find_Type('spell', self3.spellID)
+                        print(findIndex)
+                        if findIndex then
+                            table.remove(Save.spell, findIndex)
+                        else
+                            table.insert(Save.spell, self3.spellID)
+                        end
+                        print(id, addName, C_SpellBook.GetSpellLinkFromSpellID(self3.spellID), findIndex and (e.onlyChinese and '移除' or REMOVE) or (e.onlyChinese and '添加' or ADD), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                        self3:Set_Alpha()
+                    end
+                else
+                    e.LibDD:ToggleDropDownMenu(1, nil, panel.Menu, self3, 15, 0)
+                end
+            end)
+
+        end
+        if self2.useSpell then
+            self2.useSpell.spellID= spellID
+            self2.useSpell:Set_Alpha()
+            self2.useSpell:SetShown(spellID and true or false)
+        end
+    end
     for i=1, SPELLS_PER_PAGE  do--SPELLS_PER_PAGE = 12
         local btn= _G['SpellButton'..i]
         if btn and btn.UpdateButton then
-            
             hooksecurefunc(btn, 'UpdateButton', function(self2)--SpellBookFrame.lua
                 local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self2)
                 if not slot or SpellBookFrame.bookType~='spell' then
@@ -510,60 +563,15 @@ local function Init()
                 end
                 local spellName, _, spellID = GetSpellBookItemName(slot, SpellBookFrame.bookType)
 
-                if not self2.useSpell and spellID then
-                    self2.useSpell= e.Cbtn(self2, {size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
-                    self2.useSpell:SetPoint('BOTTOMLEFT', self2, 'BOTTOMRIGHT')
-                    function self2.useSpell:Set_Alpha()
-                        if self.spellID then
-                            self:SetAlpha(find_Type('spell', self.spellID) and 1 or 0.3)
-                        end
-                    end
-
-
-                    self2.useSpell:SetScript('OnLeave', function(self3) e.tips:Hide() self3:Set_Alpha()  end)
-                    self2.useSpell:SetScript('OnEnter', function(self3)
-                        e.tips:SetOwner(self3, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        if self3.spellID then
-                            local text
-                            local icon= GetSpellTexture(self3.spellID)
-                            text= icon and '|T'..icon..':0|t' or ''
-                            text= text..(C_SpellBook.GetSpellLinkFromSpellID(self3.spellID) or '')..self3.spellID
-                            e.tips:AddDoubleLine(text, e.GetEnabeleDisable(find_Type('spell', self3.spellID))..e.Icon.left)
-                        end
-                        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-                        e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(id,'Tools |A:soulbinds_tree_conduit_icon_utility:0:0|a'..addName)
-                        e.tips:Show()
-                        self3:SetAlpha(1)
-                    end)
-                    self2.useSpell:SetScript('OnClick', function(self3, d)
-                        if d=='LeftButton' then
-                            if self3.spellID then
-                                local findIndex= find_Type('spell', self3.spellID)
-                                print(findIndex)
-                                if findIndex then
-                                    table.remove(Save.spell, findIndex)
-                                else
-                                    table.insert(Save.spell, self3.spellID)
-                                end
-                                print(id, addName, C_SpellBook.GetSpellLinkFromSpellID(self3.spellID), findIndex and (e.onlyChinese and '移除' or REMOVE) or (e.onlyChinese and '添加' or ADD), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                                self3:Set_Alpha()
-                            end
-                        else
-                            e.LibDD:ToggleDropDownMenu(1, nil, panel.Menu, self3, 15, 0)
-                        end
-                    end)
-
-                end
-                if self2.useSpell then
-                    self2.useSpell.spellID= spellID
-                    self2.useSpell:Set_Alpha()
-                    self2.useSpell:SetShown(spellID and true or false)
-                end
+                set_Use_Spell_Button(self2, spellID)
             end)
         end
     end
+    hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self2)
+        local name = self2:GetParent():GetParent():GetName()
+        local find= (name and name:find('SpellButton')) and true or false
+        set_Use_Spell_Button(self2, find and self2.spellID or nil)
+    end)
 end
 
 
