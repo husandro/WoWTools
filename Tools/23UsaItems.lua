@@ -1,9 +1,8 @@
 local id, e = ...
 local addName=USE_ITEM
-local panel=e.Cbtn(e.toolsFrame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size={20,20}})
 
-panel:SetPoint('BOTTOMLEFT', e.toolsFrame, 'TOPRIGHT',-2,5)
-panel:SetAlpha(0.1)
+local panel= CreateFrame("Frame")
+local button
 
 local Save= {
         item={
@@ -364,7 +363,7 @@ local function setToySpellButton_UpdateButton(self2)--标记, 是否已选取
                 print(id, addName, C_ToyBox.GetToyLink(itemID), find and (e.onlyChinese and '移除' or REMOVE) or (e.onlyChinese and '添加' or ADD), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 securecallfunction(ToySpellButton_UpdateButton, frame)
             else
-                e.LibDD:ToggleDropDownMenu(1, nil, panel.Menu, self3, 15, 0)
+                e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self3, 15, 0)
             end
         end)
     end
@@ -441,8 +440,8 @@ local function Init()
         end,
     }
 
-    panel.Menu=CreateFrame("Frame", id..addName..'Menu', panel, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(panel.Menu, Init_Menu, 'MENU')
+    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, Init_Menu, 'MENU')
 
    for _, itemID in pairs(Save.item) do
         local name ,icon
@@ -497,7 +496,7 @@ local function Init()
         end
     end
 
-    panel:SetScript('OnMouseDown',function(self, d)--添加, 移除
+    button:SetScript('OnMouseDown',function(self, d)--添加, 移除
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
         if infoType == "item" and itemID and itemLink then
             local itemEquipLoc= select(4, GetItemInfoInstant(itemLink))
@@ -526,10 +525,10 @@ local function Init()
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
-    panel:SetScript('OnEnter',function (self)
+    button:SetScript('OnEnter',function (self)
         self:SetAlpha(1.0)
     end)
-    panel:SetScript('OnLeave', function (self)
+    button:SetScript('OnLeave', function (self)
         self:SetAlpha(0.1)
         e.tips:Hide()
     end)
@@ -577,7 +576,7 @@ local function Init()
                         self3:Set_Alpha()
                     end
                 else
-                    e.LibDD:ToggleDropDownMenu(1, nil, panel.Menu, self3, 15, 0)
+                    e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self3, 15, 0)
                 end
             end)
 
@@ -626,12 +625,19 @@ panel:RegisterEvent("PLAYER_REGEN_ENABLED")
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
+            button=e.Cbtn(e.toolsFrame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size={20,20}})
+            button:SetPoint('BOTTOMLEFT', e.toolsFrame, 'TOPRIGHT',-2,5)
+            
             if not WoWToolsSave[addName..'Tools'] then
-                panel:SetAlpha(1)
+                button:SetAlpha(1)
+            else
+                button:SetAlpha(0.1)
             end
+
             if (not WoWToolsSave or not WoWToolsSave[addName..'Tools']) and PlayerHasToy(156833) and Save.item[1]==194885 then
-            Save.item[1] = 156833
+                Save.item[1] = 156833
             end
+
             Save= WoWToolsSave[addName..'Tools'] or Save
 
             if not e.toolsFrame.disabled then
