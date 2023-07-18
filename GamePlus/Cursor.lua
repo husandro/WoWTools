@@ -352,7 +352,7 @@ local function Init_Cursor_Options()
     end})
     alphaSlider:SetPoint("TOPLEFT", sliderGravity, 'BOTTOMLEFT', 0, -20)
 
-    local dropDown = CreateFrame("FRAME",  id..addName..'Menu', panel, "UIDropDownMenuTemplate")--下拉，菜单
+    local dropDown = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
     local delColorButton= e.Cbtn(panel, {icon='hide', size={20,20}})--删除, 按钮
     local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
     local addColorButton= e.Cbtn(panel, {icon='hide', size={20,20}})--添加, 按钮
