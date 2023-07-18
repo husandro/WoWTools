@@ -279,7 +279,7 @@ local function setPet(self, speciesID, setSearchText)--宠物
 
         self:AddDoubleLine((e.onlyChinese and '宠物' or PET)..' '..speciesID..(speciesIcon and '  |T'..speciesIcon..':0|t'..speciesIcon or ''), (creatureDisplayID and (e.onlyChinese and '模型' or MODEL)..' '..creatureDisplayID or '')..(companionID and ' NPC '..companionID or ''))--ID
 
-        local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
+        local tab = C_PetJournal.GetPetAbilityListTable(speciesID) or {}--技能图标
         table.sort(tab, function(a,b) return a.level< b.level end)
         local abilityIconA, abilityIconB = '', ''
         for k, info in pairs(tab) do

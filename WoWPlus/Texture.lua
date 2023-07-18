@@ -420,6 +420,8 @@ local function Init_Set_AlphaAndColor()
 
     for i=1, 12 do
         set_Alpha(_G['SpellButton'..i..'Background'])
+        set_Alpha(_G['SpellButton'..i..'SlotFrame'])
+        
         local frame= _G['SpellButton'..i]
         if frame then
             hooksecurefunc(frame, 'UpdateButton', function(self)--SpellBookFrame.lua
