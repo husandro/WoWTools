@@ -5,7 +5,8 @@ local Save= {
     targetTextureTab={
         ['common-icon-rotateright']='a',
         ['NPE_ArrowDown']='a',
-        ['UI-HUD-MicroMenu-StreamDLYellow-Up']='a'
+        ['UI-HUD-MicroMenu-StreamDLYellow-Up']='a',
+        ['Interface\\AddOns\\WeakAuras\\Media\\Textures\\targeting-mark.tga']='t',
     },
     targetTextureName='common-icon-rotateright',
 
@@ -158,7 +159,7 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
             end
         end
 
-    elseif not UnitInParty(unit) then--if not isIns and isPvPZone and not UnitInParty(unit) then
+    elseif not (UnitInParty(unit) or UnitIsUnit('player', unit)) then--if not isIns and isPvPZone and not UnitInParty(unit) then
         local wow= e.GetFriend(nil, UnitGUID(unit), nil)--检测, 是否好友
         local faction= e.GetUnitFaction(unit, nil, Save.questShowAllFaction)--检查, 是否同一阵营
         local text
@@ -675,6 +676,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.targetTextureTab= Save.targetTextureTab or {
                 ['common-icon-rotateright']='a',
                 ['NPE_ArrowDown']='a',
+                ['UI-HUD-MicroMenu-StreamDLYellow-Up']='a',
+                ['Interface\\AddOns\\WeakAuras\\Media\\Textures\\targeting-mark.tga']='t',
             }
             Save.targetTextureName= Save.targetTextureName or 'common-icon-rotateright'
             Save.targetColor= Save.targetColor or {r=1,g=1,b=1,a=1}

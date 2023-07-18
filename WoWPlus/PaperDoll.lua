@@ -1213,6 +1213,50 @@ local function Init_Server_equipmentButton_Lable()
 
 end
 
+--################
+--时空漫游战役, 提示
+--################
+local function set_ChromieTime()--时空漫游战役, 提示
+    local canEnter = C_PlayerInfo.CanPlayerEnterChromieTime()
+    if canEnter and not Save.hide and not panel.ChromieTime then
+        panel.ChromieTime= e.Cbtn(PaperDollItemsFrame, {size={20,20}, atlas='ChromieTime-32x32'})
+        panel.ChromieTime:SetPoint('BOTTOMLEFT', PaperDollItemsFrame, 5, 10)
+        panel.ChromieTime:SetScript('OnLeave', function() e.tips:Hide() end)
+        panel.ChromieTime:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")
+            e.tips:ClearLines()
+       
+            for _, info in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
+                local col= info.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
+                e.tips:AddDoubleLine((info.alreadyOn and e.Icon.toRight2 or '')..col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a' or '')..info.name..(info.alreadyOn and e.Icon.toLeft2 or ''), col..'ID '.. info.id)
+                e.tips:AddDoubleLine(' ', col..(info.mapAtlas and '|A:'..info.mapAtlas..':0:0|a'.. info.mapAtlas))
+                e.tips:AddDoubleLine(' ', col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a'.. info.previewAtlas))
+                e.tips:AddDoubleLine(' ', col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
+                e.tips:AddLine(' ')
+            end
+
+            local expansionID = UnitChromieTimeID('player');
+            local option = C_ChromieTime.GetChromieTimeExpansionOption(expansionID);
+            local isInChromieTime= option and option.name
+            local expansion = isInChromieTime or (e.onlyChinese and '无' or NONE)
+            if option and option.previewAtlas then
+                expansion= '|A:'..option.previewAtlas..':0:0|a'..expansion
+            end
+            local text= format(e.onlyChinese and '你目前处于|cffffffff时空漫游战役：%s|r' or PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION, expansion)
+            e.tips:AddDoubleLine((e.onlyChinese and '选择时空漫游战役' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHROMIE_TIME_SELECT_EXAPANSION_BUTTON, CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE))..': '..e.GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime()),
+                                    text
+                                )
+
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end)
+    end
+    if panel.ChromieTime then
+        panel.ChromieTime:SetShown(canEnter and not Save.hide)
+    end
+end
+
+
 --###############
 --显示，隐藏，按钮
 --###############
@@ -1241,6 +1285,7 @@ panel.Init_Show_Hide_Button= function(self, frame)
         LvTo()--总装等
         set_PaperDollSidebarTab3_Text()--标签, 内容,提示
         Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
+        set_ChromieTime()--时空漫游战役, 提示
         set_inti_Equipment_Frame()--添加装备管理框
         securecall('PaperDollFrame_SetLevel')
         securecall('PaperDollFrame_UpdateStats')
@@ -1270,6 +1315,7 @@ end
 local function Init()
     panel.Init_Show_Hide_Button(CharacterFrame.TitleContainer, _G['MoveZoomInButtonPerCharacterFrame'])--初始，显示/隐藏，按钮
     Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
+    set_ChromieTime()--时空漫游战役, 提示
 
     set_inti_Equipment_Frame()--装备管理框
     --set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
@@ -1391,24 +1437,37 @@ local function Init()
                 if Save.hide or not info then
                     return
                 end
-                
+                C_PlayerInfo.GetDisplayID()
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine('name', info.name)
                 e.tips:AddDoubleLine('fileName', info.fileName)
                 e.tips:AddDoubleLine('createScreenIconAtlas', (info.createScreenIconAtlas and '|A:'..info.createScreenIconAtlas..':0:0|a' or '')..(info.createScreenIconAtlas or ''))
                 e.tips:AddDoubleLine('sex', info.sex)
-
                 if info.alternateFormRaceData then
                     e.tips:AddLine(' ')
-                    e.tips:AddLine('alternateFormRaceData')
-                    
+                    --e.tips:AddLine('alternateFormRaceData')
                     e.tips:AddDoubleLine('raceID', info.alternateFormRaceData.raceID)
                     e.tips:AddDoubleLine('name', info.alternateFormRaceData.name)
                     e.tips:AddDoubleLine('fileName', info.alternateFormRaceData.fileName)
                     e.tips:AddDoubleLine('createScreenIconAtlas', info.alternateFormRaceData.createScreenIconAtlas)
+                    e.tips:AddLine(' ')
                 end
+                e.tips:AddDoubleLine('displayID', C_PlayerInfo.GetDisplayID())
+                --local function GetChromieTimeLocationString(unitToken)-- 时空漫游战役 PartyUtil.lua
+                local expansionID = UnitChromieTimeID('player');
+                local option = C_ChromieTime.GetChromieTimeExpansionOption(expansionID);
+                local isInChromieTime= option and option.name
+                local expansion = isInChromieTime or (e.onlyChinese and '无' or NONE)
+                if option and option.previewAtlas then
+                    expansion= '|A:'..option.previewAtlas..':0:0|a'..expansion
+                end
+                local text= format(e.onlyChinese and '你目前处于|cffffffff时空漫游战役：%s|r' or PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION, expansion)
+                e.tips:AddDoubleLine((e.onlyChinese and '选择时空漫游战役' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHROMIE_TIME_SELECT_EXAPANSION_BUTTON, CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE))..': '..e.GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime()),
+                                        text
+                                    )
                 e.tips:AddLine(' ')
+
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
                 self2:SetAlpha(0.3)

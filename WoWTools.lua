@@ -1791,3 +1791,5 @@ e.Get_Region= function(realm, guid, unit, disabled)--e.Get_Region(server, guid, 
         return realm and Realms[realm] and regionColor[Realms[realm]]
     end
 end
+
+

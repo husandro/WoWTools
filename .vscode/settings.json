@@ -3122,7 +3122,11 @@
         "LANDING_DRAGONRIDING_PANEL_TITLE",
         "CLUB_FINDER_LOOKING_FOR_CLASS_SPEC",
         "SELF_CAST_AUTO",
-        "LOOT"
+        "LOOT",
+        "CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE",
+        "CHROMIE_TIME_SELECT_EXAPANSION_BUTTON",
+        "PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION",
+        "PARTY_PLAYER_CHROMIE_TIME_OTHER_LOCATION"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
