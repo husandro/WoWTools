@@ -168,7 +168,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
         if Save.disabledBNFriendInfo then
             return
         end
-        if not Save.showInCombatFriendInfo and UnitAffectingCombat('player') then--战斗中，不显示，好友，提示
+        if not Save.showInCombatFriendInfo and UnitAffectingCombat('player') and IsInInstance() then--战斗中，不显示，好友，提示
             self.tips=nil
             return
         end

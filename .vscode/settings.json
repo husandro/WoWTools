@@ -3128,7 +3128,10 @@
         "PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION",
         "PARTY_PLAYER_CHROMIE_TIME_OTHER_LOCATION",
         "HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL",
-        "OpacityFrame"
+        "OpacityFrame",
+        "DEFAULT_OBJECTIVE_TRACKER_MODULE",
+        "ChatFrameChannelButton",
+        "ChatFrameMenuButton"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

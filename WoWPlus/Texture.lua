@@ -7,6 +7,7 @@ local Save={
     chatBubbleAlpha= 0.5,--聊天泡泡
     chatBubbleSacal= 0.85,
     classPowerNum= e.Player.husandro,--职业，显示数字
+    classPowerNumSize= 12,
     disabledMainMenu= not e.Player.husandro, --主菜单，颜色，透明度
 }
 local panel=CreateFrame("Frame")
@@ -859,6 +860,15 @@ local function Init_Set_AlphaAndColor()
         end
     end)
 
+    set_Alpha(QuickJoinToastButton.FriendsButton)
+    set_Alpha(QuickJoinToastButton.FriendsButton)
+    set_Alpha_Frame_Texture(ChatFrameChannelButton)
+    set_Alpha_Frame_Texture(ChatFrameMenuButton)
+    --[[hooksecurefunc('ObjectiveTracker_UpdateOpacity', function()
+        --for _, module in ipairs(ObjectiveTrackerBlocksFrame.MODULES) do
+          --  set_Alpha(module.Header.Background)
+        --end
+    end)]]
     C_Timer.After(2, function()
         if SpellFlyout and SpellFlyout.Background then--Spell Flyout
             hide_Texture(SpellFlyout.Background.HorizontalMiddle)
@@ -1586,10 +1596,10 @@ local function Init_Class_Power()--职业
     if not Save.classPowerNum then
         return
     end
-    local function set_Num_Texture(self, num, color)
+    local function set_Num_Texture(self, num, color, parent)
         if not self.numTexture and (self.layoutIndex or num) then
-            self.numTexture= self:CreateTexture(nil, 'OVERLAY')
-            self.numTexture:SetSize(12,12)
+            self.numTexture= (parent or self):CreateTexture(nil, 'OVERLAY')
+            self.numTexture:SetSize(Save.classPowerNumSize, Save.classPowerNumSize)
             self.numTexture:SetPoint('CENTER', self, 'CENTER')
             self.numTexture:SetAtlas(e.Icon.number..(num or self.layoutIndex))
             if color~=false then
@@ -1718,9 +1728,10 @@ local function Init_Class_Power()--职业
         end)
     elseif e.Player.class=='DEATHKNIGHT' then
         if RuneFrame.Runes then
-            for _, btn in pairs(RuneFrame.Runes) do
+            for index, btn in pairs(RuneFrame.Runes) do
                 hide_Texture(btn.BG_Active)
                 hide_Texture(btn.BG_Inactive)
+                --set_Num_Texture(btn, index, false, RuneFrame)
             end
         end
         if DeathKnightResourceOverlayFrame.Runes then
@@ -1896,13 +1907,25 @@ local function options_Init()--初始，选项
 
     --职业，显示数字
     local classNumCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    classNumCheck.text:SetText('4) '..(e.onlyChinese and '职业能量数字' or (CLASS..'('..AUCTION_HOUSE_QUANTITY_LABEL..')'..ENERGY))..format(e.Icon.number2,1)..format(e.Icon.number2,2)..format(e.Icon.number2,3))
+    classNumCheck.Text:SetText('4) '..(e.onlyChinese and '职业能量数字' or (CLASS..'('..AUCTION_HOUSE_QUANTITY_LABEL..')'..ENERGY))..format(e.Icon.number2,1)..format(e.Icon.number2,2)..format(e.Icon.number2,3))
     classNumCheck:SetPoint('TOPRIGHT', chatBubbleSacale, 'BOTTOMLEFT', 0, -16)
     classNumCheck:SetChecked(Save.classPowerNum)
     classNumCheck:SetScript('OnMouseDown', function()
         Save.classPowerNum= not Save.classPowerNum and true or nil
         print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
+
+    local sliderClassPowerNumSize = e.Create_Slider(panel, {min=8, max=24, value=Save.classPowerNumSize, setp=1, color=true,
+    text=e.onlyChinese and '大小' or 'Size',
+    func=function(self, value)
+        value= tonumber(format('%i', value))
+        value= value==0 and 0 or value
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.classPowerNumSize= value
+        print(id, addName, value, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end})
+    sliderClassPowerNumSize:SetPoint("LEFT", classNumCheck.Text, 'RIGHT', 2,0)
 end
 --###########
 --加载保存数据
@@ -1913,6 +1936,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave[addName] or Save
+            Save.classPowerNumSize= Save.classPowerNumSize or 12
 
             panel.name = '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)
             panel.parent =id
