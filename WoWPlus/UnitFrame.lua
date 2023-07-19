@@ -300,6 +300,7 @@ local function set_PartyFrame()--PartyFrame.lua
             local frame= memberFrame.potFrame
             if not frame then
                 frame= e.Cbtn(memberFrame, {type=true, size={35,35}, icon='hide'})
+                --frame:SetFrameLevel(memberFrame:GetFrameLevel()+1)
                 frame:SetPoint('LEFT', memberFrame, 'RIGHT', -3, 4)
                 frame:SetAttribute('type', 'target')
                 frame:SetAttribute('unit', unit..'target')
@@ -612,13 +613,14 @@ local function set_PartyFrame()--PartyFrame.lua
                 frame.dead=0
                 frame.deadText= e.Cstr(memberFrame, {mouse=true})
                 frame.deadText:SetPoint('BOTTOMLEFT', frame)
-                frame.deadText:SetScript('OnLeave', function() e.tips:Hide() end)
+                frame.deadText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                 frame.deadText:SetScript('OnEnter', function(self2)
                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
                     e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.onlyChinese and '死亡' or DEAD, e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+                    e.tips:AddDoubleLine(e.onlyChinese and '死亡' or DEAD, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, self2:GetParent().dead or 0 ,  e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
                     e.tips:AddDoubleLine(id, addName)
                     e.tips:Show()
+                    self2:SetAlpha(0.3)
                 end)
 
                 frame.unit= unit
@@ -628,7 +630,6 @@ local function set_PartyFrame()--PartyFrame.lua
             if exists then
                 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
                 frame:RegisterEvent('CHALLENGE_MODE_START')
-                --frame:RegisterEvent('CHALLENGE_MODE_DEATH_COUNT_UPDATED')
                 frame:RegisterUnitEvent('UNIT_FLAGS', unit)
                 frame.deadText:SetTextColor(r, g, b)
             else

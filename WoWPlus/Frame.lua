@@ -162,7 +162,7 @@ local function stop_Drag(self)--停止移动
     end
     ResetCursor()--还原，光标
 end
-local function set_SetClampedToScreen(self)
+local function set_SetClampedToScreen(self)--设置，可能，移动，属性
     if self then
         if Save.moveToScreenFuori then
             self:SetClampedToScreen(false)
@@ -183,8 +183,9 @@ local function set_Frame_Drag(self)
         self:RegisterForDrag("LeftButton", "RightButton")
     end
     self:SetScript("OnDragStart", function(self2)--开始移动
-        local moveFrame= self2.MoveFrame or self2
-        moveFrame:StartMoving()
+        --if not EditModeManagerFrame:IsEditModeActive() then
+            local moveFrame= self2.MoveFrame or self2
+            moveFrame:StartMoving()
     end)
     self:SetScript("OnDragStop", function(self2)
         stop_Drag(self)--停止移动
@@ -553,8 +554,11 @@ local function Init_Move()
         ChannelFrame={},--聊天设置
 
         ColorPickerFrame={save=true, click='R'},--颜色选择器
-    }
 
+        [PartyFrame.Background]={frame=PartyFrame, notZoom=true},
+        OpacityFrame={save=true},
+        --EditModeManagerFrame={save=true},
+    }
     for k, v in pairs(FrameTab) do
         if v then
             local f= _G[k]
@@ -570,6 +574,7 @@ local function Init_Move()
        end
     end
     FrameTab=nil
+
 
     created_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer, save=true})
 

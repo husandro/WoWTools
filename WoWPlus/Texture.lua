@@ -72,6 +72,9 @@ local function set_Alpha_Frame_Texture(frame, tab)
                     icon:SetAlpha(Save.alpha)
                 end
                 if e.Player.useColor and not tab.notColor then
+                    if frame==PartyFrame.Background then
+                        print(index)
+                    end
                     icon:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
                 end
             end
@@ -846,6 +849,16 @@ local function Init_Set_AlphaAndColor()
     set_Alpha_Frame_Texture(MinimapCluster.Tracking.Button)
     set_Alpha_Frame_Texture(GameTimeFrame)
 
+    
+    --set_Alpha_Frame_Texture(PartyFrame.Background, {})
+    
+    --任务，追踪柆
+    hooksecurefunc('ObjectiveTracker_Initialize', function(self)
+        for _, module in ipairs(self.MODULES) do
+            set_Alpha(module.Header.Background)
+        end
+    end)
+
     C_Timer.After(2, function()
         if SpellFlyout and SpellFlyout.Background then--Spell Flyout
             hide_Texture(SpellFlyout.Background.HorizontalMiddle)
@@ -865,6 +878,8 @@ local function Init_Set_AlphaAndColor()
         end
 
     end)
+
+    
 end
 
 --#########

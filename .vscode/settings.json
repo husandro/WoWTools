@@ -3127,7 +3127,8 @@
         "CHROMIE_TIME_SELECT_EXAPANSION_BUTTON",
         "PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION",
         "PARTY_PLAYER_CHROMIE_TIME_OTHER_LOCATION",
-        "HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL"
+        "HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL",
+        "OpacityFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
