@@ -1491,6 +1491,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent('CHAT_MSG_SYSTEM')
         end
 
+        C_MythicPlus.RequestMapInfo()
         C_Timer.After(2, function()
             set_Instance_Difficulty()--副本, 地下城，指示
             set_Keystones_Date()--挑战，数据

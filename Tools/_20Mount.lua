@@ -89,8 +89,8 @@ e.LoadDate({id=34090, type= 'spell'})
 local function setPanelPostion()--设置按钮位置
     if Save.Point and Save.Point[1] and Save.Point[3] and Save.Point[4] and Save.Point[5] then
         button:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
-    elseif e.Player.husandro then
-        button:SetPoint('RIGHT', QueueStatusButton, 'LEFT')
+    --elseif e.Player.husandro then
+        --button:SetPoint('RIGHT', QueueStatusButton, 'LEFT')
     else
         button:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -350, 6)
     end

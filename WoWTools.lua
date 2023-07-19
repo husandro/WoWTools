@@ -1305,7 +1305,8 @@ e.PlaySound= function(soundKitID, setPlayerSound)--播放, 声音 SoundKitConsta
     else
         channel= 'Master'
     end
-    PlaySound(soundKitID or SOUNDKIT.GS_CHARACTER_SELECTION_ENTER_WORLD, channel)--SOUNDKIT.READY_CHECK SOUNDKIT.LFG_ROLE_CHECK SOUNDKIT.LFG_ROLE_CHECK SOUNDKIT.IG_PLAYER_INVITE
+    local success, voHandle= PlaySound(soundKitID or SOUNDKIT.GS_CHARACTER_SELECTION_ENTER_WORLD, channel)--SOUNDKIT.READY_CHECK SOUNDKIT.LFG_ROLE_CHECK SOUNDKIT.LFG_ROLE_CHECK SOUNDKIT.IG_PLAYER_INVITE
+    return success, voHandle
 end
 
 e.set_CVar= function(name, value)-- e.set_CVar()--设置 Cvar

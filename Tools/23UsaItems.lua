@@ -459,23 +459,8 @@ local function Init()
             end
         end
    end
-   for _, spellID in pairs(Save.spell) do
-        if IsSpellKnown(spellID) then
-            local name, _, icon = GetSpellInfo(spellID)
-            if name and icon then
-                if name and icon then
-                    local btn=e.Cbtn2(nil, e.toolsFrame, true, true)
-                    btn.spellID=spellID
-                    setSpellButton(btn)
-                    e.ToolsSetButtonPoint(btn)--设置位置
-                    btn:SetAttribute('type', 'spell')
-                    btn:SetAttribute('spell', name)
-                    btn.texture:SetTexture(icon)
-                end
-            end
-        end
-   end
-   for _, itemID in pairs(Save.equip) do
+   
+    for _, itemID in pairs(Save.equip) do
         local name ,icon
         if GetItemCount(itemID)>0 then
             name = C_Item.GetItemNameByID(itemID..'')
@@ -495,6 +480,24 @@ local function Init()
             end
         end
     end
+
+    for _, spellID in pairs(Save.spell) do
+        if IsSpellKnown(spellID) then
+            local name, _, icon = GetSpellInfo(spellID)
+            if name and icon then
+                if name and icon then
+                    local btn=e.Cbtn2(nil, e.toolsFrame, true, true)
+                    btn.spellID=spellID
+                    setSpellButton(btn)
+                    e.ToolsSetButtonPoint(btn)--设置位置
+                    btn:SetAttribute('type', 'spell')
+                    btn:SetAttribute('spell', name)
+                    btn.texture:SetTexture(icon)
+                end
+            end
+        end
+    end
+
 
     button:SetScript('OnMouseDown',function(self, d)--添加, 移除
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()

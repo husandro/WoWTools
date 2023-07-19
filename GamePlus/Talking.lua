@@ -62,8 +62,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 StopSound(self.voHandle);
                 self.voHandle = nil;
             end
-            --e.PlaySound(vo, true)
-            local success, voHandle = PlaySound(vo, "Talking Head", true, true);
+            local success, voHandle = e.PlaySound(vo, true)--PlaySound(vo, "Talking Head", true, true);
             if ( success ) then
                 self.voHandle = voHandle;
             end
