@@ -308,10 +308,10 @@ local function set_PartyFrame()--PartyFrame.lua
                     local text
                     local exists2= UnitExists(self2.unit)
                     if exists2 then
-                        if UnitIsDeadOrGhost(self2.unit) then--死亡
-                            self2.Portrait:SetAtlas('xmarksthespot')
-                        elseif UnitIsUnit(self2.unit, 'player') then--我
+                        if UnitIsUnit(self2.unit, 'player') then--我
                             self2.Portrait:SetAtlas('auctionhouse-icon-favorite')
+                        elseif UnitIsDeadOrGhost(self2.unit) then--死亡
+                            self2.Portrait:SetAtlas('xmarksthespot')
                         else
                             local index = GetRaidTargetIndex(self2.unit)
                             if index and index>0 and index< 9 then--标记

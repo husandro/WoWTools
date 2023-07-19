@@ -89,8 +89,8 @@ local function recipeLearned(recipeSpellID)--是否已学配方
     return info and info.learned
 end
 
-local function set_Engineering(self, slot, link, use)--增加 [潘达利亚工程学: 地精滑翔器][诺森德工程学: 氮气推进器]
-    if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use or Save.hide or not link then
+local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增加 [潘达利亚工程学: 地精滑翔器][诺森德工程学: 氮气推进器]
+    if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use or Save.hide or not link or not isPaperDollItemSlot then
         if self.engineering  then
             self.engineering:SetShown(false)
         end
@@ -169,12 +169,12 @@ local function get_no_Enchant_Bag(slot)--取得，物品，bag, slot
         end
     end
 end
-local function set_no_Enchant(self, slot, find)--附魔，按钮
+local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，按钮
     if not subClassToSlot[slot] or UnitAffectingCombat('player') then
         return
     end
     local tab
-    if not find and not Save.hide then
+    if not find and not Save.hide and isPaperDollItemSlot then
         tab=get_no_Enchant_Bag(slot)--取得，物品，bag, slot
         if tab and not self.noEnchant then
             local h=self:GetHeight()/3
@@ -236,6 +236,8 @@ end
 
 local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使用, 属性
     local enchant, use, pvpItem, upgradeItem
+    local unit = (not isPaperDollItemSlot and InspectFrame) and InspectFrame.unit or 'player'
+
     if link and not Save.hide then
         local dateInfo= e.GetTooltipData({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr}, onlyText=true})--物品提示，信息
         enchant, use, pvpItem, upgradeItem= dateInfo.text[enchantStr], dateInfo.red, dateInfo.text[pvpItemStr],  dateInfo.text[upgradeStr]
@@ -267,8 +269,9 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         self.enchant.tips= enchant
         self.enchant:SetShown(enchant and true or false)
     end
-    set_no_Enchant(self, slot, enchant and true or false)--附魔，按钮
-
+    
+    set_no_Enchant(self, slot, enchant and true or false, isPaperDollItemSlot)--附魔，按钮
+    
     use=  link and select(2, GetItemSpell(link))--物品是否可使用
     if use and not self.use then
         local h=self:GetHeight()/3
@@ -296,7 +299,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         self.use.spellID= use
         self.use:SetShown(use and true or false)
     end
-    set_Engineering(self, slot, link, use)--地精滑翔,氮气推进器
+    set_Engineering(self, slot, link, use, isPaperDollItemSlot)--地精滑翔,氮气推进器
 
     if pvpItem and not self.pvpItem then--提示PvP装备
         local h=self:GetHeight()/3
@@ -386,7 +389,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
             self.upgradeItemText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
         end
         self.upgradeItemText.tips= upgradeItem
-        local quality = GetInventoryItemQuality('player', slot)--颜色
+        local quality = GetInventoryItemQuality(unit, slot)--颜色
         local hex = quality and select(4, GetItemQualityColor(quality))
         if hex then
             upgradeItemText= '|c'..hex..upgradeItemText..'|r'
@@ -510,8 +513,7 @@ local function set_Slot_Num_Label(self, slot, isEquipped)--栏位
         self.slotText:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            local name= self2.name and _G[strupper(strsub(self2.name, 10))] or ''
-            e.tips:AddDoubleLine((e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..name, self2.slot)
+            e.tips:AddDoubleLine((e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..(self2.name and _G[strupper(strsub(self2.name, 10))] or self2.name or ''), self2.slot)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
@@ -1221,8 +1223,8 @@ local function set_ChromieTime()--时空漫游战役, 提示
     if canEnter and not Save.hide and not panel.ChromieTime then
         panel.ChromieTime= e.Cbtn(PaperDollItemsFrame, {size={18,18}, atlas='ChromieTime-32x32'})
         panel.ChromieTime:SetAlpha(0.5)
-        if _G['MoveZoomInButtonPerCharacterFrame'] then
-            panel.ChromieTime:SetPoint('LEFT', _G['MoveZoomInButtonPerCharacterFrame'], 'RIGHT')
+        if _G['MoveZoomInButtonPerCharacterFrame'] or CharacterFrame.TitleContainer.ShowHideButton then
+            panel.ChromieTime:SetPoint('LEFT', _G['MoveZoomInButtonPerCharacterFrame'] or CharacterFrame.TitleContainer.ShowHideButton, 'RIGHT')
             panel.ChromieTime:SetFrameLevel(CharacterFrame.TitleContainer:GetFrameLevel()+1)
         else
             panel.ChromieTime:SetPoint('BOTTOMLEFT', PaperDollItemsFrame, 5, 10)
@@ -1231,7 +1233,6 @@ local function set_ChromieTime()--时空漫游战役, 提示
         panel.ChromieTime:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-       
             for _, info in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
                 local col= info.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
                 e.tips:AddDoubleLine((info.alreadyOn and e.Icon.toRight2 or '')..col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a' or '')..info.name..(info.alreadyOn and e.Icon.toLeft2 or ''), col..'ID '.. info.id)
@@ -1241,10 +1242,9 @@ local function set_ChromieTime()--时空漫游战役, 提示
                 e.tips:AddLine(' ')
             end
 
-            local expansionID = UnitChromieTimeID('player');
+            local expansionID = UnitChromieTimeID('player')--时空漫游战役 PartyUtil.lua
             local option = C_ChromieTime.GetChromieTimeExpansionOption(expansionID);
-            local isInChromieTime= option and option.name
-            local expansion = isInChromieTime or (e.onlyChinese and '无' or NONE)
+            local expansion = option and option.name or (e.onlyChinese and '无' or NONE)
             if option and option.previewAtlas then
                 expansion= '|A:'..option.previewAtlas..':0:0|a'..expansion
             end
@@ -1297,10 +1297,15 @@ panel.Init_Show_Hide_Button= function(self, frame)
         securecall('PaperDollFrame_SetLevel')
         securecall('PaperDollFrame_UpdateStats')
 
-        if InspectFrame and InspectFrame:IsShown() then
-            securecall('InspectPaperDollFrame_UpdateButtons')--InspectPaperDollFrame.lua
-            securecall('InspectPaperDollFrame_SetLevel')--目标,天赋 装等
-            Init_Target_InspectUI()
+        if InspectFrame then
+            if InspectFrame:IsShown() then
+                securecall('InspectPaperDollFrame_UpdateButtons')--InspectPaperDollFrame.lua
+                securecall('InspectPaperDollFrame_SetLevel')--目标,天赋 装等
+                Init_Target_InspectUI()
+            end
+            if InspectLevelText then
+                e.Cstr(nil, {changeFont= InspectLevelText, size= not Save.hide and 20 or 12})
+            end
         end
     end)
     btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
@@ -1462,20 +1467,7 @@ local function Init()
                     e.tips:AddLine(' ')
                 end
                 e.tips:AddDoubleLine('displayID', C_PlayerInfo.GetDisplayID())
-                --local function GetChromieTimeLocationString(unitToken)-- 时空漫游战役 PartyUtil.lua
-                local expansionID = UnitChromieTimeID('player');
-                local option = C_ChromieTime.GetChromieTimeExpansionOption(expansionID);
-                local isInChromieTime= option and option.name
-                local expansion = isInChromieTime or (e.onlyChinese and '无' or NONE)
-                if option and option.previewAtlas then
-                    expansion= '|A:'..option.previewAtlas..':0:0|a'..expansion
-                end
-                local text= format(e.onlyChinese and '你目前处于|cffffffff时空漫游战役：%s|r' or PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION, expansion)
-                e.tips:AddDoubleLine((e.onlyChinese and '选择时空漫游战役' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHROMIE_TIME_SELECT_EXAPANSION_BUTTON, CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE))..': '..e.GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime()),
-                                        text
-                                    )
                 e.tips:AddLine(' ')
-
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
                 self2:SetAlpha(0.3)

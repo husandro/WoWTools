@@ -12,7 +12,10 @@ local Save={
     guildWelcome= true,
     --guildWelcomeText='',
     welcomeOnlyHomeGroup=true,--仅限, 手动组队
+
     setPlayerSound= e.Player.husandro,--播放, 声音
+    --disabledNPCTalking=true,--禁用，隐藏NPC发言
+
     setFucus= e.Player.husandro,--焦点
     focusKey='Shift',--焦点,快捷键, Ctrl, Alt
 }
@@ -765,7 +768,7 @@ StaticPopupDialogs[id..addName..'WELCOME']={--区域,设置对话框
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, type)
+local function InitMenu(_, level, type)
     local info
     if type=='Welcome' then--欢迎
         info={
@@ -807,6 +810,21 @@ local function InitMenu(self, level, type)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
         return
+
+    --[[elseif type=='NPCTalking' then--禁用，隐藏NPC发言
+        info={--仅限, 手动组队,不是在随机队伍里
+            text= e.onlyChinese and '隐藏NPC发言' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ' (NPC) '..VOICE_TALKING),
+            checked= not Save.disabledNPCTalking,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '隐藏对话特写头像' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL),
+            --keepShownOnClick=true,
+            func= function()
+                Save.disabledNPCTalking= not Save.disabledNPCTalking and true or nil
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
+        ]]
     end
 
 
@@ -842,6 +860,8 @@ local function InitMenu(self, level, type)
         checked= Save.setPlayerSound,
         colorCode= (not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0') and '|cff606060',
         keepShownOnClick=true,
+        --hasArrow=true,
+        --menuList='NPCTalking',
         func= function()
             Save.setPlayerSound= not Save.setPlayerSound and true or nil
             e.setPlayerSound= Save.setPlayerSound
