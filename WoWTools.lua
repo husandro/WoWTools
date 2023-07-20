@@ -362,7 +362,7 @@ e.Icon={
     map='poi-islands-table',
     map2='|A:poi-islands-table:0:0|a',
     --wow2='|A:Icon-WoW:0:0|a',--136235
-    wow2='|T-18:0|t',
+    wow2= BNet_GetClientEmbeddedTexture(-18, 32, 32),--'|T-18:0|t',--BnetShared.lua UI-ChatIcon-
 
     horde= 'charcreatetest-logo-horde',
     alliance='charcreatetest-logo-alliance',
