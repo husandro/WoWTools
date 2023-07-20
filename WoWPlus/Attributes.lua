@@ -1735,7 +1735,7 @@ local function set_Panle_Setting()--设置 panel
         button.frame:SetScale(value)
     end)
 
-    local sliderButtonAlpha = e.Create_Slider(panel, {min=0, max=1, value=Save.buttonAlpha or 0.3, setp=0.1, color=true,
+    local sliderButtonAlpha = e.CSlider(panel, {min=0, max=1, value=Save.buttonAlpha or 0.3, setp=0.1, color=true,
     text=e.onlyChinese and '专精透明度' or SPECIALIZATION..'('..CHANGE_OPACITY..')',
     func=function(self, value)
         value= tonumber(format('%.1f', value))

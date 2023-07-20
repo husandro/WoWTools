@@ -241,7 +241,7 @@ end
 
 --Curor, 添加控制面板
 local function Init_Cursor_Options()
-    local sliderMaxParticles = e.Create_Slider(panel, {min=50, max=4096, value=Save.maxParticles, setp=1,
+    local sliderMaxParticles = e.CSlider(panel, {min=50, max=4096, value=Save.maxParticles, setp=1,
     text=e.onlyChinese and '粒子密度' or PARTICLE_DENSITY,
     func=function(self, value)
         value= math.floor(value)
@@ -252,7 +252,7 @@ local function Init_Cursor_Options()
     end})
     sliderMaxParticles:SetPoint("TOPLEFT", panel.cursorCheck, 'BOTTOMLEFT', 0, -20)
 
-    local sliderMinDistance = e.Create_Slider(panel, {min=1, max=10, value=Save.minDistance, setp=1, color=true,
+    local sliderMinDistance = e.CSlider(panel, {min=1, max=10, value=Save.minDistance, setp=1, color=true,
     text=e.onlyChinese and '最小距离' or MINIMUM..TRACKER_SORT_PROXIMITY,
     func=function(self, value)
         value= math.floor(value)
@@ -264,7 +264,7 @@ local function Init_Cursor_Options()
     sliderMinDistance:SetPoint("TOPLEFT", sliderMaxParticles, 'BOTTOMLEFT', 0, -20)
 
 
-    local sliderSize = e.Create_Slider(panel, {min=8, max=128, value=Save.size, setp=1,
+    local sliderSize = e.CSlider(panel, {min=8, max=128, value=Save.size, setp=1,
     text=e.onlyChinese and '缩放' or UI_SCALE,
     func=function(self, value)
         value= math.floor(value)
@@ -275,7 +275,7 @@ local function Init_Cursor_Options()
     end})
     sliderSize:SetPoint("TOPLEFT", sliderMinDistance, 'BOTTOMLEFT', 0, -20)
 
-    local sliderX = e.Create_Slider(panel, {min=-100, max=100, value=Save.X, setp=1, color=true,
+    local sliderX = e.CSlider(panel, {min=-100, max=100, value=Save.X, setp=1, color=true,
     text='X',
     func=function(self, value)
         value= math.floor(value)
@@ -286,7 +286,7 @@ local function Init_Cursor_Options()
     end})
     sliderX:SetPoint("TOPLEFT", sliderSize, 'BOTTOMLEFT', 0, -20)
 
-    local sliderY = e.Create_Slider(panel, {min=-100, max=100, value=Save.Y, setp=1,
+    local sliderY = e.CSlider(panel, {min=-100, max=100, value=Save.Y, setp=1,
     text='Y',
     func=function(self, value)
         value= math.floor(value)
@@ -297,7 +297,7 @@ local function Init_Cursor_Options()
     end})
     sliderY:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0, -20)
 
-    local sliderRate = e.Create_Slider(panel, {min=0.001, max=0.1, value=Save.rate, setp=0.001, color=true,
+    local sliderRate = e.CSlider(panel, {min=0.001, max=0.1, value=Save.rate, setp=0.001, color=true,
     text=e.onlyChinese and '刷新' or REFRESH,
     func=function(self, value)
         value= tonumber(format('%.3f', value))
@@ -308,7 +308,7 @@ local function Init_Cursor_Options()
     end})
     sliderRate:SetPoint("TOPLEFT", sliderY, 'BOTTOMLEFT', 0, -20)
 
-    local sliderRotate = e.Create_Slider(panel, {min=0, max=32, value=Save.rotate, setp=1,
+    local sliderRotate = e.CSlider(panel, {min=0, max=32, value=Save.rotate, setp=1,
     text=e.onlyChinese and '旋转' or HUD_EDIT_MODE_SETTING_MINIMAP_ROTATE_MINIMAP:gsub(MINIMAP_LABEL, ''),
     func=function(self, value)
         value= math.floor(value)
@@ -319,7 +319,7 @@ local function Init_Cursor_Options()
     end})
     sliderRotate:SetPoint("TOPLEFT", sliderRate, 'BOTTOMLEFT', 0, -20)
 
-    local sliderDuration = e.Create_Slider(panel, {min=0.1, max=4, value=Save.duration, setp=0.1, color=true,
+    local sliderDuration = e.CSlider(panel, {min=0.1, max=4, value=Save.duration, setp=0.1, color=true,
     text=e.onlyChinese and '持续时间' or AUCTION_DURATION,
     func=function(self, value)
         value= tonumber(format('%.1f', value))
@@ -330,7 +330,7 @@ local function Init_Cursor_Options()
     end})
     sliderDuration:SetPoint("TOPLEFT", sliderRotate, 'BOTTOMLEFT', 0, -20)
 
-    local sliderGravity = e.Create_Slider(panel, {min=-512, max=512, value=Save.gravity, setp=1,
+    local sliderGravity = e.CSlider(panel, {min=-512, max=512, value=Save.gravity, setp=1,
     text=e.onlyChinese and '掉落' or BATTLE_PET_SOURCE_1,
     func=function(self, value)
         value= math.floor(value)
@@ -341,7 +341,7 @@ local function Init_Cursor_Options()
     end})
     sliderGravity:SetPoint("TOPLEFT", sliderDuration, 'BOTTOMLEFT', 0, -20)
 
-    local alphaSlider = e.Create_Slider(panel, {min=0.1, max=1, value=Save.alpha, setp=0.1, color=true,
+    local alphaSlider = e.CSlider(panel, {min=0.1, max=1, value=Save.alpha, setp=0.1, color=true,
     text=e.onlyChinese and '透明度' or CHANGE_OPACITY,
     func=function(self, value)
         value= tonumber(format('%.1f', value))
@@ -536,7 +536,7 @@ end
 --GCD, 添加控制面板
 --################
 local function Init_GCD_Options()
-    local sliderSize = e.Create_Slider(panel, {min=8, max=128, value=Save.gcdSize, setp=1,
+    local sliderSize = e.CSlider(panel, {min=8, max=128, value=Save.gcdSize, setp=1,
     text=e.onlyChinese and '缩放' or UI_SCALE,
     func=function(self, value)
         value= math.floor(value)
@@ -547,7 +547,7 @@ local function Init_GCD_Options()
     end})
     sliderSize:SetPoint("TOPLEFT", panel.gcdCheck, 'BOTTOMLEFT', 0, -20)
 
-    local alphaSlider = e.Create_Slider(panel, {min=0.1, max=1, value=Save.alpha, setp=0.1, color=true,
+    local alphaSlider = e.CSlider(panel, {min=0.1, max=1, value=Save.alpha, setp=0.1, color=true,
     text=e.onlyChinese and '透明度' or CHANGE_OPACITY,
     func=function(self, value)
         value= tonumber(format('%.1f', value))
@@ -558,7 +558,7 @@ local function Init_GCD_Options()
     end})
     alphaSlider:SetPoint("TOPLEFT", sliderSize, 'BOTTOMLEFT', 0, -20)
 
-    local sliderX = e.Create_Slider(panel, {min=-100, max=100, value=Save.gcdX , setp=1,
+    local sliderX = e.CSlider(panel, {min=-100, max=100, value=Save.gcdX , setp=1,
     text='X',
     func=function(self, value)
         value= math.floor(value)
@@ -569,7 +569,7 @@ local function Init_GCD_Options()
     end})
     sliderX:SetPoint("TOPLEFT", alphaSlider, 'BOTTOMLEFT', 0, -20)
 
-    local sliderY = e.Create_Slider(panel, {min=-100, max=100, value=Save.gcdY, setp=1, color=true,
+    local sliderY = e.CSlider(panel, {min=-100, max=100, value=Save.gcdY, setp=1, color=true,
     text='Y',
     func=function(self, value)
         value= math.floor(value)

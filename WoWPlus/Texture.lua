@@ -1915,7 +1915,7 @@ local function options_Init()--初始，选项
         print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
-    local sliderClassPowerNumSize = e.Create_Slider(panel, {min=8, max=24, value=Save.classPowerNumSize, setp=1, color=true,
+    local sliderClassPowerNumSize = e.CSlider(panel, {w=100,min=8, max=24, value=Save.classPowerNumSize, setp=1, color=true,
     text=e.onlyChinese and '大小' or 'Size',
     func=function(self, value)
         value= tonumber(format('%i', value))

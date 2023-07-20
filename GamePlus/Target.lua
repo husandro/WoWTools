@@ -444,7 +444,7 @@ local function set_Option()
         self2:SetAlpha(0.3)
     end)
 
-    local sliderX = e.Create_Slider(panel, {min=-250, max=250, value=Save.x, setp=1, w= 100,
+    local sliderX = e.CSlider(panel, {min=-250, max=250, value=Save.x, setp=1, w= 100,
     text= 'X',
     func=function(self2, value)
         value= math.floor(value)
@@ -454,7 +454,7 @@ local function set_Option()
         set_All_Init()
     end})
     sliderX:SetPoint("TOPLEFT", sel, 'BOTTOMRIGHT',0, -12)
-    local sliderY = e.Create_Slider(panel, {min=-250, max=250, value=Save.y, setp=1, w= 100, color=true,
+    local sliderY = e.CSlider(panel, {min=-250, max=250, value=Save.y, setp=1, w= 100, color=true,
     text= 'Y',
     func=function(self2, value)
         value= math.floor(value)
@@ -464,7 +464,7 @@ local function set_Option()
         set_All_Init()
     end})
     sliderY:SetPoint("LEFT", sliderX, 'RIGHT',15,0)
-    local sliderW = e.Create_Slider(panel, {min=10, max=100, value=Save.w, setp=1, w= 100,
+    local sliderW = e.CSlider(panel, {min=10, max=100, value=Save.w, setp=1, w= 100,
     text= 'W',
     func=function(self2, value)
         value= math.floor(value)
@@ -475,7 +475,7 @@ local function set_Option()
         set_Target_Size(panel.tipTargetTexture)--设置，大小
     end})
     sliderW:SetPoint("LEFT", sliderY, 'RIGHT',15,0)
-    local sliderH = e.Create_Slider(panel, {min=10, max=100, value=Save.h, setp=1, w= 100, color=true,
+    local sliderH = e.CSlider(panel, {min=10, max=100, value=Save.h, setp=1, w= 100, color=true,
     text= 'H',
     func=function(self2, value)
         value= math.floor(value)
@@ -616,7 +616,7 @@ local function set_Option()
         set_All_Init()
     end)
 
-    local sliderRange = e.Create_Slider(panel, {min=0, max=60, value=Save.creatureRange, setp=1, w= 100 ,
+    local sliderRange = e.CSlider(panel, {min=0, max=60, value=Save.creatureRange, setp=1, w= 100 ,
     text=format(e.onlyChinese and '码' or IN_GAME_NAVIGATION_RANGE, ''),
     func=function(self2, value)
         value= math.floor(value)
@@ -627,7 +627,7 @@ local function set_Option()
     end})
     sliderRange:SetPoint("TOPLEFT", sel2.Text, 'BOTTOMLEFT',0, -16)
 
-    local sliderCreatureFontSize = e.Create_Slider(panel, {min=8, max=32, value=Save.creatureFontSize, setp=1, w=100, color=true,
+    local sliderCreatureFontSize = e.CSlider(panel, {min=8, max=32, value=Save.creatureFontSize, setp=1, w=100, color=true,
     text=e.onlyChinese and '大小' or 'Size',
     func=function(self2, value)
         value= math.floor(value)

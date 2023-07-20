@@ -7,8 +7,32 @@ local Save={
     setCVar=e.Player.husandro,
     inCombatDefaultAnchor=true,
     ctrl= e.Player.husandro,--取得网页，数据链接
+
+    --模型
+    modelSize=100,--大小
+    --modelLeft=true,--左边
+    modelX= 0,
+    modelY= -24,
+    modelFacing= -0.35,--方向
 }
 local panel=CreateFrame("Frame")
+
+
+local function set_playerModel(self)
+    if not self.playerModel then
+        self.playerModel= CreateFrame("PlayerModel", nil, self)--DressUpModel PlayerModel
+        self.playerModel:SetFrameLevel(self:GetFrameLevel()-1)
+    else
+        self.playerModel:ClearAllPoints()
+    end
+    if Save.modelLeft then
+        self.playerModel:SetPoint("RIGHT", self, 'LEFT', Save.modelX, Save.modelY)
+    else
+        self.playerModel:SetPoint("BOTTOM", self, 'TOP', Save.modelX, Save.modelY)
+    end
+    self.playerModel:SetSize(Save.modelSize, Save.modelSize)
+    self.playerModel:SetFacing(Save.modelFacing)
+end
 
 local function setInitItem(self, hide)--创建物品
     if not self.textLeft then--左上角字符
@@ -28,12 +52,8 @@ local function setInitItem(self, hide)--创建物品
         self.backgroundColor:SetAllPoints(self)
     end
     if not self.playerModel and not Save.hideModel then
-        self.playerModel= CreateFrame("PlayerModel", nil, self)--DressUpModel PlayerModel
-        self.playerModel:SetFacing(-0.35)
-        self.playerModel:SetPoint("BOTTOM", self, 'TOP', 0, -24)
-        self.playerModel:SetSize(Save.modelSize or 100, Save.modelSize or 100)
+        set_playerModel(self)
         self.playerModel:SetShown(false)
-        self.playerModel:SetFrameLevel(self:GetFrameLevel()-1)
     end
 
     if not self.Portrait then--右上角图标
@@ -63,7 +83,6 @@ local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=nil, guid=n
     if Save.hideModel then
         return
     end
-    
     if tab.unit then
         if self.playerModel.id~=tab.guid then--and self.playerModel:CanSetUnit(tab.unit) then
             self.playerModel:SetUnit(tab.unit)
@@ -1555,12 +1574,15 @@ end
 --设置 panel
 --##########
 local function set_Cursor_Tips(self)
+    set_playerModel(e.tips)
+    set_playerModel(ItemRefTooltip)
     GameTooltip_SetDefaultAnchor(e.tips, self or UIParent)
     --e.tips:SetOwner(UIParent, 'ANCHOR_CURSOR_LEFT', Save.cursorX, Save.cursorY)
     e.tips:ClearLines()
     e.tips:SetUnit('player')
     e.tips:Show()
 end
+
 local function Init_Panel()
     panel.name = e.Icon.mid..addName;--添加新控制面板
     panel.parent= id
@@ -1594,7 +1616,7 @@ local function Init_Panel()
     end)
 
 
-    local sliderCursorX = e.Create_Slider(panel, {w=100, min=-150, max=150, value=Save.cursorX or 0, setp=1, color=nil,
+    local sliderCursorX = e.CSlider(panel, {w=100, min=-150, max=150, value=Save.cursorX or 0, setp=1, color=nil,
     text='X',
     func=function(self, value)
         value= tonumber(format('%i', value))
@@ -1605,9 +1627,8 @@ local function Init_Panel()
         set_Cursor_Tips(self)
     end})
     sliderCursorX:SetPoint('TOPLEFT', setDefaultAnchor, 'BOTTOMRIGHT', 0, -16)
-    sliderCursorX:SetScript('OnLeave', function() e.tips:Hide() end)
 
-    local sliderCursorY = e.Create_Slider(panel, {w=100, min=-150, max=150, value=Save.cursorY or 0, setp=1, color=true,
+    local sliderCursorY = e.CSlider(panel, {w=100, min=-150, max=150, value=Save.cursorY or 0, setp=1, color=true,
     text='Y',
     func=function(self, value)
         value= tonumber(format('%i', value))
@@ -1618,7 +1639,6 @@ local function Init_Panel()
         set_Cursor_Tips(self)
     end})
     sliderCursorY:SetPoint("LEFT", sliderCursorX, 'RIGHT',20,0)
-    sliderCursorY:SetScript('OnLeave', function() e.tips:Hide() end)
 
     inCombatDefaultAnchor.text:SetText(e.onlyChinese and '战斗中：默认' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT)
     inCombatDefaultAnchor:SetPoint('TOPLEFT', sliderCursorX.Low, 'BOTTOMLEFT',0,-16)
@@ -1635,45 +1655,81 @@ local function Init_Panel()
         Save.cursorRight= not Save.cursorRight and true or nil
         set_Cursor_Tips(self)
     end)
-    courorRightCheck:SetScript('OnLeave', function() e.tips:Hide() end)
 
 
     local modelCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     modelCheck.text:SetText(e.onlyChinese and '模型' or MODEL)
     modelCheck:SetPoint('TOPLEFT', panel, 'TOP', 0, -48)
     modelCheck:SetChecked(not Save.hideModel)
-    modelCheck:SetScript('OnMouseDown', function(self)
+    modelCheck:SetScript('OnClick', function(self)
         Save.hideModel= not Save.hideModel and true or nil
-        setInitItem(e.tips, true)--创建物品
-        setInitItem(ItemRefTooltip, true)
         set_Cursor_Tips(self)
     end)
-    modelCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+    
+    local modelLeft=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    modelLeft.text:SetText(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT)
+    modelLeft:SetPoint('LEFT', modelCheck.text, 'RIGHT', 2, 0)
+    modelLeft:SetChecked(Save.modelLeft)
+    modelLeft:SetScript('OnMouseDown', function(self)
+        Save.modelLeft= not Save.modelLeft and true or nil
+        set_Cursor_Tips(self)
+    end)
 
-    local sliderModelSize = e.Create_Slider(panel, {w=100, min=50, max=200, value=Save.modelSize or 100, setp=1, color=nil,
+    local sliderModelSize = e.CSlider(panel, {w=100, min=50, max=200, value=Save.modelSize, setp=1, color=nil,
     text=e.onlyChinese and '大小' or 'Size',
     func=function(self, value)
         value= tonumber(format('%i', value))
         value= value==0 and 0 or value
         self:SetValue(value)
         self.Text:SetText(value)
-        if ItemRefTooltip.playerModel then
-            ItemRefTooltip.playerModel:SetSize(value, value)
-        end
-        if e.tips.playerModel then
-            e.tips.playerModel:SetSize(value, value)
-        end
         Save.modelSize= value
         set_Cursor_Tips(self)
     end})
-    sliderModelSize:SetPoint("LEFT", modelCheck.text, 'RIGHT',10,0)
-    sliderModelSize:SetScript('OnLeave', function() e.tips:Hide() end)
+    sliderModelSize:SetPoint("TOPLEFT", modelCheck.text, 'BOTTOMLEFT',0, -16)
+
+    local sliderModelFacing = e.CSlider(panel, {w=100, min=-1, max=1, value=Save.modelFacing, setp=0.01, color=true,
+    text= e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION,
+    func=function(self, value)
+        value= tonumber(format('%0.2f', value))
+        value= value==0 and 0 or value
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.modelFacing= value
+        set_Cursor_Tips(self)
+    end})
+    sliderModelFacing:SetPoint("LEFT", sliderModelSize, 'RIGHT', 10, 0)
+
+    local sliderModelX = e.CSlider(panel, {w=100, min=-200, max=200, value=Save.modelX, setp=1, color=true,
+    text= 'X',
+    func=function(self, value)
+        value= tonumber(format('%i', value))
+        value= value==0 and 0 or value
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.modelX= value
+        set_Cursor_Tips(self)
+    end})
+    sliderModelX:SetPoint("TOPLEFT", sliderModelSize, 'BOTTOMLEFT', 0, -36)
+
+    local sliderModelY = e.CSlider(panel, {w=100, min=-200, max=200, value=Save.modelY, setp=1, color=nil,
+    text= 'Y',
+    func=function(self, value)
+        value= tonumber(format('%i', value))
+        value= value==0 and 0 or value
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.modelY= value
+        set_Cursor_Tips(self)
+    end})
+    sliderModelY:SetPoint("LEFT", sliderModelX, 'RIGHT', 10, 0)
+
+
 
     local healthCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     healthCheck.text:SetText(e.onlyChinese and '生命值 ' or HEALTH)
-    healthCheck:SetPoint('TOPLEFT', modelCheck, 'BOTTOMLEFT')
+    healthCheck:SetPoint('TOPLEFT', modelCheck, 'BOTTOMLEFT', 0, -104)
     healthCheck:SetChecked(not Save.hideHealth)
-    healthCheck:SetScript('OnMouseDown', function(self)
+    healthCheck:SetScript('OnMouseDown', function()
         Save.hideHealth= not Save.hideHealth and true or nil
         print(id, addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
@@ -1682,7 +1738,7 @@ local function Init_Panel()
     ctrlCopy.text:SetText('Ctrl+Shift'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..' (wowhead Raider.IO)')
     ctrlCopy:SetPoint('TOPLEFT', healthCheck, 'BOTTOMLEFT')
     ctrlCopy:SetChecked(Save.ctrl)
-    ctrlCopy:SetScript('OnMouseDown', function(self)
+    ctrlCopy:SetScript('OnMouseDown', function()
         Save.ctrl= not Save.ctrl and true or nil
     end)
 
@@ -1716,10 +1772,15 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
+            Save.modelSize= Save.modelSize or 100
+            Save.modelX= Save.modelX or 0
+            Save.modelY= Save.modelY or -24
+            Save.modelFacing= Save.modelFacing or -0.35
+
             Init_Panel()--设置 panel
 
             if Save.disabled then

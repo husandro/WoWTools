@@ -3131,7 +3131,8 @@
         "OpacityFrame",
         "DEFAULT_OBJECTIVE_TRACKER_MODULE",
         "ChatFrameChannelButton",
-        "ChatFrameMenuButton"
+        "ChatFrameMenuButton",
+        "MAXIMUM"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

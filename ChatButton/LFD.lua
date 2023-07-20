@@ -912,7 +912,7 @@ local function set_LFGPlus()--预创建队伍增强
             self.autoAcceptTexture:SetSize(12,12)
             self.autoAcceptTexture:EnableMouse(true)
             self.autoAcceptTexture:SetScript('OnEnter', function(self2)
-                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddLine(e.onlyChinese and '自动接受' or LFG_LIST_AUTO_ACCEPT)
                 e.tips:AddDoubleLine(id, addName)
