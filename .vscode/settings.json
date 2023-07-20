@@ -3132,7 +3132,11 @@
         "DEFAULT_OBJECTIVE_TRACKER_MODULE",
         "ChatFrameChannelButton",
         "ChatFrameMenuButton",
-        "MAXIMUM"
+        "MAXIMUM",
+        "MAX_BOSS_FRAMES",
+        "BossTargetFrameContainerMixin",
+        "BossTargetFrameMixin",
+        "BossTargetFrameContainer"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

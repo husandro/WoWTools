@@ -394,6 +394,7 @@ local function set_PartyFrame()--PartyFrame.lua
                 frame:RegisterEvent('RAID_TARGET_UPDATE')
                 frame:RegisterUnitEvent('UNIT_TARGET', unit)
                 frame:RegisterUnitEvent('UNIT_FLAGS', unit..'target')
+                frame:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit..'target')
             end
             frame.set_Party_Target_Changed(frame)
 
@@ -1307,6 +1308,37 @@ local function set_ToggleWarMode()--设置, 战争模式
     end
 end
 
+--#########
+--BossFrame
+--#########
+local function set_BossFrame()
+    for i=1, MAX_BOSS_FRAMES do
+        local frame= _G['Boss'..i..'TargetFrame']
+        frame.PortraitFrame=CreateFrame('Frame', nil, frame)
+        frame.PortraitFrame:SetFrameStrata('MEDIUM')
+        frame.PortraitFrame:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
+        frame.PortraitFrame:SetSize(38, 38)
+        frame.PortraitFrame.Portrait= frame.PortraitFrame:CreateTexture(nil, 'BACKGROUND')
+        frame.PortraitFrame.Portrait:SetAllPoints(frame.PortraitFrame)
+        function frame.PortraitFrame:set_Portrait()
+            local parentFrame= self:GetParent()
+            local unit= parentFrame.unit
+            local isExists= UnitExists(unit)
+            if isExists then
+                SetPortraitTexture(self.Portrait, unit)
+                self:Raise()
+            end
+            self:SetShown(isExists)
+        end
+        frame.PortraitFrame:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', frame.unit)
+        frame.PortraitFrame:RegisterEvent('INSTANCE_ENCOUNTER_ENGAGE_UNIT')
+        frame.PortraitFrame:SetScript('OnEvent', frame.PortraitFrame.set_Portrait)
+        frame.PortraitFrame:set_Portrait()
+        hooksecurefunc(frame, 'CheckClassification', function(self)
+            self.PortraitFrame:set_Portrait()
+        end)
+    end
+end
 
 --######
 --初始化
@@ -1322,6 +1354,7 @@ local function Init()
     set_TargetFrame()--目标
     set_PartyFrame()--小队
     set_UnitFrame_Update()--职业, 图标， 颜色
+    set_BossFrame()
 
     --###############
     --MirrorTimer.lua

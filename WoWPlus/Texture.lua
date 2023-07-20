@@ -90,6 +90,15 @@ local function Init_HideTexture()
     if Save.disabledTexture then
         return
     end
+
+    for i=1, MAX_BOSS_FRAMES do
+        local frame= _G['Boss'..i..'TargetFrame']
+        hide_Texture(frame.TargetFrameContainer.FrameTexture)
+        --[[frame:HookScript('OnShow', function(self)
+            hide_Texture(self.TargetFrameContainer.FrameTexture)
+        end)]]
+    end
+
     hooksecurefunc('PlayerFrame_UpdateArt', function()--隐藏材质, 载具
         if OverrideActionBarEndCapL then
             hide_Texture(OverrideActionBarEndCapL)

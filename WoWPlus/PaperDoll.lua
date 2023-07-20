@@ -1336,7 +1336,7 @@ local function Init()
         set_PaperDollSidebarTab3_Text()
     end)
 
-    hooksecurefunc('PaperDollEquipmentManagerPane_Update', function(slef, equipmentSetsDirty)--装备管理
+    hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()--装备管理
         set_PaperDollSidebarTab3_Text()
         LvTo()--总装等
     end)
