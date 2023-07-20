@@ -1334,9 +1334,6 @@ local function set_BossFrame()
         frame.PortraitFrame:RegisterEvent('INSTANCE_ENCOUNTER_ENGAGE_UNIT')
         frame.PortraitFrame:SetScript('OnEvent', frame.PortraitFrame.set_Portrait)
         frame.PortraitFrame:set_Portrait()
-        hooksecurefunc(frame, 'CheckClassification', function(self)
-            self.PortraitFrame:set_Portrait()
-        end)
     end
 end
 
