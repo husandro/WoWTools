@@ -632,6 +632,7 @@ local function set_PartyFrame()--PartyFrame.lua
                 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
                 frame:RegisterEvent('CHALLENGE_MODE_START')
                 frame:RegisterUnitEvent('UNIT_FLAGS', unit)
+                frame:RegisterUnitEvent('UNIT_HEALTH', unit)
                 frame.deadText:SetTextColor(r, g, b)
             else
                 frame.dead= 0
