@@ -1421,8 +1421,6 @@ local function set_Panle_Setting()--设置 panel
     end)
     sliderY.text= text
 
-
-
     local notTextCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     notTextCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -32)
     notTextCheck.text:SetText(e.onlyChinese and '隐藏数值' or HIDE..STATUS_TEXT_VALUE)
