@@ -3136,7 +3136,8 @@
         "MAX_BOSS_FRAMES",
         "BossTargetFrameContainerMixin",
         "BossTargetFrameMixin",
-        "BossTargetFrameContainer"
+        "BossTargetFrameContainer",
+        "BNet_GetClientEmbeddedTexture"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

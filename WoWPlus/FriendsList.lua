@@ -162,7 +162,6 @@ local function set_FriendsList_Init()--好友列表, 初始化
 
     panel.btn= e.Cbtn(FriendsFrameStatusDropDownButton, {size={20,20}})
     panel.btn:RegisterEvent('BN_FRIEND_INFO_CHANGED')
-    panel.btn.gameIcon= panel.btn:CreateTexture()
     panel.btn.playerRealmID = GetRealmID()
     panel.btn:SetScript('OnEvent', function(self, _, friendIndex)
         if Save.disabledBNFriendInfo then
@@ -204,7 +203,6 @@ local function set_FriendsList_Init()--好友列表, 初始化
         if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= MAX_PLAYER_LEVEL then--角色等级
             text= text..'|cnGREEN_FONT_COLOR:'..accountInfo.gameAccountInfo.characterLevel..'|r '
         end
-        
 
         if accountInfo.gameAccountInfo.isOnline and accountInfo.gameAccountInfo.clientProgram == BNET_CLIENT_WOW then
             if accountInfo.gameAccountInfo.wowProjectID == WOW_PROJECT_ID  and accountInfo.gameAccountInfo.isInCurrentRegion then
@@ -223,13 +221,14 @@ local function set_FriendsList_Init()--好友列表, 初始化
         end
 
         if accountInfo.gameAccountInfo.clientProgram then
-            C_Texture.SetTitleIconTexture(self.gameIcon, accountInfo.gameAccountInfo.clientProgram, Enum.TitleIconVersion.Medium)
-            local icon= self.gameIcon:GetTexture()
-            if icon then
-                text= text..'|T'..icon..':0|t'
-            end
+            C_Texture.GetTitleIconTexture(accountInfo.gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small, function(success, texture)--FriendsFrame.lua BnetShared.lua
+                if success then
+                    text= text..'|T'..texture..':0|t'
+                    --print( BNet_GetClientEmbeddedTexture(texture, 32, 32, 0).." ")--
+                end
+            end)
+            --C_Texture.SetTitleIconTexture(self.gameIcon, accountInfo.gameAccountInfo.clientProgram, Enum.TitleIconVersion.Medium)
         end
-        self.gameIcon:SetTexture(0)
 
         if not accountInfo.gameAccountInfo.isInCurrentRegion then
             if accountInfo.gameAccountInfo.regionID and regionNames[accountInfo.gameAccountInfo.regionID] then
@@ -480,7 +479,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
             end
 
             local text=''
-            
+
             if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= MAX_PLAYER_LEVEL then--角色等级
                 text= text..'|cnGREEN_FONT_COLOR:'..accountInfo.gameAccountInfo.characterLevel..'|r '
             end
