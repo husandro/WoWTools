@@ -1329,9 +1329,6 @@ local function Init()
     Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
     set_ChromieTime()--时空漫游战役, 提示
 
-    set_inti_Equipment_Frame()--装备管理框
-    --set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
-
     GetDurationTotale()--装备,总耐久度
 
     hooksecurefunc('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
@@ -1476,6 +1473,9 @@ local function Init()
             CharacterLevelText.set=true
         end
     end)
+
+    C_Timer.After(2, set_inti_Equipment_Frame)--装备管理框
+    --set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
 end
 
 
