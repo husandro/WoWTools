@@ -219,8 +219,8 @@ local function Init()
         local last
         local index= 0
         for _, tab in pairs(newTab) do
-            local name, title, notes, loadable, reason, security = GetAddOnInfo(tab.name)
-            if tab.name then
+            local name, _, _, _, reason = GetAddOnInfo(tab.name)
+            if name and reason~='MISSING' then
                 index= index+1
                 local check= panel.fast[index]
                 if not check then
@@ -244,7 +244,7 @@ local function Init()
                     check:SetScript('OnEnter', function(self2)
                         e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                         e.tips:ClearLines()
-                        e.tips:AddDoubleLine(self2.icon..self2.name, self2.index)
+                        e.tips:AddDoubleLine(self2.icon ..self2.name, self2.index)
                         e.tips:AddLine(' ')
                         e.tips:AddLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
                         e.tips:AddDoubleLine(id, addName)
@@ -257,10 +257,15 @@ local function Init()
                 local checked= GetAddOnEnableState(nil, name)~=0
                 check:SetChecked(checked)
                 check:SetShown(true)
-                
+
                 local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
 	            local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
-                local icon= iconTexture and '|T'..iconTexture..':0|t' or (iconAtlas and '|A:'..iconAtlas..':0:0|a') or ''
+                local icon= ''
+                if iconTexture then
+                    icon= '|T'..iconTexture..':0|t'
+                elseif iconAtlas then
+                    icon='|A:'..iconAtlas..':0:0|a'
+                end
                 check.Text:SetText(name..icon)
                 if checked then
                     check.Text:SetTextColor(0,1,0)
