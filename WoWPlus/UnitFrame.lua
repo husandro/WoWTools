@@ -699,6 +699,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
             self.classFrame.Texture:SetPoint('CENTER', self.classFrame,1,-1)
             self.classFrame.Texture:SetSize(20,20)
+            --self.classFrame:RegisterUnitEvent('')
 
             --[[local mask= self.classFrame:CreateMaskTexture()--mask
             mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
@@ -736,6 +737,8 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 lootTipsTexture:SetSize(10,10)
                 lootTipsTexture:SetPoint('TOP',0,8)
                 lootTipsTexture:SetAtlas('Banker')
+
+                self.lootSpecFrame:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                 self.lootSpecFrame:SetScript('OnEnter', function(self2)
                     if self2.tips then
                         e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -744,6 +747,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         e.tips:AddLine(' ')
                         e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
+                        self2:SetAlpha(0.3)
                     end
                 end)
                 --set_LootSpecialization()--拾取专精
@@ -753,6 +757,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 self.instanceFrame3:SetPoint('RIGHT', self.lootSpecFrame, 'LEFT',-2, 1)
                 self.instanceFrame3:SetSize(16,16)
                 self.instanceFrame3:EnableMouse(true)
+                self.instanceFrame3:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                 self.instanceFrame3:SetScript('OnEnter', function(self2)
                     if self2.tips then
                         e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -770,9 +775,9 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         end
                         e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
+                        self2:SetAlpha(0.3)
                     end
                 end)
-                self.instanceFrame3:SetScript('OnLeave', function() e.tips:Hide() end)
                 self.instanceFrame3.texture= self.instanceFrame3:CreateTexture(nil,'BORDER', nil, 1)
                 self.instanceFrame3.texture:SetAllPoints(self.instanceFrame3)
                 self.instanceFrame3.texture:SetAtlas('poi-torghast')
@@ -785,6 +790,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 self.instanceFrame2:SetPoint('RIGHT', self.instanceFrame3, 'LEFT',0, -6)
                 self.instanceFrame2:SetSize(16,16)
                 self.instanceFrame2:EnableMouse(true)
+                self.instanceFrame2:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                 self.instanceFrame2:SetScript('OnEnter', function(self2)
                     if self2.tips then
                         e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -802,9 +808,9 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         end
                         e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
+                        self2:SetAlpha(0.3)
                     end
                 end)
-                self.instanceFrame2:SetScript('OnLeave', function() e.tips:Hide() end)
                 self.instanceFrame2.texture= self.instanceFrame2:CreateTexture(nil,'BORDER', nil, 1)
                 self.instanceFrame2.texture:SetAllPoints(self.instanceFrame2)
                 self.instanceFrame2.texture:SetAtlas('DungeonSkull')
@@ -828,7 +834,13 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
         local guid= UnitGUID(unit)--职业, 天赋, 图标
         if UnitIsPlayer(unit) then
-            if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].specID then
+            if unit=='player' then
+                local texture= select(4, GetSpecializationInfo(GetSpecialization() or 0))
+                if texture then
+                    SetPortraitToTexture(self.classFrame.Portrait, texture)
+                end
+
+            elseif guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].specID then
                 local texture= select(4, GetSpecializationInfoByID(e.UnitItemLevel[guid].specID))
                 if texture then
                     SetPortraitToTexture(self.classFrame.Portrait, texture)
