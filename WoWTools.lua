@@ -339,7 +339,7 @@ for k, v in pairs(GetAutoCompleteRealms()) do
 end
 
 e.Icon={
-    icon='orderhalltalents-done-glow',
+    icon= 'orderhalltalents-done-glow',
 
     disabled='talents-button-reset',
     select='AlliedRace-UnlockingFrame-Checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√

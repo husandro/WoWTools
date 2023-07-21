@@ -102,7 +102,7 @@ local function get_Faction_Info(tab)
 			if isChild and not isHeader then
 				t= t..e.Icon.toRight2..(icon or '')
 			elseif not verHeader then
-				t= t.. (icon or '    ')--('|A:'..e.Icon.icon..':0:0|a'))
+				t= t.. (icon or '    ')
 			end
 			if tab.name then--名称
 				t=t..(name:match('%- (.+)') or name)
