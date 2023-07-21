@@ -8,7 +8,7 @@
 ## X-Wago-ID: baND1J6o
 ## X-Curse-Project-ID: 715192
 ## X-Category: Plugins
-## IconTexture: Interface\AddOns\WoWTools\Sesource\WoWtools.tga
+## IconTexture: Interface\AddOns\WoWTools\Sesource\Texture\WoWtools.tga
 ## IconAtlas: orderhalltalents-done-glow
 
 ## X-Website https://www.curseforge.com/wow/addons/wowtools

@@ -714,12 +714,12 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 end
             end
 
-            if self.unit=='player' and self~= PetFrame and self.PlayerFrameContainer then
+            if self==PlayerFrame then-- and self~= PetFrame and self.PlayerFrameContainer then
                 local frameLevel=self.PlayerFrameContainer:GetFrameLevel()+1
                 frameLevel= frameLevel<0 and 0 or frameLevel
 
                 self.lootSpecFrame= CreateFrame("Frame", nil, self)
-                self.lootSpecFrame:SetPoint('TOPRIGHT', self.classTexture, 'TOPLEFT', -0.5,4)
+                self.lootSpecFrame:SetPoint('TOPRIGHT', self.classFrame, 'TOPLEFT', -0.5,4)
                 self.lootSpecFrame:SetSize(14,14)
                 self.lootSpecFrame:EnableMouse(true)
                 self.lootSpecFrame:SetFrameLevel(frameLevel)
@@ -746,7 +746,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         e.tips:Show()
                     end
                 end)
-                set_LootSpecialization()--拾取专精
+                --set_LootSpecialization()--拾取专精
 
                 self.instanceFrame3= CreateFrame("Frame", nil, self)--Riad 副本, 地下城，指示
                 self.instanceFrame3:SetFrameLevel(frameLevel)
@@ -874,7 +874,6 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             self.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
             self.healthbar:SetStatusBarColor(r,g,b)--颜色
         end
-
     end)
 
     hooksecurefunc(TargetFrame, 'CheckClassification', function ()--目标，颜色

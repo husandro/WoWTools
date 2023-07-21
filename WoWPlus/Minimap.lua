@@ -574,7 +574,7 @@ local function Init()
         end
 
         Save.miniMapPoint= Save.miniMapPoint or {}
-        Set_MinMap_Icon({name= id, texture= [[Interface\AddOns\WoWTools\Sesource\WoWtools.tga]],--texture= -18,--136235,
+        Set_MinMap_Icon({name= id, texture= [[Interface\AddOns\WoWTools\Sesource\Texture\WoWtools.tga]],--texture= -18,--136235,
             func= click_Func,
             enter= enter_Func,
         })
