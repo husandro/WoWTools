@@ -699,7 +699,11 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
             self.classFrame.Texture:SetPoint('CENTER', self.classFrame,1,-1)
             self.classFrame.Texture:SetSize(20,20)
-            --self.classFrame:RegisterUnitEvent('')
+            --[[self.classFrame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', unit)
+            self.classFrame:SetScript('OnEvent', function(self2)
+                local unit2= self2:GetParent().unit2
+                
+            --end)]]
 
             --[[local mask= self.classFrame:CreateMaskTexture()--mask
             mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
