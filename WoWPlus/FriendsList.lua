@@ -620,15 +620,19 @@ local function set_WhoList_Update()--查询, 名单列表
         if info then
             if RAID_CLASS_COLORS[info.filename] then
                 r,g,b= RAID_CLASS_COLORS[info.filename]:GetRGB()
+                local class=  e.Class(nil, info.filename)
+                if class and btn.Class then
+                    btn.Class:SetText(class)
+                end
             end
            level= info.level
         end
         if r and g and b then
             if btn.Name and info.fullName then
                 if info.fullName== e.Player.name then
-                    btn.Name:SetText(e.Icon.toRight2..COMBATLOG_FILTER_STRING_ME..e.Icon.toLeft2)
+                    btn.Name:SetText(e.Icon.toRight2..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..e.Icon.toLeft2)
                 else
-                    local nameText= e.GetFriend(info.fullName, nil, nil)--检测, 是否好友
+                    local nameText= e.GetFriend(info.fullName)--检测, 是否好友
                     if nameText then
                         nameText= nameText..info.fullName
                         if info.fullName== e.Player.name then
@@ -661,6 +665,7 @@ local function Init()--FriendsFrame.lua
     set_QuinkJoin_Init()--快速加入, 模块
     set_FriendsList_Init()--好友列表, 模块
     hooksecurefunc('WhoList_Update', set_WhoList_Update)
+    hooksecurefunc(WhoFrame.ScrollBox, 'SetScrollTargetOffset', set_WhoList_Update)
 end
 
 --###########
