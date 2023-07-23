@@ -681,6 +681,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             guid= UnitGUID(self2.unit)--职业, 天赋, 图标
             if not self2.classFrame then
                 self2.classFrame= CreateFrame('Frame', nil, self2)
+                self2.classFrame:SetShown(false)
                 self2.classFrame:SetSize(16,16)
                 self2.classFrame.Portrait= self2.classFrame:CreateTexture(nil, "BACKGROUND")
                 self2.classFrame.Portrait:SetAllPoints(self2.classFrame)
@@ -707,8 +708,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
                 function self2.classFrame:set_Class(guid3)
                     local unit2= self:GetParent().unit
-                    local guid2= guid3 or UnitGUID(unit2)
-                    local isPlayer= UnitIsPlayer(unit2)
+                    local isPlayer= unit2 and UnitIsPlayer(unit2)
                     local find2
                     if isPlayer then
                         if unit2=='player' then
@@ -718,6 +718,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                                 find2=true
                             end
                         else
+                            local guid2= guid3 or UnitGUID(unit2)
                             if guid2 and e.UnitItemLevel[guid2] and e.UnitItemLevel[guid2].specID then
                                 local texture= select(4, GetSpecializationInfoByID(e.UnitItemLevel[guid2].specID))
                                 if texture then
@@ -725,7 +726,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                                     find2=true
                                 end
                             else
-                                local class= e.Class(self.unit, nil, true)--职业, 图标
+                                local class= e.Class(unit2, nil, true)--职业, 图标
                                 if class then
                                     self.Portrait:SetAtlas(class)
                                     find2=true
