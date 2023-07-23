@@ -222,6 +222,7 @@ local function set_TargetFrame()
     end)
 
     hooksecurefunc(TargetFrame, 'CheckClassification', function(self)--外框，颜色
+        self.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         local classFilename= UnitClassBase(self.unit)
         if classFilename then
             local r,g,b=GetClassColor(classFilename)
@@ -236,7 +237,6 @@ local function set_TargetFrame()
         end
     end)
 
- 
     TargetFrame.rangeText= e.Cstr(TargetFrame, {justifyH='RIGHT'})
     TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22,0)
     TargetFrame.elapsed2= 0.4
@@ -675,13 +675,10 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         if not UnitExists(unit) or not (r and g and b) then
             return
         end
-
-        
-
-
+        local guid
         local unitIsPlayer=  UnitIsPlayer(unit)
         if unitIsPlayer then
-            local guid= UnitGUID(self2.unit)--职业, 天赋, 图标
+            guid= UnitGUID(self2.unit)--职业, 天赋, 图标
             if not self2.classFrame then
                 self2.classFrame= CreateFrame('Frame', nil, self2)
                 self2.classFrame:SetSize(16,16)
@@ -805,7 +802,6 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         self3:SetAlpha(0.3)
                     end
                 end)
-                --set_LootSpecialization()--拾取专精
 
                 self2.instanceFrame3= CreateFrame("Frame", nil, self2)--Riad 副本, 地下城，指示
                 self2.instanceFrame3:SetFrameLevel(frameLevel)
@@ -892,12 +888,23 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         end
 
         if self2.name then
+            local name
             if UnitIsUnit(unit, 'pet') then
                 self2.name:SetText(e.Icon.star2)
-            elseif isParty then
+            else
                 set_SetTextColor(self2.name, r, g, b)--名称, 颜色
-                local name= UnitName(unit)
-                name= e.WA_Utf8Sub(name, 4, 8)
+                if isParty then
+                    name= UnitName(unit)
+                    name= e.WA_Utf8Sub(name, 4, 8)
+                    self2.name:SetText(name)
+                elseif unit=='target' and guid then
+                    local wow= e.GetFriend(nil, guid)
+                    if wow then
+                        name= wow..GetUnitName(unit, true)
+                    end
+                end
+            end
+            if name then
                 self2.name:SetText(name)
             end
         end
@@ -907,9 +914,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         end
     end)
 
-    hooksecurefunc(TargetFrame, 'CheckClassification', function ()--目标，颜色
-        TargetFrame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-    end)
+
     hooksecurefunc('UnitFrame_OnEvent', function(self, event, unit)--修改, 宠物, 名称
         if unit== 'pet' and unit == self.unit and event == "UNIT_NAME_UPDATE" then
             self.name:SetText('')
