@@ -199,7 +199,7 @@ function e.GetFriend(name, guid, unit)--检测, 是否好友
         guid= guid or e.GetGUID(unit, name)
         if guid and guid~=e.Player.guid then
             if C_BattleNet.GetGameAccountInfoByGUID(guid) then--C_BattleNet.GetAccountInfoByGUID(guid)
-                return '|T-4:0|t'
+                return e.Icon.wow2--'|T-4:0|t'
             elseif C_FriendList.IsFriend(guid) then
                 return '|A:groupfinder-icon-friend:0:0|a'--好友
             elseif IsGuildMember(guid) then
@@ -362,8 +362,8 @@ e.Icon={
     map='poi-islands-table',
     map2='|A:poi-islands-table:0:0|a',
     --wow2='|A:Icon-WoW:0:0|a',--136235
-    wow2= BNet_GetClientEmbeddedTexture(-18, 32, 32),--'|T-18:0|t',--BnetShared.lua UI-ChatIcon- '|A:128-Store-Main:0:0|a',
-
+    wow2= BNet_GetClientEmbeddedTexture(-18, 32, 32),--BnetShared.lua UI-ChatIcon- '|A:128-Store-Main:0:0|a',
+    net2= BNet_GetClientEmbeddedTexture(-2, 32, 32),
     horde= 'charcreatetest-logo-horde',
     alliance='charcreatetest-logo-alliance',
     horde2='|A:charcreatetest-logo-horde:0:0|a',
@@ -401,6 +401,17 @@ e.Icon={
     info2='|A:questlegendary:0:0|a',--黄色!
     star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
+C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, 2, function(success, texture)--FriendsFrame.lua BnetShared.lua
+    if success and texture then
+        e.Icon.wow2= '|T'..texture..':0|t'
+    end
+end)
+C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, 2, function(success, texture)
+    if success and texture then
+        e.Icon.net2= '|T'..texture..':0|t'
+    end
+end)
+
 --[[
     Interface\Common\WhiteIconFrame 提示方形外框
     FRIENDS_TEXTURE_DND 忙碌texture FRIENDS_LIST_BUSY
@@ -416,8 +427,6 @@ e.Icon={
     mask='CircleMaskScalable',
     soulbinds_tree_conduit_icon_utility 闪电形
 ]]
-
-
 
 function e.PlayerOnlineInfo(unit)--单位，状态信息
     if unit and UnitExists(unit) then

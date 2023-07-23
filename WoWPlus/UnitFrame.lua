@@ -765,7 +765,9 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 self2.itemLevel:SetText(guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel or '')
             end
         end
-        self2.classFrame:SetShown(unitIsPlayer)
+        if self2.classFrame then
+            self2.classFrame:SetShown(unitIsPlayer)
+        end
   
         if unit=='player' then
             if not self2.lootSpecFrame then-- and self2~= PetFrame and self2.PlayerFrameContainer then
