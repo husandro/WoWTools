@@ -14,6 +14,7 @@ local Save={
     modelX= 0,
     modelY= -24,
     modelFacing= -0.35,--方向
+    showModelFileID=e.Player.husandro,--显示，文件ID
 }
 local panel=CreateFrame("Frame")
 
@@ -32,6 +33,10 @@ local function set_playerModel(self)
     end
     self.playerModel:SetSize(Save.modelSize, Save.modelSize)
     self.playerModel:SetFacing(Save.modelFacing)
+    if Save.showModelFileID then
+        self.playerModelFileIDLabel= e.Cstr(self.playerModel, {size=12, justifyH='RIGHT'})
+        self.playerModelFileIDLabel:SetPoint('BOTTOMRIGHT', self.textRight, 'TOPRIGHT')
+    end
 end
 
 local function setInitItem(self, hide)--创建物品
@@ -72,6 +77,9 @@ local function setInitItem(self, hide)--创建物品
             self.playerModel:ClearModel()
             self.playerModel:SetShown(false)
             self.playerModel.id=nil
+            if self.playerModelFileIDLabel then
+                self.playerModelFileIDLabel:SetText('')
+            end
         end
     end
 end
@@ -83,11 +91,13 @@ local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=nil, guid=n
     if Save.hideModel then
         return
     end
+    local isShow= false
     if tab.unit then
         if self.playerModel.id~=tab.guid then--and self.playerModel:CanSetUnit(tab.unit) then
             self.playerModel:SetUnit(tab.unit)
             self.playerModel.guid=tab.guid
             self.playerModel.id=tab.guid
+            isShow=true
             self.playerModel:SetShown(true)
         end
     elseif tab.creatureDisplayID  then
@@ -98,13 +108,22 @@ local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=nil, guid=n
             end
             self.playerModel.id=tab.creatureDisplayID
             self.playerModel:SetShown(true)
+            isShow=true
         end
     elseif tab.itemID then
         if self.playerModel.id~= tab.itemID then
             self.playerModel:SetItem(tab.itemID, tab.appearanceID, tab.visualID)
             self.playerModel.id= tab.itemID
+            isShow=true
             self.playerModel:SetShown(true)
         end
+    end
+    if isShow and self.playerModelFileIDLabel then
+        local modelFileID
+        if Save.showModelFileID then
+            modelFileID= self.playerModel:GetModelFileID()
+        end
+        self.playerModelFileIDLabel:SetText(modelFileID or '')
     end
 end
 
