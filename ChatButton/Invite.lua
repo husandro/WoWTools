@@ -879,7 +879,7 @@ local function Init()
         notInviterGUID=nil
     end
      --hooksecurefunc(StaticPopupDialogs["PARTY_INVITE"], "OnShow",function(self, ...)
-        
+
      --end)
 
 
@@ -888,24 +888,54 @@ local function Init()
     --#########
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnShow",function(self)--StaticPopup.lua
         e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
-        if not Save.Summon or IsModifierKeyDown() or not self.button1:IsEnabled() then
+        if not Save.Summon or IsModifierKeyDown() or not self.button1:IsEnabled() or UnitAffectingCombat('player') then
             e.Ccool(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
             return
         end
         --if not UnitAffectingCombat("player") and PlayerCanTeleport() then
-        print(id, addName, e.onlyChinese and '召唤' or SUMMON, C_SummonInfo.GetSummonConfirmSummoner(), C_SummonInfo.GetSummonConfirmAreaName())
+        print(id, addName, e.onlyChinese and '召唤' or SUMMON,
+             C_SummonInfo.GetSummonConfirmSummoner(),
+             C_SummonInfo.GetSummonConfirmAreaName()
+            )
         e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
         if self.SummonTimer then self.SummonTimer:Cancel() end
+        self:SetScript('OnUpdate', function(self2)
+            if IsModifierKeyDown() and self2.SummonTimer then
+                self2.SummonTimer:Cancel()
+            end
+        end)
         self.SummonTimer= C_Timer.NewTimer(3, function()
             if not UnitAffectingCombat("player") and PlayerCanTeleport() and not IsModifierKeyDown() then
                 C_SummonInfo.ConfirmSummon()
                 StaticPopup_Hide("CONFIRM_SUMMON")
+                if IsInGroup() and not IsInRaid() then
+                    --region= GetCurrentRegion(),--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+                    local text
+                    if (e.Player.region==1 or e.Player.region==3) then
+                        text = 'thx, sum me'
+                    elseif e.Player.region==5 then
+                        text= '谢谢你的，召唤'
+                    else
+                        text= VOICEMACRO_16_Dw_1 ..', '..SUMMON
+                    end
+                    e.Chat('{rt1}'..text..'{rt1}')
+                end
             end
         end)
     end)
-    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnCancel",function(self)
-        if self.SummonTimer then self.SummonTimer:Cancel() end
-    end)
+    --[[hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnCancel",function(self)
+        if self.SummonTimer then
+            self.SummonTimer:Cancel()
+        end
+        self:SetScript('OnUpdate', nil)
+    end)]]
+    StaticPopupDialogs["CONFIRM_SUMMON"].OnHide= function(self)
+        if self.SummonTimer then
+            self.SummonTimer:Cancel()
+        end
+        self:SetScript('OnUpdate', nil)
+    end
+
 
     if UnitAffectingCombat('player') and (Save.setFrameFun or Save.setFucus) then
         panel:RegisterEvent('PLAYER_REGEN_ENABLED')

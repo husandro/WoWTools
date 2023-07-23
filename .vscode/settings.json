@@ -3141,7 +3141,8 @@
         "BNET_CLIENT_CLNT",
         "WhoFrameGroupInviteButton",
         "WhoFrameAddFriendButton",
-        "ADD_FRIEND"
+        "ADD_FRIEND",
+        "VOICEMACRO_16_Dw_1"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

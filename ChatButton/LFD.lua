@@ -1095,7 +1095,10 @@ end
         local frame=self2.CategoryButtons[i]
         if frame and frame:IsShown() then
             if not frame.setOnDoubleClick then
-                frame:SetScript('OnDoubleClick', function(self3)
+                frame:SetScript('OnDoubleClick', function()
+                    if LFGListFrame.CategorySelection.FindGroupButton:IsEnabled() then
+                        LFGListFrame.CategorySelection.FindGroupButton:Click()
+                    end
                     local frame2 = self3:GetParent();
                     if frame2.selectedCategory then
                         securecall('LFGListCategorySelection_StartFindGroup', frame2)
