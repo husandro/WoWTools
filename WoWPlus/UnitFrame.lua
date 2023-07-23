@@ -613,7 +613,7 @@ local function set_PartyFrame()--PartyFrame.lua
 
                 --死亡，次数
                 frame.dead=0
-                frame.deadText= e.Cstr(memberFrame, {mouse=true})
+                frame.deadText= e.Cstr(frame, {mouse=true})
                 frame.deadText:SetPoint('BOTTOMLEFT', frame)
                 frame.deadText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                 frame.deadText:SetScript('OnEnter', function(self2)
