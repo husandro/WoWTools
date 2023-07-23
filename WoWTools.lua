@@ -211,7 +211,7 @@ function e.GetFriend(name, guid, unit)--检测, 是否好友
             return '|A:groupfinder-icon-friend:0:0|a'--好友
         end
         if e.WoWGUID[e.GetUnitName(name)] then
-            return '|T-4:0|t'--e.Icon.wow2
+            return e.Icon.wow2
         end
     end
 end
@@ -362,7 +362,7 @@ e.Icon={
     map='poi-islands-table',
     map2='|A:poi-islands-table:0:0|a',
     --wow2='|A:Icon-WoW:0:0|a',--136235
-    wow2= '|A:128-Store-Main:0:0|a',--BNet_GetClientEmbeddedTexture(-18, 32, 32),--'|T-18:0|t',--BnetShared.lua UI-ChatIcon-
+    wow2= BNet_GetClientEmbeddedTexture(-18, 32, 32),--'|T-18:0|t',--BnetShared.lua UI-ChatIcon- '|A:128-Store-Main:0:0|a',
 
     horde= 'charcreatetest-logo-horde',
     alliance='charcreatetest-logo-alliance',
