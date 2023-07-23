@@ -615,17 +615,27 @@ end
 
 local function set_WhoList_Update()--查询, 名单列表
     for _, btn in pairs(WhoFrame.ScrollBox:GetFrames()) do
-        if not btn.OnDoubleClick then
+        if not btn.setOnDoubleClick then
             btn:SetScript('OnDoubleClick', function()
                 if WhoFrameGroupInviteButton:IsEnabled() then
                     WhoFrameGroupInviteButton:Click()
                 end
             end)
-            btn:HookScript('OnEnter', function(self2)
+            btn:HookScript('OnClick', function()
+                if WhoFrameAddFriendButton:IsEnabled() and IsAltKeyDown() then
+                    WhoFrameAddFriendButton:Click()
+                    C_Timer.After(1, function() securecall('WhoList_Update') end)
+                end
+            end)
+            btn:HookScript('OnEnter', function()
+                e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.onlyChinese and '组队邀请' or GROUP_INVITE, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
+                e.tips:AddDoubleLine(e.onlyChinese and '添加好友' or ADD_FRIEND, e.Icon.left)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
             end)
+            btn.setOnDoubleClick= true
         end
         local info= btn.index and C_FriendList.GetWhoInfo(btn.index)
         local r,g,b,level
