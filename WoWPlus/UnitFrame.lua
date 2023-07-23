@@ -709,27 +709,36 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 function self2.classFrame:set_Class(guid3)
                     local unit2= self:GetParent().unit
                     local isPlayer= unit2 and UnitIsPlayer(unit2)
-                    local find2
+                    local find2=false
                     if isPlayer then
                         if unit2=='player' then
                             local texture= select(4, GetSpecializationInfo(GetSpecialization() or 0))
                             if texture then
                                 SetPortraitToTexture(self.Portrait, texture)
-                                find2=true
+                                find2= true
                             end
                         else
-                            local guid2= guid3 or UnitGUID(unit2)
-                            if guid2 and e.UnitItemLevel[guid2] and e.UnitItemLevel[guid2].specID then
-                                local texture= select(4, GetSpecializationInfoByID(e.UnitItemLevel[guid2].specID))
+                            local specID= GetInspectSpecialization(unit2)
+                            if specID and specID>0 then
+                                local texture= select(4, GetSpecializationInfoByID(specID))
                                 if texture then
                                     SetPortraitToTexture(self.Portrait, texture)
-                                    find2=true
+                                    find2= true
                                 end
                             else
-                                local class= e.Class(unit2, nil, true)--职业, 图标
-                                if class then
-                                    self.Portrait:SetAtlas(class)
-                                    find2=true
+                                local guid2= guid3 or UnitGUID(unit2)
+                                if guid2 and e.UnitItemLevel[guid2] and e.UnitItemLevel[guid2].specID then
+                                    local texture= select(4, GetSpecializationInfoByID(e.UnitItemLevel[guid2].specID))
+                                    if texture then
+                                        SetPortraitToTexture(self.Portrait, texture)
+                                        find2= true
+                                    end
+                                else
+                                    local class= e.Class(unit2, nil, true)--职业, 图标
+                                    if class then
+                                        self.Portrait:SetAtlas(class)
+                                        find2=true
+                                    end
                                 end
                             end
                         end

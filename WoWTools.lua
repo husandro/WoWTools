@@ -152,13 +152,13 @@ function e.GetUnitRaceInfo(tab)--e.GetUnitRaceInfo({unit=nil, guid=nil, race=nil
     end
 end
 
-function e.Class(unit, class, reAltlas)--职业图标
+function e.Class(unit, class, reAltlas)--职业图标 groupfinder-icon-emptyslot'
     class= unit and select(2, UnitClass(unit)) or class
     if class then
         if class=='EVOKER' then
             class='UI-HUD-UnitFrame-Player-Portrait-ClassIcon-Evoker'
         else
-            class=class and 'groupfinder-icon-class-'..class or 'groupfinder-icon-emptyslot'
+            class= 'groupfinder-icon-class-'..class
         end
         if reAltlas then
             return class
