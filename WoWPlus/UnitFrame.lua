@@ -900,7 +900,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 elseif unit=='target' and guid then
                     local wow= e.GetFriend(nil, guid)
                     if wow then
-                        name= wow..GetUnitName(unit, true)
+                        name= wow..GetUnitName(unit, false)
                     end
                 end
             end
