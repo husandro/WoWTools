@@ -3138,7 +3138,8 @@
         "BossTargetFrameMixin",
         "BossTargetFrameContainer",
         "BNet_GetClientEmbeddedTexture",
-        "BNET_CLIENT_CLNT"
+        "BNET_CLIENT_CLNT",
+        "WhoFrameGroupInviteButton"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

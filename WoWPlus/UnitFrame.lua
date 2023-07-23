@@ -733,7 +733,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                             end
                         end
                     end
-                    self2:SetShown(isPlayer and find2)
+                    self:SetShown(isPlayer and find2)
                 end
                 self2.classFrame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', unit)
                 self2.classFrame:SetScript('OnEvent', function(self3)
