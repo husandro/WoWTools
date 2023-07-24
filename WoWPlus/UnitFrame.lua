@@ -1421,81 +1421,9 @@ local function Init()
                 hooksecurefunc(activeTimer, 'UpdateStatusBarValue', function(self2)
                     self2.valueText:SetText(format('%i', self2.StatusBar:GetValue()))
                 end)
-                --[[activeTimer.elapsed= 0.5
-                activeTimer:HookScript('OnUpdate', function(self2, elapsed)
-                    self2.elapsed= self2.elapsed + elapsed
-                    if self2.elapsed>0.5 then
-                        self2.valueText:SetText(format('%i', self2.StatusBar:GetValue()))
-                        self2.elapsed= 0
-                    end
-                end)]]
-
             end
         end
     end)
-        
-    --#########
-    --移动，速度
-    --#########
-    local leaveElapsed=0
-    local function get_UnitSpeed(self, elapsed)
-        if leaveElapsed>0.3 then
-            local unit, speed
-            if UnitExists('vehicle') then
-                unit= 'vehicle'
-            elseif UnitExists(PlayerFrame.unit) then
-                unit= PlayerFrame.unit
-            end
-            if unit then
-                speed= GetUnitSpeed(unit)--PlayerFrame.unit
-                if speed and not self.speedText then
-                    self.speedText= e.Cstr(self, {mouse=true})
-                    self.speedText:SetPoint('TOP')
-                    self.speedText:SetScript('OnLeave', function() e.tips:Hide() end)
-                    self.speedText:SetScript('OnEnter', function(self2)
-                        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                        e.tips:ClearLines()
-                        e.tips:AddDoubleLine(e.onlyChinese and '当前' or REFORGE_CURRENT, e.onlyChinese and '移动速度' or STAT_MOVEMENT_SPEED)
-                        e.tips:AddDoubleLine(id, addName)
-                        e.tips:Show()
-                    end)
-                    self.speedText:SetScript('OnMouseDown', function(self2)
-                        local frame= self2:GetParent()
-                        if frame.OnClicked then
-                            frame.OnClicked(frame)
-                        end
-                    end)
-                end
-            end
-            if self.speedText then
-                if not speed or speed==0 then
-                    self.speedText:SetText('')
-                else
-                    self.speedText:SetFormattedText('%.0f', speed * 100 / BASE_MOVEMENT_SPEED)
-                end
-            end
-             leaveElapsed=0
-        else
-            leaveElapsed= leaveElapsed+ elapsed
-        end
-    end
-    local function hide_SpeedText(self)
-        if self.speedText then
-            self.speedText:SetText('')
-        end
-    end
-    if MainMenuBarVehicleLeaveButton then--没有车辆，界面
-        MainMenuBarVehicleLeaveButton:SetScript('OnUpdate', get_UnitSpeed)
-        MainMenuBarVehicleLeaveButton:SetScript('OnHide', hide_SpeedText)
-    end
-    if OverrideActionBarLeaveFrameLeaveButton then--有车辆，界面
-        OverrideActionBarLeaveFrameLeaveButton:SetScript('OnUpdate', get_UnitSpeed)
-        OverrideActionBarLeaveFrameLeaveButton:SetScript('OnHide', hide_SpeedText)
-    end
-    if MainMenuBarVehicleLeaveButton then--Taxi, 移动, 速度
-        MainMenuBarVehicleLeaveButton:SetScript('OnUpdate', get_UnitSpeed)
-        MainMenuBarVehicleLeaveButton:SetScript('OnHide', hide_SpeedText)
-    end
 
     C_Timer.After(2, set_ToggleWarMode)--设置, 战争模式
 end

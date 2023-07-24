@@ -18,7 +18,6 @@ local Save={
 }
 local panel=CreateFrame("Frame")
 
-
 local function set_playerModel(self)
     if not self.playerModel then
         self.playerModel= CreateFrame("PlayerModel", nil, self)--DressUpModel PlayerModel
@@ -33,53 +32,46 @@ local function set_playerModel(self)
     end
     self.playerModel:SetSize(Save.modelSize, Save.modelSize)
     self.playerModel:SetFacing(Save.modelFacing)
-    if Save.showModelFileID then
-        self.playerModelFileIDLabel= e.Cstr(self.playerModel, {size=12, justifyH='RIGHT'})
-        self.playerModelFileIDLabel:SetPoint('BOTTOMRIGHT', self.textRight, 'TOPRIGHT')
-    end
 end
 
-local function setInitItem(self, hide)--创建物品
+local function set_Init_Item(self, hide)--创建物品
     if not self.textLeft then--左上角字符
         self.textLeft=e.Cstr(self, {size=16})
         self.textLeft:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
-    end
-    if not self.text2Left then--左上角字符2
-        self.text2Left=e.Cstr(self, {size=16})
+
+        self.text2Left=e.Cstr(self, {size=16})--左上角字符2
         self.text2Left:SetPoint('LEFT', self.textLeft, 'RIGHT', 5, 0)
-    end
-    if not self.textRight then--右上角字符
-        self.textRight=e.Cstr(self, {size=12, justifyH='RIGHT'})
+
+        self.textRight=e.Cstr(self, {size=12, justifyH='RIGHT'})--右上角字符
         self.textRight:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT')
-    end
-    if not self.backgroundColor then--背景颜色
-        self.backgroundColor= self:CreateTexture(nil, 'BACKGROUND',nil, 1)
+
+        self.text2Right= e.Cstr(self, {size=12, justifyH='RIGHT'})--右上角字符2
+        self.text2Right:SetPoint('BOTTOMRIGHT', self.textRight, 'TOPRIGHT')
+
+        self.backgroundColor= self:CreateTexture(nil, 'BACKGROUND',nil, 1)--背景颜色
         self.backgroundColor:SetAllPoints(self)
+
+        self.Portrait= self:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
+        self.Portrait:SetPoint('TOPRIGHT',-2, -3)
+        self.Portrait:SetSize(40,40)
     end
+
     if not self.playerModel and not Save.hideModel then
         set_playerModel(self)
         self.playerModel:SetShown(false)
-    end
-
-    if not self.Portrait then--右上角图标
-        self.Portrait= self:CreateTexture(nil, 'BACKGROUND',nil, 2)
-        self.Portrait:SetPoint('TOPRIGHT',-2, -3)
-        self.Portrait:SetSize(40,40)
     end
 
     if hide then
         self.textLeft:SetText('')
         self.text2Left:SetText('')
         self.textRight:SetText('')
+        self.text2Right:SetText('')
         self.Portrait:SetShown(false)
         self.backgroundColor:SetShown(false)
         if self.playerModel then
             self.playerModel:ClearModel()
             self.playerModel:SetShown(false)
             self.playerModel.id=nil
-            if self.playerModelFileIDLabel then
-                self.playerModelFileIDLabel:SetText('')
-            end
         end
     end
 end
@@ -91,14 +83,18 @@ local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=nil, guid=n
     if Save.hideModel then
         return
     end
-    local isShow= false
     if tab.unit then
         if self.playerModel.id~=tab.guid then--and self.playerModel:CanSetUnit(tab.unit) then
             self.playerModel:SetUnit(tab.unit)
             self.playerModel.guid=tab.guid
             self.playerModel.id=tab.guid
-            isShow=true
             self.playerModel:SetShown(true)
+            if Save.showModelFileID then
+                local modelFileID= self.playerModel:GetModelFileID()
+                if modelFileID and modelFileID>0 then
+                    self.text2Right:SetText((tab.col or '')..modelFileID)
+                end
+            end
         end
     elseif tab.creatureDisplayID  then
         if self.playerModel.id~= tab.creatureDisplayID then
@@ -108,23 +104,13 @@ local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=nil, guid=n
             end
             self.playerModel.id=tab.creatureDisplayID
             self.playerModel:SetShown(true)
-            isShow=true
         end
     elseif tab.itemID then
         if self.playerModel.id~= tab.itemID then
             self.playerModel:SetItem(tab.itemID, tab.appearanceID, tab.visualID)
             self.playerModel.id= tab.itemID
-            isShow=true
             self.playerModel:SetShown(true)
         end
-    end
-    if isShow and self.playerModelFileIDLabel then
-        local modelFileID
-        if Save.showModelFileID then
-            modelFileID= self.playerModel:GetModelFileID()
-            modelFileID= (modelFileID and modelFileID>0) and (tab.col or '')..modelFileID or ''
-        end
-        self.playerModelFileIDLabel:SetText(modelFileID or '')
     end
 end
 
@@ -295,7 +281,7 @@ local function setMount(self, mountID)--坐骑
     if source then
         self:AddLine(source,nil,nil,nil,true)
     end
-    set_Item_Model(self, {creatureDisplayID=creatureDisplayInfoID, animID=animID, itemID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
+    set_Item_Model(self, {creatureDisplayID=creatureDisplayInfoID, animID=animID})--设置, 3D模型
 
     self.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
 
@@ -308,6 +294,7 @@ local function setPet(self, speciesID, setSearchText)--宠物
         return
     end
     local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+    --print(C_PetJournal.GetPetModelSceneInfoBySpeciesID(speciesID))
     if obtainable then--可得到的
         self:AddLine(' ')
 
@@ -345,7 +332,7 @@ local function setPet(self, speciesID, setSearchText)--宠物
         self.Portrait:SetTexture("Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType])
         self.Portrait:SetShown(true)
     end
-    set_Item_Model(self, {creatureDisplayID=creatureDisplayID, animID=nil, itemID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
+    set_Item_Model(self, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
 
     if setSearchText and speciesName and PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--宠物手册，设置名称
         PetJournalSearchBox:SetText(speciesName)
@@ -416,7 +403,7 @@ local function setItem(self, ItemLink)
                 self.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
             end
         end
-        set_Item_Model(self, {creatureDisplayID=nil, animID=nil, itemID=itemID, appearanceID=appearanceID, visualID=visualID, col=col})--设置, 3D模型
+        set_Item_Model(self, {itemID=itemID, appearanceID=appearanceID, visualID=visualID, col=col})--设置, 3D模型
 
         if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
             self.Portrait:SetAtlas(e.Icon.unlocked)
@@ -1012,7 +999,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         set_Unit_Health_Bar(GameTooltipStatusBar, unit)--生命条提示
     end
 
-    set_Item_Model(self, {unit=unit, guid=guid, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil, col= col})--设置, 3D模型
+    set_Item_Model(self, {unit=unit, guid=guid, col= col})--设置, 3D模型
 end
 
 local function setCVar(reset, tips, notPrint)
@@ -1117,9 +1104,9 @@ local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     end
     local speciesName, speciesIcon, _, companionID, tooltipSource, _, _, _, _, _, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
     if not self.Portrait then
-        setInitItem(self, true)--创建物品
+        set_Init_Item(self, true)--创建物品
     end
-    set_Item_Model(self, {creatureDisplayID=creatureDisplayID, animID=nil, itemID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
+    set_Item_Model(self, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
     --self.itemModel:SetDisplayInfo(creatureDisplayID)
     if obtainable then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
@@ -1190,13 +1177,13 @@ end
 --初始
 --####
 local function Init()
-    setInitItem(ItemRefTooltip)
-    setInitItem(e.tips)
+    set_Init_Item(ItemRefTooltip)
+    set_Init_Item(e.tips)
     e.tips:HookScript("OnHide", function(self)--隐藏
-        setInitItem(self, true)
+        set_Init_Item(self, true)
     end)
     ItemRefTooltip:HookScript("OnHide", function (self)--隐藏
-        setInitItem(self, true)
+        set_Init_Item(self, true)
         if ItemRefTooltip.wowhead then
             ItemRefTooltip.wowhead.web=nil--取得网页，数据链接
             ItemRefTooltip.wowhead:SetShown(false)
@@ -1598,6 +1585,7 @@ end
 --设置 panel
 --##########
 local function set_Cursor_Tips(self)
+    set_Init_Item(e.tips, true)
     set_playerModel(e.tips)
     set_playerModel(ItemRefTooltip)
     GameTooltip_SetDefaultAnchor(e.tips, self or UIParent)
@@ -1707,6 +1695,7 @@ local function Init_Panel()
         Save.showModelFileID= not Save.showModelFileID and true or nil
         set_Cursor_Tips(self)
     end)
+
     modelFileIDCheck:SetScript('OnLeave', function() e.tips:Hide() end)
     modelFileIDCheck:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")

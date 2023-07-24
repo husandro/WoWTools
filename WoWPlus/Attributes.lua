@@ -40,6 +40,7 @@ local Save={
     textColor= {r=1,g=1,b=1,a=1},--数值，颜色
     bit=0,--数值，位数
     --disabledDragonridingSpeed=true,--禁用，驭龙术UI，速度
+    --disabledVehicleSpeed=true, --禁用，载具，速度
 }
     --hideInPetBattle=true,--宠物战斗中, 隐藏
     --buttonAlpha=0,--专精，图标，透明度
@@ -1305,10 +1306,20 @@ local function set_Panle_Setting()--设置 panel
             local dragonriding= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             dragonriding:SetChecked(not Save.disabledDragonridingSpeed)
             dragonriding:SetPoint('LEFT', text, 'RIGHT',2,0)
-            dragonriding.text:SetFormattedText('%s|A:dragonriding_vigor_decor:0:0|a%s UI', e.onlyChinese and '驭龙术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE, e.onlyChinese and '速度' or SPEED)
+            dragonriding.text:SetFormattedText('|A:dragonriding_vigor_decor:0:0|a%s', e.onlyChinese and '驭龙术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
             dragonriding:SetScript('OnClick',function()
                 Save.disabledDragonridingSpeed= not Save.disabledDragonridingSpeed and true or nil
             end)
+
+              --载具，速度
+              local vehicleSpeedCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+              vehicleSpeedCheck:SetChecked(not Save.disabledVehicleSpeed)
+              vehicleSpeedCheck:SetPoint('LEFT', dragonriding.text, 'RIGHT',2,0)
+              vehicleSpeedCheck.text:SetFormattedText(e.onlyChinese and '%s载具' or UNITNAME_SUMMON_TITLE9, '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t')
+              vehicleSpeedCheck:SetScript('OnClick',function()
+                  Save.disabledVehicleSpeed= not Save.disabledVehicleSpeed and true or nil
+              end)
+
 
         elseif info.name=='VERSATILITY' then--全能5
             local check2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅防卫
@@ -2005,6 +2016,70 @@ local function Init()
             set_Speed(UIWidgetPowerBarContainerFrame.widgetFrames[widgetID])
         end
     end)
+
+    --###############
+    --载具，移动，速度
+    --##############
+    local function get_UnitSpeed(self, elapsed)
+        self.elapsed= self.elapsed+ elapsed
+        if self.elapsed>0.3 then
+            local unit, speed
+            if not Save.disabledVehicleSpeed then
+                if UnitExists('vehicle') then
+                    unit= 'vehicle'
+                elseif UnitExists(PlayerFrame.unit) then
+                    unit= PlayerFrame.unit
+                end
+            end
+            if unit then
+                speed= GetUnitSpeed(unit)--PlayerFrame.unit
+                if speed and not self.speedText then
+                    self.speedText= e.Cstr(self, {mouse=true})
+                    self.speedText:SetPoint('TOP')
+                    self.speedText:SetScript('OnLeave', function() e.tips:Hide() end)
+                    self.speedText:SetScript('OnEnter', function(self2)
+                        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                        e.tips:ClearLines()
+                        e.tips:AddDoubleLine(e.onlyChinese and '当前' or REFORGE_CURRENT, e.onlyChinese and '移动速度' or STAT_MOVEMENT_SPEED)
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:Show()
+                    end)
+                    self.speedText:SetScript('OnMouseDown', function(self2)
+                        local frame= self2:GetParent()
+                        if frame.OnClicked then
+                            frame.OnClicked(frame)
+                        end
+                    end)
+                end
+            end
+            if self.speedText then
+                if not speed or speed==0 then
+                    self.speedText:SetText('')
+                else
+                    self.speedText:SetFormattedText('%.0f', speed * 100 / BASE_MOVEMENT_SPEED)
+                end
+            end
+            self.elapsed= 0
+        end
+    end
+    local function hide_SpeedText(self)
+        if self.speedText then
+            self.elapsed=1
+            self.speedText:SetText('')
+        end
+    end
+    local vehicleTabs={
+        'MainMenuBarVehicleLeaveButton',--没有车辆，界面
+        'OverrideActionBarLeaveFrameLeaveButton',--有车辆，界面
+        'MainMenuBarVehicleLeaveButton',--Taxi, 移动, 速度
+    }
+    for _, btn in pairs(vehicleTabs) do
+        if _G[btn] then
+            _G[btn].elapsed=1
+            _G[btn]:HookScript('OnUpdate', get_UnitSpeed)
+            _G[btn]:HookScript('OnHide', hide_SpeedText)
+        end
+    end
 end
 
 

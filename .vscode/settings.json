@@ -3143,7 +3143,8 @@
         "WhoFrameAddFriendButton",
         "ADD_FRIEND",
         "VOICEMACRO_16_Dw_1",
-        "BATTLE_PET_CANNOT_BATTLE"
+        "BATTLE_PET_CANNOT_BATTLE",
+        "UNITNAME_SUMMON_TITLE9"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

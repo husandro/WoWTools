@@ -703,6 +703,9 @@ local function set_WhoList_Update()--查询, 名单列表
     end
 end
 
+
+
+
 --######
 --初始化
 --######
@@ -713,10 +716,12 @@ local function Init()--FriendsFrame.lua
     hooksecurefunc(WhoFrame.ScrollBox, 'SetScrollTargetOffset', set_WhoList_Update)
 end
 
+
+
+
 --###########
 --加载保存数据
 --###########
-
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('SOCIAL_QUEUE_UPDATE')--快速加入
 
