@@ -55,12 +55,10 @@ local function set_Init_Item(self, hide)--创建物品
         self.Portrait:SetPoint('TOPRIGHT',-2, -3)
         self.Portrait:SetSize(40,40)
     end
-
     if not self.playerModel and not Save.hideModel then
         set_playerModel(self)
         self.playerModel:SetShown(false)
     end
-
     if hide then
         self.textLeft:SetText('')
         self.text2Left:SetText('')
@@ -1572,12 +1570,9 @@ local function Init()
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
+            print(id,addName)
         end
     end)
-
-    --[[hooksecurefunc(SpellButtonMixin, 'OnEnter', function()
-        print(id,addName)
-    end)]]
 end
 
 
