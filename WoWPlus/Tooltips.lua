@@ -1586,10 +1586,10 @@ end
 --##########
 local function set_Cursor_Tips(self)
     set_Init_Item(e.tips, true)
+    set_Init_Item(ItemRefTooltip, true)
     set_playerModel(e.tips)
     set_playerModel(ItemRefTooltip)
     GameTooltip_SetDefaultAnchor(e.tips, self or UIParent)
-    --e.tips:SetOwner(UIParent, 'ANCHOR_CURSOR_LEFT', Save.cursorX, Save.cursorY)
     e.tips:ClearLines()
     e.tips:SetUnit('player')
     e.tips:Show()
