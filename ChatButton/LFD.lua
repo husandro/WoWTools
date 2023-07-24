@@ -1801,10 +1801,10 @@ local function Init()
         local  encounterID= GroupLootHistoryFrame.selectedEncounterID
         local info= encounterID and C_LootHistory.GetInfoForEncounter(encounterID)
         if info then
-            e.tip:AddDoubleLine('encounterName', info.encounterName)
-            e.tip:AddDoubleLine('encounterID', info.encounterID)
-            e.tip:AddDoubleLine('startTime', info.startTime and SecondsToClock(info.startTime))
-            e.tip:AddDoubleLine('duration', info.duration and SecondsToTime(info.duration))
+            e.tips:AddDoubleLine('encounterName', info.encounterName)
+            e.tips:AddDoubleLine('encounterID', info.encounterID)
+            e.tips:AddDoubleLine('startTime', info.startTime and SecondsToClock(info.startTime))
+            e.tips:AddDoubleLine('duration', info.duration and SecondsToTime(info.duration))
         else
             e.tips:AddDoubleLine('encounterID', e.onlyChinese and '无' or NONE)
         end
