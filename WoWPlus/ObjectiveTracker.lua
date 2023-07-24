@@ -1,5 +1,5 @@
 local id, e = ...
-local addName=	TRACK_QUEST
+local addName=	HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL
 local Save={
         scale= 0.85,
         autoHide=true
@@ -526,7 +526,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板        
-            local sel=e.CPanel('|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL or addName), not Save.disabled)
+            local sel=e.CPanel('|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
