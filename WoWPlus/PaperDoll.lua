@@ -1031,7 +1031,7 @@ end
 --#########
 local function Init_Target_InspectUI()
     local self= InspectPaperDollFrame
-    panel.Init_Show_Hide_Button(InspectFrame.TitleContainer, _G['MoveZoomInButtonPerInspectFrame'])
+    panel.Init_Show_Hide_Button(InspectFrame, _G['MoveZoomInButtonPerInspectFrame'])
 
     if not self.initButton and not Save.hide then
         if self.ViewButton then
@@ -1275,10 +1275,10 @@ panel.Init_Show_Hide_Button= function(self, frame)
     if frame then
         btn:SetPoint('RIGHT', frame, 'LEFT')
     else
-        btn:SetPoint('LEFT')
+        btn:SetPoint('LEFT', self.TitleContainer)
     end
     btn:SetAlpha(0.5)
-    btn:SetScript('OnClick', function(self2)
+    btn:SetScript('OnClick', function()
         Save.hide= not Save.hide and true or nil
         if InspectFrame and InspectFrame.TitleContainer and InspectFrame.TitleContainer.ShowHideButton then
             InspectFrame.TitleContainer.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)

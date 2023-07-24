@@ -1526,6 +1526,8 @@ e.ShowColorPicker= function(valueR, valueG, valueB, valueA, func, cancelFunc)
 end
 
 e.Reload= function()
+    C_UI.Reload()
+
     local bat= UnitAffectingCombat('player') and e.IsEncouter_Start
     if not bat or not IsInInstance() then
         C_UI.Reload()
