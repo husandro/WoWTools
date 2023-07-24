@@ -910,11 +910,10 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         --生命条，颜色，材质
         --################
         if self2.healthbar then
-            if not self2.CheckClassification then
-                self2.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-                self2.healthbar:SetStatusBarColor(r,g,b)--颜色
+            self2.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+            self2.healthbar:SetStatusBarColor(r,g,b)--颜色
                 
-            elseif not self2.setHealthbarTexture then
+            if not self2.setHealthbarTexture and self2.CheckClassification then
                 hooksecurefunc(self2, 'CheckClassification', function(self3)--外框，颜色
                     self3.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
                     local classFilename= UnitClassBase(self3.unit)
@@ -922,23 +921,22 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         local r2,g2,b2=GetClassColor(classFilename)
                         if r2 and g2 and b2 and self3.TargetFrameContainer then
                             if self3.TargetFrameContainer.FrameTexture then
-                                self3.TargetFrameContainer.FrameTexture:SetVertexColor(r2,g2,b2)
+                                self3.TargetFrameContainer.FrameTexture:SetVertexColor(r2, g2, b2)
                             end
                             if self3.TargetFrameContainer.BossPortraitFrameTexture:IsShown() then
-                                self3.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r2,g2,b2)
+                                self3.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r2, g2, b2)
                             end
                         end
                     end
                 end)
-                self2.setHealthbarTexture =true
+                self2.setHealthbarTexture= true
             end
         end
     end)
 
-
-    hooksecurefunc('UnitFrame_OnEvent', function(self, event, unit)--修改, 宠物, 名称
-        if unit== 'pet' and unit == self.unit and event == "UNIT_NAME_UPDATE" then
-            self.name:SetText('')
+    hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称
+        if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
+            self.name:SetText(e.Icon.star2)
         end
     end)
 

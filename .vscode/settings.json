@@ -3142,7 +3142,8 @@
         "WhoFrameGroupInviteButton",
         "WhoFrameAddFriendButton",
         "ADD_FRIEND",
-        "VOICEMACRO_16_Dw_1"
+        "VOICEMACRO_16_Dw_1",
+        "BATTLE_PET_CANNOT_BATTLE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

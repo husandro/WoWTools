@@ -87,7 +87,7 @@ end
 --###########
 --设置, 3D模型
 --###########
-local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=nil, guid=nil, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
+local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=nil, guid=nil, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil, col=nil})--设置, 3D模型
     if Save.hideModel then
         return
     end
@@ -122,6 +122,7 @@ local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=nil, guid=n
         local modelFileID
         if Save.showModelFileID then
             modelFileID= self.playerModel:GetModelFileID()
+            modelFileID= (modelFileID and modelFileID>0) and (tab.col or '')..modelFileID or ''
         end
         self.playerModelFileIDLabel:SetText(modelFileID or '')
     end
@@ -332,6 +333,9 @@ local function setPet(self, speciesID, setSearchText)--宠物
         self:AddDoubleLine(abilityIconA, abilityIconB)
         if not isTradeable then
             self:AddLine(e.onlyChinese and '该宠物不可交易' or BATTLE_PET_NOT_TRADABLE, 1,0,0)
+        end
+        if not canBattle then
+            self:AddLine(e.onlyChinese and '该生物无法对战。' or BATTLE_PET_CANNOT_BATTLE, 1,0,0)
         end
     end
     if tooltipSource then
@@ -750,6 +754,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
     local r, g, b, col = GetClassColor(UnitClassBase(unit))--颜色
           col= col and '|c'..col or ''
+
     --设置单位图标  
     local englishFaction = isPlayer and UnitFactionGroup(unit)
     if isPlayer then
@@ -1007,7 +1012,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         set_Unit_Health_Bar(GameTooltipStatusBar, unit)--生命条提示
     end
 
-    set_Item_Model(self, {unit=unit, guid=guid, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil})--设置, 3D模型
+    set_Item_Model(self, {unit=unit, guid=guid, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil, col= col})--设置, 3D模型
 end
 
 local function setCVar(reset, tips, notPrint)
@@ -1692,6 +1697,23 @@ local function Init_Panel()
     modelLeft:SetScript('OnMouseDown', function(self)
         Save.modelLeft= not Save.modelLeft and true or nil
         set_Cursor_Tips(self)
+    end)
+
+    local modelFileIDCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    modelFileIDCheck.text:SetText((e.onlyChinese and '模型' or MODEL)..' ID')
+    modelFileIDCheck:SetPoint('LEFT', modelLeft.text, 'RIGHT', 2, 0)
+    modelFileIDCheck:SetChecked(Save.showModelFileID)
+    modelFileIDCheck:SetScript('OnMouseDown', function(self)
+        Save.showModelFileID= not Save.showModelFileID and true or nil
+        set_Cursor_Tips(self)
+    end)
+    modelFileIDCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+    modelFileIDCheck:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine('fileID = myModel:GetModelFileID()')
+        e.tips:AddLine('Returns the file ID associated with the model currently displayed in the Model widget.')
+        e.tips:Show()
     end)
 
     local sliderModelSize = e.CSlider(panel, {w=100, min=50, max=200, value=Save.modelSize, setp=1, color=nil,
