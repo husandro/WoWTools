@@ -196,7 +196,7 @@ local function set_Item_Info(self, tab)
                 elseif itemMinLevel>e.Player.level then--低装等
                     bottomLeftText='|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
                 elseif dateInfo.wow then--战网
-                    bottomLeftText= e.Icon.wow2
+                    bottomLeftText= e.Icon.net2
                     if subclassID==0 then
                         if itemLevel and itemLevel>1 then
                             bottomLeftText= bottomLeftText.. itemLevel

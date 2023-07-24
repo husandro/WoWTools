@@ -416,7 +416,7 @@ local function setItem(self, ItemLink)
                 self.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
             end
         end
-        set_Item_Model(self, {creatureDisplayID=nil, animID=nil, itemID=itemID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
+        set_Item_Model(self, {creatureDisplayID=nil, animID=nil, itemID=itemID, appearanceID=appearanceID, visualID=visualID, col=col})--设置, 3D模型
 
         if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
             self.Portrait:SetAtlas(e.Icon.unlocked)
@@ -591,11 +591,11 @@ local function setAchievement(self, achievementID)--成就
     local _, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic = GetAchievementInfo(achievementID)
     self.textLeft:SetText(points..(e.onlyChinese and '点' or RESAMPLE_QUALITY_POINT))--点数
     self.text2Left:SetText(completed and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已完成' or CRITERIA_COMPLETED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未完成' or ACHIEVEMENTFRAME_FILTER_INCOMPLETE)..'|r')--否是完成
-    self.textRight:SetText(isGuild and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '公会' or GUILD) or flags==0x4000 and ('|cffff00ff'..e.Icon.wow2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))  or '')
+    self.textRight:SetText(isGuild and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '公会' or GUILD) or flags==0x4000 and ('|cffff00ff'..e.Icon.net2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))  or '')
 
     self:AddDoubleLine((e.onlyChinese and '成就' or ACHIEVEMENTS)..' '..(flags==0x20000 and '|cffff00ff'..e.Icon.wow2..achievementID..'|r' or achievementID), icon and '|T'..icon..':0|t'..icon)
     if flags==0x20000 then
-        self.textRight:SetText(e.Icon.wow2..'|cffff00ff'..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))
+        self.textRight:SetText(e.Icon.net2..'|cffff00ff'..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))
     end
     get_Web_Link({frame=self, type='achievement', id=achievementID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
 end
@@ -1865,7 +1865,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     if text then
                         local flags= select(9, GetAchievementInfo(self2.id))
                         if flags==0x20000 then
-                            text= e.Icon.wow2..'|cffff00ff'..text..'|r'
+                            text= e.Icon.net2..'|cffff00ff'..text..'|r'
                         end
                     end
                     frame.textID:SetText(text or '')
@@ -1891,7 +1891,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     if button.Player and button.Player.idText then
                         local flags= button.id and select(9, GetAchievementInfo(button.id))
                         if flags==0x20000 then
-                            button.Player.idText:SetText(e.Icon.wow2..'|cffff00ff'..button.id..'|r')
+                            button.Player.idText:SetText(e.Icon.net2..'|cffff00ff'..button.id..'|r')
                         else
                             button.Player.idText:SetText(button.id or '')
                         end

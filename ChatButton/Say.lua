@@ -393,7 +393,7 @@ local function Init_Menu(self, level, type)--主菜单
         numOline=numOline>0 and '|cnGREEN_FONT_COLOR:'..numOline..'|r' or ''
 
         info={--战网
-            text=numOline..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET),
+            text=e.Icon.net2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..numOline,
             notCheckable=true,
             menuList='WOW',
             hasArrow=true
@@ -403,7 +403,7 @@ local function Init_Menu(self, level, type)--主菜单
         numOline= C_FriendList.GetNumOnlineFriends()--好友列表
         numOline= (numOline and numOline>0) and '|cnGREEN_FONT_COLOR:'..numOline..'|r' or ''
         info={
-            text=numOline..(e.onlyChinese and '好友' or FRIENDS),
+            text='|A:groupfinder-icon-friend:0:0|a'..(e.onlyChinese and '好友' or FRIENDS)..numOline,
             notCheckable=true,
             menuList='GAME',
             hasArrow=true
@@ -413,7 +413,7 @@ local function Init_Menu(self, level, type)--主菜单
         numOline = C_FriendList.GetNumWhoResults()
         numOline = (numOline and numOline>0)  and '|cnGREEN_FONT_COLOR:'..numOline..'|r' or ''
         info={--区域列表
-            text=numOline..(e.onlyChinese and '区域' or FLOOR),
+            text=e.Icon.map2..(e.onlyChinese and '区域' or FLOOR)..numOline,
             notCheckable=true,
             menuList='FLOOR',
             hasArrow=true,

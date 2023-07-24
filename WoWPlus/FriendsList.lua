@@ -317,7 +317,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
     panel.btn:SetPoint('LEFT', FriendsFrameStatusDropDownButton, 'RIGHT',0,-2)
     panel.btn:SetScript('OnClick', function(self)
         if not BNConnected() then
-            print(id, addName, e.onlyChinese and '断开战网' or format('%s %s', SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))
+            print(id, addName, e.Icon.net2, e.onlyChinese and '断开战网' or format('%s %s', SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))
             return
         end
         if not self.menu then
@@ -411,7 +411,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
 
                 e.LibDD:UIDropDownMenu_AddSeparator()
                 info={
-                    text=  e.Icon.wow2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' ('..(e.onlyChinese and '好友' or FRIEND)..') '..( e.onlyChinese and '信息' or INFO)..'|A:communities-icon-chat:0:0|a',
+                    text=  e.Icon.net2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' ('..(e.onlyChinese and '好友' or FRIEND)..') '..( e.onlyChinese and '信息' or INFO)..'|A:communities-icon-chat:0:0|a',
                     checked= not Save.disabledBNFriendInfo,
                     hasArrow=true,
                     menuList= 'OnlyWOWFriendInfo',
@@ -627,21 +627,43 @@ local function set_WhoList_Update()--查询, 名单列表
                     C_Timer.After(1, function() securecall('WhoList_Update') end)
                 end
             end)
-            btn:HookScript('OnEnter', function()
+            btn:HookScript('OnEnter', function(self)--FriendsFrame.lua
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                local index= self.index
+                local info = index and C_FriendList.GetWhoInfo(index)
+                if info and info.fullName then
+                    e.tips:AddLine((info.gender==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a' or e.Icon.toRight2)
+                                ..(e.Class(nil, info.filename) or '')
+                                ..self.col
+                                ..info.fullName
+                                ..(e.GetFriend(info.fullName) or '')
+                                ..(info.level and ' '..(info.level~=MAX_PLAYER_LEVEL and '|cnGREEN_FONT_COLOR:' or '')..info.level or '')
+                            )
+                    e.tips:AddLine('|A:UI-HUD-MicroMenu-GuildCommunities-GuildColor-Mouseover:0:0|a'..self.col..(info.fullGuildName or ''))
+                    e.tips:AddLine('|A:groupfinder-waitdot:0:0|a'..self.col..(info.raceStr or ''))
+                    e.tips:AddLine(e.Icon.map2..self.col..(info.area or ''))
+                end
+                
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinese and '组队邀请' or GROUP_INVITE, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
-                e.tips:AddDoubleLine(e.onlyChinese and '添加好友' or ADD_FRIEND, e.Icon.left)
+                e.tips:AddDoubleLine(self.col..'index', self.index)
+                e.tips:AddDoubleLine(self.col..(e.onlyChinese and '组队邀请' or GROUP_INVITE), (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
+                e.tips:AddDoubleLine(self.col..(e.onlyChinese and '添加好友' or ADD_FRIEND), 'Alt+'..e.Icon.left)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end)
             btn.setOnDoubleClick= true
         end
+        btn.tooltip1=nil
+        btn.tooltip2=nil
+
         local info= btn.index and C_FriendList.GetWhoInfo(btn.index)
-        local r,g,b,level
+        local r,g,b,level, hex
         if info then
             if RAID_CLASS_COLORS[info.filename] then
                 r,g,b= RAID_CLASS_COLORS[info.filename]:GetRGB()
+                hex= RAID_CLASS_COLORS[info.filename]:GenerateHexColor()
                 local class=  e.Class(nil, info.filename)
                 if class and btn.Class then
                     btn.Class:SetText(class)
@@ -649,6 +671,7 @@ local function set_WhoList_Update()--查询, 名单列表
             end
            level= info.level
         end
+        btn.col= hex and '|c'..hex or ''
         if r and g and b then
             if btn.Name and info.fullName then
                 if info.fullName== e.Player.name then

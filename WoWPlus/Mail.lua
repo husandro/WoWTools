@@ -338,7 +338,7 @@ local function Init_Menu(_, level, menuList)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
-        text= e.Icon.wow2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET),
+        text= e.Icon.net2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET),
         hasArrow= true,
         notCheckable=true,
         menuList= 'WOW',
