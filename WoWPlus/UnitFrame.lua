@@ -2,7 +2,7 @@ local id, e = ...
 local addName= UNITFRAME_LABEL
 local Save={
     raidFrameScale=0.8,
-    notRaidFrame=not e.Player.husandro
+    notRaidFrame= not e.Player.husandro,
 }
 local panel=CreateFrame("Frame")
 
@@ -1075,13 +1075,123 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
 end
 
 
+
+local function set_ToggleWarMode()--设置, 战争模式
+    if C_PvP.CanToggleWarModeInArea() then
+        local isWar= C_PvP.IsWarModeDesired()
+        if not PlayerFrame.warMode then
+            local w= PlayerFrame.healthbar:GetHeight() or 20
+            PlayerFrame.warMode= e.Cbtn(PlayerFrame, {size={w,w}, icon='hide'})
+            PlayerFrame.warMode:SetPoint('TOPRIGHT', PlayerFrame, -20, -8)
+            PlayerFrame.warMode:SetScript('OnClick',  C_PvP.ToggleWarMode)
+            PlayerFrame.warMode:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_RIGHT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, e.GetEnabeleDisable(C_PvP.IsWarModeDesired())..e.Icon.left)
+                if not C_PvP.CanToggleWarMode(false)  then
+                    e.tips:AddLine(e.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
+                end
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end)
+            PlayerFrame.warMode:SetScript('OnLeave', function() e.tips:Hide() end)
+        end
+        PlayerFrame.warMode:SetNormalAtlas(isWar and 'pvptalents-warmode-swords' or 'pvptalents-warmode-swords-disabled')
+        PlayerFrame.warMode:SetShown(true)
+    elseif PlayerFrame.warMode then
+        PlayerFrame.warMode:SetShown(false)
+    end
+end
+
+--#########
+--BossFrame
+--#########
+local function set_BossFrame()
+    for i=1, MAX_BOSS_FRAMES do
+        local frame= _G['Boss'..i..'TargetFrame']
+        frame.PortraitFrame=CreateFrame('Frame', nil, frame)
+        frame.PortraitFrame:SetFrameStrata('MEDIUM')
+        frame.PortraitFrame:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
+        frame.PortraitFrame:SetSize(38, 38)
+        frame.PortraitFrame.Portrait= frame.PortraitFrame:CreateTexture(nil, 'BACKGROUND')
+        frame.PortraitFrame.Portrait:SetAllPoints(frame.PortraitFrame)
+        function frame.PortraitFrame:set_Portrait()
+            local parentFrame= self:GetParent()
+            local unit= parentFrame.unit
+            local isExists= UnitExists(unit)
+            if isExists then
+                SetPortraitTexture(self.Portrait, unit)
+                self:Raise()
+            end
+            self:SetShown(isExists)
+        end
+        frame.PortraitFrame:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', frame.unit)
+        frame.PortraitFrame:RegisterEvent('INSTANCE_ENCOUNTER_ENGAGE_UNIT')
+        frame.PortraitFrame:SetScript('OnEvent', frame.PortraitFrame.set_Portrait)
+        frame.PortraitFrame:set_Portrait()
+    end
+end
+
+--######
+--初始化
+--######
+local function Init_UnitFrame()
+    set_CompactPartyFrame()--小队, 使用团框架
+
+    hooksecurefunc(CompactPartyFrame,'UpdateVisibility', set_CompactPartyFrame)
+
+    set_PlayerFrame()--玩家
+    set_TargetFrame()--目标
+    set_PartyFrame()--小队
+    set_UnitFrame_Update()--职业, 图标， 颜色
+    set_BossFrame()
+
+    --###############
+    --MirrorTimer.lua
+    --###############
+    hooksecurefunc(MirrorTimerContainer, 'SetupTimer', function(self, value)
+        for _, activeTimer in pairs(self.activeTimers) do
+            if not activeTimer.valueText then
+                activeTimer.valueText=e.Cstr(activeTimer, {justifyH='RIGHT'})
+                activeTimer.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
+                activeTimer.valueText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+                activeTimer.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+                hooksecurefunc(activeTimer, 'UpdateStatusBarValue', function(self2)
+                    self2.valueText:SetText(format('%i', self2.StatusBar:GetValue()))
+                end)
+            end
+        end
+    end)
+
+    C_Timer.After(2, set_ToggleWarMode)--设置, 战争模式
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --团队
 --CompactUnitFrame.lua
-local function set_RaidFrame()--设置,团队
-    if Save.notRaidFrame then
-        return
-    end
+local function Init_RaidFrame()--设置,团队
     hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍标记
         if UnitExists(unit) and not unit:find('nameplate') and not frame.RaidTargetIcon and frame.name then
             frame.RaidTargetIcon= frame:CreateTexture(nil,'OVERLAY', nil, 7)
@@ -1335,98 +1445,24 @@ local function set_RaidFrame()--设置,团队
 end
 
 
-local function set_ToggleWarMode()--设置, 战争模式
-    if C_PvP.CanToggleWarModeInArea() then
-        local isWar= C_PvP.IsWarModeDesired()
-        if not PlayerFrame.warMode then
-            local w= PlayerFrame.healthbar:GetHeight() or 20
-            PlayerFrame.warMode= e.Cbtn(PlayerFrame, {size={w,w}, icon='hide'})
-            PlayerFrame.warMode:SetPoint('TOPRIGHT', PlayerFrame, -20, -8)
-            PlayerFrame.warMode:SetScript('OnClick',  C_PvP.ToggleWarMode)
-            PlayerFrame.warMode:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_RIGHT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, e.GetEnabeleDisable(C_PvP.IsWarModeDesired())..e.Icon.left)
-                if not C_PvP.CanToggleWarMode(false)  then
-                    e.tips:AddLine(e.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
-                end
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:Show()
-            end)
-            PlayerFrame.warMode:SetScript('OnLeave', function() e.tips:Hide() end)
-        end
-        PlayerFrame.warMode:SetNormalAtlas(isWar and 'pvptalents-warmode-swords' or 'pvptalents-warmode-swords-disabled')
-        PlayerFrame.warMode:SetShown(true)
-    elseif PlayerFrame.warMode then
-        PlayerFrame.warMode:SetShown(false)
-    end
-end
 
---#########
---BossFrame
---#########
-local function set_BossFrame()
-    for i=1, MAX_BOSS_FRAMES do
-        local frame= _G['Boss'..i..'TargetFrame']
-        frame.PortraitFrame=CreateFrame('Frame', nil, frame)
-        frame.PortraitFrame:SetFrameStrata('MEDIUM')
-        frame.PortraitFrame:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
-        frame.PortraitFrame:SetSize(38, 38)
-        frame.PortraitFrame.Portrait= frame.PortraitFrame:CreateTexture(nil, 'BACKGROUND')
-        frame.PortraitFrame.Portrait:SetAllPoints(frame.PortraitFrame)
-        function frame.PortraitFrame:set_Portrait()
-            local parentFrame= self:GetParent()
-            local unit= parentFrame.unit
-            local isExists= UnitExists(unit)
-            if isExists then
-                SetPortraitTexture(self.Portrait, unit)
-                self:Raise()
-            end
-            self:SetShown(isExists)
-        end
-        frame.PortraitFrame:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', frame.unit)
-        frame.PortraitFrame:RegisterEvent('INSTANCE_ENCOUNTER_ENGAGE_UNIT')
-        frame.PortraitFrame:SetScript('OnEvent', frame.PortraitFrame.set_Portrait)
-        frame.PortraitFrame:set_Portrait()
-    end
-end
 
---######
---初始化
---######
-local function Init()
-    set_RaidFrame()--团队
 
-    set_CompactPartyFrame()--小队, 使用团框架
 
-    hooksecurefunc(CompactPartyFrame,'UpdateVisibility', set_CompactPartyFrame)
 
-    set_PlayerFrame()--玩家
-    set_TargetFrame()--目标
-    set_PartyFrame()--小队
-    set_UnitFrame_Update()--职业, 图标， 颜色
-    set_BossFrame()
 
-    --###############
-    --MirrorTimer.lua
-    --###############
-    hooksecurefunc(MirrorTimerContainer, 'SetupTimer', function(self, value)
-        for _, activeTimer in pairs(self.activeTimers) do
-            if not activeTimer.valueText then
-                activeTimer.valueText=e.Cstr(activeTimer, {justifyH='RIGHT'})
-                activeTimer.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
-                activeTimer.valueText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
-                activeTimer.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
-                hooksecurefunc(activeTimer, 'UpdateStatusBarValue', function(self2)
-                    self2.valueText:SetText(format('%i', self2.StatusBar:GetValue()))
-                end)
-            end
-        end
-    end)
 
-    C_Timer.After(2, set_ToggleWarMode)--设置, 战争模式
-end
+
+
+
+
+
+
+
+
+
+
+
 
 --###########
 --加载保存数据
@@ -1468,7 +1504,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinese and '提示：如果出现错误' or ('note: '..ENABLE_ERROR_SPEECH), e.onlyChinese and '请取消' or CANCEL)
-                --e.tips:AddDoubleLine(e.onlyChinese and '登出游戏' or LOG_OUT..GAME, e.onlyChinese and '请取消' or CANCEL)
                 e.tips:Show()
             end)
             sel2:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -1477,12 +1512,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 
+            if not Save.notRaidFrame then
+                Init_RaidFrame()--团队
+            end
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
-                Init()
-                --panel:UnregisterEvent('ADDON_LOADED')
+                Init_UnitFrame()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -1525,6 +1562,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
+
+
+
 --[[
     for index, tab in pairs(EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame]) do
         if tab.name==HUD_EDIT_MODE_SETTING_UNIT_FRAME_WIDTH  then-- Frame Width
