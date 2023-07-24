@@ -910,9 +910,11 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         --生命条，颜色，材质
         --################
         if self2.healthbar then
-            self2.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-            self2.healthbar:SetStatusBarColor(r,g,b)--颜色
-            if self2.CheckClassification and not self2.setHealthbarTexture then
+            if not self2.CheckClassification then
+                self2.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+                self2.healthbar:SetStatusBarColor(r,g,b)--颜色
+                
+            elseif not self2.setHealthbarTexture then
                 hooksecurefunc(self2, 'CheckClassification', function(self3)--外框，颜色
                     self3.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
                     local classFilename= UnitClassBase(self3.unit)
