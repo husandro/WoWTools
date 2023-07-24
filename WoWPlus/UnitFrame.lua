@@ -221,21 +221,9 @@ local function set_TargetFrame()
         end
     end)
 
-    hooksecurefunc(TargetFrame, 'CheckClassification', function(self)--外框，颜色
-        self.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-        local classFilename= UnitClassBase(self.unit)
-        if classFilename then
-            local r,g,b=GetClassColor(classFilename)
-            if r and g and b and self.TargetFrameContainer then
-                if self.TargetFrameContainer.FrameTexture then
-                    self.TargetFrameContainer.FrameTexture:SetVertexColor(r,g,b)
-                end
-                if self.TargetFrameContainer.BossPortraitFrameTexture:IsShown() then
-                    self.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r,g,b)
-                end
-            end
-        end
-    end)
+    
+
+
 
     TargetFrame.rangeText= e.Cstr(TargetFrame, {justifyH='RIGHT'})
     TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22,0)
@@ -675,6 +663,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         if not UnitExists(unit) or not (r and g and b) then
             return
         end
+       
         local guid
         local unitIsPlayer=  UnitIsPlayer(unit)
         if unitIsPlayer then
@@ -686,16 +675,14 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 self2.classFrame.Portrait= self2.classFrame:CreateTexture(nil, "BACKGROUND")
                 self2.classFrame.Portrait:SetAllPoints(self2.classFrame)
 
-                if unit=='target' or unit=='focus' then
-                    if self2.TargetFrameContent and self2.TargetFrameContent.TargetFrameContentContextual.LeaderIcon then
-                        self2.classFrame:SetPoint('RIGHT', self2.TargetFrameContent.TargetFrameContentContextual.LeaderIcon, 'LEFT')
-                    else
-                        self2.classFrame:SetPoint('TOPRIGHT', self2.portrait, 'TOPLEFT',0,10)
-                    end
-                elseif self2.unit=='pet' then
+                if self2==TargetFrame then
+                    self2.classFrame:SetPoint('RIGHT', self2.TargetFrameContent.TargetFrameContentContextual.LeaderIcon, 'LEFT')
+                elseif self2==PetFrame then
                     self2.classFrame:SetPoint('LEFT', self2.name,-10,0)
-                elseif self2.unit=='player' then
+                elseif self2==PlayerFrame then
                     self2.classFrame:SetPoint('TOPLEFT', self2.portrait, 'TOPRIGHT',-14,8)
+                elseif self2==FocusFrame then
+                    self2.classFrame:SetPoint('BOTTOMRIGHT', self2.TargetFrameContent.TargetFrameContentMain.ReputationColor, 'TOPRIGHT')
                 else
                     self2.classFrame:SetPoint('TOPLEFT', self2.portrait, 'TOPRIGHT',-14,10)
                 end
@@ -776,9 +763,9 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             self2.classFrame:SetShown(unitIsPlayer)
         end
   
-        if unit=='player' then
+        if self2==PlayerFrame and unit=='player' then
             if not self2.lootSpecFrame then-- and self2~= PetFrame and self2.PlayerFrameContainer then
-                local frameLevel=self2.PlayerFrameContainer:GetFrameLevel()+1
+                local frameLevel= self2.PlayerFrameContainer:GetFrameLevel()+1
                 frameLevel= frameLevel<0 and 0 or frameLevel
 
                 self2.lootSpecFrame= CreateFrame("Frame", nil, self2)
@@ -918,9 +905,31 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 self2.name:SetText(name)
             end
         end
-        if self2.healthbar then--生命条，颜色，材质
+
+        --################
+        --生命条，颜色，材质
+        --################
+        if self2.healthbar then
             self2.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
             self2.healthbar:SetStatusBarColor(r,g,b)--颜色
+            if self2.CheckClassification and not self2.setHealthbarTexture then
+                hooksecurefunc(self2, 'CheckClassification', function(self3)--外框，颜色
+                    self3.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+                    local classFilename= UnitClassBase(self3.unit)
+                    if classFilename then
+                        local r2,g2,b2=GetClassColor(classFilename)
+                        if r2 and g2 and b2 and self3.TargetFrameContainer then
+                            if self3.TargetFrameContainer.FrameTexture then
+                                self3.TargetFrameContainer.FrameTexture:SetVertexColor(r2,g2,b2)
+                            end
+                            if self3.TargetFrameContainer.BossPortraitFrameTexture:IsShown() then
+                                self3.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r2,g2,b2)
+                            end
+                        end
+                    end
+                end)
+                self2.setHealthbarTexture =true
+            end
         end
     end)
 
