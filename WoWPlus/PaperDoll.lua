@@ -1325,7 +1325,7 @@ end
 --初始化
 --#####
 local function Init()
-    panel.Init_Show_Hide_Button(CharacterFrame.TitleContainer, _G['MoveZoomInButtonPerCharacterFrame'])--初始，显示/隐藏，按钮
+    panel.Init_Show_Hide_Button(PaperDollItemsFrame, _G['MoveZoomInButtonPerCharacterFrame'])--初始，显示/隐藏，按钮
     Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
     set_ChromieTime()--时空漫游战役, 提示
 
