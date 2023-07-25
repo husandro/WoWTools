@@ -3147,7 +3147,9 @@
         "UNITNAME_SUMMON_TITLE9",
         "OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE",
         "BossBanner_ConfigureLootFrame",
-        "AuctionHouseBrowseResultsFrameMixin"
+        "AuctionHouseBrowseResultsFrameMixin",
+        "EDIT_MODE_MODERN_SYSTEM_MAP",
+        "EDIT_MODE_CLASSIC_SYSTEM_MAP"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

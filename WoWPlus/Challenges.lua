@@ -871,7 +871,14 @@ local function set_All_Text()--所有记录
             curLevel= runs.level>curLevel and runs.level or curLevel
         end
     end
-    for i=10, 20 do
+    local min, max=10, 20
+    if curLevel>0 then
+        min= curLevel-5
+        min= min<2 and 2 or min
+        max= curLevel+5
+        max= max<12 and 12 or max
+    end
+    for i=min, max do
         local col= curLevel==i and '|cff00ff00' or select(2, math.modf(i/2))==0 and '|cffff8200' or '|cffffffff'
         local weeklyRewardLevel2, endOfRunRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
         if weeklyRewardLevel2 and weeklyRewardLevel2>0 then
