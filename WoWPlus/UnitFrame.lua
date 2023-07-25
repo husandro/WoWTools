@@ -294,7 +294,7 @@ local function set_PartyFrame()--PartyFrame.lua
                     if exists2 then
                         if UnitIsUnit(self2.unit, 'player') then--我
                             self2.Portrait:SetAtlas('auctionhouse-icon-favorite')
-                        elseif UnitIsDeadOrGhost(self2.unit) then--死亡
+                        elseif UnitHealth(unit)<=0 then--死亡
                             self2.Portrait:SetAtlas('xmarksthespot')
                         else
                             local index = GetRaidTargetIndex(self2.unit)
@@ -568,14 +568,22 @@ local function set_PartyFrame()--PartyFrame.lua
                 frame.texture:SetAllPoints(frame)
                 frame.set_Active= function(self2)
                     local find= false
-                    if UnitIsConnected(self2.unit) and not UnitIsFeignDeath(self2.unit) then
-                        if UnitIsDead(self2.unit) then
+                    if UnitIsConnected(self2.unit) and UnitIsPlayer(self2.unit) then--被魅惑
+                        if UnitIsCharmed(self2.unit) then
+                            self2.texture:SetAtlas('CovenantSanctum-Reservoir-Idle-NightFae-Spiral3')
+                            find= true
+                        elseif UnitIsFeignDeath(self2.unit) then--假死
+                            self2.texture:SetTexture(132293)
+                            find= true
+                            
+                        elseif UnitIsDead(self2.unit) then
                             self2.texture:SetAtlas('xmarksthespot')
                             find= true
                             if not self2.deadBool then--死亡，次数
                                 self2.deadBool=true
                                 self2.dead= self2.dead +1
                             end
+
                         elseif UnitIsGhost(self2.unit) then
                             self2.texture:SetAtlas('poi-soulspiritghost')
                             find= true
@@ -606,10 +614,10 @@ local function set_PartyFrame()--PartyFrame.lua
                     e.tips:Show()
                     self2:SetAlpha(0.3)
                 end)
-
-                frame.unit= unit
                 memberFrame.deadFrame= frame
             end
+
+            frame.unit= unit
             frame:UnregisterAllEvents()
             if exists then
                 frame:RegisterEvent('PLAYER_ENTERING_WORLD')
