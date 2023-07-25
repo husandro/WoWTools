@@ -771,6 +771,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
     local r, g, b, col = GetClassColor(UnitClassBase(unit))--颜色
           col= col and '|c'..col or ''
+    local isInCombat= UnitAffectingCombat('player')
 
     --设置单位图标  
     local englishFaction = isPlayer and UnitFactionGroup(unit)
@@ -783,8 +784,8 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         end
 
         --InspectFrame,如果显示，查看玩家，天赋，出错
-        if not e.UnitItemLevel[guid] and CheckInteractDistance(unit, 1) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then--取得装等
-           NotifyInspect(unit)
+        if not e.UnitItemLevel[guid] or (e.UnitItemLevel[guid] and not isInCombat) then--取得装等
+            e.GetNotifyInspect(nil, unit)
         end
 
         --取得玩家信息
@@ -964,7 +965,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 end
             end
         end
-        if UnitAffectingCombat('player') then
+        if isInCombat then
             if hideLine then
                 hideLine:SetText('')
                 hideLine:SetShown(false)

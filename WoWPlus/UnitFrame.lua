@@ -736,7 +736,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 self2.classFrame:SetScript('OnEvent', function(self3)
                     local unit2= self3:GetParent().unit
                     if UnitIsPlayer(unit2) then
-                        e.GetNotifyInspect({unit2})--取得玩家信息
+                        e.GetNotifyInspect(nil, unit2)--取得玩家信息
                         C_Timer.After(2, function()
                             self3:set_Class()
                         end)

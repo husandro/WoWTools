@@ -93,20 +93,27 @@ end
 --#######
 --取得装等
 --#######
-e.GetNotifyInspect= function(tab)
-    local num, index= #tab, 1
-    if num>0 then
-        if panel.NotifyInspectTicker then
-            panel.NotifyInspectTicker:Cancel()
+e.GetNotifyInspect= function(tab, unit)
+    if unit then
+        if UnitExists(unit) and CheckInteractDistance(unit, 1) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then
+            NotifyInspect(unit)
         end
-        panel.NotifyInspectTicker=C_Timer.NewTicker(4, function()
-            local unit=tab[index]
-            --InspectFrame,如果显示，查看玩家，天赋，出错
-            if UnitExists(unit) and CheckInteractDistance(unit, 1) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then
-                NotifyInspect(tab[index])
+    else
+        tab=tab or {}
+        local num, index= #tab, 1
+        if num>0 then
+            if panel.NotifyInspectTicker then
+                panel.NotifyInspectTicker:Cancel()
             end
-            index= index+ 1
-        end, num-1)
+            panel.NotifyInspectTicker=C_Timer.NewTicker(4, function()
+                local unit2=tab[index]
+                --InspectFrame,如果显示，查看玩家，天赋，出错
+                if UnitExists(unit2) and CheckInteractDistance(unit2, 1) and CanInspect(unit2) and (not InspectFrame or not InspectFrame:IsShown()) then
+                    NotifyInspect(tab[index])
+                    index= index+ 1
+                end
+            end, num)
+        end
     end
 end
 
