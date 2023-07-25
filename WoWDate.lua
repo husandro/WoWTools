@@ -105,9 +105,8 @@ e.GetNotifyInspect= function(tab, unit)
             if panel.NotifyInspectTicker then
                 panel.NotifyInspectTicker:Cancel()
             end
-            panel.NotifyInspectTicker=C_Timer.NewTicker(4, function()
+            panel.NotifyInspectTicker=C_Timer.NewTicker(4, function()--InspectFrame,如果显示，查看玩家，天赋，出错
                 local unit2=tab[index]
-                --InspectFrame,如果显示，查看玩家，天赋，出错
                 if UnitExists(unit2) and CheckInteractDistance(unit2, 1) and CanInspect(unit2) and (not InspectFrame or not InspectFrame:IsShown()) then
                     NotifyInspect(tab[index])
                     index= index+ 1
@@ -434,7 +433,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
                 RequestBattlefieldScoreData()--请求战地得分数据
             ]]
             C_Timer.After(2, function()
-                NotifyInspect('player')--取得,自已, 装等
+                e.GetNotifyInspect(nil, 'player')--取得,自已, 装等
                 e.GetGroupGuidDate()--队伍数据收集    
                 set_Money()--钱
                 updateCurrency(nil)--{currencyID = 数量}
@@ -523,13 +522,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         end
 
     elseif event=='PLAYER_EQUIPMENT_CHANGED' or event=='PLAYER_SPECIALIZATION_CHANGED' or event=='PLAYER_AVG_ITEM_LEVEL_UPDATE' then--更新自已
-        if not InspectFrame or not InspectFrame:IsShown() then
-            if event=='PLAYER_SPECIALIZATION_CHANGED' and UnitInParty(arg1) then
-                NotifyInspect(arg1)--队伍数据收集
-            else
-                NotifyInspect('player')--取得,自已, 装等
-            end
-        end
+        e.GetNotifyInspect(nil, arg1 or 'player')--取得装等
 
     elseif event=='ENCOUNTER_START' then-- 给 e.Reload用
         e.IsEncouter_Start= true

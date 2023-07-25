@@ -783,15 +783,13 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             self.Portrait:SetShown(true)
         end
 
-        --InspectFrame,如果显示，查看玩家，天赋，出错
-        if not e.UnitItemLevel[guid] or (e.UnitItemLevel[guid] and not isInCombat) then--取得装等
-            e.GetNotifyInspect(nil, unit)
-        end
-
         --取得玩家信息
         local textLeft, text2Left
         local info= e.UnitItemLevel[guid]
         if info then
+            if not isInCombat then
+                e.GetNotifyInspect(nil, unit)--取得装等
+            end
             if info.itemLevel and info.itemLevel>1 then--设置装等
                 textLeft= col..info.itemLevel..'|r'
             end
@@ -799,7 +797,10 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             if icon then
                 text2Left="|T"..icon..':0|t'
             end
+        else
+            e.GetNotifyInspect(nil, unit)--取得装等
         end
+
         self.backgroundColor:SetColorTexture(r, g, b, 0.2)--背景颜色
         self.backgroundColor:SetShown(true)
 
