@@ -118,7 +118,7 @@ local function getBagKey(self, point, x, y, parent) --KEY链接
     local find=point:find('LEFT')
     local i=1
     for bagID= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do
-        for slotID=1,C_Container.GetContainerNumSlots(bagID) do
+        for slotID=1, C_Container.GetContainerNumSlots(bagID) do
             local icon, itemLink, itemID
             local info= C_Container.GetContainerItemInfo(bagID, slotID)
             if info then
