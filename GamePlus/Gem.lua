@@ -14,7 +14,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     local gem1007= select(2, GetSocketItemInfo())== 4638590 --204000, 204030
 
     for bag= Enum.BagIndex.Backpack, Constants.InventoryConstants.NumBagSlots do
-        for slot=1, C_Container.GetContainerNumSlots(bag) do
+        for slot=Enum.BagIndex.Backpack, NUM_BAG_FRAMES do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info
                 and info.hyperlink

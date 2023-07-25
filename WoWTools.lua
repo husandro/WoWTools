@@ -62,7 +62,7 @@ end
 for _, spellID in pairs(spellLoadTab) do
     e.LoadDate({id=spellID, type='spell'})
 end
-for bag= Enum.BagIndex.Backpack, Constants.InventoryConstants.NumBagSlots+1 do
+for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do
     for slot=1, C_Container.GetContainerNumSlots(bag) do
         local info = C_Container.GetContainerItemInfo(bag, slot)
         if info and info.itemID then

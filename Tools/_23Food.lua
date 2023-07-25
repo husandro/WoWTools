@@ -89,7 +89,7 @@ end
 
 local function find_Item_Type(class, subclass)
     local tab={}
-    for bag= Enum.BagIndex.Backpack, Constants.InventoryConstants.NumBagSlots do
+    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.hyperlink and info.itemID and GetItemSpell(info.itemID) then

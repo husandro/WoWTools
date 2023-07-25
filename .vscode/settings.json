@@ -3146,7 +3146,8 @@
         "BATTLE_PET_CANNOT_BATTLE",
         "UNITNAME_SUMMON_TITLE9",
         "OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE",
-        "BossBanner_ConfigureLootFrame"
+        "BossBanner_ConfigureLootFrame",
+        "AuctionHouseBrowseResultsFrameMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

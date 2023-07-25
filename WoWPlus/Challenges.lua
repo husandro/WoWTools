@@ -37,25 +37,34 @@ local affixSchedule = {
 }
 
 local SpellTabs={
+    --spell= 传送门法术ID 
+    --ins= 副本ID journalInstanceID
+    --map= 跳战副本ID mapChallengeID
     {spell=393222, ins=1197, map=403},--奥达曼：提尔的遗产
     {spell=393267, ins=1196, map=405},--蕨皮山谷
     {spell=393283, ins=1204, map=406},--注能大厅
     {spell=393276, ins=1199, map=404},--奈萨鲁斯
     {spell=410071, ins=1001, map=245},--自由镇
     {spell=410078, ins=767, map=206},--奈萨里奥的巢穴
-
     {spell=410074, ins=1022, map=251},--地渊孢林
     {spell=410080, ins=68, map=438},--旋云之巅
 }
 --[[
-{spell=393262, ins=, map=},--诺库德阻击战
-{spell=393222, ins=, map=},--奥达曼：提尔的遗产
-{spell=159897, ins=, map=},--奥金顿
+{spell=393222, ins=1197, map=403},--奥达曼：提尔的遗产
+{spell=393267, ins=1196, map=405},--蕨皮山谷
+{spell=393283, ins=1204, map=406},--注能大厅
+{spell=393276, ins=1199, map=404},--奈萨鲁斯
+{spell=410071, ins=1001, map=245},--自由镇
+{spell=410078, ins=767, map=206},--奈萨里奥的巢穴
+{spell=410074, ins=1022, map=251},--地渊孢林
+{spell=410080, ins=68, map=438},--旋云之巅
 
+
+{spell=393262, ins=, map=},--诺库德阻击战
+{spell=159897, ins=, map=},--奥金顿
 {spell=159901, ins=, map=},--永茂林地
 {spell=354467, ins=, map=},--伤逝剧场
 {spell=373191, ins=, map=},--统御圣所
-{spell=393283, ins=, map=},--注能大厅
 {spell=131232, ins=, map=},--通灵学院
 {spell=354466, ins=, map=},--晋升高塔
 {spell=131228, ins=, map=},--围攻砮皂寺
@@ -66,18 +75,14 @@ local SpellTabs={
 {spell=159899, ins=, map=},--影月墓地
 {spell=159900, ins=, map=},--恐轨车站
 {spell=393273, ins=, map=},--艾杰斯亚学院
-{spell=410078, ins=, map=},--奈萨里奥的巢穴 
 {spell=373262, ins=, map=},--卡拉赞
 {spell=373192, ins=, map=},--初诞者圣墓
-{spell=410071, ins=, map=},--自由镇
 {spell=393766, ins=, map=},--群星庭院
 {spell=159896, ins=, map=},--钢铁码头
 {spell=131204, ins=, map=},--青龙寺
 {spell=354464, ins=, map=},--塞兹仙林的迷雾
 {spell=131222, ins=, map=},--魔古山宫殿
-{spell=393276, ins=, map=},--奈萨鲁斯
 {spell=354463, ins=, map=},--凋魂之殇
-{spell=393267, ins=, map=},--蕨皮山谷
 {spell=131231, ins=, map=},--血色大厅
 {spell=131229, ins=, map=},--血色修道院
 {spell=354468, ins=, map=},--彼界
@@ -85,15 +90,7 @@ local SpellTabs={
 {spell=131225, ins=, map=},--残阳关
 {spell=131206, ins=, map=},--影踪禅院
 
-{spell=, ins=, map=},--
-{spell=, ins=, map=},--
-{spell=, ins=, map=},--
-{spell=, ins=, map=},--
-{spell=, ins=, map=},--
-{spell=, ins=, map=},--
 
-
-{spell=, ins=, map=},--
 
 ]]
 local function get_Spell_MapChallengeID(mapChallengeID)
@@ -106,10 +103,21 @@ local function get_Spell_MapChallengeID(mapChallengeID)
 end
 get_Spell_MapChallengeID()
 
+local function get_Bag_Key()--查找，包的key
+    for bagID= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do--Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES ,Constants.InventoryConstants.NumBagSlots
+        for slotID=1, C_Container.GetContainerNumSlots(bagID) do
+            local info = C_Container.GetContainerItemInfo(bagID, slotID)
+            if info and info.itemID and C_Item.IsItemKeystoneByID(info.itemID) and info.hyperlink then
+                return info.hyperlink, info, bagID, slotID
+            end
+        end
+    end
+end
+
 local function getBagKey(self, point, x, y, parent) --KEY链接
     local find=point:find('LEFT')
     local i=1
-    for bagID= Enum.BagIndex.Backpack, Constants.InventoryConstants.NumBagSlots do
+    for bagID= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do
         for slotID=1,C_Container.GetContainerNumSlots(bagID) do
             local icon, itemLink, itemID
             local info= C_Container.GetContainerItemInfo(bagID, slotID)
@@ -321,7 +329,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
             ItemButtonUtil.OpenAndFilterBags(ChallengesKeystoneFrame)
             if ItemButtonUtil.GetItemContext() == nil then return end
             local itemLocation = ItemLocation:CreateEmpty()
-            for bagID=0, NUM_BAG_FRAMES do--ContainerFrame.lua
+            for bagID= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do--ContainerFrame.lua
                 for slotIndex = 1, ContainerFrame_GetContainerNumSlots(bagID) do
                     itemLocation:SetBagAndSlot(bagID, slotIndex)
                     if ItemButtonUtil.GetItemContextMatchResultForItem(itemLocation) == ItemButtonUtil.ItemContextMatchResult.Match then
@@ -426,7 +434,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                 m=m..name2..', '
             end
         end
-        m=m..SecondsToClock(timeLimit)
+        m=m.. SecondsToClock(timeLimit)
         e.Chat(m)
         self2.inseSayTips=nil
     end)
@@ -1247,14 +1255,9 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 frame.currentKey:SetScript('OnEnter', function(self2)
                     e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                     e.tips:ClearLines()
-                    for bag=0, NUM_BAG_SLOTS do
-                        for slot=1, C_Container.GetContainerNumSlots(bag) do
-                            local info = C_Container.GetContainerItemInfo(bag, slot)
-                            if info and info.itemID and C_Item.IsItemKeystoneByID(info.itemID) then
-                                e.tips:SetBagItem(bag, slot)
-                                break
-                            end
-                        end
+                    local bagID, slotID= select(3, get_Bag_Key())--查找，包的key
+                    if bagID and slotID then
+                        e.tips:SetBagItem(bagID, slotID)
                     end
                     e.tips:Show()
                     self2:SetAlpha(0.5)
@@ -1453,7 +1456,7 @@ local function Init()
             e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.portScale or 1)..'|r'.. e.Icon.mid)
             e.tips:AddLine(' ')
             for _, tab in pairs(SpellTabs) do
-               local spellLink= GetSpellLink(tab.spell) or GetSpellInfo(tab.spell)
+               local spellLink= GetSpellLink(tab.spell) or GetSpellInfo(tab.spell) or ('ID'.. tab.spell)
                local icon= GetSpellTexture(tab.spell)
                e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '')..spellLink,
                                     'spellID '..tab.spell..' '..
@@ -1548,6 +1551,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("CHALLENGE_MODE_COMPLETED")
 
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -1592,6 +1596,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
+        end
+
+    elseif event=='CHALLENGE_MODE_COMPLETED' then
+        if Save.slotKeystoneSay then
+            local itemLink= get_Bag_Key()--查找，包的key
+            if itemLink then
+                C_Timer.After(2, function()
+                    e.Chat(itemLink)
+                end)
+            end
         end
     end
 end)

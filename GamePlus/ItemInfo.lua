@@ -509,6 +509,9 @@ end
 --初始
 --####
 local function Init()
+
+
+
     --没用，测试, boss掉落，物品
     hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
 	    --local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = GetItemInfo(data.itemLink)
@@ -882,6 +885,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
                 set_FrozenButton_Tips()
             end)
+        
+        elseif arg1=='Blizzard_AuctionHouseUI' then
+            hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(self2, addedBrowseResults)
+                info= self2.self.browseResults 
+                for k, v in pairs(info) do if v and type(v)=='table' then print('---------',k..'STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---------',k..'END') end print(k,v) end
+                print(id,addName)
+            end)
+
         end
 
     elseif event == "PLAYER_LOGOUT" then
