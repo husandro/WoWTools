@@ -597,38 +597,49 @@ end
 
 local function set_Kill_Info()--副本PVP团本
     local R = {}
-    local activityInfo =  C_WeeklyRewards.GetActivities() or {}
-
-    for  _ , info in pairs(activityInfo) do
-        if info.type and info.type>0 and info.type<4 and info.level then
+    for  _ , info in pairs( C_WeeklyRewards.GetActivities() or {}) do
+        if info.type and info.type>= Enum.WeeklyRewardChestThresholdType.MythicPlus and info.type<= Enum.WeeklyRewardChestThresholdType.Raid and info.level then
             local head
-            local difficultyText= '...'
-            --local itemLevel
+            local difficultyText
             if info.type == Enum.WeeklyRewardChestThresholdType.MythicPlus then--1
                 head= e.onlyChinese and '史诗地下城' or MYTHIC_DUNGEONS
                 difficultyText= string.format(e.onlyChinese and '史诗 %d' or WEEKLY_REWARDS_MYTHIC, info.level)
-                --itemLevel=  C_MythicPlus.GetRewardLevelForDifficultyLevel(info.level)
 
             elseif info.type == Enum.WeeklyRewardChestThresholdType.RankedPvP then--2
                 head= e.onlyChinese and 'PvP' or PVP
-                difficultyText= PVPUtil.GetTierName(info.level)
+                if e.onlyChinese then
+                    local tab={
+                        [0]= "休闲者",
+                        [1]= "争斗者 I",
+                        [2]= "挑战者 I",
+                        [3]= "竞争者 I",
+                        [4]= "决斗者",
+                        [5]= "精锐",
+                        [6]= "争斗者 II",
+                        [7]= "挑战者 II",
+                        [8]= "竞争者 II",
+                    }
+                    difficultyText=tab[info.level]
+                end
+                difficultyText=  difficultyText or PVPUtil.GetTierName(info.level)-- _G["PVP_RANK_"..tierEnum.."_NAME"] PVPUtil.lua
 
             elseif info.type == Enum.WeeklyRewardChestThresholdType.Raid then--3
                 head= e.onlyChinese and '团队副本' or RAIDS
                 difficultyText=  DifficultyUtil.GetDifficultyName(info.level)
             end
-
-            R[head]= R[head] or {}
-            R[head][info.index] = {
-                level = info.level,
-                difficulty = difficultyText or '... ',
-                progress = info.progress,
-                threshold = info.threshold,
-                unlocked = info.progress>=info.threshold,
-                id= info.id,
-                type= info.type,
-            }
-            info= info.rewards
+            if head then
+                R[head]= R[head] or {}
+                R[head][info.index] = {
+                    level = info.level,
+                    difficulty = difficultyText or '... ',
+                    progress = info.progress,
+                    threshold = info.threshold,
+                    unlocked = info.progress>=info.threshold,
+                    id= info.id,
+                    type= info.type,
+                    itemDBID= info.rewards and info.rewards.itemDBID or nil,
+                }
+            end
         end
     end
 
@@ -656,8 +667,8 @@ local function set_Kill_Info()--副本PVP团本
                 label:SetScript('OnEnter', function(self2)
                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
                     e.tips:ClearLines()
-                    local link= self2.id and C_WeeklyRewards.GetExampleRewardItemHyperlinks(self2.id)
-                    if link and link~='' then
+                    local link= self2:Get_ItemLink()
+                    if link then
                         e.tips:SetHyperlink(link)
                     else
                         e.tips:AddDoubleLine(format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL ),e.onlyChinese and '无' or NONE)
@@ -667,23 +678,35 @@ local function set_Kill_Info()--副本PVP团本
                     e.tips:Show()
                     self2:SetAlpha(0.5)
                 end)
+                function label:Get_ItemLink()
+                    local link
+                    if self.itemDBID then
+                        link= C_WeeklyRewards.GetItemHyperlink(self.itemDBID)
+                    elseif self.id then
+                        link= C_WeeklyRewards.GetExampleRewardItemHyperlinks(self.id)
+                    end
+                    if link and link~='' then
+                        e.LoadDate({id=link, type='item'})
+                        return link
+                    end
+                end
                 ChallengesFrame['rewardChestSub'..head..index]= label
             end
             label.id= info.id
             label.type= info.type
+            label.itemDBID= info.itemDBID
             last= label
 
             local text
-            local itemLink= info.id and C_WeeklyRewards.GetExampleRewardItemHyperlinks(info.id)
-            if itemLink and itemLink~='' then
-                e.LoadDate({id=itemLink, type='item'})
+            local itemLink= label:Get_ItemLink()
+            if itemLink then
                 local texture= C_Item.GetItemIconByID(itemLink)
                 local itemLevel= GetDetailedItemLevelInfo(itemLink)
                 text= '    '..index..') '..(texture and '|T'..texture..':0|t' or itemLink)
-                text= text..((itemLevel and itemLevel>0) and itemLevel or '')..e.Icon.select2
+                text= text..((itemLevel and itemLevel>0) and itemLevel or '')..e.Icon.select2..(info.level or '')
             else
                 if info.unlocked then
-                    text='   '..index..') '..info.difficulty..e.Icon.select2--.. ' '..(e.onlyChinese and '完成' or COMPLETE)
+                    text='   '..index..') '..info.difficulty..e.Icon.select2..(info.level or '')--.. ' '..(e.onlyChinese and '完成' or COMPLETE)
                 else
                     text='    |cff828282'..index..') '
                         ..info.difficulty
@@ -720,7 +743,7 @@ local function set_All_Text()--所有记录
 
             local tabs={}
             local completed, all= 0,0
-            for index, info in pairs(C_MythicPlus.GetRunHistory(true, true) or {}) do
+            for _, info in pairs(C_MythicPlus.GetRunHistory(true, true) or {}) do
                 local mapID=info.mapChallengeModeID
                 tabs[mapID]= tabs[mapID] or
                             {
