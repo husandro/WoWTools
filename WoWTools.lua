@@ -1381,7 +1381,8 @@ e.Set_Item_Stats = function(self, link, setting) --setting= setting or {}
             setID= select(16 , GetItemInfo(link))--套装
             if setID and not self.itemSet then
                 self.itemSet= self:CreateTexture()
-                self.itemSet:SetAtlas(e.Icon.pushed)
+                self.itemSet:SetAtlas(e.Icon.pushed)--services-icon-goldborder
+                self.itemSet:SetVertexColor(1, 0.85, 0)
                 self.itemSet:SetAllPoints(setting.point or self)
             end
         end

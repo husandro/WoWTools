@@ -88,19 +88,15 @@ local function set_Item_Info(self, tab)
                 if name then
                     bottomLeftText= e.WA_Utf8Sub(name, 3,6, true)
                 end
-                local activities=C_WeeklyRewards.GetActivities(1)--本周完成
-                if activities then
-                    local t=0
-                    for _,v in pairs(activities) do
-                        if v and v.level then
-                            if v.level >t then t=v.level end
-                        end
-                    end
-                    if t>0 then
-                        leftText='|cnGREEN_FONT_COLOR:'..t..'|r'
-                    end
+                local text
+                for _, activities in pairs(C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.MythicPlus) or {}) do--本周完成
+                    text= (text and text..'/' or '')..activities.level
+                end
+                if text then
+                    leftText='|cnGREEN_FONT_COLOR:'..text..'|r'
                 end
             end
+
         elseif e.itemPetID[itemID] then
             topRightText='|A:WildBattlePetCapturable:0:0|a'
 
@@ -513,6 +509,12 @@ end
 --初始
 --####
 local function Init()
+    --没用，测试, boss掉落，物品
+    hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
+	    --local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = GetItemInfo(data.itemLink)
+        e.Set_Item_Stats(lootFrame, data.itemLink, {point=lootFrame.Icon})
+    end)
+
     --################
     --设置，收信箱，物品
     --################

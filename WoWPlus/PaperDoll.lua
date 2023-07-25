@@ -123,14 +123,13 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增�
                 e.tips:SetSpellByID(self2.spell)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '商业技能' or TRADESKILLS), e.Icon.right)
-                e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需求' or NEED), e.onlyChinese and '打开一次' or CHALLENGES_LASTRUN_TIME..'('..UNWRAP..')')
+                e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需求' or NEED), (e.onlyChinese and '打开一次' or CHALLENGES_LASTRUN_TIME)..'('..(e.onlyChinese and '打开' or UNWRAP)..')')
                 e.tips:Show()
         end)
         self.engineering:SetScript("OnMouseUp", function()
             local n=GetItemCount(90146, true)
                 if n==0 then
-                    local item=select(2, GetItemInfo(90146)) or SPELL_REAGENTS_OPTIONAL
-                    print(item..' '..RED_FONT_COLOR_CODE..NONE..'|r')
+                    print(select(2, GetItemInfo(90146)) or (e.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
                 end
         end)
         self.engineering:SetScript('OnLeave',function() e.tips:Hide() end)
@@ -1223,8 +1222,8 @@ local function set_ChromieTime()--时空漫游战役, 提示
     if canEnter and not Save.hide and not panel.ChromieTime then
         panel.ChromieTime= e.Cbtn(PaperDollItemsFrame, {size={18,18}, atlas='ChromieTime-32x32'})
         panel.ChromieTime:SetAlpha(0.5)
-        if _G['MoveZoomInButtonPerCharacterFrame'] or CharacterFrame.TitleContainer.ShowHideButton then
-            panel.ChromieTime:SetPoint('LEFT', _G['MoveZoomInButtonPerCharacterFrame'] or CharacterFrame.TitleContainer.ShowHideButton, 'RIGHT')
+        if _G['MoveZoomInButtonPerCharacterFrame'] or PaperDollItemsFrame.ShowHideButton then
+            panel.ChromieTime:SetPoint('LEFT', _G['MoveZoomInButtonPerCharacterFrame'] or PaperDollItemsFrame.ShowHideButton, 'RIGHT')
             panel.ChromieTime:SetFrameLevel(CharacterFrame.TitleContainer:GetFrameLevel()+1)
         else
             panel.ChromieTime:SetPoint('BOTTOMLEFT', PaperDollItemsFrame, 5, 10)
@@ -1233,15 +1232,6 @@ local function set_ChromieTime()--时空漫游战役, 提示
         panel.ChromieTime:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            for _, info in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
-                local col= info.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
-                e.tips:AddDoubleLine((info.alreadyOn and e.Icon.toRight2 or '')..col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a' or '')..info.name..(info.alreadyOn and e.Icon.toLeft2 or ''), col..'ID '.. info.id)
-                e.tips:AddDoubleLine(' ', col..(info.mapAtlas and '|A:'..info.mapAtlas..':0:0|a'.. info.mapAtlas))
-                e.tips:AddDoubleLine(' ', col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a'.. info.previewAtlas))
-                e.tips:AddDoubleLine(' ', col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
-                e.tips:AddLine(' ')
-            end
-
             local expansionID = UnitChromieTimeID('player')--时空漫游战役 PartyUtil.lua
             local option = C_ChromieTime.GetChromieTimeExpansionOption(expansionID);
             local expansion = option and option.name or (e.onlyChinese and '无' or NONE)
@@ -1252,7 +1242,15 @@ local function set_ChromieTime()--时空漫游战役, 提示
             e.tips:AddDoubleLine((e.onlyChinese and '选择时空漫游战役' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHROMIE_TIME_SELECT_EXAPANSION_BUTTON, CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE))..': '..e.GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime()),
                                     text
                                 )
-
+            e.tips:AddLine(' ')
+            for _, info in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
+                local col= info.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
+                e.tips:AddDoubleLine((info.alreadyOn and e.Icon.toRight2 or '')..col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a' or '')..info.name..(info.alreadyOn and e.Icon.toLeft2 or '')..col..' ID '.. info.id, col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
+                --e.tips:AddDoubleLine(' ', col..(info.mapAtlas and '|A:'..info.mapAtlas..':0:0|a'.. info.mapAtlas))
+                --e.tips:AddDoubleLine(' ', col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a'.. info.previewAtlas))
+                --e.tips:AddDoubleLine(' ', col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
+            end
+            e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
             self2:SetAlpha(1)
@@ -1271,19 +1269,23 @@ panel.Init_Show_Hide_Button= function(self, frame)
     if not self or self.ShowHideButton then
         return
     end
+    local title= self==PaperDollItemsFrame and CharacterFrame.TitleContainer or self.TitleContainer
+
     local btn= e.Cbtn(self, {size={20,20}, atlas= not Save.hide and e.Icon.icon or e.Icon.disabled})
     if frame then
         btn:SetPoint('RIGHT', frame, 'LEFT')
     else
-        btn:SetPoint('LEFT', self.TitleContainer)
+        btn:SetPoint('LEFT', title)
     end
+    btn:SetFrameLevel(title:GetFrameLevel()+1)
+
     btn:SetAlpha(0.5)
     btn:SetScript('OnClick', function()
         Save.hide= not Save.hide and true or nil
-        if InspectFrame and InspectFrame.TitleContainer and InspectFrame.TitleContainer.ShowHideButton then
-            InspectFrame.TitleContainer.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+        if InspectFrame and InspectFrame.ShowHideButton then
+            InspectFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
         end
-        CharacterFrame.TitleContainer.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+        PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
 
         --print(id, addName, e.GetShowHide(not Save.hide), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or (NEED..REFRESH)))
 

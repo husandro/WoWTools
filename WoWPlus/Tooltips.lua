@@ -339,6 +339,13 @@ local function setPet(self, speciesID, setSearchText)--宠物
     get_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})--取得网页，数据链接
 end
 
+local function getItemInfoFromHyperlink(link)--LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
+	local itemID = link:match("|H.-:(%d+).-|h")
+	if itemID then
+		return tonumber(itemID)
+	end
+end
+
 --############
 --设置,物品信息
 --############
@@ -346,9 +353,14 @@ local function setItem(self, ItemLink)
     if not ItemLink then
         return
     end
+
     local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(ItemLink)
     local itemID, itemType, itemSubType, itemEquipLoc, itemTexture2, classID, subclassID = GetItemInfoInstant(ItemLink)
-    itemID = itemID or ItemLink:match(':(%d+):')
+    itemID = itemID or getItemInfoFromHyperlink(ItemLink)
+    if not itemID then
+        return
+    end
+
     local r, g, b, col= 1,1,1,e.Player.col
     if itemQuality then
         r, g, b, col= GetItemQualityColor(itemQuality)
@@ -392,7 +404,7 @@ local function setItem(self, ItemLink)
             end
         end
 
-        local appearanceID, sourceID =C_TransmogCollection.GetItemInfo(ItemLink)--幻化
+        local appearanceID, sourceID = C_TransmogCollection.GetItemInfo(ItemLink)--幻化
         local visualID
         if sourceID then
             local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
@@ -430,6 +442,14 @@ local function setItem(self, ItemLink)
         end]]
     elseif C_ToyBox.GetToyInfo(itemID) then--玩具
         self.text2Left:SetText(PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
+
+    elseif itemID==122284 then--魔兽世界时光徽章
+        C_WowTokenPublic.UpdateMarketPrice()
+        local price= C_WowTokenPublic.GetCurrentMarketPrice()
+        if price and price>0 then
+            self.textLeft:SetText('|A:token-choice-wow:0:0|a'..GetCoinTextureString(price))
+        end
+
     else
         local mountID = C_MountJournal.GetMountFromItem(itemID)--坐骑物品
         local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(itemID))
@@ -456,24 +476,36 @@ local function setItem(self, ItemLink)
             if guid and info then
                 local find
                 for linkItem, _ in pairs(info.Keystone.itemLink) do
-                self:AddDoubleLine(' ', linkItem)
-                find=true
+                    self:AddDoubleLine(' ', linkItem)
+                    find=true
                 end
                 if find then
                     self:AddLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}))
                 end
             end
         end
-        if WoWDate[e.Player.guid] and WoWDate[e.Player.guid].Keystone then--挑战分数
-            local score= WoWDate[e.Player.guid].Keystone.score
-            if score and score>0 then
-                local numAll= WoWDate[e.Player.guid].Keystone.all or 0
-                local weekNum= WoWDate[e.Player.guid].Keystone.weekNum or 0
-                local weekLevel= WoWDate[e.Player.guid].Keystone.weekLevel or 0
-                self.textLeft:SetText(weekLevel.. e.GetKeystoneScorsoColor(score, true))
-                self.text2Left:SetText(weekNum..'/'..numAll)
+        local text
+        for _, activities in pairs(C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.MythicPlus) or {}) do--本周完成
+            text= (text and text..'/' or '')..activities.level
+        end
+        if text then
+            self.textLeft:SetText('|cnGREEN_FONT_COLOR:'..text..'|r '.. e.GetKeystoneScorsoColor(C_ChallengeMode.GetOverallDungeonScore()))
+        end
+        local info = C_MythicPlus.GetRunHistory(false, true) or {}--本周记录
+        local num= 0
+        local completedNum=0
+        for _, runs  in pairs(info) do
+            if runs and runs.level then
+                num= num+ 1
+                if runs.completed then
+                    completedNum= completedNum +1
+                end
             end
         end
+        if num>0 then
+            self.text2Left:SetText('|cnGREEN_FONT_COLOR:'..completedNum..'|r/'..num)
+        end
+
     else
         local bagAll,bankAll,numPlayer=0,0,0--帐号数据
         for guid, info in pairs(WoWDate or {}) do
@@ -803,9 +835,9 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         local line=GameTooltipTextLeft1--名称
         if line then
             if isSelf then--魔兽世界时光徽章
-                local price= C_WowTokenPublic.GetCurrentMarketPrice()
                 C_WowTokenPublic.UpdateMarketPrice()
-                if price then
+                local price= C_WowTokenPublic.GetCurrentMarketPrice()
+                if price and price>0 then
                     local all, numPlayer= e.GetItemWoWNum(122284)--取得WOW物品数量
                     GameTooltipTextRight1:SetText(col..all..(numPlayer>1 and '('..numPlayer..')' or '')..'|A:token-choice-wow:0:0|a'..e.MK(price/10000,3)..'|r|A:Front-Gold-Icon:0:0|a')
                     GameTooltipTextRight1:SetShown(true)

@@ -3144,7 +3144,9 @@
         "ADD_FRIEND",
         "VOICEMACRO_16_Dw_1",
         "BATTLE_PET_CANNOT_BATTLE",
-        "UNITNAME_SUMMON_TITLE9"
+        "UNITNAME_SUMMON_TITLE9",
+        "OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE",
+        "BossBanner_ConfigureLootFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

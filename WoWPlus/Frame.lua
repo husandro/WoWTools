@@ -488,32 +488,17 @@ local function set_classPowerBar()
         end
     end
 end
---##########
---专业
---10.1.5出错
-local function Init_InspectRecipeFrame()--专业, 10.1.5出错
-    if not InspectRecipeFrame then
-        return
-    end
-   InspectRecipeFrame:HookScript('OnShow', function(self)
-        local name= self:GetName()
-        if name and Save.scale[name] then
-            self:SetScale(Save.scale[name])
-        end
-    end)
-end
+
 
 --########
 --初始,移动
 --########
 local function Init_Move()
 
-    Init_InspectRecipeFrame()--专业, 10.1.5出错
-
     local FrameTab={
         AddonList={},--插件
         GameMenuFrame={save=true,},--菜单
-        ProfessionsFrame={},--专业 10.1.5出错
+        --ProfessionsFrame={},--专业 10.1.5出错
         InspectRecipeFrame={},
 
         CharacterFrame={},--角色
@@ -797,8 +782,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
     
-        elseif arg1=='Blizzard_Professions' then
-            Init_InspectRecipeFrame()--专业, 10.1.5出错
+        elseif arg1=='Blizzard_Professions' then--专业, 10.1.5
+            InspectRecipeFrame:HookScript('OnShow', function(self2)
+                local name= self2:GetName()
+                if name and Save.scale[name] then
+                    self2:SetScale(Save.scale[name])
+                end
+            end)
             set_Move_Frame(ProfessionsFrame, {})
         else
             setAddLoad(arg1)

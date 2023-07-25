@@ -44,6 +44,7 @@ EditModeManagerFrame:UseRaidStylePartyFrames()
 local item = Item:CreateFromItemLink(outputItemInfo.hyperlink)
 quality = item:GetItemQuality()
 
+GetItemInfoFromHyperlink(itemLink) LinkUtil.lua
 if IsModifiedClick("CHATLINK") then
     local spellLink = GetSpellLink(self:GetSpellID())
     ChatEdit_InsertLink(spellLink)
