@@ -1564,12 +1564,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 end)
 
 
-
 --[[
+    EditModeSettingDisplayInfo.lua
     for index, tab in pairs(EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame]) do
         if tab.name==HUD_EDIT_MODE_SETTING_UNIT_FRAME_WIDTH  then-- Frame Width
             EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame][index].minValue=36
         elseif tab.name==HUD_EDIT_MODE_SETTING_UNIT_FRAME_HEIGHT then
             EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.UnitFrame][index].minValue=18
         end
-    end]]
+    end
+]]

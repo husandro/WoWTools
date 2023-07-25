@@ -1802,6 +1802,7 @@ local function set_MainMenu_Color(init)--主菜单
             end
         end
     end
+    EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.MicroMenu][3].minValue=50
 end
 
 
