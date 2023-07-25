@@ -38,55 +38,37 @@ end
 e.UnitItemLevel={}
 local function get_Player_Info(guid)--取得玩家信息
     local unit= guid and UnitTokenFromGUID(guid)
-    if not unit and guid then
-        if e.GroupGuid[guid] then
-            unit= e.GroupGuid[guid].unit
-        elseif guid== e.Player.guid then
-            unit= 'player'
-        elseif UnitGUID("mouseover")== guid then
-            unit= 'mouseover'
-        elseif guid== UnitGUID('target') then
-            unit='target'
-        elseif InspectFrame and InspectFrame.unit and guid==UnitGUID(InspectFrame.unit) then
-            unit= InspectFrame.unit
+    if not unit then
+        return
+    end
+    local r, g, b, hex
+    local class= UnitClassBase(unit)
+    if class then
+        r, g, b, hex= GetClassColor(class)
+        if hex then
+            hex= '|c'..hex
         end
     end
-    local itemLevel= unit and C_PaperDollInfo.GetInspectItemLevel(unit)
-    if unit then
-        local r, g, b, hex
-        local class= UnitClassBase(unit)
-        if class then
-            r, g, b, hex= GetClassColor(class)
-            if hex then
-                hex= '|c'..hex
+    e.UnitItemLevel[guid] = {--玩家装等
+        itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel),
+        specID= GetInspectSpecialization(unit),
+        faction= UnitFactionGroup(unit),
+        col= hex,
+        r=r,
+        g=g,
+        b=b,
+    }
+    if UnitInParty(unit) and not IsInRaid() then
+        for i=1, 4 do
+            local frame= PartyFrame['MemberFrame'..i]
+            if UnitIsUnit(frame.unit, unit) then
+                securecall('UnitFrame_Update', frame, true)
+                break
             end
         end
-
-        itemLevel= itemLevel or e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel
-        local specID= GetInspectSpecialization(unit)
-        e.UnitItemLevel[guid] = {--玩家装等
-            itemLevel= itemLevel,
-            specID= specID,
-            faction= UnitFactionGroup(unit),
-            col= hex,
-            r=r,
-            g=g,
-            b=b,
-        }
-        if e.GroupGuid[guid] and not IsInRaid() then
-                for i=1, 4 do
-                    local frame= PartyFrame['MemberFrame'..i]
-                    if UnitIsUnit(frame.unit, unit) then
-                        securecall('UnitFrame_Update', frame, true)
-                        break
-                    end
-                end
-            --[[elseif not UnitAffectingCombat('player') and RaidFrame and RaidFrame:IsVisible() then
-                securecall('RaidGroupFrame_Update')--出现，错误]]
-        end
-        if UnitIsUnit(unit, 'target') then
-            securecall('UnitFrame_Update', TargetFrame, false)
-        end
+    end
+    if UnitIsUnit(unit, 'target') then
+        securecall('UnitFrame_Update', TargetFrame, false)
     end
 end
 

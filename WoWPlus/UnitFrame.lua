@@ -113,23 +113,17 @@ local function set_Keystones_Date()
     local text
     local score= C_ChallengeMode.GetOverallDungeonScore()
     if score and score>0 then
-        text= e.GetKeystoneScorsoColor(score)
-        local info = C_MythicPlus.GetRunHistory(false, true)--本周记录
-        if info then
-            local num= 0
-            local level--, completed
-            for _, runs  in pairs(info) do
-                if runs and runs.level then
-                    num= num+ 1
-                    if not level or level< runs.level then
-                        level= runs.level
-                        --completed= runs.completed
-                    end
-                end
-            end
-            if num>0 and level then
-                text= text..' ('..level..') '..num
-            end
+        local activeText
+        for _, activities in pairs(C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.MythicPlus) or {}) do--本周完成
+            activeText= (activeText and activeText..'/' or '')..activities.level
+        end
+        activeText= activeText and ' ('..activeText..') '
+
+        text= e.GetKeystoneScorsoColor(score, true)..(activeText or '')--分数
+        local info = C_MythicPlus.GetRunHistory(false, true) or {}--次数
+        local num= #info
+        if num>0 then
+            text= text..num
         end
     end
     self.keystoneText:SetText(text or '')
@@ -221,7 +215,7 @@ local function set_TargetFrame()
         end
     end)
 
-    
+
 
 
 
@@ -663,7 +657,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         if not UnitExists(unit) or not (r and g and b) then
             return
         end
-       
+
         local guid
         local unitIsPlayer=  UnitIsPlayer(unit)
         if unitIsPlayer then
@@ -762,7 +756,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         if self2.classFrame then
             self2.classFrame:SetShown(unitIsPlayer)
         end
-  
+
         if self2==PlayerFrame and unit=='player' then
             if not self2.lootSpecFrame then-- and self2~= PetFrame and self2.PlayerFrameContainer then
                 local frameLevel= self2.PlayerFrameContainer:GetFrameLevel()+1
@@ -912,7 +906,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         if self2.healthbar then
             self2.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
             self2.healthbar:SetStatusBarColor(r,g,b)--颜色
-                
+
             if not self2.setHealthbarTexture and self2.CheckClassification then
                 hooksecurefunc(self2, 'CheckClassification', function(self3)--外框，颜色
                     self3.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
