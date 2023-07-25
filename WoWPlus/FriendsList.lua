@@ -23,7 +23,7 @@ local function set_SOCIAL_QUEUE_UPDATE()--更新, 快速加入
         QuickJoinToastButton.quickJoinText:SetText(n~=0 and n or '')
     end
 end
-local function set_QuinkJoin_Init()--快速加入, 初始化
+local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
     set_SOCIAL_QUEUE_UPDATE()
 
     hooksecurefunc(QuickJoinEntryMixin, 'ApplyToFrame', function(self, frame)
@@ -66,10 +66,29 @@ local function set_QuinkJoin_Init()--快速加入, 初始化
         if not frame.OnDoubleClick then--设置, 双击, 加入
             frame:HookScript("OnDoubleClick", function()--QuickJoin.lua
                 QuickJoinFrame:JoinQueue()
+                local frame2=LFGListApplicationDialog
+                if frame2:IsShown() then
+                    if not frame2.TankButton.CheckButton:GetChecked() and not frame2.HealerButton.CheckButton:GetChecked() and not frame2.DamagerButton.CheckButton:GetChecked() then
+                        local specID=GetSpecialization()--当前专精
+                        if specID then
+                            local role = select(5, GetSpecializationInfo(specID))
+                            if role=='DAMAGER' and frame2.DamagerButton:IsShown() then
+                                frame2.DamagerButton.CheckButton:SetChecked(true)
+
+                            elseif role=='TANK' and frame2.TankButton:IsShown() then
+                                frame2.TankButton.CheckButton:SetChecked(true)
+
+                            elseif role=='HEALER' and frame2.HealerButton:IsShown() then
+                                frame2.HealerButton.CheckButton:SetChecked(true)
+                            end
+                            LFGListApplicationDialog_UpdateValidState(frame2)
+                        end
+                    end
+                    --[[if frame2.SignUpButton:IsEnabled() then
+                        --frame2.SignUpButton:Click()
+                    end]]
+                end
             end)
-            hooksecurefunc(frame,'OnEnter', function()
-                print(id,addName)
-             end)
         end
 
         local text--需求职责, 提示

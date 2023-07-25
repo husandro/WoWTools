@@ -420,6 +420,21 @@ local function Init()
 
 	ColorPickerFrame:SetScript('OnUpdate', set_Text)
 	Frame:SetShown(not Save.hide)
+
+	OpacitySliderFrame:EnableMouseWheel(true)
+	OpacitySliderFrame:SetScript('OnMouseWheel', function(self2, d)
+        local value= self2:GetValue()
+		--value= format('%.2f', self2:GetValue())
+		--value= tonumber(value)
+        if d== 1 then
+            value= value- 0.01
+        elseif d==-1 then
+            value= value+ 0.01
+        end
+        value= value> 1 and 1 or value
+        value= value< 0 and 0 or value
+        self2:SetValue(value)
+    end)
 end
 
 panel:RegisterEvent('ADDON_LOADED')
@@ -467,7 +482,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				check2:SetScript('OnEnter', function()
 					e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT");
 					e.tips:ClearLines();
-					e.tips:AddDoubleLine(e.GetShowHide(true), e.GetShowHide(false))
+					e.tips:AddDoubleLine(e.GetShowHide(not Save.color)..e.Icon.left)
 					e.tips:AddDoubleLine(id, addName)
 					e.tips:Show();
 				end)
