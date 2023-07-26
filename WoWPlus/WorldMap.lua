@@ -362,7 +362,7 @@ end
 --#########
 --地图ID提示
 --#########
-local function setOnEnter(self)
+local function set_button_OnEnter(self)
     local frame=WorldMapFrame
     e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
@@ -388,7 +388,7 @@ local function setOnEnter(self)
                 if poiInfo and (poiInfo.areaPoiID or poiInfo.widgetSetID) then
                     e.tips:AddDoubleLine((poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')
                     .. poiInfo.name
-                    ..(poiInfo.widgetSetID and 'widgetSetID '..poiInfo.widgetSetID or ''),
+                    ..(poiInfo.widgetSetID and ' widgetSetID '..poiInfo.widgetSetID or ''),
                     'areaPoiID '..(poiInfo.areaPoiID or NONE))
                 end
             end
@@ -424,7 +424,7 @@ local function setOnEnter(self)
     e.tips:Show()
 end
 
-local function setMapIDText(self)
+local function set_Map_ID_Text(self)
     local m=''
     if not Save.hide then
         local uiMapID = self.mapID or self:GetMapID("current")
@@ -467,7 +467,9 @@ local function setMapIDText(self)
     self.playerPosition:SetShown(not Save.hide)
 end
 
-local function set_Map_ID(self)--显示地图ID
+
+local function Init_set_Map_ID()--显示地图ID
+    local self= WorldMapFrame
     if not self.mapInfoBtn then
         self.mapInfoBtn=e.Cbtn(self.BorderFrame.TitleContainer, {icon='hide', size={22,22}})
         if IsAddOnLoaded('Mapster') then
@@ -477,12 +479,12 @@ local function set_Map_ID(self)--显示地图ID
         end
         self.mapInfoBtn:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.map)
         self.mapInfoBtn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-        self.mapInfoBtn:SetScript('OnEnter', setOnEnter)
+        self.mapInfoBtn:SetScript('OnEnter', set_button_OnEnter)
         self.mapInfoBtn:SetScript('OnLeave', function() e.tips:Hide() end)
         self.mapInfoBtn:SetScript('OnMouseDown', function(self2, d)
             if d=="LeftButton" then
                 Save.hide= not Save.hide and true or nil
-                setMapIDText(self)
+                set_Map_ID_Text(self)
                 setMapQuestList()--世界地图,任务, 加 - + 按钮
                 print(id, addName, e.GetShowHide(not Save.hide), e.onlyChinese and ' 刷新' or REFRESH)
                 self.mapInfoBtn:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.map)
@@ -554,11 +556,10 @@ local function set_Map_ID(self)--显示地图ID
 
         self.playerPosition.Text=e.Cstr(self.playerPosition, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
         self.playerPosition.Text:SetPoint('LEFT',self.playerPosition.edit, 'RIGHT', 2,0)
-        self.playerPosition.elapsed=0
+        self.playerPosition.elapsed=1
         self.playerPosition:HookScript("OnUpdate", function (self2, elapsed)
             self2.elapsed = self2.elapsed + elapsed
             if self2.elapsed > 0.15 then
-                self2.elapsed = 0
                 local text=''
                 local x, y= getPlayerXY()--玩家当前坐标
                 if x and y then
@@ -574,95 +575,87 @@ local function set_Map_ID(self)--显示地图ID
                     text=''
                 end
                 self.playerPosition.Text:SetText(text)
+                self2.elapsed = 0
             end
         end)
     end
-
-    setMapIDText(self)
 end
 
-local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOIDataProvider.lua
-    if not poiInfo or Save.hide then
-        if poiInfo and poiInfo.Str then
-            poiInfo.Str:SetText('')
+local function set_Widget_Text_OnUpDate(self, elapsed)
+    self.elapsed= self.elapsed + elapsed
+    if self.elapsed>1 then--and self.updateWidgetID then
+        if self.updateAreaPoiID then
+            self.Text:SetText(SecondsToClock(C_AreaPoiInfo.GetAreaPOISecondsLeft(self.updateAreaPoiID) or 0))
+        elseif self.updateWidgetID then
+            local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(self.updateWidgetID) or {}
+            if widgetInfo.shownState== 1 and widgetInfo.text and widgetInfo.hasTimer then--剩余时间：
+                self.Text:SetText(widgetInfo.text)
+            end
+        end
+        self.elapsed= 0
+    end
+end
+
+local function set_AreaPOIPinMixin_OnAcquired(self)--地图POI提示 AreaPOIDataProvider.lua
+    self.updateWidgetID=nil
+    self.updateAreaPoiID=nil
+    self:SetScript('OnUpdate', nil)
+
+    if not self or Save.hide or not(self.widgetSetID and self.areaPoiID) then
+        if self and self.Text then
+            self.Text:SetText('')
         end
         return
     end
 
-    local t=''
-    if poiInfo.widgetSetID==399 then --托尔加斯特
-        local R={}
-        local sets = C_UIWidgetManager.GetAllWidgetsBySetID(399) or {}
-        for _,v in ipairs(sets) do
-            local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(v.widgetID)
-            if widgetInfo and widgetInfo.shownState == Enum.WidgetShownState.Shown then
-                R[widgetInfo.orderIndex] = widgetInfo.text
-            end
-        end
-        for i,v in pairs(R) do
-            if i%2 ==0 then
-                local name = string.gsub(v,'|n','')
-                local leveltext =string.gsub(R[i+1],'|n','')
-                R[i] = string.format("%s-%s",name,leveltext)
-                R[i+1] = nil
-            end
-        end
-        t=C_AreaPoiInfo.GetAreaPOIInfo(1543,6640).name
-        for _,v in pairs(R) do
-            t=t..'|n '..v
-        end
-    elseif poiInfo.name then
-        t=poiInfo.name
-        local ds=poiInfo.description
-        if not t or #t<1 or t:find(COVENANT_UNLOCK_TRANSPORT_NETWORK) or (ds and ds:find(ANIMA_DIVERSION_ORIGIN_TOOLTIP )) then
-            if poiInfo.Str then poiInfo.Str:SetText('') end
-            return
-        end
-        t=t:match('%((.+)%)') or t
-        t=t:match('（(.+)）') or t
-        t=t:match(',(.+)') or t
-        t=t:match(UNITNAME_SUMMON_TITLE14:gsub('%%s','%(%.%+%)')) or t
-        t=t:gsub(PET_ACTION_MOVE_TO,'')
-        t=t:gsub(SPLASH_BATTLEFORAZEROTH_8_1_0_FEATURE2_TITLE..':','')
-        t=t:gsub(SPLASH_BATTLEFORAZEROTH_8_1_0_FEATURE2_TITLE..'：','')
+    if not self.Text then
+        self.Text= create_Wolor_Font(self, 10)
+        self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
+        self.elapsed=0
     end
 
-    if t~='' and not poiInfo.Str then
-        poiInfo.Str= create_Wolor_Font(poiInfo, 10)
-        poiInfo.Str:SetPoint('BOTTOM', poiInfo, 'TOP', 0, -3)
+    local text
+    local isTimed, hideTimer
+    if self.areaPoiID then
+        isTimed, hideTimer= C_AreaPoiInfo.IsAreaPOITimed(self.areaPoiID)
     end
 
-    --if poiInfo.areaPoiID and C_AreaPoiInfo.IsAreaPOITimed(poiInfo.areaPoiID) then
-        local seconds= poiInfo.areaPoiID and C_AreaPoiInfo.GetAreaPOISecondsLeft(poiInfo.areaPoiID)
-        if seconds and seconds>0 then
-            t= t~='' and t..'|n' or t
-            t= t..'|cnGREEN_FONT_COLOR:'..SecondsToTime(seconds)..'|r'
+    if isTimed and not hideTimer then
+        local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(self.areaPoiID)
+        if secondsLeft and secondsLeft>0 then
+            text= secondsLeft and secondsLeft>0 and SecondsToClock(secondsLeft)
+            self.updateAreaPoiID= self.areaPoiID
+            self:SetScript('OnUpdate', set_Widget_Text_OnUpDate)
         end
-    --end
 
-    if poiInfo.widgetSetID then
-        local widgets = C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}
-        for _,widget in ipairs(widgets) do
+    elseif self.widgetSetID then
+        for _,widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(self.widgetSetID) or {}) do
             if widget and widget.widgetID and  widget.widgetType==8 then
-                local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
-                if widgetInfo and widgetInfo.shownState== 1  and widgetInfo.text then
-
-                    local icon, num= widgetInfo.text:match('(|T.-|t).-]|r.-(%d+)')
-                    local text= widgetInfo.text:match('(%d+/%d+)')--次数
-                    if icon and num then
-                        t= t..icon..'|cff00ff00'..num..'|r'
+                local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID) or {}
+                if widgetInfo.shownState== 1 and widgetInfo.text then
+                    if widgetInfo.hasTimer then--剩余时间：
+                        text= widgetInfo.text
+                        self.updateWidgetID= widget.widgetID
+                        self:SetScript('OnUpdate', set_Widget_Text_OnUpDate)
+                    else
+                        local icon, num= widgetInfo.text:match('(|T.-|t).-]|r.-(%d+)')
+                        local text2= widgetInfo.text:match('(%d+/%d+)')--次数
+                        if icon and num then
+                            text= icon..'|cff00ff00'..num..'|r'
+                        end
+                        if text2 then
+                            text= (text or '')..'|cffff00ff'..text2..'|r'
+                        end
                     end
                     if text then
-                        t= t..'|cffff00ff'..text..'|r'
+                        break
                     end
                 end
             end
         end
     end
 
-    if poiInfo.Str then
-        poiInfo.Str:SetText(t)
-    end
+    self.Text:SetText(text or self.name or '')
 end
 
 
@@ -672,9 +665,13 @@ end
 --####
 local function Init()
     hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', set_WorldQuestPinMixin_RefreshVisuals)--世界地图任务
-    hooksecurefunc(WorldMapFrame, 'OnMapChanged', set_Map_ID)--Blizzard_WorldMap.lua
+
     CursorPositionInt()
+
     hooksecurefunc(AreaPOIPinMixin,'OnAcquired', set_AreaPOIPinMixin_OnAcquired)--地图POI提示 AreaPOIDataProvider.lua
+
+    Init_set_Map_ID()--显示地图ID
+    hooksecurefunc(WorldMapFrame, 'OnMapChanged', set_Map_ID_Text)--Blizzard_WorldMap.lua
     setMapQuestList()--世界地图,任务, 加 - + 按钮
     --hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
 end

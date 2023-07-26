@@ -3150,7 +3150,12 @@
         "AuctionHouseBrowseResultsFrameMixin",
         "EDIT_MODE_MODERN_SYSTEM_MAP",
         "EDIT_MODE_CLASSIC_SYSTEM_MAP",
-        "WorldMapTextFont"
+        "WorldMapTextFont",
+        "GameTooltip_AddNormalLine",
+        "BONUS_OBJECTIVE_TIME_LEFT",
+        "TIME_REMAINING",
+        "ACTIVATE",
+        "GameTooltip_AddWidgetSet"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

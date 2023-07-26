@@ -1032,6 +1032,10 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     end
 
     set_Item_Model(self, {unit=unit, guid=guid, col= col})--设置, 3D模型
+
+    if isSelf and not isInCombat then
+        GameTooltip_AddWidgetSet(e.tips, 845, 10)
+    end
 end
 
 local function setCVar(reset, tips, notPrint)
@@ -1306,7 +1310,7 @@ local function Init()
         end
     end)
 
-    hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(self, slot, unit)--技能收，宠物，技能，提示
+    hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(_, slot, unit)--技能收，宠物，技能，提示
         if unit=='pet' and slot then
             local icon=GetSpellBookItemTexture(slot, 'pet')
             local spellID = select(3, GetSpellBookItemName(slot, 'pet'))
@@ -1467,26 +1471,32 @@ local function Init()
     end
 
     hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--POI提示 AreaPOIDataProvider.lua
+        e.tips:AddLine(' ')
         local uiMapID = self:GetMap() and self:GetMap():GetMapID()
         if self.areaPoiID then
-            GameTooltip:AddDoubleLine('areaPoiID', self.areaPoiID)
+            e.tips:AddDoubleLine('areaPoiID', self.areaPoiID)
         end
         if self.widgetSetID then
-            GameTooltip:AddDoubleLine('widgetSetID', self.widgetSetID)
+            e.tips:AddDoubleLine('widgetSetID', self.widgetSetID)
+            for _,widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(self.widgetSetID) or {}) do
+                if widget and widget.widgetID and widget.shownState==1 then
+                    e.tips:AddDoubleLine('|A:characterupdate_arrow-bullet-point:0:0|awidgetID', widget.widgetID)
+                end
+            end
         end
         if uiMapID then
-            GameTooltip:AddDoubleLine('mapID', uiMapID)
+            e.tips:AddDoubleLine('mapID', uiMapID)
         end
         if self.factionID then
-            setMajorFactionRenown(GameTooltip, self.factionID)--名望
+            setMajorFactionRenown(e.tips, self.factionID)--名望
         end
         if self.areaPoiID and uiMapID then
             local poiInfo= C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID)
             if poiInfo and poiInfo.atlasName  then
-                GameTooltip:AddDoubleLine('atlasName', '|A:'..poiInfo.atlasName..':0:0|a'..poiInfo.atlasName)
+                e.tips:AddDoubleLine('atlasName', '|A:'..poiInfo.atlasName..':0:0|a'..poiInfo.atlasName)
             end
         end
-        GameTooltip:Show()
+        e.tips:Show()
     end)
 
     --#############
@@ -1496,8 +1506,8 @@ local function Init()
         hooksecurefunc( ScenarioChallengeModeAffixMixin, 'OnEnter', function(self2)
             if self2.affixID then
                 local _, _, filedataid = C_ChallengeMode.GetAffixInfo(self2.affixID)
-                GameTooltip:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ');
-                GameTooltip:Show();
+                e.tips:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ');
+                e.tips:Show();
             end
         end)
     end
@@ -1947,8 +1957,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 if self2.affixID then
                     if self2.affixID then
                         local _, _, filedataid = C_ChallengeMode.GetAffixInfo(self2.affixID)
-                        GameTooltip:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ');
-                        GameTooltip:Show()
+                        e.tips:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ');
+                        e.tips:Show()
                     end
                 end
             end)
