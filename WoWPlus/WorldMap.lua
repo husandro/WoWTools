@@ -71,7 +71,7 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
 
     if texture then
         self.Texture:SetTexture(texture)
-        self.Texture:SetSize(38, 38)
+        self.Texture:SetSize(40, 40)
     end
 
     if not self.Text and text then
