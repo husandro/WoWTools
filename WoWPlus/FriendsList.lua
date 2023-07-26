@@ -3,7 +3,7 @@ local addName= FRIENDS_LIST
 local Save={
         Friends={},
         --disabledBNFriendInfo=true,--禁用战网，好友信息，提示
-        --onlyWoWFriendInfo=true,--仅限，提示，WoW，好友，提示
+        onlyWoWFriendInfo= not e.Player.husandro,--仅限，提示，WoW，好友，提示
         --showInCombatFriendInfo,--仅限，不在战斗中，好友，提示
     }
 local panel=CreateFrame("Frame")
