@@ -7,7 +7,8 @@ local Save={
 local panel=CreateFrame("Frame")
 
 local function create_Wolor_Font(self, size)
-    return e.Cstr(self, {size=size, justifyH='CENTER', color=false, fontName='WorldMapTextFont'})
+    local font= e.Cstr(self, {size=size, justifyH='CENTER', color=false, fontName='WorldMapTextFont'})
+    return font
 end
 
 --###########

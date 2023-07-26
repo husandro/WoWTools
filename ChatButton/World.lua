@@ -117,16 +117,17 @@ local function addMenu(name, channelNumber, level)--添加菜单
     local text=name
     local clubId=name:match('Community:(%d+)');
     local communityName, communityTexture
-    local info= clubId and C_Club.GetClubInfo(clubId)--社区名称
-    if info and (info.shortName or info.name) then
-        text='|cnGREEN_FONT_COLOR:'..(info.shortName or info.name)..'|r'
-        communityName=info.shortName or info.name
-        communityTexture=info.avatarId
+    
+    local clubInfo= clubId and C_Club.GetClubInfo(clubId)--社区名称
+    if clubInfo and (clubInfo.shortName or clubInfo.name) then
+        text='|cnGREEN_FONT_COLOR:'..(clubInfo.shortName or clubInfo.name)..'|r'
+        communityName=clubInfo.shortName or clubInfo.name
+        communityTexture=clubInfo.avatarId
     end
     text=((channelNumber and channelNumber>0) and channelNumber..' ' or '')..text--频道数字
     text=text..(button.channelNumber==channelNumber and e.Icon.left or '')--当前点击提示
 
-    info={
+    local info={
         text= text,
         checked= check==1,
         colorCode= check==0 and '|cffff0000' or check==2 and '|cff606060',

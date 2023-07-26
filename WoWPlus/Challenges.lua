@@ -672,8 +672,8 @@ local function set_Kill_Info()--副本PVP团本
                         e.tips:SetHyperlink(link)
                     else
                         e.tips:AddDoubleLine(format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL ),e.onlyChinese and '无' or NONE)
-                        e.tips:AddLine('activities')
-                        e.tips:AddDoubleLine('type '..self2.type, 'id '..self2.id)
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine('Activities Type '..self2.type, 'id '..self2.id)
                     end
                     e.tips:Show()
                     self2:SetAlpha(0.5)
@@ -895,10 +895,11 @@ local function set_All_Text()--所有记录
         end
     end
     local min, max=10, 20
-    if curLevel>0 then
-        min= curLevel-5
+    if curLevel>0 or curKey>0 then
+        local value= curLevel>0 and curLevel or curKey
+        min= value-5
         min= min<2 and 2 or min
-        max= curLevel+5
+        max= value+5
         max= max<12 and 12 or max
     end
     for i=min, max do
