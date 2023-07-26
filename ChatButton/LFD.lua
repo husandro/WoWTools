@@ -260,7 +260,7 @@ local function setQueueStatus()--小眼睛, 信息
 
     local pvp
     for i=1, GetMaxBattlefieldID() do --PVP
-        local status, mapName, teamSize, registeredMatch, suspendedQueue, queueType, _, role = GetBattlefieldStatus(i)
+        local status, mapName, teamSize, _, suspendedQueue, queueType, _, role = GetBattlefieldStatus(i)
         if status and mapName then
             pvp= pvp and pvp..'|n' or ''
             pvp= pvp..'   '..i..') '
