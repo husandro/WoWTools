@@ -184,8 +184,11 @@ local function set_Frame_Drag(self)
     end
     self:SetScript("OnDragStart", function(self2)--开始移动
         --if not EditModeManagerFrame:IsEditModeActive() then
-            local moveFrame= self2.MoveFrame or self2
-            moveFrame:StartMoving()
+            local frame= self2.MoveFrame or self2
+            if not frame:IsMovable()  then
+                frame:SetMovable(true)
+            end
+            frame:StartMoving()
     end)
     self:SetScript("OnDragStop", function(self2)
         stop_Drag(self)--停止移动

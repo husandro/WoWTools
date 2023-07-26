@@ -1036,7 +1036,11 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame.moveFrame:RegisterForDrag('RightButton')
     CompactPartyFrame.moveFrame:SetScript("OnDragStart", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
-            CompactPartyFrame:StartMoving()
+            local frame= self:GetParent()
+            if not frame:IsMovable() then
+                frame:SetMovable(true)
+            end
+            frame:StartMoving()
         end
     end)
     CompactPartyFrame.moveFrame:SetScript("OnDragStop", function(self)
@@ -1321,11 +1325,15 @@ local function Init_RaidFrame()--设置,团队
     CompactRaidFrameContainer.moveFrame:RegisterForDrag('RightButton')
     CompactRaidFrameContainer.moveFrame:SetScript("OnDragStart", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
-            CompactRaidFrameContainer:StartMoving()
+            local frame= self:GetParent()
+            if not frame:IsMovable()  then
+                frame:SetMovable(true)
+            end
+            frame:StartMoving()
         end
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnDragStop", function(self)
-        CompactRaidFrameContainer:StopMovingOrSizing()
+        self:GetParent():StopMovingOrSizing()
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnMouseDown", function(self, d)
         print(id, addName, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.raidFrameScale or 1)
@@ -1357,7 +1365,7 @@ local function Init_RaidFrame()--设置,团队
                     sacle=0.5
                 end
                 print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE), sacle)
-                CompactRaidFrameContainer:SetScale(sacle)
+                self:GetParent():SetScale(sacle)
                 Save.raidFrameScale=sacle
             end
         end

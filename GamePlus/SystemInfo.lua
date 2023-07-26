@@ -670,7 +670,11 @@ local function Init()
         button.moveFPSFrame:SetScript("OnDragStart", function(self2, d)
             if d=='RightButton' then
                 SetCursor('UI_MOVE_CURSOR')
-                FramerateFrame:StartMoving()
+                local frame= FramerateFrame
+                if not frame:IsMovable()  then
+                    frame:SetMovable(true)
+                end
+                frame:StartMoving()
             end
         end)
         button.moveFPSFrame:SetScript("OnDragStop", function(self)

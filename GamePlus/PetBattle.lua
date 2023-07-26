@@ -546,7 +546,7 @@ local function Init()
     panel:SetClampedToScreen(true)
 
     panel:SetScript("OnDragStart", function(self)
-            self:StartMoving()
+        self:StartMoving()
     end)
     panel:SetScript("OnDragStop", function(self)
         ResetCursor()

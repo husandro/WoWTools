@@ -426,9 +426,7 @@ local function Init()
     button:SetMovable(true)
     button:SetClampedToScreen(true)
     button:SetScript("OnDragStart", function(self,d)
-        --if IsAltKeyDown() then
-            self:StartMoving()
-        --end
+        self:StartMoving()
     end)
     button:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
