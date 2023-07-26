@@ -590,10 +590,10 @@ e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
     return string, colorRe or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=e.Player.col}
 end
 
-function e.Cstr(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a=}, layer=, justifyH=, mouse=false, wheel=false}
+function e.Cstr(self, tab)--self, {size, copyFont, changeFont, fontName color={r=,g=,b=,a=}, layer=, justifyH=, mouse=false, wheel=false}
     tab= tab or {}--Fonts.xml FontStyles.xml
     self= self or UIParent
-    local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), 'GameFontNormal',  5)
+    local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), tab.fontName or 'GameFontNormal',  self:GetFrameLevel()+1)
     if tab.copyFont then
         --[[font:CopyFontObject(tab.copyFont)
         if tab.size then
@@ -615,15 +615,17 @@ function e.Cstr(self, tab)--self, {size, copyFont, changeFont, color={r=,g=,b=,a
         font:SetShadowOffset(1, -1)
         --font:SetShadowColor(0, 0, 0)
         font:SetJustifyH(tab.justifyH or 'LEFT')
-        if not tab.color then
-            font:SetTextColor(1, 0.82, 0)
-        elseif type(tab.color)=='table' then
-            font:SetTextColor(tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1)
-        else
-            if e.Player.useColor then
-                font:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a)
+        if tab.color~=false then
+            if not tab.color then
+                font:SetTextColor(1, 0.82, 0)
+            elseif type(tab.color)=='table' then
+                font:SetTextColor(tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1)
             else
-                font:SetTextColor(0.82, 0.82, 0.82)
+                if e.Player.useColor then
+                    font:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a)
+                else
+                    font:SetTextColor(0.82, 0.82, 0.82)
+                end
             end
         end
     end

@@ -6,6 +6,10 @@ local Save={
 }
 local panel=CreateFrame("Frame")
 
+local function create_Wolor_Font(self, size)
+    return e.Cstr(self, {size=size, justifyH='CENTER', color=false, fontName='WorldMapTextFont'})
+end
+
 --###########
 --世界地图任务
 --###########
@@ -22,7 +26,6 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
     if itemName then
         if itemLevel and itemLevel>1 then
             text= itemLevel
-
         end
 
         local itemEquipLoc, _, classID = select(4, GetItemInfoInstant(itemID))
@@ -75,7 +78,7 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
     end
 
     if not self.Text and text then
-        self.Text=e.Cstr(self, {size=22})
+        self.Text= create_Wolor_Font(self, 22)
         self.Text:SetPoint('TOP', self, 'BOTTOM',0,2)
     end
     if self.Text then
@@ -624,7 +627,7 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
     end
 
     if t~='' and not poiInfo.Str then
-        poiInfo.Str=e.Cstr(poiInfo, {size=10, justifyH='CENTER'})
+        poiInfo.Str= create_Wolor_Font(poiInfo, 10)
         poiInfo.Str:SetPoint('BOTTOM', poiInfo, 'TOP', 0, -3)
     end
 

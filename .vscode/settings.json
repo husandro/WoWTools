@@ -3149,7 +3149,8 @@
         "BossBanner_ConfigureLootFrame",
         "AuctionHouseBrowseResultsFrameMixin",
         "EDIT_MODE_MODERN_SYSTEM_MAP",
-        "EDIT_MODE_CLASSIC_SYSTEM_MAP"
+        "EDIT_MODE_CLASSIC_SYSTEM_MAP",
+        "WorldMapTextFont"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
