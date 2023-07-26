@@ -6,94 +6,97 @@ local Save={
 }
 local panel=CreateFrame("Frame")
 
-
 --###########
 --世界地图任务
 --###########
-local function set_WorldQuestPinMixin_RefreshVisuals(self)----WorldQuestDataProvider.lua self.tagInfo
-    if Save.hide then
-        if self.str then
-            self.str:SetShown(false)
-        end
-        if self.worldQuestTypeTips then
-            self.worldQuestTypeTips:SetShown(false)
-        end
+local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvider.lua self.tagInfo
+    if Save.hide or not self.questID then
+        if self.Text then self.Text:SetText('') end
+        if self.worldQuestTypeTips then self.worldQuestTypeTips:SetShown(false) end
         return
     end
-    local tagInfo=self.tagInfo
-    local itemName, itemTexture, numItems, quality, _, itemID, itemLevel
-    itemName, itemTexture, numItems, quality, _, itemID, itemLevel = GetQuestLogRewardInfo(1, self.questID)
-    itemLevel= (itemLevel and itemLevel>1) and itemLevel
-    if not itemName then
-        itemName, itemTexture, numItems, _, quality = GetQuestLogRewardCurrencyInfo(1, self.questID)
-    end
-    if not itemName then
-        itemLevel=GetQuestLogRewardMoney(self.questID)
-        if itemLevel then
-            itemLevel=e.MK(itemLevel/10000,1)
-            itemTexture='interface\\moneyframe\\ui-goldicon'
+    local itemName, texture, numItems, quality, _, itemID, itemLevel
+    itemName, texture, numItems, quality, _, itemID, itemLevel = GetQuestLogRewardInfo(1, self.questID)--物品
+
+    local text
+    if itemName then
+        if itemLevel and itemLevel>1 then
+            text= itemLevel
+
         end
-    end
-    self.Texture:SetTexture(itemTexture)
-    self.Texture:SetSize(45, 45)
-    if not self.str then
-        self.str=e.Cstr(self, {size=26})
-        self.str:SetPoint('TOP', self, 'BOTTOM', 0, 0)
-    end
 
-    local str
-    str= itemLevel or (numItems and numItems>1) and numItems--数量
+        local itemEquipLoc, _, classID = select(4, GetItemInfoInstant(itemID))
+        if classID==2 or classID==4 then
+            if quality and text then--物品，颜色
+                text='|c'..select(4, GetItemQualityColor(quality))..itemLevel..'|r'
+            end
 
-    if str then
-        if quality and quality~=1 then
-            str='|c'..select(4, GetItemQualityColor(quality))..str..'|r'
-        elseif tagInfo.quality==1 then
-            str='|cffa335ee'..str..'|r'
-        elseif tagInfo.quality==2 then
-            str='|cffe6cc80'..str..'|r'
+            local setLevelUp
+            local invSlot = itemEquipLoc and e.itemSlotTable[itemEquipLoc]
+            if invSlot and itemName and itemLevel and itemLevel>1 then--装等
+                local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
+                if itemLinkPlayer then
+                    local lv= GetDetailedItemLevelInfo(itemLinkPlayer)
+                    if lv and itemLevel-lv>0 then
+                        text= (text or '')..e.Icon.up2
+                        setLevelUp=true
+                    end
+                end
+            end
+            if not setLevelUp then
+                local sourceID =itemID and select(2, C_TransmogCollection.GetItemInfo(itemID))--幻化
+                if sourceID then
+                    local collectedText, isCollected=e.GetItemCollected(nil, sourceID, true)--物品是否收集 
+                    if collectedText and not isCollected then
+                        text= (text or '')..collectedText
+                    end
+                end
+            end
         end
-    end
+    else
 
-    local setLevelUp
-    local itemEquipLoc= itemID and select(4, GetItemInfoInstant(itemID))
-    local invSlot = itemEquipLoc and e.itemSlotTable[itemEquipLoc]
-    if invSlot and itemName and itemLevel and itemLevel>1 then--装等
-        local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
-        if itemLinkPlayer then
-            local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
-            if lv and itemLevel-lv>0 then
-                str= (str or '')..e.Icon.up2
-                setLevelUp=true
+        itemName, texture, numItems, _, quality = GetQuestLogRewardCurrencyInfo(1, self.questID)--货币
+        if itemName and numItems and numItems>1 then
+            text= numItems
+        end
+
+        if not itemName then
+            local gold= GetQuestLogRewardMoney(self.questID)
+            if gold and gold>0 then
+                text= e.MK(gold/10000, 0)
+                texture='interface\\moneyframe\\ui-goldicon'
             end
         end
     end
 
-    if not setLevelUp then
-        local sourceID =itemID and select(2, C_TransmogCollection.GetItemInfo(itemID))--幻化
-        if sourceID then
-            local collectedText, isCollected=e.GetItemCollected(nil, sourceID, true)--物品是否收集 
-            if collectedText and not isCollected then
-                str=(str or '')..collectedText
-            end
-        end
+    if texture then
+        self.Texture:SetTexture(texture)
+        self.Texture:SetSize(38, 38)
     end
 
+    if not self.Text and text then
+        self.Text=e.Cstr(self, {size=22})
+        self.Text:SetPoint('TOP', self, 'BOTTOM',0,2)
+    end
+    if self.Text then
+        self.Text:SetText(text or '')
+    end
 
-    self.str:SetText(str or '')
-    self.str:SetShown(str and true or false)
-
-    if self.worldQuestType ~= Enum.QuestTagType.Normal then
+    local isNormalQuest= self.worldQuestType == Enum.QuestTagType.Normal--任务，类型
+    if not isNormalQuest then
         local inProgress = self.dataProvider:IsMarkingActiveQuests() and C_QuestLog.IsOnQuest(self.questID)
-        local atlas= QuestUtil.GetWorldQuestAtlasInfo(self.worldQuestType, inProgress, tagInfo.tradeskillLineID, self.questID)
-        if not self.worldQuestTypeTips then
+        local atlas= QuestUtil.GetWorldQuestAtlasInfo(self.worldQuestType, inProgress, self.tagInfo.tradeskillLineID, self.questID)
+        if not self.worldQuestTypeTips and atlas then
             self.worldQuestTypeTips=self:CreateTexture(nil, 'OVERLAY')
             self.worldQuestTypeTips:SetPoint('TOPRIGHT', self.Texture, 'TOPRIGHT', 5, 5)
             self.worldQuestTypeTips:SetSize(30, 30)
         end
-        self.worldQuestTypeTips:SetAtlas(atlas)
+        if atlas then
+            self.worldQuestTypeTips:SetAtlas(atlas)
+        end
     end
     if self.worldQuestTypeTips then
-        self.worldQuestTypeTips:SetShown(self.worldQuestType ~= Enum.QuestTagType.Normal)
+        self.worldQuestTypeTips:SetShown(not isNormalQuest)
     end
 end
 
