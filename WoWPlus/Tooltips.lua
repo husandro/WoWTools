@@ -15,6 +15,7 @@ local Save={
     modelY= -24,
     modelFacing= -0.35,--方向
     showModelFileID=e.Player.husandro,--显示，文件ID
+    --WidgetSetID=848,--自定义，监视 WidgetSetID
 }
 local panel=CreateFrame("Frame")
 
@@ -1033,8 +1034,8 @@ local function setUnitInfo(self, unit)--设置单位提示信息
 
     set_Item_Model(self, {unit=unit, guid=guid, col= col})--设置, 3D模型
 
-    if isSelf and not isInCombat then
-        GameTooltip_AddWidgetSet(e.tips, 845, 10)
+    if isSelf and not isInCombat and Save.WidgetSetID>0 then
+        GameTooltip_AddWidgetSet(e.tips, Save.WidgetSetID, 10)
     end
 end
 
@@ -1811,6 +1812,30 @@ local function Init_Panel()
         Save.ctrl= not Save.ctrl and true or nil
     end)
 
+    local widgetLabel= e.Cstr(panel)
+    widgetLabel:SetPoint('TOPLEFT', ctrlCopy, 'BOTTOMLEFT',0, -4)
+    widgetLabel:SetText('WidgetSetID')
+    local widgetEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--|cff808080
+	widgetEdit:SetPoint('LEFT', widgetLabel, 'RIGHT',2,0)
+	widgetEdit:SetSize(100,20)
+	widgetEdit:SetAutoFocus(false)
+	widgetEdit:ClearFocus()
+    widgetEdit:SetNumeric(true)
+    widgetEdit:SetNumber(Save.WidgetSetID or 0)
+	widgetEdit:SetScript('OnEnterPressed', function(self2)
+		local num= self2:GetNumber()
+        num= math.modf(num)
+        if num>0 then
+            Save.WidgetSetID= num
+            print(id, addName, 'PlayerFrame WidgetSetID', num)
+            self2:ClearFocus()
+        elseif num==0 then
+            Save.WidgetSetID=0
+            self2:ClearFocus()
+            print(id, addName, 'PlayerFrame WidgetSetID', e.GetEnabeleDisable(false))
+        end
+	end)
+
    --设置CVar
     local cvar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     cvar.text:SetText((e.onlyChinese and '设置' or SETTINGS)..' CVar')
@@ -1849,6 +1874,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.modelX= Save.modelX or 0
             Save.modelY= Save.modelY or -24
             Save.modelFacing= Save.modelFacing or -0.35
+
+            Save.WidgetSetID = Save.WidgetSetID or 845
 
             Init_Panel()--设置 panel
 

@@ -601,17 +601,17 @@ local function set_AreaPOIPinMixin_OnAcquired(self)--地图POI提示 AreaPOIData
     self.updateAreaPoiID=nil
     self:SetScript('OnUpdate', nil)
 
-    if not self or Save.hide or not(self.widgetSetID and self.areaPoiID) then
-        if self and self.Text then
-            self.Text:SetText('')
-        end
-        return
-    end
-
-    if not self.Text then
+    if not self.Text and not Save.hide and (self.name or self.widgetSetID or self.areaPoiID) then
         self.Text= create_Wolor_Font(self, 10)
         self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
         self.elapsed=0
+    end
+
+    if not self or Save.hide or not(self.widgetSetID and self.areaPoiID) then
+        if self and self.Text then
+            self.Text:SetText(not Save.hide and self.name or '')
+        end
+        return
     end
 
     local text
