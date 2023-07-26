@@ -196,6 +196,11 @@ local function set_PlayerFrame()--PlayerFrame.lua
     if PlayerFrame.PlayerFrameContainer and PlayerFrame.PlayerFrameContainer.FrameTexture then
         PlayerFrame.PlayerFrameContainer.FrameTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)--外框
     end
+
+    if PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestLoop.RestTexture then
+        PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestLoop.RestTexture:ClearAllPoints()
+        PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestLoop.RestTexture:SetPoint('CENTER', PlayerFrame.PlayerFrameContainer.PlayerPortrait)
+    end
 end
 
 --####
