@@ -451,7 +451,7 @@ local function enter_Func(self)
         expButton.OnEnter(expButton)
         e.tips:AddLine(' ')
     else
-        e.tips:SetOwner(self, "ANCHOR_Left")
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
     end
     if self and type(self)=='table' then
