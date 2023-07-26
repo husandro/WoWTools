@@ -260,14 +260,14 @@ local function setQueueStatus()--小眼睛, 信息
 
     local pvp
     for i=1, GetMaxBattlefieldID() do --PVP
-        local status, mapName, teamSize, registeredMatch, suspendedQueue, _, _, role = GetBattlefieldStatus(i)
+        local status, mapName, teamSize, registeredMatch, suspendedQueue, queueType, _, role = GetBattlefieldStatus(i)
         if status and mapName then
             pvp= pvp and pvp..'|n' or ''
             pvp= pvp..'   '..i..') '
-                ..mapName
+                ..mapName..(queueType and ' ('..queueType..')')
                 ..(status~='queued' and ' '..get_Status_Text(status) or '')
-                ..(teamSize and teamSize>0 and registeredMatch and (' '..registeredMatch..'/'..teamSize) or '')
-                ..(suspendedQueue and ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..'|r') or '')
+                ..(teamSize and teamSize>0 and ' '..teamSize or '')
+                ..(suspendedQueue and ('|cnRED_FONT_COLOR: ['..(e.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..']|r') or '')
                 ..(e.Icon[role] or '')
                 ..' '.. SecondsToClock(GetBattlefieldTimeWaited(i) / 1000)
                 ..' '

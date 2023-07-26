@@ -157,7 +157,7 @@ local function set_Item_Info(self, tab)
                 end
             end
             if dateInfo.text[ITEM_SPELL_KNOWN] then--"已经学会"
-                bottomRightText= e.Icon.X2
+                bottomRightText= e.Icon.select2
             elseif dateInfo.red then--红色
                 bottomRightText= e.Icon.O2
             elseif dateInfo.wow then
@@ -200,7 +200,7 @@ local function set_Item_Info(self, tab)
                             if not dateInfo.red then
                                 bottomLeftText= bottomLeftText.. (level<itemLevel and e.Icon.up2 or e.Icon.select2)
                             else
-                                bottomLeftText= bottomLeftText..e.Icon.X2
+                                bottomLeftText= bottomLeftText..e.Icon.O2
                             end
                         end
                         if dateInfo.text[classStr] then
@@ -275,7 +275,7 @@ local function set_Item_Info(self, tab)
                             topLeftText=itemLevel ..(topLeftText or '')
                         end
                     elseif itemMinLevel and itemMinLevel<=e.Player.level then--不可使用
-                        topLeftText=e.Icon.X2
+                        topLeftText=e.Icon.O2
                     end
                 end
                 --[[if (containerInfo and not containerInfo.isBound) or tab.guidBank then--没有锁定
@@ -305,7 +305,7 @@ local function set_Item_Info(self, tab)
         elseif classID==15 and subclassID==5 then--坐骑
             local mountID = C_MountJournal.GetMountFromItem(itemID)
             if mountID then
-                bottomRightText= select(11, C_MountJournal.GetMountInfoByID(mountID)) and e.Icon.X2 or e.Icon.star2
+                bottomRightText= select(11, C_MountJournal.GetMountInfoByID(mountID)) and e.Icon.select2 or e.Icon.star2
             end
 
 
@@ -340,7 +340,7 @@ local function set_Item_Info(self, tab)
             end
 
         elseif C_ToyBox.GetToyInfo(itemID) then--玩具
-            bottomRightText= PlayerHasToy(itemID) and e.Icon.X2 or e.Icon.star2
+            bottomRightText= PlayerHasToy(itemID) and e.Icon.select2 or e.Icon.star2
 
         elseif itemStackCount==1 then
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={chargesStr}, wow=true, red=true})--物品提示，信息
@@ -348,7 +348,7 @@ local function set_Item_Info(self, tab)
             if dateInfo.wow then
                 topRightText= e.Icon.wow2
             elseif dateInfo.red then
-                topRightText= e.Icon.X2
+                topRightText= e.Icon.O2
             end
         end
 

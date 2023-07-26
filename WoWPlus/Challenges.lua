@@ -1278,7 +1278,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             if findKey and not frame.currentKey then--提示, 包里KEY地图
                 frame.currentKey= frame:CreateTexture(nil, 'OVERLAY')
                 frame.currentKey:SetPoint('BOTTOM', frame)
-                frame.currentKey:SetTexture(4352494)
+                frame.currentKey:SetAtlas('auctionhouse-icon-favorite')
+                --frame.currentKey:SetTexture(4352494)
                 frame.currentKey:SetSize(14,14)
                 frame.currentKey:EnableMouse(true)
                 frame.currentKey:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)

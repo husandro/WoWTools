@@ -631,13 +631,13 @@ local function set_AreaPOIPinMixin_OnAcquired(poiInfo)--地图POI提示 AreaPOID
         poiInfo.Str:SetPoint('BOTTOM', poiInfo, 'TOP', 0, -3)
     end
 
-    if poiInfo.areaPoiID and C_AreaPoiInfo.IsAreaPOITimed(poiInfo.areaPoiID) then
-        local seconds= C_AreaPoiInfo.GetAreaPOISecondsLeft(poiInfo.areaPoiID)
+    --if poiInfo.areaPoiID and C_AreaPoiInfo.IsAreaPOITimed(poiInfo.areaPoiID) then
+        local seconds= poiInfo.areaPoiID and C_AreaPoiInfo.GetAreaPOISecondsLeft(poiInfo.areaPoiID)
         if seconds and seconds>0 then
             t= t~='' and t..'|n' or t
             t= t..'|cnGREEN_FONT_COLOR:'..SecondsToTime(seconds)..'|r'
         end
-    end
+    --end
 
     if poiInfo.widgetSetID then
         local widgets = C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}
