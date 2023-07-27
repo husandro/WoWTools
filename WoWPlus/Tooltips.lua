@@ -1822,8 +1822,6 @@ local function Init_Panel()
         set_Cursor_Tips(self2)
         self2:SetAlpha(0.3)
     end)
-
-
     local widgetEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')
 	widgetEdit:SetPoint('LEFT', widgetLabel, 'RIGHT',6,0)
 	widgetEdit:SetSize(100,20)
@@ -1844,9 +1842,6 @@ local function Init_Panel()
             print(id, addName, 'PlayerFrame WidgetSetID', num==0 and e.GetEnabeleDisable(false) or num)
         end
 	end)
-
-
-
     widgetLabel= e.Cstr(panel)
     widgetLabel:SetPoint('LEFT', widgetEdit, 'RIGHT',4, 0)
     widgetLabel:SetText('0 '..(e.onlyChinese and '取消' or CANCEL))
