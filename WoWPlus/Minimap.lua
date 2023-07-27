@@ -82,12 +82,23 @@ local function set_MINIMAP_UPDATE_ZOOM()
     Minimap.viewRadius:SetFormattedText('%i', C_Minimap.GetViewRadius() or 100)
 end
 
---#################
---小地图, 标记, 文本
---#################
+
+
+
+
+
+
+
+
+
+
+
+
+--#######################
+--小地图, 标记, 监视，文本
+--#######################
 local function set_vigentteButton_Text(self)
     local text
-    --世界任务, 监视
     for questID,_ in pairs(questIDTab) do
         if C_TaskQuest.IsActive(questID) then--世界任务
             if not HaveQuestRewardData(questID) then
@@ -193,6 +204,24 @@ local function set_vigentteButton_Text(self)
 
     panel.Button.Frame.text:SetText(text or '')
 end
+--[[
+local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvider.lua self.tagInfo
+    if self.set_hooksecurefunc then
+        return
+    end
+    self.set_hooksecurefunc=true
+
+    self:HookScript('OnEnter', function(self2)
+        if self.questID then
+            e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING), self2.questID..(questIDTab[self2.questID] and e.Icon.select2 or ''))
+        end
+    end)
+    hooksecurefunc(self, 'OnMouseClickAction', function(self2)
+        if self2.questID then
+            SAve
+    end)
+    
+end]]
 
 local function check_Button_Enabled_Disabled()
     local self= panel.Button
@@ -260,7 +289,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             local key= IsModifierKeyDown()
             if d=='LeftButton' and not key then
                 if not self.menu then
-                    self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                    self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                     e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Button_Menu, 'MENU')
                 end
                 e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
@@ -285,7 +314,6 @@ local function Init_Set_Button()--小地图, 标记, 文本
                 end
                 scale= scale>2.5 and 2.5  or scale
                 scale= scale<0.4 and 0.4 or scale
-
                 print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, scale)
                 Save.vigentteButtonTextScale= scale
                 self.Frame:SetScale(scale)
@@ -295,6 +323,8 @@ local function Init_Set_Button()--小地图, 标记, 文本
             set_vigentteButton_Text()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
+            e.tips:AddLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING))
+            e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
             e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.vigentteButtonTextScale), 'Alt+'..e.Icon.mid)
@@ -336,8 +366,26 @@ local function Init_Set_Button()--小地图, 标记, 文本
             end
         end)
         panel.Button=btn
+
+        hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', set_WorldQuestPinMixin_RefreshVisuals)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local function Init_Menu(self, level, type)
@@ -398,7 +446,7 @@ local function Init_Menu(self, level, type)
         tooltipTitle='|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL),
         tooltipText='|cffff00ff'..mapName,
         checked= Save.vigentteButton,
-        disabled= IsInInstance(),
+        disabled= IsInInstance() or UnitAffectingCombat('player'),
         func= function ()
             Save.vigentteButton= not Save.vigentteButton and true or nil
             Init_Set_Button()--小地图, 标记, 文本
@@ -449,7 +497,7 @@ local function click_Func(self, d)
             WeeklyRewards_ShowUI()--WeeklyReward.lua
         elseif IsAltKeyDown() and self and type(self)=='table' then
             if not self.menu then
-                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
