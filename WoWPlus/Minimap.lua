@@ -367,7 +367,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         end)
         panel.Button=btn
 
-        hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', set_WorldQuestPinMixin_RefreshVisuals)
+       -- hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', set_WorldQuestPinMixin_RefreshVisuals)
     end
 end
 
