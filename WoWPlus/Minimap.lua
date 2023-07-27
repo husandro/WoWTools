@@ -207,6 +207,20 @@ local function check_Button_Enabled_Disabled()
     return isDisabled
 end
 
+local function Init_Button_Menu(_, level, type)
+    local info={
+        text=e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE),
+        checked= Save.vigentteButtonShowText,
+        tooltipOnButton=true,
+        func= function()
+            Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or false
+            panel.Button:SetNormalAtlas(Save.vigentteButtonShowText and e.Icon.icon or e.Icon.disabled)
+            check_Button_Enabled_Disabled()
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+end
+
 local function Init_Set_Button()--小地图, 标记, 文本
     local btn= panel.Button
     if check_Button_Enabled_Disabled() then
@@ -245,9 +259,11 @@ local function Init_Set_Button()--小地图, 标记, 文本
         btn:SetScript('OnClick', function(self, d)--显示，隐藏
             local key= IsModifierKeyDown()
             if d=='LeftButton' and not key then
-                Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or false
-                self:SetNormalAtlas(Save.vigentteButtonShowText and e.Icon.icon or e.Icon.disabled)
-                check_Button_Enabled_Disabled()
+                if not self.menu then
+                    self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                    e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Button_Menu, 'MENU')
+                end
+                e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
 
             elseif d=='RightButton' and key then
                 Save.pointVigentteButton=nil
@@ -261,27 +277,29 @@ local function Init_Set_Button()--小地图, 标记, 文本
 
         btn:SetScript('OnMouseWheel', function(self, d)--缩放
             if IsAltKeyDown() then
-                local scale=Save.vigentteButtonTextScale
+                local scale= Save.vigentteButtonTextScale or 1
                 if d==1 then
                     scale= scale- 0.05
                 elseif d==-1 then
-                    scale= scale- 0.05
+                    scale= scale+ 0.05
                 end
-                scale= scale>2.5 and 2.5 or scale<0.4 and 0.4 or scale
+                scale= scale>2.5 and 2.5  or scale
+                scale= scale<0.4 and 0.4 or scale
 
                 print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, scale)
                 Save.vigentteButtonTextScale= scale
-                self.Frame:SetScale(Save.scale)
+                self.Frame:SetScale(scale)
             end
         end)
         btn:SetScript('OnEnter',function(self)
             set_vigentteButton_Text()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, (not e.Player.levelMax and '|cff606060' or '')..e.GetShowHide(Save.vigentteButtonShowText)..e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
             e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.vigentteButtonTextScale), 'Alt+'..e.Icon.mid)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
         end)
         btn:SetScript('OnLeave',function(self)
@@ -384,9 +402,6 @@ local function Init_Menu(self, level, type)
         func= function ()
             Save.vigentteButton= not Save.vigentteButton and true or nil
             Init_Set_Button()--小地图, 标记, 文本
-            if panel.Button then
-                panel.Button:SetButtonState('PUSHED')
-            end
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
