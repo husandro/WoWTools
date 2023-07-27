@@ -22,6 +22,23 @@ local Save={
 local button
 local panel= CreateFrame("Frame")
 
+local Cedit= function(self, width, height)
+    width = width or 400
+    height= height or 400
+
+    local editBox = CreateFrame("EditBox", nil, self)
+    editBox:SetSize(width, height)
+    editBox:SetAutoFocus(false)
+    editBox:ClearFocus()
+    editBox:SetFontObject("ChatFontNormal")
+    editBox:SetMultiLine(true)
+    --editBox:SetAltArrowKeyMode(false)
+    local tex=editBox:CreateTexture(nil, "BACKGROUND")
+    tex:SetAtlas('_Adventures-Mission-Highlight-Mid')
+    tex:SetAllPoints(editBox)
+    return editBox
+end
+
 --[[local Magic=function(s)  local t={'%%', '%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^', '%$'} for _,v in pairs(t) do s=s:gsub(v,'%%'..v) end return s end --  ( ) . % + - * ? [ ^ $
 local MK=function(k,b) if not b then b=1 end if k>=1e6 then k=string.format('%.'..b..'fm',k/1e6) elseif k>= 1e4 and GetLocale() == "zhCN" then k=string.format('%.'..b..'fw',k/1e4) elseif k>=1e3 then k=string.format('%.'..b..'fk',k/1e3) else k=string.format('%i',k) end return k end--加k 9.1
 local Race=function(u, race, sex2) local s =u and select(2,UnitRace(u)) or race local sex= u and UnitSex(u) or sex2 if s and (sex==2 or sex==3 ) then s= s=='Scourge' and 'Undead' or s=='HighmountainTauren' and 'highmountain' or s=='ZandalariTroll' and 'zandalari' or s=='LightforgedDraenei' and 'lightforged' or s s=string.lower(s) sex= sex==2 and 'male' or sex==3 and 'female' return '|A:raceicon-'..s..'-'..sex..':0:0|a' end end--角色图标
@@ -571,7 +588,7 @@ local function setPanel()
     local str=e.Cstr(frame)--内容加颜色
     str:SetPoint('TOPLEFT')
     str:SetText(e.onlyChinese and '颜色: 关键词 (|cnGREEN_FONT_COLOR:空格|r) 分开' or (COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r'))
-    local editBox=e.Cedit(frame)
+    local editBox=Cedit(frame)
     editBox:SetPoint('TOPLEFT', str, 'BOTTOMLEFT',0,-5)
     editBox:SetTextColor(0,1,0)
     if Save.text then
@@ -609,7 +626,7 @@ local function setPanel()
     local str2=e.Cstr(frame)--频道名称替换
     str2:SetPoint('TOPLEFT', editBox, 'BOTTOMLEFT', 0,-20)
     str2:SetText(e.onlyChinese and '频道名称替换: 关键词|cnGREEN_FONT_COLOR:=|r替换' or (CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r'))
-    local editBox2=e.Cedit(frame)
+    local editBox2=Cedit(frame)
     editBox2:SetPoint('TOPLEFT', str2, 'BOTTOMLEFT',0,-5)
     if Save.channels then
         local t3=''

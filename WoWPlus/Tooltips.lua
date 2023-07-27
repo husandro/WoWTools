@@ -1812,29 +1812,44 @@ local function Init_Panel()
         Save.ctrl= not Save.ctrl and true or nil
     end)
 
+    --监视， WidgetSetID
     local widgetLabel= e.Cstr(panel)
-    widgetLabel:SetPoint('TOPLEFT', ctrlCopy, 'BOTTOMLEFT',0, -4)
+    widgetLabel:SetPoint('TOPLEFT', ctrlCopy, 'BOTTOMLEFT',0, -8)
     widgetLabel:SetText('WidgetSetID')
-    local widgetEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--|cff808080
-	widgetEdit:SetPoint('LEFT', widgetLabel, 'RIGHT',2,0)
+    widgetLabel:EnableMouse(true)
+    widgetLabel:SetScript('OnLeave', function(self2) self2:SetAlpha(1) e.tips:Hide() end)
+    widgetLabel:SetScript('OnEnter', function(self2)
+        set_Cursor_Tips(self2)
+        self2:SetAlpha(0.3)
+    end)
+
+
+    local widgetEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')
+	widgetEdit:SetPoint('LEFT', widgetLabel, 'RIGHT',6,0)
 	widgetEdit:SetSize(100,20)
-	widgetEdit:SetAutoFocus(false)
-	widgetEdit:ClearFocus()
+    widgetEdit:SetAutoFocus(false)
     widgetEdit:SetNumeric(true)
-    widgetEdit:SetNumber(Save.WidgetSetID or 0)
+    widgetEdit:SetNumber(Save.WidgetSetID)
+    widgetEdit:SetCursorPosition(0)
+    widgetEdit:ClearFocus()
+    widgetEdit:SetJustifyH('CENTER')
+    widgetEdit:SetScript('OnEscapePressed', function(self2) self2:ClearFocus() end)
+    widgetEdit:SetScript('OnLeave', function() e.tips:Hide() end)
 	widgetEdit:SetScript('OnEnterPressed', function(self2)
-		local num= self2:GetNumber()
-        num= math.modf(num)
-        if num>0 then
+        local num= math.modf(self2:GetNumber())
+        if num>=0 then
             Save.WidgetSetID= num
-            print(id, addName, 'PlayerFrame WidgetSetID', num)
             self2:ClearFocus()
-        elseif num==0 then
-            Save.WidgetSetID=0
-            self2:ClearFocus()
-            print(id, addName, 'PlayerFrame WidgetSetID', e.GetEnabeleDisable(false))
+            set_Cursor_Tips(self2)
+            print(id, addName, 'PlayerFrame WidgetSetID', num==0 and e.GetEnabeleDisable(false) or num)
         end
 	end)
+
+
+
+    widgetLabel= e.Cstr(panel)
+    widgetLabel:SetPoint('LEFT', widgetEdit, 'RIGHT',4, 0)
+    widgetLabel:SetText('0 '..(e.onlyChinese and '取消' or CANCEL))
 
    --设置CVar
     local cvar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")

@@ -24,7 +24,6 @@ end
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
 
-
 function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell
     if not tab.id then
         return
@@ -632,24 +631,6 @@ function e.Cstr(self, tab)--self, {size, copyFont, changeFont, fontName color={r
         font:EnableMouseWheel(true)
     end
     return font
-end
-
-
-e.Cedit= function(self, width, height)
-    width = width or 400
-    height= height or 400
-
-    local editBox = CreateFrame("EditBox", nil, self)
-    editBox:SetSize(width, height)
-    editBox:SetAutoFocus(false)
-    editBox:ClearFocus()
-    editBox:SetFontObject("ChatFontNormal")
-    editBox:SetMultiLine(true)
-    --editBox:SetAltArrowKeyMode(false)
-    local tex=editBox:CreateTexture(nil, "BACKGROUND")
-    tex:SetAtlas('_Adventures-Mission-Highlight-Mid')
-    tex:SetAllPoints(editBox)
-    return editBox
 end
 
 function e.Cbtn(self, tab)--type, icon, name, size
