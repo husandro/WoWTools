@@ -509,12 +509,9 @@ end
 --初始
 --####
 local function Init()
-
-
-
-    --没用，测试, boss掉落，物品
+    --boss掉落，物品, 可能，会留下 StaticPopup1 框架
     hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
-	    --local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = GetItemInfo(data.itemLink)
+        --local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = GetItemInfo(data.itemLink)
         e.Set_Item_Stats(lootFrame, data.itemLink, {point=lootFrame.Icon})
     end)
 

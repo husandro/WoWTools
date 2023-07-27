@@ -3155,7 +3155,9 @@
         "BONUS_OBJECTIVE_TIME_LEFT",
         "TIME_REMAINING",
         "ACTIVATE",
-        "GameTooltip_AddWidgetSet"
+        "GameTooltip_AddWidgetSet",
+        "LOSS_OF_CONTROL_DISPLAY_POLYMORPH",
+        "RAID_INFO_WORLD_BOSS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

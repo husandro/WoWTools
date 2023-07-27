@@ -23,6 +23,14 @@ local function set_playerModel(self)
     if not self.playerModel then
         self.playerModel= CreateFrame("PlayerModel", nil, self)--DressUpModel PlayerModel
         self.playerModel:SetFrameLevel(self:GetFrameLevel()-1)
+        --[[
+        self.itemModel= CreateFrame("DressUpModel", nil, self)--DressUpModel PlayerModel
+        self.itemModel:SetPoint('TOP', self, 'BOTTOM')
+        self.itemModel:SetUnit('player')
+        self.itemModel:SetSize(Save.modelSize, Save.modelSize)
+        self.itemModel:SetModelScale(2)
+        self.itemModel:SetFacing(Save.modelFacing)
+        ]]
     else
         self.playerModel:ClearAllPoints()
     end
@@ -78,7 +86,7 @@ end
 --###########
 --设置, 3D模型
 --###########
-local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=nil, guid=nil, creatureDisplayID=nil, animID=nil, appearanceID=nil, visualID=nil, col=nil})--设置, 3D模型
+local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=, col=})--设置, 3D模型
     if Save.hideModel then
         return
     end
@@ -105,8 +113,12 @@ local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=nil, guid=n
             self.playerModel:SetShown(true)
         end
     elseif tab.itemID then
-        if self.playerModel.id~= tab.itemID then
-            self.playerModel:SetItem(tab.itemID, tab.appearanceID, tab.visualID)
+        if self.playerModel.id~=tab.itemID then
+            if  tab.appearanceID and tab.visualID then
+                self.playerModel:SetItemAppearance(tab.visualID, tab.appearanceID)
+            else
+                self.playerModel:SetItem(tab.itemID, tab.appearanceID, tab.visualID)
+            end
             self.playerModel.id= tab.itemID
             self.playerModel:SetShown(true)
         end
@@ -341,7 +353,7 @@ local function setPet(self, speciesID, setSearchText)--宠物
 end
 
 local function getItemInfoFromHyperlink(link)--LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
-	local itemID = link:match("|H.-:(%d+).-|h")
+	local itemID = link and link:match("|H.-:(%d+).-|h")
 	if itemID then
 		return tonumber(itemID)
 	end
@@ -350,14 +362,15 @@ end
 --############
 --设置,物品信息
 --############
-local function setItem(self, ItemLink)
-    if not ItemLink then
+local function set_Item_Info(self, itemLink, itemID)
+    if not (itemLink and itemID) then
         return
     end
-
-    local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(ItemLink)
-    local itemID, itemType, itemSubType, itemEquipLoc, itemTexture2, classID, subclassID = GetItemInfoInstant(ItemLink)
-    itemID = itemID or getItemInfoFromHyperlink(ItemLink)
+    local itemName, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent= GetItemInfo(itemLink or itemID)
+    itemID= itemID or GetItemInfoInstant(itemLink or itemID) or getItemInfoFromHyperlink(itemLink)
+    itemTexture= itemTexture or C_Item.GetItemNameByID(itemLink or itemID)
+    --local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(itemLink)
+    --local itemID, itemType, itemSubType, itemEquipLoc, itemTexture2, classID, subclassID = GetItemInfoInstant(itemLink)
     if not itemID then
         return
     end
@@ -372,7 +385,7 @@ local function setItem(self, ItemLink)
         self:AddDoubleLine(e.GetExpansionText(expacID))
     end
 
-    local itemTexture= itemTexture2 or itemID and C_Item.GetItemIconByID(itemID)
+    --local itemTexture= itemTexture2 or itemID and C_Item.GetItemIconByID(itemID)
     self:AddDoubleLine(itemID and (e.onlyChinese and '物品' or ITEMS)..' '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture, 1,1,1, 1,1,1)--ID, texture
 
     if classID and subclassID then
@@ -380,7 +393,7 @@ local function setItem(self, ItemLink)
     end
 
     if classID==2 or classID==4 then
-        itemLevel= GetDetailedItemLevelInfo(ItemLink) or itemLevel--装等
+        itemLevel= GetDetailedItemLevelInfo(itemLink) or itemLevel--装等
         if itemLevel and itemLevel>1 then
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
             if slot then
@@ -405,7 +418,7 @@ local function setItem(self, ItemLink)
             end
         end
 
-        local appearanceID, sourceID = C_TransmogCollection.GetItemInfo(ItemLink)--幻化
+        local appearanceID, sourceID = C_TransmogCollection.GetItemInfo(itemLink or itemID)--幻化
         local visualID
         if sourceID then
             local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
@@ -414,13 +427,13 @@ local function setItem(self, ItemLink)
                 self.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
             end
         end
-        set_Item_Model(self, {itemID=itemID, appearanceID=appearanceID, visualID=visualID, col=col})--设置, 3D模型
+        set_Item_Model(self, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID, col=col})--设置, 3D模型
 
         if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
             self.Portrait:SetAtlas(e.Icon.unlocked)
         end
 
-        local specTable = GetItemSpecInfo(ItemLink) or {}--专精图标
+        local specTable = GetItemSpecInfo(itemLink) or {}--专精图标
         local specTableNum=#specTable
         if specTableNum>0 then
             --local num=math.modf(specTableNum/2)
@@ -461,15 +474,15 @@ local function setItem(self, ItemLink)
         end
     end
 
-    local spellName, spellID = GetItemSpell(ItemLink)--物品法术
+    local spellName, spellID = GetItemSpell(itemLink)--物品法术
     if spellName and spellID then
         local spellTexture=GetSpellTexture(spellID)
         self:AddDoubleLine((itemName~=spellName and col..'['..spellName..']|r' or '')..(e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
     end
 
     local wowNum= 0--WoW 数量
-    local bag= GetItemCount(ItemLink)--物品数量
-    local bank= GetItemCount(ItemLink,true) - bag
+    local bag= GetItemCount(itemLink)--物品数量
+    local bank= GetItemCount(itemLink,true) - bag
 
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         --local numPlayer=1 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
@@ -499,7 +512,7 @@ local function setItem(self, ItemLink)
             if runs and runs.level then
                 num= num+ 1
                 if runs.completed then
-                    completedNum= completedNum +1
+                    comset_Item_InfoedNum= completedNum +1
                 end
             end
         end
@@ -1260,9 +1273,9 @@ local function Init()
 
         elseif data.id and data.type then
             if data.type==0 or data.type==19 then--TooltipUtil.lua 0物品 19玩具
-                local itemID, itemLink=TooltipUtil.GetDisplayedItem(tooltip)
+                local itemLink, itemID= select(2, TooltipUtil.GetDisplayedItem(tooltip))
                 itemLink= itemLink or itemID or data.id
-                setItem(tooltip, itemLink)
+                set_Item_Info(tooltip, itemLink, itemID)
 
             elseif data.type==1 then
                 set_Spell(tooltip, data.id)--法术
@@ -1615,9 +1628,36 @@ local function Init()
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
-            print(id,addName)
         end
     end)
+--[[
+    function panel:set_Widget_Tips()
+        local isEnabled= Save.WidgetSetID>0
+
+        if isEnabled and not self.widgetButton then
+            self.widgetButton= e.Cbtn(self, {size={16,16}, icon='hide'})
+
+            self.widgetButton:SetPoint('BOTTOMLEFT', PlayerFrame, 'TOPLEFT')
+
+            self.widgetButton.elapsed= 1
+            --self.widgetButton.tips= CreateFrame('GameTooltip', nil, self.widgetButton)--, 'GameTooltipTemplate')
+            self.widgetButton:SetScript("OnUpdate",  function(self2, elapsed)
+
+                self2.elapsed= self2.elapsed+ elapsed
+                if self2.elapsed>1 then
+                    self2.tips:SetOwner(self2, 'ANCHOR_LEFT')
+                    --self2.tips:ClearLines()
+                    GameTooltip_AddWidgetSet(self2.tips, 845, 10)
+                    self2.tips:Shown()
+                    self2.elapsed= 0
+                end
+            end)
+        end
+        if self.widgetTip then
+            self.widgetTip:SetShown(isEnabled)
+        end
+    end
+    panel:set_Widget_Tips()]]
 end
 
 

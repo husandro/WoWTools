@@ -4,8 +4,11 @@ local Save={
         scale=e.Player.husandro and 1 or 0.85,
         ZoomOut=true,--更新地区时,缩小化地图
         ZoomOutInfo=true,--小地图, 缩放, 信息
+
         vigentteButton=e.Player.husandro,
         vigentteButtonShowText=true,
+        vigentteButtonTextScale=1,
+
         miniMapPoint={},--保存小图地, 按钮位置
         useServerTimer=true,--小时图，使用服务器, 时间
         --disabledInstanceDifficulty=true,--副本，难图，指示
@@ -82,101 +85,89 @@ end
 --#################
 --小地图, 标记, 文本
 --#################
-local function set_vigentteButton_Event()
-    if Save.vigentteButton and Save.vigentteButtonShowText and not IsInInstance() then
-        panel.vigentteButton:RegisterEvent('AREA_POIS_UPDATED')
-        panel.vigentteButton:RegisterEvent('VIGNETTES_UPDATED')
-        panel.vigentteButton:RegisterEvent('QUEST_DATA_LOAD_RESULT')
-        panel.vigentteButton:RegisterEvent('QUEST_COMPLETE')
-    else
-        panel.vigentteButton:UnregisterAllEvents()
-    end
-
-    if Save.vigentteButton and Save.vigentteButtonShowText then
-        panel.vigentteButton.text:SetText('')
-    end
-end
-
-local setVigentteButtonText
-local function set_vigentteButton_Text()
-    if not Save.vigentteButtonShowText then
-        panel.vigentteButton.text:SetText('')
-        setVigentteButtonText=nil
-        return
-    end
-
-    if setVigentteButtonText then
-        return
-    else
-        setVigentteButtonText=true
-    end
-
+local function set_vigentteButton_Text(self)
     local text
-    if e.Player.levelMax then--世界任务, 监视
-        for questID,_ in pairs(questIDTab) do
-            if C_TaskQuest.IsActive(questID) then--世界任务
-                if not HaveQuestRewardData(questID) then
-                    C_TaskQuest.RequestPreloadRewardData(questID)
-                else
-                    local questName= C_TaskQuest.GetQuestInfoByQuestID(questID)
-                    local itemTexture= select(2, GetQuestLogRewardInfo(1, questID))
-                    if questName and itemTexture then
-                        local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
-                        local secText
-                        if secondsLeft then
-                            secText= SecondsToClock(secondsLeft, true)
-                            secText= ' '..secText:gsub('：',':')
-                            if secondsLeft<= 600 then
-                                secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
-                            end
+    --世界任务, 监视
+    for questID,_ in pairs(questIDTab) do
+        if C_TaskQuest.IsActive(questID) then--世界任务
+            if not HaveQuestRewardData(questID) then
+                C_TaskQuest.RequestPreloadRewardData(questID)
+            else
+                local questName= C_TaskQuest.GetQuestInfoByQuestID(questID)
+                local itemTexture= select(2, GetQuestLogRewardInfo(1, questID))
+                if questName and itemTexture then
+                    local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
+                    local secText
+                    if secondsLeft then
+                        secText= SecondsToClock(secondsLeft, true)
+                        secText= ' '..secText:gsub('：',':')
+                        if secondsLeft<= 600 then
+                            secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
                         end
-                        text='|cffff8200'..questName..(secText or '')..'|T'..itemTexture..':0|t|r'
                     end
+
+                    text= text and text..'|n' or ''
+                    text= '|T'..itemTexture..':0|t|cffff00ff'..questName..'|r'..(secText or '')
                 end
             end
         end
     end
 
-    local vignetteGUIDs=C_VignetteInfo.GetVignettes() or {}--当前
-    for _, guid in pairs(vignetteGUIDs) do
+    for _, guid in pairs(C_VignetteInfo.GetVignettes() or {}) do--当前
         local info= C_VignetteInfo.GetVignetteInfo(guid)
         if info and info.atlasName and not info.isDead then
             if info.onMinimap then
                 text= text and text..'|n' or ''
-                text= text..(info.name and '|cnGREEN_FONT_COLOR:'..info.name..'|r' or '')..'|A:'..info.atlasName..':0:0|a'
+                text= text..'|A:'..info.atlasName..':0:0|a'..(info.name and '|cnGREEN_FONT_COLOR:'..info.name..'|r' or '')
             elseif info.onWorldMap then
                 text= text and text..'|n' or ''
-                text= text..(info.name and '|cffff00ff'..info.name..'|r' or '')..'|A:'..info.atlasName..':0:0|a'
+                text= text..'|A:'..info.atlasName..':0:0|a'..(info.name and '|cffff00ff'..info.name..'|r' or '')
             end
         end
     end
 
-    if e.Player.levelMax then
-        for _, uiMapID in pairs(uiMapIDsTab) do
-            local areaPoiIDs = C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}
-            for _, areaPoiID in pairs(areaPoiIDs) do
-                local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
-                local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
-                if poiInfo and poiInfo.name and poiInfo.atlasName and secondsLeft and secondsLeft>0 then-- C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
-                    text= text and text..'|n' or ''
-                    if poiInfo.widgetSetID then
-                        local widgets = C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}
-                        for _,widget in ipairs(widgets) do
-                            if widget and widget.widgetID and  widget.widgetType==8 then
-                                local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
-                                if widgetInfo and widgetInfo.shownState== 1  and widgetInfo.text then
-                                    local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
-                                    if icon and num then
-                                        text= text..'|cff00ff00'..num..'|r'..icon
-                                        break
-                                    end
+    for _, uiMapID in pairs(uiMapIDsTab) do--地图ID
+        for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
+
+            local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
+
+            local name=''
+            if  poiInfo.name or poiInfo.atlasName then
+                name= (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
+            end
+
+            for _, widget in ipairs(poiInfo.widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}) do
+                if widget and widget.widgetID then--and  widget.widgetType==8 then
+                    local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID) or {}
+                    if widgetInfo.shownState== 1  and widgetInfo.text then
+                        if widgetInfo.hasTimer then
+                            text= text and text..'|n' or ''
+                            text= text..'      '..widgetInfo.text:gsub('|n', '|n      ')..'|n'..name
+                            break
+                        else
+                            local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
+                            if icon and num then
+                                local texture= icon:match('(|T.-):')
+                                if texture then
+                                    icon= texture..':0|t'
                                 end
+                                text= text and text..'|n' or ''
+
+                                text= text..name..icon..'|cff00ff00'..num..'|r'
+                                break
                             end
                         end
                     end
+                end
+            end
 
+            local isTimed, hideTimer= C_AreaPoiInfo.IsAreaPOITimed(areaPoiID)
+            if isTimed and not hideTimer then
+                local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
+                if secondsLeft and secondsLeft>0 then
+                    text= text and text..'|n' or ''
 
-                    text= text.. poiInfo.name
+                    text= text..name
                     if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
                         local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
                         if info and info.textureKit then
@@ -195,30 +186,36 @@ local function set_vigentteButton_Text()
                         end
                         text= text..secText
                     end
-                    text= text..'|A:'..poiInfo.atlasName..':0:0|a'
                 end
             end
         end
     end
 
-
-    panel.vigentteButton.text:SetText(text or '..')
-    setVigentteButtonText=nil
+    panel.Button.Frame.text:SetText(text or '')
 end
 
-local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
-    local btn= panel.vigentteButton
-    if not Save.vigentteButton or IsInInstance() then
-        if btn then
-            btn.text:SetText('')
-            btn:SetShown(false)
-            set_vigentteButton_Event()
+local function check_Button_Enabled_Disabled()
+    local self= panel.Button
+    local isDisabled= not Save.vigentteButton or IsInInstance() or UnitAffectingCombat('player') or WorldMapFrame:IsShown()
+    if self then
+        self:SetShown(not isDisabled)
+        self.Frame:SetShown(Save.vigentteButtonShowText and not isDisabled)
+        if isDisabled or not Save.vigentteButtonShowText then
+            self.Frame.text:SetText('')
         end
+    end
+    return isDisabled
+end
+
+local function Init_Set_Button()--小地图, 标记, 文本
+    local btn= panel.Button
+    if check_Button_Enabled_Disabled() then
         return
     end
+
     if not btn then
-        btn= e.Cbtn(nil, {icon='hide', size={15,15}})
-        panel.vigentteButton=btn
+        btn= e.Cbtn(nil, {icon=Save.vigentteButtonShowText, size={20,20}})
+
         function btn:Set_Point()--设置，位置
             if Save.pointVigentteButton then
                self:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
@@ -229,10 +226,7 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
             end
         end
         btn:Set_Point()
-        
-        if not Save.vigentteButtonShowText then
-            btn:SetNormalAtlas(e.Icon.disabled)
-        end
+
         btn:RegisterForDrag("RightButton")
         btn:SetMovable(true)
         btn:SetClampedToScreen(true)
@@ -247,17 +241,14 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
             Save.pointVigentteButton[2]=nil
             print(id, addName, 'Alt+'..e.Icon.right, e.onlyChinese and '还原位置' or RESET_POSITION)
         end)
-        btn:SetScript('OnMouseDown', function(self, d)
+
+        btn:SetScript('OnClick', function(self, d)--显示，隐藏
             local key= IsModifierKeyDown()
             if d=='LeftButton' and not key then
                 Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or false
-                if Save.vigentteButtonShowText then
-                    self:SetNormalTexture(0)
-                else
-                    self:SetNormalAtlas(e.Icon.disabled)
-                end
-                set_vigentteButton_Event()
-                set_vigentteButton_Text()
+                self:SetNormalAtlas(Save.vigentteButtonShowText and e.Icon.icon or e.Icon.disabled)
+                check_Button_Enabled_Disabled()
+
             elseif d=='RightButton' and key then
                 Save.pointVigentteButton=nil
                 btn:ClearAllPoints()
@@ -267,22 +258,20 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
                 SetCursor('UI_MOVE_CURSOR')
             end
         end)
+
         btn:SetScript('OnMouseWheel', function(self, d)--缩放
             if IsAltKeyDown() then
-                local size=Save.vigentteButtonSize or 12
+                local scale=Save.vigentteButtonTextScale
                 if d==1 then
-                    size=size+1
+                    scale= scale- 0.05
                 elseif d==-1 then
-                    size=size-1
+                    scale= scale- 0.05
                 end
-                if size>36 then
-                    size=36
-                elseif size<8 then
-                    size=8
-                end
-                print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE, size)
-                Save.vigentteButtonSize= size
-                e.Cstr(nil, {size=size, changeFont=btn.text, color=true, justifyH='RIGHT'})--size, nil, btn.text, true ,nil,'RIGHT')
+                scale= scale>2.5 and 2.5 or scale<0.4 and 0.4 or scale
+
+                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, scale)
+                Save.vigentteButtonTextScale= scale
+                self.Frame:SetScale(Save.scale)
             end
         end)
         btn:SetScript('OnEnter',function(self)
@@ -290,30 +279,46 @@ local function set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
-            e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save.vigentteButtonShowText)..e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, (not e.Player.levelMax and '|cff606060' or '')..e.GetShowHide(Save.vigentteButtonShowText)..e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..': '..(Save.vigentteButtonSize or 12), 'Alt+'..e.Icon.mid)
+            e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.vigentteButtonTextScale), 'Alt+'..e.Icon.mid)
             e.tips:Show()
         end)
         btn:SetScript('OnLeave',function(self)
-            self:SetButtonState("NORMAL")
             e.tips:Hide()
             ResetCursor()
         end)
-        btn:SetScript("OnEvent", function(self, event, arg1, arg2)
-            if event=='QUEST_DATA_LOAD_RESULT' and arg2 and questIDTab[arg1] then
-                set_vigentteButton_Text()
-            else
-                set_vigentteButton_Text()
-            end
-        end)--更新事件
 
-        btn.text= e.Cstr(btn, {size=Save.vigentteButtonSize, color=true, justifyH='RIGHT'})
-        btn.text:SetPoint('BOTTOMRIGHT')
+        btn:RegisterEvent('PLAYER_REGEN_DISABLED')
+        btn:RegisterEvent('PLAYER_REGEN_ENABLED')
+        btn:RegisterEvent('PLAYER_ENTERING_WORLD')
+        btn:SetScript('OnEvent', check_Button_Enabled_Disabled)
+
+        btn.Frame= CreateFrame('Frame', nil, btn)
+        btn.Frame:SetPoint('BOTTOMLEFT', btn, 'TOPLEFT')
+        btn.Frame:SetSize(1,1)
+        if Save.vigentteButtonTextScale~=1 then
+            btn.Frame:SetScale(Save.vigentteButtonTextScale)
+        end
+
+        btn.Frame.text= e.Cstr(btn.Frame, {color=true})
+        btn.Frame.text:SetPoint('BOTTOMLEFT')
+
+        WorldMapFrame:HookScript('OnHide', check_Button_Enabled_Disabled)
+        WorldMapFrame:HookScript('OnShow', check_Button_Enabled_Disabled)
+
+        check_Button_Enabled_Disabled()
+
+        btn.Frame.elapsed=1
+        btn.Frame:SetScript('OnUpdate', function(self, elapsed)
+            self.elapsed= self.elapsed+ elapsed
+            if self.elapsed>=1 then
+                set_vigentteButton_Text(self.text)
+               self.elapsed=0
+            end
+        end)
+        panel.Button=btn
     end
-    btn:SetShown(true)
-    set_vigentteButton_Event()
-    set_vigentteButton_Text()
 end
 
 
@@ -378,9 +383,9 @@ local function Init_Menu(self, level, type)
         disabled= IsInInstance(),
         func= function ()
             Save.vigentteButton= not Save.vigentteButton and true or nil
-            set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
-            if panel.vigentteButton then
-                panel.vigentteButton:SetButtonState('PUSHED')
+            Init_Set_Button()--小地图, 标记, 文本
+            if panel.Button then
+                panel.Button:SetButtonState('PUSHED')
             end
         end
     }
@@ -554,6 +559,8 @@ end
 local function Init()
     Init_InstanceDifficulty()--副本，难图，指示
 
+    Init_Set_Button()--小地图, 标记, 文本
+
     --########
     --盟约图标
     --########
@@ -597,6 +604,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
+            Save.vigentteButtonTextScale= Save.vigentteButtonTextScale or 1
 
              --添加控制面板        
              local check=e.CPanel('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName), not Save.disabled)
@@ -668,11 +676,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_ENTERING_WORLD' or event=='ZONE_CHANGED_NEW_AREA' or event=='ZONE_CHANGED' then
         set_ZoomOut()--更新地区时,缩小化地图
-
-        if event=='PLAYER_ENTERING_WORLD' then
-            set_VIGNETTE_MINIMAP_UPDATED()--小地图, 标记, 文本
-
-        end
 
     elseif event=='MINIMAP_UPDATE_ZOOM' then--当前缩放，显示数值 Minimap.lua
         set_MINIMAP_UPDATE_ZOOM()
