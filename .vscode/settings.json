@@ -3161,7 +3161,8 @@
         "TaskPOI_OnEnter",
         "CallingPOI_OnEnter",
         "GameTooltip_SetTooltipWaitingForData",
-        "WORLDMAP_BUTTON"
+        "WORLDMAP_BUTTON",
+        "WorldMapFramePortrait"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

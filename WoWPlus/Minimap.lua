@@ -197,7 +197,7 @@ local function set_vigentteButton_Text()
             local info= C_VignetteInfo.GetVignetteInfo(guid) or {}
             if (info.atlasName or info.name)
                 and not info.isDead
-                and info.zoneInfiniteAOI
+              --  and info.zoneInfiniteAOI
                 and (
                     (info.onMinimap and not Save.hideVigentteCurrentOnMinimap)--当前，小地图，标记
                     or (info.onWorldMap and not Save.hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
@@ -240,52 +240,6 @@ local function set_vigentteButton_Text()
         text= text and text..'|n|n'..areaPoiAllText or areaPoiAllText
     end
     panel.Button.Frame.text:SetText(text or '..')
-end
-
-
---世界地图，追踪，世界任务，添加，移除
-local function set_TaskPOI_OnEnter(self2)--提示 WorldMapFrame.lua
-    if self2.questID and self2.OnMouseClickAction then
-        e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)..(Save.questIDs[self2.questID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
-        e.tips:Show()
-    end
-end
-local function set_WorldQuestPinMixin_RefreshVisuals(self)-- 功能， 添加/移除，追踪，世界任务，WorldQuestDataProvider.lua self.tagInfo
-    if not self.OnMouseClickAction or self.setTracking then
-        return
-    end
-    hooksecurefunc(self, 'OnMouseClickAction', function(self2, d)
-        if self2.questID and d=='LeftButton' and IsAltKeyDown() then
-            Save.questIDs[self2.questID]= not Save.questIDs[self2.questID] and true or nil
-            print(id,addName,'|n',
-                '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
-                GetQuestLink(self2.questID) or self2.questID,
-                Save.questIDs[self2.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
-            )
-        end
-    end)
-    self.setTracking=true
-end
-local function set_AreaPOIPinMixin_OnAcquired(self)
-    if self.setTracking then
-        return
-    end
-    self:HookScript('OnMouseDown', function(self2,d)
-        if self2.areaPoiID and d=='LeftButton' and IsAltKeyDown() then
-            local uiMapID = self:GetMap() and self:GetMap():GetMapID()
-            if uiMapID then
-                Save.areaPoiIDs[self.areaPoiID]= not Save.areaPoiIDs[self.areaPoiID] and uiMapID or nil
-                local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID) or {}
-                local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
-                print(id,addName, 'areaPoiID '..self.areaPoiID, 'uiMapID '..uiMapID, '|n',
-                    '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
-                    name,
-                    Save.areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
-                )
-            end
-        end
-    end)
-    self.setTracking=true
 end
 
 --检测，显示，禁用，Button, 文本
@@ -655,9 +609,91 @@ local function Init_Set_Button()--小地图, 标记, 文本
         end)
         panel.Button=btn
 
-        hooksecurefunc('TaskPOI_OnEnter', set_TaskPOI_OnEnter)--世界任务， 添加，移除，提示
-        hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', set_WorldQuestPinMixin_RefreshVisuals)--世界任务，添加/移除，功能
-        hooksecurefunc(AreaPOIPinMixin,'OnAcquired', set_AreaPOIPinMixin_OnAcquired)
+        hooksecurefunc('TaskPOI_OnEnter', function(self2)--世界任务，提示 WorldMapFrame.lua
+            if self2.questID and self2.OnMouseClickAction then
+                e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)..(Save.questIDs[self2.questID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
+                e.tips:Show()
+            end
+        end)
+        hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--世界任务，添加/移除 WorldQuestDataProvider.lua self.tagInfo
+            if not self.OnMouseClickAction or self.setTracking then
+                return
+            end
+            hooksecurefunc(self, 'OnMouseClickAction', function(self2, d)
+                if self2.questID and d=='LeftButton' and IsAltKeyDown() then
+                    Save.questIDs[self2.questID]= not Save.questIDs[self2.questID] and true or nil
+                    print(id,addName,'|n',
+                        '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
+                        GetQuestLink(self2.questID) or self2.questID,
+                        Save.questIDs[self2.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                    )
+                end
+            end)
+            self.setTracking=true
+        end)
+
+        hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--areaPoiID,提示 AreaPOIDataProvider.lua
+            if self.areaPoiID and  self:GetMap() and self:GetMap():GetMapID() then
+                e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)..(Save.areaPoiIDs[self.areaPoiID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
+                e.tips:Show()
+            end
+        end)
+        hooksecurefunc(AreaPOIPinMixin,'OnAcquired', function(self)---areaPoiID, 添加/移除 AreaPOIDataProvider.lua
+            if self.setTracking then
+                return
+            end
+            self:HookScript('OnMouseDown', function(self2,d)
+                if self2.areaPoiID and d=='LeftButton' and IsAltKeyDown() then
+                    local uiMapID = self:GetMap() and self:GetMap():GetMapID()
+                    if uiMapID then
+                        Save.areaPoiIDs[self.areaPoiID]= not Save.areaPoiIDs[self.areaPoiID] and uiMapID or nil
+                        local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID) or {}
+                        local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
+                        name= name=='' and 'areaPoiID '..self.areaPoiID or name
+                        print(id,addName, '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING), '|n',
+                            (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
+                            name,
+                            Save.areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                        )
+                    end
+                end
+            end)
+            self.setTracking=true
+        end)
+
+        WorldMapFrame.setTrackingButton= e.Cbtn(WorldMapFrame, {size={20,20}, icon='hide'})
+        WorldMapFrame.setTrackingButton:SetPoint('TOPRIGHT', WorldMapFramePortrait, 'BOTTOMRIGHT', 2, 10)
+        WorldMapFrame.setTrackingButton:Raise()
+        WorldMapFrame.setTrackingButton:SetScript('OnEnter', function(self)
+            local uiMapID= WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
+            if uiMapID then
+                Save.uiMapIDs[uiMapID]= not Save.uiMapIDs[uiMapID] and true or nil
+                local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
+                print(id,addName, '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING), '|n',
+                    name,
+                    Save.uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                )
+            end
+        end)
+        WorldMapFrame.setTrackingButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        WorldMapFrame.setTrackingButton:SetScript('OnEnter', function(self)
+            local uiMapID= WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
+            if uiMapID then
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)..(Save.uiMapIDs[uiMapID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
+                e.tips:AddDoubleLine(id, addName)
+            end
+        end)
+        function WorldMapFrame:Set_TrackingButton_Texture()
+            local uiMapID= self.mapID or self:GetMapID("current")
+            if not uiMapID then
+                self.setTrackingButton:SetNormalTexture(0)
+            else
+               self.setTrackingButton:SetNormalAtlas(Save.uiMapIDs[uiMapID] and e.Icon.select or 'VignetteKillElite')
+            end
+        end
+        hooksecurefunc(WorldMapFrame, 'OnMapChanged', WorldMapFrame.Set_TrackingButton_Texture)--uiMapIDs, 添加，移除 --Blizzard_WorldMap.lua
     end
 end
 
