@@ -211,7 +211,7 @@ local function set_vigentteButton_Text()
 
     local qustText= get_Quest_Text()--世界任务
     if qustText then
-        text= text and text..'|n'..qustText or qustText
+        text= text and text..'|n|n'..qustText or qustText
     end
 
     local areaPoiIDText
@@ -682,7 +682,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             if uiMapID then
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)..(Save.uiMapIDs[uiMapID] and e.Icon.select2 or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..uiMapID)
+                e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)..(Save.uiMapIDs[uiMapID] and e.Icon.select2 or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end
