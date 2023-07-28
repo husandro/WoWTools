@@ -9,20 +9,21 @@ local Save={
         vigentteButtonShowText=true,
         vigentteButtonTextScale=1,
 
+        hideVigentteCurrentOnMinimap=true,--当前，小地图，标记
+        hideVigentteCurrentOnWorldMap=true,--当前，世界地图，标记
+
+        --widgetIDs={},
+        areaPoiIDs={},
+        questIDs={},--世界任务, 监视, ID
+        uiMapIDs= {},--地图ID 监视, areaPoiIDs，
+        
         miniMapPoint={},--保存小图地, 按钮位置
         useServerTimer=true,--小时图，使用服务器, 时间
-        --disabledInstanceDifficulty=true,--副本，难图，指示
-}
-local uiMapIDsTab= {--地图ID 监视, areaPoiIDs，
-    2026,
-    2025,
-    2024,
-    2023,
-    2022,
-    2133
+       --disabledInstanceDifficulty=true,--副本，难图，指示
+
 }
 
-local questIDTab= {--世界任务, 监视, ID
+local questIDTab= {
    -- [74378]=true,
 }
 
@@ -97,16 +98,16 @@ end
 --#######################
 --小地图, 标记, 监视，文本
 --#######################
-local function set_vigentteButton_Text(self)
+local function get_Quest_Text()--世界任务
     local text
-    for questID,_ in pairs(questIDTab) do
-        if C_TaskQuest.IsActive(questID) then--世界任务
+    for questID, _ in pairs(Save.questIDs) do
+        if C_TaskQuest.IsActive(questID) then
             if not HaveQuestRewardData(questID) then
                 C_TaskQuest.RequestPreloadRewardData(questID)
             else
                 local questName= C_TaskQuest.GetQuestInfoByQuestID(questID)
                 local itemTexture= select(2, GetQuestLogRewardInfo(1, questID))
-                if questName and itemTexture then
+                if questName then
                     local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
                     local secText
                     if secondsLeft then
@@ -118,110 +119,141 @@ local function set_vigentteButton_Text(self)
                     end
 
                     text= text and text..'|n' or ''
-                    text= '|T'..itemTexture..':0|t|cffff00ff'..questName..'|r'..(secText or '')
+                    text= (itemTexture and '|T'..itemTexture..':0|t' or '')..'|cffff00ff'..questName..'|r'..(secText or '')
                 end
             end
         end
     end
-
-    for _, guid in pairs(C_VignetteInfo.GetVignettes() or {}) do--当前
-        local info= C_VignetteInfo.GetVignetteInfo(guid)
-        if info and info.atlasName and not info.isDead then
-            if info.onMinimap then
-                text= text and text..'|n' or ''
-                text= text..'|A:'..info.atlasName..':0:0|a'..(info.name and '|cnGREEN_FONT_COLOR:'..info.name..'|r' or '')
-            elseif info.onWorldMap then
-                text= text and text..'|n' or ''
-                text= text..'|A:'..info.atlasName..':0:0|a'..(info.name and '|cffff00ff'..info.name..'|r' or '')
-            end
-        end
-    end
-
-    for _, uiMapID in pairs(uiMapIDsTab) do--地图ID
-        for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
-
-            local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
-
-            local name=''
-            if  poiInfo.name or poiInfo.atlasName then
-                name= (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
-            end
-
-            for _, widget in ipairs(poiInfo.widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}) do
-                if widget and widget.widgetID then--and  widget.widgetType==8 then
-                    local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID) or {}
-                    if widgetInfo.shownState== 1  and widgetInfo.text then
-                        if widgetInfo.hasTimer then
-                            text= text and text..'|n' or ''
-                            text= text..'      '..widgetInfo.text:gsub('|n', '|n      ')..'|n'..name
-                            break
-                        else
-                            local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
-                            if icon and num then
-                                local texture= icon:match('(|T.-):')
-                                if texture then
-                                    icon= texture..':0|t'
-                                end
-                                text= text and text..'|n' or ''
-
-                                text= text..name..icon..'|cff00ff00'..num..'|r'
-                                break
-                            end
-                        end
-                    end
-                end
-            end
-
-            local isTimed, hideTimer= C_AreaPoiInfo.IsAreaPOITimed(areaPoiID)
-            if isTimed and not hideTimer then
-                local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
-                if secondsLeft and secondsLeft>0 then
-                    text= text and text..'|n' or ''
-
-                    text= text..name
-                    if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
-                        local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
-                        if info and info.textureKit then
-                            text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
-                        else
-                            text= text..' '
-                        end
-                    else
-                        text= text..' '
-                    end
-                    if secondsLeft and secondsLeft>0 then
-                        local secText=SecondsToClock(secondsLeft,true)
-                        secText= secText:gsub('：',':')
-                        if secondsLeft<= 600 then
-                            secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
-                        end
-                        text= text..secText
-                    end
-                end
-            end
-        end
-    end
-
-    panel.Button.Frame.text:SetText(text or '')
+    return text
 end
---[[
-local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvider.lua self.tagInfo
-    if self.set_hooksecurefunc then
+
+local function get_areaPoiID_Text(areaPoiID, uiMapID)
+    local text
+    local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
+    local name=''
+    if  poiInfo.name or poiInfo.atlasName then
+        name= (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
+    end
+
+    for _, widget in ipairs(poiInfo.widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}) do
+        if widget and widget.widgetID then--and  widget.widgetType==8 then
+            local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID) or {}
+            if widgetInfo.shownState== 1  and widgetInfo.text then
+                if widgetInfo.hasTimer then
+                    text= text and text..'|n' or ''
+                    text= text..'      '..widgetInfo.text:gsub('|n', '|n      ')..'|n'..name
+                    break
+                else
+                    local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
+                    if icon and num then
+                        local texture= icon:match('(|T.-):')
+                        if texture then
+                            icon= texture..':0|t'
+                        end
+                        text= text and text..'|n' or ''
+
+                        text= text..name..icon..'|cff00ff00'..num..'|r'
+                        break
+                    end
+                end
+            end
+        end
+    end
+
+    local isTimed, hideTimer= C_AreaPoiInfo.IsAreaPOITimed(areaPoiID)
+    if isTimed and not hideTimer then
+        local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
+        if secondsLeft and secondsLeft>0 then
+            text= text and text..'|n' or ''
+
+            text= text..name
+            if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
+                local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
+                if info and info.textureKit then
+                    text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
+                else
+                    text= text..' '
+                end
+            else
+                text= text..' '
+            end
+            if secondsLeft and secondsLeft>0 then
+                local secText=SecondsToClock(secondsLeft,true)
+                secText= secText:gsub('：',':')
+                if secondsLeft<= 600 then
+                    secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
+                end
+                text= text..secText
+            end
+        end
+    end
+end
+local function set_vigentteButton_Text()
+    local text
+    if not (Save.hideVigentteCurrentOnMinimap or Save.hideVigentteCurrentOnWorldMap) then
+        for _, guid in pairs(C_VignetteInfo.GetVignettes() or {}) do
+            local info= C_VignetteInfo.GetVignetteInfo(guid) or {}
+            if (info.atlasName or info.name) and not info.isDead then
+                if (info.onMinimap and not Save.hideVigentteCurrentOnMinimap)--当前，小地图，标记
+                    or (info.onWorldMap and not Save.hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
+                then
+                    text= text and text..'|n' or ''
+                    text= text..(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name and info.name or '')
+                end
+            end
+        end
+    end
+
+    local qustText= get_Quest_Text()--世界任务
+    if qustText then
+        text= text and text..'|n'..qustText or qustText
+    end
+
+    for areaPoiID, uiMapID in pairs(Save.areaPoiIDs) do
+        local areaPoiIDText= get_areaPoiID_Text(uiMapID, areaPoiID)
+        if areaPoiIDText  then
+            text= text and text..'|n|n'..areaPoiIDText or areaPoiIDText
+        end
+    end
+
+    for uiMapID, _ in pairs(Save.uiMapIDs) do--地图ID
+        for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
+            local areaPoiIDText= get_areaPoiID_Text(uiMapID, areaPoiID)
+            if areaPoiIDText  then
+                text= text and text..'|n|n'..areaPoiIDText or areaPoiIDText
+            end
+            
+        end
+    end
+
+    panel.Button.Frame.text:SetText(text or '..')
+end
+
+
+hooksecurefunc('TaskPOI_OnEnter', function(self2)--WorldMapFrame.lu
+    if self2.questID and self2.OnMouseClickAction then
+        e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING), 'Alt+'..e.Icon.left)
+        e.tips:Show()
+    end
+end)
+local function set_WorldQuestPinMixin_RefreshVisuals(self)--添加/移除，追踪，世界任务，WorldQuestDataProvider.lua self.tagInfo
+    if not self.OnMouseClickAction or self.setTracking then
         return
     end
-    self.set_hooksecurefunc=true
-
-    self:HookScript('OnEnter', function(self2)
-        if self.questID then
-            e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING), self2.questID..(questIDTab[self2.questID] and e.Icon.select2 or ''))
+    hooksecurefunc(self, 'OnMouseClickAction', function(self2, d)
+        if self2.questID and d=='LeftButton' and IsAltKeyDown() then
+            Save.questIDs[self2.questID]= not Save.questIDs[self2.questID] and true or nil
+            print(id,addName,'|n',
+                '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
+                GetQuestLink(self2.questID) or self2.questID,
+                Save.questIDs[self2.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+            )
         end
     end)
-    hooksecurefunc(self, 'OnMouseClickAction', function(self2)
-        if self2.questID then
-            SAve
-    end)
-    
-end]]
+    self.setTracking=true
+end
+
+
 
 local function check_Button_Enabled_Disabled()
     local self= panel.Button
@@ -231,16 +263,47 @@ local function check_Button_Enabled_Disabled()
         self.Frame:SetShown(Save.vigentteButtonShowText and not isDisabled)
         if isDisabled or not Save.vigentteButtonShowText then
             self.Frame.text:SetText('')
+        else
+            self.Frame.elapsed=1
         end
     end
     return isDisabled
 end
 
-local function Init_Button_Menu(_, level, type)
-    local info={
+local function Init_Button_Menu(_, level, menuList)--菜单
+    local info
+
+    if menuList=='WorldQuest' then--世界任务
+        for questID, _ in pairs(Save.questIDs) do
+            e.LoadDate({id= questID, type=='quest'})
+            info={
+                text= GetQuestLink(questID) or questID,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..questID,
+                arg1= questID,
+                func= function(_, arg1)
+                    Save.questIDs[arg1]=nil
+                    print(id,addName,'|n',
+                    '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
+                    GetQuestLink(questID) or questID,
+                    '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2
+                )
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+    end
+
+    if menuList then
+        return
+    end
+    local num
+    info={
         text=e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE),
         checked= Save.vigentteButtonShowText,
         tooltipOnButton=true,
+        keepShownOnClick=true,
         func= function()
             Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or false
             panel.Button:SetNormalAtlas(Save.vigentteButtonShowText and e.Icon.icon or e.Icon.disabled)
@@ -248,6 +311,33 @@ local function Init_Button_Menu(_, level, type)
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
+        text= (e.onlyChinese and '当前' or REFORGE_CURRENT)..' Vignette',
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL,
+        checked=not Save.hideVigentteCurrent,
+        keepShownOnClick=true,
+        func= function()
+            Save.hideVigentteCurrent= not Save.hideVigentteCurrent and true or nil
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    num=0
+    for _ in pairs(Save.questIDs) do
+        num= num+1
+    end
+    info={
+        text= (e.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS)..' |cnGREEN_FONT_COLOR:#'..num,
+        notCheckable=true,
+        menuList= 'WorldQuest',
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    
+    
 end
 
 local function Init_Set_Button()--小地图, 标记, 文本
@@ -367,7 +457,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         end)
         panel.Button=btn
 
-       -- hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', set_WorldQuestPinMixin_RefreshVisuals)
+        hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', set_WorldQuestPinMixin_RefreshVisuals)
     end
 end
 
@@ -433,7 +523,7 @@ local function Init_Menu(self, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     local mapName=''
-    for _, mapID in pairs(uiMapIDsTab) do
+    for _, mapID in pairs(Save.uiMapIDs) do
         local mapInfo=C_Map.GetMapInfo(mapID)
         if mapInfo and mapInfo.name then
             mapName= mapName..'|n'..mapInfo.name
@@ -668,6 +758,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
             Save.vigentteButtonTextScale= Save.vigentteButtonTextScale or 1
+            Save.uiMapIDs= Save.uiMapIDs or {}
+            Save.questIDs= Save.questIDs or {
+                                                [74378]=true,
+                                            }
+            Save.widgetIDs= Save.widgetIDs or {
+                                                [845]=true,
+                                                [723]=true,
+                                            }
+            Save.areaPoiIDs= Save.areaPoiIDs or {}
 
              --添加控制面板        
              local check=e.CPanel('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName), not Save.disabled)
@@ -678,7 +777,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save.disabled then
                 if not e.Player.levelMax then
-                    uiMapIDsTab= {}
                     questIDTab= {}
                 end
                 panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")
