@@ -12,7 +12,7 @@ local Save={
         --hideVigentteCurrentOnWorldMap=true,--当前，世界地图，标记
         questIDs={},--世界任务, 监视, ID {[任务ID]=true}
         areaPoiIDs={[7492]= 2025},--{[areaPoiID]= 地图ID}
-        uiMapIDs= {[2025]=true},--地图ID 监视, areaPoiIDs，
+        uiMapIDs= {},--地图ID 监视, areaPoiIDs，
 
         miniMapPoint={},--保存小图地, 按钮位置
         useServerTimer=true,--小时图，使用服务器, 时间
@@ -130,15 +130,15 @@ local function get_AreaPOIInfo_Name(poiInfo)
 end
 
 --areaPoiID 文本
-local function get_areaPoiID_Text(uiMapID, areaPoiID)
+local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
     local text
     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
     local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
     for _, widget in ipairs(poiInfo.widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}) do
         if widget and widget.widgetID then--and  widget.widgetType==8 then
             local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID) or {}
-            if widgetInfo.shownState== 1  and widgetInfo.text then
-                if widgetInfo.hasTimer then
+            if widgetInfo.shownState== 1 and widgetInfo.text then
+                if widgetInfo.hasTimer or not all then
                     text= text and text..'|n' or ''
                     text= text..'      |cffffffff'..widgetInfo.text:gsub('|n', '|n      ')..'|r|n'..name
                     break
@@ -229,7 +229,7 @@ local function set_vigentteButton_Text()
     for uiMapID, _ in pairs(Save.uiMapIDs) do--地图ID
         for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
             if not Save.areaPoiIDs[areaPoiID] then
-                local area= get_areaPoiID_Text(uiMapID, areaPoiID)
+                local area= get_areaPoiID_Text(uiMapID, areaPoiID, true)
                 if area then
                     areaPoiAllText= areaPoiAllText and areaPoiAllText..'|n'..area or area
                 end
@@ -343,7 +343,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-        
+
     elseif menuList=='uiMapIDs' then--地图
         for uiMapID, _ in pairs(Save.uiMapIDs) do
             local name=  (C_Map.GetMapInfo(uiMapID) or {}).name
@@ -416,7 +416,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
     if menuList then
         return
     end
-    
+
     info={
         text=e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE),
         checked= Save.vigentteButtonShowText,
@@ -1000,7 +1000,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.questIDs= Save.questIDs or {
                                                 [74378]=true,
                                             }
-            
+
             Save.areaPoiIDs= Save.areaPoiIDs or {
                 [7492]= 2025
             }
