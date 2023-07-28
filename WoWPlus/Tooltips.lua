@@ -1499,7 +1499,7 @@ local function Init()
             end
         end
         if uiMapID then
-            e.tips:AddDoubleLine('mapID', uiMapID)
+            e.tips:AddDoubleLine('uiMapID', uiMapID)
         end
         if self.factionID then
             setMajorFactionRenown(e.tips, self.factionID)--名望

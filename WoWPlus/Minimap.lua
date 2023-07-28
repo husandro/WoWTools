@@ -8,14 +8,11 @@ local Save={
         vigentteButton=e.Player.husandro,
         vigentteButtonShowText=true,
         vigentteButtonTextScale=1,
-
-        hideVigentteCurrentOnMinimap=true,--当前，小地图，标记
-        hideVigentteCurrentOnWorldMap=true,--当前，世界地图，标记
-
-        --widgetIDs={},
-        areaPoiIDs={},
-        questIDs={},--世界任务, 监视, ID
-        uiMapIDs= {},--地图ID 监视, areaPoiIDs，
+        --hideVigentteCurrentOnMinimap=true,--当前，小地图，标记
+        --hideVigentteCurrentOnWorldMap=true,--当前，世界地图，标记
+        questIDs={},--世界任务, 监视, ID {[任务ID]=true}
+        areaPoiIDs={[7492]= 2025},--{[areaPoiID]= 地图ID}
+        uiMapIDs= {[2025]=true},--地图ID 监视, areaPoiIDs，
 
         miniMapPoint={},--保存小图地, 按钮位置
         useServerTimer=true,--小时图，使用服务器, 时间
@@ -127,22 +124,23 @@ local function get_Quest_Text()
     return text
 end
 
+--取得 areaPoiID 名称
+local function get_AreaPOIInfo_Name(poiInfo)
+    return (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
+end
+
 --areaPoiID 文本
-local function get_areaPoiID_Text(areaPoiID, uiMapID)
+local function get_areaPoiID_Text(uiMapID, areaPoiID)
     local text
     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
-    local name=''
-    if  poiInfo.name or poiInfo.atlasName then
-        name= (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
-    end
-
+    local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
     for _, widget in ipairs(poiInfo.widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}) do
         if widget and widget.widgetID then--and  widget.widgetType==8 then
             local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID) or {}
             if widgetInfo.shownState== 1  and widgetInfo.text then
                 if widgetInfo.hasTimer then
                     text= text and text..'|n' or ''
-                    text= text..'      '..widgetInfo.text:gsub('|n', '|n      ')..'|n'..name
+                    text= text..'      |cffffffff'..widgetInfo.text:gsub('|n', '|n      ')..'|r|n'..name
                     break
                 else
                     local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
@@ -188,6 +186,7 @@ local function get_areaPoiID_Text(areaPoiID, uiMapID)
             end
         end
     end
+    return text
 end
 
 --Button 文本
@@ -215,33 +214,42 @@ local function set_vigentteButton_Text()
         text= text and text..'|n'..qustText or qustText
     end
 
-    for areaPoiID, uiMapID in pairs(Save.areaPoiIDs) do
-        local areaPoiIDText= get_areaPoiID_Text(uiMapID, areaPoiID)
-        if areaPoiIDText  then
-            text= text and text..'|n|n'..areaPoiIDText or areaPoiIDText
+    local areaPoiIDText
+    for areaPoiID, uiMapID in pairs(Save.areaPoiIDs) do--自定义 areaPoiID
+        local area= get_areaPoiID_Text(uiMapID, areaPoiID)
+        if area then
+            areaPoiIDText= areaPoiIDText and areaPoiIDText..'|n'..area or area
         end
     end
+    if areaPoiIDText then
+        text= text and text..'|n|n'..areaPoiIDText or areaPoiIDText
+    end
 
+    local areaPoiAllText
     for uiMapID, _ in pairs(Save.uiMapIDs) do--地图ID
         for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
-            local areaPoiIDText= get_areaPoiID_Text(uiMapID, areaPoiID)
-            if areaPoiIDText  then
-                text= text and text..'|n|n'..areaPoiIDText or areaPoiIDText
+            if not Save.areaPoiIDs[areaPoiID] then
+                local area= get_areaPoiID_Text(uiMapID, areaPoiID)
+                if area then
+                    areaPoiAllText= areaPoiAllText and areaPoiAllText..'|n'..area or area
+                end
             end
-
         end
+    end
+    if areaPoiAllText then
+        text= text and text..'|n|n'..areaPoiAllText or areaPoiAllText
     end
     panel.Button.Frame.text:SetText(text or '..')
 end
 
 
 --世界地图，追踪，世界任务，添加，移除
-hooksecurefunc('TaskPOI_OnEnter', function(self2)--提示 WorldMapFrame.lua
+local function set_TaskPOI_OnEnter(self2)--提示 WorldMapFrame.lua
     if self2.questID and self2.OnMouseClickAction then
-        e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING), 'Alt+'..e.Icon.left)
+        e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)..(Save.questIDs[self2.questID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
         e.tips:Show()
     end
-end)
+end
 local function set_WorldQuestPinMixin_RefreshVisuals(self)-- 功能， 添加/移除，追踪，世界任务，WorldQuestDataProvider.lua self.tagInfo
     if not self.OnMouseClickAction or self.setTracking then
         return
@@ -258,7 +266,27 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)-- 功能， 添加/�
     end)
     self.setTracking=true
 end
-
+local function set_AreaPOIPinMixin_OnAcquired(self)
+    if self.setTracking then
+        return
+    end
+    self:HookScript('OnMouseDown', function(self2,d)
+        if self2.areaPoiID and d=='LeftButton' and IsAltKeyDown() then
+            local uiMapID = self:GetMap() and self:GetMap():GetMapID()
+            if uiMapID then
+                Save.areaPoiIDs[self.areaPoiID]= not Save.areaPoiIDs[self.areaPoiID] and uiMapID or nil
+                local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID) or {}
+                local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
+                print(id,addName, 'areaPoiID '..self.areaPoiID, 'uiMapID '..uiMapID, '|n',
+                    '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
+                    name,
+                    Save.areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                )
+            end
+        end
+    end)
+    self.setTracking=true
+end
 
 --检测，显示，禁用，Button, 文本
 local function check_Button_Enabled_Disabled()
@@ -316,12 +344,125 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinese and '全部清除' or CLEAR_ALL,
+            notCheckable=true,
+            func= function()
+                Save.questIDs={}
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif menuList=='AreaPoiID' then--AreaPoiID
+        for areaPoiID, uiMapID in pairs(Save.areaPoiIDs) do
+            local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
+            local name
+            name= get_AreaPOIInfo_Name(poiInfo)
+            name= name=='' and areaPoiID or name
+            info={
+                text= name,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..areaPoiID,
+                tooltipText= (C_Map.GetMapInfo(uiMapID) or {}).name,
+                arg1= areaPoiID,
+                arg2= uiMapID,
+                func= function(_, arg1,arg2)
+                    Save.areaPoiIDs[arg1]=nil
+                    print(id,addName,
+                    '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
+                    get_AreaPOIInfo_Name(C_AreaPoiInfo.GetAreaPOIInfo(arg2, arg1) or {}),
+                    arg1 and 'areaPoiID '..arg1 or '',
+                    ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                )
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinese and '全部清除' or CLEAR_ALL,
+            notCheckable=true,
+            func= function()
+                Save.areaPoiIDs={}
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        
+    elseif menuList=='uiMapIDs' then--地图
+        for uiMapID, _ in pairs(Save.uiMapIDs) do
+            local name=  (C_Map.GetMapInfo(uiMapID) or {}).name
+            name= name or uiMapID
+            info={
+                text= name,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..uiMapID,
+                arg1= uiMapID,
+                func= function(_, arg1)
+                    Save.uiMapIDs[arg1]=nil
+                    print(id,addName,
+                    '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
+                    (C_Map.GetMapInfo(uiMapID) or {}).name,
+                    arg1 and 'uiMapID '..arg1 or '',
+                    ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                )
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinese and '全部清除' or CLEAR_ALL,
+            notCheckable=true,
+            func= function()
+                Save.uiMapIDs={}
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif menuList=='AreaPoiID' then--AreaPoiID
+        for areaPoiID, uiMapID in pairs(Save.areaPoiIDs) do
+            local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
+            local name
+            name= get_AreaPOIInfo_Name(poiInfo)
+            name= name=='' and areaPoiID or name
+            info={
+                text= name,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..areaPoiID,
+                tooltipText= (C_Map.GetMapInfo(uiMapID) or {}).name,
+                arg1= areaPoiID,
+                arg2= uiMapID,
+                func= function(_, arg1,arg2)
+                    Save.areaPoiIDs[arg1]=nil
+                    print(id,addName,
+                    '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
+                    get_AreaPOIInfo_Name(C_AreaPoiInfo.GetAreaPOIInfo(arg2, arg1) or {})
+                    'areaPoiID '..arg1,
+                    ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                )
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinese and '全部清除' or CLEAR_ALL,
+            notCheckable=true,
+            func= function()
+                Save.areaPoiIDs={}
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
     if menuList then
         return
     end
-    local num
+    
     info={
         text=e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE),
         checked= Save.vigentteButtonShowText,
@@ -347,7 +488,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    num=0
+    local num=0
     for _ in pairs(Save.questIDs) do
         num= num+1
     end
@@ -359,7 +500,29 @@ local function Init_Button_Menu(_, level, menuList)--菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+    num=0
+    for _ in pairs(Save.areaPoiIDs) do
+        num= num+1
+    end
+    info={
+        text= 'AreaPoiID |cnGREEN_FONT_COLOR:#'..num,
+        notCheckable=true,
+        menuList= 'AreaPoiID',
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+    num=0
+    for _ in pairs(Save.uiMapIDs) do--地图
+        num= num+1
+    end
+    info={
+        text= (e.onlyChinese and '地图' or WORLD_MAP)..'|cnGREEN_FONT_COLOR:#'..num,
+        notCheckable=true,
+        menuList= 'uiMapIDs',
+        hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 local function Init_Set_Button()--小地图, 标记, 文本
@@ -492,7 +655,9 @@ local function Init_Set_Button()--小地图, 标记, 文本
         end)
         panel.Button=btn
 
-        hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', set_WorldQuestPinMixin_RefreshVisuals)
+        hooksecurefunc('TaskPOI_OnEnter', set_TaskPOI_OnEnter)--世界任务， 添加，移除，提示
+        hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', set_WorldQuestPinMixin_RefreshVisuals)--世界任务，添加/移除，功能
+        hooksecurefunc(AreaPOIPinMixin,'OnAcquired', set_AreaPOIPinMixin_OnAcquired)
     end
 end
 
@@ -797,11 +962,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.questIDs= Save.questIDs or {
                                                 [74378]=true,
                                             }
-            Save.widgetIDs= Save.widgetIDs or {
-                                                [845]=true,
-                                                [723]=true,
-                                            }
-            Save.areaPoiIDs= Save.areaPoiIDs or {}
+            
+            Save.areaPoiIDs= Save.areaPoiIDs or {
+                [7492]= 2025
+            }
 
              --添加控制面板        
              local check=e.CPanel('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName), not Save.disabled)
@@ -811,9 +975,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
              end)
 
             if not Save.disabled then
-                if not e.Player.levelMax then
-                    questIDTab= {}
-                end
                 panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")
                 panel:RegisterEvent('ZONE_CHANGED')
                 panel:RegisterEvent("PLAYER_ENTERING_WORLD")
