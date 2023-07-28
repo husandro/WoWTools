@@ -664,7 +664,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         WorldMapFrame.setTrackingButton= e.Cbtn(WorldMapFrame, {size={20,20}, icon='hide'})
         WorldMapFrame.setTrackingButton:SetPoint('TOPRIGHT', WorldMapFramePortrait, 'BOTTOMRIGHT', 2, 10)
         WorldMapFrame.setTrackingButton:Raise()
-        WorldMapFrame.setTrackingButton:SetScript('OnEnter', function(self)
+        WorldMapFrame.setTrackingButton:SetScript('OnClick', function()
             local uiMapID= WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
             if uiMapID then
                 Save.uiMapIDs[uiMapID]= not Save.uiMapIDs[uiMapID] and true or nil
@@ -673,6 +673,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
                     name,
                     Save.uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
                 )
+                WorldMapFrame:Set_TrackingButton_Texture()
             end
         end)
         WorldMapFrame.setTrackingButton:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -681,8 +682,9 @@ local function Init_Set_Button()--小地图, 标记, 文本
             if uiMapID then
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)..(Save.uiMapIDs[uiMapID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
+                e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)..(Save.uiMapIDs[uiMapID] and e.Icon.select2 or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..uiMapID)
                 e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
             end
         end)
         function WorldMapFrame:Set_TrackingButton_Texture()
