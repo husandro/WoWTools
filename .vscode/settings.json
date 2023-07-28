@@ -3160,7 +3160,8 @@
         "RAID_INFO_WORLD_BOSS",
         "TaskPOI_OnEnter",
         "CallingPOI_OnEnter",
-        "GameTooltip_SetTooltipWaitingForData"
+        "GameTooltip_SetTooltipWaitingForData",
+        "WORLDMAP_BUTTON"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -16,16 +16,13 @@ local Save={
         areaPoiIDs={},
         questIDs={},--世界任务, 监视, ID
         uiMapIDs= {},--地图ID 监视, areaPoiIDs，
-        
+
         miniMapPoint={},--保存小图地, 按钮位置
         useServerTimer=true,--小时图，使用服务器, 时间
        --disabledInstanceDifficulty=true,--副本，难图，指示
 
 }
 
-local questIDTab= {
-   -- [74378]=true,
-}
 
 local panel= CreateFrame("Frame")
 
@@ -98,7 +95,9 @@ end
 --#######################
 --小地图, 标记, 监视，文本
 --#######################
-local function get_Quest_Text()--世界任务
+
+--世界任务 文本
+local function get_Quest_Text()
     local text
     for questID, _ in pairs(Save.questIDs) do
         if C_TaskQuest.IsActive(questID) then
@@ -106,20 +105,21 @@ local function get_Quest_Text()--世界任务
                 C_TaskQuest.RequestPreloadRewardData(questID)
             else
                 local questName= C_TaskQuest.GetQuestInfoByQuestID(questID)
-                local itemTexture= select(2, GetQuestLogRewardInfo(1, questID))
                 if questName then
-                    local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
-                    local secText
-                    if secondsLeft then
-                        secText= SecondsToClock(secondsLeft, true)
-                        secText= ' '..secText:gsub('：',':')
-                        if secondsLeft<= 600 then
-                            secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
+                    local itemTexture= select(2, GetQuestLogRewardInfo(1, questID))
+                                        or select(2, GetQuestLogRewardCurrencyInfo(1, questID))
+                    if not itemTexture then
+                        local gold= GetQuestLogRewardMoney(questID)
+                        if gold and gold>0 then
+                            itemTexture='interface\\moneyframe\\ui-goldicon'
                         end
                     end
+                    local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
 
                     text= text and text..'|n' or ''
-                    text= (itemTexture and '|T'..itemTexture..':0|t' or '')..'|cffff00ff'..questName..'|r'..(secText or '')
+                    text= text..(itemTexture and '|T'..itemTexture..':0|t' or '|A:worldquest-tracker-questmarker:0:0|a')
+                        ..'|cffff00ff'..questName..'|r'
+                        ..(secondsLeft and ' '..SecondsToClock(secondsLeft, true) or '')
                 end
             end
         end
@@ -127,6 +127,7 @@ local function get_Quest_Text()--世界任务
     return text
 end
 
+--areaPoiID 文本
 local function get_areaPoiID_Text(areaPoiID, uiMapID)
     local text
     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
@@ -188,18 +189,23 @@ local function get_areaPoiID_Text(areaPoiID, uiMapID)
         end
     end
 end
+
+--Button 文本
 local function set_vigentteButton_Text()
     local text
-    if not (Save.hideVigentteCurrentOnMinimap or Save.hideVigentteCurrentOnWorldMap) then
+    if not (Save.hideVigentteCurrentOnMinimap and Save.hideVigentteCurrentOnWorldMap) then
         for _, guid in pairs(C_VignetteInfo.GetVignettes() or {}) do
             local info= C_VignetteInfo.GetVignetteInfo(guid) or {}
-            if (info.atlasName or info.name) and not info.isDead then
-                if (info.onMinimap and not Save.hideVigentteCurrentOnMinimap)--当前，小地图，标记
+            if (info.atlasName or info.name)
+                and not info.isDead
+                and info.zoneInfiniteAOI
+                and (
+                    (info.onMinimap and not Save.hideVigentteCurrentOnMinimap)--当前，小地图，标记
                     or (info.onWorldMap and not Save.hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
-                then
-                    text= text and text..'|n' or ''
-                    text= text..(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name and info.name or '')
-                end
+                )
+            then
+                text= text and text..'|n' or ''
+                text= text..(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name or '')
             end
         end
     end
@@ -222,21 +228,21 @@ local function set_vigentteButton_Text()
             if areaPoiIDText  then
                 text= text and text..'|n|n'..areaPoiIDText or areaPoiIDText
             end
-            
+
         end
     end
-
     panel.Button.Frame.text:SetText(text or '..')
 end
 
 
-hooksecurefunc('TaskPOI_OnEnter', function(self2)--WorldMapFrame.lu
+--世界地图，追踪，世界任务，添加，移除
+hooksecurefunc('TaskPOI_OnEnter', function(self2)--提示 WorldMapFrame.lua
     if self2.questID and self2.OnMouseClickAction then
         e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING), 'Alt+'..e.Icon.left)
         e.tips:Show()
     end
 end)
-local function set_WorldQuestPinMixin_RefreshVisuals(self)--添加/移除，追踪，世界任务，WorldQuestDataProvider.lua self.tagInfo
+local function set_WorldQuestPinMixin_RefreshVisuals(self)-- 功能， 添加/移除，追踪，世界任务，WorldQuestDataProvider.lua self.tagInfo
     if not self.OnMouseClickAction or self.setTracking then
         return
     end
@@ -254,7 +260,7 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--添加/移除，追�
 end
 
 
-
+--检测，显示，禁用，Button, 文本
 local function check_Button_Enabled_Disabled()
     local self= panel.Button
     local isDisabled= not Save.vigentteButton or IsInInstance() or UnitAffectingCombat('player') or WorldMapFrame:IsShown()
@@ -272,8 +278,25 @@ end
 
 local function Init_Button_Menu(_, level, menuList)--菜单
     local info
+    if menuList=='CurrentVignette' then--当前 Vingnette
+        info={
+            text=e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL,
+            checked= not Save.hideVigentteCurrentOnMinimap,
+            func= function()
+                Save.hideVigentteCurrentOnMinimap= not Save.hideVigentteCurrentOnMinimap and true or nil
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        info={
+            text=e.onlyChinese and '世界地图' or WORLDMAP_BUTTON,
+            checked= not Save.hideVigentteCurrentOnWorldMap,
+            func= function()
+                Save.hideVigentteCurrentOnWorldMap= not Save.hideVigentteCurrentOnWorldMap and true or nil
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    if menuList=='WorldQuest' then--世界任务
+    elseif menuList=='WorldQuest' then--世界任务
         for questID, _ in pairs(Save.questIDs) do
             e.LoadDate({id= questID, type=='quest'})
             info={
@@ -315,10 +338,9 @@ local function Init_Button_Menu(_, level, menuList)--菜单
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= (e.onlyChinese and '当前' or REFORGE_CURRENT)..' Vignette',
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL,
-        checked=not Save.hideVigentteCurrent,
-        keepShownOnClick=true,
+        menuList='CurrentVignette',
+        hasArrow=true,
+        notCheckable=true,
         func= function()
             Save.hideVigentteCurrent= not Save.hideVigentteCurrent and true or nil
         end
@@ -336,8 +358,8 @@ local function Init_Button_Menu(_, level, menuList)--菜单
         hasArrow=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-    
-    
+
+
 end
 
 local function Init_Set_Button()--小地图, 标记, 文本
@@ -422,15 +444,28 @@ local function Init_Set_Button()--小地图, 标记, 文本
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
         end)
-        btn:SetScript('OnLeave',function(self)
+        btn:SetScript('OnLeave',function()
             e.tips:Hide()
             ResetCursor()
         end)
 
-        btn:RegisterEvent('PLAYER_REGEN_DISABLED')
-        btn:RegisterEvent('PLAYER_REGEN_ENABLED')
-        btn:RegisterEvent('PLAYER_ENTERING_WORLD')
-        btn:SetScript('OnEvent', check_Button_Enabled_Disabled)
+        btn:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件
+        function btn:set_Instance_Event()
+            if IsInInstance() then
+                self:UnregisterEvent('PLAYER_REGEN_DISABLED')
+                self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+            else
+                self:RegisterEvent('PLAYER_REGEN_DISABLED')
+                self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            end
+        end
+        btn:set_Instance_Event()
+        btn:SetScript('OnEvent', function(self, event)
+            if event=='PLAYER_ENTERING_WORLD' then
+                self:set_Instance_Event()
+            end
+            check_Button_Enabled_Disabled()
+        end)
 
         btn.Frame= CreateFrame('Frame', nil, btn)
         btn.Frame:SetPoint('BOTTOMLEFT', btn, 'TOPLEFT')
