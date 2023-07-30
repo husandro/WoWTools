@@ -3,7 +3,7 @@ local addName= FRIENDS_LIST
 local Save={
         Friends={},
         --disabledBNFriendInfo=true,--禁用战网，好友信息，提示
-        onlyWoWFriendInfo= not e.Player.husandro,--仅限，提示，WoW，好友，提示
+        --allFriendInfo= true,--所有，提示，WoW，好友，提示
         --showInCombatFriendInfo,--仅限，不在战斗中，好友，提示
     }
 local panel=CreateFrame("Frame")
@@ -193,7 +193,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
         local accountInfo= friendIndex and C_BattleNet.GetFriendAccountInfo(friendIndex) --FriendsFrame_UpdateFriendButton FriendsFrame.lua
         if not accountInfo
             or (
-                Save.onlyWoWFriendInfo
+                not Save.allFriendInfo
                 and accountInfo.gameAccountInfo.isOnline
                 and (
                         accountInfo.gameAccountInfo.clientProgram ~= BNET_CLIENT_WOW
@@ -347,10 +347,10 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     info={
                         text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, 'WoW'..e.Icon.wow2..(e.onlyChinese and '好友' or FRIEND)),
                         disabled= Save.disabledBNFriendInfo,
-                        checked= Save.onlyWoWFriendInfo,
+                        checked= not Save.allFriendInfo,
                         keepShownOnClick=true,
                         func= function()
-                            Save.onlyWoWFriendInfo= not Save.onlyWoWFriendInfo and true or nil
+                            Save.allFriendInfo= not Save.allFriendInfo and true or nil
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
