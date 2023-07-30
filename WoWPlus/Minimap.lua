@@ -1,5 +1,6 @@
 local id, e = ...
 local addName= HUD_EDIT_MODE_MINIMAP_LABEL
+local addName2
 local Save={
         scale=e.Player.husandro and 1 or 0.85,
         ZoomOut=true,--更新地区时,缩小化地图
@@ -298,9 +299,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 arg1= questID,
                 func= function(_, arg1)
                     Save.questIDs[arg1]=nil
-                    print(id,addName,'|n',
-                    '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
-                    GetQuestLink(questID) or questID,
+                    print(id, addName, addName2, GetQuestLink(questID) or questID,
                     '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2
                 )
                 end
@@ -333,8 +332,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 arg2= uiMapID,
                 func= function(_, arg1,arg2)
                     Save.areaPoiIDs[arg1]=nil
-                    print(id,addName,
-                    '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
+                    print(id,addName, addName2,
                     get_AreaPOIInfo_Name(C_AreaPoiInfo.GetAreaPOIInfo(arg2, arg1) or {}),
                     arg1 and 'areaPoiID '..arg1 or '',
                     ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
@@ -365,8 +363,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 arg1= uiMapID,
                 func= function(_, arg1)
                     Save.uiMapIDs[arg1]=nil
-                    print(id,addName,
-                    '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
+                    print(id,addName, addName2,
                     (C_Map.GetMapInfo(uiMapID) or {}).name,
                     arg1 and 'uiMapID '..arg1 or '',
                     ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
@@ -401,8 +398,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 arg2= uiMapID,
                 func= function(_, arg1,arg2)
                     Save.areaPoiIDs[arg1]=nil
-                    print(id,addName,
-                    '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
+                    print(id,addName, addName2,
                     get_AreaPOIInfo_Name(C_AreaPoiInfo.GetAreaPOIInfo(arg2, arg1) or {})
                     'areaPoiID '..arg1,
                     ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
@@ -561,7 +557,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             set_vigentteButton_Text()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING))
+            e.tips:AddLine(addName2)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
@@ -620,7 +616,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
 
         hooksecurefunc('TaskPOI_OnEnter', function(self2)--世界任务，提示 WorldMapFrame.lua
             if self2.questID and self2.OnMouseClickAction then
-                e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)..(Save.questIDs[self2.questID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
+                e.tips:AddDoubleLine(addName2..(Save.questIDs[self2.questID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
                 e.tips:Show()
             end
         end)
@@ -632,7 +628,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
                 if self2.questID and d=='LeftButton' and IsAltKeyDown() then
                     Save.questIDs[self2.questID]= not Save.questIDs[self2.questID] and true or nil
                     print(id,addName,'|n',
-                        '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
+                        addName2,
                         GetQuestLink(self2.questID) or self2.questID,
                         Save.questIDs[self2.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
                     )
@@ -643,7 +639,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
 
         hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--areaPoiID,提示 AreaPOIDataProvider.lua
             if self.areaPoiID and  self:GetMap() and self:GetMap():GetMapID() then
-                e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)..(Save.areaPoiIDs[self.areaPoiID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
+                e.tips:AddDoubleLine(addName2..(Save.areaPoiIDs[self.areaPoiID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
                 e.tips:Show()
             end
         end)
@@ -659,7 +655,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
                         local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID) or {}
                         local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
                         name= name=='' and 'areaPoiID '..self.areaPoiID or name
-                        print(id,addName, '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING), '|n',
+                        print(id,addName, addName2, '|n',
                             (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
                             name,
                             Save.areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
@@ -679,7 +675,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             if uiMapID then
                 Save.uiMapIDs[uiMapID]= not Save.uiMapIDs[uiMapID] and true or nil
                 local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
-                print(id,addName, '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING), '|n',
+                print(id,addName, addName2, '|n',
                     name,
                     Save.uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
                 )
@@ -696,7 +692,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             if uiMapID then
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine('|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)..(Save.uiMapIDs[uiMapID] and e.Icon.select2 or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
+                e.tips:AddDoubleLine(addName2..(Save.uiMapIDs[uiMapID] and e.Icon.select2 or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end
@@ -1018,6 +1014,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.areaPoiIDs= Save.areaPoiIDs or {
                 [7492]= 2025
             }
+
+            addName2= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)
 
              --添加控制面板        
              local check=e.CPanel('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName), not Save.disabled)
