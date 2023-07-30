@@ -354,15 +354,16 @@ local timeElapsed=3.1
 local function setMountShow()--坐骑展示
     if UnitAffectingCombat('player') then
         specialEffects=nil
-        print(id, addName, '|cnRED_FONT_COLOR:'..COMBAT..'|r')
+        print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT)..'|r')
         return
     elseif specialEffects and not IsMounted() then
-        print(id, addName, EMOTE171_CMD2, '|cnRED_FONT_COLOR:'..NEED..MOUNT..'|r')
+        print(id, addName, e.onlyChinese and '/坐骑特效' or EMOTE171_CMD2,
+        '|cnRED_FONT_COLOR:'..(e.onlyChinese and '需要要坐骑' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, MOUNT)))
         specialEffects=nil
         return
     end
     timeElapsed=3.1
-    print(id, addName, specialEffects and EMOTE171_CMD2:gsub('/','') or MOUNT, '3 '..SECONDS)
+    print(id, addName, specialEffects and (e.onlyChinese and '/坐骑特效' or EMOTE171_CMD2) or (e.onlyChinese and '坐骑' or MOUNT), '3 '..(e.onlyChinese and '秒' or SECONDS))
     if not button.showFrame then
         button.showFrame=CreateFrame('Frame')
         button.showFrame:HookScript('OnUpdate',function(self, elapsed)
@@ -425,9 +426,9 @@ local function Init_Dialogs()
         hideOnEscape=1,
         exclusive=1,
         timeout = 60,
-        button1=ADD,
-        button2=CANCEL,
-        button3=REMOVE,
+        button1= e.onlyChinese and '添加' or ADD,
+        button2= e.onlyChinese and '取消' or CANCEL,
+        button3= e.onlyChinese and '移除' or REMOVE,
         OnShow = function(self, data)
             self.button3:SetEnabled(Save.Mounts[SPELLS][data.spellID] and true or false)
             self.button1:SetEnabled(not Save.Mounts[SPELLS][data.spellID] and true or false)
@@ -755,7 +756,7 @@ local function InitMenu(_, level, type)--主菜单
                 notCheckable=true,
                 arg1= spellID,
                 arg2= text,
-                func=function(self2, arg1, arg2)
+                func=function(_, arg1, arg2)
                     StaticPopup_Show(id..addName..'SPELLS',
                             arg2,
                             Save.Mounts[SPELLS][arg1] and (e.onlyChinese and '法术已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW),

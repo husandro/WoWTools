@@ -62,7 +62,7 @@ local function getToy()--生成, 有效表格
 end
 
 local function setAtt()--设置属性
-    if UnitAffectingCombat('player') or not button:IsShown() then
+    if UnitAffectingCombat('player') or not button:IsVisible() then
         return
     end
 
@@ -383,7 +383,7 @@ local function InitMenu(_, level, menuList)--主菜单
         hasArrow=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-    
+
     -- e.LibDD:UIDropDownMenu_AddSeparator()
     info={
         text=Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL),
@@ -431,6 +431,17 @@ local function showTips(self)--显示提示
     end
 end
 
+local function set_Button_Event(isShown)
+    if isShown then
+        panel:RegisterUnitEvent('UNIT_SPELLCAST_SUCCEEDED', 'player')
+        panel:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+        panel:RegisterEvent('SPELL_UPDATE_USABLE')
+    else
+        panel:UnregisterEvent('UNIT_SPELLCAST_SUCCEEDED')
+        panel:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
+        panel:UnregisterEvent('SPELL_UPDATE_USABLE')
+    end
+end
 
 local function Init()
     e.ToolsSetButtonPoint(button)--设置位置
@@ -460,7 +471,15 @@ local function Init()
         setAtt()--设置属性
         showTips(self)--显示提示
     end)
-    
+
+    button:SetScript("OnShow", function()
+        set_Button_Event(true)
+        setAtt()--设置属性
+        setCooldown()--主图标冷却
+    end)
+    button:SetScript("OnHide", function()
+        set_Button_Event()
+    end)
 end
 
 --###########
@@ -469,7 +488,7 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave[addName..'Tools'] or Save
@@ -484,11 +503,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 button.count=e.Cstr(button, {size=10, color=true})--10, nil,nil, true)
                 button.count:SetPoint('TOPRIGHT',-3, -2)
 
-                panel:RegisterUnitEvent('UNIT_SPELLCAST_SUCCEEDED', 'player')
-                panel:RegisterEvent('SPELL_UPDATE_COOLDOWN')
                 panel:RegisterEvent('NEW_TOY_ADDED')
                 panel:RegisterEvent('TOYS_UPDATED')
-                panel:RegisterEvent('SPELL_UPDATE_USABLE')
 
                 if not IsAddOnLoaded("Blizzard_Collections") then LoadAddOn('Blizzard_Collections') end
                 C_Timer.After(2.1, function()
@@ -510,13 +526,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            
             WoWToolsSave[addName..'Tools']=Save
         end
 
     elseif event=='TOYS_UPDATED' or event=='NEW_TOY_ADDED' then
         getToy()--生成, 有效表格
-        setAtt()--设置属性
 
     elseif event=='SPELL_UPDATE_COOLDOWN' then
         setCooldown()--主图标冷却
