@@ -73,8 +73,7 @@ local Save={
 local panel= CreateFrame("Frame")
 local button
 local Faction =  e.Player.faction=='Horde' and 0 or e.Player.faction=='Alliance' and 1
-local ClassID = select(2, UnitClassBase('player'))
-local ShiJI= Faction==0 and 179244 or Faction==1 and 179245
+local ShiJI= e.Player.faction==0 and 179244 or e.Player.faction=='Alliance' and 179245
 local OkMount--是否已学, 骑术
 local XD
 
@@ -130,7 +129,7 @@ local function setKEY()--设置捷键
 end
 local function XDInt()--德鲁伊设置
     XD=nil
-    if Save.XD and ClassID==11 then
+    if Save.XD and e.Player.class=='DRUID' then
         local ground=IsSpellKnown(768) and 768
         local flying=IsSpellKnown(783) and 783
         if ground then
@@ -194,6 +193,7 @@ local function checkMount()--检测坐骑
     for index, type in pairs(MountType) do
         if XD and XD[type] then
             MountTab[type]={XD[type]}
+            
 
         elseif index<=3 and not OkMount and ShiJI then--33388初级骑术 33391中级骑术 3409高级骑术 34091专家级骑术 90265大师级骑术 783旅行形态
             MountTab[type]={ShiJI}
@@ -258,17 +258,9 @@ local function setTextrue()--设置图标
         icon=136116
     elseif icon then
         local spellID= button.spellAtt or button.itemID and select(2, GetItemSpell(button.itemID))
-        if spellID  then --and e.WA_GetUnitBuff('player', spellID, 'PLAYER') then
-            local spellName=GetSpellInfo(spellID)
-            for i = 1, 40 do
-                local name, _, _, _, _, _, _, _, _, spell=UnitBuff('player', spellID, 'PLAYER')
-                if not name then
-                    break
-                elseif spell == spellID  or spellName == name then
-                    icon=136116
-                    break
-                end
-              end
+        local aura = spellID and C_UnitAuras.GetPlayerAuraBySpellID(spellID) 
+        if aura and aura.spellId then
+            icon=136116
         end
     end
     if icon then
@@ -292,18 +284,20 @@ local mapIDs={
 
 local function setClickAtt()--设置 Click属性
     local inCombat=UnitAffectingCombat('player')
-    if inCombat or UnitIsDead('player') then
+    if inCombat or UnitIsDeadOrGhost('player') then
         button.Combat=true
         return
     end
     local spellID= IsIndoors() and button.spellID--进入战斗, 室内
                     or getRandomRoll(FLOOR)--区域
                     or getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+                    or (XD and IsUsableSpell(783)) and 783
                     or IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC)--水平中
                     or IsFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING)--飞行区域
                     or IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND)--室外
                     or button.spellID
                     --or IsUsableSpell(368896) and C_MountJournal.GetMountUsabilityByID(1589, true) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+                    
 
     local name, _, icon
     if spellID then
@@ -614,7 +608,7 @@ local function InitMenu(_, level, type)--主菜单
     local info
     if type=='RANDOM' then--三级, 离开时, 随机坐骑
         info={
-            text= '<AFK>'..(e.onlyChinese and '自动' or CLUB_FINDER_LOOKING_FOR_CLASS_SPEC),
+            text= '<AFK>'..(e.onlyChinese and '自动' or SELF_CAST_AUTO),
             checked= Save.AFKRandom,
             tooltipOnButton=true,
             tooltipTitle=e.onlyChinese and '注意: 掉落' or ('note: '..STRING_ENVIRONMENTAL_DAMAGE_FALLING),
@@ -633,6 +627,7 @@ local function InitMenu(_, level, type)--主菜单
     elseif type==SETTINGS then--设置菜单
         info={--快捷键,设置对话框
             text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
+            icon= 'NPE_ArrowDown',
             checked=Save.KEY and true or nil,
             func=function()
                 StaticPopup_Show(id..addName..'KEY')
@@ -641,9 +636,10 @@ local function InitMenu(_, level, type)--主菜单
         info.disabled=UnitAffectingCombat('player')
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        if ClassID==11 then--德鲁伊
+        if e.Player.class=='DRUID' then--德鲁伊
             info={
-                text= UnitClass('player'),
+                text= e.onlyChinese and '德鲁伊' or  UnitClass('player'),
+                icon= 'classicon-druid',
                 checked=Save.XD,
                 func=function()
                     Save.XD= not Save.XD and true or nil
@@ -860,18 +856,19 @@ local function InitMenu(_, level, type)--主菜单
     end
 
     local mainMenuTable={
-        MOUNT_JOURNAL_FILTER_GROUND,
-        MOUNT_JOURNAL_FILTER_AQUATIC,
-        MOUNT_JOURNAL_FILTER_FLYING,
-        MOUNT_JOURNAL_FILTER_DRAGONRIDING,
-        '-',
-        'Shift', 'Alt', 'Ctrl',
-        '-',
-        SPELLS,
-        ITEMS,
-        FLOOR,
+        {type=MOUNT_JOURNAL_FILTER_GROUND, name='地面'},
+        {type=MOUNT_JOURNAL_FILTER_AQUATIC, name='水栖'},
+        {type=MOUNT_JOURNAL_FILTER_FLYING, name='飞行'},
+        {type=MOUNT_JOURNAL_FILTER_DRAGONRIDING, name='驭龙术'},
+        {type='-', name=''},
+        {type='Shift', name=''}, {type='Alt', name=''}, {type='Ctrl', name=''},
+        {type='-', name=''},
+        {type=SPELLS, name='法术'},
+        {type=ITEMS, name='物品'},
+        {type=FLOOR, name='区域'},
     }
-    for _, indexType in pairs(mainMenuTable) do
+    for _, tab in pairs(mainMenuTable) do
+        local indexType= tab.type
         if indexType=='-' then
             e.LibDD:UIDropDownMenu_AddSeparator()
 
@@ -879,7 +876,7 @@ local function InitMenu(_, level, type)--主菜单
             local num=getTableNum(indexType)--检测,表里的数量
             local icon= (indexType==SPELLS and button.spellID) and GetSpellTexture(button.spellID) or button.itemID and C_Item.GetItemIconByID(button.itemID)
             info={
-                text=(num>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '')..(icon and '|T'..icon..':0|t' or '')..indexType,
+                text=(num>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '')..(icon and '|T'..icon..':0|t' or '')..(e.onlyChinese and tab.name or indexType),
                 menuList=indexType,
                 hasArrow=num>0,
                 notCheckable=true,
@@ -888,8 +885,8 @@ local function InitMenu(_, level, type)--主菜单
             e.LibDD:UIDropDownMenu_AddButton(info, level);
 
         elseif indexType=='Shift' or indexType=='Alt' or indexType=='Ctrl' then
-            local tab=MountTab[indexType] or {}
-            local spellID=tab[1]
+            local tab2=MountTab[indexType] or {}
+            local spellID=tab2[1]
             local icon =spellID and GetSpellTexture(spellID)
             local mountID= spellID and C_MountJournal.GetMountFromSpell(spellID)
             local useError = mountID and select(2, C_MountJournal.GetMountUsabilityByID(mountID, true))
@@ -912,15 +909,15 @@ local function InitMenu(_, level, type)--主菜单
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level);
         else
-            local tab=MountTab[indexType] or {}
-            local spellID= tab[1]
+            local tab2=MountTab[indexType] or {}
+            local spellID= tab2[1]
             local icon= spellID and GetSpellTexture(spellID)
             local isXDSpell= XD and XD[indexType]
             local mountID= not isXDSpell and spellID and C_MountJournal.GetMountFromSpell(spellID)
             info={
-                text= (icon and '|T'..icon..':0|t' or '').. indexType,
+                text= (icon and '|T'..icon..':0|t' or '').. (e.onlyChinese and tab.name or indexType),
                 menuList=indexType,
-                hasArrow= #tab>0 and true or false,
+                hasArrow= #tab2>0 and true or false,
                 notCheckable= true,
                 tooltipOnButton=not isXDSpell,
                 tooltipTitle= (mountID and (e.onlyChinese and '召唤' or SUMMON) or (e.onlyChinese and '设置' or SETTINGS))..e.Icon.left,
