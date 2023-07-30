@@ -685,6 +685,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
                 WorldMapFrame:Set_TrackingButton_Texture()
             end
         end)
+        WorldMapFrame.setTrackingButton:SetScript('OnShow', WorldMapFrame.Set_TrackingButton_Texture)
         WorldMapFrame.setTrackingButton:SetScript('OnLeave', function() e.tips:Hide() end)
         WorldMapFrame.setTrackingButton:SetScript('OnEnter', function(self)
             local uiMapID= WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
