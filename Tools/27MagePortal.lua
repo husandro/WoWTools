@@ -62,64 +62,60 @@ local function Init()
     local find
     for _, tab in pairs(Tab) do
         if IsSpellKnown(tab.spell) then
-            local button=e.Cbtn2(nil, e.toolsFrame, true, true)
+            local btn=e.Cbtn2(nil, e.toolsFrame, true, true)
 
-            e.ToolsSetButtonPoint(button, not find, true)--设置位置
+            e.ToolsSetButtonPoint(btn, not find, true)--设置位置
             find=true
 
-            button.spell= tab.spell
-            button.spell2= tab.spell2
+            btn.spell= tab.spell
+            btn.spell2= tab.spell2
             local name, _, icon = GetSpellInfo(tab.spell)
 
-            button:SetAttribute('type', 'spell')--设置属性
-            button:SetAttribute('spell', name or tab.spell)
-            button.texture:SetTexture(icon)
+            btn:SetAttribute('type', 'spell')--设置属性
+            btn:SetAttribute('spell', name or tab.spell)
+            btn.texture:SetTexture(icon)
 
-            button.text=e.Cstr(button, {color= not tab.luce})
-            button.text:SetPoint('RIGHT', button, 'LEFT')
+            btn.text=e.Cstr(btn, {color= not tab.luce})
+            btn.text:SetPoint('RIGHT', btn, 'LEFT')
             if e.onlyChinese then
-                button.text:SetText(tab.name)
+                btn.text:SetText(tab.name)
             else
                 local text=name:gsub('(.+):','')
                 text=text:gsub('(.+)：','');
                 text=text:gsub('(.+)-','');
-                button.text:SetText(text)
+                btn.text:SetText(text)
             end
 
             if tab.luce then
-                button.border:SetAtlas('bag-border')--设置高亮
+                btn.border:SetAtlas('bag-border')--设置高亮
             end
 
             if tab.spell2 and IsSpellKnown(tab.spell2) then--右击
                 name,_,icon = GetSpellInfo(tab.spell2)
-                button:SetAttribute('type2', 'spell')
-                button:SetAttribute('spell2', name or tab.spell2)
+                btn:SetAttribute('type2', 'spell')
+                btn:SetAttribute('spell2', name or tab.spell2)
 
-                button.texture2=button:CreateTexture(nil,'OVERLAY')
-                button.texture2:SetPoint('TOPRIGHT',-6,-6)
-                button.texture2:SetSize(10, 10)
-                button.texture2:SetTexture(icon)
-                button.texture2:AddMaskTexture(button.mask)
-                button:RegisterEvent('PLAYER_REGEN_DISABLED')
-                button:RegisterEvent('PLAYER_REGEN_ENABLED')
-                button:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-
-                e.SetItemSpellCool(button, nil, tab.spell)--设置冷却
-
-                button:SetScript("OnEvent", function(self, event)
+                btn.texture2= btn:CreateTexture(nil,'OVERLAY')
+                btn.texture2:SetPoint('TOPRIGHT',-6,-6)
+                btn.texture2:SetSize(10, 10)
+                btn.texture2:SetTexture(icon)
+                btn.texture2:AddMaskTexture(btn.mask)
+                btn:SetScript('OnShow', function(self2)
+                    self2:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+                    e.SetItemSpellCool(btn, nil, self2.spell2)--设置冷却
+                end)
+                btn:SetScript('OnHide', function(self2)
+                    self2:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
+                end)
+                btn:SetScript("OnEvent", function(self, event)
                     if event=='SPELL_UPDATE_COOLDOWN' then
                         e.SetItemSpellCool(self, nil, self.spell2)--设置冷却
-                    elseif event=='PLAYER_REGEN_DISABLED' then
-                        self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                    elseif event=='PLAYER_REGEN_ENABLED' then
-                        self:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
                     end
                 end)
             end
 
-            button.spell= tab.spell
-            button.spell2= tab.spell2
-            button:SetScript('OnEnter', function(self)
+            btn:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:SetSpellByID(self.spell)
@@ -132,7 +128,6 @@ local function Init()
                 end
                 e.tips:Show()
             end)
-            button:SetScript('OnLeave', function() e.tips:Hide() end)
         end
     end
 
@@ -163,6 +158,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterEvent('ADDON_LOADED')
             else
                 panel:UnregisterAllEvents()
+                Tab=nil
             end
         end
 

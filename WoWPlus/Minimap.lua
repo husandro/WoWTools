@@ -103,20 +103,21 @@ local function get_Quest_Text()
             else
                 local questName= C_TaskQuest.GetQuestInfoByQuestID(questID)
                 if questName then
-                    local itemTexture= select(2, GetQuestLogRewardInfo(1, questID))
-                                        or select(2, GetQuestLogRewardCurrencyInfo(1, questID))
+                    local itemTexture
+                    itemTexture= select(2, GetQuestLogRewardInfo(1, questID)) or select(2, GetQuestLogRewardCurrencyInfo(1, questID))
                     if not itemTexture then
                         local gold= GetQuestLogRewardMoney(questID)
                         if gold and gold>0 then
                             itemTexture='interface\\moneyframe\\ui-goldicon'
                         end
                     end
+                    itemTexture= (itemTexture and '|T'..itemTexture..':0|t' or '|A:worldquest-tracker-questmarker:0:0|a')
                     local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
-
+                    local secText= (secondsLeft and secondsLeft>0) and SecondsToClock(secondsLeft, true)
                     text= text and text..'|n' or ''
-                    text= text..(itemTexture and '|T'..itemTexture..':0|t' or '|A:worldquest-tracker-questmarker:0:0|a')
+                    text= text..itemTexture
                         ..'|cffff00ff'..questName..'|r'
-                        ..(secondsLeft and ' '..SecondsToClock(secondsLeft, true) or '')
+                        ..(secText or '')
                 end
             end
         end
@@ -134,56 +135,64 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
     local text
     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
     local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
+    if name=='' then
+        return
+    end
+    local secondsLeft
+    local isTimed, hideTimer= C_AreaPoiInfo.IsAreaPOITimed(areaPoiID)
+    local hasTime= isTimed and not hideTimer
+    if hasTime then
+        secondsLeft= C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
+        hasTime= secondsLeft and secondsLeft>0
+    end
+
     for _, widget in ipairs(poiInfo.widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}) do
         if widget and widget.widgetID then--and  widget.widgetType==8 then
             local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID) or {}
             if widgetInfo.shownState== 1 and widgetInfo.text then
-                if widgetInfo.hasTimer or not all then
+                local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
+                if widgetInfo.hasTimer or (not all and not(icon and num) and hasTime) then
                     text= text and text..'|n' or ''
                     text= text..'      |cffffffff'..widgetInfo.text:gsub('|n', '|n      ')..'|r|n'..name
                     break
-                else
-                    local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
-                    if icon and num then
-                        local texture= icon:match('(|T.-):')
-                        if texture then
-                            icon= texture..':0|t'
-                        end
-                        text= text and text..'|n' or ''
-
-                        text= text..name..icon..'|cff00ff00'..num..'|r'
-                        break
+                elseif icon and num then
+                    local texture= icon:match('(|T.-):')
+                    if texture then
+                        icon= texture..':0|t'
                     end
+                    text= text and text..'|n' or ''
+
+                    text= text..name..icon..'|cff00ff00'..num..'|r'
+                    break
+                elseif hasTime then
+                    text=name
+                    break
                 end
             end
         end
     end
 
-    local isTimed, hideTimer= C_AreaPoiInfo.IsAreaPOITimed(areaPoiID)
-    if isTimed and not hideTimer then
-        local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
-        if secondsLeft and secondsLeft>0 then
-            text= text and text..'|n' or ''
+    if hasTime then
+        text= text and text..'|n' or ''
 
-            text= text..name
-            if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
-                local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
-                if info and info.textureKit then
-                    text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
-                else
-                    text= text..' '
-                end
+        text= text..name
+        if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
+            local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
+            if info and info.textureKit then
+                text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
             else
                 text= text..' '
             end
-            if secondsLeft and secondsLeft>0 then
-                local secText=SecondsToClock(secondsLeft,true)
-                secText= secText:gsub('：',':')
-                if secondsLeft<= 600 then
-                    secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
-                end
-                text= text..secText
+        else
+            text= text..' '
+        end
+        if secondsLeft and secondsLeft>0 then
+            local secText=SecondsToClock(secondsLeft,true)
+            secText= secText:gsub('：',':')
+            if secondsLeft<= 600 then
+                secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
             end
+            text= text..secText
         end
     end
     return text
@@ -1030,7 +1039,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local function set_Server_Timer()--小时图，使用服务器, 时间
                 if Save.useServerTimer then
                     TimeManagerClockButton_Update=function()
-                        TimeManagerClockTicker:SetText(SecondsToClock(GetServerTime()))
+                        local secText=SecondsToClock(GetServerTime(), true)
+                        secText= secText:gsub('：',':')
+                        TimeManagerClockTicker:SetText(secText)
                     end
                 else
                     TimeManagerClockButton_Update= TimeManagerClockButton_Update_R

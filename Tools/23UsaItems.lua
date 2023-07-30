@@ -62,7 +62,7 @@ local function find_Type(type, ID)
     end
 end
 
-local function getFind(ID, spell)
+local function get_Find(ID, spell)
     if spell then
         if IsSpellKnown(ID) then
             return true
@@ -73,6 +73,27 @@ local function getFind(ID, spell)
         end
     end
 end
+
+local function set_button_Event(self, isShown)--事件
+    local tab={}
+    if self.spellID then
+        tab= {
+            'SPELL_UPDATE_USABLE',
+            'SPELL_UPDATE_COOLDOWN',
+        }
+    elseif self.itemID then
+        tab={
+            'BAG_UPDATE_DELAYED',
+            'BAG_UPDATE_COOLDOWN'
+        }
+    end
+    if isShown then
+        FrameUtil.RegisterFrameForEvents(self, tab)
+    else
+        FrameUtil.UnregisterFrameForEvents(self, tab)
+    end
+end
+
 
 --#####
 --主菜单
@@ -85,8 +106,8 @@ local function Init_Menu(_, level, type)--主菜单
             if type=='spell' then
                 name, _, icon =GetSpellInfo(ID)
             else
-                name= C_Item.GetItemNameByID(ID..'')
-                icon=C_Item.GetItemIconByID(ID..'')
+                name= C_Item.GetItemNameByID(ID)
+                icon=C_Item.GetItemIconByID(ID)
             end
             name=name or (type..'ID '..ID)
             local text=(icon and '|T'..icon..':0|t' or '') ..name
@@ -195,18 +216,18 @@ end
 --####
 --物品
 --####
-local function setEquipSlot(self)--装备
+local function set_Equip_Slot(self)--装备
     if UnitAffectingCombat('player') then
         self:RegisterEvent('PLAYER_REGEN_ENABLED')
         return
     end
     local slotItemID=GetInventoryItemID('player', self.slot)
     local slotItemLink=GetInventoryItemLink('player', self.slot)
-    local name= slotItemLink and GetItemInfo(slotItemLink) or slotItemID and C_Item.GetItemNameByID(slotItemID..'')
+    local name= slotItemLink and GetItemInfo(slotItemLink) or slotItemID and C_Item.GetItemNameByID(slotItemID)
     if name and slotItemID~=self.itemID and self:GetAttribute('item2')~=name then
         self:SetAttribute('item2', name)
         self.slotEquipName=name
-        local icon = C_Item.GetItemIconByID(slotItemID..'')
+        local icon = C_Item.GetItemIconByID(slotItemID)
         if icon and not self.slotTexture then--装备前的物品,提示
             self.slotequipedTexture=self:CreateTexture(nil, 'OVERLAY')
             self.slotequipedTexture:SetPoint('BOTTOMRIGHT',-7,9)
@@ -234,7 +255,7 @@ local function setEquipSlot(self)--装备
     self:UnregisterEvent('PLAYER_REGEN_ENABLED')
 end
 
-local function setItemCount(self)--数量
+local function set_Item_Count(self)--数量
     local num = GetItemCount(self.itemID,nil,true,true)
     if not PlayerHasToy(self.itemID) then
         if num~=1 and not self.count then
@@ -248,7 +269,7 @@ local function setItemCount(self)--数量
     self.texture:SetDesaturated(num==0 and not PlayerHasToy(self.itemID))
 end
 
-local function setBlingtron(self)--布林顿任务
+local function set_Bling_Quest(self)--布林顿任务
     local complete=C_QuestLog.IsQuestFlaggedCompleted(56042)
     if not self.quest then
         self.quest=e.Cstr(self, {size=8})
@@ -256,9 +277,7 @@ local function setBlingtron(self)--布林顿任务
     end
     self.quest:SetText(complete and '|cnGREEN_FONT_COLOR:'..COMPLETE..'|r' or e.Icon.info2)
 end
-local function setItemButton(self, equip)--设置按钮
-    self:RegisterEvent("BAG_UPDATE_DELAYED")
-    self:RegisterEvent("BAG_UPDATE_COOLDOWN")
+local function init_Item_Button(self, equip)--设置按钮
     self:SetScript('OnEnter', function()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -268,17 +287,24 @@ local function setItemButton(self, equip)--设置按钮
     self:SetScript('OnLeave', function() e.tips:Hide() end)
     self:SetScript("OnEvent", function(self2, event, arg1)
         if event=='BAG_UPDATE_DELAYED' then
-            setItemCount(self2)
+            set_Item_Count(self2)
         elseif event=='BAG_UPDATE_COOLDOWN' then
             e.SetItemSpellCool(self2, self2.itemID, nil)
         elseif event=='QUEST_COMPLETE' then
-            setBlingtron(self2)
+            set_Bling_Quest(self2)
         elseif event=='PLAYER_EQUIPMENT_CHANGED' or 'PLAYER_REGEN_ENABLED' then
-            setEquipSlot(self2)
+            set_Equip_Slot(self2)
         end
     end)
-    e.SetItemSpellCool(self, self.itemID, nil)
-    setItemCount(self)
+    self:SetScript('OnShow', function(self2)
+        set_button_Event(self2, true)--事件
+        e.SetItemSpellCool(self, self.itemID, nil)
+        set_Item_Count(self)
+    end)
+    self:SetScript('OnHide', function(self2)
+        set_button_Event(self2)--事件
+    end)
+
     if equip then
         self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
         self:SetScript('OnMouseUp',function()
@@ -287,18 +313,18 @@ local function setItemButton(self, equip)--设置按钮
                 ToggleCharacter("PaperDollFrame");
             end
         end)
-        setEquipSlot(self)
+        set_Equip_Slot(self)
     end
     if self.itemID==168667 or self.itemID==87214 or self==111821 then--布林顿任务
         self:RegisterEvent('QUEST_COMPLETE')
-        setBlingtron(self)
+        set_Bling_Quest(self)
     end
 end
 
 --###
 --法术
 --###
-local function setSpellCount(self)--次数
+local function set_Spell_Count(self)--次数
     local num, max= GetSpellCharges(self.spellID)
     if max and max>1 and not self.count then
         self.count=e.Cstr(self, {color=true})--nil,nil,nil,true)
@@ -310,9 +336,7 @@ local function setSpellCount(self)--次数
     self.texture:SetDesaturated(num and num>0)
 end
 
-local function setSpellButton(self)--设置按钮
-    self:RegisterEvent("SPELL_UPDATE_USABLE")
-    self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+local function init_Spell_Button(self)--设置按钮
     self:SetScript('OnEnter', function()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -320,15 +344,21 @@ local function setSpellButton(self)--设置按钮
         e.tips:Show()
     end)
     self:SetScript('OnLeave', function() e.tips:Hide() end)
-    self:SetScript("OnEvent", function(self2, event, arg1)
+    self:SetScript("OnEvent", function(self2, event)
         if event=='SPELL_UPDATE_USABLE' then
-            setSpellCount(self2)
+            set_Spell_Count(self2)
         elseif event=='SPELL_UPDATE_COOLDOWN' then
             e.SetItemSpellCool(self2, nil, self2.spellID)
         end
     end)
-    e.SetItemSpellCool(self, nil, self.spellID)
-    setSpellCount(self)
+    self:SetScript('OnShow', function(self2)
+        set_button_Event(self2, true)
+        e.SetItemSpellCool(self, nil, self.spellID)
+        set_Spell_Count(self)
+    end)
+    self:SetScript('OnHide', function(self2)
+        set_button_Event(self2)
+    end)
 end
 
 
@@ -445,13 +475,13 @@ local function Init()
 
    for _, itemID in pairs(Save.item) do
         local name ,icon
-        if getFind(itemID) then
-            name = C_Item.GetItemNameByID(itemID..'')
-            icon = C_Item.GetItemIconByID(itemID..'')
+        if get_Find(itemID) then
+            name = C_Item.GetItemNameByID(itemID)
+            icon = C_Item.GetItemIconByID(itemID)
             if name and icon then
                 local btn=e.Cbtn2(nil, e.toolsFrame, true, true)
                 btn.itemID=itemID
-                setItemButton(btn)
+                init_Item_Button(btn)
                 e.ToolsSetButtonPoint(btn)--设置位置
                 btn:SetAttribute('type', 'item')
                 btn:SetAttribute('item', name)
@@ -459,19 +489,19 @@ local function Init()
             end
         end
    end
-   
+
     for _, itemID in pairs(Save.equip) do
         local name ,icon
         if GetItemCount(itemID)>0 then
-            name = C_Item.GetItemNameByID(itemID..'')
+            name = C_Item.GetItemNameByID(itemID)
             local itemEquipLoc, icon2 = select(4, GetItemInfoInstant(itemID))
-            icon =icon2 or C_Item.GetItemIconByID(itemID..'')
+            icon =icon2 or C_Item.GetItemIconByID(itemID)
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]
             if name and icon and slot then
                 local btn=e.Cbtn2(nil, e.toolsFrame, true, true)
                 btn.itemID=itemID
                 btn.slot=slot
-                setItemButton(btn, true)
+                init_Item_Button(btn, true)
                 e.ToolsSetButtonPoint(btn)--设置位置
                 btn:SetAttribute('type', 'item')
                 btn:SetAttribute('item', name)
@@ -488,7 +518,7 @@ local function Init()
                 if name and icon then
                     local btn=e.Cbtn2(nil, e.toolsFrame, true, true)
                     btn.spellID=spellID
-                    setSpellButton(btn)
+                    init_Spell_Button(btn)
                     e.ToolsSetButtonPoint(btn)--设置位置
                     btn:SetAttribute('type', 'spell')
                     btn:SetAttribute('spell', name)
@@ -630,7 +660,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1== id then
             button=e.Cbtn(e.toolsFrame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size={20,20}})
             button:SetPoint('BOTTOMLEFT', e.toolsFrame, 'TOPRIGHT',-2,5)
-            
+
             if not WoWToolsSave[addName..'Tools'] then
                 button:SetAlpha(1)
             else
