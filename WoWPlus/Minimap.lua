@@ -494,7 +494,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             if Save.pointVigentteButton then
                self:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
             elseif e.Player.husandro then
-                self:SetPoint('BOTTOMLEFT', ChatFrame1, 'BOTTOMRIGHT', 25,-40)
+                self:SetPoint('BOTTOMLEFT', ChatFrame1, 'BOTTOMRIGHT', 25, -40)
             else
                 self:SetPoint('CENTER', -330, -240)
             end
