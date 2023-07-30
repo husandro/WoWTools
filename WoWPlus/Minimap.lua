@@ -673,8 +673,9 @@ local function Init_Set_Button()--小地图, 标记, 文本
         WorldMapFrame.setTrackingButton= e.Cbtn(WorldMapFrame, {size={20,20}, icon='hide'})
         WorldMapFrame.setTrackingButton:SetPoint('TOPRIGHT', WorldMapFramePortrait, 'BOTTOMRIGHT', 2, 10)
         WorldMapFrame.setTrackingButton:Raise()
-        WorldMapFrame.setTrackingButton:SetScript('OnClick', function()
-            local uiMapID= WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
+        WorldMapFrame.setTrackingButton:SetScript('OnClick', function(self)
+            local frame= self:GetParent()
+            local uiMapID= frame.mapID or frame:GetMapID("current")
             if uiMapID then
                 Save.uiMapIDs[uiMapID]= not Save.uiMapIDs[uiMapID] and true or nil
                 local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
@@ -682,13 +683,16 @@ local function Init_Set_Button()--小地图, 标记, 文本
                     name,
                     Save.uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
                 )
-                WorldMapFrame:Set_TrackingButton_Texture()
+                frame:Set_TrackingButton_Texture()
             end
         end)
-        WorldMapFrame.setTrackingButton:SetScript('OnShow', WorldMapFrame.Set_TrackingButton_Texture)
+        WorldMapFrame.setTrackingButton:SetScript('OnShow', function(self)
+            self:GetParent():Set_TrackingButton_Texture()
+        end)
         WorldMapFrame.setTrackingButton:SetScript('OnLeave', function() e.tips:Hide() end)
         WorldMapFrame.setTrackingButton:SetScript('OnEnter', function(self)
-            local uiMapID= WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
+            local frame= self:GetParent()
+            local uiMapID= frame.mapID or frame:GetMapID("current")
             if uiMapID then
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
