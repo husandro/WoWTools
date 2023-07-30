@@ -1098,3 +1098,4 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         set_MINIMAP_UPDATE_ZOOM()
     end
 end)
+
