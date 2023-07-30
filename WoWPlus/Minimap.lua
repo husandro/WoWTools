@@ -153,17 +153,14 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
             if widgetInfo.shownState== 1 and widgetInfo.text then
                 local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
                 if widgetInfo.hasTimer or (not all and not(icon and num) and hasTime) then
-                    text= text and text..'|n' or ''
-                    text= text..'      |cffffffff'..widgetInfo.text:gsub('|n', '|n      ')..'|r|n'..name
+                    text= '      |cffffffff'..widgetInfo.text:gsub('|n', '|n      ')..'|r|n'..name
                     break
                 elseif icon and num then
                     local texture= icon:match('(|T.-):')
                     if texture then
                         icon= texture..':0|t'
                     end
-                    text= text and text..'|n' or ''
-
-                    text= text..name..icon..'|cff00ff00'..num..'|r'
+                    text= name..icon..'|cff00ff00'..num..'|r'
                     break
                 elseif hasTime then
                     text=name
@@ -497,7 +494,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             if Save.pointVigentteButton then
                self:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
             elseif e.Player.husandro then
-                self:SetPoint('BOTTOMRIGHT', ActionButton1, 'BOTTOMLEFT', -20, -20)
+                self:SetPoint('BOTTOMLEFT', ChatFrame1, 'BOTTOMRIGHT', 25,-40)
             else
                 self:SetPoint('CENTER', -330, -240)
             end
@@ -510,6 +507,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         btn:SetScript("OnDragStart", function(self,d)
             if d=='RightButton' and not IsModifierKeyDown() then
                 self:StartMoving()
+                SetCursor('UI_MOVE_CURSOR')
             end
         end)
         btn:SetScript("OnDragStop", function(self)
@@ -528,14 +526,20 @@ local function Init_Set_Button()--小地图, 标记, 文本
                 end
                 e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
 
-            elseif d=='RightButton' and key then
+            elseif d=='RightButton' and IsAltKeyDown() then
                 Save.pointVigentteButton=nil
                 btn:ClearAllPoints()
                 self:Set_Point()
+            end
+        end)
 
-            elseif d=='RightButton' and not key then
+        btn:SetScript('OnMouseDown', function(_, d)
+            if d=='RightButton' and not IsModifierKeyDown() then
                 SetCursor('UI_MOVE_CURSOR')
             end
+        end)
+        btn:SetScript('OnMouseUp', function()
+            ResetCursor()
         end)
 
         btn:SetScript('OnMouseWheel', function(self, d)--缩放
@@ -726,7 +730,7 @@ end
 
 
 
-local function Init_Menu(self, level, type)
+local function Init_Menu(_, level)
     local info={
         text=e.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT,
         icon='UI-HUD-Minimap-Tracking-Mouseover',
@@ -740,6 +744,7 @@ local function Init_Menu(self, level, type)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= e.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT,
         icon= 'UI-HUD-Minimap-Zoom-Out',
@@ -777,20 +782,7 @@ local function Init_Menu(self, level, type)
             mapName= mapName..'|n'..mapInfo.name
         end
     end
-    info={
-        text= e.onlyChinese and '追踪' or TRACKING,
-        icon='VignetteKillElite',
-        tooltipOnButton=true,
-        tooltipTitle='|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL),
-        tooltipText='|cffff00ff'..mapName,
-        checked= Save.vigentteButton,
-        disabled= IsInInstance() or UnitAffectingCombat('player'),
-        func= function ()
-            Save.vigentteButton= not Save.vigentteButton and true or nil
-            Init_Set_Button()--小地图, 标记, 文本
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
 
     local tab={
         DifficultyUtil.ID.Raid40,
@@ -818,6 +810,22 @@ local function Init_Menu(self, level, type)
         func= function()
             Save.disabledInstanceDifficulty= not Save.disabledInstanceDifficulty and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabledInstanceDifficulty), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
+        text= e.onlyChinese and '追踪' or TRACKING,
+        icon='VignetteKillElite',
+        tooltipOnButton=true,
+        tooltipTitle=e.onlyChinese and '地图' or WORLD_MAP,
+        tooltipText='|nAreaPoiID|nWorldQuest|nVignette',
+        checked= Save.vigentteButton,
+        disabled= IsInInstance() or UnitAffectingCombat('player'),
+        func= function ()
+            Save.vigentteButton= not Save.vigentteButton and true or nil
+            Init_Set_Button()--小地图, 标记, 文本
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)

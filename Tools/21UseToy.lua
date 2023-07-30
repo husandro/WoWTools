@@ -183,21 +183,6 @@ end
 
 
 
-StaticPopupDialogs[id..addName..'RESETALL']={--重置所有,清除全部玩具
-    text=id..' '..addName..'|n'..CLEAR_ALL..'|n|n'.. RELOADUI,
-    whileDead=1,
-    hideOnEscape=1,
-    exclusive=1,
-    timeout = 60,
-    button1='|cnRED_FONT_COLOR:'..RESET..'|r',
-    button2=CANCEL,
-    OnAccept = function(self, data)
-        Save=nil
-        e.Reload()
-    end,
-}
-
-
 --#####
 --主菜单
 --#####
@@ -445,6 +430,20 @@ end
 
 local function Init()
     e.ToolsSetButtonPoint(button)--设置位置
+
+    StaticPopupDialogs[id..addName..'RESETALL']={--重置所有,清除全部玩具
+        text=id..' '..addName..'|n'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI),
+        whileDead=1,
+        hideOnEscape=1,
+        exclusive=1,
+        timeout = 60,
+        button1='|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r',
+        button2= e.onlyChinese and '取消' or CANCEL,
+        OnAccept = function()
+            Save=nil
+            e.Reload()
+        end,
+    }
 
     button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
     e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
