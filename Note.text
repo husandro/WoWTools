@@ -187,3 +187,6 @@ StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"] = {
 		ClearCursor();
 	end
 };
+
+材质
+Interface/WorldMap/UI-QuestPoi-NumberIcons

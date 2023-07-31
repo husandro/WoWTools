@@ -140,7 +140,10 @@ local function InitMenu(self, level, type)
             text= e.onlyChinese and '进入战斗' or ENTERING_COMBAT,--进入战斗时, 隐藏
             icon= 'Warfronts-BaseMapIcons-Horde-Barracks-Minimap',
             checked=not Save.notHideCombat,
-            func=function() Save.notHideCombat = not Save.notHideCombat and true or nil setframeEvent() end,
+            keepShownOnClick=true,
+            func=function()
+                Save.notHideCombat = not Save.notHideCombat and true or nil setframeEvent()
+            end,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '隐藏' or HIDE,
         }
@@ -152,6 +155,7 @@ local function InitMenu(self, level, type)
             checked=not Save.notHideMoving,
             func=function() Save.notHideMoving = not Save.notHideMoving and true or nil setframeEvent() end,
             tooltipOnButton=true,
+            keepShownOnClick=true,
             tooltipTitle= e.onlyChinese and '隐藏' or HIDE,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -160,7 +164,10 @@ local function InitMenu(self, level, type)
             text= e.onlyChinese and '过移图标时' or ENTER_LFG..EMBLEM_SYMBOL,--过移图标时,显示
             icon= 'newplayertutorial-drag-cursor',
             checked=Save.showEnter,
-            func=function() Save.showEnter = not Save.showEnter and true or nil end,
+            keepShownOnClick=true,
+            func=function()
+                Save.showEnter = not Save.showEnter and true or nil
+            end,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '显示' or SHOW,
         }
@@ -172,13 +179,18 @@ local function InitMenu(self, level, type)
             notCheckable=true,
             menuList='Channels',
             hasArrow=true,
+            keepShownOnClick=true,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
         info={
             text= e.onlyChinese and '重置' or RESET,
             icon= 'bags-button-autosort-up',
             notCheckable=true,
-            func=function() Save=nil e.Reload() end,
+            keepShownOnClick=true,
+            func=function()
+                Save=nil
+                e.Reload()
+            end,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '重新加载UI' or RELOADUI,
             colorCode='|cffff0000'

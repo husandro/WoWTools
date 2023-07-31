@@ -545,6 +545,7 @@ local function InitList(self, level, type)
             text= e.onlyChinese and '拒绝邀请' or LFG_LIST_APP_INVITE_DECLINED,--三级列表，拒绝邀请列表
             notCheckable=true,
             menuList='NoInvList',
+            keepShownOnClick=true,
             hasArrow=true,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -736,6 +737,7 @@ local function InitList(self, level, type)
                 checked= Save.focusKey== key,
                 disabled= UnitAffectingCombat('player') or Save.focusKey== key,
                 arg1= key,
+                keepShownOnClick=true,
                 func= function(_, arg1)
                     Save.focusKey= arg1
                     set_Shift_Click_focurs()--Shift+点击设置焦点
@@ -764,18 +766,20 @@ local function InitList(self, level, type)
     info={
         text=e.Icon.left..(e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7),
         notCheckable=true,
-        menuList='InvUnit',
-        func=InvUnitFunc,--邀请，周围玩家
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '邀请周围玩家' or (INVITE..e.Icon.left..SPELL_RANGE_AREA:gsub(SPELL_TARGET_CENTER_CASTER,'')),
         hasArrow=true,
+        menuList='InvUnit',
         colorCode=not getLeader() and '|cff606060',
+        keepShownOnClick=true,
+        func=InvUnitFunc,--邀请，周围玩家
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
     info = {
         text= e.Icon.select2..(e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION),
         notCheckable=true,
         menuList='ACEINVITE',
+        keepShownOnClick=true,
         hasArrow=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -786,6 +790,7 @@ local function InitList(self, level, type)
         menuList='NoInv',
         hasArrow=true,
         tooltipOnButton=true,
+        keepShownOnClick=true,
         tooltipTitle= e.onlyChinese and ('拒绝 '..Save.InvNoFriendNum..' 次') or (DECLINE..' '..format(ITEM_SPELL_CHARGES, Save.InvNoFriendNum))
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)

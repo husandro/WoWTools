@@ -143,6 +143,7 @@ local function InitMenu(self, level, menuList)--主菜单
                 icon= icon or C_Item.GetItemIconByID(itemID),
                 colorCode=not PlayerHasToy(itemID) and '|cff606060',
                 notCheckable=true,
+                keepShownOnClick=true,
                 tooltipOnButton=true,
                 tooltipTitle= e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE),
                 tooltipText= (e.onlyChinese and '藏品->玩具箱' or (COLLECTIONS..'->'..TOY_BOX))..e.Icon.left,
@@ -179,6 +180,7 @@ local function InitMenu(self, level, menuList)--主菜单
             notCheckable=true,
             menuList='TOY',
             hasArrow=true,
+            keepShownOnClick=true,
        }
        e.LibDD:UIDropDownMenu_AddButton(info, level)
        info={
@@ -186,6 +188,7 @@ local function InitMenu(self, level, menuList)--主菜单
             checked=Save.showBindName,
             menuList='BIND',
             hasArrow=true,
+            keepShownOnClick=true,
             func=function()
                 Save.showBindName = not Save.showBindName and true or nil
                 set_BindLocation()--显示, 炉石, 绑定位置

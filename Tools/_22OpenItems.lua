@@ -297,6 +297,7 @@ local function setMenuList(self, level, menuList)--主菜单
                 text= (select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID)).. (num>1 and ' |cnGREEN_FONT_COLOR:x'..num..'|r' or ''),
                 icon= C_Item.GetItemIconByID(itemID),
                 checked=true,
+                keepShownOnClick=true,
                 tooltipOnButton=true,
                 tooltipTitle= e.onlyChinese and '移除' or REMOVE,
                 tooltipText=num>1 and '|n'..(e.onlyChinese and '组合物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..'|n'..(e.onlyChinese and '数量' or AUCTION_STACK_SIZE)..': '..num..'|nitemID: '..itemID,
@@ -313,6 +314,7 @@ local function setMenuList(self, level, menuList)--主菜单
             info={
                 text= e.onlyChinese and '全部清除' or CLEAR_ALL,
                 notCheckable=true,
+                keepShownOnClick=true,
                 func=function()
                     Save.use={}
                     getItems()
@@ -336,6 +338,7 @@ local function setMenuList(self, level, menuList)--主菜单
                 text=select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID),
                 icon=C_Item.GetItemIconByID(itemID),
                 checked=true,
+                keepShownOnClick=true,
                 tooltipOnButton=true,
                 tooltipTitle=REMOVE,
                 tooltipText= 'itemID: '..itemID,
@@ -352,6 +355,7 @@ local function setMenuList(self, level, menuList)--主菜单
             info={
                 text= e.onlyChinese and '全部清除' or CLEAR_ALL,
                 notCheckable=true,
+                keepShownOnClick=true,
                 func=function()
                     Save.no={}
                     getItems()
@@ -371,6 +375,7 @@ local function setMenuList(self, level, menuList)--主菜单
 
 
     info={
+        keepShownOnClick=true,
         notCheckable=true,
         tooltipOnButton=true,
     }
@@ -407,6 +412,7 @@ local function setMenuList(self, level, menuList)--主菜单
         notCheckable=1,
         menuList='NO',
         hasArrow=true,
+        keepShownOnClick=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
@@ -415,12 +421,14 @@ local function setMenuList(self, level, menuList)--主菜单
         notCheckable=1,
         menuList='USE',
         hasArrow=true,
+        keepShownOnClick=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={
         text= e.onlyChinese and '<右键点击打开>' or ITEM_OPENABLE,
         checked=Save.open,
+        keepShownOnClick=true,
         func=function()
             Save.open= not Save.open and true or nil
             getItems()
@@ -433,6 +441,7 @@ local function setMenuList(self, level, menuList)--主菜单
         tooltipOnButton=true,
         tooltipTitle= '<3',
         checked=Save.pet,
+        keepShownOnClick=true,
         func=function()
             Save.pet= not Save.pet and true or nil
             getItems()
@@ -443,6 +452,7 @@ local function setMenuList(self, level, menuList)--主菜单
     info={
         text= e.onlyChinese and '玩具' or TOY,
         checked=Save.toy,
+        keepShownOnClick=true,
         func=function()
             Save.toy= not Save.toy and true or nil
             getItems()
@@ -453,6 +463,7 @@ local function setMenuList(self, level, menuList)--主菜单
     info={
         text= e.onlyChinese and '坐骑' or MOUNTS,
         checked=Save.mount,
+        keepShownOnClick=true,
         func=function()
             Save.mount= not Save.mount and true or nil
             getItems()
@@ -463,6 +474,7 @@ local function setMenuList(self, level, menuList)--主菜单
     info={
         text= e.onlyChinese and '幻化' or TRANSMOGRIFY,
         checked=Save.mago,
+        keepShownOnClick=true,
         func=function()
             Save.mago= not Save.mago and true or nil
             getItems()
@@ -473,6 +485,7 @@ local function setMenuList(self, level, menuList)--主菜单
     info={
         text= e.onlyChinese and '配方' or TRADESKILL_SERVICE_LEARN,
         checked=Save.ski,
+        keepShownOnClick=true,
         func=function()
             Save.ski= not Save.ski and true or nil
             getItems()
@@ -483,6 +496,7 @@ local function setMenuList(self, level, menuList)--主菜单
     info={
         text= e.onlyChinese and '其它' or BINDING_HEADER_OTHER,
         checked=Save.alt,
+        keepShownOnClick=true,
         func=function()
             Save.alt= not Save.alt and true or nil
             getItems()
@@ -493,6 +507,7 @@ local function setMenuList(self, level, menuList)--主菜单
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
+        keepShownOnClick=true,
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '未发现物品' or BROWSE_NO_RESULTS,
         func=function()

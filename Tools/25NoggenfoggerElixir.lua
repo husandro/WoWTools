@@ -92,6 +92,7 @@ local function InitMenu(self, level)--主菜单
             icon=icon,
             checked= type,
             tooltipOnButton=true,
+            keepShownOnClick=true,
             tooltipTitle=  e.onlyChinese and '脱离战斗' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT,
             func=function()
                 Save.aura[spellID] = not type and true or false
@@ -105,6 +106,7 @@ local function InitMenu(self, level)--主菜单
         text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
         checked=Save.KEY and true or nil,
         disabled=UnitAffectingCombat('player'),
+        keepShownOnClick=true,
         func=function()
             StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
                 text=id..' '..addName..'|n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|n|nQ, BUTTON5',

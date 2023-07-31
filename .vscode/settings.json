@@ -3163,7 +3163,9 @@
         "GameTooltip_SetTooltipWaitingForData",
         "WORLDMAP_BUTTON",
         "WorldMapFramePortrait",
-        "MinimapBackdrop"
+        "MinimapBackdrop",
+        "BaseMapPoiPinMixin",
+        "UIDropDownMenu_RefreshAll"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

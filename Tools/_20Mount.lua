@@ -613,6 +613,7 @@ local function InitMenu(_, level, type)--主菜单
             checked= Save.AFKRandom,
             tooltipOnButton=true,
             tooltipTitle=e.onlyChinese and '注意: 掉落' or ('note: '..STRING_ENVIRONMENTAL_DAMAGE_FALLING),
+            keepShownOnClick=true,
             func= function()
                 Save.AFKRandom= not Save.AFKRandom and true or nil
                 if Save.AFKRandom then
@@ -630,6 +631,7 @@ local function InitMenu(_, level, type)--主菜单
             text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
             icon= 'NPE_ArrowDown',
             checked=Save.KEY and true or nil,
+            keepShownOnClick=true,
             func=function()
                 StaticPopup_Show(id..addName..'KEY')
             end,
@@ -642,6 +644,7 @@ local function InitMenu(_, level, type)--主菜单
                 text= e.onlyChinese and '德鲁伊' or  UnitClass('player'),
                 icon= 'classicon-druid',
                 checked=Save.XD,
+                keepShownOnClick=true,
                 func=function()
                     Save.XD= not Save.XD and true or nil
                     XDInt()--德鲁伊设置
@@ -661,6 +664,7 @@ local function InitMenu(_, level, type)--主菜单
             tooltipOnButton=true,
             hasArrow=true,
             menuList='RANDOM',
+            keepShownOnClick=true,
             tooltipTitle= e.onlyChinese and '每隔 3 秒, 召唤' or ('3 '..SECONDS..MOUNT),
             tooltipText= (e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)..e.Icon.mid,
             func=function()
@@ -673,6 +677,7 @@ local function InitMenu(_, level, type)--主菜单
         info={--坐骑特效
             text= e.Icon.mid..(e.onlyChinese and '坐骑特效' or (EMOTE171_CMD2:gsub('/','')..SHOW)),
             notCheckable=true,
+            keepShownOnClick=true,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '每隔 3 秒' or ('3 '..SECONDS..EMOTE171_CMD2:gsub('/','')),
             tooltipText= (e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN)..e.Icon.mid,
@@ -688,6 +693,7 @@ local function InitMenu(_, level, type)--主菜单
             text= e.onlyChinese and '还原位置' or RESET_POSITION,
             disabled=UnitAffectingCombat('player'),
             colorCode=not Save.Point and '|cff606060',
+            keepShownOnClick=true,
             func=function()
                 Save.Point=nil
                 button:ClearAllPoints()
@@ -729,6 +735,7 @@ local function InitMenu(_, level, type)--主菜单
                 tooltipOnButton=true,
                 tooltipTitle= (e.onlyChinese and '修改' or HUD_EDIT_MODE_RENAME_LAYOUT)..e.Icon.left,
                 notCheckable=true,
+                keepShownOnClick=true,
                 arg1= itemID,
                 arg2= text,
                 func=function(_, arg1, arg2)
@@ -754,6 +761,7 @@ local function InitMenu(_, level, type)--主菜单
                 tooltipTitle= (e.onlyChinese and '修改' or HUD_EDIT_MODE_RENAME_LAYOUT)..e.Icon.left,
                 colorCode= not known and '|cff606060',
                 notCheckable=true,
+                keepShownOnClick=true,
                 arg1= spellID,
                 arg2= text,
                 func=function(_, arg1, arg2)
@@ -787,6 +795,7 @@ local function InitMenu(_, level, type)--主菜单
                 colorCode= spellID~=MountTab[type][1] and '|cff606060' or '|cnGREEN_FONT_COLOR:',
                 notCheckable=true,
                 tooltipOnButton= true,
+                keepShownOnClick=true,
                 tooltipTitle= e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE),
                 tooltipText= (e.onlyChinese and '藏品->坐骑' or (COLLECTIONS..'->'..MOUNTS))..e.Icon.left,
                 arg1= mountID,
@@ -823,6 +832,7 @@ local function InitMenu(_, level, type)--主菜单
                 text=name or ('spellID '..spellID),
                 icon=icon,
                 notCheckable=true,
+                keepShownOnClick=true,
                 tooltipOnButton= not isXDSpell,
                 tooltipTitle= e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE),
                 tooltipText= (e.onlyChinese and '藏品->坐骑' or (COLLECTIONS..'->'..MOUNTS))..e.Icon.left,
@@ -880,6 +890,7 @@ local function InitMenu(_, level, type)--主菜单
                 text=(num>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '')..(icon and '|T'..icon..':0|t' or '')..(e.onlyChinese and tab.name or indexType),
                 menuList=indexType,
                 hasArrow=num>0,
+                keepShownOnClick=true,
                 notCheckable=true,
                 colorCode=num==0 and '|cff606060',
             }
@@ -894,6 +905,7 @@ local function InitMenu(_, level, type)--主菜单
             info={
                 text= (icon and '|T'..icon..':0|t' or '').. indexType,
                 notCheckable= true,
+                keepShownOnClick=true,
                 tooltipOnButton=true,
                 hasArrow=true,
                 menuList=indexType,
@@ -920,6 +932,7 @@ local function InitMenu(_, level, type)--主菜单
                 menuList=indexType,
                 hasArrow= #tab2>0 and true or false,
                 notCheckable= true,
+                keepShownOnClick=true,
                 tooltipOnButton=not isXDSpell,
                 tooltipTitle= (mountID and (e.onlyChinese and '召唤' or SUMMON) or (e.onlyChinese and '设置' or SETTINGS))..e.Icon.left,
                 arg1= mountID,
@@ -948,6 +961,7 @@ local function InitMenu(_, level, type)--主菜单
         notCheckable=true,
         menuList=SETTINGS,
         hasArrow=true,
+        keepShownOnClick=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
 end

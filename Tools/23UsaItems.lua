@@ -115,6 +115,7 @@ local function Init_Menu(_, level, type)--主菜单
                 text= name,
                 notCheckable=true,
                 icon=icon,
+                keepShownOnClick=true,
             }
 
             if (type=='spell' and not IsSpellKnown(ID)) or ((type=='item' or type=='equip') and GetItemCount(ID)==0 and not PlayerHasToy(ID)) then
@@ -157,6 +158,7 @@ local function Init_Menu(_, level, type)--主菜单
         info={--清除全部
             text=cleraAllText,
             notCheckable=true,
+            keepShownOnClick=true,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '重新加载UI' or RELOADUI,
             arg1=cleraAllText,
@@ -180,6 +182,7 @@ local function Init_Menu(_, level, type)--主菜单
             notCheckable=true,
             hasArrow=true,
             menuList=type2,
+            keepShownOnClick=true,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level);
     end
@@ -187,6 +190,7 @@ local function Init_Menu(_, level, type)--主菜单
     info={
         text= e.onlyChinese and '重新加载UI' or RELOADUI,
         notCheckable=true,
+        keepShownOnClick=true,
         tooltipOnButton=true,
         tooltipTitle='/reload',
         func=function()
@@ -208,7 +212,11 @@ local function Init_Menu(_, level, type)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level);
     e.LibDD:UIDropDownMenu_AddButton({text=addName, isTitle=true, notCheckable=true}, level);
-    e.LibDD:UIDropDownMenu_AddButton({text= e.onlyChinese and '拖曳: 物品, 法术, 装备' or (DRAG_MODEL..', '..SPELLS..', '..ITEMS), isTitle=true, notCheckable=true}, level);
+    e.LibDD:UIDropDownMenu_AddButton({
+        text= e.onlyChinese and '拖曳: 物品, 法术, 装备' or (DRAG_MODEL..', '..SPELLS..', '..ITEMS),
+        isTitle=true,
+        notCheckable=true
+    }, level);
 
 end
 

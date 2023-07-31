@@ -72,6 +72,7 @@ local function InitMenu(self, level)--主菜单
     local info={
         text= e.onlyChinese and '使用 /招手' or (USE..' '..EMOTE102_CMD1),
         checked=not Save.notGuLai,
+        keepShownOnClick=true,
         func=function()
             if Save.notGuLai then
                 Save.notGuLai=nil
@@ -87,6 +88,7 @@ local function InitMenu(self, level)--主菜单
     info={--自动召唤
         text= e.onlyChinese and '自动召唤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SUMMONS),
         checked=Save.autoSummon,
+        keepShownOnClick=true,
         func=function()
             if Save.autoSummon then
                 Save.autoSummon=nil

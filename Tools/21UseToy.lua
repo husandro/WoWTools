@@ -195,6 +195,7 @@ local function InitMenu(_, level, menuList)--主菜单
                 text= toyName or itemID,
                 icon= icon or C_Item.GetItemIconByID(itemID),
                 colorCode=not PlayerHasToy(itemID) and '|cff606060',
+                keepShownOnClick=true,
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle= e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE),
@@ -227,6 +228,7 @@ local function InitMenu(_, level, menuList)--主菜单
                     icon= icon or C_Item.GetItemIconByID(itemID),
                     colorCode='|cff606060',
                     notCheckable=true,
+                    keepShownOnClick=true,
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE),
                     tooltipText= (e.onlyChinese and '藏品->玩具箱' or (COLLECTIONS..'->'..TOY_BOX))..e.Icon.left,
@@ -256,6 +258,7 @@ local function InitMenu(_, level, menuList)--主菜单
             text= '|cnRED_FONT_COLOR:#'..num..' '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..' ('..(e.onlyChinese and '未收集' or NOT_COLLECTED)..')',
             icon= 'bags-button-autosort-up',
             notCheckable=true,
+            keepShownOnClick=true,
             func= function()
                 local num2=0
                 for itemID, _ in pairs(Save.items) do
@@ -275,6 +278,7 @@ local function InitMenu(_, level, menuList)--主菜单
             text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
             checked=Save.KEY and true or nil,
             disabled=UnitAffectingCombat('player'),
+            keepShownOnClick=true,
             func=function()
                 StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
                     text=id..' '..addName..'|n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|n|nQ, BUTTON5',
@@ -330,6 +334,7 @@ local function InitMenu(_, level, menuList)--主菜单
         info={--清除
             text='|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..(e.onlyChinese and '玩具' or TOY)..'|r '..#ItemsTab..'/'..getAllSaveNum(),
             icon= 'bags-button-autosort-up',
+            keepShownOnClick=true,
             notCheckable=true,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '清除全部' or CLEAR_ALL,
@@ -343,6 +348,7 @@ local function InitMenu(_, level, menuList)--主菜单
             text= e.onlyChinese and '重置' or RESET,
             colorCode="|cffff0000",
             notCheckable=true,
+            keepShownOnClick=true,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT,
             func=function ()
@@ -358,6 +364,7 @@ local function InitMenu(_, level, menuList)--主菜单
         notCheckable=true,
         menuList='TOY',
         hasArrow=true,
+        keepShownOnClick=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
@@ -366,6 +373,7 @@ local function InitMenu(_, level, menuList)--主菜单
         notCheckable=true,
         menuList='notTOY',
         hasArrow=true,
+        keepShownOnClick=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
@@ -375,6 +383,7 @@ local function InitMenu(_, level, menuList)--主菜单
         notCheckable=true,
         menuList='SETTINGS',
         hasArrow=true,
+        keepShownOnClick=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end

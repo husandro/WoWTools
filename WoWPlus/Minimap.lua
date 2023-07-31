@@ -1002,6 +1002,40 @@ local function Init()
             end)
         end
     end
+
+    panel.Texture= UIParent:CreateTexture()
+    panel.Texture:SetTexture("Interface\\Minimap\\POIIcons")
+    panel.Texture:SetPoint('CENTER')
+    panel.Texture:SetSize(20,20)
+
+--[[
+local ATLAS_WITH_TEXTURE_KIT_PREFIX = "%s-%s";
+hooksecurefunc(MinimapMixin , 'SetTexture', function(poiInfo)
+    print(poiInfo.atlasName, poiInfo.textureIndex)
+    local atlasName = poiInfo.atlasName;
+	if atlasName then
+		if poiInfo.textureKit then
+			atlasName = ATLAS_WITH_TEXTURE_KIT_PREFIX:format(poiInfo.textureKit, atlasName);
+		end
+        local sizeX, sizeY = panel.Texture:GetSize();
+		panel.Texture:SetAtlas(atlasName, true);
+		panel:SetSize(sizeX, sizeY);
+
+		panel.Texture:SetTexCoord(0, 1, 0, 1);
+	else
+		
+		panel.Texture:SetWidth(16);
+		panel.Texture:SetHeight(16);
+		panel.Texture:SetTexture("Interface/Minimap/POIIcons");
+	
+
+		local x1, x2, y1, y2 = C_Minimap.GetPOITextureCoords(poiInfo.textureIndex);
+		panel.Texture:SetTexCoord(x1, x2, y1, y2);
+		
+	end
+end)]]
+   
+
 end
 
 

@@ -935,6 +935,7 @@ local function Init()--冒险指南界面
                 checked= not Save.loot[e.Player.class][self.dungeonEncounterID],
                 arg1= self.dungeonEncounterID,
                 arg2= self.button,
+                keepShownOnClick=true,
                 func=function(_,arg1, arg2)
                     Save.loot[e.Player.class][arg1]=nil
                     set_Loot_Spec_Texture(arg2)
@@ -958,6 +959,7 @@ local function Init()--冒险指南界面
             notCheckable=true,
             hasArrow=true,
             menuList='CLEAR',
+            keepShownOnClick=true,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
         --e.LibDD:UIDropDownMenu_AddSeparator(level)
@@ -984,7 +986,7 @@ local function Init()--冒险指南界面
             button.LootButton:SetScript('OnClick', function(self)
                 local menu= EncounterJournal.encounter.LootSpecMenu
                 if not menu then
-                    menu=CreateFrame("Frame", id..addName..'Menu', EncounterJournal.encounter, "UIDropDownMenuTemplate")
+                    menu= CreateFrame("Frame", nil, EncounterJournal.encounter, "UIDropDownMenuTemplate")
                     e.LibDD:UIDropDownMenu_Initialize(menu, set_Loot_Spec_Menu_Init, 'MENU')
                 end
                 menu.dungeonEncounterID=self.dungeonEncounterID

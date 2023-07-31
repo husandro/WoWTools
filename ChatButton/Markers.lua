@@ -728,7 +728,7 @@ local function InitMenu(_, level, type)--主菜单
                 text=e.Icon.select2..(e.onlyChinese and '就绪' or READY),--就绪
                 colorCode='|cff00ff00',
                 checked= Save.autoReady==1,
-                keepShownOnClick= true,
+                keepShownOnClick=true,
                 func=function()
                     Save.autoReady=1
                     setReadyTexureTips()--自动就绪, 主图标, 提示
@@ -739,7 +739,7 @@ local function InitMenu(_, level, type)--主菜单
             info={
                 text=e.Icon.X2..(e.onlyChinese and '未就绪' or NOT_READY_FEMALE),--未就绪
                 colorCode='|cffff0000',
-                checked=Save.autoReady==2,
+                checked= Save.autoReady==2,
                 keepShownOnClick= true,
                 func=function()
                     Save.autoReady=2
@@ -777,6 +777,7 @@ local function InitMenu(_, level, type)--主菜单
                 text= e.onlyChinese and '重置位置' or RESET_POSITION,
                 notCheckable=true,
                 colorCode= not Save.markersFramePoint and '|cff606060',
+                keepShownOnClick=true,
                 func= function()
                     targetFrame:ClearAllPoints()
                     Save.markersFramePoint=nil

@@ -215,6 +215,7 @@ local function InitMenu(self, level, type)--主菜单
             info={
                 text= itemLink or ('itemID '..itemID),
                 notCheckable=true,
+                keepShownOnClick=true,
                 icon=itemTexture,
                 tooltipOnButton=true,
                 tooltipTitle=e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
@@ -230,6 +231,7 @@ local function InitMenu(self, level, type)--主菜单
         info={
             text= e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
+            keepShownOnClick=true,
             func= function()
                 Save.noUseItems={}
                 set_Item_Button()
@@ -242,6 +244,7 @@ local function InitMenu(self, level, type)--主菜单
     elseif type=='WHO' then
         info= {
             text= e.onlyChinese and '登录游戏时: 查找' or (LOGIN or SOCIAL_TWITTER_SIGN_IN)..GAME,
+            keepShownOnClick=true,
             tooltipOnButton=true,
             tooltipTitle=AUTO_JOIN:gsub(JOIN,WHO),
             tooltipText='1 '..VOICEMACRO_LABEL_CHARGE1,
@@ -257,6 +260,7 @@ local function InitMenu(self, level, type)--主菜单
             tooltipOnButton=true,
             tooltipTitle=(e.onlyChinese and '事件' or EVENTS_LABEL)..': BAG_UPDATE_DELAYED',
             checked=Save.autoWho,
+            keepShownOnClick=true,
             func= function()
                 Save.autoWho= not Save.autoWho and true or nil
                 if Save.autoWho then
@@ -270,6 +274,7 @@ local function InitMenu(self, level, type)--主菜单
         info={
             text= e.onlyChinese and '仅当前版本物品' or 	LFG_LIST_CROSS_FACTION:format(REFORGE_CURRENT..(VERSION or GAME_VERSION_LABEL)),
             checked= Save.onlyMaxExpansion,
+            keepShownOnClick=true,
             tooltipOnButton=true,
             tooltipTitle= e.ExpansionLevel,
             func= function()
@@ -285,6 +290,7 @@ local function InitMenu(self, level, type)--主菜单
             if type==tab.className then
                 info={
                     text=tab.subClassID..' '..tab.subclassName,
+                    keepShownOnClick=true,
                     checked= Save.itemClass[tab.className..tab.subclassName],
                     tooltipOnButton=true,
                     tooltipTitle= tab.className.. ' classID |cnGREEN_FONT_COLOR:'..tab.classID..'|r',
@@ -308,6 +314,7 @@ local function InitMenu(self, level, type)--主菜单
         disabled=classNum==0,
         menuList='WHO',
         hasArrow=true,
+        keepShownOnClick=true,
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN,
         func= function()
@@ -323,6 +330,7 @@ local function InitMenu(self, level, type)--主菜单
             info={
                 text=get_Save_Numer_SubClass(tab.className)..tab.className,
                 notCheckable=true,
+                keepShownOnClick=true,
                 menuList=tab.className,
                 hasArrow=true,
             }
@@ -335,6 +343,7 @@ local function InitMenu(self, level, type)--主菜单
         text=e.Icon.up2.. (e.onlyChinese and '全部取消' or CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL)),
         colorCode= '|cffff0000',
         notCheckable=true,
+        keepShownOnClick=true,
         func= function()
             Save.itemClass={}
             set_Item_Button()
@@ -347,6 +356,7 @@ local function InitMenu(self, level, type)--主菜单
     info= {
         text= e.onlyChinese and '禁用' or DISABLE,
         notCheckable=true,
+        keepShownOnClick=true,
         menuList='DISABLE',
         hasArrow=true,
     }
@@ -364,6 +374,7 @@ local function InitMenu(self, level, type)--主菜单
         text= e.onlyChinese and '还原位置' or RESET_POSITION,
         notCheckable=true,
         colorCode= not Save.point and'|cff606060',
+        keepShownOnClick=true,
         func=function()
             Save.point=nil
             button:ClearAllPoints()
