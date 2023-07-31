@@ -307,7 +307,9 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             e.LoadDate({id= questID, type=='quest'})
             info={
                 text= GetQuestLink(questID) or questID,
-                icon= select(2, GetQuestLogRewardInfo(1, questID)) or select(2, GetQuestLogRewardCurrencyInfo(1, questID)),
+                icon= select(2, GetQuestLogRewardInfo(1, questID))
+                     or select(2, GetQuestLogRewardCurrencyInfo(1, questID))
+                     or e.Icon.quest,
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..questID,
@@ -339,7 +341,6 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             name= name=='' and areaPoiID or name
             info={
                 text= name,
-                icon= poiInfo.atlasName,
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..areaPoiID,
@@ -660,8 +661,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             hooksecurefunc(self, 'OnMouseClickAction', function(self2, d)
                 if self2.questID and d=='LeftButton' and IsAltKeyDown() then
                     Save.questIDs[self2.questID]= not Save.questIDs[self2.questID] and true or nil
-                    print(id,addName,'|n',
-                        addName2,
+                    print(id,addName, addName2,
                         GetQuestLink(self2.questID) or self2.questID,
                         Save.questIDs[self2.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
                     )
@@ -688,7 +688,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
                         local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID) or {}
                         local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
                         name= name=='' and 'areaPoiID '..self.areaPoiID or name
-                        print(id,addName, addName2, '|n',
+                        print(id,addName, addName2, 
                             (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
                             name,
                             Save.areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
@@ -708,7 +708,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             if uiMapID then
                 Save.uiMapIDs[uiMapID]= not Save.uiMapIDs[uiMapID] and true or nil
                 local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
-                print(id,addName, addName2, '|n',
+                print(id,addName, addName2,
                     name,
                     Save.uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
                 )
