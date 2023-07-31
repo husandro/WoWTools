@@ -181,6 +181,7 @@ local function text_Init()--监视, 文本
 				self2:StopMovingOrSizing()
 				Save.point={self2:GetPoint(1)}
 				Save.point[2]=nil
+				self2:Raise()
 		end)
 		button.btn:SetScript("OnMouseUp", function() ResetCursor() end)
 		button.btn:SetScript("OnMouseDown", function(self2, d)

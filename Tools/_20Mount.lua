@@ -1161,6 +1161,7 @@ local function Init()
         Save.Point={self:GetPoint(1)}
         Save.Point[2]=nil
         e.LibDD:CloseDropDownMenus()
+        self:Raise()
     end)
     button:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()

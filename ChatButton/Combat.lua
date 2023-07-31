@@ -198,6 +198,7 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
             self:StopMovingOrSizing()
             Save.textFramePoint={self:GetPoint(1)}
             Save.textFramePoint[2]=nil
+            self:Raise()
             print(id, addName, e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, 'Alt+'..e.Icon.right)
         end)
         button.textButton:SetScript("OnMouseDown", function(self,d)

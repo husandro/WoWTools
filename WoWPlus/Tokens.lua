@@ -231,6 +231,7 @@ local function Set_btn()
 				self2:StopMovingOrSizing()
 				Save.point={self2:GetPoint(1)}
 				Save.point[2]=nil
+				self2:Raise()
 		end)
 		button.btn:SetScript("OnMouseUp", function() ResetCursor() end)
 		button.btn:SetScript("OnClick", function(self2, d)

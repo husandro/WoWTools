@@ -532,6 +532,7 @@ local function Init_tipsButton()
         self:StopMovingOrSizing()
         Save.tipsFramePoint={self:GetPoint(1)}
         Save.tipsFramePoint[2]=nil
+        self:Raise()
     end)
     tipsButton:SetScript('OnMouseWheel', function(self, d)
         local n= Save.tipsScale or 1
@@ -1419,6 +1420,8 @@ local function setIslandButton(self)--离开海岛按钮
                     ResetCursor()
                     self2:StopMovingOrSizing()
                     Save.islandPoint={self2:GetPoint(1)}
+                    Save.islandPoint[2]= nil
+                    self2:Raise()
             end)
             self.island:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -2013,6 +2016,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 self:StopMovingOrSizing()
                 Save.RoleInfoPoint={self:GetPoint(1)}
                 Save.RoleInfoPoint[2]=nil
+                self:Raise()
             end)
             button.RoleInfo:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")

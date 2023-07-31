@@ -375,6 +375,7 @@ local function Init_Gossip()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
         e.LibDD:CloseDropDownMenus()
+        self:Raise()
     end)
     panel:SetScript('OnMouseDown', function(self, d)
         local key=IsModifierKeyDown()

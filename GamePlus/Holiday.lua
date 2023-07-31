@@ -481,6 +481,7 @@ local function Init()
         Save.point[2]=nil
         e.LibDD:CloseDropDownMenus()
         ResetCursor()
+        self:Raise()
     end)
     button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then

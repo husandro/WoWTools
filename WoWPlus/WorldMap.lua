@@ -359,6 +359,7 @@ local function CursorPositionInt()
         Save.PlayerXYPoint={self2:GetPoint(1)}
         Save.PlayerXYPoint[2]=nil
         ResetCursor()
+        self2:Raise()
     end)
     frame.playerPostionBtn:SetScript("OnMouseUp", function(self2,d)
        if d=='LeftButton' and not IsModifierKeyDown() then

@@ -315,6 +315,8 @@ local function MoveFrame(self, savePointName)
             ResetCursor()
             self2:StopMovingOrSizing()
             Save[savePointName]={self2:GetPoint(1)}
+            Save[savePointName][2]= nil
+            self2:Raise()
     end);
     self:SetScript('OnLeave', function()
         self:SetButtonState("NORMAL")

@@ -758,9 +758,10 @@ local function set_inti_Equipment_Frame()--添加装备管理框
             end
         end)
         panel.equipmentButton.btn:SetScript("OnDragStop", function(self)
-                self:StopMovingOrSizing()
-                Save.Equipment={self:GetPoint(1)}
-                Save.Equipment[2]=nil
+            self:StopMovingOrSizing()
+            Save.Equipment={self:GetPoint(1)}
+            Save.Equipment[2]=nil
+            self:Raise()
         end)
         panel.equipmentButton.btn:SetScript('OnMouseDown', function(_, d)
             if d=='RightButton' and not IsModifierKeyDown() then--移动图标

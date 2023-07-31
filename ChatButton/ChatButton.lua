@@ -30,6 +30,7 @@ local function Init()
         self:StopMovingOrSizing()
         Save.Point={self:GetPoint(1)}
         Save.Point[2]=nil
+        self:Raise()
         print(id, addName, (e.onlyChinese and '重置位置' or RESET_POSITION), 'Alt+'..e.Icon.right)
     end)
     panel:SetScript("OnMouseDown", function(self,d)

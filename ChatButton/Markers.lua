@@ -254,6 +254,7 @@ local function setGroupReadyTips(event, arg1, arg2)
                 Save.groupReadyTipsPoint={self:GetPoint(1)}
                 Save.groupReadyTipsPoint[2]=nil
                 print(id, addName, RESET_POSITION, 'Alt+'..e.Icon.right)
+                self:Raise()
             end)
             button.groupReadyTips:SetScript('OnHide', function(self)
                 if self.timer then
@@ -398,6 +399,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                     targetFrame:StopMovingOrSizing()
                     Save.markersFramePoint={targetFrame:GetPoint(1)}
                     Save.markersFramePoint[2]=nil
+                    targetFrame:Raise()
                 end)
                 btn:SetScript('OnMouseDown', function(_, d)
                     local key=IsModifierKeyDown()

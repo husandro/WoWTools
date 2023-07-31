@@ -581,6 +581,7 @@ local function Init()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
         ResetCursor()
+        self:Raise()
     end)
     button:SetScript("OnMouseUp", function(self2,d)
         ResetCursor()
@@ -682,6 +683,7 @@ local function Init()
             Save.frameratePoint={FramerateFrame:GetPoint(1)}
             Save.frameratePoint[2]=nil
             ResetCursor()
+            FramerateFrame:Raise()
         end)
         button.moveFPSFrame:SetScript("OnMouseUp", function(self2,d)
             ResetCursor()

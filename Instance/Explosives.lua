@@ -169,6 +169,7 @@ local function set_Button()
             Save.point={self:GetPoint(1)}
             Save.point[2]=nil
             ResetCursor()
+            self:Raise()
         end)
         button:SetScript("OnEvent", set_Count)
         button:SetScript("OnMouseUp", function() ResetCursor() end)

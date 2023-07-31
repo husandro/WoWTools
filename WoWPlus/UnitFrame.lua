@@ -1044,7 +1044,9 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         end
     end)
     CompactPartyFrame.moveFrame:SetScript("OnDragStop", function(self)
-        CompactPartyFrame:StopMovingOrSizing()
+        local frame=self:GetParent()
+        frame:StopMovingOrSizing()
+        frame:Raise()
     end)
     CompactPartyFrame.moveFrame:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' and not IsModifierKeyDown() then
@@ -1337,7 +1339,9 @@ local function Init_RaidFrame()--设置,团队
         end
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnDragStop", function(self)
-        self:GetParent():StopMovingOrSizing()
+        local frame=self:GetParent()
+        frame:StopMovingOrSizing()
+        frame:Raise()
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnMouseDown", function(self, d)
         print(id, addName, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.raidFrameScale or 1)

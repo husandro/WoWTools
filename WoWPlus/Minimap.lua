@@ -521,6 +521,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             Save.pointVigentteButton={self:GetPoint(1)}
             Save.pointVigentteButton[2]=nil
             print(id, addName, 'Alt+'..e.Icon.right, e.onlyChinese and '还原位置' or RESET_POSITION)
+            self:Raise()
         end)
 
         btn:SetScript('OnClick', function(self, d)--显示，隐藏
