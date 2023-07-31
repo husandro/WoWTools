@@ -307,6 +307,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             e.LoadDate({id= questID, type=='quest'})
             info={
                 text= GetQuestLink(questID) or questID,
+                icon= select(2, GetQuestLogRewardInfo(1, questID)) or select(2, GetQuestLogRewardCurrencyInfo(1, questID)),
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..questID,
@@ -338,6 +339,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             name= name=='' and areaPoiID or name
             info={
                 text= name,
+                icon= poiInfo.atlasName,
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..areaPoiID,
@@ -371,6 +373,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             name= name or uiMapID
             info={
                 text= name,
+                icon= e.Icon.map,
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..uiMapID,
