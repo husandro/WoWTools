@@ -375,7 +375,7 @@ local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
         end)
         MoveFrame(panel.WorldBoss, 'WorldBossPoint')
 
-        panel.WorldBoss.Text=e.Cstr(panel.WorldBoss, {size=Save.EncounterJournalFontSize})--, nil,nil,nil)
+        panel.WorldBoss.Text=e.Cstr(panel.WorldBoss, {size=Save.EncounterJournalFontSize, color=true})
         panel.WorldBoss.Text:SetPoint('TOPLEFT')
 
         panel.WorldBoss.texture=panel.WorldBoss:CreateTexture()
@@ -460,7 +460,7 @@ local function Init_Set_InstanceBoss_Text()--显示副本击杀数据
             end
         end)
         MoveFrame(panel.instanceBoss, 'instanceBossPoint')
-        panel.instanceBoss.Text=e.Cstr(panel.instanceBoss, {size=Save.EncounterJournalFontSize})
+        panel.instanceBoss.Text=e.Cstr(panel.instanceBoss, {size=Save.EncounterJournalFontSize, color=true})
         panel.instanceBoss.Text:SetPoint('TOPLEFT')
 
         panel.instanceBoss.texture=panel.instanceBoss:CreateTexture()

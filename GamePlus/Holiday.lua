@@ -13,6 +13,7 @@ local function _CalendarFrame_SafeGetName(name)
 	end
 	return name;
 end
+
 local function _CalendarFrame_IsPlayerCreatedEvent(calendarType)
 	return
 		calendarType == "PLAYER" or
@@ -20,6 +21,7 @@ local function _CalendarFrame_IsPlayerCreatedEvent(calendarType)
 		calendarType == "GUILD_EVENT" or
 		calendarType == "COMMUNITY_EVENT";
 end
+
 local function _CalendarFrame_IsSignUpEvent(calendarType, inviteType)
 	return (calendarType == "GUILD_EVENT" or calendarType == "COMMUNITY_EVENT") and inviteType == Enum.CalendarInviteType.Signup;
 end
@@ -74,11 +76,24 @@ local function set_Quest_Completed(tab)--任务是否完成
     return ''
 end
 
-local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
-    --button.texture:SetShown(Save.hide)
 
-    if Save.hide then
-        if button.Text then
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
+    if Save.hide or not button then
+        if button and button.Text then
             button.Text:SetText('')
         end
         return
@@ -260,47 +275,26 @@ local function set_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDay
     button.Text:SetText(Text2)
 end
 
-local function set_event()--设置事件
-    if Save.hide then
-        panel:UnregisterEvent('CALENDAR_UPDATE_EVENT_LIST')
-        panel:UnregisterEvent('CALENDAR_UPDATE_EVENT')
-        panel:UnregisterEvent('CALENDAR_NEW_EVENT')
-        panel:UnregisterEvent('CALENDAR_OPEN_EVENT')
-        panel:UnregisterEvent('CALENDAR_CLOSE_EVENT')
-    else
-        panel:RegisterEvent('CALENDAR_UPDATE_EVENT_LIST')
-        panel:RegisterEvent('CALENDAR_UPDATE_EVENT')
-        panel:RegisterEvent('CALENDAR_NEW_EVENT')
-        panel:RegisterEvent('CALENDAR_OPEN_EVENT')
-        panel:RegisterEvent('CALENDAR_CLOSE_EVENT')
-    end
-end
 
-local function Text_Settings()--设置Text
-    if button.Text then
-        button.Text:SetJustifyH(Save.left and 'LEFT' or  'RIGHT' )
-        button.Text:ClearAllPoints()
-        button.Text:SetPoint(Save.left and 'TOPLEFT' or 'TOPRIGHT')
-        e.Cstr(nil, {changeFont=button.Text, color=true})--nil,nil,button.Text,true)
-        if Save.scale then
-            button.Text:SetScale(Save.scale)
-        end
-    end
-    C_Timer.After(2, set_Text)
-end
 
-local function set_Point()--设置, 位置
-    if e.Player.husandro then
-        button:SetPoint('BOTTOMRIGHT', ObjectiveTrackerBlocksFrame, 'TOPLEFT',-20, -10)
-    else
-        button:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT', -20,0)
-    end
-end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, type)--主菜单
+local function InitMenu(_, level, type)--主菜单
     local info
     if type then
         info={
@@ -308,7 +302,7 @@ local function InitMenu(self, level, type)--主菜单
             checked= Save.left,
             func= function()
                 Save.left= not Save.left and true or nil
-                Text_Settings()--设置Tex
+                button:set_Text_Settings()--设置Tex
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -350,7 +344,7 @@ local function InitMenu(self, level, type)--主菜单
             func=function()
                 Save.point=nil
                 button:ClearAllPoints()
-                set_Point()
+                button:set_Point()
             end,
             tooltipOnButton=true,
             tooltipTitle=e.Icon.right..' '..NPE_MOVE,
@@ -405,6 +399,21 @@ local function InitMenu(self, level, type)--主菜单
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -415,12 +424,50 @@ local function Init()
     button.texture:SetAllPoints(button)
     button.texture:SetAtlas(e.Icon.icon)
     button.texture:SetAlpha(0.3)
-    button.texture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-    if Save.point then
-        button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-    else
-        set_Point()
+
+    function button:set_Texture()
+        self.texture:SetAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
     end
+    function button:set_Point()--设置, 位置
+        if Save.point then
+            self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+        elseif e.Player.husandro then
+            self:SetPoint('BOTTOMRIGHT', ObjectiveTrackerBlocksFrame, 'TOPLEFT',-20, -10)
+        else
+            self:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT', -20,0)
+        end
+    end
+    function button:set_Text_Settings()
+        self.Text:SetJustifyH(Save.left and 'LEFT' or  'RIGHT' )
+        self.Text:ClearAllPoints()
+        if Save.left then
+            self.Text:SetPoint('TOPLEFT', self, 'TOPRIGHT')
+        else
+            self.Text:SetPoint('TOPRIGHT', self, 'TOPLEFT')
+        end
+        self.Text:SetScale(Save.scale or 1)
+        C_Timer.After(2, set_Text)
+    end
+    function button:set_event()--设置事件
+        if Save.hide then
+            panel:UnregisterEvent('CALENDAR_UPDATE_EVENT_LIST')
+            panel:UnregisterEvent('CALENDAR_UPDATE_EVENT')
+            panel:UnregisterEvent('CALENDAR_NEW_EVENT')
+            panel:UnregisterEvent('CALENDAR_OPEN_EVENT')
+            panel:UnregisterEvent('CALENDAR_CLOSE_EVENT')
+        else
+            panel:RegisterEvent('CALENDAR_UPDATE_EVENT_LIST')
+            panel:RegisterEvent('CALENDAR_UPDATE_EVENT')
+            panel:RegisterEvent('CALENDAR_NEW_EVENT')
+            panel:RegisterEvent('CALENDAR_OPEN_EVENT')
+            panel:RegisterEvent('CALENDAR_CLOSE_EVENT')
+        end
+    end
+
+    button:set_Texture()
+    button:set_Point()
+    button:set_Text_Settings()
+    button:set_event()
 
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
@@ -438,8 +485,9 @@ local function Init()
     button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             Save.hide= not Save.hide and true or nil
-            set_event()--设置事件
+            self:set_event()--设置事件
             set_Text()
+            self:set_Texture()
         elseif d=='RightButton' then
             if not self.Menu then
                 self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
@@ -467,16 +515,26 @@ local function Init()
             end
             print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, sacle)
             Save.scale=sacle
-            Text_Settings()--设置Text
+            self:set_Text_Settings()--设置Text
         else
             Calendar_Toggle()
         end
     end)
+    button:SetScript('OnLeave', function(self) self.texture:SetAlpha(0.3) end)
+    button:SetScript('OnEnter', function(self) self.texture:SetAlpha(1) end)
 
 
 
-    set_event()
-    Text_Settings()--设置Text
+
+
+
+
+
+
+
+
+
+
 
     local function calendar_Uptate()
         local indexInfo = C_Calendar.GetEventIndex()
@@ -684,6 +742,24 @@ local function Init()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
@@ -730,7 +806,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_ENTERING_WORLD' then
         if IsInInstance() and not Save.hide then
             Save.hide= true
-            Text_Settings()--设置Text
+            if button then
+                button:set_Text_Settings()--设置Text
+            end
         end
 
     else

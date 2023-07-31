@@ -426,8 +426,8 @@ local function Init_Button_Menu(_, level, menuList)--菜单
         keepShownOnClick=true,
         func= function()
             Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or false
-            panel.Button:SetNormalAtlas(Save.vigentteButtonShowText and e.Icon.icon or e.Icon.disabled)
             check_Button_Enabled_Disabled()
+            panel.Button:set_Texture()
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -488,8 +488,14 @@ local function Init_Set_Button()--小地图, 标记, 文本
     end
 
     if not btn then
-        btn= e.Cbtn(nil, {icon=Save.vigentteButtonShowText, size={20,20}})
-
+        btn= e.Cbtn(nil, {icon='hide', size={20,20}})
+        btn.texture= btn:CreateTexture(nil, 'BORDER')
+        btn.texture:SetAllPoints(btn)
+        btn.texture:SetAlpha(0.3)
+        function btn:set_Texture()
+            self.texture:SetAtlas(Save.vigentteButtonShowText and e.Icon.icon or e.Icon.disabled)
+        end
+        btn:set_Texture()
         function btn:Set_Point()--设置，位置
             if Save.pointVigentteButton then
                self:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
@@ -569,10 +575,12 @@ local function Init_Set_Button()--小地图, 标记, 文本
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
+            self.texture:SetAlpha(1)
         end)
-        btn:SetScript('OnLeave',function()
+        btn:SetScript('OnLeave',function(self)
             e.tips:Hide()
             ResetCursor()
+            self.texture:SetAlpha(0.3)
         end)
 
         btn:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件
