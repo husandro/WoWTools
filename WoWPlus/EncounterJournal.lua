@@ -176,7 +176,7 @@ local function EncounterJournal_Set_All_Info_Text()
     local num=0
     for bossName, _ in pairs(tab) do
         num=num+1
-        text= text~='' and text..' ' or text
+        text= text~='' and text..', ' or text
         text=text.. getBossNameSort(bossName)
     end
     if text~='' then
@@ -187,7 +187,7 @@ local function EncounterJournal_Set_All_Info_Text()
     tab=WoWDate[e.Player.guid].Rare.boss--稀有怪
     text, num='',0
     for name, _ in pairs(tab) do
-        text=text~='' and text..' ' or text
+        text=text~='' and text..', ' or text
         text=text..getBossNameSort(name)
         num=num+1
     end
