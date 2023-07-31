@@ -1002,9 +1002,6 @@ local function Init()
             end)
         end
     end
-    hooksecurefunc(AreaPOIPinMixin, 'OnAcquired', function()
-        
-    end)
 end
 --[[
     panel.Texture= UIParent:CreateTexture()

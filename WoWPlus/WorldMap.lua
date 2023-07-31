@@ -11,6 +11,20 @@ local function create_Wolor_Font(self, size)
     return font
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --世界地图任务
 --###########
@@ -103,6 +117,18 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
         self.worldQuestTypeTips:SetShown(not isNormalQuest)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#######
 --任务日志
@@ -204,6 +230,21 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function getPlayerXY()--当前世界地图位置
     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图        
     if uiMapID then
@@ -263,6 +304,26 @@ local function sendPlayerPoint()--发送玩家位置
         print("Cannot set waypoints on this map")
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --###############
@@ -357,6 +418,27 @@ local function CursorPositionInt()
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --#########
@@ -657,6 +739,19 @@ local function set_AreaPOIPinMixin_OnAcquired(self)--地图POI提示 AreaPOIData
 
     self.Text:SetText(text or self.name or '')
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

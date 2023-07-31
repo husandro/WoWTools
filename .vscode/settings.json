@@ -3166,7 +3166,9 @@
         "MinimapBackdrop",
         "BaseMapPoiPinMixin",
         "UIDropDownMenu_RefreshAll",
-        "ScenarioPinMixin"
+        "ScenarioPinMixin",
+        "EncounterJournalDataProviderMixin",
+        "EncounterJournalPinMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
