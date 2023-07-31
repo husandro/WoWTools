@@ -93,9 +93,7 @@ end
 --#######################
 --小地图, 标记, 监视，文本
 --#######################
-
---世界任务 文本
-local function get_Quest_Text()
+local function get_Quest_Text()--世界任务 文本
     local text
     for questID, _ in pairs(Save.questIDs) do
         if C_TaskQuest.IsActive(questID) then
@@ -117,8 +115,8 @@ local function get_Quest_Text()
                     local secText= (secondsLeft and secondsLeft>0) and SecondsToClock(secondsLeft, true)
                     text= text and text..'|n' or ''
                     text= text..itemTexture
-                        ..'|cffff00ff'..questName..'|r'
-                        ..(secText or '')
+                        ..questName
+                        ..(secText and ' '..secText or '')
                 end
             end
         end
@@ -153,7 +151,8 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
             if widgetInfo.shownState== 1 and widgetInfo.text then
                 local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
                 if widgetInfo.hasTimer or (not all and not(icon and num) and hasTime) then
-                    text= '      |cffffffff'..widgetInfo.text:gsub('|n', '|n      ')..'|r|n'..name
+                    local text2= widgetInfo.text:match('^|n(.+)') or widgetInfo.text
+                    text= '      |cffffffff'..text2:gsub('|n', '|n      ')..'|r|n'..name
                     break
                 elseif icon and num then
                     local texture= icon:match('(|T.-):')
@@ -200,7 +199,11 @@ end
 local function set_vigentteButton_Text()
     local text
     if not (Save.hideVigentteCurrentOnMinimap and Save.hideVigentteCurrentOnWorldMap) then
-        for _, guid in pairs(C_VignetteInfo.GetVignettes() or {}) do
+        local onMinimap={}
+        local onWorldMap={}
+        local vignetteGUIDs=C_VignetteInfo.GetVignettes() or {}
+        local bestUniqueVignetteIndex = C_VignetteInfo.FindBestUniqueVignette(vignetteGUIDs)
+        for index, guid in pairs(vignetteGUIDs) do
             local info= C_VignetteInfo.GetVignetteInfo(guid) or {}
             if (info.atlasName or info.name)
                 and not info.isDead
@@ -210,10 +213,24 @@ local function set_vigentteButton_Text()
                     or (info.onWorldMap and not Save.hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
                 )
             then
-                text= text and text..'|n' or ''
-                text= text..(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name or '')
+                local vignette=(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name or '')
+                if vignette~='' then
+                    vignette= index==bestUniqueVignetteIndex and '|cnGREEN_FONT_COLOR:'..vignette..'|r'..e.Icon.select2 or vignette
+                    table.insert(info.onMinimap and onMinimap or onWorldMap, vignette)
+                end
             end
         end
+
+        local vigentteText
+        for _, vigentte in pairs(onMinimap) do
+            vigentteText= vigentteText and vigentteText..'|n'..vigentte or vigentte
+        end
+
+        vigentteText= (vigentteText and #onWorldMap>0) and vigentteText..'|n' or vigentteText
+        for _, vigentte in pairs(onWorldMap) do
+            vigentteText= vigentteText and vigentteText..'|n'..vigentte or vigentte
+        end
+        text= vigentteText
     end
 
     local qustText= get_Quest_Text()--世界任务
