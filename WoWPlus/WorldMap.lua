@@ -682,7 +682,6 @@ local function set_AreaPOIPinMixin_OnAcquired(self)--地图POI提示 AreaPOIData
     self.updateWidgetID=nil
     self.updateAreaPoiID=nil
     self:SetScript('OnUpdate', nil)
-
     if not self.Text and not Save.hide and (self.name or self.widgetSetID or self.areaPoiID) then
         self.Text= create_Wolor_Font(self, 10)
         self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
@@ -765,15 +764,40 @@ local function Init()
 
     hooksecurefunc(AreaPOIPinMixin,'OnAcquired', set_AreaPOIPinMixin_OnAcquired)--地图POI提示 AreaPOIDataProvider.lua
 
+
     Init_set_Map_ID()--显示地图ID
     hooksecurefunc(WorldMapFrame, 'OnMapChanged', set_Map_ID_Text)--Blizzard_WorldMap.lua
     setMapQuestList()--世界地图,任务, 加 - + 按钮
     --hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
+
+    hooksecurefunc(DungeonEntrancePinMixin, 'OnAcquired', function(self, info)
+        if not self.journalInstanceID or Save.hide or not self.name then
+            if self.Text then
+                self.Text:SetText('')
+            end
+            return
+        end
+        if not self.Text then
+            self.Text= create_Wolor_Font(self, 10)
+            self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
+        end
+        if self.Text then
+            self.Text:SetText(self.name)
+        end
+    end)
 end
 
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
+    if arg1=='Blizzard_FlightMap' then
+
+        hooksecurefunc(FlightMap_AreaPOIPinMixin,'OnAcquired', function(self2, info)
+            if self2.name and self2.name:find('Accam') then
+                print(self2.name)
+            end
+        end)
+    end
     if event == "ADDON_LOADED" and arg1==id then
             Save= WoWToolsSave[addName] or Save
 
@@ -788,7 +812,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+              --  panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 

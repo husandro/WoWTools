@@ -3168,7 +3168,18 @@
         "UIDropDownMenu_RefreshAll",
         "ScenarioPinMixin",
         "EncounterJournalDataProviderMixin",
-        "EncounterJournalPinMixin"
+        "EncounterJournalPinMixin",
+        "CreateFramePool",
+        "FramePool_HideAndClearAnchors",
+        "MapCanvasDataProviderMixin",
+        "MapCanvasPinMixin",
+        "WorldQuestDataProviderMixin",
+        "FlightMap_AreaPOIProviderMixin",
+        "AreaPOIDataProviderMixin",
+        "FlightMapMixin",
+        "FlightMap_AreaPOIPinMixin",
+        "DungeonEntrancePinMixin",
+        "EncounterJournal_OpenJournal"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -97,7 +97,7 @@ local function get_Spell_MapChallengeID(mapChallengeID)
     for _, tab in pairs(SpellTabs) do
         e.LoadDate({id=tab.spell, type='spell'})
         if mapChallengeID and tab.map==mapChallengeID then
-            return tab.spell
+            return tab.spell, tab.ins
         end
     end
 end
@@ -179,6 +179,28 @@ local function getBagKey(self, point, x, y, parent) --KEY链接
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --##################
 --挑战,钥石,插入,界面
@@ -470,6 +492,26 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --##################
 --史诗钥石地下城, 界面
 --词缀日程表AngryKeystones Schedule.lua
@@ -719,6 +761,32 @@ local function set_Kill_Info()--副本PVP团本
     end
 
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function set_All_Text()--所有记录
     --###
@@ -1013,6 +1081,26 @@ local function set_All_Text()--所有记录
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_Update()--Blizzard_ChallengesUI.lua
     local self= ChallengesFrame
     if not self.maps or #self.maps==0 then
@@ -1026,6 +1114,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
         local frame = self.DungeonIcons[i]
         if frame and frame.mapID then
             if not frame.setTips then
+                frame.spellID, frame.journalInstanceID= get_Spell_MapChallengeID(frame.mapID)
                 frame:HookScript('OnEnter', function(self2)--提示
                     if not self2.mapID or Save.hideIns then
                         return
@@ -1112,6 +1201,18 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     end
                     e.tips:Show()
                 end)
+
+                --[[if e.Player.husandro then
+                    frame:EnableMouse(true)
+                    frame:SetScript('OnMouseDown', function(self2)
+                        if self2.journalInstanceID and EncounterJournal then
+                            --if ( not EncounterJournal ) then
+                                --EncounterJournal_LoadUI();
+                                EncounterJournal_OpenJournal(DifficultyUtil.ID.DungeonChallenge, self2.journalInstanceID);
+                            --EncounterJournal_OpenJournal([difficultyID, instanceID, encounterID, sectionID, creatureID, itemID, tierIndex])
+                        end
+                    end)
+                end]]
 
                 frame.setTips=true
             end
@@ -1303,20 +1404,19 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             --#####
             --传送门
             --#####
-            local spellID
             if not Save.hidePort and not isInBat then
-                spellID= get_Spell_MapChallengeID(frame.mapID)
-                if spellID then
+                if frame.spellID then
                     if not frame.spellPort then
                         local h=frame:GetWidth()/3 +8
                         frame.spellPort= e.Cbtn(frame, {type=true, size={h, h}, atlas='WarlockPortal-Yellow-32x32'})
                         frame.spellPort:SetNormalAtlas('WarlockPortal-Yellow-32x32')
                         frame.spellPort:SetPoint('BOTTOMRIGHT', frame, 4,-4)
                         frame.spellPort:SetScript("OnEnter",function(self2)
-                            e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
+                            local parent= self2:GetParent()
+                            e.tips:SetOwner(parent, "ANCHOR_RIGHT")
                             e.tips:ClearLines()
-                            e.tips:SetSpellByID(self2.spellID)
-                            if not IsSpellKnown(self2.spellID) then--没学会
+                            e.tips:SetSpellByID(parent.spellID)
+                            if not IsSpellKnown(parent.spellID) then--没学会
                                 e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '法术尚未学会' or SPELL_FAILED_NOT_KNOWN))
                             end
                             e.tips:Show()
@@ -1324,7 +1424,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         end)
                         frame.spellPort:SetScript("OnLeave",function(self2)
                             e.tips:Hide()
-                            self2:SetAlpha((self2.spellID and IsSpellKnown(self2.spellID)) and 1 or 0.3)
+                            local spellID=self2:GetParent().spellID
+                            self2:SetAlpha(spellID and IsSpellKnown(spellID) and 1 or 0.3)
                         end)
                         frame.spellPort:SetScript('OnHide', function(self2)
                             self2:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
@@ -1332,20 +1433,19 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         frame.spellPort:RegisterEvent('SPELL_UPDATE_COOLDOWN')
                         frame.spellPort:SetScript('OnShow', function(self2)
                             self2:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                            e.SetItemSpellCool(self2, nil, self2.spellID)
+                            e.SetItemSpellCool(self2, nil, self2:GetParent().spellID)
                         end)
                         frame.spellPort:SetScript('OnEvent', function(self2)
-                            e.SetItemSpellCool(self2, nil, self2.spellID)
+                            e.SetItemSpellCool(self2, nil, self2:GetParent().spellID)
                         end)
                     end
                 end
             end
             if frame.spellPort and not isInBat then
-                frame.spellPort.spellID= spellID
-                if spellID and IsSpellKnown(spellID) then
-                    local name= GetSpellInfo(spellID)
+                if frame.spellID and IsSpellKnown(frame.spellID) then
+                    local name= GetSpellInfo(frame.spellID)
                     frame.spellPort:SetAttribute("type", "spell")
-                    frame.spellPort:SetAttribute("spell", name or spellID)
+                    frame.spellPort:SetAttribute("spell", name or frame.spellID)
                     frame.spellPort:SetAlpha(1)
                 else
                     frame.spellPort:SetAlpha(0.3)
@@ -1365,6 +1465,25 @@ local function set_Update()--Blizzard_ChallengesUI.lua
         ChallengesFrame.WeeklyInfo.Child.Description:Hide()
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --####
 --初始
