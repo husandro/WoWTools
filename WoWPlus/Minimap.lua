@@ -1002,13 +1002,17 @@ local function Init()
             end)
         end
     end
-
+    hooksecurefunc(AreaPOIPinMixin, 'OnAcquired', function()
+        
+    end)
+end
+--[[
     panel.Texture= UIParent:CreateTexture()
     panel.Texture:SetTexture("Interface\\Minimap\\POIIcons")
     panel.Texture:SetPoint('CENTER')
-    panel.Texture:SetSize(20,20)
+    panel.Texture:SetSize(16,16)
 
---[[
+
 local ATLAS_WITH_TEXTURE_KIT_PREFIX = "%s-%s";
 hooksecurefunc(MinimapMixin , 'SetTexture', function(poiInfo)
     print(poiInfo.atlasName, poiInfo.textureIndex)
@@ -1033,10 +1037,9 @@ hooksecurefunc(MinimapMixin , 'SetTexture', function(poiInfo)
 		panel.Texture:SetTexCoord(x1, x2, y1, y2);
 		
 	end
+    print('SetTexture')
 end)]]
-   
 
-end
 
 
 --###########

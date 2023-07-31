@@ -3165,7 +3165,8 @@
         "WorldMapFramePortrait",
         "MinimapBackdrop",
         "BaseMapPoiPinMixin",
-        "UIDropDownMenu_RefreshAll"
+        "UIDropDownMenu_RefreshAll",
+        "ScenarioPinMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
