@@ -116,7 +116,7 @@ local function get_Quest_Text()--世界任务 文本
                     text= text and text..'|n' or ''
                     text= text..itemTexture
                         ..questName
-                        ..(secText and ' '..secText or '')
+                        ..(secText and ' |cffffffff'..secText..'|r' or '')
                 end
             end
         end
@@ -144,7 +144,6 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
         secondsLeft= C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
         hasTime= secondsLeft and secondsLeft>0
     end
-
     for _, widget in ipairs(poiInfo.widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}) do
         if widget and widget.widgetID then--and  widget.widgetType==8 then
             local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID) or {}
@@ -159,7 +158,7 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
                     if texture then
                         icon= texture..':0|t'
                     end
-                    text= name..icon..'|cff00ff00'..num..'|r'
+                    text= name..icon..'|cffffffff'..num..'|r'
                     break
                 elseif hasTime then
                     text=name
@@ -169,27 +168,17 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
         end
     end
 
-    if hasTime then
-        text= text and text..'|n' or ''
-
-        text= text..name
+    if text then
         if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
             local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
             if info and info.textureKit then
                 text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
-            else
-                text= text..' '
             end
-        else
-            text= text..' '
         end
-        if secondsLeft and secondsLeft>0 then
+        if hasTime then
             local secText=SecondsToClock(secondsLeft,true)
             secText= secText:gsub('：',':')
-            if secondsLeft<= 600 then
-                secText= '|cnGREEN_FONT_COLOR:'..secText..'|r'
-            end
-            text= text..secText
+            text= text..' |cffffffff'..secText..'|r'
         end
     end
     return text
@@ -252,6 +241,7 @@ local function set_vigentteButton_Text()
     local areaPoiAllText
     for uiMapID, _ in pairs(Save.uiMapIDs) do--地图ID
         for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
+            
             if not Save.areaPoiIDs[areaPoiID] then
                 local area= get_areaPoiID_Text(uiMapID, areaPoiID, true)
                 if area then
@@ -260,6 +250,7 @@ local function set_vigentteButton_Text()
             end
         end
     end
+
     if areaPoiAllText then
         text= text and text..'|n|n'..areaPoiAllText or areaPoiAllText
     end
