@@ -795,15 +795,6 @@ local function Init_Menu(_, level)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    local mapName=''
-    for _, mapID in pairs(Save.uiMapIDs) do
-        local mapInfo=C_Map.GetMapInfo(mapID)
-        if mapInfo and mapInfo.name then
-            mapName= mapName..'|n'..mapInfo.name
-        end
-    end
-
-
     local tab={
         DifficultyUtil.ID.Raid40,
         DifficultyUtil.ID.RaidLFR,
