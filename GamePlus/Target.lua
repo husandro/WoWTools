@@ -273,7 +273,10 @@ end
 --####
 local function set_Register_Event()
     --isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
-    isIns= IsInInstance() and GetNumGroupMembers()>2 or C_PvP.IsBattleground() or C_PvP.IsArena()
+    isIns=  C_PvP.IsBattleground()
+            or C_PvP.IsArena()
+            or IsInInstance() and (GetNumGroupMembers()>2 or C_ChallengeMode.IsChallengeModeActive())
+
 
     targetFrame:UnregisterAllEvents()
     targetFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
