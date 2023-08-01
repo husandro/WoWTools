@@ -273,6 +273,17 @@ local function check_Button_Enabled_Disabled()
     return isDisabled
 end
 
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Button_Menu(_, level, menuList)--菜单
     local info
     if menuList=='CurrentVignette' then--当前 Vingnette
@@ -492,6 +503,19 @@ local function Init_Button_Menu(_, level, menuList)--菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function Init_Set_Button()--小地图, 标记, 文本
     local btn= panel.Button
@@ -746,10 +770,6 @@ end
 
 
 
-
-
-
-
 local function Init_Menu(_, level)
     local info={
         text=e.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT,
@@ -844,6 +864,15 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
 local function click_Func(self, d)
     local key= IsModifierKeyDown()
     if d=='LeftButton' then
@@ -892,11 +921,27 @@ local function enter_Func(self)
     e.tips:Show()
 end
 
+
+
+
+
+
+
+
+
 --####################
 --添加，游戏，自带，菜单
 --###################
 WowTools_OnAddonCompartmentClick= click_Func
 WowTools_OnAddonCompartmentFuncOnEnter= enter_Func
+
+
+
+
+
+
+
+
 
 --##############
 --副本，难图，指示
@@ -973,6 +1018,15 @@ local function Init_InstanceDifficulty()--副本，难图，指示
     end)
 end
 
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -1047,6 +1101,13 @@ hooksecurefunc(MinimapMixin , 'SetTexture', function(poiInfo)
 	end
     print('SetTexture')
 end)]]
+
+
+
+
+
+
+
 
 
 
