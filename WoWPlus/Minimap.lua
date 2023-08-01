@@ -12,12 +12,14 @@ local Save={
         --hideVigentteCurrentOnMinimap=true,--当前，小地图，标记
         --hideVigentteCurrentOnWorldMap=true,--当前，世界地图，标记
         questIDs={},--世界任务, 监视, ID {[任务ID]=true}
-        areaPoiIDs={[7492]= 2025},--{[areaPoiID]= 地图ID}
+        areaPoiIDs={},--[7492]= 2025},--{[areaPoiID]= 地图ID}
         uiMapIDs= {},--地图ID 监视, areaPoiIDs，
+        currentMapAreaPoiIDs=true,--当前地图，监视, areaPoiIDs，
 
         miniMapPoint={},--保存小图地, 按钮位置
         useServerTimer=true,--小时图，使用服务器, 时间
        --disabledInstanceDifficulty=true,--副本，难图，指示
+
 
 }
 
@@ -239,9 +241,13 @@ local function set_vigentteButton_Text()
     end
 
     local areaPoiAllText
-    for uiMapID, _ in pairs(Save.uiMapIDs) do--地图ID
+    local mapIDS= Save.uiMapIDs
+    local mapID= Save.currentMapAreaPoiIDs and C_Map.GetBestMapForUnit("player")
+    if mapID and mapID>0 then
+        mapIDS[mapID]=true
+    end
+    for uiMapID, _ in pairs(mapIDS) do--地图ID
         for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
-            
             if not Save.areaPoiIDs[areaPoiID] then
                 local area= get_areaPoiID_Text(uiMapID, areaPoiID, true)
                 if area then
@@ -257,13 +263,21 @@ local function set_vigentteButton_Text()
     panel.Button.Frame.text:SetText(text or '..')
 end
 
+
+
+
+
+
+
+
+
 --检测，显示，禁用，Button, 文本
 local function check_Button_Enabled_Disabled()
     local self= panel.Button
     local isDisabled= not Save.vigentteButton or IsInInstance() or UnitAffectingCombat('player') or WorldMapFrame:IsShown()
     if self then
         self:SetShown(not isDisabled)
-        self.Frame:SetShown(Save.vigentteButtonShowText and not isDisabled)
+        self.Frame:SetShown(Save.vigentteButtonShowText and not isDisabled and true or false)
         if isDisabled or not Save.vigentteButtonShowText then
             self.Frame.text:SetText('')
         else
@@ -272,7 +286,6 @@ local function check_Button_Enabled_Disabled()
     end
     return isDisabled
 end
-
 
 
 
@@ -394,6 +407,16 @@ local function Init_Button_Menu(_, level, menuList)--菜单
         end
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
+            text= e.onlyChinese and '当前地图' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP),
+            checked= Save.currentMapAreaPoiIDs,
+            tooltipOnButton= true,
+            tooltipTitle= C_Map.GetBestMapForUnit("player"),
+            func= function()
+                Save.currentMapAreaPoiIDs= not Save.currentMapAreaPoiIDs and true or nil
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        info={
             text= e.onlyChinese and '全部清除' or CLEAR_ALL,
             notCheckable=true,
             func= function()
@@ -448,7 +471,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
         tooltipOnButton=true,
         keepShownOnClick=true,
         func= function()
-            Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or false
+            Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or nil
             check_Button_Enabled_Disabled()
             panel.Button:set_Texture()
         end
@@ -492,7 +515,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     num=0
-    for _ in pairs(Save.uiMapIDs) do--地图
+    for _, _ in pairs(Save.uiMapIDs) do--地图
         num= num+1
     end
     info={
@@ -750,7 +773,13 @@ local function Init_Set_Button()--小地图, 标记, 文本
             if not uiMapID then
                 self.setTrackingButton:SetNormalTexture(0)
             else
-               self.setTrackingButton:SetNormalAtlas(Save.uiMapIDs[uiMapID] and e.Icon.select or 'VignetteKillElite')
+                local atlas
+                if Save.uiMapIDs[uiMapID] then
+                    atlas= e.Icon.select
+                else
+                    atlas='VignetteKillElite'
+                end
+               self.setTrackingButton:SetNormalAtlas(atlas)
             end
         end
         hooksecurefunc(WorldMapFrame, 'OnMapChanged', WorldMapFrame.Set_TrackingButton_Texture)--uiMapIDs, 添加，移除 --Blizzard_WorldMap.lua
@@ -1122,13 +1151,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.vigentteButtonTextScale= Save.vigentteButtonTextScale or 1
             Save.uiMapIDs= Save.uiMapIDs or {}
-            Save.questIDs= Save.questIDs or {
-                                                [74378]=true,
-                                            }
-
-            Save.areaPoiIDs= Save.areaPoiIDs or {
-                [7492]= 2025
-            }
+            Save.questIDs= Save.questIDs or {}
+            Save.areaPoiIDs= Save.areaPoiIDs or {}
 
             addName2= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)
 
