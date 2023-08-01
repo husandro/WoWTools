@@ -3184,7 +3184,8 @@
         "GARRISON_ACTIVATE_FOLLOWER",
         "EQUIP_CONTAINER_REAGENT",
         "HybridMinimapMixin",
-        "FlightPointPinMixin"
+        "FlightPointPinMixin",
+        "VignetteDataProviderMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

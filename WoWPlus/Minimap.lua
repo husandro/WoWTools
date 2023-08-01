@@ -15,6 +15,7 @@ local Save={
         areaPoiIDs={[7492]= 2025},--{[areaPoiID]= 地图ID}
         uiMapIDs= {},--地图ID 监视, areaPoiIDs，
         currentMapAreaPoiIDs=true,--当前地图，监视, areaPoiIDs，
+        showID= e.Player.husandro,--显示ID
 
         miniMapPoint={},--保存小图地, 按钮位置
         useServerTimer=true,--小时图，使用服务器, 时间
@@ -119,6 +120,7 @@ local function get_Quest_Text()--世界任务 文本
                     text= text..itemTexture
                         ..questName
                         ..(secText and ' |cffffffff'..secText..'|r' or '')
+                        ..(Save.showID and ' |cffffffffQ|r'..questID or '')
                 end
             end
         end
@@ -153,7 +155,10 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
                 local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
                 if widgetInfo.hasTimer or (not all and not(icon and num) and hasTime) then
                     local text2= widgetInfo.text:match('^|n(.+)') or widgetInfo.text
-                    text= '      |cffffffff'..text2:gsub('|n', '|n      ')..'|r|n'..name
+                    text= '      |cffffffff'..text2:gsub('|n', '|n      ')
+                            ..'|r|n'
+                            ..name
+                            ..(Save.showID and ' |cffffffffW|r'..widget.widgetID or '')
                     break
                 elseif icon and num then
                     local texture= icon:match('(|T.-):')
@@ -182,6 +187,9 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
             secText= secText:gsub('：',':')
             text= text..' |cffffffff'..secText..'|r'
         end
+        if Save.showID then
+            text= text..' |cffffffffA|r'..areaPoiID
+        end
     end
     return text
 end
@@ -209,8 +217,8 @@ local function set_vigentteButton_Text()
                     vignette= vignette..'|T1059121:0|t'
                 end
                 vignette= index==bestUniqueVignetteIndex and '|cnGREEN_FONT_COLOR:'..vignette..'|r'..e.Icon.star2 or vignette
-                if e.Player.husandro then
-                    vignette= vignette.. ' '..info.vignetteID
+                if Save.showID then
+                    vignette= vignette.. ' |cffffffffV|r'..info.vignetteID
                 end
                 table.insert(info.onMinimap and onMinimap or onWorldMap, vignette)
                 
@@ -528,6 +536,17 @@ local function Init_Button_Menu(_, level, menuList)--菜单
         notCheckable=true,
         menuList= 'uiMapIDs',
         hasArrow=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
+        text= (e.onlyChinese and '显示' or SHOW)..' ID',
+        tooltipOnButton=true,
+        tooltipTitle= 'Q= questID|nV= vignetteID|nW= widgetID|nA= areaPoiID',
+        func= function()
+            Save.showID= not Save.showID and true or nil
+        end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
@@ -1101,6 +1120,10 @@ local function Init()
             end)
         end
     end
+
+    hooksecurefunc(VignetteDataProviderMixin, 'RefreshAllData', function()
+        print('RefreshAllData')
+    end)
 end
 --[[
     panel.Texture= UIParent:CreateTexture()
