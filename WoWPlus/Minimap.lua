@@ -542,6 +542,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= (e.onlyChinese and '显示' or SHOW)..' ID',
+        checked= Save.showID,
         tooltipOnButton=true,
         tooltipTitle= 'Q= questID|nV= vignetteID|nW= widgetID|nA= areaPoiID',
         func= function()
