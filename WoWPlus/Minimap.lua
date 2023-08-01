@@ -205,10 +205,15 @@ local function set_vigentteButton_Text()
                 )
             then
                 local vignette=(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name or '')
-                if vignette~='' then
-                    vignette= index==bestUniqueVignetteIndex and '|cnGREEN_FONT_COLOR:'..vignette..'|r'..e.Icon.star2 or vignette
-                    table.insert(info.onMinimap and onMinimap or onWorldMap, vignette)
+                if info.vignetteID == 5715 then--翻动的泥土堆
+                    vignette= vignette..'|T1059121:0|t'
                 end
+                vignette= index==bestUniqueVignetteIndex and '|cnGREEN_FONT_COLOR:'..vignette..'|r'..e.Icon.star2 or vignette
+                if e.Player.husandro then
+                    vignette= vignette.. ' '..info.vignetteID
+                end
+                table.insert(info.onMinimap and onMinimap or onWorldMap, vignette)
+                
             end
         end
 
@@ -1096,7 +1101,6 @@ local function Init()
             end)
         end
     end
-
 end
 --[[
     panel.Texture= UIParent:CreateTexture()
