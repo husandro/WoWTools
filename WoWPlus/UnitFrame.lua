@@ -299,7 +299,7 @@ local function set_PartyFrame()--PartyFrame.lua
                     if exists2 then
                         if UnitIsUnit(self2.unit, 'player') then--我
                             self2.Portrait:SetAtlas('auctionhouse-icon-favorite')
-                        elseif UnitHealth(unit)<=0 then--死亡
+                        elseif UnitIsDeadOrGhost(self2.unit) then--死亡
                             self2.Portrait:SetAtlas('xmarksthespot')
                         else
                             local index = GetRaidTargetIndex(self2.unit)
@@ -573,8 +573,8 @@ local function set_PartyFrame()--PartyFrame.lua
                 frame.texture:SetAllPoints(frame)
                 frame.set_Active= function(self2)
                     local find= false
-                    if UnitIsConnected(self2.unit) and UnitIsPlayer(self2.unit) then--被魅惑
-                        if UnitIsCharmed(self2.unit) then
+                    if UnitIsConnected(self2.unit) and UnitIsPlayer(self2.unit) then
+                        if UnitIsCharmed(self2.unit) then--被魅惑
                             self2.texture:SetAtlas('CovenantSanctum-Reservoir-Idle-NightFae-Spiral3')
                             find= true
                         elseif UnitIsFeignDeath(self2.unit) then--假死

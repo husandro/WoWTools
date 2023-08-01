@@ -12,7 +12,7 @@ local Save={
         --hideVigentteCurrentOnMinimap=true,--当前，小地图，标记
         --hideVigentteCurrentOnWorldMap=true,--当前，世界地图，标记
         questIDs={},--世界任务, 监视, ID {[任务ID]=true}
-        areaPoiIDs={},--[7492]= 2025},--{[areaPoiID]= 地图ID}
+        areaPoiIDs={[7492]= 2025},--{[areaPoiID]= 地图ID}
         uiMapIDs= {},--地图ID 监视, areaPoiIDs，
         currentMapAreaPoiIDs=true,--当前地图，监视, areaPoiIDs，
 
@@ -206,7 +206,7 @@ local function set_vigentteButton_Text()
             then
                 local vignette=(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name or '')
                 if vignette~='' then
-                    vignette= index==bestUniqueVignetteIndex and '|cnGREEN_FONT_COLOR:'..vignette..'|r'..e.Icon.select2 or vignette
+                    vignette= index==bestUniqueVignetteIndex and '|cnGREEN_FONT_COLOR:'..vignette..'|r'..e.Icon.star2 or vignette
                     table.insert(info.onMinimap and onMinimap or onWorldMap, vignette)
                 end
             end
