@@ -16,6 +16,17 @@ local sec=3--时间 timer
 local button, tipsButton
 local panel= CreateFrame("Frame")
 
+
+
+
+
+
+
+
+
+
+
+
 local getRewardInfo=function(dungeonID)--FB奖励
     local t=''
     if not dungeonID then
@@ -106,6 +117,20 @@ local function get_Queued_List(type, reTips, reRole)--排队情况
     end
     return num, m
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#####
 --小眼睛
@@ -620,6 +645,37 @@ local function Init_tipsButton()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###############
 --副本， 菜单列表
 --###############
@@ -836,6 +892,26 @@ local set_Raid_Menu_List=function(level)--团队本
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1107,6 +1183,25 @@ end
     end
 end)]]
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#######
 --初始菜单
 --#######
@@ -1336,6 +1431,31 @@ local function InitList(self, level, type)--LFDFrame.lua
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local ExitIns
 local function exit_Instance()
     local ins
@@ -1363,29 +1483,6 @@ local function exit_Instance()
     print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or LEAVE)..'|r'..(name or e.onlyChinese and '副本' or INSTANCE), name and '|cnGREEN_FONT_COLOR:'..wowSave[INSTANCE][name]..'|r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1) or '')
     ExitIns=nil
 end
-
-StaticPopupDialogs[addName..'ExitIns']={
-    text =id..'('..addName..')|n|n|cff00ff00'..(e.onlyChinese and '离开' or LEAVE)..'|r: ' ..(e.onlyChinese and '副本' or INSTANCE).. '|cff00ff00 '..sec..' |r'..(e.onlyChinese and '秒' or SECONDS),
-    button1 = LEAVE,
-    button2 = CANCEL,
-    OnAccept=function()
-        ExitIns=true
-        exit_Instance()
-    end,
-    OnCancel=function(_, _, d)
-        if d=='clicked' then
-            ExitIns=nil
-            print(id,addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
-        end
-    end,
-    EditBoxOnEscapePressed = function(s)
-        s:SetAutoFocus(false)
-        s:ClearFocus()
-        ExitIns=nil
-        print(id,addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
-        s:GetParent():Hide()
-    end,
-whileDead=true,timeout=sec, hideOnEscape =true,}
 
 local function setIslandButton(self)--离开海岛按钮
     local find
@@ -1444,6 +1541,30 @@ local function setIslandButton(self)--离开海岛按钮
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function setHoliday()--节日, 提示, button.texture
     --button.dungeonID=nil
     --button.name=nil
@@ -1489,6 +1610,32 @@ local function setHoliday()--节日, 提示, button.texture
     end
     setTexture(dungeonID, nil, name, texturePath,  atlas)--设置图标
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#######
 --自动ROLL
@@ -1587,10 +1734,57 @@ local function set_ROLL_Check(frame)
     set_Timer_Text(frame)--提示，剩余时间
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
 local function Init()
+    StaticPopupDialogs[addName..'ExitIns']={
+        text =id..'('..addName..')|n|n|cff00ff00'..(e.onlyChinese and '离开' or LEAVE)..'|r: ' ..(e.onlyChinese and '副本' or INSTANCE).. '|cff00ff00 '..sec..' |r'..(e.onlyChinese and '秒' or SECONDS),
+        button1 = LEAVE,
+        button2 = CANCEL,
+        OnAccept=function()
+            ExitIns=true
+            exit_Instance()
+        end,
+        OnCancel=function(_, _, d)
+            if d=='clicked' then
+                ExitIns=nil
+                print(id,addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
+            end
+        end,
+        EditBoxOnEscapePressed = function(s)
+            s:SetAutoFocus(false)
+            s:ClearFocus()
+            ExitIns=nil
+            print(id,addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
+            s:GetParent():Hide()
+        end,
+    whileDead=true,timeout=sec, hideOnEscape =true,}
+
     button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, true)
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
@@ -2052,6 +2246,33 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
         button.RoleInfo:SetShown(false)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --###########
 --加载保存数据

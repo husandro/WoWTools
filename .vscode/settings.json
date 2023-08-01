@@ -3179,7 +3179,9 @@
         "FlightMapMixin",
         "FlightMap_AreaPOIPinMixin",
         "DungeonEntrancePinMixin",
-        "EncounterJournal_OpenJournal"
+        "EncounterJournal_OpenJournal",
+        "GarrisonTalentButtonMixin",
+        "GARRISON_ACTIVATE_FOLLOWER"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

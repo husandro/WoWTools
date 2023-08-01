@@ -1661,6 +1661,23 @@ local function Init()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --##########
 --设置 panel
 --##########
@@ -1757,7 +1774,7 @@ local function Init_Panel()
         Save.hideModel= not Save.hideModel and true or nil
         set_Cursor_Tips(self)
     end)
-    
+
     local modelLeft=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     modelLeft.text:SetText(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT)
     modelLeft:SetPoint('LEFT', modelCheck.text, 'RIGHT', 2, 0)
@@ -1912,6 +1929,24 @@ local function Init_Panel()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
@@ -2037,6 +2072,49 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         e.tips:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ');
                         e.tips:Show()
                     end
+                end
+            end)
+
+        elseif arg1=='Blizzard_OrderHallUI' then--要塞，技能树
+            hooksecurefunc(GarrisonTalentButtonMixin, 'OnEnter', function(self2)--Blizzard_OrderHallTalents.lua
+                local info=self2.talent--C_Garrison.GetTalentInfo(self.talent.id);
+                if not info or not info.id then
+                    return
+                end
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine('talentID '..info.id, info.icon and '|T'..info.icon..':0|t'..info.icon)
+                if info.ability and info.ability.id and info.ability.id>0 then
+                    e.tips:AddDoubleLine('ability '..info.ability.id, info.ability.icon and '|T'..info.ability.icon..':0|t'..info.ability.icon)
+                end
+                e.tips:Show()
+            end)
+            hooksecurefunc(GarrisonTalentButtonMixin, 'SetTalent', function(self2)--是否已激活, 和等级
+                local info= self2.talent
+                if not info or not info.id then
+                    return
+                end
+
+                if info.researched and not self2.researchedTexture then
+                    self2.researchedTexture= self2:CreateTexture(nil, 'OVERLAY')
+                    local w,h= self2:GetSize()
+                    self2.researchedTexture:SetSize(w/3, h/3)
+                    self2.researchedTexture:SetPoint('BOTTOMRIGHT')
+                    self2.researchedTexture:SetAtlas(e.Icon.select)
+                end
+                if self2.researchedTexture then
+                    self2.researchedTexture:SetShown(info.researched)
+                end
+
+                local rank
+                if info.talentMaxRank and info.talentMaxRank>1 and info.talentRank~= info.talentMaxRank then
+                    if not info.rankText then
+                        info.rankText= e.Cstr(self2)
+                        info.rankText:SetPoint('BOTTOMLEFT')
+                    end
+                    rank= '|cnGREEN_FONT_COLOR:'..(info.talentRank or 0)..'|r/'..info.talentMaxRank
+                end
+                if info.rankText then
+                    info.rankText:SetText(rank or '')
                 end
             end)
         end

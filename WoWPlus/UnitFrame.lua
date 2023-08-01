@@ -1178,10 +1178,6 @@ local function Init_UnitFrame()
     end)
 
     C_Timer.After(2, set_ToggleWarMode)--设置, 战争模式
-
-    StaticPopup1:HookScript('OnHide', function (self)
-        self:Hide()
-    end)
 end
 
 
