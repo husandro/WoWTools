@@ -5,7 +5,7 @@ local Save={
         [190198]=5,
         [201791]=1,--龙类驯服手册》
         [198969]=1,--守护者的印记,  研究以使你的巨龙群岛工程学知识提高1点。
-        
+
         [198790]=1,--10.0 加，声望物品
         [201781]=1,
         [201783]=1,
@@ -92,7 +92,7 @@ local Save={
         --10.1
         [203708]=true,--蜗壳哨
         [205982]=true,--失落的挖掘地图
-        
+
     },
     pet=true,
     open=true,
@@ -102,7 +102,7 @@ local Save={
     ski=true,
     alt=true,
     noItemHide= not e.Player.husandro,
-    disabledCheckReagentBag= e.Player.husandro,--禁用，检查，材料包
+    --disabledCheckReagentBag= true,--禁用，检查，材料包
 }
 local Combat, Bag, Opening= nil,{},nil
 local panel= CreateFrame("Frame")
@@ -168,7 +168,7 @@ end
 
 
 local equipItem--是装备时, 打开角色界面
-local function getItems()--取得背包物品信息
+local function get_Items()--取得背包物品信息
     if UnitAffectingCombat('player') then
         Combat=true
         return
@@ -179,7 +179,7 @@ local function getItems()--取得背包物品信息
     Opening= true
     equipItem=nil
     Bag={}
-    local bagMax= Save.disabledCheckReagentBag and NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES or NUM_REAGENTBAG_FRAMES
+    local bagMax= not Save.disabledCheckReagentBag and NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES or NUM_BAG_FRAMES
     for bag= Enum.BagIndex.Backpack, bagMax do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
@@ -204,7 +204,7 @@ local function getItems()--取得背包物品信息
 
                 else
                     local dateInfo= e.GetTooltipData({hyperLink=info.hyperlink, red=true, onlyRed=true, text={}})
-                    
+
                     if not dateInfo.red and C_PlayerInfo.CanUseItem(info.itemID) then--不出售, 可以使用
                         local _, _, _, _, itemMinLevel, _, _, _, itemEquipLoc, _, _, classID2, subclassID= GetItemInfo(info.hyperlink)
                         classID= classID or classID2
@@ -292,7 +292,7 @@ local function setDisableCursorItem()--禁用当物品
             Save.use[itemID]=nil
         end
     end
-    getItems()
+    get_Items()
 end
 
 
@@ -319,6 +319,7 @@ local function setMenuList(self, level, menuList)--主菜单
     if menuList=='USE' then
         local find
         for itemID, num in pairs(Save.use) do--二级, 使用
+            e.LoadDate({id=itemID, type='item'})
             info={
                 text= (select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID)).. (num>1 and ' |cnGREEN_FONT_COLOR:x'..num..'|r' or ''),
                 icon= C_Item.GetItemIconByID(itemID),
@@ -329,7 +330,7 @@ local function setMenuList(self, level, menuList)--主菜单
                 tooltipText=num>1 and '|n'..(e.onlyChinese and '组合物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..'|n'..(e.onlyChinese and '数量' or AUCTION_STACK_SIZE)..': '..num..'|nitemID: '..itemID,
                 func=function()
                     Save.use[itemID]=nil
-                    getItems()
+                    get_Items()
                 end,
             }
             e.LibDD:UIDropDownMenu_AddButton(info,level)
@@ -343,7 +344,7 @@ local function setMenuList(self, level, menuList)--主菜单
                 keepShownOnClick=true,
                 func=function()
                     Save.use={}
-                    getItems()
+                    get_Items()
                     e.LibDD:CloseDropDownMenus()
                 end
             }
@@ -360,6 +361,7 @@ local function setMenuList(self, level, menuList)--主菜单
     elseif menuList=='NO' then
         local find
         for itemID, _ in pairs(Save.no) do
+            e.LoadDate({id=itemID, type='item'})
             info={
                 text=select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID),
                 icon=C_Item.GetItemIconByID(itemID),
@@ -370,7 +372,7 @@ local function setMenuList(self, level, menuList)--主菜单
                 tooltipText= 'itemID: '..itemID,
                 func=function()
                     Save.no[itemID]=nil
-                    getItems()
+                    get_Items()
                 end,
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -384,7 +386,7 @@ local function setMenuList(self, level, menuList)--主菜单
                 keepShownOnClick=true,
                 func=function()
                     Save.no={}
-                    getItems()
+                    get_Items()
                     e.LibDD:CloseDropDownMenus()
                 end,
             }
@@ -457,7 +459,7 @@ local function setMenuList(self, level, menuList)--主菜单
         keepShownOnClick=true,
         func=function()
             Save.open= not Save.open and true or nil
-            getItems()
+            get_Items()
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -470,7 +472,7 @@ local function setMenuList(self, level, menuList)--主菜单
         keepShownOnClick=true,
         func=function()
             Save.pet= not Save.pet and true or nil
-            getItems()
+            get_Items()
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -481,7 +483,7 @@ local function setMenuList(self, level, menuList)--主菜单
         keepShownOnClick=true,
         func=function()
             Save.toy= not Save.toy and true or nil
-            getItems()
+            get_Items()
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -492,7 +494,7 @@ local function setMenuList(self, level, menuList)--主菜单
         keepShownOnClick=true,
         func=function()
             Save.mount= not Save.mount and true or nil
-            getItems()
+            get_Items()
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -503,7 +505,7 @@ local function setMenuList(self, level, menuList)--主菜单
         keepShownOnClick=true,
         func=function()
             Save.mago= not Save.mago and true or nil
-            getItems()
+            get_Items()
         end,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -514,7 +516,7 @@ local function setMenuList(self, level, menuList)--主菜单
         keepShownOnClick=true,
         func=function()
             Save.ski= not Save.ski and true or nil
-            getItems()
+            get_Items()
         end,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -525,12 +527,12 @@ local function setMenuList(self, level, menuList)--主菜单
         keepShownOnClick=true,
         func=function()
             Save.alt= not Save.alt and true or nil
-            getItems()
+            get_Items()
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    
+
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= e.onlyChinese and '材料包' or EQUIP_CONTAINER_REAGENT:gsub(EQUIPSET_EQUIP,''),
@@ -539,6 +541,7 @@ local function setMenuList(self, level, menuList)--主菜单
         tooltipTitle= e.onlyChinese and '检查' or WHO,
         func= function()
             Save.disabledCheckReagentBag= not Save.disabledCheckReagentBag and true or nil
+            get_Items()
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -613,7 +616,7 @@ local function Init()
     button.count=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
     button.count:SetPoint('BOTTOM',0,2)
 
-    getItems()--设置属性
+    get_Items()--设置属性
 
     button:SetScript("OnEnter",function(self)
         local infoType, itemID, itemLink = GetCursorInfo()
@@ -655,13 +658,13 @@ local function Init()
                     num = num<1 and 1 or num
                     Save.use[data.itemID]=num
                     Save.no[data.itemID]=nil
-                    getItems()--取得背包物品信息
+                    get_Items()--取得背包物品信息
                     print(id, '|cnGREEN_FONT_COLOR:'..addName..'|r', num>1 and (e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r' or '', data.itemLink)
                 end,
                 OnAlt = function(self2, data)
                     Save.no[data.itemID]=true
                     Save.use[data.itemID]=nil
-                    getItems()--取得背包物品信息
+                    get_Items()--取得背包物品信息
                     print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r', data.itemLink)
                 end,
                 EditBoxOnTextChanged=function(self2)
@@ -725,7 +728,7 @@ local function Init()
         end
     end)
 
-    C_Timer.After(2, function() getItems() end)
+    C_Timer.After(2, get_Items)
 end
 
 --##########
@@ -747,7 +750,7 @@ local function set_Events()--注册， 事件
         panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
         panel:RegisterEvent('PLAYER_REGEN_DISABLED')
         panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-        getItems()
+        get_Items()
     end
 end
 
@@ -781,7 +784,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         set_Events()--注册， 事件
 
     elseif  event=='BAG_UPDATE_DELAYED' then-- event=='BAG_UPDATE' orthen
-            getItems()
+            get_Items()
 
     elseif event=='PLAYER_REGEN_DISABLED' then
         if Save.noItemHide then
@@ -790,7 +793,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_REGEN_ENABLED' then
         if Combat then
-            getItems()
+            get_Items()
         else
             button:SetShown(Bag.bag or not Save.noItemHide)
         end
