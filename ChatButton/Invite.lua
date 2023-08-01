@@ -888,58 +888,87 @@ local function Init()
      --end)
 
 
+
+
+
+
+
+
+
+
+
     --#########
     --接受, 召唤
     --#########
-    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnShow",function(self)--StaticPopup.lua
-        e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
-        if not Save.Summon or IsModifierKeyDown() or not self.button1:IsEnabled() or UnitAffectingCombat('player') then
-            e.Ccool(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
+    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate",function(self)
+        if IsModifierKeyDown() or self.isCancelledAuto then
+            if not self.isCancelledAuto then
+                e.Ccool(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
+                if self.SummonTimer and not self.SummonTimer:IsCancelled() then self.SummonTimer:Cancel() end--取消，计时
+            end
+            self.isCancelledAuto=true
             return
         end
-        --if not UnitAffectingCombat("player") and PlayerCanTeleport() then
-        print(id, addName, e.onlyChinese and '召唤' or SUMMON,
-             C_SummonInfo.GetSummonConfirmSummoner(),
-             C_SummonInfo.GetSummonConfirmAreaName()
-            )
-        e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
-        if self.SummonTimer then self.SummonTimer:Cancel() end
-        self:SetScript('OnUpdate', function(self2)
-            if IsModifierKeyDown() and self2.SummonTimer then
-                self2.SummonTimer:Cancel()
-            end
-        end)
-        self.SummonTimer= C_Timer.NewTimer(3, function()
-            if not UnitAffectingCombat("player") and PlayerCanTeleport() and not IsModifierKeyDown() then
-                C_SummonInfo.ConfirmSummon()
-                StaticPopup_Hide("CONFIRM_SUMMON")
-                if IsInGroup() and not IsInRaid() then
-                    --region= GetCurrentRegion(),--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-                    local text
-                    if (e.Player.region==1 or e.Player.region==3) then
-                        text = 'thx, sum me'
-                    elseif e.Player.region==5 then
-                        text= '谢谢你的，召唤'
-                    else
-                        text= VOICEMACRO_16_Dw_1 ..', '..SUMMON
-                    end
-                    e.Chat('{rt1}'..text..'{rt1}')
+
+        if not UnitAffectingCombat("player") and PlayerCanTeleport() then--启用，召唤
+            if not self.enabledAutoSummon then
+                self.enabledAutoSummon= true
+                if self.SummonTimer and not self.SummonTimer:IsCancelled() then
+                    self.SummonTimer:Cancel()
                 end
+                e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
+                self.SummonTimer= C_Timer.NewTimer(3, function()
+                    if not UnitAffectingCombat("player") and PlayerCanTeleport() then
+                        C_SummonInfo.ConfirmSummon()
+                        StaticPopup_Hide("CONFIRM_SUMMON")
+                        if IsInGroup() and not IsInRaid() then
+                            local text
+                            if (e.Player.region==1 or e.Player.region==3) then
+                                text = 'thx, sum me'
+                            elseif e.Player.region==5 then
+                                text= '谢谢你的，召唤'
+                            else
+                                text= VOICEMACRO_16_Dw_1 ..', '..SUMMON
+                            end
+                            e.Chat('{rt1}'..text..'{rt1}')
+                        end
+                    end
+                end)
             end
-        end)
+
+        elseif self.enabledAutoSummon then--取消，召唤
+            e.Ccool(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
+            if self.SummonTimer and not self.SummonTimer:IsCancelled() then self.SummonTimer:Cancel() end--取消，计时
+            self.enabledAutoSummon=nil
+        end
     end)
-    --[[hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnCancel",function(self)
-        if self.SummonTimer then
-            self.SummonTimer:Cancel()
-        end
-        self:SetScript('OnUpdate', nil)
-    end)]]
+
     StaticPopupDialogs["CONFIRM_SUMMON"].OnHide= function(self)
-        if self.SummonTimer then
-            self.SummonTimer:Cancel()
-        end
-        self:SetScript('OnUpdate', nil)
+        if self.SummonTimer then self.SummonTimer:Cancel() end
+        if self.cooldown then self.cooldown:Clear() end
+        self.enabledAutoSummon=nil
+        self.isCancelled=nil
     end
+
+    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnShow",function(self)--StaticPopup.lua
+        e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
+        local name= C_SummonInfo.GetSummonConfirmSummoner()
+        local info= e.GroupGuid[name]
+        if info and info.guid then
+            local playerInfo=e.GetPlayerInfo({guid=info.guid, reLink=true})
+            name= playerInfo~='' and playerInfo or name
+        end
+        print(id, addName, e.onlyChinese and '召唤' or SUMMON, name, '|cnGREEN_FONT_COLOR:', C_SummonInfo.GetSummonConfirmAreaName())
+    end)
+
+
+
+
+
+
+
+
+
 
 
     if UnitAffectingCombat('player') and (Save.setFrameFun or Save.setFucus) then
@@ -960,7 +989,7 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('LFG_LIST_APPLICATION_STATUS_UPDATED')
 
-panel:SetScript("OnEvent", function(_, event, arg1, ...)
+panel:SetScript("OnEvent", function(self, event, arg1, ...)
     if event == "ADDON_LOADED" then
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button

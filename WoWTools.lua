@@ -679,7 +679,6 @@ e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
         self.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
         self.cooldown:SetHideCountdownNumbers(HideCountdownNumbers)--隐藏数字
         self.cooldown:SetReverse(Reverse)--控制冷却动画的方向
-        self.cooldown:Raise()
         self.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge");
         if SwipeTexture then
             self.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')--圆框架
