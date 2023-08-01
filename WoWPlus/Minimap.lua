@@ -1121,10 +1121,6 @@ local function Init()
             end)
         end
     end
-
-    hooksecurefunc(VignetteDataProviderMixin, 'RefreshAllData', function()
-        print('RefreshAllData')
-    end)
 end
 --[[
     panel.Texture= UIParent:CreateTexture()
