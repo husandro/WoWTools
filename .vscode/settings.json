@@ -3181,7 +3181,8 @@
         "DungeonEntrancePinMixin",
         "EncounterJournal_OpenJournal",
         "GarrisonTalentButtonMixin",
-        "GARRISON_ACTIVATE_FOLLOWER"
+        "GARRISON_ACTIVATE_FOLLOWER",
+        "EQUIP_CONTAINER_REAGENT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

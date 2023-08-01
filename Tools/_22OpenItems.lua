@@ -102,6 +102,7 @@ local Save={
     ski=true,
     alt=true,
     noItemHide= not e.Player.husandro,
+    disabledCheckReagentBag= e.Player.husandro,--禁用，检查，材料包
 }
 local Combat, Bag, Opening= nil,{},nil
 local panel= CreateFrame("Frame")
@@ -158,6 +159,14 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
     Opening= nil
 end
 
+
+
+
+
+
+
+
+
 local equipItem--是装备时, 打开角色界面
 local function getItems()--取得背包物品信息
     if UnitAffectingCombat('player') then
@@ -170,7 +179,8 @@ local function getItems()--取得背包物品信息
     Opening= true
     equipItem=nil
     Bag={}
-    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
+    local bagMax= Save.disabledCheckReagentBag and NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES or NUM_REAGENTBAG_FRAMES
+    for bag= Enum.BagIndex.Backpack, bagMax do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             local duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
@@ -284,6 +294,22 @@ local function setDisableCursorItem()--禁用当物品
     end
     getItems()
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --####
 --菜单
@@ -504,7 +530,19 @@ local function setMenuList(self, level, menuList)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+    
     e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
+        text= e.onlyChinese and '材料包' or EQUIP_CONTAINER_REAGENT:gsub(EQUIPSET_EQUIP,''),
+        checked= not Save.disabledCheckReagentBag,
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '检查' or WHO,
+        func= function()
+            Save.disabledCheckReagentBag= not Save.disabledCheckReagentBag and true or nil
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
     info={
         text= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
         keepShownOnClick=true,
@@ -520,6 +558,21 @@ local function setMenuList(self, level, menuList)--主菜单
 
     e.LibDD:UIDropDownMenu_AddButton({text= e.onlyChinese and '拖曳物品: 使用/禁用' or (DRAG_MODEL..ITEMS..'('..USE..'/'..DISABLE..')'), isTitle=true, notCheckable=true})
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --########
