@@ -64,6 +64,15 @@ local function set_Target_Size(self)--设置，大小
     end
 end
 
+
+
+
+
+
+
+
+
+
 --########################
 --怪物目标, 队员目标, 总怪物
 --########################
@@ -118,6 +127,15 @@ local function set_Creature_Num()
     targetFrame.Creature:SetText(e.Player.col..(T==0 and '-' or  T)..'|r |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
     createRun=nil
 end
+
+
+
+
+
+
+
+
+
 
 --#########
 --任务，数量
@@ -208,6 +226,13 @@ local function set_check_All_Plates()
     end
 end
 
+
+
+
+
+
+
+
 --##########################
 --设置,指示目标,位置,显示,隐藏
 --##########################
@@ -240,6 +265,12 @@ local function set_Target()
 end
 
 
+
+
+
+
+
+
 --####################################
 --设置 targetFrame Target Creature 属性
 --####################################
@@ -268,6 +299,11 @@ local function set_Created_Texture_Text()
 end
 
 
+
+
+
+
+
 --####
 --事件
 --####
@@ -275,7 +311,9 @@ local function set_Register_Event()
     --isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
     isIns=  C_PvP.IsBattleground()
             or C_PvP.IsArena()
-            or IsInInstance() and (GetNumGroupMembers()>2 or C_ChallengeMode.IsChallengeModeActive())
+            or (IsInInstance()
+                and (GetNumGroupMembers()>3 or C_ChallengeMode.IsChallengeModeActive())
+            )
 
 
     targetFrame:UnregisterAllEvents()
@@ -315,6 +353,15 @@ local function set_All_Init()
     set_Register_Event()
     set_check_All_Plates()
 end
+
+
+
+
+
+
+
+
+
 
 --####
 --初始
@@ -356,6 +403,11 @@ local function Init()
         end
     end)
 end
+
+
+
+
+
 
 
 --#################
@@ -669,6 +721,18 @@ local function set_Option()
         set_All_Init()
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 panel:RegisterEvent('PLAYER_LOGOUT')
 panel:RegisterEvent('ADDON_LOADED')
