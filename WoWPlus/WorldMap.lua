@@ -749,12 +749,6 @@ end
 
 
 
-
-
-
-
-
-
 --####
 --初始
 --####
@@ -771,35 +765,36 @@ local function Init()
     setMapQuestList()--世界地图,任务, 加 - + 按钮
     --hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
 
-    hooksecurefunc(DungeonEntrancePinMixin, 'OnAcquired', function(self, info)
-        if not self.journalInstanceID or Save.hide or not self.name then
-            if self.Text then
-                self.Text:SetText('')
+    hooksecurefunc(DungeonEntrancePinMixin, 'OnAcquired', function(self)--地下城，加名称
+        local text
+        if not Save.hide and self.name then
+            if not self.Text then
+                self.Text= create_Wolor_Font(self, 10)
+                self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
             end
-            return
-        end
-        if not self.Text then
-            self.Text= create_Wolor_Font(self, 10)
-            self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
+            text= self.name
         end
         if self.Text then
-            self.Text:SetText(self.name)
+            self.Text:SetText(text or '')
         end
     end)
 end
 
+
+
+
+
+
+
+
+
+
+
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if arg1=='Blizzard_FlightMap' then
-
-        hooksecurefunc(FlightMap_AreaPOIPinMixin,'OnAcquired', function(self2, info)
-            if self2.name and self2.name:find('Accam') then
-                print(self2.name)
-            end
-        end)
-    end
-    if event == "ADDON_LOADED" and arg1==id then
+    if event == "ADDON_LOADED" then
+        if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板        
@@ -813,9 +808,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init()
-              --  panel:UnregisterEvent('ADDON_LOADED')
+                panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+
+        --[[elseif arg1=='Blizzard_FlightMap' then
+            hooksecurefunc(FlightMap_AreaPOIPinMixin,'OnAcquired', function(self2)
+                print(id,addName, self2.name)
+                set_Pin_Name(self2)
+            end)
+            --set_Pin_Name)--飞行点，加名称
+            ]]
+        end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

@@ -1067,6 +1067,7 @@ local function Init()
             end)
         end
     end
+
 end
 --[[
     panel.Texture= UIParent:CreateTexture()

@@ -3182,7 +3182,9 @@
         "EncounterJournal_OpenJournal",
         "GarrisonTalentButtonMixin",
         "GARRISON_ACTIVATE_FOLLOWER",
-        "EQUIP_CONTAINER_REAGENT"
+        "EQUIP_CONTAINER_REAGENT",
+        "HybridMinimapMixin",
+        "FlightPointPinMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
