@@ -252,7 +252,8 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
                 local tab={36471, 32175}
                 local isCompleted= set_Quest_Completed(tab)--任务是否完成
                 if isCompleted then
-                    msg= Save.left and ((isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a')..msg) or (msg..(isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'))
+                    local texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
+                    msg= Save.left and msg..texture or (texture..msg)
                     findQuest=true
                 end
                 icon='|T134481:0|t'--515[暗月奖券]
