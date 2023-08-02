@@ -1536,7 +1536,7 @@ local function set_Week_Reward_Look_Specialization()
     end
     frame:SetScript('OnEvent', function(self, event, unit, target, _, spellID)
         if event=='PLAYER_UPDATE_RESTING' then
-            self:set_event()
+            self:set_Event()
 
         elseif spellID==392391 and unit=='player' and target and target:find(RATED_PVP_WEEKLY_VAULT) then
             self:set_Texture()
