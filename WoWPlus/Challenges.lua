@@ -1510,12 +1510,16 @@ local function set_Week_Reward_Look_Specialization()
     end
     function frame:set_Texture()
         if not self.texture then
-            self.texture= frame:CreateTexture()
+            self.texture= frame:CreateTexture(nil, 'BACKGROUND')
             self.texture:SetAllPoints(self)
             self:SetScript('OnEnter', function(self2)
                 self2:set_Show(false)
                 print(id, addName)
             end)
+            local texture= self:CreateTexture(nil,'BORDER')
+            texture:SetSize(60,60)
+            texture:SetPoint('CENTER',3,-3)
+            texture:SetAtlas('UI-HUD-UnitFrame-TotemFrame-2x')
         end
         self:set_Show(true)
         self.time= C_Timer.NewTicker(4, function(self2)
