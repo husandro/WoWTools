@@ -133,6 +133,7 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
             local isValid
             if (event.sequenceType == "ONGOING") then
                 event.eventTime = format(CALENDAR_TOOLTIP_DATE_RANGE, FormatShortDate(event.startTime.monthDay, event.startTime.month), FormatShortDate(event.endTime.monthDay, event.endTime.month));
+                
                 isValid=true
             elseif (event.sequenceType == "END") then
                 event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.endTime.hour, event.endTime.minute, true), event.startTime.hour, event.startTime.minute)
@@ -145,6 +146,9 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
                 or not Save.onGoing
                 or (Save.onGoing and  isValid)
             then
+                if Save.showDate and isValid and event.eventTime then
+                    event.eventTime= '|cnGREEN_FONT_COLOR:'..event.eventTime..'|r'
+                end
                 tinsert(events, event);
             end
         end
@@ -221,7 +225,7 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
         end
 
         if Save.showID and event.eventID then--显示 ID
-            msg= Save.left and (msg..' '..event.eventID) or (event.eventID..' '..msg)
+            msg= Save.left and (msg..' |cffffffff'..event.eventID)..'|r' or ('|cffffffff'..event.eventID..'|r '..msg)
         end
 
         local icon
@@ -774,6 +778,8 @@ local function Init_Blizzard_Calendar()
             e.LibDD:ToggleDropDownMenu(1, nil, self2:GetParent(), self2, 15, 0)
         end)
     end)
+
+    CalendarFrame:HookScript('OnHide', set_Button_Text)
 end
 
 
