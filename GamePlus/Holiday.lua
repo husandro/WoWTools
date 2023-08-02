@@ -244,17 +244,15 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
 
                 local tab={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709}
                 local isCompleted= set_Quest_Completed(tab)--任务是否完成
-                if isCompleted then
-                    msg= msg..isCompleted
-                    findQuest=true
-                end
+                msg= msg..(isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a')
+                findQuest= isCompleted
                 icon='|T463446:0|t'--1166[时空扭曲徽章]
 
             elseif event.eventID==479 then--暗月
                 local tab={36471, 32175}
                 local isCompleted= set_Quest_Completed(tab)--任务是否完成
                 if isCompleted then
-                    msg= msg..isCompleted
+                    msg= Save.left and ((isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a')..msg) or (msg..(isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'))
                     findQuest=true
                 end
                 icon='|T134481:0|t'--515[暗月奖券]
