@@ -740,6 +740,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             end
         end)
         hooksecurefunc(AreaPOIPinMixin,'OnAcquired', function(self)---areaPoiID, 添加/移除 AreaPOIDataProvider.lua
+
             if self.setTracking then
                 return
             end

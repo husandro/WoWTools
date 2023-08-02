@@ -1473,13 +1473,65 @@ end
 
 
 
+--########################
+--打开周奖励时，提示拾取专精
+--########################
+local function set_Week_Reward_Look_Specialization()
+    if not C_WeeklyRewards.AreRewardsForCurrentRewardPeriod() then
+        return
+    end
+    local frame= CreateFrame("Frame")
+    frame:SetSize(40,40)
+    frame:SetPoint("CENTER",60, 60)
+    frame:SetShown(false)
+    frame:RegisterEvent('PLAYER_UPDATE_RESTING')
+    function frame:set_Event()
+        if not C_WeeklyRewards.AreRewardsForCurrentRewardPeriod() then
+            self:UnregisterAllEvents()
+            self:SetShown(false)
+            return
+        end
+        self:UnregisterEvent('UNIT_SPELLCAST_SENT')
+        if IsResting() then
+            self:RegisterEvent('UNIT_SPELLCAST_SENT')
+        end
+    end
+    frame:set_Event()
+    function frame:set_Show(show)
+        if self.time and not self.time:IsCancelled() then self.time:Cancel() end
+        self:SetShown(show)
+    end
+    function frame:set_Texture()
+        if not self.texture then
+            self.texture= frame:CreateTexture()
+            self.texture:SetAllPoints(self)
+            self:SetScript('OnEnter', function(self2)
+                self2:set_Show(false)
+                print(id, addName)
+            end)
+        end
+        self:set_Show(true)
+        self.time= C_Timer.NewTicker(4, function(self2)
+            self:SetShown(false)
+        end)
+        local loot = GetLootSpecialization()
+        local texture
+        if loot and loot>0 then
+            texture= select(4, GetSpecializationInfoByID(loot))
+        else
+            texture= select(4, GetSpecializationInfo(GetSpecialization() or 0))
+        end
+        SetPortraitToTexture(self.texture, texture or 0)
+    end
+    frame:SetScript('OnEvent', function(self, event, unit, target, _, spellID)
+        if event=='PLAYER_UPDATE_RESTING' then
+            self:set_event()
 
-
-
-
-
-
-
+        elseif spellID==392391 and unit=='player' and target and target:find(RATED_PVP_WEEKLY_VAULT) then
+            self:set_Texture()
+        end
+    end)
+end
 
 
 
@@ -1698,6 +1750,13 @@ local function Init()
 end
 
 
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
@@ -1718,6 +1777,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
+            else
+                set_Week_Reward_Look_Specialization()--打开周奖励时，提示拾取专精
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 

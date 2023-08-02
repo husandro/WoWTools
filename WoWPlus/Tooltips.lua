@@ -1528,9 +1528,9 @@ local function Init()
 
     local function create_Quest_Label(self)--添加任务ID
         if not self.questIDLabel then
-            self.questIDLabel= e.Cstr(self)
-            self.questIDLabel:EnableMouse(true)
-            self.questIDLabel:SetScript('OnLeave', function() e.tips:Hide() end)
+            self.questIDLabel= e.Cstr(self, {mouse=true})
+            self.questIDLabel:SetAlpha(0.3)
+            self.questIDLabel:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.3) end)
             self.questIDLabel:SetScript('OnEnter', function(self2)
                 if self2.questID then
                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -1539,6 +1539,7 @@ local function Init()
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(id, addName..e.Icon.left)
                     e.tips:Show()
+                    self2:SetAlpha(1)
                 end
             end)
             self.questIDLabel:SetScript('OnMouseDown', function(self2)

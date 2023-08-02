@@ -815,7 +815,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -881,8 +881,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
                 end
                 set_FrozenButton_Tips()
-            end)
-        
+            end)    
         --[[elseif arg1=='Blizzard_AuctionHouseUI' then
             hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(self2, addedBrowseResults)
                 info= self2.browseResults 
@@ -890,6 +889,28 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 print(id,addName)
             end)]]
 
+        elseif arg1=='Blizzard_WeeklyRewards' then--周奖励, 物品提示，信息
+            hooksecurefunc(WeeklyRewardsFrame, 'Refresh', function(self2)--Blizzard_WeeklyRewards.lua WeeklyRewardsMixin:Refresh(playSheenAnims)
+                local activities = C_WeeklyRewards.GetActivities();
+                for _, activityInfo in ipairs(activities) do
+                    local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index);
+                    local itemFrame= frame and frame.ItemFrame
+                    if itemFrame then
+                        e.Set_Item_Stats(itemFrame, itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID), {point=itemFrame.Icon})
+                    end
+                end
+            end)
+            hooksecurefunc(WeeklyRewardsFrame, 'UpdateSelection', function(self2)
+                local activities = C_WeeklyRewards.GetActivities();
+                for _, activityInfo in ipairs(activities) do
+                    local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index);
+                    local itemFrame= frame and frame.ItemFrame
+                    if itemFrame then
+                        e.Set_Item_Stats(itemFrame, itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID), {point=itemFrame.Icon})
+                    end
+                end
+            end)
+print(id,addName)
         end
 
     elseif event == "PLAYER_LOGOUT" then
