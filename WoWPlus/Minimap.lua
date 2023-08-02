@@ -687,9 +687,13 @@ local function Init_Set_Button()--小地图, 标记, 文本
         btn:set_Instance_Event()
         btn:SetScript('OnEvent', function(self, event)
             if event=='PLAYER_ENTERING_WORLD' then
-                self:set_Instance_Event()
+                C_Timer.After(2, function()
+                    check_Button_Enabled_Disabled()
+                    self:set_Instance_Event()
+                end)
+            else
+                check_Button_Enabled_Disabled()
             end
-            check_Button_Enabled_Disabled()
         end)
 
 

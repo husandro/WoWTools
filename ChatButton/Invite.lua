@@ -958,7 +958,7 @@ local function Init()
             local playerInfo=e.GetPlayerInfo({guid=info.guid, reLink=true})
             name= playerInfo~='' and playerInfo or name
         end
-        print(id, addName, e.onlyChinese and '召唤' or SUMMON, name, '|cnGREEN_FONT_COLOR:', C_SummonInfo.GetSummonConfirmAreaName())
+        print(id, addName, e.onlyChinese and '召唤' or SUMMON, name, e.Icon.map2..'|cnGREEN_FONT_COLOR:', C_SummonInfo.GetSummonConfirmAreaName())
     end)
 
 
