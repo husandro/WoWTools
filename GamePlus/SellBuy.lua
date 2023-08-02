@@ -978,7 +978,7 @@ panel:RegisterEvent('MERCHANT_UPDATE')--购回
 panel:RegisterEvent('LOOT_READY')--自动拾取加强 
 
 
-panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
+panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, _, arg5)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -1042,7 +1042,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         setDurabiliy()
 
     elseif event=='ENCOUNTER_LOOT_RECEIVED' then--买出BOOS装备
-        if IsInInstance() then
+        if IsInInstance() and arg5 and arg5:find(e.Player.name) then
             bossLoot(arg2, arg3)
         end
 

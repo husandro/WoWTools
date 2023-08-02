@@ -64,8 +64,8 @@ local function setButtons()--设置按钮
             btn:SetPoint('BOTTOMLEFT', last, 'BOTTOMRIGHT')
             if index==0 then line=btn end
         end
-        btn:SetScript('OnMouseDown', function(self, d) send(text, d) end)
-        btn:SetScript('OnEnter', function(self)
+        btn:SetScript('OnMouseDown', function(_, d) send(text, d) end)
+        btn:SetScript('OnEnter', function()
             e.tips:SetOwner(frame, "ANCHOR_RIGHT", 0,125)
             e.tips:ClearLines()
             e.tips:AddLine(text)
@@ -92,7 +92,7 @@ end
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, type)
+local function InitMenu(_, level, type)
     local info
     if type then
         for _, channel in pairs(Channels) do
@@ -314,6 +314,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if WoWToolsChatButtonFrame.disabled or Save.disabled then--禁用Chat Button
                 File=nil
+                Channels=nil
             else
                 button=e.Cbtn2('WoWToolsChatButtonEmoji', WoWToolsChatButtonFrame, true, false)
 

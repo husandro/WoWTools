@@ -16,6 +16,7 @@ local Save={
         uiMapIDs= {},--地图ID 监视, areaPoiIDs，
         currentMapAreaPoiIDs=true,--当前地图，监视, areaPoiIDs，
         showID= e.Player.husandro,--显示ID
+        --textToDown= true,--文本，向下
 
         miniMapPoint={},--保存小图地, 按钮位置
         useServerTimer=true,--小时图，使用服务器, 时间
@@ -213,15 +214,18 @@ local function set_vigentteButton_Text()
                 )
             then
                 local vignette=(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name or '')
-                if info.vignetteID == 5715 then--翻动的泥土堆
+                if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
                     vignette= vignette..'|T1059121:0|t'
+                elseif info.vignetteID== 5485 then
+                    vignette= vignette..'|A:MajorFactions_Icons_Tuskarr512:0:0|a'
+                elseif info.vignetteID==5468 then
+                    vignette= vignette..'|A:MajorFactions_Icons_Expedition512:0:0|a'
                 end
                 vignette= index==bestUniqueVignetteIndex and '|cnGREEN_FONT_COLOR:'..vignette..'|r'..e.Icon.star2 or vignette
                 if Save.showID then
                     vignette= vignette.. ' |cffffffffV|r'..info.vignetteID
                 end
                 table.insert(info.onMinimap and onMinimap or onWorldMap, vignette)
-                
             end
         end
 
@@ -254,12 +258,7 @@ local function set_vigentteButton_Text()
     end
 
     local areaPoiAllText
-    local mapIDS= Save.uiMapIDs
-    local mapID= Save.currentMapAreaPoiIDs and C_Map.GetBestMapForUnit("player")
-    if mapID and mapID>0 then
-        mapIDS[mapID]=true
-    end
-    for uiMapID, _ in pairs(mapIDS) do--地图ID
+    for uiMapID, _ in pairs(Save.uiMapIDs) do--地图ID
         for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
             if not Save.areaPoiIDs[areaPoiID] then
                 local area= get_areaPoiID_Text(uiMapID, areaPoiID, true)
@@ -270,18 +269,25 @@ local function set_vigentteButton_Text()
         end
     end
 
+    if Save.currentMapAreaPoiIDs then
+        local uiMapID= C_Map.GetBestMapForUnit("player")
+        if uiMapID and uiMapID>0 and not Save.uiMapIDs[uiMapID] then
+            for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
+                if not Save.areaPoiIDs[areaPoiID] then
+                    local area= get_areaPoiID_Text(uiMapID, areaPoiID, true)
+                    if area then
+                        areaPoiAllText= areaPoiAllText and areaPoiAllText..'|n'..area or area
+                    end
+                end
+            end
+        end
+    end
+
     if areaPoiAllText then
         text= text and text..'|n|n'..areaPoiAllText or areaPoiAllText
     end
     panel.Button.Frame.text:SetText(text or '..')
 end
-
-
-
-
-
-
-
 
 
 --检测，显示，禁用，Button, 文本
@@ -299,15 +305,6 @@ local function check_Button_Enabled_Disabled()
     end
     return isDisabled
 end
-
-
-
-
-
-
-
-
-
 
 
 local function Init_Button_Menu(_, level, menuList)--菜单
@@ -472,6 +469,29 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif menuList=='SETTINGS' then
+        info={
+            text= (e.onlyChinese and '显示' or SHOW)..' ID',
+            checked= Save.showID,
+            tooltipOnButton=true,
+            tooltipTitle= 'Q= questID|nV= vignetteID|nW= widgetID|nA= areaPoiID',
+            func= function()
+                Save.showID= not Save.showID and true or nil
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        info={
+            text= e.onlyChinese and '向下滚动' or COMBAT_TEXT_SCROLL_DOWN,
+            checked= Save.textToDown,
+            func= function()
+                Save.textToDown= not Save.textToDown and true or nil
+                panel.Button:set_Frame()--设置，Button的 Frame Text 属性
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
     end
 
     if menuList then
@@ -541,28 +561,14 @@ local function Init_Button_Menu(_, level, menuList)--菜单
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
-        text= (e.onlyChinese and '显示' or SHOW)..' ID',
-        checked= Save.showID,
-        tooltipOnButton=true,
-        tooltipTitle= 'Q= questID|nV= vignetteID|nW= widgetID|nA= areaPoiID',
-        func= function()
-            Save.showID= not Save.showID and true or nil
-        end
+        text= e.onlyChinese and '设置' or SETTINGS,
+        notCheckable=true,
+        keepShownOnClick=true,
+        menuList='SETTINGS',
+        hasArrow=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 local function Init_Set_Button()--小地图, 标记, 文本
@@ -575,7 +581,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         btn= e.Cbtn(nil, {icon='hide', size={20,20}})
         btn.texture= btn:CreateTexture(nil, 'BORDER')
         btn.texture:SetAllPoints(btn)
-        btn.texture:SetAlpha(0.3)
+        btn.texture:SetAlpha(0.1)
         function btn:set_Texture()
             self.texture:SetAtlas(Save.vigentteButtonShowText and e.Icon.icon or e.Icon.disabled)
         end
@@ -584,9 +590,9 @@ local function Init_Set_Button()--小地图, 标记, 文本
             if Save.pointVigentteButton then
                self:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
             elseif e.Player.husandro then
-                self:SetPoint('BOTTOMLEFT', ChatFrame1, 'BOTTOMRIGHT', 25, -40)
+                self:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT', 4, 2)
             else
-                self:SetPoint('CENTER', -330, -240)
+                self:SetPoint('CENTER', -200, -200)
             end
         end
         btn:Set_Point()
@@ -645,7 +651,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
                 scale= scale<0.4 and 0.4 or scale
                 print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, scale)
                 Save.vigentteButtonTextScale= scale
-                self.Frame:SetScale(scale)
+                self:set_Frame()--设置，Button的 Frame Text 属性
             end
         end)
         btn:SetScript('OnEnter',function(self)
@@ -665,7 +671,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         btn:SetScript('OnLeave',function(self)
             e.tips:Hide()
             ResetCursor()
-            self.texture:SetAlpha(0.3)
+            self.texture:SetAlpha(0.1)
         end)
 
         btn:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件
@@ -686,15 +692,26 @@ local function Init_Set_Button()--小地图, 标记, 文本
             check_Button_Enabled_Disabled()
         end)
 
-        btn.Frame= CreateFrame('Frame', nil, btn)
-        btn.Frame:SetPoint('BOTTOMLEFT', btn, 'TOPLEFT')
-        btn.Frame:SetSize(1,1)
-        if Save.vigentteButtonTextScale~=1 then
-            btn.Frame:SetScale(Save.vigentteButtonTextScale)
-        end
 
-        btn.Frame.text= e.Cstr(btn.Frame, {color=true})
-        btn.Frame.text:SetPoint('BOTTOMLEFT')
+        function btn:set_Frame()--设置，Button的 Frame Text 属性
+            if not self.Frame then
+                self.Frame= CreateFrame('Frame', nil, self)
+                self.Frame:SetSize(1,1)
+                self.Frame.text= e.Cstr(self.Frame, {color=true})
+            else
+                self.Frame:ClearAllPoints()
+                self.Frame.text:ClearAllPoints()
+            end
+            if Save.textToDown then
+                self.Frame:SetPoint('TOPLEFT', self, 'BOTTOMLEFT')
+                self.Frame.text:SetPoint('TOPLEFT')
+            else
+                self.Frame:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
+                self.Frame.text:SetPoint('BOTTOMLEFT')
+            end
+            self.Frame:SetScale(Save.vigentteButtonTextScale or 1)
+        end
+        btn:set_Frame()
 
         WorldMapFrame:HookScript('OnHide', check_Button_Enabled_Disabled)
         WorldMapFrame:HookScript('OnShow', check_Button_Enabled_Disabled)
@@ -740,7 +757,6 @@ local function Init_Set_Button()--小地图, 标记, 文本
             end
         end)
         hooksecurefunc(AreaPOIPinMixin,'OnAcquired', function(self)---areaPoiID, 添加/移除 AreaPOIDataProvider.lua
-
             if self.setTracking then
                 return
             end
@@ -752,7 +768,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
                         local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID) or {}
                         local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
                         name= name=='' and 'areaPoiID '..self.areaPoiID or name
-                        print(id,addName, addName2, 
+                        print(id,addName, addName2,
                             (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
                             name,
                             Save.areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)

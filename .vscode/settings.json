@@ -3186,7 +3186,8 @@
         "HybridMinimapMixin",
         "FlightPointPinMixin",
         "VignetteDataProviderMixin",
-        "WEEKLY_REWARDS_RETURN_TO_CLAIM"
+        "WEEKLY_REWARDS_RETURN_TO_CLAIM",
+        "COMBAT_TEXT_SCROLL_DOWN"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
