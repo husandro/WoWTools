@@ -3185,7 +3185,8 @@
         "EQUIP_CONTAINER_REAGENT",
         "HybridMinimapMixin",
         "FlightPointPinMixin",
-        "VignetteDataProviderMixin"
+        "VignetteDataProviderMixin",
+        "WEEKLY_REWARDS_RETURN_TO_CLAIM"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

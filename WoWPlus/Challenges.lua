@@ -1473,12 +1473,19 @@ end
 
 
 
+
+
+
+
+
 --########################
 --打开周奖励时，提示拾取专精
 --########################
 local function set_Week_Reward_Look_Specialization()
-    if not C_WeeklyRewards.AreRewardsForCurrentRewardPeriod() then
+    if not C_WeeklyRewards.HasAvailableRewards() then
         return
+    else
+        print(id, addName,'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
     end
     local frame= CreateFrame("Frame")
     frame:SetSize(40,40)
@@ -1486,7 +1493,7 @@ local function set_Week_Reward_Look_Specialization()
     frame:SetShown(false)
     frame:RegisterEvent('PLAYER_UPDATE_RESTING')
     function frame:set_Event()
-        if not C_WeeklyRewards.AreRewardsForCurrentRewardPeriod() then
+        if not C_WeeklyRewards.HasAvailableRewards() then
             self:UnregisterAllEvents()
             self:SetShown(false)
             return
@@ -1532,6 +1539,12 @@ local function set_Week_Reward_Look_Specialization()
         end
     end)
 end
+
+
+
+
+
+
 
 
 
@@ -1747,6 +1760,7 @@ local function Init()
     if not Save.hideKeyUI then
         init_Blizzard_ChallengesUI()
     end
+
 end
 
 
@@ -1778,7 +1792,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
-                set_Week_Reward_Look_Specialization()--打开周奖励时，提示拾取专精
+                C_Timer.After(2, set_Week_Reward_Look_Specialization)--打开周奖励时，提示拾取专精
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
