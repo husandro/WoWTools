@@ -216,7 +216,7 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
             msg= msg..(title:match(': (.+)') or title:match('：(.+)') or title)
         end
 
-        if Save.showDate then
+        if Save.showDate then--时间
             msg= Save.left and (msg..' '..event.eventTime) or (event.eventTime..' '..msg)
         end
 
@@ -409,7 +409,7 @@ end
 --初始
 --####
 local function Init()
-    button= e.Cbtn(nil, {icon='hide', size={18,18}})
+    button= e.Cbtn(nil, {icon='hide', size={20,20}})
     button.Text=e.Cstr(button, {color=true})
     button.texture=button:CreateTexture()
     button.texture:SetAllPoints(button)
@@ -532,7 +532,6 @@ local function Init()
 
         else
             set_Button_Text()
-            print(id,addName)
         end
     end)
 
