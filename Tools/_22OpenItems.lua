@@ -618,7 +618,14 @@ local function Init()
 
     get_Items()--设置属性
 
-    button:SetScript("OnEnter",function(self)
+    button:SetScript("OnEnter", shoTips)--显示提示
+    button:SetScript("OnLeave",function()
+        e.tips:Hide()
+        BattlePetTooltip:Hide()
+        ResetCursor()
+        get_Items()
+    end)
+    button:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID and itemLink then
             if Bag.bag and Bag.slot and itemLink== C_Container.GetContainerItemLink(Bag.bag, Bag.slot) then
@@ -688,18 +695,12 @@ local function Init()
             local list=Save.use[itemID] and (e.onlyChinese and '当前列表' or PROFESSIONS_CURRENT_LISTINGS)..': |cff00ff00'..(e.onlyChinese and '使用' or USE)..'|r' or Save.no[itemID] and (e.onlyChinese and '当前列表' or PROFESSIONS_CURRENT_LISTINGS)..': |cffff0000'..(e.onlyChinese and '禁用' or DISABLE)..'|r' or ''
             StaticPopup_Show('OpenItmesUseOrDisableItem', icon, list, {itemID=itemID, itemLink=itemLink})
             ClearCursor()
-        else
-            shoTips(self)--显示提示
+            return
         end
-    end)
-    button:SetScript("OnLeave",function()
-        e.tips:Hide()
-        BattlePetTooltip:Hide()
-        ResetCursor()
-    end)
-    button:SetScript("OnMouseDown", function(self,d)
+
+
         local key= IsModifierKeyDown()
-        if (d=='RightButton' and not key) or not(Bag.bag and Bag.slot) then
+        if (d=='RightButton' and not key) then
             if not self.Menu then
                 button.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")--菜单列表
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, setMenuList, 'MENU')
@@ -736,7 +737,7 @@ end
 --##########
 local function set_Events()--注册， 事件
     if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then
-        --panel:UnregisterEvent('BAG_UPDATE')
+        panel:UnregisterEvent('BAG_UPDATE')
         panel:UnregisterEvent('BAG_UPDATE_DELAYED')
         panel:UnregisterEvent('BAG_UPDATE_COOLDOWN')
         panel:UnregisterEvent('PLAYER_REGEN_DISABLED')
@@ -745,7 +746,7 @@ local function set_Events()--注册， 事件
             button:SetShown(false)
         end
     else
-        --panel:RegisterEvent('BAG_UPDATE')
+        panel:RegisterEvent('BAG_UPDATE')
         panel:RegisterEvent('BAG_UPDATE_DELAYED')
         panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
         panel:RegisterEvent('PLAYER_REGEN_DISABLED')
@@ -783,7 +784,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
         set_Events()--注册， 事件
 
-    elseif  event=='BAG_UPDATE_DELAYED' then-- event=='BAG_UPDATE' orthen
+    elseif  event=='BAG_UPDATE_DELAYED' or event=='BAG_UPDATE' then
             get_Items()
 
     elseif event=='PLAYER_REGEN_DISABLED' then

@@ -1092,15 +1092,16 @@ end
 
 
 local function set_ToggleWarMode()--设置, 战争模式
+    local self= PlayerFrame
     if C_PvP.CanToggleWarModeInArea() then
         local isWar= C_PvP.IsWarModeDesired()
-        if not PlayerFrame.warMode then
-            local w= PlayerFrame.healthbar:GetHeight() or 20
-            PlayerFrame.warMode= e.Cbtn(PlayerFrame, {size={w,w}, icon='hide'})
-            PlayerFrame.warMode:SetPoint('TOPRIGHT', PlayerFrame, -20, -8)
-            PlayerFrame.warMode:SetScript('OnClick',  C_PvP.ToggleWarMode)
-            PlayerFrame.warMode:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        if not self.warMode then
+            self.warMode= e.Cbtn(self, {size={20,20}, icon='hide'})
+            self.warMode:Raise()
+            self.warMode:SetPoint('LEFT', self, 10, 12)
+            self.warMode:SetScript('OnClick',  C_PvP.ToggleWarMode)
+            self.warMode:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, e.GetEnabeleDisable(C_PvP.IsWarModeDesired())..e.Icon.left)
                 if not C_PvP.CanToggleWarMode(false)  then
@@ -1110,12 +1111,12 @@ local function set_ToggleWarMode()--设置, 战争模式
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end)
-            PlayerFrame.warMode:SetScript('OnLeave', function() e.tips:Hide() end)
+            self.warMode:SetScript('OnLeave', function() e.tips:Hide() end)
         end
-        PlayerFrame.warMode:SetNormalAtlas(isWar and 'pvptalents-warmode-swords' or 'pvptalents-warmode-swords-disabled')
-        PlayerFrame.warMode:SetShown(true)
-    elseif PlayerFrame.warMode then
-        PlayerFrame.warMode:SetShown(false)
+        self.warMode:SetNormalAtlas(isWar and 'pvptalents-warmode-swords' or 'pvptalents-warmode-swords-disabled')
+        self.warMode:SetShown(true)
+    elseif self.warMode then
+        self.warMode:SetShown(false)
     end
 end
 

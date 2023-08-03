@@ -531,7 +531,7 @@
         "ReputationFrameStandingLabel",
         "ReputationFrameFactionLabel",
         "COMPARE_ACHIEVEMENTS",
-        "CHANGE_OPACITY",
+        "'Alpha'",
         "QuickJoinToastButton",
         "QuickJoinRoleSelectionFrame",
         "QuickJoinEntryMixin",

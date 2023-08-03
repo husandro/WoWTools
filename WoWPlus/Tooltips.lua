@@ -1060,7 +1060,7 @@ local function setCVar(reset, tips, notPrint)
         },
         ['nameplateOccludedAlphaMult']={
             value='0.15',
-            msg= e.onlyChinese and '不在视野里, 姓名板透明度' or (SPELL_FAILED_LINE_OF_SIGHT..'('..SHOW_TARGET_CASTBAR_IN_V_KEY..')'..CHANGE_OPACITY),
+            msg= e.onlyChinese and '不在视野里, 姓名板透明度' or (SPELL_FAILED_LINE_OF_SIGHT..'('..SHOW_TARGET_CASTBAR_IN_V_KEY..')'..'Alpha'),
         },
         ['dontShowEquipmentSetsOnItems']={
             value='0',

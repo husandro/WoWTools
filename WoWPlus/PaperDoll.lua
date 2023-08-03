@@ -688,6 +688,16 @@ local function set_PaperDollSidebarTab3_Text()--标签, 内容,提示
     end
 end
 
+
+
+
+
+
+
+
+
+
+
 --#######
 --装备管理
 --#######
@@ -854,6 +864,7 @@ local function set_inti_Equipment_Frame()--添加装备管理框
                     if specIndex then
                         local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
                         if icon3 and specName2 then
+                            e.tips:AddLine(' ')
                             e.tips:AddLine(format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, '|T'..icon3..':0|t'..specName2))
                             e.tips:AddLine(' ')
                             e.tips:AddDoubleLine(id,addName)
@@ -890,6 +901,19 @@ local function set_inti_Equipment_Frame()--添加装备管理框
         panel.equipmentButton.btn.buttons[index]:SetShown(false)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --############
@@ -1568,9 +1592,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
 
             if not Save.disabled then
+                Init()
                 panel:RegisterEvent("EQUIPMENT_SWAP_FINISHED")
                 panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-                Init()
+                panel:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
             else
                 panel:UnregisterEvent('ADDON_LOADED')
             end
@@ -1593,7 +1618,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event == 'EQUIPMENT_SWAP_FINISHED' then
+    elseif event == 'EQUIPMENT_SWAP_FINISHED' or event=='PLAYER_EQUIPMENT_CHANGED' then
         C_Timer.After(0.6, set_inti_Equipment_Frame)
 
     elseif event=='UPDATE_INVENTORY_DURABILITY' then

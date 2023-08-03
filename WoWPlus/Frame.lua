@@ -35,7 +35,7 @@ end
 --####
 --缩放
 --####
-local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
+local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)--放大
     local self= tab.frame or frame
     if not tab.name then
         tab.name= self and self:GetName()
@@ -51,6 +51,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
                         or self.BorderFrame and self.BorderFrame.TitleContainer
                         or self
         , {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}, name='MoveZoomInButtonPer'..tab.name})
+    self.ZoomInOutFrame:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
     self.ZoomInOutFrame.ScaleName= tab.name
     self.ZoomInOutFrame.ZoomFrame= self
@@ -59,6 +60,9 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
 
     if self.moveButton then
         self.ZoomInOutFrame:SetPoint('RIGHT', self.moveButton, 'LEFT')
+
+    elseif tab.point=='left' then
+        self.ZoomInOutFrame:SetPoint('RIGHT', self, 'LEFT')
 
     elseif self.Header then
         self.ZoomInOutFrame:SetPoint('LEFT')
@@ -108,6 +112,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
         n= n< 0.5 and 0.5 or n
         Save.scale[self2.ScaleName]= n
         self2.ZoomFrame:SetScale(n)
+        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
     end)
 
     self.ZoomInOutFrame:SetAlpha(self.ZoomInOutFrame.alpha)
@@ -117,15 +122,15 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name)--放大
     end)
     self.ZoomInOutFrame:SetScript("OnEnter",function(self2)
         self2:SetAlpha(1)
+        if UnitAffectingCombat('player') then
+            return
+        end
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine('|cff00ff00'..(Save.scale[self2.ScaleName] or 1))
-        if UnitAffectingCombat('player') then
-            e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
-        else
-            e.tips:AddDoubleLine(e.onlyChinese and '放大' or ZOOM_IN, '3'..e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinese and '缩小' or ZOOM_OUT, '0.5'..e.Icon.right)
-        end
+        e.tips:AddDoubleLine('|cff00ff00'..(Save.scale[self2.ScaleName] or 1), e.Icon.mid)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '放大' or ZOOM_IN, '3'..e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '缩小' or ZOOM_OUT, '0.5'..e.Icon.right)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
@@ -213,10 +218,13 @@ local function set_Frame_Drag(self)
     end)
 end
 
+
+
 --####
 --移动
 --####
-local set_Move_Frame=function(self, tab)--set_Move_Frame(frame, {frame=nil, click=nil, save=nil, show=nil, zeroAlpha=nil, notZoom=true})    
+--set_Move_Frame(frame, {frame=nil, click=nil, save=nil, show=nil, zeroAlpha=nil, notZoom=true, point='left'})    
+local set_Move_Frame=function(self, tab)
     if not self then
         return
     end
@@ -457,6 +465,10 @@ local function setAddLoad(arg1)
     end
 end
 
+
+
+
+
 --###########
 --职业，能量条
 --###########
@@ -476,10 +488,15 @@ local function set_classPowerBar()
             if self.FrameName then
                 set_Frame_Point(self)
             else
-                set_Move_Frame(self, {save=true, zeroAlpha=true})
+                set_Move_Frame(self, {
+                    save=true,
+                    zeroAlpha=true,
+                    point= e.Player.class=='EVOKER' and 'left' or nil,
+                })
             end
         end
     end
+
 
     if TotemFrame and TotemFrame:IsShown() and TotemFrame.totemPool and TotemFrame.totemPool.activeObjects then
         for btn, _ in pairs(TotemFrame.totemPool.activeObjects) do
