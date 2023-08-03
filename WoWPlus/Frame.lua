@@ -466,6 +466,7 @@ local function set_classPowerBar()
         RuneFrame,
         MonkStaggerBar,
         PlayerFrameAlternateManaBar,
+        EssencePlayerFrame,
         --MageArcaneChargesFrame,
         --TotemFrame,
     }

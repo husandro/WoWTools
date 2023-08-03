@@ -179,9 +179,11 @@ local function set_PlayerFrame()--PlayerFrame.lua
     PlayerFrameGroupIndicatorRight:SetTexture(0)
     PlayerFrameGroupIndicatorRight:SetShown(false)
 
-    if PlayerHitIndicator then--玩家
+    if PlayerHitIndicator then--玩家, 治疗，爆击，数字
+        PlayerHitIndicator:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
         PlayerHitIndicator:ClearAllPoints()
-        PlayerHitIndicator:SetPoint('BOTTOMLEFT', (PlayerFrame.PlayerFrameContainer and PlayerFrame and PlayerFrame.PlayerFrameContainer.PlayerPortrait) or  PlayerHitIndicator:GetParent(), 'TOPLEFT')
+        PlayerHitIndicator:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT')
+        --PlayerHitIndicator:SetPoint('BOTTOMLEFT', (PlayerFrame.PlayerFrameContainer and PlayerFrame and PlayerFrame.PlayerFrameContainer.PlayerPortrait) or  PlayerHitIndicator:GetParent(), 'TOPLEFT')
     end
     if PetHitIndicator then--宠物
         PetHitIndicator:ClearAllPoints()

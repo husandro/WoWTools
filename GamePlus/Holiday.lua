@@ -133,7 +133,7 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
             local isValid
             if (event.sequenceType == "ONGOING") then
                 event.eventTime = format(CALENDAR_TOOLTIP_DATE_RANGE, FormatShortDate(event.startTime.monthDay, event.startTime.month), FormatShortDate(event.endTime.monthDay, event.endTime.month));
-                
+
                 isValid=true
             elseif (event.sequenceType == "END") then
                 event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.endTime.hour, event.endTime.minute, true), event.startTime.hour, event.startTime.minute)
@@ -254,7 +254,7 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
                 local isCompleted= set_Quest_Completed(tab)--任务是否完成
                 local texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
                 msg= Save.left and msg..texture or (texture..msg)
-                    
+
                 findQuest=isCompleted
                 icon='|T134481:0|t'--515[暗月奖券]
 
@@ -295,110 +295,106 @@ end
 --主菜单
 --#####
 local function InitMenu(_, level, type)--主菜单
-    local info
-    if type then
-        info={
-            text= e.onlyChinese and '内容靠左' or BINDING_NAME_STRAFELEFT,--向左平移
-            checked=not Save.left,
-            func= function()
-                Save.left= not Save.left and true or nil
-                button:set_Text_Settings()--设置Tex
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    local info={
+        text= e.onlyChinese and '内容靠左' or BINDING_NAME_STRAFELEFT,--向左平移
+        checked=not Save.left,
+        func= function()
+            Save.left= not Save.left and true or nil
+            button:set_Text_Settings()--设置Tex
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        info={
-            text= e.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
-            checked= Save.onGoing,
-            func= function()
-                Save.onGoing= not Save.onGoing and true or nil
-                set_Button_Text()
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    info={
+        text= e.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
+        checked= Save.onGoing,
+        func= function()
+            Save.onGoing= not Save.onGoing and true or nil
+            set_Button_Text()
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        info={
-            text= e.onlyChinese and '时间' or TIME_LABEL,
-            checked= Save.showDate,
-            func= function()
-                Save.showDate= not Save.showDate and true or nil
-                set_Button_Text()
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    info={
+        text= e.onlyChinese and '时间' or TIME_LABEL,
+        checked= Save.showDate,
+        func= function()
+            Save.showDate= not Save.showDate and true or nil
+            set_Button_Text()
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        info={
-            text= e.onlyChinese and '节日 ID' or CALENDAR_FILTER_HOLIDAYS..' ID',--时间
-            checked= Save.showID,
-            func= function()
-                Save.showID= not Save.showID and true or nil
-                set_Button_Text()
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    info={
+        text= e.onlyChinese and '节日 ID' or CALENDAR_FILTER_HOLIDAYS..' ID',--时间
+        checked= Save.showID,
+        func= function()
+            Save.showID= not Save.showID and true or nil
+            set_Button_Text()
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text=e.onlyChinese and '还原位置' or RESET_POSITION,
-            colorCode=not Save.point and '|cff606060',
-            func=function()
-                Save.point=nil
-                button:ClearAllPoints()
-                button:set_Point()
-            end,
-            tooltipOnButton=true,
-            tooltipTitle=e.Icon.right..' '..NPE_MOVE,
-            notCheckable=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
+        text=e.onlyChinese and '还原位置' or RESET_POSITION,
+        colorCode=not Save.point and '|cff606060',
+        func=function()
+            Save.point=nil
+            button:ClearAllPoints()
+            button:set_Point()
+        end,
+        tooltipOnButton=true,
+        tooltipTitle=e.Icon.right..' '..NPE_MOVE,
+        notCheckable=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    else
-        info={
+        --[[info={
             text=e.onlyChinese and '设置' or SETTINGS,
             notCheckable=true,
             menuList='SETTINGS',
             hasArrow=true,
         }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text=e.Icon.left..(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE)),
-            isTitle=true,
-            notCheckable=true
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        info={--点击这里显示日历
-            text=e.Icon.mid..(e.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR ),
-            isTitle=true,
-            notCheckable=true
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)]]
 
         e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={--提示移动
-            text= e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
-            isTitle=true,
-            notCheckable=true
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    info={
+        text=e.Icon.left..(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE)),
+        isTitle=true,
+        notCheckable=true
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    info={--点击这里显示日历
+        text=e.Icon.mid..(e.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR ),
+        isTitle=true,
+        notCheckable=true
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        info={
-            text='Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE)..(Save.scale or 1),
-            isTitle=true,
-            notCheckable=true
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={--提示移动
+        text= e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
+        isTitle=true,
+        notCheckable=true
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text=id..' '..addName,
-            isTitle=true,
-            notCheckable=true
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-    end
+    info={
+        text='Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE)..(Save.scale or 1),
+        isTitle=true,
+        notCheckable=true
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
+        text=id..' '..addName,
+        isTitle=true,
+        notCheckable=true
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
-
 
 
 
@@ -416,7 +412,7 @@ local function Init()
     button.Text=e.Cstr(button, {color=true})
     button.texture=button:CreateTexture()
     button.texture:SetAllPoints(button)
-    button.texture:SetAlpha(0.1)
+    button.texture:SetAlpha(0.3)
 
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
@@ -481,10 +477,8 @@ local function Init()
     function button:set_Point()--设置, 位置
         if Save.point then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-        elseif e.Player.husandro then
-            self:SetPoint('BOTTOMRIGHT', ObjectiveTrackerBlocksFrame, 'TOPLEFT',-20, -10)
         else
-            self:SetPoint('TOPRIGHT', Minimap, 'BOTTOMLEFT', -20,0)
+            self:SetPoint('BOTTOMRIGHT', ObjectiveTrackerBlocksFrame, 'TOPLEFT', -35, -10)
         end
     end
     button:set_Point()

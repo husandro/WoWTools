@@ -290,6 +290,10 @@ local function set_vigentteButton_Text()
 end
 
 
+
+
+
+
 --检测，显示，禁用，Button, 文本
 local function check_Button_Enabled_Disabled()
     local self= panel.Button
@@ -497,7 +501,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
     if menuList then
         return
     end
-
+--[[
     info={
         text=e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE),
         checked= Save.vigentteButtonShowText,
@@ -511,7 +515,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    e.LibDD:UIDropDownMenu_AddSeparator(level)]]
     info={
         text= (e.onlyChinese and '当前' or REFORGE_CURRENT)..' Vignette',
         menuList='CurrentVignette',
@@ -581,7 +585,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         btn= e.Cbtn(nil, {icon='hide', size={20,20}})
         btn.texture= btn:CreateTexture(nil, 'BORDER')
         btn.texture:SetAllPoints(btn)
-        btn.texture:SetAlpha(0.1)
+        btn.texture:SetAlpha(0.3)
         function btn:set_Texture()
             self.texture:SetAtlas(Save.vigentteButtonShowText and e.Icon.icon or e.Icon.disabled)
         end
@@ -589,10 +593,8 @@ local function Init_Set_Button()--小地图, 标记, 文本
         function btn:Set_Point()--设置，位置
             if Save.pointVigentteButton then
                self:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
-            elseif e.Player.husandro then
-                self:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT', 4, 2)
             else
-                self:SetPoint('CENTER', -200, -200)
+                self:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT', 4, 2)
             end
         end
         btn:Set_Point()
@@ -614,14 +616,20 @@ local function Init_Set_Button()--小地图, 标记, 文本
             self:Raise()
         end)
 
-        btn:SetScript('OnClick', function(self, d)--显示，隐藏
+        btn:SetScript('OnMouseDown', function(self, d)--显示，隐藏
             local key= IsModifierKeyDown()
             if d=='LeftButton' and not key then
+                Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or nil
+                check_Button_Enabled_Disabled()
+                panel.Button:set_Texture()
+
+            elseif d=='RightButton' and not key then
                 if not self.menu then
                     self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                     e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Button_Menu, 'MENU')
                 end
                 e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
+                SetCursor('UI_MOVE_CURSOR')
 
             elseif d=='RightButton' and IsAltKeyDown() then
                 Save.pointVigentteButton=nil
@@ -630,11 +638,6 @@ local function Init_Set_Button()--小地图, 标记, 文本
             end
         end)
 
-        btn:SetScript('OnMouseDown', function(_, d)
-            if d=='RightButton' and not IsModifierKeyDown() then
-                SetCursor('UI_MOVE_CURSOR')
-            end
-        end)
         btn:SetScript('OnMouseUp', function()
             ResetCursor()
         end)
@@ -660,7 +663,8 @@ local function Init_Set_Button()--小地图, 标记, 文本
             e.tips:ClearLines()
             e.tips:AddLine(addName2)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.left)
+            e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
             e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.vigentteButtonTextScale), 'Alt+'..e.Icon.mid)
             e.tips:AddLine(' ')
@@ -671,7 +675,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         btn:SetScript('OnLeave',function(self)
             e.tips:Hide()
             ResetCursor()
-            self.texture:SetAlpha(0.1)
+            self.texture:SetAlpha(0.3)
         end)
 
         btn:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件

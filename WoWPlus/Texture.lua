@@ -83,6 +83,23 @@ local function set_Alpha_Frame_Texture(frame, tab)
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###############
 --初始化, 隐藏材质
 --###############
@@ -94,11 +111,8 @@ local function Init_HideTexture()
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
         hide_Texture(frame.TargetFrameContainer.FrameTexture)
-        --[[frame:HookScript('OnShow', function(self)
-            hide_Texture(self.TargetFrameContainer.FrameTexture)
-        end)]]
     end
-
+    
     hooksecurefunc('PlayerFrame_UpdateArt', function()--隐藏材质, 载具
         if OverrideActionBarEndCapL then
             hide_Texture(OverrideActionBarEndCapL)
@@ -315,6 +329,22 @@ local function Init_HideTexture()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_HideTexture_Event(arg1)
     if Save.disabledTexture then
         return
@@ -342,32 +372,18 @@ local function set_HideTexture_Event(arg1)
 end
 
 
---##################
---专业, 初始化, 透明
---专业 10.1.5出现问题
-local function Init_ProfessionsFrame()
-    if not ProfessionsFrame or Save.disabledAlpha then
-        return
-    end
-    set_Alpha(ProfessionsFrame.NineSlice.TopLeftCorner)
-    set_Alpha(ProfessionsFrame.NineSlice.TopEdge)
-    set_Alpha(ProfessionsFrame.NineSlice.TopRightCorner)
-    set_Alpha(ProfessionsFrameBg)
-    set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Background)
-    set_Alpha(ProfessionsFrame.CraftingPage.RankBar.Background)
 
-    set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
-    set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
-    set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundBottom)
 
-    hide_Texture(ProfessionsFrame.SpecPage.TreeView.Background)
-    hide_Texture(ProfessionsFrame.SpecPage.DetailedView.Background)
-    set_Alpha(ProfessionsFrame.SpecPage.DetailedView.Path.DialBG)
-    set_Alpha(ProfessionsFrame.SpecPage.DetailedView.UnspentPoints.CurrencyBackground)
 
-    set_Alpha(InspectRecipeFrameBg)
-    set_Alpha(InspectRecipeFrame.SchematicForm.MinimalBackground)
-end
+
+
+
+
+
+
+
+
+
 
 --###########
 --初始化, 透明
@@ -377,7 +393,11 @@ local function Init_Set_AlphaAndColor()
         return
     end
 
-    Init_ProfessionsFrame()--专业, 初始化, 透明
+
+    set_Alpha(PlayerCastingBarFrame.Border)
+    set_Alpha(PlayerCastingBarFrame.Background)
+    set_Alpha(PlayerCastingBarFrame.TextBorder)
+    set_Alpha(PlayerCastingBarFrame.Shine)
 
     --角色，界面
     set_Alpha(CharacterFrameBg)
@@ -897,9 +917,22 @@ local function Init_Set_AlphaAndColor()
         end
 
     end)
-
-    
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#########
 --事件, 透明
@@ -1572,8 +1605,39 @@ local function set_Alpha_Event(arg1)
     elseif arg1=='Blizzard_MajorFactions' then--派系声望
         set_Alpha(MajorFactionRenownFrame.Background)
 
+    elseif arg1=='Blizzard_Professions' then--专业, 初始化, 透明
+        set_Alpha(ProfessionsFrame.NineSlice.TopLeftCorner)
+        set_Alpha(ProfessionsFrame.NineSlice.TopEdge)
+        set_Alpha(ProfessionsFrame.NineSlice.TopRightCorner)
+        set_Alpha(ProfessionsFrameBg)
+        set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Background)
+        set_Alpha(ProfessionsFrame.CraftingPage.RankBar.Background)
+    
+        set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
+        set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
+        set_Alpha(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundBottom)
+    
+        hide_Texture(ProfessionsFrame.SpecPage.TreeView.Background)
+        hide_Texture(ProfessionsFrame.SpecPage.DetailedView.Background)
+        set_Alpha(ProfessionsFrame.SpecPage.DetailedView.Path.DialBG)
+        set_Alpha(ProfessionsFrame.SpecPage.DetailedView.UnspentPoints.CurrencyBackground)
+    
+        set_Alpha(InspectRecipeFrameBg)
+        set_Alpha(InspectRecipeFrame.SchematicForm.MinimalBackground)
+
     end
 end
+
+
+
+
+
+
+
+
+
+
+
 
 
 --#######
@@ -1598,6 +1662,18 @@ local function Init_chatBubbles()
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --职业
 --####
@@ -1606,8 +1682,8 @@ local function Init_Class_Power()--职业
         return
     end
     local function set_Num_Texture(self, num, color, parent)
-        if not self.numTexture and (self.layoutIndex or num) then
-            self.numTexture= (parent or self):CreateTexture(nil, 'OVERLAY')
+        if self and not self.numTexture and (self.layoutIndex or num) then
+            self.numTexture= (parent or self):CreateTexture(nil, 'OVERLAY', nil, 7)
             self.numTexture:SetSize(Save.classPowerNumSize, Save.classPowerNumSize)
             self.numTexture:SetPoint('CENTER', self, 'CENTER')
             self.numTexture:SetAtlas(e.Icon.number..(num or self.layoutIndex))
@@ -1620,6 +1696,7 @@ local function Init_Class_Power()--职业
             end
         end
     end
+
     if e.Player.class=='PALADIN' then--QS PaladinPowerBarFrame
         if PaladinPowerBarFrame and PaladinPowerBarFrame.Background and PaladinPowerBarFrame.ActiveTexture then
             hide_Texture(PaladinPowerBarFrame.Background, true)
@@ -1735,9 +1812,10 @@ local function Init_Class_Power()--职业
                 end
             end
         end)
+
     elseif e.Player.class=='DEATHKNIGHT' then
         if RuneFrame.Runes then
-            for index, btn in pairs(RuneFrame.Runes) do
+            for _, btn in pairs(RuneFrame.Runes) do
                 hide_Texture(btn.BG_Active)
                 hide_Texture(btn.BG_Inactive)
                 --set_Num_Texture(btn, index, false, RuneFrame)
@@ -1747,6 +1825,15 @@ local function Init_Class_Power()--职业
             for _, btn in pairs(DeathKnightResourceOverlayFrame.Runes) do
                 hide_Texture(btn.BG_Active)
                 hide_Texture(btn.BG_Inactive)
+            end
+        end
+
+    elseif e.Player.class=='EVOKER' then
+        if EssencePlayerFrame and EssencePlayerFrame.classResourceButtonTable then--EssenceFramePlayer.lua
+            for _, btn in pairs(EssencePlayerFrame.classResourceButtonTable) do
+                set_Alpha(btn.EssenceFillDone.EssenceIcon, true)
+                set_Alpha(btn.EssenceFillDone.CircBGActive, true)
+                set_Num_Texture(btn, nil, nil)
             end
         end
     end
@@ -1804,6 +1891,18 @@ local function set_MainMenu_Color(init)--主菜单
     end
     --EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.MicroMenu][3].minValue=50--EditModeSettingDisplayInfo.lua
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --###########
@@ -1925,7 +2024,7 @@ local function options_Init()--初始，选项
         print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
-    local sliderClassPowerNumSize = e.CSlider(panel, {w=100,min=8, max=24, value=Save.classPowerNumSize, setp=1, color=true,
+    local sliderClassPowerNumSize = e.CSlider(panel, {w=100,min=8, max=36, value=Save.classPowerNumSize, setp=1, color=true,
     text=e.onlyChinese and '大小' or 'Size',
     func=function(self, value)
         value= tonumber(format('%i', value))
@@ -1937,6 +2036,20 @@ local function options_Init()--初始，选项
     end})
     sliderClassPowerNumSize:SetPoint("LEFT", classNumCheck.Text, 'RIGHT', 2,0)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
@@ -1979,9 +2092,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
-
-        elseif arg1=='Blizzard_Professions' then
-            Init_ProfessionsFrame()--专业, 初始化, 透明10.1.5
 
         else
             set_HideTexture_Event(arg1)

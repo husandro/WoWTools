@@ -496,8 +496,10 @@ function e.MK(number, bit)
     end
 end
 
-e.GetShowHide = function(sh)
-	if sh then
+e.GetShowHide = function(sh, all)
+    if all then
+        return not e.onlyChinese and SHOW..'/'..HIDE or '显示/隐藏'
+    elseif sh then
 		return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '显示' or SHOW)..'|r'
 	else
 		return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '隐藏' or HIDE)..'|r'
