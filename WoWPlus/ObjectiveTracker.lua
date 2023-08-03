@@ -315,7 +315,7 @@ local function Init()
 
 
 						if name and icon then
-                            local text = format('%s %s', '|T'..icon..':0|t'..format('%s/%d', quantity, quantityRequired), name)
+                            local text = format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|T'..icon..':0|t'..format('%s/%d', quantity, quantityRequired), name)
 							local metQuantity = quantity >= quantityRequired;
                             local line= block.lines[slotIndex]
                             if line then
