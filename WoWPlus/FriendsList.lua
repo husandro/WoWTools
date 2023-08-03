@@ -8,6 +8,15 @@ local Save={
     }
 local panel=CreateFrame("Frame")
 
+
+
+
+
+
+
+
+
+
 --#############
 --快速加入, 模块
 --#############
@@ -163,6 +172,22 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
         QuickJoinToastButton.Toast:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT')
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --#############
@@ -366,6 +391,32 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
                     return
+                
+                elseif menuList=='PlayerList' then--玩家，列表
+                    local find
+                    for name, tab in pairs(Save.Friends) do
+                        if name~=e.Player.name_realm and (tab.Availabel or tab.Away or tab.DND) then
+                            info={
+                                text= name..' '
+                                    ..(tab.Availabel and  optionText:format(FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE) or '')
+                                    ..(tab.Away and  optionText:format(FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY) or '' )
+                                    ..(tab.DND and optionText:format(FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY) or ''),
+                                notCheckable= true,
+                                tooltipOnButton=true,
+                                tooltipTitle= e.onlyChinese and '移除' or REMOVE,
+                                arg1= name,
+                                func= function(_, arg1)
+                                    Save.Friends[arg1]= {}
+                                end,
+                            }
+                            e.LibDD:UIDropDownMenu_AddButton(info, level)
+                            find=true
+                        end
+                    end
+                    if not find then
+                        e.LibDD:UIDropDownMenu_AddButton({text= e.onlyChinese and '无' or NONE, isTitle=true, notCheckable=true}, level)
+                    end
+                    return
                 end
 
                 info= {
@@ -374,7 +425,6 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '登入(游戏)' or (LOG_IN..' ('..GAME..')'),
                     tooltipText=id..' '..addName,
-                    keepShownOnClick=true,
                     func=function()
                         Save.Friends[e.Player.name_realm].Availabel = not Save.Friends[e.Player.name_realm].Availabel and true or nil
                         Save.Friends[e.Player.name_realm].Away= nil
@@ -390,7 +440,6 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '登入(游戏)' or (LOG_IN..' ('..GAME..')'),
                     tooltipText=id..' '..addName,
-                    keepShownOnClick=true,
                     func=function()
                         Save.Friends[e.Player.name_realm].Availabel = nil
                         Save.Friends[e.Player.name_realm].Away= not Save.Friends[e.Player.name_realm].Away and true or nil
@@ -406,7 +455,6 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '登入(游戏)' or (LOG_IN..' ('..GAME..')'),
                     tooltipText=id..' '..addName,
-                    keepShownOnClick=true,
                     func=function()
                         Save.Friends[e.Player.name_realm].Availabel = nil
                         Save.Friends[e.Player.name_realm].Away=nil
@@ -418,7 +466,6 @@ local function set_FriendsList_Init()--好友列表, 初始化
 
                 info={
                     text= e.onlyChinese and '无' or NONE,
-                    keepShownOnClick=true,
                     func= function()
                         Save.Friends[e.Player.name_realm].Availabel = nil
                         Save.Friends[e.Player.name_realm].Away= nil
@@ -428,6 +475,15 @@ local function set_FriendsList_Init()--好友列表, 初始化
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+                e.LibDD:UIDropDownMenu_AddSeparator()
+                info={
+                    text=e.onlyChinese and '玩家' or PLAYER,
+                    notCheckable=true,
+                    hasArrow=true,
+                    menuList='PlayerList',
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+                
                 e.LibDD:UIDropDownMenu_AddSeparator()
                 info={
                     text=  e.Icon.net2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' ('..(e.onlyChinese and '好友' or FRIEND)..') '..( e.onlyChinese and '信息' or INFO)..'|A:communities-icon-chat:0:0|a',
@@ -517,6 +573,20 @@ local function set_FriendsList_Init()--好友列表, 初始化
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --#########
@@ -725,6 +795,21 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --######
 --初始化
 --######
@@ -734,6 +819,14 @@ local function Init()--FriendsFrame.lua
     hooksecurefunc('WhoList_Update', set_WhoList_Update)
     hooksecurefunc(WhoFrame.ScrollBox, 'SetScrollTargetOffset', set_WhoList_Update)
 end
+
+
+
+
+
+
+
+
 
 
 
