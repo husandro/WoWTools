@@ -192,6 +192,7 @@ local function get_Items()--取得背包物品信息
                 and not info.isLocked
                 and info.iconFileID
                 and (not Save.no[info.itemID] or Save.use[info.itemID])
+                and C_PlayerInfo.CanUseItem(info.itemID)
                 and not (duration and duration>2 or enable==0) and classID~=8
             then
                 e.LoadDate({id=info.itemID, type='item'})
