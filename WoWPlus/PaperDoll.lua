@@ -853,7 +853,7 @@ local function set_inti_Equipment_Frame()--添加装备管理框
                     C_EquipmentSet.UseEquipmentSet(self.setID)
                     C_Timer.After(0.5, function() LvTo() end)--修改总装等
                 else
-                    print(addName..': '..RED_FONT_COLOR_CODE..ERR_NOT_IN_COMBAT..'|r')
+                    print(id, addName, RED_FONT_COLOR_CODE, e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT)
                 end
             end)
             btn:SetScript("OnEnter", function(self)
