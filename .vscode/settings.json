@@ -531,7 +531,7 @@
         "ReputationFrameStandingLabel",
         "ReputationFrameFactionLabel",
         "COMPARE_ACHIEVEMENTS",
-        "'Alpha'",
+        "CHANGE_OPACITY",
         "QuickJoinToastButton",
         "QuickJoinRoleSelectionFrame",
         "QuickJoinEntryMixin",
@@ -3189,7 +3189,9 @@
         "WEEKLY_REWARDS_RETURN_TO_CLAIM",
         "COMBAT_TEXT_SCROLL_DOWN",
         "EssencePlayerFrame",
-        "EssencePowerBar"
+        "EssencePowerBar",
+        "ZoneAbilityFrameMixin",
+        "ZoneAbilityFrameSpellButtonMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

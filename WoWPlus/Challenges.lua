@@ -1568,7 +1568,14 @@ local function Init()
     self.tipsFrame:SetShown(not Save.hideTips)
     self.tipsFrame:SetScale(Save.tipsScale or 1)
 
-    local check= e.Cbtn(self, {size={18,18}, icon= not Save.hideIns})
+    local check= e.Cbtn(self, {size={18,18}, icon='hide'})-- not Save.hideIns})
+    check.texture= check:CreateTexture()
+    check.texture:SetAllPoints(check)
+    check.texture:SetAlpha(0.3)
+    function check:set_Texture()
+        self.texture:SetAtlas(not Save.hideIns and e.Icon.icon or e.Icon.disabled)
+    end
+    check:set_Texture()
     check:SetFrameLevel( PVEFrame.TitleContainer:GetFrameLevel()+1)
     if _G['MoveZoomInButtonPerPVEFrame'] then
         check:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT', -18,0)
@@ -1577,7 +1584,8 @@ local function Init()
     end
     check:SetScript("OnClick", function(self2)
         Save.hideIns = not Save.hideIns and true or nil
-        self2:SetNormalAtlas(not Save.hideIns and e.Icon.icon or e.Icon.disabled)
+        --self2:SetNormalAtlas(not Save.hideIns and e.Icon.icon or e.Icon.disabled)
+        self2:set_Texture()
         set_Update()
     end)
     check:SetScript('OnMouseWheel', function(self2, d)--缩放
@@ -1601,9 +1609,11 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
+        self2.texture:SetAlpha(1)
     end)
-    check:SetScript("OnLeave",function(_)
+    check:SetScript("OnLeave",function(self2)
         e.tips:Hide()
+        self2.texture:SetAlpha(0.3)
     end)
 
 

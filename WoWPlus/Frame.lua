@@ -187,15 +187,18 @@ local function set_Frame_Drag(self)
     else
         self:RegisterForDrag("LeftButton", "RightButton")
     end
-    self:SetScript("OnDragStart", function(self2)--开始移动
-        --if not EditModeManagerFrame:IsEditModeActive() then
+
+
+    self:HookScript("OnDragStart", function(self2, d)--开始移动
+        if not self.ClickTypeMove or (self.ClickTypeMove=='R' and d=='RightButton') or (self.ClickTypeMove=='L' and d=='LeftButton') then
             local frame= self2.MoveFrame or self2
             if not frame:IsMovable()  then
                 frame:SetMovable(true)
             end
             frame:StartMoving()
+        end
     end)
-    self:SetScript("OnDragStop", function(self2)
+    self:HookScript("OnDragStop", function(self2)
         stop_Drag(self)--停止移动
         local moveFrame= self2.MoveFrame or self2
         local frameName= self2.FrameName or moveFrame:GetName()
@@ -230,13 +233,12 @@ local set_Move_Frame=function(self, tab)
     end
     tab= tab or {}
     if not Save.disabledMove then
-        local name= tab.frame and tab.frame:GetName() or self and self:GetName()
-        tab.name= name
-        if name and not self.FrameName then
-            self.SavePoint= ((tab.save and name) or Save.SavePoint) and true or false--是否保存
+        tab.name= tab.name or (tab.frame and tab.frame:GetName()) or (self and self:GetName()) or nil
+        if tab.name and not self.FrameName then
+            self.SavePoint= ((tab.save and tab.name) or Save.SavePoint) and true or false--是否保存
             self.ClickTypeMove= tab.click--点击,或右击
             self.MoveFrame= tab.frame--要移动的Frame
-            self.FrameName= name
+            self.FrameName= tab.name
 
             set_Frame_Drag(self)--设置Frame,移动属性
 
@@ -245,7 +247,7 @@ local set_Move_Frame=function(self, tab)
                 header.SavePoint= self.SavePoint
                 header.ClickTypeMove= self.ClickTypeMove
                 header.MoveFrame= self
-                header.FrameName=name
+                header.FrameName=tab.name
                 set_Frame_Drag(header)--设置Frame,移动属性
             end
 
@@ -255,7 +257,7 @@ local set_Move_Frame=function(self, tab)
 
             self:HookScript("OnLeave", ResetCursor)
         end
-        set_Frame_Point(self, name)--设置, 移动, 位置
+        set_Frame_Point(self, tab.name)--设置, 移动, 位置
     end
     set_Zoom_Frame(self, tab)
 end
@@ -583,7 +585,14 @@ local function Init_Move()
     FrameTab=nil
 
 
-    created_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer, save=true})
+
+    created_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer})
+    --跟点击，功能冲突 ZoneAbilityFrameSpellButtonMixin:OnDragStart()
+    --[[hooksecurefunc(ZoneAbilityFrame, 'UpdateDisplayedZoneAbilities', function(self)
+        --for spellButton in self.SpellButtonContainer:EnumerateActive() do
+    end)]]
+
+
 
     --########
     --小，背包
@@ -803,7 +812,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
-    
+
         elseif arg1=='Blizzard_Professions' then--专业, 10.1.5
             InspectRecipeFrame:HookScript('OnShow', function(self2)
                 local name= self2:GetName()
