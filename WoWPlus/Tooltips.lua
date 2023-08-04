@@ -1910,9 +1910,8 @@ local function Init_Panel()
             print(id, addName, 'PlayerFrame WidgetSetID',
                 num==0 and e.GetEnabeleDisable(false) or num,
                 '|n|cnRED_FONT_COLOR:',
-                e.onlyChinese and '备注：如果出现错误，请关闭此功能（0）' or ('note: '..ENABLE_ERROR_SPEECH..', '..CANCEL..' (0)')
+                e.onlyChinese and '备注：如果出现错误，请关闭此功能（0）' or 'note: If you get error, please disable this (0)'
             )
-            
         end
 	end)
     widgetLabel= e.Cstr(panel)
