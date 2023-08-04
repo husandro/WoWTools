@@ -95,6 +95,16 @@ local function set_Quest_Completed(tab)--任务是否完成
     end
 end
 
+local CALENDAR_EVENTTYPE_TEXTURES = {
+	[Enum.CalendarEventType.Raid]		= "Interface\\LFGFrame\\LFGIcon-Raid",
+	[Enum.CalendarEventType.Dungeon]	= "Interface\\LFGFrame\\LFGIcon-Dungeon",
+	[Enum.CalendarEventType.PvP]		= e.Player.faction=='Alliance' and "Interface\\Calendar\\UI-Calendar-Event-PVP02"
+                                            or (e.Player.faction=='Horde' and "Interface\\Calendar\\UI-Calendar-Event-PVP01")
+                                            or "Interface\\Calendar\\UI-Calendar-Event-PVP",
+	[Enum.CalendarEventType.Meeting]	= "Interface\\Calendar\\MeetingIcon",
+	--[Enum.CalendarEventType.Other]		= "Interface\\Calendar\\UI-Calendar-Event-Other",
+}
+
 local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
     if Save.hide or not button:IsShown() then
         button.Text:SetText('')
@@ -149,6 +159,7 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
                 if Save.showDate and isValid and event.eventTime then
                     event.eventTime= '|cnGREEN_FONT_COLOR:'..event.eventTime..'|r'
                 end
+                event.index= i
                 tinsert(events, event);
             end
         end
@@ -229,7 +240,7 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
         end
 
         local icon
-        if title:find(PVP) then
+        if title:find(PVP) or event.eventID==561 then
             icon= '|A:pvptalents-warmode-swords:0:0|a'--pvp
         elseif event.calendarType=='HOLIDAY' and event.eventID then
             if event.eventID==1063
@@ -267,10 +278,24 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
                 icon= '|T235477:0|t'
             elseif event.eventID==691 then
                 icon='|T1500867:0|t'
+            elseif event.eventID==1405 then
+                icon='|T133661:0|t'
             elseif event.iconTexture then
                 icon='|T'..event.iconTexture..':0|t'
             end
         end
+        
+        if CALENDAR_EVENTTYPE_TEXTURES[event.eventType] then
+            local texture= '|T'..CALENDAR_EVENTTYPE_TEXTURES[event.eventType]..':0|t'
+            icon= Save.left and (texture..(icon or '')) or ((icon or '')..texture)
+        end
+        
+        local invitInfo= C_Calendar.EventGetInvite(event.index)
+        if invitInfo and invitInfo.guid then
+            local texture= e.GetPlayerInfo({guid=invitInfo.guid})
+             icon= Save.left and (texture..(icon or '')) or ((icon or '')..texture)
+        end
+
         if icon then
             msg= Save.left and (icon..msg) or (msg..icon)
         end
