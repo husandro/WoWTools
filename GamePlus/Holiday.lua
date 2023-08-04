@@ -270,7 +270,7 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
                 icon='|T134481:0|t'--515[暗月奖券]
 
 
-            elseif event.eventID==324 then--万圣节
+            elseif event.eventID==324 or event.eventID==1405 then--万圣节
                icon= '|T236546:0|t'--33226[奶糖]
             elseif event.eventID==423 then--情人节
                 icon='|T235468:0|t'
@@ -278,8 +278,6 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
                 icon= '|T235477:0|t'
             elseif event.eventID==691 then
                 icon='|T1500867:0|t'
-            elseif event.eventID==1405 then
-                icon='|T133661:0|t'
             elseif event.iconTexture then
                 icon='|T'..event.iconTexture..':0|t'
             end
