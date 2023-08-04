@@ -901,7 +901,7 @@ local function Init()
     --接受, 召唤
     --#########
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate",function(self)
-        if IsModifierKeyDown() or self.isCancelledAuto then
+        if IsModifierKeyDown() or self.isCancelledAuto or not Save.Summon then
             if not self.isCancelledAuto then
                 e.Ccool(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
                 if self.SummonTimer and not self.SummonTimer:IsCancelled() then self.SummonTimer:Cancel() end--取消，计时
