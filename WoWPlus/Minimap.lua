@@ -591,7 +591,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         btn.texture:SetAllPoints(btn)
         btn.texture:SetAlpha(0.3)
         function btn:set_Texture()
-            self.texture:SetAtlas(Save.vigentteButtonShowText and e.Icon.icon or e.Icon.disabled)
+            self.texture:SetAtlas(Save.vigentteButtonShowText and 'VignetteKillElite' or e.Icon.disabled)
         end
         btn:set_Texture()
         function btn:Set_Point()--设置，位置
