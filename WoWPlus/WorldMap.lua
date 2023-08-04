@@ -664,6 +664,23 @@ local function Init_set_Map_ID()--显示地图ID
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_Widget_Text_OnUpDate(self, elapsed)
     self.elapsed= self.elapsed + elapsed
     if self.elapsed>1 then--and self.updateWidgetID then
@@ -672,7 +689,7 @@ local function set_Widget_Text_OnUpDate(self, elapsed)
         elseif self.updateWidgetID then
             local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(self.updateWidgetID) or {}
             if widgetInfo.shownState== 1 and widgetInfo.text and widgetInfo.hasTimer then--剩余时间：
-                self.Text:SetText(widgetInfo.text)
+                self.Text:SetText(widgetInfo.text:gsub(HEADER_COLON, '|n'))
             end
         end
         self.elapsed= 0
