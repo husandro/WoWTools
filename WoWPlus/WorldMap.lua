@@ -180,12 +180,16 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
         QuestScrollFrame.btnDeleteAllQuest:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(not e.onlyChinese and LOOT_HISTORY_ALL_PASSED or "全部放弃", '|cnRED_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"))
+            e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"), '|cnRED_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"))
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(not e.onlyChinese and LOOT_HISTORY_ALL_PASSED or "全部放弃", (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
             self2:SetAlpha(1)
         end)
-        QuestScrollFrame.btnDeleteAllQuest:SetScript("OnMouseDown", function()
-            StaticPopupDialogs[id..addName.."ABANDON_QUEST"] = {
+        QuestScrollFrame.btnDeleteAllQuest:SetScript("OnDoubleClick", function()
+            StaticPopupDialogs[id..addName.."ABANDON_QUEST"] = StaticPopupDialogs[id..addName.."ABANDON_QUEST"] or {
                 text= (e.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)..'|n|n|cnYELLOW_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"),
                 button1 = '|cnRED_FONT_COLOR:'..(not e.onlyChinese and ABANDON_QUEST_ABBREV or "放弃"),
                 button2 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL),

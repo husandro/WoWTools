@@ -1047,9 +1047,9 @@ local function setUnitInfo(self, unit)--设置单位提示信息
 
     set_Item_Model(self, {unit=unit, guid=guid, col= col})--设置, 3D模型
 
-    if isSelf and not isInCombat and Save.WidgetSetID>0 then
-        GameTooltip_AddWidgetSet(e.tips, Save.WidgetSetID, 10)
-    end
+    --[[if isSelf and not isInCombat and Save.WidgetSetID>0 then
+        GameTooltip_AddWidgetSet(e.tips, Save.WidgetSetID)
+    end]]
 end
 
 local function setCVar(reset, tips, notPrint)
@@ -1843,7 +1843,7 @@ local function Init_Panel()
     end)
 
     --监视， WidgetSetID
-    local widgetLabel= e.Cstr(panel)
+    --[[local widgetLabel= e.Cstr(panel)
     widgetLabel:SetPoint('TOPLEFT', ctrlCopy, 'BOTTOMLEFT',0, -8)
     widgetLabel:SetText('WidgetSetID')
     widgetLabel:EnableMouse(true)
@@ -1874,7 +1874,7 @@ local function Init_Panel()
 	end)
     widgetLabel= e.Cstr(panel)
     widgetLabel:SetPoint('LEFT', widgetEdit, 'RIGHT',4, 0)
-    widgetLabel:SetText('0 '..(e.onlyChinese and '取消' or CANCEL))
+    widgetLabel:SetText('0 '..(e.onlyChinese and '取消' or CANCEL))]]
 
    --设置CVar
     local cvar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -1933,7 +1933,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.modelY= Save.modelY or -24
             Save.modelFacing= Save.modelFacing or -0.35
 
-            Save.WidgetSetID = Save.WidgetSetID or 7588
+            --Save.WidgetSetID = Save.WidgetSetID or 859
 
             Init_Panel()--设置 panel
 
