@@ -15,7 +15,7 @@ local Save={
         areaPoiIDs={[7492]= 2025},--{[areaPoiID]= 地图ID}
         uiMapIDs= {},--地图ID 监视, areaPoiIDs，
         currentMapAreaPoiIDs=true,--当前地图，监视, areaPoiIDs，
-        showID= e.Player.husandro,--显示ID
+        --showID= e.Player.husandro,--显示ID
         --textToDown= true,--文本，向下
 
         miniMapPoint={},--保存小图地, 按钮位置
@@ -141,15 +141,8 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
         return
     end
 
-
-
-    local text, widgetID, line
+    local text, widgetID
     for _, widget in ipairs(poiInfo.widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}) do
-        local widgetInfo = C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(widget.widgetID)
-        if widgetInfo then
-            print(widgetInfo.hasTimer,'b')
-        end
-
         if widget.widgetID then
             local info = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
             if info
@@ -158,38 +151,44 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
                 and (info.hasTimer or not all)
             then
                 local text3= info.text:gsub('^|n', '')
+                text3= text3:gsub(':%d+|t', ':0|t')
                 text= (text and text..'|n' or '')
-                        .. '      '..text3:gsub('|n', '|n      ')
+                        .. '       '..text3:gsub('|n', '|n       ')
                 widgetID= widget.widgetID
             end
         end
     end
 
 
-    local hasTime= C_AreaPoiInfo.IsAreaPOITimed(areaPoiID)
+
     local time
-    if hasTime then
-        time=C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
-        hasTime = time and time>=0
+    if C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
+        time=  C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
+        time= (time and time>0) and time or nil
     end
-    if text or hasTime then
-        if text then
-            text= text and '|cffffffff'..text..'|r'
-            text= line and (name..' '..text) or (text..'|n'..name)
-        else
-            text=name
-        end
+
+    if text or time then
+        text= text and '|cffffffff'..text..'|r|n'..name or name
+
         if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
             local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
             if info and info.textureKit then
                 text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
             end
         end
-        if hasTime then
-            if time<86400 then
-                text= text..' |cffffffff'..e.SecondsToClock(time)..'|r'
+        if time then
+            if poiInfo.name~='' then
+                if time<86400 then
+                    text= text..' |cffffffff'..e.SecondsToClock(time)..'|r'
+                else
+                    text= text..' |cffffffff'..SecondsToTime(time)..'|r'
+                end
             else
-                text= text..' |cffffffff'..SecondsToTime(time)..'|r'
+                if time<86400 then
+                    text= text..' '..e.SecondsToClock(time)
+                else
+                    text= text..' '..SecondsToTime(time)
+                end
             end
         end
         if Save.showID then

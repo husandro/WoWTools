@@ -732,14 +732,12 @@ local function GCD_Init()
     Init_GCD_Options()
 end
 
-
 --######
 --初始化
 --######
 local function Init()
     panel.name = e.Icon.left..(e.onlyChinese and '鼠标' or MOUSE_LABEL)..'|r'
     panel.parent =id
-    InterfaceOptions_AddCategory(panel)
 
     e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=nil, clearTips=nil,--重新加载UI, 重置, 按钮
         disabledfunc=nil,

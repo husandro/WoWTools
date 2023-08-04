@@ -90,6 +90,9 @@ end
 local panel = CreateFrame("Frame")--Panel
 panel.name = id--'|cffff00ffWoW|r|cff00ff00Tools|r'
 InterfaceOptions_AddCategory(panel)
+--panel.OnCommit = function() print('OnCommit') end--关闭
+panel.OnDefault = function() print('OnDefault') end
+panel.OnRefresh = function() print('OnRefresh') end--打开
 
 --##############
 --Instance Panel

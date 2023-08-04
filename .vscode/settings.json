@@ -3195,7 +3195,8 @@
         "ConvertSecondsToUnits",
         "HOURS_MINUTES_SECONDS",
         "MINUTES_SECONDS",
-        "INSTANCE_DIFFICULTY_FORMAT"
+        "INSTANCE_DIFFICULTY_FORMAT",
+        "Settings"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
