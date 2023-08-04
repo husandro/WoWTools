@@ -1631,34 +1631,6 @@ local function Init()
             e.tips:Show()
         end
     end)
---[[
-    function panel:set_Widget_Tips()
-        local isEnabled= Save.WidgetSetID>0
-
-        if isEnabled and not self.widgetButton then
-            self.widgetButton= e.Cbtn(self, {size={16,16}, icon='hide'})
-
-            self.widgetButton:SetPoint('BOTTOMLEFT', PlayerFrame, 'TOPLEFT')
-
-            self.widgetButton.elapsed= 1
-            --self.widgetButton.tips= CreateFrame('GameTooltip', nil, self.widgetButton)--, 'GameTooltipTemplate')
-            self.widgetButton:SetScript("OnUpdate",  function(self2, elapsed)
-
-                self2.elapsed= self2.elapsed+ elapsed
-                if self2.elapsed>1 then
-                    self2.tips:SetOwner(self2, 'ANCHOR_LEFT')
-                    --self2.tips:ClearLines()
-                    GameTooltip_AddWidgetSet(self2.tips, 845, 10)
-                    self2.tips:Shown()
-                    self2.elapsed= 0
-                end
-            end)
-        end
-        if self.widgetTip then
-            self.widgetTip:SetShown(isEnabled)
-        end
-    end
-    panel:set_Widget_Tips()]]
 end
 
 
@@ -1961,7 +1933,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.modelY= Save.modelY or -24
             Save.modelFacing= Save.modelFacing or -0.35
 
-            Save.WidgetSetID = Save.WidgetSetID or 845
+            Save.WidgetSetID = Save.WidgetSetID or 7588
 
             Init_Panel()--设置 panel
 

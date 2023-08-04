@@ -591,7 +591,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                         local num= self2:GetNumber()
                         local parent= self2:GetParent()
                         parent.button1:SetEnabled(num>0 and num<=3600)
-                        parent.button1:SetText(SecondsToClock(num))
+                        parent.button1:SetText(e.SecondsToClock(num))
                     end,
                     EditBoxOnEscapePressed = function(self2)
                         securecall(ChatEdit_FocusActiveWindow)

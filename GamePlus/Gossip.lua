@@ -1255,7 +1255,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                                     local time= GetTime()
                                     time= time < value and time + 86400 or time
                                     time= time - value
-                                    text= SecondsToClock(aura.duration- time)
+                                    text= e.SecondsToClock(aura.duration- time)
                                     count= select(3, e.WA_GetUnitBuff('player', self3.spellID, 'HELPFUL'))
                                     count= count and count>1 and count or nil
                                 end

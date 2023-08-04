@@ -116,7 +116,7 @@ local function get_Quest_Text()--世界任务 文本
                     end
                     itemTexture= (itemTexture and '|T'..itemTexture..':0|t' or '|A:worldquest-tracker-questmarker:0:0|a')
                     local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
-                    local secText= (secondsLeft and secondsLeft>0) and SecondsToClock(secondsLeft, true)
+                    local secText= e.SecondsToClock(secondsLeft, true)
                     text= text and text..'|n' or ''
                     text= text..itemTexture
                         ..questName
@@ -133,50 +133,52 @@ end
 local function get_AreaPOIInfo_Name(poiInfo)
     return (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
 end
-
 --areaPoiID 文本
 local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
-    local text
     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
     local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
     if name=='' then
         return
     end
-    local secondsLeft
-    local isTimed, hideTimer= C_AreaPoiInfo.IsAreaPOITimed(areaPoiID)
-    local hasTime= isTimed and not hideTimer
-    if hasTime then
-        secondsLeft= C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
-        hasTime= secondsLeft and secondsLeft>0
-    end
+
+
+
+    local text, widgetID, line
     for _, widget in ipairs(poiInfo.widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}) do
-        if widget and widget.widgetID then--and  widget.widgetType==8 then
-            local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID) or {}
-            if widgetInfo.shownState== 1 and widgetInfo.text then
-                local icon, num= widgetInfo.text:match('(|T.-|t).+(%d+)')
-                if widgetInfo.hasTimer or (not all and not(icon and num) and hasTime) then
-                    local text2= widgetInfo.text:match('^|n(.+)') or widgetInfo.text
-                    text= '      |cffffffff'..text2:gsub('|n', '|n      ')
-                            ..'|r|n'
-                            ..name
-                            ..(Save.showID and ' |cffffffffW|r'..widget.widgetID or '')
-                    break
-                elseif icon and num then
-                    local texture= icon:match('(|T.-):')
-                    if texture then
-                        icon= texture..':0|t'
-                    end
-                    text= name..icon..'|cffffffff'..num..'|r'
-                    break
-                elseif hasTime then
-                    text=name
-                    break
-                end
+        local widgetInfo = C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(widget.widgetID)
+        if widgetInfo then
+            print(widgetInfo.hasTimer,'b')
+        end
+
+        if widget.widgetID then
+            local info = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
+            if info
+                and info.shownState == Enum.WidgetShownState.Shown
+                and info.text
+                and (info.hasTimer or not all)
+            then
+                local text3= info.text:gsub('^|n', '')
+                text= (text and text..'|n' or '')
+                        .. '      '..text3:gsub('|n', '|n      ')
+                widgetID= widget.widgetID
             end
         end
     end
 
-    if text then
+
+    local hasTime= C_AreaPoiInfo.IsAreaPOITimed(areaPoiID)
+    local time
+    if hasTime then
+        time=C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
+        hasTime = time and time>=0
+    end
+    if text or hasTime then
+        if text then
+            text= text and '|cffffffff'..text..'|r'
+            text= line and (name..' '..text) or (text..'|n'..name)
+        else
+            text=name
+        end
         if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
             local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
             if info and info.textureKit then
@@ -184,14 +186,17 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
             end
         end
         if hasTime then
-            local secText=SecondsToClock(secondsLeft,true)
-            secText= secText:gsub('：',':')
-            text= text..' |cffffffff'..secText..'|r'
+            if time<86400 then
+                text= text..' |cffffffff'..e.SecondsToClock(time)..'|r'
+            else
+                text= text..' |cffffffff'..SecondsToTime(time)..'|r'
+            end
         end
         if Save.showID then
-            text= text..' |cffffffffA|r'..areaPoiID
+            text= text..' |cffffffffA|r'..areaPoiID..(widgetID and ' |cffffffffW|r'..widgetID or '')
         end
     end
+
     return text
 end
 
@@ -1230,9 +1235,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local function set_Server_Timer()--小时图，使用服务器, 时间
                 if Save.useServerTimer then
                     TimeManagerClockButton_Update=function()
-                        local secText=SecondsToClock(GetServerTime(), true)
-                        secText= secText:gsub('：',':')
-                        TimeManagerClockTicker:SetText(secText)
+                        TimeManagerClockTicker:SetText(e.SecondsToClock(GetServerTime(), true) or '')
                     end
                 else
                     TimeManagerClockButton_Update= TimeManagerClockButton_Update_R
@@ -1259,7 +1262,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             check:SetScript('OnLeave', function() e.tips:Hide() end)
 
             hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
-                e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), SecondsToClock(GetServerTime()))
+                e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), e.SecondsToClock(GetServerTime()))
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end)

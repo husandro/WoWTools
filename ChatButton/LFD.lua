@@ -294,7 +294,7 @@ local function setQueueStatus()--小眼睛, 信息
                 ..(teamSize and teamSize>0 and ' '..teamSize or '')
                 ..(suspendedQueue and ('|cnRED_FONT_COLOR: ['..(e.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..']|r') or '')
                 ..(e.Icon[role] or '')
-                ..' '.. SecondsToClock(GetBattlefieldTimeWaited(i) / 1000)
+                ..' '.. e.SecondsToClock(GetBattlefieldTimeWaited(i) / 1000)
                 ..' '
         end
     end
@@ -407,7 +407,7 @@ local function setQueueStatus()--小眼睛, 信息
                     ..(info.isWarMode and '|A:pvptalents-warmode-swords:0:0|a' or '')
                     ..(factionText or '')
                     ..(roleText or '')
-                    ..' '..SecondsToClock(appDuration)--过期，时间
+                    ..' '..e.SecondsToClock(appDuration)--过期，时间
                     ..' '
             end
 
@@ -521,7 +521,7 @@ local function setQueueStatus()--小眼睛, 信息
                 ..(info.autoAccept and '|A:runecarving-icon-reagent-empty:0:0|a' or '')--自动邀请
                 ..(name2 and ' '..name2 or '')--名称
                 ..(info.privateGroup and  (e.onlyChinese and '私人' or LFG_LIST_PRIVATE) or '')--私人
-                ..(info.duration and  ' '..SecondsToClock(info.duration) or '')--时间
+                ..(info.duration and  ' '..e.SecondsToClock(info.duration) or '')--时间
 
             if member and not isLeader then--不是队长, 显示, 内容
                 list= list..'|n'..member
@@ -1655,7 +1655,7 @@ local function set_Timer_Text(frame)--提示，剩余时间
         frame.Timer.Text= e.Cstr(frame.Timer)
         frame.Timer.Text:SetPoint('RIGHT')
         frame.Timer:HookScript("OnUpdate", function(self2)
-            self2.Text:SetText(SecondsToClock(self2:GetValue()))
+            self2.Text:SetText(e.SecondsToClock(self2:GetValue()))
         end)
     end
 end
@@ -2025,7 +2025,7 @@ local function Init()
         if info then
             e.tips:AddDoubleLine('encounterName', info.encounterName)
             e.tips:AddDoubleLine('encounterID', info.encounterID)
-            e.tips:AddDoubleLine('startTime', info.startTime and SecondsToClock(info.startTime))
+            e.tips:AddDoubleLine('startTime', e.SecondsToClock(info.startTime))
             e.tips:AddDoubleLine('duration', info.duration and SecondsToTime(info.duration))
         else
             e.tips:AddDoubleLine('encounterID', e.onlyChinese and '无' or NONE)
@@ -2046,7 +2046,7 @@ local function Init()
                 end
                 local info= self.encounterInfo--C_LootHistory.GetInfoForEncounter(encounterID)
                 text= (info.encounterInfo.duration- GetTime()-info.startTime)
-                time= text and SecondsToClock(text) or ''
+                time= text and e.SecondsToClock(text) or ''
             end
             if self.TimerLabel then
                 self.TimerLabel:SetText(text or '')

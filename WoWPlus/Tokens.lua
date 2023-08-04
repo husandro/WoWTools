@@ -110,8 +110,8 @@ local function set_ItemInteractionFrame_Currency(self)
 
         local chargeInfo = C_ItemInteraction.GetChargeInfo()
         local timeToNextCharge = chargeInfo.timeToNextCharge
-        if (self.interactionType == Enum.UIItemInteractionType.ItemConversion) and timeToNextCharge>0 then
-            text= text ..' |cnGREEN_FONT_COLOR:'..SecondsToClock(timeToNextCharge, true)..'|r'
+        if (self.interactionType == Enum.UIItemInteractionType.ItemConversion) then
+            text= text ..' |cnGREEN_FONT_COLOR:'..(e.SecondsToClock(timeToNextCharge, true) or '')..'|r'
         end
 
 		if info.canEarnPerWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0 then

@@ -3191,7 +3191,11 @@
         "EssencePlayerFrame",
         "EssencePowerBar",
         "ZoneAbilityFrameMixin",
-        "ZoneAbilityFrameSpellButtonMixin"
+        "ZoneAbilityFrameSpellButtonMixin",
+        "ConvertSecondsToUnits",
+        "HOURS_MINUTES_SECONDS",
+        "MINUTES_SECONDS",
+        "INSTANCE_DIFFICULTY_FORMAT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

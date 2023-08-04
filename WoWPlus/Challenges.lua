@@ -456,7 +456,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                 m=m..name2..', '
             end
         end
-        m=m.. SecondsToClock(timeLimit)
+        m=m..e.SecondsToClock(timeLimit)
         e.Chat(m)
         self2.inseSayTips=nil
     end)
@@ -1311,7 +1311,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                     e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                                     e.tips:ClearLines()
                                     e.tips:AddDoubleLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, self2.name),
-                                                            self2.overTime and '|cff828282'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, SecondsToClock(self2.durationSec)) or SecondsToClock(self2.durationSec)
+                                                            self2.overTime and '|cff828282'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, e.SecondsToClock(self2.durationSec)) or e.SecondsToClock(self2.durationSec)
                                                         )
                                     e.tips:Show()
                                     self2:SetAlpha(0.5)

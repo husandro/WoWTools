@@ -685,8 +685,18 @@ local function set_Widget_Text_OnUpDate(self, elapsed)
     self.elapsed= self.elapsed + elapsed
     if self.elapsed>1 then--and self.updateWidgetID then
         if self.updateAreaPoiID then
-            self.Text:SetText(SecondsToClock(C_AreaPoiInfo.GetAreaPOISecondsLeft(self.updateAreaPoiID) or 0))
-        elseif self.updateWidgetID then
+            local time= C_AreaPoiInfo.GetAreaPOISecondsLeft(self.updateAreaPoiID)
+            if time and time>0 then
+                if time<86400 then
+                    self.Text:SetText(e.SecondsToClock(time))
+                else
+                    self.Text:SetText(SecondsToTime(time, true))
+                end
+                self.elapsed= 0
+                return
+            end
+        end
+        if self.updateWidgetID then
             local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(self.updateWidgetID) or {}
             if widgetInfo.shownState== 1 and widgetInfo.text and widgetInfo.hasTimer then--剩余时间：
                 self.Text:SetText(widgetInfo.text:gsub(HEADER_COLON, '|n'))
@@ -696,42 +706,39 @@ local function set_Widget_Text_OnUpDate(self, elapsed)
     end
 end
 
+local str_INSTANCE_DIFFICULTY_FORMAT='('..e.Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
 local function set_AreaPOIPinMixin_OnAcquired(self)--地图POI提示 AreaPOIDataProvider.lua
     self.updateWidgetID=nil
     self.updateAreaPoiID=nil
     self:SetScript('OnUpdate', nil)
+    self.elapsed=1
     if not self.Text and not Save.hide and (self.name or self.widgetSetID or self.areaPoiID) then
         self.Text= create_Wolor_Font(self, 10)
         self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
-        self.elapsed=0
     end
 
     if not self or Save.hide or not(self.widgetSetID and self.areaPoiID) then
         if self and self.Text then
-            self.Text:SetText(not Save.hide and self.name or '')
+            local text--地图，地名，名称
+            if not Save.hide and self.name then
+                text= self.name:match(str_INSTANCE_DIFFICULTY_FORMAT) or self.name
+            end
+            self.Text:SetText(text or '')
         end
         return
     end
 
     local text
-    local isTimed, hideTimer
-    if self.areaPoiID then
-        isTimed, hideTimer= C_AreaPoiInfo.IsAreaPOITimed(self.areaPoiID)
-    end
 
-    if isTimed and not hideTimer then
-        local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(self.areaPoiID)
-        if secondsLeft and secondsLeft>0 then
-            text= secondsLeft and secondsLeft>0 and SecondsToClock(secondsLeft)
-            self.updateAreaPoiID= self.areaPoiID
-            self:SetScript('OnUpdate', set_Widget_Text_OnUpDate)
-        end
+    if self.areaPoiID and C_AreaPoiInfo.IsAreaPOITimed(self.areaPoiID) then
+        self.updateAreaPoiID= self.areaPoiID
+        self:SetScript('OnUpdate', set_Widget_Text_OnUpDate)
 
     elseif self.widgetSetID then
         for _,widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(self.widgetSetID) or {}) do
             if widget and widget.widgetID and  widget.widgetType==8 then
                 local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID) or {}
-                if widgetInfo.shownState== 1 and widgetInfo.text then
+                if widgetInfo.shownState== Enum.WidgetShownState.Shown and widgetInfo.text then
                     if widgetInfo.hasTimer then--剩余时间：
                         text= widgetInfo.text
                         self.updateWidgetID= widget.widgetID

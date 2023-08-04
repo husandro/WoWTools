@@ -830,6 +830,16 @@ e.HEX=function(r, g, b, a)
     return string.format("%02x%02x%02x%02x",a*255, r*255, g*255, b*255)
 end]]
 
+function e.SecondsToClock(seconds, displayZeroHours)--TimeUtil.lua
+    if seconds and seconds>=0 then
+        local units = ConvertSecondsToUnits(seconds);
+        if units.hours > 0 or displayZeroHours then
+            return format('%.2d:%.2d:%.2d', units.hours, units.minutes, units.seconds);
+        else
+            return format('%.2d:%.2d', units.minutes, units.seconds);
+        end
+    end
+end
 
 --取得对战宠物, 强弱 SharedPetBattleTemplates.lua
 e.GetPetStrongWeakHints= function(petType)
@@ -1075,13 +1085,13 @@ function e.GetTimeInfo(value, chat, time)
         time= time < value and time + 86400 or time
         time= time - value;
         if chat then
-            return SecondsToClock(time):gsub('：',':'), time;
+            return e.SecondsToClock(time), time;
         else
             return SecondsToTime(time), time;
         end
     else
         if chat then
-            return SecondsToClock(0):gsub('：',':'), 0;
+            return e.SecondsToClock(0), 0;
         else
             return SecondsToTime(0), 0;
         end
