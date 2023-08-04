@@ -3196,7 +3196,10 @@
         "HOURS_MINUTES_SECONDS",
         "MINUTES_SECONDS",
         "INSTANCE_DIFFICULTY_FORMAT",
-        "Settings"
+        "Settings",
+        "UIWidgetBaseSpellTemplateMixin",
+        "EmbeddedItemTooltip",
+        "GameTooltip_ShowHyperlink"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

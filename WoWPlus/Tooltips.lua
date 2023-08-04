@@ -999,6 +999,12 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 line:SetTextColor(r,g,b)
             end
         end
+ 
+        local uiWidgetSet= UnitWidgetSet(unit)
+        if uiWidgetSet and uiWidgetSet>0 then
+            e.tips:AddDoubleLine('WidgetSetID', uiWidgetSet, r,g,b, r,g,b)
+        end
+
 
         if guid then
             local zone, npc = select(5, strsplit("-", guid))--位面,NPCID
@@ -1047,9 +1053,10 @@ local function setUnitInfo(self, unit)--设置单位提示信息
 
     set_Item_Model(self, {unit=unit, guid=guid, col= col})--设置, 3D模型
 
-    --[[if isSelf and not isInCombat and Save.WidgetSetID>0 then
-        GameTooltip_AddWidgetSet(e.tips, Save.WidgetSetID)
-    end]]
+
+    if isSelf and not isInCombat and Save.WidgetSetID>0 then
+        GameTooltip_AddWidgetSet(e.tips, Save.WidgetSetID, 10)
+    end
 end
 
 local function setCVar(reset, tips, notPrint)
@@ -1229,6 +1236,8 @@ end
 local function Init()
     set_Init_Item(ItemRefTooltip)
     set_Init_Item(e.tips)
+    set_Init_Item(EmbeddedItemTooltip)
+
     e.tips:HookScript("OnHide", function(self)--隐藏
         set_Init_Item(self, true)
     end)
@@ -1239,6 +1248,33 @@ local function Init()
             ItemRefTooltip.wowhead:SetShown(false)
         end
     end)
+    EmbeddedItemTooltip:HookScript('OnHide', function(self)
+        set_Init_Item(self, true)
+    end)
+
+    --Blizzard_UIWidgetTemplateBase.lua
+    hooksecurefunc(EmbeddedItemTooltip, 'SetSpellByID', function(self, spellID)--法术 Blizzard_UIWidgetTemplateBase.lua
+        if spellID and spellID>0 then
+            local _, _, icon, _, _, _, _, originalIcon= GetSpellInfo(spellID)
+            local spellTexture=  originalIcon or icon or GetSpellTexture(spellID)
+            GameTooltip_AddColoredLine(
+                EmbeddedItemTooltip,
+                (e.onlyChinese and '法术' or SPELLS)..' '..spellID..(spellTexture and '  |T'..spellTexture..':0|t'..spellTexture or ''),
+                self.tooltipColor or HIGHLIGHT_FONT_COLOR, true
+            )
+        end
+    end)
+    hooksecurefunc(EmbeddedItemTooltip, 'SetItemByID', function(self, itemID)--物品 Blizzard_UIWidgetTemplateBase.lua
+        if itemID and itemID>0 then
+            local texture= C_Item.GetItemNameByID(itemID) or select(10, GetItemInfo(itemID))
+            GameTooltip_AddColoredLine(
+                EmbeddedItemTooltip,
+                (e.onlyChinese and '物品' or ITEMS)..' '..itemID..(texture and '  |T'..texture..':0|t'..texture or ''),
+                self.tooltipColor or HIGHLIGHT_FONT_COLOR, true
+            )
+        end
+    end)
+
 
     hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', setQuest)--世界任务ID GameTooltip_AddQuest
 
@@ -1631,6 +1667,8 @@ local function Init()
             e.tips:Show()
         end
     end)
+
+   
 end
 
 
@@ -1843,7 +1881,7 @@ local function Init_Panel()
     end)
 
     --监视， WidgetSetID
-    --[[local widgetLabel= e.Cstr(panel)
+    local widgetLabel= e.Cstr(panel)
     widgetLabel:SetPoint('TOPLEFT', ctrlCopy, 'BOTTOMLEFT',0, -8)
     widgetLabel:SetText('WidgetSetID')
     widgetLabel:EnableMouse(true)
@@ -1869,12 +1907,17 @@ local function Init_Panel()
             Save.WidgetSetID= num
             self2:ClearFocus()
             set_Cursor_Tips(self2)
-            print(id, addName, 'PlayerFrame WidgetSetID', num==0 and e.GetEnabeleDisable(false) or num)
+            print(id, addName, 'PlayerFrame WidgetSetID',
+                num==0 and e.GetEnabeleDisable(false) or num,
+                '|n|cnRED_FONT_COLOR:',
+                e.onlyChinese and '备注：如果出现错误，请关闭此功能（0）' or ('note: '..ENABLE_ERROR_SPEECH..', '..CANCEL..' (0)')
+            )
+            
         end
 	end)
     widgetLabel= e.Cstr(panel)
     widgetLabel:SetPoint('LEFT', widgetEdit, 'RIGHT',4, 0)
-    widgetLabel:SetText('0 '..(e.onlyChinese and '取消' or CANCEL))]]
+    widgetLabel:SetText('0 '..(e.onlyChinese and '取消' or CANCEL))
 
    --设置CVar
     local cvar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -1933,7 +1976,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.modelY= Save.modelY or -24
             Save.modelFacing= Save.modelFacing or -0.35
 
-            --Save.WidgetSetID = Save.WidgetSetID or 859
+            Save.WidgetSetID = Save.WidgetSetID or 0
 
             Init_Panel()--设置 panel
 
