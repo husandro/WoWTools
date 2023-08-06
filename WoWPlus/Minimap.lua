@@ -8,6 +8,8 @@ local Save={
 
         vigentteButton=e.Player.husandro,
         vigentteButtonShowText=true,
+        vigentteSound= e.Player.husandro,--播放声音
+
         vigentteButtonTextScale=1,
         --hideVigentteCurrentOnMinimap=true,--当前，小地图，标记
         --hideVigentteCurrentOnWorldMap=true,--当前，世界地图，标记
@@ -295,9 +297,6 @@ end
 
 
 
-
-
-
 --检测，显示，禁用，Button, 文本
 local function check_Button_Enabled_Disabled()
     local self= panel.Button
@@ -315,9 +314,57 @@ local function check_Button_Enabled_Disabled()
 end
 
 
+
+--播放声音
+local SpeakTextTab={}
+local function speak_Text(text)
+    local ttsVoices= C_VoiceChat.GetTtsVoices() or {}
+    local voiceID= ttsVoices.voiceID or C_TTSSettings.GetVoiceOptionID(Enum.TtsVoiceType.Standard)
+    local destination= ttsVoices.voiceID and Enum.VoiceTtsDestination.QueuedLocalPlayback or Enum.VoiceTtsDestination.LocalPlayback
+    --C_VoiceChat.SpeakText(voiceID, text, destination, rate, volume)
+    C_VoiceChat.SpeakText(voiceID, text, destination, 0, 100)
+    print(id, addName2, text)
+end
+local function set_VIGNETTES_UPDATED(init)
+    for _, vignetteGUID in pairs(C_VignetteInfo.GetVignettes() or {}) do
+        local info= vignetteGUID and C_VignetteInfo.GetVignetteInfo(vignetteGUID) or {}
+        if info.name and info.name~='' and info.zoneInfiniteAOI then
+            if init then
+                SpeakTextTab[vignetteGUID]= not info.isDead and true or nil
+            else
+                if info.isDead then
+                    SpeakTextTab[vignetteGUID]=nil
+                elseif not SpeakTextTab[vignetteGUID] then
+                    speak_Text(info.name)
+                    SpeakTextTab[vignetteGUID]=true
+                    break
+                end
+            end
+        end
+    end
+end
+
+
+
 local function Init_Button_Menu(_, level, menuList)--菜单
     local info
-    if menuList=='CurrentVignette' then--当前 Vingnette
+    if menuList=='WorldMapVigenttePlaySound' then--3 级菜单
+        info={
+            text= e.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND),
+            icon= 'chatframe-button-icon-voicechat',
+            checked= Save.vigentteSound,
+            disabled= Save.hideVigentteCurrentOnWorldMap,
+            func= function()
+                Save.vigentteSound= not Save.vigentteSound and true or nil
+                panel.Button:set_Instance_Event()
+                if Save.vigentteSound then
+                    speak_Text(e.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND))
+                end
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif menuList=='CurrentVignette' then--当前 Vingnette
         info={
             text=e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL,
             checked= not Save.hideVigentteCurrentOnMinimap,
@@ -329,6 +376,8 @@ local function Init_Button_Menu(_, level, menuList)--菜单
         info={
             text=e.onlyChinese and '世界地图' or WORLDMAP_BUTTON,
             checked= not Save.hideVigentteCurrentOnWorldMap,
+            menuList='WorldMapVigenttePlaySound',
+            hasArrow=true,
             func= function()
                 Save.hideVigentteCurrentOnWorldMap= not Save.hideVigentteCurrentOnWorldMap and true or nil
             end
@@ -687,9 +736,15 @@ local function Init_Set_Button()--小地图, 标记, 文本
             if IsInInstance() then
                 self:UnregisterEvent('PLAYER_REGEN_DISABLED')
                 self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+                self:UnregisterEvent('VIGNETTES_UPDATED')
+                SpeakTextTab={}
             else
                 self:RegisterEvent('PLAYER_REGEN_DISABLED')
                 self:RegisterEvent('PLAYER_REGEN_ENABLED')
+                if Save.vigentteSound and not Save.hideVigentteCurrentOnWorldMap then
+                    set_VIGNETTES_UPDATED(true)
+                    self:RegisterEvent('VIGNETTES_UPDATED')
+                end
             end
         end
         btn:set_Instance_Event()
@@ -699,11 +754,13 @@ local function Init_Set_Button()--小地图, 标记, 文本
                     check_Button_Enabled_Disabled()
                     self:set_Instance_Event()
                 end)
+            elseif event=='VIGNETTES_UPDATED' then
+                set_VIGNETTES_UPDATED()
             else
                 check_Button_Enabled_Disabled()
             end
         end)
-
+        
 
         function btn:set_Frame()--设置，Button的 Frame Text 属性
             if not self.Frame then

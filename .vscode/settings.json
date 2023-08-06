@@ -3199,7 +3199,13 @@
         "Settings",
         "UIWidgetBaseSpellTemplateMixin",
         "EmbeddedItemTooltip",
-        "GameTooltip_ShowHyperlink"
+        "GameTooltip_ShowHyperlink",
+        "HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC",
+        "VignettePinMixin",
+        "FlightMap_FlightPathDataProviderMixin",
+        "FlightMap_FlightPointPinMixin",
+        "PLAYER_LIST_DELIMITER",
+        "KEY_COMMA"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

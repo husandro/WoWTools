@@ -312,12 +312,10 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
 end
 
 
-
-
 --#####
 --主菜单
 --#####
-local function InitMenu(_, level, type)--主菜单
+local function InitMenu(_, level)--主菜单
     local info={
         text= e.onlyChinese and '内容靠左' or BINDING_NAME_STRAFELEFT,--向左平移
         checked=not Save.left,

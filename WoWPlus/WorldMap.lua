@@ -3,6 +3,7 @@ local addName = WORLD_MAP
 local addName2=RESET_POSITION:gsub(RESET, PLAYER)
 local Save={
     --PlayerXY=true,--玩家实时，坐标
+    --showFlightMapPinName=true,飞行地图，显示，飞行点名称
 }
 local panel=CreateFrame("Frame")
 
@@ -10,11 +11,6 @@ local function create_Wolor_Font(self, size)
     local font= e.Cstr(self, {size=size, justifyH='CENTER', color=false, fontName='WorldMapTextFont'})
     return font
 end
-
-
-
-
-
 
 
 
@@ -772,7 +768,53 @@ end
 
 
 
+--######################
+--飞行地图， 飞行点，加名称
+--hooksecurefunc(FlightPointPinMixin, 'OnAcquired', set_AreaPOIPinMixin_OnAcquired)--世界地图，飞行点，加名称
+local function Init_FlightMap()
+    local btn= e.Cbtn(FlightMapFrame.BorderFrame.TitleContainer, {size={20,20}, icon=Save.showFlightMapPinName})
+    if _G['MoveZoomInButtonPerFlightMapFrame'] then
+        btn:SetPoint('RIGHT', _G['MoveZoomInButtonPerFlightMapFrame'], 'LEFT')
+    else
+        btn:SetPoint('LEFT')
+    end
+    btn:Raise()
+    btn:SetAlpha(0.5)
+    btn:SetScript('OnClick', function(self)
+        Save.showFlightMapPinName= not Save.showFlightMapPinName and true or nil
+        self:SetNormalAtlas(not Save.showFlightMapPinName and e.Icon.disabled or e.Icon.icon)
+        CloseTaxiMap()
+    end)
+    btn:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+    btn:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine('taxiMapID '..(GetTaxiMapID() or ''), (e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(NumTaxiNodes() or 0))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine('|A:FlightMaster:0:0|a'..(e.onlyChinese and '飞行点名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MOUNT_JOURNAL_FILTER_FLYING, NAME)), e.GetShowHide(Save.showFlightMapPinName))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+        self:SetAlpha(1)
+    end)
 
+    hooksecurefunc(FlightMap_FlightPointPinMixin, 'SetFlightPathStyle', function(self2)
+        local text
+        if self2.taxiNodeData and Save.showFlightMapPinName then
+            if not self2.Text and self2.taxiNodeData.name then
+                self2.Text= create_Wolor_Font(self2, 10)
+                self2.Text:SetPoint('TOP', self2, 'BOTTOM', 0, 3)
+            end
+            text= self2.taxiNodeData.name
+            if text then
+                text= text:match('(.-)'..KEY_COMMA) or text:match('(.-)'..PLAYER_LIST_DELIMITER) or text
+            end
+        end
+        if self2.Text then
+            self2.Text:SetText(text or '')
+        end
+    end)
+end
 
 
 
@@ -820,7 +862,7 @@ end
 
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -836,17 +878,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+                --panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
-        --[[elseif arg1=='Blizzard_FlightMap' then
-            hooksecurefunc(FlightMap_AreaPOIPinMixin,'OnAcquired', function(self2)
-                print(id,addName, self2.name)
-                set_Pin_Name(self2)
-            end)
-            --set_Pin_Name)--飞行点，加名称
-            ]]
+        elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
+            Init_FlightMap()--飞行地图， 飞行点，加名称
         end
 
     elseif event == "PLAYER_LOGOUT" then

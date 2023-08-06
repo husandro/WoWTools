@@ -2132,6 +2132,15 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     info.rankText:SetText(rank or '')
                 end
             end)
+
+        elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
+            hooksecurefunc(FlightMap_FlightPointPinMixin, 'OnMouseEnter', function(self2)
+                local info= self2.taxiNodeData
+                if info then
+                    e.tips:AddDoubleLine('nodeID '..(info.nodeID or ''), 'slotIndex '..(info.slotIndex or ''))
+                    e.tips:Show()
+                end
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then

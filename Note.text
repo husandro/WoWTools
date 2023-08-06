@@ -195,3 +195,4 @@ Interface/Minimap/POIIcons
 字符
 HEADER_COLON = "：";
 INSTANCE_DIFFICULTY_FORMAT = "（%s）";
+PLAYER_LIST_DELIMITER = "，"

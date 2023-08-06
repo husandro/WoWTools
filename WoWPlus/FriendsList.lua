@@ -477,7 +477,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
 
                 e.LibDD:UIDropDownMenu_AddSeparator()
                 info={
-                    text=e.onlyChinese and '玩家' or PLAYER,
+                    text=e.onlyChinese and '其他玩家' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC, PLAYER) ,
                     notCheckable=true,
                     hasArrow=true,
                     menuList='PlayerList',
