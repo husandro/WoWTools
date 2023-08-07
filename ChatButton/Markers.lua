@@ -770,7 +770,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         return
     end
 
-    if not pingFrame then
+    if not pingFrame then--Blizzard_PingUI.lua
         pingFrame= CreateFrame('Frame', nil, targetFrame)
         pingFrame:SetSize(1, 1)
         if Save.H then
@@ -917,6 +917,8 @@ local function Init_Markers_Frame()--设置标记, 框架
         pingFrame:SetScript('OnEvent', pingFrame.set_Shown)
     end
     pingFrame:set_Shown()
+
+    PingUI_LoadUI()
 end
 
 
@@ -1233,6 +1235,26 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
             end
             panel:UnregisterEvent('ADDON_LOADED')
+        --[[elseif arg1=='Blizzard_PingUI' then--Ping, 冷却时间
+            hooksecurefunc( PingManager, 'OnPingPinFrameAdded', function(self3, frame)
+                local ping= self3.activePinFrames[frame]
+                ping.value=5
+                ping.elapsed=1
+                if not ping.text then
+                    ping.text= e.Cstr(ping)
+                    ping.text:SetPoint('CENTER')
+
+                    ping.OutroAnim:HookScript('Restart', function(self2, elapsed)
+                        self2.elapsed = self2.elapsed + elapsed
+                        self2.value= self2.value - elapsed
+                        
+                        if self2.elapsed>=1 then
+                            self2.text:SetFormattedText("%i", self2.value)
+                            self2.elapsed=0
+                        end
+                    end)
+                end
+            end)]]
         end
 
     elseif event == "PLAYER_LOGOUT" then

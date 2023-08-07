@@ -107,6 +107,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save.disabled then
                 Init()
+                SELECTED_DOCK_FRAME.editBox:SetAltArrowKeyMode(false)
+                
             else
                 self:SetShown(false)
                 panel.disabled=true
