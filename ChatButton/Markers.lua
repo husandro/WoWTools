@@ -684,8 +684,8 @@ local function Init_Markers_Frame()--设置标记, 框架
         targetFrame.countdown:SetScript('OnLeave', function() e.tips:Hide() end)
     end
     targetFrame.check:SetShown(GetNumGroupMembers()>1 and (IsInRaid() and getIsLeader()) or UnitIsGroupLeader('player'))
-    
-    
+
+
     local isInGroup=IsInGroup()--世界标记
     local isLeader= getIsLeader()
 
@@ -778,7 +778,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         else
             pingFrame:SetPoint('TOPLEFT', targetFrame, 'BOTTOMRIGHT', -1, size+1)
         end
-        
+
         local ping={--Enum.PingSubjectType.Warning
             {type=6, name= e.onlyChinese and '清除全部' or CLEAR_ALL, atlas=e.Icon.disabled},
             {type=7, name= e.onlyChinese and '信号系统' or PING_SYSTEM_LABEL, atlas='UI-QuestPoiLegendary-QuestBang'},
@@ -796,7 +796,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                                             size={size,size},
                                             atlas= tab.atlas,
                                         })
-            
+
             if Save.H then
                 btn:SetPoint('BOTTOMRIGHT', last or pingFrame, 'TOPRIGHT')
             else
@@ -893,7 +893,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                         end
                     end
                 end)
-                
+
                 btn:SetScript('OnEnter', function(self2)
                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
                     e.tips:ClearLines()
@@ -904,7 +904,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                         e.tips:AddLine()
                     end
                     e.tips:Show()
-                    
+
                 end)
             end
             last=btn
@@ -1270,7 +1270,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='PLAYER_REGEN_ENABLED' then
         Init_Markers_Frame()--设置标记, 框架
         self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-        
+
 
     elseif event=='READY_CHECK' then--自动就绪事件
         e.PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音
