@@ -911,7 +911,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
         function pingFrame:set_Shown()
             local cvar= C_CVar.GetCVarBool("enablePings")
-            self:SetShown(cvar and true or false)--getAllSet() and cvar and true or false)
+            self:SetShown(cvar and Save.markersFrame and true or false)--getAllSet() and cvar and true or false)
         end
         pingFrame:RegisterEvent('CVAR_UPDATE')
         pingFrame:SetScript('OnEvent', pingFrame.set_Shown)
