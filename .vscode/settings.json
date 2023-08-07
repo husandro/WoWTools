@@ -3205,7 +3205,18 @@
         "FlightMap_FlightPathDataProviderMixin",
         "FlightMap_FlightPointPinMixin",
         "PLAYER_LIST_DELIMITER",
-        "KEY_COMMA"
+        "KEY_COMMA",
+        "C_Ping",
+        "PingUI_LoadUI",
+        "PING_TYPE_ATTACK",
+        "PING_TYPE_WARNING",
+        "PING_TYPE_ASSIST",
+        "PING_TYPE_ON_MY_WAY",
+        "PING_SUBJECT_TYPE_ALERT_NOT_THREAT_POINT",
+        "PING_SUBJECT_TYPE_ALERT_THREAT_POINT",
+        "PingListenerFrame",
+        "PingManager",
+        "PING_SYSTEM_LABEL"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

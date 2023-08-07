@@ -30,8 +30,7 @@ FrameUtil.RegisterFrameForEvents(self, table)
 FrameUtil.RegisterFrameForUnitEvents(frame, events, ...)
 FrameUtil.UnregisterFrameForEvents(self, table)
 
-SetPortraitTexture(textureObject, unitToken [, disableMasking])
-SetPortraitToTexture(textureObject, texturePath)
+
 Region:SetVertexColor(colorR, colorG, colorB [, a])
 ... = securecall(func or functionName, ...)
 frame:SetFrameLevel(self:GetFrameLevel() + 5)
@@ -56,8 +55,7 @@ else
     securecall(ChatFrame_OpenChat, link)
 end
 
-SetItemButtonTextureVertexColor(button, 1.0, 1.0, 1.0)
-SetItemButtonNormalTextureVertexColor(button, 1.0, 1.0, 1.0)
+
 
 Day={0.10, 0.72, 1},--日常 |cff19b7ff  任务颜色
 Week={0.02, 1, 0.66},--周长 |cff05ffa8
@@ -189,6 +187,12 @@ StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"] = {
 };
 
 材质
+SetPortraitTexture(textureObject, unitToken [, disableMasking])
+SetPortraitToTexture(textureObject, texturePath)
+C_Texture.GetAtlasInfo(atlas)
+C_Texture.GetFilenameFromFileDataID(fileDataID)
+SetItemButtonTextureVertexColor(button, 1.0, 1.0, 1.0)
+SetItemButtonNormalTextureVertexColor(button, 1.0, 1.0, 1.0)
 Interface/WorldMap/UI-QuestPoi-NumberIcons
 Interface/Minimap/POIIcons
 

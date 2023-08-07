@@ -144,6 +144,24 @@ local function setReadyTexureTips()--自动就绪, 主图标, 提示
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --################
 --队员,就绪,提示信息
 --################
@@ -279,6 +297,17 @@ local function setGroupReadyTips(event, arg1, arg2)
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
 --#############
 --设置,按钮,图片
 --#############
@@ -302,6 +331,21 @@ end
 local function setAllTextrue()--主图标,是否有权限
     button.texture:SetDesaturated(GetNumGroupMembers() <2  or not getAllSet())
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --#############
@@ -337,7 +381,7 @@ local function set_Clear(index)--取消标记标
     end
 end
 
-local targetFrame, markersFrame
+local targetFrame, markersFrame, pingFrame
 local function setMarkersFrame_Postion()--设置标记框架, 位置
     if targetFrame then
         if Save.markersFramePoint then
@@ -369,9 +413,13 @@ local function Init_Markers_Frame()--设置标记, 框架
     if not targetFrame then
         local last
         targetFrame= CreateFrame("Frame")
-        --targetFrame:SetFrameStrata('HIGH')
+        targetFrame:Raise()
         setMarkersFrame_Postion()--设置标记框架, 位置
-        targetFrame:SetSize(1, size)
+        if Save.H then
+            targetFrame:SetSize(size, 1)
+        else
+            targetFrame:SetSize(1, size)
+        end
         targetFrame:SetMovable(true)
         targetFrame:SetClampedToScreen(true)
         if Save.markersScale and Save.markersScale~=1 then--缩放
@@ -409,7 +457,10 @@ local function Init_Markers_Frame()--设置标记, 框架
                         SetCursor('UI_MOVE_CURSOR')
                     elseif d=='RightButton' and IsControlKeyDown() then
                         Save.H = not Save.H and true or nil
-                        print(id,addName,HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION..(Save.H and e.Icon.up2 or e.Icon.toLeft2), REQUIRES_RELOAD)
+                        print(id,addName,
+                            e.onlyChinese and '图标方向' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION..(Save.H and e.Icon.up2 or e.Icon.toLeft2),
+                            e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                        )
                     end
                 end)
                 btn:SetScript('OnMouseUp', function() ResetCursor() end)
@@ -418,7 +469,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                     self:SetNormalTexture('Interface\\Cursor\\UI-Cursor-Move')
                 end)
                 btn:SetScript('OnEnter', function(self)
-                    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+                    e.tips:SetOwner(self, "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     e.tips:AddDoubleLine(id, addName)
                     e.tips:AddDoubleLine(e.Icon.O2..(e.onlyChinese and '清除全部' or CLEAR_ALL), e.Icon.left)
@@ -469,7 +520,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                     self2.set_Active(self2)
                 end)
                 btn:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     e.tips:AddDoubleLine(e.Icon.left
                                         ..Color[self2.index].col
@@ -538,7 +589,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             DoReadyCheck()
         end)
         targetFrame.check:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_RIGHT")
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddLine(EMOTE127_CMD3)
             e.tips:Show()
@@ -550,7 +601,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         if Save.H then
             targetFrame.countdown:SetPoint('TOPRIGHT',targetFrame.check, 'TOPLEFT')
         else
-            targetFrame.countdown:SetPoint('BOTTOMLEFT', targetFrame.check, 'TOPLEFT')
+            targetFrame.countdown:SetPoint('BOTTOMLEFT', targetFrame.check, 'TOPLEFT', -1, -size*2-2)
         end
         targetFrame.countdown:SetScript('OnMouseDown', function(self, d)
             local key=IsModifierKeyDown()
@@ -621,7 +672,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             self:UnregisterEvent('START_TIMER')
         end)
         targetFrame.countdown:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_RIGHT")
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddLine(e.Icon.left..(e.onlyChinese and '/倒计时' or SLASH_COUNTDOWN2)..' '..(Save.countdown or 7))
             e.tips:AddLine(e.Icon.right..(e.Player.cn and '取消！ 取消！ 取消！' or 'STOP! STOP! STOP!'))
@@ -633,26 +684,17 @@ local function Init_Markers_Frame()--设置标记, 框架
         targetFrame.countdown:SetScript('OnLeave', function() e.tips:Hide() end)
     end
     targetFrame.check:SetShown(GetNumGroupMembers()>1 and (IsInRaid() and getIsLeader()) or UnitIsGroupLeader('player'))
-
-
+    
+    
     local isInGroup=IsInGroup()--世界标记
-    if isInCombat then
-       if not isInGroup or not markersFrame or not markersFrame:IsShown() then
-            panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-            return
-       end
-    elseif not isInGroup then
-        if markersFrame then
-            markersFrame:SetShown(false)
-        end
-        return
-    end
-    if not markersFrame then
+    local isLeader= getIsLeader()
+
+    if not markersFrame and isInGroup and isLeader then
         markersFrame= CreateFrame("Frame", nil, targetFrame)
         if Save.H then
             markersFrame:SetPoint('TOPRIGHT', targetFrame, 'TOPLEFT')
         else
-            markersFrame:SetPoint('TOPLEFT', targetFrame, 'TOPRIGHT',-1,0)
+            markersFrame:SetPoint('TOPLEFT', targetFrame, 'TOPRIGHT',-1, -size*2-1)
         end
         markersFrame:SetSize(1, 1)
         local last
@@ -678,7 +720,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             btn:SetAttribute("action2", "clear")
             btn:SetScript('OnLeave', function() e.tips:Hide() end)
             btn:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 if self2.index==0 then
                     e.tips:AddLine(e.Icon.O2..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
@@ -714,10 +756,178 @@ local function Init_Markers_Frame()--设置标记, 框架
             end
         end
     end
-    if not isInCombat then
-        markersFrame:SetShown(true)
+    if markersFrame then
+        if isInCombat then
+            if not isInGroup or isLeader or not markersFrame:IsShown() then
+                panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+            end
+        elseif not isInGroup or not isLeader then
+            markersFrame:SetShown(false)
+        end
     end
+
+    if not C_Ping then
+        return
+    end
+
+    if not pingFrame then
+        pingFrame= CreateFrame('Frame', nil, targetFrame)
+        pingFrame:SetSize(1, 1)
+        if Save.H then
+            pingFrame:SetPoint('TOPRIGHT', targetFrame, 'TOPRIGHT', size+1,0)
+        else
+            pingFrame:SetPoint('TOPLEFT', targetFrame, 'BOTTOMRIGHT', -1, size+1)
+        end
+        
+        local ping={--Enum.PingSubjectType.Warning
+            {type=6, name= e.onlyChinese and '清除全部' or CLEAR_ALL, atlas=e.Icon.disabled},
+            {type=7, name= e.onlyChinese and '信号系统' or PING_SYSTEM_LABEL, atlas='UI-QuestPoiLegendary-QuestBang'},
+            {type=0, name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack'},
+            {type=3, name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay'},
+            {type=1, name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning'},
+            {type=4, name= e.onlyChinese and '威胁提示' or format(PING_SUBJECT_TYPE_ALERT_THREAT_POINT,'',''), atlas='Ping_Marker_Icon_threat'},
+            {type=2, name=e.onlyChinese and '协助' or PING_TYPE_ASSIST, atlas='Ping_Marker_Icon_Assist'},
+            {type=5, name= e.onlyChinese and '看这里' or format(PING_SUBJECT_TYPE_ALERT_NOT_THREAT_POINT,'','',''), atlas='Ping_Marker_Icon_nonthreat'},
+        }
+
+        local last
+        for _, tab in pairs(ping) do
+            local btn= e.Cbtn(pingFrame, {--type=true,
+                                            size={size,size},
+                                            atlas= tab.atlas,
+                                        })
+            
+            if Save.H then
+                btn:SetPoint('BOTTOMRIGHT', last or pingFrame, 'TOPRIGHT')
+            else
+                btn:SetPoint('BOTTOMRIGHT', last or pingFrame, 'BOTTOMLEFT')
+            end
+            btn.type=tab.type
+            btn.name= tab.name
+            btn.atlas= tab.atlas
+
+            btn:SetScript('OnLeave', function() e.tips:Hide() end)
+            if tab.type==6 then--全部，取消
+                btn:SetScript('OnClick', function()
+                    if PingManager and PingManager.activePinFrames then--Blizzard_PingManager.lua
+                        for frame, _ in pairs(PingManager.activePinFrames) do
+                            PingManager:OnPingPinFrameRemoved(frame)
+                        end
+                    end
+                end)
+                btn:SetScript('OnEnter', function(self2)
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddLine('|A:'..self2.atlas..':0:0|a'..self2.name..e.Icon.left)
+                    e.tips:Show()
+                end)
+
+            elseif tab.type==7 then--信号系统
+                function btn:cancel_PingFrame()--Bindings.xml
+                    PingListenerFrame:CancelPendingPing();
+                    PingListenerFrame:SetShown(false)
+                    self:UnregisterAllEvents()
+                end
+                btn:SetScript('OnMouseUp', function(self, d)
+                    if not IsAddOnLoaded('Blizzard_PingUI') then
+                        PingUI_LoadUI()
+                    end
+                    if d=='LeftButton' then
+                        PingListenerFrame:SetShown(true)
+                        C_Timer.After(0.3, function()
+                            self:RegisterEvent('GLOBAL_MOUSE_UP')
+                        end)
+                    elseif d=='RightButton' then
+                        self:cancel_PingFrame()
+                    end
+                end)
+                btn:SetScript('OnEvent', function(self)
+                    self:cancel_PingFrame()
+                end)
+                btn:SetScript('OnEnter', function(self2)
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine('|A:'..self2.atlas..':0:0|a'..self2.name..e.Icon.left, (e.onlyChinese and '取消' or CANCEL)..e.Icon.right)
+                    e.tips:Show()
+                end)
+
+            else--攻击,正在赶来,警告,威胁提示,协助,看这里
+
+                function btn:cancel_Send_Ping()
+                    self:UnregisterAllEvents()
+                    self:UnlockHighlight()
+                    ResetCursor()
+                end
+                function btn:send_Ping(unit)
+                    local guid=UnitGUID(unit)
+                    if guid then
+                        C_Ping.SendPing(self.type, guid)
+                        self:cancel_Send_Ping()
+                        return true
+                    end
+                end
+                function btn:set_world_Ping()
+                    local x, y = GetCursorPosition()
+                    if x and y and C_Ping.GetTargetWorldPing(x,y) then
+                        C_Ping.SendPing(self.type, nil, x,y)
+                        self:cancel_Send_Ping()
+                    end
+                end
+                btn:SetScript("OnClick", function(self, d)
+                    if d=='LeftButton' then
+                        if not self:send_Ping('target') then
+                            self:RegisterEvent('GLOBAL_MOUSE_DOWN')
+                            self:LockHighlight()
+                            SetCursor("CAST_CURSOR")
+                        end
+                    elseif d=='RightButton' then
+                        self:cancel_Send_Ping()
+                    end
+                end)
+                btn:SetScript('OnEvent', function(self,event, d)
+                    if event=='GLOBAL_MOUSE_DOWN' then
+                        if d=='RightButton' then
+                            self:cancel_Send_Ping()
+                        elseif d=='LeftButton' then
+                            self:set_world_Ping()
+                        end
+                    end
+                end)
+                
+                btn:SetScript('OnEnter', function(self2)
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    local name= UnitName('target')
+                    name= name and name..getTexture(GetRaidTargetIndex('target')) or nil
+                    e.tips:AddDoubleLine('|A:'..self2.atlas..':0:0|a'..self2.name..e.Icon.left, name or ((e.onlyChinese and '取消' or CANCEL)..e.Icon.right))
+                    if not name then
+                        e.tips:AddLine()
+                    end
+                    e.tips:Show()
+                    
+                end)
+            end
+            last=btn
+        end
+        function pingFrame:set_Shown()
+            local cvar= C_CVar.GetCVarBool("enablePings")
+            self:SetShown(cvar and true or false)--getAllSet() and cvar and true or false)
+        end
+        pingFrame:RegisterEvent('CVAR_UPDATE')
+        pingFrame:SetScript('OnEvent', pingFrame.set_Shown)
+    end
+    pingFrame:set_Shown()
 end
+
+
+
+
+
+
+
+
+
+
 
 --#####
 --主菜单
@@ -874,23 +1084,19 @@ local function InitMenu(_, level, type)--主菜单
 
         e.LibDD:UIDropDownMenu_AddSeparator()
         info={
-            text=e.onlyChinese and '队伍标记工具' or format(BINDING_HEADER_RAID_TARGET, PROFESSION_TOOL_TOOLTIP_LINE),
+            text=e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET),
             checked=Save.markersFrame,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''),
-            tooltipText= (e.onlyChinese and '需求：队伍和权限' or (NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS,CALENDAR_INVITELIST_SETMODERATOR))),
+            tooltipText= (e.onlyChinese and '需求：队伍和权限' or (NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, CALENDAR_INVITELIST_SETMODERATOR))),
             menuList= 'MakerFrameResetPost',
             hasArrow=true,
             keepShownOnClick= true,
+            disabled=not getAllSet() or C_PvP.IsArena() or C_PvP.IsBattleground() or UnitAffectingCombat('player'),--是不有权限
             func=function()
-                if UnitAffectingCombat('player') then
-                    print(id, addName, '|cnRED_FONT_COLOR:'..COMBAT..'|r')
-                    return
-                end
                 Save.markersFrame= not Save.markersFrame and true or nil
                 Init_Markers_Frame()--设置标记, 框架
             end,
-            disabled=not getAllSet() or C_PvP.IsArena() or C_PvP.IsBattleground(),--是不有权限
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
@@ -916,6 +1122,19 @@ local function InitMenu(_, level, type)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --####
 --初始
@@ -978,6 +1197,21 @@ local function Init()
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
@@ -1012,10 +1246,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         Init_Markers_Frame()--设置标记, 框架
 
     elseif event=='PLAYER_REGEN_ENABLED' then
-        --C_Timer.After(2, function()
-            Init_Markers_Frame()--设置标记, 框架
-            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-        --end)
+        Init_Markers_Frame()--设置标记, 框架
+        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+        
 
     elseif event=='READY_CHECK' then--自动就绪事件
         e.PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音
