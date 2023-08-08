@@ -352,7 +352,7 @@ end
 --初始
 --####
 local function Init_ProfessionsFrame()
-
+print(id,addName)
     local btn= e.Cbtn(ProfessionsFrame.TitleContainer, {icon=not Save.disabled, size={20, 20}})
     if _G['MoveZoomInButtonPerProfessionsFrame'] then
         btn:SetPoint('LEFT', _G['MoveZoomInButtonPerProfessionsFrame'], 'RIGHT')
@@ -593,9 +593,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end)
             end
 
-            if Save.disabled then
-                panel:UnregisterEvent('ADDON_LOADED')
-            else
+            if not Save.disabled then
+                --panel:UnregisterEvent('ADDON_LOADED')
                 Init()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
