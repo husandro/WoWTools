@@ -634,28 +634,28 @@ local function Init_Markers_Frame()--设置标记, 框架
                     hasEditBox=1,
                     button1= e.onlyChinese and '设置' or SETTINGS,
                     button2= e.onlyChinese and '取消' or CANCEL,
-                    OnShow = function(self)
-                        self.editBox:SetNumeric(true)
-                        self.editBox:SetNumber(Save.countdown or 7)
-                        self.editBox:SetFocus()
+                    OnShow = function(self2)
+                        self2.editBox:SetNumeric(true)
+                        self2.editBox:SetNumber(Save.countdown or 7)
+                        self2.editBox:SetFocus()
                     end,
-                    OnHide= function(self)
-                        self.editBox:SetText("")
+                    OnHide= function(self2)
+                        self2.editBox:SetText("")
                         securecall(ChatEdit_FocusActiveWindow)
                     end,
-                    OnAccept = function(self)
-                        local num= self.editBox:GetNumber()
+                    OnAccept = function(self2)
+                        local num= self2.editBox:GetNumber()
                         Save.countdown=num
                     end,
-                    EditBoxOnTextChanged=function(self)
-                        local num= self:GetNumber()
-                        local parent= self:GetParent()
+                    EditBoxOnTextChanged=function(self2)
+                        local num= self2:GetNumber()
+                        local parent= self2:GetParent()
                         parent.button1:SetEnabled(num>0 and num<=3600)
                         parent.button1:SetText(e.SecondsToClock(num))
                     end,
-                    EditBoxOnEscapePressed = function(self)
+                    EditBoxOnEscapePressed = function(self2)
                         securecall(ChatEdit_FocusActiveWindow)
-                        self:GetParent():Hide()
+                        self2:GetParent():Hide()
                     end,
                 }
                 StaticPopup_Show(id..addName..'COUNTDOWN')
