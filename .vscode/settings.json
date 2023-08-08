@@ -3217,7 +3217,10 @@
         "PingListenerFrame",
         "PingManager",
         "PING_SYSTEM_LABEL",
-        "CAPACITANCE_SHIPMENT_COOLDOWN"
+        "CAPACITANCE_SHIPMENT_COOLDOWN",
+        "SendMailCostMoneyFrameCopperButton",
+        "SEND_MAIL_COST",
+        "SendMailCostMoneyFrameCopperButtonText"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

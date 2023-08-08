@@ -415,7 +415,12 @@ local function Init_Button()
 
     --下拉，菜单
     button= e.Cbtn(SendMailFrame, {size={size, size}, atlas='common-icon-rotateleft'})
-    button:SetPoint('LEFT', _G['Postal_BlackBookButton'] or SendMailNameEditBox, 'RIGHT', 2, 0)--IsAddOnLoaded('Postal')
+    if _G['SendMailNameEditBoxMiddle'] then
+        button:SetPoint('LEFT',    _G['SendMailNameEditBoxMiddle'] or SendMailNameEditBox, 'RIGHT', 6, 0)
+    else
+    button:SetPoint('LEFT',   _G['Postal_BlackBookButton'] or SendMailNameEditBox, 'RIGHT', 2, 0)--IsAddOnLoaded('Postal')
+    end
+    button:SetFrameStrata('HIGH')
     button:SetScript('OnClick', function(self2)
         if not self2.Menu then
             self2.Menu= CreateFrame("Frame", nil, self2, "UIDropDownMenuTemplate")
@@ -686,7 +691,42 @@ local function Init_Button()
         self2.playerTipsLable:SetText((get_Name_Info(name) or '')..text)
         button.ClearPlayerButton:SetAlpha(self2:GetText()=='' and 0.3 or 1)
     end)
+
+    --#################
+    --隐藏， 邮资：，文本
+    --#################
+    if SendMailCostMoneyFrameCopperButton then
+        SendMailCostMoneyFrameCopperButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        SendMailCostMoneyFrameCopperButton:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(e.onlyChinese and '邮资：' or SEND_MAIL_COST)
+            e.tips:Show()
+        end)
+        if SendMailCostMoneyFrame then
+            local frames= {SendMailCostMoneyFrame:GetRegions()}
+            for _, text in pairs(frames) do
+                if text:GetObjectType()=="FontString" and text:GetText()==SEND_MAIL_COST then
+                    text:SetText('')
+                    text:Hide()
+                    break
+                end
+            end
+        end
+        --[[C_Timer.After(2, function()
+            SendMailCostMoneyFrameCopperButtonText:ClearAllPoints()
+            SendMailCostMoneyFrameCopperButtonText:SetPoint('LEFT', button, 'RIGHT',2,0)
+            --SendMailCostMoneyFrameCopperButton:Clea
+        end)]]
+    end
 end
+
+
+
+
+
+
+
 
 
 --##################
@@ -718,6 +758,14 @@ local function check_Enabled_Item(classID, subClassID, findString, bag, slot)
         end
     end
 end
+
+
+
+
+
+
+
+
 
 
 --####################
@@ -845,6 +893,19 @@ local function Init_Fast_Menu(_, level, menuList)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --####################
@@ -1209,6 +1270,19 @@ local function Init_Fast_Button()
     button.clearAllItmeButton.itemNumLabel:SetPoint('BOTTOMRIGHT', button.clearAllItmeButton, 'BOTTOMLEFT',0,4)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 --################
 --收信箱，物品，提示
 --MailFrame.lua
@@ -1248,6 +1322,8 @@ local function Init_InBox()
         end
         return itemLink
     end
+
+
 
     --删除，或退信
     local function return_delete_InBox(openMailID)--删除，或退信
@@ -1297,6 +1373,9 @@ local function Init_InBox()
             end
         end
     end
+
+
+
 
     local function set_Tooltips_DeleteAll(self2, del)--所有，删除，退信，提示
         set_btn_enterTipTexture_Hide_All()--隐藏，所有，选中提示
@@ -1356,6 +1435,8 @@ local function Init_InBox()
         e.tips:Show()
     end
 
+
+
     local function eventEnter(self2, get)--enter 提示，删除，或退信，按钮
         e.tips:SetOwner(self2, "ANCHOR_RIGHT")
         e.tips:ClearLines()
@@ -1393,6 +1474,8 @@ local function Init_InBox()
         e.tips:AddLine('|cffff00ff'..self2.openMailID..' |r'..(icon and '|T'..icon..':0|t')..text2..(allCount>1 and ' |cnGREEN_FONT_COLOR:'..e.MK(allCount,3)..'|r'..(e.onlyChinese and '物品' or ITEMS) or ''))
         e.tips:Show()
     end
+
+
 
     hooksecurefunc('InboxFrame_Update',function()
         local totalItems= select(2, GetInboxNumItems())  --信件，总数量   
@@ -1780,6 +1863,18 @@ local function Init_InBox()
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 --####
 --初始

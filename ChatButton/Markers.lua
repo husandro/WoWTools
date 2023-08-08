@@ -808,7 +808,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         local ping={--Enum.PingSubjectType.Warning
             {type=6, name=e.onlyChinese and '清除全部' or CLEAR_ALL, atlas=e.Icon.disabled},
 
-            {type=7, name=e.onlyChinese and '信号系统' or PING_SYSTEM_LABEL, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
+            {type=7, name=e.onlyChinese and '信号' or PING, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
             {type=0, name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK'},
             {type=1, name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING'},
             {type=3, name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay', action='PINGONMYWAY'},
@@ -1022,7 +1022,7 @@ local function InitMenu(_, level, type)--主菜单
         elseif type=='MakerFrameResetPost' then--重置位置， 队伍标记工具
             if C_Ping then
                 info={
-                    text= e.onlyChinese and '冷却时间：信号系统' or format(CAPACITANCE_SHIPMENT_COOLDOWN, PING_SYSTEM_LABEL),
+                    text= e.onlyChinese and '冷却时间：信号' or format(CAPACITANCE_SHIPMENT_COOLDOWN, PING),
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this',
                     colorCode= not C_CVar.GetCVarBool("enablePings") and '|cff606060' or nil,
