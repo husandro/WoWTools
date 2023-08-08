@@ -3216,7 +3216,8 @@
         "PING_SUBJECT_TYPE_ALERT_THREAT_POINT",
         "PingListenerFrame",
         "PingManager",
-        "PING_SYSTEM_LABEL"
+        "PING_SYSTEM_LABEL",
+        "CAPACITANCE_SHIPMENT_COOLDOWN"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

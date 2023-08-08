@@ -7,8 +7,10 @@ local Save={
         healer=1,
         countdown=7,
         groupReadyTips=true,
+
         markersScale=0.85,
-        markersFrame= e.Player.husandro
+        markersFrame= e.Player.husandro,
+        pingTime= e.Player.husandro,--显示ping冷却时间
     }
 
 local button
@@ -23,6 +25,14 @@ local Color={
     [6]={r=0.1, g=0.2, b=1, col='|cff0070dd'},--方块, 蓝色
     [7]={r=1, g=0, b=0, col='|cffff2020'},--十字, 红色
     [8]={r=1, g=1, b=1, col='|cffffffff'},--骷髅,白色
+}
+local PingColor={
+    ["Assist"] = {r=0.09, g=0.78, b=0.39, col='|cff17c864'},--协助
+    ["Attack"] = {r=1.00, g=0.50, b=0.00, col='|cffff8000' },--攻击
+    ["OnMyWay"] = {r=0.16, g=0.64, b=1.00, col='|cff2aa2ff'},--正在赶来
+    ["Warning"] = {r=1.00, g=0.13, b=0.08, col='|c3fff2114'},--警告
+    ["NonThreat"] = {r=0.16, g=0.64, b=1.00, col='|cff2aa2ff'},--看这里
+    ["Threat"] = {r=0.8, g=0, b=0, col='|cffcc0000'},--威胁提示
 }
 --[[
 WORLD_MARKER = "世界标记%d";
@@ -196,7 +206,7 @@ local function getReadyCheckStatus(unit, index, uiMapID)
             ..(uiMapID~=mapID and mapText or '')--地图名称
             ..' '
 end
-local function setGroupReadyTips(event, arg1, arg2)
+local function setGroupReadyTips(event, _, arg2)
     local text=''
     if event=='READY_CHECK' or event=='READY_CHECK_CONFIRM'  then
         local isInRaid=IsInRaid()
@@ -796,21 +806,21 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
 
         local ping={--Enum.PingSubjectType.Warning
-            {type=6, name= e.onlyChinese and '清除全部' or CLEAR_ALL, atlas=e.Icon.disabled},
+            {type=6, name=e.onlyChinese and '清除全部' or CLEAR_ALL, atlas=e.Icon.disabled},
 
-            {type=7, name= e.onlyChinese and '信号系统' or PING_SYSTEM_LABEL, atlas='UI-QuestPoiLegendary-QuestBang', action='TOGGLEPINGLISTENER'},
+            {type=7, name=e.onlyChinese and '信号系统' or PING_SYSTEM_LABEL, atlas='UI-QuestPoiLegendary-QuestBang', action='TOGGLEPINGLISTENER'},
             {type=0, name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK'},
             {type=1, name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING'},
             {type=3, name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay', action='PINGONMYWAY'},
             {type=2, name=e.onlyChinese and '协助' or PING_TYPE_ASSIST, atlas='Ping_Marker_Icon_Assist', action='PINGASSIST'},
 
-            {type=4, name= e.onlyChinese and '威胁提示' or format(PING_SUBJECT_TYPE_ALERT_THREAT_POINT,'',''), atlas='Ping_Marker_Icon_threat'},
-            {type=5, name= e.onlyChinese and '看这里' or format(PING_SUBJECT_TYPE_ALERT_NOT_THREAT_POINT,'','',''), atlas='Ping_Marker_Icon_nonthreat'},
+            {type=4, name=e.onlyChinese and '威胁提示' or format(PING_SUBJECT_TYPE_ALERT_THREAT_POINT,'',''), atlas='Ping_Marker_Icon_threat'},
+            {type=5, name=e.onlyChinese and '看这里' or format(PING_SUBJECT_TYPE_ALERT_NOT_THREAT_POINT,'','',''), atlas='Ping_Marker_Icon_nonthreat'},
         }
 
         local last
         for _, tab in pairs(ping) do
-            local btn= e.Cbtn(pingFrame, {--type=true,
+            local btn= e.Cbtn(pingFrame, {
                                             size={size,size},
                                             atlas= tab.atlas,
                                         })
@@ -824,7 +834,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             btn.name= tab.name
             btn.atlas= tab.atlas
             btn.action= tab.action
-            
+
             if tab.type==6 then--全部，取消
                 btn:SetScript('OnClick', function()
                     if PingManager and PingManager.activePinFrames then--Blizzard_PingManager.lua
@@ -849,9 +859,6 @@ local function Init_Markers_Frame()--设置标记, 框架
                     self:UnlockHighlight()
                 end
                 btn:SetScript('OnMouseUp', function(self, d)
-                    if not IsAddOnLoaded('Blizzard_PingUI') then
-                        PingUI_LoadUI()
-                    end
                     if d=='LeftButton' then
                         PingListenerFrame:SetShown(true)
                         SetCursor("CAST_CURSOR")
@@ -880,28 +887,15 @@ local function Init_Markers_Frame()--设置标记, 框架
 
             else--攻击,正在赶来,警告,威胁提示,协助,看这里
                 function btn:cancel_Send_Ping()
-                    self:UnregisterAllEvents()
+                    self:UnregisterEvent('GLOBAL_MOUSE_DOWN')
                     self:UnlockHighlight()
                     ResetCursor()
                 end
-                function btn:send_Ping(unit)
-                    local guid=UnitGUID(unit)
-                    if guid then
-                        C_Ping.SendPing(self.type, guid)
-                        self:cancel_Send_Ping()
-                        return true
-                    end
-                end
-                function btn:set_world_Ping()
-                    local x, y = GetCursorPosition()
-                    if x and y and C_Ping.GetTargetWorldPing(x,y) then
-                        C_Ping.SendPing(self.type, nil, x,y)
-                        self:cancel_Send_Ping()
-                    end
-                end
                 btn:SetScript("OnClick", function(self, d)
                     if d=='LeftButton' then
-                        if not self:send_Ping('target') then
+                        if UnitExists('target') then
+                            PingManager:SendMacroPing(self.type, 'target')
+                        else
                             self:RegisterEvent('GLOBAL_MOUSE_DOWN')
                             self:LockHighlight()
                             SetCursor("CAST_CURSOR")
@@ -910,15 +904,18 @@ local function Init_Markers_Frame()--设置标记, 框架
                         self:cancel_Send_Ping()
                     end
                 end)
-                btn:SetScript('OnEvent', function(self,event, d)
+                btn:SetScript('OnEvent', function(self, event, d)
                     if event=='GLOBAL_MOUSE_DOWN' then
                         if d=='RightButton' then
                             self:cancel_Send_Ping()
                         elseif d=='LeftButton' then
-                            self:set_world_Ping()
+
+                            PingManager:SendMacroPing(self.type)
+                            self:cancel_Send_Ping()
                         end
                     end
                 end)
+
                 btn:SetScript('OnLeave', function() e.tips:Hide() end)
                 btn:SetScript('OnEnter', function(self)
                     e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -943,9 +940,13 @@ local function Init_Markers_Frame()--设置标记, 框架
             end
             last=btn
         end
+
         function pingFrame:set_Shown()
             local cvar= C_CVar.GetCVarBool("enablePings")
             self:SetShown(cvar and Save.markersFrame and true or false)--getAllSet() and cvar and true or false)
+            if cvar and not IsAddOnLoaded('Blizzard_PingUI') then
+                PingUI_LoadUI()
+            end
         end
         pingFrame:RegisterEvent('CVAR_UPDATE')
         pingFrame:SetScript('OnEvent', pingFrame.set_Shown)
@@ -1019,6 +1020,23 @@ local function InitMenu(_, level, type)--主菜单
             e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         elseif type=='MakerFrameResetPost' then--重置位置， 队伍标记工具
+            if C_Ping then
+                info={
+                    text= e.onlyChinese and '冷却时间：信号系统' or format(CAPACITANCE_SHIPMENT_COOLDOWN, PING_SYSTEM_LABEL),
+                    tooltipOnButton=true,
+                    tooltipTitle= e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this',
+                    colorCode= not C_CVar.GetCVarBool("enablePings") and '|cff606060' or nil,
+                    checked= Save.pingTime,
+                    keepShownOnClick=true,
+                    func= function()
+                        Save.pingTime= not Save.pingTime and true or nil
+                        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    end
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+                e.LibDD:UIDropDownMenu_AddSeparator(level)
+            end
+
             info={
                 text= e.onlyChinese and '重置位置' or RESET_POSITION,
                 notCheckable=true,
@@ -1265,28 +1283,41 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 panel:RegisterEvent('GROUP_LEFT')
                 panel:RegisterEvent('READY_CHECK')
                 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-            end
-            panel:UnregisterEvent('ADDON_LOADED')
-        --[[elseif arg1=='Blizzard_PingUI' then--Ping, 冷却时间
-            hooksecurefunc( PingManager, 'OnPingPinFrameAdded', function(self3, frame)
-                local ping= self3.activePinFrames[frame]
-                ping.value=5
-                ping.elapsed=1
-                if not ping.text then
-                    ping.text= e.Cstr(ping)
-                    ping.text:SetPoint('CENTER')
 
-                    ping.OutroAnim:HookScript('Restart', function(self, elapsed)
-                        self.elapsed = self.elapsed + elapsed
-                        self.value= self.value - elapsed
-                        
-                        if self.elapsed>=1 then
-                            self.text:SetFormattedText("%i", self.value)
-                            self.elapsed=0
-                        end
-                    end)
-                end
-            end)]]
+            end
+           -- panel:UnregisterEvent('ADDON_LOADED')
+        elseif arg1=='Blizzard_PingUI' then--Ping, 冷却时间
+            if Save.pingTime then
+                hooksecurefunc( PingManager, 'OnPingPinFrameAdded', function(self3, frame, uiTextureKit)
+                    local ping= self3.activePinFrames[frame]
+                    if not ping.valueFrame then
+                        ping.valueFrame=CreateFrame("Frame",nil, ping)
+                        ping.valueFrame.value=5
+                        ping.valueFrame.elapsed=1
+                        ping.valueFrame:SetSize(1,1)
+                        ping.valueFrame:SetPoint('CENTER')
+                        ping.valueFrame.text= e.Cstr(ping.valueFrame)
+                        ping.valueFrame.text:SetPoint('CENTER')
+                        ping.valueFrame:SetScript('OnUpdate', function(self2, elapsed)
+                            self2.elapsed = self2.elapsed + elapsed
+                            self2.value= self2.value - elapsed
+                            if self2.elapsed>=1 then
+                                self2.text:SetFormattedText("%i", self2.value)
+                                self2.elapsed=0
+                            end
+                        end)
+                    else
+                        ping.valueFrame.value=5
+                        ping.valueFrame.elapsed=1
+                    end
+
+                    local color= PingColor[uiTextureKit]
+                    if color then
+                        ping.valueFrame.text:SetTextColor(color.r, color.g, color.b)
+                    end
+                    ping.valueFrame:SetShown(true)
+                end)
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -1329,7 +1360,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if arg1==READY_CHECK_ALL_READY then
             setGroupReadyTips(event, arg1, arg2)--队员,就绪,提示信息
         end
-
     end
 end)
 

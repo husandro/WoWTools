@@ -87,7 +87,7 @@ function e.ReloadPanel(tab)
     end
 end
 
-local panel = CreateFrame("Frame")--Panel
+local panel = CreateFrame("Frame", 'WoWToolsPanel')--Panel
 panel.name = id--'|cffff00ffWoW|r|cff00ff00Tools|r'
 InterfaceOptions_AddCategory(panel)
 --panel.OnCommit = function() print('OnCommit') end--关闭

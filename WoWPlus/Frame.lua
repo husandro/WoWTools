@@ -13,7 +13,6 @@ local Save={
 local addName= 'Frame'
 local panel= CreateFrame("Frame")
 
-
 --###############
 --设置, 移动, 位置
 --###############
@@ -793,6 +792,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel.name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..('框架' or addName)
             panel.parent= id
             InterfaceOptions_AddCategory(panel)
+            --local subcategory, category= InterfaceOptions_AddCategory(panel)
 
             e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked= not Save.disabled, clearTips=nil,--重新加载UI, 重置, 按钮
                             disabledfunc=function()
