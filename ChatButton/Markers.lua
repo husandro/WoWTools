@@ -36,7 +36,10 @@ WORLD_MARKER7 = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14|t |cf
 WORLD_MARKER8 = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14|t |cffffffff 白色|r世界标记";
 ]]
 
-local function getTexture(index)--取得图片
+local function get_RaidTargetTexture(index, unit)--取得图片
+    if unit then
+        index= GetRaidTargetIndex(unit)
+    end
     if not index or index<1 or index>NUM_WORLD_RAID_MARKERS then
         return ''
     else
@@ -109,8 +112,8 @@ local function setTankHealer(autoSet)--设置队伍标记
     if Save.tank==0 or num<2 then
         if num<2 and not autoSet then
             print(id, addName,e.onlyChinese and '设置' or SETTINGS,
-            INLINE_TANK_ICON..(e.onlyChinese and '坦克' or TANK)..getTexture(Save.tank),
-            INLINE_HEALER_ICON..(e.onlyChinese and '治疗' or HEALER)..getTexture(Save.healer),
+            INLINE_TANK_ICON..(e.onlyChinese and '坦克' or TANK)..get_RaidTargetTexture(Save.tank),
+            INLINE_HEALER_ICON..(e.onlyChinese and '治疗' or HEALER)..get_RaidTargetTexture(Save.healer),
                 '|cnRED_FONT_COLOR:'..(e.onlyChinese and '队员' or SPELL_TARGET_TYPE4_DESC)..'<2|r')
         end
         return
@@ -118,8 +121,8 @@ local function setTankHealer(autoSet)--设置队伍标记
     if IsInRaid() then
         if not getIsLeader() and not autoSet then--没有权限
             print(id, addName,e.onlyChinese and '设置' or SETTINGS,
-            INLINE_TANK_ICON..(e.onlyChinese and '坦克' or TANK)..getTexture(Save.tank),
-            INLINE_HEALER_ICON..(e.onlyChinese and '治疗' or HEALER)..getTexture(Save.healer),
+            INLINE_TANK_ICON..(e.onlyChinese and '坦克' or TANK)..get_RaidTargetTexture(Save.tank),
+            INLINE_HEALER_ICON..(e.onlyChinese and '治疗' or HEALER)..get_RaidTargetTexture(Save.healer),
             '|cnRED_FONT_COLOR:'..(e.onlyChinese and '没有权限' or ERR_ARENA_TEAM_PERMISSIONS)..'|r')
         else
             setRaidTarget()--设置团队标记
@@ -508,27 +511,33 @@ local function Init_Markers_Frame()--设置标记, 框架
                 btn.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
                 btn.texture:SetSize(size/2.5, size/2.5)
                 btn.texture:SetPoint('CENTER')
-                btn:SetScript('OnClick', function(self2, d)
+                btn:SetScript('OnClick', function(self, d)
                     if d=='LeftButton' then
-                        set_Taget('target', self2.index)--设置,目标, 标记
+                        set_Taget('target', self.index)--设置,目标, 标记
                     elseif d=='RightButton' then
-                        set_Clear(self2.index)--取消标记标    
+                        set_Clear(self.index)--取消标记标    
                     end
                 end)
-                btn:SetScript('OnLeave', function(self2)
+                btn:SetScript('OnLeave', function(self)
                     e.tips:Hide()
-                    self2.set_Active(self2)
+                    self.set_Active(self)
                 end)
-                btn:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                btn:SetScript('OnEnter', function(self)
+                    e.tips:SetOwner(self, "ANCHOR_LEFT")
                     e.tips:ClearLines()
+                    local key1= GetBindingKey('RAIDTARGET'..self.index)
+                    local key2= GetBindingKey('RAIDTARGETNONE')
+                    key1= key1 and ' |cnGREEN_FONT_COLOR:'..key1..'|r' or ''
+                    key2= key2 and '|cnRED_FONT_COLOR:'..key2..' |r' or ''
                     e.tips:AddDoubleLine(e.Icon.left
-                                        ..Color[self2.index].col
-                                        ..getTexture(self2.index)
-                                        ..(e.onlyChinese and '设置' or SETTINGS),
+                                        ..Color[self.index].col
+                                        ..(e.onlyChinese and '设置' or SETTINGS)
+                                        ..get_RaidTargetTexture(self.index)
+                                        ..key1,
 
-                                        Color[self2.index].col
-                                        ..getTexture(self2.index)
+                                        key2
+                                        ..Color[self.index].col
+                                        ..'|A:bags-button-autosort-up:0:0|a'
                                         ..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                                         ..e.Icon.right
                                     )
@@ -536,10 +545,10 @@ local function Init_Markers_Frame()--设置标记, 框架
                         e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '不能标记' or DISABLE))
                     end
                     e.tips:Show()
-                    self2:SetButtonState('NORMAL')
-                    self2:SetAlpha(1)
+                    self:SetButtonState('NORMAL')
+                    self:SetAlpha(1)
                 end)
-                btn.set_Active= function(self2)
+                btn.set_Active= function(self)
                     local index2
                     local exists= UnitExists('target')
                     local can= true
@@ -549,23 +558,23 @@ local function Init_Markers_Frame()--设置标记, 框架
                         end
                         index2= GetRaidTargetIndex('target')
                     end
-                    self2:SetButtonState(index2==self2.index and 'PUSHED' or 'NORMAL')
-                    self2.texture:SetShown(index2==self2.index)
-                    self2:SetAlpha(can and 1 or 0.1)
+                    self:SetButtonState(index2==self.index and 'PUSHED' or 'NORMAL')
+                    self.texture:SetShown(index2==self.index)
+                    self:SetAlpha(can and 1 or 0.1)
                 end
-                btn.set_Events= function(self2)
-                    self2:RegisterEvent('PLAYER_TARGET_CHANGED')
-                    self2:RegisterEvent('RAID_TARGET_UPDATE')
-                    self2:set_Active(self2)
+                btn.set_Events= function(self)
+                    self:RegisterEvent('PLAYER_TARGET_CHANGED')
+                    self:RegisterEvent('RAID_TARGET_UPDATE')
+                    self:set_Active(self)
                 end
-                btn:SetScript('OnShow', function(self2)
-                    btn:set_Events(self2)
+                btn:SetScript('OnShow', function(self)
+                    btn:set_Events(self)
                 end)
-                btn:SetScript('OnHide', function(self2)
-                    self2:UnregisterAllEvents()
+                btn:SetScript('OnHide', function(self)
+                    self:UnregisterAllEvents()
                 end)
-                btn:SetScript('OnEvent', function(self2,event)
-                    self2:set_Active(self2)
+                btn:SetScript('OnEvent', function(self)
+                    self:set_Active(self)
                 end)
                 btn:set_Events(btn)
             end
@@ -625,28 +634,28 @@ local function Init_Markers_Frame()--设置标记, 框架
                     hasEditBox=1,
                     button1= e.onlyChinese and '设置' or SETTINGS,
                     button2= e.onlyChinese and '取消' or CANCEL,
-                    OnShow = function(self2)
-                        self2.editBox:SetNumeric(true)
-                        self2.editBox:SetNumber(Save.countdown or 7)
-                        self2.editBox:SetFocus()
+                    OnShow = function(self)
+                        self.editBox:SetNumeric(true)
+                        self.editBox:SetNumber(Save.countdown or 7)
+                        self.editBox:SetFocus()
                     end,
-                    OnHide= function(self2)
-                        self2.editBox:SetText("")
+                    OnHide= function(self)
+                        self.editBox:SetText("")
                         securecall(ChatEdit_FocusActiveWindow)
                     end,
-                    OnAccept = function(self2)
-                        local num= self2.editBox:GetNumber()
+                    OnAccept = function(self)
+                        local num= self.editBox:GetNumber()
                         Save.countdown=num
                     end,
-                    EditBoxOnTextChanged=function(self2)
-                        local num= self2:GetNumber()
-                        local parent= self2:GetParent()
+                    EditBoxOnTextChanged=function(self)
+                        local num= self:GetNumber()
+                        local parent= self:GetParent()
                         parent.button1:SetEnabled(num>0 and num<=3600)
                         parent.button1:SetText(e.SecondsToClock(num))
                     end,
-                    EditBoxOnEscapePressed = function(self2)
+                    EditBoxOnEscapePressed = function(self)
                         securecall(ChatEdit_FocusActiveWindow)
-                        self2:GetParent():Hide()
+                        self:GetParent():Hide()
                     end,
                 }
                 StaticPopup_Show(id..addName..'COUNTDOWN')
@@ -719,16 +728,23 @@ local function Init_Markers_Frame()--设置标记, 框架
             btn:SetAttribute("marker2", index==0 and 0 or tab[index])
             btn:SetAttribute("action2", "clear")
             btn:SetScript('OnLeave', function() e.tips:Hide() end)
-            btn:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            btn:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                if self2.index==0 then
+                if self.index==0 then
                     e.tips:AddLine(e.Icon.O2..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
                 else
-                    local inx= self2.index2
-                    e.tips:AddDoubleLine(Color[inx].col..e.Icon.left..getTexture(inx)..(e.onlyChinese and '设置' or SETTINGS),
-                                        Color[inx].col..getTexture(inx)..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..e.Icon.right
-                                        )
+                    e.tips:AddDoubleLine(
+                        Color[self.index2].col
+                        ..e.Icon.left
+                        ..(e.onlyChinese and '设置' or SETTINGS)
+                        ..get_RaidTargetTexture(self.index2),
+
+                        Color[self.index2].col
+                        ..'|A:bags-button-autosort-up:0:0|a'
+                        ..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+                        ..e.Icon.right
+                    )
                 end
                 e.tips:Show()
             end)
@@ -741,15 +757,15 @@ local function Init_Markers_Frame()--设置标记, 框架
                 btn.texture:SetAllPoints(btn)
                 btn.texture:SetColorTexture(Color[index].r, Color[index].g, Color[index].b)
                 btn.texture:SetAlpha(0.3)
-                btn.setActive= function(self2)
-                    self2:SetButtonState(IsRaidMarkerActive(self2.index) and 'PUSHED' or 'NORMAL')
+                btn.setActive= function(self)
+                    self:SetButtonState(IsRaidMarkerActive(self.index) and 'PUSHED' or 'NORMAL')
                 end
                 btn.elapsed= 0
-                btn:SetScript('OnUpdate', function(self2, elapsed)
-                    self2.elapsed= self2.elapsed +elapsed
-                    if self2.elapsed>2 then
-                        self2.setActive(self2)
-                        self2.elapsed=0
+                btn:SetScript('OnUpdate', function(self, elapsed)
+                    self.elapsed= self.elapsed +elapsed
+                    if self.elapsed>2 then
+                        self.setActive(self)
+                        self.elapsed=0
                     end
                 end)
                 btn.setActive(btn)
@@ -781,12 +797,14 @@ local function Init_Markers_Frame()--设置标记, 框架
 
         local ping={--Enum.PingSubjectType.Warning
             {type=6, name= e.onlyChinese and '清除全部' or CLEAR_ALL, atlas=e.Icon.disabled},
-            {type=7, name= e.onlyChinese and '信号系统' or PING_SYSTEM_LABEL, atlas='UI-QuestPoiLegendary-QuestBang'},
-            {type=0, name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack'},
-            {type=3, name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay'},
-            {type=1, name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning'},
+
+            {type=7, name= e.onlyChinese and '信号系统' or PING_SYSTEM_LABEL, atlas='UI-QuestPoiLegendary-QuestBang', action='TOGGLEPINGLISTENER'},
+            {type=0, name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK'},
+            {type=1, name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING'},
+            {type=3, name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay', action='PINGONMYWAY'},
+            {type=2, name=e.onlyChinese and '协助' or PING_TYPE_ASSIST, atlas='Ping_Marker_Icon_Assist', action='PINGASSIST'},
+
             {type=4, name= e.onlyChinese and '威胁提示' or format(PING_SUBJECT_TYPE_ALERT_THREAT_POINT,'',''), atlas='Ping_Marker_Icon_threat'},
-            {type=2, name=e.onlyChinese and '协助' or PING_TYPE_ASSIST, atlas='Ping_Marker_Icon_Assist'},
             {type=5, name= e.onlyChinese and '看这里' or format(PING_SUBJECT_TYPE_ALERT_NOT_THREAT_POINT,'','',''), atlas='Ping_Marker_Icon_nonthreat'},
         }
 
@@ -805,8 +823,8 @@ local function Init_Markers_Frame()--设置标记, 框架
             btn.type=tab.type
             btn.name= tab.name
             btn.atlas= tab.atlas
-
-            btn:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn.action= tab.action
+            
             if tab.type==6 then--全部，取消
                 btn:SetScript('OnClick', function()
                     if PingManager and PingManager.activePinFrames then--Blizzard_PingManager.lua
@@ -815,10 +833,11 @@ local function Init_Markers_Frame()--设置标记, 框架
                         end
                     end
                 end)
-                btn:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                btn:SetScript('OnLeave', function() e.tips:Hide() end)
+                btn:SetScript('OnEnter', function(self)
+                    e.tips:SetOwner(self, "ANCHOR_LEFT")
                     e.tips:ClearLines()
-                    e.tips:AddLine('|A:'..self2.atlas..':0:0|a'..self2.name..e.Icon.left)
+                    e.tips:AddLine('|A:'..self.atlas..':0:0|a'..self.name..e.Icon.left)
                     e.tips:Show()
                 end)
 
@@ -827,6 +846,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                     PingListenerFrame:CancelPendingPing();
                     PingListenerFrame:SetShown(false)
                     self:UnregisterAllEvents()
+                    self:UnlockHighlight()
                 end
                 btn:SetScript('OnMouseUp', function(self, d)
                     if not IsAddOnLoaded('Blizzard_PingUI') then
@@ -834,6 +854,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                     end
                     if d=='LeftButton' then
                         PingListenerFrame:SetShown(true)
+                        SetCursor("CAST_CURSOR")
                         C_Timer.After(0.3, function()
                             self:RegisterEvent('GLOBAL_MOUSE_UP')
                         end)
@@ -844,15 +865,20 @@ local function Init_Markers_Frame()--设置标记, 框架
                 btn:SetScript('OnEvent', function(self)
                     self:cancel_PingFrame()
                 end)
-                btn:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                btn:SetScript('OnLeave', function() e.tips:Hide() end)
+                btn:SetScript('OnEnter', function(self)
+                    e.tips:SetOwner(self, "ANCHOR_LEFT")
                     e.tips:ClearLines()
-                    e.tips:AddDoubleLine('|A:'..self2.atlas..':0:0|a'..self2.name..e.Icon.left, (e.onlyChinese and '取消' or CANCEL)..e.Icon.right)
+                    local key1= GetBindingKey(self.action)
+                    key1= key1 and ' |cnGREEN_FONT_COLOR:'..key1..'|r' or ''
+                    e.tips:AddDoubleLine(
+                        e.Icon.left..self.name..'|A:'..self.atlas..':0:0|a'..key1,
+                        (e.onlyChinese and '取消' or CANCEL)..e.Icon.right
+                    )
                     e.tips:Show()
                 end)
 
             else--攻击,正在赶来,警告,威胁提示,协助,看这里
-
                 function btn:cancel_Send_Ping()
                     self:UnregisterAllEvents()
                     self:UnlockHighlight()
@@ -893,18 +919,26 @@ local function Init_Markers_Frame()--设置标记, 框架
                         end
                     end
                 end)
-
-                btn:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                btn:SetScript('OnLeave', function() e.tips:Hide() end)
+                btn:SetScript('OnEnter', function(self)
+                    e.tips:SetOwner(self, "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     local name= UnitName('target')
-                    name= name and name..getTexture(GetRaidTargetIndex('target')) or nil
-                    e.tips:AddDoubleLine('|A:'..self2.atlas..':0:0|a'..self2.name..e.Icon.left, name or ((e.onlyChinese and '取消' or CANCEL)..e.Icon.right))
-                    if not name then
-                        e.tips:AddLine()
+                    if UnitExists('target') then
+                        local icon= e.GetPlayerInfo({unit='target', reName=true})
+                        if icon=='' then
+                            local baseClass= UnitClassBase('target')
+                            name= '|A:BuildanAbomination-32x32:0:0|a|c'..select(4, GetClassColor(baseClass))..UnitName('target')..'|r'
+                        end
+                        name= name..get_RaidTargetTexture(nil, 'target')
                     end
+                    local key1= self.action and GetBindingKey(self.action)
+                    key1= key1 and ' |cnGREEN_FONT_COLOR:'..key1..'|r' or ''
+                    e.tips:AddDoubleLine(
+                        e.Icon.left..self.name..'|A:'..self.atlas..':0:0|a'..key1,
+                        name or ('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '取消' or CANCEL)..e.Icon.right)
+                    )
                     e.tips:Show()
-
                 end)
             end
             last=btn
@@ -917,8 +951,6 @@ local function Init_Markers_Frame()--设置标记, 框架
         pingFrame:SetScript('OnEvent', pingFrame.set_Shown)
     end
     pingFrame:set_Shown()
-
-    PingUI_LoadUI()
 end
 
 
@@ -1244,13 +1276,13 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     ping.text= e.Cstr(ping)
                     ping.text:SetPoint('CENTER')
 
-                    ping.OutroAnim:HookScript('Restart', function(self2, elapsed)
-                        self2.elapsed = self2.elapsed + elapsed
-                        self2.value= self2.value - elapsed
+                    ping.OutroAnim:HookScript('Restart', function(self, elapsed)
+                        self.elapsed = self.elapsed + elapsed
+                        self.value= self.value - elapsed
                         
-                        if self2.elapsed>=1 then
-                            self2.text:SetFormattedText("%i", self2.value)
-                            self2.elapsed=0
+                        if self.elapsed>=1 then
+                            self.text:SetFormattedText("%i", self.value)
+                            self.elapsed=0
                         end
                     end)
                 end
