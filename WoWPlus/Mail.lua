@@ -919,11 +919,11 @@ local function Init_Fast_Button()
     button.FastButtonS={}
     panel.ItemMaxNum= ATTACHMENTS_MAX_SEND
 
-    button.FastButton= e.Cbtn(button, {size={size, size}, atlas= 'NPE_ArrowRight'})
+    button.FastButton= e.Cbtn(button, {size={size+4, size+4}, atlas= 'NPE_ArrowRight'})
     if _G['Postal_QuickAttachButton1'] then--IsAddOnLoaded('Postal')
         button.FastButton:SetPoint('BOTTOMLEFT', _G['Postal_QuickAttachButton1'], 'TOPRIGHT', 2, 0)
     else
-        button.FastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT', 0, 2)
+        button.FastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT',0, -2)
     end
     button.FastButton:SetScript('OnClick', function(self2, d)
         if IsAltKeyDown() and d=='LeftButton' then--展开/缩起
