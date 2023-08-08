@@ -348,23 +348,39 @@ local function set_Blizzard_TrainerU()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
 local function Init_ProfessionsFrame()
-print(id,addName)
-    local btn= e.Cbtn(ProfessionsFrame.TitleContainer, {icon=not Save.disabled, size={20, 20}})
+    local btn2= e.Cbtn(ProfessionsFrame.TitleContainer, {icon=not Save.disabled, size={20, 20}})
     if _G['MoveZoomInButtonPerProfessionsFrame'] then
-        btn:SetPoint('LEFT', _G['MoveZoomInButtonPerProfessionsFrame'], 'RIGHT')
+        btn2:SetPoint('LEFT', _G['MoveZoomInButtonPerProfessionsFrame'], 'RIGHT')
     else
-        btn:SetPoint('RIGHT', ProfessionsFrameTitleText, 'RIGHT', -24, 2)
+        btn2:SetPoint('RIGHT', ProfessionsFrameTitleText, 'RIGHT', -24, 2)
     end
-    btn:SetScript('OnMouseDown', function(self2)
+    btn2:SetScript('OnMouseDown', function(self2)
         Save.disabled= not Save.disabled and true or nil
         self2:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
         print(id, addName, e.GetEnabeleDisable(not Save.disabled),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
-    btn:SetScript('OnEnter', function(self2)
+    btn2:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, 'Tools')
@@ -373,17 +389,26 @@ print(id,addName)
         e.tips:Show()
         self2:SetAlpha(1)
     end)
-    btn:SetScript('OnLeave', function(self2)
+    btn2:SetScript('OnLeave', function(self2)
         e.tips:Hide()
         self2:SetAlpha(0.5)
     end)
-    btn:SetAlpha(0.5)
+    btn2:SetAlpha(0.5)
 
     if Save.disabled then
         return
     end
 
     Init_ProfessionsFrame_Button()--专业界面, 按钮
+
+
+
+
+
+
+
+
+
 
     --###
     --数量
@@ -418,6 +443,20 @@ print(id,addName)
     end)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     --##################
     --移过，列表，物品提示
     --Blizzard_ProfessionsRecipeList.lua
@@ -436,12 +475,27 @@ print(id,addName)
     end)
 
 
+
+
+
+
+
+
     --专业，列表，增加图标
-    hooksecurefunc(ProfessionsRecipeListRecipeMixin, 'Init', function(self, node, hideCraftableCount)
+    hooksecurefunc(ProfessionsRecipeListRecipeMixin, 'Init', function(self, node)
         local elementData = node:GetData();
         local recipeInfo = Professions.GetHighestLearnedRecipe(elementData.recipeInfo) or elementData.recipeInfo
-        if recipeInfo and recipeInfo.icon and recipeInfo.name then
+        --[[if recipeInfo and recipeInfo.icon and recipeInfo.name then
             self.Label:SetText('|T'..recipeInfo.icon..':0|t'..recipeInfo.name)
+        end]]
+        local icon = recipeInfo and recipeInfo.icon 
+        if icon and not self.texture then
+            self.texture= self:CreateTexture()
+            self.texture:SetPoint('LEFT')
+            self.texture:SetSize(20,20)
+        end
+        if self.texture then
+            self.texture:SetTexture(icon or 0)
         end
     end)
 
@@ -507,6 +561,13 @@ print(id,addName)
             end
         end
     end)
+
+
+
+
+
+
+
 
     --Blizzard_ProfessionsSpecializations.lua
     --全加点，专精，
