@@ -808,7 +808,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         local ping={--Enum.PingSubjectType.Warning
             {type=6, name=e.onlyChinese and '清除全部' or CLEAR_ALL, atlas=e.Icon.disabled},
 
-            {type=7, name=e.onlyChinese and '信号系统' or PING_SYSTEM_LABEL, atlas='UI-QuestPoiLegendary-QuestBang', action='TOGGLEPINGLISTENER'},
+            {type=7, name=e.onlyChinese and '信号系统' or PING_SYSTEM_LABEL, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
             {type=0, name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK'},
             {type=1, name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING'},
             {type=3, name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay', action='PINGONMYWAY'},
