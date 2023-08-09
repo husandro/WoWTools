@@ -106,8 +106,25 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
-            --添加控制面板        
-            local sel=e.CPanel('|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(e.onlyChinese and '法术Frame' or addName), not Save.disabled)
+
+            --添加控制面板
+            e.AddPanelCheck({
+                name= '|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(e.onlyChinese and '法术Frame' or addName),
+                tooltip= e.onlyChinese and '法术距离, 颜色|n法术弹出框, 名称|n...'
+                        or (
+                            format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, TRACKER_SORT_PROXIMITY)..': '.. COLOR
+                            ..'|n'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Flyout')..': '..LFG_LIST_TITLE
+                            ..'|n...'
+                    ),
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+
+            --[[添加控制面板        
+            local sel=e.AddPanelCheck('|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(e.onlyChinese and '法术Frame' or addName), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -119,7 +136,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 e.tips:AddDoubleLine(e.onlyChinese and '法术弹出框' or SPELLS..' Flyout', e.onlyChinese and '名称' or LFG_LIST_TITLE)
                 e.tips:Show();
             end)
-            sel:SetScript('OnLeave', function() e.tips:Hide() end)
+            sel:SetScript('OnLeave', function() e.tips:Hide() end)]]
 
             if Save.disabled then
                 panel:UnregisterAllEvents()

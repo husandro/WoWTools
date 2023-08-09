@@ -820,8 +820,25 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
-            --添加控制面板        
-            local sel=e.CPanel(e.Icon.bag2..(e.onlyChinese and '物品信息' or addName), not Save.disabled, true)
+            --添加控制面板
+            e.AddPanelCheck({
+                name= e.Icon.bag2..(e.onlyChinese and '物品信息' or addName),
+                tooltip= e.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
+                value= not Save.disabled,
+                func= function()
+                    if Save.disabled then
+                        Save.disabled=nil
+                        panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+                    else
+                        Save.disabled=true
+                        panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+                    end
+                    print(id, addName, e.GetEnabeleDisable(Save.disabled))
+                end
+            })
+
+            --[[添加控制面板        
+            local sel=e.AddPanelCheck(e.Icon.bag2..(e.onlyChinese and '物品信息' or addName), not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -839,7 +856,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 e.tips:Show()
             end)
             sel:SetScript('OnLeave', function() e.tips:Hide() end)
-
+]]
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else

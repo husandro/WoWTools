@@ -610,7 +610,7 @@ end
 --点击移动
 --########
 local function set_Click_To_Move()
-    if not Save.clickToMove then
+    if not Save.clickToMove or Save.disabled then
         return
     end
     local value= C_CVar.GetCVarBool("autoInteract")
@@ -639,7 +639,31 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            local check=e.CPanel('|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName), not Save.disabled, true)
+            local initializer2= e.AddPanelCheck({
+                name= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName),
+                tooltip= addName,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                end
+            })
+
+            local initializer= e.AddPanelCheck({
+                name= e.Icon.right..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE),
+                tooltip= (not e.onlyChinese and CLICK_TO_MOVE..', '..REFORGE_CURRENT or '点击移动, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))
+                    ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' < '..MAX_PLAYER_LEVEL..' = '..e.GetEnabeleDisable(false)
+                    ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' = '..MAX_PLAYER_LEVEL..' = '..e.GetEnabeleDisable(true),
+                value= Save.clickToMove,
+                func= function()
+                    Save.clickToMove = not Save.clickToMove and true or nil
+                    set_Click_To_Move()
+                end
+            })
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+
+            --[[添加控制面板
+            local check=e.AddPanelCheck('|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName), not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
@@ -664,11 +688,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:Show()
             end)
             clickToMoveCheck:SetScript('OnLeave', function() e.tips:Hide() end)
-            set_Click_To_Move()
+            ]]
+            
 
             if Save.disabled then
+                
                 panel:UnregisterAllEvents()
             else
+                set_Click_To_Move()
                 Init()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")

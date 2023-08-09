@@ -837,12 +837,24 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('SOCIAL_QUEUE_UPDATE')--快速加入
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
-            --添加控制面板        
-            local sel=e.CPanel('|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '好友列表' or addName), not Save.disabled)
+
+            --添加控制面板
+            e.AddPanelCheck({
+                name= '|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '好友列表' or addName),
+                tooltip= addName,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+
+            --[[添加控制面板        
+            local sel=e.AddPanelCheck('|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '好友列表' or addName), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 if Save.disabled then
                     Save.disabled=nil
@@ -850,7 +862,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Save.disabled=true
                 end
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
+            end)]]
 
             if Save.disabled then
                 panel:UnregisterAllEvents()

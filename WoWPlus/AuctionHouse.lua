@@ -14,12 +14,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             Save= WoWToolsSave[addName] or Save
 
-            --添加控制面板        
-            local sel=e.CPanel(addName, not Save.disabled)
+            --添加控制面板
+            e.AddPanelCheck({
+                name= addName,
+                tooltip= addName,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+
+            --[[添加控制面板        
+            local sel=e.AddPanelCheck(addName, not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
+            end)]]
 
             if Save.disabled then
                 panel:UnregisterAllEvents()

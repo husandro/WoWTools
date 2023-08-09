@@ -1302,11 +1302,23 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 Save= WoWToolsSave[addName]
             end
 
-            local check=e.CPanel('|A:bag-border-empty:0:0|aTools', not Save.disabled, true)
+            --添加控制面板
+            e.AddPanelCheck({
+                name= '|A:bag-border-empty:0:0|aTools',
+                tooltip= addName,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+                title= 'Tools',
+            })
+
+            --[[local check=e.AddPanelCheck('|A:bag-border-empty:0:0|aTools', not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
+            end)]]
 
             if not Save.disabled then
                 for spellID, tab in pairs(Save.Mounts[FLOOR]) do

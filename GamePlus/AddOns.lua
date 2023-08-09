@@ -433,12 +433,16 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                     ['TextureAtlasViewer']=78,
                 }
             end
-            --添加控制面板        
-            local sel=e.CPanel('|A:Garr_Building-AddFollowerPlus:0:0|a'..(e.onlyChinese and '插件管理' or addName), not Save.disabled, true)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled = not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-            end)
+            --添加控制面板
+            e.AddPanelCheck({
+                name= '|A:Garr_Building-AddFollowerPlus:0:0|a'..(e.onlyChinese and '插件管理' or addName),
+                tooltip= addName,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled = not Save.disabled and true or nil
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                end
+            })
 
             if Save.disabled then
                 panel:UnregisterAllEvents()

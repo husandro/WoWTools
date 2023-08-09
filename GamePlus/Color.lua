@@ -444,8 +444,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
 			Save.color= Save.color or {}
 
-            --添加控制面板        
-            panel.check=e.CPanel('|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器增强' or addName), not Save.disabled, true)
+			--添加控制面板
+            e.AddPanelCheck({
+                name= '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器增强' or addName),
+                tooltip= addName,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                	print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+
+
+            --[[添加控制面板        
+            panel.check=e.AddPanelCheck('|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器增强' or addName), not Save.disabled, true)
             panel.check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -463,7 +475,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.ShowColorPicker(e.Player.r, e.Player.g, e.Player.b, 1, function()
 					set_Text(nil, 3)
 				end)
-			end)
+			end)]]
 
             if not Save.disabled then
 				local check2= CreateFrame("CheckButton", nil, ColorPickerFrame, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏

@@ -21,14 +21,27 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
+            --添加控制面板
+            e.AddPanelCheck({
+                name= '|A:TalkingHeads-Glow-TopSpike:0:0|a'..(e.onlyChinese and '隐藏NPC发言' or addName),
+                tooltip=format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '隐藏' or HIDE , e.onlyChinese and '对话特写头像' or HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL),
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    setRegister()--设置事件
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled))
+                end
+            })
+
+ --[[
             --添加控制面板        
-            local sel=e.CPanel('|A:TalkingHeads-Glow-TopSpike:0:0|a'..(e.onlyChinese and '隐藏NPC发言' or addName), not Save.disabled, true)
+            local sel=e.AddPanelCheck('|A:TalkingHeads-Glow-TopSpike:0:0|a'..(e.onlyChinese and '隐藏NPC发言' or addName), not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 setRegister()--设置事件
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled))
             end)
-            --[[sel:SetScript('OnEnter', function(self2)
+           sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinese and '声音' or SOUND, e.GetEnabeleDisable(e.setPlayerSound))

@@ -3220,7 +3220,11 @@
         "CAPACITANCE_SHIPMENT_COOLDOWN",
         "SendMailCostMoneyFrameCopperButton",
         "SEND_MAIL_COST",
-        "SendMailCostMoneyFrameCopperButtonText"
+        "SendMailCostMoneyFrameCopperButtonText",
+        "MinimalSliderWithSteppersMixin",
+        "CHAT",
+        "AUCTION_SUBCATEGORY_PROFESSION_TOOLS",
+        "CreateSettingsListSectionHeaderInitializer"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

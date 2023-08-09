@@ -717,64 +717,117 @@ local function Init_Move()
 end
 
 local function Init_Options()
-    panel.check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    panel.check.Text:SetText('|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(e.onlyChinese and '移动' or NPE_MOVE))
-    panel.check:SetPoint('TOPLEFT', 0, -48)
-    panel.check:SetChecked(not Save.disabledMove)
-    panel.check:SetScript('OnMouseDown', function()
-        Save.disabledMove= not Save.disabledMove and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end)
+    local Category, Layout= e.AddPanelSubCategory({name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..addName})
 
-    local checkPoint=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    checkPoint.Text:SetText(e.onlyChinese and '位置' or CHOOSE_LOCATION:gsub(CHOOSE , ''))
-    checkPoint:SetPoint('LEFT', panel.check.Text, 'RIGHT',4,0)
-    checkPoint:SetChecked(not Save.disabledZoom)
-    checkPoint:SetScript('OnMouseDown', function()
-        Save.SavePoint= not Save.SavePoint and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end)
+    e.AddPanelCheck({
+        name= e.GetEnabeleDisable(true),
+        tooltip= addName,
+        value= not Save.disabled,
+        category= Category,
+        func= function()
+            Save.disabled= not Save.disabled and true or nil
+            print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    })
 
-    local checkMoveToScreenFuori=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    checkMoveToScreenFuori.Text:SetText(e.onlyChinese and '可以移到屏幕外' or 'Can be moved off screen')
-    checkMoveToScreenFuori:SetPoint('LEFT', checkPoint.Text, 'RIGHT',4,0)
-    checkMoveToScreenFuori:SetChecked(Save.moveToScreenFuori)
-    checkMoveToScreenFuori:SetScript('OnMouseDown', function()
-        Save.moveToScreenFuori= not Save.moveToScreenFuori and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end)
+    --移动
+    local initializer2= e.AddPanelCheck({
+        name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(e.onlyChinese and '移动' or NPE_MOVE),
+        tooltip= addName,
+        value= not Save.disabledMove,
+        category= Category,
+        layout= Layout,
+        title= e.onlyChinese and '移动' or NPE_MOVE,
+        func= function()
+            Save.disabledMove= not Save.disabledMove and true or nil
+            print(id, addName, e.GetEnabeleDisable(not Save.disabledMove), e.onlyChinese and '重新加载UI' or RELOADUI)
+        end
+    })
 
-    local check2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    check2.Text:SetText('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE))
-    check2:SetPoint('TOPLEFT', panel.check, 'BOTTOMLEFT',0,-16)
-    check2:SetChecked(not Save.disabledZoom)
-    check2:SetScript('OnMouseDown', function()
-        Save.disabledZoom= not Save.disabledZoom and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end)
+        local initializer= e.AddPanelCheck({
+            name= '|A:talents-search-notonactionbar:0:0|a'..(e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
+            tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0),
+            value= Save.SavePoint,
+            category= Category,
+            func= function()
+                Save.SavePoint= not Save.SavePoint and true or nil
+            end
+        })
+        initializer:SetParentInitializer(initializer2, function() return not Save.disabledMove end)
 
-    local btn= e.Cbtn(panel, {atlas='bags-button-autosort-up', size={24,24}})
-    btn:SetPoint('TOPLEFT', check2, 'BOTTOMLEFT',0,-16)
-    btn:SetScript('OnClick', function()
-        StaticPopupDialogs[id..addName..'MoveZoom']={
-            text =id..' '..addName..'|n|n'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2 )..' ('..(e.onlyChinese and '保存' or SAVE)..')',
-            button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移动' or NPE_MOVE),
-            button2 = e.onlyChinese and '取消' or CANCEL,
-            button3 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '缩放' or UI_SCALE),
-            whileDead=true,
-            timeout=60,
-            hideOnEscape = true,
-            OnAccept=function()
-                Save.point={}
-                print(id, addName, e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
-            end,
-            OnAlt= function()
-                Save.scale={}
-                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
-            end,
-        }
-        StaticPopup_Show(id..addName..'MoveZoom')
-    end)
+            --清除
+            local initializer3= e.AddPanelCheck({
+                name= '     |A:bags-button-autosort-up:0:0|a|cffff00ff'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r',
+                tooltip= (e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
+                value= false,
+                category= Category,
+                func= function()
+                    StaticPopupDialogs[id..addName..'MoveZoomClearPoint']= {
+                        text =id..' '..addName..'|n|n'
+                        ..(e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
+                        button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+                        button2 = e.onlyChinese and '取消' or CANCEL,
+                        whileDead=true,
+                        timeout=60,
+                        hideOnEscape = true,
+                        OnAccept=function()
+                            Save.point={}
+                            print(id, addName, e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                        end,
+                    }
+                    StaticPopup_Show(id..addName..'MoveZoomClearPoint')
+                end
+            })
+            initializer3:SetParentInitializer(initializer, function() return true end)
+
+        initializer= e.AddPanelCheck({
+            name= e.onlyChinese and '可以移到屏幕外' or 'Can be moved off screen',
+            tooltip= addName,
+            value= Save.moveToScreenFuori,
+            category= Category,
+            func= function()
+                Save.moveToScreenFuori= not Save.moveToScreenFuori and true or nil
+            end
+        })
+        initializer:SetParentInitializer(initializer2, function() return not Save.disabledMove end)
+
+        --缩放
+        initializer2= e.AddPanelCheck({
+            name= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
+            tooltip= addName,
+            value= not Save.disabledZoom,
+            category= Category,
+            layout= Layout,
+            title= (e.onlyChinese and '缩放' or UI_SCALE),
+            func= function()
+                Save.disabledZoom= not Save.disabledZoom and true or nil
+                print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        })
+
+            initializer= e.AddPanelCheck({
+                name= '     |A:bags-button-autosort-up:0:0|a|cffff00ff'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r',
+                tooltip= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
+                value= false,
+                category= Category,
+                func= function()
+                    StaticPopupDialogs[id..addName..'MoveZoomClearZoom']= {
+                        text =id..' '..addName..'|n|n'
+                        ..('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE)),
+                        button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+                        button2 = e.onlyChinese and '取消' or CANCEL,
+                        whileDead=true,
+                        timeout=60,
+                        hideOnEscape = true,
+                        OnAccept=function()
+                            Save.scale={}
+                            print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                        end,
+                    }
+                    StaticPopup_Show(id..addName..'MoveZoomClearZoom')
+                end
+            })
+            initializer:SetParentInitializer(initializer2, function() return true end)
 end
 
 --###########
@@ -788,11 +841,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.scale= Save.scale or {}
 
-            --添加控制面板CollectionsJournal
+            --[[添加控制面板CollectionsJournal
             panel.name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..('框架' or addName)
             panel.parent= id
-            InterfaceOptions_AddCategory(panel)
-            --local subcategory, category= InterfaceOptions_AddCategory(panel)
+            InterfaceOptions_AddCategory(panel)]]
 
             e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked= not Save.disabled, clearTips=nil,--重新加载UI, 重置, 按钮
                             disabledfunc=function()

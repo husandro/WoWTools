@@ -6,6 +6,13 @@ local Save={
     useCustomColor= nil,--使用, 自定义, 颜色
     useCustomColorTab= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--自定义, 颜色, 表
 }
+local panel = CreateFrame("Frame", 'WoWTools')--Panel
+
+
+
+
+
+
 
 --#####################
 --重新加载UI, 重置, 按钮
@@ -87,64 +94,47 @@ function e.ReloadPanel(tab)
     end
 end
 
-local panel = CreateFrame("Frame", 'WoWToolsPanel')--Panel
-panel.name = id--'|cffff00ffWoW|r|cff00ff00Tools|r'
-InterfaceOptions_AddCategory(panel)
---panel.OnCommit = function() print('OnCommit') end--关闭
---panel.OnDefault = function() print('OnDefault') end--恢复所有默认
---panel.OnRefresh = function() print('OnRefresh') end--打开
 
 
 
+--Settings.SetKeybindingsCategory(Category)
 
-
-
---##############
---Instance Panel
---##############
---[[
-local instancePane= CreateFrame('Frame')
-instancePane.name = '|A:poi-rift1:0:0|a'..INSTANCE
-instancePane.parent =id;
-InterfaceOptions_AddCategory(instancePane)
-]]
 
 --##############
 --创建, 添加控制面板
 --##############
-local lastWoW, lastGame--, lastInstance
-e.CPanel= function(name, value, GamePlus)--, Instance)
-    --local check=CreateFrame("CheckButton", nil, Instance and instancePane or panel, "InterfaceOptionsCheckButtonTemplate")
-    local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    check.text:SetText(name)
-    check:SetChecked(value)
 
---[[if Instance then--副本, 大类
-        if not lastInstance then
-            check:SetPoint('TOPLEFT')
-            lastInstance= check
-        else
-            check:SetPoint('TOPLEFT', lastInstance, 'BOTTOMLEFT')
-        end
-]]
-    if GamePlus then--GamePlus, 大类
-        if lastGame then
-            check:SetPoint('TOPLEFT', lastGame, 'BOTTOMLEFT')
-        else
-            check:SetPoint('TOPLEFT', panel, 'TOP', 0, -25)
-        end
-        lastGame=check
+local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t'..id)
+Settings.RegisterAddOnCategory(Category)
 
-    else--WoWPlus, 大类
-        if lastWoW then
-            check:SetPoint('TOPLEFT', lastWoW, 'BOTTOMLEFT')
-        else
-            check:SetPoint('TOPLEFT', 0, -25)
-        end
-        lastWoW=check
+function e.AddPanelCheck(tab)
+    if tab.title then
+        (tab.layout or Layout):AddInitializer(CreateSettingsListSectionHeaderInitializer(tab.title))
     end
-    return check
+    local category= tab.category or Category
+    local variable = id..tab.name
+    local name = tab.name
+    local tooltip = tab.tooltip
+    local defaultValue
+    if tab.value then
+        defaultValue= true
+    else
+        defaultValue=false
+    end
+    local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
+    local initializer= Settings.CreateCheckBox(category, setting, tooltip)
+    Settings.SetOnValueChangedCallback(variable, tab.func, initializer)
+    return initializer
 end
+
+
+
+
+function e.AddPanelSubCategory(tab)
+    return Settings.RegisterVerticalLayoutSubcategory(Category, tab.name)--Blizzard_SettingsInbound.lua
+end
+
+
 
 panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent("PLAYER_LOGOUT")

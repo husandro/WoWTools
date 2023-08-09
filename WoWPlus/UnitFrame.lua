@@ -1511,8 +1511,30 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
-            --添加控制面板        
-            local sel=e.CPanel('|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(e.onlyChinese and '单位框体' or addName), not Save.disabled)
+            --添加控制面板
+            e.AddPanelCheck({
+                name= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(e.onlyChinese and '单位框体' or addName),
+                tooltip= addName,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+
+            e.AddPanelCheck({
+                name= e.onlyChinese and '团队框体' or HUD_EDIT_MODE_RAID_FRAMES_LABEL,
+                tooltip= addName..', Emoji',
+                value= not Save.notRaidFrame,
+                func= function()
+                    Save.notRaidFrame= not Save.notRaidFrame and true or nil
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+            
+
+            --[[添加控制面板        
+            local sel=e.AddPanelCheck('|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(e.onlyChinese and '单位框体' or addName), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -1532,7 +1554,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             sel2:SetScript('OnMouseDown', function ()
                 Save.notRaidFrame= not Save.notRaidFrame and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
+            end)]]
 
             if not Save.notRaidFrame then
                 Init_RaidFrame()--团队

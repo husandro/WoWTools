@@ -1266,12 +1266,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             addName2= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)
 
-             --添加控制面板        
-             local check=e.CPanel('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName), not Save.disabled)
+            --添加控制面板
+            e.AddPanelCheck({
+                name= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName),
+                tooltip= addName,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+
+             --[[添加控制面板        
+             local check=e.AddPanelCheck('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName), not Save.disabled)
              check:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
                 print(id, addName, e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-             end)
+             end)]]
 
             if not Save.disabled then
                 panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")

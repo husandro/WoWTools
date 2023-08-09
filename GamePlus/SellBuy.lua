@@ -978,13 +978,36 @@ panel:RegisterEvent('MERCHANT_UPDATE')--购回
 panel:RegisterEvent('LOOT_READY')--自动拾取加强 
 
 
-panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, _, arg5)
+panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            local check=e.CPanel(e.Icon.bank2..(e.onlyChinese and '商人' or addName), not Save.disabled, true)
+            local initializer2= e.AddPanelCheck({
+                name= e.Icon.bank2..(e.onlyChinese and '商人' or addName),
+                tooltip= addName,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                end
+            })
+
+            local initializer= e.AddPanelCheck({
+                name= e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT,
+                tooltip= (not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT..', '..REFORGE_CURRENT or '自动拾取, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault"))
+                    ..'|n'..(not e.onlyChinese and HUD_EDIT_MODE_LOOT_FRAME_LABEL..' Alt, Ctrl, Shift: '..DISABLE or '拾取窗口 Alt，Ctrl，Shift: 禁用'),
+                value= Save.altDisabledAutoLoot,
+                func= function()
+                    Save.altDisabledAutoLoot= not Save.altDisabledAutoLoot and true or nil
+                end
+            })
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+
+
+            --[[添加控制面板
+            local check=e.AddPanelCheck(e.Icon.bank2..(e.onlyChinese and '商人' or addName), not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
@@ -1006,7 +1029,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, _, arg5)
                 e.tips:Show();
             end)
             check2:SetScript('OnLeave', function() e.tips:Hide() end)
-
+]]
             if Save.disabled then
                 e.CheckItemSell=nil
                 panel:UnregisterAllEvents()

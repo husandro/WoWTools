@@ -60,8 +60,27 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
-            --添加控制面板        
-            local sel=e.CPanel('|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or addName), not Save.disabled, true)
+
+            --添加控制面板
+            e.AddPanelCheck({
+                name= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or addName),
+                tooltip= e.onlyChinese and '说|n仅限： 我, 有队伍'
+                    or (SAY..'|n'..format(LFG_LIST_CROSS_FACTION, COMBATLOG_FILTER_STRING_ME)..'|n'..format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
+                value= not Save.disabled,
+                func= function()
+                    if Save.disabled then
+                        Save.disabled=nil
+                        panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+                    else
+                        Save.disabled=true
+                        panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+                    end
+                    print(id, addName, e.GetEnabeleDisable(Save.disabled))
+                end
+            })
+
+            --[[添加控制面板        
+            local sel=e.AddPanelCheck('|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or addName), not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 if Save.disabled then
                     Save.disabled=nil
@@ -81,7 +100,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end)
             sel:SetScript('OnLeave', function()
                 e.tips:Hide()
-            end)
+            end)]]
 
             if Save.disabled then
                 panel:UnregisterAllEvents()

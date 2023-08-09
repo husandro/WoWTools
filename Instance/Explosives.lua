@@ -216,8 +216,19 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
-            --添加控制面板        
-            local check= e.CPanel((e.onlyChinese and '爆炸物' or addName)..'|T2175503:0|t', not Save.disabled, nil, true)
+            --添加控制面板
+            e.AddPanelCheck({
+                name= '|T2175503:0|t'..(e.onlyChinese and '爆炸物' or addName),
+                tooltip= select(2, C_ChallengeMode.GetAffixInfo(13)),
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled = not Save.disabled and true or nil
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                end
+            })
+
+            --[[添加控制面板        
+            local check= e.AddPanelCheck((e.onlyChinese and '爆炸物' or addName)..'|T2175503:0|t', not Save.disabled, nil, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
@@ -232,7 +243,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                     e.tips:Show()
                 end
             end)
-            check:SetScript('OnLeave', function() e.tips:Hide() end)
+            check:SetScript('OnLeave', function() e.tips:Hide() end)]]
 
             if not Save.disabled then
                 C_Timer.After(2, function()

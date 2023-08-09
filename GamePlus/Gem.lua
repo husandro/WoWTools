@@ -125,8 +125,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
+            --添加控制面板
+            e.AddPanelCheck({
+                name= '|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or addName),
+                tooltip= addName,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled = not Save.disabled and true or nil
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                end
+            })
+            --[[
             --添加控制面板        
-            local sel=e.CPanel('|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or addName), not Save.disabled, true)
+            local sel=e.AddPanelCheck('|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or addName), not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
@@ -137,7 +148,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
-        --[[elseif arg1=='Blizzard_ItemSocketingUI' then--10.07 原石宝石，提示
+        elseif arg1=='Blizzard_ItemSocketingUI' then--10.07 原石宝石，提示
 
             ItemSocketingFrame.setTipsFrame= CreateFrame("Frame", nil, ItemSocketingFrame)
             ItemSocketingFrame.setTipsFrame:SetFrameStrata('HIGH')

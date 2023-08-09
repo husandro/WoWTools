@@ -1,5 +1,9 @@
 local id, e = ...
-local Save={scale=0.8}
+local Save={
+    --disabled=true,
+    emoji= e.Player.cn or e.Player.husandro,
+    scale=0.8
+}
 local addName='ChatButton'
 local panel=e.Cbtn(nil, {name='WoWToolsChatButtonFrame', icon='hide', size={10,30}})
 WoWToolsChatButtonFrame.last=panel
@@ -96,22 +100,38 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
+            panel.disabled= Save.disabled
+            panel.ShowEmojiButton= Save.emoji
 
-            --添加控制面板        
-            panel.sel=e.CPanel('|A:transmog-icon-chat:0:0|a'..addName, not Save.disabled, true)
-            panel.sel:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                panel.disabled= Save.disabled
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
+            --添加控制面板
+            local initializer2= e.AddPanelCheck({
+                name= '|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS)),
+                tooltip= addName,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    panel.disabled= Save.disabled
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+                title= 'Chat',
+            })
+
+           local initializer= e.AddPanelCheck({
+                name= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\greet:0|tEmoji',
+                tooltip= addName..', Emoji',
+                value= Save.emoji,
+                func= function()
+                    Save.emoji= not Save.emoji and true or nil
+                    print(id, addName, 'Emoji', e.GetEnabeleDisable(Save.emoji), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 
             if not Save.disabled then
                 Init()
                 SELECTED_DOCK_FRAME.editBox:SetAltArrowKeyMode(false)
-                
             else
                 self:SetShown(false)
-                panel.disabled=true
             end
             panel:UnregisterEvent('ADDON_LOADED')
             panel:RegisterEvent("PLAYER_LOGOUT")
