@@ -97,7 +97,15 @@ end
 
 
 
---Settings.SetKeybindingsCategory(Category)
+
+
+
+
+
+
+
+
+
 
 
 --##############
@@ -128,18 +136,30 @@ function e.AddPanelCheck(tab)
 end
 
 
-
-
 function e.AddPanelSubCategory(tab)
     return Settings.RegisterVerticalLayoutSubcategory(Category, tab.name)--Blizzard_SettingsInbound.lua
 end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent("PLAYER_LOGOUT")
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1==id then
             WoWToolsSave= WoWToolsSave or {}
