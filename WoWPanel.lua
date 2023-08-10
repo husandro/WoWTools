@@ -192,7 +192,7 @@ function e.AddPanelCheckButton(tab)
     local layout= tab.layout or Layout
     local category= tab.category or Category
 
-    local variable = id..buttonText
+    local variable = id..checkName
     local setting= Settings.RegisterAddOnSetting(category, checkName, variable, type(defaultValue), defaultValue)
     local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc, false, tooltip)
     layout:AddInitializer(initializer)
