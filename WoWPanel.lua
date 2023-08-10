@@ -115,34 +115,47 @@ end
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
 Settings.RegisterAddOnCategory(Category)
 
-function e.OpenPanelOpting()
-    Settings.OpenToCategory(Category)
+function e.OpenPanelOpting(frameName)
+    Settings.OpenToCategory(Category, frameName)
+end
+function e.AddPanelHeader(layout, title)
+    layout= layout or Layout
+    layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(title))
 end
 
-
 function e.AddPanelCheck(tab)
-    local category= tab.category or Category
     local name = tab.name
-    local variable = id..name
     local tooltip = tab.tooltip
+    local category= tab.category or Category
     local defaultValue
     local func= tab.func
-    local title= tab.title--需要layout
-    local layout= tab.layout or Layout
 
-    if title then
-        layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(title))
-    end
+    local variable = id..name
     if tab.value then
         defaultValue= true
     else
         defaultValue=false
     end
-    local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
+    local setting= Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
+
     local initializer= Settings.CreateCheckBox(category, setting, tooltip)
     Settings.SetOnValueChangedCallback(variable, func, initializer)
     return initializer
 end
+--[[
+local initializer2= e.AddPanelCheck({
+    name= ,
+    tooltip= addName,
+    category=Category,
+    value= not Save.disabled,
+    func= function()
+    end
+})
+local initializer= e.AddPanelCheck({
+})
+initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+]]
+
 
 function e.AddPanelButton(tab)
     local name= tab.name or ''
@@ -151,21 +164,135 @@ function e.AddPanelButton(tab)
     local tooltip= tab.tooltip
     local layout= tab.layout or Layout
 
-    local initializer = CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip)
-	return layout:AddInitializer(initializer)
+    local initializer= CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip)--Blizzard_SettingControls.lua
+	layout:AddInitializer(initializer)
+    return initializer
 end
---[[Blizzard_SettingControls.lua PingSystem.lua
-    function CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip)
-        local data = {name = name, buttonText = buttonText, buttonClick = buttonClick, tooltip = tooltip};
-        local initializer = Settings.CreateElementInitializer("SettingButtonControlTemplate", data);
-        initializer:AddSearchTags(name);
-        initializer:AddSearchTags(buttonText);
-        return initializer;
+
+--[[
+ e.AddPanelButton({
+    name= nil,
+    text= addName,
+    layout= Layout,
+    tooltip=nil,
+    func= function()
     end
+})
+]]
+function e.AddPanelCheckButton(tab)
+    local checkName = tab.checkName
+    local defaultValue= tab.checkValue and true or false
+    local checkFunc= tab.checkFunc
+
+    local buttonText= tab.buttonText
+    local buttonFunc= tab.buttonFunc
+
+    local tooltip = tab.tooltip
+    local layout= tab.layout or Layout
+    local category= tab.category or Category
+
+    local variable = id..buttonText
+    local setting= Settings.RegisterAddOnSetting(category, checkName, variable, type(defaultValue), defaultValue)
+    local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc, false, tooltip)
+    layout:AddInitializer(initializer)
+    Settings.SetOnValueChangedCallback(variable, checkFunc, initializer)
+    return initializer
+end
+
+--[[
+local initializer2= e.AddPanelCheckButton({
+    checkName= addName,
+    checkValue= not Save.disabled,
+    checkFunc= function()
+    end,
+    buttonText='',
+    buttonFunc= function()
+    end,
+    tooltip= addName,
+    layout= Layout,
+    category= Category
+})
+local initializer= e.AddPanelCheck({
+})
+initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+]]
+
+
+--[[Blizzard_SettingControls.lua PingSystem.lua
+
+function CreateSettingsListSectionHeaderInitializer(name)
+	local data = {name = name};
+	return Settings.CreateElementInitializer("SettingsListSectionHeaderTemplate", data);
+end
+
+function CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip)
+	local data = {name = name, buttonText = buttonText, buttonClick = buttonClick, tooltip = tooltip};
+	local initializer = Settings.CreateElementInitializer("SettingButtonControlTemplate", data);
+	initializer:AddSearchTags(name);
+	initializer:AddSearchTags(buttonText);
+	return initializer;
+end
+function CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonClick, clickRequiresSet, tooltip)
+	local data = Settings.CreateSettingInitializerData(setting, nil, tooltip);
+	data.buttonText = buttonText;
+	data.OnButtonClick = buttonClick;
+	data.clickRequiresSet = clickRequiresSet;
+	return Settings.CreateSettingInitializer("SettingsCheckBoxWithButtonControlTemplate", data);
+end
+function CreateSettingsCheckBoxSliderInitializer(cbSetting, cbLabel, cbTooltip, sliderSetting, sliderOptions, sliderLabel, sliderTooltip)
+	local data =
+	{
+		name = cbLabel,
+		tooltip = cbTooltip,
+		cbSetting = cbSetting,
+		cbLabel = cbLabel,
+		cbTooltip = cbTooltip,
+		sliderSetting = sliderSetting,
+		sliderOptions = sliderOptions,
+		sliderLabel = sliderLabel,
+		sliderTooltip = sliderTooltip,
+	};
+	return Settings.CreateSettingInitializer("SettingsCheckBoxSliderControlTemplate", data);
+end
+function CreateSettingsCheckBoxDropDownInitializer(cbSetting, cbLabel, cbTooltip, dropDownSetting, dropDownOptions, dropDownLabel, dropDownTooltip)
+	local data =
+	{
+		name = cbLabel,
+		tooltip = cbTooltip,
+		cbSetting = cbSetting,
+		cbLabel = cbLabel,
+		cbTooltip = cbTooltip,
+		dropDownSetting = dropDownSetting,
+		dropDownOptions = dropDownOptions,
+		dropDownLabel = dropDownLabel,
+		dropDownTooltip = dropDownTooltip,
+	};
+	return Settings.CreateSettingInitializer("SettingsCheckBoxDropDownControlTemplate", data);
+end
+function CreateSettingsExpandableSectionInitializer(name)
+	local initializer = CreateFromMixins(SettingsExpandableSectionInitializer);
+	initializer:Init("SettingsExpandableSectionTemplate");
+	initializer.data = {name = name};
+	return initializer;
+end
+
+function CreateSettingsAddOnDisabledLabelInitializer()
+	local data = {};
+	return Settings.CreateElementInitializer("SettingsAddOnDisabledLabelTemplate", data);
+end
+function CreateSettingsSelectionCustomSelectedData(data, label)
+	data.selectedDataFunc = function()
+		return {label = label};
+	end;
+end
 ]]
 
 function e.AddPanelSubCategory(tab)
-    return Settings.RegisterVerticalLayoutSubcategory(Category, tab.name)--Blizzard_SettingsInbound.lua
+    if tab.frame then
+        return SettingsInbound.RegisterCanvasLayoutCategory(tab.frame, tab.name)
+    else
+        return Settings.RegisterVerticalLayoutSubcategory(Category, tab.name)--Blizzard_SettingsInbound.lua
+    end
 end
 
 
@@ -174,20 +301,14 @@ end
 --开始
 --####
 local function Init()
-    Layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(e.onlyChinese and '设置' or SETTINGS))
-
-    e.AddPanelButton({
-        name= '|A:StreamCinematic-PlayButton:0:0|a'..(e.onlyChinese and '重新加载UI' or RELOADUI),--UI-Vehicles-Button-Exit-Down
-        text= '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1,
-        func= e.Reload
-    })
+    e.AddPanelHeader(nil, e.onlyChinese and '设置' or SETTINGS)
 
     e.AddPanelButton({
         name= '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
         text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '默认设置' or SETTINGS_DEFAULTS),
         func= function()
             StaticPopupDialogs[id..'RestAllSetup']={
-                text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r|n|n'..(e.onlyChinese and "你想要将所有选项重置为默认状态吗？将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)
+                text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r|n|n'..(e.onlyChinese and "你想要将所有选项重置为默认状态吗？|n将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)
                     ..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|n|n'
                 ,
                 button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
@@ -206,9 +327,11 @@ local function Init()
         name= e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
         text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         func= function()
+            print(e.Icon.wow2)
             StaticPopupDialogs[id..'RestWoWSetup']={
                 text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'
-                    ..'|n|n|cnGREEN_FONT_COLOR:'..(e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'))..'|n|n'
+                    ..'|n|n'..(e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'))
+                    ..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|n|n'
                 ,
                 button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
                 button2= e.onlyChinese and '取消' or CANCEL,
@@ -221,6 +344,12 @@ local function Init()
             StaticPopup_Show(id..'RestWoWSetup')
         end
     })
+
+    local btn= e.Cbtn(SettingsPanel, {type=false, size={140, 25}})
+    btn:SetPoint('RIGHT', SettingsPanel.CloseButton, 'LEFT', -15,0)
+    --btn:SetPoint('BOTTOM',0,10)
+    btn:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
+    btn:SetScript("OnClick", e.Reload)
 end
 
 

@@ -718,9 +718,8 @@ end
 
 local function Init_Options()
     local Category, Layout= e.AddPanelSubCategory({name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..addName})
-
     e.AddPanelCheck({
-        name= e.GetEnabeleDisable(true),
+        name= e.onlyChinese and '启用' or ENABLE,
         tooltip= addName,
         value= not Save.disabled,
         category= Category,
@@ -730,55 +729,48 @@ local function Init_Options()
         end
     })
 
+    e.AddPanelHeader(Layout, e.onlyChinese and '选项' or OPTIONS)
+
     --移动
     local initializer2= e.AddPanelCheck({
         name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(e.onlyChinese and '移动' or NPE_MOVE),
         tooltip= addName,
         value= not Save.disabledMove,
         category= Category,
-        layout= Layout,
-        title= e.onlyChinese and '移动' or NPE_MOVE,
         func= function()
             Save.disabledMove= not Save.disabledMove and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabledMove), e.onlyChinese and '重新加载UI' or RELOADUI)
         end
     })
 
-        local initializer= e.AddPanelCheck({
-            name= '|A:talents-search-notonactionbar:0:0|a'..(e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
-            tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0),
-            value= Save.SavePoint,
-            category= Category,
-            func= function()
-                Save.SavePoint= not Save.SavePoint and true or nil
-            end
-        })
-        initializer:SetParentInitializer(initializer2, function() return not Save.disabledMove end)
-
-            --清除
-            local initializer3= e.AddPanelCheck({
-                name= '     |A:bags-button-autosort-up:0:0|a|cffff00ff'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r',
-                tooltip= (e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
-                value= false,
-                category= Category,
-                func= function()
-                    StaticPopupDialogs[id..addName..'MoveZoomClearPoint']= {
-                        text =id..' '..addName..'|n|n'
-                        ..(e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
-                        button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-                        button2 = e.onlyChinese and '取消' or CANCEL,
-                        whileDead=true,
-                        timeout=60,
-                        hideOnEscape = true,
-                        OnAccept=function()
-                            Save.point={}
-                            print(id, addName, e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
-                        end,
-                    }
-                    StaticPopup_Show(id..addName..'MoveZoomClearPoint')
-                end
-            })
-            initializer3:SetParentInitializer(initializer, function() return true end)
+    local initializer= e.AddPanelCheckButton({
+        checkName= '|A:talents-search-notonactionbar:0:0|a'..(e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
+        tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0),
+        checkValue= Save.SavePoint,
+        checkFunc=function()
+            Save.SavePoint= not Save.SavePoint and true or nil
+        end,
+        buttonText= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+        buttonFunc= function()
+            StaticPopupDialogs[id..addName..'MoveZoomClearPoint']= {
+                text =id..' '..addName..'|n|n'
+                ..(e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
+                button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+                button2 = e.onlyChinese and '取消' or CANCEL,
+                whileDead=true,
+                timeout=60,
+                hideOnEscape = true,
+                OnAccept=function()
+                    Save.point={}
+                    print(id, addName, e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                end,
+            }
+            StaticPopup_Show(id..addName..'MoveZoomClearPoint')
+        end,
+        layout= Layout,
+        category=Category,
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.disabledMove end)
 
         initializer= e.AddPanelCheck({
             name= e.onlyChinese and '可以移到屏幕外' or 'Can be moved off screen',
@@ -791,43 +783,74 @@ local function Init_Options()
         })
         initializer:SetParentInitializer(initializer2, function() return not Save.disabledMove end)
 
-        --缩放
-        initializer2= e.AddPanelCheck({
-            name= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
-            tooltip= addName,
-            value= not Save.disabledZoom,
+    --缩放
+    e.AddPanelCheckButton({
+        checkName= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
+        checkValue= not Save.disabledZoom,
+        checkFunc= function()
+            Save.disabledZoom= not Save.disabledZoom and true or nil
+            print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+    
+        buttonText= (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+        buttonFunc= function()
+            StaticPopupDialogs[id..addName..'MoveZoomClearZoom']= {
+                text =id..' '..addName..'|n|n'
+                ..('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE)),
+                button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+                button2 = e.onlyChinese and '取消' or CANCEL,
+                whileDead=true,
+                timeout=60,
+                hideOnEscape = true,
+                OnAccept=function()
+                    Save.scale={}
+                    print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                end,
+            }
+            StaticPopup_Show(id..addName..'MoveZoomClearZoom')
+        end,
+    
+        tooltip= addName,
+        layout= Layout,
+        category= Category
+    })
+
+    --[[ e.AddPanelCheck({
+        name= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
+        tooltip= addName,
+        value= not Save.disabledZoom,
+        category= Category,
+        layout= Layout,
+        title= (e.onlyChinese and '缩放' or UI_SCALE),
+        func= function()
+            Save.disabledZoom= not Save.disabledZoom and true or nil
+            print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    })
+
+        initializer= e.AddPanelCheck({
+            name= '     |A:bags-button-autosort-up:0:0|a|cffff00ff'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r',
+            tooltip= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
+            value= false,
             category= Category,
-            layout= Layout,
-            title= (e.onlyChinese and '缩放' or UI_SCALE),
             func= function()
-                Save.disabledZoom= not Save.disabledZoom and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                StaticPopupDialogs[id..addName..'MoveZoomClearZoom']= {
+                    text =id..' '..addName..'|n|n'
+                    ..('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE)),
+                    button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+                    button2 = e.onlyChinese and '取消' or CANCEL,
+                    whileDead=true,
+                    timeout=60,
+                    hideOnEscape = true,
+                    OnAccept=function()
+                        Save.scale={}
+                        print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                    end,
+                }
+                StaticPopup_Show(id..addName..'MoveZoomClearZoom')
             end
         })
-
-            initializer= e.AddPanelCheck({
-                name= '     |A:bags-button-autosort-up:0:0|a|cffff00ff'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r',
-                tooltip= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
-                value= false,
-                category= Category,
-                func= function()
-                    StaticPopupDialogs[id..addName..'MoveZoomClearZoom']= {
-                        text =id..' '..addName..'|n|n'
-                        ..('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE)),
-                        button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-                        button2 = e.onlyChinese and '取消' or CANCEL,
-                        whileDead=true,
-                        timeout=60,
-                        hideOnEscape = true,
-                        OnAccept=function()
-                            Save.scale={}
-                            print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
-                        end,
-                    }
-                    StaticPopup_Show(id..addName..'MoveZoomClearZoom')
-                end
-            })
-            initializer:SetParentInitializer(initializer2, function() return true end)
+        initializer:SetParentInitializer(initializer2, function() return true end)]]
 end
 
 --###########
@@ -845,7 +868,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel.name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..('框架' or addName)
             panel.parent= id
             InterfaceOptions_AddCategory(panel)]]
-
+--[[
             e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked= not Save.disabled, clearTips=nil,--重新加载UI, 重置, 按钮
                             disabledfunc=function()
                                             Save.disabled= not Save.disabled and true or nil
@@ -856,9 +879,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                                         end,
                             clearfunc= function() Save=nil e.Reload() end}
                         )
-
+]]
+            Init_Options()--初始, 选项
             if not Save.disabled then
-                Init_Options()--初始, 选项
                 Init_Move()--初始, 移动
             else
                 panel:UnregisterAllEvents()

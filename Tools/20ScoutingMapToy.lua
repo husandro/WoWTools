@@ -1,5 +1,5 @@
 local id, e = ...
---local addName= ADVENTURE_MAP_TITLE..TOY
+--local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADVENTURE_MAP_TITLE, TOY)
 local panel= CreateFrame("Frame")
 
 local ToyTab={

@@ -1303,6 +1303,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             end
 
             --添加控制面板
+            e.AddPanelHeader(nil, 'Tools')
             e.AddPanelCheck({
                 name= '|A:bag-border-empty:0:0|aTools',
                 tooltip= addName,
@@ -1311,7 +1312,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     Save.disabled= not Save.disabled and true or nil
                     print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
-                title= 'Tools',
             })
 
             --[[local check=e.AddPanelCheck('|A:bag-border-empty:0:0|aTools', not Save.disabled, true)

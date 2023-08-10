@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= ITEMS..INFO
+local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO)
 local Save={}
 local panel=CreateFrame("Frame")
 

@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= ADDONS..CHAT_MODERATE
+local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE)
 local panel=e.Cbtn(AddonList, {type=false, size={80,22}})
 
 local Save={

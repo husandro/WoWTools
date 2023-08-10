@@ -521,13 +521,13 @@ panel:RegisterEvent("PLAYER_ENTERING_WORLD")
 panel:RegisterEvent("CHALLENGE_MODE_START")
 panel:RegisterEvent("ADDON_LOADED")
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            e.AddPanelCheck({
+            local initializer2= e.AddPanelCheck({
                 name= '|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -536,15 +536,35 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
+            local initializer= e.AddPanelCheck({
+                name= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
+                tooltip= (e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)
+                    ..'|n|n'..(e.onlyChinese and '场景战役' or SCENARIOS)..' ...'
+                    ..'|nUI WIDGET ...'
+                    ..'|n|n'..(e.onlyChinese and '奖励目标' or SCENARIO_BONUS_OBJECTIVES)..' '..e.GetShowHide(false)
+                    ..'|n'..(e.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS)..' '..e.GetShowHide(false)
+                    ..'|n'..(e.onlyChinese and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..' '..e.GetShowHide(false)
+                    ..'|n'..(e.onlyChinese and '追踪任务' or TRACK_QUEST)..' '..e.GetShowHide(false)
+                    ..'|n'..(e.onlyChinese and '追踪成就' or TRACKER_HEADER_ACHIEVEMENTS)..' '..e.GetShowHide(false)
+                    ..'|n'..(e.onlyChinese and '追踪配方' or PROFESSIONS_TRACK_RECIPE)..' '..e.GetShowHide(false),
+                value= Save.autoHide,
+                func= function()
+                    Save.autoHide= not Save.autoHide and true or nil
+                    print(id, addName, e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
+                        e.onlyChinese and '任务追踪栏' or QUEST_OBJECTIVES, e.GetEnabeleDisable(Save.autoHide)
+                    )
+                end
+            })
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 
             --[[添加控制面板        
             local sel=e.AddPanelCheck('|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-            end)]]
+            end)
 
-            if not Save.disabled then
+         
                 local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
                 sel2.text:SetText(e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
                 sel2:SetPoint('LEFT', sel.Text, 'RIGHT')
@@ -570,7 +590,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Save.autoHide= not Save.autoHide and true or nil
                     print(id, addName, e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE), e.onlyChinese and '任务追踪栏' or QUEST_OBJECTIVES, e.GetEnabeleDisable(Save.autoHide))
                 end)
-
+]]   
+            if not Save.disabled then
                 Init()
                 panel:UnregisterEvent('ADDON_LOADED')
             else

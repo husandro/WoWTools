@@ -46,7 +46,7 @@ WoWPlus\Texture.lua
 ##角色面板
 WoWPlus\PaperDoll.lua
 ##角色，属性
-WoWPlus\Attributes.lua
+##WoWPlus\Attributes.lua
 ##声望面板
 WoWPlus\Reputation.lua
 ##货币面板
@@ -60,7 +60,12 @@ WoWPlus\Collections.lua
 ##地图，增强
 WoWPlus\WorldMap.lua
 ##鼠标，提示
-WoWPlus\Tooltips.lua
+
+
+##WoWPlus\Tooltips.lua
+
+
+
 ##单位框，没完成
 WoWPlus\UnitFrame.lua
 ##好友，面板
@@ -95,8 +100,14 @@ GamePlus\InterruptStolenDispel.lua
 GamePlus\Holiday.lua
 ##镶嵌宝石
 GamePlus\Gem.lua
+
+
+
 ##目标指示
-GamePlus\Target.lua
+##GamePlus\Target.lua
+
+
+
 ##驭龙术，速度
 ##GamePlus\Dragonriding.lua
 ##颜色选择器，增强
@@ -142,7 +153,7 @@ Tools\27MagePortal.lua
 ##这是Chat主要，如果需要其中一个功能，这个不能关
 ChatButton\ChatButton.lua
 ##超链接， 欢迎, 一些其他功能
-ChatButton\HyperLink.lua
+##ChatButton\HyperLink.lua
 ##ROLL
 ChatButton\Roll.lua
 ##标记

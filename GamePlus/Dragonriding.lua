@@ -4,7 +4,7 @@ if e.Player.level< 58 then
     return
 end
 
-local addName= MOUNT_JOURNAL_FILTER_DRAGONRIDING..SPEED
+local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MOUNT_JOURNAL_FILTER_DRAGONRIDING, SPEED)
 local Save= {sacleBool= e.Player.husandro}
 local panel= CreateFrame("Frame", nil, UIWidgetPowerBarContainerFrame)
 panel:SetShown(false)

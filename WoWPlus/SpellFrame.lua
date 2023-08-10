@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= SPELLS..'Frame'
+local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Frame')
 local Save={}
 local panel=CreateFrame("Frame")
 

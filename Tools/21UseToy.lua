@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= SLASH_RANDOM3:gsub('/','').. TOY
+local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TOY)
 local panel= CreateFrame('Frame')
 local button
 local ItemsTab={}--存放有效

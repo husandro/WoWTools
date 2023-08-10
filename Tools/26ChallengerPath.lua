@@ -1,5 +1,5 @@
 local id, e = ...
-local addName=UNITNAME_SUMMON_TITLE14:format(PLAYER_DIFFICULTY5)--挑战的传送门 'ChallengersPath'
+local addName=format(UNITNAME_SUMMON_TITLE14, PLAYER_DIFFICULTY5)--挑战的传送门 'ChallengersPath'
 local panel=CreateFrame("Frame")
 local buttons={}
 local Save={}

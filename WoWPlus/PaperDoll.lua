@@ -1585,6 +1585,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
+            e.AddPanelHeader(nil, 'Wow')
             e.AddPanelCheck({
                 name= (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..(e.onlyChinese and '角色' or addName),
                 tooltip= addName,
@@ -1593,7 +1594,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     Save.disabled= not Save.disabled and true or nil
                     print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
-                title= 'WoW',
             })
             
             --[[添加控制面板

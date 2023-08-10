@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= SLASH_RANDOM3:gsub('/','').. TUTORIAL_TITLE31
+local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TUTORIAL_TITLE31)
 local Save={
     items={
         [142542]=true,--城镇传送之书

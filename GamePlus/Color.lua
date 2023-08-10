@@ -2,7 +2,7 @@ local id, e= ...
 local Save= {
 		color={},--保存，历史记录
 }
-local addName= COLOR_PICKER..' Plus'--"颜色选择器";
+local addName= COLOR_PICKER--"颜色选择器";
 local panel= CreateFrame("Frame")--ColorPickerFrame.xml
 local logNum= 30--记录数量
 
@@ -445,23 +445,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			Save.color= Save.color or {}
 
 			--添加控制面板
-            e.AddPanelCheck({
-                name= '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器增强' or addName),
-                tooltip= addName,
-                value= not Save.disabled,
-                func= function()
-                    Save.disabled= not Save.disabled and true or nil
+			e.AddPanelCheckButton({
+				checkName=  '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器增强' or addName),
+				checkValue= not Save.disabled,
+				checkFunc= function()
+					Save.disabled= not Save.disabled and true or nil
                 	print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-
-			e.AddPanelButton({
-				name=' ',
-				text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '测试' or 'Test'),
-				func= function()
+				end,
+				buttonText='|A:QuestArtifact:0:0|a'..(e.onlyChinese and '测试' or 'Test'),
+				buttonFunc= function()
 					e.ShowColorPicker(e.Player.r, e.Player.g, e.Player.b, 1, function()end)
-				end
+                end,
+				tooltip= addName,
+				layout= nil,
+				category= nil,
 			})
+
 
             if not Save.disabled then
 				local check2= CreateFrame("CheckButton", nil, ColorPickerFrame, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏

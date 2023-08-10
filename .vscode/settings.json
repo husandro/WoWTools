@@ -3231,7 +3231,10 @@
         "CreateSettingsCheckBoxWithButtonInitializer",
         "RESET_TUTORIALS",
         "OPTION_TOOLTIP_SHOW_TUTORIALS",
-        "SHOW_TUTORIALS"
+        "SHOW_TUTORIALS",
+        "SettingsInbound",
+        "TutorialFrame_ClearQueue",
+        "NPETutorial_AttemptToBegin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

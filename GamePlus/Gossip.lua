@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= ENABLE_DIALOG..QUESTS_LABEL
+local addName=format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENABLE_DIALOG, QUESTS_LABEL)
 local Save={
         NPC={},
 
@@ -1161,6 +1161,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
             --添加控制面板
+            e.AddPanelHeader(nil, 'Plus')
             e.AddPanelCheck({
                 name= '|A:CampaignAvailableQuestIcon:0:0|a'..(e.onlyChinese and '对话和任务' or addName),
                 tooltip= addName,
@@ -1169,7 +1170,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Save.disabled = not Save.disabled and true or nil
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end,
-                title= 'Plus'
             })
 
             --[[添加控制面板        

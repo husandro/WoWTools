@@ -1934,6 +1934,8 @@ end
 --添加控制面板
 --###########
 local function options_Init()--初始，选项
+    local Category, Layout= e.AddPanelSubCategory({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName), frame=panel})
+
     panel.check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     panel.check.text:SetText('*) '..(e.onlyChinese and '隐藏材质' or HIDE..addName))
     panel.check:SetChecked(not Save.disabledTexture)
@@ -2090,15 +2092,11 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave[addName] or Save
             Save.classPowerNumSize= Save.classPowerNumSize or 12
-
-            panel.name = '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)
-            panel.parent =id
-            InterfaceOptions_AddCategory(panel)
 
             e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked= not Save.disabled, clearTips=nil,--重新加载UI, 重置, 按钮
                 disabledfunc= function()
