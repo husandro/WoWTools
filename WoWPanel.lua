@@ -116,6 +116,14 @@ end
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
 Settings.RegisterAddOnCategory(Category)
 
+function e.AddPanelSubCategory(tab)
+    if tab.frame then
+        return Settings.RegisterCanvasLayoutSubcategory(Category, tab.frame, tab.name)
+    else
+        return Settings.RegisterVerticalLayoutSubcategory(Category, tab.name)--Blizzard_SettingsInbound.lua
+    end
+end
+
 function e.OpenPanelOpting(frameName)
     Settings.OpenToCategory(Category, frameName)
 end
@@ -246,13 +254,7 @@ e.AddPanelDropDown({
 })
 ]]
 
-function e.AddPanelSubCategory(tab)
-    if tab.frame then
-        return SettingsInbound.RegisterCanvasLayoutCategory(tab.frame, tab.name)
-    else
-        return Settings.RegisterVerticalLayoutSubcategory(Category, tab.name)--Blizzard_SettingsInbound.lua
-    end
-end
+
 
 --[[Blizzard_SettingControls.lua PingSystem.lua
 function CreateSettingsListSectionHeaderInitializer(name)

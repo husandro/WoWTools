@@ -2098,6 +2098,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.classPowerNumSize= Save.classPowerNumSize or 12
 
+            --[[
             e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked= not Save.disabled, clearTips=nil,--重新加载UI, 重置, 按钮
                 disabledfunc= function()
                                 Save.disabled= not Save.disabled and true or nil
@@ -2107,7 +2108,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                             end,
                 clearfunc= function() Save=nil e.Reload() end}
-            )
+            )]]
 
             if Save.disabled then
                 panel:UnregisterAllEvents()

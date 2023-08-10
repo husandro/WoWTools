@@ -736,7 +736,7 @@ end
 
 panel:RegisterEvent('PLAYER_LOGOUT')
 panel:RegisterEvent('ADDON_LOADED')
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -750,9 +750,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.targetColor= Save.targetColor or {r=1,g=1,b=1,a=1}
             Save.targetInCombatColor= Save.targetInCombatColor or {r=1, g=0, b=0, a=1}
 
-            panel.name = e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName)..'|r'
-            panel.parent = id
-            InterfaceOptions_AddCategory(panel)
+            --添加控制面板
+            e.AddPanelSubCategory({name=e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName)..'|r', frame=panel})
 
             e.ReloadPanel({panel=panel, addName= addName, restTips=nil, checked=true, clearTips=nil,--重新加载UI, 重置, 按钮
                 disabledfunc=function()

@@ -791,7 +791,7 @@ local function Init_Options()
             Save.disabledZoom= not Save.disabledZoom and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
-    
+
         buttonText= (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         buttonFunc= function()
             StaticPopupDialogs[id..addName..'MoveZoomClearZoom']= {
@@ -809,77 +809,29 @@ local function Init_Options()
             }
             StaticPopup_Show(id..addName..'MoveZoomClearZoom')
         end,
-    
+
         tooltip= addName,
         layout= Layout,
         category= Category
     })
-
-    --[[ e.AddPanelCheck({
-        name= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
-        tooltip= addName,
-        value= not Save.disabledZoom,
-        category= Category,
-        layout= Layout,
-        title= (e.onlyChinese and '缩放' or UI_SCALE),
-        func= function()
-            Save.disabledZoom= not Save.disabledZoom and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    })
-
-        initializer= e.AddPanelCheck({
-            name= '     |A:bags-button-autosort-up:0:0|a|cffff00ff'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r',
-            tooltip= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
-            value= false,
-            category= Category,
-            func= function()
-                StaticPopupDialogs[id..addName..'MoveZoomClearZoom']= {
-                    text =id..' '..addName..'|n|n'
-                    ..('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE)),
-                    button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-                    button2 = e.onlyChinese and '取消' or CANCEL,
-                    whileDead=true,
-                    timeout=60,
-                    hideOnEscape = true,
-                    OnAccept=function()
-                        Save.scale={}
-                        print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
-                    end,
-                }
-                StaticPopup_Show(id..addName..'MoveZoomClearZoom')
-            end
-        })
-        initializer:SetParentInitializer(initializer2, function() return true end)]]
 end
+local frame = CreateFrame("Frame")
+local background = frame:CreateTexture()
+background:SetAllPoints(frame)
+background:SetColorTexture(1, 0, 1, 0.5)
+
 
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
             Save.scale= Save.scale or {}
 
-            --[[添加控制面板CollectionsJournal
-            panel.name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..('框架' or addName)
-            panel.parent= id
-            InterfaceOptions_AddCategory(panel)]]
---[[
-            e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked= not Save.disabled, clearTips=nil,--重新加载UI, 重置, 按钮
-                            disabledfunc=function()
-                                            Save.disabled= not Save.disabled and true or nil
-                                            if not Save.disabled and not panel.check then
-                                                Init_Options()--初始, 选项
-                                            end
-                                            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                                        end,
-                            clearfunc= function() Save=nil e.Reload() end}
-                        )
-]]
             Init_Options()--初始, 选项
             if not Save.disabled then
                 Init_Move()--初始, 移动

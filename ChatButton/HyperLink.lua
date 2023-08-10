@@ -580,10 +580,10 @@ end
 --设置控制面板
 --###########
 local function setPanel()
-    local frame = CreateFrame("FRAME");
-    frame.name = e.onlyChinese and '超链接图标' or addName;
-    frame.parent =id;
-    InterfaceOptions_AddCategory(frame)
+    local frame = CreateFrame("FRAME")
+
+    --添加控制面板
+    e.AddPanelSubCategory({name=e.onlyChinese and '超链接图标' or addName, frame=frame})
 
     local str=e.Cstr(frame)--内容加颜色
     str:SetPoint('TOPLEFT')

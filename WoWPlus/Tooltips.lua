@@ -1704,10 +1704,8 @@ local function set_Cursor_Tips(self)
 end
 
 local function Init_Panel()
-    panel.name = e.Icon.mid..addName;--添加新控制面板
-    panel.parent= id
-    InterfaceOptions_AddCategory(panel)
-
+    --添加新控制面板
+    e.AddPanelSubCategory({name=e.Icon.mid..addName, frame=panel})
 
     e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=not Save.disabled, clearTips=nil,--重新加载UI, 重置, 按钮
         disabledfunc=function()
