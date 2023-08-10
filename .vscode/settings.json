@@ -3224,7 +3224,14 @@
         "MinimalSliderWithSteppersMixin",
         "CHAT",
         "AUCTION_SUBCATEGORY_PROFESSION_TOOLS",
-        "CreateSettingsListSectionHeaderInitializer"
+        "CreateSettingsListSectionHeaderInitializer",
+        "CreateSettingsButtonInitializer",
+        "SETTINGS_DEFAULTS",
+        "CONFIRM_RESET_SETTINGS",
+        "CreateSettingsCheckBoxWithButtonInitializer",
+        "RESET_TUTORIALS",
+        "OPTION_TOOLTIP_SHOW_TUTORIALS",
+        "SHOW_TUTORIALS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

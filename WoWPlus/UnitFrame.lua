@@ -1524,7 +1524,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             e.AddPanelCheck({
                 name= e.onlyChinese and '团队框体' or HUD_EDIT_MODE_RAID_FRAMES_LABEL,
-                tooltip= addName..', Emoji',
+                tooltip= addName,
                 value= not Save.notRaidFrame,
                 func= function()
                     Save.notRaidFrame= not Save.notRaidFrame and true or nil

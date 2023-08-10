@@ -1032,11 +1032,13 @@ local function click_Func(self, d)
             if expButton and expButton.ToggleLandingPage and expButton.title then
                 expButton.ToggleLandingPage(expButton)--Minimap.lua
             else
-                securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
+                e.OpenPanelOpting()
+                --Settings.OpenToCategory(id)
+                --securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
             end
         end
     elseif not key then
-        securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
+        e.OpenPanelOpting()
     end
 end
 local function enter_Func(self)

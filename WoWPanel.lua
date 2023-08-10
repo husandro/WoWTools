@@ -112,18 +112,27 @@ end
 --创建, 添加控制面板
 --##############
 
-local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t'..id)
+local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
 Settings.RegisterAddOnCategory(Category)
 
+function e.OpenPanelOpting()
+    Settings.OpenToCategory(Category)
+end
+
+
 function e.AddPanelCheck(tab)
-    if tab.title then
-        (tab.layout or Layout):AddInitializer(CreateSettingsListSectionHeaderInitializer(tab.title))
-    end
     local category= tab.category or Category
-    local variable = id..tab.name
     local name = tab.name
+    local variable = id..name
     local tooltip = tab.tooltip
     local defaultValue
+    local func= tab.func
+    local title= tab.title--需要layout
+    local layout= tab.layout or Layout
+
+    if title then
+        layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(title))
+    end
     if tab.value then
         defaultValue= true
     else
@@ -131,10 +140,29 @@ function e.AddPanelCheck(tab)
     end
     local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
     local initializer= Settings.CreateCheckBox(category, setting, tooltip)
-    Settings.SetOnValueChangedCallback(variable, tab.func, initializer)
+    Settings.SetOnValueChangedCallback(variable, func, initializer)
     return initializer
 end
 
+function e.AddPanelButton(tab)
+    local name= tab.name or ''
+    local buttonText= tab.text
+    local buttonClick= tab.func
+    local tooltip= tab.tooltip
+    local layout= tab.layout or Layout
+
+    local initializer = CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip)
+	return layout:AddInitializer(initializer)
+end
+--[[Blizzard_SettingControls.lua PingSystem.lua
+    function CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip)
+        local data = {name = name, buttonText = buttonText, buttonClick = buttonClick, tooltip = tooltip};
+        local initializer = Settings.CreateElementInitializer("SettingButtonControlTemplate", data);
+        initializer:AddSearchTags(name);
+        initializer:AddSearchTags(buttonText);
+        return initializer;
+    end
+]]
 
 function e.AddPanelSubCategory(tab)
     return Settings.RegisterVerticalLayoutSubcategory(Category, tab.name)--Blizzard_SettingsInbound.lua
@@ -142,8 +170,58 @@ end
 
 
 
+--####
+--开始
+--####
+local function Init()
+    Layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(e.onlyChinese and '设置' or SETTINGS))
 
+    e.AddPanelButton({
+        name= '|A:StreamCinematic-PlayButton:0:0|a'..(e.onlyChinese and '重新加载UI' or RELOADUI),--UI-Vehicles-Button-Exit-Down
+        text= '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1,
+        func= e.Reload
+    })
 
+    e.AddPanelButton({
+        name= '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
+        text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '默认设置' or SETTINGS_DEFAULTS),
+        func= function()
+            StaticPopupDialogs[id..'RestAllSetup']={
+                text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r|n|n'..(e.onlyChinese and "你想要将所有选项重置为默认状态吗？将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)
+                    ..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|n|n'
+                ,
+                button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
+                button2= e.onlyChinese and '取消' or CANCEL,
+                whileDead=true,hideOnEscape = 1,
+                OnAccept=function ()
+                    e.ClearAllSave=true
+                    e.Reload()
+                end,
+            }
+            StaticPopup_Show(id..'RestAllSetup')
+        end
+    })
+
+    e.AddPanelButton({
+        name= e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
+        text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+        func= function()
+            StaticPopupDialogs[id..'RestWoWSetup']={
+                text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'
+                    ..'|n|n|cnGREEN_FONT_COLOR:'..(e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'))..'|n|n'
+                ,
+                button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+                button2= e.onlyChinese and '取消' or CANCEL,
+                whileDead=true,hideOnEscape = 1,
+                OnAccept=function ()
+                    e.ClearAllSave=true
+                    e.Reload()
+                end,
+            }
+            StaticPopup_Show(id..'RestWoWSetup')
+        end
+    })
+end
 
 
 
@@ -171,16 +249,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
             e.onlyChinese= Save.onlyChinese
 
-            e.ReloadPanel({--重新加载UI, 重置, 按钮
-                panel=panel, addName= addName, restTips=true, checked=not Save.disabled,
-                clearTips= not e.onlyChinese and '1) '..CLEAR_ALL..'\n2) Clear WoW data' or '1) 清除全部\n2) 清除WoW数据',
-                clearWoWData=true,
-                disabledfunc=nil,
-                clearfunc= function()
-                    e.ClearAllSave=true
-                    e.Reload()
-                end
-            })
+            Init()
 
             if e.onlyChinese or LOCALE_zhCN or LOCALE_zhTW then
                 e.Player.LayerText= '位面'

@@ -455,27 +455,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-
-            --[[添加控制面板        
-            panel.check=e.AddPanelCheck('|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器增强' or addName), not Save.disabled, true)
-            panel.check:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-
-			panel.check.text:EnableMouse(true)
-			panel.check.text:SetScript('OnLeave', function() e.tips:Hide() end)
-			panel.check.text:SetScript('OnEnter', function(self2)
-				e.tips:SetOwner(self2, "ANCHOR_LEFT")
-				e.tips:ClearLines()
-				e.tips:AddDoubleLine(e.onlyChinese and '颜色选择器' or COLOR_PICKER, (e.onlyChinese and '打开' or UNWRAP)..e.Icon.left)
-				e.tips:Show()
-			end)
-			panel.check.text:SetScript('OnMouseDown', function()
-                e.ShowColorPicker(e.Player.r, e.Player.g, e.Player.b, 1, function()
-					set_Text(nil, 3)
-				end)
-			end)]]
+			e.AddPanelButton({
+				name=' ',
+				text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '测试' or 'Test'),
+				func= function()
+					e.ShowColorPicker(e.Player.r, e.Player.g, e.Player.b, 1, function()end)
+				end
+			})
 
             if not Save.disabled then
 				local check2= CreateFrame("CheckButton", nil, ColorPickerFrame, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
