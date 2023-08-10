@@ -1492,7 +1492,7 @@ e.HEX_to_RGB=function(hexColor, self)--HEX转RGB -- ColorUtil.lua
 	end
 end
 
-e.Get_ColorFrame_RGBA= function()--取得, ColorFrame, 颜色
+function e.Get_ColorFrame_RGBA()--取得, ColorFrame, 颜色
 	local a= OpacitySliderFrame:IsShown() and OpacitySliderFrame:GetValue() or 0
 	local r, g, b = ColorPickerFrame:GetColorRGB()
 	return r, g, b, 1-a

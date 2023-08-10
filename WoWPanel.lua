@@ -2,8 +2,9 @@ local id, e = ...
 local addName= 'panel Settings'
 local Save={
     onlyChinese= e.Player.husandro or LOCALE_zhCN,
-    useClassColor= e.Player.husandro,--使用,职业, 颜色
-    useCustomColor= nil,--使用, 自定义, 颜色
+    --useClassColor= e.Player.husandro,--使用,职业, 颜色
+    --useCustomColor= nil,--使用, 自定义, 颜色
+    useColor=1,
     useCustomColorTab= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--自定义, 颜色, 表
 }
 local panel = CreateFrame("Frame", 'WoWTools')--Panel
@@ -212,19 +213,52 @@ local initializer2= e.AddPanelCheckButton({
     layout= Layout,
     category= Category
 })
-local initializer= e.AddPanelCheck({
-})
-initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 ]]
 
+function e.AddPanelDropDown(tab)
+    local SetValue= tab.SetValueFunc
+    local GetOptions= tab.GetOptionsFunc
+    local defaultValue= tab.value
+    local name= tab.name
+    local tootip= tab.tooltip
+    local category= tab.category or Category
+
+    local variable= id..name
+
+    local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
+    local initializer= Settings.CreateDropDown(category, setting, GetOptions, tootip)
+    Settings.SetOnValueChangedCallback(variable, SetValue)
+    return initializer
+end
+--[[
+e.AddPanelDropDown({
+    SetValueFunc= function(_, _, value)
+    end,
+    GetOptionsFunc= function()
+        local container = Settings.CreateControlTextContainer()
+        container:Add(1, e.onlyChinese and '职业' or CLASS)
+        return container:GetData();
+    end,
+    value=,
+    name=,
+    tootip= addName,
+    category=Category
+})
+]]
+
+function e.AddPanelSubCategory(tab)
+    if tab.frame then
+        return SettingsInbound.RegisterCanvasLayoutCategory(tab.frame, tab.name)
+    else
+        return Settings.RegisterVerticalLayoutSubcategory(Category, tab.name)--Blizzard_SettingsInbound.lua
+    end
+end
 
 --[[Blizzard_SettingControls.lua PingSystem.lua
-
 function CreateSettingsListSectionHeaderInitializer(name)
 	local data = {name = name};
 	return Settings.CreateElementInitializer("SettingsListSectionHeaderTemplate", data);
 end
-
 function CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip)
 	local data = {name = name, buttonText = buttonText, buttonClick = buttonClick, tooltip = tooltip};
 	local initializer = Settings.CreateElementInitializer("SettingButtonControlTemplate", data);
@@ -287,13 +321,7 @@ function CreateSettingsSelectionCustomSelectedData(data, label)
 end
 ]]
 
-function e.AddPanelSubCategory(tab)
-    if tab.frame then
-        return SettingsInbound.RegisterCanvasLayoutCategory(tab.frame, tab.name)
-    else
-        return Settings.RegisterVerticalLayoutSubcategory(Category, tab.name)--Blizzard_SettingsInbound.lua
-    end
-end
+
 
 
 
@@ -302,6 +330,111 @@ end
 --####
 local function Init()
     e.AddPanelHeader(nil, e.onlyChinese and '设置' or SETTINGS)
+
+    local function set_Color()
+        if Save.useColor==1 then
+            e.Player.useColor= {r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, hex= e.Player.col}
+        elseif Save.useColor==2 then
+            e.Player.useColor= Save.useCustomColorTab
+        else
+            e.Player.useColor=nil
+        end
+    end
+    set_Color()
+
+    e.AddPanelDropDown({
+        SetValueFunc= function(_, _, value)
+            if value==2 then
+                local valueR, valueG, valueB, valueA= Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a
+                local setA, setR, setG, setB
+                local function func()
+                    local hex=e.RGB_to_HEX(setR, setG, setB, setA)--RGB转HEX
+                    Save.useCustomColorTab={r=setR, g=setG, b=setB, a=setA, hex= '|c'..hex }
+                    set_Color()
+                end
+                e.ShowColorPicker(valueR, valueG, valueB, valueA, function()
+                        setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+                        func()
+                    end, function()
+                        setR, setG, setB, setA= valueR, valueG, valueB, valueA
+                        func()
+                    end
+                )
+            else
+                set_Color()
+            end
+            Save.useColor= value
+            print(id, e.Player.useColor and e.Player.useColor.hex or '', (e.onlyChinese and '颜色' or COLOR)..'|r',   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+        GetOptionsFunc= function()
+            local container = Settings.CreateControlTextContainer()
+			container:Add(1, e.onlyChinese and '职业' or CLASS)
+			container:Add(2, e.onlyChinese and '自定义' or CUSTOM)
+			container:Add(3, e.onlyChinese and '无' or NONE)
+			return container:GetData();
+        end,
+        value= Save.useColor,
+        name= (e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR),
+        tootip= addName,
+        category=Category
+    })
+
+    e.AddPanelCheck({
+        name= 'Chinese',
+        tooltip=e.onlyChinese and '语言: 简体中文'
+                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
+        category=Category,
+        value= not Save.disabled,
+        func= function()
+            e.onlyChinese= not e.onlyChinese and true or nil
+            Save.onlyChinese = e.onlyChinese
+            print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    })
+
+    if e.Player.region==1 or e.Player.region==3 then--US EU realm提示
+        local function get_tooltip()
+            local tabs= e.Player.region==3 and
+                {
+                    ["deDE"] = {col="|cFF00FF00DE|r", text='DE', realm="Germany"},
+                    ["frFR"] = {col="|cFF00FFFFFR|r", text='FR', realm="France"},
+                    ["enGB"] = {col="|cFFFF00FFGB|r", text='GB', realm="Great Britain"},
+                    ["itIT"] = {col="|cFFFFFF00IT|r", text='IT', realm="Italy"},
+                    ["esES"] = {col="|cFFFFBF00ES|r", text='ES', realm="Spain"},
+                    ["ruRU"] = {col="|cFFCCCCFFRU|r" ,text='RU', realm="Russia"},
+                    ["ptBR"] = {col="|cFF8fce00PT|r", text='PT', realm="Portuguese"},
+                }
+            or
+                {
+                    ["oce"] = {col="|cFF00FF00OCE|r", text='CE', realm="Oceanic"},
+                    ["usp"] = {col="|cFF00FFFFUSP|r", text='USP', realm="US Pacific"},
+                    ["usm"] = {col="|cFFFF00FFUSM|r", text='USM', realm="US Mountain"},
+                    ["usc"] = {col="|cFFFFFF00USC|r", text='USC', realm="US Central"},
+                    ["use"] = {col="|cFFFFBF00USE|r", text='USE', realm="US East"},
+                    ["mex"] = {col="|cFFCCCCFFMEX|r", text='MEX', realm="Mexico"},
+                    ["bzl"] = {col="|cFF8fce00BZL|r", text='BZL', realm="Brazil"},
+                }
+            local text
+            for text2, tab in pairs(tabs) do
+                text= (text and text..'|n' or '')..tab.col..'  '..tab.realm.. '  ('..tab.text..')  '.. text2
+            end
+            return text
+        end
+        e.AddPanelCheck({
+            name= e.onlyChinese and '服务器' or 'Realm',
+            tooltip=get_tooltip(),
+            category=Category,
+            value= not Save.disabledRealm,
+            func= function()
+                Save.disabledRealm= not Save.disabledRealm and true or nil
+                print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        })
+        if Save.disabledRealm then
+            e.Get_Region(nil, nil, nil, true)
+            e.Get_Region=function() end
+        end
+    end
 
     e.AddPanelButton({
         name= '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
@@ -345,9 +478,9 @@ local function Init()
         end
     })
 
+
     local btn= e.Cbtn(SettingsPanel, {type=false, size={140, 25}})
     btn:SetPoint('RIGHT', SettingsPanel.CloseButton, 'LEFT', -15,0)
-    --btn:SetPoint('BOTTOM',0,10)
     btn:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
     btn:SetScript("OnClick", e.Reload)
 end
@@ -374,6 +507,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --BunniesDB= BunniesDB or {}
 
             Save= WoWToolsSave[addName] or Save
+            Save.useColor= Save.useColor or 1
             Save.useCustomColorTab= Save.useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
 
             e.onlyChinese= Save.onlyChinese
@@ -396,157 +530,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 e.Player.LayerText= 'Camada'
             elseif LOCALE_itIT then
                 e.Player.LayerText= 'Strato'
-            end
-
-            local useClassColor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用,职业,颜色
-            local useCustomColor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用,自定义,颜色
-
-            local function set_Use_Color()
-                if Save.useClassColor then
-                    useClassColor:SetChecked(true)
-                    useCustomColor:SetChecked(false)
-                    Save.useCustomColor=nil
-                    local r,g,b= e.Player.r, e.Player.g, e.Player.b
-                    local hex= e.RGB_to_HEX(r,g,b,1)
-                    e.Player.useColor= {r=r, g=g, b=b, a=1, hex=hex}
-
-                elseif Save.useCustomColor then
-                    useClassColor:SetChecked(false)
-                    useCustomColor:SetChecked(true)
-                    Save.useClassColor=nil
-                    e.Player.useColor= Save.useCustomColorTab
-                else
-                    e.Player.useColor=nil
-                end
-            end
-            set_Use_Color()
-
-            useClassColor.text:SetText(e.Player.col..(e.onlyChinese and '职业颜色' or COLORS))
-            useClassColor:SetPoint('BOTTOMLEFT')
-            useClassColor:SetScript('OnClick', function()
-                Save.useClassColor= not Save.useClassColor and true or nil
-                if Save.useCustomColor then
-                    Save.useCustomColor=nil
-                end
-                set_Use_Color()
-                print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-
-            useCustomColor.text:SetText('|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '自定义 ' or CUSTOM))
-            useCustomColor:SetPoint('LEFT', useClassColor.text, 'RIGHT',2,0)
-            useCustomColor:SetScript('OnClick', function()
-                Save.useCustomColor= not Save.useCustomColor and true or nil
-                if Save.useClassColor then
-                    Save.useClassColor=nil
-                end
-                set_Use_Color()
-                print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-            useCustomColor.text:SetTextColor(Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a)
-            useCustomColor.text:EnableMouse(true)
-            useCustomColor.text:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, (e.onlyChinese and '颜色' or COLOR)..e.Icon.left)
-                local hex=self2.hex:gsub('|c','')
-                e.tips:AddDoubleLine(format('r%.2f g%.2f b%.2f a%.2f', self2.r, self2.g, self2.b, self2.a), hex)
-                e.tips:Show()
-                self2:SetAlpha(0.3)
-            end)
-            useCustomColor.text:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
-
-            useCustomColor.text.r, useCustomColor.text.g, useCustomColor.text.b, useCustomColor.text.a, useCustomColor.text.hex= Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a, Save.useCustomColorTab.hex
-            useCustomColor.text:SetScript('OnMouseDown', function(self2)
-                local valueR, valueG, valueB, valueA, class, custom= self2.r, self2.g, self2.b, self2.a, Save.useClassColor, Save.useCustomColor
-                local setA, setR, setG, setB, class2, custom2
-                local function func()
-                    e.RGB_to_HEX(setR, setG, setB, setA, self2)--RGB转HEX
-                    Save.useCustomColorTab= {r=setR, g=setG, b=setB, a=setA, hex=self2.hex}
-                    Save.useClassColor, Save.useCustomColor= class2, custom2
-                    set_Use_Color()
-                end
-                e.ShowColorPicker(self2.r, self2.g, self2.b,self2.a, function()
-                        setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
-                        class2, custom2= nil, true
-                        func()
-                    end, function()
-                        setR, setG, setB, setA= valueR, valueG, valueB, valueA
-                        class2, custom2= class, custom
-                        func()
-                    end
-                )
-            end)
-
-            local check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅中文
-            check:SetChecked(Save.onlyChinese)
-            check.text:SetText('Chinese')
-            check:SetPoint('LEFT', useCustomColor.text, 'RIGHT', 10,0)
-            check:SetScript('OnMouseUp',function()
-                e.onlyChinese= not e.onlyChinese and true or nil
-                Save.onlyChinese = e.onlyChinese
-                print(id, addName, e.GetEnabeleDisable(e.onlyChinese), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-            check:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(LANGUAGE..'('..SHOW..')', LFG_LIST_LANGUAGE_ZHCN)
-                e.tips:AddDoubleLine('显示语言', '简体中文')
-                e.tips:Show()
-            end)
-            check:SetScript('OnLeave', function() e.tips:Hide() end)
-
-            local textTips= e.Cstr(panel, {justifyH='CENTER'})--nil, nil, nil, nil, nil, 'CENTER')
-            textTips:SetPoint('TOP',-70,10)
-            textTips:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE)..'|r/|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE))
-
-            if e.Player.region==1 or e.Player.region==3 then--US EU realm提示
-                local realmCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-                realmCheck:SetPoint('LEFT', check.text, 'RIGHT',8,0)
-                realmCheck:SetChecked(not Save.disabledRealm)
-                realmCheck.Text:SetText(e.onlyChinese and '服务器' or 'Realm')
-                realmCheck:SetScript('OnClick', function()
-                    Save.disabledRealm= not Save.disabledRealm and true or nil
-                    if Save.disabledRealm then
-                        e.Get_Region(nil, nil, nil, true)
-                        e.Get_Region=function() end
-                    else
-                        print(id, addName, e.GetEnabeleDisable(true), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                    end
-                end)
-                realmCheck:SetScript('OnLeave', function() e.tips:Hide() end)
-                realmCheck:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    local tabs= e.Player.region==3 and
-                                {
-                                    ["deDE"] = {col="|cFF00FF00DE|r", text='DE', realm="Germany"},
-                                    ["frFR"] = {col="|cFF00FFFFFR|r", text='FR', realm="France"},
-                                    ["enGB"] = {col="|cFFFF00FFGB|r", text='GB', realm="Great Britain"},
-                                    ["itIT"] = {col="|cFFFFFF00IT|r", text='IT', realm="Italy"},
-                                    ["esES"] = {col="|cFFFFBF00ES|r", text='ES', realm="Spain"},
-                                    ["ruRU"] = {col="|cFFCCCCFFRU|r" ,text='RU', realm="Russia"},
-                                    ["ptBR"] = {col="|cFF8fce00PT|r", text='PT', realm="Portuguese"},
-                                }
-                            or e.Player.region==1 and
-                                {
-                                    ["oce"] = {col="|cFF00FF00OCE|r", text='CE', realm="Oceanic"},
-                                    ["usp"] = {col="|cFF00FFFFUSP|r", text='USP', realm="US Pacific"},
-                                    ["usm"] = {col="|cFFFF00FFUSM|r", text='USM', realm="US Mountain"},
-                                    ["usc"] = {col="|cFFFFFF00USC|r", text='USC', realm="US Central"},
-                                    ["use"] = {col="|cFFFFBF00USE|r", text='USE', realm="US East"},
-                                    ["mex"] = {col="|cFFCCCCFFMEX|r", text='MEX', realm="Mexico"},
-                                    ["bzl"] = {col="|cFF8fce00BZL|r", text='BZL', realm="Brazil"},
-                                }
-                            or {}
-                    for text, tab in pairs(tabs) do
-                        e.tips:AddDoubleLine(tab.realm.. ' ('..tab.text..') '.. text, tab.col)
-                    end
-                    e.tips:Show()
-                end)
-                if Save.disabledRealm then
-                    e.Get_Region(nil, nil, nil, true)
-                    e.Get_Region=function() end
-                end
             end
 
             panel:UnregisterEvent('ADDON_LOADED')
