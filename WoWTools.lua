@@ -360,8 +360,8 @@ e.Icon={
 
     map='poi-islands-table',
     map2='|A:poi-islands-table:0:0|a',
-    --wow2='|A:Icon-WoW:0:0|a',--136235
-    wow2= BNet_GetClientEmbeddedTexture(-18, 32, 32),--BnetShared.lua UI-ChatIcon- '|A:128-Store-Main:0:0|a',
+    wow2='|A:Icon-WoW:0:0|a',--136235
+    --wow2= BNet_GetClientEmbeddedTexture(-18, 32, 32),--BnetShared.lua UI-ChatIcon- '|A:128-Store-Main:0:0|a',
     net2= BNet_GetClientEmbeddedTexture(-2, 32, 32),
     horde= 'charcreatetest-logo-horde',
     alliance='charcreatetest-logo-alliance',
@@ -400,12 +400,14 @@ e.Icon={
     info2='|A:questlegendary:0:0|a',--黄色!
     star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
-C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, 2, function(success, texture)--FriendsFrame.lua BnetShared.lua
+
+C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua
     if success and texture then
         e.Icon.wow2= '|T'..texture..':0|t'
     end
+    print(success,texture)
 end)
-C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, 2, function(success, texture)
+C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Medium, function(success, texture)
     if success and texture then
         e.Icon.net2= '|T'..texture..':0|t'
     end

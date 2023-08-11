@@ -435,6 +435,8 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
                 end
 
                 get_WoW_GUID_Info()--战网，好友GUID
+
+
             end)
             panel:UnregisterEvent('ADDON_LOADED')
         end

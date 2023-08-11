@@ -462,7 +462,6 @@ local function Init()
         name= e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
         text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         func= function()
-            print(e.Icon.wow2)
             StaticPopupDialogs[id..'RestWoWSetup']={
                 text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'
                     ..'|n|n'..(e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'))
