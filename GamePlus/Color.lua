@@ -63,16 +63,22 @@ local function Init()
 		texture.r, texture.g, texture.b, texture.a= r, g, b, a
 		texture:SetScript('OnMouseDown', function(self2)
 			set_Edit_Text(self2.r, self2.g, self2.b, self2.a, self2.textCode)
+			self2:SetAlpha(0.1)
 		end)
+		texture:SetScript('OnMouseUp', function(self2) self2:SetAlpha(0.7) end)
 		texture:SetScript('OnEnter', function(self2)
+			local col= '|c'..e.RGB_to_HEX(self2.r, self2.g, self2.b, self2.a)
+			e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
+			e.tips:ClearLines()
+			e.tips:AddDoubleLine(col..id, col..addName)
 			if self2.tooltip then
-				e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
-				e.tips:ClearLines()
+				e.tips:AddLine(' ')
 				e.tips:AddLine(self2.tooltip)
-				e.tips:Show()
 			end
+			e.tips:Show()
+			self2:SetAlpha(0.7)
 		end)
-		texture:SetScript('OnLeave', function() e.tips:Hide() end)
+		texture:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 		if atlas then
 			texture:SetAtlas(atlas)
 		else
@@ -449,13 +455,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				checkName=  '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器' or addName),
 				checkValue= not Save.disabled,
 				checkFunc= function()
-					print(id,addName,'check')
 					Save.disabled= not Save.disabled and true or nil
                 	print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 				end,
 				buttonText='|A:QuestArtifact:0:0|a'..(e.onlyChinese and '测试' or 'Test'),
 				buttonFunc= function()
-					print(id,addName,'button')
 					e.ShowColorPicker(e.Player.r, e.Player.g, e.Player.b, 1, function()end)
                 end,
 				tooltip= addName,

@@ -1933,10 +1933,22 @@ end
 --添加控制面板
 --###########
 local function options_Init()--初始，选项
-    local Category, Layout= e.AddPanelSubCategory({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName), frame=panel})
+    local Category, Layout= e.AddPanelSubCategory({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
 
     e.AddPanelCheck({
-        name= e.onlyChinese and '隐藏材质' or HIDE..addName,
+        name= e.onlyChinese and '启用' or ENABLE,
+        tooltip= addName,
+        category= Category,
+        value= not Save.disabled,
+        func= function()
+            Save.disabled= not Save.disabled and true or nil
+            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)    
+        end
+    })
+    e.AddPanelHeader(Layout, e.onlyChinese and '选项' or OPTIONS)
+
+    e.AddPanelCheck({
+        name= e.onlyChinese and '隐藏材质' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, addName),
         tooltip= addName,
         category= Category,
         value= not Save.disabledTexture,
@@ -1946,16 +1958,22 @@ local function options_Init()--初始，选项
         end
     })
 
-    local initializer2= e.AddPanelCheck({
-        name= e.onlyChinese and '颜色' or COLOR,
-        tooltip= addName,
-        category= Category,
-        value= not Save.disabledColor,
-        func= function()
+
+    local initializer2= e.AddPanelCheckButton({
+        checkName= e.onlyChinese and '颜色' or COLOR,
+        checkValue= not Save.disabledColor,
+        checkFunc= function()
             Save.disabledColor= not Save.disabledColor and true or false
             print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
+        end,
+        buttonText= e.onlyChinese and '设置' or SETTINGS,
+        buttonFunc= function()
+        end,
+        tooltip= addName,
+        layout= Layout,
+        category= Category
     })
+
 
     local initializer= e.AddPanelCheck({
         name= e.onlyChinese and '主菜单' or MAINMENU_BUTTON,
@@ -1969,8 +1987,30 @@ local function options_Init()--初始，选项
     })
     initializer:SetParentInitializer(initializer2, function() return not Save.disabledColor end)
 
-
-
+    print(Save.alpha)
+    e.AddPanelCheckSider({
+        checkName= e.onlyChinese and '透明度' or 'Alpha',
+        checkValue= not Save.disabledAlpha,
+        checkTooltip= addName,
+        checkFunc= function()
+            Save.disabledAlpha= not Save.disabledAlpha and true or false
+            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+        sliderValue= Save.alpha or 0.5,
+        sliderMinValue= 0,
+        sliderMaxValue= 1,
+        sliderStep= 0.1,
+        siderName= nil,
+        siderTooltip= nil,
+        siderFunc= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, 0, 1, 0.1)
+            Save.alpha= value3
+            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+        layout= Layout,
+        category= Category,
+    })
+--[[
 
 
     
@@ -2085,6 +2125,8 @@ local function options_Init()--初始，选项
         print(id, addName, value, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end})
     sliderClassPowerNumSize:SetPoint("LEFT", classNumCheck.Text, 'RIGHT', 2,0)
+
+    ]]
 end
 
 
@@ -2111,17 +2153,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.classPowerNumSize= Save.classPowerNumSize or 12
 
-            --[[
-            e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked= not Save.disabled, clearTips=nil,--重新加载UI, 重置, 按钮
-                disabledfunc= function()
-                                Save.disabled= not Save.disabled and true or nil
-                                if not Save.disabled and not panel.check then
-                                    options_Init()--初始，选项
-                                end
-                                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                            end,
-                clearfunc= function() Save=nil e.Reload() end}
-            )]]
+            options_Init()--初始，选项
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
@@ -2135,8 +2167,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 if not Save.disabledChatBubble then
                     Init_chatBubbles()
                 end
-                options_Init()--初始，选项
-
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 

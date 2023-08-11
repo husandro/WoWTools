@@ -112,9 +112,15 @@ end
 --##############
 --创建, 添加控制面板
 --##############
-
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
 Settings.RegisterAddOnCategory(Category)
+
+
+--打开，选项
+function e.OpenPanelOpting(frameName)
+    Settings.OpenToCategory(Category, frameName)
+end
+
 
 --添加，子目录
 function e.AddPanelSubCategory(tab)
@@ -125,16 +131,13 @@ function e.AddPanelSubCategory(tab)
     end
 end
 
---打开，选项
-function e.OpenPanelOpting(frameName)
-    Settings.OpenToCategory(Category, frameName)
-end
 
 --添加，标题
 function e.AddPanelHeader(layout, title)
     layout= layout or Layout
     layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(title))
 end
+
 
 --添加，Check
 function e.AddPanelCheck(tab)
@@ -144,7 +147,7 @@ function e.AddPanelCheck(tab)
     local defaultValue= tab.value and true or false
     local func= tab.func
 
-    local variable = id..name
+    local variable = id..name..(category.order or '')
     local setting= Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
 
     local initializer= Settings.CreateCheckBox(category, setting, tooltip)
@@ -158,6 +161,7 @@ local initializer2= e.AddPanelCheck({
     category= Category,
     value= not Save.disabled,
     func= function()
+        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
 })
 local initializer= e.AddPanelCheck({
@@ -184,9 +188,87 @@ end
     layout= Layout,
     tooltip= nil,
     func= function()
+        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
 })
 ]]
+
+--添加，下拉菜单
+function e.AddPanelDropDown(tab)
+    local SetValue= tab.SetValueFunc
+    local GetOptions= tab.GetOptionsFunc
+    local defaultValue= tab.value
+    local name= tab.name
+    local tootip= tab.tooltip
+    local category= tab.category or Category
+
+    local variable= id..name..(category.order or '')
+    local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
+    local initializer= Settings.CreateDropDown(category, setting, GetOptions, tootip)
+    Settings.SetOnValueChangedCallback(variable, SetValue, initializer)
+    return initializer
+end
+--[[
+e.AddPanelDropDown({
+    SetValueFunc= function(_, _, value)
+        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end,
+    GetOptionsFunc= function()
+        local container = Settings.CreateControlTextContainer()
+        container:Add(1, e.onlyChinese and '职业' or CLASS)
+        return container:GetData();
+    end,
+    value=,
+    name=,
+    tootip= addName,
+    category=Category
+})
+]]
+
+--添加，划动条
+function e.GetFormatter1to10(value, minValue, maxValue, step)
+    return RoundToSignificantDigits(((value-minValue)/(maxValue-minValue) * (maxValue- step)) + step, maxValue)
+end
+local function GetFormatter1to10(minValue, maxValue, step)
+    return function(value)
+        return e.GetFormatter1to10(value, minValue, maxValue, step)
+    end
+end
+--[[
+function e.AddPanelSider(tab)
+    local name= tab.name
+    local defaultValue= tab.value
+    local minValue= tab.minValue
+    local maxValue= tab.maxValue
+    local step= tab.setp
+    local tooltip= addName
+    local category= tab.category or Category
+    local func= tab.func
+
+    local variable = id..name..(category.order or '')
+    local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
+    local options = Settings.CreateSliderOptions(minValue, maxValue, step)
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, GetFormatter1to10(minValue, maxValue, step))
+    local initializer= Settings.CreateSlider(category, setting, options, tooltip)
+	Settings.SetOnValueChangedCallback(variable, func, initializer)
+    return initializer
+end
+
+e.AddPanelSider({
+    name= addName,
+    value= 0,
+    minValue= 0,
+    maxValue= 1,
+    setp= 1,
+    tooltip= addName,
+    category= Category,
+    func= function(_, _, value2)
+        local value3= e.GetFormatter1to10(value2, minValue, maxValue, step)
+        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end
+})
+]]
+
 
 --添加，Check 和 按钮
 function e.AddPanelCheckButton(tab)
@@ -201,33 +283,23 @@ function e.AddPanelCheckButton(tab)
     local layout= tab.layout or Layout
     local category= tab.category or Category
 
-    local variable = id..checkName
+    local variable = id..checkName..(category.order or '')
     local setting= Settings.RegisterAddOnSetting(category, checkName, variable, type(defaultValue), defaultValue)
-    --local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc, false, tooltip)
-    local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc, checkFunc, tooltip)
+    local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc, false, tooltip)
     layout:AddInitializer(initializer)
-    --Settings.SetOnValueChangedCallback(variable, checkFunc, initializer)
+    Settings.SetOnValueChangedCallback(variable, checkFunc, initializer)
     return initializer
 end
-
---[[
-unction CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonClick, clickRequiresSet, tooltip)
-	local data = Settings.CreateSettingInitializerData(setting, nil, tooltip);
-	data.buttonText = buttonText;
-	data.OnButtonClick = buttonClick;
-	data.clickRequiresSet = clickRequiresSet;
-	return Settings.CreateSettingInitializer("SettingsCheckBoxWithButtonControlTemplate", data);
-end
-]]
-
 --[[
 local initializer2= e.AddPanelCheckButton({
     checkName= addName,
     checkValue= not Save.disabled,
     checkFunc= function()
+        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end,
     buttonText= '',
     buttonFunc= function()
+        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end,
     tooltip= addName,
     layout= Layout,
@@ -235,35 +307,87 @@ local initializer2= e.AddPanelCheckButton({
 })
 ]]
 
-function e.AddPanelDropDown(tab)
-    local SetValue= tab.SetValueFunc
-    local GetOptions= tab.GetOptionsFunc
-    local defaultValue= tab.value
-    local name= tab.name
-    local tootip= tab.tooltip
-    local category= tab.category or Category
 
-    local variable= id..name
-    local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
-    local initializer= Settings.CreateDropDown(category, setting, GetOptions, tootip)
-    Settings.SetOnValueChangedCallback(variable, SetValue)
+--添加，Check 和 划条
+function e.AddPanelCheckSider(tab)
+    local checkName= tab.checkName
+    local checkValue= tab.checkValue and true or false
+    local checkTooltip= tab.checkTooltip
+    local checkFunc= tab.checkFunc
+  
+    local sliderValue= not tab.sliderValue and 0 or type(tab.sliderValue)~='number' and tonumber(tab.sliderValue) or tab.sliderValue
+    local sliderMinValue= tab.sliderMinValue
+    local sliderMaxValue= tab.sliderMaxValue
+    local sliderStep= tab.sliderStep
+    local siderName= tab.siderName or checkName
+    local siderTooltip= tab.siderTooltip or checkTooltip
+    local siderFunc= tab.siderFunc
+
+    local category= tab.category or Category
+    local variable = id..checkName..(category.order or '')
+    local layout= tab.layout or Layout
+    local checkSetting = Settings.RegisterAddOnSetting(category, checkName..'Check', variable..'Check', type(checkValue), checkValue)
+    local siderSetting = Settings.RegisterAddOnSetting(category, checkName..'Sider', variable..'Sider', type(sliderValue), sliderValue)
+
+    local options = CreateFromMixins(SettingsSliderOptionsMixin)--local options = Settings.CreateSliderOptions(sliderMinValue, sliderMaxValue, sliderStep);
+	options.minValue = sliderMinValue or 0
+	options.maxValue = sliderMaxValue or 1
+	options.steps= sliderStep--(rate and (maxValue - minValue) / rate) or 100;
+
+    
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, GetFormatter1to10(sliderMinValue, sliderMaxValue, sliderStep));
+
+    local initializer = CreateSettingsCheckBoxSliderInitializer(checkSetting, checkName, checkTooltip, siderSetting, options, siderName, siderTooltip);
+    Settings.SetOnValueChangedCallback(variable..'Check', checkFunc, initializer)
+    Settings.SetOnValueChangedCallback(variable..'Sider', siderFunc, initializer)
+    layout:AddInitializer(initializer)
     return initializer
 end
 --[[
-e.AddPanelDropDown({
-    SetValueFunc= function(_, _, value)
+e.AddPanelCheckSider({
+    checkName= addName,
+    checkValue= not Save.disabled,
+    checkTooltip= addName,
+    checkFunc= function()
+        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end,
-    GetOptionsFunc= function()
-        local container = Settings.CreateControlTextContainer()
-        container:Add(1, e.onlyChinese and '职业' or CLASS)
-        return container:GetData();
+    sliderValue= 0.5,
+    sliderMinValue= 0,
+    sliderMaxValue= 1,
+    sliderStep= 0.1,
+    siderName= nil,
+    siderTooltip= nil,
+    siderFunc= function(_, _, value2)
+        local value3= e.GetFormatter1to10(value2, MinValue, MaxValue, Step)
+        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end,
-    value=,
-    name=,
-    tootip= addName,
-    category=Category
+    layout= Layout,
+    category= Category,
 })
 ]]
+
+
+--[[
+function CreateSettingsCheckBoxSliderInitializer(cbSetting, cbLabel, cbTooltip, sliderSetting, sliderOptions, sliderLabel, sliderTooltip)
+	local data =
+	{
+		name = cbLabel,
+		tooltip = cbTooltip,
+		cbSetting = cbSetting,
+		cbLabel = cbLabel,
+		cbTooltip = cbTooltip,
+		sliderSetting = sliderSetting,
+		sliderOptions = sliderOptions,
+		sliderLabel = sliderLabel,
+		sliderTooltip = sliderTooltip,
+	};
+	return Settings.CreateSettingInitializer("SettingsCheckBoxSliderControlTemplate", data);
+end
+
+]]
+
+
+
 
 
 
@@ -341,8 +465,51 @@ end
 --####
 --开始
 --####
+
 local function Init()
     e.AddPanelHeader(nil, e.onlyChinese and '设置' or SETTINGS)
+
+    e.AddPanelButton({
+        name= '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
+        text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '默认设置' or SETTINGS_DEFAULTS),
+        func= function()
+            StaticPopupDialogs[id..'RestAllSetup']={
+                text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r|n|n'..(e.onlyChinese and "你想要将所有选项重置为默认状态吗？|n将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)
+                    ..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|n|n'
+                ,
+                button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
+                button2= e.onlyChinese and '取消' or CANCEL,
+                whileDead=true,hideOnEscape = 1,
+                OnAccept=function ()
+                    e.ClearAllSave=true
+                    e.Reload()
+                end,
+            }
+            StaticPopup_Show(id..'RestAllSetup')
+        end
+    })
+
+    e.AddPanelButton({
+        name= e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
+        text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+        func= function()
+            StaticPopupDialogs[id..'RestWoWSetup']={
+                text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'
+                    ..'|n|n'..(e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'))
+                    ..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|n|n'
+                ,
+                button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+                button2= e.onlyChinese and '取消' or CANCEL,
+                whileDead=true,hideOnEscape = 1,
+                OnAccept=function ()
+                    e.ClearAllSave=true
+                    e.Reload()
+                end,
+            }
+            StaticPopup_Show(id..'RestWoWSetup')
+        end
+    })
+
 
     local function set_Color()
         if Save.useColor==1 then
@@ -354,7 +521,6 @@ local function Init()
         end
     end
     set_Color()
-
     e.AddPanelDropDown({
         SetValueFunc= function(_, _, value)
             if value==2 then
@@ -364,6 +530,7 @@ local function Init()
                     local hex=e.RGB_to_HEX(setR, setG, setB, setA)--RGB转HEX
                     Save.useCustomColorTab={r=setR, g=setG, b=setB, a=setA, hex= '|c'..hex }
                     set_Color()
+                    print(e.Player.useColor and e.Player.useColor.hex or '', id, addName,   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
                 e.ShowColorPicker(valueR, valueG, valueB, valueA, function()
                         setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
@@ -374,10 +541,14 @@ local function Init()
                     end
                 )
             else
+                if ColorPickerFrame:IsShown() then
+                    ColorPickerCancelButton:Click()
+                end
                 set_Color()
+                print(id, e.Player.useColor and e.Player.useColor.hex or '', (e.onlyChinese and '颜色' or COLOR)..'|r',   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
             Save.useColor= value
-            print(id, e.Player.useColor and e.Player.useColor.hex or '', (e.onlyChinese and '颜色' or COLOR)..'|r',   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            
         end,
         GetOptionsFunc= function()
             local container = Settings.CreateControlTextContainer()
@@ -448,47 +619,6 @@ local function Init()
             e.Get_Region=function() end
         end
     end
-
-    e.AddPanelButton({
-        name= '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
-        text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '默认设置' or SETTINGS_DEFAULTS),
-        func= function()
-            StaticPopupDialogs[id..'RestAllSetup']={
-                text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r|n|n'..(e.onlyChinese and "你想要将所有选项重置为默认状态吗？|n将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)
-                    ..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|n|n'
-                ,
-                button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
-                button2= e.onlyChinese and '取消' or CANCEL,
-                whileDead=true,hideOnEscape = 1,
-                OnAccept=function ()
-                    e.ClearAllSave=true
-                    e.Reload()
-                end,
-            }
-            StaticPopup_Show(id..'RestAllSetup')
-        end
-    })
-
-    e.AddPanelButton({
-        name= e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
-        text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-        func= function()
-            StaticPopupDialogs[id..'RestWoWSetup']={
-                text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'
-                    ..'|n|n'..(e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'))
-                    ..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|n|n'
-                ,
-                button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-                button2= e.onlyChinese and '取消' or CANCEL,
-                whileDead=true,hideOnEscape = 1,
-                OnAccept=function ()
-                    e.ClearAllSave=true
-                    e.Reload()
-                end,
-            }
-            StaticPopup_Show(id..'RestWoWSetup')
-        end
-    })
 
 
     local btn= e.Cbtn(SettingsPanel, {type=false, size={140, 25}})

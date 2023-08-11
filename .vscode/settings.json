@@ -3237,7 +3237,14 @@
         "NPETutorial_AttemptToBegin",
         "OPTION_TOOLTIP_STATUS_TEXT_DISPLAY",
         "STATUS_TEXT_BOTH",
-        "STATUSTEXT_LABEL"
+        "STATUSTEXT_LABEL",
+        "RoundToSignificantDigits",
+        "CreateSettingsCheckBoxSliderInitializer",
+        "ENABLE_MOUSE_SPEED",
+        "OPTION_TOOLTIP_MOUSE_SENSITIVITY",
+        "MOUSE_SENSITIVITY",
+        "ColorPickerCancelButton",
+        "SettingsSliderOptionsMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
