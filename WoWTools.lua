@@ -405,7 +405,6 @@ C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, fun
     if success and texture then
         e.Icon.wow2= '|T'..texture..':0|t'
     end
-    print(success,texture)
 end)
 C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Medium, function(success, texture)
     if success and texture then
