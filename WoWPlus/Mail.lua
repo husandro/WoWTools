@@ -2040,7 +2040,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
             --添加控制面板
-            e.AddPanelCheck({
+            e.AddPanel_Check({
                 name= '|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or addName),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -2051,7 +2051,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             --[[添加控制面板
-            local check=e.AddPanelCheck('|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or addName), not Save.disabled)
+            local check=e.AddPanel_Check('|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or addName), not Save.disabled)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)

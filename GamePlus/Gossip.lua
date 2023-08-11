@@ -1161,8 +1161,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
             --添加控制面板
-            e.AddPanelHeader(nil, 'Plus')
-            e.AddPanelCheck({
+            e.AddPanel_Header(nil, 'Plus')
+            e.AddPanel_Check({
                 name= '|A:CampaignAvailableQuestIcon:0:0|a'..(e.onlyChinese and '对话和任务' or addName),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -1173,7 +1173,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             --[[添加控制面板        
-            local sel=e.AddPanelCheck('|A:CampaignAvailableQuestIcon:0:0|a'..(e.onlyChinese and '对话和任务' or addName), not Save.disabled, true)
+            local sel=e.AddPanel_Check('|A:CampaignAvailableQuestIcon:0:0|a'..(e.onlyChinese and '对话和任务' or addName), not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)

@@ -112,6 +112,12 @@ end
 --##############
 --创建, 添加控制面板
 --##############
+
+local variableIndex=0
+local function get_variableIndex()
+    variableIndex= variableIndex+1
+    return variableIndex
+end
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
 Settings.RegisterAddOnCategory(Category)
 
@@ -123,7 +129,7 @@ end
 
 
 --添加，子目录
-function e.AddPanelSubCategory(tab)
+function e.AddPanel_Sub_Category(tab)
     if tab.frame then
         return Settings.RegisterCanvasLayoutSubcategory(Category, tab.frame, tab.name)
     else
@@ -133,21 +139,21 @@ end
 
 
 --添加，标题
-function e.AddPanelHeader(layout, title)
+function e.AddPanel_Header(layout, title)
     layout= layout or Layout
     layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(title))
 end
 
 
 --添加，Check
-function e.AddPanelCheck(tab)
+function e.AddPanel_Check(tab)
     local name = tab.name
     local tooltip = tab.tooltip
     local category= tab.category or Category
     local defaultValue= tab.value and true or false
     local func= tab.func
 
-    local variable = id..name..(category.order or '')
+    local variable = id..name..(category.order or '')..get_variableIndex()
     local setting= Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
 
     local initializer= Settings.CreateCheckBox(category, setting, tooltip)
@@ -155,7 +161,7 @@ function e.AddPanelCheck(tab)
     return initializer
 end
 --[[
-local initializer2= e.AddPanelCheck({
+local initializer2= e.AddPanel_Check({
     name= ,
     tooltip= addName,
     category= Category,
@@ -164,13 +170,13 @@ local initializer2= e.AddPanelCheck({
         print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
 })
-local initializer= e.AddPanelCheck({
+local initializer= e.AddPanel_Check({
 })
 initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 ]]
 
 --添加，按钮
-function e.AddPanelButton(tab)
+function e.AddPanel_Button(tab)
     local name= tab.name or ''
     local buttonText= tab.text
     local buttonClick= tab.func
@@ -182,7 +188,7 @@ function e.AddPanelButton(tab)
     return initializer
 end
 --[[
- e.AddPanelButton({
+ e.AddPanel_Button({
     name= nil,
     text= addName,
     layout= Layout,
@@ -194,7 +200,7 @@ end
 ]]
 
 --添加，下拉菜单
-function e.AddPanelDropDown(tab)
+function e.AddPanel_DropDown(tab)
     local SetValue= tab.SetValueFunc
     local GetOptions= tab.GetOptionsFunc
     local defaultValue= tab.value
@@ -202,14 +208,14 @@ function e.AddPanelDropDown(tab)
     local tootip= tab.tooltip
     local category= tab.category or Category
 
-    local variable= id..name..(category.order or '')
+    local variable= id..name..(category.order or '')..get_variableIndex()
     local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
     local initializer= Settings.CreateDropDown(category, setting, GetOptions, tootip)
     Settings.SetOnValueChangedCallback(variable, SetValue, initializer)
     return initializer
 end
 --[[
-e.AddPanelDropDown({
+e.AddPanel_DropDown({
     SetValueFunc= function(_, _, value)
         print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end,
@@ -225,53 +231,10 @@ e.AddPanelDropDown({
 })
 ]]
 
---添加，划动条
-function e.GetFormatter1to10(value, minValue, maxValue, step)
-    return RoundToSignificantDigits(((value-minValue)/(maxValue-minValue) * (maxValue- step)) + step, maxValue)
-end
-local function GetFormatter1to10(minValue, maxValue, step)
-    return function(value)
-        return e.GetFormatter1to10(value, minValue, maxValue, step)
-    end
-end
---[[
-function e.AddPanelSider(tab)
-    local name= tab.name
-    local defaultValue= tab.value
-    local minValue= tab.minValue
-    local maxValue= tab.maxValue
-    local step= tab.setp
-    local tooltip= addName
-    local category= tab.category or Category
-    local func= tab.func
-
-    local variable = id..name..(category.order or '')
-    local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
-    local options = Settings.CreateSliderOptions(minValue, maxValue, step)
-    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, GetFormatter1to10(minValue, maxValue, step))
-    local initializer= Settings.CreateSlider(category, setting, options, tooltip)
-	Settings.SetOnValueChangedCallback(variable, func, initializer)
-    return initializer
-end
-
-e.AddPanelSider({
-    name= addName,
-    value= 0,
-    minValue= 0,
-    maxValue= 1,
-    setp= 1,
-    tooltip= addName,
-    category= Category,
-    func= function(_, _, value2)
-        local value3= e.GetFormatter1to10(value2, minValue, maxValue, step)
-        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end
-})
-]]
 
 
 --添加，Check 和 按钮
-function e.AddPanelCheckButton(tab)
+function e.AddPanel_Check_Button(tab)
     local checkName = tab.checkName
     local defaultValue= tab.checkValue and true or false
     local checkFunc= tab.checkFunc
@@ -283,7 +246,7 @@ function e.AddPanelCheckButton(tab)
     local layout= tab.layout or Layout
     local category= tab.category or Category
 
-    local variable = id..checkName..(category.order or '')
+    local variable = id..checkName..(category.order or '')..get_variableIndex()
     local setting= Settings.RegisterAddOnSetting(category, checkName, variable, type(defaultValue), defaultValue)
     local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc, false, tooltip)
     layout:AddInitializer(initializer)
@@ -291,7 +254,7 @@ function e.AddPanelCheckButton(tab)
     return initializer
 end
 --[[
-local initializer2= e.AddPanelCheckButton({
+local initializer2= e.AddPanel_Check_Button({
     checkName= addName,
     checkValue= not Save.disabled,
     checkFunc= function()
@@ -308,14 +271,23 @@ local initializer2= e.AddPanelCheckButton({
 ]]
 
 
+
 --添加，Check 和 划条
-function e.AddPanelCheckSider(tab)
+function e.GetFormatter1to10(value, minValue, maxValue)
+    return RoundToSignificantDigits(((value-minValue)/(maxValue-minValue) * (maxValue- minValue)) + minValue, maxValue)
+end
+local function GetFormatter1to10(minValue, maxValue)
+    return function(value)
+        return e.GetFormatter1to10(value, minValue, maxValue)
+    end
+end
+function e.AddPanel_Check_Sider(tab)
     local checkName= tab.checkName
     local checkValue= tab.checkValue and true or false
     local checkTooltip= tab.checkTooltip
     local checkFunc= tab.checkFunc
   
-    local sliderValue= not tab.sliderValue and 0 or type(tab.sliderValue)~='number' and tonumber(tab.sliderValue) or tab.sliderValue
+    local sliderValue= tab.sliderValue
     local sliderMinValue= tab.sliderMinValue
     local sliderMaxValue= tab.sliderMaxValue
     local sliderStep= tab.sliderStep
@@ -324,18 +296,13 @@ function e.AddPanelCheckSider(tab)
     local siderFunc= tab.siderFunc
 
     local category= tab.category or Category
-    local variable = id..checkName..(category.order or '')
+    local variable = id..checkName..(category.order or '')..get_variableIndex()
     local layout= tab.layout or Layout
     local checkSetting = Settings.RegisterAddOnSetting(category, checkName..'Check', variable..'Check', type(checkValue), checkValue)
     local siderSetting = Settings.RegisterAddOnSetting(category, checkName..'Sider', variable..'Sider', type(sliderValue), sliderValue)
 
-    local options = CreateFromMixins(SettingsSliderOptionsMixin)--local options = Settings.CreateSliderOptions(sliderMinValue, sliderMaxValue, sliderStep);
-	options.minValue = sliderMinValue or 0
-	options.maxValue = sliderMaxValue or 1
-	options.steps= sliderStep--(rate and (maxValue - minValue) / rate) or 100;
-
-    
-    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, GetFormatter1to10(sliderMinValue, sliderMaxValue, sliderStep));
+    local options = Settings.CreateSliderOptions(sliderMinValue, sliderMaxValue, sliderStep)
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, GetFormatter1to10(sliderMinValue, sliderMaxValue));
 
     local initializer = CreateSettingsCheckBoxSliderInitializer(checkSetting, checkName, checkTooltip, siderSetting, options, siderName, siderTooltip);
     Settings.SetOnValueChangedCallback(variable..'Check', checkFunc, initializer)
@@ -343,8 +310,46 @@ function e.AddPanelCheckSider(tab)
     layout:AddInitializer(initializer)
     return initializer
 end
+
+
+--添加，划动条
+function e.AddPanelSider(tab)
+    local name= tab.name
+    local defaultValue= tab.value
+    local minValue= tab.minValue
+    local maxValue= tab.maxValue
+    local step= tab.setp
+    local tooltip= addName
+    local category= tab.category or Category
+    local func= tab.func
+
+    local variable = id..name..(category.order or '')..get_variableIndex()
+    local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
+    local options = Settings.CreateSliderOptions(minValue, maxValue, step)
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, GetFormatter1to10(minValue, maxValue))
+    local initializer= Settings.CreateSlider(category, setting, options, tooltip)
+	Settings.SetOnValueChangedCallback(variable, func, initializer)
+    return initializer
+end
 --[[
-e.AddPanelCheckSider({
+e.AddPanelSider({
+    name= addName,
+    value= 0,
+    minValue= 0,
+    maxValue= 1,
+    setp= 1,
+    tooltip= addName,
+    category= Category,
+    func= function(_, _, value2)
+        local value3= e.GetFormatter1to10(value2, minValue, maxValue)
+        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end
+})
+]]
+
+
+--[[
+e.AddPanel_Check_Sider({
     checkName= addName,
     checkValue= not Save.disabled,
     checkTooltip= addName,
@@ -467,9 +472,9 @@ end
 --####
 
 local function Init()
-    e.AddPanelHeader(nil, e.onlyChinese and '设置' or SETTINGS)
+    e.AddPanel_Header(nil, e.onlyChinese and '设置' or SETTINGS)
 
-    e.AddPanelButton({
+    e.AddPanel_Button({
         name= '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
         text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '默认设置' or SETTINGS_DEFAULTS),
         func= function()
@@ -489,7 +494,7 @@ local function Init()
         end
     })
 
-    e.AddPanelButton({
+    e.AddPanel_Button({
         name= e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
         text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         func= function()
@@ -521,7 +526,7 @@ local function Init()
         end
     end
     set_Color()
-    e.AddPanelDropDown({
+    e.AddPanel_DropDown({
         SetValueFunc= function(_, _, value)
             if value==2 then
                 local valueR, valueG, valueB, valueA= Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a
@@ -563,7 +568,7 @@ local function Init()
         category=Category
     })
 
-    e.AddPanelCheck({
+    e.AddPanel_Check({
         name= 'Chinese',
         tooltip=e.onlyChinese and '语言: 简体中文'
                 or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
@@ -604,7 +609,7 @@ local function Init()
             end
             return text
         end
-        e.AddPanelCheck({
+        e.AddPanel_Check({
             name= e.onlyChinese and '服务器' or 'Realm',
             tooltip=get_tooltip(),
             category=Category,

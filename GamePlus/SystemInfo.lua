@@ -792,7 +792,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            e.AddPanelCheck({
+            e.AddPanel_Check({
                 name= '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '系统信息' or addName),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -802,7 +802,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             })
             --[[
-            local check=e.AddPanelCheck('|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '系统信息' or addName), not Save.disabled, true)
+            local check=e.AddPanel_Check('|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '系统信息' or addName), not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)

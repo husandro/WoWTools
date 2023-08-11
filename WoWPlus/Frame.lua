@@ -716,23 +716,20 @@ local function Init_Move()
     end)
 end
 
-local function Init_Options()
-    local Category, Layout= e.AddPanelSubCategory({name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..addName})
-    e.AddPanelCheck({
-        name= e.onlyChinese and '启用' or ENABLE,
-        tooltip= addName,
-        value= not Save.disabled,
-        category= Category,
-        func= function()
-            Save.disabled= not Save.disabled and true or nil
-            print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    })
 
-    e.AddPanelHeader(Layout, e.onlyChinese and '选项' or OPTIONS)
+
+
+
+--###########
+--添加控制面板
+--###########
+local Category, Layout= e.AddPanel_Sub_Category({name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..addName})
+
+local function Init_Options()
+    e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
 
     --移动
-    local initializer2= e.AddPanelCheck({
+    local initializer2= e.AddPanel_Check({
         name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(e.onlyChinese and '移动' or NPE_MOVE),
         tooltip= addName,
         value= not Save.disabledMove,
@@ -743,7 +740,7 @@ local function Init_Options()
         end
     })
 
-    local initializer= e.AddPanelCheckButton({
+    local initializer= e.AddPanel_Check_Button({
         checkName= '|A:talents-search-notonactionbar:0:0|a'..(e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
         tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0),
         checkValue= Save.SavePoint,
@@ -772,7 +769,7 @@ local function Init_Options()
     })
     initializer:SetParentInitializer(initializer2, function() return not Save.disabledMove end)
 
-        initializer= e.AddPanelCheck({
+        initializer= e.AddPanel_Check({
             name= e.onlyChinese and '可以移到屏幕外' or 'Can be moved off screen',
             tooltip= addName,
             value= Save.moveToScreenFuori,
@@ -784,7 +781,7 @@ local function Init_Options()
         initializer:SetParentInitializer(initializer2, function() return not Save.disabledMove end)
 
     --缩放
-    e.AddPanelCheckButton({
+    e.AddPanel_Check_Button({
         checkName= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
         checkValue= not Save.disabledZoom,
         checkFunc= function()
@@ -832,8 +829,19 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.scale= Save.scale or {}
 
-            Init_Options()--初始, 选项
+            e.AddPanel_Check({
+                name= e.onlyChinese and '启用' or ENABLE,
+                tooltip= addName,
+                value= not Save.disabled,
+                category= Category,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+            
             if not Save.disabled then
+                Init_Options()--初始, 选项
                 Init_Move()--初始, 移动
             else
                 panel:UnregisterAllEvents()

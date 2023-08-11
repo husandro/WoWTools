@@ -583,7 +583,7 @@ local function setPanel()
     local frame = CreateFrame("FRAME")
 
     --添加控制面板
-    e.AddPanelSubCategory({name=e.onlyChinese and '超链接图标' or addName, frame=frame})
+    e.AddPanel_Sub_Category({name=e.onlyChinese and '超链接图标' or addName, frame=frame})
 
     local str=e.Cstr(frame)--内容加颜色
     str:SetPoint('TOPLEFT')

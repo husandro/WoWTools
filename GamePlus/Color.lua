@@ -451,7 +451,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			Save.color= Save.color or {}
 
 			--添加控制面板
-			e.AddPanelCheckButton({
+			e.AddPanel_Check_Button({
 				checkName=  '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器' or addName),
 				checkValue= not Save.disabled,
 				checkFunc= function()

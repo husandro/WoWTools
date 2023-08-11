@@ -639,7 +639,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            local initializer2= e.AddPanelCheck({
+            local initializer2= e.AddPanel_Check({
                 name= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -649,7 +649,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            local initializer= e.AddPanelCheck({
+            local initializer= e.AddPanel_Check({
                 name= e.Icon.right..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE),
                 tooltip= (not e.onlyChinese and CLICK_TO_MOVE..', '..REFORGE_CURRENT or '点击移动, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))
                     ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' < '..MAX_PLAYER_LEVEL..' = '..e.GetEnabeleDisable(false)
@@ -663,7 +663,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 
             --[[添加控制面板
-            local check=e.AddPanelCheck('|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName), not Save.disabled, true)
+            local check=e.AddPanel_Check('|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName), not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)

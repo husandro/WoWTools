@@ -984,7 +984,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            local initializer2= e.AddPanelCheck({
+            local initializer2= e.AddPanel_Check({
                 name= e.Icon.bank2..(e.onlyChinese and '商人' or addName),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -994,7 +994,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
                 end
             })
 
-            local initializer= e.AddPanelCheck({
+            local initializer= e.AddPanel_Check({
                 name= e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT,
                 tooltip= (not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT..', '..REFORGE_CURRENT or '自动拾取, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault"))
                     ..'|n'..(not e.onlyChinese and HUD_EDIT_MODE_LOOT_FRAME_LABEL..' Alt, Ctrl, Shift: '..DISABLE or '拾取窗口 Alt，Ctrl，Shift: 禁用'),
@@ -1007,7 +1007,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
 
 
             --[[添加控制面板
-            local check=e.AddPanelCheck(e.Icon.bank2..(e.onlyChinese and '商人' or addName), not Save.disabled, true)
+            local check=e.AddPanel_Check(e.Icon.bank2..(e.onlyChinese and '商人' or addName), not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)

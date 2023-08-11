@@ -217,7 +217,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            e.AddPanelCheck({
+            e.AddPanel_Check({
                 name= '|T2175503:0|t'..(e.onlyChinese and '爆炸物' or addName),
                 tooltip= select(2, C_ChallengeMode.GetAffixInfo(13)),
                 value= not Save.disabled,
@@ -228,7 +228,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             })
 
             --[[添加控制面板        
-            local check= e.AddPanelCheck((e.onlyChinese and '爆炸物' or addName)..'|T2175503:0|t', not Save.disabled, nil, true)
+            local check= e.AddPanel_Check((e.onlyChinese and '爆炸物' or addName)..'|T2175503:0|t', not Save.disabled, nil, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)

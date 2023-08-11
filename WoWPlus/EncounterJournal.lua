@@ -1455,7 +1455,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.loot[e.Player.class]= Save.loot[e.Player.class] or {}
 
             --添加控制面板
-            e.AddPanelCheck({
+            e.AddPanel_Check({
                 name= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or addName),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -1466,7 +1466,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             --[[添加控制面板        
-            local sel=e.AddPanelCheck('|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or addName), not Save.disabled)
+            local sel=e.AddPanel_Check('|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or addName), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)

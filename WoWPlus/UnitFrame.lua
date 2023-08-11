@@ -1512,7 +1512,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            e.AddPanelCheck({
+            e.AddPanel_Check({
                 name= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(e.onlyChinese and '单位框体' or addName),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -1522,7 +1522,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            e.AddPanelCheck({
+            e.AddPanel_Check({
                 name= e.onlyChinese and '团队框体' or HUD_EDIT_MODE_RAID_FRAMES_LABEL,
                 tooltip= addName,
                 value= not Save.notRaidFrame,
@@ -1534,7 +1534,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             
 
             --[[添加控制面板        
-            local sel=e.AddPanelCheck('|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(e.onlyChinese and '单位框体' or addName), not Save.disabled)
+            local sel=e.AddPanel_Check('|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(e.onlyChinese and '单位框体' or addName), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)

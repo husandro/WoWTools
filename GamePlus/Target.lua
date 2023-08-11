@@ -751,7 +751,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.targetInCombatColor= Save.targetInCombatColor or {r=1, g=0, b=0, a=1}
 
             --添加控制面板
-            e.AddPanelSubCategory({name=e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName)..'|r', frame=panel})
+            e.AddPanel_Sub_Category({name=e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName)..'|r', frame=panel})
 
             e.ReloadPanel({panel=panel, addName= addName, restTips=nil, checked=true, clearTips=nil,--重新加载UI, 重置, 按钮
                 disabledfunc=function()

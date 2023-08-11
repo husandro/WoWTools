@@ -104,8 +104,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             panel.ShowEmojiButton= Save.emoji
 
             --添加控制面板
-            e.AddPanelHeader(nil, 'Chat')
-            local initializer2= e.AddPanelCheck({
+            e.AddPanel_Header(nil, 'Chat')
+            local initializer2= e.AddPanel_Check({
                 name= '|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS)),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -116,7 +116,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end,
             })
 
-           local initializer= e.AddPanelCheck({
+           local initializer= e.AddPanel_Check({
                 name= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\greet:0|tEmoji',
                 tooltip= addName..', Emoji',
                 value= Save.emoji,

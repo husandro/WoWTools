@@ -7,8 +7,10 @@ local Save={
 
     alpha= 0.5,
 
+    --disabledChatBubble=true,--禁用，聊天泡泡
     chatBubbleAlpha= 0.5,--聊天泡泡
     chatBubbleSacal= 0.85,
+
     classPowerNum= e.Player.husandro,--职业，显示数字
     classPowerNumSize= 12,
     disabledMainMenu= not e.Player.husandro, --主菜单，颜色，透明度
@@ -1621,27 +1623,7 @@ end
 
 
 
---#######
---聊天泡泡
---#######
-local function Init_chatBubbles()
-    local chatBubblesEvents={
-        'CHAT_MSG_SAY',
-        'CHAT_MSG_YELL',
-        'CHAT_MSG_PARTY',
-        'CHAT_MSG_PARTY_LEADER',
-        'CHAT_MSG_RAID',
-        'CHAT_MSG_RAID_LEADER',
-        'CHAT_MSG_MONSTER_PARTY',
-        'CHAT_MSG_MONSTER_SAY',
-        'CHAT_MSG_MONSTER_YELL',
-    }
-    if not Save.disabledChatBubble then
-        FrameUtil.RegisterFrameForEvents(panel, chatBubblesEvents)
-    else
-        FrameUtil.UnregisterFrameForEvents(panel, chatBubblesEvents);
-    end
-end
+
 
 
 
@@ -1918,11 +1900,56 @@ end
 
 
 
+--#######
+--聊天泡泡
+--#######
+local function set_Chat_Bubbles_Event()
+    local chatBubblesEvents={
+        'CHAT_MSG_SAY',
+        'CHAT_MSG_YELL',
+        'CHAT_MSG_PARTY',
+        'CHAT_MSG_PARTY_LEADER',
+        'CHAT_MSG_RAID',
+        'CHAT_MSG_RAID_LEADER',
+        'CHAT_MSG_MONSTER_PARTY',
+        'CHAT_MSG_MONSTER_SAY',
+        'CHAT_MSG_MONSTER_YELL',
+    }
+    if not Save.disabledChatBubble then
+        FrameUtil.RegisterFrameForEvents(panel, chatBubblesEvents)
+    else
+        FrameUtil.UnregisterFrameForEvents(panel, chatBubblesEvents);
+    end
+end
 
+local function set_Chat_Bubbles(init)
+    for _, buble in pairs(C_ChatBubbles.GetAllChatBubbles() or {}) do
+        if not buble.set_Alpha or init then
+            local frame= buble:GetChildren()
+            if frame then
+                local fontString = frame.String
+                local point, relativeTo, relativePoint, ofsx, ofsy = fontString:GetPoint(1)
+                local currentScale= buble:GetScale()
 
-
-
-
+                frame:SetScale(Save.chatBubbleSacal)
+                if point then
+                    local scaleRatio = Save.chatBubbleSacal / currentScale
+                    fontString:SetPoint(point, relativeTo, relativePoint, ofsx / scaleRatio, ofsy / scaleRatio)
+                end
+                
+                local tab={frame:GetRegions()}
+                for _, frame2 in pairs(tab) do
+                    if frame2:GetObjectType()=='Texture' then-- .String
+                        frame2:SetAlpha(Save.chatBubbleAlpha)
+                        frame2:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+                    end
+                end
+                
+                buble.set_Alpha= true
+            end
+        end
+    end
+end
 
 
 
@@ -1932,22 +1959,12 @@ end
 --###########
 --添加控制面板
 --###########
+local Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
+
 local function options_Init()--初始，选项
-    local Category, Layout= e.AddPanelSubCategory({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
+    e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
 
-    e.AddPanelCheck({
-        name= e.onlyChinese and '启用' or ENABLE,
-        tooltip= addName,
-        category= Category,
-        value= not Save.disabled,
-        func= function()
-            Save.disabled= not Save.disabled and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)    
-        end
-    })
-    e.AddPanelHeader(Layout, e.onlyChinese and '选项' or OPTIONS)
-
-    e.AddPanelCheck({
+    e.AddPanel_Check({
         name= e.onlyChinese and '隐藏材质' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, addName),
         tooltip= addName,
         category= Category,
@@ -1959,7 +1976,7 @@ local function options_Init()--初始，选项
     })
 
 
-    local initializer2= e.AddPanelCheckButton({
+    local initializer2= e.AddPanel_Check_Button({
         checkName= e.onlyChinese and '颜色' or COLOR,
         checkValue= not Save.disabledColor,
         checkFunc= function()
@@ -1975,20 +1992,20 @@ local function options_Init()--初始，选项
     })
 
 
-    local initializer= e.AddPanelCheck({
-        name= e.onlyChinese and '主菜单' or MAINMENU_BUTTON,
-        tooltip= addName,
-        category= Category,
-        value= not Save.disabledMainMenu,
-        func= function()
-            Save.disabledMainMenu= not Save.disabledMainMenu and true or nil
-            set_MainMenu_Color()--主菜单，颜色，透明度
-        end
-    })
-    initializer:SetParentInitializer(initializer2, function() return not Save.disabledColor end)
+        local initializer= e.AddPanel_Check({
+            name= e.onlyChinese and '主菜单' or MAINMENU_BUTTON,
+            tooltip= addName,
+            category= Category,
+            value= not Save.disabledMainMenu,
+            func= function()
+                Save.disabledMainMenu= not Save.disabledMainMenu and true or nil
+                set_MainMenu_Color()--主菜单，颜色，透明度
+            end
+        })
+        initializer:SetParentInitializer(initializer2, function() return not Save.disabledColor end)
 
-    print(Save.alpha)
-    e.AddPanelCheckSider({
+
+    e.AddPanel_Check_Sider({
         checkName= e.onlyChinese and '透明度' or 'Alpha',
         checkValue= not Save.disabledAlpha,
         checkTooltip= addName,
@@ -2003,130 +2020,87 @@ local function options_Init()--初始，选项
         siderName= nil,
         siderTooltip= nil,
         siderFunc= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, 0, 1, 0.1)
+            local value3= e.GetFormatter1to10(value2, 0, 1)
             Save.alpha= value3
-            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, addName, value3, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         layout= Layout,
         category= Category,
     })
---[[
+
+    initializer2= e.AddPanel_Check({
+        name= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
+        tooltip= (e.onlyChinese and '在副本无效' or (INSTANCE..' ('..DISABLE..')'))
+                ..'|n|n'..((e.onlyChinese and '说' or SAY)..' CVar: chatBubbles '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubbles")))
+                ..'|n'..((e.onlyChinese and '小队' or SAY)..' CVar: chatBubblesParty '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubblesParty"))),
+        category= Category,
+        value= not Save.disabledChatBubble,
+        func= function()
+            Save.disabledChatBubble= not Save.disabledChatBubble and true or nil
+            set_Chat_Bubbles_Event()
+            if not Save.disabledChatBubble then
+                set_Chat_Bubbles(true)
+            else
+                print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        end
+    })
+
+    initializer= e.AddPanelSider({
+        name= e.onlyChinese and '改变透明度' or CHANGE_OPACITY,
+        value= Save.chatBubbleAlpha,
+        minValue= 0,
+        maxValue= 1,
+        setp= 0.1,
+        tooltip= addName,
+        category= Category,
+        func= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, 0, 1)
+            Save.chatBubbleAlpha= value3
+            set_Chat_Bubbles(true)
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.disabledChatBubble end)
+
+    initializer= e.AddPanelSider({
+        name= e.onlyChinese and '缩放' or UI_SCALE,
+        value= Save.chatBubbleSacal,
+        minValue= 0.3,
+        maxValue= 1,
+        setp= 0.1,
+        tooltip= addName,
+        category= Category,
+        func= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, 0.3, 1)
+            Save.chatBubbleSacal= value3
+            set_Chat_Bubbles(true)
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.disabledChatBubble end)
 
 
-    
-    local alphaCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    alphaCheck.text:SetText('*) '..(e.onlyChinese and '透明度' or 'Alpha'))
-    alphaCheck:SetPoint('TOPLEFT', colorCheck, 'BOTTOMLEFT', 0, -16)
-    alphaCheck:SetChecked(not Save.disabledAlpha)
-    alphaCheck:SetScript('OnMouseDown', function()
-        Save.disabledAlpha= not Save.disabledAlpha and true or false
-    end)
-
-    local alphaValue= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')
-    alphaValue:SetPoint("LEFT", alphaCheck.text, 'RIGHT', 6,0)
-    alphaValue:SetSize(120,20)
-    alphaValue:SetMinMaxValues(0, 0.9)
-    alphaValue:SetValue(Save.alpha)
-    alphaValue.Low:SetText('0')
-    alphaValue.High:SetText('0.9')
-    alphaValue.Text:SetText(Save.alpha)
-    alphaValue:SetValueStep(0.1)
-    alphaValue:SetScript('OnValueChanged', function(self, value, userInput)
-        value= tonumber(format('%.1f', value))
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.alpha= value==0 and 0 or value
-    end)
-
-
-
-    --聊天泡泡 ChatBubble
-    local chatBubbleCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    chatBubbleCheck.text:SetText('*) '..(e.onlyChinese and '聊天泡泡: 副本无效' or (CHAT_BUBBLES_TEXT..': '..INSTANCE..' ('..NO..')')))
-    chatBubbleCheck:SetPoint('TOPLEFT', alphaCheck, 'BOTTOMLEFT', 0, -32)
-    chatBubbleCheck:SetChecked(not Save.disabledChatBubble)
-    chatBubbleCheck:SetScript('OnMouseDown', function()
-        Save.disabledChatBubble= not Save.disabledChatBubble and true or false
-    end)
-    chatBubbleCheck:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:AddDoubleLine(e.onlyChinese and '说' or SAY, 'CVar: chatBubbles '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubbles")))
-        e.tips:AddDoubleLine(e.onlyChinese and '小队' or CHAT_MSG_PARTY, 'CVar: chatBubblesParty '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubblesParty")))
-        e.tips:Show()
-    end)
-    chatBubbleCheck:SetScript('OnLeave', function() e.tips:Hide() end)
-
-    local chatBubbleAlpha=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    chatBubbleAlpha.text:SetText(e.onlyChinese and '透明度' or 'Alpha')
-    chatBubbleAlpha:SetPoint('TOPLEFT', chatBubbleCheck, 'BOTTOMRIGHT',0,-10)
-    chatBubbleAlpha:SetChecked(not Save.disabledChatBubbleAlpha)
-    chatBubbleAlpha:SetScript('OnMouseDown', function()
-        Save.disabledChatBubbleAlpha= not Save.disabledChatBubbleAlpha and true or false
-    end)
-
-    local chaAlphaValue= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')
-    chaAlphaValue:SetPoint("LEFT", chatBubbleAlpha.text, 'RIGHT', 6,0)
-    chaAlphaValue:SetSize(120,20)
-    chaAlphaValue:SetMinMaxValues(0, 0.9)
-    chaAlphaValue:SetValue(Save.chatBubbleAlpha)
-    chaAlphaValue.Low:SetText('0')
-    chaAlphaValue.High:SetText('0.9')
-    chaAlphaValue.Text:SetText(Save.chatBubbleAlpha)
-    chaAlphaValue:SetValueStep(0.1)
-    chaAlphaValue:SetScript('OnValueChanged', function(self, value, userInput)
-        value= tonumber(format('%.1f', value))
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.chatBubbleAlpha= value==0 and 0 or value
-    end)
-
-    local chatBubbleSacale=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    chatBubbleSacale.text:SetText(e.onlyChinese and '缩放' or UI_SCALE)
-    chatBubbleSacale:SetPoint('TOPLEFT', chatBubbleAlpha, 'BOTTOMLEFT', 0, -12)
-    chatBubbleSacale:SetChecked(not Save.disabledChatBubbleSacal)
-    chatBubbleSacale:SetScript('OnMouseDown', function()
-        Save.disabledChatBubbleSacal= not Save.disabledChatBubbleSacal and true or false
-    end)
-
-    local chaScaleValue= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')
-    chaScaleValue:SetPoint("LEFT", chatBubbleSacale.text, 'RIGHT', 6,0)
-    chaScaleValue:SetSize(120,20)
-    chaScaleValue:SetMinMaxValues(0.3, 2)
-    chaScaleValue:SetValue(Save.chatBubbleSacal)
-    chaScaleValue.Low:SetText('0.3')
-    chaScaleValue.High:SetText('2')
-    chaScaleValue.Text:SetText(Save.chatBubbleSacal)
-    chaScaleValue:SetValueStep(0.01)
-    chaScaleValue:SetScript('OnValueChanged', function(self, value, userInput)
-        value= tonumber(format('%.2f', value))
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.chatBubbleSacal=value
-    end)
-
-    --职业，显示数字
-    local classNumCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    classNumCheck.Text:SetText('*) '..(e.onlyChinese and '职业能量数字' or (CLASS..'('..AUCTION_HOUSE_QUANTITY_LABEL..')'..ENERGY))..format(e.Icon.number2,1)..format(e.Icon.number2,2)..format(e.Icon.number2,3))
-    classNumCheck:SetPoint('TOPRIGHT', chatBubbleSacale, 'BOTTOMLEFT', 0, -32)
-    classNumCheck:SetChecked(Save.classPowerNum)
-    classNumCheck:SetScript('OnMouseDown', function()
-        Save.classPowerNum= not Save.classPowerNum and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end)
-
-    local sliderClassPowerNumSize = e.CSlider(panel, {w=100,min=8, max=36, value=Save.classPowerNumSize, setp=1, color=true,
-    text=e.onlyChinese and '大小' or 'Size',
-    func=function(self, value)
-        value= tonumber(format('%i', value))
-        value= value==0 and 0 or value
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.classPowerNumSize= value
-        print(id, addName, value, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end})
-    sliderClassPowerNumSize:SetPoint("LEFT", classNumCheck.Text, 'RIGHT', 2,0)
-
-    ]]
+    e.AddPanel_Check_Sider({
+        checkName= (e.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..format(e.Icon.number2,1)..format(e.Icon.number2,2)..format(e.Icon.number2,3),
+        checkValue= Save.classPowerNum,
+        checkTooltip= addName,
+        checkFunc= function()
+            Save.classPowerNum= not Save.classPowerNum and true or false
+            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+        sliderValue= Save.classPowerNumSize,
+        sliderMinValue= 6,
+        sliderMaxValue= 64,
+        sliderStep= 1,
+        siderName= nil,
+        siderTooltip= nil,
+        siderFunc= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, 6, 64)
+            Save.classPowerNumSize= value3
+            print(id, addName, value3, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+        layout= Layout,
+        category= Category,
+    })
 end
 
 
@@ -2153,20 +2127,31 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.classPowerNumSize= Save.classPowerNumSize or 12
 
-            options_Init()--初始，选项
+            e.AddPanel_Check({
+                name= e.onlyChinese and '启用' or ENABLE,
+                tooltip= addName,
+                category= Category,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)    
+                end
+            })
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
+                options_Init()--初始，选项
                 Init_HideTexture()
                 Init_Set_AlphaAndColor()
                 Init_Class_Power()--职业
+                if not Save.disabledChatBubble then
+                    set_Chat_Bubbles_Event()
+                end
                 C_Timer.After(2, function()
                     set_MainMenu_Color(true)--主菜单, 颜色
                 end)
-                if not Save.disabledChatBubble then
-                    Init_chatBubbles()
-                end
+
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -2182,36 +2167,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         end
 
     else--ChatBubbles https://wago.io/yyX84OlOD
-        C_Timer.After(0, function()
-            for _, buble in pairs(C_ChatBubbles.GetAllChatBubbles()) do
-                if not buble.set_Alpha then
-                    local frame= buble:GetChildren()
-                    if frame then
-                        if not Save.disabledChatBubbleSacal and Save.chatBubbleSacal~=1 then
-                            local fontString = frame.String
-                            local point, relativeTo, relativePoint, ofsx, ofsy = fontString:GetPoint(1)
-                            local currentScale= buble:GetScale()
-                            frame:SetScale(Save.chatBubbleSacal)
-                            if point then
-                                local scaleRatio = Save.chatBubbleSacal / currentScale
-                                fontString:SetPoint(point, relativeTo, relativePoint, ofsx / scaleRatio, ofsy / scaleRatio)
-                            end
-                        end
-                        if not Save.disabledChatBubbleAlpha then
-                            local tab={frame:GetRegions()}
-                            for _, frame2 in pairs(tab) do
-                                if frame2:GetObjectType()=='Texture' then-- .String
-                                    frame2:SetAlpha(Save.chatBubbleAlpha)
-                                    if not Save.disabledColor then
-                                        frame2:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-                                    end
-                                end
-                            end
-                        end
-                        buble.set_Alpha= true
-                    end
-                end
-            end
-        end)
+        C_Timer.After(0, set_Chat_Bubbles)
+
     end
 end)

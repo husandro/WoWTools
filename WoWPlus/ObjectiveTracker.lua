@@ -527,7 +527,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            local initializer2= e.AddPanelCheck({
+            local initializer2= e.AddPanel_Check({
                 name= '|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -536,7 +536,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
-            local initializer= e.AddPanelCheck({
+            local initializer= e.AddPanel_Check({
                 name= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
                 tooltip= (e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)
                     ..'|n|n'..(e.onlyChinese and '场景战役' or SCENARIOS)..' ...'
@@ -558,7 +558,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 
             --[[添加控制面板        
-            local sel=e.AddPanelCheck('|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL), not Save.disabled)
+            local sel=e.AddPanel_Check('|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)

@@ -843,7 +843,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            e.AddPanelCheck({
+            e.AddPanel_Check({
                 name= '|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '好友列表' or addName),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -854,7 +854,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             })
 
             --[[添加控制面板        
-            local sel=e.AddPanelCheck('|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '好友列表' or addName), not Save.disabled)
+            local sel=e.AddPanel_Check('|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '好友列表' or addName), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 if Save.disabled then
                     Save.disabled=nil

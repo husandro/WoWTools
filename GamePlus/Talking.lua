@@ -22,7 +22,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            local initializer2= e.AddPanelCheck({
+            local initializer2= e.AddPanel_Check({
                 name= '|A:TalkingHeads-Glow-TopSpike:0:0|a'..(e.onlyChinese and '隐藏NPC发言' or addName),
                 tooltip=format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '隐藏' or HIDE , e.onlyChinese and '对话特写头像' or HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL)
                         ..'|n|n'..(e.onlyChinese and '声音' or SOUND)
@@ -36,7 +36,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            local initializer= e.AddPanelCheck({
+            local initializer= e.AddPanel_Check({
                 name= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
                 tooltip= addName,
                 value= not Save.notPrint,
@@ -49,7 +49,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
  --[[
             --添加控制面板        
-            local sel=e.AddPanelCheck('|A:TalkingHeads-Glow-TopSpike:0:0|a'..(e.onlyChinese and '隐藏NPC发言' or addName), not Save.disabled, true)
+            local sel=e.AddPanel_Check('|A:TalkingHeads-Glow-TopSpike:0:0|a'..(e.onlyChinese and '隐藏NPC发言' or addName), not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 setRegister()--设置事件

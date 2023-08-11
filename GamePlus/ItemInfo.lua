@@ -821,7 +821,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            e.AddPanelCheck({
+            e.AddPanel_Check({
                 name= e.Icon.bag2..(e.onlyChinese and '物品信息' or addName),
                 tooltip= e.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
                 value= not Save.disabled,
@@ -838,7 +838,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             })
 
             --[[添加控制面板        
-            local sel=e.AddPanelCheck(e.Icon.bag2..(e.onlyChinese and '物品信息' or addName), not Save.disabled, true)
+            local sel=e.AddPanel_Check(e.Icon.bag2..(e.onlyChinese and '物品信息' or addName), not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)

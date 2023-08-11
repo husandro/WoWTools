@@ -62,7 +62,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
 
             --添加控制面板
-            e.AddPanelCheck({
+            e.AddPanel_Check({
                 name= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or addName),
                 tooltip= e.onlyChinese and '说|n仅限： 我, 有队伍'
                     or (SAY..'|n'..format(LFG_LIST_CROSS_FACTION, COMBATLOG_FILTER_STRING_ME)..'|n'..format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
@@ -80,7 +80,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             })
 
             --[[添加控制面板        
-            local sel=e.AddPanelCheck('|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or addName), not Save.disabled, true)
+            local sel=e.AddPanel_Check('|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or addName), not Save.disabled, true)
             sel:SetScript('OnMouseDown', function()
                 if Save.disabled then
                     Save.disabled=nil
