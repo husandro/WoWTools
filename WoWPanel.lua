@@ -286,7 +286,7 @@ function e.AddPanel_Check_Sider(tab)
     local checkValue= tab.checkValue and true or false
     local checkTooltip= tab.checkTooltip
     local checkFunc= tab.checkFunc
-  
+
     local sliderValue= tab.sliderValue
     local sliderMinValue= tab.sliderMinValue
     local sliderMaxValue= tab.sliderMaxValue
@@ -553,7 +553,7 @@ local function Init()
                 print(id, e.Player.useColor and e.Player.useColor.hex or '', (e.onlyChinese and '颜色' or COLOR)..'|r',   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
             Save.useColor= value
-            
+
         end,
         GetOptionsFunc= function()
             local container = Settings.CreateControlTextContainer()

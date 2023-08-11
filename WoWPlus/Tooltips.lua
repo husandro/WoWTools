@@ -1705,7 +1705,7 @@ end
 
 local function Init_Panel()
     --添加新控制面板
-    e.AddPanel_Sub_Category({name=e.Icon.mid..addName, frame=panel})
+    e.AddPanelSubCategory({name=e.Icon.mid..addName, frame=panel})
 
     e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=not Save.disabled, clearTips=nil,--重新加载UI, 重置, 按钮
         disabledfunc=function()
