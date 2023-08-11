@@ -311,6 +311,28 @@ function e.AddPanel_Check_Sider(tab)
     return initializer
 end
 
+--[[
+e.AddPanel_Check_Sider({
+    checkName= addName,
+    checkValue= not Save.disabled,
+    checkTooltip= addName,
+    checkFunc= function()
+        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end,
+    sliderValue= 0.5,
+    sliderMinValue= 0,
+    sliderMaxValue= 1,
+    sliderStep= 0.1,
+    siderName= nil,
+    siderTooltip= nil,
+    siderFunc= function(_, _, value2)
+        local value3= e.GetFormatter1to10(value2, MinValue, MaxValue)
+        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end,
+    layout= Layout,
+    category= Category,
+})
+]]
 
 --添加，划动条
 function e.AddPanelSider(tab)
@@ -348,28 +370,6 @@ e.AddPanelSider({
 ]]
 
 
---[[
-e.AddPanel_Check_Sider({
-    checkName= addName,
-    checkValue= not Save.disabled,
-    checkTooltip= addName,
-    checkFunc= function()
-        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end,
-    sliderValue= 0.5,
-    sliderMinValue= 0,
-    sliderMaxValue= 1,
-    sliderStep= 0.1,
-    siderName= nil,
-    siderTooltip= nil,
-    siderFunc= function(_, _, value2)
-        local value3= e.GetFormatter1to10(value2, MinValue, MaxValue, Step)
-        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end,
-    layout= Layout,
-    category= Category,
-})
-]]
 
 
 --[[

@@ -2080,7 +2080,7 @@ local function options_Init()--初始，选项
 
 
     e.AddPanel_Check_Sider({
-        checkName= (e.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..format(e.Icon.number2,1)..format(e.Icon.number2,2)..format(e.Icon.number2,3),
+        checkName= (e.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
         checkValue= Save.classPowerNum,
         checkTooltip= addName,
         checkFunc= function()
