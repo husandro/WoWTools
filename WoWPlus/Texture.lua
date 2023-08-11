@@ -6,7 +6,6 @@ local Save={
     disabledAlpha= not e.Player.husandro,
 
     alpha= 0.5,
-    --disabledMainMenu=true,--主菜单，颜色，使用透明度
 
     chatBubbleAlpha= 0.5,--聊天泡泡
     chatBubbleSacal= 0.85,
@@ -1936,31 +1935,45 @@ end
 local function options_Init()--初始，选项
     local Category, Layout= e.AddPanelSubCategory({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName), frame=panel})
 
-    panel.check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    panel.check.text:SetText('*) '..(e.onlyChinese and '隐藏材质' or HIDE..addName))
-    panel.check:SetChecked(not Save.disabledTexture)
-    panel.check:SetPoint('TOPLEFT', 0, -48)
-    panel.check:SetScript('OnMouseDown', function()
-        Save.disabledTexture= not Save.disabledTexture and true or nil
-    end)
+    e.AddPanelCheck({
+        name= e.onlyChinese and '隐藏材质' or HIDE..addName,
+        tooltip= addName,
+        category= Category,
+        value= not Save.disabledTexture,
+        func= function()
+            Save.disabledTexture= not Save.disabledTexture and true or nil
+            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    })
 
-    local colorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    colorCheck.text:SetText('*) '..(e.onlyChinese and '颜色' or COLOR))
-    colorCheck:SetPoint('TOPLEFT', panel.check, 'BOTTOMLEFT', 0, -16)
-    colorCheck:SetChecked(not Save.disabledColor)
-    colorCheck:SetScript('OnMouseDown', function()
-        Save.disabledColor= not Save.disabledColor and true or false
-    end)
+    local initializer2= e.AddPanelCheck({
+        name= e.onlyChinese and '颜色' or COLOR,
+        tooltip= addName,
+        category= Category,
+        value= not Save.disabledColor,
+        func= function()
+            Save.disabledColor= not Save.disabledColor and true or false
+            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    })
 
-    local mainMenuCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    mainMenuCheck:SetPoint('LEFT', colorCheck.text, 'RIGHT', 2, 0)
-    mainMenuCheck:SetChecked(not Save.disabledMainMenu)
-    mainMenuCheck.Text:SetText(e.onlyChinese and '主菜单' or MAINMENU_BUTTON)
-    mainMenuCheck:SetScript('OnClick', function()
-        Save.disabledMainMenu= not Save.disabledMainMenu and true or nil
-        set_MainMenu_Color()--主菜单，颜色，透明度
-    end)
+    local initializer= e.AddPanelCheck({
+        name= e.onlyChinese and '主菜单' or MAINMENU_BUTTON,
+        tooltip= addName,
+        category= Category,
+        value= not Save.disabledMainMenu,
+        func= function()
+            Save.disabledMainMenu= not Save.disabledMainMenu and true or nil
+            set_MainMenu_Color()--主菜单，颜色，透明度
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.disabledColor end)
 
+
+
+
+
+    
     local alphaCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     alphaCheck.text:SetText('*) '..(e.onlyChinese and '透明度' or 'Alpha'))
     alphaCheck:SetPoint('TOPLEFT', colorCheck, 'BOTTOMLEFT', 0, -16)

@@ -116,6 +116,7 @@ end
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
 Settings.RegisterAddOnCategory(Category)
 
+--添加，子目录
 function e.AddPanelSubCategory(tab)
     if tab.frame then
         return Settings.RegisterCanvasLayoutSubcategory(Category, tab.frame, tab.name)
@@ -124,27 +125,26 @@ function e.AddPanelSubCategory(tab)
     end
 end
 
+--打开，选项
 function e.OpenPanelOpting(frameName)
     Settings.OpenToCategory(Category, frameName)
 end
+
+--添加，标题
 function e.AddPanelHeader(layout, title)
     layout= layout or Layout
     layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(title))
 end
 
+--添加，Check
 function e.AddPanelCheck(tab)
     local name = tab.name
     local tooltip = tab.tooltip
     local category= tab.category or Category
-    local defaultValue
+    local defaultValue= tab.value and true or false
     local func= tab.func
 
     local variable = id..name
-    if tab.value then
-        defaultValue= true
-    else
-        defaultValue=false
-    end
     local setting= Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
 
     local initializer= Settings.CreateCheckBox(category, setting, tooltip)
@@ -155,7 +155,7 @@ end
 local initializer2= e.AddPanelCheck({
     name= ,
     tooltip= addName,
-    category=Category,
+    category= Category,
     value= not Save.disabled,
     func= function()
     end
@@ -165,7 +165,7 @@ local initializer= e.AddPanelCheck({
 initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 ]]
 
-
+--添加，按钮
 function e.AddPanelButton(tab)
     local name= tab.name or ''
     local buttonText= tab.text
@@ -177,17 +177,18 @@ function e.AddPanelButton(tab)
 	layout:AddInitializer(initializer)
     return initializer
 end
-
 --[[
  e.AddPanelButton({
     name= nil,
     text= addName,
     layout= Layout,
-    tooltip=nil,
+    tooltip= nil,
     func= function()
     end
 })
 ]]
+
+--添加，Check 和 按钮
 function e.AddPanelCheckButton(tab)
     local checkName = tab.checkName
     local defaultValue= tab.checkValue and true or false
@@ -202,11 +203,22 @@ function e.AddPanelCheckButton(tab)
 
     local variable = id..checkName
     local setting= Settings.RegisterAddOnSetting(category, checkName, variable, type(defaultValue), defaultValue)
-    local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc, false, tooltip)
+    --local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc, false, tooltip)
+    local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc, checkFunc, tooltip)
     layout:AddInitializer(initializer)
-    Settings.SetOnValueChangedCallback(variable, checkFunc, initializer)
+    --Settings.SetOnValueChangedCallback(variable, checkFunc, initializer)
     return initializer
 end
+
+--[[
+unction CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonClick, clickRequiresSet, tooltip)
+	local data = Settings.CreateSettingInitializerData(setting, nil, tooltip);
+	data.buttonText = buttonText;
+	data.OnButtonClick = buttonClick;
+	data.clickRequiresSet = clickRequiresSet;
+	return Settings.CreateSettingInitializer("SettingsCheckBoxWithButtonControlTemplate", data);
+end
+]]
 
 --[[
 local initializer2= e.AddPanelCheckButton({
@@ -214,7 +226,7 @@ local initializer2= e.AddPanelCheckButton({
     checkValue= not Save.disabled,
     checkFunc= function()
     end,
-    buttonText='',
+    buttonText= '',
     buttonFunc= function()
     end,
     tooltip= addName,
@@ -232,7 +244,6 @@ function e.AddPanelDropDown(tab)
     local category= tab.category or Category
 
     local variable= id..name
-
     local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
     local initializer= Settings.CreateDropDown(category, setting, GetOptions, tootip)
     Settings.SetOnValueChangedCallback(variable, SetValue)
@@ -505,7 +516,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1==id then
             WoWToolsSave= WoWToolsSave or {}
             WoWDate= WoWDate or {}
-            --BunniesDB= BunniesDB or {}
 
             Save= WoWToolsSave[addName] or Save
             Save.useColor= Save.useColor or 1
