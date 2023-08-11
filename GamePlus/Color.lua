@@ -446,14 +446,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 			--添加控制面板
 			e.AddPanelCheckButton({
-				checkName=  '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器增强' or addName),
+				checkName=  '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器' or addName),
 				checkValue= not Save.disabled,
 				checkFunc= function()
+					print(id,addName,'check')
 					Save.disabled= not Save.disabled and true or nil
                 	print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 				end,
 				buttonText='|A:QuestArtifact:0:0|a'..(e.onlyChinese and '测试' or 'Test'),
 				buttonFunc= function()
+					print(id,addName,'button')
 					e.ShowColorPicker(e.Player.r, e.Player.g, e.Player.b, 1, function()end)
                 end,
 				tooltip= addName,
