@@ -829,7 +829,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 if reason==0 then
                     textLeft= (e.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..(textLeft or '')
                 elseif reason==1 then
-                    textLeft= (e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.LayerText))..(textLeft or '')
+                    textLeft= (e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.layer))..(textLeft or '')
                 elseif reason==2 then--战争模
                     textLeft= (isWarModeDesired and (e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))..(textLeft or '')
                 elseif reason==3 then
@@ -940,7 +940,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             if line then
                 if i==num then
                     if isSelf then--位面ID, 战争模式
-                        line:SetText(e.Player.Layer and '|A:nameplates-holypower2-on:0:0|a'..col..e.Player.LayerText..' '..e.Player.Layer..'|r' or ' ')
+                        line:SetText(e.Player.Layer and '|A:nameplates-holypower2-on:0:0|a'..col..e.Player.L.layer..' '..e.Player.Layer..'|r' or ' ')
                         line=_G["GameTooltipTextRight"..i]
                         if line then
                             if isWarModeDesired then
@@ -1009,7 +1009,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         if guid then
             local zone, npc = select(5, strsplit("-", guid))--位面,NPCID
             if zone then
-                self:AddDoubleLine(col..e.Player.LayerText..' '..zone, col..'NPC '..npc, r,g,b, r,g,b)
+                self:AddDoubleLine(col..e.Player.L.layer..' '..zone, col..'NPC '..npc, r,g,b, r,g,b)
                 e.Player.Layer=zone
             end
             get_Web_Link({frame=self, type='npc', id=npc, name=name, col=col, isPetUI=false})--取得网页，数据链接 
@@ -1815,7 +1815,7 @@ local function Init_Panel()
     initializer:SetParentInitializer(initializer2, function() return not Save.hideModel end)
 
     initializer= e.AddPanelSider({
-        name= e.onlyChinese and '大小' or 'Size',
+        name= e.Player.L.size,
         value= Save.modelSize or 100,
         minValue= 40,
         maxValue= 300,

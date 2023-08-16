@@ -519,7 +519,7 @@ local function InitMenu(self, level, type)--主菜单
         menuList='LOG_IN',
         hasArrow=true,
         tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '移动/大小' or (NPE_MOVE..'/'..UI_SCALE),
+        tooltipTitle= e.onlyChinese and '移动/大小' or (NPE_MOVE..'/'..e.Player.L.size),
         tooltipText= (e.onlyChinese and '系统' or SYSTEM)..' FPS',
         func= function()
             Save.frameratePlus= not Save.frameratePlus and true or nil

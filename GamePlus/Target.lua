@@ -683,7 +683,7 @@ local function set_Option()
     sliderRange:SetPoint("TOPLEFT", sel2.Text, 'BOTTOMLEFT',0, -16)
 
     local sliderCreatureFontSize = e.CSlider(panel, {min=8, max=32, value=Save.creatureFontSize, setp=1, w=100, color=true,
-    text=e.onlyChinese and '大小' or 'Size',
+    text= e.Player.L.size,
     func=function(self2, value)
         value= math.floor(value)
         self2:SetValue(value)

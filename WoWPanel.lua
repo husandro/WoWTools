@@ -645,8 +645,52 @@ end
 
 
 
-
-
+local function set_Local_Text()
+    local tab
+    if e.onlyChinese or LOCALE_zhCN or LOCALE_zhTW then
+        tab={
+            layer='位面',
+            size='大小',
+        }
+    elseif LOCALE_koKR then
+        tab={
+            layer='층',
+            size='크기',
+        }
+    elseif LOCALE_frFR then
+        tab={
+            layer='Couche',
+            size='Taille',
+        }
+    elseif LOCALE_deDE then
+        tab={
+            layer='Schicht',
+            size='Größe',
+        }
+    elseif LOCALE_esES or LOCALE_esMX then--西班牙语
+        tab={
+            layer='Capa',
+            size='Tamaño',
+        }
+    elseif LOCALE_ruRU then
+        tab={
+            layer='слой',
+            size='Размер',
+        }
+    elseif LOCALE_ptBR then--葡萄牙语
+        tab={
+            layer='Camada',
+            size='Tamanho',
+        }
+    elseif LOCALE_itIT then
+        tab={
+            layer='Strato',
+            size='Misurare',
+        }
+    end
+    e.Player.L=tab or e.Player.L
+    tab=nil
+end
 
 
 
@@ -668,26 +712,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
             e.onlyChinese= Save.onlyChinese
 
+            set_Local_Text()
             Init()
-
-            if e.onlyChinese or LOCALE_zhCN or LOCALE_zhTW then
-                e.Player.LayerText= '位面'
-            elseif LOCALE_koKR then
-                e.Player.LayerText= '층'
-            elseif LOCALE_frFR then
-                e.Player.LayerText= 'Couche'
-            elseif LOCALE_deDE then
-                e.Player.LayerText= 'Schicht'
-            elseif LOCALE_esES or LOCALE_esMX then
-                e.Player.LayerText= 'Capa'
-            elseif LOCALE_ruRU then
-                e.Player.LayerText= 'слой'
-            elseif LOCALE_ptBR then
-                e.Player.LayerText= 'Camada'
-            elseif LOCALE_itIT then
-                e.Player.LayerText= 'Strato'
-            end
-
             panel:UnregisterEvent('ADDON_LOADED')
         end
 

@@ -376,7 +376,7 @@ local function CursorPositionInt()
         can= C_Map.GetBestMapForUnit("player")
         can= can and C_Map.CanSetUserWaypointOnMap(can)
         e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(e.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r' or '') ..e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '大小' or FONT_SIZE, (Save.PlayerXYSize or 12)..e.Icon.mid)
+        e.tips:AddDoubleLine(e.Player.L.size, (Save.PlayerXYSize or 12)..e.Icon.mid)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:Show()
     end)
@@ -399,7 +399,7 @@ local function CursorPositionInt()
         end
         Save.PlayerXYSize=size
         e.Cstr(nil, {size=size, changeFont=self.Text})
-        print(id,addName, e.onlyChinese and '大小' or FONT_SIZE, size)
+        print(id,addName, e.Player.L.size, size)
     end)
 
     frame.playerPostionBtn.Text=e.Cstr(frame.playerPostionBtn, {size=Save.PlayerXYSize, color=true})
@@ -452,7 +452,7 @@ local function set_button_OnEnter(self)
     e.tips:AddDoubleLine(id, addName)
     e.tips:AddLine(' ')
     if e.Player.Layer then
-        e.tips:AddDoubleLine(e.Player.LayerText, e.Player.Layer)
+        e.tips:AddDoubleLine(e.Player.L.layer, e.Player.Layer)
     end
     local uiMapID = frame.mapID or frame:GetMapID("current")
     if uiMapID then
