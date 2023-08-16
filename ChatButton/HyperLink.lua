@@ -820,8 +820,7 @@ local function InitMenu(_, level, menuList)
                     button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),
                     button2= e.onlyChinese and '取消' or CANCEL,
                     OnShow = function(self)
-                        local text= Save.guildWelcomeText or EMOTE103_CMD1:gsub('/','')
-                        self.editBox:SetText(text)
+                        self.editBox:SetText(Save.guildWelcomeText)
                     end,
                     OnAccept = function(self)
                         local text= self.editBox:GetText()
@@ -851,8 +850,7 @@ local function InitMenu(_, level, menuList)
                     button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),
                     button2= e.onlyChinese and '取消' or CANCEL,
                     OnShow = function(self)
-                        local text= Save.guildWelcomeText or EMOTE103_CMD1:gsub('/','')
-                        self.editBox:SetText(text)
+                        self.editBox:SetText(Save.groupWelcomeText)
                     end,
                     OnAccept = function(self)
                         local text= self.editBox:GetText()
@@ -874,7 +872,7 @@ local function InitMenu(_, level, menuList)
             text= e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER,--公会新成员
             checked= Save.guildWelcome,
             tooltipOnButton=true,
-            tooltipTitle= Save.guildWelcomeText or (e.onlyChinese and '无' or NONE),
+            tooltipTitle= Save.guildWelcomeText,
             tooltipText= not IsInGuild() and e.onlyChinese and '你现在没有加入任何一个公会' or ERR_GUILD_PLAYER_NOT_IN_GUILD or nil,
             colorCode= (not IsInGuild() or not Save.guildWelcomeText)  and '|cff606060' or nil,--不在公会
             keepShownOnClick=true,
