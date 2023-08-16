@@ -7,14 +7,19 @@ local Save={
     text={--内容颜色,
         [ACHIEVEMENTS]=true,
     },
+
     groupWelcome= e.Player.husandro,--欢迎
-    groupWelcomeText= e.Player.cn and EMOTE103_CMD1:gsub('/','') or 'Hi{rt1}',
-    guildWelcome= true,
-    --guildWelcomeText='',
+    --groupWelcomeText= e.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}',
+    
+    guildWelcome= e.Player.husandro,
+    --guildWelcomeText= e.Player.cn and '宝贝，欢迎你加入' or EMOTE103_CMD1:gsub('/',''),
+
     welcomeOnlyHomeGroup=true,--仅限, 手动组队
 
     setPlayerSound= e.Player.husandro,--播放, 声音
+
     --disabledNPCTalking=true,--禁用，隐藏NPC发言
+    --disabledTalkingPringText=true,--禁用，隐藏NPC发言，文本
 
     setFucus= e.Player.husandro,--焦点
     focusKey='Shift',--焦点,快捷键, Ctrl, Alt
@@ -665,10 +670,10 @@ end
 --欢迎加入, 信息
 --#############
 local function set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
-    if (not Save.guildWelcome or not IsInGuild()) and not Save.groupWelcome then
-        panel:UnregisterEvent('CHAT_MSG_SYSTEM')
-    else
+    if (Save.guildWelcome and IsInGuild() ) or Save.groupWelcome then
         panel:RegisterEvent('CHAT_MSG_SYSTEM')
+    else
+        panel:UnregisterEvent('CHAT_MSG_SYSTEM')
     end
 end
 
@@ -677,7 +682,7 @@ local partyMS= JOINED_PARTY:gsub("%%s", "(.+)")--%s加入了队伍。
 local guildMS= ERR_GUILD_JOIN_S:gsub("%%s", "(.+)")--加入了公会
 
 local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
-    if not text or (not Save.guildWelcome and not Save.groupWelcome) then
+    if not text then
         return
     end
     if text:find(raidMS) or text:find(partyMS) then
@@ -688,16 +693,76 @@ local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
             end
         end
     elseif text:find(guildMS) then
-        if Save.guildWelcome then
+        if Save.guildWelcome and IsInGuild() then
             local name=text:match(guildMS)
             if name then
                 C_Timer.After(2, function()
-                    SendChatMessage((Save.guildWelcomeText or EMOTE103_CMD1:gsub('/',''))..' '.. name.. ' ' ..GUILD_INVITE_JOIN, "GUILD");
+                    SendChatMessage(Save.guildWelcomeText..' '.. name.. ' ' ..GUILD_INVITE_JOIN, "GUILD");
                 end)
             end
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+--##########
+--隐藏NPC发言
+--##########
+local function set_Talking()
+    if not Save.disabledNPCTalking or not Save.setPlayerSound then
+        if panel.talkingFrame then
+            panel:UnregisterAllEvents()
+        end
+        return
+    end
+
+    if not panel.talkingFrame then
+        panel.talkingFrame= CreateFrame("Frame", nil, panel)
+        panel.talkingFrame:SetScript('OnEvent', function(self)
+            local _, _, vo, _, _, _, name, text, isNewTalkingHead = C_TalkingHead.GetCurrentLineInfo()
+            TalkingHeadFrame:CloseImmediately()
+            if vo and vo>0 then
+                if ( self.voHandle ) then
+                    StopSound(self.voHandle);
+                    self.voHandle = nil;
+                end
+                local success, voHandle = e.PlaySound(vo, true)--PlaySound(vo, "Talking Head", true, true);
+                if ( success ) then
+                    self.voHandle = voHandle;
+                end
+            end
+            if not Save.disabledTalkingPringText and (text or self.voHandle) then
+                print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r',id, addName, 'soundKitID', vo)
+            end
+        end)
+    end
+    panel.talkingFrame:RegisterEvent('TALKINGHEAD_REQUESTED')
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -724,79 +789,100 @@ local function set_START_TIMER_Event()--事件, 声音
 end
 
 
---#####
---对话框
---#####
-StaticPopupDialogs[id..addName..'WELCOME']={--区域,设置对话框
-    text=id..' '..addName..'|n|n'..	EMOTE103_CMD1:gsub('/','')..' '.. JOIN..' |cnGREEN_FONT_COLOR:%s|r',
-    whileDead=1,
-    hideOnEscape=1,
-    exclusive=1,
-	timeout = 60,
-    hasEditBox=1,
-    button1= SLASH_CHAT_MODERATE2:gsub('/', ''),
-    button2= CANCEL,
-    button3= DISABLE,
-    OnShow = function(self, data)
-        local text=data.guild and Save.guildWelcomeText or data.group and Save.groupWelcomeText
-        text=text or EMOTE103_CMD1:gsub('/','')
-        self.editBox:SetText(text)
-        self.button3:SetEnabled(data.guild and Save.guildWelcome  or  data.group and Save.groupWelcome)
-        self.button1:SetText(e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''))
-        self.button2:SetText(e.onlyChinese and '取消' or CANCEL)
-        self.button3:SetText(e.onlyChinese and '禁用' or DISABLE)
-	end,
-    OnHide= function(self2)
-        self2.editBox:SetText("")
-        securecall(ChatEdit_FocusActiveWindow)
-    end,
-    OnAccept = function(self, data)
-		local text= self.editBox:GetText()
-        if data.guild then
-            Save.guildWelcomeText= text
-            Save.guildWelcome=true
-        elseif data.group then
-            Save.groupWelcomeText= text
-            Save.groupWelcome=true
-        end
-        e.LibDD:CloseDropDownMenus()
-        set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
-	end,
-    OnAlt = function(self, data)
-        if data.guild then
-            Save.guildWelcome=nil
-        else
-            Save.groupWelcome=nil
-        end
-        e.LibDD:CloseDropDownMenus()
-        set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
-    end,
-    EditBoxOnTextChanged=function(self, data)
-        local text= self:GetText()
-        self:GetParent().button1:SetEnabled(text:gsub(' ', '')~='')
-    end,
-    EditBoxOnEscapePressed = function(s)
-        s:SetAutoFocus(false)
-        s:ClearFocus()
-        s:GetParent():Hide()
-    end,
-}
+
+
+
+
+
+
+
+
+
+
+
 
 --#####
 --主菜单
 --#####
-local function InitMenu(_, level, type)
+local function InitMenu(_, level, menuList)
     local info
-    if type=='Welcome' then--欢迎
+    if menuList=='modifyGuildWelcomeText' then--三级
         info={
-            text= e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER,--公会新成员
-            checked=Save.guildWelcome,
+            text= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),--公会新成员
+            notCheckable=true,
             tooltipOnButton=true,
-            tooltipTitle=Save.guildWelcomeText or EMOTE103_CMD1:gsub('/',''),
-            colorCode= not IsInGuild() and '|cff606060',--不在公会
+            tooltipTitle=Save.guildWelcomeText,
             keepShownOnClick=true,
             func=function()
-                StaticPopup_Show(id..addName..'WELCOME', e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER, nil, {guild= true})
+                StaticPopupDialogs[id..addName..'modifyGuildWelcome']={--区域,设置对话框
+                    text=id..' '..addName..'|n|n'..(e.onlyChinese and '欢迎加入' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  EMOTE103_CMD1:gsub('/',''), JOIN))..'|n'..(e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER),
+                    hasEditBox=1,
+                    button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),
+                    button2= e.onlyChinese and '取消' or CANCEL,
+                    OnShow = function(self)
+                        local text= Save.guildWelcomeText or EMOTE103_CMD1:gsub('/','')
+                        self.editBox:SetText(text)
+                    end,
+                    OnAccept = function(self)
+                        local text= self.editBox:GetText()
+                        Save.guildWelcomeText= text
+                        print(id,addName, text)
+                    end,
+                    EditBoxOnTextChanged=function(self)
+                        local text= self:GetText() or ''
+                        self:GetParent().button1:SetEnabled(text:gsub(' ', '')~='')
+                    end,
+                }
+                StaticPopup_Show(id..addName..'modifyGuildWelcome')
+            end,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    elseif menuList=='modifyGroupWelcomeText' then--三级
+        info={
+            text= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),--公会新成员
+            notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle=Save.groupWelcomeText,
+            keepShownOnClick=true,
+            func=function()
+                StaticPopupDialogs[id..addName..'modifyGroupWelcome']={--区域,设置对话框
+                    text=id..' '..addName..'|n|n'..(e.onlyChinese and '欢迎加入' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  EMOTE103_CMD1:gsub('/',''), JOIN))..'|n'..(e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER),
+                    hasEditBox=1,
+                    button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),
+                    button2= e.onlyChinese and '取消' or CANCEL,
+                    OnShow = function(self)
+                        local text= Save.guildWelcomeText or EMOTE103_CMD1:gsub('/','')
+                        self.editBox:SetText(text)
+                    end,
+                    OnAccept = function(self)
+                        local text= self.editBox:GetText()
+                        Save.groupWelcomeText= text
+                        e.Chat(text, e.Player.name)
+                    end,
+                    EditBoxOnTextChanged=function(self)
+                        local text= self:GetText() or ''
+                        self:GetParent().button1:SetEnabled(text:gsub(' ', '')~='')
+                    end,
+                }
+                StaticPopup_Show(id..addName..'modifyGroupWelcome')
+            end,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif menuList=='Welcome' then--欢迎
+        info={
+            text= e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER,--公会新成员
+            checked= Save.guildWelcome,
+            tooltipOnButton=true,
+            tooltipTitle= Save.guildWelcomeText or (e.onlyChinese and '无' or NONE),
+            tooltipText= not IsInGuild() and e.onlyChinese and '你现在没有加入任何一个公会' or ERR_GUILD_PLAYER_NOT_IN_GUILD or nil,
+            colorCode= (not IsInGuild() or not Save.guildWelcomeText)  and '|cff606060' or nil,--不在公会
+            keepShownOnClick=true,
+            hasArrow=true,
+            menuList='modifyGuildWelcomeText',
+            func=function()
+                Save.guildWelcome= not Save.guildWelcome and true or nil
+                set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
             end,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -804,13 +890,16 @@ local function InitMenu(_, level, type)
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinese and '队伍新成员' or SPELL_TARGET_TYPE14_DESC,--队伍新成员
-            checked=Save.groupWelcome,
+            checked= Save.groupWelcome,
             tooltipOnButton=true,
-            tooltipTitle=LFG_LIST_CROSS_FACTION:format(PARTY_PROMOTE),
-            tooltipText=Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''),
+            tooltipTitle= e.onlyChinese and '仅限队长或团长' or format(LFG_LIST_CROSS_FACTION, LEADER ),
+            tooltipText=Save.groupWelcomeText,
             keepShownOnClick=true,
+            hasArrow=true,
+            menuList='modifyGroupWelcomeText',
             func=function()
-                StaticPopup_Show(id..addName..'WELCOME', e.onlyChinese and '队伍新成员' or SPELL_TARGET_TYPE14_DESC, nil, {group= true})
+                Save.groupWelcome= not Save.groupWelcome and true or nil
+                set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
             end,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -823,31 +912,47 @@ local function InitMenu(_, level, type)
             keepShownOnClick=true,
             func= function()
                 Save.welcomeOnlyHomeGroup= not Save.welcomeOnlyHomeGroup and true or nil
+                
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-        return
 
-    --[[elseif type=='NPCTalking' then--禁用，隐藏NPC发言
+    elseif menuList=='NPCTalkingText' then--3级，菜单
+        info={--仅限, 手动组队,不是在随机队伍里
+            text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
+            checked= not Save.disabledTalkingPringText,
+            disabled= not Save.setPlayerSound or Save.disabledNPCTalking,
+            keepShownOnClick=true,
+            func= function()
+                Save.disabledTalkingPringText= not Save.disabledTalkingPringText and true or nil
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif menuList=='NPCTalking' then--禁用，隐藏NPC发言
         info={--仅限, 手动组队,不是在随机队伍里
             text= e.onlyChinese and '隐藏NPC发言' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ' (NPC) '..VOICE_TALKING),
             checked= not Save.disabledNPCTalking,
             tooltipOnButton=true,
+            disabled= not Save.setPlayerSound,
             tooltipTitle= e.onlyChinese and '隐藏对话特写头像' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL),
-            --keepShownOnClick=true,
+            keepShownOnClick=true,
+            hasArrow=true,
+            menuList='NPCTalkingText',
             func= function()
                 Save.disabledNPCTalking= not Save.disabledNPCTalking and true or nil
+                set_Talking()--隐藏NPC发言
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-        return
-        ]]
     end
 
+    if menuList then
+        return
+    end
 
     info={
-        text= (e.onlyChinese and '超链接图标'or addName),
-        icon= 'newplayertutorial-icon-mouse-leftbutton',
+        text= '|A:newplayertutorial-icon-mouse-leftbutton:0:0|a'..(e.onlyChinese and '超链接图标'or addName),
         checked=not Save.disabed,
         keepShownOnClick=true,
         func=function()
@@ -857,8 +962,7 @@ local function InitMenu(_, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={--文本转语音
-        text= (e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
-        icon= 'chatframe-button-icon-TTS',
+        text= '|A:chatframe-button-icon-TTS:0:0|a'..(e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
         checked= C_CVar.GetCVarBool('textToSpeech'),
         disabled= UnitAffectingCombat('player'),
         tooltipOnButton=true,
@@ -872,19 +976,19 @@ local function InitMenu(_, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={
-        text= e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND,
-        icon= 'chatframe-button-icon-voicechat',
+        text= '|A:chatframe-button-icon-voicechat:0:0|a'..(e.onlyChinese and '事件声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTS_LABEL, SOUND)),
         checked= Save.setPlayerSound,
         colorCode= (not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0') and '|cff606060',
         keepShownOnClick=true,
-        --hasArrow=true,
-        --menuList='NPCTalking',
+        hasArrow=true,
+        menuList='NPCTalking',
         func= function()
             Save.setPlayerSound= not Save.setPlayerSound and true or nil
             e.setPlayerSound= Save.setPlayerSound
             if Save.setPlayerSound then
                 e.PlaySound()--播放, 声音
             end
+            set_Talking()--隐藏NPC发言
             set_START_TIMER_Event()--事件, 声音
             print(id, addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
         end
@@ -907,8 +1011,7 @@ local function InitMenu(_, level, type)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
-        text= '|cffff00ffETR|rACE',
-        icon= 'minimap-genericevent-hornicon',
+        text= '|A:minimap-genericevent-hornicon:0:0|a|cffff00ffETR|rACE',
         checked= IsAddOnLoaded("Blizzard_EventTrace") and EventTrace:IsShown(),
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '事件记录' or EVENTTRACE_HEADER,
@@ -924,8 +1027,7 @@ local function InitMenu(_, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={
-        text= '|cff00ff00FST|rACK',
-        icon= 'QuestLegendaryTurnin',
+        text= '|A:QuestLegendaryTurnin:0:0|a|cff00ff00FST|rACK',
         checked= IsAddOnLoaded("Blizzard_DebugTools") and FrameStackTooltip_IsFramestackEnabled(),--Blizzard_DebugTools.lua
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '框架栈' or DEBUG_FRAMESTACK,
@@ -945,11 +1047,10 @@ local function InitMenu(_, level, type)
 
     --e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={--重载
-        text= e.onlyChinese and '重新加载UI' or RELOADUI,
-        icon='Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up',
+        text= '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t'..(e.onlyChinese and '重新加载UI' or RELOADUI),
         notCheckable=true,
         tooltipOnButton=true,
-        tooltipTitle='/reload',
+        tooltipTitle= SLASH_RELOAD1,-- '/reload',
         colorCode='|cffff0000',
         keepShownOnClick=true,
         func=function()
@@ -1037,15 +1138,18 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 Save= WoWToolsSave[addName] or Save
                 Save.Cvar= Save.Cvar or {}
                 e.setPlayerSound= Save.setPlayerSound--播放, 声音
+                Save.groupWelcomeText= Save.groupWelcomeText or (e.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
+                Save.guildWelcomeText= Save.guildWelcomeText or (e.Player.cn and '宝贝，欢迎你加入' or EMOTE103_CMD1:gsub('/',''))
 
                 button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
 
-
+                set_Talking()--隐藏NPC发言
                 Init()
                 panel:RegisterEvent('CVAR_UPDATE')
-                panel:RegisterEvent("PLAYER_LOGOUT")
+            else
+                panel:UnregisterEvent('ADDON_LOADED')
             end
-            --panel:UnregisterEvent('ADDON_LOADED')
+            panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_DebugTools' then--FSTACK Blizzard_DebugTools.lua
             local btn= e.Cbtn(TableAttributeDisplay, {icon='hide', size={35,35}})

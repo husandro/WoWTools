@@ -46,7 +46,7 @@ WoWPlus\Texture.lua
 ##角色面板
 WoWPlus\PaperDoll.lua
 ##角色，属性
-##WoWPlus\Attributes.lua
+WoWPlus\Attributes.lua
 ##声望面板
 WoWPlus\Reputation.lua
 ##货币面板
@@ -88,7 +88,7 @@ GamePlus\ItemInfo.lua
 ##插件，方案
 GamePlus\AddOns.lua
 ##自动隐藏，弹出NPC说话，
-GamePlus\Talking.lua
+##GamePlus\Talking.lua
 ##断， 驱，散
 GamePlus\InterruptStolenDispel.lua
 ##日历, 显示
@@ -142,7 +142,7 @@ Tools\27MagePortal.lua
 ##这是Chat主要，如果需要其中一个功能，这个不能关
 ChatButton\ChatButton.lua
 ##超链接， 欢迎, 一些其他功能
-##ChatButton\HyperLink.lua
+ChatButton\HyperLink.lua
 ##ROLL
 ChatButton\Roll.lua
 ##标记

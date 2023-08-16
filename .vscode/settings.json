@@ -3244,7 +3244,8 @@
         "OPTION_TOOLTIP_MOUSE_SENSITIVITY",
         "MOUSE_SENSITIVITY",
         "ColorPickerCancelButton",
-        "SettingsSliderOptionsMixin"
+        "SettingsSliderOptionsMixin",
+        "ERR_GUILD_PLAYER_NOT_IN_GUILD"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
