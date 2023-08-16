@@ -124,7 +124,17 @@ Settings.RegisterAddOnCategory(Category)
 
 --打开，选项
 function e.OpenPanelOpting(frameName)
-    Settings.OpenToCategory(Category, frameName)
+    frameName= frameName or 'Frame'
+    if frameName then
+        for _, initializer in Layout:EnumerateInitializers() do
+            if initializer.data.name== 'Frame' then
+                initializer.data.expanded = true;
+                Settings.OpenToCategory(Category:GetID(), frameName);
+                return;
+            end
+        end
+    end
+    Settings.OpenToCategory(Category:GetID(), frameName)
 end
 
 
@@ -177,22 +187,22 @@ initializer:SetParentInitializer(initializer2, function() return not Save.disabl
 
 --添加，按钮
 function e.AddPanel_Button(tab)
-    local name= tab.name or ''
-    local buttonText= tab.text
+    local title= tab.title or ''
+    local buttonText= tab.buttonText
     local buttonClick= tab.func
-    local tooltip= tab.tooltip
+    local tooltip= tab.title and tab.tooltip or nil
     local layout= tab.layout or Layout
 
-    local initializer= CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip)--Blizzard_SettingControls.lua
+    local initializer= CreateSettingsButtonInitializer(title, buttonText, buttonClick, tooltip)--Blizzard_SettingControls.lua
 	layout:AddInitializer(initializer)
     return initializer
 end
 --[[
  e.AddPanel_Button({
-    name= nil,
-    text= addName,
+    title= nil,
+    buttonText= addName,
+    tooltip= nil,--需要 title
     layout= Layout,
-    tooltip= nil,
     func= function()
         print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
@@ -475,8 +485,8 @@ local function Init()
     e.AddPanel_Header(nil, e.onlyChinese and '设置' or SETTINGS)
 
     e.AddPanel_Button({
-        name= '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
-        text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '默认设置' or SETTINGS_DEFAULTS),
+        title= '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
+        buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '默认设置' or SETTINGS_DEFAULTS),
         func= function()
             StaticPopupDialogs[id..'RestAllSetup']={
                 text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r|n|n'..(e.onlyChinese and "你想要将所有选项重置为默认状态吗？|n将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)
@@ -495,8 +505,8 @@ local function Init()
     })
 
     e.AddPanel_Button({
-        name= e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
-        text= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+        title= e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
+        buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         func= function()
             StaticPopupDialogs[id..'RestWoWSetup']={
                 text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'

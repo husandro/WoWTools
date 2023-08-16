@@ -1054,12 +1054,12 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     set_Item_Model(self, {unit=unit, guid=guid, col= col})--设置, 3D模型
 
 
-    if isSelf and not isInCombat and Save.WidgetSetID>0 then
+    --[[if isSelf and not isInCombat and Save.WidgetSetID>0 then
         GameTooltip_AddWidgetSet(e.tips, Save.WidgetSetID, 10)
-    end
+    end]]
 end
 
-local function setCVar(reset, tips, notPrint)
+local function set_CVar(reset, tips, notPrint)
     local tab={
         ['missingTransmogSourceInItemTooltips']={
             value='1',
@@ -1092,19 +1092,20 @@ local function setCVar(reset, tips, notPrint)
     }
 
     if tips then
+        local text
         for name, info in pairs(tab) do
             if info.zh and LOCALE_zhCN or not info.zh then
                 local curValue= C_CVar.GetCVar(name)
-                e.tips:AddDoubleLine(
-                    (curValue== info.value and '|cnGREEN_FONT_COLOR:' or '')
-                    ..name..' '
+                text= (text and text..'|n|n' or '')
+                    ..info.msg..'|n'..name..'|n'
+                    ..(curValue== info.value and '|cnGREEN_FONT_COLOR:' or '')
+                    
                     ..(e.onlyChinese and '设置' or SETTINGS)..'|cffff00ff'..info.value..'|r'
                     ..' ('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cffff00ff'..C_CVar.GetCVar(name)..'|r) |r'
-                    ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..C_CVar.GetCVarDefault(name)..'|r',
-                    info.msg)
+                    ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..C_CVar.GetCVarDefault(name)..'|r'
             end
         end
-        return
+        return text
     end
 
     for name, info in pairs(tab) do
@@ -1498,19 +1499,18 @@ local function Init()
         setPet(self, speciesID)--宠物
     end)
 
+    if Save.setCVar then
+        set_CVar(nil, nil, true)--设置CVar
+        if LOCALE_zhCN then
+            ConsoleExec("portal TW")
+            SetCVar("profanityFilter", '0')
 
-
-    setCVar(nil, nil, true)--设置CVar
-
-    if Save.setCVar and LOCALE_zhCN then
-        ConsoleExec("portal TW")
-        SetCVar("profanityFilter", '0')
-
-        local pre = C_BattleNet.GetFriendGameAccountInfo
-        C_BattleNet.GetFriendGameAccountInfo = function(...)
-            local gameAccountInfo = pre(...)
-            gameAccountInfo.isInCurrentRegion = true
-            return gameAccountInfo;
+            local pre = C_BattleNet.GetFriendGameAccountInfo
+            C_BattleNet.GetFriendGameAccountInfo = function(...)
+                local gameAccountInfo = pre(...)
+                gameAccountInfo.isInCurrentRegion = true
+                return gameAccountInfo;
+            end
         end
     end
 
@@ -1689,9 +1689,10 @@ end
 
 
 
---##########
---设置 panel
---##########
+--##############
+ --添加新控制面板
+--##############
+local Category, Layout= e.AddPanel_Sub_Category({name=e.Icon.mid..addName})
 local function set_Cursor_Tips(self)
     set_Init_Item(e.tips, true)
     set_Init_Item(ItemRefTooltip, true)
@@ -1702,182 +1703,233 @@ local function set_Cursor_Tips(self)
     e.tips:SetUnit('player')
     e.tips:Show()
 end
-
 local function Init_Panel()
-    --添加新控制面板
-    e.AddPanel_Sub_Category({name=e.Icon.mid..addName, frame=panel})
+    e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
 
-    e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=not Save.disabled, clearTips=nil,--重新加载UI, 重置, 按钮
-        disabledfunc=function()
-            Save.disabled= not Save.disabled and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end,
-        clearfunc= function() Save=nil e.Reload() end}
-    )
-
-
-    local setDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--设置默认提示位置
-    local inCombatDefaultAnchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    local Anchor=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--指定提示位置
-
-    setDefaultAnchor.text:SetText(e.onlyChinese and '跟随鼠标' or FOLLOW..MOUSE_LABEL)
-    setDefaultAnchor:SetPoint('TOPLEFT', 0, -48)
-    setDefaultAnchor:SetChecked(Save.setDefaultAnchor)--提示位置
-    setDefaultAnchor:SetScript('OnLeave', function() e.tips:Hide() end)
-    setDefaultAnchor:SetScript('OnMouseDown', function(self)
-        Save.setDefaultAnchor= not Save.setDefaultAnchor and true or nil
-        if Save.setDefaultAnchor then
-            Save.setAnchor=nil
-            Anchor:SetChecked(false)
+    
+    local initializer2= e.AddPanel_Check({
+        name= e.onlyChinese and '跟随鼠标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FOLLOW, MOUSE_LABEL),
+        tooltip= addName,
+        value= Save.setDefaultAnchor,
+        category= Category,
+        func= function()
+            Save.setDefaultAnchor= not Save.setDefaultAnchor and true or nil
+            if Save.setDefaultAnchor then
+                Save.setAnchor=nil
+            end
+            set_Cursor_Tips()
         end
-        set_Cursor_Tips(self)
-    end)
+    })
+
+    local initializer= e.AddPanelSider({
+        name= 'X',
+        value= Save.cursorX or 0,
+        minValue= -240,
+        maxValue= 240,
+        setp= 1,
+        tooltip= addName,
+        category= Category,
+        func= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, -200, 200)
+            Save.cursorX= value3
+            set_Cursor_Tips()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
+
+    initializer= e.AddPanelSider({
+        name= 'Y',
+        value= Save.cursorY or 0,
+        minValue= -240,
+        maxValue= 240,
+        setp= 1,
+        tooltip= addName,
+        category= Category,
+        func= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, -200, 200)
+            Save.cursorY= value3
+            set_Cursor_Tips()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
+
+    initializer= e.AddPanel_Check({
+        name= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
+        tooltip= addName,
+        value= Save.cursorRight,
+        category= Category,
+        func= function()
+            Save.cursorRight= not Save.cursorRight and true or nil
+            set_Cursor_Tips()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
+
+    initializer= e.AddPanel_Check({
+        name= e.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
+        tooltip= addName,
+        value= Save.inCombatDefaultAnchor,
+        category= Category,
+        func= function()
+            Save.inCombatDefaultAnchor= not Save.inCombatDefaultAnchor and true or nil
+            set_Cursor_Tips()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
+    
+
+    e.AddPanel_Header(Layout, e.onlyChinese and '设置' or SETTINGS)
+    initializer2= e.AddPanel_Check({
+        name= e.onlyChinese and '模型' or MODEL,
+        tooltip= addName,
+        value= not Save.hideModel,
+        category= Category,
+        func= function()
+            Save.hideModel= not Save.hideModel and true or nil
+            set_Cursor_Tips()
+        end
+    })
+
+    initializer= e.AddPanel_Check({
+        name= e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
+        tooltip= addName,
+        value= Save.modelLeft,
+        category= Category,
+        func= function()
+            Save.modelLeft= not Save.modelLeft and true or nil
+            set_Cursor_Tips()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.hideModel end)
+
+    initializer= e.AddPanel_Check({
+        name= (e.onlyChinese and '模型' or MODEL)..' ID',
+        tooltip= addName,
+        value= Save.showModelFileID,
+        category= Category,
+        func= function()
+            Save.showModelFileID= not Save.showModelFileID and true or nil
+            set_Cursor_Tips()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.hideModel end)
+
+    initializer= e.AddPanelSider({
+        name= e.onlyChinese and '大小' or 'Size',
+        value= Save.modelSize or 100,
+        minValue= 40,
+        maxValue= 300,
+        setp= 1,
+        tooltip= addName,
+        category= Category,
+        func= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, 40, 300)
+            Save.modelSize= value3
+            set_Cursor_Tips()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.hideModel end)
+
+    initializer= e.AddPanelSider({
+        name= 'X',
+        value= Save.modelX or 0,
+        minValue= -240,
+        maxValue= 240,
+        setp= 1,
+        tooltip= addName,
+        category= Category,
+        func= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, -200, 200)
+            Save.modelX= value3
+            set_Cursor_Tips()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.hideModel end)
+
+    initializer= e.AddPanelSider({
+        name= 'Y',
+        value= Save.modelY or -24,
+        minValue= -240,
+        maxValue= 240,
+        setp= 1,
+        tooltip= addName,
+        category= Category,
+        func= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, -200, 200)
+            Save.modelY= value3
+            set_Cursor_Tips()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.hideModel end)
+    
+    initializer= e.AddPanelSider({
+        name= e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION,
+        value= Save.modelFacing or -24,
+        minValue= -1,
+        maxValue= 1,
+        setp= 0.1,
+        tooltip= addName,
+        category= Category,
+        func= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, -1, 1)
+            Save.modelFacing= value3
+            set_Cursor_Tips()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.hideModel end)
 
 
-    local sliderCursorX = e.CSlider(panel, {w=100, min=-150, max=150, value=Save.cursorX or 0, setp=1, color=nil,
-    text='X',
-    func=function(self, value)
-        value= tonumber(format('%i', value))
-        value= value==0 and 0 or value
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.cursorX= value
-        set_Cursor_Tips(self)
-    end})
-    sliderCursorX:SetPoint('TOPLEFT', setDefaultAnchor, 'BOTTOMRIGHT', 0, -16)
-
-    local sliderCursorY = e.CSlider(panel, {w=100, min=-150, max=150, value=Save.cursorY or 0, setp=1, color=true,
-    text='Y',
-    func=function(self, value)
-        value= tonumber(format('%i', value))
-        value= value==0 and 0 or value
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.cursorY= value
-        set_Cursor_Tips(self)
-    end})
-    sliderCursorY:SetPoint("LEFT", sliderCursorX, 'RIGHT',20,0)
-
-    inCombatDefaultAnchor.text:SetText(e.onlyChinese and '战斗中：默认' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT)
-    inCombatDefaultAnchor:SetPoint('TOPLEFT', sliderCursorX.Low, 'BOTTOMLEFT',0,-16)
-    inCombatDefaultAnchor:SetChecked(Save.inCombatDefaultAnchor)
-    inCombatDefaultAnchor:SetScript('OnMouseDown', function()
-        Save.inCombatDefaultAnchor= not Save.inCombatDefaultAnchor and true or nil
-    end)
-
-    local courorRightCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--指定提示位置
-    courorRightCheck.text:SetText(e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT)
-    courorRightCheck:SetPoint('LEFT', inCombatDefaultAnchor.text, 'RIGHT',2,0)
-    courorRightCheck:SetChecked(Save.cursorRight)
-    courorRightCheck:SetScript('OnMouseDown', function(self)
-        Save.cursorRight= not Save.cursorRight and true or nil
-        set_Cursor_Tips(self)
-    end)
+    e.AddPanel_Check({
+        name= e.onlyChinese and '生命值 ' or HEALTH,
+        tooltip= addName,
+        value= not Save.hideHealth,
+        category= Category,
+        func= function()
+            Save.hideHealth= not Save.hideHealth and true or nil
+            print(id, addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    })
+    e.AddPanel_Check({
+        name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Ctrl+Shift', e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
+        tooltip= 'WoWHead.com|nRaider.IO',
+        value= Save.ctrl,
+        category= Category,
+        func= function()
+            Save.ctrl= not Save.ctrl and true or nil
+            set_Cursor_Tips()
+        end
+    })
 
 
-    local modelCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    modelCheck.text:SetText(e.onlyChinese and '模型' or MODEL)
-    modelCheck:SetPoint('TOPLEFT', panel, 'TOP', 0, -48)
-    modelCheck:SetChecked(not Save.hideModel)
-    modelCheck:SetScript('OnClick', function(self)
-        Save.hideModel= not Save.hideModel and true or nil
-        set_Cursor_Tips(self)
-    end)
+    initializer2= e.AddPanel_Check({
+        name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '设置' or SETTINGS, 'CVar'),
+        tooltip= function() return set_CVar(nil, true, true)..'|n|n'..(e.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS)) end,
+        value= Save.setCVar,
+        category= Category,
+        func= function()
+            Save.setCVar= not Save.setCVar and true or nil
+        end
+    })
 
-    local modelLeft=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    modelLeft.text:SetText(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT)
-    modelLeft:SetPoint('LEFT', modelCheck.text, 'RIGHT', 2, 0)
-    modelLeft:SetChecked(Save.modelLeft)
-    modelLeft:SetScript('OnMouseDown', function(self)
-        Save.modelLeft= not Save.modelLeft and true or nil
-        set_Cursor_Tips(self)
-    end)
+    initializer= e.AddPanel_Button({
+        buttonText= e.onlyChinese and '设置' or SETTINGS,
+        layout= Layout,
+        func= function()
+            set_CVar()
+        end
+    })
+    initializer:SetParentInitializer(initializer2)
 
-    local modelFileIDCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    modelFileIDCheck.text:SetText((e.onlyChinese and '模型' or MODEL)..' ID')
-    modelFileIDCheck:SetPoint('LEFT', modelLeft.text, 'RIGHT', 2, 0)
-    modelFileIDCheck:SetChecked(Save.showModelFileID)
-    modelFileIDCheck:SetScript('OnMouseDown', function(self)
-        Save.showModelFileID= not Save.showModelFileID and true or nil
-        set_Cursor_Tips(self)
-    end)
-
-    modelFileIDCheck:SetScript('OnLeave', function() e.tips:Hide() end)
-    modelFileIDCheck:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine('fileID = myModel:GetModelFileID()')
-        e.tips:AddLine('Returns the file ID associated with the model currently displayed in the Model widget.')
-        e.tips:Show()
-    end)
-
-    local sliderModelSize = e.CSlider(panel, {w=100, min=50, max=200, value=Save.modelSize, setp=1, color=nil,
-    text=e.onlyChinese and '大小' or 'Size',
-    func=function(self, value)
-        value= tonumber(format('%i', value))
-        value= value==0 and 0 or value
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.modelSize= value
-        set_Cursor_Tips(self)
-    end})
-    sliderModelSize:SetPoint("TOPLEFT", modelCheck.text, 'BOTTOMLEFT',0, -16)
-
-    local sliderModelFacing = e.CSlider(panel, {w=100, min=-1, max=1, value=Save.modelFacing, setp=0.01, color=true,
-    text= e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION,
-    func=function(self, value)
-        value= tonumber(format('%0.2f', value))
-        value= value==0 and 0 or value
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.modelFacing= value
-        set_Cursor_Tips(self)
-    end})
-    sliderModelFacing:SetPoint("LEFT", sliderModelSize, 'RIGHT', 10, 0)
-
-    local sliderModelX = e.CSlider(panel, {w=100, min=-200, max=200, value=Save.modelX, setp=1, color=true,
-    text= 'X',
-    func=function(self, value)
-        value= tonumber(format('%i', value))
-        value= value==0 and 0 or value
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.modelX= value
-        set_Cursor_Tips(self)
-    end})
-    sliderModelX:SetPoint("TOPLEFT", sliderModelSize, 'BOTTOMLEFT', 0, -36)
-
-    local sliderModelY = e.CSlider(panel, {w=100, min=-200, max=200, value=Save.modelY, setp=1, color=nil,
-    text= 'Y',
-    func=function(self, value)
-        value= tonumber(format('%i', value))
-        value= value==0 and 0 or value
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.modelY= value
-        set_Cursor_Tips(self)
-    end})
-    sliderModelY:SetPoint("LEFT", sliderModelX, 'RIGHT', 10, 0)
-
-
-
-    local healthCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    healthCheck.text:SetText(e.onlyChinese and '生命值 ' or HEALTH)
-    healthCheck:SetPoint('TOPLEFT', modelCheck, 'BOTTOMLEFT', 0, -104)
-    healthCheck:SetChecked(not Save.hideHealth)
-    healthCheck:SetScript('OnMouseDown', function()
-        Save.hideHealth= not Save.hideHealth and true or nil
-        print(id, addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end)
-
-    local ctrlCopy=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    ctrlCopy.text:SetText('Ctrl+Shift'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..' (wowhead Raider.IO)')
-    ctrlCopy:SetPoint('TOPLEFT', healthCheck, 'BOTTOMLEFT')
-    ctrlCopy:SetChecked(Save.ctrl)
-    ctrlCopy:SetScript('OnMouseDown', function()
-        Save.ctrl= not Save.ctrl and true or nil
-    end)
-
+    initializer= e.AddPanel_Button({
+        buttonText= e.onlyChinese and '默认' or DEFAULT,
+        layout= Layout,
+        func= function()
+            set_CVar(true, nil, nil)
+        end
+    })
+    initializer:SetParentInitializer(initializer2)
+end
+--[[
     --监视， WidgetSetID
     local widgetLabel= e.Cstr(panel)
     widgetLabel:SetPoint('TOPLEFT', ctrlCopy, 'BOTTOMLEFT',0, -8)
@@ -1915,33 +1967,9 @@ local function Init_Panel()
     widgetLabel= e.Cstr(panel)
     widgetLabel:SetPoint('LEFT', widgetEdit, 'RIGHT',4, 0)
     widgetLabel:SetText('0 '..(e.onlyChinese and '取消' or CANCEL))
-
-   --设置CVar
-    local cvar=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    cvar.text:SetText((e.onlyChinese and '设置' or SETTINGS)..' CVar')
-    cvar:SetPoint('BOTTOMLEFT')
-    cvar:SetChecked(Save.setCVar)
-    cvar:SetScript('OnMouseDown', function()
-        if Save.setCVar then
-            Save.setCVar=nil
-            setCVar(true)
-        else
-            Save.setCVar=true
-            setCVar()
-        end
-    end)
-    cvar:SetScript('OnEnter',function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
-        setCVar(nil, true)
-        e.tips:Show()
-    end)
-    cvar:SetScript('OnLeave', function() e.tips:Hide() end)
 end
 
-
+]]
 
 
 
@@ -1973,13 +2001,23 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.modelY= Save.modelY or -24
             Save.modelFacing= Save.modelFacing or -0.35
 
-            Save.WidgetSetID = Save.WidgetSetID or 0
-
-            Init_Panel()--设置 panel
+            --Save.WidgetSetID = Save.WidgetSetID or 0
+            e.AddPanel_Check({
+                name= e.onlyChinese and '启用' or ENABLE,
+                tooltip= addName,
+                value= not Save.disabled,
+                category= Category,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
+
             else
+                Init_Panel()--设置 panel
                 Init()--初始
                 if e.onlyChinese then
                     raiderioText= 'https://raider.io/cn/characters/%s/%s/%s'

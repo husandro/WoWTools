@@ -724,7 +724,6 @@ end
 --添加控制面板
 --###########
 local Category, Layout= e.AddPanel_Sub_Category({name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..addName})
-
 local function Init_Options()
     e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
 
