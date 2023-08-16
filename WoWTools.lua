@@ -328,10 +328,7 @@ e.Player={
    
     Layer= nil, --位面数字
     useColor= nil,--使用颜色
-    L={--多语言
-        layer= 'Layer',--位面文本
-        size= 'Size',
-    },
+    L={},--多语言，文本
 }
  --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
  --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),

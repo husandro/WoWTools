@@ -643,55 +643,60 @@ local function Init()
 end
 
 
-
-
 local function set_Local_Text()
-    local tab
-    if e.onlyChinese or LOCALE_zhCN or LOCALE_zhTW then
-        tab={
+    if e.onlyChinese then
+        e.Player.L={
             layer='位面',
             size='大小',
         }
-    elseif LOCALE_koKR then
-        tab={
-            layer='층',
-            size='크기',
-        }
-    elseif LOCALE_frFR then
-        tab={
-            layer='Couche',
-            size='Taille',
-        }
-    elseif LOCALE_deDE then
-        tab={
-            layer='Schicht',
-            size='Größe',
-        }
-    elseif LOCALE_esES or LOCALE_esMX then--西班牙语
-        tab={
-            layer='Capa',
-            size='Tamaño',
-        }
-    elseif LOCALE_ruRU then
-        tab={
-            layer='слой',
-            size='Размер',
-        }
-    elseif LOCALE_ptBR then--葡萄牙语
-        tab={
-            layer='Camada',
-            size='Tamanho',
-        }
-    elseif LOCALE_itIT then
-        tab={
-            layer='Strato',
-            size='Misurare',
-        }
     end
-    e.Player.L=tab or e.Player.L
-    tab=nil
 end
-
+if LOCALE_zhCN or LOCALE_zhTW then
+    e.Player.L={
+        layer='位面',
+        size='大小',
+    }
+elseif LOCALE_koKR then
+    e.Player.L={
+        layer='층',
+        size='크기',
+    }
+elseif LOCALE_frFR then
+    e.Player.L={
+        layer='Couche',
+        size='Taille',
+    }
+elseif LOCALE_deDE then
+    e.Player.L={
+        layer='Schicht',
+        size='Größe',
+    }
+elseif LOCALE_esES or LOCALE_esMX then--西班牙语
+    e.Player.L={
+        layer='Capa',
+        size='Tamaño',
+    }
+elseif LOCALE_ruRU then
+    e.Player.L={
+        layer='слой',
+        size='Размер',
+    }
+elseif LOCALE_ptBR then--葡萄牙语
+    e.Player.L={
+        layer='Camada',
+        size='Tamanho',
+    }
+elseif LOCALE_itIT then
+    e.Player.L={
+        layer='Strato',
+        size='Misurare',
+    }
+else
+    e.Player.L={
+        layer= 'Layer',
+        size= 'Size',
+    }
+end
 
 
 

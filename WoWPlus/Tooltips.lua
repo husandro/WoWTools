@@ -1098,11 +1098,11 @@ local function set_CVar(reset, tips, notPrint)
                 local curValue= C_CVar.GetCVar(name)
                 text= (text and text..'|n|n' or '')
                     ..info.msg..'|n'..name..'|n'
-                    ..(curValue== info.value and '|cnGREEN_FONT_COLOR:' or '')
+                    ..(curValue== info.value and e.Icon.select2..'|cnGREEN_FONT_COLOR:' or '')
                     
                     ..(e.onlyChinese and '设置' or SETTINGS)..'|cffff00ff'..info.value..'|r'
-                    ..' ('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cffff00ff'..C_CVar.GetCVar(name)..'|r) |r'
-                    ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..C_CVar.GetCVarDefault(name)..'|r'
+                    ..' ('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cffff00ff'..C_CVar.GetCVar(name)..'|r |r'
+                    ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..C_CVar.GetCVarDefault(name)..')|r'
             end
         end
         return text
@@ -1721,64 +1721,65 @@ local function Init_Panel()
         end
     })
 
-    local initializer= e.AddPanelSider({
-        name= 'X',
-        value= Save.cursorX or 0,
-        minValue= -240,
-        maxValue= 240,
-        setp= 1,
-        tooltip= addName,
-        category= Category,
-        func= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, -200, 200)
-            Save.cursorX= value3
-            set_Cursor_Tips()
-        end
-    })
-    initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
+        local initializer= e.AddPanelSider({
+            name= 'X',
+            value= Save.cursorX or 0,
+            minValue= -240,
+            maxValue= 240,
+            setp= 1,
+            tooltip= addName,
+            category= Category,
+            func= function(_, _, value2)
+                local value3= e.GetFormatter1to10(value2, -200, 200)
+                Save.cursorX= value3
+                set_Cursor_Tips()
+            end
+        })
+        initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
 
-    initializer= e.AddPanelSider({
-        name= 'Y',
-        value= Save.cursorY or 0,
-        minValue= -240,
-        maxValue= 240,
-        setp= 1,
-        tooltip= addName,
-        category= Category,
-        func= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, -200, 200)
-            Save.cursorY= value3
-            set_Cursor_Tips()
-        end
-    })
-    initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
+        initializer= e.AddPanelSider({
+            name= 'Y',
+            value= Save.cursorY or 0,
+            minValue= -240,
+            maxValue= 240,
+            setp= 1,
+            tooltip= addName,
+            category= Category,
+            func= function(_, _, value2)
+                local value3= e.GetFormatter1to10(value2, -200, 200)
+                Save.cursorY= value3
+                set_Cursor_Tips()
+            end
+        })
+        initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
 
-    initializer= e.AddPanel_Check({
-        name= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
-        tooltip= addName,
-        value= Save.cursorRight,
-        category= Category,
-        func= function()
-            Save.cursorRight= not Save.cursorRight and true or nil
-            set_Cursor_Tips()
-        end
-    })
-    initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
+        initializer= e.AddPanel_Check({
+            name= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
+            tooltip= addName,
+            value= Save.cursorRight,
+            category= Category,
+            func= function()
+                Save.cursorRight= not Save.cursorRight and true or nil
+                set_Cursor_Tips()
+            end
+        })
+        initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
 
-    initializer= e.AddPanel_Check({
-        name= e.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
-        tooltip= addName,
-        value= Save.inCombatDefaultAnchor,
-        category= Category,
-        func= function()
-            Save.inCombatDefaultAnchor= not Save.inCombatDefaultAnchor and true or nil
-            set_Cursor_Tips()
-        end
-    })
-    initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
+        initializer= e.AddPanel_Check({
+            name= e.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
+            tooltip= addName,
+            value= Save.inCombatDefaultAnchor,
+            category= Category,
+            func= function()
+                Save.inCombatDefaultAnchor= not Save.inCombatDefaultAnchor and true or nil
+                set_Cursor_Tips()
+            end
+        })
+        initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
     
 
     e.AddPanel_Header(Layout, e.onlyChinese and '设置' or SETTINGS)
+    
     initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '模型' or MODEL,
         tooltip= addName,
@@ -1891,7 +1892,7 @@ local function Init_Panel()
     })
     e.AddPanel_Check({
         name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Ctrl+Shift', e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
-        tooltip= 'WoWHead.com|nRaider.IO',
+        tooltip= 'wowhead.com|nraider.io',
         value= Save.ctrl,
         category= Category,
         func= function()
@@ -1903,7 +1904,7 @@ local function Init_Panel()
 
     initializer2= e.AddPanel_Check({
         name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '设置' or SETTINGS, 'CVar'),
-        tooltip= function() return set_CVar(nil, true, true)..'|n|n'..(e.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS)) end,
+        tooltip= function() return set_CVar(nil, true, true)..'|n|n'..e.Icon.toRight2..(e.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS))..e.Icon.toLeft2 end,
         value= Save.setCVar,
         category= Category,
         func= function()
@@ -1916,6 +1917,7 @@ local function Init_Panel()
         layout= Layout,
         func= function()
             set_CVar()
+            print(e.onlyChinese and '设置完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COMPLETE))
         end
     })
     initializer:SetParentInitializer(initializer2)
@@ -1925,6 +1927,7 @@ local function Init_Panel()
         layout= Layout,
         func= function()
             set_CVar(true, nil, nil)
+            print(e.onlyChinese and '默认完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEFAULT, COMPLETE))
         end
     })
     initializer:SetParentInitializer(initializer2)
