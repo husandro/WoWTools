@@ -347,7 +347,7 @@ function e.AddPanelSider(tab)
     local minValue= tab.minValue
     local maxValue= tab.maxValue
     local step= tab.setp
-    local tooltip= addName
+    local tooltip= tab.tooltip
     local category= tab.category or Category
     local func= tab.func
 

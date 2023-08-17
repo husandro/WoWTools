@@ -1640,7 +1640,7 @@ end
 --####
 --职业
 --####
-local function Init_Class_Power()--职业
+local function Init_Class_Power(init)--职业
     if not Save.classPowerNum then
         return
     end
@@ -1664,14 +1664,6 @@ local function Init_Class_Power()--职业
         if PaladinPowerBarFrame and PaladinPowerBarFrame.Background and PaladinPowerBarFrame.ActiveTexture then
             hide_Texture(PaladinPowerBarFrame.Background, true)
             hide_Texture(PaladinPowerBarFrame.ActiveTexture, true)
-            PaladinPowerBarFrame:HookScript('OnEnter', function(self2)
-                self2.Background:SetShown(true)
-                self2.ActiveTexture:SetShown(true)
-            end)
-            PaladinPowerBarFrame:HookScript('OnLeave', function(self2)
-                hide_Texture(self2.Background, true)
-                hide_Texture(self2.ActiveTexture, true)
-            end)
             if ClassNameplateBarPaladinFrame then
                 hide_Texture(ClassNameplateBarPaladinFrame.Background)
                 hide_Texture(ClassNameplateBarPaladinFrame.ActiveTexture)
@@ -1680,6 +1672,16 @@ local function Init_Class_Power()--职业
             for i=1,maxHolyPower do
                 local holyRune = PaladinPowerBarFrame["rune"..i]
                 set_Num_Texture(holyRune, i, false)
+            end
+            if init then
+                PaladinPowerBarFrame:HookScript('OnEnter', function(self2)
+                    self2.Background:SetShown(true)
+                    self2.ActiveTexture:SetShown(true)
+                end)
+                PaladinPowerBarFrame:HookScript('OnLeave', function(self2)
+                    hide_Texture(self2.Background, true)
+                    hide_Texture(self2.ActiveTexture, true)
+                end)
             end
         end
 
@@ -1720,7 +1722,7 @@ local function Init_Class_Power()--职业
         end
 
     elseif e.Player.class=='ROGUE' then--DZ RogueComboPointBarFrame
-        if RogueComboPointBarFrame and RogueComboPointBarFrame.UpdateMaxPower then
+        if RogueComboPointBarFrame and RogueComboPointBarFrame.UpdateMaxPower and init then
             hooksecurefunc(RogueComboPointBarFrame, 'UpdateMaxPower',function(self)
                 C_Timer.After(0.5, function()
                     for _, btn in pairs(self.classResourceButtonTable or {}) do
@@ -1750,31 +1752,33 @@ local function Init_Class_Power()--职业
                 set_Num_Texture(btn)
             end
         end
-        hooksecurefunc(MonkHarmonyBarFrame, 'UpdateMaxPower', function(self)
-            C_Timer.After(0.5, function()
-                for i = 1, #self.classResourceButtonTable do
-                    set_MonkHarmonyBarFrame(self.classResourceButtonTable[i])
-                end
-                local tab= ClassNameplateBarWindwalkerMonkFrame and ClassNameplateBarWindwalkerMonkFrame.classResourceButtonTable or {}
-                for i = 1, #tab do
-                    set_MonkHarmonyBarFrame(tab[i])
-                end
+        if init then
+            hooksecurefunc(MonkHarmonyBarFrame, 'UpdateMaxPower', function(self)
+                C_Timer.After(0.5, function()
+                    for i = 1, #self.classResourceButtonTable do
+                        set_MonkHarmonyBarFrame(self.classResourceButtonTable[i])
+                    end
+                    local tab= ClassNameplateBarWindwalkerMonkFrame and ClassNameplateBarWindwalkerMonkFrame.classResourceButtonTable or {}
+                    for i = 1, #tab do
+                        set_MonkHarmonyBarFrame(tab[i])
+                    end
+                end)
             end)
-        end)
-        hooksecurefunc(MonkHarmonyBarFrame, 'UpdatePower', function(self)
-            for _, btn in pairs(self.classResourceButtonTable or {}) do
-                if btn.Chi_BG then
-                    btn.Chi_BG:SetAlpha(0.2)
-                end
-            end
-            if ClassNameplateBarWindwalkerMonkFrame then
-                for _, btn in pairs(ClassNameplateBarWindwalkerMonkFrame.classResourceButtonTable or {}) do
+            hooksecurefunc(MonkHarmonyBarFrame, 'UpdatePower', function(self)
+                for _, btn in pairs(self.classResourceButtonTable or {}) do
                     if btn.Chi_BG then
                         btn.Chi_BG:SetAlpha(0.2)
                     end
                 end
-            end
-        end)
+                if ClassNameplateBarWindwalkerMonkFrame then
+                    for _, btn in pairs(ClassNameplateBarWindwalkerMonkFrame.classResourceButtonTable or {}) do
+                        if btn.Chi_BG then
+                            btn.Chi_BG:SetAlpha(0.2)
+                        end
+                    end
+                end
+            end)
+        end
 
     elseif e.Player.class=='DEATHKNIGHT' then
         if RuneFrame.Runes then
@@ -2097,7 +2101,8 @@ local function options_Init()--初始，选项
         siderFunc= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, 6, 64)
             Save.classPowerNumSize= value3
-            print(id, addName, value3, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            Init_Class_Power()--职业
+            print(id, addName,'|cnGREEN_FONT_COLOR:'.. value3..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         layout= Layout,
         category= Category,
@@ -2145,7 +2150,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 options_Init()--初始，选项
                 Init_HideTexture()
                 Init_Set_AlphaAndColor()
-                Init_Class_Power()--职业
+                Init_Class_Power(init)--职业
                 if not Save.disabledChatBubble then
                     set_Chat_Bubbles_Event()
                 end
