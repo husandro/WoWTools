@@ -561,9 +561,10 @@ local function Init_Dialogs()
             btn:SetEnabled(text and true or false)
             btn:SetText(text or (e.onlyChinese and '无' or NONE))
         end,
-        EditBoxOnEscapePressed = function(s)
-            s:SetAutoFocus(false)
-            s:ClearFocus()
+        EditBoxOnEscapePressed = function(self2)
+            self2:SetAutoFocus(false)
+            self2:ClearFocus()
+            self2:GetParent():Hide()
         end,
     }
 end

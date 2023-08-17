@@ -664,7 +664,8 @@ local function Init_Markers_Frame()--设置标记, 框架
                         parent.button1:SetText(e.SecondsToClock(num))
                     end,
                     EditBoxOnEscapePressed = function(self2)
-                        securecall(ChatEdit_FocusActiveWindow)
+                        self2:SetAutoFocus(false)
+                        self2:ClearFocus()
                         self2:GetParent():Hide()
                     end,
                 }

@@ -888,6 +888,11 @@ local function InitMenu(_, level, menuList)
                         local text= self:GetText() or ''
                         self:GetParent().button1:SetEnabled(text:gsub(' ', '')~='')
                     end,
+                    EditBoxOnEscapePressed = function(self2)
+                        self2:SetAutoFocus(false)
+                        self2:ClearFocus()
+                        self2:GetParent():Hide()
+                    end,
                 }
                 StaticPopup_Show(id..addName..'modifyGuildWelcome')
             end,

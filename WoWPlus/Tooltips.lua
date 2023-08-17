@@ -165,10 +165,11 @@ StaticPopupDialogs["WowheadQuickLinkUrl"] = {
         parent.button1:Click()
         parent:Hide()
 	end,
-    EditBoxOnEscapePressed = function(self)
-        self:GetParent():Hide()
+    EditBoxOnEscapePressed = function(self2)
+        self2:SetAutoFocus(false)
+        self2:ClearFocus()
+        self2:GetParent():Hide()
     end,
-
     hasEditBox = true,
     editBoxWidth = 320,
     timeout = 0,
