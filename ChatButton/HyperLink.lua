@@ -7,6 +7,7 @@ local Save={
     text={--内容颜色,
         [ACHIEVEMENTS]=true,
     },
+    --disabledKeyColor= true,--禁用，内容颜色，和频道名称替换
 
     groupWelcome= e.Player.husandro,--欢迎
     --groupWelcomeText= e.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}',
@@ -20,29 +21,11 @@ local Save={
 
     --disabledNPCTalking=true,--禁用，隐藏NPC发言
     --disabledTalkingPringText=true,--禁用，隐藏NPC发言，文本
-
-    setFucus= e.Player.husandro,--焦点
-    focusKey='Shift',--焦点,快捷键, Ctrl, Alt
 }
 local button
 local panel= CreateFrame("Frame")
 
-local Cedit= function(self, width, height)
-    width = width or 400
-    height= height or 400
 
-    local editBox = CreateFrame("EditBox", nil, self)
-    editBox:SetSize(width, height)
-    editBox:SetAutoFocus(false)
-    editBox:ClearFocus()
-    editBox:SetFontObject("ChatFontNormal")
-    editBox:SetMultiLine(true)
-    --editBox:SetAltArrowKeyMode(false)
-    local tex=editBox:CreateTexture(nil, "BACKGROUND")
-    tex:SetAtlas('_Adventures-Mission-Highlight-Mid')
-    tex:SetAllPoints(editBox)
-    return editBox
-end
 
 --[[local Magic=function(s)  local t={'%%', '%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^', '%$'} for _,v in pairs(t) do s=s:gsub(v,'%%'..v) end return s end --  ( ) . % + - * ? [ ^ $
 local MK=function(k,b) if not b then b=1 end if k>=1e6 then k=string.format('%.'..b..'fm',k/1e6) elseif k>= 1e4 and GetLocale() == "zhCN" then k=string.format('%.'..b..'fw',k/1e4) elseif k>=1e3 then k=string.format('%.'..b..'fk',k/1e3) else k=string.format('%i',k) end return k end--加k 9.1
@@ -547,6 +530,22 @@ local function setAddMessageFunc(self, s, ...)
     return self.ADD(self, s, ...)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#########
 --使用，禁用
 --#########
@@ -581,10 +580,50 @@ local function setFunc()--使用，禁用
     setUseDisabled()
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --设置控制面板
 --###########
+local function set_Key_Frame()
+
+end
 local function setPanel()
+    local Cedit= function(self, width, height)
+        width = width or 400
+        height= height or 400
+    
+        local editBox = CreateFrame("EditBox", nil, self)
+        editBox:SetSize(width, height)
+        editBox:SetAutoFocus(false)
+        editBox:ClearFocus()
+        editBox:SetFontObject("ChatFontNormal")
+        editBox:SetMultiLine(true)
+        --editBox:SetAltArrowKeyMode(false)
+        local tex=editBox:CreateTexture(nil, "BACKGROUND")
+        tex:SetAtlas('_Adventures-Mission-Highlight-Mid')
+        tex:SetAllPoints(editBox)
+        return editBox
+    end
+
     local frame = CreateFrame("FRAME")
 
     --添加控制面板
@@ -611,7 +650,7 @@ local function setPanel()
     btn:SetScript('OnMouseDown', function()
         Save.text={}
         local n=0
-        local s=editBox:GetText()
+        local s=editBox:GetText() or ''
         if s:gsub(' ','')~='' then
             s=s..' '
             s=s:gsub('|n', ' ')
@@ -648,7 +687,7 @@ local function setPanel()
     btn2:SetScript('OnMouseDown', function()
         Save.channels={}
         local n=0
-        local s=editBox2:GetText()
+        local s=editBox2:GetText() or ''
         if s:gsub(' ','')~='' then
             s=s..' '
             s=s:gsub('|n', ' ')
@@ -665,6 +704,24 @@ local function setPanel()
         print(id, addName, e.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r',  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#############
 --欢迎加入, 信息
@@ -944,16 +1001,38 @@ local function InitMenu(_, level, menuList)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif menuList=='KeyColor' then--内容颜色，和频道名称替换
+        info={
+            text= e.Player.L.key,--关键词
+            checked= not Save.disabledKeyColor,
+            colorCode= Save.disabed and '|cff606060' or nil,
+            keepShownOnClick=true,
+            func=function()
+                Save.disabledKeyColor= not Save.disabledKeyColor and true or nil
+            end,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        info={
+            text= e.onlyChinese and '设置' or SETTINGS,
+            notCheckable=true,
+            func= set_Key_Frame,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
     if menuList then
         return
     end
+   
 
     info={
         text= '|A:newplayertutorial-icon-mouse-leftbutton:0:0|a'..(e.onlyChinese and '超链接图标'or addName),
         checked=not Save.disabed,
         keepShownOnClick=true,
+        hasArrow=true,
+        menuList='KeyColor',
         func=function()
             setFunc()--使用，禁用
         end,
@@ -1024,6 +1103,7 @@ local function InitMenu(_, level, menuList)
         end,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
+    
 
     info={
         text= '|A:QuestLegendaryTurnin:0:0|a|cff00ff00FST|rACK',
@@ -1124,13 +1204,20 @@ local function Init()
     end)
 end
 
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
-
 panel:RegisterEvent("ADDON_LOADED")
-
-panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
+panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
         if arg1 == id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button

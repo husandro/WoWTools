@@ -3,6 +3,7 @@ local id, e = ...
 local Save={
     world= e.Player.region==5 and '大脚世界频道' or WORLD,
     myChatFilter= true,--过滤，多次，内容
+    myChatFilterNum=70,
 }
 local addName='ChatButtonWorldChannel'
 local button
@@ -89,14 +90,14 @@ end
 --屏蔽内容
 --#######
 local filterTextTab={}--记录, 屏蔽内容
-local function myChatFilter(self, event, msg, name, ...)
+local function myChatFilter(_, _, msg, name)
     if name== e.Player.name_realm or e.GetFriend(name) or e.GroupGuid[name:gsub('%-'..e.Player.realm, '')] then--自已, 好友
         return
 
     elseif filterTextTab[msg] and filterTextTab[msg].name== name then
         filterTextTab[msg].num= filterTextTab[msg].num +1
         return true
-    elseif strlenutf8(msg)>70 or msg:find('<.->') or msg:find('WTS') then
+    elseif strlenutf8(msg)>Save.myChatFilterNum or msg:find('<.->') or msg:find('WTS') then
         if not filterTextTab[msg] then
             filterTextTab[msg]={num=1, name=name}
         else
@@ -112,6 +113,10 @@ end
 --#####
 --主菜单
 --#####
+local function get_myChatFilter_Text()
+    return (e.onlyChinese and '内容限'..Save.myChatFilterNum..'个字符以内' or ERR_VOICE_CHAT_CHANNEL_NAME_TOO_LONG:gsub(CHANNEL_CHANNEL_NAME,''):gsub('30', Save.myChatFilterNum))
+end
+
 local function addMenu(name, channelNumber, level)--添加菜单
     local check=Check(name)
     local text=name
@@ -151,7 +156,7 @@ local function addMenu(name, channelNumber, level)--添加菜单
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
-local function InitMenu(self, level, type)--主菜单
+local function InitMenu(_, level, type)--主菜单
     local info
     if type=='WORLD' then
         info= {
@@ -214,6 +219,40 @@ local function InitMenu(self, level, type)--主菜单
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
+        
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= (e.onlyChinese and '设置' or SETTINGS)..' |cnGREEN_FONT_COLOR:'..Save.myChatFilterNum,
+            notCheckable=true,
+            func= function()
+                StaticPopupDialogs[id..addName..'myChatFilterNum']= {
+                    text=id..' '..addName..'|n|n'..get_myChatFilter_Text(),
+                    hasEditBox=1,
+                    button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),
+                    button2= e.onlyChinese and '取消' or CANCEL,
+                    OnShow = function(self)
+                        self.editBox:SetNumeric(true)
+                        self.editBox:SetNumber(Save.myChatFilterNum)
+                    end,
+                    OnAccept = function(self)
+                        local num= self.editBox:GetNumber()
+                        Save.myChatFilterNum= num
+                        print(id, addName, get_myChatFilter_Text())
+                    end,
+                    EditBoxOnTextChanged=function(self)
+                        local num= self:GetNumber() or 0
+                        self:GetParent().button1:SetEnabled(num>=10)
+                    end,
+                    EditBoxOnEscapePressed = function(self2)
+                        self2:SetAutoFocus(false)
+                        self2:ClearFocus()
+                        self2:GetParent():Hide()
+                    end,
+                }
+                StaticPopup_Show(id..addName..'myChatFilterNum')
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
         return
     end
 
@@ -239,13 +278,13 @@ local function InitMenu(self, level, type)--主菜单
         find= find+1
     end
     info={
-        text= (e.onlyChinese and '屏蔽刷屏' or IGNORE..CLUB_FINDER_REPORT_SPAM).. (find>0 and ' |cnRED_FONT_COLOR:'..find..'|r' or ''),
+        text= (e.onlyChinese and '屏蔽刷屏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, IGNORE, CLUB_FINDER_REPORT_SPAM)).. (find>0 and ' |cnRED_FONT_COLOR:'..find..'|r' or ''),
         checked= Save.myChatFilter,
         menuList='IGNORE',
         hasArrow=true,
         tooltipOnButton=true,
         tooltipTitle='CHAT_MSG_CHANNEL',
-        tooltipText= e.onlyChinese and '内容限70个字符以内' or string.gsub(ERR_VOICE_CHAT_CHANNEL_NAME_TOO_LONG, CHANNEL_CHANNEL_NAME,''):gsub('30','70'),
+        tooltipText= get_myChatFilter_Text(),
         keepShownOnClick= true,
         func= function()
             Save.myChatFilter= not Save.myChatFilter and true or nil
@@ -306,6 +345,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
+                Save.myChatFilterNum= Save.myChatFilterNum or 70
                 Save.world= Save.world or CHANNEL_CATEGORY_WORLD
 
                 button= e.Cbtn2({
