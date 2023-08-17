@@ -3246,7 +3246,9 @@
         "ColorPickerCancelButton",
         "SettingsSliderOptionsMixin",
         "ERR_GUILD_PLAYER_NOT_IN_GUILD",
-        "HUD_EDIT_MODE_PLAYER_FRAME_LABEL"
+        "HUD_EDIT_MODE_PLAYER_FRAME_LABEL",
+        "ACTION_BUTTON_USE_KEY_DOWN",
+        "OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -165,10 +165,11 @@ end
 --####
 local function Init()
     e.ToolsSetButtonPoint(button)--设置位置
-    --button.texture:SetShown(true)
+    
     button:SetAttribute('type','item')
     button:SetAttribute('item',GetItemInfo(button.itemID) or button.itemID)
     button.texture:SetTexture(C_Item.GetItemIconByID(button.itemID..''))
+
     setCount()--设置数量
     setAura()--光环取消   
 
@@ -187,14 +188,14 @@ local function Init()
         e.tips:Show()
     end)
     button:SetScript('OnLeave', function() e.tips:Hide() end)
-    button:SetScript('OnMouseUp', function(self, d)
-        if d=='RightButton' then
+    button:SetScript('OnMouseWheel', function(self)
+        
             if not self.Menu then
                 self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
-        end
+        
    end)
 
    if Save.KEY then set_KEY() end--设置捷键

@@ -1059,33 +1059,69 @@ local function setUnitInfo(self, unit)--设置单位提示信息
     end]]
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--########
+--设置Cvar
+--########
+local function get_CVar_tooltip(info)
+    local curValue= C_CVar.GetCVar(info.name)
+    return info.msg..'|n'..info.name..'|n'
+    ..(info.value and curValue== info.value and e.Icon.select2 or '')
+    ..(info.value and (e.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
+    ..'('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cnGREEN_FONT_COLOR:'..C_CVar.GetCVar(info.name)..'|r |r'
+    ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..C_CVar.GetCVarDefault(info.name)..')|r'
+
+end
 local function set_CVar(reset, tips, notPrint)
     local tab={
-        ['missingTransmogSourceInItemTooltips']={
+        {   name='missingTransmogSourceInItemTooltips',
             value='1',
-            msg= e.onlyChinese and '显示装备幻化来源' or TRANSMOGRIFY..SOURCES..': '..SHOW,
+            msg=e.onlyChinese and '显示装备幻化来源' or TRANSMOGRIFY..SOURCES..': '..SHOW,
         },
-        ['nameplateOccludedAlphaMult']={
+        {   name='nameplateOccludedAlphaMult',
             value='0.15',
-            msg= e.onlyChinese and '不在视野里, 姓名板透明度' or (SPELL_FAILED_LINE_OF_SIGHT..'('..SHOW_TARGET_CASTBAR_IN_V_KEY..')'..'Alpha'),
+            msg=e.onlyChinese and '不在视野里, 姓名板透明度' or (SPELL_FAILED_LINE_OF_SIGHT..'('..SHOW_TARGET_CASTBAR_IN_V_KEY..')'..'Alpha'),
         },
-        ['dontShowEquipmentSetsOnItems']={
+        {   name='dontShowEquipmentSetsOnItems',
             value='0',
-            msg= e.onlyChinese and '显法装备方案' or EQUIPMENT_SETS:format(SHOW),
+            msg=e.onlyChinese and '显法装备方案' or EQUIPMENT_SETS:format(SHOW),
         },
-        ['UberTooltips']={
+        {   name='UberTooltips',
             value='1',
-            msg= e.onlyChinese and '显示法术信息' or SPELL_MESSAGES..': '..SHOW,
+            msg=e.onlyChinese and '显示法术信息' or SPELL_MESSAGES..': '..SHOW,
         },
-        ["alwaysCompareItems"]={
+        {   name="alwaysCompareItems",
              value= "1",
              msg= e.onlyChinese and '总是比较装备' or ALWAYS..COMPARE_ACHIEVEMENTS:gsub(ACHIEVEMENTS, ITEMS)
         },
-        ["profanityFilter"]={value= '0',msg= '禁用语言过虑 /reload', zh=true},
-        ["overrideArchive"]={value= '0',msg= '反和谐 /reload', zh=true},
-        ['cameraDistanceMaxZoomFactor']={value= '2.6', msg= e.onlyChinese and '视野距离' or FARCLIP},
-
-        ["showTargetOfTarget"]={
+        {   name="profanityFilter",
+            value= '0',
+            msg= '禁用语言过虑 /reload', 
+            zh=true,
+        },
+        {   name="overrideArchive",
+            value= '0',
+            msg= '反和谐 /reload',
+            zh=true
+        },
+        {   name='cameraDistanceMaxZoomFactor',
+            value= '2.6',
+            msg= e.onlyChinese and '视野距离' or FARCLIP
+        },
+        {   name="showTargetOfTarget",
             value= "1",
             msg= e.onlyChinese and '总是显示目标的目标' or OPTION_TOOLTIP_TARGETOFTARGET5,
         },
@@ -1093,38 +1129,31 @@ local function set_CVar(reset, tips, notPrint)
 
     if tips then
         local text
-        for name, info in pairs(tab) do
+        for _, info in pairs(tab) do
             if info.zh and LOCALE_zhCN or not info.zh then
-                local curValue= C_CVar.GetCVar(name)
-                text= (text and text..'|n|n' or '')
-                    ..info.msg..'|n'..name..'|n'
-                    ..(curValue== info.value and e.Icon.select2..'|cnGREEN_FONT_COLOR:' or '')
-                    
-                    ..(e.onlyChinese and '设置' or SETTINGS)..'|cffff00ff'..info.value..'|r'
-                    ..' ('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cffff00ff'..C_CVar.GetCVar(name)..'|r |r'
-                    ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..C_CVar.GetCVarDefault(name)..')|r'
+                text= (text and text..'|n|n' or '')..get_CVar_tooltip(info)
             end
         end
         return text
     end
 
-    for name, info in pairs(tab) do
+    for _, info in pairs(tab) do
         if info.zh and LOCALE_zhCN or not info.zh then
             if reset then
-                local defaultValue = C_CVar.GetCVarDefault(name)
-                local value = C_CVar.GetCVar(name)
+                local defaultValue = C_CVar.GetCVarDefault(info.name)
+                local value = C_CVar.GetCVar(info.name)
                 if defaultValue~=value then
-                    C_CVar.SetCVar(name, defaultValue)
+                    C_CVar.SetCVar(info.name, defaultValue)
                     if not notPrint then
-                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', name, defaultValue, info.msg)
+                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
                     end
                 end
             else
-                local value = C_CVar.GetCVar(name)
+                local value = C_CVar.GetCVar(info.name)
                 if value~=info.value then
-                    C_CVar.SetCVar(name, info.value)
+                    C_CVar.SetCVar(info.name, info.value)
                     if not notPrint then
-                        print(id,addName ,name, info.value..'('..value..')', info.msg)
+                        print(id,addName, info.name, info.value..'('..value..')', info.msg)
                     end
                 end
             end
@@ -1132,6 +1161,19 @@ local function set_CVar(reset, tips, notPrint)
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+--###########
+--法术, 弹出框
+--###########
 local function set_FlyoutInfo(self, flyoutID)--法术, 弹出框
     self:AddLine(' ')
     local _, _, numSlots, isKnown= GetFlyoutInfo(flyoutID)
@@ -1152,6 +1194,21 @@ local function set_FlyoutInfo(self, flyoutID)--法术, 弹出框
     self:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, numSlots..' '..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL))
     self:AddDoubleLine(id, addName)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --###########
 --宠物面板提示
@@ -1902,9 +1959,11 @@ local function Init_Panel()
     })
 
 
+    e.AddPanel_Header(Layout, 'Cvar')
+
     initializer2= e.AddPanel_Check({
-        name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '设置' or SETTINGS, 'CVar'),
-        tooltip= function() return set_CVar(nil, true, true)..'|n|n'..e.Icon.toRight2..(e.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS))..e.Icon.toLeft2 end,
+        name= e.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS),
+        tooltip= function() return set_CVar(nil, true, true) end,
         value= Save.setCVar,
         category= Category,
         func= function()
@@ -1931,6 +1990,30 @@ local function Init_Panel()
         end
     })
     initializer:SetParentInitializer(initializer2)
+
+    e.AddPanel_DropDown({
+        SetValueFunc= function(_, _, value)
+            if value==1 then
+                C_CVar.SetCVar("ActionButtonUseKeyDown", '1')
+            else
+                C_CVar.SetCVar("ActionButtonUseKeyDown", '0')
+            end
+        end,
+        GetOptionsFunc= function()
+            local container = Settings.CreateControlTextContainer()
+            container:Add(1, e.onlyChinese and '是' or YES)
+            container:Add(2, e.onlyChinese and '不' or NO)
+            return container:GetData();
+        end,
+        value=C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 1 or 2,
+        name= e.onlyChinese and '按下快捷键时施法' or ACTION_BUTTON_USE_KEY_DOWN,
+        tooltip= function()
+            return get_CVar_tooltip({
+                    name='ActionButtonUseKeyDown',
+                    msg=e.onlyChinese and '在按下快捷键时施法，而不是在松开快捷键时施法。' or OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN,
+                }) end,
+        category=Category
+    })
 end
 --[[
     --监视， WidgetSetID

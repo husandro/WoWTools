@@ -215,12 +215,12 @@ function e.AddPanel_DropDown(tab)
     local GetOptions= tab.GetOptionsFunc
     local defaultValue= tab.value
     local name= tab.name
-    local tootip= tab.tooltip
+    local tooltip= tab.tooltip
     local category= tab.category or Category
 
     local variable= id..name..(category.order or '')..get_variableIndex()
     local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
-    local initializer= Settings.CreateDropDown(category, setting, GetOptions, tootip)
+    local initializer= Settings.CreateDropDown(category, setting, GetOptions, tooltip)
     Settings.SetOnValueChangedCallback(variable, SetValue, initializer)
     return initializer
 end
@@ -236,7 +236,7 @@ e.AddPanel_DropDown({
     end,
     value=,
     name=,
-    tootip= addName,
+    tooltip= addName,
     category=Category
 })
 ]]
@@ -574,7 +574,7 @@ local function Init()
         end,
         value= Save.useColor,
         name= (e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR),
-        tootip= addName,
+        tooltip= addName,
         category=Category
     })
 
