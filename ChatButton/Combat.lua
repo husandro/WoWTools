@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= COMBAT..TIMEMANAGER_TOOLTIP_TITLE
+local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, TIMEMANAGER_TOOLTIP_TITLE)
 local Save= {textScale=1.2,
         Say=120,
         --AllOnlineTime=true,--进入游戏时,提示游戏,时间

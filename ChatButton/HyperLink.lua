@@ -1,5 +1,5 @@
 local id, e = ...
-local addName = COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK..EMBLEM_SYMBOL
+local addName = format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL)
 local Save={
     channels={--频道名称替换 
         --['世界'] = '[世]',
@@ -24,14 +24,8 @@ local Save={
 }
 local button
 local panel= CreateFrame("Frame")
+DEFAULT_CHAT_FRAME.ADD=DEFAULT_CHAT_FRAME.AddMessage
 
-
-
---[[local Magic=function(s)  local t={'%%', '%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^', '%$'} for _,v in pairs(t) do s=s:gsub(v,'%%'..v) end return s end --  ( ) . % + - * ? [ ^ $
-local MK=function(k,b) if not b then b=1 end if k>=1e6 then k=string.format('%.'..b..'fm',k/1e6) elseif k>= 1e4 and GetLocale() == "zhCN" then k=string.format('%.'..b..'fw',k/1e4) elseif k>=1e3 then k=string.format('%.'..b..'fk',k/1e3) else k=string.format('%i',k) end return k end--加k 9.1
-local Race=function(u, race, sex2) local s =u and select(2,UnitRace(u)) or race local sex= u and UnitSex(u) or sex2 if s and (sex==2 or sex==3 ) then s= s=='Scourge' and 'Undead' or s=='HighmountainTauren' and 'highmountain' or s=='ZandalariTroll' and 'zandalari' or s=='LightforgedDraenei' and 'lightforged' or s s=string.lower(s) sex= sex==2 and 'male' or sex==3 and 'female' return '|A:raceicon-'..s..'-'..sex..':0:0|a' end end--角色图标
-local Class=function(u, c, icon) c=c or select(2, UnitClass(u)) c=c and 'groupfinder-icon-class-'..c or nil if c then if icon then return '|A:'..c ..':0:0|a' else return c end end end--职业图标
-]]
 
 local set_LOOT_ITEM= LOOT_ITEM:gsub('%%s', '(.+)')--%s获得了战利品：%s。
 
@@ -41,11 +35,15 @@ local function SetChannels(link)
         if name:find(WORLD) then
             return link:gsub('%[.-]', '['..e.WA_Utf8Sub(WORLD, 2, 5)..']')
         end
-        for k, v in pairs(Save.channels) do--自定义
-            if name:find(k) then
-                return link:gsub('%[.-]', v)
+
+        if not Save.disabledKeyColor then
+            for k, v in pairs(Save.channels) do--自定义
+                if name:find(k) then
+                    return link:gsub('%[.-]', v)
+                end
             end
         end
+
         if name:find(GENERAL_LABEL) then--综合
             return link:gsub('%[.-]', '['..e.WA_Utf8Sub(GENERAL_LABEL, 2, 5)..']')
         end
@@ -523,8 +521,10 @@ local function setAddMessageFunc(self, s, ...)
         end
     end
 
-    for k, _ in pairs(Save.text) do--内容加颜色
-        s=s:gsub(k, '|cnGREEN_FONT_COLOR:'..k..'|r')
+    if not Save.disabledKeyColor then
+        for k, _ in pairs(Save.text) do--内容加颜色
+            s=s:gsub(k, '|cnGREEN_FONT_COLOR:'..k..'|r')
+        end
     end
 
     return self.ADD(self, s, ...)
@@ -603,8 +603,11 @@ end
 --###########
 --设置控制面板
 --###########
-local function set_Key_Frame()
-
+local keyFrame
+local function set_Key_Settings_Frame()
+    if keyFrame then
+        
+    end
 end
 local function setPanel()
     local Cedit= function(self, width, height)
@@ -624,15 +627,13 @@ local function setPanel()
         return editBox
     end
 
-    local frame = CreateFrame("FRAME")
 
-    --添加控制面板
-    e.AddPanel_Sub_Category({name=e.onlyChinese and '超链接图标' or addName, frame=frame})
+    e.AddPanel_Sub_Category({name=e.onlyChinese and '超链接图标' or addName, frame=panel})
 
-    local str=e.Cstr(frame)--内容加颜色
+    local str=e.Cstr(panel)--内容加颜色
     str:SetPoint('TOPLEFT')
     str:SetText(e.onlyChinese and '颜色: 关键词 (|cnGREEN_FONT_COLOR:空格|r) 分开' or (COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r'))
-    local editBox=Cedit(frame)
+    local editBox=Cedit(panel)
     editBox:SetPoint('TOPLEFT', str, 'BOTTOMLEFT',0,-5)
     editBox:SetTextColor(0,1,0)
     if Save.text then
@@ -667,10 +668,10 @@ local function setPanel()
         print(id, addName, e.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
-    local str2=e.Cstr(frame)--频道名称替换
+    local str2=e.Cstr(panel)--频道名称替换
     str2:SetPoint('TOPLEFT', editBox, 'BOTTOMLEFT', 0,-20)
     str2:SetText(e.onlyChinese and '频道名称替换: 关键词|cnGREEN_FONT_COLOR:=|r替换' or (CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r'))
-    local editBox2=Cedit(frame)
+    local editBox2=Cedit(panel)
     editBox2:SetPoint('TOPLEFT', str2, 'BOTTOMLEFT',0,-5)
     if Save.channels then
         local t3=''
@@ -1016,7 +1017,8 @@ local function InitMenu(_, level, menuList)
         info={
             text= e.onlyChinese and '设置' or SETTINGS,
             notCheckable=true,
-            func= set_Key_Frame,
+            keepShownOnClick=true,
+            func= set_Key_Settings_Frame,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
@@ -1154,7 +1156,17 @@ local function InitMenu(_, level, menuList)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
-DEFAULT_CHAT_FRAME.ADD=DEFAULT_CHAT_FRAME.AddMessage
+
+
+
+
+
+
+
+
+
+
+
 
 --####
 --初始

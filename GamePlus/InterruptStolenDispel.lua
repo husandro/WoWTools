@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= INTERRUPTS..DISPELS..ACTION_SPELL_STOLEN
+local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN))
 
 local Save={}
 local panel=CreateFrame("Frame")
