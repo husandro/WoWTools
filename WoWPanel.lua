@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= 'panel Settings'
+local addName= 'Panel Settings'
 local Save={
     onlyChinese= e.Player.husandro or LOCALE_zhCN,
     --useClassColor= e.Player.husandro,--使用,职业, 颜色
@@ -636,6 +636,15 @@ local function Init()
     btn:SetPoint('RIGHT', SettingsPanel.CloseButton, 'LEFT', -15,0)
     btn:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
     btn:SetScript("OnClick", e.Reload)
+    btn:SetScript('OnLeave', function() e.tips:Hide() end)
+    btn:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(' ', '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1)
+        e.tips:AddLine(" ")
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
 end
 
 
