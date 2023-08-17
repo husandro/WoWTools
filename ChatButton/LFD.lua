@@ -1785,7 +1785,16 @@ local function Init()
         end,
     whileDead=true,timeout=sec, hideOnEscape =true,}
 
-    button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, true)
+    button= e.Cbtn2({
+        name=nil,
+        parent=WoWToolsChatButtonFrame,
+        click=true,-- right left
+        notSecureActionButton=true,
+        notTexture=nil,
+        showTexture=true,
+        sizi=nil,
+    })
+    
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 

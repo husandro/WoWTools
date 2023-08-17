@@ -492,7 +492,15 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
 
                 WhisperTab= Save.WhisperTab or {}--保存, 密语
 
-                button=e.Cbtn2('WoWToolsChatButtonSay', WoWToolsChatButtonFrame, true, false)
+                button= e.Cbtn2({
+                    name=nil,
+                    parent=WoWToolsChatButtonFrame,
+                    click=true,-- right left
+                    notSecureActionButton=true,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
 
                 Init()
                 panel:RegisterEvent("PLAYER_LOGOUT")

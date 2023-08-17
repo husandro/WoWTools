@@ -308,7 +308,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save= WoWToolsSave[addName] or Save
                 Save.world= Save.world or CHANNEL_CATEGORY_WORLD
 
-                button= e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+                button= e.Cbtn2({
+                    name=nil,
+                    parent=WoWToolsChatButtonFrame,
+                    click=true,-- right left
+                    notSecureActionButton=true,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
 
                 Init()
 

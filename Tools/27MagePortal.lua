@@ -62,7 +62,15 @@ local function Init()
     local find
     for _, tab in pairs(Tab) do
         if IsSpellKnown(tab.spell) then
-            local btn=e.Cbtn2(nil, e.toolsFrame, true, true)
+            local btn=e.Cbtn2({
+                name= id..addName,
+                parent= e.toolsFrame,
+                click=true,-- right left
+                notSecureActionButton=nil,
+                notTexture=nil,
+                showTexture=true,
+                sizi=nil,
+            })
 
             e.ToolsSetButtonPoint(btn, not find, true)--设置位置
             find=true

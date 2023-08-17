@@ -920,12 +920,25 @@ e.GetSpellItemCooldown = function(spellID, itemID)--法术冷却
     end
 end
 
-function e.Cbtn2(name, parent, showTexture, rightClick)
-    local button= CreateFrame("Button", name, parent or UIParent, "SecureActionButtonTemplate")
-    button:SetSize(30, 30)
-    if rightClick then
+function e.Cbtn2(tab)
+--[[
+    e.Cbtn2({
+        name=nil, 
+        parent=,
+        click=true,-- right left
+        notSecureActionButton=nil,
+        notTexture=nil,
+        showTexture=true,
+        sizi=nil,
+    })
+]]
+    local button= CreateFrame("Button", tab.name, tab.parent or UIParent, not tab.notSecureActionButton and "SecureActionButtonTemplate" or nil)
+    button:SetSize(tab.size or 30, tab.size or 30)
+    if tab.click==true then
         button:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    elseif rightClick~=false then
+    elseif tab.click=='right' then
+        button:RegisterForClicks(e.RightButtonDown)
+    elseif tab.click=='left' then
         button:RegisterForClicks(e.LeftButtonDown)
     end
     button:EnableMouseWheel(true)
@@ -944,13 +957,13 @@ function e.Cbtn2(name, parent, showTexture, rightClick)
     button.background:SetAlpha(0.5)
     button.background:AddMaskTexture(button.mask)
 
-    button.texture=button:CreateTexture(nil, 'BORDER')
-
-    button.texture:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4);
-	button.texture:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -6, 6);
-    button.texture:AddMaskTexture(button.mask)
-    button.texture:SetShown(showTexture)
-
+    if not tab.notTexture then
+        button.texture=button:CreateTexture(nil, 'BORDER')
+        button.texture:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4);
+        button.texture:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -6, 6);
+        button.texture:AddMaskTexture(button.mask)
+        button.texture:SetShown(tab.showTexture)
+    end
     button.border=button:CreateTexture(nil, 'ARTWORK')
     button.border:SetAllPoints(button)
     button.border:SetAtlas('bag-reagent-border')

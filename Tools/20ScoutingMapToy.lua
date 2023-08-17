@@ -40,7 +40,17 @@ local function Get_Use_Toy()
                 local _, name, _, _, _, _, _, _, _, _, _, _, wasEarnedByMe=GetAchievementInfo(achievementID)
                 if name and not wasEarnedByMe then
                     if not panel.btn then
-                        panel.btn=e.Cbtn2(nil, WoWToolsMountButton, true)
+                        
+                        panel.btn= e.Cbtn2({
+                            name=nil,
+                            parent=_G['WoWToolsMountButton'],
+                            click=true,-- right left
+                            notSecureActionButton=nil,
+                            notTexture=nil,
+                            showTexture=true,
+                            sizi=nil,
+                        })
+                        
                         panel.btn:SetAttribute("type*", "item")
                         panel.btn:SetPoint('BOTTOM', WoWToolsOpenItemsButton, 'TOP')--自定义位置
                         panel.btn:SetScript('OnLeave', function() e.tips:Hide() end)

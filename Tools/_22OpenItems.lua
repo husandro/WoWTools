@@ -766,7 +766,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
 
-                button= e.Cbtn2('WoWToolsOpenItemsButton', WoWToolsMountButton)
+                button= e.Cbtn2({
+                    name= 'WoWToolsOpenItemsButton',
+                    parent=_G['WoWToolsMountButton'],
+                    click=true,-- right left
+                    notSecureActionButton=nil,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
+
                 button:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT')
 
                 panel:RegisterEvent('CHALLENGE_MODE_START')

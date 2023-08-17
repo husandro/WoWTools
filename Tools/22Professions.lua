@@ -19,7 +19,17 @@ local function Init_Tools_Button()
             local name, _, _, _, numAbilities, spelloffset = GetProfessionInfo(type)
             local _, _, icon, _, _, _, spellID= GetSpellInfo(spelloffset+ 1, 'spell')
 
-            local btn= e.Cbtn2(id..addName..name, e.toolsFrame, nil, true)
+
+            local btn= e.Cbtn2({
+                name=id..addName..name,
+                parent= e.toolsFrame,
+                click=true,-- right left
+                notSecureActionButton=nil,
+                notTexture=nil,
+                showTexture=true,
+                sizi=nil,
+            })
+
             e.ToolsSetButtonPoint(btn)--设置位置
 
             btn.spellID = spellID

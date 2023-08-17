@@ -1329,7 +1329,16 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
                 if not IsAddOnLoaded("Blizzard_Collections") then LoadAddOn('Blizzard_Collections') end
 
-                button=e.Cbtn2('WoWToolsMountButton')
+                button= e.Cbtn2({
+                    name= 'WoWToolsMountButton',
+                    parent=nil,
+                    click=true,-- right left
+                    notSecureActionButton=nil,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
+
                 button:SetAttribute("type1", "spell")
                 button:SetAttribute("target-spell", "cursor")
                 button:SetAttribute("alt-type1", "spell")

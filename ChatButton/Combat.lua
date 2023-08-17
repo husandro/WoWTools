@@ -510,7 +510,7 @@ local function Init()
     button.texture2:SetColorTexture(1,0,0)
     button.texture2:SetShown(false)
 
-    button:SetScript('OnMouseDown', function(self, d)
+    button:SetScript('OnClick', function(self, d)
         if d=='RightButton' then
             if not self.Menu then
                 self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")--菜单框架
@@ -562,7 +562,16 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+                button= e.Cbtn2({
+                    name=nil,
+                    parent=WoWToolsChatButtonFrame,
+                    click=true,-- right left
+                    notSecureActionButton=true,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
+
                 Save= WoWToolsSave[addName] or Save
 
                 panel:RegisterEvent('PLAYER_REGEN_DISABLED')

@@ -323,9 +323,12 @@ local function speak_Text(text)
     local destination= ttsVoices.voiceID and Enum.VoiceTtsDestination.QueuedLocalPlayback or Enum.VoiceTtsDestination.LocalPlayback
     --C_VoiceChat.SpeakText(voiceID, text, destination, rate, volume)
     C_VoiceChat.SpeakText(voiceID, text, destination, 0, 100)
-    print(id, addName2, text)
+    print(id, addName2,'|cffff00ff', text)
 end
 local function set_VIGNETTES_UPDATED(init)
+    if UnitOnTaxi('player') then
+        return
+    end
     for _, vignetteGUID in pairs(C_VignetteInfo.GetVignettes() or {}) do
         local info= vignetteGUID and C_VignetteInfo.GetVignetteInfo(vignetteGUID) or {}
         if info.name and info.name~='' and info.zoneInfiniteAOI then
@@ -569,8 +572,10 @@ local function Init_Button_Menu(_, level, menuList)--菜单
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)]]
+
+
     info={
-        text= (e.onlyChinese and '当前' or REFORGE_CURRENT)..' Vignette',
+        text= (e.onlyChinese and '当前' or REFORGE_CURRENT)..(Save.vigentteSound and '|A:chatframe-button-icon-voicechat:0:0|a' or ' ')..'Vignette',
         menuList='CurrentVignette',
         hasArrow=true,
         notCheckable=true,

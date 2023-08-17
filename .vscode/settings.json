@@ -3245,7 +3245,8 @@
         "MOUSE_SENSITIVITY",
         "ColorPickerCancelButton",
         "SettingsSliderOptionsMixin",
-        "ERR_GUILD_PLAYER_NOT_IN_GUILD"
+        "ERR_GUILD_PLAYER_NOT_IN_GUILD",
+        "HUD_EDIT_MODE_PLAYER_FRAME_LABEL"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

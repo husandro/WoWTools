@@ -123,7 +123,7 @@ local function Init()
 
     e.ToolsSetButtonPoint(button)--设置位置
 
-    button:SetScript('OnMouseDown', function(self, d)
+    button:SetScript('OnClick', function(_, d)
         local key=IsModifierKeyDown()
         if d=='LeftButton' and not key then
             C_PetJournal.SummonPetByGUID(petGUID)
@@ -169,7 +169,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             Save= WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
-                button=e.Cbtn2(nil, e.toolsFrame, true, false)
+                button= e.Cbtn2({
+                    name=nil,
+                    parent= e.toolsFrame,
+                    click=true,-- right left
+                    notSecureActionButton=true,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
+
 
                 panel:RegisterEvent('PLAYER_LOGOUT')
                 panel:RegisterEvent("PLAYER_REGEN_ENABLED")

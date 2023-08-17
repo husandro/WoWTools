@@ -106,7 +106,15 @@ end
 
 local function create_Button(self)
     self= self or button
-    local btn= e.Cbtn2(nil, self, true, nil)
+    local btn= e.Cbtn2({
+        name= nil,
+        parent=self,
+        click=true,-- right left
+        notSecureActionButton=nil,
+        notTexture=nil,
+        showTexture=true,
+        sizi=nil,
+    })
     btn:SetPoint('RIGHT', self, 'LEFT')
     return btn
 end
@@ -461,7 +469,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName..'Tools'] or Save
 
             if not e.toolsFrame.disabled then
-                button=e.Cbtn2(nil, WoWToolsMountButton, true, nil)
+                button= e.Cbtn2({
+                    name=nil,
+                    parent=_G['WoWToolsMountButton'],
+                    click=true,-- right left
+                    notSecureActionButton=nil,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
+
                 button.itemID= 5512--治疗石
                 set_Button_Init(button)--提示, 事件
 

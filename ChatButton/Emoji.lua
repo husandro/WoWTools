@@ -6,7 +6,6 @@ local Save={
  }
 local button
 
-local frame--控制图标,显示,隐藏
 local File={'Angel','Angry','Biglaugh','Clap','Cool','Cry','Cutie','Despise','Dreamsmile','Embarrass','Evil','Excited','Faint','Fight','Flu','Freeze','Frown','Greet','Grimace','Growl','Happy','Heart','Horror','Ill','Innocent','Kongfu','Love','Mail','Makeup','Meditate','Miserable','Okay','Pretty','Puke','Shake','Shout','Shuuuu','Shy','Sleep','Smile','Suprise','Surrender','Sweat','Tear','Tears','Think','Titter','Ugly','Victory','Volunteer','Wronged','Mario',}
 local textFile
 
@@ -32,20 +31,20 @@ local Channels={
 
 local function setframeEvent()--设置隐藏事件
     if Save.notHideCombat then
-        frame:UnregisterEvent('PLAYER_REGEN_DISABLED')
+        button.btn:UnregisterEvent('PLAYER_REGEN_DISABLED')
     else
-        frame:RegisterEvent('PLAYER_REGEN_DISABLED')
+        button.btn:RegisterEvent('PLAYER_REGEN_DISABLED')
     end
     if Save.notHideMoving then
-        frame:UnregisterEvent('PLAYER_STARTED_MOVING')
+        button.btn:UnregisterEvent('PLAYER_STARTED_MOVING')
     else
-        frame:RegisterEvent('PLAYER_STARTED_MOVING')
+        button.btn:RegisterEvent('PLAYER_STARTED_MOVING')
     end
 end
 
 local function setButtons()--设置按钮
     local size= 30
-    local last, index, line=frame, 0, nil
+    local last, index, line=button.btn, 0, nil
     local function send(text, d)--发送信息
         text='{'..text..'}'
         if d =='LeftButton' then
@@ -66,7 +65,7 @@ local function setButtons()--设置按钮
         end
         btn:SetScript('OnMouseDown', function(_, d) send(text, d) end)
         btn:SetScript('OnEnter', function()
-            e.tips:SetOwner(frame, "ANCHOR_RIGHT", 0,125)
+            e.tips:SetOwner(button.btn, "ANCHOR_RIGHT", 0,125)
             e.tips:ClearLines()
             e.tips:AddLine(text)
             e.tips:Show()
@@ -74,20 +73,36 @@ local function setButtons()--设置按钮
         btn:SetScript('OnLeave', function() e.tips:Hide() end)
     end
     for i, texture in pairs(File) do
-        local btn=e.Cbtn(frame, {icon='hide',size={size,size}})
+        local btn=e.Cbtn(button.btn, {icon='hide',size={size,size}})
         setPoint(btn, textFile[i])
         btn:SetNormalTexture('Interface\\Addons\\WoWTools\\Sesource\\Emojis\\'..texture)
         last=btn
         index=index+1
     end
     for i= 1, 8 do
-        local btn=e.Cbtn(frame, {icon='hide',size={size,size}})
+        local btn=e.Cbtn(button.btn, {icon='hide',size={size,size}})
         setPoint(btn, 'rt'..i)
         btn:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..i)
         last=btn
         index=index+1
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#####
 --主菜单
@@ -199,6 +214,19 @@ local function InitMenu(_, level, type)
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -206,24 +234,51 @@ local function Init()
     button:SetPoint('LEFT', WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    frame=e.Cbtn(button,{icon='hide', size={10, 30}})--控制图标,显示,隐藏
+    button.texture:SetTexture('Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet')
+    button:SetScript('OnEnter', function(self)
+        if Save.showEnter then
+            self.btn:SetShown(true)
+            self.btn:SetButtonState('PUSHED')
+        end
+    end)
+    button:SetScript('OnLeave', function(self) self.btn:SetButtonState('NORMAL') end)
+    button:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then
+            self.btn:SetShown(not button.btn:IsShown())
+            if self.btn:IsShown() then
+                self.btn:SetButtonState('PUSHED')
+            end
+
+        else
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)--主菜单
+        end
+    end)
+
+
+    button.btn=e.Cbtn(button,{icon='hide', size={10, 30}})--控制图标,显示,隐藏
     if Save.Point then
-        frame:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
+        button.btn:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
     else
-        frame:SetPoint('BOTTOMRIGHT',button, 'TOPLEFT', -120,2)
+        button.btn:SetPoint('BOTTOMRIGHT',button, 'TOPLEFT', -120,2)
     end
-    frame:SetShown(false)
-    frame:RegisterForDrag("RightButton")
-    frame:SetMovable(true)
-    frame:SetClampedToScreen(true)
+    button.btn:SetShown(false)
+    button.btn:RegisterForDrag("RightButton")
+    button.btn:SetMovable(true)
+    button.btn:SetClampedToScreen(true)
+
     setframeEvent()--设置隐藏事件
-    frame:SetScript('OnEvent', function(self) self:SetShown(false) end)
-    frame:SetScript("OnDragStart", function(self,d )
+
+    button.btn:SetScript('OnEvent', function(self) self:SetShown(false) end)
+    button.btn:SetScript("OnDragStart", function(self,d )
         if not IsModifierKeyDown() and d=='RightButton' then
             self:StartMoving()
         end
     end)
-    frame:SetScript("OnDragStop", function(self)
+    button.btn:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
         Save.Point={self:GetPoint(1)}
@@ -231,7 +286,7 @@ local function Init()
         self:Raise()
         print(id, addName, RESET_POSITION, 'Alt+'..e.Icon.right)
     end)
-    frame:SetScript('OnMouseDown',function(self, d)
+    button.btn:SetScript('OnMouseDown',function(self, d)
         local key=IsModifierKeyDown()
         if d=='RightButton' and IsAltKeyDown() then--还原
             Save.Point=nil
@@ -243,32 +298,17 @@ local function Init()
             print(id, addName, NPE_MOVE..e.Icon.right)
         end
     end)
-    frame:SetScript("OnMouseUp", function(self, d)
+    button.btn:SetScript("OnMouseUp", function(_, d)
         ResetCursor()
     end)
-    frame:SetScript("OnLeave",function()
+    button.btn:SetScript("OnLeave",function()
         ResetCursor()
     end)
 
     setButtons()--设置按钮
 
-    button.texture:SetTexture('Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet')
-    button:SetScript('OnEnter', function()
-        if Save.showEnter then
-            frame:SetShown(true)
-        end
-    end)
-    button:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' then
-            frame:SetShown(not frame:IsShown())
-        else
-            if not self.Menu then
-                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)--主菜单
-        end
-    end)
+
+
 
     local Tab={}
     for index, text in pairs(textFile) do
@@ -290,6 +330,15 @@ local function Init()
         end
     end
 end
+
+
+
+
+
+
+
+
+
 
 --###########
 --加载保存数据
@@ -315,8 +364,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if WoWToolsChatButtonFrame.disabled or not WoWToolsChatButtonFrame.ShowEmojiButton then--禁用Chat Button
                     File=nil
                     Channels=nil
+
                 else
-                    button=e.Cbtn2('WoWToolsChatButtonEmoji', WoWToolsChatButtonFrame, true, false)
+                    button= e.Cbtn2({
+                        name=nil,
+                        parent=WoWToolsChatButtonFrame,
+                        click=true,-- right left
+                        notSecureActionButton=true,
+                        notTexture=nil,
+                        showTexture=true,
+                        sizi=nil,
+                    })
 
                     if LOCALE_zhCN then
                         textFile= {'天使','生气','大笑','鼓掌','酷','哭','可爱','鄙视','美梦','尴尬','邪恶','兴奋','晕','打架','流感','呆','皱眉','致敬','鬼脸','龇牙','开心','心','恐惧','生病','无辜','功夫','花痴','邮件','化妆','沉思','可怜','好','漂亮','吐','握手','喊','闭嘴','害羞','睡觉','微笑','吃惊','失败','流汗','流泪','悲剧','想','偷笑','猥琐','胜利','雷锋','委屈','马里奥'}
@@ -342,7 +400,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                     Init()
                 end
-            
+
             panel:UnregisterEvent('ADDON_LOADED')
             panel:RegisterEvent("PLAYER_LOGOUT")
     end

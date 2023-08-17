@@ -24,6 +24,19 @@ local function set_RaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#######
 --拾取专精
 --#######
@@ -49,6 +62,18 @@ local function set_LootSpecialization()--拾取专精
         self.lootSpecFrame:SetShown(find)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 --################
 --副本, 地下城，指示
@@ -129,6 +154,20 @@ local function set_Keystones_Date()
     self.keystoneText:SetText(text or '')
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --玩家
 --####
@@ -204,6 +243,20 @@ local function set_PlayerFrame()--PlayerFrame.lua
         PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestLoop.RestTexture:SetPoint('CENTER', PlayerFrame.PlayerFrameContainer.PlayerPortrait)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --####
 --目标
@@ -1019,6 +1072,27 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###############
 --小队, 使用团框架
 --###############
@@ -1120,6 +1194,19 @@ local function set_ToggleWarMode()--设置, 战争模式
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#########
 --BossFrame
 --#########
@@ -1148,6 +1235,24 @@ local function set_BossFrame()
         frame.PortraitFrame:set_Portrait()
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --######
 --初始化
@@ -1501,7 +1606,6 @@ local legacyRaidDifficultyStr= ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', 
 
 panel:RegisterEvent('GROUP_ROSTER_UPDATE')--挑战，数据
 panel:RegisterEvent('GROUP_LEFT')
---panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
 
 panel:RegisterEvent('PLAYER_FLAGS_CHANGED')--设置, 战争模式
 panel:RegisterEvent('PLAYER_UPDATE_RESTING')
@@ -1532,29 +1636,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
             
-
-            --[[添加控制面板        
-            local sel=e.AddPanel_Check('|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(e.onlyChinese and '单位框体' or addName), not Save.disabled)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-
-            local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-            sel2.text:SetText(e.onlyChinese and '团队框体' or HUD_EDIT_MODE_RAID_FRAMES_LABEL)
-            sel2:SetPoint('LEFT', sel.text, 'RIGHT')
-            sel2:SetChecked(not Save.notRaidFrame)
-            sel2:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinese and '提示：如果出现错误，请取消' or 'note: If you get error, please cancel this')
-                e.tips:Show()
-            end)
-            sel2:SetScript('OnLeave', function() e.tips:Hide() end)
-            sel2:SetScript('OnMouseDown', function ()
-                Save.notRaidFrame= not Save.notRaidFrame and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)]]
 
             if not Save.notRaidFrame then
                 Init_RaidFrame()--团队

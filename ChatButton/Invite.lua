@@ -847,7 +847,7 @@ local function Init()
 
     set_SummonTips()--召唤，提示
 
-    button:SetScript('OnMouseDown', function(self, d)
+    button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             InvUnitFunc()--邀请，周围玩家
         else
@@ -997,7 +997,16 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
                 Save.frameList= Save.frameList or {['Target']=true, ['Party1']=true, ['Party2']=true, ['Party3']=true, ['Party4']=true}--框架, 向上:密语, 向下:跟随
                 Save.focusKey= Save.focusKey or 'Shift'--焦点
 
-                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+                button= e.Cbtn2({
+                    name=nil,
+                    parent=WoWToolsChatButtonFrame,
+                    click=true,-- right left
+                    notSecureActionButton=true,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
+
                 Init()
 
                 panel:RegisterEvent("PLAYER_LOGOUT")

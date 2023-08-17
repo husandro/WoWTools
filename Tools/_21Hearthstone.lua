@@ -332,7 +332,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             Save= WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
-                button=e.Cbtn2('HearthstoneToolsButton', WoWToolsMountButton)
+
+                button= e.Cbtn2({
+                    name= 'HearthstoneToolsButton',
+                    parent=_G['WoWToolsMountButton'],
+                    click=true,-- right left
+                    notSecureActionButton=nil,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
+
                 button:SetAttribute("type1", "item")
                 button:SetAttribute("alt-type1", "item")
                 button:SetAttribute("shift-type1", "item")

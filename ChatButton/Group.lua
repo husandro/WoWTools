@@ -361,7 +361,7 @@ local function Init()
     end
 
     button.texture:SetAtlas('socialqueuing-icon-group')
-    button:SetScript('OnMouseDown', function(self, d)
+    button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' and button.type then
             e.Say(button.type)
         else
@@ -398,7 +398,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
-                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+                
+                button= e.Cbtn2({
+                    name=nil,
+                    parent=WoWToolsChatButtonFrame,
+                    click=true,-- right left
+                    notSecureActionButton=true,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
 
                 Init()
                 panel:RegisterEvent("PLAYER_LOGOUT")

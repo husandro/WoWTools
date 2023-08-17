@@ -1,11 +1,20 @@
 local id, e = ...
 local Save={
     --clickToMove= e.Player.husandro,--禁用, 点击移动
+    clickToMoveButton= e.Player.huge,--点击移动，按钮
 }
 local addName= PET_BATTLE_COMBAT_LOG
 local panel= e.Cbtn(nil, {icon=true, size={20,20}})
 panel:SetShown(false)
 panel:SetFrameStrata('DIALOG')
+
+
+
+
+
+
+
+
 
 --#################
 --宠物战斗界面收集数
@@ -41,6 +50,16 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
 --###################
 --宠物 frme 技能, 提示
 --###################
@@ -65,6 +84,20 @@ local function set_PetBattleUnitTooltip_UpdateForUnit(self, petOwner, petIndex)
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#############################
 --显示当前宠物, 速度指示, 力量数据
@@ -124,6 +157,20 @@ local function set_PetBattleFrame_UpdateSpeedIndicators(self)--Blizzard_PetBattl
     end)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#################
 --主面板,主技能, 提示
 --#################
@@ -169,6 +216,18 @@ local function set_PetBattleAbilityButton_UpdateBetterIcon(self)
         self.text:SetText(Cooldown and Cooldown>0 and Cooldown or '')
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 --########################
 --对方, 我方， 技能提示， 框
@@ -380,6 +439,16 @@ local function set_PetBattleActionButton_UpdateState(self)
     end
 end
 
+
+
+
+
+
+
+
+
+
+
 --#####################
 --宠物， 类型，强弱，提示
 --#####################
@@ -520,6 +589,147 @@ local function set_Button_setFrame_PetJournal()--宠物手册，增加按钮
     frame:SetScript('OnLeave', function() e.tips:Hide() end)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--########
+--点击移动
+--########
+local function set_Click_To_Move()
+    panel:UnregisterEvent('PLAYER_LEVEL_UP')
+    if not Save.clickToMove or Save.disabled then
+        return
+    end
+    local value= C_CVar.GetCVarBool("autoInteract")
+    if e.Player.levelMax then
+        if not value then
+            C_CVar.SetCVar("autoInteract", '1')
+            print(id, addName, e.onlyChinese and '点击移动' or CLICK_TO_MOVE, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")))
+        end
+    else
+        if value then
+            C_CVar.SetCVar("autoInteract", '0')
+            print(id, addName, e.onlyChinese and '点击移动' or CLICK_TO_MOVE, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")))
+        end
+        panel:RegisterEvent('PLAYER_LEVEL_UP')
+    end
+end
+
+local function add_Click_To_Move_Button()--点击移动，按钮
+    local btn=PlayerFrame.ClickToMoveButton
+    if not Save.clickToMoveButton then
+        if btn then
+            btn:SetShown(false)
+        end
+        return
+    end
+
+    if not btn then
+        btn= e.Cbtn2({
+            name=nil,
+            parent=PlayerFrame,
+            click=true,-- right left
+            notSecureActionButton=true,
+            notTexture=nil,
+            showTexture=true,
+            sizi=20,
+        })
+        btn:SetPoint('RIGHT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'LEFT', 5,15)
+        btn:SetSize(20,20)
+        btn:SetNormalAtlas('transmog-nav-slot-feet')
+        --btn.texture:SetAtlas('transmog-nav-slot-feet')
+        PlayerFrame.ClickToMoveButton= btn
+    end
+    btn:SetShown(true)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--###########
+--添加控制面板
+--###########
+local function Init_Panel()
+    local initializer2= e.AddPanel_Check({
+        name= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName),
+        tooltip= addName,
+        value= not Save.disabled,
+        func= function()
+            Save.disabled= not Save.disabled and true or nil
+            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+        end
+    })
+
+    local initializer= e.AddPanel_Check({
+        name= e.Icon.right..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE),
+        tooltip= (not e.onlyChinese and CLICK_TO_MOVE..', '..REFORGE_CURRENT or '点击移动, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))
+            ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' < '..MAX_PLAYER_LEVEL..' = '..e.GetEnabeleDisable(false)
+            ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' = '..MAX_PLAYER_LEVEL..' = '..e.GetEnabeleDisable(true),
+        value= Save.clickToMove,
+        func= function()
+            Save.clickToMove = not Save.clickToMove and true or nil
+            set_Click_To_Move()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+
+    initializer= e.AddPanel_Check({
+        name= '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button')),
+        tooltip= e.onlyChinese and '位置：玩家框体' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHOOSE_LOCATION:gsub(CHOOSE, '')..': ', HUD_EDIT_MODE_PLAYER_FRAME_LABEL),
+        value= Save.clickToMoveButton,
+        func= function()
+            Save.clickToMoveButton = not Save.clickToMoveButton and true or nil
+            add_Click_To_Move_Button()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -604,28 +814,11 @@ local function Init()
 			PetActionBar:SetShown(false)
 		end
     end)]]
+
+    add_Click_To_Move_Button()--点击移动，按钮
 end
 
---########
---点击移动
---########
-local function set_Click_To_Move()
-    if not Save.clickToMove or Save.disabled then
-        return
-    end
-    local value= C_CVar.GetCVarBool("autoInteract")
-    if e.Player.levelMax then
-        if not value then
-            C_CVar.SetCVar("autoInteract", '1')
-            print(id, addName, e.onlyChinese and '点击移动' or CLICK_TO_MOVE, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")))
-        end
-    else
-        if value then
-            C_CVar.SetCVar("autoInteract", '0')
-            print(id, addName, e.onlyChinese and '点击移动' or CLICK_TO_MOVE, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")))
-        end
-    end
-end
+
 --###########
 --加载保存数据
 --###########
@@ -633,66 +826,14 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('PET_BATTLE_OPENING_DONE')
 panel:RegisterEvent('PET_BATTLE_CLOSE')
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
-            --添加控制面板
-            local initializer2= e.AddPanel_Check({
-                name= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName),
-                tooltip= addName,
-                value= not Save.disabled,
-                func= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
-                end
-            })
-
-            local initializer= e.AddPanel_Check({
-                name= e.Icon.right..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE),
-                tooltip= (not e.onlyChinese and CLICK_TO_MOVE..', '..REFORGE_CURRENT or '点击移动, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))
-                    ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' < '..MAX_PLAYER_LEVEL..' = '..e.GetEnabeleDisable(false)
-                    ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' = '..MAX_PLAYER_LEVEL..' = '..e.GetEnabeleDisable(true),
-                value= Save.clickToMove,
-                func= function()
-                    Save.clickToMove = not Save.clickToMove and true or nil
-                    set_Click_To_Move()
-                end
-            })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
-
-            --[[添加控制面板
-            local check=e.AddPanel_Check('|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName), not Save.disabled, true)
-            check:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
-            end)
-
-            local clickToMoveCheck=CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")
-            clickToMoveCheck.text:SetText(e.Icon.right..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE))
-            clickToMoveCheck:SetPoint('LEFT', check.text, 'RIGHT',2,0)
-            clickToMoveCheck:SetChecked(Save.clickToMove)
-            clickToMoveCheck:SetScript('OnMouseDown', function()
-                Save.clickToMove = not Save.clickToMove and true or nil
-                set_Click_To_Move()
-            end)
-            clickToMoveCheck:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinese and '点击移动' or CLICK_TO_MOVE, (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")))
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine((e.onlyChinese and '等级' or LEVEL).. ' < '..MAX_PLAYER_LEVEL, e.GetEnabeleDisable(false))
-                e.tips:AddDoubleLine((e.onlyChinese and '等级' or LEVEL).. ' = '..MAX_PLAYER_LEVEL, e.GetEnabeleDisable(true))
-                
-                e.tips:Show()
-            end)
-            clickToMoveCheck:SetScript('OnLeave', function() e.tips:Hide() end)
-            ]]
-            
+            Init_Panel()--添加控制面板
 
             if Save.disabled then
-                
                 panel:UnregisterAllEvents()
             else
                 set_Click_To_Move()
@@ -708,8 +849,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
-    else
 
+    elseif event== 'PLAYER_LEVEL_UP' then
+        C_Timer.After(2, set_Click_To_Move)
+
+    else--PET_BATTLE_OPENING_DONE PET_BATTLE_CLOSE
         set_Pet_Type(C_PetBattles.IsInBattle())
         if event=='PET_BATTLE_CLOSE' then
             if PetHasActionBar() and not UnitAffectingCombat('player') then--宠物动作条， 显示，隐藏

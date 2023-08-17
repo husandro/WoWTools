@@ -210,7 +210,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             Save= WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
-                button=e.Cbtn2(id..addName, e.toolsFrame, true)
+                button= e.Cbtn2({
+                    name= id..addName,
+                    parent= e.toolsFrame,
+                    click=true,-- right left
+                    notSecureActionButton=nil,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
+
                 button.itemID=8529
 
                 panel:RegisterEvent("PLAYER_REGEN_ENABLED")

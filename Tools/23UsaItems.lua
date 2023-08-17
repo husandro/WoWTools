@@ -487,7 +487,16 @@ local function Init()
             name = C_Item.GetItemNameByID(itemID)
             icon = C_Item.GetItemIconByID(itemID)
             if name and icon then
-                local btn=e.Cbtn2(nil, e.toolsFrame, true, true)
+                local btn= e.Cbtn2({
+                    name=id..addName..name,
+                    parent= e.toolsFrame,
+                    click=true,-- right left
+                    notSecureActionButton=nil,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
+
                 btn.itemID=itemID
                 init_Item_Button(btn)
                 e.ToolsSetButtonPoint(btn)--设置位置
@@ -505,8 +514,17 @@ local function Init()
             local itemEquipLoc, icon2 = select(4, GetItemInfoInstant(itemID))
             icon =icon2 or C_Item.GetItemIconByID(itemID)
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]
+
             if name and icon and slot then
-                local btn=e.Cbtn2(nil, e.toolsFrame, true, true)
+                local btn= e.Cbtn2({
+                    name=nil,
+                    parent= e.toolsFrame,
+                    click=true,-- right left
+                    notSecureActionButton=nil,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
                 btn.itemID=itemID
                 btn.slot=slot
                 init_Item_Button(btn, true)
@@ -524,7 +542,15 @@ local function Init()
             local name, _, icon = GetSpellInfo(spellID)
             if name and icon then
                 if name and icon then
-                    local btn=e.Cbtn2(nil, e.toolsFrame, true, true)
+                    local btn= e.Cbtn2({
+                        name=nil,
+                        parent= e.toolsFrame,
+                        click=true,-- right left
+                        notSecureActionButton=nil,
+                        notTexture=nil,
+                        showTexture=true,
+                        sizi=nil,
+                    })
                     btn.spellID=spellID
                     init_Spell_Button(btn)
                     e.ToolsSetButtonPoint(btn)--设置位置

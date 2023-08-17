@@ -501,8 +501,16 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1== id then
             Save= WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
+                button= e.Cbtn2({
+                    name=id..'RandomToyButton',
+                    parent= e.toolsFrame,
+                    click=true,-- right left
+                    notSecureActionButton=nil,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
 
-                button=e.Cbtn2(id..'RandomToyButton', e.toolsFrame)
                 button:SetAttribute("type1", "item")
                 button:SetAttribute("alt-type1", "item")
                 button:SetAttribute("shift-type1", "item")

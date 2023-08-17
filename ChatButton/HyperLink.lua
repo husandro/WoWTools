@@ -720,7 +720,7 @@ end
 --隐藏NPC发言
 --##########
 local function set_Talking()
-    if not Save.disabledNPCTalking or not Save.setPlayerSound then
+    if Save.disabledNPCTalking then
         if panel.talkingFrame then
             panel:UnregisterAllEvents()
         end
@@ -730,7 +730,7 @@ local function set_Talking()
     if not panel.talkingFrame then
         panel.talkingFrame= CreateFrame("Frame", nil, panel)
         panel.talkingFrame:SetScript('OnEvent', function(self)
-            local _, _, vo, _, _, _, name, text, isNewTalkingHead = C_TalkingHead.GetCurrentLineInfo()
+            local _, _, vo, _, _, _, name, text = C_TalkingHead.GetCurrentLineInfo()
             TalkingHeadFrame:CloseImmediately()
             if vo and vo>0 then
                 if ( self.voHandle ) then
@@ -741,9 +741,9 @@ local function set_Talking()
                 if ( success ) then
                     self.voHandle = voHandle;
                 end
-            end
-            if not Save.disabledTalkingPringText and (text or self.voHandle) then
-                print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r',id, addName, 'soundKitID', vo)
+                if not Save.disabledTalkingPringText and text then
+                    print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r',id, addName, 'soundKitID', vo)
+                end
             end
         end)
     end
@@ -916,16 +916,17 @@ local function InitMenu(_, level, menuList)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     elseif menuList=='NPCTalkingText' then--3级，菜单
-        info={--仅限, 手动组队,不是在随机队伍里
+        info={
             text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
             checked= not Save.disabledTalkingPringText,
-            disabled= not Save.setPlayerSound or Save.disabledNPCTalking,
+            disabled= Save.disabledNPCTalking,
             keepShownOnClick=true,
             func= function()
                 Save.disabledTalkingPringText= not Save.disabledTalkingPringText and true or nil
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+
 
     elseif menuList=='NPCTalking' then--禁用，隐藏NPC发言
         info={--仅限, 手动组队,不是在随机队伍里
@@ -1069,7 +1070,7 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
     button.texture:SetAtlas(e.Icon.icon)
 
-    button:SetScript('OnMouseDown', function(self, d)
+    button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             setFunc()--使用，禁用
         else
@@ -1139,7 +1140,15 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 Save.groupWelcomeText= Save.groupWelcomeText or (e.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
                 Save.guildWelcomeText= Save.guildWelcomeText or (e.Player.cn and '宝贝，欢迎你加入' or EMOTE103_CMD1:gsub('/',''))
 
-                button=e.Cbtn2(nil, WoWToolsChatButtonFrame, true, false)
+                button= e.Cbtn2({
+                    name=nil,
+                    parent=WoWToolsChatButtonFrame,
+                    click=true,-- right left
+                    notSecureActionButton=true,
+                    notTexture=nil,
+                    showTexture=true,
+                    sizi=nil,
+                })
 
                 set_Talking()--隐藏NPC发言
                 Init()
