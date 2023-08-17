@@ -811,10 +811,7 @@ local function Init_Options()
         category= Category
     })
 end
-local frame = CreateFrame("Frame")
-local background = frame:CreateTexture()
-background:SetAllPoints(frame)
-background:SetColorTexture(1, 0, 1, 0.5)
+
 
 
 --###########

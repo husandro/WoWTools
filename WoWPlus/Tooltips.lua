@@ -1077,14 +1077,6 @@ end
 --########
 --设置Cvar
 --########
-function e.Get_CVar_Tooltips(info)
-    local curValue= C_CVar.GetCVar(info.name)
-    return info.msg..'|n'..info.name..'|n'
-    ..(info.value and curValue== info.value and e.Icon.select2 or '')
-    ..(info.value and (e.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
-    ..'('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cnGREEN_FONT_COLOR:'..C_CVar.GetCVar(info.name)..'|r |r'
-    ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..C_CVar.GetCVarDefault(info.name)..')|r'
-end
 local function set_CVar(reset, tips, notPrint)
     local tab={
         {   name='missingTransmogSourceInItemTooltips',

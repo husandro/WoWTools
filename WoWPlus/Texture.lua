@@ -1986,7 +1986,6 @@ local function options_Init()--初始，选项
         buttonText= e.onlyChinese and '设置' or SETTINGS,
         buttonFunc= function()
             e.OpenPanelOpting()
-
         end,
         tooltip= addName,
         layout= Layout,

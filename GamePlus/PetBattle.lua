@@ -655,8 +655,12 @@ local function add_Click_To_Move_Button()--点击移动，按钮
         btn:Raise()
         btn:SetSize(20,20)
         btn:SetNormalAtlas('transmog-nav-slot-feet')
-        btn:SetScript('OnClick', function()
-            C_CVar.SetCVar("autoInteract", C_CVar.GetCVarBool("autoInteract") and '0' or '1')
+        btn:SetScript('OnClick', function(_, d)
+            if d=='LeftButton' then
+                C_CVar.SetCVar("autoInteract", C_CVar.GetCVarBool("autoInteract") and '0' or '1')
+            else
+                e.OpenPanelOpting(nil, '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button')))
+            end
         end)
         function btn:set_State()
             if C_CVar.GetCVarBool("autoInteract") then
@@ -675,7 +679,10 @@ local function add_Click_To_Move_Button()--点击移动，按钮
         function btn:set_Tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddLine(e.Get_CVar_Tooltips({name='autoInteract' ,msg=e.Icon.left..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE)}))
+            e.tips:AddDoubleLine(e.onlyChinese and '点击移动' or CLICK_TO_MOVE, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))..e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
+            e.tips:AddLine(' ')
+            e.tips:AddLine(e.Get_CVar_Tooltips({name='autoInteract'}))
             e.tips:AddLine(" ")
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()

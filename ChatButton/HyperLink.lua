@@ -603,32 +603,34 @@ end
 --###########
 --设置控制面板
 --###########
-local keyFrame
-local function set_Key_Settings_Frame()
-    if keyFrame then
-        
-    end
-end
-local function setPanel()
+
+--local Category, Layout
+local function Init_Panel()
+    --Category, Layout= e.AddPanel_Sub_Category({name= addName, frame= panel})
+    e.AddPanel_Sub_Category({name=e.onlyChinese and '超链接图标' or addName, frame=panel})
     local Cedit= function(self, width, height)
         width = width or 400
         height= height or 400
     
-        local editBox = CreateFrame("EditBox", nil, self)
+        local editBox = CreateFrame("EditBox", nil, self)--ScrollingEditBoxMixin
         editBox:SetSize(width, height)
         editBox:SetAutoFocus(false)
         editBox:ClearFocus()
         editBox:SetFontObject("ChatFontNormal")
         editBox:SetMultiLine(true)
-        --editBox:SetAltArrowKeyMode(false)
         local tex=editBox:CreateTexture(nil, "BACKGROUND")
         tex:SetAtlas('_Adventures-Mission-Highlight-Mid')
         tex:SetAllPoints(editBox)
         return editBox
     end
 
+--[[
+    local frame= CreateFrame('Frame',nil,nil,'ScrollingEditBoxTemplate')
+    frame:SetPoint('CENTER')
+    frame:SetSize(300,300)
 
-    e.AddPanel_Sub_Category({name=e.onlyChinese and '超链接图标' or addName, frame=panel})
+]]
+    
 
     local str=e.Cstr(panel)--内容加颜色
     str:SetPoint('TOPLEFT')
@@ -858,7 +860,6 @@ end
 
 
 
-
 --#####
 --主菜单
 --#####
@@ -1018,7 +1019,7 @@ local function InitMenu(_, level, menuList)
             text= e.onlyChinese and '设置' or SETTINGS,
             notCheckable=true,
             keepShownOnClick=true,
-            func= set_Key_Settings_Frame,
+            func= function() e.OpenPanelOpting() end,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
@@ -1042,7 +1043,6 @@ local function InitMenu(_, level, menuList)
     if menuList then
         return
     end
-   
 
     info={
         text= '|A:newplayertutorial-icon-mouse-leftbutton:0:0|a'..(e.onlyChinese and '超链接图标'or addName),
@@ -1177,6 +1177,8 @@ local function Init()
     WoWToolsChatButtonFrame.last=button
     button.texture:SetAtlas(e.Icon.icon)
 
+    Init_Panel()--设置控制面板
+
     button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             setFunc()--使用，禁用
@@ -1192,19 +1194,15 @@ local function Init()
     if not Save.disabed then--使用，禁用
         setUseDisabled()
     else
-        --button.texture:SetDesaturated(true)
         button.texture:SetAtlas(not Save.disabed and e.Icon.icon or e.Icon.disabled)
     end
 
-    setPanel()--设置控制面板
     set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
-
 
     showTimestamps= C_CVar.GetCVar("showTimestamps")~='none' and true or nil
 
-    --if Save.setPlayerSound then
-        set_START_TIMER_Event()--事件, 声音
-    --end
+    set_START_TIMER_Event()--事件, 声音
+
 
     LFGListInviteDialog:SetScript("OnShow", function(self)--队伍查找器, 接受邀请
         if Save.setPlayerSound then

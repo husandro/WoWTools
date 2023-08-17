@@ -243,7 +243,7 @@ local function set_PlayerFrame()--PlayerFrame.lua
         PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestLoop.RestTexture:SetPoint('CENTER', PlayerFrame.PlayerFrameContainer.PlayerPortrait)
     end
 
-    C_Timer.After(2, function()--开启战争模式时，PVP图标 PlayerFrame_UpdatePvPStatus()
+    hooksecurefunc('PlayerFrame_UpdatePvPStatus', function(self)--开启战争模式时，PVP图标
         local icon= PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PVPIcon
         if icon then
             icon:SetSize(25,25)
@@ -1061,6 +1061,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             statusFrame.DeadText:SetText(text)
         end
     end)
+
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
     --###################
     --隐藏, 队伍, DPS 图标

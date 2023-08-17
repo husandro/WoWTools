@@ -1830,7 +1830,7 @@ end
 
 
 function e.Get_CVar_Tooltips(info)--取得CVar信息 e.Get_CVar_Tooltips({name= ,msg=, value=})
-    return info.msg..'|n'..info.name..'|n'
+    return (info.msg and info.msg..'|n' or '')..info.name..'|n'
     ..(info.value and C_CVar.GetCVar(info.name)== info.value and e.Icon.select2 or '')
     ..(info.value and (e.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
     ..'('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cnGREEN_FONT_COLOR:'..C_CVar.GetCVar(info.name)..'|r |r'

@@ -120,23 +120,19 @@ local function get_variableIndex()
 end
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
 Settings.RegisterAddOnCategory(Category)
-
+Settings.SetKeybindingsCategory(Category)
 
 --打开，选项
-function e.OpenPanelOpting(frameName)
-    frameName= frameName or 'Frame'
-    if frameName then
-        for _, initializer in Layout:EnumerateInitializers() do
-            if initializer.data.name== 'Frame' then
-                initializer.data.expanded = true;
-                Settings.OpenToCategory(Category:GetID(), frameName);
-                return;
-            end
+function e.OpenPanelOpting(category, name)
+    category= category or Category
+    local find= Settings.OpenToCategory(category:GetID(), name)
+    if not find then
+        Settings.OpenToCategory(Category:GetID())
+        if e.Player.husandro then
+            print(id, addName, '没有找到 panel')
         end
     end
-    Settings.OpenToCategory(Category:GetID(), frameName)
 end
-
 
 --添加，子目录
 function e.AddPanel_Sub_Category(tab)
