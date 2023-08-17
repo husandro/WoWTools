@@ -923,6 +923,11 @@ local function InitMenu(_, level, menuList)
                         local text= self:GetText() or ''
                         self:GetParent().button1:SetEnabled(text:gsub(' ', '')~='')
                     end,
+                    EditBoxOnEscapePressed = function(self2)
+                        self2:SetAutoFocus(false)
+                        self2:ClearFocus()
+                        self2:GetParent():Hide()
+                    end,
                 }
                 StaticPopup_Show(id..addName..'modifyGroupWelcome')
             end,
@@ -1007,24 +1012,29 @@ local function InitMenu(_, level, menuList)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    elseif menuList=='KeyColor' then--内容颜色，和频道名称替换
-        info={
-            text= e.Player.L.key,--关键词
-            checked= not Save.disabledKeyColor,
-            colorCode= Save.disabed and '|cff606060' or nil,
-            keepShownOnClick=true,
-            func=function()
-                Save.disabledKeyColor= not Save.disabledKeyColor and true or nil
-            end,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
+    elseif menuList=='KeyColorSettings' then--3级
         info={
             text= e.onlyChinese and '设置' or SETTINGS,
             notCheckable=true,
             func= set_Key_Frame,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif menuList=='KeyColor' then--内容颜色，和频道名称替换
+        info={
+            text= e.Player.L.key,--关键词
+            checked= not Save.disabledKeyColor,
+            colorCode= Save.disabed and '|cff606060' or nil,
+            keepShownOnClick=true,
+            hasArrow=true,
+            menuList='KeyColorSettings',
+            func=function()
+                Save.disabledKeyColor= not Save.disabledKeyColor and true or nil
+            end,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+
     end
 
     if menuList then
