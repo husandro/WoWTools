@@ -1076,14 +1076,13 @@ end
 --########
 --设置Cvar
 --########
-local function get_CVar_tooltip(info)
+function e.Get_CVar_Tooltips(info)
     local curValue= C_CVar.GetCVar(info.name)
     return info.msg..'|n'..info.name..'|n'
     ..(info.value and curValue== info.value and e.Icon.select2 or '')
     ..(info.value and (e.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
     ..'('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cnGREEN_FONT_COLOR:'..C_CVar.GetCVar(info.name)..'|r |r'
     ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..C_CVar.GetCVarDefault(info.name)..')|r'
-
 end
 local function set_CVar(reset, tips, notPrint)
     local tab={
@@ -1131,7 +1130,7 @@ local function set_CVar(reset, tips, notPrint)
         local text
         for _, info in pairs(tab) do
             if info.zh and LOCALE_zhCN or not info.zh then
-                text= (text and text..'|n|n' or '')..get_CVar_tooltip(info)
+                text= (text and text..'|n|n' or '')..e.Get_CVar_Tooltips(info)
             end
         end
         return text
@@ -2008,7 +2007,7 @@ local function Init_Panel()
         value=C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 1 or 2,
         name= e.onlyChinese and '按下快捷键时施法' or ACTION_BUTTON_USE_KEY_DOWN,
         tooltip= function()
-            return get_CVar_tooltip({
+            return e.Get_CVar_Tooltips({
                     name='ActionButtonUseKeyDown',
                     msg=e.onlyChinese and '在按下快捷键时施法，而不是在松开快捷键时施法。' or OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN,
                 }) end,

@@ -930,6 +930,7 @@ function e.Cbtn2(tab)
         notTexture=nil,
         showTexture=true,
         sizi=nil,
+        alpha=1,
     })
 ]]
     local button= CreateFrame("Button", tab.name, tab.parent or UIParent, not tab.notSecureActionButton and "SecureActionButtonTemplate" or nil)
@@ -954,7 +955,8 @@ function e.Cbtn2(tab)
     button.background=button:CreateTexture(nil,'BACKGROUND')
     button.background:SetAllPoints(button)
     button.background:SetAtlas(e.Icon.bagEmpty)
-    button.background:SetAlpha(0.5)
+    button.background:SetAlpha(tab.alpha or 0.5)
+    
     button.background:AddMaskTexture(button.mask)
 
     if not tab.notTexture then
@@ -1813,7 +1815,7 @@ local regionColor = {--https://wago.io/6-GG3RMcC
     ["mex"]= {col="|cFFCCCCFFMEX|r", text='MEX', realm="Mexico"},
     ["bzl"]= {col="|cFF8fce00BZL|r", text='BZL', realm="Brazil"},
 }
-e.Get_Region= function(realm, guid, unit, disabled)--e.Get_Region(server, guid, unit)--服务器，EU， US {col=, text=, realm=}
+function e.Get_Region(realm, guid, unit, disabled)--e.Get_Region(server, guid, unit)--服务器，EU， US {col=, text=, realm=}
     if disabled then
         regionColor={}
         Realms={}
@@ -1827,3 +1829,10 @@ e.Get_Region= function(realm, guid, unit, disabled)--e.Get_Region(server, guid, 
 end
 
 
+function e.Get_CVar_Tooltips(info)--取得CVar信息 e.Get_CVar_Tooltips({name= ,msg=, value=})
+    return info.msg..'|n'..info.name..'|n'
+    ..(info.value and C_CVar.GetCVar(info.name)== info.value and e.Icon.select2 or '')
+    ..(info.value and (e.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
+    ..'('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cnGREEN_FONT_COLOR:'..C_CVar.GetCVar(info.name)..'|r |r'
+    ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..C_CVar.GetCVarDefault(info.name)..')|r'
+end

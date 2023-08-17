@@ -1,7 +1,7 @@
 local id, e = ...
 local Save={
     --clickToMove= e.Player.husandro,--禁用, 点击移动
-    clickToMoveButton= e.Player.huge,--点击移动，按钮
+    clickToMoveButton= e.Player.husandro,--点击移动，按钮
 }
 local addName= PET_BATTLE_COMBAT_LOG
 local panel= e.Cbtn(nil, {icon=true, size={20,20}})
@@ -634,6 +634,7 @@ local function add_Click_To_Move_Button()--点击移动，按钮
     local btn=PlayerFrame.ClickToMoveButton
     if not Save.clickToMoveButton then
         if btn then
+            btn:UnregisterAllEvents()
             btn:SetShown(false)
         end
         return
@@ -648,13 +649,46 @@ local function add_Click_To_Move_Button()--点击移动，按钮
             notTexture=nil,
             showTexture=true,
             sizi=20,
+            alpha=1,
         })
-        btn:SetPoint('RIGHT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'LEFT', 5,15)
+        btn:SetPoint('RIGHT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'LEFT', 5,-8)
+        btn:Raise()
         btn:SetSize(20,20)
         btn:SetNormalAtlas('transmog-nav-slot-feet')
-        --btn.texture:SetAtlas('transmog-nav-slot-feet')
+        btn:SetScript('OnClick', function()
+            C_CVar.SetCVar("autoInteract", C_CVar.GetCVarBool("autoInteract") and '0' or '1')
+        end)
+        function btn:set_State()
+            if C_CVar.GetCVarBool("autoInteract") then
+                self:UnlockHighlight()
+                self:SetAlpha(0.3)
+            else
+                self:LockHighlight()
+                self:SetAlpha(1)
+            end
+        end
+        btn:SetScript('OnEvent', function(self, _, arg1)
+            if arg1=='autoInteract' then
+                self:set_State()
+            end
+        end)
+        function btn:set_Tooltips()
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(e.Get_CVar_Tooltips({name='autoInteract' ,msg=e.Icon.left..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE)}))
+            e.tips:AddLine(" ")
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+            self:SetAlpha(1)
+        end
+        btn:SetScript('OnLeave', function(self) e.tips:Hide() self:set_State() end)
+        btn:SetScript('OnEnter', btn.set_Tooltips)
+        btn:SetScript('OnMouseUp', btn.set_Tooltips)
+        
         PlayerFrame.ClickToMoveButton= btn
     end
+    btn:set_State()
+    btn:RegisterEvent('CVAR_UPDATE')
     btn:SetShown(true)
 end
 
@@ -836,6 +870,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
+                add_Click_To_Move_Button()--点击移动，按钮
                 set_Click_To_Move()
                 Init()
             end

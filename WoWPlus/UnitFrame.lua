@@ -242,6 +242,15 @@ local function set_PlayerFrame()--PlayerFrame.lua
         PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestLoop.RestTexture:ClearAllPoints()
         PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestLoop.RestTexture:SetPoint('CENTER', PlayerFrame.PlayerFrameContainer.PlayerPortrait)
     end
+
+    C_Timer.After(2, function()--开启战争模式时，PVP图标 PlayerFrame_UpdatePvPStatus()
+        local icon= PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PVPIcon
+        if icon then
+            icon:SetSize(25,25)
+            icon:ClearAllPoints()
+            icon:SetPoint('RIGHT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'LEFT', 13, -24)
+        end
+    end)
 end
 
 
