@@ -282,11 +282,8 @@ local function InitMenu(_, level, menuList)--主菜单
             func=function()
                 StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
                     text=id..' '..addName..'|n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|n|nQ, BUTTON5',
-                    whileDead=1,
-                    hideOnEscape=1,
-                    exclusive=1,
-                    timeout = 60,
-                    hasEditBox=1,
+                    whileDead=true, hideOnEscape=true, exclusive=true,
+                    hasEditBox=true,
                     button1= e.onlyChinese and '设置' or SETTINGS,
                     button2= e.onlyChinese and '取消' or CANCEL,
                     button3= e.onlyChinese and '取消' or REMOVE,
@@ -442,10 +439,7 @@ local function Init()
 
     StaticPopupDialogs[id..addName..'RESETALL']={--重置所有,清除全部玩具
         text=id..' '..addName..'|n'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI),
-        whileDead=1,
-        hideOnEscape=1,
-        exclusive=1,
-        timeout = 60,
+        whileDead=true, hideOnEscape=true, exclusive=true,
         button1='|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r',
         button2= e.onlyChinese and '取消' or CANCEL,
         OnAccept = function()

@@ -77,9 +77,7 @@ local function set_Buttons()--设置按钮, 和位置
                             text =id..' '..addName..'|n|n< |cff00ff00%s|r >|n|n'..(e.onlyChinese and '插件数量' or  ADDONS..AUCTION_HOUSE_QUANTITY_LABEL)..' %s',
                             button1 = e.onlyChinese and '删除' or DELETE,
                             button2 = e.onlyChinese and '取消' or CANCEL,
-                            whileDead=true,
-                            timeout=60,
-                            hideOnEscape = true,
+                            whileDead=true, hideOnEscape=true, exclusive=true,
                             OnAccept=function(_,data)
                                 Save.buttons[data.name]=nil
                                 data.frame:SetShown(false)
@@ -162,10 +160,8 @@ local function Init()
             text =id..' '..addName..'|n|n'..(e.onlyChinese and '当前已选择' or ICON_SELECTION_TITLE_CURRENT)..' %s|n|n'..(e.onlyChinese and '新的方案' or PAPERDOLL_NEWEQUIPMENTSET),
             button1 = e.onlyChinese and '新建' or NEW,
             button2 = e.onlyChinese and '取消' or CANCEL,
+            whileDead=true, hideOnEscape=true, exclusive=true,
             hasEditBox=true,
-            whileDead=true,
-            timeout=60,
-            hideOnEscape = true,
             OnAccept=function(self)
                 local text = self.editBox:GetText()
                 Save.buttons[text]={}

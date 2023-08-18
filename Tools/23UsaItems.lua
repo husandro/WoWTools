@@ -418,10 +418,7 @@ local function Init()
     --###########
     StaticPopupDialogs[id..addName..'REMOVE']={
         text=id..' '..addName..'|n|n%s',
-        whileDead=1,
-        hideOnEscape=1,
-        exclusive=1,
-        timeout = 60,
+        whileDead=true, hideOnEscape=true, exclusive=true,
         button1='|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r',
         button2=e.onlyChinese and '取消' or CANCEL,
         OnAccept = function(_, data)
@@ -441,10 +438,7 @@ local function Init()
 
     StaticPopupDialogs[id..addName..'RESETALL']={--重置所有
         text=id..' '..addName..'|n|n'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI),
-        whileDead=1,
-        hideOnEscape=1,
-        exclusive=1,
-        timeout = 60,
+        whileDead=true, hideOnEscape=true, exclusive=true,
         button1= e.onlyChinese and '重置' or RESET,
         button2= e.onlyChinese and '取消' or CANCEL,
         OnAccept = function()
@@ -455,10 +449,7 @@ local function Init()
 
     StaticPopupDialogs[id..addName..'ADD']={--添加, 移除
         text=id..' '..addName..'|n|n%s: %s',
-        whileDead=1,
-        hideOnEscape=1,
-        exclusive=1,
-        timeout = 60,
+        whileDead=true, hideOnEscape=true, exclusive=true,
         button1= e.onlyChinese and '添加' or ADD,
         button2= e.onlyChinese and '取消' or CANCEL,
         button3= e.onlyChinese and '移除' or REMOVE,

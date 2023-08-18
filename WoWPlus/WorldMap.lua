@@ -209,10 +209,7 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
                     end
                     PlaySound(SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST);
                 end,
-                timeout = 30,
-                whileDead = true,
-                exclusive = true,
-                hideOnEscape = true,
+                whileDead=true, hideOnEscape=true, exclusive=true,
                 showAlert= true,
             }
             StaticPopup_Show(id..addName.."ABANDON_QUEST", '|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '|n|A:groupfinder-icon-redx:0:0|a所有任务' or ('|n|A:groupfinder-icon-redx:0:0|a'..ALL))..' |r#|cnGREEN_FONT_COLOR:'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r')

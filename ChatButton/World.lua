@@ -166,10 +166,7 @@ local function InitMenu(_, level, type)--主菜单
             func= function()
                 StaticPopupDialogs[id..addName..'changeNamme']={
                     text=(e.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''))..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI ),
-                    whileDead=1,
-                    hideOnEscape=1,
-                    exclusive=1,
-                    timeout = 60,
+                    whileDead=true, hideOnEscape=true, exclusive=true,
                     hasEditBox=1,
                     button1= e.onlyChinese and '确定' or OKAY,
                     button2= e.onlyChinese and '取消' or CANCEL,
@@ -227,7 +224,8 @@ local function InitMenu(_, level, type)--主菜单
             func= function()
                 StaticPopupDialogs[id..addName..'myChatFilterNum']= {
                     text=id..' '..addName..'|n|n'..get_myChatFilter_Text(),
-                    hasEditBox=1,
+                    whileDead=true, hideOnEscape=true, exclusive=true,
+                    hasEditBox=true,
                     button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),
                     button2= e.onlyChinese and '取消' or CANCEL,
                     OnShow = function(self)

@@ -392,10 +392,7 @@ end
 local function Init_Dialogs()
     StaticPopupDialogs[id..addName..'ITEMS']={--物品, 设置对话框
         text=id..' '..addName..' '..(e.onlyChinese and '物品' or ITEMS)..'|n|n%s|n%s',
-        whileDead=1,
-        hideOnEscape=1,
-        exclusive=1,
-        timeout = 60,
+        whileDead=true, hideOnEscape=true, exclusive=true,
         button1= e.onlyChinese and '添加' or ADD,
         button2= e.onlyChinese and '取消' or CANCEL,
         button3= e.onlyChinese and '移除' or REMOVE,
@@ -422,10 +419,7 @@ local function Init_Dialogs()
 
     StaticPopupDialogs[id..addName..'SPELLS']={--法术, 设置对话框
         text=id..' '..addName..' '..(e.onlyChinese and '法术' or SPELLS)..'|n|n%s|n%s',
-        whileDead=1,
-        hideOnEscape=1,
-        exclusive=1,
-        timeout = 60,
+        whileDead=true, hideOnEscape=true, exclusive=true,
         button1= e.onlyChinese and '添加' or ADD,
         button2= e.onlyChinese and '取消' or CANCEL,
         button3= e.onlyChinese and '移除' or REMOVE,
@@ -452,11 +446,8 @@ local function Init_Dialogs()
 
     StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
         text=id..' '..addName..'|n'..(e.onlyChinese and '快捷键"' or SETTINGS_KEYBINDINGS_LABEL)..'|n|nQ, BUTTON5',
-        whileDead=1,
-        hideOnEscape=1,
-        exclusive=1,
-        timeout = 60,
-        hasEditBox=1,
+        whileDead=true, hideOnEscape=true, exclusive=true,
+        hasEditBox=true,
         button1= e.onlyChinese and '设置' or SETTINGS,
         button2= e.onlyChinese and '取消' or CANCEL,
         button3= e.onlyChinese and '移除' or REMOVE,
@@ -512,9 +503,7 @@ local function Init_Dialogs()
 
     StaticPopupDialogs[id..addName..'FLOOR'] = {--区域,设置对话框
         text=id..' '..addName..' '..(e.onlyChinese and '区域' or FLOOR)..'|n|n%s|n%s',
-        --whileDead=1,
-        --hideOnEscape=1,
-        --exclusive=1,
+        whileDead=true, hideOnEscape=true, exclusive=true,
         timeout= 0,
         hasEditBox= true,
         button1=e.onlyChinese and '区域' or FLOOR,

@@ -637,11 +637,8 @@ local function Init_Markers_Frame()--设置标记, 框架
             elseif d=='RightButton' and IsControlKeyDown() then--设置时间
                 StaticPopupDialogs[id..addName..'COUNTDOWN']={--区域,设置对话框
                     text=id..' '..addName..'|n'..(e.onlyChinese and '就绪' or READY)..'|n|n1 - 3600',
-                    whileDead=1,
-                    hideOnEscape=1,
-                    exclusive=1,
-                    timeout = 0,
-                    hasEditBox=1,
+                    whileDead=true, hideOnEscape=true, exclusive=true,
+                    hasEditBox=true,
                     button1= e.onlyChinese and '设置' or SETTINGS,
                     button2= e.onlyChinese and '取消' or CANCEL,
                     OnShow = function(self2)

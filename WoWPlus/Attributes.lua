@@ -1748,7 +1748,7 @@ local function set_Panle_Setting()--设置 panel
             text =id..'  '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinese and '保存' or SAVE)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI)..' /reload',
             button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET),
             button2 = e.onlyChinese and '取消' or CANCEL,
-            whileDead=true,timeout=30,hideOnEscape = 1,
+            whileDead=true, hideOnEscape=true, exclusive=true,
             OnAccept=function(self)
                 Save=nil
                 e.Reload()

@@ -156,10 +156,7 @@ local function InitMenu(_, level, type)--主菜单
                             ..'|n|n'..(e.onlyChinese and '自定义发送信息' or (CUSTOM..SEND_MESSAGE))
                             ..'|n|n|cnGREEN_FONT_COLOR:%s|r|n|n'
                             ..(e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS),
-                        whileDead=1,
-                        hideOnEscape=1,
-                        exclusive=1,
-                        timeout = 60,
+                        whileDead=true, hideOnEscape=true, exclusive=true,
                         hasEditBox=1,
                         button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
                         button2= e.onlyChinese and '取消' or CANCEL,
@@ -412,7 +409,7 @@ local function Init()
         if (Save.mouseDown or Save.mouseUP) and IsInGroup() then
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '说' or SAY, IsInRaid() and (e.onlyChinese and '团队' or RAID or IsInGroup() and (e.onlyChinese and '小队' or GROUP)) )
+            e.tips:AddDoubleLine(e.onlyChinese and '说' or SAY, IsInRaid() and (e.onlyChinese and '团队' or RAID) or IsInGroup() and (e.onlyChinese and '小队' or GROUP))
             if Save.mouseUP then
                 e.tips:AddDoubleLine(Save.mouseUP, (e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..e.Icon.mid)
             end

@@ -628,11 +628,8 @@ local function InitList(self, level, type)
             func= function()
                 StaticPopupDialogs[id..addName..'CHANNEL']={--设置,内容,频道, 邀请,事件
                     text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'|n|n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
-                    whileDead=1,
-                    hideOnEscape=1,
-                    exclusive=1,
-                    timeout = 60,
-                    hasEditBox=1,
+                    whileDead=true, hideOnEscape=true, exclusive=true,
+                    hasEditBox=true,
                     button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
                     button2=CANCEL,
                     OnShow = function(self2, data)

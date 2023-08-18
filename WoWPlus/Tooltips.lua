@@ -173,8 +173,7 @@ StaticPopupDialogs["WowheadQuickLinkUrl"] = {
     hasEditBox = true,
     editBoxWidth = 320,
     timeout = 0,
-    whileDead = true,
-    hideOnEscape = true,
+    whileDead=true, hideOnEscape=true, exclusive=true,
 }
 --https://www.wowhead.com/cn/pet-ability=509/汹涌
 local wowheadText= 'https://www.wowhead.com/%s=%d'

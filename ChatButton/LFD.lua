@@ -1788,7 +1788,8 @@ local function Init()
             print(id,addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
             s:GetParent():Hide()
         end,
-    whileDead=true,timeout=sec, hideOnEscape =true,}
+        whileDead=true, hideOnEscape=true, exclusive=true,
+        timeout=sec}
 
     button= e.Cbtn2({
         name=nil,

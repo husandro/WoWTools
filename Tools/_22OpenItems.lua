@@ -635,11 +635,8 @@ local function Init()
             --添加，移除
             StaticPopupDialogs['OpenItmesUseOrDisableItem']={
                 text=id..' '..addName..'|n|n%s|n%s|n|n'..(e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..' >1: ',
-                whileDead=1,
-                hideOnEscape=1,
-                exclusive=1,
-                timeout = 60,
-                hasEditBox=1,
+                whileDead=true, hideOnEscape=true, exclusive=true,
+                hasEditBox=true,
                 button1='|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '使用' or USE)..'|r',
                 button2= e.onlyChinese and '取消' or CANCEL,
                 button3='|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r',

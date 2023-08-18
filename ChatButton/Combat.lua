@@ -382,9 +382,7 @@ local function InitMenu(_, level, type)--主菜单
                     text=id..' '..addName..'|n|n'
                         ..(e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''))
                         ..'|n 0.4 - 4 ',
-                    whileDead=1,
-                    hideOnEscape=true,
-                    exclusive=true,
+                    whileDead=true, hideOnEscape=true, exclusive=true,
                     hasEditBox=true,
                     button1= e.onlyChinese and '设置' or SETTINGS,
                     button2= e.onlyChinese and '取消' or CANCEL,
@@ -430,9 +428,7 @@ local function InitMenu(_, level, type)--主菜单
                 StaticPopupDialogs[id..addName..'SayTime']={
                     text= id..' '..addName..'|n|n'.. (e.onlyChinese and '时间戳' or EVENTTRACE_TIMESTAMP)..' '..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
                         ..'|n >= 60 ',
-                    whileDead=1,
-                    hideOnEscape=true,
-                    exclusive=true,
+                    whileDead=true, hideOnEscape=true, exclusive=true,
                     hasEditBox=true,
                     button1= e.onlyChinese and '设置' or SETTINGS,
                     button2= e.onlyChinese and '取消' or CANCEL,

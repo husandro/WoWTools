@@ -715,7 +715,7 @@ local function Init_Button(frame)
                     ..(Save.notAutoBuy and '|n|n'..(e.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..': '..e.GetEnabeleDisable(false) or ''),
                     button1 = e.onlyChinese and '购买' or PURCHASE,
                     button2 = e.onlyChinese and '取消' or CANCEL,
-                    hasEditBox=true,whileDead=true,timeout=60,hideOnEscape = 1,
+                    whileDead=true, hideOnEscape=true, exclusive=true,
                     OnAccept=function(s)
                         local num= s.editBox:GetNumber()
                         if num==0 then

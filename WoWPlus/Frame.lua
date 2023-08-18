@@ -764,9 +764,7 @@ local function Init_Options()
                 ..(e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
                 button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
                 button2 = e.onlyChinese and '取消' or CANCEL,
-                whileDead=true,
-                timeout=60,
-                hideOnEscape = true,
+                whileDead=true, hideOnEscape=true, exclusive=true,
                 OnAccept=function()
                     Save.point={}
                     print(id, addName, e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
@@ -806,9 +804,7 @@ local function Init_Options()
                 ..('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''))),
                 button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
                 button2 = e.onlyChinese and '取消' or CANCEL,
-                whileDead=true,
-                timeout=60,
-                hideOnEscape = true,
+                whileDead=true, hideOnEscape=true, exclusive=true,
                 OnAccept=function()
                     Save.scale={}
                     print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''))..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))

@@ -32,7 +32,7 @@ function e.ReloadPanel(tab)
             text =id..'  '..self.addName..'|n|n|cnRED_FONT_COLOR:'..(self.clearTips or (e.onlyChinese and '当前保存' or (ITEM_UPGRADE_CURRENT..SAVE)))..'|r '..(e.onlyChinese and '保存' or SAVE)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI)..' /reload',
             button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET),
             button2= e.onlyChinese and '取消' or CANCEL,
-            whileDead=true,timeout=30,hideOnEscape = 1,
+            whileDead=true, hideOnEscape=true, exclusive=true,
             OnAccept=self.func,
         }
 
@@ -490,7 +490,7 @@ local function Init()
                 ,
                 button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
                 button2= e.onlyChinese and '取消' or CANCEL,
-                whileDead=true,hideOnEscape = 1,
+                whileDead=true, hideOnEscape=true, exclusive=true,
                 OnAccept=function ()
                     e.ClearAllSave=true
                     e.Reload()
@@ -511,15 +511,16 @@ local function Init()
                 ,
                 button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
                 button2= e.onlyChinese and '取消' or CANCEL,
-                whileDead=true,hideOnEscape = 1,
+                whileDead=true, hideOnEscape=true, exclusive=true,
                 OnAccept=function ()
-                    e.ClearAllSave=true
+                    WoWDate={}
                     e.Reload()
                 end,
             }
             StaticPopup_Show(id..'RestWoWSetup')
         end
     })
+
 
 
     local function set_Color()

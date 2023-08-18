@@ -833,7 +833,8 @@ local function InitMenu(_, level, menuList)
             func=function()
                 StaticPopupDialogs[id..addName..'modifyGuildWelcome']={--区域,设置对话框
                     text=id..' '..addName..'|n|n'..(e.onlyChinese and '欢迎加入' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  EMOTE103_CMD1:gsub('/',''), JOIN))..'|n'..(e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER),
-                    hasEditBox=1,
+                    whileDead=true, hideOnEscape=true, exclusive=true,
+                    hasEditBox=true,
                     button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),
                     button2= e.onlyChinese and '取消' or CANCEL,
                     OnShow = function(self)
@@ -868,7 +869,8 @@ local function InitMenu(_, level, menuList)
             func=function()
                 StaticPopupDialogs[id..addName..'modifyGroupWelcome']={--区域,设置对话框
                     text=id..' '..addName..'|n|n'..(e.onlyChinese and '欢迎加入' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  EMOTE103_CMD1:gsub('/',''), JOIN))..'|n'..(e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER),
-                    hasEditBox=1,
+                    whileDead=true, hideOnEscape=true, exclusive=true,
+                    hasEditBox=true,
                     button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),
                     button2= e.onlyChinese and '取消' or CANCEL,
                     OnShow = function(self)
