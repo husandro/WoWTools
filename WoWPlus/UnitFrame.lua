@@ -1138,7 +1138,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         elseif d=="LeftButton" then
-            print(id, addName, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
+            print(id, addName, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,'')), Save.compactPartyFrameScale or 1)
         end
     end)
     CompactPartyFrame.moveFrame:SetScript("OnLeave", function(self, d)
@@ -1147,7 +1147,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             if UnitAffectingCombat('player') then
-                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
+                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
             else
                 local sacle= Save.compactPartyFrameScale or 1
                 if d==1 then
@@ -1160,7 +1160,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
                 elseif sacle<0.5 then
                     sacle=0.5
                 end
-                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE), sacle)
+                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,'')), sacle)
                 CompactPartyFrame:SetScale(sacle)
                 Save.compactPartyFrameScale=sacle
             end
@@ -1458,7 +1458,7 @@ local function Init_RaidFrame()--设置,团队
         frame:Raise()
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnMouseDown", function(self, d)
-        print(id, addName, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.raidFrameScale or 1)
+        print(id, addName, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,'')), Save.raidFrameScale or 1)
         if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
@@ -1473,7 +1473,7 @@ local function Init_RaidFrame()--设置,团队
     CompactRaidFrameContainer.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             if UnitAffectingCombat('player') then
-                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
+                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
             else
                 local sacle= Save.raidFrameScale or 1
                 if d==1 then
@@ -1486,7 +1486,7 @@ local function Init_RaidFrame()--设置,团队
                 elseif sacle<0.5 then
                     sacle=0.5
                 end
-                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE), sacle)
+                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,'')), sacle)
                 self:GetParent():SetScale(sacle)
                 Save.raidFrameScale=sacle
             end
@@ -1501,12 +1501,12 @@ local function Init_RaidFrame()--设置,团队
     CompactRaidFrameManager.sacleFrame:SetPoint('RIGHT', CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel, 'LEFT')
     CompactRaidFrameManager.sacleFrame:SetAlpha(0.5)
     CompactRaidFrameManager.sacleFrame:SetScript("OnMouseDown", function(self, d)
-        print(id, addName, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.managerScale or 1)
+        print(id, addName, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,'')), Save.managerScale or 1)
     end)
     CompactRaidFrameManager.sacleFrame:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             if UnitAffectingCombat('player') then
-                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
+                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
             else
                 local sacle= Save.managerScale or 1
                 if d==1 then
@@ -1519,7 +1519,7 @@ local function Init_RaidFrame()--设置,团队
                 elseif sacle<0.5 then
                     sacle=0.5
                 end
-                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE), sacle)
+                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,'')), sacle)
                 CompactRaidFrameManager:SetScale(sacle)
                 Save.managerScale=sacle
             end

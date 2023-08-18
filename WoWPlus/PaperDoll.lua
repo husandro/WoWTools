@@ -845,7 +845,7 @@ local function set_inti_Equipment_Frame()--添加装备管理框
                 n= n<0.8 and 0.8 or n>3 and 3 or n
                 Save.equipmentFrameScale=n
                 set_equipmentFrame_Scale()--缩放
-                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
+                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''), GREEN_FONT_COLOR_CODE..n)
         end)
         panel.equipmentButton.btn:SetScript("OnEnter", function (self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -856,7 +856,7 @@ local function set_inti_Equipment_Frame()--添加装备管理框
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine( Save.EquipmentH and (e.onlyChinese and '向右' or BINDING_NAME_STRAFERIGHT) or (e.onlyChinese and '向下' or BINDING_NAME_PITCHDOWN), 'Alt + '..e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), (Save.equipmentFrameScale or 1)..e.Icon.mid)
+            e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,'')), (Save.equipmentFrameScale or 1)..e.Icon.mid)
             e.tips:Show()
             if panel.equipmentButton:IsVisible() then
                 panel.equipmentButton:SetButtonState('PUSHED')

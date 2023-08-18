@@ -2,13 +2,18 @@ local id, e = ...
 local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, TIMEMANAGER_TOOLTIP_TITLE)
 local Save= {textScale=1.2,
         Say=120,
+        --SayTime=120,--每隔
+
         --AllOnlineTime=true,--进入游戏时,提示游戏,时间
-        combatScale=true,--战斗中缩放
+
         bat={num= 0, time= 0},--战斗数据
         pet={num= 0,  win=0, capture=0},
         ins={num= 0, time= 0, kill=0, dead=0},
         afk={num= 0, time= 0},
         hideCombatText= true,--隐藏, 战斗, 文本
+
+        combatScale=true,--战斗中缩放
+        inCombatScale=1.3,--战斗中缩放
 }
 local button
 
@@ -32,11 +37,9 @@ local function setText()--设置显示内容
         local combat, sec = e.GetTimeInfo(OnCombatTime, not Save.timeTypeText)
         if Save.Say then--喊话
             sec=math.floor(sec)
-            if sec ~= chatStarTime and sec > 0 and sec%Save.Say==0  then
+            if sec ~= chatStarTime and sec > 0 and sec%Save.SayTime==0  then--IsInInstance()
                 chatStarTime=sec
-                if IsInInstance() then
-                    e.Chat(e.SecondsToClock(sec), nil, true)
-                end
+                e.Chat(e.SecondsToClock(sec), nil, true)
             end
         end
         text= text and text..'|n' or ''
@@ -347,12 +350,121 @@ local function set_textButton_Disabled_Enable()--禁用, 启用, textButton
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, type)--主菜单
+local function InitMenu(_, level, type)--主菜单
     local info
-    if type=='SETTINGS' then
+    if type=='inCombatScale' then--4级， 设置，战斗中缩放
+        info={
+            text=e.onlyChinese and '设置' or SETTINGS,
+            notCheckable=true,
+            disabled=UnitAffectingCombat('player'),
+            func= function()
+                StaticPopupDialogs[id..addName..'inCombatScale']={
+                    text=id..' '..addName..'|n|n'
+                        ..(e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''))
+                        ..'|n 0.4 - 4 ',
+                    whileDead=1,
+                    hideOnEscape=true,
+                    exclusive=true,
+                    hasEditBox=true,
+                    button1= e.onlyChinese and '设置' or SETTINGS,
+                    button2= e.onlyChinese and '取消' or CANCEL,
+                    OnShow = function(self)
+                        self.editBox:SetText(Save.inCombatScale)
+                    end,
+                    OnAccept = function(self)
+                        local num
+                        num= self.editBox:GetText() or ''
+                        num= tonumber(num)
+                        Save.inCombatScale= num
+                        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''),'|cnGREEN_FONT_COLOR:', num)
+                        button:SetScale(num)
+                        C_Timer.After(3, function()
+                            if not UnitAffectingCombat('player') then
+                                button:SetScale(1)
+                            end
+                        end)
+                    end,
+                    EditBoxOnTextChanged=function(self)
+                        local num
+                        num= self:GetText() or ''
+                        num= tonumber(num)
+                        self:GetParent().button1:SetEnabled(num and num>=0.4 and num<=4)
+                    end,
+                    EditBoxOnEscapePressed = function(s)
+                        s:SetAutoFocus(false)
+                        s:ClearFocus()
+                        s:GetParent():Hide()
+                    end,
+                }
+                StaticPopup_Show(id..addName..'inCombatScale')
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif type=='SayTime' then
+        info={
+            text=e.onlyChinese and '设置' or SETTINGS,
+            notCheckable=true,
+            disabled=UnitAffectingCombat('player'),
+            func= function()
+                StaticPopupDialogs[id..addName..'SayTime']={
+                    text= id..' '..addName..'|n|n'.. (e.onlyChinese and '时间戳' or EVENTTRACE_TIMESTAMP)..' '..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
+                        ..'|n >= 60 ',
+                    whileDead=1,
+                    hideOnEscape=true,
+                    exclusive=true,
+                    hasEditBox=true,
+                    button1= e.onlyChinese and '设置' or SETTINGS,
+                    button2= e.onlyChinese and '取消' or CANCEL,
+                    OnShow = function(self)
+                        self.editBox:SetText(Save.SayTime)
+                    end,
+                    OnAccept = function(self)
+                        local num
+                        num= self.editBox:GetText() or ''
+                        num= tonumber(num)
+                        Save.SayTime= num
+                        e.Chat(e.SecondsToClock(num), nil, true)
+                    end,
+                    EditBoxOnTextChanged=function(self)
+                        local num
+                        num= self:GetText() or ''
+                        num= tonumber(num)
+                        self:GetParent().button1:SetEnabled(num and num>=60)
+                    end,
+                    EditBoxOnEscapePressed = function(s)
+                        s:SetAutoFocus(false)
+                        s:ClearFocus()
+                        s:GetParent():Hide()
+                    end,
+                }
+                StaticPopup_Show(id..addName..'SayTime')
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+
+    elseif type=='SETTINGS' then
         info={--时间类型
             text= (e.onlyChinese and '时间类型' or TIME_LABEL)..' |cnGREEN_FONT_COLOR:'..(Save.timeTypeText and SecondsToTime(35) or '00:35')..'|r',
             checked= Save.timeTypeText,
@@ -367,17 +479,14 @@ local function InitMenu(self, level, type)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinese and '战斗中缩放 1.3' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..UI_SCALE..' 1.3',
+            text= (e.onlyChinese and '战斗中缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,'')))..' '..Save.inCombatScale,
             checked= Save.combatScale,
             disabled= UnitAffectingCombat('player'),
+            hasArrow=true,
+            menuList='inCombatScale',
             keepShownOnClick=true,
             func= function()
                 Save.combatScale= not Save.combatScale and true or nil
-                if Save.combatScale and UnitAffectingCombat('player') then--战斗中缩放
-                    button:SetScale(1.3)
-                else
-                    button:SetScale(1)
-                end
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -393,13 +502,19 @@ local function InitMenu(self, level, type)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= ((e.onlyChinese and '战斗时间' or COMBAT)..'|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '每: ' or EVENTTRACE_TIMESTAMP)..Save.Say),
+            text= ((e.onlyChinese and '战斗时间' or COMBAT)..'|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '每: ' or EVENTTRACE_TIMESTAMP)..Save.SayTime),
             checked= Save.Say and true or nil,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '说' or SAY,
+            --tooltipText= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '在副本中' or AGGRO_WARNING_IN_INSTANCE),
             keepShownOnClick=true,
+            hasArrow=true,
+            menuList='SayTime',
             func= function()
-                Save.Say= not Save.Say and 120 or nil
+                Save.Say= not Save.Say and true or nil
+                if Save.Say then
+                    e.Chat(e.SecondsToClock(Save.SayTime), nil, true)
+                end
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -494,6 +609,27 @@ local function InitMenu(self, level, type)--主菜单
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -552,6 +688,25 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
@@ -561,6 +716,9 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
+            Save= WoWToolsSave[addName] or Save
+            Save.inCombatScale= Save.inCombatScale or 1.3
+            Save.SayTime= Save.SayTime or 120
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 button= e.Cbtn2({
                     name=nil,
@@ -572,7 +730,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     sizi=nil,
                 })
 
-                Save= WoWToolsSave[addName] or Save
+
 
                 panel:RegisterEvent('PLAYER_REGEN_DISABLED')
                 panel:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -600,7 +758,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     elseif event=='PLAYER_REGEN_DISABLED' then
         button.texture2:SetShown(true)
         if Save.combatScale then--战斗中缩放
-            button:SetScale(1.3)
+            button:SetScale(Save.inCombatScale or 1.3)
         end
         if not Save.disabledText then
             check_Event()--检测事件

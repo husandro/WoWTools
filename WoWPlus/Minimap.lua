@@ -710,7 +710,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
                 end
                 scale= scale>2.5 and 2.5  or scale
                 scale= scale<0.4 and 0.4 or scale
-                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, scale)
+                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''), scale)
                 Save.vigentteButtonTextScale= scale
                 self:set_Frame()--设置，Button的 Frame Text 属性
             end
@@ -724,7 +724,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.vigentteButtonTextScale), 'Alt+'..e.Icon.mid)
+            e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''))..': '..(Save.vigentteButtonTextScale), 'Alt+'..e.Icon.mid)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()

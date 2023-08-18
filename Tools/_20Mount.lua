@@ -1222,7 +1222,7 @@ local function Init()
             n= n>3 and 3 or n
             n= n<0.5 and 0.5 or n
             self:SetScale(n)
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''), n)
             Save.scale= n
         else
             if d==1 then--坐骑展示
@@ -1267,7 +1267,7 @@ local function Init()
         end
 
         e.tips:AddLine('')
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..(Save.scale or 1)..'|r Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,'')), '|cnGREEN_FONT_COLOR:'..(Save.scale or 1)..'|r Alt+'..e.Icon.mid)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()

@@ -9,6 +9,19 @@ local Save={
 local panel=CreateFrame("Frame")
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 --##########
 --TOOLS，按钮
 --##########
@@ -149,6 +162,24 @@ local function Init_Tools_Button()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#############
 --专业界面, 按钮
 --#############
@@ -241,6 +272,21 @@ local function Init_ProfessionsFrame_Button()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --添一个,全学,专业, 按钮, 插件 TrainAll 
 local function set_Blizzard_TrainerU()
     if Save.disabled then
@@ -305,7 +351,7 @@ local function set_Blizzard_TrainerU()
         ClassTrainerFrame.BuyAll.cost=0
         local tradeSkillStepIndex = GetTrainerServiceStepIndex();
         local category= tradeSkillStepIndex and select(index, GetTrainerServiceInfo(tradeSkillStepIndex))
-        
+
         if tradeSkillStepIndex and (category=='used' or category=='available') then
             for i=1, GetNumTrainerServices() do
                 if select(index, GetTrainerServiceInfo(i))=="available" then
@@ -314,7 +360,7 @@ local function set_Blizzard_TrainerU()
                 end
             end
         end
-        
+
         ClassTrainerFrame.BuyAll:SetEnabled(ClassTrainerFrame.BuyAll.all>0)
         local text= ClassTrainerFrame.BuyAll.all..' '..ClassTrainerFrame.BuyAll.name
         text= (ClassTrainerFrame.BuyAll.all>0 and ClassTrainerFrame.BuyAll.cost>GetMoney() and '|cnRED_FONT_COLOR:' or '')..text
@@ -409,15 +455,8 @@ local function Init_ProfessionsFrame()
         return
     end
 
+
     Init_ProfessionsFrame_Button()--专业界面, 按钮
-
-
-
-
-
-
-
-
 
 
     --###
@@ -453,20 +492,6 @@ local function Init_ProfessionsFrame()
     end)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     --##################
     --移过，列表，物品提示
     --Blizzard_ProfessionsRecipeList.lua
@@ -478,6 +503,11 @@ local function Init_ProfessionsFrame()
             e.tips:ClearLines()
             e.tips:SetRecipeResultItem(recipeID)
             e.tips:AddLine(' ')
+            local text= C_TradeSkillUI.GetRecipeSourceText(recipeID)
+            if text and text~='' then
+                e.tips:AddLine(text)
+                e.tips:AddLine(' ')
+            end
             e.tips:AddDoubleLine('recipeID', recipeID)
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
@@ -485,28 +515,22 @@ local function Init_ProfessionsFrame()
     end)
 
 
-
-
-
-
-
-
     --专业，列表，增加图标
     hooksecurefunc(ProfessionsRecipeListRecipeMixin, 'Init', function(self, node)
         local elementData = node:GetData();
         local recipeInfo = Professions.GetHighestLearnedRecipe(elementData.recipeInfo) or elementData.recipeInfo
-        --[[if recipeInfo and recipeInfo.icon and recipeInfo.name then
-            self.Label:SetText('|T'..recipeInfo.icon..':0|t'..recipeInfo.name)
-        end]]
-        local icon = recipeInfo and recipeInfo.icon 
+
+        local icon = recipeInfo and recipeInfo.icon
         if icon and not self.texture then
             self.texture= self:CreateTexture()
-            self.texture:SetPoint('LEFT')
+            self.texture:SetPoint('RIGHT')
             self.texture:SetSize(20,20)
         end
+
         if self.texture then
             self.texture:SetTexture(icon or 0)
         end
+
     end)
 
 
@@ -573,12 +597,6 @@ local function Init_ProfessionsFrame()
     end)
 
 
-
-
-
-
-
-
     --Blizzard_ProfessionsSpecializations.lua
     --全加点，专精，
     hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateDetailedPanel', function(self, setLocked)
@@ -615,6 +633,27 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
     --########################
     --自动输入，忘却，文字，专业
@@ -644,6 +683,21 @@ local function Init()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
@@ -665,7 +719,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
             if not Save.disabled then
-                --panel:UnregisterEvent('ADDON_LOADED')
                 Init()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")

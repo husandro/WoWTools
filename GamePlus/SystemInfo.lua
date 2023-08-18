@@ -629,7 +629,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '每秒帧数' or FRAMERATE_FREQUENCY, format("%.1f", GetFramerate())..e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (Save.size or 12)..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''), (Save.size or 12)..e.Icon.mid)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
         if self2.moveFPSFrame then

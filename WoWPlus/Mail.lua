@@ -546,7 +546,7 @@ local function Init_Button()
                 num= num+ 0.05
             end
             num= num<0.5 and 0.5 or num>2 and 2 or num
-            print(id, addName,e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.scaleSendPlayerFrame or 1) )
+            print(id, addName,e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''), '|cnGREEN_FONT_COLOR:'..(Save.scaleSendPlayerFrame or 1) )
             Save.scaleSendPlayerFrame= num
             button.SendPlayerFrame:SetScale(num)
 
@@ -570,7 +570,7 @@ local function Init_Button()
         e.tips:AddDoubleLine((e.onlyChinese and '全部清除' or CLEAR_ALL)..' |cnGREEN_FONT_COLOR:#'..#Save.lastSendPlayerList..'|r/'..Save.lastMaxSendPlayerList, '|cnGREEN_FONT_COLOR:Alt+'.. e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER)..' '..(Save.hideSendPlayerList and '|A:AnimaChannel-Bar-Venthyr-Gem:0:0|a' or '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a')..e.GetShowHide(not Save.hideSendPlayerList), e.Icon.mid)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleSendPlayerFrame or 1), 'Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''))..' |cnGREEN_FONT_COLOR:'..(Save.scaleSendPlayerFrame or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
@@ -947,7 +947,7 @@ local function Init_Fast_Button()
                 num= num+ 0.05
             end
             num= num<0.5 and 0.5 or num>2 and 2 or num
-            print(id, addName,e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.scaleFastButton or 1) )
+            print(id, addName,e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''), '|cnGREEN_FONT_COLOR:'..(Save.scaleFastButton or 1) )
             Save.scaleFastButton= num
             self2.frame:SetScale(num)
         end
@@ -959,7 +959,7 @@ local function Init_Fast_Button()
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)..' '..e.GetYesNo(not Save.fastShow), 'Alt+'..e.Icon.left)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleFastButton or 1), 'Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''))..' |cnGREEN_FONT_COLOR:'..(Save.scaleFastButton or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()

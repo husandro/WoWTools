@@ -265,7 +265,7 @@ local function Init_Cursor_Options()
 
 
     local sliderSize = e.CSlider(panel, {min=8, max=128, value=Save.size, setp=1,
-    text=e.onlyChinese and '缩放' or UI_SCALE,
+    text=e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''),
     func=function(self, value)
         value= math.floor(value)
         self:SetValue(value)
@@ -537,7 +537,7 @@ end
 --################
 local function Init_GCD_Options()
     local sliderSize = e.CSlider(panel, {min=8, max=128, value=Save.gcdSize, setp=1,
-    text=e.onlyChinese and '缩放' or UI_SCALE,
+    text=e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''),
     func=function(self, value)
         value= math.floor(value)
         self:SetValue(value)

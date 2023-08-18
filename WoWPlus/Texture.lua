@@ -2068,7 +2068,7 @@ local function options_Init()--初始，选项
     initializer:SetParentInitializer(initializer2, function() return not Save.disabledChatBubble end)
 
     initializer= e.AddPanelSider({
-        name= e.onlyChinese and '缩放' or UI_SCALE,
+        name= e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''),
         value= Save.chatBubbleSacal,
         minValue= 0.3,
         maxValue= 1,
