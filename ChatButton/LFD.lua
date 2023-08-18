@@ -1585,10 +1585,10 @@ local function setHoliday()--节日, 提示, button.texture
                         local find
                         for rewardIndex=1 , numRewards do
                             --local name, texture, numItems, isBonusReward, rewardType, rewardID, quality = GetLFGDungeonRewardInfo(dungeonID, i)
-                            local icon, _, _, rewardType=select(2, GetLFGDungeonRewardInfo(dungeonID, rewardIndex))
-                            if texturePath and rewardType == "currency" or rewardType=='item' then
+                            local _, texture, _, isBonusReward, rewardType= GetLFGDungeonRewardInfo(dungeonID, rewardIndex)
+                            if texture and (rewardType == "currency" or rewardType=='item' or isBonusReward) then
                                 find=true
-                                texturePath= icon
+                                texturePath= texture
                                 if rewardType == "currency"  then
                                     break
                                 end
