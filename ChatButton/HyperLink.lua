@@ -533,19 +533,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 --#########
 --使用，禁用
 --#########
@@ -583,61 +570,31 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --###########
 --设置控制面板
 --###########
-
 --local Category, Layout
 local function Init_Panel()
     --Category, Layout= e.AddPanel_Sub_Category({name= addName, frame= panel})
     e.AddPanel_Sub_Category({name=e.onlyChinese and '超链接图标' or addName, frame=panel})
-    local Cedit= function(self, width, height)
-        width = width or 400
-        height= height or 400
-    
-        local editBox = CreateFrame("EditBox", nil, self)--ScrollingEditBoxMixin
-        editBox:SetSize(width, height)
-        editBox:SetAutoFocus(false)
-        editBox:ClearFocus()
-        editBox:SetFontObject("ChatFontNormal")
-        editBox:SetMultiLine(true)
-        local tex=editBox:CreateTexture(nil, "BACKGROUND")
-        tex:SetAtlas('_Adventures-Mission-Highlight-Mid')
-        tex:SetAllPoints(editBox)
-        return editBox
+    local Cedit= function(self)
+        local frame= CreateFrame('Frame',nil, self, 'ScrollingEditBoxTemplate')--ScrollTemplates.lua
+        frame:SetPoint('CENTER')
+        frame:SetSize(500,250)
+        frame.texture= frame:CreateTexture(nil, "BACKGROUND")
+        frame.texture:SetAllPoints(frame)
+        frame.texture:SetAtlas('CreditsScreen-Background-0')
+        frame.texture:SetAlpha(0.3)
+
+        return frame
     end
-
---[[
-    local frame= CreateFrame('Frame',nil,nil,'ScrollingEditBoxTemplate')
-    frame:SetPoint('CENTER')
-    frame:SetSize(300,300)
-
-]]
-    
 
     local str=e.Cstr(panel)--内容加颜色
     str:SetPoint('TOPLEFT')
     str:SetText(e.onlyChinese and '颜色: 关键词 (|cnGREEN_FONT_COLOR:空格|r) 分开' or (COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r'))
     local editBox=Cedit(panel)
     editBox:SetPoint('TOPLEFT', str, 'BOTTOMLEFT',0,-5)
-    editBox:SetTextColor(0,1,0)
+    
     if Save.text then
         local s=''
         for k, _ in pairs(Save.text) do
@@ -650,10 +607,10 @@ local function Init_Panel()
     btn:SetSize(80,28)
     btn:SetText(e.onlyChinese and '更新' or UPDATE)
     btn:SetPoint('TOPLEFT', editBox, 'TOPRIGHT',5, 0)
-    btn:SetScript('OnMouseDown', function()
+    btn:SetScript('OnMouseDown', function(self)
         Save.text={}
         local n=0
-        local s=editBox:GetText() or ''
+        local s=self:GetParent():GetInputText() or ''
         if s:gsub(' ','')~='' then
             s=s..' '
             s=s:gsub('|n', ' ')
@@ -687,10 +644,10 @@ local function Init_Panel()
     btn2:SetSize(80,28)
     btn2:SetText(e.onlyChinese and '更新' or UPDATE)
     btn2:SetPoint('TOPLEFT', editBox2, 'TOPRIGHT',5, 0)
-    btn2:SetScript('OnMouseDown', function()
+    btn2:SetScript('OnMouseDown', function(self)
         Save.channels={}
         local n=0
-        local s=editBox2:GetText() or ''
+        local s=self:GetParent():GetInputText() or ''
         if s:gsub(' ','')~='' then
             s=s..' '
             s=s:gsub('|n', ' ')

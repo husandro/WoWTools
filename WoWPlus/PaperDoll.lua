@@ -14,6 +14,7 @@ local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 
+
 local function is_Left_Slot(slot)--左边插曹
     return slot==1 or slot==2 or slot==3 or slot==15 or slot==5 or slot==4 or slot==19 or slot==9 or slot==17 or slot==18
 end
@@ -89,6 +90,18 @@ local function recipeLearned(recipeSpellID)--是否已学配方
     return info and info.learned
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增加 [潘达利亚工程学: 地精滑翔器][诺森德工程学: 氮气推进器]
     if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use or Save.hide or not link or not isPaperDollItemSlot then
         if self.engineering  then
@@ -154,8 +167,7 @@ local subClassToSlot={
     --[16]= 12,--	双手武器	
     [17]= 13,--盾牌/副手	
 }
-local function get_no_Enchant_Bag(slot)--取得，物品，bag, slot
-    
+local function get_no_Enchant_Bag(slot)--取得，物品，bag, slot    
     for bagIndex= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
         for slotIndex=1, C_Container.GetContainerNumSlots(bagIndex) do
             local info = C_Container.GetContainerItemInfo(bagIndex, slotIndex)
@@ -200,7 +212,7 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
                     self2:SetAlpha(0.3)
                 end
             end)
-  
+
             self.noEnchant:SetScript('OnShow', function(self2)
                 self2:RegisterEvent('BAG_UPDATE_DELAYED')
             end)
@@ -237,7 +249,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
     local enchant, use, pvpItem, upgradeItem
     local unit = (not isPaperDollItemSlot and InspectFrame) and InspectFrame.unit or 'player'
 
-    if link and not Save.hide then
+    if link and not Save.hide and not IsCorruptedItem(link) then
         local dateInfo= e.GetTooltipData({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr}, onlyText=true})--物品提示，信息
         enchant, use, pvpItem, upgradeItem= dateInfo.text[enchantStr], dateInfo.red, dateInfo.text[pvpItemStr],  dateInfo.text[upgradeStr]
     end
@@ -268,9 +280,9 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         self.enchant.tips= enchant
         self.enchant:SetShown(enchant and true or false)
     end
-    
+
     set_no_Enchant(self, slot, enchant and true or false, isPaperDollItemSlot)--附魔，按钮
-    
+
     use=  link and select(2, GetItemSpell(link))--物品是否可使用
     if use and not self.use then
         local h=self:GetHeight()/3
@@ -581,6 +593,25 @@ local function Title()--头衔数量
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####################
 --装备, 标签, 内容,提示
 --####################
@@ -687,6 +718,16 @@ local function set_PaperDollSidebarTab3_Text()--标签, 内容,提示
         self.nu.setID= setID
     end
 end
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1050,6 +1091,25 @@ local function setFlyout(button, itemLink, slot)
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#########
 --目标, 装备
 --#########
@@ -1153,6 +1213,22 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --########################
 --显示服务器名称，装备管理框
 --########################
@@ -1239,6 +1315,22 @@ local function Init_Server_equipmentButton_Lable()
 
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --################
 --时空漫游战役, 提示
 --################
@@ -1285,6 +1377,22 @@ local function set_ChromieTime()--时空漫游战役, 提示
         panel.ChromieTime:SetShown(canEnter and not Save.hide)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --###############
@@ -1347,6 +1455,23 @@ panel.Init_Show_Hide_Button= function(self, frame)
     end)
     self.ShowHideButton= btn
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#####
 --初始化
@@ -1446,6 +1571,16 @@ local function Init()
         end
     end)
 
+
+
+
+
+
+
+
+
+
+
     --############
     --更改,等级文本
     --############
@@ -1504,6 +1639,19 @@ local function Init()
     C_Timer.After(2, set_inti_Equipment_Frame)--装备管理框
     --set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1571,9 +1719,21 @@ local function add_Button_OpenOption(self)
         end)
         set_item_Num_Text(btn)
     end
-
-
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
@@ -1595,7 +1755,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
             })
-            
+
             --[[添加控制面板
             local sel=e.AddPanel_Check((e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..(e.onlyChinese and '角色' or addName), not Save.disabled)
             sel:SetScript('OnMouseDown', function()

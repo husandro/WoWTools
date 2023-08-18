@@ -200,3 +200,62 @@ Interface/Minimap/POIIcons
 HEADER_COLON = "：";
 INSTANCE_DIFFICULTY_FORMAT = "（%s）";
 PLAYER_LIST_DELIMITER = "，"
+
+
+
+
+
+
+
+
+
+
+
+
+测试
+
+local frame= CreateFrame('Frame',nil,nil,'ScrollingEditBoxTemplate')--ScrollTemplates.lua
+frame:SetPoint('CENTER')
+frame:SetSize(150,150)
+frame.texture= frame:CreateTexture(nil, "BACKGROUND")
+frame.texture:SetAllPoints(frame)
+frame.texture:SetAtlas('CreditsScreen-Background-0')
+frame.texture:SetAlpha(0.5)
+
+
+
+
+local editBox = frame:GetEditBox();
+local scrollBox = frame:GetScrollBox();
+scrollBox:SetPoint('LEFT', frame, 'RIGHT')
+scrollBox:SetSize(150,150)
+print(scrollBox:IsShown(), scrollBox:IsVisible())
+
+
+	scrollBox:SetAlignmentOverlapIgnored(false);
+	frame:SetInterpolateScroll(true)
+	
+
+frame:SetText([[
+    aaaaaa
+
+    bbbbbb
+
+    bbbbbbbbbb
+
+
+    ccccccccccc
+
+    eeeeeeeeeeeeeeeee
+
+
+    efffffffffffffffff
+
+    aaaaaaaaaaaaa
+
+
+    11111111111111
+
+
+    2222222222222222222222222222222222222222222222222222222222222222222222222
+]])

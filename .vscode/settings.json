@@ -3251,7 +3251,10 @@
         "OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN",
         "PING",
         "PlayerFrame_UpdatePvPStatus",
-        "ScrollingEditBoxMixin"
+        "ScrollingEditBoxMixin",
+        "TRANSMOGRIFIED_HEADER",
+        "ITEM_GOOD_COLOR_CODE",
+        "INTERFACE_LABEL"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

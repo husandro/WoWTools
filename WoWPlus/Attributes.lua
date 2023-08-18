@@ -1265,7 +1265,7 @@ local function set_Panle_Setting()--设置 panel
             local current= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             current:SetChecked(Save.tab[info.name].bar)
             current:SetPoint('LEFT', text, 'RIGHT',2,0)
-            current.text:SetText('Bar')
+            current.text:SetText(e.Player.col..'Bar')
             current:SetScript('OnMouseUp',function(self)
                 Save.tab['STATUS'].bar= not Save.tab['STATUS'].bar and true or false
                 frame_Init(true)--初始， 或设置
@@ -1273,9 +1273,22 @@ local function set_Panle_Setting()--设置 panel
             current:SetScript('OnEnter', function(self2) set_SPEED_Tooltip(self2) self2:SetAlpha(0.3) end)
             current:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
-            local sliderBit= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--位数，bit
+            --位数，bit
+            local sliderBit=e.CSlider(panel, {w=100,h=20, min=0, max=6, value=Save.tab['STATUS'].bit or 3, setp=1, color=nil,
+                text= e.Player.col..(e.onlyChinese and '位数' or 'bit'),
+                func=function(self, value)
+                    value= math.floor(value)
+                    self:SetValue(value)
+                    self.Text:SetText(value)
+                    Save.tab['STATUS'].bit= value==0 and 0 or value
+                    frame_Init(true)--初始，设置
+                end,
+                tips=nil
+            })
             sliderBit:SetPoint("LEFT", current.text, 'RIGHT', 6,0)
             sliderBit:SetSize(100,20)
+
+            --[[local sliderBit= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')
             sliderBit:SetMinMaxValues(0, 6)
             sliderBit:SetValue(Save.tab['STATUS'].bit or 3)
             sliderBit.Low:SetText('0')
@@ -1288,7 +1301,7 @@ local function set_Panle_Setting()--设置 panel
                 self.Text:SetText(value)
                 Save.tab['STATUS'].bit= value==0 and 0 or value
                 frame_Init(true)--初始，设置
-            end)
+            end)]]
 
         elseif info.name=='SPEED' then--速度, 当前速度, 选项
             --[[local current= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -1394,42 +1407,33 @@ local function set_Panle_Setting()--设置 panel
         self2:SetAlpha(0.3)
     end)
 
-    local sliderX= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--bar, 宽度
+    --bar, 宽度
+    local sliderX=e.CSlider(panel, {w=120 ,h=20, min=-5, max=5, value=Save.font.x, setp=1, color=nil,
+        text='X',
+        func=function(self, value)
+            value= math.floor(value)
+            self:SetValue(value)
+            self.Text:SetText(value)
+            Save.font.x= value==0 and 0 or value
+            set_Shadow(self.text)--设置，字体阴影
+            frame_Init(true)--初始，设置
+        end, tips=nil
+    })
     sliderX:SetPoint("TOPLEFT", text, 'BOTTOMLEFT',0,-12)
-    sliderX:SetSize(120,20)
-    sliderX:SetMinMaxValues(-5,5)
-    sliderX:SetValue(Save.font.x)
-    sliderX.Low:SetText('')
-    sliderX.High:SetText('')
-    sliderX.Text:SetText('x'..Save.font.x)
-    sliderX:SetValueStep(0.1)
-    sliderX:SetScript('OnValueChanged', function(self, value, userInput)
-        value= math.floor(value)
-        self:SetValue(value)
-        self.Text:SetText('x'..value)
-        Save.font.x= value==0 and 0 or value
-        set_Shadow(self.text)--设置，字体阴影
-        frame_Init(true)--初始，设置
-    end)
     sliderX.text= text
 
-    local sliderY= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--bar, 宽度
+    --bar, 宽度
+    local sliderY= e.CSlider(panel, {w=120 ,h=20, min=-5, max=5, value=Save.font.y, setp=1, color=true,
+        text='Y', func=function(self, value, userInput)
+            value= math.floor(value)
+            self:SetValue(value)
+            self.Text:SetText(value)
+            Save.font.y= value==0 and 0 or value
+            set_Shadow(self.text)--设置，字体阴影
+            frame_Init(true)--初始，设置
+        end, tips=nil
+    })
     sliderY:SetPoint("LEFT", sliderX, 'RIGHT', 2, 0)
-    sliderY:SetSize(120,20)
-    sliderY:SetMinMaxValues(-5,5)
-    sliderY:SetValue(Save.font.y)
-    sliderY.Low:SetText('')
-    sliderY.High:SetText('')
-    sliderY.Text:SetText('y'..Save.font.y)
-    sliderY:SetValueStep(0.1)
-    sliderY:SetScript('OnValueChanged', function(self, value, userInput)
-        value= math.floor(value)
-        self:SetValue(value)
-        self.Text:SetText('y'..value)
-        Save.font.y= value==0 and 0 or value
-        set_Shadow(self.text)--设置，字体阴影
-        frame_Init(true)--初始，设置
-    end)
     sliderY.text= text
 
     local notTextCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -1492,22 +1496,19 @@ local function set_Panle_Setting()--设置 panel
         frame_Init(true)--初始， 或设置
     end)
 
-    local sliderBit= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--位数，bit
+    --位数，bit
+    local sliderBit= e.CSlider(panel, {w=100 ,h=20, min=0, max=3, value=Save.bit, setp=1, color=nil,
+        text=e.onlyChinese and '位数' or 'bit',
+        func=function(self, value)
+            value= math.ceil(value)
+            self:SetValue(value)
+            self.Text:SetText(value)
+            Save.bit= value==0 and 0 or value
+            frame_Init(true)--初始，设置
+        end,
+    tips=nil})
     sliderBit:SetPoint("LEFT", check5.text, 'RIGHT', 6,0)
-    sliderBit:SetSize(150,20)
-    sliderBit:SetMinMaxValues(0, 3)
-    sliderBit:SetValue(Save.bit)
-    sliderBit.Low:SetText('0')
-    sliderBit.High:SetText('0.003')
-    sliderBit.Text:SetText(Save.bit)
-    sliderBit:SetValueStep(1)
-    sliderBit:SetScript('OnValueChanged', function(self, value, userInput)
-        value= math.ceil(value)
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.bit= value==0 and 0 or value
-        frame_Init(true)--初始，设置
-    end)
+    
 
     local barValueText= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
     barValueText:SetPoint("TOPLEFT", check5, 'BOTTOMLEFT')
@@ -1606,39 +1607,33 @@ local function set_Panle_Setting()--设置 panel
         Save.barTexture2= not Save.barTexture2 and true or nil
         frame_Init(true)--初始，设置
     end)
-    local barWidth= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--bar, 宽度
-    barWidth:SetPoint("LEFT", check3.text, 'RIGHT', 10, 0)
-    barWidth:SetSize(150,20)
-    barWidth:SetMinMaxValues(-120,120)
-    barWidth:SetValue(Save.barWidth)
-    barWidth.Low:SetText((e.onlyChinese and '宽' or WIDE)..' -60')
-    barWidth.High:SetText('120')
-    barWidth.Text:SetText(Save.barWidth)
-    barWidth:SetValueStep(0.1)
-    barWidth:SetScript('OnValueChanged', function(self, value, userInput)
-        value= math.floor(value)
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.barWidth= value==0 and 0 or value
-        frame_Init(true)--初始，设置
-    end)
 
-    local barX= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--bar, 宽度
+    --bar, 宽度
+    local barWidth= e.CSlider(panel, {w=120, h=20, min=-119, max=250, value=Save.barWidth, setp=1, color=nil,
+        text=e.onlyChinese and '宽' or WIDE,
+        func=function(self, value)
+            value= math.floor(value)
+            self:SetValue(value)
+            self.Text:SetText(value)
+            Save.barWidth= value==0 and 0 or value
+            frame_Init(true)--初始，设置
+        end, tips=nil
+    })
+    barWidth:SetPoint("LEFT", check3.text, 'RIGHT', 10, 0)
+    
+    --bar, x
+    local barX= e.CSlider(panel, {w=120, h=20, min=-250, max=250, value=Save.barX, setp=1, color=true,
+        text='X',
+        func=function(self, value)
+            value= math.floor(value)
+            self:SetValue(value)
+            self.Text:SetText(value)
+            Save.barX= value==0 and 0 or value
+            frame_Init(true)--初始，设置
+        end, tips=nil
+    })
     barX:SetPoint("TOPLEFT", barWidth.Low, 'BOTTOMLEFT', 0, -10)
-    barX:SetSize(150,20)
-    barX:SetMinMaxValues(-200,200)
-    barX:SetValue(Save.barX)
-    barX.Low:SetText('x -200')
-    barX.High:SetText('+200')
-    barX.Text:SetText(Save.barX)
-    barX:SetValueStep(1)
-    barX:SetScript('OnValueChanged', function(self, value, userInput)
-        value= math.floor(value)
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.barX= value==0 and 0 or value
-        frame_Init(true)--初始，设置
-    end)
+
 
     local barToLeft= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar 向左
     barToLeft:SetPoint("TOPLEFT", check2, 'BOTTOMLEFT')
@@ -1649,57 +1644,49 @@ local function set_Panle_Setting()--设置 panel
         frame_Init(true)--初始， 或设置
     end)
 
-    local slider= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--间隔，上下
+    --间隔，上下
+    local slider= e.CSlider(panel, {w=120, h=20, min=-5, max=10, value=Save.vertical, setp=0.1, color=nil,
+        text='|T450907:0|t|T450905:0|t',
+        func=function(self, value)
+            value= tonumber(format('%.1f', value))
+            self:SetValue(value)
+            self.Text:SetText(value)
+            Save.vertical= value==0 and 0 or value
+            frame_Init(true)--初始，设置
+        end,
+        tips=nil
+    })
     slider:SetPoint("TOPLEFT", barToLeft, 'BOTTOMLEFT', 0,-80)
-    --slider:SetOrientation('VERTICAL')--HORIZONTAL --slider.tooltipText=e.onlyChinese and '距离远近' or TRACKER_SORT_PROXIMITY
-    slider:SetSize(200,20)
-    slider:SetMinMaxValues(-5,10)
-    slider:SetValue(Save.vertical)
-    slider.Low:SetText('|T450907:0|t-5')
-    slider.High:SetText('|T450905:0|t10')
-    slider.Text:SetText(Save.vertical)
-    slider:SetValueStep(0.1)
-    slider:SetScript('OnValueChanged', function(self, value, userInput)
-        value= tonumber(format('%.1f', value))
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.vertical= value==0 and 0 or value
-        frame_Init(true)--初始，设置
-    end)
 
-    local slider2= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--间隔，左右
-    slider2:SetPoint("TOPLEFT", slider, 'BOTTOMLEFT', 0,-24)
-    slider2:SetSize(200,20)
-    slider2:SetMinMaxValues(0.1, 20)
-    slider2:SetValue(Save.horizontal)
-    slider2.Low:SetText('|T450908:0|t 0.1')
-    slider2.High:SetText('|T450906:0|t 10')
-    slider2.Text:SetText(Save.horizontal)
-    slider2:SetValueStep(0.1)
-    slider2:SetScript('OnValueChanged', function(self, value, userInput)
-        value= tonumber(format('%.1f', value))
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.horizontal=value
-        frame_Init(true)--初始，设置
-    end)
+    --间隔，左右
+    local slider2= e.CSlider(panel, {w=120, h=20, min=-0.1, max=40, value=Save.horizontal, setp=0.1, color=true,
+        text='|T450908:0|t|T450906:0|t',
+        func=function(self, value)
+            value= tonumber(format('%.1f', value))
+            self:SetValue(value)
+            self.Text:SetText(value)
+            Save.horizontal=value
+            frame_Init(true)--初始，设置
+        end,
+        tips=nil
+    })
+    slider2:SetPoint("LEFT", slider, 'RIGHT', 10,0)
 
-    local slider3= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--文本，截取
-    slider3:SetPoint("TOPLEFT", slider2, 'BOTTOMLEFT', 0,-24)
-    slider3:SetSize(200,20)
-    slider3:SetMinMaxValues(0, 20)
-    slider3:SetValue(Save.gsubText or 0)
-    slider3.Low:SetText(e.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO) )
-    slider3.High:SetText((e.onlyChinese and '截取' or BINDING_NAME_SCREENSHOT).. ' 20')
-    slider3.Text:SetText(Save.gsubText or '0')
-    slider3:SetValueStep(1)
-    slider3:SetScript('OnValueChanged', function(self, value, userInput)
-        value= math.floor(value)
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.gsubText= value>0 and value or nil
-        frame_Init(true)--初始，设置
-    end)
+    --文本，截取
+    local slider3= e.CSlider(panel, {w=120, h=20, min=0, max=20, value=Save.gsubText or 0, setp=1, color=nil,
+        text=e.onlyChinese and '截取' or BINDING_NAME_SCREENSHOT,
+        func=function(self, value, userInput)
+            value= math.floor(value)
+            self:SetValue(value)
+            self.Text:SetText(value)
+            Save.gsubText= value>0 and value or nil
+            frame_Init(true)--初始，设置
+            print(id,addName, '|cnGREEN_FONT_COLOR:'..value..'|r', e.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO))
+        end,
+        tips=nil
+    })
+    slider3:SetPoint("TOPLEFT", slider, 'BOTTOMLEFT', 0,-24)
+
 
     local checkStrupper= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
     local checkStrlower= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
@@ -1726,26 +1713,23 @@ local function set_Panle_Setting()--设置 panel
         frame_Init(true)--初始，设置
     end)
 
-
-    local slider4= CreateFrame("Slider", nil, panel, 'OptionsSliderTemplate')--缩放
+    --缩放
+    local slider4= e.CSlider(panel, {w=nil, h=20, min=0.3, max=4, value=Save.scale or 1, setp=0.1, color=nil,
+        text=e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''),
+        func=function(self, value)
+            value= tonumber(format('%.1f', value)) or 1
+            self:SetValue(value)
+            self.Text:SetText(value)
+            Save.scale=value
+            button.frame:SetScale(value)
+        end,
+        tips=nil
+    })
     slider4:SetPoint("TOPLEFT", slider3, 'BOTTOMLEFT', 0,-24)
-    slider4:SetSize(200,20)
-    slider4:SetMinMaxValues(0.3, 4)
-    slider4:SetValue(Save.scale or 1)
-    slider4.Low:SetText((e.onlyChinese and '缩放' or UI_SCALE)..' 0.4')
-    slider4.High:SetText('4')
-    slider4.Text:SetText(Save.scale or 1)
-    slider4:SetValueStep(0.1)
-    slider4:SetScript('OnValueChanged', function(self, value, userInput)
-        value= tonumber(format('%.1f', value)) or 1
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save.scale=value
-        button.frame:SetScale(value)
-    end)
+
 
     local sliderButtonAlpha = e.CSlider(panel, {min=0, max=1, value=Save.buttonAlpha or 0.3, setp=0.1, color=true,
-    text=e.onlyChinese and '专精透明度' or SPECIALIZATION..'('..'Alpha'..')',
+    text=e.onlyChinese and '专精透明度' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, 'Alpha'),
     func=function(self, value)
         value= tonumber(format('%.1f', value))
         value= value==0 and 0 or value

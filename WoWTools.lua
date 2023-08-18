@@ -1543,7 +1543,8 @@ e.Reload= function()
     end
 end
 
-function e.CSlider(self, tab)--e.CSlider(self, {w= ,h=, min=, max=, value=, setp=, color=, text=, func=clickfunc, tips=func})
+
+function e.CSlider(self, tab)--e.CSlider(self, {w=, h=, min=, max=, value=, setp=, color=, text=, func=clickfunc, tips=func})
     local slider= CreateFrame("Slider", nil, self, 'OptionsSliderTemplate')
     slider:SetSize(tab.w or 200, tab.h or 18)
     slider:SetMinMaxValues(tab.min, tab.max)
@@ -1551,6 +1552,12 @@ function e.CSlider(self, tab)--e.CSlider(self, {w= ,h=, min=, max=, value=, setp
     slider.Low:SetText(tab.text or tab.min)
     slider.High:SetText('')
     slider.Text:SetText(tab.value)
+    
+    slider.Low:ClearAllPoints()
+    slider.Low:SetPoint('LEFT')
+    slider.Text:ClearAllPoints()
+    slider.Text:SetPoint('RIGHT')
+
     slider:SetValueStep(tab.setp)
     slider:SetScript('OnValueChanged', tab.func)
     slider:EnableMouseWheel(true)
