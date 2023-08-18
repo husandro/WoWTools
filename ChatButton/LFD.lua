@@ -27,7 +27,7 @@ local panel= CreateFrame("Frame")
 
 
 
-local getRewardInfo=function(dungeonID)--FB奖励
+local get_Reward_Info=function(dungeonID)--FB奖励
     local t=''
     if not dungeonID then
         return t
@@ -73,6 +73,7 @@ local getRewardInfo=function(dungeonID)--FB奖励
     return t
 end
 
+
 local function get_Queued_List(type, reTips, reRole)--排队情况
     local list= GetLFGQueuedList(type)
     local  hasData, _, tank, healer, dps, totalTanks, totalHealers, totalDPS, _, _, _, _, _, _, _, _, queuedTime =GetLFGQueueStats(type)
@@ -104,7 +105,7 @@ local function get_Queued_List(type, reTips, reRole)--排队情况
                     ..num..')|r '
                     ..name
                     ..boss
-                    ..getRewardInfo(dungeonID)
+                    ..get_Reward_Info(dungeonID)
             end
         end
     end
@@ -725,7 +726,7 @@ local function set_Party_Menu_List(level)--5人，随机 LFDFrame.lua
                 end
                 info= {
                     text= name
-                        ..getRewardInfo(dungeonID)
+                        ..get_Reward_Info(dungeonID)
                         ..(doneToday or ''),
                     icon= select(11, GetLFGDungeonInfo(dungeonID)),
                     arg1= dungeonID,
@@ -845,7 +846,7 @@ local set_Raid_Menu_List=function(level)--团队本
 
             info={
                 text= (scenarioName== strlower(sortedDungeons[i].name or '') and e.Icon.star2 or '')--在当前副本
-                    ..(kill==numEncounters and '|cnRED_FONT_COLOR:' or '')..sortedDungeons[i].name..'|r'..getRewardInfo(sortedDungeons[i].id)--名称
+                    ..(kill==numEncounters and '|cnRED_FONT_COLOR:' or '')..sortedDungeons[i].name..'|r'..get_Reward_Info(sortedDungeons[i].id)--名称
                     ..killText,
                 icon= icon,
                 iconXOffset= icon and -6 or nil,
@@ -1583,10 +1584,14 @@ local function setHoliday()--节日, 提示, button.texture
                     if numRewards and numRewards>0 then--奖励物品
                         local find
                         for rewardIndex=1 , numRewards do
-                            texturePath=select(2, GetLFGDungeonRewardInfo(dungeonID, rewardIndex))
-                            if texturePath then
+                            --local name, texture, numItems, isBonusReward, rewardType, rewardID, quality = GetLFGDungeonRewardInfo(dungeonID, i)
+                            local icon, _, _, rewardType=select(2, GetLFGDungeonRewardInfo(dungeonID, rewardIndex))
+                            if texturePath and rewardType == "currency" or rewardType=='item' then
                                 find=true
-                                break
+                                texturePath= icon
+                                if rewardType == "currency"  then
+                                    break
+                                end
                             end
                         end
                         if find then
