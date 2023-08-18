@@ -795,6 +795,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     end
 
     if not pingFrame then--Blizzard_PingUI.lua
+        PingUI_LoadUI()
         pingFrame= CreateFrame('Frame', nil, targetFrame)
         pingFrame:SetSize(1, 1)
         if Save.H then
@@ -853,24 +854,33 @@ local function Init_Markers_Frame()--设置标记, 框架
                 function btn:cancel_PingFrame()--Bindings.xml
                     PingListenerFrame:CancelPendingPing();
                     PingListenerFrame:SetShown(false)
-                    self:UnregisterAllEvents()
+                    self:UnregisterEvent('GLOBAL_MOUSE_UP')
                     self:UnlockHighlight()
                 end
                 btn:SetScript('OnMouseUp', function(self, d)
                     if d=='LeftButton' then
-                        PingListenerFrame:SetShown(true)
+                        PingListenerFrame:Show()
                         SetCursor("CAST_CURSOR")
                         C_Timer.After(0.3, function()
                             self:RegisterEvent('GLOBAL_MOUSE_UP')
+                            self:LockHighlight()
                         end)
                     elseif d=='RightButton' then
                         self:cancel_PingFrame()
                     end
                 end)
-                btn:SetScript('OnEvent', function(self)
-                    self:cancel_PingFrame()
+                
+                btn:SetScript('OnEvent', function(self, event, arg1)
+                    if event=='GLOBAL_MOUSE_UP' then
+                        self:cancel_PingFrame()
+                    elseif event=='CVAR_UPDATE' and arg1=='pingMode' then
+                        self:set_Alpha()
+                    end
                 end)
                 btn:SetScript('OnLeave', function() e.tips:Hide() end)
+                function btn:set_Alpha()
+                    self:SetAlpha(PingListenerFrame:GetPingMode() == Enum.PingMode.KeyDown and 0.1 or 1)
+                end
                 btn:SetScript('OnEnter', function(self)
                     e.tips:SetOwner(self, "ANCHOR_LEFT")
                     e.tips:ClearLines()
@@ -880,8 +890,13 @@ local function Init_Markers_Frame()--设置标记, 框架
                         e.Icon.left..self.name..'|A:'..self.atlas..':0:0|a'..key1,
                         (e.onlyChinese and '取消' or CANCEL)..e.Icon.right
                     )
+                    if PingListenerFrame:GetPingMode() == Enum.PingMode.KeyDown then
+                        e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '需求' or NEED), PING_MODE_CLICK_DRAG,1,0,0, 1,0,0)
+                    end
                     e.tips:Show()
                 end)
+                btn:RegisterEvent('CVAR_UPDATE')
+                btn:set_Alpha()
 
             else--攻击,正在赶来,警告,威胁提示,协助,看这里
                 function btn:cancel_Send_Ping()
@@ -942,9 +957,8 @@ local function Init_Markers_Frame()--设置标记, 框架
         function pingFrame:set_Shown()
             local cvar= C_CVar.GetCVarBool("enablePings")
             self:SetShown(cvar and Save.markersFrame and true or false)--getAllSet() and cvar and true or false)
-            if cvar and not IsAddOnLoaded('Blizzard_PingUI') then
-                PingUI_LoadUI()
-            end
+            --if cvar and not IsAddOnLoaded('Blizzard_PingUI') then
+                --PingUI_LoadUI()
         end
         pingFrame:RegisterEvent('CVAR_UPDATE')
         pingFrame:SetScript('OnEvent', pingFrame.set_Shown)
