@@ -390,8 +390,11 @@ local function Init()
 
     button:SetScript('OnMouseWheel', function(self, d)--发送自定义信息
         local text
-        text= d==1 and Save.mouseUP or text
-        text= d==-1 and Save.mouseDown or text
+        if d==1 then
+            text= Save.mouseUP
+        elseif d==-1 then
+            text= Save.mouseDown
+        end
         if text then
             text=set_Text(text)--处理%s
             if IsInRaid() then
@@ -409,6 +412,7 @@ local function Init()
         if (Save.mouseDown or Save.mouseUP) and IsInGroup() then
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '说' or SAY, IsInRaid() and (e.onlyChinese and '团队' or RAID or IsInGroup() and (e.onlyChinese and '小队' or GROUP)) )
             if Save.mouseUP then
                 e.tips:AddDoubleLine(Save.mouseUP, (e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..e.Icon.mid)
             end
