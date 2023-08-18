@@ -574,19 +574,21 @@ local function Init()
         category=Category
     })
 
-    e.AddPanel_Check({
-        name= 'Chinese',
-        tooltip=e.onlyChinese and '语言: 简体中文'
-                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
-        category=Category,
-        value= not Save.disabled,
-        func= function()
-            e.onlyChinese= not e.onlyChinese and true or nil
-            Save.onlyChinese = e.onlyChinese
-            print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    })
-
+    if not LOCALE_zhCN then
+        e.AddPanel_Check({
+            name= 'Chinese',
+            tooltip=e.onlyChinese and '语言: 简体中文'
+                    or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
+            category=Category,
+            value= not Save.disabled,
+            func= function()
+                e.onlyChinese= not e.onlyChinese and true or nil
+                Save.onlyChinese = e.onlyChinese
+                print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        })
+    end
+    
     if e.Player.region==1 or e.Player.region==3 then--US EU realm提示
         local function get_tooltip()
             local tabs= e.Player.region==3 and
@@ -733,7 +735,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.useColor= Save.useColor or 1
             Save.useCustomColorTab= Save.useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
 
-            e.onlyChinese= Save.onlyChinese
+            e.onlyChinese= Save.onlyChinese or LOCALE_zhCN
 
             set_Local_Text()
             Init()

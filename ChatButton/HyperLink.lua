@@ -577,7 +577,8 @@ end
 local function Init_Panel()
     --Category, Layout= e.AddPanel_Sub_Category({name= addName, frame= panel})
     e.AddPanel_Sub_Category({name=e.onlyChinese and '超链接图标' or addName, frame=panel})
-    local Cedit= function(self)
+
+    local Cedit= function(self)        
         local frame= CreateFrame('Frame',nil, self, 'ScrollingEditBoxTemplate')--ScrollTemplates.lua
         frame:SetPoint('CENTER')
         frame:SetSize(500,250)
@@ -606,7 +607,7 @@ local function Init_Panel()
     local btn=CreateFrame('Button', nil, editBox, 'UIPanelButtonTemplate')
     btn:SetSize(80,28)
     btn:SetText(e.onlyChinese and '更新' or UPDATE)
-    btn:SetPoint('TOPLEFT', editBox, 'TOPRIGHT',5, 0)
+    btn:SetPoint('BOTTOMRIGHT')
     btn:SetScript('OnMouseDown', function(self)
         Save.text={}
         local n=0
@@ -643,7 +644,7 @@ local function Init_Panel()
     local btn2=CreateFrame('Button', nil, editBox2, 'UIPanelButtonTemplate')
     btn2:SetSize(80,28)
     btn2:SetText(e.onlyChinese and '更新' or UPDATE)
-    btn2:SetPoint('TOPLEFT', editBox2, 'TOPRIGHT',5, 0)
+    btn2:SetPoint('BOTTOMRIGHT')
     btn2:SetScript('OnMouseDown', function(self)
         Save.channels={}
         local n=0

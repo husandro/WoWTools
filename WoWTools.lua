@@ -1,7 +1,8 @@
 local id, e = ...
-e.L=e.L or {}--多语言
-e.tips=GameTooltip
 
+--e.L=e.L or {}--多语言
+e.tips=GameTooltip
+e.onlyChinese= LOCALE_zhCN
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
 
 local function GetWeek()--周数
@@ -14,7 +15,7 @@ local function GetWeek()--周数
             break
         end
     end
-    local week=ceil(floor((time() - time({year = d.year, month = 1, day = cd})) / (24*60*60)) /7)
+    local week=ceil(floor((time() - time({year= d.year, month= 1, day= cd})) / (24*60*60)) /7)
     if week==0 then
         week=52
     end
