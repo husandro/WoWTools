@@ -95,7 +95,7 @@ local function setGroupTips()--队伍信息提示
     end
 end
 
-local function setText(text)--处理%s
+local function set_Text(text)--处理%s
     local groupTab= e.GroupGuid[e.Player.guid]
     if text:find('%%s') and groupTab and groupTab.subgroup then
         text= text:format(groupTab.subgroup..' '..GROUP..' ')
@@ -106,10 +106,24 @@ local function setText(text)--处理%s
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, type)--主菜单
+local function InitMenu(_, level, type)--主菜单
     local chatType={
         {text= e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, type= SLASH_PARTY1},--/p
         {text= e.onlyChinese and '团队' or RAID, type= SLASH_RAID1},--/raid
@@ -125,7 +139,7 @@ local function InitMenu(self, level, type)--主菜单
         for _, tab in pairs(tab2) do
             local text=(Save[tab.type] or tab.text)
             if Save[tab.type] then
-                text=setText(text)--处理%s
+                text=set_Text(text)--处理%s
             end
             info={
                 text= text,
@@ -375,14 +389,36 @@ local function Init()
     end)
 
     button:SetScript('OnMouseWheel', function(self, d)--发送自定义信息
-        local text= d==1 and Save.mouseUP or d==-1 and Save.mouseDown
+        local text
+        text= d==1 and Save.mouseUP or text
+        text= d==-1 and Save.mouseDown or text
         if text then
-            text=setText(text)--处理%s
-            e.Chat(text, nil, true)
+            text=set_Text(text)--处理%s
+            if IsInRaid() then
+                SendChatMessage(text, 'RAID')
+            elseif IsInGroup() then
+                SendChatMessage(text, 'PARTY')
+            else
+                e.Chat(text, nil, true)
+            end
         end
     end)
 
     --button:SetScript('OnLeave', function() e.tips:Hide() end)
+    button:SetScript('OnEnter', function(self2)
+        if (Save.mouseDown or Save.mouseUP) and IsInGroup() then
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            if Save.mouseUP then
+                e.tips:AddDoubleLine(Save.mouseUP, (e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..e.Icon.mid)
+            end
+            if Save.mouseDown then
+                e.tips:AddDoubleLine(Save.mouseDown, (e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN)..e.Icon.mid)
+            end
+            e.tips:Show()
+        end
+    end)
+
 
     C_Timer.After(0.3, function() setGroupTips() end)--队伍信息提示
 end

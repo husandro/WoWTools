@@ -3256,7 +3256,9 @@
         "ITEM_GOOD_COLOR_CODE",
         "INTERFACE_LABEL",
         "LOSS_OF_CONTROL_SECONDS",
-        "AGGRO_WARNING_IN_INSTANCE"
+        "AGGRO_WARNING_IN_INSTANCE",
+        "HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP",
+        "HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
