@@ -1256,7 +1256,6 @@ local function Init()
 
 
     --if Save.pingTime then
-        print(PingManager)
         --[[hooksecurefunc( PingManager, 'OnPingPinFrameAdded', function(self3, frame, uiTextureKit)
             local ping= self3.activePinFrames[frame]
             if not ping.valueFrame then
