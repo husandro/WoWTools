@@ -7,9 +7,11 @@ local Save={
     --disabledLootPlus=true,--禁用，战利品Plus
     ReMe=true,--仅限战场，释放，复活
     autoSetPvPRole=true,--自动职责确认， 排副本
-    LFGPlus=e.Player.husandro,--预创建队伍增强
+    LFGPlus= e.Player.husandro,--预创建队伍增强
     --tipsScale=1,--提示内容,缩放
 }
+
+
 local wowSave={[INSTANCE]={}}--{[ISLANDS_HEADER]=次数, [副本名称..难度=次数]}
 
 local sec=3--时间 timer

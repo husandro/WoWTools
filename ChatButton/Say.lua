@@ -1,6 +1,6 @@
 local id, e = ...
 local Save= {
-    inInstanceBubblesDisabled= e.Player.husandro,
+    --inInstanceBubblesDisabled= e.Player.husandro,
     saveWhisper=true,--保存, 密语
     --WhisperTab={}--保存, 密语, 内容
 }

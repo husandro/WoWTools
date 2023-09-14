@@ -1454,8 +1454,12 @@ local function Init_RaidFrame()--设置,团队
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnDragStop", function(self)
         local frame=self:GetParent()
-        frame:StopMovingOrSizing()
-        frame:Raise()
+        if frame then
+            frame:StopMovingOrSizing()
+            if not UnitAffectingCombat('player') then
+                frame:Raise()
+            end
+        end
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnMouseDown", function(self, d)
         print(id, addName, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,'')), Save.raidFrameScale or 1)

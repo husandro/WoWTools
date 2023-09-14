@@ -1002,28 +1002,29 @@ e.ToolsSetButtonPoint=function(self, line, unoLine)--设置位置
 end
 
 function e.Chat(text, name, setPrint)
-    if text then
-        if name then
-            SendChatMessage(text, 'WHISPER',nil, name);
+    if not text then
+        return
+    end
+    if name then
+        SendChatMessage(text, 'WHISPER',nil, name);
 
-        elseif IsInInstance() and not UnitIsDeadOrGhost('player') and C_CVar.GetCVarBool("chatBubbles") then
-            SendChatMessage(text, 'SAY')
+    elseif IsInInstance() and not UnitIsDeadOrGhost('player') then-- and C_CVar.GetCVarBool("chatBubbles") then
+        SendChatMessage(text, 'YELL')
 
-        elseif IsInRaid() then
-            SendChatMessage(text, 'RAID')
+    elseif IsInRaid() then
+        SendChatMessage(text, 'RAID')
 
-        elseif IsInGroup() and C_CVar.GetCVarBool("chatBubblesParty") then
-            SendChatMessage(text, 'PARTY')
+    elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
+        SendChatMessage(text, 'PARTY')
 
-        elseif IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-            SendChatMessage(text, 'INSTANCE_CHAT')
+    elseif IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
+        SendChatMessage(text, 'INSTANCE_CHAT')
 
-        elseif not IsResting() then
-            SendChatMessage(text, 'SAY')
+    elseif not IsResting() and IsOutdoors() then
+        SendChatMessage(text, 'YELL')
 
-        elseif setPrint then
-            print(text)
-        end
+    elseif setPrint then
+        print(text)
     end
 end
 

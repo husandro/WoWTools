@@ -11,7 +11,7 @@ local Save={
 
     groupWelcome= e.Player.husandro,--欢迎
     --groupWelcomeText= e.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}',
-    
+
     guildWelcome= e.Player.husandro,
     --guildWelcomeText= e.Player.cn and '宝贝，欢迎你加入' or EMOTE103_CMD1:gsub('/',''),
 
@@ -578,7 +578,7 @@ local function Init_Panel()
     --Category, Layout= e.AddPanel_Sub_Category({name= addName, frame= panel})
     e.AddPanel_Sub_Category({name=e.onlyChinese and '超链接图标' or addName, frame=panel})
 
-    local Cedit= function(self)        
+    local Cedit= function(self)
         local frame= CreateFrame('Frame',nil, self, 'ScrollingEditBoxTemplate')--ScrollTemplates.lua
         frame:SetPoint('CENTER')
         frame:SetSize(500,250)
@@ -595,7 +595,7 @@ local function Init_Panel()
     str:SetText(e.onlyChinese and '颜色: 关键词 (|cnGREEN_FONT_COLOR:空格|r) 分开' or (COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r'))
     local editBox=Cedit(panel)
     editBox:SetPoint('TOPLEFT', str, 'BOTTOMLEFT',0,-5)
-    
+
     if Save.text then
         local s=''
         for k, _ in pairs(Save.text) do
@@ -939,7 +939,7 @@ local function InitMenu(_, level, menuList)
             keepShownOnClick=true,
             func= function()
                 Save.welcomeOnlyHomeGroup= not Save.welcomeOnlyHomeGroup and true or nil
-                
+
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1080,7 +1080,7 @@ local function InitMenu(_, level, menuList)
         end,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-    
+
 
     info={
         text= '|A:QuestLegendaryTurnin:0:0|a|cff00ff00FST|rACK',
