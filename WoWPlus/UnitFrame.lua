@@ -1016,10 +1016,13 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
     --############
     local deadText= e.onlyChinese and '死亡' or DEAD
     hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value, valueMin, valueMax)
-        if value>0 then--statusFrame.unit
-            if textString:IsShown() then
+        if not statusFrame or not UnitExists(statusFrame.unit) then
+            return
+        end
+        if value and value>0 then--statusFrame.unit
+            if textString and textString:IsShown() then
                     local text
-                    if value==1 and statusFrame.unit and  UnitIsGhost(statusFrame.unit) then
+                    if UnitIsGhost(statusFrame.unit) then
                         text= '|A:poi-soulspiritghost:18:18|a'..deadText
                     else
                         text= textString:GetText()
@@ -1035,7 +1038,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
             elseif statusFrame.LeftText and statusFrame.LeftText:IsShown() then
                 local text
-                if value==1 and statusFrame.unit and  UnitIsGhost(statusFrame.unit) then
+                if UnitIsGhost(statusFrame.unit) then
                     text= '|A:poi-soulspiritghost:18:18|a'..deadText
                 else
                     text= statusFrame.LeftText:GetText()
