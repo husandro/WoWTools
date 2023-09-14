@@ -1019,7 +1019,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         if not statusFrame or not UnitExists(statusFrame.unit) then
             return
         end
-        if value and value>0 then--statusFrame.unit
+        if value then--statusFrame.unit
             if textString and textString:IsShown() then
                     local text
                     if UnitIsGhost(statusFrame.unit) then

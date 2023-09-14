@@ -1,6 +1,10 @@
 local id, e = ...
 local addName= MOUNT
 
+--IsAdvancedFlyableArea()
+--IsFlyableArea()
+--IsOutdoors()
+
 local Save={
     --disabled= not e.Player.husandro,
     Mounts={

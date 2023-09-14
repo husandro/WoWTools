@@ -1307,7 +1307,6 @@ function e.GetTooltipData(tab)
 end
 
 e.PlaySound= function(soundKitID, setPlayerSound)--播放, 声音 SoundKitConstants.lua e.PlaySound()--播放, 声音
-    print(soundKitID, setPlayerSound, 'ok')
     if not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0' or (not setPlayerSound and not e.setPlayerSound) then
         return
     end
@@ -1324,8 +1323,7 @@ e.PlaySound= function(soundKitID, setPlayerSound)--播放, 声音 SoundKitConsta
     else
         channel= 'Master'
     end
-    local success, voHandle= PlaySoundFile(soundKitID or SOUNDKIT.GS_CHARACTER_SELECTION_ENTER_WORLD, channel)--SOUNDKIT.READY_CHECK SOUNDKIT.LFG_ROLE_CHECK SOUNDKIT.LFG_ROLE_CHECK SOUNDKIT.IG_PLAYER_INVITE
-    print(soundKitID, setPlayerSound, channel, success, voHandle)
+    local success, voHandle= PlaySound(soundKitID or SOUNDKIT.GS_CHARACTER_SELECTION_ENTER_WORLD, channel)--SOUNDKIT.READY_CHECK SOUNDKIT.LFG_ROLE_CHECK SOUNDKIT.LFG_ROLE_CHECK SOUNDKIT.IG_PLAYER_INVITE
     return success, voHandle
 end
 
