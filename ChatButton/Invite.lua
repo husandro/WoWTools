@@ -67,18 +67,20 @@ local InvUnitFunc=function()--邀请，周围玩家
             local tab= C_NamePlate.GetNamePlates() or {}
             for _, v in pairs(tab) do
                 local u = v.namePlateUnitToken or v.UnitFrame and v.UnitFrame.unit
-                local name=GetUnitName(u,true)
-                local guid=UnitGUID(u)
-                if name and name~=UNKNOWNOBJECT and guid and not UnitInAnyGroup(u) and not UnitIsAFK(u) and UnitIsConnected(u) and UnitIsPlayer(u) and UnitIsFriend(u, 'player') and not UnitIsUnit('player',u) then
-                    if not InvPlateGuid[guid] then
-                        C_PartyInfo.InviteUnit(name)
-                        InvPlateGuid[guid]=name
-                        print(id, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinese and '邀请' or INVITE ,e.PlayerLink(name, guid))
-                        if not raid and n +co>=5  then
-                            print(id, addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))
-                            break
+                if u then
+                    local name=GetUnitName(u,true)
+                    local guid=UnitGUID(u)
+                    if name and name~=UNKNOWNOBJECT and guid and not UnitInAnyGroup(u) and not UnitIsAFK(u) and UnitIsConnected(u) and UnitIsPlayer(u) and UnitIsFriend(u, 'player') and not UnitIsUnit('player',u) then
+                        if not InvPlateGuid[guid] then
+                            C_PartyInfo.InviteUnit(name)
+                            InvPlateGuid[guid]=name
+                            print(id, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinese and '邀请' or INVITE ,e.PlayerLink(name, guid))
+                            if not raid and n +co>=5  then
+                                print(id, addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))
+                                break
+                            end
+                            n=n+1
                         end
-                        n=n+1
                     end
                 end
             end

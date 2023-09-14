@@ -61,7 +61,7 @@ local function get_Player_Info(guid)--取得玩家信息
     if UnitInParty(unit) and not IsInRaid() then
         for i=1, 4 do
             local frame= PartyFrame['MemberFrame'..i]
-            if UnitIsUnit(frame.unit, unit) then
+            if UnitIsUnit(frame.unit, unit) and frame.unit then
                 securecall('UnitFrame_Update', frame, true)
                 break
             end

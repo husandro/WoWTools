@@ -190,7 +190,7 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
         local msg = ''
         if event.calendarType=='PLAYER' or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) then--自定义,事件
 			local creaText;
-			if event.invitedBy and UnitIsUnit("player", event.invitedBy) then
+			if UnitExists(event.invitedBy) and UnitIsUnit("player", event.invitedBy) then
 				if ( event.calendarType == "GUILD_ANNOUNCEMENT" ) then
 					creaText = e.Icon.player;
 				elseif ( event.calendarType == "GUILD_EVENT" ) then

@@ -92,7 +92,7 @@ local function set_Creature_Num()
         local u = nameplat.namePlateUnitToken or nameplat.UnitFrame and nameplat.UnitFrame.unit
         local t= u and u..'target'
         local range= Save.creatureRange>0 and e.CheckRange(u, Save.creatureRange, '<=') or Save.creatureRange==0
-        if t and UnitExists(u)
+        if UnitExists(t) and UnitExists(u)
             and not UnitIsDeadOrGhost(u)
             and not UnitInParty(u)
             and not UnitIsUnit(u,'player')
@@ -119,7 +119,7 @@ local function set_Creature_Num()
                 u='party'..i
             end
             local t=u..'-target'
-            if UnitExists(u) and not UnitIsDeadOrGhost(u) and UnitIsUnit(t, 'player') and not UnitIsUnit(u,'player') then
+            if UnitExists(u) and not UnitIsDeadOrGhost(u) and UnitIsUnit(t, 'player') and not UnitIsUnit(u, 'player') then
                 F=F+1
             end
         end

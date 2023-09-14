@@ -790,12 +790,9 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
     end
 
-    if not C_Ping then
-        return
-    end
-
-    if not pingFrame then--Blizzard_PingUI.lua
-        PingUI_LoadUI()
+    --[[if not pingFrame then--Blizzard_PingUI.lua
+        if not IsAddOnLoaded("Blizzard_PingUI") then LoadAddOn("Blizzard_PingUI") end
+        --PingUI_LoadUI()
         pingFrame= CreateFrame('Frame', nil, targetFrame)
         pingFrame:SetSize(1, 1)
         if Save.H then
@@ -852,6 +849,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
             elseif tab.type==7 then--信号系统
                 function btn:cancel_PingFrame()--Bindings.xml
+                    --C_PingSecure.ClearPendingPingInfo()
                     PingListenerFrame:CancelPendingPing();
                     PingListenerFrame:SetShown(false)
                     self:UnregisterEvent('GLOBAL_MOUSE_UP')
@@ -957,13 +955,11 @@ local function Init_Markers_Frame()--设置标记, 框架
         function pingFrame:set_Shown()
             local cvar= C_CVar.GetCVarBool("enablePings")
             self:SetShown(cvar and Save.markersFrame and true or false)--getAllSet() and cvar and true or false)
-            --if cvar and not IsAddOnLoaded('Blizzard_PingUI') then
-                --PingUI_LoadUI()
         end
         pingFrame:RegisterEvent('CVAR_UPDATE')
         pingFrame:SetScript('OnEvent', pingFrame.set_Shown)
     end
-    pingFrame:set_Shown()
+    pingFrame:set_Shown()]]
 end
 
 
@@ -1032,22 +1028,20 @@ local function InitMenu(_, level, type)--主菜单
             e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         elseif type=='MakerFrameResetPost' then--重置位置， 队伍标记工具
-            if C_Ping then
-                info={
-                    text= e.onlyChinese and '冷却时间：信号' or format(CAPACITANCE_SHIPMENT_COOLDOWN, PING),
-                    tooltipOnButton=true,
-                    tooltipTitle= e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this',
-                    colorCode= not C_CVar.GetCVarBool("enablePings") and '|cff606060' or nil,
-                    checked= Save.pingTime,
-                    keepShownOnClick=true,
-                    func= function()
-                        Save.pingTime= not Save.pingTime and true or nil
-                        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                    end
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-                e.LibDD:UIDropDownMenu_AddSeparator(level)
-            end
+            --[[info={
+                text= e.onlyChinese and '冷却时间：信号' or format(CAPACITANCE_SHIPMENT_COOLDOWN, PING),
+                tooltipOnButton=true,
+                tooltipTitle= e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this',
+                colorCode= not C_CVar.GetCVarBool("enablePings") and '|cff606060' or nil,
+                checked= Save.pingTime,
+                keepShownOnClick=true,
+                func= function()
+                    Save.pingTime= not Save.pingTime and true or nil
+                    print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+            e.LibDD:UIDropDownMenu_AddSeparator(level)]]
 
             info={
                 text= e.onlyChinese and '重置位置' or RESET_POSITION,

@@ -2163,7 +2163,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 if not raid and i==co then
                     u2='player'
                 end
-                local guid=UnitGUID(u2)
+                local guid= UnitExists(u2) and UnitGUID(u2)
                 if guid then
                     local info=(e.PlayerOnlineInfo(u2) or '')
                                 ..e.GetPlayerInfo({guid=guid, unit=u2, reName=true, reRealm=true})
