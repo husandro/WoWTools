@@ -960,6 +960,15 @@ local function Init_Markers_Frame()--设置标记, 框架
         pingFrame:SetScript('OnEvent', pingFrame.set_Shown)
     end
     pingFrame:set_Shown()]]
+
+    --[[
+/ping
+/ping attack
+/ping assist
+/ping onmyway
+/ping warning
+/ping [@target]attack
+    ]]
 end
 
 
