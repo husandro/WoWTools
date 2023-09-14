@@ -3258,7 +3258,8 @@
         "LOSS_OF_CONTROL_SECONDS",
         "AGGRO_WARNING_IN_INSTANCE",
         "HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP",
-        "HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN"
+        "HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN",
+        "PING_MODE_CLICK_DRAG"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
