@@ -499,7 +499,7 @@ local function Init_ProfessionsFrame()
         local elementData = self:GetElementData()
         local recipeID = elementData.data.recipeInfo.recipeID
         if recipeID then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
             e.tips:SetRecipeResultItem(recipeID)
             e.tips:AddLine(' ')
