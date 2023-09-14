@@ -1253,6 +1253,40 @@ local function Init()
             end
         end)
     end
+
+
+    --if Save.pingTime then
+        print(PingManager)
+        --[[hooksecurefunc( PingManager, 'OnPingPinFrameAdded', function(self3, frame, uiTextureKit)
+            local ping= self3.activePinFrames[frame]
+            if not ping.valueFrame then
+                ping.valueFrame=CreateFrame("Frame",nil, ping)
+                ping.valueFrame.value=5
+                ping.valueFrame.elapsed=1
+                ping.valueFrame:SetSize(1,1)
+                ping.valueFrame:SetPoint('CENTER')
+                ping.valueFrame.text= e.Cstr(ping.valueFrame)
+                ping.valueFrame.text:SetPoint('CENTER')
+                ping.valueFrame:SetScript('OnUpdate', function(self2, elapsed)
+                    self2.elapsed = self2.elapsed + elapsed
+                    self2.value= self2.value - elapsed
+                    if self2.elapsed>=1 then
+                        self2.text:SetFormattedText("%i", self2.value)
+                        self2.elapsed=0
+                    end
+                end)
+            else
+                ping.valueFrame.value=5
+                ping.valueFrame.elapsed=1
+            end
+
+            local color= PingColor[uiTextureKit]
+            if color then
+                ping.valueFrame.text:SetTextColor(color.r, color.g, color.b)
+            end
+            ping.valueFrame:SetShown(true)
+        end)]]
+    --end
 end
 
 
@@ -1280,7 +1314,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
-                
+
                 button= e.Cbtn2({
                     name=nil,
                     parent=WoWToolsChatButtonFrame,
@@ -1300,39 +1334,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
             end
-           -- panel:UnregisterEvent('ADDON_LOADED')
-        elseif arg1=='Blizzard_PingUI' then--Ping, 冷却时间
-            if Save.pingTime then
-                hooksecurefunc( PingManager, 'OnPingPinFrameAdded', function(self3, frame, uiTextureKit)
-                    local ping= self3.activePinFrames[frame]
-                    if not ping.valueFrame then
-                        ping.valueFrame=CreateFrame("Frame",nil, ping)
-                        ping.valueFrame.value=5
-                        ping.valueFrame.elapsed=1
-                        ping.valueFrame:SetSize(1,1)
-                        ping.valueFrame:SetPoint('CENTER')
-                        ping.valueFrame.text= e.Cstr(ping.valueFrame)
-                        ping.valueFrame.text:SetPoint('CENTER')
-                        ping.valueFrame:SetScript('OnUpdate', function(self2, elapsed)
-                            self2.elapsed = self2.elapsed + elapsed
-                            self2.value= self2.value - elapsed
-                            if self2.elapsed>=1 then
-                                self2.text:SetFormattedText("%i", self2.value)
-                                self2.elapsed=0
-                            end
-                        end)
-                    else
-                        ping.valueFrame.value=5
-                        ping.valueFrame.elapsed=1
-                    end
-
-                    local color= PingColor[uiTextureKit]
-                    if color then
-                        ping.valueFrame.text:SetTextColor(color.r, color.g, color.b)
-                    end
-                    ping.valueFrame:SetShown(true)
-                end)
-            end
+            panel:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then

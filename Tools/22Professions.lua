@@ -524,7 +524,7 @@ local function Init_ProfessionsFrame()
         if icon and not self.texture then
             self.texture= self:CreateTexture()
             self.texture:SetPoint('RIGHT')
-            self.texture:SetSize(20,20)
+            self.texture:SetSize(22,22)
         end
 
         if self.texture then
