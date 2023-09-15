@@ -592,6 +592,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             last=btn
         end
     end
+
     if not isInCombat then
         targetFrame:SetShown(true)
     end
@@ -703,7 +704,9 @@ local function Init_Markers_Frame()--设置标记, 框架
     targetFrame.check:SetShown(GetNumGroupMembers()>1 and (IsInRaid() and getIsLeader()) or UnitIsGroupLeader('player'))
 
 
-    local isInGroup=IsInGroup()--世界标记
+
+    --世界标记
+    local isInGroup=IsInGroup()
     local isLeader= getIsLeader()
 
     if not markersFrame and isInGroup and isLeader then
@@ -785,11 +788,15 @@ local function Init_Markers_Frame()--设置标记, 框架
             if not isInGroup or isLeader or not markersFrame:IsShown() then
                 panel:RegisterEvent('PLAYER_REGEN_ENABLED')
             end
-        elseif not isInGroup or not isLeader then
-            markersFrame:SetShown(false)
+        else
+            markersFrame:SetShown(isInGroup and isLeader)
         end
     end
 
+
+
+
+    --Ping System
     if not pingFrame then--Blizzard_PingUI.lua
         pingFrame= CreateFrame('Frame', nil, targetFrame)
         pingFrame:SetSize(1, 1)
@@ -831,10 +838,10 @@ local function Init_Markers_Frame()--设置标记, 框架
         local last
         local tab= {name= e.onlyChinese and '自动' or SELF_CAST_AUTO, atlas='Ping_Wheel_Icon_Assist_Disabled_Small'}
         last= e.Cbtn(pingFrame, {
-                                                size={size,size},
-                                                atlas= tab.atlas,
-                                                type=true,
-                                            })
+                size={size,size},
+                atlas= tab.atlas,
+                type=true,
+            })
         if Save.H then
             last:SetPoint('BOTTOMRIGHT', pingFrame, 'TOPRIGHT')
         else
@@ -852,9 +859,10 @@ local function Init_Markers_Frame()--设置标记, 框架
                 self:UnregisterEvent('PLAYER_TARGET_CHANGED')
             end
         end
-        last:set_Event()
+
         last:SetScript('OnShow', last.set_Event)
         last:SetScript('OnHide', last.set_Event)
+        last:set_Event()
 
         last:SetScript('OnEvent', function(self)
             local guid= UnitExists('target') and UnitGUID('target')
@@ -867,10 +875,10 @@ local function Init_Markers_Frame()--设置标记, 框架
                     return
                 end
             end
-            self:SetAlpha(0.3)
+            self:SetAlpha(0.1)
             self:SetNormalTexture(self.atlas)
         end)
-        last:SetAlpha(0.3)
+        last:SetAlpha(0.1)
 
         last:SetScript('OnLeave', function() e.tips:Hide() end)
         last:SetScript('OnEnter', function(self)
@@ -1476,6 +1484,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 panel:RegisterEvent("PLAYER_LOGOUT")
                 panel:RegisterEvent('GROUP_ROSTER_UPDATE')
                 panel:RegisterEvent('GROUP_LEFT')
+                panel:RegisterEvent('GROUP_JOINED')
                 panel:RegisterEvent('READY_CHECK')
                 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
@@ -1488,7 +1497,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' or event=='PLAYER_ENTERING_WORLD' then
+    elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' or event=='PLAYER_ENTERING_WORLD' or event=='GROUP_JOINED' then
         setTankHealer(true)--设置队伍标记
         setAllTextrue()--主图标,是否有权限
         Init_Markers_Frame()--设置标记, 框架
