@@ -394,6 +394,8 @@ local function set_Clear(index)--取消标记标
     end
 end
 
+
+
 local targetFrame, markersFrame, pingFrame
 local function setMarkersFrame_Postion()--设置标记框架, 位置
     if targetFrame then
@@ -826,10 +828,10 @@ local function Init_Markers_Frame()--设置标记, 框架
 
         pingFrame.ping={--Enum.PingSubjectType.Warning
             [7]={name=e.onlyChinese and '信号' or PING, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
-            [0]={name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK'},
-            [1]={name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING'},
-            [3]={name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay', action='PINGONMYWAY'},
-            [2]={name=e.onlyChinese and '协助' or PING_TYPE_ASSIST, atlas='Ping_Marker_Icon_Assist', action='PINGASSIST'},
+            [0]={name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK', text='attack'},
+            [1]={name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING', text='warning'},
+            [3]={name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay', action='PINGONMYWAY', text='onmyway'},
+            [2]={name=e.onlyChinese and '协助' or PING_TYPE_ASSIST, atlas='Ping_Marker_Icon_Assist', action='PINGASSIST', text='assist'},
             [4]={name=e.onlyChinese and '威胁' or REPORT_THREAT , atlas='Ping_Marker_Icon_threat'},
             [5]={name=e.onlyChinese and '看这里' or format(PING_SUBJECT_TYPE_ALERT_NOT_THREAT_POINT,'','',''), atlas='Ping_Marker_Icon_nonthreat'},
         }
@@ -840,13 +842,19 @@ local function Init_Markers_Frame()--设置标记, 框架
         last= e.Cbtn(pingFrame, {
                 size={size,size},
                 atlas= tab.atlas,
+                --icon='hide',
                 type=true,
             })
         if Save.H then
-            last:SetPoint('BOTTOMRIGHT', pingFrame, 'TOPRIGHT')
+            last:SetPoint('BOTTOMRIGHT', pingFrame, 'TOPRIGHT', 0, size*2)
         else
-            last:SetPoint('BOTTOMRIGHT', pingFrame, 'BOTTOMLEFT')
+            last:SetPoint('BOTTOMRIGHT', pingFrame, 'BOTTOMLEFT', -size*2, 0)
         end
+
+        --[[
+        last.texture= last:CreateTexture()
+        last.texture:SetAllPoints(last)
+        last.texture:SetAtlas(tab.atlas, true)]]
 
         last.tooltip= '/ping [@target]'
         last.atlas= tab.atlas
@@ -871,14 +879,16 @@ local function Init_Markers_Frame()--设置标记, 框架
                 local pingTab=self:GetParent().ping
                 if pingTab[type] then
                     self:SetNormalAtlas(pingTab[type].atlas)
+                    --self.texture:SetAtlas(pingTab[type].atlas, true)
                     self:SetAlpha(1)
                     return
                 end
             end
-            self:SetAlpha(0.1)
+            self:SetAlpha(0.3)
             self:SetNormalTexture(self.atlas)
+            --self.texture:SetAtlas(self.atlas, true)
         end)
-        last:SetAlpha(0.1)
+        last:SetAlpha(0.3)
 
         last:SetScript('OnLeave', function() e.tips:Hide() end)
         last:SetScript('OnEnter', function(self)
@@ -915,6 +925,65 @@ local function Init_Markers_Frame()--设置标记, 框架
             e.tips:AddDoubleLine(self.tooltip, text)
             e.tips:Show()
         end)
+
+        if not e.Player.husandro then
+            return
+        end
+
+        --[[
+            [0]={name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK', text='attack'},
+            [1]={name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING', text='warning'},
+            [3]={name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay', action='PINGONMYWAY', text='onmyway'},
+            [2]={name=e.onlyChinese and '协助' or PING_TYPE_ASSIST, atlas='Ping_Marker_Icon_Assist', action='PINGASSIST', text='assist'},
+        ]]
+
+        for _, index in pairs({0, 1, 3, 2}) do
+            local btn= e.Cbtn(pingFrame, {
+                size={size,size},
+                atlas= pingFrame.ping[index].atlas,
+                type=true,
+            })
+            if Save.H then
+                btn:SetPoint('BOTTOMRIGHT', last, 'TOPRIGHT')
+            else
+                btn:SetPoint('BOTTOMRIGHT', last, 'BOTTOMLEFT')
+            end
+
+            btn.tooltip= '/ping [@target]'..pingFrame.ping[index].text
+            btn.name= '|A:'..pingFrame.ping[index].atlas..':0:0|a'..pingFrame.ping[index].name
+            btn.action= pingFrame.ping[index].action
+
+            btn:SetAttribute('type', 'macro')
+            btn:SetAttribute("macrotext", btn.tooltip)
+
+            function btn:set_Event()
+                if self:IsShown() then
+                    self:RegisterEvent('PLAYER_TARGET_CHANGED')
+                else
+                    self:UnregisterEvent('PLAYER_TARGET_CHANGED')
+                end
+            end
+
+            btn:SetScript('OnShow', btn.set_Event)
+            btn:SetScript('OnHide', btn.set_Event)
+            btn:set_Event()
+
+            btn:SetScript('OnEvent', function(self)
+                self:SetAlpha(UnitExists('target') and 1 or 0.3)
+            end)
+            btn:SetAlpha(0.3)
+
+            btn:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                local key1= GetBindingKey(self.action)
+                e.tips:AddDoubleLine(self.name, (key1 and key1~='') and '|cnGREEN_FONT_COLOR:'..key1..'|r' or nil)
+                e.tips:AddLine(self.tooltip)
+                e.tips:Show()
+            end)
+            last=btn
+        end
     end
 end
 --[[
@@ -1203,6 +1272,7 @@ local function InitMenu(_, level, type)--主菜单
                 notCheckable=true,
                 colorCode= not Save.markersFramePoint and '|cff606060',
                 keepShownOnClick=true,
+                disabled= not targetFrame,
                 func= function()
                     targetFrame:ClearAllPoints()
                     Save.markersFramePoint=nil
