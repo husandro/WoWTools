@@ -818,7 +818,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         pingFrame:RegisterEvent('CVAR_UPDATE')
 
         pingFrame.ping={--Enum.PingSubjectType.Warning
-            [8]={name= e.onlyChinese and '自动' or SELF_CAST_AUTO, atlas='Ping_OVMarker_Pointer_Assist'},
+            [8]={name= e.onlyChinese and '自动' or SELF_CAST_AUTO, atlas='Ping_Wheel_Icon_Assist_Disabled_Small'},
             [7]={name=e.onlyChinese and '信号' or PING, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
             [0]={name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK'},
             [1]={name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING'},
@@ -863,11 +863,14 @@ local function Init_Markers_Frame()--设置标记, 框架
                         local pingTab=self:GetParent().ping
                         if pingTab[type] then
                             self:SetNormalAtlas(pingTab[type].atlas)
+                            self:SetAlpha(1)
                             return
                         end
                     end
+                    self:SetAlpha(0.3)
                     self:SetNormalTexture(self.atlas)
                 end)
+                btn:SetAlpha(0.3)
 
                 btn:SetScript('OnLeave', function() e.tips:Hide() end)
                 btn:SetScript('OnEnter', function(self)
@@ -884,7 +887,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                     for _, tab2 in pairs(pingTab) do
                         local key1= GetBindingKey(tab2.action)
                         if key1 and key1~='' then
-                            e.tips:AddDoubleLine(tab2.type..'|A:'..tab2.atlas..':0:0|a'..tab2.name, '|cnGREEN_FONT_COLOR:'..key1..'|r')
+                            e.tips:AddDoubleLine((e.Player.husandro and tab2.type or '')..'|A:'..tab2.atlas..':0:0|a'..tab2.name, '|cnGREEN_FONT_COLOR:'..key1..'|r')
                             find=true
                         end
                     end
@@ -895,7 +898,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                     local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
                     local text
                     if type then
-                        text=type
+                        text=(e.Player.husandro and type or '')
                         local tab3=self:GetParent().ping[type]
                         if tab3 then
                             text= text..'|A:'..tab3.atlas..':0:0|a'..tab3.name
