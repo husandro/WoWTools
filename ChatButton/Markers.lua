@@ -818,7 +818,6 @@ local function Init_Markers_Frame()--设置标记, 框架
         pingFrame:RegisterEvent('CVAR_UPDATE')
 
         pingFrame.ping={--Enum.PingSubjectType.Warning
-            [8]={name= e.onlyChinese and '自动' or SELF_CAST_AUTO, atlas='Ping_Wheel_Icon_Assist_Disabled_Small'},
             [7]={name=e.onlyChinese and '信号' or PING, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
             [0]={name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK'},
             [1]={name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING'},
@@ -827,91 +826,87 @@ local function Init_Markers_Frame()--设置标记, 框架
             [4]={name=e.onlyChinese and '威胁' or REPORT_THREAT , atlas='Ping_Marker_Icon_threat'},
             [5]={name=e.onlyChinese and '看这里' or format(PING_SUBJECT_TYPE_ALERT_NOT_THREAT_POINT,'','',''), atlas='Ping_Marker_Icon_nonthreat'},
         }
+
+        --目标，自动
         local last
-        for index, tab in pairs(pingFrame.ping) do
-            if index==8 then
-                local btn= e.Cbtn(pingFrame, {
+        local tab= {name= e.onlyChinese and '自动' or SELF_CAST_AUTO, atlas='Ping_Wheel_Icon_Assist_Disabled_Small'}
+        last= e.Cbtn(pingFrame, {
                                                 size={size,size},
                                                 atlas= tab.atlas,
                                                 type=true,
                                             })
-                if Save.H then
-                    btn:SetPoint('BOTTOMRIGHT', last or pingFrame, 'TOPRIGHT')
-                else
-                    btn:SetPoint('BOTTOMRIGHT', last or pingFrame, 'BOTTOMLEFT')
-                end
+        if Save.H then
+            last:SetPoint('BOTTOMRIGHT', pingFrame, 'TOPRIGHT')
+        else
+            last:SetPoint('BOTTOMRIGHT', pingFrame, 'BOTTOMLEFT')
+        end
 
-                btn.tooltip= '/ping [@target]'
-                btn.atlas= tab.atlas
-                btn:SetAttribute('type', 'macro')
-                btn:SetAttribute("macrotext", btn.tooltip)
-                function btn:set_Event()
-                    if self:IsShown() then
-                        self:RegisterEvent('PLAYER_TARGET_CHANGED')
-                    else
-                        self:UnregisterEvent('PLAYER_TARGET_CHANGED')
-                    end
-                end
-                btn:set_Event()
-                btn:SetScript('OnShow', btn.set_Event)
-                btn:SetScript('OnHide', btn.set_Event)
-
-                btn:SetScript('OnEvent', function(self)
-                    local guid= UnitExists('target') and UnitGUID('target')
-                    local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
-                    if type then
-                        local pingTab=self:GetParent().ping
-                        if pingTab[type] then
-                            self:SetNormalAtlas(pingTab[type].atlas)
-                            self:SetAlpha(1)
-                            return
-                        end
-                    end
-                    self:SetAlpha(0.3)
-                    self:SetNormalTexture(self.atlas)
-                end)
-                btn:SetAlpha(0.3)
-
-                btn:SetScript('OnLeave', function() e.tips:Hide() end)
-                btn:SetScript('OnEnter', function(self)
-                    e.tips:SetOwner(self, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    local find
-                    local pingTab={
-                        {type=7, name=e.onlyChinese and '信号' or PING, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
-                        {type=0, name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK'},
-                        {type=1, name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING'},
-                        {type=3, name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay', action='PINGONMYWAY'},
-                        {type=2, name=e.onlyChinese and '协助' or PING_TYPE_ASSIST, atlas='Ping_Marker_Icon_Assist', action='PINGASSIST'},
-                    }
-                    for _, tab2 in pairs(pingTab) do
-                        local key1= GetBindingKey(tab2.action)
-                        if key1 and key1~='' then
-                            e.tips:AddDoubleLine((e.Player.husandro and tab2.type or '')..'|A:'..tab2.atlas..':0:0|a'..tab2.name, '|cnGREEN_FONT_COLOR:'..key1..'|r')
-                            find=true
-                        end
-                    end
-                    if find then
-                        e.tips:AddLine(' ')
-                    end
-                    local guid= UnitExists('target') and UnitGUID('target')
-                    local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
-                    local text
-                    if type then
-                        text=(e.Player.husandro and type or '')
-                        local tab3=self:GetParent().ping[type]
-                        if tab3 then
-                            text= text..'|A:'..tab3.atlas..':0:0|a'..tab3.name
-                        end
-                    end
-                    e.tips:AddDoubleLine(self.tooltip, text)
-                    e.tips:Show()
-                end)
-
-
-                break
+        last.tooltip= '/ping [@target]'
+        last.atlas= tab.atlas
+        last:SetAttribute('type', 'macro')
+        last:SetAttribute("macrotext", last.tooltip)
+        function last:set_Event()
+            if self:IsShown() then
+                self:RegisterEvent('PLAYER_TARGET_CHANGED')
+            else
+                self:UnregisterEvent('PLAYER_TARGET_CHANGED')
             end
         end
+        last:set_Event()
+        last:SetScript('OnShow', last.set_Event)
+        last:SetScript('OnHide', last.set_Event)
+
+        last:SetScript('OnEvent', function(self)
+            local guid= UnitExists('target') and UnitGUID('target')
+            local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
+            if type then
+                local pingTab=self:GetParent().ping
+                if pingTab[type] then
+                    self:SetNormalAtlas(pingTab[type].atlas)
+                    self:SetAlpha(1)
+                    return
+                end
+            end
+            self:SetAlpha(0.3)
+            self:SetNormalTexture(self.atlas)
+        end)
+        last:SetAlpha(0.3)
+
+        last:SetScript('OnLeave', function() e.tips:Hide() end)
+        last:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            local find
+            local pingTab={
+                {type=7, name=e.onlyChinese and '信号' or PING, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
+                {type=0, name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK'},
+                {type=1, name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING'},
+                {type=3, name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay', action='PINGONMYWAY'},
+                {type=2, name=e.onlyChinese and '协助' or PING_TYPE_ASSIST, atlas='Ping_Marker_Icon_Assist', action='PINGASSIST'},
+            }
+            for _, tab2 in pairs(pingTab) do
+                local key1= GetBindingKey(tab2.action)
+                if key1 and key1~='' then
+                    e.tips:AddDoubleLine((e.Player.husandro and tab2.type or '')..'|A:'..tab2.atlas..':0:0|a'..tab2.name, '|cnGREEN_FONT_COLOR:'..key1..'|r')
+                    find=true
+                end
+            end
+            if find then
+                e.tips:AddLine(' ')
+            end
+            local guid= UnitExists('target') and UnitGUID('target')
+            local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
+            local text
+            if type then
+                text=(e.Player.husandro and type or '')
+                local tab3=self:GetParent().ping[type]
+                if tab3 then
+                    text= text..'|A:'..tab3.atlas..':0:0|a'..tab3.name
+                end
+            end
+            e.tips:AddDoubleLine(self.tooltip, text)
+            e.tips:Show()
+        end)
     end
 end
 --[[
