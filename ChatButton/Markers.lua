@@ -394,17 +394,15 @@ local function set_Clear(index)--取消标记标
     end
 end
 
-
-
 local targetFrame, markersFrame, pingFrame
 local function setMarkersFrame_Postion()--设置标记框架, 位置
     if targetFrame then
         if Save.markersFramePoint then
             targetFrame:SetPoint(Save.markersFramePoint[1], UIParent, Save.markersFramePoint[3], Save.markersFramePoint[4], Save.markersFramePoint[5])
         elseif e.Player.husandro then
-            targetFrame:SetPoint('BOTTOMRIGHT', _G['MultiBarBottomLeftButton11'], 'TOPRIGHT', 0, 4)
+            targetFrame:SetPoint('BOTTOMRIGHT', _G['MultiBarBottomLeftButton11'], 'TOPRIGHT', 0, 24)
         else
-            targetFrame:SetPoint('BOTTOM', UIParent, 'BOTTOM', 135, 85)
+            targetFrame:SetPoint('CENTER', -150, 50)
         end
     end
 end
@@ -846,9 +844,9 @@ local function Init_Markers_Frame()--设置标记, 框架
                 type=true,
             })
         if Save.H then
-            last:SetPoint('BOTTOMRIGHT', pingFrame, 'TOPRIGHT', 0, size*2)
+            last:SetPoint('BOTTOMRIGHT', pingFrame, 'TOPRIGHT', 0, size)--, 0, size*2)
         else
-            last:SetPoint('BOTTOMRIGHT', pingFrame, 'BOTTOMLEFT', -size*2, 0)
+            last:SetPoint('BOTTOMRIGHT', pingFrame, 'BOTTOMLEFT', -size, 0)--, -size*2, 0)
         end
 
         --[[
