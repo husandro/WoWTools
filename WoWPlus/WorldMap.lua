@@ -247,11 +247,11 @@ local function getPlayerXY()--当前世界地图位置
     if uiMapID then
         local position = C_Map.GetPlayerMapPosition(uiMapID, "player")
         if position then
-            local x,y
+            local x, y
             x,y=position:GetXY()
             if x and y then
-                x=('%.2f'):format(x*100)
-                y=('%.2f'):format(y*100)
+                x= format('%.2f', x*100)
+                y= format('%.2f', y*100)
                 return x, y
             end
         end
@@ -334,7 +334,7 @@ local function CursorPositionInt()
         end
         return
     end
-    frame.playerPostionBtn= e.Cbtn(nil, {icon='hide', size={12,12}})-- CreateFrame('Button', nil, UIParent)
+    frame.playerPostionBtn= e.Cbtn(nil, {icon='hide', size={18,18}})-- CreateFrame('Button', nil, UIParent)
     if not Save.PlayerXYPoint then
         frame.playerPostionBtn:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT',-50, 5)
     else
@@ -346,19 +346,23 @@ local function CursorPositionInt()
     frame.playerPostionBtn:RegisterForDrag("RightButton")
     frame.playerPostionBtn:SetClampedToScreen(true)
     frame.playerPostionBtn:SetScript("OnDragStart", function(self2, d)
-        if d=='RightButton' and not IsModifierKeyDown() then
-            SetCursor('UI_MOVE_CURSOR')
+        if d=='RightButton' and IsAltKeyDown() then
             self2:StartMoving()
         end
     end)
-    frame.playerPostionBtn:SetScript("OnDragStop", function(self2, d)
+    frame.playerPostionBtn:SetScript("OnDragStop", function(self2)
         self2:StopMovingOrSizing()
         Save.PlayerXYPoint={self2:GetPoint(1)}
         Save.PlayerXYPoint[2]=nil
         ResetCursor()
         self2:Raise()
     end)
-    frame.playerPostionBtn:SetScript("OnMouseUp", function(self2,d)
+    frame.playerPostionBtn:SetScript("OnMouseDown", function(_, d)
+        if d=='RightButton' and IsAltKeyDown() then
+            SetCursor('UI_MOVE_CURSOR')
+        end
+     end)
+    frame.playerPostionBtn:SetScript("OnMouseUp", function(_, d)
        if d=='LeftButton' and not IsModifierKeyDown() then
             sendPlayerPoint()--发送玩家位置
         end
@@ -373,8 +377,8 @@ local function CursorPositionInt()
         can= C_Map.GetBestMapForUnit("player")
         can= can and C_Map.CanSetUserWaypointOnMap(can)
         e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(e.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r' or '') ..e.Icon.left)
-        e.tips:AddDoubleLine(e.Player.L.size, (Save.PlayerXYSize or 12)..e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine(e.Player.L.size..' '..(Save.PlayerXYSize or 12), 'alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'alt+'..e.Icon.right)
         e.tips:Show()
     end)
     frame.playerPostionBtn:SetScript("OnLeave", function()
@@ -383,7 +387,7 @@ local function CursorPositionInt()
     end)
 
     frame.playerPostionBtn:SetScript('OnMouseWheel',function(self, d)
-        if IsModifierKeyDown() then
+        if not IsAltKeyDown() then
             return
         end
         local size=Save.PlayerXYSize or 12
@@ -395,19 +399,19 @@ local function CursorPositionInt()
             size= size<8 and 8 or size
         end
         Save.PlayerXYSize=size
-        e.Cstr(nil, {size=size, changeFont=self.Text})
+        e.Cstr(nil, {size=size, changeFont=self.Text, color=true})
         print(id,addName, e.Player.L.size, size)
     end)
 
     frame.playerPostionBtn.Text=e.Cstr(frame.playerPostionBtn, {size=Save.PlayerXYSize, color=true})
     frame.playerPostionBtn.Text:SetPoint('BOTTOMRIGHT')
 
-    local timeElapsed = 0
+    frame.playerPostionBtn.timeElapsed = 0
     frame.playerPostionBtn:HookScript("OnUpdate", function (self, elapsed)
-        timeElapsed = timeElapsed + elapsed
-        if timeElapsed > 0.3 then
-            timeElapsed = 0
-            local x, y =getPlayerXY()
+        self.timeElapsed = self.timeElapsed + elapsed
+        if self.timeElapsed > 0.3 then
+            self.timeElapsed = 0
+            local x, y= getPlayerXY()
             if x and y then
                 self.Text:SetText(x.. ' '..y)
             else
@@ -875,7 +879,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             })
 
-            --[[添加控制面板        
+            --[[添加控制面板
             local sel=e.AddPanel_Check(e.Icon.map2..(e.onlyChinese and '地图' or addName), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
