@@ -2089,7 +2089,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             e.AddPanel_Sub_Category({name='|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES), frame=panel})
 
-            e.ReloadPanel({panel=panel, addName= addName, restTips=nil, checked=not Save.disabled, clearTips=nil,--重新加载UI, 重置, 按钮
+            e.ReloadPanel({panel=panel, addName=addName, restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
             disabledfunc=function()
                 Save.disabled = not Save.disabled and true or nil
                 if not Save.disabled and not button then

@@ -54,32 +54,34 @@ function e.ReloadPanel(tab)
         e.tips:AddDoubleLine(id, self.addName)
         e.tips:Show()
     end)
-    local reload= e.Cbtn(tab.panel, {type=false, size={25,25}})
-    reload:SetNormalTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up')
-    reload:SetPushedTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Down')
-    reload:SetPoint('TOPLEFT',-12, 8)
-    reload:SetScript('OnClick', e.Reload)
-    reload.addName=tab.addName
-    reload:SetScript('OnLeave', function() e.tips:Hide() end)
-    reload:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '重新加载UI' or RELOADUI)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, self.addName)
-        e.tips:Show()
-    end)
-    if tab.restTips then
-        local needReload= e.Cstr(tab.panel)
-        needReload:SetText(e.Icon.toRight2..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..e.Icon.toLeft2)
-        needReload:SetPoint('BOTTOMRIGHT')
-        needReload:SetTextColor(0,1,0)
+
+    local reload
+    if reload then
+        reload= e.Cbtn(tab.panel, {type=false, size={25,25}})
+        reload:SetNormalTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up')
+        reload:SetPushedTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Down')
+        reload:SetPoint('TOPLEFT',-12, 8)
+        reload:SetScript('OnClick', e.Reload)
+        reload.addName=tab.addName
+        reload:SetScript('OnLeave', function() e.tips:Hide() end)
+        reload:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(e.onlyChinese and '重新加载UI' or RELOADUI)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, self.addName)
+            e.tips:Show()
+        end)
     end
     if tab.disabledfunc then
         local check=CreateFrame("CheckButton", nil, tab.panel, "InterfaceOptionsCheckButtonTemplate")
         check.text:SetText(e.GetEnabeleDisable(true))
         check:SetChecked(tab.checked)
-        check:SetPoint('LEFT', reload, 'RIGHT')
+        if reload then
+            check:SetPoint('LEFT', reload, 'RIGHT')
+        else
+            check:SetPoint('TOPLEFT',-12, 8)
+        end
         check:SetScript('OnClick', tab.disabledfunc)
         check:SetScript('OnLeave', function() e.tips:Hide() end)
         check.addName= tab.addName
@@ -91,6 +93,12 @@ function e.ReloadPanel(tab)
             e.tips:AddDoubleLine(id, self.addName)
             e.tips:Show()
         end)
+    end
+    if tab.restTips then
+        local needReload= e.Cstr(tab.panel)
+        needReload:SetText(e.Icon.toRight2..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..e.Icon.toLeft2)
+        needReload:SetPoint('BOTTOMRIGHT')
+        needReload:SetTextColor(0,1,0)
     end
 end
 

@@ -741,7 +741,7 @@ local function Init()
 
     e.AddPanel_Sub_Category({name=e.Icon.left..(e.onlyChinese and '鼠标' or MOUSE_LABEL)..'|r', frame=panel})
 
-    e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=nil, clearTips=nil,--重新加载UI, 重置, 按钮
+    e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=nil, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
         disabledfunc=nil,
         clearfunc= function() Save=nil e.Reload() end}
     )
