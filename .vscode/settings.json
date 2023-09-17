@@ -3264,7 +3264,8 @@
         "PingFrame",
         "REPORT_THREAT",
         "SLASH_PING1",
-        "ITEM_CREATED_BY"
+        "ITEM_CREATED_BY",
+        "PingListenerFrameMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -835,30 +835,29 @@ local function Init_Markers_Frame()--设置标记, 框架
         }
 
         --目标，自动
-        local last
         local tab= {name= e.onlyChinese and '自动' or SELF_CAST_AUTO, atlas='Ping_Wheel_Icon_Assist_Disabled_Small'}
-        last= e.Cbtn(pingFrame, {
+        pingFrame.autoPing= e.Cbtn(pingFrame, {
                 size={size,size},
                 atlas= tab.atlas,
                 --icon='hide',
                 type=true,
             })
         if Save.H then
-            last:SetPoint('BOTTOMRIGHT', pingFrame, 'TOPRIGHT', 0, size)--, 0, size*2)
+            pingFrame.autoPing:SetPoint('BOTTOMRIGHT', pingFrame, 'TOPRIGHT', 0, size)--, 0, size*2)
         else
-            last:SetPoint('BOTTOMRIGHT', pingFrame, 'BOTTOMLEFT', -size, 0)--, -size*2, 0)
+            pingFrame.autoPing:SetPoint('BOTTOMRIGHT', pingFrame, 'BOTTOMLEFT', -size, 0)--, -size*2, 0)
         end
 
         --[[
-        last.texture= last:CreateTexture()
-        last.texture:SetAllPoints(last)
-        last.texture:SetAtlas(tab.atlas, true)]]
+        pingFrame.autoPing.texture= pingFrame.autoPing:CreateTexture()
+        pingFrame.autoPing.texture:SetAllPoints(pingFrame.autoPing)
+        pingFrame.autoPing.texture:SetAtlas(tab.atlas, true)]]
 
-        last.tooltip= '/ping [@target]'
-        last.atlas= tab.atlas
-        last:SetAttribute('type', 'macro')
-        last:SetAttribute("macrotext", last.tooltip)
-        function last:set_Event()
+        pingFrame.autoPing.tooltip= '/ping [@target]'
+        pingFrame.autoPing.atlas= tab.atlas
+        pingFrame.autoPing:SetAttribute('type', 'macro')
+        pingFrame.autoPing:SetAttribute("macrotext", pingFrame.autoPing.tooltip)
+        function pingFrame.autoPing:set_Event()
             if self:IsShown() then
                 self:RegisterEvent('PLAYER_TARGET_CHANGED')
             else
@@ -866,11 +865,11 @@ local function Init_Markers_Frame()--设置标记, 框架
             end
         end
 
-        last:SetScript('OnShow', last.set_Event)
-        last:SetScript('OnHide', last.set_Event)
-        last:set_Event()
+        pingFrame.autoPing:SetScript('OnShow', pingFrame.autoPing.set_Event)
+        pingFrame.autoPing:SetScript('OnHide', pingFrame.autoPing.set_Event)
+        pingFrame.autoPing:set_Event()
 
-        last:SetScript('OnEvent', function(self)
+        pingFrame.autoPing:SetScript('OnEvent', function(self)
             local guid= UnitExists('target') and UnitGUID('target')
             local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
             if type then
@@ -886,10 +885,10 @@ local function Init_Markers_Frame()--设置标记, 框架
             self:SetNormalTexture(self.atlas)
             --self.texture:SetAtlas(self.atlas, true)
         end)
-        last:SetAlpha(0.3)
+        pingFrame.autoPing:SetAlpha(0.3)
 
-        last:SetScript('OnLeave', function() e.tips:Hide() end)
-        last:SetScript('OnEnter', function(self)
+        pingFrame.autoPing:SetScript('OnLeave', function() e.tips:Hide() end)
+        pingFrame.autoPing:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             local find
@@ -924,17 +923,17 @@ local function Init_Markers_Frame()--设置标记, 框架
             e.tips:Show()
         end)
 
+        function pingFrame.autoPing:set_Cool()--冷却，时间
+            local cooldownDuration = (self.cooldownInfo.endTimeMs / 1000) - GetTime()
+            e.Ccool(pingFrame.autoPing, nil, cooldownDuration, nil, true)
+        end
+        hooksecurefunc(PingListenerFrame, 'SetupCooldownTimer', pingFrame.autoPing.set_Cool)
+
         if not e.Player.husandro then
             return
         end
 
-        --[[
-            [0]={name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK', text='attack'},
-            [1]={name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING', text='warning'},
-            [3]={name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay', action='PINGONMYWAY', text='onmyway'},
-            [2]={name=e.onlyChinese and '协助' or PING_TYPE_ASSIST, atlas='Ping_Marker_Icon_Assist', action='PINGASSIST', text='assist'},
-        ]]
-
+        local last= pingFrame.autoPing
         for _, index in pairs({0, 1, 3, 2}) do
             local btn= e.Cbtn(pingFrame, {
                 size={size,size},
