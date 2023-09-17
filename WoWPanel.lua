@@ -14,7 +14,6 @@ local panel = CreateFrame("Frame", 'WoWTools')--Panel
 
 
 
-
 --#####################
 --重新加载UI, 重置, 按钮
 --#####################
@@ -112,7 +111,6 @@ end
 --##############
 --创建, 添加控制面板
 --##############
-
 local variableIndex=0
 local function get_variableIndex()
     variableIndex= variableIndex+1
@@ -188,8 +186,9 @@ function e.AddPanel_Button(tab)
     local buttonClick= tab.func
     local tooltip= tab.title and tab.tooltip or nil
     local layout= tab.layout or Layout
+    local addSearchTags= tab.addSearchTags or tab.title or tab.buttonText or ''
 
-    local initializer= CreateSettingsButtonInitializer(title, buttonText, buttonClick, tooltip)--Blizzard_SettingControls.lua
+    local initializer= CreateSettingsButtonInitializer(title, buttonText, buttonClick, tooltip, addSearchTags)--Blizzard_SettingControls.lua
 	layout:AddInitializer(initializer)
     return initializer
 end
@@ -199,6 +198,7 @@ end
     buttonText= addName,
     tooltip= nil,--需要 title
     layout= Layout,
+    addSearchTags= addName
     func= function()
         print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
@@ -483,6 +483,7 @@ local function Init()
     e.AddPanel_Button({
         title= '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
         buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '默认设置' or SETTINGS_DEFAULTS),
+        addSearchTags= e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT,
         func= function()
             StaticPopupDialogs[id..'RestAllSetup']={
                 text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r|n|n'..(e.onlyChinese and "你想要将所有选项重置为默认状态吗？|n将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)
@@ -503,6 +504,7 @@ local function Init()
     e.AddPanel_Button({
         title= e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
         buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+        addSearchTags= e.onlyChinese and '清除WoW数据' or 'Clear WoW data',
         func= function()
             StaticPopupDialogs[id..'RestWoWSetup']={
                 text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'
