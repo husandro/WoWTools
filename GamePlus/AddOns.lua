@@ -17,14 +17,14 @@ local Save={
         enableAllButtn= e.Player.husandro,--全部禁用时，不禁用本插件
     }
 
-local function getAddList()--检查列表, 选取数量, 总数, 数量/总数
-    local num, all=0, GetNumAddOns();
+local function get_AddList()--检查列表, 选取数量, 总数, 数量/总数
+    local num, all=0, GetNumAddOns()
     for i=1,  all do
-        local t= GetAddOnEnableState(nil,i);
+        local t= GetAddOnEnableState(nil,i)
         if t==2 then
-            local name=GetAddOnInfo(i);
+            local name=GetAddOnInfo(i)
             if name then
-                num=num+1;
+                num=num+1
             end
         end
     end
@@ -35,25 +35,23 @@ end
 --####
 --按钮
 --####
-local function set_Buttons()--设置按钮, 和位置
-
-    local function get_buttons()
-        local addTab={}
-        for name, tab in pairs(Save.buttons) do
-            local num=0
-            local load= 0
-            for name2 in pairs(tab) do
-                num=num+1
-                if IsAddOnLoaded(name2) then
-                    load= load+1
-                end
+local function get_buttons()
+    local addTab={}
+    for name, tab in pairs(Save.buttons) do
+        local num=0
+        local load= 0
+        for name2 in pairs(tab) do
+            num=num+1
+            if IsAddOnLoaded(name2) then
+                load= load+1
             end
-            table.insert(addTab, {name= name, tab= tab, num=num, load=load})
         end
-        table.sort(addTab, function(a,b) return a.num< b.num end)
-        return addTab
+        table.insert(addTab, {name= name, tab= tab, num=num, load=load})
     end
-
+    table.sort(addTab, function(a,b) return a.num< b.num end)
+    return addTab
+end
+local function set_Buttons()--设置按钮, 和位置
     local last=panel
     for _, info in pairs(get_buttons()) do
         local button=panel.buttons[info.name]
@@ -187,23 +185,17 @@ local function Init()
             OnShow=function(self)
                 self.editBox:SetText(e.onlyChinese and '一般' or RESISTANCE_FAIR)
             end,
-            OnHide= function(self2)
-                self2.editBox:SetText("")
-                securecall('ChatEdit_FocusActiveWindow')
-            end,
-            EditBoxOnTextChanged= function(self, data)
+            EditBoxOnTextChanged= function(self)
                 local text= self:GetText()
                 text=text:gsub(' ', '')
                 local parent=self:GetParent()
                 parent.button1:SetEnabled(text~='' and not Save.buttons[text])
             end,
             EditBoxOnEscapePressed = function(self)
-                self:SetAutoFocus(false)
-                self:ClearFocus()
                 self:GetParent():Hide()
             end,
         }
-        local text= select(3, getAddList())--检查列表, 选取数量, 总数, 数量/总数
+        local text= select(3, get_AddList())--检查列表, 选取数量, 总数, 数量/总数
         StaticPopup_Show(id..addName..'NEW', text, nil)--新建按钮
     end)
     panel.buttons={}--存放按钮
@@ -294,7 +286,7 @@ local function Init()
 
     --hooksecurefunc('AddonList_HasAnyChanged', function(self)
     hooksecurefunc('AddonList_Update', function()
-        local num, all, text = getAddList()--检查列表, 选取数量, 总数, 数量/总数,
+        local num, all, text = get_AddList()--检查列表, 选取数量, 总数, 数量/总数,
         local findButton=nil
         for name, button in pairs(panel.buttons) do
             if button:IsShown() then
