@@ -753,7 +753,7 @@ local function Init_Options()
     })
 
     local initializer= e.AddPanel_Check_Button({
-        checkName= '|A:talents-search-notonactionbar:0:0|a'..(e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
+        checkName= (e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
         tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0),
         checkValue= Save.SavePoint,
         checkFunc=function()
