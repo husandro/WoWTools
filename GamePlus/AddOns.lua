@@ -149,6 +149,14 @@ local function set_Buttons()--设置按钮, 和位置
     end
 end
 
+
+
+
+
+
+
+
+
 --#####
 --初始化
 --#####
@@ -174,16 +182,16 @@ local function Init()
                     end
                 end
                 set_Buttons()--设置按钮, 和位置
-                AddonList_HasAnyChanged()
+                securecall('AddonList_HasAnyChanged')
             end,
             OnShow=function(self)
-                self.editBox:SetText(RESISTANCE_FAIR)
+                self.editBox:SetText(e.onlyChinese and '一般' or RESISTANCE_FAIR)
             end,
             OnHide= function(self2)
                 self2.editBox:SetText("")
-                securecall(ChatEdit_FocusActiveWindow)
+                securecall('ChatEdit_FocusActiveWindow')
             end,
-            EditBoxOnTextChanged=function(self, data)
+            EditBoxOnTextChanged= function(self, data)
                 local text= self:GetText()
                 text=text:gsub(' ', '')
                 local parent=self:GetParent()
@@ -390,14 +398,15 @@ local function Init()
             securecall('AddonList_Update')
         end
     end)
-
 end
+
+
+
 
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -429,6 +438,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     ['TextureAtlasViewer']=78,
                 }
             end
+
             --添加控制面板
             e.AddPanel_Check({
                 name= '|A:Garr_Building-AddFollowerPlus:0:0|a'..(e.onlyChinese and '插件管理' or addName),
