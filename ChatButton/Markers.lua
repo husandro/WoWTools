@@ -26,6 +26,7 @@ local Color={
     [7]={r=1, g=0, b=0, col='|cffff2020'},--十字, 红色
     [8]={r=1, g=1, b=1, col='|cffffffff'},--骷髅,白色
 }
+--[[
 local PingColor={
     ["Assist"] = {r=0.09, g=0.78, b=0.39, col='|cff17c864'},--协助
     ["Attack"] = {r=1.00, g=0.50, b=0.00, col='|cffff8000' },--攻击
@@ -34,7 +35,7 @@ local PingColor={
     ["NonThreat"] = {r=0.16, g=0.64, b=1.00, col='|cff2aa2ff'},--看这里
     ["Threat"] = {r=0.8, g=0, b=0, col='|cffcc0000'},--威胁提示
 }
---[[
+
 WORLD_MARKER = "世界标记%d";
 WORLD_MARKER1 = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14|t |cff0070dd 蓝色|r世界标记"
 WORLD_MARKER2 = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:14:14|t |cff1eff00 绿色|r世界标记";
