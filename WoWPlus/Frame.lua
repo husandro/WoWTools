@@ -81,7 +81,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
 
     self.ZoomInOutFrame:SetScript('OnClick', function(self2, d)
         if UnitAffectingCombat('player') then
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
         local n= Save.scale[self2.ScaleName] or 1
@@ -98,7 +98,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
 
     self.ZoomInOutFrame:SetScript('OnMouseWheel', function(self2,d)
         if UnitAffectingCombat('player') then
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
         local n= Save.scale[self2.ScaleName] or 1
@@ -111,7 +111,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         n= n< 0.5 and 0.5 or n
         Save.scale[self2.ScaleName]= n
         self2.ZoomFrame:SetScale(n)
-        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''), n)
+        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
     end)
 
     self.ZoomInOutFrame:SetAlpha(self.ZoomInOutFrame.alpha)
@@ -792,7 +792,7 @@ local function Init_Options()
 
     --缩放
     e.AddPanel_Check_Button({
-        checkName= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,'')),
+        checkName= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
         checkValue= not Save.disabledZoom,
         checkFunc= function()
             Save.disabledZoom= not Save.disabledZoom and true or nil
@@ -803,13 +803,13 @@ local function Init_Options()
         buttonFunc= function()
             StaticPopupDialogs[id..addName..'MoveZoomClearZoom']= {
                 text =id..' '..addName..'|n|n'
-                ..('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''))),
+                ..('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE)),
                 button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
                 button2 = e.onlyChinese and '取消' or CANCEL,
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 OnAccept=function()
                     Save.scale={}
-                    print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''))..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                    print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
                 end,
             }
             StaticPopup_Show(id..addName..'MoveZoomClearZoom')

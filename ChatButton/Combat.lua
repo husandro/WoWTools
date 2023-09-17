@@ -380,7 +380,7 @@ local function InitMenu(_, level, type)--主菜单
             func= function()
                 StaticPopupDialogs[id..addName..'inCombatScale']={
                     text=id..' '..addName..'|n|n'
-                        ..(e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''))
+                        ..(e.onlyChinese and '缩放' or UI_SCALE)
                         ..'|n 0.4 - 4 ',
                     whileDead=true, hideOnEscape=true, exclusive=true,
                     hasEditBox=true,
@@ -394,7 +394,7 @@ local function InitMenu(_, level, type)--主菜单
                         num= self.editBox:GetText() or ''
                         num= tonumber(num)
                         Save.inCombatScale= num
-                        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''),'|cnGREEN_FONT_COLOR:', num)
+                        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:', num)
                         button:SetScale(num)
                         C_Timer.After(3, function()
                             if not UnitAffectingCombat('player') then
@@ -475,7 +475,7 @@ local function InitMenu(_, level, type)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= (e.onlyChinese and '战斗中缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,'')))..' '..Save.inCombatScale,
+            text= (e.onlyChinese and '战斗中缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, UI_SCALE))..' '..Save.inCombatScale,
             checked= Save.combatScale,
             disabled= UnitAffectingCombat('player'),
             hasArrow=true,

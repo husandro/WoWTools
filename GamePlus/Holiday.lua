@@ -402,7 +402,7 @@ local function InitMenu(_, level)--主菜单
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={
-        text='Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''))..(Save.scale or 1),
+        text='Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE)..(Save.scale or 1),
         isTitle=true,
         notCheckable=true
     }
@@ -480,7 +480,7 @@ local function Init()
             elseif sacle<0.6 then
                 sacle=0.6
             end
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''), sacle)
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, sacle)
             Save.scale=sacle
             self:set_Text_Settings()--设置Text
         else

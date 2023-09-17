@@ -70,7 +70,7 @@ local function Scale(setPrint)
     end
     ObjectiveTrackerFrame:SetScale(Save.scale)
     if setPrint then
-        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''), '|cnGREEN_FONT_COLOR:',Save.scale)
+        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:',Save.scale)
     end
 end
 
@@ -171,7 +171,7 @@ local function Init()
         e.tips:AddLine(' ')
 
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE), e.Icon.mid)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''))..': '..(Save.scale or 1), 'Ctrl + '..e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.scale or 1), 'Ctrl + '..e.Icon.mid)
         e.tips:Show()
     end)
     btn:SetScript('OnMouseWheel',function(self,d)

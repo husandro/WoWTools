@@ -1715,7 +1715,7 @@ local function set_Panle_Setting()--设置 panel
 
     --缩放
     local slider4= e.CSlider(panel, {w=nil, h=20, min=0.3, max=4, value=Save.scale or 1, setp=0.1, color=nil,
-        text=e.onlyChinese and '缩放' or UI_SCALE:gsub('UI',''):gusb(INTERFACE_LABEL,''),
+        text=e.onlyChinese and '缩放' or UI_SCALE,
         func=function(self, value)
             value= tonumber(format('%.1f', value)) or 1
             self:SetValue(value)
