@@ -184,7 +184,7 @@ initializer:SetParentInitializer(initializer2, function() return not Save.disabl
 --添加，按钮
 function e.AddPanel_Button(tab)
     local title= tab.title or ''
-    local buttonText= tab.buttonText
+    local buttonText= tab.buttonText or ''
     local buttonClick= tab.func
     local tooltip= tab.title and tab.tooltip or nil
     local layout= tab.layout or Layout
