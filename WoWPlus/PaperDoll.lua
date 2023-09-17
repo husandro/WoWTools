@@ -13,7 +13,7 @@ local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在
 local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
-
+local ITEM_CREATED_BY_Str= ITEM_CREATED_BY:gsub('%%s','(.+)')--"|cff00ff00<由%s制造>|r";
 
 local function is_Left_Slot(slot)--左边插曹
     return slot==1 or slot==2 or slot==3 or slot==15 or slot==5 or slot==4 or slot==19 or slot==9 or slot==17 or slot==18
@@ -246,19 +246,20 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
 end
 
 local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使用, 属性
-    local enchant, use, pvpItem, upgradeItem
+    local enchant, use, pvpItem, upgradeItem, createItem
     local unit = (not isPaperDollItemSlot and InspectFrame) and InspectFrame.unit or 'player'
+    local isLeftSlot= is_Left_Slot(slot)
 
     if link and not Save.hide and not IsCorruptedItem(link) then
-        local dateInfo= e.GetTooltipData({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr}, onlyText=true})--物品提示，信息
-        enchant, use, pvpItem, upgradeItem= dateInfo.text[enchantStr], dateInfo.red, dateInfo.text[pvpItemStr],  dateInfo.text[upgradeStr]
+        local dateInfo= e.GetTooltipData({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr,ITEM_CREATED_BY_Str}, onlyText=true})--物品提示，信息
+        enchant, use, pvpItem, upgradeItem, createItem= dateInfo.text[enchantStr], dateInfo.red, dateInfo.text[pvpItemStr], dateInfo.text[upgradeStr], dateInfo.text[ITEM_CREATED_BY_Str]
     end
 
     if enchant and not self.enchant then--附魔
         local h=self:GetHeight()/3
         self.enchant= self:CreateTexture()
         self.enchant:SetSize(h,h)
-        if is_Left_Slot(slot) then
+        if isLeftSlot then
             self.enchant:SetPoint('LEFT', self, 'RIGHT', 8, 0)
         else
             self.enchant:SetPoint('RIGHT', self, 'LEFT', -8, 0)
@@ -288,7 +289,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         local h=self:GetHeight()/3
         self.use= self:CreateTexture()
         self.use:SetSize(h,h)
-        if is_Left_Slot(slot) then
+        if isLeftSlot then
             self.use:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
         else
             self.use:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
@@ -316,7 +317,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         local h=self:GetHeight()/3
         self.pvpItem=self:CreateTexture(nil,'OVERLAY',nil,7)
         self.pvpItem:SetSize(h,h)
-        if is_Left_Slot(slot) then
+        if isLeftSlot then
             self.pvpItem:SetPoint('LEFT', self, 'RIGHT', -2.5,0)
         else
             self.pvpItem:SetPoint('RIGHT', self, 'LEFT', 2.5,0)
@@ -340,7 +341,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
     end
 
     if upgradeItem and not self.upgradeItem then--"升级：%s/%s"
-        if is_Left_Slot(slot) then
+        if isLeftSlot then
             self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}, mouse=true})
             self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT',1,0)
         else
@@ -381,7 +382,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         upgradeItemText= strlower(e.WA_Utf8Sub(upText,1,3, true))
         if not self.upgradeItemText then
             local h= self:GetHeight()/3
-            if is_Left_Slot(slot) then
+            if isLeftSlot then
                 self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}, mouse=true})
                 self.upgradeItemText:SetPoint('LEFT', self, 'RIGHT',h+8,0)
             else
@@ -410,9 +411,38 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         self.upgradeItemText:SetText(upgradeItemText or '')
     end
 
+
+
+
+    if createItem and not self.createItem then--"|cff00ff00<由%s制造>|r" ITEM_CREATED_BY 
+        if isLeftSlot then
+            self.createItem= e.Cstr(self, {color={r=0,g=1,b=0}, mouse=true})
+            self.createItem:SetPoint('LEFT', self, 'RIGHT',1,0)
+        else
+            self.createItem= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
+            self.createItem:SetPoint('RIGHT', self, 'LEFT',2,0)
+        end
+        self.createItem:SetScript('OnEnter', function(self2)
+            if self2.tips then
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine(format(e.onlyChinese and '|cff00ff00<由%s制造>|r' or ITEM_CREATED_BY, self2.tips))
+                e.tips:Show()
+                self2:SetAlpha(0.3)
+            end
+        end)
+        self.createItem:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+    end
+    if self.createItem then
+        self.createItem.tips=createItem
+        self.createItem:SetText(createItem and '|A:communities-icon-notification:10:10|a' or '')
+    end
+
+
+
+
     if not Save.hide then--宝石
-        local leftSlot= is_Left_Slot(slot)--左边插曹
-        local x= leftSlot and 8 or -8
+        local x= isLeftSlot and 8 or -8--左边插曹
         for n=1, MAX_NUM_SOCKETS do
             local gemLink= link and select(2, GetItemGem(link, n))
             if gemLink then
@@ -434,7 +464,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
                 else
                     self['gem'..n]:ClearAllPoints()
                 end
-                if leftSlot then--左边插曹
+                if isLeftSlot then--左边插曹
                     self['gem'..n]:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', x, 0)
                 else
                     self['gem'..n]:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', x, 0)
@@ -446,7 +476,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
                 self['gem'..n]:SetShown(not gemLink and false or true)
             end
 
-            x= leftSlot and x+ 12.3 or x- 12.3--左边插曹
+            x= isLeftSlot and x+ 12.3 or x- 12.3--左边插曹
         end
     else
         for n=1, MAX_NUM_SOCKETS do
@@ -468,7 +498,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         local wq= slot==16 or slot==17 or slot==18--武器
         if wq then
             self.du:SetPoint('TOP', self, 'BOTTOM')
-        elseif is_Left_Slot(slot) then
+        elseif isLeftSlot then
             self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
         else
             self.du:SetPoint('LEFT', self, 'RIGHT', 2.5,0)

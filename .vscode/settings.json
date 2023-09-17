@@ -3263,7 +3263,8 @@
         "PingableTypeMixin",
         "PingFrame",
         "REPORT_THREAT",
-        "SLASH_PING1"
+        "SLASH_PING1",
+        "ITEM_CREATED_BY"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
