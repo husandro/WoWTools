@@ -736,8 +736,10 @@ end
 --初始化
 --######
 local function Init()
-    panel.name = e.Icon.left..(e.onlyChinese and '鼠标' or MOUSE_LABEL)..'|r'
-    panel.parent =id
+    --panel.name = e.Icon.left..(e.onlyChinese and '鼠标' or MOUSE_LABEL)..'|r'
+    --panel.parent =id
+
+    e.AddPanel_Sub_Category({name=e.Icon.left..(e.onlyChinese and '鼠标' or MOUSE_LABEL)..'|r', frame=panel})
 
     e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=nil, clearTips=nil,--重新加载UI, 重置, 按钮
         disabledfunc=nil,
