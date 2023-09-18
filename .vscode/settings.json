@@ -3265,7 +3265,13 @@
         "REPORT_THREAT",
         "SLASH_PING1",
         "ITEM_CREATED_BY",
-        "PingListenerFrameMixin"
+        "PingListenerFrameMixin",
+        "SLASH_PING2",
+        "BINDING_NAME_PINGATTACK",
+        "BINDING_NAME_PINGWARNING",
+        "BINDING_NAME_PINGONMYWAY",
+        "BINDING_NAME_PINGASSIST",
+        "BINDING_NAME_TOGGLEPINGLISTENER"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

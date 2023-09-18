@@ -827,20 +827,35 @@ local function Init_Markers_Frame()--设置标记, 框架
 
         pingFrame.ping={--Enum.PingSubjectType.Warning
             [7]={name=e.onlyChinese and '信号' or PING, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
-            [0]={name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK', text='attack'},
-            [1]={name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING', text='warning'},
-            [3]={name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay', action='PINGONMYWAY', text='onmyway'},
-            [2]={name=e.onlyChinese and '协助' or PING_TYPE_ASSIST, atlas='Ping_Marker_Icon_Assist', action='PINGASSIST', text='assist'},
+            [0]={name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK', text=BINDING_NAME_PINGATTACK},--text='attack'},
+            [1]={name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING', text=BINDING_NAME_PINGWARNING},--text='warning'},
+            [3]={name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay', action='PINGONMYWAY', text=BINDING_NAME_PINGONMYWAY},--text='onmyway'},
+            [2]={name=e.onlyChinese and '协助' or PING_TYPE_ASSIST, atlas='Ping_Marker_Icon_Assist', action='PINGASSIST', text=BINDING_NAME_PINGASSIST},-- text='assist'},
             [4]={name=e.onlyChinese and '威胁' or REPORT_THREAT , atlas='Ping_Marker_Icon_threat'},
             [5]={name=e.onlyChinese and '看这里' or format(PING_SUBJECT_TYPE_ALERT_NOT_THREAT_POINT,'','',''), atlas='Ping_Marker_Icon_nonthreat'},
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
 
         --目标，自动
         local tab= {name= e.onlyChinese and '自动' or SELF_CAST_AUTO, atlas='Ping_Wheel_Icon_Assist_Disabled_Small'}
         pingFrame.autoPing= e.Cbtn(pingFrame, {
                 size={size,size},
                 atlas= tab.atlas,
-                --icon='hide',
                 type=true,
             })
         if Save.H then
@@ -849,15 +864,12 @@ local function Init_Markers_Frame()--设置标记, 框架
             pingFrame.autoPing:SetPoint('BOTTOMRIGHT', pingFrame, 'BOTTOMLEFT', -size, 0)--, -size*2, 0)
         end
 
-        --[[
-        pingFrame.autoPing.texture= pingFrame.autoPing:CreateTexture()
-        pingFrame.autoPing.texture:SetAllPoints(pingFrame.autoPing)
-        pingFrame.autoPing.texture:SetAtlas(tab.atlas, true)]]
 
-        pingFrame.autoPing.tooltip= '/ping [@target]'
+        pingFrame.autoPing.tooltip= SLASH_PING1..' [@target]'..BINDING_NAME_TOGGLEPINGLISTENER
         pingFrame.autoPing.atlas= tab.atlas
-        pingFrame.autoPing:SetAttribute('type', 'macro')
-        pingFrame.autoPing:SetAttribute("macrotext", pingFrame.autoPing.tooltip)
+        pingFrame.autoPing:SetAttribute('type1', 'macro')
+        pingFrame.autoPing:SetAttribute("macrotext1", pingFrame.autoPing.tooltip)
+
         function pingFrame.autoPing:set_Event()
             if self:IsShown() then
                 self:RegisterEvent('PLAYER_TARGET_CHANGED')
@@ -877,18 +889,16 @@ local function Init_Markers_Frame()--设置标记, 框架
                 local pingTab=self:GetParent().ping
                 if pingTab[type] then
                     self:SetNormalAtlas(pingTab[type].atlas)
-                    --self.texture:SetAtlas(pingTab[type].atlas, true)
                     self:SetAlpha(1)
                     return
                 end
             end
             self:SetAlpha(0.3)
             self:SetNormalTexture(self.atlas)
-            --self.texture:SetAtlas(self.atlas, true)
         end)
         pingFrame.autoPing:SetAlpha(0.3)
 
-        pingFrame.autoPing:SetScript('OnLeave', function() e.tips:Hide() end)
+        pingFrame.autoPing:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
         pingFrame.autoPing:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -903,7 +913,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             for _, tab2 in pairs(pingTab) do
                 local key1= GetBindingKey(tab2.action)
                 if key1 and key1~='' then
-                    e.tips:AddDoubleLine((e.Player.husandro and tab2.type or '')..'|A:'..tab2.atlas..':0:0|a'..tab2.name, '|cnGREEN_FONT_COLOR:'..key1..'|r')
+                    e.tips:AddDoubleLine('|A:'..tab2.atlas..':0:0|a'..tab2.name, '|cnGREEN_FONT_COLOR:'..key1..'|r')
                     find=true
                 end
             end
@@ -930,9 +940,11 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
         hooksecurefunc(PingListenerFrame, 'SetupCooldownTimer', pingFrame.autoPing.set_Cool)
 
-        if not e.Player.husandro then
-            return
-        end
+
+
+
+
+
 
         local last= pingFrame.autoPing
         for _, index in pairs({0, 1, 3, 2}) do
@@ -947,7 +959,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 btn:SetPoint('BOTTOMRIGHT', last, 'BOTTOMLEFT')
             end
 
-            btn.tooltip= '/ping [@target]'..pingFrame.ping[index].text
+            btn.tooltip= SLASH_PING1..' [@target]'..pingFrame.ping[index].text
             btn.name= '|A:'..pingFrame.ping[index].atlas..':0:0|a'..pingFrame.ping[index].name
             btn.action= pingFrame.ping[index].action
 
@@ -971,7 +983,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             end)
             btn:SetAlpha(0.3)
 
-            btn:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
             btn:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
@@ -984,205 +996,13 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
     end
 end
---[[
-C_Ping.SendMacroPing
-C_Ping.TogglePingListener
-C_Ping.GetContextualPingTypeForUnit
 
-    if not pingFrame then--Blizzard_PingUI.lua
-    
-        pingFrame= CreateFrame('Frame', nil, targetFrame)
-        pingFrame:SetSize(1, 1)
-        if Save.H then
-            pingFrame:SetPoint('TOPRIGHT', targetFrame, 'TOPRIGHT', size+1,0)
-        else
-            pingFrame:SetPoint('TOPLEFT', targetFrame, 'BOTTOMRIGHT', -1, size+1)
-        end
 
-        local ping={--Enum.PingSubjectType.Warning
-            --{type=6, name=e.onlyChinese and '清除全部' or CLEAR_ALL, atlas=e.Icon.disabled},
 
-            --{type=7, name=e.onlyChinese and '信号' or PING, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
-            {type=0, name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK', text='attack'},
-            {type=1, name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING', text='warning'},
-            {type=3, name=e.onlyChinese and '正在赶来' or PING_TYPE_ON_MY_WAY, atlas='Ping_Marker_Icon_OnMyWay', action='PINGONMYWAY', text='onmyway'},
-            {type=2, name=e.onlyChinese and '协助' or PING_TYPE_ASSIST, atlas='Ping_Marker_Icon_Assist', action='PINGASSIST', text='assist'},
 
-            --{type=4, name=e.onlyChinese and '威胁' or REPORT_THREAT , atlas='Ping_Marker_Icon_threat'},
-            --{type=5, name=e.onlyChinese and '看这里' or format(PING_SUBJECT_TYPE_ALERT_NOT_THREAT_POINT,'','',''), atlas='Ping_Marker_Icon_nonthreat'},
-        }
 
-        local last
-        for _, tab in pairs(ping) do
-            local btn= e.Cbtn(pingFrame, {
-                                            size={size,size},
-                                            atlas= tab.atlas,
-                                            type=true,
-                                        })
-            if Save.H then
-                btn:SetPoint('BOTTOMRIGHT', last or pingFrame, 'TOPRIGHT')
-            else
-                btn:SetPoint('BOTTOMRIGHT', last or pingFrame, 'BOTTOMLEFT')
-            end
-            --btn.type=tab.type
-            --btn.name= tab.name
-            --btn.atlas= tab.atlas
-            btn.action= tab.action
-            btn.tooltip= '/ping [@target]'..tab.text--SLASH_PING1
 
-            btn:SetAttribute('type1', 'macro')
-            
-            btn:SetAttribute("macrotext1", btn.tooltip)
 
-            btn:SetScript('OnLeave', function() e.tips:Hide() end)
-            btn:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                local key1= GetBindingKey(self.action)
-                key1= key1 and ' |cnGREEN_FONT_COLOR:'..key1..'|r' or ''
-                e.tips:AddDoubleLine(self.tooltip, key1)
-                e.tips:Show()
-                print(self:GetAttribute('macrotext1'))
-            end)
-        end
-            if tab.type==6 then--全部，取消
-                btn:SetScript('OnClick', function()
-                    if PingManager and PingManager.activePinFrames then--Blizzard_PingManager.lua
-                        for frame, _ in pairs(PingManager.activePinFrames) do
-                            PingManager:OnPingPinFrameRemoved(frame)
-                        end
-                    end
-                end)
-                btn:SetScript('OnLeave', function() e.tips:Hide() end)
-                btn:SetScript('OnEnter', function(self)
-                    e.tips:SetOwner(self, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddLine('|A:'..self.atlas..':0:0|a'..self.name..e.Icon.left)
-                    e.tips:Show()
-                end)
-
-            elseif tab.type==7 then--信号系统
-                function btn:cancel_PingFrame()--Bindings.xml
-                    --C_PingSecure.ClearPendingPingInfo()
-                    PingListenerFrame:CancelPendingPing();
-                    PingListenerFrame:SetShown(false)
-                    self:UnregisterEvent('GLOBAL_MOUSE_UP')
-                    self:UnlockHighlight()
-                end
-                btn:SetScript('OnMouseUp', function(self, d)
-                    if d=='LeftButton' then
-                        PingListenerFrame:Show()
-                        SetCursor("CAST_CURSOR")
-                        C_Timer.After(0.3, function()
-                            self:RegisterEvent('GLOBAL_MOUSE_UP')
-                            self:LockHighlight()
-                        end)
-                    elseif d=='RightButton' then
-                        self:cancel_PingFrame()
-                    end
-                end)
-                
-                btn:SetScript('OnEvent', function(self, event, arg1)
-                    if event=='GLOBAL_MOUSE_UP' then
-                        self:cancel_PingFrame()
-                    elseif event=='CVAR_UPDATE' and arg1=='pingMode' then
-                        self:set_Alpha()
-                    end
-                end)
-                btn:SetScript('OnLeave', function() e.tips:Hide() end)
-                function btn:set_Alpha()
-                    self:SetAlpha(PingListenerFrame:GetPingMode() == Enum.PingMode.KeyDown and 0.1 or 1)
-                end
-                btn:SetScript('OnEnter', function(self)
-                    e.tips:SetOwner(self, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    local key1= GetBindingKey(self.action)
-                    key1= key1 and ' |cnGREEN_FONT_COLOR:'..key1..'|r' or ''
-                    e.tips:AddDoubleLine(
-                        e.Icon.left..self.name..'|A:'..self.atlas..':0:0|a'..key1,
-                        (e.onlyChinese and '取消' or CANCEL)..e.Icon.right
-                    )
-                    if PingListenerFrame:GetPingMode() == Enum.PingMode.KeyDown then
-                        e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '需求' or NEED), PING_MODE_CLICK_DRAG,1,0,0, 1,0,0)
-                    end
-                    e.tips:Show()
-                end)
-                btn:RegisterEvent('CVAR_UPDATE')
-                btn:set_Alpha()
-
-            else--攻击,正在赶来,警告,威胁提示,协助,看这里
-                function btn:cancel_Send_Ping()
-                    self:UnregisterEvent('GLOBAL_MOUSE_DOWN')
-                    self:UnlockHighlight()
-                    ResetCursor()
-                end
-                btn:SetScript("OnClick", function(self, d)
-                    if d=='LeftButton' then
-                        if UnitExists('target') then
-                            PingManager:SendMacroPing(self.type, 'target')
-                        else
-                            self:RegisterEvent('GLOBAL_MOUSE_DOWN')
-                            self:LockHighlight()
-                            SetCursor("CAST_CURSOR")
-                        end
-                    elseif d=='RightButton' then
-                        self:cancel_Send_Ping()
-                    end
-                end)
-                btn:SetScript('OnEvent', function(self, event, d)
-                    if event=='GLOBAL_MOUSE_DOWN' then
-                        if d=='RightButton' then
-                            self:cancel_Send_Ping()
-                        elseif d=='LeftButton' then
-
-                            PingManager:SendMacroPing(self.type)
-                            self:cancel_Send_Ping()
-                        end
-                    end
-                end)
-
-                btn:SetScript('OnLeave', function() e.tips:Hide() end)
-                btn:SetScript('OnEnter', function(self)
-                    e.tips:SetOwner(self, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    local name= UnitName('target')
-                    if UnitExists('target') then
-                        local icon= e.GetPlayerInfo({unit='target', reName=true})
-                        if icon=='' then
-                            local baseClass= UnitClassBase('target')
-                            name= '|A:BuildanAbomination-32x32:0:0|a|c'..select(4, GetClassColor(baseClass))..UnitName('target')..'|r'
-                        end
-                        name= name..get_RaidTargetTexture(nil, 'target')
-                    end
-                    local key1= self.action and GetBindingKey(self.action)
-                    key1= key1 and ' |cnGREEN_FONT_COLOR:'..key1..'|r' or ''
-                    e.tips:AddDoubleLine(
-                        e.Icon.left..self.name..'|A:'..self.atlas..':0:0|a'..key1,
-                        name or ('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '取消' or CANCEL)..e.Icon.right)
-                    )
-                    e.tips:Show()
-                end)
-            end
-            last=btn
-        end
-
-        
-        function pingFrame:set_Shown()
-            self:SetShown((C_CVar.GetCVarBool("pingMode") and Save.markersFrame) and true or false)--0快速，1
-        end
-        pingFrame:RegisterEvent('CVAR_UPDATE')
-        pingFrame:SetScript('OnEvent', pingFrame.set_Shown)
-    end
-    --pingFrame:set_Shown()
-
- 
-/ping
-/ping attack
-/ping assist
-/ping onmyway
-/ping warning
-/ping [@target]attack
-    ]]
 
 
 
