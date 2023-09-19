@@ -199,7 +199,7 @@ local function Init_Ready_Tips_Button()
 
     ReadyTipsButton= e.Cbtn(nil, {size={22,22}, atlas=e.Icon.select})
     ReadyTipsButton.text=e.Cstr(ReadyTipsButton)
-    ReadyTipsButton.text:SetPoint('BOTTOMLEFT', ReadyTipsButton, 'BOTTOMRIGHT')
+    ReadyTipsButton.text:SetPoint('BOTTOMLEFT', ReadyTipsButton, 'TOPLEFT')
 
 
     ReadyTipsButton:Raise()
@@ -207,21 +207,20 @@ local function Init_Ready_Tips_Button()
     ReadyTipsButton:SetMovable(true)
     ReadyTipsButton:SetClampedToScreen(true)
 
-    ReadyTipsButton:SetScript("OnDragStart", function(self,d )
+    ReadyTipsButton:SetScript("OnDragStart", function(self)
         if IsAltKeyDown() then
             self:StartMoving()
         end
     end)
     ReadyTipsButton:SetScript("OnDragStop", function(self)
-        ResetCursor()
         self:StopMovingOrSizing()
         Save.groupReadyTipsPoint={self:GetPoint(1)}
         Save.groupReadyTipsPoint[2]=nil
-        
     end)
+    
+    ReadyTipsButton:SetScript("OnMouseUp", ResetCursor)
 
     function ReadyTipsButton:set_Point()
-        self:ClearAllPoints()
         if Save.groupReadyTipsPoint then
             self:SetPoint(Save.groupReadyTipsPoint[1], UIParent, Save.groupReadyTipsPoint[3], Save.groupReadyTipsPoint[4], Save.groupReadyTipsPoint[5])
         else
@@ -229,22 +228,96 @@ local function Init_Ready_Tips_Button()
         end
     end
 
+
+    ReadyTipsButton:SetScript('OnHide', function(self)
+        e.Ccool(self, nil, 0)
+    end)
+    function ReadyTipsButton:set_Shown()
+        local text= self.text:GetText()
+        local show= Save.groupReadyTips and (text and text~='')
+        self:SetShown(show)
+    end
+
     function ReadyTipsButton:set_Event()
         if Save.groupReadyTips then
             self:RegisterEvent('READY_CHECK_CONFIRM')
             self:RegisterEvent('CHAT_MSG_SYSTEM')
+            self:RegisterEvent('READY_CHECK')
         else
            self:UnregisterAllEvents()
         end
     end
 
-    function ReadyTipsButton:set_Shown()
-        self:SetShown(Save.groupReadyTips and self.text:GetText()~='')
-        e.Ccool(self, nil, 0)
+    function ReadyTipsButton:get_ReadyCheck_Status(unit, index, uiMapID)
+        local stat= GetReadyCheckStatus(unit)
+        if stat=='ready' then
+            return
+        end
+        local mapText, mapID e.GetUnitMapName(unit)--单位, 地图名称
+        return (
+                    stat== 'waiting' and '|A:QuestTurnin:0:0|a'
+                    or stat== 'notready' and e.Icon.X2
+                    or stat
+                    or ''
+                )
+                ..(index<10 and ' ' or '')..index..')'--编号号
+                ..(e.PlayerOnlineInfo(unit) or '')
+                ..e.GetPlayerInfo({guid=UnitGUID(unit), unit=unit, reName=true, reRealm=true})
+                ..(UnitHasLFGRandomCooldown(unit) and '|cnRED_FONT_COLOR:<'..(e.onlyChinese and '逃亡者' or DESERTER)..'>|r' or '')
+                ..(uiMapID~=mapID and mapText or '')--地图名称
+                ..' '
     end
+
+    function ReadyTipsButton:get_ReadyCheck_Text()
+        local text
+        local isInRaid=IsInRaid()
+        local unit=isInRaid and 'raid' or 'party'
+        local num= GetNumGroupMembers()
+        local uiMapID= C_Map.GetBestMapForUnit('player')
+        if isInRaid then
+            for index= 1, num do
+                local text2= self:get_ReadyCheck_Status(unit..index, index, uiMapID)
+                if text2 then
+                    text= (text and text..'|n' or '')..text2
+                end
+            end
+        else
+            for index= 1, num-1 do
+                local text2= self:get_ReadyCheck_Status(unit..index, index, uiMapID)
+                if text2 then
+                    text= (text and text..'|n' or '')..text2
+                end
+            end
+            local text2= self:get_ReadyCheck_Status('player', num, uiMapID)
+            if text2 then
+                text= (text and text..'|n' or '')..text2
+            end
+        end
+        return text
+    end
+
+    ReadyTipsButton:SetScript('OnEvent', function(self, event, arg1, arg2)
+        if event=='CHAT_MSG_SYSTEM' then
+            if arg1== READY_CHECK_ALL_READY then--所有人都已准备就绪
+                self.text:SetText("")
+                self:set_Shown()
+            end
+            return
+        end
+
+        local text= self:get_ReadyCheck_Text()
+        self.text:SetText(text or '')
+        self:set_Shown()
+
+        if event=='READY_CHECK' and text then
+            e.Ccool(ReadyTipsButton,nil, arg2 or 35, nil, true)
+        end
+    end)
+
+    ReadyTipsButton:set_Point()   
     ReadyTipsButton:set_Event()
     ReadyTipsButton:set_Shown()
-
+    
 
     ReadyTipsButton:SetScript('OnDoubleClick', function(self)
         self.text:SetText('')
@@ -252,15 +325,17 @@ local function Init_Ready_Tips_Button()
     end)
 
     ReadyTipsButton:SetScript('OnClick', function(self, d)
-        local key=IsModifierKeyDown()
         if d=='RightButton' and IsAltKeyDown() then
             Save.groupReadyTipsPoint=nil
+            self:ClearAllPoints()
             self:set_Point()
         end
     end)
     
-
-
+    ReadyTipsButton:SetScript('OnLeave', function()
+        e.tips:Hide()
+        button:SetButtonState('NORMAL')
+    end)
     ReadyTipsButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -271,92 +346,8 @@ local function Init_Ready_Tips_Button()
         e.tips:Show()
         button:SetButtonState('PUSHED')
     end)
-    ReadyTipsButton:SetScript('OnLeave', function()
-        ResetCursor()
-        e.tips:Hide()
-        button:SetButtonState('NORMAL')
-    end)
-    ReadyTipsButton:SetScript("OnMouseUp", function(self, d)
-        ResetCursor()
-    end)
 
-    ReadyTipsButton:SetScript('OnHide', function(self)
-        e.Ccool(self, nil, 0)
-    end)
-    
 end
-
-local function set_GroupReady_Tips_Event()--注册事件, 就绪,队员提示信息
-    
-end
-local function get_ReadyCheck_Status(unit, index, uiMapID)
-    local stat= GetReadyCheckStatus(unit)
-    if stat=='ready' then
-        return
-    end
-    local mapText, mapID e.GetUnitMapName(unit)--单位, 地图名称
-    return (
-                stat== 'waiting' and '|A:QuestTurnin:0:0|a'
-                or stat== 'notready' and e.Icon.X2
-                or stat
-                or ''
-            )
-            ..(index<10 and ' ' or '')..index..')'--编号号
-            ..(e.PlayerOnlineInfo(unit) or '')
-            ..e.GetPlayerInfo({guid=UnitGUID(unit), unit=unit, reName=true, reRealm=true})
-            ..(UnitHasLFGRandomCooldown(unit) and '|cnRED_FONT_COLOR:<'..(e.onlyChinese and '逃亡者' or DESERTER)..'>|r' or '')
-            ..(uiMapID~=mapID and mapText or '')--地图名称
-            ..' '
-end
-
-
-local function setGroupReadyTips(event, _, arg2)
-    local text=''
-    if event=='READY_CHECK' or event=='READY_CHECK_CONFIRM'  then
-        local isInRaid=IsInRaid()
-        local unit=isInRaid and 'raid' or 'party'
-        local num=GetNumGroupMembers()
-        local uiMapID= C_Map.GetBestMapForUnit('player')
-        if isInRaid then
-            for index= 1, num do
-                local text2=get_ReadyCheck_Status(unit..index, index, uiMapID)
-                if text2 then
-                    text= (text~='' and text..'|n' or text)..text2
-                end
-            end
-        else
-            for index= 1, num-1 do
-                local text2=get_ReadyCheck_Status(unit..index, index, uiMapID)
-                if text2 then
-                    text= (text~='' and text..'|n' or text)..text2
-                end
-            end
-            local text2=get_ReadyCheck_Status('player', num, uiMapID)
-            if text2 then
-                text= (text~='' and text..'|n' or text)..text2
-            end
-        end
-
-        if event=='READY_CHECK' and text~='' then
-            if ReadyTipsButton.timer then ReadyTipsButton.timer:Cancel() end
-            ReadyTipsButton.timer= C_Timer.NewTimer(arg2 or 35, function()
-                ReadyTipsButton.text:SetText('')
-                ReadyTipsButton:SetShown(false)
-            end)
-            e.Ccool(ReadyTipsButton,nil, arg2 or 35, nil,nil,true )
-        end
-    end
-    if ReadyTipsButton then
-        ReadyTipsButton:SetShown(text~='')
-        ReadyTipsButton.text:SetText(text)
-    end
-end
-
-
-
-
-
-
 
 
 
@@ -1029,19 +1020,6 @@ local function Init_Markers_Frame()--设置标记, 框架
         else
             btn:SetAlpha(0.5)
         end
-
-        function btn:set_Events()
-            if self:IsVisible() then
-                self:RegisterEvent('PLAYER_TARGET_CHANGED')
-                self:RegisterEvent('RAID_TARGET_UPDATE')
-                self:set_Active()
-            else
-                self:UnregisterAllEvents()
-            end
-        end
-
-        btn:SetScript('OnShow', btn.set_Events)
-        btn:SetScript('OnHide', btn.set_Events)
     end
 
     Frame:set_Shown()
@@ -1438,16 +1416,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             end
         else
             e.Ccool(ReadyCheckListenerFrame, nil, arg2 or 35, nil, true,true)--冷却条
-        end
-        if Save.groupReadyTips then
-            setGroupReadyTips(event, arg1, arg2)--队员,就绪,提示信息
-        end
-    elseif event=='READY_CHECK_CONFIRM' then
-            setGroupReadyTips(event, arg1, arg2)--队员,就绪,提示信息
-
-    elseif event=='CHAT_MSG_SYSTEM' then
-        if arg1==READY_CHECK_ALL_READY then
-            setGroupReadyTips(event, arg1, arg2)--队员,就绪,提示信息
         end
     end
 end)
