@@ -840,7 +840,6 @@ local function Init_Markers_Frame()--设置标记, 框架
                     local key2= GetBindingKey('RAIDTARGETNONE')
                     local icon= get_RaidTargetTexture(self.index)
                     local can= CanBeRaidTarget('target')
-                    local meCan= CanBeRaidTarget('player')
                     e.tips:AddDoubleLine(icon..(can and Color[self.index].col or '|cff606060')
                                         ..(e.onlyChinese and '目标' or TARGET)..e.Icon.left
                                         ..(not can and ' '..(e.onlyChinese and '禁用' or DISABLE) or ''),
