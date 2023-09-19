@@ -89,13 +89,13 @@ e.LoadDate({id=34090, type= 'spell'})
 e.LoadDate({id=34090, type= 'spell'})
 
 
-local function setPanelPostion()--设置按钮位置
+local function set_Button_Postion()--设置按钮位置
     if Save.Point and Save.Point[1] and Save.Point[3] and Save.Point[4] and Save.Point[5] then
         button:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
-    --elseif e.Player.husandro then
-        --button:SetPoint('RIGHT', QueueStatusButton, 'LEFT')
+    elseif e.Player.husandro then
+        button:SetPoint('RIGHT', QueueStatusButton, 'LEFT')
     else
-        button:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -350, 6)
+        button:SetPoint('CENTER', 300, 100)
     end
 end
 
@@ -684,14 +684,14 @@ local function InitMenu(_, level, type)--主菜单
 
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinese and '还原位置' or RESET_POSITION,
+            text= e.onlyChinese and '重置位置' or RESET_POSITION,
             disabled=UnitAffectingCombat('player'),
             colorCode=not Save.Point and '|cff606060',
             keepShownOnClick=true,
             func=function()
                 Save.Point=nil
                 button:ClearAllPoints()
-                setPanelPostion()--设置按钮位置
+                set_Button_Postion()--设置按钮位置
                 e.LibDD:CloseDropDownMenus()
             end,
             tooltipOnButton=true,
@@ -1125,7 +1125,7 @@ local function Init()
             e.LoadDate({id=ID, type= type==ITEMS and 'item' or 'spell'})
         end
     end
-    setPanelPostion()--设置按钮位置
+    set_Button_Postion()--设置按钮位置
 
     --setButtonSize()--设置按钮大小
     XDInt()--德鲁伊设置
@@ -1139,15 +1139,16 @@ local function Init()
         setKEY()--设置捷键
     end
 
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+    
 
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
     button:SetClampedToScreen(true)
 
     button:SetScript("OnDragStart", function(self,d)
-        self:StartMoving()
+        if d=='RightButton' and IsAltKeyDown() then
+            self:StartMoving()
+        end
     end)
     button:SetScript("OnDragStop", function(self)
         ResetCursor()
@@ -1155,7 +1156,6 @@ local function Init()
         Save.Point={self:GetPoint(1)}
         Save.Point[2]=nil
         e.LibDD:CloseDropDownMenus()
-        self:Raise()
     end)
     button:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
@@ -1177,6 +1177,10 @@ local function Init()
             SetCursor('UI_MOVE_CURSOR')
 
         elseif d=='RightButton' and not IsModifierKeyDown() then
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+            end
            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
 
         elseif d=='LeftButton' then
@@ -1261,7 +1265,7 @@ local function Init()
 
         e.tips:AddLine('')
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..(Save.scale or 1)..'|r Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
     end)
@@ -1298,7 +1302,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
             --添加控制面板
             e.AddPanel_Header(nil, 'Tools')
-            e.AddPanel_Check({
+            local initializer2= e.AddPanel_Check({
                 name= '|A:bag-border-empty:0:0|aTools',
                 tooltip= addName,
                 value= not Save.disabled,
@@ -1307,6 +1311,20 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
             })
+            
+            local initializer= e.AddPanel_Button({
+                title= nil,
+                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                tooltip= nil,--需要 title
+                addSearchTags= e.onlyChinese and '重置位置' or RESET_POSITION,
+                func= function()
+                    Save.Point=nil
+                    button:ClearAllPoints()
+                    set_Button_Postion()--设置按钮位置
+                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                end
+            })
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 
             --[[local check=e.AddPanel_Check('|A:bag-border-empty:0:0|aTools', not Save.disabled, true)
             check:SetScript('OnMouseDown', function()
@@ -1332,7 +1350,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     showTexture=true,
                     sizi=nil,
                 })
-
+                button:Raise()
                 button:SetAttribute("type1", "spell")
                 button:SetAttribute("target-spell", "cursor")
                 button:SetAttribute("alt-type1", "spell")

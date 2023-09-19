@@ -532,7 +532,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     end)
 
 
-    
+
 
 
     --Ping System Blizzard_PingUI.lua
@@ -558,7 +558,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     }
 
     Frame.ping.Button={}
-    
+
     for _, index in pairs({8, 0, 1, 3, 2}) do
         btn= e.Cbtn(Frame.ping, {
             size={size,size},
@@ -620,9 +620,8 @@ local function Init_Markers_Frame()--设置标记, 框架
             if self.action then
                 local key1= GetBindingKey(self.action)
                 e.tips:AddDoubleLine(self.name, (key1 and key1~='') and '|cnGREEN_FONT_COLOR:'..key1..'|r' or nil)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine((not UnitExists('target') and '|cff606060' or '')..(e.onlyChinese and '目标' or TARGET), e.Icon.left)
-                e.tips:AddDoubleLine(e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME), e.Icon.right)
+                e.tips:AddLine((not UnitExists('target') and '|cff606060' or '')..(e.onlyChinese and '目标' or TARGET)..e.Icon.left)
+                e.tips:AddLine(e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..e.Icon.right)
             else
                 local find
                 local pingTab= self:GetParent().tab
@@ -638,14 +637,14 @@ local function Init_Markers_Frame()--设置标记, 框架
                 end
                 local guid= UnitExists('target') and UnitGUID('target')
                 local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
-                e.tips:AddDoubleLine((not UnitExists('target') and '|cff606060' or '')..(e.onlyChinese and '目标' or TARGET)
-                                    ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or ''),
-                                    e.Icon.left)
+                e.tips:AddLine((not UnitExists('target') and '|cff606060' or '')..(e.onlyChinese and '目标' or TARGET)
+                                    ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or '')
+                                    ..e.Icon.left)
 
                                     type= C_Ping.GetContextualPingTypeForUnit(e.Player.guid)
-                e.tips:AddDoubleLine(e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
-                                    ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or ''),
-                                        e.Icon.right)
+                e.tips:AddLine(e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+                                    ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or '')
+                                    ..e.Icon.right)
 
             end
             e.tips:Show()
@@ -664,44 +663,23 @@ local function Init_Markers_Frame()--设置标记, 框架
 
 
 
-    Frame.check=e.Cbtn(Frame, {size={size,size}, atlas=e.Icon.select})
-    Frame.check:SetNormalAtlas(e.Icon.select)
-    if Save.H then
-        Frame.check:SetPoint('BOTTOM', last, 'TOP', 0, size)
-    else
-        Frame.check:SetPoint('RIGHT', last, 'LEFT', -size, 0)
-    end
-    Frame.check:SetScript('OnMouseDown', function()
-        DoReadyCheck()
-    end)
-    Frame.check:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(EMOTE127_CMD3)
-        e.tips:Show()
-    end)
-    Frame.check:SetScript('OnLeave', function() e.tips:Hide() end)
-    function Frame.check:set_Event()
-        if self:IsVisible() then
-            self:RegisterEvent('READY_CHECK')
-            self:RegisterEvent('READY_CHECK_FINISHED')
-        else
-            self:UnregisterAllEvents()
-        end
-    end
-    Frame.check:SetScript('OnShow', Frame.check.set_Event)
-    Frame.check:SetScript('OnHide', Frame.check.set_Event)
-    Frame.check:SetScript('OnEvent', function(self, event, _, arg2)
-        e.Ccool(self, nil, event=='READY_CHECK_FINISHED' and 0 or arg2 or 0, nil, true, true)--冷却条
-    end)
-    Frame.check:set_Event()
+
+
+
+
+
+
+
+
+
+
 
 
     Frame.countdown= e.Cbtn(Frame, {size={size,size}, atlas='countdown-swords'})--倒计时10秒
     if Save.H then
-        Frame.countdown:SetPoint('BOTTOM', Frame.check, 'TOP')
+        Frame.countdown:SetPoint('BOTTOM', last, 'TOP', 0, size)
     else
-        Frame.countdown:SetPoint('RIGHT', Frame.check, 'LEFT')
+        Frame.countdown:SetPoint('RIGHT', last, 'LEFT', -size, 0)
     end
     Frame.countdown:SetScript('OnClick', function(self, d)
         local key=IsModifierKeyDown()
@@ -777,6 +755,45 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
     end)
     Frame.countdown:set_Event()
+
+
+    Frame.check=e.Cbtn(Frame, {size={size,size}, atlas=e.Icon.select})
+    Frame.check:SetNormalAtlas(e.Icon.select)
+    if Save.H then
+        Frame.check:SetPoint('BOTTOM', Frame.countdown, 'TOP')
+    else
+        Frame.check:SetPoint('RIGHT', Frame.countdown, 'LEFT')
+    end
+    Frame.check:SetScript('OnMouseDown', function()
+        DoReadyCheck()
+    end)
+    Frame.check:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(EMOTE127_CMD3)
+        e.tips:Show()
+    end)
+    Frame.check:SetScript('OnLeave', function() e.tips:Hide() end)
+    function Frame.check:set_Event()
+        if self:IsVisible() then
+            self:RegisterEvent('READY_CHECK')
+            self:RegisterEvent('READY_CHECK_FINISHED')
+        else
+            self:UnregisterAllEvents()
+        end
+    end
+    Frame.check:SetScript('OnShow', Frame.check.set_Event)
+    Frame.check:SetScript('OnHide', Frame.check.set_Event)
+    Frame.check:SetScript('OnEvent', function(self, event, _, arg2)
+        e.Ccool(self, nil, event=='READY_CHECK_FINISHED' and 0 or arg2 or 0, nil, true, true)--冷却条
+    end)
+    Frame.check:set_Event()
+
+
+
+
+
+
 
 
 

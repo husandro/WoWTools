@@ -192,7 +192,7 @@ function e.AddPanel_Button(tab)
     local title= tab.title or ''
     local buttonText= tab.buttonText or ''
     local buttonClick= tab.func
-    local tooltip= tab.title and tab.tooltip or nil
+    local tooltip= tab.tooltip or tab.buttonText or tab.title or nil
     local layout= tab.layout or Layout
     local addSearchTags= tab.addSearchTags or tab.title or tab.buttonText or ''
 
@@ -201,16 +201,17 @@ function e.AddPanel_Button(tab)
     return initializer
 end
 --[[
- e.AddPanel_Button({
+ local initializer= e.AddPanel_Button({
     title= nil,
     buttonText= addName,
     tooltip= nil,--需要 title
     layout= Layout,
-    addSearchTags= addName
+    addSearchTags= addName,
     func= function()
         print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
 })
+initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 ]]
 
 --添加，下拉菜单

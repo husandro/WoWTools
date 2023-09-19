@@ -5,88 +5,90 @@ local Save={
     scale=0.8
 }
 local addName='ChatButton'
-local panel=e.Cbtn(nil, {name='WoWToolsChatButtonFrame', icon='hide', size={10,30}})
-WoWToolsChatButtonFrame.last=panel
+local panel= CreateFrame("Frame")
+
+local button
 
 --####
 --初始
 --####
 local function Init()
+    
     if Save.scale and Save.scale~=1 then--缩放
-        panel:SetScale(Save.scale)
+        button:SetScale(Save.scale)
     end
-    if Save.Point then
-        panel:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
-    else
-        panel:SetPoint('BOTTOMLEFT', SELECTED_CHAT_FRAME, 'TOPLEFT', -5, 30)
+    function button:set_Point()
+        self:ClearAllPoints()
+        if Save.Point then
+            self:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
+        else
+            self:SetPoint('BOTTOMLEFT', SELECTED_CHAT_FRAME, 'TOPLEFT', -5, 30)
+        end
     end
-    panel:RegisterForDrag("RightButton")
-    panel:SetMovable(true)
-    panel:SetClampedToScreen(true)
+    button:set_Point()
 
-    panel:SetScript("OnDragStart", function(self,d )
-        if not IsModifierKeyDown() and d=='RightButton' then
+    button:RegisterForDrag("RightButton")
+    button:SetMovable(true)
+    button:SetClampedToScreen(true)
+
+    button:SetScript("OnDragStart", function(self,d )
+        if d=='RightButton' and IsAltKeyDown() then
             self:StartMoving()
         end
     end)
-    panel:SetScript("OnDragStop", function(self)
+    button:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
         Save.Point={self:GetPoint(1)}
         Save.Point[2]=nil
-        self:Raise()
-        print(id, addName, (e.onlyChinese and '重置位置' or RESET_POSITION), 'Alt+'..e.Icon.right)
     end)
-    panel:SetScript("OnMouseDown", function(self,d)
-        if d=='LeftButton' then--提示移动
-            print(id, addName, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, (e.onlyChinese and '缩放' or UI_SCALE)..'Alt+'..e.Icon.mid,Save.scale)
-
-        elseif d=='RightButton' and not IsModifierKeyDown() then--移动光标
+    button:SetScript("OnMouseDown", function(self, d)
+        if d=='RightButton' and IsAltKeyDown() then--移动光标
             SetCursor('UI_MOVE_CURSOR')
 
-        elseif d=='RightButton' and IsAltKeyDown() then--还原
-            if UnitAffectingCombat('player') then
-                print(id ,addName, (e.onlyChinese and '移动' or NPE_MOVE), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
-                return
-            end
+        elseif d=='RightButton' and IsControlKeyDown() then--还原
             Save.Point=nil
-            panel:ClearAllPoints()
-            panel:SetPoint('BOTTOMLEFT', SELECTED_CHAT_FRAME, 'TOPLEFT', -5, 30)
+            self:set_Point()
+            print(id ,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
-    panel:SetScript("OnMouseUp", function(self, d)
-        ResetCursor()
-    end)
-    panel:SetScript("OnLeave",function(self)
-        ResetCursor()
-        self:SetButtonState('NORMAL')
-    end)
-    panel:SetScript('OnMouseWheel', function(self, d)--缩放
-        if IsAltKeyDown() then
-            if UnitAffectingCombat('player') then
-                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
-            else
-                local sacle=Save.scale or 1
-                if d==1 then
-                    sacle=sacle+0.05
-                elseif d==-1 then
-                    sacle=sacle-0.05
-                end
-                if sacle>3 then
-                    sacle=3
-                elseif sacle<0.6 then
-                    sacle=0.6
-                end
-                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE), sacle)
-                self:SetScale(sacle)
-                Save.scale=sacle
-            end
+    button:SetScript("OnMouseUp", function() ResetCursor() end)
+
+    button:SetScript('OnMouseWheel', function(self, d)--缩放
+        if not IsAltKeyDown() then
+            return
         end
+        local sacle=Save.scale or 1
+        if d==1 then
+            sacle=sacle+0.05
+        elseif d==-1 then
+            sacle=sacle-0.05
+        end
+        sacle= sacle>4 and 4 or sacle
+        sacle= sacle<0.4 and 0.4 or sacle
+        self:SetScale(sacle)
+        Save.scale=sacle
+        print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..sacle)
+    end)
+    button:SetScript("OnLeave",function(self)
+        ResetCursor()
+        e.tips:Hide()
+    end)
+    button:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, self.addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, 'Alt+'..e.Icon.mid)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '重置位置' or RESET_POSITION, 'Ctrl+'..e.Icon.right)
+        e.tips:Show()
     end)
 
-    panel:SetButtonState('PUSHED')
-    C_Timer.After(4, function()
-        panel:SetButtonState('NORMAL')
+    button:SetButtonState('PUSHED')
+    C_Timer.After(6, function()
+        button:SetButtonState('NORMAL')
     end)
 end
 
@@ -95,13 +97,15 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
+            button= e.Cbtn(nil, {name='WoWToolsChatButtonFrame', icon='hide', size={10,30}})
+            WoWToolsChatButtonFrame.last= button
+
             Save= WoWToolsSave[addName] or Save
-            panel.disabled= Save.disabled
-            panel.ShowEmojiButton= Save.emoji
+            button.disabled= Save.disabled
+            button.ShowEmojiButton= Save.emoji
 
             --添加控制面板
             e.AddPanel_Header(nil, 'Chat')
@@ -111,7 +115,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    panel.disabled= Save.disabled
+                    button.disabled= Save.disabled
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
             })
