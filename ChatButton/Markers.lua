@@ -183,14 +183,111 @@ end
 --################
 --队员,就绪,提示信息
 --################
-local function set_GroupReady_Tips_Event()--注册事件, 就绪,队员提示信息
-    if Save.groupReadyTips then
-        panel:RegisterEvent('READY_CHECK_CONFIRM')
-        panel:RegisterEvent('CHAT_MSG_SYSTEM')
-    else
-        panel:UnregisterEvent('READY_CHECK_CONFIRM')
-        panel:UnregisterEvent('CHAT_MSG_SYSTEM')
+local ReadyTipsButton
+local function Init_Ready_Tips_Button()
+    if not Save.groupReadyTips then
+        if ReadyTipsButton then
+            ReadyTipsButton:set_Event()
+            ReadyTipsButton:set_Shown()
+        end
+        return
+    elseif ReadyTipsButton then
+        ReadyTipsButton:set_Event()
+        ReadyTipsButton:set_Shown()
+        return
     end
+
+    ReadyTipsButton= e.Cbtn(nil, {size={22,22}, atlas=e.Icon.select})
+    ReadyTipsButton.text=e.Cstr(ReadyTipsButton)
+    ReadyTipsButton.text:SetPoint('BOTTOMLEFT', ReadyTipsButton, 'BOTTOMRIGHT')
+
+
+    ReadyTipsButton:Raise()
+    ReadyTipsButton:RegisterForDrag("RightButton")
+    ReadyTipsButton:SetMovable(true)
+    ReadyTipsButton:SetClampedToScreen(true)
+
+    ReadyTipsButton:SetScript("OnDragStart", function(self,d )
+        if IsAltKeyDown() then
+            self:StartMoving()
+        end
+    end)
+    ReadyTipsButton:SetScript("OnDragStop", function(self)
+        ResetCursor()
+        self:StopMovingOrSizing()
+        Save.groupReadyTipsPoint={self:GetPoint(1)}
+        Save.groupReadyTipsPoint[2]=nil
+        
+    end)
+
+    function ReadyTipsButton:set_Point()
+        self:ClearAllPoints()
+        if Save.groupReadyTipsPoint then
+            self:SetPoint(Save.groupReadyTipsPoint[1], UIParent, Save.groupReadyTipsPoint[3], Save.groupReadyTipsPoint[4], Save.groupReadyTipsPoint[5])
+        else
+            self:SetPoint('BOTTOMLEFT', button, 'TOPLEFT', 0, 20)
+        end
+    end
+
+    function ReadyTipsButton:set_Event()
+        if Save.groupReadyTips then
+            self:RegisterEvent('READY_CHECK_CONFIRM')
+            self:RegisterEvent('CHAT_MSG_SYSTEM')
+        else
+           self:UnregisterAllEvents()
+        end
+    end
+
+    function ReadyTipsButton:set_Shown()
+        self:SetShown(Save.groupReadyTips and self.text:GetText()~='')
+        e.Ccool(self, nil, 0)
+    end
+    ReadyTipsButton:set_Event()
+    ReadyTipsButton:set_Shown()
+
+
+    ReadyTipsButton:SetScript('OnDoubleClick', function(self)
+        self.text:SetText('')
+        self:set_Shown()
+    end)
+
+    ReadyTipsButton:SetScript('OnClick', function(self, d)
+        local key=IsModifierKeyDown()
+        if d=='RightButton' and IsAltKeyDown() then
+            Save.groupReadyTipsPoint=nil
+            self:set_Point()
+        end
+    end)
+    
+
+
+    ReadyTipsButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '清除全部' or  CLEAR_ALL, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE,'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine(addName, e.onlyChinese and '队员就绪信息' or PLAYERS_IN_GROUP..READY..INFO)
+        e.tips:Show()
+        button:SetButtonState('PUSHED')
+    end)
+    ReadyTipsButton:SetScript('OnLeave', function()
+        ResetCursor()
+        e.tips:Hide()
+        button:SetButtonState('NORMAL')
+    end)
+    ReadyTipsButton:SetScript("OnMouseUp", function(self, d)
+        ResetCursor()
+    end)
+
+    ReadyTipsButton:SetScript('OnHide', function(self)
+        e.Ccool(self, nil, 0)
+    end)
+    
+end
+
+local function set_GroupReady_Tips_Event()--注册事件, 就绪,队员提示信息
+    
 end
 local function get_ReadyCheck_Status(unit, index, uiMapID)
     local stat= GetReadyCheckStatus(unit)
@@ -211,6 +308,8 @@ local function get_ReadyCheck_Status(unit, index, uiMapID)
             ..(uiMapID~=mapID and mapText or '')--地图名称
             ..' '
 end
+
+
 local function setGroupReadyTips(event, _, arg2)
     local text=''
     if event=='READY_CHECK' or event=='READY_CHECK_CONFIRM'  then
@@ -237,81 +336,19 @@ local function setGroupReadyTips(event, _, arg2)
                 text= (text~='' and text..'|n' or text)..text2
             end
         end
-        if text~='' and not button.groupReadyTips then
-            button.groupReadyTips= e.Cbtn(nil, {icon='hide', size={20,20}})
-            if Save.groupReadyTipsPoint then
-                button.groupReadyTips:SetPoint(Save.groupReadyTipsPoint[1], UIParent, Save.groupReadyTipsPoint[3], Save.groupReadyTipsPoint[4], Save.groupReadyTipsPoint[5])
-            else
-                button.groupReadyTips:SetPoint('BOTTOMLEFT', button, 'TOPLEFT', 0, 20)
-            end
-            button.groupReadyTips:SetScript('OnClick', function(self, d)
-                local key=IsModifierKeyDown()
-                if d=='LeftButton' and not key then
-                    self.text:SetText('')
-                    self:SetShown(false)
-                elseif d=='RightButton' and not key then
 
-                elseif d=='RightButton' and IsAltKeyDown() then
-                    Save.groupReadyTipsPoint=nil
-                    self:ClearAllPoints()
-                    self:SetPoint('BOTTOMLEFT', button, 'TOPLEFT', 0, 20)
-                end
-            end)
-            button.groupReadyTips:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(addName, e.onlyChinese and '队员就绪信息' or PLAYERS_IN_GROUP..READY..INFO)
-                e.tips:AddDoubleLine(e.onlyChinese and '清除全部' or  CLEAR_ALL, e.Icon.left)
-                e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-                e.tips:Show()
-                button:SetButtonState('PUSHED')
-            end)
-            button.groupReadyTips:SetScript('OnLeave', function()
-                ResetCursor()
-                e.tips:Hide()
-                button:SetButtonState('NORMAL')
-            end)
-            button.groupReadyTips:SetScript("OnMouseUp", function(self, d)
-                ResetCursor()
-            end)
-
-            button.groupReadyTips:RegisterForDrag("RightButton")
-            button.groupReadyTips:SetMovable(true)
-            button.groupReadyTips:SetClampedToScreen(true)
-
-            button.groupReadyTips:SetScript("OnDragStart", function(self,d )
-                if not IsModifierKeyDown() and d=='RightButton' then
-                    self:StartMoving()
-                end
-            end)
-            button.groupReadyTips:SetScript("OnDragStop", function(self)
-                ResetCursor()
-                self:StopMovingOrSizing()
-                Save.groupReadyTipsPoint={self:GetPoint(1)}
-                Save.groupReadyTipsPoint[2]=nil
-                print(id, addName, RESET_POSITION, 'Alt+'..e.Icon.right)
-                self:Raise()
-            end)
-            button.groupReadyTips:SetScript('OnHide', function(self)
-                if self.timer then
-                    self.timer:Cancel()
-                end
-            end)
-            button.groupReadyTips.text=e.Cstr(button.groupReadyTips)
-            button.groupReadyTips.text:SetPoint('BOTTOMLEFT', button.groupReadyTips, 'BOTTOMRIGHT')
-        end
         if event=='READY_CHECK' and text~='' then
-            if button.groupReadyTips.timer then button.groupReadyTips.timer:Cancel() end
-            button.groupReadyTips.timer= C_Timer.NewTimer(arg2 or 35, function()
-                button.groupReadyTips.text:SetText('')
-                button.groupReadyTips:SetShown(false)
+            if ReadyTipsButton.timer then ReadyTipsButton.timer:Cancel() end
+            ReadyTipsButton.timer= C_Timer.NewTimer(arg2 or 35, function()
+                ReadyTipsButton.text:SetText('')
+                ReadyTipsButton:SetShown(false)
             end)
-            e.Ccool(button.groupReadyTips,nil, arg2 or 35, nil,nil,true )
+            e.Ccool(ReadyTipsButton,nil, arg2 or 35, nil,nil,true )
         end
     end
-    if button.groupReadyTips then
-        button.groupReadyTips:SetShown(text~='')
-        button.groupReadyTips.text:SetText(text)
+    if ReadyTipsButton then
+        ReadyTipsButton:SetShown(text~='')
+        ReadyTipsButton.text:SetText(text)
     end
 end
 
@@ -662,19 +699,6 @@ local function Init_Markers_Frame()--设置标记, 框架
     end)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     Frame.countdown= e.Cbtn(Frame, {size={size,size}, atlas='countdown-swords'})--倒计时10秒
     if Save.H then
         Frame.countdown:SetPoint('BOTTOM', last, 'TOP', 0, size)
@@ -788,14 +812,6 @@ local function Init_Markers_Frame()--设置标记, 框架
         e.Ccool(self, nil, event=='READY_CHECK_FINISHED' and 0 or arg2 or 0, nil, true, true)--冷却条
     end)
     Frame.check:set_Event()
-
-
-
-
-
-
-
-
 
 
     --队伍标记
@@ -1090,7 +1106,7 @@ local function InitMenu(_, level, type)--主菜单
                 keepShownOnClick= true,
                 func=function()
                     Save.groupReadyTips= not Save.groupReadyTips and true or false
-                    set_GroupReady_Tips_Event()--注册事件, 就绪,队员提示信息
+                    Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1275,7 +1291,7 @@ local function Init()
 
     Init_Markers_Frame()--设置标记, 框架
     setReadyTexureTips()--自动就绪, 主图标, 提示
-    set_GroupReady_Tips_Event()--注册事件, 就绪,队员提示信息
+    Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
 
     button:SetScript("OnMouseDown", function(self,d)
         if d=='LeftButton' then

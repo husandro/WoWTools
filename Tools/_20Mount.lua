@@ -90,6 +90,10 @@ e.LoadDate({id=34090, type= 'spell'})
 
 
 local function set_Button_Postion()--设置按钮位置
+    if not button then
+        return
+    end
+    button:ClearAllPoints()
     if Save.Point and Save.Point[1] and Save.Point[3] and Save.Point[4] and Save.Point[5] then
         button:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
     elseif e.Player.husandro then
@@ -1319,7 +1323,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 addSearchTags= e.onlyChinese and '重置位置' or RESET_POSITION,
                 func= function()
                     Save.Point=nil
-                    button:ClearAllPoints()
                     set_Button_Postion()--设置按钮位置
                     print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                 end

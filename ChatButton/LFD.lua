@@ -543,11 +543,16 @@ end
 
 local function Init_tipsButton()
     tipsButton= e.Cbtn(nil, {size={18,18}, atlas= 'UI-HUD-MicroMenu-Groupfinder-Mouseover'})
-    if Save.tipsFramePoint then
-        tipsButton:SetPoint(Save.tipsFramePoint[1], UIParent, Save.tipsFramePoint[3], Save.tipsFramePoint[4], Save.tipsFramePoint[5])
-    else
-        tipsButton:SetPoint('BOTTOMLEFT', button, 'TOPLEFT',0,2)
+    tipsButton:Raise()
+    function tipsButton:set_Point()
+        self:ClearAllPoints()
+        if Save.tipsFramePoint then
+            tipsButton:SetPoint(Save.tipsFramePoint[1], UIParent, Save.tipsFramePoint[3], Save.tipsFramePoint[4], Save.tipsFramePoint[5])
+        else
+            tipsButton:SetPoint('BOTTOMLEFT', button, 'TOPLEFT',0,2)
+        end
     end
+    tipsButton:set_Point()
     tipsButton:RegisterForDrag("RightButton")
     tipsButton:SetMovable(true)
     tipsButton:SetClampedToScreen(true)
@@ -562,9 +567,11 @@ local function Init_tipsButton()
         self:StopMovingOrSizing()
         Save.tipsFramePoint={self:GetPoint(1)}
         Save.tipsFramePoint[2]=nil
-        self:Raise()
     end)
     tipsButton:SetScript('OnMouseWheel', function(self, d)
+        if not IsAltKeyDown() then
+            return
+        end
         local n= Save.tipsScale or 1
         if d==1 then
             n=n+ 0.05
@@ -576,9 +583,14 @@ local function Init_tipsButton()
         self:SetScale(n)
         print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
     end)
-    tipsButton:SetScript("OnMouseDown", function(self,d)
+    tipsButton:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
+        elseif d=='RightButton' and IsControlKeyDown() then
+            self:set_Point()
+            print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+        elseif not PVEFrame:IsShown() then
+            PVEFrame_ToggleFrame()
         end
     end)
     tipsButton:SetScript('OnMouseUp', ResetCursor)
@@ -590,11 +602,13 @@ local function Init_tipsButton()
     tipsButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(not e.onlyChinese and DUNGEONS_BUTTON or "队伍查找器", e.Icon.left)
         e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
+        e.tips:AddDoubleLine(not e.onlyChinese and DUNGEONS_BUTTON or "队伍查找器", e.Icon.left)
         e.tips:AddLine(' ')
+        
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (Save.tipsScale or 1).. e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.tipsScale or 1), 'Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '重置位置' or RESET_POSITION,'Ctlr+'..e.Icon.right)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')
         e.tips:AddDoubleLine(id, addName)
@@ -603,7 +617,7 @@ local function Init_tipsButton()
         setQueueStatus()--小眼睛, 更新信息
     end)
 
-    tipsButton:SetScript('OnDoubleClick', function(self2, d)--离开所有队列
+    tipsButton:SetScript('OnDoubleClick', function(_, d)--离开所有队列
         if d~= 'LeftButton' or IsModifierKeyDown() then
             return
         end
@@ -621,11 +635,8 @@ local function Init_tipsButton()
         C_LFGList.RemoveListing()
         C_LFGList.ClearSearchResults()
     end)
-    tipsButton:SetScript('OnClick', function()
-        if not PVEFrame:IsShown() then
-            PVEFrame_ToggleFrame()
-        end
-    end)
+    --tipsButton:SetScript('OnClick', function()
+        
 
     tipsButton.elapsed=0
     tipsButton:SetScript('OnUpdate', function(self, elapsed)

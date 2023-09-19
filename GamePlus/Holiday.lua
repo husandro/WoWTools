@@ -315,7 +315,7 @@ end
 --#####
 --主菜单
 --#####
-local function InitMenu(_, level)--主菜单
+local function Init_Menu(_, level)--主菜单
     local info={
         text= e.onlyChinese and '内容靠左' or BINDING_NAME_STRAFELEFT,--向左平移
         checked=not Save.left,
@@ -395,7 +395,7 @@ local function InitMenu(_, level)--主菜单
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={--提示移动
-        text= e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
+        text= 'Alt+'..e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
         isTitle=true,
         notCheckable=true
     }
@@ -439,7 +439,9 @@ local function Init()
     button:SetMovable(true)
     button:SetClampedToScreen(true)
     button:SetScript("OnDragStart", function(self)
-        self:StartMoving()
+        if IsAltKeyDown() then
+            self:StartMoving()
+        end
     end)
     button:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
@@ -457,8 +459,8 @@ local function Init()
             self:set_Texture()
         elseif d=='RightButton' then
             if not self.Menu then
-                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
             SetCursor('UI_MOVE_CURSOR')
@@ -748,7 +750,7 @@ local function Init_Blizzard_Calendar()
         last:SetPoint('TOPRIGHT', menu2, 'BOTTOMRIGHT')
         e.LibDD:UIDropDownMenu_SetWidth(last, 60)
         e.LibDD:UIDropDownMenu_SetText(last, e.onlyChinese and '公会' or GUILD)
-        e.LibDD:UIDropDownMenu_Initialize(last, function(self2, level, type)
+        e.LibDD:UIDropDownMenu_Initialize(last, function(_, level)
             local map=e.GetUnitMapName('player')
             local inviteTab={}
             for index = 1, C_Calendar.GetNumInvites() do

@@ -120,6 +120,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end,
             })
 
+
            local initializer= e.AddPanel_Check({
                 name= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\greet:0|tEmoji',
                 tooltip= addName..', Emoji',
@@ -127,6 +128,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 func= function()
                     Save.emoji= not Save.emoji and true or nil
                     print(id, addName, 'Emoji', e.GetEnabeleDisable(Save.emoji), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+
+            initializer= e.AddPanel_Button({
+                title= nil,
+                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                tooltip= nil,--需要 title
+                addSearchTags= e.onlyChinese and '重置位置' or RESET_POSITION,
+                func= function()
+                    Save.Point=nil
+                    if button then
+                        button:set_Point()
+                    end
+                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                 end
             })
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
