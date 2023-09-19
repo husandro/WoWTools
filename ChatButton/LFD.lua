@@ -552,8 +552,10 @@ local function Init_tipsButton()
     tipsButton:SetMovable(true)
     tipsButton:SetClampedToScreen(true)
 
-    tipsButton:SetScript("OnDragStart", function(self,d )
-        self:StartMoving()
+    tipsButton:SetScript("OnDragStart", function(self, d)
+        if IsAltKeyDown() then
+            self:StartMoving()
+        end
     end)
     tipsButton:SetScript("OnDragStop", function(self)
         ResetCursor()
@@ -575,7 +577,7 @@ local function Init_tipsButton()
         print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
     end)
     tipsButton:SetScript("OnMouseDown", function(self,d)
-        if d=='RightButton' then
+        if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
@@ -591,7 +593,7 @@ local function Init_tipsButton()
         e.tips:AddDoubleLine(not e.onlyChinese and DUNGEONS_BUTTON or "队伍查找器", e.Icon.left)
         e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (Save.tipsScale or 1).. e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')

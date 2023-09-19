@@ -43,7 +43,7 @@ local function Init()
         Save.Point[2]=nil
     end)
     button:SetScript("OnMouseDown", function(self, d)
-        if d=='RightButton' and IsAltKeyDown() then--移动光标
+        if IsAltKeyDown() then--移动光标
             SetCursor('UI_MOVE_CURSOR')
 
         elseif d=='RightButton' and IsControlKeyDown() then--还原
