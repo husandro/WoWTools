@@ -133,9 +133,9 @@ local function Item(link)--物品超链接
                 if not sourceInfo.isCollected then
                     local hasItemData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)--玩家是否可收集
                     if hasItemData and canCollect then
-                        t=t..e.Icon.okTransmog2
+                        t=t..'|T132288:0|t'
                     else
-                        t=t..e.Icon.transmogHide2
+                        t=t..'|A:transmog-icon-hidden:0:0|a'
                     end
                 end
             end
@@ -334,9 +334,9 @@ local function Transmogillusion(link)--幻化
     if illusionID then
         local info=C_TransmogCollection.GetIllusionInfo(illusionID)
         if info then
-            local icon=e.Icon.transmogHide2
+            local icon='|A:transmog-icon-hidden:0:0|a'
             if info.isCollected and info.isUsable then
-                icon=e.Icon.okTransmog2
+                icon='|T132288:0|t'
             elseif info.isCollected then
                 icon=e.Icon.select2
             end

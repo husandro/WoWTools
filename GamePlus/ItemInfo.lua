@@ -429,7 +429,7 @@ local function set_Item_Info(self, tab)
     if setIDItem and not self.setIDItem then
         self.setIDItem=self:CreateTexture()
         self.setIDItem:SetAllPoints(self)
-        self.setIDItem:SetAtlas(e.Icon.pushed)
+        self.setIDItem:SetAtlas('UI-HUD-MicroMenu-Highlightalert')
     end
     if self.setIDItem then
         self.setIDItem:SetShown(setIDItem)

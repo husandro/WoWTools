@@ -350,7 +350,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 	if isWatched and not factionBar.watchedIcon then--显示为经验条
 		factionContainer.watchedIcon=factionBar:CreateTexture(nil, 'OVERLAY')
 		factionContainer.watchedIcon:SetPoint('LEFT')
-		factionContainer.watchedIcon:SetAtlas(e.Icon.selectYellow)
+		factionContainer.watchedIcon:SetAtlas('common-icon-checkmark-yellow')
 		factionContainer.watchedIcon:SetSize(16, 16)
 	end
 	if factionContainer.watchedIcon then

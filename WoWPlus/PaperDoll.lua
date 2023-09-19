@@ -579,7 +579,7 @@ local function set_item_Set(self, link)--套装
             if set and not self.set then
                 self.set=self:CreateTexture()
                 self.set:SetAllPoints(self)
-                self.set:SetAtlas(e.Icon.pushed)
+                self.set:SetAtlas('UI-HUD-MicroMenu-Highlightalert')
             end
         end
     end

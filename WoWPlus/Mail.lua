@@ -812,7 +812,7 @@ local function Init_Fast_Menu(_, level, menuList)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
         if menuList.class==2 or menuList.class==4 then
             info= {
-                text= e.Icon.okTransmog2..format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED),
+                text= '|T132288:0|t'..format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED),
                 notCheckable= true,
                 isTitle= true,
             }
@@ -870,7 +870,7 @@ local function Init_Fast_Menu(_, level, menuList)
     local find
     for _, tab2 in pairs(newTab) do
         info={
-            text= (tab2.class<10 and ' ' or '')..tab2.class..') '.. GetItemClassInfo(tab2.class)..((tab2.class==2 or tab2==4) and e.Icon.okTransmog2 or ' ')..'|cnGREEN_FONT_COLOR:#'..tab2.num,
+            text= (tab2.class<10 and ' ' or '')..tab2.class..') '.. GetItemClassInfo(tab2.class)..((tab2.class==2 or tab2==4) and '|T132288:0|t' or ' ')..'|cnGREEN_FONT_COLOR:#'..tab2.num,
             keepShownOnClick= true,
             notCheckable=true,
             menuList= {class=tab2.class, subClass=tab2.subClass, num=tab2.num},

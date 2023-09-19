@@ -3271,7 +3271,8 @@
         "BINDING_NAME_PINGWARNING",
         "BINDING_NAME_PINGONMYWAY",
         "BINDING_NAME_PINGASSIST",
-        "BINDING_NAME_TOGGLEPINGLISTENER"
+        "BINDING_NAME_TOGGLEPINGLISTENER",
+        "READY_CHECK_FINISHED"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

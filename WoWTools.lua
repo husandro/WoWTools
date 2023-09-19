@@ -343,9 +343,9 @@ e.Icon={
     icon= 'orderhalltalents-done-glow',
 
     disabled='talents-button-reset',
-    select='AlliedRace-UnlockingFrame-Checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√
-    select2='|A:AlliedRace-UnlockingFrame-Checkmark:0:0|a',--绿色√
-    selectYellow='Adventures-Checkmark',--黄色√
+    select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√
+    select2='|A:common-icon-checkmark:0:0|a',--绿色√
+    --selectYellow='common-icon-checkmark-yellow',--黄色√
     X2='|A:xmarksthespot:0:0|a',
     O2='|A:talents-button-reset:0:0|a',--￠
 
@@ -353,12 +353,12 @@ e.Icon={
     left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
     mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
 
-    pushed='UI-HUD-MicroMenu-Highlightalert',--'bag-border-highlight',--Forge-ColorSwatchHighlight',--移过时
-    highlight='Forge-ColorSwatchSelection',--点击时
+    --pushed='UI-HUD-MicroMenu-Highlightalert',--'bag-border-highlight',--Forge-ColorSwatchHighlight',--移过时
+    --highlight='Forge-ColorSwatchSelection',--点击时
 
-    transmogHide='transmog-icon-hidden',--不可幻化
-    transmogHide2='|A:transmog-icon-hidden:0:0|a',--不可幻化
-    okTransmog2='|T132288:0|t',--可幻化
+    --transmogHide='transmog-icon-hidden',--不可幻化
+    --transmogHide2='|A:transmog-icon-hidden:0:0|a',--不可幻化
+    --okTransmog2='|T132288:0|t',--可幻化
 
     map='poi-islands-table',
     map2='|A:poi-islands-table:0:0|a',
@@ -655,8 +655,8 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size
         btn:SetSize(tab.size[1], tab.size[2])
     end
     if tab.type~=false then
-        btn:SetHighlightAtlas(e.Icon.highlight)
-        btn:SetPushedAtlas(e.Icon.pushed)
+        btn:SetHighlightAtlas('Forge-ColorSwatchSelection')
+        btn:SetPushedAtlas('UI-HUD-MicroMenu-Highlightalert')
         if tab.icon~='hide' then
             if tab.texture then
                 btn:SetNormalTexture(tab.texture)
@@ -674,6 +674,12 @@ end
 
 e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
     if not (self or duration) then
+        return
+    end
+    if duration<=0 then
+        if self.cooldown then
+            self.cooldown:Clear()
+        end
         return
     end
     if not self.cooldown then
@@ -1165,7 +1171,7 @@ e.GetItemCollected= function(link, sourceID, icon)--物品是否收集
         else
             if icon then
                 if isSelf then
-                    return e.Icon.okTransmog2, sourceInfo.isCollected, isSelf
+                    return '|T132288:0|t', sourceInfo.isCollected, isSelf
                 else
                     return e.Icon.star2, sourceInfo.isCollected, isSelf
                 end
@@ -1390,7 +1396,7 @@ e.Set_Item_Stats = function(self, link, setting) --setting= setting or {}
             setID= select(16 , GetItemInfo(link))--套装
             if setID and not self.itemSet then
                 self.itemSet= self:CreateTexture()
-                self.itemSet:SetAtlas(e.Icon.pushed)--services-icon-goldborder
+                self.itemSet:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
                 self.itemSet:SetVertexColor(1, 0.85, 0)
                 self.itemSet:SetAllPoints(setting.point or self)
             end
