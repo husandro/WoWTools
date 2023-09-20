@@ -201,8 +201,6 @@ local function Init_Ready_Tips_Button()
     ReadyTipsButton.text=e.Cstr(ReadyTipsButton)
     ReadyTipsButton.text:SetPoint('BOTTOMLEFT', ReadyTipsButton, 'TOPLEFT')
 
-
-    ReadyTipsButton:Raise()
     ReadyTipsButton:RegisterForDrag("RightButton")--移动
     ReadyTipsButton:SetMovable(true)
     ReadyTipsButton:SetClampedToScreen(true)
@@ -240,7 +238,7 @@ local function Init_Ready_Tips_Button()
         self:set_Shown()
     end
 
-    function ReadyTipsButton:set_Event()
+    function ReadyTipsButton:set_Event()--设置，信息
         if Save.groupReadyTips then
             self:RegisterEvent('READY_CHECK_CONFIRM')
             self:RegisterEvent('CHAT_MSG_SYSTEM')
@@ -250,7 +248,7 @@ local function Init_Ready_Tips_Button()
         end
     end
 
-    function ReadyTipsButton:get_ReadyCheck_Status(unit, index, uiMapID)
+    function ReadyTipsButton:get_ReadyCheck_Status(unit, index, uiMapID)--取得，就绪信息
         local stat= GetReadyCheckStatus(unit)
         if stat=='ready' then
             return
@@ -270,7 +268,7 @@ local function Init_Ready_Tips_Button()
                 ..' '
     end
 
-    function ReadyTipsButton:get_ReadyCheck_Text()
+    function ReadyTipsButton:get_ReadyCheck_Text()--取得，队伍，所有，就绪信息
         local text
         local isInRaid=IsInRaid()
         local unit=isInRaid and 'raid' or 'party'
@@ -347,6 +345,7 @@ local function Init_Ready_Tips_Button()
     end)
 
     ReadyTipsButton:set_Point()
+    ReadyTipsButton:Raise()
     ReadyTipsButton:set_Event()
     ReadyTipsButton:set_Shown()
 end
@@ -1041,209 +1040,228 @@ end
 --#####
 local function InitMenu(_, level, type)--主菜单
     local info
-    if type then
-        if type=='ready' then
-            info={
-                text=e.Icon.select2..(e.onlyChinese and '就绪' or READY),--就绪
-                colorCode='|cff00ff00',
-                checked= Save.autoReady==1,
-                keepShownOnClick=true,
-                func=function()
-                    Save.autoReady=1
-                    setReadyTexureTips()--自动就绪, 主图标, 提示
-                    e.LibDD:CloseDropDownMenus();
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-            info={
-                text=e.Icon.X2..(e.onlyChinese and '未就绪' or NOT_READY_FEMALE),--未就绪
-                colorCode='|cffff0000',
-                checked= Save.autoReady==2,
-                keepShownOnClick= true,
-                func=function()
-                    Save.autoReady=2
-                    setReadyTexureTips()--自动就绪, 主图标, 提示
-                    e.LibDD:CloseDropDownMenus();
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-            info={--无
-                text= e.onlyChinese and '无' or NONE,
-                checked=not Save.autoReady,
-                keepShownOnClick= true,
-                func=function()
-                    Save.autoReady=nil
-                    setReadyTexureTips()--自动就绪, 主图标, 提示
-                    e.LibDD:CloseDropDownMenus();
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-            e.LibDD:UIDropDownMenu_AddSeparator(level)--队员提示信息
-            info={
-                text= e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)),
-                checked=Save.groupReadyTips,
-                keepShownOnClick= true,
-                func=function()
-                    Save.groupReadyTips= not Save.groupReadyTips and true or false
-                    Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        elseif type=='MakerFrameResetPost' then--重置位置， 队伍标记工具
-            --[[info={
-                text= e.onlyChinese and '冷却时间：信号' or format(CAPACITANCE_SHIPMENT_COOLDOWN, PING),
-                tooltipOnButton=true,
-                tooltipTitle= e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this',
-                colorCode= not C_CVar.GetCVarBool("enablePings") and '|cff606060' or nil,
-                checked= Save.pingTime,
-                keepShownOnClick=true,
-                func= function()
-                    Save.pingTime= not Save.pingTime and true or nil
-                    print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-            e.LibDD:UIDropDownMenu_AddSeparator(level)]]
-
-            info={
-                text= e.onlyChinese and '重置位置' or RESET_POSITION,
-                notCheckable=true,
-                colorCode= not Save.markersFramePoint and '|cff606060',
-                keepShownOnClick=true,
-                disabled= not Frame,
-                func= function()
-                    Frame:ClearAllPoints()
-                    Save.markersFramePoint=nil
-                    Frame:Init_Set_Frame()--位置
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        else
-            local num= NUM_RAID_ICONS+1
-            for index=1, num do
-                if index==num then
-                    e.LibDD:UIDropDownMenu_AddSeparator(level)
-                end
-                info={
-                    text= index==num and (e.onlyChinese and '无' or NONE) or _G['RAID_TARGET_'..index],
-                    icon= index==num and nil or 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
-                    checked= Save[type]==index,
-                    colorCode=Color[index] and Color[index].col,
-                    keepShownOnClick= true,
-                    func=function()
-                        Save[type]=index
-                        e.LibDD:CloseDropDownMenus()
-                        if type=='tank' then
-                            setTexture()--图标, 自动标记
-                        end
-                    end
-                }
-                if index~=0 then
-                    if type=='tank' then
-                        info.disabled= Save.healer==index or Save.tank2==index
-                    elseif type=='tank2' then
-                        info.disabled= Save.tank==index or Save.tank==0
-                    elseif type=='healer' then
-                        info.disabled= Save.tank==index
-                    end
-                end
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-            end
-            info={
-                text=format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, type=='tank2' and (e.onlyChinese and '团队' or RAID) or type=='healer' and (e.onlyChinese and '小队' or GROUP) or (e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
-                notCheckable=true,
-                isTitle=true,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-    else
+    if type=='ReadyTipsRestPoint' then
         info={
-            text= (e.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER))..e.Icon.TANK..e.Icon.HEALER,
-            icon= 'Warfronts-BaseMapIcons-Alliance-Workshop-Minimap',
-            checked= Save.autoSet,
-            disabled= Save.tank==0 and Save.healer==0,
-            keepShownOnClick= true,
-            func=function()
-                if Save.autoSet then
-                    Save.autoSet=nil
-                else
-                    Save.autoSet=true
-                    setTankHealer(true)
-                end
-                setTexture()--设置,按钮图片
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        e.LibDD:UIDropDownMenu_AddSeparator()
-
-        local tab={
-                {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK), type='tank'},
-                {text= e.Icon.HEALER..(e.onlyChinese and '治疗' or HEALER), type='healer'},
-                {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK)..'2', type='tank2'},
-            }
-        for _, tab2 in pairs(tab) do
-            info={
-                text=tab2.text,
-                checked=Save[tab2.type]~=0,
-                keepShownOnClick= true,
-                menuList=tab2.type,
-                hasArrow=true,
-            }
-            if Save[tab2.type]~=0 then
-                info.text=info.text..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save[tab2.type]..':0|t'
-            end
-            info.colorCode=Color[Save[tab2.type]] and Color[Save[tab2.type]].col
-            if tab2.type2 and Save.tank==0 then
-                info.disabled=true
-            end
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-            if tab2.type=='healer' then
-                e.LibDD:UIDropDownMenu_AddSeparator()
-            end
-        end
-
-        e.LibDD:UIDropDownMenu_AddSeparator()
-        info={
-            text=e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET),
-            checked=Save.markersFrame,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''),
-            tooltipText= (e.onlyChinese and '需求：队伍和权限' or (NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, CALENDAR_INVITELIST_SETMODERATOR))),
-            menuList= 'MakerFrameResetPost',
-            hasArrow=true,
-            keepShownOnClick= true,
-            disabled=not get_All_Set() or C_PvP.IsArena() or C_PvP.IsBattleground() or UnitAffectingCombat('player'),--是不有权限
-            func=function()
-                Save.markersFrame= not Save.markersFrame and true or nil
-                Init_Markers_Frame()--设置标记, 框架
-            end,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text=(
-                    Save.autoReady==1 and e.Icon.select2
-                    or Save.autoReady==2 and e.Icon.O2
-                    or (e.onlyChinese and '无' or NONE)
-                )
-                ..format(e.onlyChinese and '%s%s' or CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '自动' or SELF_CAST_AUTO, (
-                    (not Save.autoReady or Save.autoReady==1) and (e.onlyChinese and '就绪' or READY)
-                    or Save.autoReady==2 and (e.onlyChinese and '未就绪'
-                    or NOT_READY_FEMALE)
-                    or ''
-                )),
-            --checked= Save.autoReady==1 or Save.autoReady==2,
+            text= e.onlyChinese and '重置位置' or RESET_POSITION,
             notCheckable=true,
-            colorCode= Save.autoReady==1 and '|cff00ff00' or Save.autoReady==2 and '|cffff0000',
-            menuList='ready',
-            hasArrow=true,
+            colorCode= not Save.groupReadyTips and '|cff606060',
+            keepShownOnClick=true,
+            disabled= not ReadyTipsButton,
+            func= function()
+                ReadyTipsButton:ClearAllPoints()
+                Save.groupReadyTipsPoint=nil
+                ReadyTipsButton:set_Point()--位置
+                print(id,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif type=='ready' then
+        info={
+            text=e.Icon.select2..(e.onlyChinese and '就绪' or READY),--就绪
+            colorCode='|cff00ff00',
+            checked= Save.autoReady==1,
+            keepShownOnClick=true,
+            func=function()
+                Save.autoReady=1
+                setReadyTexureTips()--自动就绪, 主图标, 提示
+                e.LibDD:CloseDropDownMenus();
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        info={
+            text=e.Icon.X2..(e.onlyChinese and '未就绪' or NOT_READY_FEMALE),--未就绪
+            colorCode='|cffff0000',
+            checked= Save.autoReady==2,
             keepShownOnClick= true,
+            func=function()
+                Save.autoReady=2
+                setReadyTexureTips()--自动就绪, 主图标, 提示
+                e.LibDD:CloseDropDownMenus();
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        info={--无
+            text= e.onlyChinese and '无' or NONE,
+            checked=not Save.autoReady,
+            keepShownOnClick= true,
+            func=function()
+                Save.autoReady=nil
+                setReadyTexureTips()--自动就绪, 主图标, 提示
+                e.LibDD:CloseDropDownMenus();
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        e.LibDD:UIDropDownMenu_AddSeparator(level)--队员提示信息
+        info={
+            text= e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)),
+            checked=Save.groupReadyTips,
+            keepShownOnClick= true,
+            func=function()
+                Save.groupReadyTips= not Save.groupReadyTips and true or false
+                Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif type=='MakerFrameResetPost' then--重置位置， 队伍标记工具
+        --[[info={
+            text= e.onlyChinese and '冷却时间：信号' or format(CAPACITANCE_SHIPMENT_COOLDOWN, PING),
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this',
+            colorCode= not C_CVar.GetCVarBool("enablePings") and '|cff606060' or nil,
+            checked= Save.pingTime,
+            keepShownOnClick=true,
+            func= function()
+                Save.pingTime= not Save.pingTime and true or nil
+                print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)]]
+
+        info={
+            text= e.onlyChinese and '重置位置' or RESET_POSITION,
+            notCheckable=true,
+            colorCode= not Save.markersFramePoint and '|cff606060',
+            keepShownOnClick=true,
+            disabled= not Frame,
+            func= function()
+                Frame:ClearAllPoints()
+                Save.markersFramePoint=nil
+                Frame:Init_Set_Frame()--位置
+                print(id,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    else
+        local num= NUM_RAID_ICONS+1
+        for index=1, num do
+            if index==num then
+                e.LibDD:UIDropDownMenu_AddSeparator(level)
+            end
+            info={
+                text= index==num and (e.onlyChinese and '无' or NONE) or _G['RAID_TARGET_'..index],
+                icon= index==num and nil or 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
+                checked= Save[type]==index,
+                colorCode=Color[index] and Color[index].col,
+                keepShownOnClick= true,
+                func=function()
+                    Save[type]=index
+                    e.LibDD:CloseDropDownMenus()
+                    if type=='tank' then
+                        setTexture()--图标, 自动标记
+                    end
+                end
+            }
+            if index~=0 then
+                if type=='tank' then
+                    info.disabled= Save.healer==index or Save.tank2==index
+                elseif type=='tank2' then
+                    info.disabled= Save.tank==index or Save.tank==0
+                elseif type=='healer' then
+                    info.disabled= Save.tank==index
+                end
+            end
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+        info={
+            text=format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, type=='tank2' and (e.onlyChinese and '团队' or RAID) or type=='healer' and (e.onlyChinese and '小队' or GROUP) or (e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
+            notCheckable=true,
+            isTitle=true,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
+    
+    if type then
+        return
+    end
+
+    info={
+        text= (e.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER))..e.Icon.TANK..e.Icon.HEALER,
+        icon= 'Warfronts-BaseMapIcons-Alliance-Workshop-Minimap',
+        checked= Save.autoSet,
+        disabled= Save.tank==0 and Save.healer==0,
+        keepShownOnClick= true,
+        func=function()
+            if Save.autoSet then
+                Save.autoSet=nil
+            else
+                Save.autoSet=true
+                setTankHealer(true)
+            end
+            setTexture()--设置,按钮图片
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    e.LibDD:UIDropDownMenu_AddSeparator()
+
+    local tab={
+            {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK), type='tank'},
+            {text= e.Icon.HEALER..(e.onlyChinese and '治疗' or HEALER), type='healer'},
+            {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK)..'2', type='tank2'},
+        }
+    for _, tab2 in pairs(tab) do
+        info={
+            text=tab2.text,
+            checked=Save[tab2.type]~=0,
+            keepShownOnClick= true,
+            menuList=tab2.type,
+            hasArrow=true,
+        }
+        if Save[tab2.type]~=0 then
+            info.text=info.text..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save[tab2.type]..':0|t'
+        end
+        info.colorCode=Color[Save[tab2.type]] and Color[Save[tab2.type]].col
+        if tab2.type2 and Save.tank==0 then
+            info.disabled=true
+        end
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        if tab2.type=='healer' then
+            e.LibDD:UIDropDownMenu_AddSeparator()
+        end
+    end
+
+    e.LibDD:UIDropDownMenu_AddSeparator()
+    info={
+        text=e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET),
+        checked=Save.markersFrame,
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''),
+        tooltipText= (e.onlyChinese and '需求：队伍和权限' or (NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, CALENDAR_INVITELIST_SETMODERATOR))),
+        menuList= 'MakerFrameResetPost',
+        hasArrow=true,
+        keepShownOnClick= true,
+        disabled=not get_All_Set() or C_PvP.IsArena() or C_PvP.IsBattleground() or UnitAffectingCombat('player'),--是不有权限
+        func=function()
+            Save.markersFrame= not Save.markersFrame and true or nil
+            Init_Markers_Frame()--设置标记, 框架
+        end,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text=(
+                Save.autoReady==1 and e.Icon.select2
+                or Save.autoReady==2 and e.Icon.O2
+                or (e.onlyChinese and '无' or NONE)
+            )
+            ..format(e.onlyChinese and '%s%s' or CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '自动' or SELF_CAST_AUTO, (
+                (not Save.autoReady or Save.autoReady==1) and (e.onlyChinese and '就绪' or READY)
+                or Save.autoReady==2 and (e.onlyChinese and '未就绪'
+                or NOT_READY_FEMALE)
+                or ''
+            )),
+        --checked= Save.autoReady==1 or Save.autoReady==2,
+        notCheckable=true,
+        colorCode= Save.autoReady==1 and '|cff00ff00' or Save.autoReady==2 and '|cffff0000',
+        menuList='ready',
+        hasArrow=true,
+        keepShownOnClick= true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 
