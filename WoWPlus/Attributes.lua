@@ -1095,14 +1095,7 @@ local function frame_Init(rest)--初始， 或设置
 end
 
 
---##########
---显示， 隐藏
---##########
-local function set_Show_Hide()
-    button.frame:SetShown(not Save.hide)
-    button.texture:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0)
-    button.classPortrait:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0)
-end
+
 
 --################
 --显示，隐藏，事件
@@ -1119,18 +1112,35 @@ local function set_ShowHide_Event()
     end
 end
 
---#########
---设置, 位置
---#########
-local function set_Point()
-    if Save.point then
-        button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-    elseif e.Player.husandro then
-        button:SetPoint('LEFT', PlayerFrame, 'RIGHT', 25, 35)
-    else
-        button:SetPoint('LEFT', 23, 180)
-    end
-end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --##########
 --设置 panel
@@ -1508,7 +1518,7 @@ local function set_Panle_Setting()--设置 panel
         end,
     tips=nil})
     sliderBit:SetPoint("LEFT", check5.text, 'RIGHT', 6,0)
-    
+
 
     local barValueText= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
     barValueText:SetPoint("TOPLEFT", check5, 'BOTTOMLEFT')
@@ -1620,7 +1630,7 @@ local function set_Panle_Setting()--设置 panel
         end, tips=nil
     })
     barWidth:SetPoint("LEFT", check3.text, 'RIGHT', 10, 0)
-    
+
     --bar, x
     local barX= e.CSlider(panel, {w=120, h=20, min=-250, max=250, value=Save.barX, setp=1, color=true,
         text='X',
@@ -1736,26 +1746,25 @@ local function set_Panle_Setting()--设置 panel
         self:SetValue(value)
         self.Text:SetText(value)
         Save.buttonAlpha=  value
-        set_Show_Hide()--显示， 隐藏
+        button:set_Show_Hide()--显示， 隐藏
     end})
     sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
 
-    --[[local restButton= e.Cbtn(panel, {type=false, size={20,20}})--重置
-    restButton:SetNormalAtlas('bags-button-autosort-up')
-    restButton:SetPoint("TOPRIGHT")
-    restButton:SetScript('OnMouseUp', function()
-        StaticPopupDialogs[id..addName..'restAllSetup']={
-            text =id..'  '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinese and '保存' or SAVE)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI)..' /reload',
-            button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET),
-            button2 = e.onlyChinese and '取消' or CANCEL,
-            whileDead=true, hideOnEscape=true, exclusive=true,
-            OnAccept=function(self)
-                Save=nil
-                e.Reload()
-            end,
-        }
-        StaticPopup_Show(id..addName..'restAllSetup')
-    end)]]
+    local restPosti= e.Cbtn(panel, {size={20,20}, atlas='characterundelete-RestoreButton'})--重置
+    restPosti:SetPoint('BOTTOMRIGHT')
+    --restPosti:SetPoint("TOPLEFT", sliderButtonAlpha, 'BOTTOMLEFT', 0, -24)
+    restPosti:SetScript('OnClick', function()
+        button:ClearAllPoints()
+        Save.point=nil
+        button:set_Point()--设置, 位置
+    end)
+    restPosti:SetScript('OnLeave', function() e.tips:Hide() end)
+    restPosti:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine((not Save.point and '|cff606060' or '')..(e.onlyChinese and '重置位置' or RESET_POSITION))
+        e.tips:Show()
+    end)
 
     local hideText= e.Cstr(panel)--隐藏
     hideText:SetPoint('BOTTOMLEFT')
@@ -1770,6 +1779,22 @@ local function set_Panle_Setting()--设置 panel
         button:SetShown(not Save.hideInPetBattle or not C_PetBattles.IsInBattle())
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --#######
@@ -1817,9 +1842,8 @@ end
 --初始
 --####
 local function Init()
-    button= e.Cbtn(nil, {icon='hide', size={18,18}})
+    button= e.Cbtn(nil, {icon='hide', size={22,22}})
 
-    button:SetFrameLevel(button:GetFrameLevel()+5)
     button.texture= button:CreateTexture(nil, 'BORDER')
     button.texture:SetSize(12,12)
     button.texture:SetPoint('CENTER')
@@ -1829,14 +1853,29 @@ local function Init()
     button.classPortrait:SetSize(20,20)
     button.classPortrait:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
-    set_Point()--设置, 位置
 
+    function button:set_Show_Hide()--显示， 隐藏
+        self.frame:SetShown(not Save.hide)
+        self.texture:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0)
+        self.classPortrait:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0)
+    end
+
+    function button:set_Point()--设置, 位置
+        if Save.point then
+            button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+        elseif e.Player.husandro then
+            button:SetPoint('LEFT', PlayerFrame, 'RIGHT', 25, 35)
+        else
+            button:SetPoint('LEFT', 23, 180)
+        end
+    end
+    
+    
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
     button:SetClampedToScreen(true)
-
     button:SetScript("OnDragStart", function(self,d)
-        if d=='RightButton' and not IsModifierKeyDown() then
+        if IsAltKeyDown() then
             self:StartMoving()
         end
     end)
@@ -1845,36 +1884,36 @@ local function Init()
         self:StopMovingOrSizing()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
-        self:Raise()
     end)
-    button:SetScript("OnMouseDown", function(self,d)
-        if d=='LeftButton' then--提示移动
-            if not IsAltKeyDown() then
-                frame_Init(true)--初始， 或设置
-                print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
-            else
-                send_Att_Chat()--发送信息
-            end
-        elseif d=='RightButton' then
-            if not IsModifierKeyDown() then--移动光标
-                SetCursor('UI_MOVE_CURSOR')
-                print(id, addName, e.onlyChinese and '还原位置' or RESET_POSITION, 'Alt+'..e.Icon.right)
-
-            elseif IsAltKeyDown then
-                Save.point=nil
-                self:ClearAllPoints()
-                set_Point()--设置, 位置
-            end
+    button:SetScript("OnMouseUp", ResetCursor)
+    button:SetScript('OnMouseDown', function(_, d)
+        if d=='RightButton' and IsAltKeyDown() then
+            SetCursor('UI_MOVE_CURSOR')
         end
     end)
+
+    button:SetScript("OnClick", function(_, d)
+        if IsModifierKeyDown() then
+            return
+        end
+        if d=='LeftButton' then
+            frame_Init(true)--初始， 或设置
+            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
+        elseif d=='RightButton' then
+            send_Att_Chat()--发送信息
+        end
+    end)
+
     button:SetScript('OnMouseWheel', function(self, d)
         if d==1 then
             Save.hide= true
         elseif d==-1 then
             Save.hide= nil
         end
-        set_Show_Hide()--显示， 隐藏
+        self:set_Show_Hide()--显示， 隐藏
     end)
+
+    button:SetScript("OnLeave",function(self) ResetCursor() e.tips:Hide() self:set_Show_Hide() end)
     button:SetScript('OnEnter', function(self)
         local text
         if ChatEdit_GetActiveWindow() then
@@ -1893,27 +1932,38 @@ local function Init()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '重置' or RESET, e.Icon.left)
-        e.tips:AddDoubleLine(text, 'Alt+'..e.Icon.left)
+        e.tips:AddDoubleLine(text, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or (HIDE..'/'..SHOW), e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-        e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.mid)
-        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
         self.texture:SetAlpha(1)
         self.classPortrait:SetAlpha(1)
     end)
-    button:SetScript("OnMouseUp", function() ResetCursor() end)
-    button:SetScript("OnLeave",function() ResetCursor() e.tips:Hide() set_Show_Hide() end)
+
+    
+
+    
+
+    
+    button.frame= CreateFrame("Frame",nil,button)
+    
+    button:set_Point()--设置, 位置
+    button:Raise()
+    button:set_Show_Hide()--显示， 隐藏
+
+
+
+
+
 
     C_Timer.After(4, function()
-        button.frame= CreateFrame("Frame",nil,button)
         button.frame:SetPoint('BOTTOM')
         button.frame:SetSize(1,1)
         if Save.scale and Save.scale~=1 then--缩放
             button.frame:SetScale(Save.scale)
         end
-
         button.frame:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
 
         button.frame:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
@@ -1945,7 +1995,7 @@ local function Init()
                 frame_Init(true)--初始， 或设置
             end
         end)
-        set_Show_Hide()--显示， 隐藏
+        
         frame_Init(true)--初始， 或设置
         set_Panle_Setting()--设置 panel
     end)
