@@ -112,10 +112,10 @@ local function get_Queued_List(type, reTips, reRole)--排队情况
         end
     end
     if m and reRole then
-        m=m..(tank and tank>0 and INLINE_TANK_ICON..'|cnRED_FONT_COLOR:'..tank..'|r'  or '')
-        ..(healer and healer>0 and INLINE_HEALER_ICON..'|cnRED_FONT_COLOR:'..healer..'|r'  or '')
-        ..(dps and dps>0 and INLINE_DAMAGER_ICON..'|cnRED_FONT_COLOR:'..dps..'|r'  or '')
-        ..'  '..e.GetTimeInfo(queuedTime, true)
+        m=m..((tank and tank>0) and INLINE_TANK_ICON..'|cnRED_FONT_COLOR:'..tank..'|r'  or '')
+        ..((healer and healer>0) and INLINE_HEALER_ICON..'|cnRED_FONT_COLOR:'..healer..'|r'  or '')
+        ..((dps and dps>0) and INLINE_DAMAGER_ICON..'|cnRED_FONT_COLOR:'..dps..'|r'  or '')
+        ..'  '..(queuedTime and e.GetTimeInfo(queuedTime, true) or '')
         ..' '
     end
     return num, m
