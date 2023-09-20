@@ -41,14 +41,14 @@ local Save={
     bit=0,--数值，位数
     --disabledDragonridingSpeed=true,--禁用，驭龙术UI，速度
     --disabledVehicleSpeed=true, --禁用，载具，速度
-}
+
     --hideInPetBattle=true,--宠物战斗中, 隐藏
-    --buttonAlpha=0,--专精，图标，透明度
+    buttonAlpha=0.3,--专精，图标，透明度
     --hide=false,--显示，隐藏
     --gsubText
     --strlower
     --strupper
-
+}
 
 local function get_PrimaryStat()--取得主属
     local spec= GetSpecialization()
@@ -1743,9 +1743,10 @@ local function set_Panle_Setting()--设置 panel
     func=function(self, value)
         value= tonumber(format('%.1f', value))
         value= value==0 and 0 or value
+        value= value==1 and 1 or value
         self:SetValue(value)
         self.Text:SetText(value)
-        Save.buttonAlpha=  value
+        Save.buttonAlpha= value
         button:set_Show_Hide()--显示， 隐藏
     end})
     sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
@@ -1856,7 +1857,7 @@ local function Init()
 
     function button:set_Show_Hide()--显示， 隐藏
         self.frame:SetShown(not Save.hide)
-        self.texture:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0)
+        self.texture:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0.3)
         self.classPortrait:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0)
     end
 
