@@ -649,8 +649,8 @@ local function Init_Markers_Frame()--设置标记, 框架
             if self.action then
                 local key1= GetBindingKey(self.action)
                 e.tips:AddDoubleLine(self.name, (key1 and key1~='') and '|cnGREEN_FONT_COLOR:'..key1..'|r' or nil)
-                e.tips:AddLine((not UnitExists('target') and '|cff606060' or '')..(e.onlyChinese and '目标' or TARGET)..e.Icon.left)
-                e.tips:AddLine(e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..e.Icon.right)
+                e.tips:AddLine(e.Icon.left..(not UnitExists('target') and '|cff606060' or '')..(e.onlyChinese and '目标' or TARGET))
+                e.tips:AddLine(e.Icon.right..e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME))
             else
                 local find
                 local pingTab= self:GetParent().tab
@@ -666,14 +666,14 @@ local function Init_Markers_Frame()--设置标记, 框架
                 end
                 local guid= UnitExists('target') and UnitGUID('target')
                 local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
-                e.tips:AddLine((not UnitExists('target') and '|cff606060' or '')..(e.onlyChinese and '目标' or TARGET)
-                                    ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or '')
-                                    ..e.Icon.left)
+                e.tips:AddLine(e.Icon.left..(not UnitExists('target') and '|cff606060' or '')..(e.onlyChinese and '目标' or TARGET)
+                            ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or '')
+                )
 
-                                    type= C_Ping.GetContextualPingTypeForUnit(e.Player.guid)
-                e.tips:AddLine(e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
-                                    ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or '')
-                                    ..e.Icon.right)
+                type= C_Ping.GetContextualPingTypeForUnit(e.Player.guid)
+                e.tips:AddLine(e.Icon.right..e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+                            ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or '')
+                )
 
             end
             e.tips:Show()
@@ -902,7 +902,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 local key1= GetBindingKey('RAIDTARGET'..self.index)
                 local key2= GetBindingKey('RAIDTARGETNONE')
                 local can= CanBeRaidTarget('target')
-                e.tips:AddDoubleLine(Color[self.index].col..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..get_RaidTargetTexture(self.index)..'Alt+'..e.Icon.right, key2 or nil)
+                e.tips:AddDoubleLine(Color[self.index].col..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..get_RaidTargetTexture(self.index)..'Alt+'..e.Icon.left, key2 or nil)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.Icon.left..(can and Color[self.index].col or '|cff606060')
                                     ..(e.onlyChinese and '目标' or TARGET)
@@ -981,16 +981,15 @@ local function Init_Markers_Frame()--设置标记, 框架
             if self.index==0 then
                 e.tips:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
             else
-                e.tips:AddDoubleLine(
+                e.tips:AddLine(
                     Color[self.index2].col
                     ..e.Icon.left
                     ..(e.onlyChinese and '设置' or SETTINGS)
-                    ..get_RaidTargetTexture(self.index2),
+                    ..get_RaidTargetTexture(self.index2))
 
-                    Color[self.index2].col
-                    ..'|A:bags-button-autosort-up:0:0|a'
+                    e.tips:AddLine(e.Icon.right..Color[self.index2].col
                     ..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
-                    ..e.Icon.right
+                    ..'|A:bags-button-autosort-up:0:0|a'
                 )
             end
             e.tips:Show()
