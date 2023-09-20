@@ -541,9 +541,24 @@ local function setQueueStatus()--小眼睛, 信息
     set_tipsFrame_Tips(text, LFGListTab)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_tipsButton()
     tipsButton= e.Cbtn(nil, {size={22,22}, atlas= 'UI-HUD-MicroMenu-Groupfinder-Mouseover'})
-    tipsButton:Raise()
+
     function tipsButton:set_Point()
         self:ClearAllPoints()
         if Save.tipsFramePoint then
@@ -552,10 +567,6 @@ local function Init_tipsButton()
             tipsButton:SetPoint('BOTTOMLEFT', button, 'TOPLEFT',0,2)
         end
     end
-    tipsButton:set_Point()
-    tipsButton:RegisterForDrag("RightButton")
-    tipsButton:SetMovable(true)
-    tipsButton:SetClampedToScreen(true)
 
     tipsButton:SetScript("OnDragStart", function(self, d)
         if IsAltKeyDown() then
@@ -570,8 +581,10 @@ local function Init_tipsButton()
     end)
 
     function tipsButton:set_Scale()
+        print(self.text, Save.tipsScale)
+        self.text:SetScale(Save.tipsScale or 1)
     end
-    
+
     tipsButton:SetScript('OnMouseWheel', function(self, d)
         if not IsAltKeyDown() then
             return
@@ -585,20 +598,24 @@ local function Init_tipsButton()
         n= n>4 and 4 or n
         n= n<0.4 and 0.4 or n
         Save.tipsScale= n
-        self:SetScale(n)
+        self:set_Scale()
         print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
     end)
+
     tipsButton:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
+
         elseif d=='RightButton' and IsControlKeyDown() then
             self:set_Point()
             print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+
         elseif not PVEFrame:IsShown() then
             PVEFrame_ToggleFrame()
         end
     end)
     tipsButton:SetScript('OnMouseUp', ResetCursor)
+
     tipsButton:SetScript("OnLeave", function()
         e.tips:Hide()
         ResetCursor()
@@ -610,7 +627,7 @@ local function Init_tipsButton()
         e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
         e.tips:AddDoubleLine(not e.onlyChinese and DUNGEONS_BUTTON or "队伍查找器", e.Icon.left)
         e.tips:AddLine(' ')
-        
+
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.tipsScale or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddDoubleLine(e.onlyChinese and '重置位置' or RESET_POSITION,'Ctlr+'..e.Icon.right)
@@ -641,7 +658,7 @@ local function Init_tipsButton()
         C_LFGList.ClearSearchResults()
     end)
     --tipsButton:SetScript('OnClick', function()
-        
+
 
     tipsButton.elapsed=0
     tipsButton:SetScript('OnUpdate', function(self, elapsed)
@@ -662,7 +679,13 @@ local function Init_tipsButton()
     tipsButton.lfgTextTab= {}
     tipsButton.lfgTextTab[1]= get_InviteButton_Frame(1)
 
-    tipsButton:SetScale(Save.tipsScale or 1)--设置, 缩放
+
+    tipsButton:set_Point()
+    tipsButton:set_Scale()--设置, 缩放
+    tipsButton:Raise()
+    tipsButton:RegisterForDrag("RightButton")
+    tipsButton:SetMovable(true)
+    tipsButton:SetClampedToScreen(true)
 end
 
 
@@ -1820,7 +1843,7 @@ local function Init()
         showTexture=true,
         sizi=nil,
     })
-    
+
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
