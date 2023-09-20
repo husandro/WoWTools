@@ -502,7 +502,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
     end)
 
-    function Frame:set_Tooltips_Point(frame)
+    function Frame:set_Tooltips_Point()
         e.tips:SetOwner(Frame, "ANCHOR_RIGHT")
         --e.tips:SetOwner(frame, "ANCHOR_LEFT")
     end
