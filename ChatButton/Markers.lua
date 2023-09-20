@@ -872,7 +872,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             btn:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddLine(e.Icon.O2..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
+                e.tips:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
                 e.tips:Show()
                 self:SetAlpha(1)
             end)
@@ -902,13 +902,13 @@ local function Init_Markers_Frame()--设置标记, 框架
                 local key1= GetBindingKey('RAIDTARGET'..self.index)
                 local key2= GetBindingKey('RAIDTARGETNONE')
                 local can= CanBeRaidTarget('target')
-                e.tips:AddDoubleLine(get_RaidTargetTexture(self.index)..(can and Color[self.index].col or '|cff606060')
-                                    ..(e.onlyChinese and '目标' or TARGET)..e.Icon.left
+                e.tips:AddDoubleLine(Color[self.index].col..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..get_RaidTargetTexture(self.index)..'Alt+'..e.Icon.right, key2 or nil)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.Icon.left..(can and Color[self.index].col or '|cff606060')
+                                    ..(e.onlyChinese and '目标' or TARGET)
                                     ..(not can and ' '..(e.onlyChinese and '禁用' or DISABLE) or ''),
                                     key1 or nil)
-                e.tips:AddLine(e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..e.Icon.right)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine('|A:bags-button-autosort-up:0:0|a'..Color[self.index].col..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..' Alt+'..e.Icon.right, key2 or nil)
+                e.tips:AddLine(e.Icon.right..e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME))
                 e.tips:Show()
                 self:SetButtonState('NORMAL')
                 self:SetAlpha(1)
@@ -979,7 +979,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             if self.index==0 then
-                e.tips:AddLine(e.Icon.O2..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
+                e.tips:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
             else
                 e.tips:AddDoubleLine(
                     Color[self.index2].col
