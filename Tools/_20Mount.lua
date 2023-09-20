@@ -694,8 +694,8 @@ local function InitMenu(_, level, type)--主菜单
             keepShownOnClick=true,
             func=function()
                 Save.Point=nil
-                button:ClearAllPoints()
                 set_Button_Postion()--设置按钮位置
+                print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                 e.LibDD:CloseDropDownMenus()
             end,
             tooltipOnButton=true,
@@ -1305,6 +1305,25 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
             --添加控制面板
             e.AddPanel_Header(nil, 'Tools')
+            e.AddPanel_Check_Button({
+                checkName= '|A:bag-border-empty:0:0|aTools',
+                checkValue= not Save.disabled,
+                checkFunc= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                buttonFunc= function()
+                    Save.Point=nil
+                    set_Button_Postion()--设置按钮位置
+                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                end,
+                tooltip= addName,
+                layout= nil,
+                category= nil,
+            })
+            --[[
+            e.AddPanel_Header(nil, 'Tools')
             local initializer2= e.AddPanel_Check({
                 name= '|A:bag-border-empty:0:0|aTools',
                 tooltip= addName,
@@ -1327,6 +1346,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 end
             })
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+            ]]
 
             --[[local check=e.AddPanel_Check('|A:bag-border-empty:0:0|aTools', not Save.disabled, true)
             check:SetScript('OnMouseDown', function()

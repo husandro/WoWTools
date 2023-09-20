@@ -491,7 +491,7 @@ local function Init()
 
     e.AddPanel_Button({
         title= '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
-        buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '默认设置' or SETTINGS_DEFAULTS),
+        buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除全部' or REMOVE_WORLD_MARKERS ),
         addSearchTags= e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT,
         func= function()
             StaticPopupDialogs[id..'RestAllSetup']={

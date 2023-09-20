@@ -109,19 +109,28 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             --添加控制面板
             e.AddPanel_Header(nil, 'Chat')
-            local initializer2= e.AddPanel_Check({
-                name= '|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS)),
-                tooltip= addName,
-                value= not Save.disabled,
-                func= function()
+
+            local initializer2= e.AddPanel_Check_Button({
+                checkName= '|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS)),
+                checkValue= not Save.disabled,
+                checkFunc= function()
                     Save.disabled= not Save.disabled and true or nil
                     button.disabled= Save.disabled
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
+                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                buttonFunc= function()
+                    Save.Point=nil
+                    if button and button.set_Point then
+                        button:set_Point()
+                    end
+                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                end,
+                tooltip= addName,
+                layout= nil,
+                category= nil,
             })
-
-
-           local initializer= e.AddPanel_Check({
+            local initializer= e.AddPanel_Check({
                 name= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\greet:0|tEmoji',
                 tooltip= addName..', Emoji',
                 value= Save.emoji,
@@ -132,7 +141,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 
-            initializer= e.AddPanel_Button({
+            --[[e.AddPanel_Check({
+                name= '|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS)),
+                tooltip= addName,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    button.disabled= Save.disabled
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+            })]]
+
+
+           
+
+            --[[initializer= e.AddPanel_Button({
                 title= nil,
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                 tooltip= nil,--需要 title
@@ -145,7 +168,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                 end
             })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)]]
 
             if not Save.disabled then
                 Init()
