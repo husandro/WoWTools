@@ -217,7 +217,7 @@ local function Init_Ready_Tips_Button()
         Save.groupReadyTipsPoint={self:GetPoint(1)}
         Save.groupReadyTipsPoint[2]=nil
     end)
-    
+
     ReadyTipsButton:SetScript("OnMouseUp", ResetCursor)
 
     function ReadyTipsButton:set_Point()
@@ -228,10 +228,6 @@ local function Init_Ready_Tips_Button()
         end
     end
 
-
-    ReadyTipsButton:SetScript('OnHide', function(self)
-        e.Ccool(self, nil, 0)
-    end)
     function ReadyTipsButton:set_Shown()
         local text= self.text:GetText()
         local show= Save.groupReadyTips and (text and text~='')
@@ -314,10 +310,10 @@ local function Init_Ready_Tips_Button()
         end
     end)
 
-    ReadyTipsButton:set_Point()   
+    ReadyTipsButton:set_Point()
     ReadyTipsButton:set_Event()
     ReadyTipsButton:set_Shown()
-    
+
 
     ReadyTipsButton:SetScript('OnDoubleClick', function(self)
         self.text:SetText('')
@@ -331,7 +327,7 @@ local function Init_Ready_Tips_Button()
             self:set_Point()
         end
     end)
-    
+
     ReadyTipsButton:SetScript('OnLeave', function()
         e.tips:Hide()
         button:SetButtonState('NORMAL')
@@ -339,14 +335,16 @@ local function Init_Ready_Tips_Button()
     ReadyTipsButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '清除全部' or  CLEAR_ALL, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '隐藏' or HIDE, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE,'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine(addName, e.onlyChinese and '队员就绪信息' or PLAYERS_IN_GROUP..READY..INFO)
+        e.tips:AddDoubleLine(addName, e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)))
         e.tips:Show()
         button:SetButtonState('PUSHED')
     end)
-
+    ReadyTipsButton:SetScript('OnHide', function(self)
+        e.Ccool(self, nil, 0)
+    end)
 end
 
 
@@ -1079,7 +1077,7 @@ local function InitMenu(_, level, type)--主菜单
 
             e.LibDD:UIDropDownMenu_AddSeparator(level)--队员提示信息
             info={
-                text= e.onlyChinese and '队员就绪信息' or (PLAYERS_IN_GROUP..READY..INFO),
+                text= e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)),
                 checked=Save.groupReadyTips,
                 keepShownOnClick= true,
                 func=function()
