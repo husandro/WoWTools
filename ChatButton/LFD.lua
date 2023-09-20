@@ -580,7 +580,6 @@ local function Init_tipsButton()
     end)
 
     function tipsButton:set_Scale()
-        print(self.text, Save.tipsScale)
         self.text:SetScale(Save.tipsScale or 1)
     end
 
