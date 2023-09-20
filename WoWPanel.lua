@@ -589,10 +589,10 @@ local function Init()
     if not LOCALE_zhCN then
         e.AddPanel_Check({
             name= 'Chinese',
-            tooltip=e.onlyChinese and '语言: 简体中文'
+            tooltip= e.onlyChinese and '语言: 简体中文'
                     or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
             category=Category,
-            value= not Save.disabled,
+            value= Save.onlyChinese,
             func= function()
                 e.onlyChinese= not e.onlyChinese and true or nil
                 Save.onlyChinese = e.onlyChinese
@@ -600,7 +600,7 @@ local function Init()
             end
         })
     end
-    
+
     if e.Player.region==1 or e.Player.region==3 then--US EU realm提示
         local function get_tooltip()
             local tabs= e.Player.region==3 and
@@ -672,6 +672,7 @@ local function set_Local_Text()
         e.Player.L=tabzhCN
     end
 end
+
 if LOCALE_zhCN then
     e.Player.L= tabzhCN
 elseif LOCALE_zhTW then
@@ -679,7 +680,7 @@ elseif LOCALE_zhTW then
         layer='位面',
         size='大小',
         key='關鍵詞',
-    } 
+    }
 elseif LOCALE_koKR then
     e.Player.L={
         layer='층',

@@ -542,7 +542,7 @@ local function setQueueStatus()--小眼睛, 信息
 end
 
 local function Init_tipsButton()
-    tipsButton= e.Cbtn(nil, {size={18,18}, atlas= 'UI-HUD-MicroMenu-Groupfinder-Mouseover'})
+    tipsButton= e.Cbtn(nil, {size={22,22}, atlas= 'UI-HUD-MicroMenu-Groupfinder-Mouseover'})
     tipsButton:Raise()
     function tipsButton:set_Point()
         self:ClearAllPoints()
@@ -568,6 +568,10 @@ local function Init_tipsButton()
         Save.tipsFramePoint={self:GetPoint(1)}
         Save.tipsFramePoint[2]=nil
     end)
+
+    function tipsButton:set_Scale()
+    end
+    
     tipsButton:SetScript('OnMouseWheel', function(self, d)
         if not IsAltKeyDown() then
             return
@@ -578,7 +582,8 @@ local function Init_tipsButton()
         elseif d==-1 then
             n=n- 0.05
         end
-        n= n>2.5 and 2.5 or n<0.5 and 0.5 or n
+        n= n>4 and 4 or n
+        n= n<0.4 and 0.4 or n
         Save.tipsScale= n
         self:SetScale(n)
         print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
