@@ -560,7 +560,6 @@ local function Init_tipsButton()
     tipsButton= e.Cbtn(nil, {size={22,22}, atlas= 'UI-HUD-MicroMenu-Groupfinder-Mouseover'})
 
     function tipsButton:set_Point()
-        self:ClearAllPoints()
         if Save.tipsFramePoint then
             tipsButton:SetPoint(Save.tipsFramePoint[1], UIParent, Save.tipsFramePoint[3], Save.tipsFramePoint[4], Save.tipsFramePoint[5])
         else
@@ -602,13 +601,9 @@ local function Init_tipsButton()
         print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
     end)
 
-    tipsButton:SetScript("OnMouseDown", function(self, d)
+    tipsButton:SetScript("OnMouseDown", function(_, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
-
-        elseif d=='RightButton' and IsControlKeyDown() then
-            self:set_Point()
-            print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
 
         elseif not PVEFrame:IsShown() then
             PVEFrame_ToggleFrame()
@@ -630,7 +625,7 @@ local function Init_tipsButton()
 
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.tipsScale or 1), 'Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinese and '重置位置' or RESET_POSITION,'Ctlr+'..e.Icon.right)
+
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')
         e.tips:AddDoubleLine(id, addName)
@@ -1249,17 +1244,33 @@ end)]]
 --#######
 --初始菜单
 --#######
-local function InitList(self, level, type)--LFDFrame.lua
+local function InitList(_, level, type)--LFDFrame.lua
     local info
-    if type=='SETTINGS' then
+
+    if type=='tipsButtonRestPoint' then
+        info={
+            text= e.onlyChinese and '重置位置' or RESET_POSITION,
+            colorCode= (not tipsButton or not Save.tipsFramePoint or Save.hideQueueStatus) and '|cff606060' or nil,
+            disabled= not tipsButton,
+            notCheckable=true,
+            func= function()
+                Save.tipsFramePoint=nil
+                tipsButton:ClearAllPoints()
+                tipsButton:set_Point()
+                print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif type=='SETTINGS' then
         info={--自动, 离开副本,选项
-            text=e.onlyChinese and '离开副本' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,LEAVE, INSTANCE),
+            text= e.Icon.toLeft2..(e.onlyChinese and '离开副本' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,LEAVE, INSTANCE)),
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '离开副本和战场' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LEAVE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INSTANCE, BATTLEFIELDS))),
             checked=Save.leaveInstance,
             tooltipText= e.onlyChinese and '离开随机|n自动掷骰'
-                        or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LEAVE,LFG_TYPE_RANDOM_DUNGEON)..'|n'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ROLL),
-            icon=e.Icon.toLeft,
+                        or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LEAVE,LFG_TYPE_RANDOM_DUNGEON)..'|n'
+                            ..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ROLL),
             keepShownOnClick=true,
             func=function()
                 Save.leaveInstance= not Save.leaveInstance and true or nil
@@ -1268,12 +1279,13 @@ local function InitList(self, level, type)--LFDFrame.lua
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        --e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={--信息 QueueStatusFrame.lua
-            text=e.onlyChinese and '列表信息' or SOCIAL_QUEUE_TOOLTIP_HEADER..INFO,
+            text= '|A:groupfinder-eye-frame:0:0|a'..(e.onlyChinese and '列表信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_QUEUE_TOOLTIP_HEADER,INFO)),
             checked=not Save.hideQueueStatus,
-            icon= 'groupfinder-eye-frame',
             keepShownOnClick=true,
+            hasArrow=true,
+            menuList='tipsButtonRestPoint',
             func=function()
                 Save.hideQueueStatus = not Save.hideQueueStatus and true or nil
                 setQueueStatus()
@@ -1282,10 +1294,9 @@ local function InitList(self, level, type)--LFDFrame.lua
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
 
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        --e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
-            text= not e.onlyChinese and LFGLIST_NAME..' Plus'  or '预创建队伍增强' ,
-            icon='UI-HUD-MicroMenu-Groupfinder-Mouseover',
+            text= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(e.onlyChinese and '预创建队伍增强' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LFGLIST_NAME, 'Plus')),
             keepShownOnClick=true,
             func=function()
                 Save.LFGPlus = not Save.LFGPlus and true or nil
@@ -1298,7 +1309,6 @@ local function InitList(self, level, type)--LFDFrame.lua
             tooltipOnButton=true,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-        return
 
     elseif type=='BATTLEFIELDS' then--战场
         info={
@@ -1320,7 +1330,6 @@ local function InitList(self, level, type)--LFDFrame.lua
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-        return
 
     elseif type=='LOOT' then
         info={--自动,战利品掷骰
@@ -1346,6 +1355,9 @@ local function InitList(self, level, type)--LFDFrame.lua
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+    end
+
+    if type then
         return
     end
 
