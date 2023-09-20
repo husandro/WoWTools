@@ -1117,6 +1117,9 @@ end
 --初始化
 --######
 local function Init()
+    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
+    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+
     Init_Dialogs()--初始化，对话框
 
     OkMount= IsSpellKnownOrOverridesKnown(90265)--是否已学, 骑术
@@ -1181,10 +1184,6 @@ local function Init()
             SetCursor('UI_MOVE_CURSOR')
 
         elseif d=='RightButton' and not IsModifierKeyDown() then
-            if not self.Menu then
-                self.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
-            end
            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
 
         elseif d=='LeftButton' then
