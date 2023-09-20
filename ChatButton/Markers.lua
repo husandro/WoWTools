@@ -203,10 +203,9 @@ local function Init_Ready_Tips_Button()
 
 
     ReadyTipsButton:Raise()
-    ReadyTipsButton:RegisterForDrag("RightButton")
+    ReadyTipsButton:RegisterForDrag("RightButton")--移动
     ReadyTipsButton:SetMovable(true)
     ReadyTipsButton:SetClampedToScreen(true)
-
     ReadyTipsButton:SetScript("OnDragStart", function(self)
         if IsAltKeyDown() then
             self:StartMoving()
@@ -218,9 +217,9 @@ local function Init_Ready_Tips_Button()
         Save.groupReadyTipsPoint[2]=nil
     end)
 
-    ReadyTipsButton:SetScript("OnMouseUp", ResetCursor)
+    ReadyTipsButton:SetScript("OnMouseUp", ResetCursor)--还原光标
 
-    function ReadyTipsButton:set_Point()
+    function ReadyTipsButton:set_Point()--设置位置
         if Save.groupReadyTipsPoint then
             self:SetPoint(Save.groupReadyTipsPoint[1], UIParent, Save.groupReadyTipsPoint[3], Save.groupReadyTipsPoint[4], Save.groupReadyTipsPoint[5])
         else
@@ -228,10 +227,17 @@ local function Init_Ready_Tips_Button()
         end
     end
 
-    function ReadyTipsButton:set_Shown()
+    function ReadyTipsButton:set_Shown()--显示/隐藏
         local text= self.text:GetText()
         local show= Save.groupReadyTips and (text and text~='')
+        if not show and self.HideTemr then
+            self:Cancel()
+        end
         self:SetShown(show)
+    end
+    function ReadyTipsButton:set_Hide()--隐藏
+        self.text:SetText("")
+        self:set_Shown()
     end
 
     function ReadyTipsButton:set_Event()
@@ -295,8 +301,7 @@ local function Init_Ready_Tips_Button()
     ReadyTipsButton:SetScript('OnEvent', function(self, event, arg1, arg2)
         if event=='CHAT_MSG_SYSTEM' then
             if arg1== READY_CHECK_ALL_READY then--所有人都已准备就绪
-                self.text:SetText("")
-                self:set_Shown()
+                self:set_Hide()
             end
             return
         end
@@ -307,18 +312,13 @@ local function Init_Ready_Tips_Button()
 
         if event=='READY_CHECK' and text then
             e.Ccool(ReadyTipsButton,nil, arg2 or 35, nil, true)
+            self.HideTimer=C_Timer.NewTimer(arg2 or 35, function()
+                self:set_Hide()
+            end)
         end
     end)
 
-    ReadyTipsButton:set_Point()
-    ReadyTipsButton:set_Event()
-    ReadyTipsButton:set_Shown()
-
-
-    ReadyTipsButton:SetScript('OnDoubleClick', function(self)
-        self.text:SetText('')
-        self:set_Shown()
-    end)
+    ReadyTipsButton:SetScript('OnDoubleClick', ReadyTipsButton.set_Hide)--隐藏
 
     ReadyTipsButton:SetScript('OnClick', function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
@@ -345,6 +345,10 @@ local function Init_Ready_Tips_Button()
     ReadyTipsButton:SetScript('OnHide', function(self)
         e.Ccool(self, nil, 0)
     end)
+
+    ReadyTipsButton:set_Point()
+    ReadyTipsButton:set_Event()
+    ReadyTipsButton:set_Shown()
 end
 
 
