@@ -670,7 +670,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             self:StopMovingOrSizing()
             Save.pointVigentteButton={self:GetPoint(1)}
             Save.pointVigentteButton[2]=nil
-            print(id, addName, 'Alt+'..e.Icon.right, e.onlyChinese and '还原位置' or RESET_POSITION)
+           
             self:Raise()
         end)
 
@@ -689,7 +689,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
                 e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
                 SetCursor('UI_MOVE_CURSOR')
 
-            elseif d=='RightButton' and IsAltKeyDown() then
+            elseif d=='RightButton' and IsControlKeyDown() then
                 Save.pointVigentteButton=nil
                 btn:ClearAllPoints()
                 self:Set_Point()
@@ -915,14 +915,35 @@ end
 
 
 
-local function Init_Menu(_, level)
-    local info={
-        text=e.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT,
-        icon='UI-HUD-Minimap-Tracking-Mouseover',
+local function Init_Menu(_, level, menuList)
+    local info
+    if menuList=='panelButtonRestPoint' then
+        info={
+            text= e.onlyChinese and '重置位置' or RESET_POSITION,
+            notCheckable=true,
+            disabled= not panel.Button,
+            colorCode= not Save.pointVigentteButton and '|cff606060' or '',
+            func= function()
+                Save.pointVigentteButton=nil
+                panel.Button:ClearAllPoints()
+                panel.Button:Set_Point()
+                print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    end
+
+    if menuList then
+        return
+    end
+
+    info={
+        text= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT),
         checked= C_CVar.GetCVarBool("minimapTrackingShowAll"),
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '显示: 追踪' or SHOW..': '..TRACKING,
         tooltipText= id..' '..addName..'|n|nCVar minimapTrackingShowAll',
+        keepShownOnClick=true,
         func= function()
             C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' )
         end
@@ -931,12 +952,12 @@ local function Init_Menu(_, level)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
-        text= e.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT,
-        icon= 'UI-HUD-Minimap-Zoom-Out',
+        text= '|A:UI-HUD-Minimap-Zoom-Out:0:0|a'..(e.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT),
         checked= Save.ZoomOut,
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '更新地区时' or UPDATE..ZONE,
         tooltipText= id..' '..addName,
+        keepShownOnClick=true,
         func= function()
             Save.ZoomOut= not Save.ZoomOut and true or nil
             set_ZoomOut()--更新地区时,缩小化地图
@@ -945,11 +966,11 @@ local function Init_Menu(_, level)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={
-        text= e.onlyChinese and '信息' or INFO,--当前缩放，显示数值
-        icon= 'common-icon-zoomin',
+        text= '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '信息' or INFO),--当前缩放，显示数值
         checked= Save.ZoomOutInfo,
         tooltipOnButton=true,
         tooltipTitle=(e.onlyChinese and '镜头视野范围' or CAMERA_FOV)..': '..format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)),
+        keepShownOnClick=true,
         func= function()
             Save.ZoomOutInfo= not Save.ZoomOutInfo and true or nil
             set_Event_MINIMAP_UPDATE_ZOOM()
@@ -977,12 +998,12 @@ local function Init_Menu(_, level)
     end
 
     info={
-        text= e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY,
-        icon= 'DungeonSkull',
+        text= '|A:DungeonSkull:0:0|a'..(e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY),
         tooltipOnButton= true,
         tooltipTitle= e.onlyChinese and '颜色' or COLOR,
         tooltipText= tips,
         checked= not Save.disabledInstanceDifficulty,
+        keepShownOnClick=true,
         func= function()
             Save.disabledInstanceDifficulty= not Save.disabledInstanceDifficulty and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabledInstanceDifficulty), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -992,13 +1013,14 @@ local function Init_Menu(_, level)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
-        text= e.onlyChinese and '追踪' or TRACKING,
-        icon='VignetteKillElite',
+        text= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
         tooltipOnButton=true,
         tooltipTitle=e.onlyChinese and '地图' or WORLD_MAP,
         tooltipText='|nAreaPoiID|nWorldQuest|nVignette',
         checked= Save.vigentteButton,
         disabled= IsInInstance() or UnitAffectingCombat('player'),
+        menuList= 'panelButtonRestPoint',
+        keepShownOnClick=true,
         func= function ()
             Save.vigentteButton= not Save.vigentteButton and true or nil
             Init_Set_Button()--小地图, 标记, 文本
@@ -1020,19 +1042,20 @@ end
 
 local function click_Func(self, d)
     local key= IsModifierKeyDown()
-    if d=='LeftButton' then
-        if IsShiftKeyDown() then
-            if not IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
-                LoadAddOn("Blizzard_WeeklyRewards")
-            end
-            WeeklyRewards_ShowUI()--WeeklyReward.lua
-        elseif IsAltKeyDown() and self and type(self)=='table' then
-            if not self.menu then
-                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
-        elseif not key then
+    if IsAltKeyDown() and self and type(self)=='table' then
+        if not self.menu then
+            self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+            e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
+        end
+        e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
+
+    elseif IsShiftKeyDown() then
+        if not IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
+            LoadAddOn("Blizzard_WeeklyRewards")
+        end
+        WeeklyRewards_ShowUI()--WeeklyReward.lua
+
+    elseif d=='LeftButton' and not key then
             local expButton=ExpansionLandingPageMinimapButton
             if expButton and expButton.ToggleLandingPage and expButton.title then
                 expButton.ToggleLandingPage(expButton)--Minimap.lua
@@ -1041,8 +1064,8 @@ local function click_Func(self, d)
                 --Settings.OpenToCategory(id)
                 --securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
             end
-        end
-    elseif not key then
+
+    elseif d=='RightButton' and not key then
         e.OpenPanelOpting()
     end
 end
@@ -1055,14 +1078,17 @@ local function enter_Func(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
     end
+
+    e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.right)
+
     if self and type(self)=='table' then
         if expButton and expButton:IsShown() then
             expButton:SetShown(false)
         end
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.left, 0,1,0, 0,1,0)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.right)
     end
-    e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left, 1,0,1, 1,0,1)
-    e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.right, 0,1,0, 0,1,0)
+    e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left)
+    
     e.tips:AddLine(' ')
     e.tips:AddDoubleLine(id, addName)
     e.tips:Show()
