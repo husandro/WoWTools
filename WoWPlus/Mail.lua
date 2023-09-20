@@ -1689,7 +1689,7 @@ local function Init_InBox()
         end
 
         --删除所有信，按钮
-        if numCanDelete>1 and not InboxFrame.DeleteAllButton then
+        if numCanDelete>0 and not InboxFrame.DeleteAllButton then
             InboxFrame.DeleteAllButton= e.Cbtn(InboxFrame, {size={25,25}, atlas='xmarksthespot'})
             if _G['PostalSelectReturnButton'] then
                 InboxFrame.DeleteAllButton:SetPoint('LEFT', _G['PostalSelectReturnButton'], 'RIGHT')
@@ -1728,7 +1728,7 @@ local function Init_InBox()
         end
         if InboxFrame.DeleteAllButton then
             InboxFrame.DeleteAllButton.Text:SetText(numCanDelete)
-            InboxFrame.DeleteAllButton:SetShown(numCanDelete>1)
+            InboxFrame.DeleteAllButton:SetShown(numCanDelete>0)
         end
 
 

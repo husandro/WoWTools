@@ -2,9 +2,10 @@ local id, e = ...
 local addName= BINDING_HEADER_RAID_TARGET
 local Save={
         autoSet=true,
-        tank=2,
-        tank2=6,
-        healer=1,
+        tank= 2,
+        tank2= 6,
+        healer= 1,
+
         countdown=7,
         groupReadyTips=true,
 
@@ -217,6 +218,9 @@ local function Init_Ready_Tips_Button()
 
     ReadyTipsButton:SetScript("OnMouseUp", ResetCursor)--还原光标
 
+    function ReadyTipsButton:set_Scale()
+        self.text:SetScale(Save.tipsTextSacle or 1)
+    end
     function ReadyTipsButton:set_Point()--设置位置
         if Save.groupReadyTipsPoint then
             self:SetPoint(Save.groupReadyTipsPoint[1], UIParent, Save.groupReadyTipsPoint[3], Save.groupReadyTipsPoint[4], Save.groupReadyTipsPoint[5])
@@ -318,11 +322,22 @@ local function Init_Ready_Tips_Button()
 
     ReadyTipsButton:SetScript('OnDoubleClick', ReadyTipsButton.set_Hide)--隐藏
 
-    ReadyTipsButton:SetScript('OnClick', function(self, d)
-        if d=='RightButton' and IsAltKeyDown() then
-            Save.groupReadyTipsPoint=nil
-            self:ClearAllPoints()
-            self:set_Point()
+    ReadyTipsButton:SetScript('OnMouseWheel', function(self, d)--缩放
+        if IsAltKeyDown() then
+            local sacle= Save.tipsTextSacle or 1
+            if d==1 then
+                sacle=sacle+0.05
+            elseif d==-1 then
+                sacle=sacle-0.05
+            end
+            if sacle>3 then
+                sacle=3
+            elseif sacle<0.6 then
+                sacle=0.6
+            end
+            Save.tipsTextSacle=sacle
+            self:set_Scale()
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..sacle)
         end
     end)
 
@@ -336,6 +351,7 @@ local function Init_Ready_Tips_Button()
         e.tips:AddDoubleLine(e.onlyChinese and '隐藏' or HIDE, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE,'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.tipsTextSacle or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddDoubleLine(addName, e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)))
         e.tips:Show()
         button:SetButtonState('PUSHED')
@@ -345,6 +361,7 @@ local function Init_Ready_Tips_Button()
     end)
 
     ReadyTipsButton:set_Point()
+    ReadyTipsButton:set_Scale()
     ReadyTipsButton:Raise()
     ReadyTipsButton:set_Event()
     ReadyTipsButton:set_Shown()
@@ -359,11 +376,8 @@ end
 --设置,按钮,图片
 --#############
 local function setTexture()--图标, 自动标记
-    if Save.tank==0 then
-        button.texture:SetTexture(0)
-    else
-        button.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save.tank)
-    end
+    button.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save.tank)
+    
     if Save.autoSet and not button.autoSetTips then
         button.autoSetTips= button:CreateTexture(nil,'OVERLAY')
         button.autoSetTips:SetPoint('BOTTOMLEFT',4, 4)
@@ -487,6 +501,11 @@ local function Init_Markers_Frame()--设置标记, 框架
             self:set_Shown()
         end
     end)
+
+    function Frame:set_Tooltips_Point(frame)
+        e.tips:SetOwner(Frame, "ANCHOR_RIGHT")
+        --e.tips:SetOwner(frame, "ANCHOR_LEFT")
+    end
     Frame:set_Event()
 
 
@@ -526,7 +545,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     btn:SetScript('OnMouseUp', function(self) ResetCursor() self:set_Alpha(true) end)
     btn:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)
     btn:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        Frame:set_Tooltips_Point(self)
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
@@ -644,7 +663,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
         btn:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
         btn:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            Frame:set_Tooltips_Point(self)
             e.tips:ClearLines()
             if self.action then
                 local key1= GetBindingKey(self.action)
@@ -738,7 +757,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
     end)
     Frame.countdown:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        Frame:set_Tooltips_Point(self)
         e.tips:ClearLines()
         e.tips:AddLine(e.Icon.left..(e.onlyChinese and '/倒计时' or SLASH_COUNTDOWN2)..' '..(Save.countdown or 7))
         e.tips:AddLine(e.Icon.right..(e.Player.cn and '取消 取消 取消' or 'STOP STOP STOP'))
@@ -784,7 +803,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         DoReadyCheck()
     end)
     Frame.check:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        Frame:set_Tooltips_Point(self)
         e.tips:ClearLines()
         e.tips:AddLine(EMOTE127_CMD3)
         e.tips:Show()
@@ -870,7 +889,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 e.tips:Hide()
             end)
             btn:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                Frame:set_Tooltips_Point(self)
                 e.tips:ClearLines()
                 e.tips:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
                 e.tips:Show()
@@ -897,7 +916,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 self:set_Active()
             end)
             btn:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                Frame:set_Tooltips_Point(self)
                 e.tips:ClearLines()
                 local key1= GetBindingKey('RAIDTARGET'..self.index)
                 local key2= GetBindingKey('RAIDTARGETNONE')
@@ -976,7 +995,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         btn:SetAttribute("action2", "clear")
         btn:SetScript('OnLeave', function(self) e.tips:Hide() if self.index==0 then self:SetAlpha(0.5) end  end)
         btn:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            Frame:set_Tooltips_Point(self)
             e.tips:ClearLines()
             if self.index==0 then
                 e.tips:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
@@ -1039,12 +1058,28 @@ end
 --#####
 local function InitMenu(_, level, type)--主菜单
     local info
-    if type=='ReadyTipsRestPoint' then
+    if type=='tank' or type=='tank2' or type=='healer' then--3级
+        for index=1, NUM_RAID_ICONS do
+            info={
+                text= _G['RAID_TARGET_'..index],
+                icon= 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
+                checked= Save[type]==index,
+                colorCode= Color[index] and Color[index].col,
+                disabled=  Save.tank==index or Save.healer==index or Save.tank2==index,
+                arg1=type,
+                func=function(_, arg1)
+                    Save[arg1]=index
+                    setTexture()--图标, 自动标记
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+
+    elseif type=='ReadyTipsRestPoint' then--重置位置， 就绪信信息，提示
         info={
             text= e.onlyChinese and '重置位置' or RESET_POSITION,
             notCheckable=true,
-            colorCode= not Save.groupReadyTips and '|cff606060',
-            keepShownOnClick=true,
+            colorCode= (not Save.groupReadyTips or not Save.groupReadyTipsPoint) and '|cff606060',
             disabled= not ReadyTipsButton,
             func= function()
                 ReadyTipsButton:ClearAllPoints()
@@ -1092,17 +1127,7 @@ local function InitMenu(_, level, type)--主菜单
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        e.LibDD:UIDropDownMenu_AddSeparator(level)--队员提示信息
-        info={
-            text= e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)),
-            checked=Save.groupReadyTips,
-            keepShownOnClick= true,
-            func=function()
-                Save.groupReadyTips= not Save.groupReadyTips and true or false
-                Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        
 
     elseif type=='MakerFrameResetPost' then--重置位置， 队伍标记工具
         --[[info={
@@ -1134,46 +1159,8 @@ local function InitMenu(_, level, type)--主菜单
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    else
-        local num= NUM_RAID_ICONS+1
-        for index=1, num do
-            if index==num then
-                e.LibDD:UIDropDownMenu_AddSeparator(level)
-            end
-            info={
-                text= index==num and (e.onlyChinese and '无' or NONE) or _G['RAID_TARGET_'..index],
-                icon= index==num and nil or 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
-                checked= Save[type]==index,
-                colorCode=Color[index] and Color[index].col,
-                keepShownOnClick= true,
-                func=function()
-                    Save[type]=index
-                    e.LibDD:CloseDropDownMenus()
-                    if type=='tank' then
-                        setTexture()--图标, 自动标记
-                    end
-                end
-            }
-            if index~=0 then
-                if type=='tank' then
-                    info.disabled= Save.healer==index or Save.tank2==index
-                elseif type=='tank2' then
-                    info.disabled= Save.tank==index or Save.tank==0
-                elseif type=='healer' then
-                    info.disabled= Save.tank==index
-                end
-            end
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-        info={
-            text=format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, type=='tank2' and (e.onlyChinese and '团队' or RAID) or type=='healer' and (e.onlyChinese and '小队' or GROUP) or (e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
-            notCheckable=true,
-            isTitle=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
-    
+
     if type then
         return
     end
@@ -1195,32 +1182,24 @@ local function InitMenu(_, level, type)--主菜单
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-    e.LibDD:UIDropDownMenu_AddSeparator()
 
     local tab={
-            {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK), type='tank'},
-            {text= e.Icon.HEALER..(e.onlyChinese and '治疗' or HEALER), type='healer'},
-            {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK)..'2', type='tank2'},
-        }
+            {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK), type='tank', tip=format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)},
+            {text= e.Icon.HEALER..(e.onlyChinese and '治疗' or HEALER), type='healer', tip=format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '小队' or GROUP)},
+            {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK)..'2', type='tank2', tip=format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '团队' or RAID)},
+    }
     for _, tab2 in pairs(tab) do
         info={
-            text=tab2.text,
-            checked=Save[tab2.type]~=0,
-            keepShownOnClick= true,
-            menuList=tab2.type,
+            text=(Save[tab2.type]>0 and '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save[tab2.type]..':0|t' or '')..tab2.text,
+            colorCode= Color[Save[tab2.type]] and Color[Save[tab2.type]].col or '|cff606060',
+            tooltipOnButton=true,
+            tooltipTitle= tab2.tip,
+            --keepShownOnClick= true,
+            notCheckable=true,
+            menuList= tab2.type,
             hasArrow=true,
         }
-        if Save[tab2.type]~=0 then
-            info.text=info.text..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save[tab2.type]..':0|t'
-        end
-        info.colorCode=Color[Save[tab2.type]] and Color[Save[tab2.type]].col
-        if tab2.type2 and Save.tank==0 then
-            info.disabled=true
-        end
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-        if tab2.type=='healer' then
-            e.LibDD:UIDropDownMenu_AddSeparator()
-        end
     end
 
     e.LibDD:UIDropDownMenu_AddSeparator()
@@ -1241,19 +1220,36 @@ local function InitMenu(_, level, type)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+    e.LibDD:UIDropDownMenu_AddSeparator()
+    info={
+        text= e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)),
+        checked=Save.groupReadyTips,
+        keepShownOnClick= true,
+        hasArrow=true,
+        menuList= 'ReadyTipsRestPoint',
+        func=function()
+            Save.groupReadyTips= not Save.groupReadyTips and true or nil
+            Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
+            if Save.groupReadyTips then--测试
+                ReadyTipsButton.text:SetText('Test')
+                ReadyTipsButton:set_Shown()
+            end
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
     info={
         text=(
-                Save.autoReady==1 and e.Icon.select2
-                or Save.autoReady==2 and e.Icon.O2
-                or (e.onlyChinese and '无' or NONE)
-            )
-            ..format(e.onlyChinese and '%s%s' or CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '自动' or SELF_CAST_AUTO, (
-                (not Save.autoReady or Save.autoReady==1) and (e.onlyChinese and '就绪' or READY)
-                or Save.autoReady==2 and (e.onlyChinese and '未就绪'
-                or NOT_READY_FEMALE)
-                or ''
-            )),
-        --checked= Save.autoReady==1 or Save.autoReady==2,
+            Save.autoReady==1 and e.Icon.select2
+            or Save.autoReady==2 and e.Icon.O2
+            or (e.onlyChinese and '无' or NONE)
+        )
+        ..format(e.onlyChinese and '%s%s' or CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '自动' or SELF_CAST_AUTO, (
+            (not Save.autoReady or Save.autoReady==1) and (e.onlyChinese and '就绪' or READY)
+            or Save.autoReady==2 and (e.onlyChinese and '未就绪'
+            or NOT_READY_FEMALE)
+            or ''
+        )),
         notCheckable=true,
         colorCode= Save.autoReady==1 and '|cff00ff00' or Save.autoReady==2 and '|cffff0000',
         menuList='ready',
@@ -1261,6 +1257,9 @@ local function InitMenu(_, level, type)--主菜单
         keepShownOnClick= true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    
+   
 end
 
 
@@ -1396,6 +1395,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
+
+                Save.tank= Save.tank==0 and Save.tank or 2
+                Save.tank2= Save.tank2==0 and 6 or Save.tank2
+                Save.healer= Save.healer==0 and 1 or Save.healer
+
 
                 button= e.Cbtn2({
                     name=nil,
