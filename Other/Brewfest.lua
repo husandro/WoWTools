@@ -10,22 +10,9 @@ local button
 --初始
 --####
 function Init()
-    button= e.Cbtn(UIParent, {size={48, 48}, texture= 132248})
-    
-    button:RegisterForDrag("RightButton", 'LeftButton')
-    button:SetMovable(true)
-    button:SetClampedToScreen(true)
+    button= e.Cbtn(UIParent, {size={48, 48}, texture=132248})
 
-    button:SetScript("OnDragStart", button.StartMoving)
-    button:SetScript("OnDragStop", function(self)
-        self:StopMovingOrSizing()
-        Save.Point={self:GetPoint(1)}
-        Save.Point[2]=nil
-    end)
-    button:SetScript("OnMouseUp", ResetCursor)
-    button:SetScript('OnMouseDown', function() SetCursor('UI_MOVE_CURSOR') end)
-
-    button.topText= e.Cstr(button, {size=26})
+    button.topText= e.Cstr(button, {size=22})
     button.centerText= e.Cstr(button, {size=26})
     button.bottomText= e.Cstr(button, {size=16})
     button.bottomText2= e.Cstr(button, {size=16})
@@ -40,6 +27,37 @@ function Init()
     button.rightTexture:SetSize(48,48)
     button.rightTexture:SetTexture(132622)
 
+    button:RegisterForDrag("RightButton", 'LeftButton')
+    button:SetMovable(true)
+    button:SetClampedToScreen(true)
+
+    button:SetScript("OnDragStart", button.StartMoving)
+    button:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        Save.Point={self:GetPoint(1)}
+        Save.Point[2]=nil
+    end)
+    button:SetScript("OnMouseUp", ResetCursor)
+    button:SetScript('OnMouseDown', function() SetCursor('UI_MOVE_CURSOR') end)
+
+    function button:set_Scale()
+        self:SetScale(Save.scale or 1)
+    end
+    button:SetScript('OnMouseWheel', function(self, d)--缩放
+        local sacle= Save.scale or 1
+        if d==1 then
+            sacle= sacle+0.05
+        elseif d==-1 then
+            sacle= sacle-0.05
+        end
+        sacle= sacle>4 and 4 or sacle
+        sacle= sacle<0.4 and 0.4 or sacle
+
+        Save.scale=sacle
+        self:set_Scale()
+        print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..sacle)
+    end)
+
     function button:set_Point()
         if Save.Point then
             self:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
@@ -53,13 +71,13 @@ function Init()
                 or C_UnitAuras.GetPlayerAuraBySpellID(42993)
                 or C_UnitAuras.GetPlayerAuraBySpellID(42994)
                 or C_UnitAuras.GetPlayerAuraBySpellID(43332)
-                
+
 
                 or C_UnitAuras.GetPlayerAuraBySpellID(43880)
                 or C_UnitAuras.GetPlayerAuraBySpellID(43883)
-                
+
         self:SetNormalTexture(info and info.icon or 132248)
-        self:SetShown(info and true or false)    
+        self:SetShown(info and true or false)
 
         local duration= (info and info.duration and info.duration>0) and info.duration or nil
         e.Ccool(self, nil, duration, nil, true, true)
@@ -103,9 +121,6 @@ function Init()
             self:set_ItmeNum()
         end
     end)
-    
-
-  
 
     button.elapsed = 0
     button:SetScript('OnUpdate', function(self, elapsed)
@@ -132,12 +147,12 @@ function Init()
                 text= format('%i', time- self.Time)
             end
             self.centerText:SetText(text or '')
-            
+
             self.elapsed=0
         end
     end)
 
-    
+    button:set_Scale()
     button:set_Point()
     button:set_Event()
 end
