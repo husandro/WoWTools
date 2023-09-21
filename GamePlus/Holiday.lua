@@ -106,8 +106,10 @@ local CALENDAR_EVENTTYPE_TEXTURES = {
 }
 
 local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
-    if Save.hide or not button:IsShown() then
-        button.Text:SetText('')
+    if Save.hide or not button or not button:IsShown() then
+        if button then
+            button.Text:SetText('')
+        end
         return
     end
 
@@ -623,10 +625,10 @@ local function Init_Blizzard_Calendar()
     hooksecurefunc('CalendarCreateEventInviteListScrollFrame_Update', function()
         local namesReady = C_Calendar.AreNamesReady();
         if namesReady then
-            for index, button in pairs(CalendarCreateEventInviteList.ScrollBox:GetFrames()) do--ScrollBox.lua
+            for index, btn in pairs(CalendarCreateEventInviteList.ScrollBox:GetFrames()) do--ScrollBox.lua
                 local inviteInfo = C_Calendar.EventGetInvite(index)
                 if inviteInfo and inviteInfo.guid then
-                   button.Class:SetText(e.GetPlayerInfo({guid=inviteInfo.guid, name=inviteInfo.name}))
+                    btn.Class:SetText(e.GetPlayerInfo({guid=inviteInfo.guid, name=inviteInfo.name}))
                 end
             end
         end
@@ -842,17 +844,17 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if  Save.disabled then
                 panel:UnregisterAllEvents()
             else
-                Init()--初始
                 if not IsAddOnLoaded("Blizzard_Calendar") then--加载
                     LoadAddOn("Blizzard_Calendar")
-                    Calendar_Toggle()
-                    C_Calendar.OpenCalendar()
-                    C_Timer.After(3, function()
-                        if CalendarFrame and CalendarFrame:IsShown() then
-                            Calendar_Toggle()
-                        end
-                    end)
                 end
+                Calendar_Toggle()
+                C_Calendar.OpenCalendar()
+                C_Timer.After(2, function()
+                    if CalendarFrame and CalendarFrame:IsShown() then
+                        Calendar_Toggle()
+                    end
+                end)
+                C_Timer.After(2, function() Init() end)--初始
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
