@@ -1633,7 +1633,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            e.AddPanel_Check({
+            local initializer2= e.AddPanel_Check({
                 name= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(e.onlyChinese and '单位框体' or addName),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -1643,7 +1643,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            e.AddPanel_Check({
+            local initializer= e.AddPanel_Check({
                 name= e.onlyChinese and '团队框体' or HUD_EDIT_MODE_RAID_FRAMES_LABEL,
                 tooltip= addName,
                 value= not Save.notRaidFrame,
@@ -1652,7 +1652,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
-            
+            initializer:SetParentInitializer(initializer2, function() return true end)
+
 
             if not Save.notRaidFrame then
                 Init_RaidFrame()--团队
