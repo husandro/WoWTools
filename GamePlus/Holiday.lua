@@ -847,7 +847,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     LoadAddOn("Blizzard_Calendar")
                     Calendar_Toggle()
                     C_Calendar.OpenCalendar()
-                    C_Timer.After(2, function()
+                    C_Timer.After(3, function()
                         if CalendarFrame and CalendarFrame:IsShown() then
                             Calendar_Toggle()
                         end
