@@ -2,6 +2,8 @@ local id, e= ...
 local addName= 'Brewfest'
 local Save={
     disabled=true,
+    --Point
+    --scale
 }
 local panel= CreateFrame("Frame")
 local button
