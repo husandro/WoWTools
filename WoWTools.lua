@@ -673,10 +673,9 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size
 end
 
 e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
-    if not (self or duration) then
+    if not self then
         return
-    end
-    if duration<=0 then
+    elseif not duration or duration<=0 then
         if self.cooldown then
             self.cooldown:Clear()
         end
@@ -1104,11 +1103,20 @@ e.GetKeystoneScorsoColor= function(score, texture, overall)--地下城史诗, �
     end
 end
 
-function e.GetTimeInfo(value, chat, time)
-    if value>0 then
+function e.GetTimeInfo(value, chat, time, expirationTime)
+    if value and value>0 then
         time= time or GetTime()
         time= time < value and time + 86400 or time
         time= time - value;
+        if chat then
+            return e.SecondsToClock(time), time;
+        else
+            return SecondsToTime(time), time;
+        end
+    elseif expirationTime and expirationTime>0 then
+        time= time or GetTime()
+        expirationTime= time > expirationTime and expirationTime + 86400 or expirationTime
+        time= expirationTime- time;
         if chat then
             return e.SecondsToClock(time), time;
         else
