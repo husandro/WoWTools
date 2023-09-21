@@ -58,16 +58,19 @@ local function get_Player_Info(guid)--取得玩家信息
         g=g,
         b=b,
     }
+    local isInCombat= UnitAffectingCombat('player')
     if UnitInParty(unit) and not IsInRaid() then
         for i=1, 4 do
             local frame= PartyFrame['MemberFrame'..i]
             if frame and UnitExists(frame.unit) and UnitIsUnit(frame.unit, unit) then
-                securecall('UnitFrame_Update', frame, true)
+                if not isInCombat then
+                    securecall('UnitFrame_Update', frame, true)
+                end
                 break
             end
         end
     end
-    if UnitIsUnit(unit, 'target') then
+    if UnitIsUnit(unit, 'target') and not isInCombat then
         securecall('UnitFrame_Update', TargetFrame, false)
     end
 end
