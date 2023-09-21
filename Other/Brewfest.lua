@@ -15,7 +15,7 @@ function Init()
     button= e.Cbtn(UIParent, {size={48, 48}, texture=132248})
 
     button.topText= e.Cstr(button, {size=22})
-    button.centerText= e.Cstr(button, {size=26})
+    button.centerText= e.Cstr(button, {size=22})
     button.speedText= e.Cstr(button, {size=16})
     button.bottomText= e.Cstr(button, {size=16})
     button.bottomText2= e.Cstr(button, {size=16})
