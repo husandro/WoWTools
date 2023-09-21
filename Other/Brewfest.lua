@@ -51,7 +51,7 @@ function Init()
     button.rightTexture:SetScript('OnShow', button.rightTexture.set_tipSound)
     button.rightTexture:SetScript('OnHide', button.rightTexture.set_tipSound)
 
-    button:RegisterForDrag("RightButton", 'LeftButton')
+    button:RegisterForDrag("RightButton")
     button:SetMovable(true)
     button:SetClampedToScreen(true)
 
@@ -187,6 +187,28 @@ function Init()
             self.elapsed=0
         end
     end)
+
+    button:SetScript('OnClick', function(_, d)
+        if d=='LeftButton' and IsShiftKeyDown() then
+            local macroId = CreateMacro('Ram', 236912, '/click ExtraActionButton1')
+            print(id, addName, e.onlyChinese and '创建宏"' or CREATE_MACROS, 'Ram',
+                macroId and '/click ExtraActionButton1' or (e.onlyChinese and '无法创建' or NONE)
+            )
+        end
+    end)
+    button:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        local macro= select(3, GetMacroInfo('Ram'))
+        local col= (macro and macro:find('ExtraActionButton1')) and '|cff606060' or ''
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '创建宏"' or CREATE_MACROS), col..'Shift+'..e.Icon.left)
+        e.tips:AddLine(col..'/click ExtraActionButton1')
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), e.Icon.mid)
+        e.tips:Show()
+    end)
+    button:SetScript('OnLeave', function() e.tips:Hide() end)
 
     button:set_Scale()
     button:set_Point()
