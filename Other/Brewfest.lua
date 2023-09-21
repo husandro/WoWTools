@@ -16,12 +16,15 @@ function Init()
 
     button.topText= e.Cstr(button, {size=22})
     button.centerText= e.Cstr(button, {size=26})
+    button.speedText= e.Cstr(button, {size=16})
     button.bottomText= e.Cstr(button, {size=16})
     button.bottomText2= e.Cstr(button, {size=16})
 
     button.topText:SetPoint('BOTTOM', button, 'TOP')
     button.centerText:SetPoint('CENTER')
-    button.bottomText:SetPoint('TOPLEFT', button, 'BOTTOMLEFT')
+
+    button.speedText:SetPoint('TOPLEFT', button, 'BOTTOMLEFT')
+    button.bottomText:SetPoint('TOPLEFT', button.speedText, 'BOTTOMLEFT')
     button.bottomText2:SetPoint('TOPLEFT', button.bottomText, 'BOTTOMLEFT')
 
     button.rightTexture= button:CreateTexture()
@@ -150,6 +153,7 @@ function Init()
             end
             self.centerText:SetText(text or '')
 
+            self.speedText:SetFormattedText('|T132307:0|t%i',GetUnitSpeed("player")*100/7)
             self.elapsed=0
         end
     end)
