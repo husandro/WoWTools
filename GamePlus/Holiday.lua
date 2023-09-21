@@ -357,7 +357,7 @@ local function Init_Menu(_, level)--主菜单
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-
+--[[
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text=e.onlyChinese and '还原位置' or RESET_POSITION,
@@ -373,7 +373,7 @@ local function Init_Menu(_, level)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        --[[info={
+    info={
             text=e.onlyChinese and '设置' or SETTINGS,
             notCheckable=true,
             menuList='SETTINGS',
@@ -824,7 +824,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
 
             --添加控制面板
-            e.AddPanel_Check({
+            --[[e.AddPanel_Check({
                 name= '|A:GarrisonTroops-Health:0:0|a'..(e.onlyChinese and '节日' or addName),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -832,6 +832,27 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     Save.disabled = not Save.disabled and true or nil
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
+            })]]
+
+            e.AddPanel_Check_Button({
+                checkName= '|A:GarrisonTroops-Health:0:0|a'..(e.onlyChinese and '节日' or addName),
+                checkValue= not Save.disabled,
+                checkFunc= function()
+                    Save.disabled = not Save.disabled and true or nil
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                end,
+                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                buttonFunc= function()
+                    Save.point=nil
+                    if button then
+                        button:ClearAllPoints()
+                        button:set_Point()
+                    end
+                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                end,
+                tooltip= addName,
+                layout= nil,
+                category= nil,
             })
 
             --[[添加控制面板        
