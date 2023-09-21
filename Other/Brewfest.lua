@@ -218,7 +218,13 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 checkValue= not Save.disabled,
                 checkFunc= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    if not Save.disabled then
+                        if not button then
+                            Init()
+                        end
+                    else
+                        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    end
                 end,
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
