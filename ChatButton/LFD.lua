@@ -603,9 +603,6 @@ local function Init_tipsButton()
     tipsButton:SetScript("OnMouseDown", function(_, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
-
-        elseif not PVEFrame:IsShown() then
-            PVEFrame_ToggleFrame()
         end
     end)
     tipsButton:SetScript('OnMouseUp', ResetCursor)
@@ -619,7 +616,7 @@ local function Init_tipsButton()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
-        e.tips:AddDoubleLine(not e.onlyChinese and DUNGEONS_BUTTON or "队伍查找器", e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.Icon.right)
         e.tips:AddLine(' ')
 
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
@@ -651,7 +648,11 @@ local function Init_tipsButton()
         C_LFGList.RemoveListing()
         C_LFGList.ClearSearchResults()
     end)
-    --tipsButton:SetScript('OnClick', function()
+    tipsButton:SetScript('OnClick', function(_, d)
+        if d=='RightButton' and not IsModifierKeyDown() then
+            PVEFrame_ToggleFrame()
+        end
+    end)
 
 
     tipsButton.elapsed=0
