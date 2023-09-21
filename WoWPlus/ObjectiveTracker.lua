@@ -201,7 +201,11 @@ local function Init()
         local m=''
         block.r, block.g, block.b=nil, nil, nil
         if questID then
-            if C_QuestLog.IsComplete(questID) then m=m..e.Icon.select2 elseif C_QuestLog.IsFailed(questID) then m=m.e.Icon.X2 end
+            if C_QuestLog.IsComplete(questID) then
+                m=m..e.Icon.select2
+            elseif C_QuestLog.IsFailed(questID) then
+                m=m..e.Icon.X2
+            end
             local factionGroup = GetQuestFactionGroup(questID)
             if factionGroup == LE_QUEST_FACTION_HORDE then
                 m=m..e.Icon.horde2

@@ -31,6 +31,14 @@ function Init()
     button.rightTexture:SetPoint('RIGHT', button, 'LEFT')
     button.rightTexture:SetSize(48,48)
     button.rightTexture:SetTexture(132622)
+    button.rightTexture:SetShown(false)
+
+    button.rightTexture:SetScript('OnShow', function()
+        e.PlaySound()
+    end)
+    button.rightTexture:SetScript('OnHide', function()
+        e.PlaySound()
+    end)
 
     button:RegisterForDrag("RightButton", 'LeftButton')
     button:SetMovable(true)
@@ -117,10 +125,18 @@ function Init()
     end
 
     button:RegisterEvent('PLAYER_ENTERING_WORLD')
-    button:SetScript('OnEvent', function(self, event)
+    button:SetScript('OnEvent', function(self, event, _, arg2)
         if event=='PLAYER_ENTERING_WORLD' then
             self:set_Event()
         elseif event=='UNIT_AURA' then
+            if arg2 and arg2.addedAuras then
+               for _, info in pairs(arg2.addedAuras) do
+                    if info.spellId==43052 then
+                        self.Timer= nil
+                        self.spellId=nil
+                    end
+               end
+            end
             self:set_Shown()
         elseif event=='BAG_UPDATE_DELAYED' then
             self:set_ItmeNum()

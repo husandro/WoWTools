@@ -3272,7 +3272,9 @@
         "BINDING_NAME_PINGONMYWAY",
         "BINDING_NAME_PINGASSIST",
         "BINDING_NAME_TOGGLEPINGLISTENER",
-        "READY_CHECK_FINISHED"
+        "READY_CHECK_FINISHED",
+        "C_UnitAuras",
+        "print"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
