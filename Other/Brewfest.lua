@@ -13,12 +13,14 @@ local button
 --####
 function Init()
     button= e.Cbtn(UIParent, {size={48, 48}, texture=132248})
+    button:SetShown(false)
 
-    button.topText= e.Cstr(button, {size=22})
-    button.centerText= e.Cstr(button, {size=22})
-    button.speedText= e.Cstr(button, {size=16})
-    button.bottomText= e.Cstr(button, {size=16})
-    button.bottomText2= e.Cstr(button, {size=16})
+    button.topText= e.Cstr(button, {size=22})--debuff
+    button.centerText= e.Cstr(button, {size=22})--持续，时间
+    button.speedText= e.Cstr(button, {size=16})--移动，速度
+    button.bottomText= e.Cstr(button, {size=16})--物品，数量
+    button.bottomText2= e.Cstr(button, {size=16})--
+    button.rightText= e.Cstr(button, {size=16})--本次，物品，收入
 
     button.topText:SetPoint('BOTTOM', button, 'TOP')
     button.centerText:SetPoint('CENTER')
@@ -26,6 +28,7 @@ function Init()
     button.speedText:SetPoint('TOPLEFT', button, 'BOTTOMLEFT')
     button.bottomText:SetPoint('TOPLEFT', button.speedText, 'BOTTOMLEFT')
     button.bottomText2:SetPoint('TOPLEFT', button.bottomText, 'BOTTOMLEFT')
+    button.rightText:SetPoint('LEFT', button, 'RIGHT')
 
     button.rightTexture= button:CreateTexture()
     button.rightTexture:SetPoint('RIGHT', button, 'LEFT')
@@ -33,12 +36,20 @@ function Init()
     button.rightTexture:SetTexture(132622)
     button.rightTexture:SetShown(false)
 
-    button.rightTexture:SetScript('OnShow', function()
-        e.PlaySound()
+    button:SetScript('OnShow', function(self)
+        self.item= GetItemCount(37829, true)
     end)
-    button.rightTexture:SetScript('OnHide', function()
-        e.PlaySound()
+    button:SetScript('OnHide', function(self)
+        self.item=nil
     end)
+
+    function button.rightTexture:set_tipSound()
+        if self:GetParent():IsVisible() then
+            e.PlaySound()
+        end
+    end
+    button.rightTexture:SetScript('OnShow', button.rightTexture.set_tipSound)
+    button.rightTexture:SetScript('OnHide', button.rightTexture.set_tipSound)
 
     button:RegisterForDrag("RightButton", 'LeftButton')
     button:SetMovable(true)
@@ -108,8 +119,11 @@ function Init()
     end
 
     function button:set_ItmeNum()
-        self.bottomText2:SetText('|T133784:0|t'..GetItemCount(37829, true))
+        local num = GetItemCount(37829, true)
+        self.bottomText2:SetText('|T133784:0|t'..num)
         self.rightTexture:SetShown(GetItemCount(33797)>0 and true or false)
+        num= num- (self.item or num)
+        self.rightText:SetText(num>0 and '|T133784:0|t|n'..num or '')
     end
 
     function button:set_Event()
