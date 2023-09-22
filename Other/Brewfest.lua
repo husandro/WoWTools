@@ -65,7 +65,7 @@ function Init()
     button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' and not IsModifierKeyDown() then
             self:set_Shown()
-        else
+        elseif d=='RightButton' then
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
@@ -196,7 +196,7 @@ function Init()
 
     button:SetScript('OnClick', function(_, d)
         if d=='LeftButton' and IsShiftKeyDown() then
-            local macroId = CreateMacro('Ram', 236912, '#showtooltip|n/click ExtraActionButton1')
+            local macroId = CreateMacro('Ram', 236912, '/click ExtraActionButton1')
             print(id, addName, e.onlyChinese and '创建宏"' or CREATE_MACROS, 'Ram',
                 macroId and '/click ExtraActionButton1' or (e.onlyChinese and '无法创建' or NONE)
             )

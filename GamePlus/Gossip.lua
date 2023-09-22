@@ -864,7 +864,7 @@ end
 local function Init_Quest()
     questPanel:SetPoint('RIGHT', panel, 'LEFT')
 
-    questPanel.Text=e.Cstr(questPanel, {justifyH='RIGHT'})--nil, nil,nil, nil,nil, 'RIGHT')--任务数量
+    questPanel.Text=e.Cstr(questPanel, {justifyH='RIGHT', color=true})--nil, nil,nil, nil,nil, 'RIGHT')--任务数量
     questPanel.Text:SetPoint('RIGHT', questPanel, 'LEFT')
     questPanel:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
@@ -936,7 +936,8 @@ local function Init_Quest()
         elseif event=='QUEST_LOG_UPDATE' then--更新数量
             --local n = select(2,C_QuestLog.GetNumQuestLogEntries())
             --local max = C_QuestLog.GetMaxNumQuestsCanAccept()
-            self.Text:SetText((select(2,C_QuestLog.GetNumQuestLogEntries()) or ''))-- and n..'/'..max or '')
+            local num= select(2,C_QuestLog.GetNumQuestLogEntries())
+            self.Text:SetText((num>=35 and '|cnRED_FONT_COLOR:' or '')..num)-- and n..'/'..max or '')
         elseif event=='GROUP_ROSTER_UPDATE' then
             set_PushableQuest()--共享,任务
         else
