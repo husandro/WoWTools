@@ -126,7 +126,7 @@ function Init()
 
     function button:set_ItmeNum()
         local num = GetItemCount(37829, true)
-        self.itemText:SetText(num>0 and '|T133784:0|t'..num or '')
+        self.itemText:SetText(num>0 and '|T133784:0|t'..num..' ' or '')
         self.leftTexture:SetShown(GetItemCount(33797)>0 and true or false)
         num= num- (self.item or num)
         self.rightText:SetText(num>0 and '|T133784:0|t|n'..num or '')
@@ -167,7 +167,7 @@ function Init()
     button:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= self.elapsed + elapsed
         if self.elapsed > 0.3 then
-            local info= C_UnitAuras.GetPlayerAuraBySpellID(43883)
+            local info= C_UnitAuras.GetPlayerAuraBySpellID(43883) or C_UnitAuras.GetPlayerAuraBySpellID(43880)
             if info and info.expirationTime then
                 self.timeText:SetText('|T'..info.icon..':0|t'..e.GetTimeInfo(nil, true, nil, info.expirationTime))
             end
