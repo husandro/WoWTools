@@ -125,7 +125,7 @@ local function Init_set_Tank_Healer()
         end
         local tank, healer
         local members=GetNumGroupMembers()
-        
+
         if IsInRaid() then
             local tab={}--设置团队标记
             for index=1, members do-- MAX_RAID_MEMBERS do
@@ -170,13 +170,13 @@ local function Init_set_Tank_Healer()
     end
 
 
-    
+
     function SetTankHealerFrame:set_Event()--设置，事件
         if self:check_Enable() then
             self:RegisterEvent('GROUP_ROSTER_UPDATE')
             self:RegisterEvent('GROUP_LEFT')
             self:RegisterEvent('GROUP_JOINED')
-            
+
         else
             self:UnregisterEvent('GROUP_ROSTER_UPDATE')
             self:UnregisterEvent('GROUP_LEFT')
@@ -1148,7 +1148,7 @@ local function InitMenu(_, level, type)--主菜单
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        
+
 
     elseif type=='MakerFrameResetPost' then--重置位置， 队伍标记工具
         --[[info={
@@ -1349,9 +1349,9 @@ local function Init()
     end)
 
 
-    
 
-   
+
+
 
 
     local readyFrame=ReadyCheckListenerFrame--自动就绪事件, 提示
