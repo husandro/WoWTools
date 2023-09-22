@@ -99,6 +99,24 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#######################
 --小地图, 标记, 监视，文本
 --#######################
@@ -163,8 +181,6 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
             end
         end
     end
-
-
 
     local time
     if C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
@@ -328,33 +344,29 @@ local function speak_Text(text)
     C_VoiceChat.SpeakText(voiceID, text, destination, 0, 100)
     print(id, addName2,'|cffff00ff', text)
 end
-local function set_VIGNETTES_UPDATED(init)
+local function set_VIGNETTES_UPDATED()
     if UnitOnTaxi('player')  then
         return
     end
     local find
-    for _, vignetteGUID in pairs(C_VignetteInfo.GetVignettes() or {}) do
-        local info= vignetteGUID and C_VignetteInfo.GetVignetteInfo(vignetteGUID) or {}
-        if info.name and info.name~='' and info.zoneInfiniteAOI then
-            if init then
-                SpeakTextTab[vignetteGUID]= not info.isDead and true or nil
-            else
+    local vignetteInfo= C_VignetteInfo.GetVignettes()
+    if vignetteInfo then
+        for _, vignetteGUID in pairs(vignetteInfo) do
+            local info= vignetteGUID and C_VignetteInfo.GetVignetteInfo(vignetteGUID) or {}
+            if info.name and info.name~='' and info.zoneInfiniteAOI then
                 if info.isDead then
-                    SpeakTextTab[vignetteGUID]=nil
-                elseif not SpeakTextTab[vignetteGUID] then
-                    if not find   then
+                    SpeakTextTab[info.name]=nil
+                elseif not SpeakTextTab[info.name] then
+                    if not find then
                         speak_Text(info.name)
                         find=true
                     end
-                    SpeakTextTab[vignetteGUID]=true
+                    SpeakTextTab[info.name]=true
                 end
             end
         end
     end
 end
-
-
-
 
 local function Init_Button_Menu(_, level, menuList)--菜单
     local info
@@ -627,272 +639,267 @@ end
 
 local function Init_Set_Button()--小地图, 标记, 文本
     local btn= panel.Button
-    if check_Button_Enabled_Disabled() then
+    if check_Button_Enabled_Disabled() or btn then
         return
     end
 
-    if not btn then
-        btn= e.Cbtn(nil, {icon='hide', size={20,20}})
-        btn.texture= btn:CreateTexture(nil, 'BORDER')
-        btn.texture:SetAllPoints(btn)
-        btn.texture:SetAlpha(0.3)
-        function btn:set_Texture()
-            self.texture:SetAtlas(Save.vigentteButtonShowText and 'VignetteKillElite' or e.Icon.disabled)
+    btn= e.Cbtn(nil, {icon='hide', size={20,20}})
+    btn.texture= btn:CreateTexture(nil, 'BORDER')
+    btn.texture:SetAllPoints(btn)
+    btn.texture:SetAlpha(0.3)
+    function btn:set_Texture()
+        self.texture:SetAtlas(Save.vigentteButtonShowText and 'VignetteKillElite' or e.Icon.disabled)
+    end
+    btn:set_Texture()
+    function btn:Set_Point()--设置，位置
+        if Save.pointVigentteButton then
+            self:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
+        else
+            self:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT', 4, 2)
         end
-        btn:set_Texture()
-        function btn:Set_Point()--设置，位置
-            if Save.pointVigentteButton then
-               self:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
-            else
-                self:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT', 4, 2)
-            end
+    end
+    btn:Set_Point()
+
+    btn:RegisterForDrag("RightButton")
+    btn:SetMovable(true)
+    btn:SetClampedToScreen(true)
+    btn:SetScript("OnDragStart", function(self)
+        if IsAltKeyDown() then
+            self:StartMoving()
         end
-        btn:Set_Point()
+    end)
+    btn:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        Save.pointVigentteButton={self:GetPoint(1)}
+        Save.pointVigentteButton[2]=nil
+        self:Raise()
+    end)
 
-        btn:RegisterForDrag("RightButton")
-        btn:SetMovable(true)
-        btn:SetClampedToScreen(true)
-        btn:SetScript("OnDragStart", function(self)
-            if IsAltKeyDown() then
-                self:StartMoving()
+    btn:SetScript('OnClick', function(self, d)--显示，隐藏
+        local key= IsModifierKeyDown()
+        if d=='LeftButton' and not key then
+            Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or nil
+            check_Button_Enabled_Disabled()
+            panel.Button:set_Texture()
+
+        elseif d=='RightButton' and not key then
+            if not self.menu then
+                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Button_Menu, 'MENU')
             end
-        end)
-        btn:SetScript("OnDragStop", function(self)
-            self:StopMovingOrSizing()
-            Save.pointVigentteButton={self:GetPoint(1)}
-            Save.pointVigentteButton[2]=nil
-            self:Raise()
-        end)
+            e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
 
-        btn:SetScript('OnClick', function(self, d)--显示，隐藏
-            local key= IsModifierKeyDown()
-            if d=='LeftButton' and not key then
-                Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or nil
-                check_Button_Enabled_Disabled()
-                panel.Button:set_Texture()
+        elseif d=='RightButton' and IsControlKeyDown() then
+            Save.pointVigentteButton=nil
+            self:ClearAllPoints()
+            self:Set_Point()
+        end
+    end)
 
-            elseif d=='RightButton' and not key then
-                if not self.menu then
-                    self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                    e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Button_Menu, 'MENU')
-                end
-                e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
-               
+    btn:SetScript('OnMouseDown', function(_, d)
+        if d=='RightButton' and IsAltKeyDown() then
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+    btn:SetScript('OnMouseUp', ResetCursor)
 
-            elseif d=='RightButton' and IsControlKeyDown() then
-                Save.pointVigentteButton=nil
-                btn:ClearAllPoints()
-                self:Set_Point()
+    btn:SetScript('OnMouseWheel', function(self, d)--缩放
+        if IsAltKeyDown() then
+            local scale= Save.vigentteButtonTextScale or 1
+            if d==1 then
+                scale= scale- 0.05
+            elseif d==-1 then
+                scale= scale+ 0.05
             end
-        end)
+            scale= scale>2.5 and 2.5  or scale
+            scale= scale<0.4 and 0.4 or scale
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, scale)
+            Save.vigentteButtonTextScale= scale
+            self:set_Frame()--设置，Button的 Frame Text 属性
+        end
+    end)
+    btn:SetScript('OnEnter',function(self)
+        set_vigentteButton_Text()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(addName2)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.vigentteButtonTextScale), 'Alt+'..e.Icon.mid)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+        self.texture:SetAlpha(1)
+    end)
+    btn:SetScript('OnLeave',function(self)
+        e.tips:Hide()
+        ResetCursor()
+        self.texture:SetAlpha(0.3)
+    end)
 
-        btn:SetScript('OnMouseDown', function(_, d)
-            if d=='RightButton' and IsAltKeyDown() then
-                SetCursor('UI_MOVE_CURSOR')
-            end
-        end)
-        btn:SetScript('OnMouseUp', ResetCursor)
-
-        btn:SetScript('OnMouseWheel', function(self, d)--缩放
-            if IsAltKeyDown() then
-                local scale= Save.vigentteButtonTextScale or 1
-                if d==1 then
-                    scale= scale- 0.05
-                elseif d==-1 then
-                    scale= scale+ 0.05
-                end
-                scale= scale>2.5 and 2.5  or scale
-                scale= scale<0.4 and 0.4 or scale
-                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, scale)
-                Save.vigentteButtonTextScale= scale
-                self:set_Frame()--设置，Button的 Frame Text 属性
-            end
-        end)
-        btn:SetScript('OnEnter',function(self)
-            set_vigentteButton_Text()
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddLine(addName2)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
-            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.vigentteButtonTextScale), 'Alt+'..e.Icon.mid)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:Show()
-            self.texture:SetAlpha(1)
-        end)
-        btn:SetScript('OnLeave',function(self)
-            e.tips:Hide()
-            ResetCursor()
-            self.texture:SetAlpha(0.3)
-        end)
-
-        btn:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件
-        function btn:set_Instance_Event()
-            if IsInInstance() then
-                self:UnregisterEvent('PLAYER_REGEN_DISABLED')
-                self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-                self:UnregisterEvent('VIGNETTES_UPDATED')
+    btn:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件
+    function btn:set_Instance_Event()
+        if IsInInstance() then
+            self:UnregisterEvent('PLAYER_REGEN_DISABLED')
+            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+            self:UnregisterEvent('VIGNETTES_UPDATED')
+        else
+            self:RegisterEvent('PLAYER_REGEN_DISABLED')
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            if Save.vigentteSound and not Save.hideVigentteCurrentOnWorldMap then
                 SpeakTextTab={}
-            else
-                self:RegisterEvent('PLAYER_REGEN_DISABLED')
-                self:RegisterEvent('PLAYER_REGEN_ENABLED')
-                if Save.vigentteSound and not Save.hideVigentteCurrentOnWorldMap then
-                    set_VIGNETTES_UPDATED(true)
-                    self:RegisterEvent('VIGNETTES_UPDATED')
-                end
+                self:RegisterEvent('VIGNETTES_UPDATED')
             end
         end
-        btn:set_Instance_Event()
-        btn:SetScript('OnEvent', function(self, event)
-            if event=='PLAYER_ENTERING_WORLD' then
-                C_Timer.After(2, function()
-                    check_Button_Enabled_Disabled()
-                    self:set_Instance_Event()
-                end)
-            elseif event=='VIGNETTES_UPDATED' then
-                set_VIGNETTES_UPDATED()
-            else
+    end
+    btn:set_Instance_Event()
+    btn:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_ENTERING_WORLD' then
+            C_Timer.After(2, function()
                 check_Button_Enabled_Disabled()
-            end
-        end)
-        
-
-        function btn:set_Frame()--设置，Button的 Frame Text 属性
-            if not self.Frame then
-                self.Frame= CreateFrame('Frame', nil, self)
-                self.Frame:SetSize(1,1)
-                self.Frame.text= e.Cstr(self.Frame, {color=true})
-            else
-                self.Frame:ClearAllPoints()
-                self.Frame.text:ClearAllPoints()
-            end
-            if Save.textToDown then
-                self.Frame:SetPoint('TOPLEFT', self, 'BOTTOMLEFT')
-                self.Frame.text:SetPoint('TOPLEFT')
-            else
-                self.Frame:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
-                self.Frame.text:SetPoint('BOTTOMLEFT')
-            end
-            self.Frame:SetScale(Save.vigentteButtonTextScale or 1)
+                self:set_Instance_Event()
+            end)
+        elseif event=='VIGNETTES_UPDATED' then
+            set_VIGNETTES_UPDATED()
+        else
+            check_Button_Enabled_Disabled()
         end
-        btn:set_Frame()
+    end)
 
-        WorldMapFrame:HookScript('OnHide', check_Button_Enabled_Disabled)
-        WorldMapFrame:HookScript('OnShow', check_Button_Enabled_Disabled)
+    function btn:set_Frame()--设置，Button的 Frame Text 属性
+        if not self.Frame then
+            self.Frame= CreateFrame('Frame', nil, self)
+            self.Frame:SetSize(1,1)
+            self.Frame.text= e.Cstr(self.Frame, {color=true})
+        else
+            self.Frame:ClearAllPoints()
+            self.Frame.text:ClearAllPoints()
+        end
+        if Save.textToDown then
+            self.Frame:SetPoint('TOPLEFT', self, 'BOTTOMLEFT')
+            self.Frame.text:SetPoint('TOPLEFT')
+        else
+            self.Frame:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
+            self.Frame.text:SetPoint('BOTTOMLEFT')
+        end
+        self.Frame:SetScale(Save.vigentteButtonTextScale or 1)
+    end
+    btn:set_Frame()
 
-        check_Button_Enabled_Disabled()
+    WorldMapFrame:HookScript('OnHide', check_Button_Enabled_Disabled)
+    WorldMapFrame:HookScript('OnShow', check_Button_Enabled_Disabled)
 
-        btn.Frame.elapsed=1
-        btn.Frame:SetScript('OnUpdate', function(self, elapsed)
-            self.elapsed= self.elapsed+ elapsed
-            if self.elapsed>=1 then
-                set_vigentteButton_Text(self.text)
-               self.elapsed=0
+    check_Button_Enabled_Disabled()
+
+    btn.Frame.elapsed=1
+    btn.Frame:SetScript('OnUpdate', function(self, elapsed)
+        self.elapsed= self.elapsed+ elapsed
+        if self.elapsed>=1 then
+            set_vigentteButton_Text(self.text)
+            self.elapsed=0
+        end
+    end)
+    panel.Button=btn
+
+    hooksecurefunc('TaskPOI_OnEnter', function(self2)--世界任务，提示 WorldMapFrame.lua
+        if self2.questID and self2.OnMouseClickAction then
+            e.tips:AddDoubleLine(addName2..(Save.questIDs[self2.questID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
+            e.tips:Show()
+        end
+    end)
+    hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--世界任务，添加/移除 WorldQuestDataProvider.lua self.tagInfo
+        if not self.OnMouseClickAction or self.setTracking then
+            return
+        end
+        hooksecurefunc(self, 'OnMouseClickAction', function(self2, d)
+            if self2.questID and d=='LeftButton' and IsAltKeyDown() then
+                Save.questIDs[self2.questID]= not Save.questIDs[self2.questID] and true or nil
+                print(id,addName, addName2,
+                    GetQuestLink(self2.questID) or self2.questID,
+                    Save.questIDs[self2.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                )
             end
         end)
-        panel.Button=btn
+        self.setTracking=true
+    end)
 
-        hooksecurefunc('TaskPOI_OnEnter', function(self2)--世界任务，提示 WorldMapFrame.lua
-            if self2.questID and self2.OnMouseClickAction then
-                e.tips:AddDoubleLine(addName2..(Save.questIDs[self2.questID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
-                e.tips:Show()
-            end
-        end)
-        hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--世界任务，添加/移除 WorldQuestDataProvider.lua self.tagInfo
-            if not self.OnMouseClickAction or self.setTracking then
-                return
-            end
-            hooksecurefunc(self, 'OnMouseClickAction', function(self2, d)
-                if self2.questID and d=='LeftButton' and IsAltKeyDown() then
-                    Save.questIDs[self2.questID]= not Save.questIDs[self2.questID] and true or nil
+    hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--areaPoiID,提示 AreaPOIDataProvider.lua
+        if self.areaPoiID and  self:GetMap() and self:GetMap():GetMapID() then
+            e.tips:AddDoubleLine(addName2..(Save.areaPoiIDs[self.areaPoiID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
+            e.tips:Show()
+        end
+    end)
+    hooksecurefunc(AreaPOIPinMixin,'OnAcquired', function(self)---areaPoiID, 添加/移除 AreaPOIDataProvider.lua
+        if self.setTracking then
+            return
+        end
+        self:HookScript('OnMouseDown', function(self2,d)
+            if self2.areaPoiID and d=='LeftButton' and IsAltKeyDown() then
+                local uiMapID = self:GetMap() and self:GetMap():GetMapID()
+                if uiMapID then
+                    Save.areaPoiIDs[self.areaPoiID]= not Save.areaPoiIDs[self.areaPoiID] and uiMapID or nil
+                    local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID) or {}
+                    local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
+                    name= name=='' and 'areaPoiID '..self.areaPoiID or name
                     print(id,addName, addName2,
-                        GetQuestLink(self2.questID) or self2.questID,
-                        Save.questIDs[self2.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                        (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
+                        name,
+                        Save.areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
                     )
                 end
-            end)
-            self.setTracking=true
+            end
         end)
+        self.setTracking=true
+    end)
 
-        hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--areaPoiID,提示 AreaPOIDataProvider.lua
-            if self.areaPoiID and  self:GetMap() and self:GetMap():GetMapID() then
-                e.tips:AddDoubleLine(addName2..(Save.areaPoiIDs[self.areaPoiID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
-                e.tips:Show()
-            end
-        end)
-        hooksecurefunc(AreaPOIPinMixin,'OnAcquired', function(self)---areaPoiID, 添加/移除 AreaPOIDataProvider.lua
-            if self.setTracking then
-                return
-            end
-            self:HookScript('OnMouseDown', function(self2,d)
-                if self2.areaPoiID and d=='LeftButton' and IsAltKeyDown() then
-                    local uiMapID = self:GetMap() and self:GetMap():GetMapID()
-                    if uiMapID then
-                        Save.areaPoiIDs[self.areaPoiID]= not Save.areaPoiIDs[self.areaPoiID] and uiMapID or nil
-                        local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID) or {}
-                        local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
-                        name= name=='' and 'areaPoiID '..self.areaPoiID or name
-                        print(id,addName, addName2,
-                            (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
-                            name,
-                            Save.areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
-                        )
-                    end
-                end
-            end)
-            self.setTracking=true
-        end)
-
-        WorldMapFrame.setTrackingButton= e.Cbtn(WorldMapFrame, {size={20,20}, icon='hide'})
-        WorldMapFrame.setTrackingButton:SetPoint('TOPRIGHT', WorldMapFramePortrait, 'BOTTOMRIGHT', 2, 10)
-        WorldMapFrame.setTrackingButton:Raise()
-        WorldMapFrame.setTrackingButton:SetScript('OnClick', function(self)
-            local frame= self:GetParent()
-            local uiMapID= frame.mapID or frame:GetMapID("current")
-            if uiMapID then
-                Save.uiMapIDs[uiMapID]= not Save.uiMapIDs[uiMapID] and true or nil
-                local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
-                print(id,addName, addName2,
-                    name,
-                    Save.uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
-                )
-                frame:Set_TrackingButton_Texture()
-            end
-        end)
-        WorldMapFrame.setTrackingButton:SetScript('OnShow', function(self)
-            self:GetParent():Set_TrackingButton_Texture()
-        end)
-        WorldMapFrame.setTrackingButton:SetScript('OnLeave', function() e.tips:Hide() end)
-        WorldMapFrame.setTrackingButton:SetScript('OnEnter', function(self)
-            local frame= self:GetParent()
-            local uiMapID= frame.mapID or frame:GetMapID("current")
-            if uiMapID then
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(addName2..(Save.uiMapIDs[uiMapID] and e.Icon.select2 or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:Show()
-            end
-        end)
-        function WorldMapFrame:Set_TrackingButton_Texture()
-            local uiMapID= self.mapID or self:GetMapID("current")
-            if not uiMapID then
-                self.setTrackingButton:SetNormalTexture(0)
-            else
-                local atlas
-                if Save.uiMapIDs[uiMapID] then
-                    atlas= e.Icon.select
-                else
-                    atlas='VignetteKillElite'
-                end
-               self.setTrackingButton:SetNormalAtlas(atlas)
-            end
+    WorldMapFrame.setTrackingButton= e.Cbtn(WorldMapFrame, {size={20,20}, icon='hide'})
+    WorldMapFrame.setTrackingButton:SetPoint('TOPRIGHT', WorldMapFramePortrait, 'BOTTOMRIGHT', 2, 10)
+    WorldMapFrame.setTrackingButton:Raise()
+    WorldMapFrame.setTrackingButton:SetScript('OnClick', function(self)
+        local frame= self:GetParent()
+        local uiMapID= frame.mapID or frame:GetMapID("current")
+        if uiMapID then
+            Save.uiMapIDs[uiMapID]= not Save.uiMapIDs[uiMapID] and true or nil
+            local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
+            print(id,addName, addName2,
+                name,
+                Save.uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+            )
+            frame:Set_TrackingButton_Texture()
         end
-        hooksecurefunc(WorldMapFrame, 'OnMapChanged', WorldMapFrame.Set_TrackingButton_Texture)--uiMapIDs, 添加，移除 --Blizzard_WorldMap.lua
+    end)
+    WorldMapFrame.setTrackingButton:SetScript('OnShow', function(self)
+        self:GetParent():Set_TrackingButton_Texture()
+    end)
+    WorldMapFrame.setTrackingButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    WorldMapFrame.setTrackingButton:SetScript('OnEnter', function(self)
+        local frame= self:GetParent()
+        local uiMapID= frame.mapID or frame:GetMapID("current")
+        if uiMapID then
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(addName2..(Save.uiMapIDs[uiMapID] and e.Icon.select2 or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end
+    end)
+    function WorldMapFrame:Set_TrackingButton_Texture()
+        local uiMapID= self.mapID or self:GetMapID("current")
+        if not uiMapID then
+            self.setTrackingButton:SetNormalTexture(0)
+        else
+            local atlas
+            if Save.uiMapIDs[uiMapID] then
+                atlas= e.Icon.select
+            else
+                atlas='VignetteKillElite'
+            end
+            self.setTrackingButton:SetNormalAtlas(atlas)
+        end
     end
+    hooksecurefunc(WorldMapFrame, 'OnMapChanged', WorldMapFrame.Set_TrackingButton_Texture)--uiMapIDs, 添加，移除 --Blizzard_WorldMap.lua
 end
 
 
@@ -1094,7 +1101,7 @@ local function enter_Func(self)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.right)
     end
     e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left)
-    
+
     e.tips:AddLine(' ')
     e.tips:AddDoubleLine(id, addName)
     e.tips:Show()
