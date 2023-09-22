@@ -62,7 +62,13 @@ function Init()
         Save.Point[2]=nil
     end)
     button:SetScript("OnMouseUp", ResetCursor)
-    button:SetScript('OnMouseDown', function() SetCursor('UI_MOVE_CURSOR') end)
+    button:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' then
+            self:set_Shown()
+        else
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
 
     function button:set_Scale()
         self:SetScale(Save.scale or 1)
@@ -199,6 +205,8 @@ function Init()
     button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:SetSpellByID(43883)
+        e.tips:AddLine(' ')
         local macro= select(3, GetMacroInfo('Ram'))
         local col= (macro and macro:find('ExtraActionButton1')) and '|cff606060' or ''
         e.tips:AddDoubleLine(col..(e.onlyChinese and '创建宏"' or CREATE_MACROS), col..'Shift+'..e.Icon.left)
@@ -244,6 +252,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         if not button then
                             Init()
                         end
+                        button:SetShown(true)
                     else
                         print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                     end
