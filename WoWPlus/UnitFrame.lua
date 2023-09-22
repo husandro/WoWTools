@@ -324,393 +324,410 @@ end
 --####
 --小队
 --####
-local function set_PartyFrame()--PartyFrame.lua
-    local function set_UpdatePartyFrames(self)
-        for memberFrame in self.PartyMemberFramePool:EnumerateActive() do
-            local unit= memberFrame.unit or memberFrame:GetUnit()
-            local exists= memberFrame:IsShown()
+local function set_memberFrame(memberFrame)
+    local unit= memberFrame.unit or memberFrame:GetUnit()
+    local exists= memberFrame:IsShown()
 
-            local r, g, b
-            local classFilename= exists and UnitClassBase(unit)
-            if classFilename then
-                r,g,b= GetClassColor(classFilename)
-            end
-            r= r or 1
-            g= g or 1
-            b= b or 1
+    local r, g, b
+    local classFilename= exists and UnitClassBase(unit)
+    if classFilename then
+        r,g,b= GetClassColor(classFilename)
+    end
+    r= r or 1
+    g= g or 1
+    b= b or 1
 
-            --####
-            --外框
-            --####
-            if memberFrame.Texture and exists then
-                memberFrame.Texture:SetVertexColor(r, g, b)
-            end
-
-            --#########
-            --目标的目标
-            --#########
-            local frame= memberFrame.potFrame
-            if not frame then
-                frame= e.Cbtn(memberFrame, {type=true, size={35,35}, icon='hide'})
-                --frame:SetFrameLevel(memberFrame:GetFrameLevel()+1)
-                frame:SetPoint('LEFT', memberFrame, 'RIGHT', -3, 4)
-                frame:SetAttribute('type', 'target')
-                frame:SetAttribute('unit', unit..'target')
-
-                frame.set_Party_Target_Changed= function(self2)
-                    local text
-                    local exists2= UnitExists(self2.unit)
-                    if exists2 then
-                        if UnitIsUnit(self2.unit, 'player') then--我
-                            self2.Portrait:SetAtlas('auctionhouse-icon-favorite')
-                        elseif UnitIsDeadOrGhost(self2.unit) then--死亡
-                            self2.Portrait:SetAtlas('xmarksthespot')
-                        else
-                            local index = GetRaidTargetIndex(self2.unit)
-                            if index and index>0 and index< 9 then--标记
-                                self2.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
-                            else
-                                SetPortraitTexture(self2.Portrait, self2.unit, true)--图像
-                            end
-                        end
-                        text= UnitIsPlayer(self2.unit) and e.Class(self2.unit)
-                        local r2, g2, b2= GetClassColor(UnitClassBase(self2.unit))
-                        self2.healthBar:SetStatusBarColor(r2 or 1, g2 or 1, b2 or 1, 1)
-                    end
-                    self2.Portrait:SetShown(exists2)--队友，目标，图像
-                    self2.Text:SetText(text or '')--队友，目标，职业
-                    self2.healthBar:SetShown(exists2)--队友， 目标， 生命条
-                    self2.healthBar.elapsed=1
-                end
-                frame:SetScript('OnLeave', function() e.tips:Hide() end)
-                frame:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                    e.tips:ClearLines()
-                    if  UnitExists(self2.unit) then
-                        e.tips:SetUnit(self2.unit)
-                    else
-                        e.tips:AddDoubleLine(' ',e.Icon.left..(e.onlyChinese and '选中目标' or BINDING_HEADER_TARGETING))
-                        e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(id, addName)
-                    end
-                    e.tips:Show()
-                end)
-                frame:SetScript('OnEvent', function(self2)
-                    self2.set_Party_Target_Changed(self2)
-                end)
-                frame.unit= unit..'target'
-
-                frame.Portrait= frame:CreateTexture(nil, 'BACKGROUND')--队友，目标，图像
-                frame.Portrait:SetAllPoints(frame)
-
-                frame.Text= e.Cstr(frame, {size=14})--队友，目标，职业
-                frame.Text:SetPoint('BOTTOMRIGHT',3,-2)
-
-                frame.healthBar= CreateFrame('StatusBar', nil, frame)--队友， 目标， 生命条
-                frame.healthBar:SetSize(55, 8)
-                frame.healthBar:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT')
-                frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-                frame.healthBar:SetMinMaxValues(0,100)
-                frame.healthBar:SetFrameLevel(frame:GetFrameLevel()+7)
-                frame.healthBar.elapsed=0
-                frame.healthBar.unit= unit..'target'
-                frame.healthBar:SetScript('OnUpdate', function(self2, elapsed)
-                    self2.elapsed= self2.elapsed +elapsed
-                    if self2.elapsed>0.75 then
-                        local cur= UnitHealth(self2.unit)
-                        local max= UnitHealthMax(self2.unit)
-                        if max and max>0 then
-                            local value= cur/max*100
-                           self2:SetValue(value)
-                           self2.Text:SetFormattedText('%i', value)
-                        else
-                            self2:SetShown(false)
-                        end
-                        self2.elapsed=0
-                    end
-                end)
-
-                local texture= frame.healthBar:CreateTexture(nil, 'BACKGROUND')--队友，目标，生命条，外框
-                texture:SetAtlas('MainPet-HealthBarFrame')
-                texture:SetAllPoints(frame.healthBar)
-                texture:SetVertexColor(1,0,0)
-
-                frame.healthBar.Text= e.Cstr(frame.healthBar)
-                frame.healthBar.Text:SetPoint('RIGHT')
-                frame.healthBar.Text:SetTextColor(1,1,1)
-
-                memberFrame.potFrame= frame
-            end
-            frame:UnregisterAllEvents()
-            if exists then
-                frame:RegisterEvent('RAID_TARGET_UPDATE')
-                frame:RegisterUnitEvent('UNIT_TARGET', unit)
-                frame:RegisterUnitEvent('UNIT_FLAGS', unit..'target')
-                frame:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit..'target')
-            end
-            frame.set_Party_Target_Changed(frame)
-
-            --#########
-            --队友，施法
-            --#########
-            frame= memberFrame.castFrame
-            if not frame then
-                frame= CreateFrame("Frame", nil, memberFrame)
-                frame:SetPoint('BOTTOMLEFT', memberFrame.potFrame, 'BOTTOMRIGHT')
-                frame:SetSize(20,20)
-                frame.texture=  frame:CreateTexture(nil,'BACKGROUND')
-                frame.texture:SetAllPoints(frame)
-                frame.set_Party_Casting= function(self2)
-                    local texture, startTime, endTime, find, channel
-                    if UnitExists(self2.unit) then
-                        texture, startTime, endTime= select(3, UnitChannelInfo(self2.unit))
-                        if not (texture and  startTime and endTime) then
-                            texture, startTime, endTime= select(3, UnitCastingInfo(self2.unit))
-                        else
-                            channel= true
-                        end
-                        if texture and startTime and endTime then
-                            local duration=(endTime - startTime) / 1000
-                            e.Ccool(self2, nil, duration, nil, true, channel, nil,nil)
-                            find=true
-                        end
-                    end
-                    self2.texture:SetTexture(texture or 0)
-                    if not find and self2.cooldown then
-                        self2.cooldown:Clear()
-                    end
-                    self2:SetShown(find)
-                end
-                frame:SetScript('OnEvent', function (self2, _, _, _, spellID)
-                    self2.set_Party_Casting(self2)
-                    self2.spellID= spellID
-                end)
-                frame:SetScript('OnLeave', function() e.tips:Hide() end)
-                frame:SetScript('OnEnter', function(self2)
-                    if self2.spellID then
-                        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                        e.tips:ClearLines()
-                        e.tips:SetSpellByID(self2.spellID)
-                        e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(id, addName)
-                        e.tips:Show()
-                    end
-                end)
-                frame.unit= unit
-                memberFrame.castFrame= frame
-            end
-            frame:UnregisterAllEvents()
-            if exists then
-                local events= {
-                    'UNIT_SPELLCAST_CHANNEL_START',
-                    'UNIT_SPELLCAST_CHANNEL_STOP',
-                    'UNIT_SPELLCAST_CHANNEL_UPDATE',
-                    'UNIT_SPELLCAST_START',
-                    'UNIT_SPELLCAST_DELAYED',
-
-                    'UNIT_SPELLCAST_FAILED',
-                    'UNIT_SPELLCAST_FAILED_QUIET',
-                    'UNIT_SPELLCAST_INTERRUPTED',
-                    'UNIT_SPELLCAST_SUCCEEDED',
-                    'UNIT_SPELLCAST_STOP',
-                }
-                FrameUtil.RegisterFrameForUnitEvents(frame, events, unit)
-            end
-            frame.set_Party_Casting(frame)
-
-            --##########
-            --队伍, 标记
-            --##########
-            frame= memberFrame.RaidTargetFrame
-            if not frame then
-                frame= CreateFrame("Frame", nil, memberFrame)
-                frame:SetSize(14,14)
-                frame:SetPoint('RIGHT', memberFrame.PartyMemberOverlay.RoleIcon, 'LEFT')
-                frame:SetScript('OnEvent', function (self2)
-                    set_RaidTarget(self2.RaidTargetIcon, self2.unit)
-                end)
-                frame.RaidTargetIcon= frame:CreateTexture()
-                frame.RaidTargetIcon:SetAllPoints(frame)
-                frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
-                frame.unit= unit
-                memberFrame.RaidTargetFrame= frame
-            end
-            frame:UnregisterAllEvents()
-            if exists then
-                frame:RegisterEvent('RAID_TARGET_UPDATE')
-            end
-            set_RaidTarget(frame.RaidTargetIcon, unit)--设置,标记
-
-            --#######
-            --战斗指示
-            --#######
-            frame= memberFrame.combatFrame
-            if not frame then
-                frame= CreateFrame('Frame', nil, memberFrame)
-                frame:SetPoint('TOPLEFT', memberFrame.potFrame, 'TOPRIGHT',2,2)
-                frame:SetSize(16,16)
-                frame:SetScript('OnLeave', function() e.tips:Hide() end)
-                frame:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                    e.tips:ClearLines()
-                    e.tips:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(id, addName)
-                    e.tips:Show()
-                end)
-                frame.texture= frame:CreateTexture()
-                frame.texture:SetAllPoints(frame)
-                frame.texture:SetAtlas('UI-HUD-UnitFrame-Player-CombatIcon-2x')
-                frame.texture:SetVertexColor(1, 0, 0)
-                frame.texture:SetShown(false)
-                frame.unit= unit
-                frame.elapsed=0
-                frame:SetScript('OnUpdate', function(self2, elapsed)
-                    self2.elapsed= self2.elapsed +elapsed
-                    if self2.elapsed>0.5 then
-                        self2.texture:SetShown(UnitAffectingCombat(self2.unit))
-                        self2.elapsed=0
-                    end
-                end)
-                memberFrame.combatFrame= frame
-            end
-            frame:SetShown(exists)
-
-            --#######
-            --队友位置
-            --#######
-            frame= memberFrame.positionFrame
-            if not frame then
-                frame= CreateFrame("Frame", nil, memberFrame)
-                frame:SetPoint('LEFT', memberFrame.PartyMemberOverlay.LeaderIcon, 'RIGHT')
-                frame:SetSize(1,1)
-                frame.set_Shown= function(self2)
-                    self2:SetShown(not IsInInstance() and UnitExists(self2.unit))
-                end
-                frame:SetScript('OnEvent', function(self2)
-                    self2.set_Shown(self2)
-                end)
-                frame.Text= e.Cstr(frame)
-                frame.Text:SetPoint('LEFT')
-                frame.elapsed= 0
-                frame:SetScript('OnUpdate', function(self2, elapsed)
-                    self2.elapsed= self2.elapsed +elapsed
-                    if self2.elapsed>1 then
-                        local mapID= C_Map.GetBestMapForUnit(self2.unit)--地图ID
-                        local mapInfo= mapID and C_Map.GetMapInfo(mapID)
-                        local text
-                        local distanceSquared, checkedDistance = UnitDistanceSquared(self2.unit)
-                        if distanceSquared and checkedDistance then
-                            text= e.MK(distanceSquared, 0)
-                        end
-                        if mapInfo and mapInfo.name then
-                            text= (text and text..' ' or '')..mapInfo.name
-                            local mapID2= C_Map.GetBestMapForUnit('player')
-                            if mapID2== mapID then
-                                text= e.Icon.select2..text
-                            end
-                        end
-                        self2.Text:SetText(text or '')
-                        self2.elapsed=0
-                    end
-                end)
-                frame.unit= unit
-                memberFrame.positionFrame= frame
-            end
-            frame:RegisterAllEvents()
-            if exists then
-                frame:RegisterEvent('PLAYER_ENTERING_WORLD')
-                frame.Text:SetTextColor(r, g, b)
-            end
-            frame:set_Shown(frame)
-
-            --#########
-            --队友，死亡
-            --#########
-            frame= memberFrame.deadFrame
-            if not frame then
-                frame= CreateFrame('Frame', nil, memberFrame)
-                frame:SetPoint("CENTER", memberFrame.Portrait)
-                frame:SetSize(37,37)
-                frame:SetFrameStrata('HIGH')
-                frame.texture= frame:CreateTexture()
-                frame.texture:SetAllPoints(frame)
-                frame.set_Active= function(self2)
-                    local find= false
-                    if UnitIsConnected(self2.unit) and UnitIsPlayer(self2.unit) then
-                        if UnitIsCharmed(self2.unit) then--被魅惑
-                            self2.texture:SetAtlas('CovenantSanctum-Reservoir-Idle-NightFae-Spiral3')
-                            find= true
-                        elseif UnitIsFeignDeath(self2.unit) then--假死
-                            self2.texture:SetTexture(132293)
-                            find= true
-                            
-                        elseif UnitIsDead(self2.unit) then
-                            self2.texture:SetAtlas('xmarksthespot')
-                            find= true
-                            if not self2.deadBool then--死亡，次数
-                                self2.deadBool=true
-                                self2.dead= self2.dead +1
-                            end
-
-                        elseif UnitIsGhost(self2.unit) then
-                            self2.texture:SetAtlas('poi-soulspiritghost')
-                            find= true
-                        else
-                            self2.deadBool= nil
-                        end
-                    end
-                    self2:SetShown(find)
-                    self2.deadText:SetText(self2.dead>0 and self2.dead or '')
-                end
-                frame:SetScript('OnEvent', function(self2, event)
-                    if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
-                        self2.dead= 0
-                    end
-                    self2:set_Active(self2)
-                end)
-
-                --死亡，次数
-                frame.dead=0
-                frame.deadText= e.Cstr(frame.memberFrame, {mouse=true})
-                frame.deadText:SetPoint('BOTTOMLEFT', frame)
-                frame.deadText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
-                frame.deadText:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.onlyChinese and '死亡' or DEAD, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, self2:GetParent().dead or 0 ,  e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
-                    e.tips:AddDoubleLine(id, addName)
-                    e.tips:Show()
-                    self2:SetAlpha(0.3)
-                end)
-                memberFrame.deadFrame= frame
-            end
-
-            frame.unit= unit
-            frame:UnregisterAllEvents()
-            if exists then
-                frame:RegisterEvent('PLAYER_ENTERING_WORLD')
-                frame:RegisterEvent('CHALLENGE_MODE_START')
-                frame:RegisterUnitEvent('UNIT_FLAGS', unit)
-                frame:RegisterUnitEvent('UNIT_HEALTH', unit)
-                frame.deadText:SetTextColor(r, g, b)
-            else
-                frame.dead= 0
-            end
-            frame:set_Active(frame)
-        end
+    --####
+    --外框
+    --####
+    if memberFrame.Texture and exists then
+        memberFrame.Texture:SetVertexColor(r, g, b)
     end
 
+    --#########
+    --目标的目标
+    --#########
+    local frame= memberFrame.potFrame
+    if not frame then
+        frame= e.Cbtn(memberFrame, {type=true, size={35,35}, icon='hide'})
+        frame.Portrait= frame:CreateTexture(nil, 'BACKGROUND')--队友，目标，图像
+        frame.healthBar= CreateFrame('StatusBar', nil, frame)
+        frame.healthBar.Text= e.Cstr(frame.healthBar)
+
+        frame:SetPoint('LEFT', memberFrame, 'RIGHT', -3, 4)
+        frame:SetAttribute('type', 'target')
+        frame:SetAttribute('unit', unit..'target')
+
+        function frame:set_Party_Target_Changed()
+            local text
+            local exists2= UnitExists(self.unit)
+            if exists2 then
+                if UnitIsUnit(self.unit, 'player') then--我
+                    self.Portrait:SetAtlas('auctionhouse-icon-favorite')
+                elseif UnitIsDeadOrGhost(self.unit) then--死亡
+                    self.Portrait:SetAtlas('xmarksthespot')
+                else
+                    local index = GetRaidTargetIndex(self.unit)
+                    if index and index>0 and index< 9 then--标记
+                        self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+                    else
+                        SetPortraitTexture(self.Portrait, self.unit, true)--图像
+                    end
+                end
+                text= UnitIsPlayer(self.unit) and e.Class(self.unit)
+                local r2, g2, b2= GetClassColor(UnitClassBase(self.unit))
+                self.healthBar:SetStatusBarColor(r2 or 1, g2 or 1, b2 or 1, 1)
+            end
+            self.Portrait:SetShown(exists2)--队友，目标，图像
+            self.Text:SetText(text or '')--队友，目标，职业
+            self.healthBar:SetShown(exists2)--队友， 目标， 生命条
+            self.healthBar.elapsed=1
+        end
+        frame:SetScript('OnLeave', function() e.tips:Hide() end)
+        frame:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_RIGHT")
+            e.tips:ClearLines()
+            if UnitExists(self.unit) then
+                e.tips:SetUnit(self.unit)
+            else
+                e.tips:AddDoubleLine(' ',e.Icon.left..(e.onlyChinese and '选中目标' or BINDING_HEADER_TARGETING))
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, addName)
+            end
+            e.tips:Show()
+        end)
+        frame:SetScript('OnEvent', frame.set_Party_Target_Changed)
+        frame.unit= unit..'target'
+
+        --队友， 目标， 生命条
+        frame.healthBar:SetSize(55, 8)
+        frame.healthBar:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT')
+        frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+        frame.healthBar:SetMinMaxValues(0,100)
+        frame.healthBar:SetFrameLevel(frame:GetFrameLevel()+7)
+        frame.healthBar.elapsed=0
+        frame.healthBar.unit= unit..'target'
+        frame.healthBar:SetScript('OnUpdate', function(self, elapsed)
+            self.elapsed= self.elapsed +elapsed
+            if self.elapsed>0.75 then
+                local cur= UnitHealth(self.unit)
+                local max= UnitHealthMax(self.unit)
+                if max and max>0 then
+                    local value= cur/max*100
+                    self:SetValue(value)
+                    self.Text:SetFormattedText('%i', value)
+                else
+                    self:SetShown(false)
+                end
+                self.elapsed=0
+            end
+        end)
+
+        local texture= frame.healthBar:CreateTexture(nil, 'BACKGROUND')--队友，目标，生命条，外框
+        texture:SetAtlas('MainPet-HealthBarFrame')
+        texture:SetAllPoints(frame.healthBar)
+        texture:SetVertexColor(1,0,0)
+
+        frame.Portrait:SetAllPoints(frame)
+        frame.Text= e.Cstr(frame, {size=14})--队友，目标，职业
+        frame.Text:SetPoint('BOTTOMRIGHT',3,-2)
+        frame.healthBar.Text:SetPoint('RIGHT')
+        frame.healthBar.Text:SetTextColor(1,1,1)
+
+        memberFrame.potFrame= frame
+    end
+
+    frame:UnregisterAllEvents()
+    if exists then
+        frame:RegisterEvent('RAID_TARGET_UPDATE')
+        frame:RegisterUnitEvent('UNIT_TARGET', unit)
+        frame:RegisterUnitEvent('UNIT_FLAGS', unit..'target')
+        frame:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit..'target')
+    end
+    frame:set_Party_Target_Changed()
+
+    --#########
+    --队友，施法
+    --#########
+    frame= memberFrame.castFrame
+    if not frame then
+        frame= CreateFrame("Frame", nil, memberFrame)
+        frame:SetPoint('BOTTOMLEFT', memberFrame.potFrame, 'BOTTOMRIGHT')
+        frame:SetSize(20,20)
+        frame.texture=  frame:CreateTexture(nil,'BACKGROUND')
+        frame.texture:SetAllPoints(frame)
+        function frame:set_Party_Casting()
+            local texture, startTime, endTime, find, channel
+            if UnitExists(self.unit) then
+                texture, startTime, endTime= select(3, UnitChannelInfo(self.unit))
+                if not (texture and  startTime and endTime) then
+                    texture, startTime, endTime= select(3, UnitCastingInfo(self.unit))
+                else
+                    channel= true
+                end
+                if texture and startTime and endTime then
+                    local duration=(endTime - startTime) / 1000
+                    e.Ccool(self, nil, duration, nil, true, channel, nil,nil)
+                    find=true
+                end
+            end
+            self.texture:SetTexture(texture or 0)
+            if not find and self.cooldown then
+                self.cooldown:Clear()
+            end
+            self:SetShown(find)
+        end
+        frame:SetScript('OnEvent', function (self, _, _, _, spellID)
+            self:set_Party_Casting()
+            self.spellID= spellID
+        end)
+        frame:SetScript('OnLeave', function() e.tips:Hide() end)
+        frame:SetScript('OnEnter', function(self)
+            if self.spellID then
+                e.tips:SetOwner(self, "ANCHOR_RIGHT")
+                e.tips:ClearLines()
+                e.tips:SetSpellByID(self.spellID)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end
+        end)
+        frame.unit= unit
+        memberFrame.castFrame= frame
+    end
+    frame:UnregisterAllEvents()
+    if exists then
+        local events= {
+            'UNIT_SPELLCAST_CHANNEL_START',
+            'UNIT_SPELLCAST_CHANNEL_STOP',
+            'UNIT_SPELLCAST_CHANNEL_UPDATE',
+            'UNIT_SPELLCAST_START',
+            'UNIT_SPELLCAST_DELAYED',
+
+            'UNIT_SPELLCAST_FAILED',
+            'UNIT_SPELLCAST_FAILED_QUIET',
+            'UNIT_SPELLCAST_INTERRUPTED',
+            'UNIT_SPELLCAST_SUCCEEDED',
+            'UNIT_SPELLCAST_STOP',
+        }
+        FrameUtil.RegisterFrameForUnitEvents(frame, events, unit)
+    end
+    frame:set_Party_Casting()
+
+    --##########
+    --队伍, 标记
+    --##########
+    frame= memberFrame.RaidTargetFrame
+    if not frame then
+        frame= CreateFrame("Frame", nil, memberFrame)
+        frame:SetSize(14,14)
+        frame:SetPoint('RIGHT', memberFrame.PartyMemberOverlay.RoleIcon, 'LEFT')
+        frame:SetScript('OnEvent', function (self)
+            set_RaidTarget(self.RaidTargetIcon, self.unit)
+        end)
+        frame.RaidTargetIcon= frame:CreateTexture()
+        frame.RaidTargetIcon:SetAllPoints(frame)
+        frame.RaidTargetIcon:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
+        frame.unit= unit
+        memberFrame.RaidTargetFrame= frame
+    end
+    frame:UnregisterAllEvents()
+    if exists then
+        frame:RegisterEvent('RAID_TARGET_UPDATE')
+    end
+    set_RaidTarget(frame.RaidTargetIcon, unit)--设置,标记
+
+    --#######
+    --战斗指示
+    --#######
+    frame= memberFrame.combatFrame
+    if not frame then
+        frame= CreateFrame('Frame', nil, memberFrame)
+        frame:SetPoint('TOPLEFT', memberFrame.potFrame, 'TOPRIGHT',2,2)
+        frame:SetSize(16,16)
+        frame:SetScript('OnLeave', function() e.tips:Hide() end)
+        frame:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_RIGHT")
+            e.tips:ClearLines()
+            e.tips:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end)
+        frame.texture= frame:CreateTexture()
+        frame.texture:SetAllPoints(frame)
+        frame.texture:SetAtlas('UI-HUD-UnitFrame-Player-CombatIcon-2x')
+        frame.texture:SetVertexColor(1, 0, 0)
+        frame.texture:SetShown(false)
+        frame.unit= unit
+        frame.elapsed=0
+        frame:SetScript('OnUpdate', function(self, elapsed)
+            self.elapsed= self.elapsed +elapsed
+            if self.elapsed>0.5 then
+                self.texture:SetShown(UnitAffectingCombat(self.unit))
+                self.elapsed=0
+            end
+        end)
+        memberFrame.combatFrame= frame
+    end
+    frame:SetShown(exists)
+
+    --#######
+    --队友位置
+    --#######
+    frame= memberFrame.positionFrame
+    if not frame then
+        frame= CreateFrame("Frame", nil, memberFrame)
+        frame:SetPoint('LEFT', memberFrame.PartyMemberOverlay.LeaderIcon, 'RIGHT')
+        frame:SetSize(1,1)
+        frame.Text= e.Cstr(frame)
+        frame.Text:SetPoint('LEFT')
+        function frame:set_Shown(isExists)
+            local show= not IsInInstance() and isExists
+            if isExists then
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            else
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            end
+            if show then
+                self:RegisterEvent('PLAYER_REGEN_DISABLED')
+                self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            else
+                self:UnregisterEvent('PLAYER_REGEN_DISABLED')
+                self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+            end
+            self:SetShown(show and not UnitAffectingCombat('player'))
+        end
+        frame.elapsed= 1
+        frame:SetScript('OnUpdate', function(self, elapsed)
+            self.elapsed= self.elapsed +elapsed
+            if self.elapsed>1 then
+                local mapID= C_Map.GetBestMapForUnit(self.unit)--地图ID
+                local mapInfo= mapID and C_Map.GetMapInfo(mapID)
+                local text
+                local distanceSquared, checkedDistance = UnitDistanceSquared(self.unit)
+                if distanceSquared and checkedDistance then
+                    text= e.MK(distanceSquared, 0)
+                end
+                if mapInfo and mapInfo.name then
+                    text= (text and text..' ' or '')..mapInfo.name
+                    local mapID2= C_Map.GetBestMapForUnit('player')
+                    if mapID2== mapID then
+                        text= e.Icon.select2..text
+                    end
+                end
+                self.Text:SetText(text or '')
+                self.elapsed=0
+            end
+        end)
+        frame:SetScript('OnEvent', function(self, event)
+            if event == 'PLAYER_ENTERING_WORLD' then
+                self:set_Shown(UnitExists(self.unit))
+            elseif event=='PLAYER_REGEN_DISABLED' then
+                self:SetShown(false)
+            elseif event=='PLAYER_REGEN_ENABLED' then
+                self.elapsed=1
+                self:SetShown(true)
+            end
+        end)
+        frame.unit= unit
+        memberFrame.positionFrame= frame
+    end
+    if exists then
+        frame.Text:SetTextColor(r, g, b)
+    end
+    frame:set_Shown(exists)
+
+    --#########
+    --队友，死亡
+    --#########
+    frame= memberFrame.deadFrame
+    if not frame then
+        frame= CreateFrame('Frame', nil, memberFrame)
+        frame:SetPoint("CENTER", memberFrame.Portrait)
+        frame:SetSize(37,37)
+        frame:SetFrameStrata('HIGH')
+        frame.texture= frame:CreateTexture()
+        frame.texture:SetAllPoints(frame)
+        function frame:set_Active()
+            local find= false
+            if UnitIsConnected(self.unit) and UnitIsPlayer(self.unit) then
+                if UnitIsCharmed(self.unit) then--被魅惑
+                    self.texture:SetAtlas('CovenantSanctum-Reservoir-Idle-NightFae-Spiral3')
+                    find= true
+                elseif UnitIsFeignDeath(self.unit) then--假死
+                    self.texture:SetTexture(132293)
+                    find= true
+                    
+                elseif UnitIsDead(self.unit) then
+                    self.texture:SetAtlas('xmarksthespot')
+                    find= true
+                    if not self.deadBool then--死亡，次数
+                        self.deadBool=true
+                        self.dead= self.dead +1
+                    end
+
+                elseif UnitIsGhost(self.unit) then
+                    self.texture:SetAtlas('poi-soulspiritghost')
+                    find= true
+                else
+                    self.deadBool= nil
+                end
+            end
+            self:SetShown(find)
+            self.deadText:SetText(self.dead>0 and self.dead or '')
+        end
+        frame:SetScript('OnEvent', function(self, event)
+            if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
+                self.dead= 0
+            end
+            self:set_Active()
+        end)
+
+        --死亡，次数
+        frame.dead=0
+        frame.deadText= e.Cstr(frame.memberFrame, {mouse=true})
+        frame.deadText:SetPoint('BOTTOMLEFT', frame)
+        frame.deadText:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+        frame.deadText:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '死亡' or DEAD, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, self:GetParent().dead or 0 ,  e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+            self:SetAlpha(0.3)
+        end)
+        memberFrame.deadFrame= frame
+    end
+
+    frame.unit= unit
+    frame:UnregisterAllEvents()
+    if exists then
+        frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+        frame:RegisterEvent('CHALLENGE_MODE_START')
+        frame:RegisterUnitEvent('UNIT_FLAGS', unit)
+        frame:RegisterUnitEvent('UNIT_HEALTH', unit)
+        frame.deadText:SetTextColor(r, g, b)
+    else
+        frame.dead= 0
+    end
+    frame:set_Active()
+end
+local function set_UpdatePartyFrames(unitFrame)
+    for memberFrame in unitFrame.PartyMemberFramePool:EnumerateActive() do
+        set_memberFrame(memberFrame)
+    end
+end
+local function set_PartyFrame()--PartyFrame.lua
     set_UpdatePartyFrames(PartyFrame)--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
     hooksecurefunc(PartyFrame, 'UpdatePartyFrames', set_UpdatePartyFrames)
-
     --##############
     --隐藏, DPS 图标
     --##############
     for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
-        hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self2)--隐藏, DPS 图标
-            if UnitGroupRolesAssigned(self2.unit)=='DAMAGER' then
-                self2.PartyMemberOverlay.RoleIcon:SetShown(false)
+        hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
+            if UnitGroupRolesAssigned(self.unit)=='DAMAGER' then
+                self.PartyMemberOverlay.RoleIcon:SetShown(false)
             end
         end)
     end
