@@ -96,6 +96,9 @@ end
 
 
 
+
+
+
 --#######################
 --小地图, 标记, 监视，文本
 --#######################
@@ -326,9 +329,10 @@ local function speak_Text(text)
     print(id, addName2,'|cffff00ff', text)
 end
 local function set_VIGNETTES_UPDATED(init)
-    if UnitOnTaxi('player') then
+    if UnitOnTaxi('player')  then
         return
     end
+    local find
     for _, vignetteGUID in pairs(C_VignetteInfo.GetVignettes() or {}) do
         local info= vignetteGUID and C_VignetteInfo.GetVignetteInfo(vignetteGUID) or {}
         if info.name and info.name~='' and info.zoneInfiniteAOI then
@@ -338,14 +342,17 @@ local function set_VIGNETTES_UPDATED(init)
                 if info.isDead then
                     SpeakTextTab[vignetteGUID]=nil
                 elseif not SpeakTextTab[vignetteGUID] then
-                    speak_Text(info.name)
+                    if not find   then
+                        speak_Text(info.name)
+                        find=true
+                    end
                     SpeakTextTab[vignetteGUID]=true
-                    break
                 end
             end
         end
     end
 end
+
 
 
 
@@ -557,21 +564,6 @@ local function Init_Button_Menu(_, level, menuList)--菜单
     if menuList then
         return
     end
---[[
-    info={
-        text=e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE),
-        checked= Save.vigentteButtonShowText,
-        tooltipOnButton=true,
-        keepShownOnClick=true,
-        func= function()
-            Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or nil
-            check_Button_Enabled_Disabled()
-            panel.Button:set_Texture()
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)]]
 
 
     info={
@@ -660,21 +652,19 @@ local function Init_Set_Button()--小地图, 标记, 文本
         btn:RegisterForDrag("RightButton")
         btn:SetMovable(true)
         btn:SetClampedToScreen(true)
-        btn:SetScript("OnDragStart", function(self,d)
-            if d=='RightButton' and not IsModifierKeyDown() then
+        btn:SetScript("OnDragStart", function(self)
+            if IsAltKeyDown() then
                 self:StartMoving()
-                SetCursor('UI_MOVE_CURSOR')
             end
         end)
         btn:SetScript("OnDragStop", function(self)
             self:StopMovingOrSizing()
             Save.pointVigentteButton={self:GetPoint(1)}
             Save.pointVigentteButton[2]=nil
-           
             self:Raise()
         end)
 
-        btn:SetScript('OnMouseDown', function(self, d)--显示，隐藏
+        btn:SetScript('OnClick', function(self, d)--显示，隐藏
             local key= IsModifierKeyDown()
             if d=='LeftButton' and not key then
                 Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or nil
@@ -687,7 +677,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
                     e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Button_Menu, 'MENU')
                 end
                 e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
-                SetCursor('UI_MOVE_CURSOR')
+               
 
             elseif d=='RightButton' and IsControlKeyDown() then
                 Save.pointVigentteButton=nil
@@ -696,9 +686,12 @@ local function Init_Set_Button()--小地图, 标记, 文本
             end
         end)
 
-        btn:SetScript('OnMouseUp', function()
-            ResetCursor()
+        btn:SetScript('OnMouseDown', function(_, d)
+            if d=='RightButton' and IsAltKeyDown() then
+                SetCursor('UI_MOVE_CURSOR')
+            end
         end)
+        btn:SetScript('OnMouseUp', ResetCursor)
 
         btn:SetScript('OnMouseWheel', function(self, d)--缩放
             if IsAltKeyDown() then
@@ -915,6 +908,19 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+--#########
+--初始，菜单
+--#########
 local function Init_Menu(_, level, menuList)
     local info
     if menuList=='panelButtonRestPoint' then
@@ -1200,6 +1206,17 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -1274,6 +1291,9 @@ hooksecurefunc(MinimapMixin , 'SetTexture', function(poiInfo)
 	end
     print('SetTexture')
 end)]]
+
+
+
 
 
 
