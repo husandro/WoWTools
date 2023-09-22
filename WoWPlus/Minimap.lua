@@ -726,8 +726,8 @@ local function Init_Set_Button()--小地图, 标记, 文本
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.vigentteButtonTextScale), 'Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.vigentteButtonTextScale), 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
@@ -1033,6 +1033,7 @@ local function Init_Menu(_, level, menuList)
         checked= Save.vigentteButton,
         disabled= IsInInstance() or UnitAffectingCombat('player'),
         menuList= 'panelButtonRestPoint',
+        hasArrow= true,
         keepShownOnClick=true,
         func= function ()
             Save.vigentteButton= not Save.vigentteButton and true or nil
