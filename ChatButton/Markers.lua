@@ -59,16 +59,16 @@ local function get_RaidTargetTexture(index, unit)--取得图片
     end
 end
 
-local function is_Leader()--队长， 或助理
+local function Is_Leader()--队长， 或助理
     return UnitIsGroupAssistant('player') or UnitIsGroupLeader('player')
 end
 
 local function get_All_Set()--是不有权限
     local raid =IsInRaid()
-    return (raid and is_Leader()) or not raid
+    return (raid and Is_Leader()) or not raid
 end
 
-local function is_In_PvP_Area()
+local function Is_In_PvP_Area()
     return C_PvP.IsArena() or C_PvP.IsBattleground()
 end
 
@@ -78,75 +78,7 @@ local function set_Taget(unit, index)--设置,目标,标记
     end
 end
 
-local function set_Raid_Target()--设置团队标记
-    local tab={}--设置团队标记
-    for index=1,GetNumGroupMembers() do-- MAX_RAID_MEMBERS do
-        local online, _, role, _, combatRole = select(8, GetRaidRosterInfo(index))
-        if (role=='TANK' or  combatRole=='TANK') and online then
-            table.insert(tab, {
-                unit='raid'..index,
-                hp=UnitHealthMax('raid'..index)
-            })
-        end
-    end
-    local num= #tab
-    if num> 0 then
-        table.sort(tab, function(a,b) return a.hp<b.hp end)
-        set_Taget(tab[1].unit, Save.tank)--设置,目标,标记
 
-        if num>=2 and Save.tank2~=0 then
-            set_Taget(tab[2].unit, Save.tank2)--设置,目标,标记
-        end
-    end
-end
-
-local function set_Party_Target()--设置队伍标记
-    local tank, healer
-    local num=GetNumGroupMembers()--MAX_PARTY_MEMBERS + 1
-    for index=1, num do
-        local unit = index==num and 'player' or 'party'..index
-        local role = UnitGroupRolesAssigned(unit)
-        if role=='TANK' then
-            if not tank then
-                set_Taget(unit, Save.tank)--设置,目标,标记
-                tank=true
-            end
-        elseif role=='HEALER' then
-            if not healer then
-                set_Taget(unit, Save.healer)--设置,目标,标记
-                healer=true
-            end
-        end
-    end
-end
-
-local function setTankHealer(autoSet)--设置队伍标记
-    if autoSet and not Save.autoSet then
-        return
-    end
-    local num=GetNumGroupMembers()
-    if Save.tank==0 or num<2 then
-        if num<2 and not autoSet then
-            print(id, addName,e.onlyChinese and '设置' or SETTINGS,
-            INLINE_TANK_ICON..(e.onlyChinese and '坦克' or TANK)..get_RaidTargetTexture(Save.tank),
-            INLINE_HEALER_ICON..(e.onlyChinese and '治疗' or HEALER)..get_RaidTargetTexture(Save.healer),
-                '|cnRED_FONT_COLOR:'..(e.onlyChinese and '队员' or SPELL_TARGET_TYPE4_DESC)..'<2|r')
-        end
-        return
-    end
-    if IsInRaid() then
-        if not is_Leader() and not autoSet then--没有权限
-            print(id, addName,e.onlyChinese and '设置' or SETTINGS,
-            INLINE_TANK_ICON..(e.onlyChinese and '坦克' or TANK)..get_RaidTargetTexture(Save.tank),
-            INLINE_HEALER_ICON..(e.onlyChinese and '治疗' or HEALER)..get_RaidTargetTexture(Save.healer),
-            '|cnRED_FONT_COLOR:'..(e.onlyChinese and '没有权限' or ERR_ARENA_TEAM_PERMISSIONS)..'|r')
-        else
-            set_Raid_Target()--设置团队标记
-        end
-    else
-        set_Party_Target()--设置队伍标记
-    end
-end
 
 local function setReadyTexureTips()--自动就绪, 主图标, 提示
     if Save.autoReady and not button.ReadyTextrueTips then
@@ -167,10 +99,111 @@ end
 
 
 
+--###########
+--设置队伍标记
+--###########
+local SetTankHealerFrame
+local function Init_set_Tank_Healer()
+    SetTankHealerFrame=CreateFrame("Frame", nil, button)
+
+    SetTankHealerFrame:SetPoint('BOTTOMLEFT',4, 4)
+    SetTankHealerFrame:SetSize(12,12)
+    SetTankHealerFrame:SetFrameLevel(button:GetFrameLevel()+1)
+
+    SetTankHealerFrame.autoSetTexture= SetTankHealerFrame:CreateTexture()
+    SetTankHealerFrame.autoSetTexture:SetAtlas('mechagon-projects')
+    SetTankHealerFrame.autoSetTexture:SetAllPoints(SetTankHealerFrame)
 
 
+    function SetTankHealerFrame:check_Enable(set)
+        return (Save.autoSet or set) and Is_Leader() and not Is_In_PvP_Area()
+    end
+
+    function SetTankHealerFrame:set_TankHealer(set)--设置队伍标记
+        if not self:check_Enable(set) then
+            return
+        end
+        local tank, healer
+        local members=GetNumGroupMembers()
+        
+        if IsInRaid() then
+            local tab={}--设置团队标记
+            for index=1, members do-- MAX_RAID_MEMBERS do
+                local online, _, role, _, combatRole = select(8, GetRaidRosterInfo(index))
+                if (role=='TANK' or  combatRole=='TANK') and online then
+                    table.insert(tab, {
+                        unit='raid'..index,
+                        hp=UnitHealthMax('raid'..index)
+                    })
+                end
+            end
+            table.sort(tab, function(a,b) return a.hp<b.hp end)
+            if tab[1] then
+                set_Taget(tab[1].unit, Save.tank)--设置,目标,标记
+                tank=true
+            end
+            if tab[2] then
+                set_Taget(tab[2].unit, Save.tank2)--设置,目标,标记
+                tank=true
+            end
+
+        else--设置队伍标记
+            for index=1, members do
+                local unit= index<members and 'party'..index or 'player'
+                if UnitIsConnected(unit) then
+                    local role=  UnitGroupRolesAssigned(unit)
+                    if role=='TANK' then
+                        if not tank then
+                            set_Taget(unit, Save.tank)--设置,目标,标记
+                            tank=true
+                        end
+                    elseif role=='HEALER' then
+                        if not healer then
+                            set_Taget(unit, Save.healer)--设置,目标,标记
+                            healer=true
+                        end
+                    end
+                end
+            end
+        end
+        return tank or healer
+    end
 
 
+    
+    function SetTankHealerFrame:set_Event()--设置，事件
+        if self:check_Enable() then
+            self:RegisterEvent('GROUP_ROSTER_UPDATE')
+            self:RegisterEvent('GROUP_LEFT')
+            self:RegisterEvent('GROUP_JOINED')
+            
+        else
+            self:UnregisterEvent('GROUP_ROSTER_UPDATE')
+            self:UnregisterEvent('GROUP_LEFT')
+            self:UnregisterEvent('GROUP_JOINED')
+        end
+    end
+
+    function SetTankHealerFrame:set_Enabel_Event()
+        if Save.autoSet then
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            self:set_Event()
+        else
+            self:UnregisterAllEvents()
+        end
+        self:SetShown(Save.autoSet and true or false)
+    end
+
+    SetTankHealerFrame:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_ENTERING_WORLD' then
+            self:set_Event()
+        else
+            self:set_TankHealer()--设置队伍标记
+        end
+    end)
+
+    SetTankHealerFrame:set_Enabel_Event()
+end
 
 
 
@@ -375,23 +408,9 @@ end
 --#############
 --设置,按钮,图片
 --#############
-local function setTexture()--图标, 自动标记
-    button.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save.tank)
-    
-    if Save.autoSet and not button.autoSetTips then
-        button.autoSetTips= button:CreateTexture(nil,'OVERLAY')
-        button.autoSetTips:SetPoint('BOTTOMLEFT',4, 4)
-        button.autoSetTips:SetSize(12,12)
-        button.autoSetTips:SetAtlas('Warfronts-BaseMapIcons-Alliance-Workshop-Minimap')
-        --button.autoSetTips:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-    end
-    if button.autoSetTips then
-        button.autoSetTips:SetShown(Save.autoSet)
-    end
-end
-local function setAllTextrue()--主图标,是否有权限
-    button.texture:SetDesaturated(GetNumGroupMembers() <2  or not get_All_Set())
-end
+
+
+
 
 
 
@@ -461,15 +480,15 @@ local function Init_Markers_Frame()--设置标记, 框架
             local target= get_All_Set()--是不有权限
             self.target:SetShown(target)
 
-            local marker= IsInGroup() and is_Leader()
+            local marker= IsInGroup() and Is_Leader()
             self.marker:SetShown(marker)
 
             self:SetShown(Save.markersFrame
-                        and not is_In_PvP_Area()
+                        and not Is_In_PvP_Area()
                         and (ping or target or marker)
                     )
 
-            local isLeader=GetNumGroupMembers()>1 and (IsInRaid() and is_Leader()) or UnitIsGroupLeader('player')
+            local isLeader=GetNumGroupMembers()>1 and (IsInRaid() and Is_Leader()) or UnitIsGroupLeader('player')
             self.countdown:SetShown(isLeader)
             self.check:SetShown(isLeader)
         end
@@ -1069,7 +1088,9 @@ local function InitMenu(_, level, type)--主菜单
                 arg1=type,
                 func=function(_, arg1)
                     Save[arg1]=index
-                    setTexture()--图标, 自动标记
+                    if arg1=='tank' then
+                        button:set_Texture()--图标
+                    end
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1167,18 +1188,16 @@ local function InitMenu(_, level, type)--主菜单
 
     info={
         text= (e.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER))..e.Icon.TANK..e.Icon.HEALER,
-        icon= 'Warfronts-BaseMapIcons-Alliance-Workshop-Minimap',
+        icon= 'mechagon-projects',
         checked= Save.autoSet,
         disabled= Save.tank==0 and Save.healer==0,
         keepShownOnClick= true,
         func=function()
+            Save.autoSet= not Save.autoSet and true or nil
+            SetTankHealerFrame:set_Enabel_Event()
             if Save.autoSet then
-                Save.autoSet=nil
-            else
-                Save.autoSet=true
-                setTankHealer(true)
+                SetTankHealerFrame:set_TankHealer(true)--设置队伍标记
             end
-            setTexture()--设置,按钮图片
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1257,11 +1276,7 @@ local function InitMenu(_, level, type)--主菜单
         keepShownOnClick= true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    
-   
 end
-
 
 
 
@@ -1282,19 +1297,40 @@ local function Init()
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    setTexture()--设置,按钮图片
-    setAllTextrue()--主图标,是否有权限
-
     Init_Markers_Frame()--设置标记, 框架
+    Init_set_Tank_Healer()--设置队伍标记
+
+    function button:set_Texture()--图标
+        self.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save.tank)
+    end
+    button:set_Texture()--图标
+
+    function button:set_Desaturated_Textrue()--主图标,是否有权限
+        self.texture:SetDesaturated(not Is_Leader() or Is_In_PvP_Area())
+    end
+
+    button:set_Desaturated_Textrue()--主图标,是否有权限
+
+    button:RegisterEvent('PLAYER_ENTERING_WORLD')
+    button:RegisterEvent('GROUP_ROSTER_UPDATE')
+    button:RegisterEvent('GROUP_LEFT')
+    button:RegisterEvent('GROUP_JOINED')
+    button:SetScript("OnEvent", button.set_Desaturated_Textrue)
+
+
     setReadyTexureTips()--自动就绪, 主图标, 提示
     Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
 
-    button:SetScript("OnMouseDown", function(self,d)
+    button:SetScript("OnClick", function(self, d)
         if d=='LeftButton' then
-            setTankHealer()--设置队伍标记
+            if SetTankHealerFrame:set_TankHealer(true) then--设置队伍标记
+                print(id, addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER)
+            else
+                print(id, addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
+            end
         else
             if not self.Menu then
-                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
@@ -1311,6 +1347,12 @@ local function Init()
             self.groupReadyTips:SetButtonState('NORMAL')
         end
     end)
+
+
+    
+
+   
+
 
     local readyFrame=ReadyCheckListenerFrame--自动就绪事件, 提示
     if readyFrame then
