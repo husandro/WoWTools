@@ -823,18 +823,23 @@ local function set_inti_Equipment_Frame()--添加装备管理框
     if not panel.equipmentButton.btn and not Save.hide then
         panel.equipmentButton.btn=e.Cbtn(UIParent, {icon='hide'})--添加移动按钮
         set_equipmentButton_Size()--设置大小
-        if Save.Equipment then
-            panel.equipmentButton.btn:SetPoint(Save.Equipment[1], UIParent, Save.Equipment[3], Save.Equipment[4], Save.Equipment[5])
-        elseif PlayerFrame.PlayerFrameContainer.FrameTexture:IsShown() then
-            panel.equipmentButton.btn:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.FrameTexture, 'TOPRIGHT',-4,-3)
-        else
-            panel.equipmentButton.btn:SetPoint('BOTTOMRIGHT', PaperDollItemsFrame, 'TOPRIGHT')
+
+        function panel.equipmentButton:set_Point()
+            if Save.Equipment then
+                self.btn:SetPoint(Save.Equipment[1], UIParent, Save.Equipment[3], Save.Equipment[4], Save.Equipment[5])
+            elseif PlayerFrame.PlayerFrameContainer.FrameTexture:IsVisible() then
+                self.btn:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.FrameTexture, 'TOPRIGHT',-4,-3)
+            else
+                self.btn:SetPoint('BOTTOMRIGHT', PaperDollItemsFrame, 'TOPRIGHT')
+            end
         end
+        panel.equipmentButton:set_Point()
+
         panel.equipmentButton.btn:RegisterForDrag("RightButton")
         panel.equipmentButton.btn:SetClampedToScreen(true)
         panel.equipmentButton.btn:SetMovable(true)
         panel.equipmentButton.btn:SetScript("OnDragStart", function(self)
-            if not IsModifierKeyDown() then
+            if IsAltKeyDown() then
                 self:StartMoving()
             end
         end)
@@ -845,15 +850,13 @@ local function set_inti_Equipment_Frame()--添加装备管理框
             self:Raise()
         end)
         panel.equipmentButton.btn:SetScript('OnMouseDown', function(_, d)
-            if d=='RightButton' and not IsModifierKeyDown() then--移动图标
+            if d=='RightButton' and IsAltKeyDown() then--移动图标
                 SetCursor('UI_MOVE_CURSOR')
             end
         end)
-        panel.equipmentButton.btn:SetScript("OnMouseUp", function() ResetCursor() end)
-        panel.equipmentButton.btn:SetScript("OnClick", function(self,d)
-            local key=IsModifierKeyDown()
-            local alt=IsAltKeyDown()
-            if d=='LeftButton' and alt then--图标横,或 竖
+        panel.equipmentButton.btn:SetScript("OnMouseUp", ResetCursor)
+        panel.equipmentButton.btn:SetScript("OnClick", function(self, d)
+            if d=='RightButton' and IsControlKeyDown() then--图标横,或 竖
                 Save.EquipmentH= not Save.EquipmentH and true or nil
                 for index, btn in pairs(self.buttons) do
                     btn:ClearAllPoints()
@@ -861,32 +864,38 @@ local function set_inti_Equipment_Frame()--添加装备管理框
                     set_equipmentButton_bnt_button_Point(btn, index)--设置位置
                 end
 
-            elseif d=='LeftButton' and not key then--打开/关闭角色界面
+            elseif d=='LeftButton' and not IsModifierKeyDown() then--打开/关闭角色界面
                 ToggleCharacter("PaperDollFrame")
             end
         end)
-        panel.equipmentButton.btn:SetScript('OnMouseWheel',function(self, d)--放大
+        panel.equipmentButton.btn:SetScript('OnMouseWheel',function(_, d)--放大
+            if IsAltKeyDown() then
                 local n=Save.equipmentFrameScale or 1
                 if d==1 then
                     n=n+0.05
                 elseif d==-1 then
                     n=n-0.05
                 end
-                n= n<0.8 and 0.8 or n>3 and 3 or n
+                n= n>4 and 4 or n
+                n= n<0.4 and 0.4 or n
                 Save.equipmentFrameScale=n
                 set_equipmentFrame_Scale()--缩放
                 print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
+            end
         end)
         panel.equipmentButton.btn:SetScript("OnEnter", function (self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, e.onlyChinese and '装备管理'or EQUIPMENT_MANAGER)
-            e.tips:AddLine(' ')
+
             e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine( Save.EquipmentH and (e.onlyChinese and '向右' or BINDING_NAME_STRAFERIGHT) or (e.onlyChinese and '向下' or BINDING_NAME_PITCHDOWN), 'Alt + '..e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), (Save.equipmentFrameScale or 1)..e.Icon.mid)
+            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+            e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.equipmentFrameScale or 1),'Alt+'..e.Icon.mid)
+            e.tips:AddDoubleLine(not Save.EquipmentH and e.Icon.toRight2..(e.onlyChinese and '向右' or BINDING_NAME_STRAFERIGHT) or (e.Icon.down2..(e.onlyChinese and '向下' or BINDING_NAME_PITCHDOWN)),
+                    'Ctrl+'..e.Icon.right)
+
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, e.onlyChinese and '装备管理'or EQUIPMENT_MANAGER)
             e.tips:Show()
             if panel.equipmentButton:IsVisible() then
                 panel.equipmentButton:SetButtonState('PUSHED')
@@ -1316,15 +1325,27 @@ local function Init_Server_equipmentButton_Lable()
         panel.equipmentButton = e.Cbtn(PaperDollItemsFrame, {size={18,18}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
         panel.equipmentButton:SetPoint('TOPRIGHT',-2,-40)
         panel.equipmentButton:SetAlpha(0.5)
-        panel.equipmentButton:SetScript("OnClick", function(self2)
-            Save.equipment= not Save.equipment and true or nil
-            self2:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
-            set_inti_Equipment_Frame()--添加装备管理框
+        panel.equipmentButton:SetScript("OnClick", function(self2, d)
+            if d=='LeftButton' and not IsModifierKeyDown() then
+                Save.equipment= not Save.equipment and true or nil
+                self2:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
+                set_inti_Equipment_Frame()--添加装备管理框
+                print(id, addName, e.GetShowHide(Save.equipment))
+            elseif d=='RightButton' and IsControlKeyDown() then
+                Save.Equipment=nil
+                if self2.btn then
+                    self2.btn:ClearAllPoints()
+                    self2:set_Point()
+                end
+                print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            end
         end)
         panel.equipmentButton:SetScript("OnEnter", function (self2)
             e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER, e.Icon.left..e.GetShowHide(Save.equipment))
+            local col= not (self2.btn and Save.Equipment) and '|cff606060' or ''
+            e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
