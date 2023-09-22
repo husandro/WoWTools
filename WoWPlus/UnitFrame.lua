@@ -123,6 +123,27 @@ local function set_Instance_Difficulty()
     self.instanceFrame3:SetShown(not ins and find3)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#########
 --挑战，数据
 --#########
@@ -283,11 +304,6 @@ local function set_TargetFrame()
             end
         end
     end)
-
-
-
-
-
     TargetFrame.rangeText= e.Cstr(TargetFrame, {justifyH='RIGHT'})
     TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22,0)
     TargetFrame.elapsed2= 0.4
@@ -319,6 +335,31 @@ local function set_TargetFrame()
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --####
@@ -733,6 +774,32 @@ local function set_PartyFrame()--PartyFrame.lua
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --################
 --职业, 图标， 颜色
 --################
@@ -1030,7 +1097,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
     --############
     --去掉生命条 % extStatusBar.lua
-    --[[############
+    --############
     local deadText= e.onlyChinese and '死亡' or DEAD
     hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value)
         if not statusFrame or not statusFrame:IsVisible() or not UnitExists(statusFrame.unit) or not UnitIsConnected('player') then
@@ -1080,7 +1147,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             end
             statusFrame.DeadText:SetText(text)
         end
-    end)]]
+    end)
 
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
     --###################
@@ -1192,9 +1259,6 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame:SetClampedToScreen(true)
     CompactPartyFrame:SetMovable(true)
 end
-
-
-
 local function set_ToggleWarMode()--设置, 战争模式
     local self= PlayerFrame
     if C_PvP.CanToggleWarModeInArea() then
