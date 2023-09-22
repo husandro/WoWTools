@@ -686,6 +686,7 @@ local function set_memberFrame(memberFrame)
     if not frame then
         frame= CreateFrame('Frame', nil, memberFrame)
         frame:SetPoint("CENTER", memberFrame.Portrait)
+        frame:SetFrameLevel(memberFrame:GetFrameLevel()+1)
         frame:SetSize(37,37)
         frame:SetFrameStrata('HIGH')
         frame.texture= frame:CreateTexture()
@@ -715,7 +716,7 @@ local function set_memberFrame(memberFrame)
                     self.deadBool= nil
                 end
             end
-            self:SetShown(find)
+            self.texture:SetShown(find)
             self.deadText:SetText(self.dead>0 and self.dead or '')
         end
         frame:SetScript('OnEvent', function(self, event)
@@ -727,13 +728,15 @@ local function set_memberFrame(memberFrame)
 
         --死亡，次数
         frame.dead=0
-        frame.deadText= e.Cstr(frame.memberFrame, {mouse=true})
+        frame.deadText= e.Cstr(frame, {mouse=true})
         frame.deadText:SetPoint('BOTTOMLEFT', frame)
         frame.deadText:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
         frame.deadText:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '死亡' or DEAD, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, self:GetParent().dead or 0 ,  e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
+            e.tips:AddDoubleLine(e.onlyChinese and '死亡' or DEAD,
+                    format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, self:GetParent().dead or 0 , e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+            )
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
             self:SetAlpha(0.3)
