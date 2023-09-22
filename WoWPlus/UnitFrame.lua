@@ -1013,9 +1013,9 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
     --############
     --去掉生命条 % extStatusBar.lua
-    --############
+    --[[############
     local deadText= e.onlyChinese and '死亡' or DEAD
-    hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value, valueMin, valueMax)
+    hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value)
         if not statusFrame or not statusFrame:IsVisible() or not UnitExists(statusFrame.unit) or not UnitIsConnected('player') then
             return
         end
@@ -1063,7 +1063,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             end
             statusFrame.DeadText:SetText(text)
         end
-    end)
+    end)]]
 
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
     --###################

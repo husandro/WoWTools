@@ -18,23 +18,23 @@ function Init()
     button.topText= e.Cstr(button, {size=22})--debuff
     button.centerText= e.Cstr(button, {size=22})--持续，时间
     button.speedText= e.Cstr(button, {size=16})--移动，速度
-    button.bottomText= e.Cstr(button, {size=16})--物品，数量
-    button.bottomText2= e.Cstr(button, {size=16})--
+    button.itemText= e.Cstr(button, {size=16})--物品，数量
+    button.timeText= e.Cstr(button, {size=16})--坐骑，剩余，时间
     button.rightText= e.Cstr(button, {size=16})--本次，物品，收入
 
     button.topText:SetPoint('BOTTOM', button, 'TOP')
     button.centerText:SetPoint('CENTER')
 
     button.speedText:SetPoint('TOPLEFT', button, 'BOTTOMLEFT')
-    button.bottomText:SetPoint('TOPLEFT', button.speedText, 'BOTTOMLEFT')
-    button.bottomText2:SetPoint('TOPLEFT', button.bottomText, 'BOTTOMLEFT')
+    button.itemText:SetPoint('TOPLEFT', button.speedText, 'BOTTOMLEFT')
+    button.timeText:SetPoint('TOPLEFT', button.itemText, 'BOTTOMLEFT')
     button.rightText:SetPoint('LEFT', button, 'RIGHT')
 
-    button.rightTexture= button:CreateTexture()
-    button.rightTexture:SetPoint('RIGHT', button, 'LEFT')
-    button.rightTexture:SetSize(48,48)
-    button.rightTexture:SetTexture(132622)
-    button.rightTexture:SetShown(false)
+    button.leftTexture= button:CreateTexture()
+    button.leftTexture:SetPoint('RIGHT', button, 'LEFT')
+    button.leftTexture:SetSize(48,48)
+    button.leftTexture:SetTexture(132622)
+    button.leftTexture:SetShown(false)
 
     button:SetScript('OnShow', function(self)
         self.item= GetItemCount(37829, true)
@@ -43,13 +43,13 @@ function Init()
         self.item=nil
     end)
 
-    function button.rightTexture:set_tipSound()
+    function button.leftTexture:set_tipSound()
         if self:GetParent():IsVisible() then
             e.PlaySound()
         end
     end
-    button.rightTexture:SetScript('OnShow', button.rightTexture.set_tipSound)
-    button.rightTexture:SetScript('OnHide', button.rightTexture.set_tipSound)
+    button.leftTexture:SetScript('OnShow', button.leftTexture.set_tipSound)
+    button.leftTexture:SetScript('OnHide', button.leftTexture.set_tipSound)
 
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
@@ -126,8 +126,8 @@ function Init()
 
     function button:set_ItmeNum()
         local num = GetItemCount(37829, true)
-        self.bottomText2:SetText('|T133784:0|t'..num)
-        self.rightTexture:SetShown(GetItemCount(33797)>0 and true or false)
+        self.itemText:SetText(num>0 and '|T133784:0|t'..num or '')
+        self.leftTexture:SetShown(GetItemCount(33797)>0 and true or false)
         num= num- (self.item or num)
         self.rightText:SetText(num>0 and '|T133784:0|t|n'..num or '')
     end
@@ -167,9 +167,9 @@ function Init()
     button:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= self.elapsed + elapsed
         if self.elapsed > 0.3 then
-            local info=C_UnitAuras.GetPlayerAuraBySpellID(43880)
+            local info= C_UnitAuras.GetPlayerAuraBySpellID(43883)
             if info and info.expirationTime then
-                self.bottomText:SetText('|T'..info.icon..':0|t'..e.GetTimeInfo(nil, true, nil, info.expirationTime))
+                self.timeText:SetText('|T'..info.icon..':0|t'..e.GetTimeInfo(nil, true, nil, info.expirationTime))
             end
 
             local text
@@ -205,7 +205,7 @@ function Init()
     button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:SetSpellByID(43883)
+        e.tips:SetSpellByID(self.spellId or 43883)
         e.tips:AddLine(' ')
         local macro= select(3, GetMacroInfo('Ram'))
         local col= (macro and macro:find('ExtraActionButton1')) and '|cff606060' or ''

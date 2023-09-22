@@ -58,19 +58,18 @@ local function get_Player_Info(guid)--取得玩家信息
         g=g,
         b=b,
     }
-    if UnitIsConnected('player') then
-        if UnitInParty(unit) and not IsInRaid() then
-            for i=1, 4 do
-                local frame= PartyFrame['MemberFrame'..i]
-                if frame and UnitExists(frame.unit) and UnitIsUnit(frame.unit, unit) then
-                    securecall('UnitFrame_Update', frame, true)
-                    break
-                end
+
+    if UnitInParty(unit) and not IsInRaid() then
+        for i=1, 4 do
+            local frame= PartyFrame['MemberFrame'..i]
+            if frame and UnitExists(frame.unit) and UnitIsUnit(frame.unit, unit) then
+                securecall('UnitFrame_Update', frame, true)
+                break
             end
         end
-        if UnitIsUnit(unit, 'target') then
-            securecall('UnitFrame_Update', TargetFrame, false)
-        end
+    end
+    if UnitIsUnit(unit, 'target') then
+        securecall('UnitFrame_Update', TargetFrame, UnitInParty('target'))
     end
 end
 
