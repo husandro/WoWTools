@@ -398,7 +398,7 @@ local function CursorPositionInt()
     end)
 
     PostionButton.Text=e.Cstr(PostionButton, {size=Save.PlayerXYSize, color=true})
-    PostionButton.Text:SetPoint('BOTTOMRIGHT')
+    PostionButton.Text:SetPoint('RIGHT', PostionButton, "LEFT")
 
     PostionButton:HookScript("OnUpdate", function (self, elapsed)
         self.elapsed = (self.elapsed or 0.3) + elapsed
@@ -553,8 +553,17 @@ local function Init_set_Map_ID()--显示地图ID
             local col= Save.PlayerXYPoint and '' or '|cff606060'
             e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
             e.tips:Show()
+
+            if PostionButton then
+                PostionButton:SetButtonState('PUSHED')
+            end
         end)
-        Button:SetScript('OnLeave', function() e.tips:Hide() end)
+        Button:SetScript('OnLeave', function()
+            e.tips:Hide()
+            if PostionButton then
+                PostionButton:SetButtonState('NORMAL')
+            end
+        end)
         Button:SetScript('OnClick', function(self, d)
             if d=='RightButton' and IsControlKeyDown() then
                 Save.PlayerXYPoint=nil
