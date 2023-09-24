@@ -1,5 +1,5 @@
---[[ $Id: CallbackHandler-1.0.lua 26 2022-12-12 15:09:39Z nevcairiel $ ]]
-local MAJOR, MINOR = "CallbackHandler-1.0", 8
+--[[ $Id: CallbackHandler-1.0.lua 1284 2022-09-25 09:15:30Z nevcairiel $ ]]
+local MAJOR, MINOR = "CallbackHandler-1.0", 7
 local CallbackHandler = LibStub:NewLibrary(MAJOR, MINOR)
 
 if not CallbackHandler then return end -- No upgrade needed
@@ -7,16 +7,21 @@ if not CallbackHandler then return end -- No upgrade needed
 local meta = {__index = function(tbl, key) tbl[key] = {} return tbl[key] end}
 
 -- Lua APIs
-local securecallfunction, error = securecallfunction, error
+local error = error
 local setmetatable, rawget = setmetatable, rawget
 local next, select, pairs, type, tostring = next, select, pairs, type, tostring
 
+local xpcall = xpcall
+
+local function errorhandler(err)
+	return geterrorhandler()(err)
+end
 
 local function Dispatch(handlers, ...)
 	local index, method = next(handlers)
 	if not method then return end
 	repeat
-		securecallfunction(method, ...)
+		xpcall(method, errorhandler, ...)
 		index, method = next(handlers, index)
 	until not method
 end
