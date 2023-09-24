@@ -12,7 +12,7 @@
 ## IconAtlas: orderhalltalents-done-glow
 
 ## X-Website https://www.curseforge.com/wow/addons/wowtools
-## OptionalDeps: LibStub-1.0, CallbackHandler-1.0, LibDataBroker-1.1, LibDBIcon-1.0, LibRangeCheck-3.0, LibUIDropDownMenu-4.0
+## OptionalDeps: LibStub-1.0, CallbackHandler-1.0, LibDataBroker-1.1, LibDBIcon-1.0, LibRangeCheck-2.0, LibUIDropDownMenu-4.0
 ## AddonCompartmentFunc: WowTools_OnAddonCompartmentClick
 ## AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter
 
@@ -22,7 +22,7 @@ Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
 Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 
 Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
-Libs\LibRangeCheck-3.0\LibRangeCheck-3.0.lua
+Libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua
 Libs\!LibUIDropDownMenu\LibUIDropDownMenu\LibUIDropDownMenu.lua
 
 ##Libs\LibNameplateRegistry-1.0\LibNameplateRegistry-1.0.lua
