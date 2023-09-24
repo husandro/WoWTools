@@ -40,6 +40,10 @@ function Init()
         self.item= GetItemCount(37829, true)
     end)
     button:SetScript('OnHide', function(self)
+        local num= GetItemCount(37829, true)
+        if self.item and self.item<num then
+            print(id, addName, select(2, GetItemInfo(37829)) or '|T133784:0|t', self.item)
+        end
         self.item=nil
     end)
 
@@ -126,10 +130,10 @@ function Init()
 
     function button:set_ItmeNum()
         local num = GetItemCount(37829, true)
-        self.itemText:SetText(num>0 and '|T133784:0|t'..num..' ' or '')
+        self.itemText:SetText(num>0 and '|T133784:0|t'..num or '')
         self.leftTexture:SetShown(GetItemCount(33797)>0 and true or false)
         num= num- (self.item or num)
-        self.rightText:SetText(num>0 and '|T133784:0|t|n'..num or '')
+        self.rightText:SetText(num>0 and '|T133784:0|t'..num or '')
     end
 
     function button:set_Event()

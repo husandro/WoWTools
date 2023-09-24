@@ -1644,7 +1644,7 @@ local function setHoliday()--节日, 提示, button.texture
                             if texture and (rewardType == "currency" or rewardType=='item' or isBonusReward) then
                                 find=true
                                 texturePath= texture
-                                if rewardType == "currency"  then
+                                if rewardType == "currency" or rewardType=='item' then
                                     break
                                 end
                             end
