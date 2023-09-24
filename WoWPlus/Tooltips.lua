@@ -999,7 +999,7 @@ local function setUnitInfo(self, unit)--设置单位提示信息
                 line:SetTextColor(r,g,b)
             end
         end
- 
+
         local uiWidgetSet= UnitWidgetSet(unit)
         if uiWidgetSet and uiWidgetSet>0 then
             e.tips:AddDoubleLine('WidgetSetID', uiWidgetSet, r,g,b, r,g,b)
