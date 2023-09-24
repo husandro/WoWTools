@@ -5,12 +5,81 @@ local Save={
     --PlayerXY=true,--玩家实时，坐标
     --showFlightMapPinName=true,飞行地图，显示，飞行点名称
 }
+
 local panel=CreateFrame("Frame")
+local Button--开关
+local PostionButton--实时玩家， 当前坐标
+local PlayerButton--世界地图， 当前坐标
 
 local function create_Wolor_Font(self, size)
     local font= e.Cstr(self, {size=size, justifyH='CENTER', color=false, fontName='WorldMapTextFont'})
     return font
 end
+
+
+
+local function getPlayerXY()--当前世界地图位置
+    local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图        
+    if uiMapID then
+        local position = C_Map.GetPlayerMapPosition(uiMapID, "player")
+        if position then
+            local x, y
+            x,y=position:GetXY()
+            if x and y then
+                x= format('%.2f', x*100)
+                y= format('%.2f', y*100)
+                return x, y
+            end
+        end
+    end
+end
+local function sendPlayerPoint()--发送玩家位置
+    local mapID = C_Map.GetBestMapForUnit("player")
+    if mapID then
+        if  C_Map.CanSetUserWaypointOnMap(mapID) then
+            local point=C_Map.GetUserWaypoint()
+            local pos = C_Map.GetPlayerMapPosition(mapID, "player")
+            local mapPoint = UiMapPoint.CreateFromVector2D(mapID, pos)
+            C_Map.SetUserWaypoint(mapPoint)
+            ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..C_Map.GetUserWaypointHyperlink())
+            if point then
+                C_Map.SetUserWaypoint(point)
+            else
+                C_Map.ClearUserWaypoint()
+            end
+            return
+        else
+            local x, y=getPlayerXY()
+            if x and y then
+                local pointText=x..' '..y
+                local info=C_Map.GetMapInfo(mapID)
+                if info and info.name then
+                    pointText=pointText..' '..info.name
+                end
+                ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..pointText)
+                return
+            end
+        end
+    end
+    local name=GetMinimapZoneText()
+    local name2
+    if mapID then
+        local info=C_Map.GetMapInfo(mapID)
+        name2=info and info.name
+    end
+    if name  or name2 then
+        if name2 and name~=name2 then
+            name=name2..'('..name..')'
+        end
+        name =name or name2
+        ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..name)
+    else
+        print("Cannot set waypoints on this map")
+    end
+end
+
+
+
 
 
 
@@ -136,13 +205,13 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
         QuestScrollFrame.btnCollapse:SetPushedAtlas('campaign_headericon_closedpressed')
         QuestScrollFrame.btnCollapse:SetHighlightAtlas('Forge-ColorSwatchSelection')
         QuestScrollFrame.btnCollapse:SetAlpha(0.5)
-        QuestScrollFrame.btnCollapse:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
-        QuestScrollFrame.btnCollapse:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        QuestScrollFrame.btnCollapse:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+        QuestScrollFrame.btnCollapse:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddLine(not e.onlyChinese and HUD_EDIT_MODE_COLLAPSE_OPTIONS or "收起选项 |A:editmode-up-arrow:16:11:0:3|a")
             e.tips:Show()
-            self2:SetAlpha(1)
+            self:SetAlpha(1)
         end)
         QuestScrollFrame.btnCollapse:SetScript("OnMouseDown", function()
             for i=1, C_QuestLog.GetNumQuestLogEntries() do
@@ -155,13 +224,13 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
         QuestScrollFrame.btnExpand:SetPushedAtlas('campaign_headericon_openpressed')
         QuestScrollFrame.btnExpand:SetHighlightAtlas('Forge-ColorSwatchSelection')
         QuestScrollFrame.btnExpand:SetAlpha(0.5)
-        QuestScrollFrame.btnExpand:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
-        QuestScrollFrame.btnExpand:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        QuestScrollFrame.btnExpand:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+        QuestScrollFrame.btnExpand:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddLine(not e.onlyChinese and HUD_EDIT_MODE_EXPAND_OPTIONS or "展开选项 |A:editmode-down-arrow:16:11:0:-7|a")
             e.tips:Show()
-            self2:SetAlpha(1)
+            self:SetAlpha(1)
         end)
         QuestScrollFrame.btnExpand:SetScript("OnMouseDown", function()
             for i=1, C_QuestLog.GetNumQuestLogEntries() do
@@ -172,9 +241,9 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
         QuestScrollFrame.btnDeleteAllQuest=e.Cbtn(QuestScrollFrame,{size={18,18}, atlas='xmarksthespot'})
         QuestScrollFrame.btnDeleteAllQuest:SetPoint('RIGHT', QuestScrollFrame.btnCollapse, 'LEFT', -2, 0)
         QuestScrollFrame.btnDeleteAllQuest:SetAlpha(0.5)
-        QuestScrollFrame.btnDeleteAllQuest:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
-        QuestScrollFrame.btnDeleteAllQuest:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        QuestScrollFrame.btnDeleteAllQuest:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+        QuestScrollFrame.btnDeleteAllQuest:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"), '|cnRED_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"))
             e.tips:AddLine(' ')
@@ -182,14 +251,14 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
-            self2:SetAlpha(1)
+            self:SetAlpha(1)
         end)
         QuestScrollFrame.btnDeleteAllQuest:SetScript("OnDoubleClick", function()
             StaticPopupDialogs[id..addName.."ABANDON_QUEST"] = StaticPopupDialogs[id..addName.."ABANDON_QUEST"] or {
                 text= (e.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)..'|n|n|cnYELLOW_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"),
                 button1 = '|cnRED_FONT_COLOR:'..(not e.onlyChinese and ABANDON_QUEST_ABBREV or "放弃"),
                 button2 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL),
-                OnAccept = function(self2)
+                OnAccept = function(self)
                     local n=0
                     for index=1 , C_QuestLog.GetNumQuestLogEntries() do
                         local questInfo=C_QuestLog.GetInfo(index)
@@ -242,82 +311,6 @@ end
 
 
 
-local function getPlayerXY()--当前世界地图位置
-    local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图        
-    if uiMapID then
-        local position = C_Map.GetPlayerMapPosition(uiMapID, "player")
-        if position then
-            local x, y
-            x,y=position:GetXY()
-            if x and y then
-                x= format('%.2f', x*100)
-                y= format('%.2f', y*100)
-                return x, y
-            end
-        end
-    end
-end
-local function sendPlayerPoint()--发送玩家位置
-    local mapID = C_Map.GetBestMapForUnit("player")
-    if mapID then
-        if  C_Map.CanSetUserWaypointOnMap(mapID) then
-            local point=C_Map.GetUserWaypoint()
-            local pos = C_Map.GetPlayerMapPosition(mapID, "player")
-            local mapPoint = UiMapPoint.CreateFromVector2D(mapID, pos)
-            C_Map.SetUserWaypoint(mapPoint)
-            ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..C_Map.GetUserWaypointHyperlink())
-            if point then
-                C_Map.SetUserWaypoint(point)
-            else
-                C_Map.ClearUserWaypoint()
-            end
-            return
-        else
-            local x, y=getPlayerXY()
-            if x and y then
-                local pointText=x..' '..y
-                local info=C_Map.GetMapInfo(mapID)
-                if info and info.name then
-                    pointText=pointText..' '..info.name
-                end
-                ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..pointText)
-                return
-            end
-        end
-    end
-    local name=GetMinimapZoneText()
-    local name2
-    if mapID then
-        local info=C_Map.GetMapInfo(mapID)
-        name2=info and info.name
-    end
-    if name  or name2 then
-        if name2 and name~=name2 then
-            name=name2..'('..name..')'
-        end
-        name =name or name2
-        ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..name)
-    else
-        print("Cannot set waypoints on this map")
-    end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -327,50 +320,51 @@ end
 --实时玩家当前坐标
 --###############
 local function CursorPositionInt()
-    local frame=WorldMapFrame
-    if not Save.PlayerXY or frame.playerPostionBtn then
-        if frame.playerPostionBtn then
-            frame.playerPostionBtn:SetShown(Save.PlayerXY)
+    if not Save.PlayerXY or PostionButton then
+        if PostionButton then
+            PostionButton:SetShown(Save.PlayerXY)
         end
         return
     end
-    frame.playerPostionBtn= e.Cbtn(nil, {icon='hide', size={18,18}})-- CreateFrame('Button', nil, UIParent)
-    if not Save.PlayerXYPoint then
-        frame.playerPostionBtn:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT',-50, 5)
-    else
-        frame.playerPostionBtn:SetPoint(Save.PlayerXYPoint[1], UIParent, Save.PlayerXYPoint[3], Save.PlayerXYPoint[4], Save.PlayerXYPoint[5])
-    end
+    PostionButton= e.Cbtn(nil, {icon='hide', size={18,18}})-- CreateFrame('Button', nil, UIParent)
 
-    frame.playerPostionBtn:SetFrameStrata('HIGH')
-    frame.playerPostionBtn:SetMovable(true)
-    frame.playerPostionBtn:RegisterForDrag("RightButton")
-    frame.playerPostionBtn:SetClampedToScreen(true)
-    frame.playerPostionBtn:SetScript("OnDragStart", function(self2, d)
-        if d=='RightButton' and IsAltKeyDown() then
-            self2:StartMoving()
+    function PostionButton:set_Point()
+        if not Save.PlayerXYPoint then
+            PostionButton:SetPoint('BOTTOMRIGHT', WorldMapFrame, 'TOPRIGHT',-50, 5)
+        else
+            PostionButton:SetPoint(Save.PlayerXYPoint[1], UIParent, Save.PlayerXYPoint[3], Save.PlayerXYPoint[4], Save.PlayerXYPoint[5])
+        end
+    end
+    PostionButton:set_Point()
+
+    PostionButton:SetFrameStrata('HIGH')
+    PostionButton:SetMovable(true)
+    PostionButton:RegisterForDrag("RightButton")
+    PostionButton:SetClampedToScreen(true)
+    PostionButton:SetScript("OnDragStart", function(self)
+        if IsAltKeyDown() then
+            self:StartMoving()
         end
     end)
-    frame.playerPostionBtn:SetScript("OnDragStop", function(self2)
-        self2:StopMovingOrSizing()
-        Save.PlayerXYPoint={self2:GetPoint(1)}
+    PostionButton:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        Save.PlayerXYPoint={self:GetPoint(1)}
         Save.PlayerXYPoint[2]=nil
-        ResetCursor()
-        self2:Raise()
     end)
-    frame.playerPostionBtn:SetScript("OnMouseDown", function(_, d)
+    PostionButton:SetScript("OnMouseDown", function(_, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
      end)
-    frame.playerPostionBtn:SetScript("OnMouseUp", function(_, d)
-       if d=='LeftButton' and not IsModifierKeyDown() then
+    PostionButton:SetScript("OnMouseUp", ResetCursor)
+    PostionButton:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' and not IsModifierKeyDown() then
             sendPlayerPoint()--发送玩家位置
         end
-        ResetCursor()
     end)
-    frame.playerPostionBtn:SetScript("OnEnter",function(self2)
+    PostionButton:SetScript("OnEnter",function(self)
         e.tips:ClearLines()
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:AddDoubleLine(id, addName2)
         e.tips:AddLine(' ')
         local can
@@ -381,12 +375,12 @@ local function CursorPositionInt()
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'alt+'..e.Icon.right)
         e.tips:Show()
     end)
-    frame.playerPostionBtn:SetScript("OnLeave", function()
+    PostionButton:SetScript("OnLeave", function()
         e.tips:Hide()
         ResetCursor()
     end)
 
-    frame.playerPostionBtn:SetScript('OnMouseWheel',function(self, d)
+    PostionButton:SetScript('OnMouseWheel',function(self, d)
         if not IsAltKeyDown() then
             return
         end
@@ -403,11 +397,11 @@ local function CursorPositionInt()
         print(id,addName, e.Player.L.size, size)
     end)
 
-    frame.playerPostionBtn.Text=e.Cstr(frame.playerPostionBtn, {size=Save.PlayerXYSize, color=true})
-    frame.playerPostionBtn.Text:SetPoint('BOTTOMRIGHT')
+    PostionButton.Text=e.Cstr(PostionButton, {size=Save.PlayerXYSize, color=true})
+    PostionButton.Text:SetPoint('BOTTOMRIGHT')
 
-    frame.playerPostionBtn.elapsed = 0
-    frame.playerPostionBtn:HookScript("OnUpdate", function (self, elapsed)
+    PostionButton.elapsed = 0
+    PostionButton:HookScript("OnUpdate", function (self, elapsed)
         self.elapsed = self.elapsed + elapsed
         if self.elapsed > 0.3 then
             self.elapsed = 0
@@ -446,133 +440,138 @@ end
 --#########
 --地图ID提示
 --#########
-local function set_button_OnEnter(self)
-    local frame=WorldMapFrame
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-    e.tips:AddDoubleLine(id, addName)
-    e.tips:AddLine(' ')
-    if e.Player.Layer then
-        e.tips:AddDoubleLine(e.Player.L.layer, e.Player.Layer)
-    end
-    local uiMapID = frame.mapID or frame:GetMapID("current")
-    if uiMapID then
-        local info = C_Map.GetMapInfo(uiMapID)
-        if info then
-            e.tips:AddDoubleLine(info.name, 'mapID '..info.mapID or uiMapID)--地图ID
-            local uiMapGroupID = C_Map.GetMapGroupID(uiMapID)
-            if uiMapGroupID then
-                e.tips:AddDoubleLine(e.onlyChinese and '区域' or FLOOR, 'uiMapGroupID g'..uiMapGroupID)
-            end
+local function Init_set_Map_ID()--显示地图ID
+    if not Button then
+        Button=e.Cbtn(WorldMapFrame.BorderFrame.TitleContainer, {icon='hide', size={22,22}})
+        if IsAddOnLoaded('Mapster') then
+            Button:SetPoint('RIGHT', WorldMapFrame.BorderFrame.TitleContainer, 'RIGHT', -140,0)
+        else
+            Button:SetPoint('RIGHT', WorldMapFrame.BorderFrame.TitleContainer, 'RIGHT', -50,0)
         end
-        local areaPoiIDs=C_AreaPoiInfo.GetAreaPOIForMap(uiMapID)
-        if areaPoiIDs then
-            for _,areaPoiID in pairs(areaPoiIDs) do
-                local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
-                if poiInfo and (poiInfo.areaPoiID or poiInfo.widgetSetID) then
-                    e.tips:AddDoubleLine((poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')
-                    .. poiInfo.name
-                    ..(poiInfo.widgetSetID and ' widgetSetID '..poiInfo.widgetSetID or ''),
-                    'areaPoiID '..(poiInfo.areaPoiID or NONE))
+        Button:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.map)
+
+        function Button:set_Map_ID_Text()
+            local m=''
+            if not Save.hide then
+                local uiMapID = WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
+                m= uiMapID or m
+                if uiMapID then
+                    local uiMapGroupID=C_Map.GetMapGroupID(uiMapID)
+                    if uiMapGroupID then
+                        m='g'..uiMapGroupID..'  '..m
+                    end
+                    local areaPoiIDs=C_AreaPoiInfo.GetAreaPOIForMap(uiMapID)
+                    if areaPoiIDs then
+                        for _,areaPoiID in pairs(areaPoiIDs) do
+                            local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
+                            if poiInfo and (poiInfo.areaPoiID or poiInfo.widgetSetID) and poiInfo.atlasName then
+                                m='|A:'..poiInfo.atlasName..':0:0|a'..m
+                            end
+                        end
+                    end
+                    if IsInInstance() then
+                        local instanceID, _, LfgDungeonID =select(8, GetInstanceInfo())
+                        if instanceID then
+                            m=INSTANCE..instanceID..'  '..m
+                            if LfgDungeonID then
+                                m=(e.onlyChinese and '随机' or 'Random')..LfgDungeonID..'  '..m
+                            end
+                        end
+                    end
+                    if not Button.mapID then--字符
+                        Button.mapID=e.Cstr(WorldMapFrame.BorderFrame.TitleContainer, {copyFont=WorldMapFrameTitleText})
+                        Button.mapID:SetPoint('RIGHT', Button, 'LEFT')
+                    end
+                end
+                if e.Player.Layer then
+                    m = e.Player.Layer..' '..m
                 end
             end
-        end
-        if IsInInstance() then--副本数据
-            local instanceID, _, LfgDungeonID =select(8, GetInstanceInfo())
-            if instanceID then
-                e.tips:AddDoubleLine(e.onlyChinese and '副本' or INSTANCE, instanceID)
-                if LfgDungeonID then
-                    e.tips:AddDoubleLine(e.onlyChinese and '随机副本' or LFG_TYPE_RANDOM_DUNGEON, LfgDungeonID)
-                end
+            if Button.mapID then
+                Button.mapID:SetText(m)
             end
+            PlayerButton:SetShown(not Save.hide)
         end
-        local x,y =getPlayerXY()
-        if x and y then
-            local playerCursorMapName
-            local uiMapIDPlayer= C_Map.GetBestMapForUnit("player")
-            if uiMapIDPlayer and uiMapIDPlayer~=uiMapID then
-                local info2 = C_Map.GetMapInfo(uiMapIDPlayer)
-                playerCursorMapName=info2 and info2.name
+
+        Button:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.Player.L.layer, e.Player.Layer or (e.onlyChinese and '无' or NONE))--位面
+
+            local uiMapID = WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")--地图信息
+            if uiMapID then
+                local info = C_Map.GetMapInfo(uiMapID)
+                if info then
+                    e.tips:AddDoubleLine(info.name, 'mapID '..info.mapID or uiMapID)--地图ID
+                    local uiMapGroupID = C_Map.GetMapGroupID(uiMapID)
+                    if uiMapGroupID then
+                        e.tips:AddDoubleLine(e.onlyChinese and '区域' or FLOOR, 'uiMapGroupID g'..uiMapGroupID)
+                    end
+                end
+                local areaPoiIDs=C_AreaPoiInfo.GetAreaPOIForMap(uiMapID)
+                if areaPoiIDs then
+                    for _,areaPoiID in pairs(areaPoiIDs) do
+                        local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
+                        if poiInfo and (poiInfo.areaPoiID or poiInfo.widgetSetID) then
+                            e.tips:AddDoubleLine((poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')
+                            .. poiInfo.name
+                            ..(poiInfo.widgetSetID and ' widgetSetID '..poiInfo.widgetSetID or ''),
+                            'areaPoiID '..(poiInfo.areaPoiID or NONE))
+                        end
+                    end
+                end
+                if IsInInstance() then--副本数据
+                    local instanceID, _, LfgDungeonID =select(8, GetInstanceInfo())
+                    if instanceID then
+                        e.tips:AddDoubleLine(e.onlyChinese and '副本' or INSTANCE, instanceID)
+                        if LfgDungeonID then
+                            e.tips:AddDoubleLine(e.onlyChinese and '随机副本' or LFG_TYPE_RANDOM_DUNGEON, LfgDungeonID)
+                        end
+                    end
+                end
+                local x,y = getPlayerXY()
+                if x and y then
+                    local playerCursorMapName
+                    local uiMapIDPlayer= C_Map.GetBestMapForUnit("player")
+                    if uiMapIDPlayer and uiMapIDPlayer~=uiMapID then
+                        local info2 = C_Map.GetMapInfo(uiMapIDPlayer)
+                        playerCursorMapName=info2 and info2.name
+                    end
+                    e.tips:AddLine(' ')
+                    if playerCursorMapName then
+                        e.tips:AddDoubleLine(e.Icon.player..playerCursorMapName, 'XY: '..x..' '..y)
+                    else
+                        e.tips:AddDoubleLine(e.onlyChinese and '位置' or (RESET_POSITION:gsub(RESET, e.Icon.player)), 'XY: '..x..' '..y)
+                    end
+                end
             end
             e.tips:AddLine(' ')
-            if playerCursorMapName then
-                e.tips:AddDoubleLine(e.Icon.player..playerCursorMapName, 'XY: '..x..' '..y)
-            else
-                e.tips:AddDoubleLine(e.onlyChinese and '位置' or (RESET_POSITION:gsub(RESET, e.Icon.player)), 'XY: '..x..' '..y)
-            end
-        end
-    end
-    e.tips:AddLine(' ')
-    e.tips:AddDoubleLine(addName, e.GetEnabeleDisable(not Save.hide)..e.Icon.left)
-    e.tips:AddDoubleLine(addName2, e.GetEnabeleDisable(Save.PlayerXY)..e.Icon.right)
-    e.tips:Show()
-end
-
-local function set_Map_ID_Text(self)
-    local m=''
-    if not Save.hide then
-        local uiMapID = self.mapID or self:GetMapID("current")
-        m= uiMapID or m
-        if uiMapID then
-            local uiMapGroupID=C_Map.GetMapGroupID(uiMapID)
-            if uiMapGroupID then
-                m='g'..uiMapGroupID..'  '..m
-            end
-            local areaPoiIDs=C_AreaPoiInfo.GetAreaPOIForMap(uiMapID)
-            if areaPoiIDs then
-                for _,areaPoiID in pairs(areaPoiIDs) do
-                    local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
-                    if poiInfo and (poiInfo.areaPoiID or poiInfo.widgetSetID) and poiInfo.atlasName then
-                        m='|A:'..poiInfo.atlasName..':0:0|a'..m
-                    end
+            e.tips:AddDoubleLine(addName, e.GetEnabeleDisable(not Save.hide)..e.Icon.left)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(addName2, e.GetEnabeleDisable(Save.PlayerXY)..e.Icon.right)
+            local col= Save.PlayerXYPoint and '' or '|cff606060'
+            e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
+            e.tips:Show()
+        end)
+        Button:SetScript('OnLeave', function() e.tips:Hide() end)
+        Button:SetScript('OnClick', function(self, d)
+            if d=='RightButton' and IsControlKeyDown() then
+                Save.PlayerXYPoint=nil
+                if PostionButton then
+                    PostionButton:ClearAllPoints()
+                    PostionButton:set_Point()
                 end
-            end
-            if IsInInstance() then
-                local instanceID, _, LfgDungeonID =select(8, GetInstanceInfo())
-                if instanceID then
-                    m=INSTANCE..instanceID..'  '..m
-                    if LfgDungeonID then
-                        m=(e.onlyChinese and '随机' or 'Random')..LfgDungeonID..'  '..m
-                    end
-                end
-            end
-            if not self.mapInfoBtn.mapID then--字符
-                self.mapInfoBtn.mapID=e.Cstr(self.BorderFrame.TitleContainer, {copyFont=WorldMapFrameTitleText})
-                self.mapInfoBtn.mapID:SetPoint('RIGHT', self.mapInfoBtn, 'LEFT')
-            end
-        end
-        if e.Player.Layer then
-            m = e.Player.Layer..' '..m
-        end
-    end
-    if self.mapInfoBtn.mapID then
-        self.mapInfoBtn.mapID:SetText(m)
-    end
-    self.playerPosition:SetShown(not Save.hide)
-end
+                print(id, addName, addName2, e.onlyChinese and '重置位置' or RESET_POSITION)
 
-
-local function Init_set_Map_ID()--显示地图ID
-    local self= WorldMapFrame
-    if not self.mapInfoBtn then
-        self.mapInfoBtn=e.Cbtn(self.BorderFrame.TitleContainer, {icon='hide', size={22,22}})
-        if IsAddOnLoaded('Mapster') then
-            self.mapInfoBtn:SetPoint('RIGHT', self.BorderFrame.TitleContainer, 'RIGHT', -140,0)
-        else
-            self.mapInfoBtn:SetPoint('RIGHT', self.BorderFrame.TitleContainer, 'RIGHT', -50,0)
-        end
-        self.mapInfoBtn:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.map)
-        self.mapInfoBtn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-        self.mapInfoBtn:SetScript('OnEnter', set_button_OnEnter)
-        self.mapInfoBtn:SetScript('OnLeave', function() e.tips:Hide() end)
-        self.mapInfoBtn:SetScript('OnMouseDown', function(self2, d)
-            if d=="LeftButton" then
+            elseif d=="LeftButton" and not IsModifierKeyDown() then
                 Save.hide= not Save.hide and true or nil
-                set_Map_ID_Text(self)
+                self:set_Map_ID_Text()
                 setMapQuestList()--世界地图,任务, 加 - + 按钮
                 print(id, addName, e.GetShowHide(not Save.hide), e.onlyChinese and ' 刷新' or REFRESH)
-                self.mapInfoBtn:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.map)
-            elseif d=='RightButton' then--实时玩家当前坐标
+                self:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.map)
+            elseif d=='RightButton' and not IsModifierKeyDown() then--实时玩家当前坐标
                 if Save.PlayerXY then
                     Save.PlayerXY=nil
                     print(id, addName, addName2..":", e.GetEnabeleDisable(Save.PlayerXY), '|cnGREEN_FONT_COLOR:'..NEED..'/reload|r')
@@ -585,18 +584,18 @@ local function Init_set_Map_ID()--显示地图ID
         end)
     end
 
-    if not self.playerPosition then--玩家坐标
-        self.playerPosition=e.Cbtn(self.BorderFrame.TitleContainer, {icon='hide', size={22,22}})
+    if not PlayerButton then--玩家坐标
+        PlayerButton=e.Cbtn(WorldMapFrame.BorderFrame.TitleContainer, {icon='hide', size={22,22}})
         if _G['MoveZoomInButtonPerWorldMapFrame'] then
-            self.playerPosition:SetPoint('LEFT', _G['MoveZoomInButtonPerWorldMapFrame'], 'RIGHT')
+            PlayerButton:SetPoint('LEFT', _G['MoveZoomInButtonPerWorldMapFrame'], 'RIGHT')
         else
-            self.playerPosition:SetPoint('LEFT', self.BorderFrame.TitleContainer, 'LEFT', 75, -2)
+            PlayerButton:SetPoint('LEFT', WorldMapFrame.BorderFrame.TitleContainer, 'LEFT', 75, -2)
         end
-        self.playerPosition:SetNormalAtlas(e.Icon.player:match('|A:(.-):'))
-        self.playerPosition:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-        self.playerPosition:SetScript('OnLeave', function() e.tips:Hide() end)
-        self.playerPosition:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        PlayerButton:SetNormalAtlas(e.Icon.player:match('|A:(.-):'))
+        PlayerButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+        PlayerButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        PlayerButton:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
             e.tips:AddLine(' ')
@@ -607,51 +606,51 @@ local function Init_set_Map_ID()--显示地图ID
             e.tips:AddDoubleLine(e.onlyChinese and '返回当前地图' or (PREVIOUS..REFORGE_CURRENT..WORLD_MAP), e.Icon.right)
             e.tips:Show()
         end)
-        self.playerPosition:SetScript('OnMouseDown', function(self2, d)
+        PlayerButton:SetScript('OnMouseDown', function(self, d)
             if d=='RightButton' then--返回当前地图                
-	            self:SetMapID(MapUtil.GetDisplayableMapForPlayer())
+	            WorldMapFrame:SetMapID(MapUtil.GetDisplayableMapForPlayer())
             elseif d=='LeftButton' then
                 sendPlayerPoint()--发送玩家位置
             end
         end)
 
-        self.playerPosition.edit= CreateFrame("EditBox", nil, self.playerPosition, 'InputBoxTemplate')
-        self.playerPosition.edit:SetSize(73,20)
-        self.playerPosition.edit:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
-        self.playerPosition.edit:SetAutoFocus(false)
-        self.playerPosition.edit:ClearFocus()
-        self.playerPosition.edit:SetPoint('LEFT', self.playerPosition, 'RIGHT',2,0)
-        self.playerPosition.edit:SetScript('OnEditFocusLost', function(self2)
-            self2:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+        PlayerButton.edit= CreateFrame("EditBox", nil, PlayerButton, 'InputBoxTemplate')
+        PlayerButton.edit:SetSize(73,20)
+        PlayerButton.edit:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+        PlayerButton.edit:SetAutoFocus(false)
+        PlayerButton.edit:ClearFocus()
+        PlayerButton.edit:SetPoint('LEFT', PlayerButton, 'RIGHT',2,0)
+        PlayerButton.edit:SetScript('OnEditFocusLost', function(self)
+            self:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
         end)
-        self.playerPosition.edit:SetScript('OnEditFocusGained', function(self2)
-            self2:HighlightText()
-            self2:SetTextColor(1,1,1)
+        PlayerButton.edit:SetScript('OnEditFocusGained', function(self)
+            self:HighlightText()
+            self:SetTextColor(1,1,1)
         end)
-        self.playerPosition.edit:SetScript("OnKeyUp", function(s, key)
+        PlayerButton.edit:SetScript("OnKeyUp", function(s, key)
             if IsControlKeyDown() and key == "C" then
                 s:ClearFocus()
                 print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
             end
         end)
-        self.playerPosition.edit.Left:SetAlpha(0.5)
-        self.playerPosition.edit.Middle:SetAlpha(0.5)
-        self.playerPosition.edit.Right:SetAlpha(0.5)
+        PlayerButton.edit.Left:SetAlpha(0.5)
+        PlayerButton.edit.Middle:SetAlpha(0.5)
+        PlayerButton.edit.Right:SetAlpha(0.5)
 
-        self.playerPosition.Text=e.Cstr(self.playerPosition, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
-        self.playerPosition.Text:SetPoint('LEFT',self.playerPosition.edit, 'RIGHT', 2,0)
-        self.playerPosition.elapsed=1
-        self.playerPosition:HookScript("OnUpdate", function (self2, elapsed)
-            self2.elapsed = self2.elapsed + elapsed
-            if self2.elapsed > 0.15 then
-                self2.elapsed = 0
+        PlayerButton.Text=e.Cstr(PlayerButton, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
+        PlayerButton.Text:SetPoint('LEFT',PlayerButton.edit, 'RIGHT', 2,0)
+        PlayerButton.elapsed=1
+        PlayerButton:HookScript("OnUpdate", function (self, elapsed)
+            self.elapsed = self.elapsed + elapsed
+            if self.elapsed > 0.15 then
+                self.elapsed = 0
                 local text=''
                 local x, y= getPlayerXY()--玩家当前坐标
                 if x and y then
                     text=x..' '..y
                 end
-                if not self2.edit:HasFocus() then
-                    self2.edit:SetText(text)
+                if not self.edit:HasFocus() then
+                    self.edit:SetText(text)
                 end
                 x, y = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()--当前世界地图位置
                 if x and y then
@@ -659,7 +658,7 @@ local function Init_set_Map_ID()--显示地图ID
                 else
                     text=''
                 end
-                self.playerPosition.Text:SetText(text)
+                PlayerButton.Text:SetText(text)
             end
         end)
     end
@@ -679,12 +678,13 @@ end
 
 
 
-
-
-
+--##########
+--地图POI提示
+--AreaPOIDataProvider.lua
+local str_INSTANCE_DIFFICULTY_FORMAT='('..e.Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
 local function set_Widget_Text_OnUpDate(self, elapsed)
     self.elapsed= self.elapsed + elapsed
-    if self.elapsed>1 then--and self.updateWidgetID then
+    if self.elapsed>1 then
         self.elapsed= 0
         if self.updateAreaPoiID then
             local time= C_AreaPoiInfo.GetAreaPOISecondsLeft(self.updateAreaPoiID)
@@ -706,43 +706,46 @@ local function set_Widget_Text_OnUpDate(self, elapsed)
     end
 end
 
-local str_INSTANCE_DIFFICULTY_FORMAT='('..e.Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
-local function set_AreaPOIPinMixin_OnAcquired(self)--地图POI提示 AreaPOIDataProvider.lua
-    self.updateWidgetID=nil
-    self.updateAreaPoiID=nil
-    self:SetScript('OnUpdate', nil)
-    self.elapsed=1
-    if not self.Text and not Save.hide and (self.name or self.widgetSetID or self.areaPoiID) then
-        self.Text= create_Wolor_Font(self, 10)
-        self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
+
+local function set_AreaPOIPinMixin_OnAcquired(frame)
+    frame.updateWidgetID=nil
+    frame.updateAreaPoiID=nil
+    frame:SetScript('OnUpdate', nil)
+    frame.elapsed=1
+    if not frame.Text and not Save.hide and (frame.name or frame.widgetSetID or frame.areaPoiID) then
+        frame.Text= create_Wolor_Font(frame, 10)
+        frame.Text:SetPoint('TOP', frame, 'BOTTOM', 0, 3)
     end
 
-    if not self or Save.hide or not(self.widgetSetID and self.areaPoiID) then
-        if self and self.Text then
+    if not frame or Save.hide or not(frame.widgetSetID and frame.areaPoiID) then
+        if frame and frame.Text then
             local text--地图，地名，名称
-            if not Save.hide and self.name then
-                text= self.name:match(str_INSTANCE_DIFFICULTY_FORMAT) or self.name
+            if not Save.hide and frame.name then
+                text= frame.name:match(str_INSTANCE_DIFFICULTY_FORMAT) or frame.name
             end
-            self.Text:SetText(text or '')
+            frame.Text:SetText(text or '')
         end
         return
     end
 
     local text
 
-    if self.areaPoiID and C_AreaPoiInfo.IsAreaPOITimed(self.areaPoiID) then
-        self.updateAreaPoiID= self.areaPoiID
-        self:SetScript('OnUpdate', set_Widget_Text_OnUpDate)
+    if frame.areaPoiID and C_AreaPoiInfo.IsAreaPOITimed(frame.areaPoiID) then
+        frame.updateAreaPoiID= frame.areaPoiID
+        frame:SetScript('OnUpdate', set_Widget_Text_OnUpDate)
 
-    elseif self.widgetSetID then
-        for _,widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(self.widgetSetID) or {}) do
+    elseif frame.widgetSetID then
+        for _,widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(frame.widgetSetID) or {}) do
             if widget and widget.widgetID and  widget.widgetType==8 then
                 local widgetInfo = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID) or {}
                 if widgetInfo.shownState== Enum.WidgetShownState.Shown and widgetInfo.text then
                     if widgetInfo.hasTimer then--剩余时间：
                         text= widgetInfo.text
-                        self.updateWidgetID= widget.widgetID
-                        self:SetScript('OnUpdate', set_Widget_Text_OnUpDate)
+                        frame.updateWidgetID= widget.widgetID
+                        if not frame.setScripOK then
+                            frame.setScripOK=true
+                            frame:SetScript('OnUpdate', set_Widget_Text_OnUpDate)
+                        end
                     else
                         local icon, num= widgetInfo.text:match('(|T.-|t).-]|r.-(%d+)')
                         local text2= widgetInfo.text:match('(%d+/%d+)')--次数
@@ -761,60 +764,22 @@ local function set_AreaPOIPinMixin_OnAcquired(self)--地图POI提示 AreaPOIData
         end
     end
 
-    self.Text:SetText(text or self.name or '')
+    frame.Text:SetText(text or frame.name or '')
 end
 
 
 
 
 
---######################
---飞行地图， 飞行点，加名称
---hooksecurefunc(FlightPointPinMixin, 'OnAcquired', set_AreaPOIPinMixin_OnAcquired)--世界地图，飞行点，加名称
-local function Init_FlightMap()
-    local btn= e.Cbtn(FlightMapFrame.BorderFrame.TitleContainer, {size={20,20}, icon=Save.showFlightMapPinName})
-    if _G['MoveZoomInButtonPerFlightMapFrame'] then
-        btn:SetPoint('RIGHT', _G['MoveZoomInButtonPerFlightMapFrame'], 'LEFT')
-    else
-        btn:SetPoint('LEFT')
-    end
-    btn:Raise()
-    btn:SetAlpha(0.5)
-    btn:SetScript('OnClick', function(self)
-        Save.showFlightMapPinName= not Save.showFlightMapPinName and true or nil
-        self:SetNormalAtlas(not Save.showFlightMapPinName and e.Icon.disabled or e.Icon.icon)
-        CloseTaxiMap()
-    end)
-    btn:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
-    btn:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine('taxiMapID '..(GetTaxiMapID() or ''), (e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(NumTaxiNodes() or 0))
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine('|A:FlightMaster:0:0|a'..(e.onlyChinese and '飞行点名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MOUNT_JOURNAL_FILTER_FLYING, NAME)), e.GetShowHide(Save.showFlightMapPinName))
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:Show()
-        self:SetAlpha(1)
-    end)
 
-    hooksecurefunc(FlightMap_FlightPointPinMixin, 'SetFlightPathStyle', function(self2)
-        local text
-        if self2.taxiNodeData and Save.showFlightMapPinName then
-            if not self2.Text and self2.taxiNodeData.name then
-                self2.Text= create_Wolor_Font(self2, 10)
-                self2.Text:SetPoint('TOP', self2, 'BOTTOM', 0, 3)
-            end
-            text= self2.taxiNodeData.name
-            if text then
-                text= text:match('(.-)'..KEY_COMMA) or text:match('(.-)'..PLAYER_LIST_DELIMITER) or text
-            end
-        end
-        if self2.Text then
-            self2.Text:SetText(text or '')
-        end
-    end)
-end
+
+
+
+
+
+
+
+
 
 
 
@@ -831,7 +796,9 @@ local function Init()
 
 
     Init_set_Map_ID()--显示地图ID
-    hooksecurefunc(WorldMapFrame, 'OnMapChanged', set_Map_ID_Text)--Blizzard_WorldMap.lua
+    if Button then
+        hooksecurefunc(WorldMapFrame, 'OnMapChanged', Button.set_Map_ID_Text)--Blizzard_WorldMap.lua
+    end
     setMapQuestList()--世界地图,任务, 加 - + 按钮
     --hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
 
@@ -860,12 +827,22 @@ end
 
 
 
+
+
+
+
+
+
+
+
 --加载保存数据
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
+
+            addName2= e.onlyChinese and '玩家坐标' or addName2
 
             --添加控制面板
             e.AddPanel_Check({
@@ -878,23 +855,59 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             })
 
-            --[[添加控制面板
-            local sel=e.AddPanel_Check(e.Icon.map2..(e.onlyChinese and '地图' or addName), not Save.disabled)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)]]
-
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
                 Init()
-                --panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
+
+
         elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
-            Init_FlightMap()--飞行地图， 飞行点，加名称
+            --hooksecurefunc(FlightPointPinMixin, 'OnAcquired', set_AreaPOIPinMixin_OnAcquired)--世界地图，飞行点，加名称
+            local btn= e.Cbtn(FlightMapFrame.BorderFrame.TitleContainer, {size={20,20}, icon=Save.showFlightMapPinName})
+            if _G['MoveZoomInButtonPerFlightMapFrame'] then
+                btn:SetPoint('RIGHT', _G['MoveZoomInButtonPerFlightMapFrame'], 'LEFT')
+            else
+                btn:SetPoint('LEFT')
+            end
+            btn:Raise()
+            btn:SetAlpha(0.5)
+            btn:SetScript('OnClick', function(self)
+                Save.showFlightMapPinName= not Save.showFlightMapPinName and true or nil
+                self:SetNormalAtlas(not Save.showFlightMapPinName and e.Icon.disabled or e.Icon.icon)
+                CloseTaxiMap()
+            end)
+            btn:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+            btn:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine('taxiMapID '..(GetTaxiMapID() or ''), (e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(NumTaxiNodes() or 0))
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine('|A:FlightMaster:0:0|a'..(e.onlyChinese and '飞行点名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MOUNT_JOURNAL_FILTER_FLYING, NAME)), e.GetShowHide(Save.showFlightMapPinName))
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+                self:SetAlpha(1)
+            end)
+
+            hooksecurefunc(FlightMap_FlightPointPinMixin, 'SetFlightPathStyle', function(self)
+                local text
+                if self.taxiNodeData and Save.showFlightMapPinName then
+                    if not self.Text and self.taxiNodeData.name then
+                        self.Text= create_Wolor_Font(self, 10)
+                        self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
+                    end
+                    text= self.taxiNodeData.name
+                    if text then
+                        text= text:match('(.-)'..KEY_COMMA) or text:match('(.-)'..PLAYER_LIST_DELIMITER) or text
+                    end
+                end
+                if self.Text then
+                    self.Text:SetText(text or '')
+                end
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then
