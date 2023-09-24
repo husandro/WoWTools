@@ -154,12 +154,14 @@ function Init()
             self:set_Event()
         elseif event=='UNIT_AURA' then
             if arg2 and arg2.addedAuras then
-               for _, info in pairs(arg2.addedAuras) do
+                for _, info in pairs(arg2.addedAuras) do
                     if info.spellId==43052 then
                         self.Timer= nil
                         self.spellId=nil
+                        -- e.PlaySound(SOUNDKIT.IG_SPELLBOOK_OPEN)
+                        break
                     end
-               end
+                end
             end
             self:set_Shown()
         elseif event=='BAG_UPDATE_DELAYED' then
