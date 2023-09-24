@@ -158,7 +158,7 @@ function Init()
                     if info.spellId==43052 then
                         self.Timer= nil
                         self.spellId=nil
-                        -- e.PlaySound(SOUNDKIT.IG_SPELLBOOK_OPEN)
+                        e.PlaySound(SOUNDKIT.IG_SPELLBOOK_OPEN)
                         break
                     end
                 end
