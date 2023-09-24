@@ -1716,7 +1716,27 @@ local function Init()
         end
     end)
 
-   
+    for i= 1, NUM_OVERRIDE_BUTTONS do-- ActionButton.lua
+        if _G['OverrideActionBarButton'..i] then
+            hooksecurefunc(_G['OverrideActionBarButton'..i], 'SetTooltip', function(self)
+                if self.action then
+                    local actionType, ID, subType = GetActionInfo(self.action)
+                    if actionType=='spell' and ID then
+                        set_Spell(e.tips, ID)
+                        e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType or nil)
+                        e.tips:Show()
+
+                    elseif actionType=='item' and ID then
+                        set_Item_Info(e.tips, nil, ID)
+                        e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType or nil)
+                        e.tips:Show()
+                    end
+                end
+            end)
+        else
+            break
+        end
+    end
 end
 
 

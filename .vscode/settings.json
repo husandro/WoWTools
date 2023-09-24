@@ -3275,7 +3275,9 @@
         "READY_CHECK_FINISHED",
         "C_UnitAuras",
         "print",
-        "CREATE_MACROS"
+        "CREATE_MACROS",
+        "OverrideActionBarButton1",
+        "NUM_OVERRIDE_BUTTONS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
