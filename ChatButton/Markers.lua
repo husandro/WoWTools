@@ -1045,9 +1045,8 @@ local function Init_Markers_Frame()--设置标记, 框架
             btn.setActive= function(self)
                 self:SetButtonState(IsRaidMarkerActive(self.index) and 'PUSHED' or 'NORMAL')
             end
-            btn.elapsed= 0
             btn:SetScript('OnUpdate', function(self, elapsed)
-                self.elapsed= self.elapsed +elapsed
+                self.elapsed= (self.elapsed or 2) +elapsed
                 if self.elapsed>2 then
                     self.elapsed=0
                     self.setActive(self)

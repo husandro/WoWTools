@@ -139,7 +139,7 @@ end
 
 local nowX, nowY = 0, 0
 local set_Cursor_Update = function(self, elapsed)
-    self.elapsed= self.elapsed+ elapsed
+    self.elapsed= (self.elapsed or Save.rate) + elapsed
     if self.elapsed> Save.rate then
         self.elapsed=0
         local oldX, oldY = nowX, nowY
@@ -460,7 +460,6 @@ end
 --Cursor, 初始化
 local function Cursor_Init()
     cursorFrame= CreateFrame('Frame')
-    cursorFrame.elapsed= Save.rate or 2
     cursorFrame.egim=0
     cursor_Init_And_Set()
     Init_Cursor_Options()
@@ -720,9 +719,8 @@ local function GCD_Init()
 
     gcdFrame:SetScript('OnShow', set_GCD_Frame_Point)
 
-    gcdFrame.elapsed= 0.01
     gcdFrame:SetScript('OnUpdate', function(self, elapsed)
-        self.elapsed = self.elapsed + elapsed
+        self.elapsed = (self.elapsed or 0.01) + elapsed
         if self.elapsed>0.01 then
             self.elapsed=0
             set_GCD_Frame_Point()

@@ -1249,9 +1249,8 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
             edit:SetSize(390, 20)
             edit:SetAutoFocus(false)
             edit:ClearFocus()
-            edit.elapsed= 0
             edit:SetScript('OnUpdate', function(self2, elapsed)
-                self2.elapsed= self2.elapsed +elapsed
+                self2.elapsed= (self2.elapsed or 0.3) +elapsed
                 if self2.elapsed>0.3 then
                     self2.elapsed=0
                     if not self2:HasFocus() then

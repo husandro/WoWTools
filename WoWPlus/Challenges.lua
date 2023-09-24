@@ -461,9 +461,8 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
         self2.inseSayTips=nil
     end)
 
-    self.elapsed = 0.8
     self:HookScript("OnUpdate", function (self2, elapsed)--更新队伍数据
-        self.elapsed= self.elapsed+ elapsed
+        self.elapsed= (self.elapsed or 0.8) + elapsed
         if self.elapsed > 0.8 then
             self.elapsed=0
             UI_Party_Info(self2)

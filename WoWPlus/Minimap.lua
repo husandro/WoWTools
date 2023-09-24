@@ -793,9 +793,8 @@ local function Init_Set_Button()--小地图, 标记, 文本
 
     check_Button_Enabled_Disabled()
 
-    btn.Frame.elapsed=1
     btn.Frame:SetScript('OnUpdate', function(self, elapsed)
-        self.elapsed= self.elapsed+ elapsed
+        self.elapsed= (self.elapsed or 1) + elapsed
         if self.elapsed>=1 then
             self.elapsed=0
             set_vigentteButton_Text(self.text)

@@ -8,13 +8,13 @@ local logNum= 30--记录数量
 
 local Frame
 
-local timeElapsed=0
+
 local function set_Text(self, elapsed)
 	if not Frame or not Frame:IsShown() then
 		return
 	end
-	timeElapsed = timeElapsed + elapsed
-	if timeElapsed > 0.3 then
+	self.elapsed = (self.elapsed or 0.3) + elapsed
+	if self.elapsed > 0.3 then
 		local r, g, b, a= e.Get_ColorFrame_RGBA()
 		r= r==0 and 0 or r
 		g= g==0 and 0 or g

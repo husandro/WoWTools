@@ -1680,9 +1680,8 @@ e.Set_HelpTips= function(tab)--e.Set_HelpTips({frame=, topoint=, point='left', s
         if tab.color then
             SetItemButtonNormalTextureVertexColor(tab.frame.HelpTips, tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1);
         end
-        tab.frame.HelpTips.elapsed=0
         tab.frame.HelpTips:SetScript('OnUpdate', function(self, elapsed)
-            self.elapsed= self.elapsed + elapsed
+            self.elapsed= (self.elapsed or 0.5) + elapsed
             if self.elapsed>0.5 then
                 self.elapsed=0
                 self:SetScale(self:GetScale()==1 and 0.5 or 1)

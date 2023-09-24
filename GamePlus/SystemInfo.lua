@@ -238,7 +238,7 @@ end
 --设置, fps, ms, 数值
 --##################
 local function set_Fps_Ms(self, elapsed)
-    self.elapsed = self.elapsed + elapsed
+    self.elapsed = (self.elapsed or 0.4) + elapsed
     if self.elapsed > 0.4 then
         self.elapsed = 0
         local latencyHome, latencyWorld= select(3, GetNetStats())--ms
@@ -256,7 +256,6 @@ local function set_Fps_Ms(self, elapsed)
     end
 end
 local function set_Fps_Ms_Show_Hide()--设置, fps, ms, 数值
-    panel.elapsed=0.4
     panel:SetShown(not Save.hideFpsMs)
     if Save.hideFpsMs then
         if Labels.fps then

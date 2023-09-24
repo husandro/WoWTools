@@ -71,10 +71,9 @@ local function Init()
         self.statusBar:SetShown(true)
     end)
 
-    panel.elapsed=0.3
     local speedTextFactor = 100 / BASE_MOVEMENT_SPEED
     panel:SetScript('OnUpdate', function(self, elapsed)
-        self.elapsed = self.elapsed + elapsed
+        self.elapsed = (self.elapsed or 0.3) + elapsed
         if self.elapsed > 0.3 then
             self.elapsed = 0
             local speed= get_Speed()

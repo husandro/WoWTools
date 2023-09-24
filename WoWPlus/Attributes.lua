@@ -729,7 +729,7 @@ end
 --移动
 --####
 local function set_SPEED_Text(frame, elapsed)
-    frame.elapsed= frame.elapsed+ elapsed
+    frame.elapsed= (frame.elapsed or 0.3) + elapsed
     if frame.elapsed > 0.3 then
         frame.elapsed= 0
         local value
@@ -1025,7 +1025,6 @@ local function frame_Init(rest)--初始， 或设置
                     frame.text:SetScript('OnEnter', set_STAGGER_Tooltip)
 
                 elseif info.name=='SPEED' then--移动12
-                    frame.elapsed=0.4
                     frame:HookScript('OnUpdate', set_SPEED_Text)
                     frame.label:SetScript('OnEnter', set_SPEED_Tooltip)
                     frame.text:SetScript('OnEnter', set_SPEED_Tooltip)
@@ -2019,9 +2018,8 @@ local function Init()
 
             self2.speedBar.Text= e.Cstr(self2.speedBar, {size=16, color= true})
             self2.speedBar.Text:SetPoint('BOTTOM', self2, 'TOP',0, 16)
-            self2.speedBar.elapsed=1
             self2.speedBar:SetScript('OnUpdate', function(self3, elapsed)
-                self3.elapsed= self3.elapsed+ elapsed
+                self3.elapsed= (self3.elapsed or 0.3)+ elapsed
                 if self3.elapsed>0.3 then
                     self3.elapsed=0
                     local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
@@ -2057,7 +2055,7 @@ local function Init()
     --载具，移动，速度
     --##############
     local function get_UnitSpeed(self, elapsed)
-        self.elapsed= self.elapsed+ elapsed
+        self.elapsed= (self.elapsed or 0.3) + elapsed
         if self.elapsed>0.3 then
             local unit, speed
             if not Save.disabledVehicleSpeed then
@@ -2100,7 +2098,7 @@ local function Init()
     end
     local function hide_SpeedText(self)
         if self.speedText then
-            self.elapsed=1
+            self.elapsed= nil
             self.speedText:SetText('')
         end
     end
@@ -2111,7 +2109,6 @@ local function Init()
     }
     for _, btn in pairs(vehicleTabs) do
         if _G[btn] then
-            _G[btn].elapsed=1
             _G[btn]:HookScript('OnUpdate', get_UnitSpeed)
             _G[btn]:HookScript('OnHide', hide_SpeedText)
         end

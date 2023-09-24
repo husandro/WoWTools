@@ -1258,12 +1258,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                             e.tips:AddDoubleLine(id, addName)
                             e.tips:Show()
                         end)
-                        optionFrame.check.elapsed=1
                         optionFrame.check.Text2=e.Cstr(optionFrame.check)
                         optionFrame.check.Text2:SetPoint('RIGHT', optionFrame.check, 'LEFT')
                         optionFrame.check.Text2:SetTextColor(0,1,0)
                         optionFrame.check:SetScript('OnUpdate', function(self3, elapsed)
-                            self3.elapsed = self3.elapsed + elapsed
+                            self3.elapsed = (self3.elapsed or 1) + elapsed
                             if self3.elapsed>=1 then
                                 local text, count
                                 local aura= self3.spellID and C_UnitAuras.GetPlayerAuraBySpellID(self3.spellID)

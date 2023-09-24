@@ -206,9 +206,8 @@ local function set_PlayerFrame()--PlayerFrame.lua
     PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color={r=e.Player.r, g=e.Player.g, b=e.Player.b}, justifyH='RIGHT'})
     PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
     PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
-    PlayerCastingBarFrame.elapsed=1
     PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
-        self.elapsed= self.elapsed+ elapsed
+        self.elapsed= (self.elapsed or 0.1) + elapsed
         if self.elapsed>=0.1 and self.value and self.maxValue then
             self.elapsed=0
             local value= self.channeling and self.value or (self.maxValue-self.value)
@@ -306,9 +305,8 @@ local function set_TargetFrame()
     end)
     TargetFrame.rangeText= e.Cstr(TargetFrame, {justifyH='RIGHT'})
     TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22,0)
-    TargetFrame.elapsed= 0.4
     hooksecurefunc(TargetFrame, 'OnUpdate', function(self, elapsed)--距离
-        self.elapsed= self.elapsed+ elapsed
+        self.elapsed= (self.elapsed or 0.3) + elapsed
         if self.elapsed>0.3 then
             self.elapsed=0
             local text
@@ -448,10 +446,9 @@ local function set_memberFrame(memberFrame)
         frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         frame.healthBar:SetMinMaxValues(0,100)
         frame.healthBar:SetFrameLevel(frame:GetFrameLevel()+7)
-        frame.healthBar.elapsed=0.75
         frame.healthBar.unit= unit..'target'
         frame.healthBar:SetScript('OnUpdate', function(self, elapsed)
-            self.elapsed= self.elapsed +elapsed
+            self.elapsed= (self.elapsed or 0.75) +elapsed
             if self.elapsed>0.75 then
                 self.elapsed=0
                 local cur= UnitHealth(self.unit)
@@ -603,9 +600,8 @@ local function set_memberFrame(memberFrame)
         frame.texture:SetVertexColor(1, 0, 0)
         frame.texture:SetShown(false)
         frame.unit= unit
-        frame.elapsed=0.5
         frame:SetScript('OnUpdate', function(self, elapsed)
-            self.elapsed= self.elapsed +elapsed
+            self.elapsed= (self.elapsed or 0.5) + elapsed
             if self.elapsed>0.5 then
                 self.elapsed=0
                 self.texture:SetShown(UnitAffectingCombat(self.unit))
@@ -641,9 +637,8 @@ local function set_memberFrame(memberFrame)
             end
             self:SetShown(show and not UnitAffectingCombat('player'))
         end
-        frame.elapsed= 1
         frame:SetScript('OnUpdate', function(self, elapsed)
-            self.elapsed= self.elapsed +elapsed
+            self.elapsed= (self.elapsed or 1) + elapsed
             if self.elapsed>1 then
                 self.elapsed=0
                 local mapID= C_Map.GetBestMapForUnit(self.unit)--地图ID

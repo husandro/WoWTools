@@ -400,9 +400,8 @@ local function CursorPositionInt()
     PostionButton.Text=e.Cstr(PostionButton, {size=Save.PlayerXYSize, color=true})
     PostionButton.Text:SetPoint('BOTTOMRIGHT')
 
-    PostionButton.elapsed = 0
     PostionButton:HookScript("OnUpdate", function (self, elapsed)
-        self.elapsed = self.elapsed + elapsed
+        self.elapsed = (self.elapsed or 0.3) + elapsed
         if self.elapsed > 0.3 then
             self.elapsed = 0
             local x, y= getPlayerXY()
@@ -638,10 +637,9 @@ local function Init_set_Map_ID()--显示地图ID
         PlayerButton.edit.Right:SetAlpha(0.5)
 
         PlayerButton.Text=e.Cstr(PlayerButton, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
-        PlayerButton.Text:SetPoint('LEFT',PlayerButton.edit, 'RIGHT', 2,0)
-        PlayerButton.elapsed=1
+        PlayerButton.Text:SetPoint('LEFT',PlayerButton.edit, 'RIGHT', 2, 0)
         PlayerButton:HookScript("OnUpdate", function (self, elapsed)
-            self.elapsed = self.elapsed + elapsed
+            self.elapsed = (self.elapsed or 1) + elapsed
             if self.elapsed > 0.15 then
                 self.elapsed = 0
                 local text=''
@@ -683,7 +681,7 @@ end
 --AreaPOIDataProvider.lua
 local str_INSTANCE_DIFFICULTY_FORMAT='('..e.Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
 local function set_Widget_Text_OnUpDate(self, elapsed)
-    self.elapsed= self.elapsed + elapsed
+    self.elapsed= (self.elapsed or 1) + elapsed
     if self.elapsed>1 then
         self.elapsed= 0
         if self.updateAreaPoiID then
@@ -711,7 +709,6 @@ local function set_AreaPOIPinMixin_OnAcquired(frame)
     frame.updateWidgetID=nil
     frame.updateAreaPoiID=nil
     frame:SetScript('OnUpdate', nil)
-    frame.elapsed=1
     if not frame.Text and not Save.hide and (frame.name or frame.widgetSetID or frame.areaPoiID) then
         frame.Text= create_Wolor_Font(frame, 10)
         frame.Text:SetPoint('TOP', frame, 'BOTTOM', 0, 3)
@@ -842,7 +839,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
-            addName2= e.onlyChinese and '玩家坐标' or addName2
+            addName2= e.onlyChinese and '时实坐标' or addName2
 
             --添加控制面板
             e.AddPanel_Check({

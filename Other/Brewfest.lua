@@ -169,9 +169,8 @@ function Init()
         end
     end)
 
-    button.elapsed = 0
     button:SetScript('OnUpdate', function(self, elapsed)
-        self.elapsed= self.elapsed + elapsed
+        self.elapsed= (self.elapsed or 0.3) + elapsed
         if self.elapsed > 0.3 then
             local info= C_UnitAuras.GetPlayerAuraBySpellID(43883) or C_UnitAuras.GetPlayerAuraBySpellID(43880)
             if info and info.expirationTime then

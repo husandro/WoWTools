@@ -316,9 +316,8 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
         end
 
         button.frame=CreateFrame("Frame", nil, button.textButton)
-        button.frame.elapsed=0
         button.frame:HookScript("OnUpdate", function (self, elapsed)
-            self.elapsed = self.elapsed + elapsed
+            self.elapsed = (self.elapsed or 0.3) + elapsed
             if self.elapsed > 0.3 then
                 self.elapsed = 0
                 setText()--设置显示内容

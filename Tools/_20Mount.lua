@@ -358,7 +358,6 @@ local function getMountShow()
 end
 
 local specialEffects
-local timeElapsed=3.1
 local function setMountShow()--坐骑展示
     if UnitAffectingCombat('player') then
         specialEffects=nil
@@ -375,9 +374,8 @@ local function setMountShow()--坐骑展示
     print(id, addName, specialEffects and (e.onlyChinese and '/坐骑特效' or EMOTE171_CMD2) or (e.onlyChinese and '坐骑' or MOUNT), '3 '..(e.onlyChinese and '秒' or SECONDS))
     if not button.showFrame then
         button.showFrame=CreateFrame('Frame')
-        button.showFrame.elapsed= 3.1
         button.showFrame:HookScript('OnUpdate',function(self, elapsed)
-            self.elapsed= self.elapsed + elapsed
+            self.elapsed= (self.elapsed or 3) + elapsed
             if UnitAffectingCombat('player') or IsPlayerMoving() or UnitIsDeadOrGhost('player') then
                 button.showFrame:SetShown(false)
                 specialEffects=nil

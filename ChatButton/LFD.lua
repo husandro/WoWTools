@@ -655,12 +655,11 @@ local function Init_tipsButton()
     end)
 
 
-    tipsButton.elapsed=0
     tipsButton:SetScript('OnUpdate', function(self, elapsed)
         if UnitAffectingCombat('player') then
             return
         end
-        self.elapsed= self.elapsed + elapsed
+        self.elapsed= (self.elapsed or 1) + elapsed
         if self.elapsed>=1 then
             self.elapsed=0
             securecall(QueueStatusFrame.Update, QueueStatusFrame)--小眼睛, 更新信息, QueueStatusFrame.lua
