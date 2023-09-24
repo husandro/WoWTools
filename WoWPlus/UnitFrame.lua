@@ -306,32 +306,34 @@ local function set_TargetFrame()
     end)
     TargetFrame.rangeText= e.Cstr(TargetFrame, {justifyH='RIGHT'})
     TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22,0)
-    TargetFrame.elapsed2= 0.4
-    hooksecurefunc(TargetFrame, 'OnUpdate', function(self, elapsed)
-        self.elapsed2= self.elapsed2+ elapsed
-        if self.elapsed2>0.3 then
-            local mi, ma= e.GetRange('target')
+    TargetFrame.elapsed= 0.4
+    hooksecurefunc(TargetFrame, 'OnUpdate', function(self, elapsed)--距离
+        self.elapsed= self.elapsed+ elapsed
+        if self.elapsed>0.3 then
+            self.elapsed=0
             local text
-            if mi and ma then
-                text=mi..'|n'..ma
-                if mi>40 then
-                    text='|cFFFF0000'..text--红色
-                elseif mi>35 then
-                    text='|cFFFFD000'..text
-                elseif mi>30 then
-                    text='|cFFFF00FF'..text
-                elseif mi >8 then
-                    text ='|cFFFFFF00'..text
-                elseif mi>5 then
-                    text='|cFFAF00FF'..text
-                elseif mi>2 then
-                    text='|cFF00FF00'..text
-                else
-                    text='|cFFFFFFFF'..text----白色
+            if not UnitIsUnit('player', 'target') then
+                local mi, ma= e.GetRange('target')
+                if mi and ma then
+                    text=mi..'|n'..ma
+                    if mi>40 then
+                        text='|cFFFF0000'..text--红色
+                    elseif mi>35 then
+                        text='|cFFFFD000'..text
+                    elseif mi>30 then
+                        text='|cFFFF00FF'..text
+                    elseif mi >8 then
+                        text ='|cFFFFFF00'..text
+                    elseif mi>5 then
+                        text='|cFFAF00FF'..text
+                    elseif mi>2 then
+                        text='|cFF00FF00'..text
+                    else
+                        text='|cFFFFFFFF'..text----白色
+                    end
                 end
             end
             self.rangeText:SetText(text or '')
-            self.elapsed2=0
         end
     end)
 end
