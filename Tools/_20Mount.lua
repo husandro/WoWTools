@@ -370,23 +370,25 @@ local function setMountShow()--坐骑展示
         specialEffects=nil
         return
     end
-    timeElapsed=3.1
+
+
     print(id, addName, specialEffects and (e.onlyChinese and '/坐骑特效' or EMOTE171_CMD2) or (e.onlyChinese and '坐骑' or MOUNT), '3 '..(e.onlyChinese and '秒' or SECONDS))
     if not button.showFrame then
         button.showFrame=CreateFrame('Frame')
+        button.showFrame.elapsed= 3.1
         button.showFrame:HookScript('OnUpdate',function(self, elapsed)
-            timeElapsed= timeElapsed+ elapsed
+            self.elapsed= self.elapsed + elapsed
             if UnitAffectingCombat('player') or IsPlayerMoving() or UnitIsDeadOrGhost('player') then
                 button.showFrame:SetShown(false)
                 specialEffects=nil
                 return
-            elseif timeElapsed>3 then
+            elseif self.elapsed>3 then
+                self.elapsed=0
                 if specialEffects then
                     DEFAULT_CHAT_FRAME.editBox:SetText(EMOTE171_CMD2)
                     ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox,0)
                 else
                     getMountShow()
-                    timeElapsed=0
                 end
             end
         end)

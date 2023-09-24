@@ -9,7 +9,7 @@ local logNum= 30--记录数量
 local Frame
 
 local timeElapsed=0
-local function set_Text(_, elapsed)
+local function set_Text(self, elapsed)
 	if not Frame or not Frame:IsShown() then
 		return
 	end
@@ -421,7 +421,6 @@ local function Init()
 			n=n+1
 		end
 	end)
-
 
 
 	ColorPickerFrame:SetScript('OnUpdate', set_Text)

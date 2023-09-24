@@ -1049,8 +1049,8 @@ local function Init_Markers_Frame()--设置标记, 框架
             btn:SetScript('OnUpdate', function(self, elapsed)
                 self.elapsed= self.elapsed +elapsed
                 if self.elapsed>2 then
-                    self.setActive(self)
                     self.elapsed=0
+                    self.setActive(self)
                 end
             end)
             btn.setActive(btn)

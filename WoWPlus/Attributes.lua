@@ -731,6 +731,7 @@ end
 local function set_SPEED_Text(frame, elapsed)
     frame.elapsed= frame.elapsed+ elapsed
     if frame.elapsed > 0.3 then
+        frame.elapsed= 0
         local value
         local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
         if isGliding and forwardSpeed then
@@ -745,7 +746,6 @@ local function set_SPEED_Text(frame, elapsed)
         else
             frame.text:SetFormattedText('%.0f%%', value*100/BASE_MOVEMENT_SPEED)
         end
-        frame.elapsed= 0
     end
 end
 local function set_SPEED_Tooltip(self)
@@ -2023,6 +2023,7 @@ local function Init()
             self2.speedBar:SetScript('OnUpdate', function(self3, elapsed)
                 self3.elapsed= self3.elapsed+ elapsed
                 if self3.elapsed>0.3 then
+                    self3.elapsed=0
                     local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
                     local base = isGliding and forwardSpeed or GetUnitSpeed("player") or 0
                     if base>0 then
@@ -2032,7 +2033,6 @@ local function Init()
                         self3.Text:SetText('')
                     end
                     self3:SetValue(base)
-                    self3.elapsed=0
                 end
             end)
         end

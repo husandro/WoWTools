@@ -1258,7 +1258,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                             e.tips:AddDoubleLine(id, addName)
                             e.tips:Show()
                         end)
-                        optionFrame.check.elapsed=0
+                        optionFrame.check.elapsed=1
                         optionFrame.check.Text2=e.Cstr(optionFrame.check)
                         optionFrame.check.Text2:SetPoint('RIGHT', optionFrame.check, 'LEFT')
                         optionFrame.check.Text2:SetTextColor(0,1,0)

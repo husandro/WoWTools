@@ -1251,15 +1251,16 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
             edit:ClearFocus()
             edit.elapsed= 0
             edit:SetScript('OnUpdate', function(self2, elapsed)
-                    self2.elapsed= self2.elapsed +elapsed
-                    if self2.elapsed>0.3 then
-                        if not self2:HasFocus() then
-                            local text = TableAttributeDisplay.TitleButton.Text:GetText()
-                            if text and text~='' then
-                                edit:SetText(text:match('%- (.+)') or text)
-                            end
+                self2.elapsed= self2.elapsed +elapsed
+                if self2.elapsed>0.3 then
+                    self2.elapsed=0
+                    if not self2:HasFocus() then
+                        local text = TableAttributeDisplay.TitleButton.Text:GetText()
+                        if text and text~='' then
+                            edit:SetText(text:match('%- (.+)') or text)
                         end
                     end
+                end
             end)
             edit:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then

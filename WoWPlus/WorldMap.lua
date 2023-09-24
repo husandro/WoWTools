@@ -406,11 +406,11 @@ local function CursorPositionInt()
     frame.playerPostionBtn.Text=e.Cstr(frame.playerPostionBtn, {size=Save.PlayerXYSize, color=true})
     frame.playerPostionBtn.Text:SetPoint('BOTTOMRIGHT')
 
-    frame.playerPostionBtn.timeElapsed = 0
+    frame.playerPostionBtn.elapsed = 0
     frame.playerPostionBtn:HookScript("OnUpdate", function (self, elapsed)
-        self.timeElapsed = self.timeElapsed + elapsed
-        if self.timeElapsed > 0.3 then
-            self.timeElapsed = 0
+        self.elapsed = self.elapsed + elapsed
+        if self.elapsed > 0.3 then
+            self.elapsed = 0
             local x, y= getPlayerXY()
             if x and y then
                 self.Text:SetText(x.. ' '..y)
@@ -644,6 +644,7 @@ local function Init_set_Map_ID()--显示地图ID
         self.playerPosition:HookScript("OnUpdate", function (self2, elapsed)
             self2.elapsed = self2.elapsed + elapsed
             if self2.elapsed > 0.15 then
+                self2.elapsed = 0
                 local text=''
                 local x, y= getPlayerXY()--玩家当前坐标
                 if x and y then
@@ -659,7 +660,6 @@ local function Init_set_Map_ID()--显示地图ID
                     text=''
                 end
                 self.playerPosition.Text:SetText(text)
-                self2.elapsed = 0
             end
         end)
     end
@@ -685,6 +685,7 @@ end
 local function set_Widget_Text_OnUpDate(self, elapsed)
     self.elapsed= self.elapsed + elapsed
     if self.elapsed>1 then--and self.updateWidgetID then
+        self.elapsed= 0
         if self.updateAreaPoiID then
             local time= C_AreaPoiInfo.GetAreaPOISecondsLeft(self.updateAreaPoiID)
             if time and time>0 then
@@ -693,7 +694,6 @@ local function set_Widget_Text_OnUpDate(self, elapsed)
                 else
                     self.Text:SetText(SecondsToTime(time, true))
                 end
-                self.elapsed= 0
                 return
             end
         end
@@ -703,7 +703,6 @@ local function set_Widget_Text_OnUpDate(self, elapsed)
                 self.Text:SetText(widgetInfo.text:gsub(HEADER_COLON, '|n'))
             end
         end
-        self.elapsed= 0
     end
 end
 

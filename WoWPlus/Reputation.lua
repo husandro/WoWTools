@@ -449,7 +449,7 @@ end
 --#############
 local factionStr=FACTION_STANDING_INCREASED:gsub("%%s", "(.-)")--你在%s中的声望值提高了%d点。
 factionStr = factionStr:gsub("%%d", ".-")
-local function FactionUpdate(self, event, text, ...)
+local function FactionUpdate(self, _, text, ...)
 	local name=text and text:match(factionStr)
 	if not name then
 		return

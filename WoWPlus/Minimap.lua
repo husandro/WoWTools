@@ -797,8 +797,8 @@ local function Init_Set_Button()--小地图, 标记, 文本
     btn.Frame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= self.elapsed+ elapsed
         if self.elapsed>=1 then
-            set_vigentteButton_Text(self.text)
             self.elapsed=0
+            set_vigentteButton_Text(self.text)
         end
     end)
     panel.Button=btn

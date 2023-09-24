@@ -461,12 +461,12 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
         self2.inseSayTips=nil
     end)
 
-    local timeElapsed = 0
+    self.elapsed = 0.8
     self:HookScript("OnUpdate", function (self2, elapsed)--更新队伍数据
-        timeElapsed = timeElapsed + elapsed
-        if timeElapsed > 0.8 then
+        self.elapsed= self.elapsed+ elapsed
+        if self.elapsed > 0.8 then
+            self.elapsed=0
             UI_Party_Info(self2)
-            timeElapsed=0
         end
         local inse= C_ChallengeMode.HasSlottedKeystone()
         self2.ins:SetEnabled(not inse)

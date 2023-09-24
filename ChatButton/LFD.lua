@@ -662,9 +662,9 @@ local function Init_tipsButton()
         end
         self.elapsed= self.elapsed + elapsed
         if self.elapsed>=1 then
+            self.elapsed=0
             securecall(QueueStatusFrame.Update, QueueStatusFrame)--小眼睛, 更新信息, QueueStatusFrame.lua
             --securecall(LFGListUtil_SetAutoAccept, C_LFGList.CanActiveEntryUseAutoAccept())--LFGList.lua 不可用
-            self.elapsed=0
         end
     end)
 

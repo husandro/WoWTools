@@ -256,7 +256,7 @@ local function set_Fps_Ms(self, elapsed)
     end
 end
 local function set_Fps_Ms_Show_Hide()--设置, fps, ms, 数值
-    panel.elapsed=0
+    panel.elapsed=0.4
     panel:SetShown(not Save.hideFpsMs)
     if Save.hideFpsMs then
         if Labels.fps then

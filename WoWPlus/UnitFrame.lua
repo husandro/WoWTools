@@ -210,6 +210,7 @@ local function set_PlayerFrame()--PlayerFrame.lua
     PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
         self.elapsed= self.elapsed+ elapsed
         if self.elapsed>=0.1 and self.value and self.maxValue then
+            self.elapsed=0
             local value= self.channeling and self.value or (self.maxValue-self.value)
             if value<=0 then
                 self.castingText:SetText(0)
@@ -218,7 +219,6 @@ local function set_PlayerFrame()--PlayerFrame.lua
             else
                 self.castingText:SetFormattedText('%.01f', value)
             end
-            self.elapsed=0
         end
     end)
     set_SetTextColor(PlayerCastingBarFrame.Text, e.Player.r, e.Player.g, e.Player.b)--法术名称，颜色
@@ -448,11 +448,12 @@ local function set_memberFrame(memberFrame)
         frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         frame.healthBar:SetMinMaxValues(0,100)
         frame.healthBar:SetFrameLevel(frame:GetFrameLevel()+7)
-        frame.healthBar.elapsed=0
+        frame.healthBar.elapsed=0.75
         frame.healthBar.unit= unit..'target'
         frame.healthBar:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= self.elapsed +elapsed
             if self.elapsed>0.75 then
+                self.elapsed=0
                 local cur= UnitHealth(self.unit)
                 local max= UnitHealthMax(self.unit)
                 if max and max>0 then
@@ -462,7 +463,6 @@ local function set_memberFrame(memberFrame)
                 else
                     self:SetShown(false)
                 end
-                self.elapsed=0
             end
         end)
 
@@ -603,12 +603,12 @@ local function set_memberFrame(memberFrame)
         frame.texture:SetVertexColor(1, 0, 0)
         frame.texture:SetShown(false)
         frame.unit= unit
-        frame.elapsed=0
+        frame.elapsed=0.5
         frame:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= self.elapsed +elapsed
             if self.elapsed>0.5 then
-                self.texture:SetShown(UnitAffectingCombat(self.unit))
                 self.elapsed=0
+                self.texture:SetShown(UnitAffectingCombat(self.unit))
             end
         end)
         memberFrame.combatFrame= frame
@@ -645,6 +645,7 @@ local function set_memberFrame(memberFrame)
         frame:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= self.elapsed +elapsed
             if self.elapsed>1 then
+                self.elapsed=0
                 local mapID= C_Map.GetBestMapForUnit(self.unit)--地图ID
                 local mapInfo= mapID and C_Map.GetMapInfo(mapID)
                 local text
@@ -660,7 +661,6 @@ local function set_memberFrame(memberFrame)
                     end
                 end
                 self.Text:SetText(text or '')
-                self.elapsed=0
             end
         end)
         frame:SetScript('OnEvent', function(self, event)

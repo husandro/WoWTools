@@ -460,7 +460,7 @@ end
 --Cursor, 初始化
 local function Cursor_Init()
     cursorFrame= CreateFrame('Frame')
-    cursorFrame.elapsed=0
+    cursorFrame.elapsed= Save.rate or 2
     cursorFrame.egim=0
     cursor_Init_And_Set()
     Init_Cursor_Options()
@@ -700,7 +700,6 @@ end
 local function GCD_Init()
     gcdFrame= CreateFrame("Frame")
     gcdFrame:SetFrameStrata("TOOLTIP")
-    gcdFrame.elapsed=0
 
     gcdFrame.cooldown= CreateFrame("Cooldown", nil, gcdFrame, 'CooldownFrameTemplate')
     gcdFrame.cooldown:SetHideCountdownNumbers(true)--隐藏数字
@@ -721,9 +720,11 @@ local function GCD_Init()
 
     gcdFrame:SetScript('OnShow', set_GCD_Frame_Point)
 
+    gcdFrame.elapsed= 0.01
     gcdFrame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed = self.elapsed + elapsed
         if self.elapsed>0.01 then
+            self.elapsed=0
             set_GCD_Frame_Point()
         end
     end)
