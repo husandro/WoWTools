@@ -392,12 +392,14 @@ e.Icon={
     info2='|A:questlegendary:0:0|a',--黄色!
     star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
-C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua
+
+e.GetTitleIconTexture= C_Texture.GetTitleIconTexture
+e.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua
     if success and texture then
         e.Icon.wow2= '|T'..texture..':0|t'
     end
 end)
-C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Medium, function(success, texture)
+e.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Medium, function(success, texture)
     if success and texture then
         e.Icon.net2= '|T'..texture..':0|t'
     end
