@@ -676,6 +676,7 @@ function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
     start=start or GetTime()
     self.cooldown:SetCooldown(start, duration, modRate)
 end
+
 function e.SetItemSpellCool(self, item, spell)
     if item then
         local startTime, duration = GetItemCooldown(item)
@@ -1535,70 +1536,6 @@ function e.Reload()
     end
 end
 
-
-function e.CSlider(self, tab)--e.CSlider(self, {w=, h=, min=, max=, value=, setp=, color=, text=, func=clickfunc, tips=func})
-    local slider= CreateFrame("Slider", nil, self, 'OptionsSliderTemplate')
-    slider:SetSize(tab.w or 200, tab.h or 18)
-    slider:SetMinMaxValues(tab.min, tab.max)
-    slider:SetValue(tab.value)
-    slider.Low:SetText(tab.text or tab.min)
-    slider.High:SetText('')
-    slider.Text:SetText(tab.value)
-
-    slider.Low:ClearAllPoints()
-    slider.Low:SetPoint('LEFT')
-    slider.Text:ClearAllPoints()
-    slider.Text:SetPoint('RIGHT')
-
-    slider:SetValueStep(tab.setp)
-    slider:SetScript('OnValueChanged', tab.func)
-    slider:EnableMouseWheel(true)
-    slider.max= tab.max
-    slider.min= tab.min
-    slider:SetScript('OnMouseWheel', function(self2, d)
-        local setp= self2:GetValueStep() or 1
-        local value= self2:GetValue()
-        if d== 1 then
-            value= value- setp
-        elseif d==-1 then
-            value= value+ setp
-        end
-        value= value> self2.max and self2.max or value
-        value= value< self2.min and self2.min or value
-        self2:SetValue(value)
-    end)
-    if tab.color then
-        slider.Low:SetTextColor(1,0,1)
-        slider.High:SetTextColor(1,0,1)
-        slider.Text:SetTextColor(1,0,1)
-        slider.NineSlice.BottomEdge:SetVertexColor(1,0,1)
-        slider.NineSlice.TopEdge:SetVertexColor(1,0,1)
-        slider.NineSlice.RightEdge:SetVertexColor(1,0,1)
-        slider.NineSlice.LeftEdge:SetVertexColor(1,0,1)
-        slider.NineSlice.TopRightCorner:SetVertexColor(1,0,1)
-        slider.NineSlice.TopLeftCorner:SetVertexColor(1,0,1)
-        slider.NineSlice.BottomRightCorner:SetVertexColor(1,0,1)
-        slider.NineSlice.BottomLeftCorner:SetVertexColor(1,0,1)
-    end
-    slider:SetScript('OnLeave', function() e.tips:Hide() end)
-    if tab.tip then
-        slider:SetScript('OnEnter', tab.tips)
-    else
-        slider:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddLine(tab.text)
-            e.tips:AddLine(' ')
-            e.tips:AddLine(e.Icon.down2..(e.onlyChinese and '最小' or MINIMUM)..': '..tab.min)
-            e.tips:AddLine(e.Icon.up2..(e.onlyChinese and '最大' or MAXIMUM)..': '..tab.max)
-            e.tips:AddLine('Setp: '..tab.setp)
-            e.tips:AddLine(' ')
-            e.tips:AddLine(e.Icon.toRight2..(e.onlyChinese and '当前: ' or ITEM_UPGRADE_CURRENT)..self2:GetValue())
-            e.tips:Show()
-        end)
-    end
-    return slider
-end
 
 function e.Magic(text)
     local tab= {'%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^'}
