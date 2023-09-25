@@ -1,6 +1,5 @@
 local id, e = ...
 
---e.L=e.L or {}--多语言
 e.tips=GameTooltip
 e.onlyChinese= LOCALE_zhCN
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
@@ -63,14 +62,14 @@ end
 for _, spellID in pairs(spellLoadTab) do
     e.LoadDate({id=spellID, type='spell'})
 end
-for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do
+--[[for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do
     for slot=1, C_Container.GetContainerNumSlots(bag) do
         local info = C_Container.GetContainerItemInfo(bag, slot)
         if info and info.itemID then
             e.LoadDate({id=info.itemID, type='item'})
         end
     end
-end
+end]]
 
 e.itemPetID={--宠物对换, wow9.0
     [11406]=true,
@@ -217,7 +216,7 @@ function e.GetFriend(name, guid, unit)--检测, 是否好友
     end
 end
 
-e.GetUnitFaction= function(unit, faction, all)--检查, 是否同一阵营
+function e.GetUnitFaction(unit, faction, all)--检查, 是否同一阵营
     if not faction and unit then
         faction= UnitFactionGroup(unit)
     end
@@ -227,7 +226,7 @@ e.GetUnitFaction= function(unit, faction, all)--检查, 是否同一阵营
 end
 
 
-e.PlayerLink=function(name, guid, onlyLink) --玩家超链接
+function e.PlayerLink(name, guid, onlyLink) --玩家超链接
     guid= guid or e.GetGUID(nil, name)
     if guid==e.Player.guid then--自已
         return (not onlyLink and e.Icon.player)..'|Hplayer:'..e.Player.name_realm..'|h['..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
@@ -247,7 +246,7 @@ e.PlayerLink=function(name, guid, onlyLink) --玩家超链接
     return ''
 end
 
-e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, faction=nil, reName=true, reLink=false, reRealm=false, reNotRegion=false})
+function e.GetPlayerInfo(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, faction=nil, reName=true, reLink=false, reRealm=false, reNotRegion=false})
     local guid= tab.guid or e.GetGUID(tab.unit, tab.name)
     if guid==e.Player.guid then
         return e.Icon.player..((tab.reName or tab.reLink) and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..e.Icon.star2
@@ -305,6 +304,8 @@ e.GetPlayerInfo= function(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, f
 
     return ''
 end
+
+
 local battleTag= select(2, BNGetInfo())
 local baseClass= UnitClassBase('player')
 e.Player={
@@ -327,7 +328,6 @@ e.Player={
     level= UnitLevel('player'),--UnitEffectiveLevel('player')
     husandro= battleTag== '古月剑龙#5972' or battleTag=='SandroChina#2690' or battleTag=='Sandro126#2297' or battleTag=='Sandro163EU#2603',
     faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
-   
     Layer= nil, --位面数字
     useColor= nil,--使用颜色
     L={},--多语言，文本
@@ -342,29 +342,18 @@ end
 
 e.Icon={
     icon= 'orderhalltalents-done-glow',
-
     disabled='talents-button-reset',
     select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√
     select2='|A:common-icon-checkmark:0:0|a',--绿色√
     --selectYellow='common-icon-checkmark-yellow',--黄色√
     X2='|A:xmarksthespot:0:0|a',
     O2='|A:talents-button-reset:0:0|a',--￠
-
     right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
     left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
     mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
-
-    --pushed='UI-HUD-MicroMenu-Highlightalert',--'bag-border-highlight',--Forge-ColorSwatchHighlight',--移过时
-    --highlight='Forge-ColorSwatchSelection',--点击时
-
-    --transmogHide='transmog-icon-hidden',--不可幻化
-    --transmogHide2='|A:transmog-icon-hidden:0:0|a',--不可幻化
-    --okTransmog2='|T132288:0|t',--可幻化
-
     map='poi-islands-table',
     map2='|A:poi-islands-table:0:0|a',
     wow2='|A:Icon-WoW:0:0|a',--136235
-    --wow2= BNet_GetClientEmbeddedTexture(-18, 32, 32),--BnetShared.lua UI-ChatIcon- '|A:128-Store-Main:0:0|a',
     net2= BNet_GetClientEmbeddedTexture(-2, 32, 32),
     horde= 'charcreatetest-logo-horde',
     alliance='charcreatetest-logo-alliance',
@@ -374,7 +363,7 @@ e.Icon={
     number='services-number-',
     number2='|A:services-number-%d:0:0|a',
     clock='socialqueuing-icon-clock',
-    clock2='|A:socialqueuing-icon-clock:0:0|a',--auctionhouse-icon-clock
+    clock2='|A:socialqueuing-icon-clock:0:0|a',
 
     player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
 
@@ -403,7 +392,6 @@ e.Icon={
     info2='|A:questlegendary:0:0|a',--黄色!
     star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
-
 C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua
     if success and texture then
         e.Icon.wow2= '|T'..texture..':0|t'
@@ -415,21 +403,6 @@ C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Medium, fu
     end
 end)
 
---[[
-    Interface\Common\WhiteIconFrame 提示方形外框
-    FRIENDS_TEXTURE_DND 忙碌texture FRIENDS_LIST_BUSY
-    FRIENDS_TEXTURE_AFK 离开 AFK FRIENDS_LIST_AWAY 
-    FRIENDS_TEXTURE_ONLINE 	有空 FRIENDS_LIST_AVAILABLE
-    format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK)
-    Interface\\FriendsFrame\\Battlenet-Portrait
-    INLINE_TANK_ICON
-    INLINE_HEALER_ICON
-    INLINE_DAMAGER_ICON
-    mask="Interface\\ChatFrame\\UI-ChatIcon-HotS",--菱形
-    mask='Interface\\CHARACTERFRAME\\TempPortraitAlphaMask',--圆形 :SetMask()
-    mask='CircleMaskScalable',
-    soulbinds_tree_conduit_icon_utility 闪电形
-]]
 
 function e.PlayerOnlineInfo(unit)--单位，状态信息
     if unit and UnitExists(unit) then
@@ -445,7 +418,7 @@ function e.PlayerOnlineInfo(unit)--单位，状态信息
     end
 end
 
-e.GetNpcID = function(unit)--NPC ID
+function e.GetNpcID(unit)--NPC ID
     if UnitExists(unit) then
         local guid=UnitGUID(unit)
         if guid then
@@ -500,7 +473,7 @@ function e.MK(number, bit)
     end
 end
 
-e.GetShowHide = function(sh, all)
+function e.GetShowHide(sh, all)
     if all then
         return not e.onlyChinese and SHOW..'/'..HIDE or '显示/隐藏'
     elseif sh then
@@ -509,14 +482,14 @@ e.GetShowHide = function(sh, all)
 		return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '隐藏' or HIDE)..'|r'
 	end
 end
-e.GetEnabeleDisable = function (ed)--启用或禁用字符
+function e.GetEnabeleDisable(ed)--启用或禁用字符
     if ed then
         return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE)..'|r'
     else
         return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r'
     end
 end
-e.GetYesNo = function (yesno)
+function e.GetYesNo(yesno)
     if yesno then
         return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '是' or YES)..'|r'
     else
@@ -525,7 +498,7 @@ e.GetYesNo = function (yesno)
 end
 
 --副本，难道，颜色
-e.GetDifficultyColor = function(string, difficultyID)--DifficultyUtil.lua
+function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
     local colorRe
     if difficultyID and difficultyID>0 then
         local color={
@@ -673,7 +646,7 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size
     return btn
 end
 
-e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
+function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
     if not self then
         return
     elseif not duration or duration<=0 then
@@ -703,7 +676,7 @@ e.Ccool=function(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
     start=start or GetTime()
     self.cooldown:SetCooldown(start, duration, modRate)
 end
-e.SetItemSpellCool= function(self, item, spell)
+function e.SetItemSpellCool(self, item, spell)
     if item then
         local startTime, duration = GetItemCooldown(item)
         e.Ccool(self, startTime, duration, nil, true, nil, true)
@@ -715,7 +688,7 @@ e.SetItemSpellCool= function(self, item, spell)
     end
 end
 
-e.SetButtonKey = function(self, set, key, click)--设置清除快捷键
+function e.SetButtonKey(self, set, key, click)--设置清除快捷键
     if set then
         SetOverrideBindingClick(self, true, key, self:GetName(), click or 'LeftButton')
     else
@@ -765,7 +738,7 @@ e.WA_GetUnitAura = function(unit, spell, filter)--AuraEnvironment.lua
 end
 ]]
 
-e.WA_GetUnitBuff = function(unit, spell, filter)--HELPFUL HARMFUL
+function e.WA_GetUnitBuff(unit, spell, filter)--HELPFUL HARMFUL
     for i = 1, 40 do
         local spellID = select(10, UnitBuff(unit, i, filter))
         if not spellID then
@@ -775,7 +748,7 @@ e.WA_GetUnitBuff = function(unit, spell, filter)--HELPFUL HARMFUL
         end
     end
 end
-e.WA_GetUnitDebuff = function(unit, spell, filter, spellTab)
+function e.WA_GetUnitDebuff(unit, spell, filter, spellTab)
     spellTab= spellTab or {}
     for i = 1, 40 do
         local spellID = select(10, UnitDebuff(unit, i, filter))
@@ -851,7 +824,7 @@ function e.SecondsToClock(seconds, displayZeroHours)--TimeUtil.lua
 end
 
 --取得对战宠物, 强弱 SharedPetBattleTemplates.lua
-e.GetPetStrongWeakHints= function(petType)
+function e.GetPetStrongWeakHints(petType)
     local strongTexture,weakHintsTexture, stringIndex, weakHintsIndex
     for i=1, C_PetJournal.GetNumPetTypes() do
         local modifier = C_PetBattles.GetAttackModifier(petType, i);
@@ -909,7 +882,7 @@ e.GetItemCooldown= function(itemID)--物品冷却
 end
 
 ]]
-e.GetSpellItemCooldown = function(spellID, itemID)--法术冷却
+function e.GetSpellItemCooldown(spellID, itemID)--法术冷却
     local startTime, duration, enable
     if spellID then
         startTime, duration, enable = GetSpellCooldown(spellID)
@@ -963,7 +936,7 @@ function e.Cbtn2(tab)
     button.background:SetAllPoints(button)
     button.background:SetAtlas(e.Icon.bagEmpty)
     button.background:SetAlpha(tab.alpha or 0.5)
-    
+
     button.background:AddMaskTexture(button.mask)
 
     if not tab.notTexture then
@@ -991,7 +964,7 @@ e.toolsFrame.last=e.toolsFrame
 e.toolsFrame.line=1
 e.toolsFrame.index=0
 
-e.ToolsSetButtonPoint=function(self, line, unoLine)--设置位置
+function e.ToolsSetButtonPoint(self, line, unoLine)--设置位置
     self:SetSize(30, 30)
     if (not unoLine and e.toolsFrame.index>0 and select(2, math.modf(e.toolsFrame.index / 10))==0) or line then
         local x= - (e.toolsFrame.line * 30)
@@ -1058,7 +1031,7 @@ function e.Say(type, name, wow, text)
 end
 
 
-e.GetDurabiliy= function(reTexture)--耐久度
+function e.GetDurabiliy(reTexture)--耐久度
     local cur, max= 0, 0
     for i= 1, 18 do
         local cur2, max2 = GetInventoryItemDurability(i)
@@ -1090,7 +1063,7 @@ e.GetDurabiliy= function(reTexture)--耐久度
     return text, value
 end
 
-e.GetKeystoneScorsoColor= function(score, texture, overall)--地下城史诗, 分数, 颜色 C_ChallengeMode.GetOverallDungeonScore()
+function e.GetKeystoneScorsoColor(score, texture, overall)--地下城史诗, 分数, 颜色 C_ChallengeMode.GetOverallDungeonScore()
     if not score or score==0 or score=='0' then
         return ''
     else
@@ -1134,7 +1107,7 @@ function e.GetTimeInfo(value, chat, time, expirationTime)
     end
 end
 
-e.GetSetsCollectedNum= function(setID)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
+function e.GetSetsCollectedNum(setID)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
     local info= setID and C_TransmogSets.GetSetPrimaryAppearances(setID)
     local numCollected,numAll=0,0
     if info then
@@ -1164,7 +1137,7 @@ e.GetSetsCollectedNum= function(setID)--套装 , 收集数量, 返回: 图标, �
     end
 end
 
-e.GetItemCollected= function(link, sourceID, icon)--物品是否收集
+function e.GetItemCollected(link, sourceID, icon)--物品是否收集
     sourceID= sourceID or link and select(2, C_TransmogCollection.GetItemInfo(link))
     local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
     if sourceInfo then
@@ -1193,7 +1166,7 @@ e.GetItemCollected= function(link, sourceID, icon)--物品是否收集
     end
 end
 
-e.GetPetCollectedNum= function(speciesID, itemID)--总收集数量， 25 25 25， 3/3
+function e.GetPetCollectedNum(speciesID, itemID)--总收集数量， 25 25 25， 3/3
     speciesID = speciesID or itemID and select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物物品
     if not speciesID then
         return
@@ -1237,7 +1210,7 @@ e.GetPetCollectedNum= function(speciesID, itemID)--总收集数量， 25 25 25�
     return AllCollected, CollectedNum, CollectedText
 end
 
-e.GetMountCollected= function(mountID)--坐骑, 收集数量
+function e.GetMountCollected(mountID)--坐骑, 收集数量
     if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
         return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r'
     else
@@ -1248,7 +1221,7 @@ end
 
 
 e.ExpansionLevel= GetExpansionLevel()
-e.GetExpansionText= function(expacID, questID)--版本数据
+function e.GetExpansionText(expacID, questID)--版本数据
     expacID= expacID or questID and GetQuestExpansion(questID)
     if expacID then
         if e.ExpansionLevel==expacID then
@@ -1323,7 +1296,7 @@ function e.GetTooltipData(tab)
     return data
 end
 
-e.PlaySound= function(soundKitID, setPlayerSound)--播放, 声音 SoundKitConstants.lua e.PlaySound()--播放, 声音
+function e.PlaySound(soundKitID, setPlayerSound)--播放, 声音 SoundKitConstants.lua e.PlaySound()--播放, 声音
     if not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0' or (not setPlayerSound and not e.setPlayerSound) then
         return
     end
@@ -1344,7 +1317,7 @@ e.PlaySound= function(soundKitID, setPlayerSound)--播放, 声音 SoundKitConsta
     return success, voHandle
 end
 
-e.set_CVar= function(name, value)-- e.set_CVar()--设置 Cvar
+function e.set_CVar(name, value)-- e.set_CVar()--设置 Cvar
     if value~= nil then
         C_CVar.SetCVar(name, value and '1' or '0')
     end
@@ -1354,7 +1327,7 @@ end
 --###############
 --显示, 物品, 属性
 --###############
-e.Get_Item_Stats= function(link)--物品，次属性，表
+function e.Get_Item_Stats(link)--物品，次属性，表
     if not link then
         return {}
     end
@@ -1396,7 +1369,7 @@ e.Get_Item_Stats= function(link)--物品，次属性，表
 end
 
 --e.Set_Item_Stats(self, itemLink, {point=self.icon, itemID=nil, hideSet=false, hideLevel=false, hideStats=false})--设置，物品，4个次属性，套装，装等，
-e.Set_Item_Stats = function(self, link, setting) --setting= setting or {}
+function e.Set_Item_Stats(self, link, setting) --setting= setting or {}
     if not self then
         return
     end
@@ -1488,7 +1461,7 @@ local function set_Frame_Color(self, setR, setG, setB, setA, setHex)
         self.r, self.g, self.b, self.a, self.hex= setR, setG, setB, setA, '|c'..setHex
     end
 end
-e.RGB_to_HEX=function(setR, setG, setB, setA, self)--RGB转HEX
+function e.RGB_to_HEX(setR, setG, setB, setA, self)--RGB转HEX
     setA= setA or 1
 	setR = setR <= 1 and setR >= 0 and setR or 0
 	setG = setG <= 1 and setG >= 0 and setG or 0
@@ -1499,7 +1472,7 @@ e.RGB_to_HEX=function(setR, setG, setB, setA, self)--RGB转HEX
 	return hex
 end
 
-e.HEX_to_RGB=function(hexColor, self)--HEX转RGB -- ColorUtil.lua
+function e.HEX_to_RGB(hexColor, self)--HEX转RGB -- ColorUtil.lua
 	if hexColor then
 		hexColor= hexColor:gsub('|c', '')
         hexColor= hexColor:gsub('#', '')
@@ -1535,7 +1508,7 @@ function e.Get_ColorFrame_RGBA()--取得, ColorFrame, 颜色
 	return r, g, b, 1-a
 end
 
-e.ShowColorPicker= function(valueR, valueG, valueB, valueA, func, cancelFunc)
+function e.ShowColorPicker(valueR, valueG, valueB, valueA, func, cancelFunc)
     ColorPickerFrame:SetShown(false); -- Need to run the OnShow handler.
     valueR= valueR or 1
     valueG= valueG or 0.8
@@ -1552,9 +1525,8 @@ e.ShowColorPicker= function(valueR, valueG, valueB, valueA, func, cancelFunc)
     ColorPickerFrame:SetShown(true)
 end
 
-e.Reload= function()
+function e.Reload()
     C_UI.Reload()
-
     local bat= UnitAffectingCombat('player') and e.IsEncouter_Start
     if not bat or not IsInInstance() then
         C_UI.Reload()
@@ -1572,7 +1544,7 @@ function e.CSlider(self, tab)--e.CSlider(self, {w=, h=, min=, max=, value=, setp
     slider.Low:SetText(tab.text or tab.min)
     slider.High:SetText('')
     slider.Text:SetText(tab.value)
-    
+
     slider.Low:ClearAllPoints()
     slider.Low:SetPoint('LEFT')
     slider.Text:ClearAllPoints()
@@ -1628,7 +1600,7 @@ function e.CSlider(self, tab)--e.CSlider(self, {w=, h=, min=, max=, value=, setp
     return slider
 end
 
-e.Magic= function(text)
+function e.Magic(text)
     local tab= {'%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^'}
     for _,v in pairs(tab) do
         text= text:gsub(v,'%%'..v)
@@ -1657,11 +1629,11 @@ end
 
 
 local LibRangeCheck = LibStub("LibRangeCheck-2.0", true)
-e.GetRange= function(unit, checkVisible)--WA Prototypes.lua
+function e.GetRange(unit, checkVisible)--WA Prototypes.lua
     return LibRangeCheck:GetRange(unit, checkVisible);
 end
 
-e.CheckRange= function(unit, range, operator)
+function e.CheckRange(unit, range, operator)
     local min, max= LibRangeCheck:GetRange(unit, true);
     if (operator == "<=") then
         return (max or 999) <= range;
@@ -1670,7 +1642,7 @@ e.CheckRange= function(unit, range, operator)
     end
 end
 
-e.Set_HelpTips= function(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=})--设置，提示
+function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=})--设置，提示
     if tab.show and not tab.frame.HelpTips then
         tab.frame.HelpTips= e.Cbtn(tab.frame, {layer='OVERLAY',size=tab.size and {tab.size[1], tab.size[2]} or {40,40}})-- button:CreateTexture(nil, 'OVERLAY')
         if tab.point=='right' then
