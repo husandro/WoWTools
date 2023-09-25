@@ -1028,7 +1028,7 @@ function e.Chat(text, name, setPrint)
     elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
         SendChatMessage(text, 'PARTY')
 
-    elseif not IsResting() and isNotDead and IsOutdoors() then
+    elseif isNotDead and IsOutdoors() then
         SendChatMessage(text, 'YELL')
 
     elseif setPrint then
@@ -1036,7 +1036,7 @@ function e.Chat(text, name, setPrint)
     end
 end
 
-e.Say=function(type, name, wow, text)
+function e.Say(type, name, wow, text)
     local chat= SELECTED_DOCK_FRAME
     local msg = chat.editBox:GetText() or ''
     if text and text==msg then

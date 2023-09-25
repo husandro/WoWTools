@@ -716,14 +716,25 @@ end
 --#########
 --生命条提示
 --#########
+local function int_Unit_Health_Bar(self)
+    if self then
+        self.text= e.Cstr(self, {justifyH='CENTER'})
+        self.text:SetPoint('TOP', self, 'BOTTOM')--生命条
+
+        self.textLeft = e.Cstr(self, {justifyH='LEFT'})
+        self.textLeft:SetPoint('TOPLEFT', self, 'BOTTOMLEFT')--生命条
+
+        self.textRight = e.Cstr(self, {size=18, justifyH='RIGHT'})
+        self.textRight:SetPoint('TOPRIGHT',0, -2)--生命条
+    end
+end
 local function set_Unit_Health_Bar(self, unit)
-    if self:GetWidth()<100 or not unit then
+    if Save.hideHealth or self:GetWidth()<100 or not unit then
         return
     end
     local value= unit and UnitHealth(unit)
     local max= unit and UnitHealthMax(unit)
     local r, g, b, left, right, col, text
-
     if value and max then
         r, g, b, col = GetClassColor(select(2, UnitClass(unit)))
         if UnitIsFeignDeath(unit) then
@@ -747,30 +758,12 @@ local function set_Unit_Health_Bar(self, unit)
         right = e.MK(max, 2)
         self:SetStatusBarColor(r, g, b)
     end
-    if not self.text and text then
-        self.text= e.Cstr(self)
-        self.text:SetPoint('TOP', self, 'BOTTOM')--生命条
-        self.text:SetJustifyH("CENTER");
-    end
-    if self.text then
-        self.text:SetText(text or '');
-    end
-    if not self.textLeft and right then
-        self.textLeft = e.Cstr(self)
-        self.textLeft:SetPoint('TOPLEFT', self, 'BOTTOMLEFT')--生命条
-        self.textLeft:SetJustifyH("LEFT");
-        self.textRight = e.Cstr(self, {size=18})
-        self.textRight:SetPoint('TOPRIGHT',0,-2)--生命条
-        --self.textRight:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT')--生命条
-        self.textRight:SetJustifyH("Right");
-    end
-    if self.textLeft then
-        self.textLeft:SetText(left or '')
-        self.textRight:SetText(right or '')
-        if r and g and b then
-            self.textLeft:SetTextColor(r,g,b)
-            self.textRight:SetTextColor(r,g,b)
-        end
+    self.text:SetText(text or '')
+    self.textLeft:SetText(left or '')
+    self.textRight:SetText(right or '')
+    if r and g and b then
+        self.textLeft:SetTextColor(r,g,b)
+        self.textRight:SetTextColor(r,g,b)
     end
 end
 
@@ -1047,9 +1040,9 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         end
     end
 
-    if not Save.hideHealth then
-        set_Unit_Health_Bar(GameTooltipStatusBar, unit)--生命条提示
-    end
+    
+    set_Unit_Health_Bar(GameTooltipStatusBar, unit)--生命条提示
+    
 
     set_Item_Model(self, {unit=unit, guid=guid, col= col})--设置, 3D模型
 
@@ -1452,6 +1445,7 @@ local function Init()
     --生命条提示
     --#########
     if not Save.hideHealth then
+        int_Unit_Health_Bar(GameTooltipStatusBar)--生命条提示
         GameTooltipStatusBar:SetScript("OnValueChanged", function(self)
             set_Unit_Health_Bar(self, select(2, TooltipUtil.GetDisplayedUnit(GameTooltip)))
         end)

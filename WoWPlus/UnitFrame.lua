@@ -1089,24 +1089,24 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         end
     end)
 
-    hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称
+    hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称)
         if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
             self.name:SetText(e.Icon.star2)
         end
     end)
 
     --############
-    --去掉生命条 % extStatusBar.lua
-    --############
+    --去掉生命条 % extStatusBar.lua TextStatusBar.lua
+    --[[############会出现，错误
     local deadText= e.onlyChinese and '死亡' or DEAD
-    hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(statusFrame, textString, value)
-        if not statusFrame or not statusFrame:IsVisible() or not UnitExists(statusFrame.unit) or not UnitIsConnected('player') then
+    hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
+        if not frame or not UnitExists(frame.unit) then
             return
         end
         if value then--statusFrame.unit
             if textString and textString:IsShown() then
                     local text
-                    if UnitIsGhost(statusFrame.unit) then
+                    if UnitIsGhost(frame.unit) then
                         text= '|A:poi-soulspiritghost:18:18|a'..deadText
                     else
                         text= textString:GetText()
@@ -1120,12 +1120,12 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         textString:SetText(text)
                     end
 
-            elseif statusFrame.LeftText and statusFrame.LeftText:IsShown() then
+            elseif frame.LeftText and frame.LeftText:IsShown() then
                 local text
-                if UnitIsGhost(statusFrame.unit) then
+                if UnitIsGhost(frame.unit) then
                     text= '|A:poi-soulspiritghost:18:18|a'..deadText
                 else
-                    text= statusFrame.LeftText:GetText()
+                    text= frame.LeftText:GetText()
                 end
                 if text then
                     if text=='100%' then
@@ -1133,21 +1133,21 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                     else
                         text= text:gsub('%%', '')
                     end
-                    statusFrame.LeftText:SetText(text)
+                    frame.LeftText:SetText(text)
                 end
             end
-        elseif statusFrame.zeroText and statusFrame.DeadText and statusFrame.DeadText:IsShown() then
+        elseif frame.zeroText and frame.DeadText and frame.DeadText:IsShown() then
             local text= deadText--死亡
-            if statusFrame.unit then
-                if UnitIsGhost(statusFrame.unit) then--灵魂
+            if frame.unit then
+                if UnitIsGhost(frame.unit) then--灵魂
                     text= '|A:poi-soulspiritghost:18:18|a'..text
-                elseif UnitIsDead(statusFrame.unit) then--死亡
+                elseif UnitIsDead(frame.unit) then--死亡
                     text= '|A:deathrecap-icon-tombstone:18:18|a'..text
                 end
             end
-            statusFrame.DeadText:SetText(text)
+            frame.DeadText:SetText(text)
         end
-    end)
+    end)]]
 
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
     --###################
