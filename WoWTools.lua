@@ -31,6 +31,7 @@ function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell
     end
     if tab.type=='quest' then
         C_QuestLog.RequestLoadQuestByID(tab.id)
+        C_TaskQuest.RequestPreloadRewardData(tab.id)
     elseif tab.type=='spell' then
         local spellID= tab.id
         if type(tab.id)=='string' then
@@ -1009,12 +1010,17 @@ end
 function e.Chat(text, name, setPrint)
     if not text then
         return
+    elseif name then
+        SendChatMessage(text, 'WHISPER',nil, name)
+        return
     end
-    if name then
-        SendChatMessage(text, 'WHISPER',nil, name);
-
-    elseif IsInInstance() and not UnitIsDeadOrGhost('player') then-- and C_CVar.GetCVarBool("chatBubbles") then
+    local isNotDead= not UnitIsDeadOrGhost('player')
+    local isInInstance= IsInInstance()
+    if isInInstance and isNotDead then-- and C_CVar.GetCVarBool("chatBubbles") then
         SendChatMessage(text, 'YELL')
+
+    elseif isInInstance and IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
+        SendChatMessage(text, 'INSTANCE_CHAT')
 
     elseif IsInRaid() then
         SendChatMessage(text, 'RAID')
@@ -1022,10 +1028,7 @@ function e.Chat(text, name, setPrint)
     elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
         SendChatMessage(text, 'PARTY')
 
-    elseif IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-        SendChatMessage(text, 'INSTANCE_CHAT')
-
-    elseif not IsResting() and IsOutdoors() then
+    elseif not IsResting() and isNotDead and IsOutdoors() then
         SendChatMessage(text, 'YELL')
 
     elseif setPrint then

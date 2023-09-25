@@ -648,7 +648,7 @@ local function Init()
         button.moveFPSFrame= e.Cbtn(FramerateFrame, {size={12,12}, icon='hide'})
         button.moveFPSFrame:SetPoint('RIGHT',FramerateFrame.FramerateText)
         button.moveFPSFrame.set_Point= function()
-            if Save.frameratePoint then
+            if Save.frameratePoint and FramerateFrame then
                 FramerateFrame:ClearAllPoints()
                 FramerateFrame:SetPoint(Save.frameratePoint[1], UIParent, Save.frameratePoint[3], Save.frameratePoint[4], Save.frameratePoint[5])
             end
@@ -656,7 +656,7 @@ local function Init()
 
 
         QueueStatusButton:HookScript('OnShow', button.moveFPSFrame.set_Point)
-        QueueStatusButton:HookScript('OnHide', button.moveFPSFrame.set_Point)
+        --QueueStatusButton:HookScript('OnHide', button.moveFPSFrame.set_Point)
 
         FramerateFrame:SetMovable(true)
         FramerateFrame:SetClampedToScreen(true)

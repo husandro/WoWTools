@@ -1521,7 +1521,7 @@ local function set_Week_Reward_Look_Specialization()
             texture:SetAtlas('UI-HUD-UnitFrame-TotemFrame-2x')
         end
         self:set_Show(true)
-        self.time= C_Timer.NewTicker(4, function(self2)
+        self.time= C_Timer.NewTicker(4, function()
             self:SetShown(false)
         end)
         local loot = GetLootSpecialization()

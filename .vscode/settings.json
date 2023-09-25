@@ -3277,7 +3277,8 @@
         "print",
         "CREATE_MACROS",
         "OverrideActionBarButton1",
-        "NUM_OVERRIDE_BUTTONS"
+        "NUM_OVERRIDE_BUTTONS",
+        "WHITE_FONT_COLOR"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

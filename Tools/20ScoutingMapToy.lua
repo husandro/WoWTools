@@ -1,6 +1,7 @@
 local id, e = ...
 --local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADVENTURE_MAP_TITLE, TOY)
 local panel= CreateFrame("Frame")
+local button
 
 local ToyTab={
     [187869]={14663, 14303, 14304, 14305, 14306},--暗影界
@@ -19,29 +20,36 @@ local ToyTab={
     [150745]={858, 859, 627, 776, 775, 768, 765, 802, 782, 766, 772, 777, 779, 770, 774, 780, 769, 773, 778, 841, 4995, 761, 771, 781, 868},--东部王国
 }
 
-for itemID, _ in pairs(ToyTab) do
-    e.LoadDate({id=itemID, type='item'})
+function panel:Requested_Achievement()
+    for itemID, achievementIDs in pairs(ToyTab) do
+        e.LoadDate({id=itemID, type='item'})
+        for _, achievementID in pairs(achievementIDs) do
+            GetAchievementCategory(achievementID)
+        end
+    end
 end
 
 
-local function Get_Use_Toy()
+
+function panel:get_Use_Toy()
     local bat= UnitAffectingCombat('player')
     if bat or e.Player.faction=='Neutral' then
-        if not bat and panel.btn then
-            panel.btn:SetShown(false)
+        if not bat and button then
+            button:SetShown(false)
         end
         return
     end
+    panel:Requested_Achievement()
 
     local notFindName
     for itemID, tab in pairs(ToyTab) do
         if PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID) then
             for _, achievementID  in pairs(tab) do
-                local _, name, _, _, _, _, _, _, _, _, _, _, wasEarnedByMe=GetAchievementInfo(achievementID)
+                local _, name, _, _, _, _, _, _, _, _, _, _, wasEarnedByMe= GetAchievementInfo(achievementID)
                 if name and not wasEarnedByMe then
-                    if not panel.btn then
-                        
-                        panel.btn= e.Cbtn2({
+                    if not button then
+
+                        button= e.Cbtn2({
                             name=nil,
                             parent=_G['WoWToolsMountButton'],
                             click=true,-- right left
@@ -50,11 +58,11 @@ local function Get_Use_Toy()
                             showTexture=true,
                             sizi=nil,
                         })
-                        
-                        panel.btn:SetAttribute("type*", "item")
-                        panel.btn:SetPoint('BOTTOM', WoWToolsOpenItemsButton, 'TOP')--自定义位置
-                        panel.btn:SetScript('OnLeave', function() e.tips:Hide() end)
-                        panel.btn:SetScript('OnEnter', function(self2)
+
+                        button:SetAttribute("type*", "item")
+                        button:SetPoint('BOTTOM', WoWToolsOpenItemsButton, 'TOP')--自定义位置
+                        button:SetScript('OnLeave', function() e.tips:Hide() end)
+                        button:SetScript('OnEnter', function(self2)
                             if self2.itemID then
                                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                                 e.tips:ClearLines()
@@ -72,10 +80,10 @@ local function Get_Use_Toy()
                     local itemName, _, _, _, _, _, _, _, _, itemTexture= GetItemInfo(itemID)
                     itemName=itemName or  C_Item.GetItemNameByID(itemID) or itemID
                     itemTexture= itemTexture or C_Item.GetItemIconByID(itemID) or 0
-                    panel.btn:SetAttribute("item*", itemName)
-                    panel.btn.texture:SetTexture(itemTexture)
-                    panel.btn:SetShown(true)
-                    panel.btn.itemID=itemID
+                    button:SetAttribute("item*", itemName)
+                    button.texture:SetTexture(itemTexture)
+                    button:SetShown(true)
+                    button.itemID=itemID
                     return
 
                 elseif not name then
@@ -85,8 +93,8 @@ local function Get_Use_Toy()
         end
     end
 
-    if panel.btn then
-        panel.btn:SetShown(false)
+    if button then
+        button:SetShown(false)
     end
     if not notFindName then
         panel:UnregisterAllEvents()
@@ -99,7 +107,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1, arg2)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             if not e.toolsFrame.disabled then
@@ -117,14 +125,13 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     end
                 end)
 
-                C_Timer.After(4, function()
-                    panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-                    panel:RegisterEvent("PLAYER_REGEN_ENABLED")
-                    panel:RegisterEvent('UI_ERROR_MESSAGE')
-                    panel:RegisterEvent('CRITERIA_UPDATE')
-                    panel:RegisterEvent('RECEIVED_ACHIEVEMENT_LIST')
-                    Get_Use_Toy()
-                end)
+                panel:RegisterEvent('PLAYER_REGEN_DISABLED')
+                panel:RegisterEvent("PLAYER_REGEN_ENABLED")
+                panel:RegisterEvent('UI_ERROR_MESSAGE')
+                panel:RegisterEvent('CRITERIA_UPDATE')
+                panel:RegisterEvent('RECEIVED_ACHIEVEMENT_LIST')
+
+                C_Timer.After(4, self.get_Use_Toy)
             else
                 Toy=nil
             end
@@ -132,11 +139,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         end
 
     elseif event=='PLAYER_REGEN_DISABLED' then
-        if panel.btn then
-            panel.btn:SetShown(false)
+        if button then
+            button:SetShown(false)
         end
 
     else
-        C_Timer.After(1, function() Get_Use_Toy() end)
+        C_Timer.After(2, self.get_Use_Toy)
     end
 end)

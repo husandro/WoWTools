@@ -20,6 +20,7 @@ local Save={
         --showID= e.Player.husandro,--显示ID
         --textToDown= true,--文本，向下
 
+
         miniMapPoint={},--保存小图地, 按钮位置
         useServerTimer=true,--小时图，使用服务器, 时间
        --disabledInstanceDifficulty=true,--副本，难图，指示
@@ -27,6 +28,9 @@ local Save={
 
 }
 
+for questID, _ in pairs(Save.questIDs or {}) do
+    e.LoadDate({id= questID, type=='quest'})
+end
 
 local panel= CreateFrame("Frame")
 
@@ -311,8 +315,56 @@ local function set_vigentteButton_Text()
     if areaPoiAllText then
         text= text and text..'|n|n'..areaPoiAllText or areaPoiAllText
     end
+
     panel.Button.Frame.text:SetText(text or '..')
 end
+--[[local barColorFromTintValue = {
+	[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.White] = WHITE_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Red] = RED_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Yellow] = YELLOW_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Orange] = ORANGE_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Purple] = EPIC_PURPLE_COLOR,
+	[Enum.StatusBarColorTintValue.Green] = GREEN_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Blue] = RARE_BLUE_COLOR,
+}
+local widgetSetText
+Save.WidgetSetIDs={[706]=true}
+for setID, _ in pairs(Save.WidgetSetIDs) do
+    for _, widgets in pairs(C_UIWidgetManager.GetAllWidgetsBySetID(setID) or {}) do
+        if widgets.widgetID then
+            if widgets.widgetType== Enum.UIWidgetVisualizationType.StatusBar then--2
+                local widgetInfo = C_UIWidgetManager.GetStatusBarWidgetVisualizationInfo(widgets.widgetID) or {}
+                
+                    if widgetInfo.text and widgetInfo.barValue then
+                        
+                        local text2
+                        if widgetInfo.barValueTextType== Enum.StatusBarValueTextType.Time--3
+                            or widgetInfo.barValueTextType== Enum.StatusBarValueTextType.TimeShowOneLevelOnly--4
+                        then
+                            text2= SecondsToTime(widgetInfo.barValue)--时间
+                        elseif widgetInfo.barValueTextType== Enum.StatusBarValueTextType.Percentage then--1
+                            text2= format('%i%%', widgetInfo.barValue)--百份比
+                        else
+                            text2= e.MK(widgetInfo.barValue, 2)..(widgetInfo.barMax and '/'..e.MK(widgetInfo.barMax, 2) or '')--值
+                        end
+                        if text2 then
+                            local col= barColorFromTintValue[widgetInfo.colorTint]
+                            if col then
+                                text2= col:WrapTextInColorCode(text2)
+                            end
+                            widgetSetText= widgetInfo.text..' '..(widgetSetText and widgetSetText..'|n'..text2 or text2)
+                        end
+                    end
+            end
+        end
+    end
+end
+if widgetSetText then
+    text= text and text..'|n|n'..widgetSetText or widgetSetText
+end
+]]
+
 
 
 
@@ -624,6 +676,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
         hasArrow=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
+
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
@@ -1323,6 +1376,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.uiMapIDs= Save.uiMapIDs or {}
             Save.questIDs= Save.questIDs or {}
             Save.areaPoiIDs= Save.areaPoiIDs or {}
+
 
             addName2= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)
 
