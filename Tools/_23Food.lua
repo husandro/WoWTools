@@ -25,12 +25,8 @@ local function set_Item_Cooldown_Count(self)--图标冷却
     if self.itemID then
         local start, duration, enable = GetItemCooldown(self.itemID)
         local num= GetItemCount(self.itemID, nil, true, true)
-        local notFind= enable==0 or num==0
-        if notFind then
-            if self.cooldown then
-                self.cooldown:Clear()
-            end
-        else
+        local notFind= (enable==0 or num==0) and true or false
+        if not notFind then
             e.Ccool(self, start, duration, nil, true, nil, true)--冷却条
         end
         self.count:SetText(num>1 and num or (num==1 and Save.autoWho) and num or '')

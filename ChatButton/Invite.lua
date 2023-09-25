@@ -944,7 +944,7 @@ local function Init()
 
     StaticPopupDialogs["CONFIRM_SUMMON"].OnHide= function(self)
         if self.SummonTimer then self.SummonTimer:Cancel() end
-        if self.cooldown then self.cooldown:Clear() end
+        --if self.cooldown then self.cooldown:Clear() end
         self.enabledAutoSummon=nil
         self.isCancelled=nil
     end

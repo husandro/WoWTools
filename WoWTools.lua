@@ -83,7 +83,7 @@ e.itemPetID={--宠物对换, wow9.0
     [67410]=true,
 }
 
-local GetPlayerNameRemoveRealm= function(name, realm)--玩家名称, 去服务器为*
+local function GetPlayerNameRemoveRealm(name, realm)--玩家名称, 去服务器为*
     if not name then
         return
     end

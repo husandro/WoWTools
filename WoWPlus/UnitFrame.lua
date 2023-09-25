@@ -512,9 +512,6 @@ local function set_memberFrame(memberFrame)
                 end
             end
             self.texture:SetTexture(texture or 0)
-            if not find and self.cooldown then
-                self.cooldown:Clear()
-            end
             self:SetShown(find)
         end
         frame:SetScript('OnEvent', function (self, _, _, _, spellID)
