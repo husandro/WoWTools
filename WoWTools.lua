@@ -1750,6 +1750,7 @@ local regionColor = {--https://wago.io/6-GG3RMcC
     ["mex"]= {col="|cFFCCCCFFMEX|r", text='MEX', realm="Mexico"},
     ["bzl"]= {col="|cFF8fce00BZL|r", text='BZL', realm="Brazil"},
 }
+
 function e.Get_Region(realm, guid, unit, disabled)--e.Get_Region(server, guid, unit)--服务器，EU， US {col=, text=, realm=}
     if disabled then
         regionColor={}
