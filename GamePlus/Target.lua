@@ -753,7 +753,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             e.AddPanel_Sub_Category({name=e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName)..'|r', frame=panel})
 
-            e.ReloadPanel({panel=panel, addName= addName, restTips=nil, checked=true, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+            e.ReloadPanel({panel=panel, addName= addName, restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=function()
                     Save.disabled= not Save.disabled and true or nil
                     if not targetFrame and not Save.disabled  then
