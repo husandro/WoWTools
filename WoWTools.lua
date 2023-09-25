@@ -353,7 +353,7 @@ e.Icon={
     mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
     map='poi-islands-table',
     map2='|A:poi-islands-table:0:0|a',
-    wow2='|A:Icon-WoW:0:0|a',--136235
+    wow2='-32',--'|A:Icon-WoW:0:0|a',--136235
     net2= BNet_GetClientEmbeddedTexture(-2, 32, 32),
     horde= 'charcreatetest-logo-horde',
     alliance='charcreatetest-logo-alliance',
@@ -393,17 +393,18 @@ e.Icon={
     star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
 
-e.GetTitleIconTexture= C_Texture.GetTitleIconTexture
-e.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua
+
+C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua
     if success and texture then
         e.Icon.wow2= '|T'..texture..':0|t'
     end
 end)
-e.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Medium, function(success, texture)
+--[[C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Medium, function(success, texture)
     if success and texture then
         e.Icon.net2= '|T'..texture..':0|t'
+        print(texture)
     end
-end)
+end)]]
 
 
 function e.PlayerOnlineInfo(unit)--单位，状态信息

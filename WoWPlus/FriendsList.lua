@@ -265,13 +265,11 @@ local function set_FriendsList_Init()--好友列表, 初始化
         end
 
         if accountInfo.gameAccountInfo.clientProgram then
-            e.GetTitleIconTexture(accountInfo.gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small, function(success, texture)--FriendsFrame.lua BnetShared.lua
+            C_Texture.GetTitleIconTexture(accountInfo.gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small, function(success, texture)--FriendsFrame.lua BnetShared.lua
                 if success and texture then
                     text= text..'|T'..texture..':0|t'
-                    --text= text..BNet_GetClientEmbeddedTexture(texture, 32, 32, 0)--BnetShared.lua
                 end
             end)
-            --C_Texture.SetTitleIconTexture(self.gameIcon, accountInfo.gameAccountInfo.clientProgram, Enum.TitleIconVersion.Medium)
         end
 
         if not accountInfo.gameAccountInfo.isInCurrentRegion then
