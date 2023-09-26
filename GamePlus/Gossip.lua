@@ -13,55 +13,24 @@ local Save={
         questRewardCheck={},--{任务ID= index}
         autoSortQuest= e.Player.husandro,--仅显示当前地图任务
         autoSelectReward= e.Player.husandro,--自动选择奖励
+
+        --scale=1,
+        --point=nil,
+
 }
 
-local panel=e.Cbtn(nil, {icon='hide', size={15,15}})--闲话图标
-local questPanel=e.Cbtn(panel, {icon='hide', size={15,15}})--任务图标
-local questSelect={}--已选任务, 提示用
 
-local function setTexture()--设置图标
-    questPanel:SetNormalAtlas(Save.quest and 'campaignavailablequesticon' or e.Icon.icon)
-    panel:SetNormalAtlas(Save.gossip and 'transmog-icon-chat' or e.Icon.icon)
-end
+local panel= CreateFrame("Frame")
+local GossipButton
+local QusetButton
+---@class GossipButton
+---@class QusetButton
 
-local function setPoint()--设置位置
-    if Save.point then
-        panel:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-    else
-        panel:SetPoint('BOTTOMLEFT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPLEFT',30,0)
-    end
-end
 
-local isQuestTrivialTracking
-local function get_set_IsQuestTrivialTracking(setting)--其它任务,低等任务,追踪
-    for trackingID=1, C_Minimap.GetNumTrackingTypes() do
-        local name, texture, active, category, nested = C_Minimap.GetTrackingInfo(trackingID)
-        if name==MINIMAP_TRACKING_TRIVIAL_QUESTS then
-            if setting then
-                active= not active and true or false
-                C_Minimap.SetTracking(trackingID, active)
-            end
-            isQuestTrivialTracking = active
-            break
-        end
-    end
-end
-local function not_Ace_QuestTrivial(questID)--其它任务,低等任务
-    return C_QuestLog.IsQuestTrivial(questID) and not isQuestTrivialTracking
-end
---[[local function getMaxQuest()--任务，是否已满
-    return C_QuestLog.GetMaxNumQuests()==C_QuestLog.GetMaxNumQuestsCanAccept()
-    --return select(2,C_QuestLog.GetNumQuestLogEntries())==C_QuestLog.GetMaxNumQuestsCanAccept()
-end]]
 
---取得， 任务ID
-local function questInfo_GetQuestID()--QuestInfo.lua
-    if ( QuestInfoFrame.questLog ) then
-		return C_QuestLog.GetSelectedQuest();
-	else
-		return GetQuestID();
-	end
-end
+
+
+
 
 local function select_Reward(questID)--自动:选择奖励
     local numQuests = GetNumQuestChoices() or 0
@@ -80,6 +49,7 @@ local function select_Reward(questID)--自动:选择奖励
         local frame= _G['QuestInfoRewardsFrameQuestInfoItem'..i]
         if frame and questID then
             if not frame.check then
+                ---@class frame.check
                 frame.check=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
                 frame.check:SetPoint("TOPRIGHT")
                 frame.check:SetScript('OnClick', function(self)
@@ -178,10 +148,30 @@ local function select_Reward(questID)--自动:选择奖励
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --对话，主菜单
 --###########
-local function InitMenu_Gossip(self, level, type)
+local function Init_Menu_Gossip(_, level, type)
     local info
     if type=='CUSTOM' then
         for gossipOptionID, text in pairs(Save.gossipOption) do
@@ -193,7 +183,7 @@ local function InitMenu_Gossip(self, level, type)
                 arg1= gossipOptionID,
                 func=function(_, arg1)
                     Save.gossipOption[arg1]=nil
-                    print(id, ENABLE_DIALOG, e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', arg1)
+                    print(id, e.onlyChinese and '对话' or ENABLE_DIALOG, e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', arg1)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -209,7 +199,7 @@ local function InitMenu_Gossip(self, level, type)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-        return
+        
     elseif type=='DISABLE' then--禁用NPC, 闲话,任务, 选项
         for npcID, name in pairs(Save.NPC) do
             info={
@@ -235,7 +225,7 @@ local function InitMenu_Gossip(self, level, type)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-        return
+        
 
     elseif type=='PlayerChoiceFrame' then
         for spellID, rarity in pairs(Save.choice) do
@@ -249,7 +239,7 @@ local function InitMenu_Gossip(self, level, type)
                 text=(icon and '|T'..icon..':0|t' or '').. name..' '.. quality,
                 tooltipOnButton=true,
                 tooltipTitle= e.Icon.left.. (e.onlyChinese and '移除' or REMOVE),
-                tooltipText= 'spellID '..spellID,                
+                tooltipText= 'spellID '..spellID,
                 notCheckable= true,
 
                 arg1=spellID,
@@ -270,21 +260,15 @@ local function InitMenu_Gossip(self, level, type)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+        
+    end
+
+    if type then
         return
     end
 
-    info={--启用,禁用
-        text=e.Icon.left..(e.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG)),
-        checked=Save.gossip,
-        keepShownOnClick=true,
-        func= function()
-            Save.gossip= not Save.gossip and true or nil
-            setTexture()--设置图标
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
     info={--唯一
-        text= e.onlyChinese and '唯一对话' or ITEM_UNIQUE..ENABLE_DIALOG,
+        text= e.onlyChinese and '唯一对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEM_UNIQUE, ENABLE_DIALOG),
         checked= Save.unique,
         keepShownOnClick=true,
         func= function()
@@ -295,10 +279,11 @@ local function InitMenu_Gossip(self, level, type)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={--自定义,闲话,选项
-        text= e.onlyChinese and '自定义对话' or (CUSTOM..ENABLE_DIALOG),
+        text= e.onlyChinese and '自定义对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, ENABLE_DIALOG),
         menuList='CUSTOM',
         notCheckable=true,
         hasArrow=true,
+        keepShownOnClick=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
@@ -310,6 +295,7 @@ local function InitMenu_Gossip(self, level, type)
         tooltipText= e.onlyChinese and '任务' or QUESTS_LABEL,
         notCheckable=true,
         hasArrow=true,
+        keepShownOnClick=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
@@ -321,16 +307,11 @@ local function InitMenu_Gossip(self, level, type)
         tooltipText= 'Blizzard_PlayerChoice',
         notCheckable=true,
         hasArrow=true,
+        keepShownOnClick=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text=e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
-        notCheckable=true,
-        isTitle=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
     info={
         text= e.onlyChinese and '重置位置' or RESET_POSITION,
         notCheckable=true,
@@ -338,61 +319,115 @@ local function InitMenu_Gossip(self, level, type)
         keepShownOnClick=true,
         func= function()
             Save.point=nil
-            panel:ClearAllPoints()
-            setPoint()
+            GossipButton:ClearAllPoints()
+            GossipButton:set_Point()
+            print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text=id..' '..(e.onlyChinese and '对话' or ENABLE_DIALOG),
-        isTitle=true,
-        notCheckable=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
+
+
+
+
+
+
+
+
+
+
 
 
 --###########
 --对话，初始化
 --###########
 local function Init_Gossip()
+    GossipButton=e.Cbtn(nil, {icon='hide', size={16,16}})--闲话图标
 
-    --panel:SetFrameStrata('HIGH')
-    panel:SetMovable(true)--移动
-    panel:SetClampedToScreen(true)
-    panel:RegisterForDrag('RightButton')
-    panel:SetScript('OnDragStart',function(self)
-        if not IsModifierKeyDown() then
+    function GossipButton:set_Point()--设置位置
+        if Save.point then
+            self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+        else
+            self:SetPoint('BOTTOMLEFT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPLEFT', 30 , 0)
+        end
+    end
+    function GossipButton:set_Scale()--设置，缩放
+        self:SetScale(Save.scale or 1)
+    end
+    function GossipButton:set_Texture()--设置，图片
+        self:SetNormalAtlas(Save.gossip and 'SpecDial_LastPip_BorderGlow' or e.Icon.icon)
+    end
+
+    GossipButton:set_Texture()
+    GossipButton:set_Scale()
+    GossipButton:set_Point()
+    GossipButton:Raise()
+
+    GossipButton:SetMovable(true)--移动
+    GossipButton:SetClampedToScreen(true)
+    GossipButton:RegisterForDrag('RightButton')
+    GossipButton:SetScript('OnDragStart',function(self)
+        if IsAltKeyDown() then
             self:StartMoving()
-            SetCursor('UI_MOVE_CURSOR')
         end
     end)
-    panel:SetScript('OnDragStop', function(self)
+    GossipButton:SetScript('OnDragStop', function(self)
         self:StopMovingOrSizing()
         ResetCursor()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
-        e.LibDD:CloseDropDownMenus()
         self:Raise()
     end)
-    panel:SetScript('OnMouseDown', function(self, d)
+    GossipButton:SetScript('OnMouseUp', ResetCursor)
+    GossipButton:SetScript('OnMouseDown', function(_, d)
+        if d=='RightButton' and IsAltKeyDown() then--移动
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+    GossipButton:SetScript('OnMouseWheel', function(self, d)
+        if IsAltKeyDown() then
+            local n= Save.scale or 1
+            if d==-1 then
+                n= n+ 0.05
+            elseif d==1 then
+                n= n- 0.05
+            end
+            n= n>3 and 3 or n
+            n= n< 0.4 and 0.4 or n
+            Save.scale=n
+            self:set_Scale()
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
+        end
+    end)
+    GossipButton:SetScript('OnClick', function(self, d)
         local key=IsModifierKeyDown()
-        if d=='LeftButton' and not key then
+        if d=='LeftButton' and not key then--禁用，启用
             Save.gossip= not Save.gossip and true or nil
-            setTexture()
-        elseif d=='RightButton' and not key then
+            self:set_Texture()--设置，图片
+        elseif d=='RightButton' and not key then--菜单
             if not self.MenuGossip then
                 self.MenuGossip=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.MenuGossip, InitMenu_Gossip, 'MENU')
+                e.LibDD:UIDropDownMenu_Initialize(self.MenuGossip, Init_Menu_Gossip, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.MenuGossip, self, 15, 0)
         end
     end)
-    panel:SetScript('OnMouseUp', function()
-        ResetCursor()
+    GossipButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    GossipButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..e.GetEnabeleDisable(not Save.gossip), e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), 'Alt+'..e.Icon.mid)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, e.onlyChinese and '对话' or ENABLE_DIALOG)
+        e.tips:Show()
     end)
+
+
+
 
     --禁用此npc闲话选项
     GossipFrame.sel=CreateFrame("CheckButton", nil, GossipFrame, 'InterfaceOptionsCheckButtonTemplate')
@@ -416,20 +451,21 @@ local function Init_Gossip()
         end
         e.tips:Show()
     end)
-    GossipFrame.sel:SetScript("OnLeave", function()
-        e.tips:Hide()
-    end)
+    GossipFrame.sel:SetScript("OnLeave", function() e.tips:Hide() end)
+
+
+
+
 
     local selectGissipIDTab= {}
     GossipFrame:SetScript('OnShow', function (self)
-        questSelect={}--已选任务, 提示用
+        QusetButton.questSelect={}--已选任务, 提示用
         selectGissipIDTab={}
         local npc=e.GetNpcID('npc')
         self.sel.npc=npc
         self.sel.name=UnitName("npc")
         self.sel:SetChecked(Save.NPC[npc])
     end)
-
     --自定义闲话选项, 按钮 GossipFrameShared.lua
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
         if not info or not info.gossipOptionID then
@@ -443,7 +479,7 @@ local function Init_Gossip()
             self.sel:SetScript("OnEnter", function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(id, ENABLE_DIALOG)
+                e.tips:AddDoubleLine(id, e.onlyChinese and '对话' or ENABLE_DIALOG)
                 e.tips:AddDoubleLine(' ')
                 if self2.spellID then
                     e.tips:SetSpellByID(self2.spellID)
@@ -466,7 +502,7 @@ local function Init_Gossip()
                         C_GossipInfo.SelectOption(self2.id)
                     end
                 else
-                    print(id, addName, '|cnRED_FONT_COLOR:'..NONE..'|r', ENABLE_DIALOG,'ID')
+                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r', e.onlyChinese and '对话' or ENABLE_DIALOG,'ID')
                 end
             end)
         end
@@ -512,7 +548,7 @@ local function Init_Gossip()
 
                 tab= C_GossipInfo.GetAvailableQuests() or {}
                 for _, questInfo in pairs(tab) do
-                    if questInfo.questID and (Save.quest or Save.questOption[questInfo.questID]) and (isQuestTrivialTracking and questInfo.isTrivial or not questInfo.isTrivial) then
+                    if questInfo.questID and (Save.quest or Save.questOption[questInfo.questID]) and (QusetButton.isQuestTrivialTracking and questInfo.isTrivial or not questInfo.isTrivial) then
                         return
                     end
                 end
@@ -557,7 +593,7 @@ local function Init_Gossip()
 
         if find then
             selectGissipIDTab[index]=true
-            print(id, ENABLE_DIALOG, '|T'..(info.overrideIconID or info.icon or '')..':0|t', '|cffff00ff'..name..'|r', index)
+            print(id, e.onlyChinese and '对话' or ENABLE_DIALOG, '|T'..(info.overrideIconID or info.icon or '')..':0|t', '|cffff00ff'..name..'|r', index)
         end
     end)
 
@@ -609,7 +645,7 @@ local function Init_Gossip()
         elseif Save.questOption[questID] then--自定义
            C_GossipInfo.SelectAvailableQuest(questID)--or self:GetID()
 
-        elseif not Save.quest or not_Ace_QuestTrivial(questID) or Save.NPC[npc] then--or getMaxQuest()
+        elseif not Save.quest or QusetButton:not_Ace_QuestTrivial(questID) or Save.NPC[npc] then--or getMaxQuest()
             return
 
         else
@@ -637,6 +673,42 @@ local function Init_Gossip()
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --###########
@@ -685,22 +757,22 @@ end
 
 local function set_Auto_QuestWatch_Event()--设置事件, 仅显示本地图任务, 共享任务, 
     if Save.autoSortQuest then
-        questPanel:RegisterEvent('PLAYER_ENTERING_WORLD')
-        questPanel:RegisterEvent('ZONE_CHANGED')
-        questPanel:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-        --questPanel:RegisterEvent('QUEST_LOG_UPDATE')
-        questPanel:RegisterEvent('SCENARIO_UPDATE')
+        QusetButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+        QusetButton:RegisterEvent('ZONE_CHANGED')
+        QusetButton:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+        --QusetButton:RegisterEvent('QUEST_LOG_UPDATE')
+        QusetButton:RegisterEvent('SCENARIO_UPDATE')
     else
-        questPanel:UnregisterEvent('PLAYER_ENTERING_WORLD')
-        questPanel:UnregisterEvent('ZONE_CHANGED')
-        questPanel:UnregisterEvent('ZONE_CHANGED_NEW_AREA')
-        --questPanel:UnregisterEvent('SCENARIO_UPDATE')
-        --questPanel:UnregisterEvent('QUEST_LOG_UPDATE')
+        QusetButton:UnregisterEvent('PLAYER_ENTERING_WORLD')
+        QusetButton:UnregisterEvent('ZONE_CHANGED')
+        QusetButton:UnregisterEvent('ZONE_CHANGED_NEW_AREA')
+        --QusetButton:UnregisterEvent('SCENARIO_UPDATE')
+        --QusetButton:UnregisterEvent('QUEST_LOG_UPDATE')
     end
     if Save.pushable then
-        questPanel:RegisterEvent('GROUP_ROSTER_UPDATE')
+        QusetButton:RegisterEvent('GROUP_ROSTER_UPDATE')
     else
-        questPanel:UnregisterEvent('GROUP_ROSTER_UPDATE')
+        QusetButton:UnregisterEvent('GROUP_ROSTER_UPDATE')
     end
 end
 
@@ -732,7 +804,6 @@ local function InitMenu_Quest(self, level, type)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-        return
 
     elseif type=='CUSTOM' then
         for questID, text in pairs(Save.questOption) do
@@ -759,32 +830,22 @@ local function InitMenu_Quest(self, level, type)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-        return
+    end
 
-    elseif type=='QUEST' then
-        info={
-            text='|A:TrivialQuests:0:0|a'..(e.onlyChinese and '其他任务' or MINIMAP_TRACKING_TRIVIAL_QUESTS),--低等任务
-            checked= isQuestTrivialTracking,
-            tooltipOnButton= true,
-            tooltipTitle= e.onlyChinese and '追踪' or TRACKING,
-            tooltipText= e.onlyChinese and '低等任务' or (LOW..LEVEL..QUESTS_LABEL),
-            func= function ()
-                get_set_IsQuestTrivialTracking(true)--其它任务,低等任务,追踪
-            end,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    if type then
         return
     end
 
     info={
-        text=e.Icon.left..(e.onlyChinese and '自动接受' or QUICK_JOIN_IS_AUTO_ACCEPT_TOOLTIP),
-        checked= Save.quest,
-        menuList= 'QUEST',
-        hasArrow= true,
-        func= function()
-            Save.quest= not Save.quest and true or nil
-            setTexture()--设置图标
-        end
+        text='|A:TrivialQuests:0:0|a'..(e.onlyChinese and '其他任务' or MINIMAP_TRACKING_TRIVIAL_QUESTS),--低等任务
+        checked= QusetButton.isQuestTrivialTracking,
+        tooltipOnButton= true,
+        tooltipTitle= e.onlyChinese and '追踪' or TRACKING,
+        tooltipText= e.onlyChinese and '低等任务' or (LOW..LEVEL..QUESTS_LABEL),
+        keepShownOnClick=true,
+        func= function ()
+            QusetButton:get_set_IsQuestTrivialTracking(true)--其它任务,低等任务,追踪
+        end,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
@@ -794,6 +855,7 @@ local function InitMenu_Quest(self, level, type)
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '最高品质' or format(PROFESSIONS_CRAFTING_QUALITY, VIDEO_OPTIONS_ULTRA_HIGH),
         tooltipText= '|cff0000ff'..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r',
+        keepShownOnClick=true,
         menuList='REWARDSCHECK',
         hasArrow=true,
         func= function()
@@ -808,6 +870,7 @@ local function InitMenu_Quest(self, level, type)
         colorCode= not IsInGroup() and '|cff606060',
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '仅限在队伍中' or format(LFG_LIST_CROSS_FACTION, AGGRO_WARNING_IN_PARTY),
+        keepShownOnClick=true,
         func= function()
             Save.pushable= not Save.pushable and true or nil
             set_PushableQuest()--共享,任务
@@ -828,6 +891,7 @@ local function InitMenu_Quest(self, level, type)
         checked=C_CVar.GetCVarBool("autoQuestWatch"),
         tooltipOnButton=true,
         tooltipTitle= format(e.onlyChinese and '接受任务：%s' or ERR_QUEST_ACCEPTED_S, 'Cvar autoQuestWatch'),
+        keepShownOnClick=true,
         func=function()
             C_CVar.SetCVar("autoQuestWatch", C_CVar.GetCVarBool("autoQuestWatch") and '0' or '1')
         end
@@ -840,6 +904,7 @@ local function InitMenu_Quest(self, level, type)
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '仅显示当前地图任务' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITH_PLAYSTLE, SHOW,FLOOR..QUESTS_LABEL),--仅限-本区域任务
         tooltipText= e.onlyChinese and '触发事件: 更新区域' or (EVENTS_LABEL..':' ..UPDATE..FLOOR),
+        keepShownOnClick=true,
         func=function()
             Save.autoSortQuest= not Save.autoSortQuest and true or nil
             set_Auto_QuestWatch_Event()--仅显示本地图任务,事件
@@ -854,22 +919,37 @@ local function InitMenu_Quest(self, level, type)
         menuList='CUSTOM',
         notCheckable=true,
         hasArrow=true,
+        keepShownOnClick=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
+
+
+
+
+
+
+
+
+
 
 --###########
 --任务，初始化
 --###########
 local function Init_Quest()
-    questPanel:SetPoint('RIGHT', panel, 'LEFT')
+    local size= GossipButton:GetWidth()
+    QusetButton=e.Cbtn(GossipButton, {icon='hide', size={size, size}})--任务图标
+    QusetButton:SetPoint('RIGHT', GossipButton, 'LEFT')
 
-    questPanel.Text=e.Cstr(questPanel, {justifyH='RIGHT', color=true})--nil, nil,nil, nil,nil, 'RIGHT')--任务数量
-    questPanel.Text:SetPoint('RIGHT', questPanel, 'LEFT')
-    questPanel:SetScript('OnMouseDown', function(self, d)
+    function QusetButton:set_Texture()--设置，图片
+        self:SetNormalAtlas(Save.quest and 'UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest' or e.Icon.icon)--AutoQuest-Badge-Campaign
+    end
+    QusetButton:set_Texture()
+    
+    QusetButton:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             Save.quest= not Save.quest and true or nil
-            setTexture()--设置图标
+            self:set_Texture()--设置，图片
         elseif d=='RightButton' then
             if not self.MenuQest then
                 self.MenuQest=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
@@ -878,7 +958,8 @@ local function Init_Quest()
             e.LibDD:ToggleDropDownMenu(1, nil, self.MenuQest, self, 15, 0)
         end
     end)
-    questPanel:SetScript('OnEnter', function(self)
+
+    QusetButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
@@ -919,25 +1000,46 @@ local function Init_Quest()
 
         e.tips:AddLine('|cffffffff'..(e.onlyChinese and '一般' or RESISTANCE_FAIR)..': '..numQuest..'/25')
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetEnabeleDisable(Save.quest)..e.Icon.left, (e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right)
+        e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.quest),e.Icon.left)
+        e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),e.Icon.right)
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, e.onlyChinese and '任务' or QUESTS_LABEL)
         e.tips:Show()
 
         set_Only_Show_Zone_Quest()
     end)
-    questPanel:SetScript('OnLeave', function() e.tips:Hide() end)
+    QusetButton:SetScript('OnLeave', function() e.tips:Hide() end)
 
-    questPanel:RegisterEvent("QUEST_LOG_UPDATE")
-    questPanel:RegisterEvent('MINIMAP_UPDATE_TRACKING')
-    questPanel:SetScript("OnEvent", function(self, event)
+
+    function QusetButton:get_set_IsQuestTrivialTracking(setting)--其它任务,低等任务,追踪
+        for trackingID=1, C_Minimap.GetNumTrackingTypes() do
+            local name, _, active= C_Minimap.GetTrackingInfo(trackingID)--name, texture, active, category, nested
+            if name== MINIMAP_TRACKING_TRIVIAL_QUESTS then
+                if setting then
+                    active= not active and true or false
+                    C_Minimap.SetTracking(trackingID, active)
+                end
+                self.isQuestTrivialTracking = active
+                break
+            end
+        end
+    end
+    function QusetButton:not_Ace_QuestTrivial(questID)--其它任务,低等任务
+        return C_QuestLog.IsQuestTrivial(questID) and not self.isQuestTrivialTracking
+    end
+    QusetButton:get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
+
+    QusetButton:RegisterEvent("QUEST_LOG_UPDATE")
+    QusetButton:RegisterEvent('MINIMAP_UPDATE_TRACKING')
+    QusetButton:SetScript("OnEvent", function(self, event)
         if event=='MINIMAP_UPDATE_TRACKING' then
-            get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
+            self:get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
 
         elseif event=='QUEST_LOG_UPDATE' then--更新数量
             --local n = select(2,C_QuestLog.GetNumQuestLogEntries())
             --local max = C_QuestLog.GetMaxNumQuestsCanAccept()
-            local num= select(2,C_QuestLog.GetNumQuestLogEntries())
-            self.Text:SetText((num>=35 and '|cnRED_FONT_COLOR:' or '')..num)-- and n..'/'..max or '')
+            local num= select(2, C_QuestLog.GetNumQuestLogEntries())
+            self.Text:SetText((num>=C_QuestLog.GetMaxNumQuestsCanAccept() and '|cnRED_FONT_COLOR:' or '')..num)-- and n..'/'..max or '')
         elseif event=='GROUP_ROSTER_UPDATE' then
             set_PushableQuest()--共享,任务
         else
@@ -945,6 +1047,28 @@ local function Init_Quest()
         end
     end)
 
+    QusetButton.questSelect={}--已选任务, 提示用
+
+    function QusetButton:questInfo_GetQuestID()--取得， 任务ID, QuestInfo.lua
+        if ( QuestInfoFrame.questLog ) then
+            return C_QuestLog.GetSelectedQuest();
+        else
+            return GetQuestID();
+        end
+    end
+
+    QusetButton.Text=e.Cstr(QusetButton, {justifyH='RIGHT', color=true, size= size-2})--任务数量
+    QusetButton.Text:SetPoint('RIGHT', QusetButton, 'LEFT')
+
+
+
+
+
+
+
+
+
+    ---@class QuestFrame.sel
     QuestFrame.sel=CreateFrame("CheckButton", nil, QuestFrame, 'InterfaceOptionsCheckButtonTemplate')--禁用此npc,任务,选项
     QuestFrame.sel:SetPoint("TOPLEFT", QuestFrame, 40, 20)
     QuestFrame.sel.Text:SetText(e.onlyChinese and '禁用' or DISABLE)
@@ -964,7 +1088,7 @@ local function Init_Quest()
         else
             e.tips:AddDoubleLine(NONE, 'NPC ID')
         end
-        local questID=questInfo_GetQuestID()
+        local questID=QusetButton:questInfo_GetQuestID()
         if questID then
             e.tips:AddDoubleLine('questID', questID)
         end
@@ -975,7 +1099,7 @@ local function Init_Quest()
     end)
 
     --任务框, 自动选任务    
-    QuestFrameGreetingPanel:HookScript('OnShow', function(self)--QuestFrame.lua QuestFrameGreetingPanel_OnShow
+    QuestFrameGreetingPanel:HookScript('OnShow', function()--QuestFrame.lua QuestFrameGreetingPanel_OnShow
         local npc=e.GetNpcID('npc')
         QuestFrame.sel.npc=npc
         QuestFrame.sel.name=UnitName("npc")
@@ -999,7 +1123,7 @@ local function Init_Quest()
             for i=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests) do
                 local index = i - numActiveQuests
                 local isTrivial= GetAvailableQuestInfo(index)
-                if (isTrivial and isQuestTrivialTracking) or not isTrivial then
+                if (isTrivial and QusetButton.isQuestTrivialTracking) or not isTrivial then
                     SelectAvailableQuest(index)
                     return
                 end
@@ -1014,15 +1138,15 @@ local function Init_Quest()
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save.NPC[npc])
 
-        local questID= questInfo_GetQuestID()
+        local questID= QusetButton:questInfo_GetQuestID()
 
         if not questID or not Save.quest or IsModifierKeyDown() or (Save.NPC[npc] and not Save.questOption[questID]) then
             return
         end
 
         if not IsQuestCompletable() then--or not C_QuestOffer.GetHideRequiredItemsOnTurnIn() then
-            if questID then--and not questSelect[questID] then
-                local link--C_QuestLog.RequestLoadQuestByID(questID)
+            if questID then
+                local link
                 local buttonIndex = 1--物品数量
                 for i=1, GetNumQuestItems() do
                     local hidden = IsQuestItemHidden(i)
@@ -1051,15 +1175,14 @@ local function Init_Quest()
                     end
                     print(id, QUESTS_LABEL, questLink, text and '|cffff00ff'..text..'|r', link, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
                 end)
-               -- questSelect[questID]=true
             end
             QuestGoodbyeButton_OnClick()
         else
-            if not questSelect[questID] then
+            if not QusetButton.questSelect[questID] then--已选任务, 提示用
                 C_Timer.After(0.5, function()
                     print(id, addName, GetQuestLink(questID) or questID)
                 end)
-                questSelect[questID]=true
+                QusetButton.questSelect[questID]=true
             end
             QuestProgressCompleteButton_OnClick()--local b=QuestFrameCompleteQuestButton
         end
@@ -1072,7 +1195,7 @@ local function Init_Quest()
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save.NPC[npc])
 
-        local questID= questInfo_GetQuestID()
+        local questID= QusetButton:questInfo_GetQuestID()
         if not questID and template.canHaveSealMaterial and not QuestUtil.QuestTextContrastEnabled() and template.questLog then
             local frame = parentFrame:GetParent():GetParent()
             questID = frame.questID
@@ -1082,7 +1205,7 @@ local function Init_Quest()
             or not Save.quest
             or (Save.NPC[npc] and not Save.questOption[questID])
             or IsModifierKeyDown()
-            or not_Ace_QuestTrivial(questID)
+            or QusetButton:not_Ace_QuestTrivial(questID)
             or not acceptButton
             or not acceptButton:IsEnabled()
         then return end
@@ -1127,17 +1250,17 @@ local function Init_Quest()
             end
         end
 
-        if not questSelect[questID] then
+        if not QusetButton.questSelect[questID] then--已选任务, 提示用
             C_Timer.After(0.5, function()
                 print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, (complete and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..acceptButton:GetText()..'|r', itemLink)
             end)
-            questSelect[questID]=true
+            QusetButton.questSelect[questID]=true
         end
 
         acceptButton:Click()
     end)
 
-    
+
 
     if Save.autoSortQuest then--仅显示本地图任务,事件
         set_Auto_QuestWatch_Event()
@@ -1147,13 +1270,44 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent('QUEST_ACCEPTED')
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED"  then
         if arg1 == id then
             Save= WoWToolsSave[addName] or Save
@@ -1161,71 +1315,68 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.gossipOption= Save.gossipOption or {}
             Save.questRewardCheck= Save.questRewardCheck or {}
             Save.choice= Save.choice or {}
-
+            Save.NPC= Save.NPC or {}
 
             --添加控制面板
             e.AddPanel_Header(nil, 'Plus')
-            e.AddPanel_Check({
-                name= '|A:CampaignAvailableQuestIcon:0:0|a'..(e.onlyChinese and '对话和任务' or addName),
-                tooltip= addName,
-                value= not Save.disabled,
-                func= function()
+            e.AddPanel_Check_Button({
+                checkName= '|A:CampaignAvailableQuestIcon:0:0|a'..(e.onlyChinese and '对话和任务' or addName),
+                checkValue= not Save.disabled,
+                checkFunc= function()
                     Save.disabled = not Save.disabled and true or nil
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end,
+                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                buttonFunc= function()
+                    Save.point=nil
+                    if GossipButton then
+                        GossipButton:ClearAllPoints()
+                        GossipButton:set_Point()
+                    end
+                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                end,
+                tooltip= addName,
+                layout= nil,
+                category= nil,
             })
 
-            --[[添加控制面板        
-            local sel=e.AddPanel_Check('|A:CampaignAvailableQuestIcon:0:0|a'..(e.onlyChinese and '对话和任务' or addName), not Save.disabled, true)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-]]
             if not Save.disabled then
-                setPoint()--设置位置
-                setTexture()
-                get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
-
                 Init_Gossip()--对话，初始化
                 Init_Quest()--任务，初始化
-
-                Save.NPC= Save.NPC or {}
             else
                 panel:UnregisterAllEvents()
-                questPanel:UnregisterAllEvents()
-                panel:SetShown(false)
-                questPanel:SetShown(false)
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
-        elseif arg1=='Blizzard_PlayerChoice' then--命运, 字符
+        elseif arg1=='Blizzard_PlayerChoice' then
+            --#########
+            --命运, 字符
+            --#########
             hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"],"OnShow",function(s)
                 if Save.gossip and s.editBox then
                     s.editBox:SetText(SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING)
                 end
             end)
 
-
+            --###########
             --自动选择奖励
             --Blizzard_PlayerChoice.lua
-            panel.Send_Player_Choice_Response= function(optionInfo)
-                if not optionInfo then
-                    return
-                end
-                C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
-                print(id, addName, (optionInfo.spellID and GetSpellLink(optionInfo.spellID) or ''), '|n',
+            function GossipButton:Send_Player_Choice_Response(optionInfo)
+                if optionInfo then
+                    C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
+                    print(id, addName, (optionInfo.spellID and GetSpellLink(optionInfo.spellID) or ''),
+                        '|n',
                         '|T'..(optionInfo.choiceArtID or 0)..':0|t'..optionInfo.rarityColor:WrapTextInColorCode(optionInfo.description or '')
                     )
-                PlayerChoiceFrame:OnSelectionMade();
-                C_PlayerChoice.OnUIClosed()
-                for optionFrame in PlayerChoiceFrame.optionPools:EnumerateActiveByTemplate(PlayerChoiceFrame.optionFrameTemplate) do
-                    optionFrame:SetShown(false)
+                    PlayerChoiceFrame:OnSelectionMade();
+                    C_PlayerChoice.OnUIClosed()
+                    for optionFrame in PlayerChoiceFrame.optionPools:EnumerateActiveByTemplate(PlayerChoiceFrame.optionFrameTemplate) do
+                        optionFrame:SetShown(false)
+                    end
                 end
             end
             hooksecurefunc(PlayerChoiceFrame, 'SetupOptions', function(self2)
-                if IsModifierKeyDown() or not Save.gossip
-                then
+                if IsModifierKeyDown() or not Save.gossip then
                     return
                 end
                 local tab={}
@@ -1233,6 +1384,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 for optionFrame in self2.optionPools:EnumerateActiveByTemplate(self2.optionFrameTemplate) do
                     local enabled= not optionFrame.optionInfo.disabledOption and optionFrame.optionInfo.spellID and optionFrame.optionInfo.spellID>0
                     if not optionFrame.check and enabled then
+                        ---@class optionFrame
                         optionFrame.check= CreateFrame("CheckButton", nil, optionFrame, "InterfaceOptionsCheckButtonTemplate")
                         optionFrame.check:SetPoint('BOTTOM' ,0, -40)
                         optionFrame.check:SetScript('OnClick', function(self3)
@@ -1240,7 +1392,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                             if optionInfo and optionInfo.spellID then
                                 Save.choice[optionInfo.spellID]= not Save.choice[optionInfo.spellID] and (optionInfo.rarity or 0) or nil
                                 if Save.choice[optionInfo.spellID] then
-                                    panel.Send_Player_Choice_Response(optionInfo)
+                                    GossipButton:Send_Player_Choice_Response(optionInfo)
                                 end
                             else
                                 print(id, addName,'|cnRED_FONT_COLOR:', not e.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误')
@@ -1281,8 +1433,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                             end
                         end)
                     end
-
-                    
                     if optionFrame.check then
                         optionFrame.check.elapsed=1.1
                         optionFrame.check.spellID= optionFrame.optionInfo.spellID
@@ -1305,7 +1455,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                             return a.rarity> b.rarity
                         end
                     end)
-                    panel.Send_Player_Choice_Response(tab[1])
+                    GossipButton:Send_Player_Choice_Response(tab[1])
                 end
             end)
         end
@@ -1317,11 +1467,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='QUEST_ACCEPTED' then--共享任务
-        if IsInGroup() and arg1 and Save.pushable then
-            if C_QuestLog.IsPushableQuest(arg1) then
-                C_QuestLog.SetSelectedQuest(arg1)
-                QuestLogPushQuest()
-            end
+        if IsInGroup() and arg1 and Save.pushable and C_QuestLog.IsPushableQuest(arg1) then
+            C_QuestLog.SetSelectedQuest(arg1)
+            QuestLogPushQuest()
         end
 
     end

@@ -108,7 +108,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
             n= n- 0.05
         end
         n= n>3 and 3 or n
-        n= n< 0.5 and 0.5 or n
+        n= n< 0.4 and 0.4 or n
         Save.scale[self2.ScaleName]= n
         self2.ZoomFrame:SetScale(n)
         print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
