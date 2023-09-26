@@ -3375,7 +3375,8 @@
         "UnitIsCharmed",
         "CloseTaxiMap",
         "GetTaxiMapID",
-        "NumTaxiNodes"
+        "NumTaxiNodes",
+        "MovieFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

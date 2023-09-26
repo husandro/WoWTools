@@ -486,6 +486,9 @@ local function Init_Markers_Frame()--设置标记, 框架
             self:SetShown(Save.markersFrame
                         and not Is_In_PvP_Area()
                         and (ping or target or marker)
+                        and not InCinematic()
+                        and not MovieFrame:IsShown()
+                        --and not IsInCinematicScene()
                     )
 
             local isLeader=GetNumGroupMembers()>1 and (IsInRaid() and Is_Leader()) or UnitIsGroupLeader('player')
@@ -500,11 +503,16 @@ local function Init_Markers_Frame()--设置标记, 框架
             Frame:RegisterEvent('GROUP_ROSTER_UPDATE')
             Frame:RegisterEvent('GROUP_LEFT')
             Frame:RegisterEvent('GROUP_JOINED')
+            Frame:RegisterEvent('CINEMATIC_START')
+            Frame:RegisterEvent('CINEMATIC_STOP')
+            Frame:RegisterEvent('PLAY_MOVIE')
+            Frame:RegisterEvent('STOP_MOVIE')
         else
             Frame:UnregisterAllEvents()
         end
     end
     Frame:SetScript('OnEvent', function(self, event, arg1)
+        
         if event=='PLAYER_REGEN_ENABLED' then
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
             self:set_Shown()
@@ -516,7 +524,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             if arg1=='enablePings' then
                 self:set_Shown()
             end
-        elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' or event=='GROUP_JOINED' then
+        else--if event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' or event=='GROUP_JOINED' then
             self:set_Shown()
         end
     end)
