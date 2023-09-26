@@ -104,9 +104,16 @@ local Save={
     noItemHide= not e.Player.husandro,
     --disabledCheckReagentBag= true,--禁用，检查，材料包
 }
-local Combat, Bag, Opening= nil,{},nil
+local Combat, Bag= nil,{}
 local panel= CreateFrame("Frame")
 local button
+
+
+
+
+
+
+
 
 --QUEST_REPUTATION_REWARD_TOOLTIP = "在%2$s中的声望提高%1$d点";
 local function setCooldown()--冷却条
@@ -124,7 +131,6 @@ end
 
 local function setAtt(bag, slot, icon, itemID)--设置属性
     if UnitAffectingCombat('player') or not UnitIsConnected('player') then
-        Opening= nil
         Combat= true
         return
     end
@@ -146,46 +152,40 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
     button.count:SetText(num or '')
     button.texture:SetShown(bag and slot)
     Combat=nil
-    Opening= nil
 end
-
-
-
-
-
-
-
-
 
 local equipItem--是装备时, 打开角色界面
 local function get_Items()--取得背包物品信息
     if UnitAffectingCombat('player') or not UnitIsConnected('player') then
         Combat=true
         return
-    elseif Opening then
-        return
     end
 
-    Opening= true
     equipItem=nil
     Bag={}
     local bagMax= not Save.disabledCheckReagentBag and NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES or NUM_BAG_FRAMES
     for bag= Enum.BagIndex.Backpack, bagMax do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
-            local duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
-            local classID= (info and info.itemID) and select(6, GetItemInfoInstant(info.itemID))
+
+            local itemMinLevel, itemEquipLoc, classID, subclassID, setID, _
+            local duration, enable
+            if info and info.itemID then
+                itemMinLevel, _, _, _, itemEquipLoc, _, _, classID, subclassID, _, _, setID= select(5, GetItemInfo(info.itemID))
+                duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
+            end
 
             if info
                 and info.itemID
                 and info.hyperlink
                 and not info.isLocked
                 and info.iconFileID
-                and (not Save.no[info.itemID] or Save.use[info.itemID])
-                and C_PlayerInfo.CanUseItem(info.itemID)
-                and not (duration and duration>2 or enable==0) and classID~=8
+                and (not Save.no[info.itemID] or Save.use[info.itemID])--禁用使用
+                and C_PlayerInfo.CanUseItem(info.itemID)--是否可使用
+                and not (duration and duration>2 or enable==0) and classID~=8--冷却
+                and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel)--使用等级
             then
-                e.LoadDate({id=info.itemID, type='item'})
+                --e.LoadDate({id=info.itemID, type='item'})
 
                 if Save.use[info.itemID] then--自定义
                     if Save.use[info.itemID]<=info.stackCount then
@@ -196,12 +196,9 @@ local function get_Items()--取得背包物品信息
                 else
                     local dateInfo= e.GetTooltipData({hyperLink=info.hyperlink, red=true, onlyRed=true, text={}})
 
-                    if not dateInfo.red and C_PlayerInfo.CanUseItem(info.itemID) then--不出售, 可以使用
-                        local _, _, _, _, itemMinLevel, _, _, _, itemEquipLoc, _, _, classID2, subclassID= GetItemInfo(info.hyperlink)
-                        classID= classID or classID2
-
+                    if not dateInfo.red then--不出售, 可以使用
                         if itemEquipLoc and _G[itemEquipLoc] then--幻化
-                            if Save.mago and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel) and info.quality then--and (not info.isBound or (classID==4 and (subclassID==0 or subclassID==5))) then
+                            if Save.mago and info.quality then
                                 local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink))
                                 if not isCollected and isSelf then
                                     setAtt(bag, slot, info.iconFileID, info.itemID)
