@@ -1094,7 +1094,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
     --############
     --去掉生命条 % extStatusBar.lua TextStatusBar.lua
-    --[[############会出现，错误
+    --############会出现，错误
     local deadText= e.onlyChinese and '死亡' or DEAD
     hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
         if not frame or not UnitExists(frame.unit) then
@@ -1144,7 +1144,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             end
             frame.DeadText:SetText(text)
         end
-    end)]]
+    end)
 
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
     --###################

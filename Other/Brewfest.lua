@@ -1,7 +1,7 @@
 local id, e= ...
 local addName= 'Brewfest'
 local Save={
-    disabled=true,
+    disabled=not e.Player.husandro,
     --Point
     --scale
 }

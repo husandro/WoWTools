@@ -33,6 +33,7 @@ for questID, _ in pairs(Save.questIDs or {}) do
 end
 
 local panel= CreateFrame("Frame")
+---@class panel
 
 --###################
 --更新地区时,缩小化地图
@@ -695,7 +696,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
     if check_Button_Enabled_Disabled() or btn then
         return
     end
-
+    ---@class btn
     btn= e.Cbtn(nil, {icon='hide', size={20,20}})
     btn.texture= btn:CreateTexture(nil, 'BORDER')
     btn.texture:SetAllPoints(btn)
@@ -823,6 +824,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
 
     function btn:set_Frame()--设置，Button的 Frame Text 属性
         if not self.Frame then
+            ---@class self.Frame
             self.Frame= CreateFrame('Frame', nil, self)
             self.Frame:SetSize(1,1)
             self.Frame.text= e.Cstr(self.Frame, {color=true})

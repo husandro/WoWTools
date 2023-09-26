@@ -1928,7 +1928,7 @@ end
 
 local function set_Chat_Bubbles(init)
     for _, buble in pairs(C_ChatBubbles.GetAllChatBubbles() or {}) do
-        if not buble.set_Alpha or init then
+        if not buble.setAlphaOK or init then
             local frame= buble:GetChildren()
             if frame then
                 local fontString = frame.String
@@ -1948,8 +1948,7 @@ local function set_Chat_Bubbles(init)
                         frame2:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
                     end
                 end
-                
-                buble.set_Alpha= true
+                buble.setAlphaOK= true
             end
         end
     end
@@ -2150,7 +2149,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 options_Init()--初始，选项
                 Init_HideTexture()
                 Init_Set_AlphaAndColor()
-                Init_Class_Power(init)--职业
+                Init_Class_Power(true)--职业
                 if not Save.disabledChatBubble then
                     set_Chat_Bubbles_Event()
                 end

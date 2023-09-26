@@ -117,26 +117,19 @@ local function setCooldown()--冷却条
                 local start, duration, enable = GetItemCooldown(itemID)
                 button.texture:SetDesaturated(enable==1 and duration and duration>2)
                 e.Ccool(button, start, duration, nil, true,nil, true)
-                return
             end
         end
     end
 end
 
 local function setAtt(bag, slot, icon, itemID)--设置属性
-    if UnitAffectingCombat('player') then
+    if UnitAffectingCombat('player') or not UnitIsConnected('player') then
         Opening= nil
         Combat= true
         return
     end
     local num
     if bag and slot then
-        if UnitAffectingCombat('player') then
-            Opening= nil
-            Combat= true
-            return
-        end
-
         Bag={bag=bag, slot=slot}
 
         button:SetAttribute("macrotext", '/use '..bag..' '..slot)
@@ -166,7 +159,7 @@ end
 
 local equipItem--是装备时, 打开角色界面
 local function get_Items()--取得背包物品信息
-    if UnitAffectingCombat('player') then
+    if UnitAffectingCombat('player') or not UnitIsConnected('player') then
         Combat=true
         return
     elseif Opening then

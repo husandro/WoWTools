@@ -104,6 +104,7 @@ end
 --###########
 local SetTankHealerFrame
 local function Init_set_Tank_Healer()
+    ---@class SetTankHealerFrame
     SetTankHealerFrame=CreateFrame("Frame", nil, button)
 
     SetTankHealerFrame:SetPoint('BOTTOMLEFT',4, 4)
@@ -448,7 +449,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     end
 
     local size, last, btn= 16, nil, nil
-
+---@class Frame
     Frame=CreateFrame('Frame')
     Frame:Raise()
     Frame:SetMovable(true)--移动
@@ -459,11 +460,11 @@ local function Init_Markers_Frame()--设置标记, 框架
 
     function Frame:Init_Set_Frame()--位置
         if Save.markersFramePoint then
-            Frame:SetPoint(Save.markersFramePoint[1], UIParent, Save.markersFramePoint[3], Save.markersFramePoint[4], Save.markersFramePoint[5])
+            self:SetPoint(Save.markersFramePoint[1], UIParent, Save.markersFramePoint[3], Save.markersFramePoint[4], Save.markersFramePoint[5])
         elseif e.Player.husandro then
-            Frame:SetPoint('BOTTOMRIGHT', _G['MultiBarBottomLeftButton11'], 'TOPRIGHT', 0, 40)
+            self:SetPoint('BOTTOMRIGHT', _G['MultiBarBottomLeftButton11'], 'TOPRIGHT', 0, 40)
         else
-            Frame:SetPoint('CENTER', -150, 50)
+            self:SetPoint('CENTER', -150, 50)
         end
     end
     Frame:Init_Set_Frame()
@@ -602,6 +603,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
 
     --Ping System Blizzard_PingUI.lua
+    ---@class Frame.ping
     Frame.ping= CreateFrame('Frame', nil, Frame)
     Frame.ping:SetSize(size, size)
     if Save.H then
@@ -609,6 +611,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     else
         Frame.ping:SetPoint('RIGHT', Frame, 'LEFT')
     end
+
 
     Frame.ping.tab={--Enum.PingSubjectType.Warning
         [8]={name= e.onlyChinese and '自动' or SELF_CAST_AUTO, atlas='Ping_Marker_Icon_NonThreat'},
@@ -844,6 +847,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
 
     --队伍标记
+    ---@class Frame.target
     Frame.target= CreateFrame("Frame", nil, Frame)
     Frame.target:SetSize(size, size)
     if Save.H then
