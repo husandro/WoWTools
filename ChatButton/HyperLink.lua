@@ -948,7 +948,7 @@ local function InitMenu(_, level, menuList)
         info={
             text= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
             checked= not Save.disabledTalkingPringText,
-            disabled= Save.disabledNPCTalking,
+            --disabled= Save.disabledNPCTalking,
             keepShownOnClick=true,
             func= function()
                 Save.disabledTalkingPringText= not Save.disabledTalkingPringText and true or nil
@@ -962,7 +962,7 @@ local function InitMenu(_, level, menuList)
             text= e.onlyChinese and '隐藏NPC发言' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ' (NPC) '..VOICE_TALKING),
             checked= not Save.disabledNPCTalking,
             tooltipOnButton=true,
-            disabled= not Save.setPlayerSound,
+            --disabled= not Save.setPlayerSound,
             tooltipTitle= e.onlyChinese and '隐藏对话特写头像' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL),
             keepShownOnClick=true,
             hasArrow=true,
