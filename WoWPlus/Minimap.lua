@@ -32,86 +32,9 @@ for questID, _ in pairs(Save.questIDs or {}) do
     e.LoadDate({id= questID, type=='quest'})
 end
 
-local panel= CreateFrame("Frame")
+local panel
 ---@class panel
-
---###################
---更新地区时,缩小化地图
---###################
-local function set_ZoomOut()
-    if Save.ZoomOut then
-        local value= Minimap:GetZoomLevels()
-        if value~=0 then
-            Minimap:SetZoom(0)
-        end
-    end
-end
-
-
---################
---当前缩放，显示数值
---Minimap.lua
-local function set_Event_MINIMAP_UPDATE_ZOOM()
-    if Save.ZoomOutInfo then
-        panel:RegisterEvent('MINIMAP_UPDATE_ZOOM')
-    else
-        panel:UnregisterEvent('MINIMAP_UPDATE_ZOOM')
-        if Minimap.zoomText then
-            Minimap.zoomText:SetText('')
-        end
-        if Minimap.viewRadius then
-            Minimap.viewRadius:SetText('')
-        end
-    end
-end
-local function set_MINIMAP_UPDATE_ZOOM()
-    local zoom = Minimap:GetZoom()
-    local level= Minimap:GetZoomLevels()
-    if not Minimap.zoomText then
-        Minimap.zoomText= e.Cstr(Minimap, {color=true})
-        Minimap.zoomText:SetPoint('BOTTOM', Minimap.ZoomOut, 'TOP', 3, 0)
-    end
-    Minimap.zoomText:SetText(zoom and level and (level-zoom)..'/'..level or '')
-
-    if not Minimap.viewRadius then
-        Minimap.viewRadius=e.Cstr(Minimap, {color=true, justifyH='CENTER'})
-        Minimap.viewRadius:SetPoint('BOTTOMLEFT', Minimap, 'BOTTOM', 8, -8)
-        Minimap.viewRadius:EnableMouse(true)
-        Minimap.viewRadius:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '镜头视野范围' or CAMERA_FOV, format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)))
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:Show()
-        end)
-        Minimap.viewRadius:SetScript('OnLeave', function() e.tips:Hide() end)
-    end
-    Minimap.viewRadius:SetFormattedText('%i', C_Minimap.GetViewRadius() or 100)
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+panel = CreateFrame("Frame")
 
 
 
@@ -822,9 +745,9 @@ local function Init_Set_Button()--小地图, 标记, 文本
         end
     end)
 
+    ---@class btn.Frame
     function btn:set_Frame()--设置，Button的 Frame Text 属性
         if not self.Frame then
-            ---@class self.Frame
             self.Frame= CreateFrame('Frame', nil, self)
             self.Frame:SetSize(1,1)
             self.Frame.text= e.Cstr(self.Frame, {color=true})
@@ -967,6 +890,20 @@ end
 
 
 
+
+
+
+--###################
+--更新地区时,缩小化地图
+--###################
+local function set_ZoomOut()
+    if Save.ZoomOut then
+        local value= Minimap:GetZoomLevels()
+        if value~=0 then
+            Minimap:SetZoom(0)
+        end
+    end
+end
 
 
 
@@ -1265,6 +1202,48 @@ end
 
 
 
+--################
+--当前缩放，显示数值
+--Minimap.lua
+local function set_Event_MINIMAP_UPDATE_ZOOM()
+    if Save.ZoomOutInfo then
+        panel:RegisterEvent('MINIMAP_UPDATE_ZOOM')
+    else
+        panel:UnregisterEvent('MINIMAP_UPDATE_ZOOM')
+        if Minimap.zoomText then
+            Minimap.zoomText:SetText('')
+        end
+        if Minimap.viewRadius then
+            Minimap.viewRadius:SetText('')
+        end
+    end
+end
+local function set_MINIMAP_UPDATE_ZOOM()
+    local zoom = Minimap:GetZoom()
+    local level= Minimap:GetZoomLevels()
+    if not Minimap.zoomText then
+        Minimap.zoomText= e.Cstr(Minimap, {color=true})
+        Minimap.zoomText:SetPoint('BOTTOM', Minimap.ZoomOut, 'TOP', 3, 0)
+    end
+    Minimap.zoomText:SetText(zoom and level and (level-zoom)..'/'..level or '')
+
+    if not Minimap.viewRadius then
+        Minimap.viewRadius=e.Cstr(Minimap, {color=true, justifyH='CENTER'})
+        Minimap.viewRadius:SetPoint('BOTTOMLEFT', Minimap, 'BOTTOM', 8, -8)
+        Minimap.viewRadius:EnableMouse(true)
+        Minimap.viewRadius:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '镜头视野范围' or CAMERA_FOV, format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)))
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end)
+        Minimap.viewRadius:SetScript('OnLeave', function() e.tips:Hide() end)
+    end
+    Minimap.viewRadius:SetFormattedText('%i', C_Minimap.GetViewRadius() or 100)
+end
+
+
 
 
 
@@ -1295,17 +1274,27 @@ local function Init()
     if libDataBroker and libDBIcon then
         local Set_MinMap_Icon= function(tab)-- {name, texture, func, hide} 小地图，建立一个图标 Hide("MyLDB") icon:Show("")
             local bunnyLDB = libDataBroker:NewDataObject(tab.name, {
-                type = "data source",
-                text = tab.name,
-                icon = tab.texture,
-                OnClick = tab.func,
-                OnEnter= tab.enter,
+                OnClick=tab.func,--fun(displayFrame: Frame, buttonName: string)
+                OnEnter=tab.enter,--fun(displayFrame: Frame)
+                OnLeave=nil,--fun(displayFrame: Frame)
+                OnTooltipShow=nil,--fun(tooltip: Frame)
+                icon=tab.texture,--string
+                iconB=nil,--number,
+                iconCoords=nil,--table,
+                iconG=nil,--number,
+                iconR=nil,--number,
+                label=nil,--string,
+                suffix=nil,--string,
+                text=tab.name,-- string,
+                tocname=nil,--string,
+                tooltip=nil,--Frame,
+                type='data source',-- "data source"|"launcher",
+                value=nil,--string,
             })
 
             libDBIcon:Register(tab.name, bunnyLDB, Save.miniMapPoint)
             return libDBIcon
         end
-
         Save.miniMapPoint= Save.miniMapPoint or {}
         Set_MinMap_Icon({name= id, texture= [[Interface\AddOns\WoWTools\Sesource\Texture\WoWtools.tga]],--texture= -18,--136235,
             func= click_Func,
