@@ -156,7 +156,7 @@ function e.Class(unit, class, reAltlas)--职业图标 groupfinder-icon-emptyslot
     class= unit and select(2, UnitClass(unit)) or class
     if class then
         if class=='EVOKER' then
-            class='UI-HUD-UnitFrame-Player-Portrait-ClassIcon-Evoker'
+            class='classicon-evoker'
         else
             class= 'groupfinder-icon-class-'..class
         end
