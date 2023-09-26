@@ -168,10 +168,10 @@ local function get_Items()--取得背包物品信息
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
 
-            local itemMinLevel, itemEquipLoc, classID, subclassID, setID, _
+            local itemMinLevel, itemEquipLoc, classID, subclassID, _
             local duration, enable
             if info and info.itemID then
-                itemMinLevel, _, _, _, itemEquipLoc, _, _, classID, subclassID, _, _, setID= select(5, GetItemInfo(info.itemID))
+                itemMinLevel, _, _, _, itemEquipLoc, _, _, classID, subclassID= select(5, GetItemInfo(info.itemID))
                 duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
             end
 
