@@ -1058,7 +1058,7 @@ local function Init_Quest()
     end
 
     QusetButton.Text=e.Cstr(QusetButton, {justifyH='RIGHT', color=true, size= size-2})--任务数量
-    QusetButton.Text:SetPoint('RIGHT', QusetButton, 'LEFT')
+    QusetButton.Text:SetPoint('RIGHT', QusetButton, 'LEFT', 0, 1)
 
 
 
