@@ -691,72 +691,13 @@ local function add_Click_To_Move_Button()--点击移动，按钮
         btn:SetScript('OnLeave', function(self) e.tips:Hide() self:set_State() end)
         btn:SetScript('OnEnter', btn.set_Tooltips)
         btn:SetScript('OnMouseUp', btn.set_Tooltips)
-        
+
         PlayerFrame.ClickToMoveButton= btn
     end
     btn:set_State()
     btn:RegisterEvent('CVAR_UPDATE')
     btn:SetShown(true)
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---###########
---添加控制面板
---###########
-local function Init_Panel()
-    local initializer2= e.AddPanel_Check({
-        name= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName),
-        tooltip= addName,
-        value= not Save.disabled,
-        func= function()
-            Save.disabled= not Save.disabled and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
-        end
-    })
-
-    local initializer= e.AddPanel_Check({
-        name= e.Icon.right..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE),
-        tooltip= (not e.onlyChinese and CLICK_TO_MOVE..', '..REFORGE_CURRENT or '点击移动, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))
-            ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' < '..MAX_PLAYER_LEVEL..' = '..e.GetEnabeleDisable(false)
-            ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' = '..MAX_PLAYER_LEVEL..' = '..e.GetEnabeleDisable(true),
-        value= Save.clickToMove,
-        func= function()
-            Save.clickToMove = not Save.clickToMove and true or nil
-            set_Click_To_Move()
-        end
-    })
-    initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
-
-    initializer= e.AddPanel_Check({
-        name= '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button')),
-        tooltip= e.onlyChinese and '位置：玩家框体' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHOOSE_LOCATION:gsub(CHOOSE, '')..': ', HUD_EDIT_MODE_PLAYER_FRAME_LABEL),
-        value= Save.clickToMoveButton,
-        func= function()
-            Save.clickToMoveButton = not Save.clickToMoveButton and true or nil
-            add_Click_To_Move_Button()
-        end
-    })
-    initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
-
-end
-
-
-
-
-
-
 
 
 
@@ -872,7 +813,41 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
-            Init_Panel()--添加控制面板
+            --添加控制面板
+            local initializer2= e.AddPanel_Check({
+                name= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName),
+                tooltip= addName,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                end
+            })
+
+            local initializer= e.AddPanel_Check({
+                name= e.Icon.right..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE),
+                tooltip= (not e.onlyChinese and CLICK_TO_MOVE..', '..REFORGE_CURRENT or '点击移动, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))
+                    ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' < '..MAX_PLAYER_LEVEL..'  '..e.GetEnabeleDisable(false)
+                    ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' = '..MAX_PLAYER_LEVEL..'  '..e.GetEnabeleDisable(true),
+                value= Save.clickToMove,
+                func= function()
+                    Save.clickToMove = not Save.clickToMove and true or nil
+                    set_Click_To_Move()
+                end
+            })
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+
+            initializer= e.AddPanel_Check({
+                name= '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button')),
+                tooltip= e.onlyChinese and '位置：玩家框体' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHOOSE_LOCATION:gsub(CHOOSE, '')..': ', HUD_EDIT_MODE_PLAYER_FRAME_LABEL),
+                value= Save.clickToMoveButton,
+                func= function()
+                    Save.clickToMoveButton = not Save.clickToMoveButton and true or nil
+                    add_Click_To_Move_Button()
+                end
+            })
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
