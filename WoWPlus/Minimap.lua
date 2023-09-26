@@ -301,8 +301,8 @@ local function check_Button_Enabled_Disabled()
         self.Frame:SetShown(Save.vigentteButtonShowText and not isDisabled and true or false)
         if isDisabled or not Save.vigentteButtonShowText then
             self.Frame.text:SetText('')
-        else
-            self.Frame.elapsed=1
+        --else
+            --self.Frame.elapsed=1
         end
     end
     return isDisabled
@@ -748,6 +748,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
     ---@class btn.Frame
     function btn:set_Frame()--设置，Button的 Frame Text 属性
         if not self.Frame then
+            ---@class self.Frame
             self.Frame= CreateFrame('Frame', nil, self)
             self.Frame:SetSize(1,1)
             self.Frame.text= e.Cstr(self.Frame, {color=true})
@@ -909,6 +910,47 @@ end
 
 
 
+
+--################
+--当前缩放，显示数值
+--Minimap.lua
+local function set_Event_MINIMAP_UPDATE_ZOOM()
+    if Save.ZoomOutInfo then
+        panel:RegisterEvent('MINIMAP_UPDATE_ZOOM')
+    else
+        panel:UnregisterEvent('MINIMAP_UPDATE_ZOOM')
+        if Minimap.zoomText then
+            Minimap.zoomText:SetText('')
+        end
+        if Minimap.viewRadius then
+            Minimap.viewRadius:SetText('')
+        end
+    end
+end
+local function set_MINIMAP_UPDATE_ZOOM()
+    local zoom = Minimap:GetZoom()
+    local level= Minimap:GetZoomLevels()
+    if not Minimap.zoomText then
+        Minimap.zoomText= e.Cstr(Minimap, {color=true})
+        Minimap.zoomText:SetPoint('BOTTOM', Minimap.ZoomOut, 'TOP', 3, 0)
+    end
+    Minimap.zoomText:SetText(zoom and level and (level-zoom)..'/'..level or '')
+
+    if not Minimap.viewRadius then
+        Minimap.viewRadius=e.Cstr(Minimap, {color=true, justifyH='CENTER'})
+        Minimap.viewRadius:SetPoint('BOTTOMLEFT', Minimap, 'BOTTOM', 8, -8)
+        Minimap.viewRadius:EnableMouse(true)
+        Minimap.viewRadius:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '镜头视野范围' or CAMERA_FOV, format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)))
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end)
+        Minimap.viewRadius:SetScript('OnLeave', function() e.tips:Hide() end)
+    end
+    Minimap.viewRadius:SetFormattedText('%i', C_Minimap.GetViewRadius() or 100)
+end
 
 
 
@@ -1195,61 +1237,6 @@ local function Init_InstanceDifficulty()--副本，难图，指示
         e.tips:Hide()
     end)
 end
-
-
-
-
-
-
-
---################
---当前缩放，显示数值
---Minimap.lua
-local function set_Event_MINIMAP_UPDATE_ZOOM()
-    if Save.ZoomOutInfo then
-        panel:RegisterEvent('MINIMAP_UPDATE_ZOOM')
-    else
-        panel:UnregisterEvent('MINIMAP_UPDATE_ZOOM')
-        if Minimap.zoomText then
-            Minimap.zoomText:SetText('')
-        end
-        if Minimap.viewRadius then
-            Minimap.viewRadius:SetText('')
-        end
-    end
-end
-local function set_MINIMAP_UPDATE_ZOOM()
-    local zoom = Minimap:GetZoom()
-    local level= Minimap:GetZoomLevels()
-    if not Minimap.zoomText then
-        Minimap.zoomText= e.Cstr(Minimap, {color=true})
-        Minimap.zoomText:SetPoint('BOTTOM', Minimap.ZoomOut, 'TOP', 3, 0)
-    end
-    Minimap.zoomText:SetText(zoom and level and (level-zoom)..'/'..level or '')
-
-    if not Minimap.viewRadius then
-        Minimap.viewRadius=e.Cstr(Minimap, {color=true, justifyH='CENTER'})
-        Minimap.viewRadius:SetPoint('BOTTOMLEFT', Minimap, 'BOTTOM', 8, -8)
-        Minimap.viewRadius:EnableMouse(true)
-        Minimap.viewRadius:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '镜头视野范围' or CAMERA_FOV, format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)))
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:Show()
-        end)
-        Minimap.viewRadius:SetScript('OnLeave', function() e.tips:Hide() end)
-    end
-    Minimap.viewRadius:SetFormattedText('%i', C_Minimap.GetViewRadius() or 100)
-end
-
-
-
-
-
-
-
-
 
 
 
