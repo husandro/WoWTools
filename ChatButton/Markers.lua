@@ -469,7 +469,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     end
     Frame:Init_Set_Frame()
 
-    function Frame:set_Shown()
+    function Frame:set_Shown(hide)
         if UnitAffectingCombat('player') then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         else
@@ -486,6 +486,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             self:SetShown(Save.markersFrame
                         and not Is_In_PvP_Area()
                         and (ping or target or marker)
+                        and not hide
                         and not InCinematic()
                         and not IsInCinematicScene()
                         and not MovieFrame:IsShown()
@@ -525,10 +526,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 self:set_Shown()
             end
         else--if event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' or event=='GROUP_JOINED' then
-            if e.Player.husandro then
-                print(event, IsInCinematicScene(),IsInCinematicScene(),MovieFrame:IsShown())
-            end
-            self:set_Shown()
+            self:set_Shown(event=='CINEMATIC_START' or event=='PLAY_MOVIE')
         end
     end)
 
