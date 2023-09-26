@@ -694,7 +694,7 @@ local function set_memberFrame(memberFrame)
                 elseif UnitIsFeignDeath(self.unit) then--假死
                     self.texture:SetTexture(132293)
                     find= true
-                    
+
                 elseif UnitIsDead(self.unit) then
                     self.texture:SetAtlas('xmarksthespot')
                     find= true
@@ -1086,22 +1086,24 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         end
     end)
 
-    hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称)
-        if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
-            self.name:SetText(e.Icon.star2)
-        end
-    end)
+    --if e.Player.husandro then
+        hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称)
+            if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
+                self.name:SetText(e.Icon.star2)
+            end
+        end)
 
     --############
     --去掉生命条 % extStatusBar.lua TextStatusBar.lua
     --############会出现，错误
-    local deadText= e.onlyChinese and '死亡' or DEAD
-    hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
-        if not frame or not UnitExists(frame.unit) then
-            return
-        end
-        if value then--statusFrame.unit
-            if textString and textString:IsShown() then
+
+        local deadText= e.onlyChinese and '死亡' or DEAD
+        hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
+            if not UnitExists(frame.unit) or not frame:IsShown() then
+                return
+            end
+            if value then--statusFrame.unit
+                if textString and textString:IsShown() then
                     local text
                     if UnitIsGhost(frame.unit) then
                         text= '|A:poi-soulspiritghost:18:18|a'..deadText
@@ -1117,34 +1119,34 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         textString:SetText(text)
                     end
 
-            elseif frame.LeftText and frame.LeftText:IsShown() then
-                local text
-                if UnitIsGhost(frame.unit) then
-                    text= '|A:poi-soulspiritghost:18:18|a'..deadText
-                else
-                    text= frame.LeftText:GetText()
-                end
-                if text then
-                    if text=='100%' then
-                        text= ''
+                elseif frame.LeftText and frame.LeftText:IsShown() then
+                    local text
+                    if UnitIsGhost(frame.unit) then
+                        text= '|A:poi-soulspiritghost:18:18|a'..deadText
                     else
-                        text= text:gsub('%%', '')
+                        text= frame.LeftText:GetText()
                     end
-                    frame.LeftText:SetText(text)
+                    if text then
+                        if text=='100%' then
+                            text= ''
+                        else
+                            text= text:gsub('%%', '')
+                        end
+                        frame.LeftText:SetText(text)
+                    end
                 end
-            end
-        elseif frame.zeroText and frame.DeadText and frame.DeadText:IsShown() then
-            local text= deadText--死亡
-            if frame.unit then
-                if UnitIsGhost(frame.unit) then--灵魂
-                    text= '|A:poi-soulspiritghost:18:18|a'..text
-                elseif UnitIsDead(frame.unit) then--死亡
-                    text= '|A:deathrecap-icon-tombstone:18:18|a'..text
+            elseif frame.zeroText and frame.DeadText and frame.DeadText:IsShown() then
+                local text= deadText--死亡
+                if frame.unit then
+                    if UnitIsGhost(frame.unit) then--灵魂
+                        text= '|A:poi-soulspiritghost:18:18|a'..text
+                    elseif UnitIsDead(frame.unit) then--死亡
+                        text= '|A:deathrecap-icon-tombstone:18:18|a'..text
+                    end
                 end
+                frame.DeadText:SetText(text)
             end
-            frame.DeadText:SetText(text)
-        end
-    end)
+        end)
 
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
     --###################

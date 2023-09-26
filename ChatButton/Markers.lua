@@ -487,8 +487,8 @@ local function Init_Markers_Frame()--设置标记, 框架
                         and not Is_In_PvP_Area()
                         and (ping or target or marker)
                         and not InCinematic()
+                        and not IsInCinematicScene()
                         and not MovieFrame:IsShown()
-                        --and not IsInCinematicScene()
                     )
 
             local isLeader=GetNumGroupMembers()>1 and (IsInRaid() and Is_Leader()) or UnitIsGroupLeader('player')
@@ -525,6 +525,9 @@ local function Init_Markers_Frame()--设置标记, 框架
                 self:set_Shown()
             end
         else--if event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' or event=='GROUP_JOINED' then
+            if e.Player.husandro then
+                print(event, IsInCinematicScene(),IsInCinematicScene(),MovieFrame:IsShown())
+            end
             self:set_Shown()
         end
     end)
