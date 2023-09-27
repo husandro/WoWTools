@@ -2082,7 +2082,6 @@ end
 --###########
 --加载保存数据
 --###########
-panel:RegisterEvent('PLAY_MOVIE')
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
@@ -2275,8 +2274,5 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
-
-    elseif event=='PLAY_MOVIE' then
-        print(id, addName, event, '|cnGREEN_FONT_COLOR:movieID', arg1)
     end
 end)

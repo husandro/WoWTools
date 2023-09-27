@@ -284,13 +284,15 @@ local function Init_Menu_Gossip(_, level, type)
                 tooltipTitle= dateTime,
                 tooltipText= '|n'
                             ..e.Icon.left..(e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY)
-                            ..'Shift+'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
+                            ..'|nShift+'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
                 notCheckable=true,
+                disabled= UnitAffectingCombat('player'),
+                colorCode= not IsMoviePlayable(movieID) and '|cff606060' or nil,
                 arg1= movieID,
                 func= function(_, arg1)
                     if not IsModifierKeyDown() then
+                        e.LibDD:CloseDropDownMenus()
                         MovieFrame_PlayMovie(MovieFrame, arg1)
-
                     elseif IsShiftKeyDown() then
                         Save.movie[arg1]=nil
                         print(id, addName, e.onlyChinese and '移除' or REMOVE, 'movieID', arg1)
@@ -507,13 +509,15 @@ local function Init_Gossip()
             if Save.movie[arg1] then
                 if Save.stopMovie then
                     MovieFrame:StopMovie()
-                    print(id, addName,
+                    print(id, addName, e.onlyChinese and '对话' or ENABLE_DIALOG,
                         '|cnRED_FONT_COLOR:'..(e.onlyChinese and '停止播放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_TEXTTOSPEECH_STOP, EVENTTRACE_BUTTON_PLAY))..'|r',
+                        '|cnRED_FONT_COLOR:movieID|r',
                         arg1
                     )
                 end
             else
                 Save.movie[arg1]= date("%d/%m/%y %H:%M:%S")
+                print(id, addName, '|cnGREEN_FONT_COLOR:movieID', arg1)
             end
         end
     end)

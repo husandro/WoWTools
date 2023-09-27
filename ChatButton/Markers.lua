@@ -1143,7 +1143,7 @@ local function InitMenu(_, level, type)--主菜单
             func=function()
                 Save.autoReady=1
                 setReadyTexureTips()--自动就绪, 主图标, 提示
-                e.LibDD:CloseDropDownMenus();
+                e.LibDD:CloseDropDownMenus()
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
