@@ -218,7 +218,7 @@ local function Init_Menu_Gossip(_, level, type)
                 arg1= npcID,
                 func= function(_, arg1)
                     Save.NPC[arg1]=nil
-                    print(id, addName, e.onlyChinese and '移除' or REMOVE, 'NPC:', arg1)
+                    print(id, addName, e.onlyChinese and '移除' or REMOVE, 'NPC', arg1)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
