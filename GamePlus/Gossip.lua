@@ -277,9 +277,106 @@ local function Init_Menu_Gossip(_, level, type)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+    elseif type=='WoWMovie' then
+        local MovieList= MOVIE_LIST or {--cinematicsframe.lua
+            { expansion=LE_EXPANSION_CLASSIC,
+              movieIDs = { 1, 2 },
+              upAtlas="StreamCinematic-Classic-Up",
+              text= e.onlyChinese and '经典旧世' or nil,
+            },
+            { expansion=LE_EXPANSION_BURNING_CRUSADE,
+              movieIDs = { 27 },
+              upAtlas="StreamCinematic-BC-Up",
+              text= e.onlyChinese and '燃烧的远征' or nil,
+            },
+            { expansion=LE_EXPANSION_WRATH_OF_THE_LICH_KING,
+              movieIDs = { 18 },
+              upAtlas="StreamCinematic-LK-Up",
+              text= e.onlyChinese and '巫妖王之怒' or nil,
+            },
+            { expansion=LE_EXPANSION_CATACLYSM,
+              movieIDs = { 23 },
+              upAtlas="StreamCinematic-CC-Up",
+              text= e.onlyChinese and '大地的裂变' or nil,
+            },
+            { expansion=LE_EXPANSION_MISTS_OF_PANDARIA,
+              movieIDs = { 115 },
+              upAtlas="StreamCinematic-MOP-Up",
+              text= e.onlyChinese and '熊猫人之谜' or nil,
+            },
+            { expansion=LE_EXPANSION_WARLORDS_OF_DRAENOR,
+              movieIDs = { 195 },
+              upAtlas="StreamCinematic-WOD-Up",
+              text= e.onlyChinese and '德拉诺之王' or nil,
+            },
+            { expansion=LE_EXPANSION_LEGION,
+              movieIDs = { 470 },
+              upAtlas="StreamCinematic-Legion-Up",
+              text= e.onlyChinese and '军团再临' or nil,
+            },
+            { expansion=LE_EXPANSION_BATTLE_FOR_AZEROTH,
+              movieIDs = { 852 },
+              upAtlas="StreamCinematic-BFA-Up",
+              text= e.onlyChinese and '争霸艾泽拉斯' or nil,
+            },
+            { expansion=LE_EXPANSION_SHADOWLANDS,
+              movieIDs = { 936 },
+              upAtlas="StreamCinematic-Shadowlands-Up",
+              text= e.onlyChinese and '暗影国度' or nil,
+            },
+            { expansion=LE_EXPANSION_DRAGONFLIGHT,
+              movieIDs = { 960 },
+              upAtlas="StreamCinematic-Dragonflight-Up",
+              text= e.onlyChinese and '巨龙时代' or nil,
+            },
+            { expansion=LE_EXPANSION_DRAGONFLIGHT,
+              movieIDs = { 973 },
+              upAtlas="StreamCinematic-Dragonflight2-Up",
+              title=DRAGONFLIGHT_TOTHESKIES,
+              disableAutoPlay=true,
+              text= e.onlyChinese and '巨龙时代' or nil,
+            },
+        }
+
+        for _, movieEntry in pairs(MovieList) do
+            for _, movieID in pairs(movieEntry.movieIDs) do
+                local isDownload= IsMovieLocal(movieID)-- IsMoviePlayable(movieID)
+                local inProgress, downloaded, total = GetMovieDownloadProgress(movieID)
+                info={
+                    text= (movieEntry.title or movieEntry.text or _G["EXPANSION_NAME"..movieEntry.expansion])..' '..movieID,
+                    tooltipOnButton=true,
+                    tooltipTitle= e.Icon.left..(e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY),
+                    tooltipText=(isDownload and '|cff606060' or '')
+                                ..'Ctrl+'..e.Icon.left..(e.onlyChinese and '下载' or 'Download')
+                                ..(inProgress and downloaded and total and format('|n%i%%', downloaded/total*100) or ''),
+                    notCheckable=true,
+                    disabled= UnitAffectingCombat('player'),
+                    colorCode= not isDownload and '|cff606060' or nil,
+                    icon= movieEntry.upAtlas,
+                    arg1= movieID,
+                    func= function(_, arg1)
+                        if IsControlKeyDown() then
+                            if IsMovieLocal(arg1) then
+                                print(id, addName, arg1, e.onlyChinese and '存在' or 'Exist')
+                            else
+                                PreloadMovie(arg1)
+                                local inProgress2, downloaded2, total2 = GetMovieDownloadProgress(arg1)
+                                print(id, addName, inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
+                            end
+                        elseif not IsModifierKeyDown() then
+                            e.LibDD:CloseDropDownMenus()
+                            MovieFrame_PlayMovie(MovieFrame, arg1)
+                        end
+                    end
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+            end
+        end
+
     elseif type=='Movie' then
         for movieID, dateTime in pairs(Save.movie) do
             local isDownload= IsMovieLocal(movieID)-- IsMoviePlayable(movieID)
+            local inProgress, downloaded, total = GetMovieDownloadProgress(movieID)
             info={
                 text= movieID,
                 tooltipOnButton=true,
@@ -288,7 +385,8 @@ local function Init_Menu_Gossip(_, level, type)
                             ..e.Icon.left..(e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY)
                             ..'|nShift+'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE)
                             ..(isDownload and '|cff606060' or '')
-                            ..'|nCtrl+'..e.Icon.left..(e.onlyChinese and '下载' or 'Download'),
+                            ..'|nCtrl+'..e.Icon.left..(e.onlyChinese and '下载' or 'Download')
+                            ..(inProgress and downloaded and total and format('|n%i%%', downloaded/total*100) or ''),
                 notCheckable=true,
                 disabled= UnitAffectingCombat('player'),
                 colorCode= not isDownload and '|cff606060' or nil,
@@ -301,9 +399,9 @@ local function Init_Menu_Gossip(_, level, type)
                         if IsMovieLocal(movieID) then
                             print(id, addName, arg1, e.onlyChinese and '存在' or 'Exist')
                         else
-                            PreloadMovie(movieID)
-                            local inProgress, downloaded, total = GetMovieDownloadProgress(arg1)
-                            print(id, addName, inProgress, e.MK(downloaded), e.MK(total))
+                            PreloadMovie(arg1)
+                            local inProgress2, downloaded2, total2 = GetMovieDownloadProgress(arg1)
+                            print(id, addName, inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
                         end
                     elseif IsShiftKeyDown() then
                         Save.movie[arg1]=nil
@@ -313,6 +411,21 @@ local function Init_Menu_Gossip(_, level, type)
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
+
+        info={
+            text=e.onlyChinese and '清除全部' or CLEAR_ALL,
+            tooltipOnButton=true,
+            tooltipTitle='Shift+'..e.Icon.left,
+            notCheckable=true,
+            func= function()
+                if IsShiftKeyDown() then
+                    Save.movie={}
+                    print(id, addName, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                end
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON,
@@ -327,18 +440,26 @@ local function Init_Menu_Gossip(_, level, type)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
         info={
-            text=e.onlyChinese and '清除全部' or CLEAR_ALL,
+            text= e.onlyChinese and '动画字幕' or CINEMATIC_SUBTITLES,
             tooltipOnButton=true,
-            tooltipTitle='Shift+'..e.Icon.left,
-            notCheckable=true,
+            tooltipTitle='CVar movieSubtitle',
+            checked= C_CVar.GetCVarBool("movieSubtitle"),
+            disabled= UnitAffectingCombat('player'),
             func= function()
-                if IsShiftKeyDown() then
-                    Save.movie={}
-                    print(id, addName, e.onlyChinese and '清除全部' or CLEAR_ALL)
-                end
+                C_CVar.SetCVar('movieSubtitle', C_CVar.GetCVarBool("movieSubtitle") and '0' or '1')
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        info={
+            text='WoW',
+            notCheckable=true,
+            hasArrow=true,
+            menuList='WoWMovie',
+            keepShownOnClick=true,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
     end
 
     if type then
@@ -445,6 +566,18 @@ local function Init_Gossip()
     function GossipButton:set_Texture()--设置，图片
         self:SetNormalAtlas(Save.gossip and 'SpecDial_LastPip_BorderGlow' or e.Icon.icon)
     end
+    function GossipButton:tooltip_Show()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..e.GetEnabeleDisable(not Save.gossip), e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), 'Alt+'..e.Icon.mid)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, e.onlyChinese and '对话' or ENABLE_DIALOG)
+        e.tips:Show()
+    end
 
     GossipButton:set_Texture()
     GossipButton:set_Scale()
@@ -484,6 +617,7 @@ local function Init_Gossip()
             n= n< 0.4 and 0.4 or n
             Save.scale=n
             self:set_Scale()
+            self:tooltip_Show()
             print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
         end
     end)
@@ -492,6 +626,7 @@ local function Init_Gossip()
         if d=='LeftButton' and not key then--禁用，启用
             Save.gossip= not Save.gossip and true or nil
             self:set_Texture()--设置，图片
+            self:tooltip_Show()
         elseif d=='RightButton' and not key then--菜单
             if not self.MenuGossip then
                 self.MenuGossip=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
@@ -500,19 +635,10 @@ local function Init_Gossip()
             e.LibDD:ToggleDropDownMenu(1, nil, self.MenuGossip, self, 15, 0)
         end
     end)
+
+
     GossipButton:SetScript('OnLeave', function() e.tips:Hide() end)
-    GossipButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..e.GetEnabeleDisable(not Save.gossip), e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), 'Alt+'..e.Icon.mid)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.onlyChinese and '对话' or ENABLE_DIALOG)
-        e.tips:Show()
-    end)
+    GossipButton:SetScript('OnEnter', GossipButton.tooltip_Show)
 
     GossipButton.selectGissipIDTab={}--GossipFrame，显示时用
 
@@ -1096,41 +1222,7 @@ local function Init_Quest()
         end
     end
 
-    QusetButton:SetScript("OnEvent", function(self, event, arg1)
-        if event=='MINIMAP_UPDATE_TRACKING' then
-            self:get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
-
-        elseif event=='QUEST_LOG_UPDATE' then--更新数量
-            local num= select(2, C_QuestLog.GetNumQuestLogEntries()) or 0
-            self.Text:SetText((num >= C_QuestLog.GetMaxNumQuestsCanAccept() and '|cnRED_FONT_COLOR:' or '')..num)
-
-        elseif event=='GROUP_ROSTER_UPDATE' then
-            self:set_PushableQuest()--共享,任务
-
-        elseif event=='QUEST_ACCEPTED' then---共享,任务
-            if arg1 then
-                self:set_PushableQuest(arg1)--共享,任务
-            end
-        else
-            self:set_Only_Show_Zone_Quest()--显示本区域任务
-        end
-    end)
-
-    QusetButton:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' then
-            Save.quest= not Save.quest and true or nil
-            self:set_Texture()--设置，图片
-        elseif d=='RightButton' then
-            if not self.MenuQest then
-                self.MenuQest=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.MenuQest, InitMenu_Quest, 'MENU')
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.MenuQest, self, 15, 0)
-        end
-    end)
-
-    QusetButton:SetScript('OnLeave', function() e.tips:Hide() end)
-    QusetButton:SetScript('OnEnter', function(self)
+    function QusetButton:tooltip_Show()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
@@ -1171,7 +1263,44 @@ local function Init_Quest()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, e.onlyChinese and '任务' or QUESTS_LABEL)
         e.tips:Show()
+    end
+
+    QusetButton:SetScript("OnEvent", function(self, event, arg1)
+        if event=='MINIMAP_UPDATE_TRACKING' then
+            self:get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
+
+        elseif event=='QUEST_LOG_UPDATE' then--更新数量
+            local num= select(2, C_QuestLog.GetNumQuestLogEntries()) or 0
+            self.Text:SetText((num >= C_QuestLog.GetMaxNumQuestsCanAccept() and '|cnRED_FONT_COLOR:' or '')..num)
+
+        elseif event=='GROUP_ROSTER_UPDATE' then
+            self:set_PushableQuest()--共享,任务
+
+        elseif event=='QUEST_ACCEPTED' then---共享,任务
+            if arg1 then
+                self:set_PushableQuest(arg1)--共享,任务
+            end
+        else
+            self:set_Only_Show_Zone_Quest()--显示本区域任务
+        end
     end)
+
+    QusetButton:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then
+            Save.quest= not Save.quest and true or nil
+            self:set_Texture()--设置，图片
+            self:tooltip_Show()
+        elseif d=='RightButton' then
+            if not self.MenuQest then
+                self.MenuQest=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.MenuQest, InitMenu_Quest, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.MenuQest, self, 15, 0)
+        end
+    end)
+
+    QusetButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    QusetButton:SetScript('OnEnter', QusetButton.tooltip_Show)
 
     QusetButton.questSelect={}--已选任务, 提示用
     QusetButton:set_Texture()--设置，图片
