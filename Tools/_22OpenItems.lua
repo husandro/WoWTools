@@ -224,7 +224,7 @@ local function get_Items()--取得背包物品信息
                             if Save.open then
                                 if dateInfo.text[LOCKED] and e.Player.class=='ROGUE' then--DZ
                                     setAtt(bag, slot, info.iconFileID, info.itemID, 1804)--开锁 Pick Lock
-                                elseif not dateInfo.text[LOCKED] then
+                                else--if not dateInfo.text[LOCKED] then
                                     setAtt(bag, slot, info.iconFileID, info.itemID)
                                 end
                                 return
