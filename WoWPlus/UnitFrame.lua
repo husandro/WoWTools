@@ -1086,16 +1086,16 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         end
     end)
 
-    --if e.Player.husandro then
+    if e.Player.husandro then
         hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称)
             if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
                 self.name:SetText(e.Icon.star2)
             end
         end)
 
-    --############
-    --去掉生命条 % extStatusBar.lua TextStatusBar.lua
-    --############会出现，错误
+        --############
+        --去掉生命条 % extStatusBar.lua TextStatusBar.lua
+        --############会出现，错误
 
         local deadText= e.onlyChinese and '死亡' or DEAD
         hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
@@ -1147,6 +1147,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 frame.DeadText:SetText(text)
             end
         end)
+    end
 
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
     --###################
