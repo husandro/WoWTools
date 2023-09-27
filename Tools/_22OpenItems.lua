@@ -109,7 +109,7 @@ local panel= CreateFrame("Frame")
 local button
 
 if e.Player.class=='ROGUE' then
-    e.LoadDate({id=1804, type='spell'})
+    e.LoadDate({id=1804, type='spell'})--开锁 Pick Lock
 end
 
 --QUEST_REPUTATION_REWARD_TOOLTIP = "在%2$s中的声望提高%1$d点";
@@ -223,7 +223,7 @@ local function get_Items()--取得背包物品信息
                         elseif info.hasLoot then--可打开
                             if Save.open then
                                 if dateInfo.text[LOCKED] and e.Player.class=='ROGUE' then--DZ
-                                    setAtt(bag, slot, info.iconFileID, info.itemID, 1804)
+                                    setAtt(bag, slot, info.iconFileID, info.itemID, 1804)--开锁 Pick Lock
                                 elseif not dateInfo.text[LOCKED] then
                                     setAtt(bag, slot, info.iconFileID, info.itemID)
                                 end
