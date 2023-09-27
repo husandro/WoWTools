@@ -7,7 +7,9 @@ local Save={
     equipmentFrameScale=1.1--装备管理, 缩放
     --hide=true,--隐藏CreateTexture
 }
-local panel = CreateFrame("Frame", nil, PaperDollFrame)
+local panel
+---@class panel
+panel= CreateFrame("Frame", nil, PaperDollFrame)
 
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
@@ -494,6 +496,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         end
     end
     if not self.du and du and isPaperDollItemSlot then
+        ---@class self.du
         self.du= CreateFrame('StatusBar', nil, self)
         local wq= slot==16 or slot==17 or slot==18--武器
         if wq then
@@ -1453,6 +1456,7 @@ panel.Init_Show_Hide_Button= function(self, frame)
     if not self or self.ShowHideButton then
         return
     end
+    
     local title= self==PaperDollItemsFrame and CharacterFrame.TitleContainer or self.TitleContainer
 
     local btn= e.Cbtn(self, {size={20,20}, atlas= not Save.hide and e.Icon.icon or e.Icon.disabled})
