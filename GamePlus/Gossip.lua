@@ -8,6 +8,7 @@ local Save={
         gossipOption={},
         choice={},--PlayerChoiceFrame
         movie={},--电影
+        stopMovie=true,--如果已播放，停止播放
 
         quest= true,
         questOption={},
@@ -193,10 +194,14 @@ local function Init_Menu_Gossip(_, level, type)
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinese and '清除全部' or CLEAR_ALL,
+            tooltipOnButton= true,
+            tooltipTitle= 'Shift+'..e.Icon.left,
             notCheckable=true,
             func= function()
-                Save.gossipOption={}
-                print(id, addName, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                if IsShiftKeyDown() then
+                    Save.gossipOption={}
+                    print(id, addName, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                end
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -220,9 +225,14 @@ local function Init_Menu_Gossip(_, level, type)
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text=e.onlyChinese and '清除全部' or CLEAR_ALL,
+            notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle= 'Shift+'..e.Icon.left,
             func= function()
-                Save.NPC={}
-                print(id, addName, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                if IsShiftKeyDown() then
+                    Save.NPC={}
+                    print(id, addName, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                end
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -255,13 +265,65 @@ local function Init_Menu_Gossip(_, level, type)
         info={
             text=e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle='Shift+'..e.Icon.left,
             func= function()
-                Save.choice={}
-                print(id, addName, e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                if IsShiftKeyDown() then
+                    Save.choice={}
+                    print(id, addName, e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                end
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+    elseif type=='Movie' then
+        for movieID, dateTime in pairs(Save.movie) do
+            info={
+                text= movieID,
+                tooltipOnButton=true,
+                tooltipTitle= dateTime,
+                tooltipText= '|n'
+                            ..e.Icon.left..(e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY)
+                            ..'Shift+'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
+                notCheckable=true,
+                arg1= movieID,
+                func= function(_, arg1)
+                    if not IsModifierKeyDown() then
+                        MovieFrame_PlayMovie(MovieFrame, arg1)
+
+                    elseif IsShiftKeyDown() then
+                        Save.movie[arg1]=nil
+                        print(id, addName, e.onlyChinese and '移除' or REMOVE, 'movieID', arg1)
+                    end
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON,
+            checked= Save.stopMovie,
+            tooltipOnButton=true,
+            tooltipTitle=e.onlyChinese and '已经播放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ANIMA_DIVERSION_NODE_SELECTED, EVENTTRACE_BUTTON_PLAY),
+            func= function ()
+                Save.stopMovie= not Save.stopMovie and true or nil
+                print(id, addName, e.GetEnabeleDisable(Save.stopMovie))
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        info={
+            text=e.onlyChinese and '清除全部' or CLEAR_ALL,
+            tooltipOnButton=true,
+            tooltipTitle='Shift+'..e.Icon.left,
+            notCheckable=true,
+            func= function()
+                if IsShiftKeyDown() then
+                    Save.movie={}
+                    print(id, addName, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                end
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
     if type then
@@ -306,6 +368,16 @@ local function Init_Menu_Gossip(_, level, type)
         tooltipOnButton=true,
         tooltipTitle='PlayerChoiceFrame',
         tooltipText= 'Blizzard_PlayerChoice',
+        notCheckable=true,
+        hasArrow=true,
+        keepShownOnClick=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text= e.onlyChinese and '电影' or 'Movie',
+        menuList='Movie',
+        tooltipOnButton=true,
         notCheckable=true,
         hasArrow=true,
         keepShownOnClick=true,
@@ -429,6 +501,26 @@ local function Init_Gossip()
 
     GossipButton.selectGissipIDTab={}--GossipFrame，显示时用
 
+    GossipButton:RegisterEvent('PLAY_MOVIE')--movieID
+    GossipButton:SetScript('OnEvent', function(_, _, arg1)
+        if arg1 then
+            if Save.movie[arg1] then
+                if Save.stopMovie then
+                    MovieFrame:StopMovie()
+                    print(id, addName,
+                        '|cnRED_FONT_COLOR:'..(e.onlyChinese and '停止播放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_TEXTTOSPEECH_STOP, EVENTTRACE_BUTTON_PLAY))..'|r',
+                        arg1
+                    )
+                end
+            else
+                Save.movie[arg1]= date("%d/%m/%y %H:%M:%S")
+            end
+        end
+    end)
+
+
+
+
     --禁用此npc闲话选项
     GossipFrame.sel=CreateFrame("CheckButton", nil, GossipFrame, 'InterfaceOptionsCheckButtonTemplate')
     GossipFrame.sel:SetPoint("BOTTOMLEFT",5,2)
@@ -461,6 +553,7 @@ local function Init_Gossip()
         self.sel.name=UnitName("npc")
         self.sel:SetChecked(Save.NPC[npc])
     end)
+
     --自定义闲话选项, 按钮 GossipFrameShared.lua
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
         if not info or not info.gossipOptionID then
@@ -711,9 +804,6 @@ end
 --任务，主菜单
 --###########
 
-
-
-
 local function InitMenu_Quest(_, level, type)
     local info
     if type=='REWARDSCHECK' then--三级菜单 ->自动:选择奖励
@@ -725,8 +815,10 @@ local function InitMenu_Quest(_, level, type)
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle='questID: '..questID,
-                func= function()
-                    Save.questRewardCheck[questID]=nil
+                arg1= questID,
+                func= function(_, arg1)
+                    Save.questRewardCheck[arg1]=nil
+                    print(id, addName, GetQuestLink(arg1) or C_QuestLog.GetTitleForQuestID(arg1) or arg1)
                 end,
             }
             num=num+1
@@ -737,8 +829,13 @@ local function InitMenu_Quest(_, level, type)
         info={
             text= e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle= 'Shift+'..e.Icon.left,
             func= function()
-                Save.questRewardCheck={}
+                if IsShiftKeyDown() then
+                    Save.questRewardCheck={}
+                    print(id, addName, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                end
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -763,9 +860,13 @@ local function InitMenu_Quest(_, level, type)
         info={
             text= e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle= 'Shift+'..e.Icon.left,
             func= function()
-                Save.questOption={}
-                print(id, QUESTS_LABEL, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                if IsShiftKeyDown() then
+                    Save.questOption={}
+                    print(id, QUESTS_LABEL, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                end
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1317,6 +1418,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.questRewardCheck= Save.questRewardCheck or {}
             Save.choice= Save.choice or {}
             Save.NPC= Save.NPC or {}
+            Save.movie= Save.movie or {}
 
             --添加控制面板
             e.AddPanel_Header(nil, 'Plus')
@@ -1463,7 +1565,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-
             WoWToolsSave[addName]=Save
         end
     end

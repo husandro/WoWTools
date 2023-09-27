@@ -3379,7 +3379,10 @@
         "MovieFrame",
         "MovieFrame_PlayMovie",
         "MovieFrame_OnHide",
-        "QuestDetailAcceptButton_OnClick"
+        "QuestDetailAcceptButton_OnClick",
+        "RENOWN_LEVEL_UP_SKIP_BUTTON",
+        "ANIMA_DIVERSION_NODE_SELECTED",
+        "SLASH_TEXTTOSPEECH_STOP"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
