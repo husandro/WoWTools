@@ -656,6 +656,8 @@ end
 
 local function Init_Button(frame)
     local btn=e.Cbtn(frame.TitleContainer, {size={20,20}, texture=236994})
+    btn:Raise()
+    btn:SetAlpha(0.5)
     btn:SetPoint('RIGHT', frame.TitleContainer ,'RIGHT', -25, 0)
     btn:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
@@ -680,6 +682,7 @@ local function Init_Button(frame)
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         end
         e.tips:Show()
+        self2:SetAlpha(1)
     end)
     btn:SetScript('OnMouseUp', function(self2, d)
         local infoType, itemID, itemLink = GetCursorInfo()
@@ -756,11 +759,13 @@ local function Init_Button(frame)
             e.LibDD:ToggleDropDownMenu(1, nil, self2.Menu, self2, 15, 0)
         end
     end)
-    btn:SetScript('OnLeave', function() e.tips:Hide() end)
+    btn:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
 
-    local noSellButton=e.Cbtn(btn, {size={20,20}, icon=false})--nil, false)--购回
+    local noSellButton=e.Cbtn(frame.TitleContainer, {size={20,20}, atlas='common-icon-undo'})--nil, false)--购回
+    noSellButton:Raise()
+    noSellButton:SetAlpha(0.5)
     noSellButton:SetPoint('RIGHT', btn, 'LEFT', -2, 0)
-    noSellButton:SetScript('OnMouseUp', function(self2)
+    noSellButton:SetScript('OnMouseUp', function()
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType=='item' and itemID then
             if Save.noSell[itemID] then
@@ -803,8 +808,9 @@ local function Init_Button(frame)
             e.tips:AddDoubleLine((e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '回购' or BUYBACK)
         end
         e.tips:Show()
+        self2:SetAlpha(1)
     end)
-    noSellButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    noSellButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
 end
 
 --StackSplitFrame.lua 堆叠,数量,框架

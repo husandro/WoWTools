@@ -117,16 +117,17 @@ local button
 
 --QUEST_REPUTATION_REWARD_TOOLTIP = "在%2$s中的声望提高%1$d点";
 local function setCooldown()--冷却条
+    local start, duration, enable
     if button:IsShown() then
         if Bag.bag and Bag.slot then
             local itemID = C_Container.GetContainerItemID(Bag.bag, Bag.slot)
             if itemID then
-                local start, duration, enable = GetItemCooldown(itemID)
+                start, duration, enable = GetItemCooldown(itemID)
                 button.texture:SetDesaturated(enable==1 and duration and duration>2)
-                e.Ccool(button, start, duration, nil, true,nil, true)
             end
         end
     end
+    e.Ccool(button, start, duration, nil, true,nil, true)
 end
 
 local function setAtt(bag, slot, icon, itemID)--设置属性
