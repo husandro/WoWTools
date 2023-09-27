@@ -586,7 +586,7 @@ local function Init_Gossip()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, e.onlyChinese and '对话' or ENABLE_DIALOG)
         e.tips:Show()
-        e.tips.texture:SetAlpha(1)
+        self.texture:SetAlpha(1)
     end
 
     GossipButton:set_Texture()
@@ -1281,7 +1281,7 @@ local function Init_Quest()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, e.onlyChinese and '任务' or QUESTS_LABEL)
         e.tips:Show()
-        e.tips.texture:SetAlpha(1)
+        self.texture:SetAlpha(1)
     end
 
     QusetButton:SetScript("OnEvent", function(self, event, arg1)
