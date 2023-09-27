@@ -63,7 +63,7 @@ local function Is_Leader()--队长， 或助理
     return UnitIsGroupAssistant('player') or UnitIsGroupLeader('player')
 end
 
-local function get_All_Set()--是不有权限
+local function in_Raid_Leader()--是不有权限
     local raid =IsInRaid()
     return (raid and Is_Leader()) or not raid
 end
@@ -117,7 +117,7 @@ local function Init_set_Tank_Healer()
 
 
     function SetTankHealerFrame:check_Enable(set)
-        return (Save.autoSet or set) and get_All_Set() and IsInGroup() and not Is_In_PvP_Area()
+        return (Save.autoSet or set) and in_Raid_Leader() and IsInGroup() and not Is_In_PvP_Area()
     end
 
     function SetTankHealerFrame:set_TankHealer(set)--设置队伍标记
@@ -473,7 +473,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         if UnitAffectingCombat('player') then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         else
-            local all= get_All_Set()
+            local all= in_Raid_Leader()
             local ping= C_CVar.GetCVarBool("enablePings") and true or false
             self.ping:SetShown(ping)
 
@@ -1258,7 +1258,7 @@ local function InitMenu(_, level, type)--主菜单
         menuList= 'MakerFrameResetPost',
         hasArrow=true,
         keepShownOnClick= true,
-        disabled=not get_All_Set() or C_PvP.IsArena() or C_PvP.IsBattleground() or UnitAffectingCombat('player'),--是不有权限
+        disabled= Is_In_PvP_Area() or UnitAffectingCombat('player'),--是不有权限
         func=function()
             Save.markersFrame= not Save.markersFrame and true or nil
             Init_Markers_Frame()--设置标记, 框架
