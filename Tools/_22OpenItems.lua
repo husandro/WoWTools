@@ -109,10 +109,9 @@ local panel= CreateFrame("Frame")
 local button
 
 
-
-
-
-
+if e.Player.class=='ROGUE' then
+    e.LoadDate({id=1804, type='spell'})
+end
 
 
 --QUEST_REPUTATION_REWARD_TOOLTIP = "在%2$s中的声望提高%1$d点";
@@ -130,7 +129,7 @@ local function setCooldown()--冷却条
     e.Ccool(button, start, duration, nil, true,nil, true)
 end
 
-local function setAtt(bag, slot, icon, itemID)--设置属性
+local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
     if UnitAffectingCombat('player') or not UnitIsConnected('player') then
         Combat= true
         return
@@ -138,8 +137,12 @@ local function setAtt(bag, slot, icon, itemID)--设置属性
     local num
     if bag and slot then
         Bag={bag=bag, slot=slot}
+        if spellID then
+            button:SetAttribute("macrotext*",'/cast '..(GetSpellInfo(spellID) or spellID)..'\n/use '..bag ..' '..slot)
+        else
+            button:SetAttribute("macrotext", '/use '..bag..' '..slot)
+        end
 
-        button:SetAttribute("macrotext", '/use '..bag..' '..slot)
         button.texture:SetTexture(icon)
         num = GetItemCount(itemID)
         num= num~=1 and num or ''
@@ -195,7 +198,7 @@ local function get_Items()--取得背包物品信息
                     end
 
                 else
-                    local dateInfo= e.GetTooltipData({hyperLink=info.hyperlink, red=true, onlyRed=true, text={}})
+                    local dateInfo= e.GetTooltipData({hyperLink=info.hyperlink, red=true, onlyRed=true, text={LOCKED}})
 
                     if not dateInfo.red then--不出售, 可以使用
                         if itemEquipLoc and _G[itemEquipLoc] then--幻化
@@ -221,7 +224,11 @@ local function get_Items()--取得背包物品信息
                             end
                         elseif info.hasLoot then--可打开
                             if Save.open then
-                                setAtt(bag, slot, info.iconFileID, info.itemID)
+                                if dateInfo.text[LOCKED] and e.Player.class=='ROGUE' then--DZ
+                                    setAtt(bag, slot, info.iconFileID, info.itemID, 1804)
+                                elseif not dateInfo.text[LOCKED] then
+                                    setAtt(bag, slot, info.iconFileID, info.itemID)
+                                end
                                 return
                             end
 
