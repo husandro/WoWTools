@@ -108,11 +108,9 @@ local Combat, Bag= nil,{}
 local panel= CreateFrame("Frame")
 local button
 
-
 if e.Player.class=='ROGUE' then
     e.LoadDate({id=1804, type='spell'})
 end
-
 
 --QUEST_REPUTATION_REWARD_TOOLTIP = "在%2$s中的声望提高%1$d点";
 local function setCooldown()--冷却条
