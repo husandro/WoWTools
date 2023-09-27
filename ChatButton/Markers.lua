@@ -513,28 +513,11 @@ local function Init_Markers_Frame()--设置标记, 框架
             self:UnregisterAllEvents()
         end
     end
-    Frame:SetScript('OnEvent', function(self, event, arg1)
-        if event=='PLAYER_REGEN_ENABLED' then
-            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-            self:set_Shown()
-
-        elseif event=='PLAYER_ENTERING_WORLD' then
-            self:set_Shown()
-
-        elseif event=='CVAR_UPDATE' then
-            if arg1=='enablePings' then
-                self:set_Shown()
-            end
-        else
-            self:set_Shown()
-        end
-    end)
     
-
     function Frame:set_Tooltips_Point()
         e.tips:SetOwner(Frame, "ANCHOR_RIGHT")
     end
-    Frame:set_Event()
+    
 
 
     btn= e.Cbtn(Frame, {size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})--移动按钮
@@ -1070,6 +1053,26 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
     end
 
+    
+    Frame:SetScript('OnEvent', function(self, event, arg1)
+        if event=='PLAYER_REGEN_ENABLED' then
+            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+            self:set_Shown()
+
+        elseif event=='PLAYER_ENTERING_WORLD' then
+            self:set_Shown()
+
+        elseif event=='CVAR_UPDATE' then
+            if arg1=='enablePings' then
+                self:set_Shown()
+            end
+        else
+            self:set_Shown()
+        end
+    end)
+    hooksecurefunc('MovieFrame_PlayMovie', function() Frame:set_Shown() end)
+    hooksecurefunc('MovieFrame_OnMovieFinished', function() Frame:set_Shown() end)
+    Frame:set_Event()
     Frame:set_Shown()
 end
 
