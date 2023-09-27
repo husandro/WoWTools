@@ -452,27 +452,29 @@ end
 
 
 function e.MK(number, bit)
-    bit = bit or 1
-    local num= 0
-    if bit==0 then
-        num= 0.4
-    elseif bit==1 then
-        num= 0.04
-    elseif bit==2 then
-        num= 0.004
-    elseif bit==3 then
-        num= 0.0004
-    elseif bit==4 then
-        num= 0.00004
-    end
-    if number>=1e6 then
-        return format('%.'..bit..'fm', (number/1e6)-num)
-    elseif number>= 1e4 and (LOCALE_zhCN or e.onlyChinese) then
-        return format('%.'..bit..'fw', (number/1e4)-num)
-    elseif number>=1e3 then
-        return format('%.'..bit..'fk', (number/1e3)-num)
-    else
-        return format('%i', number)
+    if number then
+        bit = bit or 1
+        local num= 0
+        if bit==0 then
+            num= 0.4
+        elseif bit==1 then
+            num= 0.04
+        elseif bit==2 then
+            num= 0.004
+        elseif bit==3 then
+            num= 0.0004
+        elseif bit==4 then
+            num= 0.00004
+        end
+        if number>=1e6 then
+            return format('%.'..bit..'fm', (number/1e6)-num)
+        elseif number>= 1e4 and (LOCALE_zhCN or e.onlyChinese) then
+            return format('%.'..bit..'fw', (number/1e4)-num)
+        elseif number>=1e3 then
+            return format('%.'..bit..'fk', (number/1e3)-num)
+        else
+            return format('%i', number)
+        end
     end
 end
 
@@ -587,7 +589,7 @@ function e.Cstr(self, tab)--self, {size, copyFont, changeFont, fontName color={r
             font:SetFont('Fonts\\ARHei.ttf', (tab.size or 12), 'OUTLINE')
         else
             local fontName= font:GetFont()
-            font:SetFont(fontName, (tab.size or 12), 'OUTLINE')--THICKOUTLINE
+            font:SetFont(fontName or 'GameFontNormal', (tab.size or 12), 'OUTLINE')--THICKOUTLINE
         end
         font:SetShadowOffset(1, -1)
         --font:SetShadowColor(0, 0, 0)

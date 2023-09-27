@@ -278,21 +278,32 @@ local function Init_Menu_Gossip(_, level, type)
 
     elseif type=='Movie' then
         for movieID, dateTime in pairs(Save.movie) do
+            local isDownload= IsMovieLocal(movieID)-- IsMoviePlayable(movieID)
             info={
                 text= movieID,
                 tooltipOnButton=true,
                 tooltipTitle= dateTime,
                 tooltipText= '|n'
                             ..e.Icon.left..(e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY)
-                            ..'|nShift+'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
+                            ..'|nShift+'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE)
+                            ..(isDownload and '|cff606060' or '')
+                            ..'|nCtrl+'..e.Icon.left..(e.onlyChinese and '下载' or 'Download'),
                 notCheckable=true,
                 disabled= UnitAffectingCombat('player'),
-                colorCode= not IsMoviePlayable(movieID) and '|cff606060' or nil,
+                colorCode= not isDownload and '|cff606060' or nil,
                 arg1= movieID,
                 func= function(_, arg1)
                     if not IsModifierKeyDown() then
                         e.LibDD:CloseDropDownMenus()
                         MovieFrame_PlayMovie(MovieFrame, arg1)
+                    elseif IsControlKeyDown() then
+                        if IsMovieLocal(movieID) then
+                            print(id, addName, arg1, e.onlyChinese and '存在' or 'Exist')
+                        else
+                            PreloadMovie(movieID)
+                            local inProgress, downloaded, total = GetMovieDownloadProgress(arg1)
+                            print(id, addName, inProgress, e.MK(downloaded), e.MK(total))
+                        end
                     elseif IsShiftKeyDown() then
                         Save.movie[arg1]=nil
                         print(id, addName, e.onlyChinese and '移除' or REMOVE, 'movieID', arg1)
@@ -307,6 +318,7 @@ local function Init_Menu_Gossip(_, level, type)
             checked= Save.stopMovie,
             tooltipOnButton=true,
             tooltipTitle=e.onlyChinese and '已经播放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ANIMA_DIVERSION_NODE_SELECTED, EVENTTRACE_BUTTON_PLAY),
+            keepShownOnClick=true,
             func= function ()
                 Save.stopMovie= not Save.stopMovie and true or nil
                 print(id, addName, e.GetEnabeleDisable(Save.stopMovie))
@@ -510,15 +522,16 @@ local function Init_Gossip()
                 if Save.stopMovie then
                     MovieFrame:StopMovie()
                     print(id, addName, e.onlyChinese and '对话' or ENABLE_DIALOG,
-                        '|cnRED_FONT_COLOR:'..(e.onlyChinese and '停止播放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_TEXTTOSPEECH_STOP, EVENTTRACE_BUTTON_PLAY))..'|r',
-                        '|cnRED_FONT_COLOR:movieID|r',
+                        '|cnRED_FONT_COLOR:'..(e.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
+                        'movieID|cnGREEN_FONT_COLOR:',
                         arg1
                     )
+                    return
                 end
             else
                 Save.movie[arg1]= date("%d/%m/%y %H:%M:%S")
-                print(id, addName, '|cnGREEN_FONT_COLOR:movieID', arg1)
             end
+            print(id, addName, '|cnGREEN_FONT_COLOR:movieID', arg1)
         end
     end)
 
@@ -698,6 +711,7 @@ local function Init_Gossip()
         end
 
         if not self.sel then
+            ---@class self.sel
             self.sel=CreateFrame("CheckButton", nil, self, 'InterfaceOptionsCheckButtonTemplate')
             self.sel:SetPoint("RIGHT", -2, 0)
             self.sel:SetSize(18, 18)
@@ -991,7 +1005,6 @@ local function Init_Quest()
         if not Save.autoSortQuest or IsInInstance() then
             return
         end
-        print(self, id, addName)
         if self.setQuestWatchTime and not self.setQuestWatchTime:IsCancelled() then
             self.setQuestWatchTime:Cancel()
         end

@@ -469,7 +469,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     end
     Frame:Init_Set_Frame()
 
-    function Frame:set_Shown(hide)
+    function Frame:set_Shown()
         if UnitAffectingCombat('player') then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         else
@@ -487,11 +487,11 @@ local function Init_Markers_Frame()--设置标记, 框架
             self.countdown:SetShown(isLeader)
             self.check:SetShown(isLeader)
 
+
             self:SetShown(
                 Save.markersFrame
                 and not Is_In_PvP_Area()
                 and (ping or target or marker)
-                and not hide
                 and not InCinematic()
                 and not IsInCinematicScene()
                 and not MovieFrame:IsShown()
@@ -500,17 +500,17 @@ local function Init_Markers_Frame()--设置标记, 框架
     end
     function Frame:set_Event()
         if Save.markersFrame then
-            Frame:RegisterEvent('PLAYER_ENTERING_WORLD')--显示/隐藏
-            Frame:RegisterEvent('CVAR_UPDATE')
-            Frame:RegisterEvent('GROUP_ROSTER_UPDATE')
-            Frame:RegisterEvent('GROUP_LEFT')
-            Frame:RegisterEvent('GROUP_JOINED')
-            Frame:RegisterEvent('CINEMATIC_START')
-            Frame:RegisterEvent('CINEMATIC_STOP')
-            Frame:RegisterEvent('PLAY_MOVIE')
-            Frame:RegisterEvent('STOP_MOVIE')
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')--显示/隐藏
+            self:RegisterEvent('CVAR_UPDATE')
+            self:RegisterEvent('GROUP_ROSTER_UPDATE')
+            self:RegisterEvent('GROUP_LEFT')
+            self:RegisterEvent('GROUP_JOINED')
+            self:RegisterEvent('CINEMATIC_START')
+            self:RegisterEvent('CINEMATIC_STOP')
+            self:RegisterEvent('PLAY_MOVIE')
+            self:RegisterEvent('STOP_MOVIE')
         else
-            Frame:UnregisterAllEvents()
+            self:UnregisterAllEvents()
         end
     end
     Frame:SetScript('OnEvent', function(self, event, arg1)
@@ -526,9 +526,10 @@ local function Init_Markers_Frame()--设置标记, 框架
                 self:set_Shown()
             end
         else
-            self:set_Shown(event=='CINEMATIC_START' or event=='PLAY_MOVIE')
+            self:set_Shown()
         end
     end)
+    
 
     function Frame:set_Tooltips_Point()
         e.tips:SetOwner(Frame, "ANCHOR_RIGHT")
