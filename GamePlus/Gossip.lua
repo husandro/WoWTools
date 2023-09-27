@@ -445,6 +445,7 @@ local function Init_Menu_Gossip(_, level, type)
             tooltipTitle='CVar movieSubtitle',
             checked= C_CVar.GetCVarBool("movieSubtitle"),
             disabled= UnitAffectingCombat('player'),
+            keepShownOnClick=true,
             func= function()
                 C_CVar.SetCVar('movieSubtitle', C_CVar.GetCVarBool("movieSubtitle") and '0' or '1')
             end
@@ -563,8 +564,16 @@ local function Init_Gossip()
     function GossipButton:set_Scale()--设置，缩放
         self:SetScale(Save.scale or 1)
     end
+    function GossipButton:set_Alpha()
+        self.texture:SetAlpha(Save.gossip and 1 or 0.3)
+    end
     function GossipButton:set_Texture()--设置，图片
-        self:SetNormalAtlas(Save.gossip and 'SpecDial_LastPip_BorderGlow' or e.Icon.icon)
+        if not self.texture then
+            self.texture= self:CreateTexture()
+            self.texture:SetAllPoints(self)
+        end
+        self.texture:SetAtlas(Save.gossip and 'SpecDial_LastPip_BorderGlow' or e.Icon.icon)
+        self:set_Alpha()
     end
     function GossipButton:tooltip_Show()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -577,6 +586,7 @@ local function Init_Gossip()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, e.onlyChinese and '对话' or ENABLE_DIALOG)
         e.tips:Show()
+        e.tips.texture:SetAlpha(1)
     end
 
     GossipButton:set_Texture()
@@ -637,7 +647,7 @@ local function Init_Gossip()
     end)
 
 
-    GossipButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    GossipButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)
     GossipButton:SetScript('OnEnter', GossipButton.tooltip_Show)
 
     GossipButton.selectGissipIDTab={}--GossipFrame，显示时用
@@ -1174,8 +1184,16 @@ local function Init_Quest()
         end
     end
 
+    function QusetButton:set_Alpha()
+        self.texture:SetAlpha(Save.quest and 1 or 0.3)
+    end
     function QusetButton:set_Texture()--设置，图片
-        self:SetNormalAtlas(Save.quest and 'UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest' or e.Icon.icon)--AutoQuest-Badge-Campaign
+        if not self.texture then
+            self.texture= self:CreateTexture()
+            self.texture:SetAllPoints()
+        end
+        self.texture:SetAtlas(Save.quest and 'UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest' or e.Icon.icon)--AutoQuest-Badge-Campaign
+        self:set_Alpha()
     end
 
     function QusetButton:get_set_IsQuestTrivialTracking(setting)--其它任务,低等任务,追踪
@@ -1263,6 +1281,7 @@ local function Init_Quest()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, e.onlyChinese and '任务' or QUESTS_LABEL)
         e.tips:Show()
+        e.tips.texture:SetAlpha(1)
     end
 
     QusetButton:SetScript("OnEvent", function(self, event, arg1)
@@ -1299,7 +1318,7 @@ local function Init_Quest()
         end
     end)
 
-    QusetButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    QusetButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)
     QusetButton:SetScript('OnEnter', QusetButton.tooltip_Show)
 
     QusetButton.questSelect={}--已选任务, 提示用
