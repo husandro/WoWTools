@@ -181,7 +181,8 @@ local function Init_Menu_Gossip(_, level, type)
                 text= text,
                 notCheckable=true,
                 tooltipOnButton=true,
-                tooltipTitle='gossipOptionID '..gossipOptionID..'|n|n'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
+                tooltipTitle='gossipOptionID '..gossipOptionID,
+                tooltipText='|n'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
                 arg1= gossipOptionID,
                 func=function(_, arg1)
                     Save.gossipOption[arg1]=nil
@@ -365,7 +366,7 @@ local function Init_Menu_Gossip(_, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info={--禁用NPC, 闲话,任务, 选项
-        text= e.onlyChinese and '禁用 NPC' or (DISABLE..' NPC'),
+        text= (e.onlyChinese and '禁用' or DISABLE)..' NPC',
         menuList='DISABLE',
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '对话' or ENABLE_DIALOG,
