@@ -483,18 +483,19 @@ local function Init_Markers_Frame()--设置标记, 框架
             local marker= IsInGroup() and Is_Leader()
             self.marker:SetShown(marker)
 
-            self:SetShown(Save.markersFrame
-                        and not Is_In_PvP_Area()
-                        and (ping or target or marker)
-                        and not hide
-                        and not InCinematic()
-                        and not IsInCinematicScene()
-                        and not MovieFrame:IsShown()
-                    )
-
             local isLeader=GetNumGroupMembers()>1 and (IsInRaid() and Is_Leader()) or UnitIsGroupLeader('player')
             self.countdown:SetShown(isLeader)
             self.check:SetShown(isLeader)
+
+            self:SetShown(
+                Save.markersFrame
+                and not Is_In_PvP_Area()
+                and (ping or target or marker)
+                and not hide
+                and not InCinematic()
+                and not IsInCinematicScene()
+                and not MovieFrame:IsShown()
+            )
         end
     end
     function Frame:set_Event()
@@ -513,7 +514,6 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
     end
     Frame:SetScript('OnEvent', function(self, event, arg1)
-        
         if event=='PLAYER_REGEN_ENABLED' then
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
             self:set_Shown()
@@ -525,17 +525,15 @@ local function Init_Markers_Frame()--设置标记, 框架
             if arg1=='enablePings' then
                 self:set_Shown()
             end
-        else--if event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' or event=='GROUP_JOINED' then
+        else
             self:set_Shown(event=='CINEMATIC_START' or event=='PLAY_MOVIE')
         end
     end)
 
     function Frame:set_Tooltips_Point()
         e.tips:SetOwner(Frame, "ANCHOR_RIGHT")
-        --e.tips:SetOwner(frame, "ANCHOR_LEFT")
     end
     Frame:set_Event()
-
 
 
     btn= e.Cbtn(Frame, {size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})--移动按钮

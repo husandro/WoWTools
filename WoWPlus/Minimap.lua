@@ -32,9 +32,10 @@ for questID, _ in pairs(Save.questIDs or {}) do
     e.LoadDate({id= questID, type=='quest'})
 end
 
-local panel
----@class panel
-panel = CreateFrame("Frame")
+local panel= CreateFrame("Frame")
+local Button
+---@class Button
+
 
 
 
@@ -240,7 +241,7 @@ local function set_vigentteButton_Text()
         text= text and text..'|n|n'..areaPoiAllText or areaPoiAllText
     end
 
-    panel.Button.Frame.text:SetText(text or '..')
+    Button.Frame.text:SetText(text or '..')
 end
 --[[local barColorFromTintValue = {
 	[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
@@ -294,15 +295,14 @@ end
 
 --检测，显示，禁用，Button, 文本
 local function check_Button_Enabled_Disabled()
-    local self= panel.Button
     local isDisabled= not Save.vigentteButton or IsInInstance() or UnitAffectingCombat('player') or WorldMapFrame:IsShown()
-    if self then
-        self:SetShown(not isDisabled)
-        self.Frame:SetShown(Save.vigentteButtonShowText and not isDisabled and true or false)
+    if Button then
+        Button:SetShown(not isDisabled)
+        Button.Frame:SetShown(Save.vigentteButtonShowText and not isDisabled and true or false)
         if isDisabled or not Save.vigentteButtonShowText then
-            self.Frame.text:SetText('')
-        --else
-            --self.Frame.elapsed=1
+            Button.Frame.text:SetText('')
+        else
+            Button.Frame.elapsed=1
         end
     end
     return isDisabled
@@ -320,7 +320,7 @@ local function speak_Text(text)
     C_VoiceChat.SpeakText(voiceID, text, destination, 0, 100)
     print(id, addName2,'|cffff00ff', text)
 end
-local function set_VIGNETTES_UPDATED()
+local function set_VIGNETTES_UPDATED(init)
     if UnitOnTaxi('player')  then
         return
     end
@@ -330,14 +330,20 @@ local function set_VIGNETTES_UPDATED()
         for _, vignetteGUID in pairs(vignetteInfo) do
             local info= vignetteGUID and C_VignetteInfo.GetVignetteInfo(vignetteGUID) or {}
             if info.name and info.name~='' and info.zoneInfiniteAOI then
-                if info.isDead then
-                    SpeakTextTab[info.name]=nil
-                elseif not SpeakTextTab[info.name] then
-                    if not find then
-                        speak_Text(info.name)
-                        find=true
+                if init then
+                    if not info.isDead then
+                        SpeakTextTab[info.name]=true
                     end
-                    SpeakTextTab[info.name]=true
+                else
+                    if info.isDead then
+                        SpeakTextTab[info.name]=nil
+                    elseif not SpeakTextTab[info.name] then
+                        if not find then
+                            speak_Text(info.name)
+                            find=true
+                        end
+                        SpeakTextTab[info.name]=true
+                    end
                 end
             end
         end
@@ -354,7 +360,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             disabled= Save.hideVigentteCurrentOnWorldMap,
             func= function()
                 Save.vigentteSound= not Save.vigentteSound and true or nil
-                panel.Button:set_Instance_Event()
+                Button:set_Instance_Event()
                 if Save.vigentteSound then
                     speak_Text(e.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND))
                 end
@@ -542,7 +548,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             checked= Save.textToDown,
             func= function()
                 Save.textToDown= not Save.textToDown and true or nil
-                panel.Button:set_Frame()--设置，Button的 Frame Text 属性
+                Button:set_Frame()--设置，Button的 Frame Text 属性
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -615,49 +621,49 @@ end
 
 
 local function Init_Set_Button()--小地图, 标记, 文本
-    local btn= panel.Button
-    if check_Button_Enabled_Disabled() or btn then
+    if check_Button_Enabled_Disabled() or Button then
         return
     end
-    ---@class btn
-    btn= e.Cbtn(nil, {icon='hide', size={20,20}})
-    btn.texture= btn:CreateTexture(nil, 'BORDER')
-    btn.texture:SetAllPoints(btn)
-    btn.texture:SetAlpha(0.3)
-    function btn:set_Texture()
+    Button= e.Cbtn(nil, {icon='hide', size={20,20}})
+    Button.texture= Button:CreateTexture(nil, 'BORDER')
+    Button.texture:SetAllPoints(Button)
+    Button.texture:SetAlpha(0.3)
+
+    function Button:set_Texture()
         self.texture:SetAtlas(Save.vigentteButtonShowText and 'VignetteKillElite' or e.Icon.disabled)
     end
-    btn:set_Texture()
-    function btn:Set_Point()--设置，位置
+    Button:set_Texture()
+
+    function Button:Set_Point()--设置，位置
         if Save.pointVigentteButton then
             self:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
         else
             self:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT', 4, 2)
         end
     end
-    btn:Set_Point()
+    Button:Set_Point()
 
-    btn:RegisterForDrag("RightButton")
-    btn:SetMovable(true)
-    btn:SetClampedToScreen(true)
-    btn:SetScript("OnDragStart", function(self)
+    Button:RegisterForDrag("RightButton")
+    Button:SetMovable(true)
+    Button:SetClampedToScreen(true)
+    Button:SetScript("OnDragStart", function(self)
         if IsAltKeyDown() then
             self:StartMoving()
         end
     end)
-    btn:SetScript("OnDragStop", function(self)
+    Button:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
         Save.pointVigentteButton={self:GetPoint(1)}
         Save.pointVigentteButton[2]=nil
         self:Raise()
     end)
 
-    btn:SetScript('OnClick', function(self, d)--显示，隐藏
+    Button:SetScript('OnClick', function(self, d)--显示，隐藏
         local key= IsModifierKeyDown()
         if d=='LeftButton' and not key then
             Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or nil
             check_Button_Enabled_Disabled()
-            panel.Button:set_Texture()
+            Button:set_Texture()
 
         elseif d=='RightButton' and not key then
             if not self.menu then
@@ -673,14 +679,14 @@ local function Init_Set_Button()--小地图, 标记, 文本
         end
     end)
 
-    btn:SetScript('OnMouseDown', function(_, d)
+    Button:SetScript('OnMouseDown', function(_, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
-    btn:SetScript('OnMouseUp', ResetCursor)
+    Button:SetScript('OnMouseUp', ResetCursor)
 
-    btn:SetScript('OnMouseWheel', function(self, d)--缩放
+    Button:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             local scale= Save.vigentteButtonTextScale or 1
             if d==1 then
@@ -695,7 +701,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             self:set_Frame()--设置，Button的 Frame Text 属性
         end
     end)
-    btn:SetScript('OnEnter',function(self)
+    Button:SetScript('OnEnter',function(self)
         set_vigentteButton_Text()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -710,14 +716,15 @@ local function Init_Set_Button()--小地图, 标记, 文本
         e.tips:Show()
         self.texture:SetAlpha(1)
     end)
-    btn:SetScript('OnLeave',function(self)
+    Button:SetScript('OnLeave',function(self)
         e.tips:Hide()
         ResetCursor()
         self.texture:SetAlpha(0.3)
     end)
 
-    btn:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件
-    function btn:set_Instance_Event()
+    Button:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件
+    function Button:set_Instance_Event()
+        SpeakTextTab={}
         if IsInInstance() then
             self:UnregisterEvent('PLAYER_REGEN_DISABLED')
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
@@ -726,13 +733,14 @@ local function Init_Set_Button()--小地图, 标记, 文本
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             if Save.vigentteSound and not Save.hideVigentteCurrentOnWorldMap then
-                SpeakTextTab={}
+                set_VIGNETTES_UPDATED(true)
                 self:RegisterEvent('VIGNETTES_UPDATED')
             end
         end
     end
-    btn:set_Instance_Event()
-    btn:SetScript('OnEvent', function(self, event)
+    Button:set_Instance_Event()
+
+    Button:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_ENTERING_WORLD' then
             C_Timer.After(2, function()
                 check_Button_Enabled_Disabled()
@@ -745,8 +753,8 @@ local function Init_Set_Button()--小地图, 标记, 文本
         end
     end)
 
-    ---@class btn.Frame
-    function btn:set_Frame()--设置，Button的 Frame Text 属性
+    ---@class Button.Frame
+    function Button:set_Frame()--设置，Button的 Frame Text 属性
         if not self.Frame then
             ---@class self.Frame
             self.Frame= CreateFrame('Frame', nil, self)
@@ -765,21 +773,20 @@ local function Init_Set_Button()--小地图, 标记, 文本
         end
         self.Frame:SetScale(Save.vigentteButtonTextScale or 1)
     end
-    btn:set_Frame()
+    Button:set_Frame()
 
     WorldMapFrame:HookScript('OnHide', check_Button_Enabled_Disabled)
     WorldMapFrame:HookScript('OnShow', check_Button_Enabled_Disabled)
 
     check_Button_Enabled_Disabled()
 
-    btn.Frame:SetScript('OnUpdate', function(self, elapsed)
+    Button.Frame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 1) + elapsed
         if self.elapsed>=1 then
             self.elapsed=0
             set_vigentteButton_Text(self.text)
         end
     end)
-    panel.Button=btn
 
     hooksecurefunc('TaskPOI_OnEnter', function(self2)--世界任务，提示 WorldMapFrame.lua
         if self2.questID and self2.OnMouseClickAction then
@@ -967,12 +974,12 @@ local function Init_Menu(_, level, menuList)
         info={
             text= e.onlyChinese and '重置位置' or RESET_POSITION,
             notCheckable=true,
-            disabled= not panel.Button,
+            disabled= not Button,
             colorCode= not Save.pointVigentteButton and '|cff606060' or '',
             func= function()
                 Save.pointVigentteButton=nil
-                panel.Button:ClearAllPoints()
-                panel.Button:Set_Point()
+                Button:ClearAllPoints()
+                Button:Set_Point()
                 print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         }
@@ -1346,15 +1353,15 @@ end)]]
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
+
             Save.vigentteButtonTextScale= Save.vigentteButtonTextScale or 1
             Save.uiMapIDs= Save.uiMapIDs or {}
             Save.questIDs= Save.questIDs or {}
             Save.areaPoiIDs= Save.areaPoiIDs or {}
-
 
             addName2= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)
 
@@ -1368,13 +1375,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
-
-             --[[添加控制面板        
-             local check=e.AddPanel_Check('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName), not Save.disabled)
-             check:SetScript('OnMouseDown', function()
-                Save.disabled = not Save.disabled and true or nil
-                print(id, addName, e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-             end)]]
 
             if not Save.disabled then
                 panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")

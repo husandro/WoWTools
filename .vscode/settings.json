@@ -3376,7 +3376,10 @@
         "CloseTaxiMap",
         "GetTaxiMapID",
         "NumTaxiNodes",
-        "MovieFrame"
+        "MovieFrame",
+        "MovieFrame_PlayMovie",
+        "MovieFrame_OnHide",
+        "QuestDetailAcceptButton_OnClick"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
