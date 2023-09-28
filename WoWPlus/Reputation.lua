@@ -162,7 +162,9 @@ local function Init_TrackButton()--监视, 文本
 		return
 	end
 	TrackButton= e.Cbtn(nil, {icon='hide', size={20,20}})
-	TrackButton.text=e.Cstr(TrackButton, {color=true})
+	TrackButton.text= e.Cstr(TrackButton, {color=true})
+	TrackButton.texture= TrackButton:CreateTexture()
+	TrackButton.texture:SetAllPoints(TrackButton)
 	
 	function TrackButton:set_Scale()
 		if Save.ttoRightTrackText then
@@ -171,6 +173,15 @@ local function Init_TrackButton()--监视, 文本
 			self.text:SetPoint('TOPLEFT', 3 , -3)
 		end
 		self.text:SetScale(Save.scaleTrackButton or 1)
+	end
+
+	function TrackButton:set_Texture()
+		if Save.btnstr then
+			self.texture:SetTexture(0)
+		else
+			self.texture:SetAtlas(e.Icon.icon)
+		end
+		self.texture:SetAlpha(Save.btnstr and 1 or 0.5)
 	end
 
 	function TrackButton:set_Point()
@@ -210,6 +221,7 @@ local function Init_TrackButton()--监视, 文本
 			Save.btnstr= not Save.btnstr and true or false
 			print(id, addName, e.GetShowHide(Save.btnstr))
 			self:set_Text()--设置, 文本
+			self:set_Texture()
 
 		elseif d=='LeftButton' and IsAltKeyDown() then
 			Save.btnStrHideHeader= not Save.btnStrHideHeader and true or false
@@ -233,18 +245,21 @@ local function Init_TrackButton()--监视, 文本
 		e.tips:AddDoubleLine(e.GetShowHide(not Save.btnstr), e.Icon.left)
 		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.right)
 		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine((e.onlyChinese and '版本' or GAME_VERSION_LABEL)..' '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt+'..e.Icon.left)
 		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
 		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+		
 		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine((e.onlyChinese and '版本' or GAME_VERSION_LABEL)..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt+'..e.Icon.left)
 		e.tips:AddDoubleLine((e.onlyChinese and '隐藏最高声望' or
 				format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, VIDEO_OPTIONS_ULTRA_HIGH, REPUTATION))),
 				e.GetShowHide(not Save.btnStrHideCap)..'Ctrl+'..e.Icon.left)
 		e.tips:Show();
+		self.texture:SetAlpha(1)
 	end
-	TrackButton:SetScript("OnLeave", function()
+	TrackButton:SetScript("OnLeave", function(self)
 		ResetCursor()
 		e.tips:Hide()
+		self:set_Texture()
 	end)
 	TrackButton:SetScript("OnEnter",TrackButton.set_Tooltips)
 
@@ -326,12 +341,13 @@ local function Init_TrackButton()--监视, 文本
 		self.text:SetText(text or '')
 	end
 
-	hooksecurefunc('ReputationFrame_Update', TrackButton.set_Text)--更新, 监视, 文本
+	hooksecurefunc('ReputationFrame_Update', function() TrackButton:set_Text() end)--更新, 监视, 文本
 
 	TrackButton:set_Scale()
 	TrackButton:set_Point()
 	TrackButton:set_Event()
 	TrackButton:set_Shown()
+	TrackButton:set_Texture()
 end
 
 
