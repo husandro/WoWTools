@@ -669,14 +669,18 @@ local function InitMenu(_, level, menuList)--主菜单
 		menuList='ITEMS',
 		hasArrow=true,
 		keepShownOnClick=true,
+		colorCoed=Save.Hide and '|cff606060' or nil,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 	info={
 		text=e.onlyChinese and '货币' or TOKENS,
+		tooltipOnButton=true,
+		tooltipTitle=e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION,
 		notCheckable=true,
 		menuList='TOKENS',
 		hasArrow=true,
 		keepShownOnClick=true,
+		colorCoed=Save.Hide and '|cff606060' or nil,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 

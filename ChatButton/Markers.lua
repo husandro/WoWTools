@@ -936,7 +936,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 local key1= GetBindingKey('RAIDTARGET'..self.index)
                 local key2= GetBindingKey('RAIDTARGETNONE')
                 local can= CanBeRaidTarget('target')
-                e.tips:AddDoubleLine(Color[self.index].col..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..get_RaidTargetTexture(self.index)..'Alt+'..e.Icon.left, key2 or nil)
+                e.tips:AddDoubleLine(Color[self.index].col..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..get_RaidTargetTexture(self.index)..'Alt+', key2 or nil)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.Icon.left..(can and Color[self.index].col or '|cff606060')
                                     ..(e.onlyChinese and '目标' or TARGET)

@@ -1634,17 +1634,21 @@ local function setHoliday()--节日, 提示, button.texture
                 --name, typeID, subtypeID, minLevel, maxLevel, recLevel, minRecLevel, maxRecLevel, expansionLevel, groupID, textureFilename, difficulty, maxPlayers, description, isHoliday, bonusRepAmount, minPlayers, isTimeWalker, name2, minGearLevel, isScalingDungeon, lfgMapID = GetLFGDungeonInfo(dungeonID)
                 if select(15, GetLFGDungeonInfo(dungeonID)) then
                     --local doneToday, moneyAmount, moneyVar, experienceGained, experienceVar, numRewards, spellID = GetLFGDungeonRewards(dungeonID)
-                    local numRewards = select(6, GetLFGDungeonRewards(dungeonID))
+                    local numRewards = select(6, GetLFGDungeonRewards(dungeonID))--isHoliday
                     if numRewards and numRewards>0 then--奖励物品
                         local find
                         for rewardIndex=1 , numRewards do
                             --local name, texture, numItems, isBonusReward, rewardType, rewardID, quality = GetLFGDungeonRewardInfo(dungeonID, i)
                             local _, texture, _, isBonusReward, rewardType= GetLFGDungeonRewardInfo(dungeonID, rewardIndex)
-                            if texture and (rewardType == "currency" or rewardType=='item' or isBonusReward) then
-                                find=true
-                                texturePath= texture
-                                if rewardType == "currency" or rewardType=='item' then
+                            if texture then
+                                if rewardType == "currency" then
+                                    texturePath= texture
+                                    find=true
                                     break
+                                elseif rewardType=='item' then
+                                    texturePath= texture
+                                elseif isBonusReward and not texturePath then
+                                    texturePath= texture
                                 end
                             end
                         end
