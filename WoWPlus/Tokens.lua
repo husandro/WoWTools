@@ -6,8 +6,23 @@ local Save={
 	tokens={},--{[currencyID]=true}指定显示，表
 	item={},--[202196]= true
 	--indicato=nil,--指定显示
+
+	--scaleTrackButton=1,
+	--hideCurrencyMax=true,--隐藏，已达到资源上限,提示
+	--CAPPED
 }
-local button
+local Button
+local TrackButton
+---@class Button
+---@class TrackButton
+
+
+
+
+
+
+
+
 
 local Get_Currency= function(tab)--e.Get_Currency({id=nil, index=nil, link=nil, soloValue=nil, showIcon=true, showName=true, showID=true, bit=3, showMax=nil})--货币
     local info
@@ -32,7 +47,7 @@ local Get_Currency= function(tab)--e.Get_Currency({id=nil, index=nil, link=nil, 
         return
     end
     local t=''
-    t= tab.showName and '   ' or t
+    --t= tab.showName and '   ' or t
     if tab.showID then--显示ID
         local ID= tab.id or tab.link and C_CurrencyInfo.GetCurrencyIDFromLink(tab.link)
         if tab.index then
@@ -69,6 +84,29 @@ local Get_Currency= function(tab)--e.Get_Currency({id=nil, index=nil, link=nil, 
 
     return t
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#############
 --套装,转换,货币
@@ -127,223 +165,229 @@ end
 
 
 
-local function set_Text_Item()
-	if not button.btn or not button.btn:IsShown() then
+
+--###########
+--监视声望按钮
+--###########
+local function Init_TrackButton()
+	if Save.Hide or TrackButton then
 		return
 	end
-	local text=''
-	for itemID in pairs(Save.item) do
-		local num= GetItemCount(itemID , nil, true, true)
+	TrackButton=e.Cbtn(nil, {atlas='hide', size={20,20}})
 
-		local icon= C_Item.GetItemIconByID(itemID)
-		if icon and num>0 then
-			text= text~='' and text..'|n' or text
-			if Save.showID then
-				text= text..itemID
-			end
-			text= text..'|T'..icon..':0|t'
-			if Save.nameShow then
-				text= text..(GetItemInfo(itemID) or '')..' '
-			end
-			text= text..e.MK(num, 3)
+	TrackButton.text=e.Cstr(TrackButton, {color=true})--内容显示文本
+	TrackButton.text:SetPoint('TOPLEFT',3,-3)
 
-		elseif not icon then
-			e.LoadDate({id=itemID, type='item'})--加载 item quest spell
-		end
-	end
-	button.btn.text2:SetText(text)
+	TrackButton.text2=e.Cstr(TrackButton, {color=true})--物品, 内容显示文本
+	TrackButton.text2:SetPoint('TOPLEFT', TrackButton.text, 'BOTTOMLEFT', 0, -6)
 
-end
-
-local function set_Text()
-	if not button.btn or not button.btn:IsShown() then
-		return
-	end
-	local m=''
-	if Save.indicato then
-		local tab={}
-		for currentID, index in pairs(Save.tokens) do
-			table.insert(tab, {currentID= currentID, index=index==true and 1 or index})
-		end
-		table.sort(tab, function(a,b) return a.index< b.index end)
-		for _, info in pairs(tab) do
-			local text= Get_Currency({id=info.currentID, index=nil, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
-			if text then
-				m= m..text..'|n' or m
-			end
-		end
-	else
-		for index=1, C_CurrencyInfo.GetCurrencyListSize() do
-			local text= Get_Currency({id=nil, index=index, link=nil, soloValue=nil, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3, showMax=nil})--货币
-			if text then
-				m= m..text..'|n' or m
-			end
-		end
-	end
-	button.btn.text:SetText(m)
-end
-
-local function get_Item_Num(tab)--物品数量
-	local num= 0
-	for _ in pairs(tab) do
-		num= num +1
-	end
-	return num
-end
-
-local function set_btn_ShowHide()--设置btn 显示,隐藏
-	local hide= Save.Hide
-				or (button.btn.text.num==0 and button.btn.text2.num==0)
-				or IsInInstance()
-				or C_PetBattles.IsInBattle()
-	button.btn:SetShown(not hide)
-	if Save.str then
-		button.btn:SetNormalTexture(0)
-	else
-		button.btn:SetNormalAtlas(e.Icon.icon)
-	end
-end
-
-local function set_btn_CurrencyAndItem_Text()--设置btn text
-	if button.btn:IsShown() and Save.str then
-		set_Text()
-		set_Text_Item()
-	else
-		button.btn.text:SetText('')
-		button.btn.text2:SetText('')
-	end
-end
-
-local function Set_btn()
-	if not Save.Hide and not button.btn then--监视声望按钮
-		button.btn=e.Cbtn(nil, {atlas=e.Icon.icon, size={18,18}})
-		if Save.point then
-			button.btn:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-		else
-			button.btn:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT',0, -35)
-		end
-		button.btn:RegisterForDrag("RightButton")
-		button.btn:SetClampedToScreen(true);
-		button.btn:SetMovable(true);
-		button.btn:SetScript("OnDragStart", function(self2, d) if d=='RightButton' and not IsModifierKeyDown() then self2:StartMoving() end end)
-		button.btn:SetScript("OnDragStop", function(self2)
-				ResetCursor()
-				self2:StopMovingOrSizing()
-				Save.point={self2:GetPoint(1)}
-				Save.point[2]=nil
-				self2:Raise()
-		end)
-		button.btn:SetScript("OnMouseUp", function() ResetCursor() end)
-		button.btn:SetScript("OnClick", function(self2, d)
-			local key=IsModifierKeyDown()
-			if d=='RightButton' and not key then--右击,移动
-				SetCursor('UI_MOVE_CURSOR')
-
-			elseif d=='LeftButton' and not key then--点击,显示隐藏
-				Save.str= not Save.str and true or nil
-				set_btn_ShowHide()--设置btn 显示,隐藏
-				set_btn_CurrencyAndItem_Text()--设置btn text
-				print(id, addName, e.GetShowHide(Save.str))
-
-			elseif d=='LeftButton' and IsAltKeyDown() then--显示名称
-				Save.nameShow= not Save.nameShow and true or nil
-				set_btn_ShowHide()--设置btn 显示,隐藏
-				set_btn_CurrencyAndItem_Text()--设置btn text
-				print(id, addName, SHOW, NAME, e.GetShowHide(Save.nameShow))
-
-			elseif d=='LeftButton' and IsControlKeyDown() then --显示ID
-				Save.showID= not Save.showID and true or nil
-				print(id, addName, SHOW, 'ID', e.GetShowHide(Save.showID))
-				set_btn_ShowHide()--设置btn 显示,隐藏
-				set_btn_CurrencyAndItem_Text()--设置btn text
-			end
-		end)
-		button.btn:SetScript("OnEnter",function(self2)
-			if UnitAffectingCombat('player') then
-				return
-			end
-			e.tips:SetOwner(self2, "ANCHOR_LEFT");
-			e.tips:ClearLines();
-			e.tips:AddDoubleLine((e.onlyChinese and '追踪' or TRACKING)..': '..e.GetShowHide(Save.str),e.Icon.left)
-			e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.mid)
-			e.tips:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..(Save.size or 12), 'Alt+'..e.Icon.mid)
-			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine((e.onlyChinese and '名称' or NAME)..': '..e.GetShowHide(Save.nameShow), 'Alt+'..e.Icon.left)
-			e.tips:AddDoubleLine('ID: '..e.GetShowHide(Save.showID), 'Ctrl+'..e.Icon.left)
-			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(id, addName)
-			e.tips:Show();
-		end)
-		button.btn:SetScript("OnLeave", function(self2)
-			self2:SetButtonState("NORMAL")
-			ResetCursor()
-			e.tips:Hide()
-		end);
-		button.btn:EnableMouseWheel(true)
-		button.btn:SetScript("OnMouseWheel", function (self2, d)
-			if IsAltKeyDown() then
-				local n= Save.size or 12
-				if d==1 then
-					n= n+ 1
-				elseif d==-1 then
-					n= n- 1
+	function TrackButton:set_Item_Text()
+		local text=''
+		if Save.str and self:IsShown() then
+			for itemID in pairs(Save.item) do
+				local num= GetItemCount(itemID , nil, true, true)
+				local icon= C_Item.GetItemIconByID(itemID)
+				if icon and num>0 then
+					text= text~='' and text..'|n' or text
+					if Save.showID then
+						text= text..itemID
+					end
+					text= text..'|T'..icon..':0|t'
+					if Save.nameShow then
+						text= text..(GetItemInfo(itemID) or '')..' '
+					end
+					text= text..e.MK(num, 3)
+				elseif not icon then
+					e.LoadDate({id=itemID, type='item'})--加载 item quest spell
 				end
-				n= n<6 and 6 or n
-				n= n>32 and 32 or n
-				Save.size=n
-				e.Cstr(nil, {size=n, changeFont=button.btn.text, color=true})--n, nil, button.btn.text, true)
-				print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '字体大小' or FONT_SIZE, n)
+			end
+		end
+		self.text2:SetText(text)
+	end
+
+	function TrackButton:set_Currency_Text()
+		local m=''
+		if Save.str and self:IsShown() then
+			if Save.indicato then
+				local tab={}
+				for currentID, index in pairs(Save.tokens) do
+					table.insert(tab, {currentID= currentID, index=index==true and 1 or index})
+				end
+				table.sort(tab, function(a,b) return a.index< b.index end)
+				for _, info in pairs(tab) do
+					local text= Get_Currency({id=info.currentID, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3})--货币
+					if text then
+						m= m..text..'|n' or m
+					end
+				end
 			else
-				if d==1 and not TokenFrame:IsVisible() or d==-1 and TokenFrame:IsVisible() then
-					ToggleCharacter("TokenFrame")--打开货币
+				for index=1, C_CurrencyInfo.GetCurrencyListSize() do
+					local text= Get_Currency({index=index, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3})--货币
+					if text then
+						m= m..text..'|n' or m
+					end
 				end
 			end
-		end)
+		end
+		self.text:SetText(m)
+	end
 
-		button.btn:SetScript('OnEvent', function(self, event)
-			if event=='PLAYER_ENTERING_WORLD' or event=='PET_BATTLE_OPENING_DONE' or event=='PET_BATTLE_CLOSE' then
-				set_btn_ShowHide()--设置btn 显示,隐藏
-			elseif event=='BAG_UPDATE_DELAYED' then
-				set_Text_Item()
-			elseif event=='CURRENCY_DISPLAY_UPDATE' then
-				set_Text()
+	function TrackButton:set_Shown()--显示,隐藏
+		local hide= Save.Hide or IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player')
+		self:SetShown(not hide)
+		self:set_Currency_Text()
+		self:set_Item_Text()
+		if Save.str then
+			self:SetNormalTexture(0)
+			self:SetAlpha(1)
+		else
+			self:SetNormalAtlas(e.Icon.icon)
+			self:SetAlpha(0.5)
+		end
+	end
+
+	function TrackButton:set_Scale()
+		self:SetScale(Save.scaleTrackButton or 1)
+	end
+
+	TrackButton:RegisterForDrag("RightButton")
+	TrackButton:SetClampedToScreen(true);
+	TrackButton:SetMovable(true);
+	TrackButton:SetScript("OnDragStart", function(self)
+		if IsAltKeyDown() then
+			self:StartMoving()
+		end
+	end)
+	TrackButton:SetScript("OnDragStop", function(self)
+			ResetCursor()
+			self:StopMovingOrSizing()
+			Save.point={self:GetPoint(1)}
+			Save.point[2]=nil
+			self:Raise()
+	end)
+	TrackButton:SetScript("OnMouseUp", ResetCursor)
+	TrackButton:SetScript("OnMouseDown", function(_, d)
+		if d=='RightButton' and IsAltKeyDown() then--右击,移动
+			SetCursor('UI_MOVE_CURSOR')
+		end
+	end)
+	TrackButton:SetScript("OnClick", function(self, d)
+		if d=='LeftButton' and not IsModifierKeyDown() then--点击,显示隐藏
+			Save.str= not Save.str and true or nil
+			self:set_Shown()
+			self:set_Tooltips()
+			print(id, addName, e.GetShowHide(Save.str))
+		elseif d=='RightButton' and not IsModifierKeyDown() then
+			ToggleCharacter("TokenFrame")--打开货币
+
+		elseif d=='LeftButton' and IsAltKeyDown() then--显示名称
+			Save.nameShow= not Save.nameShow and true or nil
+			self:set_Shown()
+			self:set_Tooltips()
+			print(id, addName, SHOW, NAME, e.GetShowHide(Save.nameShow))
+
+		elseif d=='LeftButton' and IsControlKeyDown() then --显示ID
+			Save.showID= not Save.showID and true or nil
+			self:set_Shown()
+			self:set_Tooltips()
+			print(id, addName, SHOW, 'ID', e.GetShowHide(Save.showID))
+		end
+	end)
+	function TrackButton:set_Tooltips()
+		e.tips:SetOwner(self, "ANCHOR_LEFT");
+		e.tips:ClearLines();
+		e.tips:AddDoubleLine((e.onlyChinese and '追踪' or TRACKING)..': '..e.GetShowHide(Save.str),e.Icon.left)
+		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.right)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine((e.onlyChinese and '名称' or NAME)..': '..e.GetShowHide(Save.nameShow), 'Alt+'..e.Icon.left)
+		e.tips:AddDoubleLine('ID: '..e.GetShowHide(Save.showID), 'Ctrl+'..e.Icon.left)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Atl+'..e.Icon.right)
+		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..(Save.btnScale or 1), 'Alt+'..e.Icon.mid)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine(id, addName)
+		e.tips:Show()
+		self:SetAlpha(1)
+	end
+	TrackButton:SetScript("OnEnter", TrackButton.set_Tooltips)
+	TrackButton:SetScript('OnMouseUp', ResetCursor)
+	TrackButton:SetScript("OnLeave", function(self)
+		self:set_Shown()
+		self:SetButtonState("NORMAL")
+		e.tips:Hide()
+	end);
+	TrackButton:SetScript("OnMouseWheel", function(self, d)
+		if IsAltKeyDown() then
+			local n= Save.scaleTrackButton or 1
+			if d==1 then
+				n= n+ 0.05
+			elseif d==-1 then
+				n= n- 0.05
 			end
-		end)
-
-		button.btn.text=e.Cstr(button.btn, {size=Save.size, color=true})--内容显示文本
-		button.btn.text:SetPoint('TOPLEFT',3,-3)
-
-		button.btn.text2=e.Cstr(button.btn, {size=Save.size, color=true})--物品, 内容显示文本
-		button.btn.text2:SetPoint('TOPLEFT', button.btn.text, 'BOTTOMLEFT', 0, -8)
-	end
-	if button.btn then
-		local events={
-			'CURRENCY_DISPLAY_UPDATE',
-			'PLAYER_ENTERING_WORLD',
-			'PET_BATTLE_OPENING_DONE',
-			'PET_BATTLE_CLOSE',
-		}
-		if Save.indicato then
-			button.btn.text.num= get_Item_Num(Save.tokens)
-		else
-			button.btn.text.num= 1
+			n= n<0.4 and 0.4 or n
+			n= n>3 and 3 or n
+			Save.scaleTrackButton=n
+			self:set_Scale()
+			self:set_Tooltips()
+			print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '字体大小' or FONT_SIZE, n)
 		end
-		button.btn.text2.num= get_Item_Num(Save.item)
-
-		set_btn_ShowHide()--设置btn 显示,隐藏
-		set_btn_CurrencyAndItem_Text()--设置btn Text
-
-		if not button.btn:IsShown() then--注册,事件
-			FrameUtil.UnregisterFrameForEvents(button.btn, events)
-			button.btn:UnregisterEvent('BAG_UPDATE_DELAYED')--物品数量
+	end)
+	function TrackButton:set_Event()
+		if Save.Hide then
+			self:UnregisterAllEvents()
 		else
-			button.btn:RegisterEvent('BAG_UPDATE_DELAYED')
-			FrameUtil.RegisterFrameForEvents(button.btn, events)
+			self:RegisterEvent('PLAYER_ENTERING_WORLD')
+			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+			self:RegisterEvent('PET_BATTLE_CLOSE')
+			self:RegisterEvent('PLAYER_REGEN_DISABLED')
+			self:RegisterEvent('PLAYER_REGEN_ENABLED')
+			self:RegisterEvent('BAG_UPDATE_DELAYED')
+			self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
 		end
 	end
+	TrackButton:SetScript('OnEvent', function(self, event)
+		if event=='BAG_UPDATE_DELAYED' then
+			self:set_Item_Text()
+		elseif event=='CURRENCY_DISPLAY_UPDATE' then
+			self:set_Currency_Text()
+		else
+			self:set_Shown()--显示,隐藏
+		end
+	end)
+
+	function TrackButton:set_Point()
+		if Save.point then
+			self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+		else
+			self:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT',0, -35)
+		end
+	end
+
+	TrackButton:set_Point()
+	TrackButton:set_Scale()
+	TrackButton:set_Event()
+	TrackButton:set_Shown()
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local function set_Tokens_Button(frame)--设置, 列表, 内容
@@ -360,13 +404,13 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 			if self.currencyID then
 				Save.tokens[self.currencyID]= not Save.tokens[self.currencyID] and self.index or nil
 				frame.check:SetAlpha(Save.tokens[self.currencyID] and 1 or 0.5)
-
-				set_Text()--设置, 文本
-
+				if TrackButton then
+					TrackButton:set_Currency_Text()--设置, 文本
+				end
 			end
 		end)
 		frame.check:SetScript('OnEnter', function(self)
-			e.tips:SetOwner(self, "ANCHOR_RIGHT")
+			e.tips:SetOwner(self, "ANCHOR_LEFT")
 			e.tips:ClearLines()
 			if self.currencyID then
 				local info2=C_CurrencyInfo.GetCurrencyInfo(self.currencyID)
@@ -411,30 +455,38 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 end
 
 
---##############
---设置,按钮, 图标
---##############
-local function set_bagButtonTexture(icon)
-	if icon then
-		button:SetNormalTexture(icon)
-		button.bagButton:SetNormalTexture(icon)
-	elseif Save.Hide then
-		button:SetNormalAtlas(e.Icon.disabled)
-		button.bagButton:SetNormalAtlas(e.Icon.disabled)
-	else
-		button:SetNormalAtlas('auctionhouse-icon-favorite')
-		button.bagButton:SetNormalAtlas('auctionhouse-icon-favorite')
-	end
-end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, menuList)--主菜单
+local function InitMenu(_, level, menuList)--主菜单
 	local info
 	if menuList=='ITEMS' then
-		local find
-		for itemID in pairs(Save.item) do
+		for itemID, _ in pairs(Save.item) do
+			e.LoadDate({id=itemID, type='item'})--加载 item quest spell
 			info={
 				text= select(2, GetItemInfo(itemID)) or ('itemID '..itemID),
 				icon= C_Item.GetItemIconByID(itemID),
@@ -444,49 +496,88 @@ local function InitMenu(self, level, menuList)--主菜单
 				arg1= itemID,
 				func= function(_, arg1)
 					Save.item[arg1]= nil
-					Set_btn()
+					if TrackButton then
+						TrackButton:set_Shown()
+					end
 					print(id, addName, e.onlyChinese and '移除' or REMOVE, select(2, GetItemInfo(itemID)) or ('itemID '..itemID))
 				end
 			}
-			find=true
 			e.LibDD:UIDropDownMenu_AddButton(info, level)
 		end
-		if find then
-			e.LibDD:UIDropDownMenu_AddSeparator(level)
-			info={
-				text= e.onlyChinese and '全部清除' or CLEAR_ALL,
-				icon='bags-button-autosort-up',
-				notCheckable=true,
-				func= function()
+		e.LibDD:UIDropDownMenu_AddSeparator(level)
+		info={
+			text= e.onlyChinese and '全部清除' or CLEAR_ALL,
+			icon='bags-button-autosort-up',
+			notCheckable=true,
+			tooltipOnButton=true,
+			tooltipTitle='Shift+'..e.Icon.left,
+			func= function()
+				if IsShiftKeyDown() then
 					Save.item= {}
-					Set_btn()
+					if TrackButton then
+						TrackButton:set_Shown()
+					end
 					print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+				end
+			end
+		}
+		e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+	elseif menuList=='TOKENS' then
+		for currencyID, _ in pairs(Save.tokens) do
+			local currencyInfo= C_CurrencyInfo.GetCurrencyInfo(currencyID) or {}
+			info={
+				text= currencyInfo.name or currencyID,
+				icon=currencyInfo.iconFileID,
+				notCheckable=true,
+				tooltipOnButton=true,
+				tooltipTitle=e.onlyChinese and '移除' or REMOVE,
+				tooltipText=currencyID,
+				arg1= currencyID,
+				func= function(_, arg1)
+					Save.tokens[arg1]=nil
+					securecall('TokenFrame_Update')
+					print(id, addName, e.onlyChinese and '移除' or REMOVE, C_CurrencyInfo.GetCurrencyLink(arg1) or arg1)
 				end
 			}
 			e.LibDD:UIDropDownMenu_AddButton(info, level)
-		else
-			info={
-				text= e.onlyChinese and '无' or NONE,
-				notCheckable=true,
-				isTitle=true,
-			}
-			e.LibDD:UIDropDownMenu_AddButton(info, level)
 		end
+		e.LibDD:UIDropDownMenu_AddSeparator(level)
+		info={
+			text= e.onlyChinese and '全部清除' or CLEAR_ALL,
+			icon='bags-button-autosort-up',
+			notCheckable=true,
+			tooltipOnButton=true,
+			tooltipTitle='Shift+'..e.Icon.left,
+			func= function()
+				if IsShiftKeyDown() then
+					Save.tokens= {}
+					securecall('TokenFrame_Update')
+					print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+				end
+			end
+		}
+		e.LibDD:UIDropDownMenu_AddButton(info, level)
+	end
+
+	if menuList then
 		return
 	end
 
     info={
 		text= (e.onlyChinese and '追踪' or TRACKING),
 		checked= not Save.Hide,
+		keepShownOnClick=true,
+		icon='FXAM-SmallSpikeyGlow',
 		func= function()
 			Save.Hide= not Save.Hide and true or nil
-			Set_btn()
-			set_bagButtonTexture()
+			Init_TrackButton()
+			Button:set_bagButtonTexture()
 			print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.GetEnabeleDisable(not Save.Hide))
 			if Save.Hide then
-				button.indcatoCheck.text:SetTextColor(0.82, 0.82, 0.82, 0.5)
+				Button.indcatoCheck.text:SetTextColor(0.82, 0.82, 0.82, 0.5)
 			else
-				button.indcatoCheck.text:SetTextColor(1, 1, 1, 1)
+				Button.indcatoCheck.text:SetTextColor(1, 1, 1, 1)
 			end
 		end
     }
@@ -497,32 +588,116 @@ local function InitMenu(self, level, menuList)--主菜单
 		notCheckable=true,
 		menuList='ITEMS',
 		hasArrow=true,
+		keepShownOnClick=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+	info={
+		text=e.onlyChinese and '货币' or TOKENS,
+		notCheckable=true,
+		menuList='TOKENS',
+		hasArrow=true,
+		keepShownOnClick=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+	e.LibDD:UIDropDownMenu_AddSeparator(level)
+	info={
+		text=e.onlyChinese and '达到上限' or CAPPED,
+		checked= not Save.hideCurrencyMax,
+		tooltipOnButton=true,
+		tooltipTitle=e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248,
+		keepShownOnClick=true,
+		func= function()
+			Save.hideCurrencyMax= not Save.hideCurrencyMax and true or nil
+			Button:set_Event()--已达到资源上限
+			if not Save.hideCurrencyMax then
+				Button:currency_Max(true)--已达到资源上限
+				print(id, addName, 'Test', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
+			end
+		end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --######
 --初始化
 --######
 local function Init()
-	for itemID in pairs(Save.item) do
-		e.LoadDate({id=itemID, type='item'})--加载 item quest spell
+	Button= e.Cbtn(TokenFrame, {icon='hide', size={18,18}})
+	Button:SetPoint("TOPRIGHT", TokenFrame, 'TOPRIGHT',-6,-35)
+	Button.texture= Button:CreateTexture()
+	Button.texture:SetAllPoints()
+	Button.texture:SetAlpha(0.5)
+
+	Button.bagButton= e.Cbtn(ContainerFrameCombinedBags, {icon='hide', size={18,18, name='WoWToolsTokensTrackItemBagButton'}})--背包中, 增加一个图标, 用来添加或移除
+	if _G['MoveZoomInButtonPerContainerFrameCombinedBags'] then
+        Button.bagButton:SetPoint('LEFT', _G['MoveZoomInButtonPerContainerFrameCombinedBags'], 'RIGHT')
+    else
+        Button.bagButton:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT',-4,0)
+    end
+	Button.bagButton:SetFrameStrata('HIGH')
+	Button.bagButton.texture= Button.bagButton:CreateTexture()
+	Button.bagButton.texture:SetAllPoints()
+	Button.bagButton.texture:SetAlpha(0.5)
+
+	function Button:set_bagButtonTexture(icon)--设置,按钮, 图标
+		if icon then
+			self.texture:SetTexture(icon)
+			self.bagButton.texture:SetTexture(icon)
+		elseif Save.Hide then
+			self.texture:SetAtlas(e.Icon.icon)
+			self.bagButton.texture:SetAtlas(e.Icon.icon)
+		else
+			self.texture:SetAtlas('FXAM-SmallSpikeyGlow')
+			self.bagButton.texture:SetAtlas('FXAM-SmallSpikeyGlow')
+		end
 	end
+	Button:set_bagButtonTexture()--设置,按钮, 图标
 
 	local function click(self)
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save.item[itemID]= not Save.item[itemID] and true or nil
-			Set_btn()
 			print(id, addName, e.onlyChinese and '追踪' or TRACKING,
 					Save.item[itemID] and
-							('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2)
-							or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2),
-					itemLink or ('itemID'..itemID))
+					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2)
+					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2),
+					itemLink or itemID)
 			ClearCursor()
+			if TrackButton then
+				TrackButton:set_Item_Text()
+			end
 		else
-			e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self, 15, 0)
+			if not Button.Menu then
+				Button.Menu=CreateFrame("Frame", nil, Button, "UIDropDownMenuTemplate")
+				e.LibDD:UIDropDownMenu_Initialize(Button.Menu, InitMenu, 'MENU')
+			end
+			e.LibDD:ToggleDropDownMenu(1, nil, Button.Menu, self, 15, 0)
 		end
 	end
 
@@ -541,7 +716,7 @@ local function Init()
 						('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
 					or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2)
 			)
-			set_bagButtonTexture(C_Item.GetItemIconByID(itemID))
+			Button:set_bagButtonTexture(C_Item.GetItemIconByID(itemID))
 		else
 			e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
 			e.tips:AddLine(' ')
@@ -551,76 +726,64 @@ local function Init()
 		e.tips:AddLine(' ')
 		e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()
-		if button.btn and button.btn:IsShown() then
-			button.btn:SetButtonState('PUSHED')
+		self.texture:SetAlpha(1)
+		if TrackButton and TrackButton:IsShown() then
+			TrackButton:SetButtonState('PUSHED')
 		end
 	end
 
-	local function leave()
-		if button.btn then
-			button.btn:SetButtonState("NORMAL")
-		end
+	local function leave(self)
 		e.tips:Hide()
-		set_bagButtonTexture()
+		Button:set_bagButtonTexture()
+		self.texture:SetAlpha(0.5)
+		if TrackButton then
+			TrackButton:SetButtonState("NORMAL")
+		end
 	end
 
-	button= e.Cbtn(TokenFrame, {icon=false, size={18,18}})
-	button:SetPoint("TOPRIGHT", TokenFrame, 'TOPRIGHT',-6,-35)
 
-	button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
-	e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+	Button:SetScript('OnClick', click)
+	Button:SetScript('OnEnter', enter)
+	Button:SetScript('OnLeave', leave)
 
-	button.bagButton= e.Cbtn(ContainerFrameCombinedBags, {size={18,18}})--背包中, 增加一个图标, 用来添加或移除
-	if _G['MoveZoomInButtonPerContainerFrameCombinedBags'] then
-        button.bagButton:SetPoint('LEFT', _G['MoveZoomInButtonPerContainerFrameCombinedBags'], 'RIGHT')
-    else
-        button.bagButton:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT',-4,0)
-    end
-	
-	button.bagButton:SetFrameStrata('HIGH')
-	button.bagButton:SetAlpha(0.5)
-	button:SetScript('OnClick', click)
-	button:SetScript('OnEnter', enter)
-	button:SetScript('OnLeave', leave)
+	Button.bagButton:SetScript('OnClick', click)
+	Button.bagButton:SetScript('OnEnter', enter)
+	Button.bagButton:SetScript('OnLeave',leave)
+	Button.bagButton:HookScript('OnEnter', function(self2) self2:SetAlpha(1) end)
+	Button.bagButton:HookScript('OnLeave', function(self2) self2:SetAlpha(0.5) end)
 
-	button.bagButton:SetScript('OnClick', click)
-	button.bagButton:SetScript('OnEnter', enter)
-	button.bagButton:SetScript('OnLeave',leave)
-	button.bagButton:HookScript('OnEnter', function(self2) self2:SetAlpha(1) end)
-	button.bagButton:HookScript('OnLeave', function(self2) self2:SetAlpha(0.5) end)
 
-	set_bagButtonTexture()
 
 	--展开,合起
-	button.down=e.Cbtn(button, {icon=false, size={18,18}});
-	button.down:SetPoint('RIGHT', button, 'LEFT', -2,0)
-	button.down:SetNormalTexture('Interface\\Buttons\\UI-MinusButton-Up')
-	button.down:SetScript("OnClick", function(self)
+	Button.down=e.Cbtn(Button, {icon=false, size={18,18}});
+	Button.down:SetPoint('RIGHT', Button, 'LEFT', -2,0)
+	Button.down:SetNormalTexture('Interface\\Buttons\\UI-MinusButton-Up')
+	Button.down:SetScript("OnClick", function(self)
 			for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
 				local info = C_CurrencyInfo.GetCurrencyListInfo(i)
 				if info  and info.isHeader and not info.isHeaderExpanded then
 					C_CurrencyInfo.ExpandCurrencyList(i,true);
 				end
 			end
-			TokenFrame_Update()
+			securecall('TokenFrame_Update')
 	end)
-	button.up=e.Cbtn(button, {icon=false, size={18,18}})
-	button.up:SetPoint('RIGHT', button.down, 'LEFT',-2,0)
-	button.up:SetSize(18,18);
-	button.up:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up")
-	button.up:SetScript("OnClick", function(self)
+	Button.up=e.Cbtn(Button, {icon=false, size={18,18}})
+	Button.up:SetPoint('RIGHT', Button.down, 'LEFT',-2,0)
+	Button.up:SetSize(18,18);
+	Button.up:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up")
+	Button.up:SetScript("OnClick", function(self)
 			for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
 				local info = C_CurrencyInfo.GetCurrencyListInfo(i);
 				if info  and info.isHeader and info.isHeaderExpanded then
 					C_CurrencyInfo.ExpandCurrencyList(i, false);
 				end
 			end
-			TokenFrame_Update();
+			securecall('TokenFrame_Update')
 	end)
-	button.bag=e.Cbtn(button, {icon='hide', size={18,18}})
-	button.bag:SetPoint('RIGHT', button.up, 'LEFT',-2,0)
-	button.bag:SetNormalAtlas(e.Icon.bag)
-	button.bag:SetScript("OnClick", function(self)
+	Button.bag=e.Cbtn(Button, {icon='hide', size={18,18}})
+	Button.bag:SetPoint('RIGHT', Button.up, 'LEFT',-2,0)
+	Button.bag:SetNormalAtlas(e.Icon.bag)
+	Button.bag:SetScript("OnClick", function(self)
 		for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
 			local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
 			if info then
@@ -628,9 +791,9 @@ local function Init()
 			end
 		end
 		ToggleAllBags()
-		TokenFrame_Update();
+		securecall('TokenFrame_Update')
 	end)
-	button.bag:SetScript('OnEnter', function(self2)
+	Button.bag:SetScript('OnEnter', function(self2)
 		e.tips:SetOwner(self2, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(e.onlyChinese and '在行囊上显示' or SHOW_ON_BACKPACK, GetNumWatchedTokens())
@@ -642,46 +805,110 @@ local function Init()
 		end
 		e.tips:Show()
 	end)
-	button.bag:SetScript('OnLeave', function() e.tips:Hide() end)
+	Button.bag:SetScript('OnLeave', function() e.tips:Hide() end)
 
 
-	button.indcatoCheck= CreateFrame("CheckButton", nil, TokenFrame, "InterfaceOptionsCheckButtonTemplate")--指定显示, 选项
-	button.indcatoCheck:SetPoint('TOP', 0, -32)
-	button.indcatoCheck:SetScript('OnMouseDown', function(self, d)
-		if d=='LeftButton' then
-			Save.indicato= not Save.indicato and true or nil
-			print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(not Save.Hide))
-		elseif d=='RightButton' then
-			Save.tokens={}
-			print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL, e.onlyChinese and '类型' or TYPE, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-			TokenFrame_Update()
+	Button.indcatoCheck= CreateFrame("CheckButton", nil, TokenFrame, "InterfaceOptionsCheckButtonTemplate")--指定显示, 选项
+	Button.indcatoCheck:SetPoint('TOP', 0, -32)
+	Button.indcatoCheck:SetScript('OnMouseDown', function()
+		Save.indicato= not Save.indicato and true or nil
+		print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(not Save.Hide))
+		if TrackButton then
+			TrackButton:set_Shown()
 		end
-		set_Text()--设置, 文本
 	end)
-	button.indcatoCheck:SetScript('OnEnter', function(self)
-		local num= 0
-		for _, _ in pairs(Save.tokens) do
-			num= num+1
-		end
+	Button.indcatoCheck:SetScript('OnEnter', function(self)
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
-		e.tips:AddDoubleLine(e.onlyChinese and '追踪 (类型): 指定' or  TRACKING..' ('..TYPE..'): '..COMBAT_ALLY_START_MISSION, e.Icon.left)
-		e.tips:AddDoubleLine( e.onlyChinese and '全部清除' or CLEAR_ALL, '|cnGREEN_FONT_COLOR:#'..num..'|r'.. e.Icon.right)
+		e.tips:AddLine(e.onlyChinese and '追踪' or TRACKING)
+		e.tips:AddDoubleLine(e.onlyChinese and '指定类型' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT_ALLY_START_MISSION, TYPE), e.Icon.left)
 		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine((e.onlyChinese and '追踪' or TRACKING), e.GetShowHide(not Save.Hide))
 		e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()
 	end)
-	button.indcatoCheck:SetScript('OnLeave', function() e.tips:Hide() end)
-	button.indcatoCheck.text:SetText(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-	button.indcatoCheck:SetChecked(Save.indicato)
+	Button.indcatoCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+	Button.indcatoCheck.text:SetText(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+	Button.indcatoCheck:SetChecked(Save.indicato)
 	if Save.Hide then
-		button.indcatoCheck.text:SetTextColor(0.82, 0.82, 0.82, 0.5)
+		Button.indcatoCheck.text:SetTextColor(0.82, 0.82, 0.82, 0.5)
 	end
 
+
+	function Button:currency_Max(init, curID)--已达到资源上限
+		self.currencyMax= (init or not self.currencyMax) and {} or self.currencyMax
+		local text
+		if curID then
+			local info = C_CurrencyInfo.GetCurrencyInfo(curID)
+			if info then
+				if info and info.quantity and info.quantity>0
+					and (
+						(info.maxQuantity and info.maxQuantity>0 and info.quantity==info.maxQuantity)--最大数
+						or (info.canEarnPerWeek and info.canEarnPerWeek>0 and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
+						or (info.useTotalEarnedForMaxQty and info.useTotalEarnedForMaxQty>0 and info.totalEarned==info.maxQuantity)--赛季
+					)
+				then
+					text= C_CurrencyInfo.GetCurrencyLink(curID) or curID
+				end
+			end
+		else
+			local tab={}
+			for currencyID, _ in pairs(Save.tokens) do
+				if not self.currencyMax[currencyID] then
+					local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
+					if info and info.quantity and info.quantity>0
+						and (
+							(info.maxQuantity and info.maxQuantity>0 and info.quantity==info.maxQuantity)--最大数
+							or (info.canEarnPerWeek and info.canEarnPerWeek>0 and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
+							or (info.useTotalEarnedForMaxQty and info.useTotalEarnedForMaxQty>0 and info.totalEarned==info.maxQuantity)--赛季
+						)
+					then
+						tab[currencyID]=C_CurrencyInfo.GetCurrencyLink(currencyID) or info.name or currencyID
+					end
+				end
+			end
+			for i=1, C_CurrencyInfo.GetCurrencyListSize() do
+				local info = C_CurrencyInfo.GetCurrencyListInfo(i)
+				if info and info.quantity and info.quantity>0
+					and (
+						(info.maxQuantity and info.maxQuantity>0 and info.quantity==info.maxQuantity)--最大数
+						or (info.canEarnPerWeek and info.canEarnPerWeek>0 and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
+						or (info.useTotalEarnedForMaxQty and info.useTotalEarnedForMaxQty>0 and info.totalEarned==info.maxQuantity)--赛季
+					)
+				then
+					local link =C_CurrencyInfo.GetCurrencyListLink(i)
+					local currencyID = link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
+					if currencyID and not self.currencyMax[currencyID] then
+						tab[currencyID]=link
+					end
+				end
+			end
+			for currencyID, _ in pairs(tab) do
+				local link= C_CurrencyInfo.GetCurrencyLink(currencyID)
+				text= (text and text..' ' or '|cnGREEN_FONT_COLOR:')..(link or currencyID)
+				self.currencyMax[currencyID]=true
+			end
+		end
+		if text then
+			print(id, addName, text, '|r|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
+		end
+	end
+
+	function Button:set_Event()
+		if Save.hideCurrencyMax then
+			self:UnregisterAllEvents()
+		else
+			self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+		end
+	end
+	Button:SetScript('OnEvent', function(self, _, arg1)
+		if arg1 and not self.currencyMax[arg1] then
+			self:currency_Max(nil, arg1)
+		end
+	end)
+
+
 	C_Timer.After(2, function()
-		Set_btn()
-		hooksecurefunc('TokenFrame_InitTokenButton',function(self, frame, elementData)--Blizzard_TokenUI.lua
+		hooksecurefunc('TokenFrame_InitTokenButton',function(_, frame)--Blizzard_TokenUI.lua
 			set_Tokens_Button(frame)--设置, 列表, 内容
 		end)
 		hooksecurefunc('TokenFrame_Update', function()
@@ -689,32 +916,35 @@ local function Init()
 				set_Tokens_Button(frame)--设置, 列表, 内容
 			end
 			set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
-			set_Text()--设置, 文本
+			if TrackButton then
+				TrackButton:set_Currency_Text()--设置, 文本
+			end
 		end)
 
-		local tab
-        for i=1, C_CurrencyInfo.GetCurrencyListSize() do
-            local link =C_CurrencyInfo.GetCurrencyListLink(i)
-            local info = C_CurrencyInfo.GetCurrencyListInfo(i)
-            if link and info and info.quantity and info.quantity>0 and (
-                            info.quantity==info.maxQuantity--最大数
-                        or (info.canEarnPerWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
-                        or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
-                    )
-			then
-				tab= tab or {}
-				tab[link]=true
-            end
-        end
-        if tab then
-            local text=''
-            for link, _ in pairs(tab) do
-                text= text..link
-            end
-            print(id, addName, text, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
-        end
+		if not Save.hideCurrencyMax then
+			Button:currency_Max(true)--已达到资源上限
+			Button:set_Event()--已达到资源上限
+		end
+
+		Init_TrackButton()
 	end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --###########
@@ -722,12 +952,18 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
 		if arg1==id then
             Save= WoWToolsSave[addName] or Save
 			Save.tokens= Save.tokens or {}
 			Save.item= Save.item or {}
+
+			if not Save.Hide then
+				for itemID, _ in pairs(Save.item) do
+					e.LoadDate({id=itemID, type='item'})--加载 item quest spell
+				end
+			end
 
 			--添加控制面板
 			e.AddPanel_Check({

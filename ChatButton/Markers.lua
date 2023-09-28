@@ -473,29 +473,31 @@ local function Init_Markers_Frame()--设置标记, 框架
         if UnitAffectingCombat('player') then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         else
-            local all= in_Raid_Leader()
-            local ping= C_CVar.GetCVarBool("enablePings") and true or false
+            local raid= IsInRaid()
+
+            local isLeader= Is_Leader()
+            local isRaid= (raid and isLeader) or not raid
+            local isInGroup= IsInGroup()
+            local enabled= not Is_In_PvP_Area()
+                        and Save.markersFrame
+                        and not InCinematic()
+                        and not IsInCinematicScene()
+                        and not MovieFrame:IsShown()
+
+            local ping= C_CVar.GetCVarBool("enablePings") and Save.markersFrame
             self.ping:SetShown(ping)
 
-            local target= all
+            local target= isRaid and enabled
             self.target:SetShown(target)
 
-            local marker= IsInGroup() and all
+            local marker= isInGroup and isRaid and enabled
             self.marker:SetShown(marker)
 
-            local isLeader=GetNumGroupMembers()>1 and (IsInRaid() and Is_Leader()) or UnitIsGroupLeader('player')
-            self.countdown:SetShown(isLeader)
-            self.check:SetShown(isLeader)
+            local check= isLeader and isInGroup and enabled
+            self.countdown:SetShown(check)
+            self.check:SetShown(check)
 
-
-            self:SetShown(
-                Save.markersFrame
-                and not Is_In_PvP_Area()
-                and (ping or target or marker)
-                and not InCinematic()
-                and not IsInCinematicScene()
-                and not MovieFrame:IsShown()
-            )
+            self:SetShown(ping or target or marker or check)
         end
     end
     function Frame:set_Event()
@@ -513,11 +515,11 @@ local function Init_Markers_Frame()--设置标记, 框架
             self:UnregisterAllEvents()
         end
     end
-    
+
     function Frame:set_Tooltips_Point()
         e.tips:SetOwner(Frame, "ANCHOR_RIGHT")
     end
-    
+
 
 
     btn= e.Cbtn(Frame, {size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})--移动按钮
@@ -1053,7 +1055,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
     end
 
-    
+
     Frame:SetScript('OnEvent', function(self, event, arg1)
         if event=='PLAYER_REGEN_ENABLED' then
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
