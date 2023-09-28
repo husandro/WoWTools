@@ -259,6 +259,7 @@ local function Init_TrackButton()
 					e.LoadDate({id=itemID, type='item'})--加载 item quest spell
 				end
 			end
+			text= text or '..'
 		end
 		self.text2:SetText(text or '')
 	end
@@ -401,7 +402,7 @@ local function Init_TrackButton()
 		e.tips:AddDoubleLine(e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT, 'Shift+'..e.Icon.left)
 		e.tips:AddLine(' ')
 		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Atl+'..e.Icon.right)
-		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..(Save.btnScale or 1), 'Alt+'..e.Icon.mid)
+		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
 		e.tips:AddLine(' ')
 		e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()

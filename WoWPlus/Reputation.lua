@@ -1,11 +1,14 @@
 ---@diagnostic disable: redundant-parameter
 local id, e = ...
 local Save={
+	--btn=true,--启用，TrackButton
+	factions={},--指定,显示,声望
+	btnstr=true,--文本
+	--scaleTrackButton=1,缩放
 	btnStrHideCap=true,-- 隐藏最高级, 且没有奖励声望
 	btnStrHideHeader=true, --隐藏, 版本标题
+
 	factionUpdateTips=true,--更新, 提示
-	btnstr=true,--文本
-	factions={},--指定,显示,声望
 	--indicato=true,--指定
 }
 local addName=REPUTATION
@@ -158,30 +161,52 @@ local function Init_TrackButton()--监视, 文本
 	if not Save.btn or TrackButton then
 		return
 	end
-	TrackButton= e.Cbtn(nil, {icon=Save.btn, size={18,18}})
-	if Save.point then
-		TrackButton:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-	else
-		TrackButton:SetPoint('TOPLEFT', ReputationFrame, 'TOPRIGHT',0, -40)
+	TrackButton= e.Cbtn(nil, {icon='hide', size={20,20}})
+	TrackButton.text=e.Cstr(TrackButton, {color=true})
+	
+	function TrackButton:set_Scale()
+		if Save.ttoRightTrackText then
+			self.text:SetPoint('TOPRIGHT', -3 , -3)
+		else
+			self.text:SetPoint('TOPLEFT', 3 , -3)
+		end
+		self.text:SetScale(Save.scaleTrackButton or 1)
 	end
+
+	function TrackButton:set_Point()
+		if Save.point then
+			self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+		else
+			self:SetPoint('TOPLEFT', ReputationFrame, 'TOPRIGHT',0, -40)
+		end
+	end
+
 	TrackButton:RegisterForDrag("RightButton")
 	TrackButton:SetClampedToScreen(true);
 	TrackButton:SetMovable(true);
-	TrackButton:SetScript("OnDragStart", function(self2, d) if d=='RightButton' and not IsModifierKeyDown() then self2:StartMoving() end end)
-	TrackButton:SetScript("OnDragStop", function(self2)
-			ResetCursor()
-			self2:StopMovingOrSizing()
-			Save.point={self2:GetPoint(1)}
-			Save.point[2]=nil
-			self2:Raise()
+	TrackButton:SetScript("OnDragStart", function(self)
+		if IsAltKeyDown() then
+			self:StartMoving()
+		end
 	end)
-	TrackButton:SetScript("OnMouseUp", function() ResetCursor() end)
-	TrackButton:SetScript("OnMouseDown", function(self, d)
-		local key=IsModifierKeyDown()
-		if d=='RightButton' and not key then--右击,移动
+	TrackButton:SetScript("OnDragStop", function(self)
+		ResetCursor()
+		self:StopMovingOrSizing()
+		Save.point={self:GetPoint(1)}
+		Save.point[2]=nil
+	end)
+	TrackButton:SetScript("OnMouseUp", ResetCursor)
+	TrackButton:SetScript("OnMouseDown", function(_, d)
+		if d=='RightButton' and IsAltKeyDown() then
 			SetCursor('UI_MOVE_CURSOR')
+		end
+	end)
 
-		elseif d=='LeftButton' and not key then--点击,显示隐藏
+	TrackButton:SetScript("OnClick", function(self, d)
+		if d=='RightButton' and not IsModifierKeyDown() then--右击,移动
+			ToggleCharacter("ReputationFrame")
+
+		elseif d=='LeftButton' and not IsModifierKeyDown() then--点击,显示隐藏
 			Save.btnstr= not Save.btnstr and true or false
 			print(id, addName, e.GetShowHide(Save.btnstr))
 			self:set_Text()--设置, 文本
@@ -196,107 +221,117 @@ local function Init_TrackButton()--监视, 文本
 			self:set_Text()--设置, 文本
 			print(id, addName, e.onlyChinese and '没有声望奖励时' or VIDEO_OPTIONS_ULTRA_HIGH..'('..NO..e.Icon.bank2..QUEST_REWARDS..')', e.GetShowHide(not Save.btnStrHideCap))
 		end
+		self:set_Tooltips()
 	end)
-	TrackButton:SetScript("OnEnter",function(self2)
-		e.tips:SetOwner(self2, "ANCHOR_LEFT");
+
+
+	function TrackButton:set_Tooltips()
+		e.tips:SetOwner(self, "ANCHOR_LEFT");
 		e.tips:ClearLines();
 		e.tips:AddDoubleLine(id, addName)
 		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine(e.GetShowHide(Save.btnstr), e.Icon.left)
-		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+		e.tips:AddDoubleLine(e.GetShowHide(not Save.btnstr), e.Icon.left)
+		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.right)
 		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.mid)
-		e.tips:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..': '..(Save.size or 12), 'Alt+'..e.Icon.mid)
+		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
+		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
 		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine((e.onlyChinese and '版本' or GAME_VERSION_LABEL)..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
-		e.tips:AddDoubleLine((e.onlyChinese and '隐藏最高声望' or (VIDEO_OPTIONS_ULTRA_HIGH..addName))..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
+		e.tips:AddDoubleLine((e.onlyChinese and '版本' or GAME_VERSION_LABEL)..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt+'..e.Icon.left)
+		e.tips:AddDoubleLine((e.onlyChinese and '隐藏最高声望' or
+				format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, VIDEO_OPTIONS_ULTRA_HIGH, REPUTATION))),
+				e.GetShowHide(not Save.btnStrHideCap)..'Ctrl+'..e.Icon.left)
 		e.tips:Show();
-	end)
-	TrackButton:SetScript("OnLeave", function(self2)
+	end
+	TrackButton:SetScript("OnLeave", function()
 		ResetCursor()
 		e.tips:Hide()
-	end);
-	TrackButton:EnableMouseWheel(true)
-	TrackButton:SetScript("OnMouseWheel", function (self2, d)--打开,关闭, 声望
+	end)
+	TrackButton:SetScript("OnEnter",TrackButton.set_Tooltips)
+
+	TrackButton:SetScript("OnMouseWheel", function(self, d)--打开,关闭, 声望
 		if IsAltKeyDown() then--缩放
 			local num
-			num= Save.size or 12
+			num= Save.scaleTrackButton or 1
 			if d==1 then
-				num= num +1
+				num= num + 0.05
 			elseif d==-1 then
-				num= num -1
+				num= num - 0.05
 			end
-			num= num<6 and 6 or num
-			num= num>32 and 32 or num
-			Save.size= num
-			e.Cstr(nil, {size=num, changeFont=TrackButton.text, color=true})
+			num= num<0.4 and 0.4 or num
+			num= num>4 and 4 or num
+			Save.scaleTrackButton= num
+			self:set_Scale()
+			self:set_Tooltips()
 			print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '字体大小' or FONT_SIZE, num)
-
-		elseif d==1 then
-			if not ReputationFrame:IsVisible() then
-				ToggleCharacter("ReputationFrame")
-			end
-		elseif d==-1 then
-			if ReputationFrame:IsVisible() then
-				ToggleCharacter("ReputationFrame")
-			end
-		end
-	end)
-	TrackButton:RegisterEvent('PLAYER_ENTERING_WORLD')
-	TrackButton:RegisterEvent('PET_BATTLE_OPENING_DONE')
-	TrackButton:RegisterEvent('PET_BATTLE_CLOSE')
-	TrackButton:RegisterEvent('UPDATE_FACTION')
-	TrackButton:SetScript('OnEvent', function(self)
-		local show= Save.btn and not IsInInstance() and not C_PetBattles.IsInBattle()
-		self:SetShown(show)
-		if show then
-			self:set_Text()--设置, 文本
 		end
 	end)
 
-	TrackButton.text=e.Cstr(TrackButton, {size=Save.size, color=true})
-	TrackButton.text:SetPoint('TOPLEFT',3,-3)
-
-	function TrackButton:set_Text()--设置, 文本
-		if not Save.btn or not Save.btnstr or (TrackButton and not TrackButton:IsShown())  then
-			if TrackButton and TrackButton.text then
-				TrackButton.text:SetText('')
-				TrackButton:SetNormalAtlas(e.Icon.disabled)
-			end
-			return
-		end
-		TrackButton:SetNormalTexture(0)
-
-		local m=''
-		if Save.indicato then
-			local tab={}
-			for factionID, value in pairs(Save.factions) do
-				table.insert(tab, {factionID= factionID, index= value==true and 1 or value})
-			end
-			table.sort(tab, function(a, b) return a.index < b.index end)
-			for _, info in pairs(tab) do
-				local t=get_Faction_Info({factionID= info.factionID, hide=nil, name=not Save.hideName,})
-				if t then
-					if m~='' then m=m..'|n' end
-					m=m..t
-				end
-			end
+	function TrackButton:set_Event()
+		if not Save.btn then
+			self:UnregisterAllEvents()
 		else
-			for i=1, GetNumFactions() do
-				local t=get_Faction_Info({index= i, hide=true, name=not Save.hideName,})
-				if t then
-					if m~='' then m=m..'|n' end
-					m=m..t
+			self:RegisterEvent('PLAYER_ENTERING_WORLD')
+			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+			self:RegisterEvent('PET_BATTLE_CLOSE')
+			self:RegisterEvent('UPDATE_FACTION')
+			self:RegisterEvent('PLAYER_REGEN_DISABLED')
+			self:RegisterEvent('PLAYER_REGEN_ENABLED')
+		end
+	end
+
+	function TrackButton:set_Shown()
+		self:SetShown(
+			Save.btn
+			and not IsInInstance()
+			and not C_PetBattles.IsInBattle()
+			and not UnitAffectingCombat('player')
+		)
+		self:set_Text()
+	end
+
+	TrackButton:SetScript('OnEvent', function(self, event)
+		if event=='UPDATE_FACTION' then
+			self:set_Text()
+		else
+			self:set_Shown()
+		end
+	end)
+
+
+	function TrackButton:set_Text()
+		local text
+		if Save.btnstr and self:IsShown() then
+			if Save.indicato then
+				local tab={}
+				for factionID, value in pairs(Save.factions) do
+					table.insert(tab, {factionID= factionID, index= value==true and 1 or value})
+				end
+				table.sort(tab, function(a, b) return a.index < b.index end)
+				for _, info in pairs(tab) do
+					local t=get_Faction_Info({factionID= info.factionID, hide=nil, name=not Save.hideName,})
+					if t then
+						text= text and text..'|n'..t or t
+					end
+				end
+			else
+				for i=1, GetNumFactions() do
+					local t=get_Faction_Info({index= i, hide=true, name=not Save.hideName,})
+					if t then
+						text= text and text..'|n'..t or t
+					end
 				end
 			end
+			text= text or '..'
 		end
-		if m=='' then
-			m='..'
-		end
-		TrackButton.text:SetText(m)
+		self.text:SetText(text or '')
 	end
 
 	hooksecurefunc('ReputationFrame_Update', TrackButton.set_Text)--更新, 监视, 文本
+
+	TrackButton:set_Scale()
+	TrackButton:set_Point()
+	TrackButton:set_Event()
+	TrackButton:set_Shown()
 end
 
 
