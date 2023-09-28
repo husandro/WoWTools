@@ -812,7 +812,7 @@ local function Init()
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
     end)
 	Button:SetScript('OnEnter', function()
-		if TrackButton and TrackButton:IsShown() then
+		if TrackButton then
 			TrackButton:SetButtonState('PUSHED')
 		end
 	end)
@@ -823,8 +823,6 @@ local function Init()
 	end)
 
 	Init_TrackButton()--监视, 文本
-
-	
 
 	hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
 
