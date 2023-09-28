@@ -1,13 +1,15 @@
 local id, e = ...
 local addName= TOKENS
 local Save={
-	Hide=true,
-	str=true,
 	tokens={},--{[currencyID]=true}指定显示，表
 	item={},--[202196]= true
 	--indicato=nil,--指定显示
 
+	Hide=true,
+	str=true,
 	--scaleTrackButton=1,
+	--toRightTrackText=true,--向右平移
+
 	--hideCurrencyMax=true,--隐藏，已达到资源上限,提示
 	--CAPPED
 }
@@ -24,65 +26,89 @@ local TrackButton
 
 
 
-local Get_Currency= function(tab)--e.Get_Currency({id=nil, index=nil, link=nil, soloValue=nil, showIcon=true, showName=true, showID=true, bit=3, showMax=nil})--货币
+local Get_Currency= function(tab)--货币
+	--Get_Currency({index=index, showName=Save.nameShow, showID=Save.showID, toRight=Save.toRightTrackText})--货币
     local info
 	if tab.index then
 		info= C_CurrencyInfo.GetCurrencyListInfo(tab.index)
 	elseif tab.id then
 		info= C_CurrencyInfo.GetCurrencyInfo(tab.id)
 	elseif tab.link then
-		C_CurrencyInfo.GetCurrencyInfoFromLink(tab.link)
+		info= C_CurrencyInfo.GetCurrencyInfoFromLink(tab.link)
 	end
-    if not info or (info.quantity==0 and not info.isHeader) then
-        return
-    end
-    if tab.soloValue then--仅，返回值
-        return info
+
+	local text
+    if not info or not info.iconFileID or not info.quantity or info.quantity<=0 then
+		if info and info.isHeader and Save.showName and info.name then
+			if tab.toRight then
+				text= '|cffffffff'..info.name..'|r'..e.Icon.icon
+			else
+				text= e.Icon.icon..'|cffffffff'..info.name..'|r'
+			end
+		end
+		return text
     end
 
-    if info.isHeader then
-        return tab.showName and (tab.showIcon and '|A:'..e.Icon.icon..':0:0|a|cffffffff' or '')..info.name..'|r'
-    end
-    if not info.quantity or info.quality==0 then
-        return
-    end
-    local t=''
-    --t= tab.showName and '   ' or t
-    if tab.showID then--显示ID
-        local ID= tab.id or tab.link and C_CurrencyInfo.GetCurrencyIDFromLink(tab.link)
-        if tab.index then
-            local link=tab.link or C_CurrencyInfo.GetCurrencyListLink(tab.index)
-            ID= link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
-        end
-        if ID then
-            t= ID and t..ID..' ' or t
-        end
-    end
-    if tab.showIcon and info.iconFileID then--图标
-        t= t..'|T'..info.iconFileID..':0|t'
-    end
-    if tab.showName and info.name then--名称
-        t= t..info.name..' '
-    end
+	local currencyID
+	if tab.showID then
+		if tab.id then
+			currencyID= tab.id
+		elseif tab.link then
+			currencyID= C_CurrencyInfo.GetCurrencyIDFromLink(tab.link)
+		elseif tab.index then
+			local link= C_CurrencyInfo.GetCurrencyListLink(tab.index)
+			currencyID= link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
+		end
+	end
 
-    local max= info.quantity and info.quantity>0 and (
-            info.quantity==info.maxQuantity--最大数
-        or (info.canEarnPerWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
-        or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
-    )
-    if max then--最大数量
-        t=t..'|cnRED_FONT_COLOR:'..e.MK(info.quantity, tab.bit)..'|r'..e.Icon.toLeft2
-    else
-        t=t..e.MK(info.quantity, tab.bit)..(tab.showMax and info.maxQuantity and info.maxQuantity>0 and ' /'..e.MK(info.maxQuantity, tab.bit) or '')
-    end
+	local icon= '|T'..info.iconFileID..':0|t'
+    local name=  tab.showName and info.name or nil
+	local num= e.MK(info.quantity, tab.bit)
 
-    if info.canEarnPerWeek and info.quantityEarnedThisWeek< info.maxWeeklyQuantity then--本周,收入
-        t= t..' |cnGREEN_FONT_COLOR:(+'..e.MK(info.maxWeeklyQuantity - info.quantityEarnedThisWeek, tab.bit)..'|r'
-    elseif info.useTotalEarnedForMaxQty and info.totalEarned< info.maxQuantity  and info.totalEarned< info.maxQuantity then--赛季,收入
-        t= t..' |cnGREEN_FONT_COLOR:(+'..e.MK(info.maxQuantity- info.totalEarned, tab.bit)..'|r'
-    end
+	local weekMax= info.canEarnPerWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek--本周
+	local earnedMax= info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity--赛季
+	
+    local max
+	if info.quantity==info.maxQuantity--最大数
+		or weekMax
+		or earnedMax
+	then
+		max= tab.toRight and e.Icon.toRight2 or e.Icon.toLeft2
+		num= '|cnRED_FONT_COLOR:'..num..'|r'
+	end
+	
+	local need
+	if not weekMax--本周,收入
+		and info.canEarnPerWeek
+		and info.quantityEarnedThisWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0
+		and info.quantityEarnedThisWeek<info.maxWeeklyQuantity
+	then
+		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxWeeklyQuantity- info.quantityEarnedThisWeek, tab.bit)..'|r'
 
-    return t
+	elseif not earnedMax--赛季,收入
+		and info.useTotalEarnedForMaxQty
+		and info.totalEarned and info.maxQuantity and info.maxQuantity>0
+		and info.totalEarned<info.maxQuantity
+	then
+		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxQuantity- info.totalEarned, tab.bit)..'|r'
+	end
+   
+	if tab.toRight then
+		text= (max or '')
+			..num
+			..(name and ' '..name or '')
+			..icon
+			..(currencyID and ' '..currencyID or '')
+	else
+		text=(currencyID and currencyID..' ' or '')
+			..icon
+			..(name and ' '..name..' ' or '')
+			..num
+			..(max or '')
+	end
+   
+
+    return text
 end
 
 
@@ -176,33 +202,60 @@ local function Init_TrackButton()
 	TrackButton=e.Cbtn(nil, {atlas='hide', size={20,20}})
 
 	TrackButton.text=e.Cstr(TrackButton, {color=true})--内容显示文本
-	TrackButton.text:SetPoint('TOPLEFT',3,-3)
-
 	TrackButton.text2=e.Cstr(TrackButton, {color=true})--物品, 内容显示文本
-	TrackButton.text2:SetPoint('TOPLEFT', TrackButton.text, 'BOTTOMLEFT', 0, -6)
+
+	function TrackButton:set_Point()
+		if Save.point then
+			self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+		else
+			self:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT',0, -35)
+		end
+	end
 
 	function TrackButton:set_Item_Text()
-		local text=''
+		local text
 		if Save.str and self:IsShown() then
 			for itemID in pairs(Save.item) do
 				local num= GetItemCount(itemID , nil, true, true)
 				local icon= C_Item.GetItemIconByID(itemID)
 				if icon and num>0 then
-					text= text~='' and text..'|n' or text
-					if Save.showID then
-						text= text..itemID
-					end
-					text= text..'|T'..icon..':0|t'
+					text= text and text..'|n' or ''
+
+					local idText= Save.showID and itemID
+
+					icon= '|T'..icon..':0|t'
+					local name
 					if Save.nameShow then
-						text= text..(GetItemInfo(itemID) or '')..' '
+						name= C_Item.GetItemNameByID(itemID) or GetItemInfo(itemID)
+						if name then
+							local itemQuality = C_Item.GetItemQualityByID(itemID)
+							if itemQuality then
+								local hex = select(4, GetItemQualityColor(itemQuality))
+								name = hex and '|c'..hex..name..'|r' or name
+							end
+						end
 					end
-					text= text..e.MK(num, 3)
+
+					if Save.toRightTrackText then--向右平移
+						text= text
+							.. e.MK(num, 3)
+							..(name and ' '..name or '')
+							..icon
+							..(idText and ' '..idText or '')
+					else
+						text= text
+							..(idText and idText..' ' or '')
+							..icon
+							..(name and name..' ' or '')
+							..e.MK(num, 3)
+					end
+
 				elseif not icon then
 					e.LoadDate({id=itemID, type='item'})--加载 item quest spell
 				end
 			end
 		end
-		self.text2:SetText(text)
+		self.text2:SetText(text or '')
 	end
 
 	function TrackButton:set_Currency_Text()
@@ -215,14 +268,14 @@ local function Init_TrackButton()
 				end
 				table.sort(tab, function(a,b) return a.index< b.index end)
 				for _, info in pairs(tab) do
-					local text= Get_Currency({id=info.currentID, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3})--货币
+					local text= Get_Currency({id=info.currentID, showName=Save.nameShow, showID=Save.showID, toRight=Save.toRightTrackText})--货币
 					if text then
 						m= m..text..'|n' or m
 					end
 				end
 			else
 				for index=1, C_CurrencyInfo.GetCurrencyListSize() do
-					local text= Get_Currency({index=index, showIcon=true, showName=Save.nameShow, showID=Save.showID, bit=3})--货币
+					local text= Get_Currency({index=index, showName=Save.nameShow, showID=Save.showID, toRight=Save.toRightTrackText})--货币
 					if text then
 						m= m..text..'|n' or m
 					end
@@ -250,6 +303,19 @@ local function Init_TrackButton()
 		self:SetScale(Save.scaleTrackButton or 1)
 	end
 
+	function TrackButton:set_Text_Point()
+		if Save.toRightTrackText then--向右平移
+			self.text:SetPoint('TOPRIGHT', -3,-3)
+			self.text2:SetPoint('TOPRIGHT', self.text, 'BOTTOMRIGHT', 0, -6)
+		else
+			self.text:SetPoint('TOPLEFT',3,-3)
+			self.text2:SetPoint('TOPLEFT', self.text, 'BOTTOMLEFT', 0, -6)
+		end
+
+		self.text:SetJustifyH(Save.toRightTrackText and 'RIGHT' or 'LEFT')
+		self.text2:SetJustifyH(Save.toRightTrackText and 'RIGHT' or 'LEFT')
+	end
+
 	TrackButton:RegisterForDrag("RightButton")
 	TrackButton:SetClampedToScreen(true);
 	TrackButton:SetMovable(true);
@@ -271,51 +337,6 @@ local function Init_TrackButton()
 			SetCursor('UI_MOVE_CURSOR')
 		end
 	end)
-	TrackButton:SetScript("OnClick", function(self, d)
-		if d=='LeftButton' and not IsModifierKeyDown() then--点击,显示隐藏
-			Save.str= not Save.str and true or nil
-			self:set_Shown()
-			self:set_Tooltips()
-			print(id, addName, e.GetShowHide(Save.str))
-		elseif d=='RightButton' and not IsModifierKeyDown() then
-			ToggleCharacter("TokenFrame")--打开货币
-
-		elseif d=='LeftButton' and IsAltKeyDown() then--显示名称
-			Save.nameShow= not Save.nameShow and true or nil
-			self:set_Shown()
-			self:set_Tooltips()
-			print(id, addName, SHOW, NAME, e.GetShowHide(Save.nameShow))
-
-		elseif d=='LeftButton' and IsControlKeyDown() then --显示ID
-			Save.showID= not Save.showID and true or nil
-			self:set_Shown()
-			self:set_Tooltips()
-			print(id, addName, SHOW, 'ID', e.GetShowHide(Save.showID))
-		end
-	end)
-	function TrackButton:set_Tooltips()
-		e.tips:SetOwner(self, "ANCHOR_LEFT");
-		e.tips:ClearLines();
-		e.tips:AddDoubleLine((e.onlyChinese and '追踪' or TRACKING)..': '..e.GetShowHide(Save.str),e.Icon.left)
-		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.right)
-		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine((e.onlyChinese and '名称' or NAME)..': '..e.GetShowHide(Save.nameShow), 'Alt+'..e.Icon.left)
-		e.tips:AddDoubleLine('ID: '..e.GetShowHide(Save.showID), 'Ctrl+'..e.Icon.left)
-		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Atl+'..e.Icon.right)
-		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..(Save.btnScale or 1), 'Alt+'..e.Icon.mid)
-		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine(id, addName)
-		e.tips:Show()
-		self:SetAlpha(1)
-	end
-	TrackButton:SetScript("OnEnter", TrackButton.set_Tooltips)
-	TrackButton:SetScript('OnMouseUp', ResetCursor)
-	TrackButton:SetScript("OnLeave", function(self)
-		self:set_Shown()
-		self:SetButtonState("NORMAL")
-		e.tips:Hide()
-	end);
 	TrackButton:SetScript("OnMouseWheel", function(self, d)
 		if IsAltKeyDown() then
 			local n= Save.scaleTrackButton or 1
@@ -332,6 +353,62 @@ local function Init_TrackButton()
 			print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '字体大小' or FONT_SIZE, n)
 		end
 	end)
+
+	TrackButton:SetScript("OnClick", function(self, d)
+		if d=='LeftButton' and not IsModifierKeyDown() then--点击,显示隐藏
+			Save.str= not Save.str and true or nil
+			self:set_Shown()
+			self:set_Tooltips()
+			print(id, addName, e.GetShowHide(Save.str))
+		elseif d=='RightButton' and not IsModifierKeyDown() then
+			ToggleCharacter("TokenFrame")--打开货币
+
+		elseif d=='RightButton' and IsShiftKeyDown() then--向右平移
+			Save.toRightTrackText = not Save.toRightTrackText and true or nil
+			self.text:ClearAllPoints()
+			self.text2:ClearAllPoints()
+			self:set_Text_Point()
+			self:set_Shown()
+
+		elseif d=='LeftButton' and IsAltKeyDown() then--显示名称
+			Save.nameShow= not Save.nameShow and true or nil
+			self:set_Shown()
+			self:set_Tooltips()
+			print(id, addName, SHOW, NAME, e.GetShowHide(Save.nameShow))
+
+		elseif d=='LeftButton' and IsControlKeyDown() then --显示ID
+			Save.showID= not Save.showID and true or nil
+			self:set_Shown()
+			self:set_Tooltips()
+			print(id, addName, SHOW, 'ID', e.GetShowHide(Save.showID))
+		end
+	end)
+
+	function TrackButton:set_Tooltips()
+		e.tips:SetOwner(self, "ANCHOR_LEFT");
+		e.tips:ClearLines();
+		e.tips:AddDoubleLine((e.onlyChinese and '追踪' or TRACKING)..': '..e.GetShowHide(Save.str),e.Icon.left)
+		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.right)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine((e.onlyChinese and '名称' or NAME)..': '..e.GetShowHide(Save.nameShow), 'Alt+'..e.Icon.left)
+		e.tips:AddDoubleLine('ID: '..e.GetShowHide(Save.showID), 'Ctrl+'..e.Icon.left)
+		e.tips:AddDoubleLine(e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT, 'Shift+'..e.Icon.right)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Atl+'..e.Icon.right)
+		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..(Save.btnScale or 1), 'Alt+'..e.Icon.mid)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine(id, addName)
+		e.tips:Show()
+		self:SetAlpha(1)
+	end
+	TrackButton:SetScript("OnEnter", TrackButton.set_Tooltips)
+	TrackButton:SetScript('OnMouseUp', ResetCursor)
+	TrackButton:SetScript("OnLeave", function(self)
+		self:set_Shown()
+		self:SetButtonState("NORMAL")
+		e.tips:Hide()
+	end)
+
 	function TrackButton:set_Event()
 		if Save.Hide then
 			self:UnregisterAllEvents()
@@ -355,18 +432,11 @@ local function Init_TrackButton()
 		end
 	end)
 
-	function TrackButton:set_Point()
-		if Save.point then
-			self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-		else
-			self:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT',0, -35)
-		end
-	end
-
 	TrackButton:set_Point()
 	TrackButton:set_Scale()
 	TrackButton:set_Event()
 	TrackButton:set_Shown()
+	TrackButton:set_Text_Point()
 end
 
 
@@ -568,17 +638,21 @@ local function InitMenu(_, level, menuList)--主菜单
 		text= (e.onlyChinese and '追踪' or TRACKING),
 		checked= not Save.Hide,
 		keepShownOnClick=true,
-		icon='FXAM-SmallSpikeyGlow',
 		func= function()
 			Save.Hide= not Save.Hide and true or nil
-			Init_TrackButton()
+			if TrackButton then
+				TrackButton:set_Shown()
+			else
+				Init_TrackButton()
+			end
+
 			Button:set_bagButtonTexture()
-			print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.GetEnabeleDisable(not Save.Hide))
 			if Save.Hide then
 				Button.indcatoCheck.text:SetTextColor(0.82, 0.82, 0.82, 0.5)
 			else
 				Button.indcatoCheck.text:SetTextColor(1, 1, 1, 1)
 			end
+			print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.GetEnabeleDisable(not Save.Hide))
 		end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -679,7 +753,7 @@ local function Init()
 	end
 	Button:set_bagButtonTexture()--设置,按钮, 图标
 
-	local function click(self)
+	local function click(self, d)
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save.item[itemID]= not Save.item[itemID] and true or nil
@@ -692,6 +766,13 @@ local function Init()
 			if TrackButton then
 				TrackButton:set_Item_Text()
 			end
+		elseif d=='RightButton' and IsControlKeyDown() then
+			Save.point=nil
+			if TrackButton then
+				TrackButton:ClearAllPoints()
+				TrackButton:set_Point()
+			end
+			print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
 		else
 			if not Button.Menu then
 				Button.Menu=CreateFrame("Frame", nil, Button, "UIDropDownMenuTemplate")
@@ -719,11 +800,14 @@ local function Init()
 			Button:set_bagButtonTexture(C_Item.GetItemIconByID(itemID))
 		else
 			e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine((e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
-			e.tips:AddDoubleLine(e.onlyChinese and '副本/宠物对战' or (INSTANCE..'/'..SHOW_PET_BATTLES_ON_MAP_TEXT), e.GetEnabeleDisable(false))
+			local col= Save.point and '' or '|cff606060'
+			e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
 		end
 		e.tips:AddLine(' ')
+		
 		e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()
 		self.texture:SetAlpha(1)

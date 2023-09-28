@@ -3401,7 +3401,8 @@
         "LE_EXPANSION_SHADOWLANDS",
         "LE_EXPANSION_DRAGONFLIGHT",
         "MOVIE_LIST",
-        "DRAGONFLIGHT_TOTHESKIES"
+        "DRAGONFLIGHT_TOTHESKIES",
+        "HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
