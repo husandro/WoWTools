@@ -154,14 +154,7 @@ end
 
 
 
-
-
-
-
-
 local function Init_TrackButton()--监视, 文本
-
-	
 	if not Save.btn or TrackButton then
 		return
 	end
@@ -337,8 +330,8 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
     local factionIndex = elementData.index;
 	local factionContainer = factionRow.Container
 	local factionBar = factionContainer.ReputationBar;
-
-	local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive = GetFactionInfo(factionIndex);
+	--local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive
+	local _, _, standingID, _, _, _, _, _, isHeader, _, hasRep, isWatched, _, factionID= GetFactionInfo(factionIndex)
 	if (isHeader and not hasRep) or not factionID or Save.notPlus then
 		if factionContainer.watchedIcon then--显示为经验条
 			factionContainer.watchedIcon:SetShown(false)
@@ -505,12 +498,26 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#############
 --声望更新, 提示
 --#############
 local factionStr=FACTION_STANDING_INCREASED:gsub("%%s", "(.-)")--你在%s中的声望值提高了%d点。
 factionStr = factionStr:gsub("%%d", ".-")
-local function FactionUpdate(self, _, text, ...)
+local function FactionUpdate(_, _, text, ...)
 	local name=text and text:match(factionStr)
 	if not name then
 		return
@@ -902,7 +909,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             else
                 Init()
 				panel:UnregisterEvent('ADDON_LOADED')
-				panel:RegisterEvent('UPDATE_FACTION')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 		end
@@ -911,9 +917,5 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
-	elseif event=='UPDATE_FACTION' then
-		if TrackButton then
-			C_Timer.After(0.5, TrackButton.set_Text)--设置, 文本
-		end
     end
 end)
