@@ -67,7 +67,7 @@ local Get_Currency= function(tab)--货币
 
 	local weekMax= info.canEarnPerWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek--本周
 	local earnedMax= info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity--赛季
-	
+
     local max
 	if info.quantity==info.maxQuantity--最大数
 		or weekMax
@@ -76,7 +76,7 @@ local Get_Currency= function(tab)--货币
 		max= tab.toRight and e.Icon.toRight2 or e.Icon.toLeft2
 		num= '|cnRED_FONT_COLOR:'..num..'|r'
 	end
-	
+
 	local need
 	if not weekMax--本周,收入
 		and info.canEarnPerWeek
@@ -92,7 +92,7 @@ local Get_Currency= function(tab)--货币
 	then
 		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxQuantity- info.totalEarned, tab.bit)..'|r'
 	end
-   
+
 	if tab.toRight then
 		text= (max or '')
 			..num
@@ -106,7 +106,7 @@ local Get_Currency= function(tab)--货币
 			..num
 			..(max or '')
 	end
-   
+
 
     return text
 end
@@ -199,6 +199,11 @@ local function Init_TrackButton()
 	if Save.Hide or TrackButton then
 		return
 	end
+
+	for itemID, _ in pairs(Save.item) do
+		e.LoadDate({id=itemID, type='item'})--加载 item quest spell
+	end
+
 	TrackButton=e.Cbtn(nil, {atlas='hide', size={20,20}})
 
 	TrackButton.text=e.Cstr(TrackButton, {color=true})--内容显示文本
@@ -808,7 +813,7 @@ local function Init()
 			e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
 		end
 		e.tips:AddLine(' ')
-		
+
 		e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()
 		self.texture:SetAlpha(1)
@@ -1043,12 +1048,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
 			Save.tokens= Save.tokens or {}
 			Save.item= Save.item or {}
-
-			if not Save.Hide then
-				for itemID, _ in pairs(Save.item) do
-					e.LoadDate({id=itemID, type='item'})--加载 item quest spell
-				end
-			end
 
 			--添加控制面板
 			e.AddPanel_Check({
