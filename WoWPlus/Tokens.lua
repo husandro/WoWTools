@@ -27,7 +27,7 @@ local TrackButton
 
 
 local Get_Currency= function(tab)--货币
-	--Get_Currency({index=index, showName=Save.nameShow, showID=Save.showID, toRight=Save.toRightTrackText})--货币
+	--Get_Currency({index=index, showName=Save.nameShow, showID=Save.showID, toRight=Save.toRightTrackText, bit=nil})--货币
     local info
 	if tab.index then
 		info= C_CurrencyInfo.GetCurrencyListInfo(tab.index)
@@ -63,7 +63,7 @@ local Get_Currency= function(tab)--货币
 
 	local icon= '|T'..info.iconFileID..':0|t'
     local name=  tab.showName and info.name or nil
-	local num= e.MK(info.quantity, tab.bit)
+	local num= e.MK(info.quantity, tab.bit or 3)
 
 	local weekMax= info.canEarnPerWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek--本周
 	local earnedMax= info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity--赛季

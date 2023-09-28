@@ -918,7 +918,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             btn.texture:SetSize(size/2.5, size/2.5)
             btn.texture:SetPoint('CENTER')
             btn:SetScript('OnClick', function(self, d)
-                if d=='LeftButton' and IsAltKeyDown() then
+                if IsAltKeyDown() then
                     Frame.target:set_Clear(self.index)--取消标记标    
                 elseif d=='LeftButton' then
                     set_Taget('target', self.index)--设置,目标, 标记
