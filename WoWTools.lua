@@ -3,6 +3,7 @@ local id, e = ...
 e.tips=GameTooltip
 e.onlyChinese= LOCALE_zhCN
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
+e.call= securecallfunction
 
 local function GetWeek()--周数
     local region= GetCurrentRegion()

@@ -180,7 +180,7 @@ local function Init()
                     end
                 end
                 set_Buttons()--设置按钮, 和位置
-                securecall('AddonList_HasAnyChanged')
+                e.call('AddonList_HasAnyChanged')
             end,
             OnShow=function(self)
                 self.editBox:SetText(e.onlyChinese and '一般' or RESISTANCE_FAIR)
@@ -233,7 +233,7 @@ local function Init()
                         else
                             EnableAddOn(self2.name)
                         end
-                        securecall('AddonList_Update')
+                        e.call('AddonList_Update')
                     end)
                     check:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                     check:SetScript('OnEnter', function(self2)
@@ -386,7 +386,7 @@ local function Init()
     AddonListDisableAllButton:HookScript('OnClick', function()
         if Save.enableAllButtn then
             EnableAddOn(id)
-            securecall('AddonList_Update')
+            e.call('AddonList_Update')
         end
     end)
 end

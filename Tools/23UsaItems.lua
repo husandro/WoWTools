@@ -399,7 +399,7 @@ local function setToySpellButton_UpdateButton(self2)--标记, 是否已选取
                     table.insert(Save.item, itemID)
                 end
                 print(id, addName, C_ToyBox.GetToyLink(itemID), find and (e.onlyChinese and '移除' or REMOVE) or (e.onlyChinese and '添加' or ADD), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                securecallfunction(ToySpellButton_UpdateButton, frame)
+                e.call('ToySpellButton_UpdateButton', frame)
             else
                 e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self3, 15, 0)
             end

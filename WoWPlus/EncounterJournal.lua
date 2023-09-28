@@ -599,7 +599,7 @@ local function Init_EncounterJournal()--冒险指南界面
             self2.btn:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
 
             set_Loot_Spec_Event()--BOSS战时, 指定拾取, 专精, 事件
-            securecall(EncounterJournal_ListInstances)
+            e.call('EncounterJournal_ListInstances')
         elseif d=='RightButton' then
             if Save.hideEncounterJournal_All_Info_Text then
                 Save.hideEncounterJournal_All_Info_Text=nil
@@ -1355,9 +1355,9 @@ local function Init_EncounterJournal()--冒险指南界面
                         local link=C_PerksActivities.GetPerksActivityChatLink(self3.id)
                         if link then
                             if ChatEdit_GetActiveWindow() then
-                                securecall(ChatEdit_InsertLink, link)
+                                e.call('ChatEdit_InsertLink', link)
                             else
-                                securecall(ChatFrame_OpenChat, link)
+                                e.call('ChatFrame_OpenChat', link)
                             end
                         end
                     elseif d=='LeftButton' then
@@ -1380,7 +1380,7 @@ local function Init_EncounterJournal()--冒险指南界面
         numTier= numTier>max and max or numTier
         EJ_SelectTier(numTier)
         --[[C_Timer.After(2, function()
-            securecall('EJ_ContentTab_Select', numTier)
+            e.call('EJ_ContentTab_Select', numTier)
         end)]]
     end
 

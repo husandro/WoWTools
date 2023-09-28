@@ -640,7 +640,7 @@ local function InitList(self, level, type)
                     end,
                     OnHide= function(self2)
                         self2.editBox:SetText("")
-                        securecall(ChatEdit_FocusActiveWindow)
+                        e.call('ChatEdit_FocusActiveWindow')
                     end,
                     OnAccept = function(self2, data)
                         Save.ChannelText = string.upper(self.editBox:GetText())

@@ -9,7 +9,28 @@ local Save={
 	--indicato=true,--指定
 }
 local addName=REPUTATION
-local button
+
+local Button
+local TrackButton
+---@class Button
+---@class TrackButton
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function get_Faction_Info(tab)
 	local name, standingID, barMin, barMax, barValue, isHeader, isCollapsed, hasRep, isChild, factionID, _
@@ -122,155 +143,192 @@ local function get_Faction_Info(tab)
 	end
 end
 
---#########
---设置, 文本
---#########
-local function set_Text()--设置, 文本
-	if not Save.btn or not Save.btnstr or (button.btn and not button.btn:IsShown())  then
-		if button.btn and button.btn.text then
-			button.btn.text:SetText('')
-			button.btn:SetNormalAtlas(e.Icon.disabled)
-		end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_TrackButton()--监视, 文本
+
+	
+	if not Save.btn or TrackButton then
 		return
 	end
-	button.btn:SetNormalTexture(0)
-
-	local m=''
-	if Save.indicato then
-		local tab={}
-		for factionID, value in pairs(Save.factions) do
-			table.insert(tab, {factionID= factionID, index= value==true and 1 or value})
-		end
-		table.sort(tab, function(a, b) return a.index < b.index end)
-		for _, info in pairs(tab) do
-			local t=get_Faction_Info({factionID= info.factionID, hide=nil, name=not Save.hideName,})
-			if t then
-				if m~='' then m=m..'|n' end
-				m=m..t
-			end
-		end
+	TrackButton= e.Cbtn(nil, {icon=Save.btn, size={18,18}})
+	if Save.point then
+		TrackButton:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
 	else
-		for i=1, GetNumFactions() do
-			local t=get_Faction_Info({index= i, hide=true, name=not Save.hideName,})
-			if t then
-				if m~='' then m=m..'|n' end
-				m=m..t
-			end
-		end
+		TrackButton:SetPoint('TOPLEFT', ReputationFrame, 'TOPRIGHT',0, -40)
 	end
-	if m=='' then
-		m='..'
-	end
-	button.btn.text:SetText(m)
-end
-
-
-local function text_Init()--监视, 文本
-	if Save.btn and not button.btn then
-		button.btn= e.Cbtn(nil, {icon=Save.btn, size={18,18}})
-		if Save.point then
-			button.btn:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-		else
-			button.btn:SetPoint('TOPLEFT', ReputationFrame, 'TOPRIGHT',0, -40)
-		end
-		button.btn:RegisterForDrag("RightButton")
-		button.btn:SetClampedToScreen(true);
-		button.btn:SetMovable(true);
-		button.btn:SetScript("OnDragStart", function(self2, d) if d=='RightButton' and not IsModifierKeyDown() then self2:StartMoving() end end)
-		button.btn:SetScript("OnDragStop", function(self2)
-				ResetCursor()
-				self2:StopMovingOrSizing()
-				Save.point={self2:GetPoint(1)}
-				Save.point[2]=nil
-				self2:Raise()
-		end)
-		button.btn:SetScript("OnMouseUp", function() ResetCursor() end)
-		button.btn:SetScript("OnMouseDown", function(self2, d)
-			local key=IsModifierKeyDown()
-			if d=='RightButton' and not key then--右击,移动
-				SetCursor('UI_MOVE_CURSOR')
-
-			elseif d=='LeftButton' and not key then--点击,显示隐藏
-				Save.btnstr= not Save.btnstr and true or false
-				print(id, addName, e.GetShowHide(Save.btnstr))
-				set_Text()--设置, 文本
-
-			elseif d=='LeftButton' and IsAltKeyDown() then
-				Save.btnStrHideHeader= not Save.btnStrHideHeader and true or false
-				set_Text()--设置, 文本
-				print(id,addName, e.onlyChinese and '版本' or GAME_VERSION_LABEL,'('..NO..e.Icon.bank2..(e.onlyChinese and '奖励' or QUEST_REWARDS)..')', e.GetShowHide(not Save.btnStrHideHeader))
-
-			elseif d=='LeftButton' and IsShiftKeyDown() then--Shift+点击, 隐藏最高级, 且没有奖励声望
-				Save.btnStrHideCap= not Save.btnStrHideCap and true or false
-				set_Text()--设置, 文本
-				print(id, addName, e.onlyChinese and '没有声望奖励时' or VIDEO_OPTIONS_ULTRA_HIGH..'('..NO..e.Icon.bank2..QUEST_REWARDS..')', e.GetShowHide(not Save.btnStrHideCap))
-			end
-		end)
-		button.btn:SetScript("OnEnter",function(self2)
-			e.tips:SetOwner(self2, "ANCHOR_LEFT");
-			e.tips:ClearLines();
-			e.tips:AddDoubleLine(id, addName)
-			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(e.GetShowHide(Save.btnstr), e.Icon.left)
-			e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.mid)
-			e.tips:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..': '..(Save.size or 12), 'Alt+'..e.Icon.mid)
-			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine((e.onlyChinese and '版本' or GAME_VERSION_LABEL)..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
-			e.tips:AddDoubleLine((e.onlyChinese and '隐藏最高声望' or (VIDEO_OPTIONS_ULTRA_HIGH..addName))..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
-			e.tips:Show();
-		end)
-		button.btn:SetScript("OnLeave", function(self2)
+	TrackButton:RegisterForDrag("RightButton")
+	TrackButton:SetClampedToScreen(true);
+	TrackButton:SetMovable(true);
+	TrackButton:SetScript("OnDragStart", function(self2, d) if d=='RightButton' and not IsModifierKeyDown() then self2:StartMoving() end end)
+	TrackButton:SetScript("OnDragStop", function(self2)
 			ResetCursor()
-			e.tips:Hide()
-		end);
-		button.btn:EnableMouseWheel(true)
-		button.btn:SetScript("OnMouseWheel", function (self2, d)--打开,关闭, 声望
-			if IsAltKeyDown() then--缩放
-				local num
-				num= Save.size or 12
-				if d==1 then
-					num= num +1
-				elseif d==-1 then
-					num= num -1
-				end
-				num= num<6 and 6 or num
-				num= num>32 and 32 or num
-				Save.size= num
-				e.Cstr(nil, {size=num, changeFont=button.btn.text, color=true})
-				print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '字体大小' or FONT_SIZE, num)
+			self2:StopMovingOrSizing()
+			Save.point={self2:GetPoint(1)}
+			Save.point[2]=nil
+			self2:Raise()
+	end)
+	TrackButton:SetScript("OnMouseUp", function() ResetCursor() end)
+	TrackButton:SetScript("OnMouseDown", function(self, d)
+		local key=IsModifierKeyDown()
+		if d=='RightButton' and not key then--右击,移动
+			SetCursor('UI_MOVE_CURSOR')
 
-			elseif d==1 then
-				if not ReputationFrame:IsVisible() then
-					ToggleCharacter("ReputationFrame")
-				end
+		elseif d=='LeftButton' and not key then--点击,显示隐藏
+			Save.btnstr= not Save.btnstr and true or false
+			print(id, addName, e.GetShowHide(Save.btnstr))
+			self:set_Text()--设置, 文本
+
+		elseif d=='LeftButton' and IsAltKeyDown() then
+			Save.btnStrHideHeader= not Save.btnStrHideHeader and true or false
+			self:set_Text()--设置, 文本
+			print(id,addName, e.onlyChinese and '版本' or GAME_VERSION_LABEL,'('..NO..e.Icon.bank2..(e.onlyChinese and '奖励' or QUEST_REWARDS)..')', e.GetShowHide(not Save.btnStrHideHeader))
+
+		elseif d=='LeftButton' and IsShiftKeyDown() then--Shift+点击, 隐藏最高级, 且没有奖励声望
+			Save.btnStrHideCap= not Save.btnStrHideCap and true or false
+			self:set_Text()--设置, 文本
+			print(id, addName, e.onlyChinese and '没有声望奖励时' or VIDEO_OPTIONS_ULTRA_HIGH..'('..NO..e.Icon.bank2..QUEST_REWARDS..')', e.GetShowHide(not Save.btnStrHideCap))
+		end
+	end)
+	TrackButton:SetScript("OnEnter",function(self2)
+		e.tips:SetOwner(self2, "ANCHOR_LEFT");
+		e.tips:ClearLines();
+		e.tips:AddDoubleLine(id, addName)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine(e.GetShowHide(Save.btnstr), e.Icon.left)
+		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.mid)
+		e.tips:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..': '..(Save.size or 12), 'Alt+'..e.Icon.mid)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine((e.onlyChinese and '版本' or GAME_VERSION_LABEL)..': '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt + '..e.Icon.left)
+		e.tips:AddDoubleLine((e.onlyChinese and '隐藏最高声望' or (VIDEO_OPTIONS_ULTRA_HIGH..addName))..': '..e.GetShowHide(not Save.btnStrHideCap), 'Shift + '..e.Icon.left)
+		e.tips:Show();
+	end)
+	TrackButton:SetScript("OnLeave", function(self2)
+		ResetCursor()
+		e.tips:Hide()
+	end);
+	TrackButton:EnableMouseWheel(true)
+	TrackButton:SetScript("OnMouseWheel", function (self2, d)--打开,关闭, 声望
+		if IsAltKeyDown() then--缩放
+			local num
+			num= Save.size or 12
+			if d==1 then
+				num= num +1
 			elseif d==-1 then
-				if ReputationFrame:IsVisible() then
-					ToggleCharacter("ReputationFrame")
+				num= num -1
+			end
+			num= num<6 and 6 or num
+			num= num>32 and 32 or num
+			Save.size= num
+			e.Cstr(nil, {size=num, changeFont=TrackButton.text, color=true})
+			print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '字体大小' or FONT_SIZE, num)
+
+		elseif d==1 then
+			if not ReputationFrame:IsVisible() then
+				ToggleCharacter("ReputationFrame")
+			end
+		elseif d==-1 then
+			if ReputationFrame:IsVisible() then
+				ToggleCharacter("ReputationFrame")
+			end
+		end
+	end)
+	TrackButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+	TrackButton:RegisterEvent('PET_BATTLE_OPENING_DONE')
+	TrackButton:RegisterEvent('PET_BATTLE_CLOSE')
+	TrackButton:RegisterEvent('UPDATE_FACTION')
+	TrackButton:SetScript('OnEvent', function(self)
+		local show= Save.btn and not IsInInstance() and not C_PetBattles.IsInBattle()
+		self:SetShown(show)
+		if show then
+			self:set_Text()--设置, 文本
+		end
+	end)
+
+	TrackButton.text=e.Cstr(TrackButton, {size=Save.size, color=true})
+	TrackButton.text:SetPoint('TOPLEFT',3,-3)
+
+	function TrackButton:set_Text()--设置, 文本
+		if not Save.btn or not Save.btnstr or (TrackButton and not TrackButton:IsShown())  then
+			if TrackButton and TrackButton.text then
+				TrackButton.text:SetText('')
+				TrackButton:SetNormalAtlas(e.Icon.disabled)
+			end
+			return
+		end
+		TrackButton:SetNormalTexture(0)
+
+		local m=''
+		if Save.indicato then
+			local tab={}
+			for factionID, value in pairs(Save.factions) do
+				table.insert(tab, {factionID= factionID, index= value==true and 1 or value})
+			end
+			table.sort(tab, function(a, b) return a.index < b.index end)
+			for _, info in pairs(tab) do
+				local t=get_Faction_Info({factionID= info.factionID, hide=nil, name=not Save.hideName,})
+				if t then
+					if m~='' then m=m..'|n' end
+					m=m..t
 				end
 			end
-		end)
-		button.btn:RegisterEvent('PLAYER_ENTERING_WORLD')
-		button.btn:RegisterEvent('PET_BATTLE_OPENING_DONE')
-		button.btn:RegisterEvent('PET_BATTLE_CLOSE')
-		button.btn:RegisterEvent('UPDATE_FACTION')
-		button.btn:SetScript('OnEvent', function(self)
-			local show= Save.btn and not IsInInstance() and not C_PetBattles.IsInBattle()
-			self:SetShown(show)
-			if show then
-				set_Text()--设置, 文本
+		else
+			for i=1, GetNumFactions() do
+				local t=get_Faction_Info({index= i, hide=true, name=not Save.hideName,})
+				if t then
+					if m~='' then m=m..'|n' end
+					m=m..t
+				end
 			end
-		end)
+		end
+		if m=='' then
+			m='..'
+		end
+		TrackButton.text:SetText(m)
+	end
 
-		button.btn.text=e.Cstr(button.btn, {size=Save.size, color=true})
-		button.btn.text:SetPoint('TOPLEFT',3,-3)
-	end
-	if button.btn then
-		button.btn:SetShown(Save.btn and not IsInInstance() and not C_PetBattles.IsInBattle())
-		set_Text()--设置, 文本
-	end
+	hooksecurefunc('ReputationFrame_Update', TrackButton.set_Text)--更新, 监视, 文本
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#########
 --界面, 增强
@@ -415,7 +473,9 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 			if self.factionID then
 				Save.factions[self.factionID ]= not Save.factions[self.factionID ] and self.factionIndex or nil
 				self:SetAlpha(Save.factions[self.factionID] and 1 or 0.5)
-				set_Text()--设置, 文本
+				if TrackButton then
+					TrackButton:set_Text()--设置, 文本
+				end
 			end
 		end)
 		factionContainer.check:SetScript('OnEnter', function(self)
@@ -536,10 +596,37 @@ local function FactionUpdate(self, _, text, ...)
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, type)
+local function InitMenu(_, level, type)
 	local info
 	if type=='INDICATOLIST' then
 		local find
@@ -555,7 +642,7 @@ local function InitMenu(self, level, type)
 				arg2= factionID,
 				func= function(_,arg1, arg2)
 					Save.factions[arg2]=nil
-					securecallfunction(ReputationFrame_Update)
+					e.call('ReputationFrame_Update')
 					print(id, addName, e.onlyChinese and '移除' or REMOVE, arg1, arg2)
 				end
 			}
@@ -569,8 +656,7 @@ local function InitMenu(self, level, type)
 				notCheckable=true,
 				func= function()
 					Save.factions={}
-					securecallfunction(ReputationFrame_Update)
-					set_Text()--设置, 文本
+					e.call('ReputationFrame_Update')
 				end
 			}
 			e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -598,12 +684,12 @@ local function InitMenu(self, level, type)
 				Save.indicato= not Save.indicato and true or nil
 				if Save.indicato and Save.notPlus then
 					Save.notPlus= nil
-					button.down:SetShown(true)
-					button.up:SetShown(true)
-					securecallfunction(ReputationFrame_Update)
+					Button.down:SetShown(true)
+					Button.up:SetShown(true)
+					e.call('ReputationFrame_Update')
 					--e.LibDD:CloseDropDownMenus();
 				end
-				set_Text()--设置, 文本
+				TrackButton:set_Text()--设置, 文本
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -614,7 +700,9 @@ local function InitMenu(self, level, type)
 			checked= not Save.hideName,
 			func= function()
 				Save.hideName= not Save.hideName and true or nil
-				set_Text()--设置, 文本
+				if TrackButton then
+					TrackButton:set_Text()--设置, 文本
+				end
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -632,7 +720,12 @@ local function InitMenu(self, level, type)
 		hasArrow=true,
 		func= function()
 			Save.btn= not Save.btn and true or nil
-			text_Init()--监视, 文本
+			if TrackButton then
+				TrackButton:SetShown(Save.btn and not IsInInstance() and not C_PetBattles.IsInBattle())
+				TrackButton:set_Text()--设置, 文本
+			else
+				Init_TrackButton()--监视, 文本
+			end
 			print(id, addName,e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save.btn))
 		end
 	}
@@ -657,9 +750,9 @@ local function InitMenu(self, level, type)
 		checked= not Save.notPlus,
 		func= function()
 			Save.notPlus= not Save.notPlus and true or nil
-			button.down:SetShown(not Save.notPlus)
-			button.up:SetShown(not Save.notPlus)
-			securecallfunction(ReputationFrame_Update)
+			Button.down:SetShown(not Save.notPlus)
+			Button.up:SetShown(not Save.notPlus)
+			e.call('ReputationFrame_Update')
 			--print(id, addName, 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or NEED..REFRESH)
 		end
 	}
@@ -675,52 +768,75 @@ local function InitMenu(self, level, type)
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --######
 --初始化
 --######
 local function Init()
-	button= e.Cbtn(ReputationFrame, {atlas='auctionhouse-icon-favorite',size={18, 18}})
-	button:SetPoint("LEFT", ReputationFrameStandingLabel, 'RIGHT',5,0)
-	button:SetScript("OnClick", function(self,d)
+	Button= e.Cbtn(ReputationFrame, {atlas='auctionhouse-icon-favorite',size={18, 18}})
+	Button:SetPoint("LEFT", ReputationFrameStandingLabel, 'RIGHT',5,0)
+	Button:SetScript("OnClick", function(self)
 		if not self.Menu then
 			self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
     		e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
 		end
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
     end)
-	button:SetScript('OnEnter', function(self)
-		if self.btn and self.btn:IsShown() then
-			self.btn:SetButtonState('PUSHED')
+	Button:SetScript('OnEnter', function()
+		if TrackButton and TrackButton:IsShown() then
+			TrackButton:SetButtonState('PUSHED')
 		end
 	end)
-	button:SetScript('OnLeave', function(self)
-		if self.btn then
-			self.btn:SetButtonState("NORMAL")
+	Button:SetScript('OnLeave', function()
+		if TrackButton then
+			TrackButton:SetButtonState("NORMAL")
 		end
 	end)
 
-	text_Init()--监视, 文本
+	Init_TrackButton()--监视, 文本
 
-	hooksecurefunc('ReputationFrame_Update', set_Text)--更新, 监视, 文本
+	
 
 	hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
 
-	button.up=CreateFrame("Button",nil, button, 'UIPanelButtonTemplate')--收起所有
-	button.up:SetShown(not Save.notPlus)
-	button.up:SetNormalTexture('Interface\\Buttons\\UI-PlusButton-Up')
-	button.up:SetSize(16, 16)
-	button.up:SetPoint("LEFT", ReputationFrameFactionLabel, 'RIGHT',5,0)
-	button.up:SetScript("OnMouseDown", function()
+	Button.up=CreateFrame("Button",nil, Button, 'UIPanelButtonTemplate')--收起所有
+	Button.up:SetShown(not Save.notPlus)
+	Button.up:SetNormalTexture('Interface\\Buttons\\UI-PlusButton-Up')
+	Button.up:SetSize(16, 16)
+	Button.up:SetPoint("LEFT", ReputationFrameFactionLabel, 'RIGHT',5,0)
+	Button.up:SetScript("OnMouseDown", function()
 		for i=GetNumFactions(), 1, -1 do
 			CollapseFactionHeader(i)
 		end
 	end)
-	button.down=CreateFrame("Button",nil, button, 'UIPanelButtonTemplate')--展开所有
-	button.down:SetShown(not Save.notPlus)
-	button.down:SetNormalTexture('Interface\\Buttons\\UI-MinusButton-Up')
-	button.down:SetPoint('LEFT', button.up, 'RIGHT')
-	button.down:SetSize(18, 18)
-	button.down:SetScript("OnMouseDown", function(self)
+	Button.down=CreateFrame("Button",nil, Button, 'UIPanelButtonTemplate')--展开所有
+	Button.down:SetShown(not Save.notPlus)
+	Button.down:SetNormalTexture('Interface\\Buttons\\UI-MinusButton-Up')
+	Button.down:SetPoint('LEFT', Button.up, 'RIGHT')
+	Button.down:SetSize(18, 18)
+	Button.down:SetScript("OnMouseDown", function(self)
 		ExpandAllFactionHeaders()
 	end)
 
@@ -796,6 +912,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             WoWToolsSave[addName]=Save
         end
 	elseif event=='UPDATE_FACTION' then
-		C_Timer.After(0.5, set_Text)--设置, 文本
+		if TrackButton then
+			C_Timer.After(0.5, TrackButton.set_Text)--设置, 文本
+		end
     end
 end)

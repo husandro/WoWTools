@@ -131,7 +131,7 @@ local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracke
                 if not self.collapsed  then
                     --local module = self.Header.MinimizeButton:GetParent().module;
                     self:SetCollapsed(true);
-                    securecallfunction(ObjectiveTracker_Update, 0, nil, self)
+                    e.call('ObjectiveTracker_Update', 0, nil, self)
                     self.Header.MinimizeButton:SetCollapsed(true);
                     self.setColla=true;
                 end
@@ -144,7 +144,7 @@ local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracke
                 if self.setColla then
                     if self.collapsed  then
                         self:SetCollapsed(false);
-                        securecallfunction(ObjectiveTracker_Update, 0, nil, self)
+                        e.call('ObjectiveTracker_Update', 0, nil, self)
                         self.Header.MinimizeButton:SetCollapsed(false);
                     end
                     self.setColla=nil;

@@ -42,7 +42,7 @@ local function LvTo()--总装等
             PaperDollSidebarTab1.itemLevelText:EnableMouse(true)
             PaperDollSidebarTab1.itemLevelText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
             PaperDollSidebarTab1.itemLevelText:SetScript('OnMouseDown', function()
-                securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
+                e.call('PaperDollFrame_SetSidebar', PaperDollSidebarTab1, 1)--PaperDollFrame.lua
             end)
             PaperDollSidebarTab1.itemLevelText:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -62,7 +62,7 @@ local function LvTo()--总装等
             PaperDollSidebarTab1.itemLevelPvPText=e.Cstr(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
             PaperDollSidebarTab1.itemLevelPvPText:SetPoint('TOP')
             PaperDollSidebarTab1.itemLevelPvPText:SetScript('OnMouseDown', function(self)
-                securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
+                e.call(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
             end)
             PaperDollSidebarTab1.itemLevelPvPText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
             PaperDollSidebarTab1.itemLevelPvPText:SetScript('OnEnter', function(self)
@@ -606,7 +606,7 @@ local function Title()--头衔数量
             PaperDollSidebarTab2.titleNumeri:EnableMouse(true)
             PaperDollSidebarTab2.titleNumeri:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
             PaperDollSidebarTab2.titleNumeri:SetScript('OnMouseDown', function(self)
-                securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab2, 2)--PaperDollFrame.lua
+                e.call(PaperDollFrame_SetSidebar, PaperDollSidebarTab2, 2)--PaperDollFrame.lua
             end)
             PaperDollSidebarTab2.titleNumeri:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -652,7 +652,7 @@ local function set_set_PaperDollSidebarTab3_Text_Tips(self)
     self:EnableMouse(true)
     self:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
     self:SetScript('OnMouseDown', function()
-        securecallfunction(PaperDollFrame_SetSidebar, PaperDollSidebarTab3, 3)--PaperDollFrame.lua
+        e.call(PaperDollFrame_SetSidebar, PaperDollSidebarTab3, 3)--PaperDollFrame.lua
     end)
     self:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -921,7 +921,7 @@ local function set_inti_Equipment_Frame()--添加装备管理框
     local setIDs={}
     if not Save.hide then
         setIDs= C_EquipmentSet.GetEquipmentSetIDs() or {}
-        securecallfunction(SortEquipmentSetIDs, setIDs)--PaperDollFrame.lua
+        e.call(SortEquipmentSetIDs, setIDs)--PaperDollFrame.lua
     end
     local numIndex=0
     for index, setID in pairs(setIDs) do
@@ -1484,13 +1484,13 @@ panel.Init_Show_Hide_Button= function(self, frame)
         Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
         set_ChromieTime()--时空漫游战役, 提示
         set_inti_Equipment_Frame()--添加装备管理框
-        securecall('PaperDollFrame_SetLevel')
-        securecall('PaperDollFrame_UpdateStats')
+        e.call('PaperDollFrame_SetLevel')
+        e.call('PaperDollFrame_UpdateStats')
 
         if InspectFrame then
             if InspectFrame:IsShown() then
-                securecall('InspectPaperDollFrame_UpdateButtons')--InspectPaperDollFrame.lua
-                securecall('InspectPaperDollFrame_SetLevel')--目标,天赋 装等
+                e.call('InspectPaperDollFrame_UpdateButtons')--InspectPaperDollFrame.lua
+                e.call('InspectPaperDollFrame_SetLevel')--目标,天赋 装等
                 Init_Target_InspectUI()
             end
             if InspectLevelText then

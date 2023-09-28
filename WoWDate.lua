@@ -64,13 +64,13 @@ local function get_Player_Info(guid)--取得玩家信息
             for i=1, 4 do
                 local frame= PartyFrame['MemberFrame'..i]
                 if frame and UnitExists(frame.unit) and UnitIsUnit(frame.unit, unit) then
-                    securecall('UnitFrame_Update', frame, true)
+                    e.call('UnitFrame_Update', frame, true)
                     break
                 end
             end
         end
         if UnitIsUnit(unit, 'target') then
-            securecall('UnitFrame_Update', TargetFrame, UnitInParty('target'))
+            e.call('UnitFrame_Update', TargetFrame, UnitInParty('target'))
         end
     end
 end

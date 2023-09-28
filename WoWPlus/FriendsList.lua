@@ -711,7 +711,7 @@ local function set_WhoList_Update()--查询, 名单列表
             btn:HookScript('OnClick', function()
                 if WhoFrameAddFriendButton:IsEnabled() and IsAltKeyDown() then
                     WhoFrameAddFriendButton:Click()
-                    C_Timer.After(1, function() securecall('WhoList_Update') end)
+                    C_Timer.After(1, function() e.call('WhoList_Update') end)
                 end
             end)
             btn:HookScript('OnEnter', function(self)--FriendsFrame.lua

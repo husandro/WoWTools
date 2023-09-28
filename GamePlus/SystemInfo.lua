@@ -58,16 +58,6 @@ local function set_Label_Size_Color()
     end
 end
 local function create_Set_lable(self, text)--建立,或设置,Labels
---[[      
-        if text=='fps' then
-            label.tooltip= 'FPS'
-            down= function() securecallfunction(InterfaceOptionsFrame_OpenToCategory, id) end
-        elseif text=='ms' then
-            label.tooltip= function()
-                e.tips:AddLine(format(e.onlyChinese and  "延迟：|n%.0f ms （本地）|n%.0f ms （世界）" or MAINMENUBAR_LATENCY_LABEL, select(3, GetNetStats())))
-            end
-            down= function() securecallfunction(InterfaceOptionsFrame_OpenToCategory, id) end
-]]
     local down
     local label= Labels[text] or e.Cstr(self, {size=Save.size, color=true})
     if Save.parent then
@@ -767,7 +757,7 @@ local function Init()
 
     MainMenuMicroButton:EnableMouseWheel(true)--主菜单, 打开插件选项
     MainMenuMicroButton:SetScript('OnMouseWheel', function()
-        securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
+        e.call('InterfaceOptionsFrame_OpenToCategory', id)
     end)
 
     C_Timer.After(2, function()

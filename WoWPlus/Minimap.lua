@@ -1116,7 +1116,7 @@ local function click_Func(self, d)
             else
                 e.OpenPanelOpting()
                 --Settings.OpenToCategory(id)
-                --securecallfunction(InterfaceOptionsFrame_OpenToCategory, id)
+                --e.call(InterfaceOptionsFrame_OpenToCategory, id)
             end
 
     elseif d=='RightButton' and not key then

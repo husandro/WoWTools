@@ -662,8 +662,8 @@ local function Init_tipsButton()
         self.elapsed= (self.elapsed or 1) + elapsed
         if self.elapsed>=1 then
             self.elapsed=0
-            securecall(QueueStatusFrame.Update, QueueStatusFrame)--小眼睛, 更新信息, QueueStatusFrame.lua
-            --securecall(LFGListUtil_SetAutoAccept, C_LFGList.CanActiveEntryUseAutoAccept())--LFGList.lua 不可用
+            e.call(QueueStatusFrame.Update, QueueStatusFrame)--小眼睛, 更新信息, QueueStatusFrame.lua
+            --e.call(LFGListUtil_SetAutoAccept, C_LFGList.CanActiveEntryUseAutoAccept())--LFGList.lua 不可用
         end
     end)
 
@@ -898,8 +898,8 @@ local set_Raid_Menu_List=function(level)--团队本
                     if arg1.check then
                         LeaveSingleLFG(LE_LFG_CATEGORY_RF, arg1.id)
                     else
-                        securecallfunction(RaidFinderQueueFrame_SetRaid, arg1.id)
-                        securecallfunction(RaidFinderQueueFrame_Join)
+                        e.call('RaidFinderQueueFrame_SetRaid', arg1.id)
+                        e.call('RaidFinderQueueFrame_Join')
                         printListInfo()--输出当前列表
                         setTexture(nil, arg1, arg1.name, nil)--设置图标, 点击,提示
                     end
@@ -1212,7 +1212,7 @@ end
                     end
                     local frame2 = self3:GetParent();
                     if frame2.selectedCategory then
-                        securecall('LFGListCategorySelection_StartFindGroup', frame2)
+                        e.call('LFGListCategorySelection_StartFindGroup', frame2)
                     end
                 end)
                 frame.setOnDoubleClick=true
@@ -1865,12 +1865,12 @@ local function Init()
     button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' and (self.dungeonID or self.RaidID) then
             if self.dungeonID then
-                securecallfunction(LFDQueueFrame_SetType, self.dungeonID)
-                securecallfunction(LFDQueueFrame_Join)
+                e.call('LFDQueueFrame_SetType', self.dungeonID)
+                e.call('LFDQueueFrame_Join')
                 printListInfo()--输出当前列表
             else
-                securecallfunction(RaidFinderQueueFrame_SetRaid, self.RaidID)
-                securecallfunction(RaidFinderQueueFrame_Join)
+                e.call('RaidFinderQueueFrame_SetRaid', self.RaidID)
+                e.call('RaidFinderQueueFrame_Join')
                 printListInfo()--输出当前列表
             end
         else

@@ -136,8 +136,8 @@ local function Init()
                     if not frame or not frame:IsShown() then
                         ToggleEncounterJournal();
                     end
-                    securecall('NavBar_Reset', EncounterJournal.navBar)
-                    securecall('EncounterJournal_DisplayInstance', tab.ins)
+                    e.call('NavBar_Reset', EncounterJournal.navBar)
+                    e.call('EncounterJournal_DisplayInstance', tab.ins)
                 end
             end)]]
             buttons[tab.spell]:RegisterEvent('PLAYER_REGEN_DISABLED')--设置, 冷却

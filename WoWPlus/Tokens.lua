@@ -612,7 +612,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				arg1= currencyID,
 				func= function(_, arg1)
 					Save.tokens[arg1]=nil
-					securecall('TokenFrame_Update')
+					e.call('TokenFrame_Update')
 					print(id, addName, e.onlyChinese and '移除' or REMOVE, C_CurrencyInfo.GetCurrencyLink(arg1) or arg1)
 				end
 			}
@@ -628,7 +628,7 @@ local function InitMenu(_, level, menuList)--主菜单
 			func= function()
 				if IsShiftKeyDown() then
 					Save.tokens= {}
-					securecall('TokenFrame_Update')
+					e.call('TokenFrame_Update')
 					print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
 				end
 			end
@@ -859,7 +859,7 @@ local function Init()
 					C_CurrencyInfo.ExpandCurrencyList(i,true);
 				end
 			end
-			securecall('TokenFrame_Update')
+			e.call('TokenFrame_Update')
 	end)
 	Button.up=e.Cbtn(Button, {icon=false, size={18,18}})
 	Button.up:SetPoint('RIGHT', Button.down, 'LEFT',-2,0)
@@ -872,7 +872,7 @@ local function Init()
 					C_CurrencyInfo.ExpandCurrencyList(i, false);
 				end
 			end
-			securecall('TokenFrame_Update')
+			e.call('TokenFrame_Update')
 	end)
 	Button.bag=e.Cbtn(Button, {icon='hide', size={18,18}})
 	Button.bag:SetPoint('RIGHT', Button.up, 'LEFT',-2,0)
@@ -885,7 +885,7 @@ local function Init()
 			end
 		end
 		ToggleAllBags()
-		securecall('TokenFrame_Update')
+		e.call('TokenFrame_Update')
 	end)
 	Button.bag:SetScript('OnEnter', function(self2)
 		e.tips:SetOwner(self2, "ANCHOR_LEFT")

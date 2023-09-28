@@ -527,7 +527,7 @@ local function Init_Button()
     button.ClearPlayerButton:SetScript('OnClick', function(self2, d)
         if d=='LeftButton' and not IsModifierKeyDown() then
             SendMailNameEditBox:SetText('')
-            securecall(SendMailFrame_Update)
+            e.call('SendMailFrame_Update')
 
         elseif IsAltKeyDown() and d=='LeftButton' then
             Save.lastSendPlayerList={}
@@ -1349,7 +1349,7 @@ local function Init_InBox()
             InboxFrame.openMailID= openMailID
             OpenMailFrame.itemName= (itemCount and itemCount>0) and itemName or nil
             OpenMailFrame.money= money
-            securecall(OpenMail_Delete)--删除，或退信 MailFrame.lua
+            e.call('OpenMail_Delete')--删除，或退信 MailFrame.lua
         end
 
         print('|cFFFF00FF'..openMailID..')|r',
@@ -1503,7 +1503,7 @@ local function Init_InBox()
                                     OpenMailSender.Name:SetText(self2.playerName or self2.sender)
                                     OpenMailSubject:SetText(self2.subject)
                                     InboxFrame.openMailID= self2.openMailID
-                                    securecall(OpenMail_Reply)--回复
+                                    e.call('OpenMail_Reply')--回复
                                     self2:SetAlpha(1)
                                 end
                             end)
@@ -1621,7 +1621,7 @@ local function Init_InBox()
                     btn.outItemOrMoney= e.Cbtn(btn, {size={22, 20}, atlas='talents-search-notonactionbarhidden'})
                     btn.outItemOrMoney:SetPoint('RIGHT', btn.DeleteButton, 'LEFT', -22, 0)
                     btn.outItemOrMoney:SetScript('OnClick', function(self2)
-                        securecall(InboxFrame_OnModifiedClick, self2:GetParent(), self2.openMailID)
+                        e.call('InboxFrame_OnModifiedClick', self2:GetParent(), self2.openMailID)
                     end)
                     btn.outItemOrMoney:SetScript('OnLeave' ,function(self2)
                         local frame=self2:GetParent()
@@ -1915,10 +1915,10 @@ local function Init()--SendMailNameEditBox
         panel.showButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
 
         if OpenMailFrame:IsShown() then
-            securecall(OpenMail_Update)
+            e.call('OpenMail_Update')
         end
         if InboxFrame:IsShown() then
-            securecall(InboxFrame_Update)
+            e.call('InboxFrame_Update')
         end
     end)
 

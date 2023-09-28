@@ -124,7 +124,7 @@ local function InitMenu(self, level)--主菜单
                 end,
                 OnHide= function(self2)
                     self2.editBox:SetText("")
-                    securecall(ChatEdit_FocusActiveWindow)
+                    e.call('ChatEdit_FocusActiveWindow')
                 end,
                 OnAccept = function(self2, data)
                     local text= self2.editBox:GetText()

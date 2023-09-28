@@ -104,7 +104,7 @@ local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
                 end
                 getToy()--生成, 有效表格
                 setAtt()--设置属性
-                securecallfunction(ToySpellButton_UpdateButton, frame)
+                e.call('ToySpellButton_UpdateButton', frame)
             else
                 e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self2, 15, 0)
             end

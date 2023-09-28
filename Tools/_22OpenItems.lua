@@ -649,7 +649,7 @@ local function Init()
                 end,
                 OnHide= function(self2)
                     self2.editBox:SetText("")
-                    securecall(ChatEdit_FocusActiveWindow)
+                    e.call('ChatEdit_FocusActiveWindow')
                 end,
                 OnAccept = function(self2, data)
                     local num= self2.editBox:GetNumber()

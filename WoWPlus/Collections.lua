@@ -1011,7 +1011,7 @@ local function Init_Mount()
             table.insert(Filtertab, {text= mountTypeStrings[i - 1],
                 set=function(value)
                     C_MountJournal.SetTypeFilter(i, not value);
-                    securecallfunction(MountJournalResetFiltersButton_UpdateVisibility)
+                    e.call(MountJournalResetFiltersButton_UpdateVisibility)
                 end,
                 isSet=function() return C_MountJournal.IsTypeChecked(i) end
             })

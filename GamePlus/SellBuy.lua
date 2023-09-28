@@ -741,7 +741,7 @@ local function Init_Button(frame)
                     end,
                     OnHide= function(self3)
                         self3.editBox:SetText("")
-                        securecall(ChatEdit_FocusActiveWindow)
+                        e.call('ChatEdit_FocusActiveWindow')
                     end,
                     EditBoxOnEscapePressed = function(s)
                         s:SetAutoFocus(false)
