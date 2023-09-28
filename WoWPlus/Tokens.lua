@@ -360,10 +360,8 @@ local function Init_TrackButton()
 			self:set_Shown()
 			self:set_Tooltips()
 			print(id, addName, e.GetShowHide(Save.str))
-		elseif d=='RightButton' and not IsModifierKeyDown() then
-			ToggleCharacter("TokenFrame")--打开货币
 
-		elseif d=='RightButton' and IsShiftKeyDown() then--向右平移
+		elseif d=='LeftButton' and IsShiftKeyDown() then--向右平移
 			Save.toRightTrackText = not Save.toRightTrackText and true or nil
 			self.text:ClearAllPoints()
 			self.text2:ClearAllPoints()
@@ -381,6 +379,9 @@ local function Init_TrackButton()
 			self:set_Shown()
 			self:set_Tooltips()
 			print(id, addName, SHOW, 'ID', e.GetShowHide(Save.showID))
+
+		elseif d=='RightButton' and not IsModifierKeyDown() then
+			ToggleCharacter("TokenFrame")--打开货币
 		end
 	end)
 
@@ -392,7 +393,7 @@ local function Init_TrackButton()
 		e.tips:AddLine(' ')
 		e.tips:AddDoubleLine((e.onlyChinese and '名称' or NAME)..': '..e.GetShowHide(Save.nameShow), 'Alt+'..e.Icon.left)
 		e.tips:AddDoubleLine('ID: '..e.GetShowHide(Save.showID), 'Ctrl+'..e.Icon.left)
-		e.tips:AddDoubleLine(e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT, 'Shift+'..e.Icon.right)
+		e.tips:AddDoubleLine(e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT, 'Shift+'..e.Icon.left)
 		e.tips:AddLine(' ')
 		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Atl+'..e.Icon.right)
 		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..(Save.btnScale or 1), 'Alt+'..e.Icon.mid)
