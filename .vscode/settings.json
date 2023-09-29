@@ -3404,7 +3404,9 @@
         "DRAGONFLIGHT_TOTHESKIES",
         "HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT",
         "PARAGON_REPUTATION_TOOLTIP_TEXT",
-        "SHOW_CHAT_ICONS"
+        "SHOW_CHAT_ICONS",
+        "TRIVIAL_DIFFICULTY_COLOR_CODE",
+        "EASY_DIFFICULTY_COLOR"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
