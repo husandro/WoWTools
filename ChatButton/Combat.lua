@@ -215,9 +215,7 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
                 button.textButton:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT')
             end
         end)
-        button.textButton:SetScript("OnMouseUp", function(self, d)
-            ResetCursor()
-        end)
+        button.textButton:SetScript("OnMouseUp", ResetCursor)
         button.textButton:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
