@@ -888,7 +888,23 @@ local function InitMenu(_, level, type)
 			}
 			e.LibDD:UIDropDownMenu_AddButton(info, level)
 		end
-		return
+	
+	elseif type=='RestPoint' then
+		info={
+			text=e.onlyChinese and '重置位置' or RESET_POSITION,
+			colorCode= (not Save.point or not TrackButton) and '|cff606060' or nil,
+			notCheckable=true,
+			keepShownOnClick=true,
+			func= function()
+				Save.point=nil
+				if TrackButton then
+					TrackButton:ClearAllPoints()
+					TrackButton:set_Point()
+				end
+				print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+			end
+		}
+		e.LibDD:UIDropDownMenu_AddButton(info, level)
 	end
 
 	if type then
@@ -902,6 +918,8 @@ local function InitMenu(_, level, type)
 		tooltipTitle= e.onlyChinese and '副本/宠物对战' or INSTANCE..'/'..SHOW_PET_BATTLES_ON_MAP_TEXT,
 		tooltipText= e.GetEnabeleDisable(false),
 		colorCode= (IsInInstance() or C_PetBattles.IsInBattle()) and '|cffff0000',
+		hasArrow=true,
+		menuList='RestPoint',
 		func= function()
 			Save.btn= not Save.btn and true or nil
 			if TrackButton then
