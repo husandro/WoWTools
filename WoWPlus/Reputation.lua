@@ -248,7 +248,7 @@ local function Init_TrackButton()--监视, 文本
 	if not Save.btn or TrackButton then
 		return
 	end
-	TrackButton= e.Cbtn(nil, {icon='hide', size={22,22}})
+	TrackButton= e.Cbtn(nil, {icon='hide', size={24,24}})
 	TrackButton.text= e.Cstr(TrackButton, {color=true})
 	TrackButton.texture= TrackButton:CreateTexture()
 	TrackButton.texture:SetAllPoints(TrackButton)

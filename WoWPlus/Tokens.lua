@@ -204,7 +204,7 @@ local function Init_TrackButton()
 		e.LoadDate({id=itemID, type='item'})--加载 item quest spell
 	end
 
-	TrackButton= e.Cbtn(nil, {atlas='hide', size={20,20}})
+	TrackButton= e.Cbtn(nil, {atlas='hide', size={24,24}})
 
 	TrackButton.text=e.Cstr(TrackButton, {color=true})--内容显示文本
 	TrackButton.text2=e.Cstr(TrackButton, {color=true})--物品, 内容显示文本
