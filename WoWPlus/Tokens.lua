@@ -11,7 +11,7 @@ local Save={
 	--toRightTrackText=true,--向右平移
 
 	--hideCurrencyMax=true,--隐藏，已达到资源上限,提示
-	--CAPPED
+	--showID=true,--显示ID
 }
 local Button
 local TrackButton

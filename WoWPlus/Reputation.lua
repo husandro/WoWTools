@@ -10,6 +10,7 @@ local Save={
 
 	factionUpdateTips=true,--更新, 提示
 	--indicato=true,--指定
+	--showID=true,--显示ID
 }
 local addName=REPUTATION
 
@@ -214,26 +215,91 @@ local function Init_TrackButton()--监视, 文本
 	end)
 
 	TrackButton:SetScript("OnClick", function(self, d)
-		if d=='RightButton' and not IsModifierKeyDown() then--右击,移动
+		if d=='LeftButton' and not IsModifierKeyDown() then--右击, 移动
 			ToggleCharacter("ReputationFrame")
+		elseif d=='RightButton' and not IsModifierKeyDown() then
+			if not self.Menu then
+				self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+				e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
+					local info={
+						text= e.onlyChinese and '显示' or SHOW,
+						tooltipOnButton=true,
+						tooltipTitle=e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE),
+						checked= Save.btnstr,
+						keepShownOnClick=true,
+						func= function()
+							Save.btnstr= not Save.btnstr and true or false
+							TrackButton:set_Text()
+							TrackButton:set_Texture()
+						end
+					}
+					e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-		elseif d=='LeftButton' and not IsModifierKeyDown() then--点击,显示隐藏
+					info={
+						text= e.onlyChinese and '显示版本' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, GAME_VERSION_LABEL),
+						tooltipOnButton=true,
+						tooltipTitle=e.onlyChinese and '无声望' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NONE, REPUTATION),
+						checked= not Save.btnStrHideHeader,
+						colorCode= Save.indicato and '|cff606060' or nil,
+						keepShownOnClick=true,
+						func= function()
+							Save.btnStrHideHeader= not Save.btnStrHideHeader and true or false--隐藏最高声望
+							TrackButton:set_Text()
+						end
+					}
+					e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+					info={
+						text= e.onlyChinese and '显示最高声望' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, VIDEO_OPTIONS_ULTRA_HIGH , REPUTATION)),
+						tooltipOnButton=true,
+						tooltipTitle=e.onlyChinese and '继续获取阵营的声望以赢取奖励。' or format(PARAGON_REPUTATION_TOOLTIP_TEXT, FACTION),
+						checked= not Save.btnStrHideCap,
+						keepShownOnClick=true,
+						func= function()
+							Save.btnStrHideCap= not Save.btnStrHideCap and true or false--隐藏最高级, 且没有奖励声望
+							TrackButton:set_Text()
+						end
+					}
+					e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+					info={
+						text= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.GetShowHide(true), 'ID'),
+						checked= Save.showID,
+						keepShownOnClick=true,
+						func= function()
+							Save.showID= not Save.showID and true or false
+							TrackButton:set_Text()
+						end
+					}
+					e.LibDD:UIDropDownMenu_AddButton(info, level)
+				end, 'MENU')
+			end
+			e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
+		end
+		self:set_Tooltips()
+		--[[elseif d=='LeftButton' and not IsModifierKeyDown() then--点击, 显示隐藏
 			Save.btnstr= not Save.btnstr and true or false
 			print(id, addName, e.GetShowHide(Save.btnstr))
-			self:set_Text()--设置, 文本
+			self:set_Text()
 			self:set_Texture()
 
 		elseif d=='LeftButton' and IsAltKeyDown() then
-			Save.btnStrHideHeader= not Save.btnStrHideHeader and true or false
-			self:set_Text()--设置, 文本
-			print(id,addName, e.onlyChinese and '版本' or GAME_VERSION_LABEL,'('..NO..e.Icon.bank2..(e.onlyChinese and '奖励' or QUEST_REWARDS)..')', e.GetShowHide(not Save.btnStrHideHeader))
+			Save.btnStrHideHeader= not Save.btnStrHideHeader and true or false--隐藏最高声望
+			self:set_Text()
+			print(id,addName, e.onlyChinese and '版本' or GAME_VERSION_LABEL,
+			(e.onlyChinese and '无' or NONE)..e.Icon.bank2..(e.onlyChinese and '奖励' or QUEST_REWARDS), e.GetShowHide(not Save.btnStrHideHeader))
 
-		elseif d=='LeftButton' and IsShiftKeyDown() then--Shift+点击, 隐藏最高级, 且没有奖励声望
-			Save.btnStrHideCap= not Save.btnStrHideCap and true or false
-			self:set_Text()--设置, 文本
+		elseif d=='LeftButton' and IsShiftKeyDown() then
+			Save.btnStrHideCap= not Save.btnStrHideCap and true or false--隐藏最高级, 且没有奖励声望
+			self:set_Text()
 			print(id, addName, e.onlyChinese and '没有声望奖励时' or VIDEO_OPTIONS_ULTRA_HIGH..'('..NO..e.Icon.bank2..QUEST_REWARDS..')', e.GetShowHide(not Save.btnStrHideCap))
-		end
-		self:set_Tooltips()
+
+		elseif d=='LeftButton' and IsControlKeyDown() then
+			Save.showID= not Save.showID and true or nil--显示ID
+			self:set_Text()
+			print(id, addName, 'ID', e.GetShowHide(Save.showID))
+		end]]
+		
 	end)
 
 
@@ -248,7 +314,7 @@ local function Init_TrackButton()--监视, 文本
 		e.tips:AddDoubleLine((e.onlyChinese and '版本' or GAME_VERSION_LABEL)..' '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt+'..e.Icon.left)
 		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
 		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-		
+		e.tips:AddDoubleLine('ID '..e.GetShowHide(Save.showID), 'Ctrl+'..e.Icon.left)
 		e.tips:AddLine(' ')
 		e.tips:AddDoubleLine((e.onlyChinese and '隐藏最高声望' or
 				format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, VIDEO_OPTIONS_ULTRA_HIGH, REPUTATION))),
@@ -857,7 +923,7 @@ local function Init()
 	Button:SetPoint("LEFT", ReputationFrameStandingLabel, 'RIGHT',5,0)
 	Button:SetScript("OnClick", function(self)
 		if not self.Menu then
-			self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+			self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
     		e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
 		end
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)

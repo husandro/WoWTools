@@ -3402,7 +3402,8 @@
         "LE_EXPANSION_DRAGONFLIGHT",
         "MOVIE_LIST",
         "DRAGONFLIGHT_TOTHESKIES",
-        "HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT"
+        "HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT",
+        "PARAGON_REPUTATION_TOOLTIP_TEXT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
