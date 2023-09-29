@@ -306,7 +306,8 @@ local function Init_TrackButton()
 	end
 
 	function TrackButton:set_Scale()
-		self:SetScale(Save.scaleTrackButton or 1)
+		self.text:SetScale(Save.scaleTrackButton or 1)
+		self.text2:SetScale(Save.scaleTrackButton or 1)
 	end
 
 	function TrackButton:set_Text_Point()
