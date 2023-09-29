@@ -263,7 +263,7 @@ local function Init_TrackButton()--监视, 文本
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
 
 					info={
-						text= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.GetShowHide(true), 'ID'),
+						text= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '显示' or SHOW, 'ID'),
 						checked= Save.showID,
 						keepShownOnClick=true,
 						func= function()
@@ -277,28 +277,7 @@ local function Init_TrackButton()--监视, 文本
 			e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
 		end
 		self:set_Tooltips()
-		--[[elseif d=='LeftButton' and not IsModifierKeyDown() then--点击, 显示隐藏
-			Save.btnstr= not Save.btnstr and true or false
-			print(id, addName, e.GetShowHide(Save.btnstr))
-			self:set_Text()
-			self:set_Texture()
 
-		elseif d=='LeftButton' and IsAltKeyDown() then
-			Save.btnStrHideHeader= not Save.btnStrHideHeader and true or false--隐藏最高声望
-			self:set_Text()
-			print(id,addName, e.onlyChinese and '版本' or GAME_VERSION_LABEL,
-			(e.onlyChinese and '无' or NONE)..e.Icon.bank2..(e.onlyChinese and '奖励' or QUEST_REWARDS), e.GetShowHide(not Save.btnStrHideHeader))
-
-		elseif d=='LeftButton' and IsShiftKeyDown() then
-			Save.btnStrHideCap= not Save.btnStrHideCap and true or false--隐藏最高级, 且没有奖励声望
-			self:set_Text()
-			print(id, addName, e.onlyChinese and '没有声望奖励时' or VIDEO_OPTIONS_ULTRA_HIGH..'('..NO..e.Icon.bank2..QUEST_REWARDS..')', e.GetShowHide(not Save.btnStrHideCap))
-
-		elseif d=='LeftButton' and IsControlKeyDown() then
-			Save.showID= not Save.showID and true or nil--显示ID
-			self:set_Text()
-			print(id, addName, 'ID', e.GetShowHide(Save.showID))
-		end]]
 		
 	end)
 
