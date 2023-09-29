@@ -406,7 +406,7 @@ local function Init_TrackButton()--监视, 文本
 				for _, info in pairs(tab) do
 					local msg=get_Faction_Info({
 							factionID=info.factionID,
-							onlyIcon=not Save.onlyIcon,
+							onlyIcon=Save.onlyIcon,
 							showID=Save.showID,
 							showHeader=not Save.btnStrHideHeader,
 							showMax=not Save.btnStrHideCap,
@@ -882,8 +882,8 @@ local function InitMenu(_, level, type)
 		checked= not Save.notPlus,
 		func= function()
 			Save.notPlus= not Save.notPlus and true or nil
-			Button.down:SetShown(not Save.notPlus)
-			Button.up:SetShown(not Save.notPlus)
+			Button:set_Shown()
+			
 			e.call('ReputationFrame_Update')
 			--print(id, addName, 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or NEED..REFRESH)
 		end
@@ -945,16 +945,9 @@ local function Init()
 		end
 	end)
 
-	Init_TrackButton()--监视, 文本
-
-	hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
-
-	Button.up=CreateFrame("Button",nil, Button, 'UIPanelButtonTemplate')--收起所有
-	Button.up:SetShown(not Save.notPlus)
-	Button.up:SetNormalTexture('Interface\\Buttons\\UI-PlusButton-Up')
-	Button.up:SetSize(16, 16)
+	Button.up= e.Cbtn(Button, {size={22,22}, texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
 	Button.up:SetPoint("LEFT", ReputationFrameFactionLabel, 'RIGHT',5,0)
-	Button.up:SetScript("OnMouseDown", function()
+	Button.up:SetScript("OnClick", function()
 		for i=GetNumFactions(), 1, -1 do
 			CollapseFactionHeader(i)
 		end
@@ -963,25 +956,31 @@ local function Init()
 	Button.up:SetScript('OnEnter', function(self)
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
-		e.tips:AddLine(e.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
+		e.tips:AddDoubleLine(' ', e.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
+		e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()
 	end)
 
-	Button.down=CreateFrame("Button",nil, Button, 'UIPanelButtonTemplate')--展开所有
-	Button.down:SetShown(not Save.notPlus)
-	Button.down:SetNormalTexture('Interface\\Buttons\\UI-MinusButton-Up')
+	Button.down= e.Cbtn(Button.up, {size={22,22}, texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
 	Button.down:SetPoint('LEFT', Button.up, 'RIGHT')
-	Button.down:SetSize(18, 18)
-	Button.down:SetScript("OnMouseDown", function(self)
-		ExpandAllFactionHeaders()
-	end)
+	Button.down:SetScript("OnClick", ExpandAllFactionHeaders)
 	Button.down:SetScript("OnLeave", function() e.tips:Hide() end)
 	Button.down:SetScript('OnEnter', function(self)
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
-		e.tips:AddLine(e.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
+		e.tips:AddDoubleLine(' ', e.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
+		e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()
 	end)
+
+	function Button:set_Shown()
+		self.up:SetShown(not Save.notPlus)
+	end
+
+	Init_TrackButton()--监视, 文本
+	hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
+	Button:set_Shown()
+
 	if Save.factionUpdateTips then--声望更新, 提示
 		ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE', FactionUpdate)
 
@@ -1008,6 +1007,23 @@ local function Init()
 		end
 	end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --###########

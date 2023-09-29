@@ -860,33 +860,48 @@ local function Init()
 
 
 	--展开,合起
-	Button.down=e.Cbtn(Button, {icon=false, size={18,18}});
-	Button.down:SetPoint('RIGHT', Button, 'LEFT', -2,0)
-	Button.down:SetNormalTexture('Interface\\Buttons\\UI-MinusButton-Up')
-	Button.down:SetScript("OnClick", function(self)
-			for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
-				local info = C_CurrencyInfo.GetCurrencyListInfo(i)
-				if info  and info.isHeader and not info.isHeaderExpanded then
-					C_CurrencyInfo.ExpandCurrencyList(i,true);
-				end
+	Button.down= e.Cbtn(Button, {size={22,22}, texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
+	Button.down:SetPoint('RIGHT', Button, 'LEFT', -2, 0)
+	Button.down:SetScript("OnClick", function()
+		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
+			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
+			if info  and info.isHeader and not info.isHeaderExpanded then
+				C_CurrencyInfo.ExpandCurrencyList(i,true);
 			end
-			e.call('TokenFrame_Update')
+		end
+		e.call('TokenFrame_Update')
 	end)
-	Button.up=e.Cbtn(Button, {icon=false, size={18,18}})
-	Button.up:SetPoint('RIGHT', Button.down, 'LEFT',-2,0)
-	Button.up:SetSize(18,18);
-	Button.up:SetNormalTexture("Interface\\Buttons\\UI-PlusButton-Up")
-	Button.up:SetScript("OnClick", function(self)
-			for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
-				local info = C_CurrencyInfo.GetCurrencyListInfo(i);
-				if info  and info.isHeader and info.isHeaderExpanded then
-					C_CurrencyInfo.ExpandCurrencyList(i, false);
-				end
+	Button.down:SetScript("OnLeave", function() e.tips:Hide() end)
+	Button.down:SetScript('OnEnter', function(self)
+		e.tips:SetOwner(self, "ANCHOR_LEFT")
+		e.tips:ClearLines()
+		e.tips:AddDoubleLine(' ', e.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
+		e.tips:AddDoubleLine(id, addName)
+		e.tips:Show()
+	end)
+
+	Button.up= e.Cbtn(Button, {size={22,22}, texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
+	Button.up:SetPoint('RIGHT', Button.down, 'LEFT', -2, 0)
+	Button.up:SetScript("OnClick", function()
+		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
+			local info = C_CurrencyInfo.GetCurrencyListInfo(i);
+			if info  and info.isHeader and info.isHeaderExpanded then
+				C_CurrencyInfo.ExpandCurrencyList(i, false);
 			end
-			e.call('TokenFrame_Update')
+		end
+		e.call('TokenFrame_Update')
 	end)
+	Button.up:SetScript("OnLeave", function() e.tips:Hide() end)
+	Button.up:SetScript('OnEnter', function(self)
+		e.tips:SetOwner(self, "ANCHOR_LEFT")
+		e.tips:ClearLines()
+		e.tips:AddDoubleLine(' ',e.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
+		e.tips:AddDoubleLine(id, addName)
+		e.tips:Show()
+	end)
+
 	Button.bag=e.Cbtn(Button, {icon='hide', size={18,18}})
-	Button.bag:SetPoint('RIGHT', Button.up, 'LEFT',-2,0)
+	Button.bag:SetPoint('RIGHT', Button.up, 'LEFT',-4,0)
 	Button.bag:SetNormalAtlas(e.Icon.bag)
 	Button.bag:SetScript("OnClick", function(self)
 		for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
