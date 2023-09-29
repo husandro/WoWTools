@@ -259,13 +259,12 @@ local function Init_TrackButton()
 					e.LoadDate({id=itemID, type='item'})--加载 item quest spell
 				end
 			end
-			text= text or '..'
 		end
-		self.text2:SetText(text or '')
+		self.text2:SetText(text and text..' ' or '')
 	end
 
 	function TrackButton:set_Currency_Text()
-		local m=''
+		local text
 		if Save.str and self:IsShown() then
 			if Save.indicato then
 				local tab={}
@@ -274,21 +273,21 @@ local function Init_TrackButton()
 				end
 				table.sort(tab, function(a,b) return a.index< b.index end)
 				for _, info in pairs(tab) do
-					local text= Get_Currency({id=info.currentID, showName=Save.nameShow, showID=Save.showID, toRight=Save.toRightTrackText})--货币
-					if text then
-						m= m..text..'|n' or m
+					local msg= Get_Currency({id=info.currentID, showName=Save.nameShow, showID=Save.showID, toRight=Save.toRightTrackText})--货币
+					if msg then
+						text= text and text..'|n'..msg or msg
 					end
 				end
 			else
 				for index=1, C_CurrencyInfo.GetCurrencyListSize() do
-					local text= Get_Currency({index=index, showName=Save.nameShow, showID=Save.showID, toRight=Save.toRightTrackText})--货币
-					if text then
-						m= m..text..'|n' or m
+					local msg= Get_Currency({index=index, showName=Save.nameShow, showID=Save.showID, toRight=Save.toRightTrackText})--货币
+					if msg then
+						text= text and text..'|n'..msg or msg
 					end
 				end
 			end
 		end
-		self.text:SetText(m)
+		self.text:SetText(text and text..' ' or '')
 	end
 
 	function TrackButton:set_Shown()--显示,隐藏
@@ -611,6 +610,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				tooltipOnButton=true,
 				tooltipTitle=e.onlyChinese and '移除' or REMOVE,
 				tooltipText=currencyID,
+				colorCode= not Save.indicato and '|cff606060' or nil,
 				arg1= currencyID,
 				func= function(_, arg1)
 					Save.tokens[arg1]=nil
@@ -636,6 +636,23 @@ local function InitMenu(_, level, menuList)--主菜单
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+	elseif menuList=='RestPoint' then
+		info={
+			text=e.onlyChinese and '重置位置' or RESET_POSITION,
+			colorCode= (not Save.point or not TrackButton) and '|cff606060' or nil,
+			notCheckable=true,
+			keepShownOnClick=true,
+			func= function()
+				Save.point=nil
+				if TrackButton then
+					TrackButton:ClearAllPoints()
+					TrackButton:set_Point()
+				end
+				print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+			end
+		}
+		e.LibDD:UIDropDownMenu_AddButton(info, level)
 	end
 
 	if menuList then
@@ -646,6 +663,8 @@ local function InitMenu(_, level, menuList)--主菜单
 		text= (e.onlyChinese and '追踪' or TRACKING),
 		checked= not Save.Hide,
 		keepShownOnClick=true,
+		hasArrow=true,
+		menuList='RestPoint',
 		func= function()
 			Save.Hide= not Save.Hide and true or nil
 			if TrackButton then
@@ -653,14 +672,25 @@ local function InitMenu(_, level, menuList)--主菜单
 			else
 				Init_TrackButton()
 			end
-
 			Button:set_bagButtonTexture()
-			if Save.Hide then
-				Button.indcatoCheck.text:SetTextColor(0.82, 0.82, 0.82, 0.5)
-			else
-				Button.indcatoCheck.text:SetTextColor(1, 1, 1, 1)
-			end
 			print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.GetEnabeleDisable(not Save.Hide))
+		end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+	info={
+		text=e.onlyChinese and '货币' or TOKENS,
+		checked= Save.indicato,
+		tooltipOnButton=true,
+		tooltipTitle=e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION,
+		menuList='TOKENS',
+		hasArrow=true,
+		keepShownOnClick=true,
+		func= function()
+			Save.indicato= not Save.indicato and true or nil
+			if TrackButton then
+				TrackButton:set_Shown()
+			end
 		end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -674,17 +704,7 @@ local function InitMenu(_, level, menuList)--主菜单
 		colorCoed=Save.Hide and '|cff606060' or nil,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-	info={
-		text=e.onlyChinese and '货币' or TOKENS,
-		tooltipOnButton=true,
-		tooltipTitle=e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION,
-		notCheckable=true,
-		menuList='TOKENS',
-		hasArrow=true,
-		keepShownOnClick=true,
-		colorCoed=Save.Hide and '|cff606060' or nil,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
+	
 
 	e.LibDD:UIDropDownMenu_AddSeparator(level)
 	info={
@@ -765,7 +785,7 @@ local function Init()
 	end
 	Button:set_bagButtonTexture()--设置,按钮, 图标
 
-	local function click(self, d)
+	local function click(self)
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save.item[itemID]= not Save.item[itemID] and true or nil
@@ -778,13 +798,6 @@ local function Init()
 			if TrackButton then
 				TrackButton:set_Item_Text()
 			end
-		elseif d=='RightButton' and IsControlKeyDown() then
-			Save.point=nil
-			if TrackButton then
-				TrackButton:ClearAllPoints()
-				TrackButton:set_Point()
-			end
-			print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
 		else
 			if not Button.Menu then
 				Button.Menu=CreateFrame("Frame", nil, Button, "UIDropDownMenuTemplate")
@@ -812,11 +825,7 @@ local function Init()
 			Button:set_bagButtonTexture(C_Item.GetItemIconByID(itemID))
 		else
 			e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
-
-			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine((e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
-			local col= Save.point and '' or '|cff606060'
-			e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
 		end
 		e.tips:AddLine(' ')
 
@@ -902,32 +911,6 @@ local function Init()
 		e.tips:Show()
 	end)
 	Button.bag:SetScript('OnLeave', function() e.tips:Hide() end)
-
-
-	Button.indcatoCheck= CreateFrame("CheckButton", nil, TokenFrame, "InterfaceOptionsCheckButtonTemplate")--指定显示, 选项
-	Button.indcatoCheck:SetPoint('TOP', 0, -32)
-	Button.indcatoCheck:SetScript('OnMouseDown', function()
-		Save.indicato= not Save.indicato and true or nil
-		print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(not Save.Hide))
-		if TrackButton then
-			TrackButton:set_Shown()
-		end
-	end)
-	Button.indcatoCheck:SetScript('OnEnter', function(self)
-		e.tips:SetOwner(self, "ANCHOR_LEFT")
-		e.tips:ClearLines()
-		e.tips:AddLine(e.onlyChinese and '追踪' or TRACKING)
-		e.tips:AddDoubleLine(e.onlyChinese and '指定类型' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT_ALLY_START_MISSION, TYPE), e.Icon.left)
-		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine(id, addName)
-		e.tips:Show()
-	end)
-	Button.indcatoCheck:SetScript('OnLeave', function() e.tips:Hide() end)
-	Button.indcatoCheck.text:SetText(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-	Button.indcatoCheck:SetChecked(Save.indicato)
-	if Save.Hide then
-		Button.indcatoCheck.text:SetTextColor(0.82, 0.82, 0.82, 0.5)
-	end
 
 
 	function Button:currency_Max(init, curID)--已达到资源上限

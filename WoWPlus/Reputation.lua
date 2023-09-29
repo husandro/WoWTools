@@ -11,6 +11,7 @@ local Save={
 	factionUpdateTips=true,--更新, 提示
 	--indicato=true,--指定
 	--showID=true,--显示ID
+	--hideName=true,--隐藏名称
 }
 local addName=REPUTATION
 
@@ -166,7 +167,7 @@ local function Init_TrackButton()--监视, 文本
 	TrackButton.text= e.Cstr(TrackButton, {color=true})
 	TrackButton.texture= TrackButton:CreateTexture()
 	TrackButton.texture:SetAllPoints(TrackButton)
-	
+
 	function TrackButton:set_Scale()
 		if Save.ttoRightTrackText then
 			self.text:SetPoint('TOPRIGHT', -3 , -3)
@@ -229,8 +230,8 @@ local function Init_TrackButton()--监视, 文本
 						keepShownOnClick=true,
 						func= function()
 							Save.btnstr= not Save.btnstr and true or false
-							TrackButton:set_Text()
-							TrackButton:set_Texture()
+							TrackButton:set_Shown()
+							e.call('ReputationFrame_Update')
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -244,7 +245,7 @@ local function Init_TrackButton()--监视, 文本
 						keepShownOnClick=true,
 						func= function()
 							Save.btnStrHideHeader= not Save.btnStrHideHeader and true or false--隐藏最高声望
-							TrackButton:set_Text()
+							e.call('ReputationFrame_Update')
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -257,7 +258,17 @@ local function Init_TrackButton()--监视, 文本
 						keepShownOnClick=true,
 						func= function()
 							Save.btnStrHideCap= not Save.btnStrHideCap and true or false--隐藏最高级, 且没有奖励声望
-							TrackButton:set_Text()
+							e.call('ReputationFrame_Update')
+						end
+					}
+					e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+					info={
+						text= e.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME),
+						checked= not Save.hideName,
+						func= function()
+							Save.hideName= not Save.hideName and true or nil
+							e.call('ReputationFrame_Update')
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -268,7 +279,7 @@ local function Init_TrackButton()--监视, 文本
 						keepShownOnClick=true,
 						func= function()
 							Save.showID= not Save.showID and true or false
-							TrackButton:set_Text()
+							e.call('ReputationFrame_Update')
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -277,28 +288,19 @@ local function Init_TrackButton()--监视, 文本
 			e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
 		end
 		self:set_Tooltips()
-
-		
 	end)
 
-
 	function TrackButton:set_Tooltips()
-		e.tips:SetOwner(self, "ANCHOR_LEFT");
-		e.tips:ClearLines();
-		e.tips:AddDoubleLine(id, addName)
+		e.tips:SetOwner(self, "ANCHOR_LEFT")
+		e.tips:ClearLines()
+		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.left)
+		e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
 		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine(e.GetShowHide(not Save.btnstr), e.Icon.left)
-		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.right)
-		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine((e.onlyChinese and '版本' or GAME_VERSION_LABEL)..' '..e.GetShowHide(not Save.btnStrHideHeader), 'Alt+'..e.Icon.left)
 		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
 		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-		e.tips:AddDoubleLine('ID '..e.GetShowHide(Save.showID), 'Ctrl+'..e.Icon.left)
 		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine((e.onlyChinese and '隐藏最高声望' or
-				format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, VIDEO_OPTIONS_ULTRA_HIGH, REPUTATION))),
-				e.GetShowHide(not Save.btnStrHideCap)..'Ctrl+'..e.Icon.left)
-		e.tips:Show();
+		e.tips:AddDoubleLine(id, addName)
+		e.tips:Show()
 		self.texture:SetAlpha(1)
 	end
 	TrackButton:SetScript("OnLeave", function(self)
@@ -347,6 +349,7 @@ local function Init_TrackButton()--监视, 文本
 			and not UnitAffectingCombat('player')
 		)
 		self:set_Text()
+		self:set_Texture()
 	end
 
 	TrackButton:SetScript('OnEvent', function(self, event)
@@ -368,7 +371,7 @@ local function Init_TrackButton()--监视, 文本
 				end
 				table.sort(tab, function(a, b) return a.index < b.index end)
 				for _, info in pairs(tab) do
-					local t=get_Faction_Info({factionID= info.factionID, hide=nil, name=not Save.hideName,})
+					local t=get_Faction_Info({factionID= info.factionID, name=not Save.hideName,})
 					if t then
 						text= text and text..'|n'..t or t
 					end
@@ -381,7 +384,7 @@ local function Init_TrackButton()--监视, 文本
 					end
 				end
 			end
-			text= text or '..'
+			text= text and text..' ' or '..'
 		end
 		self.text:SetText(text or '')
 	end
@@ -557,18 +560,16 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 	if not factionContainer.check then
 		factionContainer.check= CreateFrame("CheckButton", nil, factionContainer, "InterfaceOptionsCheckButtonTemplate")
 		factionContainer.check:SetPoint('LEFT',-4,0)
-		factionContainer.check:SetFrameStrata('DIALOG')
+		factionContainer.check:Raise()
 		factionContainer.check:SetScript('OnClick', function(self)
 			if self.factionID then
 				Save.factions[self.factionID ]= not Save.factions[self.factionID ] and self.factionIndex or nil
-				self:SetAlpha(Save.factions[self.factionID] and 1 or 0.5)
-				if TrackButton then
-					TrackButton:set_Text()--设置, 文本
-				end
+				self:SetAlpha(1)
+				e.call('ReputationFrame_Update')
 			end
 		end)
 		factionContainer.check:SetScript('OnEnter', function(self)
-			e.tips:SetOwner(self, "ANCHOR_RIGHT")
+			e.tips:SetOwner(self, "ANCHOR_LEFT")
 			e.tips:ClearLines()
 			if self.factionID then
 				local name2=GetFactionInfoByID(self.factionID)
@@ -583,14 +584,14 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 			e.tips:Show()
 		end)
 		factionContainer.check:SetScript('OnLeave', function() e.tips:Hide() end)
-		factionContainer.check:SetSize(15,15)
+		factionContainer.check:SetSize(18,22)
 		factionContainer.check:SetCheckedTexture(e.Icon.icon)
 	end
 	factionContainer.check:SetShown(true)
 	factionContainer.check.factionID= factionID
 	factionContainer.check.factionIndex= factionIndex
 	factionContainer.check:SetChecked(Save.factions[factionID])
-	factionContainer.check:SetAlpha(Save.factions[factionID] and 1 or 0.5)
+	factionContainer.check:SetAlpha(0.5)
 end
 
 
@@ -739,6 +740,7 @@ local function InitMenu(_, level, type)
 			info={
 				text= name..' |cnGREEN_FONT_COLOR:'..index..'|r',
 				tooltipOnButton=true,
+				colorCode= not Save.indicato and '|cff606060' or nil,
 				tooltipTitle= e.onlyChinese and '移除' or REMOVE,
 				notCheckable= true,
 				arg1= name,
@@ -772,43 +774,9 @@ local function InitMenu(_, level, type)
 			e.LibDD:UIDropDownMenu_AddButton(info, level)
 		end
 		return
+	end
 
-	elseif type=='INDICATO' then
-		local n= 0
-		for _ in pairs(Save.factions) do
-			n=n+1
-		end
-		info={
-			text= (e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)..' |cnGREEN_FONT_COLOR:#'..n,
-			checked= Save.indicato,
-			menuList='INDICATOLIST',
-			hasArrow=true,
-			func= function()
-				Save.indicato= not Save.indicato and true or nil
-				if Save.indicato and Save.notPlus then
-					Save.notPlus= nil
-					Button.down:SetShown(true)
-					Button.up:SetShown(true)
-					e.call('ReputationFrame_Update')
-					--e.LibDD:CloseDropDownMenus();
-				end
-				TrackButton:set_Text()--设置, 文本
-			end
-		}
-		e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-		e.LibDD:UIDropDownMenu_AddSeparator(level)
-		info={
-			text= e.onlyChinese and '名称' or NAME,
-			checked= not Save.hideName,
-			func= function()
-				Save.hideName= not Save.hideName and true or nil
-				if TrackButton then
-					TrackButton:set_Text()--设置, 文本
-				end
-			end
-		}
-		e.LibDD:UIDropDownMenu_AddButton(info, level)
+	if type then
 		return
 	end
 
@@ -819,13 +787,11 @@ local function InitMenu(_, level, type)
 		tooltipTitle= e.onlyChinese and '副本/宠物对战' or INSTANCE..'/'..SHOW_PET_BATTLES_ON_MAP_TEXT,
 		tooltipText= e.GetEnabeleDisable(false),
 		colorCode= (IsInInstance() or C_PetBattles.IsInBattle()) and '|cffff0000',
-		menuList='INDICATO',
-		hasArrow=true,
 		func= function()
 			Save.btn= not Save.btn and true or nil
 			if TrackButton then
-				TrackButton:SetShown(Save.btn and not IsInInstance() and not C_PetBattles.IsInBattle())
-				TrackButton:set_Text()--设置, 文本
+				TrackButton:set_Shown()
+				e.call('ReputationFrame_Update')
 			else
 				Init_TrackButton()--监视, 文本
 			end
@@ -834,6 +800,21 @@ local function InitMenu(_, level, type)
 	}
 	e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+	info={
+		text= (e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION),
+		checked= Save.indicato,
+		menuList='INDICATOLIST',
+		colorCode= not Save.btn and '|cff606060' or nil,
+		hasArrow=true,
+		keepShownOnClick=true,
+		func= function()
+			Save.indicato= not Save.indicato and true or nil
+			e.call('ReputationFrame_Update')
+		end
+	}
+	e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+	e.LibDD:UIDropDownMenu_AddSeparator(level)
 	info={
 		text= (e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT)..'|A:voicechat-icon-textchat-silenced:0:0|a',
 		tooltipOnButton=true,
@@ -858,14 +839,6 @@ local function InitMenu(_, level, type)
 			e.call('ReputationFrame_Update')
 			--print(id, addName, 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or NEED..REFRESH)
 		end
-	}
-	e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-	e.LibDD:UIDropDownMenu_AddSeparator(level)
-	info={
-		text= id..' '..addName,
-		isTitle=true,
-		notCheckable=true,
 	}
 	e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
@@ -907,12 +880,18 @@ local function Init()
 		end
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
     end)
-	Button:SetScript('OnEnter', function()
+	Button:SetScript('OnEnter', function(self)
+		e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
 		if TrackButton then
 			TrackButton:SetButtonState('PUSHED')
 		end
 	end)
 	Button:SetScript('OnLeave', function()
+		e.tips:Hide()
 		if TrackButton then
 			TrackButton:SetButtonState("NORMAL")
 		end
@@ -949,7 +928,7 @@ local function Init()
 			local name, _, _, _, _, _, _, _, _, _, _, _, _, factionID = GetFactionInfo(i)
 			if name and factionID and C_Reputation.IsFactionParagon(factionID) and select(4, C_Reputation.GetFactionParagonInfo(factionID)) then--奖励
 				text= text and text..' ' or ''
-				
+
 				local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
 				if repInfo and repInfo.texture and repInfo.texture>0 then
 					text= text..'|T'..repInfo.texture..':0|t'
