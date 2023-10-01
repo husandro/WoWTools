@@ -3406,7 +3406,8 @@
         "PARAGON_REPUTATION_TOOLTIP_TEXT",
         "SHOW_CHAT_ICONS",
         "TRIVIAL_DIFFICULTY_COLOR_CODE",
-        "EASY_DIFFICULTY_COLOR"
+        "EASY_DIFFICULTY_COLOR",
+        "GetMinimapShape"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

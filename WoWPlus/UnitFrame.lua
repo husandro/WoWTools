@@ -392,6 +392,7 @@ local function set_memberFrame(memberFrame)
     if not frame then
         frame= e.Cbtn(memberFrame, {type=true, size={35,35}, icon='hide'})
         frame.Portrait= frame:CreateTexture(nil, 'BACKGROUND')--队友，目标，图像
+        ---@class frame.healthBar
         frame.healthBar= CreateFrame('StatusBar', nil, frame)
         frame.healthBar.Text= e.Cstr(frame.healthBar)
 
@@ -422,7 +423,7 @@ local function set_memberFrame(memberFrame)
             self.Portrait:SetShown(exists2)--队友，目标，图像
             self.Text:SetText(text or '')--队友，目标，职业
             self.healthBar:SetShown(exists2)--队友， 目标， 生命条
-            self.healthBar.elapsed=1
+            --self.healthBar.elapsed=1
         end
         frame:SetScript('OnLeave', function() e.tips:Hide() end)
         frame:SetScript('OnEnter', function(self)
@@ -491,6 +492,7 @@ local function set_memberFrame(memberFrame)
     --#########
     frame= memberFrame.castFrame
     if not frame then
+        ---@class frame
         frame= CreateFrame("Frame", nil, memberFrame)
         frame:SetPoint('BOTTOMLEFT', memberFrame.potFrame, 'BOTTOMRIGHT')
         frame:SetSize(20,20)
@@ -614,6 +616,7 @@ local function set_memberFrame(memberFrame)
     frame= memberFrame.positionFrame
     if not frame then
         frame= CreateFrame("Frame", nil, memberFrame)
+        ---@class frame
         frame:SetPoint('LEFT', memberFrame.PartyMemberOverlay.LeaderIcon, 'RIGHT')
         frame:SetSize(1,1)
         frame.Text= e.Cstr(frame)
@@ -801,8 +804,8 @@ end
 --职业, 图标， 颜色
 --################
 local function set_UnitFrame_Update()--职业, 图标， 颜色
-    hooksecurefunc('UnitFrame_Update', function(self2, isParty)--UnitFrame.lua
-        local unit= self2.unit
+    hooksecurefunc('UnitFrame_Update', function(unitFrame, isParty)--UnitFrame.lua
+        local unit= unitFrame.unit
         local r,g,b
         if unit=='player' then
             r,g,b= e.Player.r, e.Player.g, e.Player.b
@@ -819,33 +822,33 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         local guid
         local unitIsPlayer=  UnitIsPlayer(unit)
         if unitIsPlayer then
-            guid= UnitGUID(self2.unit)--职业, 天赋, 图标
-            if not self2.classFrame then
-                self2.classFrame= CreateFrame('Frame', nil, self2)
-                self2.classFrame:SetShown(false)
-                self2.classFrame:SetSize(16,16)
-                self2.classFrame.Portrait= self2.classFrame:CreateTexture(nil, "BACKGROUND")
-                self2.classFrame.Portrait:SetAllPoints(self2.classFrame)
+            guid= UnitGUID(unitFrame.unit)--职业, 天赋, 图标
+            if not unitFrame.classFrame then
+                ---@class unitFrame.classFrame
+                unitFrame.classFrame= CreateFrame('Frame', nil, unitFrame)
+                unitFrame.classFrame:SetShown(false)
+                unitFrame.classFrame:SetSize(16,16)
+                unitFrame.classFrame.Portrait= unitFrame.classFrame:CreateTexture(nil, "BACKGROUND")
+                unitFrame.classFrame.Portrait:SetAllPoints(unitFrame.classFrame)
 
-                if self2==TargetFrame then
-                    self2.classFrame:SetPoint('RIGHT', self2.TargetFrameContent.TargetFrameContentContextual.LeaderIcon, 'LEFT')
-                elseif self2==PetFrame then
-                    self2.classFrame:SetPoint('LEFT', self2.name,-10,0)
-                elseif self2==PlayerFrame then
-                    self2.classFrame:SetPoint('TOPLEFT', self2.portrait, 'TOPRIGHT',-14,8)
-                elseif self2==FocusFrame then
-                    self2.classFrame:SetPoint('BOTTOMRIGHT', self2.TargetFrameContent.TargetFrameContentMain.ReputationColor, 'TOPRIGHT')
+                if unitFrame==TargetFrame then
+                    unitFrame.classFrame:SetPoint('RIGHT', unitFrame.TargetFrameContent.TargetFrameContentContextual.LeaderIcon, 'LEFT')
+                elseif unitFrame==PetFrame then
+                    unitFrame.classFrame:SetPoint('LEFT', unitFrame.name,-10,0)
+                elseif unitFrame==PlayerFrame then
+                    unitFrame.classFrame:SetPoint('TOPLEFT', unitFrame.portrait, 'TOPRIGHT',-14,8)
+                elseif unitFrame==FocusFrame then
+                    unitFrame.classFrame:SetPoint('BOTTOMRIGHT', unitFrame.TargetFrameContent.TargetFrameContentMain.ReputationColor, 'TOPRIGHT')
                 else
-                    self2.classFrame:SetPoint('TOPLEFT', self2.portrait, 'TOPRIGHT',-14,10)
+                    unitFrame.classFrame:SetPoint('TOPLEFT', unitFrame.portrait, 'TOPRIGHT',-14,10)
                 end
+                
+                unitFrame.classFrame.Texture= unitFrame.classFrame:CreateTexture(nil, 'OVERLAY')--加个外框
+                unitFrame.classFrame.Texture:SetAtlas('UI-HUD-UnitFrame-TotemFrame-2x')
+                unitFrame.classFrame.Texture:SetPoint('CENTER', unitFrame.classFrame, 1,-1)
+                unitFrame.classFrame.Texture:SetSize(20,20)
 
-                self2.classFrame.Texture= self2.classFrame:CreateTexture(nil, 'OVERLAY')--加个外框
-                self2.classFrame.Texture:SetAtlas('UI-HUD-UnitFrame-TotemFrame-2x')
-
-                self2.classFrame.Texture:SetPoint('CENTER', self2.classFrame, 1,-1)
-                self2.classFrame.Texture:SetSize(20,20)
-
-                function self2.classFrame:set_Class(guid3)
+                function unitFrame.classFrame:set_Class(guid3)
                     local unit2= self:GetParent().unit
                     local isPlayer= unit2 and UnitIsPlayer(unit2)
                     local find2=false
@@ -884,8 +887,8 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                     end
                     self:SetShown(isPlayer and find2)
                 end
-                self2.classFrame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', unit)
-                self2.classFrame:SetScript('OnEvent', function(self3)
+                unitFrame.classFrame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', unit)
+                unitFrame.classFrame:SetScript('OnEvent', function(self3)
                     local unit2= self3:GetParent().unit
                     if UnitIsPlayer(unit2) then
                         e.GetNotifyInspect(nil, unit2)--取得玩家信息
@@ -895,52 +898,53 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                     end
                 end)
             end
-            self2.classFrame:set_Class(guid)
-            self2.classFrame.Texture:SetVertexColor(r, g, b)
+            unitFrame.classFrame:set_Class(guid)
+            unitFrame.classFrame.Texture:SetVertexColor(r, g, b)
 
             if unit~='player' then
-                if not self2.itemLevel then
-                    self2.itemLevel= e.Cstr(self2.classFrame, {size=12})--装等
+                if not unitFrame.itemLevel then
+                    unitFrame.itemLevel= e.Cstr(unitFrame.classFrame, {size=12})--装等
                     if unit=='target' or unit=='focus' then
-                        self2.itemLevel:SetPoint('RIGHT', self2.classFrame, 'LEFT')
+                        unitFrame.itemLevel:SetPoint('RIGHT', unitFrame.classFrame, 'LEFT')
                     else
-                        self2.itemLevel:SetPoint('TOPRIGHT', self2.classFrame, 'TOPLEFT')
+                        unitFrame.itemLevel:SetPoint('TOPRIGHT', unitFrame.classFrame, 'TOPLEFT')
                     end
                 end
-                self2.itemLevel:SetTextColor(r,g,b)
-                self2.itemLevel:SetText(guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel or '')
+                unitFrame.itemLevel:SetTextColor(r,g,b)
+                unitFrame.itemLevel:SetText(guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel or '')
             end
         end
-        if self2.classFrame then
-            self2.classFrame:SetShown(unitIsPlayer)
+        if unitFrame.classFrame then
+            unitFrame.classFrame:SetShown(unitIsPlayer)
         end
 
-        if self2==PlayerFrame and unit=='player' then
-            if not self2.lootSpecFrame then-- and self2~= PetFrame and self2.PlayerFrameContainer then
-                local frameLevel= self2.PlayerFrameContainer:GetFrameLevel()+1
+        if unitFrame==PlayerFrame and unit=='player' then
+            if not unitFrame.lootSpecFrame then-- and unitFrame~= PetFrame and unitFrame.PlayerFrameContainer then
+                local frameLevel= unitFrame.PlayerFrameContainer:GetFrameLevel()+1
                 frameLevel= frameLevel<0 and 0 or frameLevel
 
-                self2.lootSpecFrame= CreateFrame("Frame", nil, self2)
-                self2.lootSpecFrame:SetPoint('TOPRIGHT', self2.classFrame, 'TOPLEFT', -0.5,4)
-                self2.lootSpecFrame:SetSize(14,14)
-                self2.lootSpecFrame:EnableMouse(true)
-                self2.lootSpecFrame:SetFrameLevel(frameLevel)
-                self2.lootSpecFrame.texture=self2.lootSpecFrame:CreateTexture(nil, 'BORDER')
-                self2.lootSpecFrame.texture:SetAllPoints(self2.lootSpecFrame)
+---@class unitFrame.lootSpecFrame
+                unitFrame.lootSpecFrame= CreateFrame("Frame", nil, unitFrame)
+                unitFrame.lootSpecFrame:SetPoint('TOPRIGHT', PlayerFrame, 'TOPLEFT', -0.5,4)
+                unitFrame.lootSpecFrame:SetSize(14,14)
+                unitFrame.lootSpecFrame:EnableMouse(true)
+                unitFrame.lootSpecFrame:SetFrameLevel(frameLevel)
+                unitFrame.lootSpecFrame.texture=unitFrame.lootSpecFrame:CreateTexture(nil, 'BORDER')
+                unitFrame.lootSpecFrame.texture:SetAllPoints(unitFrame.lootSpecFrame)
 
-                local portrait= self2.lootSpecFrame:CreateTexture(nil, 'ARTWORK', nil,7)--外框
+                local portrait= unitFrame.lootSpecFrame:CreateTexture(nil, 'ARTWORK', nil,7)--外框
                 portrait:SetAtlas('DK-Base-Rune-CDFill')
-                portrait:SetPoint('CENTER', self2.lootSpecFrame)
+                portrait:SetPoint('CENTER', unitFrame.lootSpecFrame)
                 portrait:SetSize(20,20)
                 portrait:SetVertexColor(r,g,b,1)
 
-                local lootTipsTexture= self2.lootSpecFrame:CreateTexture(nil, "OVERLAY")
+                local lootTipsTexture= unitFrame.lootSpecFrame:CreateTexture(nil, "OVERLAY")
                 lootTipsTexture:SetSize(10,10)
                 lootTipsTexture:SetPoint('TOP',0,8)
                 lootTipsTexture:SetAtlas('Banker')
 
-                self2.lootSpecFrame:SetScript('OnLeave', function(self3) e.tips:Hide() self3:SetAlpha(1) end)
-                self2.lootSpecFrame:SetScript('OnEnter', function(self3)
+                unitFrame.lootSpecFrame:SetScript('OnLeave', function(self3) e.tips:Hide() self3:SetAlpha(1) end)
+                unitFrame.lootSpecFrame:SetScript('OnEnter', function(self3)
                     if self3.tips then
                         e.tips:SetOwner(self3, "ANCHOR_LEFT")
                         e.tips:ClearLines()
@@ -951,14 +955,14 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         self3:SetAlpha(0.3)
                     end
                 end)
-
-                self2.instanceFrame3= CreateFrame("Frame", nil, self2)--Riad 副本, 地下城，指示
-                self2.instanceFrame3:SetFrameLevel(frameLevel)
-                self2.instanceFrame3:SetPoint('RIGHT', self2.lootSpecFrame, 'LEFT',-2, 1)
-                self2.instanceFrame3:SetSize(16,16)
-                self2.instanceFrame3:EnableMouse(true)
-                self2.instanceFrame3:SetScript('OnLeave', function(self3) e.tips:Hide() self3:SetAlpha(1) end)
-                self2.instanceFrame3:SetScript('OnEnter', function(self3)
+---@class unitFrame.instanceFrame3
+                unitFrame.instanceFrame3= CreateFrame("Frame", nil, unitFrame)--Riad 副本, 地下城，指示
+                unitFrame.instanceFrame3:SetFrameLevel(frameLevel)
+                unitFrame.instanceFrame3:SetPoint('RIGHT', unitFrame.lootSpecFrame, 'LEFT',-2, 1)
+                unitFrame.instanceFrame3:SetSize(16,16)
+                unitFrame.instanceFrame3:EnableMouse(true)
+                unitFrame.instanceFrame3:SetScript('OnLeave', function(self3) e.tips:Hide() self3:SetAlpha(1) end)
+                unitFrame.instanceFrame3:SetScript('OnEnter', function(self3)
                     if self3.tips then
                         e.tips:SetOwner(self3, "ANCHOR_LEFT")
                         e.tips:ClearLines()
@@ -978,21 +982,21 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         self3:SetAlpha(0.3)
                     end
                 end)
-                self2.instanceFrame3.texture= self2.instanceFrame3:CreateTexture(nil,'BORDER', nil, 1)
-                self2.instanceFrame3.texture:SetAllPoints(self2.instanceFrame3)
-                self2.instanceFrame3.texture:SetAtlas('poi-torghast')
+                unitFrame.instanceFrame3.texture= unitFrame.instanceFrame3:CreateTexture(nil,'BORDER', nil, 1)
+                unitFrame.instanceFrame3.texture:SetAllPoints(unitFrame.instanceFrame3)
+                unitFrame.instanceFrame3.texture:SetAtlas('poi-torghast')
 
-                self2.instanceFrame3.text= e.Cstr(self2.instanceFrame3, {size=8})
-                self2.instanceFrame3.text:SetPoint('TOP',0,5)
-                self2.instanceFrame3.text:SetTextColor(r,g,b)
-
-                self2.instanceFrame2= CreateFrame("Frame", nil, self2)--5人 副本, 地下城，指示
-                self2.instanceFrame2:SetFrameLevel(frameLevel)
-                self2.instanceFrame2:SetPoint('RIGHT', self2.instanceFrame3, 'LEFT',0, -6)
-                self2.instanceFrame2:SetSize(16,16)
-                self2.instanceFrame2:EnableMouse(true)
-                self2.instanceFrame2:SetScript('OnLeave', function(self3) e.tips:Hide() self3:SetAlpha(1) end)
-                self2.instanceFrame2:SetScript('OnEnter', function(self3)
+                unitFrame.instanceFrame3.text= e.Cstr(unitFrame.instanceFrame3, {size=8})
+                unitFrame.instanceFrame3.text:SetPoint('TOP',0,5)
+                unitFrame.instanceFrame3.text:SetTextColor(r,g,b)
+---@class unitFrame.instanceFrame2
+                unitFrame.instanceFrame2= CreateFrame("Frame", nil, unitFrame)--5人 副本, 地下城，指示
+                unitFrame.instanceFrame2:SetFrameLevel(frameLevel)
+                unitFrame.instanceFrame2:SetPoint('RIGHT', unitFrame.instanceFrame3, 'LEFT',0, -6)
+                unitFrame.instanceFrame2:SetSize(16,16)
+                unitFrame.instanceFrame2:EnableMouse(true)
+                unitFrame.instanceFrame2:SetScript('OnLeave', function(self3) e.tips:Hide() self3:SetAlpha(1) end)
+                unitFrame.instanceFrame2:SetScript('OnEnter', function(self3)
                     if self3.tips then
                         e.tips:SetOwner(self3, "ANCHOR_LEFT")
                         e.tips:ClearLines()
@@ -1012,23 +1016,23 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         self3:SetAlpha(0.3)
                     end
                 end)
-                self2.instanceFrame2.texture= self2.instanceFrame2:CreateTexture(nil,'BORDER', nil, 1)
-                self2.instanceFrame2.texture:SetAllPoints(self2.instanceFrame2)
-                self2.instanceFrame2.texture:SetAtlas('DungeonSkull')
+                unitFrame.instanceFrame2.texture= unitFrame.instanceFrame2:CreateTexture(nil,'BORDER', nil, 1)
+                unitFrame.instanceFrame2.texture:SetAllPoints(unitFrame.instanceFrame2)
+                unitFrame.instanceFrame2.texture:SetAtlas('DungeonSkull')
 
-                portrait= self2.instanceFrame2:CreateTexture(nil, 'BORDER',nil,2)--外框
+                portrait= unitFrame.instanceFrame2:CreateTexture(nil, 'BORDER',nil,2)--外框
                 portrait:SetAtlas('DK-Base-Rune-CDFill')
                 portrait:SetPoint('CENTER')
                 portrait:SetSize(20,20)
                 portrait:SetVertexColor(r,g,b,1)
 
-                self2.keystoneText= e.Cstr(self2, {color=true})
-                if self2.PlayerFrameContent and self2.PlayerFrameContent.PlayerFrameContentContextual and self2.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon then
-                    self2.keystoneText:SetPoint('LEFT', self2.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon, 'RIGHT')
+                unitFrame.keystoneText= e.Cstr(unitFrame, {color=true})
+                if unitFrame.PlayerFrameContent and unitFrame.PlayerFrameContent.PlayerFrameContentContextual and unitFrame.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon then
+                    unitFrame.keystoneText:SetPoint('LEFT', unitFrame.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon, 'RIGHT')
                 end
                 if PlayerFrameGroupIndicatorText then--移动，小队，号
                     PlayerFrameGroupIndicatorText:ClearAllPoints()
-                    PlayerFrameGroupIndicatorText:SetPoint('LEFT', self2.keystoneText, 'RIGHT',12,0)
+                    PlayerFrameGroupIndicatorText:SetPoint('LEFT', unitFrame.keystoneText, 'RIGHT',12,0)
                 end
             end
             set_Instance_Difficulty()--副本, 地下城，指示
@@ -1036,16 +1040,16 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
             C_Timer.After(2, set_Keystones_Date)--挑战，数据
         end
 
-        if self2.name then
+        if unitFrame.name then
             local name
             if UnitIsUnit(unit, 'pet') then
-                self2.name:SetText(e.Icon.star2)
+                unitFrame.name:SetText(e.Icon.star2)
             else
-                set_SetTextColor(self2.name, r, g, b)--名称, 颜色
+                set_SetTextColor(unitFrame.name, r, g, b)--名称, 颜色
                 if isParty then
                     name= UnitName(unit)
                     name= e.WA_Utf8Sub(name, 4, 8)
-                    self2.name:SetText(name)
+                    unitFrame.name:SetText(name)
                 elseif unit=='target' and guid then
                     local wow= e.GetFriend(nil, guid)
                     if wow then
@@ -1054,19 +1058,19 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 end
             end
             if name then
-                self2.name:SetText(name)
+                unitFrame.name:SetText(name)
             end
         end
 
         --################
         --生命条，颜色，材质
         --################
-        if self2.healthbar then
-            self2.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-            self2.healthbar:SetStatusBarColor(r,g,b)--颜色
+        if unitFrame.healthbar then
+            unitFrame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+            unitFrame.healthbar:SetStatusBarColor(r,g,b)--颜色
 
-            if not self2.setHealthbarTexture and self2.CheckClassification then
-                hooksecurefunc(self2, 'CheckClassification', function(self3)--外框，颜色
+            if not unitFrame.setHealthbarTexture and unitFrame.CheckClassification then
+                hooksecurefunc(unitFrame, 'CheckClassification', function(self3)--外框，颜色
                     self3.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
                     local classFilename= UnitClassBase(self3.unit)
                     if classFilename then
@@ -1081,7 +1085,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                         end
                     end
                 end)
-                self2.setHealthbarTexture= true
+                unitFrame.setHealthbarTexture= true
             end
         end
     end)
@@ -1259,6 +1263,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame:SetClampedToScreen(true)
     CompactPartyFrame:SetMovable(true)
 end
+
 local function set_ToggleWarMode()--设置, 战争模式
     local self= PlayerFrame
     if C_PvP.CanToggleWarModeInArea() then
@@ -1268,8 +1273,8 @@ local function set_ToggleWarMode()--设置, 战争模式
             self.warMode:Raise()
             self.warMode:SetPoint('LEFT', self, 10, 12)
             self.warMode:SetScript('OnClick',  C_PvP.ToggleWarMode)
-            self.warMode:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+            self.warMode:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, e.GetEnabeleDisable(C_PvP.IsWarModeDesired())..e.Icon.left)
                 if not C_PvP.CanToggleWarMode(false)  then
@@ -1307,6 +1312,7 @@ end
 local function set_BossFrame()
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
+---@class frame.PortraitFrame
         frame.PortraitFrame=CreateFrame('Frame', nil, frame)
         frame.PortraitFrame:SetFrameStrata('MEDIUM')
         frame.PortraitFrame:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
@@ -1365,15 +1371,15 @@ local function Init_UnitFrame()
     --###############
     --MirrorTimer.lua
     --###############
-    hooksecurefunc(MirrorTimerContainer, 'SetupTimer', function(self, value)
-        for _, activeTimer in pairs(self.activeTimers) do
+    hooksecurefunc(MirrorTimerContainer, 'SetupTimer', function(frame)--, value)
+        for _, activeTimer in pairs(frame.activeTimers) do
             if not activeTimer.valueText then
                 activeTimer.valueText=e.Cstr(activeTimer, {justifyH='RIGHT'})
                 activeTimer.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
                 activeTimer.valueText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
                 activeTimer.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
-                hooksecurefunc(activeTimer, 'UpdateStatusBarValue', function(self2)
-                    self2.valueText:SetText(format('%i', self2.StatusBar:GetValue()))
+                hooksecurefunc(activeTimer, 'UpdateStatusBarValue', function(self)
+                    self.valueText:SetText(format('%i', self.StatusBar:GetValue()))
                 end)
             end
         end
