@@ -234,11 +234,11 @@ local function set_Item_Info(self, tab)
                     rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
                 end
                 if dateInfo.text[upgradeStr] then--"升级：%s/%s"
-                    
+
                     local min, max= dateInfo.text[upgradeStr]:match('(%d+)/(%d+)')
                     local upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
                     upText= upText and strlower(e.WA_Utf8Sub(upText,1,3, true)) or ''
-                    
+
                     if min and max then
                         if min==max then
                             leftText= "|A:VignetteKill:0:0|a"..upText
@@ -837,31 +837,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             })
 
-            --[[添加控制面板        
-            local sel=e.AddPanel_Check(e.Icon.bag2..(e.onlyChinese and '物品信息' or addName), not Save.disabled, true)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-
-            sel:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                if e.onlyChinese then
-                    e.tips:AddDoubleLine('系统背包', '商人')
-                else
-                    e.tips:AddDoubleLine(BAGSLOT, MERCHANT)
-                end
-                e.tips:AddDoubleLine('Inventorian, Baggins', 'Bagnon')
-                e.tips:Show()
-            end)
-            sel:SetScript('OnLeave', function() e.tips:Hide() end)
-]]
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
                 Init()
-                --panel:UnregisterEvent('ADDON_LOADED')
 
                 FMTab={--附魔
                         ['主属性']= '主',
@@ -890,6 +869,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 if frame then
                     local itemLink= frame.FrozenButton.itemID and select(2, GetItemInfo(frame.FrozenButton.itemID))
                     set_Item_Info(frame.FrozenButton, {hyperLink=itemLink})
+                    
                 end
             end
             hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'SetScrollTargetOffset', function(self2)
@@ -898,7 +878,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
                 end
                 set_FrozenButton_Tips()
-            end)    
+            end)
         --[[elseif arg1=='Blizzard_AuctionHouseUI' then
             hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(self2, addedBrowseResults)
                 info= self2.browseResults 

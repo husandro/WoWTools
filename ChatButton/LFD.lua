@@ -808,20 +808,22 @@ end
 
 local set_Raid_Menu_List=function(level)--团队本
     local sortedDungeons, info = {}, {}
+    local LfgDungeonID = select(10, GetInstanceInfo())
+
     local function InsertDungeonData(dungeonID, name, mapName, isAvailable, mapID)
-        local t = { id = dungeonID, name = name, mapName = mapName, isAvailable = isAvailable, mapID = mapID }
+        local tab = { id = dungeonID, name = name, mapName = mapName, isAvailable = isAvailable, mapID = mapID }
         local foundMap = false
         for i = 1, #sortedDungeons do
             if ( sortedDungeons[i].mapName == mapName ) then
                 foundMap = true
             else
                 if ( foundMap ) then
-                    tinsert(sortedDungeons, i, t)
+                    tinsert(sortedDungeons, i, tab)
                     return
                 end
             end
         end
-        tinsert(sortedDungeons, t)
+        tinsert(sortedDungeons, tab)
     end
 
     for i=1, GetNumRFDungeons() do
@@ -830,9 +832,11 @@ local set_Raid_Menu_List=function(level)--团队本
         local name = dungeonInfo[2]
         local mapName = dungeonInfo[20]
         local mapID = dungeonInfo[23]
-        local isAvailable, isAvailableToPlayer, hideIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
-        if( not hideIfNotJoinable or isAvailable ) then
-            if ( isAvailable or isAvailableToPlayer or isRaidFinderDungeonDisplayable(dungeonID) ) then
+        if dungeonID and name then
+            local isAvailable, isAvailableToPlayer, hideIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
+            if name and (not hideIfNotJoinable or isAvailable)
+                and (isAvailable or isAvailableToPlayer or isRaidFinderDungeonDisplayable(dungeonID))
+            then
                 InsertDungeonData(dungeonID, name, mapName, isAvailable, mapID)
             end
         end
@@ -883,9 +887,11 @@ local set_Raid_Menu_List=function(level)--团队本
                 end
             end
 
+            
             info={
-                text= (scenarioName== strlower(sortedDungeons[i].name or '') and e.Icon.star2 or '')--在当前副本
-                    ..(kill==numEncounters and '|cnRED_FONT_COLOR:' or '')..sortedDungeons[i].name..'|r'..get_Reward_Info(sortedDungeons[i].id)--名称
+                text=((LfgDungeonID==sortedDungeons[i].id or scenarioName== strlower(sortedDungeons[i].name or '')) and e.Icon.star2 or '')--在当前副本
+                    ..sortedDungeons[i].name
+                    ..get_Reward_Info(sortedDungeons[i].id)--名称
                     ..killText,
                 icon= icon,
                 iconXOffset= icon and -6 or nil,
@@ -1516,7 +1522,7 @@ local ExitIns
 local function exit_Instance()
     local ins
     ins= IsInInstance()
-    local name, _, _, difficultyName, _, _, _, instanceID = GetInstanceInfo()
+    local name, _, _, difficultyName = GetInstanceInfo()
     ins = ins and name and difficultyName
     if ins then
         name= name..difficultyName
