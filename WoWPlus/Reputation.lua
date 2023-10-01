@@ -7,6 +7,7 @@ local Save={
 	--scaleTrackButton=1,缩放
 	btnStrHideCap=true,-- 隐藏最高级, 且没有奖励声望
 	btnStrHideHeader=true, --隐藏, 版本标题
+	--notAutoHideTrack=true,--自动隐藏
 
 	factionUpdateTips=true,--更新, 提示
 	--indicato=true,--指定
@@ -155,21 +156,8 @@ local function get_Faction_Info(tab)
 			else
 				value= '('..completed..') '..format('%i%%', currentValue/threshold*100)
 			end
-			
 		end
-		--[[if hasRewardPending then
-			C_Reputation.RequestFactionParagonPreloadRewardData(factionID)
-			if rewardQuestID then
-			end
-		end]]
 	end
-
-		--[[
-		onlyIcon=not Save.onlyIcon,
-		showID=Save.showID,
-		showHeader=not Save.btnStrHideHeader,
-		showMax=not Save.btnStrHideCap
-		]]
 
 	--local verHeader= isHeader and not isParagon and not hasRep and not isChild--版本, 没有声望
 	if
@@ -252,6 +240,74 @@ local function Init_TrackButton()--监视, 文本
 	TrackButton.text= e.Cstr(TrackButton, {color=true})
 	TrackButton.texture= TrackButton:CreateTexture()
 	TrackButton.texture:SetAllPoints(TrackButton)
+
+	function TrackButton:set_Text()
+		local text
+		if Save.btnstr and self:IsShown() then
+			if Save.indicato then
+				local tab={}
+				for factionID, value in pairs(Save.factions) do
+					table.insert(tab, {factionID= factionID, index= value==true and 1 or value})
+				end
+				table.sort(tab, function(a, b) return a.index < b.index end)
+				for _, info in pairs(tab) do
+					local msg=get_Faction_Info({
+							factionID=info.factionID,
+							onlyIcon=Save.onlyIcon,
+							showID=Save.showID,
+							showHeader=not Save.btnStrHideHeader,
+							showMax=not Save.btnStrHideCap,
+							indicato=true,--是否加空格
+							toRight= Save.toRightTrackText,
+						})
+					if msg then
+						text= text and text..'|n'..msg or msg
+					end
+				end
+			else
+				for i=1, GetNumFactions() do
+					local msg=get_Faction_Info({
+							index=i,
+							onlyIcon=Save.onlyIcon,
+							showID=Save.showID,
+							showHeader=not Save.btnStrHideHeader,
+							showMax=not Save.btnStrHideCap,
+							indicato=false,
+							toRight= Save.toRightTrackText,
+						})
+					if msg then
+						text= text and text..'|n'..msg or msg
+					end
+				end
+			end
+			text= text and text..' ' or '..'
+		end
+		self.text:SetText(text or '')
+	end
+
+	function TrackButton:set_Shown()
+		local hide= not Save.btn
+		or (
+		   not Save.notAutoHideTrack and (IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player'))
+	   )
+	   	self:SetShown(not hide)
+		self:set_Text()
+		self:set_Texture()
+	end
+
+	function TrackButton:set_Tooltips()
+		e.tips:SetOwner(self, "ANCHOR_LEFT")
+		e.tips:ClearLines()
+		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.left)
+		e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
+		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine(id, addName)
+		e.tips:Show()
+		self.texture:SetAlpha(1)
+	end
 
 	function TrackButton:set_Scale()
 		if Save.toRightTrackText then
@@ -388,19 +444,7 @@ local function Init_TrackButton()--监视, 文本
 		self:set_Tooltips()
 	end)
 
-	function TrackButton:set_Tooltips()
-		e.tips:SetOwner(self, "ANCHOR_LEFT")
-		e.tips:ClearLines()
-		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.left)
-		e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
-		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine(id, addName)
-		e.tips:Show()
-		self.texture:SetAlpha(1)
-	end
+	
 	TrackButton:SetScript("OnLeave", function(self)
 		ResetCursor()
 		e.tips:Hide()
@@ -439,17 +483,6 @@ local function Init_TrackButton()--监视, 文本
 		end
 	end
 
-	function TrackButton:set_Shown()
-		self:SetShown(
-			Save.btn
-			and not IsInInstance()
-			and not C_PetBattles.IsInBattle()
-			and not UnitAffectingCombat('player')
-		)
-		self:set_Text()
-		self:set_Texture()
-	end
-
 	TrackButton:SetScript('OnEvent', function(self, event)
 		if event=='UPDATE_FACTION' then
 			self:set_Text()
@@ -457,51 +490,6 @@ local function Init_TrackButton()--监视, 文本
 			self:set_Shown()
 		end
 	end)
-
-
-	function TrackButton:set_Text()
-		local text
-		if Save.btnstr and self:IsShown() then
-			if Save.indicato then
-				local tab={}
-				for factionID, value in pairs(Save.factions) do
-					table.insert(tab, {factionID= factionID, index= value==true and 1 or value})
-				end
-				table.sort(tab, function(a, b) return a.index < b.index end)
-				for _, info in pairs(tab) do
-					local msg=get_Faction_Info({
-							factionID=info.factionID,
-							onlyIcon=Save.onlyIcon,
-							showID=Save.showID,
-							showHeader=not Save.btnStrHideHeader,
-							showMax=not Save.btnStrHideCap,
-							indicato=true,--是否加空格
-							toRight= Save.toRightTrackText,
-						})
-					if msg then
-						text= text and text..'|n'..msg or msg
-					end
-				end
-			else
-				for i=1, GetNumFactions() do
-					local msg=get_Faction_Info({
-							index=i,
-							onlyIcon=Save.onlyIcon,
-							showID=Save.showID,
-							showHeader=not Save.btnStrHideHeader,
-							showMax=not Save.btnStrHideCap,
-							indicato=false,
-							toRight= Save.toRightTrackText,
-						})
-					if msg then
-						text= text and text..'|n'..msg or msg
-					end
-				end
-			end
-			text= text and text..' ' or '..'
-		end
-		self.text:SetText(text or '')
-	end
 
 	hooksecurefunc('ReputationFrame_Update', function() TrackButton:set_Text() end)--更新, 监视, 文本
 
@@ -891,6 +879,22 @@ local function InitMenu(_, level, type)
 	
 	elseif type=='RestPoint' then
 		info={
+			text= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
+			checked= not Save.notAutoHideTrack,
+			tooltipOnButton=true,
+			tooltipTitle= (e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)..'|n'
+				..(e.onlyChinese and '宠物对战' or SHOW_PET_BATTLES_ON_MAP_TEXT)..'|n'
+				..(e.onlyChinese and '在副本中' or AGGRO_WARNING_IN_INSTANCE),
+			func= function()
+				Save.notAutoHideTrack= not Save.notAutoHideTrack and true or nil
+				if TrackButton then
+					TrackButton:set_Shown()
+				end
+			end
+		}
+		e.LibDD:UIDropDownMenu_AddButton(info, level)
+		e.LibDD:UIDropDownMenu_AddSeparator(level)
+		info={
 			text=e.onlyChinese and '重置位置' or RESET_POSITION,
 			colorCode= (not Save.point or not TrackButton) and '|cff606060' or nil,
 			notCheckable=true,
@@ -914,10 +918,6 @@ local function InitMenu(_, level, type)
 	info={
 		text= e.onlyChinese and '追踪' or TRACKING,
 		checked= Save.btn,
-		tooltipOnButton=true,
-		tooltipTitle= e.onlyChinese and '副本/宠物对战' or INSTANCE..'/'..SHOW_PET_BATTLES_ON_MAP_TEXT,
-		tooltipText= e.GetEnabeleDisable(false),
-		colorCode= (IsInInstance() or C_PetBattles.IsInBattle()) and '|cffff0000',
 		hasArrow=true,
 		menuList='RestPoint',
 		func= function()

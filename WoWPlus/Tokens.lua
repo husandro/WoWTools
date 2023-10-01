@@ -4,11 +4,12 @@ local Save={
 	tokens={},--{[currencyID]=true}指定显示，表
 	item={},--[202196]= true
 	--indicato=nil,--指定显示
-
+	
 	Hide=true,
 	str=true,
 	--scaleTrackButton=1,
 	--toRightTrackText=true,--向右平移
+	--notAutoHideTrack=true,--自动隐藏
 
 	--hideCurrencyMax=true,--隐藏，已达到资源上限,提示
 	--showID=true,--显示ID
@@ -291,7 +292,11 @@ local function Init_TrackButton()
 	end
 
 	function TrackButton:set_Shown()--显示,隐藏
-		local hide= Save.Hide or IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player')
+		local hide= Save.Hide
+		 	or (
+				not Save.notAutoHideTrack and (IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player'))
+			)
+
 		self:SetShown(not hide)
 		self:set_Currency_Text()
 		self:set_Item_Text()
@@ -320,6 +325,34 @@ local function Init_TrackButton()
 
 		self.text:SetJustifyH(Save.toRightTrackText and 'RIGHT' or 'LEFT')
 		self.text2:SetJustifyH(Save.toRightTrackText and 'RIGHT' or 'LEFT')
+	end
+
+	function TrackButton:set_Tooltips()
+		e.tips:SetOwner(self, "ANCHOR_LEFT")
+		e.tips:ClearLines()
+		e.tips:AddDoubleLine(id, addName)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.left)
+		e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Atl+'..e.Icon.right)
+		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
+		e.tips:Show()
+		self:SetAlpha(1)
+	end
+	
+	function TrackButton:set_Event()
+		if Save.Hide then
+			self:UnregisterAllEvents()
+		else
+			self:RegisterEvent('PLAYER_ENTERING_WORLD')
+			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+			self:RegisterEvent('PET_BATTLE_CLOSE')
+			self:RegisterEvent('PLAYER_REGEN_DISABLED')
+			self:RegisterEvent('PLAYER_REGEN_ENABLED')
+			self:RegisterEvent('BAG_UPDATE_DELAYED')
+			self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+		end
 	end
 
 	TrackButton:RegisterForDrag("RightButton")
@@ -356,94 +389,82 @@ local function Init_TrackButton()
 			Save.scaleTrackButton=n
 			self:set_Scale()
 			self:set_Tooltips()
-			print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '字体大小' or FONT_SIZE, n)
+			print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
 		end
 	end)
 
 	TrackButton:SetScript("OnClick", function(self, d)
-		if not self.Menu then
-			self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-			e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
-				local info={
-					
-				}
-				e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-				e.LibDD:UIDropDownMenu_AddSeparator(level)
-				
-
-			end, 'MENU')
-		end
-		e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
-
-		if d=='LeftButton' and not IsModifierKeyDown() then--点击,显示隐藏
-			Save.str= not Save.str and true or nil
-			self:set_Shown()
-			self:set_Tooltips()
-			print(id, addName, e.GetShowHide(Save.str))
-
-		elseif d=='LeftButton' and IsShiftKeyDown() then--向右平移
-			Save.toRightTrackText = not Save.toRightTrackText and true or nil
-			self.text:ClearAllPoints()
-			self.text2:ClearAllPoints()
-			self:set_Text_Point()
-			self:set_Shown()
-
-		elseif d=='LeftButton' and IsAltKeyDown() then--显示名称
-			Save.nameShow= not Save.nameShow and true or nil
-			self:set_Shown()
-			self:set_Tooltips()
-			print(id, addName, SHOW, NAME, e.GetShowHide(Save.nameShow))
-
-		elseif d=='LeftButton' and IsControlKeyDown() then --显示ID
-			Save.showID= not Save.showID and true or nil
-			self:set_Shown()
-			self:set_Tooltips()
-			print(id, addName, SHOW, 'ID', e.GetShowHide(Save.showID))
+		if d=='LeftButton' and not IsModifierKeyDown() then
+			ToggleCharacter("TokenFrame")--打开货币
 
 		elseif d=='RightButton' and not IsModifierKeyDown() then
-			ToggleCharacter("TokenFrame")--打开货币
+			if not self.Menu then
+				self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+				e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
+					local info={
+						text= e.onlyChinese and '显示' or SHOW,
+						tooltipOnButton=true,
+						tooltipTitle=e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE),
+						checked= Save.str,
+						keepShownOnClick=true,
+						func= function()
+							Save.str= not Save.str and true or nil
+							TrackButton:set_Shown()
+							TrackButton:set_Tooltips()
+							print(id, addName, e.GetShowHide(Save.str))
+						end
+					}
+					e.LibDD:UIDropDownMenu_AddButton(info, level)
+					e.LibDD:UIDropDownMenu_AddSeparator(level)
+					info={
+						text=e.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME),
+						checked= Save.nameShow,
+						func= function()
+							Save.nameShow= not Save.nameShow and true or nil
+							TrackButton:set_Shown()
+							TrackButton:set_Tooltips()
+							print(id, addName, SHOW, NAME, e.GetShowHide(Save.nameShow))
+						end
+					}
+					e.LibDD:UIDropDownMenu_AddButton(info, level)
+					info={
+						text=format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '显示' or SHOW, 'ID'),
+						checked= Save.showID,
+						func= function()
+							Save.showID= not Save.showID and true or nil
+							TrackButton:set_Shown()
+							TrackButton:set_Tooltips()
+							print(id, addName, SHOW, 'ID', e.GetShowHide(Save.showID))
+						end
+					}
+					e.LibDD:UIDropDownMenu_AddButton(info, level)
+					info={
+						text= e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT,
+						checked= Save.toRightTrackText,
+						func= function()
+							Save.toRightTrackText = not Save.toRightTrackText and true or nil
+							TrackButton.text:ClearAllPoints()
+							TrackButton.text2:ClearAllPoints()
+							TrackButton:set_Text_Point()
+							TrackButton:set_Shown()
+						end
+					}
+					e.LibDD:UIDropDownMenu_AddButton(info, level)
+				end, 'MENU')
+			end
+			e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
 		end
 	end)
 
-	function TrackButton:set_Tooltips()
-		e.tips:SetOwner(self, "ANCHOR_LEFT");
-		e.tips:ClearLines();
-		e.tips:AddDoubleLine((e.onlyChinese and '追踪' or TRACKING)..': '..e.GetShowHide(Save.str),e.Icon.left)
-		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.right)
-		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine((e.onlyChinese and '名称' or NAME)..': '..e.GetShowHide(Save.nameShow), 'Alt+'..e.Icon.left)
-		e.tips:AddDoubleLine('ID: '..e.GetShowHide(Save.showID), 'Ctrl+'..e.Icon.left)
-		e.tips:AddDoubleLine(e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT, 'Shift+'..e.Icon.left)
-		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Atl+'..e.Icon.right)
-		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
-		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine(id, addName)
-		e.tips:Show()
-		self:SetAlpha(1)
-	end
+
 	TrackButton:SetScript("OnEnter", TrackButton.set_Tooltips)
 	TrackButton:SetScript('OnMouseUp', ResetCursor)
 	TrackButton:SetScript("OnLeave", function(self)
 		self:set_Shown()
-		self:SetButtonState("NORMAL")
 		e.tips:Hide()
 	end)
 
-	function TrackButton:set_Event()
-		if Save.Hide then
-			self:UnregisterAllEvents()
-		else
-			self:RegisterEvent('PLAYER_ENTERING_WORLD')
-			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
-			self:RegisterEvent('PET_BATTLE_CLOSE')
-			self:RegisterEvent('PLAYER_REGEN_DISABLED')
-			self:RegisterEvent('PLAYER_REGEN_ENABLED')
-			self:RegisterEvent('BAG_UPDATE_DELAYED')
-			self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
-		end
-	end
+
 	TrackButton:SetScript('OnEvent', function(self, event)
 		if event=='BAG_UPDATE_DELAYED' then
 			self:set_Item_Text()
@@ -654,6 +675,22 @@ local function InitMenu(_, level, menuList)--主菜单
 
 	elseif menuList=='RestPoint' then
 		info={
+			text= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
+			checked= not Save.notAutoHideTrack,
+			tooltipOnButton=true,
+			tooltipTitle= (e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)..'|n'
+				..(e.onlyChinese and '宠物对战' or SHOW_PET_BATTLES_ON_MAP_TEXT)..'|n'
+				..(e.onlyChinese and '在副本中' or AGGRO_WARNING_IN_INSTANCE),
+			func= function()
+				Save.notAutoHideTrack= not Save.notAutoHideTrack and true or nil
+				if TrackButton then
+					TrackButton:set_Shown()
+				end
+			end
+		}
+		e.LibDD:UIDropDownMenu_AddButton(info, level)
+		e.LibDD:UIDropDownMenu_AddSeparator(level)
+		info={
 			text=e.onlyChinese and '重置位置' or RESET_POSITION,
 			colorCode= (not Save.point or not TrackButton) and '|cff606060' or nil,
 			notCheckable=true,
@@ -856,7 +893,7 @@ local function Init()
 		e.tips:Hide()
 		Button:set_bagButtonTexture()
 		self.texture:SetAlpha(0.5)
-		if TrackButton then
+		if TrackButton and TrackButton:IsShown() then
 			TrackButton:SetButtonState("NORMAL")
 		end
 	end
