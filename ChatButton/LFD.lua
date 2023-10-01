@@ -805,6 +805,7 @@ local function isRaidFinderDungeonDisplayable(dungeonID)--RaidFinder.lua
     local myLevel = e.Player.level
     return myLevel >= minLevel and myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel
 end
+
 local set_Raid_Menu_List=function(level)--团队本
     local sortedDungeons, info = {}, {}
     local function InsertDungeonData(dungeonID, name, mapName, isAvailable, mapID)
@@ -822,6 +823,7 @@ local set_Raid_Menu_List=function(level)--团队本
         end
         tinsert(sortedDungeons, t)
     end
+
     for i=1, GetNumRFDungeons() do
         local dungeonInfo = { GetRFDungeonInfo(i) }
         local dungeonID = dungeonInfo[1]
@@ -1404,7 +1406,7 @@ local function InitList(_, level, type)--LFDFrame.lua
     local shouldtext
     local cooldowntext
 
-    local hasDeserter = false;
+    --local hasDeserter = false;
     local deserterExpiration = GetLFGDeserterExpiration();
 
 	if ( deserterExpiration ) then
@@ -1413,7 +1415,7 @@ local function InitList(_, level, type)--LFDFrame.lua
         if timeRemaining>0 then
             shouldtext= shouldtext..' '..SecondsToTime(ceil(timeRemaining))
         end
-		hasDeserter = true;
+		--hasDeserter = true;
 	else
 		local myExpireTime = GetLFGRandomCooldownExpiration();
         if myExpireTime then
@@ -1428,61 +1430,60 @@ local function InitList(_, level, type)--LFDFrame.lua
         local unit= 'party'..i
 		if ( UnitHasLFGDeserter(unit) ) then
 			shouldtext= (shouldtext and shouldtext..'|n' or '')..e.GetPlayerInfo({unit=unit})..' '..(e.onlyChinese and '逃亡者' or DESERTER)
-			hasDeserter = true;
+			--hasDeserter = true;
 		elseif ( UnitHasLFGRandomCooldown(unit) ) then
 			cooldowntext= (cooldowntext and cooldowntext..'|n' or '')..e.GetPlayerInfo({unit=unit})..' '..(e.onlyChinese and '冷却中' or ON_COOLDOWN)
 		end
     end
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
-    if not hasDeserter then
-        set_Party_Menu_List(level)--随机
-    else
+
+    if shouldtext then
         info={
             text=shouldtext,
             colorCode='|cffff0000',
+            isTitle=true,
             notCheckable=true,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
+    set_Party_Menu_List(level)--随机
 
-    if not hasDeserter and not cooldowntext then
-        set_Raid_Menu_List(level)--团本
-    elseif cooldowntext then
+    if cooldowntext then
         info={
             text=cooldowntext,
             colorCode='|cffff0000',
+            isTitle=true,
             notCheckable=true,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
+    set_Raid_Menu_List(level)--团本
 
-    if not hasDeserter then
-        local num, text=0, ''
-        for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-            local listNum, listText= get_Queued_List(i,true)
-            if listNum and listText then
-                text= text~='' and text..'|n'..listText or listText
-                num=num+listNum
-            end
+    local num, text=0, ''
+    for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
+        local listNum, listText= get_Queued_List(i,true)
+        if listNum and listText then
+            text= text~='' and text..'|n'..listText or listText
+            num=num+listNum
         end
-        if num>0 then
-            e.LibDD:UIDropDownMenu_AddSeparator(level)
-            info={
-                text= (e.onlyChinese and '离开列队' or LEAVE_QUEUE)..' |cnGREEN_FONT_COLOR:#'..num..'|r',
-                notCheckable=true,
-                keepShownOnClick=true,
-                func=function ()
-                    for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-                        LeaveLFG(i)
-                    end
-                end,
-                tooltipOnButton=true,
-                tooltipTitle= e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS,
-                tooltipText=text,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
+    end
+    if num>0 then
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= (e.onlyChinese and '离开列队' or LEAVE_QUEUE)..' |cnGREEN_FONT_COLOR:#'..num..'|r',
+            notCheckable=true,
+            keepShownOnClick=true,
+            func=function ()
+                for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
+                    LeaveLFG(i)
+                end
+            end,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS,
+            tooltipText=text,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 end
 
