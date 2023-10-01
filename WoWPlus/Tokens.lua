@@ -704,12 +704,12 @@ local function InitMenu(_, level, menuList)--主菜单
 		colorCoed=Save.Hide and '|cff606060' or nil,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-	
 
 	e.LibDD:UIDropDownMenu_AddSeparator(level)
 	info={
 		text=e.onlyChinese and '达到上限' or CAPPED,
 		checked= not Save.hideCurrencyMax,
+		icon='communities-icon-chat',
 		tooltipOnButton=true,
 		tooltipTitle=e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248,
 		keepShownOnClick=true,
@@ -941,7 +941,7 @@ local function Init()
 						or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
 					)
 				then
-					text= C_CurrencyInfo.GetCurrencyLink(curID) or curID
+					text= C_CurrencyInfo.GetCurrencyLink(curID) or info.name or curID
 				end
 			end
 		else
@@ -956,7 +956,7 @@ local function Init()
 							or (info.useTotalEarnedForMaxQty and info.useTotalEarnedForMaxQty>0 and info.totalEarned==info.maxQuantity)--赛季
 						)
 					then
-						tab[currencyID]=C_CurrencyInfo.GetCurrencyLink(currencyID) or info.name or currencyID
+						tab[currencyID]= C_CurrencyInfo.GetCurrencyLink(currencyID) or info.name or currencyID
 					end
 				end
 			end
@@ -972,13 +972,13 @@ local function Init()
 					local link =C_CurrencyInfo.GetCurrencyListLink(i)
 					local currencyID = link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
 					if currencyID and not self.currencyMax[currencyID] then
-						tab[currencyID]=link
+						tab[currencyID]= link
 					end
 				end
 			end
-			for currencyID, _ in pairs(tab) do
-				local link= C_CurrencyInfo.GetCurrencyLink(currencyID)
-				text= (text and text..' ' or '|cnGREEN_FONT_COLOR:')..(link or currencyID)
+			for currencyID, link in pairs(tab) do
+				--local currencyLink= C_CurrencyInfo.GetCurrencyLink(currencyID)
+				text= (text and text..' ' or '|cnGREEN_FONT_COLOR:')..link
 				self.currencyMax[currencyID]=true
 			end
 		end
