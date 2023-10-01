@@ -1486,7 +1486,9 @@ local function set_Week_Reward_Look_Specialization()
     else
         print(id, addName,'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
     end
-    local frame= CreateFrame("Frame")
+    local frame
+    ---@class frame
+    frame= CreateFrame("Frame")
     frame:SetSize(40,40)
     frame:SetPoint("CENTER",60, 60)
     frame:SetShown(false)
