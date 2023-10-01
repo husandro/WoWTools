@@ -595,28 +595,20 @@ local function set_memberFrame(memberFrame)
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
         end)
-        frame:SetShown(false)
+
         frame.texture= frame:CreateTexture()
         frame.texture:SetAllPoints(frame)
         frame.texture:SetAtlas('UI-HUD-UnitFrame-Player-CombatIcon-2x')
         frame.texture:SetVertexColor(1, 0, 0)
-        
+        frame.texture:SetShown(false)
+
         frame.unit= unit
         frame:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= (self.elapsed or 0.5) + elapsed
             if self.elapsed>0.5 then
                 self.elapsed=0
-                self:SetShown(UnitAffectingCombat(self.unit))
+                self.texture:SetShown(UnitAffectingCombat(self.unit))
             end
-        end)
-        frame:SetScript('OnShow', function(self)
-            if self.time and not self.time:IsCancelled() then
-                self.time:Cancel()
-            end
-            self:SetScale(1.5)
-            self.time= C_Timer.NewTimer(1, function()
-                self:SetScale(1)
-            end)
         end)
         memberFrame.combatFrame= frame
     end
