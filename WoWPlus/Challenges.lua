@@ -1490,7 +1490,8 @@ local function set_Week_Reward_Look_Specialization()
     ---@class frame
     frame= CreateFrame("Frame")
     frame:SetSize(40,40)
-    frame:SetPoint("CENTER",60, 60)
+    frame:SetPoint("CENTER", -100, 60)
+    frame:Raise()
     frame:SetShown(false)
     frame:RegisterEvent('PLAYER_UPDATE_RESTING')
     function frame:set_Event()
@@ -1506,8 +1507,11 @@ local function set_Week_Reward_Look_Specialization()
     end
     frame:set_Event()
     function frame:set_Show(show)
-        if self.time and not self.time:IsCancelled() then self.time:Cancel() end
+        if self.time and not self.time:IsCancelled() then
+            self.time:Cancel()
+        end
         self:SetShown(show)
+        e.Ccool(self, nil, show and 4 or 0, nil, true, true, true)
     end
     function frame:set_Texture()
         if not self.texture then
