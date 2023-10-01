@@ -938,7 +938,7 @@ local function Init()
 					and (
 						(info.maxQuantity and info.maxQuantity>0 and info.quantity==info.maxQuantity)--最大数
 						or (info.canEarnPerWeek and info.canEarnPerWeek>0 and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
-						or (info.useTotalEarnedForMaxQty and info.useTotalEarnedForMaxQty>0 and info.totalEarned==info.maxQuantity)--赛季
+						or (info.useTotalEarnedForMaxQty and info.maxQuantity and info.maxQuantity>0 and info.totalEarned==info.maxQuantity)--赛季
 					)
 				then
 					text= C_CurrencyInfo.GetCurrencyLink(curID) or curID

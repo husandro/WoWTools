@@ -1,8 +1,9 @@
 local id, e = ...
 local addName= UNITFRAME_LABEL
 local Save={
-    raidFrameScale=0.8,
     notRaidFrame= not e.Player.husandro,
+    raidFrameScale=0.8,
+    --raidFrameAlpha=1,
 }
 local panel=CreateFrame("Frame")
 
@@ -989,6 +990,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 unitFrame.instanceFrame3.text= e.Cstr(unitFrame.instanceFrame3, {size=8})
                 unitFrame.instanceFrame3.text:SetPoint('TOP',0,5)
                 unitFrame.instanceFrame3.text:SetTextColor(r,g,b)
+
 ---@class unitFrame.instanceFrame2
                 unitFrame.instanceFrame2= CreateFrame("Frame", nil, unitFrame)--5人 副本, 地下城，指示
                 unitFrame.instanceFrame2:SetFrameLevel(frameLevel)
@@ -1527,14 +1529,15 @@ local function Init_RaidFrame()--设置,团队
     CompactRaidFrameContainer:SetClampedToScreen(true)
     CompactRaidFrameContainer:SetMovable(true)
 
-    CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, {icon= true, size={20,20}})--IsEveryoneAssistant() hooksecurefunc('RaidFrameAllqbCheckButton_UpdateAvailable', function()
-    CompactRaidFrameContainer.moveFrame:SetAlpha(0.3)
+    CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, {icon= true, size={22,22}})--IsEveryoneAssistant() hooksecurefunc('RaidFrameAllqbCheckButton_UpdateAvailable', function()
     CompactRaidFrameContainer.moveFrame:SetPoint('TOPRIGHT', CompactRaidFrameContainer, 'TOPLEFT',-2, -13)
+
     CompactRaidFrameContainer.moveFrame:SetClampedToScreen(true)
     CompactRaidFrameContainer.moveFrame:SetMovable(true)
+    CompactRaidFrameContainer:SetMovable(true)
     CompactRaidFrameContainer.moveFrame:RegisterForDrag('RightButton')
-    CompactRaidFrameContainer.moveFrame:SetScript("OnDragStart", function(self,d)
-        if d=='RightButton' and not IsModifierKeyDown() then
+    CompactRaidFrameContainer.moveFrame:SetScript("OnDragStart", function(self)
+        if IsAltKeyDown() then
             local frame= self:GetParent()
             if not frame:IsMovable()  then
                 frame:SetMovable(true)
@@ -1543,52 +1546,54 @@ local function Init_RaidFrame()--设置,团队
         end
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnDragStop", function(self)
-        local frame=self:GetParent()
-        if frame then
-            frame:StopMovingOrSizing()
-            if not UnitAffectingCombat('player') then
-                frame:Raise()
-            end
-        end
+        self:GetParent():StopMovingOrSizing()
     end)
-    CompactRaidFrameContainer.moveFrame:SetScript("OnMouseDown", function(self, d)
-        print(id, addName, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.raidFrameScale or 1)
-        if d=='RightButton' and not IsModifierKeyDown() then
+    CompactRaidFrameContainer.moveFrame:SetScript('OnMouseUp', ResetCursor)
+    CompactRaidFrameContainer.moveFrame:SetScript("OnMouseDown", function()
+        if IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
-    CompactRaidFrameContainer.moveFrame:SetScript("OnLeave", function(self, d)
-        ResetCursor()
-        self:SetAlpha(0.3)
-    end)
-    CompactRaidFrameContainer.moveFrame:SetScript('OnEnter', function(self)
+    function CompactRaidFrameContainer.moveFrame:set_Tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        local col= UnitAffectingCombat('player') and '|cff606060' or ''
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.raidFrameScale or 1), col..'Alt+'..e.Icon.mid)
+        e.tips:Show()
         self:SetAlpha(1)
-    end)
+    end
+    function CompactRaidFrameContainer.moveFrame:set_Scale()
+        self:GetParent():SetScale(Save.raidFrameScale or 1)
+    end
     CompactRaidFrameContainer.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
-        if IsAltKeyDown() then
-            if UnitAffectingCombat('player') then
-                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
-            else
-                local sacle= Save.raidFrameScale or 1
-                if d==1 then
-                    sacle=sacle+0.05
-                elseif d==-1 then
-                    sacle=sacle-0.05
-                end
-                if sacle>2 then
-                    sacle=2
-                elseif sacle<0.5 then
-                    sacle=0.5
-                end
-                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE), sacle)
-                self:GetParent():SetScale(sacle)
-                Save.raidFrameScale=sacle
+        if IsAltKeyDown() and not UnitAffectingCombat('player') then
+            local num= Save.raidFrameScale or 1
+            if d==1 then
+                num= num+0.05
+            elseif d==-1 then
+                num= num-0.05
             end
+            num= num>4 and 4 or num
+            num= num<0.4 and 0.4 or num
+            Save.raidFrameScale= num
+            self:set_Scale()
+            self:set_Tooltips()
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, num)
         end
     end)
-    if Save.raidFrameScale and Save.raidFrameScale~=1 then
-        CompactRaidFrameContainer:SetScale(Save.raidFrameScale)
-    end
+    CompactRaidFrameContainer.moveFrame:SetScript("OnLeave", function(self)
+        e.tips:Hide()
+        self:SetAlpha(0.1)
+    end)
+    CompactRaidFrameContainer.moveFrame:SetScript('OnEnter', CompactRaidFrameContainer.moveFrame.set_Tooltips)
+    CompactRaidFrameContainer.moveFrame:set_Scale()
+    CompactRaidFrameContainer.moveFrame:SetAlpha(0.1)
+
+
+
 
     --团体, 管理, 缩放
     CompactRaidFrameManager.sacleFrame= e.Cbtn(CompactRaidFrameManager, {icon=true, size={15,15}})

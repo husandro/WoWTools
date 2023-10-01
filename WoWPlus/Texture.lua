@@ -2051,7 +2051,7 @@ local function options_Init()--初始，选项
     })
 
     initializer= e.AddPanelSider({
-        name= e.onlyChinese and '改变透明度' or CHANGE_OPACITY,
+        name= e.onlyChinese and '透明度' or 'Alpha',
         value= Save.chatBubbleAlpha,
         minValue= 0,
         maxValue= 1,
