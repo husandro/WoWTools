@@ -78,6 +78,7 @@ end
 --#######
 --取得装等
 --#######
+local NotifyInspectTicker
 e.GetNotifyInspect= function(tab, unit)
     if unit then
         if UnitExists(unit) and CheckInteractDistance(unit, 1) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then
@@ -87,10 +88,10 @@ e.GetNotifyInspect= function(tab, unit)
         tab=tab or {}
         local num, index= #tab, 1
         if num>0 then
-            if panel.NotifyInspectTicker then
-                panel.NotifyInspectTicker:Cancel()
+            if NotifyInspectTicker and not NotifyInspectTicker:IsCancelled() then
+                NotifyInspectTicker:Cancel()
             end
-            panel.NotifyInspectTicker=C_Timer.NewTicker(4, function()--InspectFrame,如果显示，查看玩家，天赋，出错
+            NotifyInspectTicker=C_Timer.NewTimer(4, function()--InspectFrame,如果显示，查看玩家，天赋，出错
                 local unit2=tab[index]
                 if UnitExists(unit2) and CheckInteractDistance(unit2, 1) and CanInspect(unit2) and (not InspectFrame or not InspectFrame:IsShown()) then
                     NotifyInspect(tab[index])
