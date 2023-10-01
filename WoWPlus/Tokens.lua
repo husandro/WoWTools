@@ -361,6 +361,21 @@ local function Init_TrackButton()
 	end)
 
 	TrackButton:SetScript("OnClick", function(self, d)
+		if not self.Menu then
+			self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+			e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
+				local info={
+					
+				}
+				e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+				e.LibDD:UIDropDownMenu_AddSeparator(level)
+				
+
+			end, 'MENU')
+		end
+		e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
+
 		if d=='LeftButton' and not IsModifierKeyDown() then--点击,显示隐藏
 			Save.str= not Save.str and true or nil
 			self:set_Shown()

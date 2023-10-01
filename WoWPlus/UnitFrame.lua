@@ -851,7 +851,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
                 function unitFrame.classFrame:set_Class(guid3)
                     local unit2= self:GetParent().unit
-                    local isPlayer= unit2 and UnitIsPlayer(unit2)
+                    local isPlayer= UnitExists(unit2) and UnitIsPlayer(unit2)
                     local find2=false
                     if isPlayer then
                         if unit2=='player' then

@@ -449,7 +449,7 @@ local function Init()
         end,
     }
 
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
+    button.Menu=CreateFrame("Frame", nil, button, "UIDropDownMenuTemplate")
     e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     getToy()--生成, 有效表格

@@ -178,7 +178,7 @@ local function set_Button()
                 SetCursor('UI_MOVE_CURSOR');
             elseif d=='LeftButton' then
                 if not self.Menu then
-                    self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                    self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                     e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
                 end
                 e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)

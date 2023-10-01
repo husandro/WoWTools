@@ -378,7 +378,7 @@ local function Init()
         else
             show_Group_Info_Toolstip()--玩家,信息, 提示
             if not self.Menu then
-                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)

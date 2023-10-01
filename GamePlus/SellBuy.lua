@@ -753,7 +753,7 @@ local function Init_Button(frame)
             end
         else
             if not self2.Menu then
-                self2.Menu=CreateFrame("Frame", id..addName..'Menu', self2, "UIDropDownMenuTemplate")
+                self2.Menu=CreateFrame("Frame", nil, self2, "UIDropDownMenuTemplate")
                 e.LibDD:UIDropDownMenu_Initialize(self2.Menu, Init_Menu, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self2.Menu, self2, 15, 0)

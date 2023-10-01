@@ -306,7 +306,7 @@ local function Init_TrackButton()--监视, 文本
 			ToggleCharacter("ReputationFrame")
 		elseif d=='RightButton' and not IsModifierKeyDown() then
 			if not self.Menu then
-				self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")
+				self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
 				e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
 					local info={
 						text= e.onlyChinese and '显示' or SHOW,

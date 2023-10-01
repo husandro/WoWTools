@@ -644,7 +644,7 @@ local function Init()
     button:SetScript('OnClick', function(self, d)
         if d=='RightButton' then
             if not self.Menu then
-                self.Menu=CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")--菜单框架
+                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")--菜单框架
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)

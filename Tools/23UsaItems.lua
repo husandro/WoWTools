@@ -469,7 +469,7 @@ local function Init()
         end,
     }
 
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
+    button.Menu=CreateFrame("Frame", nil, button, "UIDropDownMenuTemplate")
     e.LibDD:UIDropDownMenu_Initialize(button.Menu, Init_Menu, 'MENU')
 
    for _, itemID in pairs(Save.item) do

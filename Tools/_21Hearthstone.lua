@@ -276,7 +276,7 @@ local function Init()
         e.LoadDate({id=itemID, type='item'})
     end
 
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
+    button.Menu=CreateFrame("Frame", nil, button, "UIDropDownMenuTemplate")
     e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     button:SetSize(30, 30)

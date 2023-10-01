@@ -1117,7 +1117,7 @@ end
 --初始化
 --######
 local function Init()
-    button.Menu=CreateFrame("Frame", id..addName..'Menu', button, "UIDropDownMenuTemplate")
+    button.Menu=CreateFrame("Frame", nil, button, "UIDropDownMenuTemplate")
     e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     Init_Dialogs()--初始化，对话框
