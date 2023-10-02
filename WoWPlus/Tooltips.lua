@@ -728,6 +728,7 @@ local function int_Unit_Health_Bar(self)
         self.textRight:SetPoint('TOPRIGHT',0, -2)--生命条
     end
 end
+
 local function set_Unit_Health_Bar(self, unit)
     if Save.hideHealth or self:GetWidth()<100 or not unit then
         return
@@ -767,6 +768,24 @@ local function set_Unit_Health_Bar(self, unit)
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#######
 --设置单位
 --#######
@@ -800,9 +819,11 @@ local function setUnitInfo(self, unit)--设置单位提示信息
             if info.itemLevel and info.itemLevel>1 then--设置装等
                 textLeft= col..info.itemLevel..'|r'
             end
-            local icon= info.specID and select(4, GetSpecializationInfoByID(info.specID))--设置天赋
-            if icon then
-                text2Left="|T"..icon..':0|t'
+            if info.specID then
+                local icon, role= select(4, GetSpecializationInfoByID(info.specID))--设置天赋
+                if icon then
+                    text2Left= "|T"..icon..':0|t'..(e.Icon[role] or '')
+                end
             end
         else
             e.GetNotifyInspect(nil, unit)--取得装等
@@ -1040,9 +1061,9 @@ local function setUnitInfo(self, unit)--设置单位提示信息
         end
     end
 
-    
+
     set_Unit_Health_Bar(GameTooltipStatusBar, unit)--生命条提示
-    
+
 
     set_Item_Model(self, {unit=unit, guid=guid, col= col})--设置, 3D模型
 
@@ -1093,7 +1114,7 @@ local function set_CVar(reset, tips, notPrint)
         },
         {   name="profanityFilter",
             value= '0',
-            msg= '禁用语言过虑 /reload', 
+            msg= '禁用语言过虑 /reload',
             zh=true,
         },
         {   name="overrideArchive",
@@ -1768,7 +1789,7 @@ end
 local function Init_Panel()
     e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
 
-    
+
     local initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '跟随鼠标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FOLLOW, MOUSE_LABEL),
         tooltip= addName,
@@ -1838,10 +1859,10 @@ local function Init_Panel()
             end
         })
         initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
-    
+
 
     e.AddPanel_Header(Layout, e.onlyChinese and '设置' or SETTINGS)
-    
+
     initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '模型' or MODEL,
         tooltip= addName,
@@ -1924,7 +1945,7 @@ local function Init_Panel()
         end
     })
     initializer:SetParentInitializer(initializer2, function() return not Save.hideModel end)
-    
+
     initializer= e.AddPanelSider({
         name= e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION,
         value= Save.modelFacing or -24,

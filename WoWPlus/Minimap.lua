@@ -36,7 +36,8 @@ local panel= CreateFrame("Frame")
 local Button
 ---@class Button
 
-
+local TrackButton
+---@class TrackButton
 
 
 
@@ -243,6 +244,7 @@ local function set_vigentteButton_Text()
 
     Button.Frame.text:SetText(text or '..')
 end
+
 --[[local barColorFromTintValue = {
 	[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
 	[Enum.StatusBarColorTintValue.White] = WHITE_FONT_COLOR,
