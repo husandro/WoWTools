@@ -1096,11 +1096,11 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
     end)
 
     if e.Player.husandro then
-        hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称)
+        --[[hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称)
             if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
                 self.name:SetText(e.Icon.star2)
             end
-        end)
+        end)--]]
 
         --############
         --去掉生命条 % extStatusBar.lua TextStatusBar.lua
@@ -1321,6 +1321,8 @@ local function Init_BossFrame()
         frame.PortraitFrame=CreateFrame('Frame', nil, frame)
         frame.PortraitFrame:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
         frame.PortraitFrame:SetSize(38, 38)
+        frame.PortraitFrame:Raise()
+
         frame.PortraitFrame.Portrait= frame.PortraitFrame:CreateTexture(nil, 'BACKGROUND')
         frame.PortraitFrame.Portrait:SetAllPoints(frame.PortraitFrame)
 
@@ -1332,22 +1334,21 @@ local function Init_BossFrame()
         frame.PortraitFrame.unit= frame.unit
 
         function frame.PortraitFrame:set_Portrait()
-            local isExists= UnitExists(self.unit)
-            if isExists then
+            if UnitExists(self.unit) then
                 SetPortraitTexture(self.Portrait, self.unit)
             end
         end
 
         function frame.PortraitFrame:set_Target_Segnale()
-            self.targetTexture:SetShown(UnitExists('target') and UnitIsUnit(self.unit, 'target'))
+            self.targetTexture:SetShown(UnitExists(self.unit))
         end
-        frame.PortraitFrame.index=i
+
         function frame.PortraitFrame:set_Event()
             if not UnitExists(self.unit) then
                 self:UnregisterAllEvents()
             else
                 self:RegisterEvent('PLAYER_TARGET_CHANGED')
-                self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', frame.unit)
+                self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.unit)
                 self:RegisterEvent('INSTANCE_ENCOUNTER_ENGAGE_UNIT')
             end
         end
@@ -1361,8 +1362,12 @@ local function Init_BossFrame()
         end)
 
         frame.PortraitFrame:set_Event()
-        frame:HookScript('OnShow', function(self) self.PortraitFrame:set_Event() end)
-        frame:HookScript('OnHide', function(self) self.PortraitFrame:set_Event() end)
+        frame:HookScript('OnShow', function(self)
+            self.PortraitFrame:set_Event()
+        end)
+        frame:HookScript('OnHide', function(self)
+            self.PortraitFrame:set_Event()
+        end)
 
         frame.PortraitFrame:set_Portrait()
         frame.PortraitFrame:set_Target_Segnale()
@@ -1390,7 +1395,7 @@ end
 --######
 --初始化
 --######
-local function Init_UnitFrame()
+local function Init()
     set_CompactPartyFrame()--小队, 使用团框架
 
     hooksecurefunc(CompactPartyFrame,'UpdateVisibility', set_CompactPartyFrame)
@@ -1785,7 +1790,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
-                Init_UnitFrame()
+                Init()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
