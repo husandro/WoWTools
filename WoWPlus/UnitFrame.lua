@@ -1095,7 +1095,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
         end
     end)
 
-   -- if e.Player.husandro then
+    if e.Player.husandro then
         hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称)
             if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
                 self.name:SetText(e.Icon.star2)
@@ -1156,7 +1156,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
                 frame.DeadText:SetText(text)
             end
         end)
-    --end
+    end
 
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
     --###################

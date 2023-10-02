@@ -1448,7 +1448,7 @@ local function Init_Quest()
                     print(id, QUESTS_LABEL, questLink, text and '|cffff00ff'..text..'|r', link, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
                 end)
             end
-            QuestGoodbyeButton_OnClick()
+            e.call('QuestGoodbyeButton_OnClick')
         else
             if not QusetButton.questSelect[questID] then--已选任务, 提示用
                 C_Timer.After(0.5, function()
@@ -1456,7 +1456,7 @@ local function Init_Quest()
                 end)
                 QusetButton.questSelect[questID]=true
             end
-            QuestProgressCompleteButton_OnClick()--local b=QuestFrameCompleteQuestButton
+            e.call('QuestProgressCompleteButton_OnClick')
         end
     end)
 
@@ -1532,11 +1532,12 @@ local function Init_Quest()
             QusetButton.questSelect[questID]=true
         end
 
-        acceptButton:Click()
+        if acceptButton==QuestFrameCompleteQuestButton then
+            e.call('QuestRewardCompleteButton_OnClick')
+        else
+            acceptButton:Click()
+        end
     end)
-
-
-
 end
 
 

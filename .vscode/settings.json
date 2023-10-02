@@ -3407,7 +3407,9 @@
         "SHOW_CHAT_ICONS",
         "TRIVIAL_DIFFICULTY_COLOR_CODE",
         "EASY_DIFFICULTY_COLOR",
-        "GetMinimapShape"
+        "GetMinimapShape",
+        "QuestFrameCompleteQuestButton",
+        "QuestRewardCompleteButton_OnClick"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
