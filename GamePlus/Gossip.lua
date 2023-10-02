@@ -1282,6 +1282,7 @@ local function Init_Quest()
         e.tips:AddDoubleLine(id, e.onlyChinese and '任务' or QUESTS_LABEL)
         e.tips:Show()
         self.texture:SetAlpha(1)
+        self:set_Only_Show_Zone_Quest()
     end
 
     QusetButton:SetScript("OnEvent", function(self, event, arg1)
