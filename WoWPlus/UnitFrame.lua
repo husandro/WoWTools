@@ -1334,13 +1334,15 @@ local function Init_BossFrame()
         frame.PortraitFrame.unit= frame.unit
 
         function frame.PortraitFrame:set_Portrait()
-            if UnitExists(self.unit) then
+            local exists=UnitExists(self.unit)
+            if exists then
                 SetPortraitTexture(self.Portrait, self.unit)
             end
+            self.Portrait:SetShown(exists)
         end
 
         function frame.PortraitFrame:set_Target_Segnale()
-            self.targetTexture:SetShown(UnitExists(self.unit))
+            self.targetTexture:SetShown(UnitExists('target') and UnitIsUnit('target', self.unit))
         end
 
         function frame.PortraitFrame:set_Event()
@@ -1362,12 +1364,8 @@ local function Init_BossFrame()
         end)
 
         frame.PortraitFrame:set_Event()
-        frame:HookScript('OnShow', function(self)
-            self.PortraitFrame:set_Event()
-        end)
-        frame:HookScript('OnHide', function(self)
-            self.PortraitFrame:set_Event()
-        end)
+        frame:HookScript('OnShow', function(self) self.PortraitFrame:set_Event() end)
+        frame:HookScript('OnHide', function(self) self.PortraitFrame:set_Event() end)
 
         frame.PortraitFrame:set_Portrait()
         frame.PortraitFrame:set_Target_Segnale()
