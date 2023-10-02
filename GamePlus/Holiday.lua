@@ -125,7 +125,7 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
     end
     if not day or not monthOffset then
         if button.Text then
-            button.Text:SetText('')
+            button.Text:SetText('..')
         end
         return
     end
@@ -135,7 +135,7 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
         if button.Text then
             button.Text:SetText('')
         end
-		return;
+		return
 	end
 
     local events = {};
@@ -284,12 +284,12 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
                 icon='|T'..event.iconTexture..':0|t'
             end
         end
-        
+
         if CALENDAR_EVENTTYPE_TEXTURES[event.eventType] then
             local texture= '|T'..CALENDAR_EVENTTYPE_TEXTURES[event.eventType]..':0|t'
             icon= Save.left and (texture..(icon or '')) or ((icon or '')..texture)
         end
-        
+
         local invitInfo= C_Calendar.EventGetInvite(event.index)
         if invitInfo and invitInfo.guid then
             local texture= e.GetPlayerInfo({guid=invitInfo.guid})
@@ -310,114 +310,11 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
     if findQuest then
         button:RegisterEvent('QUEST_COMPLETE')
     end
-    button.Text:SetText(text)
+    button.Text:SetText(text=='' and '..' or text)
 end
 
 
---#####
---主菜单
---#####
-local function Init_Menu(_, level)--主菜单
-    local info={
-        text= e.onlyChinese and '内容靠左' or BINDING_NAME_STRAFELEFT,--向左平移
-        checked=not Save.left,
-        func= function()
-            Save.left= not Save.left and true or nil
-            button:set_Text_Settings()--设置Tex
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    info={
-        text= e.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
-        checked= Save.onGoing,
-        func= function()
-            Save.onGoing= not Save.onGoing and true or nil
-            set_Button_Text()
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text= e.onlyChinese and '时间' or TIME_LABEL,
-        checked= Save.showDate,
-        func= function()
-            Save.showDate= not Save.showDate and true or nil
-            set_Button_Text()
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text= e.onlyChinese and '节日 ID' or CALENDAR_FILTER_HOLIDAYS..' ID',--时间
-        checked= Save.showID,
-        func= function()
-            Save.showID= not Save.showID and true or nil
-            set_Button_Text()
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
---[[
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text=e.onlyChinese and '还原位置' or RESET_POSITION,
-        colorCode=not Save.point and '|cff606060',
-        func=function()
-            Save.point=nil
-            button:ClearAllPoints()
-            button:set_Point()
-        end,
-        tooltipOnButton=true,
-        tooltipTitle=e.Icon.right..' '..NPE_MOVE,
-        notCheckable=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-            text=e.onlyChinese and '设置' or SETTINGS,
-            notCheckable=true,
-            menuList='SETTINGS',
-            hasArrow=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)]]
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text=e.Icon.left..(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE)),
-        isTitle=true,
-        notCheckable=true
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-    info={--点击这里显示日历
-        text=e.Icon.mid..(e.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR ),
-        isTitle=true,
-        notCheckable=true
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={--提示移动
-        text= 'Alt+'..e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
-        isTitle=true,
-        notCheckable=true
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text='Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE)..(Save.scale or 1),
-        isTitle=true,
-        notCheckable=true
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text=id..' '..addName,
-        isTitle=true,
-        notCheckable=true
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-end
 
 
 
@@ -435,7 +332,7 @@ local function Init()
     button.Text=e.Cstr(button, {color=true})
     button.texture=button:CreateTexture()
     button.texture:SetAllPoints(button)
-    button.texture:SetAlpha(0.3)
+    button.texture:SetAtlas(e.Icon.icon)
 
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
@@ -453,23 +350,92 @@ local function Init()
         ResetCursor()
         self:Raise()
     end)
-    button:SetScript('OnMouseDown', function(self, d)
+
+    function button:set_Tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR, e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), 'Alt+'..e.Icon.mid)
+        e.tips:Show()
+    end
+
+    button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
-            Save.hide= not Save.hide and true or nil
-            self:set_Button_Text_Event()--设置事件
-            set_Button_Text()
-            self:set_Texture()
+            Calendar_Toggle()
+
         elseif d=='RightButton' then
             if not self.Menu then
                 self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
+                    local info
+                    info={
+                        text=e.onlyChinese and '显示' or SHOW,
+                        checked=not Save.hide,
+                        func= function()
+                            Save.hide= not Save.hide and true or nil
+                            self:set_Button_Text_Event()--设置事件
+                            set_Button_Text()
+                            self:set_Texture()
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+                    e.LibDD:UIDropDownMenu_AddSeparator(level)
+                    info={
+                        text= e.onlyChinese and '内容靠左' or BINDING_NAME_STRAFELEFT,--向左平移
+                        checked=not Save.left,
+                        func= function()
+                            Save.left= not Save.left and true or nil
+                            button:set_Text_Settings()--设置Tex
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+                    info={
+                        text= e.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
+                        checked= Save.onGoing,
+                        func= function()
+                            Save.onGoing= not Save.onGoing and true or nil
+                            set_Button_Text()
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+                    info={
+                        text= e.onlyChinese and '时间' or TIME_LABEL,
+                        checked= Save.showDate,
+                        func= function()
+                            Save.showDate= not Save.showDate and true or nil
+                            set_Button_Text()
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+                    info={
+                        text= e.onlyChinese and '节日 ID' or CALENDAR_FILTER_HOLIDAYS..' ID',--时间
+                        checked= Save.showID,
+                        func= function()
+                            Save.showID= not Save.showID and true or nil
+                            set_Button_Text()
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+                end, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
-            SetCursor('UI_MOVE_CURSOR')
         end
     end)
-    button:SetScript('OnMouseUp', function()
-        ResetCursor()
+
+    button:SetScript('OnMouseUp', ResetCursor)
+    button:SetScript('OnMouseDown', function(_, d)
+        if d=='RightButton' and IsAltKeyDown() then
+            SetCursor('UI_MOVE_CURSOR')
+        end
     end)
     button:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
@@ -479,23 +445,22 @@ local function Init()
             elseif d==-1 then
                 sacle=sacle-0.1
             end
-            if sacle>3 then
-                sacle=3
-            elseif sacle<0.6 then
-                sacle=0.6
+            if sacle>4 then
+                sacle=4
+            elseif sacle<0.4 then
+                sacle=0.4
             end
             print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, sacle)
             Save.scale=sacle
             self:set_Text_Settings()--设置Text
-        else
-            Calendar_Toggle()
+            self:set_Tooltips()
         end
     end)
-    button:SetScript('OnLeave', function(self) self.texture:SetAlpha(0.3) end)
-    button:SetScript('OnEnter', function(self) self.texture:SetAlpha(1) end)
+    button:SetScript('OnLeave', function() e.tips:Hide() end)
+    button:SetScript('OnEnter', button.set_Tooltips)
 
     function button:set_Texture()--设置，图片
-        self.texture:SetAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+        self.texture:SetShown(Save.hide and true or nil)
     end
     button:set_Texture()
 
@@ -822,18 +787,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
-
-            --添加控制面板
-            --[[e.AddPanel_Check({
-                name= '|A:GarrisonTroops-Health:0:0|a'..(e.onlyChinese and '节日' or addName),
-                tooltip= addName,
-                value= not Save.disabled,
-                func= function()
-                    Save.disabled = not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
-                end
-            })]]
-
             e.AddPanel_Check_Button({
                 checkName= '|A:GarrisonTroops-Health:0:0|a'..(e.onlyChinese and '节日' or addName),
                 checkValue= not Save.disabled,
@@ -855,12 +808,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 category= nil,
             })
 
-            --[[添加控制面板        
-            local sel=e.AddPanel_Check('|A:GarrisonTroops-Health:0:0|a'..(e.onlyChinese and '节日' or addName), not Save.disabled, true)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled = not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
-            end)]]
 
             if  Save.disabled then
                 panel:UnregisterAllEvents()
@@ -870,12 +817,13 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
                 Calendar_Toggle()
                 C_Calendar.OpenCalendar()
-                C_Timer.After(2, function()
+                C_Timer.After(4, function()
                     if CalendarFrame and CalendarFrame:IsShown() then
                         Calendar_Toggle()
                     end
+                    Init()
                 end)
-                C_Timer.After(2, function() Init() end)--初始
+                
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
