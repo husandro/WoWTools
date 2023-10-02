@@ -1357,11 +1357,12 @@ local function Init()
         end
     end)
 
-    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip, data)
+
+    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip, data)--TooltipUtil.lua 
         if tooltip~=GameTooltip and tooltip~=ItemRefTooltip then
             return
         end
-        --25宏, 11动作条, 4矿, 14装备管理
+        --25宏, 11动作条, 4可交互物品, 14装备管理, 0物品 19玩具
         if data.type==2 then--单位
             if tooltip==e.tips then
                 local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
@@ -1371,7 +1372,7 @@ local function Init()
             end
 
         elseif data.id and data.type then
-            if data.type==0 or data.type==19 then--TooltipUtil.lua 0物品 19玩具
+            if data.type==0 or data.type==19 then
                 local itemLink, itemID= select(2, TooltipUtil.GetDisplayedItem(tooltip))
                 itemLink= itemLink or itemID or data.id
                 set_Item_Info(tooltip, itemLink, itemID)
