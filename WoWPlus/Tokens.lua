@@ -198,6 +198,10 @@ end
 --###########
 local function Init_TrackButton()
 	if Save.Hide or TrackButton then
+		if TrackButton then
+			TrackButton:set_Event()
+			TrackButton:set_Shown()
+		end
 		return
 	end
 
@@ -719,12 +723,7 @@ local function InitMenu(_, level, menuList)--主菜单
 		menuList='RestPoint',
 		func= function()
 			Save.Hide= not Save.Hide and true or nil
-			if TrackButton then
-				TrackButton:set_Shown()
-			else
-				Init_TrackButton()
-			end
-			Button:set_bagButtonTexture()
+			Init_TrackButton()
 			print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.GetEnabeleDisable(not Save.Hide))
 		end
     }

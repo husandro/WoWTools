@@ -99,6 +99,16 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
 --###########
 --设置队伍标记
 --###########
@@ -138,7 +148,7 @@ local function Init_set_Tank_Healer()
                     })
                 end
             end
-            table.sort(tab, function(a,b) return a.hp<b.hp end)
+            table.sort(tab, function(a,b) return a.hp>b.hp end)
             if tab[1] then
                 set_Taget(tab[1].unit, Save.tank)--设置,目标,标记
                 tank=true

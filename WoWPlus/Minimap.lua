@@ -82,10 +82,20 @@ local function get_Quest_Text()--世界任务 文本
     return text
 end
 
+
+
+
+
+
 --取得 areaPoiID 名称
 local function get_AreaPOIInfo_Name(poiInfo)
     return (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
 end
+
+
+
+
+
 --areaPoiID 文本
 local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
@@ -149,6 +159,20 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
 
     return text
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --Button 文本
 local function set_vigentteButton_Text()
@@ -295,62 +319,20 @@ end
 
 
 
---检测，显示，禁用，Button, 文本
-local function check_Button_Enabled_Disabled()
-    local isDisabled= not Save.vigentteButton or IsInInstance() or UnitAffectingCombat('player') or WorldMapFrame:IsShown()
-    if Button then
-        Button:SetShown(not isDisabled)
-        Button.Frame:SetShown(Save.vigentteButtonShowText and not isDisabled and true or false)
-        if isDisabled or not Save.vigentteButtonShowText then
-            Button.Frame.text:SetText('')
-        else
-            Button.Frame.elapsed=1
-        end
-    end
-    return isDisabled
-end
 
 
 
---播放声音
-local SpeakTextTab={}
-local function speak_Text(text)
-    local ttsVoices= C_VoiceChat.GetTtsVoices() or {}
-    local voiceID= ttsVoices.voiceID or C_TTSSettings.GetVoiceOptionID(Enum.TtsVoiceType.Standard)
-    local destination= ttsVoices.voiceID and Enum.VoiceTtsDestination.QueuedLocalPlayback or Enum.VoiceTtsDestination.LocalPlayback
-    --C_VoiceChat.SpeakText(voiceID, text, destination, rate, volume)
-    C_VoiceChat.SpeakText(voiceID, text, destination, 0, 100)
-    print(id, addName2,'|cffff00ff', text)
-end
-local function set_VIGNETTES_UPDATED(init)
-    if UnitOnTaxi('player')  then
-        return
-    end
-    local find
-    local vignetteInfo= C_VignetteInfo.GetVignettes()
-    if vignetteInfo then
-        for _, vignetteGUID in pairs(vignetteInfo) do
-            local info= vignetteGUID and C_VignetteInfo.GetVignetteInfo(vignetteGUID) or {}
-            if info.name and info.name~='' and info.zoneInfiniteAOI then
-                if init then
-                    if not info.isDead then
-                        SpeakTextTab[info.name]=true
-                    end
-                else
-                    if info.isDead then
-                        SpeakTextTab[info.name]=nil
-                    elseif not SpeakTextTab[info.name] then
-                        if not find then
-                            speak_Text(info.name)
-                            find=true
-                        end
-                        SpeakTextTab[info.name]=true
-                    end
-                end
-            end
-        end
-    end
-end
+
+
+
+
+
+
+
+
+
+
+
 
 local function Init_Button_Menu(_, level, menuList)--菜单
     local info
@@ -362,9 +344,9 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             disabled= Save.hideVigentteCurrentOnWorldMap,
             func= function()
                 Save.vigentteSound= not Save.vigentteSound and true or nil
-                Button:set_Instance_Event()
+                Button:set_Event()
                 if Save.vigentteSound then
-                    speak_Text(e.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND))
+                    Button:speak_Text(e.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND))
                 end
             end
         }
@@ -555,6 +537,20 @@ local function Init_Button_Menu(_, level, menuList)--菜单
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinese and '重置位置' or RESET_POSITION,
+            notCheckable=true,
+            disabled= not Button,
+            colorCode= not Save.pointVigentteButton and '|cff606060' or '',
+            func= function()
+                Save.pointVigentteButton=nil
+                Button:ClearAllPoints()
+                Button:Set_Point()
+                print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
     if menuList then
@@ -622,14 +618,80 @@ local function Init_Button_Menu(_, level, menuList)--菜单
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Set_Button()--小地图, 标记, 文本
-    if check_Button_Enabled_Disabled() or Button then
+    if not Save.vigentteButton or Button then
+        if Button then
+            Button:set_Shown()
+        end
         return
     end
+
     Button= e.Cbtn(nil, {icon='hide', size={20,20}})
+
     Button.texture= Button:CreateTexture(nil, 'BORDER')
     Button.texture:SetAllPoints(Button)
     Button.texture:SetAlpha(0.3)
+
+    --播放声音
+    function Button:speak_Text(text)
+        local ttsVoices= C_VoiceChat.GetTtsVoices() or {}
+        local voiceID= ttsVoices.voiceID or C_TTSSettings.GetVoiceOptionID(Enum.TtsVoiceType.Standard)
+        local destination= ttsVoices.voiceID and Enum.VoiceTtsDestination.QueuedLocalPlayback or Enum.VoiceTtsDestination.LocalPlayback
+        --C_VoiceChat.SpeakText(voiceID, text, destination, rate, volume)
+        C_VoiceChat.SpeakText(voiceID, text, destination, 0, 100)
+        print(id, addName2,'|cffff00ff', text)
+    end
+    function Button:set_VIGNETTES_UPDATED(init)
+        if UnitOnTaxi('player')  then
+            return
+        end
+        self.SpeakTextTab= self.SpeakTextTab or {}
+        local find
+        local vignetteInfo= C_VignetteInfo.GetVignettes()
+        if vignetteInfo then
+            for _, vignetteGUID in pairs(vignetteInfo) do
+                local info= vignetteGUID and C_VignetteInfo.GetVignetteInfo(vignetteGUID) or {}
+                if info.name and info.name~='' and info.zoneInfiniteAOI then
+                    if init then
+                        if not info.isDead then
+                            self.SpeakTextTab[info.name]=true
+                        end
+                    else
+                        if info.isDead then
+                            self.SpeakTextTab[info.name]=nil
+                        elseif not self.SpeakTextTab[info.name] then
+                            if not find then
+                                self:speak_Text(info.name)
+                                find=true
+                            end
+                            self.SpeakTextTab[info.name]=true
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    function Button:set_Shown()
+        local hide= not Save.vigentteButton
+            or IsInInstance()
+            or UnitAffectingCombat('player')
+            or WorldMapFrame:IsShown()
+
+        Button:SetShown(not hide)
+        Button.Frame:SetShown(Save.vigentteButtonShowText and not hide)
+    end
 
     function Button:set_Texture()
         self.texture:SetAtlas(Save.vigentteButtonShowText and 'VignetteKillElite' or e.Icon.disabled)
@@ -664,8 +726,8 @@ local function Init_Set_Button()--小地图, 标记, 文本
         local key= IsModifierKeyDown()
         if d=='LeftButton' and not key then
             Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or nil
-            check_Button_Enabled_Disabled()
-            Button:set_Texture()
+            self:set_Shown()
+            self:set_Texture()
 
         elseif d=='RightButton' and not key then
             if not self.menu then
@@ -673,11 +735,6 @@ local function Init_Set_Button()--小地图, 标记, 文本
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Button_Menu, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
-
-        elseif d=='RightButton' and IsControlKeyDown() then
-            Save.pointVigentteButton=nil
-            self:ClearAllPoints()
-            self:Set_Point()
         end
     end)
 
@@ -724,34 +781,29 @@ local function Init_Set_Button()--小地图, 标记, 文本
         self.texture:SetAlpha(0.3)
     end)
 
-    Button:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件
-    function Button:set_Instance_Event()
-        SpeakTextTab={}
-        if IsInInstance() then
-            self:UnregisterEvent('PLAYER_REGEN_DISABLED')
-            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-            self:UnregisterEvent('VIGNETTES_UPDATED')
-        else
+    function Button:set_Event()
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件
+        self:UnregisterAllEvents()
+        if not Save.vigentteButton and self:IsShown() then
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             if Save.vigentteSound and not Save.hideVigentteCurrentOnWorldMap then
-                set_VIGNETTES_UPDATED(true)
                 self:RegisterEvent('VIGNETTES_UPDATED')
+                self:set_VIGNETTES_UPDATED()
             end
         end
     end
-    Button:set_Instance_Event()
+    Button:set_Event()
 
     Button:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_ENTERING_WORLD' then
-            C_Timer.After(2, function()
-                check_Button_Enabled_Disabled()
-                self:set_Instance_Event()
-            end)
+            self.SpeakTextTab=nil
+            self:set_Shown()
+            self:set_Event()
         elseif event=='VIGNETTES_UPDATED' then
-            set_VIGNETTES_UPDATED()
-        else
-            check_Button_Enabled_Disabled()
+            self:set_VIGNETTES_UPDATED()
+        else--PLAYER_REGEN_DISABLED PLAYER_REGEN_ENABLED
+            self:set_Shown()
         end
     end)
 
@@ -777,10 +829,8 @@ local function Init_Set_Button()--小地图, 标记, 文本
     end
     Button:set_Frame()
 
-    WorldMapFrame:HookScript('OnHide', check_Button_Enabled_Disabled)
-    WorldMapFrame:HookScript('OnShow', check_Button_Enabled_Disabled)
-
-    check_Button_Enabled_Disabled()
+    WorldMapFrame:HookScript('OnHide', function() Button:set_Shown() end)
+    WorldMapFrame:HookScript('OnShow', function() Button:set_Shown() end)
 
     Button.Frame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 1) + elapsed
@@ -789,6 +839,16 @@ local function Init_Set_Button()--小地图, 标记, 文本
             set_vigentteButton_Text(self.text)
         end
     end)
+
+    Button:set_Shown()
+
+
+
+
+
+
+
+
 
     hooksecurefunc('TaskPOI_OnEnter', function(self2)--世界任务，提示 WorldMapFrame.lua
         if self2.questID and self2.OnMouseClickAction then
@@ -888,6 +948,29 @@ local function Init_Set_Button()--小地图, 标记, 文本
     end
     hooksecurefunc(WorldMapFrame, 'OnMapChanged', WorldMapFrame.Set_TrackingButton_Texture)--uiMapIDs, 添加，移除 --Blizzard_WorldMap.lua
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
