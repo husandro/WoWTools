@@ -328,7 +328,7 @@ end
 --初始
 --####
 local function Init()
-    button= e.Cbtn(nil, {icon='hide', size={20,20}})
+    button= e.Cbtn(nil, {icon='hide', size={22,22}})
     button.Text=e.Cstr(button, {color=true})
     button.texture=button:CreateTexture()
     button.texture:SetAllPoints(button)
