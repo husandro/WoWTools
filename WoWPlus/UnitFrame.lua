@@ -193,7 +193,7 @@ end
 --####
 --玩家
 --####
-local function set_PlayerFrame()--PlayerFrame.lua
+local function Init_PlayerFrame()--PlayerFrame.lua
     hooksecurefunc('PlayerFrame_UpdateLevel', function()
         set_SetTextColor(PlayerLevelText, e.Player.r, e.Player.g, e.Player.b)
     end)
@@ -291,7 +291,7 @@ end
 --####
 --目标
 --####
-local function set_TargetFrame()
+local function Init_TargetFrame()
     hooksecurefunc(TargetFrame,'CheckLevel', function(self)--目标, 等级, 颜色
         local levelText = self.TargetFrameContent.TargetFrameContentMain.LevelText
         if levelText and levelText:IsShown() and self.unit then
@@ -763,7 +763,7 @@ local function set_UpdatePartyFrames(unitFrame)
         set_memberFrame(memberFrame)
     end
 end
-local function set_PartyFrame()--PartyFrame.lua
+local function Init_PartyFrame()--PartyFrame.lua
     set_UpdatePartyFrames(PartyFrame)--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
     hooksecurefunc(PartyFrame, 'UpdatePartyFrames', set_UpdatePartyFrames)
     --##############
@@ -807,7 +807,7 @@ end
 --################
 --职业, 图标， 颜色
 --################
-local function set_UnitFrame_Update()--职业, 图标， 颜色
+local function Init_UnitFrame_Update()--职业, 图标， 颜色
     hooksecurefunc('UnitFrame_Update', function(unitFrame, isParty)--UnitFrame.lua
         local unit= unitFrame.unit
         local r,g,b
@@ -1314,30 +1314,58 @@ end
 --#########
 --BossFrame
 --#########
-local function set_BossFrame()
+local function Init_BossFrame()
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
 ---@class frame.PortraitFrame
         frame.PortraitFrame=CreateFrame('Frame', nil, frame)
-        frame.PortraitFrame:SetFrameStrata('MEDIUM')
         frame.PortraitFrame:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
         frame.PortraitFrame:SetSize(38, 38)
         frame.PortraitFrame.Portrait= frame.PortraitFrame:CreateTexture(nil, 'BACKGROUND')
         frame.PortraitFrame.Portrait:SetAllPoints(frame.PortraitFrame)
+
+        frame.PortraitFrame.targetTexture= frame.PortraitFrame:CreateTexture(nil, 'OVERLAY')
+        frame.PortraitFrame.targetTexture:SetSize(52,52)
+        frame.PortraitFrame.targetTexture:SetPoint('CENTER')
+        frame.PortraitFrame.targetTexture:SetAtlas('DK-Blood-Rune-CDFill')
+
+        frame.PortraitFrame.unit= frame.unit
+
         function frame.PortraitFrame:set_Portrait()
-            local parentFrame= self:GetParent()
-            local unit= parentFrame.unit
-            local isExists= UnitExists(unit)
+            local isExists= UnitExists(self.unit)
             if isExists then
-                SetPortraitTexture(self.Portrait, unit)
-                self:Raise()
+                SetPortraitTexture(self.Portrait, self.unit)
             end
-            self:SetShown(isExists)
         end
-        frame.PortraitFrame:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', frame.unit)
-        frame.PortraitFrame:RegisterEvent('INSTANCE_ENCOUNTER_ENGAGE_UNIT')
-        frame.PortraitFrame:SetScript('OnEvent', frame.PortraitFrame.set_Portrait)
+
+        function frame.PortraitFrame:set_Target_Segnale()
+            self.targetTexture:SetShown(UnitExists('target') and UnitIsUnit(self.unit, 'target'))
+        end
+        frame.PortraitFrame.index=i
+        function frame.PortraitFrame:set_Event()
+            if not UnitExists(self.unit) then
+                self:UnregisterAllEvents()
+            else
+                self:RegisterEvent('PLAYER_TARGET_CHANGED')
+                self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', frame.unit)
+                self:RegisterEvent('INSTANCE_ENCOUNTER_ENGAGE_UNIT')
+            end
+        end
+
+        frame.PortraitFrame:SetScript('OnEvent', function(self, event)
+            if event == 'PLAYER_TARGET_CHANGED' then
+                self:set_Target_Segnale()
+            else
+                self:set_Portrait()
+            end
+        end)
+
+        frame.PortraitFrame:set_Event()
+        frame:HookScript('OnShow', function(self) self.PortraitFrame:set_Event() end)
+        frame:HookScript('OnHide', function(self) self.PortraitFrame:set_Event() end)
+
         frame.PortraitFrame:set_Portrait()
+        frame.PortraitFrame:set_Target_Segnale()
     end
 end
 
@@ -1367,11 +1395,11 @@ local function Init_UnitFrame()
 
     hooksecurefunc(CompactPartyFrame,'UpdateVisibility', set_CompactPartyFrame)
 
-    set_PlayerFrame()--玩家
-    set_TargetFrame()--目标
-    set_PartyFrame()--小队
-    set_UnitFrame_Update()--职业, 图标， 颜色
-    set_BossFrame()
+    Init_PlayerFrame()--玩家
+    Init_TargetFrame()--目标
+    Init_PartyFrame()--小队
+    Init_UnitFrame_Update()--职业, 图标， 颜色
+    Init_BossFrame()
 
     --###############
     --MirrorTimer.lua
