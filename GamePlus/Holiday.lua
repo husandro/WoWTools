@@ -441,9 +441,9 @@ local function Init()
         if IsAltKeyDown() then
             local sacle=Save.scale or 1
             if d==1 then
-                sacle=sacle+0.1
+                sacle=sacle+0.05
             elseif d==-1 then
-                sacle=sacle-0.1
+                sacle=sacle-0.05
             end
             if sacle>4 then
                 sacle=4
