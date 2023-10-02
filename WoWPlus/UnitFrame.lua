@@ -929,7 +929,7 @@ local function set_UnitFrame_Update()--职业, 图标， 颜色
 
 ---@class unitFrame.lootSpecFrame
                 unitFrame.lootSpecFrame= CreateFrame("Frame", nil, unitFrame)
-                unitFrame.lootSpecFrame:SetPoint('TOPRIGHT', PlayerFrame, 'TOPLEFT', -0.5,4)
+                unitFrame.lootSpecFrame:SetPoint('TOPRIGHT', unitFrame.classFrame, 'TOPLEFT', -0.5, 4)
                 unitFrame.lootSpecFrame:SetSize(14,14)
                 unitFrame.lootSpecFrame:EnableMouse(true)
                 unitFrame.lootSpecFrame:SetFrameLevel(frameLevel)
