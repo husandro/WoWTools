@@ -811,17 +811,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if  Save.disabled then
                 panel:UnregisterAllEvents()
             else
-                if not IsAddOnLoaded("Blizzard_Calendar") then--加载
-                    LoadAddOn("Blizzard_Calendar")
-                end
-                Calendar_Toggle()
-                C_Calendar.OpenCalendar()
-                C_Timer.After(2, function()
-                    if CalendarFrame and CalendarFrame:IsShown() then
-                        Calendar_Toggle()
-                    end
-                    Init()
-                end)
+                LoadAddOn("Blizzard_Calendar")
+                Init()
+                C_Timer.After(4, Calendar_Toggle)
+                C_Timer.After(6, Calendar_Toggle)
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
