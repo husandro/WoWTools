@@ -808,7 +808,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 category= nil,
             })
 
-
             if  Save.disabled then
                 panel:UnregisterAllEvents()
             else
@@ -817,13 +816,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
                 Calendar_Toggle()
                 C_Calendar.OpenCalendar()
-                C_Timer.After(4, function()
+                C_Timer.After(2, function()
                     if CalendarFrame and CalendarFrame:IsShown() then
                         Calendar_Toggle()
                     end
                     Init()
                 end)
-                
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
