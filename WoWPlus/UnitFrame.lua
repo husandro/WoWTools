@@ -1095,20 +1095,20 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
         end
     end)
 
-    if e.Player.husandro then
-        --[[hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称)
+
+        hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称)
             if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
                 self.name:SetText(e.Icon.star2)
             end
-        end)--]]
+        end)
 
         --############
         --去掉生命条 % extStatusBar.lua TextStatusBar.lua
-        --############会出现，错误
+        --[[############会出现，错误
 
         local deadText= e.onlyChinese and '死亡' or DEAD
         hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
-            if not UnitExists(frame.unit) or not frame:IsShown() then
+            if not UnitExists(frame.unit)  or not frame:IsShown() then
                 return
             end
             if value then--statusFrame.unit
@@ -1155,10 +1155,10 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
                 end
                 frame.DeadText:SetText(text)
             end
-        end)
-    end
+        end)]]
 
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
+
     --###################
     --隐藏, 队伍, DPS 图标
     --###################
@@ -1166,12 +1166,8 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
         hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
             local icon = self.PartyMemberOverlay.RoleIcon
             if icon and icon:IsShown() then
-                local role = UnitGroupRolesAssigned(self.unit)
-                if role== 'DAMAGER' then
-                    icon:SetAlpha(0)
-                else
-                    icon:SetAlpha(1)
-                end
+                --local role = UnitGroupRolesAssigned(self.unit)
+                icon:SetAlpha(UnitGroupRolesAssigned(self.unit)== 'DAMAGER' and 0 or 1)
             end
         end)
     end

@@ -406,7 +406,7 @@ local function Init()
 
     --button:SetScript('OnLeave', function() e.tips:Hide() end)
     button:SetScript('OnEnter', function(self2)
-        if (Save.mouseDown or Save.mouseUP) and IsInGroup() then
+        if (Save.mouseDown or Save.mouseUP) then-- and IsInGroup()
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.onlyChinese and '说' or SAY, IsInRaid() and (e.onlyChinese and '团队' or RAID) or IsInGroup() and (e.onlyChinese and '小队' or GROUP))
