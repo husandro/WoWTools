@@ -1750,6 +1750,20 @@ local function set_Panle_Setting()--设置 panel
     end})
     sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
 
+    local sliderButtonScale = e.CSlider(panel, {min=0.4, max=4, value=Save.buttonScale or 1, setp=0.05, color=true,
+    text=e.onlyChinese and '专精缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, UI_SCALE),
+    func=function(self, value)
+        value= tonumber(format('%.01f', value))
+        value= value==0 and 0 or value
+        value= value==1 and 1 or value
+        self:SetValue(value)
+        self.Text:SetText(value)
+        Save.buttonScale= value
+        button:set_Show_Hide()--显示， 隐藏
+    end})
+    sliderButtonScale:SetPoint("TOPLEFT", sliderButtonAlpha, 'BOTTOMLEFT', 0,-24)
+
+
     local restPosti= e.Cbtn(panel, {size={20,20}, atlas='characterundelete-RestoreButton'})--重置
     restPosti:SetPoint('BOTTOMRIGHT')
     --restPosti:SetPoint("TOPLEFT", sliderButtonAlpha, 'BOTTOMLEFT', 0, -24)
@@ -1797,67 +1811,101 @@ end
 
 
 
---#######
---发送信息
---#######
-local function send_Att_Chat()
-    local text=''
-    local specIndex= GetSpecialization()
-    if specIndex then
-        local specID= GetSpecializationInfo(specIndex)
-        if specID then
-            local specTab= C_SpecializationInfo.GetSpellsDisplay(specID) or {}
-            for _, spellID in pairs (specTab) do
-                local link= GetSpellLink(spellID)
-                if link then
-                    text= link
-                    break
-                end
-            end
-        end
-    end
-    text= text.. 'HP'..e.MK(UnitHealthMax('player'), 0)
-    for _, info in pairs(Tabs) do
-        local frame=button[info.name]
-        if not info.hide and info.name~='SPEED' and frame and frame:IsShown() and frame.value and frame.value>0 then
-            local value= frame.text:GetText()
-            if value then
-                text= text..', '..info.text..value
-            end
-        end
-    end
-    if ChatEdit_GetActiveWindow() then
-        ChatEdit_InsertLink(text)
-    else
-        local name
-        if UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
-            name= GetUnitName('target', true)
-        end
-        e.Chat(text, name, true)
-    end
-end
+
+
+
+
+
+
+
+
+
+
 
 
 --####
 --初始
 --####
 local function Init()
-    button= e.Cbtn(nil, {icon='hide', size={22,22}})
+    button= e.Cbtn(nil, {icon='hide', size={22,22}, pushe=true})
 
     button.texture= button:CreateTexture(nil, 'BORDER')
-    button.texture:SetSize(12,12)
+    button.texture:SetSize(18,18)
     button.texture:SetPoint('CENTER')
+
     button.classPortrait= button:CreateTexture(nil, 'OVERLAY', nil)--加个外框
-    button.classPortrait:SetAtlas('DK-Base-Rune-CDFill')
-    button.classPortrait:SetPoint('CENTER')
-    button.classPortrait:SetSize(20,20)
+
+    button.classPortrait:SetPoint('CENTER',1,-1)
+    button.classPortrait:SetSize(24,24)
+    button.classPortrait:SetAtlas('bag-reagent-border')
     button.classPortrait:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
+    function button:get_Att_Text_Chat()--属性，内容
+        local text=''
+        local specIndex= GetSpecialization()
+        if specIndex then
+            local specID= GetSpecializationInfo(specIndex)
+            if specID then
+                local specTab= C_SpecializationInfo.GetSpellsDisplay(specID) or {}
+                for _, spellID in pairs (specTab) do
+                    local link= GetSpellLink(spellID)
+                    if link then
+                        text= link
+                        break
+                    end
+                end
+            end
+        end
+        text= text.. 'HP'..e.MK(UnitHealthMax('player'), 0)
+
+        for _, info in pairs(Tabs) do
+            local frame=button[info.name]
+            if not info.hide and info.name~='SPEED' and frame and frame:IsShown() and frame.value and frame.value>0 then
+                local value= frame.text:GetText()
+                if value then
+                    text= text..', '..info.text..value
+                end
+            end
+        end
+        return text
+    end
+    
+    function button:get_sendTextTips()
+        local text
+        if ChatEdit_GetActiveWindow() then
+            text= e.onlyChinese and '编辑' or EDIT
+        elseif UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
+            text= (e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)..': '.. GetUnitName('target', true)
+        elseif not UnitIsDeadOrGhost('player') and IsInInstance() then
+            text= (e.onlyChinese and '说' or SAY)
+        elseif IsInRaid() then
+            text= e.onlyChinese and '说: 团队' or (SAY..': '..CHAT_MSG_RAID)
+        elseif IsInGroup() then
+            text= e.onlyChinese and '说: 队伍' or (SAY..': '..CHAT_MSG_PARTY)
+        else
+            text= (e.onlyChinese and '说' or SAY)
+        end
+        return text
+    end
+    
+    function button:send_Att_Chat()--发送信息
+        local text= self:get_Att_Text_Chat()
+        if ChatEdit_GetActiveWindow() then
+            ChatEdit_InsertLink(text)
+        else
+            local name
+            if UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
+                name= GetUnitName('target', true)
+            end
+            e.Chat(text, name, true)
+        end
+    end
 
     function button:set_Show_Hide()--显示， 隐藏
         self.frame:SetShown(not Save.hide)
         self.texture:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0.3)
         self.classPortrait:SetAlpha(Save.hide and 1 or Save.buttonAlpha or 0)
+        self:SetScale(Save.buttonScale or 1)
     end
 
     function button:set_Point()--设置, 位置
@@ -1869,18 +1917,17 @@ local function Init()
             button:SetPoint('LEFT', 23, 180)
         end
     end
-    
-    
+
+
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
     button:SetClampedToScreen(true)
-    button:SetScript("OnDragStart", function(self,d)
+    button:SetScript("OnDragStart", function(self)
         if IsAltKeyDown() then
             self:StartMoving()
         end
     end)
     button:SetScript("OnDragStop", function(self)
-        ResetCursor()
         self:StopMovingOrSizing()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
@@ -1892,15 +1939,57 @@ local function Init()
         end
     end)
 
-    button:SetScript("OnClick", function(_, d)
-        if IsModifierKeyDown() then
-            return
-        end
-        if d=='LeftButton' then
+    button:SetScript("OnClick", function(self, d)
+        if d=='LeftButton' and not IsModifierKeyDown() then
             frame_Init(true)--初始， 或设置
             print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
-        elseif d=='RightButton' then
-            send_Att_Chat()--发送信息
+
+        elseif d=='RightButton' and IsShiftKeyDown() then
+            self:send_Att_Chat()--发送信息
+
+        elseif d=='RightButton' and not IsModifierKeyDown() then
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
+                    local info
+                    info={
+                        text=e.onlyChinese and '重置' or RESET,
+                        notCheckable=true,
+                        keepShownOnClick=true,
+                        func= function()
+                            frame_Init(true)--初始， 或设置
+                            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+                    e.LibDD:UIDropDownMenu_AddSeparator(level)
+
+                    info={
+                        text=e.onlyChinese and '显示' or SHOW,
+                        checked=not Save.hide,
+                        keepShownOnClick=true,
+                        func= function()
+                            Save.hide= not Save.hide and true or nil
+                            self:set_Show_Hide()--显示， 隐藏
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+                    info={
+                        text=e.onlyChinese and '发送信息' or SEND_MESSAGE,--发送信息
+                        tooltipOnButton=true,
+                        tooltipTitle=self:get_sendTextTips(),
+                        tooltipText=self:get_Att_Text_Chat(),
+                        keepShownOnClick=true,
+                        notCheckable=true,
+                        func= function()
+                            self:send_Att_Chat()--发送信息
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+                end, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
 
@@ -1914,26 +2003,14 @@ local function Init()
     end)
 
     button:SetScript("OnLeave",function(self) ResetCursor() e.tips:Hide() self:set_Show_Hide() end)
+
     button:SetScript('OnEnter', function(self)
-        local text
-        if ChatEdit_GetActiveWindow() then
-            text= e.onlyChinese and '编辑' or EDIT
-        elseif UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
-            text= (e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)..': '.. GetUnitName('target', true)
-        elseif not UnitIsDeadOrGhost('player') and IsInInstance() then
-            text= (e.onlyChinese and '说' or SAY)
-        elseif IsInRaid() then
-            text= e.onlyChinese and '说: 团队' or SAY..': '..CHAT_MSG_RAID
-        elseif IsInGroup() then
-            text= e.onlyChinese and '说: 队伍' or SAY..': '..CHAT_MSG_PARTY
-        else
-            text= (e.onlyChinese and '说' or SAY)
-        end
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '重置' or RESET, e.Icon.left)
-        e.tips:AddDoubleLine(text, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or (HIDE..'/'..SHOW), e.Icon.mid)
+        e.tips:AddDoubleLine(self:get_sendTextTips(), 'Shift+'..e.Icon.right)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine(id, addName)
@@ -1942,13 +2019,13 @@ local function Init()
         self.classPortrait:SetAlpha(1)
     end)
 
-    
 
-    
 
-    
+
+
+
     button.frame= CreateFrame("Frame",nil,button)
-    
+
     button:set_Point()--设置, 位置
     button:Raise()
     button:set_Show_Hide()--显示， 隐藏
@@ -1960,7 +2037,7 @@ local function Init()
 
     C_Timer.After(4, function()
         button.frame:SetPoint('BOTTOM')
-        button.frame:SetSize(1,1)
+        button.frame:SetSize(1, 1)
         if Save.scale and Save.scale~=1 then--缩放
             button.frame:SetScale(Save.scale)
         end
@@ -1995,7 +2072,7 @@ local function Init()
                 frame_Init(true)--初始， 或设置
             end
         end)
-        
+
         frame_Init(true)--初始， 或设置
         set_Panle_Setting()--设置 panel
     end)
@@ -2149,26 +2226,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end,
             clearfunc= function() Save=nil e.Reload() end}
         )
-            --[[panel.check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-            panel.check:SetChecked(not Save.disabled)
-            panel.check:SetPoint('TOPLEFT', panel, 'TOP')
-            panel.check.text:SetText(e.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE))
-            panel.check:SetScript('OnMouseDown', function()
-                Save.disabled = not Save.disabled and true or nil
-                if not Save.disabled and not button then
-                    Init()
-                else
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-                    frame_Init(true)--初始， 或设置
-                end
-            end)
-            panel.check:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddLine(e.onlyChinese and '启用/禁用' or ENABLE..'/'..DISABLE)
-                e.tips:Show()
-            end)
-            panel.check:SetScript('OnLeave', function() e.tips:Hide() end)]]
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
