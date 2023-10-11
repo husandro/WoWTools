@@ -3411,7 +3411,8 @@
         "QuestFrameCompleteQuestButton",
         "QuestRewardCompleteButton_OnClick",
         "DK",
-        "Calendar_LoadUI"
+        "Calendar_LoadUI",
+        "ENABLE_PINGS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

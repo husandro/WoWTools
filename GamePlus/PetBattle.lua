@@ -659,7 +659,7 @@ local function add_Click_To_Move_Button()--点击移动，按钮
             if d=='LeftButton' then
                 C_CVar.SetCVar("autoInteract", C_CVar.GetCVarBool("autoInteract") and '0' or '1')
             else
-                e.OpenPanelOpting(nil, '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button')))
+                e.OpenPanelOpting('|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button')))
             end
         end)
         function btn:set_State()

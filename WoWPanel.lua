@@ -191,15 +191,8 @@ Settings.RegisterAddOnCategory(Category)
 Settings.SetKeybindingsCategory(Category)
 
 --打开，选项
-function e.OpenPanelOpting(category, name)
-    category= category or Category
-    local find= Settings.OpenToCategory(category:GetID(), name)
-    if not find then
-        Settings.OpenToCategory(Category:GetID())
-        if e.Player.husandro then
-            print(id, addName, '没有找到 panel')
-        end
-    end
+function e.OpenPanelOpting(name)
+    Settings.OpenToCategory(Category:GetID(), name)
 end
 
 --添加，子目录
