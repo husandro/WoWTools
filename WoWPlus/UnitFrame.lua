@@ -412,8 +412,8 @@ local function set_memberFrame(memberFrame)
         frame.Text= e.Cstr(frame, {size=14})--队友，目标，职业
         frame.Text:SetPoint('BOTTOMRIGHT',3,-2)
 
-        frame.playerTargetTexture= frame:CreateTexture(nil, 'OVERLAY')
-        frame.playerTargetTexture:SetSize(50,50)
+        frame.playerTargetTexture= frame:CreateTexture(nil, 'BORDER')
+        frame.playerTargetTexture:SetSize(52,52)
         frame.playerTargetTexture:SetPoint('CENTER')
         frame.playerTargetTexture:SetAtlas('DK-Blood-Rune-CDFill')
 
@@ -424,7 +424,7 @@ local function set_memberFrame(memberFrame)
 
         frame:SetPoint('LEFT', memberFrame, 'RIGHT', -3, 4)
         frame:SetAttribute('type', 'target')
-        frame:SetAttribute('unit', unit..'target')
+        frame:SetAttribute('unit', frame.healthBar.unit)
 
         function frame:set_Party_Target_Changed()
             local text
