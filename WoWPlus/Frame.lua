@@ -844,7 +844,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
-            
+
             if not Save.disabled then
                 Init_Options()--初始, 选项
                 Init_Move()--初始, 移动

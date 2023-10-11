@@ -1116,8 +1116,8 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
             end
         end
     end)
-
-
+--[[
+if e.Player.husandro then
         hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称)
             if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
                 self.name:SetText(e.Icon.star2)
@@ -1130,9 +1130,10 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
 
         local deadText= e.onlyChinese and '死亡' or DEAD
         hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
-            if not UnitExists(frame.unit)  or not frame:IsShown() then
+            if not frame:IsShown() then
                 return
             end
+            print(frame.displayedValue , frame.unit)
             if value then--statusFrame.unit
                 if textString and textString:IsShown() then
                     local text
@@ -1180,7 +1181,8 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
         end)
 
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
-
+end
+]]t
     --###################
     --隐藏, 队伍, DPS 图标
     --###################

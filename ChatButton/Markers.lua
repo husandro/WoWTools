@@ -1345,7 +1345,13 @@ local function Init()
     button:set_Texture()--图标
 
     function button:set_Desaturated_Textrue()--主图标,是否有权限
-        self.texture:SetDesaturated(not Is_Leader() or Is_In_PvP_Area())
+        local raid= IsInRaid()
+        local enabled= not Is_In_PvP_Area()
+                and (
+                        (raid and Is_Leader())
+                    or (GetNumGroupMembers()>1 and not raid)
+                )
+        self.texture:SetDesaturated(not enabled)
     end
 
     button:set_Desaturated_Textrue()--主图标,是否有权限
