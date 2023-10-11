@@ -392,10 +392,35 @@ local function set_memberFrame(memberFrame)
     local frame= memberFrame.potFrame
     if not frame then
         frame= e.Cbtn(memberFrame, {type=true, size={35,35}, icon='hide'})
+
         frame.Portrait= frame:CreateTexture(nil, 'BACKGROUND')--队友，目标，图像
+        frame.Portrait:SetAllPoints(frame)
+
         ---@class frame.healthBar
         frame.healthBar= CreateFrame('StatusBar', nil, frame)
+        frame.healthBar:SetSize(55, 8)
+        frame.healthBar:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT')
+        frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+        frame.healthBar:SetMinMaxValues(0,100)
+        frame.healthBar:SetFrameLevel(frame:GetFrameLevel()+7)
+        frame.healthBar.unit= unit..'target'
+
         frame.healthBar.Text= e.Cstr(frame.healthBar)
+        frame.healthBar.Text:SetPoint('RIGHT')
+        frame.healthBar.Text:SetTextColor(1,1,1)
+
+        frame.Text= e.Cstr(frame, {size=14})--队友，目标，职业
+        frame.Text:SetPoint('BOTTOMRIGHT',3,-2)
+
+        frame.playerTargetTexture= frame:CreateTexture(nil, 'OVERLAY')
+        frame.playerTargetTexture:SetSize(50,50)
+        frame.playerTargetTexture:SetPoint('CENTER')
+        frame.playerTargetTexture:SetAtlas('DK-Blood-Rune-CDFill')
+
+        local texture= frame.healthBar:CreateTexture(nil, 'BACKGROUND')--队友，目标，生命条，外框
+        texture:SetAtlas('MainPet-HealthBarFrame')
+        texture:SetAllPoints(frame.healthBar)
+        texture:SetVertexColor(1, 0, 0)
 
         frame:SetPoint('LEFT', memberFrame, 'RIGHT', -3, 4)
         frame:SetAttribute('type', 'target')
@@ -423,8 +448,12 @@ local function set_memberFrame(memberFrame)
             end
             self.Portrait:SetShown(exists2)--队友，目标，图像
             self.Text:SetText(text or '')--队友，目标，职业
-            self.healthBar:SetShown(exists2)--队友， 目标， 生命条
+            self.healthBar:SetAlpha(exists2 and 1 or 0)
+            --self.healthBar:SetShown(exists2)--队友， 目标， 生命条
             --self.healthBar.elapsed=1
+        end
+        function frame:set_IsPlayerTarget()
+            self.playerTargetTexture:SetShown(UnitIsUnit(self.unit, 'target'))
         end
         frame:SetScript('OnLeave', function() e.tips:Hide() end)
         frame:SetScript('OnEnter', function(self)
@@ -439,16 +468,19 @@ local function set_memberFrame(memberFrame)
             end
             e.tips:Show()
         end)
-        frame:SetScript('OnEvent', frame.set_Party_Target_Changed)
+        frame:SetScript('OnEvent', function(self, event)
+            if event=='PLAYER_TARGET_CHANGED' then
+                self:set_IsPlayerTarget()
+            else
+                if event=='UNIT_TARGET' then
+                    self:set_IsPlayerTarget()
+                end
+                self:set_Party_Target_Changed()
+            end
+        end)
         frame.unit= unit..'target'
 
         --队友， 目标， 生命条
-        frame.healthBar:SetSize(55, 8)
-        frame.healthBar:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT')
-        frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-        frame.healthBar:SetMinMaxValues(0,100)
-        frame.healthBar:SetFrameLevel(frame:GetFrameLevel()+7)
-        frame.healthBar.unit= unit..'target'
         frame.healthBar:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= (self.elapsed or 0.75) +elapsed
             if self.elapsed>0.75 then
@@ -460,21 +492,10 @@ local function set_memberFrame(memberFrame)
                     self:SetValue(value)
                     self.Text:SetFormattedText('%i', value)
                 else
-                    self:SetShown(false)
+                    self.Text:SetText('')
                 end
             end
         end)
-
-        local texture= frame.healthBar:CreateTexture(nil, 'BACKGROUND')--队友，目标，生命条，外框
-        texture:SetAtlas('MainPet-HealthBarFrame')
-        texture:SetAllPoints(frame.healthBar)
-        texture:SetVertexColor(1,0,0)
-
-        frame.Portrait:SetAllPoints(frame)
-        frame.Text= e.Cstr(frame, {size=14})--队友，目标，职业
-        frame.Text:SetPoint('BOTTOMRIGHT',3,-2)
-        frame.healthBar.Text:SetPoint('RIGHT')
-        frame.healthBar.Text:SetTextColor(1,1,1)
 
         memberFrame.potFrame= frame
     end
@@ -485,9 +506,10 @@ local function set_memberFrame(memberFrame)
         frame:RegisterUnitEvent('UNIT_TARGET', unit)
         frame:RegisterUnitEvent('UNIT_FLAGS', unit..'target')
         frame:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit..'target')
+        frame:RegisterEvent('PLAYER_TARGET_CHANGED')
     end
     frame:set_Party_Target_Changed()
-
+    frame:set_IsPlayerTarget()
     --#########
     --队友，施法
     --#########
@@ -1104,7 +1126,7 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
 
         --############
         --去掉生命条 % extStatusBar.lua TextStatusBar.lua
-        --[[############会出现，错误
+        --############会出现，错误
 
         local deadText= e.onlyChinese and '死亡' or DEAD
         hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
@@ -1155,7 +1177,7 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
                 end
                 frame.DeadText:SetText(text)
             end
-        end)]]
+        end)
 
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
 
@@ -1226,16 +1248,14 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         frame:StopMovingOrSizing()
         frame:Raise()
     end)
-    CompactPartyFrame.moveFrame:SetScript("OnMouseDown", function(self, d)
+    CompactPartyFrame.moveFrame:SetScript("OnMouseDown", function(_, d)
         if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         elseif d=="LeftButton" then
             print(id, addName, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
         end
     end)
-    CompactPartyFrame.moveFrame:SetScript("OnLeave", function(self, d)
-        ResetCursor()
-    end)
+    CompactPartyFrame.moveFrame:SetScript("OnLeave", ResetCursor)
     CompactPartyFrame.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             if UnitAffectingCombat('player') then
