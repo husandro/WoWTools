@@ -485,9 +485,9 @@ local function set_memberFrame(memberFrame)
             self.elapsed= (self.elapsed or 0.75) +elapsed
             if self.elapsed>0.75 then
                 self.elapsed=0
-                local cur= UnitHealth(self.unit)
+                local cur= UnitHealth(self.unit) or 0
                 local max= UnitHealthMax(self.unit)
-                if max and max>0 then
+                if max and max>0 and cur < max then
                     local value= cur/max*100
                     self:SetValue(value)
                     self.Text:SetFormattedText('%i', value)
