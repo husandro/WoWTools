@@ -445,6 +445,7 @@ local function set_memberFrame(memberFrame)
                 text= UnitIsPlayer(self.unit) and e.Class(self.unit)
                 local r2, g2, b2= GetClassColor(UnitClassBase(self.unit))
                 self.healthBar:SetStatusBarColor(r2 or 1, g2 or 1, b2 or 1, 1)
+                --self.playerTargetTexture:SetVertexColor(r2 or 1, g2 or 1, b2 or 1, 1)
             end
             self.Portrait:SetShown(exists2)--队友，目标，图像
             self.Text:SetText(text or '')--队友，目标，职业
@@ -1182,7 +1183,7 @@ if e.Player.husandro then
 
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
 end
-]]t
+]]
     --###################
     --隐藏, 队伍, DPS 图标
     --###################
