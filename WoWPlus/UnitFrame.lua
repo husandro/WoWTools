@@ -1352,6 +1352,8 @@ local function Init_BossFrame()
                 self:RegisterEvent('PLAYER_TARGET_CHANGED')
                 self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.unit)
                 self:RegisterEvent('INSTANCE_ENCOUNTER_ENGAGE_UNIT')
+                self:set_Portrait()
+                self:set_Target_Segnale()
             end
         end
 
