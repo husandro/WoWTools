@@ -639,14 +639,14 @@ end
 local function set_Kill_Info()--副本PVP团本
     local R = {}
     for  _ , info in pairs( C_WeeklyRewards.GetActivities() or {}) do
-        if info.type and info.type>= Enum.WeeklyRewardChestThresholdType.MythicPlus and info.type<= Enum.WeeklyRewardChestThresholdType.Raid and info.level then
+        if info.type and info.type>= 1 and info.type<= 3 and info.level then
             local head
             local difficultyText
-            if info.type == Enum.WeeklyRewardChestThresholdType.MythicPlus then--1
+            if info.type == 1 then--1 Enum.WeeklyRewardChestThresholdType.MythicPlus
                 head= e.onlyChinese and '史诗地下城' or MYTHIC_DUNGEONS
                 difficultyText= string.format(e.onlyChinese and '史诗 %d' or WEEKLY_REWARDS_MYTHIC, info.level)
 
-            elseif info.type == Enum.WeeklyRewardChestThresholdType.RankedPvP then--2
+            elseif info.type == 2 then--2 Enum.WeeklyRewardChestThresholdType.RankedPvP
                 head= e.onlyChinese and 'PvP' or PVP
                 if e.onlyChinese then
                     local tab={
@@ -664,7 +664,7 @@ local function set_Kill_Info()--副本PVP团本
                 end
                 difficultyText=  difficultyText or PVPUtil.GetTierName(info.level)-- _G["PVP_RANK_"..tierEnum.."_NAME"] PVPUtil.lua
 
-            elseif info.type == Enum.WeeklyRewardChestThresholdType.Raid then--3
+            elseif info.type == 3 then--3 Enum.WeeklyRewardChestThresholdType.Raid
                 head= e.onlyChinese and '团队副本' or RAIDS
                 difficultyText=  DifficultyUtil.GetDifficultyName(info.level)
             end

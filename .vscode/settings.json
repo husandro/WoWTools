@@ -3410,7 +3410,8 @@
         "GetMinimapShape",
         "QuestFrameCompleteQuestButton",
         "QuestRewardCompleteButton_OnClick",
-        "DK"
+        "DK",
+        "Calendar_LoadUI"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

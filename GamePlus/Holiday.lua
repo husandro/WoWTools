@@ -106,9 +106,9 @@ local CALENDAR_EVENTTYPE_TEXTURES = {
 }
 
 local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
-    if Save.hide or not button or not button:IsShown() then
+    if Save.hide then
         if button then
-            button.Text:SetText('')
+            button:set_Shown()
         end
         return
     end
@@ -351,6 +351,43 @@ local function Init()
         self:Raise()
     end)
 
+    
+    function button:set_Events()--设置事件
+        if Save.hide then
+            self:UnregisterAllEvents()
+        else
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            self:RegisterEvent('PLAYER_REGEN_DISABLED')
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+			self:RegisterEvent('PET_BATTLE_CLOSE')
+
+            self:RegisterEvent('CALENDAR_UPDATE_EVENT_LIST')
+            self:RegisterEvent('CALENDAR_UPDATE_EVENT')
+            self:RegisterEvent('CALENDAR_NEW_EVENT')
+            self:RegisterEvent('CALENDAR_OPEN_EVENT')
+            self:RegisterEvent('CALENDAR_CLOSE_EVENT')
+        end
+    end
+
+    function button:set_Shown()
+        local hide= IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player')
+        self:SetShown(not hide)
+        self.text:SetShown()
+    end
+
+    function button:set_Text_Settings()--设置，Text， 属性
+        self.Text:SetJustifyH(Save.left and 'LEFT' or  'RIGHT' )
+        self.Text:ClearAllPoints()
+        if Save.left then
+            self.Text:SetPoint('TOPLEFT', self, 'TOPRIGHT')
+        else
+            self.Text:SetPoint('TOPRIGHT', self, 'TOPLEFT')
+        end
+        self.Text:SetScale(Save.scale or 1)
+        set_Button_Text()
+    end
+
     function button:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -362,6 +399,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), 'Alt+'..e.Icon.mid)
         e.tips:Show()
+        self.texture:SetAlpha(1)
     end
 
     button:SetScript('OnClick', function(self, d)
@@ -378,9 +416,9 @@ local function Init()
                         checked=not Save.hide,
                         func= function()
                             Save.hide= not Save.hide and true or nil
-                            self:set_Button_Text_Event()--设置事件
+                            self:set_Events()--设置事件
                             set_Button_Text()
-                            self:set_Texture()
+                            self:set_Alpha()
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -456,13 +494,12 @@ local function Init()
             self:set_Tooltips()
         end
     end)
-    button:SetScript('OnLeave', function() e.tips:Hide() end)
+    button:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)
     button:SetScript('OnEnter', button.set_Tooltips)
 
-    function button:set_Texture()--设置，图片
-        self.texture:SetShown(Save.hide and true or nil)
+    function button:set_Alpha()--设置，图片
+        self.texture:SetAlpha(Save.hide and 0.5 or 0.1)
     end
-    button:set_Texture()
 
     function button:set_Point()--设置, 位置
         if Save.point then
@@ -471,71 +508,25 @@ local function Init()
             self:SetPoint('BOTTOMRIGHT', ObjectiveTrackerBlocksFrame, 'TOPLEFT', -35, -10)
         end
     end
-    button:set_Point()
-
-    button:RegisterEvent('PLAYER_ENTERING_WORLD')
-    function button:set_Button_Text_Event(hide)--设置事件
-        if Save.hide or hide then
-            self:UnregisterEvent('CALENDAR_UPDATE_EVENT_LIST')
-            self:UnregisterEvent('CALENDAR_UPDATE_EVENT')
-            self:UnregisterEvent('CALENDAR_NEW_EVENT')
-            self:UnregisterEvent('CALENDAR_OPEN_EVENT')
-            self:UnregisterEvent('CALENDAR_CLOSE_EVENT')
-        else
-            self:RegisterEvent('CALENDAR_UPDATE_EVENT_LIST')
-            self:RegisterEvent('CALENDAR_UPDATE_EVENT')
-            self:RegisterEvent('CALENDAR_NEW_EVENT')
-            self:RegisterEvent('CALENDAR_OPEN_EVENT')
-            self:RegisterEvent('CALENDAR_CLOSE_EVENT')
-        end
-    end
-
-    function button:set_IsInInstancer_Event(isInInstance)
-        if isInInstance then
-            self:UnregisterEvent('PLAYER_REGEN_DISABLED')
-            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-        else
-            self:RegisterEvent('PLAYER_REGEN_DISABLED')
-            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-        end
-        self:SetShown(not isInInstance)
-    end
 
     button:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD' then
-            C_Timer.After(2, function()
-                local isInInstance= IsInInstance()
-                self:set_IsInInstancer_Event(isInInstance)
-                self:set_Button_Text_Event(isInInstance)
-                set_Button_Text()
-            end)
-        elseif event=='PLAYER_REGEN_DISABLED' then
-            self:SetShown(false)
-            set_Button_Text()
-
-        elseif event=='PLAYER_REGEN_ENABLED' then
-            self:SetShown(true)
-            set_Button_Text()
-
+        if event=='PLAYER_ENTERING_WORLD'
+        or event=='PLAYER_REGEN_DISABLED'
+        or event=='PLAYER_REGEN_ENABLED'
+        or event=='PET_BATTLE_OPENING_DONE'
+        or event=='PET_BATTLE_CLOSE'
+        then
+            self:set_Shown()
         else
             set_Button_Text()
         end
     end)
 
-    button:set_Button_Text_Event(IsInInstance())
-    button:set_IsInInstancer_Event(IsInInstance())
 
-    function button:set_Text_Settings()--设置，Text， 属性
-        self.Text:SetJustifyH(Save.left and 'LEFT' or  'RIGHT' )
-        self.Text:ClearAllPoints()
-        if Save.left then
-            self.Text:SetPoint('TOPLEFT', self, 'TOPRIGHT')
-        else
-            self.Text:SetPoint('TOPRIGHT', self, 'TOPLEFT')
-        end
-        self.Text:SetScale(Save.scale or 1)
-        set_Button_Text()
-    end
+
+    button:set_Point()
+    button:set_Alpha()
+    button:set_Events()
     button:set_Text_Settings()
 end
 
@@ -811,15 +802,20 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if  Save.disabled then
                 panel:UnregisterAllEvents()
             else
-                LoadAddOn("Blizzard_Calendar")
-                Init()
-                C_Timer.After(4, Calendar_Toggle)
-                C_Timer.After(6, Calendar_Toggle)
+                e.call('Calendar_LoadUI')--LoadAddOn("Blizzard_Calendar")
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Calendar' then
+            C_Timer.After(2, Calendar_Toggle)
+            C_Timer.After(4, function()
+                if CalendarFrame:IsShown() then
+                    e.call('Calendar_Toggle')
+                end
+            end)
+
             Init_Blizzard_Calendar()--初始，插件
+            Init()
         end
 
     elseif event == "PLAYER_LOGOUT" then
