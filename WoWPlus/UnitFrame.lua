@@ -391,7 +391,7 @@ local function set_memberFrame(memberFrame)
     --#########
     local frame= memberFrame.potFrame
     if not frame then
-        frame= e.Cbtn(memberFrame, {type=true, size={35,35}, icon='hide'})
+        frame= e.Cbtn(memberFrame, {type=true, size={35,35}, icon='hide', pushe=true})
 
         frame.Portrait= frame:CreateTexture(nil, 'BACKGROUND')--队友，目标，图像
         frame.Portrait:SetAllPoints(frame)
@@ -404,9 +404,6 @@ local function set_memberFrame(memberFrame)
         frame.healthBar:SetMinMaxValues(0,100)
         frame.healthBar:SetFrameLevel(frame:GetFrameLevel()+7)
         frame.healthBar.unit= unit..'target'
-
-        info= frame.healthBar
-        for k, v in pairs(info) do if v and type(v)=='table' then print('---------',k..'STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---------',k..'END') end print(k,v) end
 
         frame.healthBar.Text= e.Cstr(frame.healthBar)
         frame.healthBar.Text:SetPoint('RIGHT')

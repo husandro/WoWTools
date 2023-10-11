@@ -618,7 +618,7 @@ function e.Cstr(self, tab)--self, {size, copyFont, changeFont, fontName color={r
     return font
 end
 
-function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size
+function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe
     tab=tab or {}
     self= self or UIParent
     local btn
@@ -635,8 +635,13 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size
         btn:SetSize(tab.size[1], tab.size[2])
     end
     if tab.type~=false then
-        btn:SetHighlightAtlas('Forge-ColorSwatchSelection')
-        btn:SetPushedAtlas('UI-HUD-MicroMenu-Highlightalert')
+        if tab.pushe then
+            btn:SetHighlightAtlas('bag-border')
+            btn:SetPushedAtlas('bag-border-highlight')
+        else
+            btn:SetHighlightAtlas('Forge-ColorSwatchSelection')
+            btn:SetPushedAtlas('UI-HUD-MicroMenu-Highlightalert')
+        end
         if tab.icon~='hide' then
             if tab.texture then
                 btn:SetNormalTexture(tab.texture)
