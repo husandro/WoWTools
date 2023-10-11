@@ -373,7 +373,7 @@ local function Init()
     function button:set_Shown()
         local hide= IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player')
         self:SetShown(not hide)
-        self.text:SetShown()
+        --self.text:SetShown()
     end
 
     function button:set_Text_Settings()--设置，Text， 属性
