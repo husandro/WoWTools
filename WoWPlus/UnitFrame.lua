@@ -405,6 +405,9 @@ local function set_memberFrame(memberFrame)
         frame.healthBar:SetFrameLevel(frame:GetFrameLevel()+7)
         frame.healthBar.unit= unit..'target'
 
+        info= frame.healthBar
+        for k, v in pairs(info) do if v and type(v)=='table' then print('---------',k..'STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---------',k..'END') end print(k,v) end
+
         frame.healthBar.Text= e.Cstr(frame.healthBar)
         frame.healthBar.Text:SetPoint('RIGHT')
         frame.healthBar.Text:SetTextColor(1,1,1)
