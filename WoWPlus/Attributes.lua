@@ -1752,7 +1752,7 @@ local function set_Panle_Setting()--设置 panel
     sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
 
     local sliderButtonScale = e.CSlider(panel, {min=0.4, max=4, value=Save.buttonScale or 1, setp=0.1, color=true,
-    text=e.onlyChinese and '专精缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, UI_SCALE),
+    text=e.onlyChinese and '专精缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, 'Scale'),
     func=function(self, value)
         value= tonumber(format('%.01f', value))
         value= value<0.4 and 0.4 or value
@@ -1857,7 +1857,7 @@ local function Init()
                 end
             end
         end
-        text= text.. 'HP'..e.MK(UnitHealthMax('player'), 0)
+        text= text..'HP'..e.MK(UnitHealthMax('player'), 0)
 
         for _, info in pairs(Tabs) do
             local frame=button[info.name]
@@ -1870,7 +1870,7 @@ local function Init()
         end
         return text
     end
-    
+
     function button:get_sendTextTips()
         local text
         if ChatEdit_GetActiveWindow() then
@@ -1888,7 +1888,7 @@ local function Init()
         end
         return text
     end
-    
+
     function button:send_Att_Chat()--发送信息
         local text= self:get_Att_Text_Chat()
         if ChatEdit_GetActiveWindow() then
@@ -1991,7 +1991,7 @@ local function Init()
                     e.LibDD:UIDropDownMenu_AddSeparator(level)
 
 
-                    
+
                     info={
                         text=e.onlyChinese and '选项' or SETTINGS_TITLE,
                         notCheckable=true,
@@ -2000,7 +2000,7 @@ local function Init()
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
-                    
+
                 end, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
@@ -2226,8 +2226,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.tab['STAUTS'].bit= Save.tab['STAUTS'].bit or 3
 
             --添加控制面板
-            --e.AddPanel_Sub_Category({name='|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES), frame=panel})
-            e.AddPanel_Sub_Category({name=e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES, frame=panel})
+            e.AddPanel_Sub_Category({name='|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES), frame=panel})
+
 
             e.ReloadPanel({panel=panel, addName=addName, restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
             disabledfunc=function()
