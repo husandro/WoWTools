@@ -351,7 +351,6 @@ local function Init()
         self:Raise()
     end)
 
-    
     function button:set_Events()--设置事件
         if Save.hide then
             self:UnregisterAllEvents()
