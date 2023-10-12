@@ -18,6 +18,7 @@ local ModulTab={--Blizzard_ObjectiveTracker.lua
     'MONTHLY_ACTIVITIES_TRACKER_MODULE',--9 旅行者日志 TRACKER_HEADER_MONTHLY_ACTIVITIES
 }
 
+
 local Color={
     Day={0.10, 0.72, 1},--日常
     Week={0.02, 1, 0.66},--周长

@@ -3412,7 +3412,9 @@
         "QuestRewardCompleteButton_OnClick",
         "DK",
         "Calendar_LoadUI",
-        "ENABLE_PINGS"
+        "ENABLE_PINGS",
+        "KEY_ENTER",
+        "SELF_CAST_KEY_PRESS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

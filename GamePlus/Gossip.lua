@@ -15,6 +15,7 @@ local Save={
         questRewardCheck={},--{任务ID= index}
         autoSortQuest= e.Player.husandro,--仅显示当前地图任务
         autoSelectReward= e.Player.husandro,--自动选择奖励
+        showAllQuestNum= e.Player.husandro,--显示所有任务数量
 
         --scale=1,
         --point=nil,
@@ -27,11 +28,6 @@ local GossipButton
 local QusetButton
 ---@class GossipButton
 ---@class QusetButton
-
-
-
-
-
 
 
 local function select_Reward(questID)--自动:选择奖励
@@ -1263,6 +1259,7 @@ local function Init_Quest()
             self:RegisterEvent('GROUP_JOINED')
             self:RegisterEvent('QUEST_ACCEPTED')
         end
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
     end
 
     function QusetButton:tooltip_Show()
@@ -1294,7 +1291,7 @@ local function Init_Quest()
                end
             end
         end
-
+        
         e.tips:AddLine('|cff19b7ff'..(e.onlyChinese and '日常' or DAILY)..': '..dayNum)
         e.tips:AddLine('|cff05ffa8'..(e.onlyChinese and '周长' or WEEKLY)..': '..weekNum)
         e.tips:AddLine('|cffff7c00'..(e.onlyChinese and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..companionNum)
@@ -1309,14 +1306,24 @@ local function Init_Quest()
         self.texture:SetAlpha(1)
         self:set_Only_Show_Zone_Quest()
     end
+    function QusetButton:set_Quest_Num_Text()
+        if IsInInstance() then
+            self.Text:SetText('')
+        else
+            if Save.showAllQuestNum then--显示所有任务数量
 
+            else
+                local num= select(2, C_QuestLog.GetNumQuestLogEntries()) or 0
+                self.Text:SetText((num >= C_QuestLog.GetMaxNumQuestsCanAccept() and '|cnRED_FONT_COLOR:' or '')..num)
+            end
+        end
+    end
     QusetButton:SetScript("OnEvent", function(self, event, arg1)
         if event=='MINIMAP_UPDATE_TRACKING' then
             self:get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
 
-        elseif event=='QUEST_LOG_UPDATE' then--更新数量
-            local num= select(2, C_QuestLog.GetNumQuestLogEntries()) or 0
-            self.Text:SetText((num >= C_QuestLog.GetMaxNumQuestsCanAccept() and '|cnRED_FONT_COLOR:' or '')..num)
+        elseif event=='QUEST_LOG_UPDATE' or event=='PLAYER_ENTERING_WORLD' then--更新数量
+            self:set_Quest_Num_Text()
 
         elseif event=='GROUP_ROSTER_UPDATE' then
             self:set_PushableQuest()--共享,任务

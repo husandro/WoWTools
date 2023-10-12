@@ -503,6 +503,20 @@ function e.GetYesNo(yesno)
     end
 end
 
+function e.GetQestColor()
+    local Color={
+        Day={r=0.10, g=0.72, b=1, hex='|cff1ab8ff'},--日常
+        Week={r=0.02, g=1, b=0.66, hex='|cff05ffa8'},--周长
+        Legendary={r=1, g=0.49, b=0, hex='|cffff7d00'},--传说
+        Calling={r=1, g=0, b=0.9, hex='|cffff00e6'},--使命
+    
+        Trivial={r=0.53, g=0.53, b=0.53, hex='|cff878787'},--0 难度 Difficulty
+        Easy={r=0.63, g=1, b=0.61, hex='|cffa1ff9c'},--1
+        Difficult={r=1, g=0.43, b=0.42, hex='|cffff6e6b'},--3
+        Impossible={r=1, g=0, b=0.08, hex='|cffff0014'},--4
+    }
+
+end
 --副本，难道，颜色
 function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
     local colorRe
