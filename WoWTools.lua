@@ -25,13 +25,13 @@ end
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
 
-function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell
+function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, uiMapID
     if not tab.id then
         return
     end
     if tab.type=='quest' then
-        C_QuestLog.RequestLoadQuestByID(tab.id)
-        C_TaskQuest.RequestPreloadRewardData(tab.id)
+            C_QuestLog.RequestLoadQuestByID(tab.id)
+            C_TaskQuest.RequestPreloadRewardData(tab.id)
     elseif tab.type=='spell' then
         local spellID= tab.id
         if type(tab.id)=='string' then
@@ -40,7 +40,9 @@ function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell
         if spellID and not C_Spell.IsSpellDataCached(spellID) then C_Spell.RequestLoadSpellData(spellID) end
     elseif tab.type=='item' then
         if not C_Item.IsItemDataCachedByID(tab.id) then C_Item.RequestLoadItemDataByID(tab.id) end
+    
     end
+    
 end
 
 local itemLoadTab={--加载法术,或物品数据
@@ -503,20 +505,38 @@ function e.GetYesNo(yesno)
     end
 end
 
-function e.GetQestColor()
-    local Color={
+function e.GetQestColor(text, questID)
+    local color={
         Day={r=0.10, g=0.72, b=1, hex='|cff1ab8ff'},--日常
         Week={r=0.02, g=1, b=0.66, hex='|cff05ffa8'},--周长
-        Legendary={r=1, g=0.49, b=0, hex='|cffff7d00'},--传说
+        Legendary={r=1, g=0.49, b=0, hex='|cffff7d00'},--传说, 战役
         Calling={r=1, g=0, b=0.9, hex='|cffff00e6'},--使命
     
         Trivial={r=0.53, g=0.53, b=0.53, hex='|cff878787'},--0 难度 Difficulty
         Easy={r=0.63, g=1, b=0.61, hex='|cffa1ff9c'},--1
         Difficult={r=1, g=0.43, b=0.42, hex='|cffff6e6b'},--3
         Impossible={r=1, g=0, b=0.08, hex='|cffff0014'},--4
-    }
 
+        Story={r=0.09, g=0.78, b=0.39, a=1.00, hex='|cff17c864'}
+    }
+    if text then
+        return color[text]
+    elseif questID and UnitEffectiveLevel('player')== e.Player.level then
+        local difficulty= C_PlayerInfo.GetContentDifficultyQuestForPlayer(questID)
+        if difficulty then
+            if difficulty== 0 then--Trivial    
+                return color.Trivial
+            elseif difficulty== 1 then--Easy
+                return color.Easy
+            elseif difficulty==3 then--Difficult    
+                return color.Difficult
+            elseif difficulty==4 then--Impossible    
+                return color.Impossible
+            end
+        end
+    end
 end
+
 --副本，难道，颜色
 function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
     local colorRe

@@ -3414,7 +3414,9 @@
         "Calendar_LoadUI",
         "ENABLE_PINGS",
         "KEY_ENTER",
-        "SELF_CAST_KEY_PRESS"
+        "SELF_CAST_KEY_PRESS",
+        "GARRISON_FOLLOWER_QUALITY6_DESC",
+        "STORY_PROGRESS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

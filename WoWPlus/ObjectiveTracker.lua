@@ -18,7 +18,7 @@ local ModulTab={--Blizzard_ObjectiveTracker.lua
     'MONTHLY_ACTIVITIES_TRACKER_MODULE',--9 旅行者日志 TRACKER_HEADER_MONTHLY_ACTIVITIES
 }
 
-
+--[[
 local Color={
     Day={0.10, 0.72, 1},--日常
     Week={0.02, 1, 0.66},--周长
@@ -30,7 +30,7 @@ local Color={
     Difficult={1, 0.43, 0.42},--3
     Impossible={1, 0, 0.08},--4
 }
-
+]]
 local function ItemNum(button)--增加物品数量
     if button.itemLink then
         local nu=GetItemCount(button.itemLink, true, true,true)
@@ -85,18 +85,10 @@ local function setColor(block, questID)
     end
     local r, g, b=block.r, block.g, block.b
 
-    if (not r or not g or not b)  and UnitEffectiveLevel('player')== e.Player.level then
-        local lv= C_PlayerInfo.GetContentDifficultyQuestForPlayer(questID)
-        if lv then
-            if lv== 0 then--Trivial    
-                r,g,b= Color.Trivial[1], Color.Trivial[2], Color.Trivial[3]
-            elseif lv== 1 then--Easy    
-                r,g,b= Color.Easy[1], Color.Easy[2], Color.Easy[3]
-            elseif lv==3 then--Difficult    
-                r,g,b= Color.Difficult[1], Color.Difficult[2], Color.Difficult[3]
-            elseif lv==4 then--Impossible    
-                r,g,b= Color.Impossible[1], Color.Impossible[2], Color.Impossible[3]
-            end
+    if (not r or not g or not b) then
+        local color= e.GetQestColor(nil, questID)
+        if color then
+            r,g,b= color.r, color.g, color.b
         end
     end
     if r and g and b and block.HeaderText then
@@ -191,16 +183,16 @@ local function Init()
         end
     end)
 
-    hooksecurefunc(QUEST_TRACKER_MODULE, 'OnBlockHeaderLeave', function(self ,block)
+    hooksecurefunc(QUEST_TRACKER_MODULE, 'OnBlockHeaderLeave', function(_ ,block)
         setColor(block, block.id)
     end)
-    hooksecurefunc('QuestObjectiveTracker_DoQuestObjectives', function(self, block, questCompleted, questSequenced, existingBlock, useFullHeight)
+    hooksecurefunc('QuestObjectiveTracker_DoQuestObjectives', function(_, block, questCompleted, questSequenced, existingBlock, useFullHeight)
         setColor(block)
     end)
 
-    hooksecurefunc(QUEST_TRACKER_MODULE,'SetBlockHeader', function(self, block, text, questLogIndex, isQuestComplete, questID)--任务颜色 图标
+    hooksecurefunc(QUEST_TRACKER_MODULE,'SetBlockHeader', function(_, block, text, questLogIndex, isQuestComplete, questID)--任务颜色 图标
         local m=''
-        block.r, block.g, block.b=nil, nil, nil
+        local color
         if questID then
             if C_QuestLog.IsComplete(questID) then
                 m=m..e.Icon.select2
@@ -214,15 +206,17 @@ local function Init()
                     m=m..e.Icon.alliance2
                 end
             end
-            if  C_QuestLog.IsQuestCalling(questID) then--使命
+            if C_QuestLog.IsQuestCalling(questID) then--使命
                 m=m..'|A:campaignavailabledailyquesticon:10:10|a'
-                block.r, block.g, block.b=Color.Calling[1],Color.Calling[2],Color.Calling[3]
+                color= e.GetQestColor('Calling')
             end
-            if C_QuestLog.IsAccountQuest(questID) then m=m..e.Icon.wow2 end--帐户
-            if C_QuestLog.IsLegendaryQuest(questID) then
+            if C_QuestLog.IsAccountQuest(questID) then--帐户
+                m=m..e.Icon.wow2
+            end
+            if C_QuestLog.IsLegendaryQuest(questID) then--传奇
                 m=m..'|A:questlegendary:10:10|a'
-                block.r, block.g, block.b=Color.Legendary[1],Color.Legendary[2],Color.Legendary[3]
-            end--传奇                            
+                color= e.GetQestColor('Legendary')
+            end
         end
         if questLogIndex then
             local info = C_QuestLog.GetInfo(questLogIndex)
@@ -230,29 +224,40 @@ local function Init()
                 if info.startEvent then--事件开始
                     m=m..'|A:vignetteevent:10:10|a'
                 end
-                if info.frequency then
-                    if info.frequency==Enum.QuestFrequency.Daily then--日常
-                        m=m..'|A:UI-DailyQuestPoiCampaign-QuestBang:10:10|a'
-                        block.r, block.g, block.b=Color.Day[1],Color.Day[2],Color.Day[3]
-                    elseif info.frequency==Enum.QuestFrequency.Weekly then--周常
-                        m=m..'|A:weeklyrewards-orb-unlocked:10:10|a'
-                        block.r, block.g, block.b= Color.Week[1], Color.Week[2], Color.Week[3]
-                    end
+
+                if info.frequency== Enum.QuestFrequency.Daily then--日常
+                    m=m..'|A:UI-DailyQuestPoiCampaign-QuestBang:10:10|a'
+                    color= e.GetQestColor('Day')
+
+                elseif info.frequency==Enum.QuestFrequency.Weekly then--周常
+                    m=m..'|A:weeklyrewards-orb-unlocked:10:10|a'
+                    color= e.GetQestColor('Week')
                 end
+
                 local ver=GetQuestExpansion(questID or info.questID)--版本
                 if ver and ver~= e.ExpansionLevel then
-                    m=m..(ver<e.ExpansionLevel and  '|cff606060' or '|cnRED_FONT_COLOR:')..'['..(ver+1)..']|r'
+                    local col= ver<e.ExpansionLevel and e.GetQestColor('Trivial') or e.GetQestColor('Difficult')
+                    m=m..col.hex..'['..(ver+1)..']|r'
                 end
                 if info.campaignID then
-                    block.r, block.g, block.b=Color.Legendary[1],Color.Legendary[2],Color.Legendary[3]
+                    color= e.GetQestColor('Legendary')
                 elseif info.isStory then
-                    block.r, block.g, block.b=Color.Legendary[1],Color.Legendary[2],Color.Legendary[3]
                     m= '|A:StoryHeader-CheevoIcon:0:0|a'..m
+                    color= e.GetQestColor('Story')
+                elseif info.isLegendarySort then--传奇
+                    m=m..'|A:questlegendary:10:10|a'
+                    color= e.GetQestColor('Legendary')
                 end
             end
         end
+
+        color= color or {}
+        block.r, block.g, block.b= color.r, color.g, color.b
         setColor(block, questID)
-        if m~='' then block.HeaderText:SetText(m..text) end
+
+        if m~='' then
+            block.HeaderText:SetText(m..text)
+        end
     end)
 
     --##################################
@@ -595,7 +600,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     Save.autoHide= not Save.autoHide and true or nil
                     print(id, addName, e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE), e.onlyChinese and '任务追踪栏' or QUEST_OBJECTIVES, e.GetEnabeleDisable(Save.autoHide))
                 end)
-]]   
+]]
             if not Save.disabled then
                 Init()
                 panel:UnregisterEvent('ADDON_LOADED')

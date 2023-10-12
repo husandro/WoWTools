@@ -25,9 +25,9 @@ local Save={
 
 local panel= CreateFrame("Frame")
 local GossipButton
-local QusetButton
+local QuestButton
 ---@class GossipButton
----@class QusetButton
+---@class QuestButton
 
 
 local function select_Reward(questID)--自动:选择奖励
@@ -709,7 +709,7 @@ local function Init_Gossip()
     GossipFrame.sel:SetScript("OnLeave", function() e.tips:Hide() end)
 
     GossipFrame:SetScript('OnShow', function (self)
-        QusetButton.questSelect={}--已选任务, 提示用
+        QuestButton.questSelect={}--已选任务, 提示用
         GossipButton.selectGissipIDTab={}
         local npc=e.GetNpcID('npc')
         self.sel.npc=npc
@@ -800,7 +800,7 @@ local function Init_Gossip()
 
                 tab= C_GossipInfo.GetAvailableQuests() or {}
                 for _, questInfo in pairs(tab) do
-                    if questInfo.questID and (Save.quest or Save.questOption[questInfo.questID]) and (QusetButton.isQuestTrivialTracking and questInfo.isTrivial or not questInfo.isTrivial) then
+                    if questInfo.questID and (Save.quest or Save.questOption[questInfo.questID]) and (QuestButton.isQuestTrivialTracking and questInfo.isTrivial or not questInfo.isTrivial) then
                         return
                     end
                 end
@@ -898,7 +898,7 @@ local function Init_Gossip()
         elseif Save.questOption[questID] then--自定义
            C_GossipInfo.SelectAvailableQuest(questID)--or self:GetID()
 
-        elseif not Save.quest or QusetButton:not_Ace_QuestTrivial(questID) or Save.NPC[npc] then--or getMaxQuest()
+        elseif not Save.quest or QuestButton:not_Ace_QuestTrivial(questID) or Save.NPC[npc] then--or getMaxQuest()
             return
 
         else
@@ -970,6 +970,7 @@ end
 
 local function InitMenu_Quest(_, level, type)
     local info
+    local uiMapID = (WorldMapFrame:IsShown() and (WorldMapFrame.mapID or WorldMapFrame:GetMapID("current"))) or C_Map.GetBestMapForUnit('player')
     if type=='REWARDSCHECK' then--三级菜单 ->自动:选择奖励
         local num=0
         for questID, index in pairs(Save.questRewardCheck) do
@@ -1034,7 +1035,29 @@ local function InitMenu_Quest(_, level, type)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+    
+    elseif type=='MapQuest' then
+        if not uiMapID then
+            return
+        end
+            for _, mapInfo in pairs(C_QuestLog.GetQuestsOnMap(uiMapID) or {}) do     
+                local questInfo= mapInfo.questID and C_QuestLog.GetQuestTagInfo(mapInfo.questID)
+                if questInfo and questInfo.tagName and not C_QuestLog.IsComplete(mapInfo.questID) and not C_QuestLog.IsOnQuest(mapInfo.questID) then
+                    info={
+                        text=  questInfo.tagName,
+                        notCheckable=true,
+                        tooltipOnButton=true,
+                        tooltipTitle= 'questID '..mapInfo.questID,
+
+                        func= function(self)
+                        
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+                end
+            end
     end
+
 
     if type then
         return
@@ -1046,8 +1069,8 @@ local function InitMenu_Quest(_, level, type)
         keepShownOnClick=true,
         func= function ()
             Save.quest= not Save.quest and true or nil
-            QusetButton:set_Texture()--设置，图片
-            QusetButton:tooltip_Show()
+            QuestButton:set_Texture()--设置，图片
+            QuestButton:tooltip_Show()
         end,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1055,13 +1078,13 @@ local function InitMenu_Quest(_, level, type)
 
     info={
         text='|A:TrivialQuests:0:0|a'..(e.onlyChinese and '其他任务' or MINIMAP_TRACKING_TRIVIAL_QUESTS),--低等任务
-        checked= QusetButton.isQuestTrivialTracking,
+        checked= QuestButton.isQuestTrivialTracking,
         tooltipOnButton= true,
         tooltipTitle= e.onlyChinese and '追踪' or TRACKING,
         tooltipText= e.onlyChinese and '低等任务' or (LOW..LEVEL..QUESTS_LABEL),
         keepShownOnClick=true,
         func= function ()
-            QusetButton:get_set_IsQuestTrivialTracking(true)--其它任务,低等任务,追踪
+            QuestButton:get_set_IsQuestTrivialTracking(true)--其它任务,低等任务,追踪
         end,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1090,8 +1113,8 @@ local function InitMenu_Quest(_, level, type)
         keepShownOnClick=true,
         func= function()
             Save.pushable= not Save.pushable and true or nil
-            QusetButton:set_Event()--设置事件
-            QusetButton:set_PushableQuest()--共享,任务
+            QuestButton:set_Event()--设置事件
+            QuestButton:set_PushableQuest()--共享,任务
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1125,21 +1148,38 @@ local function InitMenu_Quest(_, level, type)
         keepShownOnClick=true,
         func=function()
             Save.autoSortQuest= not Save.autoSortQuest and true or nil
-            QusetButton:set_Event()--仅显示本地图任务,事件
-            QusetButton:set_Only_Show_Zone_Quest()--显示本区域任务
+            QuestButton:set_Event()--仅显示本地图任务,事件
+            QuestButton:set_Only_Show_Zone_Quest()--显示本区域任务
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={--自定义,任务,选项
-        text= e.onlyChinese and '自定义任务' or CUSTOM..QUESTS_LABEL,
+        text= e.onlyChinese and '自定义任务' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, QUESTS_LABEL),
         menuList='CUSTOM',
         notCheckable=true,
         hasArrow=true,
         keepShownOnClick=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    local mapInfo
+    if uiMapID then
+        mapInfo=C_Map.GetMapInfo(uiMapID)
+    end
+    info={
+        text= mapInfo and mapInfo.name or (e.onlyChinese and '地图' or WORLD_MAP),
+        disabled= not uiMapID,
+        tooltipOnButton=true,
+        tooltipTitle='uiMapID '..(uiMapID or ''),
+        notCheckable=true,
+        keepShownOnClick=true,
+        hasArrow=true,
+        menuList='MapQuest',
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
 end
 
 
@@ -1156,10 +1196,10 @@ end
 --###########
 local function Init_Quest()
     local size= GossipButton:GetWidth()
-    QusetButton=e.Cbtn(GossipButton, {icon='hide', size={size, size}})--任务图标
-    QusetButton:SetPoint('RIGHT', GossipButton, 'LEFT')
+    QuestButton=e.Cbtn(GossipButton, {icon='hide', size={size, size}})--任务图标
+    QuestButton:SetPoint('RIGHT', GossipButton, 'LEFT')
 
-    function QusetButton:set_Only_Show_Zone_Quest()--显示本区域任务
+    function QuestButton:set_Only_Show_Zone_Quest()--显示本区域任务
         if not Save.autoSortQuest or IsInInstance() then
             return
         end
@@ -1185,7 +1225,7 @@ local function Init_Quest()
         end)
     end
 
-    function QusetButton:set_PushableQuest(questID)--共享,任务
+    function QuestButton:set_PushableQuest(questID)--共享,任务
         if IsInGroup() and Save.pushable then
             if questID then
                 if IsInGroup() and C_QuestLog.IsPushableQuest(questID) then
@@ -1205,10 +1245,10 @@ local function Init_Quest()
         end
     end
 
-    function QusetButton:set_Alpha()
+    function QuestButton:set_Alpha()
         self.texture:SetAlpha(Save.quest and 1 or 0.3)
     end
-    function QusetButton:set_Texture()--设置，图片
+    function QuestButton:set_Texture()--设置，图片
         if not self.texture then
             self.texture= self:CreateTexture()
             self.texture:SetAllPoints()
@@ -1217,7 +1257,7 @@ local function Init_Quest()
         self:set_Alpha()
     end
 
-    function QusetButton:get_set_IsQuestTrivialTracking(setting)--其它任务,低等任务,追踪
+    function QuestButton:get_set_IsQuestTrivialTracking(setting)--其它任务,低等任务,追踪
         for trackingID=1, C_Minimap.GetNumTrackingTypes() do
             local name, _, active= C_Minimap.GetTrackingInfo(trackingID)--name, texture, active, category, nested
             if name== MINIMAP_TRACKING_TRIVIAL_QUESTS then
@@ -1231,11 +1271,11 @@ local function Init_Quest()
         end
     end
 
-    function QusetButton:not_Ace_QuestTrivial(questID)--其它任务,低等任务
+    function QuestButton:not_Ace_QuestTrivial(questID)--其它任务,低等任务
         return C_QuestLog.IsQuestTrivial(questID) and not self.isQuestTrivialTracking
     end
 
-    function QusetButton:questInfo_GetQuestID()--取得， 任务ID, QuestInfo.lua
+    function QuestButton:questInfo_GetQuestID()--取得， 任务ID, QuestInfo.lua
         if QuestInfoFrame.questLog then
             return C_QuestLog.GetSelectedQuest();
         else
@@ -1243,7 +1283,7 @@ local function Init_Quest()
         end
     end
 
-    function QusetButton:set_Event()--设置事件
+    function QuestButton:set_Event()--设置事件
         self:UnregisterAllEvents()
 
         self:RegisterEvent("QUEST_LOG_UPDATE")--更新数量
@@ -1261,42 +1301,50 @@ local function Init_Quest()
         end
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
     end
-
-    function QusetButton:tooltip_Show()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
-        e.tips:AddDoubleLine((e.onlyChinese and '日常' or DAILY)..': |cnGREEN_FONT_COLOR:'..GetDailyQuestsCompleted()..'|r'..e.Icon.select2, (e.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..e.MK(#all, 3))
-        e.tips:AddLine(' ')
-
-        e.tips:AddDoubleLine((e.onlyChinese and '上限' or CAPPED)..': '..select(2,  C_QuestLog.GetNumQuestLogEntries())..'/'..C_QuestLog.GetMaxNumQuestsCanAccept(), (e.onlyChinese and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches())
-        e.tips:AddLine(' ')
-
-        local numQuest,dayNum,weekNum, companionNum, numAll = 0, 0, 0, 0, 0
+    function QuestButton:get_All_Num()
+        local numQuest, dayNum, weekNum, companionNum, otherNum = 0, 0, 0, 0, 0
+        
         for index=1, select(2,C_QuestLog.GetNumQuestLogEntries()) do
             local info = C_QuestLog.GetInfo(index)
-            if info and  not info.isHeader then
+            if info then--and info.questID then
                 if info.frequency== 0 then
                     numQuest= numQuest+ 1
-                elseif info.frequency== 1 then
+                elseif info.frequency==  Enum.QuestFrequency.Daily then--日常
                     dayNum= dayNum+ 1
-               elseif info.frequency== 2 then
+                elseif info.frequency== Enum.QuestFrequency.Weekly then--周常
                     weekNum= weekNum+ 1
-               end
-               if info.campaignID then
+                elseif not info.isHidden then
+                    otherNum= otherNum + 1
+                end
+
+                if info.campaignID or info.isLegendarySort or info.isStory then
                     companionNum= companionNum+ 1
-               end
-               if not info.isHidden then
-                    numAll= numAll+ 1
-               end
+                end
             end
         end
         
-        e.tips:AddLine('|cff19b7ff'..(e.onlyChinese and '日常' or DAILY)..': '..dayNum)
-        e.tips:AddLine('|cff05ffa8'..(e.onlyChinese and '周长' or WEEKLY)..': '..weekNum)
-        e.tips:AddLine('|cffff7c00'..(e.onlyChinese and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..companionNum)
+        return numQuest, dayNum, weekNum, companionNum, otherNum
+    end
+    function QuestButton:tooltip_Show()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
+        e.tips:AddDoubleLine(e.GetQestColor('Day').hex..(e.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..e.Icon.select2, (e.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..e.MK(#all, 3))
 
+        e.tips:AddLine(
+            e.Player.col..(e.onlyChinese and '上限' or CAPPED)..': '..select(2,  C_QuestLog.GetNumQuestLogEntries())..'/'..C_QuestLog.GetMaxNumQuestsCanAccept()
+            --(e.onlyChinese and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches()
+        )
+        e.tips:AddLine(' ')
+
+        local numQuest, dayNum, weekNum, companionNum, otherNum = self:get_All_Num()
+        e.tips:AddLine(e.GetQestColor('Day').hex..(e.onlyChinese and '日常' or DAILY)..': '..dayNum)
+        e.tips:AddLine(e.GetQestColor('Week').hex..(e.onlyChinese and '周长' or WEEKLY)..': '..weekNum)
         e.tips:AddLine('|cffffffff'..(e.onlyChinese and '一般' or RESISTANCE_FAIR)..': '..numQuest..'/25')
+        e.tips:AddLine((e.onlyChinese and '其它' or OTHER)..': '..otherNum)
+        e.tips:AddLine(' ')
+        e.tips:AddLine(e.GetQestColor('Legendary').hex..(e.onlyChinese and '战役/传说' or TRACKER_HEADER_CAMPAIGN_QUESTS..'/'..GARRISON_FOLLOWER_QUALITY6_DESC)..': '..companionNum)
+        e.tips:AddLine((e.onlyChinese and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.quest),e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),e.Icon.right)
@@ -1306,19 +1354,25 @@ local function Init_Quest()
         self.texture:SetAlpha(1)
         self:set_Only_Show_Zone_Quest()
     end
-    function QusetButton:set_Quest_Num_Text()
+    function QuestButton:set_Quest_Num_Text()
         if IsInInstance() then
             self.Text:SetText('')
         else
             if Save.showAllQuestNum then--显示所有任务数量
-
+                local numQuest, dayNum, weekNum, companionNum = self:get_All_Num()
+                self.Text:SetText(
+                    (dayNum>0 and e.GetQestColor('Day').hex..dayNum..'|r ' or '')
+                    ..(weekNum>0 and e.GetQestColor('Week').hex..weekNum..'|r ' or '')
+                    ..(companionNum>0 and e.GetQestColor('Legendary').hex..companionNum..'|r ' or '')
+                    ..(numQuest>0 and '|cffffffff'..numQuest..'|r ' or '')
+                )
             else
                 local num= select(2, C_QuestLog.GetNumQuestLogEntries()) or 0
                 self.Text:SetText((num >= C_QuestLog.GetMaxNumQuestsCanAccept() and '|cnRED_FONT_COLOR:' or '')..num)
             end
         end
     end
-    QusetButton:SetScript("OnEvent", function(self, event, arg1)
+    QuestButton:SetScript("OnEvent", function(self, event, arg1)
         if event=='MINIMAP_UPDATE_TRACKING' then
             self:get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
 
@@ -1337,7 +1391,7 @@ local function Init_Quest()
         end
     end)
 
-    QusetButton:SetScript('OnClick', function(self, d)
+    QuestButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             Save.quest= not Save.quest and true or nil
             self:set_Texture()--设置，图片
@@ -1351,18 +1405,18 @@ local function Init_Quest()
         end
     end)
 
-    QusetButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)
-    QusetButton:SetScript('OnEnter', QusetButton.tooltip_Show)
+    QuestButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)
+    QuestButton:SetScript('OnEnter', QuestButton.tooltip_Show)
 
-    QusetButton.questSelect={}--已选任务, 提示用
-    QusetButton:set_Texture()--设置，图片
-    QusetButton:get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
-    QusetButton:set_Event()--仅显示本地图任务,事件
+    QuestButton.questSelect={}--已选任务, 提示用
+    QuestButton:set_Texture()--设置，图片
+    QuestButton:get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
+    QuestButton:set_Event()--仅显示本地图任务,事件
 
-    C_Timer.After(2, function() QusetButton:set_Only_Show_Zone_Quest() end)--显示本区域任务
+    C_Timer.After(2, function() QuestButton:set_Only_Show_Zone_Quest() end)--显示本区域任务
 
-    QusetButton.Text=e.Cstr(QusetButton, {justifyH='RIGHT', color=true, size= size-2})--任务数量
-    QusetButton.Text:SetPoint('RIGHT', QusetButton, 'LEFT', 0, 1)
+    QuestButton.Text=e.Cstr(QuestButton, {justifyH='RIGHT', color=true, size= size-2})--任务数量
+    QuestButton.Text:SetPoint('RIGHT', QuestButton, 'LEFT', 0, 1)
 
 
 
@@ -1392,7 +1446,7 @@ local function Init_Quest()
         else
             e.tips:AddDoubleLine(NONE, 'NPC ID')
         end
-        local questID=QusetButton:questInfo_GetQuestID()
+        local questID=QuestButton:questInfo_GetQuestID()
         if questID then
             e.tips:AddDoubleLine('questID', questID)
         end
@@ -1427,7 +1481,7 @@ local function Init_Quest()
             for i=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests) do
                 local index = i - numActiveQuests
                 local isTrivial= GetAvailableQuestInfo(index)
-                if (isTrivial and QusetButton.isQuestTrivialTracking) or not isTrivial then
+                if (isTrivial and QuestButton.isQuestTrivialTracking) or not isTrivial then
                     SelectAvailableQuest(index)
                     return
                 end
@@ -1442,7 +1496,7 @@ local function Init_Quest()
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save.NPC[npc])
 
-        local questID= QusetButton:questInfo_GetQuestID()
+        local questID= QuestButton:questInfo_GetQuestID()
 
         if not questID or not Save.quest or IsModifierKeyDown() or (Save.NPC[npc] and not Save.questOption[questID]) then
             return
@@ -1482,11 +1536,11 @@ local function Init_Quest()
             end
             e.call('QuestGoodbyeButton_OnClick')
         else
-            if not QusetButton.questSelect[questID] then--已选任务, 提示用
+            if not QuestButton.questSelect[questID] then--已选任务, 提示用
                 C_Timer.After(0.5, function()
                     print(id, addName, GetQuestLink(questID) or questID)
                 end)
-                QusetButton.questSelect[questID]=true
+                QuestButton.questSelect[questID]=true
             end
             e.call('QuestProgressCompleteButton_OnClick')
         end
@@ -1499,7 +1553,7 @@ local function Init_Quest()
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save.NPC[npc])
 
-        local questID= QusetButton:questInfo_GetQuestID()
+        local questID= QuestButton:questInfo_GetQuestID()
         if not questID and template.canHaveSealMaterial and not QuestUtil.QuestTextContrastEnabled() and template.questLog then
             local frame = parentFrame:GetParent():GetParent()
             questID = frame.questID
@@ -1509,7 +1563,7 @@ local function Init_Quest()
             or not Save.quest
             or (Save.NPC[npc] and not Save.questOption[questID])
             or IsModifierKeyDown()
-            or QusetButton:not_Ace_QuestTrivial(questID)
+            or QuestButton:not_Ace_QuestTrivial(questID)
             or not acceptButton
             or not acceptButton:IsVisible()
             or not acceptButton:IsEnabled()
@@ -1557,11 +1611,11 @@ local function Init_Quest()
             end
         end
 
-        if not QusetButton.questSelect[questID] then--已选任务, 提示用
+        if not QuestButton.questSelect[questID] then--已选任务, 提示用
             C_Timer.After(0.5, function()
                 print(id, QUESTS_LABEL, GetQuestLink(questID) or questID, (complete and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..acceptButton:GetText()..'|r', itemLink)
             end)
-            QusetButton.questSelect[questID]=true
+            QuestButton.questSelect[questID]=true
         end
 
         if acceptButton==QuestFrameCompleteQuestButton then

@@ -451,6 +451,7 @@ local function Init_set_Map_ID()--显示地图ID
 
         function Button:set_Map_ID_Text()
             local m=''
+            local story, achievementID
             if not Save.hide then
                 local uiMapID = WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
                 m= uiMapID or m
@@ -485,9 +486,48 @@ local function Init_set_Map_ID()--显示地图ID
                 if e.Player.Layer then
                     m = e.Player.Layer..' '..m
                 end
+
+                achievementID = C_QuestLog.GetZoneStoryInfo(uiMapID)--当前地图，故事任务
+                if achievementID then
+                    if not Button.storyText then--字符
+                        Button.storyText=e.Cstr(Button, {copyFont=WorldMapFrameTitleText})
+                        Button.storyText:SetPoint('BOTTOMRIGHT', Button, 'TOPRIGHT')
+                        Button.storyText:EnableMouse(true)
+                        Button.storyText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                        Button.storyText:SetScript('OnEnter', function(self2)
+                            if self2.achievementID then
+                                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                                e.tips:ClearLines()
+                                e.tips:SetAchievementByID(self2.achievementID)
+                                e.tips:AddLine(' ')
+                                e.tips:AddDoubleLine(e.onlyChinese and '发送链接' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SEND_LABEL, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK), e.Icon.left)
+                                e.tips:Show()
+                                self2:SetAlpha(0.7)
+                            end
+                        end)
+                        Button.storyText:SetScript("OnMouseUp", function(self2) self2:SetAlpha(0.7) end)
+                        Button.storyText:SetScript('OnMouseDown', function(self2)
+                            if self2.achievementID then
+                                print(GetAchievementLink(self2.achievementID) or self2.achievementID)
+                            end
+                            self2:SetAlpha(0.3)
+                        end)
+                    end
+                    local completed, _
+                    story, _, completed= select(2, GetAchievementInfo(achievementID))
+                    story= story or achievementID
+                    if completed then
+                        story= '|cff606060'..story..'|r'
+                    end
+                end
+
             end
             if Button.mapID then
                 Button.mapID:SetText(m)
+            end
+            if Button.storyText then
+                Button.storyText:SetText(story or '')
+                Button.storyText.achievementID= achievementID
             end
             PlayerButton:SetShown(not Save.hide)
         end
