@@ -467,6 +467,19 @@ local function Init_Menu_Gossip(_, level, type)
         return
     end
 
+    info={
+        text=e.onlyChinese and '启用' or ENABLE,
+        checked= Save.gossip,
+        keepShownOnClick=true,
+        func= function ()
+            Save.gossip= not Save.gossip and true or nil
+            GossipButton:set_Texture()--设置，图片
+            GossipButton:tooltip_Show()
+        end,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+
     info={--唯一
         text= e.onlyChinese and '唯一对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEM_UNIQUE, ENABLE_DIALOG),
         checked= Save.unique,
@@ -1032,6 +1045,19 @@ local function InitMenu_Quest(_, level, type)
     end
 
     info={
+        text=e.onlyChinese and '启用' or ENABLE,
+        checked= Save.quest,
+        keepShownOnClick=true,
+        func= function ()
+            Save.quest= not Save.quest and true or nil
+            QusetButton:set_Texture()--设置，图片
+            QusetButton:tooltip_Show()
+        end,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+
+    info={
         text='|A:TrivialQuests:0:0|a'..(e.onlyChinese and '其他任务' or MINIMAP_TRACKING_TRIVIAL_QUESTS),--低等任务
         checked= QusetButton.isQuestTrivialTracking,
         tooltipOnButton= true,
@@ -1110,7 +1136,6 @@ local function InitMenu_Quest(_, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
-
     info={--自定义,任务,选项
         text= e.onlyChinese and '自定义任务' or CUSTOM..QUESTS_LABEL,
         menuList='CUSTOM',
