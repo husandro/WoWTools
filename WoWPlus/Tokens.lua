@@ -6,7 +6,7 @@ local Save={
 	--indicato=nil,--指定显示
 	
 	Hide=true,
-	str=true,
+	str=e.Player.husandro,
 	--scaleTrackButton=1,
 	--toRightTrackText=true,--向右平移
 	--notAutoHideTrack=true,--自动隐藏
@@ -215,6 +215,8 @@ local function Init_TrackButton()
 	function TrackButton:set_Point()
 		if Save.point then
 			self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+		elseif e.Player.husandro then
+			self:SetPoint('TOPLEFT')
 		else
 			self:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT',0, -35)
 		end
