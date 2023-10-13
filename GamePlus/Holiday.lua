@@ -3,7 +3,7 @@ local addName= CALENDAR_FILTER_HOLIDAYS
 local Save={
     onGoing=true,--仅限: 正在活动
     --disabled= not e.Player.husandro
-    --left=true,--内容靠左
+    --left=e.Player.husandro,--内容靠左
     --showDate= true,--时间
     --showID=true, --节日 ID
 }
@@ -503,6 +503,8 @@ local function Init()
     function button:set_Point()--设置, 位置
         if Save.point then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+        elseif e.Player.husandro then
+            self:SetPoint('TOPLEFT', 300,0)
         else
             self:SetPoint('BOTTOMRIGHT', ObjectiveTrackerBlocksFrame, 'TOPLEFT', -35, -10)
         end
