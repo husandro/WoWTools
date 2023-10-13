@@ -1,7 +1,7 @@
 ---@diagnostic disable: redundant-parameter
 local id, e = ...
 local Save={
-	--btn=true,--启用，TrackButton
+	btn=e.Player.husandro,--启用，TrackButton
 	factions={},--指定,显示,声望
 	btnstr=true,--文本
 	--scaleTrackButton=1,缩放
@@ -328,6 +328,8 @@ local function Init_TrackButton()--监视, 文本
 	function TrackButton:set_Point()
 		if Save.point then
 			self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+		elseif e.Player.husandro then
+			self:SetPoint('TOPLEFT',70,0)
 		else
 			self:SetPoint('TOPLEFT', ReputationFrame, 'TOPRIGHT',0, -40)
 		end

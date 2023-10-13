@@ -5,8 +5,8 @@ local Save={
 	item={},--[202196]= true
 	--indicato=nil,--指定显示
 	
-	Hide=true,
-	str=e.Player.husandro,
+	Hide=not e.Player.husandro,
+	str=true,
 	--scaleTrackButton=1,
 	--toRightTrackText=true,--向右平移
 	--notAutoHideTrack=true,--自动隐藏
