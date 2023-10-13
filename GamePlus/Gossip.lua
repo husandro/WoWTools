@@ -970,7 +970,7 @@ end
 
 local function InitMenu_Quest(_, level, type)
     local info
-    local uiMapID = (WorldMapFrame:IsShown() and (WorldMapFrame.mapID or WorldMapFrame:GetMapID("current"))) or C_Map.GetBestMapForUnit('player')
+    --local uiMapID = (WorldMapFrame:IsShown() and (WorldMapFrame.mapID or WorldMapFrame:GetMapID("current"))) or C_Map.GetBestMapForUnit('player')
     if type=='REWARDSCHECK' then--三级菜单 ->自动:选择奖励
         local num=0
         for questID, index in pairs(Save.questRewardCheck) do
@@ -1035,27 +1035,6 @@ local function InitMenu_Quest(_, level, type)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-    
-    elseif type=='MapQuest' then
-        if not uiMapID then
-            return
-        end
-            for _, mapInfo in pairs(C_QuestLog.GetQuestsOnMap(uiMapID) or {}) do     
-                local questInfo= mapInfo.questID and C_QuestLog.GetQuestTagInfo(mapInfo.questID)
-                if questInfo and questInfo.tagName and not C_QuestLog.IsComplete(mapInfo.questID) and not C_QuestLog.IsOnQuest(mapInfo.questID) then
-                    info={
-                        text=  questInfo.tagName,
-                        notCheckable=true,
-                        tooltipOnButton=true,
-                        tooltipTitle= 'questID '..mapInfo.questID,
-
-                        func= function(self)
-                        
-                        end
-                    }
-                    e.LibDD:UIDropDownMenu_AddButton(info, level)
-                end
-            end
     end
 
 
@@ -1163,24 +1142,13 @@ local function InitMenu_Quest(_, level, type)
         keepShownOnClick=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    local mapInfo
-    if uiMapID then
-        mapInfo=C_Map.GetMapInfo(uiMapID)
-    end
-    info={
-        text= mapInfo and mapInfo.name or (e.onlyChinese and '地图' or WORLD_MAP),
-        disabled= not uiMapID,
-        tooltipOnButton=true,
-        tooltipTitle='uiMapID '..(uiMapID or ''),
-        notCheckable=true,
-        keepShownOnClick=true,
-        hasArrow=true,
-        menuList='MapQuest',
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
 end
+
+
+
+
+
+
 
 
 
@@ -1417,6 +1385,24 @@ local function Init_Quest()
 
     QuestButton.Text=e.Cstr(QuestButton, {justifyH='RIGHT', color=true, size= size-2})--任务数量
     QuestButton.Text:SetPoint('RIGHT', QuestButton, 'LEFT', 0, 1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
