@@ -1955,6 +1955,7 @@ local function Init()
                     local info
                     info={
                         text=e.onlyChinese and '重置' or RESET,
+                        icon='characterundelete-RestoreButton',
                         notCheckable=true,
                         keepShownOnClick=true,
                         func= function()
@@ -1969,6 +1970,7 @@ local function Init()
                         text=e.onlyChinese and '显示' or SHOW,
                         checked=not Save.hide,
                         keepShownOnClick=true,
+                        icon=e.Icon.icon,
                         func= function()
                             Save.hide= not Save.hide and true or nil
                             self:set_Show_Hide()--显示， 隐藏
@@ -1978,6 +1980,7 @@ local function Init()
 
                     info={
                         text=e.onlyChinese and '发送信息' or SEND_MESSAGE,--发送信息
+                        icon='communities-icon-chat',
                         tooltipOnButton=true,
                         tooltipTitle=self:get_sendTextTips(),
                         tooltipText=self:get_Att_Text_Chat(),
@@ -1994,6 +1997,7 @@ local function Init()
 
                     info={
                         text=e.onlyChinese and '选项' or SETTINGS_TITLE,
+                        icon='mechagon-projects',
                         notCheckable=true,
                         func= function()
                             e.OpenPanelOpting(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
