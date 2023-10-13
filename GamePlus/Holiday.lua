@@ -108,6 +108,7 @@ local CALENDAR_EVENTTYPE_TEXTURES = {
 local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
     if Save.hide then
         if button then
+            button.Text:SetText('')
             button:set_Shown()
         end
         return
@@ -323,6 +324,22 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -331,7 +348,7 @@ local function Init()
     button.Text=e.Cstr(button, {color=true})
     button.texture=button:CreateTexture()
     button.texture:SetAllPoints(button)
-    button.texture:SetAtlas(e.Icon.icon)
+    button.texture:SetAlpha(0.3)
 
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
@@ -368,20 +385,34 @@ local function Init()
         end
     end
 
+    function button:set_Texture()
+        if Save.hide then
+            self.texture:SetAtlas(e.Icon.icon)
+        else
+            self.texture:SetTexture(0)
+            
+        end
+    end
+
     function button:set_Shown()
         local hide= IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player')
         self:SetShown(not hide)
-        --self.text:SetShown()
+        --self.Text:SetShown(not hide and not Save.hide)
     end
 
     function button:set_Text_Settings()--设置，Text， 属性
         self.Text:SetJustifyH(Save.left and 'LEFT' or  'RIGHT' )
         self.Text:ClearAllPoints()
         if Save.left then
+            self.Text:SetPoint('TOPLEFT')
+        else
+            self.Text:SetPoint('TOPRIGHT')
+        end
+        --[[if Save.left then
             self.Text:SetPoint('TOPLEFT', self, 'TOPRIGHT')
         else
             self.Text:SetPoint('TOPRIGHT', self, 'TOPLEFT')
-        end
+        end]]
         self.Text:SetScale(Save.scale or 1)
         set_Button_Text()
     end
@@ -414,9 +445,9 @@ local function Init()
                         checked=not Save.hide,
                         func= function()
                             Save.hide= not Save.hide and true or nil
-                            self:set_Events()--设置事件
                             set_Button_Text()
-                            self:set_Alpha()
+                            self:set_Events()--设置事件
+                            self:set_Texture()
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -492,12 +523,11 @@ local function Init()
             self:set_Tooltips()
         end
     end)
-    button:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)
+    button:SetScript('OnLeave', function(self)
+        e.tips:Hide()
+        self.texture:SetAlpha(0.3)
+    end)
     button:SetScript('OnEnter', button.set_Tooltips)
-
-    function button:set_Alpha()--设置，图片
-        self.texture:SetAlpha(Save.hide and 0.5 or 0.1)
-    end
 
     function button:set_Point()--设置, 位置
         if Save.point then
@@ -525,10 +555,24 @@ local function Init()
 
 
     button:set_Point()
-    button:set_Alpha()
+    button:set_Texture()
     button:set_Events()
     button:set_Text_Settings()
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
