@@ -1103,6 +1103,7 @@ local function InitMenu_Quest(_, level, type)
         func= function()
             Save.showAllQuestNum= not Save.showAllQuestNum and true or nil
             QuestButton:set_Quest_Num_Text()
+            QuestButton:set_Event()--设置事件
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1276,7 +1277,11 @@ local function Init_Quest()
             self:RegisterEvent('GROUP_JOINED')
             self:RegisterEvent('QUEST_ACCEPTED')
         end
+        if Save.showAllQuestNum then--显示所有任务数量, 过区域时，更新当前地图任务，数量
+            self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+        end
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
+        
     end
     function QuestButton:get_All_Num()
         local numQuest, dayNum, weekNum, campaignNum, legendaryNum, storyNum, bountyNum, inMapNum = 0, 0, 0, 0, 0, 0, 0,0
@@ -1364,7 +1369,7 @@ local function Init_Quest()
         if event=='MINIMAP_UPDATE_TRACKING' then
             self:get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
 
-        elseif event=='QUEST_LOG_UPDATE' or event=='PLAYER_ENTERING_WORLD' then--更新数量
+        elseif event=='QUEST_LOG_UPDATE' or event=='PLAYER_ENTERING_WORLD' or event=='ZONE_CHANGED_NEW_AREA' then--更新数量
             self:set_Quest_Num_Text()
 
         elseif event=='GROUP_ROSTER_UPDATE' then
