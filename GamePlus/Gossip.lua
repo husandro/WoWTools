@@ -1281,7 +1281,7 @@ local function Init_Quest()
             self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
         end
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
-        
+
     end
     function QuestButton:get_All_Num()
         local numQuest, dayNum, weekNum, campaignNum, legendaryNum, storyNum, bountyNum, inMapNum = 0, 0, 0, 0, 0, 0, 0,0
