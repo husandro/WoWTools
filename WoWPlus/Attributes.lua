@@ -1993,8 +1993,6 @@ local function Init()
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
                     e.LibDD:UIDropDownMenu_AddSeparator(level)
 
-
-
                     info={
                         text=e.onlyChinese and '选项' or SETTINGS_TITLE,
                         icon='mechagon-projects',

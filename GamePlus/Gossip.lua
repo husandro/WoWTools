@@ -1280,7 +1280,6 @@ local function Init_Quest()
     end
     function QuestButton:get_All_Num()
         local numQuest, dayNum, weekNum, campaignNum, legendaryNum, storyNum, bountyNum, inMapNum = 0, 0, 0, 0, 0, 0, 0,0
-local a=0
         for index=1, C_QuestLog.GetNumQuestLogEntries() do
             local info = C_QuestLog.GetInfo(index)
             if info and not info.isHeader and not info.isHidden then
@@ -1313,7 +1312,6 @@ local a=0
 
     function QuestButton:tooltip_Show()
         local numQuest, dayNum, weekNum, campaignNum, legendaryNum, storyNum, bountyNum, inMapNum = self:get_All_Num()
-
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.onlyChinese and '任务' or QUESTS_LABEL)
@@ -1339,6 +1337,7 @@ local a=0
         e.tips:Show()
         self.texture:SetAlpha(1)
         self:set_Only_Show_Zone_Quest()
+        self:set_Quest_Num_Text()
     end
     function QuestButton:set_Quest_Num_Text()
         if IsInInstance() then
