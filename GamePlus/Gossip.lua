@@ -564,7 +564,7 @@ local function Init_Gossip()
         if Save.point then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
         else
-            self:SetPoint('BOTTOMLEFT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPLEFT', 30 , 0)
+            self:SetPoint('BOTTOM', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOP', 0 , 0)
         end
     end
     function GossipButton:set_Scale()--设置，缩放
@@ -584,13 +584,13 @@ local function Init_Gossip()
     function GossipButton:tooltip_Show()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..e.GetEnabeleDisable(not Save.gossip), e.Icon.left)
+        e.tips:AddDoubleLine(id, e.onlyChinese and '对话' or ENABLE_DIALOG)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.onlyChinese and '对话' or ENABLE_DIALOG)
+        e.tips:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..e.GetEnabeleDisable(not Save.gossip), e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
         e.tips:Show()
         self.texture:SetAlpha(1)
     end
@@ -1093,6 +1093,20 @@ local function InitMenu_Quest(_, level, type)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+    info={
+        text= e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
+        checked= Save.showAllQuestNum,
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '所有' or ALL,
+        tooltipText= e.onlyChinese and '在副本中禁用|n任务>0' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AGGRO_WARNING_IN_INSTANCE, DISABLE)..'|n'..QUESTS_LABEL..' >0'),
+        keepShownOnClick=true,
+        func= function()
+            Save.showAllQuestNum= not Save.showAllQuestNum and true or nil
+            QuestButton:set_Quest_Num_Text()
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= e.onlyChinese and '追踪' or TRACKING,
@@ -1135,21 +1149,6 @@ local function InitMenu_Quest(_, level, type)
         notCheckable=true,
         hasArrow=true,
         keepShownOnClick=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-
-    info={
-        text= e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
-        checked= Save.showAllQuestNum,
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '所有' or ALL,
-        tooltipText= e.onlyChinese and '在副本中禁用|n任务>0' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AGGRO_WARNING_IN_INSTANCE, DISABLE)..'|n'..QUESTS_LABEL..' >0'),
-        keepShownOnClick=true,
-        func= function()
-            Save.showAllQuestNum= not Save.showAllQuestNum and true or nil
-            QuestButton:set_Quest_Num_Text()
-        end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
@@ -1317,6 +1316,8 @@ local a=0
 
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, e.onlyChinese and '任务' or QUESTS_LABEL)
+        e.tips:AddLine(' ')
         local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
         e.tips:AddDoubleLine(e.GetQestColor('Day').hex..(e.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..e.Icon.select2, (e.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..e.MK(#all, 3))
         e.tips:AddLine(e.Player.col..(e.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/'..C_QuestLog.GetMaxNumQuestsCanAccept())
@@ -1333,11 +1334,8 @@ local a=0
         e.tips:AddLine(e.GetQestColor('Legendary').hex..(e.onlyChinese and '故事' or 'Story')..': '..storyNum)
         e.tips:AddLine((e.onlyChinese and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches())
         e.tips:AddLine(' ')
-        
         e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.quest),e.Icon.left)
-        e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),e.Icon.right)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.onlyChinese and '任务' or QUESTS_LABEL)
+        e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),e.Icon.right)    
         e.tips:Show()
         self.texture:SetAlpha(1)
         self:set_Only_Show_Zone_Quest()
@@ -1347,11 +1345,11 @@ local a=0
             self.Text:SetText('')
         else
             if Save.showAllQuestNum then--显示所有任务数量
-                local numQuest, dayNum, weekNum, campaignNum, legendaryNum, storyNum, inMapNum= self:get_All_Num()
+                local numQuest, dayNum, weekNum, campaignNum, legendaryNum, storyNum, bountyNum, inMapNum = self:get_All_Num()
 
-                local need= campaignNum+ legendaryNum+ storyNum
+                local need= campaignNum+ legendaryNum+ storyNum +bountyNum
                 self.Text:SetText(
-                    (inMapNum>0 and '|cnGREEN_FONT_COLOR:'..inMapNum..'|r ' or '')
+                    (inMapNum>0 and '|cnGREEN_FONT_COLOR:'..inMapNum..e.Icon.toLeft2..'|r ' or '')
                     ..(dayNum>0 and e.GetQestColor('Day').hex..dayNum..'|r ' or '')
                     ..(weekNum>0 and e.GetQestColor('Week').hex..weekNum..'|r ' or '')
                     ..(numQuest>0 and '|cffffffff'..numQuest..'|r ' or '')
