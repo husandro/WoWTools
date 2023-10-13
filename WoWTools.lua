@@ -1047,7 +1047,7 @@ function e.Chat(text, name, setPrint)
     elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
         SendChatMessage(text, 'PARTY')
 
-    elseif isNotDead and IsOutdoors() then
+    elseif isNotDead and IsOutdoors() and not UnitAffectingCombat('player') then
         SendChatMessage(text, 'YELL')
 
     elseif setPrint then
