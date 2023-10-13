@@ -191,6 +191,20 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --监视声望按钮
 --###########
@@ -214,6 +228,7 @@ local function Init_TrackButton()
 
 	TrackButton.texture= TrackButton:CreateTexture()
 	TrackButton.texture:SetAllPoints(TrackButton)
+	TrackButton.texture:SetAlpha(0.5)
 
 	function TrackButton:set_Point()
 		if Save.point then
@@ -303,7 +318,6 @@ local function Init_TrackButton()
 			self.texture:SetTexture(0)
 		else
 			self.texture:SetAtlas(e.Icon.icon)
-			self.texture:SetAlpha(0.3)
 		end
 	end
 
@@ -474,7 +488,7 @@ local function Init_TrackButton()
 	TrackButton:SetScript("OnLeave", function(self)
 		self:set_Shown()
 		e.tips:Hide()
-		self.texture:SetAlpha(0.3)
+		self.texture:SetAlpha(0.5)
 	end)
 
 

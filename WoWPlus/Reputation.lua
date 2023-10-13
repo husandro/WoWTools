@@ -229,6 +229,13 @@ end
 
 
 
+
+
+
+
+
+
+
 local function Init_TrackButton()--监视, 文本
 	if not Save.btn or TrackButton then
 		return
@@ -237,6 +244,7 @@ local function Init_TrackButton()--监视, 文本
 	TrackButton.text= e.Cstr(TrackButton, {color=true})
 	TrackButton.texture= TrackButton:CreateTexture()
 	TrackButton.texture:SetAllPoints(TrackButton)
+	TrackButton.texture:SetAlpha(0.5)
 
 	function TrackButton:set_Text()
 		local text
@@ -303,7 +311,6 @@ local function Init_TrackButton()--监视, 文本
 		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
 		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
 		e.tips:Show()
-		self.texture:SetAlpha(1)
 	end
 
 	function TrackButton:set_Scale()
@@ -322,7 +329,6 @@ local function Init_TrackButton()--监视, 文本
 		else
 			self.texture:SetAtlas(e.Icon.icon)
 		end
-		self.texture:SetAlpha(Save.btnstr and 1 or 0.5)
 	end
 
 	function TrackButton:set_Point()
@@ -443,13 +449,15 @@ local function Init_TrackButton()--监视, 文本
 		self:set_Tooltips()
 	end)
 
-	
 	TrackButton:SetScript("OnLeave", function(self)
 		ResetCursor()
 		e.tips:Hide()
-		self:set_Texture()
+		self.texture:SetAlpha(0.5)
 	end)
-	TrackButton:SetScript("OnEnter",TrackButton.set_Tooltips)
+	TrackButton:SetScript("OnEnter", function(self)
+		self:set_Tooltips()
+		self.texture:SetAlpha(1)
+	end)
 
 	TrackButton:SetScript("OnMouseWheel", function(self, d)--打开,关闭, 声望
 		if IsAltKeyDown() then--缩放

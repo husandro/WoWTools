@@ -348,7 +348,7 @@ local function Init()
     button.Text=e.Cstr(button, {color=true})
     button.texture=button:CreateTexture()
     button.texture:SetAllPoints(button)
-    button.texture:SetAlpha(0.3)
+    button.texture:SetAlpha(0.5)
 
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
@@ -428,7 +428,6 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), 'Alt+'..e.Icon.mid)
         e.tips:Show()
-        self.texture:SetAlpha(1)
     end
 
     button:SetScript('OnClick', function(self, d)
@@ -525,9 +524,12 @@ local function Init()
     end)
     button:SetScript('OnLeave', function(self)
         e.tips:Hide()
-        self.texture:SetAlpha(0.3)
+        self.texture:SetAlpha(0.5)
     end)
-    button:SetScript('OnEnter', button.set_Tooltips)
+    button:SetScript('OnEnter', function(self)
+        self:set_Tooltips()
+        self.texture:SetAlpha(1)
+    end)
 
     function button:set_Point()--设置, 位置
         if Save.point then
