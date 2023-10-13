@@ -4,7 +4,7 @@ local Save={
 	tokens={},--{[currencyID]=true}指定显示，表
 	item={},--[202196]= true
 	--indicato=nil,--指定显示
-	
+
 	Hide=not e.Player.husandro,
 	str=true,
 	--scaleTrackButton=1,
@@ -212,6 +212,9 @@ local function Init_TrackButton()
 	TrackButton.text=e.Cstr(TrackButton, {color=true})--内容显示文本
 	TrackButton.text2=e.Cstr(TrackButton, {color=true})--物品, 内容显示文本
 
+	TrackButton.texture= TrackButton:CreateTexture()
+	TrackButton.texture:SetAllPoints(TrackButton)
+
 	function TrackButton:set_Point()
 		if Save.point then
 			self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
@@ -295,6 +298,15 @@ local function Init_TrackButton()
 		self.text:SetText(text and text..' ' or '')
 	end
 
+	function TrackButton:set_Texture()
+		if Save.str then
+			self.texture:SetTexture(0)
+		else
+			self.texture:SetAtlas(e.Icon.icon)
+			self.texture:SetAlpha(0.3)
+		end
+	end
+
 	function TrackButton:set_Shown()--显示,隐藏
 		local hide= Save.Hide
 		 	or (
@@ -304,13 +316,6 @@ local function Init_TrackButton()
 		self:SetShown(not hide)
 		self:set_Currency_Text()
 		self:set_Item_Text()
-		if Save.str then
-			self:SetNormalTexture(0)
-			self:SetAlpha(1)
-		else
-			self:SetNormalAtlas(e.Icon.icon)
-			self:SetAlpha(0.5)
-		end
 	end
 
 	function TrackButton:set_Scale()
@@ -342,9 +347,8 @@ local function Init_TrackButton()
 		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Atl+'..e.Icon.right)
 		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
 		e.tips:Show()
-		self:SetAlpha(1)
 	end
-	
+
 	function TrackButton:set_Event()
 		if Save.Hide then
 			self:UnregisterAllEvents()
@@ -368,11 +372,11 @@ local function Init_TrackButton()
 		end
 	end)
 	TrackButton:SetScript("OnDragStop", function(self)
-			ResetCursor()
-			self:StopMovingOrSizing()
-			Save.point={self:GetPoint(1)}
-			Save.point[2]=nil
-			self:Raise()
+		ResetCursor()
+		self:StopMovingOrSizing()
+		Save.point={self:GetPoint(1)}
+		Save.point[2]=nil
+		self:Raise()
 	end)
 	TrackButton:SetScript("OnMouseUp", ResetCursor)
 	TrackButton:SetScript("OnMouseDown", function(_, d)
@@ -414,6 +418,7 @@ local function Init_TrackButton()
 						func= function()
 							Save.str= not Save.str and true or nil
 							TrackButton:set_Shown()
+							TrackButton:set_Texture()
 							TrackButton:set_Tooltips()
 							print(id, addName, e.GetShowHide(Save.str))
 						end
@@ -461,11 +466,15 @@ local function Init_TrackButton()
 	end)
 
 
-	TrackButton:SetScript("OnEnter", TrackButton.set_Tooltips)
+	TrackButton:SetScript("OnEnter", function(self)
+		self:set_Tooltips()
+		self.texture:SetAlpha(1)
+	end)
 	TrackButton:SetScript('OnMouseUp', ResetCursor)
 	TrackButton:SetScript("OnLeave", function(self)
 		self:set_Shown()
 		e.tips:Hide()
+		self.texture:SetAlpha(0.3)
 	end)
 
 
@@ -483,6 +492,7 @@ local function Init_TrackButton()
 	TrackButton:set_Scale()
 	TrackButton:set_Event()
 	TrackButton:set_Shown()
+	TrackButton:set_Texture()
 	TrackButton:set_Text_Point()
 end
 

@@ -3,7 +3,7 @@ local addName= CALENDAR_FILTER_HOLIDAYS
 local Save={
     onGoing=true,--仅限: 正在活动
     --disabled= not e.Player.husandro
-    --left=e.Player.husandro,--内容靠左
+    left=e.Player.husandro,--内容靠左
     --showDate= true,--时间
     --showID=true, --节日 ID
 }
@@ -296,9 +296,8 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
              icon= Save.left and (texture..(icon or '')) or ((icon or '')..texture)
         end
 
-        if icon then
-            msg= Save.left and (icon..msg) or (msg..icon)
-        end
+        icon= icon or '   '
+        msg= Save.left and (icon..msg) or (msg..icon)
 
         if msg~='' then
             text= text~='' and text..'|n' or text
@@ -504,7 +503,7 @@ local function Init()
         if Save.point then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
         elseif e.Player.husandro then
-            self:SetPoint('TOPLEFT', 300,0)
+            self:SetPoint('TOPLEFT', 240,0)
         else
             self:SetPoint('BOTTOMRIGHT', ObjectiveTrackerBlocksFrame, 'TOPLEFT', -35, -10)
         end
