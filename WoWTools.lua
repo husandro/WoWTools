@@ -40,9 +40,9 @@ function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, u
         if spellID and not C_Spell.IsSpellDataCached(spellID) then C_Spell.RequestLoadSpellData(spellID) end
     elseif tab.type=='item' then
         if not C_Item.IsItemDataCachedByID(tab.id) then C_Item.RequestLoadItemDataByID(tab.id) end
-    
+
     end
-    
+
 end
 
 local itemLoadTab={--加载法术,或物品数据
@@ -511,7 +511,7 @@ function e.GetQestColor(text, questID)
         Week={r=0.02, g=1, b=0.66, hex='|cff05ffa8'},--周长
         Legendary={r=1, g=0.49, b=0, hex='|cffff7d00'},--传说, 战役
         Calling={r=1, g=0, b=0.9, hex='|cffff00e6'},--使命
-    
+
         Trivial={r=0.53, g=0.53, b=0.53, hex='|cff878787'},--0 难度 Difficulty
         Easy={r=0.63, g=1, b=0.61, hex='|cffa1ff9c'},--1
         Difficult={r=1, g=0.43, b=0.42, hex='|cffff6e6b'},--3
