@@ -18,19 +18,7 @@ local ModulTab={--Blizzard_ObjectiveTracker.lua
     'MONTHLY_ACTIVITIES_TRACKER_MODULE',--9 旅行者日志 TRACKER_HEADER_MONTHLY_ACTIVITIES
 }
 
---[[
-local Color={
-    Day={0.10, 0.72, 1},--日常
-    Week={0.02, 1, 0.66},--周长
-    Legendary={1, 0.49, 0},--传说
-    Calling={1, 0, 0.9},--使命
 
-    Trivial={0.53, 0.53, 0.53},--0 难度 Difficulty
-    Easy={0.63, 1, 0.61},--1
-    Difficult={1, 0.43, 0.42},--3
-    Impossible={1, 0, 0.08},--4
-}
-]]
 local function ItemNum(button)--增加物品数量
     if button.itemLink then
         local nu=GetItemCount(button.itemLink, true, true,true)
@@ -48,7 +36,6 @@ local function ItemNum(button)--增加物品数量
     end
 end
 
-
 local colla_Module=function(type)
     for _, self in pairs(ModulTab) do
         self= _G[self]
@@ -63,7 +50,7 @@ local colla_Module=function(type)
     end
 end
 
-local function Scale(setPrint)
+local function set_Scale(setPrint)
     if Save.scale<0.5 then
         Save.scale=0.5
     elseif Save.scale>1.5 then
@@ -78,7 +65,7 @@ end
 
 
 --任务颜色
-local function setColor(block, questID)
+local function set_Color(block, questID)
     questID=questID or block.id
     if not block or not questID or C_QuestLog.IsFailed(questID) then
         return
@@ -112,7 +99,7 @@ local function setColor(block, questID)
     block.b=b
 end
 
-local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracker.lua
+local function hide_Trecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracker.lua
     if not Save.autoHide then
         return
     end
@@ -147,12 +134,32 @@ local function hideTrecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTracke
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
 local function Init()
     if Save.scale and Save.scale~=1 then
-        Scale()
+        set_Scale()
     end--缩放
 
     local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
@@ -162,32 +169,31 @@ local function Init()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-
-        e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE), e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a/收起选项 |A:editmode-up-arrow:16:11:0:3|a' or (HUD_EDIT_MODE_EXPAND_OPTIONS..'/'..HUD_EDIT_MODE_COLLAPSE_OPTIONS))
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.scale or 1), 'Ctrl + '..e.Icon.mid)
         e.tips:Show()
     end)
-    btn:SetScript('OnMouseWheel',function(self,d)
+    btn:SetScript('OnMouseWheel',function(_, d)
         if d == 1 and not IsModifierKeyDown() then
             colla_Module(true)
-            print(id, addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '全部隐藏' or (HIDE..ALL))
+            print(id, addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
         elseif d == -1 and not IsModifierKeyDown() then
             colla_Module()
-            print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '显示全部' or (SHOW..ALL))
+            print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
         elseif d==1 and IsControlKeyDown() then
             Save.scale=Save.scale+0.05
-            Scale(true)
+            set_Scale(true)
         elseif d==-1 and IsControlKeyDown() then
             Save.scale=Save.scale-0.05
-            Scale(true)
+            set_Scale(true)
         end
     end)
 
     hooksecurefunc(QUEST_TRACKER_MODULE, 'OnBlockHeaderLeave', function(_ ,block)
-        setColor(block, block.id)
+        set_Color(block, block.id)
     end)
-    hooksecurefunc('QuestObjectiveTracker_DoQuestObjectives', function(_, block, questCompleted, questSequenced, existingBlock, useFullHeight)
-        setColor(block)
+    hooksecurefunc('QuestObjectiveTracker_DoQuestObjectives', function(_, block)--, questCompleted, questSequenced, existingBlock, useFullHeight)
+        set_Color(block)
     end)
 
     hooksecurefunc(QUEST_TRACKER_MODULE,'SetBlockHeader', function(_, block, text, questLogIndex, isQuestComplete, questID)--任务颜色 图标
@@ -195,26 +201,26 @@ local function Init()
         local color
         if questID then
             if C_QuestLog.IsComplete(questID) then
-                m=m..e.Icon.select2
+                m= m..e.Icon.select2
             elseif C_QuestLog.IsFailed(questID) then
-                m=m..e.Icon.X2
+                m= m..e.Icon.X2
             end
             local factionGroup = GetQuestFactionGroup(questID)
             if factionGroup == LE_QUEST_FACTION_HORDE then
-                m=m..e.Icon.horde2
+                m= m..e.Icon.horde2
                 if factionGroup == LE_QUEST_FACTION_ALLIANCE then
                     m=m..e.Icon.alliance2
                 end
             end
             if C_QuestLog.IsQuestCalling(questID) then--使命
-                m=m..'|A:campaignavailabledailyquesticon:10:10|a'
+                m= m..'|A:campaignavailabledailyquesticon:10:10|a'
                 color= e.GetQestColor('Calling')
             end
             if C_QuestLog.IsAccountQuest(questID) then--帐户
-                m=m..e.Icon.wow2
+                m= m..e.Icon.wow2
             end
             if C_QuestLog.IsLegendaryQuest(questID) then--传奇
-                m=m..'|A:questlegendary:10:10|a'
+                m= m..'|A:questlegendary:10:10|a'
                 color= e.GetQestColor('Legendary')
             end
         end
@@ -222,22 +228,22 @@ local function Init()
             local info = C_QuestLog.GetInfo(questLogIndex)
             if info then
                 if info.startEvent then--事件开始
-                    m=m..'|A:vignetteevent:10:10|a'
+                    m= m..'|A:vignetteevent:10:10|a'
                 end
 
                 if info.frequency== Enum.QuestFrequency.Daily then--日常
-                    m=m..'|A:UI-DailyQuestPoiCampaign-QuestBang:10:10|a'
+                    m= m..'|A:UI-DailyQuestPoiCampaign-QuestBang:10:10|a'
                     color= e.GetQestColor('Day')
 
                 elseif info.frequency==Enum.QuestFrequency.Weekly then--周常
-                    m=m..'|A:weeklyrewards-orb-unlocked:10:10|a'
+                    m= m..'|A:weeklyrewards-orb-unlocked:10:10|a'
                     color= e.GetQestColor('Week')
                 end
 
                 local ver=GetQuestExpansion(questID or info.questID)--版本
                 if ver and ver~= e.ExpansionLevel then
                     local col= ver<e.ExpansionLevel and e.GetQestColor('Trivial') or e.GetQestColor('Difficult')
-                    m=m..col.hex..'['..(ver+1)..']|r'
+                    m= m..col.hex..'['..(ver+1)..']|r'
                 end
                 if info.campaignID then
                     color= e.GetQestColor('Legendary')
@@ -245,7 +251,7 @@ local function Init()
                     m= '|A:StoryHeader-CheevoIcon:0:0|a'..m
                     color= e.GetQestColor('Story')
                 elseif info.isLegendarySort then--传奇
-                    m=m..'|A:questlegendary:10:10|a'
+                    m= m..'|A:questlegendary:10:10|a'
                     color= e.GetQestColor('Legendary')
                 end
             end
@@ -253,12 +259,30 @@ local function Init()
 
         color= color or {}
         block.r, block.g, block.b= color.r, color.g, color.b
-        setColor(block, questID)
+        set_Color(block, questID)
 
         if m~='' then
             block.HeaderText:SetText(m..text)
         end
     end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     --##################################
     --8 追踪配方 PROFESSIONS_TRACK_RECIPE
@@ -350,6 +374,12 @@ local function Init()
     end)
 
 
+
+
+
+
+
+
     hooksecurefunc('QuestObjectiveSetupBlockButton_AddRightButton', function(block, button)--物品按钮左边,放大 --Blizzard_ObjectiveTrackerShared.lua
         if not button or not block or not button:IsShown() or block.groupFinderButton == button then
             return
@@ -393,6 +423,26 @@ local function Init()
             button:SetPoint('TOPRIGHT',  block, 'TOPLEFT',-20,0)
         end
     end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     --##########
     --清除, 追踪
@@ -523,6 +573,21 @@ local function Init()
     end)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
@@ -567,40 +632,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             })
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 
-            --[[添加控制面板        
-            local sel=e.AddPanel_Check('|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL), not Save.disabled)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled = not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-            end)
-
-         
-                local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-                sel2.text:SetText(e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
-                sel2:SetPoint('LEFT', sel.Text, 'RIGHT')
-                sel2:SetChecked(Save.autoHide)
-                sel2:SetScript('OnEnter', function(self2)
-                    local text=e.GetShowHide(false)
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.onlyChinese and '场景战役' or SCENARIOS, '...')
-                    e.tips:AddDoubleLine('UI WIDGET', '...')
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(e.onlyChinese and '奖励目标' or SCENARIO_BONUS_OBJECTIVES, text)
-                    e.tips:AddDoubleLine(e.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS, text)
-                    e.tips:AddDoubleLine(e.onlyChinese and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS, text)
-                    e.tips:AddDoubleLine(e.onlyChinese and '追踪任务' or TRACK_QUEST, text)
-                    e.tips:AddDoubleLine(e.onlyChinese and '追踪成就' or (TRACKER_HEADER_ACHIEVEMENTS), text)
-                    e.tips:AddDoubleLine(e.onlyChinese and '追踪配方' or PROFESSIONS_TRACK_RECIPE, text)
-                    e.tips:Show()
-                end)
-                sel2:SetScript('OnLeave', function() e.tips:Hide() end)
-
-                sel2:SetScript('OnMouseDown', function ()
-                    Save.autoHide= not Save.autoHide and true or nil
-                    print(id, addName, e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE), e.onlyChinese and '任务追踪栏' or QUEST_OBJECTIVES, e.GetEnabeleDisable(Save.autoHide))
-                end)
-]]
             if not Save.disabled then
                 Init()
                 panel:UnregisterEvent('ADDON_LOADED')
@@ -615,7 +646,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             WoWToolsSave[addName]=Save
         end
     elseif event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then--隐藏
-        hideTrecker()
+        hide_Trecker()
 
     end
 end)

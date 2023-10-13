@@ -3416,7 +3416,9 @@
         "KEY_ENTER",
         "SELF_CAST_KEY_PRESS",
         "GARRISON_FOLLOWER_QUALITY6_DESC",
-        "STORY_PROGRESS"
+        "STORY_PROGRESS",
+        "PVP_BOUNTY_REWARD_TITLE",
+        "REWARD"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -1265,50 +1265,63 @@ local function Init_Quest()
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
     end
     function QuestButton:get_All_Num()
-        local numQuest, dayNum, weekNum, companionNum, otherNum = 0, 0, 0, 0, 0
-        
-        for index=1, select(2,C_QuestLog.GetNumQuestLogEntries()) do
+        local numQuest, dayNum, weekNum, campaignNum, legendaryNum, storyNum, bountyNum, inMapNum = 0, 0, 0, 0, 0, 0, 0,0
+local a=0
+        for index=1, C_QuestLog.GetNumQuestLogEntries() do
             local info = C_QuestLog.GetInfo(index)
-            if info then--and info.questID then
+            if info and not info.isHeader and not info.isHidden then
                 if info.frequency== 0 then
                     numQuest= numQuest+ 1
+
                 elseif info.frequency==  Enum.QuestFrequency.Daily then--日常
                     dayNum= dayNum+ 1
+
                 elseif info.frequency== Enum.QuestFrequency.Weekly then--周常
                     weekNum= weekNum+ 1
-                elseif not info.isHidden then
-                    otherNum= otherNum + 1
                 end
 
-                if info.campaignID or info.isLegendarySort or info.isStory then
-                    companionNum= companionNum+ 1
+                if info.campaignID then
+                    campaignNum= campaignNum+1
+                elseif info.isLegendarySort then
+                    legendaryNum= legendaryNum +1
+                elseif info.isStory then
+                    storyNum= storyNum +1
+                elseif info.isBounty then
+                    bountyNum= bountyNum+ 1
+                end
+                if info.isOnMap then
+                    inMapNum= inMapNum +1
                 end
             end
         end
-        
-        return numQuest, dayNum, weekNum, companionNum, otherNum
+        return numQuest, dayNum, weekNum, campaignNum, legendaryNum, storyNum, bountyNum, inMapNum
     end
+
     function QuestButton:tooltip_Show()
+        local numQuest, dayNum, weekNum, campaignNum, legendaryNum, storyNum, bountyNum, inMapNum = self:get_All_Num()
+
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
         e.tips:AddDoubleLine(e.GetQestColor('Day').hex..(e.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..e.Icon.select2, (e.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..e.MK(#all, 3))
-
         e.tips:AddLine(
-            e.Player.col..(e.onlyChinese and '上限' or CAPPED)..': '..select(2,  C_QuestLog.GetNumQuestLogEntries())..'/'..C_QuestLog.GetMaxNumQuestsCanAccept()
+            e.Player.col..(e.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/'..C_QuestLog.GetMaxNumQuestsCanAccept()
             --(e.onlyChinese and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches()
         )
         e.tips:AddLine(' ')
-
-        local numQuest, dayNum, weekNum, companionNum, otherNum = self:get_All_Num()
+        e.tips:AddLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '当前地图' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP))..': '..inMapNum)
+        e.tips:AddLine(' ')
         e.tips:AddLine(e.GetQestColor('Day').hex..(e.onlyChinese and '日常' or DAILY)..': '..dayNum)
         e.tips:AddLine(e.GetQestColor('Week').hex..(e.onlyChinese and '周长' or WEEKLY)..': '..weekNum)
         e.tips:AddLine('|cffffffff'..(e.onlyChinese and '一般' or RESISTANCE_FAIR)..': '..numQuest..'/25')
-        e.tips:AddLine((e.onlyChinese and '其它' or OTHER)..': '..otherNum)
         e.tips:AddLine(' ')
-        e.tips:AddLine(e.GetQestColor('Legendary').hex..(e.onlyChinese and '战役/传说' or TRACKER_HEADER_CAMPAIGN_QUESTS..'/'..GARRISON_FOLLOWER_QUALITY6_DESC)..': '..companionNum)
+        e.tips:AddLine(e.GetQestColor('Legendary').hex..(e.onlyChinese and '传说' or GARRISON_FOLLOWER_QUALITY6_DESC)..': '..legendaryNum)
+        e.tips:AddLine(e.GetQestColor('Legendary').hex..(e.onlyChinese and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..campaignNum)
+        e.tips:AddLine(e.GetQestColor('Legendary').hex..(e.onlyChinese and '悬赏' or PVP_BOUNTY_REWARD_TITLE)..': '..bountyNum)
+        e.tips:AddLine(e.GetQestColor('Legendary').hex..(e.onlyChinese and '故事' or 'Story')..': '..storyNum)
         e.tips:AddLine((e.onlyChinese and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches())
         e.tips:AddLine(' ')
+        
         e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.quest),e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),e.Icon.right)
         e.tips:AddLine(' ')
@@ -1322,16 +1335,19 @@ local function Init_Quest()
             self.Text:SetText('')
         else
             if Save.showAllQuestNum then--显示所有任务数量
-                local numQuest, dayNum, weekNum, companionNum = self:get_All_Num()
+                local numQuest, dayNum, weekNum, campaignNum, legendaryNum, storyNum, inMapNum= self:get_All_Num()
+
+                local need= campaignNum+ legendaryNum+ storyNum
                 self.Text:SetText(
-                    (dayNum>0 and e.GetQestColor('Day').hex..dayNum..'|r ' or '')
+                    (inMapNum>0 and '|cnGREEN_FONT_COLOR:'..inMapNum..'|r ' or '')
+                    ..(dayNum>0 and e.GetQestColor('Day').hex..dayNum..'|r ' or '')
                     ..(weekNum>0 and e.GetQestColor('Week').hex..weekNum..'|r ' or '')
-                    ..(companionNum>0 and e.GetQestColor('Legendary').hex..companionNum..'|r ' or '')
                     ..(numQuest>0 and '|cffffffff'..numQuest..'|r ' or '')
+                    ..(need>0 and e.GetQestColor('Legendary').hex..need..'|r ' or '')
                 )
             else
-                local num= select(2, C_QuestLog.GetNumQuestLogEntries()) or 0
-                self.Text:SetText((num >= C_QuestLog.GetMaxNumQuestsCanAccept() and '|cnRED_FONT_COLOR:' or '')..num)
+                local num= select(2, C_QuestLog.GetNumQuestLogEntries())
+                self.text:SetText(num>0 and num or '')
             end
         end
     end
