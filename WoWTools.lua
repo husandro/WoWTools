@@ -959,9 +959,7 @@ function e.Cbtn2(tab)
         alpha=1,
     })
 ]]
-    local button
-    ---@class button
-    button= CreateFrame("Button", tab.name, tab.parent or UIParent, not tab.notSecureActionButton and "SecureActionButtonTemplate" or nil)
+    local button= CreateFrame("Button", tab.name, tab.parent or UIParent, not tab.notSecureActionButton and "SecureActionButtonTemplate" or nil)
     button:SetSize(tab.size or 30, tab.size or 30)
     if tab.click==true then
         button:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
@@ -1005,7 +1003,6 @@ function e.Cbtn2(tab)
     return button
 end
 
----@class e.toolsFrame
 e.toolsFrame=CreateFrame('Frame')--TOOLS 框架
 e.toolsFrame:SetSize(1,1)
 e.toolsFrame:SetShown(false)
@@ -1523,7 +1520,7 @@ end
 
 function e.HEX_to_RGB(hexColor, self)--HEX转RGB -- ColorUtil.lua
 	if hexColor then
-		hexColor= hexColor:gsub('|c', '')
+		hexColor= hexColor:match('|c(.+)') or hexColor
         hexColor= hexColor:gsub('#', '')
 		hexColor= hexColor:gsub(' ','')
         local len= #hexColor
@@ -1629,7 +1626,6 @@ end
 
 function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=})--设置，提示
     if tab.show and not tab.frame.HelpTips then
-        ---@class tab.frame.HelpTips
         tab.frame.HelpTips= e.Cbtn(tab.frame, {layer='OVERLAY',size=tab.size and {tab.size[1], tab.size[2]} or {40,40}})-- button:CreateTexture(nil, 'OVERLAY')
         if tab.point=='right' then
             tab.frame.HelpTips:SetPoint('BOTTOMLEFT', tab.topoint or tab.frame, 'BOTTOMRIGHT',0,-10)

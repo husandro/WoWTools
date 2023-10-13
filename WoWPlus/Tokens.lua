@@ -16,8 +16,6 @@ local Save={
 }
 local Button
 local TrackButton
----@class Button
----@class TrackButton
 
 
 

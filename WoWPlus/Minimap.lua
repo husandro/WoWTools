@@ -34,10 +34,7 @@ end
 
 local panel= CreateFrame("Frame")
 local Button
----@class Button
-
-local TrackButton
----@class TrackButton
+--local TrackButton
 
 
 
@@ -807,10 +804,8 @@ local function Init_Set_Button()--小地图, 标记, 文本
         end
     end)
 
-    ---@class Button.Frame
     function Button:set_Frame()--设置，Button的 Frame Text 属性
         if not self.Frame then
-            ---@class self.Frame
             self.Frame= CreateFrame('Frame', nil, self)
             self.Frame:SetSize(1,1)
             self.Frame.text= e.Cstr(self.Frame, {color=true})

@@ -114,7 +114,6 @@ end
 --###########
 local SetTankHealerFrame
 local function Init_set_Tank_Healer()
-    ---@class SetTankHealerFrame
     SetTankHealerFrame=CreateFrame("Frame", nil, button)
 
     SetTankHealerFrame:SetPoint('BOTTOMLEFT',4, 4)
@@ -459,7 +458,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     end
 
     local size, last, btn= 16, nil, nil
----@class Frame
+    
     Frame=CreateFrame('Frame')
     Frame:Raise()
     Frame:SetMovable(true)--移动
@@ -606,7 +605,6 @@ local function Init_Markers_Frame()--设置标记, 框架
 
 
     --Ping System Blizzard_PingUI.lua
-    ---@class Frame.ping
     Frame.ping= CreateFrame('Frame', nil, Frame)
     Frame.ping:SetSize(size, size)
     if Save.H then

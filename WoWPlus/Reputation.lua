@@ -18,9 +18,6 @@ local addName=REPUTATION
 
 local Button
 local TrackButton
----@class Button
----@class TrackButton
-
 
 
 
@@ -660,7 +657,6 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 	end
 
 	if not frame.check then
-		---@class frame.check
 		frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
 		frame.check:SetPoint('LEFT',-4,0)
 		frame.check:Raise()

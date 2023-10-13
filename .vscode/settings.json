@@ -3424,6 +3424,8 @@
         "undefined-field",
         "assign-type-mismatch",
         "deprecated",
-        "duplicate-set-field"
+        "duplicate-set-field",
+        "param-type-mismatch",
+        "inject-field"
     ]
 }

@@ -26,8 +26,6 @@ local Save={
 local panel= CreateFrame("Frame")
 local GossipButton
 local QuestButton
----@class GossipButton
----@class QuestButton
 
 
 local function select_Reward(questID)--自动:选择奖励
@@ -47,7 +45,6 @@ local function select_Reward(questID)--自动:选择奖励
         local frame= _G['QuestInfoRewardsFrameQuestInfoItem'..i]
         if frame and questID then
             if not frame.check then
-                ---@class frame.check
                 frame.check=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
                 frame.check:SetPoint("TOPRIGHT")
                 frame.check:SetScript('OnClick', function(self)
@@ -724,7 +721,6 @@ local function Init_Gossip()
         end
 
         if not self.sel then
-            ---@class self.sel
             self.sel=CreateFrame("CheckButton", nil, self, 'InterfaceOptionsCheckButtonTemplate')
             self.sel:SetPoint("RIGHT", -2, 0)
             self.sel:SetSize(18, 18)
@@ -857,7 +853,6 @@ local function Init_Gossip()
         end
 
         if not self.sel then
-            ---@class self.sel
             self.sel=CreateFrame("CheckButton", nil, self, 'InterfaceOptionsCheckButtonTemplate')
             self.sel:SetPoint("RIGHT", -2, 0)
             self.sel:SetSize(18, 18)
@@ -1408,11 +1403,6 @@ local function Init_Quest()
 
 
 
-
-
-
-
-    ---@class QuestFrame.sel
     QuestFrame.sel=CreateFrame("CheckButton", nil, QuestFrame, 'InterfaceOptionsCheckButtonTemplate')--禁用此npc,任务,选项
     QuestFrame.sel:SetPoint("TOPLEFT", QuestFrame, 40, 20)
     QuestFrame.sel.Text:SetText(e.onlyChinese and '禁用' or DISABLE)
@@ -1727,7 +1717,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 for optionFrame in self2.optionPools:EnumerateActiveByTemplate(self2.optionFrameTemplate) do
                     local enabled= not optionFrame.optionInfo.disabledOption and optionFrame.optionInfo.spellID and optionFrame.optionInfo.spellID>0
                     if not optionFrame.check and enabled then
-                        ---@class optionFrame
                         optionFrame.check= CreateFrame("CheckButton", nil, optionFrame, "InterfaceOptionsCheckButtonTemplate")
                         optionFrame.check:SetPoint('BOTTOM' ,0, -40)
                         optionFrame.check:SetScript('OnClick', function(self3)

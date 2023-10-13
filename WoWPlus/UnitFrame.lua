@@ -396,7 +396,6 @@ local function set_memberFrame(memberFrame)
         frame.Portrait= frame:CreateTexture(nil, 'BACKGROUND')--队友，目标，图像
         frame.Portrait:SetAllPoints(frame)
 
-        ---@class frame.healthBar
         frame.healthBar= CreateFrame('StatusBar', nil, frame)
         frame.healthBar:SetSize(55, 8)
         frame.healthBar:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT')
@@ -516,7 +515,6 @@ local function set_memberFrame(memberFrame)
     --#########
     frame= memberFrame.castFrame
     if not frame then
-        ---@class frame
         frame= CreateFrame("Frame", nil, memberFrame)
         frame:SetPoint('BOTTOMLEFT', memberFrame.potFrame, 'BOTTOMRIGHT')
         frame:SetSize(20,20)
@@ -643,7 +641,6 @@ local function set_memberFrame(memberFrame)
     frame= memberFrame.positionFrame
     if not frame then
         frame= CreateFrame("Frame", nil, memberFrame)
-        ---@class frame
         frame:SetPoint('LEFT', memberFrame.PartyMemberOverlay.LeaderIcon, 'RIGHT')
         frame:SetSize(1,1)
         frame.Text= e.Cstr(frame)
@@ -851,7 +848,6 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
         if unitIsPlayer then
             guid= UnitGUID(unitFrame.unit)--职业, 天赋, 图标
             if not unitFrame.classFrame then
----@class unitFrame.classFrame
                 unitFrame.classFrame= CreateFrame('Frame', nil, unitFrame)
                 unitFrame.classFrame:SetShown(false)
                 unitFrame.classFrame:SetSize(16,16)
@@ -950,7 +946,6 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
                 local frameLevel= unitFrame.PlayerFrameContainer:GetFrameLevel()+1
                 frameLevel= frameLevel<0 and 0 or frameLevel
 
----@class unitFrame.lootSpecFrame
                 unitFrame.lootSpecFrame= CreateFrame("Frame", nil, unitFrame)
                 unitFrame.lootSpecFrame:SetPoint('TOPRIGHT', unitFrame.classFrame, 'TOPLEFT', -0.5, 4)
                 unitFrame.lootSpecFrame:SetSize(14,14)
@@ -982,7 +977,7 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
                         self3:SetAlpha(0.3)
                     end
                 end)
----@class unitFrame.instanceFrame3
+
                 unitFrame.instanceFrame3= CreateFrame("Frame", nil, unitFrame)--Riad 副本, 地下城，指示
                 unitFrame.instanceFrame3:SetFrameLevel(frameLevel)
                 unitFrame.instanceFrame3:SetPoint('RIGHT', unitFrame.lootSpecFrame, 'LEFT',-2, 1)
@@ -1017,7 +1012,6 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
                 unitFrame.instanceFrame3.text:SetPoint('TOP',0,5)
                 unitFrame.instanceFrame3.text:SetTextColor(r,g,b)
 
----@class unitFrame.instanceFrame2
                 unitFrame.instanceFrame2= CreateFrame("Frame", nil, unitFrame)--5人 副本, 地下城，指示
                 unitFrame.instanceFrame2:SetFrameLevel(frameLevel)
                 unitFrame.instanceFrame2:SetPoint('RIGHT', unitFrame.instanceFrame3, 'LEFT',0, -6)
@@ -1336,7 +1330,6 @@ end
 local function Init_BossFrame()
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
----@class frame.PortraitFrame
         frame.PortraitFrame=CreateFrame('Frame', nil, frame)
         frame.PortraitFrame:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
         frame.PortraitFrame:SetSize(38, 38)

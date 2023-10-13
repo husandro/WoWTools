@@ -240,9 +240,7 @@ local function updateCoord(self)
 end
 
 local function createButton(name, object, db, customCompartmentIcon)
-	local button
-	---@class button
-	button= CreateFrame("Button", "LibDBIcon10_"..name, Minimap)
+	local button= CreateFrame("Button", "LibDBIcon10_"..name, Minimap)
 	button.dataObject = object
 	button.db = db
 	button:SetFrameStrata("MEDIUM")

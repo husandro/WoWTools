@@ -52,14 +52,11 @@ end
 --初始
 --####
 local function Init()
----@class Frame
 	Frame= CreateFrame("Frame", nil, ColorPickerFrame)
 
 	local size, x, y, n
 	local function create_Texture(r,g,b,a, atlas)
-		local texture
----@class texture
-		texture= Frame:CreateTexture()
+		local texture= Frame:CreateTexture()
 		texture:SetSize(size, size)
 		texture:EnableMouse(true)
 		a=a or 1
@@ -281,7 +278,6 @@ local function Init()
 		enter:SetScript("OnEnter", func)
 	end
 
----@class Frame.rgb
 	Frame.rgb= CreateFrame("EditBox", nil, Frame, 'InputBoxTemplate')-- 1 1 1 1
 	Frame.rgb:SetPoint("TOPLEFT", ColorPickerFrame, 'BOTTOMLEFT',10,0)
 	Frame.rgb:SetSize(w,20)
@@ -359,7 +355,6 @@ local function Init()
 	end)
 
 
-	---@class Frame.rgb2
 	Frame.rgb2= CreateFrame("EditBox", nil, Frame, 'InputBoxTemplate')--r=1, b=1, g=1, a=1
 	Frame.rgb2:SetPoint("TOPLEFT", Frame.rgb, 'BOTTOMLEFT',0,-2)
 	Frame.rgb2:SetSize(w,20)
@@ -432,7 +427,7 @@ local function Init()
 	Frame.hex:SetAutoFocus(false)
 	Frame.hex:ClearFocus()
 	function Frame.hex:get_RGB()
-		return e.HEX_to_RGB(text)
+		return e.HEX_to_RGB(self:GetText())
 	end
 	Frame.hex:SetScript('OnEnterPressed', function(self)
 		local r, g, b, a= self:get_RGB()
@@ -465,7 +460,7 @@ local function Init()
 		e.tips:SetOwner(self, "ANCHOR_RIGHT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(e.onlyChinese and '回车按键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, KEY_ENTER, SELF_CAST_KEY_PRESS))
-		--e.tips:AddLine('|c........')
+		e.tips:AddLine('|c........')
 		e.tips:AddLine('ff00ff00')
 		e.tips:AddLine('Hex #......')
 
@@ -591,6 +586,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save.disabled then
 				local check2= CreateFrame("CheckButton", nil, ColorPickerFrame, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
+				check2.type2= CreateFrame("CheckButton", nil, ColorPickerFrame, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
+
 				check2:SetPoint("TOPLEFT", ColorPickerFrame, 7, -7)
 				check2:SetChecked(not Save.hide)
 				check2:SetScript('OnMouseDown', function()
@@ -612,21 +609,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				end)
 				check2:SetScript('OnLeave', function() e.tips:Hide() end)
 
-				local colorTypeCheck= CreateFrame("CheckButton", nil, ColorPickerFrame, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
-				colorTypeCheck:SetPoint("LEFT", check2, 'RIGHT',-4,0)
-				colorTypeCheck:SetChecked(Save.colorType)
-				colorTypeCheck:SetScript('OnMouseDown', function()
+				
+				check2.type2:SetPoint("LEFT", check2, 'RIGHT',-4,0)
+				check2.type2:SetChecked(Save.colorType)
+				check2.type2:SetScript('OnMouseDown', function()
 					Save.colorType= not Save.colorType and true or nil
 					print(id, addName, e.GetEnabeleDisable(Save.colorType), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
 				end)
-				colorTypeCheck:SetScript('OnEnter', function()
+				check2.type2:SetScript('OnEnter', function()
 					e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT");
 					e.tips:ClearLines();
-					e.tips:AddDoubleLine(COLOR, 2)
+					e.tips:AddDoubleLine(e.onlyChinese and '颜色' or COLOR, 2)
 					e.tips:AddDoubleLine(id, addName)
 					e.tips:Show();
 				end)
-				colorTypeCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+				check2.type2:SetScript('OnLeave', function() e.tips:Hide() end)
 
 				if not Save.hide then
 					Init()
