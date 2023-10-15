@@ -239,38 +239,18 @@ frame.texture:SetAlpha(0.5)
 
 
 
+10.2
+local SliceDemo = CreateFrame("Frame", nil, UIParent);
+SliceDemo:SetPoint("CENTER");
+SliceDemo:SetSize(256, 256);
+SliceDemo:SetResizable(true);
 
-local editBox = frame:GetEditBox();
-local scrollBox = frame:GetScrollBox();
-scrollBox:SetPoint('LEFT', frame, 'RIGHT')
-scrollBox:SetSize(150,150)
-print(scrollBox:IsShown(), scrollBox:IsVisible())
+SliceDemo.Texture = SliceDemo:CreateTexture();
+SliceDemo.Texture:SetTexture([[interface/soulbinds/soulbindsconduitpendinganimationmask]])
+SliceDemo.Texture:SetTextureSliceMargins(24, 24, 24, 24);
+SliceDemo.Texture:SetTextureSliceMode(Enum.UITextureSliceMode.Tiled);
+SliceDemo.Texture:SetAllPoints(SliceDemo);
+SliceDemo.Texture:SetVertexColor(0, 1, 0);
 
-
-	scrollBox:SetAlignmentOverlapIgnored(false);
-	frame:SetInterpolateScroll(true)
-	
-
-frame:SetText([[
-    aaaaaa
-
-    bbbbbb
-
-    bbbbbbbbbb
-
-
-    ccccccccccc
-
-    eeeeeeeeeeeeeeeee
-
-
-    efffffffffffffffff
-
-    aaaaaaaaaaaaa
-
-
-    11111111111111
-
-
-    2222222222222222222222222222222222222222222222222222222222222222222222222
-]])
+SliceDemo.ResizeButton = CreateFrame("Button", nil, SliceDemo, "PanelResizeButtonTemplate");
+SliceDemo.ResizeButton:SetPoint("BOTTOMRIGHT");
