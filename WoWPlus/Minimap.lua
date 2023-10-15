@@ -122,7 +122,7 @@ local function get_widgetSetID_Text(widgetSetID, all)
                 text3= text3:gsub('|n', '|n       ')
                 text3= text3:gsub(':%d+|t', ':0|t')
                 --[[if widgetSetID==1005 then
-                    local name= info.text:match('|c........(.-)|r') or info.text:match('- (.-)'..HEADER_COLON)-- or info.text:match('- (.-)：')
+                    local name= info.text:match('|c........(.-)|r') or info.text:match('- (.-)'..HEADER_COLON)--
                     if name then
                         local num= GetItemCount(name) or 0
                         if num>=0 then
@@ -130,7 +130,6 @@ local function get_widgetSetID_Text(widgetSetID, all)
                         end
                     end
                 else]]
-                
                 local col = barColor[info.enabledState]
                 if col then
                     text3= col:WrapTextInColorCode(text3)
@@ -883,7 +882,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         self:UnregisterAllEvents()
 
         self:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件
-        if Save.vigentteButton then
+        if Save.vigentteButton and not IsInInstance() then
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             if Save.vigentteSound then
@@ -895,8 +894,8 @@ local function Init_Set_Button()--小地图, 标记, 文本
     Button:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_ENTERING_WORLD' then
             self.SpeakTextTab=nil
-            self:set_Shown()
             self:set_Event()
+            self:set_Shown()
         elseif event=='VIGNETTES_UPDATED' then
             self:set_VIGNETTES_UPDATED()
         else--PLAYER_REGEN_DISABLED PLAYER_REGEN_ENABLED
