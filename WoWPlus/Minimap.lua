@@ -112,14 +112,13 @@ local function get_widgetSetID_Text(widgetSetID, all)
                 local text3= info.text:gsub('^|n', '')
                 text3= text3:gsub(':%d+|t', ':0|t')
 
-
                 local col = barColor[info.enabledState]
                 if col then
                     text3= col:WrapTextInColorCode(text3)
                 end
 
                 text= (text and text..'|n' or '')
-                        .. '       '..text3:gsub('|n', '|n       ')
+                    .. '       '..text3:gsub('|n', '|n       ')
                 widgetID= widget.widgetID
             end
         end
@@ -196,7 +195,7 @@ local function get_vignette_Text()
             then
                 local text
                 if info.widgetSetID then
-                    local text2, widgetID= get_widgetSetID_Text(info.widgetSetID, nil)
+                    local text2= get_widgetSetID_Text(info.widgetSetID, nil)
                     --text, widgetID= get_widgetSetID_Text(info.widgetSetID, nil)
                     text= text2 or text
                 end
@@ -367,7 +366,26 @@ end
 
 local function Init_Button_Menu(_, level, menuList)--菜单
     local info
-    if menuList=='WorldMapVigenttePlaySound' then--3 级菜单
+    if menuList=='CurrentVignette' then--当前 Vingnette
+        info={
+            text=e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL,
+            checked= not Save.hideVigentteCurrentOnMinimap,
+            func= function()
+                Save.hideVigentteCurrentOnMinimap= not Save.hideVigentteCurrentOnMinimap and true or nil
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        info={
+            text=e.onlyChinese and '世界地图' or WORLDMAP_BUTTON,
+            checked= not Save.hideVigentteCurrentOnWorldMap,
+            hasArrow=true,
+            func= function()
+                Save.hideVigentteCurrentOnWorldMap= not Save.hideVigentteCurrentOnWorldMap and true or nil
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND),
             icon= 'chatframe-button-icon-voicechat',
@@ -382,26 +400,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    elseif menuList=='CurrentVignette' then--当前 Vingnette
-        info={
-            text=e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL,
-            checked= not Save.hideVigentteCurrentOnMinimap,
-            func= function()
-                Save.hideVigentteCurrentOnMinimap= not Save.hideVigentteCurrentOnMinimap and true or nil
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        info={
-            text=e.onlyChinese and '世界地图' or WORLDMAP_BUTTON,
-            checked= not Save.hideVigentteCurrentOnWorldMap,
-            menuList='WorldMapVigenttePlaySound',
-            hasArrow=true,
-            func= function()
-                Save.hideVigentteCurrentOnWorldMap= not Save.hideVigentteCurrentOnWorldMap and true or nil
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        
 
     elseif menuList=='WorldQuest' then--世界任务
         for questID, _ in pairs(Save.questIDs) do
@@ -588,7 +587,21 @@ local function Init_Button_Menu(_, level, menuList)--菜单
         return
     end
 
+    
+    info={
+        text= e.onlyChinese and '显示' or SHOW,
+        checked= Save.vigentteButtonShowText,
+        keepShownOnClick=true,
+        func= function()
+            Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or nil
+            Button:set_Shown()
+            Button:set_Texture()
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    
 
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= (e.onlyChinese and '当前' or REFORGE_CURRENT)..(Save.vigentteSound and '|A:chatframe-button-icon-voicechat:0:0|a' or ' ')..'Vignette',
         menuList='CurrentVignette',
@@ -668,11 +681,11 @@ local function Init_Set_Button()--小地图, 标记, 文本
         return
     end
 
-    Button= e.Cbtn(nil, {icon='hide', size={20,20}})
+    Button= e.Cbtn(nil, {icon='hide', size={22,22}})
 
     Button.texture= Button:CreateTexture(nil, 'BORDER')
     Button.texture:SetAllPoints(Button)
-    Button.texture:SetAlpha(0.3)
+    Button.texture:SetAlpha(0.5)
 
     --播放声音
     function Button:speak_Text(text)
@@ -717,7 +730,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
     function Button:set_Shown()
         local hide= not Save.vigentteButton
             or IsInInstance()
-            or UnitAffectingCombat('player')
+            --or UnitAffectingCombat('player')
             or WorldMapFrame:IsShown()
 
         Button:SetShown(not hide)
@@ -725,7 +738,11 @@ local function Init_Set_Button()--小地图, 标记, 文本
     end
 
     function Button:set_Texture()
-        self.texture:SetAtlas(Save.vigentteButtonShowText and 'VignetteKillElite' or e.Icon.disabled)
+        if Save.vigentteButtonShowText then
+            self.texture:SetTexture(0)
+        else
+            self.texture:SetAtlas('VignetteKillElite')
+        end
     end
     Button:set_Texture()
 
@@ -780,14 +797,13 @@ local function Init_Set_Button()--小地图, 标记, 文本
     function Button:set_Tootips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine(addName2)
+        e.tips:AddLine(addName, addName2)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.vigentteButtonTextScale), 'Alt+'..e.Icon.mid)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end
 
@@ -816,19 +832,19 @@ local function Init_Set_Button()--小地图, 标记, 文本
     Button:SetScript('OnLeave',function(self)
         e.tips:Hide()
         ResetCursor()
-        self.texture:SetAlpha(0.3)
+        self.texture:SetAlpha(0.5)
     end)
 
     function Button:set_Event()
-        self:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件
         self:UnregisterAllEvents()
-        if not Save.vigentteButton and self:IsShown() then
-            self:RegisterEvent('PLAYER_REGEN_DISABLED')
-            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-            if Save.vigentteSound and not Save.hideVigentteCurrentOnWorldMap then
-                self:RegisterEvent('VIGNETTES_UPDATED')
-                self:set_VIGNETTES_UPDATED()
-            end
+
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件
+        --if not Save.vigentteButton and self:IsShown() then
+           -- self:RegisterEvent('PLAYER_REGEN_DISABLED')
+            --self:RegisterEvent('PLAYER_REGEN_ENABLED')
+        if (Save.vigentteButton or Save.vigentteSound) then
+            self:RegisterEvent('VIGNETTES_UPDATED')
+            self:set_VIGNETTES_UPDATED()
         end
     end
     Button:set_Event()
@@ -848,17 +864,14 @@ local function Init_Set_Button()--小地图, 标记, 文本
     function Button:set_Frame()--设置，Button的 Frame Text 属性
         if not self.Frame then
             self.Frame= CreateFrame('Frame', nil, self)
-            self.Frame:SetSize(1,1)
+            self.Frame:SetAllPoints(self)
             self.Frame.text= e.Cstr(self.Frame, {color=true})
         else
-            self.Frame:ClearAllPoints()
             self.Frame.text:ClearAllPoints()
         end
         if Save.textToDown then
-            self.Frame:SetPoint('TOPLEFT', self, 'BOTTOMLEFT')
             self.Frame.text:SetPoint('TOPLEFT')
         else
-            self.Frame:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
             self.Frame.text:SetPoint('BOTTOMLEFT')
         end
         self.Frame:SetScale(Save.vigentteButtonTextScale or 1)
