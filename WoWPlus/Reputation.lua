@@ -12,7 +12,7 @@ local Save={
 	factionUpdateTips=true,--更新, 提示
 	--indicato=true,--指定
 	--showID=true,--显示ID
-	onlyIcon=true,--仅显示有图标
+	onlyIcon=e.Player.husandro,--仅显示有图标
 }
 local addName=REPUTATION
 
