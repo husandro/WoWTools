@@ -104,7 +104,7 @@ local Save={
     mago=true,
     ski=true,
     alt=true,
-    noItemHide= not e.Player.husandro,
+    noItemHide= true,--not e.Player.husandro,
     --disabledCheckReagentBag= true,--禁用，检查，材料包
 }
 local Combat, Bag= nil,{}

@@ -60,7 +60,7 @@ local function set_Item_Info(self, tab)
         end
 
         local sellItem
-        if tab.bag and not containerInfo.isLocked and e.CheckItemSell then
+        if tab.bag and containerInfo and not containerInfo.isLocked and e.CheckItemSell then
             sellItem= e.CheckItemSell(itemID, itemQuality)--检测是否是出售物品
         end
 
@@ -90,7 +90,9 @@ local function set_Item_Info(self, tab)
                 end
                 local text
                 for _, activities in pairs(C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.MythicPlus) or {}) do--本周完成
-                    text= (text and text..'/' or '')..activities.level
+                    if activities.level and activities.level>=0 and activities.threshold and activities.threshold>0 and activities.type==Enum.WeeklyRewardChestThresholdType.MythicPlus then
+                        text= (text and text..'/' or '')..activities.level
+                    end
                 end
                 if text then
                     leftText='|cnGREEN_FONT_COLOR:'..text..'|r'

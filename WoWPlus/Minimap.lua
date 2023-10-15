@@ -83,7 +83,6 @@ end
 
 
 
-
 --取得 areaPoiID 名称
 local function get_AreaPOIInfo_Name(poiInfo)
     return (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
@@ -91,7 +90,16 @@ end
 
 
 
-
+local barColor = {
+	--[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
+	[3] = WHITE_FONT_COLOR,
+	[2] = RED_FONT_COLOR,
+	[1] = YELLOW_FONT_COLOR,
+	--[Enum.StatusBarColorTintValue.Orange] = ORANGE_FONT_COLOR,
+	[5] = EPIC_PURPLE_COLOR,
+	[4] = GREEN_FONT_COLOR,
+	[6] = RARE_BLUE_COLOR,
+}
 
 --areaPoiID 文本
 local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
@@ -108,10 +116,17 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
             if info
                 and info.shownState == Enum.WidgetShownState.Shown
                 and info.text
-                and (info.hasTimer or not all)
+                and (info.hasTimer or not all)-- or (info.enabledState and info.enabledState>0))
             then
                 local text3= info.text:gsub('^|n', '')
                 text3= text3:gsub(':%d+|t', ':0|t')
+
+
+                local col = barColor[info.enabledState]
+                if col then
+                    text3= col:WrapTextInColorCode(text3)
+                end
+
                 text= (text and text..'|n' or '')
                         .. '       '..text3:gsub('|n', '|n       ')
                 widgetID= widget.widgetID
@@ -153,10 +168,8 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
             text= text..' |cffffffffA|r'..areaPoiID..(widgetID and ' |cffffffffW|r'..widgetID or '')
         end
     end
-
-    return text
+    return text, name
 end
-
 
 
 
@@ -179,15 +192,18 @@ local function set_vigentteButton_Text()
         local onWorldMap={}
         local vignetteGUIDs=C_VignetteInfo.GetVignettes() or {}
         local bestUniqueVignetteIndex = C_VignetteInfo.FindBestUniqueVignette(vignetteGUIDs)
+        local vigTab={}
         for index, guid in pairs(vignetteGUIDs) do
             local info= C_VignetteInfo.GetVignetteInfo(guid) or {}
-            if (info.atlasName or info.name)
+            if info.vignetteID and not vigTab[info.vignetteID]
+                and (info.atlasName or info.name)
                 and not info.isDead
-              --  and info.zoneInfiniteAOI
+                --and info.zoneInfiniteAOI
                 and (
                     (info.onMinimap and not Save.hideVigentteCurrentOnMinimap)--当前，小地图，标记
                     or (info.onWorldMap and not Save.hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
                 )
+                
             then
                 local vignette=(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name or '')
                 if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
@@ -197,7 +213,9 @@ local function set_vigentteButton_Text()
                 elseif info.vignetteID==5468 then
                     vignette= vignette..'|A:MajorFactions_Icons_Expedition512:0:0|a'
                 end
-                vignette= index==bestUniqueVignetteIndex and '|cnGREEN_FONT_COLOR:'..vignette..'|r'..e.Icon.star2 or vignette
+                if index==bestUniqueVignetteIndex or info.isUnique then
+                    vignette= '|cnGREEN_FONT_COLOR:'..vignette..'|r'..e.Icon.star2
+                end
                 if Save.showID then
                     vignette= vignette.. ' |cffffffffV|r'..info.vignetteID
                 end
@@ -263,8 +281,16 @@ local function set_vigentteButton_Text()
         text= text and text..'|n|n'..areaPoiAllText or areaPoiAllText
     end
 
-    Button.Frame.text:SetText(text or '..')
+    Button.Frame.text:SetText(text and text..' ' or '..')
 end
+
+
+
+
+
+
+
+
 
 --[[local barColorFromTintValue = {
 	[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
@@ -312,14 +338,6 @@ if widgetSetText then
     text= text and text..'|n|n'..widgetSetText or widgetSetText
 end
 ]]
-
-
-
-
-
-
-
-
 
 
 

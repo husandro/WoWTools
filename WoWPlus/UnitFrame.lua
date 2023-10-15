@@ -161,9 +161,9 @@ local function set_Keystones_Date()
     local score= C_ChallengeMode.GetOverallDungeonScore()
     if score and score>0 then
         local activeText
-        for _, info in pairs(C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.MythicPlus) or {}) do--本周完成
-            if info.level and info.level>=0 and info.threshold and info.threshold>0 and info.type==Enum.WeeklyRewardChestThresholdType.MythicPlus then
-                activeText= (activeText and activeText..'/' or '')..info.level
+        for _, activities in pairs(C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.MythicPlus) or {}) do--本周完成
+            if activities.level and activities.level>=0 and activities.threshold and activities.threshold>0 and activities.type==Enum.WeeklyRewardChestThresholdType.MythicPlus then
+                activeText= (activeText and activeText..'/' or '')..activities.level
             end
         end
         activeText= activeText and ' ('..activeText..') '
