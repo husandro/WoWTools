@@ -200,7 +200,7 @@ local function get_vignette_Text()
                     --text, widgetID= get_widgetSetID_Text(info.widgetSetID, nil)
                     text= text2 or text
                 end
-                
+
                 text=(text and text..'|n'  or '')..(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name or '')
                 if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
                     text= text..'|T1059121:0|t'
