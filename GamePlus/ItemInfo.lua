@@ -865,17 +865,26 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --商站
             --Blizzard_PerksProgram.lua          
             local function set_FrozenButton_Tips()
-                local frame= PerksProgramFrame:GetFrozenItemFrame()
-                if frame then
-                    local itemLink= frame.FrozenButton.itemID and select(2, GetItemInfo(frame.FrozenButton.itemID))
-                    set_Item_Info(frame.FrozenButton, {hyperLink=itemLink})
-                    
+                if PerksProgramFrame.GetFrozenItemFrame then
+                    local frame= PerksProgramFrame:GetFrozenItemFrame()
+                    if frame then
+                        local itemLink= frame.FrozenButton.itemID and select(2, GetItemInfo(frame.FrozenButton.itemID))
+                        set_Item_Info(frame.FrozenButton, {hyperLink=itemLink})
+                    end
                 end
             end
             hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'SetScrollTargetOffset', function(self2)
                 for _, btn in pairs(self2:GetFrames()) do
-                    local itemLink= btn.itemID and select(2, GetItemInfo(btn.itemID))
-                    set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
+                    if btn.itemID then
+                        local itemLink= btn.itemID and select(2, GetItemInfo(btn.itemID))
+                        set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
+                    elseif btn.GetItemInfo then--10.2
+                        local itemInfo=btn:GetItemInfo()
+                        if itemInfo then
+                            local itemLink= itemInfo.itemID and select(2, GetItemInfo(itemInfo.itemID))
+                            set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
+                        end
+                    end
                 end
                 set_FrozenButton_Tips()
             end)
