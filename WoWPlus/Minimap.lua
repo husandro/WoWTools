@@ -107,6 +107,7 @@ local function get_widgetSetID_Text(widgetSetID, all)
             then
                 local text3= info.text:gsub('^|n', '')
                 text3= text3:gsub(':%d+|t', ':0|t')
+                
 
                 local col = barColor[info.enabledState]
                 if col then
@@ -187,9 +188,9 @@ local function get_vignette_Text()--Vignettes
                     or (info.onWorldMap and not Save.hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
                 )
             then
-                local text
+                local text, widgetID
                 if info.widgetSetID then
-                    text= get_widgetSetID_Text(info.widgetSetID, nil)
+                    text, widgetID= get_widgetSetID_Text(info.widgetSetID, nil)
                 end
                 text=(text and text..'|n'  or '')..(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name or '')
                 if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
@@ -203,7 +204,7 @@ local function get_vignette_Text()--Vignettes
                     text= '|cnGREEN_FONT_COLOR:'..text..'|r'..e.Icon.star2
                 end
                 if Save.showID then
-                    text= text.. ' |cffffffffV|r'..info.vignetteID
+                    text= text..' |cffffffffV|r'..info.vignetteID..(widgetID and ' |cffffffffW|r'..widgetID or '')
                 end
                 table.insert(info.onMinimap and onMinimap or onWorldMap, text)
                 tab[info.vignetteID]=true
@@ -369,7 +370,6 @@ local function Init_Button_Menu(_, level, menuList)--菜单
         info={
             text=e.onlyChinese and '世界地图' or WORLDMAP_BUTTON,
             checked= not Save.hideVigentteCurrentOnWorldMap,
-            hasArrow=true,
             func= function()
                 Save.hideVigentteCurrentOnWorldMap= not Save.hideVigentteCurrentOnWorldMap and true or nil
             end
