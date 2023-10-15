@@ -168,7 +168,7 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
             text= text..' |cffffffffA|r'..areaPoiID..(widgetID and ' |cffffffffW|r'..widgetID or '')
         end
     end
-    return text, name
+    return text
 end
 
 
@@ -192,10 +192,10 @@ local function set_vigentteButton_Text()
         local onWorldMap={}
         local vignetteGUIDs=C_VignetteInfo.GetVignettes() or {}
         local bestUniqueVignetteIndex = C_VignetteInfo.FindBestUniqueVignette(vignetteGUIDs)
-        local vigTab={}
+        local tab={}
         for index, guid in pairs(vignetteGUIDs) do
             local info= C_VignetteInfo.GetVignetteInfo(guid) or {}
-            if info.vignetteID and not vigTab[info.vignetteID]
+            if info.vignetteID and not tab[info.vignetteID]
                 and (info.atlasName or info.name)
                 and not info.isDead
                 --and info.zoneInfiniteAOI
@@ -203,7 +203,6 @@ local function set_vigentteButton_Text()
                     (info.onMinimap and not Save.hideVigentteCurrentOnMinimap)--当前，小地图，标记
                     or (info.onWorldMap and not Save.hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
                 )
-                
             then
                 local vignette=(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name or '')
                 if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
@@ -213,13 +212,14 @@ local function set_vigentteButton_Text()
                 elseif info.vignetteID==5468 then
                     vignette= vignette..'|A:MajorFactions_Icons_Expedition512:0:0|a'
                 end
-                if index==bestUniqueVignetteIndex or info.isUnique then
+                if index==bestUniqueVignetteIndex then-- or info.isUnique then
                     vignette= '|cnGREEN_FONT_COLOR:'..vignette..'|r'..e.Icon.star2
                 end
                 if Save.showID then
                     vignette= vignette.. ' |cffffffffV|r'..info.vignetteID
                 end
                 table.insert(info.onMinimap and onMinimap or onWorldMap, vignette)
+                tab[info.vignetteID]=true
             end
         end
 
@@ -253,11 +253,13 @@ local function set_vigentteButton_Text()
 
     local areaPoiAllText
     for uiMapID, _ in pairs(Save.uiMapIDs) do--地图ID
+        local tab={}
         for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
-            if not Save.areaPoiIDs[areaPoiID] then
+            if not Save.areaPoiIDs[areaPoiID] and not tab[areaPoiID] then
                 local area= get_areaPoiID_Text(uiMapID, areaPoiID, true)
                 if area then
                     areaPoiAllText= areaPoiAllText and areaPoiAllText..'|n'..area or area
+                    tab[areaPoiID]=true
                 end
             end
         end
@@ -266,11 +268,13 @@ local function set_vigentteButton_Text()
     if Save.currentMapAreaPoiIDs then
         local uiMapID= C_Map.GetBestMapForUnit("player")
         if uiMapID and uiMapID>0 and not Save.uiMapIDs[uiMapID] then
+            local tab={}
             for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
-                if not Save.areaPoiIDs[areaPoiID] then
+                if not Save.areaPoiIDs[areaPoiID] and not tab[areaPoiID] then
                     local area= get_areaPoiID_Text(uiMapID, areaPoiID, true)
                     if area then
                         areaPoiAllText= areaPoiAllText and areaPoiAllText..'|n'..area or area
+                        tab[areaPoiID]=true
                     end
                 end
             end
