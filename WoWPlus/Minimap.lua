@@ -42,12 +42,13 @@ local Button
 
 
 
-
-
 --#######################
 --小地图, 标记, 监视，文本
 --#######################
-local function get_Quest_Text()--世界任务 文本
+
+
+--世界任务 文本
+local function get_Quest_Text()
     local text
     for questID, _ in pairs(Save.questIDs) do
         if C_TaskQuest.IsActive(questID) then
@@ -80,9 +81,7 @@ local function get_Quest_Text()--世界任务 文本
 end
 
 
-
-
-
+--取得 areaPoiID 名称
 local barColor = {
 	--[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
 	[3] = WHITE_FONT_COLOR,
@@ -93,12 +92,9 @@ local barColor = {
 	[4] = GREEN_FONT_COLOR,
 	[6] = RARE_BLUE_COLOR,
 }
---取得 areaPoiID 名称
 local function get_AreaPOIInfo_Name(poiInfo)
     return (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
 end
-
-
 local function get_widgetSetID_Text(widgetSetID, all)
     local text, widgetID
     for _, widget in ipairs(widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(widgetSetID) or {}) do
@@ -125,9 +121,7 @@ local function get_widgetSetID_Text(widgetSetID, all)
     end
     return text, widgetID
 end
-
---areaPoiID 文本
-local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
+local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
     local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
     if name=='' then
@@ -175,7 +169,7 @@ end
 
 
 
-local function get_vignette_Text()
+local function get_vignette_Text()--Vignettes
     if not (Save.hideVigentteCurrentOnMinimap and Save.hideVigentteCurrentOnWorldMap) then
         local onMinimap={}
         local onWorldMap={}
@@ -195,11 +189,8 @@ local function get_vignette_Text()
             then
                 local text
                 if info.widgetSetID then
-                    local text2= get_widgetSetID_Text(info.widgetSetID, nil)
-                    --text, widgetID= get_widgetSetID_Text(info.widgetSetID, nil)
-                    text= text2 or text
+                    text= get_widgetSetID_Text(info.widgetSetID, nil)
                 end
-
                 text=(text and text..'|n'  or '')..(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name or '')
                 if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
                     text= text..'|T1059121:0|t'
@@ -243,7 +234,7 @@ end
 
 
 --Button 文本
-local function set_vigentteButton_Text()
+local function set_Button_Text()
     local text= get_vignette_Text()
 
     local qustText= get_Quest_Text()--世界任务
@@ -393,6 +384,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             disabled= Save.hideVigentteCurrentOnWorldMap,
             func= function()
                 Save.vigentteSound= not Save.vigentteSound and true or nil
+                Button:set_VIGNETTES_UPDATED(true)
                 Button:set_Event()
                 if Save.vigentteSound then
                     Button:speak_Text(e.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND))
@@ -561,6 +553,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             text= e.onlyChinese and '向下滚动' or COMBAT_TEXT_SCROLL_DOWN,
             checked= Save.textToDown,
             func= function()
+                Button.Frame.text:ClearAllPoints()
                 Save.textToDown= not Save.textToDown and true or nil
                 Button:set_Frame()--设置，Button的 Frame Text 属性
             end
@@ -683,6 +676,10 @@ local function Init_Set_Button()--小地图, 标记, 文本
 
     Button= e.Cbtn(nil, {icon='hide', size={22,22}})
 
+    Button.Frame= CreateFrame('Frame', nil, Button)
+    Button.Frame:SetAllPoints(Button)
+    Button.Frame.text= e.Cstr(Button.Frame, {color=true})
+
     Button.texture= Button:CreateTexture(nil, 'BORDER')
     Button.texture:SetAllPoints(Button)
     Button.texture:SetAlpha(0.5)
@@ -697,30 +694,28 @@ local function Init_Set_Button()--小地图, 标记, 文本
         print(id, addName2,'|cffff00ff', text)
     end
     function Button:set_VIGNETTES_UPDATED(init)
-        if UnitOnTaxi('player')  then
+        if UnitOnTaxi('player') or not Save.vigentteSound then
+            self.SpeakTextTab=nil
             return
         end
         self.SpeakTextTab= self.SpeakTextTab or {}
         local find
-        local vignetteInfo= C_VignetteInfo.GetVignettes()
-        if vignetteInfo then
-            for _, vignetteGUID in pairs(vignetteInfo) do
-                local info= vignetteGUID and C_VignetteInfo.GetVignetteInfo(vignetteGUID) or {}
-                if info.name and info.name~='' and info.zoneInfiniteAOI then
-                    if init then
-                        if not info.isDead then
-                            self.SpeakTextTab[info.name]=true
+        for _, vignetteGUID in pairs(C_VignetteInfo.GetVignettes() or {}) do
+            local info= vignetteGUID and C_VignetteInfo.GetVignetteInfo(vignetteGUID) or {}
+            if info.name and info.name~='' and info.zoneInfiniteAOI then
+                if init then
+                    if not info.isDead then
+                        self.SpeakTextTab[info.name]=true
+                    end
+                else
+                    if info.isDead then
+                        self.SpeakTextTab[info.name]=nil
+                    elseif not self.SpeakTextTab[info.name] then
+                        if not find then
+                            self:speak_Text(info.name)
+                            find=true
                         end
-                    else
-                        if info.isDead then
-                            self.SpeakTextTab[info.name]=nil
-                        elseif not self.SpeakTextTab[info.name] then
-                            if not find then
-                                self:speak_Text(info.name)
-                                find=true
-                            end
-                            self.SpeakTextTab[info.name]=true
-                        end
+                        self.SpeakTextTab[info.name]=true
                     end
                 end
             end
@@ -730,7 +725,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
     function Button:set_Shown()
         local hide= not Save.vigentteButton
             or IsInInstance()
-            --or UnitAffectingCombat('player')
+            or UnitAffectingCombat('player')
             or WorldMapFrame:IsShown()
 
         Button:SetShown(not hide)
@@ -744,7 +739,6 @@ local function Init_Set_Button()--小地图, 标记, 文本
             self.texture:SetAtlas('VignetteKillElite')
         end
     end
-    Button:set_Texture()
 
     function Button:Set_Point()--设置，位置
         if Save.pointVigentteButton then
@@ -753,8 +747,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             self:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT', 4, 2)
         end
     end
-    Button:Set_Point()
-
+    
     Button:RegisterForDrag("RightButton")
     Button:SetMovable(true)
     Button:SetClampedToScreen(true)
@@ -825,7 +818,6 @@ local function Init_Set_Button()--小地图, 标记, 文本
     end)
 
     Button:SetScript('OnEnter',function(self)
-        set_vigentteButton_Text()
         self:set_Tootips()
         self.texture:SetAlpha(1)
     end)
@@ -839,15 +831,14 @@ local function Init_Set_Button()--小地图, 标记, 文本
         self:UnregisterAllEvents()
 
         self:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件
-        --if not Save.vigentteButton and self:IsShown() then
-           -- self:RegisterEvent('PLAYER_REGEN_DISABLED')
-            --self:RegisterEvent('PLAYER_REGEN_ENABLED')
-        if (Save.vigentteButton or Save.vigentteSound) then
-            self:RegisterEvent('VIGNETTES_UPDATED')
-            self:set_VIGNETTES_UPDATED()
+        if Save.vigentteButton then
+            self:RegisterEvent('PLAYER_REGEN_DISABLED')
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            if Save.vigentteSound then
+                self:RegisterEvent('VIGNETTES_UPDATED')
+            end
         end
     end
-    Button:set_Event()
 
     Button:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_ENTERING_WORLD' then
@@ -862,13 +853,6 @@ local function Init_Set_Button()--小地图, 标记, 文本
     end)
 
     function Button:set_Frame()--设置，Button的 Frame Text 属性
-        if not self.Frame then
-            self.Frame= CreateFrame('Frame', nil, self)
-            self.Frame:SetAllPoints(self)
-            self.Frame.text= e.Cstr(self.Frame, {color=true})
-        else
-            self.Frame.text:ClearAllPoints()
-        end
         if Save.textToDown then
             self.Frame.text:SetPoint('TOPLEFT')
         else
@@ -876,7 +860,6 @@ local function Init_Set_Button()--小地图, 标记, 文本
         end
         self.Frame:SetScale(Save.vigentteButtonTextScale or 1)
     end
-    Button:set_Frame()
 
     WorldMapFrame:HookScript('OnHide', function() Button:set_Shown() end)
     WorldMapFrame:HookScript('OnShow', function() Button:set_Shown() end)
@@ -885,14 +868,16 @@ local function Init_Set_Button()--小地图, 标记, 文本
         self.elapsed= (self.elapsed or 1) + elapsed
         if self.elapsed>=1 then
             self.elapsed=0
-            set_vigentteButton_Text(self.text)
+            set_Button_Text()
         end
     end)
-
+ 
+    Button:set_VIGNETTES_UPDATED(true)
+    Button:Set_Point()
+    Button:set_Texture()
+    Button:set_Frame()
+    Button:set_Event()
     Button:set_Shown()
-
-
-
 
 
 
