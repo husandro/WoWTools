@@ -92,14 +92,27 @@ local barColor = {
 	[4] = GREEN_FONT_COLOR,
 	[6] = RARE_BLUE_COLOR,
 }
+
+local barColorFromTintValue = {
+	[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.White] = WHITE_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Red] = RED_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Yellow] = YELLOW_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Orange] = ORANGE_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Purple] = EPIC_PURPLE_COLOR,
+	[Enum.StatusBarColorTintValue.Green] = GREEN_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Blue] = RARE_BLUE_COLOR,
+}
+
 local function get_AreaPOIInfo_Name(poiInfo)
     return (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
 end
 local function get_widgetSetID_Text(widgetSetID, all)
-    local text, widgetID
+    local text
     for _, widget in ipairs(widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(widgetSetID) or {}) do
         if widget.widgetID then
-            local info = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
+            local info
+            info = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
             if info
                 and info.shownState == Enum.WidgetShownState.Shown
                 and info.text
@@ -107,20 +120,61 @@ local function get_widgetSetID_Text(widgetSetID, all)
             then
                 local text3= info.text:gsub('^|n', '')
                 text3= text3:gsub(':%d+|t', ':0|t')
-                
 
+                --[[if widgetSetID==1005 then
+                    local name= info.text:match('|c........(.-)|r') or info.text:match('- (.-)'..HEADER_COLON)-- or info.text:match('- (.-)：')
+                    if name then
+                        local num= GetItemCount(name) or 0
+                        if num>=0 then
+                            text3= text3..' |cnGREEN_FONT_COLOR:/'..num..'|r'
+                        end
+                    end
+                else]]
                 local col = barColor[info.enabledState]
                 if col then
                     text3= col:WrapTextInColorCode(text3)
                 end
 
-                text= (text and text..'|n' or '')
-                    .. '       '..text3:gsub('|n', '|n       ')
-                widgetID= widget.widgetID
+                text= (text and text..'|n' or '').. '       '..text3:gsub('|n', '|n       ')
+            end
+
+            info= C_UIWidgetManager.GetStatusBarWidgetVisualizationInfo(widget.widgetID)
+            if info
+                and info.shownState==Enum.WidgetShownState.Shown
+                and info.barMax
+                and info.barMax>0
+                and info.barValue
+                and info.text
+            then
+                local text3
+                if info.barValueTextType == Enum.StatusBarValueTextType.Value then--Blizzard_UIWidgetTemplateBase.lua
+                    text3= info.barValue;
+                elseif info.barValueTextType == Enum.StatusBarValueTextType.ValueOverMax then
+                    text3= FormatFraction(info.barValue, info.barMax);
+                elseif info.barValueTextType == Enum.StatusBarValueTextType.ValueOverMaxNormalized then
+                    text3= FormatFraction(info.barValue - info.barMin, info.barMax - info.barMin);
+                elseif info.barValueTextType == Enum.StatusBarValueTextType.Percentage then
+                    local barPercent = PercentageBetween(info.barValue, info.barMin, info.barMax);
+                    text3= FormatPercentage(barPercent, true);
+                elseif info.barValueTextType == Enum.StatusBarValueTextType.Time then
+                    text3 = SecondsToTime(info.barValue, false, true, nil, true);
+                end
+                if text3 then
+                    text3= '|cffffffff'..text3..'|r'
+                    if info.text then
+                        local col= barColorFromTintValue[info.colorTint]
+                        if col then
+                            text3= text3..' '..col:WrapTextInColorCode(info.text:gsub('^|n', ''))
+                        end
+                    end
+                    text= (text and '|n'..text or '')..'       '..text3:gsub('|n', '|n       ')
+
+                    --text= (text and text..'|n       ' or '       ')..text3
+                end
             end
         end
     end
-    return text, widgetID
+    return text
 end
 local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
@@ -129,7 +183,7 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
         return
     end
 
-    local text, widgetID= get_widgetSetID_Text(poiInfo.widgetSetID, all)
+    local text= get_widgetSetID_Text(poiInfo.widgetSetID, all)
 
     local time
     if C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
@@ -162,7 +216,7 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
             end
         end
         if Save.showID then
-            text= text..' |cffffffffA|r'..areaPoiID..(widgetID and ' |cffffffffW|r'..widgetID or '')
+            text= text..' |cffffffffA|r'..areaPoiID..(poiInfo.widgetSetID and ' |cffffffffW|r'..poiInfo.widgetSetID or '')
         end
     end
     return text
@@ -188,9 +242,9 @@ local function get_vignette_Text()--Vignettes
                     or (info.onWorldMap and not Save.hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
                 )
             then
-                local text, widgetID
+                local text
                 if info.widgetSetID then
-                    text, widgetID= get_widgetSetID_Text(info.widgetSetID, nil)
+                    text= get_widgetSetID_Text(info.widgetSetID, nil)
                 end
                 text=(text and text..'|n'  or '')..(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name or '')
                 if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
@@ -204,7 +258,7 @@ local function get_vignette_Text()--Vignettes
                     text= '|cnGREEN_FONT_COLOR:'..text..'|r'..e.Icon.star2
                 end
                 if Save.showID then
-                    text= text..' |cffffffffV|r'..info.vignetteID..(widgetID and ' |cffffffffW|r'..widgetID or '')
+                    text= text..' |cffffffffV|r'..info.vignetteID..(info.widgetSetID and ' |cffffffffW|r'..info.widgetSetID or '')
                 end
                 table.insert(info.onMinimap and onMinimap or onWorldMap, text)
                 tab[info.vignetteID]=true
@@ -392,7 +446,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-        
+
 
     elseif menuList=='WorldQuest' then--世界任务
         for questID, _ in pairs(Save.questIDs) do
@@ -542,7 +596,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             text= (e.onlyChinese and '显示' or SHOW)..' ID',
             checked= Save.showID,
             tooltipOnButton=true,
-            tooltipTitle= 'Q= questID|nV= vignetteID|nW= widgetID|nA= areaPoiID',
+            tooltipTitle= 'Q= questID|nV= vignetteID|nW= widgetSetID|nA= areaPoiID',
             func= function()
                 Save.showID= not Save.showID and true or nil
             end
@@ -580,7 +634,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
         return
     end
 
-    
+
     info={
         text= e.onlyChinese and '显示' or SHOW,
         checked= Save.vigentteButtonShowText,
@@ -592,7 +646,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-    
+
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
@@ -747,7 +801,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             self:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT', 4, 2)
         end
     end
-    
+
     Button:RegisterForDrag("RightButton")
     Button:SetMovable(true)
     Button:SetClampedToScreen(true)
@@ -871,7 +925,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             set_Button_Text()
         end
     end)
- 
+
     Button:set_VIGNETTES_UPDATED(true)
     Button:Set_Point()
     Button:set_Texture()
