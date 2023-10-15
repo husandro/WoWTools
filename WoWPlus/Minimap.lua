@@ -116,11 +116,11 @@ local function get_widgetSetID_Text(widgetSetID, all)
             if info
                 and info.shownState == Enum.WidgetShownState.Shown
                 and info.text
-                and (info.hasTimer or not all)-- or (info.enabledState and info.enabledState>0))
+                and (info.hasTimer or not all)
             then
                 local text3= info.text:gsub('^|n', '')
+                text3= text3:gsub('|n', '|n       ')
                 text3= text3:gsub(':%d+|t', ':0|t')
-
                 --[[if widgetSetID==1005 then
                     local name= info.text:match('|c........(.-)|r') or info.text:match('- (.-)'..HEADER_COLON)-- or info.text:match('- (.-)：')
                     if name then
@@ -130,12 +130,13 @@ local function get_widgetSetID_Text(widgetSetID, all)
                         end
                     end
                 else]]
+                
                 local col = barColor[info.enabledState]
                 if col then
                     text3= col:WrapTextInColorCode(text3)
                 end
 
-                text= (text and text..'|n' or '').. '       '..text3:gsub('|n', '|n       ')
+                text= (text and text..'|n' or '').. '       '..text3
             end
 
             info= C_UIWidgetManager.GetStatusBarWidgetVisualizationInfo(widget.widgetID)
@@ -163,13 +164,10 @@ local function get_widgetSetID_Text(widgetSetID, all)
                     text3= '|cffffffff'..text3..'|r'
                     if info.text then
                         local col= barColorFromTintValue[info.colorTint]
-                        if col then
-                            text3= text3..' '..col:WrapTextInColorCode(info.text:gsub('^|n', ''))
-                        end
+                        info.text= info.text:gsub('^|n', '')
+                        text3= text3..' '..(col and col:WrapTextInColorCode(info.text) or info.text)
                     end
                     text= (text and '|n'..text or '')..'       '..text3:gsub('|n', '|n       ')
-
-                    --text= (text and text..'|n       ' or '       ')..text3
                 end
             end
         end
