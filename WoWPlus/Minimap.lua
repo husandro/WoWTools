@@ -83,13 +83,6 @@ end
 
 
 
---取得 areaPoiID 名称
-local function get_AreaPOIInfo_Name(poiInfo)
-    return (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
-end
-
-
-
 local barColor = {
 	--[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
 	[3] = WHITE_FONT_COLOR,
@@ -100,17 +93,15 @@ local barColor = {
 	[4] = GREEN_FONT_COLOR,
 	[6] = RARE_BLUE_COLOR,
 }
+--取得 areaPoiID 名称
+local function get_AreaPOIInfo_Name(poiInfo)
+    return (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
+end
 
---areaPoiID 文本
-local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
-    local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
-    local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
-    if name=='' then
-        return
-    end
 
+local function get_widgetSetID_Text(widgetSetID, all)
     local text, widgetID
-    for _, widget in ipairs(poiInfo.widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(poiInfo.widgetSetID) or {}) do
+    for _, widget in ipairs(widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(widgetSetID) or {}) do
         if widget.widgetID then
             local info = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
             if info
@@ -133,6 +124,18 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
             end
         end
     end
+    return text, widgetID
+end
+
+--areaPoiID 文本
+local function get_areaPoiID_Text(uiMapID, areaPoiID, all)
+    local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
+    local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
+    if name=='' then
+        return
+    end
+
+    local text, widgetID= get_widgetSetID_Text(poiInfo.widgetSetID, all)
 
     local time
     if C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
@@ -173,20 +176,7 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
---Button 文本
-local function set_vigentteButton_Text()
-    local text
+local function get_vignette_Text()
     if not (Save.hideVigentteCurrentOnMinimap and Save.hideVigentteCurrentOnWorldMap) then
         local onMinimap={}
         local onWorldMap={}
@@ -204,21 +194,28 @@ local function set_vigentteButton_Text()
                     or (info.onWorldMap and not Save.hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
                 )
             then
-                local vignette=(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name or '')
+                local text
+                if info.widgetSetID then
+                    local text2, widgetID= get_widgetSetID_Text(info.widgetSetID, nil)
+                    --text, widgetID= get_widgetSetID_Text(info.widgetSetID, nil)
+                    text= text2 or text
+                end
+                
+                text=(text and text..'|n'  or '')..(info.atlasName and '|A:'..info.atlasName..':0:0|a' or '')..(info.name or '')
                 if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
-                    vignette= vignette..'|T1059121:0|t'
+                    text= text..'|T1059121:0|t'
                 elseif info.vignetteID== 5485 then
-                    vignette= vignette..'|A:MajorFactions_Icons_Tuskarr512:0:0|a'
+                    text= text..'|A:MajorFactions_Icons_Tuskarr512:0:0|a'
                 elseif info.vignetteID==5468 then
-                    vignette= vignette..'|A:MajorFactions_Icons_Expedition512:0:0|a'
+                    text= text..'|A:MajorFactions_Icons_Expedition512:0:0|a'
                 end
                 if index==bestUniqueVignetteIndex then-- or info.isUnique then
-                    vignette= '|cnGREEN_FONT_COLOR:'..vignette..'|r'..e.Icon.star2
+                    text= '|cnGREEN_FONT_COLOR:'..text..'|r'..e.Icon.star2
                 end
                 if Save.showID then
-                    vignette= vignette.. ' |cffffffffV|r'..info.vignetteID
+                    text= text.. ' |cffffffffV|r'..info.vignetteID
                 end
-                table.insert(info.onMinimap and onMinimap or onWorldMap, vignette)
+                table.insert(info.onMinimap and onMinimap or onWorldMap, text)
                 tab[info.vignetteID]=true
             end
         end
@@ -232,8 +229,23 @@ local function set_vigentteButton_Text()
         for _, vigentte in pairs(onWorldMap) do
             vigentteText= vigentteText and vigentteText..'|n'..vigentte or vigentte
         end
-        text= vigentteText
+
+        return vigentteText
     end
+end
+
+
+
+
+
+
+
+
+
+
+--Button 文本
+local function set_vigentteButton_Text()
+    local text= get_vignette_Text()
 
     local qustText= get_Quest_Text()--世界任务
     if qustText then
@@ -757,12 +769,27 @@ local function Init_Set_Button()--小地图, 标记, 文本
         end
     end)
 
+    Button:SetScript('OnMouseUp', ResetCursor)
     Button:SetScript('OnMouseDown', function(_, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
-    Button:SetScript('OnMouseUp', ResetCursor)
+
+
+    function Button:set_Tootips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(addName2)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.vigentteButtonTextScale), 'Alt+'..e.Icon.mid)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end
 
     Button:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
@@ -777,21 +804,13 @@ local function Init_Set_Button()--小地图, 标记, 文本
             print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, scale)
             Save.vigentteButtonTextScale= scale
             self:set_Frame()--设置，Button的 Frame Text 属性
+            self:set_Tootips()
         end
     end)
+
     Button:SetScript('OnEnter',function(self)
         set_vigentteButton_Text()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(addName2)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.vigentteButtonTextScale), 'Alt+'..e.Icon.mid)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:Show()
+        self:set_Tootips()
         self.texture:SetAlpha(1)
     end)
     Button:SetScript('OnLeave',function(self)
