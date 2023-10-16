@@ -1627,7 +1627,7 @@ local function Init_Quest()
 
         if acceptButton==QuestFrameCompleteQuestButton then
             e.call('QuestRewardCompleteButton_OnClick')
-        else
+        elseif acceptButton:IsEnabled() then
             acceptButton:Click()
         end
     end)
