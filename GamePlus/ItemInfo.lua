@@ -945,6 +945,5 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end
             --ToggleBag(i);
         end
-
     end
 end)

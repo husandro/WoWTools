@@ -832,7 +832,7 @@ end
 --#######
 --设置单位
 --#######
-local function setUnitInfo(self, unit)--设置单位提示信息
+local function set_Unit_Info(self, unit)--设置单位提示信息
     local name, realm= UnitName(unit)
     local isPlayer = UnitIsPlayer(unit)
     local guid = UnitGUID(unit)
@@ -1411,7 +1411,7 @@ local function Init()
             if tooltip==e.tips then
                 local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
                 if unit then
-                    setUnitInfo(tooltip, unit)
+                    set_Unit_Info(tooltip, unit)
                 end
             end
 
@@ -1465,6 +1465,8 @@ local function Init()
             elseif e.Player.husandro then
                 tooltip:AddDoubleLine('id '..data.id, 'type '..data.type)
             end
+        elseif e.Player.husandro then
+            tooltip:AddDoubleLine(data.id and 'id '..data.id,  data.type and 'type '..data.type)
         end
     end)
 
