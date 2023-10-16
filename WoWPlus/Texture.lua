@@ -1566,6 +1566,7 @@ local function set_Alpha_Event(arg1)
 
     elseif arg1=='Blizzard_PlayerChoice' then----任务选择
         PlayerChoiceFrame:HookScript('OnShow', function(self)
+            set_Alpha_Color(PlayerChoiceFrame.Header)
             if self.NineSlice then
                 hide_Texture(self.NineSlice.TopLeftCorner)
                 hide_Texture(self.NineSlice.TopEdge)
