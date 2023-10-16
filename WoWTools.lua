@@ -507,114 +507,7 @@ function e.GetYesNo(yesno)
     end
 end
 
-    --[[
-        Enum.QuestTag[]
-        QuestTag = {
-		Group = 1,
-		PvP = 41,
-		Raid = 62,
-		Dungeon = 81,
-		Legendary = 83,
-		Heroic = 85,
-		Raid10 = 88,
-		Raid25 = 89,
-		Scenario = 98,
-		Account = 102,
-		CombatAlly = 266,
-        267==专业
-	},
-    -- Quest Tags Constants.lua
-QUEST_TAG_ATLAS = {
-	["COMPLETED"] = "questlog-questtypeicon-quest",
-	["COMPLETED_LEGENDARY"] = "questlog-questtypeicon-legendaryturnin",
-	["DAILY"] = "questlog-questtypeicon-daily",
-	["WEEKLY"] = "questlog-questtypeicon-weekly",
-	["FAILED"] = "questlog-questtypeicon-questfailed",
-	["STORY"] = "questlog-questtypeicon-story",
-	["ALLIANCE"] = "questlog-questtypeicon-alliance",
-	["HORDE"] = "questlog-questtypeicon-horde",
-	["EXPIRING_SOON"] = "questlog-questtypeicon-expiringsoon",
-	["EXPIRING"] = "questlog-questtypeicon-expiring",
-	[Enum.QuestTag.Dungeon] = "questlog-questtypeicon-dungeon",
-	[Enum.QuestTag.Scenario] = "questlog-questtypeicon-scenario",
-	[Enum.QuestTag.Account] = "questlog-questtypeicon-account",
-	[Enum.QuestTag.Legendary] = "questlog-questtypeicon-legendary",
-	[Enum.QuestTag.Group] = "questlog-questtypeicon-group",
-	[Enum.QuestTag.PvP] = "questlog-questtypeicon-pvp",
-	[Enum.QuestTag.Heroic] = "questlog-questtypeicon-heroic",
-	-- same texture for all raids
-	[Enum.QuestTag.Raid] = "questlog-questtypeicon-raid",
-	[Enum.QuestTag.Raid10] = "questlog-questtypeicon-raid",
-	[Enum.QuestTag.Raid25] = "questlog-questtypeicon-raid",
-};
-]]
-function e.QuestLogQuests_GetBestTagID(questID, info, tagInfo, isComplete)--QuestMapFrame.lua QuestUtils.lua
-    questID= questID or (info and info.questID)
-    if not info and questID then
-       local questLogIndex= C_QuestLog.GetLogIndexForQuestID(questID)
-       info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
-    end
-    tagInfo =  tagInfo or C_QuestLog.GetQuestTagInfo(questID);
-    if not questID or not info or not tagInfo then
-        return
-    end
-    if isComplete==nil then
-        isComplete= C_QuestLog.IsComplete(questID)
-    end
 
-    local tagID, color, atlas
-    if isComplete then
-        if tagInfo.tagID == Enum.QuestTag.Legendary then
-            tagID, color, atlas= "COMPLETED_LEGENDARY", e.GetQestColor('Complete'), nil
-        else
-            tagID, color, atlas=  nil, e.GetQestColor('Complete'), nil--"COMPLETED", e.GetQestColor('Complete')
-        end
-    elseif C_QuestLog.IsFailed(questID) then
-        tagID, color, atlas= "FAILED", e.GetQestColor('Failed'), nil
-
-    elseif info.isCalling then
-        local secondsRemaining = C_TaskQuest.GetQuestTimeLeftSeconds(questID);
-        if secondsRemaining then
-            if secondsRemaining < 3600 then -- 1 hour
-                tagID, color, atlas= "EXPIRING_SOON", e.GetQestColor('Calling'), nil
-            elseif secondsRemaining < 18000 then -- 5 hours
-                tagID, color, atlas= "EXPIRING", e.GetQestColor('Calling'), nil
-            end
-        end
-
-    elseif tagInfo.tagID == Enum.QuestTag.Account then
-        local factionGroup = GetQuestFactionGroup(questID);
-        if factionGroup==LE_QUEST_FACTION_HORDE then--部落
-            tagID, color, atlas= 'HORDE', e.GetQestColor('Horde'), nil
-        elseif factionGroup==LE_QUEST_FACTION_ALLIANCE then
-            tagID, color, atlas= "ALLIANCE", e.GetQestColor('Alliance'), nil--联盟
-        else
-            tagID, color, atlas= Enum.QuestTag.Account,e.GetQestColor('WoW'), nil--帐户
-        end
-
-    elseif info.frequency == Enum.QuestFrequency.Daily then--日常
-        tagID, color, atlas= "DAILY", e.GetQestColor('Day'), nil
-
-    elseif info.frequency == Enum.QuestFrequency.Weekly then--周常
-        tagID, color, atlas= "WEEKLY", e.GetQestColor('Week'), nil
-
-    elseif tagInfo.tagID==267 then--专业
-        tagID, color, atlas= nil, e.GetQestColor('Week'), '|A:Professions-Icon-Quality-Mixed-Small:0:0|a'
-
-    else
-        tagID, color, atlas= tagInfo.tagID, nil, nil
-    end
-    if not atlas and tagID then
-        local tagAtlas = QuestUtils_GetQuestTagAtlas(tagID)
-        if tagAtlas then
-            atlas= '|A:'..tagAtlas..':0:0|a'
-        end
-    end
-    if tagInfo.tagID==41 and not color then
-        color=e.GetQestColor('PvP')
-    end
-    return atlas, color
-end
 
 
 --[[
@@ -663,6 +556,78 @@ function e.GetQestColor(text, questID)
             end
         end
     end
+end
+
+--任务图标，颜色
+function e.QuestLogQuests_GetBestTagID(questID, info, tagInfo, isComplete)--QuestMapFrame.lua QuestUtils.lua
+    questID= questID or (info and info.questID)
+
+    if not info and questID then
+       local questLogIndex= C_QuestLog.GetLogIndexForQuestID(questID)
+       info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
+    end
+
+    tagInfo =  tagInfo or C_QuestLog.GetQuestTagInfo(questID) or {};
+    if not questID or not info then
+        return
+    end
+
+    if isComplete==nil then
+        isComplete= C_QuestLog.IsComplete(questID)
+    end
+
+    local tagID, color, atlas
+    if isComplete then
+        if tagInfo.tagID == Enum.QuestTag.Legendary then
+            tagID, color, atlas= "COMPLETED_LEGENDARY", e.GetQestColor('Complete'), nil
+        else
+            tagID, color, atlas=  nil, e.GetQestColor('Complete'), e.Icon.select2--"COMPLETED", e.GetQestColor('Complete')
+        end
+    elseif C_QuestLog.IsFailed(questID) then
+        tagID, color, atlas= "FAILED", e.GetQestColor('Failed'), nil
+
+    elseif tagInfo.tagID==267 or tagInfo.tagName==TRADE_SKILLS then--专业
+        tagID, color, atlas= nil, e.GetQestColor('Week'), '|A:Professions-Icon-Quality-Mixed-Small:0:0|a'
+
+    elseif info.isCalling then
+        local secondsRemaining = C_TaskQuest.GetQuestTimeLeftSeconds(questID);
+        if secondsRemaining then
+            if secondsRemaining < 3600 then -- 1 hour
+                tagID, color, atlas= "EXPIRING_SOON", e.GetQestColor('Calling'), nil
+            elseif secondsRemaining < 18000 then -- 5 hours
+                tagID, color, atlas= "EXPIRING", e.GetQestColor('Calling'), nil
+            end
+        end
+
+    elseif tagInfo.tagID == Enum.QuestTag.Account then
+        local factionGroup = GetQuestFactionGroup(questID);
+        if factionGroup==LE_QUEST_FACTION_HORDE then--部落
+            tagID, color, atlas= 'HORDE', e.GetQestColor('Horde'), nil
+        elseif factionGroup==LE_QUEST_FACTION_ALLIANCE then
+            tagID, color, atlas= "ALLIANCE", e.GetQestColor('Alliance'), nil--联盟
+        else
+            tagID, color, atlas= Enum.QuestTag.Account,e.GetQestColor('WoW'), nil--帐户
+        end
+
+    elseif info.frequency == Enum.QuestFrequency.Daily then--日常
+        tagID, color, atlas= "DAILY", e.GetQestColor('Day'), nil
+
+    elseif info.frequency == Enum.QuestFrequency.Weekly then--周常
+        tagID, color, atlas= "WEEKLY", e.GetQestColor('Week'), nil
+
+    else
+        tagID, color, atlas= tagInfo.tagID, nil, nil
+    end
+    if not atlas and tagID then
+        local tagAtlas = QuestUtils_GetQuestTagAtlas(tagID)
+        if tagAtlas then
+            atlas= '|A:'..tagAtlas..':0:0|a'
+        end
+    end
+    if tagInfo.tagID==41 and not color then
+        color=e.GetQestColor('PvP')
+    end
+    return atlas, color
 end
 
 --副本，难道，颜色

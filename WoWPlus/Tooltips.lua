@@ -651,6 +651,11 @@ local function set_Quest(self, questID, info)----任务
     end
     self:AddDoubleLine((e.onlyChinese and '任务' or QUESTS_LABEL)..(levelText or ''), questID)
 
+if not info then
+    local questLogIndex= C_QuestLog.GetLogIndexForQuestID(questID)
+    info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
+end
+
     local distanceSq= C_QuestLog.GetDistanceSqToQuest(questID)--距离
     if distanceSq and distanceSq>0 then
         local _, x, y = QuestPOIGetIconInfo(questID)

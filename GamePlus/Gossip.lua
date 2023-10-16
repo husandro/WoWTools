@@ -1324,7 +1324,7 @@ local function Init_Quest()
         e.tips:AddLine(' ')
         local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
         e.tips:AddDoubleLine(e.GetQestColor('Day').hex..(e.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..e.Icon.select2, (e.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..e.MK(#all, 3))
-        e.tips:AddLine(e.Player.col..(e.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/'..C_QuestLog.GetMaxNumQuestsCanAccept())
+        e.tips:AddLine(e.Player.col..(e.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/38 ('..C_QuestLog.GetMaxNumQuestsCanAccept()..')')
         e.tips:AddLine(' ')
         e.tips:AddLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '当前地图' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP))..': '..inMapNum)
         e.tips:AddLine(' ')
