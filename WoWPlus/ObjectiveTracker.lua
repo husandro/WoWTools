@@ -250,85 +250,93 @@ local function Init()
     end
 
 
-    hooksecurefunc(QUEST_TRACKER_MODULE,'SetBlockHeader', function(_, block, text, questLogIndex, isQuestComplete, questID)--任务颜色 图标
+    hooksecurefunc(QUEST_TRACKER_MODULE, 'SetBlockHeader', function(_, block, text, questLogIndex, isQuestComplete, questID)--任务颜色 图标
+        local info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
+        if not info then
+            return
+        end
         local m=''
         local color
-        if questLogIndex then
-            local info = C_QuestLog.GetInfo(questLogIndex)
-            if info then
-                if isQuestComplete then-- C_QuestLog.IsComplete(questID) then
-                    m= m..e.Icon.select2
-                    color= e.GetQestColor('Complete')
-                elseif C_QuestLog.IsFailed(questID) then
-                    m= m..e.Icon.X2
-                    color= e.GetQestColor('Failed')
-                else
+        questID= questID or info.questID
 
-                    if info.startEvent then--事件开始
-                        m= m..e.Icon.toRight2
-                    end
+        local tagInfo = C_QuestLog.GetQuestTagInfo(questID) or {}
+
+        questID= questID or info.questID
+        local atlas= QuestUtils_GetQuestTagAtlas(tagInfo.tagID)--QuestMapFrame.lua QuestUtils.lua
+        if atlas then
+            m= m..'|A:'..atlas..':0:0|a'
+        end
                 
-                    questID= questID or info.questID
-                    if info.questID then
-                        local tagInfo= C_QuestLog.GetQuestTagInfo(questID)
-                        local atlas= tagInfo and QuestUtils_GetQuestTagAtlas(tagInfo.tagID)--QuestMapFrame.lua QuestUtils.lua
-                        if atlas then
-                            m= m..'|A:'..atlas..':0:0|a'
-                        end
-                    end
 
-                    local factionGroup = GetQuestFactionGroup(questID)
-                    if factionGroup == LE_QUEST_FACTION_HORDE then
-                        m= m..e.Icon.horde2
-                        color= e.GetQestColor('Horde')
-                    elseif factionGroup == LE_QUEST_FACTION_ALLIANCE then
-                        m=m..e.Icon.alliance2
-                        color= e.GetQestColor('Alliance')
-                    end
-        
-                    if C_QuestLog.IsQuestCalling(questID) then--使命
-                        m= m..'|A:campaignavailabledailyquesticon:10:10|a'
-                        color= e.GetQestColor('Calling')
-                    end
-                    if C_QuestLog.IsAccountQuest(questID) then--帐户
-                        m= m..e.Icon.wow2
-                        color= e.GetQestColor('WoW')
-                    end
-                    if C_QuestLog.IsLegendaryQuest(questID) then--传奇
-                        m= m..'|A:legendaryavailablequesticon:10:10|a'
-                        color= e.GetQestColor('Legendary')
-                    end
+               
 
-                    if info.frequency== Enum.QuestFrequency.Daily then--日常
-                        m= m..'|A:UI-DailyQuestPoiCampaign-QuestBang:10:10|a'
-                        color= e.GetQestColor('Day')
+        if isQuestComplete then-- C_QuestLog.IsComplete(questID) then
+            if tagInfo.tagID == Enum.QuestTag.Legendary then
+                m=m..'|A:legendaryactivequesticon:0:0|a'
+            end
+            color= e.GetQestColor('Complete')
 
-                    elseif info.frequency==Enum.QuestFrequency.Weekly then--周常
-                        m= m..'|A:weeklyrewards-orb-unlocked:10:10|a'
-                        color= e.GetQestColor('Week')
-                    end
+        elseif C_QuestLog.IsFailed(questID) then
+            m= m..e.Icon.X2
+            color= e.GetQestColor('Failed')
+        else
+            if info.startEvent then--事件开始
+                m= m..e.Icon.toRight2
+            end
 
-                    local ver=GetQuestExpansion(questID or info.questID)--版本
-                    if ver and ver~= e.ExpansionLevel then
-                        local col= ver<e.ExpansionLevel and e.GetQestColor('Trivial') or e.GetQestColor('Difficult')
-                        m= m..col.hex..'['..(ver+1)..']|r'
-                    end
+            local factionGroup = GetQuestFactionGroup(questID)
+            if factionGroup == LE_QUEST_FACTION_HORDE then
+                m= m..e.Icon.horde2
+                color= e.GetQestColor('Horde')
 
-                    if info.campaignID then
-                        color= e.GetQestColor('Legendary')
-                        m=m..'|A:Quest-Campaign-Available:0:0|a'
+            elseif factionGroup == LE_QUEST_FACTION_ALLIANCE then
+                m=m..e.Icon.alliance2
+                color= e.GetQestColor('Alliance')
+            end
 
-                    elseif info.isStory then
-                        m= '|A:StoryHeader-CheevoIcon:0:0|a'..m
-                        color= e.GetQestColor('Story')
-                --[[ elseif info.isLegendarySort then--传奇
-                        m= m..'|A:questlegendary:10:10|a'
-                        color= e.GetQestColor('Legendary')]]
+            if info.isCalling then--C_QuestLog.IsQuestCalling(questID)
+                m= m..'|A:Callings-Available:10:10|a'
+                local secondsRemaining = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
+                if secondsRemaining and secondsRemaining>0 then
+                    m=m..'['..SecondsToClock(secondsRemaining)..']'
                 end
-                end
+                color= e.GetQestColor('Calling')
+            end
+
+            if C_QuestLog.IsAccountQuest(questID) then--帐户
+                m= m..e.Icon.wow2
+                color= e.GetQestColor('WoW')
+            end
+
+            if C_QuestLog.IsLegendaryQuest(questID) then--传奇
+                m= m..'|A:legendaryavailablequesticon:10:10|a'
+                color= e.GetQestColor('Legendary')
+            end
+
+            if info.campaignID then
+                color= e.GetQestColor('Legendary')
+                m=m..'|A:Quest-Campaign-Available:0:0|a'
+
+            elseif info.isStory then
+                m= '|A:StoryHeader-CheevoIcon:0:0|a'..m
+                color= e.GetQestColor('Story')
+            end
+
+            if info.frequency== Enum.QuestFrequency.Daily then--日常
+                m= m..'|A:UI-DailyQuestPoiCampaign-QuestBang:10:10|a'
+                color= e.GetQestColor('Day')
+
+            elseif info.frequency==Enum.QuestFrequency.Weekly then--周常
+                m= m..'|A:weeklyrewards-orb-unlocked:10:10|a'
+                color= e.GetQestColor('Week')
             end
         end
 
+        local ver=GetQuestExpansion(questID or info.questID)--版本
+        if ver and ver~= e.ExpansionLevel then
+            local col= ver<e.ExpansionLevel and e.GetQestColor('Trivial') or e.GetQestColor('Difficult')
+            m= m..col.hex..'['..(ver+1)..']|r'
+        end
         
 
         color= color or {}

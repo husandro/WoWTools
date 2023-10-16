@@ -370,7 +370,7 @@ e.Icon={
     clock2='|A:socialqueuing-icon-clock:0:0|a',
 
     player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
-    
+
     bank2='|A:Banker:0:0|a',
     bag='bag-main',
     bag2='|A:bag-main:0:0|a',
@@ -532,7 +532,7 @@ function e.GetQestColor(text, questID)
         Story={r=0.09, g=0.78, b=0.39, a=1.00, hex='|cff17c864'},
         Complete={r=0.10, g=1.00, b=0.10, a=1.00, hex='|cff19ff19'},
         Failed={r=1.00, g=0.00, b=0.00, a=1.00, hex='|cffff0000'},
-        Horde={r=1.00, g=0.16, b=0.20, a=1.00, hex='|cffff2934'},
+        Horde={r=1.00, g=0.38, b=0.38, a=1.00, hex='|cffff6161'},
         Alliance={r=0.00, g=0.68, b=0.94, a=1.00, hex='|cff00adf0'},
         WoW={r=0.00, g=0.80, b=1.00, a=1.00, hex='|cff00ccff'},
     }
