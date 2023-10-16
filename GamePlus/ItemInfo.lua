@@ -511,6 +511,10 @@ end
 --初始
 --####
 local function Init()
+    hooksecurefunc(AlertFrameQueueMixin,'ShowAlert', function(...)
+        print(...)
+    end)
+
     --boss掉落，物品, 可能，会留下 StaticPopup1 框架
     hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
         --local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = GetItemInfo(data.itemLink)
@@ -918,7 +922,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     end
                 end
             end)
-print(id,addName)
         end
 
     elseif event == "PLAYER_LOGOUT" then

@@ -1713,17 +1713,17 @@ end
 --####################
 --添加一个按钮, 打开选项
 --####################
-local function add_Button_OpenOption(self)
-    if not self then
+local function add_Button_OpenOption(frame)
+    if not frame then
         return
     end
-    local btn= e.Cbtn(self, {atlas='charactercreate-icon-customize-body-selected', size={40,40}})
+    local btn= e.Cbtn(frame, {atlas='charactercreate-icon-customize-body-selected', size={40,40}})
     btn:SetPoint('TOPRIGHT',-5,-25)
     btn:SetScript('OnClick', function()
         ToggleCharacter("PaperDollFrame")
     end)
-    btn:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+    btn:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
         e.tips:AddLine(' ')
@@ -1731,19 +1731,14 @@ local function add_Button_OpenOption(self)
         e.tips:Show()
     end)
     btn:SetScript('OnLeave', function() e.tips:Hide() end)
-    --[[self:HookScript('OnShow', function()--出现BUG,不知哪里问题
-        if not PaperDollFrame:IsVisible() then
-            ToggleCharacter("PaperDollFrame")
-        end
-    end)]]
-
-    if self==ItemUpgradeFrameCloseButton then--装备升级, 界面
-        local function set_item_Num_Text(self2)
+    if frame==ItemUpgradeFrameCloseButton then--装备升级, 界面
+        local function set_item_Num_Text(self)
             local tab={--物品数量提示
                 204196,--10.1
                 204195,
                 204194,
                 204193,
+
             }
             local text
             for _, itemID in pairs(tab) do
@@ -1757,20 +1752,38 @@ local function add_Button_OpenOption(self)
                     end
                 end
             end
-            if text and not self2.text then
-                self2.text= e.Cstr(self2)
-                self2.text:SetPoint('BOTTOMLEFT', ItemUpgradeFrame, 'BOTTOMLEFT', 6, 385)
+            tab={
+                2709,--[守护巨龙的酣梦纹章] 10.2
+                2708,
+                2707,
+                2245,--飞珑石
+            }
+            local text2
+            for _, currencyID in pairs(tab) do
+                local info= C_CurrencyInfo.GetCurrencyInfo(currencyID) or {}
+                if info.iconFileID and info.quantity and info.quantity>0 then
+                    text2= text2 and text2..'|n' or ''
+                    text2= text2..'|T'..info.iconFileID..':0|t' ..e.MK(info.quantity, 3)
+                end
             end
-            if self2.text then
-                self2.text:SetText(text or '')
+            if text2 then
+                text= (text and text..'|n|n' or '')..text2
+            end
+            if text and not self.text then
+                self.text= e.Cstr(self)
+                self.text:SetPoint('BOTTOMLEFT', ItemUpgradeFrame, 'BOTTOMLEFT', 6, 385)
+            end
+            if self.text then
+                self.text:SetText(text and text..' ' or '')
             end
         end
         btn:SetScript("OnEvent", set_item_Num_Text)
-        btn:SetScript('OnShow', function(self2)
-            self2:RegisterEvent('BAG_UPDATE_DELAYED')
+        btn:SetScript('OnShow', function(self)
+            self:RegisterEvent('BAG_UPDATE_DELAYED')
+            self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
         end)
-        btn:SetScript('OnHide', function(self2)
-            self2:UnregisterEvent('BAG_UPDATE_DELAYED')
+        btn:SetScript('OnHide', function(self)
+            self:UnregisterAllEvents()
         end)
         set_item_Num_Text(btn)
     end

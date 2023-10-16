@@ -3418,7 +3418,8 @@
         "GARRISON_FOLLOWER_QUALITY6_DESC",
         "STORY_PROGRESS",
         "PVP_BOUNTY_REWARD_TITLE",
-        "REWARD"
+        "REWARD",
+        "AlertFrameQueueMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

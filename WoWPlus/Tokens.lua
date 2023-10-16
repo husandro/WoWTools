@@ -25,7 +25,7 @@ local TrackButton
 
 
 
-local Get_Currency= function(tab)--货币
+local function Get_Currency(tab)--货币
 	--Get_Currency({index=index, showName=Save.nameShow, showID=Save.showID, toRight=Save.toRightTrackText, bit=nil})--货币
     local info
 	if tab.index then
