@@ -1565,24 +1565,24 @@ local function set_Alpha_Event(arg1)
         set_Alpha_Color(GenericTraitFrame.NineSlice.BottomRightCorner)
 
     elseif arg1=='Blizzard_PlayerChoice' then----任务选择
-        C_Timer.After(0.3, function()
-            if PlayerChoiceFrame.NineSlice then
-                hide_Texture(PlayerChoiceFrame.NineSlice.TopLeftCorner)
-                hide_Texture(PlayerChoiceFrame.NineSlice.TopEdge)
-                hide_Texture(PlayerChoiceFrame.NineSlice.TopRightCorner)
-                hide_Texture(PlayerChoiceFrame.NineSlice.BottomLeftCorner)
-                hide_Texture(PlayerChoiceFrame.NineSlice.BottomEdge)
-                hide_Texture(PlayerChoiceFrame.NineSlice.BottomRightCorner)
-                hide_Texture(PlayerChoiceFrame.NineSlice.RightEdge)
-                hide_Texture(PlayerChoiceFrame.NineSlice.LeftEdge)
+        PlayerChoiceFrame:HookScript('OnShow', function(self)
+            if self.NineSlice then
+                hide_Texture(self.NineSlice.TopLeftCorner)
+                hide_Texture(self.NineSlice.TopEdge)
+                hide_Texture(self.NineSlice.TopRightCorner)
+                hide_Texture(self.NineSlice.BottomLeftCorner)
+                hide_Texture(self.NineSlice.BottomEdge)
+                hide_Texture(self.NineSlice.BottomRightCorner)
+                hide_Texture(self.NineSlice.RightEdge)
+                hide_Texture(self.NineSlice.LeftEdge)
             end
-            if PlayerChoiceFrame.Title then
-                set_Alpha_Color(PlayerChoiceFrame.Title.Middle)
-                set_Alpha_Color(PlayerChoiceFrame.Title.Left)
-                set_Alpha_Color(PlayerChoiceFrame.Title.Right)
+            if self.Title then
+                set_Alpha_Color(self.Title.Middle)
+                set_Alpha_Color(self.Title.Left)
+                set_Alpha_Color(self.Title.Right)
             end
-            if PlayerChoiceFrame.Background then
-                hide_Texture(PlayerChoiceFrame.Background.BackgroundTile)
+            if self.Background then
+                hide_Texture(self.Background.BackgroundTile or self.Background)
             end
         end)
     elseif arg1=='Blizzard_MajorFactions' then--派系声望
