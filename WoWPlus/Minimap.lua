@@ -94,7 +94,7 @@ local barColor = {
 }
 
 local barColorFromTintValue = {
-	[Enum.StatusBarColorTintValue.Black] = WHITE_FONT_COLOR,--BLACK_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
 	[Enum.StatusBarColorTintValue.White] = WHITE_FONT_COLOR,
 	[Enum.StatusBarColorTintValue.Red] = RED_FONT_COLOR,
 	[Enum.StatusBarColorTintValue.Yellow] = YELLOW_FONT_COLOR,
