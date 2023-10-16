@@ -349,14 +349,15 @@ e.Icon={
     select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√
     select2='|A:common-icon-checkmark:0:0|a',--绿色√
     --selectYellow='common-icon-checkmark-yellow',--黄色√
-    X2='|A:xmarksthespot:0:0|a',
+    X2='|A:common-icon-redx:0:0|a',
     O2='|A:talents-button-reset:0:0|a',--￠
     right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
     left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
     mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
     map='poi-islands-table',
     map2='|A:poi-islands-table:0:0|a',
-    wow2='-32',--'|A:Icon-WoW:0:0|a',--136235
+    wow=136235,
+    wow2='|T136235:0|t',--'|A:Icon-WoW:0:0|a',--136235
     net2= BNet_GetClientEmbeddedTexture(-2, 32, 32),
     horde= 'charcreatetest-logo-horde',
     alliance='charcreatetest-logo-alliance',
@@ -369,7 +370,7 @@ e.Icon={
     clock2='|A:socialqueuing-icon-clock:0:0|a',
 
     player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
-
+    
     bank2='|A:Banker:0:0|a',
     bag='bag-main',
     bag2='|A:bag-main:0:0|a',
@@ -400,6 +401,7 @@ e.Icon={
 C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua
     if success and texture then
         e.Icon.wow2= '|T'..texture..':0|t'
+        e.Icon.wow= texture
     end
 end)
 --[[C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Medium, function(success, texture)
@@ -505,6 +507,16 @@ function e.GetYesNo(yesno)
     end
 end
 
+--[[
+[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
+[Enum.StatusBarColorTintValue.White] = WHITE_FONT_COLOR,
+[Enum.StatusBarColorTintValue.Red] = RED_FONT_COLOR,
+[Enum.StatusBarColorTintValue.Yellow] = YELLOW_FONT_COLOR,
+[Enum.StatusBarColorTintValue.Orange] = ORANGE_FONT_COLOR,
+[Enum.StatusBarColorTintValue.Purple] = EPIC_PURPLE_COLOR,
+[Enum.StatusBarColorTintValue.Green] = GREEN_FONT_COLOR,
+[Enum.StatusBarColorTintValue.Blue] = RARE_BLUE_COLOR,
+]]
 function e.GetQestColor(text, questID)
     local color={
         Day={r=0.10, g=0.72, b=1, hex='|cff1ab8ff'},--日常
@@ -517,7 +529,12 @@ function e.GetQestColor(text, questID)
         Difficult={r=1, g=0.43, b=0.42, hex='|cffff6e6b'},--3
         Impossible={r=1, g=0, b=0.08, hex='|cffff0014'},--4
 
-        Story={r=0.09, g=0.78, b=0.39, a=1.00, hex='|cff17c864'}
+        Story={r=0.09, g=0.78, b=0.39, a=1.00, hex='|cff17c864'},
+        Complete={r=0.10, g=1.00, b=0.10, a=1.00, hex='|cff19ff19'},
+        Failed={r=1.00, g=0.00, b=0.00, a=1.00, hex='|cffff0000'},
+        Horde={r=1.00, g=0.16, b=0.20, a=1.00, hex='|cffff2934'},
+        Alliance={r=0.00, g=0.68, b=0.94, a=1.00, hex='|cff00adf0'},
+        WoW={r=0.00, g=0.80, b=1.00, a=1.00, hex='|cff00ccff'},
     }
     if text then
         return color[text]

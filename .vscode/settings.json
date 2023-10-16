@@ -3419,7 +3419,8 @@
         "STORY_PROGRESS",
         "PVP_BOUNTY_REWARD_TITLE",
         "REWARD",
-        "AlertFrameQueueMixin"
+        "AlertFrameQueueMixin",
+        "QuestUtils_GetQuestTagAtlas"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
