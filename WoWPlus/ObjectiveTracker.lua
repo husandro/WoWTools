@@ -196,58 +196,22 @@ local function Init()
         set_Color(block)
     end)
 
-
-    local function QuestLogQuests_GetBestTagID(questID, info, isComplete)
-        local tagInfo = C_QuestLog.GetQuestTagInfo(questID);
-        local questTagID = tagInfo and tagInfo.tagID;
-    
-        if isComplete then
-            if questTagID == Enum.QuestTag.Legendary then
-                return "COMPLETED_LEGENDARY";
-            else
-                return "COMPLETED";
-            end
+    hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, 'SetBlockHeader', function(_, block, text, questLogIndex, isQuestComplete, questID)--任务颜色 图标
+        local info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
+        if not info then
+            return
         end
-    
-        -- At this point, we know the quest is not complete, no need to check it any more.
-        if C_QuestLog.IsFailed(questID) then
-            return "FAILED";
+        local color, m= e.GetQestColor('Legendary'), ''
+        if isQuestComplete then-- C_QuestLog.IsComplete(questID) then
+            color= e.GetQestColor('Complete')
+        elseif C_QuestLog.IsFailed(questID) then
+            color= e.GetQestColor('Failed')
+        else
+            color= e.GetQestColor('Legendary')
         end
-    
-        if info.isCalling then
-            local secondsRemaining = C_TaskQuest.GetQuestTimeLeftSeconds(questID);
-            if secondsRemaining then
-                if secondsRemaining < 3600 then -- 1 hour
-                    return "EXPIRING_SOON";
-                elseif secondsRemaining < 18000 then -- 5 hours
-                    return "EXPIRING";
-                end
-            end
-        end
-    
-        if questTagID == Enum.QuestTag.Account then
-            local factionGroup = GetQuestFactionGroup(questID);
-            if factionGroup then
-                return factionGroup == LE_QUEST_FACTION_HORDE and "HORDE" or "ALLIANCE";
-            else
-                return Enum.QuestTag.Account;
-            end
-        end
-    
-        if info.frequency == Enum.QuestFrequency.Daily then
-            return "DAILY";
-        end
-    
-        if info.frequency == Enum.QuestFrequency.Weekly then
-            return "WEEKLY";
-        end
-    
-        if questTagID then
-            return questTagID;
-        end
-    
-        return nil;
-    end
+        block.r, block.g, block.b= color.r, color.g, color.b
+        set_Color(block, questID)
+    end)
 
 
     hooksecurefunc(QUEST_TRACKER_MODULE, 'SetBlockHeader', function(_, block, text, questLogIndex, isQuestComplete, questID)--任务颜色 图标
@@ -255,81 +219,12 @@ local function Init()
         if not info then
             return
         end
+
         local m=''
-        local color
         questID= questID or info.questID
-
-        local tagInfo = C_QuestLog.GetQuestTagInfo(questID) or {}
-
-        questID= questID or info.questID
-        local atlas= QuestUtils_GetQuestTagAtlas(tagInfo.tagID)--QuestMapFrame.lua QuestUtils.lua
+        local atlas, color =e.QuestLogQuests_GetBestTagID(questID, info, nil, isQuestComplete)
         if atlas then
-            m= m..'|A:'..atlas..':0:0|a'
-        end
-                
-
-               
-
-        if isQuestComplete then-- C_QuestLog.IsComplete(questID) then
-            if tagInfo.tagID == Enum.QuestTag.Legendary then
-                m=m..'|A:legendaryactivequesticon:0:0|a'
-            end
-            color= e.GetQestColor('Complete')
-
-        elseif C_QuestLog.IsFailed(questID) then
-            m= m..e.Icon.X2
-            color= e.GetQestColor('Failed')
-        else
-            if info.startEvent then--事件开始
-                m= m..e.Icon.toRight2
-            end
-
-            local factionGroup = GetQuestFactionGroup(questID)
-            if factionGroup == LE_QUEST_FACTION_HORDE then
-                m= m..e.Icon.horde2
-                color= e.GetQestColor('Horde')
-
-            elseif factionGroup == LE_QUEST_FACTION_ALLIANCE then
-                m=m..e.Icon.alliance2
-                color= e.GetQestColor('Alliance')
-            end
-
-            if info.isCalling then--C_QuestLog.IsQuestCalling(questID)
-                m= m..'|A:Callings-Available:10:10|a'
-                local secondsRemaining = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
-                if secondsRemaining and secondsRemaining>0 then
-                    m=m..'['..SecondsToClock(secondsRemaining)..']'
-                end
-                color= e.GetQestColor('Calling')
-            end
-
-            if C_QuestLog.IsAccountQuest(questID) then--帐户
-                m= m..e.Icon.wow2
-                color= e.GetQestColor('WoW')
-            end
-
-            if C_QuestLog.IsLegendaryQuest(questID) then--传奇
-                m= m..'|A:legendaryavailablequesticon:10:10|a'
-                color= e.GetQestColor('Legendary')
-            end
-
-            if info.campaignID then
-                color= e.GetQestColor('Legendary')
-                m=m..'|A:Quest-Campaign-Available:0:0|a'
-
-            elseif info.isStory then
-                m= '|A:StoryHeader-CheevoIcon:0:0|a'..m
-                color= e.GetQestColor('Story')
-            end
-
-            if info.frequency== Enum.QuestFrequency.Daily then--日常
-                m= m..'|A:UI-DailyQuestPoiCampaign-QuestBang:10:10|a'
-                color= e.GetQestColor('Day')
-
-            elseif info.frequency==Enum.QuestFrequency.Weekly then--周常
-                m= m..'|A:weeklyrewards-orb-unlocked:10:10|a'
-                color= e.GetQestColor('Week')
-            end
+            m=m..atlas
         end
 
         local ver=GetQuestExpansion(questID or info.questID)--版本
@@ -337,11 +232,11 @@ local function Init()
             local col= ver<e.ExpansionLevel and e.GetQestColor('Trivial') or e.GetQestColor('Difficult')
             m= m..col.hex..'['..(ver+1)..']|r'
         end
-        
 
-        color= color or {}
-        block.r, block.g, block.b= color.r, color.g, color.b
-        set_Color(block, questID)
+        if color then
+            block.r, block.g, block.b= color.r, color.g, color.b
+            set_Color(block, questID)
+        end
 
         if m~='' then
             block.HeaderText:SetText(m..text)

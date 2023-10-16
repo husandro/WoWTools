@@ -631,11 +631,49 @@ local function setAchievement(self, achievementID)--成就
     get_Web_Link({frame=self, type='achievement', id=achievementID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
 end
 
-local function setQuest(self, questID)
+local function set_Quest(self, questID, info)----任务
+    questID= questID or (info and info.questID or nil)
+    if not questID then
+        return
+    end
     self:AddDoubleLine(e.GetExpansionText(nil, questID))--任务版本
-    self:AddDoubleLine(e.onlyChinese and '任务' or QUESTS_LABEL, questID)
-    local info = C_QuestLog.GetQuestTagInfo(questID)
-    get_Web_Link({frame=self, type='quest', id=questID, name=info and info.tagName, col=nil, isPetUI=false})--取得网页，数据链接
+
+    local lv=C_QuestLog.GetQuestDifficultyLevel(questID)--等级
+    local levelText
+    if lv then
+        if lv<e.Player.level then
+            levelText= '|cnGREEN_FONT_COLOR:['..lv..']|r'
+        elseif lv>e.Player.level then
+            levelText= '|cnRED_FONT_COLOR:['..lv..']|r'
+        else
+            levelText='|cffffffff['..lv..']|r'
+        end
+    end
+    self:AddDoubleLine((e.onlyChinese and '任务' or QUESTS_LABEL)..(levelText or ''), questID)
+
+    local distanceSq= C_QuestLog.GetDistanceSqToQuest(questID)--距离
+    if distanceSq and distanceSq>0 then
+        local _, x, y = QuestPOIGetIconInfo(questID)
+        if x and y then
+            x=math.modf(x*100) y=math.modf(y*100)
+        end
+        e.tips:AddDoubleLine(x and y and 'XY '..x..', '..y or ' ',  format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
+    end
+
+    local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
+    local name
+    if tagInfo and tagInfo.tagID then
+        local atlas, color = e.QuestLogQuests_GetBestTagID(questID, info, tagInfo, nil)
+        local col= color and color.hex or ''
+        self:AddDoubleLine(col..(atlas or '')..'tagID', col..tagInfo.tagID)
+        name= tagInfo.name
+    else
+        local tagID= C_QuestLog.GetQuestType(questID)
+        if tagID and tagID>0 then
+            self:AddDoubleLine('tagID', tagID)
+        end
+    end
+    get_Web_Link({frame=self, type='quest', id=questID, name=name or C_QuestLog.GetTitleForQuestID(questID), col=nil, isPetUI=false})--取得网页，数据链接
 end
 
 
@@ -1339,7 +1377,7 @@ local function Init()
     end)
 
 
-    hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', setQuest)--世界任务ID GameTooltip_AddQuest
+    hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', set_Quest)--世界任务ID GameTooltip_AddQuest
 
     --战斗宠物，技能 SharedPetBattleTemplates.lua
     hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo, additionalText)
@@ -1362,6 +1400,7 @@ local function Init()
         if tooltip~=GameTooltip and tooltip~=ItemRefTooltip then
             return
         end
+        
         --25宏, 11动作条, 4可交互物品, 14装备管理, 0物品 19玩具
         if data.type==2 then--单位
             if tooltip==e.tips then
@@ -1399,7 +1438,7 @@ local function Init()
                 set_FlyoutInfo(tooltip, data.id)
 
             elseif data.type==23 then
-                setQuest(tooltip, data.id)--任务
+                set_Quest(tooltip, data.id)--任务
 
             elseif data.type==25 then--宏
                 local frame= GetMouseFocus()
@@ -1684,18 +1723,9 @@ local function Init()
         if not info or not info.questID or not HaveQuestData(info.questID) then
             return
         end
-        e.tips:AddDoubleLine(e.GetExpansionText(nil, info.questID))--任务版本
-        local lv=C_QuestLog.GetQuestDifficultyLevel(info.questID)--ID
 
-        e.tips:AddDoubleLine((e.onlyChinese and '任务' or QUESTS_LABEL)..(lv and '['..lv..']' or ''), info.questID)
-        local distanceSq= C_QuestLog.GetDistanceSqToQuest(info.questID)--距离
-        if distanceSq then
-            local _, x, y = QuestPOIGetIconInfo(info.questID)
-            if x and y then
-                x=math.modf(x*100) y=math.modf(y*100)
-            end
-            e.tips:AddDoubleLine(x and y and 'XY '..x..', '..y,  format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
-        end
+        set_Quest(e.tips, info.questID, info)--任务
+
         if IsInGroup() then
             local n=GetNumGroupMembers()
             if n >1 then
@@ -1715,7 +1745,7 @@ local function Init()
                 e.tips:AddDoubleLine((e.onlyChinese and '共享' or SHARE_QUEST)..' '..(acceto..'/'..(n-1)), e.GetYesNo(C_QuestLog.IsPushableQuest(info.questID)))
             end
         end
-        get_Web_Link({frame=e.tips, type='quest', id=info.questID, name=info.title, col=nil, isPetUI=false})--取得网页，数据链接
+
         e.tips:Show()
     end)
 
