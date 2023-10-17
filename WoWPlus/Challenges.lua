@@ -1422,7 +1422,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 if frame.spellID then
                     if not frame.spellPort then
                         local h=frame:GetWidth()/3 +8
-                        frame.spellPort= e.Cbtn(frame, {type=true, size={h, h}, atlas='WarlockPortal-Yellow-32x32'})
+                        frame.spellPort= e.Cbtn(frame, {type=true, size={h, h}, atlas='WarlockPortal-Yellow-32x32', pushe=true})
                         frame.spellPort:SetNormalAtlas('WarlockPortal-Yellow-32x32')
                         frame.spellPort:SetPoint('BOTTOMRIGHT', frame, 4,-4)
                         frame.spellPort:SetScript("OnEnter",function(self2)
