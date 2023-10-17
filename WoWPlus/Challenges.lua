@@ -49,6 +49,10 @@ local SpellTabs={
     {spell=410074, ins=1022, map=251},--地渊孢林
     {spell=410080, ins=68, map=438},--旋云之巅
 
+}
+--[[
+
+
     {spell=424197, ins=1209},--永恒黎明：迦拉克隆的陨落 Dawn of the Infinite: Galakrond's Fall
     {spell=424197, ins=1209},--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise
     {spell=424167, ins=1021},--维克雷斯庄园 Waycrest Manor (Battle for Azeroth)
@@ -57,8 +61,8 @@ local SpellTabs={
     {spell=424153, ins=740},--黑鸦堡垒 Black Rook Hold (Legion)
     {spell=159901, ins=556},--永茂林地 The Everbloom (Warlords of Draenor)
     {spell=424142, ins=65},--潮汐王座 Throne of the Tides (Cataclysm)
-}
---[[
+
+
 
 {spell=393222, ins=1197, map=403},--奥达曼：提尔的遗产
 {spell=393267, ins=1196, map=405},--蕨皮山谷
