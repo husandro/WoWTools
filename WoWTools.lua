@@ -745,16 +745,16 @@ function e.Cstr(self, tab)--self, {size, copyFont, changeFont, fontName color={r
     return font
 end
 
-function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe
+function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton'
     tab=tab or {}
     self= self or UIParent
     local btn
     if tab.type==false then
-        btn= CreateFrame('Button', tab.name, self, 'UIPanelButtonTemplate')--MagicButtonTemplate
+        btn= CreateFrame(tab.button or 'Button', tab.name, self, 'UIPanelButtonTemplate')--MagicButtonTemplate
     elseif tab.type==true then
-        btn= CreateFrame("Button", tab.name, self, "SecureActionButtonTemplate");
+        btn= CreateFrame(tab.button or "Button", tab.name, self, "SecureActionButtonTemplate");
     else
-        btn= CreateFrame('Button', tab.name, self)
+        btn= CreateFrame(tab.button or 'Button', tab.name, self)
     end
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     btn:EnableMouseWheel(true)
