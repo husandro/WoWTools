@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= 'DormantSeeds'
 local Save={
-    --disabled= not e.Player.husandro,
+    disabled= not e.Player.husandro,
     scale=0.85,
 }
 
