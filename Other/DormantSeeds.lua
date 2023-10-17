@@ -2,6 +2,7 @@ local id, e = ...
 local addName= 'DormantSeeds'
 local Save={
     --disabled= not e.Player.husandro,
+    scale=0.85,
 }
 
 local panel= CreateFrame('Frame')
@@ -14,7 +15,7 @@ local ItemTab={
 }
 
 local function Init()
-    Button= e.Cbtn(nil, {size={22,22}, icon=true})
+    Button= e.Cbtn(nil, {size={22,22}, icon='hide'})
     function Button:set_Point()
         if Save.point then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
@@ -26,7 +27,6 @@ local function Init()
         self:SetScale(Save.scale or 1)
     end
     function Button:set_Tooltips()
-        local col= UnitAffectingCombat('player') and '|cff606060' or ''
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
@@ -37,12 +37,20 @@ local function Init()
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE), col..('Alt+'..e.Icon.mid))
-        e.tips:AddDoubleLine(e.onlyChinese and '重置位置' or RESET_POSITION, 'Ctrl+'..e.Icon.right)
-        
-        
+        local col= UnitAffectingCombat('player') and '|cff606060' or ''
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), col..('Alt+'..e.Icon.mid))
+        col= not Save.point and '|cff606060' or ''
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
+
+
         e.tips:Show()
     end
+
+    Button.texture= Button:CreateTexture()
+    Button.texture:SetAllPoints(Button)
+    Button.texture:SetAtlas(e.Icon.icon)
+    Button.texture:SetAlpha(0.5)
+
     Button:SetClampedToScreen(true)
     Button:SetMovable(true)
     Button:RegisterForDrag("RightButton")
@@ -56,10 +64,7 @@ local function Init()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
     end)
-    
-    Button:SetScript("OnEvent", function(self)
 
-    end)
     Button:SetScript("OnMouseUp", ResetCursor)
     Button:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' and IsAltKeyDown() then--移动
@@ -73,37 +78,77 @@ local function Init()
     end)
     Button:SetScript('OnMouseWheel',function(self, d)
         if IsAltKeyDown() and not UnitAffectingCombat('player') then
-            local scale=Save.scale or 1
+            local scale= Save.scale or 1
             if d==1 then
-                scale= scale+0.05
+                scale= scale+ 0.05
             elseif d==-1 then
                 scale= scale- 0.05
             end
+            scale= scale>4 and 4 or scale
+            scale= scale<0.4 and 0.4 or scale
             Save.scale=scale
             self:set_Scale()
             self:set_Tooltips()
         end
     end)
-    Button:SetScript('OnLeave', function()
+    Button:SetScript('OnLeave', function(self)
         e.tips:Hide()
         ResetCursor()
+        self.texture:SetAlpha(0.5)
     end)
-    Button:SetScript('OnEnter', Button.set_Tooltips)
-    
+    Button:SetScript('OnEnter', function(self)
+        self:set_Tooltips()
+        self.texture:SetAlpha(1)
+    end)
+
+
+    function Button:set_Event()
+        self:UnregisterAllEvents()
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
+        if self.uiMapID then
+            self:RegisterEvent('PLAYER_REGEN_DISABLED')
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            self:RegisterEvent('BAG_UPDATE')
+            self:RegisterEvent('BAG_UPDATE_DELAYED')
+        end
+    end
+    function Button:set_Shown()
+        self:SetShown(self.uiMapID and not UnitAffectingCombat('player'))
+    end
+    function Button:get_UIMapID()
+        self.uiMapID= C_Map.GetBestMapForUnit('player')==2200 and true or false
+    end
+    Button:SetScript("OnEvent", function(self, event)
+        if event=='PLAYER_ENTERING_WORLD' then
+            self:get_UIMapID()
+            self:set_Event()
+        elseif event=='PLAYER_REGEN_ENABLED' then
+            if self.setButtonInCombat then
+                self:set_button()
+            end
+        elseif event=='BAG_UPDATE' or event=='BAG_UPDATE_DELAYED' then
+            self:set_button()
+        end
+        self:set_Shown()
+    end)
 
     Button.btn={}
     function Button:set_button()
+        self.setButtonInCombat=nil
+        if UnitAffectingCombat('player') then
+            self.setButtonInCombat=true
+            return
+        end
         local index=1
         for _, itemID in pairs(ItemTab) do
             local num= GetItemCount(itemID)
             if num>0 then
                 local btn= self.btn[index]
                 if not btn then
-                    --btn= CreateFrame('ItemButton',nil, self)
-                    btn= e.Cbtn(self, {type=true, size={22,22}, button='ItemButton', icon='hide'})
+                    btn= e.Cbtn(self, {type=true, button='ItemButton', icon='hide', pushe=false})
                     btn:SetAttribute('type*', 'item')
-                    
-                    btn:SetPoint('TOP', index==1 and Button or self.btn[index-1], 'BOTTOM', 0, -16)
+
+                    btn:SetPoint('TOP', index==1 and Button or self.btn[index-1], 'BOTTOM', 0, -6)
                     btn:SetScript('OnEnter', function(self2)
                         if self2.itemID  then
                             e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -113,20 +158,24 @@ local function Init()
                         end
                     end)
                     btn:SetScript('OnLeave', function() e.tips:Hide() end)
+                    btn:UpdateItemContextOverlayTextures(1)
                     self.btn[index]= btn
                 end
-                
-                btn.itemID= itemID
-
-                local icon= C_Item.GetItemIconByID(itemID)
-                local name= C_Item.GetItemNameByID(itemID) or itemID
-
-                btn:SetAttribute('item*', name)
-                --btn:SetNormalTexture(icon or 0)
-
-                btn:SetItem(itemID)
+                if btn.itemID~= itemID then
+                    btn.itemID= itemID
+                    local name=C_Item.GetItemNameByID(itemID) or GetItemInfo(itemID) or itemID
+                    btn:SetAttribute('item*', name)
+                    btn:SetItem(itemID)
+                end
                 btn:SetItemButtonCount(GetItemCount(itemID))
                 index= index+1
+            end
+        end
+        for i= index+1, #self.btn do
+            local btn= self.btn[i]
+            if btn then
+                btn:Reset()
+                btn:SetShown(false)
             end
         end
     end
@@ -134,10 +183,14 @@ local function Init()
     Button:set_Point()
     Button:set_button()
     Button:set_Scale()
+    Button:get_UIMapID()
+    Button:set_Event()
+    Button:set_Shown()
 end
 
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:RegisterEvent('PLAYER_LOGOUT')
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -149,6 +202,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     e.tips:SetOwner(SettingsPanel, "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     e.tips:SetItemByID(208047)
+                    e.tips:AddLine(' ')
+                    local info= C_Map.GetMapInfo(2200) or {}
+                    e.tips:AddDoubleLine( '|cnGREEN_FONT_COLOR:'..format(LFG_LIST_CROSS_FACTION, info.name or 'uiMapID 2200'), '|cnGREEN_FONT_COLOR:uiMapID 2200')
                     e.tips:Show()
                 end,
                 value= not Save.disabled,
@@ -164,6 +220,14 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
                 C_Timer.After(2, Init)
             end
+
+            self:UnregisterEvent('ADDON_LOADED')
         end
+
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave[addName]=Save
+        end
+
     end
 end)

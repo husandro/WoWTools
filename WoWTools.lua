@@ -760,6 +760,8 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, butto
     btn:EnableMouseWheel(true)
     if tab.size then
         btn:SetSize(tab.size[1], tab.size[2])
+    elseif tab.button=='ItemButton' then
+        btn:SetSize(34, 34)
     end
     if tab.type~=false then
         if tab.pushe then

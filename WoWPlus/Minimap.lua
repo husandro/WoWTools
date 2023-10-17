@@ -144,7 +144,7 @@ local function get_widgetSetID_Text(widgetSetID, all)
                 and info.barMax
                 and info.barMax>0
                 and info.barValue
-                and info.text
+                and info.text and info.text~=''
             then
                 local text3
                 if info.barValueTextType == Enum.StatusBarValueTextType.Value then--Blizzard_UIWidgetTemplateBase.lua
