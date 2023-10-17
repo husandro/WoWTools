@@ -9,9 +9,10 @@ local panel= CreateFrame('Frame')
 local Button
 
 local ItemTab={
-    '208066',--小小的梦境之种
-    '208067',--饱满的梦境之种
-    '208047',--硕大的梦境之种
+    208066,--小小的梦境之种
+    208067,--饱满的梦境之种
+    208047,--硕大的梦境之种
+    210014
 }
 
 local function Init()
@@ -19,8 +20,10 @@ local function Init()
     function Button:set_Point()
         if Save.point then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+        elseif e.Player.husandro then
+            self:SetPoint('TOPRIGHT', PlayerFrame, 'TOPLEFT',10,10)
         else
-            self:SetPoint('CENTER', -100, 100)
+            self:SetPoint('CENTER', -400, 200)
         end
     end
     function Button:set_Scale()
@@ -33,7 +36,16 @@ local function Init()
         e.tips:AddLine(' ')
         for _, itemID in pairs(ItemTab) do
             local link= select(2, GetItemInfo(itemID)) or itemID
-            e.tips:AddDoubleLine(link, GetItemCount(itemID))
+            local icon= C_Item.GetItemIconByID(itemID)
+            icon= icon and '|T'..icon..':0|t' or ''
+            local num
+            num= GetItemCount(itemID)
+            num= num>0 and '|cnGREEN_FONT_COLOR:'..num or ('|cnRED_FONT_COLOR:'..num)
+            e.tips:AddDoubleLine(icon..link, num)
+        end
+        local info= C_CurrencyInfo.GetCurrencyInfo(2650)
+        if info and info.quantity and info.name then
+            e.tips:AddDoubleLine((info.iconFileID and '|T'..info.iconFileID..':0|t' or '')..info.name, info.quantity)
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
@@ -41,8 +53,6 @@ local function Init()
         e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), col..('Alt+'..e.Icon.mid))
         col= not Save.point and '|cff606060' or ''
         e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
-
-
         e.tips:Show()
     end
 
@@ -113,7 +123,9 @@ local function Init()
         end
     end
     function Button:set_Shown()
-        self:SetShown(self.uiMapID and not UnitAffectingCombat('player'))
+        if not UnitAffectingCombat('player') then
+            self:SetShown(self.uiMapID and not UnitAffectingCombat('player'))
+        end
     end
     function Button:get_UIMapID()
         self.uiMapID= C_Map.GetBestMapForUnit('player')==2200 and true or false
@@ -145,9 +157,8 @@ local function Init()
             if num>0 then
                 local btn= self.btn[index]
                 if not btn then
-                    btn= e.Cbtn(self, {type=true, button='ItemButton', icon='hide', pushe=false})
+                    btn= e.Cbtn(self, {type=true, button='ItemButton', icon='hide'})
                     btn:SetAttribute('type*', 'item')
-
                     btn:SetPoint('TOP', index==1 and Button or self.btn[index-1], 'BOTTOM', 0, -6)
                     btn:SetScript('OnEnter', function(self2)
                         if self2.itemID  then
@@ -171,7 +182,7 @@ local function Init()
                 index= index+1
             end
         end
-        for i= index+1, #self.btn do
+        for i= index, #self.btn do
             local btn= self.btn[i]
             if btn then
                 btn:Reset()

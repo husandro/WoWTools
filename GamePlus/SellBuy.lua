@@ -140,7 +140,7 @@ local function setSellItems()
     end
     local num, gruop, preceTotale= 0, 0, 0
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do
-        for slot=0, C_Container.GetContainerNumSlots(bag) do--背包数量
+        for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
             local info = C_Container.GetContainerItemInfo(bag,slot)
             if info
                 and info.hyperlink

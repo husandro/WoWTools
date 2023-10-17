@@ -200,7 +200,14 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
             else
                 self.noEnchant:SetPoint('RIGHT', self, 'LEFT', -8, 0)
             end
-
+            self.noEnchant:SetScript('OnMouseDown', function()
+                if MerchantFrame:IsVisible() then
+                    MerchantFrame:SetShown(false)
+                end
+                if SendMailFrame:IsShown() then
+                    MailFrame:SetShown(false)
+                end
+            end)
             self.noEnchant:SetScript('OnLeave',function(self2) e.tips:Hide() self2:SetAlpha(1) end)
             self.noEnchant:SetScript('OnEnter' ,function(self2)
                 if self2.tab then

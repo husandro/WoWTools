@@ -109,15 +109,63 @@ local function get_AreaPOIInfo_Name(poiInfo)
 end
 local function get_widgetSetID_Text(widgetSetID, all)
     local text
+    
     for _, widget in ipairs(widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(widgetSetID) or {}) do
+        local info
         if widget.widgetID then
-            local info
-            info = C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
-            if info
-                and info.shownState == Enum.WidgetShownState.Shown
-                and info.text
-                and (info.hasTimer or not all)
-            then
+            if widget.widgetType ==Enum.UIWidgetVisualizationType.IconAndText then info= C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.CaptureBar then info= C_UIWidgetManager.GetCaptureBarWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StatusBar then info= C_UIWidgetManager.GetStatusBarWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleStatusBar then info= C_UIWidgetManager.GetDoubleStatusBarWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.IconTextAndBackground then info= C_UIWidgetManager.GetIconTextAndBackgroundWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleIconAndText then info= C_UIWidgetManager.GetDoubleIconAndTextWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StackedResourceTracker then info= C_UIWidgetManager.GetStackedResourceTrackerWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.IconTextAndCurrencies then info= C_UIWidgetManager.GetIconTextAndCurrenciesWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextWithState then info= C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.HorizontalCurrencies then info= C_UIWidgetManager.GetHorizontalCurrenciesWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.BulletTextList then info= C_UIWidgetManager.GetBulletTextListWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ScenarioHeaderCurrenciesAndBackground then info= C_UIWidgetManager.GetScenarioHeaderCurrenciesAndBackgroundWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureAndText then info= C_UIWidgetManager.GetTextureAndTextVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.SpellDisplay then info= C_UIWidgetManager.GetSpellDisplayVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleStateIconRow then info= C_UIWidgetManager.GetDoubleStateIconRowVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureAndTextRow then info= C_UIWidgetManager.GetTextureAndTextRowVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ZoneControl then info= C_UIWidgetManager.GetZoneControlVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.CaptureZone then info= C_UIWidgetManager.GetCaptureZoneVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureWithAnimation then info= C_UIWidgetManager.GetTextureWithAnimationVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DiscreteProgressSteps then info= C_UIWidgetManager.GetDiscreteProgressStepsVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ScenarioHeaderTimer then info= C_UIWidgetManager.GetScenarioHeaderTimerWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextColumnRow then info= C_UIWidgetManager.GetTextColumnRowVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.Spacer then info= C_UIWidgetManager.GetSpacerVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.UnitPowerBar then info= C_UIWidgetManager.GetUnitPowerBarWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.FillUpFrames then info= C_UIWidgetManager.GetFillUpFramesWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextWithSubtext then info= C_UIWidgetManager.GetTextWithSubtextWidgetVisualizationInfo(widget.widgetID)
+            --elseif widget.widgetType ==Enum.UIWidgetVisualizationType.WorldLootObject		Added in 10.1.0
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ItemDisplay then info= C_UIWidgetManager.GetItemDisplayVisualizationInfo(widget.widgetID)
+            end
+        end
+        if info and info.shownState == Enum.WidgetShownState.Shown and info.text and info.text~='' then
+           if info.hasTimer or not all then
+                local barText
+                if info.barMax and info.barMax>0 and info.barValue then
+                    if info.barValueTextType == Enum.StatusBarValueTextType.Value then--Blizzard_UIWidgetTemplateBase.lua
+                        barText= info.barValue--2
+
+                    elseif info.barValueTextType == Enum.StatusBarValueTextType.ValueOverMax then
+                        barText= FormatFraction(info.barValue, info.barMax)--5
+
+                    elseif info.barValueTextType == Enum.StatusBarValueTextType.ValueOverMaxNormalized then
+                        barText= FormatFraction(info.barValue - info.barMin, info.barMax - info.barMin);
+
+                    elseif info.barValueTextType == Enum.StatusBarValueTextType.Percentage then--1
+                        local barPercent = PercentageBetween(info.barValue, info.barMin, info.barMax);
+                        barText= FormatPercentage(barPercent, true);
+                        
+                    elseif info.barValueTextType == Enum.StatusBarValueTextType.Time then
+                        barText = SecondsToTime(info.barValue, false, true, nil, true);
+                    end
+                end
+                barText= barText and '|cffffffff'..barText..'|r ' or ''
+                
                 local text3= info.text:gsub('^|n', '')
                 text3= text3:gsub('|n', '|n       ')
                 text3= text3:gsub(':%d+|t', ':0|t')
@@ -135,39 +183,7 @@ local function get_widgetSetID_Text(widgetSetID, all)
                     text3= col:WrapTextInColorCode(text3)
                 end
 
-                text= (text and text..'|n' or '').. '       '..text3
-            end
-
-            info= C_UIWidgetManager.GetStatusBarWidgetVisualizationInfo(widget.widgetID)
-            if info
-                and info.shownState==Enum.WidgetShownState.Shown
-                and info.barMax
-                and info.barMax>0
-                and info.barValue
-                and info.text and info.text~=''
-            then
-                local text3
-                if info.barValueTextType == Enum.StatusBarValueTextType.Value then--Blizzard_UIWidgetTemplateBase.lua
-                    text3= info.barValue;
-                elseif info.barValueTextType == Enum.StatusBarValueTextType.ValueOverMax then
-                    text3= FormatFraction(info.barValue, info.barMax);
-                elseif info.barValueTextType == Enum.StatusBarValueTextType.ValueOverMaxNormalized then
-                    text3= FormatFraction(info.barValue - info.barMin, info.barMax - info.barMin);
-                elseif info.barValueTextType == Enum.StatusBarValueTextType.Percentage then
-                    local barPercent = PercentageBetween(info.barValue, info.barMin, info.barMax);
-                    text3= FormatPercentage(barPercent, true);
-                elseif info.barValueTextType == Enum.StatusBarValueTextType.Time then
-                    text3 = SecondsToTime(info.barValue, false, true, nil, true);
-                end
-                if text3 then
-                    text3= '|cffffffff'..text3..'|r'
-                    if info.text then
-                        local col= barColorFromTintValue[info.colorTint]
-                        info.text= info.text:gsub('^|n', '')
-                        text3= text3..' '..(col and col:WrapTextInColorCode(info.text) or info.text)
-                    end
-                    text= (text and '|n'..text or '')..'       '..text3:gsub('|n', '|n       ')
-                end
+                text=(text and text..'|n' or '').. '       '..barText..text3
             end
         end
     end
