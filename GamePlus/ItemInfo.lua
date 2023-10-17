@@ -13,7 +13,7 @@ local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s";
 local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 local FMTab={}--附魔
 local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
-local andStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s";
+--local andStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s";
 local size= 10--字体大小
 
 
@@ -115,7 +115,8 @@ local function set_Item_Info(self, tab)
 
         elseif classID==3 then--宝石
             if expacID== e.ExpansionLevel then
-                local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+%d+ .+)', }})--物品提示，信息
+                leftText, bottomLeftText= e.Get_Gem_Stats(tab, itemLink)
+                --[[local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+%d+ .+)', }})--物品提示，信息
                 local text= dateInfo.text['(%+%d+ .+)']
                 if text and text:find('%+') then
                     local str2, str3
@@ -137,7 +138,7 @@ local function set_Item_Info(self, tab)
                             bottomLeftText= bottomLeftText and '|cffffffff'..bottomLeftText..'|r'
                         end
                     end
-                end
+                end]]
             end
             rightText= itemLevel
 

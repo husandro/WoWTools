@@ -85,8 +85,8 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             btn:SetScript('OnLeave', function() e.tips:Hide() end)
 
             btn.level=e.Cstr(btn)
-            btn.level:SetPoint('TOP',0,5)
-
+            btn.level:SetPoint('TOPRIGHT')
+        
             table.insert(Buttons, btn)
         end
 
@@ -100,6 +100,8 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
         btn:SetItemButtonCount(GetItemCount(info.hyperlink))
         btn:SetAlpha(info.isLocked and 0.3 or 1)
         btn:SetShown(true)
+
+        e.Get_Gem_Stats({bag={bag=items[index].bag, slot=items[index].slot}}, nil, btn)
     end
 
     for index= #items+1, #Buttons, 1 do

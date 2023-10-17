@@ -1464,6 +1464,51 @@ function e.set_CVar(name, value)-- e.set_CVar()--设置 Cvar
     end
 end
 
+--显示, 宝石, 属性
+local AndStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s";
+function e.Get_Gem_Stats(tab, itemLink, self)
+    local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+%d+ .+)', }})--物品提示，信息
+    local text= dateInfo.text['(%+%d+ .+)']
+    local leftText, bottomLeftText
+    if text and text:find('%+') then
+        local str2, str3
+        if text:find(', ') then
+            str2, str3= text:match('(.-), (.+)')
+        elseif text:find('，') then
+            str2, str3= text:match('(.-)，(.+)')
+        else
+            str2, str3= text:match(AndStr)
+        end
+        str2= str2 or text:match('%+%d+ .+')
+        if str2 then
+            str2= str2:match('%+%d+ (.+)')
+            leftText= e.WA_Utf8Sub(str2,1,3, true)
+            leftText= leftText and '|cffffffff'..leftText..'|r'
+            if str3 then
+                str3= str3:match('%+%d+ (.+)')
+                bottomLeftText= e.WA_Utf8Sub(str3,1,3, true)
+                bottomLeftText= bottomLeftText and '|cffffffff'..bottomLeftText..'|r'
+            end
+        end
+    end
+    if self then
+        if leftText and not self.leftText then
+            self.leftText= e.Cstr(self, {size=10})
+            self.leftText:SetPoint('LEFT')
+        end
+        if self.leftText then
+            self.leftText:SetText(leftText or '')
+        end
+        if bottomLeftText and not self.bottomLeftText then
+            self.bottomLeftText= e.Cstr(self, {size=10})
+            self.bottomLeftText:SetPoint('BOTTOMLEFT')
+        end
+        if self.bottomLeftText then
+            self.bottomLeftText:SetText(bottomLeftText or '')
+        end
+    end
+    return leftText, bottomLeftText
+end
 
 --###############
 --显示, 物品, 属性
