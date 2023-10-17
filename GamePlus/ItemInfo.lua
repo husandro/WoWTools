@@ -114,7 +114,7 @@ local function set_Item_Info(self, tab)
             --topLeftText= dateInfo.text[bagNumStr]--格数 CONTAINER_SLOTS  不知怎样处理--%2$s da %1$d |4scomparto:scomparti
 
         elseif classID==3 then--宝石
-            if expacID== e.ExpansionLevel then
+            if expacID== e.ExpansionLevel or not e.Player.levelMax then
                 leftText, bottomLeftText= e.Get_Gem_Stats(tab, itemLink)
                 --[[local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+%d+ .+)', }})--物品提示，信息
                 local text= dateInfo.text['(%+%d+ .+)']
