@@ -48,8 +48,18 @@ local SpellTabs={
     {spell=410078, ins=767, map=206},--奈萨里奥的巢穴
     {spell=410074, ins=1022, map=251},--地渊孢林
     {spell=410080, ins=68, map=438},--旋云之巅
+
+    {spell=424197, ins=1209},--永恒黎明：迦拉克隆的陨落 Dawn of the Infinite: Galakrond's Fall
+    {spell=424197, ins=1209},--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise
+    {spell=424167, ins=1021},--维克雷斯庄园 Waycrest Manor (Battle for Azeroth)
+    {spell=424187, ins=1176},--阿塔达萨 Atal'Dazar (Battle for Azeroth)
+    {spell=424163, ins=762},--黑心林地 Darkheart Thicket (Legion)
+    {spell=424153, ins=740},--黑鸦堡垒 Black Rook Hold (Legion)
+    {spell=159901, ins=556},--永茂林地 The Everbloom (Warlords of Draenor)
+    {spell=424142, ins=65},--潮汐王座 Throne of the Tides (Cataclysm)
 }
 --[[
+
 {spell=393222, ins=1197, map=403},--奥达曼：提尔的遗产
 {spell=393267, ins=1196, map=405},--蕨皮山谷
 {spell=393283, ins=1204, map=406},--注能大厅
@@ -62,7 +72,6 @@ local SpellTabs={
 
 {spell=393262, ins=, map=},--诺库德阻击战
 {spell=159897, ins=, map=},--奥金顿
-{spell=159901, ins=, map=},--永茂林地
 {spell=354467, ins=, map=},--伤逝剧场
 {spell=373191, ins=, map=},--统御圣所
 {spell=131232, ins=, map=},--通灵学院
@@ -1008,7 +1017,7 @@ local function set_All_Text()--所有记录
 
         if tab.type=='currency' then
             local info=C_CurrencyInfo.GetCurrencyInfo(tab.id)
-            if info and info.discovered and info.quantity and info.maxQuantity then
+            if info and info.discovered and info.quantity and info.quantity>0 and info.maxQuantity then
                 if info.maxQuantity>0  then
 
                     if info.quantity==info.maxQuantity then
@@ -1040,10 +1049,12 @@ local function set_All_Text()--所有记录
                 text= (info.iconFileID and '|T'..info.iconFileID..':0|t' or '')..text
             end
         elseif tab.type=='item' then
-            e.LoadDate({id=tab.id, type='item'})
-            local icon= C_Item.GetItemIconByID(tab.id)
             local num= GetItemCount(tab.id, true)
-            text= (icon and icon>0 and '|T'..icon..':0|t' or (select(2,  GetItemInfo(tab.id)) or C_Item.GetItemNameByID(tab.id) or tab.id))..' x'..num
+            if num>0 then
+                e.LoadDate({id=tab.id, type='item'})
+                local icon= C_Item.GetItemIconByID(tab.id)
+                text= (icon and icon>0 and '|T'..icon..':0|t' or (select(2,  GetItemInfo(tab.id)) or C_Item.GetItemNameByID(tab.id) or tab.id))..' x'..num
+            end
         end
         if not lable and text~='' then
             lable=e.Cstr(ChallengesFrame.tipsFrame, {mouse=true})
