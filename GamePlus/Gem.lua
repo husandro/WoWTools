@@ -12,7 +12,6 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     end
 
     local items={}
-    --local links={}
     local gem1007= select(2, GetSocketItemInfo())== 4638590 --204000, 204030
 
       for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES do
@@ -21,7 +20,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             if info
                 and info.hyperlink
                 and info.itemID
-                and not info.isLocked
+                and info.quality
                 and (
                         (gem1007 and info.itemID>=204000 and info.itemID<=204030)
                     or (not gem1007 and (info.itemID<204000 or info.itemID>204030))
@@ -31,8 +30,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 local classID, _, _, expacID= select(12, GetItemInfo(info.hyperlink))
 
                 if classID==3
-                    --and (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax)--最高等级
-                    --and (not links[info.itemID] or links[info.itemID]~= level)--装等不一样
+                    and (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax)--最高等级
                 then
                     table.insert(items, {
                         info= info,
@@ -40,8 +38,6 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                         slot=slot,
                         level= level,
                     })
-                    --links[info.itemID]= level
-                    --print(info.hyperlink)
                 end
             end
         end
@@ -67,14 +63,6 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
         if not btn then
             btn= e.Cbtn(ItemSocketingFrame, {button='ItemButton', icon='hide'})
             btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT', x, y)
-            --[[if index==1 then
-                btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT',-10,-6)
-            elseif index>=9 and select(2, math.modf(index /9))==0 then
-                local y=math.modf(index / 9)
-                btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT',-10, -y*44)
-            else
-                btn:SetPoint('RIGHT', Buttons[index-1], 'LEFT', -4,0)
-            end]]
             btn:SetScript('OnMouseDown', function(self, d)
                 if self.bag and self.slot then
                     if d=='LeftButton' then
@@ -110,6 +98,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
 
         btn:SetItem(info.hyperlink)
         btn:SetItemButtonCount(GetItemCount(info.hyperlink))
+        btn:SetAlpha(info.isLocked and 0.3 or 1)
         btn:SetShown(true)
     end
 
