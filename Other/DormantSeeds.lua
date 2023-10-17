@@ -12,7 +12,7 @@ local ItemTab={
     208066,--小小的梦境之种
     208067,--饱满的梦境之种
     208047,--硕大的梦境之种
-    210014
+   -- 210014
 }
 
 local function Init()
@@ -123,9 +123,7 @@ local function Init()
         end
     end
     function Button:set_Shown()
-        if not UnitAffectingCombat('player') then
-            self:SetShown(self.uiMapID and not UnitAffectingCombat('player'))
-        end
+        self:SetShown(self.uiMapID and not UnitAffectingCombat('player'))
     end
     function Button:get_UIMapID()
         self.uiMapID= C_Map.GetBestMapForUnit('player')==2200 and true or false
@@ -141,7 +139,12 @@ local function Init()
         elseif event=='BAG_UPDATE' or event=='BAG_UPDATE_DELAYED' then
             self:set_button()
         end
-        self:set_Shown()
+
+        if event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then
+            self:set_Shown()
+        elseif not UnitAffectingCombat('player') then
+            self:set_Shown()
+        end
     end)
 
     Button.btn={}
