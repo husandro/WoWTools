@@ -1295,20 +1295,22 @@ end
 --########################
 --打开周奖励时，提示拾取专精
 --########################
+local WeekRewardLookFrame
 local function set_Week_Reward_Look_Specialization()
-    if not C_WeeklyRewards.HasAvailableRewards() then
+    if not C_WeeklyRewards.HasAvailableRewards() or WeekRewardLookFrame then
         return
     else
         print(id, addName,'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
     end
     
-    local frame= CreateFrame("Frame")
-    frame:SetSize(40,40)
-    frame:SetPoint("CENTER", -100, 60)
-    frame:Raise()
-    frame:SetShown(false)
-    frame:RegisterEvent('PLAYER_UPDATE_RESTING')
-    function frame:set_Event()
+    WeekRewardLookFrame= CreateFrame("Frame")
+    WeekRewardLookFrame:SetSize(40,40)
+    WeekRewardLookFrame:SetPoint("CENTER", -100, 60)
+    WeekRewardLookFrame:Raise()
+    WeekRewardLookFrame:SetShown(false)
+    WeekRewardLookFrame:RegisterEvent('PLAYER_UPDATE_RESTING')
+    WeekRewardLookFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    function WeekRewardLookFrame:set_Event()
         if not C_WeeklyRewards.HasAvailableRewards() then
             self:UnregisterAllEvents()
             self:SetShown(false)
@@ -1319,17 +1321,17 @@ local function set_Week_Reward_Look_Specialization()
             self:RegisterEvent('UNIT_SPELLCAST_SENT')
         end
     end
-    frame:set_Event()
-    function frame:set_Show(show)
+    WeekRewardLookFrame:set_Event()
+    function WeekRewardLookFrame:set_Show(show)
         if self.time and not self.time:IsCancelled() then
             self.time:Cancel()
         end
         self:SetShown(show)
         e.Ccool(self, nil, show and 4 or 0, nil, true, true, true)
     end
-    function frame:set_Texture()
+    function WeekRewardLookFrame:set_Texture()
         if not self.texture then
-            self.texture= frame:CreateTexture(nil, 'BACKGROUND')
+            self.texture= self:CreateTexture(nil, 'BACKGROUND')
             self.texture:SetAllPoints(self)
             self:SetScript('OnEnter', function(self2)
                 self2:set_Show(false)
@@ -1353,7 +1355,7 @@ local function set_Week_Reward_Look_Specialization()
         end
         SetPortraitToTexture(self.texture, texture or 0)
     end
-    frame:SetScript('OnEvent', function(self, event, unit, target, _, spellID)
+    WeekRewardLookFrame:SetScript('OnEvent', function(self, event, unit, target, _, spellID)
         if event=='PLAYER_UPDATE_RESTING' then
             self:set_Event()
 
@@ -1631,7 +1633,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("CHALLENGE_MODE_COMPLETED")
 
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -1646,13 +1648,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
-
-            --[[添加控制面板        
-            local sel=e.AddPanel_Check('|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(e.onlyChinese and '史诗钥石地下城' or addName), not Save.disabled)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)]]
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
