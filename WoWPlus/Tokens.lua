@@ -666,7 +666,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				func= function(_, arg1)
 					Save.item[arg1]= nil
 					if TrackButton then
-						TrackButton:set_Shown()
+						TrackButton.set_TrackButton_Text()
 					end
 					print(id, addName, e.onlyChinese and '移除' or REMOVE, select(2, GetItemInfo(itemID)) or ('itemID '..itemID))
 				end
