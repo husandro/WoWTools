@@ -37,7 +37,12 @@ local function Get_Currency(tab)--货币
 	end
 
 	local text
-    if not info or not info.iconFileID or not info.quantity or info.quantity<=0 then
+    if not info
+		or not info.iconFileID
+		or not info.quantity
+		or info.quantity<0
+		or (info.quantity==0 and not (info.canEarnPerWeek and info.useTotalEarnedForMaxQty))
+	then
 		if info and info.isHeader and Save.showName and info.name then
 			if tab.toRight then
 				text= '|cffffffff'..info.name..'|r'..e.Icon.icon
@@ -64,11 +69,19 @@ local function Get_Currency(tab)--货币
     local name=  tab.showName and info.name or nil
 	local num= e.MK(info.quantity, tab.bit or 3)
 
-	local weekMax= info.canEarnPerWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek--本周
-	local earnedMax= info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity--赛季
+	
 
+	local weekMax= info.canEarnPerWeek--本周
+			and info.maxWeeklyQuantity
+			and info.maxWeeklyQuantity>0
+			and info.maxWeeklyQuantity==info.quantityEarnedThisWeek
+	local earnedMax= info.useTotalEarnedForMaxQty--赛季
+			and info.totalEarned
+			and info.totalEarned>0
+			and info.totalEarned==info.maxQuantity
     local max
-	if info.quantity==info.maxQuantity--最大数
+
+	if (info.quantity==info.maxQuantity and info.maxQuantity and info.maxQuantity>0)--最大数
 		or weekMax
 		or earnedMax
 	then
@@ -93,7 +106,8 @@ local function Get_Currency(tab)--货币
 	end
 
 	if tab.toRight then
-		text= (max or '')
+		text= (need and need..' ' or '')
+			..(max or '')
 			..num
 			..(name and ' '..name or '')
 			..icon
@@ -104,6 +118,7 @@ local function Get_Currency(tab)--货币
 			..(name and ' '..name..' ' or '')
 			..num
 			..(max or '')
+			..(need and ' '..need or '')
 	end
 
 
