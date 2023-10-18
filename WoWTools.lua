@@ -647,10 +647,6 @@ function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', si
     end
 end
 
-
-
-
-
 function e.Get_CVar_Tooltips(info)--取得CVar信息 e.Get_CVar_Tooltips({name= ,msg=, value=})
     return (info.msg and info.msg..'|n' or '')..info.name..'|n'
     ..(info.value and C_CVar.GetCVar(info.name)== info.value and e.Icon.select2 or '')
@@ -665,7 +661,13 @@ function e.set_CVar(name, value)-- e.set_CVar()--设置 Cvar
     end
 end
 
-
+function e.SetButtonKey(self, set, key, click)--设置清除快捷键
+    if set then
+        SetOverrideBindingClick(self, true, key, self:GetName(), click or 'LeftButton')
+    else
+        ClearOverrideBindings(self)
+    end
+end
 
 
 
@@ -1497,14 +1499,6 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
 end
 
 
-
-function e.SetButtonKey(self, set, key, click)--设置清除快捷键
-    if set then
-        SetOverrideBindingClick(self, true, key, self:GetName(), click or 'LeftButton')
-    else
-        ClearOverrideBindings(self)
-    end
-end
 
 
 
