@@ -338,16 +338,17 @@ local function set_Button_Text()
     if Save.currentMapAreaPoiIDs then
         local uiMapID= C_Map.GetBestMapForUnit("player")
         if uiMapID and uiMapID>0 and not Save.uiMapIDs[uiMapID] then
-            local tab={}
+            local nameTab={}
             for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
-                if not Save.areaPoiIDs[areaPoiID] and not tab[areaPoiID] then
+                if not Save.areaPoiIDs[areaPoiID] then
                     local area= get_areaPoiID_Text(uiMapID, areaPoiID, true)
-                    if area then
+                    if area and not nameTab[area] then
                         areaPoiAllText= areaPoiAllText and areaPoiAllText..'|n'..area or area
-                        tab[areaPoiID]=true
+                        nameTab[area]=true
                     end
                 end
             end
+            nameTab=nil
         end
     end
 
