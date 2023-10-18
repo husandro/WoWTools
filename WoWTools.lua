@@ -677,6 +677,18 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 --周奖励，提示
 function e.Get_Weekly_Rewards_Activities(settings)
     local R = {}
@@ -818,8 +830,8 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
     {type='item', id=204195},--幼龙的暗影烈焰纹章
     {type='item', id=204194},--守护巨龙的暗影烈焰纹章
     {type='item', id=204193},--雏龙的暗影烈焰纹章
-
-    {type='currency', id=2709},--守护巨龙的酣梦纹章 10.2
+    
+    {type='currency', id=2709, vouta=true},--守护巨龙的酣梦纹章 10.2
     {type='currency', id=2708},--魔龙的酣梦纹章
     {type='currency', id=2707},--幼龙的酣梦纹章
 
@@ -887,11 +899,9 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
             if not lable then
                 lable=e.Cstr(settings.frame, {mouse=true})
                 if last then
-                    lable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
+                    lable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, tab.vouta and -6 or -2)
                 elseif settings.point then
                     lable:SetPoint(settings.point[1], settings.point[2] or settings.frame, settings.point[3], settings.point[4], settings.point[5])
-                else
-                    lable:SetPoint('TOPLEFT', settings.frame, 'BOTTOMLEFT',0, -12)
                 end
                 lable:SetScript("OnEnter",function(self)
                     e.tips:SetOwner(self, "ANCHOR_RIGHT")

@@ -168,6 +168,16 @@ local function EncounterJournal_Set_All_Info_Text()
         AllTipsFrame:SetSize(1,1)
         AllTipsFrame.label= e.Cstr(AllTipsFrame)
         AllTipsFrame.label:SetPoint('TOPLEFT')
+        AllTipsFrame.weekLable= e.Cstr(AllTipsFrame, {mouse=true})
+        AllTipsFrame.weekLable:SetPoint('TOPLEFT', AllTipsFrame.label, 'BOTTOMLEFT', 0, -12)
+        AllTipsFrame.weekLable:SetScript('OnMouseDown', function(self)
+            if not IsAddOnLoaded("Blizzard_WeeklyRewards") then LoadAddOn("Blizzard_WeeklyRewards") end--周奖励面板
+            WeeklyRewards_ShowUI()--WeeklyReward.lua
+            self:SetAlpha(1)
+        end)
+        AllTipsFrame.weekLable:SetScript('OnLeave', function(self) self:SetAlpha(1) end)
+        AllTipsFrame.weekLable:SetScript('OnEnter', function(self) self:SetAlpha(0.5) end)
+        
     end
     local m, text, num
 
@@ -209,17 +219,21 @@ local function EncounterJournal_Set_All_Info_Text()
         m= m and m..'|n|n' or ''
         m= m..num..' '..'|cnGREEN_FONT_COLOR:'..text..'|r'
     end
+    AllTipsFrame.label:SetText(m or '')
 
-    --本周还可获取奖励
-    if C_WeeklyRewards.HasAvailableRewards() then--C_WeeklyRewards.CanClaimRewards() then
-        m= m and m..'|n|n' or ''
-        m=m..'|A:oribos-weeklyrewards-orb-dialog:0:0|a|cnGREEN_FONT_COLOR:'..
-        (e.onlyChinese and '宏伟宝库里有奖励在等待着你。' or GREAT_VAULT_REWARDS_WAITING)..'|r'
+    
+   --本周还可获取奖励
+   if C_WeeklyRewards.HasAvailableRewards() then--C_WeeklyRewards.CanClaimRewards() then
+        AllTipsFrame.weekLable:SetText('|A:oribos-weeklyrewards-orb-dialog:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '宏伟宝库里有奖励在等待着你。' or GREAT_VAULT_REWARDS_WAITING))
+    else
+        AllTipsFrame.weekLable:SetText('')
     end
-    AllTipsFrame.label:SetText(m)
-
     --周奖励，提示
-    local last= e.Get_Weekly_Rewards_Activities({frame=AllTipsFrame, point={'TOPLEFT', AllTipsFrame.label, 'BOTTOMLEFT',0, -12}})
+    local last= e.Get_Weekly_Rewards_Activities({frame=AllTipsFrame, point={'TOPLEFT', AllTipsFrame.weekLable, 'BOTTOMLEFT', 0, -2}})
+
+ 
+
+    
     --物品，货币提示
     e.ItemCurrencyLabel({frame=AllTipsFrame, point={'TOPLEFT', last or AllTipsFrame.label, 'BOTTOMLEFT', 0, -12}, showAll=true})
     AllTipsFrame:SetShown(true)
