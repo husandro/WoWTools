@@ -582,7 +582,7 @@ local function Init_EncounterJournal()--冒险指南界面
             panel.instanceBoss:SetButtonState('PUSHED')
         end
     end)
-    
+
 
     Button.btn.Worldboss =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色已击杀世界BOSS
     Button.btn.Worldboss:SetPoint('RIGHT', Button.btn.instance, 'LEFT')
@@ -764,7 +764,7 @@ local function Init_EncounterJournal()--冒险指南界面
 
 
     --Boss, 战利品, 信息
-    hooksecurefunc(EncounterJournalItemMixin,'Init', function(self, elementData)--Blizzard_EncounterJournal.lua
+    hooksecurefunc(EncounterJournalItemMixin,'Init', function(self)--Blizzard_EncounterJournal.lua
         local text, collectText='', nil
         if not Save.hideEncounterJournal and self.link and self.itemID and self.slot then
             local specTable = GetItemSpecInfo(self.link) or {}--专精图标
