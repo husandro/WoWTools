@@ -31,60 +31,75 @@ local function set_Frame_Point(self, name)--设置, 移动, 位置
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --缩放
 --####
 local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)--放大
-    local self= tab.frame or frame
+    frame= tab.frame or frame
     if not tab.name then
-        tab.name= self and self:GetName()
+        tab.name= frame and frame:GetName()
     end
 
-    if not self or self.ZoomInOutFrame or tab.notZoom or Save.disabledZoom or not tab.name or _G['MoveZoomInButtonPer'..tab.name] then
+    if not frame or frame.ZoomInOutFrame or tab.notZoom or Save.disabledZoom or not tab.name or _G['MoveZoomInButtonPer'..tab.name] then
         return
     end
 
-    self.ZoomInOutFrame= e.Cbtn(self.Header
-                        or self.TitleContainer
-                        or self.SpellButtonContainer
-                        or self.BorderFrame and self.BorderFrame.TitleContainer
-                        or self
+    frame.ZoomInOutFrame= e.Cbtn(frame.Header
+                        or frame.TitleContainer
+                        or frame.SpellButtonContainer
+                        or frame.BorderFrame and frame.BorderFrame.TitleContainer
+                        or frame
         , {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}, name='MoveZoomInButtonPer'..tab.name})
-    self.ZoomInOutFrame:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    frame.ZoomInOutFrame:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
-    self.ZoomInOutFrame.ScaleName= tab.name
-    self.ZoomInOutFrame.ZoomFrame= self
-    self.ZoomInOutFrame.alpha= tab.zeroAlpha and 0 or 0.2
-    self.ZoomInOutFrame:SetFrameLevel(self.ZoomInOutFrame:GetFrameLevel() +5)
+    frame.ZoomInOutFrame.ScaleName= tab.name
+    frame.ZoomInOutFrame.ZoomFrame= frame
+    frame.ZoomInOutFrame.alpha= tab.zeroAlpha and 0 or 0.2
+    frame.ZoomInOutFrame:SetFrameLevel(frame.ZoomInOutFrame:GetFrameLevel() +5)
 
-    if self.moveButton then
-        self.ZoomInOutFrame:SetPoint('RIGHT', self.moveButton, 'LEFT')
+    if frame.moveButton then
+        frame.ZoomInOutFrame:SetPoint('RIGHT', frame.moveButton, 'LEFT')
 
     elseif tab.point=='left' then
-        self.ZoomInOutFrame:SetPoint('RIGHT', self, 'LEFT')
+        frame.ZoomInOutFrame:SetPoint('RIGHT', frame, 'LEFT')
 
-    elseif self.Header then
-        self.ZoomInOutFrame:SetPoint('LEFT')
+    elseif frame.Header then
+        frame.ZoomInOutFrame:SetPoint('LEFT')
 
-    elseif self.TitleContainer then
-        self.ZoomInOutFrame:SetPoint('LEFT', 35,-2)
+    elseif frame.TitleContainer then
+        frame.ZoomInOutFrame:SetPoint('LEFT', 35,-2)
 
-    elseif self.SpellButtonContainer then
-        self.ZoomInOutFrame:SetPoint('BOTTOM', self.SpellButtonContainer, 'TOP', -20,0)
+    elseif frame.SpellButtonContainer then
+        frame.ZoomInOutFrame:SetPoint('BOTTOM', frame.SpellButtonContainer, 'TOP', -20,0)
 
-    elseif self.BorderFrame and self.BorderFrame.TitleContainer then
-        self.ZoomInOutFrame:SetPoint('LEFT', 35,-2)
+    elseif frame.BorderFrame and frame.BorderFrame.TitleContainer then
+        frame.ZoomInOutFrame:SetPoint('LEFT', 35,-2)
 
     else
-        self.ZoomInOutFrame:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
+        frame.ZoomInOutFrame:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
     end
 
-    self.ZoomInOutFrame:SetScript('OnClick', function(self2, d)
+    frame.ZoomInOutFrame:SetScript('OnClick', function(self, d)
         if UnitAffectingCombat('player') then
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
-        local n= Save.scale[self2.ScaleName] or 1
+        local n= Save.scale[self.ScaleName] or 1
         if d=='LeftButton' then
             n= n+ 0.05
         elseif d=='RightButton' then
@@ -92,67 +107,89 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         end
         n= n>3 and 3 or n
         n= n< 0.5 and 0.5 or n
-        Save.scale[self2.ScaleName]= n
-        self2.ZoomFrame:SetScale(n)
+        Save.scale[self.ScaleName]= n
+        self.ZoomFrame:SetScale(n)
+        self:set_Tooltips()
     end)
 
-    self.ZoomInOutFrame:SetScript('OnMouseWheel', function(self2,d)
+    frame.ZoomInOutFrame:SetScript('OnMouseWheel', function(self,d)
         if UnitAffectingCombat('player') then
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
-        local n= Save.scale[self2.ScaleName] or 1
+        local n= Save.scale[self.ScaleName] or 1
         if d==-1 then
             n= n+ 0.05
         elseif d==1 then
             n= n- 0.05
         end
-        n= n>3 and 3 or n
+        n= n>4 and 4 or n
         n= n< 0.4 and 0.4 or n
-        Save.scale[self2.ScaleName]= n
-        self2.ZoomFrame:SetScale(n)
-        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
+        Save.scale[self.ScaleName]= n
+        self.ZoomFrame:SetScale(n)
+        self:set_Tooltips()
     end)
 
-    self.ZoomInOutFrame:SetAlpha(self.ZoomInOutFrame.alpha)
-    self.ZoomInOutFrame:SetScript("OnLeave", function(self2)
+    frame.ZoomInOutFrame:SetAlpha(frame.ZoomInOutFrame.alpha)
+    frame.ZoomInOutFrame:SetScript("OnLeave", function(self)
         e.tips:Hide()
-        self2:SetAlpha(self2.alpha)
+        self:SetAlpha(self.alpha)
     end)
-    self.ZoomInOutFrame:SetScript("OnEnter",function(self2)
-        self2:SetAlpha(1)
-        if UnitAffectingCombat('player') then
-            return
-        end
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+    function frame.ZoomInOutFrame:set_Tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine('|cff00ff00'..(Save.scale[self2.ScaleName] or 1), e.Icon.mid)
+        e.tips:AddLine(self.ScaleName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '放大' or ZOOM_IN, '3'..e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '缩小' or ZOOM_OUT, '0.5'..e.Icon.right)
+        local col= UnitAffectingCombat('player') and '|cff606060:' or ''
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE).. ' |cnGREEN_FONT_COLOR:'..(Save.scale[self.ScaleName] or 1), e.Icon.mid)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '放大' or ZOOM_IN), e.Icon.left)
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '缩小' or ZOOM_OUT), e.Icon.right)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
+    end
+    frame.ZoomInOutFrame:SetScript("OnEnter",function(self)
+        self:set_Tooltips()
+        self:SetAlpha(1)
     end)
 
     if Save.scale[tab.name] and Save.scale[tab.name]~=1 then
-        self:SetScale(Save.scale[tab.name])
+        frame:SetScale(Save.scale[tab.name])
     end
     if tab.zeroAlpha then
-        self:HookScript('OnEnter', function(self2)
-            self2.ZoomInOutFrame:SetAlpha(1)
-            if self2.moveButton then
-                self2.moveButton:SetAlpha(1)
+        frame:HookScript('OnEnter', function(self)
+            self.ZoomInOutFrame:SetAlpha(1)
+            if self.moveButton then
+                self.moveButton:SetAlpha(1)
             end
         end)
-        self:HookScript('OnLeave', function(self2)
-            self2.ZoomInOutFrame:SetAlpha(0)
-            if self2.moveButton then
-                self2.moveButton:SetAlpha(0)
+        frame:HookScript('OnLeave', function(self)
+            self.ZoomInOutFrame:SetAlpha(0)
+            if self.moveButton then
+                self.moveButton:SetAlpha(0)
             end
         end)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --############
 --设置Frame属性

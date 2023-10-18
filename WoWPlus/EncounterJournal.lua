@@ -5,7 +5,8 @@ local Save={
     loot= {[e.Player.class]= {}},
 }
 local panel=CreateFrame("Frame")
-
+local Button
+local AllTipsFrame--冒险指南,右边,显示所数据
 
 local function getBossNameSort(name)--取得怪物名称, 短名称
     name=name:gsub('(,.+)','')
@@ -154,136 +155,74 @@ end
 --冒险指南,右边,显示所数据
 --######################
 local function EncounterJournal_Set_All_Info_Text()
-    local self=EncounterJournal
     if not EncounterJournal or Save.hideEncounterJournal_All_Info_Text then
-        if EncounterJournal and EncounterJournal.AllText then
-            EncounterJournal.AllText:SetText('')
+        if AllTipsFrame then
+            AllTipsFrame:SetShown(false)
         end
         return
     end
-    if not EncounterJournal.AllText then
-        EncounterJournal.AllText=e.Cstr(EncounterJournal)
-        EncounterJournal.AllText:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT',40,0)
+
+    if not AllTipsFrame then
+        AllTipsFrame=CreateFrame("Frame", nil, EncounterJournal)
+        AllTipsFrame:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT',40,0)
+        AllTipsFrame:SetSize(1,1)
+        AllTipsFrame.label= e.Cstr(AllTipsFrame)
+        AllTipsFrame.label:SetPoint('TOPLEFT')
     end
-    local m=''
+    local m, text, num
 
     local tab=WoWDate[e.Player.guid].Instance.ins
-    local text=''
     for insName, info in pairs(tab) do
-        text= text~='' and text..'|n' or text
+        text= text and text..'|n' or ''
         text= text..'|T450908:0|t'..insName
         for difficultyName, index in pairs(info) do
             text=text..'|n     '..index..' '..difficultyName
         end
     end
-    if text~='' then
-        m= m~='' and m..'|n|n'..text or text
+    if text then
+        m= m and m..'|n|n' or ''
+        m= m..text
     end
 
-    text=''--世界BOSS
+    text=nil--世界BOSS
+    num=0
     tab=WoWDate[e.Player.guid].Worldboss.boss
-    local num=0
     for bossName, _ in pairs(tab) do
         num=num+1
-        text= text~='' and text..', ' or text
-        text=text.. getBossNameSort(bossName)
+        text= text and text..', ' or ''
+        text= text.. getBossNameSort(bossName)
     end
-    if text~='' then
-        m= m~='' and m..'|n|n' or m
-        m=m..num..' |cnGREEN_FONT_COLOR:'..text..'|r'
+    if text then
+        m= m and m..'|n|n' or ''
+        m= m..num..' |cnGREEN_FONT_COLOR:'..text..'|r'
     end
 
     tab=WoWDate[e.Player.guid].Rare.boss--稀有怪
-    text, num='',0
+    text= nil
+    num=0
     for name, _ in pairs(tab) do
-        text=text~='' and text..', ' or text
-        text=text..getBossNameSort(name)
+        text= text and text..', ' or ''
+        text= text..getBossNameSort(name)
         num=num+1
     end
-    if text~='' then
-        m= m~='' and m..'|n|n' or m
+    if text then
+        m= m and m..'|n|n' or ''
         m= m..num..' '..'|cnGREEN_FONT_COLOR:'..text..'|r'
     end
 
-    --周奖励,副本,PVP,团本
-    tab = {}
-    local activityInfo =  C_WeeklyRewards.GetActivities()--Blizzard_WeeklyRewards.lua
-    for  _ , info in pairs(activityInfo) do
-        local difficulty
-        if info.type == Enum.WeeklyRewardChestThresholdType.Raid then
-            difficulty = DifficultyUtil.GetDifficultyName(info.level);
-        elseif info.type == Enum.WeeklyRewardChestThresholdType.MythicPlus then
-            difficulty =  string.format(WEEKLY_REWARDS_MYTHIC, info.level);
-        elseif info.type == Enum.WeeklyRewardChestThresholdType.RankedPvP then
-            difficulty =  PVPUtil.GetTierName(info.level);
-        elseif info.type== Enum.WeeklyRewardChestThresholdType.AlsoReceive then
-            difficulty =  WEEKLY_REWARDS_ALSO_RECEIVE;
-        elseif info.type== Enum.WeeklyRewardChestThresholdType.Concession then
-            difficulty =  WEEKLY_REWARDS_GET_CONCESSION;
-        end
-        tab[info.type]=tab[info.type] or {}
-        tab[info.type][info.index] = {
-            level = info.level,
-            difficulty = difficulty or NONE,
-            progress = info.progress,
-            threshold = info.threshold,
-            unlocked = info.progress >= info.threshold,
-            rewards = info.rewards,
-        }
-    end
-    text=''
-    for type,v in pairs(tab) do
-        local head
-        if type == Enum.WeeklyRewardChestThresholdType.Raid then
-            head = RAIDS
-        elseif type == Enum.WeeklyRewardChestThresholdType.MythicPlus then
-            head = MYTHIC_DUNGEONS
-        elseif type == Enum.WeeklyRewardChestThresholdType.RankedPvP then
-            head = PVP
-        end
-        if head then
-            text = text~='' and text..'|n' or text
-            text = text..'|T450908:0|t'..head
-            if head==MYTHIC_DUNGEONS and WoWDate[e.Player.guid].Keystone then
-                local weekLevel= WoWDate[e.Player.guid].Keystone.weekLevel--本周最高
-                if weekLevel then
-                    text=text..' |cnGREEN_FONT_COLOR:'..weekLevel..'|r'
-                end
-            end
-            for x,r in pairs(v) do
-                text = text~='' and text..'|n' or text
-                text = text..'     '
-                if r.unlocked then
-                    text = text..'|cnGREEN_FONT_COLOR:'..x..')'..r.difficulty.. ' '..COMPLETE..'|r'
-                else
-                    text = text..x..')'..r.difficulty.. ' '..r.progress.."/"..r.threshold
-                end
-                if r.level and r.level>0 then
-                    text=text..' '..r.level
-                end
-                if r.rewards then
-                    if r.rewards.type==1 then
-                        text=text..' '..ITEMS
-                    elseif r.rewards.type==2 then
-                        text=text..' '..CURRENCY
-                    elseif r.rewards==3 then
-                        text=text..' '..QUESTS_LABEL
-                    end
-                end
-            end
-        end
-    end
-    m= m~='' and m..'|n|n'..text or text
-
     --本周还可获取奖励
     if C_WeeklyRewards.HasAvailableRewards() then--C_WeeklyRewards.CanClaimRewards() then
-        m=m..'|n|n|A:oribos-weeklyrewards-orb-dialog:0:0|a|cnGREEN_FONT_COLOR:'..
+        m= m and m..'|n|n' or ''
+        m=m..'|A:oribos-weeklyrewards-orb-dialog:0:0|a|cnGREEN_FONT_COLOR:'..
         (e.onlyChinese and '宏伟宝库里有奖励在等待着你。' or GREAT_VAULT_REWARDS_WAITING)..'|r'
     end
-    EncounterJournal.AllText:SetText(m)
+    AllTipsFrame.label:SetText(m)
 
+    --周奖励，提示
+    local last= e.Get_Weekly_Rewards_Activities({frame=AllTipsFrame, point={'TOPLEFT', AllTipsFrame.label, 'BOTTOMLEFT',0, -12}})
     --物品，货币提示
-    e.ItemCurrencyLabel({frame=EncounterJournal, point={'TOPLEFT', EncounterJournal.AllText, 'BOTTOMLEFT', 0, -12}, showAll=true})
+    e.ItemCurrencyLabel({frame=AllTipsFrame, point={'TOPLEFT', last or AllTipsFrame.label, 'BOTTOMLEFT', 0, -12}, showAll=true})
+    AllTipsFrame:SetShown(true)
 end
 
 
@@ -576,46 +515,38 @@ end
 --冒险指南界面初始化
 --################
 local function Init_EncounterJournal()--冒险指南界面
-    EncounterJournal.btn= e.Cbtn(EncounterJournal.TitleContainer, {icn=not Save.hideEncounterJournal, size={22,22}})--按钮, 总开关
-    EncounterJournal.btn:SetPoint('RIGHT',-22, -2)
-    EncounterJournal.btn:SetScript('OnEnter',function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT");
+    Button= e.Cbtn(EncounterJournal.TitleContainer, {icon=not Save.hideEncounterJournal, size={22,22}})--按钮, 总开关
+    Button:SetPoint('RIGHT',-22, -2)
+    function Button:set_Tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT");
         e.tips:ClearLines();
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save.hideEncounterJournal))
-        e.tips:AddDoubleLine(e.onlyChinese and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save.hideEncounterJournal_All_Info_Text))
+        e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save.hideEncounterJournal).. e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save.hideEncounterJournal_All_Info_Text)..e.Icon.right)
         e.tips:Show()
-    end)
-    EncounterJournal.btn:SetScript('OnClick', function(self2, d)
+    end
+    Button:SetScript('OnEnter', Button.set_Tooltips)
+    Button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             Save.hideEncounterJournal= not Save.hideEncounterJournal and true or nil
-            EncounterJournal.instance:SetShown(not Save.hideEncounterJournal)
-            EncounterJournal.Worldboss:SetShown(not Save.hideEncounterJournal)
-            if EncounterJournal.keystones then
-                EncounterJournal.keystones:SetShown(not Save.hideEncounterJournal)
-            end
-            EncounterJournal.money:SetShown(not Save.hideEncounterJournal)
-
-            self2.btn:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
-
+            self:set_Shown()
+            self:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
             set_Loot_Spec_Event()--BOSS战时, 指定拾取, 专精, 事件
             e.call('EncounterJournal_ListInstances')
+
         elseif d=='RightButton' then
-            if Save.hideEncounterJournal_All_Info_Text then
-                Save.hideEncounterJournal_All_Info_Text=nil
-            else
-                Save.hideEncounterJournal_All_Info_Text=true
-            end
+            Save.hideEncounterJournal_All_Info_Text= not Save.hideEncounterJournal_All_Info_Text and true or nil
             EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
         end
+        self:set_Tooltips()
     end)
-    EncounterJournal.btn:SetScript("OnLeave",function() e.tips:Hide() end)
-    
+    Button:SetScript("OnLeave",function() e.tips:Hide() end)
+    Button.btn={}
 
-    EncounterJournal.instance =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色副本
-    EncounterJournal.instance:SetPoint('RIGHT', EncounterJournal.btn, 'LEFT')
-    EncounterJournal.instance:SetNormalAtlas('animachannel-icon-kyrian-map')
-    EncounterJournal.instance:SetScript('OnEnter',function(self2)
+    Button.btn.instance =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色副本
+    Button.btn.instance:SetPoint('RIGHT', Button, 'LEFT')
+    Button.btn.instance:SetNormalAtlas('animachannel-icon-kyrian-map')
+    Button.btn.instance:SetScript('OnEnter',function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
         e.tips:ClearLines();
         e.tips:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save.showInstanceBoss), e.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
@@ -637,26 +568,27 @@ local function Init_EncounterJournal()--冒险指南界面
             end
         end
         e.tips:Show()
-    end)--提示
-    EncounterJournal.instance:SetScript('OnMouseDown', function()
-            if  Save.showInstanceBoss then
-                Save.showInstanceBoss=nil
-            else
-                Save.showInstanceBoss=true
-                Save.hideInstanceBossText=nil
-            end
-            Init_Set_InstanceBoss_Text()
-            if panel.instanceBoss then
-                panel.instanceBoss:SetButtonState('PUSHED')
-            end
     end)
-    EncounterJournal.instance:SetScript("OnLeave",function() e.tips:Hide() end)
+    Button.btn.instance:SetScript("OnLeave",function() e.tips:Hide() end)
+    Button.btn.instance:SetScript('OnClick', function()
+        if  Save.showInstanceBoss then
+            Save.showInstanceBoss=nil
+        else
+            Save.showInstanceBoss=true
+            Save.hideInstanceBossText=nil
+        end
+        Init_Set_InstanceBoss_Text()
+        if panel.instanceBoss then
+            panel.instanceBoss:SetButtonState('PUSHED')
+        end
+    end)
+    
 
-    EncounterJournal.Worldboss =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色已击杀世界BOSS
-    EncounterJournal.Worldboss:SetPoint('RIGHT', EncounterJournal.instance, 'LEFT')
-    EncounterJournal.Worldboss:SetNormalAtlas('poi-soulspiritghost')
-    EncounterJournal.Worldboss:SetScript('OnEnter',set_EncounterJournal_World_Tips)--提示
-    EncounterJournal.Worldboss:SetScript('OnMouseDown', function(self2, d)
+    Button.btn.Worldboss =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色已击杀世界BOSS
+    Button.btn.Worldboss:SetPoint('RIGHT', Button.btn.instance, 'LEFT')
+    Button.btn.Worldboss:SetNormalAtlas('poi-soulspiritghost')
+    Button.btn.Worldboss:SetScript('OnEnter',set_EncounterJournal_World_Tips)--提示
+    Button.btn.Worldboss:SetScript('OnMouseDown', function(self2, d)
         if  Save.showWorldBoss then
             Save.showWorldBoss=nil
         else
@@ -668,41 +600,32 @@ local function Init_EncounterJournal()--冒险指南界面
             panel.WorldBoss:SetButtonState('PUSHED')
         end
     end)
-    EncounterJournal.Worldboss:SetScript("OnLeave",function() e.tips:Hide() end)
+    Button.btn.Worldboss:SetScript("OnLeave",function() e.tips:Hide() end)
 
     if e.Player.levelMax then
-        EncounterJournal.keystones =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色,挑战
-        EncounterJournal.keystones:SetPoint('RIGHT', EncounterJournal.Worldboss, 'LEFT')
-        EncounterJournal.keystones:SetNormalTexture(4352494)
-        EncounterJournal.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)
-        EncounterJournal.keystones:SetScript("OnLeave",function() e.tips:Hide() end)
-        EncounterJournal.keystones:SetScript('OnMouseDown', function()
+        Button.btn.keystones =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色,挑战
+        Button.btn.keystones:SetPoint('RIGHT', Button.btn.Worldboss, 'LEFT')
+        Button.btn.keystones:SetNormalTexture(4352494)
+        Button.btn.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)
+        Button.btn.keystones:SetScript("OnLeave",function() e.tips:Hide() end)
+        Button.btn.keystones:SetScript('OnMouseDown', function()
             PVEFrame_ToggleFrame('ChallengesFrame', 3)
         end)
     end
-    EncounterJournal.money =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--钱
-    EncounterJournal.money:SetPoint('RIGHT', EncounterJournal.keystones or EncounterJournal.Worldboss, 'LEFT')
-    EncounterJournal.money:SetNormalAtlas('Front-Gold-Icon')
-    EncounterJournal.money:SetScript('OnEnter',set_EncounterJournal_Money_Tips)
-    EncounterJournal.money:SetScript("OnLeave",function() e.tips:Hide() end)
+    Button.btn.money =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--钱
+    Button.btn.money:SetPoint('RIGHT', Button.btn.keystones or Button.btn.Worldboss, 'LEFT')
+    Button.btn.money:SetNormalAtlas('Front-Gold-Icon')
+    Button.btn.money:SetScript('OnEnter',set_EncounterJournal_Money_Tips)
+    Button.btn.money:SetScript("OnLeave",function() e.tips:Hide() end)
 
-    EncounterJournal.money:SetShown(not Save.hideEncounterJournal)
-    EncounterJournal.instance:SetShown(not Save.hideEncounterJournal)
-    EncounterJournal.Worldboss:SetShown(not Save.hideEncounterJournal)
-    if EncounterJournal.keystones then
-        EncounterJournal.keystones:SetShown(not Save.hideEncounterJournal)
+
+    function Button:set_Shown()
+        for _, btn in pairs(self.btn) do
+            btn:SetShown(not Save.hideEncounterJournal)
+        end
     end
 
-
-
-
-
-
-
-
-
-
-
+    Button:set_Shown()
 
 
 

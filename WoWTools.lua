@@ -677,8 +677,132 @@ end
 
 
 
+--周奖励，提示
+function e.Get_Weekly_Rewards_Activities(settings)
+    local R = {}
+    for  _ , info in pairs( C_WeeklyRewards.GetActivities() or {}) do
+        if info.type and info.type>= 1 and info.type<= 3 and info.level then
+            local head
+            local difficultyText
+            if info.type == 1 then--1 Enum.WeeklyRewardChestThresholdType.MythicPlus
+                head= e.onlyChinese and '史诗地下城' or MYTHIC_DUNGEONS
+                difficultyText= string.format(e.onlyChinese and '史诗 %d' or WEEKLY_REWARDS_MYTHIC, info.level)
 
+            elseif info.type == 2 then--2 Enum.WeeklyRewardChestThresholdType.RankedPvP
+                head= e.onlyChinese and 'PvP' or PVP
+                if e.onlyChinese then
+                    local tab={
+                        [0]= "休闲者",
+                        [1]= "争斗者 I",
+                        [2]= "挑战者 I",
+                        [3]= "竞争者 I",
+                        [4]= "决斗者",
+                        [5]= "精锐",
+                        [6]= "争斗者 II",
+                        [7]= "挑战者 II",
+                        [8]= "竞争者 II",
+                    }
+                    difficultyText=tab[info.level]
+                end
+                difficultyText=  difficultyText or PVPUtil.GetTierName(info.level)-- _G["PVP_RANK_"..tierEnum.."_NAME"] PVPUtil.lua
 
+            elseif info.type == 3 then--3 Enum.WeeklyRewardChestThresholdType.Raid
+                head= e.onlyChinese and '团队副本' or RAIDS
+                difficultyText=  DifficultyUtil.GetDifficultyName(info.level)
+            end
+            if head then
+                R[head]= R[head] or {}
+                R[head][info.index] = {
+                    level = info.level,
+                    difficulty = difficultyText or '... ',
+                    progress = info.progress,
+                    threshold = info.threshold,
+                    unlocked = info.progress>=info.threshold,
+                    id= info.id,
+                    type= info.type,
+                    itemDBID= info.rewards and info.rewards.itemDBID or nil,
+                }
+            end
+        end
+    end
+
+    local last
+    settings.frame.WeekRewards= settings.frame.WeekRewards or {}
+    for head, tab in pairs(R) do
+        local label= settings.frame.WeekRewards['rewardChestHead'..head]
+        if not label then
+            label= e.Cstr(settings.frame)
+            if last then
+                label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-4)
+            elseif settings.point then
+                label:SetPoint(settings.point[1], settings.point[2] or settings.frame, settings.point[3], settings.point[4], settings.point[5])
+            end
+            settings.frame.WeekRewards['rewardChestHead'..head]= label
+        end
+        label:SetText(e.Icon.toRight2..head)
+        last= label
+
+        for index, info in pairs(tab) do
+            label= settings.frame.WeekRewards['rewardChestSub'..head..index]
+            if not label then
+                label= e.Cstr(settings.frame, {mouse= true})
+                label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
+                label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                label:SetScript('OnEnter', function(self2)
+                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    local link= self2:Get_ItemLink()
+                    if link then
+                        e.tips:SetHyperlink(link)
+                    else
+                        e.tips:AddDoubleLine(format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL ),e.onlyChinese and '无' or NONE)
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine('Activities Type '..self2.type, 'id '..self2.id)
+                    end
+                    e.tips:Show()
+                    self2:SetAlpha(0.5)
+                end)
+                function label:Get_ItemLink()
+                    local link
+                    if self.itemDBID then
+                        link= C_WeeklyRewards.GetItemHyperlink(self.itemDBID)
+                    elseif self.id then
+                        link= C_WeeklyRewards.GetExampleRewardItemHyperlinks(self.id)
+                    end
+                    if link and link~='' then
+                        e.LoadDate({id=link, type='item'})
+                        return link
+                    end
+                end
+                settings.frame.WeekRewards['rewardChestSub'..head..index]= label
+            end
+            label.id= info.id
+            label.type= info.type
+            label.itemDBID= info.itemDBID
+            last= label
+
+            local text
+            local itemLink= label:Get_ItemLink()
+            if itemLink then
+                local texture= C_Item.GetItemIconByID(itemLink)
+                local itemLevel= GetDetailedItemLevelInfo(itemLink)
+                text= '    '..index..') '..(texture and '|T'..texture..':0|t' or itemLink)
+                text= text..((itemLevel and itemLevel>0) and itemLevel or '')..e.Icon.select2..(info.level or '')
+            else
+                if info.unlocked then
+                    text='   '..index..') '..info.difficulty..e.Icon.select2..(info.level or '')--.. ' '..(e.onlyChinese and '完成' or COMPLETE)
+                else
+                    text='    |cff828282'..index..') '
+                        ..info.difficulty
+                        .. ' '..(info.progress>0 and '|cnGREEN_FONT_COLOR:'..info.progress..'|r' or info.progress)
+                        .."/"..info.threshold..'|r'
+                end
+            end
+            label:SetText(text or '')
+        end
+    end
+    return last
+end
 
 
 
@@ -802,6 +926,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
 end
 
 
+
 --显示, 宝石, 属性
 local AndStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s";
 function e.Get_Gem_Stats(tab, itemLink, self)
@@ -848,9 +973,10 @@ function e.Get_Gem_Stats(tab, itemLink, self)
     return leftText, bottomLeftText
 end
 
---###############
---显示, 物品, 属性
---###############
+
+
+
+
 function e.Get_Item_Stats(link)--物品，次属性，表
     if not link then
         return {}
