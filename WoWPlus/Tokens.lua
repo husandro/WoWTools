@@ -366,12 +366,8 @@ local function Init_TrackButton()
 	TrackButton.Frame:SetPoint('BOTTOM')
 
 
-	function TrackButton:create_Button()
-		
-	end
-
-	function TrackButton:set_TrackButton_Text()
-		if not Save.str or not self.Frame:IsShown() then
+	TrackButton.set_TrackButton_Text= function()
+		if not Save.str or not TrackButton.Frame:IsShown() then
 			return
 		end
 
@@ -403,10 +399,10 @@ local function Init_TrackButton()
 		local last
 		for _, tables in pairs(tab) do
 			index= index+1
-			local btn= self.btn[index]
+			local btn= TrackButton.btn[index]
 			if not btn then
-				btn= e.Cbtn(self.Frame, {size={12,12, icon='hide'}})
-				btn:SetPoint("TOP", last or self, 'BOTTOM',0,-1)
+				btn= e.Cbtn(TrackButton.Frame, {size={12,12, icon='hide'}})
+				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0,-1)
 				btn.text= e.Cstr(btn, {color=true})
 				function btn:set_Texture()
 					self:SetNormalTexture(self.icon)
@@ -432,7 +428,7 @@ local function Init_TrackButton()
 					e.tips:AddDoubleLine(id, addName)
 					e.tips:Show()
 				end)
-				self.btn[index]= btn
+				TrackButton.btn[index]= btn
 			end
 
 			btn.type=tables.type
@@ -445,8 +441,8 @@ local function Init_TrackButton()
 			last= btn
 		end
 
-		for i= index+1, #self.btn do
-			local btn= self.btn[i]
+		for i= index+1, #TrackButton.btn do
+			local btn= TrackButton.btn[i]
 			if btn then
 				btn:SetShown(false)
 			end
