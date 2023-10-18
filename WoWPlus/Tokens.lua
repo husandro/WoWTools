@@ -8,7 +8,7 @@ local Save={
 	Hide=not e.Player.husandro,
 	str=true,
 	--scaleTrackButton=1,
-	--toRightTrackText=true,--向右平移
+	toRightTrackText=true,--向右平移
 	--notAutoHideTrack=true,--自动隐藏
 
 	--hideCurrencyMax=true,--隐藏，已达到资源上限,提示
@@ -174,7 +174,7 @@ local function Init_TrackButton()
 		e.LoadDate({id=itemID, type='item'})--加载 item quest spell
 	end
 
-	TrackButton= e.Cbtn(nil, {atlas='hide', size={22,22}})
+	TrackButton= e.Cbtn(nil, {atlas='hide', size={22,22}, pushe=true})
 
 	TrackButton.texture= TrackButton:CreateTexture()
 	TrackButton.texture:SetAllPoints(TrackButton)
