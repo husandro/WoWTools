@@ -4,8 +4,46 @@ e.tips=GameTooltip
 e.onlyChinese= LOCALE_zhCN
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
 e.call= securecall
-
-
+e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
+e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
+e.itemPetID={--宠物对换, wow9.0
+    [11406]=true,
+    [11944]=true,
+    [25402]=true,
+    [3300]=true,
+    [3670]=true,
+    [6150]=true,
+    [36812]=true,
+    [62072]=true,
+    [67410]=true,
+}
+e.itemSlotTable={
+    ['INVTYPE_HEAD']=1,
+    ['INVTYPE_NECK']=2,
+    ['INVTYPE_SHOULDER']=3,
+    ['INVTYPE_BODY']=4,
+    ['INVTYPE_CHEST']=5,
+    ['INVTYPE_WAIST']=6,
+    ['INVTYPE_LEGS']=7,
+    ['INVTYPE_FEET']=8,
+    ['INVTYPE_WRIST']=9,
+    ['INVTYPE_HAND']=10,
+    ['INVTYPE_FINGER']=11,
+    ['INVTYPE_TRINKET']=13,
+    ['INVTYPE_WEAPON']=16,
+    ['INVTYPE_SHIELD']=17,
+    ['INVTYPE_RANGED']=16,
+    ['INVTYPE_CLOAK']=15,
+    ['INVTYPE_2HWEAPON']=16,
+    ['INVTYPE_TABARD']=19,
+    ['INVTYPE_ROBE']=5,
+    ['INVTYPE_WEAPONMAINHAND']=16,
+    ['INVTYPE_WEAPONOFFHAND']=16,
+    ['INVTYPE_HOLDABLE']=17,
+    ['INVTYPE_THROWN']=16,
+    ['INVTYPE_RANGEDRIGHT']=16,
+}
+e.ExpansionLevel= GetExpansionLevel()--版本数据
 
 local function GetWeek()--周数
     local region= GetCurrentRegion()
@@ -24,8 +62,110 @@ local function GetWeek()--周数
     return week
 end
 
-e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
-e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
+
+local battleTag= select(2, BNGetInfo())
+local baseClass= UnitClassBase('player')
+e.Player={
+    realm= GetRealmName(),
+    Realms= {},--多服务器
+    name_realm= UnitName('player')..'-'..GetRealmName(),
+    name= UnitName('player'),
+    sex= UnitSex("player"),
+    class= baseClass,
+    r= GetClassColor(baseClass),
+    g= select(2,GetClassColor(baseClass)),
+    b= select(3, GetClassColor(baseClass)),
+    col= '|c'..select(4, GetClassColor(baseClass)),
+    cn= GetCurrentRegion()==5,
+    region= GetCurrentRegion(),--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+    --Lo= GetLocale(),
+    week= GetWeek(),--周数
+    guid= UnitGUID('player'),
+    levelMax= UnitLevel('player')==MAX_PLAYER_LEVEL,--玩家是否最高等级
+    level= UnitLevel('player'),--UnitEffectiveLevel('player')
+    husandro= battleTag== '古月剑龙#5972' or battleTag=='SandroChina#2690' or battleTag=='Sandro126#2297' or battleTag=='Sandro163EU#2603',
+    faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
+    Layer= nil, --位面数字
+    useColor= nil,--使用颜色
+    L={},--多语言，文本
+}
+ --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
+ --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
+ --ver= select(4,GetBuildInfo())>=100100,--版本 100100
+ --disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true
+for k, v in pairs(GetAutoCompleteRealms()) do
+    e.Player.Realms[v]=k
+end
+
+
+e.Icon={
+    icon= 'orderhalltalents-done-glow',
+    disabled='talents-button-reset',
+    select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√
+    select2='|A:common-icon-checkmark:0:0|a',--绿色√
+    --selectYellow='common-icon-checkmark-yellow',--黄色√
+    X2='|A:common-icon-redx:0:0|a',
+    O2='|A:talents-button-reset:0:0|a',--￠
+    right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
+    left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
+    mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
+    map='poi-islands-table',
+    map2='|A:poi-islands-table:0:0|a',
+    wow=136235,
+    wow2='|T136235:0|t',--'|A:Icon-WoW:0:0|a',--136235
+    net2= BNet_GetClientEmbeddedTexture(-2, 32, 32),
+    horde= 'charcreatetest-logo-horde',
+    alliance='charcreatetest-logo-alliance',
+    horde2='|A:charcreatetest-logo-horde:0:0|a',
+    alliance2='|A:charcreatetest-logo-alliance:0:0|a',
+
+    number='services-number-',
+    number2='|A:services-number-%d:0:0|a',
+    clock='socialqueuing-icon-clock',
+    clock2='|A:socialqueuing-icon-clock:0:0|a',
+
+    --player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
+
+    bank2='|A:Banker:0:0|a',
+    bag='bag-main',
+    bag2='|A:bag-main:0:0|a',
+    bagEmpty='bag-reagent-border-empty',
+
+    up2='|A:bags-greenarrow:0:0|a',--绿色向上, 红色向上 UI-HUD-Minimap-Arrow-Corpse， 金色 UI-HUD-Minimap-Arrow-Guard
+    down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下
+    toLeft='common-icon-rotateleft',--向左
+    toLeft2='|A:common-icon-rotateleft:0:0|a',
+    toRight='common-icon-rotateright',--向右
+    toRight2='|A:common-icon-rotateright:0:0|a',
+
+    unlocked='tradeskills-icon-locked',--'Levelup-Icon-Lock',--没锁
+    quest='AutoQuest-Badge-Campaign',--任务
+    guild2='|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a',--guild2='|A:communities-guildbanner-background:0:0|a',
+
+    TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',
+    HEALER='|A:UI-LFG-RoleIcon-Healer:0:0|a',
+    DAMAGER='|A:UI-LFG-RoleIcon-DPS:0:0|a',
+    NONE='|A:UI-LFG-RoleIcon-Pending:0:0|a',
+    leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
+
+    info2='|A:questlegendary:0:0|a',--黄色!
+    star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
+}
+
+
+C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua
+    if success and texture then
+        e.Icon.wow2= '|T'..texture..':0|t'
+        e.Icon.wow= texture
+    end
+end)
+--[[C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Medium, function(success, texture)
+    if success and texture then
+        e.Icon.net2= '|T'..texture..':0|t'
+        print(texture)
+    end
+end)]]
+
 
 function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, uiMapID
     if not tab.id then
@@ -66,26 +206,483 @@ end
 for _, spellID in pairs(spellLoadTab) do
     e.LoadDate({id=spellID, type='spell'})
 end
---[[for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS
-    for slot=1, C_Container.GetContainerNumSlots(bag) do
-        local info = C_Container.GetContainerItemInfo(bag, slot)
-        if info and info.itemID then
-            e.LoadDate({id=info.itemID, type='item'})
+
+
+
+
+
+
+
+
+
+
+
+
+
+function e.MK(number, bit)
+    if number then
+        bit = bit or 1
+        local num= 0
+        if bit==0 then
+            num= 0.4
+        elseif bit==1 then
+            num= 0.04
+        elseif bit==2 then
+            num= 0.004
+        elseif bit==3 then
+            num= 0.0004
+        elseif bit==4 then
+            num= 0.00004
+        end
+        if number>=1e6 then
+            return format('%.'..bit..'fm', (number/1e6)-num)
+        elseif number>= 1e4 and (LOCALE_zhCN or e.onlyChinese) then
+            return format('%.'..bit..'fw', (number/1e4)-num)
+        elseif number>=1e3 then
+            return format('%.'..bit..'fk', (number/1e3)-num)
+        else
+            return format('%i', number)
         end
     end
+end
+
+function e.GetShowHide(sh, all)
+    if all then
+        return e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE)
+    elseif sh then
+		return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '显示' or SHOW)..'|r'
+	else
+		return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '隐藏' or HIDE)..'|r'
+	end
+end
+
+function e.GetEnabeleDisable(ed)--启用或禁用字符
+    if ed then
+        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE)..'|r'
+    else
+        return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r'
+    end
+end
+
+function e.GetYesNo(yesno)
+    if yesno then
+        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '是' or YES)..'|r'
+    else
+        return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '否' or NO)..'|r'
+    end
+end
+
+function e.Cstr(self, tab)--self, {size, copyFont, changeFont, fontName color={r=,g=,b=,a=}, layer=, justifyH=, mouse=false, wheel=false}
+    tab= tab or {}--Fonts.xml FontStyles.xml
+    self= self or UIParent
+    local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), tab.fontName or 'GameFontNormal',  self:GetFrameLevel()+1)
+    if tab.copyFont then
+        local fontName, size, fontFlags = tab.copyFont:GetFont()
+        font:SetFont(fontName, tab.size or size, fontFlags)
+        font:SetTextColor(tab.copyFont:GetTextColor())
+        font:SetFontObject(tab.copyFont:GetFontObject())
+        font:SetShadowColor(tab.copyFont:GetShadowColor())
+        font:SetShadowOffset(tab.copyFont:GetShadowOffset())
+    else
+        if (e.onlyChinese or LOCALE_zhCN) then
+            font:SetFont('Fonts\\ARHei.ttf', (tab.size or 12), 'OUTLINE')
+        else
+            local fontName= font:GetFont()
+            font:SetFont(fontName or 'GameFontNormal', (tab.size or 12), 'OUTLINE')--THICKOUTLINE
+        end
+        font:SetShadowOffset(1, -1)
+        --font:SetShadowColor(0, 0, 0)
+        font:SetJustifyH(tab.justifyH or 'LEFT')
+        if  tab.color~=false then
+            if tab.color==true then--颜色
+                if e.Player.useColor then
+                    font:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a or 1)
+                else
+                    font:SetTextColor(e.Player.r, e.Player.g, e.Player.b, 1)
+                end
+            elseif type(tab.color)=='table' then
+                font:SetTextColor(tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1)
+            else
+                font:SetTextColor(1, 0.82, 0, 1)
+            end
+        end
+    end
+    if tab.mouse then
+        font:EnableMouse(true)
+    end
+    if tab.wheel then
+        font:EnableMouseWheel(true)
+    end
+    return font
+end
+
+function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton'
+    tab=tab or {}
+    self= self or UIParent
+    local btn
+    if tab.type==false then
+        btn= CreateFrame(tab.button or 'Button', tab.name, self, 'UIPanelButtonTemplate')--MagicButtonTemplate
+    elseif tab.type==true then
+        btn= CreateFrame(tab.button or "Button", tab.name, self, "SecureActionButtonTemplate");
+    else
+        btn= CreateFrame(tab.button or 'Button', tab.name, self)
+    end
+    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+    btn:EnableMouseWheel(true)
+    if tab.size then
+        btn:SetSize(tab.size[1], tab.size[2])
+    elseif tab.button=='ItemButton' then
+        btn:SetSize(34, 34)
+    end
+    if tab.type~=false then
+        if tab.pushe then
+            btn:SetHighlightAtlas('bag-border')
+            btn:SetPushedAtlas('bag-border-highlight')
+        else
+            btn:SetHighlightAtlas('Forge-ColorSwatchSelection')
+            btn:SetPushedAtlas('UI-HUD-MicroMenu-Highlightalert')
+        end
+        if tab.icon~='hide' then
+            if tab.texture then
+                btn:SetNormalTexture(tab.texture)
+            elseif tab.atlas then
+                btn:SetNormalAtlas(tab.atlas)
+            elseif tab.icon==true then
+                btn:SetNormalAtlas(e.Icon.icon)
+            else
+                btn:SetNormalAtlas(e.Icon.disabled)
+            end
+        end
+    end
+    return btn
+end
+
+function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
+    if not self then
+        return
+    elseif not duration or duration<=0 then
+        if self.cooldown then
+            self.cooldown:Clear()
+        end
+        return
+    end
+    if not self.cooldown then
+        self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
+        self.cooldown:Raise()
+        self.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
+        self.cooldown:SetDrawBling(not hideDrawBling)--闪光
+        self.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
+        self.cooldown:SetHideCountdownNumbers(HideCountdownNumbers)--隐藏数字
+        self.cooldown:SetReverse(Reverse)--控制冷却动画的方向
+        self.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge");
+        if SwipeTexture then
+            self.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')--圆框架
+        end
+        self:HookScript('OnHide', function(self2)
+            if self2.cooldown then
+                self2.cooldown:Clear()
+            end
+        end)
+    end
+    start=start or GetTime()
+    self.cooldown:SetCooldown(start, duration, modRate)
+end
+
+function e.SetItemSpellCool(self, item, spell)
+    if item then
+        local startTime, duration = GetItemCooldown(item)
+        e.Ccool(self, startTime, duration, nil, true, nil, true)
+    elseif spell then
+        local start, duration, _, modRate = GetSpellCooldown(spell)
+        e.Ccool(self, start, duration, modRate, true, nil, true)--冷却条
+    elseif self.cooldown then
+        self.cooldown:Clear()
+    end
+end
+
+function e.GetSpellItemCooldown(spellID, itemID)--法术冷却
+    local startTime, duration, enable
+    if spellID then
+        startTime, duration, enable = GetSpellCooldown(spellID)
+    elseif itemID then
+        startTime, duration, enable = GetItemCooldown(itemID)
+    end
+    if duration and duration>0 and enable==1 then
+        local t=GetTime()
+        if startTime>t then t=t+86400 end
+        t=t-startTime
+        t=duration-t
+        return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
+    elseif enable==0 then
+        return '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
+    end
+end
+--[[
+e.WA_GetUnitAura = function(unit, spell, filter)--AuraEnvironment.lua
+  for i = 1, 255 do
+    --local name, _, _, _, _, _, _, _, _, spellId = UnitAura(unit, i, filter)
+    local spellID = select(10, UnitAura(unit, i, filter))
+    if not spellID then
+        return
+    elseif spell == spellID then
+      return UnitAura(unit, i, filter)
+    end
+  end
+end
+]]
+
+function e.WA_GetUnitBuff(unit, spell, filter)--HELPFUL HARMFUL
+    for i = 1, 40 do
+        local spellID = select(10, UnitBuff(unit, i, filter))
+        if not spellID then
+            return
+        elseif spell == spellID then
+          return UnitBuff(unit, i, filter)
+        end
+    end
+end
+
+function e.WA_GetUnitDebuff(unit, spell, filter, spellTab)
+    spellTab= spellTab or {}
+    for i = 1, 40 do
+        local spellID = select(10, UnitDebuff(unit, i, filter))
+        if not spellID then
+            return
+        elseif spellTab[spellID] or spell== spellID then
+            return UnitDebuff(unit, i, filter)
+        end
+    end
+end
+
+function e.WA_Utf8Sub(input, size, letterSize, lower)
+    local output = ""
+    if type(input) ~= "string" then
+      return output or ''
+    end
+    local i = 1
+
+    if letterSize and input:find('%w')  then--英文
+        size=letterSize
+    end
+
+    while (size > 0) do
+      local byte = input:byte(i)
+      if not byte then
+        return output
+      end
+      if byte < 128 then
+        -- ASCII byte
+        output = output .. input:sub(i, i)
+        size = size - 1
+      elseif byte < 192 then
+        -- Continuation bytes
+        output = output .. input:sub(i, i)
+      elseif byte < 244 then
+        -- Start bytes
+        output = output .. input:sub(i, i)
+        size = size - 1
+      end
+      i = i + 1
+    end
+    while (true) do
+      local byte = input:byte(i)
+      if byte and byte >= 128 and byte < 192 then
+        output = output .. input:sub(i, i)
+      else
+        break
+      end
+      i = i + 1
+    end
+    return lower and strlower(output) or output
+end
+--[[
+e.HEX=function(r, g, b, a)
+    a=a or 1
+    r = r <= 1 and r >= 0 and r or 0
+    g = g <= 1 and g >= 0 and g or 0
+    b = b <= 1 and b >= 0 and b or 0
+    a = a <= 1 and a >= 0 and a or 0
+    return string.format("%02x%02x%02x%02x",a*255, r*255, g*255, b*255)
 end]]
 
-e.itemPetID={--宠物对换, wow9.0
-    [11406]=true,
-    [11944]=true,
-    [25402]=true,
-    [3300]=true,
-    [3670]=true,
-    [6150]=true,
-    [36812]=true,
-    [62072]=true,
-    [67410]=true,
-}
+function e.SecondsToClock(seconds, displayZeroHours)--TimeUtil.lua
+    if seconds and seconds>=0 then
+        local units = ConvertSecondsToUnits(seconds);
+        if units.hours > 0 or displayZeroHours then
+            return format('%.2d:%.2d:%.2d', units.hours, units.minutes, units.seconds);
+        else
+            return format('%.2d:%.2d', units.minutes, units.seconds);
+        end
+    end
+end
+
+function e.Chat(text, name, setPrint)
+    if not text then
+        return
+    elseif name then
+        SendChatMessage(text, 'WHISPER',nil, name)
+        return
+    end
+    local isNotDead= not UnitIsDeadOrGhost('player')
+    local isInInstance= IsInInstance()
+    if isInInstance and isNotDead then-- and C_CVar.GetCVarBool("chatBubbles") then
+        SendChatMessage(text, 'YELL')
+
+    elseif isInInstance and IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
+        SendChatMessage(text, 'INSTANCE_CHAT')
+
+    elseif IsInRaid() then
+        SendChatMessage(text, 'RAID')
+
+    elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
+        SendChatMessage(text, 'PARTY')
+
+    elseif isNotDead and IsOutdoors() and not UnitAffectingCombat('player') then
+        SendChatMessage(text, 'YELL')
+
+    elseif setPrint then
+        print(text)
+    end
+end
+
+function e.Say(type, name, wow, text)
+    local chat= SELECTED_DOCK_FRAME
+    local msg = chat.editBox:GetText() or ''
+    if text and text==msg then
+        text=''
+    else
+        text= text or ''
+    end
+    if msg:find('/') then msg='' end
+    msg=' '..msg
+    if name then
+        if wow then
+            ChatFrame_SendBNetTell(name..msg..(text or ''))
+        else
+            ChatFrame_OpenChat("/w " ..name..msg..(text or ''), chat);
+        end
+    elseif type then
+        ChatFrame_OpenChat(type..msg..(text or ''), chat)
+    end
+end
+
+function e.Reload()
+    C_UI.Reload()
+    local bat= UnitAffectingCombat('player') and e.IsEncouter_Start
+    if not bat or not IsInInstance() then
+        C_UI.Reload()
+    else
+        print(id, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+    end
+end
+
+function e.Magic(text)
+    local tab= {'%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^'}
+    for _,v in pairs(tab) do
+        text= text:gsub(v,'%%'..v)
+    end
+    tab={
+        ['%%%d%$s']= '%(%.%-%)',
+        ['%%s']= '%(%.%-%)',
+        ['%%%d%$d']= '%(%%d%+%)',
+        ['%%d']= '%(%%d%+%)',
+    }
+    local find
+    for k,v in pairs(tab) do
+        text= text:gsub(k,v)
+        find=true
+    end
+    if find then
+        tab={'%$'}
+    else
+        tab={'%%','%$'}
+    end
+    for _, v in pairs(tab) do
+        text= text:gsub(v,'%%'..v)
+    end
+    return text
+end
+
+local LibRangeCheck = LibStub("LibRangeCheck-2.0", true)
+function e.GetRange(unit, checkVisible)--WA Prototypes.lua
+    return LibRangeCheck:GetRange(unit, checkVisible);
+end
+
+function e.CheckRange(unit, range, operator)
+    local min, max= LibRangeCheck:GetRange(unit, true);
+    if (operator == "<=") then
+        return (max or 999) <= range;
+    else
+        return (min or 0) >= range;
+    end
+end
+
+function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=})--设置，提示
+    if tab.show and not tab.frame.HelpTips then
+        tab.frame.HelpTips= e.Cbtn(tab.frame, {layer='OVERLAY',size=tab.size and {tab.size[1], tab.size[2]} or {40,40}})-- button:CreateTexture(nil, 'OVERLAY')
+        if tab.point=='right' then
+            tab.frame.HelpTips:SetPoint('BOTTOMLEFT', tab.topoint or tab.frame, 'BOTTOMRIGHT',0,-10)
+            tab.frame.HelpTips:SetNormalAtlas(tab.atlas or e.Icon.toLeft)
+        else--left
+            tab.frame.HelpTips:SetPoint('BOTTOMRIGHT', tab.topoint or tab.frame, 'BOTTOMLEFT',0,-10)
+            tab.frame.HelpTips:SetNormalAtlas(tab.atlas or e.Icon.toRight)
+        end
+        if tab.color then
+            SetItemButtonNormalTextureVertexColor(tab.frame.HelpTips, tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1);
+        end
+        tab.frame.HelpTips:SetScript('OnUpdate', function(self, elapsed)
+            self.elapsed= (self.elapsed or 0.5) + elapsed
+            if self.elapsed>0.5 then
+                self.elapsed=0
+                self:SetScale(self:GetScale()==1 and 0.5 or 1)
+            end
+        end)
+        tab.frame.HelpTips:SetScript('OnEnter', function(self) self:SetShown(false) end)
+        if tab.onlyOne then
+            tab.frame.HelpTips.onlyOne=true
+        end
+    end
+    if tab.frame.HelpTips and not tab.frame.HelpTips.onlyOne then
+        tab.frame.HelpTips:SetShown(tab.show)
+    end
+end
+
+
+
+
+
+function e.Get_CVar_Tooltips(info)--取得CVar信息 e.Get_CVar_Tooltips({name= ,msg=, value=})
+    return (info.msg and info.msg..'|n' or '')..info.name..'|n'
+    ..(info.value and C_CVar.GetCVar(info.name)== info.value and e.Icon.select2 or '')
+    ..(info.value and (e.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
+    ..'('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cnGREEN_FONT_COLOR:'..C_CVar.GetCVar(info.name)..'|r |r'
+    ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..C_CVar.GetCVarDefault(info.name)..')|r'
+end
+
+function e.set_CVar(name, value)-- e.set_CVar()--设置 Cvar
+    if value~= nil then
+        C_CVar.SetCVar(name, value and '1' or '0')
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --物品升级界面，挑战界面，物品，货币提示
 function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true, showAll=true}
@@ -203,6 +800,192 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
 end
 
 
+--显示, 宝石, 属性
+local AndStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s";
+function e.Get_Gem_Stats(tab, itemLink, self)
+    local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+%d+ .+)', }})--物品提示，信息
+    local text= dateInfo.text['(%+%d+ .+)']
+    local leftText, bottomLeftText
+    if text and text:find('%+') then
+        local str2, str3
+        if text:find(', ') then
+            str2, str3= text:match('(.-), (.+)')
+        elseif text:find('，') then
+            str2, str3= text:match('(.-)，(.+)')
+        else
+            str2, str3= text:match(AndStr)
+        end
+        str2= str2 or text:match('%+%d+ .+')
+        if str2 then
+            str2= str2:match('%+%d+ (.+)')
+            leftText= e.WA_Utf8Sub(str2,1,3, true)
+            leftText= leftText and '|cffffffff'..leftText..'|r'
+            if str3 then
+                str3= str3:match('%+%d+ (.+)')
+                bottomLeftText= e.WA_Utf8Sub(str3,1,3, true)
+                bottomLeftText= bottomLeftText and '|cffffffff'..bottomLeftText..'|r'
+            end
+        end
+    end
+    if self then
+        if leftText and not self.leftText then
+            self.leftText= e.Cstr(self, {size=10})
+            self.leftText:SetPoint('LEFT')
+        end
+        if self.leftText then
+            self.leftText:SetText(leftText or '')
+        end
+        if bottomLeftText and not self.bottomLeftText then
+            self.bottomLeftText= e.Cstr(self, {size=10})
+            self.bottomLeftText:SetPoint('BOTTOMLEFT')
+        end
+        if self.bottomLeftText then
+            self.bottomLeftText:SetText(bottomLeftText or '')
+        end
+    end
+    return leftText, bottomLeftText
+end
+
+--###############
+--显示, 物品, 属性
+--###############
+function e.Get_Item_Stats(link)--物品，次属性，表
+    if not link then
+        return {}
+    end
+    local num, tab= 0, {}
+    local info= GetItemStats(link) or {}
+    if info['ITEM_MOD_CRIT_RATING_SHORT'] then
+        table.insert(tab, {text=e.onlyChinese and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2, true), value=info['ITEM_MOD_CRIT_RATING_SHORT'] or 1, index=1})
+        num= num +1
+    end
+    if info['ITEM_MOD_HASTE_RATING_SHORT'] then
+        table.insert(tab, {text=e.onlyChinese and '急' or e.WA_Utf8Sub(STAT_HASTE, 1, 2, true), value=info['ITEM_MOD_HASTE_RATING_SHORT'] or 1, index=1})
+        num= num +1
+    end
+    if info['ITEM_MOD_MASTERY_RATING_SHORT'] then
+        table.insert(tab, {text=e.onlyChinese and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1, 2, true), value=info['ITEM_MOD_MASTERY_RATING_SHORT'] or 1, index=1})
+        num= num +1
+    end
+    if info['ITEM_MOD_VERSATILITY'] then
+        table.insert(tab, {text=e.onlyChinese and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1, 2, true), value=info['ITEM_MOD_VERSATILITY'] or 1, index=1})
+        num= num +1
+    end
+    if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
+        table.insert(tab, {text=e.onlyChinese and '闪' or e.WA_Utf8Sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1, 2, true), value=info['ITEM_MOD_CR_AVOIDANCE_SHORT'], index=2})
+        num= num +1
+    end
+    if num<4 and info['ITEM_MOD_CR_LIFESTEAL_SHORT'] then
+        table.insert(tab, {text=e.onlyChinese and '吸' or e.WA_Utf8Sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1, 2, true), value=info['ITEM_MOD_CR_LIFESTEAL_SHORT'] or 1, index=2})
+        num= num +1
+    end
+    --[[if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
+        table.insert(tab, {text=e.onlyChinese and '溅' or e.WA_Utf8Sub(ITEM_MOD_CR_MULTISTRIKE_SHORT, 1,2,true), value=info['ITEM_MOD_CR_MULTISTRIKE_SHORT'] or 1, index=2})
+        num= num +1
+    end]]
+    if num<4 and info['ITEM_MOD_CR_SPEED_SHORT'] then
+        table.insert(tab, {text=e.onlyChinese and '速' or e.WA_Utf8Sub(ITEM_MOD_CR_SPEED_SHORT, 1,2,true), value=info['ITEM_MOD_CR_SPEED_SHORT'] or 1, index=2})
+        num= num +1
+    end
+    return tab
+end
+
+--e.Set_Item_Stats(self, itemLink, {point=self.icon, itemID=nil, hideSet=false, hideLevel=false, hideStats=false})--设置，物品，4个次属性，套装，装等，
+function e.Set_Item_Stats(self, link, setting) --setting= setting or {}
+    if not self then
+        return
+    end
+    local setID, itemLevel
+
+    if link then
+        if not setting.hideSet then
+            setID= select(16 , GetItemInfo(link))--套装
+            if setID and not self.itemSet then
+                self.itemSet= self:CreateTexture()
+                self.itemSet:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
+                self.itemSet:SetVertexColor(1, 0.85, 0)
+                self.itemSet:SetAllPoints(setting.point or self)
+            end
+        end
+
+        if not setting.hideLevel then--物品, 装等
+            local quality = C_Item.GetItemQualityByID(link)--颜色
+            if quality==7 then
+                local itemLevelStr=ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
+                local dataInfo= e.GetTooltipData({hyperLink=link, itemID= setting.itemID or GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
+                itemLevel= tonumber(dataInfo.text[itemLevelStr])
+            end
+            itemLevel= itemLevel or GetDetailedItemLevelInfo(link)
+            if itemLevel and itemLevel<3 then
+                itemLevel=nil
+            end
+            local avgItemLevel= itemLevel and select(2, GetAverageItemLevel())--已装备, 装等
+            if itemLevel and avgItemLevel then
+                local lv = itemLevel- avgItemLevel
+                --if lv>=7 then
+                  --  itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
+                --elseif quality and quality<= 6 then
+                    if lv <= -6  then
+                        itemLevel =RED_FONT_COLOR_CODE..itemLevel..'|r'
+                    elseif lv>=7 then
+                        itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
+                    else
+                        local hexColor= quality and select(4, GetItemQualityColor(quality))
+                        if hexColor then
+                            itemLevel='|c'..hexColor..itemLevel..'|r'
+                        end
+                    end
+                --end
+            end
+            if not self.itemLevel and itemLevel then
+                self.itemLevel= e.Cstr(self, {justifyH='CENTER'})--nil, nil, nil,nil,nil, 'CENTER')
+                self.itemLevel:SetShadowOffset(2,-2)
+                self.itemLevel:SetPoint('CENTER', setting.point)
+            end
+        end
+    end
+    if self.itemSet then self.itemSet:SetShown(setID) end--套装
+    if self.itemLevel then self.itemLevel:SetText(itemLevel or '') end--装等
+
+    local tab= not setting.hideStats and e.Get_Item_Stats(link) or {}--物品，次属性，表
+    table.sort(tab, function(a,b) return a.value>b.value and a.index== b.index end)
+    for index=1 ,4 do
+        local text=self['statText'..index]
+        if tab[index] then
+            if not text then
+                text= e.Cstr(self,{justifyH= (index==2 or index==4) and 'RIGHT'})
+                if index==1 then
+                    text:SetPoint('BOTTOMLEFT', setting.point or self, 'BOTTOMLEFT')
+                elseif index==2 then
+                    text:SetPoint('BOTTOMRIGHT', setting.point or self, 'BOTTOMRIGHT', 4,0)
+                elseif index==3 then
+                    text:SetPoint('TOPLEFT', setting.point or self, 'TOPLEFT')
+                else
+                    text:SetPoint('TOPRIGHT', setting.point or self, 'TOPRIGHT',4,0)
+                end
+                self['statText'..index]=text
+            end
+            text:SetText(tab[index].text)
+        elseif text then
+            text:SetText('')
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -283,6 +1066,9 @@ function e.GetUnitRaceInfo(tab)--e.GetUnitRaceInfo({unit=nil, guid=nil, race=nil
         end
     end
 end
+e.Icon.player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false})
+
+
 
 function e.Class(unit, class, reAltlas)--职业图标 groupfinder-icon-emptyslot'
     class= unit and select(2, UnitClass(unit)) or class
@@ -438,109 +1224,6 @@ function e.GetPlayerInfo(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, fa
 end
 
 
-local battleTag= select(2, BNGetInfo())
-local baseClass= UnitClassBase('player')
-e.Player={
-    realm= GetRealmName(),
-    Realms= {},--多服务器
-    name_realm= UnitName('player')..'-'..GetRealmName(),
-    name= UnitName('player'),
-    sex= UnitSex("player"),
-    class= baseClass,
-    r= GetClassColor(baseClass),
-    g= select(2,GetClassColor(baseClass)),
-    b= select(3, GetClassColor(baseClass)),
-    col= '|c'..select(4, GetClassColor(baseClass)),
-    cn= GetCurrentRegion()==5,
-    region= GetCurrentRegion(),--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-    --Lo= GetLocale(),
-    week= GetWeek(),--周数
-    guid= UnitGUID('player'),
-    levelMax= UnitLevel('player')==MAX_PLAYER_LEVEL,--玩家是否最高等级
-    level= UnitLevel('player'),--UnitEffectiveLevel('player')
-    husandro= battleTag== '古月剑龙#5972' or battleTag=='SandroChina#2690' or battleTag=='Sandro126#2297' or battleTag=='Sandro163EU#2603',
-    faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
-    Layer= nil, --位面数字
-    useColor= nil,--使用颜色
-    L={},--多语言，文本
-}
- --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
- --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
- --ver= select(4,GetBuildInfo())>=100100,--版本 100100
- --disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true
-for k, v in pairs(GetAutoCompleteRealms()) do
-    e.Player.Realms[v]=k
-end
-
-e.Icon={
-    icon= 'orderhalltalents-done-glow',
-    disabled='talents-button-reset',
-    select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√
-    select2='|A:common-icon-checkmark:0:0|a',--绿色√
-    --selectYellow='common-icon-checkmark-yellow',--黄色√
-    X2='|A:common-icon-redx:0:0|a',
-    O2='|A:talents-button-reset:0:0|a',--￠
-    right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
-    left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
-    mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
-    map='poi-islands-table',
-    map2='|A:poi-islands-table:0:0|a',
-    wow=136235,
-    wow2='|T136235:0|t',--'|A:Icon-WoW:0:0|a',--136235
-    net2= BNet_GetClientEmbeddedTexture(-2, 32, 32),
-    horde= 'charcreatetest-logo-horde',
-    alliance='charcreatetest-logo-alliance',
-    horde2='|A:charcreatetest-logo-horde:0:0|a',
-    alliance2='|A:charcreatetest-logo-alliance:0:0|a',
-
-    number='services-number-',
-    number2='|A:services-number-%d:0:0|a',
-    clock='socialqueuing-icon-clock',
-    clock2='|A:socialqueuing-icon-clock:0:0|a',
-
-    player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
-
-    bank2='|A:Banker:0:0|a',
-    bag='bag-main',
-    bag2='|A:bag-main:0:0|a',
-    bagEmpty='bag-reagent-border-empty',
-
-    up2='|A:bags-greenarrow:0:0|a',--绿色向上, 红色向上 UI-HUD-Minimap-Arrow-Corpse， 金色 UI-HUD-Minimap-Arrow-Guard
-    down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下
-    toLeft='common-icon-rotateleft',--向左
-    toLeft2='|A:common-icon-rotateleft:0:0|a',
-    toRight='common-icon-rotateright',--向右
-    toRight2='|A:common-icon-rotateright:0:0|a',
-
-    unlocked='tradeskills-icon-locked',--'Levelup-Icon-Lock',--没锁
-    quest='AutoQuest-Badge-Campaign',--任务
-    guild2='|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a',--guild2='|A:communities-guildbanner-background:0:0|a',
-
-    TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',
-    HEALER='|A:UI-LFG-RoleIcon-Healer:0:0|a',
-    DAMAGER='|A:UI-LFG-RoleIcon-DPS:0:0|a',
-    NONE='|A:UI-LFG-RoleIcon-Pending:0:0|a',
-    leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
-
-    info2='|A:questlegendary:0:0|a',--黄色!
-    star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
-}
-
-
-C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua
-    if success and texture then
-        e.Icon.wow2= '|T'..texture..':0|t'
-        e.Icon.wow= texture
-    end
-end)
---[[C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Medium, function(success, texture)
-    if success and texture then
-        e.Icon.net2= '|T'..texture..':0|t'
-        print(texture)
-    end
-end)]]
-
-
 function e.PlayerOnlineInfo(unit)--单位，状态信息
     if unit and UnitExists(unit) then
         if not UnitIsConnected(unit) then
@@ -585,56 +1268,39 @@ end
 
 
 
-function e.MK(number, bit)
-    if number then
-        bit = bit or 1
-        local num= 0
-        if bit==0 then
-            num= 0.4
-        elseif bit==1 then
-            num= 0.04
-        elseif bit==2 then
-            num= 0.004
-        elseif bit==3 then
-            num= 0.0004
-        elseif bit==4 then
-            num= 0.00004
-        end
-        if number>=1e6 then
-            return format('%.'..bit..'fm', (number/1e6)-num)
-        elseif number>= 1e4 and (LOCALE_zhCN or e.onlyChinese) then
-            return format('%.'..bit..'fw', (number/1e4)-num)
-        elseif number>=1e3 then
-            return format('%.'..bit..'fk', (number/1e3)-num)
-        else
-            return format('%i', number)
-        end
-    end
-end
 
-function e.GetShowHide(sh, all)
-    if all then
-        return e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE)
-    elseif sh then
-		return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '显示' or SHOW)..'|r'
-	else
-		return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '隐藏' or HIDE)..'|r'
-	end
-end
-function e.GetEnabeleDisable(ed)--启用或禁用字符
-    if ed then
-        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE)..'|r'
-    else
-        return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r'
-    end
-end
-function e.GetYesNo(yesno)
-    if yesno then
-        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '是' or YES)..'|r'
-    else
-        return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '否' or NO)..'|r'
-    end
-end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -830,133 +1496,7 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
     return string, colorRe or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=e.Player.col}
 end
 
-function e.Cstr(self, tab)--self, {size, copyFont, changeFont, fontName color={r=,g=,b=,a=}, layer=, justifyH=, mouse=false, wheel=false}
-    tab= tab or {}--Fonts.xml FontStyles.xml
-    self= self or UIParent
-    local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), tab.fontName or 'GameFontNormal',  self:GetFrameLevel()+1)
-    if tab.copyFont then
-        local fontName, size, fontFlags = tab.copyFont:GetFont()
-        font:SetFont(fontName, tab.size or size, fontFlags)
-        font:SetTextColor(tab.copyFont:GetTextColor())
-        font:SetFontObject(tab.copyFont:GetFontObject())
-        font:SetShadowColor(tab.copyFont:GetShadowColor())
-        font:SetShadowOffset(tab.copyFont:GetShadowOffset())
-    else
-        if (e.onlyChinese or LOCALE_zhCN) then
-            font:SetFont('Fonts\\ARHei.ttf', (tab.size or 12), 'OUTLINE')
-        else
-            local fontName= font:GetFont()
-            font:SetFont(fontName or 'GameFontNormal', (tab.size or 12), 'OUTLINE')--THICKOUTLINE
-        end
-        font:SetShadowOffset(1, -1)
-        --font:SetShadowColor(0, 0, 0)
-        font:SetJustifyH(tab.justifyH or 'LEFT')
-        if  tab.color~=false then
-            if tab.color==true then--颜色
-                if e.Player.useColor then
-                    font:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a or 1)
-                else
-                    font:SetTextColor(e.Player.r, e.Player.g, e.Player.b, 1)
-                end
-            elseif type(tab.color)=='table' then
-                font:SetTextColor(tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1)
-            else
-                font:SetTextColor(1, 0.82, 0, 1)
-            end
-        end
-    end
-    if tab.mouse then
-        font:EnableMouse(true)
-    end
-    if tab.wheel then
-        font:EnableMouseWheel(true)
-    end
-    return font
-end
 
-function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton'
-    tab=tab or {}
-    self= self or UIParent
-    local btn
-    if tab.type==false then
-        btn= CreateFrame(tab.button or 'Button', tab.name, self, 'UIPanelButtonTemplate')--MagicButtonTemplate
-    elseif tab.type==true then
-        btn= CreateFrame(tab.button or "Button", tab.name, self, "SecureActionButtonTemplate");
-    else
-        btn= CreateFrame(tab.button or 'Button', tab.name, self)
-    end
-    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    btn:EnableMouseWheel(true)
-    if tab.size then
-        btn:SetSize(tab.size[1], tab.size[2])
-    elseif tab.button=='ItemButton' then
-        btn:SetSize(34, 34)
-    end
-    if tab.type~=false then
-        if tab.pushe then
-            btn:SetHighlightAtlas('bag-border')
-            btn:SetPushedAtlas('bag-border-highlight')
-        else
-            btn:SetHighlightAtlas('Forge-ColorSwatchSelection')
-            btn:SetPushedAtlas('UI-HUD-MicroMenu-Highlightalert')
-        end
-        if tab.icon~='hide' then
-            if tab.texture then
-                btn:SetNormalTexture(tab.texture)
-            elseif tab.atlas then
-                btn:SetNormalAtlas(tab.atlas)
-            elseif tab.icon==true then
-                btn:SetNormalAtlas(e.Icon.icon)
-            else
-                btn:SetNormalAtlas(e.Icon.disabled)
-            end
-        end
-    end
-    return btn
-end
-
-function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
-    if not self then
-        return
-    elseif not duration or duration<=0 then
-        if self.cooldown then
-            self.cooldown:Clear()
-        end
-        return
-    end
-    if not self.cooldown then
-        self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
-        self.cooldown:Raise()
-        self.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
-        self.cooldown:SetDrawBling(not hideDrawBling)--闪光
-        self.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
-        self.cooldown:SetHideCountdownNumbers(HideCountdownNumbers)--隐藏数字
-        self.cooldown:SetReverse(Reverse)--控制冷却动画的方向
-        self.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge");
-        if SwipeTexture then
-            self.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')--圆框架
-        end
-        self:HookScript('OnHide', function(self2)
-            if self2.cooldown then
-                self2.cooldown:Clear()
-            end
-        end)
-    end
-    start=start or GetTime()
-    self.cooldown:SetCooldown(start, duration, modRate)
-end
-
-function e.SetItemSpellCool(self, item, spell)
-    if item then
-        local startTime, duration = GetItemCooldown(item)
-        e.Ccool(self, startTime, duration, nil, true, nil, true)
-    elseif spell then
-        local start, duration, _, modRate = GetSpellCooldown(spell)
-        e.Ccool(self, start, duration, modRate, true, nil, true)--冷却条
-    elseif self.cooldown then
-        self.cooldown:Clear()
-    end
-end
 
 function e.SetButtonKey(self, set, key, click)--设置清除快捷键
     if set then
@@ -966,209 +1506,32 @@ function e.SetButtonKey(self, set, key, click)--设置清除快捷键
     end
 end
 
-e.itemSlotTable={
-    ['INVTYPE_HEAD']=1,
-    ['INVTYPE_NECK']=2,
-    ['INVTYPE_SHOULDER']=3,
-    ['INVTYPE_BODY']=4,
-    ['INVTYPE_CHEST']=5,
-    ['INVTYPE_WAIST']=6,
-    ['INVTYPE_LEGS']=7,
-    ['INVTYPE_FEET']=8,
-    ['INVTYPE_WRIST']=9,
-    ['INVTYPE_HAND']=10,
-    ['INVTYPE_FINGER']=11,
-    ['INVTYPE_TRINKET']=13,
-    ['INVTYPE_WEAPON']=16,
-    ['INVTYPE_SHIELD']=17,
-    ['INVTYPE_RANGED']=16,
-    ['INVTYPE_CLOAK']=15,
-    ['INVTYPE_2HWEAPON']=16,
-    ['INVTYPE_TABARD']=19,
-    ['INVTYPE_ROBE']=5,
-    ['INVTYPE_WEAPONMAINHAND']=16,
-    ['INVTYPE_WEAPONOFFHAND']=16,
-    ['INVTYPE_HOLDABLE']=17,
-    ['INVTYPE_THROWN']=16,
-    ['INVTYPE_RANGEDRIGHT']=16,
-};
-
-
---[[
-e.WA_GetUnitAura = function(unit, spell, filter)--AuraEnvironment.lua
-  for i = 1, 255 do
-    --local name, _, _, _, _, _, _, _, _, spellId = UnitAura(unit, i, filter)
-    local spellID = select(10, UnitAura(unit, i, filter))
-    if not spellID then
-        return
-    elseif spell == spellID then
-      return UnitAura(unit, i, filter)
-    end
-  end
-end
-]]
-
-function e.WA_GetUnitBuff(unit, spell, filter)--HELPFUL HARMFUL
-    for i = 1, 40 do
-        local spellID = select(10, UnitBuff(unit, i, filter))
-        if not spellID then
-            return
-        elseif spell == spellID then
-          return UnitBuff(unit, i, filter)
-        end
-    end
-end
-function e.WA_GetUnitDebuff(unit, spell, filter, spellTab)
-    spellTab= spellTab or {}
-    for i = 1, 40 do
-        local spellID = select(10, UnitDebuff(unit, i, filter))
-        if not spellID then
-            return
-        elseif spellTab[spellID] or spell== spellID then
-            return UnitDebuff(unit, i, filter)
-        end
-    end
-end
-
-
-function e.WA_Utf8Sub(input, size, letterSize, lower)
-    local output = ""
-    if type(input) ~= "string" then
-      return output or ''
-    end
-    local i = 1
-
-    if letterSize and input:find('%w')  then--英文
-        size=letterSize
-    end
-
-    while (size > 0) do
-      local byte = input:byte(i)
-      if not byte then
-        return output
-      end
-      if byte < 128 then
-        -- ASCII byte
-        output = output .. input:sub(i, i)
-        size = size - 1
-      elseif byte < 192 then
-        -- Continuation bytes
-        output = output .. input:sub(i, i)
-      elseif byte < 244 then
-        -- Start bytes
-        output = output .. input:sub(i, i)
-        size = size - 1
-      end
-      i = i + 1
-    end
-    while (true) do
-      local byte = input:byte(i)
-      if byte and byte >= 128 and byte < 192 then
-        output = output .. input:sub(i, i)
-      else
-        break
-      end
-      i = i + 1
-    end
-    return lower and strlower(output) or output
-end
---[[
-e.HEX=function(r, g, b, a)
-    a=a or 1
-    r = r <= 1 and r >= 0 and r or 0
-    g = g <= 1 and g >= 0 and g or 0
-    b = b <= 1 and b >= 0 and b or 0
-    a = a <= 1 and a >= 0 and a or 0
-    return string.format("%02x%02x%02x%02x",a*255, r*255, g*255, b*255)
-end]]
-
-function e.SecondsToClock(seconds, displayZeroHours)--TimeUtil.lua
-    if seconds and seconds>=0 then
-        local units = ConvertSecondsToUnits(seconds);
-        if units.hours > 0 or displayZeroHours then
-            return format('%.2d:%.2d:%.2d', units.hours, units.minutes, units.seconds);
-        else
-            return format('%.2d:%.2d', units.minutes, units.seconds);
-        end
-    end
-end
-
---取得对战宠物, 强弱 SharedPetBattleTemplates.lua
-function e.GetPetStrongWeakHints(petType)
-    local strongTexture,weakHintsTexture, stringIndex, weakHintsIndex
-    for i=1, C_PetJournal.GetNumPetTypes() do
-        local modifier = C_PetBattles.GetAttackModifier(petType, i);
-        if ( modifier > 1 ) then
-            strongTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i]--"Interface\\PetBattles\\PetIcon-"..PET_TYPE_SUFFIX[i]
-            weakHintsIndex=i
-        elseif ( modifier < 1 ) then
-            weakHintsTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i]
-            weakHintsIndex=i
-        end
-    end
-    return strongTexture,weakHintsTexture, stringIndex, weakHintsIndex ----_G["BATTLE_PET_NAME_"..petType]
-end
-
---[[
-local R,G,B=4,GetClassColor(UnitClassBase('player'))
-e.CStatusBar = function(self,value, size, VERTICAL, color, min, max,ReverseFill)
-    if not self.Bar then
-        self.Bar = CreateFrame('StatusBar', nil, self);
-        if size then
-            self.Bar:SetSize(size[1], size[2])
-        else
-            self.Bar:SetAllPoints(slef)
-        end
-        if VERTICAL then--"HORIZONTAL","VERTICAL"垂直
-            self.Bar:SetOrientation('VERTICAL');
-        else
-            self.Bar:SetOrientation('HORIZONTAL');
-        end
-        self.Bar:SetMinMaxValues(min,max);
-        self.Bar:SetReverseFill(ReverseFill)
-    end
-    if color then
-        self.Bar:SetStatusBarColor(color[1], color[2], color[3]);
-    else
-        self.Bar:SetStatusBarColor(R, G, B);
-    end
-    self.Bar:SetValue(value);
-end
 
 
 
-e.GetItemCooldown= function(itemID)--物品冷却
-    local startTime, duration, enable = GetItemCooldown(itemID)
-    if duration>0 and enable==1 then
-        local t=GetTime()
-        if startTime>t then t=t+86400 end
-        t=t-startTime
-        t=duration-t
-        return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
-    elseif enable==0 then
-        return '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
-    end
-    return ''
-end
 
-]]
-function e.GetSpellItemCooldown(spellID, itemID)--法术冷却
-    local startTime, duration, enable
-    if spellID then
-        startTime, duration, enable = GetSpellCooldown(spellID)
-    elseif itemID then
-        startTime, duration, enable = GetItemCooldown(itemID)
-    end
-    if duration and duration>0 and enable==1 then
-        local t=GetTime()
-        if startTime>t then t=t+86400 end
-        t=t-startTime
-        t=duration-t
-        return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
-    elseif enable==0 then
-        return '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
-    end
-end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function e.Cbtn2(tab)
 --[[
@@ -1250,55 +1613,6 @@ function e.ToolsSetButtonPoint(self, line, unoLine)--设置位置
     e.toolsFrame.index=e.toolsFrame.index+1
 end
 
-function e.Chat(text, name, setPrint)
-    if not text then
-        return
-    elseif name then
-        SendChatMessage(text, 'WHISPER',nil, name)
-        return
-    end
-    local isNotDead= not UnitIsDeadOrGhost('player')
-    local isInInstance= IsInInstance()
-    if isInInstance and isNotDead then-- and C_CVar.GetCVarBool("chatBubbles") then
-        SendChatMessage(text, 'YELL')
-
-    elseif isInInstance and IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-        SendChatMessage(text, 'INSTANCE_CHAT')
-
-    elseif IsInRaid() then
-        SendChatMessage(text, 'RAID')
-
-    elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
-        SendChatMessage(text, 'PARTY')
-
-    elseif isNotDead and IsOutdoors() and not UnitAffectingCombat('player') then
-        SendChatMessage(text, 'YELL')
-
-    elseif setPrint then
-        print(text)
-    end
-end
-
-function e.Say(type, name, wow, text)
-    local chat= SELECTED_DOCK_FRAME
-    local msg = chat.editBox:GetText() or ''
-    if text and text==msg then
-        text=''
-    else
-        text= text or ''
-    end
-    if msg:find('/') then msg='' end
-    msg=' '..msg
-    if name then
-        if wow then
-            ChatFrame_SendBNetTell(name..msg..(text or ''))
-        else
-            ChatFrame_OpenChat("/w " ..name..msg..(text or ''), chat);
-        end
-    elseif type then
-        ChatFrame_OpenChat(type..msg..(text or ''), chat)
-    end
-end
 
 
 function e.GetDurabiliy(reTexture)--耐久度
@@ -1480,6 +1794,22 @@ function e.GetPetCollectedNum(speciesID, itemID)--总收集数量， 25 25 25，
     return AllCollected, CollectedNum, CollectedText
 end
 
+--取得对战宠物, 强弱 SharedPetBattleTemplates.lua
+function e.GetPetStrongWeakHints(petType)
+    local strongTexture,weakHintsTexture, stringIndex, weakHintsIndex
+    for i=1, C_PetJournal.GetNumPetTypes() do
+        local modifier = C_PetBattles.GetAttackModifier(petType, i);
+        if ( modifier > 1 ) then
+            strongTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i]--"Interface\\PetBattles\\PetIcon-"..PET_TYPE_SUFFIX[i]
+            weakHintsIndex=i
+        elseif ( modifier < 1 ) then
+            weakHintsTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i]
+            weakHintsIndex=i
+        end
+    end
+    return strongTexture,weakHintsTexture, stringIndex, weakHintsIndex ----_G["BATTLE_PET_NAME_"..petType]
+end
+
 function e.GetMountCollected(mountID)--坐骑, 收集数量
     if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
         return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r'
@@ -1490,7 +1820,6 @@ end
 
 
 
-e.ExpansionLevel= GetExpansionLevel()
 function e.GetExpansionText(expacID, questID)--版本数据
     expacID= expacID or questID and GetQuestExpansion(questID)
     if expacID then
@@ -1587,183 +1916,24 @@ function e.PlaySound(soundKitID, setPlayerSound)--播放, 声音 SoundKitConstan
     return success, voHandle
 end
 
-function e.set_CVar(name, value)-- e.set_CVar()--设置 Cvar
-    if value~= nil then
-        C_CVar.SetCVar(name, value and '1' or '0')
-    end
-end
 
---显示, 宝石, 属性
-local AndStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s";
-function e.Get_Gem_Stats(tab, itemLink, self)
-    local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+%d+ .+)', }})--物品提示，信息
-    local text= dateInfo.text['(%+%d+ .+)']
-    local leftText, bottomLeftText
-    if text and text:find('%+') then
-        local str2, str3
-        if text:find(', ') then
-            str2, str3= text:match('(.-), (.+)')
-        elseif text:find('，') then
-            str2, str3= text:match('(.-)，(.+)')
-        else
-            str2, str3= text:match(AndStr)
-        end
-        str2= str2 or text:match('%+%d+ .+')
-        if str2 then
-            str2= str2:match('%+%d+ (.+)')
-            leftText= e.WA_Utf8Sub(str2,1,3, true)
-            leftText= leftText and '|cffffffff'..leftText..'|r'
-            if str3 then
-                str3= str3:match('%+%d+ (.+)')
-                bottomLeftText= e.WA_Utf8Sub(str3,1,3, true)
-                bottomLeftText= bottomLeftText and '|cffffffff'..bottomLeftText..'|r'
-            end
-        end
-    end
-    if self then
-        if leftText and not self.leftText then
-            self.leftText= e.Cstr(self, {size=10})
-            self.leftText:SetPoint('LEFT')
-        end
-        if self.leftText then
-            self.leftText:SetText(leftText or '')
-        end
-        if bottomLeftText and not self.bottomLeftText then
-            self.bottomLeftText= e.Cstr(self, {size=10})
-            self.bottomLeftText:SetPoint('BOTTOMLEFT')
-        end
-        if self.bottomLeftText then
-            self.bottomLeftText:SetText(bottomLeftText or '')
-        end
-    end
-    return leftText, bottomLeftText
-end
 
---###############
---显示, 物品, 属性
---###############
-function e.Get_Item_Stats(link)--物品，次属性，表
-    if not link then
-        return {}
-    end
-    local num, tab= 0, {}
-    local info= GetItemStats(link) or {}
-    if info['ITEM_MOD_CRIT_RATING_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2, true), value=info['ITEM_MOD_CRIT_RATING_SHORT'] or 1, index=1})
-        num= num +1
-    end
-    if info['ITEM_MOD_HASTE_RATING_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '急' or e.WA_Utf8Sub(STAT_HASTE, 1, 2, true), value=info['ITEM_MOD_HASTE_RATING_SHORT'] or 1, index=1})
-        num= num +1
-    end
-    if info['ITEM_MOD_MASTERY_RATING_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1, 2, true), value=info['ITEM_MOD_MASTERY_RATING_SHORT'] or 1, index=1})
-        num= num +1
-    end
-    if info['ITEM_MOD_VERSATILITY'] then
-        table.insert(tab, {text=e.onlyChinese and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1, 2, true), value=info['ITEM_MOD_VERSATILITY'] or 1, index=1})
-        num= num +1
-    end
-    if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '闪' or e.WA_Utf8Sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1, 2, true), value=info['ITEM_MOD_CR_AVOIDANCE_SHORT'], index=2})
-        num= num +1
-    end
-    if num<4 and info['ITEM_MOD_CR_LIFESTEAL_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '吸' or e.WA_Utf8Sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1, 2, true), value=info['ITEM_MOD_CR_LIFESTEAL_SHORT'] or 1, index=2})
-        num= num +1
-    end
-    --[[if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '溅' or e.WA_Utf8Sub(ITEM_MOD_CR_MULTISTRIKE_SHORT, 1,2,true), value=info['ITEM_MOD_CR_MULTISTRIKE_SHORT'] or 1, index=2})
-        num= num +1
-    end]]
-    if num<4 and info['ITEM_MOD_CR_SPEED_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '速' or e.WA_Utf8Sub(ITEM_MOD_CR_SPEED_SHORT, 1,2,true), value=info['ITEM_MOD_CR_SPEED_SHORT'] or 1, index=2})
-        num= num +1
-    end
-    return tab
-end
 
---e.Set_Item_Stats(self, itemLink, {point=self.icon, itemID=nil, hideSet=false, hideLevel=false, hideStats=false})--设置，物品，4个次属性，套装，装等，
-function e.Set_Item_Stats(self, link, setting) --setting= setting or {}
-    if not self then
-        return
-    end
-    local setID, itemLevel
 
-    if link then
-        if not setting.hideSet then
-            setID= select(16 , GetItemInfo(link))--套装
-            if setID and not self.itemSet then
-                self.itemSet= self:CreateTexture()
-                self.itemSet:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
-                self.itemSet:SetVertexColor(1, 0.85, 0)
-                self.itemSet:SetAllPoints(setting.point or self)
-            end
-        end
 
-        if not setting.hideLevel then--物品, 装等
-            local quality = C_Item.GetItemQualityByID(link)--颜色
-            if quality==7 then
-                local itemLevelStr=ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
-                local dataInfo= e.GetTooltipData({hyperLink=link, itemID= setting.itemID or GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
-                itemLevel= tonumber(dataInfo.text[itemLevelStr])
-            end
-            itemLevel= itemLevel or GetDetailedItemLevelInfo(link)
-            if itemLevel and itemLevel<3 then
-                itemLevel=nil
-            end
-            local avgItemLevel= itemLevel and select(2, GetAverageItemLevel())--已装备, 装等
-            if itemLevel and avgItemLevel then
-                local lv = itemLevel- avgItemLevel
-                --if lv>=7 then
-                  --  itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
-                --elseif quality and quality<= 6 then
-                    if lv <= -6  then
-                        itemLevel =RED_FONT_COLOR_CODE..itemLevel..'|r'
-                    elseif lv>=7 then
-                        itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
-                    else
-                        local hexColor= quality and select(4, GetItemQualityColor(quality))
-                        if hexColor then
-                            itemLevel='|c'..hexColor..itemLevel..'|r'
-                        end
-                    end
-                --end
-            end
-            if not self.itemLevel and itemLevel then
-                self.itemLevel= e.Cstr(self, {justifyH='CENTER'})--nil, nil, nil,nil,nil, 'CENTER')
-                self.itemLevel:SetShadowOffset(2,-2)
-                self.itemLevel:SetPoint('CENTER', setting.point)
-            end
-        end
-    end
-    if self.itemSet then self.itemSet:SetShown(setID) end--套装
-    if self.itemLevel then self.itemLevel:SetText(itemLevel or '') end--装等
 
-    local tab= not setting.hideStats and e.Get_Item_Stats(link) or {}--物品，次属性，表
-    table.sort(tab, function(a,b) return a.value>b.value and a.index== b.index end)
-    for index=1 ,4 do
-        local text=self['statText'..index]
-        if tab[index] then
-            if not text then
-                text= e.Cstr(self,{justifyH= (index==2 or index==4) and 'RIGHT'})
-                if index==1 then
-                    text:SetPoint('BOTTOMLEFT', setting.point or self, 'BOTTOMLEFT')
-                elseif index==2 then
-                    text:SetPoint('BOTTOMRIGHT', setting.point or self, 'BOTTOMRIGHT', 4,0)
-                elseif index==3 then
-                    text:SetPoint('TOPLEFT', setting.point or self, 'TOPLEFT')
-                else
-                    text:SetPoint('TOPRIGHT', setting.point or self, 'TOPRIGHT',4,0)
-                end
-                self['statText'..index]=text
-            end
-            text:SetText(tab[index].text)
-        elseif text then
-            text:SetText('')
-        end
-    end
-end
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function set_Frame_Color(self, setR, setG, setB, setA, setHex)
     if self then
@@ -1840,88 +2010,19 @@ function e.ShowColorPicker(valueR, valueG, valueB, valueA, func, cancelFunc)
     ColorPickerFrame:SetShown(true)
 end
 
-function e.Reload()
-    C_UI.Reload()
-    local bat= UnitAffectingCombat('player') and e.IsEncouter_Start
-    if not bat or not IsInInstance() then
-        C_UI.Reload()
-    else
-        print(id, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
-    end
-end
 
 
-function e.Magic(text)
-    local tab= {'%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^'}
-    for _,v in pairs(tab) do
-        text= text:gsub(v,'%%'..v)
-    end
-    tab={
-        ['%%%d%$s']= '%(%.%-%)',
-        ['%%s']= '%(%.%-%)',
-        ['%%%d%$d']= '%(%%d%+%)',
-        ['%%d']= '%(%%d%+%)',
-    }
-    local find
-    for k,v in pairs(tab) do
-        text= text:gsub(k,v)
-        find=true
-    end
-    if find then
-        tab={'%$'}
-    else
-        tab={'%%','%$'}
-    end
-    for _, v in pairs(tab) do
-        text= text:gsub(v,'%%'..v)
-    end
-    return text
-end
 
 
-local LibRangeCheck = LibStub("LibRangeCheck-2.0", true)
-function e.GetRange(unit, checkVisible)--WA Prototypes.lua
-    return LibRangeCheck:GetRange(unit, checkVisible);
-end
 
-function e.CheckRange(unit, range, operator)
-    local min, max= LibRangeCheck:GetRange(unit, true);
-    if (operator == "<=") then
-        return (max or 999) <= range;
-    else
-        return (min or 0) >= range;
-    end
-end
 
-function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=})--设置，提示
-    if tab.show and not tab.frame.HelpTips then
-        tab.frame.HelpTips= e.Cbtn(tab.frame, {layer='OVERLAY',size=tab.size and {tab.size[1], tab.size[2]} or {40,40}})-- button:CreateTexture(nil, 'OVERLAY')
-        if tab.point=='right' then
-            tab.frame.HelpTips:SetPoint('BOTTOMLEFT', tab.topoint or tab.frame, 'BOTTOMRIGHT',0,-10)
-            tab.frame.HelpTips:SetNormalAtlas(tab.atlas or e.Icon.toLeft)
-        else--left
-            tab.frame.HelpTips:SetPoint('BOTTOMRIGHT', tab.topoint or tab.frame, 'BOTTOMLEFT',0,-10)
-            tab.frame.HelpTips:SetNormalAtlas(tab.atlas or e.Icon.toRight)
-        end
-        if tab.color then
-            SetItemButtonNormalTextureVertexColor(tab.frame.HelpTips, tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1);
-        end
-        tab.frame.HelpTips:SetScript('OnUpdate', function(self, elapsed)
-            self.elapsed= (self.elapsed or 0.5) + elapsed
-            if self.elapsed>0.5 then
-                self.elapsed=0
-                self:SetScale(self:GetScale()==1 and 0.5 or 1)
-            end
-        end)
-        tab.frame.HelpTips:SetScript('OnEnter', function(self) self:SetShown(false) end)
-        if tab.onlyOne then
-            tab.frame.HelpTips.onlyOne=true
-        end
-    end
-    if tab.frame.HelpTips and not tab.frame.HelpTips.onlyOne then
-        tab.frame.HelpTips:SetShown(tab.show)
-    end
-end
+
+
+
+
+
+
+
 
 local Realms={}
 if e.Player.region==3 then--EU 
@@ -2078,11 +2179,3 @@ function e.Get_Region(realm, guid, unit, disabled)--e.Get_Region(server, guid, u
     end
 end
 
-
-function e.Get_CVar_Tooltips(info)--取得CVar信息 e.Get_CVar_Tooltips({name= ,msg=, value=})
-    return (info.msg and info.msg..'|n' or '')..info.name..'|n'
-    ..(info.value and C_CVar.GetCVar(info.name)== info.value and e.Icon.select2 or '')
-    ..(info.value and (e.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
-    ..'('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cnGREEN_FONT_COLOR:'..C_CVar.GetCVar(info.name)..'|r |r'
-    ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..C_CVar.GetCVarDefault(info.name)..')|r'
-end

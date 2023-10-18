@@ -254,3 +254,25 @@ SliceDemo.Texture:SetVertexColor(0, 1, 0);
 
 SliceDemo.ResizeButton = CreateFrame("Button", nil, SliceDemo, "PanelResizeButtonTemplate");
 SliceDemo.ResizeButton:SetPoint("BOTTOMRIGHT");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--[[for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS
+    for slot=1, C_Container.GetContainerNumSlots(bag) do
+        local info = C_Container.GetContainerItemInfo(bag, slot)
+        if info and info.itemID then
+            e.LoadDate({id=info.itemID, type='item'})
+        end
+    end
+end]]
