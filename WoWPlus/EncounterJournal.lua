@@ -141,20 +141,29 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
 --######################
 --冒险指南,右边,显示所数据
 --######################
 local function EncounterJournal_Set_All_Info_Text()
     local self=EncounterJournal
-    if not self or Save.hideEncounterJournal_All_Info_Text then
-        if self and self.AllText then
-            self.AllText:SetText('')
+    if not EncounterJournal or Save.hideEncounterJournal_All_Info_Text then
+        if EncounterJournal and EncounterJournal.AllText then
+            EncounterJournal.AllText:SetText('')
         end
         return
     end
-    if not self.AllText then
-        self.AllText=e.Cstr(self)
-        self.AllText:SetPoint('TOPLEFT', self, 'TOPRIGHT',40,0)
+    if not EncounterJournal.AllText then
+        EncounterJournal.AllText=e.Cstr(EncounterJournal)
+        EncounterJournal.AllText:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT',40,0)
     end
     local m=''
 
@@ -266,29 +275,20 @@ local function EncounterJournal_Set_All_Info_Text()
     end
     m= m~='' and m..'|n|n'..text or text
 
-    --征服点数 Conquest 1602 1191/勇气点数
-    tab={1191, 1602, 1792}
-    text=''
-    for _,v in pairs(tab) do
-        local info=C_CurrencyInfo.GetCurrencyInfo(v)
-        if info and info.quantity and info.quantity>=0 and info.name then
-            local t=(info.iconFileID and '|T'..info.iconFileID..':0|t' or '')..info.name..': '
-            t=t..e.MK(info.quantity,3)..((info.maxQuantity and info.maxQuantity>0) and '/'..e.MK(info.maxQuantity,3) or '')
-            if info.maxQuantity and info.maxQuantity>0 and info.maxQuantity==info.quantity then
-                t='|cnRED_FONT_COLOR:'..t..'|r'
-            end
-            text= text~='' and text..'|n'..t or t
-        end
-    end
-    if text~='' then
-        m= m~='' and m..'|n|n'..text or text
-    end
     --本周还可获取奖励
-    if C_WeeklyRewards.CanClaimRewards() then
-        m=m..'|n|n|cFF00FF00'.. string.format(LFD_REWARD_DESCRIPTION_WEEKLY,1)..'|r|T134140:0|t'
+    if C_WeeklyRewards.HasAvailableRewards() then--C_WeeklyRewards.CanClaimRewards() then
+        m=m..'|n|n|A:oribos-weeklyrewards-orb-dialog:0:0|a|cnGREEN_FONT_COLOR:'..
+        (e.onlyChinese and '宏伟宝库里有奖励在等待着你。' or GREAT_VAULT_REWARDS_WAITING)..'|r'
     end
-    self.AllText:SetText(m)
+    EncounterJournal.AllText:SetText(m)
+
+    --物品，货币提示
+    e.ItemCurrencyLabel({frame=EncounterJournal, point={'TOPLEFT', EncounterJournal.AllText, 'BOTTOMLEFT', 0, -12}, showAll=true})
 end
+
+
+
+
 
 
 

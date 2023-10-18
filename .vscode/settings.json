@@ -3420,7 +3420,8 @@
         "PVP_BOUNTY_REWARD_TITLE",
         "REWARD",
         "AlertFrameQueueMixin",
-        "QuestUtils_GetQuestTagAtlas"
+        "QuestUtils_GetQuestTagAtlas",
+        "GREAT_VAULT_REWARDS_WAITING"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

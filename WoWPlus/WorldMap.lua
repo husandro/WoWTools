@@ -728,7 +728,6 @@ end
 --##########
 --地图POI提示
 --AreaPOIDataProvider.lua
-local str_INSTANCE_DIFFICULTY_FORMAT='('..e.Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
 local function set_Widget_Text_OnUpDate(self, elapsed)
     self.elapsed= (self.elapsed or 1) + elapsed
     if self.elapsed>1 then
@@ -753,7 +752,7 @@ local function set_Widget_Text_OnUpDate(self, elapsed)
     end
 end
 
-
+local str_INSTANCE_DIFFICULTY_FORMAT='('..e.Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
 local function set_AreaPOIPinMixin_OnAcquired(frame)
     frame.updateWidgetID=nil
     frame.updateAreaPoiID=nil

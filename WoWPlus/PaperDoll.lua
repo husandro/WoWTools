@@ -1739,52 +1739,12 @@ local function add_Button_OpenOption(frame)
     end)
     btn:SetScript('OnLeave', function() e.tips:Hide() end)
     if frame==ItemUpgradeFrameCloseButton then--装备升级, 界面
-        local function set_item_Num_Text(self)
-            local tab={--物品数量提示
-                204196,--10.1
-                204195,
-                204194,
-                204193,
-
-            }
-            local text
-            for _, itemID in pairs(tab) do
-                e.LoadDate({id=itemID, type='item'})--加载 item quest spell
-                local num= GetItemCount(itemID , true, nil, true)
-                if num>0 then
-                    local icon= C_Item.GetItemIconByID(itemID)
-                    if icon then
-                        text= text and text..'|n' or ''
-                        text= text..'|T'..icon..':0|t'..num
-                    end
-                end
-            end
-            tab={
-                2709,--[守护巨龙的酣梦纹章] 10.2
-                2708,
-                2707,
-                2245,--飞珑石
-            }
-            local text2
-            for _, currencyID in pairs(tab) do
-                local info= C_CurrencyInfo.GetCurrencyInfo(currencyID) or {}
-                if info.iconFileID and info.quantity and info.quantity>0 then
-                    text2= text2 and text2..'|n' or ''
-                    text2= text2..'|T'..info.iconFileID..':0|t' ..e.MK(info.quantity, 3)
-                end
-            end
-            if text2 then
-                text= (text and text..'|n|n' or '')..text2
-            end
-            if text and not self.text then
-                self.text= e.Cstr(self)
-                self.text:SetPoint('BOTTOMLEFT', ItemUpgradeFrame, 'BOTTOMLEFT', 6, 385)
-            end
-            if self.text then
-                self.text:SetText(text and text..' ' or '')
-            end
-        end
-        btn:SetScript("OnEvent", set_item_Num_Text)
+        --物品，货币提示
+        e.ItemCurrencyLabel({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})
+        btn:SetScript("OnEvent", function()
+            --物品，货币提示
+            e.ItemCurrencyLabel({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})
+        end)
         btn:SetScript('OnShow', function(self)
             self:RegisterEvent('BAG_UPDATE_DELAYED')
             self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
@@ -1792,7 +1752,6 @@ local function add_Button_OpenOption(frame)
         btn:SetScript('OnHide', function(self)
             self:UnregisterAllEvents()
         end)
-        set_item_Num_Text(btn)
     end
 end
 

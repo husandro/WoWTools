@@ -5,6 +5,8 @@ e.onlyChinese= LOCALE_zhCN
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
 e.call= securecall
 
+
+
 local function GetWeek()--周数
     local region= GetCurrentRegion()
     local d = date("*t")
@@ -42,7 +44,6 @@ function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, u
         if not C_Item.IsItemDataCachedByID(tab.id) then C_Item.RequestLoadItemDataByID(tab.id) end
 
     end
-
 end
 
 local itemLoadTab={--加载法术,或物品数据
@@ -85,6 +86,134 @@ e.itemPetID={--宠物对换, wow9.0
     [62072]=true,
     [67410]=true,
 }
+
+--物品升级界面，挑战界面，物品，货币提示
+function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true, showAll=true}
+    if not settings.frame then return end
+    local itemS= {--数量提示
+    {type='item', id=204196},--魔龙的暗影烈焰纹章10.1
+    {type='item', id=204195},--幼龙的暗影烈焰纹章
+    {type='item', id=204194},--守护巨龙的暗影烈焰纹章
+    {type='item', id=204193},--雏龙的暗影烈焰纹章
+
+    {type='currency', id=2709},--守护巨龙的酣梦纹章 10.2
+    {type='currency', id=2708},--魔龙的酣梦纹章
+    {type='currency', id=2707},--幼龙的酣梦纹章
+
+    {type='currency', id=2245},--飞珑石
+    {type='currency', id=1602},--征服点数
+    {type='currency', id=1191},--勇气点数
+}
+
+    settings.frame.tipsLabels= settings.frame.tipsLabels or {}
+
+    local index=0
+    local last
+    for _, tab in pairs(itemS) do
+        local text=''
+        if tab.type=='currency' then
+            local info=C_CurrencyInfo.GetCurrencyInfo(tab.id)
+            if info and info.quantity and info.maxQuantity
+                and (settings.showAll or (info.discovered and info.quantity>0))
+            then
+                if info.maxQuantity>0  then
+                    if info.quantity==info.maxQuantity then
+                        text=text..'|cnGREEN_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
+                    else
+                        text=text..info.quantity.. '/'..info.maxQuantity..' '
+                    end
+                    if info.useTotalEarnedForMaxQty then--本周还可获取                        
+                        local q
+                        q= info.maxQuantity - info.totalEarned
+                        if q>0 then
+                            q='|cnGREEN_FONT_COLOR:+'..q..'|r'
+                        else
+                            q='|cff828282+0|r'
+                        end
+                        text=text..' ('..q..') '
+                    end
+                else
+                    if info.maxQuantity==0 then
+                        text=text..info.quantity..'/'.. (e.onlyChinese and '无限制' or UNLIMITED)..' '
+                    else
+                        if info.quantity==info.maxQuantity then
+                            text=text..'|cnGREEN_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
+                        else
+                            text=text..info.quantity..'/'..info.maxQuantity..' '
+                        end
+                    end
+                end
+                text= (info.iconFileID and '|T'..info.iconFileID..':0|t' or '')
+                    ..((settings.showName and info.name) and info.name..' ' or '')
+                    ..text
+            end
+        elseif tab.type=='item' then
+            e.LoadDate({id=tab.id, type='item'})
+            local num= GetItemCount(tab.id, true)
+            if settings.showAll or num>0 then
+                e.LoadDate({id=tab.id, type='item'})
+                local icon= C_Item.GetItemIconByID(tab.id)
+                text= ((icon and icon>0) and '|T'..icon..':0|t' or id '')
+                    ..(settings.showName and C_Item.GetItemNameByID(tab.id) or '')
+                    ..' |cnGREEN_FONT_COLOR:x|r'..num
+            end
+        end
+        if text~='' then
+            index= index +1
+            local lable= settings.frame.tipsLabels[index]
+            if not lable then
+                lable=e.Cstr(settings.frame, {mouse=true})
+                if last then
+                    lable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
+                elseif settings.point then
+                    lable:SetPoint(settings.point[1], settings.point[2] or settings.frame, settings.point[3], settings.point[4], settings.point[5])
+                else
+                    lable:SetPoint('TOPLEFT', settings.frame, 'BOTTOMLEFT',0, -12)
+                end
+                lable:SetScript("OnEnter",function(self)
+                    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+                    e.tips:ClearLines()
+                    if self.type=='currency' then
+                        e.tips:SetCurrencyByID(self.id)
+                    elseif self.type=='item' then
+                        e.tips:SetItemByID(self.id)
+                    end
+                    e.tips:Show()
+                    self:SetAlpha(0.5)
+                end)
+                lable:SetScript("OnLeave",function(self)
+                    e.tips:Hide()
+                    self:SetAlpha(1)
+                end)
+                settings.frame.tipsLabels[index]= lable
+                last= lable
+            end
+            lable.id= tab.id
+            lable.type= tab.type
+            lable:SetText(text)
+        end
+    end
+
+    for i= index+1, #settings.frame.tipsLabels do
+        local lable= settings.frame.tipsLabels[i]
+        if lable then
+            lable:SetText("")
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function GetPlayerNameRemoveRealm(name, realm)--玩家名称, 去服务器为*
     if not name then
@@ -485,7 +614,7 @@ end
 
 function e.GetShowHide(sh, all)
     if all then
-        return not e.onlyChinese and SHOW..'/'..HIDE or '显示/隐藏'
+        return e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE)
     elseif sh then
 		return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '显示' or SHOW)..'|r'
 	else

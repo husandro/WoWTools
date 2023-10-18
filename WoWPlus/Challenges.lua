@@ -11,7 +11,7 @@ local Save= {
     --tipsScale=0.8,--提示信息，缩放
 
     hidePort= not e.Player.husandro,--传送门
-    --portScale=0.8,--传送门, 缩放
+    portScale=0.85,--传送门, 缩放
 
     --hideKeyUI=true,--挑战,钥石,插入界面
     --slotKeystoneSay=true,--插入, KEY时, 说
@@ -1002,96 +1002,8 @@ local function set_All_Text()--所有记录
     end
     ChallengesFrame.tipsAllLabel:SetText(m)
 
-    --###############
-    --货币, 物品，数量
-    --###############
-    local last
-    local itemS={
-        {id=204194, type='item'},--守护巨龙的暗影烈焰纹章
-        {id=204196, type='item'},
-        {id=204195, type='item'},
-        {id=204193, type='item'},--10.1
-        {id=2245,type='currency'},
-        {id=1602, type='currency'},
-        {id=1191, type='currency'},
-    }
-    for _, tab in pairs(itemS) do
-        local text=''
-        local lable= ChallengesFrame['Currency'..tab.id..tab.type]
-
-        if tab.type=='currency' then
-            local info=C_CurrencyInfo.GetCurrencyInfo(tab.id)
-            if info and info.discovered and info.quantity and info.quantity>0 and info.maxQuantity then
-                if info.maxQuantity>0  then
-
-                    if info.quantity==info.maxQuantity then
-                        text=text..'|cnGREEN_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
-                    else
-                        text=text..info.quantity.. '/'..info.maxQuantity..' '
-                    end
-                    if info.useTotalEarnedForMaxQty then--本周还可获取                        
-                        local q
-                        q= info.maxQuantity - info.totalEarned
-                        if q>0 then
-                            q='|cnGREEN_FONT_COLOR:+'..q..'|r'
-                        else
-                            q='|cff828282+0|r'
-                        end
-                        text=text..' ('..q..') '
-                    end
-                else
-                    if info.maxQuantity==0 then
-                        text=text..info.quantity..'/'.. (e.onlyChinese and '无限制' or UNLIMITED)..' '
-                    else
-                        if info.quantity==info.maxQuantity then
-                            text=text..'|cnGREEN_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
-                        else
-                            text=text..info.quantity..'/'..info.maxQuantity..' '
-                        end
-                    end
-                end
-                text= (info.iconFileID and '|T'..info.iconFileID..':0|t' or '')..text
-            end
-        elseif tab.type=='item' then
-            local num= GetItemCount(tab.id, true)
-            if num>0 then
-                e.LoadDate({id=tab.id, type='item'})
-                local icon= C_Item.GetItemIconByID(tab.id)
-                text= (icon and icon>0 and '|T'..icon..':0|t' or (select(2,  GetItemInfo(tab.id)) or C_Item.GetItemNameByID(tab.id) or tab.id))..' x'..num
-            end
-        end
-        if not lable and text~='' then
-            lable=e.Cstr(ChallengesFrame.tipsFrame, {mouse=true})
-            if last then
-                lable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
-            else
-                lable:SetPoint('TOPLEFT', ChallengesFrame.tipsAllLabel, 'BOTTOMLEFT',0, -12)
-            end
-            lable:SetScript("OnEnter",function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                e.tips:ClearLines()
-                if self2.type=='currency' then
-                    e.tips:SetCurrencyByID(self2.id)
-                elseif self2.type=='item' then
-                    e.tips:SetItemByID(self2.id)
-                end
-                e.tips:Show()
-                self2:SetAlpha(0.5)
-            end)
-            lable:SetScript("OnLeave",function(self2)
-                e.tips:Hide()
-                self2:SetAlpha(1)
-            end)
-            ChallengesFrame['Currency'..tab.id..tab.type]= lable
-            last= lable
-        end
-       
-        if lable then
-            lable.id= tab.id
-            lable.type= tab.type
-            lable:SetText(text)
-        end
-    end
+    --物品，货币提示
+    e.ItemCurrencyLabel({frame=ChallengesFrame.tipsFrame, point={'TOPLEFT', ChallengesFrame.tipsAllLabel, 'BOTTOMLEFT',0, -12}})
 end
 
 
@@ -1422,19 +1334,21 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 if frame.spellID then
                     if not frame.spellPort then
                         local h=frame:GetWidth()/3 +8
-                        frame.spellPort= e.Cbtn(frame, {type=true, size={h, h}, texture=GetSpellTexture(frame.spellID), atlas='WarlockPortal-Yellow-32x32', pushe=true})
-                        frame.spellPort:SetNormalAtlas('WarlockPortal-Yellow-32x32')
-                        frame.spellPort:SetPoint('BOTTOMRIGHT', frame, 4,-4)
+                        local texture=GetSpellTexture(frame.spellID)
+                        frame.spellPort= e.Cbtn(frame, {type=true, size={h, h}, texture=texture, atlas='WarlockPortal-Yellow-32x32', pushe=not texture})
+                        frame.spellPort:SetPoint('BOTTOMRIGHT', frame)--, 4,-4)
                         frame.spellPort:SetScript("OnEnter",function(self2)
                             local parent= self2:GetParent()
-                            e.tips:SetOwner(parent, "ANCHOR_RIGHT")
-                            e.tips:ClearLines()
-                            e.tips:SetSpellByID(parent.spellID)
-                            if not IsSpellKnown(parent.spellID) then--没学会
-                                e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '法术尚未学会' or SPELL_FAILED_NOT_KNOWN))
+                            if parent.spellID then
+                                e.tips:SetOwner(parent, "ANCHOR_RIGHT")
+                                e.tips:ClearLines()
+                                e.tips:SetSpellByID(parent.spellID)
+                                if not IsSpellKnown(parent.spellID) then--没学会
+                                    e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '法术尚未学会' or SPELL_FAILED_NOT_KNOWN))
+                                end
+                                e.tips:Show()
+                                self2:SetAlpha(1)
                             end
-                            e.tips:Show()
-                            self2:SetAlpha(1)
                         end)
                         frame.spellPort:SetScript("OnLeave",function(self2)
                             e.tips:Hide()
@@ -1577,17 +1491,15 @@ end
 --初始
 --####
 local function Init()
-    local self= ChallengesFrame
+    ChallengesFrame.tipsFrame= CreateFrame("Frame",nil, ChallengesFrame)
+    ChallengesFrame.tipsFrame:SetFrameStrata('HIGH')
+    ChallengesFrame.tipsFrame:SetFrameLevel(7)
+    ChallengesFrame.tipsFrame:SetPoint('CENTER')
+    ChallengesFrame.tipsFrame:SetSize(1, 1)
+    ChallengesFrame.tipsFrame:SetShown(not Save.hideTips)
+    ChallengesFrame.tipsFrame:SetScale(Save.tipsScale or 1)
 
-    self.tipsFrame= CreateFrame("Frame",nil, self)
-    self.tipsFrame:SetFrameStrata('HIGH')
-    self.tipsFrame:SetFrameLevel(7)
-    self.tipsFrame:SetPoint('CENTER')
-    self.tipsFrame:SetSize(1, 1)
-    self.tipsFrame:SetShown(not Save.hideTips)
-    self.tipsFrame:SetScale(Save.tipsScale or 1)
-
-    local check= e.Cbtn(self, {size={18,18}, icon='hide'})-- not Save.hideIns})
+    local check= e.Cbtn(ChallengesFrame, {size={18,18}, icon='hide'})-- not Save.hideIns})
     check.texture= check:CreateTexture()
     check.texture:SetAllPoints(check)
     check.texture:SetAlpha(0.3)
@@ -1601,13 +1513,13 @@ local function Init()
     else
         check:SetPoint('LEFT', PVEFrame.TitleContainer)
     end
-    check:SetScript("OnClick", function(self2)
+    check:SetScript("OnClick", function(self)
         Save.hideIns = not Save.hideIns and true or nil
-        --self2:SetNormalAtlas(not Save.hideIns and e.Icon.icon or e.Icon.disabled)
-        self2:set_Texture()
+        --self:SetNormalAtlas(not Save.hideIns and e.Icon.icon or e.Icon.disabled)
+        self:set_Texture()
         set_Update()
     end)
-    check:SetScript('OnMouseWheel', function(self2, d)--缩放
+    check:SetScript('OnMouseWheel', function(self, d)--缩放
         local scale= Save.insScale or 1
         if d==1 then
             scale= scale-0.05
@@ -1619,20 +1531,24 @@ local function Init()
         print(id, addName, e.onlyChinese and '副本' or INSTANCE, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         Save.insScale= scale==1 and nil or scale
         set_Update()
+        self:set_Tooltips()
     end)
-    check:SetScript("OnEnter",function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+    function check:set_Tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, (e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..(e.onlyChinese and '信息' or INFO))
         e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.insScale or 1)..'|r'.. e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
-        self2.texture:SetAlpha(1)
+    end
+    check:SetScript("OnEnter",function(self)
+        self:set_Tooltips()
+        self.texture:SetAlpha(1)
     end)
-    check:SetScript("OnLeave",function(self2)
+    check:SetScript("OnLeave",function(self)
         e.tips:Hide()
-        self2.texture:SetAlpha(0.3)
+        self.texture:SetAlpha(0.3)
     end)
 
 
@@ -1643,12 +1559,12 @@ local function Init()
         tipsButton:SetPoint('LEFT', check, 'RIGHT')
     end
     tipsButton:SetAlpha(0.5)
-    tipsButton:SetScript('OnClick', function(self2)
+    tipsButton:SetScript('OnClick', function(self)
         Save.hideTips= not Save.hideTips and true or nil
         ChallengesFrame.tipsFrame:SetShown(not Save.hideTips)
-        self2:SetNormalAtlas(not Save.hideTips and 'FXAM-QuestBang' or e.Icon.disabled)
+        self:SetNormalAtlas(not Save.hideTips and 'FXAM-QuestBang' or e.Icon.disabled)
     end)
-    tipsButton:SetScript('OnMouseWheel', function(_, d)--缩放
+    tipsButton:SetScript('OnMouseWheel', function(self, d)--缩放
         local scale= Save.tipsScale or 1
         if d==1 then
             scale= scale-0.05
@@ -1660,30 +1576,37 @@ local function Init()
         print(id, addName, e.onlyChinese and '信息' or INFO,  e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         Save.tipsScale= scale==1 and nil or scale
         ChallengesFrame.tipsFrame:SetScale(scale)
+        self:set_Tooltips()
     end)
-    tipsButton:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+    function tipsButton:set_Tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left..(e.onlyChinese and '信息' or INFO))
         e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.tipsScale or 1)..'|r'.. e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
-        self2:SetAlpha(1)
+    end
+    tipsButton:SetScript('OnEnter', function(self)
+        self:set_Tooltips()
+        self:SetAlpha(1)
     end)
-    tipsButton:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
+    tipsButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
 
 
     --传送门
     local spellButton= e.Cbtn(check, {size={18,18}, atlas= not Save.hidePort and 'WarlockPortal-Yellow-32x32' or e.Icon.disabled})
     spellButton:SetPoint('LEFT', _G['MoveZoomInButtonPerPVEFrame'] or tipsButton, 'RIGHT')
     spellButton:SetAlpha(0.5)
-    spellButton:SetScript('OnClick', function(self2)
+    spellButton:SetScript('OnClick', function(self)
         Save.hidePort= not Save.hidePort and true or nil
         set_Update()
-        self2:SetNormalAtlas(not Save.hidePort and 'WarlockPortal-Yellow-32x32' or e.Icon.disabled)
+        self:SetNormalAtlas(not Save.hidePort and 'WarlockPortal-Yellow-32x32' or e.Icon.disabled)
     end)
-    spellButton:SetScript('OnMouseWheel', function(_, d)--缩放
+    spellButton:SetScript('OnMouseWheel', function(self, d)--缩放
+        if UnitAffectingCombat('player') then
+            return
+        end
         local scale= Save.portScale or 1
         if d==1 then
             scale= scale-0.05
@@ -1692,38 +1615,45 @@ local function Init()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(id, addName, format(not e.onlyChinese and UNITNAME_SUMMON_TITLE14 or "%s的传送门", e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
+        print(id, addName, format(e.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
         Save.portScale= scale==1 and nil or scale
         set_Update()
+        self:set_Tooltips()
     end)
-    spellButton:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
-    spellButton:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+    function spellButton:set_Tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         if e.onlyChinese then
             e.tips:AddDoubleLine('挑战20层','限时传送门')
-            e.tips:AddDoubleLine('提示：', '如果出现错误，请禁用此功能')
-            e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.portScale or 1)..'|r'.. e.Icon.mid)
-            e.tips:AddLine(' ')
-            for _, tab in pairs(SpellTabs) do
-               local spellLink= GetSpellLink(tab.spell) or GetSpellInfo(tab.spell) or ('ID'.. tab.spell)
-               local icon= GetSpellTexture(tab.spell)
-               e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '')..spellLink,
-                                    'spellID '..tab.spell..' '..
-                                    (IsSpellKnown(tab.spell) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已获得' or ACHIEVEMENTFRAME_FILTER_COMPLETED)
-                                                            or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未获得' or FOLLOWERLIST_LABEL_UNCOLLECTED))
-                                    )
-                                )
-            end
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('显示/隐藏', e.Icon.left)
+            e.tips:AddDoubleLine('提示：', '如果出现错误，请禁用此功能') 
         else
             e.tips:AddLine(format(UNITNAME_SUMMON_TITLE14, CHALLENGE_MODE..' (20) '))
             e.tips:AddDoubleLine('note:','If you get error, please disable this')
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(SHOW..'/'..HIDE, e.Icon.left)
         end
+        e.tips:AddLine(' ')
+        for _, tab in pairs(SpellTabs) do
+            local spellLink= GetSpellLink(tab.spell) or GetSpellInfo(tab.spell) or ('ID'.. tab.spell)
+            local icon= GetSpellTexture(tab.spell)
+            e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '')..spellLink,
+                                'spellID '..tab.spell..' '..
+                                (IsSpellKnown(tab.spell) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已获得' or ACHIEVEMENTFRAME_FILTER_COMPLETED)
+                                                        or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未获得' or FOLLOWERLIST_LABEL_UNCOLLECTED))
+                                )
+                            )
+        end
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or e.GetShowHide(nil, true), e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.portScale or 1)..'|r'.. e.Icon.mid)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
-        self2:SetAlpha(1)
+    end
+    spellButton:SetScript('OnLeave', function(self)
+        e.tips:Hide()
+        self:SetAlpha(0.5)
+    end)
+    spellButton:SetScript('OnEnter', function(self)
+        self:set_Tooltips()
+        self:SetAlpha(1)
     end)
 
     Affix()
@@ -1731,7 +1661,7 @@ local function Init()
     C_Timer.After(2, set_All_Text)--所有记录
     hooksecurefunc(ChallengesFrame, 'Update', set_Update)
 
-    self:HookScript('OnShow', function()
+    ChallengesFrame:HookScript('OnShow', function()
         Affix()
         set_Kill_Info()--副本PVP团本
         C_Timer.After(2, set_All_Text)--所有记录
@@ -1739,9 +1669,9 @@ local function Init()
     end)
 
 
-    if self.WeeklyInfo and self.WeeklyInfo.Child then--隐藏, 赛季最佳
-        if self.WeeklyInfo.Child.SeasonBest then
-            self.WeeklyInfo.Child.SeasonBest:SetText('')
+    if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then--隐藏, 赛季最佳
+        if ChallengesFrame.WeeklyInfo.Child.SeasonBest then
+            ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText('')
         end
    end
 
@@ -1769,26 +1699,26 @@ local function Init()
     else
         btn:SetPoint('RIGHT', ChallengesKeystoneFrame.CloseButton, 'LEFT')
     end
-    btn:SetScript("OnClick", function(self2)
+    btn:SetScript("OnClick", function(self)
         Save.hideKeyUI = not Save.hideKeyUI and true or nil
         if ChallengesKeystoneFrame.keyFrame then
             ChallengesKeystoneFrame.keyFrame:SetShown(not Save.hideKeyUI)
         elseif not Save.hideKeyUI then
             init_Blizzard_ChallengesUI()
         end
-        self2:SetNormalAtlas(not Save.hideKeyUI and e.Icon.icon or e.Icon.disabled)
+        self:SetNormalAtlas(not Save.hideKeyUI and e.Icon.icon or e.Icon.disabled)
     end)
-    btn:SetScript("OnEnter",function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+    btn:SetScript("OnEnter",function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
-        self2:SetAlpha(1)
+        self:SetAlpha(1)
     end)
-    btn:SetScript("OnLeave",function(self2)
+    btn:SetScript("OnLeave",function(self)
         e.tips:Hide()
-        self2:SetAlpha(0.5)
+        self:SetAlpha(0.5)
     end)
     if not Save.hideKeyUI then
         init_Blizzard_ChallengesUI()
