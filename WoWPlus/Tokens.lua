@@ -330,8 +330,10 @@ local function Init_TrackButton()
 		end
 	end
 
-	function TrackButton:set_Texture()
-		if Save.str then
+	function TrackButton:set_Texture(icon)
+		if icon and icon>0 then
+			self.texture:SetTexture(icon)
+		elseif Save.str then
 			self.texture:SetTexture(0)
 		else
 			self.texture:SetAtlas(e.Icon.icon)
@@ -357,13 +359,29 @@ local function Init_TrackButton()
 	function TrackButton:set_Tooltips()
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
-		e.tips:AddDoubleLine(id, addName)
-		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.left)
-		e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Atl+'..e.Icon.right)
-		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
+
+		local infoType, itemID, itemLink = GetCursorInfo()
+		if infoType=='item' and itemID then
+			e.tips:SetItemByID(itemID)
+			e.tips:AddLine(' ')
+			e.tips:AddDoubleLine(itemLink or ('itemID'..itemID),
+					Save.item[itemID] and
+						('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+					or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2)
+			)
+			self:set_Texture(C_Item.GetItemIconByID(itemID))
+		else
+
+			e.tips:AddDoubleLine(id, addName)
+			e.tips:AddLine(' ')
+			e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.left)
+			e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+			e.tips:AddLine(' ')
+			e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Atl+'..e.Icon.right)
+			e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
+			e.tips:AddLine(' ')
+			e.tips:AddDoubleLine((e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
+		end
 		e.tips:Show()
 	end
 
@@ -418,7 +436,18 @@ local function Init_TrackButton()
 	end)
 
 	TrackButton:SetScript("OnClick", function(self, d)
-		if d=='LeftButton' and not IsModifierKeyDown() then
+		local infoType, itemID, itemLink = GetCursorInfo()
+        if infoType == "item" and itemID then
+			Save.item[itemID]= not Save.item[itemID] and true or nil
+			print(id, addName, e.onlyChinese and '追踪' or TRACKING,
+					Save.item[itemID] and
+					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2)
+					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2),
+					itemLink or itemID)
+			ClearCursor()
+			Set_TrackButton_Text()
+
+		elseif d=='LeftButton' and not IsModifierKeyDown() then
 			ToggleCharacter("TokenFrame")--打开货币
 
 		elseif d=='RightButton' and not IsModifierKeyDown() then
@@ -444,6 +473,7 @@ local function Init_TrackButton()
 					info={
 						text=e.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME),
 						checked= Save.nameShow,
+						keepShownOnClick=true,
 						func= function()
 							Save.nameShow= not Save.nameShow and true or nil
 							Set_TrackButton_Text()
@@ -454,6 +484,7 @@ local function Init_TrackButton()
 					info={
 						text= e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT,
 						checked= Save.toRightTrackText,
+						keepShownOnClick=true,
 						func= function()
 							Save.toRightTrackText = not Save.toRightTrackText and true or nil
 							for _, btn in pairs(TrackButton.btn) do
@@ -479,6 +510,7 @@ local function Init_TrackButton()
 	TrackButton:SetScript("OnLeave", function(self)
 		self:set_Shown()
 		e.tips:Hide()
+		self:set_Texture()
 		self.texture:SetAlpha(0.5)
 	end)
 	TrackButton:SetScript('OnEvent', TrackButton.set_Shown)
@@ -945,12 +977,9 @@ local function Init()
 
 	local function enter(self)
 		local infoType, itemID, itemLink = GetCursorInfo()
-        if infoType ~= "item" then
-			itemID=nil
-		end
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
-		if itemID then
+		if infoType== "item"  and itemID then
 			e.tips:SetItemByID(itemID)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(itemLink or ('itemID'..itemID),

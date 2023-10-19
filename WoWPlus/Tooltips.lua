@@ -500,10 +500,13 @@ local function set_Item_Info(self, itemLink, itemID)
         end
         local text
         for _, activities in pairs(C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.MythicPlus) or {}) do--本周完成
-            text= (text and text..'/' or '')..activities.level
+            if activities.level and activities.level>=0 then
+                text= (text and text..'/' or '')..activities.level
+            end
         end
-        if text then
-            self.textLeft:SetText('|cnGREEN_FONT_COLOR:'..text..'|r '.. e.GetKeystoneScorsoColor(C_ChallengeMode.GetOverallDungeonScore()))
+        local score= e.GetKeystoneScorsoColor(C_ChallengeMode.GetOverallDungeonScore())
+        if text or score then
+            self.textLeft:SetText((text and '|cnGREEN_FONT_COLOR:'..text..'|r ' or '')..(score or ''))
         end
         local info = C_MythicPlus.GetRunHistory(false, true) or {}--本周记录
         local num= 0
