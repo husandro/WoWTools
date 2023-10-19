@@ -3421,7 +3421,9 @@
         "REWARD",
         "AlertFrameQueueMixin",
         "QuestUtils_GetQuestTagAtlas",
-        "GREAT_VAULT_REWARDS_WAITING"
+        "GREAT_VAULT_REWARDS_WAITING",
+        "SecureActionButton_OnClick",
+        "SecureCmdUseItem"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

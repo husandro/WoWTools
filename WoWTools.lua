@@ -318,20 +318,13 @@ end
 
 function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton',notWheel
     tab=tab or {}
-    self= self or UIParent
-    local btn
-    if tab.type==false then
-        btn= CreateFrame(tab.button or 'Button', tab.name, self, 'UIPanelButtonTemplate')--MagicButtonTemplate
-    elseif tab.type==true then
-        btn= CreateFrame(tab.button or "Button", tab.name, self, "SecureActionButtonTemplate");
-    else
-        btn= CreateFrame(tab.button or 'Button', tab.name, self)
-    end
+    local template= tab.type==false and 'UIPanelButtonTemplate' or tab.type==true and 'SecureActionButtonTemplate' or tab.type
+    local btn= CreateFrame(tab.button or 'Button', tab.name, self or UIParent, template)
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     if not tab.notWheel then
         btn:EnableMouseWheel(true)
     end
-    if tab.size then
+    if tab.size then--大小
         btn:SetSize(tab.size[1], tab.size[2])
     elseif tab.button=='ItemButton' then
         btn:SetSize(34, 34)
@@ -356,7 +349,7 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, butto
             end
         end
     end
-    return btn
+    return btn, template
 end
 
 function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
@@ -390,13 +383,13 @@ function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
     self.cooldown:SetCooldown(start, duration, modRate)
 end
 
-function e.SetItemSpellCool(self, item, spell)
+function e.SetItemSpellCool(self, item, spell, notSwipeTexture)
     if item then
         local startTime, duration = GetItemCooldown(item)
-        e.Ccool(self, startTime, duration, nil, true, nil, true)
+        e.Ccool(self, startTime, duration, nil, true, nil, not notSwipeTexture)
     elseif spell then
         local start, duration, _, modRate = GetSpellCooldown(spell)
-        e.Ccool(self, start, duration, modRate, true, nil, true)--冷却条
+        e.Ccool(self, start, duration, modRate, true, nil, not notSwipeTexture)--冷却条
     elseif self.cooldown then
         self.cooldown:Clear()
     end

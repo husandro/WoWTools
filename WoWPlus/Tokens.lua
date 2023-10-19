@@ -10,6 +10,7 @@ local Save={
 	--scaleTrackButton=1,
 	toRightTrackText=true,--向右平移
 	--notAutoHideTrack=true,--自动隐藏
+	itemButtonUse=e.Player.husandro,
 
 	--hideCurrencyMax=true,--隐藏，已达到资源上限,提示
 	--showID=true,--显示ID
@@ -34,15 +35,18 @@ local TrackButton
 --监视声望按钮
 --###########
 local function Get_Item(itemID)
-	local text, numText
+	local text, name
 	local icon= C_Item.GetItemIconByID(itemID)
 	local num= GetItemCount(itemID , true, nil, true)
 	local bag= GetItemCount(itemID)
 	local itemQuality
 	if icon and num>0 then
+
 		itemQuality = C_Item.GetItemQualityByID(itemID)
 		local hex = itemQuality and select(4, GetItemQualityColor(itemQuality))
 		hex= hex and '|c'..hex
+
+		local numText
 		if bag==num then
 			numText= e.MK(num, 3)
 		else
@@ -58,26 +62,23 @@ local function Get_Item(itemID)
 			end
 		end
 
-		local name
+		name= C_Item.GetItemNameByID(itemID)
+		local nameText
 		if Save.nameShow then
-			name= C_Item.GetItemNameByID(itemID)
-			name = (name and hex) and hex..name..'|r' or name
+			nameText = (name and hex) and hex..name..'|r' or name
 		else
 			numText= hex and hex..numText or numText
 		end
 		if Save.toRightTrackText then--向右平移
-			text=(name and name..' ' or '')
-				..numText
-
+			text=(nameText and nameText..' ' or '')..numText
 		else
-			text=numText
-				..(name and ' '..name or '')
+			text=numText..(nameText and ' '..nameText or '')
 		end
 
 	elseif not icon then
 		e.LoadDate({id=itemID, type='item'})--加载 item quest spell
 	end
-	return text, icon, itemQuality
+	return text, icon, itemQuality, name
 end
 
 
@@ -181,7 +182,6 @@ local function Set_TrackButton_Pushed(show)--提示
 end
 
 
-
 local function Set_TrackButton_Text()
 	if not Save.str or not TrackButton or not TrackButton.Frame:IsShown() then
 		return
@@ -189,6 +189,7 @@ local function Set_TrackButton_Text()
 
 	local tab={}
 	local findToken=1--货物，物品，分开
+	local bat= UnitAffectingCombat('player')
 
 	if Save.indicato then
 		for currencyID, _ in pairs(Save.tokens) do
@@ -213,9 +214,9 @@ local function Set_TrackButton_Text()
 
 	local itemTab={}
 	for itemID in pairs(Save.item) do
-		local text, icon, itemQuality= Get_Item(itemID)
+		local text, icon, itemQuality, name= Get_Item(itemID)
 		if text and icon then
-			table.insert(itemTab, {text= text, icon=icon, itemID= itemID, itemQuality=itemQuality or 0})
+			table.insert(itemTab, {text= text, icon=icon, itemID= itemID, itemQuality=itemQuality or 0, name=name})
 		end
 	end
 	table.sort(itemTab, function(a, b)
@@ -231,20 +232,26 @@ local function Set_TrackButton_Text()
 
 	local index=0
 	local last
+
 	for _, tables in pairs(tab) do
 		index= index+1
 		local btn= TrackButton.btn[index]
 		if not btn then
-			btn= e.Cbtn(TrackButton.Frame, {size={12,12, icon='hide', notWheel=true, type=false}})
+			local itemButtonUse=(Save.itemButtonUse and tables.itemID) and true or nil--使用物品
+
+			btn= e.Cbtn(TrackButton.Frame, {size={12,12}, icon='hide', type= itemButtonUse})
+			
+			--btn= CreateFrame("Button", nil, TrackButton.Frame, "SecureActionButtonTemplate")
+			btn:SetSize(12,12)
+			btn.text= e.Cstr(btn, {color=true})
+
+			btn:SetSize(12,12)
 			if findToken>1 and index==findToken then--货物，物品，分开
 				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -6)
 			else
 				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -1)
 			end
-			btn.text= e.Cstr(btn, {color=true})
-			function btn:set_Texture()
-				self:SetNormalTexture(self.icon)
-			end
+
 			function btn:set_Text_Point()
 				if Save.toRightTrackText then
 					self.text:SetPoint('LEFT', self, 'RIGHT')
@@ -253,6 +260,7 @@ local function Set_TrackButton_Text()
 				end
 			end
 			btn:set_Text_Point()
+
 			btn:SetScript('OnLeave', function()
 				e.tips:Hide()
 				Set_TrackButton_Pushed(false)--提示
@@ -264,17 +272,20 @@ local function Set_TrackButton_Text()
 					e.tips:SetItemByID(self.itemID)
 					e.tips:AddLine(' ')
 					local col= GetItemCount(self.itemID)==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:'
+					if self.itemButtonUse then
+						e.tips:AddDoubleLine(col..(e.onlyChinese and '使用物品' or USE_ITEM), e.Icon.left)
+					end
 					e.tips:AddDoubleLine(col..(e.onlyChinese and '拿取' or 'Pickup'), col..('Alt+'..e.Icon.left))
 				elseif self.index then
 					e.tips:SetCurrencyToken(self.index)
-				else
+				elseif self.currencyID then
 					e.tips:SetCurrencyByID(self.currencyID)
 				end
 				e.tips:AddDoubleLine(id, addName)
 				e.tips:Show()
 				Set_TrackButton_Pushed(true)--提示
 			end)
-			btn:SetScript("OnClick", function(self)
+			btn:SetScript("OnMouseDown", function(self)
 				if not self.itemID or not IsAltKeyDown() or GetItemCount(self.itemID)==0 then return end
 				for bag= Enum.BagIndex.Backpack, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
 					for slot=1, C_Container.GetContainerNumSlots(bag) do
@@ -285,18 +296,51 @@ local function Set_TrackButton_Text()
 					end
 				end
 			end)
+
+			function btn:set_btn_Event()
+				if self.itemID then
+					self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+				else
+					self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
+					e.SetItemSpellCool(btn)
+				end
+				e.SetItemSpellCool(self, self.itemID, nil, true)
+			end
+			btn:SetScript('OnEvent', function(self)
+				e.SetItemSpellCool(self, self.itemID, nil, true)
+			end)
+
+			btn.itemButtonUse= itemButtonUse--使用物品
+			if itemButtonUse then
+				--btn:SetAttribute('type*', 'item')
+				--btn:SetAttribute("unit*", "target")
+				btn:SetAttribute('type', 'macro')
+			end
+
 			TrackButton.btn[index]= btn
 		end
-
 
 		btn.itemID= tables.itemID
 		btn.index= tables.index
 		btn.currencyID= tables.currencyID
-		btn.icon=tables.icon
-		btn:set_Texture()
-		btn.text:SetText(tables.text)
+		btn:SetNormalTexture(tables.icon)--设置，图片
+		btn.text:SetText(tables.text)--设置，文本
+		btn:set_btn_Event()
 
-		btn:SetShown(true)
+		if btn.itemButtonUse then--使用物品
+			if not bat then
+				--btn:SetAttribute('item*',  tables.itemID and tables.name or nil )
+				if tables.itemID then
+					btn:SetAttribute('macrotext', '/use [target]'..(tables.name or tables.itemID))
+				else
+					btn:SetAttribute('macrotext', nil)
+				end
+				btn:SetShown(true)
+			end
+		else
+			btn:SetShown(true)
+		end
+
 		last= btn
 	end
 
@@ -317,17 +361,67 @@ local function Set_TrackButton_Text()
 	end
 	TrackButton.findToken= findToken
 
-	for i= index+1, #TrackButton.btn do
+	for i= index+1, #TrackButton.btn do--隐藏，多余
 		local btn= TrackButton.btn[i]
 		if btn then
-			btn:SetShown(false)
+			if btn.itemButtonUse and not bat or not btn.itemButtonUse then
+				btn:SetShown(false)
+			end
 		end
 	end
 end
 
+--物品，菜单
+local function MenuList_Item(level)
+	local info
+	for itemID, _ in pairs(Save.item) do
+		e.LoadDate({id=itemID, type='item'})--加载 item quest spell
+		info={
+			text= select(2, GetItemInfo(itemID)) or ('itemID '..itemID),
+			icon= C_Item.GetItemIconByID(itemID),
+			notCheckable=true,
+			tooltipOnButton=true,
+			tooltipTitle=e.onlyChinese and '移除' or REMOVE,
+			arg1= itemID,
+			func= function(_, arg1)
+				Save.item[arg1]= nil
+				Set_TrackButton_Text()
+				print(id, addName, e.onlyChinese and '移除' or REMOVE, select(2, GetItemInfo(itemID)) or ('itemID '..itemID))
+			end
+		}
+		e.LibDD:UIDropDownMenu_AddButton(info, level)
+	end
+	e.LibDD:UIDropDownMenu_AddSeparator(level)
+	info={
+		text= e.onlyChinese and '全部清除' or CLEAR_ALL,
+		icon='bags-button-autosort-up',
+		notCheckable=true,
+		tooltipOnButton=true,
+		tooltipTitle='Shift+'..e.Icon.left,
+		func= function()
+			if IsShiftKeyDown() then
+				Save.item= {}
+				Set_TrackButton_Text()
+				print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+			end
+		end
+	}
+	e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-
-
+	e.LibDD:UIDropDownMenu_AddSeparator(level)
+	info={
+		text= e.onlyChinese and '使用物品' or USE_ITEM,
+		checked= Save.itemButtonUse,
+		keepShownOnClick= true,
+		tooltipOnButton= true,
+		tooltipTitle= e.onlyChinese and '友情提示: 可能会出现错误' or ('note: '..ENABLE_ERROR_SPEECH),
+		func= function()
+			Save.itemButtonUse= not Save.itemButtonUse and true or nil
+			print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+		end
+	}
+	e.LibDD:UIDropDownMenu_AddButton(info, level)
+end
 
 
 local function Init_TrackButton()
@@ -482,7 +576,11 @@ local function Init_TrackButton()
 		elseif d=='RightButton' and not IsModifierKeyDown() then
 			if not self.Menu then
 				self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-				e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
+				e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level, menuList)
+					if menuList=='ITEMS' then
+						MenuList_Item(level)
+						return
+					end
 					local info={
 						text= e.onlyChinese and '显示' or SHOW,
 						tooltipOnButton=true,
@@ -523,6 +621,14 @@ local function Init_TrackButton()
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
+					info={
+						text=e.onlyChinese and '物品' or ITEMS,
+						notCheckable=true,
+						menuList='ITEMS',
+						hasArrow=true,
+						keepShownOnClick=true,
+					}
+					e.LibDD:UIDropDownMenu_AddButton(info, level)
 				end, 'MENU')
 			end
 			e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
@@ -531,6 +637,7 @@ local function Init_TrackButton()
 
 
 	TrackButton:SetScript("OnEnter", function(self)
+		Set_TrackButton_Text()
 		self:set_Tooltips()
 		self.texture:SetAlpha(1)
 	end)
@@ -756,39 +863,7 @@ end
 local function InitMenu(_, level, menuList)--主菜单
 	local info
 	if menuList=='ITEMS' then
-		for itemID, _ in pairs(Save.item) do
-			e.LoadDate({id=itemID, type='item'})--加载 item quest spell
-			info={
-				text= select(2, GetItemInfo(itemID)) or ('itemID '..itemID),
-				icon= C_Item.GetItemIconByID(itemID),
-				notCheckable=true,
-				tooltipOnButton=true,
-				tooltipTitle=e.onlyChinese and '移除' or REMOVE,
-				arg1= itemID,
-				func= function(_, arg1)
-					Save.item[arg1]= nil
-					Set_TrackButton_Text()
-					print(id, addName, e.onlyChinese and '移除' or REMOVE, select(2, GetItemInfo(itemID)) or ('itemID '..itemID))
-				end
-			}
-			e.LibDD:UIDropDownMenu_AddButton(info, level)
-		end
-		e.LibDD:UIDropDownMenu_AddSeparator(level)
-		info={
-			text= e.onlyChinese and '全部清除' or CLEAR_ALL,
-			icon='bags-button-autosort-up',
-			notCheckable=true,
-			tooltipOnButton=true,
-			tooltipTitle='Shift+'..e.Icon.left,
-			func= function()
-				if IsShiftKeyDown() then
-					Save.item= {}
-					Set_TrackButton_Text()
-					print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
-				end
-			end
-		}
-		e.LibDD:UIDropDownMenu_AddButton(info, level)
+		MenuList_Item(level)
 
 	elseif menuList=='TOKENS' then
 		for currencyID, _ in pairs(Save.tokens) do
@@ -899,7 +974,7 @@ local function InitMenu(_, level, menuList)--主菜单
 		menuList='ITEMS',
 		hasArrow=true,
 		keepShownOnClick=true,
-		colorCoed=Save.Hide and '|cff606060' or nil,
+		colorCode=Save.Hide and '|cff606060' or nil,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 

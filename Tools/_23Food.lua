@@ -47,7 +47,7 @@ local function set_Button_Init(self)
 
     self:SetAttribute("type", "item")
     self:SetAttribute("item", C_Item.GetItemNameByID(self.itemID))
-    self.texture:SetTexture(C_Item.GetItemIconByID(self.itemID))
+    self.texture:SetTexture(C_Item.GetItemIconByID(self.itemID) or 0)
 
     if not self.count then--设置, 数量
         self.count= e.Cstr(self, {size=10, color=true})--10, nil,nil, true)
