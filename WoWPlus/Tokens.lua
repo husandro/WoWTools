@@ -80,9 +80,13 @@ local function Get_Currency(currencyID, index)--货币
 		or info.isHeader
 		or not currencyID
 		or not info.iconFileID
-		or not info.quantity
-		or info.quantity<0
-		or (info.quantity==0 and not (info.canEarnPerWeek and info.useTotalEarnedForMaxQty))
+		or not info.quantity or info.quantity<0
+		or (
+			info.quantity==0
+			and (not info.canEarnPerWeek or info.canEarnPerWeek<=0)
+			and (not info.useTotalEarnedForMaxQty or info.useTotalEarnedForMaxQty<=0)
+			and (not info.maxQuantity or info.maxQuantity<=0)
+		)
 	then
 		return
     end
@@ -114,14 +118,17 @@ local function Get_Currency(currencyID, index)--货币
 		and info.quantityEarnedThisWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0
 		and info.quantityEarnedThisWeek<info.maxWeeklyQuantity
 	then
-		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxWeeklyQuantity- info.quantityEarnedThisWeek, 3)..'|r'
+		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxWeeklyQuantity- info.quantityEarnedThisWeek, 3)..')|r'
 
 	elseif not earnedMax--赛季,收入
 		and info.useTotalEarnedForMaxQty
 		and info.totalEarned and info.maxQuantity and info.maxQuantity>0
-		and info.totalEarned<info.maxQuantity
+		and info.totalEarned< info.maxQuantity
 	then
-		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxQuantity- info.totalEarned, 3)..'|r'
+		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxQuantity- info.totalEarned, 3)..')|r'
+
+	elseif info.maxQuantity and info.maxQuantity>0 and info.quantity< info.maxQuantity then
+		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxQuantity- info.quantity, 3)..')|r'
 	end
 	if Save.toRightTrackText then
 		text=(name and name..' ' or '')
@@ -142,6 +149,20 @@ local function Get_Currency(currencyID, index)--货币
 end
 
 
+local function Set_TrackButton_Pushed(show)--提示
+	if TrackButton and TrackButton:IsShown() then
+		if show then
+			TrackButton:SetButtonState('PUSHED')
+		else
+			TrackButton:SetButtonState("NORMAL")
+		end
+	end
+end
+
+
+
+
+
 
 local function Set_TrackButton_Text()
 	if not Save.str or not TrackButton or not TrackButton.Frame:IsShown() then
@@ -151,7 +172,13 @@ local function Set_TrackButton_Text()
 	local tab={}
 
 	if Save.indicato then
-		for currencyID, _ in pairs(Save.tokens) do
+
+		local tokens={}
+		for currencyID,_ in pairs(Save.tokens) do
+			table.insert(tokens, currencyID)
+		end
+		table.sort(tokens, function(a,b) return a>b end)
+		for _, currencyID in pairs(tokens) do
 			local text, icon= Get_Currency(currencyID, nil)--货币
 			if text and icon then
 				table.insert(tab, {text= text, icon=icon, type='current', id= currencyID})
@@ -192,7 +219,10 @@ local function Set_TrackButton_Text()
 				end
 			end
 			btn:set_Text_Point()
-			btn:SetScript('OnLeave', function() e.tips:Hide() end)
+			btn:SetScript('OnLeave', function()
+				e.tips:Hide()
+				Set_TrackButton_Pushed(false)--提示
+			end)
 			btn:SetScript('OnEnter', function(self2)
 				e.tips:SetOwner(self2, "ANCHOR_LEFT")
 				e.tips:ClearLines()
@@ -204,6 +234,7 @@ local function Set_TrackButton_Text()
 				e.tips:AddLine(' ')
 				e.tips:AddDoubleLine(id, addName)
 				e.tips:Show()
+				Set_TrackButton_Pushed(true)--提示
 			end)
 			TrackButton.btn[index]= btn
 		end
@@ -426,7 +457,7 @@ local function Init_TrackButton()
 	TrackButton.Frame:SetPoint('BOTTOM')
 
 
-	
+
 	TrackButton.Frame:SetScript('OnShow', Set_TrackButton_Text)
 
 	TrackButton.Frame:RegisterEvent('BAG_UPDATE_DELAYED')
@@ -557,11 +588,8 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 			e.tips:SetOwner(self, "ANCHOR_LEFT")
 			e.tips:ClearLines()
 			if self.currencyID then
-				local info2=C_CurrencyInfo.GetCurrencyInfo(self.currencyID)
-				if info2 and info2.name then
-					e.tips:AddDoubleLine(info2.name, self.currencyID, 0,1,0, 0,1,0)
-					e.tips:AddLine(' ')
-				end
+				e.tips:SetCurrencyByID(self.currencyID)
+				e.tips:AddLine(" ")
 			end
 			e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
 			e.tips:AddDoubleLine(id, addName)
@@ -753,18 +781,15 @@ local function InitMenu(_, level, menuList)--主菜单
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
 	info={
-		text=e.onlyChinese and '货币' or TOKENS,
+		text=e.onlyChinese and '指定货币' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT_ALLY_START_MISSION, TOKENS),
 		checked= Save.indicato,
 		tooltipOnButton=true,
-		tooltipTitle=e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION,
 		menuList='TOKENS',
 		hasArrow=true,
 		keepShownOnClick=true,
 		func= function()
 			Save.indicato= not Save.indicato and true or nil
-			if TrackButton then
-				TrackButton:set_Shown()
-			end
+			Set_TrackButton_Text()
 		end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -904,18 +929,14 @@ local function Init()
 		e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()
 		self.texture:SetAlpha(1)
-		if TrackButton and TrackButton:IsShown() then
-			TrackButton:SetButtonState('PUSHED')
-		end
+		Set_TrackButton_Pushed(true)--提示
 	end
 
 	local function leave(self)
 		e.tips:Hide()
 		Button:set_bagButtonTexture()
 		self.texture:SetAlpha(0.5)
-		if TrackButton and TrackButton:IsShown() then
-			TrackButton:SetButtonState("NORMAL")
-		end
+		Set_TrackButton_Pushed(false)--提示
 	end
 
 
