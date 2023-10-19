@@ -36,7 +36,8 @@ local TrackButton
 local function Get_Item(itemID)
 	local text
 	local icon= C_Item.GetItemIconByID(itemID)
-	local num= GetItemCount(itemID , nil, true, true)
+	local num= GetItemCount(itemID , true, nil, true)
+	local bag= GetItemCount(itemID)
 	if icon and num>0 then
 		local itemQuality = C_Item.GetItemQualityByID(itemID)
 		local hex = itemQuality and select(4, GetItemQualityColor(itemQuality))
@@ -82,10 +83,11 @@ local function Get_Currency(currencyID, index)--货币
 		or not info.iconFileID
 		or not info.quantity or info.quantity<0
 		or (
-			info.quantity==0
-			and (not info.canEarnPerWeek or info.canEarnPerWeek<=0)
-			and (not info.useTotalEarnedForMaxQty or info.useTotalEarnedForMaxQty<=0)
-			and (not info.maxQuantity or info.maxQuantity<=0)
+			info.quantity==0 and not (
+				(info.canEarnPerWeek and info.maxWeeklyQuantity>0)
+				or (info.useTotalEarnedForMaxQty and info.maxQuantity>0)
+				or (not info.canEarnPerWeek and not info.useTotalEarnedForMaxQty and info.maxQuantity and info.maxQuantity>0)
+			)
 		)
 	then
 		return
@@ -705,7 +707,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				arg1= currencyID,
 				func= function(_, arg1)
 					Save.tokens[arg1]=nil
-					Set_TrackButton_Text()
+					e.call('TokenFrame_Update')
 					print(id, addName, e.onlyChinese and '移除' or REMOVE, C_CurrencyInfo.GetCurrencyLink(arg1) or arg1)
 				end
 			}
@@ -721,7 +723,7 @@ local function InitMenu(_, level, menuList)--主菜单
 			func= function()
 				if IsShiftKeyDown() then
 					Save.tokens= {}
-					Set_TrackButton_Text()
+					e.call('TokenFrame_Update')
 					print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
 				end
 			end
