@@ -383,15 +383,17 @@ function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
     self.cooldown:SetCooldown(start, duration, modRate)
 end
 
-function e.SetItemSpellCool(self, item, spell, notSwipeTexture)
-    if item then
-        local startTime, duration = GetItemCooldown(item)
-        e.Ccool(self, startTime, duration, nil, true, nil, not notSwipeTexture)
-    elseif spell then
-        local start, duration, _, modRate = GetSpellCooldown(spell)
-        e.Ccool(self, start, duration, modRate, true, nil, not notSwipeTexture)--冷却条
-    elseif self.cooldown then
-        self.cooldown:Clear()
+function e.SetItemSpellCool(tab)--self, item, spell, type=true(not SwipeTexture)
+    if tab.frame then
+        if tab.item then
+            local startTime, duration = GetItemCooldown(tab.item)
+            e.Ccool(tab.frame, startTime, duration, nil, true, nil, not tab.type)
+        elseif tab.spell then
+            local start, duration, _, modRate = GetSpellCooldown(tab.spell)
+            e.Ccool(tab.frame, start, duration, modRate, true, nil, not tab.type)--冷却条
+        elseif tab.frame.cooldown then
+            tab.frame.cooldown:Clear()
+        end
     end
 end
 

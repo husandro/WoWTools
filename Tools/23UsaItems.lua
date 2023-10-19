@@ -297,7 +297,7 @@ local function init_Item_Button(self, equip)--设置按钮
         if event=='BAG_UPDATE_DELAYED' then
             set_Item_Count(self2)
         elseif event=='BAG_UPDATE_COOLDOWN' then
-            e.SetItemSpellCool(self2, self2.itemID, nil)
+            e.SetItemSpellCool({frame=self2, item=self2.itemID})
         elseif event=='QUEST_COMPLETE' then
             set_Bling_Quest(self2)
         elseif event=='PLAYER_EQUIPMENT_CHANGED' or 'PLAYER_REGEN_ENABLED' then
@@ -306,7 +306,7 @@ local function init_Item_Button(self, equip)--设置按钮
     end)
     self:SetScript('OnShow', function(self2)
         set_button_Event(self2, true)--事件
-        e.SetItemSpellCool(self, self.itemID, nil)
+        e.SetItemSpellCool({frame=self, item=self.itemID})
         set_Item_Count(self)
     end)
     self:SetScript('OnHide', function(self2)
@@ -345,10 +345,10 @@ local function set_Spell_Count(self)--次数
 end
 
 local function init_Spell_Button(self)--设置按钮
-    self:SetScript('OnEnter', function()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+    self:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:SetSpellByID(self.spellID)
+        e.tips:SetSpellByID(self2.spellID)
         e.tips:Show()
     end)
     self:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -356,13 +356,13 @@ local function init_Spell_Button(self)--设置按钮
         if event=='SPELL_UPDATE_USABLE' then
             set_Spell_Count(self2)
         elseif event=='SPELL_UPDATE_COOLDOWN' then
-            e.SetItemSpellCool(self2, nil, self2.spellID)
+            e.SetItemSpellCool({frame=self2, spell=self2.spellID})
         end
     end)
     self:SetScript('OnShow', function(self2)
         set_button_Event(self2, true)
-        e.SetItemSpellCool(self, nil, self.spellID)
-        set_Spell_Count(self)
+        e.SetItemSpellCool({frame=self2, spell=self2.spellID})
+        set_Spell_Count(self2)
     end)
     self:SetScript('OnHide', function(self2)
         set_button_Event(self2)

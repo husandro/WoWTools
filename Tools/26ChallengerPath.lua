@@ -149,13 +149,13 @@ local function Init()
                 elseif event=='PLAYER_REGEN_ENABLED' then
                     self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
                 elseif event=='SPELL_UPDATE_COOLDOWN' then
-                    e.SetItemSpellCool(self, nil, tab.spell)--冷却
+                    e.SetItemSpellCool({frame=self, spell=tab.spell})--冷却
                 end
             end)
             buttons[tab.spell]:SetScript('OnShow', function(self)
-                e.SetItemSpellCool(self, nil, tab.spell)--冷却
+                e.SetItemSpellCool({frame=self, spell=tab.spell})--冷却
             end)
-            e.SetItemSpellCool(buttons[tab.spell], nil, tab.spell)--冷却
+            e.SetItemSpellCool({frame=buttons[tab.spell], spell=tab.spell})--冷却
             buttons[tab.spell].cooldown:SetAlpha(0.5)
         end
     end

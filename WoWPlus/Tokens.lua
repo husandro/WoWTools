@@ -302,12 +302,12 @@ local function Set_TrackButton_Text()
 					self:RegisterEvent('BAG_UPDATE_COOLDOWN')
 				else
 					self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
-					e.SetItemSpellCool(btn)
+					e.SetItemSpellCool({frame=self})
 				end
-				e.SetItemSpellCool(self, self.itemID, nil, true)
+				e.SetItemSpellCool({frame=self, item=self.itemID, type=true})
 			end
 			btn:SetScript('OnEvent', function(self)
-				e.SetItemSpellCool(self, self.itemID, nil, true)
+				e.SetItemSpellCool({frame=self, item=self.itemID, type=true})
 			end)
 
 			btn.itemButtonUse= itemButtonUse--使用物品

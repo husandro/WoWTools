@@ -276,7 +276,7 @@ local function setTextrue()--设置图标
         button.texture:SetTexture(icon)
     end
     button.texture:SetShown(icon and true or false)
-    e.SetItemSpellCool(button, button.itemID, button.spellAtt)--设置冷却
+    e.SetItemSpellCool({frame=button, item=button.itemID, spell=button.spellAtt})--设置冷却
 end
 
 --[[
@@ -1142,7 +1142,8 @@ local function Init()
     checkMount()--检测坐骑
     setClickAtt()--设置
     setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
-    e.SetItemSpellCool(button, button.itemID, button.spellAtt)--设置冷却
+    e.SetItemSpellCool({frame=button, item=button.itemID, spell=button.spellAtt})--设置冷却
+    
     if Save.KEY then
         setKEY()--设置捷键
     end
@@ -1488,7 +1489,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         button.textureModifier:SetShown(icon)
 
     elseif event=='SPELL_UPDATE_COOLDOWN' then
-        e.SetItemSpellCool(button, button.itemID, button.spellAtt)--设置冷却
+        e.SetItemSpellCool({frame=button, item=button.itemID, spell=button.spellAtt})--设置冷却
 
     elseif event=='SPELL_UPDATE_USABLE' then
         setTextrue()--设置图标

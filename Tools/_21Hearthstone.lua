@@ -311,13 +311,12 @@ local function Init()
 
     getToy()--生成, 有效表格
     setAtt()--设置属性
-    e.SetItemSpellCool(button, button.itemID, nil)--主图标冷却
     setBagHearthstone()--设置Shift, Ctrl, Alt 提示
 
     C_Timer.After(2, function()
         setAtt()--设置属性
         set_BindLocation()--显示, 炉石, 绑定位置
-        e.SetItemSpellCool(button, button.itemID, nil)--主图标冷却
+        e.SetItemSpellCool({frame=button, item=button.itemID})--主图标冷却
     end)
 end
 
@@ -378,7 +377,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         setAtt()--设置属性
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
-        e.SetItemSpellCool(button, button.itemID, nil)--主图标冷却
+        e.SetItemSpellCool({frame=button, item=button.itemID})--主图标冷却
         setBagHearthstone()--设置Shift, Ctrl, Alt 提示
 
     elseif event=='BAG_UPDATE_DELAYED' then
