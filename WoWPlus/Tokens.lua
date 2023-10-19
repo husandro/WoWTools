@@ -34,7 +34,7 @@ local TrackButton
 --监视声望按钮
 --###########
 local function Get_Item(itemID)
-	local text
+	local text, numText
 	local icon= C_Item.GetItemIconByID(itemID)
 	local num= GetItemCount(itemID , true, nil, true)
 	local bag= GetItemCount(itemID)
@@ -42,19 +42,37 @@ local function Get_Item(itemID)
 		local itemQuality = C_Item.GetItemQualityByID(itemID)
 		local hex = itemQuality and select(4, GetItemQualityColor(itemQuality))
 		hex= hex and '|c'..hex
-		num= e.MK(num, 3)
+		if bag==num then
+			numText= e.MK(num, 3)
+		else
+			local bank= num-bag
+			if bank==0 then
+				numText= num
+			else
+				if Save.toRightTrackText then
+					numText= (bag>0 and bag..'|A:bag-main:0:0|a' or '')..(bank>0 and bank..'|A:Levelup-Icon-Bag:0:0|a' or '')
+				else
+					numText= (bank>0 and bank..'|A:Levelup-Icon-Bag:0:0|a' or '')..(bag>0 and bag..'|A:bag-main:0:0|a' or '')
+				end
+			end
+		end
+
 		local name
 		if Save.nameShow then
 			name= C_Item.GetItemNameByID(itemID)
 			name = (name and hex) and hex..name..'|r' or name
 		else
-			num= hex and hex..num or num
+			numText= hex and hex..numText or numText
 		end
 		if Save.toRightTrackText then--向右平移
-			text=(name and name..' ' or '')..num
+			text=(name and name..' ' or '')
+				..numText
+				
 		else
-			text=num..(name and ' '..name or '')
+			text=numText
+				..(name and ' '..name or '')
 		end
+
 	elseif not icon then
 		e.LoadDate({id=itemID, type='item'})--加载 item quest spell
 	end
@@ -69,8 +87,8 @@ local function Get_Currency(currencyID, index)--货币
     local info
 	if index then
 		info= C_CurrencyInfo.GetCurrencyListInfo(index)
-		local link= C_CurrencyInfo.GetCurrencyListLink(index)
-		currencyID= link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
+		--local link= C_CurrencyInfo.GetCurrencyListLink(index)
+		--currencyID= link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
 	elseif currencyID then
 		info= C_CurrencyInfo.GetCurrencyInfo(currencyID)
 		--info= C_CurrencyInfo.GetCurrencyInfoFromLink(tab.link)
@@ -79,7 +97,7 @@ local function Get_Currency(currencyID, index)--货币
 	local text
     if not info
 		or info.isHeader
-		or not currencyID
+		--or not currencyID
 		or not info.iconFileID
 		or not info.quantity or info.quantity<0
 		or (
@@ -120,17 +138,17 @@ local function Get_Currency(currencyID, index)--货币
 		and info.quantityEarnedThisWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0
 		and info.quantityEarnedThisWeek<info.maxWeeklyQuantity
 	then
-		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxWeeklyQuantity- info.quantityEarnedThisWeek, 3)..')|r'
+		need= '|cnGREEN_FONT_COLOR:('..e.MK(info.maxWeeklyQuantity- info.quantityEarnedThisWeek, 0)..')|r'
 
 	elseif not earnedMax--赛季,收入
 		and info.useTotalEarnedForMaxQty
 		and info.totalEarned and info.maxQuantity and info.maxQuantity>0
 		and info.totalEarned< info.maxQuantity
 	then
-		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxQuantity- info.totalEarned, 3)..')|r'
+		need= '|cnGREEN_FONT_COLOR:('..e.MK(info.maxQuantity- info.totalEarned, 0)..')|r'
 
 	elseif info.maxQuantity and info.maxQuantity>0 and info.quantity< info.maxQuantity then
-		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxQuantity- info.quantity, 3)..')|r'
+		need= '|cnGREEN_FONT_COLOR:('..e.MK(info.maxQuantity- info.quantity, 0)..')|r'
 	end
 	if Save.toRightTrackText then
 		text=(name and name..' ' or '')
@@ -147,7 +165,7 @@ local function Get_Currency(currencyID, index)--货币
 	end
 
 
-    return text, info.iconFileID, currencyID
+    return text, info.iconFileID
 end
 
 
@@ -174,13 +192,13 @@ local function Set_TrackButton_Text()
 	local tab={}
 
 	if Save.indicato then
-
-		local tokens={}
+		--[[local tokens={}
 		for currencyID,_ in pairs(Save.tokens) do
 			table.insert(tokens, currencyID)
 		end
-		table.sort(tokens, function(a,b) return a>b end)
-		for _, currencyID in pairs(tokens) do
+		table.sort(tokens, function(a,b) return a>b end)]]
+
+		for currencyID,_ in pairs(Save.tokens) do
 			local text, icon= Get_Currency(currencyID, nil)--货币
 			if text and icon then
 				table.insert(tab, {text= text, icon=icon, type='current', id= currencyID})
@@ -188,12 +206,14 @@ local function Set_TrackButton_Text()
 		end
 	else
 		for index=1, C_CurrencyInfo.GetCurrencyListSize() do
-			local text, icon, currencyID = Get_Currency(nil, index)--货币
-			if text and icon and currencyID then
-				table.insert(tab, {text= text, icon=icon, type='current', id= currencyID})
+			local text, icon = Get_Currency(nil, index)--货币
+			if text and icon then
+				table.insert(tab, {text= text, icon=icon, type='current', index=index})
 			end
 		end
 	end
+	
+
 	for itemID in pairs(Save.item) do
 		local text, icon= Get_Item(itemID)
 		if text and icon then
@@ -225,13 +245,15 @@ local function Set_TrackButton_Text()
 				e.tips:Hide()
 				Set_TrackButton_Pushed(false)--提示
 			end)
-			btn:SetScript('OnEnter', function(self2)
-				e.tips:SetOwner(self2, "ANCHOR_LEFT")
+			btn:SetScript('OnEnter', function(self)
+				e.tips:SetOwner(self, "ANCHOR_LEFT")
 				e.tips:ClearLines()
-				if self2.type=='item' then
-					e.tips:SetItemByID(self2.id)
+				if self.type=='item' then
+					e.tips:SetItemByID(self.id)
+				elseif self.index then
+					e.tips:SetCurrencyToken(self.index)
 				else
-					e.tips:SetCurrencyByID(self2.id)
+					e.tips:SetCurrencyByID(self.id)
 				end
 				e.tips:AddLine(' ')
 				e.tips:AddDoubleLine(id, addName)
@@ -244,6 +266,7 @@ local function Set_TrackButton_Text()
 		btn.type=tables.type
 		btn.id= tables.id
 		btn.icon=tables.icon
+		btn.index= tables.index
 		btn:set_Texture()
 		btn.text:SetText(tables.text)
 

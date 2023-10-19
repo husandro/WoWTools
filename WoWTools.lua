@@ -224,15 +224,15 @@ function e.MK(number, bit)
         bit = bit or 1
         local num= 0
         if bit==0 then
-            num= 0.4
+            num= 0.5
         elseif bit==1 then
-            num= 0.04
+            num= 0.05
         elseif bit==2 then
-            num= 0.004
+            num= 0.005
         elseif bit==3 then
-            num= 0.0004
+            num= 0.0005
         elseif bit==4 then
-            num= 0.00004
+            num= 0.00005
         end
         if number>=1e6 then
             return format('%.'..bit..'fm', (number/1e6)-num)
