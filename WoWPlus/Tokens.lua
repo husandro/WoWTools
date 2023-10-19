@@ -65,7 +65,6 @@ end
 
 
 local function Get_Currency(currencyID, index)--货币
-	--Get_Currency({index=index, showName=Save.nameShow, showID=Save.showID, toRight=Save.toRightTrackText, bit=nil})--货币
     local info
 	if index then
 		info= C_CurrencyInfo.GetCurrencyListInfo(index)
@@ -91,8 +90,6 @@ local function Get_Currency(currencyID, index)--货币
     local name=  Save.nameShow and info.name or nil
 	local num= e.MK(info.quantity, 3)
 
-
-
 	local weekMax= info.canEarnPerWeek--本周
 			and info.maxWeeklyQuantity
 			and info.maxWeeklyQuantity>0
@@ -117,14 +114,14 @@ local function Get_Currency(currencyID, index)--货币
 		and info.quantityEarnedThisWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0
 		and info.quantityEarnedThisWeek<info.maxWeeklyQuantity
 	then
-		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxWeeklyQuantity- info.quantityEarnedThisWeek, tab.bit)..'|r'
+		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxWeeklyQuantity- info.quantityEarnedThisWeek, 3)..'|r'
 
 	elseif not earnedMax--赛季,收入
 		and info.useTotalEarnedForMaxQty
 		and info.totalEarned and info.maxQuantity and info.maxQuantity>0
 		and info.totalEarned<info.maxQuantity
 	then
-		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxQuantity- info.totalEarned, tab.bit)..'|r'
+		need= '|cnGREEN_FONT_COLOR:(+'..e.MK(info.maxQuantity- info.totalEarned, 3)..'|r'
 	end
 	if Save.toRightTrackText then
 		text=(name and name..' ' or '')
@@ -146,15 +143,88 @@ end
 
 
 
+local function Set_TrackButton_Text()
+	if not Save.str or not TrackButton or not TrackButton.Frame:IsShown() then
+		return
+	end
 
+	local tab={}
 
+	if Save.indicato then
+		for currencyID, _ in pairs(Save.tokens) do
+			local text, icon= Get_Currency(currencyID, nil)--货币
+			if text and icon then
+				table.insert(tab, {text= text, icon=icon, type='current', id= currencyID})
+			end
+		end
+	else
+		for index=1, C_CurrencyInfo.GetCurrencyListSize() do
+			local text, icon, currencyID = Get_Currency(nil, index)--货币
+			if text and icon and currencyID then
+				table.insert(tab, {text= text, icon=icon, type='current', id= currencyID})
+			end
+		end
+	end
+	for itemID in pairs(Save.item) do
+		local text, icon= Get_Item(itemID)
+		if text and icon then
+			table.insert(tab, {text= text, icon=icon, type='item', id= itemID})
+		end
+	end
 
+	local index=0
+	local last
+	for _, tables in pairs(tab) do
+		index= index+1
+		local btn= TrackButton.btn[index]
+		if not btn then
+			btn= e.Cbtn(TrackButton.Frame, {size={12,12, icon='hide'}})
+			btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0,-1)
+			btn.text= e.Cstr(btn, {color=true})
+			function btn:set_Texture()
+				self:SetNormalTexture(self.icon)
+			end
+			function btn:set_Text_Point()
+				if Save.toRightTrackText then
+					self.text:SetPoint('LEFT', self, 'RIGHT')
+				else
+					self.text:SetPoint('RIGHT', self, 'LEFT')
+				end
+			end
+			btn:set_Text_Point()
+			btn:SetScript('OnLeave', function() e.tips:Hide() end)
+			btn:SetScript('OnEnter', function(self2)
+				e.tips:SetOwner(self2, "ANCHOR_LEFT")
+				e.tips:ClearLines()
+				if self2.type=='item' then
+					e.tips:SetItemByID(self2.id)
+				else
+					e.tips:SetCurrencyByID(self2.id)
+				end
+				e.tips:AddLine(' ')
+				e.tips:AddDoubleLine(id, addName)
+				e.tips:Show()
+			end)
+			TrackButton.btn[index]= btn
+		end
 
+		btn.type=tables.type
+		btn.id= tables.id
+		btn.icon=tables.icon
+		btn:set_Texture()
+		btn.text:SetText(tables.text)
 
+		btn:SetShown(true)
+		last= btn
+	end
 
-
-
-
+	for i= index+1, #TrackButton.btn do
+		local btn= TrackButton.btn[i]
+		if btn then
+			btn:SetShown(false)
+		end
+	end
+end
 
 
 
@@ -306,21 +376,11 @@ local function Init_TrackButton()
 						checked= Save.nameShow,
 						func= function()
 							Save.nameShow= not Save.nameShow and true or nil
-							TrackButton:set_TrackButton_Text()
+							Set_TrackButton_Text()
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
-					--[[info={
-						text=format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '显示' or SHOW, 'ID'),
-						checked= Save.showID,
-						func= function()
-							Save.showID= not Save.showID and true or nil
-							TrackButton:set_Shown()
-							TrackButton:set_Tooltips()
-							print(id, addName, SHOW, 'ID', e.GetShowHide(Save.showID))
-						end
-					}
-					e.LibDD:UIDropDownMenu_AddButton(info, level)]]
+
 					info={
 						text= e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT,
 						checked= Save.toRightTrackText,
@@ -330,7 +390,7 @@ local function Init_TrackButton()
 								btn.text:ClearAllPoints()
 								btn:set_Text_Point()
 							end
-							TrackButton:set_TrackButton_Text()
+							Set_TrackButton_Text()
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -366,96 +426,13 @@ local function Init_TrackButton()
 	TrackButton.Frame:SetPoint('BOTTOM')
 
 
-	TrackButton.set_TrackButton_Text= function()
-		if not Save.str or not TrackButton.Frame:IsShown() then
-			return
-		end
-
-		local tab={}
-
-		if Save.indicato then
-			for _, info in pairs(Save.tokens) do
-				local text, icon= Get_Currency(info.currentID, nil)--货币
-				if text and icon then
-					table.insert(tab, {text= text, icon=icon, type='current', id= info.currencyID})
-				end
-			end
-		else
-			for index=1, C_CurrencyInfo.GetCurrencyListSize() do
-				local text, icon, currencyID = Get_Currency(nil, index)--货币
-				if text and icon and currencyID then
-					table.insert(tab, {text= text, icon=icon, type='current', id= currencyID})
-				end
-			end
-		end
-		for itemID in pairs(Save.item) do
-			local text, icon= Get_Item(itemID)
-			if text and icon then
-				table.insert(tab, {text= text, icon=icon, type='item', id= itemID})
-			end
-		end
-
-		local index=0
-		local last
-		for _, tables in pairs(tab) do
-			index= index+1
-			local btn= TrackButton.btn[index]
-			if not btn then
-				btn= e.Cbtn(TrackButton.Frame, {size={12,12, icon='hide'}})
-				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0,-1)
-				btn.text= e.Cstr(btn, {color=true})
-				function btn:set_Texture()
-					self:SetNormalTexture(self.icon)
-				end
-				function btn:set_Text_Point()
-					if Save.toRightTrackText then
-						self.text:SetPoint('LEFT', self, 'RIGHT')
-					else
-						self.text:SetPoint('RIGHT', self, 'LEFT')
-					end
-				end
-				btn:set_Text_Point()
-				btn:SetScript('OnLeave', function() e.tips:Hide() end)
-				btn:SetScript('OnEnter', function(self2)
-					e.tips:SetOwner(self2, "ANCHOR_LEFT")
-					e.tips:ClearLines()
-					if self2.type=='item' then
-						e.tips:SetItemByID(self2.id)
-					else
-						e.tips:SetCurrencyByID(self2.id)
-					end
-					e.tips:AddLine(' ')
-					e.tips:AddDoubleLine(id, addName)
-					e.tips:Show()
-				end)
-				TrackButton.btn[index]= btn
-			end
-
-			btn.type=tables.type
-			btn.id= tables.id
-			btn.icon=tables.icon
-			btn:set_Texture()
-			btn.text:SetText(tables.text)
-
-			btn:SetShown(true)
-			last= btn
-		end
-
-		for i= index+1, #TrackButton.btn do
-			local btn= TrackButton.btn[i]
-			if btn then
-				btn:SetShown(false)
-			end
-		end
-	end
-	TrackButton.Frame:SetScript('OnShow', TrackButton.set_TrackButton_Text)
+	
+	TrackButton.Frame:SetScript('OnShow', Set_TrackButton_Text)
 
 	TrackButton.Frame:RegisterEvent('BAG_UPDATE_DELAYED')
 	TrackButton.Frame:RegisterEvent('BAG_UPDATE')
 	TrackButton.Frame:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
-	TrackButton.Frame:SetScript('OnEvent', function()
-		TrackButton:set_TrackButton_Text()
-	end)
+	TrackButton.Frame:SetScript('OnEvent', Set_TrackButton_Text)
 
 
 	TrackButton:set_Point()
@@ -464,7 +441,7 @@ local function Init_TrackButton()
 	TrackButton:set_Shown()
 	TrackButton:set_Texture()
 
-	TrackButton:set_TrackButton_Text()
+	Set_TrackButton_Text()
 end
 
 
@@ -573,9 +550,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 			if self.currencyID then
 				Save.tokens[self.currencyID]= not Save.tokens[self.currencyID] and self.index or nil
 				frame.check:SetAlpha(Save.tokens[self.currencyID] and 1 or 0.5)
-				if TrackButton then
-					TrackButton:set_TrackButton_Text()--设置, 文本
-				end
+				Set_TrackButton_Text()
 			end
 		end)
 		frame.check:SetScript('OnEnter', function(self)
@@ -665,9 +640,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				arg1= itemID,
 				func= function(_, arg1)
 					Save.item[arg1]= nil
-					if TrackButton then
-						TrackButton.set_TrackButton_Text()
-					end
+					Set_TrackButton_Text()
 					print(id, addName, e.onlyChinese and '移除' or REMOVE, select(2, GetItemInfo(itemID)) or ('itemID '..itemID))
 				end
 			}
@@ -683,9 +656,7 @@ local function InitMenu(_, level, menuList)--主菜单
 			func= function()
 				if IsShiftKeyDown() then
 					Save.item= {}
-					if TrackButton then
-						TrackButton:set_Shown()
-					end
+					Set_TrackButton_Text()
 					print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
 				end
 			end
@@ -706,7 +677,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				arg1= currencyID,
 				func= function(_, arg1)
 					Save.tokens[arg1]=nil
-					e.call('TokenFrame_Update')
+					Set_TrackButton_Text()
 					print(id, addName, e.onlyChinese and '移除' or REMOVE, C_CurrencyInfo.GetCurrencyLink(arg1) or arg1)
 				end
 			}
@@ -722,7 +693,7 @@ local function InitMenu(_, level, menuList)--主菜单
 			func= function()
 				if IsShiftKeyDown() then
 					Save.tokens= {}
-					e.call('TokenFrame_Update')
+					Set_TrackButton_Text()
 					print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
 				end
 			end
@@ -898,9 +869,7 @@ local function Init()
 					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2),
 					itemLink or itemID)
 			ClearCursor()
-			if TrackButton then
-				TrackButton:set_TrackButton_Text()
-			end
+			Set_TrackButton_Text()
 		else
 			if not Button.Menu then
 				Button.Menu=CreateFrame("Frame", nil, Button, "UIDropDownMenuTemplate")
@@ -1113,9 +1082,7 @@ local function Init()
 				set_Tokens_Button(frame)--设置, 列表, 内容
 			end
 			set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
-			if TrackButton then
-				TrackButton:set_TrackButton_Text()--设置, 文本
-			end
+			Set_TrackButton_Text()
 		end)
 
 		if not Save.hideCurrencyMax then

@@ -9,7 +9,7 @@ local Save={
     usrClassColor=true,
     size=32,--8 64
     gravity=512, -- -512 512
-    duration=0.4,--0.1 4
+    duration=0.3,--0.1 4
     rotate=32,-- 0 32
     atlasIndex=1,
     rate=0.03,--刷新
@@ -86,24 +86,26 @@ end
 --############
 local create_Particle = function(self)
     local part = self.Pool[#self.Pool]
-    self.Pool[#self.Pool] = nil
-    self.Used[#self.Used + 1] = part
-    part.life = Save.duration
-    local scale = UIParent:GetEffectiveScale()
-    local x, y = GetCursorPosition()
-    part.x = x / scale + Save.X
-    part.y = y / scale + Save.Y
-    if self.egim < 0 then
-        self.egim = floor(self.egim + 360)
-    end
-    self.egim = floor(self.egim)
-    part.a = - self.egim
-    part.vx = 1
-    part.vy = 1
+    if part then
+        self.Pool[#self.Pool] = nil
+        self.Used[#self.Used + 1] = part
+        part.life = Save.duration
+        local scale = UIParent:GetEffectiveScale()
+        local x, y = GetCursorPosition()
+        part.x = x / scale + Save.X
+        part.y = y / scale + Save.Y
+        if self.egim < 0 then
+            self.egim = floor(self.egim + 360)
+        end
+        self.egim = floor(self.egim)
+        part.a = - self.egim
+        part.vx = 1
+        part.vy = 1
 
-    part.va = math.random(-(Save.rotate), Save.rotate)
-    part:SetPoint("CENTER", UIParent, "BOTTOMLEFT", part.x, part.y)
-    part:Show()
+        part.va = math.random(-(Save.rotate), Save.rotate)
+        part:SetPoint("CENTER", UIParent, "BOTTOMLEFT", part.x, part.y)
+        part:Show()
+    end
     return part
 end
 
