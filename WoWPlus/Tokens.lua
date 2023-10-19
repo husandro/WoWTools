@@ -231,7 +231,6 @@ local function Set_TrackButton_Text()
 
 	local index=0
 	local last
-
 	for _, tables in pairs(tab) do
 		index= index+1
 		local btn= TrackButton.btn[index]
@@ -287,6 +286,23 @@ local function Set_TrackButton_Text()
 		btn:SetShown(true)
 		last= btn
 	end
+
+	if TrackButton.findToken and TrackButton.findToken~= findToken then--货物，物品，分开
+		last=nil
+		for i= 1, #TrackButton.btn do
+			local btn= TrackButton.btn[i]
+			if btn then
+				btn:ClearAllPoints()
+				if findToken>1 and i==findToken then--货物，物品，分开
+					btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -6)
+				else
+					btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -1)
+				end
+				last=btn
+			end
+		end
+	end
+	TrackButton.findToken= findToken
 
 	for i= index+1, #TrackButton.btn do
 		local btn= TrackButton.btn[i]
