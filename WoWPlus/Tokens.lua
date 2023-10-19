@@ -235,7 +235,7 @@ local function Set_TrackButton_Text()
 		index= index+1
 		local btn= TrackButton.btn[index]
 		if not btn then
-			btn= e.Cbtn(TrackButton.Frame, {size={12,12, icon='hide'}})
+			btn= e.Cbtn(TrackButton.Frame, {size={12,12, icon='hide', notWheel=true, type=false}})
 			if findToken>1 and index==findToken then--货物，物品，分开
 				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -6)
 			else
@@ -262,15 +262,28 @@ local function Set_TrackButton_Text()
 				e.tips:ClearLines()
 				if self.itemID then
 					e.tips:SetItemByID(self.itemID)
+					e.tips:AddLine(' ')
+					local col= GetItemCount(self.itemID)==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:'
+					e.tips:AddDoubleLine(col..(e.onlyChinese and '拿取' or 'Pickup'), col..('Alt+'..e.Icon.left))
 				elseif self.index then
 					e.tips:SetCurrencyToken(self.index)
 				else
 					e.tips:SetCurrencyByID(self.currencyID)
 				end
-				e.tips:AddLine(' ')
 				e.tips:AddDoubleLine(id, addName)
 				e.tips:Show()
 				Set_TrackButton_Pushed(true)--提示
+			end)
+			btn:SetScript("OnClick", function(self)
+				if not self.itemID or not IsAltKeyDown() or GetItemCount(self.itemID)==0 then return end
+				for bag= Enum.BagIndex.Backpack, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
+					for slot=1, C_Container.GetContainerNumSlots(bag) do
+						if C_Container.GetContainerItemID(bag, slot)== self.itemID then
+							C_Container.PickupContainerItem(bag, slot)
+							return
+						end
+					end
+				end
 			end)
 			TrackButton.btn[index]= btn
 		end
@@ -480,7 +493,6 @@ local function Init_TrackButton()
 							Save.str= not Save.str and true or nil
 							TrackButton:set_Shown()
 							TrackButton:set_Texture()
-							TrackButton:set_Tooltips()
 							print(id, addName, e.GetShowHide(Save.str))
 						end
 					}

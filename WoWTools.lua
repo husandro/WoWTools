@@ -316,7 +316,7 @@ function e.Cstr(self, tab)--self, {size, copyFont, changeFont, fontName color={r
     return font
 end
 
-function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton'
+function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton',notWheel
     tab=tab or {}
     self= self or UIParent
     local btn
@@ -328,7 +328,9 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, butto
         btn= CreateFrame(tab.button or 'Button', tab.name, self)
     end
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    btn:EnableMouseWheel(true)
+    if not tab.notWheel then
+        btn:EnableMouseWheel(true)
+    end
     if tab.size then
         btn:SetSize(tab.size[1], tab.size[2])
     elseif tab.button=='ItemButton' then

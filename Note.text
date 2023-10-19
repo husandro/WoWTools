@@ -268,11 +268,9 @@ SliceDemo.ResizeButton:SetPoint("BOTTOMRIGHT");
 
 
 
---[[for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS
+for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS
     for slot=1, C_Container.GetContainerNumSlots(bag) do
         local info = C_Container.GetContainerItemInfo(bag, slot)
-        if info and info.itemID then
-            e.LoadDate({id=info.itemID, type='item'})
-        end
+        C_Container.UseContainerItem(bag, slot)
     end
-end]]
+end
