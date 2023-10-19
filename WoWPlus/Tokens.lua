@@ -240,9 +240,6 @@ local function Set_TrackButton_Text()
 			local itemButtonUse=(Save.itemButtonUse and tables.itemID) and true or nil--使用物品
 
 			btn= e.Cbtn(TrackButton.Frame, {size={12,12}, icon='hide', type= itemButtonUse})
-			
-			--btn= CreateFrame("Button", nil, TrackButton.Frame, "SecureActionButtonTemplate")
-			btn:SetSize(12,12)
 			btn.text= e.Cstr(btn, {color=true})
 
 			btn:SetSize(12,12)
@@ -300,11 +297,11 @@ local function Set_TrackButton_Text()
 			function btn:set_btn_Event()
 				if self.itemID then
 					self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+					e.SetItemSpellCool({frame=self, item=self.itemID, type=true})
 				else
 					self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
 					e.SetItemSpellCool({frame=self})
 				end
-				e.SetItemSpellCool({frame=self, item=self.itemID, type=true})
 			end
 			btn:SetScript('OnEvent', function(self)
 				e.SetItemSpellCool({frame=self, item=self.itemID, type=true})
@@ -312,10 +309,12 @@ local function Set_TrackButton_Text()
 
 			btn.itemButtonUse= itemButtonUse--使用物品
 			if itemButtonUse then
-				--btn:SetAttribute('type*', 'item')
-				--btn:SetAttribute("unit*", "target")
-				btn:SetAttribute('type', 'macro')
+				--btn:SetAttribute('type', 'macro')
+				btn:SetAttribute('type', 'item')
 			end
+			btn:SetScript('OnShow', btn.set_btn_Event)
+			btn:SetScript('OnHide', function(self) self:UnregisterAllEvents() end)
+			btn:set_btn_Event()
 
 			TrackButton.btn[index]= btn
 		end
@@ -325,16 +324,16 @@ local function Set_TrackButton_Text()
 		btn.currencyID= tables.currencyID
 		btn:SetNormalTexture(tables.icon)--设置，图片
 		btn.text:SetText(tables.text)--设置，文本
-		btn:set_btn_Event()
+		e.SetItemSpellCool({frame=btn, item=btn.itemID, type=true})
 
 		if btn.itemButtonUse then--使用物品
 			if not bat then
-				--btn:SetAttribute('item*',  tables.itemID and tables.name or nil )
-				if tables.itemID then
-					btn:SetAttribute('macrotext', '/use [target]'..(tables.name or tables.itemID))
+				btn:SetAttribute('item',  tables.itemID and tables.name or nil )
+				--[[if tables.itemID then
+					btn:SetAttribute('macrotext', '/use [@player]'..(tables.name or tables.itemID))
 				else
 					btn:SetAttribute('macrotext', nil)
-				end
+				end]]
 				btn:SetShown(true)
 			end
 		else
