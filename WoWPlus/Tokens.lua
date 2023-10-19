@@ -38,8 +38,9 @@ local function Get_Item(itemID)
 	local icon= C_Item.GetItemIconByID(itemID)
 	local num= GetItemCount(itemID , true, nil, true)
 	local bag= GetItemCount(itemID)
+	local itemQuality
 	if icon and num>0 then
-		local itemQuality = C_Item.GetItemQualityByID(itemID)
+		itemQuality = C_Item.GetItemQualityByID(itemID)
 		local hex = itemQuality and select(4, GetItemQualityColor(itemQuality))
 		hex= hex and '|c'..hex
 		if bag==num then
@@ -67,7 +68,7 @@ local function Get_Item(itemID)
 		if Save.toRightTrackText then--向右平移
 			text=(name and name..' ' or '')
 				..numText
-				
+
 		else
 			text=numText
 				..(name and ' '..name or '')
@@ -76,7 +77,7 @@ local function Get_Item(itemID)
 	elseif not icon then
 		e.LoadDate({id=itemID, type='item'})--加载 item quest spell
 	end
-	return text, icon
+	return text, icon, itemQuality
 end
 
 
@@ -181,54 +182,66 @@ end
 
 
 
-
-
-
 local function Set_TrackButton_Text()
 	if not Save.str or not TrackButton or not TrackButton.Frame:IsShown() then
 		return
 	end
 
 	local tab={}
+	local findToken=1--货物，物品，分开
 
 	if Save.indicato then
-		--[[local tokens={}
-		for currencyID,_ in pairs(Save.tokens) do
-			table.insert(tokens, currencyID)
-		end
-		table.sort(tokens, function(a,b) return a>b end)]]
-
-		for currencyID,_ in pairs(Save.tokens) do
+		for currencyID, _ in pairs(Save.tokens) do
 			local text, icon= Get_Currency(currencyID, nil)--货币
 			if text and icon then
-				table.insert(tab, {text= text, icon=icon, type='current', id= currencyID})
+				table.insert(tab, {text= text, icon=icon, currencyID=currencyID})
+				findToken= findToken+1--货物，物品，分开
 			end
 		end
+		table.sort(tab, function(a, b)
+			return a.currencyID> b.currencyID
+		end)
 	else
 		for index=1, C_CurrencyInfo.GetCurrencyListSize() do
 			local text, icon = Get_Currency(nil, index)--货币
 			if text and icon then
-				table.insert(tab, {text= text, icon=icon, type='current', index=index})
+				table.insert(tab, {text= text, icon=icon, index=index})
+				findToken= findToken+1--货物，物品，分开
 			end
 		end
 	end
-	
 
+	local itemTab={}
 	for itemID in pairs(Save.item) do
-		local text, icon= Get_Item(itemID)
+		local text, icon, itemQuality= Get_Item(itemID)
 		if text and icon then
-			table.insert(tab, {text= text, icon=icon, type='item', id= itemID})
+			table.insert(itemTab, {text= text, icon=icon, itemID= itemID, itemQuality=itemQuality or 0})
 		end
+	end
+	table.sort(itemTab, function(a, b)
+		if a.itemQuality== b.itemQuality then
+			return a.itemID> b.itemID
+		else
+			return a.itemQuality> b.itemQuality
+		end
+	end)
+	for _, tables in pairs(itemTab) do
+		table.insert(tab, tables)
 	end
 
 	local index=0
 	local last
+
 	for _, tables in pairs(tab) do
 		index= index+1
 		local btn= TrackButton.btn[index]
 		if not btn then
 			btn= e.Cbtn(TrackButton.Frame, {size={12,12, icon='hide'}})
-			btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0,-1)
+			if findToken>1 and index==findToken then--货物，物品，分开
+				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -6)
+			else
+				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -1)
+			end
 			btn.text= e.Cstr(btn, {color=true})
 			function btn:set_Texture()
 				self:SetNormalTexture(self.icon)
@@ -248,12 +261,12 @@ local function Set_TrackButton_Text()
 			btn:SetScript('OnEnter', function(self)
 				e.tips:SetOwner(self, "ANCHOR_LEFT")
 				e.tips:ClearLines()
-				if self.type=='item' then
-					e.tips:SetItemByID(self.id)
+				if self.itemID then
+					e.tips:SetItemByID(self.itemID)
 				elseif self.index then
 					e.tips:SetCurrencyToken(self.index)
 				else
-					e.tips:SetCurrencyByID(self.id)
+					e.tips:SetCurrencyByID(self.currencyID)
 				end
 				e.tips:AddLine(' ')
 				e.tips:AddDoubleLine(id, addName)
@@ -263,10 +276,11 @@ local function Set_TrackButton_Text()
 			TrackButton.btn[index]= btn
 		end
 
-		btn.type=tables.type
-		btn.id= tables.id
-		btn.icon=tables.icon
+
+		btn.itemID= tables.itemID
 		btn.index= tables.index
+		btn.currencyID= tables.currencyID
+		btn.icon=tables.icon
 		btn:set_Texture()
 		btn.text:SetText(tables.text)
 
