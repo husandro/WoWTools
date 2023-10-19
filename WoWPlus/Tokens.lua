@@ -295,16 +295,16 @@ local function Set_TrackButton_Text()
 			end)
 
 			function btn:set_btn_Event()
+				self:UnregisterAllEvents()
 				if self.itemID then
 					self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-					e.SetItemSpellCool({frame=self, item=self.itemID, type=true})
-				else
-					self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
-					e.SetItemSpellCool({frame=self})
 				end
+				e.SetItemSpellCool({frame=self, item=self.itemID, type=true})
 			end
 			btn:SetScript('OnEvent', function(self)
-				e.SetItemSpellCool({frame=self, item=self.itemID, type=true})
+				if self:IsShown() then
+					e.SetItemSpellCool({frame=self, item=self.itemID, type=true})
+				end
 			end)
 
 			btn.itemButtonUse= itemButtonUse--使用物品
@@ -365,6 +365,8 @@ local function Set_TrackButton_Text()
 		if btn then
 			if btn.itemButtonUse and not bat or not btn.itemButtonUse then
 				btn:SetShown(false)
+			else
+				btn.text:SetText('')
 			end
 		end
 	end
