@@ -383,7 +383,7 @@ function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
     self.cooldown:SetCooldown(start, duration, modRate)
 end
 
-function e.SetItemSpellCool(tab)--self, item, spell, type=true(not SwipeTexture)
+function e.SetItemSpellCool(tab)--{frame=, item=, spell=, type=} type=true(not SwipeTexture)}
     if tab.frame then
         if tab.item then
             local startTime, duration = GetItemCooldown(tab.item)
