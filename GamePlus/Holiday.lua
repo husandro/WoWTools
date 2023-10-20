@@ -8,7 +8,7 @@ local Save={
     --showID=true, --节日 ID
 }
 local panel= CreateFrame('Frame')
-local button
+local TrackButton
 
 
 
@@ -107,9 +107,9 @@ local CALENDAR_EVENTTYPE_TEXTURES = {
 
 local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
     if Save.hide then
-        if button then
-            button.Text:SetText('')
-            button:set_Shown()
+        if TrackButton then
+            TrackButton.Text:SetText('')
+            TrackButton:set_Shown()
         end
         return
     end
@@ -125,16 +125,16 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
         day= info2.monthDay
     end
     if not day or not monthOffset then
-        if button.Text then
-            button.Text:SetText('..')
+        if TrackButton.Text then
+            TrackButton.Text:SetText('..')
         end
         return
     end
 
     local numEvents = C_Calendar.GetNumDayEvents(monthOffset, day);
     if ( numEvents <= 0 ) then
-        if button.Text then
-            button.Text:SetText('')
+        if TrackButton.Text then
+            TrackButton.Text:SetText('')
         end
 		return
 	end
@@ -306,11 +306,11 @@ local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua Cale
         end
 	end
 
-    button:UnregisterEvent('QUEST_COMPLETE')
+    TrackButton:UnregisterEvent('QUEST_COMPLETE')
     if findQuest then
-        button:RegisterEvent('QUEST_COMPLETE')
+        TrackButton:RegisterEvent('QUEST_COMPLETE')
     end
-    button.Text:SetText(text=='' and '..' or text)
+    TrackButton.Text:SetText(text=='' and '..' or text)
 end
 
 
@@ -344,21 +344,21 @@ end
 --初始
 --####
 local function Init()
-    button= e.Cbtn(nil, {icon='hide', size={22,22}})
-    button.Text=e.Cstr(button, {color=true})
-    button.texture=button:CreateTexture()
-    button.texture:SetAllPoints(button)
-    button.texture:SetAlpha(0.5)
+    TrackButton= e.Cbtn(nil, {icon='hide', size={22,22}})
+    TrackButton.Text=e.Cstr(TrackButton, {color=true})
+    TrackButton.texture=TrackButton:CreateTexture()
+    TrackButton.texture:SetAllPoints(TrackButton)
+    TrackButton.texture:SetAlpha(0.5)
 
-    button:RegisterForDrag("RightButton")
-    button:SetMovable(true)
-    button:SetClampedToScreen(true)
-    button:SetScript("OnDragStart", function(self)
+    TrackButton:RegisterForDrag("RightButton")
+    TrackButton:SetMovable(true)
+    TrackButton:SetClampedToScreen(true)
+    TrackButton:SetScript("OnDragStart", function(self)
         if IsAltKeyDown() then
             self:StartMoving()
         end
     end)
-    button:SetScript("OnDragStop", function(self)
+    TrackButton:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
@@ -367,7 +367,7 @@ local function Init()
         self:Raise()
     end)
 
-    function button:set_Events()--设置事件
+    function TrackButton:set_Events()--设置事件
         if Save.hide then
             self:UnregisterAllEvents()
         else
@@ -385,7 +385,7 @@ local function Init()
         end
     end
 
-    function button:set_Texture()
+    function TrackButton:set_Texture()
         if Save.hide then
             self.texture:SetAtlas(e.Icon.icon)
         else
@@ -394,13 +394,13 @@ local function Init()
         end
     end
 
-    function button:set_Shown()
+    function TrackButton:set_Shown()
         local hide= IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player')
         self:SetShown(not hide)
         --self.Text:SetShown(not hide and not Save.hide)
     end
 
-    function button:set_Text_Settings()--设置，Text， 属性
+    function TrackButton:set_Text_Settings()--设置，Text， 属性
         self.Text:SetJustifyH(Save.left and 'LEFT' or  'RIGHT' )
         self.Text:ClearAllPoints()
         if Save.left then
@@ -417,7 +417,7 @@ local function Init()
         set_Button_Text()
     end
 
-    function button:set_Tooltips()
+    function TrackButton:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
@@ -430,7 +430,7 @@ local function Init()
         e.tips:Show()
     end
 
-    button:SetScript('OnClick', function(self, d)
+    TrackButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             Calendar_Toggle()
 
@@ -457,7 +457,7 @@ local function Init()
                         checked=not Save.left,
                         func= function()
                             Save.left= not Save.left and true or nil
-                            button:set_Text_Settings()--设置Tex
+                            TrackButton:set_Text_Settings()--设置Tex
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -497,13 +497,13 @@ local function Init()
         end
     end)
 
-    button:SetScript('OnMouseUp', ResetCursor)
-    button:SetScript('OnMouseDown', function(_, d)
+    TrackButton:SetScript('OnMouseUp', ResetCursor)
+    TrackButton:SetScript('OnMouseDown', function(_, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
-    button:SetScript('OnMouseWheel', function(self, d)--缩放
+    TrackButton:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             local sacle=Save.scale or 1
             if d==1 then
@@ -522,16 +522,16 @@ local function Init()
             self:set_Tooltips()
         end
     end)
-    button:SetScript('OnLeave', function(self)
+    TrackButton:SetScript('OnLeave', function(self)
         e.tips:Hide()
         self.texture:SetAlpha(0.5)
     end)
-    button:SetScript('OnEnter', function(self)
+    TrackButton:SetScript('OnEnter', function(self)
         self:set_Tooltips()
         self.texture:SetAlpha(1)
     end)
 
-    function button:set_Point()--设置, 位置
+    function TrackButton:set_Point()--设置, 位置
         if Save.point then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
         elseif e.Player.husandro then
@@ -541,7 +541,7 @@ local function Init()
         end
     end
 
-    button:SetScript('OnEvent', function(self, event)
+    TrackButton:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_ENTERING_WORLD'
         or event=='PLAYER_REGEN_DISABLED'
         or event=='PLAYER_REGEN_ENABLED'
@@ -556,10 +556,10 @@ local function Init()
 
 
 
-    button:set_Point()
-    button:set_Texture()
-    button:set_Events()
-    button:set_Text_Settings()
+    TrackButton:set_Point()
+    TrackButton:set_Texture()
+    TrackButton:set_Events()
+    TrackButton:set_Text_Settings()
 end
 
 
@@ -834,9 +834,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
                     Save.point=nil
-                    if button then
-                        button:ClearAllPoints()
-                        button:set_Point()
+                    if TrackButton then
+                        TrackButton:ClearAllPoints()
+                        TrackButton:set_Point()
                     end
                     print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
