@@ -365,6 +365,7 @@ local function Set_TrackButton_Text()
 				btn:SetShown(false)
 			else
 				btn.text:SetText('')
+				btn:SetNormalTexture(0)
 			end
 		end
 	end

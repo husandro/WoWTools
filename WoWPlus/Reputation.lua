@@ -375,6 +375,7 @@ local function Set_TrackButton_Text()
 		local btn=TrackButton.btn[index]
 		btn.text:SetText('')
 		btn:SetShown(false)
+		btn:SetNormalTexture(0)
 	end
 end
 
