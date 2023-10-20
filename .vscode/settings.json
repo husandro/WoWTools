@@ -3433,7 +3433,9 @@
         "MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS",
         "RenownRewardUtil",
         "CreateSimpleTextureMarkup",
-        "CalendarDayButton_OnEnter"
+        "CalendarDayButton_OnEnter",
+        "GUILD_ACHIEVEMENT",
+        "CALENDAR_RAID_LOCKOUT_DESCRIPTION"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
