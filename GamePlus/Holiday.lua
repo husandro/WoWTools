@@ -390,14 +390,12 @@ local function Init()
             self.texture:SetAtlas(e.Icon.icon)
         else
             self.texture:SetTexture(0)
-            
         end
     end
 
     function TrackButton:set_Shown()
         local hide= IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player')
         self:SetShown(not hide)
-        --self.Text:SetShown(not hide and not Save.hide)
     end
 
     function TrackButton:set_Text_Settings()--设置，Text， 属性
@@ -408,11 +406,6 @@ local function Init()
         else
             self.Text:SetPoint('TOPRIGHT')
         end
-        --[[if Save.left then
-            self.Text:SetPoint('TOPLEFT', self, 'TOPRIGHT')
-        else
-            self.Text:SetPoint('TOPRIGHT', self, 'TOPLEFT')
-        end]]
         self.Text:SetScale(Save.scale or 1)
         set_Button_Text()
     end
