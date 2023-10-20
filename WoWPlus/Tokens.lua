@@ -257,7 +257,11 @@ local function Set_TrackButton_Text()
 				Set_TrackButton_Pushed(false)--提示
 			end)
 			btn:SetScript('OnEnter', function(self)
-				e.tips:SetOwner(self, "ANCHOR_LEFT")
+				if Save.toRightTrackText then
+					GameTooltip:SetOwner(self.text, "ANCHOR_RIGHT");
+				else
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+				end
 				e.tips:ClearLines()
 				if self.itemID then
 					e.tips:SetItemByID(self.itemID)
@@ -475,7 +479,7 @@ local function Init_TrackButton()
 
 
 	function TrackButton:set_Tooltips()
-		e.tips:SetOwner(self, "ANCHOR_LEFT")
+		e.tips:SetOwner(self, "ANCHOR_RIGHT")
 		e.tips:ClearLines()
 
 		local infoType, itemID, itemLink = GetCursorInfo()
