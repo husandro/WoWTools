@@ -5,14 +5,12 @@ local Save={
 	factions={},--指定,显示,声望
 	btnstr=true,--文本
 	--scaleTrackButton=1,缩放
-	--btnStrHideCap=true,-- 隐藏最高级, 且没有奖励声望
-	--btnStrHideHeader=true, --隐藏, 版本标题
 	--notAutoHideTrack=true,--自动隐藏
 	toRightTrackText=true,--向右平移 
 
 	factionUpdateTips=true,--更新, 提示
 	--indicato=true,--指定
-	--onlyIcon=e.Player.husandro,--隐藏名称， 仅显示有图标
+	onlyIcon=e.Player.husandro,--隐藏名称， 仅显示有图标
 }
 local addName=REPUTATION
 
@@ -70,7 +68,7 @@ local function get_Faction_Info(index, factionID)
 			isCapped= false
 			friendshipID= repInfo.friendshipFactionID
 		else
-			if not Save.btnStrHideCap then-- 隐藏最高级, 且没有奖励声望
+			if factionID then-- 隐藏最高级, 且没有奖励声望
 				value= '|cff606060'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
 			end
 			isCapped=true
@@ -97,7 +95,7 @@ local function get_Faction_Info(index, factionID)
 				barColor= GREEN_FONT_COLOR
 			end
 		else
-			if not Save.btnStrHideCap then-- 隐藏最高级, 且没有奖励声望
+			if factionID then-- 隐藏最高级, 且没有奖励声望
 				value= '|cff606060'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
 			end
 		end
@@ -124,7 +122,7 @@ local function get_Faction_Info(index, factionID)
 					barColor= FACTION_BAR_COLORS[standingID]
 				end
 			else
-				if not Save.btnStrHideCap then-- 隐藏最高级, 且没有奖励声望
+				if factionID then-- 隐藏最高级, 且没有奖励声望
 					value= '|cff606060'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
 				end
 			end
@@ -506,34 +504,6 @@ local function Init_TrackButton()
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
---[[
-					e.LibDD:UIDropDownMenu_AddSeparator(level)
-					info={
-						text= e.onlyChinese and '显示版本' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, GAME_VERSION_LABEL),
-						tooltipOnButton=true,
-						tooltipTitle=e.onlyChinese and '无声望' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NONE, REPUTATION),
-						tooltipText=(Save.indicato and '|cnRED_FONT_COLOR:' or '|cff606060')..(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION),
-						checked= not Save.btnStrHideHeader,
-						colorCode= Save.indicato and '|cff606060' or nil,
-						func= function()
-							Save.btnStrHideHeader= not Save.btnStrHideHeader and true or false--隐藏最高声望
-							e.call('ReputationFrame_Update')
-						end
-					}
-					e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-					info={
-						text= e.onlyChinese and '显示最高声望' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, VIDEO_OPTIONS_ULTRA_HIGH , REPUTATION)),
-						tooltipOnButton=true,
-						tooltipTitle=e.onlyChinese and '继续获取阵营的声望以赢取奖励。' or format(PARAGON_REPUTATION_TOOLTIP_TEXT, FACTION),
-						checked= not Save.btnStrHideCap,
-						func= function()
-							Save.btnStrHideCap= not Save.btnStrHideCap and true or false--隐藏最高级, 且没有奖励声望
-							e.call('ReputationFrame_Update')
-						end
-					}
-					e.LibDD:UIDropDownMenu_AddButton(info, level)
-]]
 
 
 					info={
@@ -804,9 +774,6 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 				local name2=GetFactionInfoByID(self.factionID)
 				e.tips:AddDoubleLine(name2, self.factionID, 0,1,0,0,1,0)
 				e.tips:AddLine(' ')
-			end
-			if Save.btnStrHideCap then
-				e.tips:AddLine('|cffff00ff'..(e.onlyChinese and '隐藏最高' or (VIDEO_OPTIONS_ULTRA_HIGH..': '..HIDE)))
 			end
 			e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
 			e.tips:AddDoubleLine(id, addName)
