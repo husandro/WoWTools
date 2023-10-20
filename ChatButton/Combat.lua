@@ -16,6 +16,8 @@ local Save= {textScale=1.2,
         inCombatScale=1.3,--战斗中缩放
 }
 local button
+local TrackButton
+
 
 local OnLineTime--在线时间
 local OnCombatTime--战斗时间
@@ -25,6 +27,10 @@ local LastText--最后时间提示
 local OnInstanceTime--副本
 local OnInstanceDeadCheck--副本,死亡,测试点
 local isInPvPInstance--是否在战场
+
+local function Is_In_Arena()--是否在战场
+    isInPvPInstance= C_PvP.IsBattleground() or C_PvP.IsArena()
+end
 
 local PetAll={num= 0,  win=0, capture=0}--宠物战斗,全部,数据
 local PetRound={}--宠物战斗, 本次,数据
@@ -64,7 +70,7 @@ local function setText()--设置显示内容
         text= text and text..'|n' or LastText and (LastText..'|n') or ''
         text=text..'|A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..'|A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(OnInstanceTime, not Save.timeTypeText)
     end
-    button.text:SetText(text or LastText or '')
+    TrackButton.text:SetText(text or LastText or '')
 end
 
 local function setPetText()--宠物战斗, 设置显示内容
@@ -145,10 +151,10 @@ local function check_Event()--检测事件
     if IsInInstance() then--副本
         OnInstanceTime= OnInstanceTime or time
         InstanceDate.map= InstanceDate.map or e.GetUnitMapName('player')
-        button.textButton:RegisterEvent('PLAYER_DEAD')--死亡
-        button.textButton:RegisterEvent('PLAYER_UNGHOST')
-        button.textButton:RegisterEvent('PLAYER_ALIVE')
-        button.textButton:RegisterEvent('UNIT_FLAGS')--杀怪
+        TrackButton:RegisterEvent('PLAYER_DEAD')--死亡
+        TrackButton:RegisterEvent('PLAYER_UNGHOST')
+        TrackButton:RegisterEvent('PLAYER_ALIVE')
+        TrackButton:RegisterEvent('UNIT_FLAGS')--杀怪
     elseif OnInstanceTime then
         local text, sec= e.GetTimeInfo(OnInstanceTime, not Save.timeTypeText)
         if sec>60 or InstanceDate.dead>0 or InstanceDate.kill>0 then
@@ -157,10 +163,10 @@ local function check_Event()--检测事件
         end
         LastText='|cnGREEN_FONT_COLOR:|A:CrossedFlagsWithTimer:0:0|a'..text..' |A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..' |A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|r'
         print(id, InstanceDate.map or e.onlyChinese and '副本' or INSTANCE, text)
-        button.textButton:UnregisterEvent('PLAYER_DEAD')
-        button.textButton:UnregisterEvent('PLAYER_UNGHOST')
-        button.textButton:UnregisterEvent('PLAYER_ALIVE')
-        button.textButton:UnregisterEvent('UNIT_FLAGS')
+        TrackButton:UnregisterEvent('PLAYER_DEAD')
+        TrackButton:UnregisterEvent('PLAYER_UNGHOST')
+        TrackButton:UnregisterEvent('PLAYER_ALIVE')
+        TrackButton:UnregisterEvent('UNIT_FLAGS')
         InstanceDate={time= 0, kill=0, dead=0}--副本数据{dead死亡,kill杀怪, map地图}
         OnInstanceTime=nil
     end
@@ -169,61 +175,80 @@ local function check_Event()--检测事件
 end
 
 
-local function set_Text_Button()--设置显示内容, 父框架button.textButton, 内容button.text
+
+
+
+
+
+
+local function Set_TrackButton_Pushed(show)--TrackButton，提示
+	if TrackButton then
+		TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
+	end
+end
+
+
+
+
+local function set_Text_Button()--设置显示内容, 父框架TrackButton, 内容TrackButton.text
     if Save.disabledText then
-        if button.textButton then
-            button.textButton:UnregisterAllEvents()
-            button.textButton:SetShown(false)
+        if TrackButton then
+            TrackButton:UnregisterAllEvents()
+            TrackButton:SetShown(false)
+            TrackButton.text:SetText('')
         end
         return
+
     end
 
-    if not button.textButton then
-        button.textButton= e.Cbtn(WoWToolsChatButtonFrame, {icon='hide', size={20,20}})
+    if not TrackButton then
+        TrackButton= e.Cbtn(WoWToolsChatButtonFrame, {icon='hide', size={22,22}, pushe=true})
 
-        function button.textButton:set_Point()
+        function TrackButton:set_Point()
             if Save.textFramePoint then
-                button.textButton:SetPoint(Save.textFramePoint[1], UIParent, Save.textFramePoint[3], Save.textFramePoint[4], Save.textFramePoint[5])
+                TrackButton:SetPoint(Save.textFramePoint[1], UIParent, Save.textFramePoint[3], Save.textFramePoint[4], Save.textFramePoint[5])
             else
-                button.textButton:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT')
+                TrackButton:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT')
             end
         end
-        
-        button.textButton:RegisterForDrag("RightButton")
-        button.textButton:SetMovable(true)
-        button.textButton:SetClampedToScreen(true)
-        button.textButton:SetScript("OnDragStart", function(self)
+
+        TrackButton:RegisterForDrag("RightButton")
+        TrackButton:SetMovable(true)
+        TrackButton:SetClampedToScreen(true)
+        TrackButton:SetScript("OnDragStart", function(self)
             if IsAltKeyDown() then
                 self:StartMoving()
             end
         end)
-        button.textButton:SetScript("OnDragStop", function(self)
+        TrackButton:SetScript("OnDragStop", function(self)
             self:StopMovingOrSizing()
             Save.textFramePoint={self:GetPoint(1)}
             Save.textFramePoint[2]=nil
             self:Raise()
         end)
-        button.textButton:SetScript("OnMouseDown", function(_,d)
-            if d=='LeftButton' and not IsModifierKeyDown() then--提示移动
-                button.text:SetText('')
 
-            elseif d=='RightButton' and IsAltKeyDown() then--移动光标
+        TrackButton:SetScript("OnMouseUp", ResetCursor)
+        TrackButton:SetScript("OnMouseDown", function(self, d)
+            if d=='RightButton' and IsAltKeyDown() then--移动光标
                 SetCursor('UI_MOVE_CURSOR')
-
-            --elseif d=='RightButton' and IsControlKeyDown() then--还原
-               
             end
         end)
-        button.textButton:SetScript("OnMouseUp", ResetCursor)
-        button.textButton:SetScript('OnEnter', function(self)
+
+        TrackButton:SetScript("OnClick", function(self, d)--清除
+            if d=='LeftButton' and not IsModifierKeyDown() then
+                self.text:SetText('')
+            end
+        end)
+
+        TrackButton:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            
+
             e.tips:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Icon.left)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
             e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'Alt+'..e.Icon.mid)
-            
+
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine((e.onlyChinese and '战斗' or COMBAT)..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..SecondsToTime(Save.bat.time), Save.bat.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
             e.tips:AddDoubleLine((PetAll.num>0 and PetAll.win..'/'..PetAll.num or (e.onlyChinese and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..Save.pet.win..'|r/'..Save.pet.num, Save.pet.capture..' |T646379:0|t')
@@ -234,33 +259,25 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
         end)
-        button.textButton:SetScript("OnLeave", function(self, d)
+        TrackButton:SetScript("OnLeave", function()
             e.tips:Hide()
-            self:SetButtonState('NORMAL')
         end)
-        button.textButton:SetScript('OnMouseWheel', function(self, d)--缩放
+        TrackButton:SetScript('OnMouseWheel', function(self, d)--缩放
             if IsAltKeyDown() then
-                local text=button.text:GetText()
-                if not text or text=='' then
-                    button.text:SetText(UI_SCALE)
-                end
                 local sacle=Save.textScale or 1
                 if d==1 then
                     sacle=sacle+0.05
                 elseif d==-1 then
                     sacle=sacle-0.05
                 end
-                if sacle>3 then
-                    sacle=3
-                elseif sacle<0.6 then
-                    sacle=0.6
-                end
-                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, sacle)
-                button.text:SetScale(sacle)
+                sacle=sacle>4 and 4 or sacle
+                sacle=sacle<0.4 and 0.4 or sacle
                 Save.textScale=sacle
+                self:set_text_scale()
+                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
             end
         end)
-        button.textButton:SetScript('OnEvent', function(_, event, arg1)
+        TrackButton:SetScript('OnEvent', function(_, event, arg1)
             if event=='PLAYER_FLAGS_CHANGED' then--AFK
                 check_Event()--检测事件
 
@@ -285,7 +302,7 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
                 check_Event()--检测事件
 
             elseif event=='PLAYER_ENTERING_WORLD' then--副本,杀怪,死亡
-                isInPvPInstance=C_PvP.IsBattleground() or C_PvP.IsArena()--是否在战场
+                Is_In_Arena()--是否在战场
                 check_Event()--检测事件
 
             elseif event=='PLAYER_DEAD' or event=='PLAYER_UNGHOST' or event=='PLAYER_ALIVE' then
@@ -306,13 +323,13 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
             end
         end)
 
-        button.text= e.Cstr(button.textButton, {color=true})
-        button.text:SetPoint('BOTTOMLEFT')
-        if Save.textScale and Save.textScale~=1 then
-            button.text:SetScale(Save.textScale)
+        TrackButton.text= e.Cstr(TrackButton, {color=true})
+        TrackButton.text:SetPoint('BOTTOMLEFT')
+        function TrackButton:set_text_scale()
+            self.text:SetScale(Save.textScale or 1)
         end
 
-        button.frame=CreateFrame("Frame", nil, button.textButton)
+        button.frame=CreateFrame("Frame", nil, TrackButton)
         button.frame:HookScript("OnUpdate", function (self, elapsed)
             self.elapsed = (self.elapsed or 0.3) + elapsed
             if self.elapsed > 0.3 then
@@ -320,32 +337,34 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
                 setText()--设置显示内容
             end
         end)
+
+        TrackButton:set_Point()
+        TrackButton:set_text_scale()
     end
 
-    button.textButton:RegisterEvent('PLAYER_FLAGS_CHANGED')--AFK
-    button.textButton:RegisterEvent('PET_BATTLE_OPENING_DONE')--宠物战斗
-    button.textButton:RegisterEvent('PET_BATTLE_CLOSE')
-    button.textButton:RegisterEvent('PET_BATTLE_PET_ROUND_RESULTS')
-    button.textButton:RegisterEvent('PET_BATTLE_FINAL_ROUND')
-    button.textButton:RegisterEvent('PET_BATTLE_CAPTURED')
-    button.textButton:RegisterEvent('PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE')
-    button.textButton:RegisterEvent('PLAYER_ENTERING_WORLD')--副本,杀怪,死亡
-    button.textButton:SetShown(true)
+    TrackButton:RegisterEvent('PLAYER_FLAGS_CHANGED')--AFK
+    TrackButton:RegisterEvent('PET_BATTLE_OPENING_DONE')--宠物战斗
+    TrackButton:RegisterEvent('PET_BATTLE_CLOSE')
+    TrackButton:RegisterEvent('PET_BATTLE_PET_ROUND_RESULTS')
+    TrackButton:RegisterEvent('PET_BATTLE_FINAL_ROUND')
+    TrackButton:RegisterEvent('PET_BATTLE_CAPTURED')
+    TrackButton:RegisterEvent('PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE')
+    TrackButton:RegisterEvent('PLAYER_ENTERING_WORLD')--副本,杀怪,死亡
+    TrackButton:SetShown(true)
 
     check_Event()--检测事件
+    Is_In_Arena()--是否在战场
 
-    isInPvPInstance=C_PvP.IsBattleground() or C_PvP.IsArena()--是否在战场
+
 end
 
 
 
 
-local function set_textButton_Disabled_Enable()--禁用, 启用, textButton
+local function set_TrackButton_Disabled_Enable()--禁用, 启用, TrackButton
     Save.disabledText = not Save.disabledText and true or nil
     set_Text_Button()
-    if not Save.disabledText then
-        button.textButton:SetButtonState('PUSHED')
-    end
+    Set_TrackButton_Pushed(true)--TrackButton，提示
     button.texture:SetDesaturated(Save.disabledText)
 end
 
@@ -540,9 +559,9 @@ local function InitMenu(_, level, type)--主菜单
             func= function()
                 if IsControlKeyDown() then
                     Save.textFramePoint=nil
-                    if button.textButton then
-                        button.textButton:ClearAllPoints()
-                        button.textButton:set_Point()
+                    if TrackButton then
+                        TrackButton:ClearAllPoints()
+                        TrackButton:set_Point()
                     end
                 end
             end
@@ -616,7 +635,7 @@ local function InitMenu(_, level, type)--主菜单
             checked= not Save.disabledText,
             hasArrow=true,
             menuList='SETTINGS',
-            func=set_textButton_Disabled_Enable--禁用, 启用, textButton
+            func=set_TrackButton_Disabled_Enable--禁用, 启用, TrackButton
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
@@ -668,24 +687,20 @@ local function Init()
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
         elseif d=='LeftButton' then
-            set_textButton_Disabled_Enable()--禁用, 启用, textButton
+            set_TrackButton_Disabled_Enable()--禁用, 启用, TrackButton
         end
     end)
 
-    button:SetScript('OnEnter', function(self)
-        if self.textButton and self.textButton:IsShown() then
-            self.textButton:SetButtonState('PUSHED')
-        end
+    button:SetScript('OnEnter', function()
+        Set_TrackButton_Pushed(true)--TrackButton，提示
         WoWToolsChatButtonFrame:SetButtonState('PUSHED')
     end)
-    button:SetScript('OnLeave', function(self)
-        if self.textButton then
-            self.textButton:SetButtonState('NORMAL')
-        end
+    button:SetScript('OnLeave', function()
+        Set_TrackButton_Pushed(false)--TrackButton，提示
         WoWToolsChatButtonFrame:SetButtonState('NORMAL')
     end)
 
-    set_Text_Button()--设置显示内容,框架 button.textButton,内容 button.text
+    set_Text_Button()--设置显示内容,框架 TrackButton,内容 TrackButton.text
 
     if e.Player.faction=='Alliance' then
         button.texture:SetTexture(255130)
