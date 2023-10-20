@@ -691,9 +691,13 @@ local function Init_TrackButton()
     CalendarFrame:HookScript('OnHide', function()
         Set_TrackButton_Text()
         Set_TrackButton_Pushed(false)--TrackButton，提示
+        
     end)
     CalendarFrame:HookScript('OnShow', function()
         Set_TrackButton_Pushed(true)--TrackButton，提示
+        C_Timer.After(2, function()
+            Set_TrackButton_Pushed(false)
+        end)
     end)
 end
 
