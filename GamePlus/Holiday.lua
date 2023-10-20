@@ -272,26 +272,15 @@ local function Set_TrackButton_Pushed(show)
 end
 
 local function _CalendarFrame_IsTodayOrLater(month, day, year)--Blizzard_Calendar.lua
-	local currentCalendarTime = C_DateAndTime.GetCurrentCalendarTime();
-	local presentMonth = currentCalendarTime.month;
-	local presentDay = currentCalendarTime.monthDay;
-	local presentYear = currentCalendarTime.year;
-	local todayOrLater = false;
-	if ( year > presentYear ) then
-		todayOrLater = true;
-	elseif ( year == presentYear ) then
-		if ( month > presentMonth ) then
-			todayOrLater = true;
-		elseif ( month == presentMonth ) then
-			todayOrLater = day >= presentDay;
-		end
-	end
-	return todayOrLater;
+	local currentCalendarTime = C_DateAndTime.GetCurrentCalendarTime() or {};
+	return currentCalendarTime.month==month and
+	    currentCalendarTime.monthDay== day and
+        currentCalendarTime.year== year
 end
 
 --设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
 local function Set_TrackButton_Text(monthOffset, day)
-    if Save.hide then
+    if Save.hide or not TrackButton then
         if TrackButton then
             TrackButton:set_Shown()
         end
@@ -491,10 +480,11 @@ end
 
 local function Init_TrackButton()
     TrackButton= e.Cbtn(nil, {icon='hide', size={22,22}, pushe=true})
-    --[[
+    
     TrackButton.texture=TrackButton:CreateTexture()
     TrackButton.texture:SetAllPoints(TrackButton)
-    TrackButton.texture:SetAlpha(0.5)]]
+    TrackButton.texture:SetAlpha(0.5)
+    TrackButton.texture:SetAtlas(e.Icon.icon)
 
     TrackButton.Frame= CreateFrame('Frame',nil, TrackButton)
     TrackButton.Frame:SetPoint('BOTTOM')
@@ -539,7 +529,11 @@ local function Init_TrackButton()
     function TrackButton:set_Shown()
         local hide= IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player')
         self:SetShown(not hide)
+        self.texture:SetShown(Save.hide and true or false)
+        print(Save.hide and true or false)
+        self.Frame:SetShown(not hide and not Save.hide)
     end
+
 
     function TrackButton:set_Scale()
         self.Frame:SetScale(Save.scale or 1)
@@ -579,7 +573,8 @@ local function Init_TrackButton()
                         func= function()
                             Save.hide= not Save.hide and true or nil
                             Set_TrackButton_Text()
-                            self:set_Events()--设置事件
+                            TrackButton:set_Events()--设置事件
+                            TrackButton:set_Shown()
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -619,18 +614,6 @@ local function Init_TrackButton()
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-                    --[[
-                    info={
-                        text= e.onlyChinese and '节日 ID' or CALENDAR_FILTER_HOLIDAYS..' ID',--时间
-                        checked= Save.showID,
-                        func= function()
-                            Save.showID= not Save.showID and true or nil
-                            Set_TrackButton_Text()
-                        end
-                    }
-                    e.LibDD:UIDropDownMenu_AddButton(info, level)
-                    ]]
                 end, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
@@ -698,11 +681,20 @@ local function Init_TrackButton()
 
     TrackButton:set_Point()
     TrackButton:set_Scale()
+    TrackButton:set_Shown()
     TrackButton:set_Events()
+    Set_TrackButton_Text()
+
     hooksecurefunc('CalendarDayButton_Click', function(button)
         Set_TrackButton_Text(button.monthOffset, button.day)
     end)
-
+    CalendarFrame:HookScript('OnHide', function()
+        Set_TrackButton_Text()
+        Set_TrackButton_Pushed(false)--TrackButton，提示
+    end)
+    CalendarFrame:HookScript('OnShow', function()
+        Set_TrackButton_Pushed(true)--TrackButton，提示
+    end)
 end
 
 
@@ -940,9 +932,7 @@ local function Init_Blizzard_Calendar()
             e.LibDD:CloseDropDownMenus()
             e.LibDD:ToggleDropDownMenu(1, nil, self2:GetParent(), self2, 15, 0)
         end)
-    end)
-
-    CalendarFrame:HookScript('OnHide', function() Set_TrackButton_Text() end)
+    end)   
 end
 
 
@@ -996,15 +986,16 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Calendar' then
-            C_Timer.After(2, Calendar_Toggle)
-            C_Timer.After(4, function()
-                if CalendarFrame:IsShown() then
-                    e.call('Calendar_Toggle')
-                end
+            C_Timer.After(2, function()
+                e.call('Calendar_Toggle')
+                C_Timer.After(2, function()
+                    if CalendarFrame:IsShown() then
+                        e.call('Calendar_Toggle')
+                    end
+                    Init_Blizzard_Calendar()--初始，插件
+                    Init_TrackButton()
+                end)
             end)
-
-            Init_Blizzard_Calendar()--初始，插件
-            Init_TrackButton()
         end
 
     elseif event == "PLAYER_LOGOUT" then
