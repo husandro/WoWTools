@@ -186,13 +186,14 @@ end
 
 
 
-
-local function Set_TrackButton_Pushed(show)--提示
+--TrackButton，提示
+local function Set_TrackButton_Pushed(show)
 	if TrackButton then
 		TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
 	end
 end
 
+--设置，提示，位置
 local function Set_SetOwner(self)
 	if Save.toRightTrackText then
 		GameTooltip:SetOwner(self.text, "ANCHOR_RIGHT");
@@ -200,10 +201,11 @@ local function Set_SetOwner(self)
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 	end
 end
+
+--个人，声望，提示
 local function ShowFriendshipReputationTooltip(self)--ReputationFrame.lua
 	local repInfo = C_GossipInfo.GetFriendshipReputation(self.friendshipID);
 	if ( repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0) then
-		
 		local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(repInfo.friendshipFactionID);
 		if ( rankInfo.maxLevel > 0 ) then
 			GameTooltip:SetText(repInfo.name.." ("..rankInfo.currentLevel.." / "..rankInfo.maxLevel..")", 1, 1, 1);
@@ -222,10 +224,10 @@ local function ShowFriendshipReputationTooltip(self)--ReputationFrame.lua
 	end
 end
 
+--名望，提示
 local function ShowMajorFactionRenownTooltip(self)--ReputationFrame.lua
 	local function AddRenownRewardsToTooltip(renownRewards)
 		GameTooltip_AddHighlightLine(GameTooltip, MAJOR_FACTION_BUTTON_TOOLTIP_NEXT_REWARDS);
-	
 		for i, rewardInfo in ipairs(renownRewards) do
 			local renownRewardString;
 			local icon, name = RenownRewardUtil.GetRenownRewardInfo(rewardInfo, GenerateClosure(self.ShowMajorFactionRenownTooltip, self));
@@ -238,29 +240,22 @@ local function ShowMajorFactionRenownTooltip(self)--ReputationFrame.lua
 			GameTooltip_AddNormalLine(GameTooltip, renownRewardString, wrapText);
 		end
 	end
-
 	Set_SetOwner(self)
-
 	local majorFactionData = C_MajorFactions.GetMajorFactionData(self.factionID) or {};
-
 	local tooltipTitle = majorFactionData.name;
 	GameTooltip_SetTitle(GameTooltip, tooltipTitle, NORMAL_FONT_COLOR);
-	GameTooltip_AddColoredLine(GameTooltip, RENOWN_LEVEL_LABEL .. majorFactionData.renownLevel, BLUE_FONT_COLOR);
-
+	GameTooltip_AddColoredLine(GameTooltip, (e.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..majorFactionData.renownLevel, BLUE_FONT_COLOR);
 	GameTooltip_AddBlankLineToTooltip(GameTooltip);
-
-
-	GameTooltip_AddHighlightLine(GameTooltip, MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS:format(majorFactionData.name));
+	GameTooltip_AddHighlightLine(GameTooltip, format(e.onlyChinese and '继续获取%s的声望以提升名望并解锁奖励。' or MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS, majorFactionData.name));
 	GameTooltip_AddBlankLineToTooltip(GameTooltip);
-
 	local nextRenownRewards = C_MajorFactions.GetRenownRewardsForLevel(self.factionID, C_MajorFactions.GetCurrentRenownLevel(self.factionID) + 1);
 	if #nextRenownRewards > 0 then
 		AddRenownRewardsToTooltip(nextRenownRewards);
 	end
-
 	GameTooltip:Show();
 end
 
+--阵营声望，提示
 local function ShowFactionTooltip(self)--Tooltips.lua
 	local isParagon = C_Reputation.IsFactionParagon(self.factionID)--奖励			
 	local completedParagon--完成次数
@@ -273,7 +268,6 @@ local function ShowFactionTooltip(self)--Tooltips.lua
 			end
 		end
 	end
-
 	local name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
 	if factionID then
 		Set_SetOwner(self)
@@ -294,9 +288,7 @@ local function ShowFactionTooltip(self)--Tooltips.lua
 		end
 		e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..self.factionID, completedParagon)
 		e.tips:Show();
-	
 	end
-	
 end
 
 --设置 Text
@@ -336,24 +328,23 @@ local function Set_TrackButton_Text()
 			btn:SetScript('OnLeave', function(self)
 				e.tips:Hide()
 				self.UpdateTooltip= nil
-				Set_TrackButton_Pushed(false)--提示
+				Set_TrackButton_Pushed(false)--TrackButton，提示
 			end)
 			btn:SetScript('OnEnter', function(self)
 				if C_Reputation.IsFactionParagon(self.factionID) then--ReputationFrame.lua
-					self.UpdateTooltip = ReputationParagonFrame_SetupParagonTooltip;
-					--GameTooltip_SetDefaultAnchor(GameTooltip, self)
-					Set_SetOwner(self)
+					self.UpdateTooltip = ReputationParagonFrame_SetupParagonTooltip;					
+					Set_SetOwner(self)--设置，提示，位置
 					ReputationParagonFrame_SetupParagonTooltip(self)
 				else
 					if ( self.friendshipID ) then
-						ShowFriendshipReputationTooltip(self);
+						ShowFriendshipReputationTooltip(self);--个人，声望，提示
 					elseif self.factionID and C_Reputation.IsMajorFaction(self.factionID) and not C_MajorFactions.HasMaximumRenown(self.factionID) then
-						ShowMajorFactionRenownTooltip(self);
+						ShowMajorFactionRenownTooltip(self);--名望，提示
 					else
-						ShowFactionTooltip(self)
+						ShowFactionTooltip(self)--阵营声望，提示
 					end
 				end
-				Set_TrackButton_Pushed(true)--提示
+				Set_TrackButton_Pushed(true)--TrackButton，提示
 			end)
 
 
@@ -1112,11 +1103,11 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
-		Set_TrackButton_Pushed(true)--提示
+		Set_TrackButton_Pushed(true)--TrackButton，提示
 	end)
 	Button:SetScript('OnLeave', function()
 		e.tips:Hide()
-		Set_TrackButton_Pushed(false)--提示
+		Set_TrackButton_Pushed(false)--TrackButton，提示
 	end)
 
 	Button.up= e.Cbtn(Button, {size={22,22}, texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
