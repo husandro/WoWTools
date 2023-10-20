@@ -198,7 +198,7 @@ local function Set_SetOwner(self)
 	if Save.toRightTrackText then
 		GameTooltip:SetOwner(self.text, "ANCHOR_RIGHT");
 	else
-		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+		GameTooltip:SetOwner(self.text, "ANCHOR_LEFT");
 	end
 end
 
