@@ -3,7 +3,7 @@ local addName= CALENDAR_FILTER_HOLIDAYS
 local Save={
     onGoing=true,--仅限: 正在活动
     --disabled= not e.Player.husandro
-    left=e.Player.husandro,--内容靠左
+    --left=e.Player.husandro,--内容靠左
     --showDate= true,--时间
 }
 local panel= CreateFrame('Frame')
@@ -197,7 +197,7 @@ local function Get_Button_Text(event)
         atlas= 'pvptalents-warmode-swords'--pvp
 
     elseif event.calendarType=='HOLIDAY' and event.eventID then
-           
+
         if event.title:find(PLAYER_DIFFICULTY_TIMEWALKER)--时空漫游
             or event.eventID==1063
             or event.eventID==616
@@ -369,7 +369,7 @@ local function Set_TrackButton_Text(monthOffset, day)
 				e.tips:Hide()
 				Set_TrackButton_Pushed(false)--TrackButton，提示
 			end)
-            
+
             btn:SetScript('OnEnter', function(self)
                 if Save.left then
                     GameTooltip:SetOwner(self.text, "ANCHOR_LEFT")
@@ -431,7 +431,7 @@ local function Set_TrackButton_Text(monthOffset, day)
 		end
 		last=btn
 
-       
+
         btn.index= event.index
         btn.day=day
         btn.monthOffset= monthOffset
@@ -480,7 +480,7 @@ end
 
 local function Init_TrackButton()
     TrackButton= e.Cbtn(nil, {icon='hide', size={22,22}, pushe=true})
-    
+
     TrackButton.texture=TrackButton:CreateTexture()
     TrackButton.texture:SetAllPoints(TrackButton)
     TrackButton.texture:SetAlpha(0.5)
@@ -530,7 +530,6 @@ local function Init_TrackButton()
         local hide= IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player')
         self:SetShown(not hide)
         self.texture:SetShown(Save.hide and true or false)
-        print(Save.hide and true or false)
         self.Frame:SetShown(not hide and not Save.hide)
     end
 
@@ -545,10 +544,13 @@ local function Init_TrackButton()
             CalendarDayButton_OnEnter(self)
             e.tips:AddLine(' ')
         else
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            if Save.left then
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+            else
+                e.tips:SetOwner(self, "ANCHOR_RIGHT")
+            end
             e.tips:ClearLines()
         end
-        
         e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR, e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
@@ -658,7 +660,7 @@ local function Init_TrackButton()
         if Save.point then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
         elseif e.Player.husandro then
-            self:SetPoint('TOPLEFT', 240,0)
+            self:SetPoint('TOPLEFT', 150,0)
         else
             self:SetPoint('BOTTOMRIGHT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPLEFT', -35, -10)
         end
@@ -691,7 +693,7 @@ local function Init_TrackButton()
     CalendarFrame:HookScript('OnHide', function()
         Set_TrackButton_Text()
         Set_TrackButton_Pushed(false)--TrackButton，提示
-        
+
     end)
     CalendarFrame:HookScript('OnShow', function()
         Set_TrackButton_Pushed(true)--TrackButton，提示
@@ -936,7 +938,7 @@ local function Init_Blizzard_Calendar()
             e.LibDD:CloseDropDownMenus()
             e.LibDD:ToggleDropDownMenu(1, nil, self2:GetParent(), self2, 15, 0)
         end)
-    end)   
+    end)
 end
 
 
