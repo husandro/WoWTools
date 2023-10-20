@@ -533,6 +533,7 @@ local function Init_TrackButton()
 	TrackButton:SetScript("OnEnter", function(self)
 		self:set_Tooltips()
 		self.texture:SetAlpha(1)
+		Set_TrackButton_Text()
 	end)
 
 	TrackButton:SetScript("OnMouseWheel", function(self, d)--打开,关闭, 声望
