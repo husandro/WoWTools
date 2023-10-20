@@ -97,9 +97,7 @@ end
 local CALENDAR_EVENTTYPE_TEXTURES = {
 	[Enum.CalendarEventType.Raid]		= "Interface\\LFGFrame\\LFGIcon-Raid",
 	[Enum.CalendarEventType.Dungeon]	= "Interface\\LFGFrame\\LFGIcon-Dungeon",
-	[Enum.CalendarEventType.PvP]		= e.Player.faction=='Alliance' and "Interface\\Calendar\\UI-Calendar-Event-PVP02"
-                                            or (e.Player.faction=='Horde' and "Interface\\Calendar\\UI-Calendar-Event-PVP01")
-                                            or "Interface\\Calendar\\UI-Calendar-Event-PVP",
+	--[Enum.CalendarEventType.PvP]		= e.Player.faction=='Alliance' and "Interface\\Calendar\\UI-Calendar-Event-PVP02" or (e.Player.faction=='Horde' and "Interface\\Calendar\\UI-Calendar-Event-PVP01") or "Interface\\Calendar\\UI-Calendar-Event-PVP",
 	[Enum.CalendarEventType.Meeting]	= "Interface\\Calendar\\MeetingIcon",
 	--[Enum.CalendarEventType.Other]		= "Interface\\Calendar\\UI-Calendar-Event-Other",
 }
@@ -195,7 +193,7 @@ local function Get_Button_Text(event)
     end
 
 
-    if title:find(PVP) or event.eventID==561 then
+    if event.eventType== Enum.CalendarEventType.PvP or  title:find(PVP) or event.eventID==561 then
         atlas= 'pvptalents-warmode-swords'--pvp
 
     elseif event.calendarType=='HOLIDAY' and event.eventID then
@@ -332,10 +330,8 @@ local function Set_TrackButton_Text(monthOffset, day)
                     isValid=true
                 elseif (event.sequenceType == "END") then
                     event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.endTime.hour, event.endTime.minute, true), event.startTime.hour, event.startTime.minute)
-                    isValid = isValid and isToDay
                 else
                     event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.startTime.hour, event.startTime.minute, true), event.startTime.hour, event.startTime.minute, true)
-                    isValid = isValid and isToDay
                 end
 
                 if _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)
@@ -463,8 +459,11 @@ local function Set_TrackButton_Text(monthOffset, day)
         TrackButton:RegisterEvent('QUEST_COMPLETE')
     end
 
-
-    TrackButton:SetNormalAtlas((day and not isToDay) and 'UI-HUD-Calendar-'..day..'-Up' or '')
+    if (day and not isToDay) then
+        TrackButton:SetNormalAtlas( 'UI-HUD-Calendar-'..day..'-Mouseover')
+    else
+        TrackButton:SetNormalTexture(0)
+    end
 
     for index= #events+1, #TrackButton.btn do
 		local btn=TrackButton.btn[index]
@@ -488,7 +487,7 @@ end
 
 
 local function Init_TrackButton()
-    TrackButton= e.Cbtn(nil, {icon='hide', size={22,22}})
+    TrackButton= e.Cbtn(nil, {icon='hide', size={22,22}, pushe=true})
     --[[
     TrackButton.texture=TrackButton:CreateTexture()
     TrackButton.texture:SetAllPoints(TrackButton)
@@ -940,7 +939,7 @@ local function Init_Blizzard_Calendar()
         end)
     end)
 
-    CalendarFrame:HookScript('OnHide', Set_TrackButton_Text)
+    CalendarFrame:HookScript('OnHide', function() Set_TrackButton_Text() end)
 end
 
 
