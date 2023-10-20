@@ -331,7 +331,7 @@ local function Set_TrackButton_Text()
 	for index, tab in pairs(faction) do
 		local btn= TrackButton.btn[index]
 		if not btn then
-			btn= e.Cbtn(TrackButton.Frame, {size={12,12}, icon='hide', pushe=true})
+			btn= e.Cbtn(TrackButton.Frame, {size={12,12}, icon='hide'})
 
 			btn:SetPoint('TOP', last or TrackButton, 'BOTTOM',0, -1)
 
@@ -407,7 +407,7 @@ local function Init_TrackButton()
 	if not Save.btn or TrackButton then
 		return
 	end
-	TrackButton= e.Cbtn(nil, {icon='hide', size={24,24}})
+	TrackButton= e.Cbtn(nil, {icon='hide', size={24,24}, pushe=true})
 	--TrackButton.text= e.Cstr(TrackButton, {color=true})
 
 	TrackButton.texture= TrackButton:CreateTexture()
