@@ -29,7 +29,7 @@ local TrackButton
 
 local function _CalendarFrame_SafeGetName(name)
 	if ( not name or name == "" ) then
-		return UNKNOWN;
+		return e.onlyChinese and '未知' or UNKNOWN;
 	end
 	return name;
 end
@@ -63,13 +63,13 @@ local CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT = {
 		[""]				= "%s",
 	},
 	["HOLIDAY"] = {
-		["START"]			= CALENDAR_EVENTNAME_FORMAT_START,
-		["END"]				= CALENDAR_EVENTNAME_FORMAT_END,
+		["START"]			= e.onlyChinese and '%s 开始' or CALENDAR_EVENTNAME_FORMAT_START,
+		["END"]				= e.onlyChinese and '%s 结束' or CALENDAR_EVENTNAME_FORMAT_END,
 		[""]				= "%s",
 		["ONGOING"]			= "%s",
 	},
 	["RAID_LOCKOUT"] = {
-		[""]				= CALENDAR_EVENTNAME_FORMAT_RAID_LOCKOUT,
+		[""]				= e.onlyChinese and '%s解锁' or CALENDAR_EVENTNAME_FORMAT_RAID_LOCKOUT,
 	},
 };
 
@@ -105,212 +105,312 @@ local CALENDAR_EVENTTYPE_TEXTURES = {
 	--[Enum.CalendarEventType.Other]		= "Interface\\Calendar\\UI-Calendar-Event-Other",
 }
 
-local function set_Button_Text()--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
+
+
+
+
+
+local function Get_Button_Text(event)
+    local title = event.title;
+    local findQuest
+    local msg = ''
+    local icon,atlas
+    if event.calendarType=='PLAYER' or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) then--自定义,事件
+        local creaText;
+        if UnitExists(event.invitedBy) and UnitIsUnit("player", event.invitedBy) then
+            if ( event.calendarType == "GUILD_ANNOUNCEMENT" ) then
+                creaText = e.Icon.player
+                atlas=  e.GetUnitRaceInfo({unit='player',reAtlas=true})
+
+            elseif ( event.calendarType == "GUILD_EVENT" ) then
+                creaText = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '公会' or GUILD)..'|r'
+                atlas='communities-guildbanner-background'
+
+            elseif ( event.calendarType == "COMMUNITY_EVENT") then--社区
+                creaText = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '社区' or COMMUNITIES)..'|r';
+                atlas='communities-icon-notification'
+            else
+                creaText = e.Icon.player
+                atlas=  e.GetUnitRaceInfo({unit='player',reAtlas=true})
+            end
+        else
+            if _CalendarFrame_IsSignUpEvent(event.calendarType, event.inviteType) then
+                local inviteStatusInfo = CalendarUtil.GetCalendarInviteStatusInfo(event.inviteStatus);
+                if event.inviteStatus== Enum.CalendarStatus.NotSignedup or event.inviteStatus == Enum.CalendarStatus.Signedup then
+                    creaText = inviteStatusInfo.name;
+                else
+                    creaText = format(e.onlyChinese and '已登记（%s）' or CALENDAR_SIGNEDUP_FOR_GUILDEVENT_WITH_STATUS, inviteStatusInfo.name);
+                end
+            else
+                if ( event.calendarType == "GUILD_ANNOUNCEMENT" ) then
+                    creaText = format(e.onlyChinese and '由%s创建' or CALENDAR_ANNOUNCEMENT_CREATEDBY_PLAYER, _CalendarFrame_SafeGetName(event.invitedBy));
+                    atlas= 'communities-icon-chat'
+                else
+                    creaText = format( e.onlyChinese and '被%s邀请' or CALENDAR_EVENT_INVITEDBY_PLAYER, _CalendarFrame_SafeGetName(event.invitedBy));
+                end
+            end
+        end
+        msg= (creaText or '')
+    end
+
+    if ( event.calendarType == "RAID_LOCKOUT" ) then
+        title = GetDungeonNameWithDifficulty(title, event.difficultyName);
+        msg= msg..format(CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT[event.calendarType][event.sequenceType], title)
+
+    elseif event.calendarType=='HOLIDAY' and title:find(PLAYER_DIFFICULTY_TIMEWALKER) then--时空漫游
+        msg= msg..(e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
+    else
+        msg= msg..(title:match(': (.+)') or title:match('：(.+)') or title)
+    end
+
+    if Save.showDate then--时间
+        msg= Save.left and (msg..' '..event.eventTime) or (event.eventTime..' '..msg)
+    end
+
+    if Save.showID and event.eventID then--显示 ID
+        msg= Save.left and (msg..' |cffffffff'..event.eventID)..'|r' or ('|cffffffff'..event.eventID..'|r '..msg)
+    end
+
+    
+    if title:find(PVP) or event.eventID==561 then
+        atlas= 'pvptalents-warmode-swords'--pvp
+
+    elseif event.calendarType=='HOLIDAY' and event.eventID then
+        if event.eventID==1063
+            or event.eventID==616
+            or event.eventID==617
+            or event.eventID==623
+            or event.eventID==629
+            or event.eventID==643--熊猫人之迷
+            or event.eventID==654
+            or event.eventID==1068
+            or event.eventID==1277
+            or event.eventID==1269 then--PLAYER_DIFFICULTY_TIMEWALKER = "时空漫游";
+
+            local tab={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709,
+            72725,--迷离的时光之路 熊猫人之迷
+            }
+            local isCompleted= set_Quest_Completed(tab)--任务是否完成
+            local texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
+            msg= Save.left and (texture..msg) or (msg..texture)
+            findQuest= isCompleted
+           
+            icon=463446--1166[时空扭曲徽章]
+
+        elseif event.eventID==479 then--暗月--CALENDAR_FILTER_DARKMOON = "暗月马戏团"
+            local tab={36471, 32175}
+            local isCompleted= set_Quest_Completed(tab)--任务是否完成
+            local texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
+            msg= Save.left and msg..texture or (texture..msg)
+
+            findQuest=isCompleted
+            icon=134481--515[暗月奖券]
+
+        elseif event.eventID==324 or event.eventID==1405 then--万圣节
+            icon= 236546--33226[奶糖]
+        elseif event.eventID==423 then--情人节
+            icon=235468
+        elseif event.eventID==181 then
+            icon= 235477
+        elseif event.eventID==691 then
+            icon=1500867
+        elseif event.iconTexture then
+            icon=event.iconTexture
+        end
+    elseif CALENDAR_EVENTTYPE_TEXTURES[event.eventType] then
+        icon= CALENDAR_EVENTTYPE_TEXTURES[event.eventType]
+    else
+        local invitInfo= C_Calendar.EventGetInvite(event.index) or {}
+        if invitInfo.guid then
+            atlas= e.GetPlayerInfo({guid=invitInfo.guid, reAtlas=true})
+        end
+    end
+
+    return msg, icon, atlas, findQuest
+end
+
+
+
+
+
+--TrackButton，提示
+local function Set_TrackButton_Pushed(show)
+	if TrackButton then
+		TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
+	end
+end
+
+local function _CalendarFrame_IsTodayOrLater(month, day, year)--Blizzard_Calendar.lua
+	local currentCalendarTime = C_DateAndTime.GetCurrentCalendarTime();
+	local presentMonth = currentCalendarTime.month;
+	local presentDay = currentCalendarTime.monthDay;
+	local presentYear = currentCalendarTime.year;
+	local todayOrLater = false;
+	if ( year > presentYear ) then
+		todayOrLater = true;
+	elseif ( year == presentYear ) then
+		if ( month > presentMonth ) then
+			todayOrLater = true;
+		elseif ( month == presentMonth ) then
+			todayOrLater = day >= presentDay;
+		end
+	end
+	return todayOrLater;
+end
+
+local function Set_TrackButton_Text(monthOffset, day)--设置,显示内容 Blizzard_Calendar.lua CalendarDayButton_OnEnter(self)
     if Save.hide then
         if TrackButton then
-            TrackButton.Text:SetText('')
             TrackButton:set_Shown()
         end
         return
     end
-
-    local monthOffset,day
-    local info= C_Calendar.GetEventIndex()
-    local info2= C_DateAndTime.GetCurrentCalendarTime()
-    if info then
-        monthOffset=info.offsetMonths
-        day=info.monthDay
-    elseif info2 then
-        monthOffset=0
-        day= info2.monthDay
-    end
-    if not day or not monthOffset then
-        if TrackButton.Text then
-            TrackButton.Text:SetText('..')
-        end
-        return
-    end
-
-    local numEvents = C_Calendar.GetNumDayEvents(monthOffset, day);
-    if ( numEvents <= 0 ) then
-        if TrackButton.Text then
-            TrackButton.Text:SetText('')
-        end
-		return
-	end
-
-    local events = {};
-	for i = 1, numEvents do
-		local event = C_Calendar.GetDayEvent(monthOffset, day, i);
-        if event then
-            local isValid
-            if (event.sequenceType == "ONGOING") then
-                event.eventTime = format(CALENDAR_TOOLTIP_DATE_RANGE, FormatShortDate(event.startTime.monthDay, event.startTime.month), FormatShortDate(event.endTime.monthDay, event.endTime.month));
-
-                isValid=true
-            elseif (event.sequenceType == "END") then
-                event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.endTime.hour, event.endTime.minute, true), event.startTime.hour, event.startTime.minute)
-            else
-                event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.startTime.hour, event.startTime.minute, true), event.startTime.hour, event.startTime.minute, true)
-            end
-
-            if _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)
-                or info2.monthDay~=day
-                or not Save.onGoing
-                or (Save.onGoing and  isValid)
-            then
-                if Save.showDate and isValid and event.eventTime then
-                    event.eventTime= '|cnGREEN_FONT_COLOR:'..event.eventTime..'|r'
-                end
-                event.index= i
-                tinsert(events, event);
-            end
-        end
-	end
-	table.sort(events, function(a, b)
-		if ((a.sequenceType == "ONGOING") ~= (b.sequenceType == "ONGOING")) then
-			return a.sequenceType ~= "ONGOING";
-		elseif (a.sequenceType == "ONGOING" and a.sequenceIndex ~= b.sequenceIndex) then
-			return a.sequenceIndex > b.sequenceIndex;
-		end
-
-		if (a.startTime.hour ~= b.startTime.hour) then
-			return a.startTime.hour < b.startTime.hour;
-		end
-
-		return a.startTime.minute < b.startTime.minute;
-	end)
-
-    local text=''
-	local findQuest
-
-    if day and info2.monthDay~=day then
-        text='|A:UI-HUD-Calendar-'..day..'-Up:0:0|a'
-    end
-
-	for _, event in ipairs(events) do
-		local title = event.title;
-        local msg = ''
-        if event.calendarType=='PLAYER' or _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) then--自定义,事件
-			local creaText;
-			if UnitExists(event.invitedBy) and UnitIsUnit("player", event.invitedBy) then
-				if ( event.calendarType == "GUILD_ANNOUNCEMENT" ) then
-					creaText = e.Icon.player;
-				elseif ( event.calendarType == "GUILD_EVENT" ) then
-					creaText = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '公会' or GUILD)..'|r'
-				elseif ( event.calendarType == "COMMUNITY_EVENT") then--社区
-					creaText = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '社区' or COMMUNITIES)..'|r';
-                else
-					creaText = e.Icon.player
-				end
-			else
-				if _CalendarFrame_IsSignUpEvent(event.calendarType, event.inviteType) then
-					local inviteStatusInfo = CalendarUtil.GetCalendarInviteStatusInfo(event.inviteStatus);
-					if ( event.inviteStatus == Enum.CalendarStatus.NotSignedup or
-							event.inviteStatus == Enum.CalendarStatus.Signedup ) then
-						creaText = inviteStatusInfo.name;
-					else
-						creaText = format(CALENDAR_SIGNEDUP_FOR_GUILDEVENT_WITH_STATUS, inviteStatusInfo.name);
-					end
-				else
-					if ( event.calendarType == "GUILD_ANNOUNCEMENT" ) then
-						creaText = format(CALENDAR_ANNOUNCEMENT_CREATEDBY_PLAYER, _CalendarFrame_SafeGetName(event.invitedBy));
-					else
-						creaText = format(CALENDAR_EVENT_INVITEDBY_PLAYER, _CalendarFrame_SafeGetName(event.invitedBy));
-					end
-				end
-			end
-			msg= (creaText or '')
-		end
-
-       -- msg= event.iconTexture and msg..'|T'..event.iconTexture..':0|t' or msg
-
-        if ( event.calendarType == "RAID_LOCKOUT" ) then
-			title = GetDungeonNameWithDifficulty(title, event.difficultyName);
-            msg= msg..format(CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT[event.calendarType][event.sequenceType], title)
-        elseif event.calendarType=='HOLIDAY' and title:find(PLAYER_DIFFICULTY_TIMEWALKER) then--时空漫游
-            msg= msg..(e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
+    if not monthOffset or not day then
+        local info= C_Calendar.GetEventIndex()
+        if info then
+            monthOffset=info.offsetMonths
+            day=info.monthDay
         else
-            msg= msg..(title:match(': (.+)') or title:match('：(.+)') or title)
-        end
-
-        if Save.showDate then--时间
-            msg= Save.left and (msg..' '..event.eventTime) or (event.eventTime..' '..msg)
-        end
-
-        if Save.showID and event.eventID then--显示 ID
-            msg= Save.left and (msg..' |cffffffff'..event.eventID)..'|r' or ('|cffffffff'..event.eventID..'|r '..msg)
-        end
-
-        local icon
-        if title:find(PVP) or event.eventID==561 then
-            icon= '|A:pvptalents-warmode-swords:0:0|a'--pvp
-        elseif event.calendarType=='HOLIDAY' and event.eventID then
-            if event.eventID==1063
-                or event.eventID==616
-                or event.eventID==617
-                or event.eventID==623
-                or event.eventID==629
-                or event.eventID==654
-                or event.eventID==1068
-                or event.eventID==1277
-                or event.eventID==1269 then--时光
-
-                local tab={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709}
-                local isCompleted= set_Quest_Completed(tab)--任务是否完成
-                local texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
-                msg= Save.left and (texture..msg) or (msg..texture)
-                findQuest= isCompleted
-                icon='|T463446:0|t'--1166[时空扭曲徽章]
-
-            elseif event.eventID==479 then--暗月
-                local tab={36471, 32175}
-                local isCompleted= set_Quest_Completed(tab)--任务是否完成
-                local texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
-                msg= Save.left and msg..texture or (texture..msg)
-
-                findQuest=isCompleted
-                icon='|T134481:0|t'--515[暗月奖券]
-
-
-            elseif event.eventID==324 or event.eventID==1405 then--万圣节
-               icon= '|T236546:0|t'--33226[奶糖]
-            elseif event.eventID==423 then--情人节
-                icon='|T235468:0|t'
-            elseif event.eventID==181 then
-                icon= '|T235477:0|t'
-            elseif event.eventID==691 then
-                icon='|T1500867:0|t'
-            elseif event.iconTexture then
-                icon='|T'..event.iconTexture..':0|t'
+            local currentCalendarTime= C_DateAndTime.GetCurrentCalendarTime()
+            if currentCalendarTime then
+                monthOffset=0
+                day= currentCalendarTime.monthDay
             end
         end
+    end
+    
+    local events = {};
+    local findQuest
+    local isToDay
 
-        if CALENDAR_EVENTTYPE_TEXTURES[event.eventType] then
-            local texture= '|T'..CALENDAR_EVENTTYPE_TEXTURES[event.eventType]..':0|t'
-            icon= Save.left and (texture..(icon or '')) or ((icon or '')..texture)
+    if day and monthOffset then
+        local monthInfo = C_Calendar.GetMonthInfo(monthOffset);
+        if monthInfo then
+            isToDay=_CalendarFrame_IsTodayOrLater(monthInfo.month, day, monthInfo.year)
         end
+    end
 
-        local invitInfo= C_Calendar.EventGetInvite(event.index)
-        if invitInfo and invitInfo.guid then
-            local texture= e.GetPlayerInfo({guid=invitInfo.guid})
-             icon= Save.left and (texture..(icon or '')) or ((icon or '')..texture)
+    local numEvents = (day and monthOffset) and C_Calendar.GetNumDayEvents(monthOffset, day) or 0
+    if numEvents>0 then
+        for i = 1, numEvents do
+            local event = C_Calendar.GetDayEvent(monthOffset, day, i);
+            if event then
+                local isValid
+                if (event.sequenceType == "ONGOING") then
+                    event.eventTime = format(CALENDAR_TOOLTIP_DATE_RANGE, FormatShortDate(event.startTime.monthDay, event.startTime.month), FormatShortDate(event.endTime.monthDay, event.endTime.month));
+
+                    isValid=true
+                elseif (event.sequenceType == "END") then
+                    event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.endTime.hour, event.endTime.minute, true), event.startTime.hour, event.startTime.minute)
+                else
+                    event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.startTime.hour, event.startTime.minute, true), event.startTime.hour, event.startTime.minute, true)
+                end
+
+                if _CalendarFrame_IsPlayerCreatedEvent(event.calendarType)
+                    or not isToDay--今天
+                    or not Save.onGoing
+                    or (Save.onGoing and  isValid)
+                then
+                    if Save.showDate and isValid and event.eventTime then
+                        event.eventTime= '|cnGREEN_FONT_COLOR:'..event.eventTime..'|r'
+                    end
+                    event.index= i
+
+                    local text, texture, atlas, findQuest2= Get_Button_Text(event)
+                    if text then
+                        event.tab={text= text, texture=texture, atlas= atlas}
+                        
+                        findQuest= (not findQuest and findQuest2) and true or findQuest
+                        
+                        tinsert(events, event);
+                    end
+                end
+            end
         end
+        table.sort(events, function(a, b)
+            if ((a.sequenceType == "ONGOING") ~= (b.sequenceType == "ONGOING")) then
+                return a.sequenceType ~= "ONGOING";
+            elseif (a.sequenceType == "ONGOING" and a.sequenceIndex ~= b.sequenceIndex) then
+                return a.sequenceIndex > b.sequenceIndex;
+            end
+            if (a.startTime.hour ~= b.startTime.hour) then
+                return a.startTime.hour < b.startTime.hour;
+            end
+            return a.startTime.minute < b.startTime.minute;
+        end)
+    end
 
-        icon= icon or '   '
-        msg= Save.left and (icon..msg) or (msg..icon)
 
-        if msg~='' then
-            text= text~='' and text..'|n' or text
-            text= text..msg..' '
-        end
+    
+   local last
+	for index, event in ipairs(events) do
+        local btn= TrackButton.btn[index]
+        if not btn then
+            btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide'})
+			btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')--,0, -1)
+            btn:SetScript('OnLeave', function()
+				e.tips:Hide()
+				Set_TrackButton_Pushed(false)--TrackButton，提示
+			end)
+            btn:SetScript('OnEnter', function(self)
+				if Save.left then
+                    GameTooltip:SetOwner(self.text, "ANCHOR_LEFT")
+                else
+                    GameTooltip:SetOwner(self.text, "ANCHOR_RIGHT")
+                end
+                e.tips:ClearLines()
+
+                
+                e.tips:Show()
+				Set_TrackButton_Pushed(true)--TrackButton，提示
+			end)
+
+
+            btn.text= e.Cstr(btn, {color=true})
+            function btn:set_text_point()
+                if Save.left then
+                    self.text:SetPoint('RIGHT', self, 'LEFT',1, 0)
+                else
+                    self.text:SetPoint('LEFT', self, 'RIGHT', -1, 0)
+                end
+                self.text:SetJustifyH(Save.left and 'RIGHT' or 'LEFT')
+            end
+            btn:set_text_point()
+
+			TrackButton.btn[index]=btn
+		else
+			btn:SetShown(true)
+		end
+		last=btn
+
+        btn.eventID= event.eventID
+        btn.text:SetText(event.tab.text)
+        
+		if event.tab.atlas then
+			btn:SetNormalAtlas(event.tab.atlas)
+		else
+			btn:SetNormalTexture(event.tab.texture or event.iconTexture or 0)
+		end
 	end
 
     TrackButton:UnregisterEvent('QUEST_COMPLETE')
     if findQuest then
         TrackButton:RegisterEvent('QUEST_COMPLETE')
     end
-    TrackButton.Text:SetText(text=='' and '..' or text)
+
+    
+    TrackButton:SetNormalAtlas((day and not isToDay) and 'UI-HUD-Calendar-'..day..'-Up' or '')
+
+    for index= #events+1, #TrackButton.btn do
+		local btn=TrackButton.btn[index]
+		btn.text:SetText('')
+		btn:SetShown(false)
+		btn:SetNormalTexture(0)
+	end
+
+    TrackButton.monthOffset= monthOffset
+    TrackButton.day= day
+    TrackButton:SetID(day or 0)
 end
 
 
@@ -322,33 +422,18 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---####
---初始
---####
-local function Init()
+local function Init_TrackButton()
     TrackButton= e.Cbtn(nil, {icon='hide', size={22,22}})
-    TrackButton.Text=e.Cstr(TrackButton, {color=true})
+    --[[
     TrackButton.texture=TrackButton:CreateTexture()
     TrackButton.texture:SetAllPoints(TrackButton)
-    TrackButton.texture:SetAlpha(0.5)
+    TrackButton.texture:SetAlpha(0.5)]]
+
+    TrackButton.Frame= CreateFrame('Frame',nil, TrackButton)
+    TrackButton.Frame:SetPoint('BOTTOM')
+    TrackButton.Frame:SetSize(1,1)
+
+    TrackButton.btn={}
 
     TrackButton:RegisterForDrag("RightButton")
     TrackButton:SetMovable(true)
@@ -362,8 +447,6 @@ local function Init()
         self:StopMovingOrSizing()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
-        e.LibDD:CloseDropDownMenus()
-        ResetCursor()
         self:Raise()
     end)
 
@@ -385,33 +468,22 @@ local function Init()
         end
     end
 
-    function TrackButton:set_Texture()
-        if Save.hide then
-            self.texture:SetAtlas(e.Icon.icon)
-        else
-            self.texture:SetTexture(0)
-        end
-    end
 
     function TrackButton:set_Shown()
         local hide= IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player')
         self:SetShown(not hide)
     end
 
-    function TrackButton:set_Text_Settings()--设置，Text， 属性
-        self.Text:SetJustifyH(Save.left and 'LEFT' or  'RIGHT' )
-        self.Text:ClearAllPoints()
-        if Save.left then
-            self.Text:SetPoint('TOPLEFT')
-        else
-            self.Text:SetPoint('TOPRIGHT')
-        end
-        self.Text:SetScale(Save.scale or 1)
-        set_Button_Text()
+    function TrackButton:set_Scale()
+        self.Frame:SetScale(Save.scale or 1)
     end
 
+
     function TrackButton:set_Tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        if self.monthOffset and self.day then
+         CalendarDayButton_OnEnter(self)
+        end
+        --[[e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
@@ -420,7 +492,7 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), 'Alt+'..e.Icon.mid)
-        e.tips:Show()
+        e.tips:Show()]]
     end
 
     TrackButton:SetScript('OnClick', function(self, d)
@@ -437,20 +509,24 @@ local function Init()
                         checked=not Save.hide,
                         func= function()
                             Save.hide= not Save.hide and true or nil
-                            set_Button_Text()
+                            Set_TrackButton_Text()
                             self:set_Events()--设置事件
-                            self:set_Texture()
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
                     e.LibDD:UIDropDownMenu_AddSeparator(level)
                     info={
-                        text= e.onlyChinese and '内容靠左' or BINDING_NAME_STRAFELEFT,--向左平移
+                        text= e.onlyChinese and '向左平移' or BINDING_NAME_STRAFELEFT,--向左平移
                         checked=not Save.left,
                         func= function()
                             Save.left= not Save.left and true or nil
-                            TrackButton:set_Text_Settings()--设置Tex
+                            for _, btn in pairs(TrackButton.btn) do
+                                btn.text:ClearAllPoints()
+                                btn:set_text_point()
+                            end
+                            
+                            Set_TrackButton_Text()
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -460,7 +536,7 @@ local function Init()
                         checked= Save.onGoing,
                         func= function()
                             Save.onGoing= not Save.onGoing and true or nil
-                            set_Button_Text()
+                            Set_TrackButton_Text()
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -470,7 +546,7 @@ local function Init()
                         checked= Save.showDate,
                         func= function()
                             Save.showDate= not Save.showDate and true or nil
-                            set_Button_Text()
+                            Set_TrackButton_Text()
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -480,7 +556,7 @@ local function Init()
                         checked= Save.showID,
                         func= function()
                             Save.showID= not Save.showID and true or nil
-                            set_Button_Text()
+                            Set_TrackButton_Text()
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -511,17 +587,17 @@ local function Init()
             end
             print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, sacle)
             Save.scale=sacle
-            self:set_Text_Settings()--设置Text
+            self:set_Scale()
             self:set_Tooltips()
         end
     end)
     TrackButton:SetScript('OnLeave', function(self)
         e.tips:Hide()
-        self.texture:SetAlpha(0.5)
+        --self.texture:SetAlpha(0.5)
     end)
     TrackButton:SetScript('OnEnter', function(self)
         self:set_Tooltips()
-        self.texture:SetAlpha(1)
+        --self.texture:SetAlpha(1)
     end)
 
     function TrackButton:set_Point()--设置, 位置
@@ -530,7 +606,7 @@ local function Init()
         elseif e.Player.husandro then
             self:SetPoint('TOPLEFT', 240,0)
         else
-            self:SetPoint('BOTTOMRIGHT', ObjectiveTrackerBlocksFrame, 'TOPLEFT', -35, -10)
+            self:SetPoint('BOTTOMRIGHT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPLEFT', -35, -10)
         end
     end
 
@@ -543,16 +619,19 @@ local function Init()
         then
             self:set_Shown()
         else
-            set_Button_Text()
+            Set_TrackButton_Text()
         end
     end)
 
 
 
     TrackButton:set_Point()
-    TrackButton:set_Texture()
+    TrackButton:set_Scale()
     TrackButton:set_Events()
-    TrackButton:set_Text_Settings()
+    hooksecurefunc('CalendarDayButton_Click', function(button)
+        Set_TrackButton_Text(button.monthOffset, button.day)
+    end)
+
 end
 
 
@@ -792,7 +871,7 @@ local function Init_Blizzard_Calendar()
         end)
     end)
 
-    CalendarFrame:HookScript('OnHide', set_Button_Text)
+    CalendarFrame:HookScript('OnHide', Set_TrackButton_Text)
 end
 
 
@@ -854,7 +933,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end)
 
             Init_Blizzard_Calendar()--初始，插件
-            Init()
+            Init_TrackButton()
         end
 
     elseif event == "PLAYER_LOGOUT" then

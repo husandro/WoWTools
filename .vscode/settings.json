@@ -3432,7 +3432,8 @@
         "MAJOR_FACTION_BUTTON_TOOLTIP_NEXT_REWARDS",
         "MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS",
         "RenownRewardUtil",
-        "CreateSimpleTextureMarkup"
+        "CreateSimpleTextureMarkup",
+        "CalendarDayButton_OnEnter"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

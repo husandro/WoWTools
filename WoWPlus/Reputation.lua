@@ -398,7 +398,7 @@ local function Init_TrackButton()
 	TrackButton.texture:SetAllPoints(TrackButton)
 	TrackButton.texture:SetAlpha(0.5)
 
-	TrackButton.btn= TrackButton.btn or {}
+	TrackButton.btn= {}
 	TrackButton.Frame= CreateFrame('Frame', nil, TrackButton)
 	TrackButton.Frame:SetPoint('BOTTOM')
 	TrackButton.Frame:SetSize(1,1)
