@@ -181,38 +181,37 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
     if not button.textButton then
         button.textButton= e.Cbtn(WoWToolsChatButtonFrame, {icon='hide', size={20,20}})
 
-        if Save.textFramePoint then
-            button.textButton:SetPoint(Save.textFramePoint[1], UIParent, Save.textFramePoint[3], Save.textFramePoint[4], Save.textFramePoint[5])
-        else
-            button.textButton:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT')
+        function button.textButton:set_Point()
+            if Save.textFramePoint then
+                button.textButton:SetPoint(Save.textFramePoint[1], UIParent, Save.textFramePoint[3], Save.textFramePoint[4], Save.textFramePoint[5])
+            else
+                button.textButton:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT')
+            end
         end
+        
         button.textButton:RegisterForDrag("RightButton")
         button.textButton:SetMovable(true)
         button.textButton:SetClampedToScreen(true)
-        button.textButton:SetScript("OnDragStart", function(self, d)
+        button.textButton:SetScript("OnDragStart", function(self)
             if IsAltKeyDown() then
                 self:StartMoving()
             end
         end)
         button.textButton:SetScript("OnDragStop", function(self)
-            ResetCursor()
             self:StopMovingOrSizing()
             Save.textFramePoint={self:GetPoint(1)}
             Save.textFramePoint[2]=nil
             self:Raise()
-            print(id, addName, e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, 'Ctrl+'..e.Icon.right)
         end)
-        button.textButton:SetScript("OnMouseDown", function(self,d)
+        button.textButton:SetScript("OnMouseDown", function(_,d)
             if d=='LeftButton' and not IsModifierKeyDown() then--提示移动
                 button.text:SetText('')
 
             elseif d=='RightButton' and IsAltKeyDown() then--移动光标
                 SetCursor('UI_MOVE_CURSOR')
 
-            elseif d=='RightButton' and IsControlKeyDown() then--还原
-                Save.textFramePoint=nil
-                button.textButton:ClearAllPoints()
-                button.textButton:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT')
+            --elseif d=='RightButton' and IsControlKeyDown() then--还原
+               
             end
         end)
         button.textButton:SetScript("OnMouseUp", ResetCursor)
@@ -224,7 +223,7 @@ local function set_Text_Button()--设置显示内容, 父框架button.textButton
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
             e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'Alt+'..e.Icon.mid)
-            e.tips:AddDoubleLine(e.onlyChinese and '重置位置' or RESET_POSITION, 'Ctrl+'..e.Icon.right)
+            
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine((e.onlyChinese and '战斗' or COMBAT)..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..SecondsToTime(Save.bat.time), Save.bat.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
             e.tips:AddDoubleLine((PetAll.num>0 and PetAll.win..'/'..PetAll.num or (e.onlyChinese and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..Save.pet.win..'|r/'..Save.pet.num, Save.pet.capture..' |T646379:0|t')
@@ -533,16 +532,36 @@ local function InitMenu(_, level, type)--主菜单
 
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
+            text=e.onlyChinese and '重置位置' or RESET_POSITION,
+            tooltipOnButton=true,
+            tooltipTitle= 'Ctrl+'..e.Icon.right,
+            keepShownOnClick=true,
+            colorCode= not Save.textFramePoint and '|cff606060' or nil,
+            func= function()
+                if IsControlKeyDown() then
+                    Save.textFramePoint=nil
+                    if button.textButton then
+                        button.textButton:ClearAllPoints()
+                        button.textButton:set_Point()
+                    end
+                end
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        info={
             text= e.onlyChinese and '重置所有' or RESET..ALL,
             colorCode='|cffff0000',
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '重新加载UI' or RELOADUI,
-            tooltipText=SLASH_RELOAD1,
+            tooltipTitle= "Shift+"..e.Icon.left,
+            tooltipText=(e.onlyChinese and '重新加载UI' or RELOADUI)..'|n'..SLASH_RELOAD1,
             notCheckable=true,
             disabled= UnitAffectingCombat('player'),
             func=function()
-                Save=nil
-                e.Reload()
+                if IsShiftKeyDown() then
+                    Save=nil
+                    e.Reload()
+                end
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
