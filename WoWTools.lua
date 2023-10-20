@@ -1949,7 +1949,7 @@ end
 
 function e.GetExpansionText(expacID, questID)--版本数据
     expacID= expacID or questID and GetQuestExpansion(questID)
-    if expacID then
+    if expacID and _G['EXPANSION_NAME'..expacID] then
         if e.ExpansionLevel==expacID then
             return _G['EXPANSION_NAME'..expacID], (e.onlyChinese and '版本' or GAME_VERSION_LABEL)..' '..(expacID+1)
         else

@@ -3423,7 +3423,16 @@
         "QuestUtils_GetQuestTagAtlas",
         "GREAT_VAULT_REWARDS_WAITING",
         "SecureActionButton_OnClick",
-        "SecureCmdUseItem"
+        "SecureCmdUseItem",
+        "ReputationParagonFrame_SetupParagonTooltip",
+        "MAJOR_FACTION_MAX_RENOWN_REACHED",
+        "GameTooltip_AddQuestRewardsToTooltip",
+        "PARAGON_REPUTATION_TOOLTIP_TEXT_LOW_LEVEL",
+        "REPUTATION_PROGRESS_FORMAT",
+        "MAJOR_FACTION_BUTTON_TOOLTIP_NEXT_REWARDS",
+        "MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS",
+        "RenownRewardUtil",
+        "CreateSimpleTextureMarkup"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

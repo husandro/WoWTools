@@ -752,7 +752,15 @@ local function setMajorFactionRenown(self, majorFactionID)--名望
             self.Portrait:SetAtlas('MajorFactions_Icons_'..info.textureKit..'512')
             self.textLeft:SetText('|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'..'MajorFactions_Icons_'..info.textureKit..'512')
         end
-        self:AddDoubleLine((e.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..majorFactionID, format(e.onlyChinese and '名望等级 %d' or MAJOR_FACTION_RENOWN_LEVEL_TOAST, info.renownLevel)..' '..('%i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100))
+        local levels = C_MajorFactions.GetRenownLevels(majorFactionID)
+        self:AddDoubleLine(
+            (e.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..majorFactionID,
+            format(
+                e.onlyChinese and '名望等级 %d' or MAJOR_FACTION_RENOWN_LEVEL_TOAST, info.renownLevel)
+                ..(levels and '/'..#levels or '')
+                ..' '..format('%i%%',info.renownReputationEarned/info.renownLevelThreshold*100
+            )
+        )
         get_Web_Link({frame=self, type='faction', id=majorFactionID, name=info.name, col=nil, isPetUI=false})--取得网页，数据链接
         self:Show()
     end
@@ -1532,7 +1540,7 @@ local function Init()
         setFriendshipFaction(e.tips, friendshipID)
     end)
     hooksecurefunc(ReputationBarMixin, 'OnEnter', function(self)--角色栏,声望
-        if self.friendshipID or not self.factionID or (C_Reputation.IsMajorFaction(self.factionID) and not C_MajorFactions.HasMaximumRenown(self.factionID)) then
+        if not self.factionID or self.Container.Name:IsTruncated() then
             return
         end
 
@@ -1543,39 +1551,37 @@ local function Init()
             if not tooLowLevelForParagon then
                 local completed= math.modf(currentValue/threshold)--完成次数
                 if completed>0 then
-                    completedParagon=QUEST_REWARDS.. ' '..completed..' '..VOICEMACRO_LABEL_CHARGE1
+                    completedParagon=(e.onlyChinese and '奖励 '..completed..' 次' or (QUEST_REWARDS.. ' '..completed..' '..VOICEMACRO_LABEL_CHARGE1))
                 end
             end
         end
 
-        if not self.Container.Name:IsTruncated() then
-            local name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
-            if factionID and not isHeader or (isHeader and hasRep) then
-                e.tips:SetOwner(self, "ANCHOR_RIGHT");
-                e.tips:AddLine(name..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
-                e.tips:AddLine(description, nil,nil,nil, true)
-                e.tips:AddLine(' ')
-                local gender = e.Player.sex
-                local factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
-                local barColor = FACTION_BAR_COLORS[standingID]
-                factionStandingtext=barColor:WrapTextInColorCode(factionStandingtext)--颜色
-                if barValue and barMax then
-                    if barMax==0 then
-                        e.tips:AddLine(factionStandingtext..' '..('%i%%'):format( (barMin-barValue)/barMin*100), 1,1,1)
-                    else
-                        e.tips:AddLine(factionStandingtext..' '..e.MK(barValue, 3)..'/'..e.MK(barMax, 3)..' '..('%i%%'):format(barValue/barMax*100), 1,1,1)
-                    end
-                    e.tips:AddLine(' ')
+        local name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
+        if factionID and not isHeader or (isHeader and hasRep) then
+            e.tips:SetOwner(self, "ANCHOR_RIGHT");
+            e.tips:AddLine(name..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
+            e.tips:AddLine(description, nil,nil,nil, true)
+            e.tips:AddLine(' ')
+            local gender = e.Player.sex
+            local factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
+            local barColor = FACTION_BAR_COLORS[standingID]
+            factionStandingtext=barColor:WrapTextInColorCode(factionStandingtext)--颜色
+            if barValue and barMax then
+                if barMax==0 then
+                    e.tips:AddLine(factionStandingtext..' '..('%i%%'):format( (barMin-barValue)/barMin*100), 1,1,1)
+                else
+                    e.tips:AddLine(factionStandingtext..' '..e.MK(barValue, 3)..'/'..e.MK(barMax, 3)..' '..('%i%%'):format(barValue/barMax*100), 1,1,1)
                 end
-
-                e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..self.factionID or factionID, completedParagon)
-                get_Web_Link({frame=e.tips, type='faction', id=factionID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
-                e.tips:Show();
-            elseif factionID or self.factionID then
-                e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..(self.factionID or factionID), completedParagon)
-                get_Web_Link({frame=e.tips, type='faction', id=factionID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
-                e.tips:Show()
+                e.tips:AddLine(' ')
             end
+
+            e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..self.factionID, completedParagon)
+            get_Web_Link({frame=e.tips, type='faction', id=factionID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
+            e.tips:Show();
+        elseif factionID or self.factionID then
+            e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..(self.factionID or factionID), completedParagon)
+            get_Web_Link({frame=e.tips, type='faction', id=factionID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
+            e.tips:Show()
         end
     end)
 

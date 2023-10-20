@@ -172,12 +172,8 @@ end
 
 
 local function Set_TrackButton_Pushed(show)--提示
-	if TrackButton and TrackButton:IsShown() then
-		if show then
-			TrackButton:SetButtonState('PUSHED')
-		else
-			TrackButton:SetButtonState("NORMAL")
-		end
+	if TrackButton then
+		TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
 	end
 end
 

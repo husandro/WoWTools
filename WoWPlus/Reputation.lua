@@ -5,14 +5,14 @@ local Save={
 	factions={},--指定,显示,声望
 	btnstr=true,--文本
 	--scaleTrackButton=1,缩放
-	btnStrHideCap=true,-- 隐藏最高级, 且没有奖励声望
-	btnStrHideHeader=true, --隐藏, 版本标题
+	--btnStrHideCap=true,-- 隐藏最高级, 且没有奖励声望
+	--btnStrHideHeader=true, --隐藏, 版本标题
 	--notAutoHideTrack=true,--自动隐藏
+	toRightTrackText=true,--向右平移 
 
 	factionUpdateTips=true,--更新, 提示
 	--indicato=true,--指定
-	--showID=true,--显示ID
-	onlyIcon=e.Player.husandro,--仅显示有图标
+	--onlyIcon=e.Player.husandro,--隐藏名称， 仅显示有图标
 }
 local addName=REPUTATION
 
@@ -35,83 +35,74 @@ local TrackButton
 
 
 
-local function get_Faction_Info(tab)
-	local name, standingID, barMin, barMax, barValue, isHeader, isCollapsed, hasRep, isChild, factionID, _
-	--local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canBeLFGBonus
-	if tab.index then
-		name, _, standingID, barMin, barMax, barValue, _, _, isHeader, isCollapsed, hasRep, _, isChild, factionID= GetFactionInfo(tab.index)
+local function get_Faction_Info(index, factionID)
+	local name, standingID, barMin, barMax, barValue, isHeader, isCollapsed, hasRep, isChild, _
+	if index then
+		name, _, standingID, barMin, barMax, barValue, _, _, isHeader, isCollapsed, hasRep, _, isChild, factionID= GetFactionInfo(index)
 	else
-		name, _, standingID, barMin, barMax, barValue, _, _, isHeader, isCollapsed, hasRep, _, isChild, factionID= GetFactionInfoByID(tab.factionID)
+		name, _, standingID, barMin, barMax, barValue, _, _, isHeader, isCollapsed, hasRep, _, isChild, factionID= GetFactionInfoByID(factionID)
 	end
 
-	if not factionID or not name or name==HIDE --隐藏 '隐藏声望'
-		or not(
-			hasRep
-			or (not isCollapsed and (isHeader or isChild))
-			or (not isHeader and not isChild)
-		)
-	then
+	if not factionID or not name or name==HIDE or (not hasRep and isHeader) then
 		return
 	end
-	local factionStandingtext, value, icon, barColor
+	local factionStandingtext, value, texture, atlas, barColor
 
 	local isCapped= standingID == MAX_REPUTATION_REACTION--8
 	local isMajorFaction = C_Reputation.IsMajorFaction(factionID)
 	local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
+	local friendshipID--个人声望
 
 	if repInfo and repInfo.friendshipFactionID> 0 then--个人声望
 		if repInfo.nextThreshold then
 			factionStandingtext = repInfo.reaction
 			local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
 			if rankInfo and rankInfo.maxLevel>0  and rankInfo.currentLevel~=rankInfo.maxLevel then
-				if tab.toRight then
-					factionStandingtext= rankInfo.currentLevel..'/'..rankInfo.maxLevel..' '..factionStandingtext
+				if Save.toRightTrackText then--向右平移 
+					factionStandingtext= (factionStandingtext and factionStandingtext..' ' or '')..rankInfo.currentLevel..'/'..rankInfo.maxLevel
 				else
-					factionStandingtext= factionStandingtext..' '..rankInfo.currentLevel..'/'..rankInfo.maxLevel
+					factionStandingtext= rankInfo.currentLevel..'/'..rankInfo.maxLevel..(factionStandingtext and ' '..factionStandingtext or '')
+
 				end
 				barColor= FACTION_BAR_COLORS[standingID]
 			end
 			value= format('%i%%', repInfo.standing/repInfo.nextThreshold*100)
 			isCapped= false
+			friendshipID= repInfo.friendshipFactionID
 		else
-			if tab.showMax then
+			if not Save.btnStrHideCap then-- 隐藏最高级, 且没有奖励声望
 				value= '|cff606060'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
 			end
 			isCapped=true
 		end
-		if repInfo.texture and repInfo.texture~=0 then--图标
-			icon='|T'..repInfo.texture..':0|t'
-		end
+		texture=repInfo.texture--图标
 
 	elseif isMajorFaction then--名望
 		isCapped=C_MajorFactions.HasMaximumRenown(factionID)
 		local info = C_MajorFactions.GetMajorFactionData(factionID)
 		if not isCapped then
 			if info then
-				if info.name and info.name~=name then
-					factionStandingtext= '|cnGREEN_FONT_COLOR:'..info.name..'|r'
-				end
-				local levelText
 				if info.renownLevel then
-					levelText= info.renownLevel
+					factionStandingtext= info.renownLevel
 					local levels = C_MajorFactions.GetRenownLevels(factionID)
 					if levels then
-						levelText= levelText..'/'..#levels
+						factionStandingtext= factionStandingtext..'/'..#levels
 					end
 				end
-				if tab.toRight then
-					value= format('%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)..(levelText and ' '..levelText or '')
+				if Save.toRightTrackText then--向右平移 
+					value= format('%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
 				else
-					value= (levelText and levelText..' ' or '') ..format('%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
+					value= format('%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
 				end
 				barColor= GREEN_FONT_COLOR
 			end
 		else
-			if tab.showMax then
+			if not Save.btnStrHideCap then-- 隐藏最高级, 且没有奖励声望
 				value= '|cff606060'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
 			end
 		end
-		icon=(info and info.textureKit) and'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
+
+		atlas=(info and info.textureKit) and 'MajorFactions_Icons_'..info.textureKit..'512'
 
 	else
 		if (isHeader and hasRep) or not isHeader then
@@ -124,15 +115,16 @@ local function get_Faction_Info(tab)
 					else
 						value= format('%i%%', barValue/barMax*100)
 					end
-					if tab.toRight then
-						value= value..' '..standingID..'/'..MAX_REPUTATION_REACTION
+					if Save.toRightTrackText then--向右平移 
+						factionStandingtext= factionStandingtext..' '..standingID..'/'..MAX_REPUTATION_REACTION
+						
 					else
-						value= standingID..'/'..MAX_REPUTATION_REACTION..' '..value
+						factionStandingtext= standingID..'/'..MAX_REPUTATION_REACTION..' '..factionStandingtext
 					end
 					barColor= FACTION_BAR_COLORS[standingID]
 				end
 			else
-				if tab.showMax then
+				if not Save.btnStrHideCap then-- 隐藏最高级, 且没有奖励声望
 					value= '|cff606060'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
 				end
 			end
@@ -147,74 +139,260 @@ local function get_Faction_Info(tab)
 		if not tooLowLevelForParagon and currentValue and threshold then
 			local completed= math.modf(currentValue/threshold)--完成次数
 			currentValue= completed>0 and currentValue - threshold * completed or currentValue
-			if tab.toRight then
-				value= format('%i%%', currentValue/threshold*100)..' ('..completed..')'
-			else
+			if Save.toRightTrackText then--向右平移 
 				value= '('..completed..') '..format('%i%%', currentValue/threshold*100)
+			else
+				value= format('%i%%', currentValue/threshold*100)..' ('..completed..')'
 			end
 		end
 	end
 
-	--local verHeader= isHeader and not isParagon and not hasRep and not isChild--版本, 没有声望
-	if
-		(tab.onlyIcon and not icon)--没有icon，没有显示
-		or (tab.onlyIcon and isCapped and not isParagon)
-		or (not tab.showHeader and isHeader and (isCapped and not isParagon or not hasRep))
-		or (not tab.showMax and isCapped and not isParagon)
+	if (isCapped and not isParagon and not index)--声望已满，没有奖励
+		or (Save.onlyIcon and not atlas and not texture)
 	then
 		return
 	end
 
-	local text=''
-	local indicato= (not tab.indicato and not tab.onlyIcon) and '   ' or ''--是否加空格
-	if tab.toRight then
-		text= hasRewardPending and text..hasRewardPending or text--有奖励
+	local text
+
+
+	name= not Save.onlyIcon and (name:match('%- (.+)') or name) or nil--仅显示有图标
+
+	if Save.toRightTrackText then--向右平移 
+		text= name and name..' ' or ''
+		if factionStandingtext then--等级
+			factionStandingtext= barColor and barColor:WrapTextInColorCode(factionStandingtext) or factionStandingtext
+			text= text..factionStandingtext..' '
+		end
 		if value then--值
-			value= barColor and barColor:WrapTextInColorCode(value) or value
+			value= (not factionStandingtext and barColor) and barColor:WrapTextInColorCode(value) or value
 			text= text..value
 		end
-		if factionStandingtext then--等级
-			factionStandingtext= barColor and barColor:WrapTextInColorCode(factionStandingtext) or factionStandingtext
-			text= text..' '..factionStandingtext..(tab.onlyIcon and '' or ' ')
-		end
-		if not tab.onlyIcon then--名称
-			name= name:match('%- (.+)') or name
-			name= (isHeader and not tab.indicato) and '|cffff00ff'..name..'|r' or name
-			text=text..' '..(name:match('%- (.+)') or name)
-		end
-		text= text..(icon or (not isHeader and '    ' or ''))--图标
-		text= (isChild and isHeader) and text..indicato or text--三级
-		text= isChild and text..indicato or text--二级
-		text= not isHeader and text..indicato or text--不是标题，加空格
-		if tab.showID then--显示ID
-			factionID= isHeader and '|cffff00ff'..factionID..'|r' or factionID
-			text= text..' '..factionID
-		end
-	else
-		if tab.showID then--显示ID
-			factionID= isHeader and '|cffff00ff'..factionID..'|r' or factionID
-			text= factionID..' '
-		end
-		text= not isHeader and text..indicato or text--不是标题，加空格
-		text= isChild and text..indicato or text--二级
-		text= (isChild and isHeader) and text..indicato or text--三级
-		text= text..(icon or (not isHeader and '    ' or ''))--图标
-		if not tab.onlyIcon then--名称
-			name= name:match('%- (.+)') or name
-			name= (isHeader and not tab.indicato) and '|cffff00ff'..name..'|r' or name
-			text=text..(name:match('%- (.+)') or name)
-		end
-		if factionStandingtext then--等级
-			factionStandingtext= barColor and barColor:WrapTextInColorCode(factionStandingtext) or factionStandingtext
-			text= text..(tab.onlyIcon and '' or ' ')..factionStandingtext
-		end
-		if value then--值
-			value= barColor and barColor:WrapTextInColorCode(value) or value
-			text= text..' '..value
-		end
 		text= hasRewardPending and text..hasRewardPending or text--有奖励
+	else
+
+		text= hasRewardPending or ''--有奖励
+		if value then--值
+			value= (not factionStandingtext and barColor) and barColor:WrapTextInColorCode(value) or value
+			text= text..value
+		end
+
+		if factionStandingtext then--等级
+			factionStandingtext= barColor and barColor:WrapTextInColorCode(factionStandingtext) or factionStandingtext
+			text= text..' '..factionStandingtext
+		end
+		text= name and text..' '..name or text
 	end
-	return text
+	return text, texture, atlas, factionID, friendshipID
+end
+
+
+
+
+local function Set_TrackButton_Pushed(show)--提示
+	if TrackButton then
+		TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
+	end
+end
+
+local function Set_SetOwner(self)
+	if Save.toRightTrackText then
+		GameTooltip:SetOwner(self.text, "ANCHOR_RIGHT");
+	else
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	end
+end
+local function ShowFriendshipReputationTooltip(self)--ReputationFrame.lua
+	local repInfo = C_GossipInfo.GetFriendshipReputation(self.friendshipID);
+	if ( repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0) then
+		
+		local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(repInfo.friendshipFactionID);
+		if ( rankInfo.maxLevel > 0 ) then
+			GameTooltip:SetText(repInfo.name.." ("..rankInfo.currentLevel.." / "..rankInfo.maxLevel..")", 1, 1, 1);
+		else
+			GameTooltip:SetText(repInfo.name, 1, 1, 1);
+		end
+		GameTooltip:AddLine(repInfo.text, nil, nil, nil, true);
+		if ( repInfo.nextThreshold ) then
+			local current = repInfo.standing - repInfo.reactionThreshold;
+			local max = repInfo.nextThreshold - repInfo.reactionThreshold;
+			GameTooltip:AddLine(repInfo.reaction.." ("..current.." / "..max..")" , 1, 1, 1, true);
+		else
+			GameTooltip:AddLine(repInfo.reaction, 1, 1, 1, true);
+		end
+		GameTooltip:Show();
+	end
+end
+
+local function ShowMajorFactionRenownTooltip(self)--ReputationFrame.lua
+	local function AddRenownRewardsToTooltip(renownRewards)
+		GameTooltip_AddHighlightLine(GameTooltip, MAJOR_FACTION_BUTTON_TOOLTIP_NEXT_REWARDS);
+	
+		for i, rewardInfo in ipairs(renownRewards) do
+			local renownRewardString;
+			local icon, name = RenownRewardUtil.GetRenownRewardInfo(rewardInfo, GenerateClosure(self.ShowMajorFactionRenownTooltip, self));
+			if icon then
+				local file, width, height = icon, 16, 16;
+				local rewardTexture = CreateSimpleTextureMarkup(file, width, height);
+				renownRewardString = rewardTexture .. " " .. name;
+			end
+			local wrapText = false;
+			GameTooltip_AddNormalLine(GameTooltip, renownRewardString, wrapText);
+		end
+	end
+
+	Set_SetOwner(self)
+
+	local majorFactionData = C_MajorFactions.GetMajorFactionData(self.factionID) or {};
+
+	local tooltipTitle = majorFactionData.name;
+	GameTooltip_SetTitle(GameTooltip, tooltipTitle, NORMAL_FONT_COLOR);
+	GameTooltip_AddColoredLine(GameTooltip, RENOWN_LEVEL_LABEL .. majorFactionData.renownLevel, BLUE_FONT_COLOR);
+
+	GameTooltip_AddBlankLineToTooltip(GameTooltip);
+
+
+	GameTooltip_AddHighlightLine(GameTooltip, MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS:format(majorFactionData.name));
+	GameTooltip_AddBlankLineToTooltip(GameTooltip);
+
+	local nextRenownRewards = C_MajorFactions.GetRenownRewardsForLevel(self.factionID, C_MajorFactions.GetCurrentRenownLevel(self.factionID) + 1);
+	if #nextRenownRewards > 0 then
+		AddRenownRewardsToTooltip(nextRenownRewards);
+	end
+
+	GameTooltip:Show();
+end
+
+local function ShowFactionTooltip(self)--Tooltips.lua
+	local isParagon = C_Reputation.IsFactionParagon(self.factionID)--奖励			
+	local completedParagon--完成次数
+	if ( isParagon ) then--奖励
+		local currentValue, threshold, _, _, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(self.factionID)
+		if not tooLowLevelForParagon then
+			local completed= math.modf(currentValue/threshold)--完成次数
+			if completed>0 then
+				completedParagon=(e.onlyChinese and '奖励 '..completed..' 次' or (QUEST_REWARDS.. ' '..completed..' '..VOICEMACRO_LABEL_CHARGE1))
+			end
+		end
+	end
+
+	local name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
+	if factionID then
+		Set_SetOwner(self)
+		e.tips:AddLine(name..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
+		e.tips:AddLine(description, nil,nil,nil, true)
+		e.tips:AddLine(' ')
+		local gender = e.Player.sex
+		local factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
+		local barColor = FACTION_BAR_COLORS[standingID]
+		factionStandingtext=barColor:WrapTextInColorCode(factionStandingtext)--颜色
+		if barValue and barMax then
+			if barMax==0 then
+				e.tips:AddLine(factionStandingtext..' '..('%i%%'):format( (barMin-barValue)/barMin*100), 1,1,1)
+			else
+				e.tips:AddLine(factionStandingtext..' '..e.MK(barValue, 3)..'/'..e.MK(barMax, 3)..' '..('%i%%'):format(barValue/barMax*100), 1,1,1)
+			end
+			e.tips:AddLine(' ')
+		end
+		e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..self.factionID, completedParagon)
+		e.tips:Show();
+	
+	end
+	
+end
+
+--设置 Text
+local function Set_TrackButton_Text()
+	if not Save.btnstr or not TrackButton or not TrackButton:IsShown() then
+		return
+	end
+	local faction={}
+	if Save.indicato then
+		for factionID, _ in pairs(Save.factions) do
+			local text, texture, atlas, _, friendshipID= get_Faction_Info(nil, factionID)
+			if text then
+				table.insert(faction, {text= text, texture=texture, atlas=atlas, factionID= factionID, friendshipID=friendshipID})
+			end
+		end
+		table.sort(faction, function(a, b) return a.factionID > b.factionID end)
+	else
+		for index=1, GetNumFactions() do
+			local text, texture, atlas, factionID, friendshipID=get_Faction_Info(index, nil)
+			if text and factionID then
+				table.insert(faction, {text= text, texture=texture, atlas=atlas, factionID= factionID, friendshipID=friendshipID})
+			end
+		end
+	end
+
+
+	
+
+	local last
+	for index, tab in pairs(faction) do
+		local btn= TrackButton.btn[index]
+		if not btn then
+			btn= e.Cbtn(TrackButton.Frame, {size={12,12}, icon='hide', pushe=true})
+
+			btn:SetPoint('TOP', last or TrackButton, 'BOTTOM',0, -1)
+
+			btn:SetScript('OnLeave', function(self)
+				e.tips:Hide()
+				self.UpdateTooltip= nil
+				Set_TrackButton_Pushed(false)--提示
+			end)
+			btn:SetScript('OnEnter', function(self)
+				if C_Reputation.IsFactionParagon(self.factionID) then--ReputationFrame.lua
+					self.UpdateTooltip = ReputationParagonFrame_SetupParagonTooltip;
+					--GameTooltip_SetDefaultAnchor(GameTooltip, self)
+					Set_SetOwner(self)
+					ReputationParagonFrame_SetupParagonTooltip(self)
+				else
+					if ( self.friendshipID ) then
+						ShowFriendshipReputationTooltip(self);
+					elseif self.factionID and C_Reputation.IsMajorFaction(self.factionID) and not C_MajorFactions.HasMaximumRenown(self.factionID) then
+						ShowMajorFactionRenownTooltip(self);
+					else
+						ShowFactionTooltip(self)
+					end
+				end
+				Set_TrackButton_Pushed(true)--提示
+			end)
+
+
+			btn.text= e.Cstr(btn, {color=true})
+			function btn:set_text_point()
+				if Save.toRightTrackText then
+					self.text:SetPoint('LEFT', self, 'RIGHT', -4, 0)
+				else
+					self.text:SetPoint('RIGHT', self, 'LEFT',4, 0)
+				end
+				self.text:SetJustifyH(Save.toRightTrackText and 'LEFT' or 'RIGHT')
+			end
+			btn:set_text_point()
+
+			TrackButton.btn[index]=btn
+			last=btn
+		else
+			btn:SetShown(true)
+		end
+
+		btn.text:SetText(tab.text)
+		btn.factionID= tab.factionID
+		btn.friendshipID= tab.friendshipID
+		if tab.texture then
+			btn:SetNormalTexture(tab.texture)
+		elseif tab.atlas then
+			btn:SetNormalAtlas(tab.atlas)
+		else
+			btn:SetNormalTexture(0)
+		end
+	end
+
+	for index= #faction+1, #TrackButton.btn do
+		local btn=TrackButton.btn[index]
+		btn.text:SetText('')
+		btn:SetShown(false)
+	end
 end
 
 
@@ -224,70 +402,22 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-local function Init_TrackButton()--监视, 文本
+--初始，监视, 文本
+local function Init_TrackButton()
 	if not Save.btn or TrackButton then
 		return
 	end
 	TrackButton= e.Cbtn(nil, {icon='hide', size={24,24}})
-	TrackButton.text= e.Cstr(TrackButton, {color=true})
+	--TrackButton.text= e.Cstr(TrackButton, {color=true})
+
 	TrackButton.texture= TrackButton:CreateTexture()
 	TrackButton.texture:SetAllPoints(TrackButton)
 	TrackButton.texture:SetAlpha(0.5)
 
-	function TrackButton:set_Text()
-		local text
-		if Save.btnstr and self:IsShown() then
-			if Save.indicato then
-				local tab={}
-				for factionID, value in pairs(Save.factions) do
-					table.insert(tab, {factionID= factionID, index= value==true and 1 or value})
-				end
-				table.sort(tab, function(a, b) return a.index < b.index end)
-				for _, info in pairs(tab) do
-					local msg=get_Faction_Info({
-							factionID=info.factionID,
-							onlyIcon=Save.onlyIcon,
-							showID=Save.showID,
-							showHeader=not Save.btnStrHideHeader,
-							showMax=not Save.btnStrHideCap,
-							indicato=true,--是否加空格
-							toRight= Save.toRightTrackText,
-						})
-					if msg then
-						text= text and text..'|n'..msg or msg
-					end
-				end
-			else
-				for i=1, GetNumFactions() do
-					local msg=get_Faction_Info({
-							index=i,
-							onlyIcon=Save.onlyIcon,
-							showID=Save.showID,
-							showHeader=not Save.btnStrHideHeader,
-							showMax=not Save.btnStrHideCap,
-							indicato=false,
-							toRight= Save.toRightTrackText,
-						})
-					if msg then
-						text= text and text..'|n'..msg or msg
-					end
-				end
-			end
-			text= text and text..' ' or '..'
-		end
-		self.text:SetText(text or '')
-	end
+	TrackButton.btn= TrackButton.btn or {}
+	TrackButton.Frame= CreateFrame('Frame', nil, TrackButton)
+	TrackButton.Frame:SetPoint('BOTTOM')
+	TrackButton.Frame:SetSize(1,1)
 
 	function TrackButton:set_Shown()
 		local hide= not Save.btn
@@ -295,12 +425,13 @@ local function Init_TrackButton()--监视, 文本
 		   not Save.notAutoHideTrack and (IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player'))
 	   )
 	   	self:SetShown(not hide)
-		self:set_Text()
+		self.Frame:SetShown(not hide and Save.btnstr)
+		Set_TrackButton_Text()
 		self:set_Texture()
 	end
 
 	function TrackButton:set_Tooltips()
-		e.tips:SetOwner(self, "ANCHOR_LEFT")
+		e.tips:SetOwner(self, "ANCHOR_RIGHT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(id, addName)
 		e.tips:AddLine(' ')
@@ -313,13 +444,7 @@ local function Init_TrackButton()--监视, 文本
 	end
 
 	function TrackButton:set_Scale()
-		if Save.toRightTrackText then
-			self.text:SetPoint('TOPRIGHT', -3 , -3)
-		else
-			self.text:SetPoint('TOPLEFT', 3 , -3)
-		end
-		self.text:SetScale(Save.scaleTrackButton or 1)
-		self.text:SetJustifyH(Save.toRightTrackText and 'RIGHT' or 'LEFT')
+		self.Frame:SetScale(Save.scaleTrackButton or 1)
 	end
 
 	function TrackButton:set_Texture()
@@ -381,7 +506,7 @@ local function Init_TrackButton()--监视, 文本
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
-
+--[[
 					e.LibDD:UIDropDownMenu_AddSeparator(level)
 					info={
 						text= e.onlyChinese and '显示版本' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, GAME_VERSION_LABEL),
@@ -408,24 +533,18 @@ local function Init_TrackButton()--监视, 文本
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
+]]
 
-					info={
-						text= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '显示' or SHOW, 'ID'),
-						checked= Save.showID,
-						func= function()
-							Save.showID= not Save.showID and true or false
-							e.call('ReputationFrame_Update')
-						end
-					}
-					e.LibDD:UIDropDownMenu_AddButton(info, level)
 
 					info={
 						text= e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT,
 						checked= Save.toRightTrackText,
 						func= function()
 							Save.toRightTrackText= not Save.toRightTrackText and true or false
-							TrackButton.text:ClearAllPoints()
-							TrackButton:set_Scale()
+							for _, btn in pairs(TrackButton.btn) do
+								btn.text:ClearAllPoints()
+								btn:set_text_point()
+							end
 							e.call('ReputationFrame_Update')
 						end
 					}
@@ -433,7 +552,9 @@ local function Init_TrackButton()--监视, 文本
 
 					e.LibDD:UIDropDownMenu_AddSeparator(level)
 					info={
-						text= e.onlyChinese and '仅限显示图标' or format(LFG_LIST_CROSS_FACTION, SHOW_CHAT_ICONS),
+						text= e.onlyChinese and '隐藏名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, NAME),
+						tooltipOnButton=true,
+						tooltipTitle= e.onlyChinese and '仅显示有图标声望' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FACTION, EMBLEM_SYMBOL)),
 						checked= Save.onlyIcon,
 						func= function()
 							Save.onlyIcon= not Save.onlyIcon and true or nil
@@ -491,19 +612,20 @@ local function Init_TrackButton()--监视, 文本
 
 	TrackButton:SetScript('OnEvent', function(self, event)
 		if event=='UPDATE_FACTION' then
-			self:set_Text()
+			Set_TrackButton_Text()
 		else
 			self:set_Shown()
 		end
 	end)
 
-	hooksecurefunc('ReputationFrame_Update', function() TrackButton:set_Text() end)--更新, 监视, 文本
+	hooksecurefunc('ReputationFrame_Update',Set_TrackButton_Text)--更新, 监视, 文本
 
 	TrackButton:set_Scale()
 	TrackButton:set_Point()
 	TrackButton:set_Event()
 	TrackButton:set_Shown()
 	TrackButton:set_Texture()
+	Set_TrackButton_Text()
 end
 
 
@@ -881,7 +1003,7 @@ local function InitMenu(_, level, type)
 			}
 			e.LibDD:UIDropDownMenu_AddButton(info, level)
 		end
-	
+
 	elseif type=='RestPoint' then
 		info={
 			text= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
@@ -972,7 +1094,7 @@ local function InitMenu(_, level, type)
 		func= function()
 			Save.notPlus= not Save.notPlus and true or nil
 			Button:set_Shown()
-			
+
 			e.call('ReputationFrame_Update')
 			--print(id, addName, 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or NEED..REFRESH)
 		end
@@ -1023,15 +1145,11 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
-		if TrackButton then
-			TrackButton:SetButtonState('PUSHED')
-		end
+		Set_TrackButton_Pushed(true)--提示
 	end)
 	Button:SetScript('OnLeave', function()
 		e.tips:Hide()
-		if TrackButton then
-			TrackButton:SetButtonState("NORMAL")
-		end
+		Set_TrackButton_Pushed(false)--提示
 	end)
 
 	Button.up= e.Cbtn(Button, {size={22,22}, texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
