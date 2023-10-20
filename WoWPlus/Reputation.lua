@@ -115,7 +115,7 @@ local function get_Faction_Info(index, factionID)
 					end
 					if Save.toRightTrackText then--向右平移 
 						factionStandingtext= factionStandingtext..' '..standingID..'/'..MAX_REPUTATION_REACTION
-						
+
 					else
 						factionStandingtext= standingID..'/'..MAX_REPUTATION_REACTION..' '..factionStandingtext
 					end
@@ -314,17 +314,12 @@ local function Set_TrackButton_Text()
 		end
 	end
 
-
-	
-
 	local last
 	for index, tab in pairs(faction) do
 		local btn= TrackButton.btn[index]
 		if not btn then
-			btn= e.Cbtn(TrackButton.Frame, {size={12,12}, icon='hide'})
-
-			btn:SetPoint('TOP', last or TrackButton, 'BOTTOM',0, -1)
-
+			btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide'})
+			btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')--,0, -1)
 			btn:SetScript('OnLeave', function(self)
 				e.tips:Hide()
 				self.UpdateTooltip= nil
@@ -332,7 +327,7 @@ local function Set_TrackButton_Text()
 			end)
 			btn:SetScript('OnEnter', function(self)
 				if C_Reputation.IsFactionParagon(self.factionID) then--ReputationFrame.lua
-					self.UpdateTooltip = ReputationParagonFrame_SetupParagonTooltip;					
+					self.UpdateTooltip = ReputationParagonFrame_SetupParagonTooltip;
 					Set_SetOwner(self)--设置，提示，位置
 					ReputationParagonFrame_SetupParagonTooltip(self)
 				else
@@ -347,23 +342,22 @@ local function Set_TrackButton_Text()
 				Set_TrackButton_Pushed(true)--TrackButton，提示
 			end)
 
-
 			btn.text= e.Cstr(btn, {color=true})
 			function btn:set_text_point()
 				if Save.toRightTrackText then
-					self.text:SetPoint('LEFT', self, 'RIGHT', -4, 0)
+					self.text:SetPoint('LEFT', self, 'RIGHT', -3, 0)
 				else
-					self.text:SetPoint('RIGHT', self, 'LEFT',4, 0)
+					self.text:SetPoint('RIGHT', self, 'LEFT',3, 0)
 				end
 				self.text:SetJustifyH(Save.toRightTrackText and 'LEFT' or 'RIGHT')
 			end
-			btn:set_text_point()
 
+			btn:set_text_point()
 			TrackButton.btn[index]=btn
-			last=btn
 		else
 			btn:SetShown(true)
 		end
+		last=btn
 
 		btn.text:SetText(tab.text)
 		btn.factionID= tab.factionID

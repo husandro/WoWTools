@@ -226,11 +226,9 @@ local function Set_TrackButton_Text()
 		table.insert(tab, tables)
 	end
 
-	local index=0
 	local last
 
-	for _, tables in pairs(tab) do
-		index= index+1
+	for index, tables in pairs(tab) do
 		local btn= TrackButton.btn[index]
 		if not btn then
 			local itemButtonUse=(Save.itemButtonUse and tables.itemID) and true or nil--使用物品
@@ -356,7 +354,7 @@ local function Set_TrackButton_Text()
 	end
 	TrackButton.findToken= findToken
 
-	for i= index+1, #TrackButton.btn do--隐藏，多余
+	for i= #tab+1, #TrackButton.btn do--隐藏，多余
 		local btn= TrackButton.btn[i]
 		if btn then
 			if btn.itemButtonUse and not bat or not btn.itemButtonUse then
