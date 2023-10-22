@@ -90,6 +90,26 @@ e.LoadDate({id=34090, type= 'spell'})
 e.LoadDate({id=34090, type= 'spell'})
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_Button_Postion()--设置按钮位置
     if not button then
         return
@@ -202,7 +222,7 @@ local function checkMount()--检测坐骑
     for index, type in pairs(MountType) do
         if XD and XD[type] then
             MountTab[type]={XD[type]}
-            
+
 
         elseif index<=3 and not OkMount and ShiJI then--33388初级骑术 33391中级骑术 3409高级骑术 34091专家级骑术 90265大师级骑术 783旅行形态
             MountTab[type]={ShiJI}
@@ -267,7 +287,7 @@ local function setTextrue()--设置图标
         icon=136116
     elseif icon then
         local spellID= button.spellAtt or button.itemID and select(2, GetItemSpell(button.itemID))
-        local aura = spellID and C_UnitAuras.GetPlayerAuraBySpellID(spellID) 
+        local aura = spellID and C_UnitAuras.GetPlayerAuraBySpellID(spellID)
         if aura and aura.spellId then
             icon=136116
         end
@@ -306,7 +326,7 @@ local function setClickAtt()--设置 Click属性
                     or IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND)--室外
                     or button.spellID
                     --or IsUsableSpell(368896) and C_MountJournal.GetMountUsabilityByID(1589, true) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
-                    
+
 
     local name, _, icon
     if spellID then
@@ -335,6 +355,23 @@ local function setClickAtt()--设置 Click属性
 
     button.Combat=nil
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#######
 --坐骑展示
@@ -394,6 +431,23 @@ local function setMountShow()--坐骑展示
     end
     button.showFrame:SetShown(true)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#############
 --初始化，对话框
@@ -600,6 +654,30 @@ local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#####
 --主菜单
@@ -965,6 +1043,21 @@ local function InitMenu(_, level, type)--主菜单
     e.LibDD:UIDropDownMenu_AddButton(info)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#############################
 --坐骑界面, 添加菜单, 设置提示内容
 --#############################
@@ -1051,6 +1144,20 @@ local function Init_Menu_Set_UI(self, level, menuList)--坐骑界面, 菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level);
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function setMountJournal_InitMountButton(self, elementData)--Blizzard_MountCollection.lua
     if not self or not self.spellID then
         if self and self.btn then
@@ -1114,11 +1221,28 @@ local function setMountJournal_InitMountButton(self, elementData)--Blizzard_Moun
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --######
 --初始化
 --######
 local function Init()
-    button.Menu=CreateFrame("Frame", nil, button, "UIDropDownMenuTemplate")
+    button.Menu= CreateFrame("Frame", nil, button, "UIDropDownMenuTemplate")
     e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     Init_Dialogs()--初始化，对话框
@@ -1143,12 +1267,12 @@ local function Init()
     setClickAtt()--设置
     setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
     e.SetItemSpellCool({frame=button, item=button.itemID, spell=button.spellAtt})--设置冷却
-    
+
     if Save.KEY then
         setKEY()--设置捷键
     end
 
-    
+
 
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
@@ -1292,6 +1416,26 @@ local function Init()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
@@ -1324,37 +1468,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 layout= nil,
                 category= nil,
             })
-            --[[
-            e.AddPanel_Header(nil, 'Tools')
-            local initializer2= e.AddPanel_Check({
-                name= '|A:bag-border-empty:0:0|aTools',
-                tooltip= addName,
-                value= not Save.disabled,
-                func= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end,
-            })
-            
-            local initializer= e.AddPanel_Button({
-                title= nil,
-                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
-                tooltip= nil,--需要 title
-                addSearchTags= e.onlyChinese and '重置位置' or RESET_POSITION,
-                func= function()
-                    Save.Point=nil
-                    set_Button_Postion()--设置按钮位置
-                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
-                end
-            })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
-            ]]
-
-            --[[local check=e.AddPanel_Check('|A:bag-border-empty:0:0|aTools', not Save.disabled, true)
-            check:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)]]
 
             if not Save.disabled then
                 for spellID, tab in pairs(Save.Mounts[FLOOR]) do
