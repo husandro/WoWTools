@@ -4,7 +4,7 @@ local Save={
     clickToMoveButton= e.Player.husandro,--点击移动，按钮
 }
 local addName= PET_BATTLE_COMBAT_LOG
-local panel= e.Cbtn(nil, {icon=true, size={20,20}})
+local panel= e.Cbtn(nil, {icon=true, size={20,20}, pushe=true})
 panel:SetShown(false)
 panel:SetFrameStrata('DIALOG')
 
@@ -514,7 +514,7 @@ local function set_Pet_Type(show)--提示,类型,
 
         local last=panel.setFrame
         for i=1, C_PetJournal.GetNumPetTypes() do
-            local texture= e.Cbtn(panel.setFrame, {icon='hide',size={25,25}})
+            local texture= e.Cbtn(panel.setFrame, {icon='hide',size={25,25}, pushe=true})
             texture:SetSize(25, 25)
             texture:SetPoint('LEFT', last, 'RIGHT')
             texture:SetNormalTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i])
@@ -530,7 +530,7 @@ local function set_Pet_Type(show)--提示,类型,
                 texture.indicatoUp:SetSize(10,10)
                 texture.indicatoUp:SetPoint('BOTTOM', texture,'TOP')
 
-                texture.strong= e.Cbtn(panel.setFrame, {icon='hide',size={25,25}})
+                texture.strong= e.Cbtn(panel.setFrame, {icon='hide',size={25,25}, pushe=true})
                 texture.strong:SetPoint('BOTTOM', texture.indicatoUp, 'TOP')
                 texture.strong:SetNormalTexture(strong)
                 texture.strong.abilityID= PetTypeAbility[index]
@@ -545,7 +545,7 @@ local function set_Pet_Type(show)--提示,类型,
                 texture.indicatoDown:SetSize(10,10)
                 texture.indicatoDown:SetPoint('TOP', texture,'BOTTOM')
 
-                texture.weakHints= e.Cbtn(panel.setFrame, {icon='hide', size={25,25}})
+                texture.weakHints= e.Cbtn(panel.setFrame, {icon='hide', size={25,25}, pushe=true})
                 texture.weakHints:SetPoint('TOP', texture.indicatoDown, 'BOTTOM')
                 texture.weakHints:SetNormalTexture(weakHints)
                 texture.weakHints.abilityID= PetTypeAbility[index2]

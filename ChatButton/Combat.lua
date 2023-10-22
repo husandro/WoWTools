@@ -10,9 +10,8 @@ local Save= {textScale=1.2,
         pet={num= 0,  win=0, capture=0},
         ins={num= 0, time= 0, kill=0, dead=0},
         afk={num= 0, time= 0},
-        hideCombatText= true,--隐藏, 战斗, 文本
+        
 
-        combatScale=true,--战斗中缩放
         inCombatScale=1.3,--战斗中缩放
 }
 local button
@@ -20,40 +19,86 @@ local TrackButton
 
 
 local OnLineTime--在线时间
+
 local OnCombatTime--战斗时间
 local OnAFKTime--AFK时间
 local OnPetTime--宠物战斗
-local LastText--最后时间提示
 local OnInstanceTime--副本
-local OnInstanceDeadCheck--副本,死亡,测试点
-local isInPvPInstance--是否在战场
 
-local function Is_In_Arena()--是否在战场
-    isInPvPInstance= C_PvP.IsBattleground() or C_PvP.IsArena()
-end
+local LastText--最后时间提示
+local OnInstanceDeadCheck--副本,死亡,测试点
+
+
 
 local PetAll={num= 0,  win=0, capture=0}--宠物战斗,全部,数据
 local PetRound={}--宠物战斗, 本次,数据
 local InstanceDate={num= 0, time= 0, kill=0, dead=0}--副本数据{dead死亡,kill杀怪, map地图}
 
+
+
+
+
+
+
+
+
+
+
+
+local function set_Tooltips_Info()
+    e.tips:AddDoubleLine(
+        (e.onlyChinese and '战斗' or COMBAT)..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..SecondsToTime(Save.bat.time),
+        Save.bat.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+    )
+    e.tips:AddDoubleLine(
+        (PetAll.num>0 and PetAll.win..'/'..PetAll.num or (e.onlyChinese and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..Save.pet.win..'|r/'..Save.pet.num,
+        Save.pet.capture..' |T646379:0|t'
+    )
+    e.tips:AddDoubleLine(
+        (e.onlyChinese and '离开' or AFK)..e.Icon.clock2..SecondsToTime(Save.afk.time),
+        Save.afk.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+    )
+    e.tips:AddDoubleLine(
+        (e.onlyChinese and '副本' or INSTANCE)..'|A:BuildanAbomination-32x32:0:0|a'..Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..Save.ins.dead,
+        Save.ins.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(Save.ins.time)
+    )
+    e.tips:AddLine(' ')
+    local time=e.GetTimeInfo(OnLineTime)
+    e.tips:AddDoubleLine((e.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..e.Icon.clock2, time)---在线时间
+    local tab=WoWDate[e.Player.guid].Time
+    e.tips:AddDoubleLine((e.onlyChinese and '总计' or TOTAL)..e.Icon.clock2, tab.totalTime and SecondsToTime(tab.totalTime))
+    e.tips:AddDoubleLine(
+        (e.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD'),
+        SecondsToTime(C_DateAndTime.GetSecondsUntilWeeklyReset())
+    )
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local chatStarTime
-local function setText()--设置显示内容
+local function set_TrackButton_Text()--设置显示内容
     local text
     if OnCombatTime then--战斗时间
         local combat, sec = e.GetTimeInfo(OnCombatTime, not Save.timeTypeText)
-        if Save.Say then--喊话
+        if Save.SayTime>0 then--喊话
             sec=math.floor(sec)
             if sec ~= chatStarTime and sec > 0 and sec%Save.SayTime==0  then--IsInInstance()
                 chatStarTime=sec
                 e.Chat(e.SecondsToClock(sec), nil, true)
             end
         end
-        text= text and text..'|n' or ''
-        if Save.hideCombatText then
-            text= text ..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnRED_FONT_COLOR:'..combat..'|r'
-        else
-            text= text ..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗' or COMBAT)..'|r|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..combat
-        end
+        text= '|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnRED_FONT_COLOR:'..combat..'|r'
     end
 
     if OnAFKTime then
@@ -73,7 +118,7 @@ local function setText()--设置显示内容
     TrackButton.text:SetText(text or LastText or '')
 end
 
-local function setPetText()--宠物战斗, 设置显示内容
+local function set_Pet_Text()--宠物战斗, 设置显示内容
     local text= format(e.onlyChinese and '%d轮' or PET_BATTLE_COMBAT_LOG_NEW_ROUND, PetRound.round or 0)
     if  C_PetBattles.IsWildBattle() then
         text=text..'|A:worldquest-icon-petbattle:0:0|a'
@@ -88,7 +133,19 @@ local function setPetText()--宠物战斗, 设置显示内容
     PetRound.text=text
 end
 
-local function check_Event()--检测事件
+
+
+
+
+
+
+
+
+
+
+
+
+local function TrackButton_Frame_Init_Date()--初始, 数据
     local time=GetTime()
     if UnitIsAFK('player') then
         if not OnAFKTime then--AFk时,播放声音
@@ -151,10 +208,8 @@ local function check_Event()--检测事件
     if IsInInstance() then--副本
         OnInstanceTime= OnInstanceTime or time
         InstanceDate.map= InstanceDate.map or e.GetUnitMapName('player')
-        TrackButton:RegisterEvent('PLAYER_DEAD')--死亡
-        TrackButton:RegisterEvent('PLAYER_UNGHOST')
-        TrackButton:RegisterEvent('PLAYER_ALIVE')
-        TrackButton:RegisterEvent('UNIT_FLAGS')--杀怪
+
+
     elseif OnInstanceTime then
         local text, sec= e.GetTimeInfo(OnInstanceTime, not Save.timeTypeText)
         if sec>60 or InstanceDate.dead>0 or InstanceDate.kill>0 then
@@ -163,19 +218,19 @@ local function check_Event()--检测事件
         end
         LastText='|cnGREEN_FONT_COLOR:|A:CrossedFlagsWithTimer:0:0|a'..text..' |A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..' |A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|r'
         print(id, InstanceDate.map or e.onlyChinese and '副本' or INSTANCE, text)
-        TrackButton:UnregisterEvent('PLAYER_DEAD')
-        TrackButton:UnregisterEvent('PLAYER_UNGHOST')
-        TrackButton:UnregisterEvent('PLAYER_ALIVE')
-        TrackButton:UnregisterEvent('UNIT_FLAGS')
+
         InstanceDate={time= 0, kill=0, dead=0}--副本数据{dead死亡,kill杀怪, map地图}
         OnInstanceTime=nil
     end
-    button.frame:SetShown((OnAFKTime or OnCombatTime or OnPetTime or OnInstanceTime) and true or false)--设置更新数据,显示/隐藏 button.frame
-    setText()--设置显示内容
+
+    if OnAFKTime or OnCombatTime or OnPetTime or OnInstanceTime then
+        TrackButton.elapsed= 0.4
+        TrackButton.Frame:SetShown(true)
+    else
+        TrackButton.Frame:SetShown(false)
+        set_TrackButton_Text()
+    end
 end
-
-
-
 
 
 
@@ -190,461 +245,189 @@ end
 
 
 
-local function set_Text_Button()--设置显示内容, 父框架TrackButton, 内容TrackButton.text
-    if Save.disabledText then
+local function Init_TrackButton()--设置显示内容, 父框架TrackButton, 内容TrackButton.text
+    if Save.disabledText or TrackButton then
         if TrackButton then
-            TrackButton:UnregisterAllEvents()
-            TrackButton:SetShown(false)
-            TrackButton.text:SetText('')
+            if Save.disabledText then
+                TrackButton:UnregisterAllEvents()
+                TrackButton.text:SetText('')
+            else
+                TrackButton:set_instance_evnet()
+                TrackButton:set_evnet()
+                TrackButton_Frame_Init_Date()--初始, 数据
+            end
+            TrackButton:SetShown(not Save.disabledText and true or false)
         end
         return
-
     end
 
-    if not TrackButton then
-        TrackButton= e.Cbtn(WoWToolsChatButtonFrame, {icon='hide', size={22,22}, pushe=true})
+    TrackButton= e.Cbtn(WoWToolsChatButtonFrame, {icon='hide', size={22,22}, pushe=true})
 
-        function TrackButton:set_Point()
-            if Save.textFramePoint then
-                TrackButton:SetPoint(Save.textFramePoint[1], UIParent, Save.textFramePoint[3], Save.textFramePoint[4], Save.textFramePoint[5])
+    function TrackButton:set_evnet()
+        self:RegisterEvent('PLAYER_FLAGS_CHANGED')--AFK
+        self:RegisterEvent('PET_BATTLE_OPENING_DONE')--宠物战斗
+        self:RegisterEvent('PET_BATTLE_CLOSE')
+        self:RegisterEvent('PET_BATTLE_PET_ROUND_RESULTS')
+        self:RegisterEvent('PET_BATTLE_FINAL_ROUND')
+        self:RegisterEvent('PET_BATTLE_CAPTURED')
+        self:RegisterEvent('PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE')
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')--副本,杀怪,死亡
+        self:RegisterEvent('PLAYER_REGEN_DISABLED')
+        self:RegisterEvent('PLAYER_REGEN_ENABLED')
+    end
+
+    function TrackButton:set_instance_evnet()
+        local tab={
+            'PLAYER_DEAD',--死亡
+            'PLAYER_UNGHOST',
+            'PLAYER_ALIVE',
+            'UNIT_FLAGS',--杀怪
+        }
+        if IsInInstance() then
+            FrameUtil.RegisterFrameForEvents(self, tab)
+        else
+            FrameUtil.UnregisterFrameForEvents(self, tab)
+        end
+    end
+
+    function TrackButton:set_Point()
+        if Save.textFramePoint then
+            TrackButton:SetPoint(Save.textFramePoint[1], UIParent, Save.textFramePoint[3], Save.textFramePoint[4], Save.textFramePoint[5])
+        else
+            TrackButton:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT')
+        end
+    end
+
+    TrackButton:RegisterForDrag("RightButton")
+    TrackButton:SetMovable(true)
+    TrackButton:SetClampedToScreen(true)
+    TrackButton:SetScript("OnDragStart", function(self)
+        if IsAltKeyDown() then
+            self:StartMoving()
+        end
+    end)
+    TrackButton:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        Save.textFramePoint={self:GetPoint(1)}
+        Save.textFramePoint[2]=nil
+        self:Raise()
+    end)
+
+    TrackButton:SetScript("OnMouseUp", ResetCursor)
+    TrackButton:SetScript("OnMouseDown", function(self, d)
+        if d=='RightButton' and IsAltKeyDown() then--移动光标
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+
+    TrackButton:SetScript("OnClick", function(self, d)--清除
+        if d=='LeftButton' and not IsModifierKeyDown() then
+            self.text:SetText('')
+        end
+    end)
+
+    TrackButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'Alt+'..e.Icon.mid)
+        e.tips:AddLine(' ')
+        set_Tooltips_Info()
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+        button:SetButtonState('PUSHED')
+    end)
+    TrackButton:SetScript("OnLeave", function()
+        button:SetButtonState("NORMAL")
+    end)
+    TrackButton:SetScript('OnMouseWheel', function(self, d)--缩放
+        if IsAltKeyDown() then
+            local sacle=Save.textScale or 1
+            if d==1 then
+                sacle=sacle+0.05
+            elseif d==-1 then
+                sacle=sacle-0.05
+            end
+            sacle=sacle>4 and 4 or sacle
+            sacle=sacle<0.4 and 0.4 or sacle
+            Save.textScale=sacle
+            self:set_text_scale()
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
+        end
+    end)
+
+    TrackButton:SetScript('OnEvent', function(self, event, arg1)
+        if event=='PLAYER_FLAGS_CHANGED' then--AFK
+            TrackButton_Frame_Init_Date()--初始, 数据
+
+        elseif event=='PET_BATTLE_OPENING_DONE' then
+            TrackButton_Frame_Init_Date()--初始, 数据
+
+        elseif event=='PET_BATTLE_PVP_DUEL_REQUESTED' then--宠物战斗
+            PetRound.PVP =true
+            set_Pet_Text()--宠物战斗, 设置显示内容
+        elseif (event=='PET_BATTLE_PET_ROUND_RESULTS' or event=='PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE') and arg1 then
+            PetRound.round=arg1
+            set_Pet_Text()--宠物战斗, 设置显示内容
+        elseif event=='PET_BATTLE_CAPTURED' and arg1 and arg1==2 then--捕获
+            PetRound.capture=true
+            set_Pet_Text()--宠物战斗, 设置显示内容
+        elseif event=='PET_BATTLE_FINAL_ROUND' and arg1 then--结束
+            if arg1==1 then--赢
+                PetRound.win=true
+            end
+            set_Pet_Text()--宠物战斗, 设置显示内容
+        elseif event=='PET_BATTLE_CLOSE' then
+            TrackButton_Frame_Init_Date()--初始, 数据
+
+        elseif event=='PLAYER_ENTERING_WORLD' then--副本,杀怪,死亡
+            TrackButton_Frame_Init_Date()--初始, 数据
+            self:set_instance_evnet()
+
+        elseif event=='PLAYER_DEAD' or event=='PLAYER_UNGHOST' or event=='PLAYER_ALIVE' then
+            if event=='PLAYER_DEAD' and not OnInstanceDeadCheck then
+                InstanceDate.dead= InstanceDate.dead +1
+                Save.ins.dead= Save.ins.dead +1
+                OnInstanceDeadCheck= true
             else
-                TrackButton:SetPoint('BOTTOMLEFT', button, 'BOTTOMRIGHT')
+                OnInstanceDeadCheck=nil
             end
+        elseif event=='UNIT_FLAGS' and arg1 then--杀怪,数量
+            if arg1:find('nameplate') and UnitIsEnemy(arg1, 'player') and UnitIsDead(arg1) then
+                if button.isInPvPInstance and UnitIsPlayer(arg1) or not button.isInPvPInstance then
+                    InstanceDate.kill= InstanceDate.kill +1
+                    Save.ins.kill= Save.ins.kill +1
+                end
+            end
+        elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then
+            TrackButton_Frame_Init_Date()--初始, 数据
         end
+    end)
 
-        TrackButton:RegisterForDrag("RightButton")
-        TrackButton:SetMovable(true)
-        TrackButton:SetClampedToScreen(true)
-        TrackButton:SetScript("OnDragStart", function(self)
-            if IsAltKeyDown() then
-                self:StartMoving()
-            end
-        end)
-        TrackButton:SetScript("OnDragStop", function(self)
-            self:StopMovingOrSizing()
-            Save.textFramePoint={self:GetPoint(1)}
-            Save.textFramePoint[2]=nil
-            self:Raise()
-        end)
-
-        TrackButton:SetScript("OnMouseUp", ResetCursor)
-        TrackButton:SetScript("OnMouseDown", function(self, d)
-            if d=='RightButton' and IsAltKeyDown() then--移动光标
-                SetCursor('UI_MOVE_CURSOR')
-            end
-        end)
-
-        TrackButton:SetScript("OnClick", function(self, d)--清除
-            if d=='LeftButton' and not IsModifierKeyDown() then
-                self.text:SetText('')
-            end
-        end)
-
-        TrackButton:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-
-            e.tips:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Icon.left)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-            e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'Alt+'..e.Icon.mid)
-
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine((e.onlyChinese and '战斗' or COMBAT)..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..SecondsToTime(Save.bat.time), Save.bat.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
-            e.tips:AddDoubleLine((PetAll.num>0 and PetAll.win..'/'..PetAll.num or (e.onlyChinese and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..Save.pet.win..'|r/'..Save.pet.num, Save.pet.capture..' |T646379:0|t')
-            e.tips:AddDoubleLine((e.onlyChinese and '离开' or AFK)..e.Icon.clock2..SecondsToTime(Save.afk.time), Save.afk.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
-            e.tips:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..'|A:BuildanAbomination-32x32:0:0|a'..Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..Save.ins.dead, Save.ins.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(Save.ins.time))
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine((e.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD'), SecondsToTime(C_DateAndTime.GetSecondsUntilWeeklyReset()))
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:Show()
-        end)
-        TrackButton:SetScript("OnLeave", function()
-            e.tips:Hide()
-        end)
-        TrackButton:SetScript('OnMouseWheel', function(self, d)--缩放
-            if IsAltKeyDown() then
-                local sacle=Save.textScale or 1
-                if d==1 then
-                    sacle=sacle+0.05
-                elseif d==-1 then
-                    sacle=sacle-0.05
-                end
-                sacle=sacle>4 and 4 or sacle
-                sacle=sacle<0.4 and 0.4 or sacle
-                Save.textScale=sacle
-                self:set_text_scale()
-                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
-            end
-        end)
-        TrackButton:SetScript('OnEvent', function(_, event, arg1)
-            if event=='PLAYER_FLAGS_CHANGED' then--AFK
-                check_Event()--检测事件
-
-            elseif event=='PET_BATTLE_OPENING_DONE' then
-                check_Event()--检测事件
-
-            elseif event=='PET_BATTLE_PVP_DUEL_REQUESTED' then--宠物战斗
-                PetRound.PVP =true
-                setPetText()--宠物战斗, 设置显示内容
-            elseif (event=='PET_BATTLE_PET_ROUND_RESULTS' or event=='PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE') and arg1 then
-                PetRound.round=arg1
-                setPetText()--宠物战斗, 设置显示内容
-            elseif event=='PET_BATTLE_CAPTURED' and arg1 and arg1==2 then--捕获
-                PetRound.capture=true
-                setPetText()--宠物战斗, 设置显示内容
-            elseif event=='PET_BATTLE_FINAL_ROUND' and arg1 then--结束
-                if arg1==1 then--赢
-                    PetRound.win=true
-                end
-                setPetText()--宠物战斗, 设置显示内容
-            elseif event=='PET_BATTLE_CLOSE' then
-                check_Event()--检测事件
-
-            elseif event=='PLAYER_ENTERING_WORLD' then--副本,杀怪,死亡
-                Is_In_Arena()--是否在战场
-                check_Event()--检测事件
-
-            elseif event=='PLAYER_DEAD' or event=='PLAYER_UNGHOST' or event=='PLAYER_ALIVE' then
-                if event=='PLAYER_DEAD' and not OnInstanceDeadCheck then
-                    InstanceDate.dead= InstanceDate.dead +1
-                    Save.ins.dead= Save.ins.dead +1
-                    OnInstanceDeadCheck= true
-                else
-                    OnInstanceDeadCheck=nil
-                end
-            elseif event=='UNIT_FLAGS' and arg1 then--杀怪,数量
-                if arg1:find('nameplate') and UnitIsEnemy(arg1, 'player') and UnitIsDead(arg1) then
-                    if isInPvPInstance and UnitIsPlayer(arg1) or not isInPvPInstance then
-                        InstanceDate.kill= InstanceDate.kill +1
-                        Save.ins.kill= Save.ins.kill +1
-                    end
-                end
-            end
-        end)
-
-        TrackButton.text= e.Cstr(TrackButton, {color=true})
-        TrackButton.text:SetPoint('BOTTOMLEFT')
-        function TrackButton:set_text_scale()
-            self.text:SetScale(Save.textScale or 1)
-        end
-
-        button.frame=CreateFrame("Frame", nil, TrackButton)
-        button.frame:HookScript("OnUpdate", function (self, elapsed)
-            self.elapsed = (self.elapsed or 0.3) + elapsed
-            if self.elapsed > 0.3 then
-                self.elapsed = 0
-                setText()--设置显示内容
-            end
-        end)
-
-        TrackButton:set_Point()
-        TrackButton:set_text_scale()
+    TrackButton.text= e.Cstr(TrackButton, {color=true})
+    TrackButton.text:SetPoint('BOTTOMLEFT')
+    function TrackButton:set_text_scale()
+        self.text:SetScale(Save.textScale or 1)
     end
 
-    TrackButton:RegisterEvent('PLAYER_FLAGS_CHANGED')--AFK
-    TrackButton:RegisterEvent('PET_BATTLE_OPENING_DONE')--宠物战斗
-    TrackButton:RegisterEvent('PET_BATTLE_CLOSE')
-    TrackButton:RegisterEvent('PET_BATTLE_PET_ROUND_RESULTS')
-    TrackButton:RegisterEvent('PET_BATTLE_FINAL_ROUND')
-    TrackButton:RegisterEvent('PET_BATTLE_CAPTURED')
-    TrackButton:RegisterEvent('PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE')
-    TrackButton:RegisterEvent('PLAYER_ENTERING_WORLD')--副本,杀怪,死亡
-    TrackButton:SetShown(true)
-
-    check_Event()--检测事件
-    Is_In_Arena()--是否在战场
-
-
-end
-
-
-
-
-local function set_TrackButton_Disabled_Enable()--禁用, 启用, TrackButton
-    Save.disabledText = not Save.disabledText and true or nil
-    set_Text_Button()
-    Set_TrackButton_Pushed(true)--TrackButton，提示
-    button.texture:SetDesaturated(Save.disabledText)
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---#####
---主菜单
---#####
-local function InitMenu(_, level, type)--主菜单
-    local info
-    if type=='inCombatScale' then--4级， 设置，战斗中缩放
-        info={
-            text=e.onlyChinese and '设置' or SETTINGS,
-            notCheckable=true,
-            --disabled=UnitAffectingCombat('player'),
-            func= function()
-                StaticPopupDialogs[id..addName..'inCombatScale']={
-                    text=id..' '..addName..'|n|n'
-                        ..(e.onlyChinese and '缩放' or UI_SCALE)
-                        ..'|n 0.4 - 4 ',
-                    whileDead=true, hideOnEscape=true, exclusive=true,
-                    hasEditBox=true,
-                    button1= e.onlyChinese and '设置' or SETTINGS,
-                    button2= e.onlyChinese and '取消' or CANCEL,
-                    OnShow = function(self)
-                        self.editBox:SetText(Save.inCombatScale)
-                    end,
-                    OnAccept = function(self)
-                        local num
-                        num= self.editBox:GetText() or ''
-                        num= tonumber(num)
-                        Save.inCombatScale= num
-                        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:', num)
-                        button:SetScale(num)
-                        C_Timer.After(3, function()
-                            button:SetScale(1)
-                        end)
-                    end,
-                    EditBoxOnTextChanged=function(self)
-                        local num
-                        num= self:GetText() or ''
-                        num= tonumber(num)
-                        self:GetParent().button1:SetEnabled(num and num>=0.4 and num<=4)
-                    end,
-                    EditBoxOnEscapePressed = function(s)
-                        s:SetAutoFocus(false)
-                        s:ClearFocus()
-                        s:GetParent():Hide()
-                    end,
-                }
-                StaticPopup_Show(id..addName..'inCombatScale')
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    elseif type=='SayTime' then
-        info={
-            text=e.onlyChinese and '设置' or SETTINGS,
-            notCheckable=true,
-            disabled=UnitAffectingCombat('player'),
-            func= function()
-                StaticPopupDialogs[id..addName..'SayTime']={
-                    text= id..' '..addName..'|n|n'.. (e.onlyChinese and '时间戳' or EVENTTRACE_TIMESTAMP)..' '..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
-                        ..'|n >= 60 ',
-                    whileDead=true, hideOnEscape=true, exclusive=true,
-                    hasEditBox=true,
-                    button1= e.onlyChinese and '设置' or SETTINGS,
-                    button2= e.onlyChinese and '取消' or CANCEL,
-                    OnShow = function(self)
-                        self.editBox:SetText(Save.SayTime)
-                    end,
-                    OnAccept = function(self)
-                        local num
-                        num= self.editBox:GetText() or ''
-                        num= tonumber(num)
-                        Save.SayTime= num
-                        e.Chat(e.SecondsToClock(num), nil, true)
-                    end,
-                    EditBoxOnTextChanged=function(self)
-                        local num
-                        num= self:GetText() or ''
-                        num= tonumber(num)
-                        self:GetParent().button1:SetEnabled(num and num>=60)
-                    end,
-                    EditBoxOnEscapePressed = function(s)
-                        s:SetAutoFocus(false)
-                        s:ClearFocus()
-                        s:GetParent():Hide()
-                    end,
-                }
-                StaticPopup_Show(id..addName..'SayTime')
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-
-    elseif type=='SETTINGS' then
-        info={--时间类型
-            text= (e.onlyChinese and '时间类型' or TIME_LABEL)..' |cnGREEN_FONT_COLOR:'..(Save.timeTypeText and SecondsToTime(35) or '00:35')..'|r',
-            checked= Save.timeTypeText,
-            tooltipOnButton=true,
-            tooltipTitle=  e.onlyChinese and '类型' or TYPE,
-            tooltipText='00:35|n'..SecondsToTime(35),
-            keepShownOnClick=true,
-            func= function()
-                Save.timeTypeText= not Save.timeTypeText and true or nil
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= (e.onlyChinese and '战斗中缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, UI_SCALE))..' '..Save.inCombatScale,
-            checked= Save.combatScale,
-            disabled= UnitAffectingCombat('player'),
-            hasArrow=true,
-            menuList='inCombatScale',
-            keepShownOnClick=true,
-            func= function()
-                Save.combatScale= not Save.combatScale and true or nil
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= e.onlyChinese and '隐藏|cnRED_FONT_COLOR:战斗|r文本' or (HIDE..'|cnRED_FONT_COLOR:'..COMBAT..'|r'..LOCALE_TEXT_LABEL),
-            checked= Save.hideCombatText,
-            keepShownOnClick=true,
-            func= function()
-                Save.hideCombatText= not Save.hideCombatText and true or nil
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= ((e.onlyChinese and '战斗时间' or COMBAT)..'|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '每: ' or EVENTTRACE_TIMESTAMP)..Save.SayTime),
-            checked= Save.Say and true or nil,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '说' or SAY,
-            --tooltipText= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '在副本中' or AGGRO_WARNING_IN_INSTANCE),
-            keepShownOnClick=true,
-            hasArrow=true,
-            menuList='SayTime',
-            func= function()
-                Save.Say= not Save.Say and true or nil
-                if Save.Say then
-                    e.Chat(e.SecondsToClock(Save.SayTime), nil, true)
-                end
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-
-        local tab=WoWDate[e.Player.guid].Time
-        info={
-            text= e.onlyChinese and '总游戏时间'..((tab and tab.totalTime) and ': '..SecondsToTime(tab.totalTime) or '') or TIME_PLAYED_TOTAL:format((tab and tab.totalTime) and SecondsToTime(tab.totalTime) or ''),
-            checked= Save.AllOnlineTime,
-            menuList='AllOnlineTime',
-            hasArrow=true,
-            keepShownOnClick=true,
-            func= function()
-                Save.AllOnlineTime = not Save.AllOnlineTime and true or nil
-                if Save.AllOnlineTime then
-                    RequestTimePlayed()
-                end
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text=e.onlyChinese and '重置位置' or RESET_POSITION,
-            tooltipOnButton=true,
-            tooltipTitle= 'Ctrl+'..e.Icon.right,
-            keepShownOnClick=true,
-            colorCode= not Save.textFramePoint and '|cff606060' or nil,
-            func= function()
-                if IsControlKeyDown() then
-                    Save.textFramePoint=nil
-                    if TrackButton then
-                        TrackButton:ClearAllPoints()
-                        TrackButton:set_Point()
-                    end
-                end
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= e.onlyChinese and '重置所有' or RESET..ALL,
-            colorCode='|cffff0000',
-            tooltipOnButton=true,
-            tooltipTitle= "Shift+"..e.Icon.left,
-            tooltipText=(e.onlyChinese and '重新加载UI' or RELOADUI)..'|n'..SLASH_RELOAD1,
-            notCheckable=true,
-            disabled= UnitAffectingCombat('player'),
-            func=function()
-                if IsShiftKeyDown() then
-                    Save=nil
-                    e.Reload()
-                end
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    elseif type=='AllOnlineTime' then--3级,所有角色时间
-        local timeAll=0
-        for guid, tab in pairs(WoWDate or {}) do
-            local time= tab.Time and tab.Time.totalTime
-            if time and time>0 then
-                timeAll= timeAll + time
-                info= {
-                    text= e.GetPlayerInfo({guid=guid,  reName=true, reRealm=true, factionName=tab.faction})..e.Icon.clock2..'  '..SecondsToTime(time),
-                    notCheckable=true,
-                    tooltipOnButton=true,
-                    tooltipTitle= tab.Time.levelTime and format(e.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, '|n'..SecondsToTime(tab.Time.levelTime)),
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-            end
+    TrackButton.Frame=CreateFrame("Frame", nil, TrackButton)
+    TrackButton.Frame:HookScript("OnUpdate", function (self, elapsed)
+        self.elapsed = (self.elapsed or 0.3) + elapsed
+        if self.elapsed > 0.3 then
+            self.elapsed = 0
+            set_TrackButton_Text()--设置显示内容
         end
-        if timeAll>0 then
-            e.LibDD:UIDropDownMenu_AddSeparator(level)
-            info={
-                text= (e.onlyChinese and '总计：' or FROM_TOTAL).. SecondsToTime(timeAll),
-                notCheckable=true,
-                isTitle=true
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
+    end)
 
-    else
-        info={--在线时间
-            text= (e.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..e.Icon.clock2..e.GetTimeInfo(OnLineTime),
-            isTitle=true,
-            notCheckable=true
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        local tab=WoWDate[e.Player.guid].Time
-        if tab and tab.totalTime then
-            info={
-                text= (e.onlyChinese and '总计' or TOTAL)..e.Icon.clock2..SecondsToTime(tab.totalTime),
-                isTitle=true,
-                notCheckable=true
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-
-
-        info={
-            text= e.onlyChinese and '信息' or INFO,
-            checked= not Save.disabledText,
-            hasArrow=true,
-            menuList='SETTINGS',
-            func=set_TrackButton_Disabled_Enable--禁用, 启用, TrackButton
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-    end
+    TrackButton:set_Point()
+    TrackButton:set_text_scale()
+    TrackButton:set_instance_evnet()
+    TrackButton:set_evnet()
+    TrackButton_Frame_Init_Date()--初始, 数据
 end
-
-
-
-
-
 
 
 
@@ -671,37 +454,6 @@ local function Init()
 
     button:SetPoint('BOTTOMLEFT', WoWToolsChatButtonFrame.last, 'BOTTOMRIGHT')--设置位置
 
-    button.texture:SetDesaturated(Save.disabledText)
-
-    button.texture2=button:CreateTexture(nil, 'OVERLAY')
-    button.texture2:SetAllPoints(button)
-    button.texture2:AddMaskTexture(button.mask)
-    button.texture2:SetColorTexture(1,0,0)
-    button.texture2:SetShown(false)
-
-    button:SetScript('OnClick', function(self, d)
-        if d=='RightButton' then
-            if not self.Menu then
-                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")--菜单框架
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
-        elseif d=='LeftButton' then
-            set_TrackButton_Disabled_Enable()--禁用, 启用, TrackButton
-        end
-    end)
-
-    button:SetScript('OnEnter', function()
-        Set_TrackButton_Pushed(true)--TrackButton，提示
-        WoWToolsChatButtonFrame:SetButtonState('PUSHED')
-    end)
-    button:SetScript('OnLeave', function()
-        Set_TrackButton_Pushed(false)--TrackButton，提示
-        WoWToolsChatButtonFrame:SetButtonState('NORMAL')
-    end)
-
-    set_Text_Button()--设置显示内容,框架 TrackButton,内容 TrackButton.text
-
     if e.Player.faction=='Alliance' then
         button.texture:SetTexture(255130)
     elseif e.Player.faction=='Horde' then
@@ -710,9 +462,300 @@ local function Init()
         button.texture:SetAtlas('nameplates-icon-flag-neutral')
     end
 
+    button.texture2=button:CreateTexture(nil, 'OVERLAY')
+    button.texture2:SetAllPoints(button)
+    button.texture2:AddMaskTexture(button.mask)
+    button.texture2:SetColorTexture(1,0,0)
+    button.texture2:SetShown(false)
+
+
+    function button:set_texture_Desaturated()--禁用/启用 TrackButton, 提示
+        self.texture:SetDesaturated(Save.disabledText and true or false)
+    end
+
+    function button:Is_In_Arena()--是否在战场
+        self.isInPvPInstance= C_PvP.IsBattleground() or C_PvP.IsArena()
+    end
+
+    function button:set_Sacle_InCombat(bat)--提示，战斗中
+        self.texture2:SetShown(bat)
+        if Save.combatScale then
+            self:SetScale(bat and Save.inCombatScale or 1)
+        end
+    end
+
+    function button:set_Click()
+        Save.disabledText = not Save.disabledText and true or nil
+        button:set_texture_Desaturated()
+        Init_TrackButton()
+    end
+    button:SetScript('OnClick', function(self, d)
+        if d=='RightButton' then
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")--菜单框架
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level, type)--主菜单
+                    local info
+                    if type=='AllOnlineTime' then--3级,所有角色时间
+                        local timeAll=0
+                        for guid, tab in pairs(WoWDate or {}) do
+                            local time= tab.Time and tab.Time.totalTime
+                            if time and time>0 then
+                                timeAll= timeAll + time
+                                info= {
+                                    text= e.GetPlayerInfo({guid=guid,  reName=true, reRealm=true, factionName=tab.faction})..e.Icon.clock2..'  '..SecondsToTime(time),
+                                    notCheckable=true,
+                                    tooltipOnButton=true,
+                                    tooltipTitle= tab.Time.levelTime and format(e.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, '|n'..SecondsToTime(tab.Time.levelTime)),
+                                }
+                                e.LibDD:UIDropDownMenu_AddButton(info, level)
+                            end
+                        end
+                        if timeAll>0 then
+                            e.LibDD:UIDropDownMenu_AddSeparator(level)
+                            info={
+                                text= (e.onlyChinese and '总计：' or FROM_TOTAL).. SecondsToTime(timeAll),
+                                notCheckable=true,
+                                isTitle=true
+                            }
+                            e.LibDD:UIDropDownMenu_AddButton(info, level)
+                        end
+
+                    elseif type=='Settings' then
+                        info={
+                            text=e.onlyChinese and '重置位置' or RESET_POSITION,
+                            notCheckable=true,
+                            colorCode= (not Save.textFramePoint or Save.disabledText) and '|cff606060',
+                            func= function()
+                                Save.textFramePoint=nil
+                                if TrackButton then
+                                    TrackButton:ClearAllPoints()
+                                    TrackButton:set_Point()
+                                end
+                                print(id,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                            end
+                        }
+                        e.LibDD:UIDropDownMenu_AddButton(info, level)
+                        e.LibDD:UIDropDownMenu_AddSeparator(level)
+
+                        info={
+                            text= e.onlyChinese and '重置所有' or RESET..ALL,
+                            colorCode='|cffff0000',
+                            tooltipOnButton=true,
+                            tooltipTitle= (e.onlyChinese and '全部清除' or CLEAR_ALL)..' Shift+'..e.Icon.left,
+                            tooltipText= '|n'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|n'..SLASH_RELOAD1,
+                            notCheckable=true,
+                            disabled= UnitAffectingCombat('player'),
+                            func=function()
+                                if IsShiftKeyDown() then
+                                    Save=nil
+                                    e.Reload()
+                                end
+                            end
+                        }
+                        e.LibDD:UIDropDownMenu_AddButton(info, level)
+                    end
+
+                    if type then
+                        return
+                    end
+
+                    local tab=WoWDate[e.Player.guid].Time
+                    info={
+                        text= e.onlyChinese and '总游戏时间'..((tab and tab.totalTime) and ': '..SecondsToTime(tab.totalTime) or '') or TIME_PLAYED_TOTAL:format((tab and tab.totalTime) and SecondsToTime(tab.totalTime) or ''),
+                        checked= Save.AllOnlineTime,
+                        menuList='AllOnlineTime',
+                        hasArrow=true,
+                        keepShownOnClick=true,
+                        func= function()
+                            Save.AllOnlineTime = not Save.AllOnlineTime and true or nil
+                            if Save.AllOnlineTime then
+                                RequestTimePlayed()
+                            end
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+                    info={
+                        text= (e.onlyChinese and '战斗中缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, UI_SCALE))
+                                ..' |cnGREEN_FONT_COLOR:'..Save.inCombatScale,
+                        disabled= UnitAffectingCombat('player'),
+                        notCheckable=true,
+                        keepShownOnClick=true,
+                        func= function()
+                                StaticPopupDialogs[id..addName..'inCombatScale']= StaticPopupDialogs[id..addName..'inCombatScale'] or {
+                                    text=id..' '..addName..'|n|n'
+                                        ..(e.onlyChinese and '缩放' or UI_SCALE)
+                                        ..'|n 0.4 - 4 ',
+                                    whileDead=true, hideOnEscape=true, exclusive=true,
+                                    hasEditBox=true,
+                                    button1= e.onlyChinese and '设置' or SETTINGS,
+                                    button2= e.onlyChinese and '取消' or CANCEL,
+                                    OnShow = function(s)
+                                        s.editBox:SetText(Save.inCombatScale)
+                                    end,
+                                    OnAccept = function(s)
+                                        local num
+                                        num= s.editBox:GetText() or ''
+                                        num= tonumber(num)
+                                        Save.inCombatScale= num
+                                        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:', num)
+                                        button:set_Sacle_InCombat(true)
+                                        C_Timer.After(3, function()
+                                            button:set_Sacle_InCombat(UnitAffectingCombat('player'))
+                                        end)
+                                    end,
+                                    EditBoxOnTextChanged=function(s)
+                                        local num
+                                        num= s:GetText() or ''
+                                        num= tonumber(num)
+                                        s:GetParent().button1:SetEnabled(num and num>=0.4 and num<=4)
+                                    end,
+                                    EditBoxOnEscapePressed = function(s)
+                                        s:SetAutoFocus(false)
+                                        s:ClearFocus()
+                                        s:GetParent():Hide()
+                                    end,
+                                }
+                                StaticPopup_Show(id..addName..'inCombatScale')
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+                    e.LibDD:UIDropDownMenu_AddSeparator(level)
+
+                    info={
+                        text= (e.onlyChinese and '信息' or INFO)..'|A:auctionhouse-ui-dropdown-arrow-up:0:0|a',
+                        checked= not Save.disabledText,
+                        hasArrow=true,
+                        menuList='Settings',
+                        func=button.set_Click,
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+                    info={--时间类型
+                        text= (e.onlyChinese and '时间类型' or TIME_LABEL)..' |cnGREEN_FONT_COLOR:'..(Save.timeTypeText and SecondsToTime(35) or '00:35')..'|r',
+                        checked= Save.timeTypeText,
+                        tooltipOnButton=true,
+                        tooltipTitle=  e.onlyChinese and '类型' or TYPE,
+                        tooltipText='00:35|n'..SecondsToTime(35),
+                        keepShownOnClick=true,
+                        colorCode= Save.disabledText and '|cff606060' or nil,
+                        func= function()
+                            Save.timeTypeText= not Save.timeTypeText and true or nil
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+                    
+
+
+                    info={
+                        text= (
+                            (e.onlyChinese and '战斗时间' or COMBAT)
+                            ..'|A:communities-icon-chat:0:0|a'
+                            ..(Save.SayTime==0 and e.GetEnabeleDisable(false) or ((e.onlyChinese and '每: ' or EVENTTRACE_TIMESTAMP)..Save.SayTime))
+                        ),
+                        tooltipOnButton=true,
+                        tooltipTitle= e.onlyChinese and '说' or SAY,
+                        keepShownOnClick=true,
+                        notCheckable=true,
+                        colorCode= Save.disabledText and '|cff606060' or nil,
+                        func= function()
+                            StaticPopupDialogs[id..addName..'SayTime']= StaticPopupDialogs[id..addName..'SayTime'] or {
+                                text= id..' '..addName
+                                    ..'|n|n'.. (e.onlyChinese and '时间戳' or EVENTTRACE_TIMESTAMP)..' '..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
+                                    ..'|n|n>= 60 '..e.GetEnabeleDisable(true)
+                                    ..'|n= 0  '..e.GetEnabeleDisable(false),
+                                whileDead=true, hideOnEscape=true, exclusive=true,
+                                hasEditBox=true,
+                                button1= e.onlyChinese and '设置' or SETTINGS,
+                                button2= e.onlyChinese and '取消' or CANCEL,
+                                OnShow = function(s)
+                                    s.editBox:SetText(Save.SayTime)
+                                    s.button1:SetText(Save.SayTime==0 and e.GetEnabeleDisable(false) or (e.onlyChinese and '设置' or SETTINGS))
+                                end,
+                                OnAccept = function(s)
+                                    local num
+                                    num= s.editBox:GetText() or ''
+                                    num= tonumber(num)
+                                    if num>0 then
+                                        e.Chat(e.SecondsToClock(num), nil, true)
+                                    else
+                                        print(id, addName, e.GetEnabeleDisable(false))
+                                    end
+                                    Save.SayTime= num
+                                end,
+                                EditBoxOnTextChanged=function(s)
+                                    local num
+                                    num= s:GetText() or ''
+                                    num= tonumber(num)
+                                    local parent=s:GetParent()
+                                    parent.button1:SetEnabled(num and (num>=60 or num==0))
+                                    parent.button1:SetText(num==0 and (e.onlyChinese and '禁用' or DISABLE) or (e.onlyChinese and '设置' or SETTINGS) )
+                                end,
+                                EditBoxOnEscapePressed = function(s)
+                                    s:SetAutoFocus(false)
+                                    s:ClearFocus()
+                                    s:GetParent():Hide()
+                                end,
+                            }
+                            StaticPopup_Show(id..addName..'SayTime')
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+                    
+                end, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
+            
+        elseif d=='LeftButton' then
+            button:set_Click()
+        end
+    end)
+
+    button:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        set_Tooltips_Info()
+        e.tips:Show()
+        Set_TrackButton_Pushed(true)--TrackButton，提示
+        WoWToolsChatButtonFrame:SetButtonState('PUSHED')
+    end)
+    button:SetScript('OnLeave', function()
+        Set_TrackButton_Pushed(false)--TrackButton，提示
+        WoWToolsChatButtonFrame:SetButtonState('NORMAL')
+    end)
+
+
+
+
+
+    button:RegisterEvent('PLAYER_REGEN_DISABLED')
+    button:RegisterEvent('PLAYER_REGEN_ENABLED')
+    button:RegisterEvent('PLAYER_ENTERING_WORLD')
+    button:SetScript("OnEvent", function(self, event)--提示，战斗中, 是否在战场
+        if event=='PLAYER_REGEN_ENABLED' then
+            self:set_Sacle_InCombat(false)--提示，战斗中
+        elseif event=='PLAYER_REGEN_DISABLED' then
+            self:set_Sacle_InCombat(true)
+        elseif event=='PLAYER_ENTERING_WORLD' then
+            self:Is_In_Arena()
+        end
+    end)
+
+    button:set_Sacle_InCombat(UnitAffectingCombat('player'))--提示，战斗中
+    button:Is_In_Arena()--是否在战场
+    button:set_texture_Desaturated()--禁用/启用 TrackButton, 提示
+    
+
     if Save.AllOnlineTime or not WoWDate[e.Player.guid].Time.totalTime then--总游戏时间
         RequestTimePlayed()
     end
+
+    if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then--挑战时，死亡，数据
+        InstanceDate.dead= C_ChallengeMode.GetDeathCount() or 0
+    end
+
+    Init_TrackButton()
 end
 
 
@@ -748,6 +791,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.inCombatScale= Save.inCombatScale or 1.3
             Save.SayTime= Save.SayTime or 120
+
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 button= e.Cbtn2({
                     name=nil,
@@ -761,8 +805,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
 
 
-                panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-                panel:RegisterEvent('PLAYER_REGEN_ENABLED')
                 panel:RegisterEvent("PLAYER_LOGOUT")
 
                 Init()
@@ -775,23 +817,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event=='PLAYER_REGEN_ENABLED' then
-        button.texture2:SetShown(false)
-        if Save.combatScale then--战斗中缩放
-            button:SetScale(1)
-        end
-        if not Save.disabledText then
-            check_Event()--检测事件
-        end
 
-    elseif event=='PLAYER_REGEN_DISABLED' then
-        button.texture2:SetShown(true)
-        if Save.combatScale then--战斗中缩放
-            button:SetScale(Save.inCombatScale or 1.3)
-        end
-        if not Save.disabledText then
-            check_Event()--检测事件
-        end
     end
 end)
 

@@ -687,7 +687,7 @@ end
 
 
 --周奖励，提示
-function e.Get_Weekly_Rewards_Activities(settings)
+function e.Get_Weekly_Rewards_Activities(settings)--{frame=Frame, point={'TOPLEFT', nil, 'BOTTOMLEFT', 0, -2}, anchor='ANCHOR_RIGHT'}
     local R = {}
     for  _ , info in pairs( C_WeeklyRewards.GetActivities() or {}) do
         if info.type and info.type>= 1 and info.type<= 3 and info.level then
@@ -758,7 +758,7 @@ function e.Get_Weekly_Rewards_Activities(settings)
                 label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
                 label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                 label:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                    e.tips:SetOwner(self2,  self2.anchorRight and 'ANCHOR_RIGHT' or "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     local link= self2:Get_ItemLink()
                     if link then
@@ -788,6 +788,7 @@ function e.Get_Weekly_Rewards_Activities(settings)
             label.id= info.id
             label.type= info.type
             label.itemDBID= info.itemDBID
+            label.anchor= settings.anchorRight
             last= label
 
             local text
@@ -2305,4 +2306,5 @@ function e.Get_Region(realm, guid, unit, disabled)--e.Get_Region(server, guid, u
         return realm and Realms[realm] and regionColor[Realms[realm]]
     end
 end
+
 
