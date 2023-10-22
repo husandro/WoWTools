@@ -35,7 +35,7 @@ local TipsFrame
 -- Dragonflight Season 2
 -- 134:Entangling, 135：Afflicted, 136:Incorporeal
 local affixSchedule = {
-	-- Dragonflight Season 2
+	
 	[1]  = { [1]=6,   [2]=124, [3]=9, }, -- Tyrannical | Raging      | Storming
 	[2]  = { [1]=134, [2]=7,   [3]=10,}, -- Fortified  | Entangling  | Bolstering
 	[3]  = { [1]=136, [2]=123, [3]=9, }, -- Tyrannical | Incorporeal | Spiteful
@@ -47,7 +47,18 @@ local affixSchedule = {
 	[9]  = { [1]=134, [2]=11,  [3]=9, }, -- Tyrannical | Entangling  | Bursting
 	[10] = { [1]=3,   [2]=123,   [3]=10,}, -- Fortified  |  | 
     max= 10,
+
+    season= 2,-- Dragonflight Season 2
+    level=70,
 }
+local Season= C_MythicPlus.GetCurrentUIDisplaySeason()
+if (Season and Season>0 and affixSchedule.season~=Season) or affixSchedule.level~=MAX_PLAYER_LEVEL then
+    affixSchedule=nil
+end
+
+
+
+
 
 local SpellTabs={
     --spell= 传送门法术ID 
@@ -115,10 +126,13 @@ local SpellTabs={
 {spell=373274, ins=, map=},--麦卡贡行动
 {spell=131225, ins=, map=},--残阳关
 {spell=131206, ins=, map=},--影踪禅院
-
-
-
 ]]
+
+
+
+
+
+
 local function get_Spell_MapChallengeID(mapChallengeID)
     for _, tab in pairs(SpellTabs) do
         e.LoadDate({id=tab.spell, type='spell'})
@@ -540,8 +554,33 @@ end
 --##################
 --史诗钥石地下城, 界面
 --词缀日程表AngryKeystones Schedule.lua
+
+--建立 Affix 按钮
+local function Affix_CreateButton(self, affixID)--Blizzard_ScenarioObjectiveTracker.lua
+    local btn= e.Cbtn(self, {size={22,22}, pushe=true, icon='hide'})
+    btn:SetSize(24, 24)
+    btn.Border= btn:CreateTexture(nil, "BORDER")
+    btn.Border:SetAllPoints()
+    btn.Border:SetAtlas("ChallengeMode-AffixRing-Sm")
+    btn.Portrait = btn:CreateTexture(nil, "BACKGROUND")
+    btn.Portrait:SetAllPoints(btn.Border)
+    local _, _, filedataid = C_ChallengeMode.GetAffixInfo(affixID);
+	SetPortraitToTexture(btn.Portrait, filedataid)--btn.SetUp = ScenarioChallengeModeAffixMixin.SetUp
+    btn:SetScript("OnEnter", function(self2)--btn:SetScript("OnEnter", ScenarioChallengeModeAffixMixin.OnEnter)
+        GameTooltip:SetOwner(self2, "ANCHOR_LEFT");
+		local name, description = C_ChallengeMode.GetAffixInfo(self2.affixID);
+		GameTooltip:SetText(name, 1, 1, 1, 1, true);
+		GameTooltip:AddLine(description, nil, nil, nil, true);
+        GameTooltip:AddDoubleLine('affixID', self2.affixID)
+		GameTooltip:Show();
+    end)
+    btn:SetScript("OnLeave", function() e.tips:Hide() end)
+	btn.affixID = affixID;
+    return btn
+end
+
 local function Affix()
-    if IsAddOnLoaded("AngryKeystones") then
+    if IsAddOnLoaded("AngryKeystones") or not affixSchedule then
         affixSchedule=nil
         return
     end
@@ -580,23 +619,13 @@ local function Affix()
             for i=3 ,1, -1 do
                 local frame= ChallengesFrame['AffixWeek'..index..i]
                 if not frame then
-                    frame = CreateFrame("Frame", nil, TipsFrame)
-                    frame:SetSize(24, 24)
-                    frame.Border= frame:CreateTexture(nil, "OVERLAY")
-                    frame.Border:SetAllPoints()
-                    frame.Border:SetAtlas("ChallengeMode-AffixRing-Sm")
-                    frame.Portrait = frame:CreateTexture(nil, "ARTWORK")
-                    frame.Portrait:SetSize(22, 22)
-                    frame.Portrait:SetPoint("CENTER", frame.Border)
-                    frame.SetUp = ScenarioChallengeModeAffixMixin.SetUp
-                    frame:SetScript("OnEnter", ScenarioChallengeModeAffixMixin.OnEnter)
-                    frame:SetScript("OnLeave", function() e.tips:Hide() end)
-                    frame:SetUp(tab[i])--Blizzard_ScenarioObjectiveTracker.lua
+                    frame= Affix_CreateButton(TipsFrame, tab[i])
                     if not last then
                         frame:SetPoint('RIGHT', ChallengesFrame, -10, -((index-1)*(24)))
                     else
                         frame:SetPoint('RIGHT', last, 'LEFT', 0, 0)
                     end
+
                     if i==1 then
                         last=nil
                         local indexText= index==1 and one or index==2 and due or index==3 and tre
@@ -633,7 +662,7 @@ local function Affix()
                     ChallengesFrame['AffixWeek'..index..i]= frame
                 end
                 frame:SetShown(tab[i]>0)
-                frame:SetScale(Save.tipsScale or 1)
+                --frame:SetScale(Save.tipsScale or 1)
             end
         end
     end
