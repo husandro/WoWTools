@@ -319,6 +319,17 @@ end
 function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton',notWheel
     tab=tab or {}
     local template= tab.type==false and 'UIPanelButtonTemplate' or tab.type==true and 'SecureActionButtonTemplate' or tab.type
+    --[[ SecureTemplates
+    SecureActionButtonTemplate	Button	Perform protected actions.
+    SecureUnitButtonTemplate	Button	Unit frames.
+    SecureAuraHeaderTemplate	Frame	Managing buffs and debuffs.
+    SecureGroupHeaderTemplate	Frame	Managing group members.
+    SecurePartyHeaderTemplate	Frame	Managing party members.
+    SecureRaidGroupHeaderTemplate	Frame	Managing raid group members.
+    SecureGroupPetHeaderTemplate	Frame	Managing group pets.
+    SecurePartyPetHeaderTemplate	Frame	Managing party pets.
+    SecureRaidPetHeaderTemplate
+]]
     local btn= CreateFrame(tab.button or 'Button', tab.name, self or UIParent, template)
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     if not tab.notWheel then
@@ -351,6 +362,7 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, butto
     end
     return btn, template
 end
+
 
 function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
     if not self then

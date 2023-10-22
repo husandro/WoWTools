@@ -615,7 +615,10 @@ local function Init_tipsButton()
     tipsButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
+        e.tips:AddDoubleLine(
+            (IsInGroup() and not UnitIsGroupLeader("player") and '|cff606060' or '|cnRED_FONT_COLOR:')..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES),
+            '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
+        )
         e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.Icon.right)
         e.tips:AddLine(' ')
 
@@ -630,21 +633,43 @@ local function Init_tipsButton()
         setQueueStatus()--小眼睛, 更新信息
     end)
 
+
+    function tipsButton:LeaveQueueWithMatchReadyCheck(idx, queueType)
+        if status == "confirm" and not PVPHelper_QueueAllowsLeaveQueueWithMatchReady(queueType) then
+            UIErrorsFrame:AddExternalErrorMessage(PVP_MATCH_READY_ERROR);
+        else
+            local acceptPort = false;
+            AcceptBattlefieldPort(idx, acceptPort);
+        end
+    end
     tipsButton:SetScript('OnDoubleClick', function(_, d)--离开所有队列
-        if d~= 'LeftButton' or IsModifierKeyDown() then
+        if IsInGroup() and not UnitIsGroupLeader("player") then
             return
         end
-        for i=1, NUM_LE_LFG_CATEGORYS do--pve
+
+        --pve
+        for i=1, NUM_LE_LFG_CATEGORYS do
             LeaveLFG(i)
         end
-        C_PetBattles.StopPVPMatchmaking()--PetC_PetBattles.DeclineQueuedPVPMatch()
-        RejectProposal()
-        for i=1,  GetNumWorldPVPAreas() do --PVP QueueStatusFrame.lua
+
+        if C_PetBattles.GetPVPMatchmakingInfo() then--Pet Battles
+            C_PetBattles.StopPVPMatchmaking()--PetC_PetBattles.DeclineQueuedPVPMatch()
+        end
+
+        RejectProposal()--拒绝 LFG 邀请并离开队列
+
+        --[[PvP
+        for i=1, GetMaxBattlefieldID() do
+            local status, mapName, teamSize, registeredMatch, suspendedQueue, queueType = GetBattlefieldStatus(i);
+        end]]
+
+        for i=1,  GetNumWorldPVPAreas() do --World PvP
             local queueID = select(3, GetWorldPVPQueueStatus(i))
-            if queueID then
+            if queueID and queueID>0 then
                 BattlefieldMgrExitRequest(queueID)
             end
         end
+
         C_LFGList.RemoveListing()
         C_LFGList.ClearSearchResults()
     end)
@@ -1063,8 +1088,8 @@ local function set_LFGPlus()--预创建队伍增强
                         e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
                     end
-                end)
-                self.realmText:SetScript("OnLeave", function() e.tips:Hide() end)
+            end)
+            self.realmText:SetScript("OnLeave", function() e.tips:Hide() end)
             end
         end
         if self.realmText then
