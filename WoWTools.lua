@@ -844,7 +844,8 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
     {type='currency', id=2709, vouta=true},--守护巨龙的酣梦纹章 10.2
     {type='currency', id=2708},--魔龙的酣梦纹章
     {type='currency', id=2707},--幼龙的酣梦纹章
-
+    {type='currency', id=2533},--苏生暗影烈焰
+    
     {type='currency', id=2245},--飞珑石
     {type='currency', id=1602},--征服点数
     {type='currency', id=1191},--勇气点数
@@ -863,7 +864,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
             then
                 if info.maxQuantity>0  then
                     if info.quantity==info.maxQuantity then
-                        text=text..'|cnGREEN_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
+                        text=text..'|cnRED_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
                     else
                         text=text..info.quantity.. '/'..info.maxQuantity..' '
                     end
@@ -873,7 +874,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
                         if q>0 then
                             q='|cnGREEN_FONT_COLOR:+'..q..'|r'
                         else
-                            q='|cff828282+0|r'
+                            q='|cnGREEN_FONT_COLOR:+0|r'
                         end
                         text=text..' ('..q..') '
                     end
@@ -882,7 +883,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
                         text=text..info.quantity..'/'.. (e.onlyChinese and '无限制' or UNLIMITED)..' '
                     else
                         if info.quantity==info.maxQuantity then
-                            text=text..'|cnGREEN_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
+                            text=text..'|cnRED_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
                         else
                             text=text..info.quantity..'/'..info.maxQuantity..' '
                         end
@@ -898,9 +899,10 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
             if settings.showAll or num>0 then
                 e.LoadDate({id=tab.id, type='item'})
                 local icon= C_Item.GetItemIconByID(tab.id)
+                local name=settings.showName and C_Item.GetItemNameByID(tab.id)
                 text= ((icon and icon>0) and '|T'..icon..':0|t' or id '')
-                    ..(settings.showName and C_Item.GetItemNameByID(tab.id) or '')
-                    ..' |cnGREEN_FONT_COLOR:x|r'..num
+                    ..(name and name..' |cnGREEN_FONT_COLOR:x|r' or '')
+                    ..num
             end
         end
         if text~='' then

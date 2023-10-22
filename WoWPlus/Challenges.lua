@@ -57,23 +57,23 @@ if (Season and Season>0 and affixSchedule.season~=Season) or affixSchedule.level
 end
 
 
-
-
-
 local SpellTabs={
     --spell= 传送门法术ID 
     --ins= 副本ID journalInstanceID
     --map= 跳战副本ID mapChallengeID
-    {spell=393222, ins=1197, map=403},--奥达曼：提尔的遗产
-    {spell=393267, ins=1196, map=405},--蕨皮山谷
-    {spell=393283, ins=1204, map=406},--注能大厅
-    {spell=393276, ins=1199, map=404},--奈萨鲁斯
-    {spell=410071, ins=1001, map=245},--自由镇
-    {spell=410078, ins=767, map=206},--奈萨里奥的巢穴
-    {spell=410074, ins=1022, map=251},--地渊孢林
-    {spell=410080, ins=68, map=438},--旋云之巅
-
+    [403]={spell=393222, ins=1197, name='奥达曼'},--奥达曼：提尔的遗产
+    [405]={spell=393267, ins=1196, name='蕨皮山谷'},--蕨皮山谷
+    [406]={spell=393283, ins=1204, name='注能大厅'},--注能大厅
+    [404]={spell=393276, ins=1199, name='奈萨鲁斯'},--奈萨鲁斯
+    [245]={spell=410071, ins=1001, name='自由镇'},--自由镇
+    [206]={spell=410078, ins=767, name='巢穴'},--奈萨里奥的巢穴
+    [251]={spell=410074, ins=1022, name='地渊孢林'},--地渊孢林
+    [438]={spell=410080, ins=68, name='旋云之巅'},--旋云之巅
 }
+for _, tab in pairs(SpellTabs) do
+    e.LoadDate({id=tab.spell, type='spell'})
+end
+
 --[[
 
 
@@ -130,18 +130,6 @@ local SpellTabs={
 
 
 
-
-
-
-local function get_Spell_MapChallengeID(mapChallengeID)
-    for _, tab in pairs(SpellTabs) do
-        e.LoadDate({id=tab.spell, type='spell'})
-        if mapChallengeID and tab.map==mapChallengeID then
-            return tab.spell, tab.ins
-        end
-    end
-end
-get_Spell_MapChallengeID()
 
 local function get_Bag_Key()--查找，包的key
     for bagID= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do--Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES ,Constants.InventoryConstants.NumBagSlots
@@ -955,7 +943,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
         local frame = self.DungeonIcons[i]
         if frame and frame.mapID then
             if not frame.setTips then
-                frame.spellID, frame.journalInstanceID= get_Spell_MapChallengeID(frame.mapID)
+                local insTab=SpellTabs[frame.mapID] or {}
+                frame.spellID, frame.journalInstanceID= insTab.spell, insTab.ins
                 frame:HookScript('OnEnter', function(self2)--提示
                     if not self2.mapID or Save.hideIns then
                         return
@@ -1078,15 +1067,17 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     end)
                 end
                 frame.nameLable.name= nameText
-
-                nameText=nameText:match('%((.+)%)') or nameText
-                nameText=nameText:match('%（(.+)%）') or nameText
-                nameText=nameText:match('%- (.+)') or nameText
-                nameText=nameText:match('%:(.+)') or nameText
-                nameText=nameText:match('%: (.+)') or nameText
-                nameText=nameText:match('：(.+)') or nameText
-                nameText=nameText:match('·(.+)') or nameText
-                nameText=e.WA_Utf8Sub(nameText, 5, 10)
+                --  ( ) . % + - * ? [ ^ $
+                if (e.onlyChinese or LOCALE_zhCN) and SpellTabs[frame.mapID] then
+                    nameText= SpellTabs[frame.mapID].name
+                else
+                    nameText=nameText:match('%((.+)%)') or nameText
+                    nameText=nameText:match('%（(.+)%）') or nameText
+                    nameText=nameText:match('%- (.+)') or nameText
+                    nameText=nameText:match(HEADER_COLON..'(.+)') or nameText
+                    nameText=nameText:match('·(.+)') or nameText
+                    nameText=e.WA_Utf8Sub(nameText, 5, 10)
+                end
                 frame.nameLable:SetScale(Save.insScale or 1)
             end
             if frame.nameLable then
