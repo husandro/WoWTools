@@ -229,7 +229,7 @@ local function EncounterJournal_Set_All_Info_Text()
         AllTipsFrame.weekLable:SetText('')
     end
     --周奖励，提示
-    local last= e.Get_Weekly_Rewards_Activities({frame=AllTipsFrame, point={'TOPLEFT', AllTipsFrame.weekLable, 'BOTTOMLEFT', 0, -2}, anchorRight=true})
+    local last= e.Get_Weekly_Rewards_Activities({frame=AllTipsFrame, point={'TOPLEFT', AllTipsFrame.weekLable, 'BOTTOMLEFT', 0, -2}, anchor='ANCHOR_RIGHT'})
 
  
 

@@ -834,6 +834,19 @@ local function InitList(self, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####

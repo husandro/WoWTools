@@ -723,6 +723,7 @@ local function Init()
     button:SetScript('OnLeave', function()
         Set_TrackButton_Pushed(false)--TrackButton，提示
         WoWToolsChatButtonFrame:SetButtonState('NORMAL')
+        e.tips:Hide()
     end)
 
 

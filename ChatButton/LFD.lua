@@ -1063,8 +1063,8 @@ local function set_LFGPlus()--预创建队伍增强
                         e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
                     end
-            end)
-            self.realmText:SetScript("OnLeave", function() e.tips:Hide() end)
+                end)
+                self.realmText:SetScript("OnLeave", function() e.tips:Hide() end)
             end
         end
         if self.realmText then

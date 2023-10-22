@@ -1017,11 +1017,13 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 --[[if e.Player.husandro then
                     frame:EnableMouse(true)
                     frame:SetScript('OnMouseDown', function(self2)
+                        e.call('EncounterJournal_LoadUI')
+                        
                         if self2.journalInstanceID and EncounterJournal then
-                            --if ( not EncounterJournal ) then
-                                --EncounterJournal_LoadUI();
-                                EncounterJournal_OpenJournal(DifficultyUtil.ID.DungeonChallenge, self2.journalInstanceID);
+                            ToggleEncounterJournal()
                             --EncounterJournal_OpenJournal([difficultyID, instanceID, encounterID, sectionID, creatureID, itemID, tierIndex])
+                            EncounterJournal_TierDropDown_Select(nil, 11)
+                           -- EncounterJournal_OpenJournal(DifficultyUtil.ID.DungeonChallenge, self2.journalInstanceID);
                         end
                     end)
                 end]]
