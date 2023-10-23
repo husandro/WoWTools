@@ -21,6 +21,9 @@ local Button
 local TrackButton
 
 
+for itemID, _ in pairs(Save.item) do
+	e.LoadDate({id=itemID, type='item'})--加载 item quest spell
+end
 
 
 
@@ -76,9 +79,6 @@ local function Get_Item(itemID)
 		else
 			text=numText..(nameText and ' '..nameText or '')
 		end
-
-	elseif not icon then
-		e.LoadDate({id=itemID, type='item'})--加载 item quest spell
 	end
 	return text, icon, itemQuality, name
 end
@@ -194,7 +194,7 @@ end
 
 
 local function Set_TrackButton_Text()
-	if not TrackButton or not TrackButton.Frame:IsShown() then
+	if not TrackButton or not TrackButton:IsShown() then
 		return
 	end
 
@@ -223,22 +223,26 @@ local function Set_TrackButton_Text()
 		end
 	end
 	if not Save.disabledItemTrack then
-		local itemTab={}
-		for itemID in pairs(Save.item) do
-			local text, icon, itemQuality, name= Get_Item(itemID)
-			if text and icon then
-				table.insert(itemTab, {text= text, icon=icon, itemID= itemID, itemQuality=itemQuality or 0, name=name})
+		if (Save.itemButtonUse and not bat or not Save.itemButtonUse) then
+			local itemTab={}
+			for itemID in pairs(Save.item) do
+				local text, icon, itemQuality, name= Get_Item(itemID)
+				if text and icon then
+					table.insert(itemTab, {text= text, icon=icon, itemID= itemID, itemQuality=itemQuality or 0, name=name})
+				end
 			end
-		end
-		table.sort(itemTab, function(a, b)
-			if a.itemQuality== b.itemQuality then
-				return a.itemID> b.itemID
-			else
-				return a.itemQuality> b.itemQuality
+			table.sort(itemTab, function(a, b)
+				if a.itemQuality== b.itemQuality then
+					return a.itemID> b.itemID
+				else
+					return a.itemQuality> b.itemQuality
+				end
+			end)
+			for _, tables in pairs(itemTab) do
+				table.insert(tab, tables)
 			end
-		end)
-		for _, tables in pairs(itemTab) do
-			table.insert(tab, tables)
+		elseif Save.itemButtonUse then
+			TrackButton.Frame:RegisterEvent('PLAYER_REGEN_ENABLED')
 		end
 	end
 
@@ -246,10 +250,9 @@ local function Set_TrackButton_Text()
 
 	for index, tables in pairs(tab) do
 		local btn= TrackButton.btn[index]
+		local itemButtonUse=(Save.itemButtonUse and tables.itemID) and true or nil--使用物品
 		if not btn then
-			local itemButtonUse=(Save.itemButtonUse and tables.itemID) and true or nil--使用物品
-
-			btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide', type= itemButtonUse, pushe=itemButtonUse})
+			btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide', type=itemButtonUse, pushe=itemButtonUse})
 			if itemButtonUse then
 				btn.texture= btn:CreateTexture(nil,'BORDER')
 				btn.texture:SetAllPoints(btn)
@@ -322,28 +325,37 @@ local function Set_TrackButton_Text()
 				e.SetItemSpellCool({frame=self, item=self.itemID, type= self.itemButtonUs })
 			end
 			function btn:set_btn_Event()
-				self:UnregisterAllEvents()
 				if self.itemID then
 					self:RegisterEvent('BAG_UPDATE_COOLDOWN')
 				end
-				btn:set_item_cool()
 			end
-			btn:SetScript('OnEvent', btn.set_item_cool)
+			btn:SetScript('OnEvent', function(self, event)
+				self:set_item_cool()
+			end)
 
-			btn.itemButtonUse= itemButtonUse--使用物品
-			if itemButtonUse then
+			btn:SetScript('OnShow', function(self)
+				self:set_item_cool()
+				self:set_btn_Event()
+			end)
+			btn:SetScript('OnHide', function(self)
+				self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
+			end)
+
+			btn:set_btn_Event()
+
+			if itemButtonUse then--使用物品
 				btn:SetAttribute('type', 'item')
 			end
-			btn:SetScript('OnShow', btn.set_btn_Event)
-			btn:SetScript('OnHide', function(self) self:UnregisterAllEvents() end)
-			btn:set_btn_Event()
+			btn.itemButtonUse= itemButtonUse--使用物品
 
 			TrackButton.btn[index]= btn
 		end
 
 		btn.itemID= tables.itemID
 		btn.index= tables.index
+		btn.name= tables.name
 		btn.currencyID= tables.currencyID
+
 		if btn.texture then
 			SetPortraitToTexture(btn.texture, tables.icon)
 		else
@@ -352,14 +364,10 @@ local function Set_TrackButton_Text()
 		btn.text:SetText(tables.text)--设置，文本
 		btn:set_item_cool()
 
-		if btn.itemButtonUse then--使用物品
-			if not bat then
-				btn:SetAttribute('item',  tables.itemID and tables.name or nil )
-				btn:SetShown(true)
-			end
-		else
-			btn:SetShown(true)
+		if itemButtonUse and not bat then--使用物品
+			btn:SetAttribute('item',  tables.itemID and tables.name or nil )
 		end
+		btn:SetShown(true)
 
 		last= btn
 	end
@@ -385,7 +393,7 @@ local function Set_TrackButton_Text()
 	for i= #tab+1, #TrackButton.btn do--隐藏，多余
 		local btn= TrackButton.btn[i]
 		if btn then
-			if btn.itemButtonUse and not bat or not btn.itemButtonUse then
+			if (btn.itemButtonUse and not bat) or not btn.itemButtonUse then
 				btn:SetShown(false)
 			else
 				btn.text:SetText('')
@@ -406,7 +414,6 @@ end
 local function MenuList_Item(level)
 	local info
 	for itemID, _ in pairs(Save.item) do
-		e.LoadDate({id=itemID, type='item'})--加载 item quest spell
 		info={
 			text= select(2, GetItemInfo(itemID)) or ('itemID '..itemID),
 			icon= C_Item.GetItemIconByID(itemID),
@@ -480,9 +487,6 @@ local function Init_TrackButton()
 		return
 	end
 
-	for itemID, _ in pairs(Save.item) do
-		e.LoadDate({id=itemID, type='item'})--加载 item quest spell
-	end
 
 	TrackButton= e.Cbtn(nil, {atlas='hide', size={22,22}, pushe=true})
 
@@ -517,7 +521,7 @@ local function Init_TrackButton()
 			)
 
 		self:SetShown(not hide)
-		self.Frame:SetShown(not hide and Save.str)
+		--self.Frame:SetShown(not hide and Save.str)
 	end
 
 	function TrackButton:set_Scale()
@@ -707,13 +711,17 @@ local function Init_TrackButton()
 
 
 	TrackButton:SetScript("OnEnter", function(self)
-		Set_TrackButton_Text()
+		if (Save.itemButtonUse and not UnitAffectingCombat('player')) or not Save.itemButtonUse then
+			Set_TrackButton_Text()
+			self:set_Shown()
+		end
 		self:set_Tooltips()
 		self.texture:SetAlpha(1)
 	end)
 	TrackButton:SetScript('OnMouseUp', ResetCursor)
 	TrackButton:SetScript("OnLeave", function(self)
-		self:set_Shown()
+	
+		
 		e.tips:Hide()
 		self:set_Texture()
 		self.texture:SetAlpha(0.5)
@@ -739,7 +747,12 @@ local function Init_TrackButton()
 	TrackButton.Frame:RegisterEvent('BAG_UPDATE_DELAYED')
 	TrackButton.Frame:RegisterEvent('BAG_UPDATE')
 	TrackButton.Frame:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
-	TrackButton.Frame:SetScript('OnEvent', Set_TrackButton_Text)
+	TrackButton.Frame:SetScript('OnEvent', function(self, event)
+		if event=='PLAYER_REGEN_ENABLED' then
+			self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+		end
+		Set_TrackButton_Text()
+	end)
 
 
 	TrackButton:set_Point()
@@ -976,6 +989,7 @@ local function InitMenu(_, level, menuList)--主菜单
 		info={
 			text= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
 			checked= not Save.notAutoHideTrack,
+			disabled= Save.itemButtonUse and UnitAffectingCombat('player'),
 			tooltipOnButton=true,
 			tooltipTitle= (e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)..'|n'
 				..(e.onlyChinese and '宠物对战' or SHOW_PET_BATTLES_ON_MAP_TEXT)..'|n'
