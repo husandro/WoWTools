@@ -576,7 +576,6 @@ function e.Say(type, name, wow, text)
 end
 
 function e.Reload()
-    C_UI.Reload()
     local bat= UnitAffectingCombat('player') and e.IsEncouter_Start
     if not bat or not IsInInstance() then
         C_UI.Reload()

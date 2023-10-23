@@ -237,11 +237,19 @@ local function Set_TrackButton_Text()
 			btn.text= e.Cstr(btn, {color=true})
 
 			btn:SetSize(12,12)
-			if findToken>1 and index==findToken then--货物，物品，分开
-				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -6)
-			else
-				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -1)
+			
+			local y= findToken>1 and index==findToken and -6 or -1--货物，物品，分开
+
+			function btn:set_btn_point()
+				if Save.toTopTrack then
+
+				else
+					btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, y)
+				end
 			end
+			
+			
+			
 
 			function btn:set_Text_Point()
 				if Save.toRightTrackText then
@@ -414,10 +422,13 @@ local function MenuList_Item(level)
 		checked= Save.itemButtonUse,
 		keepShownOnClick= true,
 		tooltipOnButton= true,
+		disabled=UnitAffectingCombat('player'),
 		tooltipTitle= e.onlyChinese and '友情提示: 可能会出现错误' or ('note: '..ENABLE_ERROR_SPEECH),
+		tooltipText= (e.onlyChinese and '重新加载UI' or RELOADUI)..'|n'..SLASH_RELOAD1,
 		func= function()
 			Save.itemButtonUse= not Save.itemButtonUse and true or nil
 			print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+			e.Reload()
 		end
 	}
 	e.LibDD:UIDropDownMenu_AddButton(info, level)

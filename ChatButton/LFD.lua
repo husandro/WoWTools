@@ -634,14 +634,6 @@ local function Init_tipsButton()
     end)
 
 
-    function tipsButton:LeaveQueueWithMatchReadyCheck(idx, queueType)
-        if status == "confirm" and not PVPHelper_QueueAllowsLeaveQueueWithMatchReady(queueType) then
-            UIErrorsFrame:AddExternalErrorMessage(PVP_MATCH_READY_ERROR);
-        else
-            local acceptPort = false;
-            AcceptBattlefieldPort(idx, acceptPort);
-        end
-    end
     tipsButton:SetScript('OnDoubleClick', function(_, d)--离开所有队列
         if IsInGroup() and not UnitIsGroupLeader("player") then
             return
@@ -658,7 +650,7 @@ local function Init_tipsButton()
 
         RejectProposal()--拒绝 LFG 邀请并离开队列
 
-        --[[PvP
+        --[[PvP 不能用，保护 AcceptBattlefieldPort
         for i=1, GetMaxBattlefieldID() do
             local status, mapName, teamSize, registeredMatch, suspendedQueue, queueType = GetBattlefieldStatus(i);
         end]]
