@@ -395,7 +395,7 @@ function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
     self.cooldown:SetCooldown(start, duration, modRate)
 end
 
-function e.SetItemSpellCool(tab)--{frame=, item=, spell=, type=} type=true(not SwipeTexture)}
+function e.SetItemSpellCool(tab)--{frame=, item=, spell=, type=} type=true圆形，false方形
     if tab.frame then
         if tab.item then
             local startTime, duration = GetItemCooldown(tab.item)
@@ -1683,7 +1683,7 @@ function e.Cbtn2(tab)
         notSecureActionButton=nil,
         notTexture=nil,
         showTexture=true,
-        sizi=nil,
+        size=nil,
         alpha=1,
     })
 ]]

@@ -6,7 +6,8 @@ local Save={
 	btnstr=true,--文本
 	--scaleTrackButton=1,缩放
 	--notAutoHideTrack=true,--自动隐藏
-	toRightTrackText=true,--向右平移 
+	toRightTrackText=true,--向右平移
+	--toTopTrack=true,--向上
 
 	factionUpdateTips=true,--更新, 提示
 	--indicato=true,--指定
@@ -202,6 +203,13 @@ local function Set_SetOwner(self)
 	end
 end
 
+
+
+
+
+
+
+
 --个人，声望，提示
 local function ShowFriendshipReputationTooltip(self)--ReputationFrame.lua
 	local repInfo = C_GossipInfo.GetFriendshipReputation(self.friendshipID);
@@ -291,6 +299,16 @@ local function ShowFactionTooltip(self)--Tooltips.lua
 	end
 end
 
+
+
+
+
+
+
+
+
+
+
 --设置 Text
 local function Set_TrackButton_Text()
 	if not Save.btnstr or not TrackButton or not TrackButton:IsShown() then
@@ -378,6 +396,10 @@ local function Set_TrackButton_Text()
 		btn:SetNormalTexture(0)
 	end
 end
+
+
+
+
 
 
 

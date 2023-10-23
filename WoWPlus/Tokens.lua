@@ -193,7 +193,7 @@ end
 
 
 
-local function Set_TrackButton_Text(setpoint)
+local function Set_TrackButton_Text()
 	if not TrackButton or not TrackButton.Frame:IsShown() then
 		return
 	end
@@ -249,19 +249,25 @@ local function Set_TrackButton_Text(setpoint)
 		if not btn then
 			local itemButtonUse=(Save.itemButtonUse and tables.itemID) and true or nil--使用物品
 
-			btn= e.Cbtn(TrackButton.Frame, {size={12,12}, icon='hide', type= itemButtonUse, pushe=itemButtonUse})
+			btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide', type= itemButtonUse, pushe=itemButtonUse})
+			if itemButtonUse then
+				btn.texture= btn:CreateTexture(nil,'BORDER')
+				btn.texture:SetAllPoints(btn)
+				btn.border=btn:CreateTexture(nil, 'ARTWORK')
+				btn.border:SetSize(17,17)
+				btn.border:SetPoint('CENTER',1,-1)
+				btn.border:SetAtlas('bag-reagent-border')
+			end
+			
 			btn.text= e.Cstr(btn, {color=true})
 
-			btn:SetSize(12,12)
 
-			function btn:set_Point()
-				if Save.toTopTrack then
-					btn:SetPoint("BOTTOM", last or TrackButton, 'TOP',0,  endTokenIndex>1 and index==endTokenIndex and 6 or 1) --货物，物品，分开
-				else
-					btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0,  endTokenIndex>1 and index==endTokenIndex and -6 or -1) --货物，物品，分开
-				end
+			if Save.toTopTrack then
+				btn:SetPoint("BOTTOM", last or TrackButton, 'TOP', 0,  (endTokenIndex>1 and index==endTokenIndex) and 5 or 0) --货物，物品，分开
+			else
+				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM', 0,  (endTokenIndex>1 and index==endTokenIndex) and -4 or 0) --货物，物品，分开
 			end
-			btn:set_Point()
+
 
 			function btn:set_Text_Point()
 				if Save.toRightTrackText then
@@ -312,22 +318,20 @@ local function Set_TrackButton_Text(setpoint)
 				end
 			end)
 
+			function btn:set_item_cool()
+				e.SetItemSpellCool({frame=self, item=self.itemID, type= self.itemButtonUs })
+			end
 			function btn:set_btn_Event()
 				self:UnregisterAllEvents()
 				if self.itemID then
 					self:RegisterEvent('BAG_UPDATE_COOLDOWN')
 				end
-				e.SetItemSpellCool({frame=self, item=self.itemID, type=true})
+				btn:set_item_cool()
 			end
-			btn:SetScript('OnEvent', function(self)
-				if self:IsShown() then
-					e.SetItemSpellCool({frame=self, item=self.itemID, type=true})
-				end
-			end)
+			btn:SetScript('OnEvent', btn.set_item_cool)
 
 			btn.itemButtonUse= itemButtonUse--使用物品
 			if itemButtonUse then
-				--btn:SetAttribute('type', 'macro')
 				btn:SetAttribute('type', 'item')
 			end
 			btn:SetScript('OnShow', btn.set_btn_Event)
@@ -335,17 +339,18 @@ local function Set_TrackButton_Text(setpoint)
 			btn:set_btn_Event()
 
 			TrackButton.btn[index]= btn
-		elseif setpoint then
-			btn:ClearAllPoints()
-			btn:set_Point()
 		end
 
 		btn.itemID= tables.itemID
 		btn.index= tables.index
 		btn.currencyID= tables.currencyID
-		btn:SetNormalTexture(tables.icon)--设置，图片
+		if btn.texture then
+			SetPortraitToTexture(btn.texture, tables.icon)
+		else
+			btn:SetNormalTexture(tables.icon)--设置，图片
+		end
 		btn.text:SetText(tables.text)--设置，文本
-		e.SetItemSpellCool({frame=btn, item=btn.itemID, type=true})
+		btn:set_item_cool()
 
 		if btn.itemButtonUse then--使用物品
 			if not bat then
@@ -663,23 +668,24 @@ local function Init_TrackButton()
 								btn.text:ClearAllPoints()
 								btn:set_Text_Point()
 							end
-							Set_TrackButton_Text(true)--setpoint
+							Set_TrackButton_Text()
 						end
 					}
 
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
 					info={
-						text= e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP,
+						text='|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP),
 						checked= Save.toTopTrack,
-						keepShownOnClick=true,
+						tooltipOnButton=true,
+						tooltipTitle= (e.onlyChinese and '重新加载UI' or RELOADUI)..'|n'..SLASH_RELOAD1,
+						disabled= UnitAffectingCombat('player'),
 						func= function()
 							Save.toTopTrack = not Save.toTopTrack and true or nil
-							Set_TrackButton_Text()
+							e.Reload()
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-					 
 					info={
 						text=e.onlyChinese and '物品' or ITEMS,
 						checked= not Save.disabledItemTrack,
