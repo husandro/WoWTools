@@ -9,8 +9,10 @@ local Save={
 	str=true,
 	--scaleTrackButton=1,
 	toRightTrackText=true,--向右平移
+	--toTopTrack=true,--向上
 	--notAutoHideTrack=true,--自动隐藏
 	itemButtonUse=e.Player.husandro,
+	--disabledItemTrack=true,禁用，追踪物品
 
 	--hideCurrencyMax=true,--隐藏，已达到资源上限,提示
 	--showID=true,--显示ID
@@ -171,6 +173,17 @@ local function Get_Currency(currencyID, index)--货币
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
 local function Set_TrackButton_Pushed(show)--提示
 	if TrackButton then
 		TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
@@ -178,7 +191,9 @@ local function Set_TrackButton_Pushed(show)--提示
 end
 
 
-local function Set_TrackButton_Text()
+
+
+local function Set_TrackButton_Text(setpoint)
 	if not TrackButton or not TrackButton.Frame:IsShown() then
 		return
 	end
@@ -207,25 +222,25 @@ local function Set_TrackButton_Text()
 			end
 		end
 	end
-
-	local itemTab={}
-	for itemID in pairs(Save.item) do
-		local text, icon, itemQuality, name= Get_Item(itemID)
-		if text and icon then
-			table.insert(itemTab, {text= text, icon=icon, itemID= itemID, itemQuality=itemQuality or 0, name=name})
+	if not Save.disabledItemTrack then
+		local itemTab={}
+		for itemID in pairs(Save.item) do
+			local text, icon, itemQuality, name= Get_Item(itemID)
+			if text and icon then
+				table.insert(itemTab, {text= text, icon=icon, itemID= itemID, itemQuality=itemQuality or 0, name=name})
+			end
+		end
+		table.sort(itemTab, function(a, b)
+			if a.itemQuality== b.itemQuality then
+				return a.itemID> b.itemID
+			else
+				return a.itemQuality> b.itemQuality
+			end
+		end)
+		for _, tables in pairs(itemTab) do
+			table.insert(tab, tables)
 		end
 	end
-	table.sort(itemTab, function(a, b)
-		if a.itemQuality== b.itemQuality then
-			return a.itemID> b.itemID
-		else
-			return a.itemQuality> b.itemQuality
-		end
-	end)
-	for _, tables in pairs(itemTab) do
-		table.insert(tab, tables)
-	end
-	
 
 	local last
 
@@ -238,11 +253,15 @@ local function Set_TrackButton_Text()
 			btn.text= e.Cstr(btn, {color=true})
 
 			btn:SetSize(12,12)
-			if endTokenIndex>1 and index==endTokenIndex then--货物，物品，分开
-				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -6)
-			else
-				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -1)
+
+			function btn:set_Point()
+				if Save.toTopTrack then
+					btn:SetPoint("BOTTOM", last or TrackButton, 'TOP',0,  endTokenIndex>1 and index==endTokenIndex and 6 or 1) --货物，物品，分开
+				else
+					btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0,  endTokenIndex>1 and index==endTokenIndex and -6 or -1) --货物，物品，分开
+				end
 			end
+			btn:set_Point()
 
 			function btn:set_Text_Point()
 				if Save.toRightTrackText then
@@ -316,6 +335,9 @@ local function Set_TrackButton_Text()
 			btn:set_btn_Event()
 
 			TrackButton.btn[index]= btn
+		elseif setpoint then
+			btn:ClearAllPoints()
+			btn:set_Point()
 		end
 
 		btn.itemID= tables.itemID
@@ -367,6 +389,13 @@ local function Set_TrackButton_Text()
 		end
 	end
 end
+
+
+
+
+
+
+
 
 --物品，菜单
 local function MenuList_Item(level)
@@ -421,6 +450,20 @@ local function MenuList_Item(level)
 	}
 	e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local function Init_TrackButton()
@@ -620,16 +663,34 @@ local function Init_TrackButton()
 								btn.text:ClearAllPoints()
 								btn:set_Text_Point()
 							end
+							Set_TrackButton_Text(true)--setpoint
+						end
+					}
+
+					e.LibDD:UIDropDownMenu_AddButton(info, level)
+					info={
+						text= e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP,
+						checked= Save.toTopTrack,
+						keepShownOnClick=true,
+						func= function()
+							Save.toTopTrack = not Save.toTopTrack and true or nil
 							Set_TrackButton_Text()
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+					 
 					info={
 						text=e.onlyChinese and '物品' or ITEMS,
-						notCheckable=true,
+						checked= not Save.disabledItemTrack,
 						menuList='ITEMS',
 						hasArrow=true,
 						keepShownOnClick=true,
+						disabled= UnitAffectingCombat('player'),
+						func= function()
+							Save.disabledItemTrack = not Save.disabledItemTrack and true or nil
+							Set_TrackButton_Text()
+						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
 				end, 'MENU')
@@ -971,14 +1032,19 @@ local function InitMenu(_, level, menuList)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    info={
+	info={
 		text=e.onlyChinese and '物品' or ITEMS,
-		notCheckable=true,
+		checked= not Save.disabledItemTrack,
 		menuList='ITEMS',
 		hasArrow=true,
 		keepShownOnClick=true,
+		disabled= UnitAffectingCombat('player'),
 		colorCode=Save.Hide and '|cff606060' or nil,
-    }
+		func= function()
+			Save.disabledItemTrack = not Save.disabledItemTrack and true or nil
+			Set_TrackButton_Text()
+		end
+	}
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
 	e.LibDD:UIDropDownMenu_AddSeparator(level)
