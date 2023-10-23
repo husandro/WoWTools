@@ -71,14 +71,14 @@ local function Init()
 
     end
 
+    local layer=PetStableFrame:GetFrameLevel()+ 1
     for i = 1, maxSlots do
         local frame = _G["PetStableStabledPet"..i]
         if i > 1 then
             frame:ClearAllPoints()
             frame:SetPoint("LEFT", _G["PetStableStabledPet"..i-1], "RIGHT", 4, 0)
         end
-        frame:SetFrameLevel(PetStableFrame:GetFrameLevel() + 1)
-        --frame:SetScale(7/NUM_PER_ROW)
+        frame:SetFrameLevel(layer)
         frame.dimOverlay = frame:CreateTexture(nil, "OVERLAY");
         frame.dimOverlay:SetColorTexture(0, 0, 0, 0.8);
         frame.dimOverlay:SetAllPoints();
@@ -181,7 +181,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             print(IsAddOnLoaded("ImprovedStableFrame"))
             --添加控制面板
             e.AddPanel_Check({
-                name= '|T656681:0|t'..(e.onlyChinese and '猎人兽栏' or addName),
+                name= '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or addName),
                 tooltip= nil,
                 value= not Save.disabled,
                 func= function()
