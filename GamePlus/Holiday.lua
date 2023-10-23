@@ -479,7 +479,7 @@ end
 
 
 local function Init_TrackButton()
-    TrackButton= e.Cbtn(nil, {icon='hide', size={22,22}, pushe=true})
+    TrackButton= e.Cbtn(nil, {icon='hide', size={18,18}, pushe=true})
 
     TrackButton.texture=TrackButton:CreateTexture()
     TrackButton.texture:SetAllPoints(TrackButton)

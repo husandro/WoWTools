@@ -311,7 +311,7 @@ end
 
 --设置 Text
 local function Set_TrackButton_Text()
-	if not Save.btnstr or not TrackButton or not TrackButton:IsShown() then
+	if not TrackButton or not TrackButton:IsShown() then
 		return
 	end
 	local faction={}
@@ -413,7 +413,7 @@ local function Init_TrackButton()
 	if not Save.btn or TrackButton then
 		return
 	end
-	TrackButton= e.Cbtn(nil, {icon='hide', size={24,24}, pushe=true})
+	TrackButton= e.Cbtn(nil, {icon='hide', size={18,18}, pushe=true})
 	--TrackButton.text= e.Cstr(TrackButton, {color=true})
 
 	TrackButton.texture= TrackButton:CreateTexture()

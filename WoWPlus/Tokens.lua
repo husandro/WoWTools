@@ -25,16 +25,29 @@ for itemID, _ in pairs(Save.item) do
 	e.LoadDate({id=itemID, type='item'})--加载 item quest spell
 end
 
+local qualityToIconBorderAtlas ={
+	[Enum.ItemQuality.Poor] = "auctionhouse-itemicon-border-gray",
+	[Enum.ItemQuality.Common] = "auctionhouse-itemicon-border-white",
+	[Enum.ItemQuality.Uncommon] = "auctionhouse-itemicon-border-green",
+	[Enum.ItemQuality.Rare] = "auctionhouse-itemicon-border-blue",
+	[Enum.ItemQuality.Epic] = "auctionhouse-itemicon-border-purple",
+	[Enum.ItemQuality.Legendary] = "auctionhouse-itemicon-border-orange",
+	[Enum.ItemQuality.Artifact] = "auctionhouse-itemicon-border-artifact",
+	[Enum.ItemQuality.Heirloom] = "auctionhouse-itemicon-border-account",
+	[Enum.ItemQuality.WoWToken] = "auctionhouse-itemicon-border-account",
+}
 
-
-
-
-
-
-
-
-
-
+local qualityToIconBorderAtlas4 ={
+	[Enum.ItemQuality.Poor] = "dressingroom-itemborder-gray",
+	[Enum.ItemQuality.Common] = "dressingroom-itemborder-white",
+	[Enum.ItemQuality.Uncommon] = "dressingroom-itemborder-green",
+	[Enum.ItemQuality.Rare] = "dressingroom-itemborder-blue",
+	[Enum.ItemQuality.Epic] = "dressingroom-itemborder-purple",
+	[Enum.ItemQuality.Legendary] = "auctionhouse-itemicon-border-orange",
+	[Enum.ItemQuality.Artifact] = "dressingroom-itemborder-orange",
+	[Enum.ItemQuality.Heirloom] = "dressingroom-itemborder-account",
+	[Enum.ItemQuality.WoWToken] = "dressingroom-itemborder-account",
+}
 
 --###########
 --监视声望按钮
@@ -255,15 +268,19 @@ local function Set_TrackButton_Text()
 			btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide', type=itemButtonUse, pushe=itemButtonUse})
 			if itemButtonUse then
 				btn.texture= btn:CreateTexture(nil,'BORDER')
-				btn.texture:SetSize(12,12)
-				btn.texture:SetPoint('CENTER',-1,1)
+				btn.texture:SetSize(14,14)
+				btn.texture:SetPoint('CENTER',-0.5,0.5)
 				btn.border=btn:CreateTexture(nil, 'ARTWORK')
-				
-				btn.border:SetSize(15,15)
-				btn.border:SetPoint('CENTER')
-				btn.border:SetAtlas('bag-reagent-border')
+				btn.border:SetSize(18,18)
+				btn.border:SetPoint('CENTER',-0.5,0.3)
+
+			elseif tables.itemID then
+				btn.border=btn:CreateTexture(nil, 'ARTWORK')
+				btn.border:SetAllPoints(btn)
+				--btn.border:SetSize(18,18)
+				--btn.border:SetPoint('CENTER',-0.5,0.5)
 			end
-			
+
 			btn.text= e.Cstr(btn, {color=true})
 
 
@@ -363,12 +380,24 @@ local function Set_TrackButton_Text()
 		else
 			btn:SetNormalTexture(tables.icon)--设置，图片
 		end
+		if btn.border then
+			local atlas= btn.itemButtonUse and qualityToIconBorderAtlas[tables.itemQuality] or qualityToIconBorderAtlas4[tables.itemQuality]
+			if atlas then
+				btn.border:SetAtlas(atlas)
+			end
+			btn:SetShown(atlas and true or false)
+		end
+
 		btn.text:SetText(tables.text)--设置，文本
+
 		btn:set_item_cool()
 
 		if itemButtonUse and not bat then--使用物品
 			btn:SetAttribute('item',  tables.itemID and tables.name or nil )
 		end
+
+
+
 		btn:SetShown(true)
 
 		last= btn
@@ -490,7 +519,7 @@ local function Init_TrackButton()
 	end
 
 
-	TrackButton= e.Cbtn(nil, {atlas='hide', size={22,22}, pushe=true})
+	TrackButton= e.Cbtn(nil, {atlas='hide', size={18,18}, pushe=true})
 
 	TrackButton.texture= TrackButton:CreateTexture()
 	TrackButton.texture:SetAllPoints(TrackButton)
@@ -607,7 +636,7 @@ local function Init_TrackButton()
 				n= n- 0.05
 			end
 			n= n<0.4 and 0.4 or n
-			n= n>3 and 3 or n
+			n= n>4 and 4 or n
 			Save.scaleTrackButton=n
 			self:set_Scale()
 			self:set_Tooltips()
@@ -723,8 +752,8 @@ local function Init_TrackButton()
 	end)
 	TrackButton:SetScript('OnMouseUp', ResetCursor)
 	TrackButton:SetScript("OnLeave", function(self)
-	
-		
+
+
 		e.tips:Hide()
 		self:set_Texture()
 		self.texture:SetAlpha(0.5)
