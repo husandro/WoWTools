@@ -255,10 +255,12 @@ local function Set_TrackButton_Text()
 			btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide', type=itemButtonUse, pushe=itemButtonUse})
 			if itemButtonUse then
 				btn.texture= btn:CreateTexture(nil,'BORDER')
-				btn.texture:SetAllPoints(btn)
+				btn.texture:SetSize(12,12)
+				btn.texture:SetPoint('CENTER',-1,1)
 				btn.border=btn:CreateTexture(nil, 'ARTWORK')
-				btn.border:SetSize(17,17)
-				btn.border:SetPoint('CENTER',1,-1)
+				
+				btn.border:SetSize(15,15)
+				btn.border:SetPoint('CENTER')
 				btn.border:SetAtlas('bag-reagent-border')
 			end
 			
@@ -678,7 +680,8 @@ local function Init_TrackButton()
 
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
 					info={
-						text='|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP),
+						text=e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP,
+						icon='bags-greenarrow',
 						checked= Save.toTopTrack,
 						tooltipOnButton=true,
 						tooltipTitle= (e.onlyChinese and '重新加载UI' or RELOADUI)..'|n'..SLASH_RELOAD1,
