@@ -47,6 +47,9 @@ local function ImprovedStableFrame_Update()
 end
 
 local function Init()
+    if not PetStableFrame then
+        return
+    end
     for i = 1, maxSlots do--+NUM_PET_STABLE_SLOTS
         local btn= _G["PetStableStabledPet"..i]
         if not btn then
