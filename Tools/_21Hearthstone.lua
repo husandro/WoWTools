@@ -256,10 +256,10 @@ local function showTips(self)--显示提示
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
-        if e.tips.textRight then
+        if e.tips.textLeft then
             local text=GetBindLocation()--显示,绑定位置
             if text then
-                e.tips.textRight:SetText(text)
+                e.tips.textLeft:SetText(e.Player.col..text)
             end
         end
     else
