@@ -179,12 +179,12 @@ end
 
 
 local function Set_TrackButton_Text()
-	if not Save.str or not TrackButton or not TrackButton.Frame:IsShown() then
+	if not TrackButton or not TrackButton.Frame:IsShown() then
 		return
 	end
 
 	local tab={}
-	local findToken=1--货物，物品，分开
+	local endTokenIndex=1--货物，物品，分开
 	local bat= UnitAffectingCombat('player')
 
 	if Save.indicato then
@@ -192,7 +192,7 @@ local function Set_TrackButton_Text()
 			local text, icon= Get_Currency(currencyID, nil)--货币
 			if text and icon then
 				table.insert(tab, {text= text, icon=icon, currencyID=currencyID})
-				findToken= findToken+1--货物，物品，分开
+				endTokenIndex= endTokenIndex+1--货物，物品，分开
 			end
 		end
 		table.sort(tab, function(a, b)
@@ -203,7 +203,7 @@ local function Set_TrackButton_Text()
 			local text, icon = Get_Currency(nil, index)--货币
 			if text and icon then
 				table.insert(tab, {text= text, icon=icon, index=index})
-				findToken= findToken+1--货物，物品，分开
+				endTokenIndex= endTokenIndex+1--货物，物品，分开
 			end
 		end
 	end
@@ -225,6 +225,7 @@ local function Set_TrackButton_Text()
 	for _, tables in pairs(itemTab) do
 		table.insert(tab, tables)
 	end
+	
 
 	local last
 
@@ -233,23 +234,15 @@ local function Set_TrackButton_Text()
 		if not btn then
 			local itemButtonUse=(Save.itemButtonUse and tables.itemID) and true or nil--使用物品
 
-			btn= e.Cbtn(TrackButton.Frame, {size={12,12}, icon='hide', type= itemButtonUse})
+			btn= e.Cbtn(TrackButton.Frame, {size={12,12}, icon='hide', type= itemButtonUse, pushe=itemButtonUse})
 			btn.text= e.Cstr(btn, {color=true})
 
 			btn:SetSize(12,12)
-			
-			local y= findToken>1 and index==findToken and -6 or -1--货物，物品，分开
-
-			function btn:set_btn_point()
-				if Save.toTopTrack then
-
-				else
-					btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, y)
-				end
+			if endTokenIndex>1 and index==endTokenIndex then--货物，物品，分开
+				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -6)
+			else
+				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -1)
 			end
-			
-			
-			
 
 			function btn:set_Text_Point()
 				if Save.toRightTrackText then
@@ -335,11 +328,6 @@ local function Set_TrackButton_Text()
 		if btn.itemButtonUse then--使用物品
 			if not bat then
 				btn:SetAttribute('item',  tables.itemID and tables.name or nil )
-				--[[if tables.itemID then
-					btn:SetAttribute('macrotext', '/use [@player]'..(tables.name or tables.itemID))
-				else
-					btn:SetAttribute('macrotext', nil)
-				end]]
 				btn:SetShown(true)
 			end
 		else
@@ -349,13 +337,13 @@ local function Set_TrackButton_Text()
 		last= btn
 	end
 
-	if TrackButton.findToken and TrackButton.findToken~= findToken then--货物，物品，分开
+	if TrackButton.endTokenIndex and TrackButton.endTokenIndex~= endTokenIndex then--货物，物品，分开
 		last=nil
 		for i= 1, #TrackButton.btn do
 			local btn= TrackButton.btn[i]
 			if btn then
 				btn:ClearAllPoints()
-				if findToken>1 and i==findToken then--货物，物品，分开
+				if endTokenIndex>1 and i==endTokenIndex then--货物，物品，分开
 					btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -6)
 				else
 					btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -1)
@@ -364,7 +352,8 @@ local function Set_TrackButton_Text()
 			end
 		end
 	end
-	TrackButton.findToken= findToken
+	TrackButton.endTokenIndex= endTokenIndex
+
 
 	for i= #tab+1, #TrackButton.btn do--隐藏，多余
 		local btn= TrackButton.btn[i]
@@ -427,7 +416,6 @@ local function MenuList_Item(level)
 		tooltipText= (e.onlyChinese and '重新加载UI' or RELOADUI)..'|n'..SLASH_RELOAD1,
 		func= function()
 			Save.itemButtonUse= not Save.itemButtonUse and true or nil
-			print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 			e.Reload()
 		end
 	}
