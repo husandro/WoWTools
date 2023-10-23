@@ -169,6 +169,7 @@ ChatButton\Combat.lua
 ##美酒节 Brewfest
 Other\Brewfest.lua
 Other\DormantSeeds.lua
+Other\HunterPet.lua
 
 ##副本, 挑战,之类
 ##Instance\Explosives.lua
