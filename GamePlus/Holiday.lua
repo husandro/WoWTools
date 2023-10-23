@@ -4,6 +4,7 @@ local Save={
     onGoing=true,--仅限: 正在活动
     --disabled= not e.Player.husandro
     --left=e.Player.husandro,--内容靠左
+    --toTopTrack=true,--向上
     --showDate= true,--时间
 }
 local panel= CreateFrame('Frame')
@@ -364,7 +365,11 @@ local function Set_TrackButton_Text(monthOffset, day)
         local btn= TrackButton.btn[index]
         if not btn then
             btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide'})
-			btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')--,0, -1)
+            if Save.toTopTrack then
+                btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
+            else
+			    btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')
+            end
             btn:SetScript('OnLeave', function()
 				e.tips:Hide()
 				Set_TrackButton_Pushed(false)--TrackButton，提示
@@ -591,11 +596,33 @@ local function Init_TrackButton()
                                 btn.text:ClearAllPoints()
                                 btn:set_text_point()
                             end
-
                             Set_TrackButton_Text()
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+                    info={
+						text=e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP,
+						icon='bags-greenarrow',
+						checked= Save.toTopTrack,
+						func= function()
+							Save.toTopTrack = not Save.toTopTrack and true or nil
+							local last
+							for index= 1, #TrackButton.btn do
+								local btn=TrackButton.btn[index]
+								btn:ClearAllPoints()
+								if Save.toTopTrack then
+									btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
+								else
+									btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')
+								end
+								last=btn
+							end
+							Set_TrackButton_Text()
+						end
+					}
+					e.LibDD:UIDropDownMenu_AddButton(info, level)
+
 
                     info={
                         text= e.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),

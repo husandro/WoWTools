@@ -337,7 +337,11 @@ local function Set_TrackButton_Text()
 		local btn= TrackButton.btn[index]
 		if not btn then
 			btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide'})
-			btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')--,0, -1)
+			if Save.toTopTrack then
+				btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
+			else
+				btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')
+			end
 			btn:SetScript('OnLeave', function(self)
 				e.tips:Hide()
 				self.UpdateTooltip= nil
@@ -396,7 +400,6 @@ local function Set_TrackButton_Text()
 		btn:SetNormalTexture(0)
 	end
 end
-
 
 
 
@@ -522,6 +525,28 @@ local function Init_TrackButton()
 							for _, btn in pairs(TrackButton.btn) do
 								btn.text:ClearAllPoints()
 								btn:set_text_point()
+							end
+							e.call('ReputationFrame_Update')
+						end
+					}
+					e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+					info={
+						text=e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP,
+						icon='bags-greenarrow',
+						checked= Save.toTopTrack,
+						func= function()
+							Save.toTopTrack = not Save.toTopTrack and true or nil
+							local last
+							for index= 1, #TrackButton.btn do
+								local btn=TrackButton.btn[index]
+								btn:ClearAllPoints()
+								if Save.toTopTrack then
+									btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
+								else
+									btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')
+								end
+								last=btn
 							end
 							e.call('ReputationFrame_Update')
 						end
