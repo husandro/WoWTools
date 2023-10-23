@@ -202,6 +202,7 @@ local function Init()
     Button:set_Shown()
 end
 
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
