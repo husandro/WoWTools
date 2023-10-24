@@ -708,12 +708,16 @@ local function set_All_Text()--所有记录
     --历史
     --####
     if not ChallengesFrame.runHistoryLable then
+        
         ChallengesFrame.runHistoryLable= e.Cstr(TipsFrame, {mouse=true, size=14})--最右边, 数据
+        
         if _G['RaiderIO_ProfileTooltip'] then
-            ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', _G['RaiderIO_ProfileTooltip'], 'BOTTOMLEFT', 2, 2)
+            ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', _G['RaiderIO_ProfileTooltip'], 'TOPRIGHT', 2, 0)
+            --ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', _G['RaiderIO_ProfileTooltip'], 'BOTTOMLEFT', 2, 2)
         else
             ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', 2, -26)
         end
+        
         ChallengesFrame.runHistoryLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
         ChallengesFrame.runHistoryLable:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -900,11 +904,7 @@ local function set_All_Text()--所有记录
         end
         if key then
             keyText= (keyText and keyText..'|n' or '')
-                .. (--次数
-                    (infoWoW.Keystone.weekLevel and infoWoW.Keystone.weekNum) and
-                    (infoWoW.Keystone.weekLevel or 0)..'('..(infoWoW.Keystone.weekNum or 0)..') '
-                    or ''
-                )
+                ..(infoWoW.Keystone.weekLevel or 0)..' ('..(infoWoW.Keystone.weekNum or 0)..') '--次数
                 ..e.GetPlayerInfo({guid=guid, faction=infoWoW.faction, reName=true, reRealm=true})
                 ..key
         end
