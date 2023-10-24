@@ -35,7 +35,7 @@ local TipsFrame
 -- Dragonflight Season 2
 -- 134:Entangling, 135：Afflicted, 136:Incorporeal
 local affixSchedule = {
-	
+
 	[1]  = { [1]=6,   [2]=124, [3]=9, }, -- Tyrannical | Raging      | Storming
 	[2]  = { [1]=134, [2]=7,   [3]=10,}, -- Fortified  | Entangling  | Bolstering
 	[3]  = { [1]=136, [2]=123, [3]=9, }, -- Tyrannical | Incorporeal | Spiteful
@@ -849,21 +849,7 @@ local function set_All_Text()--所有记录
             ..' |cff00ff00'..completed..'|r/'..all
             ..(weekText and '|n'..weekText or '')
 
-    --##########
-    --所有角色KEY
-    --##########
-    for guid, infoWoW in pairs(WoWDate or {}) do
-        local linkText
-        for link, _ in pairs(infoWoW.Keystone.itemLink) do
-            local texture
-            texture= C_Item.GetItemIconByID(link)
-            texture= (not texture or texture==134400) and 4352494 or texture
-            linkText= (linkText and linkText..'|n' or '')..'   '..(texture and '|T'..texture..':)|t' or '')..link
-        end
-        if linkText then
-            m= m..'|n|n'..linkText..'|n'.. e.GetPlayerInfo({guid=guid, faction=infoWoW.faction, reName=true, reRealm=true})
-        end
-    end
+
 
     --#############
     --难度 每周 掉落
@@ -898,6 +884,34 @@ local function set_All_Text()--所有记录
         m= m..'|n|n'..(e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..BATTLE_PET_SOURCE_1))..'|n'..text2
     end
 
+    --##########
+    --所有角色KEY
+    --##########
+    local keyText
+    for guid, infoWoW in pairs(WoWDate or {}) do
+        local key
+        for link, _ in pairs(infoWoW.Keystone.itemLink) do
+            local texture
+            texture=  C_Item.GetItemIconByID(link)
+            texture= (not texture or texture==134400) and 4352494 or texture
+            key= (key or '')
+                ..(texture and '|T'..texture..':0|t' or '')
+                ..link
+        end
+        if key then
+            keyText= (keyText and keyText..'|n' or '')
+                .. (--次数
+                    (infoWoW.Keystone.weekLevel and infoWoW.Keystone.weekNum) and
+                    (infoWoW.Keystone.weekLevel or 0)..'('..(infoWoW.Keystone.weekNum or 0)..') '
+                    or ''
+                )
+                ..e.GetPlayerInfo({guid=guid, faction=infoWoW.faction, reName=true, reRealm=true})
+                ..key
+        end
+    end
+    if keyText then
+        m= (m and m..'|n|n'..keyText or m)
+    end
 
     if not ChallengesFrame.tipsAllLabel then
         ChallengesFrame.tipsAllLabel= e.Cstr(TipsFrame)--最右边, 数据
@@ -1324,7 +1338,7 @@ local function set_Week_Reward_Look_Specialization()
     else
         print(id, addName,'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
     end
-    
+
     WeekRewardLookFrame= CreateFrame("Frame")
     WeekRewardLookFrame:SetSize(40,40)
     WeekRewardLookFrame:SetPoint("CENTER", -100, 60)
@@ -1534,7 +1548,7 @@ local function Init()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         if e.onlyChinese then
             e.tips:AddDoubleLine('挑战20层','限时传送门')
-            e.tips:AddDoubleLine('提示：', '如果出现错误，请禁用此功能') 
+            e.tips:AddDoubleLine('提示：', '如果出现错误，请禁用此功能')
         else
             e.tips:AddLine(format(UNITNAME_SUMMON_TITLE14, CHALLENGE_MODE..' (20) '))
             e.tips:AddDoubleLine('note:','If you get error, please disable this')

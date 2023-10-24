@@ -24,7 +24,7 @@ local function ImprovedStableFrame_Update()
     for i = 1, maxSlots do
         local icon, name, level, family, talent = GetStablePetInfo(NUM_PET_ACTIVE_SLOTS + i);
         local button = _G["PetStableStabledPet"..i];
-        
+
         button.dimOverlay:Show();
         if icon then
             local matched, expected = 0, 0
@@ -114,7 +114,7 @@ local function Init()
     --PetStablePetInfo:SetPoint('BOTTOMLEFT', PetStableModelScene,'BOTTOMLEFT')
     PetStableSelectedPetIcon:ClearAllPoints()
     PetStableSelectedPetIcon:SetPoint('RIGHT', PetStableFrame, 'LEFT')
-    
+
     PetStableNameText:ClearAllPoints()
     PetStableNameText:SetPoint('BOTTOMRIGHT', PetStableSelectedPetIcon, 'TOPRIGHT')
     PetStableNameText:SetJustifyH('RIGHT')
@@ -137,7 +137,7 @@ local function Init()
     frame:SetPoint(PetStableFrame.Inset:GetPoint(1))
     PetStableFrame.Inset:SetPoint("TOPLEFT", frame, "TOPRIGHT")
 
-    
+
     --PetStableFrameModelBg
     --PetStableFrameModelBg:SetHeight(281 + heightDelta)
 
@@ -158,7 +158,7 @@ local function Init()
     --ISF_SearchInput:SetPoint("RIGHT", -3, 0)
     ISF_SearchInput:SetSize(360,20)
     ISF_SearchInput:SetPoint('BOTTOMRIGHT',-8, 8)
-    
+
     ISF_SearchInput:HookScript("OnTextChanged", ImprovedStableFrame_Update)
     ISF_SearchInput.Instructions:SetText(e.onlyChinese and '名称，类型，天赋' or (NAME .. ", " .. TYPE .. ", " .. TALENT))
 
@@ -167,7 +167,7 @@ local function Init()
     NUM_PET_STABLE_SLOTS = maxSlots
     NUM_PET_STABLE_PAGES = 1
     PetStableFrame.page = 1
-    
+
 
 
     hooksecurefunc("PetStable_Update", ImprovedStableFrame_Update)
@@ -181,7 +181,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
-            print(IsAddOnLoaded("ImprovedStableFrame"))
+
             --添加控制面板
             e.AddPanel_Check({
                 name= '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or addName),
