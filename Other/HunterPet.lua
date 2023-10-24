@@ -65,6 +65,8 @@ end
 
 
 local function Init()
+    local w, h=720, 630
+
 
     PetStableStabledPet1:ClearAllPoints()--设置，200个按钮，第一个位置
     PetStableStabledPet1:SetPoint("TOPLEFT", PetStableFrame, 97, -37)
@@ -85,7 +87,7 @@ local function Init()
             textrue:SetAlpha(0.5)
         end
     end
-    
+
 
 
     local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
@@ -112,6 +114,14 @@ local function Init()
                     end
                     self:SetAlpha(0.5)
                 end)
+            end
+
+            btn.model= CreateFrame('ModelScene', nil, PetStableFrame,'PanningModelSceneMixinTemplate', 1)
+            btn.model:SetSize(h/5, h/5)
+            if i==1 then
+                btn.model:SetPoint('TOPLEFT', PetStableFrame, 'TOPRIGHT', -4,0)
+            else
+                btn.model:SetPoint('TOP', _G['PetStableActivePet'..i-1].model, 'BOTTOM')
             end
         end
         --local label= _G['PetStableActivePet'..i..'PetName']
@@ -159,11 +169,11 @@ local function Init()
     ISF_SearchInput.Instructions:SetText(e.onlyChinese and '名称，类型，天赋' or (NAME .. ", " .. TYPE .. ", " .. TALENT))
     hooksecurefunc("PetStable_Update", ImprovedStableFrame_Update)
 
-    
-    
-    
 
-    local w, h=720, 630
+
+
+
+  
     PetStableFrame:SetSize(w, h)--设置，大小
     PetStableFrameInset.NineSlice:Hide()
 
@@ -181,7 +191,7 @@ local function Init()
 
     PetStablePetInfo:ClearAllPoints()--隐藏，宠物，信息
     PetStablePetInfo:SetPoint('BOTTOMLEFT',PetStableFrame, 'BOTTOMRIGHT')
-    
+
 
     PetStableNextPageButton:Hide()--隐藏
     PetStablePrevPageButton:Hide()
@@ -191,19 +201,29 @@ local function Init()
     NUM_PET_STABLE_PAGES = 1
     PetStableFrame.page = 1
 
-    
 
-    hooksecurefunc('PetStable_UpdateSlot', function(button, petSlot)--宠物，类型
-        if button.talentText then
+
+    hooksecurefunc('PetStable_UpdateSlot', function(btn, petSlot)--宠物，类型
+        if btn.talentText then
             local talent =petSlot and select(5, GetStablePetInfo(petSlot))
             talent = talent and e.WA_Utf8Sub(talent, 2, 5, true) or ''
-            button.talentText:SetText(talent)
+            btn.talentText:SetText(talent)
+        end
+        if btn.model then
+            btn.model:TransitionToModelSceneID(718, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true);
+            local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(petSlot);
+            if creatureDisplayID then
+                local actor = btn.model:GetActorByTag("pet");
+                if actor then
+                    actor:SetModelByCreatureDisplayID(creatureDisplayID);
+                end
+            end
         end
     end)
-    
 
 
-    
+
+
     PetStableDiet:ClearAllPoints()
     PetStableDiet:SetSize(PetStableSelectedPetIcon:GetSize())
     PetStableDiet:SetPoint('BOTTOMRIGHT', PetStableSelectedPetIcon,'TOPRIGHT', 0,2)
@@ -212,14 +232,14 @@ local function Init()
 
     PetStablePetInfo.foodLable= e.Cstr(PetStablePetInfo)--食物
     PetStablePetInfo.foodLable:SetPoint('LEFT', PetStableDiet, 'Right',4,0)
-    
+
 
     PetStableTypeText:ClearAllPoints()
     PetStableTypeText:SetPoint('BOTTOMLEFT', PetStableDiet, 'TOPLEFT',0,2)
     PetStableTypeText:SetJustifyH('LEFT')
-    
-    
-    
+
+
+
 
     --PetStablePetInfo.foodLable:SetPoint('LEFT', PetStableTypeText, 'RIGHT', 4,0)
     hooksecurefunc('PetStable_UpdatePetModelScene', function()
@@ -281,7 +301,7 @@ local function Init()
     model:SetPoint('LEFT', PetStableFrame, 'RIGHT')
 
     local forceSceneChange = true;
-	model:TransitionToModelSceneID(718, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, forceSceneChange);
+	model:TransitionToModelSceneID(718, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true);
 	local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(1);
 	if creatureDisplayID then
 		local actor = model:GetActorByTag("pet");
