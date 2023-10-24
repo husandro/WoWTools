@@ -2,7 +2,9 @@ local id, e= ...
 if e.Player.class~='HUNTER' or IsAddOnLoaded("ImprovedStableFrame") then
     return
 end
+
 --PetStableFrame, IsAddOnLoaded("ImprovedStableFrame")
+--PetStable.lua
 
 local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  UnitClass('player'), DUNGEON_FLOOR_ORGRIMMARRAID8) --猎人兽栏
 local Save={}
@@ -13,8 +15,9 @@ local NUM_PER_ROW=15
 
 local function set_Slot_Talent(button, petSlot)
     if button.talentText then
-        local icon, name, level, family, talent = GetStablePetInfo(petSlot);
-        button.talentText:SetText(talent or '')
+        local talent =petSlot and select(5, GetStablePetInfo(petSlot))
+        talent = talent and e.WA_Utf8Sub(talent, 2, 5, true) or ''
+        button.talentText:SetText(talent)
     end
 end
 
@@ -23,56 +26,57 @@ local function ImprovedStableFrame_Update()
     local input = ISF_SearchInput:GetText()
     if not input or input:trim() == "" then
         for i = 1, maxSlots do
-            local button = _G["PetStableStabledPet"..i];
-            button.dimOverlay:Hide();
+            _G["PetStableStabledPet"..i].dimOverlay:Hide()
         end
         return
     end
 
     for i = 1, maxSlots do
-        local icon, name, level, family, talent = GetStablePetInfo(NUM_PET_ACTIVE_SLOTS + i);
+        local icon, name, _, family, talent = GetStablePetInfo(NUM_PET_ACTIVE_SLOTS + i);
         local btn = _G["PetStableStabledPet"..i];
-
-        btn.dimOverlay:Show();
+        local show=true
         if icon then
             local matched, expected = 0, 0
             for str in input:gmatch("([^%s]+)") do
                 expected = expected + 1
                 str = str:trim():lower()
-
-                if name:lower():find(str)
-                or family:lower():find(str)
-                or talent:lower():find(str)
+                if
+                    name:lower():find(str)
+                    or family:lower():find(str)
+                    or talent:lower():find(str)
                 then
                     matched = matched + 1
                 end
             end
             if matched == expected then
-                btn.dimOverlay:Hide();
+                show=false
             end
         end
+        btn.dimOverlay:SetShown(show)
     end
 end
 
+
+
+local function Create_Text(btn, index)--创建，提示内容
+    btn.solotText= e.Cstr(btn, {layer='BACKGROUND', color={r=1,g=1,b=1,a=0.3}})
+    btn.solotText:SetPoint('CENTER')
+    btn.solotText:SetText(index)
+
+    btn.talentText= e.Cstr(btn, {layer='ARTWORK'})
+    btn.talentText:SetAlpha(1)
+    btn.talentText:SetPoint('BOTTOM')
+end
 local function Init()
     if not PetStableFrame then
         return
     end
-    for i = 1, maxSlots do--+NUM_PET_STABLE_SLOTS
+    for i = 1, maxSlots do
         local btn= _G["PetStableStabledPet"..i]
         if not btn then
             btn= CreateFrame("Button", "PetStableStabledPet"..i, PetStableFrame, "PetStableSlotTemplate", i)
         end
-
-        btn.solotText= e.Cstr(btn, {layer='BACKGROUND'})
-        btn.solotText:SetAlpha(0.5)
-        btn.solotText:SetPoint('CENTER')
-        btn.solotText:SetText(i)
-
-        btn.talentText= e.Cstr(btn, {layer='ARTWORK'})
-        btn.talentText:SetAlpha(1)
-        btn.talentText:SetPoint('BOTTOM')
-        
+        Create_Text(btn, i)--创建，提示内容
 
         local textrue=_G['PetStableStabledPet'..i..'Background']
         if textrue then
@@ -83,8 +87,13 @@ local function Init()
             end
             textrue:SetAlpha(0.5)
         end
+    end
 
-
+    for i= 1, NUM_PET_ACTIVE_SLOTS do
+        local btn= _G['PetStableActivePet'..i]
+        if btn then
+           Create_Text(btn, i)
+        end
     end
 
     local layer=PetStableFrame:GetFrameLevel()+ 1
@@ -108,40 +117,7 @@ local function Init()
 
 
 
-    PetStableFrame:SetSize(720, 630)
-
-    PetStableFrameInset.NineSlice:Hide()
-
-    PetStableModelScene:ClearAllPoints()
-    PetStableModelScene:SetPoint('RIGHT', PetStableFrame, 'LEFT')
-    PetStableModelScene:SetSize( PetStableFrame:GetHeight(),  PetStableFrame:GetHeight())
-
-    if PetStableFrameModelBg:IsShown() then
-        PetStableFrameModelBg:ClearAllPoints()
-        PetStableFrameModelBg:SetAllPoints(PetStableModelScene)
-        PetStableFrameModelBg:SetAlpha(0.3)
-        PetStableFrameInset.Bg:Hide()
-    end
-
-    PetStablePetInfo:ClearAllPoints()
-    --PetStablePetInfo:SetPoint('BOTTOMLEFT', PetStableModelScene,'BOTTOMLEFT')
-    PetStableSelectedPetIcon:ClearAllPoints()
-    PetStableSelectedPetIcon:SetPoint('RIGHT', PetStableFrame, 'LEFT')
-
-    PetStableNameText:ClearAllPoints()
-    PetStableNameText:SetPoint('BOTTOMRIGHT', PetStableSelectedPetIcon, 'TOPRIGHT')
-    PetStableNameText:SetJustifyH('RIGHT')
-
-    PetStableDiet:ClearAllPoints()
-    PetStableDiet:SetPoint('TOPRIGHT', PetStableSelectedPetIcon, 'BOTTOMRIGHT')
-    PetStableDiet:SetSize(PetStableSelectedPetIcon:GetSize())
-
-    PetStableTypeText:ClearAllPoints()
-    PetStableTypeText:SetPoint('TOPRIGHT', PetStableDiet, 'BOTTOMRIGHT')
-
-    PetStableNextPageButton:Hide()
-    PetStablePrevPageButton:Hide()
-    PetStableBottomInset:Hide()
+    
 
     local frame = CreateFrame("Frame", nil, PetStableFrame)-- "ImprovedStableFrameSlots", PetStableFrame, "InsetFrameTemplate")
     frame:ClearAllPoints()
@@ -176,6 +152,44 @@ local function Init()
     ISF_SearchInput.Instructions:SetText(e.onlyChinese and '名称，类型，天赋' or (NAME .. ", " .. TYPE .. ", " .. TALENT))
 
 
+
+
+
+
+
+    PetStableFrame:SetSize(720, 630)
+    PetStableFrameInset.NineSlice:Hide()
+
+    PetStableModelScene:ClearAllPoints()
+    PetStableModelScene:SetPoint('RIGHT', PetStableFrame, 'LEFT')
+    PetStableModelScene:SetSize( PetStableFrame:GetHeight(),  PetStableFrame:GetHeight())
+
+    if PetStableFrameModelBg:IsShown() then
+        PetStableFrameModelBg:ClearAllPoints()
+        PetStableFrameModelBg:SetAllPoints(PetStableModelScene)
+        PetStableFrameModelBg:SetAlpha(0.3)
+        PetStableFrameInset.Bg:Hide()
+    end
+
+    PetStablePetInfo:ClearAllPoints()
+    --PetStablePetInfo:SetPoint('BOTTOMLEFT', PetStableModelScene,'BOTTOMLEFT')
+    PetStableSelectedPetIcon:ClearAllPoints()
+    PetStableSelectedPetIcon:SetPoint('RIGHT', PetStableFrame, 'LEFT')
+
+    PetStableNameText:ClearAllPoints()
+    PetStableNameText:SetPoint('BOTTOMRIGHT', PetStableSelectedPetIcon, 'TOPRIGHT')
+    PetStableNameText:SetJustifyH('RIGHT')
+
+    PetStableDiet:ClearAllPoints()
+    PetStableDiet:SetPoint('TOPRIGHT', PetStableSelectedPetIcon, 'BOTTOMRIGHT')
+    PetStableDiet:SetSize(PetStableSelectedPetIcon:GetSize())
+
+    PetStableTypeText:ClearAllPoints()
+    PetStableTypeText:SetPoint('TOPRIGHT', PetStableDiet, 'BOTTOMRIGHT')
+
+    PetStableNextPageButton:Hide()
+    PetStablePrevPageButton:Hide()
+    PetStableBottomInset:Hide()
 
     NUM_PET_STABLE_SLOTS = maxSlots
     NUM_PET_STABLE_PAGES = 1

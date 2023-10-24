@@ -3471,7 +3471,8 @@
         "PetStableNameText",
         "PetStableDiet",
         "PetStableTypeText",
-        "PetStable_UpdateSlot"
+        "PetStable_UpdateSlot",
+        "PetStableActivePet1"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
