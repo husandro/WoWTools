@@ -14,13 +14,6 @@ local maxSlots = NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS
 local NUM_PER_ROW=15
 
 
-local function set_Slot_Talent(button, petSlot)--宠物，类型
-    if button.talentText then
-        local talent =petSlot and select(5, GetStablePetInfo(petSlot))
-        talent = talent and e.WA_Utf8Sub(talent, 2, 5, true) or ''
-        button.talentText:SetText(talent)
-    end
-end
 
 
 local function ImprovedStableFrame_Update()
@@ -73,6 +66,8 @@ end
 
 local function Init()
 
+    PetStableStabledPet1:ClearAllPoints()--设置，200个按钮，第一个位置
+    PetStableStabledPet1:SetPoint("TOPLEFT", PetStableFrame, 97, -37)
     for i = 1, maxSlots do
         local btn= _G["PetStableStabledPet"..i]
         if not btn then
@@ -90,6 +85,8 @@ local function Init()
             textrue:SetAlpha(0.5)
         end
     end
+    
+
 
     local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
     for i= 1, NUM_PET_ACTIVE_SLOTS do
@@ -160,16 +157,98 @@ local function Init()
 
     ISF_SearchInput:HookScript("OnTextChanged", ImprovedStableFrame_Update)
     ISF_SearchInput.Instructions:SetText(e.onlyChinese and '名称，类型，天赋' or (NAME .. ", " .. TYPE .. ", " .. TALENT))
+    hooksecurefunc("PetStable_Update", ImprovedStableFrame_Update)
 
-    PetStableStabledPet1:ClearAllPoints()--设置，200个按钮，第一个位置
-    PetStableStabledPet1:SetPoint("TOPLEFT", PetStableFrame, 97, -37)
+    
+    
+    
 
-    PetStableFrame:SetSize(720, 630)--设置，大小
+    local w, h=720, 630
+    PetStableFrame:SetSize(w, h)--设置，大小
     PetStableFrameInset.NineSlice:Hide()
 
+
     PetStableModelScene:ClearAllPoints()--设置，3D，位置
+    PetStableModelScene:SetPoint('LEFT', PetStableFrame, 'RIGHT')
+    PetStableModelScene:SetSize(h, h)
+
+    if PetStableFrameModelBg:IsShown() then--3D，背景
+        PetStableFrameModelBg:ClearAllPoints()
+        PetStableFrameModelBg:SetAllPoints(PetStableModelScene)
+        PetStableFrameModelBg:SetAlpha(0.3)
+        PetStableFrameInset.Bg:Hide()
+    end
+
+    PetStablePetInfo:ClearAllPoints()--隐藏，宠物，信息
+    PetStablePetInfo:SetPoint('BOTTOMLEFT',PetStableFrame, 'BOTTOMRIGHT')
+    
+
+    PetStableNextPageButton:Hide()--隐藏
+    PetStablePrevPageButton:Hide()
+    PetStableBottomInset:Hide()
+
+    NUM_PET_STABLE_SLOTS = maxSlots
+    NUM_PET_STABLE_PAGES = 1
+    PetStableFrame.page = 1
+
+    
+
+    hooksecurefunc('PetStable_UpdateSlot', function(button, petSlot)--宠物，类型
+        if button.talentText then
+            local talent =petSlot and select(5, GetStablePetInfo(petSlot))
+            talent = talent and e.WA_Utf8Sub(talent, 2, 5, true) or ''
+            button.talentText:SetText(talent)
+        end
+    end)
+    
+
+
+    
+    PetStableDiet:ClearAllPoints()
+    PetStableDiet:SetSize(PetStableSelectedPetIcon:GetSize())
+    PetStableDiet:SetPoint('BOTTOMRIGHT', PetStableSelectedPetIcon,'TOPRIGHT', 0,2)
+    PetStableDiet:SetScript('OnLeave', function(self) self:SetAlpha(1) end)
+    PetStableDiet:SetScript('OnEnter', function(self) self:SetAlpha(0.5) end)
+
+    PetStablePetInfo.foodLable= e.Cstr(PetStablePetInfo)--食物
+    PetStablePetInfo.foodLable:SetPoint('LEFT', PetStableDiet, 'Right',4,0)
+    
+
+    PetStableTypeText:ClearAllPoints()
+    PetStableTypeText:SetPoint('BOTTOMLEFT', PetStableDiet, 'TOPLEFT',0,2)
+    PetStableTypeText:SetJustifyH('LEFT')
+    
+    
+    
+
+    --PetStablePetInfo.foodLable:SetPoint('LEFT', PetStableTypeText, 'RIGHT', 4,0)
+    hooksecurefunc('PetStable_UpdatePetModelScene', function()
+        if GetStablePetFoodTypes(PetStableFrame.selectedPet) then
+            PetStablePetInfo.foodLable:SetText(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet))))
+        else
+            PetStablePetInfo.foodLable:SetText('')
+        end
+    end)
+
+    --[[PetStableSelectedPetIcon:ClearAllPoints()--提示，当前，宠物，图标
+    PetStableSelectedPetIcon:SetPoint('RIGHT', PetStableFrame, 'LEFT', -4,0)
+
+    PetStableNameText:ClearAllPoints()--，当前，宠物，名称
+    PetStableNameText:SetPoint('BOTTOMRIGHT', PetStableSelectedPetIcon, 'TOPRIGHT')
+    PetStableNameText:SetJustifyH('RIGHT')
+
+    PetStableDiet:ClearAllPoints()--食物，提示，图标
+    PetStableDiet:SetPoint('TOPRIGHT', PetStableSelectedPetIcon, 'BOTTOMRIGHT')
+    PetStableDiet:SetSize(PetStableSelectedPetIcon:GetSize())
+
+    PetStableTypeText:ClearAllPoints()--宠物，类型，文本
+    PetStableTypeText:SetPoint('TOPRIGHT', PetStableDiet, 'BOTTOMRIGHT')]]
+
+
+
+    --[[PetStableModelScene:ClearAllPoints()--设置，3D，位置
     PetStableModelScene:SetPoint('RIGHT', PetStableFrame, 'LEFT')
-    PetStableModelScene:SetSize( PetStableFrame:GetHeight(),  PetStableFrame:GetHeight())
+    PetStableModelScene:SetSize(h, h)
 
     if PetStableFrameModelBg:IsShown() then--3D，背景
         PetStableFrameModelBg:ClearAllPoints()
@@ -192,19 +271,25 @@ local function Init()
     PetStableDiet:SetSize(PetStableSelectedPetIcon:GetSize())
 
     PetStableTypeText:ClearAllPoints()--宠物，类型，文本
-    PetStableTypeText:SetPoint('TOPRIGHT', PetStableDiet, 'BOTTOMRIGHT')
-
-    PetStableNextPageButton:Hide()--隐藏
-    PetStablePrevPageButton:Hide()
-    PetStableBottomInset:Hide()
-
-    NUM_PET_STABLE_SLOTS = maxSlots
-    NUM_PET_STABLE_PAGES = 1
-    PetStableFrame.page = 1
+    PetStableTypeText:SetPoint('TOPRIGHT', PetStableDiet, 'BOTTOMRIGHT')]]
 
 
-    hooksecurefunc('PetStable_UpdateSlot', set_Slot_Talent)
-    hooksecurefunc("PetStable_Update", ImprovedStableFrame_Update)
+
+
+    --[[local model= CreateFrame('ModelScene', nil, PetStableFrame,'PanningModelSceneMixinTemplate', 1)
+    model:SetSize(400,400)
+    model:SetPoint('LEFT', PetStableFrame, 'RIGHT')
+
+    local forceSceneChange = true;
+	model:TransitionToModelSceneID(718, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, forceSceneChange);
+	local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(1);
+	if creatureDisplayID then
+		local actor = model:GetActorByTag("pet");
+		if actor then
+			actor:SetModelByCreatureDisplayID(creatureDisplayID);
+		end
+	end]]
+
 end
 
 local panel=CreateFrame("Frame")
