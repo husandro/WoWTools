@@ -207,8 +207,8 @@ local function Init()
     PetStableDiet:ClearAllPoints()
     PetStableDiet:SetSize(PetStableSelectedPetIcon:GetSize())
     PetStableDiet:SetPoint('BOTTOMRIGHT', PetStableSelectedPetIcon,'TOPRIGHT', 0,2)
-    PetStableDiet:SetScript('OnLeave', function(self) self:SetAlpha(1) end)
-    PetStableDiet:SetScript('OnEnter', function(self) self:SetAlpha(0.5) end)
+    PetStableDiet:HookScript('OnLeave', function(self) self:SetAlpha(1) end)
+    PetStableDiet:HookScript('OnEnter', function(self) self:SetAlpha(0.5) end)
 
     PetStablePetInfo.foodLable= e.Cstr(PetStablePetInfo)--食物
     PetStablePetInfo.foodLable:SetPoint('LEFT', PetStableDiet, 'Right',4,0)
