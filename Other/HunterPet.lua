@@ -11,6 +11,14 @@ local ISF_SearchInput
 local maxSlots = NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS
 local NUM_PER_ROW=15
 
+local function set_Slot_Talent(button, petSlot)
+    if button.talentText then
+        local icon, name, level, family, talent = GetStablePetInfo(petSlot);
+        button.talentText:SetText(talent or '')
+    end
+end
+
+
 local function ImprovedStableFrame_Update()
     local input = ISF_SearchInput:GetText()
     if not input or input:trim() == "" then
@@ -23,9 +31,9 @@ local function ImprovedStableFrame_Update()
 
     for i = 1, maxSlots do
         local icon, name, level, family, talent = GetStablePetInfo(NUM_PET_ACTIVE_SLOTS + i);
-        local button = _G["PetStableStabledPet"..i];
+        local btn = _G["PetStableStabledPet"..i];
 
-        button.dimOverlay:Show();
+        btn.dimOverlay:Show();
         if icon then
             local matched, expected = 0, 0
             for str in input:gmatch("([^%s]+)") do
@@ -40,7 +48,7 @@ local function ImprovedStableFrame_Update()
                 end
             end
             if matched == expected then
-                button.dimOverlay:Hide();
+                btn.dimOverlay:Hide();
             end
         end
     end
@@ -60,6 +68,11 @@ local function Init()
         btn.solotText:SetAlpha(0.5)
         btn.solotText:SetPoint('CENTER')
         btn.solotText:SetText(i)
+
+        btn.talentText= e.Cstr(btn, {layer='ARTWORK'})
+        btn.talentText:SetAlpha(1)
+        btn.talentText:SetPoint('BOTTOM')
+        
 
         local textrue=_G['PetStableStabledPet'..i..'Background']
         if textrue then
@@ -169,7 +182,7 @@ local function Init()
     PetStableFrame.page = 1
 
 
-
+    hooksecurefunc('PetStable_UpdateSlot', set_Slot_Talent)
     hooksecurefunc("PetStable_Update", ImprovedStableFrame_Update)
 end
 
