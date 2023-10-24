@@ -905,8 +905,10 @@ local function set_All_Text()--所有记录
         if key then
             keyText= (keyText and keyText..'|n' or '')
                 ..(infoWoW.Keystone.weekLevel or 0)..' ('..(infoWoW.Keystone.weekNum or 0)..') '--次数
+                ..(infoWoW.Keystone.score and e.GetKeystoneScorsoColor(infoWoW.Keystone.score)..' ' or '')
                 ..e.GetPlayerInfo({guid=guid, faction=infoWoW.faction, reName=true, reRealm=true})
                 ..key
+                
         end
     end
     if keyText then
