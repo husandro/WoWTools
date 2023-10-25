@@ -3476,7 +3476,8 @@
         "CAMERA_MODIFICATION_TYPE_DISCARD",
         "PET_DIET_TEMPLATE",
         "BuildListString",
-        "PetStable_Update"
+        "PetStable_Update",
+        "PetStableLeftInset"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

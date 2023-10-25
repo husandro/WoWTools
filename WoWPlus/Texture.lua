@@ -549,12 +549,12 @@ local function Init_Set_AlphaAndColor()
         set_Alpha_Color(PetStableFrame.NineSlice.TopEdge)
         set_Alpha_Color(PetStableFrame.NineSlice.TopLeftCorner)
         set_Alpha_Color(PetStableFrame.NineSlice.TopRightCorner)
-        hide_Texture(PetStableFrameModelBg)
+        set_Alpha_Color(PetStableFrameModelBg)
         hide_Texture(PetStableFrameInset.Bg)
         set_Alpha_Color(PetStableFrameBg)
         hide_Texture(PetStableFrameStableBg)
-        hide_Texture(PetStableActiveBg)
-        for i=1, 10 do--NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS do
+        set_Alpha_Color(PetStableActiveBg)
+        for i=1, NUM_PET_STABLE_SLOTS do--NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS do
             if i<=5 then
                 hide_Texture(_G['PetStableActivePet'..i..'Background'])
                 set_Alpha_Color(_G['PetStableActivePet'..i..'Border'])

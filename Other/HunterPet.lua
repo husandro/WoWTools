@@ -52,7 +52,7 @@ end
 
 local function Set_Food_Lable()--食物
     if GetStablePetFoodTypes(PetStableFrame.selectedPet) then
-        PetStablePetInfo.foodLable:SetText(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet))))
+        PetStablePetInfo.foodLable:SetText(BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet)))
     else
         PetStablePetInfo.foodLable:SetText('')
     end
@@ -124,6 +124,11 @@ local function Init()
     local w, h=720, 630
     local layer= PetStableFrame:GetFrameLevel()+ 1
 
+    NUM_PET_STABLE_SLOTS = maxSlots
+    NUM_PET_STABLE_PAGES = 1
+    PetStableFrame.page = 1
+    PetStableFrame:SetSize(w, h)--设置，大小
+
     PetStableStabledPet1:ClearAllPoints()--设置，200个按钮，第一个位置
     PetStableStabledPet1:SetPoint("TOPLEFT", PetStableFrame, 97, -37)
 
@@ -163,30 +168,35 @@ local function Init()
 
     --已激活宠物
     local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
+    local modeW= h/NUM_PET_ACTIVE_SLOTS
     for i= 1, NUM_PET_ACTIVE_SLOTS do
         local btn= _G['PetStableActivePet'..i]
         if btn then
             Create_Text(btn, i)--创建，提示内容
-
+            local frame= btn:GetParent()
             --btn.model= CreateFrame('ModelScene', nil, PetStableFrame, 'PanningModelSceneMixinTemplate', i)
             --btn.model:TransitionToModelSceneID(718, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true);
             --已激活宠物，提示
             btn.model= CreateFrame("PlayerModel", nil, PetStableFrame)
-            btn.model:SetSize(h/NUM_PET_ACTIVE_SLOTS, h/NUM_PET_ACTIVE_SLOTS)
+
+            btn.model:SetSize(modeW, modeW)
             btn.model:SetFacing(0.3)
             if i==1 then
                 btn.model:SetPoint('TOPRIGHT', PetStableFrame, 'TOPLEFT', -14,0)
             else
                 btn.model:SetPoint('TOP', _G['PetStableActivePet'..i-1].model, 'BOTTOM')
             end
-
-
+            local bg=btn.model:CreateTexture('BACKGROUND')
+            bg:SetPoint('LEFT')
+            bg:SetSize(modeW+14, modeW)
+            bg:SetAtlas('ShipMission_RewardsBG-Desaturate')
+            bg:SetAlpha(0.5)
             btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
 
             if CALL_PET_SPELL_IDS[i] then--召唤，宠物，法术
                 btn.spellActivaButton= e.Cbtn(btn, {size={22,22}, icon='hide'})
-                btn.spellActivaButton:SetPoint('LEFT', btn.model, 'RIGHT', -12,0)
-                btn.spellActivaButton:SetFrameLevel(layer)
+                btn.spellActivaButton:SetPoint('LEFT', btn.model, 'RIGHT', -10,0)
+                btn.spellActivaButton:SetFrameLevel(layer+2)
                 btn.spellID= CALL_PET_SPELL_IDS[i]
                 function btn:set_Activ_Button_Texture()
                     local icon= select(3, GetSpellInfo(self.spellID)) or 132161
@@ -229,7 +239,7 @@ local function Init()
 
 
     --查询
-    ISF_SearchInput = _G['ISF_SearchInput'] or CreateFrame("EditBox", nil, PetStableFrame, "SearchBoxTemplate")
+    ISF_SearchInput = _G['ISF_SearchInput'] or CreateFrame("EditBox", nil, PetStableStabledPet1, "SearchBoxTemplate")
     if ISF_SearchInput.Middle then
         ISF_SearchInput.Middle:SetAlpha(0.5)
         ISF_SearchInput.Right:SetAlpha(0.5)
@@ -238,7 +248,7 @@ local function Init()
 
     ISF_SearchInput:SetSize(270,20)
     if  _G['ISF_SearchInput'] then ISF_SearchInput:ClearAllPoints() end--处理插件，Improved Stable Frame
-    ISF_SearchInput:SetPoint('BOTTOMRIGHT',-6, 10)
+    ISF_SearchInput:SetPoint('BOTTOMRIGHT',PetStableFrame, -6, 10)
     ISF_SearchInput:SetScale(1.2)
     ISF_SearchInput.Instructions:SetText(e.onlyChinese and '名称，类型，天赋' or (NAME .. ", " .. TYPE .. ", " .. TALENT))
 
@@ -248,23 +258,19 @@ local function Init()
 
 
 
-    NUM_PET_STABLE_SLOTS = maxSlots
-    NUM_PET_STABLE_PAGES = 1
-    PetStableFrame.page = 1
 
-    PetStableFrame:SetSize(w, h)--设置，大小
     PetStableFrameInset.NineSlice:Hide()
 
     PetStableModelScene:ClearAllPoints()--设置，3D，位置
     PetStableModelScene:SetPoint('LEFT', PetStableFrame, 'RIGHT')
     PetStableModelScene:SetSize(h, h)
 
-    if PetStableFrameModelBg:IsShown() then--3D，背景
-        PetStableFrameModelBg:ClearAllPoints()
-        PetStableFrameModelBg:SetAllPoints(PetStableModelScene)
-        PetStableFrameModelBg:SetAlpha(0.3)
-        PetStableFrameInset.Bg:Hide()
-    end
+    --3D，背景
+    PetStableFrameModelBg:ClearAllPoints()
+    PetStableFrameModelBg:SetAllPoints(PetStableModelScene)
+    PetStableFrameModelBg:SetAlpha(0.3)
+    PetStableFrameInset.Bg:Hide()
+    PetStableFrameModelBg:SetAtlas('ShipMission_RewardsBG-Desaturate')
 
     PetStablePetInfo:ClearAllPoints()--隐藏，宠物，信息
     PetStablePetInfo:SetPoint('BOTTOMLEFT',PetStableFrame, 'BOTTOMRIGHT')
@@ -281,27 +287,42 @@ local function Init()
     PetStableDiet:HookScript('OnLeave', function(self) self:SetAlpha(1) end)
     PetStableDiet:HookScript('OnEnter', function(self) self:SetAlpha(0.5) end)
 
-    PetStablePetInfo.foodLable= e.Cstr(PetStablePetInfo)--食物
-    PetStablePetInfo.foodLable:SetPoint('LEFT', PetStableDiet, 'Right',4,0)
+    PetStablePetInfo.foodLable= e.Cstr(PetStablePetInfo, {color=true})--食物
+    PetStablePetInfo.foodLable:SetPoint('LEFT', PetStableDiet, 'Right',0,0)
     Set_Food_Lable()--食物
     hooksecurefunc('PetStable_UpdatePetModelScene', Set_Food_Lable)--食物
 
+    PetStableNameText:ClearAllPoints()
+    PetStableNameText:SetPoint('BOTTOMLEFT', PetStableSelectedPetIcon, 'RIGHT', 0,2)
+    PetStableNameText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)--选定，宠物，名称
+
     PetStableTypeText:ClearAllPoints()
-    PetStableTypeText:SetPoint('BOTTOMLEFT', PetStableDiet, 'TOPLEFT',0,2)
+    PetStableTypeText:SetPoint('TOPLEFT', PetStableSelectedPetIcon, 'RIGHT',0, -2)
+    --PetStableTypeText:SetPoint('BOTTOMLEFT', PetStableDiet, 'TOPLEFT',0,2)
     PetStableTypeText:SetJustifyH('LEFT')
     PetStableTypeText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
     PetStableTypeText:SetShadowOffset(1, -1)
 
+    PetStableActiveBg:ClearAllPoints()--已激活宠物，背景，大小
+    PetStableActiveBg:SetAllPoints(PetStableLeftInset)
+
     e.call('PetStable_Update')
 end
+--[[
+self:SetPortraitToAsset("Interface\\Icons\\ability_physical_taunt");
+ButtonFrameTemplate_HideButtonBar(self);
+self.Inset
+self.LeftInset
+self.BottomInset
+self.page = 1;
+self.selectedPet = nil;
 
---local frame = CreateFrame("Frame", nil, "ImprovedStableFrameSlots", PetStableFrame, "InsetFrameTemplate")
---frame:ClearAllPoints()
---frame:SetSize(640, 550)
-
---frame:SetPoint(PetStableFrame.Inset:GetPoint(1))
---PetStableFrame.Inset:SetPoint("TOPLEFT", frame, "TOPRIGHT")
-
+local frame = CreateFrame("Frame", nil, "ImprovedStableFrameSlots", PetStableFrame, "InsetFrameTemplate")
+frame:ClearAllPoints()
+frame:SetSize(640, 550)
+frame:SetPoint(PetStableFrame.Inset:GetPoint(1))
+PetStableFrame.Inset:SetPoint("TOPLEFT", frame, "TOPRIGHT")
+]]
 
 
 local panel=CreateFrame("Frame")
