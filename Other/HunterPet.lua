@@ -13,7 +13,7 @@ local ISF_SearchInput
 local maxSlots = NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS
 local NUM_PER_ROW=15
 
-local IsInSearch
+--local IsInSearch
 
 
 local function Get_Food_Text(slotPet)
@@ -23,9 +23,9 @@ end
 --local func_PetStable_Update= PetStable_Update
 
 local function set_PetStable_Update()--查询
-    if IsInSearch then
+    --[[if IsInSearch then
         return
-    end
+    end]]
     local input = ISF_SearchInput:GetText()
     local all= maxSlots + NUM_PET_ACTIVE_SLOTS
     local num=0
