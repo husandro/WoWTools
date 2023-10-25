@@ -168,17 +168,19 @@ local function Init()
 
     --已激活宠物
     local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
-    local modeW= (h-26)/NUM_PET_ACTIVE_SLOTS
+    local modeH= (h-26)/NUM_PET_ACTIVE_SLOTS
     for i= 1, NUM_PET_ACTIVE_SLOTS do
         local btn= _G['PetStableActivePet'..i]
         if btn then
+
+
             Create_Text(btn, i)--创建，提示内容
             
             
             --已激活宠物，提示
             btn.model= CreateFrame("PlayerModel", nil, PetStableFrame)
 
-            btn.model:SetSize(modeW, modeW)
+            btn.model:SetSize(modeH, modeH)
             btn.model:SetFacing(0.3)
             if i==1 then
                 btn.model:SetPoint('TOPRIGHT', PetStableFrame, 'TOPLEFT', -14,-22)
@@ -187,7 +189,7 @@ local function Init()
             end
             local bg=btn.model:CreateTexture('BACKGROUND')
             bg:SetPoint('LEFT')
-            bg:SetSize(modeW+14, modeW)
+            bg:SetSize(modeH+14, modeH)
             bg:SetAtlas('ShipMission_RewardsBG-Desaturate')
             bg:SetAlpha(0.3)
             btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
