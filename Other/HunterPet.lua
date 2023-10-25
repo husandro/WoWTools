@@ -137,10 +137,8 @@ local function Init()
             btn= CreateFrame("Button", "PetStableStabledPet"..i, PetStableFrame, "PetStableSlotTemplate", i)
         end
         btn:SetFrameLevel(layer)
-        --btn:SetScale(1)
 
         Create_Text(btn, i, true)--创建，提示内容
-
         btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
 
         local textrue= _G['PetStableStabledPet'..i..'Background']--处理，按钮，背景 Texture.lua，中有处理过
@@ -179,31 +177,32 @@ local function Init()
 
     --已激活宠物
     local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
-    local modeH= (h-26)/NUM_PET_ACTIVE_SLOTS
+    local modelH= (PetStableLeftInset:GetHeight()-28)/NUM_PET_ACTIVE_SLOTS
+    --local modelH= (h-26)/NUM_PET_ACTIVE_SLOTS
     for i= 1, NUM_PET_ACTIVE_SLOTS do
         local btn= _G['PetStableActivePet'..i]
         if btn then
-
-
             Create_Text(btn, i)--创建，提示内容
-
 
             --已激活宠物，提示
             btn.model= CreateFrame("PlayerModel", nil, PetStableFrame)
-
-            btn.model:SetSize(modeH, modeH)
+            btn.model:SetSize(modelH, modelH)
             btn.model:SetFacing(0.3)
             if i==1 then
-                btn.model:SetPoint('TOPRIGHT', PetStableFrame, 'TOPLEFT', -14,-22)
+                btn.model:SetPoint('TOPRIGHT', PetStableLeftInset, 'TOPLEFT', -16,-28)
             else
                 btn.model:SetPoint('TOP', _G['PetStableActivePet'..i-1].model, 'BOTTOM')
             end
             local bg=btn.model:CreateTexture('BACKGROUND')
             bg:SetPoint('LEFT')
-            bg:SetSize(modeH+14, modeH)
+            bg:SetSize(modelH+14, modelH)
             bg:SetAtlas('ShipMission_RewardsBG-Desaturate')
             bg:SetAlpha(0.3)
+
             btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
+            btn:ClearAllPoints()
+            btn:SetPoint('LEFT', btn.model, 'RIGHT', 43,0)
+            
 
             if CALL_PET_SPELL_IDS[i] then--召唤，宠物，法术
                 btn.spellActivaButton= e.Cbtn(btn, {size={22,22}, icon='hide'})
