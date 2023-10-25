@@ -168,7 +168,7 @@ local function Init()
 
     --已激活宠物
     local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
-    local modeW= h/NUM_PET_ACTIVE_SLOTS
+    local modeW= (h-26)/NUM_PET_ACTIVE_SLOTS
     for i= 1, NUM_PET_ACTIVE_SLOTS do
         local btn= _G['PetStableActivePet'..i]
         if btn then
@@ -181,7 +181,7 @@ local function Init()
             btn.model:SetSize(modeW, modeW)
             btn.model:SetFacing(0.3)
             if i==1 then
-                btn.model:SetPoint('TOPRIGHT', PetStableFrame, 'TOPLEFT', -14,0)
+                btn.model:SetPoint('TOPRIGHT', PetStableFrame, 'TOPLEFT', -14,-22)
             else
                 btn.model:SetPoint('TOP', _G['PetStableActivePet'..i-1].model, 'BOTTOM')
             end
@@ -189,7 +189,7 @@ local function Init()
             bg:SetPoint('LEFT')
             bg:SetSize(modeW+14, modeW)
             bg:SetAtlas('ShipMission_RewardsBG-Desaturate')
-            bg:SetAlpha(0.5)
+            bg:SetAlpha(0.3)
             btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
 
             if CALL_PET_SPELL_IDS[i] then--召唤，宠物，法术
@@ -256,8 +256,8 @@ local function Init()
 
 
     PetStableModelScene:ClearAllPoints()--设置，3D，位置
-    PetStableModelScene:SetPoint('LEFT', PetStableFrame, 'RIGHT')
-    PetStableModelScene:SetSize(h, h)
+    PetStableModelScene:SetPoint('BOTTOMLEFT', PetStableFrame, 'BOTTOMRIGHT',0,4)
+    PetStableModelScene:SetSize(h-24, h-24)
 
     --3D，背景
     PetStableFrameModelBg:ClearAllPoints()
@@ -271,7 +271,7 @@ local function Init()
     PetStableFrameInset.NineSlice:SetPoint('BOTTOMRIGHT', PetStableFrame, -4, 4)
 
     PetStablePetInfo:ClearAllPoints()--隐藏，宠物，信息
-    PetStablePetInfo:SetPoint('BOTTOMLEFT',PetStableFrame, 'BOTTOMRIGHT')
+    PetStablePetInfo:SetPoint('BOTTOMLEFT',PetStableFrame, 'BOTTOMRIGHT',0,4)
 
     PetStableNextPageButton:Hide()--隐藏
     PetStablePrevPageButton:Hide()
