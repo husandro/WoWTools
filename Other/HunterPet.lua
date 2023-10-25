@@ -105,7 +105,7 @@ local function HookEnter_Button(btn)--GameTooltip 提示用 tooltips.lua
             e.tips.playerModel:SetDisplayInfo(creatureDisplayID)
             e.tips.playerModel:SetShown(true)
             if GetStablePetFoodTypes(btn.petSlot) then
-                e.tips:AddLine(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet))), 1, 1, 1, true)
+                e.tips:AddLine(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(btn.petSlot))), 1, 1, 1, true)
             end
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('creatureDisplayID', creatureDisplayID)
@@ -133,6 +133,8 @@ local function Init()
 
     for i = 1, maxSlots do
         local btn= _G["PetStableStabledPet"..i] or CreateFrame("Button", "PetStableStabledPet"..i, PetStableFrame, "PetStableSlotTemplate", i)
+        btn.petSlot= btn.petSlot or (NUM_PET_ACTIVE_SLOTS+i)
+
         btn:SetFrameLevel(layer)
 
         Create_Text(btn, i)--创建，提示内容
@@ -242,6 +244,7 @@ local function Init()
     
     PetStableActiveBg:ClearAllPoints()--已激活宠物，背景，大小
     PetStableActiveBg:SetAllPoints(PetStableLeftInset)
+    PetStableActiveBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
 
 
