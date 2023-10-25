@@ -13,13 +13,19 @@ local ISF_SearchInput
 local maxSlots = NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS
 local NUM_PER_ROW=15
 
+local IsInSearch
 
 
 local function Get_Food_Text(slotPet)
     return BuildListString(GetStablePetFoodTypes(slotPet))
 end
 
+--local func_PetStable_Update= PetStable_Update
+
 local function set_PetStable_Update()--查询
+    if IsInSearch then
+        return
+    end
     local input = ISF_SearchInput:GetText()
     local all= maxSlots + NUM_PET_ACTIVE_SLOTS
     local num=0
@@ -302,6 +308,36 @@ local function Init()
 
 
     e.call('PetStable_Update')
+    --[[if e.Player.husandro then
+        local sortButton= e.Cbtn(ISF_SearchInput, {atlas='bags-button-autosort-up', size={22,22}})
+        sortButton:SetPoint('BOTTOMRIGHT', ISF_SearchInput, 'TOPRIGHT')
+        sortButton:SetScript('OnClick', function()
+            IsInSearch=true
+            PetStable_Update= function() end
+            local type={
+                ['狂野']=1,
+                
+                ['坚韧']=3,
+            }
+            local tab= {}
+            for i=NUM_PET_ACTIVE_SLOTS+1, maxSlots+NUM_PET_ACTIVE_SLOTS do
+                local icon, name, _, family, talent = GetStablePetInfo(i)
+            
+                table.insert(tab, {icon=icon or 0, name=name, family= family, talen=type[talent] or 0, index=i})
+            end
+            table.sort(tab, function(a, b)
+                if a.talen< b.talent then
+                    SetPetSlot(a.index, b.index)
+                    return true
+                end
+                return false
+            end)
+            PetStable_Update= func_PetStable_Update
+            IsInSearch=nil
+            e.call('PetStable_Update')
+            print('完成')
+        end)
+    end]]
 end
 
 
