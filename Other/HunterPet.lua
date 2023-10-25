@@ -173,9 +173,8 @@ local function Init()
         local btn= _G['PetStableActivePet'..i]
         if btn then
             Create_Text(btn, i)--创建，提示内容
-            local frame= btn:GetParent()
-            --btn.model= CreateFrame('ModelScene', nil, PetStableFrame, 'PanningModelSceneMixinTemplate', i)
-            --btn.model:TransitionToModelSceneID(718, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true);
+            
+            
             --已激活宠物，提示
             btn.model= CreateFrame("PlayerModel", nil, PetStableFrame)
 
@@ -256,11 +255,6 @@ local function Init()
     hooksecurefunc("PetStable_Update", ImprovedStableFrame_Update)
 
 
-
-
-
-    PetStableFrameInset.NineSlice:Hide()
-
     PetStableModelScene:ClearAllPoints()--设置，3D，位置
     PetStableModelScene:SetPoint('LEFT', PetStableFrame, 'RIGHT')
     PetStableModelScene:SetSize(h, h)
@@ -271,6 +265,10 @@ local function Init()
     PetStableFrameModelBg:SetAlpha(0.3)
     PetStableFrameInset.Bg:Hide()
     PetStableFrameModelBg:SetAtlas('ShipMission_RewardsBG-Desaturate')
+    --PetStableFrameInset.NineSlice:Hide()--预览外框
+    PetStableFrameInset.NineSlice:ClearAllPoints()
+    PetStableFrameInset.NineSlice:SetPoint('TOPLEFT')
+    PetStableFrameInset.NineSlice:SetPoint('BOTTOMRIGHT', PetStableFrame, -4, 4)
 
     PetStablePetInfo:ClearAllPoints()--隐藏，宠物，信息
     PetStablePetInfo:SetPoint('BOTTOMLEFT',PetStableFrame, 'BOTTOMRIGHT')
@@ -322,6 +320,15 @@ frame:ClearAllPoints()
 frame:SetSize(640, 550)
 frame:SetPoint(PetStableFrame.Inset:GetPoint(1))
 PetStableFrame.Inset:SetPoint("TOPLEFT", frame, "TOPRIGHT")
+
+--btn.model= CreateFrame('ModelScene', nil, PetStableFrame, 'PanningModelSceneMixinTemplate', i)
+--btn.model:TransitionToModelSceneID(718, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true);
+local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(petSlot);
+local actor = btn.model:GetActorByTag("pet");
+if actor then
+    actor:SetModelByCreatureDisplayID(creatureDisplayID);
+end
+btn.model:SetDisplayInfo(creatureDisplayID)
 ]]
 
 

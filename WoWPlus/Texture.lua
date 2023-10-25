@@ -546,13 +546,13 @@ local function Init_Set_AlphaAndColor()
     set_Alpha_Frame_Texture(PVEFrameTab3)
 
     if PetStableFrame then--猎人，宠物
-        set_Alpha_Color(PetStableFrame.NineSlice.TopEdge)
-        set_Alpha_Color(PetStableFrame.NineSlice.TopLeftCorner)
-        set_Alpha_Color(PetStableFrame.NineSlice.TopRightCorner)
+        --set_Alpha_Color(PetStableFrame.NineSlice.TopEdge)
+        --set_Alpha_Color(PetStableFrame.NineSlice.TopLeftCorner)
+        --set_Alpha_Color(PetStableFrame.NineSlice.TopRightCorner)
         set_Alpha_Color(PetStableFrameModelBg)
         hide_Texture(PetStableFrameInset.Bg)
         set_Alpha_Color(PetStableFrameBg)
-        hide_Texture(PetStableFrameStableBg)
+        set_Alpha_Color(PetStableFrameStableBg)
         set_Alpha_Color(PetStableActiveBg)
         for i=1, NUM_PET_STABLE_SLOTS do--NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS do
             if i<=5 then
