@@ -16,7 +16,7 @@ local NUM_PER_ROW=15
 
 
 
-local function ImprovedStableFrame_Update()
+local function ImprovedStableFrame_Update()--查询
     local input = ISF_SearchInput:GetText()
     if not input or input:trim() == "" then
         for i = 1, maxSlots do
@@ -50,7 +50,13 @@ local function ImprovedStableFrame_Update()
     end
 end
 
-
+local function Set_Food_Lable()--食物
+    if GetStablePetFoodTypes(PetStableFrame.selectedPet) then
+        PetStablePetInfo.foodLable:SetText(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet))))
+    else
+        PetStablePetInfo.foodLable:SetText('')
+    end
+end
 
 
 local function set_PetStable_UpdateSlot(btn, petSlot)
@@ -103,10 +109,12 @@ local function HookEnter_Button(btn)--GameTooltip 提示用 tooltips.lua
         if creatureDisplayID and creatureDisplayID>0 then
             e.tips.playerModel:SetDisplayInfo(creatureDisplayID)
             e.tips.playerModel:SetShown(true)
-            e.tips:AddDoubleLine('creatureDisplayID', creatureDisplayID)
             if GetStablePetFoodTypes(btn.petSlot) then
-                e.tips:AddLine(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet))), nil,nil,nil, true)
+                e.tips:AddLine(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet))), 1, 1, 1, true)
             end
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine('creatureDisplayID', creatureDisplayID)
+            e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
         end
     end
@@ -153,7 +161,7 @@ local function Init()
     end
 
 
-
+    --已激活宠物
     local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
     for i= 1, NUM_PET_ACTIVE_SLOTS do
         local btn= _G['PetStableActivePet'..i]
@@ -180,7 +188,7 @@ local function Init()
                 end
                 btn:set_Activ_Button_Texture()
 
-                
+
                 btn.spellActivaButton:SetScript('OnLeave', function(self) e.tips:Hide() end)
                 btn.spellActivaButton:SetScript('OnEnter', function(self)
                     local parent= self:GetParent()
@@ -199,8 +207,16 @@ local function Init()
                     end
                 end)
             end
+            local label= _G['PetStableActivePet'..i..'PetName']
+            if label then
+                label:ClearAllPoints()
+                label:SetPoint('TOP', btn, 'BOTTOM')
+                label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+                label:SetShadowOffset(1, -1)
+                label:SetJustifyH('LEFT')
+                label:SetScale(0.85)
+            end
         end
-        --local label= _G['PetStableActivePet'..i..'PetName']
     end
 
 
@@ -261,28 +277,26 @@ local function Init()
 
     PetStablePetInfo.foodLable= e.Cstr(PetStablePetInfo)--食物
     PetStablePetInfo.foodLable:SetPoint('LEFT', PetStableDiet, 'Right',4,0)
-
+    Set_Food_Lable()--食物
+    hooksecurefunc('PetStable_UpdatePetModelScene', Set_Food_Lable)--食物
 
     PetStableTypeText:ClearAllPoints()
     PetStableTypeText:SetPoint('BOTTOMLEFT', PetStableDiet, 'TOPLEFT',0,2)
     PetStableTypeText:SetJustifyH('LEFT')
+    PetStableTypeText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+    PetStableTypeText:SetShadowOffset(1, -1)
 
-    hooksecurefunc('PetStable_UpdatePetModelScene', function()
-        if GetStablePetFoodTypes(PetStableFrame.selectedPet) then
-            PetStablePetInfo.foodLable:SetText(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet))))
-        else
-            PetStablePetInfo.foodLable:SetText('')
-        end
-    end)
-    --local frame = CreateFrame("Frame", nil, "ImprovedStableFrameSlots", PetStableFrame, "InsetFrameTemplate")
-    --frame:ClearAllPoints()
-    --frame:SetSize(640, 550)
-
-    --frame:SetPoint(PetStableFrame.Inset:GetPoint(1))
-    --PetStableFrame.Inset:SetPoint("TOPLEFT", frame, "TOPRIGHT")
-    PetStableFrame.Inset:Hide()
     e.call('PetStable_Update')
 end
+
+--local frame = CreateFrame("Frame", nil, "ImprovedStableFrameSlots", PetStableFrame, "InsetFrameTemplate")
+--frame:ClearAllPoints()
+--frame:SetSize(640, 550)
+
+--frame:SetPoint(PetStableFrame.Inset:GetPoint(1))
+--PetStableFrame.Inset:SetPoint("TOPLEFT", frame, "TOPRIGHT")
+
+
 
 local panel=CreateFrame("Frame")
 panel:RegisterEvent('ADDON_LOADED')

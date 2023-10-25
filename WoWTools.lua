@@ -273,6 +273,7 @@ function e.GetYesNo(yesno)
 end
 
 function e.Cstr(self, tab)--self, {size, copyFont, changeFont, fontName color={r=,g=,b=,a=}, layer=, justifyH=, mouse=false, wheel=false}
+    --CopyFontObject(
     tab= tab or {}--Fonts.xml FontStyles.xml
     self= self or UIParent
     local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), tab.fontName or 'GameFontNormal',  self:GetFrameLevel()+1)
