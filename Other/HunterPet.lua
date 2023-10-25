@@ -35,7 +35,7 @@ local function set_PetStable_Update()--查询
         end
         local show= isSearch
         if icon then
-            
+
             if isSearch then
                 local food = BuildListString(GetStablePetFoodTypes(i)) or ''
                 local matched, expected = 0, 0
@@ -82,7 +82,6 @@ local function set_PetStable_UpdateSlot(btn, petSlot)--宠物，类型，已激M
             btn.model:ClearModel()
         end
         btn.creatureDisplayID= creatureDisplayID--提示用，
-        --btn:set_Activ_Button_Texture()
     end
 end
 
@@ -301,31 +300,6 @@ local function Init()
 
     e.call('PetStable_Update')
 end
---[[
-self:SetPortraitToAsset("Interface\\Icons\\ability_physical_taunt");
-ButtonFrameTemplate_HideButtonBar(self);
-self.Inset
-self.LeftInset
-self.BottomInset
-self.page = 1;
-self.selectedPet = nil;
-
-local frame = CreateFrame("Frame", nil, "ImprovedStableFrameSlots", PetStableFrame, "InsetFrameTemplate")
-frame:ClearAllPoints()
-frame:SetSize(640, 550)
-frame:SetPoint(PetStableFrame.Inset:GetPoint(1))
-PetStableFrame.Inset:SetPoint("TOPLEFT", frame, "TOPRIGHT")
-
---btn.model= CreateFrame('ModelScene', nil, PetStableFrame, 'PanningModelSceneMixinTemplate', i)
---btn.model:TransitionToModelSceneID(718, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true);
-local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(petSlot);
-local actor = btn.model:GetActorByTag("pet");
-if actor then
-    actor:SetModelByCreatureDisplayID(creatureDisplayID);
-end
-btn.model:SetDisplayInfo(creatureDisplayID)
-btn.model:ClearScene()
-]]
 
 
 local panel=CreateFrame("Frame")
@@ -374,3 +348,29 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         panel:UnregisterEvent('PET_STABLE_SHOW')
     end
 end)
+
+--[[
+self:SetPortraitToAsset("Interface\\Icons\\ability_physical_taunt");
+ButtonFrameTemplate_HideButtonBar(self);
+self.Inset
+self.LeftInset
+self.BottomInset
+self.page = 1;
+self.selectedPet = nil;
+
+local frame = CreateFrame("Frame", nil, "ImprovedStableFrameSlots", PetStableFrame, "InsetFrameTemplate")
+frame:ClearAllPoints()
+frame:SetSize(640, 550)
+frame:SetPoint(PetStableFrame.Inset:GetPoint(1))
+PetStableFrame.Inset:SetPoint("TOPLEFT", frame, "TOPRIGHT")
+
+--btn.model= CreateFrame('ModelScene', nil, PetStableFrame, 'PanningModelSceneMixinTemplate', i)
+--btn.model:TransitionToModelSceneID(718, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true);
+local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(petSlot);
+local actor = btn.model:GetActorByTag("pet");
+if actor then
+    actor:SetModelByCreatureDisplayID(creatureDisplayID);
+end
+btn.model:SetDisplayInfo(creatureDisplayID)
+btn.model:ClearScene()
+]]
