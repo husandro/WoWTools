@@ -190,7 +190,7 @@ local function Init()
     if  _G['ISF_SearchInput'] then ISF_SearchInput:ClearAllPoints() end--处理插件，Improved Stable Frame
     ISF_SearchInput:SetPoint('BOTTOMRIGHT',PetStableFrame, -6, 10)
     ISF_SearchInput:SetScale(1.2)
-    ISF_SearchInput.Instructions:SetText(e.onlyChinese and '名称，类型，天赋' or (NAME .. ", " .. TYPE .. ", " .. TALENT))
+    ISF_SearchInput.Instructions:SetText(e.onlyChinese and '名称，类型，天赋，食物' or (NAME .. ", " .. TYPE .. ", " .. TALENT..', '..POWER_TYPE_FOOD))
     ISF_SearchInput:HookScript("OnTextChanged", set_PetStable_Update)
     hooksecurefunc("PetStable_Update", set_PetStable_Update)
 
@@ -288,7 +288,7 @@ local function Init()
     PetStableFrameModelBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
     PetStablePetInfo:ClearAllPoints()--宠物，信息
-    PetStablePetInfo:SetPoint('BOTTOMLEFT',PetStableFrame, 'BOTTOMRIGHT',0,4)
+    PetStablePetInfo:SetPoint('BOTTOMLEFT', PetStableModelScene, 0, 4)
 
     PetStableDiet:ClearAllPoints()--食物，提示
     PetStableDiet:SetSize(PetStableSelectedPetIcon:GetSize())
