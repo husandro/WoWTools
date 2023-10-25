@@ -73,29 +73,29 @@ local function set_PetStable_UpdateSlot(btn, petSlot)--宠物，类型，已激M
                 btn.model:SetDisplayInfo(creatureDisplayID)
             end
         else
-            btn.model:ClearScene()
+            btn.model:ClearModel()
         end
         btn.creatureDisplayID= creatureDisplayID--提示用，
-        btn:set_Activ_Button_Texture()
+        --btn:set_Activ_Button_Texture()
     end
 end
 
 
-local function Create_Text(btn, index, searchTips)--创建，提示内容
-    btn.solotText= e.Cstr(btn, {layer='BACKGROUND', color={r=1,g=1,b=1,a=0.2}})
-    btn.solotText:SetPoint('CENTER')
-    btn.solotText:SetText(index)
+local function Create_Text(btn, index, activeSlot)--创建，提示内容
+    if not activeSlot then
+        btn.solotText= e.Cstr(btn, {layer='BACKGROUND', color={r=1,g=1,b=1,a=0.2}})--栏位
+        btn.solotText:SetPoint('CENTER')
+        btn.solotText:SetText(index)
 
-    btn.talentText= e.Cstr(btn, {layer='ARTWORK', color=true})
-    btn.talentText:SetAlpha(1)
-    btn.talentText:SetPoint('BOTTOM')
-
-    if searchTips then
         btn.dimOverlay = btn:CreateTexture(nil, "OVERLAY");--查询提示用
         btn.dimOverlay:SetColorTexture(0, 0, 0, 0.8);
         btn.dimOverlay:SetAllPoints();
         btn.dimOverlay:Hide();
     end
+
+    btn.talentText= e.Cstr(btn, {layer='ARTWORK', color=true})--天赋
+    btn.talentText:SetAlpha(1)
+    btn.talentText:SetPoint('BOTTOM')
 end
 
 local function HookEnter_Button(btn)--GameTooltip 提示用 tooltips.lua
@@ -138,7 +138,7 @@ local function Init()
         end
         btn:SetFrameLevel(layer)
 
-        Create_Text(btn, i, true)--创建，提示内容
+        Create_Text(btn, i)--创建，提示内容
         btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
 
         local textrue= _G['PetStableStabledPet'..i..'Background']--处理，按钮，背景 Texture.lua，中有处理过
@@ -182,7 +182,7 @@ local function Init()
     for i= 1, NUM_PET_ACTIVE_SLOTS do
         local btn= _G['PetStableActivePet'..i]
         if btn then
-            Create_Text(btn, i)--创建，提示内容
+            Create_Text(btn, i, true)--创建，提示内容
 
             --已激活宠物，提示
             btn.model= CreateFrame("PlayerModel", nil, PetStableFrame)
@@ -203,10 +203,33 @@ local function Init()
             btn:ClearAllPoints()
             btn:SetPoint('LEFT', btn.model, 'RIGHT', 43,0)
             
+            
 
             if CALL_PET_SPELL_IDS[i] then--召唤，宠物，法术
+                btn.spellActiva= btn:CreateTexture()
+                btn.spellActiva:SetSize(22,22)
+                btn.spellActiva:SetPoint('RIGHT', btn, 'LEFT', -4,0)
+                btn.spellActiva:SetAtlas('services-number-'..i)
+                btn.spellActiva.spellID= CALL_PET_SPELL_IDS[i]
+                btn.spellActiva:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+                btn.spellActiva:SetScript('OnEnter', function(self)
+                    if self.spellID then
+                        e.tips:SetOwner(self, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:SetSpellByID(self.spellID)
+                        e.tips:AddLine(' ')
+                        local creatureDisplayID=  self:GetParent().creatureDisplayID
+                        if creatureDisplayID and creatureDisplayID>0 then
+                            e.tips:AddDoubleLine('creatureDisplayID', creatureDisplayID)
+                        end
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:Show()
+                    end
+                    self:SetAlpha(0.3)
+                end)
+                --[[
                 btn.spellActivaButton= e.Cbtn(btn, {size={22,22}, icon='hide'})
-                btn.spellActivaButton:SetPoint('LEFT', btn.model, 'RIGHT', -10,0)
+                btn.spellActivaButton:SetPoint('RIGHT', btn, 'LEFT', -4,0)
                 btn.spellActivaButton:SetFrameLevel(layer+2)
                 btn.spellID= CALL_PET_SPELL_IDS[i]
                 function btn:set_Activ_Button_Texture()
@@ -232,7 +255,7 @@ local function Init()
                         e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
                     end
-                end)
+                end)]]
             end
             local label= _G['PetStableActivePet'..i..'PetName']
             if label then
@@ -321,6 +344,7 @@ if actor then
     actor:SetModelByCreatureDisplayID(creatureDisplayID);
 end
 btn.model:SetDisplayInfo(creatureDisplayID)
+btn.model:ClearScene()
 ]]
 
 
