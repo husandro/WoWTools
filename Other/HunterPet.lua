@@ -67,15 +67,15 @@ local function set_PetStable_UpdateSlot(btn, petSlot)
     end
 
     if btn.model then--已激活宠物，提示
-        btn.model:TransitionToModelSceneID(718, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true);
-        local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(petSlot);
 
+        local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(petSlot);
         if creatureDisplayID and creatureDisplayID>0 then
             if creatureDisplayID~=btn.creatureDisplayID then
-                local actor = btn.model:GetActorByTag("pet");
+                --[[local actor = btn.model:GetActorByTag("pet");
                 if actor then
                     actor:SetModelByCreatureDisplayID(creatureDisplayID);
-                end
+                end]]
+                btn.model:SetDisplayInfo(creatureDisplayID)
             end
         else
             btn.model:ClearScene()
@@ -168,19 +168,25 @@ local function Init()
         if btn then
             Create_Text(btn, i)--创建，提示内容
 
-            btn.model= CreateFrame('ModelScene', nil, PetStableFrame, 'PanningModelSceneMixinTemplate', i)--已激活宠物，提示
-            btn.model:SetSize(h/5, h/5)
+            --btn.model= CreateFrame('ModelScene', nil, PetStableFrame, 'PanningModelSceneMixinTemplate', i)
+            --btn.model:TransitionToModelSceneID(718, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true);
+            --已激活宠物，提示
+            btn.model= CreateFrame("PlayerModel", nil, PetStableFrame)
+            btn.model:SetSize(h/NUM_PET_ACTIVE_SLOTS, h/NUM_PET_ACTIVE_SLOTS)
+            btn.model:SetFacing(0.3)
             if i==1 then
-                btn.model:SetPoint('TOPRIGHT', PetStableFrame, 'TOPLEFT', -4,0)
+                btn.model:SetPoint('TOPRIGHT', PetStableFrame, 'TOPLEFT', -14,0)
             else
                 btn.model:SetPoint('TOP', _G['PetStableActivePet'..i-1].model, 'BOTTOM')
             end
 
+
             btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
 
             if CALL_PET_SPELL_IDS[i] then--召唤，宠物，法术
-                btn.spellActivaButton= e.Cbtn(btn, {size={22,22}, icon='hide', setID=i})
-                btn.spellActivaButton:SetPoint('RIGHT', btn.model)
+                btn.spellActivaButton= e.Cbtn(btn, {size={22,22}, icon='hide'})
+                btn.spellActivaButton:SetPoint('LEFT', btn.model, 'RIGHT', -12,0)
+                btn.spellActivaButton:SetFrameLevel(layer)
                 btn.spellID= CALL_PET_SPELL_IDS[i]
                 function btn:set_Activ_Button_Texture()
                     local icon= select(3, GetSpellInfo(self.spellID)) or 132161
