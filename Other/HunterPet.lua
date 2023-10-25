@@ -163,6 +163,8 @@ local function Init()
                 btn.model:SetPoint('TOP', _G['PetStableActivePet'..i-1].model, 'BOTTOM')
             end
 
+            btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
+
             if CALL_PET_SPELL_IDS[i] then--召唤，宠物，法术
                 btn.spellTexture= btn:CreateTexture()
                 btn.spellTexture:SetSize(22,22)
