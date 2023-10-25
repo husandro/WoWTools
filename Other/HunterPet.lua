@@ -50,9 +50,31 @@ local function ImprovedStableFrame_Update()
     end
 end
 
+local function set_PetStable_UpdateSlot(btn, petSlot)
+    if btn.talentText then--宠物，类型
+        local talent =petSlot and select(5, GetStablePetInfo(petSlot))
+        talent = talent and e.WA_Utf8Sub(talent, 2, 5, true) or ''
+        btn.talentText:SetText(talent)
+    end
+
+    if btn.model then--已激活宠物，提示
+        btn.model:TransitionToModelSceneID(718, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true);
+        local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(petSlot);
+       
+        if creatureDisplayID and creatureDisplayID>0 then
+            local actor = btn.model:GetActorByTag("pet");
+            if actor then
+                actor:SetModelByCreatureDisplayID(creatureDisplayID);
+            end
+        else
+            btn.model:ClearScene()
+        end
+        btn.spellTexture.creatureDisplayID= creatureDisplayID--提示用，
+    end
+end
 
 
-local function Create_Text(btn, index)--创建，提示内容
+local function Create_Text(btn, index, searchTips)--创建，提示内容
     btn.solotText= e.Cstr(btn, {layer='BACKGROUND', color={r=1,g=1,b=1,a=0.2}})
     btn.solotText:SetPoint('CENTER')
     btn.solotText:SetText(index)
@@ -60,6 +82,13 @@ local function Create_Text(btn, index)--创建，提示内容
     btn.talentText= e.Cstr(btn, {layer='ARTWORK'})
     btn.talentText:SetAlpha(1)
     btn.talentText:SetPoint('BOTTOM')
+
+    if searchTips then
+        btn.dimOverlay = btn:CreateTexture(nil, "OVERLAY");--查询提示用
+        btn.dimOverlay:SetColorTexture(0, 0, 0, 0.8);
+        btn.dimOverlay:SetAllPoints();
+        btn.dimOverlay:Hide();
+    end
 end
 
 
@@ -67,17 +96,21 @@ end
 local function Init()
     local w, h=720, 630
 
+    local layer=PetStableFrame:GetFrameLevel()+ 1
 
     PetStableStabledPet1:ClearAllPoints()--设置，200个按钮，第一个位置
     PetStableStabledPet1:SetPoint("TOPLEFT", PetStableFrame, 97, -37)
+
     for i = 1, maxSlots do
         local btn= _G["PetStableStabledPet"..i]
         if not btn then
             btn= CreateFrame("Button", "PetStableStabledPet"..i, PetStableFrame, "PetStableSlotTemplate", i)
         end
-        Create_Text(btn, i)--创建，提示内容
+        btn:SetFrameLevel(layer)
 
-        local textrue= _G['PetStableStabledPet'..i..'Background']--按钮，背景
+        Create_Text(btn, i, true)--创建，提示内容
+      
+        local textrue= _G['PetStableStabledPet'..i..'Background']--处理，按钮，背景 Texture.lua，中有处理过
         if textrue then
             if e.Player.useColor then
                 textrue:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
@@ -86,65 +119,71 @@ local function Init()
             end
             textrue:SetAlpha(0.5)
         end
+
+        if i > 1 then--设置位置
+            btn:ClearAllPoints()
+            btn:SetPoint("LEFT", _G["PetStableStabledPet"..i-1], "RIGHT", 4, 0)
+        end
+    end
+
+    for i = NUM_PER_ROW+1, maxSlots, NUM_PER_ROW do--换行
+        _G["PetStableStabledPet"..i]:ClearAllPoints()
+        _G["PetStableStabledPet"..i]:SetPoint("TOPLEFT", _G["PetStableStabledPet"..i-NUM_PER_ROW], "BOTTOMLEFT", 0, -4)
     end
 
 
-
+    
     local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
     for i= 1, NUM_PET_ACTIVE_SLOTS do
         local btn= _G['PetStableActivePet'..i]
         if btn then
             Create_Text(btn, i)--创建，提示内容
+
+            btn.model= CreateFrame('ModelScene', nil, PetStableFrame, 'PanningModelSceneMixinTemplate', i)--已激活宠物，提示
+            btn.model:SetSize(h/5, h/5)
+            if i==1 then
+                btn.model:SetPoint('TOPRIGHT', PetStableFrame, 'TOPLEFT', -4,0)
+            else
+                btn.model:SetPoint('TOP', _G['PetStableActivePet'..i-1].model, 'BOTTOM')
+            end
+
             if CALL_PET_SPELL_IDS[i] then--召唤，宠物，法术
-                local texture= btn:CreateTexture()
-                texture:SetSize(22,22)
-                texture:SetPoint('RIGHT', btn, 'LEFT')
-                texture.spellID= CALL_PET_SPELL_IDS[i]
+                btn.spellTexture= btn:CreateTexture()
+                btn.spellTexture:SetSize(22,22)
+                btn.spellTexture:SetPoint('RIGHT', btn.model)
+                btn.spellTexture.spellID= CALL_PET_SPELL_IDS[i]
                 local icon= select(3, GetSpellInfo(CALL_PET_SPELL_IDS[i])) or 132161
-                texture:SetTexture(icon)
-                texture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
-                texture:SetScript('OnEnter', function(self)
+                btn.spellTexture:SetTexture(icon)
+                btn.spellTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+                btn.spellTexture:SetScript('OnEnter', function(self)
                     if self.spellID then
                         e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
                         e.tips:SetSpellByID(self.spellID)
                         e.tips:AddLine(' ')
+                        if self.creatureDisplayID and self.creatureDisplayID>0 then
+                            e.tips:AddDoubleLine('creatureDisplayID', self.creatureDisplayID)
+                        end
                         e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
                     end
                     self:SetAlpha(0.5)
                 end)
             end
-
-            btn.model= CreateFrame('ModelScene', nil, PetStableFrame,'PanningModelSceneMixinTemplate', 1)
-            btn.model:SetSize(h/5, h/5)
-            if i==1 then
-                btn.model:SetPoint('TOPLEFT', PetStableFrame, 'TOPRIGHT', -4,0)
-            else
-                btn.model:SetPoint('TOP', _G['PetStableActivePet'..i-1].model, 'BOTTOM')
-            end
         end
         --local label= _G['PetStableActivePet'..i..'PetName']
     end
 
-    local layer=PetStableFrame:GetFrameLevel()+ 1--查询
-    for i = 1, maxSlots do
-        local frame = _G["PetStableStabledPet"..i]
-        if i > 1 then
-            frame:ClearAllPoints()
-            frame:SetPoint("LEFT", _G["PetStableStabledPet"..i-1], "RIGHT", 4, 0)
-        end
-        frame:SetFrameLevel(layer)
-        frame.dimOverlay = frame:CreateTexture(nil, "OVERLAY");
-        frame.dimOverlay:SetColorTexture(0, 0, 0, 0.8);
-        frame.dimOverlay:SetAllPoints();
-        frame.dimOverlay:Hide();
-    end
 
-    for i = NUM_PER_ROW+1, maxSlots, NUM_PER_ROW do
-        _G["PetStableStabledPet"..i]:ClearAllPoints()
-        _G["PetStableStabledPet"..i]:SetPoint("TOPLEFT", _G["PetStableStabledPet"..i-NUM_PER_ROW], "BOTTOMLEFT", 0, -5)
-    end
+
+
+
+
+ 
+
+
+
+
 
     --local frame = CreateFrame("Frame", nil, "ImprovedStableFrameSlots", PetStableFrame, "InsetFrameTemplate")
     --frame:ClearAllPoints()
@@ -203,25 +242,7 @@ local function Init()
 
 
 
-    hooksecurefunc('PetStable_UpdateSlot', function(btn, petSlot)--宠物，类型
-        if btn.talentText then
-            local talent =petSlot and select(5, GetStablePetInfo(petSlot))
-            talent = talent and e.WA_Utf8Sub(talent, 2, 5, true) or ''
-            btn.talentText:SetText(talent)
-        end
-        if btn.model then
-            btn.model:TransitionToModelSceneID(718, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true);
-            local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(petSlot);
-            if creatureDisplayID then
-                local actor = btn.model:GetActorByTag("pet");
-                if actor then
-                    actor:SetModelByCreatureDisplayID(creatureDisplayID);
-                end
-            end
-        end
-    end)
-
-
+    hooksecurefunc('PetStable_UpdateSlot', set_PetStable_UpdateSlot)
 
 
     PetStableDiet:ClearAllPoints()
