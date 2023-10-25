@@ -75,7 +75,7 @@ local function set_PetStable_UpdateSlot(btn, petSlot)
             btn.model:ClearScene()
         end
         btn.creatureDisplayID= creatureDisplayID--提示用，
-        btn.spellTexture:set_Texture()
+        btn:set_Activ_Button_Texture()
     end
 end
 
@@ -85,7 +85,7 @@ local function Create_Text(btn, index, searchTips)--创建，提示内容
     btn.solotText:SetPoint('CENTER')
     btn.solotText:SetText(index)
 
-    btn.talentText= e.Cstr(btn, {layer='ARTWORK'})
+    btn.talentText= e.Cstr(btn, {layer='ARTWORK', color=true})
     btn.talentText:SetAlpha(1)
     btn.talentText:SetPoint('BOTTOM')
 
@@ -98,11 +98,16 @@ local function Create_Text(btn, index, searchTips)--创建，提示内容
 end
 
 local function HookEnter_Button(btn)--GameTooltip 提示用 tooltips.lua
-    if e.tips.playerModel then
+    if e.tips.playerModel and btn.petSlot then
         local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(btn.petSlot);
         if creatureDisplayID and creatureDisplayID>0 then
             e.tips.playerModel:SetDisplayInfo(creatureDisplayID)
             e.tips.playerModel:SetShown(true)
+            e.tips:AddDoubleLine('creatureDisplayID', creatureDisplayID)
+            if GetStablePetFoodTypes(btn.petSlot) then
+                e.tips:AddLine(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet))), nil,nil,nil, true)
+            end
+            e.tips:Show()
         end
     end
 end
@@ -120,6 +125,7 @@ local function Init()
             btn= CreateFrame("Button", "PetStableStabledPet"..i, PetStableFrame, "PetStableSlotTemplate", i)
         end
         btn:SetFrameLevel(layer)
+        --btn:SetScale(1)
 
         Create_Text(btn, i, true)--创建，提示内容
 
@@ -165,33 +171,32 @@ local function Init()
             btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
 
             if CALL_PET_SPELL_IDS[i] then--召唤，宠物，法术
-                btn.spellTexture= btn:CreateTexture()
-                btn.spellTexture:SetSize(22,22)
-                btn.spellTexture:SetPoint('RIGHT', btn.model)
-                btn.spellTexture.spellID= CALL_PET_SPELL_IDS[i]
-                btn.spellTexture.index=i
-                function btn.spellTexture:set_Texture()
-                    local icon= select(3, GetSpellInfo(CALL_PET_SPELL_IDS[self.index])) or 132161
-                    self:SetTexture(icon)
+                btn.spellActivaButton= e.Cbtn(btn, {size={22,22}, icon='hide', setID=i})
+                btn.spellActivaButton:SetPoint('RIGHT', btn.model)
+                btn.spellID= CALL_PET_SPELL_IDS[i]
+                function btn:set_Activ_Button_Texture()
+                    local icon= select(3, GetSpellInfo(self.spellID)) or 132161
+                    self.spellActivaButton:SetNormalTexture(icon)
                 end
-                btn.spellTexture:set_Texture()
+                btn:set_Activ_Button_Texture()
 
-                btn.spellTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
-                btn.spellTexture:SetScript('OnEnter', function(self)
-                    if self.spellID then
+                
+                btn.spellActivaButton:SetScript('OnLeave', function(self) e.tips:Hide() end)
+                btn.spellActivaButton:SetScript('OnEnter', function(self)
+                    local parent= self:GetParent()
+                    local spellID= parent.spellID
+                    if spellID then
                         e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
-                        e.tips:SetSpellByID(self.spellID)
+                        e.tips:SetSpellByID(spellID)
                         e.tips:AddLine(' ')
-                        self:GetPrent()
-                        local creatureDisplayID=  self.GetParent().creatureDisplayID
+                        local creatureDisplayID=  parent.creatureDisplayID
                         if creatureDisplayID and creatureDisplayID>0 then
                             e.tips:AddDoubleLine('creatureDisplayID', creatureDisplayID)
                         end
                         e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
                     end
-                    self:SetAlpha(0.5)
                 end)
             end
         end
@@ -202,7 +207,7 @@ local function Init()
 
 
     --查询
-    ISF_SearchInput = CreateFrame("EditBox", nil, PetStableFrame, "SearchBoxTemplate")
+    ISF_SearchInput = _G['ISF_SearchInput'] or CreateFrame("EditBox", nil, PetStableFrame, "SearchBoxTemplate")
     if ISF_SearchInput.Middle then
         ISF_SearchInput.Middle:SetAlpha(0.5)
         ISF_SearchInput.Right:SetAlpha(0.5)
@@ -210,15 +215,13 @@ local function Init()
     end
 
     ISF_SearchInput:SetSize(270,20)
+    if  _G['ISF_SearchInput'] then ISF_SearchInput:ClearAllPoints() end--处理插件，Improved Stable Frame
     ISF_SearchInput:SetPoint('BOTTOMRIGHT',-6, 10)
     ISF_SearchInput:SetScale(1.2)
+    ISF_SearchInput.Instructions:SetText(e.onlyChinese and '名称，类型，天赋' or (NAME .. ", " .. TYPE .. ", " .. TALENT))
 
     ISF_SearchInput:HookScript("OnTextChanged", ImprovedStableFrame_Update)
-    ISF_SearchInput.Instructions:SetText(e.onlyChinese and '名称，类型，天赋' or (NAME .. ", " .. TYPE .. ", " .. TALENT))
     hooksecurefunc("PetStable_Update", ImprovedStableFrame_Update)
-
-
-
 
 
 
@@ -278,6 +281,7 @@ local function Init()
     --frame:SetPoint(PetStableFrame.Inset:GetPoint(1))
     --PetStableFrame.Inset:SetPoint("TOPLEFT", frame, "TOPRIGHT")
     PetStableFrame.Inset:Hide()
+    e.call('PetStable_Update')
 end
 
 local panel=CreateFrame("Frame")
@@ -304,7 +308,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if Save.disabled  then-- or IsAddOnLoaded("ImprovedStableFrame") then
                     panel:UnregisterAllEvents()
                 else
-                    Init()
                     if IsAddOnLoaded("ImprovedStableFrame") then
                         print(id, addName,
                             e.GetEnabeleDisable(false), 'Improved Stable Frame',
@@ -322,5 +325,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
+    elseif event=='PET_STABLE_SHOW' then
+        Init()
+        panel:UnregisterEvent('PET_STABLE_SHOW')
     end
 end)
