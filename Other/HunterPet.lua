@@ -101,6 +101,9 @@ local function Create_Text(btn, index, showSlotNum)--创建，提示内容
     btn.talentText= e.Cstr(btn, {layer='ARTWORK', color=true})--天赋
     btn.talentText:SetAlpha(1)
     btn.talentText:SetPoint('BOTTOM')
+
+    btn:RegisterForDrag('LeftButton', "RightButton")
+    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
 end
 
 local function HookEnter_Button(btn)--GameTooltip 提示用 tooltips.lua
