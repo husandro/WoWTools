@@ -132,10 +132,7 @@ local function Init()
     PetStableStabledPet1:SetPoint("TOPLEFT", PetStableFrame, 97, -37)
 
     for i = 1, maxSlots do
-        local btn= _G["PetStableStabledPet"..i]
-        if not btn then
-            btn= CreateFrame("Button", "PetStableStabledPet"..i, PetStableFrame, "PetStableSlotTemplate", i)
-        end
+        local btn= _G["PetStableStabledPet"..i] or CreateFrame("Button", "PetStableStabledPet"..i, PetStableFrame, "PetStableSlotTemplate", i)
         btn:SetFrameLevel(layer)
 
         Create_Text(btn, i)--创建，提示内容
@@ -203,8 +200,6 @@ local function Init()
             btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
             btn:ClearAllPoints()
             btn:SetPoint('LEFT', btn.model, 'RIGHT', 43,0)
-            
-            
 
             if CALL_PET_SPELL_IDS[i] then--召唤，宠物，法术
                 btn.spellActiva= btn:CreateTexture()
@@ -228,40 +223,11 @@ local function Init()
                     end
                     self:SetAlpha(0.3)
                 end)
-                --[[
-                btn.spellActivaButton= e.Cbtn(btn, {size={22,22}, icon='hide'})
-                btn.spellActivaButton:SetPoint('RIGHT', btn, 'LEFT', -4,0)
-                btn.spellActivaButton:SetFrameLevel(layer+2)
-                btn.spellID= CALL_PET_SPELL_IDS[i]
-                function btn:set_Activ_Button_Texture()
-                    local icon= select(3, GetSpellInfo(self.spellID)) or 132161
-                    self.spellActivaButton:SetNormalTexture(icon)
-                end
-                btn:set_Activ_Button_Texture()
-
-
-                btn.spellActivaButton:SetScript('OnLeave', function(self) e.tips:Hide() end)
-                btn.spellActivaButton:SetScript('OnEnter', function(self)
-                    local parent= self:GetParent()
-                    local spellID= parent.spellID
-                    if spellID then
-                        e.tips:SetOwner(self, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:SetSpellByID(spellID)
-                        e.tips:AddLine(' ')
-                        local creatureDisplayID=  parent.creatureDisplayID
-                        if creatureDisplayID and creatureDisplayID>0 then
-                            e.tips:AddDoubleLine('creatureDisplayID', creatureDisplayID)
-                        end
-                        e.tips:AddDoubleLine(id, addName)
-                        e.tips:Show()
-                    end
-                end)]]
             end
             local label= _G['PetStableActivePet'..i..'PetName']
             if label then
                 label:ClearAllPoints()
-                label:SetPoint('TOP', btn, 'BOTTOM')
+                label:SetPoint('BOTTOM', _G['PetStableActivePet'..i..'Border'] or btn,0,-10)
                 label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
                 label:SetShadowOffset(1, -1)
                 label:SetJustifyH('LEFT')
