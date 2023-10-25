@@ -546,9 +546,10 @@ local function Init_Set_AlphaAndColor()
     set_Alpha_Frame_Texture(PVEFrameTab3)
 
     if PetStableFrame then--猎人，宠物
-        --set_Alpha_Color(PetStableFrame.NineSlice.TopEdge)
-        --set_Alpha_Color(PetStableFrame.NineSlice.TopLeftCorner)
-        --set_Alpha_Color(PetStableFrame.NineSlice.TopRightCorner)
+        set_Alpha_Color(PetStableFrame.NineSlice.TopEdge)
+        set_Alpha_Color(PetStableFrame.NineSlice.TopLeftCorner)
+        set_Alpha_Color(PetStableFrame.NineSlice.TopRightCorner)
+        --set_Alpha_Color(PetStableFrame.NineSlice)
         set_Alpha_Color(PetStableFrameModelBg)
         hide_Texture(PetStableFrameInset.Bg)
         set_Alpha_Color(PetStableFrameBg)

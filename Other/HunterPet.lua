@@ -198,6 +198,7 @@ local function Init()
             bg:SetSize(modelH+14, modelH)
             bg:SetAtlas('ShipMission_RewardsBG-Desaturate')
             bg:SetAlpha(0.3)
+            bg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
             btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
             btn:ClearAllPoints()
@@ -214,7 +215,7 @@ local function Init()
                 btn.spellActiva:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
                 btn.spellActiva:SetScript('OnEnter', function(self)
                     if self.spellID then
-                        e.tips:SetOwner(self, "ANCHOR_LEFT")
+                        e.tips:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
                         e.tips:ClearLines()
                         e.tips:SetSpellByID(self.spellID)
                         e.tips:AddLine(' ')
@@ -278,7 +279,7 @@ local function Init()
 
 
 
-    PetStableFrameInset.NineSlice:ClearAllPoints()--预览外框
+    PetStableFrameInset.NineSlice:ClearAllPoints()--标示，背景
     PetStableFrameInset.NineSlice:SetPoint('TOPLEFT')
     PetStableFrameInset.NineSlice:SetPoint('BOTTOMRIGHT', PetStableFrame, -4, 4)
 
@@ -293,6 +294,7 @@ local function Init()
     PetStableFrameModelBg:SetAlpha(0.3)
     PetStableFrameInset.Bg:Hide()
     PetStableFrameModelBg:SetAtlas('ShipMission_RewardsBG-Desaturate')
+    PetStableFrameModelBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
     PetStablePetInfo:ClearAllPoints()--宠物，信息
     PetStablePetInfo:SetPoint('BOTTOMLEFT',PetStableFrame, 'BOTTOMRIGHT',0,4)
