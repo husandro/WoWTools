@@ -316,7 +316,7 @@ function e.Cstr(self, tab)--self, {size, copyFont, changeFont, fontName color={r
     return font
 end
 
-function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton',notWheel
+function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton', notWheel, setID
     tab=tab or {}
     local template= tab.type==false and 'UIPanelButtonTemplate' or tab.type==true and 'SecureActionButtonTemplate' or tab.type
     --[[ SecureTemplates
@@ -330,7 +330,7 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, butto
     SecurePartyPetHeaderTemplate	Frame	Managing party pets.
     SecureRaidPetHeaderTemplate
 ]]
-    local btn= CreateFrame(tab.button or 'Button', tab.name, self or UIParent, template)
+    local btn= CreateFrame(tab.button or 'Button', tab.name, self or UIParent, template, tab.setID)
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     if not tab.notWheel then
         btn:EnableMouseWheel(true)
