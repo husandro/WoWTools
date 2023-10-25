@@ -50,6 +50,9 @@ local function ImprovedStableFrame_Update()
     end
 end
 
+
+
+
 local function set_PetStable_UpdateSlot(btn, petSlot)
     if btn.talentText then--宠物，类型
         local talent =petSlot and select(5, GetStablePetInfo(petSlot))
@@ -60,16 +63,19 @@ local function set_PetStable_UpdateSlot(btn, petSlot)
     if btn.model then--已激活宠物，提示
         btn.model:TransitionToModelSceneID(718, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD, true);
         local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(petSlot);
-       
+
         if creatureDisplayID and creatureDisplayID>0 then
-            local actor = btn.model:GetActorByTag("pet");
-            if actor then
-                actor:SetModelByCreatureDisplayID(creatureDisplayID);
+            if creatureDisplayID~=btn.creatureDisplayID then
+                local actor = btn.model:GetActorByTag("pet");
+                if actor then
+                    actor:SetModelByCreatureDisplayID(creatureDisplayID);
+                end
             end
         else
             btn.model:ClearScene()
         end
-        btn.spellTexture.creatureDisplayID= creatureDisplayID--提示用，
+        btn.creatureDisplayID= creatureDisplayID--提示用，
+        btn.spellTexture:set_Texture()
     end
 end
 
@@ -91,7 +97,15 @@ local function Create_Text(btn, index, searchTips)--创建，提示内容
     end
 end
 
-
+local function HookEnter_Button(btn)--GameTooltip 提示用 tooltips.lua
+    if e.tips.playerModel then
+        local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(btn.petSlot);
+        if creatureDisplayID and creatureDisplayID>0 then
+            e.tips.playerModel:SetDisplayInfo(creatureDisplayID)
+            e.tips.playerModel:SetShown(true)
+        end
+    end
+end
 
 local function Init()
     local w, h=720, 630
@@ -109,7 +123,9 @@ local function Init()
         btn:SetFrameLevel(layer)
 
         Create_Text(btn, i, true)--创建，提示内容
-      
+
+        btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
+
         local textrue= _G['PetStableStabledPet'..i..'Background']--处理，按钮，背景 Texture.lua，中有处理过
         if textrue then
             if e.Player.useColor then
@@ -132,7 +148,7 @@ local function Init()
     end
 
 
-    
+
     local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
     for i= 1, NUM_PET_ACTIVE_SLOTS do
         local btn= _G['PetStableActivePet'..i]
@@ -152,8 +168,13 @@ local function Init()
                 btn.spellTexture:SetSize(22,22)
                 btn.spellTexture:SetPoint('RIGHT', btn.model)
                 btn.spellTexture.spellID= CALL_PET_SPELL_IDS[i]
-                local icon= select(3, GetSpellInfo(CALL_PET_SPELL_IDS[i])) or 132161
-                btn.spellTexture:SetTexture(icon)
+                btn.spellTexture.index=i
+                function btn.spellTexture:set_Texture()
+                    local icon= select(3, GetSpellInfo(CALL_PET_SPELL_IDS[self.index])) or 132161
+                    self:SetTexture(icon)
+                end
+                btn.spellTexture:set_Texture()
+
                 btn.spellTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
                 btn.spellTexture:SetScript('OnEnter', function(self)
                     if self.spellID then
@@ -161,8 +182,10 @@ local function Init()
                         e.tips:ClearLines()
                         e.tips:SetSpellByID(self.spellID)
                         e.tips:AddLine(' ')
-                        if self.creatureDisplayID and self.creatureDisplayID>0 then
-                            e.tips:AddDoubleLine('creatureDisplayID', self.creatureDisplayID)
+                        self:GetPrent()
+                        local creatureDisplayID=  self.GetParent().creatureDisplayID
+                        if creatureDisplayID and creatureDisplayID>0 then
+                            e.tips:AddDoubleLine('creatureDisplayID', creatureDisplayID)
                         end
                         e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
@@ -179,7 +202,7 @@ local function Init()
 
 
 
- 
+
 
 
 
@@ -212,7 +235,7 @@ local function Init()
 
 
 
-  
+
     PetStableFrame:SetSize(w, h)--设置，大小
     PetStableFrameInset.NineSlice:Hide()
 

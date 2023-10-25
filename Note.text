@@ -189,6 +189,7 @@ StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"] = {
 材质
 SetPortraitTexture(textureObject, unitToken [, disableMasking])
 SetPortraitToTexture(textureObject, texturePath)
+SetItemButtonTexture(button, icon)
 C_Texture.GetAtlasInfo(atlas)
 C_Texture.GetFilenameFromFileDataID(fileDataID)
 SetItemButtonTextureVertexColor(button, 1.0, 1.0, 1.0)
