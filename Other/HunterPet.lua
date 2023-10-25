@@ -35,7 +35,7 @@ local function set_PetStable_Update()--查询
         end
         local show= isSearch
         if icon then
-            num= num+1
+            
             if isSearch then
                 local food = BuildListString(GetStablePetFoodTypes(i)) or ''
                 local matched, expected = 0, 0
@@ -48,33 +48,20 @@ local function set_PetStable_Update()--查询
                 end
                 if matched == expected then
                    show= false
+                    num= num +1
                 end
+            else
+                num= num +1
             end
         end
         btn.dimOverlay:SetShown(show)
     end
-    ISF_SearchInput.text:SetFormattedText(e.onlyChinese and '已收集（%d/%d）' or ITEM_PET_KNOWN, num, all)
+    ISF_SearchInput.text:SetFormattedText(isSearch and '|A:common-search-magnifyingglass:0:0|a |cnGREEN_FONT_COLOR:%d|r /%d' or (e.onlyChinese and '已收集（%d/%d）' or ITEM_PET_KNOWN), num, all)
+end
 
-end
---[[
-local matched, expected = 0, 0
-for str in input:gmatch("([^%s]+)") do
-    expected = expected + 1
-    str = str:trim():lower()
 
-    if name:lower():find(str)
-    or family:lower():find(str)
-    or talent:lower():find(str)
-    then
-        matched = matched + 1
-    end
-end
-if matched == expected then
-    button.dimOverlay:Hide();
-end
-]]
 local function Set_Food_Lable()--食物
-    PetStablePetInfo.foodLable:SetText(BuildListString(Get_Food_Text(PetStableFrame.selectedPet)) or '')
+    PetStablePetInfo.foodLable:SetText(Get_Food_Text(PetStableFrame.selectedPet) or '')
 end
 
 
@@ -143,7 +130,7 @@ local function Init()
     NUM_PET_STABLE_PAGES = 1
     PetStableFrame.page = 1
     PetStableFrame:SetSize(w, h)--设置，大小
-    
+
     PetStableNextPageButton:Hide()--隐藏
     PetStablePrevPageButton:Hide()
     PetStableBottomInset:Hide()
@@ -158,6 +145,7 @@ local function Init()
         btn:SetFrameLevel(layer)
 
         Create_Text(btn, i, true)--创建，提示内容
+
         btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
 
         local textrue= _G['PetStableStabledPet'..i..'Background']--处理，按钮，背景 Texture.lua，中有处理过
@@ -196,10 +184,10 @@ local function Init()
 
     ISF_SearchInput.text= e.Cstr(ISF_SearchInput, {color=true})
     ISF_SearchInput.text:SetPoint('BOTTOMLEFT', ISF_SearchInput, 'TOPLEFT')
+
     --已激活宠物
     local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
     local modelH= (PetStableLeftInset:GetHeight()-28)/NUM_PET_ACTIVE_SLOTS
-    --local modelH= (h-26)/NUM_PET_ACTIVE_SLOTS
     for i= 1, NUM_PET_ACTIVE_SLOTS do
         local btn= _G['PetStableActivePet'..i]
         if btn then
@@ -214,6 +202,7 @@ local function Init()
             else
                 btn.model:SetPoint('TOP', _G['PetStableActivePet'..i-1].model, 'BOTTOM')
             end
+
             local bg=btn.model:CreateTexture('BACKGROUND')
             bg:SetPoint('LEFT')
             bg:SetSize(modelH+14, modelH)
@@ -225,27 +214,23 @@ local function Init()
             btn:ClearAllPoints()
             btn:SetPoint('LEFT', btn.model, 'RIGHT', 43,0)
 
+            local spellTexture= btn:CreateTexture()
+            spellTexture:SetSize(25,25)
+            spellTexture:SetPoint('RIGHT', btn, 'LEFT', -2,0)
+            spellTexture:SetAtlas('services-number-'..i)
+            spellTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+            spellTexture:SetAlpha(0.3)
             if CALL_PET_SPELL_IDS[i] then--召唤，宠物，法术
-                btn.spellActiva= btn:CreateTexture()
-                btn.spellActiva:SetSize(22,22)
-                btn.spellActiva:SetPoint('RIGHT', btn, 'LEFT', -4,0)
-                btn.spellActiva:SetAtlas('services-number-'..i)
-                btn.spellActiva.spellID= CALL_PET_SPELL_IDS[i]
-                btn.spellActiva:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
-                btn.spellActiva:SetScript('OnEnter', function(self)
-                    if self.spellID then
-                        e.tips:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
-                        e.tips:ClearLines()
-                        e.tips:SetSpellByID(self.spellID)
-                        e.tips:AddLine(' ')
-                        local creatureDisplayID=  self:GetParent().creatureDisplayID
-                        if creatureDisplayID and creatureDisplayID>0 then
-                            e.tips:AddDoubleLine('creatureDisplayID', creatureDisplayID)
-                        end
-                        e.tips:AddDoubleLine(id, addName)
-                        e.tips:Show()
-                    end
-                    self:SetAlpha(0.3)
+                spellTexture.spellID= CALL_PET_SPELL_IDS[i]
+                spellTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.3) end)
+                spellTexture:SetScript('OnEnter', function(self)
+                    e.tips:SetOwner(self, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:SetSpellByID(self.spellID)
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:Show()
+                    self:SetAlpha(1)
                 end)
             end
             local label= _G['PetStableActivePet'..i..'PetName']
@@ -263,11 +248,13 @@ local function Init()
     hooksecurefunc('PetStable_UpdateSlot', set_PetStable_UpdateSlot)--宠物，类型，已激MODEL
 
 
-    
+    PetStableFrameTitleText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)--标题
+
     PetStableActiveBg:ClearAllPoints()--已激活宠物，背景，大小
     PetStableActiveBg:SetAllPoints(PetStableLeftInset)
     PetStableActiveBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
+    PetStableActivePetsLabel:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
 
 
     PetStableFrameInset.NineSlice:ClearAllPoints()--标示，背景

@@ -3477,7 +3477,9 @@
         "PET_DIET_TEMPLATE",
         "BuildListString",
         "PetStable_Update",
-        "PetStableLeftInset"
+        "PetStableLeftInset",
+        "PetStableActivePetsLabel",
+        "PetStableFrameTitleText"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
