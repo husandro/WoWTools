@@ -15,47 +15,66 @@ local NUM_PER_ROW=15
 
 
 
+local function Get_Food_Text(slotPet)
+    return BuildListString(GetStablePetFoodTypes(slotPet))
+end
 
-local function ImprovedStableFrame_Update()--查询
+local function set_PetStable_Update()--查询
     local input = ISF_SearchInput:GetText()
-    if not input or input:trim() == "" then
-        for i = 1, maxSlots do
-            _G["PetStableStabledPet"..i].dimOverlay:Hide()
-        end
-        return
-    end
+    local all= maxSlots + NUM_PET_ACTIVE_SLOTS
+    local num=0
+    local btn
+    local isSearch= input and input:trim()~= ""
 
-    for i = 1, maxSlots do
-        local icon, name, _, family, talent = GetStablePetInfo(NUM_PET_ACTIVE_SLOTS + i);
-        local btn = _G["PetStableStabledPet"..i];
-        local show=true
+    for i = 1, all do
+        local icon, name, _, family, talent = GetStablePetInfo(i);
+        if i<=NUM_PET_ACTIVE_SLOTS then
+            btn= _G['PetStableActivePet'..i]
+        else
+            btn= _G["PetStableStabledPet"..i- NUM_PET_ACTIVE_SLOTS]
+        end
+        local show= isSearch
         if icon then
-            local matched, expected = 0, 0
-            for str in input:gmatch("([^%s]+)") do
-                expected = expected + 1
-                str = str:trim():lower()
-                if
-                    name:lower():find(str)
-                    or family:lower():find(str)
-                    or talent:lower():find(str)
-                then
-                    matched = matched + 1
+            num= num+1
+            if isSearch then
+                local food = BuildListString(GetStablePetFoodTypes(i)) or ''
+                local matched, expected = 0, 0
+                for str in input:gmatch("([^%s]+)") do
+                    expected = expected + 1
+                    str = str:trim():lower()
+                    if name:lower():find(str) or family:lower():find(str) or talent:lower():find(str) or food:lower():find(str) then
+                        matched = matched + 1
+                    end
                 end
-            end
-            if matched == expected then
-                show=false
+                if matched == expected then
+                   show= false
+                end
             end
         end
         btn.dimOverlay:SetShown(show)
     end
-end
+    ISF_SearchInput.text:SetFormattedText(e.onlyChinese and '已收集（%d/%d）' or ITEM_PET_KNOWN, num, all)
 
-local function Set_Food_Lable()--食物
-    if GetStablePetFoodTypes(PetStableFrame.selectedPet) then
-        PetStablePetInfo.foodLable:SetText(BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet)))
-    else
-        PetStablePetInfo.foodLable:SetText('')
+end
+--[[
+local matched, expected = 0, 0
+for str in input:gmatch("([^%s]+)") do
+    expected = expected + 1
+    str = str:trim():lower()
+
+    if name:lower():find(str)
+    or family:lower():find(str)
+    or talent:lower():find(str)
+    then
+        matched = matched + 1
     end
+end
+if matched == expected then
+    button.dimOverlay:Hide();
+end
+]]
+local function Set_Food_Lable()--食物
+    PetStablePetInfo.foodLable:SetText(BuildListString(Get_Food_Text(PetStableFrame.selectedPet)) or '')
 end
 
 
@@ -81,17 +100,17 @@ local function set_PetStable_UpdateSlot(btn, petSlot)--宠物，类型，已激M
 end
 
 
-local function Create_Text(btn, index, activeSlot)--创建，提示内容
-    if not activeSlot then
+local function Create_Text(btn, index, showSlotNum)--创建，提示内容
+    if showSlotNum then
         btn.solotText= e.Cstr(btn, {layer='BACKGROUND', color={r=1,g=1,b=1,a=0.2}})--栏位
         btn.solotText:SetPoint('CENTER')
         btn.solotText:SetText(index)
-
-        btn.dimOverlay = btn:CreateTexture(nil, "OVERLAY");--查询提示用
-        btn.dimOverlay:SetColorTexture(0, 0, 0, 0.8);
-        btn.dimOverlay:SetAllPoints();
-        btn.dimOverlay:Hide();
     end
+
+    btn.dimOverlay = btn:CreateTexture(nil, "OVERLAY");--查询提示用
+    btn.dimOverlay:SetColorTexture(0, 0, 0, 0.8);
+    btn.dimOverlay:SetAllPoints();
+    btn.dimOverlay:Hide();
 
     btn.talentText= e.Cstr(btn, {layer='ARTWORK', color=true})--天赋
     btn.talentText:SetAlpha(1)
@@ -104,8 +123,9 @@ local function HookEnter_Button(btn)--GameTooltip 提示用 tooltips.lua
         if creatureDisplayID and creatureDisplayID>0 then
             e.tips.playerModel:SetDisplayInfo(creatureDisplayID)
             e.tips.playerModel:SetShown(true)
-            if GetStablePetFoodTypes(btn.petSlot) then
-                e.tips:AddLine(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(btn.petSlot))), 1, 1, 1, true)
+            local food= Get_Food_Text(btn.petSlot)
+            if food then
+                e.tips:AddLine(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, food, 1, 1, 1, true))
             end
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('creatureDisplayID', creatureDisplayID)
@@ -137,7 +157,7 @@ local function Init()
 
         btn:SetFrameLevel(layer)
 
-        Create_Text(btn, i)--创建，提示内容
+        Create_Text(btn, i, true)--创建，提示内容
         btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
 
         local textrue= _G['PetStableStabledPet'..i..'Background']--处理，按钮，背景 Texture.lua，中有处理过
@@ -171,9 +191,11 @@ local function Init()
     ISF_SearchInput:SetPoint('BOTTOMRIGHT',PetStableFrame, -6, 10)
     ISF_SearchInput:SetScale(1.2)
     ISF_SearchInput.Instructions:SetText(e.onlyChinese and '名称，类型，天赋' or (NAME .. ", " .. TYPE .. ", " .. TALENT))
-    ISF_SearchInput:HookScript("OnTextChanged", ImprovedStableFrame_Update)
-    hooksecurefunc("PetStable_Update", ImprovedStableFrame_Update)
+    ISF_SearchInput:HookScript("OnTextChanged", set_PetStable_Update)
+    hooksecurefunc("PetStable_Update", set_PetStable_Update)
 
+    ISF_SearchInput.text= e.Cstr(ISF_SearchInput, {color=true})
+    ISF_SearchInput.text:SetPoint('BOTTOMLEFT', ISF_SearchInput, 'TOPLEFT')
     --已激活宠物
     local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
     local modelH= (PetStableLeftInset:GetHeight()-28)/NUM_PET_ACTIVE_SLOTS
@@ -181,7 +203,7 @@ local function Init()
     for i= 1, NUM_PET_ACTIVE_SLOTS do
         local btn= _G['PetStableActivePet'..i]
         if btn then
-            Create_Text(btn, i, true)--创建，提示内容
+            Create_Text(btn, i)--创建，提示内容
 
             --已激活宠物，提示
             btn.model= CreateFrame("PlayerModel", nil, PetStableFrame)
