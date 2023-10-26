@@ -377,7 +377,7 @@ local function set_Button_Text()
                 self.name= tables.name
                 self.nameText:SetText(tables.name or '')
                 self.text:SetText(tables.text or '')
-                if info.atlas then
+                if tables.atlas then
                     self:SetNormalAtlas(tables.atlas)
                 else
                     self:SetNormalTexture(tables.texture or 0)
