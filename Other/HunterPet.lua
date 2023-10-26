@@ -179,6 +179,7 @@ local function Init()
         _G["PetStableStabledPet"..i]:SetPoint("TOPLEFT", _G["PetStableStabledPet"..i-NUM_PER_ROW], "BOTTOMLEFT", 0, -4)
     end
 
+
     --查询
     ISF_SearchInput = _G['ISF_SearchInput'] or CreateFrame("EditBox", nil, PetStableStabledPet1, "SearchBoxTemplate")
     ISF_SearchInput.Middle:SetAlpha(0.5)
@@ -192,9 +193,9 @@ local function Init()
     ISF_SearchInput:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
     ISF_SearchInput:HookScript("OnTextChanged", set_PetStable_Update)
     hooksecurefunc("PetStable_Update", set_PetStable_Update)
-
     ISF_SearchInput.text= e.Cstr(ISF_SearchInput, {color=true})
     ISF_SearchInput.text:SetPoint('BOTTOMLEFT', ISF_SearchInput, 'TOPLEFT')
+
 
     --已激活宠物
     local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
@@ -323,8 +324,8 @@ local function Init()
     PetStableFrameModelBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
     PetStablePetInfo:ClearAllPoints()--宠物，信息
-    PetStablePetInfo:SetPoint('BOTTOMLEFT', PetStableModelScene, 0, 4)
-    PetStablePetInfo:SetParent(PetStableModelScene)
+    PetStablePetInfo:SetPoint('BOTTOMLEFT', PetStableFrame, 'BOTTOMRIGHT',0, 4)
+    --PetStablePetInfo:SetParent(PetStableModelScene)
 
     PetStableDiet:ClearAllPoints()--食物，提示
     PetStableDiet:SetSize(PetStableSelectedPetIcon:GetSize())
@@ -338,106 +339,106 @@ local function Init()
     hooksecurefunc('PetStable_UpdatePetModelScene', Set_Food_Lable)--食物
 
     PetStableNameText:ClearAllPoints()
-    PetStableNameText:SetPoint('BOTTOMLEFT', PetStableSelectedPetIcon, 'RIGHT', 0,2)
+    PetStableNameText:SetPoint('TOPLEFT', PetStableSelectedPetIcon, 'RIGHT',0, -2)
     PetStableNameText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)--选定，宠物，名称
 
     PetStableTypeText:ClearAllPoints()--选定，宠物，类型
-    PetStableTypeText:SetPoint('TOPLEFT', PetStableSelectedPetIcon, 'RIGHT',0, -2)
+    PetStableTypeText:SetPoint('BOTTOMLEFT', PetStableSelectedPetIcon, 'RIGHT', 0,2)
     PetStableTypeText:SetJustifyH('LEFT')
     PetStableTypeText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
     PetStableTypeText:SetShadowOffset(1, -1)
 
 
+
+    
+    local sortButton= e.Cbtn(ISF_SearchInput, {atlas='bags-button-autosort-up', size={26,26}})
+    --sortButton:SetPoint('BOTTOMRIGHT', ISF_SearchInput, 'TOPRIGHT')
+    sortButton:SetPoint('RIGHT', ISF_SearchInput, 'LEFT', -6, 0)
+    sortButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    sortButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(
+            e.onlyChinese and '排序图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY, EMBLEM_SYMBOL),
+            e.onlyChinese and '整理！' or POSTMASTER_BEGIN
+        )
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(
+            e.Icon.toRight2..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP)..e.Icon.left,
+            e.Icon.right..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP)..e.Icon.toLeft2)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+    sortButton:SetScript('OnClick', function(_, d)
+        if IsInSearch then
+            return
+        end
+
+        IsInSearch=true
+        PetStable_Update= function() end
+        --[[local type={
+            ['狂野']=1,
+            ['坚韧']=3,
+        }]]
+
+        local tab= {}
+        for i= NUM_PET_ACTIVE_SLOTS+ 1, maxSlots+ NUM_PET_ACTIVE_SLOTS do
+            --local icon, name, _, family, talent = GetStablePetInfo(i)
+            local icon= GetStablePetInfo(i)
+            if icon then
+                table.insert(tab, {
+                    index= i,
+                    icon= icon or 0,
+                    --name= name,
+                    --family= family,
+                    --talen= type[talent] or 0,
+                })
+            end
+        end
+
+        table.sort(tab, function(a, b)
+            return a.icon < b.icon
+        end)
+
+        local isCancelled
+        if d=='LeftButton' then--点击，从前，向后
+            for i, newTab in pairs(tab) do
+                if IsModifierKeyDown() then
+                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL))
+                    isCancelled=true
+                    break
+                end
+                do
+                    local index= i+ NUM_PET_ACTIVE_SLOTS
+                    SetPetSlot(newTab.index, index)
+                end
+            end
+        else
+            local all= maxSlots+ NUM_PET_ACTIVE_SLOTS
+            for i, newTab in pairs(tab) do
+                if IsModifierKeyDown() then
+                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL))
+                    isCancelled=true
+                    break
+                end
+                do
+                    local index= all-i+1
+                    SetPetSlot(newTab.index, index)
+                end
+            end
+        end
+
+        PetStable_Update= func_PetStable_Update
+        IsInSearch=nil
+
+        e.call('PetStable_Update')
+        if not isCancelled then
+            print(id, addName, e.onlyChinese and '完成' or DONE)
+        end
+    end)
+
     e.call('PetStable_Update')
-
-
-    if e.Player.husandro then
-        local sortButton= e.Cbtn(ISF_SearchInput, {atlas='bags-button-autosort-up', size={22,22}})
-        sortButton:SetPoint('BOTTOMRIGHT', ISF_SearchInput, 'TOPRIGHT')
-        sortButton:SetScript('OnLeave', function() e.tips:Hide() end)
-        sortButton:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(
-                e.onlyChinese and '排序图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY, EMBLEM_SYMBOL),
-                e.onlyChinese and '整理！' or POSTMASTER_BEGIN
-            )
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(
-                e.Icon.toRight2..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP)..e.Icon.left,
-                e.Icon.right..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP)..e.Icon.toLeft2)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:Show()
-        end)
-        sortButton:SetScript('OnClick', function(_, d)
-            if IsInSearch then
-                return
-            end
-
-            IsInSearch=true
-            PetStable_Update= function() end
-            --[[local type={
-                ['狂野']=1,
-                ['坚韧']=3,
-            }]]
-
-            local tab= {}
-            for i= NUM_PET_ACTIVE_SLOTS+ 1, maxSlots+ NUM_PET_ACTIVE_SLOTS do
-                --local icon, name, _, family, talent = GetStablePetInfo(i)
-                local icon= GetStablePetInfo(i)
-                if icon then
-                    table.insert(tab, {
-                        index= i,
-                        icon= icon or 0,
-                        --name= name,
-                        --family= family,
-                        --talen= type[talent] or 0,
-                    })
-                end
-            end
-
-            table.sort(tab, function(a, b)
-                return a.icon < b.icon
-            end)
-
-            local isCancelled
-            if d=='LeftButton' then--点击，从前，向后
-                for i, newTab in pairs(tab) do
-                    if IsModifierKeyDown() then
-                        print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL))
-                        isCancelled=true
-                        break
-                    end
-                    do
-                        local index= i+ NUM_PET_ACTIVE_SLOTS
-                        SetPetSlot(newTab.index, index)
-                    end
-                end
-            else
-                local all= maxSlots+ NUM_PET_ACTIVE_SLOTS
-                for i, newTab in pairs(tab) do
-                    if IsModifierKeyDown() then
-                        print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL))
-                        isCancelled=true
-                        break
-                    end
-                    do
-                        local index= all-i+1
-                        SetPetSlot(newTab.index, index)
-                    end
-                end
-            end
-
-            PetStable_Update= func_PetStable_Update
-            IsInSearch=nil
-
-            e.call('PetStable_Update')
-            if not isCancelled then
-                print(id, addName, e.onlyChinese and '完成' or DONE)
-            end
-        end)
-    end
 end
 
 
