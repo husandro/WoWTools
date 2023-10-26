@@ -3486,7 +3486,12 @@
         "TOOLTIP_QUEST_REWARDS_STYLE_PVP_BOUNTY",
         "GAME_TOOLTIP_BACKDROP_STYLE_RUNEFORGE_LEGENDARY",
         "GameTooltip_AddBlankLinesToTooltip",
-        "QuestUtils_AddQuestRewardsToTooltip"
+        "QuestUtils_AddQuestRewardsToTooltip",
+        "QuestUtils_GetBestQualityItemRewardIndex",
+        "EmbeddedItemTooltip_SetItemByQuestReward",
+        "GameTooltip_ShowCompareItem",
+        "BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT",
+        "BONUS_OBJECTIVE_REWARD_FORMAT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

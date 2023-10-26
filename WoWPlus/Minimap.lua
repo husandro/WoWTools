@@ -45,6 +45,68 @@ local Button
 --#######################
 --小地图, 标记, 监视，文本
 --#######################
+--任务奖励
+local function get_QuestReward_Texture(questID)
+    local itemTexture
+    local numQuestRewards = GetNumQuestLogRewards(questID)
+    local bestQuality = -1
+    for i = 1, numQuestRewards do
+		local _, texture, _, quality= GetQuestLogRewardInfo(i, questID);
+		if quality > bestQuality then
+            itemTexture= texture
+		end
+	end
+    if itemTexture then return itemTexture end
+	local numQuestChoices = GetNumQuestLogChoices(questID)
+    bestQuality= -1
+	for i = 1, numQuestChoices do
+		local _, texture, _, quality= GetQuestLogChoiceInfo(i, questID);
+		if quality > bestQuality then
+			itemTexture= texture
+		end
+	end
+    if itemTexture then return itemTexture end
+
+    if C_QuestInfoSystem.HasQuestRewardSpells(questID) then
+        for _, spell in pairs(C_QuestInfoSystem.GetQuestRewardSpells(questID) or {}) do
+            local info = C_QuestInfoSystem.GetQuestRewardSpellInfo(questID, spell)
+            if info and info.texture and info.texture>0 then
+                itemTexture= info.texture
+                break
+            elseif not C_Item.IsItemDataCachedByID(spell) then
+                C_Item.RequestLoadItemDataByID(spell)
+            end
+        end
+        if itemTexture then return itemTexture end
+    end
+
+    local numQuestCurrencies= GetNumQuestLogRewardCurrencies(questID)
+    if numQuestCurrencies>0 then
+        bestQuality= -1
+        for i=1, numQuestCurrencies do
+            local _, texture, _, _, quality = GetQuestLogRewardCurrencyInfo(i, questID)
+            if quality > bestQuality then
+                itemTexture= texture
+            end
+        end
+        return itemTexture
+
+    elseif GetQuestLogRewardHonor(questID)>0 then
+        return 'Interface\\ICONS\\Achievement_LegionPVPTier4'
+    elseif GetQuestLogRewardMoney(questID)>0 then
+        return 'Interface\\Icons\\inv_misc_coin_01'--'interface\\moneyframe\\ui-goldicon'
+    elseif GetQuestLogRewardXP(questID) > 0 then
+        return 'Interface\\Icons\\XP_Icon'
+    elseif GetQuestLogRewardArtifactXP(questID) > 0 then
+        local artifactCategory= select(2, GetRewardArtifactXP()) or select(2, GetQuestLogRewardArtifactXP())
+        if artifactCategory then
+            local icon = select(2, C_ArtifactUI.GetArtifactXPRewardTargetInfo(artifactCategory))
+            if icon and icon >0 then
+                return icon
+            end
+        end
+    end
+end
 
 
 --世界任务 文本
@@ -56,14 +118,7 @@ local function get_Quest_Text(questID)
         else
             local questName= C_TaskQuest.GetQuestInfoByQuestID(questID)
             if questName then
-
-                itemTexture= select(2, GetQuestLogRewardInfo(1, questID)) or select(2, GetQuestLogRewardCurrencyInfo(1, questID))
-                if not itemTexture then
-                    local gold= GetQuestLogRewardMoney(questID)
-                    if gold and gold>0 then
-                        itemTexture='interface\\moneyframe\\ui-goldicon'
-                    end
-                end
+                itemTexture= get_QuestReward_Texture(questID)
                 itemTexture= itemTexture or 'worldquest-tracker-questmarker'
                 local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
                 local secText= e.SecondsToClock(secondsLeft, true)
@@ -256,8 +311,17 @@ local function get_vignette_Text()--Vignettes
                 if index==bestUniqueVignetteIndex then-- or info.isUnique then
                     text= '|cnGREEN_FONT_COLOR:'..text..'|r'..e.Icon.star2
                 end
+                local name=info.name
+                print(name,info.rewardQuestID)
+                if info.rewardQuestID and info.rewardQuestID>0 then
+                    local itemTexture= get_QuestReward_Texture(info.rewardQuestID)
+                    if itemTexture then
+                        name= name..'|T'..itemTexture..':0|t'
+                    end
+                end
+
                 table.insert(info.onMinimap and onMinimap or onWorldMap,
-                    {name=info.name, text=text, atlas= info.atlasName, widgetSetID=info.widgetSetID, vignetteGUID=guid}
+                    {name=name, text=text, atlas= info.atlasName, widgetSetID=info.widgetSetID, vignetteGUID=guid}
                 )
                 tab[info.vignetteID]=true
             end
