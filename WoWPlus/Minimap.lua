@@ -228,8 +228,8 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
                 end
             end
         end
+        return poiInfo.name, poiInfo.atlasName or atlas, text
     end
-    return poiInfo.name, poiInfo.atlasName or atlas, text
 end
 
 
@@ -412,12 +412,15 @@ local function set_Button_Text()
                 e.tips:ClearLines()
                 if self.questID then
                     GameTooltip_AddQuest(self, self.questID)
-                elseif self.vignetteID then
-                    e.tips:AddDoubleLine('vignetteID', self.vignetteID)
-                elseif self.areaPoiID then
-                    e.tips:AddDoubleLine('areaPoiID', self.areaPoiID)
-                    e.tips:AddDoubleLine('uiMapID', self.uiMapID)
-                    e.tips:AddDoubleLine('widgetSetID', self.widgetSetID)
+                else
+                    e.tips:AddLine(self.name)
+                    if self.vignetteID then
+                        e.tips:AddDoubleLine('vignetteID', self.vignetteID)
+                    elseif self.areaPoiID then
+                        e.tips:AddDoubleLine('areaPoiID', self.areaPoiID)
+                        e.tips:AddDoubleLine('uiMapID', self.uiMapID)
+                        e.tips:AddDoubleLine('widgetSetID', self.widgetSetID)
+                    end
                 end
                 e.tips:Show()
                 Button:SetButtonState('PUSHED')
@@ -882,7 +885,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         if Save.pointVigentteButton then
             self:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
         elseif e.Player.husandro then
-            self:SetPoint('TOPLEFT', 250,0)
+            self:SetPoint('TOPLEFT', 300, 0)
         else
             self:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT', 4, 2)
         end
