@@ -3480,7 +3480,9 @@
         "PetStableLeftInset",
         "PetStableActivePetsLabel",
         "PetStableFrameTitleText",
-        "PetStableFrameCloseButton"
+        "PetStableFrameCloseButton",
+        "POSTMASTER_BEGIN",
+        "HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

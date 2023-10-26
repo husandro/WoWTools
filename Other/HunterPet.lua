@@ -313,7 +313,7 @@ local function Init()
         self:SetAlpha(1)
     end)
     PetStableModelScene.zoomModelButton:set_Scale()
-    
+
 
     PetStableFrameModelBg:ClearAllPoints()--3D，背景
     PetStableFrameModelBg:SetAllPoints(PetStableModelScene)
@@ -354,23 +354,46 @@ local function Init()
     if e.Player.husandro then
         local sortButton= e.Cbtn(ISF_SearchInput, {atlas='bags-button-autosort-up', size={22,22}})
         sortButton:SetPoint('BOTTOMRIGHT', ISF_SearchInput, 'TOPRIGHT')
-        sortButton:SetScript('OnClick', function()
+        sortButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        sortButton:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(
+                e.onlyChinese and '排序图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY, EMBLEM_SYMBOL),
+                e.onlyChinese and '整理！' or POSTMASTER_BEGIN
+            )
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(
+                e.Icon.toRight2..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP)..e.Icon.left,
+                e.Icon.right..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP)..e.Icon.toLeft2)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end)
+        sortButton:SetScript('OnClick', function(_, d)
+            if IsInSearch then
+                return
+            end
+
             IsInSearch=true
             PetStable_Update= function() end
-            local type={
+            --[[local type={
                 ['狂野']=1,
-                
                 ['坚韧']=3,
-            }
+            }]]
 
             local tab= {}
-            
             for i= NUM_PET_ACTIVE_SLOTS+ 1, maxSlots+ NUM_PET_ACTIVE_SLOTS do
-                local icon, name, _, family, talent = GetStablePetInfo(i)
+                --local icon, name, _, family, talent = GetStablePetInfo(i)
+                local icon= GetStablePetInfo(i)
                 if icon then
                     table.insert(tab, {
-                        icon=icon or 0, name=name, family= family, talen=type[talent] or 0, index=i}
-                    )
+                        index= i,
+                        icon= icon or 0,
+                        --name= name,
+                        --family= family,
+                        --talen= type[talent] or 0,
+                    })
                 end
             end
 
@@ -378,16 +401,41 @@ local function Init()
                 return a.icon < b.icon
             end)
 
-            for i, newTab in pairs(tab) do
-                local index= i+ NUM_PET_ACTIVE_SLOTS
-                SetPetSlot(newTab.index, index)
+            local isCancelled
+            if d=='LeftButton' then--点击，从前，向后
+                for i, newTab in pairs(tab) do
+                    if IsModifierKeyDown() then
+                        print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL))
+                        isCancelled=true
+                        break
+                    end
+                    do
+                        local index= i+ NUM_PET_ACTIVE_SLOTS
+                        SetPetSlot(newTab.index, index)
+                    end
+                end
+            else
+                local all= maxSlots+ NUM_PET_ACTIVE_SLOTS
+                for i, newTab in pairs(tab) do
+                    if IsModifierKeyDown() then
+                        print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL))
+                        isCancelled=true
+                        break
+                    end
+                    do
+                        local index= all-i+1
+                        SetPetSlot(newTab.index, index)
+                    end
+                end
             end
 
             PetStable_Update= func_PetStable_Update
             IsInSearch=nil
 
             e.call('PetStable_Update')
-            print(id, addName, e.onlyChinese and '完成' or DONE)
+            if not isCancelled then
+                print(id, addName, e.onlyChinese and '完成' or DONE)
+            end
         end)
     end
 end
