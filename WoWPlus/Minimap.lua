@@ -111,7 +111,7 @@ end
 
 --世界任务 文本
 local function get_Quest_Text(questID)
-    local text, itemTexture
+    local text, itemTexture, atlas
     if C_TaskQuest.IsActive(questID) then
         if not HaveQuestRewardData(questID) then
             C_TaskQuest.RequestPreloadRewardData(questID)
@@ -119,7 +119,9 @@ local function get_Quest_Text(questID)
             local questName= C_TaskQuest.GetQuestInfoByQuestID(questID)
             if questName then
                 itemTexture= get_QuestReward_Texture(questID)
-                itemTexture= itemTexture or 'worldquest-tracker-questmarker'
+                if not itemTexture then
+                    atlas= 'worldquest-tracker-questmarker'
+                end
                 local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
                 local secText= e.SecondsToClock(secondsLeft, true)
                 text= text and text..'|n' or ''
@@ -128,7 +130,7 @@ local function get_Quest_Text(questID)
             end
         end
     end
-    return text, itemTexture
+    return text, itemTexture, atlas
 end
 
 
@@ -318,7 +320,6 @@ local function get_vignette_Text()--Vignettes
                     if itemTexture then
                         name= name..'|T'..itemTexture..':0|t'
                     end
-                    print(info.rewardQuestID, name, itemTexture)
                 end
 
                 table.insert(info.onMinimap and onMinimap or onWorldMap,
@@ -414,9 +415,9 @@ local function set_Button_Text()
 
 
     for questID, _ in pairs(Save.questIDs) do--世界任务
-        local name, itemTexture= get_Quest_Text(questID)
+        local name, itemTexture, atlas= get_Quest_Text(questID)
         if name then
-            table.insert(allTable, {questID=questID, name=name, texture=itemTexture})
+            table.insert(allTable, {questID=questID, name=name, texture=itemTexture, atlas= atlas})
         end
     end
 
