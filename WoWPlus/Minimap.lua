@@ -17,7 +17,7 @@ local Save={
         areaPoiIDs={[7492]= 2025},--{[areaPoiID]= 地图ID}
         uiMapIDs= {},--地图ID 监视, areaPoiIDs，
         currentMapAreaPoiIDs=true,--当前地图，监视, areaPoiIDs，
-        --textToDown= true,--文本，向下
+        textToDown= e.Player.husandro,--文本，向下
 
 
         miniMapPoint={},--保存小图地, 按钮位置
@@ -187,10 +187,10 @@ end
 local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
 
-    if not poiInfo.name and not poiInfo.textureKit then
+    if not poiInfo.name  then
         return
     end
-
+    local atlas
     local text= get_widgetSetID_Text(poiInfo.widgetSetID, all)
     if text then
         local time
@@ -200,12 +200,16 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
         end
 
         if text or time then
-            text= text and '|cffffffff'..text..'|r|n'..(poiInfo.name or '')
-
             if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
+                
                 local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
                 if info and info.textureKit then
-                    text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
+                    if not poiInfo.atlasName then
+                        atlas='MajorFactions_Icons_'..info.textureKit..'512'
+                    else
+                        text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
+                    end
+                    
                 end
             end
             if time then
@@ -225,7 +229,7 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
             end
         end
     end
-    return text, poiInfo.textureKit
+    return poiInfo.name, poiInfo.atlasName or atlas, text
 end
 
 
@@ -240,7 +244,7 @@ local function get_vignette_Text()--Vignettes
         for index, guid in pairs(vignetteGUIDs) do
             local info= C_VignetteInfo.GetVignetteInfo(guid) or {}
             if info.vignetteID and not tab[info.vignetteID]
-                and (info.atlasName or info.name)
+                and info.name
                 and not info.isDead
                 --and info.zoneInfiniteAOI
                 and (
@@ -252,7 +256,7 @@ local function get_vignette_Text()--Vignettes
                 if info.widgetSetID then
                     text= get_widgetSetID_Text(info.widgetSetID, nil)
                 end
-                text=(text and text..'|n'  or '')..(info.name or '')
+                text=(text and text..'|n'  or '')
                 if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
                     text= text..'|T1059121:0|t'
                 elseif info.vignetteID== 5485 then
@@ -264,7 +268,7 @@ local function get_vignette_Text()--Vignettes
                     text= '|cnGREEN_FONT_COLOR:'..text..'|r'..e.Icon.star2
                 end
                 table.insert(info.onMinimap and onMinimap or onWorldMap,
-                    {vignetteID=info.vignetteID, text=text, atlas= info.atlasName}
+                    {vignetteID=info.vignetteID, name=info.name, text=text, atlas= info.atlasName, widgetSetID=info.widgetSetID}
                 )
                 tab[info.vignetteID]=true
             end
@@ -309,17 +313,17 @@ local function set_Button_Text()
 
 
     for questID, _ in pairs(Save.questIDs) do--世界任务
-        local questText, itemTexture= get_Quest_Text(questID)
-        if questText then
-            table.insert(allTable, {questID=questID, text=questText, texture=itemTexture})
+        local name, itemTexture= get_Quest_Text(questID)
+        if name then
+            table.insert(allTable, {questID=questID, name=name, texture=itemTexture})
         end
     end
 
 
     for areaPoiID, uiMapID in pairs(Save.areaPoiIDs) do--自定义 areaPoiID
-        local area, atlasName= get_areaPoiID_Text(uiMapID, areaPoiID)
-        if area then
-            table.insert(allTable, {areaPoiID=areaPoiID, uiMapID=uiMapID, text=area, atlas=atlasName})
+        local name, atlas, text= get_areaPoiID_Text(uiMapID, areaPoiID)
+        if name then
+            table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, text=text, atlas=atlas})
         end
     end
 
@@ -329,9 +333,9 @@ local function set_Button_Text()
         local tab={}
         for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
             if not Save.areaPoiIDs[areaPoiID] and not tab[areaPoiID] then
-                local area, atlasName= get_areaPoiID_Text(uiMapID, areaPoiID, true)
-                if area then
-                    table.insert(allTable, {areaPoiID=areaPoiID, uiMapID=uiMapID, text=area, atlas=atlasName})
+                local name, atlas, text= get_areaPoiID_Text(uiMapID, areaPoiID)
+                if name then
+                    table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, text=text, atlas=atlas})
                     tab[areaPoiID]=true
                 end
             end
@@ -344,10 +348,10 @@ local function set_Button_Text()
             local nameTab={}
             for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
                 if not Save.areaPoiIDs[areaPoiID] then
-                    local area, atlasName= get_areaPoiID_Text(uiMapID, areaPoiID, true)
-                    if area and not nameTab[area] then
-                        table.insert(allTable, {areaPoiID=areaPoiID, uiMapID=uiMapID, text=area, atlas=atlasName})
-                        nameTab[area]=true
+                    local name, atlas, text= get_areaPoiID_Text(uiMapID, areaPoiID)
+                    if name and not nameTab[name] then
+                        table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, text=text, atlas=atlas})
+                        nameTab[name]=true
                     end
                 end
             end
@@ -356,9 +360,12 @@ local function set_Button_Text()
 
     for index, info in pairs(allTable) do
         local btn = Button.btn[index]
-        if not btn and (info.text or info.texture or info.atlas) then
+        if not btn then
             btn= e.Cbtn(Button.Frame, {size={12,12}, icon='hdie'})
+            btn.nameText= e.Cstr(btn,{color=true})
+            btn.nameText:SetPoint('LEFT', btn, 'RIGHT')
             btn.text= e.Cstr(btn,{color=true})
+
             btn.index= index
 
             function btn:set_rest(tables)
@@ -366,6 +373,9 @@ local function set_Button_Text()
                 self.vignetteID= tables.vignetteID
                 self.areaPoiID= tables.areaPoiID
                 self.uiMapID= tables.uiMapID
+                self.widgetSetID= tables.widgetSetID
+                self.name= tables.name
+                self.nameText:SetText(tables.name or '')
                 self.text:SetText(tables.text or '')
                 if info.atlas then
                     self:SetNormalAtlas(tables.atlas)
@@ -391,9 +401,9 @@ local function set_Button_Text()
             end
             function btn:set_text_point()
                 if Save.textToDown then
-                    self.text:SetPoint('TOPLEFT', btn, 'TOPRIGHT')
+                    self.text:SetPoint('TOPLEFT', btn.nameText, 'BOTTOMLEFT')
                 else
-                    self.text:SetPoint('BOTTOMLEFT', btn, 'BOTTOMRIGHT')
+                    self.text:SetPoint('BOTTOMLEFT', btn.nameText, 'TOPLEFT')
                 end
             end
             btn:SetScript("OnLeave", function() e.tips:Hide() Button:SetButtonState('NORMAL') end)
@@ -402,6 +412,12 @@ local function set_Button_Text()
                 e.tips:ClearLines()
                 if self.questID then
                     GameTooltip_AddQuest(self, self.questID)
+                elseif self.vignetteID then
+                    e.tips:AddDoubleLine('vignetteID', self.vignetteID)
+                elseif self.areaPoiID then
+                    e.tips:AddDoubleLine('areaPoiID', self.areaPoiID)
+                    e.tips:AddDoubleLine('uiMapID', self.uiMapID)
+                    e.tips:AddDoubleLine('widgetSetID', self.widgetSetID)
                 end
                 e.tips:Show()
                 Button:SetButtonState('PUSHED')
@@ -796,7 +812,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         return
     end
 
-    Button= e.Cbtn(nil, {icon='hide', size={22,22}, pushe=true})
+    Button= e.Cbtn(nil, {icon='hide', size={18,18}, pushe=true})
     Button.btn={}
 
     Button.Frame= CreateFrame('Frame', nil, Button)
@@ -865,6 +881,8 @@ local function Init_Set_Button()--小地图, 标记, 文本
     function Button:Set_Point()--设置，位置
         if Save.pointVigentteButton then
             self:SetPoint(Save.pointVigentteButton[1], UIParent, Save.pointVigentteButton[3], Save.pointVigentteButton[4], Save.pointVigentteButton[5])
+        elseif e.Player.husandro then
+            self:SetPoint('TOPLEFT', 250,0)
         else
             self:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT', 4, 2)
         end
