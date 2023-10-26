@@ -276,7 +276,7 @@ local function Init()
 
 
     PetStableModelScene:ClearAllPoints()--设置，3D，位置
-    PetStableModelScene:SetPoint('LEFT', PetStableFrame, 'RIGHT',0,4)
+    PetStableModelScene:SetPoint('LEFT', PetStableFrame, 'RIGHT',0, -12)
     PetStableModelScene:SetSize(h-24, h-24)
 
     PetStableModelScene.zoomModelButton= e.Cbtn(PetStableFrameCloseButton, {size={22,22}, atlas='UI-HUD-Minimap-Zoom-In'})
