@@ -3479,7 +3479,8 @@
         "PetStable_Update",
         "PetStableLeftInset",
         "PetStableActivePetsLabel",
-        "PetStableFrameTitleText"
+        "PetStableFrameTitleText",
+        "PetStableFrameCloseButton"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

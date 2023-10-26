@@ -7,25 +7,27 @@ end
 --PetStable.lua
 
 local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  UnitClass('player'), DUNGEON_FLOOR_ORGRIMMARRAID8) --猎人兽栏
-local Save={}
+local Save={
+    modelScale=0.65,
+}
 
 local ISF_SearchInput
 local maxSlots = NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS
 local NUM_PER_ROW=15
 
---local IsInSearch
-
+local IsInSearch
+local func_PetStable_Update= PetStable_Update
 
 local function Get_Food_Text(slotPet)
     return BuildListString(GetStablePetFoodTypes(slotPet))
 end
 
---local func_PetStable_Update= PetStable_Update
+
 
 local function set_PetStable_Update()--查询
-    --[[if IsInSearch then
+    if IsInSearch then
         return
-    end]]
+    end
     local input = ISF_SearchInput:GetText()
     local all= maxSlots + NUM_PET_ACTIVE_SLOTS
     local num=0
@@ -62,7 +64,7 @@ local function set_PetStable_Update()--查询
         end
         btn.dimOverlay:SetShown(show)
     end
-    ISF_SearchInput.text:SetFormattedText(isSearch and '|A:common-search-magnifyingglass:0:0|a |cnGREEN_FONT_COLOR:%d|r /%d' or (e.onlyChinese and '已收集（%d/%d）' or ITEM_PET_KNOWN), num, all)
+    ISF_SearchInput.text:SetFormattedText(isSearch and (e.onlyChinese and '搜索' or SEARCH)..' |cnGREEN_FONT_COLOR:%d|r /%d' or (e.onlyChinese and '已收集（%d/%d）' or ITEM_PET_KNOWN), num, all)
 end
 
 
@@ -187,6 +189,7 @@ local function Init()
     ISF_SearchInput:SetPoint('BOTTOMRIGHT',PetStableFrame, -6, 10)
     ISF_SearchInput:SetScale(1.2)
     ISF_SearchInput.Instructions:SetText(e.onlyChinese and '名称，类型，天赋，食物' or (NAME .. ", " .. TYPE .. ", " .. TALENT..', '..POWER_TYPE_FOOD))
+    ISF_SearchInput:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
     ISF_SearchInput:HookScript("OnTextChanged", set_PetStable_Update)
     hooksecurefunc("PetStable_Update", set_PetStable_Update)
 
@@ -272,8 +275,45 @@ local function Init()
 
 
     PetStableModelScene:ClearAllPoints()--设置，3D，位置
-    PetStableModelScene:SetPoint('BOTTOMLEFT', PetStableFrame, 'BOTTOMRIGHT',0,4)
+    PetStableModelScene:SetPoint('LEFT', PetStableFrame, 'RIGHT',0,4)
     PetStableModelScene:SetSize(h-24, h-24)
+
+    PetStableModelScene.zoomModelButton= e.Cbtn(PetStableFrameCloseButton, {size={22,22}, atlas='UI-HUD-Minimap-Zoom-In'})
+    PetStableModelScene.zoomModelButton:SetPoint('RIGHT', PetStableFrameCloseButton, 'LEFT', -2,0)
+    PetStableModelScene.zoomModelButton:SetAlpha(0.5)
+    function PetStableModelScene.zoomModelButton:set_Tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.Icon.left, (e.onlyChinese and '模型缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MODEL, UI_SCALE))..' |cnGREEN_FONT_COLOR:'..Save.modelScale)
+        e.tips:Show()
+    end
+    function PetStableModelScene.zoomModelButton:set_Scale()
+        PetStableModelScene:SetScale(Save.modelScale or 1)
+    end
+    function PetStableModelScene.zoomModelButton:set_Value_Scale(add)
+        local n= Save.modelScale or 1
+        n= add and n+0.05 or (n-0.05)
+        n= n<0.4 and 0.4 or n
+        n= n>4 and 4 or n
+        Save.modelScale=n
+        self:set_Scale()
+        self:set_Tooltips()
+    end
+    PetStableModelScene.zoomModelButton:SetScript('OnMouseWheel', function(self, d)
+        self:set_Value_Scale(d==-1)
+    end)
+    PetStableModelScene.zoomModelButton:SetScript('OnClick', function(self, d)
+        self:set_Value_Scale(d=='LeftButton')
+    end)
+    PetStableModelScene.zoomModelButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
+    PetStableModelScene.zoomModelButton:SetScript('OnEnter', function(self)
+        self:set_Tooltips()
+        self:SetAlpha(1)
+    end)
+    PetStableModelScene.zoomModelButton:set_Scale()
+    
 
     PetStableFrameModelBg:ClearAllPoints()--3D，背景
     PetStableFrameModelBg:SetAllPoints(PetStableModelScene)
@@ -284,6 +324,7 @@ local function Init()
 
     PetStablePetInfo:ClearAllPoints()--宠物，信息
     PetStablePetInfo:SetPoint('BOTTOMLEFT', PetStableModelScene, 0, 4)
+    PetStablePetInfo:SetParent(PetStableModelScene)
 
     PetStableDiet:ClearAllPoints()--食物，提示
     PetStableDiet:SetSize(PetStableSelectedPetIcon:GetSize())
@@ -308,7 +349,9 @@ local function Init()
 
 
     e.call('PetStable_Update')
-    --[[if e.Player.husandro then
+
+
+    if e.Player.husandro then
         local sortButton= e.Cbtn(ISF_SearchInput, {atlas='bags-button-autosort-up', size={22,22}})
         sortButton:SetPoint('BOTTOMRIGHT', ISF_SearchInput, 'TOPRIGHT')
         sortButton:SetScript('OnClick', function()
@@ -319,25 +362,34 @@ local function Init()
                 
                 ['坚韧']=3,
             }
+
             local tab= {}
-            for i=NUM_PET_ACTIVE_SLOTS+1, maxSlots+NUM_PET_ACTIVE_SLOTS do
-                local icon, name, _, family, talent = GetStablePetInfo(i)
             
-                table.insert(tab, {icon=icon or 0, name=name, family= family, talen=type[talent] or 0, index=i})
-            end
-            table.sort(tab, function(a, b)
-                if a.talen< b.talent then
-                    SetPetSlot(a.index, b.index)
-                    return true
+            for i= NUM_PET_ACTIVE_SLOTS+ 1, maxSlots+ NUM_PET_ACTIVE_SLOTS do
+                local icon, name, _, family, talent = GetStablePetInfo(i)
+                if icon then
+                    table.insert(tab, {
+                        icon=icon or 0, name=name, family= family, talen=type[talent] or 0, index=i}
+                    )
                 end
-                return false
+            end
+
+            table.sort(tab, function(a, b)
+                return a.icon < b.icon
             end)
+
+            for i, newTab in pairs(tab) do
+                local index= i+ NUM_PET_ACTIVE_SLOTS
+                SetPetSlot(newTab.index, index)
+            end
+
             PetStable_Update= func_PetStable_Update
             IsInSearch=nil
+
             e.call('PetStable_Update')
-            print('完成')
+            print(id, addName, e.onlyChinese and '完成' or DONE)
         end)
-    end]]
+    end
 end
 
 
