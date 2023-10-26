@@ -312,12 +312,13 @@ local function get_vignette_Text()--Vignettes
                     text= '|cnGREEN_FONT_COLOR:'..text..'|r'..e.Icon.star2
                 end
                 local name=info.name
-                
+
                 if info.rewardQuestID and info.rewardQuestID>0 then
                     local itemTexture= get_QuestReward_Texture(info.rewardQuestID)
                     if itemTexture then
                         name= name..'|T'..itemTexture..':0|t'
                     end
+                    print(info.rewardQuestID, name, itemTexture)
                 end
 
                 table.insert(info.onMinimap and onMinimap or onWorldMap,
@@ -1024,7 +1025,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
 
 
     function Button:set_Tootips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddLine(addName, addName2)
         e.tips:AddLine(' ')
