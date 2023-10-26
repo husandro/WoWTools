@@ -93,7 +93,7 @@ local barColor = {
 	[6] = RARE_BLUE_COLOR,
 }
 
-local barColorFromTintValue = {
+--[[local barColorFromTintValue = {
 	[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
 	[Enum.StatusBarColorTintValue.White] = WHITE_FONT_COLOR,
 	[Enum.StatusBarColorTintValue.Red] = RED_FONT_COLOR,
@@ -102,8 +102,7 @@ local barColorFromTintValue = {
 	[Enum.StatusBarColorTintValue.Purple] = EPIC_PURPLE_COLOR,
 	[Enum.StatusBarColorTintValue.Green] = GREEN_FONT_COLOR,
 	[Enum.StatusBarColorTintValue.Blue] = RARE_BLUE_COLOR,
-}
-
+}]]
 local function get_AreaPOIInfo_Name(poiInfo)
     return (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
 end
