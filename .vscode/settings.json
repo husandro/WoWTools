@@ -3482,7 +3482,11 @@
         "PetStableFrameTitleText",
         "PetStableFrameCloseButton",
         "POSTMASTER_BEGIN",
-        "HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP"
+        "HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP",
+        "TOOLTIP_QUEST_REWARDS_STYLE_PVP_BOUNTY",
+        "GAME_TOOLTIP_BACKDROP_STYLE_RUNEFORGE_LEGENDARY",
+        "GameTooltip_AddBlankLinesToTooltip",
+        "QuestUtils_AddQuestRewardsToTooltip"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

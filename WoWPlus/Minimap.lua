@@ -41,6 +41,7 @@ local Button
 
 
 
+
 --#######################
 --小地图, 标记, 监视，文本
 --#######################
@@ -138,7 +139,7 @@ local function get_widgetSetID_Text(widgetSetID, all)
             end
         end
         if info and info.shownState == Enum.WidgetShownState.Shown and info.text and info.text~='' then
-           if info.hasTimer or not all then
+           if info.hasTimer or all then
                 local barText
                 if info.barMax and info.barMax>0 and info.barValue then
                     if info.barValueTextType == Enum.StatusBarValueTextType.Value then--Blizzard_UIWidgetTemplateBase.lua
@@ -163,15 +164,6 @@ local function get_widgetSetID_Text(widgetSetID, all)
                 local text3= info.text:gsub('^|n', '')
                 text3= text3:gsub('|n', '|n       ')
                 text3= text3:gsub(':%d+|t', ':0|t')
-                --[[if widgetSetID==1005 then
-                    local name= info.text:match('|c........(.-)|r') or info.text:match('- (.-)'..HEADER_COLON)--
-                    if name then
-                        local num= GetItemCount(name) or 0
-                        if num>=0 then
-                            text3= text3..' |cnGREEN_FONT_COLOR:/'..num..'|r'
-                        end
-                    end
-                else]]
                 local col = barColor[info.enabledState]
                 if col then
                     text3= col:WrapTextInColorCode(text3)
@@ -199,9 +191,8 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
             time= (time and time>0) and time or nil
         end
 
-        if text or time then
+        if text and (time or all) then
             if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
-                
                 local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
                 if info and info.textureKit then
                     if not poiInfo.atlasName then
@@ -209,7 +200,6 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
                     else
                         text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
                     end
-                    
                 end
             end
             if time then
@@ -227,8 +217,8 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
                     end
                 end
             end
+            return poiInfo.name, poiInfo.atlasName or atlas, text
         end
-        return poiInfo.name, poiInfo.atlasName or atlas, text
     end
 end
 
@@ -246,7 +236,6 @@ local function get_vignette_Text()--Vignettes
             if info.vignetteID and not tab[info.vignetteID]
                 and info.name
                 and not info.isDead
-                --and info.zoneInfiniteAOI
                 and (
                     (info.onMinimap and not Save.hideVigentteCurrentOnMinimap)--当前，小地图，标记
                     or (info.onWorldMap and not Save.hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
@@ -254,7 +243,7 @@ local function get_vignette_Text()--Vignettes
             then
                 local text
                 if info.widgetSetID then
-                    text= get_widgetSetID_Text(info.widgetSetID, nil)
+                    text= get_widgetSetID_Text(info.widgetSetID, true)
                 end
                 text=(text and text..'|n'  or '')
                 if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
@@ -268,23 +257,11 @@ local function get_vignette_Text()--Vignettes
                     text= '|cnGREEN_FONT_COLOR:'..text..'|r'..e.Icon.star2
                 end
                 table.insert(info.onMinimap and onMinimap or onWorldMap,
-                    {vignetteID=info.vignetteID, name=info.name, text=text, atlas= info.atlasName, widgetSetID=info.widgetSetID}
+                    {name=info.name, text=text, atlas= info.atlasName, widgetSetID=info.widgetSetID, vignetteGUID=guid}
                 )
                 tab[info.vignetteID]=true
             end
         end
-
-        --[[local vigentteText
-        for _, vigentte in pairs(onMinimap) do
-            vigentteText= vigentteText and vigentteText..'|n'..vigentte or vigentte
-        end
-
-        vigentteText= (vigentteText and #onWorldMap>0) and vigentteText..'|n' or vigentteText
-        for _, vigentte in pairs(onWorldMap) do
-            vigentteText= vigentteText and vigentteText..'|n'..vigentte or vigentte
-        end]]
-
-        --return vigentteText
     end
     return onMinimap, onWorldMap
 end
@@ -293,7 +270,66 @@ end
 
 
 
+local function set_OnEnter_btn_tips(self)--VignetteDataProvider.lua VignettePinMixin:OnMouseEnte
+    if self.questID then
+        GameTooltip_AddQuest(self, self.questID)
 
+    elseif self.vignetteGUID then
+        local vignetteInfo = C_VignetteInfo.GetVignetteInfo(self.vignetteGUID)
+        if vignetteInfo then
+            local verticalPadding = nil;
+            local waitingForData, titleAdded = false, false;
+            if vignetteInfo.type == Enum.VignetteType.Normal or vignetteInfo.type == Enum.VignetteType.Treasure then
+                GameTooltip_SetTitle(GameTooltip, vignetteInfo.name);
+                titleAdded = true
+            elseif vignetteInfo.type == Enum.VignetteType.PvPBounty then
+                local player = PlayerLocation:CreateFromGUID(e.Player.guid)
+                local class = select(3, C_PlayerInfo.GetClass(player));
+                local race = C_PlayerInfo.GetRace(player);
+                local name = C_PlayerInfo.GetName(player);
+                if race and class and name then
+                    local classInfo = C_CreatureInfo.GetClassInfo(class) or {};
+                    local factionInfo = C_CreatureInfo.GetFactionInfo(race) or {};
+                    GameTooltip_SetTitle(GameTooltip, name, GetClassColorObj(classInfo.classFile));
+                    GameTooltip_AddColoredLine(GameTooltip, factionInfo.name, GetFactionColor(factionInfo.groupTag));
+                    if vignetteInfo.rewardQuestID then
+                        GameTooltip_AddQuestRewardsToTooltip(GameTooltip, vignetteInfo.rewardQuestID, TOOLTIP_QUEST_REWARDS_STYLE_PVP_BOUNTY);
+                    end
+                    titleAdded=true
+                end
+                waitingForData = not titleAdded;
+
+            elseif vignetteInfo.type == Enum.VignetteType.Torghast then
+                SharedTooltip_SetBackdropStyle(GameTooltip, GAME_TOOLTIP_BACKDROP_STYLE_RUNEFORGE_LEGENDARY);
+                GameTooltip_SetTitle(GameTooltip, vignetteInfo.name);
+                titleAdded = true
+            end
+
+            if not waitingForData and vignetteInfo.widgetSetID then
+                local overflow = GameTooltip_AddWidgetSet(GameTooltip, vignetteInfo.widgetSetID, titleAdded and vignetteInfo.addPaddingAboveWidgets and 10);
+                if overflow then
+                    verticalPadding = -overflow;
+                end
+            elseif waitingForData then
+                GameTooltip_SetTitle(GameTooltip, RETRIEVING_DATA);
+            end
+            if verticalPadding then
+                GameTooltip:SetPadding(0, verticalPadding);
+            end
+        end
+    else
+        e.tips:AddLine(self.name)
+        if self.vignetteID then
+            e.tips:AddDoubleLine('vignetteID', self.vignetteID)
+        elseif self.areaPoiID then
+            e.tips:AddDoubleLine('areaPoiID', self.areaPoiID)
+            e.tips:AddDoubleLine('uiMapID', self.uiMapID)
+            e.tips:AddDoubleLine('widgetSetID', self.widgetSetID)
+        end
+    end
+
+    
+end
 
 
 
@@ -303,7 +339,7 @@ end
 local function set_Button_Text()
     local allTable={}
 
-    local onMinimap, onWorldMap=get_vignette_Text()--{vignetteID=info.vignetteID, text=text, atlas= info.atlasName}
+    local onMinimap, onWorldMap= get_vignette_Text()--{vignetteID=info.vignetteID, text=text, atlas= info.atlasName}
     for _, vigenttes in pairs(onMinimap) do
         table.insert(allTable, vigenttes)
     end
@@ -321,7 +357,7 @@ local function set_Button_Text()
 
 
     for areaPoiID, uiMapID in pairs(Save.areaPoiIDs) do--自定义 areaPoiID
-        local name, atlas, text= get_areaPoiID_Text(uiMapID, areaPoiID)
+        local name, atlas, text= get_areaPoiID_Text(uiMapID, areaPoiID, true)
         if name then
             table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, text=text, atlas=atlas})
         end
@@ -352,6 +388,7 @@ local function set_Button_Text()
                     if name and not nameTab[name] then
                         table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, text=text, atlas=atlas})
                         nameTab[name]=true
+                        print(name)
                     end
                 end
             end
@@ -370,7 +407,10 @@ local function set_Button_Text()
 
             function btn:set_rest(tables)
                 self.questID= tables.questID
-                self.vignetteID= tables.vignetteID
+
+                --self.vignetteID= tables.vignetteID
+                self.vignetteGUID= tables.vignetteGUID
+
                 self.areaPoiID= tables.areaPoiID
                 self.uiMapID= tables.uiMapID
                 self.widgetSetID= tables.widgetSetID
@@ -410,18 +450,7 @@ local function set_Button_Text()
             btn:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
-                if self.questID then
-                    GameTooltip_AddQuest(self, self.questID)
-                else
-                    e.tips:AddLine(self.name)
-                    if self.vignetteID then
-                        e.tips:AddDoubleLine('vignetteID', self.vignetteID)
-                    elseif self.areaPoiID then
-                        e.tips:AddDoubleLine('areaPoiID', self.areaPoiID)
-                        e.tips:AddDoubleLine('uiMapID', self.uiMapID)
-                        e.tips:AddDoubleLine('widgetSetID', self.widgetSetID)
-                    end
-                end
+                set_OnEnter_btn_tips(self)
                 e.tips:Show()
                 Button:SetButtonState('PUSHED')
             end)
