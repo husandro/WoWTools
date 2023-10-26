@@ -11,12 +11,13 @@ local Save={
     modelScale=0.65,
 }
 
-local ISF_SearchInput
+local ISF_SearchInput--查询
 local maxSlots = NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS
-local NUM_PER_ROW=15
 
-local IsInSearch
-local func_PetStable_Update= PetStable_Update
+local NUM_PER_ROW= 15--行数
+
+local IsInSearch--排序用
+local func_PetStable_Update= PetStable_Update--排序用
 
 local function Get_Food_Text(slotPet)
     return BuildListString(GetStablePetFoodTypes(slotPet))
@@ -133,6 +134,7 @@ local function HookEnter_Button(btn)--GameTooltip 提示用 tooltips.lua
 end
 
 local function Init()
+
     local w, h=720, 630
     local layer= PetStableFrame:GetFrameLevel()+ 1
 
