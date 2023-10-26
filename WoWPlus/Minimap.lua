@@ -312,7 +312,7 @@ local function get_vignette_Text()--Vignettes
                     text= '|cnGREEN_FONT_COLOR:'..text..'|r'..e.Icon.star2
                 end
                 local name=info.name
-                print(name,info.rewardQuestID)
+                
                 if info.rewardQuestID and info.rewardQuestID>0 then
                     local itemTexture= get_QuestReward_Texture(info.rewardQuestID)
                     if itemTexture then
