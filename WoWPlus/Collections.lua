@@ -211,7 +211,7 @@ end
 --###############
 --套装, 幻化, 界面
 --Blizzard_Wardrobe.lua
-local function get_Sets_Colleced()--收集所有角色套装数据
+local function Set_Sets_Colleced()--收集所有角色套装数据
     local numCollected, numTotal = C_TransmogSets.GetBaseSetsCounts()
     if not numCollected or not numTotal or numTotal<=0 then
         return
@@ -258,108 +258,168 @@ local function get_Sets_Colleced()--收集所有角色套装数据
     frame.PlayerCoollectedStr:SetText(m)
 end
 
+
+
+--[[
+local function get_Sets_Text(sets, isToolstips)
+    local header, Limited, version, lable, tip, buttonTip
+    local maxNum=0
+    for _, info in pairs(sets) do
+        if info and info.setID then
+            local numCollected, _, numAll = e.GetSetsCollectedNum(info.setID)
+            if numCollected and numAll then
+                maxNum= (not maxNum or maxNum<numAll) and numAll or maxNum
+
+                if not header then
+                    header= info.name
+                    header= info.limitedTimeSet and header..'|n'..e.Icon.clock2..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '限时套装' or TRANSMOG_SET_LIMITED_TIME_SET)..'|r' or header
+                    header = info.label and header..'|n|cnBRIGHTBLUE_FONT_COLOR:'..info.label..'|r' or header
+                    version=info.expansionID and _G['EXPANSION_NAME'..info.expansionID]
+                    header = header ..(version and '|n'..'|cnGREEN_FONT_COLOR:'..version..'|r' or '')..(info.patchID and ' toc v.'..info.patchID or '')
+                end
+
+                lable= (lable or '')..numCollected..' '
+
+                local num= numCollected..'/'..(numAll<=9 and e.Icon.number2:format(numAll) or numAll)
+
+                tip=(tip or '')..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..(isToolstips and ' setID: '..info.setID or '')..'|n'
+
+                buttonTip= (buttonTip or '')..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..' setID'..info.setID..'|n'
+
+                Limited= info.limitedTimeSet and true or Limited
+            end
+        end
+    end
+    
+    return header, Limited, version, lable, tip, buttonTip, maxNum
+end--]]
 local function Init_Wardrobe_Sets()
-    local frame= (WardrobeCollectionFrame and WardrobeCollectionFrame.SetsCollectionFrame) and WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame
-    hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(button, displayData)--外观列表    
-        local setID=displayData.setID
-        local sets = C_TransmogSets.GetVariantSets(setID)
+    --local frame= WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame
+    
+
+    hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(btn, displayData)--外观列表    
+        local setID= displayData.setID
+        local sets= setID and C_TransmogSets.GetVariantSets(setID)
         if not sets or type(sets)~='table' or Save.hideSets then
-           if button.maxNum then
-                button.maxNum:SetText('')
-           end
-           if button.limited then
-                button.limited:SetShown(false)
-           end
-           if button.version then
-                button.version:SetText('')
+           if btn.set_Rest then
+            btn:set_Rest()
            end
            return
         end
+
+        if not btn.set_Rest then
+            btn:SetScript("OnEnter",function(self)
+                if not Save.hideSets then
+                    e.tips:SetOwner(self, "ANCHOR_RIGHT")--,8,-300)
+                    e.tips:ClearLines()
+                    e.tips:AddLine(self.tooltip)
+                    e.tips:Show()
+                end
+            end)
+            btn:SetScript("OnLeave",function()
+                e.tips:Hide()
+            end)
+            btn.maxNum=e.Cstr(btn, {size=16, mouse=true})--套装最大数量
+            btn.maxNum:SetPoint('BOTTOMRIGHT', btn.Icon)
+            btn.maxNum:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+            btn.maxNum:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine(e.onlyChinese and '物品数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, AUCTION_HOUSE_QUANTITY_LABEL))
+                e.tips:Show()
+                self:SetAlpha(0.3)
+            end)
+            btn.version=e.Cstr(btn)--版本
+            btn.version:SetPoint('BOTTOMRIGHT',-5, 5)
+            btn.limited=btn:CreateTexture(nil, 'OVERLAY')--限时
+            btn.limited:SetSize(16, 16)
+            btn.limited:SetAtlas(e.Icon.clock)
+            btn.limited:SetPoint('TOPLEFT', btn.Icon)
+            btn.limited:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+            btn.limited:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine(e.onlyChinese and '限时套装' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TRANSMOG_SET_LIMITED_TIME_SET, WARDROBE_SETS))
+                e.tips:Show()
+                self:SetAlpha(0.3)
+            end)
+            btn.numSetsLabel=e.Cstr(btn, {size=16, mouse=true})
+            btn.numSetsLabel:SetPoint('BOTTOMLEFT', btn.Icon)
+            btn.numSetsLabel:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+            btn.numSetsLabel:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine(e.onlyChinese and '套装数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WARDROBE_SETS, AUCTION_HOUSE_QUANTITY_LABEL))
+                e.tips:Show()
+                self:SetAlpha(0.3)
+            end)
+            function btn:set_Rest()
+                self.maxNum:SetText('')
+                self.limited:SetShown(false)
+                self.version:SetText('')
+                self.numSetsLabel:SetText('')
+                self.tooltip=nil
+            end
+        end
+
         table.insert(sets, C_TransmogSets.GetSetInfo(setID))
         table.sort(sets, function(a, b)
             return a.uiOrder < b.uiOrder
         end)
 
-        local header, Limited, version
-        local lable, tip, buttonTip= '', '',''
+        local text, version, isLimited
+        local tipsText= btn.Name:GetText()
+        tipsText= tipsText and tipsText..'|n' or ''
         local maxNum=0
-        for _, info in pairs(sets) do
-            if info then
-                local numCollected, _, numAll = e.GetSetsCollectedNum(info.setID)
+        
+        for index, info in pairs(sets) do
+            if info and info.setID then
+                local numCollected, _, numAll = e.GetSetsCollectedNum(info.setID, 14)
                 if numCollected and numAll then
-                    maxNum= (not maxNum or maxNum<numAll) and numAll or maxNum
-                    if not header then
-                        header= info.name
-                        header= info.limitedTimeSet and header..'|n'..e.Icon.clock2..'|cnRED_FONT_COLOR:'..TRANSMOG_SET_LIMITED_TIME_SET..'|r' or header
-                        header = info.label and header..'|n|cnBRIGHTBLUE_FONT_COLOR:'..info.label..'|r' or header
-                        version=info.expansionID and _G['EXPANSION_NAME'..info.expansionID]
-                        header = header ..(version and '|n'..'|cnGREEN_FONT_COLOR:'..version..'|r' or '')..(info.patchID and ' toc v.'..info.patchID or '')
-
-                    end
-                    lable=lable..numCollected..' '
-
-                    local num=numCollected..'/'..(numAll<=9 and e.Icon.number2:format(numAll) or numAll)
-                    tip=tip..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..(info.setID and ' setID: '..info.setID or '')..'|n'
-                    buttonTip=buttonTip..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..'|n'
-
-                    Limited= info.limitedTimeSet and true or Limited
+                    if info.setID==setID then maxNum= numAll end
+                    text= (text or '')..numCollected..' '
+                    version= version or _G['EXPANSION_NAME'..(info.expansionID or '')]
+                    isLimited= isLimited or info.limitedTimeSet
+                    
+                    tipsText= tipsText..'|n '
+                        ..(isLimited and e.Icon.clock2 or '')
+                        ..((info.description or info.name) or '')
+                        ..' '..numCollected.. '/'..numAll
+                        --..' setID '..info.setID
                 end
             end
         end
+        btn.tooltip= tipsText
 
-        button.tips=(version and version..'|n|n' or '')..buttonTip--点击，显示套装情况
+        btn.Label:SetText(text)
 
-        tip=(header and header..'|n|n' or '').. tip
-        button:SetScript("OnEnter",function()
-            e.tips:SetOwner(WardrobeCollectionFrame, "ANCHOR_RIGHT",8,-300)
-            e.tips:ClearLines()
-            e.tips:SetText(tip)
-            e.tips:Show()
-        end)
-        button:SetScript("OnLeave",function()
-                e.tips:Hide()
-        end)
-        if button.Label then button.Label:SetText(lable) end
+        btn.maxNum:SetTextColor(btn.Name:GetTextColor())
+        btn.maxNum:SetText(maxNum~=0 and maxNum or '')--套装最大数量
 
-        if not button.maxNum then--套装最大数量
-            button.maxNum=e.Cstr(button)
-            button.maxNum:SetPoint('RIGHT',-5, 0)
-        end
-        button.maxNum:SetTextColor(button.Name:GetTextColor())
-        button.maxNum:SetText(maxNum~=0 and maxNum or '')
+        btn.limited:SetShown(isLimited and true or false)--限时
+       
+        btn.version:SetText(version or '')--版本
+        btn.version:SetTextColor(btn.Name:GetTextColor())
 
-        if Limited and not button.limited then--限时
-            button.limited=button:CreateTexture(nil, 'OVERLAY')
-            button.limited:SetPoint('TOPRIGHT',-5, -5)
-            button.limited:SetSize(15,12)
-            button.limited:SetAtlas(e.Icon.clock)
-        end
-        if button.limited then button.limited:SetShown(Limited) end
-        if version and not button.version then--版本
-            button.version=e.Cstr(button)
-            button.version:SetPoint('BOTTOMRIGHT',-5, 5)
-        end
-        button.version:SetTextColor(button.Name:GetTextColor())
-        button.version:SetText(version or '')
+        local numStes= #sets
+        btn.numSetsLabel:SetText(numStes>1 and numStes or '')
+        btn.numSetsLabel:SetTextColor(btn.Name:GetTextColor())
     end)
 
-    hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'OnClick', function(button, buttonName, down)--点击，显示套装情况Blizzard_Wardrobe.lua
-        if not button.tips or Save.hideSets then
-            if frame.str then frame.str:SetShown(false) end
-            return
-        end
+    hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'OnClick', function(btn, buttonName)--点击，显示套装情况Blizzard_Wardrobe.lua
         if buttonName == "LeftButton" then
-            if not frame.str then
-                frame.str=e.Cstr(frame)
-                frame.str:SetPoint('BOTTOMLEFT', frame, 'LEFT', 8 , 0)
+            if btn.tooltip and not WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str then
+                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str=e.Cstr( WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame)
+                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str:SetPoint('BOTTOMLEFT',  WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, 'LEFT', 8 , 0)
             end
-            frame.str:SetText(button.tips)
-            frame.str:SetShown(true)
+            if WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str then
+                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str:SetText(btn.tooltip or '')
+            end
         end
     end)
 
     --套装物品Link
-    hooksecurefunc(WardrobeCollectionFrame.SetsCollectionFrame, 'SetItemFrameQuality', function(self, itemFrame)
+    hooksecurefunc(WardrobeCollectionFrame.SetsCollectionFrame, 'SetItemFrameQuality', function(_, itemFrame)
         if Save.hideSets then
             if itemFrame.indexbtn then
                 for i = 1, itemFrame.indexbtn do
@@ -429,10 +489,12 @@ local function Init_Wardrobe_Sets()
         itemFrame.indexbtn=numItems
     end)
 
-    local function setAllSets()--所以有套装情况
+    local check =e.Cbtn( WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {icon=not Save.hideSets, size={18,18}})--隐藏选项
+    
+    function check:set_All_Sets()--所以有套装情况
         if Save.hideSets then
-            if frame.AllSets then
-                frame.AllSets:SetText('')
+            if  WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets then
+                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets:SetText('')
             end
             return
         end
@@ -482,45 +544,41 @@ local function Init_Wardrobe_Sets()
                 m=m..'|n'..o..' |A:communities-guildbanner-background:0:0|a'
                 m=m..'|n'..#sets..' '..LFG_LIST_CROSS_FACTION:format(FACTION)
             end
-            if not frame.AllSets then
-                frame.AllSets=e.Cstr(frame)
-                frame.AllSets:SetPoint('BOTTOMRIGHT', -6, 60)
-                frame.AllSets:SetJustifyH('RIGHT')
+            if not  WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets then
+                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets=e.Cstr(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame)
+                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets:SetPoint('BOTTOMRIGHT', -6, 60)
+                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets:SetJustifyH('RIGHT')
             end
-            frame.AllSets:SetText(m)
+            WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets:SetText(m)
         end
     end
-    setAllSets()--所以有套装情况
-
-    frame.sel =e.Cbtn(frame, {icon=not Save.hideSets, size={18,18}})--隐藏选项
-    frame.sel:SetPoint('BOTTOMRIGHT',-16, 28)
-    frame.sel:SetAlpha(0.5)
-    frame.sel:SetScript("OnMouseDown", function(self2)
-            if Save.hideSets then
-                Save.hideSets=nil;
-            else
-                Save.hideSets=true;
-                if frame.str then--点击，显示套装情况
-                    frame.str:SetShown(false)
-                end
-            end
-            print(id, addName, e.GetShowHide(not Save.hideSets), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
-            setAllSets()--所以有套装情况
-            get_Sets_Colleced()--收集所有角色套装数据
-            self2:SetNormalAtlas(Save.hideSets and e.Icon.disabled or e.Icon.icon)
+    
+    check:SetPoint('BOTTOMRIGHT',-16, 28)
+    check:SetAlpha(0.5)
+    check:SetScript("OnClick", function(self)
+        Save.hideSets= not Save.hideSets and true or nil
+        if Save.hideSets and WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str then--点击，显示套装情况
+            WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str:SetText('')----点击，显示套装情况Blizzard_Wardrobe.lua
+        end
+        --print(id, addName, e.GetShowHide(not Save.hideSets), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        self:set_All_Sets()--所以有套装情况
+        Set_Sets_Colleced()--收集所有角色套装数据
+        self:SetNormalAtlas(Save.hideSets and e.Icon.disabled or e.Icon.icon)
+        self:set_tooltips()
+        WardrobeCollectionFrame.SetsCollectionFrame:Refresh()
     end)
-    frame.sel:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+    function check:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.GetShowHide(not Save.hideSets), e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '套装' or WARDROBE_SETS, e.GetShowHide(not Save.hideSets)..e.Icon.left)
         e.tips:Show()
-    end)
-    frame.sel:SetScript('OnLeave', function()
-        e.tips:Hide()
-    end)
+    end
+    check:SetScript('OnEnter', check.set_tooltips)
+    check:SetScript('OnLeave', function()e.tips:Hide() end)
 
-    C_Timer.After(2, get_Sets_Colleced)--收集所有角色套装数据
+    check:set_All_Sets()--所以有套装情况
+    C_Timer.After(2, Set_Sets_Colleced)--收集所有角色套装数据
 end
 
 
@@ -1284,7 +1342,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 Init_DressUpFrames()--试衣间, 外观列表
-                C_Timer.After(2, get_Sets_Colleced)--收集所有角色套装数据
+                C_Timer.After(2, Set_Sets_Colleced)--收集所有角色套装数据
                 C_Timer.After(2, get_Items_Colleced)--物品, 幻化, 界面
             end
 
@@ -1304,7 +1362,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         end
 
     elseif event=='TRANSMOG_SETS_UPDATE_FAVORITE' then
-        C_Timer.After(2, get_Sets_Colleced)--收集所有角色套装数据
+        C_Timer.After(2, Set_Sets_Colleced)--收集所有角色套装数据
 
     elseif event=='TRANSMOGRIFY_ITEM_UPDATE' then
         C_Timer.After(2, get_Items_Colleced)--物品, 幻化, 界面

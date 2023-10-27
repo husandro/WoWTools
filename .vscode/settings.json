@@ -3497,7 +3497,8 @@
         "MountJournal_UpdateMountDisplay",
         "MountJournalName",
         "MountJournalSource",
-        "HeirloomsMixin"
+        "HeirloomsMixin",
+        "WardrobeSetsCollectionMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
