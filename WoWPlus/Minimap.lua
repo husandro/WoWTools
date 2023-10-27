@@ -448,7 +448,6 @@ end
 
 
 --Button 文本
-
 local function set_Button_Text()
     local allTable={}
 
@@ -572,63 +571,6 @@ local function set_Button_Text()
         Button.btn[i]:set_rest({})
     end
 end
-
-
-
-
-
-
-
-
-
---[[local barColorFromTintValue = {
-	[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.White] = WHITE_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Red] = RED_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Yellow] = YELLOW_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Orange] = ORANGE_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Purple] = EPIC_PURPLE_COLOR,
-	[Enum.StatusBarColorTintValue.Green] = GREEN_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Blue] = RARE_BLUE_COLOR,
-}
-local widgetSetText
-Save.WidgetSetIDs={[706]=true}
-for setID, _ in pairs(Save.WidgetSetIDs) do
-    for _, widgets in pairs(C_UIWidgetManager.GetAllWidgetsBySetID(setID) or {}) do
-        if widgets.widgetID then
-            if widgets.widgetType== Enum.UIWidgetVisualizationType.StatusBar then--2
-                local widgetInfo = C_UIWidgetManager.GetStatusBarWidgetVisualizationInfo(widgets.widgetID) or {}
-                
-                    if widgetInfo.text and widgetInfo.barValue then
-                        
-                        local text2
-                        if widgetInfo.barValueTextType== Enum.StatusBarValueTextType.Time--3
-                            or widgetInfo.barValueTextType== Enum.StatusBarValueTextType.TimeShowOneLevelOnly--4
-                        then
-                            text2= SecondsToTime(widgetInfo.barValue)--时间
-                        elseif widgetInfo.barValueTextType== Enum.StatusBarValueTextType.Percentage then--1
-                            text2= format('%i%%', widgetInfo.barValue)--百份比
-                        else
-                            text2= e.MK(widgetInfo.barValue, 2)..(widgetInfo.barMax and '/'..e.MK(widgetInfo.barMax, 2) or '')--值
-                        end
-                        if text2 then
-                            local col= barColorFromTintValue[widgetInfo.colorTint]
-                            if col then
-                                text2= col:WrapTextInColorCode(text2)
-                            end
-                            widgetSetText= widgetInfo.text..' '..(widgetSetText and widgetSetText..'|n'..text2 or text2)
-                        end
-                    end
-            end
-        end
-    end
-end
-if widgetSetText then
-    text= text and text..'|n|n'..widgetSetText or widgetSetText
-end
-]]
-
-
 
 
 
