@@ -8,6 +8,15 @@ local Save={
     --hideItems= true,--物品, 幻化, 界面
     --hideToyBox= true,--玩具
 }
+
+
+
+
+
+
+
+
+
 --外观保存数据wowSave={[1]={class=str,numCollected=number, numTotal=number}
 local wowSaveSets = {
     ['1']={['class']='WARRIOR'},
@@ -24,6 +33,7 @@ local wowSaveSets = {
     ['2048']={['class']='DEMONHUNTER'},
     ['4096']={['class']='EVOKER'},
 }
+local wowSave2= wowSaveSets--套装, 幻化, 界面
 local wowSaveItems={}
 local slots = {--wowSaveItems
     "|A:transmog-nav-slot-head:0:0|a",
@@ -56,6 +66,24 @@ local slots = {--wowSaveItems
     nil,
     '|A:ElementalStorm-Lesser-Earth:0:0|a',--29'军团再临"神器
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --###############
@@ -151,10 +179,38 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###############
 --套装, 幻化, 界面
-----Blizzard_Wardrobe.lua
-local wowSave2=wowSaveSets
+--Blizzard_Wardrobe.lua
 local function get_Sets_Colleced()--收集所有角色套装数据
     local numCollected, numTotal = C_TransmogSets.GetBaseSetsCounts()
     if not numCollected or not numTotal or numTotal<=0 then
@@ -475,17 +531,53 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#####
 --传家宝
 --Blizzard_HeirloomCollection.lua
 local function Init_Heirloom()
-    hooksecurefunc( HeirloomsJournal, 'UpdateButton', function(self, button)
+    hooksecurefunc(HeirloomsJournal, 'UpdateButton', function(_, button)
         if Save.hideHeirloom then
             if button.isPvP then
                 button.isPvP:SetShown(false)
             end
             if button.upLevel then
                 button.upLevel:SetShown(false)
+            end
+            if button.itemLevel then
+                button.itemLevel:SetText('')
+            end
+            for index=1 ,4 do
+                local text=button['statText'..index]
+                if text then
+                    text:SetText('')
+                end
             end
             return
         end
@@ -518,17 +610,16 @@ local function Init_Heirloom()
                     end
                 end)
             end
-            if level>0 then
-                button.upLevel:SetAtlas(e.Icon.number..level)
-            else
-                button.upLevel:SetTexture(0)
-            end
-            
         end
         if button.upLevel then
             button.upLevel.maxUp= maxUp
             button.upLevel.upgradeLevel= upgradeLevel
             button.upLevel:SetShown(has and level>0)
+            if level>0 then
+                button.upLevel:SetAtlas(e.Icon.number..level)
+            else
+                button.upLevel:SetTexture(0)
+            end
         end
 
         if isPvP and not button.isPvP then
@@ -575,27 +666,60 @@ local function Init_Heirloom()
         e.Set_Item_Stats(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture, itemID=button.itemID, hideSet=true, hideLevel=not has, hideStats=not has})--设置，物品，4个次属性，套装，装等，
     end)
 
-    local Heirloomframe=HeirloomsJournal
-    Heirloomframe.sel=e.Cbtn(Heirloomframe, {icon=not Save.hideHeirloom, size={18,18}})
-    Heirloomframe.sel:SetPoint('BOTTOMRIGHT',-25, 35)
-    Heirloomframe.sel:SetAlpha(0.5)
-    Heirloomframe.sel:SetScript('OnMouseDown',function (self2)
-        Save.hideHeirloom= not Save.hideHeirloom and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.hideHeirloom), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
-        self2:SetNormalAtlas(Save.hideHeirloom and e.Icon.disabled or e.Icon.icon)
-    end)
-    Heirloomframe.sel:SetScript('OnEnter', function (self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+
+    local check=e.Cbtn(HeirloomsJournal, {icon=not Save.hideHeirloom, size={18,18}})
+    check:SetPoint('BOTTOMRIGHT',-25, 35)
+    check:SetAlpha(0.5)
+    function check:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.hideHeirloom), e.Icon.left)
-        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.hideHeirloom), e.Icon.left)
         e.tips:Show()
+    end
+    check:SetScript('OnClick',function (self)
+        Save.hideHeirloom= not Save.hideHeirloom and true or nil
+        self:SetNormalAtlas(Save.hideHeirloom and e.Icon.disabled or e.Icon.icon)
+        securecall(HeirloomsJournal.FullRefreshIfVisible, HeirloomsJournal)
+        --HeirloomsJournal:FullRefreshIfVisible()
+        self:set_tooltips()
     end)
-    Heirloomframe.sel:SetScript('OnLeave', function ()
-        e.tips:Hide()
-    end)
+    check:SetScript('OnLeave', function () e.tips:Hide() end)
+    check:SetScript('OnEnter', check.set_tooltips)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -948,6 +1072,39 @@ local function Init_ToyBox()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#########
 --坐骑, 界面
 --#########
@@ -1068,12 +1225,37 @@ end
 --###########
 --加载保存数据
 --###########
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("TRANSMOGRIFY_ITEM_UPDATE")
 panel:RegisterEvent("TRANSMOG_SETS_UPDATE_FAVORITE")
 panel:RegisterEvent("PLAYER_LOGOUT")
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
