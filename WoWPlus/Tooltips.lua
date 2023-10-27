@@ -280,14 +280,19 @@ end
 
 local function setMount(self, mountID)--坐骑 
     self:AddLine(' ')
-    local name, spellID, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected=C_MountJournal.GetMountInfoByID(mountID)
-    self:AddDoubleLine((e.onlyChinese and '坐骑' or MOUNTS)..' '..mountID, spellID and (e.onlyChinese and '召唤技能' or (SUMMON..ABILITIES))..' '..spellID)
+    local name, spellID, _, _, _, sourceType, _, isFactionSpecific, faction, _, isCollected=C_MountJournal.GetMountInfoByID(mountID)
+    local spell
+    if spellID then
+        local icon= select(3, GetSpellInfo(spellID))
+        spell= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, (icon and '|T'..icon..':0|t' or '')..(e.onlyChinese and '法术' or SPELLS), spellID)
+    end
+    self:AddDoubleLine(format(LFG_LIST_CROSS_FACTION, e.onlyChinese and '坐骑' or MOUNTS, mountID), spell)
     if isFactionSpecific then
         self.textRight:SetText(not faction and ' ' or format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, faction==0 and e.Icon.horde2..(e.onlyChinese and '部落' or THE_HORDE) or e.Icon.alliance2..(e.onlyChinese and '联盟' or THE_ALLIANCE) or ''))
     end
-    local creatureDisplayInfoID, description, source, isSelfMount, mountTypeID, uiModelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(mountID)
+    local creatureDisplayInfoID, _, source, isSelfMount, mountTypeID, _, animID = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then
-        self:AddDoubleLine((e.onlyChinese and '模型' or MODEL)..' '..creatureDisplayInfoID, (e.onlyChinese and '变形' or TUTORIAL_TITLE61_DRUID)..' '..e.GetYesNo(isSelfMount))
+        self:AddDoubleLine((e.onlyChinese and '模型' or MODEL)..' '..creatureDisplayInfoID, isSelfMount and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '变形' or TUTORIAL_TITLE61_DRUID) or nil)
     end
     if source then
         self:AddLine(source,nil,nil,nil,true)

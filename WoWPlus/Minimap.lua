@@ -35,24 +35,24 @@ local panel= CreateFrame("Frame")
 local Button
 --local TrackButton
 
+--[[
+Interface\Minimap\ObjectIconsAtlas
+hooksecurefunc(Minimap, 'SetBlipTexture', function()
+    print(id,addName)
+end)
+
+]]
 
 
-
-
-
-
-
---#######################
---小地图, 标记, 监视，文本
---#######################
 --任务奖励
-local function get_QuestReward_Texture(questID)
+local function Get_QuestReward_Texture(questID)
     local itemTexture, bestQuality
-    local numQuestRewards = GetNumQuestLogRewards(questID)
-    if numQuestRewards>0 then
-        bestQuality = -1
-        for i = 1, numQuestRewards do
-            local _, texture, _, quality= GetQuestLogRewardInfo(i, questID);
+
+    local numQuestChoices = GetNumQuestLogChoices(questID)--可选任务，奖励
+    if numQuestChoices>0 then
+        bestQuality= -1
+        for i = 1, numQuestChoices do
+            local _, texture, _, quality= GetQuestLogChoiceInfo(i, questID);
             if quality > bestQuality then
                 itemTexture= texture
             end
@@ -60,11 +60,11 @@ local function get_QuestReward_Texture(questID)
         if itemTexture then return itemTexture end
     end
 
-	local numQuestChoices = GetNumQuestLogChoices(questID)
-    if numQuestChoices>0 then
-        bestQuality= -1
-        for i = 1, numQuestChoices do
-            local _, texture, _, quality= GetQuestLogChoiceInfo(i, questID);
+    local numQuestRewards = GetNumQuestLogRewards(questID)
+    if numQuestRewards>0 then
+        bestQuality = -1
+        for i = 1, numQuestRewards do
+            local _, texture, _, quality= GetQuestLogRewardInfo(i, questID);
             if quality > bestQuality then
                 itemTexture= texture
             end
@@ -117,6 +117,12 @@ local function get_QuestReward_Texture(questID)
 end
 
 
+
+
+
+--#######################
+--小地图, 标记, 监视，文本
+--#######################
 --世界任务 文本
 local function get_Quest_Text(questID)
     local text, itemTexture, atlas
@@ -126,7 +132,7 @@ local function get_Quest_Text(questID)
         else
             local questName= C_TaskQuest.GetQuestInfoByQuestID(questID)
             if questName then
-                itemTexture= get_QuestReward_Texture(questID)
+                itemTexture= Get_QuestReward_Texture(questID)
                 if not itemTexture then
                     atlas= 'worldquest-tracker-questmarker'
                 end
@@ -322,7 +328,7 @@ local function get_vignette_Text()--Vignettes
                     name= name..'|A:MajorFactions_Icons_Expedition512:0:0|a'
                 end
                 if info.rewardQuestID and info.rewardQuestID>0 then--任务，奖励
-                    local itemTexture= get_QuestReward_Texture(info.rewardQuestID)
+                    local itemTexture= Get_QuestReward_Texture(info.rewardQuestID)
                     if itemTexture then
                         name= name..'|T'..itemTexture..':0|t'
                     end
