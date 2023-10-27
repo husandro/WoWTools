@@ -285,6 +285,7 @@ function e.Cstr(self, tab)--self, {size, copyFont, changeFont, fontName color={r
         font:SetFontObject(tab.copyFont:GetFontObject())
         font:SetShadowColor(tab.copyFont:GetShadowColor())
         font:SetShadowOffset(tab.copyFont:GetShadowOffset())
+        if tab.justifyH then font:SetJustifyH(tab.justifyH) end
     else
         if (e.onlyChinese or LOCALE_zhCN) then
             font:SetFont('Fonts\\ARHei.ttf', (tab.size or 12), 'OUTLINE')
@@ -292,21 +293,21 @@ function e.Cstr(self, tab)--self, {size, copyFont, changeFont, fontName color={r
             local fontName= font:GetFont()
             font:SetFont(fontName or 'GameFontNormal', (tab.size or 12), 'OUTLINE')--THICKOUTLINE
         end
-        font:SetShadowOffset(1, -1)
-        --font:SetShadowColor(0, 0, 0)
         font:SetJustifyH(tab.justifyH or 'LEFT')
-        if  tab.color~=false then
-            if tab.color==true then--颜色
-                if e.Player.useColor then
-                    font:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a or 1)
-                else
-                    font:SetTextColor(e.Player.r, e.Player.g, e.Player.b, 1)
-                end
-            elseif type(tab.color)=='table' then
-                font:SetTextColor(tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1)
+    end
+    --font:SetShadowColor(0, 0, 0)
+    font:SetShadowOffset(1, -1)
+    if tab.color~=false then
+        if tab.color==true then--颜色
+            if e.Player.useColor then
+                font:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a or 1)
             else
-                font:SetTextColor(1, 0.82, 0, 1)
+                font:SetTextColor(e.Player.r, e.Player.g, e.Player.b, 1)
             end
+        elseif type(tab.color)=='table' then
+            font:SetTextColor(tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1)
+        else
+            font:SetTextColor(1, 0.82, 0, 1)
         end
     end
     if tab.mouse then

@@ -947,51 +947,72 @@ end
 --坐骑, 界面
 --#########
 local function Init_Mount()
-    hooksecurefunc('MountJournal_UpdateMountDisplay', function(forceSceneChange)--坐骑
-        if not MountJournal.selectedMountID then
-            if MountJournal.MountDisplay.infoText then
-                MountJournal.MountDisplay.infoText:SetText('')
+    hooksecurefunc('MountJournal_UpdateMountDisplay', function()--坐骑
+        if not MountJournal.MountDisplay.infoButton then
+            MountJournal.MountDisplay.infoButton= e.Cbtn(MountJournal.MountDisplay, {size={22,22}, atlas='QuestNormal'})
+            MountJournal.MountDisplay.infoButton:SetPoint('BOTTOMRIGHT', MountJournal.MountDisplay.ModelScene.TogglePlayer, 'TOPRIGHT',0, 2)
+            MountJournal.MountDisplay.infoButton.text= e.Cstr(MountJournal.MountDisplay, {copyFont= MountJournal.MountCount.Label, color=false, justifyH='LEFT'})
+            MountJournal.MountDisplay.infoButton.text:SetPoint('BOTTOMLEFT', 2, 2)
+            
+            function MountJournal.MountDisplay.infoButton:set_Alpha()
+                self:SetAlpha(Save.ShowMountDisplayInfo and 0.2 or 1)
             end
-            return
-        end
-        local creatureDisplayInfoID, description, source, isSelfMount, mountTypeID,
-        uiModelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(MountJournal.selectedMountID)
-
-        local showPlayer = GetCVarBool("mountJournalShowPlayer");
-        if not disablePlayerMountPreview and not showPlayer then
-            disablePlayerMountPreview = true;
-        end
-        if not disablePlayerMountPreview then
-            if MountJournal.MountDisplay.infoText then
-                MountJournal.MountDisplay.infoText:SetText('')
+            function MountJournal.MountDisplay.infoButton:set_Tooltips()
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(e.onlyChinese and '显示信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, INFO), e.GetShowHide(Save.ShowMountDisplayInfo))
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
             end
-            return
+            function MountJournal.MountDisplay.infoButton:set_Text()
+                local text
+                if Save.ShowMountDisplayInfo then
+                    local creatureDisplayInfoID, description, source, isSelfMount, mountTypeID, uiModelSceneID, animID, spellVisualKitID, disablePlayerMountPreview = C_MountJournal.GetMountInfoExtraByID(MountJournal.selectedMountID)
+                    text= 'mountID '..MountJournal.selectedMountID
+                        ..'|nanimID '..(animID or '')
+                        ..'|nisSelfMount '.. (isSelfMount and 'true' or 'false')
+                        ..'|nmountTypeID '..(mountTypeID or '')
+                        ..'|nspellVisualKitID '..(spellVisualKitID or '')
+                        ..'|nuiModelSceneID '..(uiModelSceneID or '')
+                        ..'|ncreatureDisplayInfoID '..(creatureDisplayInfoID or '')
+        
+                        local _, spellID, icon, _, _, sourceType= C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID)
+                        text= text..'|nspellID '..(spellID or '')
+                                    ..'|nicon '..(icon and '|T'..icon..':0:0|t'..icon or '')
+                                    ..'|nsourceType '..(sourceType or '').. (sourceType and _G['BATTLE_PET_SOURCE_'..sourceType] and ' ('.._G['BATTLE_PET_SOURCE_'..sourceType]..')' or '')
+                end
+                self.text:SetText(text or '')
+            end
+            MountJournal.MountDisplay.infoButton:SetScript('OnClick', function(self)
+                Save.ShowMountDisplayInfo= not Save.ShowMountDisplayInfo and true or nil
+                self:set_Text()
+                self:set_Alpha()
+                self:set_Tooltips()
+            end)
+            MountJournal.MountDisplay.infoButton:SetScript('OnLeave', function() e.tips:Hide() end)
+            MountJournal.MountDisplay.infoButton:SetScript('OnEnter', MountJournal.MountDisplay.infoButton.set_Tooltips)
+            MountJournal.MountDisplay.infoButton:set_Alpha()
         end
-        if not MountJournal.MountDisplay.infoText then
-            MountJournal.MountDisplay.infoText= e.Cstr(MountJournal.MountDisplay)
-            MountJournal.MountDisplay.infoText:SetPoint('BOTTOMLEFT')
-        end
-        local text= 'mountID '..MountJournal.selectedMountID
-                ..'|nanimID '..(animID or '')
-                ..'|nisSelfMount '.. (isSelfMount and 'true' or 'false')
-                ..'|nmountTypeID '..(mountTypeID or '')
-                ..'|nspellVisualKitID '..(spellVisualKitID or '')
-                ..'|nuiModelSceneID '..(uiModelSceneID or '')
-                ..'|ncreatureDisplayInfoID '..(creatureDisplayInfoID or '')
-
-                local _, spellID, icon, _, _, sourceType= C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID)
-                text= text..'|n|nspellID '..(spellID or '')
-                            ..'|nicon '..(icon or '')
-                            ..'|nsourceType '..(sourceType or '').. (sourceType and _G['BATTLE_PET_SOURCE_'..sourceType] and ' ('.._G['BATTLE_PET_SOURCE_'..sourceType]..')' or '')
-
-                            ..'|n|n'..id..' '..addName
-
-        MountJournal.MountDisplay.infoText:SetText(text)
+        MountJournal.MountDisplay.infoButton:set_Text()
     end)
+end
 
-    --[[过滤, 选项
+    --[[
+local showPlayer = GetCVarBool("mountJournalShowPlayer");
+if not disablePlayerMountPreview and not showPlayer then
+    disablePlayerMountPreview = true;
+end
+if not disablePlayerMountPreview then
+    if MountJournal.MountDisplay.infoText then
+        MountJournal.MountDisplay.infoText:SetText('')
+    end
+    return
+end
+    
+过滤, 选项
     local mountTypeStrings = {
-        [Enum.MountType.Ground] = MOUNT_JOURNAL_FILTER_GROUND,
+        [Enum.MountType.Ground] = MOUNT_JOURNAL_FILTER_GROUND,--0
         [Enum.MountType.Flying] = MOUNT_JOURNAL_FILTER_FLYING,
         [Enum.MountType.Aquatic] = MOUNT_JOURNAL_FILTER_AQUATIC,
         [Enum.MountType.Dragonriding] = MOUNT_JOURNAL_FILTER_DRAGONRIDING,
@@ -1037,7 +1058,7 @@ local function Init_Mount()
     end
     set_Check()
     hooksecurefunc('MountJournalResetFiltersButton_UpdateVisibility', set_Check)]]
-end
+
 
 --###########
 --加载保存数据
