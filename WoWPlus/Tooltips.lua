@@ -304,19 +304,27 @@ function func.Set_Mount(self, mountID)--坐骑
         return
     end
     self:AddLine(' ')
-    local name, spellID, _, _, _, sourceType, _, isFactionSpecific, faction, _, isCollected= C_MountJournal.GetMountInfoByID(mountID)    
+    --local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, isFiltered, isCollected, mountID, isForDragonriding = C_MountJournal.GetDisplayedMountInfo(elementData.index);
+    local creatureName, spellID, _, _, _, _, _, isFactionSpecific, faction, _, isCollected, _, isForDragonriding =C_MountJournal.GetMountInfoByID(mountID)
     local spell
     if spellID then
         local icon= select(3, GetSpellInfo(spellID))
         spell= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, (icon and '|T'..icon..':0|t' or '')..(e.onlyChinese and '法术' or SPELLS), spellID)
     end
-    self:AddDoubleLine(format(LFG_LIST_CROSS_FACTION, e.onlyChinese and '坐骑' or MOUNTS, mountID), spell)
+    self:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '坐骑' or MOUNTS, mountID), spell)
+
     if isFactionSpecific then
-        self.textRight:SetText(not faction and ' ' or format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, faction==0 and e.Icon.horde2..(e.onlyChinese and '部落' or THE_HORDE) or e.Icon.alliance2..(e.onlyChinese and '联盟' or THE_ALLIANCE) or ''))
+        if faction==0 then
+            self.textRight:SetFormattedText(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.Icon.horde2..(e.onlyChinese and '部落' or THE_HORDE))
+        elseif faction==1 then
+            self.textRight:SetFormattedText(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.Icon.alliance2..(e.onlyChinese and '联盟' or THE_ALLIANCE))
+        end
+    elseif isForDragonriding then
+        self.textRight:SetFormattedText(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '驭龙术' or MOUNT_JOURNAL_FILTER_DRAGONRIDING)
     end
-    local creatureDisplayInfoID, _, source, isSelfMount, mountTypeID, _, animID = C_MountJournal.GetMountInfoExtraByID(mountID)
+    local creatureDisplayInfoID, _, source, isSelfMount, _, _, animID = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then
-        self:AddDoubleLine((e.onlyChinese and '模型' or MODEL)..' '..creatureDisplayInfoID, isSelfMount and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '变形' or TUTORIAL_TITLE61_DRUID) or nil)
+        self:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '模型' or MODEL, creatureDisplayInfoID), isSelfMount and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '变形' or TUTORIAL_TITLE61_DRUID) or nil)
     end
     if source then
         self:AddLine(source,nil,nil,nil,true)
@@ -325,7 +333,7 @@ function func.Set_Mount(self, mountID)--坐骑
 
     self.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
 
-    func.Set_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
+    func.Set_Web_Link({frame=self, type='spell', id=spellID, name=creatureName, col=nil, isPetUI=false})--取得网页，数据链接
 end
 
 
