@@ -203,6 +203,7 @@ local function Get_widgetSetID_Text(widgetSetID, all)
             elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ItemDisplay then info= C_UIWidgetManager.GetItemDisplayVisualizationInfo(widget.widgetID)
             end
         end
+        
         if info and info.shownState == Enum.WidgetShownState.Shown and info.text and info.text~='' then
            if info.hasTimer or all then
                 local barText
@@ -241,7 +242,7 @@ local function Get_widgetSetID_Text(widgetSetID, all)
     return text
 end
 
-local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
+local function Get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
     if not poiInfo.name  then
         return
@@ -294,7 +295,7 @@ local function get_vignette_Text()--Vignettes
     local onMinimap={}
     local onWorldMap={}
     if not (Save.hideVigentteCurrentOnMinimap and Save.hideVigentteCurrentOnWorldMap) then
-        local vignetteGUIDs=C_VignetteInfo.GetVignettes() or {}
+        local vignetteGUIDs= C_VignetteInfo.GetVignettes() or {}
         local bestUniqueVignetteIndex = C_VignetteInfo.FindBestUniqueVignette(vignetteGUIDs)
         local tab={}
         for index, guid in pairs(vignetteGUIDs) do
@@ -492,7 +493,7 @@ local function set_Button_Text()
 
 
     for areaPoiID, uiMapID in pairs(Save.areaPoiIDs) do--自定义 areaPoiID
-        local name, atlas, text= get_areaPoiID_Text(uiMapID, areaPoiID, true)
+        local name, atlas, text= Get_areaPoiID_Text(uiMapID, areaPoiID, true)
         if name then
             table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, text=text, atlas=atlas})
         end
@@ -504,7 +505,7 @@ local function set_Button_Text()
         local tab={}
         for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
             if not Save.areaPoiIDs[areaPoiID] and not tab[areaPoiID] then
-                local name, atlas, text= get_areaPoiID_Text(uiMapID, areaPoiID)
+                local name, atlas, text= Get_areaPoiID_Text(uiMapID, areaPoiID)
                 if name then
                     table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, text=text, atlas=atlas})
                     tab[areaPoiID]=true
@@ -519,7 +520,7 @@ local function set_Button_Text()
             local nameTab={}
             for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
                 if not Save.areaPoiIDs[areaPoiID] then
-                    local name, atlas, text= get_areaPoiID_Text(uiMapID, areaPoiID)
+                    local name, atlas, text= Get_areaPoiID_Text(uiMapID, areaPoiID)
                     if name and not nameTab[name] then
                         table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, text=text, atlas=atlas})
                         nameTab[name]=true
