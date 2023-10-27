@@ -323,7 +323,7 @@ local function get_vignette_Text()--Vignettes
                 end
 
                 table.insert(info.onMinimap and onMinimap or onWorldMap,
-                    {name=name, text=text, atlas= info.atlasName, widgetSetID=info.widgetSetID, vignetteGUID=guid}
+                    {name=name, text=text, atlas= info.atlasName, vignetteGUID=guid}
                 )
                 tab[info.vignetteID]=true
             end
@@ -337,10 +337,10 @@ end
 
 
 local function set_OnEnter_btn_tips(self)--VignetteDataProvider.lua VignettePinMixin:OnMouseEnte
-    if self.questID then
+    if self.questID then--任务
         GameTooltip_AddQuest(self, self.questID)
 
-    elseif self.vignetteGUID then
+    elseif self.vignetteGUID then--vigentte
         local vignetteInfo = C_VignetteInfo.GetVignetteInfo(self.vignetteGUID)
         if vignetteInfo then
             local verticalPadding = nil;
@@ -383,18 +383,65 @@ local function set_OnEnter_btn_tips(self)--VignetteDataProvider.lua VignettePinM
                 GameTooltip:SetPadding(0, verticalPadding);
             end
         end
-    else
-        e.tips:AddLine(self.name)
-        if self.vignetteID then
-            e.tips:AddDoubleLine('vignetteID', self.vignetteID)
-        elseif self.areaPoiID then
-            e.tips:AddDoubleLine('areaPoiID', self.areaPoiID)
-            e.tips:AddDoubleLine('uiMapID', self.uiMapID)
-            e.tips:AddDoubleLine('widgetSetID', self.widgetSetID)
+
+    elseif self.uiMapID and self.areaPoiID then--areaPoi AreaPOIPinMixin:TryShowTooltip()
+        local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(self.uiMapID, self.areaPoiID) or {}
+        local hasName = poiInfo.name ~= "";
+        local hasDescription = poiInfo.description and poiInfo.description ~= "";
+        local isTimed, hideTimer = C_AreaPoiInfo.IsAreaPOITimed(self.areaPoiID);
+        local showTimer = isTimed and not hideTimer;
+        local hasWidgetSet = poiInfo.widgetSetID ~= nil;
+
+        local hasTooltip = hasDescription or showTimer or hasWidgetSet;
+	    local addedTooltipLine = false
+
+        if hasTooltip then
+            local verticalPadding = nil;
+
+            if hasName then
+                GameTooltip_SetTitle(GameTooltip, poiInfo.name, HIGHLIGHT_FONT_COLOR);
+                addedTooltipLine = true;
+            end
+
+            if hasDescription then
+                GameTooltip_AddNormalLine(GameTooltip, poiInfo.description);
+                addedTooltipLine = true;
+            end
+
+            if showTimer then
+                local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(self.areaPoiID);
+                if secondsLeft and secondsLeft > 0 then
+                    local timeString = SecondsToTime(secondsLeft);
+                    GameTooltip_AddNormalLine(GameTooltip, BONUS_OBJECTIVE_TIME_LEFT:format(timeString));
+                    addedTooltipLine = true;
+                end
+            end
+
+            if poiInfo.textureKit == "OribosGreatVault" then
+                GameTooltip_AddBlankLineToTooltip(GameTooltip);
+                GameTooltip_AddInstructionLine(GameTooltip, ORIBOS_GREAT_VAULT_POI_TOOLTIP_INSTRUCTIONS);
+                addedTooltipLine = true;
+            end
+
+            if hasWidgetSet then
+                local overflow = GameTooltip_AddWidgetSet(GameTooltip, poiInfo.widgetSetID, addedTooltipLine and poiInfo.addPaddingAboveWidgets and 10);
+                if overflow then
+                    verticalPadding = -overflow;
+                end
+            end
+
+            if poiInfo.textureKit then
+                local backdropStyle = GAME_TOOLTIP_TEXTUREKIT_BACKDROP_STYLES[poiInfo.textureKit];
+                if (backdropStyle) then
+                    SharedTooltip_SetBackdropStyle(GameTooltip, backdropStyle);
+                end
+            end
+            -- need to set padding after Show or else there will be a flicker
+            if verticalPadding then
+                GameTooltip:SetPadding(0, verticalPadding);
+            end
         end
     end
-
-    
 end
 
 
@@ -454,7 +501,6 @@ local function set_Button_Text()
                     if name and not nameTab[name] then
                         table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, text=text, atlas=atlas})
                         nameTab[name]=true
-                        print(name)
                     end
                 end
             end
@@ -472,16 +518,14 @@ local function set_Button_Text()
             btn.index= index
 
             function btn:set_rest(tables)
-                self.questID= tables.questID
+                self.questID= tables.questID--任务
 
-                --self.vignetteID= tables.vignetteID
-                self.vignetteGUID= tables.vignetteGUID
+                self.vignetteGUID= tables.vignetteGUID--vigentte
 
-                self.areaPoiID= tables.areaPoiID
+                self.areaPoiID= tables.areaPoiID--areaPoi
                 self.uiMapID= tables.uiMapID
-                self.widgetSetID= tables.widgetSetID
-                self.name= tables.name
-                self.nameText:SetText(tables.name or '')
+
+                self.nameText:SetText(tables.name or 'rqt')
                 self.text:SetText(tables.text or '')
                 if tables.atlas then
                     self:SetNormalAtlas(tables.atlas)
@@ -490,25 +534,20 @@ local function set_Button_Text()
                 end
                 self:SetShown((tables.text or tables.texture or tables.atlas) and true or false)
             end
-            function btn:set_button_point()
+            function btn:set_btn_point()
                 if Save.textToDown then
                     if self.index==1 then
                         self:SetPoint('TOP', Button, 'BOTTOM')
                     else
                         self:SetPoint('TOPRIGHT', Button.btn[index-1].text, 'BOTTOMLEFT')
                     end
+                    self.text:SetPoint('TOPLEFT', btn.nameText, 'BOTTOMLEFT')
                 else
                     if index==1 then
                         self:SetPoint('BOTTOM', Button, 'TOP')
                     else
                         self:SetPoint('BOTTOMRIGHT', Button.btn[index-1].text, 'TOPLEFT')
                     end
-                end
-            end
-            function btn:set_text_point()
-                if Save.textToDown then
-                    self.text:SetPoint('TOPLEFT', btn.nameText, 'BOTTOMLEFT')
-                else
                     self.text:SetPoint('BOTTOMLEFT', btn.nameText, 'TOPLEFT')
                 end
             end
@@ -521,8 +560,7 @@ local function set_Button_Text()
                 Button:SetButtonState('PUSHED')
             end)
 
-            btn:set_button_point()
-            btn:set_text_point()
+            btn:set_btn_point()
 
             Button.btn[index]=btn
         end
@@ -789,8 +827,8 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 Save.textToDown= not Save.textToDown and true or nil
                 for _, btn in pairs(Button.btn) do
                     btn:ClearAllPoints()
-                    btn:set_text_point()
-                    btn:set_button_point()
+                    btn.text:ClearAllPoints()
+                    btn:set_btn_point()
                 end
             end
         }
