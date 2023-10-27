@@ -239,7 +239,6 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
     if not poiInfo.name  then
         return
     end
-    local atlas
     local text= get_widgetSetID_Text(poiInfo.widgetSetID, all)
     if text then
         local time
@@ -249,13 +248,15 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
         end
 
         if text and (time or all) then
+            local name= poiInfo.name
+            local atlas= poiInfo.atlasName
             if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
                 local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
                 if info and info.textureKit then
-                    if not poiInfo.atlasName then
-                        atlas='MajorFactions_Icons_'..info.textureKit..'512'
+                    if not atlas then
+                        atlas= 'MajorFactions_Icons_'..info.textureKit..'512'
                     else
-                        text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
+                        name= name..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
                     end
                 end
             end
@@ -274,7 +275,7 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
                     end
                 end
             end
-            return poiInfo.name, poiInfo.atlasName or atlas, text
+            return name, atlas, text
         end
     end
 end
@@ -291,7 +292,7 @@ local function get_vignette_Text()--Vignettes
         for index, guid in pairs(vignetteGUIDs) do
             local info= C_VignetteInfo.GetVignetteInfo(guid) or {}
             if info.vignetteID and not tab[info.vignetteID]
-                and info.name
+                and (info.name or info.atlasName)
                 and not info.isDead
                 and (
                     (info.onMinimap and not Save.hideVigentteCurrentOnMinimap)--当前，小地图，标记
@@ -299,32 +300,29 @@ local function get_vignette_Text()--Vignettes
                 )
             then
                 local text
+                local name= info.name
                 if info.widgetSetID then
                     text= get_widgetSetID_Text(info.widgetSetID, true)
                 end
-                text=(text and text..'|n'  or '')
-                if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
-                    text= text..'|T1059121:0|t'
-                elseif info.vignetteID== 5485 then
-                    text= text..'|A:MajorFactions_Icons_Tuskarr512:0:0|a'
-                elseif info.vignetteID==5468 then
-                    text= text..'|A:MajorFactions_Icons_Expedition512:0:0|a'
-                end
-                if index==bestUniqueVignetteIndex then-- or info.isUnique then
-                    text= '|cnGREEN_FONT_COLOR:'..text..'|r'..e.Icon.star2
-                end
-                local name=info.name
 
-                if info.rewardQuestID and info.rewardQuestID>0 then
+                if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
+                    name= name..'|T1059121:0|t'
+                elseif info.vignetteID== 5485 then
+                    name= name..'|A:MajorFactions_Icons_Tuskarr512:0:0|a'
+                elseif info.vignetteID==5468 then
+                    name= name..'|A:MajorFactions_Icons_Expedition512:0:0|a'
+                end
+                if info.rewardQuestID and info.rewardQuestID>0 then--任务，奖励
                     local itemTexture= get_QuestReward_Texture(info.rewardQuestID)
                     if itemTexture then
                         name= name..'|T'..itemTexture..':0|t'
                     end
                 end
+                if index==bestUniqueVignetteIndex then--唯一
+                    name= '|cnGREEN_FONT_COLOR:'..name..'|r'..e.Icon.star2
+                end
 
-                table.insert(info.onMinimap and onMinimap or onWorldMap,
-                    {name=name, text=text, atlas= info.atlasName, vignetteGUID=guid}
-                )
+                table.insert(info.onMinimap and onMinimap or onWorldMap, {name=name, text=text, atlas= info.atlasName, vignetteGUID=guid})
                 tab[info.vignetteID]=true
             end
         end
