@@ -492,7 +492,7 @@ local function Init_Heirloom()
         local _, _, isPvP, _, upgradeLevel = C_Heirloom.GetHeirloomInfo(button.itemID);
 
         local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(button.itemID) or 0;
-        local level=maxUp-upgradeLevel
+        local level= maxUp-(upgradeLevel or 0)
         local has = C_Heirloom.PlayerHasHeirloom(button.itemID)
         if has then--需要升级数
             if not button.upLevel then
@@ -518,7 +518,12 @@ local function Init_Heirloom()
                     end
                 end)
             end
-            button.upLevel:SetAtlas(e.Icon.number..level)
+            if level>0 then
+                button.upLevel:SetAtlas(e.Icon.number..level)
+            else
+                button.upLevel:SetTexture(0)
+            end
+            
         end
         if button.upLevel then
             button.upLevel.maxUp= maxUp
