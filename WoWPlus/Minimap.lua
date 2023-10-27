@@ -335,6 +335,7 @@ end
 
 
 local function set_OnEnter_btn_tips(self)--VignetteDataProvider.lua VignettePinMixin:OnMouseEnte
+    local widgetSetID, vignetteID
     if self.questID then--任务
         GameTooltip_AddQuest(self, self.questID)
 
@@ -380,6 +381,8 @@ local function set_OnEnter_btn_tips(self)--VignetteDataProvider.lua VignettePinM
             if verticalPadding then
                 GameTooltip:SetPadding(0, verticalPadding);
             end
+            widgetSetID= vignetteInfo.widgetSetID
+            vignetteID= vignetteInfo.vignetteID
         end
 
     elseif self.uiMapID and self.areaPoiID then--areaPoi AreaPOIPinMixin:TryShowTooltip()
@@ -438,7 +441,18 @@ local function set_OnEnter_btn_tips(self)--VignetteDataProvider.lua VignettePinM
             if verticalPadding then
                 GameTooltip:SetPadding(0, verticalPadding);
             end
+            widgetSetID= poiInfo.widgetSetID
         end
+    end
+    if self.areaPoiID and self.uiMapID then
+        e.tips:AddDoubleLine('areaPoiID |cnGREEN_FONT_COLOR:'..self.areaPoiID, 'uiMapID |cnGREEN_FONT_COLOR:'..self.uiMapID)
+    elseif vignetteID then
+        e.tips:AddLine('vignetteID |cnGREEN_FONT_COLOR:'..vignetteID)
+    elseif self.questID then
+        e.tips:AddLine('questID |cnGREEN_FONT_COLOR:'..self.questID)
+    end
+    if widgetSetID then
+        e.tips:AddLine('widgetSetID |cnGREEN_FONT_COLOR:'..widgetSetID)
     end
 end
 
@@ -522,7 +536,7 @@ local function set_Button_Text()
                 self.areaPoiID= tables.areaPoiID--areaPoi
                 self.uiMapID= tables.uiMapID
 
-                self.nameText:SetText(tables.name or 'rqt')
+                self.nameText:SetText(tables.name=='' and ' ' or tables.name or '')
                 self.text:SetText(tables.text or '')
                 if tables.atlas then
                     self:SetNormalAtlas(tables.atlas)
@@ -538,14 +552,14 @@ local function set_Button_Text()
                     else
                         self:SetPoint('TOPRIGHT', Button.btn[index-1].text, 'BOTTOMLEFT')
                     end
-                    self.text:SetPoint('TOPLEFT', btn.nameText, 'BOTTOMLEFT')
+                    self.text:SetPoint('TOPLEFT', self.nameText, 'BOTTOMLEFT')
                 else
                     if index==1 then
                         self:SetPoint('BOTTOM', Button, 'TOP')
                     else
                         self:SetPoint('BOTTOMRIGHT', Button.btn[index-1].text, 'TOPLEFT')
                     end
-                    self.text:SetPoint('BOTTOMLEFT', btn.nameText, 'TOPLEFT')
+                    self.text:SetPoint('BOTTOMLEFT', self.nameText, 'TOPLEFT')
                 end
             end
             btn:SetScript("OnLeave", function() e.tips:Hide() Button:SetButtonState('NORMAL') end)
