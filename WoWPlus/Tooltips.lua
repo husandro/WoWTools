@@ -1475,9 +1475,11 @@ local function Init()
 
             elseif e.Player.husandro then
                 tooltip:AddDoubleLine('id '..data.id, 'type '..data.type)
+                tooltip:Show()
             end
         elseif e.Player.husandro then
             tooltip:AddDoubleLine(data.id and 'id '..data.id,  data.type and 'type '..data.type)
+            tooltip:Show()
         end
     end)
 
