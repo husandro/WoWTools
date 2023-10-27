@@ -167,10 +167,10 @@ local barColor = {
 local function get_AreaPOIInfo_Name(poiInfo)
     return (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
 end
-local function get_widgetSetID_Text(widgetSetID, all)
+local function Get_widgetSetID_Text(widgetSetID, all)
     local text
 
-    for _, widget in ipairs(widgetSetID and C_UIWidgetManager.GetAllWidgetsBySetID(widgetSetID) or {}) do
+    for _, widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(widgetSetID) or {}) do
         local info
         if widget.widgetID then
             if widget.widgetType ==Enum.UIWidgetVisualizationType.IconAndText then info= C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(widget.widgetID)
@@ -243,12 +243,12 @@ end
 
 local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
-
     if not poiInfo.name  then
         return
     end
-    local text= get_widgetSetID_Text(poiInfo.widgetSetID, all)
+    local text= poiInfo.widgetSetID and Get_widgetSetID_Text(poiInfo.widgetSetID, all)
     if text then
+
         local time
         if C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
             time=  C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
@@ -257,7 +257,7 @@ local function get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
 
         if text and (time or all) then
             local name= poiInfo.name
-            local atlas= poiInfo.atlasName
+            local atlas=  poiInfo.atlasName
             if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
                 local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
                 if info and info.textureKit then
@@ -310,7 +310,7 @@ local function get_vignette_Text()--Vignettes
                 local text
                 local name= info.name
                 if info.widgetSetID then
-                    text= get_widgetSetID_Text(info.widgetSetID, true)
+                    text= Get_widgetSetID_Text(info.widgetSetID, true)
                 end
 
                 if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
@@ -428,11 +428,11 @@ local function set_OnEnter_btn_tips(self)--VignetteDataProvider.lua VignettePinM
                 end
             end
 
-            if poiInfo.textureKit == "OribosGreatVault" then
+            --[[if poiInfo.textureKit == "OribosGreatVault" then
                 GameTooltip_AddBlankLineToTooltip(GameTooltip);
                 GameTooltip_AddInstructionLine(GameTooltip, ORIBOS_GREAT_VAULT_POI_TOOLTIP_INSTRUCTIONS);
                 addedTooltipLine = true;
-            end
+            end]]
 
             if hasWidgetSet then
                 local overflow = GameTooltip_AddWidgetSet(GameTooltip, poiInfo.widgetSetID, addedTooltipLine and poiInfo.addPaddingAboveWidgets and 10);
@@ -441,8 +441,8 @@ local function set_OnEnter_btn_tips(self)--VignetteDataProvider.lua VignettePinM
                 end
             end
 
-            if poiInfo.textureKit then
-                local backdropStyle = GAME_TOOLTIP_TEXTUREKIT_BACKDROP_STYLES[poiInfo.textureKit];
+            if poiInfo.uiTextureKit then
+                local backdropStyle = GAME_TOOLTIP_TEXTUREKIT_BACKDROP_STYLES[poiInfo.uiTextureKit];
                 if (backdropStyle) then
                     SharedTooltip_SetBackdropStyle(GameTooltip, backdropStyle);
                 end
@@ -455,14 +455,15 @@ local function set_OnEnter_btn_tips(self)--VignetteDataProvider.lua VignettePinM
         end
     end
     if self.areaPoiID and self.uiMapID then
-        e.tips:AddDoubleLine('areaPoiID |cnGREEN_FONT_COLOR:'..self.areaPoiID, 'uiMapID |cnGREEN_FONT_COLOR:'..self.uiMapID)
+        e.tips:AddDoubleLine('areaPoiID |cnGREEN_FONT_COLOR:'..self.areaPoiID, 'uiMapID |cnGREEN_FONT_COLOR:'..self.uiMapID..'|r')
     elseif vignetteID then
         e.tips:AddLine('vignetteID |cnGREEN_FONT_COLOR:'..vignetteID)
     elseif self.questID then
         e.tips:AddLine('questID |cnGREEN_FONT_COLOR:'..self.questID)
     end
     if widgetSetID then
-        e.tips:AddLine('widgetSetID |cnGREEN_FONT_COLOR:'..widgetSetID)
+        local info= self.uiMapID and C_Map.GetMapInfo(self.uiMapID) or {}
+        e.tips:AddDoubleLine('widgetSetID |cnGREEN_FONT_COLOR:'..widgetSetID, info.name)
     end
 end
 
@@ -1030,7 +1031,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
     function Button:set_Tootips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddLine(addName, addName2)
+        e.tips:AddDoubleLine(addName, addName2)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
