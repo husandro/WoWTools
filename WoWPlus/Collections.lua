@@ -374,7 +374,7 @@ local function Init_Wardrobe_Sets()
         
         for index, info in pairs(sets) do
             if info and info.setID then
-                local numCollected, _, numAll = e.GetSetsCollectedNum(info.setID, 14)
+                local numCollected, _, numAll = e.GetSetsCollectedNum(info.setID, nil, true)
                 if numCollected and numAll then
                     if info.setID==setID then maxNum= numAll end
                     text= (text or '')..numCollected..' '
