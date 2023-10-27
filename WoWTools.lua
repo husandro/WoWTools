@@ -173,7 +173,9 @@ function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, u
     end
     if tab.type=='quest' then
             C_QuestLog.RequestLoadQuestByID(tab.id)
-            C_TaskQuest.RequestPreloadRewardData(tab.id)
+            if not HaveQuestRewardData(tab.id) then
+                C_TaskQuest.RequestPreloadRewardData(tab.id)
+            end
     elseif tab.type=='spell' then
         local spellID= tab.id
         if type(tab.id)=='string' then

@@ -47,25 +47,30 @@ local Button
 --#######################
 --任务奖励
 local function get_QuestReward_Texture(questID)
-    local itemTexture
+    local itemTexture, bestQuality
     local numQuestRewards = GetNumQuestLogRewards(questID)
-    local bestQuality = -1
-    for i = 1, numQuestRewards do
-		local _, texture, _, quality= GetQuestLogRewardInfo(i, questID);
-		if quality > bestQuality then
-            itemTexture= texture
-		end
-	end
-    if itemTexture then return itemTexture end
+    if numQuestRewards>0 then
+        bestQuality = -1
+        for i = 1, numQuestRewards do
+            local _, texture, _, quality= GetQuestLogRewardInfo(i, questID);
+            if quality > bestQuality then
+                itemTexture= texture
+            end
+        end
+        if itemTexture then return itemTexture end
+    end
+
 	local numQuestChoices = GetNumQuestLogChoices(questID)
-    bestQuality= -1
-	for i = 1, numQuestChoices do
-		local _, texture, _, quality= GetQuestLogChoiceInfo(i, questID);
-		if quality > bestQuality then
-			itemTexture= texture
-		end
-	end
-    if itemTexture then return itemTexture end
+    if numQuestChoices>0 then
+        bestQuality= -1
+        for i = 1, numQuestChoices do
+            local _, texture, _, quality= GetQuestLogChoiceInfo(i, questID);
+            if quality > bestQuality then
+                itemTexture= texture
+            end
+        end
+        if itemTexture then return itemTexture end
+    end
 
     if C_QuestInfoSystem.HasQuestRewardSpells(questID) then
         for _, spell in pairs(C_QuestInfoSystem.GetQuestRewardSpells(questID) or {}) do
@@ -80,7 +85,7 @@ local function get_QuestReward_Texture(questID)
         if itemTexture then return itemTexture end
     end
 
-    local numQuestCurrencies= GetNumQuestLogRewardCurrencies(questID)
+    local numQuestCurrencies= GetNumQuestLogRewardCurrencies(questID)--货币
     if numQuestCurrencies>0 then
         bestQuality= -1
         for i=1, numQuestCurrencies do
@@ -91,13 +96,7 @@ local function get_QuestReward_Texture(questID)
         end
         return itemTexture
 
-    elseif GetQuestLogRewardHonor(questID)>0 then
-        return 'Interface\\ICONS\\Achievement_LegionPVPTier4'
-    elseif GetQuestLogRewardMoney(questID)>0 then
-        return 'Interface\\Icons\\inv_misc_coin_01'--'interface\\moneyframe\\ui-goldicon'
-    elseif GetQuestLogRewardXP(questID) > 0 then
-        return 'Interface\\Icons\\XP_Icon'
-    elseif GetQuestLogRewardArtifactXP(questID) > 0 then
+    elseif GetQuestLogRewardArtifactXP(questID) > 0 then--神器XP
         local artifactCategory= select(2, GetRewardArtifactXP()) or select(2, GetQuestLogRewardArtifactXP())
         if artifactCategory then
             local icon = select(2, C_ArtifactUI.GetArtifactXPRewardTargetInfo(artifactCategory))
@@ -105,6 +104,15 @@ local function get_QuestReward_Texture(questID)
                 return icon
             end
         end
+
+    elseif GetQuestLogRewardHonor(questID)>0 then--荣誉
+        return 'Interface\\ICONS\\Achievement_LegionPVPTier4'
+
+    elseif GetQuestLogRewardXP(questID) > 0 then--XP
+        return 'Interface\\Icons\\XP_Icon'
+
+    elseif GetQuestLogRewardMoney(questID)>0 then--钱
+        return 'Interface\\Icons\\inv_misc_coin_01'--'interface\\moneyframe\\ui-goldicon'
     end
 end
 
@@ -344,11 +352,13 @@ local function set_OnEnter_btn_tips(self)--VignetteDataProvider.lua VignettePinM
         if vignetteInfo then
             local verticalPadding = nil;
             local waitingForData, titleAdded = false, false;
+
             if vignetteInfo.type == Enum.VignetteType.Normal or vignetteInfo.type == Enum.VignetteType.Treasure then
                 GameTooltip_SetTitle(GameTooltip, vignetteInfo.name);
                 titleAdded = true
+
             elseif vignetteInfo.type == Enum.VignetteType.PvPBounty then
-                local player = PlayerLocation:CreateFromGUID(e.Player.guid)
+                local player = PlayerLocation:CreateFromGUID(vignetteInfo.objectGUID)
                 local class = select(3, C_PlayerInfo.GetClass(player));
                 local race = C_PlayerInfo.GetRace(player);
                 local name = C_PlayerInfo.GetName(player);
