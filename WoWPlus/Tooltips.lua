@@ -19,7 +19,27 @@ local Save={
 }
 local panel=CreateFrame("Frame")
 
-local function set_playerModel(self)
+local func={
+    --func.Set_PlayerModel(self)
+    --func.Set_Spell(self, spellID)--法术
+    --func.Set_Mount(self, mountID)--坐骑
+    --func.Set_Pet(self, speciesID, setSearchText)--宠物
+    --func.Set_Item(self, itemLink, itemID)--设置,物品信息
+    --func.Set_Currency(self, currencyID)--货币
+    --func.Set_Achievement(self, achievementID)--成就
+    --func.Set_Quest(self, questID, info)--任务
+    --func.Set_FriendshipFaction(self, friendshipID)--friend声望
+    --func.Set_MajorFactionRenown(self, majorFactionID)--名望
+    --func.Set_Flyout(self, flyoutID)--法术, 弹出框
+
+    --func.GetItemInfoFromHyperlink(link)--LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
+    --func.Set_Init_Item(self, hide)--创建，设置，内容
+    --func.Set_Item_Model(self, tab)--设置, 3D模型{unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=, col=}
+    --func.Set_Web_Link(tab)
+    --func.Set_Unit(self, unit)--设置单位提示信息
+}
+
+function func.Set_PlayerModel(self)
     if not self.playerModel then
         self.playerModel= CreateFrame("PlayerModel", nil, self)--DressUpModel PlayerModel
         self.playerModel:SetFrameLevel(self:GetFrameLevel()-1)
@@ -43,7 +63,7 @@ local function set_playerModel(self)
     self.playerModel:SetFacing(Save.modelFacing)
 end
 
-local function set_Init_Item(self, hide)--创建物品
+function func.Set_Init_Item(self, hide)--创建，设置，内容
     if not self.textLeft then--左上角字符
         self.textLeft=e.Cstr(self, {size=16})
         self.textLeft:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
@@ -65,7 +85,7 @@ local function set_Init_Item(self, hide)--创建物品
         self.Portrait:SetSize(40,40)
     end
     if not self.playerModel and not Save.hideModel then
-        set_playerModel(self)
+        func.Set_PlayerModel(self)
         self.playerModel:SetShown(false)
     end
     if hide then
@@ -86,7 +106,7 @@ end
 --###########
 --设置, 3D模型
 --###########
-local function set_Item_Model(self, tab)--set_Item_Model(self, {unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=, col=})--设置, 3D模型
+function func.Set_Item_Model(self, tab)--func.Set_Item_Model(self, {unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=, col=})--设置, 3D模型
     if Save.hideModel then
         return
     end
@@ -220,10 +240,10 @@ local function create_Tooltip_Button(self)
     self.wowhead:SetShown(false)
 end
 
---get_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
---get_Web_Link({unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
+--func.Set_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
+--func.Set_Web_Link({unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
 local RegionName= GetCurrentRegionName()
-local function get_Web_Link(tab)
+function func.Set_Web_Link(tab)
     if tab.frame==ItemRefTooltip or tab.frame==FloatingBattlePetTooltip then
         if tab.type and tab.id then
             if not tab.frame.wowhead then
@@ -278,9 +298,13 @@ local function get_Web_Link(tab)
     end
 end
 
-local function setMount(self, mountID)--坐骑 
+function func.Set_Mount(self, mountID)--坐骑
+    if mountID==268435455 then
+        func.Set_Spell(self, 150544)--法术
+        return
+    end
     self:AddLine(' ')
-    local name, spellID, _, _, _, sourceType, _, isFactionSpecific, faction, _, isCollected=C_MountJournal.GetMountInfoByID(mountID)
+    local name, spellID, _, _, _, sourceType, _, isFactionSpecific, faction, _, isCollected= C_MountJournal.GetMountInfoByID(mountID)    
     local spell
     if spellID then
         local icon= select(3, GetSpellInfo(spellID))
@@ -297,15 +321,15 @@ local function setMount(self, mountID)--坐骑
     if source then
         self:AddLine(source,nil,nil,nil,true)
     end
-    set_Item_Model(self, {creatureDisplayID=creatureDisplayInfoID, animID=animID})--设置, 3D模型
+    func.Set_Item_Model(self, {creatureDisplayID=creatureDisplayInfoID, animID=animID})--设置, 3D模型
 
     self.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
 
-    get_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
+    func.Set_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
 end
 
 
-local function setPet(self, speciesID, setSearchText)--宠物
+function func.Set_Pet(self, speciesID, setSearchText)--宠物
     if not speciesID or speciesID< 1 then
         return
     end
@@ -348,16 +372,16 @@ local function setPet(self, speciesID, setSearchText)--宠物
         self.Portrait:SetTexture("Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType])
         self.Portrait:SetShown(true)
     end
-    set_Item_Model(self, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
+    func.Set_Item_Model(self, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
 
     if setSearchText and speciesName and PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--宠物手册，设置名称
         PetJournalSearchBox:SetText(speciesName)
     end
 
-    get_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})--取得网页，数据链接
+    func.Set_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})--取得网页，数据链接
 end
 
-local function getItemInfoFromHyperlink(link)--LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
+function func.GetItemInfoFromHyperlink(link)--LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
 	local itemID = link and link:match("|H.-:(%d+).-|h")
 	if itemID then
 		return tonumber(itemID)
@@ -367,12 +391,12 @@ end
 --############
 --设置,物品信息
 --############
-local function set_Item_Info(self, itemLink, itemID)
+function func.Set_Item(self, itemLink, itemID)
     if not (itemLink and itemID) then
         return
     end
     local itemName, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent= GetItemInfo(itemLink or itemID)
-    itemID= itemID or GetItemInfoInstant(itemLink or itemID) or getItemInfoFromHyperlink(itemLink)
+    itemID= itemID or GetItemInfoInstant(itemLink or itemID) or func.GetItemInfoFromHyperlink(itemLink)
     itemTexture= itemTexture or C_Item.GetItemNameByID(itemLink or itemID)
     --local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(itemLink)
     --local itemID, itemType, itemSubType, itemEquipLoc, itemTexture2, classID, subclassID = GetItemInfoInstant(itemLink)
@@ -432,7 +456,7 @@ local function set_Item_Info(self, itemLink, itemID)
                 self.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
             end
         end
-        set_Item_Model(self, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID, col=col})--设置, 3D模型
+        func.Set_Item_Model(self, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID, col=col})--设置, 3D模型
 
         if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
             self.Portrait:SetAtlas(e.Icon.unlocked)
@@ -473,9 +497,9 @@ local function set_Item_Info(self, itemLink, itemID)
         local mountID = C_MountJournal.GetMountFromItem(itemID)--坐骑物品
         local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(itemID))
         if mountID then
-            setMount(self, mountID)--坐骑
+            func.Set_Mount(self, mountID)--坐骑
         elseif speciesID then
-            setPet(self, speciesID, true)--宠物
+            func.Set_Pet(self, speciesID, true)--宠物
         end
     end
 
@@ -555,12 +579,12 @@ local function set_Item_Info(self, itemLink, itemID)
     self.backgroundColor:SetColorTexture(r, g, b, 0.15)--颜色
     self.backgroundColor:SetShown(true)
 
-    get_Web_Link({frame=self, type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
+    func.Set_Web_Link({frame=self, type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
 
     self:Show()
 end
 
-local function set_Spell(self, spellID)--法术
+function func.Set_Spell(self, spellID)--法术
     spellID = spellID or select(2, self:GetSpell())
     if not spellID then
         return
@@ -569,9 +593,9 @@ local function set_Spell(self, spellID)--法术
     local spellTexture=  originalIcon or icon or GetSpellTexture(spellID)
     self:AddLine(' ')
     self:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture, 1,1,1, 1,1,1)
-    local mountID = C_MountJournal.GetMountFromSpell(spellID)--坐骑
+    local mountID = spellID~=150544 and C_MountJournal.GetMountFromSpell(spellID)--坐骑
     if mountID then
-        setMount(self, mountID)
+        func.Set_Mount(self, mountID)
     else
         local overrideSpellID = FindSpellOverrideByID(spellID)
         if overrideSpellID and overrideSpellID~=spellID then
@@ -585,11 +609,11 @@ local function set_Spell(self, spellID)--法术
                 e.tips:AddDoubleLine(format(e.onlyChinese and '代替%s' or REPLACES_SPELL, link), spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
             end
         end
-        get_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
+        func.Set_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
     end
 end
 
-local function setCurrency(self, currencyID)--货币
+function func.Set_Currency(self, currencyID)--货币
     local info2 = currencyID and C_CurrencyInfo.GetCurrencyInfo(currencyID)
     if info2 then
         self:AddDoubleLine((e.onlyChinese and '货币' or TOKENS)..' '..currencyID, info2.iconFileID and '|T'..info2.iconFileID..':0|t'..info2.iconFileID)
@@ -617,12 +641,12 @@ local function setCurrency(self, currencyID)--货币
         self:AddDoubleLine(e.Icon.wow2..numPlayer..(e.onlyChinese and '角色' or CHARACTER), e.MK(all,3))
     end
 
-    get_Web_Link({frame=self, type='currency', id=currencyID, name=info2.name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
+    func.Set_Web_Link({frame=self, type='currency', id=currencyID, name=info2.name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
 
     self:Show()
 end
 
-local function setAchievement(self, achievementID)--成就
+function func.Set_Achievement(self, achievementID)--成就
     if not achievementID then
         return
     end
@@ -636,10 +660,10 @@ local function setAchievement(self, achievementID)--成就
     if flags==0x20000 then
         self.textRight:SetText(e.Icon.net2..'|cffff00ff'..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))
     end
-    get_Web_Link({frame=self, type='achievement', id=achievementID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
+    func.Set_Web_Link({frame=self, type='achievement', id=achievementID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
 end
 
-local function set_Quest(self, questID, info)----任务
+function func.Set_Quest(self, questID, info)----任务
     questID= questID or (info and info.questID or nil)
     if not questID then
         return
@@ -659,10 +683,10 @@ local function set_Quest(self, questID, info)----任务
     end
     self:AddDoubleLine((e.onlyChinese and '任务' or QUESTS_LABEL)..(levelText or ''), questID)
 
-if not info then
-    local questLogIndex= C_QuestLog.GetLogIndexForQuestID(questID)
-    info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
-end
+    if not info then
+        local questLogIndex= C_QuestLog.GetLogIndexForQuestID(questID)
+        info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
+    end
 
     local distanceSq= C_QuestLog.GetDistanceSqToQuest(questID)--距离
     if distanceSq and distanceSq>0 then
@@ -686,7 +710,7 @@ end
             self:AddDoubleLine('tagID', tagID)
         end
     end
-    get_Web_Link({frame=self, type='quest', id=questID, name=name or C_QuestLog.GetTitleForQuestID(questID), col=nil, isPetUI=false})--取得网页，数据链接
+    func.Set_Web_Link({frame=self, type='quest', id=questID, name=name or C_QuestLog.GetTitleForQuestID(questID), col=nil, isPetUI=false})--取得网页，数据链接
 end
 
 
@@ -700,9 +724,9 @@ local function set_All_Aura(self, data)--Aura
         self:AddDoubleLine((e.onlyChinese and '光环' or AURAS)..' '..spellID, '|T'..icon..':0|t'..icon)
         local mountID = C_MountJournal.GetMountFromSpell(spellID)
         if mountID then
-            setMount(self, mountID)
+            func.Set_Mount(self, mountID)
         else
-            get_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
+            func.Set_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
         end
     end
 end
@@ -739,17 +763,17 @@ end
 --####
 --声望
 --####
-local setFriendshipFaction=function(self, friendshipID)--friend声望
+function func.Set_FriendshipFaction(self, friendshipID)--friend声望
     local repInfo = C_GossipInfo.GetFriendshipReputation(friendshipID);
 	if ( repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0) then
         local icon = (repInfo.texture and repInfo.texture>0) and repInfo.texture
         self:AddDoubleLine((e.onlyChinese and '个人声望' or (INDIVIDUALS..REPUTATION))..' '..friendshipID, icon and '|T'..icon..':0|t'..icon)
-        get_Web_Link({frame=self, type='faction', id=friendshipID, name=repInfo.name, col=nil, isPetUI=false})--取得网页，数据链接
+        func.Set_Web_Link({frame=self, type='faction', id=friendshipID, name=repInfo.name, col=nil, isPetUI=false})--取得网页，数据链接
         self:Show()
     end
 end
 
-local function setMajorFactionRenown(self, majorFactionID)--名望
+function func.Set_MajorFactionRenown(self, majorFactionID)--名望
 	local info = C_Reputation.IsMajorFaction(majorFactionID) and C_MajorFactions.GetMajorFactionData(majorFactionID)
     if info then
         if info.textureKit then
@@ -766,7 +790,7 @@ local function setMajorFactionRenown(self, majorFactionID)--名望
                 ..' '..format('%i%%',info.renownReputationEarned/info.renownLevelThreshold*100
             )
         )
-        get_Web_Link({frame=self, type='faction', id=majorFactionID, name=info.name, col=nil, isPetUI=false})--取得网页，数据链接
+        func.Set_Web_Link({frame=self, type='faction', id=majorFactionID, name=info.name, col=nil, isPetUI=false})--取得网页，数据链接
         self:Show()
     end
 end
@@ -848,7 +872,7 @@ end
 --#######
 --设置单位
 --#######
-local function set_Unit_Info(self, unit)--设置单位提示信息
+function func.Set_Unit(self, unit)--设置单位提示信息
     local name, realm= UnitName(unit)
     local isPlayer = UnitIsPlayer(unit)
     local guid = UnitGUID(unit)
@@ -1059,11 +1083,11 @@ local function set_Unit_Info(self, unit)--设置单位提示信息
                 hideLine:SetShown(false)
             end
         else
-            get_Web_Link({frame=hideLine, unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
+            func.Set_Web_Link({frame=hideLine, unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
         end
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
-        setPet(self, UnitBattlePetSpeciesID(unit), true)
+        func.Set_Pet(self, UnitBattlePetSpeciesID(unit), true)
 
     else
         for i=1, self:NumLines() do
@@ -1085,7 +1109,7 @@ local function set_Unit_Info(self, unit)--设置单位提示信息
                 self:AddDoubleLine(col..e.Player.L.layer..' '..zone, col..'NPC '..npc, r,g,b, r,g,b)
                 e.Player.Layer=zone
             end
-            get_Web_Link({frame=self, type='npc', id=npc, name=name, col=col, isPetUI=false})--取得网页，数据链接 
+            func.Set_Web_Link({frame=self, type='npc', id=npc, name=name, col=col, isPetUI=false})--取得网页，数据链接 
         end
 
         --怪物, 图标
@@ -1124,7 +1148,7 @@ local function set_Unit_Info(self, unit)--设置单位提示信息
     set_Unit_Health_Bar(GameTooltipStatusBar, unit)--生命条提示
 
 
-    set_Item_Model(self, {unit=unit, guid=guid, col= col})--设置, 3D模型
+    func.Set_Item_Model(self, {unit=unit, guid=guid, col= col})--设置, 3D模型
 
 
     --[[if isSelf and not isInCombat and Save.WidgetSetID>0 then
@@ -1238,7 +1262,7 @@ end
 --###########
 --法术, 弹出框
 --###########
-local function set_FlyoutInfo(self, flyoutID)--法术, 弹出框
+function func.Set_Flyout(self, flyoutID)--法术, 弹出框
     self:AddLine(' ')
     local _, _, numSlots, isKnown= GetFlyoutInfo(flyoutID)
     for slot= 1, numSlots do
@@ -1283,9 +1307,9 @@ local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     end
     local speciesName, speciesIcon, _, companionID, tooltipSource, _, _, _, _, _, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
     if not self.Portrait then
-        set_Init_Item(self, true)--创建物品
+        func.Set_Init_Item(self, true)--创建物品
     end
-    set_Item_Model(self, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
+    func.Set_Item_Model(self, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
     --self.itemModel:SetDisplayInfo(creatureDisplayID)
     if obtainable then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
@@ -1335,7 +1359,7 @@ local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     self.text2Left:SetText(CollectedText or '')
     self.textRight:SetText(not CollectedNum and AllCollected or '')
 
-    get_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=true})--取得网页，数据链接
+    func.Set_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=true})--取得网页，数据链接
 end
 
 local function set_Azerite(self, powerID)--艾泽拉斯之心
@@ -1344,7 +1368,7 @@ local function set_Azerite(self, powerID)--艾泽拉斯之心
         self:AddDoubleLine('powerID', powerID)
         local info = C_AzeriteEmpoweredItem.GetPowerInfo(powerID)
         if info and info.spellID then
-            set_Spell(self, info.spellID)--法术
+            func.Set_Spell(self, info.spellID)--法术
         end
     end
 end
@@ -1356,22 +1380,22 @@ end
 --初始
 --####
 local function Init()
-    set_Init_Item(ItemRefTooltip)
-    set_Init_Item(e.tips)
-    set_Init_Item(EmbeddedItemTooltip)
+    func.Set_Init_Item(ItemRefTooltip)
+    func.Set_Init_Item(e.tips)
+    func.Set_Init_Item(EmbeddedItemTooltip)
 
     e.tips:HookScript("OnHide", function(self)--隐藏
-        set_Init_Item(self, true)
+        func.Set_Init_Item(self, true)
     end)
     ItemRefTooltip:HookScript("OnHide", function (self)--隐藏
-        set_Init_Item(self, true)
+        func.Set_Init_Item(self, true)
         if ItemRefTooltip.wowhead then
             ItemRefTooltip.wowhead.web=nil--取得网页，数据链接
             ItemRefTooltip.wowhead:SetShown(false)
         end
     end)
     EmbeddedItemTooltip:HookScript('OnHide', function(self)
-        set_Init_Item(self, true)
+        func.Set_Init_Item(self, true)
     end)
 
     --Blizzard_UIWidgetTemplateBase.lua
@@ -1398,7 +1422,7 @@ local function Init()
     end)
 
 
-    hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', set_Quest)--世界任务ID GameTooltip_AddQuest
+    hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', func.Set_Quest)--世界任务ID GameTooltip_AddQuest
 
     --战斗宠物，技能 SharedPetBattleTemplates.lua
     hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo, additionalText)
@@ -1412,7 +1436,7 @@ local function Init()
                                     ..(icon and '  |T'..icon..':0|t'..icon or '')..'|r'
                                     ..(Save.ctrl and not UnitAffectingCombat('player') and '|nWoWHead Ctrl+Shift' or '')
                                 )
-            get_Web_Link({frame=self, type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
+            func.Set_Web_Link({frame=self, type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
         end
     end)
 
@@ -1427,7 +1451,7 @@ local function Init()
             if tooltip==e.tips then
                 local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
                 if unit then
-                    set_Unit_Info(tooltip, unit)
+                    func.Set_Unit(tooltip, unit)
                 end
             end
 
@@ -1435,13 +1459,13 @@ local function Init()
             if data.type==0 or data.type==19 then
                 local itemLink, itemID= select(2, TooltipUtil.GetDisplayedItem(tooltip))
                 itemLink= itemLink or itemID or data.id
-                set_Item_Info(tooltip, itemLink, itemID)
+                func.Set_Item(tooltip, itemLink, itemID)
 
             elseif data.type==1 then
-                set_Spell(tooltip, data.id)--法术
+                func.Set_Spell(tooltip, data.id)--法术
 
             elseif data.type==5 then
-                setCurrency(tooltip, data.id)--货币
+                func.Set_Currency(tooltip, data.id)--货币
 
             elseif data.type==7 then--Aura
                 set_All_Aura(tooltip, data)
@@ -1450,16 +1474,16 @@ local function Init()
                 set_Azerite(tooltip, data.id)
 
             elseif data.type==10 then
-                setMount(tooltip, data.id)--坐骑
+                func.Set_Mount(tooltip, data.id)--坐骑
 
             elseif data.type==12 then--成就
-                setAchievement(tooltip, data.id)
+                func.Set_Achievement(tooltip, data.id)
 
             elseif data.type==22 then--法术弹出框
-                set_FlyoutInfo(tooltip, data.id)
+                func.Set_Flyout(tooltip, data.id)
 
             elseif data.type==23 then
-                set_Quest(tooltip, data.id)--任务
+                func.Set_Quest(tooltip, data.id)--任务
 
             elseif data.type==25 then--宏
                 local frame= GetMouseFocus()
@@ -1468,7 +1492,7 @@ local function Init()
                     if type=='macro' and macroID then
                         local spellID= GetMacroSpell(macroID)
                         if spellID then
-                            set_Spell(tooltip, spellID)
+                            func.Set_Spell(tooltip, spellID)
                             tooltip:AddLine(' ')
                         end
                         local text=GetMacroBody(macroID)
@@ -1539,10 +1563,10 @@ local function Init()
     --声望
     --####
     hooksecurefunc(ReputationBarMixin, 'ShowMajorFactionRenownTooltip', function(self)--Major名望, ReputationFrame.lua
-        setMajorFactionRenown(e.tips, self.factionID)
+        func.Set_MajorFactionRenown(e.tips, self.factionID)
     end)
     hooksecurefunc(ReputationBarMixin, 'ShowFriendshipReputationTooltip', function(self, friendshipID)--个人声望 ReputationFrame.lua
-        setFriendshipFaction(e.tips, friendshipID)
+        func.Set_FriendshipFaction(e.tips, friendshipID)
     end)
     hooksecurefunc(ReputationBarMixin, 'OnEnter', function(self)--角色栏,声望
         if not self.factionID or self.Container.Name:IsTruncated() then
@@ -1581,11 +1605,11 @@ local function Init()
             end
 
             e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..self.factionID, completedParagon)
-            get_Web_Link({frame=e.tips, type='faction', id=factionID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
+            func.Set_Web_Link({frame=e.tips, type='faction', id=factionID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
             e.tips:Show();
         elseif factionID or self.factionID then
             e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..(self.factionID or factionID), completedParagon)
-            get_Web_Link({frame=e.tips, type='faction', id=factionID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
+            func.Set_Web_Link({frame=e.tips, type='faction', id=factionID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
             e.tips:Show()
         end
     end)
@@ -1620,7 +1644,7 @@ local function Init()
 
     hooksecurefunc(e.tips,"SetCompanionPet", function(self, petGUID)--设置宠物信息
         local speciesID= petGUID and C_PetJournal.GetPetInfoByPetID(petGUID)
-        setPet(self, speciesID)--宠物
+        func.Set_Pet(self, speciesID)--宠物
     end)
 
     if Save.setCVar then
@@ -1662,7 +1686,7 @@ local function Init()
             e.tips:AddDoubleLine('uiMapID', uiMapID)
         end
         if self.factionID then
-            setMajorFactionRenown(e.tips, self.factionID)--名望
+            func.Set_MajorFactionRenown(e.tips, self.factionID)--名望
         end
         if self.areaPoiID and uiMapID then
             local poiInfo= C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID)
@@ -1745,7 +1769,7 @@ local function Init()
             return
         end
 
-        set_Quest(e.tips, info.questID, info)--任务
+        func.Set_Quest(e.tips, info.questID, info)--任务
 
         if IsInGroup() then
             local n=GetNumGroupMembers()
@@ -1789,12 +1813,12 @@ local function Init()
                 if self.action then
                     local actionType, ID, subType = GetActionInfo(self.action)
                     if actionType=='spell' and ID then
-                        set_Spell(e.tips, ID)
+                        func.Set_Spell(e.tips, ID)
                         e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType or nil)
                         e.tips:Show()
 
                     elseif actionType=='item' and ID then
-                        set_Item_Info(e.tips, nil, ID)
+                        func.Set_Item(e.tips, nil, ID)
                         e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType or nil)
                         e.tips:Show()
                     end
@@ -1829,10 +1853,10 @@ end
 --##############
 local Category, Layout= e.AddPanel_Sub_Category({name=e.Icon.mid..addName})
 local function set_Cursor_Tips(self)
-    set_Init_Item(e.tips, true)
-    set_Init_Item(ItemRefTooltip, true)
-    set_playerModel(e.tips)
-    set_playerModel(ItemRefTooltip)
+    func.Set_Init_Item(e.tips, true)
+    func.Set_Init_Item(ItemRefTooltip, true)
+    func.Set_PlayerModel(e.tips)
+    func.Set_PlayerModel(ItemRefTooltip)
     GameTooltip_SetDefaultAnchor(e.tips, self or UIParent)
     e.tips:ClearLines()
     e.tips:SetUnit('player')
@@ -2275,7 +2299,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
         elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
             hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
-                set_Spell(e.tips, 243819)
+                func.Set_Spell(e.tips, 243819)
                 e.tips:Show()
             end)
 
