@@ -312,7 +312,7 @@ local function Init_Wardrobe_Sets()
     PlayerAllCollectedLabled= e.Cstr(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})--所有玩家，收集情况
     PlayerAllCollectedLabled:SetPoint('BOTTOMLEFT', 10, 8)
 
-    AllSetsLable= e.Cstr(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})--所有套装，数量
+    AllSetsLable= e.Cstr(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14, justifyH='RIGHT'})--所有套装，数量
     AllSetsLable:SetPoint('BOTTOMRIGHT', -6, 8)
 
     ButtonTipsLable= e.Cstr(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})--点击，按钮信息

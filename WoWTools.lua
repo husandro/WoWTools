@@ -737,7 +737,7 @@ function e.Get_Weekly_Rewards_Activities(settings)--{frame=Frame, point={'TOPLEF
                 R[head]= R[head] or {}
                 R[head][info.index] = {
                     level = info.level,
-                    difficulty = difficultyText or '... ',
+                    difficulty = difficultyText or (e.onlyChinese and '休闲者' or PVP_RANK_0_NAME),
                     progress = info.progress,
                     threshold = info.threshold,
                     unlocked = info.progress>=info.threshold,

@@ -3501,7 +3501,8 @@
         "WardrobeSetsCollectionMixin",
         "CollectionsJournalCloseButton",
         "WardrobeSetsDataProviderMixin",
-        "TRANSMOG_COLLECTED"
+        "TRANSMOG_COLLECTED",
+        "PVP_RANK_0_NAME"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
