@@ -1205,9 +1205,12 @@ local function set_button_LFGPlus_Texture()--预创建队伍增强
         end
         button.LFGPlus:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
         button.LFGPlus:SetAlpha(0.5)
-        button.LFGPlus:SetScript('OnClick', function(self2)
+        function button.LFGPlus:set_texture()
+            self:SetNormalAtlas(Save.LFGPlus and e.Icon.icon or e.Icon.disabled)
+        end
+        button.LFGPlus:SetScript('OnClick', function(self)
             Save.LFGPlus= not Save.LFGPlus and true or nil
-            self2:SetNormalAtlas(Save.LFGPlus and e.Icon.icon or e.Icon.disabled)
+            self:set_texture()
             if Save.LFGPlus then
                 set_LFGPlus()--预创建队伍增强
             end
@@ -1326,6 +1329,9 @@ local function InitList(_, level, type)--LFDFrame.lua
                 Save.LFGPlus = not Save.LFGPlus and true or nil
                 if Save.LFGPlus then
                     set_LFGPlus()--预创建队伍增强
+                end
+                if button.LFGPlus then
+                    button.LFGPlus:set_texture()
                 end
                 print(id, addName, e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
             end,
