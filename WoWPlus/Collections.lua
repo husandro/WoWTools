@@ -514,64 +514,63 @@ local function Init_Wardrobe_Sets()
             end
             return
         end
-        local sets = C_TransmogSets.GetAllSets()
-        if sets then
-            local a, h, o= 0, 0, 0--联盟, 部落, 其它
-            --local tempSave= wowSave2
+        local sets = C_TransmogSets.GetAllSets() or {}
+        
+        local a, h, o= 0, 0, 0--联盟, 部落, 其它
+        --local tempSave= wowSave2
+        
+        
+        for _, info in pairs(sets) do
+            if info and info.classMask and info.setID then
             
-          
-            for _, info in pairs(sets) do
-                if info and info.classMask and info.setID then
-              
-                    --[[local c= format(info.classMask)--bit.bor(v.classMask)
-                    if tempSave[c] then
-                        tempSave[c].collected= tempSave[c].collected or 0
-                        if info.collected then
-                            tempSave[c].collected=tempSave[c].collected+1
-                        end
-                        tempSave[c].all=tempSave[c].all and tempSave[c].all + 1 or 1
-                    end]]
-                    if info.requiredFaction=='Alliance' then
-                        a=a+1
-                    elseif info.requiredFaction=='Horde' then
-                        h=h+1
-                    else
-                        o=o+1
+                --[[local c= format(info.classMask)--bit.bor(v.classMask)
+                if tempSave[c] then
+                    tempSave[c].collected= tempSave[c].collected or 0
+                    if info.collected then
+                        tempSave[c].collected=tempSave[c].collected+1
                     end
+                    tempSave[c].all=tempSave[c].all and tempSave[c].all + 1 or 1
+                end]]
+                if info.requiredFaction=='Alliance' then
+                    a=a+1
+                elseif info.requiredFaction=='Horde' then
+                    h=h+1
+                else
+                    o=o+1
                 end
             end
-            local m=''
-            --[[local collected, all= 0 , 0
-            for _, info in pairs(tempSave) do
-                if info.collected and info.all and info.all>0 and info.class then
-                    
-                    local value=math.modf(info.collected/info.all*100)
-                    local t=info.collected..'/'..info.all..' '
-                    t=t..((value<10 and '  ') or (value<100 and ' ') or '')..value..'%'
-                    t=t..'|A:classicon-'..info.class..':0:0|a'
-                    t='|c'..select(4,GetClassColor(info.class))..t..'|r'
-                    m=m..t..'|n'
-
-                    collected=info.collected + collected
-                    all=info.all + all
-                end
-            end
-            if all>0 then
-                m=m..collected..'/'..all..' '..('%i%%'):format(collected/all*100)..' '..(e.onlyChinese and  '仅限职业' or format(LFG_LIST_CROSS_FACTION, CLASS))
-            end]]
-            if a > 0 or h>0 or o>0 then
-                m=m..'|n|n'..h..' |A:communities-create-button-wow-horde:0:0|a'
-                m=m..'|n'..a..' |A:communities-create-button-wow-alliance:0:0|a'
-                m=m..'|n'..o..' |A:communities-guildbanner-background:0:0|a'
-                m=m..'|n'..#sets..' '..(e.onlyChinese and '仅限阵营' or format(LFG_LIST_CROSS_FACTION, FACTION))
-            end
-            if not  WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets then
-                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets=e.Cstr(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame)
-                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets:SetPoint('BOTTOMRIGHT', -6, 60)
-                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets:SetJustifyH('RIGHT')
-            end
-            WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets:SetText(m)
         end
+        local m=''
+        --[[local collected, all= 0 , 0
+        for _, info in pairs(tempSave) do
+            if info.collected and info.all and info.all>0 and info.class then
+                
+                local value=math.modf(info.collected/info.all*100)
+                local t=info.collected..'/'..info.all..' '
+                t=t..((value<10 and '  ') or (value<100 and ' ') or '')..value..'%'
+                t=t..'|A:classicon-'..info.class..':0:0|a'
+                t='|c'..select(4,GetClassColor(info.class))..t..'|r'
+                m=m..t..'|n'
+
+                collected=info.collected + collected
+                all=info.all + all
+            end
+        end
+        if all>0 then
+            m=m..collected..'/'..all..' '..('%i%%'):format(collected/all*100)..' '..(e.onlyChinese and  '仅限职业' or format(LFG_LIST_CROSS_FACTION, CLASS))
+        end]]
+        if a > 0 or h>0 or o>0 then
+            m=m..'|n|n'..h..' |A:communities-create-button-wow-horde:0:0|a'
+            m=m..'|n'..a..' |A:communities-create-button-wow-alliance:0:0|a'
+            m=m..'|n'..o..' |A:communities-guildbanner-background:0:0|a'
+            m=m..'|n'..#sets..' '..(e.onlyChinese and '仅限阵营' or format(LFG_LIST_CROSS_FACTION, FACTION))
+        end
+        if not  WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets then
+            WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets=e.Cstr(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame)
+            WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets:SetPoint('BOTTOMRIGHT', -6, 60)
+            WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets:SetJustifyH('RIGHT')
+        end
+        WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets:SetText(m)
     end
 
     check:SetScript("OnClick", function(self)
