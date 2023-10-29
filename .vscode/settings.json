@@ -3502,7 +3502,8 @@
         "CollectionsJournalCloseButton",
         "WardrobeSetsDataProviderMixin",
         "TRANSMOG_COLLECTED",
-        "PVP_RANK_0_NAME"
+        "PVP_RANK_0_NAME",
+        "MerchantBuyBackItem"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
