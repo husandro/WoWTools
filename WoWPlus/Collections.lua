@@ -518,6 +518,7 @@ local function Init_Wardrobe_Sets()
         if sets then
             local a, h, o= 0, 0, 0--联盟, 部落, 其它
             --local tempSave= wowSave2
+            
           
             for _, info in pairs(sets) do
                 if info and info.classMask and info.setID then
