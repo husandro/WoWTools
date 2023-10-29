@@ -3498,7 +3498,9 @@
         "MountJournalName",
         "MountJournalSource",
         "HeirloomsMixin",
-        "WardrobeSetsCollectionMixin"
+        "WardrobeSetsCollectionMixin",
+        "CollectionsJournalCloseButton",
+        "WardrobeSetsDataProviderMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
