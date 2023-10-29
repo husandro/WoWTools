@@ -68,8 +68,14 @@ local slots = {--wowSaveItems
 }
 
 
-
-
+local function Create_Enable_Button(frame, value)
+    local btn= e.Cbtn(frame, {size={20,20}, icon=value})--, pushe=true})
+    btn:SetPoint('RIGHT', CollectionsJournalCloseButton, 'LEFT', -2,0)
+    btn:SetAlpha(0.5)
+    --btn:SetFrameStrata(CollectionsJournalCloseButton:GetFrameStrata())
+    btn:SetFrameLevel(CollectionsJournalCloseButton:GetFrameLevel()+1)
+    return btn
+end
 
 
 
@@ -208,9 +214,11 @@ end
 
 
 
---###############
---套装, 幻化, 界面
+--#########
+--外观，套装
 --Blizzard_Wardrobe.lua
+
+
 local function Set_Sets_Colleced()--收集所有角色套装数据
     local numCollected, numTotal = C_TransmogSets.GetBaseSetsCounts()
     if not numCollected or not numTotal or numTotal<=0 then
@@ -248,62 +256,46 @@ local function Set_Sets_Colleced()--收集所有角色套装数据
         end
     end
     if numTotal>0 then
-        m=m..ITEM_PET_KNOWN:format(numCollected, numTotal)..' '.. ('%i%%'):format(numCollected/numTotal*100)
+        m=m..format(e.onlyChinese and '已收集（%d/%d）' or ITEM_PET_KNOWN, numCollected, numTotal)..' '.. ('%i%%'):format(numCollected/numTotal*100)
     end
     if not frame.PlayerCoollectedStr then
         frame.PlayerCoollectedStr=e.Cstr(frame)
         frame.PlayerCoollectedStr:SetPoint('BOTTOMLEFT', 10, 60)
-        --frame.PlayerCoollectedStr:SetJustifyH('LEFT');
     end
     frame.PlayerCoollectedStr:SetText(m)
 end
 
 
 
---[[
-local function get_Sets_Text(sets, isToolstips)
-    local header, Limited, version, lable, tip, buttonTip
-    local maxNum=0
-    for _, info in pairs(sets) do
-        if info and info.setID then
-            local numCollected, _, numAll = e.GetSetsCollectedNum(info.setID)
-            if numCollected and numAll then
-                maxNum= (not maxNum or maxNum<numAll) and numAll or maxNum
-
-                if not header then
-                    header= info.name
-                    header= info.limitedTimeSet and header..'|n'..e.Icon.clock2..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '限时套装' or TRANSMOG_SET_LIMITED_TIME_SET)..'|r' or header
-                    header = info.label and header..'|n|cnBRIGHTBLUE_FONT_COLOR:'..info.label..'|r' or header
-                    version=info.expansionID and _G['EXPANSION_NAME'..info.expansionID]
-                    header = header ..(version and '|n'..'|cnGREEN_FONT_COLOR:'..version..'|r' or '')..(info.patchID and ' toc v.'..info.patchID or '')
+local function Init_Wardrobe_Sets()
+    local SetsDataProvider = CreateFromMixins(WardrobeSetsDataProviderMixin);
+    local function GetSetsCollectedNum(setID)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
+        local info= setID and C_TransmogSets.GetSetPrimaryAppearances(setID)
+        local numCollected, numAll=0,0
+        if info then
+            for _,v in pairs(info) do
+                numAll=numAll+1
+                if v.collected then
+                    numCollected=numCollected + 1
                 end
-
-                lable= (lable or '')..numCollected..' '
-
-                local num= numCollected..'/'..(numAll<=9 and e.Icon.number2:format(numAll) or numAll)
-
-                tip=(tip or '')..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..(isToolstips and ' setID: '..info.setID or '')..'|n'
-
-                buttonTip= (buttonTip or '')..num..(info.description or info.name)..(info.limitedTimeSet and e.Icon.clock2 or '')..' setID'..info.setID..'|n'
-
-                Limited= info.limitedTimeSet and true or Limited
+            end
+        end
+        if numAll>0 then
+            if numCollected==numAll then
+                return '|A:AlliedRace-UnlockingFrame-Checkmark:12:12|a', numCollected, numAll--, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r'
+            elseif numCollected==0 then
+                return '|cff606060'..numAll-numCollected..'|r ', numCollected, numAll--, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+            else
+                return numAll-numCollected, numCollected, numAll--, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
             end
         end
     end
-    
-    return header, Limited, version, lable, tip, buttonTip, maxNum
-end--]]
-local function Init_Wardrobe_Sets()
-    --local frame= WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame
-    
 
-    hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(btn, displayData)--外观列表    
-        local setID= displayData.setID
-        local sets= setID and C_TransmogSets.GetVariantSets(setID)
-        if not sets or type(sets)~='table' or Save.hideSets then
-           if btn.set_Rest then
-            btn:set_Rest()
-           end
+    hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(btn, displayData)--外观列表
+        local setID= displayData.setID or btn.setID
+        
+        if Save.hideSets or not setID then
+           if btn.set_Rest then btn:set_Rest() end
            return
         end
 
@@ -312,6 +304,7 @@ local function Init_Wardrobe_Sets()
                 if not Save.hideSets then
                     e.tips:SetOwner(self, "ANCHOR_RIGHT")--,8,-300)
                     e.tips:ClearLines()
+                    --e.tips:AddDoubleLine('setID', self.setID)
                     e.tips:AddLine(self.tooltip)
                     e.tips:Show()
                 end
@@ -319,7 +312,7 @@ local function Init_Wardrobe_Sets()
             btn:SetScript("OnLeave",function()
                 e.tips:Hide()
             end)
-            btn.maxNum=e.Cstr(btn, {size=16, mouse=true})--套装最大数量
+           --[[btn.maxNum=e.Cstr(btn, {size=16, mouse=true})--套装最大数量
             btn.maxNum:SetPoint('BOTTOMRIGHT', btn.Icon)
             btn.maxNum:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
             btn.maxNum:SetScript('OnEnter', function(self)
@@ -328,13 +321,13 @@ local function Init_Wardrobe_Sets()
                 e.tips:AddLine(e.onlyChinese and '物品数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, AUCTION_HOUSE_QUANTITY_LABEL))
                 e.tips:Show()
                 self:SetAlpha(0.3)
-            end)
+            end)]]
             btn.version=e.Cstr(btn)--版本
             btn.version:SetPoint('BOTTOMRIGHT',-5, 5)
             btn.limited=btn:CreateTexture(nil, 'OVERLAY')--限时
-            btn.limited:SetSize(16, 16)
+            btn.limited:SetSize(12, 12)
             btn.limited:SetAtlas(e.Icon.clock)
-            btn.limited:SetPoint('TOPLEFT', btn.Icon)
+            btn.limited:SetPoint('TOPRIGHT', btn.Icon)
             btn.limited:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
             btn.limited:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -354,63 +347,83 @@ local function Init_Wardrobe_Sets()
                 self:SetAlpha(0.3)
             end)
             function btn:set_Rest()
-                self.maxNum:SetText('')
+                --self.maxNum:SetText('')
                 self.limited:SetShown(false)
                 self.version:SetText('')
                 self.numSetsLabel:SetText('')
                 self.tooltip=nil
             end
         end
+    
 
-        table.insert(sets, C_TransmogSets.GetSetInfo(setID))
-        table.sort(sets, function(a, b)
-            return a.uiOrder < b.uiOrder
-        end)
-
-        local text, version, isLimited
-        local tipsText= btn.Name:GetText()
+        local tipsText= (displayData.name or btn.Name:GetText())..(displayData.label and displayData.name~= displayData.label and '|n'..displayData.label or '')
         tipsText= tipsText and tipsText..'|n' or ''
-        local maxNum=0
-        
-        for index, info in pairs(sets) do
+
+	    local variantSets = SetsDataProvider:GetVariantSets(setID);
+        if #variantSets==0 then
+            table.insert(variantSets, C_TransmogSets.GetSetInfo(setID))
+        end
+
+        local text, isLimited, patch, version--版本
+        for _, info in pairs(variantSets) do
             if info and info.setID then
-                local numCollected, _, numAll = e.GetSetsCollectedNum(info.setID, nil, true)
-                if numCollected and numAll then
-                    if info.setID==setID then maxNum= numAll end
-                    text= (text or '')..numCollected..' '
-                    version= version or _G['EXPANSION_NAME'..(info.expansionID or '')]
-                    isLimited= isLimited or info.limitedTimeSet
+                local meno, collect, numAll = GetSetsCollectedNum(info.setID)
+                if meno and numAll then
                     
-                    tipsText= tipsText..'|n '
-                        ..(isLimited and e.Icon.clock2 or '')
-                        ..((info.description or info.name) or '')
-                        ..' '..numCollected.. '/'..numAll
-                        --..' setID '..info.setID
+                    text= (text or '').. meno..' '--未收集，数量
+                    version= version or _G['EXPANSION_NAME'..(info.expansionID or '')]--版本
+                    isLimited= isLimited or info.limitedTimeSet--限时套装
+                    
+                    local name= info.description or info.name or ''
+                    name= numAll==collect and '|cnGREEN_FONT_COLOR:'..name..'|r' or name--已收集
+
+                    local isCollected= collect== numAll--是否已收
+
+                    local tip= (collect==0 and '|cff606060'..collect..'|r' or collect) 
+                                ..'/'..numAll--收集数量
+                                ..' '..meno..(not isCollected and ' ' or '')
+                                ..name--名称
+                                ..(info.limitedTimeSet and e.Icon.clock2 or '')--限时套装
+                                ..' '..info.setID
+                                --..(info.setID==btn.setID and ' '..e.Icon.toLeft2 or '')
+                    tipsText= tipsText..'|n'..(isCollected and '|cnGREEN_FONT_COLOR:'..tip..'|r' or tip)
                 end
+                patch= patch or (info.patchID and 'v.'..info.patchID)
+                version= version or (info.expansionID and _G['EXPANSION_NAME'..info.expansionID])
             end
         end
         btn.tooltip= tipsText
+            ..((patch or version) and '|n' or '')
+            
+            ..(version and '|n'..version or '')..(patch and ' '..patch or '')
+
+        local r, g, b= btn.Name:GetTextColor()
 
         btn.Label:SetText(text)
+        btn.Label:SetTextColor(r, g, b)
 
-        btn.maxNum:SetTextColor(btn.Name:GetTextColor())
+        --[[local maxNum=#variantSets
         btn.maxNum:SetText(maxNum~=0 and maxNum or '')--套装最大数量
+        btn.maxNum:SetTextColor(r, g, b)]]
 
         btn.limited:SetShown(isLimited and true or false)--限时
        
         btn.version:SetText(version or '')--版本
-        btn.version:SetTextColor(btn.Name:GetTextColor())
+        btn.version:SetTextColor(r, g, b)
 
-        local numStes= #sets
+        local numStes= #variantSets
         btn.numSetsLabel:SetText(numStes>1 and numStes or '')
-        btn.numSetsLabel:SetTextColor(btn.Name:GetTextColor())
+        btn.numSetsLabel:SetTextColor(r, g, b)
+
+        SetsDataProvider:ClearSets()
     end)
 
     hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'OnClick', function(btn, buttonName)--点击，显示套装情况Blizzard_Wardrobe.lua
         if buttonName == "LeftButton" then
             if btn.tooltip and not WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str then
-                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str=e.Cstr( WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame)
-                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str:SetPoint('BOTTOMLEFT',  WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, 'LEFT', 8 , 0)
+                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str=e.Cstr( WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})
+                --WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str:SetPoint('BOTTOMLEFT',  WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, 'LEFT', 8 , 0)
+                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str:SetPoint('TOPLEFT',  WardrobeCollectionFrame, 'TOPRIGHT', 2, -60)
             end
             if WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str then
                 WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str:SetText(btn.tooltip or '')
@@ -489,7 +502,9 @@ local function Init_Wardrobe_Sets()
         itemFrame.indexbtn=numItems
     end)
 
-    local check =e.Cbtn( WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {icon=not Save.hideSets, size={18,18}})--隐藏选项
+
+
+    local check = Create_Enable_Button(WardrobeCollectionFrame.SetsCollectionFrame, not Save.hideSets)--e.Cbtn( WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {icon=not Save.hideSets, size={18,18}})--隐藏选项
     
     function check:set_All_Sets()--所以有套装情况
         if Save.hideSets then
@@ -553,29 +568,28 @@ local function Init_Wardrobe_Sets()
         end
     end
     
-    check:SetPoint('BOTTOMRIGHT',-16, 28)
-    check:SetAlpha(0.5)
     check:SetScript("OnClick", function(self)
         Save.hideSets= not Save.hideSets and true or nil
         if Save.hideSets and WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str then--点击，显示套装情况
             WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str:SetText('')----点击，显示套装情况Blizzard_Wardrobe.lua
         end
-        --print(id, addName, e.GetShowHide(not Save.hideSets), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
         self:set_All_Sets()--所以有套装情况
         Set_Sets_Colleced()--收集所有角色套装数据
         self:SetNormalAtlas(Save.hideSets and e.Icon.disabled or e.Icon.icon)
         self:set_tooltips()
         WardrobeCollectionFrame.SetsCollectionFrame:Refresh()
     end)
+
     function check:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '套装' or WARDROBE_SETS, e.GetEnabeleDisable(Save.hideSets)..e.Icon.left)
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.onlyChinese and '套装' or WARDROBE_SETS, e.GetShowHide(not Save.hideSets)..e.Icon.left)
         e.tips:Show()
+        self:SetAlpha(1)
     end
     check:SetScript('OnEnter', check.set_tooltips)
-    check:SetScript('OnLeave', function()e.tips:Hide() end)
+    check:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
 
     check:set_All_Sets()--所以有套装情况
     C_Timer.After(2, Set_Sets_Colleced)--收集所有角色套装数据
@@ -587,164 +601,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---#####
---传家宝
---Blizzard_HeirloomCollection.lua
-local function Init_Heirloom()
-    hooksecurefunc(HeirloomsJournal, 'UpdateButton', function(_, button)
-        if Save.hideHeirloom then
-            if button.isPvP then
-                button.isPvP:SetShown(false)
-            end
-            if button.upLevel then
-                button.upLevel:SetShown(false)
-            end
-            if button.itemLevel then
-                button.itemLevel:SetText('')
-            end
-            for index=1 ,4 do
-                local text=button['statText'..index]
-                if text then
-                    text:SetText('')
-                end
-            end
-            return
-        end
-        local _, _, isPvP, _, upgradeLevel = C_Heirloom.GetHeirloomInfo(button.itemID);
-
-        local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(button.itemID) or 0;
-        local level= maxUp-(upgradeLevel or 0)
-        local has = C_Heirloom.PlayerHasHeirloom(button.itemID)
-        if has then--需要升级数
-            if not button.upLevel then
-                button.upLevel = button:CreateTexture(nil, 'OVERLAY')
-                button.upLevel:SetPoint('TOPLEFT', -4, 4)
-                button.upLevel:SetSize(26,26)
-                button.upLevel:SetVertexColor(1,0,0)
-                button.upLevel:EnableMouse(true)
-                button.upLevel:SetScript('OnLeave', function() e.tips:Hide() end)
-                button.upLevel:SetScript('OnEnter', function(self2)
-                    if self2.maxUp and self2.upgradeLevel then
-                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:AddLine(format(e.onlyChinese and '传家宝升级等级：%d/%d' or HEIRLOOM_UPGRADE_TOOLTIP_FORMAT, self2.upgradeLevel, self2.maxUp))
-                        e.tips:AddDoubleLine(id, addName)
-                        e.tips:Show()
-                    end
-                end)
-                button.upLevel:SetScript('OnMouseDown', function(self2)
-                    local itemID= self2:GetParent().itemID
-                    if itemID and C_Heirloom.PlayerHasHeirloom(itemID) then
-                        C_Heirloom.CreateHeirloom(itemID)
-                    end
-                end)
-            end
-        end
-        if button.upLevel then
-            button.upLevel.maxUp= maxUp
-            button.upLevel.upgradeLevel= upgradeLevel
-            button.upLevel:SetShown(has and level>0)
-            if level>0 then
-                button.upLevel:SetAtlas(e.Icon.number..level)
-            else
-                button.upLevel:SetTexture(0)
-            end
-        end
-
-        if isPvP and not button.isPvP then
-            button.isPvP=button:CreateTexture(nil, 'OVERLAY')
-            button.isPvP:SetPoint('TOP')
-            button.isPvP:SetSize(14, 14)
-            button.isPvP:SetAtlas('honorsystem-icon-prestige-6')
-            button.isPvP:EnableMouse(true)
-            button.isPvP:SetScript('OnLeave', function() e.tips:Hide() end)
-            button.isPvP:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddLine(e.onlyChinese and '竞技装备' or ITEM_TOURNAMENT_GEAR)
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:Show()
-            end)
-            button.isPvP:SetScript('OnMouseDown', function(self2)
-                local itemID= self2:GetParent().itemID
-                if itemID and C_Heirloom.PlayerHasHeirloom(itemID) then
-                    C_Heirloom.CreateHeirloom(itemID)
-                end
-            end)
-        end
-        if button.isPvP then
-            button.isPvP:SetShown(isPvP)
-        end
-        if not button.moved and button.level then--设置，等级数字，位置
-            button.level:ClearAllPoints()
-            button.level:SetPoint('TOPRIGHT', button, 'TOPRIGHT')
-
-            button.levelBackground:ClearAllPoints()
-            button.levelBackground:SetPoint('TOPRIGHT', button, 'TOPRIGHT',-2,-2)
-            button.levelBackground:SetAlpha(0.5)
-
-            button.slotFrameCollected:SetTexture(0)--外框架
-            button.slotFrameCollected:SetShown(false)
-            button.slotFrameCollected:SetAlpha(0)
-            button.moved= true
-        end
-        if level==0 then
-            button.level:SetText('')
-        end
-
-        e.Set_Item_Stats(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture, itemID=button.itemID, hideSet=true, hideLevel=not has, hideStats=not has})--设置，物品，4个次属性，套装，装等，
-    end)
-
-
-    local check=e.Cbtn(HeirloomsJournal, {icon=not Save.hideHeirloom, size={18,18}})
-    check:SetPoint('BOTTOMRIGHT',-25, 35)
-    check:SetAlpha(0.5)
-    function check:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.hideHeirloom), e.Icon.left)
-        e.tips:Show()
-    end
-    check:SetScript('OnClick',function (self)
-        Save.hideHeirloom= not Save.hideHeirloom and true or nil
-        self:SetNormalAtlas(Save.hideHeirloom and e.Icon.disabled or e.Icon.icon)
-        securecall(HeirloomsJournal.FullRefreshIfVisible, HeirloomsJournal)
-        --HeirloomsJournal:FullRefreshIfVisible()
-        self:set_tooltips()
-    end)
-    check:SetScript('OnLeave', function () e.tips:Hide() end)
-    check:SetScript('OnEnter', check.set_tooltips)
-end
 
 
 
@@ -922,26 +778,32 @@ local function get_Items_Colleced()
     end
 end
 
+
+
 local function Init_Wardrober_Items()--物品, 幻化, 界面
-    local Frame=WardrobeCollectionFrame.ItemsCollectionFrame
-    Frame.sel=e.Cbtn(Frame, {icon=not Save.hideItems, size={18,18}})
-    Frame.sel:SetPoint('BOTTOMRIGHT',-19, 30)
-    Frame.sel:SetAlpha(0.5)
-    Frame.sel:SetScript('OnMouseDown',function (self2)
+    local check= Create_Enable_Button(WardrobeCollectionFrame.ItemsCollectionFrame, not Save.hideItems)
+    --local Frame=WardrobeCollectionFrame.ItemsCollectionFrame
+    --Frame.sel=e.Cbtn(Frame, {icon=not Save.hideItems, size={18,18}})
+    --Frame.sel:SetPoint('BOTTOMRIGHT',-19, 30)
+    --Frame.sel:SetAlpha(0.5)
+    check:SetScript('OnClick',function (self)
         Save.hideItems= not Save.hideItems and true or nil
-        print(id, addName,e.GetEnabeleDisable(not Save.hideItems), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
-        self2:SetNormalAtlas(Save.hideItems and e.Icon.disabled or e.Icon.icon)
+        --print(id, addName,e.GetEnabeleDisable(not Save.hideItems), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        self:SetNormalAtlas(Save.hideItems and e.Icon.disabled or e.Icon.icon)
         get_Items_Colleced()
+        WardrobeCollectionFrame.ItemsCollectionFrame:UpdateItems()
     end)
-    Frame.sel:SetScript('OnEnter', function (self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+    check:SetScript('OnEnter', function (self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '物品' or ITEMS, e.GetEnabeleDisable(Save.hideItems)..e.Icon.left)
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.hideItems), e.Icon.left)
         e.tips:Show()
+        self:SetAlpha(1)
     end)
-    Frame.sel:SetScript('OnLeave', function ()
+    check:SetScript('OnLeave', function(self)
         e.tips:Hide()
+        self:SetAlpha(0.5)
     end)
 
     C_Timer.After(2, get_Items_Colleced)--物品, 幻化, 界面
@@ -955,7 +817,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
             end
         end
     end
-    hooksecurefunc(Frame, 'UpdateItems', function(self)--WardrobeItemsCollectionMixin:UpdateItems() Blizzard_Wardrobe.lua local indexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE;
+    hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateItems', function(self)--WardrobeItemsCollectionMixin:UpdateItems() Blizzard_Wardrobe.lua local indexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE;
         for i= 1, self.PAGE_SIZE do
             local model = self.Models[i];
             if model and model:IsShown() then
@@ -1084,9 +946,182 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--#####
+--传家宝
+--Blizzard_HeirloomCollection.lua
+local function Init_Heirloom()
+    hooksecurefunc(HeirloomsJournal, 'UpdateButton', function(_, button)
+        if Save.hideHeirloom then
+            if button.isPvP then
+                button.isPvP:SetShown(false)
+            end
+            if button.upLevel then
+                button.upLevel:SetShown(false)
+            end
+            if button.itemLevel then
+                button.itemLevel:SetText('')
+            end
+            for index=1 ,4 do
+                local text=button['statText'..index]
+                if text then
+                    text:SetText('')
+                end
+            end
+            return
+        end
+        local _, _, isPvP, _, upgradeLevel = C_Heirloom.GetHeirloomInfo(button.itemID);
+
+        local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(button.itemID) or 0;
+        local level= maxUp-(upgradeLevel or 0)
+        local has = C_Heirloom.PlayerHasHeirloom(button.itemID)
+        if has then--需要升级数
+            if not button.upLevel then
+                button.upLevel = button:CreateTexture(nil, 'OVERLAY')
+                button.upLevel:SetPoint('TOPLEFT', -4, 4)
+                button.upLevel:SetSize(26,26)
+                button.upLevel:SetVertexColor(1,0,0)
+                button.upLevel:EnableMouse(true)
+                button.upLevel:SetScript('OnLeave', function() e.tips:Hide() end)
+                button.upLevel:SetScript('OnEnter', function(self2)
+                    if self2.maxUp and self2.upgradeLevel then
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddLine(format(e.onlyChinese and '传家宝升级等级：%d/%d' or HEIRLOOM_UPGRADE_TOOLTIP_FORMAT, self2.upgradeLevel, self2.maxUp))
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:Show()
+                    end
+                end)
+                button.upLevel:SetScript('OnMouseDown', function(self2)
+                    local itemID= self2:GetParent().itemID
+                    if itemID and C_Heirloom.PlayerHasHeirloom(itemID) then
+                        C_Heirloom.CreateHeirloom(itemID)
+                    end
+                end)
+            end
+        end
+        if button.upLevel then
+            button.upLevel.maxUp= maxUp
+            button.upLevel.upgradeLevel= upgradeLevel
+            button.upLevel:SetShown(has and level>0)
+            if level>0 then
+                button.upLevel:SetAtlas(e.Icon.number..level)
+            else
+                button.upLevel:SetTexture(0)
+            end
+        end
+
+        if isPvP and not button.isPvP then
+            button.isPvP=button:CreateTexture(nil, 'OVERLAY')
+            button.isPvP:SetPoint('TOP')
+            button.isPvP:SetSize(14, 14)
+            button.isPvP:SetAtlas('honorsystem-icon-prestige-6')
+            button.isPvP:EnableMouse(true)
+            button.isPvP:SetScript('OnLeave', function() e.tips:Hide() end)
+            button.isPvP:SetScript('OnEnter', function(self2)
+                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine(e.onlyChinese and '竞技装备' or ITEM_TOURNAMENT_GEAR)
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end)
+            button.isPvP:SetScript('OnMouseDown', function(self2)
+                local itemID= self2:GetParent().itemID
+                if itemID and C_Heirloom.PlayerHasHeirloom(itemID) then
+                    C_Heirloom.CreateHeirloom(itemID)
+                end
+            end)
+        end
+        if button.isPvP then
+            button.isPvP:SetShown(isPvP)
+        end
+        if not button.moved and button.level then--设置，等级数字，位置
+            button.level:ClearAllPoints()
+            button.level:SetPoint('TOPRIGHT', button, 'TOPRIGHT')
+
+            button.levelBackground:ClearAllPoints()
+            button.levelBackground:SetPoint('TOPRIGHT', button, 'TOPRIGHT',-2,-2)
+            button.levelBackground:SetAlpha(0.5)
+
+            button.slotFrameCollected:SetTexture(0)--外框架
+            button.slotFrameCollected:SetShown(false)
+            button.slotFrameCollected:SetAlpha(0)
+            button.moved= true
+        end
+        if level==0 then
+            button.level:SetText('')
+        end
+
+        e.Set_Item_Stats(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture, itemID=button.itemID, hideSet=true, hideLevel=not has, hideStats=not has})--设置，物品，4个次属性，套装，装等，
+    end)
+
+
+    --local check=e.Cbtn(HeirloomsJournal, {icon=not Save.hideHeirloom, size={18,18}})
+    local check= Create_Enable_Button(HeirloomsJournal, not Save.hideHeirloom)
+    --check:SetPoint('BOTTOMRIGHT',-25, 35)
+    --check:SetAlpha(0.5)
+    function check:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '传家宝' or HEIRLOOMS, e.GetEnabeleDisable(Save.hideHeirloom)..e.Icon.left)
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+        self:SetAlpha(1)
+    end
+    check:SetScript('OnClick',function (self)
+        Save.hideHeirloom= not Save.hideHeirloom and true or nil
+        self:SetNormalAtlas(Save.hideHeirloom and e.Icon.disabled or e.Icon.icon)
+        e.call(HeirloomsJournal.FullRefreshIfVisible, HeirloomsJournal)
+        --HeirloomsJournal:FullRefreshIfVisible()
+        self:set_tooltips()
+    end)
+    check:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+    check:SetScript('OnEnter', check.set_tooltips)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###
 --玩具
---###
+--[[###
 local function Init_ToyBox()
     local function ToyFun(self)
         if Save.hideToyBox then
@@ -1127,7 +1162,7 @@ local function Init_ToyBox()
     toyframe.sel:SetScript('OnLeave', function ()
         e.tips:Hide()
     end)
-end
+end]]
 
 
 
@@ -1347,7 +1382,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end
 
         elseif arg1=='Blizzard_Collections' then
-            Init_ToyBox()--玩具
+            --Init_ToyBox()--玩具
             Init_Heirloom()--传家宝
             Init_Wardrober_Items()--物品, 幻化, 界面
             Init_Wardrobe_Sets()--套装, 幻化, 界面
