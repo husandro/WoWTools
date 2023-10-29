@@ -1329,6 +1329,8 @@ local function set_Alpha_Event(arg1)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset.Bg)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.ListContainer.ScrollBar.Backplate)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.ShadowLineTop)
+        hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BGCornerBottomRight)
+        hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BGCornerBottomLeft)
 
         set_Alpha_Color(WardrobeCollectionFrameSearchBox.Middle)
         set_Alpha_Color(WardrobeCollectionFrameSearchBox.Left)
