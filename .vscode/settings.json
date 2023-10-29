@@ -3500,7 +3500,8 @@
         "HeirloomsMixin",
         "WardrobeSetsCollectionMixin",
         "CollectionsJournalCloseButton",
-        "WardrobeSetsDataProviderMixin"
+        "WardrobeSetsDataProviderMixin",
+        "TRANSMOG_COLLECTED"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

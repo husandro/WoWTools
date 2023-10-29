@@ -18,9 +18,15 @@ BACKGROUND
 BORDER
 ARTWORK
 OVERLAY
+
+字符
 DRAG_MODEL拖曳
 QUEST_DASH 任务 -
 RANGE_INDICATOR = "●"
+HEADER_COLON = "：";
+INSTANCE_DIFFICULTY_FORMAT = "（%s）";
+PLAYER_LIST_DELIMITER = "，"
+
 
 UIPanelWindows[]
 
@@ -197,10 +203,7 @@ SetItemButtonNormalTextureVertexColor(button, 1.0, 1.0, 1.0)
 Interface/WorldMap/UI-QuestPoi-NumberIcons
 Interface/Minimap/POIIcons
 
-字符
-HEADER_COLON = "：";
-INSTANCE_DIFFICULTY_FORMAT = "（%s）";
-PLAYER_LIST_DELIMITER = "，"
+
 
 UIParent.lua
 :WrapTextInColorCode()

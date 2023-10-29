@@ -33,7 +33,7 @@ local wowSaveSets = {
     ['2048']={['class']='DEMONHUNTER'},
     ['4096']={['class']='EVOKER'},
 }
---local wowSave2= wowSaveSets--套装, 幻化, 界面
+local wowSave2= wowSaveSets--套装, 幻化, 界面
 local wowSaveItems={}
 local slots = {--wowSaveItems
     "|A:transmog-nav-slot-head:0:0|a",--1
@@ -217,17 +217,55 @@ end
 --#########
 --外观，套装
 --Blizzard_Wardrobe.lua
+local SetsDataProvider
 
+local function GetSetsCollectedNum(setID)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
+    local info= setID and C_TransmogSets.GetSetPrimaryAppearances(setID)
+    local numCollected, numAll=0,0
+    if info then
+        for _,v in pairs(info) do
+            numAll=numAll+1
+            if v.collected then
+                numCollected=numCollected + 1
+            end
+        end
+    end
+    if numAll>0 then
+        if numCollected==numAll then
+            return '|A:AlliedRace-UnlockingFrame-Checkmark:12:12|a', numCollected, numAll--, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r'
+        elseif numCollected==0 then
+            return '|cff606060'..numAll-numCollected..'|r ', numCollected, numAll--, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+        else
+            return numAll-numCollected, numCollected, numAll--, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+        end
+    end
+end
 
 local function Set_Sets_Colleced()--收集所有角色套装数据
     local numCollected, numTotal = C_TransmogSets.GetBaseSetsCounts()
     if not numCollected or not numTotal or numTotal<=0 then
         return
     end
+    local coll, all= 0, 0
+    if SetsDataProvider then
+        for _, set in pairs(C_TransmogSets.GetBaseSets() or {}) do
+            local variantSets = SetsDataProvider:GetVariantSets(set.setID) or {}
+            if #variantSets==0 then
+                table.insert(variantSets, C_TransmogSets.GetSetInfo(set.setID))
+            end
+            for _, tab in pairs(variantSets) do
+                coll=  tab.collected and coll+1  or coll
+                all= all+1
+            end
+            SetsDataProvider:ClearSets()
+        end
+    end
     for index, info in pairs(wowSaveSets) do
         if info.class==e.Player.class then
             wowSaveSets[index].numCollected= numCollected
             wowSaveSets[index].numTotal= numTotal
+            wowSaveSets[index].coll= coll>0 and coll or nil
+            wowSaveSets[index].all= all>0 and all or nil
             break
         end
     end
@@ -241,22 +279,24 @@ local function Set_Sets_Colleced()--收集所有角色套装数据
         return
     end
 
-    numCollected,numTotal=0, 0
+    coll, all=0, 0
     local m=''
     for _, info in pairs(wowSaveSets) do
         if info.numCollected and info.numTotal and info.numTotal > 0 then
-            numCollected = numCollected + info.numCollected
-            numTotal = numTotal + info.numTotal
-            local value=math.modf(info.numCollected/info.numTotal*100)
+
             local t='|A:classicon-'..info.class..':0:0|a'
-            t=t..((value<10 and '  ') or (value<100 and ' ') or '')..value..'%'
-            t=t..' '..info.numCollected..'/'..info.numTotal
-            t = info.numCollected<info.numTotal and '|c'..select(4,GetClassColor(info.class))..t..'|r' or '|cnGREEN_FONT_COLOR:'..t..'|r'
-            m=m..t..'|n'
+            if info.coll and info.all then
+                coll= info.coll +coll
+                all= info.all +all
+                t= t..format('%i%%', info.coll/info.all*100)..' '..info.coll..'/'.. info.all..'  '
+            end
+           
+            t=t..'('..info.numCollected..'/'..info.numTotal..')'
+            m=m..'|c'..select(4,GetClassColor(info.class))..t..'|r'..'|n'
         end
     end
-    if numTotal>0 then
-        m=m..format(e.onlyChinese and '已收集（%d/%d）' or ITEM_PET_KNOWN, numCollected, numTotal)..' '.. ('%i%%'):format(numCollected/numTotal*100)
+    if all>0 then
+        m=m..format((e.onlyChinese and '已收集 ' or TRANSMOG_COLLECTED)..' %d/%d %i%%', coll, all, coll/all*100)
     end
     if not frame.PlayerCoollectedStr then
         frame.PlayerCoollectedStr=e.Cstr(frame)
@@ -268,29 +308,9 @@ end
 
 
 local function Init_Wardrobe_Sets()
-    local SetsDataProvider = CreateFromMixins(WardrobeSetsDataProviderMixin);
+    SetsDataProvider = CreateFromMixins(WardrobeSetsDataProviderMixin);
 
-    local function GetSetsCollectedNum(setID)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
-        local info= setID and C_TransmogSets.GetSetPrimaryAppearances(setID)
-        local numCollected, numAll=0,0
-        if info then
-            for _,v in pairs(info) do
-                numAll=numAll+1
-                if v.collected then
-                    numCollected=numCollected + 1
-                end
-            end
-        end
-        if numAll>0 then
-            if numCollected==numAll then
-                return '|A:AlliedRace-UnlockingFrame-Checkmark:12:12|a', numCollected, numAll--, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r'
-            elseif numCollected==0 then
-                return '|cff606060'..numAll-numCollected..'|r ', numCollected, numAll--, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
-            else
-                return numAll-numCollected, numCollected, numAll--, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
-            end
-        end
-    end
+    
 
     hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(btn, displayData)--外观列表
         local setID= displayData.setID or btn.setID
@@ -364,6 +384,7 @@ local function Init_Wardrobe_Sets()
         if #variantSets==0 then
             table.insert(variantSets, C_TransmogSets.GetSetInfo(setID))
         end
+        SetsDataProvider:ClearSets()
 
         local text, isLimited, patch, version--版本
         for _, info in pairs(variantSets) do
@@ -416,7 +437,7 @@ local function Init_Wardrobe_Sets()
         btn.numSetsLabel:SetText(numStes>1 and numStes or '')
         btn.numSetsLabel:SetTextColor(r, g, b)
 
-        SetsDataProvider:ClearSets()
+       
     end)
 
     hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'OnClick', function(btn, buttonName)--点击，显示套装情况Blizzard_Wardrobe.lua
@@ -424,7 +445,7 @@ local function Init_Wardrobe_Sets()
             if btn.tooltip and not WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str then
                 WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str=e.Cstr( WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})
                 --WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str:SetPoint('BOTTOMLEFT',  WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, 'LEFT', 8 , 0)
-                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str:SetPoint('TOPLEFT',  WardrobeCollectionFrame, 'TOPRIGHT', 2, -60)
+                WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str:SetPoint('TOPLEFT',  WardrobeCollectionFrame, 'TOPRIGHT', 2, -150)
             end
             if WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str then
                 WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.str:SetText(btn.tooltip or '')
@@ -519,10 +540,8 @@ local function Init_Wardrobe_Sets()
         local a, h, o= 0, 0, 0--联盟, 部落, 其它
         --local tempSave= wowSave2
         
-        
         for _, info in pairs(sets) do
             if info and info.classMask and info.setID then
-            
                 --[[local c= format(info.classMask)--bit.bor(v.classMask)
                 if tempSave[c] then
                     tempSave[c].collected= tempSave[c].collected or 0
@@ -560,10 +579,11 @@ local function Init_Wardrobe_Sets()
             m=m..collected..'/'..all..' '..('%i%%'):format(collected/all*100)..' '..(e.onlyChinese and  '仅限职业' or format(LFG_LIST_CROSS_FACTION, CLASS))
         end]]
         if a > 0 or h>0 or o>0 then
-            m=m..'|n|n'..h..' |A:communities-create-button-wow-horde:0:0|a'
+            m=m..h..  ' |A:communities-create-button-wow-horde:0:0|a'
             m=m..'|n'..a..' |A:communities-create-button-wow-alliance:0:0|a'
             m=m..'|n'..o..' |A:communities-guildbanner-background:0:0|a'
-            m=m..'|n'..#sets..' '..(e.onlyChinese and '仅限阵营' or format(LFG_LIST_CROSS_FACTION, FACTION))
+            m=m..'|n'..#sets..' '..(e.onlyChinese and '总计' or TOTAL)
+            --m=m..'|n'..#sets..' '..(e.onlyChinese and '仅限阵营' or format(LFG_LIST_CROSS_FACTION, FACTION))
         end
         if not  WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets then
             WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.AllSets=e.Cstr(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame)
