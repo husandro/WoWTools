@@ -7,30 +7,6 @@ e.call= securecall
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
 
-local function Get_Pet9Item(itemID)
-    if itemID==11406 or itemID==25402 or itemID==11944 then
-        return (C_PetJournal.GetNumCollectedInfo(3106) or 0)..'|T3856129:0|t('..GetItemCount(11406, true)..'|T134357:0|t'..GetItemCount(25402, true)..'|T133053:0|t'..GetItemCount(11944, true)..'|T13254:0|t)'
-
-    elseif itemID==3300 or itemID==3670 or itemID==6150 then
-        return (C_PetJournal.GetNumCollectedInfo(3105) or 0)..'|T3856129:0|t('..GetItemCount(11406, true)..'|T134357:0|t'..GetItemCount(25402, true)..'|T133053:0|t'..GetItemCount(11944, true)..'|T13254:0|t)'
-        
-    elseif itemID==36812 or itemID==62072 or itemID==67410 then
-        3104
-    end
-end
-e.itemPetID={--宠物对换, wow9.0
-    [11406]=true,
-    [11944]=true,
-    [25402]=true,
-
-    [3300]=true,
-    [3670]=true,
-    [6150]=true,
-
-    [36812]=true,
-    [62072]=true,
-    [67410]=true,
-}
 e.itemSlotTable={
     ['INVTYPE_HEAD']=1,
     ['INVTYPE_NECK']=2,
@@ -856,12 +832,12 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
     {type='item', id=204195},--幼龙的暗影烈焰纹章
     {type='item', id=204194},--守护巨龙的暗影烈焰纹章
     {type='item', id=204193},--雏龙的暗影烈焰纹章
-    
+
     {type='currency', id=2709, vouta=true},--守护巨龙的酣梦纹章 10.2
     {type='currency', id=2708},--魔龙的酣梦纹章
     {type='currency', id=2707},--幼龙的酣梦纹章
     {type='currency', id=2533},--苏生暗影烈焰
-    
+
     {type='currency', id=2245},--飞珑石
     {type='currency', id=1602},--征服点数
     {type='currency', id=1191},--勇气点数
@@ -1958,6 +1934,45 @@ function e.GetPetStrongWeakHints(petType)
         end
     end
     return strongTexture,weakHintsTexture, stringIndex, weakHintsIndex ----_G["BATTLE_PET_NAME_"..petType]
+end
+
+
+function e.GetPet9Item(itemID, find)--宠物对换, wow9.0
+    if itemID==11406 or itemID==11944 or itemID==25402 then--[黄晶珠蜒]
+        if find then
+            return true
+        else
+            return '|T3856129:0|t'..(C_PetJournal.GetNumCollectedInfo(3106) or 0)
+                ..' = '
+                ..'|T134357:0|t'..GetItemCount(11406, true)
+                ..'|T132540:0|t'..GetItemCount(11944, true)
+                ..'|T133053:0|t'..GetItemCount(25402, true)
+        end
+
+    elseif itemID==3300 or itemID==3670 or itemID==6150 then--[绿松石珠蜒]
+        if find then
+            return true
+        else
+            return '|T3856129:0|t'..(C_PetJournal.GetNumCollectedInfo(3105) or 0)
+                    ..' = '
+                    ..'|T132936:0|t'..GetItemCount(3300, true)
+                    ..'|T133718:0|t'..GetItemCount(3670, true)
+                    ..'|T133676:0|t'..GetItemCount(6150, true)
+                
+        end
+
+    elseif itemID==36812 or itemID==62072 or itemID==67410 then--[红宝石珠蜒]
+        if find then
+            return true
+        else
+            return '|T3856131:0|t'..(C_PetJournal.GetNumCollectedInfo(3104) or 0)
+                ..' = '
+                ..'|T134063:0|t'..GetItemCount(36812, true)
+                ..'|T135148:0|t'..GetItemCount(62072, true)
+                ..'|T135239:0|t'..GetItemCount(67410, true)
+                
+        end
+    end
 end
 
 function e.GetMountCollected(mountID)--坐骑, 收集数量

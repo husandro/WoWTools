@@ -494,7 +494,7 @@ function func.Set_Item(self, itemLink, itemID)
     elseif C_ToyBox.GetToyInfo(itemID) then--玩具
         self.text2Left:SetText(PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
 
-    elseif itemID==122284 then--魔兽世界时光徽章
+    elseif C_WowTokenPublic.IsAuctionableWowToken(itemID) then --itemID==122284 then--魔兽世界时光徽章
         C_WowTokenPublic.UpdateMarketPrice()
         local price= C_WowTokenPublic.GetCurrentMarketPrice()
         if price and price>0 then
@@ -511,6 +511,13 @@ function func.Set_Item(self, itemLink, itemID)
         end
     end
 
+    if itemQuality==0 and(classID==2 or classID==15) then
+        local petText= e.GetPet9Item(itemID)--宠物对换, wow9.0
+        if petText then
+            self:AddLine(petText)
+        end
+    end
+    
     local spellName, spellID = GetItemSpell(itemLink)--物品法术
     if spellName and spellID then
         local spellTexture=GetSpellTexture(spellID)

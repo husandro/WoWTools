@@ -3513,6 +3513,7 @@
         "deprecated",
         "duplicate-set-field",
         "param-type-mismatch",
-        "inject-field"
+        "inject-field",
+        "unused-function"
     ]
 }
