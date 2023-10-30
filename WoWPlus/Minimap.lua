@@ -580,6 +580,10 @@ local function set_Button_Text()
                     self.text:SetPoint('BOTTOMLEFT', self.nameText, 'TOPLEFT')
                 end
             end
+
+            btn:SetScript('OnClick', function(self)
+                Button:show_menu(self)
+            end)
             btn:SetScript("OnLeave", function() e.tips:Hide() Button:SetButtonState('NORMAL') end)
             btn:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -588,6 +592,7 @@ local function set_Button_Text()
                 e.tips:Show()
                 Button:SetButtonState('PUSHED')
             end)
+            
 
             btn:set_btn_point()
 
@@ -1011,6 +1016,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         self:Raise()
     end)
 
+    
     Button:SetScript('OnClick', function(self, d)--显示，隐藏
         local key= IsModifierKeyDown()
         if d=='LeftButton' and not key then
@@ -1019,11 +1025,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             self:set_Texture()
 
         elseif d=='RightButton' and not key then
-            if not self.menu then
-                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Button_Menu, 'MENU')
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
+            self:show_menu()
         end
     end)
 
@@ -1034,6 +1036,13 @@ local function Init_Set_Button()--小地图, 标记, 文本
         end
     end)
 
+    function Button:show_menu(frame)
+        if not self.menu then
+            self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+            e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Button_Menu, 'MENU')
+        end
+        e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, frame or self, 15,0)
+    end
 
     function Button:set_Tootips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
