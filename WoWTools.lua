@@ -6,17 +6,18 @@ e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
 e.call= securecall
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
---[[
+
 local function Get_Pet9Item(itemID)
     if itemID==11406 or itemID==25402 or itemID==11944 then
-        C_PetJournal.GetNumCollectedInfo(3106)
-        return '|T3856129:0|t= '
+        return (C_PetJournal.GetNumCollectedInfo(3106) or 0)..'|T3856129:0|t('..GetItemCount(11406, true)..'|T134357:0|t'..GetItemCount(25402, true)..'|T133053:0|t'..GetItemCount(11944, true)..'|T13254:0|t)'
+
     elseif itemID==3300 or itemID==3670 or itemID==6150 then
-        3105
+        return (C_PetJournal.GetNumCollectedInfo(3105) or 0)..'|T3856129:0|t('..GetItemCount(11406, true)..'|T134357:0|t'..GetItemCount(25402, true)..'|T133053:0|t'..GetItemCount(11944, true)..'|T13254:0|t)'
+        
     elseif itemID==36812 or itemID==62072 or itemID==67410 then
         3104
     end
-end]]
+end
 e.itemPetID={--宠物对换, wow9.0
     [11406]=true,
     [11944]=true,
