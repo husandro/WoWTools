@@ -574,7 +574,7 @@ local function Init_Set_AlphaAndColor()
     hide_Texture(MerchantMoneyBgMiddle)
     hide_Texture(MerchantMoneyBgLeft)
     hide_Texture(MerchantMoneyBgRight)
-    for i=1, 12 do
+    for i=1, BUYBACK_ITEMS_PER_PAGE do --MERCHANT_ITEMS_PER_PAGE = 10; BUYBACK_ITEMS_PER_PAGE = 12;
         set_Alpha_Color(_G['MerchantItem'..i..'SlotTexture'])
     end
     set_Alpha_Color(MerchantFrameLootFilterMiddle)
