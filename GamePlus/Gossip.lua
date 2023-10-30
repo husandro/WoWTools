@@ -594,10 +594,14 @@ local function Init_Gossip()
         e.tips:Show()
         self.texture:SetAlpha(1)
     end
+    function GossipButton:set_shown()
+        self:SetShown(not C_PetBattles.IsInBattle())
+    end
 
     GossipButton:set_Texture()
     GossipButton:set_Scale()
     GossipButton:set_Point()
+    GossipButton:set_shown()
     GossipButton:Raise()
 
     GossipButton:SetMovable(true)--移动
@@ -659,8 +663,12 @@ local function Init_Gossip()
     GossipButton.selectGissipIDTab={}--GossipFrame，显示时用
 
     GossipButton:RegisterEvent('PLAY_MOVIE')--movieID
-    GossipButton:SetScript('OnEvent', function(_, _, arg1)
-        if arg1 then
+    GossipButton:RegisterEvent('PET_BATTLE_OPENING_DONE')
+    GossipButton:RegisterEvent('PET_BATTLE_CLOSE')
+    GossipButton:SetScript('OnEvent', function(self, event, arg1)
+        if event=='PET_BATTLE_OPENING_DONE' or event=='PET_BATTLE_CLOSE' then
+            self:set_shown()
+        elseif arg1 then
             if Save.movie[arg1] then
                 if Save.stopMovie then
                     MovieFrame:StopMovie()

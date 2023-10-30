@@ -182,21 +182,41 @@ local function set_PetBattleAbilityButton_UpdateBetterIcon(self)
     if self.BetterIcon then
         local activePet = C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally);
         if activePet then
-            local _, _, _, maxCooldown, _, _, petType = C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Ally, activePet, self:GetID());
+            local _, _, _, maxCooldown, _, _, petType, noStrongWeakHints = C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Ally, activePet, self:GetID());
             Cooldown=maxCooldown
             if petType and PET_TYPE_SUFFIX[petType] then
                 typeTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]--"Interface\\PetBattles\\PetIcon-"..PET_TYPE_SUFFIX[petType]
-                strongTexture, weakHintsTexture= e.GetPetStrongWeakHints(petType)--取得对战宠物, 强弱
+                if not noStrongWeakHints then
+                    strongTexture, weakHintsTexture= e.GetPetStrongWeakHints(petType)--取得对战宠物, 强弱
+                end
                 if not self.petType then
-                    self.strong= self:CreateTexture(nil, 'OVERLAY', nil, 7)
+                    self.strong= self:CreateTexture(nil, 'OVERLAY')
                     self.strong:SetPoint('TOPLEFT', self,-4, 2)
                     self.strong:SetSize(15,15)
-                    self.petType= self:CreateTexture(nil, 'OVERLAY', nil, 7)
+
+
+                    self.up=self:CreateTexture(nil, 'OVERLAY')
+                    self.up:SetPoint('TOP', self.strong,'BOTTOM',0, 4)
+                    self.up:SetSize(10,10)
+                    self.up:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Strong')
+
+                    
+                  
+
+                    self.petType= self:CreateTexture(nil, 'OVERLAY')
                     self.petType:SetPoint('LEFT', self, -4, 0)
                     self.petType:SetSize(15,15)
-                    self.weakHints= self:CreateTexture(nil, 'OVERLAY', nil, 7)
+
+                    self.down=self:CreateTexture(nil, 'OVERLAY')
+                    self.down:SetPoint('TOP', self.petType, 'BOTTOM', 0, 3)
+                    self.down:SetSize(10,10)
+                    self.down:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Weak')
+
+
+                    self.weakHints= self:CreateTexture(nil, 'OVERLAY')
                     self.weakHints:SetPoint('BOTTOMLEFT',-4,-2)
                     self.weakHints:SetSize(15,15)
+
                     self.text=e.Cstr(self, {color={r=1,g=0,b=0}, justifyH='RIGHT'})--nil, nil, nil,{1,0,0}, 'OVERLAY', 'RIGHT')
                     self.text:SetPoint('RIGHT',-6,-6)
                 end
@@ -204,19 +224,13 @@ local function set_PetBattleAbilityButton_UpdateBetterIcon(self)
         end
     end
     if self.petType then
-        if weakHintsTexture then
-            self.weakHints:SetTexture(weakHintsTexture)
-        end
-        self.weakHints:SetShown(weakHintsTexture)
-        if typeTexture then
-            self.petType:SetTexture(typeTexture)
-        end
-        self.petType:SetShown(typeTexture)
-        if strongTexture then
-            self.strong:SetTexture(strongTexture)
-        end
-        self.strong:SetShown(strongTexture)
+        self.weakHints:SetTexture(weakHintsTexture or 0)
+        self.petType:SetTexture(typeTexture or 0)
+        self.strong:SetTexture(strongTexture or 0)
+        self.up:SetShown(weakHintsTexture and typeTexture and strongTexture)
+        self.down:SetShown(weakHintsTexture and typeTexture and strongTexture)
         self.text:SetText(Cooldown and Cooldown>0 and Cooldown or '')
+        
     end
 end
 
