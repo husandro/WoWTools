@@ -1957,8 +1957,7 @@ function e.GetPet9Item(itemID, find)--宠物兑换, wow9.0
                     ..' = '
                     ..'|T132936:0|t'..GetItemCount(3300, true)
                     ..'|T133718:0|t'..GetItemCount(3670, true)
-                    ..'|T133676:0|t'..GetItemCount(6150, true)
-                
+                    ..'|T133676:0|t'..GetItemCount(6150, true)  
         end
 
     elseif itemID==36812 or itemID==62072 or itemID==67410 then--[红宝石珠蜒]
@@ -1966,11 +1965,10 @@ function e.GetPet9Item(itemID, find)--宠物兑换, wow9.0
             return true
         else
             return '|T3856131:0|t'..(C_PetJournal.GetNumCollectedInfo(3104) or 0)
-                ..' = '
-                ..'|T134063:0|t'..GetItemCount(36812, true)
-                ..'|T135148:0|t'..GetItemCount(62072, true)
-                ..'|T135239:0|t'..GetItemCount(67410, true)
-                
+                    ..' = '
+                    ..'|T134063:0|t'..GetItemCount(36812, true)
+                    ..'|T135148:0|t'..GetItemCount(62072, true)
+                    ..'|T135239:0|t'..GetItemCount(67410, true)
         end
     end
 end

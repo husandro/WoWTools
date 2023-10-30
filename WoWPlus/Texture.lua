@@ -580,6 +580,7 @@ local function Init_Set_AlphaAndColor()
     set_Alpha_Color(MerchantFrameLootFilterMiddle)
     set_Alpha_Color(MerchantFrameLootFilterLeft)
     set_Alpha_Color(MerchantFrameLootFilterRight)
+    set_Alpha_Color(MerchantFrameBottomLeftBorder)
 
     --银行
     set_Alpha_Color(BankFrame.NineSlice.TopEdge)
