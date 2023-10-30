@@ -4,9 +4,12 @@ local Save={
     clickToMoveButton= e.Player.husandro,--点击移动，按钮
 }
 local addName= PET_BATTLE_COMBAT_LOG
-local panel= e.Cbtn(nil, {icon=true, size={20,20}, pushe=true})
-panel:SetShown(false)
-panel:SetFrameStrata('DIALOG')
+
+
+local TrackButton
+local EnemyFrame--对方, 技能提示， 框
+
+
 
 
 
@@ -232,20 +235,25 @@ end
 --########################
 --对方, 我方， 技能提示， 框
 --########################
+--local EnemyFrame--对方, 技能提示， 框
 local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBattleUI.lua
-    if not panel.EnemyFrame then
-        panel.EnemyFrame=CreateFrame('Frame', nil, PetBattleFrame.BottomFrame)
-        if Save.EnemyFramePoint then
-            panel.EnemyFrame:SetPoint(Save.EnemyFramePoint[1], UIParent, Save.EnemyFramePoint[3], Save.EnemyFramePoint[4], Save.EnemyFramePoint[5])
-        else
-            panel.EnemyFrame:SetPoint('BOTTOMLEFT', PetBattleFrame.BottomFrame , 'TOPLEFT',60,250)
+    if not EnemyFrame then
+        EnemyFrame=CreateFrame('Frame', nil, PetBattleFrame.BottomFrame)
+        function EnemyFrame:set_point()
+            if Save.EnemyFramePoint then
+                self:SetPoint(Save.EnemyFramePoint[1], UIParent, Save.EnemyFramePoint[3], Save.EnemyFramePoint[4], Save.EnemyFramePoint[5])
+            else
+                self:SetPoint('BOTTOMLEFT', PetBattleFrame.BottomFrame , 'TOPLEFT',60,250)
+            end
         end
-        panel.EnemyFrame:SetSize(150, 50)
-        panel.EnemyFrame:SetClampedToScreen(true)
-        panel.EnemyFrame:SetMovable(true)
-        panel.EnemyFrame:RegisterForDrag('LeftButton', 'RightButton')
-        panel.EnemyFrame:SetScript('OnDragStart', function(self2,d) if not IsModifierKeyDown() then self2:StartMoving() end end)
-        panel.EnemyFrame:SetScript('OnDragStop', function(self2)
+        EnemyFrame:set_point()
+
+        EnemyFrame:SetSize(150, 50)
+        EnemyFrame:SetClampedToScreen(true)
+        EnemyFrame:SetMovable(true)
+        EnemyFrame:RegisterForDrag('LeftButton', 'RightButton')
+        EnemyFrame:SetScript('OnDragStart', function(self2,d) if not IsModifierKeyDown() then self2:StartMoving() end end)
+        EnemyFrame:SetScript('OnDragStop', function(self2)
             ResetCursor();
             self2:StopMovingOrSizing();
             Save.EnemyFramePoint={self2:GetPoint(1)}
@@ -253,7 +261,7 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
             print(id, addName,'Alt+' ..e.Icon.right,TRANSMOGRIFY_TOOLTIP_REVERT)
             self2:Raise()
         end)
-        panel.EnemyFrame:SetScript('OnMouseDown', function(self2, d)
+        EnemyFrame:SetScript('OnMouseDown', function(self2, d)
             if d=='RightButton' and IsAltKeyDown() then
                 Save.EnemyFramePoint=nil
                 self2:ClearAllPoints()
@@ -262,8 +270,8 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
                 SetCursor('UI_MOVE_CURSOR')
             end
         end)
-        panel.EnemyFrame:SetScript('OnMouseUp', function() ResetCursor() end)
-        panel.EnemyFrame:SetScript('OnEnter', function(self2)
+        EnemyFrame:SetScript('OnMouseUp', function() ResetCursor() end)
+        EnemyFrame:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
@@ -272,19 +280,20 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
             e.tips:Show()
             self2.textrue:SetAlpha(1)
         end)
-        panel.EnemyFrame:SetScript('OnLeave', function(self2)
+        EnemyFrame:SetScript('OnLeave', function(self2)
             e.tips:Hide()
             self2.textrue:SetAlpha(0.5)
         end)
-        panel.EnemyFrame.textrue=panel.EnemyFrame:CreateTexture(nil, 'BACKGROUND')
-        panel.EnemyFrame.textrue:SetAllPoints(panel.EnemyFrame)
-        panel.EnemyFrame.textrue:SetAtlas('Adventures-Missions-Shadow')
-        panel.EnemyFrame.textrue:SetAlpha(0.5)
+        EnemyFrame.textrue=EnemyFrame:CreateTexture(nil, 'BACKGROUND')
+        EnemyFrame.textrue:SetAllPoints(EnemyFrame)
+        EnemyFrame.textrue:SetAtlas('Adventures-Missions-Shadow')
+        EnemyFrame.textrue:SetAlpha(0.5)
+
         for index=1, NUM_BATTLE_PETS_IN_BATTLE +2 do
             local frame
             local allyIndex
             if index==1 then
-                frame=panel.EnemyFrame
+                frame=EnemyFrame
             elseif index<=NUM_BATTLE_PETS_IN_BATTLE then
                 frame=PetBattleFrame['Enemy'..index]
             else
@@ -293,7 +302,7 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
             end
             for i = 1, NUM_BATTLE_PET_ABILITIES do
                 if frame and not frame[i] then
-                    frame[i]=e.Cbtn(frame, {icon=true, size={40,40}})--nil, true)
+                    frame[i]=e.Cbtn(frame, {icon='hide', size={40,40}})--nil, true)
                     frame[i]:SetSize(40,40)
                     if i==1 then
                         if index==1 then
@@ -314,28 +323,42 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
                     end
                     frame[i]:SetScript('OnEnter', function(self2)
                         if self2.abilityID then
-                            if ( self2.requiredLevel ) then
-                                PetBattleAbilityTooltip_SetAbilityByID(self2.petOwner, self2.petIndex, self2.abilityID, format(PET_ABILITY_REQUIRES_LEVEL, self2.requiredLevel));
-                            else
-                                PetBattleAbilityTooltip_SetAbilityByID(self2.petOwner, self2.petIndex, self2.abilityID);
-                            end
+                            --if ( self2.requiredLevel ) then
+                              --  PetBattleAbilityTooltip_SetAbilityByID(self2.petOwner, self2.petIndex, self2.abilityID, format(PET_ABILITY_REQUIRES_LEVEL, self2.requiredLevel));
+                            PetBattleAbilityTooltip_SetAbilityByID(self2.petOwner, self2.petIndex, self2.abilityID);
+                            
                             PetBattleAbilityTooltip_Show("BOTTOMLEFT", self2, "TOPLEFT");
                         end
                     end)
                     frame[i]:SetScript('OnLeave', function() PetBattlePrimaryAbilityTooltip:Hide() end)
-                    frame[i].texture=frame[i]:CreateTexture(nil,'OVERLAY')
-                    frame[i].texture:SetPoint('BOTTOMRIGHT', 10, -10)
-                    frame[i].texture:SetSize(30,30)
 
-                    frame[i].strong=frame[i]:CreateTexture(nil,'OVERLAY')
+                    frame[i].icon= frame[i]:CreateTexture(nil,'BACKGROUND')
+                    frame[i].icon:SetAllPoints(frame[i])
+
+                    frame[i].storngORweak=frame[i]:CreateTexture(nil,'BORDER')
+                    frame[i].storngORweak:SetPoint('BOTTOMRIGHT', 10, -10)
+                    frame[i].storngORweak:SetSize(30,30)
+
+                    frame[i].strong=frame[i]:CreateTexture(nil,'BORDER')
                     frame[i].strong:SetPoint('TOPLEFT', -4, 2)
                     frame[i].strong:SetSize(15,15)
 
-                    frame[i].petTypeTexture=frame[i]:CreateTexture(nil,'OVERLAY')
+                    frame[i].up=frame[i]:CreateTexture(nil,'ARTWORK')
+                    frame[i].up:SetPoint('TOP', frame[i].strong,'BOTTOM',0, 5)
+                    frame[i].up:SetSize(8,8)
+                    frame[i].up:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Strong')
+
+                    
+                    frame[i].petTypeTexture=frame[i]:CreateTexture(nil,'BORDER', nil, 1)
                     frame[i].petTypeTexture:SetPoint('LEFT', -4, 0)
                     frame[i].petTypeTexture:SetSize(15,15)
 
-                    frame[i].weakHints=frame[i]:CreateTexture(nil,'OVERLAY')
+                    frame[i].down=frame[i]:CreateTexture(nil,'ARTWORK')
+                    frame[i].down:SetPoint('TOP', frame[i].petTypeTexture,'BOTTOM',0,5)
+                    frame[i].down:SetSize(8,8)
+                    frame[i].down:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Weak')
+
+                    frame[i].weakHints=frame[i]:CreateTexture(nil,'BORDER')
                     frame[i].weakHints:SetPoint('BOTTOMLEFT', -4, -2)
                     frame[i].weakHints:SetSize(15,15)
                 end
@@ -347,9 +370,9 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
     --local activeEnemy = C_PetBattles.GetActivePet(target);
     for index=1, NUM_BATTLE_PETS_IN_BATTLE +2 do
         local frame,petIndex
-        local allyIndex,target=nil, Enum.BattlePetOwner.Enemy
+        local allyIndex,target= nil, Enum.BattlePetOwner.Enemy
         if index==1 then
-            frame=panel.EnemyFrame
+            frame=EnemyFrame
             petIndex=C_PetBattles.GetActivePet(target)
         elseif index<=NUM_BATTLE_PETS_IN_BATTLE then
             frame=PetBattleFrame['Enemy'..index]
@@ -363,77 +386,89 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
 
         for i = 1, NUM_BATTLE_PET_ABILITIES do
             local abilityID, _, icon, _, _, _, petType, noStrongWeakHints = C_PetBattles.GetAbilityInfo(target, petIndex, i);
-            local find
+            
             if abilityID and icon and petType then
-                local speciesID = C_PetBattles.GetPetSpeciesID(target, petIndex)
-                local abilities = speciesID and C_PetJournal.GetPetAbilityListTable(speciesID)
-                if not abilities and abilities[i] then
-                    frame[i].requiredLevel=abilities[i] and abilities[i].level or nil
-                else
-                    frame[i].requiredLevel=nil
-                end
+                --local speciesID = C_PetBattles.GetPetSpeciesID(target, petIndex)
+                --local abilities = speciesID and C_PetJournal.GetPetAbilityListTable(speciesID)
                 frame[i].abilityID=abilityID
                 frame[i].petOwner=target
                 frame[i].petIndex=petIndex--提示用
 
-                frame[i]:SetNormalTexture(icon)--设置图标
+                frame[i].icon:SetTexture(icon)--设置图标
                 frame[i].petTypeTexture:SetTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType])--设置类型
-                local strong, weakhints=e.GetPetStrongWeakHints(petType)
-                frame[i].strong:SetTexture(strong)
-                frame[i].weakHints:SetTexture(weakhints)
-                find=true
-            else
-                frame[i].requiredLevel=nil
-                frame[i].petIndex=nil
-                frame[i].abilityID=nil
-                frame[i].petOwner=nil
-                frame[i]:SetNormalTexture(e.Icon.icon)
-            end
-            frame[i].strong:SetShown(find)
-            frame[i].petTypeTexture:SetShown(find)
-            frame[i].weakHints:SetShown(find)
+                
+                local strong, weakhints
+                if not noStrongWeakHints then
+                    strong, weakhints= e.GetPetStrongWeakHints(petType)
+                end
+                frame[i].strong:SetTexture(strong or 0)
+                frame[i].weakHints:SetTexture(weakhints or 0)
 
-            find=nil
-            local target2= target==Enum.BattlePetOwner.Ally and Enum.BattlePetOwner.Enemy or Enum.BattlePetOwner.Ally
-            if abilityID and icon and petType and not noStrongWeakHints then
-                local playerPetSlot = C_PetBattles.GetActivePet(target2);
-                local playerType = playerPetSlot and C_PetBattles.GetPetType(target2, playerPetSlot);
-                local modifier = playerType and C_PetBattles.GetAttackModifier(petType, playerType);
-                if modifier then
-                    if (modifier > 1) then
-                        frame[i].texture:SetTexture("Interface\\PetBattles\\BattleBar-AbilityBadge-Strong");
-                        find=true
-                    elseif (modifier < 1) then
-                        frame[i].texture:SetTexture("Interface\\PetBattles\\BattleBar-AbilityBadge-Weak");
-                        find=true
+
+                local target2= target==Enum.BattlePetOwner.Ally and Enum.BattlePetOwner.Enemy or Enum.BattlePetOwner.Ally
+                local texture
+                if abilityID and icon and petType and not noStrongWeakHints then
+                    local playerPetSlot = C_PetBattles.GetActivePet(target2);
+                    local playerType = playerPetSlot and C_PetBattles.GetPetType(target2, playerPetSlot);
+                    local modifier = playerType and C_PetBattles.GetAttackModifier(petType, playerType);
+                    if modifier then
+                        if (modifier > 1) then
+                            texture= "Interface\\PetBattles\\BattleBar-AbilityBadge-Strong"
+                        elseif (modifier < 1) then
+                            texture="Interface\\PetBattles\\BattleBar-AbilityBadge-Weak"
+                        end
                     end
                 end
+                frame[i].storngORweak:SetTexture(texture or 0)
+
+                frame[i].up:SetShown(not noStrongWeakHints)
+                frame[i].down:SetShown(not noStrongWeakHints)
+
+                frame[i]:SetShown(true)
+            else
+                frame[i]:SetShown(false)
             end
-            frame[i].texture:SetShown(find)
         end
     end
 end
 
 --对方，技能， 冷却
-local function set_PetBattleActionButton_UpdateState(self)
+local function set_PetBattleActionButton_UpdateState()
+    if not EnemyFrame then
+        return
+    end
     local activeEnemy = C_PetBattles.GetActivePet(Enum.BattlePetOwner.Enemy);
     for i = 1, NUM_BATTLE_PET_ABILITIES do
-        local frame=PetBattleFrame.BottomFrame.EnemyFrame
+        local frame= EnemyFrame--PetBattleFrame.BottomFrame.EnemyFrame
         if frame and frame[i] then
-            local text
+            local text, isUsable, currentCooldown, currentLockdown
             local abilityID, name = C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Enemy, activeEnemy, i);
             if name and abilityID then
-                local isUsable, currentCooldown, currentLockdown = C_PetBattles.GetAbilityState(Enum.BattlePetOwner.Enemy, activeEnemy, i)
+                isUsable, currentCooldown, currentLockdown = C_PetBattles.GetAbilityState(Enum.BattlePetOwner.Enemy, activeEnemy, i)
+                
                 if currentCooldown and currentCooldown>0 then
-                    if not frame[i].cooldownText then
-                        frame[i].cooldownText=e.Cstr(frame[i], {size=20, color={r=1,g=0,b=0}})--20 , nil, nil, {1, 0, 0}, 'OVERLAY')
-                        frame[i].cooldownText:SetPoint('CENTER')
-                    end
                     text=currentCooldown
+                elseif currentLockdown and currentCooldown>0 then
+                    text= currentLockdown
                 end
+                
+            end
+            if text and not frame[i].cooldownText then
+                frame[i].cooldownText=e.Cstr(frame[i], {size=22, color={r=1,g=0,b=0}})
+                frame[i].cooldownText:SetPoint('CENTER')
+                text=currentCooldown
             end
             if frame[i].cooldownText then
-                frame[i].cooldownText:SetText(text)
+                frame[i].cooldownText:SetText(text or '')
+            end
+            frame[i].icon:SetDesaturated(not isUsable)
+            
+            if currentCooldown and currentCooldown>0 then        
+                frame[i].icon:SetVertexColor(0.62, 0.62, 0.62)
+            elseif currentLockdown and currentLockdown>0 then
+                frame[i].icon:SetVertexColor(1, 0, 0)
+            else
+                frame[i].icon:SetVertexColor(1, 1, 1)
             end
         end
     end
@@ -501,92 +536,123 @@ local function show_FloatingPetBattleAbilityTooltip(frame)
         FloatingPetBattleAbilityTooltip:Hide()
     end)
 end
+
+
 local function set_Pet_Type(show)--提示,类型,
-    if not panel.setFrame and show then
-        if Save.point then
-            panel:SetPoint(Save.point[1],UIParent, Save.point[3], Save.point[4], Save.point[5])
-        else
-            panel:SetPoint('RIGHT',-400, 200)
+    TrackButton:SetShown(show)--提示,类型,
+    if TrackButton.setFrame or not show or Save.setFrameHide then
+        if TrackButton.setFrame then
+            TrackButton.setFrame:SetShown(not Save.setFrameHide)
         end
-        panel.setFrame=CreateFrame("Frame", nil, panel)
-        panel.setFrame:SetSize(1,1)
-        panel.setFrame:SetPoint('RIGHT')
-
-        local last=panel.setFrame
-        for i=1, C_PetJournal.GetNumPetTypes() do
-            local texture= e.Cbtn(panel.setFrame, {icon='hide',size={25,25}, pushe=true})
-            texture:SetSize(25, 25)
-            texture:SetPoint('LEFT', last, 'RIGHT')
-            texture:SetNormalTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i])
-            texture.abilityID= PetTypeAbility[i]
-            texture.typeID=i
-            texture:EnableMouse(true)
-            show_FloatingPetBattleAbilityTooltip(texture)
-
-            local strong, index=get_Strong_WeakHints(i, true)--强
-            if strong then
-                texture.indicatoUp=panel.setFrame:CreateTexture()
-                texture.indicatoUp:SetAtlas('bags-greenarrow')
-                texture.indicatoUp:SetSize(10,10)
-                texture.indicatoUp:SetPoint('BOTTOM', texture,'TOP')
-
-                texture.strong= e.Cbtn(panel.setFrame, {icon='hide',size={25,25}, pushe=true})
-                texture.strong:SetPoint('BOTTOM', texture.indicatoUp, 'TOP')
-                texture.strong:SetNormalTexture(strong)
-                texture.strong.abilityID= PetTypeAbility[index]
-                texture.strong.typeID=index
-                texture.strong:EnableMouse(true)
-                show_FloatingPetBattleAbilityTooltip(texture.strong)
-            end
-            local weakHints, index2=get_Strong_WeakHints(i)--弱
-            if weakHints then
-                texture.indicatoDown=panel.setFrame:CreateTexture()
-                texture.indicatoDown:SetAtlas('UI-HUD-MicroMenu-StreamDLRed-Up')
-                texture.indicatoDown:SetSize(10,10)
-                texture.indicatoDown:SetPoint('TOP', texture,'BOTTOM')
-
-                texture.weakHints= e.Cbtn(panel.setFrame, {icon='hide', size={25,25}, pushe=true})
-                texture.weakHints:SetPoint('TOP', texture.indicatoDown, 'BOTTOM')
-                texture.weakHints:SetNormalTexture(weakHints)
-                texture.weakHints.abilityID= PetTypeAbility[index2]
-                texture.weakHints.typeID=index2
-                texture.weakHints:EnableMouse(true)
-                show_FloatingPetBattleAbilityTooltip(texture.weakHints)
-            end
-
-            last=texture
-        end
+        return
     end
 
-    if panel.setFrame then
-        panel.setFrame:SetShown(not Save.setFrameHide)
+
+    TrackButton.setFrame=CreateFrame("Frame", nil, TrackButton)
+    TrackButton.setFrame:SetSize(1,1)
+    TrackButton.setFrame:SetPoint('RIGHT')
+
+    local last=TrackButton.setFrame
+    for i=1, C_PetJournal.GetNumPetTypes() do
+        local texture= e.Cbtn(TrackButton.setFrame, {icon='hide',size={25,25}, pushe=true})
+        texture:SetSize(25, 25)
+        texture:SetPoint('LEFT', last, 'RIGHT')
+        texture:SetNormalTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i])
+        texture.abilityID= PetTypeAbility[i]
+        texture.typeID=i
+        texture:EnableMouse(true)
+        show_FloatingPetBattleAbilityTooltip(texture)
+
+        local strong, index=get_Strong_WeakHints(i, true)--强
+        if strong then
+            texture.indicatoUp=TrackButton.setFrame:CreateTexture()
+            texture.indicatoUp:SetAtlas('bags-greenarrow')
+            texture.indicatoUp:SetSize(10,10)
+            texture.indicatoUp:SetPoint('BOTTOM', texture,'TOP')
+
+            texture.strong= e.Cbtn(TrackButton.setFrame, {icon='hide',size={25,25}, pushe=true})
+            texture.strong:SetPoint('BOTTOM', texture.indicatoUp, 'TOP')
+            texture.strong:SetNormalTexture(strong)
+            texture.strong.abilityID= PetTypeAbility[index]
+            texture.strong.typeID=index
+            texture.strong:EnableMouse(true)
+            show_FloatingPetBattleAbilityTooltip(texture.strong)
+        end
+        local weakHints, index2=get_Strong_WeakHints(i)--弱
+        if weakHints then
+            texture.indicatoDown=TrackButton.setFrame:CreateTexture()
+            texture.indicatoDown:SetAtlas('UI-HUD-MicroMenu-StreamDLRed-Up')
+            texture.indicatoDown:SetSize(10,10)
+            texture.indicatoDown:SetPoint('TOP', texture,'BOTTOM')
+
+            texture.weakHints= e.Cbtn(TrackButton.setFrame, {icon='hide', size={25,25}, pushe=true})
+            texture.weakHints:SetPoint('TOP', texture.indicatoDown, 'BOTTOM')
+            texture.weakHints:SetNormalTexture(weakHints)
+            texture.weakHints.abilityID= PetTypeAbility[index2]
+            texture.weakHints.typeID=index2
+            texture.weakHints:EnableMouse(true)
+            show_FloatingPetBattleAbilityTooltip(texture.weakHints)
+        end
+
+        last=texture
     end
-    panel:SetShown(show)--提示,类型,
+   
 end
 
-local function set_Button_setFrame_PetJournal()--宠物手册，增加按钮
-    local frame= e.Cbtn(RematchJournal or PetJournal, {icon=true,size={25, 25}})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--宠物手册，增加按钮
+local function set_Button_setFrame_PetJournal()
+    TrackButton.btn= e.Cbtn(RematchJournal or PetJournal, {icon='hide', size={22, 22}})
     if _G['MoveZoomInButtonPerCollectionsJournal'] then
-        frame:SetPoint('RIGHT', _G['MoveZoomInButtonPerCollectionsJournal'], 'LEFT')
+        TrackButton.btn:SetPoint('LEFT', _G['MoveZoomInButtonPerCollectionsJournal'], 'RIGHT')
     else
-        frame:SetPoint('TOPLEFT', RematchJournal or PetJournal,'TOPRIGHT',3,-29)
+        TrackButton.btn:SetPoint('TOPLEFT', RematchJournal or PetJournal,'TOPRIGHT',3,-29)
     end
-    frame:SetScript('OnMouseDown', function()
-        if panel.setFrame then
-            set_Pet_Type(not panel:IsShown() and true or false)
+    TrackButton.btn:SetAlpha(0.5)
+    TrackButton.btn:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
+    TrackButton.btn:SetScript('OnClick', function(self)
+        if TrackButton.setFrame then
+            set_Pet_Type(not TrackButton:IsShown() and true or false)
         else
             set_Pet_Type(true)
+
         end
+        self:set_texture()
     end)
-    frame:SetScript('OnEnter', function(self)
+    
+    TrackButton.btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '宠物类型' or PET_FAMILIES, e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
+        self:SetAlpha(1)
     end)
-    frame:SetScript('OnLeave', function() e.tips:Hide() end)
+    TrackButton.btn:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+    function TrackButton.btn:set_texture()
+        local show= TrackButton:IsShown()
+        self:SetNormalAtlas(show and e.Icon.icon or 'talents-button-reset')
+    end
 end
 
 
@@ -611,7 +677,7 @@ end
 --点击移动
 --########
 local function set_Click_To_Move()
-    panel:UnregisterEvent('PLAYER_LEVEL_UP')
+    TrackButton:UnregisterEvent('PLAYER_LEVEL_UP')
     if not Save.clickToMove or Save.disabled then
         return
     end
@@ -626,7 +692,7 @@ local function set_Click_To_Move()
             C_CVar.SetCVar("autoInteract", '0')
             print(id, addName, e.onlyChinese and '点击移动' or CLICK_TO_MOVE, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")))
         end
-        panel:RegisterEvent('PLAYER_LEVEL_UP')
+        TrackButton:RegisterEvent('PLAYER_LEVEL_UP')
     end
 end
 
@@ -716,6 +782,119 @@ end
 --初始
 --####
 local function Init()
+    TrackButton= e.Cbtn(nil, {icon=true, size={20,20}, pushe=true})
+
+
+    TrackButton:SetFrameStrata('DIALOG')
+    TrackButton:RegisterForDrag("RightButton")
+    TrackButton:SetMovable(true)
+    TrackButton:SetClampedToScreen(true)
+
+    TrackButton:SetScript("OnDragStart", function(self)
+        self:StartMoving()
+    end)
+    TrackButton:SetScript("OnDragStop", function(self)
+        ResetCursor()
+        self:StopMovingOrSizing()
+        Save.point={self:GetPoint(1)}
+        Save.point[2]=nil
+        self:Raise()
+    end)
+    TrackButton:SetScript("OnMouseUp", ResetCursor)
+    TrackButton:SetScript("OnMouseDown", function(_, d)
+        if d=='RightButton' then
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+    TrackButton:SetScript("OnClick", function(self, d)
+        if d=='LeftButton' then--显示，隐藏
+            Save.setFrameHide= not Save.setFrameHide and true or nil
+            self:set_texture()
+            set_Pet_Type(true)
+        end
+    end)
+
+    TrackButton:SetScript('OnMouseWheel',function(_, d)--打开，宠物手册
+        if d==1 then
+            if not PetJournal or not PetJournal:IsVisible() then
+                ToggleCollectionsJournal(2)
+            end
+        elseif d==-1 then
+            if PetJournal and PetJournal:IsVisible() then
+                ToggleCollectionsJournal(2)
+            end
+        end
+        --SetCollectionsJournalShown(true, 2)--UIParent.lua
+    end)
+
+    TrackButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    TrackButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '宠物手册' or PET_JOURNAL, e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+        if not IsAddOnLoaded('Rematch') then
+            e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '图标' or EMBLEM_SYMBOL), e.onlyChinese and '过滤器: 宠物类型' or FILTER..": "..PET_FAMILIES)
+        end
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+
+
+
+    TrackButton:RegisterEvent('PET_BATTLE_OPENING_DONE')--显示，隐藏
+    TrackButton:RegisterEvent('PET_BATTLE_CLOSE')
+    TrackButton:SetScript('OnEvent', function(_, event)
+        if event== 'PLAYER_LEVEL_UP' then
+            C_Timer.After(2, set_Click_To_Move)
+
+        else--PET_BATTLE_OPENING_DONE PET_BATTLE_CLOSE
+            set_Pet_Type(C_PetBattles.IsInBattle())
+
+            if event=='PET_BATTLE_CLOSE' then
+                if PetHasActionBar() and not UnitAffectingCombat('player') then--宠物动作条， 显示，隐藏
+                    PetActionBar:SetShown(true)
+                end
+                if not UnitAffectingCombat('player') then--UIParent.lua
+                    local duration = select(2, GetSpellCooldown(125439))
+                    if duration and duration<=2  or not duration then
+                        if (CollectionsJournal and not PetJournal:IsVisible()) or not CollectionsJournal then
+                            ToggleCollectionsJournal(2)
+                        end
+                    end
+                end
+            end
+        end
+    end)
+
+    TrackButton:SetScript("OnShow", function(self)
+        if self.btn then
+            self.btn:set_texture()--宠物手册，增加按钮
+        end
+    end)
+    TrackButton:SetScript("OnHide", function(self)
+        if self.btn then
+            self.btn:set_texture()--宠物手册，增加按钮
+        end
+    end)
+
+    function TrackButton:set_texture()
+        self:SetNormalAtlas(Save.setFrameHide and 'talents-button-reset' or e.Icon.icon)
+        self:SetAlpha(Save.setFrameHide and 0.5 or 1)
+    end
+    function TrackButton:set_point()
+        if Save.point then
+            self:SetPoint(Save.point[1],UIParent, Save.point[3], Save.point[4], Save.point[5])
+        else
+            self:SetPoint('RIGHT',-400, 200)
+        end
+    end
+
+    TrackButton:set_point()
+    TrackButton:set_texture()
+
     --宠物战斗界面收集数
     hooksecurefunc('PetBattleUnitFrame_UpdateDisplay',set_PetBattleUnitFrame_UpdateDisplay)
 
@@ -734,60 +913,6 @@ local function Init()
     --对方，技能， 冷却
     hooksecurefunc('PetBattleActionButton_UpdateState', set_PetBattleActionButton_UpdateState)
 
-    panel:RegisterForDrag("RightButton")
-    panel:SetMovable(true)
-    panel:SetClampedToScreen(true)
-
-    panel:SetScript("OnDragStart", function(self)
-        self:StartMoving()
-    end)
-    panel:SetScript("OnDragStop", function(self)
-        ResetCursor()
-        self:StopMovingOrSizing()
-        Save.point={self:GetPoint(1)}
-        Save.point[2]=nil
-        self:Raise()
-    end)
-    panel:SetScript("OnMouseDown", function(self,d)
-        if d=='RightButton' then
-            SetCursor('UI_MOVE_CURSOR')
-
-        elseif d=='LeftButton' then--显示，隐藏
-            Save.setFrameHide= not Save.setFrameHide and true or nil
-            set_Pet_Type(true)
-        end
-    end)
-    panel:SetScript("OnMouseUp", function(self, d)
-        ResetCursor()
-    end)
-    panel:SetScript('OnMouseWheel',function(self,d)--打开，宠物手册
-        if d==1 then
-            if not PetJournal or not PetJournal:IsVisible() then
-                ToggleCollectionsJournal(2)
-            end
-        elseif d==-1 then
-            if PetJournal and PetJournal:IsVisible() then
-                ToggleCollectionsJournal(2)
-            end
-        end
-        --SetCollectionsJournalShown(true, 2)--UIParent.lua
-    end)
-    panel:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '宠物手册' or PET_JOURNAL, e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-        if not IsAddOnLoaded('Rematch') then
-            e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '图标' or EMBLEM_SYMBOL), e.onlyChinese and '过滤器: 宠物类型' or FILTER..": "..PET_FAMILIES)
-        end
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:Show()
-    end)
-    panel:SetScript('OnLeave', function()
-        e.tips:Hide()
-    end)
     set_Pet_Type(C_PetBattles.IsInBattle())
 
     --隐藏, 宠物, 动作条
@@ -801,12 +926,23 @@ local function Init()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PET_BATTLE_OPENING_DONE')
-panel:RegisterEvent('PET_BATTLE_CLOSE')
+panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
@@ -814,7 +950,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            local initializer2= e.AddPanel_Check({
+            --[[local initializer2= e.AddPanel_Check({
                 name= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -822,6 +958,32 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     Save.disabled= not Save.disabled and true or nil
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
+            })]]
+
+            --添加控制面板
+            local initializer2= e.AddPanel_Check_Button({
+                checkName= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName),
+                checkValue= not Save.disabled,
+                checkFunc= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                end,
+                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                buttonFunc= function()
+                    Save.point=nil
+                    if TrackButton then
+                        TrackButton:ClearAllPoints()
+                        TrackButton:set_point()
+                    end
+                    Save.EnemyFramePoint=nil--对方, 技能提示， 框
+                    if EnemyFrame then
+                        EnemyFrame:set_point()
+                    end
+                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                end,
+                tooltip= addName,
+                layout= nil,
+                category= nil,
             })
 
             local initializer= e.AddPanel_Check({
@@ -835,7 +997,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     set_Click_To_Move()
                 end
             })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+            
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabled and TrackButton end)
 
             initializer= e.AddPanel_Check({
                 name= '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button')),
@@ -848,42 +1011,19 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             })
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 
-
-            if Save.disabled then
-                panel:UnregisterAllEvents()
-            else
+           -- panel:UnregisterEvent('ADDON_LOADED')
+            if not Save.disabled then
+                Init()
                 add_Click_To_Move_Button()--点击移动，按钮
                 set_Click_To_Move()
-                Init()
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
-
         elseif arg1=='Blizzard_Collections' then
-            set_Button_setFrame_PetJournal()
+            set_Button_setFrame_PetJournal()--宠物手册，增加按钮
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
-        end
-
-    elseif event== 'PLAYER_LEVEL_UP' then
-        C_Timer.After(2, set_Click_To_Move)
-
-    else--PET_BATTLE_OPENING_DONE PET_BATTLE_CLOSE
-        set_Pet_Type(C_PetBattles.IsInBattle())
-        if event=='PET_BATTLE_CLOSE' then
-            if PetHasActionBar() and not UnitAffectingCombat('player') then--宠物动作条， 显示，隐藏
-                PetActionBar:SetShown(true)
-            end
-            if not UnitAffectingCombat('player') then--UIParent.lua
-                local duration = select(2, GetSpellCooldown(125439))
-                if duration and duration<=2  or not duration then
-                    if (CollectionsJournal and not PetJournal:IsVisible()) or not CollectionsJournal then
-                        ToggleCollectionsJournal(2)
-                    end
-                end
-            end
         end
     end
 end)

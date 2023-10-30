@@ -120,10 +120,12 @@ local function Init()
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             self:RegisterEvent('BAG_UPDATE')
             self:RegisterEvent('BAG_UPDATE_DELAYED')
+            self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+            self:RegisterEvent('PET_BATTLE_CLOSE')
         end
     end
     function Button:set_Shown()
-        self:SetShown(self.uiMapID and not UnitAffectingCombat('player'))
+        self:SetShown(self.uiMapID and not UnitAffectingCombat('player') and not C_PetBattles.IsInBattle())
     end
     function Button:get_UIMapID()
         self.uiMapID= C_Map.GetBestMapForUnit('player')==2200 and true or false

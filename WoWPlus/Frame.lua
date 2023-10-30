@@ -309,7 +309,7 @@ local function created_Move_Button(self, tab)--created_Move_Button(self, {frame=
         return
     end
     if not self.moveButton then
-        self.moveButton= e.Cbtn(self, {texture='Interface\\Cursor\\UI-Cursor-Move', size={16,16}})
+        self.moveButton= e.Cbtn(self, {texture='Interface\\Cursor\\UI-Cursor-Move', size={22,22}})
         self.moveButton:SetPoint('BOTTOM', self, 'TOP')
         self.moveButton:SetFrameLevel(self:GetFrameLevel()+5)
         self.moveButton.alpha= tab.zeroAlpha and 0 or 0.2
