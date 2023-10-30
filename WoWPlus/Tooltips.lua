@@ -1461,7 +1461,7 @@ local function Init()
             return
         end
         
-        --25宏, 11动作条, 4可交互物品, 14装备管理, 0物品 19玩具
+        --25宏, 11动作条, 4可交互物品, 14装备管理, 0物品 19玩具, 9宠物
         if data.type==2 then--单位
             if tooltip==e.tips then
                 local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
