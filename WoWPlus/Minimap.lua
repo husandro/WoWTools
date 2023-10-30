@@ -37,7 +37,11 @@ local Button
 
 
 
-
+--[[if e.Player.husandro then
+    hooksecurefunc(BaseMapPoiPinMixin, 'SetTexture', function(poiInfo)
+        print(id,addName)
+    end)
+end]]
 
 
 
@@ -603,10 +607,75 @@ local function set_OnEnter_btn_tips(self)
     if self.rewardQuestID then
         e.tips:AddLine('rewardQuestID |cnGREEN_FONT_COLOR:'..self.rewardQuestID)
     end
+
+    e.tips:AddLine(' ')
+    
+    e.tips:AddDoubleLine(self.name and self.name~='' and '|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '信息' or INFO) or ' ', e.Icon.left)
+    e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU , e.Icon.right)
+    e.tips:Show()
 end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+--小按钮，点击
+local function set_OnClick_btn(self)
+    local text
+    if self.areaPoiID and self.uiMapID then
+        local info = C_AreaPoiInfo.GetAreaPOIInfo(self.uiMapID, self.areaPoiID)
+        if info and info.name then
+            local link
+            if info.position then
+                if C_Map.CanSetUserWaypointOnMap(self.uiMapID) then
+                    local mapPoint = UiMapPoint.CreateFromVector2D(self.uiMapID, info.position)--UiMapPoint.CreateFromCoordinates(mapID, x, y, z)
+                    C_Map.SetUserWaypoint(mapPoint)
+                    link= C_Map.GetUserWaypointHyperlink()
+                    C_Map.ClearUserWaypoint()
+                else
+                    local x, y= info.position:GetXY()
+                    if x and y then
+                        link= format('%.2f', x*100)..' '..format('%.2f', y*100)
+                    end
+                end
+            end
+            text= info.name..(link or '')
+            local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(self.areaPoiID)
+            if secondsLeft then
+                local time= e.SecondsToClock(secondsLeft)
+                if time then
+                    text= text..' '..time
+                end
+            else
+
+            end
+        end
+
+    elseif self.questID then
+        C_SuperTrack.SetSuperTrackedQuestID(self.questID)
+        text= GetQuestLink(self.questID) or C_TaskQuest.GetQuestInfoByQuestID(self.questID)
+
+    elseif self.vignetteGUID then
+        local info= C_VignetteInfo.GetVignetteInfo(self.vignetteGUID)
+        if info then
+            text= info.name
+        end
+    end
+
+    if not text then
+        text= self.name:match('(.-)|A') or self.name:match('(.-)|T')  or self.name
+    end
+    e.Chat(text, nil)
+end
 
 
 
@@ -704,12 +773,12 @@ local function set_Button_Text()
                 self.questID= tables.questID--任务
 
                 self.vignetteGUID= tables.vignetteGUID--vigentte
-                --self.onMinimap= tables.onMinimap
                 self.rewardQuestID= tables.rewardQuestID
 
                 self.areaPoiID= tables.areaPoiID--areaPoi
                 self.uiMapID= tables.uiMapID
-
+                
+                self.name= tables.name
                 self.nameText:SetText(tables.name=='' and ' ' or tables.name or '')
                 self.text:SetText(tables.text or '')
                 if tables.atlas then
@@ -738,8 +807,14 @@ local function set_Button_Text()
                 end
             end
 
-            btn:SetScript('OnClick', function(self)
-                Button:show_menu(self)
+            btn:SetScript('OnClick', function(self, d)
+                if d=='LeftButton' then
+                    if self.name and self.name~='' then
+                        set_OnClick_btn(self)
+                    end
+                else
+                    Button:show_menu(self)
+                end
             end)
             btn:SetScript("OnLeave", function() e.tips:Hide() Button:SetButtonState('NORMAL') end)
             btn:SetScript('OnEnter', function(self)

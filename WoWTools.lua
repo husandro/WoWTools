@@ -518,13 +518,14 @@ function e.SecondsToClock(seconds, displayZeroHours)--TimeUtil.lua
     end
 end
 
-function e.Chat(text, name, setPrint)
+function e.Chat(text, name)
     if not text then
         return
     elseif name then
         SendChatMessage(text, 'WHISPER',nil, name)
         return
     end
+
     local isNotDead= not UnitIsDeadOrGhost('player')
     local isInInstance= IsInInstance()
     if isInInstance and isNotDead then-- and C_CVar.GetCVarBool("chatBubbles") then
@@ -539,10 +540,11 @@ function e.Chat(text, name, setPrint)
     elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
         SendChatMessage(text, 'PARTY')
 
-    elseif isNotDead and IsOutdoors() and not UnitAffectingCombat('player') then
-        SendChatMessage(text, 'YELL')
+    --elseif isNotDead and IsOutdoors() and not UnitAffectingCombat('player') then
+        --SendChatMessage(text, 'YELL')
 
-    elseif setPrint then
+   -- elseif setPrint then
+    else
         print(text)
     end
 end
