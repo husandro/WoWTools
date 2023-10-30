@@ -336,8 +336,7 @@ local function get_vignette_Text()--Vignettes
                 if index==bestUniqueVignetteIndex then--唯一
                     name= '|cnGREEN_FONT_COLOR:'..name..'|r'..e.Icon.star2
                 end
-
-                table.insert(info.onMinimap and onMinimap or onWorldMap, {name=name, text=text, atlas= info.atlasName, vignetteGUID=guid})
+                table.insert(info.onMinimap and onMinimap or onWorldMap, {name=name, text=text, atlas= info.atlasName, vignetteGUID=guid, onMinimap= info.onMinimap})
                 tab[info.vignetteID]=true
             end
         end
@@ -483,6 +482,7 @@ local function set_Button_Text()
 
     local onMinimap, onWorldMap= get_vignette_Text()--{vignetteID=info.vignetteID, text=text, atlas= info.atlasName}
     for _, vigenttes in pairs(onMinimap) do
+
         table.insert(allTable, vigenttes)
     end
     for _, vigenttes in pairs(onWorldMap) do
@@ -542,6 +542,11 @@ local function set_Button_Text()
             btn= e.Cbtn(Button.Frame, {size={12,12}, icon='hdie'})
             btn.nameText= e.Cstr(btn,{color=true})
             btn.nameText:SetPoint('LEFT', btn, 'RIGHT')
+            btn.onMinimap= btn:CreateTexture(nil, 'ARTWORK')
+            btn.onMinimap:SetAtlas('UI-HUD-MicroMenu-Highlightalert')
+            btn.onMinimap:SetPoint('CENTER')
+            btn.onMinimap:SetSize(16,16)
+            btn.onMinimap:SetVertexColor(0,1,0)
             btn.text= e.Cstr(btn,{color=true})
 
             btn.index= index
@@ -550,6 +555,7 @@ local function set_Button_Text()
                 self.questID= tables.questID--任务
 
                 self.vignetteGUID= tables.vignetteGUID--vigentte
+                --self.onMinimap= tables.onMinimap
 
                 self.areaPoiID= tables.areaPoiID--areaPoi
                 self.uiMapID= tables.uiMapID
@@ -562,6 +568,7 @@ local function set_Button_Text()
                     self:SetNormalTexture(tables.texture or 0)
                 end
                 self:SetShown((tables.text or tables.texture or tables.atlas) and true or false)
+                self.onMinimap:SetShown(tables.vignetteGUID and tables.onMinimap)--提示， 在小地图
             end
             function btn:set_btn_point()
                 if Save.textToDown then

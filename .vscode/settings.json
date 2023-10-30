@@ -3504,7 +3504,8 @@
         "TRANSMOG_COLLECTED",
         "PVP_RANK_0_NAME",
         "MerchantBuyBackItem",
-        "MerchantFrameBottomLeftBorder"
+        "MerchantFrameBottomLeftBorder",
+        "MicroMenu"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
