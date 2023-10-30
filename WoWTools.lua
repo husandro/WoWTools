@@ -1937,7 +1937,7 @@ function e.GetPetStrongWeakHints(petType)
 end
 
 
-function e.GetPet9Item(itemID, find)--宠物对换, wow9.0
+function e.GetPet9Item(itemID, find)--宠物兑换, wow9.0
     if itemID==11406 or itemID==11944 or itemID==25402 then--[黄晶珠蜒]
         if find then
             return true

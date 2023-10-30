@@ -512,12 +512,12 @@ function func.Set_Item(self, itemLink, itemID)
     end
 
     if itemQuality==0 and(classID==2 or classID==15) then
-        local petText= e.GetPet9Item(itemID)--宠物对换, wow9.0
+        local petText= e.GetPet9Item(itemID)--宠物兑换, wow9.0
         if petText then
             self:AddLine(petText)
         end
     end
-    
+
     local spellName, spellID = GetItemSpell(itemLink)--物品法术
     if spellName and spellID then
         local spellTexture=GetSpellTexture(spellID)

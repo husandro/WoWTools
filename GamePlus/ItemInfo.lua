@@ -99,7 +99,7 @@ local function set_Item_Info(self, tab)
                 end
             end
 
-        elseif itemQuality==0 and e.GetPet9Item(itemID, true) then--宠物对换, wow9.0
+        elseif itemQuality==0 and e.GetPet9Item(itemID, true) then--宠物兑换, wow9.0
             topRightText='|A:WildBattlePetCapturable:0:0|a'
 
         elseif itemQuality==0 and not (classID==2 or classID==4 ) then

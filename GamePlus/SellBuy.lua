@@ -107,7 +107,7 @@ e.CheckItemSell= function(itemID, quality)
         elseif Save.Sell[itemID] and not Save.notSellCustom then
             return e.onlyChinese and '自定义' or CUSTOM
 
-        elseif quality==0 and e.GetPet9Item(itemID, true) then--宠物对换, wow9.0
+        elseif quality==0 and e.GetPet9Item(itemID, true) then--宠物兑换, wow9.0
             return e.onlyChinese and '宠物' or PET
 
         elseif bossSave[itemID] and not Save.notSellBoss then
