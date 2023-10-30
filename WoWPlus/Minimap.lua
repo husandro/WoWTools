@@ -33,18 +33,61 @@ end
 
 local panel= CreateFrame("Frame")
 local Button
---local TrackButton
 
---[[
-Interface\Minimap\ObjectIconsAtlas
-hooksecurefunc(Minimap, 'SetBlipTexture', function()
-    print(id,addName)
-end)
 
-]]
+
+
+
+
+
+
+
+
+
+
+
+--取得 areaPoiID 名称
+local barColor = {
+	--[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
+	[3] = WHITE_FONT_COLOR,
+	[2] = RED_FONT_COLOR,
+	[1] = YELLOW_FONT_COLOR,
+	--[Enum.StatusBarColorTintValue.Orange] = ORANGE_FONT_COLOR,
+	[5] = EPIC_PURPLE_COLOR,
+	[4] = GREEN_FONT_COLOR,
+	[6] = RARE_BLUE_COLOR,
+}
+
+--[[local barColorFromTintValue = {
+	[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.White] = WHITE_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Red] = RED_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Yellow] = YELLOW_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Orange] = ORANGE_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Purple] = EPIC_PURPLE_COLOR,
+	[Enum.StatusBarColorTintValue.Green] = GREEN_FONT_COLOR,
+	[Enum.StatusBarColorTintValue.Blue] = RARE_BLUE_COLOR,
+}]]
+local function get_AreaPOIInfo_Name(poiInfo)
+    return (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --任务奖励
+--QuestUtils_AddQuestRewardsToTooltip(tooltip, questID, style)
 local function Get_QuestReward_Texture(questID)
     local itemTexture, bestQuality
 
@@ -54,12 +97,12 @@ local function Get_QuestReward_Texture(questID)
         for i = 1, numQuestChoices do
             local _, texture, _, quality= GetQuestLogChoiceInfo(i, questID);
             if quality > bestQuality then
-                itemTexture= texture
+                itemTexture= texture or itemTexture
             end
         end
         if itemTexture then return itemTexture end
     end
-
+    
     local numQuestRewards = GetNumQuestLogRewards(questID)
     if numQuestRewards>0 then
         bestQuality = -1
@@ -71,6 +114,7 @@ local function Get_QuestReward_Texture(questID)
         end
         if itemTexture then return itemTexture end
     end
+    
 
     if C_QuestInfoSystem.HasQuestRewardSpells(questID) then
         for _, spell in pairs(C_QuestInfoSystem.GetQuestRewardSpells(questID) or {}) do
@@ -114,7 +158,28 @@ local function Get_QuestReward_Texture(questID)
     elseif GetQuestLogRewardMoney(questID)>0 then--钱
         return 'Interface\\Icons\\inv_misc_coin_01'--'interface\\moneyframe\\ui-goldicon'
     end
+
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -148,31 +213,30 @@ local function get_Quest_Text(questID)
 end
 
 
---取得 areaPoiID 名称
-local barColor = {
-	--[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
-	[3] = WHITE_FONT_COLOR,
-	[2] = RED_FONT_COLOR,
-	[1] = YELLOW_FONT_COLOR,
-	--[Enum.StatusBarColorTintValue.Orange] = ORANGE_FONT_COLOR,
-	[5] = EPIC_PURPLE_COLOR,
-	[4] = GREEN_FONT_COLOR,
-	[6] = RARE_BLUE_COLOR,
-}
 
---[[local barColorFromTintValue = {
-	[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.White] = WHITE_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Red] = RED_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Yellow] = YELLOW_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Orange] = ORANGE_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Purple] = EPIC_PURPLE_COLOR,
-	[Enum.StatusBarColorTintValue.Green] = GREEN_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Blue] = RARE_BLUE_COLOR,
-}]]
-local function get_AreaPOIInfo_Name(poiInfo)
-    return (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
-end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Get_widgetSetID_Text(widgetSetID, all)
     local text
 
@@ -242,13 +306,32 @@ local function Get_widgetSetID_Text(widgetSetID, all)
                 end
 
                 text=(text and text..'|n' or '').. '   '..barText..text3
+               --if widgetSetID==1001 then
             end
         end
     end
+
+
     return text
 end
 
-local function Get_areaPoiID_Text(uiMapID, areaPoiID, all)--areaPoiID 文本
+
+
+
+
+
+
+
+
+
+
+
+
+
+--##############
+--areaPoiID 文本
+--##############
+local function Get_areaPoiID_Text(uiMapID, areaPoiID, all)
     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
     if not poiInfo.name  then
         return
@@ -297,13 +380,32 @@ end
 
 
 
-local function get_vignette_Text()--Vignettes
+
+
+
+
+
+
+
+
+
+
+
+
+
+--#########
+--Vignettes
+--#########
+local function get_vignette_Text()
     local onMinimap={}
     local onWorldMap={}
     if not (Save.hideVigentteCurrentOnMinimap and Save.hideVigentteCurrentOnWorldMap) then
         local vignetteGUIDs= C_VignetteInfo.GetVignettes() or {}
         local bestUniqueVignetteIndex = C_VignetteInfo.FindBestUniqueVignette(vignetteGUIDs)
         local tab={}
+
+        
+
         for index, guid in pairs(vignetteGUIDs) do
             local info= C_VignetteInfo.GetVignetteInfo(guid) or {}
             if info.vignetteID and not tab[info.vignetteID]
@@ -314,6 +416,10 @@ local function get_vignette_Text()--Vignettes
                     or (info.onWorldMap and not Save.hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
                 )
             then
+                
+                if info.rewardQuestID==0 then
+                    info.rewardQuestID=nil
+                end
                 local text
                 local name= info.name
                 if info.widgetSetID then
@@ -327,8 +433,10 @@ local function get_vignette_Text()--Vignettes
                 elseif info.vignetteID==5468 then
                     name= name..'|A:MajorFactions_Icons_Expedition512:0:0|a'
                 end
-                if info.rewardQuestID and info.rewardQuestID>0 then--任务，奖励
+                if info.rewardQuestID then--任务，奖励
+                    
                     local itemTexture= Get_QuestReward_Texture(info.rewardQuestID)
+                    
                     if itemTexture then
                         name= name..'|T'..itemTexture..':0|t'
                     end
@@ -336,7 +444,16 @@ local function get_vignette_Text()--Vignettes
                 if index==bestUniqueVignetteIndex then--唯一
                     name= '|cnGREEN_FONT_COLOR:'..name..'|r'..e.Icon.star2
                 end
-                table.insert(info.onMinimap and onMinimap or onWorldMap, {name=name, text=text, atlas= info.atlasName, vignetteGUID=guid, onMinimap= info.onMinimap})
+
+                --local point= C_VignetteInfo.GetVignettePosition(guid, uiMapID)
+                table.insert(info.onMinimap and onMinimap or onWorldMap, {
+                    name=name,
+                    text=text,
+                    atlas=info.atlasName,
+                    vignetteGUID=guid,
+                    onMinimap=info.onMinimap,
+                    rewardQuestID= info.rewardQuestID
+                })
                 tab[info.vignetteID]=true
             end
         end
@@ -348,7 +465,19 @@ end
 
 
 
-local function set_OnEnter_btn_tips(self)--VignetteDataProvider.lua VignettePinMixin:OnMouseEnte
+
+
+
+
+
+
+
+
+
+--##########
+--小按钮，提示
+--VignetteDataProvider.lua VignettePinMixin:OnMouseEnte
+local function set_OnEnter_btn_tips(self)
     local widgetSetID, vignetteID
     if self.questID then--任务
         GameTooltip_AddQuest(self, self.questID)
@@ -471,7 +600,28 @@ local function set_OnEnter_btn_tips(self)--VignetteDataProvider.lua VignettePinM
         local info= self.uiMapID and C_Map.GetMapInfo(self.uiMapID) or {}
         e.tips:AddDoubleLine('widgetSetID |cnGREEN_FONT_COLOR:'..widgetSetID, info.name)
     end
+    if self.rewardQuestID then
+        e.tips:AddLine('rewardQuestID |cnGREEN_FONT_COLOR:'..self.rewardQuestID)
+    end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -482,7 +632,6 @@ local function set_Button_Text()
 
     local onMinimap, onWorldMap= get_vignette_Text()--{vignetteID=info.vignetteID, text=text, atlas= info.atlasName}
     for _, vigenttes in pairs(onMinimap) do
-
         table.insert(allTable, vigenttes)
     end
     for _, vigenttes in pairs(onWorldMap) do
@@ -556,6 +705,7 @@ local function set_Button_Text()
 
                 self.vignetteGUID= tables.vignetteGUID--vigentte
                 --self.onMinimap= tables.onMinimap
+                self.rewardQuestID= tables.rewardQuestID
 
                 self.areaPoiID= tables.areaPoiID--areaPoi
                 self.uiMapID= tables.uiMapID
