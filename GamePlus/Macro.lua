@@ -63,7 +63,7 @@ local function Init()
     MacroHorizontalBarLeft:SetWidth(w-85)
 
 
-
+    --设置，宏，图标，位置，长度
     hooksecurefunc(MacroFrame, 'ChangeTab', function(self, tabID)
         self.MacroSelector:ClearAllPoints()
         if tabID==1 then
@@ -75,22 +75,55 @@ local function Init()
             self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
         end
     end)
-    
 
-    --MacroFrame.MacroSelector.ScrollBox:SetWidth(w*2)
+    --宏，提示
+    local function set_btn_tooltips(self)
+        if self.selectionIndex then
+            local index= self.selectionIndex+ MacroFrame.macroBase
+            local name, icon, body = GetMacroInfo(index)
+            if name and icon and body then
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine('|T'..icon..':0|t'..name, self.selectionIndex)
+                e.tips:AddLine(body)
+                e.tips:Show()
+            end
+        end
+    end
+    hooksecurefunc(MacroButtonMixin, 'OnLoad', function(self)
+        self:HookScript('OnEnter', set_btn_tooltips)
+        self:HookScript('OnLeave', function() e.tips:Hide() end)
+        local texture= self:GetRegions()
+        texture:SetAlpha(0.3)
+    end)
 
-    --MacroFrame.MacroSelector:SetSize(800,400)
-    --[[MacroFrameScrollFrame:SetSize(w-43, h/2-15)
-    MacroFrameText:SetSize(w-43, h/2-15)
-    MacroFrameTextBackground:SetSize(w-33, h/2)
-    MacroHorizontalBarLeft:SetWidth(w-85)]]
-    
-    --MacroEditButton:ClearAllPoints()
-    --MacroEditButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'TOPRIGHT',2, 3)
+    --选定宏，index提示
+    MacroFrame.numSelectionLable= e.Cstr(MacroFrame)
+    MacroFrame.numSelectionLable:SetPoint('BOTTOM', MacroFrameSelectedMacroButton, 'TOP')
+    MacroFrame.numSelectionLable:SetScript('OnLeave', function() e.tips:Hide() end)
+    MacroFrame.numSelectionLable:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(' ', e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)
+        e.tips:Show()
+    end)
+    hooksecurefunc(MacroFrame, 'SelectMacro', function(self, index)
+        self.numSelectionLable:SetText(index or '')
+    end)
+    --[[hooksecurefunc(SelectorButtonMixin, 'OnClick', function(self)
+        local actualIndex = MacroFrame:GetMacroDataIndex(self:GetElementData())
+        if actualIndex then
+            actualIndex= actualIndex- MacroFrame.macroBase
+        end
+        MacroFrameSelectedMacroButton.numSelectionLable:SetText(actualIndex or '')
+    end)]]
+
+
+
     MacroEditButton:SetSize(60,22)--170 22
     MacroEditButton:SetText(e.onlyChinese and '名称' or NAME)
-    
-
 
     local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
     attck:SetPoint('LEFT', MacroEditButton, 'RIGHT')

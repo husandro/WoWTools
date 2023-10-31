@@ -3515,7 +3515,9 @@
         "MAX_CHARACTER_MACROS",
         "MAX_ACCOUNT_MACROS",
         "MacroHorizontalBarLeft",
-        "MacroFrameScrollFrame"
+        "MacroFrameScrollFrame",
+        "SelectorButtonMixin",
+        "MacroButtonMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
