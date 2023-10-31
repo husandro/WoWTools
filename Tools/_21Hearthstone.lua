@@ -130,7 +130,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
             local icon= C_Item.GetItemIconByID(itemID)
             e.tips:AddDoubleLine(
                 (icon and '|T'..icon..':0|t' or '')..(itemID and C_ToyBox.GetToyLink(itemID) or itemID),
-                e.GetEnabeleDisable(not Save.items[itemID])..e.Icon.left
+                e.GetEnabeleDisable(Save.items[itemID])..e.Icon.left
             )
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
