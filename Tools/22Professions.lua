@@ -673,7 +673,7 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
-        e.tips:SetAlpha(1)
+        self:SetAlpha(1)
     end
     btn2:SetScript("OnDoubleClick", function(self)
         Save.wangquePrefessionText= not Save.wangquePrefessionText and true or nil
