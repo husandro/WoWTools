@@ -169,37 +169,40 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
             return self:GetParent().itemID
         end
         function btn.toy:set_alpha()
-            self:SetAlpha(Save.items[self:get_itemID()] and 1 or 0.3)
+            self:SetAlpha(Save.items[self:get_itemID()] and 1 or 0.1)
         end
 
-        btn.toy:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha() end)
-        btn.toy:SetScript('OnEnter', function(self)
+        function btn.toy:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            local itemID=self:get_itemID()
-            e.tips:AddDoubleLine(itemID and C_ToyBox.GetToyLink(itemID) or itemID, e.GetEnabeleDisable(not Save.items[self.itemID])..e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-            e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id,'|T133567:0|t'..addName)
+            e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            e.tips:AddLine(' ')
+            local itemID=self:get_itemID()
+            local icon= C_Item.GetItemIconByID(itemID)
+            e.tips:AddDoubleLine(
+                (icon and '|T'..icon..':0|t' or '')..(itemID and C_ToyBox.GetToyLink(itemID) or itemID),
+                e.GetEnabeleDisable(not Save.items[itemID])..e.Icon.left
+            )
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
             self:SetAlpha(1)
-        end)
+        end
+
         btn.toy:SetScript('OnClick', function(self, d)
             if d=='LeftButton' then
-                local frame=self:GetParent()
-                local itemID= frame and frame.itemID
-                if Save.items[itemID] then
-                    Save.items[itemID]=nil
-                else
-                    Save.items[itemID]=true
-                end
+                local itemID=self:get_itemID()
+                Save.items[itemID]= not Save.items[itemID] and true or nil
                 getToy()--生成, 有效表格
                 setAtt()--设置属性
-                e.call('ToySpellButton_UpdateButton', frame)
+                self:set_tooltips()
+                e.call('ToySpellButton_UpdateButton', self:GetParent())
             else
                 e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self, 15, 0)
             end
         end)
+        btn.toy:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha() end)
+        btn.toy:SetScript('OnEnter', btn.toy.set_tooltips)
     end
     btn.toy:set_alpha()
 end

@@ -22,7 +22,6 @@ local Save={
     showBindName=true,
 }
 local button--button.items={}--存放有效
-
 local ModifiedTab={
     alt=140192,--达拉然炉石
     shift=6948,--炉石
@@ -34,6 +33,23 @@ end
 for itemID, _ in pairs(Save.items) do
     e.LoadDate({id=itemID, type='item'})
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function getToy()--生成, 有效表格
     button.items={}
@@ -75,43 +91,83 @@ local function setAtt()--设置属性
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#############
 --玩具界面, 按钮
 --#############
-local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
-    if not self.hearthstone then
-        self.hearthstone= e.Cbtn(self,{size={16,16}, texture=134414})
-        self.hearthstone:SetPoint('TOPLEFT',self.name,'BOTTOMLEFT')
-        self.hearthstone:SetScript('OnLeave', function() e.tips:Hide() end)
-        self.hearthstone:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
+    if not btn.hearthstone then
+        btn.hearthstone= e.Cbtn(btn,{size={16,16}, texture=134414})
+        btn.hearthstone:SetPoint('TOPLEFT',btn.name,'BOTTOMLEFT')
+
+        function btn.hearthstone:get_itemID()
+            return self:GetParent().itemID
+        end
+        function btn.hearthstone:set_alpha()
+            self:SetAlpha(Save.items[self:get_itemID()] and 1 or 0.1)
+        end
+        function btn.hearthstone:set_tooltips()
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            local itemID=self2:GetParent().itemID
-            e.tips:AddDoubleLine(itemID and C_ToyBox.GetToyLink(itemID) or itemID, e.GetEnabeleDisable(not Save.items[self.itemID])..e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-            e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id,'|T134414:0|t'..addName)
+            e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            e.tips:AddLine(' ')
+            local itemID=self:get_itemID()
+            local icon= C_Item.GetItemIconByID(itemID)
+            e.tips:AddDoubleLine(
+                (icon and '|T'..icon..':0|t' or '')..(itemID and C_ToyBox.GetToyLink(itemID) or itemID),
+                e.GetEnabeleDisable(not Save.items[itemID])..e.Icon.left
+            )
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
-        end)
-        self.hearthstone:SetScript('OnClick', function(self2, d)
+            self:SetAlpha(1)
+        end
+        btn.hearthstone:SetScript('OnClick', function(self, d)
             if d=='LeftButton' then
-                local frame=self2:GetParent()
-                local itemID= frame and frame.itemID
-                if Save.items[itemID] then
-                    Save.items[itemID]=nil
-                else
-                    Save.items[itemID]=true
-                end
+                local itemID=self:get_itemID()
+                Save.items[itemID]= not Save.items[itemID] and true or nil
                 getToy()--生成, 有效表格
                 setAtt()--设置属性
-                e.call('ToySpellButton_UpdateButton', frame)
+                self:set_tooltips()
+                e.call('ToySpellButton_UpdateButton', self:GetParent())
             else
-                e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self2, 15, 0)
+                e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self, 15, 0)
             end
         end)
+        btn.hearthstone:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha() end)
+        btn.hearthstone:SetScript('OnEnter', btn.hearthstone.set_tooltips)
     end
-    self.hearthstone:SetAlpha(Save.items[self.itemID] and 1 or 0.1)
+    btn.hearthstone:set_alpha()
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function set_BindLocation()--显示, 炉石, 绑定位置
     local text
@@ -129,6 +185,20 @@ local function set_BindLocation()--显示, 炉石, 绑定位置
         button.showBindNameText:SetText(text or '')
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#####
 --主菜单
@@ -197,6 +267,27 @@ local function InitMenu(self, level, menuList)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --########################
 --设置Shift, Ctrl, Alt 提示
@@ -268,6 +359,31 @@ local function showTips(self)--显示提示
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###
 --初始
 --###
@@ -319,6 +435,31 @@ local function Init()
         e.SetItemSpellCool({frame=button, item=button.itemID})--主图标冷却
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --###########
 --加载保存数据

@@ -95,6 +95,27 @@ local function set_button_Event(self, isShown)--事件
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#####
 --主菜单
 --#####
@@ -221,6 +242,27 @@ local function Init_Menu(_, level, type)--主菜单
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --物品
 --####
@@ -329,6 +371,29 @@ local function init_Item_Button(self, equip)--设置按钮
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###
 --法术
 --###
@@ -370,27 +435,66 @@ local function init_Spell_Button(self)--设置按钮
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#############
 --玩具界面, 菜单
 --#############
-local function setToySpellButton_UpdateButton(self2)--标记, 是否已选取
-    if not self2.useItem then
-        self2.useItem= e.Cbtn(self2,{size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
-        self2.useItem:SetPoint('TOPLEFT',self2.name,'BOTTOMLEFT', 32,0)
-        self2.useItem:SetScript('OnLeave', function() e.tips:Hide() end)
-        self2.useItem:SetScript('OnEnter', function(self3)
-            e.tips:SetOwner(self3, "ANCHOR_LEFT")
+local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
+    if not btn.useItem then
+        btn.useItem= e.Cbtn(btn,{size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
+        btn.useItem:SetPoint('TOPLEFT',btn.name,'BOTTOMLEFT', 32, 0)
+        function btn.useItem:get_itemID()
+            return self:GetParent().itemID
+        end
+        function btn.useItem:set_alpha()
+            local find=find_Type('item', self:get_itemID())
+            self:SetAlpha(find and 1 or 0.1)
+        end
+        function btn.useItem:set_tooltips()
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            local itemID=self3:GetParent().itemID
-            e.tips:AddDoubleLine(itemID and C_ToyBox.GetToyLink(itemID) or itemID, e.GetEnabeleDisable(find_Type('item', itemID))..e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-            e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id,'Tools |A:soulbinds_tree_conduit_icon_utility:0:0|a'..addName)
+            e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            e.tips:AddLine(' ')
+            local itemID=self:get_itemID()
+            local icon= C_Item.GetItemIconByID(itemID)
+            local find=find_Type('item', itemID)
+            e.tips:AddDoubleLine(
+                (icon and '|T'..icon..':0|t' or '')..(itemID and C_ToyBox.GetToyLink(itemID) or itemID),
+                e.GetEnabeleDisable(not find)..e.Icon.left
+            )
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
-        end)
-        self2.useItem:SetScript('OnClick', function(self3, d)
+            self:SetAlpha(1)
+        end
+
+        btn.useItem:SetScript('OnClick', function(self, d)
             if d=='LeftButton' then
-                local frame=self3:GetParent()
+                local frame=self:GetParent()
                 local itemID= frame and frame.itemID
                 local find=find_Type('item', itemID)
                 if find then
@@ -398,15 +502,43 @@ local function setToySpellButton_UpdateButton(self2)--标记, 是否已选取
                 else
                     table.insert(Save.item, itemID)
                 end
-                print(id, addName, C_ToyBox.GetToyLink(itemID), find and (e.onlyChinese and '移除' or REMOVE) or (e.onlyChinese and '添加' or ADD), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                self:set_tooltips()
                 e.call('ToySpellButton_UpdateButton', frame)
             else
-                e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self3, 15, 0)
+                e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self, 15, 0)
             end
         end)
+        btn.useItem:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha() end)
+        btn.useItem:SetScript('OnEnter', btn.useItem.set_tooltips)
     end
-    self2.useItem:SetAlpha(find_Type('item', self2.itemID) and 1 or 0.1)
+    btn.useItem:set_alpha()
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --###
@@ -672,6 +804,29 @@ local function Init()
         set_Use_Spell_Button(self2, self2.spellID)
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --###########
 --加载保存数据
