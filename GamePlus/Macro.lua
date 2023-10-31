@@ -53,7 +53,7 @@ end
 
 
 
-local SelectionIndex
+
 local function Init()
     local w, h= 350, 600--672, 672
     MacroFrame:SetSize(w, h)--<Size x="338" y="424"/>
@@ -61,6 +61,13 @@ local function Init()
     MacroFrameText:SetSize(w-43, h/2-45)
     MacroFrameTextBackground:SetSize(w-33, h/2-30)
     MacroHorizontalBarLeft:SetWidth(w-85)
+    
+    --设置，焦点
+    MacroFrameTextBackground.NineSlice:SetScript('OnMouseDown', function(_, d)
+        if d=='LeftButton' then
+            MacroFrameText:SetFocus()
+        end
+    end)
 
 
     --设置，宏，图标，位置，长度
