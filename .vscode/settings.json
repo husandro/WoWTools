@@ -3505,7 +3505,17 @@
         "PVP_RANK_0_NAME",
         "MerchantBuyBackItem",
         "MerchantFrameBottomLeftBorder",
-        "MicroMenu"
+        "MicroMenu",
+        "MACRO",
+        "MacroEditButton",
+        "ATTACK",
+        "PanelTemplates_GetSelectedTab",
+        "MacroFrameTab1",
+        "MacroFrameTab2",
+        "MAX_CHARACTER_MACROS",
+        "MAX_ACCOUNT_MACROS",
+        "MacroHorizontalBarLeft",
+        "MacroFrameScrollFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

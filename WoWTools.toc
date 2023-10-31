@@ -105,8 +105,8 @@ GamePlus\Color.lua
 GamePlus\SystemInfo.lua
 ##鼠标 Mouse https://wago.io/CVmKEpl6E
 GamePlus\Cursor.lua
-
-
+##宏增强
+GamePlus\Macro.lua
 
 
 ##坐骑， Tools 主要的，
@@ -170,6 +170,7 @@ ChatButton\Combat.lua
 Other\Brewfest.lua
 Other\DormantSeeds.lua
 Other\HunterPet.lua
+
 
 ##副本, 挑战,之类
 ##Instance\Explosives.lua
