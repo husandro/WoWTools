@@ -673,12 +673,12 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
-        self:set_tooltips()
         e.tips:SetAlpha(1)
     end
     btn2:SetScript("OnDoubleClick", function(self)
         Save.wangquePrefessionText= not Save.wangquePrefessionText and true or nil
         self:set_alpha()
+        self:set_tooltips()
     end)
     btn2:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha()end)
     btn2:SetScript('OnEnter', btn2.set_tooltips)
