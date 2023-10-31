@@ -53,7 +53,7 @@ end
 
 
 
-
+local SelectionIndex
 local function Init()
     local w, h= 350, 600--672, 672
     MacroFrame:SetSize(w, h)--<Size x="338" y="424"/>
@@ -78,13 +78,14 @@ local function Init()
 
     --宏，提示
     local function set_btn_tooltips(self)
+        
         if self.selectionIndex then
             local index= self.selectionIndex+ MacroFrame.macroBase
             local name, icon, body = GetMacroInfo(index)
             if name and icon and body then
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine('|T'..icon..':0|t'..name, self.selectionIndex)
+                e.tips:AddDoubleLine('|T'..icon..':0|t'..name, index)
                 e.tips:AddLine(body)
                 e.tips:Show()
             end
@@ -96,6 +97,8 @@ local function Init()
         local texture= self:GetRegions()
         texture:SetAlpha(0.3)
     end)
+    MacroFrameSelectedMacroButton:HookScript('OnEnter', set_btn_tooltips)
+    MacroFrameSelectedMacroButton:HookScript('OnLeave', function() e.tips:Hide() end)
 
     --选定宏，index提示
     MacroFrame.numSelectionLable= e.Cstr(MacroFrame)
@@ -110,7 +113,9 @@ local function Init()
         e.tips:Show()
     end)
     hooksecurefunc(MacroFrame, 'SelectMacro', function(self, index)
-        self.numSelectionLable:SetText(index or '')
+        self.numSelectionLable:SetText(index and index+MacroFrame.macroBase or '')
+        --index= index and index+MacroFrame.macroBase or nil
+        MacroFrameSelectedMacroButton.selectionIndex= index
     end)
     --[[hooksecurefunc(SelectorButtonMixin, 'OnClick', function(self)
         local actualIndex = MacroFrame:GetMacroDataIndex(self:GetElementData())
