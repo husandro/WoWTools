@@ -139,7 +139,7 @@ local function Init()
 
 
     --选定宏，index提示
-    MacroFrame.numSelectionLable= e.Cstr(MacroFrame)
+    MacroFrame.numSelectionLable= e.Cstr(MacroFrameSelectedMacroButton)
     MacroFrame.numSelectionLable:SetPoint('BOTTOM', MacroFrameSelectedMacroButton, 'TOP')
     MacroFrame.numSelectionLable:SetScript('OnLeave', function() e.tips:Hide() end)
     MacroFrame.numSelectionLable:SetScript('OnEnter', function(self)
