@@ -32,8 +32,6 @@ local Save={
     },
 }
 
-
-
 local ModifiedTab={
     alt=69775,--[维库饮水角]
     shift=134032,--[精英旗帜]
@@ -42,6 +40,32 @@ local ModifiedTab={
 for _, itemID in pairs(ModifiedTab) do
     e.LoadDate({id=itemID, type='item'})
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#########
 --主图标冷却
@@ -106,27 +130,63 @@ local function getAllSaveNum()--Save中玩具数量
     return num
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#############
 --玩具界面, 菜单
 --#############
-local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
-    if not self.toy then
-        self.toy= e.Cbtn(self,{size={16,16}, texture=133567})
-        self.toy:SetPoint('TOPLEFT',self.name,'BOTTOMLEFT', 16,0)
-        self.toy:SetScript('OnLeave', function() e.tips:Hide() end)
-        self.toy:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
+    if not btn.toy then
+        btn.toy= e.Cbtn(btn,{size={16,16}, texture=133567})
+        btn.toy:SetPoint('TOPLEFT',btn.name,'BOTTOMLEFT', 16,0)
+        function btn.toy:get_itemID()
+            return self:GetParent().itemID
+        end
+        function btn.toy:set_alpha()
+            self:SetAlpha(Save.items[self:get_itemID()] and 1 or 0.3)
+        end
+
+        btn.toy:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha() end)
+        btn.toy:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            local itemID=self2:GetParent().itemID
+            local itemID=self:get_itemID()
             e.tips:AddDoubleLine(itemID and C_ToyBox.GetToyLink(itemID) or itemID, e.GetEnabeleDisable(not Save.items[self.itemID])..e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id,'|T133567:0|t'..addName)
             e.tips:Show()
+            self:SetAlpha(1)
         end)
-        self.toy:SetScript('OnClick', function(self2, d)
+        btn.toy:SetScript('OnClick', function(self, d)
             if d=='LeftButton' then
-                local frame=self2:GetParent()
+                local frame=self:GetParent()
                 local itemID= frame and frame.itemID
                 if Save.items[itemID] then
                     Save.items[itemID]=nil
@@ -137,12 +197,45 @@ local function setToySpellButton_UpdateButton(self)--标记, 是否已选取
                 setAtt()--设置属性
                 e.call('ToySpellButton_UpdateButton', frame)
             else
-                e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self2, 15, 0)
+                e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self, 15, 0)
             end
         end)
     end
-    self.toy:SetAlpha(Save.items[self.itemID] and 1 or 0.1)
+    btn.toy:set_alpha()
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --######
 --快捷键
@@ -181,6 +274,36 @@ local function set_KEY()--设置捷键
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -386,6 +509,29 @@ local function InitMenu(_, level, menuList)--主菜单
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -423,6 +569,24 @@ local function showTips(self)--显示提示
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_Button_Event(isShown)
     if isShown then
         panel:RegisterUnitEvent('UNIT_SPELLCAST_SUCCEEDED', 'player')
@@ -434,6 +598,28 @@ local function set_Button_Event(isShown)
         panel:UnregisterEvent('SPELL_UPDATE_USABLE')
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function Init()
     e.ToolsSetButtonPoint(button)--设置位置
@@ -484,6 +670,29 @@ local function Init()
         set_Button_Event()
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --###########
 --加载保存数据
