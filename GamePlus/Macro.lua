@@ -3,8 +3,18 @@ local id, e= ...
 
 local addName= MACRO--宏
 local Save={
-    disabled= not e.Player.husandro
+    --disabled= not e.Player.husandro
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -54,6 +64,23 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
     local w, h= 350, 600--672, 672
     MacroFrame:SetSize(w, h)--<Size x="338" y="424"/>
@@ -61,7 +88,7 @@ local function Init()
     MacroFrameText:SetSize(w-43, h/2-45)
     MacroFrameTextBackground:SetSize(w-33, h/2-30)
     MacroHorizontalBarLeft:SetWidth(w-85)
-    
+
     --设置，焦点
     MacroFrameTextBackground.NineSlice:SetScript('OnMouseDown', function(_, d)
         if d=='LeftButton' then
@@ -224,6 +251,22 @@ local function Init()
         MacroFrameTab2.label:SetText(numCharacterMacros..'/'..MAX_CHARACTER_MACROS)
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local panel=CreateFrame("Frame")
