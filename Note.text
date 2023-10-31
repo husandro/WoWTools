@@ -127,6 +127,11 @@ ToggleGameMenu()
 ToggleFrame(frame)
 OpenAchievementFrameToAchievement(achievementID)
 
+BOOKTYPE_SPELL = "spell";
+BOOKTYPE_PROFESSION = "professions";
+BOOKTYPE_PET
+ToggleSpellBook(BOOKTYPE_SPELL)
+
 PVEFrame_ToggleFrame();
 PVEFrame_ToggleFrame("GroupFinderFrame", LFDParentFrame);
 PVEFrame_ToggleFrame("GroupFinderFrame", RaidFinderFrame);

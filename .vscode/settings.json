@@ -3517,7 +3517,9 @@
         "MacroHorizontalBarLeft",
         "MacroFrameScrollFrame",
         "SelectorButtonMixin",
-        "MacroButtonMixin"
+        "MacroButtonMixin",
+        "ToggleSpellBook",
+        "BINDING_NAME_TOGGLESPELLBOOK"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

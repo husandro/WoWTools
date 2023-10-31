@@ -658,23 +658,31 @@ local function Init()
     --########################
     --自动输入，忘却，文字，专业
     --########################
-    local btn2= e.Cbtn(SpellBookProfessionFrame, {size={18,18}, icon= not Save.wangquePrefessionText})
+    local btn2= e.Cbtn(SpellBookProfessionFrame, {size={22,22}, icon='hide'})
     btn2:SetPoint('TOP', SpellBookFramePortrait, 'BOTTOM')
-    btn2:SetScript("OnDoubleClick", function(self2)
-        Save.wangquePrefessionText= not Save.wangquePrefessionText and true or nil
-        self2:SetNormalAtlas(not Save.wangquePrefessionText and e.Icon.icon or e.Icon.disabled)
-    end)
-    btn2:SetScript('OnLeave', function() e.tips:Hide() end)
-    btn2:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+    function btn2:set_alpha()
+        self:SetAlpha(Save.wangquePrefessionText and 1 or 0.3)
+        self:SetNormalAtlas(not Save.wangquePrefessionText and e.Icon.icon or e.Icon.disabled)
+    end
+    function btn2:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '自动输入 ‘忘却’' or (TRADE_SKILLS ..': '..UNLEARN_SKILL_CONFIRMATION), (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left..e.GetEnabeleDisable(Save.wangquePrefessionText))
+        e.tips:AddDoubleLine((e.onlyChinese and '自动输入 ‘忘却’' or (TRADE_SKILLS ..': '..UNLEARN_SKILL_CONFIRMATION))..e.GetEnabeleDisable(Save.wangquePrefessionText), (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '你确定要忘却%s并遗忘所有已经学会的配方？如果你选择回到此专业，你的专精知识将依然存在。|n|n在框内输入 \"忘却\" 以确认。' or UNLEARN_SKILL, nil,nil,nil, true)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
+        self:set_tooltips()
+        e.tips:SetAlpha(1)
+    end
+    btn2:SetScript("OnDoubleClick", function(self)
+        Save.wangquePrefessionText= not Save.wangquePrefessionText and true or nil
+        self:set_alpha()
     end)
+    btn2:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha()end)
+    btn2:SetScript('OnEnter', btn2.set_tooltips)
+    btn2:set_alpha()
     hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow",function(self)
         if Save.wangquePrefessionText then
             self.editBox:SetText(UNLEARN_SKILL_CONFIRMATION);

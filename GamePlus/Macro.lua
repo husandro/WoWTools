@@ -83,9 +83,10 @@ local function Init()
         end
     end)
 
+
+
     --宏，提示
     local function set_btn_tooltips(self)
-        
         if self.selectionIndex then
             local index= self.selectionIndex+ MacroFrame.macroBase
             local name, icon, body = GetMacroInfo(index)
@@ -106,6 +107,9 @@ local function Init()
     end)
     MacroFrameSelectedMacroButton:HookScript('OnEnter', set_btn_tooltips)
     MacroFrameSelectedMacroButton:HookScript('OnLeave', function() e.tips:Hide() end)
+
+
+
 
     --选定宏，index提示
     MacroFrame.numSelectionLable= e.Cstr(MacroFrame)
@@ -133,12 +137,33 @@ local function Init()
     end)]]
 
 
+    --保存，提示
+    MacroSaveButton.saveTip= MacroSaveButton:CreateTexture()
+    MacroSaveButton.saveTip:SetPoint('RIGHT', MacroSaveButton, 'LEFT')
+    MacroSaveButton.saveTip:SetSize(22,22)
+    MacroSaveButton.saveTip:SetAtlas('common-icon-rotateright')
+    MacroSaveButton.saveTip:Hide()
+    local function set_saveTip()
+        local show= false
+        local index= MacroFrameSelectedMacroButton.selectionIndex
+        if index then
+            index= index + MacroFrame.macroBase
+            local body = select(3, GetMacroInfo(index))
+            show= body~= MacroFrameText:GetText()
+        end
+        MacroSaveButton.saveTip:SetShown(show)
+    end
+    MacroFrameText:HookScript('OnTextChanged', set_saveTip)
+    MacroSaveButton:HookScript('OnClick', set_saveTip)
+
+
+
 
     MacroEditButton:SetSize(60,22)--170 22
     MacroEditButton:SetText(e.onlyChinese and '名称' or NAME)
 
     local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
-    attck:SetPoint('LEFT', MacroEditButton, 'RIGHT')
+    attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',15,0)
     attck.text=[[#showtooltip
 /targetenemy [noharm][dead]
 ]]
@@ -163,12 +188,29 @@ local function Init()
     --local num= (self:GetNumLetters() + string.len(attck.text)) >255
     --attck:SetEnabled(not num)
 
+
+    local spellButton= e.Cbtn(MacroFrame, {size={40,40}, atlas='UI-HUD-MicroMenu-SpellbookAbilities-Up'})
+    spellButton:SetPoint('TOPRIGHT', -4, -22)
+    spellButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    spellButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(' ', '|A:UI-HUD-MicroMenu-SpellbookAbilities-Up:22:22|a'..(e.onlyChinese and '打开/关闭法术书' or BINDING_NAME_TOGGLESPELLBOOK))
+        e.tips:Show()
+    end)
+    spellButton:SetScript("OnClick", function()
+        ToggleSpellBook(BOOKTYPE_SPELL)
+    end)
+
+
     --宏数量
     --Blizzard_MacroUI.lua
     MacroFrameTab1.label= e.Cstr(MacroFrameTab1)
-    MacroFrameTab1.label:SetPoint('BOTTOM', MacroFrameTab1, 'TOP', 0, -10)
+    MacroFrameTab1.label:SetPoint('BOTTOM', MacroFrameTab1, 'TOP', 0, -7)
     MacroFrameTab2.label= e.Cstr(MacroFrameTab2)
-    MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2, 'TOP', 0, -10)
+    MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2, 'TOP', 0, -7)
     hooksecurefunc(MacroFrame, 'Update', function()
     	local numAccountMacros, numCharacterMacros
         numAccountMacros, numCharacterMacros = GetNumMacros()
