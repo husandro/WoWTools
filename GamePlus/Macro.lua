@@ -5,10 +5,12 @@ local addName= MACRO--宏
 local Save={
     --disabled= not e.Player.husandro
     --toRightLeft= 1,2, nil --左边 右边 默认
+    spellButton=e.Player.husandro,
 }
 
 --Blizzard_MacroUI.lua
 
+local Menu
 
 
 
@@ -78,10 +80,6 @@ end
 
 
 
-
-
-
-
 local function Init()
     local w, h= 350, 600--672, 672
     MacroFrame:SetSize(w, h)--<Size x="338" y="424"/>
@@ -100,6 +98,7 @@ local function Init()
         end
     end)
 
+    
 
     --设置，宏，图标，位置，长度
     hooksecurefunc(MacroFrame, 'ChangeTab', function(self, tabID)
@@ -240,10 +239,10 @@ local function Init()
 
 
     --打开/关闭法术书
-    local spellButton= e.Cbtn(MacroFrame, {size={40,40}, atlas='UI-HUD-MicroMenu-SpellbookAbilities-Up'})
-    spellButton:SetPoint('TOPRIGHT', -4, -22)
-    spellButton:SetScript('OnLeave', function() e.tips:Hide() end)
-    spellButton:SetScript('OnEnter', function(self)
+    MacroFrame.OpenSpellButton= e.Cbtn(MacroFrame, {size={32,32}, atlas='UI-HUD-MicroMenu-SpellbookAbilities-Up'})
+    MacroFrame.OpenSpellButton:SetPoint('TOPRIGHT', -30, -28)
+    MacroFrame.OpenSpellButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    MacroFrame.OpenSpellButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
@@ -251,9 +250,11 @@ local function Init()
         e.tips:AddDoubleLine(' ', '|A:UI-HUD-MicroMenu-SpellbookAbilities-Up:22:22|a'..(e.onlyChinese and '打开/关闭法术书' or BINDING_NAME_TOGGLESPELLBOOK))
         e.tips:Show()
     end)
-    spellButton:SetScript("OnClick", function()
+    MacroFrame.OpenSpellButton:SetScript("OnClick", function()
         ToggleSpellBook(BOOKTYPE_SPELL)
     end)
+
+   
 
 
     --宏数量
@@ -281,9 +282,8 @@ local function Init()
 
 
 
-
     local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
-    attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',15,0)
+    attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',10,18)
     attck.text=[[#showtooltip
 /targetenemy [noharm][dead]
 ]]
@@ -304,9 +304,62 @@ local function Init()
 /stopcasting
 ]]
 
-    --MacroFrameText:HookScript('OnTextChanged', function(self)
-    --local num= (self:GetNumLetters() + string.len(attck.text)) >255
-    --attck:SetEnabled(not num)
+
+
+
+
+    local function Spell_Menu(index)
+        local _, _, offset, numSlots = GetSpellTabInfo(index)
+        for i= offset+1, offset+ numSlots do
+            local name, rank, icon, castTime, minRange, maxRange, spellID, originalIcon= GetSpellInfo(i, BOOKTYPE_SPELL)
+            if name then
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text=(icon and '|T'..icon..':0|t' or '')..name,
+                    icon=icon,
+                    colorCode=IsPassiveSpell(i, BOOKTYPE_SPELL) and '|cff606060' or not IsSpellKnown(spellID) and '|cnRED_FONT_COLOR:',
+                    arg1= name,
+                    notCheckable=true,
+                    func= function(_, arg1)
+                        if IsAltKeyDown() then
+                            MacroFrameText:SetCursorPosition(0)
+                            MacroFrameText:Insert('#showtooltip\n/targetenemy [noharm][dead]\n'..'/cast '..arg1..'\n')
+                            MacroFrameText:SetFocus()
+                        else
+                            MacroFrameText:Insert('/cast '..arg1..'\n')
+                            MacroFrameText:SetFocus()
+                        end
+                    end
+                }, 1)
+            end
+        end
+    end
+
+    Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
+
+    local last
+    for i=1, MAX_SKILLLINE_TABS do
+        local name, icon, offset, numSlots, isGuild, offSpecID, shouldHide, specID = GetSpellTabInfo(i)
+        if (i==1 or specID) and not shouldHide then
+            local btn= e.Cbtn(MacroFrame, {size={24,24}, texture=icon})
+            btn.index= i
+            if not last then
+                btn:SetPoint('TOPLEFT', MacroEditButton, 'BOTTOMRIGHT',0,8)
+            else
+                btn:SetPoint('LEFT', last, 'RIGHT')
+            end
+            btn:SetScript('OnClick', function(self)
+                e.LibDD:UIDropDownMenu_Initialize(Menu, function() Spell_Menu(self.index) end, 'MENU')
+                e.LibDD:ToggleDropDownMenu(1, nil, Menu, self, 15,0)--主菜单
+            end)
+            btn:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', 'player')
+            btn:SetScript('OnEvent', function(self)
+                self:SetNormalTexture( select(2, GetSpellTabInfo(self.index)) or 0)
+            end)
+            last= btn
+        end
+    end
+
+
 end
 
 

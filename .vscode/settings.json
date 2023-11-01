@@ -3519,7 +3519,9 @@
         "SelectorButtonMixin",
         "MacroButtonMixin",
         "ToggleSpellBook",
-        "BINDING_NAME_TOGGLESPELLBOOK"
+        "BINDING_NAME_TOGGLESPELLBOOK",
+        "MAX_SPELLS",
+        "MAX_SKILLLINE_TABS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
