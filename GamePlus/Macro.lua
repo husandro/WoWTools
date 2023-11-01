@@ -95,7 +95,7 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==162488--[精钢陷阱]
         or spellID==236776--[高爆陷阱]
         or spellID==1543--[照明弹]
-        or spellID==321297--[野兽之眼]
+        or spellID==6197--[鹰眼术]
         or spellID==260243--[乱射]
         or spellID==257284--[猎人印记]
         or spellID==190925--[鱼叉猛刺]
