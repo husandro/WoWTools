@@ -4,9 +4,10 @@ local id, e= ...
 local addName= MACRO--宏
 local Save={
     --disabled= not e.Player.husandro
+    --toRightLeft= 1,2, nil --左边 右边 默认
 }
 
-
+--Blizzard_MacroUI.lua
 
 
 
@@ -86,8 +87,11 @@ local function Init()
     MacroFrame:SetSize(w, h)--<Size x="338" y="424"/>
     MacroFrameScrollFrame:SetSize(w-43, h/2-45)
     MacroFrameText:SetSize(w-43, h/2-45)
-    MacroFrameTextBackground:SetSize(w-33, h/2-30)
+    MacroFrameTextBackground:SetSize(w-30, h/2-30)
     MacroHorizontalBarLeft:SetWidth(w-85)
+
+    MacroEditButton:SetSize(60,22)--170 22
+    MacroEditButton:SetText(e.onlyChinese and '名称' or NAME)
 
     --设置，焦点
     MacroFrameTextBackground.NineSlice:SetScript('OnMouseDown', function(_, d)
@@ -101,15 +105,66 @@ local function Init()
     hooksecurefunc(MacroFrame, 'ChangeTab', function(self, tabID)
         self.MacroSelector:ClearAllPoints()
         if tabID==1 then
-            --self.MacroSelector:SetSize(w-38,h-12)
-            self.MacroSelector:SetSize(315,588)
-            self.MacroSelector:SetPoint('TOPRIGHT', self, 'TOPLEFT',10,-12)
+            self.MacroSelector:SetHeight(590)--(319,588)
+            if Save.toRightLeft==1 then--左边
+                self.MacroSelector:SetPoint('TOPRIGHT', self, 'TOPLEFT',10,-12)
+            elseif Save.toRightLeft==2 then--右边
+                self.MacroSelector:SetPoint('TOPLEFT', self, 'TOPRIGHT',0,-12)
+            else--默认
+                self.MacroSelector:SetHeight(146)--,146)--<Size x="319" y="146"/>
+                self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
+            end
         else
-            self.MacroSelector:SetSize(319,146)
+            self.MacroSelector:SetHeight(146)--,146)--<Size x="319" y="146"/>
             self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
         end
     end)
 
+    --设置按钮
+    local toRightButton= e.Cbtn(MacroFrame.TitleContainer, {size={20,20}, icon='hide'})
+    toRightButton:SetAlpha(0.5)
+    if _G['MoveZoomInButtonPerMacroFrame'] then
+        toRightButton:SetPoint('RIGHT', _G['MoveZoomInButtonPerMacroFrame'], 'LEFT')
+    else
+        toRightButton:SetPoint('LEFT',0, -2)
+    end
+    function toRightButton:set_texture()
+        if Save.toRightLeft==1 then--左边
+            self:SetNormalAtlas(e.Icon.toLeft)
+        elseif Save.toRightLeft==2 then--右边
+            self:SetNormalAtlas(e.Icon.toRight)
+        else--默认
+            self:SetNormalAtlas(e.Icon.icon)
+        end
+    end
+    function toRightButton:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddLine((e.onlyChinese and '图标' or EMBLEM_SYMBOL)..':')
+        e.tips:AddDoubleLine(e.Icon.toLeft2..(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT), Save.toRightLeft==1 and e.Icon.select2)
+        e.tips:AddDoubleLine(e.Icon.toRight2..(e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT), Save.toRightLeft==2 and e.Icon.select2)
+        e.tips:AddDoubleLine('|A:'..e.Icon.icon..':0:0|a'..(e.onlyChinese and '默认' or DEFAULT), not Save.toRightLeft and e.Icon.select2)
+        e.tips:Show()
+        e.tips:SetAlpha(1)
+    end
+    toRightButton:SetScript('OnClick', function(self)
+        if not Save.toRightLeft then
+            Save.toRightLeft=1--左边
+        elseif Save.toRightLeft==1 then
+            Save.toRightLeft=2--右边
+        elseif Save.toRightLeft==2 then
+            Save.toRightLeft=nil--默认
+        end
+        Save.toRight= not Save.toRight and true or nil
+        MacroFrame:ChangeTab(1)
+        self:set_texture()
+        self:set_tooltips()
+    end)
+    toRightButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+    toRightButton:SetScript('OnEnter', toRightButton.set_tooltips)
+    toRightButton:set_texture()
 
 
     --宏，提示
@@ -184,10 +239,48 @@ local function Init()
     MacroSaveButton:HookScript('OnClick', set_saveTip)
 
 
+    --打开/关闭法术书
+    local spellButton= e.Cbtn(MacroFrame, {size={40,40}, atlas='UI-HUD-MicroMenu-SpellbookAbilities-Up'})
+    spellButton:SetPoint('TOPRIGHT', -4, -22)
+    spellButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    spellButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(' ', '|A:UI-HUD-MicroMenu-SpellbookAbilities-Up:22:22|a'..(e.onlyChinese and '打开/关闭法术书' or BINDING_NAME_TOGGLESPELLBOOK))
+        e.tips:Show()
+    end)
+    spellButton:SetScript("OnClick", function()
+        ToggleSpellBook(BOOKTYPE_SPELL)
+    end)
 
 
-    MacroEditButton:SetSize(60,22)--170 22
-    MacroEditButton:SetText(e.onlyChinese and '名称' or NAME)
+    --宏数量
+    --Blizzard_MacroUI.lua
+    MacroFrameTab1.label= e.Cstr(MacroFrameTab1)
+    MacroFrameTab1.label:SetPoint('BOTTOM', MacroFrameTab1, 'TOP', 0, -8)
+    MacroFrameTab2.label= e.Cstr(MacroFrameTab2)
+    MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2, 'TOP', 0, -8)
+    hooksecurefunc(MacroFrame, 'Update', function()
+    	local numAccountMacros, numCharacterMacros
+        numAccountMacros, numCharacterMacros = GetNumMacros()
+        numAccountMacros= numAccountMacros or 0
+        numAccountMacros= numAccountMacros==MAX_ACCOUNT_MACROS and '|cnRED_FONT_COLOR:'..numAccountMacros or numAccountMacros
+
+        numCharacterMacros= numCharacterMacros or 0
+        numCharacterMacros= numCharacterMacros==MAX_CHARACTER_MACROS and '|cnRED_FONT_COLOR:'..numCharacterMacros or numCharacterMacros
+
+        MacroFrameTab1.label:SetText(numAccountMacros..'/'..MAX_ACCOUNT_MACROS)
+        MacroFrameTab2.label:SetText(numCharacterMacros..'/'..MAX_CHARACTER_MACROS)
+    end)
+
+
+
+
+
+
+
 
     local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
     attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',15,0)
@@ -214,42 +307,6 @@ local function Init()
     --MacroFrameText:HookScript('OnTextChanged', function(self)
     --local num= (self:GetNumLetters() + string.len(attck.text)) >255
     --attck:SetEnabled(not num)
-
-
-    local spellButton= e.Cbtn(MacroFrame, {size={40,40}, atlas='UI-HUD-MicroMenu-SpellbookAbilities-Up'})
-    spellButton:SetPoint('TOPRIGHT', -4, -22)
-    spellButton:SetScript('OnLeave', function() e.tips:Hide() end)
-    spellButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(' ', '|A:UI-HUD-MicroMenu-SpellbookAbilities-Up:22:22|a'..(e.onlyChinese and '打开/关闭法术书' or BINDING_NAME_TOGGLESPELLBOOK))
-        e.tips:Show()
-    end)
-    spellButton:SetScript("OnClick", function()
-        ToggleSpellBook(BOOKTYPE_SPELL)
-    end)
-
-
-    --宏数量
-    --Blizzard_MacroUI.lua
-    MacroFrameTab1.label= e.Cstr(MacroFrameTab1)
-    MacroFrameTab1.label:SetPoint('BOTTOM', MacroFrameTab1, 'TOP', 0, -7)
-    MacroFrameTab2.label= e.Cstr(MacroFrameTab2)
-    MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2, 'TOP', 0, -7)
-    hooksecurefunc(MacroFrame, 'Update', function()
-    	local numAccountMacros, numCharacterMacros
-        numAccountMacros, numCharacterMacros = GetNumMacros()
-        numAccountMacros= numAccountMacros or 0
-        numAccountMacros= numAccountMacros==MAX_ACCOUNT_MACROS and '|cnRED_FONT_COLOR:'..numAccountMacros or numAccountMacros
-
-        numCharacterMacros= numCharacterMacros or 0
-        numCharacterMacros= numCharacterMacros==MAX_CHARACTER_MACROS and '|cnRED_FONT_COLOR:'..numCharacterMacros or numCharacterMacros
-
-        MacroFrameTab1.label:SetText(numAccountMacros..'/'..MAX_ACCOUNT_MACROS)
-        MacroFrameTab2.label:SetText(numCharacterMacros..'/'..MAX_CHARACTER_MACROS)
-    end)
 end
 
 
@@ -281,9 +338,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 --添加控制面板
                 e.AddPanel_Check({
-                    name= e.onlyChinese and '宏' or addName,
-                    tooltip= ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
-                        ..'|r|n'..(e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
+                    name= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or addName),
+                    tooltip= (e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
+                        --('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
+                        --..'|r|n'..(e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
                     value= not Save.disabled,
                     func= function()
                         Save.disabled = not Save.disabled and true or nil
