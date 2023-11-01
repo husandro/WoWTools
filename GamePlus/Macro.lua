@@ -381,7 +381,7 @@ local function Init()
 
 
     local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
-    attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',10,15)
+    attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',5,15)
     attck.text=[[#showtooltip
 /targetenemy [noharm][dead]
 ]]
