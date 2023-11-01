@@ -3,14 +3,110 @@ local id, e= ...
 
 local addName= MACRO--宏
 local Save={
-    --disabled= not e.Player.husandro
+    --disabled= not e.Player.husandro,
     --toRightLeft= 1,2, nil --左边 右边 默认
     spellButton=e.Player.husandro,
 }
 
 --Blizzard_MacroUI.lua
 
-local Menu
+
+
+local function Get_Spell_Macro(name, spellID)
+    if spellID==6603 then--自动攻击
+        return '/startattack'
+
+    elseif spellID==5384 then--[假死]
+        if IsSpellKnownOrOverridesKnown(209997) then
+            local spellName= GetSpellInfo(209997)
+            if spellName then
+                return '/petfollow\n/cast '..spellName..'\n/cast '..name
+            end
+        end
+        return '/petfollow\n/cast '..name
+
+    elseif spellID==2643--[多重射击]
+        or spellID==257620--[多重射击]
+        or spellID==187708--[削凿]
+    then
+        local spellName= GetSpellInfo(186265)
+        if spellName then
+            return '/cancelaura '..spellName..'\n/cast '..name
+        end
+
+    elseif spellID==118--[变形术]
+        or spellID==2139--[法术反制]
+
+        or spellID==147362--[反制射击]
+    then
+        return '/stopcasting\n/cast [target=mouseover,harm,exists][target=focus,harm,exists]'
+            ..name..';'..name
+            ..'\n/focus [target=focus,noexists][target=focus,dead]target'
+        
+    elseif spellID==212653--[闪光术]
+        or spellID==1953--[闪现术]
+        or spellID==66--[隐形术]
+        or spellID==110959--[强化隐形术]
+    then
+        local spellName= GetSpellInfo(45438)--[寒冰屏障]
+        local text='/stopcasting\n/cast '..name
+        if spellName then
+            text= '/cancelaura '..spellName..'\n'..text
+        end
+        return text
+
+    elseif  spellID==190336 then--[造餐术]
+        local spellName= GetSpellInfo(190336)
+        local itemName= C_Item.GetItemNameByID(113509)
+        if spellName and itemName then
+           return '/use [button:1]'..spellName..'\n/cast [button:2]'..itemName
+        end
+
+    elseif spellID==78675--[日光术]
+        or spellID==33786--[旋风]
+        or spellID==57994--[风剪]
+
+        or spellID==45438--[寒冰屏障]
+        
+        
+        
+
+    then
+        return '/stopcasting\n/cast '..name
+
+    elseif spellID==145205--[百花齐放]
+        or spellID==192058--[电能图腾]
+        or spellID==51485--[陷地图腾]
+        or spellID==73920--[治疗之雨]
+        or spellID==61882--[地震术]
+        or spellID==192222--[岩浆图腾]
+        or spellID==198838--[大地之墙图腾]
+
+        or spellID==358385--[山崩]
+        or spellID==357210--[深呼吸]
+
+        or spellID==113724--[冰霜之环]
+        or spellID==2120--[烈焰风暴]
+        or spellID==190356--[暴风雪]
+
+        or spellID==187650--[冰冻陷阱]
+        or spellID==187698--[焦油陷阱]
+        or spellID==109248--[束缚射击]
+        or spellID==162488--[精钢陷阱]
+        or spellID==236776--[高爆陷阱]
+        or spellID==1543--[照明弹]
+        or spellID==321297--[野兽之眼]
+        or spellID==260243--[乱射]
+        or spellID==257284--[猎人印记]
+        or spellID==190925--[鱼叉猛刺]
+        
+    then
+        return '/cast [@cursor]'..name
+    end
+end
+
+
+
 
 
 
@@ -240,7 +336,7 @@ local function Init()
 
     --打开/关闭法术书
     MacroFrame.OpenSpellButton= e.Cbtn(MacroFrame, {size={32,32}, atlas='UI-HUD-MicroMenu-SpellbookAbilities-Up'})
-    MacroFrame.OpenSpellButton:SetPoint('TOPRIGHT', -30, -28)
+    MacroFrame.OpenSpellButton:SetPoint('TOPRIGHT', -2, -28)
     MacroFrame.OpenSpellButton:SetScript('OnLeave', function() e.tips:Hide() end)
     MacroFrame.OpenSpellButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -283,7 +379,7 @@ local function Init()
 
 
     local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
-    attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',10,18)
+    attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',10,15)
     attck.text=[[#showtooltip
 /targetenemy [noharm][dead]
 ]]
@@ -310,46 +406,97 @@ local function Init()
 
     local function Spell_Menu(index)
         local _, _, offset, numSlots = GetSpellTabInfo(index)
+        local num=0
         for i= offset+1, offset+ numSlots do
-            local name, rank, icon, castTime, minRange, maxRange, spellID, originalIcon= GetSpellInfo(i, BOOKTYPE_SPELL)
-            if name then
+            local name, _, icon, _, _, _, spellID= GetSpellInfo(i, BOOKTYPE_SPELL)
+            num= num +1
+            if name and not IsPassiveSpell(i, BOOKTYPE_SPELL) and spellID then
+                local col
+                if not IsSpellKnownOrOverridesKnown(spellID) then
+                    col='|cff606060'
+                end
+                icon= icon and '|T'..icon..':0|t' or ''
+                
                 e.LibDD:UIDropDownMenu_AddButton({
-                    text=(icon and '|T'..icon..':0|t' or '')..name,
-                    icon=icon,
-                    colorCode=IsPassiveSpell(i, BOOKTYPE_SPELL) and '|cff606060' or not IsSpellKnown(spellID) and '|cnRED_FONT_COLOR:',
+                    text=icon..name,
+                    tooltipOnButton=true,
+                    tooltipTitle= 'Alt '..icon..(e.onlyChinese and '查询' or WHO)..' '.. spellID,--'Alt /targetenemy|n'..(col or '')..
+                    tooltipText= GetSpellDescription(spellID),
+                    colorCode=col,
+                    icon= 'services-number-'..math.ceil(num / SPELLS_PER_PAGE),
                     arg1= name,
+                    arg2= spellID,
                     notCheckable=true,
-                    func= function(_, arg1)
-                        if IsAltKeyDown() then
-                            MacroFrameText:SetCursorPosition(0)
-                            MacroFrameText:Insert('#showtooltip\n/targetenemy [noharm][dead]\n'..'/cast '..arg1..'\n')
-                            MacroFrameText:SetFocus()
+                    func= function(_, arg1, arg2)
+                        if IsShiftKeyDown() then
+                            local link=GetSpellLink(arg2) or GetSpellInfo(arg2) or arg2
+                            link= 'or spellID=='..arg2..'--'..link
+                            if not ChatEdit_InsertLink(link) then
+                                ChatFrame_OpenChat(link)
+                            end
+                        elseif IsAltKeyDown() then
+                            e.call('SpellBookFrame_OpenToSpell', arg2)
                         else
-                            MacroFrameText:Insert('/cast '..arg1..'\n')
+                            local text=''
+                            local macro= MacroFrameText:GetText() or ''
+                            if macro=='' then
+                                text= '#showtooltip '..name..'\n/targetenemy [noharm][dead]\n'
+                            else
+                                if not macro:find('#showtooltip') then
+                                    text= '#showtooltip '..name..'\n'
+                                end
+                                if not macro:find('/targetenemy') then
+                                    text= text..'/targetenemy [noharm][dead]\n'
+                                end
+                            end
+                            text= text..(Get_Spell_Macro(arg1, arg2) or ('/cast '..arg1))
+                            --MacroFrameText:SetCursorPosition(0)
+                            MacroFrameText:Insert(text..'\n')
                             MacroFrameText:SetFocus()
                         end
                     end
                 }, 1)
             end
         end
+        if index==1 then
+            e.LibDD:UIDropDownMenu_AddButton({
+                text='ExtraActionButton1',
+                tooltipOnButton=true,
+                tooltipTitle='/click ExtraActionButton1',
+                notCheckable=true,
+                func= function()
+                    MacroFrameText:Insert('/click ExtraActionButton1\n')
+                    MacroFrameText:SetFocus()
+                end
+            }, 1)
+            
+        end
     end
 
-    Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
+    MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
 
     local last
     for i=1, MAX_SKILLLINE_TABS do
-        local name, icon, offset, numSlots, isGuild, offSpecID, shouldHide, specID = GetSpellTabInfo(i)
-        if (i==1 or specID) and not shouldHide then
-            local btn= e.Cbtn(MacroFrame, {size={24,24}, texture=icon})
+        local name, icon, _, _, _, _, shouldHide, specID = GetSpellTabInfo(i)
+        if (i==1 or i==2 or specID) and not shouldHide and name then
+            local btn= e.Cbtn(MacroEditButton, {size={24,24}, texture=icon})
             btn.index= i
             if not last then
                 btn:SetPoint('TOPLEFT', MacroEditButton, 'BOTTOMRIGHT',0,8)
             else
                 btn:SetPoint('LEFT', last, 'RIGHT')
             end
+           
+            if i==3 then
+                local texture= btn:CreateTexture(nil, 'OVERLAY')
+                texture:SetAtlas('Forge-ColorSwatchSelection')
+                texture:SetPoint('CENTER')
+                texture:SetSize(28,28)
+                texture:SetAlpha(0.7)
+            end
             btn:SetScript('OnClick', function(self)
-                e.LibDD:UIDropDownMenu_Initialize(Menu, function() Spell_Menu(self.index) end, 'MENU')
-                e.LibDD:ToggleDropDownMenu(1, nil, Menu, self, 15,0)--主菜单
+                e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function() Spell_Menu(self.index) end, 'MENU')
+                e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
             end)
             btn:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', 'player')
             btn:SetScript('OnEvent', function(self)
@@ -392,9 +539,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 --添加控制面板
                 e.AddPanel_Check({
                     name= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or addName),
-                    tooltip= (e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
-                        --('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
-                        --..'|r|n'..(e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
+                    tooltip= ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
+                        ..'|r|n'..(e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
                     value= not Save.disabled,
                     func= function()
                         Save.disabled = not Save.disabled and true or nil

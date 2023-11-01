@@ -759,6 +759,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         setCooldown()--主图标冷却
 
     elseif event=='SPELL_UPDATE_USABLE' or event=='UNIT_SPELLCAST_SUCCEEDED' then
+    
         setAtt()--设置属性
 
     elseif event=='PLAYER_REGEN_ENABLED' then

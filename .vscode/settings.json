@@ -3521,7 +3521,8 @@
         "ToggleSpellBook",
         "BINDING_NAME_TOGGLESPELLBOOK",
         "MAX_SPELLS",
-        "MAX_SKILLLINE_TABS"
+        "MAX_SKILLLINE_TABS",
+        "SpellBookFrame_OpenToSpell"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
