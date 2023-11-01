@@ -47,6 +47,8 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==1953--[闪现术]
         or spellID==66--[隐形术]
         or spellID==110959--[强化隐形术]
+
+        
     then
         local spellName= GetSpellInfo(45438)--[寒冰屏障]
         local text='/stopcasting\n/cast '..name
