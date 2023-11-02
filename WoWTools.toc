@@ -53,8 +53,7 @@ WoWPlus\Attributes.lua
 WoWPlus\Reputation.lua
 ##货币面板
 WoWPlus\Tokens.lua
-##法术弹出框，加名称, 和颜色
-WoWPlus\SpellFrame.lua
+
 ##任务框，增强
 WoWPlus\ObjectiveTracker.lua
 ##藏品
@@ -170,7 +169,8 @@ ChatButton\Combat.lua
 Other\Brewfest.lua
 Other\DormantSeeds.lua
 Other\HunterPet.lua
-
+##法术弹出框，加名称, 和颜色
+Other\SpellFrame.lua
 
 ##副本, 挑战,之类
 ##Instance\Explosives.lua

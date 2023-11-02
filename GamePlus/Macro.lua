@@ -1,13 +1,10 @@
 local id, e= ...
-
-
 local addName= MACRO--宏
 local Save={
     --disabled= not e.Player.husandro,
     --toRightLeft= 1,2, nil --左边 右边 默认
     spellButton=e.Player.husandro,
 }
-
 --Blizzard_MacroUI.lua
 
 
@@ -106,14 +103,21 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==111771--[恶魔传送门]ss
         or spellID==342601--[末日仪式]ss
         or spellID==20707--[灵魂石]ss
+        or spellID==114018--[潜伏帷幕]DZ
     then
-        return '/cast '..name..'\n/y '..(GetSpellLink(spellID) or name)
+        if spellID==114018 then--[潜伏帷幕]DZ
+            return '/cast '..name
+                ..'\n/party '..(GetSpellLink(spellID) or name)..' 15s'
+        else
+            return '/cast '..name..'\n/y '..(GetSpellLink(spellID) or name)
+        end
 
 
     --设置，光标，焦点， 目标，再设置焦点，
     elseif spellID==118--[变形术]fs
         or spellID==34477--[误导]lr
         or spellID==5782--[恐惧]ss
+        or spellID==57934--[嫁祸诀窍]dz
     then
         return '/stopcasting\n/cast [target=mouseover,harm,exists][target=focus,harm,exists]'
             ..name..';'..name
@@ -173,7 +177,16 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==34861--[圣言术：灵]ms
         or spellID==62618--[真言术：障]ms
         or spellID==32375--[群体驱散]ms
-        --or spellID==204883--[治疗之环]ms
+        
+        or spellID==195457--[抓钩]dz
+
+        or spellID==191427--[恶魔变形]dh
+        or spellID==204596--[烈焰咒符]dh
+        or spellID==189110--[地狱火撞击]dh
+        or spellID==390163--[极乐敕令]dh
+        or spellID==204596--[烈焰咒符]dh
+        or spellID==202137--[沉默咒符]dh
+        or spellID==207684--[悲苦咒符]dh
 
     then
         return '/cast [@cursor]'..name
@@ -414,7 +427,7 @@ local function Init()
     MacroSaveButton:HookScript('OnClick', set_saveTip)
 
 
-    --打开/关闭法术书
+    --[[打开/关闭法术书，BUG
     MacroFrame.OpenSpellButton= e.Cbtn(MacroFrame, {size={32,32}, atlas='UI-HUD-MicroMenu-SpellbookAbilities-Up'})
     MacroFrame.OpenSpellButton:SetPoint('TOPRIGHT', -2, -28)
     MacroFrame.OpenSpellButton:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -428,7 +441,7 @@ local function Init()
     end)
     MacroFrame.OpenSpellButton:SetScript("OnClick", function()
         ToggleSpellBook(BOOKTYPE_SPELL)
-    end)
+    end)]]
 
    
 
@@ -490,13 +503,15 @@ local function Init()
                 end
                 icon= icon and '|T'..icon..':0|t' or ''
                 local  macroText= Get_Spell_Macro(name, spellID)
-                --macroText= macroText and macroText:gsub('\n', '|n')
+                macroText= macroText and '|cnGREEN_FONT_COLOR:'..macroText..'|n |r' or nil
 
                 e.LibDD:UIDropDownMenu_AddButton({
                     text=icon..name..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
                     tooltipOnButton=true,
-                    tooltipTitle= (col or '')..'Alt '..icon..(e.onlyChinese and '查询' or WHO)..' '.. spellID,--'Alt /targetenemy|n'..(col or '')..
-                    tooltipText= GetSpellDescription(spellID)..(macroText and '|n|n|cnGREEN_FONT_COLOR:'..macroText or ''),
+                    --tooltipTitle= (col or '')..'Alt '..icon..(e.onlyChinese and '查询' or WHO)..' '.. spellID,
+                    --tooltipText= GetSpellDescription(spellID)..(macroText and '|n|n|cnGREEN_FONT_COLOR:'..macroText or ''),
+                    tooltipTitle= macroText or '',
+                    tooltipText=GetSpellDescription(spellID),
                     colorCode=col,
                     icon= 'services-number-'..math.ceil(num / SPELLS_PER_PAGE),
                     arg1= name,
@@ -511,6 +526,10 @@ local function Init()
                             end
                         elseif IsAltKeyDown() then
                             e.call('SpellBookFrame_OpenToSpell', arg2)
+                            if not e.Player.husandro then
+                                print(id, addName, '|cnRED_FONT_COLOR:BUG')
+                            end
+
                         else
                             local text=''
                             local macroText2, showName= Get_Spell_Macro(arg1, arg2)

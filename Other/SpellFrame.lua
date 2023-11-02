@@ -8,33 +8,37 @@ local panel=CreateFrame("Frame")
 --天赋, 点数
 --Blizzard_SharedTalentButtonTemplates.lua
 --Blizzard_ClassTalentButtonTemplates.lua
-local function set_UpdateSpendText(self)
-    local info= self.nodeInfo
+local function set_UpdateSpendText(btn)
+    local info= btn.nodeInfo-- C_Traits.GetNodeInfo btn:GetSpellID()
     local text
-    if info and info.currentRank and info.maxRanks and info.currentRank>0 and info.maxRanks~= info.currentRank then
-        text= '/'..info.maxRanks
+    if info then
+        if info.currentRank and info.maxRanks and info.currentRank>0 and info.maxRanks~= info.currentRank then
+            text= '/'..info.maxRanks
+        end
+        if text and not btn.maxText then
+            btn.maxText= e.Cstr(btn, {fontType=btn.SpendText})--nil, btn.SpendText)
+            btn.maxText:SetPoint('LEFT', btn.SpendText, 'RIGHT')
+            btn.maxText:SetTextColor(1, 0, 1)
+            btn.maxText:EnableMouse(true)
+            btn.maxText:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn.maxText:SetScript('OnEnter', function(self)
+                if self.maxRanks then
+                    e.tips:SetOwner(self, "ANCHOR_RIGHT");
+                    e.tips:ClearLines();
+                    e.tips:AddDoubleLine(e.onlyChinese and '最高等级' or TRADESKILL_RECIPE_LEVEL_TOOLTIP_HIGHEST_RANK, self.maxRanks)
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:Show();
+                end
+            end)
+        end
     end
-    if text and not self.maxText then
-        self.maxText= e.Cstr(self, {fontType=self.SpendText})--nil, self.SpendText)
-        self.maxText:SetPoint('LEFT', self.SpendText, 'RIGHT')
-        self.maxText:SetTextColor(1, 0, 1)
-        self.maxText:EnableMouse(true)
-        self.maxText:SetScript('OnLeave', function() e.tips:Hide() end)
-        self.maxText:SetScript('OnEnter', function(self2)
-            if self2.maxRanks then
-                e.tips:SetOwner(self2, "ANCHOR_RIGHT");
-                e.tips:ClearLines();
-                e.tips:AddDoubleLine(e.onlyChinese and '最高等级' or TRADESKILL_RECIPE_LEVEL_TOOLTIP_HIGHEST_RANK, self2.maxRanks)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:Show();
-            end
-        end)
+    if btn.maxText then
+        btn.maxText.maxRanks= info and info.maxRanks
+        btn.maxText:SetText(text or '')
     end
-    if self.maxText then
-        self.maxText.maxRanks= info and info.maxRanks
-        self.maxText:SetText(text or '')
-    end
+
+
 end
 
 
@@ -123,20 +127,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             })
 
-            --[[添加控制面板        
-            local sel=e.AddPanel_Check('|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(e.onlyChinese and '法术Frame' or addName), not Save.disabled)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-            sel:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_RIGHT");
-                e.tips:ClearLines();
-                e.tips:AddDoubleLine(e.onlyChinese and '法术距离' or SPELLS..TRACKER_SORT_PROXIMITY, e.onlyChinese and '颜色' or COLOR)
-                e.tips:AddDoubleLine(e.onlyChinese and '法术弹出框' or SPELLS..' Flyout', e.onlyChinese and '名称' or LFG_LIST_TITLE)
-                e.tips:Show();
-            end)
-            sel:SetScript('OnLeave', function() e.tips:Hide() end)]]
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
@@ -156,26 +146,3 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     end
 end)
 
---[[
---UpdateButton
-hooksecurefunc('SpellBookFrame_Update', function()
-    if SpellBookFrame.bookType ~= BOOKTYPE_SPELL then
-        return
-    end
-    local spellSlot;
-    for i = 1, SPELLS_PER_PAGE do
-        local btn = _G["SpellButton" .. i];
-        if btn then
-            if not btn.setScript then
-                hooksecurefunc(btn, 'UpdateButton', function(self)
-                
-                end)
-            end
-            btn:SetShown(true)
-        end
-        local slotType = select(2,SpellBook_GetSpellBookSlot(btn));
-        if (slotType == "FUTURESPELL") then
-            btn:SetShown(true)
-        end
-	end    
-end)]]
