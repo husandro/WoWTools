@@ -13,13 +13,11 @@ local function Get_Spell_Macro(name, spellID)
     if spellID==6603 then--自动攻击
         return '/startattack'
 
-    
+
     --MS
     elseif spellID==73325 then--[信仰飞跃]ms
         return '/cast [target=mouseover,help,exists][target=target,help,exists][target=targettarget,help,exists][target=focus,help,exists]'..name, name
-    elseif spellID==1706 then--[漂浮术]
-        return '/cast [target=mouseover,help,exists][@player]'..name
-            ..'\n/cancelaura [mod:alt]'..name
+    
     elseif spellID==232698 then--[暗影形态]
         return '/cast [noform]'..name, name
 
@@ -92,7 +90,7 @@ local function Get_Spell_Macro(name, spellID)
     elseif spellID==130 then--[缓落术]
         return '/cast '..name..'\n/cancelaura [mod:alt]'..name
 
-   
+
 
     --alt@player, @cursor
     elseif spellID==121536 --[天堂之羽]ms
@@ -100,9 +98,14 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==51052--[反魔法领域]
     then
         return '/cast [mod,@player][@cursor]'..name
-        
-        
 
+
+    --mouseover， 或自已，Alt取消BUFF
+    elseif spellID==1706 --[漂浮术]ms
+        or spellID==546--[水上行走]sm
+    then
+        return '/cast [target=mouseover,help,exists][@player]'..name
+            ..'\n/cancelaura [mod:alt]'..name
 
     --喊话
     elseif spellID==698--[召唤仪式]ss
@@ -111,13 +114,11 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==342601--[末日仪式]ss
         or spellID==20707--[灵魂石]ss
         or spellID==114018--[潜伏帷幕]DZ
+        or spellID==2825--[嗜血]sm
+        or spellID==414664--[群体隐形]fs
     then
-        if spellID==114018 then--[潜伏帷幕]DZ
-            return '/cast '..name
-                ..'\n/party '..(GetSpellLink(spellID) or name)..' 15s'
-        else
-            return '/cast '..name..'\n/y '..(GetSpellLink(spellID) or name)
-        end
+        return '/cast '..name..'\n/y '..(GetSpellLink(spellID) or name)
+
 
 
     --设置，光标，焦点， 目标，再设置焦点，
@@ -127,17 +128,23 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==57934--[嫁祸诀窍]dz
         or spellID==111673--[控制亡灵]
     then
-        return '/stopcasting\n/cast [target=mouseover,harm,exists][target=focus,harm,exists]'
+        return '/stopcasting\n/cast [target=mouseover,harm,exists][target=target,harm,exists][target=focus,harm,exists]'
             ..name..';'..name
             ..'\n/focus [target=focus,noexists][target=focus,dead]target'
-   
+
     --停止施法
     elseif spellID==78675--[日光术]xd
         or spellID==33786--[旋风]xd
+
         or spellID==57994--[风剪]sm
+        or spellID==51490--[雷霆风暴]sm
+        or spellID==108271--[星界转移]
+
         or spellID==45438--[寒冰屏障]fs
         or spellID==2139--[法术反制]fs
+
         or spellID==147362--[反制射击]lr
+
         or spellID==104773--[不灭决心]ss
         or spellID==111400--[爆燃冲刺]ss
         or spellID==6789--[死亡缠绕]ss
@@ -145,17 +152,22 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==8122--[心灵尖啸]ms
         or spellID==15487--[沉默]ms
         or spellID==47585--[消散]ms
+        
 
     then
         return '/stopcasting\n/cast '..name
 
     elseif spellID==145205--[百花齐放]xd
+
+        or spellID==192077--[狂风图腾]
         or spellID==192058--[电能图腾]sm
         or spellID==51485--[陷地图腾]sm
-        or spellID==73920--[治疗之雨]sm
-        or spellID==61882--[地震术]sm
         or spellID==192222--[岩浆图腾]sm
         or spellID==198838--[大地之墙图腾]sm
+        or spellID==2484--[地缚图腾]
+        or spellID==73920--[治疗之雨]sm
+        or spellID==61882--[地震术]sm
+        or spellID==6196--[视界术]sm
 
         or spellID==358385--[山崩]dm
         or spellID==357210--[深呼吸]dm
@@ -175,7 +187,7 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==260243--[乱射]lr
         or spellID==257284--[猎人印记]lr
         or spellID==190925--[鱼叉猛刺]lr
-        
+
         or spellID==30283--[暗影之怒]ss
         or spellID==1122--[召唤地狱火]ss
         or spellID==152108--[大灾变]ss
@@ -185,7 +197,7 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==34861--[圣言术：灵]ms
         or spellID==62618--[真言术：障]ms
         or spellID==32375--[群体驱散]ms
-        
+
         or spellID==195457--[抓钩]dz
 
         or spellID==189110--[地狱火撞击]dh
@@ -199,15 +211,11 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==389815--[极乐敕令]dh T
         or spellID==389809--[沉默咒符]dh T
 
+        or spellID==6544--[英勇飞跃]zs
     then
         return '/cast [@cursor]'..name
     end
 end
-
-
-
-
-
 
 
 
@@ -282,9 +290,19 @@ local function Init()
     MacroFrameTextBackground:SetSize(w-30, h/2-30)
     MacroHorizontalBarLeft:SetWidth(w-85)
 
+    MacroEditButton:ClearAllPoints()
+    MacroEditButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'TOPRIGHT',2,2)
     MacroEditButton:SetSize(60,22)--170 22
     MacroEditButton:SetText(e.onlyChinese and '名称' or NAME)
 
+    MacroFrameSelectedMacroName:ClearAllPoints()--选定宏，名称
+    MacroFrameSelectedMacroName:SetPoint('BOTTOMLEFT', MacroFrameSelectedMacroButton, 'TOPLEFT')
+    MacroFrameSelectedMacroName:SetFontObject('GameFontNormal')
+
+    MacroFrameEnterMacroText:SetText('')--输入宏命令
+    MacroFrameEnterMacroText:Hide()
+
+    --<Size x="256" y="16"/>
     --设置，焦点
     MacroFrameTextBackground.NineSlice:SetScript('OnMouseDown', function(_, d)
         if d=='LeftButton' then
@@ -292,7 +310,7 @@ local function Init()
         end
     end)
 
-    
+
 
     --设置，宏，图标，位置，长度
     hooksecurefunc(MacroFrame, 'ChangeTab', function(self, tabID)
@@ -388,7 +406,7 @@ local function Init()
 
     --选定宏，index提示
     MacroFrame.numSelectionLable= e.Cstr(MacroFrameSelectedMacroButton)
-    MacroFrame.numSelectionLable:SetPoint('BOTTOM', MacroFrameSelectedMacroButton, 'TOP')
+    MacroFrame.numSelectionLable:SetPoint('RIGHT', MacroFrameSelectedMacroButton, 'LEFT', -1,0)
     MacroFrame.numSelectionLable:SetScript('OnLeave', function() e.tips:Hide() end)
     MacroFrame.numSelectionLable:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -448,7 +466,7 @@ local function Init()
         ToggleSpellBook(BOOKTYPE_SPELL)
     end)]]
 
-   
+
 
 
     --宏数量
@@ -477,7 +495,7 @@ local function Init()
 
 
     local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
-    attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',5,15)
+    attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',16,0)
     attck.text='#showtooltip\n/targetenemy [noharm][dead]\n'
     attck.text2='/cancelaura '
     attck.textCursor=0
@@ -490,8 +508,62 @@ local function Init()
     cancel:SetPoint('LEFT', attck, 'RIGHT')
     cancel.text= '/petattack\n/startattack\n'
     cancel.text2= '/petfollow\n/stopattack\n/stopcasting\n'
-    
 
+
+    local function Create_Menu(spellID, icon, name, texture)
+        local col
+        if not IsSpellKnownOrOverridesKnown(spellID) then
+            col='|cff606060'
+        end
+        icon= icon and '|T'..icon..':0|t' or ''
+        local  macroText= Get_Spell_Macro(name, spellID)
+        macroText= macroText and '|cnGREEN_FONT_COLOR:'..macroText..'|n |r' or nil
+
+        e.LibDD:UIDropDownMenu_AddButton({
+            text=icon..name..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
+            tooltipOnButton=true,
+            --tooltipTitle= (col or '')..'Alt '..icon..(e.onlyChinese and '查询' or WHO)..' '.. spellID,
+            --tooltipText= GetSpellDescription(spellID)..(macroText and '|n|n|cnGREEN_FONT_COLOR:'..macroText or ''),
+            tooltipTitle= macroText or '',
+            tooltipText=GetSpellDescription(spellID),
+            colorCode=col,
+            icon= texture,
+            arg1= name,
+            arg2= spellID,
+            notCheckable=true,
+            func= function(_, arg1, arg2)
+                if IsShiftKeyDown() then
+                    local link=GetSpellLink(arg2) or GetSpellInfo(arg2) or arg2
+                    link= 'or spellID=='..arg2..'--'..link
+                    if not ChatEdit_InsertLink(link) then
+                        ChatFrame_OpenChat(link)
+                    end
+                elseif IsAltKeyDown() then
+                    e.call('SpellBookFrame_OpenToSpell', arg2)
+                    if not e.Player.husandro then
+                        print(id, addName, '|cnRED_FONT_COLOR:BUG')
+                    end
+
+                else
+                    local text=''
+                    local macroText2, showName= Get_Spell_Macro(arg1, arg2)
+                    local macro= MacroFrameText:GetText() or ''
+                    if not macro:find('#showtooltip') then
+                        text= '#showtooltip'..(showName and ' '..showName or '')..'\n'
+                    end
+                    if not macro:find('/targetenemy') then
+                        text= text..'/targetenemy [noharm][dead]\n'
+                    end
+
+                    text= text..(macroText2 or ('/cast '..arg1))..'\n'
+
+                    --MacroFrameText:SetCursorPosition(0)
+                    MacroFrameText:Insert(text)
+                    MacroFrameText:SetFocus()
+                end
+            end
+        }, 1)
+    end
 
 
 
@@ -502,58 +574,7 @@ local function Init()
             local name, _, icon, _, _, _, spellID= GetSpellInfo(i, BOOKTYPE_SPELL)
             num= num +1
             if name and not IsPassiveSpell(i, BOOKTYPE_SPELL) and spellID then
-                local col
-                if not IsSpellKnownOrOverridesKnown(spellID) then
-                    col='|cff606060'
-                end
-                icon= icon and '|T'..icon..':0|t' or ''
-                local  macroText= Get_Spell_Macro(name, spellID)
-                macroText= macroText and '|cnGREEN_FONT_COLOR:'..macroText..'|n |r' or nil
-
-                e.LibDD:UIDropDownMenu_AddButton({
-                    text=icon..name..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
-                    tooltipOnButton=true,
-                    --tooltipTitle= (col or '')..'Alt '..icon..(e.onlyChinese and '查询' or WHO)..' '.. spellID,
-                    --tooltipText= GetSpellDescription(spellID)..(macroText and '|n|n|cnGREEN_FONT_COLOR:'..macroText or ''),
-                    tooltipTitle= macroText or '',
-                    tooltipText=GetSpellDescription(spellID),
-                    colorCode=col,
-                    icon= 'services-number-'..math.ceil(num / SPELLS_PER_PAGE),
-                    arg1= name,
-                    arg2= spellID,
-                    notCheckable=true,
-                    func= function(_, arg1, arg2)
-                        if IsShiftKeyDown() then
-                            local link=GetSpellLink(arg2) or GetSpellInfo(arg2) or arg2
-                            link= 'or spellID=='..arg2..'--'..link
-                            if not ChatEdit_InsertLink(link) then
-                                ChatFrame_OpenChat(link)
-                            end
-                        elseif IsAltKeyDown() then
-                            e.call('SpellBookFrame_OpenToSpell', arg2)
-                            if not e.Player.husandro then
-                                print(id, addName, '|cnRED_FONT_COLOR:BUG')
-                            end
-
-                        else
-                            local text=''
-                            local macroText2, showName= Get_Spell_Macro(arg1, arg2)
-                            local macro= MacroFrameText:GetText() or ''
-                            if not macro:find('#showtooltip') then
-                                text= '#showtooltip'..(showName and ' '..showName or '')..'\n'
-                            end
-                            if not macro:find('/targetenemy') then
-                                text= text..'/targetenemy [noharm][dead]\n'
-                            end
-
-                            text= text..(macroText2 or ('/cast '..arg1))..'\n'
-
-                            --MacroFrameText:SetCursorPosition(0)
-                            MacroFrameText:Insert(text)
-                            MacroFrameText:SetFocus()
-                        end
-                    end
-                }, 1)
+                Create_Menu(spellID, icon, name, 'services-number-'..math.ceil(num / SPELLS_PER_PAGE))
             end
         end
         if index==1 then
@@ -584,6 +605,41 @@ local function Init()
 
     MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
 
+    
+    local function PvP_Menu_List()
+        local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1)
+        if slotInfo and  slotInfo.availableTalentIDs then
+            table.sort(slotInfo.availableTalentIDs, function(a, b)
+                    local talentInfoA = C_SpecializationInfo.GetPvpTalentInfo(a) or {};
+                    local talentInfoB = C_SpecializationInfo.GetPvpTalentInfo(b) or {};
+                    
+                    local unlockedA = talentInfoA.unlocked;
+                    local unlockedB = talentInfoB.unlocked;
+                    
+                    if (unlockedA ~= unlockedB) then
+                        return unlockedA;
+                    end
+                    
+                    if (not unlockedA) then
+                        local reqLevelA = C_SpecializationInfo.GetPvpTalentUnlockLevel(a);
+                        local reqLevelB = C_SpecializationInfo.GetPvpTalentUnlockLevel(b);
+                        
+                        if (reqLevelA ~= reqLevelB) then
+                            return reqLevelA < reqLevelB;
+                        end
+                    end
+                    return a < b;
+            end)
+            for _, talentID in pairs(slotInfo.availableTalentIDs) do
+                local talentInfo = C_SpecializationInfo.GetPvpTalentInfo(talentID) or {}
+                if talentInfo.spellID and talentInfo.name and not IsPassiveSpell(talentInfo.spellID)then
+                    Create_Menu(talentInfo.spellID, talentInfo.icon, talentInfo.name, talentInfo.selected and e.Icon.select)
+                end
+            end
+        end
+
+    end
+
     local last
     for i=1, MAX_SKILLLINE_TABS do
         local name, icon, _, _, _, _, shouldHide, specID = GetSpellTabInfo(i)
@@ -591,11 +647,11 @@ local function Init()
             local btn= e.Cbtn(MacroEditButton, {size={24,24}, texture=icon})
             btn.index= i
             if not last then
-                btn:SetPoint('TOPLEFT', MacroEditButton, 'BOTTOMRIGHT',0,8)
+                btn:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'BOTTOMRIGHT',0,8)
             else
                 btn:SetPoint('LEFT', last, 'RIGHT')
             end
-           
+
             if i==3 then
                 local texture= btn:CreateTexture(nil, 'OVERLAY')
                 texture:SetAtlas('Forge-ColorSwatchSelection')
@@ -615,8 +671,13 @@ local function Init()
             last= btn
         end
     end
-
-
+    
+    local pvpButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas='pvptalents-warmode-swords'})--pvptalents-warmode-swords-disabled
+    pvpButton:SetPoint('LEFT', last, 'RIGHT')
+    pvpButton:SetScript('OnClick', function(self)
+        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, PvP_Menu_List, 'MENU')
+        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
+    end)
 end
 
 

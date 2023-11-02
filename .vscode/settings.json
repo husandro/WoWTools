@@ -3522,7 +3522,10 @@
         "BINDING_NAME_TOGGLESPELLBOOK",
         "MAX_SPELLS",
         "MAX_SKILLLINE_TABS",
-        "SpellBookFrame_OpenToSpell"
+        "SpellBookFrame_OpenToSpell",
+        "ToggleTalentFrame",
+        "MacroFrameSelectedMacroName",
+        "MacroFrameEnterMacroText"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
