@@ -132,6 +132,7 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==710--[放逐术]ss
         or spellID==8122--[心灵尖啸]ms
         or spellID==15487--[沉默]ms
+        or spellID==47585--[消散]ms
 
     then
         return '/stopcasting\n/cast '..name
@@ -171,8 +172,9 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==453--[安抚心灵]ms
         or spellID==34861--[圣言术：灵]ms
         or spellID==62618--[真言术：障]ms
-        or spellID==32375--[群体驱散]
-        
+        or spellID==32375--[群体驱散]ms
+        --or spellID==204883--[治疗之环]ms
+
     then
         return '/cast [@cursor]'..name
 
@@ -574,6 +576,7 @@ local function Init()
                 local texture= btn:CreateTexture(nil, 'OVERLAY')
                 texture:SetAtlas('Forge-ColorSwatchSelection')
                 texture:SetPoint('CENTER')
+                texture:SetVertexColor(0,1,0)
                 texture:SetSize(28,28)
                 texture:SetAlpha(0.7)
             end
