@@ -13,13 +13,8 @@ local function Get_Spell_Macro(name, spellID)
     if spellID==6603 then--自动攻击
         return '/startattack'
 
+    
     --MS
-    elseif spellID==121536 then--[天堂之羽]ms
-        --[[/cast [nomod]天堂之羽
-        /cast [mod:shift,@mouseover]信仰飞跃
-        /cast [mod:shift,help]信仰飞跃
-        /cast [mod:shift,@targettarget]信仰飞跃]]
-        return '/cast [mod,@player][@cursor]'..name
     elseif spellID==73325 then--[信仰飞跃]ms
         return '/cast [target=mouseover,help,exists][target=target,help,exists][target=targettarget,help,exists][target=focus,help,exists]'..name, name
     elseif spellID==1706 then--[漂浮术]
@@ -97,6 +92,18 @@ local function Get_Spell_Macro(name, spellID)
     elseif spellID==130 then--[缓落术]
         return '/cast '..name..'\n/cancelaura [mod:alt]'..name
 
+   
+
+    --alt@player, @cursor
+    elseif spellID==121536 --[天堂之羽]ms
+        or spellID==43265--[枯萎凋零]dk
+        or spellID==51052--[反魔法领域]
+    then
+        return '/cast [mod,@player][@cursor]'..name
+        
+        
+
+
     --喊话
     elseif spellID==698--[召唤仪式]ss
         or spellID==29893--[制造灵魂之井]ss
@@ -118,6 +125,7 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==34477--[误导]lr
         or spellID==5782--[恐惧]ss
         or spellID==57934--[嫁祸诀窍]dz
+        or spellID==111673--[控制亡灵]
     then
         return '/stopcasting\n/cast [target=mouseover,harm,exists][target=focus,harm,exists]'
             ..name..';'..name
@@ -180,24 +188,21 @@ local function Get_Spell_Macro(name, spellID)
         
         or spellID==195457--[抓钩]dz
 
+        or spellID==189110--[地狱火撞击]dh
         or spellID==191427--[恶魔变形]dh
         or spellID==204596--[烈焰咒符]dh
-        or spellID==189110--[地狱火撞击]dh
-        or spellID==390163--[极乐敕令]dh
-        or spellID==204596--[烈焰咒符]dh
         or spellID==202137--[沉默咒符]dh
+        or spellID==390163--[极乐敕令]dh
         or spellID==207684--[悲苦咒符]dh
+        or spellID==389807--[锁链咒符]dh
+        or spellID==389810--[烈焰咒符]dh T
+        or spellID==389815--[极乐敕令]dh T
+        or spellID==389809--[沉默咒符]dh T
 
     then
         return '/cast [@cursor]'..name
-
-    --@cursor
-    --[[elseif spellID==121536--[天堂之羽]ms
-    then
-        return '/cast [@player]'..name]]
     end
 end
-
 
 
 
