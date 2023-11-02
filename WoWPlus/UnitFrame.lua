@@ -1287,6 +1287,7 @@ end
 
 local function set_ToggleWarMode()--设置, 战争模式
     local self= PlayerFrame
+    print( C_PvP.CanToggleWarModeInArea())
     if C_PvP.CanToggleWarModeInArea() then
         local isWar= C_PvP.IsWarModeDesired()
         if not self.warMode then
