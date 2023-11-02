@@ -167,6 +167,11 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==1122--[召唤地狱火]ss
         or spellID==152108--[大灾变]ss
         or spellID==5740--[火焰之雨]ss
+
+        or spellID==453--[安抚心灵]ms
+        or spellID==34861--[圣言术：灵]ms
+        or spellID==62618--[真言术：障]ms
+        or spellID==32375--[群体驱散]
         
     then
         return '/cast [@cursor]'..name
