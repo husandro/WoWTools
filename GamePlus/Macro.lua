@@ -705,8 +705,40 @@ local function Init()
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
 
+    local equipButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas=e.Player.sex==2 and 'charactercreate-gendericon-male-selected' or 'charactercreate-gendericon-female-selected'})--pvptalents-warmode-swords-disabled
+    equipButton:SetPoint('LEFT', pvpButton, 'RIGHT')
+    equipButton:SetScript('OnClick', function(self)
+        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
+            for slot=1,22 do
+                local textureName = GetInventoryItemTexture("player", slot)
+                if textureName then
+                    local itemLink = GetInventoryItemLink('player', slot)
+                    local name = itemLink and C_Item.GetItemNameByID(itemLink)
+                    if name then
+                        local spellID= GetItemSpell(itemLink)
+                        e.LibDD:UIDropDownMenu_AddButton({
+                            text='|T'..textureName..':0|t'..itemLink,
+                            notCheckable=true,
+                            icon= spellID and e.Icon.select or nil,
+                            tooltipOnButton=true,
+                            tooltipTitle='|cnGREEN_FONT_COLOR:'..slot..'|r '..(e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS),
+                            tooltipText= (spellID and '/use ' or '/equip ')..name,
+                            arg1=name,
+                            arg2= spellID,
+                            func= function(_, arg1, arg2)
+                                MacroFrameText:Insert((arg2 and '/use '.. arg1 or ('/equip '..arg1)))
+                                MacroFrameText:SetFocus()
+                            end
+                        }, 1)
+                    end
+                end
+            end
+        end, 'MENU')
+        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
+    end)
+
     local starButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas='PetJournal-FavoritesIcon'})
-    starButton:SetPoint('LEFT', pvpButton, 'RIGHT')
+    starButton:SetPoint('LEFT', equipButton, 'RIGHT')
     starButton:SetScript('OnClick', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level, menuList)
             local tab={
@@ -730,7 +762,6 @@ local function Init()
                         {text='/wm [@cursor]7\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_5'},
                         {text='/wm [@cursor]8\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_8'},
                         {text='/cwm 1\n', icon='talents-button-reset'},
-                        
                     }
                 },
                 {text='button',  macro='btn:1',
@@ -785,7 +816,6 @@ local function Init()
                         {text='swimming', tips='IsSubmerged()'},
                     }
                 },
-
             }
             for _, info in pairs(tab) do
                 if info.tab then
@@ -819,16 +849,15 @@ local function Init()
                                     MacroFrameText:SetFocus()
                                 end
                             end,
-                            
                         }, level)
                     end
-                else
-                   
                 end
             end
         end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
+
+
 end
 
 
