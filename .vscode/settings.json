@@ -3525,7 +3525,8 @@
         "SpellBookFrame_OpenToSpell",
         "ToggleTalentFrame",
         "MacroFrameSelectedMacroName",
-        "MacroFrameEnterMacroText"
+        "MacroFrameEnterMacroText",
+        "WORLD_MARKER1"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

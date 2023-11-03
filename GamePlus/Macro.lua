@@ -569,10 +569,7 @@ local function Init()
                     end
                 elseif IsAltKeyDown() then
                     e.call('SpellBookFrame_OpenToSpell', arg2)
-                    if not e.Player.husandro then
-                        print(id, addName, '|cnRED_FONT_COLOR:BUG')
-                    end
-
+                    print(id, addName, '|cnRED_FONT_COLOR:BUG|r', 'Alt+'..e.Icon.left..(e.onlyChinese and '查询' or WHO))
                 else
                     local text=''
                     local macroText2, showName= Get_Spell_Macro(arg1, arg2)
@@ -705,6 +702,131 @@ local function Init()
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
     pvpButton:SetScript('OnClick', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, PvP_Menu_List, 'MENU')
+        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
+    end)
+
+    local starButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas='PetJournal-FavoritesIcon'})
+    starButton:SetPoint('LEFT', pvpButton, 'RIGHT')
+    starButton:SetScript('OnClick', function(self)
+        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level, menuList)
+            local tab={
+                {text='ping', icon='Ping_Map_Whole_Assist', macro=SLASH_PING1,
+                    tab={
+                        {text=SLASH_PING1},-- icon='Ping_Map_Whole_NonThreat'},
+                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGATTACK, icon='Ping_Map_Whole_Attack'},
+                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGASSIST, icon='Ping_Map_Whole_Assist'},
+                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGONMYWAY, icon='Ping_Map_Whole_OnMyWay'},
+                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGWARNING, icon='Ping_Map_Whole_Warning'}
+                    }
+                },
+                {text='worldmarker',  macro='/wm ',
+                    tab={
+                        {text='/wm [@cursor]1\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_6'},
+                        {text='/wm [@cursor]2\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_4'},
+                        {text='/wm [@cursor]3\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_3'},
+                        {text='/wm [@cursor]4\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_7'},
+                        {text='/wm [@cursor]5\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_1'},
+                        {text='/wm [@cursor]6\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_2'},
+                        {text='/wm [@cursor]7\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_5'},
+                        {text='/wm [@cursor]8\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_8'},
+                        {text='/cwm 1\n', icon='talents-button-reset'},
+                        
+                    }
+                },
+                {text='button',  macro='btn:1',
+                    tab={
+                        {text='btn:n', tips='OnClick'},
+                        {text='bar:n', tips='GetActionBarPage()'},
+                        {text='bonusbar, bonusbar:n', tips='HasBonusActionBar()'},
+                        {text='cursor', tips='GetCursorInfo()'},
+                        {text='extrabar', tips='HasExtraActionBar()'},
+                        {text='mod, mod:key, mod:action', tips='IsModifierKeyDown() or IsModifiedClick(action)'},
+                        {text='overridebar', tips='HasOverrideActionBar()'},
+                        {text='possessbar', tips='possessbar'},
+                        {text='shapeshift', tips='HasTempShapeshiftActionBar()'},
+                        {text='vehicleui', tips='HasVehicleActionBar()'},
+                    }
+                },
+                {text='@target',  macro='@target',
+                    tab={
+                        {text='exists', tips='UnitExists()'},
+                        {text='help', tips='UnitCanAssist()'},
+                        {text='harm', tips='UnitCanAttack()'},
+                        {text='dead', tips='UnitIsDeadOrGhost()'},
+                        {text='party', tips='	UnitInParty() '},
+
+                        {text='raid', tips='UnitInRaid()'},
+                        {text='unithasvehicleui', tips='UnitInVehicle()'},
+                        {text='', tips=''},
+                    }
+                },
+                {text='@player',  macro='@player',
+                    tab={
+                        {text='advflyable', tips='IsAdvancedFlyableArea()'},
+                        {text='canexitvehicle', tips='CanExitVehicle()'},
+                        {text='channeling, channeling:spellName', tips='UnitChannelInfo("player")'},
+                        {text='combat', tips='UnitAffectingCombat("player")'},
+                        {text='equipped:type, worn:type', tips='IsEquippedItemType(type)'},
+                        {text='flyable', tips='IsFlyableArea()'},
+                        {text='flying', tips='IsFlying()'},
+                        {text='form:n, stance:n', tips='form:n, stance:n'},
+                        {text='group, group:party, group:raid', tips='IsInGroup(), IsInRaid()'},
+                        {text='indoors', tips='IsIndoors()'},
+                        {text='outdoors', tips='IsOutdoors()'},
+                        {text='known:name', tips='GetSpellInfo(name)'},
+                        {text='known:spellID', tips='IsPlayerSpell(spellID)'},
+                        {text='mounted', tips='IsMounted()'},
+                        {text='pet:name, pet:family', tips='UnitCreatureFamily("pet")'},
+                        {text='petbattle', tips='C_PetBattles.IsInBattle()'},
+                        {text='pvpcombat', tips='PvP talents are usable'},
+                        {text='resting', tips='IsResting()'},
+                        {text='spec:n', tips='GetSpecialization()'},
+                        {text='stealth', tips='IsStealthed()'},
+                        {text='swimming', tips='IsSubmerged()'},
+                    }
+                },
+
+            }
+            for _, info in pairs(tab) do
+                if info.tab then
+                    if menuList then
+                        if menuList==info.text then
+                            for _, macro in pairs(info.tab) do
+                                e.LibDD:UIDropDownMenu_AddButton({
+                                    text=macro.text,
+                                    notCheckable=true,
+                                    arg1=macro.text,
+                                    icon=macro.icon,
+                                    tooltipOnButton=true,
+                                    tooltipTitle= macro.tips and '|cff2aa2ff'..macro.tips or nil,
+                                    func= function(_, arg1)
+                                        MacroFrameText:Insert(arg1)
+                                        MacroFrameText:SetFocus()
+                                    end
+                                }, level)
+                            end
+                        end
+                    else
+                        e.LibDD:UIDropDownMenu_AddButton({
+                            text=info.text,
+                            notCheckable=true,
+                            arg1=info.macro,
+                            menuList=info.text,
+                            hasArrow=true,
+                            func= function(_, arg1)
+                                if arg1 then
+                                    MacroFrameText:Insert(arg1..'\n')
+                                    MacroFrameText:SetFocus()
+                                end
+                            end,
+                            
+                        }, level)
+                    end
+                else
+                   
+                end
+            end
+        end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
 end
