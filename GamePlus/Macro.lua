@@ -358,7 +358,7 @@ local function Init()
         e.tips:AddDoubleLine(e.Icon.toRight2..(e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT), Save.toRightLeft==2 and e.Icon.select2)
         e.tips:AddDoubleLine('|A:'..e.Icon.icon..':0:0|a'..(e.onlyChinese and '默认' or DEFAULT), not Save.toRightLeft and e.Icon.select2)
         e.tips:Show()
-        e.tips:SetAlpha(1)
+        self:SetAlpha(1)
     end
     toRightButton:SetScript('OnClick', function(self)
         if not Save.toRightLeft then
@@ -373,9 +373,23 @@ local function Init()
         self:set_texture()
         self:set_tooltips()
     end)
+    --[[toRightButton:SetScript('OnMouseWheel', function(_, d)
+        local n= Save.listStride or 6-- SetCustomStride
+        if d==1 then
+            n= n +1
+        elseif d==-1 then
+            n= n-1
+        end
+        n= n>12 and 12 or n
+        n= n<1 and 1 or n
+        MacroFrame.MacroSelector:SetCustomStride(n)
+        Save.listStride=n
+        print(n)
+    end)]]
     toRightButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
     toRightButton:SetScript('OnEnter', toRightButton.set_tooltips)
     toRightButton:set_texture()
+
 
 
     --宏，提示
@@ -386,7 +400,7 @@ local function Init()
             if name and icon and body then
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine('|T'..icon..':0|t'..name, index)
+                e.tips:AddDoubleLine('|T'..icon..':0|t|cffffffff'..name, index)
                 e.tips:AddLine(body)
                 e.tips:Show()
             end
@@ -395,9 +409,22 @@ local function Init()
     hooksecurefunc(MacroButtonMixin, 'OnLoad', function(self)
         self:HookScript('OnEnter', set_btn_tooltips)
         self:HookScript('OnLeave', function() e.tips:Hide() end)
-        local texture= self:GetRegions()
-        texture:SetAlpha(0.3)
+        local texture2= self:GetRegions()
+        texture2:SetAlpha(0.3)
+        self.Name:SetWidth(48)
+        self.SelectedTexture:ClearAllPoints()
+        self.SelectedTexture:SetPoint('CENTER')
+        self.SelectedTexture:SetSize(44,44)
+        self.SelectedTexture:SetVertexColor(0,1,1)
     end)
+
+    local function MacroFrameInitMacroButton(macroButton, _, name)--Blizzard_MacroUI.lua
+        if name ~= nil then
+            macroButton.Name:SetText(e.WA_Utf8Sub(name, 2, 4))
+        end
+    end
+    hooksecurefunc(MacroFrame.MacroSelector,'setupCallback', MacroFrameInitMacroButton)--MacroFrame.MacroSelector:SetSetupCallback(MacroFrameInitMacroButton)
+
     MacroFrameSelectedMacroButton:HookScript('OnEnter', set_btn_tooltips)
     MacroFrameSelectedMacroButton:HookScript('OnLeave', function() e.tips:Hide() end)
 
@@ -511,10 +538,12 @@ local function Init()
 
 
     local function Create_Menu(spellID, icon, name, texture)
+        e.LoadDate({id=spellID, type='spell'})
         local col
         if not IsSpellKnownOrOverridesKnown(spellID) then
             col='|cff606060'
         end
+        
         icon= icon and '|T'..icon..':0|t' or ''
         local  macroText= Get_Spell_Macro(name, spellID)
         macroText= macroText and '|cnGREEN_FONT_COLOR:'..macroText..'|n |r' or nil
