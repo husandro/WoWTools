@@ -929,7 +929,7 @@ local function Init()
                 },
                 {text='button',  macro='btn:1',
                     tab={
-                        {text='btn:n', tips='OnClick'},
+                        {text='btn:n', tips='OnClick()'},
                         {text='bar:n', tips='GetActionBarPage()'},
                         {text='bonusbar, bonusbar:n', tips='HasBonusActionBar()'},
                         {text='cursor', tips='GetCursorInfo()'},
