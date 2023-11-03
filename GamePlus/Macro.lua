@@ -715,14 +715,20 @@ local function Init()
                     local itemLink = GetInventoryItemLink('player', slot)
                     local name = itemLink and C_Item.GetItemNameByID(itemLink)
                     if name then
-                        local spellID= GetItemSpell(itemLink)
+                        local spellName, spellID= GetItemSpell(itemLink)
+                        local spellTexture
+                        if spellID then
+                            e.LoadDate({id=spellID, type='spell'})
+                            spellTexture= GetSpellTexture(spellID)
+                            spellTexture= spellTexture and '|T'..spellTexture..':0|t'
+                        end
                         e.LibDD:UIDropDownMenu_AddButton({
-                            text='|T'..textureName..':0|t'..itemLink,
+                            text='|T'..textureName..':0|t'..itemLink..(((slot==13 or slot==14) and spellID) and e.Icon.toLeft2 or ''),
                             notCheckable=true,
                             icon= spellID and e.Icon.select or nil,
                             tooltipOnButton=true,
                             tooltipTitle='|cnGREEN_FONT_COLOR:'..slot..'|r '..(e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS),
-                            tooltipText= (spellID and '/use ' or '/equip ')..name,
+                            tooltipText= spellID and '|cffff00ff/use|r '..name..'|n'..(spellTexture or '')..(GetSpellLink(spellID) or spellName or spellID) or ('/equip '..name),
                             arg1=name,
                             arg2= spellID,
                             func= function(_, arg1, arg2)
