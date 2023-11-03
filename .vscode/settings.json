@@ -3530,7 +3530,15 @@
         "SPELL_PASSIVE",
         "SPELL_UNKNOWN",
         "PROFESSIONS_CATEGORY_UNLEARNED",
-        "TRADE_SKILLS_UNLEARNED_TAB"
+        "TRADE_SKILLS_UNLEARNED_TAB",
+        "SLASH_CAST1",
+        "SLASH_CAST3",
+        "SLASH_CAST2",
+        "SLASH_CAST4",
+        "SLASH_USE1",
+        "SLASH_USE2",
+        "SLASH_USE_TOY1",
+        "SLASH_USE_TOY2"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

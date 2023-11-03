@@ -274,8 +274,8 @@ SliceDemo.ResizeButton:SetPoint("BOTTOMRIGHT");
 
 
 
-BreakUpLargeNumbers
-
+BreakUpLargeNumbers()
+InClickBindingMode()
 
 for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS
     for slot=1, C_Container.GetContainerNumSlots(bag) do

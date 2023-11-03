@@ -269,6 +269,132 @@ end
 
 
 
+--修改，当前图标
+--Blizzard_MacroIconSelector.lua MacroPopupFrameMixin:OkayButton_OnClick()
+local function Set_Texture_Macro(iconTexture)--修改，当前图标
+    if UnitAffectingCombat('player') then
+        return
+    end
+    local macroFrame =MacroFrame
+    local actualIndex = macroFrame:GetMacroDataIndex(macroFrame:GetSelectedIndex())
+    local index = 1
+    local name= GetMacroInfo(actualIndex)
+    index = EditMacro(actualIndex, name, iconTexture) - macroFrame.macroBase;--战斗中，出现错误
+    e.call(MacroFrame.SaveMacro, macroFrame)
+    macroFrame:SelectMacro(index);
+    local retainScrollPosition = true;
+    macroFrame:Update(retainScrollPosition);
+end
+
+
+
+
+
+
+
+--创建，法术，列表
+local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术，列表
+    e.LoadDate({id=spellID, type='spell'})
+    local isKnown= IsSpellKnownOrOverridesKnown(spellID)
+    local isPassive= IsPassiveSpell(spellID)
+
+    local color
+    if isPassive then
+        color= '|cff606060'
+    elseif not isKnown then
+        color= '|cnRED_FONT_COLOR:'
+    end
+    
+
+    icon= icon and '|T'..icon..':0|t' or ''
+    local  macroText= Get_Spell_Macro(name, spellID)
+    macroText= macroText and '|cnGREEN_FONT_COLOR:'..macroText..'|n |r' or nil
+
+    local tipText= GetSpellDescription(spellID)
+    if tipText then
+        local head
+        if isPassive then
+            head= '|cff606060'..(e.onlyChinese and '被动' or SPELL_PASSIVE)..'|r'
+        end
+        if not isKnown then
+            head= head and head..', ' or ''
+            head= head..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB)..'|r'
+        end
+        
+        tipText= head and head..'|n'..tipText or tipText
+    end
+
+    e.LibDD:UIDropDownMenu_AddButton({
+        text=icon..name..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
+        tooltipOnButton=true,
+        --tooltipTitle= (col or '')..'Alt '..icon..(e.onlyChinese and '查询' or WHO)..' '.. spellID,
+        --tooltipText= GetSpellDescription(spellID)..(macroText and '|n|n|cnGREEN_FONT_COLOR:'..macroText or ''),
+        tooltipTitle= macroText or '',
+        tooltipText= tipText,
+        colorCode=color,
+        icon= texture,
+        arg1= name,
+        arg2= spellID,
+        notCheckable=true,
+        func= function(_, arg1, arg2)
+            if IsShiftKeyDown() then
+                local link=GetSpellLink(arg2) or GetSpellInfo(arg2) or arg2
+                link= 'or spellID=='..arg2..'--'..link
+                if not ChatEdit_InsertLink(link) then
+                    ChatFrame_OpenChat(link)
+                end
+            elseif IsAltKeyDown() then
+                e.call('SpellBookFrame_OpenToSpell', arg2)
+                print(id, addName, '|cnRED_FONT_COLOR:BUG|r', 'Alt+'..e.Icon.left..(e.onlyChinese and '查询' or WHO))
+            else
+                local text=''
+                local macroText2, showName= Get_Spell_Macro(arg1, arg2)
+                local macro= MacroFrameText:GetText() or ''
+                if not macro:find('#showtooltip') then
+                    text= '#showtooltip'..(showName and ' '..showName or '')..'\n'
+                end
+                if not macro:find('/targetenemy') then
+                    text= text..'/targetenemy [noharm][dead]\n'
+                end
+
+                text= text..(macroText2 or ('/cast '..arg1))..'\n'
+
+                --MacroFrameText:SetCursorPosition(0)
+                MacroFrameText:Insert(text)
+                MacroFrameText:SetFocus()
+            end
+        end
+    }, 1)
+end
+
+
+
+--宏，提示
+local function set_btn_tooltips(self)
+    if self.selectionIndex then
+        local index= self.selectionIndex+ MacroFrame.macroBase
+        local name, icon, body = GetMacroInfo(index)
+        if name and icon and body then
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine('|T'..icon..':0|t|cffffffff'..name, index)
+            e.tips:AddLine(body)
+            e.tips:Show()
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -284,6 +410,8 @@ end
 
 local function Init()
     local w, h= 350, 600--672, 672
+    MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
+
     MacroFrame:SetSize(w, h)--<Size x="338" y="424"/>
     MacroFrameScrollFrame:SetSize(w-43, h/2-45)
     MacroFrameText:SetSize(w-43, h/2-45)
@@ -392,20 +520,9 @@ local function Init()
 
 
 
+    
+    
     --宏，提示
-    local function set_btn_tooltips(self)
-        if self.selectionIndex then
-            local index= self.selectionIndex+ MacroFrame.macroBase
-            local name, icon, body = GetMacroInfo(index)
-            if name and icon and body then
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine('|T'..icon..':0|t|cffffffff'..name, index)
-                e.tips:AddLine(body)
-                e.tips:Show()
-            end
-        end
-    end
     hooksecurefunc(MacroButtonMixin, 'OnLoad', function(self)
         self:HookScript('OnEnter', set_btn_tooltips)
         self:HookScript('OnLeave', function() e.tips:Hide() end)
@@ -425,14 +542,19 @@ local function Init()
     end
     hooksecurefunc(MacroFrame.MacroSelector,'setupCallback', MacroFrameInitMacroButton)--MacroFrame.MacroSelector:SetSetupCallback(MacroFrameInitMacroButton)
 
-    MacroFrameSelectedMacroButton:HookScript('OnEnter', set_btn_tooltips)
-    MacroFrameSelectedMacroButton:HookScript('OnLeave', function() e.tips:Hide() end)
+
+
+
+
+
+
 
 
 
 
     --选定宏，index提示
     MacroFrame.numSelectionLable= e.Cstr(MacroFrameSelectedMacroButton)
+    MacroFrame.numSelectionLable:SetAlpha(0.7)
     MacroFrame.numSelectionLable:SetPoint('RIGHT', MacroFrameSelectedMacroButton, 'LEFT', -1,0)
     MacroFrame.numSelectionLable:SetScript('OnLeave', function() e.tips:Hide() end)
     MacroFrame.numSelectionLable:SetScript('OnEnter', function(self)
@@ -455,6 +577,12 @@ local function Init()
         end
         MacroFrameSelectedMacroButton.numSelectionLable:SetText(actualIndex or '')
     end)]]
+
+
+
+
+
+
 
 
     --保存，提示
@@ -496,12 +624,16 @@ local function Init()
 
 
 
+
+
     --宏数量
     --Blizzard_MacroUI.lua
     MacroFrameTab1.label= e.Cstr(MacroFrameTab1)
     MacroFrameTab1.label:SetPoint('BOTTOM', MacroFrameTab1, 'TOP', 0, -8)
+    MacroFrameTab1.label:SetAlpha(0.7)
     MacroFrameTab2.label= e.Cstr(MacroFrameTab2)
     MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2, 'TOP', 0, -8)
+    MacroFrameTab2.label:SetAlpha(0.7)
     hooksecurefunc(MacroFrame, 'Update', function()
     	local numAccountMacros, numCharacterMacros
         numAccountMacros, numCharacterMacros = GetNumMacros()
@@ -521,6 +653,10 @@ local function Init()
 
 
 
+
+
+
+    --目标
     local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
     attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',8,0)
     attck.text='#showtooltip\n/targetenemy [noharm][dead]\n'
@@ -530,91 +666,44 @@ local function Init()
     attck.tip=nil
     attck.tip2=e.onlyChinese and '光环名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AURAS, NAME)
 
-
+    --攻击
     local cancel= Create_Button(e.onlyChinese and '攻击' or ATTACK)
     cancel:SetPoint('LEFT', attck, 'RIGHT')
     cancel.text= '/petattack\n/startattack\n'
     cancel.text2= '/petfollow\n/stopattack\n/stopcasting\n'
 
 
-    local function Create_Menu(spellID, icon, name, texture)
-        e.LoadDate({id=spellID, type='spell'})
-        local isKnown= IsSpellKnownOrOverridesKnown(spellID)
-        local isPassive= IsPassiveSpell(spellID)
-
-        local color
-        if isPassive then
-            color= '|cff606060'
-        elseif not isKnown then
-            color= '|cnRED_FONT_COLOR:'
-        end
-        
-
-        icon= icon and '|T'..icon..':0|t' or ''
-        local  macroText= Get_Spell_Macro(name, spellID)
-        macroText= macroText and '|cnGREEN_FONT_COLOR:'..macroText..'|n |r' or nil
-
-        local tipText= GetSpellDescription(spellID)
-        if tipText then
-            local head
-            if isPassive then
-                head= '|cff606060'..(e.onlyChinese and '被动' or SPELL_PASSIVE)..'|r'
-            end
-            if not isKnown then
-                head= head and head..', ' or ''
-                head= head..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB)..'|r'
-            end
-            
-            tipText= head and head..'|n'..tipText or tipText
-        end
-
-        e.LibDD:UIDropDownMenu_AddButton({
-            text=icon..name..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
-            tooltipOnButton=true,
-            --tooltipTitle= (col or '')..'Alt '..icon..(e.onlyChinese and '查询' or WHO)..' '.. spellID,
-            --tooltipText= GetSpellDescription(spellID)..(macroText and '|n|n|cnGREEN_FONT_COLOR:'..macroText or ''),
-            tooltipTitle= macroText or '',
-            tooltipText= tipText,
-            colorCode=color,
-            icon= texture,
-            arg1= name,
-            arg2= spellID,
-            notCheckable=true,
-            func= function(_, arg1, arg2)
-                if IsShiftKeyDown() then
-                    local link=GetSpellLink(arg2) or GetSpellInfo(arg2) or arg2
-                    link= 'or spellID=='..arg2..'--'..link
-                    if not ChatEdit_InsertLink(link) then
-                        ChatFrame_OpenChat(link)
-                    end
-                elseif IsAltKeyDown() then
-                    e.call('SpellBookFrame_OpenToSpell', arg2)
-                    print(id, addName, '|cnRED_FONT_COLOR:BUG|r', 'Alt+'..e.Icon.left..(e.onlyChinese and '查询' or WHO))
-                else
-                    local text=''
-                    local macroText2, showName= Get_Spell_Macro(arg1, arg2)
-                    local macro= MacroFrameText:GetText() or ''
-                    if not macro:find('#showtooltip') then
-                        text= '#showtooltip'..(showName and ' '..showName or '')..'\n'
-                    end
-                    if not macro:find('/targetenemy') then
-                        text= text..'/targetenemy [noharm][dead]\n'
-                    end
-
-                    text= text..(macroText2 or ('/cast '..arg1))..'\n'
-
-                    --MacroFrameText:SetCursorPosition(0)
-                    MacroFrameText:Insert(text)
-                    MacroFrameText:SetFocus()
-                end
-            end
-        }, 1)
-    end
 
 
-    MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+
+
+
+
+
+
+
+
+    --法术书
     local last
     for i=1, MAX_SKILLLINE_TABS do
         local name, icon, _, _, _, _, shouldHide, specID = GetSpellTabInfo(i)
@@ -643,7 +732,7 @@ local function Init()
                         local name2, _, icon2, _, _, _, spellID= GetSpellInfo(index, BOOKTYPE_SPELL)
                         num= num +1
                         if name2 and not IsPassiveSpell(index, BOOKTYPE_SPELL) and spellID then
-                            Create_Menu(spellID, icon2, name2, 'services-number-'..math.ceil(num / SPELLS_PER_PAGE))
+                            Create_Spell_Menu(spellID, icon2, name2, 'services-number-'..math.ceil(num / SPELLS_PER_PAGE))
                         end
                     end
                     if self.index==1 then
@@ -681,6 +770,15 @@ local function Init()
         end
     end
 
+
+
+
+
+
+
+
+
+
     --PVP， 天赋，法术
     local pvpButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas='pvptalents-warmode-swords'})--pvptalents-warmode-swords-disabled
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
@@ -712,13 +810,23 @@ local function Init()
                 for _, talentID in pairs(slotInfo.availableTalentIDs) do
                     local talentInfo = C_SpecializationInfo.GetPvpTalentInfo(talentID) or {}
                     if talentInfo.spellID and talentInfo.name then--and not IsPassiveSpell(talentInfo.spellID)then
-                        Create_Menu(talentInfo.spellID, talentInfo.icon, talentInfo.name, talentInfo.selected and e.Icon.select)
+                        Create_Spell_Menu(talentInfo.spellID, talentInfo.icon, talentInfo.name, talentInfo.selected and e.Icon.select)
                     end
                 end
             end
         end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
+
+
+
+
+
+
+
+
+
+
 
     --角色，装备
     local equipButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas=e.Player.sex==2 and 'charactercreate-gendericon-male-selected' or 'charactercreate-gendericon-female-selected'})--pvptalents-warmode-swords-disabled
@@ -758,6 +866,16 @@ local function Init()
         end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
+
+
+
+
+
+
+
+
+
+
 
     --常用，宏
     local starButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas='PetJournal-FavoritesIcon'})
@@ -880,8 +998,146 @@ local function Init()
     end)
 
 
-end
+    
+    
 
+    --选定，宏，提示
+    MacroFrameSelectedMacroButton:HookScript('OnEnter', function(self)
+        set_btn_tooltips(self)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL)),e.Icon.left)
+        e.tips:Show()
+    end)
+    MacroFrameSelectedMacroButton:HookScript('OnLeave', function() e.tips:Hide() end)
+
+
+
+    MacroFrameSelectedMacroButton:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+    MacroFrameSelectedMacroButton:HookScript('OnClick', function(self)
+        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
+            if UnitAffectingCombat('player') then
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text=e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT,
+                    notCheckable=true,
+                    isTitle=true,
+                }, 1)
+                return
+            end
+            local text= MacroFrameText:GetText()
+            text= text and text..'\n' or ''
+            local find
+            local allTab={}
+
+           
+            
+            local function get_SpellItem_Texture(spell, item)
+                if spell then
+                    local icon= GetSpellTexture(spell) or select(3, GetSpellInfo(spell))
+                    if icon then
+                        allTab[icon]={name=spell, type='spell'}
+                    end
+
+                elseif item then
+                    local icon= C_Item.GetItemIconByID(item) or select(5, GetItemInfoInstant(item))
+                    if icon then
+                        allTab[icon]={name=spell, type='itme'}
+                    end
+                end
+            end
+
+
+             --法术
+            text= text:gsub(SLASH_CAST1..' (.-)\n', function(t)--/施放
+                get_SpellItem_Texture(t:match('](.+)') or t)
+                return ''
+            end)
+            text= text:gsub(SLASH_CAST2..' (.-)\n', function(t)--/spell
+                get_SpellItem_Texture(t:match('](.+)') or t)
+                return ''
+            end)
+            text= text:gsub(SLASH_CAST3..' (.-)\n', function(t)--/cast
+                get_SpellItem_Texture(t:match('](.+)') or t)
+                return ''
+            end)
+            text= text:gsub(SLASH_CAST4..' (.-)\n', function(t)--/法术
+                get_SpellItem_Texture(t:match('](.+)') or t)
+                return ''
+            end)
+            
+            --物品
+            text= text:gsub(SLASH_USE1..' (.-)\n', function(t)--/use
+                get_SpellItem_Texture(nil, t:match('](.+)') or t)
+                return ''
+            end)
+
+            text= text:gsub(SLASH_USE2..' (.-)\n', function(t)--/use
+                get_SpellItem_Texture(nil, t:match('](.+)') or t)
+                return ''
+            end)
+            text= text:gsub(SLASH_USE_TOY1..' (.-)\n', function(t)--/使用玩具
+                get_SpellItem_Texture(nil, t:match('](.+)') or t)
+                return ''
+            end)
+            text= text:gsub(SLASH_USE_TOY2..' (.-)\n', function(t)--/usetoy
+                get_SpellItem_Texture(nil, t:match('](.+)') or t)
+                return ''
+            end)
+
+            for icon, name in pairs(allTab) do
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text='|T'..icon..':0|t'..name,
+                    notCheckable=true,
+                    arg1=icon,
+                    func= function(_, arg1)
+                        Set_Texture_Macro(arg1)--修改，当前图标
+                    end
+                }, 1)
+                find=true
+            end
+
+
+            if not find then
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text=e.onlyChinese and '无' or NONE,
+                    notCheckable=true,
+                    isTitle=true,
+                }, 1)
+            end
+        end, 'MENU')
+        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
+--[[
+        SLASH_CAST1 = "/施放";
+        SLASH_CAST2 = "/spell";
+        SLASH_CAST3 = "/cast";
+        SLASH_CAST4 = "/法术";
+    ]]
+    end)
+end
+--[[
+    function MacroPopupFrameMixin:OkayButton_OnClick()
+	IconSelectorPopupFrameTemplateMixin.OkayButton_OnClick(self);
+
+	local macroFrame = self:GetMacroFrame();
+
+	local index = 1
+	local iconTexture = self.BorderBox.SelectedIconArea.SelectedIconButton:GetIconTexture();
+	local text = self.BorderBox.IconSelectorEditBox:GetText();
+
+	text = string.gsub(text, "\"", "");
+	if ( self.mode == IconSelectorPopupFrameModes.New ) then
+		local isCharacterMacro = macroFrame.macroBase > 0;
+		index = CreateMacro(text, iconTexture, nil, isCharacterMacro) - macroFrame.macroBase;
+	elseif ( self.mode == IconSelectorPopupFrameModes.Edit ) then
+		local actualIndex = macroFrame:GetMacroDataIndex(macroFrame:GetSelectedIndex());
+		index = EditMacro(actualIndex, text, iconTexture) - macroFrame.macroBase;
+	end
+
+	macroFrame:SelectMacro(index);
+
+	local retainScrollPosition = true;
+	macroFrame:Update(retainScrollPosition);
+end
+]]
 
 
 
