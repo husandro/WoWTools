@@ -387,7 +387,7 @@ local function set_btn_tooltips(self)
         if name and icon and body then
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, index), '|T'..icon..':0|t|cffffffff'..name)
+            e.tips:AddDoubleLine('|cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, index), '|T'..icon..':0|t|cffffffff'..name)
             e.tips:AddLine(body, nil,nil,nil, true)
             e.tips:Show()
         end
