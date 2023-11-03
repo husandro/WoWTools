@@ -1142,6 +1142,9 @@ local function Init()
                     text='|T'..icon..':0|t'..name,
                     notCheckable=true,
                     arg1=icon,
+                    tooltipOnButton=true,
+                    tooltipTitle=e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL),
+
                     func= function(_, arg1)
                         Set_Texture_Macro(arg1)--修改，当前图标
                     end
