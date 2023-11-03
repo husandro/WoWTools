@@ -3526,7 +3526,11 @@
         "ToggleTalentFrame",
         "MacroFrameSelectedMacroName",
         "MacroFrameEnterMacroText",
-        "WORLD_MARKER1"
+        "WORLD_MARKER1",
+        "SPELL_PASSIVE",
+        "SPELL_UNKNOWN",
+        "PROFESSIONS_CATEGORY_UNLEARNED",
+        "TRADE_SKILLS_UNLEARNED_TAB"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

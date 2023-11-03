@@ -17,7 +17,7 @@ local function Get_Spell_Macro(name, spellID)
     --MS
     elseif spellID==73325 then--[信仰飞跃]ms
         return '/cast [target=mouseover,help,exists][target=target,help,exists][target=targettarget,help,exists][target=focus,help,exists]'..name, name
-    
+
     elseif spellID==232698 then--[暗影形态]
         return '/cast [noform]'..name, name
 
@@ -152,7 +152,7 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==8122--[心灵尖啸]ms
         or spellID==15487--[沉默]ms
         or spellID==47585--[消散]ms
-        
+
 
     then
         return '/stopcasting\n/cast '..name
@@ -539,14 +539,34 @@ local function Init()
 
     local function Create_Menu(spellID, icon, name, texture)
         e.LoadDate({id=spellID, type='spell'})
-        local col
-        if not IsSpellKnownOrOverridesKnown(spellID) then
-            col='|cff606060'
+        local isKnown= IsSpellKnownOrOverridesKnown(spellID)
+        local isPassive= IsPassiveSpell(spellID)
+
+        local color
+        if isPassive then
+            color= '|cff606060'
+        elseif not isKnown then
+            color= '|cnRED_FONT_COLOR:'
         end
         
+
         icon= icon and '|T'..icon..':0|t' or ''
         local  macroText= Get_Spell_Macro(name, spellID)
         macroText= macroText and '|cnGREEN_FONT_COLOR:'..macroText..'|n |r' or nil
+
+        local tipText= GetSpellDescription(spellID)
+        if tipText then
+            local head
+            if isPassive then
+                head= '|cff606060'..(e.onlyChinese and '被动' or SPELL_PASSIVE)..'|r'
+            end
+            if not isKnown then
+                head= head and head..', ' or ''
+                head= head..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB)..'|r'
+            end
+            
+            tipText= head and head..'|n'..tipText or tipText
+        end
 
         e.LibDD:UIDropDownMenu_AddButton({
             text=icon..name..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
@@ -554,8 +574,8 @@ local function Init()
             --tooltipTitle= (col or '')..'Alt '..icon..(e.onlyChinese and '查询' or WHO)..' '.. spellID,
             --tooltipText= GetSpellDescription(spellID)..(macroText and '|n|n|cnGREEN_FONT_COLOR:'..macroText or ''),
             tooltipTitle= macroText or '',
-            tooltipText=GetSpellDescription(spellID),
-            colorCode=col,
+            tooltipText= tipText,
+            colorCode=color,
             icon= texture,
             arg1= name,
             arg2= spellID,
@@ -592,79 +612,8 @@ local function Init()
     end
 
 
-
-    local function Spell_Menu(index)
-        local _, _, offset, numSlots = GetSpellTabInfo(index)
-        local num=0
-        for i= offset+1, offset+ numSlots do
-            local name, _, icon, _, _, _, spellID= GetSpellInfo(i, BOOKTYPE_SPELL)
-            num= num +1
-            if name and not IsPassiveSpell(i, BOOKTYPE_SPELL) and spellID then
-                Create_Menu(spellID, icon, name, 'services-number-'..math.ceil(num / SPELLS_PER_PAGE))
-            end
-        end
-        if index==1 then
-            e.LibDD:UIDropDownMenu_AddButton({
-                text='ExtraActionButton1',
-                tooltipOnButton=true,
-                tooltipTitle='/click ExtraActionButton1',
-                notCheckable=true,
-                func= function()
-                    MacroFrameText:Insert('/click ExtraActionButton1\n')
-                    MacroFrameText:SetFocus()
-                end
-            }, 1)
-            if e.Player.class=='MAGE' then--FS
-                e.LibDD:UIDropDownMenu_AddButton({
-                    text=e.onlyChinese and '解散水元素' or 'PetDismiss',
-                    tooltipOnButton=true,
-                    tooltipTitle='/script PetDismiss()',
-                    notCheckable=true,
-                    func= function()
-                        MacroFrameText:Insert('/script PetDismiss()\n')
-                        MacroFrameText:SetFocus()
-                    end
-                }, 1)
-            end
-        end
-    end
-
     MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
 
-    
-    local function PvP_Menu_List()
-        local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1)
-        if slotInfo and  slotInfo.availableTalentIDs then
-            table.sort(slotInfo.availableTalentIDs, function(a, b)
-                    local talentInfoA = C_SpecializationInfo.GetPvpTalentInfo(a) or {};
-                    local talentInfoB = C_SpecializationInfo.GetPvpTalentInfo(b) or {};
-                    
-                    local unlockedA = talentInfoA.unlocked;
-                    local unlockedB = talentInfoB.unlocked;
-                    
-                    if (unlockedA ~= unlockedB) then
-                        return unlockedA;
-                    end
-                    
-                    if (not unlockedA) then
-                        local reqLevelA = C_SpecializationInfo.GetPvpTalentUnlockLevel(a);
-                        local reqLevelB = C_SpecializationInfo.GetPvpTalentUnlockLevel(b);
-                        
-                        if (reqLevelA ~= reqLevelB) then
-                            return reqLevelA < reqLevelB;
-                        end
-                    end
-                    return a < b;
-            end)
-            for _, talentID in pairs(slotInfo.availableTalentIDs) do
-                local talentInfo = C_SpecializationInfo.GetPvpTalentInfo(talentID) or {}
-                if talentInfo.spellID and talentInfo.name and not IsPassiveSpell(talentInfo.spellID)then
-                    Create_Menu(talentInfo.spellID, talentInfo.icon, talentInfo.name, talentInfo.selected and e.Icon.select)
-                end
-            end
-        end
-
-    end
 
     local last
     for i=1, MAX_SKILLLINE_TABS do
@@ -687,7 +636,41 @@ local function Init()
                 texture:SetAlpha(0.7)
             end
             btn:SetScript('OnClick', function(self)
-                e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function() Spell_Menu(self.index) end, 'MENU')
+                e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
+                    local _, _, offset, numSlots = GetSpellTabInfo(self.index)
+                    local num=0
+                    for index= offset+1, offset+ numSlots do
+                        local name2, _, icon2, _, _, _, spellID= GetSpellInfo(index, BOOKTYPE_SPELL)
+                        num= num +1
+                        if name2 and not IsPassiveSpell(index, BOOKTYPE_SPELL) and spellID then
+                            Create_Menu(spellID, icon2, name2, 'services-number-'..math.ceil(num / SPELLS_PER_PAGE))
+                        end
+                    end
+                    if self.index==1 then
+                        e.LibDD:UIDropDownMenu_AddButton({
+                            text='ExtraActionButton1',
+                            tooltipOnButton=true,
+                            tooltipTitle='/click ExtraActionButton1',
+                            notCheckable=true,
+                            func= function()
+                                MacroFrameText:Insert('/click ExtraActionButton1\n')
+                                MacroFrameText:SetFocus()
+                            end
+                        }, 1)
+                        if e.Player.class=='MAGE' then--FS
+                            e.LibDD:UIDropDownMenu_AddButton({
+                                text=e.onlyChinese and '解散水元素' or 'PetDismiss',
+                                tooltipOnButton=true,
+                                tooltipTitle='/script PetDismiss()',
+                                notCheckable=true,
+                                func= function()
+                                    MacroFrameText:Insert('/script PetDismiss()\n')
+                                    MacroFrameText:SetFocus()
+                                end
+                            }, 1)
+                        end
+                    end
+                end, 'MENU')
                 e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
             end)
             btn:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', 'player')
@@ -697,14 +680,47 @@ local function Init()
             last= btn
         end
     end
-    
+
+    --PVP， 天赋，法术
     local pvpButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas='pvptalents-warmode-swords'})--pvptalents-warmode-swords-disabled
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
     pvpButton:SetScript('OnClick', function(self)
-        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, PvP_Menu_List, 'MENU')
+        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
+            local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1)
+            if slotInfo and  slotInfo.availableTalentIDs then
+                table.sort(slotInfo.availableTalentIDs, function(a, b)
+                        local talentInfoA = C_SpecializationInfo.GetPvpTalentInfo(a) or {};
+                        local talentInfoB = C_SpecializationInfo.GetPvpTalentInfo(b) or {};
+
+                        local unlockedA = talentInfoA.unlocked;
+                        local unlockedB = talentInfoB.unlocked;
+
+                        if (unlockedA ~= unlockedB) then
+                            return unlockedA;
+                        end
+
+                        if (not unlockedA) then
+                            local reqLevelA = C_SpecializationInfo.GetPvpTalentUnlockLevel(a);
+                            local reqLevelB = C_SpecializationInfo.GetPvpTalentUnlockLevel(b);
+
+                            if (reqLevelA ~= reqLevelB) then
+                                return reqLevelA < reqLevelB;
+                            end
+                        end
+                        return a < b;
+                end)
+                for _, talentID in pairs(slotInfo.availableTalentIDs) do
+                    local talentInfo = C_SpecializationInfo.GetPvpTalentInfo(talentID) or {}
+                    if talentInfo.spellID and talentInfo.name then--and not IsPassiveSpell(talentInfo.spellID)then
+                        Create_Menu(talentInfo.spellID, talentInfo.icon, talentInfo.name, talentInfo.selected and e.Icon.select)
+                    end
+                end
+            end
+        end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
 
+    --角色，装备
     local equipButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas=e.Player.sex==2 and 'charactercreate-gendericon-male-selected' or 'charactercreate-gendericon-female-selected'})--pvptalents-warmode-swords-disabled
     equipButton:SetPoint('LEFT', pvpButton, 'RIGHT')
     equipButton:SetScript('OnClick', function(self)
@@ -728,7 +744,7 @@ local function Init()
                             icon= spellID and e.Icon.select or nil,
                             tooltipOnButton=true,
                             tooltipTitle='|cnGREEN_FONT_COLOR:'..slot..'|r '..(e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS),
-                            tooltipText= spellID and '|cffff00ff/use|r '..name..'|n'..(spellTexture or '')..(GetSpellLink(spellID) or spellName or spellID) or ('/equip '..name),
+                            tooltipText= spellID and '|cffff00ff/use|r '..name..'|n|n'..(spellTexture or '')..(GetSpellLink(spellID) or spellName or spellID) or ('/equip '..name),
                             arg1=name,
                             arg2= spellID,
                             func= function(_, arg1, arg2)
@@ -743,6 +759,7 @@ local function Init()
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
 
+    --常用，宏
     local starButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas='PetJournal-FavoritesIcon'})
     starButton:SetPoint('LEFT', equipButton, 'RIGHT')
     starButton:SetScript('OnClick', function(self)
@@ -794,7 +811,6 @@ local function Init()
 
                         {text='raid', tips='UnitInRaid()'},
                         {text='unithasvehicleui', tips='UnitInVehicle()'},
-                        {text='', tips=''},
                     }
                 },
                 {text='@player',  macro='@player',
