@@ -3538,7 +3538,13 @@
         "SLASH_USE1",
         "SLASH_USE2",
         "SLASH_USE_TOY1",
-        "SLASH_USE_TOY2"
+        "SLASH_USE_TOY2",
+        "SLASH_EQUIP1",
+        "SLASH_EQUIP2",
+        "SLASH_EQUIP3",
+        "SLASH_EQUIP4",
+        "SLASH_EQUIP_TO_SLOT1",
+        "SLASH_EQUIP_TO_SLOT2"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
