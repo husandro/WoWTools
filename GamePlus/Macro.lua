@@ -23,6 +23,8 @@ local MacroButtonList={--新建，宏，列表
     {macro='/reload'},--134400
     {macro='/fstack'},
     {macro='/etrace'},
+    {macro='#showtooltip\n/cast [mod:alt]\n/cast [mod:ctrl]\n/cast [mod:shift][noflyable]\n/cast [swimming]\n/cast [flyable]',
+        name='Mount'},
     {macro='/click ExtraActionButton1', name='Extra'},
     --{macro=, name=, icon=, },
 }
@@ -393,8 +395,8 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
                 local text=''
                 local macroText2, showName= Get_Spell_Macro(tab.spellName, tab.spellID)
                 local macro= MacroFrameText:GetText() or ''
-                if not macro:find('#showtooltip') then
-                    text= '#showtooltip'..(showName and ' '..showName or '')..'\n'
+                if not macro:find('#show') then
+                    text= '#show'..(showName and ' '..showName or '')..'\n'
                 end
                 if not macro:find('/targetenemy') then
                     text= text..'/targetenemy [noharm][dead]\n'
@@ -736,7 +738,7 @@ local function Init()
     --目标
     local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
     attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',8,0)
-    attck.text='#showtooltip\n/targetenemy [noharm][dead]\n'
+    attck.text='#show\n/targetenemy [noharm][dead]\n'
     attck.text2='/cancelaura '
     attck.textCursor=0
     attck.text2Cursor=nil
@@ -1223,7 +1225,7 @@ local function Init()
     function MacroFrame.newButton:set_atlas()
         self:SetNormalAtlas(MacroNewButton:IsEnabled() and 'communities-chat-icon-plus' or 'communities-chat-icon-minus')
     end
-    MacroFrame.newButton:SetPoint('BOTTOMLEFT', MacroFrameTab2, 'BOTTOMRIGHT')
+    MacroFrame.newButton:SetPoint('BOTTOMLEFT', MacroFrameTab2, 'BOTTOMRIGHT',2 ,0)
     MacroFrame.newButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
     function MacroFrame.newButton:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
