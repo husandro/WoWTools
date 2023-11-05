@@ -1231,12 +1231,13 @@ local function Init()
                 local isMax= (isGolbal and MacroFrame.macroMax==global) or (not isGolbal and MacroFrame.macroMax==perChar)
                 local bat= UnitAffectingCombat('player')
                 local macroTab={
-                    {macro='/rload'},--134400
+                    {macro='/reload'},--134400
                     {macro='/fstack'},
                     {macro='/etrace'},
                     --{name=, icon=, macro=},
                 }
                 for _, tab in pairs(macroTab) do
+                    -- ( ) . % + - * ? [ ^ $
                     local name= tab.text or tab.macro:gsub('/', '')
                     name = name:match("(.-)\"") or name or ' '
                     local icon= tab.icon or 134400
@@ -1248,12 +1249,13 @@ local function Init()
                         tooltipTitle= head,
                         tooltipText=body,
                         disabled= bat or isMax,
+                        notCheckable=true,
                         arg1= tab.macro,
                         arg2={name=name, icon=icon, isCharacterMacro=not isGolbal},
                         func= function(_, arg1, arg2)
                             if not UnitAffectingCombat('player') then
                                 local index = 1
-                                index = CreateMacro(arg1, arg2.icon, nil, arg2.isCharacterMacro) - MacroFrame.macroBase;
+                                index = CreateMacro(arg2.name, arg2.icon, arg1, arg2.isCharacterMacro) - MacroFrame.macroBase;
                                 MacroFrame:SelectMacro(index);
                                 local retainScrollPosition = true;
                                 MacroFrame:Update(retainScrollPosition);
@@ -1262,6 +1264,7 @@ local function Init()
                     }, 1)
                 end
 
+                e.LibDD:UIDropDownMenu_AddSeparator(1)
                 e.LibDD:UIDropDownMenu_AddButton({
                     text=(e.onlyChinese and '删除全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL))..e.Player.col..' #'..(isGolbal and global or perChar),
                     disabled= isZero or bat,
