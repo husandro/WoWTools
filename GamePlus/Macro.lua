@@ -7,7 +7,12 @@ local Save={
 }
 --Blizzard_MacroUI.lua
 
-
+local MacroButtonList={
+    {macro='/reload'},--134400
+    {macro='/fstack'},
+    {macro='/etrace'},
+    --{name=, icon=, macro=},
+}
 
 local function Get_Spell_Macro(name, spellID)
     if spellID==6603 then--自动攻击
@@ -1230,16 +1235,11 @@ local function Init()
                 local isZero= (isGolbal and global==0) or (not isGolbal and perChar==0)
                 local isMax= (isGolbal and MacroFrame.macroMax==global) or (not isGolbal and MacroFrame.macroMax==perChar)
                 local bat= UnitAffectingCombat('player')
-                local macroTab={
-                    {macro='/reload'},--134400
-                    {macro='/fstack'},
-                    {macro='/etrace'},
-                    --{name=, icon=, macro=},
-                }
-                for _, tab in pairs(macroTab) do
-                    -- ( ) . % + - * ? [ ^ $
+
+                for _, tab in pairs(MacroButtonList) do
                     local name= tab.text or tab.macro:gsub('/', '')
                     name = name:match("(.-)\"") or name or ' '
+                    name= name:gusb()
                     local icon= tab.icon or 134400
                     local head= '|T'..icon..':0|t'..name
                     local body= tab.macro
