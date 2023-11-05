@@ -234,9 +234,11 @@ end
 
 
 --创建，宏
-local function Create_Macro_Button(name, icon, boy, isCharacterMacro)
+local function Create_Macro_Button(name, icon, boy)
+    print(name,icon,boy, MacroFrame.macroBase)
     if MacroNewButton:IsEnabled() and not UnitAffectingCombat('player') then
-        local index = CreateMacro(name or ' ', icon or 134400, boy, isCharacterMacro) - MacroFrame.macroBase
+        
+        local index = CreateMacro(name or ' ', icon or 134400, boy or '', MacroFrame.macroBase>0)- MacroFrame.macroBase
         MacroFrame:SelectMacro(index or 1)
         MacroFrame:Update(true)
     end
@@ -244,7 +246,8 @@ end
 
 --取得选定宏，index
 local function Get_Select_Index()
-   return MacroFrame:GetMacroDataIndex(MacroFrame:GetSelectedIndex())
+    local index= MacroFrame:GetSelectedIndex()
+    return index and MacroFrame:GetMacroDataIndex(index)
 end
 
 
@@ -472,7 +475,7 @@ local function Init_Create_Button()
             return
         end
 
-
+print(d)
         --添加，空，按钮
         if d=='LeftButton' then
             Create_Macro_Button(nil, nil, '',  MacroFrame.macroBase > 0)
@@ -489,7 +492,6 @@ local function Init_Create_Button()
 
             if menuList=='SAVE' then--二级菜单，保存宏，列表 {name=tab.name, icon=tab.icon, body=tab.body}
                 for index, tab in pairs(Save.mcaro) do
-                    tab.isCharacterMacro=not isGolbal
                     e.LibDD:UIDropDownMenu_AddButton({
                         text='|T'..tab.icon..':0|t'..tab.name,
                         tooltipOnButton=true,
@@ -506,7 +508,7 @@ local function Init_Create_Button()
                                 table.remove(Save.mcaro, arg2)
                                 s:GetParent():Hide()
                             elseif not IsModifierKeyDown() then
-                                Create_Macro_Button(arg1.name, arg1.icon, arg1.body, tab.isCharacterMacro)
+                                Create_Macro_Button(arg1.name, arg1.icon, arg1.body)
                             end
                         end
                     }, level)
@@ -563,9 +565,9 @@ local function Init_Create_Button()
                     disabled= bat or isMax,
                     notCheckable=true,
                     keepShownOnClick=true,
-                    arg1={name=name, icon=icon, body=tab.macro, isCharacterMacro=not isGolbal},
+                    arg1={name=name, icon=icon, body=tab.macro},
                     func= function(_, arg1)
-                        Create_Macro_Button(arg1.name, arg1.icon, arg1.body, tab.isCharacterMacro)
+                        Create_Macro_Button(arg1.name, arg1.icon, arg1.body)
                     end
                 }, level)
             end
