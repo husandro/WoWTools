@@ -4,7 +4,7 @@ local Save={
     --disabled= not e.Player.husandro,
     --toRightLeft= 1,2, nil --左边 右边 默认
     spellButton=e.Player.husandro,
-    mcaro={}
+    mcaro={},-- {name=tab.name, icon=tab.icon, body=tab.body}
 }
 --Blizzard_MacroUI.lua
 
@@ -253,9 +253,17 @@ local function Get_Spell_Macro(name, spellID)
 end
 
 
+--创建，宏
+local function Create_Macro_Button(name, icon, boy, isCharacterMacro)
+    local index = CreateMacro(name or ' ', icon or 134400, boy, isCharacterMacro) - MacroFrame.macroBase
+    MacroFrame:SelectMacro(index or 1)
+    MacroFrame:Update(true)
+end
 
-
-
+--取得选定宏，index
+local function Get_Select_Index()
+   return MacroFrame:GetMacroDataIndex(MacroFrame:GetSelectedIndex())
+end
 
 
 
@@ -311,15 +319,13 @@ local function Set_Texture_Macro(iconTexture)--修改，当前图标
         return
     end
     local macroFrame =MacroFrame
-    local actualIndex = macroFrame:GetMacroDataIndex(macroFrame:GetSelectedIndex())
-    local index = 1
+    local actualIndex = Get_Select_Index()
     local name= GetMacroInfo(actualIndex)
-    index = EditMacro(actualIndex, name, iconTexture) - macroFrame.macroBase;--战斗中，出现错误
+    local index = EditMacro(Get_Select_Index(), name, iconTexture) - macroFrame.macroBase;--战斗中，出现错误
     e.call(MacroFrame.SaveMacro, macroFrame)
-    macroFrame:SelectMacro(index);
+    macroFrame:SelectMacro(index or 1);
     local retainScrollPosition = true;
     macroFrame:Update(retainScrollPosition);
-    print(iconTexture)
 end
 
 
@@ -396,8 +402,8 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
                 local text=''
                 local macroText2, showName= Get_Spell_Macro(tab.spellName, tab.spellID)
                 local macro= MacroFrameText:GetText() or ''
-                if not macro:find('#show') then
-                    text= '#show'..(showName and ' '..showName or '')..'\n'
+                if not macro:find('#showtooltip') then
+                    text= '#showtooltip'..(showName and ' '..showName or '')..'\n'
                 end
                 if not macro:find('/targetenemy') then
                     text= text..'/targetenemy [noharm][dead]\n'
@@ -452,174 +458,179 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-local function Init()
-    local w, h= 350, 600--672, 672
-    MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
-
-    MacroFrame:SetSize(w, h)--<Size x="338" y="424"/>
-    MacroFrameScrollFrame:SetSize(w-43, h/2-45)
-    MacroFrameText:SetSize(w-43, h/2-45)
-    MacroFrameTextBackground:SetSize(w-30, h/2-30)
-    MacroHorizontalBarLeft:SetWidth(w-85)
-
-    MacroEditButton:ClearAllPoints()
-    MacroEditButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'TOPRIGHT',2,2)
-    MacroEditButton:SetSize(60,22)--170 22
-    MacroEditButton:SetText(e.onlyChinese and '名称' or NAME)
-
-    MacroFrameSelectedMacroName:ClearAllPoints()--选定宏，名称
-    MacroFrameSelectedMacroName:SetPoint('BOTTOMLEFT', MacroFrameSelectedMacroButton, 'TOPLEFT')
-    MacroFrameSelectedMacroName:SetFontObject('GameFontNormal')
-
-    MacroFrameEnterMacroText:SetText('')--输入宏命令
-    MacroFrameEnterMacroText:Hide()
-
-    --<Size x="256" y="16"/>
-    --设置，焦点
-    MacroFrameTextBackground.NineSlice:SetScript('OnMouseDown', function(_, d)
-        if d=='LeftButton' then
-            MacroFrameText:SetFocus()
-        end
-    end)
-
-    if MacroFrameTab2 and MacroFrameTab2.Text then--角色，专用宏，颜色
-        MacroFrameTab2.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+--创建，空，按钮
+--#############
+local function Init_Create_Button()
+    MacroFrame.newButton= e.Cbtn(MacroFrame, {size={22,22}, name='MacroNewEmptyButton', atlas='communities-chat-icon-plus'})
+    function MacroFrame.newButton:set_atlas()
+        self:SetNormalAtlas(MacroNewButton:IsEnabled() and 'communities-chat-icon-plus' or 'communities-chat-icon-minus')
     end
+    MacroFrame.newButton:SetPoint('BOTTOMLEFT', MacroFrameTab2, 'BOTTOMRIGHT',2 ,0)
+    MacroFrame.newButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+    function MacroFrame.newButton:set_Tooltips()
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        local bat= UnitAffectingCombat('player')
+        e.tips:AddDoubleLine(
+            ((not MacroNewButton:IsEnabled() or bat) and '|cff606060' or '')
+            ..(e.onlyChinese and '新建' or NEW), e.Icon.left
+        )
+        e.tips:AddDoubleLine((bat and '|cff606060' or '')..(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
+        e.tips:Show()
+        self:SetAlpha(0.5)
+    end
+    MacroFrame.newButton:SetScript('OnEnter', MacroFrame.newButton.set_Tooltips)
+
+    MacroFrame.newButton:SetScript('OnClick', function(self, d)--MacroPopupFrameMixin:OkayButton_OnClick()
+        if UnitAffectingCombat('player') then
+            return
+        end
 
 
-
-
-
-
-
-
-    --设置，宏，图标，位置，长度
-    hooksecurefunc(MacroFrame, 'ChangeTab', function(self, tabID)
-        self.MacroSelector:ClearAllPoints()
-        if tabID==1 then
-            self.MacroSelector:SetHeight(590)--(319,588)
-            if Save.toRightLeft==1 then--左边
-                self.MacroSelector:SetPoint('TOPRIGHT', self, 'TOPLEFT',10,-12)
-            elseif Save.toRightLeft==2 then--右边
-                self.MacroSelector:SetPoint('TOPLEFT', self, 'TOPRIGHT',0,-12)
-            else--默认
-                self.MacroSelector:SetHeight(146)--,146)--<Size x="319" y="146"/>
-                self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
+        --添加，空，按钮
+        if d=='LeftButton' then
+            if MacroNewButton:IsEnabled() then
+                if not UnitAffectingCombat('player') then
+                    Create_Macro_Button(nil, nil, '',  MacroFrame.macroBase > 0)
+                end
+                self:set_Tooltips()
             end
         else
-            self.MacroSelector:SetHeight(146)--,146)--<Size x="319" y="146"/>
-            self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
+            e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level, menuList)
+                local global, perChar = GetNumMacros()
+                local isGolbal= MacroFrame.macroBase==0
+                local isZero= (isGolbal and global==0) or (not isGolbal and perChar==0)
+                local isMax= (isGolbal and MacroFrame.macroMax==global) or (not isGolbal and MacroFrame.macroMax==perChar)
+                local bat= UnitAffectingCombat('player')
+
+                if menuList=='SAVE' then--二级菜单，保存宏，列表 {name=tab.name, icon=tab.icon, body=tab.body}
+                    for _, tab in pairs(Save.mcaro) do
+                        tab.isCharacterMacro=not isGolbal
+                        e.LibDD:UIDropDownMenu_AddButton({
+                            text='|T'..tab.icon..':0|t'..tab.name,
+                            tooltipOnButton=true,
+                            tooltipTitle='|T'..tab.icon..':0|t'..tab.name,
+                            tooltipText=tab.body,
+                            arg1=tab,
+                            notCheckable=true,
+                            disabled= bat or isMax,
+                            func= function(_, arg1)
+                                Create_Macro_Button(arg1.name, arg1.icon, arg1.body, tab.isCharacterMacro)
+                            end
+                        }, level)
+                    end
+                    return
+                end
+
+                for _, tab in pairs(MacroButtonList) do
+                    local name= tab.name or tab.macro:gsub('/', '')
+                    name = name:match("(.-)\"") or name:match("(.-)\n") or name or ' '
+                    local icon= tab.icon or 134400
+                    local head= '|T'..icon..':0|t'..name
+                    local body= tab.macro
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= name,
+                        icon= tab.icon,
+                        tooltipOnButton=true,
+                        tooltipTitle= head,
+                        tooltipText=body,
+                        disabled= bat or isMax,
+                        notCheckable=true,
+                        keepShownOnClick=true,
+                        arg1={name=name, icon=icon, body=tab.macro, isCharacterMacro=not isGolbal},
+                        func= function(_, arg1)
+                            Create_Macro_Button(arg1.name, arg1.icon, arg1.body, tab.isCharacterMacro)
+                        end
+                    }, level)
+                end
+
+                e.LibDD:UIDropDownMenu_AddSeparator(1)
+
+                --保存， 选定宏
+                local selectIndex= Get_Select_Index()
+                if selectIndex then
+                    local name, icon, body = GetMacroInfo(selectIndex)
+                    if name and icon and body then
+                        e.LibDD:UIDropDownMenu_AddButton({
+                            text= (e.onlyChinese and '保存' or SAVE)..' |T'..icon..':0|t'..name,
+                            notCheckable=true,
+                            tooltipOnButton=true,
+                            tooltipTitle='|T'..icon..':0|t'..name..' |cnGREEN_FONT_COLOR:('..(e.onlyChinese and '保存' or SAVE)..')',
+                            tooltipText= body,
+                            arg1={name=name, icon=icon, body= body},
+                            menuList='SAVE',
+                            hasArrow=true,
+                            keepShownOnClick=true,
+                            func= function(_, tab)
+                                table.insert(Save.mcaro, {name=tab.name, icon=tab.icon, body=tab.body})
+                                print(tab.body,'|n','|T'..icon..':0|t'..tab.name,'|n',id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '保存' or SAVE))
+                            end
+                        },1)
+                    end
+                else
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= '|cff606060'..(e.onlyChinese and '保存' or SAVE),
+                        notCheckable=true,
+                        isTitle=true,
+                    },1)
+                end
+
+                --删除所有宏
+                e.LibDD:UIDropDownMenu_AddSeparator(1)
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text=(e.onlyChinese and '删除全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL))..e.Player.col..' #'..(isGolbal and global or perChar),
+                    disabled= isZero or bat,
+                    tooltipOnButton=true,
+                    tooltipTitle= isGolbal
+                        and ((e.onlyChinese and '通用宏' or GENERAL_MACROS))
+                        or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))),
+                    notCheckable=true,
+                    func= function()
+                        StaticPopupDialogs[id..addName..'DeleteAllMacro']={
+                            text=(isGolbal
+                                and ((e.onlyChinese and '通用宏' or GENERAL_MACROS)..' #'..global)
+                                or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))..'|r #'..perChar)
+                            )
+                            ..('|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '危险！危险！危险！' or (VOICEMACRO_1_Sc_0..VOICEMACRO_1_Sc_0..VOICEMACRO_1_Sc_0))),
+                            whileDead=true, hideOnEscape=true, exclusive=true,
+                            button1= e.onlyChinese and '删除全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL),
+                            button2= e.onlyChinese and '取消' or CANCEL,
+                            OnShow = function(s)
+                                s.button1:SetEnabled(not UnitAffectingCombat('player'))
+                            end,
+                            OnAccept = function()
+                                if not UnitAffectingCombat('player') then
+                                    if isGolbal then--通用宏
+                                        for i = select(1, GetNumMacros()), 1, -1 do
+                                            DeleteMacro(i)
+                                        end
+                                    else--专用宏
+                                        for i = MAX_ACCOUNT_MACROS + select(2,GetNumMacros()), 121, -1 do
+                                            DeleteMacro(i)
+                                        end
+                                    end
+                                    MacroFrame:SelectMacro(1)
+                                    MacroFrame:Update(true)
+                                end
+                            end,
+                            EditBoxOnEscapePressed= function(s)
+                                s:ClearFocus()
+                                s:GetParent():Hide()
+                            end,
+                        }
+                        StaticPopup_Show(id..addName..'DeleteAllMacro')
+                    end
+                }, 1)
+            end, 'MENU')
+            e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
         end
     end)
-
-
-
-
-
-
-
-
-
-
-
-
-
-    --设置按钮
-    local toRightButton= e.Cbtn(MacroFrame.TitleContainer, {size={20,20}, icon='hide'})
-    toRightButton:SetAlpha(0.5)
-    if _G['MoveZoomInButtonPerMacroFrame'] then
-        toRightButton:SetPoint('RIGHT', _G['MoveZoomInButtonPerMacroFrame'], 'LEFT')
-    else
-        toRightButton:SetPoint('LEFT',0, -2)
-    end
-    function toRightButton:set_texture()
-        if Save.toRightLeft==1 then--左边
-            self:SetNormalAtlas(e.Icon.toLeft)
-        elseif Save.toRightLeft==2 then--右边
-            self:SetNormalAtlas(e.Icon.toRight)
-        else--默认
-            self:SetNormalAtlas(e.Icon.icon)
-        end
-    end
-    function toRightButton:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddLine((e.onlyChinese and '图标' or EMBLEM_SYMBOL)..':')
-        e.tips:AddDoubleLine(e.Icon.toLeft2..(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT), Save.toRightLeft==1 and e.Icon.select2)
-        e.tips:AddDoubleLine(e.Icon.toRight2..(e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT), Save.toRightLeft==2 and e.Icon.select2)
-        e.tips:AddDoubleLine('|A:'..e.Icon.icon..':0:0|a'..(e.onlyChinese and '默认' or DEFAULT), not Save.toRightLeft and e.Icon.select2)
-        e.tips:Show()
-        self:SetAlpha(1)
-    end
-    toRightButton:SetScript('OnClick', function(self)
-        if not Save.toRightLeft then
-            Save.toRightLeft=1--左边
-        elseif Save.toRightLeft==1 then
-            Save.toRightLeft=2--右边
-        elseif Save.toRightLeft==2 then
-            Save.toRightLeft=nil--默认
-        end
-        Save.toRight= not Save.toRight and true or nil
-        MacroFrame:ChangeTab(1)
-        self:set_texture()
-        self:set_tooltips()
+    hooksecurefunc(MacroFrame, 'UpdateButtons', function(self)
+        self.newButton:set_atlas()
     end)
-    --[[toRightButton:SetScript('OnMouseWheel', function(_, d)
-        local n= Save.listStride or 6-- SetCustomStride
-        if d==1 then
-            n= n +1
-        elseif d==-1 then
-            n= n-1
-        end
-        n= n>12 and 12 or n
-        n= n<1 and 1 or n
-        MacroFrame.MacroSelector:SetCustomStride(n)
-        Save.listStride=n
-        print(n)
-    end)]]
-    toRightButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
-    toRightButton:SetScript('OnEnter', toRightButton.set_tooltips)
-    toRightButton:set_texture()
-
-
-
-
-
-    --宏，提示
-    hooksecurefunc(MacroButtonMixin, 'OnLoad', function(btn)
-        btn:HookScript('OnEnter', set_btn_tooltips)--设置，宏，提示
-        btn:HookScript('OnLeave', function() e.tips:Hide() end)
-        local texture2= btn:GetRegions()
-        texture2:SetAlpha(0.3)--按钮，背景
-        btn.Name:SetWidth(48)--名称，长度
-        btn.SelectedTexture:ClearAllPoints()--设置，选项，特效
-        btn.SelectedTexture:SetPoint('CENTER')
-        btn.SelectedTexture:SetSize(44,44)
-        btn.SelectedTexture:SetVertexColor(0,1,1)
-        btn:SetScript('OnDoubleClick', function()--删除，宏 Alt+双击
-            if IsAltKeyDown() and not UnitAffectingCombat('player') then
-                MacroFrame:DeleteMacro()
-            end
-        end)
-    end)
-
-    local function MacroFrameInitMacroButton(macroButton, _, name)--Blizzard_MacroUI.lua
-        if name ~= nil then
-            macroButton.Name:SetText(e.WA_Utf8Sub(name, 2, 4))
-        end
-    end
-    hooksecurefunc(MacroFrame.MacroSelector,'setupCallback', MacroFrameInitMacroButton)--MacroFrame.MacroSelector:SetSetupCallback(MacroFrameInitMacroButton)
+end
 
 
 
@@ -631,31 +642,6 @@ local function Init()
 
 
 
-    --选定宏，index提示
-    MacroFrame.numSelectionLable= e.Cstr(MacroFrameSelectedMacroButton)
-    MacroFrame.numSelectionLable:SetAlpha(0.7)
-    MacroFrame.numSelectionLable:SetPoint('RIGHT', MacroFrameSelectedMacroButton, 'LEFT', -1,0)
-    MacroFrame.numSelectionLable:SetScript('OnLeave', function() e.tips:Hide() end)
-    MacroFrame.numSelectionLable:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(self:GetText(), e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)
-        e.tips:Show()
-    end)
-    hooksecurefunc(MacroFrame, 'SelectMacro', function(self, index)
-        self.numSelectionLable:SetText(index and index+MacroFrame.macroBase or '')
-        --index= index and index+MacroFrame.macroBase or nil
-        MacroFrameSelectedMacroButton.selectionIndex= index
-    end)
-    --[[hooksecurefunc(SelectorButtonMixin, 'OnClick', function(self)
-        local actualIndex = MacroFrame:GetMacroDataIndex(self:GetElementData())
-        if actualIndex then
-            actualIndex= actualIndex- MacroFrame.macroBase
-        end
-        MacroFrameSelectedMacroButton.numSelectionLable:SetText(actualIndex or '')
-    end)]]
 
 
 
@@ -663,105 +649,26 @@ local function Init()
 
 
 
-
-    --保存，提示
-    MacroSaveButton.saveTip= MacroSaveButton:CreateTexture()
-    MacroSaveButton.saveTip:SetPoint('RIGHT', MacroSaveButton, 'LEFT')
-    MacroSaveButton.saveTip:SetSize(22,22)
-    MacroSaveButton.saveTip:SetAtlas('common-icon-rotateright')
-    MacroSaveButton.saveTip:Hide()
-    local function set_saveTip()
-        local show= false
-        local index= MacroFrameSelectedMacroButton.selectionIndex
-        if index then
-            index= index + MacroFrame.macroBase
-            local body = select(3, GetMacroInfo(index))
-            show= body~= MacroFrameText:GetText()
-        end
-        MacroSaveButton.saveTip:SetShown(show)
-    end
-    MacroFrameText:HookScript('OnTextChanged', set_saveTip)
-    MacroSaveButton:HookScript('OnClick', set_saveTip)
-
-
-    --[[打开/关闭法术书，BUG
-    MacroFrame.OpenSpellButton= e.Cbtn(MacroFrame, {size={32,32}, atlas='UI-HUD-MicroMenu-SpellbookAbilities-Up'})
-    MacroFrame.OpenSpellButton:SetPoint('TOPRIGHT', -2, -28)
-    MacroFrame.OpenSpellButton:SetScript('OnLeave', function() e.tips:Hide() end)
-    MacroFrame.OpenSpellButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(' ', '|A:UI-HUD-MicroMenu-SpellbookAbilities-Up:22:22|a'..(e.onlyChinese and '打开/关闭法术书' or BINDING_NAME_TOGGLESPELLBOOK))
-        e.tips:Show()
-    end)
-    MacroFrame.OpenSpellButton:SetScript("OnClick", function()
-        ToggleSpellBook(BOOKTYPE_SPELL)
-    end)]]
-
-
-
-
-
-
-    --宏数量
-    --Blizzard_MacroUI.lua
-    MacroFrameTab1.label= e.Cstr(MacroFrameTab1)
-    MacroFrameTab1.label:SetPoint('BOTTOM', MacroFrameTab1, 'TOP', 0, -8)
-    MacroFrameTab1.label:SetAlpha(0.7)
-    MacroFrameTab2.label= e.Cstr(MacroFrameTab2)
-    MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2, 'TOP', 0, -8)
-    MacroFrameTab2.label:SetAlpha(0.7)
-    MacroFrameTab2.label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
-    hooksecurefunc(MacroFrame, 'Update', function()
-    	local numAccountMacros, numCharacterMacros
-        numAccountMacros, numCharacterMacros = GetNumMacros()
-        numAccountMacros= numAccountMacros or 0
-        numAccountMacros= numAccountMacros==MAX_ACCOUNT_MACROS and '|cff606060'..numAccountMacros or numAccountMacros
-
-        numCharacterMacros= numCharacterMacros or 0
-        numCharacterMacros= numCharacterMacros==MAX_CHARACTER_MACROS and '|cff606060'..numCharacterMacros or numCharacterMacros
-
-        MacroFrameTab1.label:SetText(numAccountMacros..'/'..MAX_ACCOUNT_MACROS)
-        MacroFrameTab2.label:SetText(numCharacterMacros..'/'..MAX_CHARACTER_MACROS)
-    end)
-
-
-
-
-
-
-
-
-
-
+--命令，按钮，列表
+local function Init_List_Button()
     --目标
     local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
     attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',8,0)
-    attck.text='#show\n/targetenemy [noharm][dead]\n'
+    attck.text='#showtooltip\n/targetenemy [noharm][dead]\n'
     attck.text2='/cancelaura '
     attck.textCursor=0
     attck.text2Cursor=nil
     attck.tip=nil
     attck.tip2=e.onlyChinese and '光环名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AURAS, NAME)
 
+
+
+
     --攻击
     local cancel= Create_Button(e.onlyChinese and '攻击' or ATTACK)
     cancel:SetPoint('LEFT', attck, 'RIGHT')
     cancel.text= '/petattack\n/startattack\n'
     cancel.text2= '/petfollow\n/stopattack\n/stopcasting\n'
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -840,8 +747,6 @@ local function Init()
 
 
 
-
-
     --PVP， 天赋，法术
     local pvpButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas='pvptalents-warmode-swords'})--pvptalents-warmode-swords-disabled
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
@@ -880,8 +785,6 @@ local function Init()
         end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
-
-
 
 
 
@@ -941,7 +844,6 @@ local function Init()
         end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
-
 
 
 
@@ -1071,10 +973,49 @@ local function Init()
         end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
+end
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--选定宏，点击，弹出菜单，自定图标
+--#############################
+local function Init_Select_Macro_Button()
+    --选定宏，index提示
+    MacroFrame.numSelectionLable= e.Cstr(MacroFrameSelectedMacroButton)
+    MacroFrame.numSelectionLable:SetAlpha(0.7)
+    MacroFrame.numSelectionLable:SetPoint('RIGHT', MacroFrameSelectedMacroButton, 'LEFT', -1,0)
+    MacroFrame.numSelectionLable:SetScript('OnLeave', function() e.tips:Hide() end)
+    MacroFrame.numSelectionLable:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(self:GetText(), e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)
+        e.tips:Show()
+    end)
+    hooksecurefunc(MacroFrame, 'SelectMacro', function(self, index)
+        self.numSelectionLable:SetText(index and index+MacroFrame.macroBase or '')
+    end)
 
     --选定，宏，提示
     MacroFrameSelectedMacroButton:HookScript('OnEnter', function(self)
@@ -1089,11 +1030,6 @@ local function Init()
         e.tips:Show()
     end)
     MacroFrameSelectedMacroButton:HookScript('OnLeave', function() e.tips:Hide() end)
-
-
-
-
-
 
     --选定宏，点击，弹出菜单，自定图标
     MacroFrameSelectedMacroButton:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
@@ -1219,137 +1155,230 @@ local function Init()
         end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
+end
 
 
 
-    MacroFrame.newButton= e.Cbtn(MacroFrame, {size={22,22}, name='MacroNewEmptyButton', atlas='communities-chat-icon-plus'})
-    function MacroFrame.newButton:set_atlas()
-        self:SetNormalAtlas(MacroNewButton:IsEnabled() and 'communities-chat-icon-plus' or 'communities-chat-icon-minus')
+
+
+
+
+
+
+--宏列表，位置
+--###########
+local function Init_Macro_List()
+
+    local toRightButton= e.Cbtn(MacroFrame.TitleContainer, {size={20,20}, icon='hide'})
+    toRightButton:SetAlpha(0.5)
+    if _G['MoveZoomInButtonPerMacroFrame'] then
+        toRightButton:SetPoint('RIGHT', _G['MoveZoomInButtonPerMacroFrame'], 'LEFT')
+    else
+        toRightButton:SetPoint('LEFT',0, -2)
     end
-    MacroFrame.newButton:SetPoint('BOTTOMLEFT', MacroFrameTab2, 'BOTTOMRIGHT',2 ,0)
-    MacroFrame.newButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
-    function MacroFrame.newButton:set_Tooltips()
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    function toRightButton:set_texture()
+        if Save.toRightLeft==1 then--左边
+            self:SetNormalAtlas(e.Icon.toLeft)
+        elseif Save.toRightLeft==2 then--右边
+            self:SetNormalAtlas(e.Icon.toRight)
+        else--默认
+            self:SetNormalAtlas(e.Icon.icon)
+        end
+    end
+    function toRightButton:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-        local bat= UnitAffectingCombat('player')
-        e.tips:AddDoubleLine(
-            ((not MacroNewButton:IsEnabled() or bat) and '|cff606060' or '')
-            ..(e.onlyChinese and '新建' or NEW), e.Icon.left
-        )
-        e.tips:AddDoubleLine((bat and '|cff606060' or '')..(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
+        e.tips:AddLine((e.onlyChinese and '图标' or EMBLEM_SYMBOL)..':')
+        e.tips:AddDoubleLine(e.Icon.toLeft2..(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT), Save.toRightLeft==1 and e.Icon.select2)
+        e.tips:AddDoubleLine(e.Icon.toRight2..(e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT), Save.toRightLeft==2 and e.Icon.select2)
+        e.tips:AddDoubleLine('|A:'..e.Icon.icon..':0:0|a'..(e.onlyChinese and '默认' or DEFAULT), not Save.toRightLeft and e.Icon.select2)
         e.tips:Show()
-        self:SetAlpha(0.5)
+        self:SetAlpha(1)
     end
-    MacroFrame.newButton:SetScript('OnEnter', MacroFrame.newButton.set_Tooltips)
-
-    MacroFrame.newButton:SetScript('OnClick', function(self, d)--MacroPopupFrameMixin:OkayButton_OnClick()
-        if UnitAffectingCombat('player') then
-            return
+    toRightButton:SetScript('OnClick', function(self)
+        if not Save.toRightLeft then
+            Save.toRightLeft=1--左边
+        elseif Save.toRightLeft==1 then
+            Save.toRightLeft=2--右边
+        elseif Save.toRightLeft==2 then
+            Save.toRightLeft=nil--默认
         end
-        if d=='LeftButton' then--添加，空
-            if MacroNewButton:IsEnabled() then
-                local index = 1
-                local iconTexture = 134400
-                local text = ' '
-                local isCharacterMacro = MacroFrame.macroBase > 0;
-                index = CreateMacro(text, iconTexture, nil, isCharacterMacro) - MacroFrame.macroBase
-                MacroFrame:SelectMacro(index)
-                local retainScrollPosition = true;
-                MacroFrame:Update(retainScrollPosition)
-                self:set_Tooltips()
+        Save.toRight= not Save.toRight and true or nil
+        MacroFrame:ChangeTab(1)
+        self:set_texture()
+        self:set_tooltips()
+    end)
+    toRightButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+    toRightButton:SetScript('OnEnter', toRightButton.set_tooltips)
+    toRightButton:set_texture()
+
+        --设置，宏，图标，位置，长度
+    hooksecurefunc(MacroFrame, 'ChangeTab', function(self, tabID)
+        self.MacroSelector:ClearAllPoints()
+        if tabID==1 then
+            self.MacroSelector:SetHeight(590)--(319,588)
+            if Save.toRightLeft==1 then--左边
+                self.MacroSelector:SetPoint('TOPRIGHT', self, 'TOPLEFT',10,-12)
+            elseif Save.toRightLeft==2 then--右边
+                self.MacroSelector:SetPoint('TOPLEFT', self, 'TOPRIGHT',0,-12)
+            else--默认
+                self.MacroSelector:SetHeight(146)--,146)--<Size x="319" y="146"/>
+                self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
             end
         else
-            e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
-                local global, perChar = GetNumMacros()
-                local isGolbal= MacroFrame.macroBase==0
-                local isZero= (isGolbal and global==0) or (not isGolbal and perChar==0)
-                local isMax= (isGolbal and MacroFrame.macroMax==global) or (not isGolbal and MacroFrame.macroMax==perChar)
-                local bat= UnitAffectingCombat('player')
-
-                for _, tab in pairs(MacroButtonList) do
-                    local name= tab.name or tab.macro:gsub('/', '')
-                    name = name:match("(.-)\"") or name:match("(.-)\n") or name or ' '
-                    local icon= tab.icon or 134400
-                    local head= '|T'..icon..':0|t'..name
-                    local body= tab.macro
-                    e.LibDD:UIDropDownMenu_AddButton({
-                        text= name,
-                        icon= tab.icon,
-                        tooltipOnButton=true,
-                        tooltipTitle= head,
-                        tooltipText=body,
-                        disabled= bat or isMax,
-                        notCheckable=true,
-                        keepShownOnClick=true,
-                        arg1= tab.macro,
-                        arg2={name=name, icon=icon, isCharacterMacro=not isGolbal},
-                        func= function(_, arg1, arg2)
-                            if not UnitAffectingCombat('player') then
-                                local index = 1
-                                index = CreateMacro(arg2.name, arg2.icon, arg1, arg2.isCharacterMacro) - MacroFrame.macroBase;
-                                MacroFrame:SelectMacro(index);
-                                local retainScrollPosition = true;
-                                MacroFrame:Update(retainScrollPosition);
-                            end
-                        end
-                    }, 1)
-                end
-
-                e.LibDD:UIDropDownMenu_AddSeparator(1)
-                e.LibDD:UIDropDownMenu_AddButton({
-                    text=(e.onlyChinese and '删除全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL))..e.Player.col..' #'..(isGolbal and global or perChar),
-                    disabled= isZero or bat,
-                    tooltipOnButton=true,
-                    tooltipTitle= isGolbal
-                        and ((e.onlyChinese and '通用宏' or GENERAL_MACROS))
-                        or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))),
-                    notCheckable=true,
-                    func= function()
-                        StaticPopupDialogs[id..addName..'DeleteAllMacro']={
-                            text=(isGolbal
-                                and ((e.onlyChinese and '通用宏' or GENERAL_MACROS)..' #'..global)
-                                or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))..'|r #'..perChar)
-                            )
-                            ..('|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '危险！危险！危险！' or (VOICEMACRO_1_Sc_0..VOICEMACRO_1_Sc_0..VOICEMACRO_1_Sc_0))),
-                            whileDead=true, hideOnEscape=true, exclusive=true,
-                            button1= e.onlyChinese and '删除全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL),
-                            button2= e.onlyChinese and '取消' or CANCEL,
-                            OnShow = function(s)
-                                s.button1:SetEnabled(not UnitAffectingCombat('player'))
-                            end,
-                            OnAccept = function()
-                                if not UnitAffectingCombat('player') then
-                                    if isGolbal then--通用宏
-                                        for i = select(1, GetNumMacros()), 1, -1 do
-                                            DeleteMacro(i)
-                                        end
-                                    else--专用宏
-                                        for i = MAX_ACCOUNT_MACROS + select(2,GetNumMacros()), 121, -1 do
-                                            DeleteMacro(i)
-                                        end
-                                    end
-                                    MacroFrame:SelectMacro(1)
-                                    MacroFrame:Update(true)
-                                end
-                            end,
-                            EditBoxOnEscapePressed= function(s)
-                                s:ClearFocus()
-                                s:GetParent():Hide()
-                            end,
-                        }
-                        StaticPopup_Show(id..addName..'DeleteAllMacro')
-                    end
-                }, 1)
-            end, 'MENU')
-            e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
+            self.MacroSelector:SetHeight(146)--,146)--<Size x="319" y="146"/>
+            self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
         end
     end)
-    hooksecurefunc(MacroFrame, 'UpdateButtons', function(self)
-        self.newButton:set_atlas()
+end
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
+    local w, h= 350, 600--672, 672
+    MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
+
+    MacroFrame:SetSize(w, h)--<Size x="338" y="424"/>
+    MacroFrameScrollFrame:SetSize(w-43, h/2-45)
+    MacroFrameText:SetSize(w-43, h/2-45)
+    MacroFrameTextBackground:SetSize(w-30, h/2-30)
+    MacroHorizontalBarLeft:SetWidth(w-85)
+
+    MacroEditButton:ClearAllPoints()
+    MacroEditButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'TOPRIGHT',2,2)
+    MacroEditButton:SetSize(60,22)--170 22
+    MacroEditButton:SetText(e.onlyChinese and '名称' or NAME)
+
+    --选定宏，名称
+    MacroFrameSelectedMacroName:ClearAllPoints()
+    MacroFrameSelectedMacroName:SetPoint('BOTTOMLEFT', MacroFrameSelectedMacroButton, 'TOPLEFT')
+    MacroFrameSelectedMacroName:SetFontObject('GameFontNormal')
+
+    --输入宏命令
+    MacroFrameEnterMacroText:SetText('')
+    MacroFrameEnterMacroText:Hide()
+
+    --设置，焦点
+    MacroFrameTextBackground.NineSlice:SetScript('OnMouseDown', function(_, d)
+        if d=='LeftButton' then
+            MacroFrameText:SetFocus()
+        end
     end)
 
+    --角色，专用宏，颜色
+    if MacroFrameTab2 and MacroFrameTab2.Text then
+        MacroFrameTab2.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+    end
+
+    --宏，提示
+    hooksecurefunc(MacroButtonMixin, 'OnLoad', function(btn)
+        btn:HookScript('OnEnter', set_btn_tooltips)--设置，宏，提示
+        btn:HookScript('OnLeave', function() e.tips:Hide() end)
+        local texture2= btn:GetRegions()
+        texture2:SetAlpha(0.3)--按钮，背景
+        btn.Name:SetWidth(48)--名称，长度
+        btn.SelectedTexture:ClearAllPoints()--设置，选项，特效
+        btn.SelectedTexture:SetPoint('CENTER')
+        btn.SelectedTexture:SetSize(44,44)
+        btn.SelectedTexture:SetVertexColor(0,1,1)
+        btn:SetScript('OnDoubleClick', function()--删除，宏 Alt+双击
+            if IsAltKeyDown() and not UnitAffectingCombat('player') then
+                MacroFrame:DeleteMacro()
+            end
+        end)
+    end)
+
+    local function MacroFrameInitMacroButton(macroButton, _, name)--Blizzard_MacroUI.lua
+        if name ~= nil then
+            macroButton.Name:SetText(e.WA_Utf8Sub(name, 2, 4))
+        end
+    end
+    hooksecurefunc(MacroFrame.MacroSelector,'setupCallback', MacroFrameInitMacroButton)--MacroFrame.MacroSelector:SetSetupCallback(MacroFrameInitMacroButton)
+
+
+
+
+
+
+    --保存，提示
+    MacroSaveButton.saveTip= MacroSaveButton:CreateTexture()
+    MacroSaveButton.saveTip:SetPoint('RIGHT', MacroSaveButton, 'LEFT')
+    MacroSaveButton.saveTip:SetSize(22,22)
+    MacroSaveButton.saveTip:SetAtlas('common-icon-rotateright')
+    MacroSaveButton.saveTip:Hide()
+    local function set_saveTip()
+        local show= false
+        local index= Get_Select_Index()
+        if index then
+            show= select(3, GetMacroInfo(index))~= MacroFrameText:GetText()
+        end
+        MacroSaveButton.saveTip:SetShown(show)
+    end
+    MacroFrameText:HookScript('OnTextChanged', set_saveTip)
+    MacroSaveButton:HookScript('OnClick', set_saveTip)
+
+
+    --[[打开/关闭法术书，BUG
+    MacroFrame.OpenSpellButton= e.Cbtn(MacroFrame, {size={32,32}, atlas='UI-HUD-MicroMenu-SpellbookAbilities-Up'})
+    MacroFrame.OpenSpellButton:SetPoint('TOPRIGHT', -2, -28)
+    MacroFrame.OpenSpellButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    MacroFrame.OpenSpellButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(' ', '|A:UI-HUD-MicroMenu-SpellbookAbilities-Up:22:22|a'..(e.onlyChinese and '打开/关闭法术书' or BINDING_NAME_TOGGLESPELLBOOK))
+        e.tips:Show()
+    end)
+    MacroFrame.OpenSpellButton:SetScript("OnClick", function()
+        ToggleSpellBook(BOOKTYPE_SPELL)
+    end)]]
+
+
+
+
+
+
+    --宏数量
+    --Blizzard_MacroUI.lua
+    MacroFrameTab1.label= e.Cstr(MacroFrameTab1)
+    MacroFrameTab1.label:SetPoint('BOTTOM', MacroFrameTab1, 'TOP', 0, -8)
+    MacroFrameTab1.label:SetAlpha(0.7)
+    MacroFrameTab2.label= e.Cstr(MacroFrameTab2)
+    MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2, 'TOP', 0, -8)
+    MacroFrameTab2.label:SetAlpha(0.7)
+    MacroFrameTab2.label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+    hooksecurefunc(MacroFrame, 'Update', function()
+    	local numAccountMacros, numCharacterMacros
+        numAccountMacros, numCharacterMacros = GetNumMacros()
+        numAccountMacros= numAccountMacros or 0
+        numAccountMacros= numAccountMacros==MAX_ACCOUNT_MACROS and '|cff606060'..numAccountMacros or numAccountMacros
+
+        numCharacterMacros= numCharacterMacros or 0
+        numCharacterMacros= numCharacterMacros==MAX_CHARACTER_MACROS and '|cff606060'..numCharacterMacros or numCharacterMacros
+
+        MacroFrameTab1.label:SetText(numAccountMacros..'/'..MAX_ACCOUNT_MACROS)
+        MacroFrameTab2.label:SetText(numCharacterMacros..'/'..MAX_CHARACTER_MACROS)
+    end)
+
+
+
+
+
+    Init_Macro_List()--宏列表，位置
+    Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
+    Init_List_Button()--命令，按钮，列表
+    Init_Create_Button()--创建，空，按钮
 end
 
 
