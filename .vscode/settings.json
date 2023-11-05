@@ -3544,7 +3544,14 @@
         "SLASH_EQUIP3",
         "SLASH_EQUIP4",
         "SLASH_EQUIP_TO_SLOT1",
-        "SLASH_EQUIP_TO_SLOT2"
+        "SLASH_EQUIP_TO_SLOT2",
+        "MacroNewButton",
+        "MacroNewButton_OnClick",
+        "MacroPopupFrame",
+        "SLASH_CANCELAURA1",
+        "SLASH_CANCELAURA2",
+        "GENERAL_MACROS",
+        "CHARACTER_SPECIFIC_MACROS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

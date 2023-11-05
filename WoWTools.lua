@@ -309,7 +309,7 @@ function e.Cstr(self, tab)--self, {size, copyFont, changeFont, fontName color={r
     return font
 end
 
-function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton', notWheel, setID
+function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton', notWheel, setID, text
     tab=tab or {}
     local template= tab.type==false and 'UIPanelButtonTemplate' or tab.type==true and 'SecureActionButtonTemplate' or tab.type
     --[[ SecureTemplates
@@ -352,6 +352,9 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, butto
                 btn:SetNormalAtlas(e.Icon.disabled)
             end
         end
+    end
+    if tab.text then
+        btn:SetText(tab.text)
     end
     return btn, template
 end
