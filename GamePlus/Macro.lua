@@ -4,6 +4,7 @@ local Save={
     --disabled= not e.Player.husandro,
     --toRightLeft= 1,2, nil --左边 右边 默认
     spellButton=e.Player.husandro,
+    mcaro={}
 }
 --Blizzard_MacroUI.lua
 
@@ -1379,7 +1380,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             if PetStableFrame then
                 Save= WoWToolsSave[addName] or Save
-
+                Save.mcaro= Save.mcaro or {}
                 --添加控制面板
                 e.AddPanel_Check({
                     name= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or addName),
