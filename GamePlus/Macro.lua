@@ -10,40 +10,20 @@ local Save={
 
 
 
-
-
-
-
-
-
-
-
-
-
-local MacroButtonList={--新建，宏，列表
+--新建，宏，列表
+--#############
+local MacroButtonList={
     {macro='/reload'},--134400
     {macro='/fstack'},
     {macro='/etrace'},
-    {macro='#showtooltip\n/cast [mod:alt]\n/cast [mod:ctrl]\n/cast [mod:shift][noflyable]\n/cast [swimming]\n/cast [flyable]',
-        name='Mount'},
+    {macro='#showtooltip\n/cast [mod:alt]\n/cast [mod:ctrl]\n/cast [mod:shift][noflyable]\n/cast [swimming]\n/cast [flyable]', name='Mount'},
     {macro='/click ExtraActionButton1', name='Extra'},
     --{macro=, name=, icon=, },
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 --自定义，职业，法术宏
-
+--##################
 local function Get_Spell_Macro(name, spellID)
     if spellID==6603 then--自动攻击
         return '/startattack'
@@ -266,7 +246,7 @@ local function Get_Select_Index()
 end
 
 
-
+--创建，目标，功击，按钮
 local function Create_Button(name)
     local btn= e.Cbtn(MacroEditButton, {size={60,22}, type=false})
     function btn:find_text(right)
@@ -321,7 +301,7 @@ local function Set_Texture_Macro(iconTexture)--修改，当前图标
     local macroFrame =MacroFrame
     local actualIndex = Get_Select_Index()
     local name= GetMacroInfo(actualIndex)
-    local index = EditMacro(Get_Select_Index(), name, iconTexture) - macroFrame.macroBase;--战斗中，出现错误
+    local index = EditMacro(actualIndex, name, iconTexture) - macroFrame.macroBase;--战斗中，出现错误
     e.call(MacroFrame.SaveMacro, macroFrame)
     macroFrame:SelectMacro(index or 1);
     local retainScrollPosition = true;
@@ -649,7 +629,11 @@ end
 
 
 
+
+
+
 --命令，按钮，列表
+--##############
 local function Init_List_Button()
     --目标
     local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
@@ -997,6 +981,18 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 --选定宏，点击，弹出菜单，自定图标
 --#############################
 local function Init_Select_Macro_Button()
@@ -1165,6 +1161,24 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --宏列表，位置
 --###########
 local function Init_Macro_List()
@@ -1233,6 +1247,25 @@ local function Init_Macro_List()
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
