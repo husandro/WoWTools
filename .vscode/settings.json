@@ -3555,7 +3555,8 @@
         "RPE_CONFIRM",
         "EmoteList",
         "UIMenu_AddButton",
-        "OnMenuLoad"
+        "OnMenuLoad",
+        "TextEmoteSpeechList"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

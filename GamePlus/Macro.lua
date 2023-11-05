@@ -1022,40 +1022,72 @@ local function Init_List_Button()
 
 
     --表情，列表 
+
+    --[[
+        	UIMenu_Initialize(self);
+	UIMenu_AddButton(self, SAY_MESSAGE, SLASH_SAY1, ChatMenu_Say);
+	UIMenu_AddButton(self, PARTY_MESSAGE, SLASH_PARTY1, ChatMenu_Party);
+	UIMenu_AddButton(self, RAID_MESSAGE, SLASH_RAID1, ChatMenu_Raid);
+	UIMenu_AddButton(self, INSTANCE_CHAT_MESSAGE, SLASH_INSTANCE_CHAT1, ChatMenu_InstanceChat);
+	UIMenu_AddButton(self, GUILD_MESSAGE, SLASH_GUILD1, ChatMenu_Guild);
+	UIMenu_AddButton(self, YELL_MESSAGE, SLASH_YELL1, ChatMenu_Yell);
+	UIMenu_AddButton(self, WHISPER_MESSAGE, SLASH_SMART_WHISPER1, ChatMenu_Whisper);
+	UIMenu_AddButton(self, REPLY_MESSAGE, SLASH_REPLY1, ChatMenu_Reply);
+	UIMenu_AddButton(self, MACRO, SLASH_MACRO1, ShowMacroFrame);
+	UIMenu_AddButton(self, EMOTE_MESSAGE, SLASH_EMOTE1, ChatMenu_Emote, "EmoteMenu");
+    ]]
     --OnMenuLoad(self,list,func) ChatFrame.lua
-    local emoteButton= e.Cbtn(MacroFrameSelectedMacroButton, {size={20,20}, texture='Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet'})
-    emoteButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'BOTTOMLEFT',-12,-4)
-    emoteButton:SetScript('OnClick', function(self)
-        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level, menuList)
-            for _, value in pairs(EmoteList) do
-                local i = 1;
-                local token = _G["EMOTE"..i.."_TOKEN"];
-                while ( i < 627 ) do--local MAXEMOTEINDEX = 627;
-                    if ( token == value ) then
-                        break;
-                    end
-                    i = i + 1;
-                    token = _G["EMOTE"..i.."_TOKEN"];
+
+
+
+    local function Chat_Init_menu(list, level)
+        for _, value in pairs(list or {}) do
+            local i = 1;
+            local token = _G["EMOTE"..i.."_TOKEN"];
+            while ( i < 627 ) do--local MAXEMOTEINDEX = 627;
+                if ( token == value ) then
+                    break;
                 end
-                local label = _G["EMOTE"..i.."_CMD1"];
-                if ( not label ) then
-                    label = value;
-                end
-                if label then
-                    e.LibDD:UIDropDownMenu_AddButton({
-                        text=label,
-                        notCheckable=true,
-                        arg1=label,
-                        func= function(_, arg1)
-                            MacroFrameText:Insert(arg1..'\n')
-                            MacroFrameText:SetFocus()
-                        end,
-                    }, level)
-                end
+                i = i + 1;
+                token = _G["EMOTE"..i.."_TOKEN"];
             end
+            local label = _G["EMOTE"..i.."_CMD1"];
+            if ( not label ) then
+                label = value;
+            end
+            if label then
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text=label,
+                    notCheckable=true,
+                    arg1=label,
+                    func= function(_, arg1)
+                        MacroFrameText:Insert(arg1..'\n')
+                        MacroFrameText:SetFocus()
+                    end,
+                }, level)
+            end
+        end
+    end
+
+    local spellchButton= e.Cbtn(MacroFrameSelectedMacroButton, {size={22,22}, atlas='communities-icon-chat'})
+    spellchButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'BOTTOMLEFT',-6,-1)
+    spellchButton:SetScript('OnClick', function(self)
+        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
+            Chat_Init_menu(TextEmoteSpeechList, level)
         end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
+
+    local emoteButton= e.Cbtn(MacroFrameSelectedMacroButton, {size={22,22}, texture='Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet'})
+    emoteButton:SetPoint('LEFT', spellchButton, 'RIGHT')
+    emoteButton:SetScript('OnClick', function(self)
+        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
+            Chat_Init_menu(EmoteList, level)
+        end, 'MENU')
+        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
+    end)
+    
+    --TextEmoteSpeechList+
 end
 
 
