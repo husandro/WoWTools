@@ -7,12 +7,39 @@ local Save={
 }
 --Blizzard_MacroUI.lua
 
-local MacroButtonList={
+
+
+
+
+
+
+
+
+
+
+
+
+local MacroButtonList={--新建，宏，列表
     {macro='/reload'},--134400
     {macro='/fstack'},
     {macro='/etrace'},
-    --{name=, icon=, macro=},
+    {macro='/click ExtraActionButton1', name='Extra'},
+    --{macro=, name=, icon=, },
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+--自定义，职业，法术宏
 
 local function Get_Spell_Macro(name, spellID)
     if spellID==6603 then--自动攻击
@@ -461,7 +488,9 @@ local function Init()
         end
     end)
 
-
+    if MacroFrameTab2 and MacroFrameTab2.Text then--角色，专用宏，颜色
+        MacroFrameTab2.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+    end
 
 
 
@@ -1237,9 +1266,8 @@ local function Init()
                 local bat= UnitAffectingCombat('player')
 
                 for _, tab in pairs(MacroButtonList) do
-                    local name= tab.text or tab.macro:gsub('/', '')
-                    name = name:match("(.-)\"") or name or ' '
-                    name= name:gusb()
+                    local name= tab.name or tab.macro:gsub('/', '')
+                    name = name:match("(.-)\"") or name:match("(.-)\n") or name or ' '
                     local icon= tab.icon or 134400
                     local head= '|T'..icon..':0|t'..name
                     local body= tab.macro
