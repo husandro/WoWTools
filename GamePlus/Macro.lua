@@ -676,6 +676,7 @@ local function Init()
     MacroFrameTab2.label= e.Cstr(MacroFrameTab2)
     MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2, 'TOP', 0, -8)
     MacroFrameTab2.label:SetAlpha(0.7)
+    MacroFrameTab2.label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
     hooksecurefunc(MacroFrame, 'Update', function()
     	local numAccountMacros, numCharacterMacros
         numAccountMacros, numCharacterMacros = GetNumMacros()
@@ -1190,17 +1191,21 @@ local function Init()
     end
     MacroFrame.newButton:SetPoint('BOTTOMLEFT', MacroFrameTab2, 'BOTTOMRIGHT')
     MacroFrame.newButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
-    MacroFrame.newButton:SetScript('OnEnter', function(self)
+    function MacroFrame.newButton:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-        local col= (MacroNewButton:IsEnabled() and not UnitAffectingCombat('player')) and '' or '|cff606060'
-        e.tips:AddDoubleLine(col..(e.onlyChinese and '新建' or NEW), e.Icon.left)
-        e.tips:AddDoubleLine(col..(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
+        local bat= UnitAffectingCombat('player')
+        e.tips:AddDoubleLine(
+            ((not MacroNewButton:IsEnabled() or bat) and '|cff606060' or '')
+            ..(e.onlyChinese and '新建' or NEW), e.Icon.left
+        )
+        e.tips:AddDoubleLine((bat and '|cff606060' or '')..(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
         e.tips:Show()
         self:SetAlpha(0.5)
-    end)
+    end
+    MacroFrame.newButton:SetScript('OnEnter', MacroFrame.newButton.set_Tooltips)
 
     MacroFrame.newButton:SetScript('OnClick', function(self, d)--MacroPopupFrameMixin:OkayButton_OnClick()
         if UnitAffectingCombat('player') then
@@ -1216,9 +1221,9 @@ local function Init()
                 MacroFrame:SelectMacro(index)
                 local retainScrollPosition = true;
                 MacroFrame:Update(retainScrollPosition)
+                self:set_Tooltips()
             end
         else
-            
             e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
                 local global, perChar = GetNumMacros()
                 e.LibDD:UIDropDownMenu_AddButton({
@@ -1226,8 +1231,8 @@ local function Init()
                     disabled= (MacroFrame.macroBase==0 and global==0) or (MacroFrame.macroBase>0 and perChar==0),
                     tooltipOnButton=true,
                     tooltipTitle= MacroFrame.macroBase==0
-                        and (e.onlyChinese and '通用宏' or GENERAL_MACROS)
-                        or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))),
+                        and ((e.onlyChinese and '通用宏' or GENERAL_MACROS)..' #'..global)
+                        or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))..' #'..perChar),
                     notCheckable=true,
                     func= function()
                         StaticPopupDialogs[id..addName..'DeleteAllMacro']={
