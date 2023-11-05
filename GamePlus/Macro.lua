@@ -247,7 +247,11 @@ end
 --取得选定宏，index
 local function Get_Select_Index()
     local index= MacroFrame:GetSelectedIndex()
-    return index and MacroFrame:GetMacroDataIndex(index)
+    if index then
+        return MacroFrame:GetMacroDataIndex(index)
+    else
+        return MacroFrame.macroBase +1
+    end
 end
 
 
@@ -475,7 +479,7 @@ local function Init_Create_Button()
             return
         end
 
-print(d)
+
         --添加，空，按钮
         if d=='LeftButton' then
             Create_Macro_Button(nil, nil, '',  MacroFrame.macroBase > 0)
@@ -593,6 +597,12 @@ print(d)
                             print(tab.body,'|n','|T'..icon..':0|t'..tab.name,'|n',id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '保存' or SAVE))
                         end
                     },1)
+                else
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= '|cff606060'..(e.onlyChinese and '保存' or SAVE),
+                        notCheckable=true,
+                        isTitle=true,
+                    }, level)
                 end
             else
                 e.LibDD:UIDropDownMenu_AddButton({
@@ -608,9 +618,11 @@ print(d)
                 text=(e.onlyChinese and '删除全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL))..e.Player.col..' #'..(isGolbal and global or perChar),
                 disabled= isZero or bat,
                 tooltipOnButton=true,
-                tooltipTitle= isGolbal
+                tooltipTitle= (
+                    isGolbal
                     and ((e.onlyChinese and '通用宏' or GENERAL_MACROS))
-                    or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))),
+                    or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player')))
+                )..'|cnRED_FONT_COLOR: ('..(e.onlyChinese and '所有' or ALL)..')',
                 tooltipText='Ctrl+'..e.Icon.left,
                 notCheckable=true,
                 keepShownOnClick=true,
@@ -859,14 +871,13 @@ local function Init_List_Button()
                                     ..(spellTexture and '|T'..spellTexture..':0|t' or '')
                                     ..(spellID and GetSpellLink(spellID) or spellName or spellID or '')..(spellID and ' '..spellID or ''),
                             arg1={name=name, spellID=spellID, icon=textureName},
-                            --arg1=name,
-                            --arg2= spellID,
-                            --func= function(_, arg1, arg2)
                             func= function(_, tab)
                                 if IsAltKeyDown() then
                                     Set_Texture_Macro(tab.icon)--修改，当前图标
                                 else
-                                    MacroFrameText:Insert((tab.spellID and '/use '..tab.name or ('/equip '..tab.name)))
+                                    MacroFrameText:Insert(
+                                        (tab.spellID and '/use '..tab.name or ('/equip '..tab.name)..'\n')
+                                    )
                                     MacroFrameText:SetFocus()
                                 end
                             end
@@ -892,14 +903,14 @@ local function Init_List_Button()
     starButton:SetPoint('LEFT', equipButton, 'RIGHT')
     starButton:SetScript('OnClick', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level, menuList)
-            local tab={
+            local macroList={
                 {text='ping', icon='Ping_Map_Whole_Assist', macro=SLASH_PING1,
                     tab={
                         {text=SLASH_PING1},-- icon='Ping_Map_Whole_NonThreat'},
-                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGATTACK, icon='Ping_Map_Whole_Attack'},
-                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGASSIST, icon='Ping_Map_Whole_Assist'},
-                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGONMYWAY, icon='Ping_Map_Whole_OnMyWay'},
-                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGWARNING, icon='Ping_Map_Whole_Warning'}
+                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGATTACK..'\n', icon='Ping_Map_Whole_Attack'},
+                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGASSIST..'\n', icon='Ping_Map_Whole_Assist'},
+                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGONMYWAY..'\n', icon='Ping_Map_Whole_OnMyWay'},
+                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGWARNING..'\n', icon='Ping_Map_Whole_Warning'}
                     }
                 },
                 {text='worldmarker',  macro='/wm ',
@@ -967,7 +978,7 @@ local function Init_List_Button()
                     }
                 },
             }
-            for _, info in pairs(tab) do
+            for _, info in pairs(macroList) do
                 if info.tab then
                     if menuList then
                         if menuList==info.text then
