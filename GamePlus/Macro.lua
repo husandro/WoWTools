@@ -305,7 +305,7 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
     elseif not isKnown then
         color= '|cnRED_FONT_COLOR:'
     end
-    
+
 
     icon= icon and '|T'..icon..':0|t' or ''
     local  macroText= Get_Spell_Macro(name, spellID)
@@ -321,7 +321,7 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
             head= head and head..', ' or ''
             head= head..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB)..'|r'
         end
-        
+
         tipText= head and head..'|n'..tipText or tipText
     end
     tipText= ((macroText or tipText) and '|n' or '')..(macroText and macroText..'|n' or '')..(tipText or '')
@@ -340,7 +340,7 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
         colorCode=color,
         icon=texture,
         arg1={spellName=name, spellID=spellID, icon=spellIcon},
-        
+
         notCheckable=true,
         func= function(_, tab)
             if IsShiftKeyDown() then
@@ -530,8 +530,8 @@ local function Init()
 
 
 
-    
-    
+
+
     --宏，提示
     hooksecurefunc(MacroButtonMixin, 'OnLoad', function(self)
         self:HookScript('OnEnter', set_btn_tooltips)
@@ -703,8 +703,8 @@ local function Init()
 
 
 
-    
-    
+
+
 
 
 
@@ -839,7 +839,7 @@ local function Init()
 
 
     --角色，装备
-    local equipButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas=e.Player.sex==2 and 'charactercreate-gendericon-male-selected' or 'charactercreate-gendericon-female-selected'})--pvptalents-warmode-swords-disabled
+    local equipButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas=e.GetUnitRaceInfo({unit='player', reAtlas=true})})--atlas=e.Player.sex==2 and 'charactercreate-gendericon-male-selected' or 'charactercreate-gendericon-female-selected'})--pvptalents-warmode-swords-disabled
     equipButton:SetPoint('LEFT', pvpButton, 'RIGHT')
     equipButton:SetScript('OnClick', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
@@ -851,11 +851,11 @@ local function Init()
                     if name then
                         local spellName, spellID= GetItemSpell(itemLink)
                         local spellTexture
-                        
+
                         if spellID then
                             e.LoadDate({id=spellID, type='spell'})
                             spellTexture= GetSpellTexture(spellID)
-                            
+
                         end
                         e.LibDD:UIDropDownMenu_AddButton({
                             text='|T'..textureName..':0|t'..itemLink..(((slot==13 or slot==14) and spellID) and e.Icon.toLeft2 or ''),
@@ -1020,8 +1020,8 @@ local function Init()
     end)
 
 
-    
-    
+
+
 
     --选定，宏，提示
     MacroFrameSelectedMacroButton:HookScript('OnEnter', function(self)
@@ -1050,8 +1050,8 @@ local function Init()
             local find
             local allTab={}
 
-           
-            
+
+
             local function get_SpellItem_Texture(spell, item)
                 if spell then
                     local icon= GetSpellTexture(spell) or select(3, GetSpellInfo(spell))
@@ -1085,7 +1085,7 @@ local function Init()
                 get_SpellItem_Texture(t:match('](.+)') or t)
                 return ''
             end)
-            
+
             --物品
             text= text:gsub(SLASH_USE1..' (.-)\n', function(t)--/use
                 get_SpellItem_Texture(nil, t:match('](.+)') or t)
