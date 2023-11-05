@@ -3552,7 +3552,10 @@
         "SLASH_CANCELAURA2",
         "GENERAL_MACROS",
         "CHARACTER_SPECIFIC_MACROS",
-        "RPE_CONFIRM"
+        "RPE_CONFIRM",
+        "EmoteList",
+        "UIMenu_AddButton",
+        "OnMenuLoad"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

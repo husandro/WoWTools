@@ -1017,6 +1017,45 @@ local function Init_List_Button()
         end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
+
+
+
+
+    --表情，列表 
+    --OnMenuLoad(self,list,func) ChatFrame.lua
+    local emoteButton= e.Cbtn(MacroFrameSelectedMacroButton, {size={20,20}, texture='Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet'})
+    emoteButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'BOTTOMLEFT',-12,-4)
+    emoteButton:SetScript('OnClick', function(self)
+        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level, menuList)
+            for _, value in pairs(EmoteList) do
+                local i = 1;
+                local token = _G["EMOTE"..i.."_TOKEN"];
+                while ( i < 627 ) do--local MAXEMOTEINDEX = 627;
+                    if ( token == value ) then
+                        break;
+                    end
+                    i = i + 1;
+                    token = _G["EMOTE"..i.."_TOKEN"];
+                end
+                local label = _G["EMOTE"..i.."_CMD1"];
+                if ( not label ) then
+                    label = value;
+                end
+                if label then
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text=label,
+                        notCheckable=true,
+                        arg1=label,
+                        func= function(_, arg1)
+                            MacroFrameText:Insert(arg1..'\n')
+                            MacroFrameText:SetFocus()
+                        end,
+                    }, level)
+                end
+            end
+        end, 'MENU')
+        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
+    end)
 end
 
 
