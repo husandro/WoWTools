@@ -1226,19 +1226,55 @@ local function Init()
         else
             e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
                 local global, perChar = GetNumMacros()
+                local isGolbal= MacroFrame.macroBase==0
+                local isZero= (isGolbal and global==0) or (not isGolbal and perChar==0)
+                local isMax= (isGolbal and MacroFrame.macroMax==global) or (not isGolbal and MacroFrame.macroMax==perChar)
+                local bat= UnitAffectingCombat('player')
+                local macroTab={
+                    {macro='/rload'},--134400
+                    {macro='/fstack'},
+                    {macro='/etrace'},
+                    --{name=, icon=, macro=},
+                }
+                for _, tab in pairs(macroTab) do
+                    local name= tab.text or tab.macro:gsub('/', '')
+                    name = name:match("(.-)\"") or name or ' '
+                    local icon= tab.icon or 134400
+                    local head= '|T'..icon..':0|t'..name
+                    local body= tab.macro
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= name,
+                        tooltipOnButton=true,
+                        tooltipTitle= head,
+                        tooltipText=body,
+                        disabled= bat or isMax,
+                        arg1= tab.macro,
+                        arg2={name=name, icon=icon, isCharacterMacro=not isGolbal},
+                        func= function(_, arg1, arg2)
+                            if not UnitAffectingCombat('player') then
+                                local index = 1
+                                index = CreateMacro(arg1, arg2.icon, nil, arg2.isCharacterMacro) - MacroFrame.macroBase;
+                                MacroFrame:SelectMacro(index);
+                                local retainScrollPosition = true;
+                                MacroFrame:Update(retainScrollPosition);
+                            end
+                        end
+                    }, 1)
+                end
+
                 e.LibDD:UIDropDownMenu_AddButton({
-                    text=(e.onlyChinese and '删除全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL))..e.Player.col..' #'..(MacroFrame.macroBase==0 and global or perChar),
-                    disabled= (MacroFrame.macroBase==0 and global==0) or (MacroFrame.macroBase>0 and perChar==0),
+                    text=(e.onlyChinese and '删除全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL))..e.Player.col..' #'..(isGolbal and global or perChar),
+                    disabled= isZero or bat,
                     tooltipOnButton=true,
-                    tooltipTitle= MacroFrame.macroBase==0
-                        and ((e.onlyChinese and '通用宏' or GENERAL_MACROS)..' #'..global)
-                        or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))..' #'..perChar),
+                    tooltipTitle= isGolbal
+                        and ((e.onlyChinese and '通用宏' or GENERAL_MACROS))
+                        or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))),
                     notCheckable=true,
                     func= function()
                         StaticPopupDialogs[id..addName..'DeleteAllMacro']={
-                            text=(MacroFrame.macroBase==0
-                                and (e.onlyChinese and '通用宏' or GENERAL_MACROS)
-                                or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player')))
+                            text=(isGolbal
+                                and ((e.onlyChinese and '通用宏' or GENERAL_MACROS)..' #'..global)
+                                or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))..'|r #'..perChar)
                             )
                             ..('|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '危险！危险！危险！' or (VOICEMACRO_1_Sc_0..VOICEMACRO_1_Sc_0..VOICEMACRO_1_Sc_0))),
                             whileDead=true, hideOnEscape=true, exclusive=true,
@@ -1249,7 +1285,7 @@ local function Init()
                             end,
                             OnAccept = function()
                                 if not UnitAffectingCombat('player') then
-                                    if MacroFrame.macroBase==0 then--通用宏
+                                    if isGolbal then--通用宏
                                         for i = select(1, GetNumMacros()), 1, -1 do
                                             DeleteMacro(i)
                                         end
