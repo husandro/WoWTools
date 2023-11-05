@@ -1245,11 +1245,13 @@ local function Init()
                     local body= tab.macro
                     e.LibDD:UIDropDownMenu_AddButton({
                         text= name,
+                        icon= tab.icon,
                         tooltipOnButton=true,
                         tooltipTitle= head,
                         tooltipText=body,
                         disabled= bat or isMax,
                         notCheckable=true,
+                        keepShownOnClick=true,
                         arg1= tab.macro,
                         arg2={name=name, icon=icon, isCharacterMacro=not isGolbal},
                         func= function(_, arg1, arg2)
