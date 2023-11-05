@@ -235,9 +235,11 @@ end
 
 --创建，宏
 local function Create_Macro_Button(name, icon, boy, isCharacterMacro)
-    local index = CreateMacro(name or ' ', icon or 134400, boy, isCharacterMacro) - MacroFrame.macroBase
-    MacroFrame:SelectMacro(index or 1)
-    MacroFrame:Update(true)
+    if MacroNewButton:IsEnabled() and not UnitAffectingCombat('player') then
+        local index = CreateMacro(name or ' ', icon or 134400, boy, isCharacterMacro) - MacroFrame.macroBase
+        MacroFrame:SelectMacro(index or 1)
+        MacroFrame:Update(true)
+    end
 end
 
 --取得选定宏，index
@@ -300,12 +302,14 @@ local function Set_Texture_Macro(iconTexture)--修改，当前图标
     end
     local macroFrame =MacroFrame
     local actualIndex = Get_Select_Index()
-    local name= GetMacroInfo(actualIndex)
-    local index = EditMacro(actualIndex, name, iconTexture) - macroFrame.macroBase;--战斗中，出现错误
-    e.call(MacroFrame.SaveMacro, macroFrame)
-    macroFrame:SelectMacro(index or 1);
-    local retainScrollPosition = true;
-    macroFrame:Update(retainScrollPosition);
+    if actualIndex then
+        local name= GetMacroInfo(actualIndex)
+        local index = EditMacro(actualIndex, name, iconTexture) - macroFrame.macroBase;--战斗中，出现错误
+        e.call(MacroFrame.SaveMacro, macroFrame)
+        macroFrame:SelectMacro(index or 1);
+        local retainScrollPosition = true;
+        macroFrame:Update(retainScrollPosition);
+    end
 end
 
 
@@ -471,141 +475,184 @@ local function Init_Create_Button()
 
         --添加，空，按钮
         if d=='LeftButton' then
-            if MacroNewButton:IsEnabled() then
-                if not UnitAffectingCombat('player') then
-                    Create_Macro_Button(nil, nil, '',  MacroFrame.macroBase > 0)
-                end
-                self:set_Tooltips()
-            end
-        else
-            e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level, menuList)
-                local global, perChar = GetNumMacros()
-                local isGolbal= MacroFrame.macroBase==0
-                local isZero= (isGolbal and global==0) or (not isGolbal and perChar==0)
-                local isMax= (isGolbal and MacroFrame.macroMax==global) or (not isGolbal and MacroFrame.macroMax==perChar)
-                local bat= UnitAffectingCombat('player')
+            Create_Macro_Button(nil, nil, '',  MacroFrame.macroBase > 0)
+            self:set_Tooltips()
+            return
+        end
 
-                if menuList=='SAVE' then--二级菜单，保存宏，列表 {name=tab.name, icon=tab.icon, body=tab.body}
-                    for _, tab in pairs(Save.mcaro) do
-                        tab.isCharacterMacro=not isGolbal
-                        e.LibDD:UIDropDownMenu_AddButton({
-                            text='|T'..tab.icon..':0|t'..tab.name,
-                            tooltipOnButton=true,
-                            tooltipTitle='|T'..tab.icon..':0|t'..tab.name,
-                            tooltipText=tab.body,
-                            arg1=tab,
-                            notCheckable=true,
-                            disabled= bat or isMax,
-                            func= function(_, arg1)
+        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level, menuList)
+            local global, perChar = GetNumMacros()
+            local isGolbal= MacroFrame.macroBase==0
+            local isZero= (isGolbal and global==0) or (not isGolbal and perChar==0)
+            local isMax= (isGolbal and MacroFrame.macroMax==global) or (not isGolbal and MacroFrame.macroMax==perChar)
+            local bat= UnitAffectingCombat('player')
+
+            if menuList=='SAVE' then--二级菜单，保存宏，列表 {name=tab.name, icon=tab.icon, body=tab.body}
+                for index, tab in pairs(Save.mcaro) do
+                    tab.isCharacterMacro=not isGolbal
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text='|T'..tab.icon..':0|t'..tab.name,
+                        tooltipOnButton=true,
+                        tooltipTitle='|T'..tab.icon..':0|t'..tab.name,
+                        tooltipText=tab.body
+                            ..'|n|n|cffffffffCtrl+'..e.Icon.left..(e.onlyChinese and '删除' or DELETE),
+                        arg1=tab,
+                        arg2=index,
+                        notCheckable=true,
+                        disabled= bat or isMax,
+                        keepShownOnClick=true,
+                        func= function(s, arg1, arg2)
+                            if IsControlKeyDown() then
+                                table.remove(Save.mcaro, arg2)
+                                s:GetParent():Hide()
+                            elseif not IsModifierKeyDown() then
                                 Create_Macro_Button(arg1.name, arg1.icon, arg1.body, tab.isCharacterMacro)
                             end
-                        }, level)
-                    end
-                    return
-                end
-
-                for _, tab in pairs(MacroButtonList) do
-                    local name= tab.name or tab.macro:gsub('/', '')
-                    name = name:match("(.-)\"") or name:match("(.-)\n") or name or ' '
-                    local icon= tab.icon or 134400
-                    local head= '|T'..icon..':0|t'..name
-                    local body= tab.macro
-                    e.LibDD:UIDropDownMenu_AddButton({
-                        text= name,
-                        icon= tab.icon,
-                        tooltipOnButton=true,
-                        tooltipTitle= head,
-                        tooltipText=body,
-                        disabled= bat or isMax,
-                        notCheckable=true,
-                        keepShownOnClick=true,
-                        arg1={name=name, icon=icon, body=tab.macro, isCharacterMacro=not isGolbal},
-                        func= function(_, arg1)
-                            Create_Macro_Button(arg1.name, arg1.icon, arg1.body, tab.isCharacterMacro)
                         end
                     }, level)
                 end
 
-                e.LibDD:UIDropDownMenu_AddSeparator(1)
-
-                --保存， 选定宏
-                local selectIndex= Get_Select_Index()
-                if selectIndex then
-                    local name, icon, body = GetMacroInfo(selectIndex)
-                    if name and icon and body then
-                        e.LibDD:UIDropDownMenu_AddButton({
-                            text= (e.onlyChinese and '保存' or SAVE)..' |T'..icon..':0|t'..name,
-                            notCheckable=true,
-                            tooltipOnButton=true,
-                            tooltipTitle='|T'..icon..':0|t'..name..' |cnGREEN_FONT_COLOR:('..(e.onlyChinese and '保存' or SAVE)..')',
-                            tooltipText= body,
-                            arg1={name=name, icon=icon, body= body},
-                            menuList='SAVE',
-                            hasArrow=true,
-                            keepShownOnClick=true,
-                            func= function(_, tab)
-                                table.insert(Save.mcaro, {name=tab.name, icon=tab.icon, body=tab.body})
-                                print(tab.body,'|n','|T'..icon..':0|t'..tab.name,'|n',id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '保存' or SAVE))
-                            end
-                        },1)
-                    end
-                else
-                    e.LibDD:UIDropDownMenu_AddButton({
-                        text= '|cff606060'..(e.onlyChinese and '保存' or SAVE),
-                        notCheckable=true,
-                        isTitle=true,
-                    },1)
-                end
-
-                --删除所有宏
-                e.LibDD:UIDropDownMenu_AddSeparator(1)
+                --清除，全部，保存宏
+                e.LibDD:UIDropDownMenu_AddSeparator(level)
+                local num= #Save.mcaro
                 e.LibDD:UIDropDownMenu_AddButton({
-                    text=(e.onlyChinese and '删除全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL))..e.Player.col..' #'..(isGolbal and global or perChar),
-                    disabled= isZero or bat,
+                    text= (e.onlyChinese and '全部清除' or CLEAR_ALL)..' |cnGREEN_FONT_COLOR:#'..num,
+                    disabled= num==0,
                     tooltipOnButton=true,
-                    tooltipTitle= isGolbal
-                        and ((e.onlyChinese and '通用宏' or GENERAL_MACROS))
-                        or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))),
+                    tooltipTitle='Ctrl+'..e.Icon.left,
                     notCheckable=true,
+                    keepShownOnClick=true,
                     func= function()
-                        StaticPopupDialogs[id..addName..'DeleteAllMacro']={
-                            text=(isGolbal
-                                and ((e.onlyChinese and '通用宏' or GENERAL_MACROS)..' #'..global)
-                                or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))..'|r #'..perChar)
-                            )
+                        if not IsControlKeyDown() then
+                            return
+                        end
+                        StaticPopupDialogs[id..addName..'DeleteAllSaveMacro']={
+                            text=((e.onlyChinese and '全部清除' or CLEAR_ALL)..' |cnGREEN_FONT_COLOR:#'..num)
                             ..('|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '危险！危险！危险！' or (VOICEMACRO_1_Sc_0..VOICEMACRO_1_Sc_0..VOICEMACRO_1_Sc_0))),
                             whileDead=true, hideOnEscape=true, exclusive=true,
-                            button1= e.onlyChinese and '删除全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL),
+                            button1= e.onlyChinese and '确认' or RPE_CONFIRM,
                             button2= e.onlyChinese and '取消' or CANCEL,
-                            OnShow = function(s)
-                                s.button1:SetEnabled(not UnitAffectingCombat('player'))
-                            end,
                             OnAccept = function()
-                                if not UnitAffectingCombat('player') then
-                                    if isGolbal then--通用宏
-                                        for i = select(1, GetNumMacros()), 1, -1 do
-                                            DeleteMacro(i)
-                                        end
-                                    else--专用宏
-                                        for i = MAX_ACCOUNT_MACROS + select(2,GetNumMacros()), 121, -1 do
-                                            DeleteMacro(i)
-                                        end
-                                    end
-                                    MacroFrame:SelectMacro(1)
-                                    MacroFrame:Update(true)
-                                end
+                                Save.mcaro={}
+                                print(id,addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
                             end,
                             EditBoxOnEscapePressed= function(s)
                                 s:ClearFocus()
                                 s:GetParent():Hide()
                             end,
                         }
-                        StaticPopup_Show(id..addName..'DeleteAllMacro')
+                        StaticPopup_Show(id..addName..'DeleteAllSaveMacro')
                     end
-                }, 1)
-            end, 'MENU')
-            e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
-        end
+                }, level)
+
+                return
+            end
+
+            for _, tab in pairs(MacroButtonList) do
+                local name= tab.name or tab.macro:gsub('/', '')
+                name = name:match("(.-)\"") or name:match("(.-)\n") or name or ' '
+                local icon= tab.icon or 134400
+                local head= '|T'..icon..':0|t'..name
+                local body= tab.macro
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text= name,
+                    icon= tab.icon,
+                    tooltipOnButton=true,
+                    tooltipTitle= head,
+                    tooltipText=body,
+                    disabled= bat or isMax,
+                    notCheckable=true,
+                    keepShownOnClick=true,
+                    arg1={name=name, icon=icon, body=tab.macro, isCharacterMacro=not isGolbal},
+                    func= function(_, arg1)
+                        Create_Macro_Button(arg1.name, arg1.icon, arg1.body, tab.isCharacterMacro)
+                    end
+                }, level)
+            end
+
+            e.LibDD:UIDropDownMenu_AddSeparator(level)
+
+            --保存， 选定宏
+            local selectIndex= Get_Select_Index()
+            if selectIndex then
+                local name, icon, body = GetMacroInfo(selectIndex)
+                if name and icon and body then
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= (e.onlyChinese and '保存' or SAVE)..' |T'..icon..':0|t'..name,
+                        notCheckable=true,
+                        tooltipOnButton=true,
+                        tooltipTitle='|T'..icon..':0|t'..name..' |cnGREEN_FONT_COLOR:('..(e.onlyChinese and '保存' or SAVE)..')',
+                        tooltipText= body,
+                        arg1={name=name, icon=icon, body= body},
+                        menuList='SAVE',
+                        hasArrow=true,
+                        func= function(_, tab)
+                            table.insert(Save.mcaro, {name=tab.name, icon=tab.icon, body=tab.body})
+                            print(tab.body,'|n','|T'..icon..':0|t'..tab.name,'|n',id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '保存' or SAVE))
+                        end
+                    },1)
+                end
+            else
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text= '|cff606060'..(e.onlyChinese and '保存' or SAVE),
+                    notCheckable=true,
+                    isTitle=true,
+                }, level)
+            end
+
+            --删除所有宏
+            e.LibDD:UIDropDownMenu_AddSeparator(level)
+            e.LibDD:UIDropDownMenu_AddButton({
+                text=(e.onlyChinese and '删除全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL))..e.Player.col..' #'..(isGolbal and global or perChar),
+                disabled= isZero or bat,
+                tooltipOnButton=true,
+                tooltipTitle= isGolbal
+                    and ((e.onlyChinese and '通用宏' or GENERAL_MACROS))
+                    or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))),
+                tooltipText='Ctrl+'..e.Icon.left,
+                notCheckable=true,
+                keepShownOnClick=true,
+                func= function()
+                    if not IsControlKeyDown() then
+                        return
+                    end
+                    StaticPopupDialogs[id..addName..'DeleteAllMacro']={
+                        text=(isGolbal
+                            and ((e.onlyChinese and '通用宏' or GENERAL_MACROS)..' #'..global)
+                            or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))..'|r #'..perChar)
+                        )
+                        ..('|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '危险！危险！危险！' or (VOICEMACRO_1_Sc_0..VOICEMACRO_1_Sc_0..VOICEMACRO_1_Sc_0))),
+                        whileDead=true, hideOnEscape=true, exclusive=true,
+                        button1= e.onlyChinese and '删除全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL),
+                        button2= e.onlyChinese and '取消' or CANCEL,
+                        OnShow = function(s)
+                            s.button1:SetEnabled(not UnitAffectingCombat('player'))
+                        end,
+                        OnAccept = function()
+                            if not UnitAffectingCombat('player') then
+                                if isGolbal then--通用宏
+                                    for i = select(1, GetNumMacros()), 1, -1 do
+                                        DeleteMacro(i)
+                                    end
+                                else--专用宏
+                                    for i = MAX_ACCOUNT_MACROS + select(2,GetNumMacros()), 121, -1 do
+                                        DeleteMacro(i)
+                                    end
+                                end
+                                MacroFrame:SelectMacro(1)
+                                MacroFrame:Update(true)
+                            end
+                        end,
+                        EditBoxOnEscapePressed= function(s)
+                            s:ClearFocus()
+                            s:GetParent():Hide()
+                        end,
+                    }
+                    StaticPopup_Show(id..addName..'DeleteAllMacro')
+                end
+            }, level)
+        end, 'MENU')
+        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
     hooksecurefunc(MacroFrame, 'UpdateButtons', function(self)
         self.newButton:set_atlas()
@@ -1042,12 +1089,14 @@ local function Init_Select_Macro_Button()
             local text= MacroFrameText:GetText()
             text= text and text..'\n' or ''
             local allTab={}
+
             --添加，物品，法术，图标=物品名称
             local function get_SpellItem_Texture(spell, item)
                 if spell then
                     local icon= GetSpellTexture(spell) or select(3, GetSpellInfo(spell))
                     if icon then
-                        allTab[icon]=spell
+                        local name= GetSpellInfo(spell) or spell
+                        allTab[icon]= name
                     end
 
                 elseif item then
@@ -1057,6 +1106,7 @@ local function Init_Select_Macro_Button()
                     end
                 end
             end
+
              --法术
             text= text:gsub(SLASH_CAST1..' (.-)\n', function(t)--/施放
                 get_SpellItem_Texture(t:match('](.+)') or t)
@@ -1127,6 +1177,12 @@ local function Init_Select_Macro_Button()
                 get_SpellItem_Texture(nil, t:match('](.+)') or t)
                 return ''
             end)
+
+            --区域，技能
+            for _, zoneAbilities in pairs(C_ZoneAbility.GetActiveAbilities() or {}) do
+                get_SpellItem_Texture(zoneAbilities.spellID)
+            end
+
             for icon, name in pairs(allTab) do
                 e.LibDD:UIDropDownMenu_AddButton({
                     text='|T'..icon..':0|t'..name,
@@ -1139,6 +1195,7 @@ local function Init_Select_Macro_Button()
                     end
                 }, 1)
             end
+
 
             e.LibDD:UIDropDownMenu_AddButton({
                 text='|T134400:0|t'..(e.onlyChinese and '无' or NONE),
