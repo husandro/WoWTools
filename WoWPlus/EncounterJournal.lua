@@ -774,12 +774,10 @@ local function Init_EncounterJournal()--冒险指南界面
 
 
 
-
-
-
     --Boss, 战利品, 信息
     hooksecurefunc(EncounterJournalItemMixin,'Init', function(self)--Blizzard_EncounterJournal.lua
         local text, collectText='', nil
+        local classText
         if not Save.hideEncounterJournal and self.link and self.itemID and self.slot then
             local specTable = GetItemSpecInfo(self.link) or {}--专精图标
             local specTableNum=#specTable
@@ -816,6 +814,15 @@ local function Init_EncounterJournal()--冒险指南界面
                     text= text..str
                 end
             end
+
+            local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') 
+            
+            local dateInfo= e.GetTooltipData({hyperLink=self.link, text={classStr}})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
+            classText= dateInfo.text[classStr]
+            if classText and not self.classLable then
+                self.classLable= e.Cstr(self)
+                self.classLable:SetPoint('TOPRIGHT',0,-2)
+            end
         end
         if text and not self.collectedText and self.slot then
             self.collectedText= e.Cstr(self)--nil,nil,nil,nil,nil,'CENTER')
@@ -836,6 +843,10 @@ local function Init_EncounterJournal()--冒险指南界面
         if self.collectedText then
             self.collectedText:SetText(text)
             self.collectedText.collectText= collectText
+        end
+
+        if self.classLable then
+            self.classLable:SetText(classText or '')
         end
 
         local find= not Save.hideEncounterJournal
