@@ -111,6 +111,19 @@ local function Init()
         self.texture:SetAlpha(1)
     end)
 
+    --货币，数量
+    Button.currencyID= 2650
+    Button.label=e.Cstr(Button, {color={r=1,g=1,b=1}})
+    Button.label:SetPoint('BOTTOMRIGHT')
+    local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(Button.currencyID) or {}
+    if currencyInfo.iconFileID then
+        Button:SetNormalTexture(currencyInfo.iconFileID)
+    end
+    function Button:set_button()
+        local info = C_CurrencyInfo.GetCurrencyInfo(self.currencyID) or {}
+        self.label:SetText(info.quantity or '')
+    end
+    Button:set_button()
 
     function Button:set_Event()
         self:UnregisterAllEvents()
@@ -122,6 +135,7 @@ local function Init()
             self:RegisterEvent('BAG_UPDATE_DELAYED')
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
             self:RegisterEvent('PET_BATTLE_CLOSE')
+            self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
         end
     end
     function Button:set_Shown()
@@ -130,7 +144,7 @@ local function Init()
     function Button:get_UIMapID()
         self.uiMapID= C_Map.GetBestMapForUnit('player')==2200 and true or false
     end
-    Button:SetScript("OnEvent", function(self, event)
+    Button:SetScript("OnEvent", function(self, event, arg1)
         if event=='PLAYER_ENTERING_WORLD' then
             self:get_UIMapID()
             self:set_Event()
@@ -140,6 +154,10 @@ local function Init()
             end
         elseif event=='BAG_UPDATE' or event=='BAG_UPDATE_DELAYED' then
             self:set_button()
+        elseif event=='CURRENCY_DISPLAY_UPDATE' then--货币，数量
+            if arg1==self.currencyID then
+                self:set_Currency()
+            end
         end
 
         if event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then
