@@ -43,7 +43,7 @@ local function Init()
             num= num>0 and '|cnGREEN_FONT_COLOR:'..num or ('|cnRED_FONT_COLOR:'..num)
             e.tips:AddDoubleLine(icon..link, num)
         end
-        local info= C_CurrencyInfo.GetCurrencyInfo(2650)
+        local info= C_CurrencyInfo.GetCurrencyInfo(self.currencyID)
         if info and info.quantity and info.name then
             e.tips:AddDoubleLine((info.iconFileID and '|T'..info.iconFileID..':0|t' or '')..info.name, info.quantity)
         end
@@ -56,10 +56,10 @@ local function Init()
         e.tips:Show()
     end
 
-    Button.texture= Button:CreateTexture()
+    --[[Button.texture= Button:CreateTexture()
     Button.texture:SetAllPoints(Button)
     Button.texture:SetAtlas(e.Icon.icon)
-    Button.texture:SetAlpha(0.5)
+    Button.texture:SetAlpha(0.5)]]
 
     Button:SetClampedToScreen(true)
     Button:SetMovable(true)
@@ -101,14 +101,14 @@ local function Init()
             self:set_Tooltips()
         end
     end)
-    Button:SetScript('OnLeave', function(self)
+    Button:SetScript('OnLeave', function()
         e.tips:Hide()
         ResetCursor()
-        self.texture:SetAlpha(0.5)
+        --self.texture:SetAlpha(0.5)
     end)
     Button:SetScript('OnEnter', function(self)
         self:set_Tooltips()
-        self.texture:SetAlpha(1)
+        --self.texture:SetAlpha(1)
     end)
 
     --货币，数量
