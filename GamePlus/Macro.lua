@@ -1452,8 +1452,8 @@ local function Init_Macro_List()
             self.MacroSelector:SetHeight(146)--<Size x="319" y="146"/>
             self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
         end
-        
-        
+
+
         Init_Note_Edit_Box()--备注
         if self.NoteEditBox then
             self.NoteEditBox:SetShown((Save.toRightLeft and MacroFrame.macroBase==0) and true or false)
@@ -1647,6 +1647,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save.disabled  then
                 self:UnregisterEvent('ADDON_LOADED')
+
+            elseif IsAddOnLoaded("MacroToolkit") then
+                print(id, addName,
+                    e.GetEnabeleDisable(false), 'MacroToolkit',
+                    e.onlyChinese and '插件' or ADDONS
+                )
             end
 
         elseif arg1=='Blizzard_MacroUI' then
