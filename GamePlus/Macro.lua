@@ -1405,7 +1405,7 @@ local function Init_Macro_List()
 
 
 
-        --设置，宏，图标，位置，长度
+    --设置，宏，图标，位置，长度
     hooksecurefunc(MacroFrame, 'ChangeTab', function(self, tabID)
         self.MacroSelector:ClearAllPoints()
         if tabID==1 then
@@ -1428,6 +1428,13 @@ local function Init_Macro_List()
             MacroFrame.NoteEditBox= e.Cedit({frame=MacroFrame, size={310, 135}})
             MacroFrame.NoteEditBox:SetPoint('TOPRIGHT', -26, -72)
             MacroFrame.NoteEditBox.edit:SetText(Save.noteText or (e.onlyChinese and '备注' or LABEL_NOTE))
+            MacroFrame.NoteEditBox.background:SetAlpha(0.8)
+            function MacroFrame.NoteEditBox:set_save_text()--保存备注
+                local text= self.edit:GetText()
+                if text and text~= (e.onlyChinese and '备注' or LABEL_NOTE) and text:gsub(' ','')~='' then
+                    Save.noteText= text
+                end
+            end
             Save.noteText=nil
         end
         if self.NoteEditBox then
@@ -1641,10 +1648,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if not e.ClearAllSave then
             --保存备注
             if MacroFrame and MacroFrame.NoteEditBox then
-                local text= MacroFrame.NoteEditBox.edit:GetText()
-                if text and text~= (e.onlyChinese and '备注' or LABEL_NOTE) and text:gsub(' ','')~='' then
-                    Save.noteText= text
-                end
+                MacroFrame.NoteEditBox:set_save_text()
             end
             WoWToolsSave[addName]=Save
         end
