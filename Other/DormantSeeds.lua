@@ -127,6 +127,8 @@ local function Init()
             self.label:SetText(info.quantity or '')
         end
         Button:set_button()
+    else
+        Button:SetNormalTexture(e.Icon.icon)
     end
 
     function Button:set_Event()
