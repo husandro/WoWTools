@@ -411,14 +411,15 @@ end
 
 
 --宏，提示
-local function set_btn_tooltips(self)
-    if self.selectionIndex then
-        local index= self.selectionIndex+ MacroFrame.macroBase
+local function set_btn_tooltips(self, index)
+    index= self.selectionIndex or index
+    if index then
+        index= (self.selectionIndex and self.selectionIndex+ MacroFrame.macroBase) or index
         local name, icon, body = GetMacroInfo(index)
         if name and icon and body then
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine('|cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, index), '|T'..icon..':0|t|cffffffff'..name)
+            e.tips:AddDoubleLine('|cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, index), '|cffff00ff|T'..icon..':0|t'..name)
             e.tips:AddLine(body, nil,nil,nil, true)
             e.tips:AddLine(' ')
             local col= UnitAffectingCombat('player') and '|cff606060' or '|cffffffff'
@@ -1143,8 +1144,8 @@ local function Init_Select_Macro_Button()
     end)
 
     --选定，宏，提示
-    MacroFrameSelectedMacroButton:HookScript('OnEnter', function(self)
-        local icon= set_btn_tooltips(self)
+    MacroFrameSelectedMacroButton:SetScript('OnEnter', function(self)
+        local icon= set_btn_tooltips(self, Get_Select_Index())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(
             '|cnGREEN_FONT_COLOR:'
@@ -1154,7 +1155,7 @@ local function Init_Select_Macro_Button()
         )
         e.tips:Show()
     end)
-    MacroFrameSelectedMacroButton:HookScript('OnLeave', function() e.tips:Hide() end)
+    MacroFrameSelectedMacroButton:SetScript('OnLeave', function() e.tips:Hide() end)
 
     --选定宏，点击，弹出菜单，自定图标
     MacroFrameSelectedMacroButton:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
@@ -1283,6 +1284,8 @@ local function Init_Select_Macro_Button()
             e.LibDD:UIDropDownMenu_AddButton({
                 text='|T134400:0|t'..(e.onlyChinese and '无' or NONE),
                 notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle=134400,
                 func= function()
                     Set_Texture_Macro(134400)--修改，当前图标
                 end
@@ -1436,6 +1439,7 @@ local function Init()
     MacroFrameSelectedMacroName:ClearAllPoints()
     MacroFrameSelectedMacroName:SetPoint('BOTTOMLEFT', MacroFrameSelectedMacroButton, 'TOPLEFT')
     MacroFrameSelectedMacroName:SetFontObject('GameFontNormal')
+
 
     --输入宏命令
     MacroFrameEnterMacroText:SetText('')
