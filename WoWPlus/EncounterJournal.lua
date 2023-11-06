@@ -817,11 +817,12 @@ local function Init_EncounterJournal()--冒险指南界面
 
             local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') 
             
-            local dateInfo= e.GetTooltipData({hyperLink=self.link, text={classStr}})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
+            local dateInfo= e.GetTooltipData({hyperLink=self.link, text={classStr}, red=true})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
             classText= dateInfo.text[classStr]
+            classText = (dateInfo.red and classText) and '|cnRED_FONT_COLOR:'..classText or classText
             if classText and not self.classLable then
                 self.classLable= e.Cstr(self)
-                self.classLable:SetPoint('TOPRIGHT',0,-2)
+                self.classLable:SetPoint('TOPRIGHT',0,-4)
             end
         end
         if text and not self.collectedText and self.slot then
