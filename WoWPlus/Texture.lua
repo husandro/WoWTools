@@ -128,7 +128,7 @@ local function Init_HideTexture()
         local frame= _G['Boss'..i..'TargetFrame']
         hide_Texture(frame.TargetFrameContainer.FrameTexture)
     end
-    
+
     hooksecurefunc('PlayerFrame_UpdateArt', function()--隐藏材质, 载具
         if OverrideActionBarEndCapL then
             hide_Texture(OverrideActionBarEndCapL)
@@ -470,7 +470,7 @@ local function Init_Set_AlphaAndColor()
     for i=1, 12 do
         set_Alpha_Color(_G['SpellButton'..i..'Background'])
         set_Alpha_Color(_G['SpellButton'..i..'SlotFrame'])
-        
+
         local frame= _G['SpellButton'..i]
         if frame then
             hooksecurefunc(frame, 'UpdateButton', function(self)--SpellBookFrame.lua
@@ -564,19 +564,8 @@ local function Init_Set_AlphaAndColor()
         end
     end
 
-    --商人
-    set_Alpha_Color(MerchantFrame.NineSlice.TopEdge)
-    set_Alpha_Color(MerchantFrame.NineSlice.TopLeftCorner)
-    set_Alpha_Color(MerchantFrame.NineSlice.TopRightCorner)
-    set_Alpha_Color(MerchantFrameBg)
-    hide_Texture(MerchantFrameInset.Bg)
-    set_Alpha_Color(MerchantMoneyInset.Bg)
-    hide_Texture(MerchantMoneyBgMiddle)
-    hide_Texture(MerchantMoneyBgLeft)
-    hide_Texture(MerchantMoneyBgRight)
-    for i=1, BUYBACK_ITEMS_PER_PAGE do --MERCHANT_ITEMS_PER_PAGE = 10; BUYBACK_ITEMS_PER_PAGE = 12;
-        set_Alpha_Color(_G['MerchantItem'..i..'SlotTexture'])
-    end
+    
+
     set_Alpha_Color(MerchantFrameLootFilterMiddle)
     set_Alpha_Color(MerchantFrameLootFilterLeft)
     set_Alpha_Color(MerchantFrameLootFilterRight)
@@ -864,9 +853,9 @@ local function Init_Set_AlphaAndColor()
     set_Alpha_Frame_Texture(MinimapCluster.Tracking.Button)
     set_Alpha_Frame_Texture(GameTimeFrame)
 
-    
+
     --set_Alpha_Frame_Texture(PartyFrame.Background, {})
-    
+
     --任务，追踪柆
     hooksecurefunc('ObjectiveTracker_Initialize', function(self)
         for _, module in ipairs(self.MODULES) do
@@ -883,6 +872,22 @@ local function Init_Set_AlphaAndColor()
           --  set_Alpha_Color(module.Header.Background)
         --end
     end)]]
+
+
+
+    --商人
+    set_Alpha_Color(MerchantFrame.NineSlice.TopEdge)
+    set_Alpha_Color(MerchantFrame.NineSlice.TopLeftCorner)
+    set_Alpha_Color(MerchantFrame.NineSlice.TopRightCorner)
+    set_Alpha_Color(MerchantFrameBg)
+    hide_Texture(MerchantFrameInset.Bg)
+    set_Alpha_Color(MerchantMoneyInset.Bg)
+    hide_Texture(MerchantMoneyBgMiddle)
+    hide_Texture(MerchantMoneyBgLeft)
+    hide_Texture(MerchantMoneyBgRight)
+
+
+
     C_Timer.After(2, function()
         if SpellFlyout and SpellFlyout.Background then--Spell Flyout
             hide_Texture(SpellFlyout.Background.HorizontalMiddle)
@@ -901,6 +906,10 @@ local function Init_Set_AlphaAndColor()
             end
         end
 
+        --商人, SellBuy.lua
+        for i=1, math.max(MERCHANT_ITEMS_PER_PAGE, BUYBACK_ITEMS_PER_PAGE) do --MERCHANT_ITEMS_PER_PAGE = 10; BUYBACK_ITEMS_PER_PAGE = 12;
+            set_Alpha_Color(_G['MerchantItem'..i..'SlotTexture'])
+        end
     end)
 end
 
@@ -1600,16 +1609,16 @@ local function set_Alpha_Event(arg1)
         set_Alpha_Color(ProfessionsFrameBg)
         set_Alpha_Color(ProfessionsFrame.CraftingPage.SchematicForm.Background)
         set_Alpha_Color(ProfessionsFrame.CraftingPage.RankBar.Background)
-    
+
         set_Alpha_Color(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
         set_Alpha_Color(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
         set_Alpha_Color(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundBottom)
-    
+
         hide_Texture(ProfessionsFrame.SpecPage.TreeView.Background)
         hide_Texture(ProfessionsFrame.SpecPage.DetailedView.Background)
         set_Alpha_Color(ProfessionsFrame.SpecPage.DetailedView.Path.DialBG)
         set_Alpha_Color(ProfessionsFrame.SpecPage.DetailedView.UnspentPoints.CurrencyBackground)
-    
+
         set_Alpha_Color(InspectRecipeFrameBg)
         set_Alpha_Color(InspectRecipeFrame.SchematicForm.MinimalBackground)
 
@@ -1869,7 +1878,7 @@ local function set_MainMenu_Color(init)--主菜单
                     end)
                 end
                 set_Alpha_Color(self.Portrait or self:GetNormalTexture(), true)
-                
+
             else
                 local texture= self.Portrait or self:GetNormalTexture()
                 if texture then
@@ -1945,7 +1954,7 @@ local function set_Chat_Bubbles(init)
                     local scaleRatio = Save.chatBubbleSacal / currentScale
                     fontString:SetPoint(point, relativeTo, relativePoint, ofsx / scaleRatio, ofsy / scaleRatio)
                 end
-                
+
                 local tab={frame:GetRegions()}
                 for _, frame2 in pairs(tab) do
                     if frame2:GetObjectType()=='Texture' then-- .String
@@ -2144,7 +2153,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)    
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

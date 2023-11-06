@@ -275,7 +275,7 @@ local function set_Item_Info(self, tab)
                             topLeftText= e.Icon.down2
                         end
                         if itemQuality>2 or (not e.Player.levelMax and itemQuality==2) or upLevel then
-                            topLeftText=itemLevel ..(topLeftText or '')
+                            topLeftText='|cffffffff'..itemLevel..'|r' ..(topLeftText or '')
                         end
                     elseif itemMinLevel and itemMinLevel<=e.Player.level then--不可使用
                         topLeftText=e.Icon.O2
