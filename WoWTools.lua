@@ -360,6 +360,30 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, butto
 end
 
 
+function e.Cedit(tab)--frame, name, size={}
+    local x, y= tab.size[1], tab.size[2]--310, 135
+    local level= tab.frame:GetFrameLevel()
+    
+    local scroll= CreateFrame('ScrollFrame', tab.name, tab.frame, 'MacroFrameScrollFrameTemplate')
+    scroll:SetSize(tab.size[1], tab.size[2])
+    scroll:SetFrameLevel(level+ 1)
+
+    scroll.edit= CreateFrame('EditBox', nil, scroll)
+    scroll.edit:SetSize(x, y)
+    scroll.edit:SetPoint('RIGHT', scroll, 'LEFT')
+    scroll.edit:SetAutoFocus(false)
+    scroll.edit:SetMultiLine(true)
+    scroll.edit:SetFontObject("ChatFontNormal")
+
+    scroll.background= CreateFrame('Frame', nil, scroll, 'TooltipBackdropTemplate')
+    scroll.background:SetSize(x+10, y+10)
+    scroll.background:SetPoint('CENTER')
+    scroll.background:SetFrameLevel(level)
+
+    scroll:SetScrollChild(scroll.edit)
+    return scroll
+end
+
 function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
     if not self then
         return

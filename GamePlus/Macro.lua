@@ -1335,36 +1335,6 @@ end
 
 
 
---备注
---放在 Init_Macro_List()之前
-local function Init_Note_Edit_Box()
-    if not MacroFrame.NoteEditBox and Save.toRightLeft and MacroFrame.macroBase==0 then
-        local level= MacroFrame:GetFrameLevel()
-
-        MacroFrame.NoteEditBox= CreateFrame('ScrollFrame', nil, MacroFrame.NineSlice, 'MacroFrameScrollFrameTemplate')
-        MacroFrame.NoteEditBox:SetPoint('TOPRIGHT', -26, -72)
-        MacroFrame.NoteEditBox:SetSize(310, 135)
-        MacroFrame.NoteEditBox:SetFrameLevel(level+2)
-
-        MacroFrame.NoteEditBox.edit= CreateFrame('EditBox', nil, MacroFrame.NoteEditBox)
-        MacroFrame.NoteEditBox.edit:SetSize(310, 10)
-        MacroFrame.NoteEditBox.edit:SetPoint('RIGHT', MacroFrame.NoteEditBox, 'LEFT')
-        MacroFrame.NoteEditBox.edit:SetAutoFocus(false)
-        MacroFrame.NoteEditBox.edit:SetMultiLine(true)
-        MacroFrame.NoteEditBox.edit:SetFontObject("ChatFontNormal")
-        MacroFrame.NoteEditBox.edit:SetText(Save.noteText or (e.onlyChinese and '备注' or LABEL_NOTE))
-        Save.noteText=nil
-
-        local background= CreateFrame('Frame', 'MacroNoteEditBoxBackground', MacroFrame.NoteEditBox, 'TooltipBackdropTemplate')
-        background:SetSize(319, 146)
-        background:SetPoint('CENTER')
-        background:SetFrameLevel(level-1)
-
-        MacroFrame.NoteEditBox:SetScrollChild(MacroFrame.NoteEditBox.edit)
-    end
-end
-
-
 
 
 
@@ -1453,8 +1423,13 @@ local function Init_Macro_List()
             self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
         end
 
-
-        Init_Note_Edit_Box()--备注
+        --备注
+        if not MacroFrame.NoteEditBox and Save.toRightLeft and MacroFrame.macroBase==0 then
+            MacroFrame.NoteEditBox= e.Cedit({frame=MacroFrame, size={310, 135}})
+            MacroFrame.NoteEditBox:SetPoint('TOPRIGHT', -26, -72)
+            MacroFrame.NoteEditBox.edit:SetText(Save.noteText or (e.onlyChinese and '备注' or LABEL_NOTE))
+            Save.noteText=nil
+        end
         if self.NoteEditBox then
             self.NoteEditBox:SetShown((Save.toRightLeft and MacroFrame.macroBase==0) and true or false)
         end
@@ -1503,6 +1478,10 @@ local function Init()
     MacroFrameSelectedMacroName:ClearAllPoints()
     MacroFrameSelectedMacroName:SetPoint('BOTTOMLEFT', MacroFrameSelectedMacroButton, 'TOPLEFT')
     MacroFrameSelectedMacroName:SetFontObject('GameFontNormal')
+
+    --选定宏，外框
+    local region= MacroFrameSelectedMacroButton:GetRegions()
+    region:Hide()
 
 
     --输入宏命令
@@ -1602,7 +1581,6 @@ local function Init()
     Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
     Init_List_Button()--命令，按钮，列表
     Init_Create_Button()--创建，空，按钮
-    --Init_Note_Edit_Box()--备注
 end
 
 
