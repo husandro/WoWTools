@@ -130,7 +130,7 @@ OpenAchievementFrameToAchievement(achievementID)
 BOOKTYPE_SPELL = "spell";
 BOOKTYPE_PROFESSION = "professions";
 BOOKTYPE_PET
-ToggleSpellBook(BOOKTYPE_SPELL)
+ToggleSpellBook(BOOKTYPE_SPELL)--bug
 
 PVEFrame_ToggleFrame();
 PVEFrame_ToggleFrame("GroupFinderFrame", LFDParentFrame);

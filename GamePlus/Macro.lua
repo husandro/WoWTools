@@ -10,6 +10,17 @@ local Save={
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 --新建，宏，列表
 --#############
 local MacroButtonList={
@@ -20,6 +31,15 @@ local MacroButtonList={
     {macro='/click ExtraActionButton1', name='Extra'},
     --{macro=, name=, icon=, },
 }
+
+
+
+
+
+
+
+
+
 
 
 --自定义，职业，法术宏
@@ -233,7 +253,19 @@ local function Get_Spell_Macro(name, spellID)
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
 --创建，宏
+--#######
 local function Create_Macro_Button(name, icon, boy)
     if MacroNewButton:IsEnabled() and not UnitAffectingCombat('player') then
         local index = CreateMacro(name or ' ', icon or 134400, boy or '', MacroFrame.macroBase>0)- MacroFrame.macroBase
@@ -243,6 +275,7 @@ local function Create_Macro_Button(name, icon, boy)
 end
 
 --取得选定宏，index
+--################
 local function Get_Select_Index()
     local index= MacroFrame:GetSelectedIndex()
     if index then
@@ -254,6 +287,7 @@ end
 
 
 --创建，目标，功击，按钮
+--####################
 local function Create_Button(name)
     local btn= e.Cbtn(MacroEditButton, {size={60,22}, type=false})
     function btn:find_text(right)
@@ -324,6 +358,7 @@ end
 
 
 --创建，法术，列表
+--##############
 local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术，列表
     e.LoadDate({id=spellID, type='spell'})
     local isKnown= IsSpellKnownOrOverridesKnown(spellID)
@@ -411,6 +446,7 @@ end
 
 
 --宏，提示
+--#######
 local function set_btn_tooltips(self, index)
     index= self.selectionIndex or index
     if index then
@@ -1021,24 +1057,6 @@ local function Init_List_Button()
 
 
     --表情，列表 
-
-    --[[
-        	UIMenu_Initialize(self);
-	UIMenu_AddButton(self, SAY_MESSAGE, SLASH_SAY1, ChatMenu_Say);
-	UIMenu_AddButton(self, PARTY_MESSAGE, SLASH_PARTY1, ChatMenu_Party);
-	UIMenu_AddButton(self, RAID_MESSAGE, SLASH_RAID1, ChatMenu_Raid);
-	UIMenu_AddButton(self, INSTANCE_CHAT_MESSAGE, SLASH_INSTANCE_CHAT1, ChatMenu_InstanceChat);
-	UIMenu_AddButton(self, GUILD_MESSAGE, SLASH_GUILD1, ChatMenu_Guild);
-	UIMenu_AddButton(self, YELL_MESSAGE, SLASH_YELL1, ChatMenu_Yell);
-	UIMenu_AddButton(self, WHISPER_MESSAGE, SLASH_SMART_WHISPER1, ChatMenu_Whisper);
-	UIMenu_AddButton(self, REPLY_MESSAGE, SLASH_REPLY1, ChatMenu_Reply);
-	UIMenu_AddButton(self, MACRO, SLASH_MACRO1, ShowMacroFrame);
-	UIMenu_AddButton(self, EMOTE_MESSAGE, SLASH_EMOTE1, ChatMenu_Emote, "EmoteMenu");
-    ]]
-    --OnMenuLoad(self,list,func) ChatFrame.lua
-
-
-
     local function Chat_Init_menu(list, level)
         for _, value in pairs(list or {}) do
             local i = 1;
@@ -1067,26 +1085,24 @@ local function Init_List_Button()
             end
         end
     end
-
+    --谈话
     local spellchButton= e.Cbtn(MacroFrameSelectedMacroButton, {size={22,22}, atlas='communities-icon-chat'})
     spellchButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'BOTTOMLEFT',-6,-1)
     spellchButton:SetScript('OnClick', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
             Chat_Init_menu(TextEmoteSpeechList, level)
         end, 'MENU')
-        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
+        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)
     end)
-
+    --表情
     local emoteButton= e.Cbtn(MacroFrameSelectedMacroButton, {size={22,22}, texture='Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet'})
     emoteButton:SetPoint('LEFT', spellchButton, 'RIGHT')
     emoteButton:SetScript('OnClick', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
             Chat_Init_menu(EmoteList, level)
         end, 'MENU')
-        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
+        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)
     end)
-    
-    --TextEmoteSpeechList+
 end
 
 
@@ -1130,21 +1146,20 @@ local function Init_Select_Macro_Button()
     MacroFrame.numSelectionLable= e.Cstr(MacroFrameSelectedMacroButton)
     MacroFrame.numSelectionLable:SetAlpha(0.7)
     MacroFrame.numSelectionLable:SetPoint('RIGHT', MacroFrameSelectedMacroButton, 'LEFT', -1,0)
-    MacroFrame.numSelectionLable:SetScript('OnLeave', function() e.tips:Hide() end)
+    MacroFrame.numSelectionLable:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.7) end)
     MacroFrame.numSelectionLable:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(self:GetText(), e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)
+        e.tips:AddLine( e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)
         e.tips:Show()
+        self:SetAlpha(1)
     end)
     hooksecurefunc(MacroFrame, 'SelectMacro', function(self, index)
         self.numSelectionLable:SetText(index and index+MacroFrame.macroBase or '')
     end)
 
     --选定，宏，提示
-    MacroFrameSelectedMacroButton:SetScript('OnEnter', function(self)
+    MacroFrameSelectedMacroButton:HookScript('OnEnter', function(self)
         local icon= set_btn_tooltips(self, Get_Select_Index())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(
@@ -1155,7 +1170,7 @@ local function Init_Select_Macro_Button()
         )
         e.tips:Show()
     end)
-    MacroFrameSelectedMacroButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    MacroFrameSelectedMacroButton:HookScript('OnLeave', function() e.tips:Hide() end)
 
     --选定宏，点击，弹出菜单，自定图标
     MacroFrameSelectedMacroButton:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
@@ -1419,7 +1434,8 @@ end
 
 
 
-
+--初始
+--####
 local function Init()
     local w, h= 350, 600--672, 672
     MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
@@ -1505,24 +1521,6 @@ local function Init()
     MacroSaveButton:HookScript('OnClick', set_saveTip)
 
 
-    --[[打开/关闭法术书，BUG
-    MacroFrame.OpenSpellButton= e.Cbtn(MacroFrame, {size={32,32}, atlas='UI-HUD-MicroMenu-SpellbookAbilities-Up'})
-    MacroFrame.OpenSpellButton:SetPoint('TOPRIGHT', -2, -28)
-    MacroFrame.OpenSpellButton:SetScript('OnLeave', function() e.tips:Hide() end)
-    MacroFrame.OpenSpellButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(' ', '|A:UI-HUD-MicroMenu-SpellbookAbilities-Up:22:22|a'..(e.onlyChinese and '打开/关闭法术书' or BINDING_NAME_TOGGLESPELLBOOK))
-        e.tips:Show()
-    end)
-    MacroFrame.OpenSpellButton:SetScript("OnClick", function()
-        ToggleSpellBook(BOOKTYPE_SPELL)
-    end)]]
-
-
-
 
 
 
@@ -1584,24 +1582,22 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if PetStableFrame then
-                Save= WoWToolsSave[addName] or Save
-                Save.mcaro= Save.mcaro or {}
-                --添加控制面板
-                e.AddPanel_Check({
-                    name= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or addName),
-                    tooltip= ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
-                        ..'|r|n'..(e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
-                    value= not Save.disabled,
-                    func= function()
-                        Save.disabled = not Save.disabled and true or nil
-                        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-                    end
-                })
-
-                if Save.disabled  then
-                    self:UnregisterEvent('ADDON_LOADED')
+            Save= WoWToolsSave[addName] or Save
+            Save.mcaro= Save.mcaro or {}
+            --添加控制面板
+            e.AddPanel_Check({
+                name= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or addName),
+                tooltip= ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
+                    ..'|r|n'..(e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled = not Save.disabled and true or nil
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
+            })
+
+            if Save.disabled  then
+                self:UnregisterEvent('ADDON_LOADED')
             end
 
         elseif arg1=='Blizzard_MacroUI' then
@@ -1612,8 +1608,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
-    elseif event=='PET_STABLE_SHOW' then
-        Init()
-        panel:UnregisterEvent('PET_STABLE_SHOW')
     end
 end)
