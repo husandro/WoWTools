@@ -1101,10 +1101,11 @@ function e.Set_Item_Stats(self, link, setting) --setting= setting or {}
                     elseif lv>=7 then
                         itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
                     else
-                        local hexColor= quality and select(4, GetItemQualityColor(quality))
+                        itemLevel='|cffffffff'..itemLevel..'|r'
+                        --[[local hexColor= quality and select(4, GetItemQualityColor(quality))
                         if hexColor then
                             itemLevel='|c'..hexColor..itemLevel..'|r'
-                        end
+                        end]]
                     end
                 --end
             end
