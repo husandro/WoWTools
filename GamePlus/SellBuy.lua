@@ -16,7 +16,7 @@ local Save={
     },
     altDisabledAutoLoot= e.Player.husandro,--打开拾取窗口时，下次禁用，自动拾取
     --sellJunkMago=true,--出售，可幻化，垃圾物品
-
+    --notWidthx2=true,--加宽
 }
 local bossSave={}
 local buySave={}--购买物品
@@ -25,7 +25,7 @@ local panel=CreateFrame("Frame")
 local RepairSave={date=date('%x'), player=0, guild=0, num=0}
 
 
-
+--MerchantFrame.lua
 
 
 
@@ -814,13 +814,25 @@ local function Init_Menu(self, level, type)
     info= {--堆叠数量
         text= (e.onlyChinese and '堆叠数量' or AUCTION_STACK_SIZE).. ' Plus',
         checked= not Save.notStackSplit,
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
         func=function ()
             Save.notStackSplit = not Save.notStackSplit and true or nil
+            print(id, addName , '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
+
+    info= {--堆叠数量
+        text= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '框体宽度' or COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH, 'x2'),
+        checked= not Save.notWidthx2,
+        func=function ()
+            Save.notStackSplit = not Save.notStackSplit and true or nil
+            print(id, addName , '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info)
+
+
+    COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH = "框体宽度";
 end
 
 
@@ -1035,6 +1047,7 @@ end
 
 
 --StackSplitFrame.lua 堆叠,数量,框架
+--#################################
 local function set_StackSplitFrame_OpenStackSplitFrame(self, maxStack, parent, anchor, anchorTo, stackCount)
     if Save.notStackSplit then
         return
@@ -1128,6 +1141,94 @@ end
 
 
 
+--加宽，框架x2
+--###########
+local function Init_Frame_Widthx2()
+    MerchantFrame.width= MerchantFrame:GetWidth()--宽度
+    MERCHANT_ITEMS_PER_PAGE= 22
+
+    for i= 3, 6 do
+        if not _G['MerchantFrameTab'..i] then
+            --上一页
+            MerchantPrevPageButton:ClearAllPoints()
+            MerchantPrevPageButton:SetPoint('LEFT', _G['MerchantFrameTab'..(i-1)], 'RIGHT', 2,0)
+            local label, texture= MerchantPrevPageButton:GetRegions()
+            if texture and texture:GetObjectType()=='Texture' then texture:Hide() texture:SetTexture(0) end
+            if label and label:GetObjectType()=='FontString' then label:Hide() label:SetText('') end
+
+            --页数
+            MerchantPageText:ClearAllPoints()
+            MerchantPageText:SetPoint('LEFT', MerchantPrevPageButton, 'RIGHT')
+            
+            --下一页
+            MerchantNextPageButton:ClearAllPoints()
+            MerchantNextPageButton:SetPoint('LEFT', MerchantPageText, 'RIGHT')
+            label, texture= MerchantNextPageButton:GetRegions()
+            if texture and texture:GetObjectType()=='Texture' then texture:Hide() texture:SetTexture(0) end
+            if label and label:GetObjectType()=='FontString' then label:Hide() label:SetText('') end
+            break
+        end
+    end
+
+    --[[
+        MERCHANT_ITEMS_PER_PAGE = 10;
+        BUYBACK_ITEMS_PER_PAGE = 12;
+        MAX_MERCHANT_CURRENCIES = 6;
+    ]]
+    MerchantItem11:ClearAllPoints()
+    MerchantItem11:SetPoint("TOPLEFT", MerchantItem2, "TOPRIGHT", 8, 0)
+    MerchantItem12:ClearAllPoints()
+	MerchantItem12:SetPoint("TOPLEFT", MerchantItem11, "TOPRIGHT", 8, 0)
+	
+
+    MerchantItem11:SetShown(true)
+    MerchantItem12:SetShown(true)
+
+    MerchantSellAllJunkButton:ClearAllPoints()
+    MerchantSellAllJunkButton:SetPoint('RIGHT', MerchantBuyBackItemItemButtonNormalTexture, 'LEFT',2,0)
+    
+    for i = 13, 22 do
+        local btn= _G['MerchantItem'..i] or CreateFrame('Frame', 'MerchantItem'.. i, MerchantFrame, 'MerchantItemTemplate')
+        btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-2)], 'BOTTOMLEFT', 0, -8)
+    end
+    
+    
+    for i=1, MERCHANT_ITEMS_PER_PAGE do
+        local btn= _G['MerchantItem'..i]
+        btn.IndexLable= e.Cstr(btn)
+        btn.IndexLable:SetPoint('TOPRIGHT', _G['MerchantItem'..i], -1, 2)
+        btn.IndexLable:SetText(i)
+        btn.IndexLable:SetAlpha(0.3)
+    end
+
+    --买
+    hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
+        MerchantItem11:SetShown(true)
+        MerchantItem12:SetShown(true)
+        for i = 13, MERCHANT_ITEMS_PER_PAGE do
+            _G['MerchantItem'..i]:SetShown(true)
+        end
+        MerchantFrame:SetWidth(MerchantFrame.width*2)--宽度
+        
+        MerchantItem11:SetPoint("TOPLEFT", MerchantItem2, "TOPRIGHT", 8, 0)
+        MerchantItem12:SetPoint("TOPLEFT", MerchantItem11, "TOPRIGHT", 8, 0)
+    end)
+
+    --回购
+    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
+        for i = 13, MERCHANT_ITEMS_PER_PAGE do
+            local btn= _G['MerchantItem'..i]
+            if i>=13 then
+                btn:SetShown(false)
+            end
+            btn.IndexLable:SetText(btn.link and btn:GetID() or '')
+        end
+        MerchantFrame:SetWidth(MerchantFrame.width)--宽度
+        MerchantItem11:SetPoint("TOPLEFT", MerchantItem9, "BOTTOMLEFT", 0, -8)
+        MerchantItem12:SetPoint("TOPLEFT", MerchantItem10, "BOTTOMLEFT", 0, -8)
+    end)
+end
+
 
 
 
@@ -1211,6 +1312,12 @@ local function Init()
         end)
     end
 
+
+
+
+    if not Save.notWidthx2 then
+        Init_Frame_Widthx2()--加宽，框架x2
+    end
 end
 
 

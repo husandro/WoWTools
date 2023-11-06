@@ -3587,7 +3587,19 @@
         "MerchantBuyBackItemMoneyFrame",
         "GameFontDisable",
         "GameFontHighlight",
-        "MerchantFrame_UpdateAltCurrency"
+        "MerchantFrame_UpdateAltCurrency",
+        "MAX_MERCHANT_CURRENCIES",
+        "MerchantItem12",
+        "MerchantItem10NameFrame",
+        "MerchantItem2",
+        "MerchantItem11",
+        "MerchantItem1",
+        "MerchantSellAllJunkButton",
+        "MerchantBuyBackItemItemButtonNormalTexture",
+        "MerchantItem3",
+        "MerchantItem5",
+        "MerchantItem7",
+        "MerchantItem9"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
