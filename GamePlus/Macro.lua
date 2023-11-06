@@ -1352,7 +1352,7 @@ local function Init_Note_Edit_Box()
         MacroFrame.NoteEditBox.edit:SetAutoFocus(false)
         MacroFrame.NoteEditBox.edit:SetMultiLine(true)
         MacroFrame.NoteEditBox.edit:SetFontObject("ChatFontNormal")
-        MacroFrame.NoteEditBox.edit:SetText(Save.noteText or (e.onlyChinese and '备注' or 'Note'))
+        MacroFrame.NoteEditBox.edit:SetText(Save.noteText or (e.onlyChinese and '备注' or LABEL_NOTE))
         Save.noteText=nil
 
         local background= CreateFrame('Frame', 'MacroNoteEditBoxBackground', MacroFrame.NoteEditBox, 'TooltipBackdropTemplate')
@@ -1407,7 +1407,7 @@ local function Init_Macro_List()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
         e.tips:AddLine((e.onlyChinese and '图标' or EMBLEM_SYMBOL)..':')
-        local text= e.onlyChinese and '备注' or 'Note'
+        local text= e.onlyChinese and '备注' or LABEL_NOTE
         text= (Save.toRightLeft and MacroFrame.macroBase==0) and '|cnGREEN_FONT_COLOR:'..text..'|r'
             or ('|cff606060'..text..'|r')
         e.tips:AddDoubleLine(e.Icon.toLeft2..(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT), (Save.toRightLeft==1 and e.Icon.select2 or '')..text)

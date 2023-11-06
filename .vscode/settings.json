@@ -3562,7 +3562,8 @@
         "MACROFRAME_CHAR_LIMIT",
         "ScrollingEdit_OnCursorChanged",
         "ScrollingEdit_OnUpdate",
-        "NOTE"
+        "NOTE",
+        "LABEL_NOTE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
