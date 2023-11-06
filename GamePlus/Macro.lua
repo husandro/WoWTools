@@ -1466,53 +1466,6 @@ end
 
 
 
---[[
-
-<Frame name="MacroFrameTextBackground" inherits="TooltipBackdropTemplate">
-    <Size x="322" y="95"/>
-    <Anchors>
-        <Anchor point="TOPLEFT" relativeTo="MacroFrame" x="6" y="-289"/>
-    </Anchors>
-</Frame>
-
-
-<ScrollFrame name="MacroFrameScrollFrame" inherits="MacroFrameScrollFrameTemplate">
-    <Size x="286" y="85"/>
-    <Anchors>
-        <Anchor point="TOPLEFT" relativeTo="MacroFrameSelectedMacroBackground" relativePoint="BOTTOMLEFT" x="11" y="-13"/>
-    </Anchors>
-    <ScrollChild>
-        <EditBox name="MacroFrameText" multiLine="true" letters="255" autoFocus="false" countInvisibleLetters="true">
-            <Size x="286" y="85"/>
-            <Scripts>
-                <OnLoad>
-                    ScrollingEdit_OnCursorChanged(self, 0, 0, 0, 0);
-                </OnLoad>
-                <OnTextChanged>
-                    MacroFrame.textChanged = 1;
-                    if ( MacroPopupFrame.mode == "new" ) then
-                        MacroPopupFrame:Hide();
-                    end
-                    MacroFrameCharLimitText:SetFormattedText(MACROFRAME_CHAR_LIMIT, MacroFrameText:GetNumLetters());
-
-                    ScrollingEdit_OnTextChanged(self, self:GetParent());
-                </OnTextChanged>
-                <OnCursorChanged function="ScrollingEdit_OnCursorChanged"/>
-                <OnUpdate>
-                    ScrollingEdit_OnUpdate(self, elapsed, self:GetParent());
-                </OnUpdate>
-                <OnEscapePressed function="EditBox_ClearFocus"/>
-            </Scripts>
-            <FontString inherits="GameFontHighlightSmall"/>
-        </EditBox>
-    </ScrollChild>
-</ScrollFrame>
-]]
-
-
-
-
-
 
 
 
