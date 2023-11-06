@@ -235,9 +235,7 @@ end
 
 --创建，宏
 local function Create_Macro_Button(name, icon, boy)
-    print(name,icon,boy, MacroFrame.macroBase)
     if MacroNewButton:IsEnabled() and not UnitAffectingCombat('player') then
-        
         local index = CreateMacro(name or ' ', icon or 134400, boy or '', MacroFrame.macroBase>0)- MacroFrame.macroBase
         MacroFrame:SelectMacro(index or 1)
         MacroFrame:Update(true)
@@ -1274,6 +1272,7 @@ local function Init_Select_Macro_Button()
                     arg1=icon,
                     tooltipOnButton=true,
                     tooltipTitle=e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL),
+                    tooltipText=icon,
                     func= function(_, arg1)
                         Set_Texture_Macro(arg1)--修改，当前图标
                     end
