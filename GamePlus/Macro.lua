@@ -1139,6 +1139,12 @@ end
 
 
 
+
+
+
+
+
+
 --选定宏，点击，弹出菜单，自定图标
 --#############################
 local function Init_Select_Macro_Button()
@@ -1329,6 +1335,44 @@ end
 
 
 
+--备注
+--放在 Init_Macro_List()之前
+local function Init_Note_Edit_Box()
+    if not MacroFrame.NoteEditBox and Save.toRightLeft and MacroFrame.macroBase==0 then
+        local level= MacroFrame:GetFrameLevel()
+
+        MacroFrame.NoteEditBox= CreateFrame('ScrollFrame', nil, MacroFrame.NineSlice, 'MacroFrameScrollFrameTemplate')
+        MacroFrame.NoteEditBox:SetPoint('TOPRIGHT', -26, -72)
+        MacroFrame.NoteEditBox:SetSize(310, 135)
+        MacroFrame.NoteEditBox:SetFrameLevel(level+2)
+
+        MacroFrame.NoteEditBox.edit= CreateFrame('EditBox', nil, MacroFrame.NoteEditBox)
+        MacroFrame.NoteEditBox.edit:SetSize(310, 10)
+        MacroFrame.NoteEditBox.edit:SetPoint('RIGHT', MacroFrame.NoteEditBox, 'LEFT')
+        MacroFrame.NoteEditBox.edit:SetAutoFocus(false)
+        MacroFrame.NoteEditBox.edit:SetMultiLine(true)
+        MacroFrame.NoteEditBox.edit:SetFontObject("ChatFontNormal")
+        MacroFrame.NoteEditBox.edit:SetText(Save.noteText or (e.onlyChinese and '备注' or 'Note'))
+        Save.noteText=nil
+
+        local background= CreateFrame('Frame', 'MacroNoteEditBoxBackground', MacroFrame.NoteEditBox, 'TooltipBackdropTemplate')
+        background:SetSize(319, 146)
+        background:SetPoint('CENTER')
+        background:SetFrameLevel(level-1)
+
+        MacroFrame.NoteEditBox:SetScrollChild(MacroFrame.NoteEditBox.edit)
+    end
+end
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1363,8 +1407,11 @@ local function Init_Macro_List()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
         e.tips:AddLine((e.onlyChinese and '图标' or EMBLEM_SYMBOL)..':')
-        e.tips:AddDoubleLine(e.Icon.toLeft2..(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT), Save.toRightLeft==1 and e.Icon.select2)
-        e.tips:AddDoubleLine(e.Icon.toRight2..(e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT), Save.toRightLeft==2 and e.Icon.select2)
+        local text= e.onlyChinese and '备注' or 'Note'
+        text= (Save.toRightLeft and MacroFrame.macroBase==0) and '|cnGREEN_FONT_COLOR:'..text..'|r'
+            or ('|cff606060'..text..'|r')
+        e.tips:AddDoubleLine(e.Icon.toLeft2..(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT), (Save.toRightLeft==1 and e.Icon.select2 or '')..text)
+        e.tips:AddDoubleLine(e.Icon.toRight2..(e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT), (Save.toRightLeft==2 and e.Icon.select2 or '')..text)
         e.tips:AddDoubleLine('|A:'..e.Icon.icon..':0:0|a'..(e.onlyChinese and '默认' or DEFAULT), not Save.toRightLeft and e.Icon.select2)
         e.tips:Show()
         self:SetAlpha(1)
@@ -1386,6 +1433,8 @@ local function Init_Macro_List()
     toRightButton:SetScript('OnEnter', toRightButton.set_tooltips)
     toRightButton:set_texture()
 
+
+
         --设置，宏，图标，位置，长度
     hooksecurefunc(MacroFrame, 'ChangeTab', function(self, tabID)
         self.MacroSelector:ClearAllPoints()
@@ -1400,8 +1449,14 @@ local function Init_Macro_List()
                 self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
             end
         else
-            self.MacroSelector:SetHeight(146)--,146)--<Size x="319" y="146"/>
+            self.MacroSelector:SetHeight(146)--<Size x="319" y="146"/>
             self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
+        end
+        
+        
+        Init_Note_Edit_Box()--备注
+        if self.NoteEditBox then
+            self.NoteEditBox:SetShown((Save.toRightLeft and MacroFrame.macroBase==0) and true or false)
         end
     end)
 end
@@ -1411,8 +1466,48 @@ end
 
 
 
+--[[
+
+<Frame name="MacroFrameTextBackground" inherits="TooltipBackdropTemplate">
+    <Size x="322" y="95"/>
+    <Anchors>
+        <Anchor point="TOPLEFT" relativeTo="MacroFrame" x="6" y="-289"/>
+    </Anchors>
+</Frame>
 
 
+<ScrollFrame name="MacroFrameScrollFrame" inherits="MacroFrameScrollFrameTemplate">
+    <Size x="286" y="85"/>
+    <Anchors>
+        <Anchor point="TOPLEFT" relativeTo="MacroFrameSelectedMacroBackground" relativePoint="BOTTOMLEFT" x="11" y="-13"/>
+    </Anchors>
+    <ScrollChild>
+        <EditBox name="MacroFrameText" multiLine="true" letters="255" autoFocus="false" countInvisibleLetters="true">
+            <Size x="286" y="85"/>
+            <Scripts>
+                <OnLoad>
+                    ScrollingEdit_OnCursorChanged(self, 0, 0, 0, 0);
+                </OnLoad>
+                <OnTextChanged>
+                    MacroFrame.textChanged = 1;
+                    if ( MacroPopupFrame.mode == "new" ) then
+                        MacroPopupFrame:Hide();
+                    end
+                    MacroFrameCharLimitText:SetFormattedText(MACROFRAME_CHAR_LIMIT, MacroFrameText:GetNumLetters());
+
+                    ScrollingEdit_OnTextChanged(self, self:GetParent());
+                </OnTextChanged>
+                <OnCursorChanged function="ScrollingEdit_OnCursorChanged"/>
+                <OnUpdate>
+                    ScrollingEdit_OnUpdate(self, elapsed, self:GetParent());
+                </OnUpdate>
+                <OnEscapePressed function="EditBox_ClearFocus"/>
+            </Scripts>
+            <FontString inherits="GameFontHighlightSmall"/>
+        </EditBox>
+    </ScrollChild>
+</ScrollFrame>
+]]
 
 
 
@@ -1554,6 +1649,7 @@ local function Init()
     Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
     Init_List_Button()--命令，按钮，列表
     Init_Create_Button()--创建，空，按钮
+    --Init_Note_Edit_Box()--备注
 end
 
 
@@ -1606,6 +1702,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
+            --保存备注
+            if MacroFrame and MacroFrame.NoteEditBox then
+                Save.noteText= MacroFrame.NoteEditBox.edit:GetText()
+            end
             WoWToolsSave[addName]=Save
         end
     end

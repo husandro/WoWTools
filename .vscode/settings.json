@@ -3556,7 +3556,13 @@
         "EmoteList",
         "UIMenu_AddButton",
         "OnMenuLoad",
-        "TextEmoteSpeechList"
+        "TextEmoteSpeechList",
+        "ScrollingEdit_OnTextChanged",
+        "MacroFrameCharLimitText",
+        "MACROFRAME_CHAR_LIMIT",
+        "ScrollingEdit_OnCursorChanged",
+        "ScrollingEdit_OnUpdate",
+        "NOTE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
