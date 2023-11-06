@@ -14,6 +14,7 @@ local ItemTab={
     208047,--硕大的梦境之种
    -- 210014
 }
+local CurrencyID= 2650
 
 local function Init()
     Button= e.Cbtn(nil, {size={22,22}, icon='hide'})
@@ -43,9 +44,11 @@ local function Init()
             num= num>0 and '|cnGREEN_FONT_COLOR:'..num or ('|cnRED_FONT_COLOR:'..num)
             e.tips:AddDoubleLine(icon..link, num)
         end
-        local info= C_CurrencyInfo.GetCurrencyInfo(self.currencyID)
-        if info and info.quantity and info.name then
-            e.tips:AddDoubleLine((info.iconFileID and '|T'..info.iconFileID..':0|t' or '')..info.name, info.quantity)
+        if CurrencyID and CurrencyID>0 then
+            local info= C_CurrencyInfo.GetCurrencyInfo(CurrencyID)
+            if info and info.quantity and info.name then
+                e.tips:AddDoubleLine((info.iconFileID and '|T'..info.iconFileID..':0|t' or '')..info.name, info.quantity)
+            end
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
@@ -112,18 +115,19 @@ local function Init()
     end)
 
     --货币，数量
-    Button.currencyID= 2650
-    Button.label=e.Cstr(Button, {color={r=1,g=1,b=1}})
-    Button.label:SetPoint('BOTTOMRIGHT')
-    local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(Button.currencyID) or {}
-    if currencyInfo.iconFileID then
-        Button:SetNormalTexture(currencyInfo.iconFileID)
+    if CurrencyID and CurrencyID>0 then
+        Button.label=e.Cstr(Button, {color={r=1,g=1,b=1}})
+        Button.label:SetPoint('BOTTOMRIGHT')
+        local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(CurrencyID) or {}
+        if currencyInfo.iconFileID then
+            Button:SetNormalTexture(currencyInfo.iconFileID)
+        end
+        function Button:set_button()
+            local info = C_CurrencyInfo.GetCurrencyInfo(CurrencyID) or {}
+            self.label:SetText(info.quantity or '')
+        end
+        Button:set_button()
     end
-    function Button:set_button()
-        local info = C_CurrencyInfo.GetCurrencyInfo(self.currencyID) or {}
-        self.label:SetText(info.quantity or '')
-    end
-    Button:set_button()
 
     function Button:set_Event()
         self:UnregisterAllEvents()
@@ -135,7 +139,9 @@ local function Init()
             self:RegisterEvent('BAG_UPDATE_DELAYED')
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
             self:RegisterEvent('PET_BATTLE_CLOSE')
-            self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+            if CurrencyID and CurrencyID>0 then
+                self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+            end
         end
     end
     function Button:set_Shown()
@@ -155,7 +161,7 @@ local function Init()
         elseif event=='BAG_UPDATE' or event=='BAG_UPDATE_DELAYED' then
             self:set_button()
         elseif event=='CURRENCY_DISPLAY_UPDATE' then--货币，数量
-            if arg1==self.currencyID then
+            if arg1==CurrencyID and CurrencyID and CurrencyID>0 then
                 self:set_Currency()
             end
         end
