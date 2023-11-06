@@ -1663,7 +1663,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if not e.ClearAllSave then
             --保存备注
             if MacroFrame and MacroFrame.NoteEditBox then
-                Save.noteText= MacroFrame.NoteEditBox.edit:GetText()
+                local text= MacroFrame.NoteEditBox.edit:GetText()
+                if text and text~= (e.onlyChinese and '备注' or LABEL_NOTE) and text:gsub(' ','')~='' then
+                    Save.noteText= text
+                end
             end
             WoWToolsSave[addName]=Save
         end
