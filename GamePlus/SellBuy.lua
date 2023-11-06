@@ -1144,6 +1144,10 @@ end
 --加宽，框架x2
 --###########
 local function Init_Frame_Widthx2()
+    if Save.notWidthx2 then
+        return
+    end
+
     MerchantFrame.width= MerchantFrame:GetWidth()--宽度
     MERCHANT_ITEMS_PER_PAGE= 22
 
@@ -1159,7 +1163,7 @@ local function Init_Frame_Widthx2()
             --页数
             MerchantPageText:ClearAllPoints()
             MerchantPageText:SetPoint('LEFT', MerchantPrevPageButton, 'RIGHT')
-            
+
             --下一页
             MerchantNextPageButton:ClearAllPoints()
             MerchantNextPageButton:SetPoint('LEFT', MerchantPageText, 'RIGHT')
@@ -1179,51 +1183,61 @@ local function Init_Frame_Widthx2()
     MerchantItem11:SetPoint("TOPLEFT", MerchantItem2, "TOPRIGHT", 8, 0)
     MerchantItem12:ClearAllPoints()
 	MerchantItem12:SetPoint("TOPLEFT", MerchantItem11, "TOPRIGHT", 8, 0)
-	
+
 
     MerchantItem11:SetShown(true)
     MerchantItem12:SetShown(true)
 
     MerchantSellAllJunkButton:ClearAllPoints()
     MerchantSellAllJunkButton:SetPoint('RIGHT', MerchantBuyBackItemItemButtonNormalTexture, 'LEFT',2,0)
-    
+
+    --新建，按钮
     for i = 13, 22 do
         local btn= _G['MerchantItem'..i] or CreateFrame('Frame', 'MerchantItem'.. i, MerchantFrame, 'MerchantItemTemplate')
         btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-2)], 'BOTTOMLEFT', 0, -8)
     end
-    
-    
+
+
+    --建立，索引，文本
     for i=1, MERCHANT_ITEMS_PER_PAGE do
         local btn= _G['MerchantItem'..i]
         btn.IndexLable= e.Cstr(btn)
-        btn.IndexLable:SetPoint('TOPRIGHT', _G['MerchantItem'..i], -1, 2)
-        btn.IndexLable:SetText(i)
+        btn.IndexLable:SetPoint('TOPRIGHT', _G['MerchantItem'..i], -1, 4)
         btn.IndexLable:SetAlpha(0.3)
+        btn.IndexLable.index=i
+        function btn:set_index_text(hide)
+            local itemButton= _G["MerchantItem"..self.IndexLable.index.."ItemButton"]
+            self.IndexLable:SetText(not hide and itemButton and itemButton.hasItem and itemButton:GetID() or '')
+        end
     end
 
-    --买
+    --卖
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
         MerchantItem11:SetShown(true)
         MerchantItem12:SetShown(true)
-        for i = 13, MERCHANT_ITEMS_PER_PAGE do
+
+        for i = 1, MERCHANT_ITEMS_PER_PAGE do
             _G['MerchantItem'..i]:SetShown(true)
+            _G['MerchantItem'..i]:set_index_text()
         end
+
         MerchantFrame:SetWidth(MerchantFrame.width*2)--宽度
-        
+
         MerchantItem11:SetPoint("TOPLEFT", MerchantItem2, "TOPRIGHT", 8, 0)
         MerchantItem12:SetPoint("TOPLEFT", MerchantItem11, "TOPRIGHT", 8, 0)
     end)
 
     --回购
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
-        for i = 13, MERCHANT_ITEMS_PER_PAGE do
+        local numBuybackItems = GetNumBuybackItems()
+        for i = 1, MERCHANT_ITEMS_PER_PAGE do
             local btn= _G['MerchantItem'..i]
-            if i>=13 then
+            if i> BUYBACK_ITEMS_PER_PAGE then
                 btn:SetShown(false)
             end
-            btn.IndexLable:SetText(btn.link and btn:GetID() or '')
+            btn:set_index_text(i> numBuybackItems)
         end
-        MerchantFrame:SetWidth(MerchantFrame.width)--宽度
+        --MerchantFrame:SetWidth(MerchantFrame.width)--宽度
         MerchantItem11:SetPoint("TOPLEFT", MerchantItem9, "BOTTOMLEFT", 0, -8)
         MerchantItem12:SetPoint("TOPLEFT", MerchantItem10, "BOTTOMLEFT", 0, -8)
     end)
@@ -1281,7 +1295,7 @@ local function Init()
     if LootFrame then
         local check=CreateFrame("CheckButton", nil, LootFrame.TitleContainer, "InterfaceOptionsCheckButtonTemplate")
         check:SetPoint('TOPLEFT',-27,2)
-        
+
         check:SetScript('OnClick', function()
             if not UnitAffectingCombat('player') then
                 C_CVar.SetCVar("autoLootDefault", not C_CVar.GetCVarBool("autoLootDefault") and '1' or '0')
@@ -1315,9 +1329,8 @@ local function Init()
 
 
 
-    if not Save.notWidthx2 then
+
         Init_Frame_Widthx2()--加宽，框架x2
-    end
 end
 
 
