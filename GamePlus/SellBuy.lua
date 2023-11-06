@@ -24,6 +24,20 @@ local addName= MERCHANT
 local panel=CreateFrame("Frame")
 local RepairSave={date=date('%x'), player=0, guild=0, num=0}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#########
 --设置耐久度
 --#########
@@ -44,6 +58,28 @@ local function setDurabiliy()--设置耐久度
         btn.durabiliyText:SetText(text or '')
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#######
 --自动修理
@@ -72,6 +108,29 @@ local function setAutoRepairAll()
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#######
 --出售物品
 --#######
@@ -95,6 +154,27 @@ local function bossLoot(itemID, itemLink)--BOSS掉落
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --####################
 --检测是否是出售物品
@@ -130,6 +210,34 @@ e.CheckItemSell= function(itemID, quality)
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#######
 --出售物品
@@ -257,6 +365,39 @@ local function setBuyItems()--购买物品
     end)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###################
 --购回物品,禁止买出物品
 --###################
@@ -365,6 +506,34 @@ local function setMerchantInfo()--设置, 提示, 信息
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --#######
@@ -654,6 +823,33 @@ local function Init_Menu(self, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Button(frame)
     local btn=e.Cbtn(frame.TitleContainer, {size={20,20}, texture=236994})
     btn:Raise()
@@ -813,6 +1009,31 @@ local function Init_Button(frame)
     noSellButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --StackSplitFrame.lua 堆叠,数量,框架
 local function set_StackSplitFrame_OpenStackSplitFrame(self, maxStack, parent, anchor, anchorTo, stackCount)
     if Save.notStackSplit then
@@ -895,6 +1116,34 @@ local function set_StackSplitFrame_OpenStackSplitFrame(self, maxStack, parent, a
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -931,14 +1180,16 @@ local function Init()
     if LootFrame then
         local check=CreateFrame("CheckButton", nil, LootFrame.TitleContainer, "InterfaceOptionsCheckButtonTemplate")
         check:SetPoint('TOPLEFT',-27,2)
-        check:SetChecked(C_CVar.GetCVarBool("autoLootDefault"))
-        check:SetScript('OnClick', function(self)
-            C_CVar.SetCVar("autoLootDefault", not C_CVar.GetCVarBool("autoLootDefault") and '1' or '0')
-            local value= C_CVar.GetCVarBool("autoLootDefault")
-            print(id, addName, not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(value))
-            if value and not IsModifierKeyDown() then
-                for i = GetNumLootItems(), 1, -1 do
-                    LootSlot(i);
+        
+        check:SetScript('OnClick', function()
+            if not UnitAffectingCombat('player') then
+                C_CVar.SetCVar("autoLootDefault", not C_CVar.GetCVarBool("autoLootDefault") and '1' or '0')
+                local value= C_CVar.GetCVarBool("autoLootDefault")
+                print(id, addName, not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(value))
+                if value and not IsModifierKeyDown() then
+                    for i = GetNumLootItems(), 1, -1 do
+                        LootSlot(i);
+                    end
                 end
             end
         end)
@@ -947,26 +1198,50 @@ local function Init()
             e.tips:ClearLines();
             e.tips:AddDoubleLine(e.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '拾取时' or PROC_EVENT512_DESC:format(ITEM_LOOT), '|cnGREEN_FONT_COLOR:Alt|r '..(e.onlyChinese and '禁用' or DISABLE))
+            local col= UnitAffectingCombat('player') and '|cff606060'
+            e.tips:AddDoubleLine((col or '')..(e.onlyChinese and '拾取时' or PROC_EVENT512_DESC:format(ITEM_LOOT)),
+                (col or '|cnGREEN_FONT_COLOR:')..'Shift|r '..(e.onlyChinese and '禁用' or DISABLE))
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
         end)
-        check:RegisterEvent('CVAR_UPDATE')
-        check:SetScript('OnEvent', function(self, event, eventName, value)
-            if eventName=='autoLootDefault' then
-                self:SetChecked(value=='1' and true or false)
-            end
+        check:SetScript('OnShow', function(self)
+            self:SetEnabled(not UnitAffectingCombat('player'))
+            self:SetChecked(C_CVar.GetCVarBool("autoLootDefault"))
         end)
-        --[[hooksecurefunc(LootFrame, 'Open', function()
-            if IsModifierKeyDown() and C_CVar.GetCVarBool("autoLootDefault") then
-                C_CVar.SetCVar("autoLootDefault", '0')
-                print(id, addName, not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
-            end
-        end)]]
     end
 
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --###########
 --加载保存数据
@@ -1003,7 +1278,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
             local initializer= e.AddPanel_Check({
                 name= e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT,
                 tooltip= (not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT..', '..REFORGE_CURRENT or '自动拾取, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault"))
-                    ..'|n'..(not e.onlyChinese and HUD_EDIT_MODE_LOOT_FRAME_LABEL..' Alt, Ctrl, Shift: '..DISABLE or '拾取窗口 Alt，Ctrl，Shift: 禁用'),
+                    ..'|n'..(not e.onlyChinese and HUD_EDIT_MODE_LOOT_FRAME_LABEL..'Shift: '..DISABLE or '拾取窗口 Shift: 禁用')..'|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '不在战斗中' or 'not in combat'),
                 value= Save.altDisabledAutoLoot,
                 func= function()
                     Save.altDisabledAutoLoot= not Save.altDisabledAutoLoot and true or nil
@@ -1012,30 +1287,6 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 
 
-            --[[添加控制面板
-            local check=e.AddPanel_Check(e.Icon.bank2..(e.onlyChinese and '商人' or addName), not Save.disabled, true)
-            check:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
-            end)
-
-            local check2= CreateFrame("CheckButton", nil, check, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
-            check2.text:SetText(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)
-            check2:SetPoint("LEFT", check.text, 'RIGHT', 2, 0)
-            check2:SetChecked(Save.altDisabledAutoLoot)
-            check2:SetScript('OnClick', function()
-                Save.altDisabledAutoLoot= not Save.altDisabledAutoLoot and true or nil
-            end)
-            check2:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT");
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinese and '拾取窗口' or HUD_EDIT_MODE_LOOT_FRAME_LABEL, 'Alt Ctrl Shift: |cnRED_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL))
-                e.tips:Show();
-            end)
-            check2:SetScript('OnLeave', function() e.tips:Hide() end)
-]]
             if Save.disabled then
                 e.CheckItemSell=nil
                 panel:UnregisterAllEvents()
@@ -1083,9 +1334,9 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
 
     elseif event=='LOOT_READY' then--拾取, 增强
         if arg1 then
-            if IsModifierKeyDown() and Save.altDisabledAutoLoot then
+            if IsShiftKeyDown() and Save.altDisabledAutoLoot and not UnitAffectingCombat('player') then
                 C_CVar.SetCVar("autoLootDefault", '0')
-                print(id, addName,'|cnGREEN_FONT_COLOR:Alt Ctrl Shift|r', e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+                print(id, addName,'|cnGREEN_FONT_COLOR:Shift|r', e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
             else
                 for i = GetNumLootItems(), 1, -1 do
                     LootSlot(i);
@@ -1095,5 +1346,3 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
 
     end
 end)
-
---name, texture, price, stackCount, numAvailable, isPurchasable, isUsable, extendedCost, currencyID, spellID = GetMerchantItemInfo(index);
