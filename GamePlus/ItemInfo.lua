@@ -55,9 +55,9 @@ local function set_Item_Info(self, tab)
         setIDItem= setID and true or nil--套装
         itemLevel=  itemLevel or GetDetailedItemLevelInfo(itemLink) or 1
 
-        if itemQuality then
+        --[[if itemQuality then
             r,g,b = GetItemQualityColor(itemQuality)
-        end
+        end]]
 
         local sellItem
         if tab.bag and containerInfo and not containerInfo.isLocked and e.CheckItemSell then
@@ -276,6 +276,7 @@ local function set_Item_Info(self, tab)
                         end
                         if itemQuality>2 or (not e.Player.levelMax and itemQuality==2) or upLevel then
                             topLeftText='|cffffffff'..itemLevel..'|r' ..(topLeftText or '')
+                            --topLeftText= itemLevel ..(topLeftText or '')
                         end
                     elseif itemMinLevel and itemMinLevel<=e.Player.level then--不可使用
                         topLeftText=e.Icon.O2
@@ -369,9 +370,9 @@ local function set_Item_Info(self, tab)
     end
     if self.topRightText then
         self.topRightText:SetText(topRightText or '')
-        if r and g and b and topRightText then
+        --[[if r and g and b and topRightText then
             self.topRightText:SetTextColor(r,g,b)
-        end
+        end]]
     end
     if topLeftText and not self.topLeftText then
         self.topLeftText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
@@ -379,9 +380,9 @@ local function set_Item_Info(self, tab)
     end
     if self.topLeftText then
         self.topLeftText:SetText(topLeftText or '')
-        if r and g and b and topLeftText then
+       --[[if r and g and b and topLeftText then
             self.topLeftText:SetTextColor(r,g,b)
-        end
+        end]]
     end
     if bottomRightText then
         if not self.bottomRightText then
@@ -391,9 +392,9 @@ local function set_Item_Info(self, tab)
     end
     if self.bottomRightText then
         self.bottomRightText:SetText(bottomRightText or '')
-        if r and g and b and bottomRightText then
+        --[[if r and g and b and bottomRightText then
             self.bottomRightText:SetTextColor(r,g,b)
-        end
+        end]]
     end
 
     if leftText and not self.leftText then
@@ -402,9 +403,9 @@ local function set_Item_Info(self, tab)
     end
     if self.leftText then
         self.leftText:SetText(leftText or '')
-        if r and g and b and leftText then
+        --[[if r and g and b and leftText then
             self.leftText:SetTextColor(r,g,b)
-        end
+        end]]
     end
 
     if rightText and not self.rightText then
@@ -413,9 +414,9 @@ local function set_Item_Info(self, tab)
     end
     if self.rightText then
         self.rightText:SetText(rightText or '')
-        if r and g and b and rightText then
+        --[[if r and g and b and rightText then
             self.rightText:SetTextColor(r,g,b)
-        end
+        end]]
     end
 
     if bottomLeftText and not self.bottomLeftText then
@@ -424,9 +425,9 @@ local function set_Item_Info(self, tab)
     end
     if self.bottomLeftText then
         self.bottomLeftText:SetText(bottomLeftText or '')
-        if r and g and b and bottomLeftText then
+        --[[if r and g and b and bottomLeftText then
             self.bottomLeftText:SetTextColor(r,g,b)
-        end
+        end]]
     end
 
     if setIDItem and not self.setIDItem then
