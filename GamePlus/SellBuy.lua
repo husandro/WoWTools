@@ -1187,6 +1187,12 @@ end
 local function Init_Frame_Widthx2()
     if Save.notWidthx2 then
         return
+    
+    elseif IsAddOnLoaded("CompactVendor") then
+        print(id, addName, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '框体宽度' or COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH, 'x2'),
+            e.GetEnabeleDisable(false), 'CompactVendor',
+            e.onlyChinese and '插件' or ADDONS
+        )
     end
 
     MerchantFrame.width= MerchantFrame:GetWidth()--宽度

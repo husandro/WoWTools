@@ -1919,39 +1919,43 @@ function e.GetItemCollected(link, sourceID, icon)--物品是否收集
     end
 end
 
-function e.GetPetCollectedNum(speciesID, itemID)--总收集数量， 25 25 25， 3/3
-    speciesID = speciesID or itemID and select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物物品
+function e.GetPetCollectedNum(speciesID, itemID, onlyNum)--总收集数量， 25 25 25， 3/3
+    if not speciesID and itemID then--宠物物品
+        speciesID= select(13, C_PetJournal.GetPetInfoByItemID(itemID))
+    end
     if not speciesID then
         return
     end
-    local AllCollected, CollectedNum, CollectedText
-    local numPets, numOwned = C_PetJournal.GetNumPets()
-    if numPets and numOwned and numPets>0 then
-        if numPets<numOwned or numPets<3 then
-            AllCollected= e.MK(numOwned, 3)
-        else
-            AllCollected= e.MK(numOwned,3)..'/'..e.MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100)
-        end
-    end
-
     local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
-    if numCollected and limit and limit>0 then
-        if numCollected>0 then
-            local text2
-            for index= 1 ,numOwned do
-                local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
-                if speciesID2==speciesID and petID and level then
-                    local rarity = select(5, C_PetJournal.GetPetStats(petID))
-                    local col= rarity and select(4, GetItemQualityColor(rarity-1))
-                    if col then
-                        text2= text2 and text2..' ' or ''
-                        text2= text2..'|c'..col..level..'|r'
-                    end
+    if numCollected and limit then
+        local AllCollected, CollectedNum, CollectedText
+        if not onlyNum then--返回所有，数据
+            local numPets, numOwned = C_PetJournal.GetNumPets()
+            if numPets and numOwned and numPets>0 then
+                if numPets<numOwned or numPets<3 then
+                    AllCollected= e.MK(numOwned, 3)
+                else
+                    AllCollected= e.MK(numOwned,3)..'/'..e.MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100)
                 end
             end
-            CollectedNum= text2
-        end
-
+            if numCollected and limit and limit>0 then
+                if numCollected>0 then
+                    local text2
+                    for index= 1 ,numOwned do
+                        local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
+                        if speciesID2==speciesID and petID and level then
+                            local rarity = select(5, C_PetJournal.GetPetStats(petID))
+                            local col= rarity and select(4, GetItemQualityColor(rarity-1))
+                            if col then
+                                text2= text2 and text2..' ' or ''
+                                text2= text2..'|c'..col..level..'|r'
+                            end
+                        end
+                    end
+                    CollectedNum= text2
+                end
+            end
+        end        
         if numCollected==0 then
             CollectedText='|cnRED_FONT_COLOR:'..numCollected..'|r/'..limit
         elseif limit and numCollected==limit and limit>0 then
@@ -1959,8 +1963,8 @@ function e.GetPetCollectedNum(speciesID, itemID)--总收集数量， 25 25 25，
         else
             CollectedText= numCollected..'/'..limit
         end
+        return AllCollected, CollectedNum, CollectedText
     end
-    return AllCollected, CollectedNum, CollectedText
 end
 
 --取得对战宠物, 强弱 SharedPetBattleTemplates.lua
@@ -2016,11 +2020,17 @@ function e.GetPet9Item(itemID, find)--宠物兑换, wow9.0
     end
 end
 
-function e.GetMountCollected(mountID)--坐骑, 收集数量
-    if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
-        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r'
-    else
-        return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+function e.GetMountCollected(mountID, itemID)--坐骑, 收集数量
+    if not mountID and itemID then
+        mountID= C_MountJournal.GetMountFromItem(itemID)
+    end
+    if mountID then
+        local isCollected= select(11, C_MountJournal.GetMountInfoByID(mountID))
+        if isCollected then
+            return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r', isCollected
+        else
+            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', isCollected
+        end
     end
 end
 

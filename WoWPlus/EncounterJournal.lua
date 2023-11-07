@@ -777,44 +777,54 @@ local function Init_EncounterJournal()--冒险指南界面
     --Boss, 战利品, 信息
     hooksecurefunc(EncounterJournalItemMixin,'Init', function(self)--Blizzard_EncounterJournal.lua
         local text, tips='', nil
-        local classText, itemLink
-        if not Save.hideEncounterJournal and self.link and self.itemID and self.slot then
-            local specTable = GetItemSpecInfo(self.link) or {}--专精图标
-            local specTableNum=#specTable
-            if specTableNum>0 then
-                local specA=''
-                local class
-                table.sort(specTable, function (a2, b2) return a2<b2 end)
-                tips= e.onlyChinese and '拾取专精' or format(PROFESSIONS_SPECIALIZATION_TITLE, UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LOOT )
-                for _,  specID in pairs(specTable) do
-                    local _, name,_, icon2, _, classFile= GetSpecializationInfoByID(specID)
-                    if icon2 and classFile then
-                        icon2='|T'..icon2..':0|t'
-                        specA = specA..((class and class~=classFile) and '  ' or '')..icon2
-                        class=classFile
-                        tips= tips..'|n'..icon2..name
+        local classText
+        local spellID
+        local slotText= self.slot and self.slot:GetText()
+        local isEquipItem= not Save.hideEncounterJournal and (slotText or slotText=='')--是装备物品
+
+        if not Save.hideEncounterJournal and self.link then            
+            if isEquipItem then
+               
+                local specTable = GetItemSpecInfo(self.link) or {}--专精图标
+                local specTableNum=#specTable
+                if specTableNum>0 then
+                    local specA=''
+                    local class
+                    table.sort(specTable, function (a2, b2) return a2<b2 end)
+                    tips= e.onlyChinese and '拾取专精' or format(PROFESSIONS_SPECIALIZATION_TITLE, UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LOOT )
+                    for _,  specID in pairs(specTable) do
+                        local _, name,_, icon2, _, classFile= GetSpecializationInfoByID(specID)
+                        if icon2 and classFile then
+                            icon2='|T'..icon2..':0|t'
+                            specA = specA..((class and class~=classFile) and '  ' or '')..icon2
+                            class=classFile
+                            tips= tips..'|n'..icon2..name
+                        end
+                    end
+                    if specA~='' then
+                        text= text..specA
                     end
                 end
-                if specA~='' then
-                    text= text..specA
+                --物品是否收集, 返回图标, 幻化
+                local item, collected, isSelf = e.GetItemCollected(self.link, nil, true)
+                if item and not collected then
+                    text= text..item
+                    tips= tips and tips..'|n|n' or ''
+                    tips= tips
+                        ..item
+                        ..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+                        ..(not isSelf and ' |cffffffff'..(e.onlyChinese and '其他职业' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, CLASS))..'|r' or '')
                 end
-            end
-
-            local item, collected, isSelf = e.GetItemCollected(self.link, nil, true)--物品是否收集, 返回图标, 幻化
-            if item and not collected then
-                text= text..item
-                tips= tips and tips..'|n|n' or ''
-                tips= tips
-                    ..item
-                    ..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r '
-                    ..(not isSelf and (e.onlyChinese and '其他职业' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, CLASS)) or '')
             else
-                local mountID = C_MountJournal.GetMountFromItem(self.itemID)--坐骑物品
-                local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(self.itemID))--宠物物品
-                local str= speciesID and select(3, e.GetPetCollectedNum(speciesID)) or mountID and e.GetMountCollected(mountID)--宠物, 收集数量
-                if str then
-                    text= text and '' or '   '
-                    text= text..str
+                local petOrMountText
+                local itemID= self.itemID or GetItemInfoInstant(self.link)
+                if itemID then
+                    petOrMountText= e.GetMountCollected(nil, itemID)--坐骑物品
+                    petOrMountText= petOrMountText or select(3, e.GetPetCollectedNum(nil, itemID, true))--宠物物品
+                    if petOrMountText then
+                        text= text and '' or '   '
+                        text= text..petOrMountText
+                    end
                 end
             end
 
@@ -829,19 +839,11 @@ local function Init_EncounterJournal()--冒险指南界面
                 end
             end
 
-            --显示, 物品, 属性
-            local classID= select(6, GetItemInfoInstant(self.link or self.itemID))
-            if classID==2 and classID==4 then
-                itemLink= self.link
-            end
         end
 
-        
         if text and not self.collectedText and self.slot then
             self.collectedText= e.Cstr(self, {mouse=true, fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
-            --self.collectedText:SetPoint('LEFT', self.slot, 'CENTER', 5, 0)
             self.collectedText:SetPoint('TOPRIGHT', 0,-4)
-            self.collectedText:SetAlpha(0.75)
             self.collectedText:SetScript('OnLeave', function(frame) e.tips:Hide() frame:SetAlpha(0.7) end)
             self.collectedText:SetScript('OnEnter', function(self2)
                 if self2.collectText then
@@ -870,7 +872,9 @@ local function Init_EncounterJournal()--冒险指南界面
         if self.classLable then
             self.classLable:SetText(classText or '')
         end
-        e.Set_Item_Stats(self, itemLink, {point= self.IconBorder})--显示, 物品, 属性
+
+        --显示, 物品, 属性
+        e.Set_Item_Stats(self, isEquipItem and self.link, {point= self.IconBorder})
     end)
 
 
