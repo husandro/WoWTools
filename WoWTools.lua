@@ -264,29 +264,36 @@ function e.GetYesNo(yesno)
     end
 end
 
-function e.Cstr(self, tab)--self, {size, copyFont, changeFont, fontName color={r=,g=,b=,a=}, layer=, justifyH=, mouse=false, wheel=false}
-    tab= tab or {}--Fonts.xml FontStyles.xml
+function e.Cstr(self, tab)
+    --{size, copyFont, changeFont, fontName color={r=,g=,b=,a=}, layer=, justifyH=, mouse=false, wheel=false, notFlag=true, notShadow=true}
+    --Fonts.xml FontStyles.xml
+    --GameFontBlack
+    tab= tab or {}
     self= self or UIParent
-    local font= tab.changeFont or self:CreateFontString(nil, (tab.layer or 'OVERLAY'), tab.fontName or 'GameFontNormal',  self:GetFrameLevel()+1)
+    local font= tab.changeFont or
+    self:CreateFontString(nil, 
+            tab.layer or 'OVERLAY',
+            tab.fontName or 'GameFontNormal',
+            self:GetFrameLevel()+1)
     if tab.copyFont then
-        local fontName, size, fontFlags = tab.copyFont:GetFont()
-        font:SetFont(fontName, tab.size or size, fontFlags)
+        local fontName2, size, fontFlag = tab.copyFont:GetFont()
+        font:SetFont(fontName2, tab.size or size, fontFlag)
         font:SetTextColor(tab.copyFont:GetTextColor())
         font:SetFontObject(tab.copyFont:GetFontObject())
         font:SetShadowColor(tab.copyFont:GetShadowColor())
         font:SetShadowOffset(tab.copyFont:GetShadowOffset())
         if tab.justifyH then font:SetJustifyH(tab.justifyH) end
     else
-        if (e.onlyChinese or LOCALE_zhCN) then
-            font:SetFont('Fonts\\ARHei.ttf', (tab.size or 12), 'OUTLINE')
-        else
-            local fontName= font:GetFont()
-            font:SetFont(fontName or 'GameFontNormal', (tab.size or 12), 'OUTLINE')--THICKOUTLINE
+        local fontName2, _, fontFlag= font:GetFont()
+        if (e.onlyChinese or LOCALE_zhCN) then--THICKOUTLINE
+            fontName2= tab.fontName and fontName2 or 'Fonts\\ARHei.ttf'--黑体字
         end
+        font:SetFont(fontName2, (tab.size or 12), tab.notFlag and fontFlag or 'OUTLINE')
         font:SetJustifyH(tab.justifyH or 'LEFT')
     end
-    --font:SetShadowColor(0, 0, 0)
-    font:SetShadowOffset(1, -1)
+    if not tab.notShadow then
+        font:SetShadowOffset(1, -1)
+    end
     if tab.color~=false then
         if tab.color==true then--颜色
             if e.Player.useColor then
@@ -550,11 +557,14 @@ function e.Chat(text, name, sendChat)
         if name then
             SendChatMessage(text, 'WHISPER', nil, name)
         elseif sendChat then
-            if ChatEdit_GetActiveWindow() then
+            if not e.call('ChatEdit_InsertLink', text) then
+                e.call('ChatFrame_OpenChat', text)
+            end
+            --[[if ChatEdit_GetActiveWindow() then
                 e.call('ChatEdit_InsertLink', text)
             else
                 e.call('ChatFrame_OpenChat', text)
-            end
+            end]]
         else
             local isNotDead= not UnitIsDeadOrGhost('player')
             local isInInstance= IsInInstance()
@@ -1900,7 +1910,7 @@ function e.GetItemCollected(link, sourceID, icon)--物品是否收集
                 if isSelf then
                     return '|T132288:0|t', sourceInfo.isCollected, isSelf
                 else
-                    return e.Icon.star2, sourceInfo.isCollected, isSelf
+                    return  '|A:transmog-icon-hidden:0:0|a', sourceInfo.isCollected, isSelf--e.Icon.star2,
                 end
             else
                 return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', sourceInfo.isCollected, isSelf

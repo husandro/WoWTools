@@ -177,7 +177,7 @@ local function EncounterJournal_Set_All_Info_Text()
         end)
         AllTipsFrame.weekLable:SetScript('OnLeave', function(self) self:SetAlpha(1) end)
         AllTipsFrame.weekLable:SetScript('OnEnter', function(self) self:SetAlpha(0.5) end)
-        
+
     end
     local m, text, num
 
@@ -221,7 +221,7 @@ local function EncounterJournal_Set_All_Info_Text()
     end
     AllTipsFrame.label:SetText(m or '')
 
-    
+
    --本周还可获取奖励
    if C_WeeklyRewards.HasAvailableRewards() then--C_WeeklyRewards.CanClaimRewards() then
         AllTipsFrame.weekLable:SetText('|A:oribos-weeklyrewards-orb-dialog:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '宏伟宝库里有奖励在等待着你。' or GREAT_VAULT_REWARDS_WAITING))
@@ -231,9 +231,9 @@ local function EncounterJournal_Set_All_Info_Text()
     --周奖励，提示
     local last= e.Get_Weekly_Rewards_Activities({frame=AllTipsFrame, point={'TOPLEFT', AllTipsFrame.weekLable, 'BOTTOMLEFT', 0, -2}, anchor='ANCHOR_RIGHT'})
 
- 
 
-    
+
+
     --物品，货币提示
     e.ItemCurrencyLabel({frame=AllTipsFrame, point={'TOPLEFT', last or AllTipsFrame.label, 'BOTTOMLEFT', 0, -12}, showAll=true})
     AllTipsFrame:SetShown(true)
@@ -776,8 +776,8 @@ local function Init_EncounterJournal()--冒险指南界面
 
     --Boss, 战利品, 信息
     hooksecurefunc(EncounterJournalItemMixin,'Init', function(self)--Blizzard_EncounterJournal.lua
-        local text, collectText='', nil
-        local classText
+        local text, tips='', nil
+        local classText, itemLink
         if not Save.hideEncounterJournal and self.link and self.itemID and self.slot then
             local specTable = GetItemSpecInfo(self.link) or {}--专精图标
             local specTableNum=#specTable
@@ -785,14 +785,14 @@ local function Init_EncounterJournal()--冒险指南界面
                 local specA=''
                 local class
                 table.sort(specTable, function (a2, b2) return a2<b2 end)
-                collectText= e.onlyChinese and '拾取专精' or format(PROFESSIONS_SPECIALIZATION_TITLE, UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LOOT )
+                tips= e.onlyChinese and '拾取专精' or format(PROFESSIONS_SPECIALIZATION_TITLE, UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LOOT )
                 for _,  specID in pairs(specTable) do
                     local _, name,_, icon2, _, classFile= GetSpecializationInfoByID(specID)
                     if icon2 and classFile then
                         icon2='|T'..icon2..':0|t'
                         specA = specA..((class and class~=classFile) and '  ' or '')..icon2
                         class=classFile
-                        collectText= collectText..'|n'..icon2..name
+                        tips= tips..'|n'..icon2..name
                     end
                 end
                 if specA~='' then
@@ -800,11 +800,14 @@ local function Init_EncounterJournal()--冒险指南界面
                 end
             end
 
-            local item, collected = e.GetItemCollected(self.link, nil, true)--物品是否收集, 返回图标, 幻化
+            local item, collected, isSelf = e.GetItemCollected(self.link, nil, true)--物品是否收集, 返回图标, 幻化
             if item and not collected then
                 text= text..item
-                collectText= collectText and collectText..'|n|n' or ''
-                collectText= collectText..item..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+                tips= tips and tips..'|n|n' or ''
+                tips= tips
+                    ..item
+                    ..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r '
+                    ..(not isSelf and (e.onlyChinese and '其他职业' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, CLASS)) or '')
             else
                 local mountID = C_MountJournal.GetMountFromItem(self.itemID)--坐骑物品
                 local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(self.itemID))--宠物物品
@@ -815,20 +818,31 @@ local function Init_EncounterJournal()--冒险指南界面
                 end
             end
 
-            local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') 
-            
+            --拾取, 职业
+            local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)')
             local dateInfo= e.GetTooltipData({hyperLink=self.link, text={classStr}, red=true})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
             classText= dateInfo.text[classStr]
-            classText = (dateInfo.red and classText) and '|cnRED_FONT_COLOR:'..classText or classText
-            if classText and not self.classLable then
-                self.classLable= e.Cstr(self)
-                self.classLable:SetPoint('TOPRIGHT',0,-4)
+            if classText then
+                local className= UnitClass('player')
+                if className and not classText:find(className) or (not className and dateInfo.red) then
+                    classText =  '|cffffffff'..classText..'|r'
+                end
+            end
+
+            --显示, 物品, 属性
+            local classID= select(6, GetItemInfoInstant(self.link or self.itemID))
+            if classID==2 and classID==4 then
+                itemLink= self.link
             end
         end
+
+        
         if text and not self.collectedText and self.slot then
-            self.collectedText= e.Cstr(self)--nil,nil,nil,nil,nil,'CENTER')
-            self.collectedText:SetPoint('LEFT', self.slot, 'CENTER', 5, 0)
-            self.collectedText:EnableMouse(true)
+            self.collectedText= e.Cstr(self, {mouse=true, fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
+            --self.collectedText:SetPoint('LEFT', self.slot, 'CENTER', 5, 0)
+            self.collectedText:SetPoint('TOPRIGHT', 0,-4)
+            self.collectedText:SetAlpha(0.75)
+            self.collectedText:SetScript('OnLeave', function(frame) e.tips:Hide() frame:SetAlpha(0.7) end)
             self.collectedText:SetScript('OnEnter', function(self2)
                 if self2.collectText then
                     e.tips:SetOwner(self2, "ANCHOR_RIGHT")
@@ -838,24 +852,25 @@ local function Init_EncounterJournal()--冒险指南界面
                     e.tips:AddDoubleLine(id, addName)
                     e.tips:Show()
                 end
+                self2:SetAlpha(0.3)
             end)
-            self.collectedText:SetScript('OnLeave', function() e.tips:Hide() end)
-        end
-        if self.collectedText then
-            self.collectedText:SetText(text)
-            self.collectedText.collectText= collectText
         end
 
+        if self.collectedText then
+            self.collectedText:SetText(text)
+            self.collectedText.collectText= tips
+        end
+
+        --拾取, 职业
+        if classText and not self.classLable then
+            self.classLable= e.Cstr(self, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
+            --self.classLable:SetPoint('TOPRIGHT',0,-2)
+            self.classLable:SetPoint('BOTTOM', self.IconBorder, 'BOTTOMRIGHT', 140, 0)--<Size x="321" y="45"/>
+        end
         if self.classLable then
             self.classLable:SetText(classText or '')
         end
-
-        local find= not Save.hideEncounterJournal
-        local classID= find and select(6, GetItemInfoInstant(self.link or self.itemID))
-        if classID~=2 and classID~=4 then
-            find= false
-        end
-        e.Set_Item_Stats(self, find and self.link, {point= self.icon, itemID= find and self.itemID})--显示, 物品, 属性
+        e.Set_Item_Stats(self, itemLink, {point= self.IconBorder})--显示, 物品, 属性
     end)
 
 
@@ -1219,22 +1234,30 @@ local function Init_EncounterJournal()--冒险指南界面
         if frame.hook then
             return
         end
+
         frame:HookScript("OnEnter", function(self)
             local spellID= self:GetParent().spellID--self3.link
+            e.LoadDate({id=spellID, type='spell'})
             if not Save.hideEncounterJournal and spellID and spellID>0 then
                 e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 e.tips:SetSpellByID(spellID)
                 e.tips:AddLine(' ')
-
+                e.tips:AddDoubleLine((IsInGroup() and '|A:communities-icon-chat:0:0|a' or '')..(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT), e.Icon.right)
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end
         end)
+        frame:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
         frame:HookScript('OnClick', function(self, d)
             local spellID= self:GetParent().spellID--self3.link
             if not Save.hideEncounterJournal and spellID and spellID>0 and d=='RightButton' then
-                
+                local link=GetSpellLink(spellID)
+                if IsInGroup() then
+                    e.Chat(link or spellID )
+                else
+                    e.Chat(link and link..'spellID' or spellID, nil, true)
+                end
             end
         end)
         frame.hook=true
@@ -1309,13 +1332,9 @@ local function Init_EncounterJournal()--冒险指南界面
                     end
                     if d=='RightButton' then
                         local link=C_PerksActivities.GetPerksActivityChatLink(self3.id)
-                        if link then
-                            if ChatEdit_GetActiveWindow() then
-                                e.call('ChatEdit_InsertLink', link)
-                            else
-                                e.call('ChatFrame_OpenChat', link)
-                            end
-                        end
+                        e.Chat(link, nil, true)
+
+
                     elseif d=='LeftButton' then
                         if self3.tracked then
                             C_PerksActivities.RemoveTrackedPerksActivity(self3.id);

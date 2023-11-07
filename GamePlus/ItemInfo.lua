@@ -658,9 +658,10 @@ end
                             button:SetScript('OnMouseDown', function(self)
                                 if self.itemLink then
                                     local link= self.itemLink..(self.quantityAll.itemValue or '')
-                                    if not ChatEdit_InsertLink(link) then
-                                        ChatFrame_OpenChat(link)
-                                    end
+                                    
+                                    --if not ChatEdit_InsertLink(link) then
+                                        --ChatFrame_OpenChat(link)
+                                    --end
                                 end
                             end)
                         end

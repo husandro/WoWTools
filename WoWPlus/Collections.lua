@@ -126,7 +126,7 @@ local function Init_DressUpFrames()--试衣间, 外观列表
             self.btn:SetScript('OnMouseDown', function (self2, d)
                 if self2.link then
                     if d=='LeftButton' then
-                        e.Chat
+                        e.Chat(self2.link, nil, true)
                         --local chat=SELECTED_DOCK_FRAME
                         --ChatFrame_OpenChat(chat.editBox:GetText()..self2.link, chat)
                     elseif d=='RightButton' then

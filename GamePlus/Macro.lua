@@ -412,9 +412,10 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
             if IsShiftKeyDown() then
                 local link=GetSpellLink(tab.spellID) or GetSpellInfo(tab.spellID) or tab.spellID
                 link= 'spellID=='..tab.spellID..'--'..link
-                if not ChatEdit_InsertLink(link) then
-                    ChatFrame_OpenChat(link)
-                end
+                e.Chat(link, nil, true)
+                --if not ChatEdit_InsertLink(link) then
+                    --ChatFrame_OpenChat(link)
+                --end
 
             elseif IsControlKeyDown() then
                 e.call('SpellBookFrame_OpenToSpell', tab.spellID)

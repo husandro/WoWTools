@@ -175,9 +175,10 @@ local function getBagKey(self, point, x, y, parent) --KEY链接
                             if d2=='LeftButton' then
                                 e.Chat(self2.item)
                             else
-                                if not ChatEdit_InsertLink(self2.item) then
-                                    ChatFrame_OpenChat(self2.item)
-                                end
+                                e.Chat(self2.item, nil, true)
+                                --if not ChatEdit_InsertLink(self2.item) then
+                                    --ChatFrame_OpenChat(self2.item)
+                                --end
                             end
                     end)
                     self['key'..i]:SetScript("OnEnter",function(self2)
@@ -413,9 +414,9 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                     if d=='LeftButton' then
                        e.Chat(self3.link)
                     elseif d=='RightButton' then
-                        if not ChatEdit_InsertLink(self3.link) then
-                            ChatFrame_OpenChat(self3.link)
-                        end
+                        e.Chat(self3.link, nil, true)
+                        --if not ChatEdit_InsertLink(self3.link) then
+                        --ChatFrame_OpenChat(self3.link)
                     end
                     self3:SetAlpha(0.5)
                 end)
