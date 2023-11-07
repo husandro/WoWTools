@@ -2025,15 +2025,23 @@ function e.GetMountCollected(mountID, itemID)--坐骑, 收集数量
         mountID= C_MountJournal.GetMountFromItem(itemID)
     end
     if mountID then
-        local isCollected= select(11, C_MountJournal.GetMountInfoByID(mountID))
-        if isCollected then
-            return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r', isCollected
+        if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
+            return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r', true
         else
-            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', isCollected
+            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', false
         end
     end
 end
 
+function e.GetToyCollected(itemID)--玩具,是否收集
+    if C_ToyBox.GetToyInfo(itemID) then
+        if PlayerHasToy(itemID) then
+            return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r', true
+        else
+            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', false
+        end
+    end
+end
 
 
 function e.GetExpansionText(expacID, questID)--版本数据

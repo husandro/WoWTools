@@ -780,7 +780,7 @@ local function Init_EncounterJournal()--冒险指南界面
         local tips--itemText提示用
         local classText--物品专精
         local upText--升级：
-        local spellID
+ 
 
         local slotText= btn.slot and btn.slot:GetText()
         local isEquipItem= not Save.hideEncounterJournal and slotText and slotText~=''--是装备物品
@@ -823,6 +823,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 if itemID then
                     itemText= e.GetMountCollected(nil, itemID)--坐骑物品
                     itemText= itemText or select(3, e.GetPetCollectedNum(nil, itemID, true))--宠物物品
+                    itemText= itemText or e.GetToyCollected(itemID)--玩具,是否收集
                 end
             end
 
@@ -866,7 +867,7 @@ local function Init_EncounterJournal()--冒险指南界面
         --拾取, 职业
         if classText and not btn.classLable then
             btn.classLable= e.Cstr(btn, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
-            btn.classLable:SetPoint('BOTTOM', btn.IconBorder, 'BOTTOMRIGHT', 140, 0)--<Size x="321" y="45"/>
+            btn.classLable:SetPoint('BOTTOM', btn.IconBorder, 'BOTTOMRIGHT', 140, 4)--<Size x="321" y="45"/>
         end
         if btn.classLable then
             btn.classLable:SetText(classText or '')
@@ -879,8 +880,42 @@ local function Init_EncounterJournal()--冒险指南界面
         if btn.upText then
             btn.upText:SetText(upText or '')
         end
+
         --显示, 物品, 属性
-        e.Set_Item_Stats(btn, isEquipItem and btn.link, {point= btn.IconBorder})
+        e.Set_Item_Stats(btn, not Save.hideEncounterJournal and btn.link, {point= btn.IconBorder})
+
+        local spellID--物品法术，提示
+        if (btn.link or btn.itemID) and not Save.hideEncounterJournal then
+            spellID= select(2, GetItemSpell(btn.link or btn.itemID))
+            if spellID and not btn.spellButton then
+                btn.spellButton= e.Cbtn(btn, {size={14,14}, icon='hide'})--, layer='OVERLAY'})
+                --btn.spellButton:SetFrameLevel(btn:GetFrameLevel()+1)
+                --btn.spellButton:SetNormalAtlas('soulbinds_tree_conduit_icon_utility')
+                btn.spellButton:SetPoint('LEFT', btn.IconBorder, 'RIGHT',-4,0)
+
+                btn.spellButton:SetScript('OnLeave', function() e.tips:Hide()  end)
+                btn.spellButton:SetScript('OnEnter', function(self)
+                    if self.spellID then
+                        e.tips:SetOwner(self, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:SetSpellByID(self.spellID)
+                        e.tips:Show()
+                    end
+                end)
+            end
+        end
+        if btn.spellButton then
+            btn.spellButton.spellID= spellID
+            btn.spellButton:SetShown(spellID and true or false)
+            if spellID then
+                local icon= GetSpellTexture(spellID)
+                if icon then
+                    btn.spellButton:SetNormalTexture(icon)
+                else
+                    btn.spellButton:SetNormalAtlas('soulbinds_tree_conduit_icon_utility')
+                end
+            end
+        end
     end)
 
 

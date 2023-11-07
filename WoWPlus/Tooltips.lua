@@ -508,6 +508,7 @@ function func.Set_Item(self, itemLink, itemID)
             func.Set_Mount(self, mountID)--坐骑
         elseif speciesID then
             func.Set_Pet(self, speciesID, true)--宠物
+        else
         end
     end
 

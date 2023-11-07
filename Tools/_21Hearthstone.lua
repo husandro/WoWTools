@@ -17,6 +17,7 @@ local Save={
         [190237]=true,--掮灵传送矩阵
         [193588]=true,--时光旅行者的炉石
         [391042]=true,--欧恩伊尔轻风贤者的炉石, 找不到数据
+        [209035]=true,--烈焰炉石
     },
     showBindNameShort=true,
     showBindName=true,
