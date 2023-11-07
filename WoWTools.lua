@@ -545,34 +545,37 @@ function e.SecondsToClock(seconds, displayZeroHours)--TimeUtil.lua
     end
 end
 
-function e.Chat(text, name)
-    if not text then
-        return
-    elseif name then
-        SendChatMessage(text, 'WHISPER',nil, name)
-        return
-    end
+function e.Chat(text, name, sendChat)
+    if text then
+        if name then
+            SendChatMessage(text, 'WHISPER', nil, name)
+        elseif sendChat then
+            if ChatEdit_GetActiveWindow() then
+                e.call('ChatEdit_InsertLink', text)
+            else
+                e.call('ChatFrame_OpenChat', text)
+            end
+        else
+            local isNotDead= not UnitIsDeadOrGhost('player')
+            local isInInstance= IsInInstance()
+            if isInInstance and isNotDead then-- and C_CVar.GetCVarBool("chatBubbles") then
+                SendChatMessage(text, 'YELL')
 
-    local isNotDead= not UnitIsDeadOrGhost('player')
-    local isInInstance= IsInInstance()
-    if isInInstance and isNotDead then-- and C_CVar.GetCVarBool("chatBubbles") then
-        SendChatMessage(text, 'YELL')
+            elseif isInInstance and IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
+                SendChatMessage(text, 'INSTANCE_CHAT')
 
-    elseif isInInstance and IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-        SendChatMessage(text, 'INSTANCE_CHAT')
+            elseif IsInRaid() then
+                SendChatMessage(text, 'RAID')
 
-    elseif IsInRaid() then
-        SendChatMessage(text, 'RAID')
-
-    elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
-        SendChatMessage(text, 'PARTY')
-
-    --elseif isNotDead and IsOutdoors() and not UnitAffectingCombat('player') then
-        --SendChatMessage(text, 'YELL')
-
-   -- elseif setPrint then
-    else
-        print(text)
+            elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
+                SendChatMessage(text, 'PARTY')
+                --elseif isNotDead and IsOutdoors() and not UnitAffectingCombat('player') then
+                    --SendChatMessage(text, 'YELL')
+                -- elseif setPrint then
+            else
+                print(text)
+            end
+        end
     end
 end
 

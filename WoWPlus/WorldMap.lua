@@ -41,7 +41,8 @@ local function sendPlayerPoint()--发送玩家位置
             local pos = C_Map.GetPlayerMapPosition(mapID, "player")
             local mapPoint = UiMapPoint.CreateFromVector2D(mapID, pos)
             C_Map.SetUserWaypoint(mapPoint)
-            ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..C_Map.GetUserWaypointHyperlink())
+            e.Chat(C_Map.GetUserWaypointHyperlink(), nil, true)
+            --ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..C_Map.GetUserWaypointHyperlink())
             if point then
                 C_Map.SetUserWaypoint(point)
             else
@@ -56,7 +57,8 @@ local function sendPlayerPoint()--发送玩家位置
                 if info and info.name then
                     pointText=pointText..' '..info.name
                 end
-                ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..pointText)
+                e.Chat(pointText, nil, true)
+                --ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..pointText)
                 return
             end
         end
@@ -72,7 +74,8 @@ local function sendPlayerPoint()--发送玩家位置
             name=name2..'('..name..')'
         end
         name =name or name2
-        ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..name)
+        e.Chat(name, nil, true)
+        --ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..name)
     else
         print("Cannot set waypoints on this map")
     end

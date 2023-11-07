@@ -126,8 +126,9 @@ local function Init_DressUpFrames()--试衣间, 外观列表
             self.btn:SetScript('OnMouseDown', function (self2, d)
                 if self2.link then
                     if d=='LeftButton' then
-                        local chat=SELECTED_DOCK_FRAME
-                        ChatFrame_OpenChat(chat.editBox:GetText()..self2.link, chat)
+                        e.Chat
+                        --local chat=SELECTED_DOCK_FRAME
+                        --ChatFrame_OpenChat(chat.editBox:GetText()..self2.link, chat)
                     elseif d=='RightButton' then
                         if not IsAddOnLoaded("Blizzard_Collections") then LoadAddOn('Blizzard_Collections') end
                         local wcFrame= WardrobeCollectionFrame
@@ -501,10 +502,10 @@ local function Init_Wardrobe_Sets()
                         e.tips:Show()
                 end)
                 btn:SetScript("OnMouseDown", function(self2)
-                        if ( self2.link ) then
-                            local chat=SELECTED_DOCK_FRAME
-                            ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
-                        end
+                    e.Chat(self2.link, nil, true)
+                    --local chat=SELECTED_DOCK_FRAME
+                    --ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
+                        
                 end)
                 btn:SetScript("OnLeave",function(self2)
                         self2:SetAlpha(0.2)
@@ -893,10 +894,9 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                             end)
                             btn:SetScript("OnClick", function(self2)
                                 local link2= get_Link_Item_Type_Source(self2.sourceID, self2.type) or self2.link
-                                if link2 then
-                                    local chat=SELECTED_DOCK_FRAME
-                                    ChatFrame_OpenChat((chat.editBox:GetText() or '')..link2, chat)
-                                end
+                                e.Chat(link2, nil, true)
+                                --local chat=SELECTED_DOCK_FRAME
+                                --ChatFrame_OpenChat((chat.editBox:GetText() or '')..link2, chat)
                             end)
                             btn:SetScript("OnLeave",function(self2)
                                 self2:SetAlpha(0.5)

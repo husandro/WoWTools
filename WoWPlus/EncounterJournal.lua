@@ -1215,26 +1215,33 @@ local function Init_EncounterJournal()--冒险指南界面
         end
     end)
 
-    hooksecurefunc('EncounterJournal_UpdateButtonState', function(self2)--技能提示
-        if not self2.OnEnter then
-            self2:SetScript("OnEnter", function(self3)
-                local spellID= self3:GetParent().spellID--self3.link
-                if Save.hideEncounterJournal or not spellID or spellID==0 then
-                    return
-                end
-                e.tips:SetOwner(self3, "ANCHOR_LEFT")
+    hooksecurefunc('EncounterJournal_UpdateButtonState', function(frame)--技能提示
+        if frame.hook then
+            return
+        end
+        frame:HookScript("OnEnter", function(self)
+            local spellID= self:GetParent().spellID--self3.link
+            if not Save.hideEncounterJournal and spellID and spellID>0 then
+                e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 e.tips:SetSpellByID(spellID)
                 e.tips:AddLine(' ')
+
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
-            end)
-            self2:SetScript('OnLeave', function() e.tips:Hide() end)
-        end
+            end
+        end)
+        frame:HookScript('OnClick', function(self, d)
+            local spellID= self:GetParent().spellID--self3.link
+            if not Save.hideEncounterJournal and spellID and spellID>0 and d=='RightButton' then
+                
+            end
+        end)
+        frame.hook=true
     end)
 
     --BOSS模型 Blizzard_EncounterJournal.lua
-    hooksecurefunc('EncounterJournal_DisplayCreature', function(self, forceUpdate)
+    hooksecurefunc('EncounterJournal_DisplayCreature', function(self)
         local text
         if not Save.hideEncounterJournal and self.displayInfo and EncounterJournal.encounter and EncounterJournal.encounter.info and EncounterJournal.encounter.info.model and EncounterJournal.encounter.info.model.imageTitle then
             if not EncounterJournal.creatureDisplayIDText then

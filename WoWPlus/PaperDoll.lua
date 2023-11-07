@@ -1202,10 +1202,10 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
         end)
         self:SetScript('OnLeave', function() e.tips:Hide() end)
         self:SetScript('OnMouseDown', function(self2)
-            if self2.link then
-                local chat=SELECTED_DOCK_FRAME
-                ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
-            end
+            e.Chat(self2.link, nil, true)
+            --local chat=SELECTED_DOCK_FRAME
+            --ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
+            
         end)
     end
     self.link= link
