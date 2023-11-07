@@ -875,13 +875,18 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
     {type='item', id=204194},--守护巨龙的暗影烈焰纹章
     {type='item', id=204193},--雏龙的暗影烈焰纹章
 
-    {type='currency', id=2709, vouta=true},--守护巨龙的酣梦纹章 10.2
-    {type='currency', id=2708},--魔龙的酣梦纹章
+    
+    {type='currency', id=2709, line=true},--守护巨龙的酣梦纹章 10.1.5
+    {type='currency', id=2796},--苏生奇梦 10.2
+
+    {type='currency', id=2708, line=true},--魔龙的酣梦纹章
     {type='currency', id=2707},--幼龙的酣梦纹章
     {type='currency', id=2533},--苏生暗影烈焰
-
     {type='currency', id=2245},--飞珑石
-    {type='currency', id=1602},--征服点数
+
+    
+    
+    {type='currency', id=1602, line=true},--征服点数
     {type='currency', id=1191},--勇气点数
 }
 
@@ -945,7 +950,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
             if not lable then
                 lable=e.Cstr(settings.frame, {mouse=true})
                 if last then
-                    lable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, tab.vouta and -6 or -2)
+                    lable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, tab.line and -6 or -2)
                 elseif settings.point then
                     lable:SetPoint(settings.point[1], settings.point[2] or settings.frame, settings.point[3], settings.point[4], settings.point[5])
                 end
