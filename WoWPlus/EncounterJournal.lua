@@ -775,17 +775,19 @@ local function Init_EncounterJournal()--冒险指南界面
 
 
     --Boss, 战利品, 信息
-    hooksecurefunc(EncounterJournalItemMixin,'Init', function(self)--Blizzard_EncounterJournal.lua
-        local text, tips='', nil
-        local classText
+    hooksecurefunc(EncounterJournalItemMixin,'Init', function(btn)--Blizzard_EncounterJournal.lua
+        local itemText--专精图标, 幻化，坐骑，宠物
+        local tips--itemText提示用
+        local classText--物品专精
+        local upText--升级：
         local spellID
-        local slotText= self.slot and self.slot:GetText()
-        local isEquipItem= not Save.hideEncounterJournal and (slotText or slotText=='')--是装备物品
 
-        if not Save.hideEncounterJournal and self.link then            
+        local slotText= btn.slot and btn.slot:GetText()
+        local isEquipItem= not Save.hideEncounterJournal and slotText and slotText~=''--是装备物品
+
+        if not Save.hideEncounterJournal and btn.link then
             if isEquipItem then
-               
-                local specTable = GetItemSpecInfo(self.link) or {}--专精图标
+                local specTable = GetItemSpecInfo(btn.link) or {}--专精图标
                 local specTableNum=#specTable
                 if specTableNum>0 then
                     local specA=''
@@ -802,13 +804,14 @@ local function Init_EncounterJournal()--冒险指南界面
                         end
                     end
                     if specA~='' then
-                        text= text..specA
+                        itemText= (itemText or '')..specA
                     end
+
                 end
                 --物品是否收集, 返回图标, 幻化
-                local item, collected, isSelf = e.GetItemCollected(self.link, nil, true)
+                local item, collected, isSelf = e.GetItemCollected(btn.link, nil, true)
                 if item and not collected then
-                    text= text..item
+                    itemText= (itemText or '')..item
                     tips= tips and tips..'|n|n' or ''
                     tips= tips
                         ..item
@@ -816,22 +819,20 @@ local function Init_EncounterJournal()--冒险指南界面
                         ..(not isSelf and ' |cffffffff'..(e.onlyChinese and '其他职业' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, CLASS))..'|r' or '')
                 end
             else
-                local petOrMountText
-                local itemID= self.itemID or GetItemInfoInstant(self.link)
+                local itemID= btn.itemID or GetItemInfoInstant(btn.link)
                 if itemID then
-                    petOrMountText= e.GetMountCollected(nil, itemID)--坐骑物品
-                    petOrMountText= petOrMountText or select(3, e.GetPetCollectedNum(nil, itemID, true))--宠物物品
-                    if petOrMountText then
-                        text= text and '' or '   '
-                        text= text..petOrMountText
-                    end
+                    itemText= e.GetMountCollected(nil, itemID)--坐骑物品
+                    itemText= itemText or select(3, e.GetPetCollectedNum(nil, itemID, true))--宠物物品
                 end
             end
 
             --拾取, 职业
             local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)')
-            local dateInfo= e.GetTooltipData({hyperLink=self.link, text={classStr}, red=true})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
+            local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
+
+            local dateInfo= e.GetTooltipData({hyperLink=btn.link, text={classStr, upgradeStr}, red=true})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
             classText= dateInfo.text[classStr]
+            upText= dateInfo.text[upgradeStr]
             if classText then
                 local className= UnitClass('player')
                 if className and not classText:find(className) or (not className and dateInfo.red) then
@@ -841,40 +842,45 @@ local function Init_EncounterJournal()--冒险指南界面
 
         end
 
-        if text and not self.collectedText and self.slot then
-            self.collectedText= e.Cstr(self, {mouse=true, fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
-            self.collectedText:SetPoint('TOPRIGHT', 0,-4)
-            self.collectedText:SetScript('OnLeave', function(frame) e.tips:Hide() frame:SetAlpha(0.7) end)
-            self.collectedText:SetScript('OnEnter', function(self2)
-                if self2.collectText then
-                    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+        if itemText and not btn.itemText then
+            btn.itemText= e.Cstr(btn, {mouse=true, fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
+            btn.itemText:SetPoint('TOPRIGHT', -10,-4)
+            btn.itemText:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+            btn.itemText:SetScript('OnEnter', function(self)
+                if self.tips then
+                    e.tips:SetOwner(self, "ANCHOR_RIGHT")
                     e.tips:ClearLines()
-                    e.tips:AddLine(self2.collectText)
+                    e.tips:AddLine(self.tips)
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(id, addName)
                     e.tips:Show()
                 end
-                self2:SetAlpha(0.3)
+                self:SetAlpha(0.3)
             end)
         end
-
-        if self.collectedText then
-            self.collectedText:SetText(text)
-            self.collectedText.collectText= tips
+        if btn.itemText then
+            btn.itemText:SetText(itemText or '')
+            btn.itemText.tips= tips
         end
 
         --拾取, 职业
-        if classText and not self.classLable then
-            self.classLable= e.Cstr(self, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
-            --self.classLable:SetPoint('TOPRIGHT',0,-2)
-            self.classLable:SetPoint('BOTTOM', self.IconBorder, 'BOTTOMRIGHT', 140, 0)--<Size x="321" y="45"/>
+        if classText and not btn.classLable then
+            btn.classLable= e.Cstr(btn, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
+            btn.classLable:SetPoint('BOTTOM', btn.IconBorder, 'BOTTOMRIGHT', 140, 0)--<Size x="321" y="45"/>
         end
-        if self.classLable then
-            self.classLable:SetText(classText or '')
+        if btn.classLable then
+            btn.classLable:SetText(classText or '')
         end
 
+        if upText and not btn.upText then
+            btn.upText= e.Cstr(btn, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
+            btn.upText:SetPoint('TOPRIGHT', -10,-16)
+        end
+        if btn.upText then
+            btn.upText:SetText(upText or '')
+        end
         --显示, 物品, 属性
-        e.Set_Item_Stats(self, isEquipItem and self.link, {point= self.IconBorder})
+        e.Set_Item_Stats(btn, isEquipItem and btn.link, {point= btn.IconBorder})
     end)
 
 
