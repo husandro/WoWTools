@@ -1257,10 +1257,11 @@ local function Init_Frame_Widthx2()
             self.IndexLable:SetText(not hide and itemButton and itemButton.hasItem and itemButton:GetID() or '')
         end
 
+        --建立，物品，背景
         btn.itemBG= btn:CreateTexture(nil, 'BACKGROUND')
         btn.itemBG:SetAtlas('ChallengeMode-guild-background')
-        btn.itemBG:SetSize(102,43)
-        btn.itemBG:SetPoint('TOPRIGHT',-6,-1)
+        btn.itemBG:SetSize(100,43)
+        btn.itemBG:SetPoint('TOPRIGHT',-7,-2)
     end
 
     --卖
@@ -1292,7 +1293,7 @@ local function Init_Frame_Widthx2()
                 btn.itemBG:SetShown(numBuybackItems<=i)
             end
             btn:set_index_text(i> numBuybackItems)
-            btn.itemBG:SetShown(numBuybackItems>=i)
+            btn.itemBG:SetShown(numBuybackItems>=i)--建立，物品，背景
         end
         MerchantFrame:SetWidth(MerchantFrame.width)--宽度
         MerchantItem11:SetPoint("TOPLEFT", MerchantItem9, "BOTTOMLEFT", 0, -8)
@@ -1302,15 +1303,8 @@ local function Init_Frame_Widthx2()
     hooksecurefunc('MerchantFrame_UpdateCurrencies', function()
         MerchantExtraCurrencyInset:SetShown(false)
         MerchantExtraCurrencyBg:SetShown(false)
-        
-        --[[if MerchantMoneyFrame:IsShown() then
-            MerchantMoneyFrame:SetPoint("RIGHT", MerchantExtraCurrencyInset,0, -1);
-        end]]
     end)
     MerchantMoneyInset:SetShown(false)
-    --MerchantExtraCurrencyInset:ClearAllPoints()
-    --MerchantExtraCurrencyInset:SetParent(MerchantMoneyFrame)
-    --MerchantExtraCurrencyInset:SetPoint('RIGHT', MerchantMoneyFrame)
 end
 
 

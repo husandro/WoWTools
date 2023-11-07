@@ -3600,7 +3600,8 @@
         "MerchantItem5",
         "MerchantItem7",
         "MerchantItem9",
-        "MerchantMoneyFrame"
+        "MerchantMoneyFrame",
+        "MerchantBuyBackItemSlotTexture"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

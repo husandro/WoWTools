@@ -774,6 +774,13 @@ local function Init_EncounterJournal()--冒险指南界面
 
 
 
+
+
+
+
+
+
+
     --Boss, 战利品, 信息
     hooksecurefunc(EncounterJournalItemMixin,'Init', function(btn)--Blizzard_EncounterJournal.lua
         local itemText--专精图标, 幻化，坐骑，宠物
@@ -887,36 +894,33 @@ local function Init_EncounterJournal()--冒险指南界面
         local spellID--物品法术，提示
         if (btn.link or btn.itemID) and not Save.hideEncounterJournal then
             spellID= select(2, GetItemSpell(btn.link or btn.itemID))
-            if spellID and not btn.spellButton then
-                btn.spellButton= e.Cbtn(btn, {size={14,14}, icon='hide'})--, layer='OVERLAY'})
-                btn.spellButton:SetPoint('LEFT', btn.IconBorder, 'RIGHT',-6,0)
-                btn.spellButton:SetScript('OnClick', function(self)
+            if spellID and not btn.spellTexture then
+                btn.spellTexture= btn:CreateTexture(nil, 'OVERLAY')
+                btn.spellTexture:SetSize(16,16)
+                btn.spellTexture:SetPoint('LEFT', btn.IconBorder, 'RIGHT',-6,0)
+                btn.spellTexture:SetScript('OnMouseDown', function(self)
                     if self.spellID then
                         e.Chat(GetSpellLink(self.spellID) or self.spellID, nil, true)
                     end
                 end)
-                btn.spellButton:SetScript('OnLeave', function() e.tips:Hide()  end)
-                btn.spellButton:SetScript('OnEnter', function(self)
+                btn.spellTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+                btn.spellTexture:SetScript('OnEnter', function(self)
                     if self.spellID then
                         e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
                         e.tips:SetSpellByID(self.spellID)
                         e.tips:Show()
                     end
+                    self:SetAlpha(0.5)
                 end)
             end
         end
-        if btn.spellButton then
-            btn.spellButton.spellID= spellID
-            btn.spellButton:SetShown(spellID and true or false)
+        if btn.spellTexture then
+            btn.spellTexture.spellID= spellID
+            btn.spellTexture:SetShown(spellID and true or false)
             if spellID then
                 e.LoadDate({id=spellID, type='spell'})
-                local icon= GetSpellTexture(spellID)
-                if icon then
-                    btn.spellButton:SetNormalTexture(icon)
-                else
-                    btn.spellButton:SetNormalAtlas('soulbinds_tree_conduit_icon_utility')
-                end
+                SetPortraitToTexture(btn.spellTexture, GetSpellTexture(spellID) or 'soulbinds_tree_conduit_icon_utility')
             end
         end
     end)
@@ -1421,6 +1425,22 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --######
 --初始化
 --######
@@ -1456,6 +1476,18 @@ local function Init()
     Init_Set_Worldboss_Text()
     Init_Set_InstanceBoss_Text()
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
