@@ -3599,7 +3599,8 @@
         "MerchantItem3",
         "MerchantItem5",
         "MerchantItem7",
-        "MerchantItem9"
+        "MerchantItem9",
+        "MerchantMoneyFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

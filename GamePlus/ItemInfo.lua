@@ -657,6 +657,7 @@ end
                         if not btn.quantityAll then
                             btn.quantityAll= e.Cstr(btn, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
                             btn.quantityAll:SetPoint('BOTTOMRIGHT', btn, 'TOPRIGHT', 3,0)
+                            btn.quantityAll:SetAlpha(0.7)
                             btn:EnableMouse(true)
                             btn:HookScript('OnMouseDown', function(self)
                                 if self.itemLink then
@@ -664,9 +665,6 @@ end
                                         self.quantityAll.itemValue and ' x'..self.quantityAll.itemValue or ''
                                     )
                                     e.Chat(link, nil, true)
-                                    --if not ChatEdit_InsertLink(link) then
-                                        --ChatFrame_OpenChat(link)
-                                    --end
                                 end
                                 self:SetAlpha(0.3)
                             end)

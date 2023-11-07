@@ -1256,16 +1256,24 @@ local function Init_Frame_Widthx2()
             local itemButton= _G["MerchantItem"..self.IndexLable.index.."ItemButton"]
             self.IndexLable:SetText(not hide and itemButton and itemButton.hasItem and itemButton:GetID() or '')
         end
+
+        btn.itemBG= btn:CreateTexture(nil, 'BACKGROUND')
+        btn.itemBG:SetAtlas('ChallengeMode-guild-background')
+        btn.itemBG:SetSize(102,43)
+        btn.itemBG:SetPoint('TOPRIGHT',-6,-1)
     end
 
     --卖
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
         MerchantItem11:SetShown(true)
         MerchantItem12:SetShown(true)
-
         for i = 1, MERCHANT_ITEMS_PER_PAGE do
-            _G['MerchantItem'..i]:SetShown(true)
-            _G['MerchantItem'..i]:set_index_text()
+            local btn= _G['MerchantItem'..i]
+            btn:SetShown(true)
+            btn:set_index_text()
+            if btn.itemBG and _G["MerchantItem"..i.."ItemButton"] then--Texture.lua
+                btn.itemBG:SetShown(_G["MerchantItem"..i.."ItemButton"].hasItem)
+            end
         end
 
         MerchantFrame:SetWidth(MerchantFrame.width*2)--宽度
@@ -1276,18 +1284,33 @@ local function Init_Frame_Widthx2()
 
     --回购
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
-        local numBuybackItems = GetNumBuybackItems()
+        local numBuybackItems = GetNumBuybackItems() or 0
         for i = 1, MERCHANT_ITEMS_PER_PAGE do
             local btn= _G['MerchantItem'..i]
             if i> BUYBACK_ITEMS_PER_PAGE then
                 btn:SetShown(false)
+                btn.itemBG:SetShown(numBuybackItems<=i)
             end
             btn:set_index_text(i> numBuybackItems)
+            btn.itemBG:SetShown(numBuybackItems>=i)
         end
         MerchantFrame:SetWidth(MerchantFrame.width)--宽度
         MerchantItem11:SetPoint("TOPLEFT", MerchantItem9, "BOTTOMLEFT", 0, -8)
         MerchantItem12:SetPoint("TOPLEFT", MerchantItem10, "BOTTOMLEFT", 0, -8)
     end)
+
+    hooksecurefunc('MerchantFrame_UpdateCurrencies', function()
+        MerchantExtraCurrencyInset:SetShown(false)
+        MerchantExtraCurrencyBg:SetShown(false)
+        
+        --[[if MerchantMoneyFrame:IsShown() then
+            MerchantMoneyFrame:SetPoint("RIGHT", MerchantExtraCurrencyInset,0, -1);
+        end]]
+    end)
+    MerchantMoneyInset:SetShown(false)
+    --MerchantExtraCurrencyInset:ClearAllPoints()
+    --MerchantExtraCurrencyInset:SetParent(MerchantMoneyFrame)
+    --MerchantExtraCurrencyInset:SetPoint('RIGHT', MerchantMoneyFrame)
 end
 
 
