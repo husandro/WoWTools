@@ -889,10 +889,12 @@ local function Init_EncounterJournal()--冒险指南界面
             spellID= select(2, GetItemSpell(btn.link or btn.itemID))
             if spellID and not btn.spellButton then
                 btn.spellButton= e.Cbtn(btn, {size={14,14}, icon='hide'})--, layer='OVERLAY'})
-                --btn.spellButton:SetFrameLevel(btn:GetFrameLevel()+1)
-                --btn.spellButton:SetNormalAtlas('soulbinds_tree_conduit_icon_utility')
-                btn.spellButton:SetPoint('LEFT', btn.IconBorder, 'RIGHT',-4,0)
-
+                btn.spellButton:SetPoint('LEFT', btn.IconBorder, 'RIGHT',-6,0)
+                btn.spellButton:SetScript('OnClick', function(self)
+                    if self.spellID then
+                        e.Chat(GetSpellLink(self.spellID) or self.spellID, nil, true)
+                    end
+                end)
                 btn.spellButton:SetScript('OnLeave', function() e.tips:Hide()  end)
                 btn.spellButton:SetScript('OnEnter', function(self)
                     if self.spellID then
@@ -908,6 +910,7 @@ local function Init_EncounterJournal()--冒险指南界面
             btn.spellButton.spellID= spellID
             btn.spellButton:SetShown(spellID and true or false)
             if spellID then
+                e.LoadDate({id=spellID, type='spell'})
                 local icon= GetSpellTexture(spellID)
                 if icon then
                     btn.spellButton:SetNormalTexture(icon)
