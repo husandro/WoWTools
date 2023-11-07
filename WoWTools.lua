@@ -271,7 +271,7 @@ function e.Cstr(self, tab)
     tab= tab or {}
     self= self or UIParent
     local font= tab.changeFont or
-    self:CreateFontString(nil, 
+    self:CreateFontString(nil,
             tab.layer or 'OVERLAY',
             tab.fontName or 'GameFontNormal',
             self:GetFrameLevel()+1)
@@ -370,7 +370,7 @@ end
 function e.Cedit(tab)--frame, name, size={}
     local x, y= tab.size[1], tab.size[2]--310, 135
     local level= tab.frame:GetFrameLevel()
-    
+
     local scroll= CreateFrame('ScrollFrame', tab.name, tab.frame, 'MacroFrameScrollFrameTemplate')
     scroll:SetSize(tab.size[1], tab.size[2])
     scroll:SetFrameLevel(level+ 1)
@@ -875,7 +875,6 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
     {type='item', id=204194},--守护巨龙的暗影烈焰纹章
     {type='item', id=204193},--雏龙的暗影烈焰纹章
 
-    
     {type='currency', id=2709, line=true},--守护巨龙的酣梦纹章 10.1.5
     {type='currency', id=2708, line=true},--魔龙的酣梦纹章
     {type='currency', id=2707},--幼龙的酣梦纹章
@@ -883,7 +882,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
     {type='currency', id=2796},--苏生奇梦 10.2
     {type='currency', id=2533},--苏生暗影烈焰
     {type='currency', id=2245},--飞珑石
-    
+
     {type='currency', id=1602, line=true},--征服点数
     {type='currency', id=1191},--勇气点数
 }
@@ -933,7 +932,8 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
         elseif tab.type=='item' then
             e.LoadDate({id=tab.id, type='item'})
             local num= GetItemCount(tab.id, true)
-            if settings.showAll or num>0 then
+            local itemQuality= C_Item.GetItemQualityByID(tab.id)
+            if (settings.showAll or num>0) and itemQuality>=1 then
                 e.LoadDate({id=tab.id, type='item'})
                 local icon= C_Item.GetItemIconByID(tab.id)
                 local name=settings.showName and C_Item.GetItemNameByID(tab.id)
@@ -1958,7 +1958,7 @@ function e.GetPetCollectedNum(speciesID, itemID, onlyNum)--总收集数量， 25
                     CollectedNum= text2
                 end
             end
-        end        
+        end
         if numCollected==0 then
             CollectedText='|cnRED_FONT_COLOR:'..numCollected..'|r/'..limit
         elseif limit and numCollected==limit and limit>0 then
@@ -2007,7 +2007,7 @@ function e.GetPet9Item(itemID, find)--宠物兑换, wow9.0
                     ..' = '
                     ..'|T132936:0|t'..GetItemCount(3300, true)
                     ..'|T133718:0|t'..GetItemCount(3670, true)
-                    ..'|T133676:0|t'..GetItemCount(6150, true)  
+                    ..'|T133676:0|t'..GetItemCount(6150, true)
         end
 
     elseif itemID==36812 or itemID==62072 or itemID==67410 then--[红宝石珠蜒]
