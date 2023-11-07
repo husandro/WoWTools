@@ -618,11 +618,14 @@ end
             self.Count:SetText(totalFree)
         end)
     end
+
+
     --####
     --商人
     --####
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo', setMerchantInfo)--MerchantFrame.lua
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
+
 
     --######################
     --##商人，物品，货币，数量
@@ -636,8 +639,8 @@ end
                 local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i);
                 if itemLink then
                     usedCurrencies = usedCurrencies + 1;
-                    local button = _G[frameName.."Item"..usedCurrencies];
-                    if button and button:IsShown() then
+                    local btn = _G[frameName.."Item"..usedCurrencies];
+                    if btn and btn:IsShown() then
                         local num
                         if currencyName then
                             num= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink).quantity
@@ -651,22 +654,40 @@ end
                                 num= '|cnRED_FONT_COLOR:'..e.MK(num,0)..'|r'
                             end
                         end
-                        if not button.quantityAll then
-                            button.quantityAll= e.Cstr(button, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
-                            button.quantityAll:SetPoint('BOTTOMRIGHT', button, 'TOPRIGHT', 3,0)
-                            button:EnableMouse(true)
-                            button:SetScript('OnMouseDown', function(self)
+                        if not btn.quantityAll then
+                            btn.quantityAll= e.Cstr(btn, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
+                            btn.quantityAll:SetPoint('BOTTOMRIGHT', btn, 'TOPRIGHT', 3,0)
+                            btn:EnableMouse(true)
+                            btn:HookScript('OnMouseDown', function(self)
                                 if self.itemLink then
-                                    local link= self.itemLink..(self.quantityAll.itemValue or '')
-                                    
+                                    local link= self.itemLink..(
+                                        self.quantityAll.itemValue and ' x'..self.quantityAll.itemValue or ''
+                                    )
+                                    e.Chat(link, nil, true)
                                     --if not ChatEdit_InsertLink(link) then
                                         --ChatFrame_OpenChat(link)
                                     --end
                                 end
+                                self:SetAlpha(0.3)
+                            end)
+                            btn:HookScript('OnEnter', function(self)
+                                self:SetAlpha(0.5)
+                            end)
+                            btn:HookScript('OnMouseUp', function(self)
+                                self:SetAlpha(0.5)
+                            end)
+                            btn:HookScript('OnLeave', function(self) self:SetAlpha(1) end)
+                            btn:HookScript('OnEnter', function(self)
+                                if self.itemLink and e.tips:IsShown() then
+                                    e.tips:AddLine(' ')
+                                    e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
+                                    e.tips:AddDoubleLine(id, addName)
+                                    e.tips:Show()
+                                end
                             end)
                         end
-                        button.quantityAll.itemValue= itemValue
-                        button.quantityAll:SetText(num or '');
+                        btn.quantityAll.itemValue= itemValue
+                        btn.quantityAll:SetText(num or '');
                     end
                 end
             end
