@@ -235,7 +235,7 @@ local function EncounterJournal_Set_All_Info_Text()
 
 
     --物品，货币提示
-    e.ItemCurrencyLabel({frame=AllTipsFrame, point={'TOPLEFT', last or AllTipsFrame.label, 'BOTTOMLEFT', 0, -12}, showAll=true})
+    e.ItemCurrencyLabel({frame=AllTipsFrame, point={'TOPLEFT', last or AllTipsFrame.label, 'BOTTOMLEFT', 0, -12}})--, showAll=true})
     AllTipsFrame:SetShown(true)
 end
 

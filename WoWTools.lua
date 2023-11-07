@@ -877,14 +877,12 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
 
     
     {type='currency', id=2709, line=true},--守护巨龙的酣梦纹章 10.1.5
-    {type='currency', id=2796},--苏生奇梦 10.2
-
     {type='currency', id=2708, line=true},--魔龙的酣梦纹章
     {type='currency', id=2707},--幼龙的酣梦纹章
+
+    {type='currency', id=2796},--苏生奇梦 10.2
     {type='currency', id=2533},--苏生暗影烈焰
     {type='currency', id=2245},--飞珑石
-
-    
     
     {type='currency', id=1602, line=true},--征服点数
     {type='currency', id=1191},--勇气点数

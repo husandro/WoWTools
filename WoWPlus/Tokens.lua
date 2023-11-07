@@ -823,9 +823,18 @@ local function set_ItemInteractionFrame_Currency(self)
 	if not self then
 		return
 	end
-    local itemInfo= C_ItemInteraction.GetItemInteractionInfo()
-    local currencyID= itemInfo and itemInfo.currencyTypeId or self.chargeCurrencyTypeId or 2533--2167
-
+    local itemInfo= C_ItemInteraction.GetItemInteractionInfo() or {}
+	local currencyID= itemInfo.currencyTypeId or self.chargeCurrencyTypeId
+	if not currencyID then
+		local ver= select(4,GetBuildInfo())-->=100100,--版本 100100
+		if ver>=100200 then
+			currencyID= 2796
+		else
+			currencyID= 2533--2533(10.1), 2167(10.0)
+		end
+	end
+			
+	
 	if self==ItemInteractionFrame then
 		TokenFrame.chargeCurrencyTypeId= currencyID
 	end
@@ -856,7 +865,9 @@ local function set_ItemInteractionFrame_Currency(self)
 
         local chargeInfo = C_ItemInteraction.GetChargeInfo()
         local timeToNextCharge = chargeInfo.timeToNextCharge
-        if (self.interactionType == Enum.UIItemInteractionType.ItemConversion) then
+		
+        if timeToNextCharge and (self.interactionType == Enum.UIItemInteractionType.ItemConversion) then
+			--text= text ..' |cnGREEN_FONT_COLOR:'..(SecondsToTime(timeToNextCharge) or '')..'|r'
             text= text ..' |cnGREEN_FONT_COLOR:'..(e.SecondsToClock(timeToNextCharge, true) or '')..'|r'
         end
 
