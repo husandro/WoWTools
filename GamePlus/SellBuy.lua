@@ -20,9 +20,9 @@ local Save={
 
 
     --notShowReagentBankFrame=true,--银行,隐藏，材料包
-    --scaleReagentBankFrame=1,--银行，缩放
+    scaleReagentBankFrame=0.75,--银行，缩放
     --xReagentBankFrame=15,--坐标x
-    --yReagentBankFrame=0,--坐标y
+    --yReagentBankFrame=10,--坐标y
 }
 
 local addName= MERCHANT
@@ -1361,7 +1361,7 @@ local function Init_Bank_Frame()
 
     --整理材料银行
     ReagentBankFrame.autoSortButton= CreateFrame("Button", nil, BankFrame, 'BankAutoSortButtonTemplate')
-    ReagentBankFrame.autoSortButton:SetPoint('TOPRIGHT', BankFrame, 'BOTTOMRIGHT', 0, -2)
+    ReagentBankFrame.autoSortButton:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', -2, 0)
     ReagentBankFrame.autoSortButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -1375,12 +1375,16 @@ local function Init_Bank_Frame()
 
     --选项
     ReagentBankFrame.ShowHideButton= e.Cbtn(BankFrame, {size={18,18}, atlas='hide'})
-    ReagentBankFrame.ShowHideButton:SetPoint('RIGHT', _G['BankFrameTab1'], 'LEFT',0,4)
+    ReagentBankFrame.ShowHideButton:SetPoint('BOTTOMRIGHT', _G['BankFrameTab1'], 'BOTTOMLEFT')
     function ReagentBankFrame.ShowHideButton:set_atlas()
         self:SetNormalAtlas(Save.notShowReagentBankFrame and 'editmode-up-arrow' or 'editmode-down-arrow')
     end
-    function ReagentBankFrame.ShowHideButton:set_scale()--
-        ReagentBankFrame:SetScale(Save.scaleReagentBankFrame or 1)
+    function ReagentBankFrame.ShowHideButton:set_scale()
+        if BankFrame.activeTabIndex==2 then
+            ReagentBankFrame:SetScale(1)
+        else
+            ReagentBankFrame:SetScale(Save.scaleReagentBankFrame or 1)
+        end
     end
     function ReagentBankFrame.ShowHideButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -1389,7 +1393,7 @@ local function Init_Bank_Frame()
         e.tips:AddDoubleLine(e.onlyChinese and '显示材料银行' or REAGENT_BANK, e.GetShowHide(not Save.notShowReagentBankFrame)..e.Icon.left)
         e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleReagentBankFrame or 1), col..'Alt+'..e.Icon.mid)
         e.tips:AddDoubleLine(col..'X |cnGREEN_FONT_COLOR:'..(Save.xReagentBankFrame or -15), col..'Ctrl+'..e.Icon.mid)
-        e.tips:AddDoubleLine(col..'Y |cnGREEN_FONT_COLOR:'..(Save.yReagentBankFrame or 15), col..'Shift+'..e.Icon.mid)
+        e.tips:AddDoubleLine(col..'Y |cnGREEN_FONT_COLOR:'..(Save.yReagentBankFrame or 10), col..'Shift+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
@@ -1428,7 +1432,7 @@ local function Init_Bank_Frame()
             Save.xReagentBankFrame= n
             self:show_hide()--设置，显示材料银行
         elseif IsShiftKeyDown() then
-            n= Save.yReagentBankFrame or 15--坐标 Y
+            n= Save.yReagentBankFrame or 10--坐标 Y
             if d==1 then
                 n= n+5
             elseif d==-1 then
@@ -1441,16 +1445,24 @@ local function Init_Bank_Frame()
     end)
     ReagentBankFrame.ShowHideButton:set_scale()
     ReagentBankFrame.ShowHideButton:set_atlas()
-
+    
     ReagentBankFrame:ClearAllPoints()
     ReagentBankFrame:SetSize(386, 415)
+    ReagentBankFrame:SetPoint('TOPLEFT')
+    
+    --背景
+    ReagentBankFrame.Bg= ReagentBankFrame:CreateTexture(nil, 'BACKGROUND')
+    ReagentBankFrame.Bg:SetSize(715, 350)
+    ReagentBankFrame.Bg:SetPoint('BOTTOMLEFT',10, 10)
+    ReagentBankFrame.Bg:SetAtlas('auctionhouse-background-buy-noncommodities-market')
+    ReagentBankFrame.Bg:SetAlpha(0.7)
 
     --设置，显示材料银行
     function ReagentBankFrame.ShowHideButton:show_hide(hide)
         if (not Save.notShowReagentBankFrame or hide) and BankFrame.activeTabIndex then
 
             if BankFrame.activeTabIndex==1 and not hide then
-                ReagentBankFrame:SetPoint('TOPLEFT', BankFrame, 'BOTTOMLEFT', Save.xReagentBankFrame or -15, Save.yReagentBankFrame or 15)
+                ReagentBankFrame:SetPoint('TOPLEFT', BankFrame, 'BOTTOMLEFT', Save.xReagentBankFrame or -15, Save.yReagentBankFrame or 10)
                 ReagentBankFrame:SetShown(true)
             elseif BankFrame.activeTabIndex==2 or hide then
                 ReagentBankFrame:SetPoint('TOPLEFT')
@@ -1460,7 +1472,7 @@ local function Init_Bank_Frame()
             end
         end
         ReagentBankFrame.ShowHideButton:SetShown(BankFrame.activeTabIndex==1)--选项
-
+        ReagentBankFrame.ShowHideButton:set_scale()--缩放
         ReagentBankFrame.autoSortButton:SetShown(not Save.notShowReagentBankFrame and BankFrame.activeTabIndex==1)--整理材料银行
     end
     hooksecurefunc('BankFrame_ShowPanel', ReagentBankFrame.ShowHideButton.show_hide)
