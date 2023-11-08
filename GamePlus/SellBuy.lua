@@ -18,7 +18,7 @@ local Save={
     --sellJunkMago=true,--出售，可幻化，垃圾物品
     --notWidthx2=true,--加宽
 
-    
+
     --notShowReagentBankFrame=true,--银行,隐藏，材料包
     --scaleReagentBankFrame=1,--银行，缩放
     --xReagentBankFrame=15,--坐标x
@@ -458,12 +458,12 @@ local function Set_Merchant_Info()--设置, 提示, 信息
     local selectedTab= MerchantFrame.selectedTab
     local isMerce= selectedTab == 1
     local page= isMerce and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
-    
-    
+
+
     for i=1, page do
 		local index = selectedTab==1 and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
         local btn= _G["MerchantItem"..i]
-        
+
         if btn and btn:IsShown() then
             local itemID, itemLink
             if selectedTab==1 then
@@ -979,7 +979,7 @@ local function Init_Button(frame)
                     end,
                     OnShow=function(s)
                         s.editBox:SetNumeric(true);
-                        
+
                         if buySave[itemID] then
                             s.editBox:SetText(buySave[itemID])
                         end
@@ -1012,12 +1012,12 @@ local function Init_Button(frame)
     noSellButton:SetPoint('RIGHT', btn, 'LEFT', -2, 0)
     noSellButton:SetScript('OnMouseUp', function()
         local infoType, itemID, itemLink = GetCursorInfo()
-        
+
         if infoType=='merchant' and itemID then--购买物品
             itemLink= GetMerchantItemLink(itemID)
             itemID= GetMerchantItemID(itemID)
         end
-        
+
         if (infoType=='item' or infoType=='merchant') and itemID then
             if Save.noSell[itemID] then
                 Save.noSell[itemID]=nil
@@ -1193,7 +1193,7 @@ end
 local function Init_Frame_Widthx2()
     if Save.notWidthx2 then
         return
-    
+
     elseif IsAddOnLoaded("CompactVendor") then
         print(id, addName, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '框体宽度' or COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH, 'x2'),
             e.GetEnabeleDisable(false), 'CompactVendor',
@@ -1372,10 +1372,10 @@ local function Init_Bank_Frame()
     ReagentBankFrame.autoSortButton:SetScript('OnClick', function(self)
         C_Container.SortReagentBankBags();
     end)
-    
+
     --选项
     ReagentBankFrame.ShowHideButton= e.Cbtn(BankFrame, {size={18,18}, atlas='hide'})
-    ReagentBankFrame.ShowHideButton:SetPoint('LEFT', _G['BankFrameTab2'], 'RIGHT',2,0)
+    ReagentBankFrame.ShowHideButton:SetPoint('RIGHT', _G['BankFrameTab1'], 'LEFT',0,4)
     function ReagentBankFrame.ShowHideButton:set_atlas()
         self:SetNormalAtlas(Save.notShowReagentBankFrame and 'editmode-up-arrow' or 'editmode-down-arrow')
     end
@@ -1396,21 +1396,16 @@ local function Init_Bank_Frame()
     end
     ReagentBankFrame.ShowHideButton:SetScript('OnClick', function(self)
         Save.notShowReagentBankFrame= not Save.notShowReagentBankFrame and true or nil
-        if Save.notShowReagentBankFrame then
-            if BankFrame.activeTabIndex==1 then
-                ReagentBankFrame:ClearAllPoints()
-                ReagentBankFrame:SetPoint('TOPLEFT')
-                ReagentBankFrame:Hide()
-            end
-        else
-            self:show_hide()
-        end
+        self:show_hide(Save.notShowReagentBankFrame)
         self:set_atlas()
         self:set_tooltips()
     end)
     ReagentBankFrame.ShowHideButton:SetScript('OnLeave', function() e.tips:Hide() end)
     ReagentBankFrame.ShowHideButton:SetScript('OnEnter', ReagentBankFrame.ShowHideButton.set_tooltips)
     ReagentBankFrame.ShowHideButton:SetScript('OnMouseWheel', function(self, d)
+        if Save.notShowReagentBankFrame then
+            return
+        end
         local n
         if IsAltKeyDown() then
             n= Save.scaleReagentBankFrame or 1--缩放
@@ -1447,20 +1442,26 @@ local function Init_Bank_Frame()
     ReagentBankFrame.ShowHideButton:set_scale()
     ReagentBankFrame.ShowHideButton:set_atlas()
 
+    ReagentBankFrame:ClearAllPoints()
+    ReagentBankFrame:SetSize(386, 415)
 
     --设置，显示材料银行
-    function ReagentBankFrame.ShowHideButton:show_hide()
-        if not Save.notShowReagentBankFrame and BankFrame.activeTabIndex then
-            ReagentBankFrame:ClearAllPoints()
-            ReagentBankFrame:SetSize(386, 415)
-            if BankFrame.activeTabIndex==1 then
+    function ReagentBankFrame.ShowHideButton:show_hide(hide)
+        if (not Save.notShowReagentBankFrame or hide) and BankFrame.activeTabIndex then
+
+            if BankFrame.activeTabIndex==1 and not hide then
                 ReagentBankFrame:SetPoint('TOPLEFT', BankFrame, 'BOTTOMLEFT', Save.xReagentBankFrame or -15, Save.yReagentBankFrame or 15)
                 ReagentBankFrame:SetShown(true)
-            elseif BankFrame.activeTabIndex==2 then
+            elseif BankFrame.activeTabIndex==2 or hide then
                 ReagentBankFrame:SetPoint('TOPLEFT')
+                if hide then
+                    ReagentBankFrame:SetShown(false)
+                end
             end
         end
         ReagentBankFrame.ShowHideButton:SetShown(BankFrame.activeTabIndex==1)--选项
+
+        ReagentBankFrame.autoSortButton:SetShown(not Save.notShowReagentBankFrame and BankFrame.activeTabIndex==1)--整理材料银行
     end
     hooksecurefunc('BankFrame_ShowPanel', ReagentBankFrame.ShowHideButton.show_hide)
 end
@@ -1517,7 +1518,7 @@ local function Init()
         MerchantFrameTab2:set_buyback_num()--回购，数量，提示
     end)
 
-    
+
 
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
         Set_Merchant_Info()--设置, 提示, 信息
