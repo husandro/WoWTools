@@ -870,10 +870,10 @@ end
 function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true, showAll=true}
     if not settings.frame then return end
     local itemS= {--数量提示
-    {type='item', id=204196},--魔龙的暗影烈焰纹章10.1
-    {type='item', id=204195},--幼龙的暗影烈焰纹章
-    {type='item', id=204194},--守护巨龙的暗影烈焰纹章
-    {type='item', id=204193},--雏龙的暗影烈焰纹章
+    --{type='item', id=204196},--魔龙的暗影烈焰纹章10.1
+    --{type='item', id=204195},--幼龙的暗影烈焰纹章
+    --{type='item', id=204194},--守护巨龙的暗影烈焰纹章
+    --{type='item', id=204193},--雏龙的暗影烈焰纹章
 
     {type='currency', id=2709, line=true},--守护巨龙的酣梦纹章 10.1.5
     {type='currency', id=2708, line=true},--魔龙的酣梦纹章
