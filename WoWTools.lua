@@ -1897,6 +1897,7 @@ function e.GetItemCollected(link, sourceID, icon)--物品是否收集
     sourceID= sourceID or link and select(2, C_TransmogCollection.GetItemInfo(link))
     local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
     if sourceInfo then
+        --local hasData, canCollect= C_TransmogCollection.PlayerCanCollectSource(sourceID)
         local isSelf= select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID))
         if sourceInfo.isCollected then
             if icon then
