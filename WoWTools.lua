@@ -879,7 +879,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
     {type='currency', id=2708, line=true},--魔龙的酣梦纹章
     {type='currency', id=2707},--幼龙的酣梦纹章
 
-    {type='currency', id=2796},--苏生奇梦 10.2
+    {type='currency', id=2796, show=true},--苏生奇梦 10.2
     {type='currency', id=2533},--苏生暗影烈焰
     {type='currency', id=2245},--飞珑石
 
@@ -896,7 +896,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
         if tab.type=='currency' then
             local info=C_CurrencyInfo.GetCurrencyInfo(tab.id)
             if info and info.quantity and info.maxQuantity
-                and (settings.showAll or (info.discovered and info.quantity>0))
+                and (tab.show or (info.discovered and info.quantity>0))
             then
                 if info.maxQuantity>0  then
                     if info.quantity==info.maxQuantity then
@@ -933,7 +933,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
             e.LoadDate({id=tab.id, type='item'})
             local num= GetItemCount(tab.id, true)
             local itemQuality= C_Item.GetItemQualityByID(tab.id)
-            if (settings.showAll or num>0) and itemQuality>=1 then
+            if (tab.show or num>0) and itemQuality>=1 then
                 e.LoadDate({id=tab.id, type='item'})
                 local icon= C_Item.GetItemIconByID(tab.id)
                 local name=settings.showName and C_Item.GetItemNameByID(tab.id)
