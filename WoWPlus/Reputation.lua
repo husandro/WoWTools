@@ -146,7 +146,7 @@ local function get_Faction_Info(index, factionID)
 		end
 	end
 
-	if (isCapped and not isParagon and not index)--声望已满，没有奖励
+	if (isCapped and not isParagon and index)--声望已满，没有奖励
 		or (Save.onlyIcon and not atlas and not texture)
 	then
 		return
