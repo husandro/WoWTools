@@ -826,12 +826,8 @@ local function set_ItemInteractionFrame_Currency(self)
     local itemInfo= C_ItemInteraction.GetItemInteractionInfo() or {}
 	local currencyID= itemInfo.currencyTypeId or self.chargeCurrencyTypeId
 	if not currencyID then
-		local ver= select(4,GetBuildInfo())-->=100100,--版本 100100
-		if ver>=100200 then
-			currencyID= 2796
-		else
-			currencyID= 2533--2533(10.1), 2167(10.0)
-		end
+		--local ver= select(4,GetBuildInfo())-->=100100,--版本 100100
+		currencyID= 2796
 	end
 			
 	
