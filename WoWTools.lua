@@ -143,20 +143,19 @@ e.Icon={
 }
 
 
-C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua
-    
+C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua    
     if success and texture then
         e.Icon.wow2= '|T'..texture..':0|t'
         e.Icon.wow= texture
+        e.Icon.net2= e.Icon.wow2
     end
 end)
---[[C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Medium, function(success, texture)
+
+--[[C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Small, function(success, texture)
     if success and texture then
         e.Icon.net2= '|T'..texture..':0|t'
-        print(texture)
     end
 end)]]
-
 
 function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, uiMapID
     if not tab.id then

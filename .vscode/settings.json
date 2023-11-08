@@ -3605,7 +3605,8 @@
         "BankItemAutoSortButton",
         "BAG_CLEANUP_REAGENT_BANK",
         "BankFrameTab2",
-        "BankFrameTab1"
+        "BankFrameTab1",
+        "BNet_GetClientAtlas"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
