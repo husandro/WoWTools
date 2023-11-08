@@ -17,6 +17,7 @@ local Save={
     altDisabledAutoLoot= e.Player.husandro,--打开拾取窗口时，下次禁用，自动拾取
     --sellJunkMago=true,--出售，可幻化，垃圾物品
     --notWidthx2=true,--加宽
+    --notShowReagentBankFrame=true,--隐藏，材料包
 }
 
 local addName= MERCHANT
@@ -1323,6 +1324,104 @@ end
 
 
 
+
+
+
+
+
+
+--银行
+--BankFrame.lua
+local function Init_Bank_Frame()
+    if not ReagentBankFrame then
+        return
+    end
+
+    local tab={--隐藏，背景
+        'LeftTopCorner-Shadow',
+        'LeftBottomCorner-Shadow',
+        'RightTopCorner-Shadow',
+        'RightBottomCorner-Shadow',
+        'Right-Shadow',
+        'Left-Shadow',
+        'Bottom-Shadow',
+        'Top-Shadow',
+    }
+    for _, textrue in pairs(tab) do
+        if ReagentBankFrame[textrue] then
+            ReagentBankFrame[textrue]:SetTexture(0)
+            ReagentBankFrame[textrue]:Hide()
+        end
+    end
+
+    --整理材料银行
+    ReagentBankFrame.autoSortButton= CreateFrame("Button", nil, ReagentBankFrame, 'BankAutoSortButtonTemplate')
+    ReagentBankFrame.autoSortButton:SetPoint('TOPRIGHT',BankFrame, 'BOTTOMRIGHT',0, -10)
+    ReagentBankFrame.autoSortButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinese and '整理材料银行' or BAG_CLEANUP_REAGENT_BANK)
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+    ReagentBankFrame.autoSortButton:SetScript('OnClick', function(self)
+        C_Container.SortReagentBankBags();
+    end)
+    
+    --选项
+    ReagentBankFrame.ShowHideButton= e.Cbtn(BankFrame, {size={20,20}, atlas='hide'})
+    ReagentBankFrame.ShowHideButton:SetPoint('LEFT', _G['BankFrameTab2'], 'RIGHT',2,0)
+    function ReagentBankFrame.ShowHideButton:set_atlas()
+        self:SetNormalAtlas(Save.notShowReagentBankFrame and 'editmode-up-arrow' or 'editmode-down-arrow')
+    end
+    
+    ReagentBankFrame.ShowHideButton:SetScript('OnClick', function(self)
+        Save.notShowReagentBankFrame= not Save.notShowReagentBankFrame and true or nil
+        if Save.notShowReagentBankFrame then
+            if BankFrame.activeTabIndex==1 then
+                ReagentBankFrame:ClearAllPoints()
+                ReagentBankFrame:SetPoint('TOPLEFT')
+                ReagentBankFrame:Hide()
+            end
+        else
+            self:show_hide()
+        end
+    end)
+    ReagentBankFrame.ShowHideButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    ReagentBankFrame.ShowHideButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinese and '显示材料银行' or REAGENT_BANK )
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+    ReagentBankFrame.ShowHideButton:set_atlas()
+
+    --设置，显示材料银行
+    function ReagentBankFrame.ShowHideButton:show_hide()
+        if not Save.notShowReagentBankFrame and BankFrame.activeTabIndex then
+            ReagentBankFrame:ClearAllPoints()
+            ReagentBankFrame:SetSize(386, 415)
+            if BankFrame.activeTabIndex==1 then
+                ReagentBankFrame:SetPoint('TOP', BankFrame, 'BOTTOM', -15, 22)
+                ReagentBankFrame:SetShown(true)
+            elseif BankFrame.activeTabIndex==2 then
+                ReagentBankFrame:SetPoint('TOPLEFT')--<Anchor point="TOPLEFT" x="10" y="-60"/>
+            end
+        end
+        ReagentBankFrame.ShowHideButton:SetShown(BankFrame.activeTabIndex==1)--选项
+    end
+    hooksecurefunc('BankFrame_ShowPanel', ReagentBankFrame.ShowHideButton.show_hide)
+end
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -1418,6 +1517,7 @@ local function Init()
 
 
         Init_Frame_Widthx2()--加宽，框架x2
+        Init_Bank_Frame()--银行
 end
 
 

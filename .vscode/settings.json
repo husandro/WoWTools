@@ -3601,7 +3601,10 @@
         "MerchantItem7",
         "MerchantItem9",
         "MerchantMoneyFrame",
-        "MerchantBuyBackItemSlotTexture"
+        "MerchantBuyBackItemSlotTexture",
+        "BankItemAutoSortButton",
+        "BAG_CLEANUP_REAGENT_BANK",
+        "BankFrameTab2"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
