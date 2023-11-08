@@ -122,11 +122,11 @@ local function Init()
         if currencyInfo.iconFileID then
             Button:SetNormalTexture(currencyInfo.iconFileID)
         end
-        function Button:set_button()
+        function Button:set_Currency()
             local info = C_CurrencyInfo.GetCurrencyInfo(CurrencyID) or {}
             self.label:SetText(info.quantity or '')
         end
-        Button:set_button()
+        Button:set_Currency()
     else
         Button:SetNormalTexture(e.Icon.icon)
     end
