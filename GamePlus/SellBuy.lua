@@ -17,7 +17,11 @@ local Save={
     altDisabledAutoLoot= e.Player.husandro,--打开拾取窗口时，下次禁用，自动拾取
     --sellJunkMago=true,--出售，可幻化，垃圾物品
     --notWidthx2=true,--加宽
-    --notShowReagentBankFrame=true,--隐藏，材料包
+
+    
+    --notShowReagentBankFrame=true,--银行,隐藏，材料包
+    --scaleReagentBankFrame=1,--银行，缩放
+    --xReagentBankFrame=15,--坐标x
 }
 
 local addName= MERCHANT
@@ -1374,7 +1378,9 @@ local function Init_Bank_Frame()
     function ReagentBankFrame.ShowHideButton:set_atlas()
         self:SetNormalAtlas(Save.notShowReagentBankFrame and 'editmode-up-arrow' or 'editmode-down-arrow')
     end
-    
+    function ReagentBankFrame.ShowHideButton:set_scale()
+        ReagentBankFrame:SetScale(Save.scaleReagentBankFrame or 1)
+    end
     ReagentBankFrame.ShowHideButton:SetScript('OnClick', function(self)
         Save.notShowReagentBankFrame= not Save.notShowReagentBankFrame and true or nil
         if Save.notShowReagentBankFrame then
@@ -1388,15 +1394,46 @@ local function Init_Bank_Frame()
         end
         self:set_atlas()
     end)
-    ReagentBankFrame.ShowHideButton:SetScript('OnLeave', function() e.tips:Hide() end)
-    ReagentBankFrame.ShowHideButton:SetScript('OnEnter', function(self)
+    function ReagentBankFrame.ShowHideButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '显示材料银行' or REAGENT_BANK )
+        e.tips:AddDoubleLine(e.onlyChinese and '显示材料银行' or REAGENT_BANK, e.GetShowHide(not Save.notShowReagentBankFrame)..e.Icon.left)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleReagentBankFrame or 1), 'Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine('X |cnGREEN_FONT_COLOR:'..(Save.xReagentBankFrame or -15), 'Ctrl+'..e.Icon.mid)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
+        self:set_tooltips()
+    end
+    ReagentBankFrame.ShowHideButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    ReagentBankFrame.ShowHideButton:SetScript('OnEnter', ReagentBankFrame.ShowHideButton.set_tooltips)
+    ReagentBankFrame.ShowHideButton:SetScript('OnMouseWheel', function(self, d)
+        local n
+        if IsAltKeyDown() then
+            n= Save.scaleReagentBankFrame or 1
+            if d==1 then
+                n= n+0.05
+            elseif d==-1 then
+                n= n-0.05
+            end
+            n= n>4 and 4 or n
+            n= n<0.4 and 0.4 or n
+            Save.scaleReagentBankFrame= n
+            self:set_scale()
+        elseif IsControlKeyDown() then
+            n= Save.xReagentBankFrame or -15
+            if d==1 then
+                n= n+5
+            elseif d==-1 then
+                n= n-5
+            end
+            Save.xReagentBankFrame= n
+            self:show_hide()--设置，显示材料银行
+        end
+        self:set_tooltips()
     end)
+    ReagentBankFrame.ShowHideButton:set_scale()
     ReagentBankFrame.ShowHideButton:set_atlas()
+
 
     --设置，显示材料银行
     function ReagentBankFrame.ShowHideButton:show_hide()
@@ -1404,10 +1441,10 @@ local function Init_Bank_Frame()
             ReagentBankFrame:ClearAllPoints()
             ReagentBankFrame:SetSize(386, 415)
             if BankFrame.activeTabIndex==1 then
-                ReagentBankFrame:SetPoint('TOP', BankFrame, 'BOTTOM', -15, 22)
+                ReagentBankFrame:SetPoint('TOPLEFT', BankFrame, 'BOTTOMLEFT', Save.xReagentBankFrame or -15,15)
                 ReagentBankFrame:SetShown(true)
             elseif BankFrame.activeTabIndex==2 then
-                ReagentBankFrame:SetPoint('TOPLEFT')--<Anchor point="TOPLEFT" x="10" y="-60"/>
+                ReagentBankFrame:SetPoint('TOPLEFT')
             end
         end
         ReagentBankFrame.ShowHideButton:SetShown(BankFrame.activeTabIndex==1)--选项
