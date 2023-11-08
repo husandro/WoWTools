@@ -494,7 +494,7 @@ function func.Set_Item(self, itemLink, itemID)
     elseif C_ToyBox.GetToyInfo(itemID) then--玩具
         self.text2Left:SetText(PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
 
-    elseif C_WowTokenPublic.IsAuctionableWowToken(itemID) then --itemID==122284 then--魔兽世界时光徽章
+    elseif itemID==122284 then-- or C_WowTokenPublic.IsAuctionableWowToken(itemID) then --itemID==122284 then--魔兽世界时光徽章
         C_WowTokenPublic.UpdateMarketPrice()
         local price= C_WowTokenPublic.GetCurrentMarketPrice()
         if price and price>0 then

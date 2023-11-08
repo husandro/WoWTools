@@ -144,6 +144,7 @@ e.Icon={
 
 
 C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua
+    
     if success and texture then
         e.Icon.wow2= '|T'..texture..':0|t'
         e.Icon.wow= texture
