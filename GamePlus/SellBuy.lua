@@ -1386,6 +1386,7 @@ local function Init_Bank_Frame()
         else
             self:show_hide()
         end
+        self:set_atlas()
     end)
     ReagentBankFrame.ShowHideButton:SetScript('OnLeave', function() e.tips:Hide() end)
     ReagentBankFrame.ShowHideButton:SetScript('OnEnter', function(self)
