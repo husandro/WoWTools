@@ -674,7 +674,7 @@ local function set_OnClick_btn(self)
     if not text then
         text= self.name:match('(.-)|A') or self.name:match('(.-)|T')  or self.name
     end
-    e.Chat(text, nil)
+    e.Chat(text, nil, nil)
 end
 
 

@@ -887,7 +887,7 @@ local function Init_Set_AlphaAndColor()
     hide_Texture(MerchantMoneyBgRight)
     set_Alpha_Color(MerchantExtraCurrencyBg)
     set_Alpha_Color(MerchantExtraCurrencyInset)
-
+    hide_Texture(MerchantFrameBottomLeftBorder)
 
     C_Timer.After(2, function()
         if SpellFlyout and SpellFlyout.Background then--Spell Flyout

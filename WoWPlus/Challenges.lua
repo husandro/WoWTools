@@ -156,11 +156,12 @@ local function getBagKey(self, point, x, y, parent) --KEY链接
             end
             if itemID and itemLink and C_Item.IsItemKeystoneByID(itemID) then
                 if not self['key'..i] then
-                    self['key'..i] = CreateFrame("Button", nil, parent or self)
-                    self['key'..i]:SetHighlightAtlas('Forge-ColorSwatchSelection')
+                    self['key'..i]= e.Cbtn(parent or self, {size={16,16}, texture=icon})
+                    --[[CreateFrame("Button", nil, parent or self)
+,                   self['key'..i]:SetHighlightAtlas('Forge-ColorSwatchSelection')
                     self['key'..i]:SetPushedTexture('Interface\\Buttons\\UI-Quickslot-Depress')
                     self['key'..i]:SetSize(16, 16)
-                    self['key'..i]:SetNormalTexture(icon)
+                    self['key'..i]:SetNormalTexture(icon)]]
                     self['key'..i].item=itemLink
                     if i==1 then
                         self['key'..i]:SetPoint(point, self, x, y)
@@ -173,7 +174,7 @@ local function getBagKey(self, point, x, y, parent) --KEY链接
                     end
                     self['key'..i]:SetScript("OnMouseDown",function(self2, d2)--发送链接
                             if d2=='LeftButton' then
-                                e.Chat(self2.item)
+                                e.Chat(self2.item, nil, nil)
                             else
                                 e.Chat(self2.item, nil, true)
                                 --if not ChatEdit_InsertLink(self2.item) then
@@ -412,7 +413,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                         return
                     end
                     if d=='LeftButton' then
-                       e.Chat(self3.link)
+                       e.Chat(self3.link, nil, nil)
                     elseif d=='RightButton' then
                         e.Chat(self3.link, nil, true)
                         --if not ChatEdit_InsertLink(self3.link) then
@@ -486,7 +487,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
             end
         end
         m=m..e.SecondsToClock(timeLimit)
-        e.Chat(m)
+        e.Chat(m, nil, nil)
         self2.inseSayTips=nil
     end)
 
@@ -515,7 +516,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.countdown2:SetSize(100,24)
     self.countdown2:SetScript("OnMouseDown",function()
         C_PartyInfo.DoCountdown(0)
-        e.Chat(e.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!')
+        e.Chat(e.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!', nil, nil)
     end)
 end
 
@@ -1728,7 +1729,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             local itemLink= get_Bag_Key()--查找，包的key
             if itemLink then
                 C_Timer.After(2, function()
-                    e.Chat(itemLink)
+                    e.Chat(itemLink, nil, nil)
                 end)
             end
         end

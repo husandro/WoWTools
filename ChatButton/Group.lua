@@ -399,7 +399,7 @@ local function Init()
             elseif IsInGroup() then
                 SendChatMessage(text, 'PARTY')
             else
-                e.Chat(text, nil, true)
+                e.Chat(text, nil, nil)
             end
         end
     end)

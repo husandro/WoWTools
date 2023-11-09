@@ -95,7 +95,7 @@ local function set_TrackButton_Text()--设置显示内容
             sec=math.floor(sec)
             if sec ~= chatStarTime and sec > 0 and sec%Save.SayTime==0  then--IsInInstance()
                 chatStarTime=sec
-                e.Chat(e.SecondsToClock(sec), nil, true)
+                e.Chat(e.SecondsToClock(sec), nil, nil)
             end
         end
         text= '|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnRED_FONT_COLOR:'..combat..'|r'
@@ -677,7 +677,7 @@ local function Init()
                                     num= s.editBox:GetText() or ''
                                     num= tonumber(num)
                                     if num>0 then
-                                        e.Chat(e.SecondsToClock(num), nil, true)
+                                        e.Chat(e.SecondsToClock(num), nil, nil)
                                     else
                                         print(id, addName, e.GetEnabeleDisable(false))
                                     end

@@ -1306,7 +1306,7 @@ local function Init_EncounterJournal()--冒险指南界面
             if not Save.hideEncounterJournal and spellID and spellID>0 and d=='RightButton' then
                 local link=GetSpellLink(spellID)
                 if IsInGroup() then
-                    e.Chat(link or spellID )
+                    e.Chat(link or spellID, nil, nil)
                 else
                     e.Chat(link and link..'spellID' or spellID, nil, true)
                 end

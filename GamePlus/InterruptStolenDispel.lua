@@ -39,7 +39,7 @@ local function set_COMBAT_LOG_EVENT_UNFILTERED()--https://wowpedia.fandom.com/wi
     if UnitIsUnit(target, 'player') then
         print(id, e.Icon.player..e.Player.col..(e.onlyChinese and '断驱散' or addName), text)
     else
-        e.Chat(text, nil, true)
+        e.Chat(text, nil, nil)
     end
 end
 

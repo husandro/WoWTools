@@ -942,7 +942,7 @@ local function Init()
                             else
                                 text= VOICEMACRO_16_Dw_1 ..', '..SUMMON
                             end
-                            e.Chat('{rt1}'..text..'{rt1}')
+                            e.Chat('{rt1}'..text..'{rt1}', nil, nil)
                         end
                     end
                 end)

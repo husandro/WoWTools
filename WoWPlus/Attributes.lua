@@ -1898,7 +1898,7 @@ local function Init()
             if UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
                 name= GetUnitName('target', true)
             end
-            e.Chat(text, name, true)
+            e.Chat(text, name, nil)
         end
     end
 

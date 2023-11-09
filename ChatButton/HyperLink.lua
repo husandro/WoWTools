@@ -707,7 +707,7 @@ local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
         if Save.groupWelcome and UnitIsGroupLeader('player') and (Save.welcomeOnlyHomeGroup and IsInGroup(LE_PARTY_CATEGORY_HOME) or not Save.welcomeOnlyHomeGroup) then
             local name=text:match(raidMS) or text:match(partyMS)
             if name then
-                e.Chat(Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''), name)
+                e.Chat(Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''), name, nil)
             end
         end
     elseif text:find(guildMS) then
@@ -879,7 +879,7 @@ local function InitMenu(_, level, menuList)
                     OnAccept = function(self)
                         local text= self.editBox:GetText()
                         Save.groupWelcomeText= text
-                        e.Chat(text, e.Player.name)
+                        e.Chat(text, e.Player.name, nil)
                     end,
                     EditBoxOnTextChanged=function(self)
                         local text= self:GetText() or ''

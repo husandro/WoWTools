@@ -138,7 +138,7 @@ local function InitMenu(self, level, type)--主菜单
                 arg1=tab.text,
                 keepShownOnClick= true,
                 func=function(_, arg1)
-                    e.Chat(arg1)
+                    e.Chat(arg1, nil, nil)
                 end,
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -169,7 +169,7 @@ local function InitMenu(self, level, type)--主菜单
             arg1=tab.arg1,
             keepShownOnClick= true,
             func=function(_, arg1)
-                e.Chat(arg1)
+                e.Chat(arg1, nil, nil)
             end,
         }
         if tabNew[tab.name] then

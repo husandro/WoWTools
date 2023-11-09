@@ -52,7 +52,7 @@ local function setButtons()--设置按钮
             ChatFrameEditBox:Insert(text)
             ChatEdit_ActivateChat(ChatFrameEditBox)
         elseif d=='RightButton' then
-            e.Chat(text)
+            e.Chat(text, nil, nil)
         end
     end
     local function setPoint(btn, text)--设置位置, 操作
