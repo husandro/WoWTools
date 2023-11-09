@@ -841,6 +841,7 @@ local function Init_Set_AlphaAndColor()
     hide_Frame_Texture(AddonCompartmentFrame)
     if e.Player.useColor then
         AddonCompartmentFrame.Text:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
+        set_Alpha_Color(AddonCompartmentFrame.Text)
     end
 
     hide_Texture(PlayerFrameAlternateManaBarBorder)
