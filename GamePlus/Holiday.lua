@@ -1014,7 +1014,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if  Save.disabled then
                 panel:UnregisterAllEvents()
             else
-                e.call('Calendar_LoadUI')--LoadAddOn("Blizzard_Calendar")
+                e.call('Calendar_LoadUI')--C_AddOns.LoadAddOn("Blizzard_Calendar")
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 

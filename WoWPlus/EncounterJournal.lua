@@ -171,7 +171,7 @@ local function EncounterJournal_Set_All_Info_Text()
         AllTipsFrame.weekLable= e.Cstr(AllTipsFrame, {mouse=true})
         AllTipsFrame.weekLable:SetPoint('TOPLEFT', AllTipsFrame.label, 'BOTTOMLEFT', 0, -12)
         AllTipsFrame.weekLable:SetScript('OnMouseDown', function(self)
-            if not IsAddOnLoaded("Blizzard_WeeklyRewards") then LoadAddOn("Blizzard_WeeklyRewards") end--周奖励面板
+            if not C_AddOns.IsAddOnLoaded("Blizzard_WeeklyRewards") then C_AddOns.LoadAddOn("Blizzard_WeeklyRewards") end--周奖励面板
             WeeklyRewards_ShowUI()--WeeklyReward.lua
             self:SetAlpha(1)
         end)
@@ -304,7 +304,7 @@ local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
         if Save.WorldBossPoint then
             panel.WorldBoss:SetPoint(Save.WorldBossPoint[1], UIParent, Save.WorldBossPoint[3], Save.WorldBossPoint[4], Save.WorldBossPoint[5])
         else
-            if IsAddOnLoaded('Blizzard_EncounterJournal') then
+            if C_AddOns.IsAddOnLoaded('Blizzard_EncounterJournal') then
                 panel.WorldBoss:SetPoint('BOTTOMRIGHT',EncounterJournal, 'TOPRIGHT', -65,5)
             else
                 panel.WorldBoss:SetPoint('CENTER')
@@ -1534,7 +1534,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     set_Loot_Spec_Event()--BOSS战时, 指定拾取, 专精, 事件
                 end
                 --[[C_Timer.After(2, function()
-                    if not IsAddOnLoaded("Blizzard_EncounterJournal") then LoadAddOn('Blizzard_EncounterJournal') end
+                    if not C_AddOns.IsAddOnLoaded("Blizzard_EncounterJournal") then C_AddOns.LoadAddOn('Blizzard_EncounterJournal') end
                     if not EncounterJournal or not EncounterJournal:IsVisible() then
                         ToggleEncounterJournal()
                     end

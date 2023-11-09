@@ -130,7 +130,7 @@ local function Init_DressUpFrames()--试衣间, 外观列表
                         --local chat=SELECTED_DOCK_FRAME
                         --ChatFrame_OpenChat(chat.editBox:GetText()..self2.link, chat)
                     elseif d=='RightButton' then
-                        if not IsAddOnLoaded("Blizzard_Collections") then LoadAddOn('Blizzard_Collections') end
+                        if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then C_AddOns.LoadAddOn('Blizzard_Collections') end
                         local wcFrame= WardrobeCollectionFrame
                         if not CollectionsJournal:IsVisible() or not wcFrame:IsVisible() then
                         ToggleCollectionsJournal(5)

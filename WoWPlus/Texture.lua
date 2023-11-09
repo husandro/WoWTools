@@ -896,10 +896,10 @@ local function Init_Set_AlphaAndColor()
             hide_Texture(SpellFlyout.Background.VerticalMiddle)
         end
 
-        for i=1, GetNumAddOns() do
-            local t= GetAddOnEnableState(nil,i);
+        for i=1, C_AddOns.GetNumAddOns() do
+            local t= C_AddOns.GetAddOnEnableState(nil,i);
             if t==2 then
-                local name=GetAddOnInfo(i)
+                local name=C_AddOns.GetAddOnInfo(i)
                 name= name:match('(.-)%-') or name
                 if name then
                     set_Alpha_Frame_Texture(_G['LibDBIcon10_'..name], {index=2})

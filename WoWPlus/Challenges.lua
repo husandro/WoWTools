@@ -570,7 +570,7 @@ local function Affix_CreateButton(self, affixID)--Blizzard_ScenarioObjectiveTrac
 end
 
 local function Affix()
-    if IsAddOnLoaded("AngryKeystones") or not affixSchedule then
+    if C_AddOns.IsAddOnLoaded("AngryKeystones") or not affixSchedule then
         affixSchedule=nil
         return
     end

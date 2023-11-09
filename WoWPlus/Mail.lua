@@ -418,7 +418,7 @@ local function Init_Button()
     if _G['SendMailNameEditBoxMiddle'] then
         button:SetPoint('LEFT',    _G['SendMailNameEditBoxMiddle'] or SendMailNameEditBox, 'RIGHT', 6, 0)
     else
-    button:SetPoint('LEFT',   _G['Postal_BlackBookButton'] or SendMailNameEditBox, 'RIGHT', 2, 0)--IsAddOnLoaded('Postal')
+    button:SetPoint('LEFT',   _G['Postal_BlackBookButton'] or SendMailNameEditBox, 'RIGHT', 2, 0)--C_AddOns.IsAddOnLoaded('Postal')
     end
     button:SetFrameStrata('HIGH')
     button:SetScript('OnClick', function(self2)
@@ -920,7 +920,7 @@ local function Init_Fast_Button()
     panel.ItemMaxNum= ATTACHMENTS_MAX_SEND
 
     button.FastButton= e.Cbtn(button, {size={size+4, size+4}, atlas= 'NPE_ArrowRight'})
-    if _G['Postal_QuickAttachButton1'] then--IsAddOnLoaded('Postal')
+    if _G['Postal_QuickAttachButton1'] then--C_AddOns.IsAddOnLoaded('Postal')
         button.FastButton:SetPoint('BOTTOMLEFT', _G['Postal_QuickAttachButton1'], 'TOPRIGHT', 2, 0)
     else
         button.FastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT',0, -2)

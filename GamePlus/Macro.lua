@@ -1634,7 +1634,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save.disabled  then
                 self:UnregisterEvent('ADDON_LOADED')
 
-            elseif IsAddOnLoaded("MacroToolkit") then
+            elseif C_AddOns.IsAddOnLoaded("MacroToolkit") then
                 print(id, addName,
                     e.GetEnabeleDisable(false), 'MacroToolkit',
                     e.onlyChinese and '插件' or ADDONS

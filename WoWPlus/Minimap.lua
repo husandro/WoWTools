@@ -1707,8 +1707,8 @@ local function click_Func(self, d)
         e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
 
     elseif IsShiftKeyDown() then
-        if not IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
-            LoadAddOn("Blizzard_WeeklyRewards")
+        if not C_AddOns.IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
+            C_AddOns.LoadAddOn("Blizzard_WeeklyRewards")
         end
         WeeklyRewards_ShowUI()--WeeklyReward.lua
 

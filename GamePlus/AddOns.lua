@@ -18,11 +18,11 @@ local Save={
     }
 
 local function get_AddList()--检查列表, 选取数量, 总数, 数量/总数
-    local num, all=0, GetNumAddOns()
+    local num, all=0, C_AddOns.GetNumAddOns()
     for i=1,  all do
-        local t= GetAddOnEnableState(nil,i)
+        local t= C_AddOns.GetAddOnEnableState(nil,i)
         if t==2 then
-            local name=GetAddOnInfo(i)
+            local name=C_AddOns.GetAddOnInfo(i)
             if name then
                 num=num+1
             end
@@ -42,7 +42,7 @@ local function get_buttons()
         local load= 0
         for name2 in pairs(tab) do
             num=num+1
-            if IsAddOnLoaded(name2) then
+            if C_AddOns.IsAddOnLoaded(name2) then
                 load= load+1
             end
         end
@@ -60,12 +60,12 @@ local function set_Buttons()--设置按钮, 和位置
                 button=e.Cbtn(panel, {type=false, size={88,22}})
                 button:SetScript('OnMouseDown',function(self, d)
                     if d=='LeftButton' then--加载
-                        for i=1, GetNumAddOns() do
-                            local name2= GetAddOnInfo(i);
+                        for i=1, C_AddOns.GetNumAddOns() do
+                            local name2= C_AddOns.GetAddOnInfo(i);
                             if name2 and Save.buttons[self.name][name2] then
-                                EnableAddOn(i)
+                                C_AddOns.EnableAddOn(i)
                             else
-                                DisableAddOn(i)
+                                C_AddOns.DisableAddOn(i)
                             end
                         end
                         e.Reload()
@@ -105,15 +105,15 @@ local function set_Buttons()--设置按钮, 和位置
                     e.tips:AddDoubleLine((e.onlyChinese and '加载插件' or LOAD_ADDON)..e.Icon.left, (e.onlyChinese and '删除' or DELETE)..e.Icon.right,1,0,1, 1,0,1)
                     local addAll={}
                     local addTab={}
-                    for i=1, GetNumAddOns() do
-                        addAll[GetAddOnInfo(i)]=true
+                    for i=1, C_AddOns.GetNumAddOns() do
+                        addAll[C_AddOns.GetAddOnInfo(i)]=true
                     end
                     for name2, _ in pairs(Save.buttons[self.name]) do
                         table.insert(addTab, name2)
                     end
                     table.sort(addTab)
                     for index, name2 in pairs(addTab) do
-                        if IsAddOnLoaded(name2) then
+                        if C_AddOns.IsAddOnLoaded(name2) then
                             name2= '|cnGREEN_FONT_COLOR:'..name2..'|r'..e.Icon.select2
                         elseif not addAll[name2] then
                             name2= '|cnRED_FONT_COLOR:'..name2..'|r'
@@ -171,9 +171,9 @@ local function Init()
             OnAccept=function(self)
                 local text = self.editBox:GetText()
                 Save.buttons[text]={}
-                for i=1, GetNumAddOns() do
-                    if GetAddOnEnableState(nil,i)==2 then
-                        local name=GetAddOnInfo(i);
+                for i=1, C_AddOns.GetNumAddOns() do
+                    if C_AddOns.GetAddOnEnableState(nil,i)==2 then
+                        local name=C_AddOns.GetAddOnInfo(i);
                         if name then
                             Save.buttons[text][name]=true
                         end
@@ -214,7 +214,7 @@ local function Init()
         local last
         local index= 0
         for _, tab in pairs(newTab) do
-            local name, _, _, _, reason = GetAddOnInfo(tab.name)
+            local name, _, _, _, reason = C_AddOns.GetAddOnInfo(tab.name)
             if name and reason~='MISSING' then
                 index= index+1
                 local check= panel.fast[index]
@@ -228,10 +228,10 @@ local function Init()
                     check.Text:ClearAllPoints()
                     check.Text:SetPoint('RIGHT', check, 'LEFT')
                     check:SetScript('OnClick', function(self2)
-                        if GetAddOnEnableState(nil, self2.name)~=0 then
-                            DisableAddOn(self2.name)
+                        if C_AddOns.GetAddOnEnableState(nil, self2.name)~=0 then
+                            C_AddOns.DisableAddOn(self2.name)
                         else
-                            EnableAddOn(self2.name)
+                            C_AddOns.EnableAddOn(self2.name)
                         end
                         e.call('AddonList_Update')
                     end)
@@ -249,7 +249,7 @@ local function Init()
                     check.index= tab.index
                     panel.fast[index]= check
                 end
-                local checked= GetAddOnEnableState(nil, name)~=0
+                local checked= C_AddOns.GetAddOnEnableState(nil, name)~=0
                 check:SetChecked(checked)
                 check:SetShown(true)
 
@@ -293,7 +293,7 @@ local function Init()
                 if num==button.totaleAddons and Save.buttons[name] then
                     find=true
                     for name2,_ in pairs(Save.buttons[name]) do
-                        if GetAddOnEnableState(nil, name2)==0 then
+                        if C_AddOns.GetAddOnEnableState(nil, name2)==0 then
                             find=false
                             break
                         end
@@ -325,7 +325,7 @@ local function Init()
 
 
     hooksecurefunc('AddonList_InitButton', function(self, addonIndex)
-        local name= GetAddOnInfo(addonIndex)
+        local name= C_AddOns.GetAddOnInfo(addonIndex)
         if Save.fast[name] then
             Save.fast[name]= addonIndex
         end
@@ -385,7 +385,7 @@ local function Init()
     end)
     AddonListDisableAllButton:HookScript('OnClick', function()
         if Save.enableAllButtn then
-            EnableAddOn(id)
+            C_AddOns.EnableAddOn(id)
             e.call('AddonList_Update')
         end
     end)

@@ -693,7 +693,7 @@ end
     end)
 
 
-    if IsAddOnLoaded("Bagnon") then
+    if C_AddOns.IsAddOnLoaded("Bagnon") then
         local itemButton = Bagnon.ItemSlot or Bagnon.Item
         if (itemButton) and (itemButton.Update)  then
             hooksecurefunc(itemButton, 'Update', function(self)
@@ -710,7 +710,7 @@ end
         end
         return
 
-    elseif IsAddOnLoaded("Baggins") then
+    elseif C_AddOns.IsAddOnLoaded("Baggins") then
         hooksecurefunc(Baggins, 'UpdateItemButton', function(_, _, button, bagID, slotID)
             if button and bagID and slotID then
                 set_Item_Info(button, {bag={bag=bagID, slot=slotID}})
@@ -718,7 +718,7 @@ end
         end)
         return
 
-    elseif IsAddOnLoaded('Inventorian') then
+    elseif C_AddOns.IsAddOnLoaded('Inventorian') then
         local lib = LibStub("AceAddon-3.0", true)
         if lib then
             ADDON= lib:GetAddon("Inventorian")

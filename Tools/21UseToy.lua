@@ -729,7 +729,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 panel:RegisterEvent('NEW_TOY_ADDED')
                 panel:RegisterEvent('TOYS_UPDATED')
 
-                if not IsAddOnLoaded("Blizzard_Collections") then LoadAddOn('Blizzard_Collections') end
+                if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then C_AddOns.LoadAddOn('Blizzard_Collections') end
                 C_Timer.After(2.1, function()
                     if UnitAffectingCombat('player') then
                         panel.combat= true

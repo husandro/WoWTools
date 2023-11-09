@@ -1,9 +1,9 @@
 local id, e= ...
-if e.Player.class~='HUNTER' then --or IsAddOnLoaded("ImprovedStableFrame") then
+if e.Player.class~='HUNTER' then --or C_AddOns.IsAddOnLoaded("ImprovedStableFrame") then
     return
 end
 
---PetStableFrame, IsAddOnLoaded("ImprovedStableFrame")
+--PetStableFrame, C_AddOns.IsAddOnLoaded("ImprovedStableFrame")
 --PetStable.lua
 
 local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  UnitClass('player'), DUNGEON_FLOOR_ORGRIMMARRAID8) --猎人兽栏
@@ -469,10 +469,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                 })
 
-                if Save.disabled  then-- or IsAddOnLoaded("ImprovedStableFrame") then
+                if Save.disabled  then-- or C_AddOns.IsAddOnLoaded("ImprovedStableFrame") then
                     panel:UnregisterAllEvents()
                 else
-                    if IsAddOnLoaded("ImprovedStableFrame") then
+                    if C_AddOns.IsAddOnLoaded("ImprovedStableFrame") then
                         print(id, addName,
                             e.GetEnabeleDisable(false), 'Improved Stable Frame',
                             e.onlyChinese and '插件' or ADDONS

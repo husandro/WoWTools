@@ -31,7 +31,7 @@ local Save= {
 local panel= CreateFrame("Frame")
 local targetFrame
 local isPvPArena, isIns--, isPvPZone
---local isAddOnPlater--IsAddOnLoaded("Plater")
+--local isAddOnPlater--C_AddOns.IsAddOnLoaded("Plater")
 --[[
 local function get_isAddOnPlater(unit)
     if isAddOnPlater and unit then
@@ -239,7 +239,7 @@ end
 local function set_Target()
     local plate = C_NamePlate.GetNamePlateForUnit("target")
     if plate and plate.UnitFrame then
-        local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--IsAddOnLoaded("Plater")
+        local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--C_AddOns.IsAddOnLoaded("Plater")
         if not frame then
             if plate.UnitFrame.RaidTargetFrame and plate.UnitFrame.RaidTargetFrame.RaidTargetIcon:IsShown() then
                 frame= plate.UnitFrame.RaidTargetFrame
@@ -766,7 +766,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             )
 
             if not Save.disabled then
-                --isAddOnPlater= IsAddOnLoaded("Plater")
+                --isAddOnPlater= C_AddOns.IsAddOnLoaded("Plater")
                 set_Option()
                 Init()
             end

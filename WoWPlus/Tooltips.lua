@@ -1759,7 +1759,7 @@ local function Init()
         local label= QuestMapFrame.DetailsFrame.questIDLabel
         if not label then
             label= create_Quest_Label(QuestMapFrame.DetailsFrame)
-            if IsAddOnLoaded('WoWeuCN_Quests') then
+            if C_AddOns.IsAddOnLoaded('WoWeuCN_Quests') then
                 label:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 25, 28)
             else
                 label:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 20, 10)

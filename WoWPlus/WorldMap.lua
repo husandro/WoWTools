@@ -445,7 +445,7 @@ end
 local function Init_set_Map_ID()--显示地图ID
     if not Button then
         Button=e.Cbtn(WorldMapFrame.BorderFrame.TitleContainer, {icon='hide', size={22,22}})
-        if IsAddOnLoaded('Mapster') then
+        if C_AddOns.IsAddOnLoaded('Mapster') then
             Button:SetPoint('RIGHT', WorldMapFrame.BorderFrame.TitleContainer, 'RIGHT', -140,0)
         else
             Button:SetPoint('RIGHT', WorldMapFrame.BorderFrame.TitleContainer, 'RIGHT', -50,0)

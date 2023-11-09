@@ -1067,13 +1067,13 @@ local function InitMenu(_, level, menuList)
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= '|A:minimap-genericevent-hornicon:0:0|a|cffff00ffETR|rACE',
-        checked= IsAddOnLoaded("Blizzard_EventTrace") and EventTrace:IsShown(),
+        checked= C_AddOns.IsAddOnLoaded("Blizzard_EventTrace") and EventTrace:IsShown(),
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '事件记录' or EVENTTRACE_HEADER,
         keepShownOnClick=true,
         func= function()
-            if not IsAddOnLoaded('Blizzard_EventTrace') then
-                UIParentLoadAddOn("Blizzard_EventTrace")
+            if not C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') then
+                UIParentC_AddOns.LoadAddOn("Blizzard_EventTrace")
             else
                 EventTrace:SetShown(not EventTrace:IsShown() and true or false)
             end
@@ -1084,7 +1084,7 @@ local function InitMenu(_, level, menuList)
 
     info={
         text= '|A:QuestLegendaryTurnin:0:0|a|cff00ff00FST|rACK',
-        checked= IsAddOnLoaded("Blizzard_DebugTools") and FrameStackTooltip_IsFramestackEnabled(),--Blizzard_DebugTools.lua
+        checked= C_AddOns.IsAddOnLoaded("Blizzard_DebugTools") and FrameStackTooltip_IsFramestackEnabled(),--Blizzard_DebugTools.lua
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '框架栈' or DEBUG_FRAMESTACK,
         tooltipText='|cnGREEN_FONT_COLOR:Alt|r '..(e.onlyChinese and '切换' or HUD_EDIT_MODE_SWITCH)
@@ -1093,8 +1093,8 @@ local function InitMenu(_, level, menuList)
                     ..'|n|cnGREEN_FONT_COLOR:Ctrl+C|r '.. (e.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..' \"File\" '..(e.onlyChinese and '类型' or TYPE),
         keepShownOnClick=true,
         func= function()--Bindings.xml
-            if not IsAddOnLoaded("Blizzard_DebugTools") then
-                LoadAddOn("Blizzard_DebugTools")
+            if not C_AddOns.IsAddOnLoaded("Blizzard_DebugTools") then
+                C_AddOns.LoadAddOn("Blizzard_DebugTools")
             end
             FrameStackTooltip_ToggleDefaults()
         end,
