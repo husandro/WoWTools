@@ -150,8 +150,6 @@ local function Init()
     function Button:set_Shown()
         local show= self.uiMapID and not UnitAffectingCombat('player') and not C_PetBattles.IsInBattle()
         self:SetShown(show)
-        if show then
-        end
     end
     function Button:get_UIMapID()
         self.uiMapID= C_Map.GetBestMapForUnit('player')==2200 and true or false
@@ -160,6 +158,7 @@ local function Init()
         if event=='PLAYER_ENTERING_WORLD' then
             self:get_UIMapID()
             self:set_Event()
+            self:set_Shown()
         elseif event=='PLAYER_REGEN_ENABLED' then
             if self.setButtonInCombat then
                 self:set_button()
