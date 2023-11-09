@@ -1817,7 +1817,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
             self2.labelType:SetPoint('TOP', self2, 'BOTTOM', 0, 4)
             self2.labelType:SetAlpha(0.5)
         end
-        self2.labelType:SetText(name and e.WA_Utf8Sub(GetDifficultyInfo(difficultyID), 2, 6) or '')
+        self2.labelType:SetText(name and e.WA_Utf8Sub(name, 2, 6) or '')
         self2.tips= tips
     end)
 
