@@ -20,7 +20,7 @@ local Save={
 local function get_AddList()--检查列表, 选取数量, 总数, 数量/总数
     local num, all=0, C_AddOns.GetNumAddOns()
     for i=1,  all do
-        local t= C_AddOns.GetAddOnEnableState(nil,i)
+        local t= C_AddOns.GetAddOnEnableState(i)
         if t==2 then
             local name=C_AddOns.GetAddOnInfo(i)
             if name then
@@ -172,7 +172,7 @@ local function Init()
                 local text = self.editBox:GetText()
                 Save.buttons[text]={}
                 for i=1, C_AddOns.GetNumAddOns() do
-                    if C_AddOns.GetAddOnEnableState(nil,i)==2 then
+                    if C_AddOns.GetAddOnEnableState(i)==2 then
                         local name=C_AddOns.GetAddOnInfo(i);
                         if name then
                             Save.buttons[text][name]=true
@@ -228,7 +228,7 @@ local function Init()
                     check.Text:ClearAllPoints()
                     check.Text:SetPoint('RIGHT', check, 'LEFT')
                     check:SetScript('OnClick', function(self2)
-                        if C_AddOns.GetAddOnEnableState(nil, self2.name)~=0 then
+                        if C_AddOns.GetAddOnEnableState(self2.name)~=0 then
                             C_AddOns.DisableAddOn(self2.name)
                         else
                             C_AddOns.EnableAddOn(self2.name)
@@ -249,7 +249,7 @@ local function Init()
                     check.index= tab.index
                     panel.fast[index]= check
                 end
-                local checked= C_AddOns.GetAddOnEnableState(nil, name)~=0
+                local checked= C_AddOns.GetAddOnEnableState(name)~=0
                 check:SetChecked(checked)
                 check:SetShown(true)
 
@@ -293,7 +293,7 @@ local function Init()
                 if num==button.totaleAddons and Save.buttons[name] then
                     find=true
                     for name2,_ in pairs(Save.buttons[name]) do
-                        if C_AddOns.GetAddOnEnableState(nil, name2)==0 then
+                        if C_AddOns.GetAddOnEnableState(name2)==0 then
                             find=false
                             break
                         end

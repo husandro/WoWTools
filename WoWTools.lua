@@ -1,4 +1,5 @@
 local id, e = ...
+--Blizzard_Deprecated/Deprecated_10_2_0.lua
 
 e.tips=GameTooltip
 e.onlyChinese= LOCALE_zhCN

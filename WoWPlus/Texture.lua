@@ -897,7 +897,7 @@ local function Init_Set_AlphaAndColor()
         end
 
         for i=1, C_AddOns.GetNumAddOns() do
-            local t= C_AddOns.GetAddOnEnableState(nil,i);
+            local t= C_AddOns.GetAddOnEnableState(i);
             if t==2 then
                 local name=C_AddOns.GetAddOnInfo(i)
                 name= name:match('(.-)%-') or name
