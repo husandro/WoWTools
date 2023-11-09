@@ -124,7 +124,7 @@ local function Init()
         end
         function Button:set_Currency()
             local info = C_CurrencyInfo.GetCurrencyInfo(CurrencyID) or {}
-            self.label:SetText(info.quantity or '')
+            self.label:SetText(info.quantity and info.quantity>0 and e.MK(info.quantity, 0) or '')
         end
         Button:set_Currency()
     else
@@ -177,8 +177,8 @@ local function Init()
             self:set_Shown()
         end
     end)
-    
-    
+
+
 
     Button.btn={}
     function Button:set_button()
@@ -227,7 +227,7 @@ local function Init()
         end
     end
 
-    Button:SetScript('OnShow', Button.set_button)
+    --Button:SetScript('OnShow', Button.set_button)
     Button:set_Point()
     Button:set_button()
     Button:set_Scale()
