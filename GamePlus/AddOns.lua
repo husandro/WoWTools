@@ -20,8 +20,7 @@ local Save={
 local function get_AddList()--检查列表, 选取数量, 总数, 数量/总数
     local num, all=0, C_AddOns.GetNumAddOns()
     for i=1,  all do
-        local t= C_AddOns.GetAddOnEnableState(i)
-        if t==2 then
+        if C_AddOns.GetAddOnEnableState(i)==2 then
             local name=C_AddOns.GetAddOnInfo(i)
             if name then
                 num=num+1
