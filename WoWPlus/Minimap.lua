@@ -1793,7 +1793,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
     --MinimapCluster:HookScript('OnEvent', function(self2)--Minimap.luab
     hooksecurefunc(self, 'Update', function(self2)--InstanceDifficulty.lua
         local isChallengeMode= self.ChallengeMode:IsShown()
-        local tips, color
+        local tips, color, name
         local frame
         if self.Guild:IsShown() then
             frame = self.Guild
@@ -1802,19 +1802,25 @@ local function Init_InstanceDifficulty()--副本，难图，指示
         elseif self.Instance:IsShown() then
             frame = self.Instance
         end
-
+        local difficultyID
         if isChallengeMode then--挑战
-            tips, color= e.GetDifficultyColor(nil, DifficultyUtil.ID.DungeonChallenge)
+            tips, color, name= e.GetDifficultyColor(nil, DifficultyUtil.ID.DungeonChallenge)
         elseif IsInInstance() then
-            local difficultyID = select(3, GetInstanceInfo())
-            tips, color= e.GetDifficultyColor(nil, difficultyID)
+             difficultyID = select(3, GetInstanceInfo())
+            tips, color, name= e.GetDifficultyColor(nil, difficultyID)
         end
         if frame and color then
             frame.Background:SetVertexColor(color.r, color.g, color.b)
         end
-
+        if not self2.labelType then
+            self2.labelType= e.Cstr(self2, {color=true, level=22})
+            self2.labelType:SetPoint('TOP', self2, 'BOTTOM', 0, 4)
+            self2.labelType:SetAlpha(0.5)
+        end
+        self2.labelType:SetText(name and e.WA_Utf8Sub(GetDifficultyInfo(difficultyID), 2, 6) or '')
         self2.tips= tips
     end)
+
     self:HookScript('OnEnter', function(self2)
         if not IsInInstance() then
             return

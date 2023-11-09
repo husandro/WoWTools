@@ -265,7 +265,7 @@ function e.GetYesNo(yesno)
 end
 
 function e.Cstr(self, tab)
-    --{size, copyFont, changeFont, fontName color={r=,g=,b=,a=}, layer=, justifyH=, mouse=false, wheel=false, notFlag=true, notShadow=true}
+    --{size, copyFont, changeFont, fontName color={r=,g=,b=,a=}, layer=, justifyH=, mouse=false, wheel=false, notFlag=true, notShadow=true, level=1}
     --Fonts.xml FontStyles.xml
     --GameFontBlack
     tab= tab or {}
@@ -274,7 +274,7 @@ function e.Cstr(self, tab)
     self:CreateFontString(nil,
             tab.layer or 'OVERLAY',
             tab.fontName or 'GameFontNormal',
-            self:GetFrameLevel()+1)
+            tab.level or (self:GetFrameLevel()+1) or 7)
     if tab.copyFont then
         local fontName2, size, fontFlag = tab.copyFont:GetFont()
         font:SetFont(fontName2, tab.size or size, fontFlag)
@@ -1614,7 +1614,7 @@ end
 
 --副本，难道，颜色
 function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
-    local colorRe
+    local colorRe, name
     if difficultyID and difficultyID>0 then
         local color={
             ['经典']= {name= e.onlyChinese and '经典' or LEGACY_RAID_DIFFICULTY, hex='|cff9d9d9d', r=0.62, g=0.62, b=0.62},
@@ -1672,7 +1672,7 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
             [170]='普通',--Path of Ascension: Wisdom	scenario	
             [171]='普通',--Path of Ascension: Humility	scenario
         }
-        local name=type[difficultyID]
+        name=type[difficultyID]
         if name then
             local tab=color[name]
             string= string or tab.name or GetDifficultyInfo(difficultyID)
@@ -1680,7 +1680,7 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
             colorRe= tab
         end
     end
-    return string, colorRe or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=e.Player.col}
+    return string, colorRe or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=e.Player.col}, name
 end
 
 
@@ -2405,5 +2405,3 @@ function e.Get_Region(realm, guid, unit, disabled)--e.Get_Region(server, guid, u
         return realm and Realms[realm] and regionColor[Realms[realm]]
     end
 end
-
-
