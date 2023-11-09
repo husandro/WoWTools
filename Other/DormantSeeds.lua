@@ -147,7 +147,10 @@ local function Init()
         end
     end
     function Button:set_Shown()
-        self:SetShown(self.uiMapID and not UnitAffectingCombat('player') and not C_PetBattles.IsInBattle())
+        local show= self.uiMapID and not UnitAffectingCombat('player') and not C_PetBattles.IsInBattle()
+        self:SetShown(show)
+        if show then
+        end
     end
     function Button:get_UIMapID()
         self.uiMapID= C_Map.GetBestMapForUnit('player')==2200 and true or false
@@ -174,6 +177,8 @@ local function Init()
             self:set_Shown()
         end
     end)
+    
+    
 
     Button.btn={}
     function Button:set_button()
@@ -222,6 +227,7 @@ local function Init()
         end
     end
 
+    Button:SetScript('OnShow', Button.set_button)
     Button:set_Point()
     Button:set_button()
     Button:set_Scale()
