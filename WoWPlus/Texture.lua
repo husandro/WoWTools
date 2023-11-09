@@ -1580,8 +1580,8 @@ local function set_Alpha_Event(arg1)
         set_Alpha_Color(GenericTraitFrame.NineSlice.BottomRightCorner)
 
     elseif arg1=='Blizzard_PlayerChoice' then----任务选择
-        PlayerChoiceFrame:HookScript('OnShow', function(self)
-            set_Alpha_Color(PlayerChoiceFrame.Header)
+        --[[sPlayerChoiceFrame:HookScript('OnShow', function(self)
+            et_Alpha_Color(PlayerChoiceFrame.Header)
             if self.NineSlice then
                 hide_Texture(self.NineSlice.TopLeftCorner)
                 hide_Texture(self.NineSlice.TopEdge)
@@ -1598,8 +1598,17 @@ local function set_Alpha_Event(arg1)
                 set_Alpha_Color(self.Title.Right)
             end
             if self.Background then
-                hide_Texture(self.Background.BackgroundTile or self.Background)
+              hide_Texture(self.Background.BackgroundTile or self.Background)
             end
+        end)]]
+        hooksecurefunc(PlayerChoiceFrame, 'SetupFrame', function(self)
+            if self.Background then
+                hide_Texture(self.Background.BackgroundTile)
+                hide_Texture(self.Background)
+            end
+            hide_Texture(self.NineSlice)
+            set_Alpha_Color(self.Title)
+            set_Alpha_Color(self.Header)
         end)
     elseif arg1=='Blizzard_MajorFactions' then--派系声望
         set_Alpha_Color(MajorFactionRenownFrame.Background)
