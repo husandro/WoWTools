@@ -1547,17 +1547,19 @@ local function set_MINIMAP_UPDATE_ZOOM()
     Minimap.zoomText:SetText(zoom and level and (level-zoom)..'/'..level or '')
 
     if not Minimap.viewRadius then
-        Minimap.viewRadius=e.Cstr(Minimap, {color=true, justifyH='CENTER'})
+        Minimap.viewRadius=e.Cstr(Minimap, {color=true, justifyH='CENTER', muose=true})
         Minimap.viewRadius:SetPoint('BOTTOMLEFT', Minimap, 'BOTTOM', 8, -8)
-        Minimap.viewRadius:EnableMouse(true)
+        --Minimap.viewRadius:EnableMouse(true)
+        Minimap.viewRadius:SetAlpha(0.5)
         Minimap.viewRadius:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.onlyChinese and '镜头视野范围' or CAMERA_FOV, format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)))
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
+            self2:SetAlpha(10)
         end)
-        Minimap.viewRadius:SetScript('OnLeave', function() e.tips:Hide() end)
+        Minimap.viewRadius:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
     end
     Minimap.viewRadius:SetFormattedText('%i', C_Minimap.GetViewRadius() or 100)
 end
