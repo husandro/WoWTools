@@ -2,10 +2,11 @@ local id, e = ...
 local addName= BANK
 local Save={
      --disabled=true,--禁用
-    --notShowReagentBankFrame=true,--银行,隐藏，材料包
+    --hideReagentBankFrame=true,--银行,隐藏，材料包
     scaleReagentBankFrame=0.75,--银行，缩放
-    --xReagentBankFrame=15,--坐标x
-    --yReagentBankFrame=10,--坐标y
+    xReagentBankFrame=-15,--坐标x
+    yReagentBankFrame=10,--坐标y
+    --pointReagentBank=｛｝--保存位置
 }
 
 
@@ -51,15 +52,15 @@ local function Init_Bank_Frame()
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
-    ReagentBankFrame.autoSortButton:SetScript('OnClick', function(self)
-        C_Container.SortReagentBankBags();
+    ReagentBankFrame.autoSortButton:SetScript('OnClick', function()
+        C_Container.SortReagentBankBags()
     end)
 
     --选项
     ReagentBankFrame.ShowHideButton= e.Cbtn(BankFrame, {size={18,18}, atlas='hide'})
     ReagentBankFrame.ShowHideButton:SetPoint('BOTTOMRIGHT', _G['BankFrameTab1'], 'BOTTOMLEFT')
     function ReagentBankFrame.ShowHideButton:set_atlas()
-        self:SetNormalAtlas(Save.notShowReagentBankFrame and 'editmode-up-arrow' or 'editmode-down-arrow')
+        self:SetNormalAtlas(Save.hideReagentBankFrame and 'editmode-up-arrow' or 'editmode-down-arrow')
     end
     function ReagentBankFrame.ShowHideButton:set_scale()
         if BankFrame.activeTabIndex==2 then
@@ -71,25 +72,41 @@ local function Init_Bank_Frame()
     function ReagentBankFrame.ShowHideButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        local col= ReagentBankFrame:IsShown() and '' or '|cff606060'
-        e.tips:AddDoubleLine(e.onlyChinese and '显示材料银行' or REAGENT_BANK, e.GetShowHide(not Save.notShowReagentBankFrame)..e.Icon.left)
-        e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleReagentBankFrame or 1), col..'Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(col..'X |cnGREEN_FONT_COLOR:'..(Save.xReagentBankFrame or -15), col..'Ctrl+'..e.Icon.mid)
-        e.tips:AddDoubleLine(col..'Y |cnGREEN_FONT_COLOR:'..(Save.yReagentBankFrame or 10), col..'Shift+'..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '显示材料银行' or REAGENT_BANK, e.GetShowHide(not Save.hideReagentBankFrame)..e.Icon.left)
+        e.tips:AddLine(' ')
+
+        local col= not ReagentBankFrame:IsShown() and '|cff606060'
+        e.tips:AddDoubleLine((col or '')..(e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleReagentBankFrame or 1), (col or '')..'Alt+'..e.Icon.mid)
+
+        if not col or Save.pointReagentBank then
+            col='|cff606060'
+        end
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine((col or '')..'X |cnGREEN_FONT_COLOR:'..Save.xReagentBankFrame, (col or '')..'Ctrl+'..e.Icon.mid)
+        e.tips:AddDoubleLine((col or '')..'Y |cnGREEN_FONT_COLOR:'..Save.yReagentBankFrame, (col or '')..'Shift+'..e.Icon.mid)
+        col= Save.pointReagentBank and '' or '|cff606060'
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '还原位置' or RESET_POSITION), col..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
+        
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end
     ReagentBankFrame.ShowHideButton:SetScript('OnClick', function(self)
-        Save.notShowReagentBankFrame= not Save.notShowReagentBankFrame and true or nil
-        self:show_hide(Save.notShowReagentBankFrame)
+        Save.hideReagentBankFrame= not Save.hideReagentBankFrame and true or nil
+        self:show_hide(Save.hideReagentBankFrame)
         self:set_atlas()
         self:set_tooltips()
+    end)
+    ReagentBankFrame.ShowHideButton:SetScript('OnDoubleClick', function(self)--还原，位置
+        Save.pointReagentBank= nil
+        self:show_hide()
+        self:set_tooltips()
+        print(id, addName, e.onlyChinese and '还原位置' or RESET_POSITION)
     end)
     ReagentBankFrame.ShowHideButton:SetScript('OnLeave', function() e.tips:Hide() end)
     ReagentBankFrame.ShowHideButton:SetScript('OnEnter', ReagentBankFrame.ShowHideButton.set_tooltips)
     ReagentBankFrame.ShowHideButton:SetScript('OnMouseWheel', function(self, d)
-        if Save.notShowReagentBankFrame then
+        if Save.hideReagentBankFrame then
             return
         end
         local n
@@ -104,24 +121,26 @@ local function Init_Bank_Frame()
             n= n<0.4 and 0.4 or n
             Save.scaleReagentBankFrame= n
             self:set_scale()
-        elseif IsControlKeyDown() then
-            n= Save.xReagentBankFrame or -15--坐标 X
-            if d==1 then
-                n= n+5
-            elseif d==-1 then
-                n= n-5
+        elseif not Save.pointReagentBank then
+            if IsControlKeyDown() then
+                n= Save.xReagentBankFrame--坐标 X
+                if d==1 then
+                    n= n+5
+                elseif d==-1 then
+                    n= n-5
+                end
+                Save.xReagentBankFrame= n
+                self:show_hide()--设置，显示材料银行
+            elseif IsShiftKeyDown() then
+                n= Save.yReagentBankFrame--坐标 Y
+                if d==1 then
+                    n= n+5
+                elseif d==-1 then
+                    n= n-5
+                end
+                Save.yReagentBankFrame= n
+                self:show_hide()--设置，显示材料银行
             end
-            Save.xReagentBankFrame= n
-            self:show_hide()--设置，显示材料银行
-        elseif IsShiftKeyDown() then
-            n= Save.yReagentBankFrame or 10--坐标 Y
-            if d==1 then
-                n= n+5
-            elseif d==-1 then
-                n= n-5
-            end
-            Save.yReagentBankFrame= n
-            self:show_hide()--设置，显示材料银行
         end
         self:set_tooltips()
     end)
@@ -129,7 +148,7 @@ local function Init_Bank_Frame()
     ReagentBankFrame.ShowHideButton:set_atlas()
 
     ReagentBankFrame:ClearAllPoints()
-    ReagentBankFrame:SetSize(386, 415)
+    ReagentBankFrame:SetSize(715, 415)--386, 415
     ReagentBankFrame:SetPoint('TOPLEFT')
 
     --背景
@@ -142,50 +161,33 @@ local function Init_Bank_Frame()
     --移动
     ReagentBankFrame:SetClampedToScreen(false)
     ReagentBankFrame:SetMovable(true)
-    ReagentBankFrame:HookScript("OnDragStart", function(self2, d)--开始移动
-        if not self.ClickTypeMove or (self.ClickTypeMove=='R' and d=='RightButton') or (self.ClickTypeMove=='L' and d=='LeftButton') then
-            local frame= self2.MoveFrame or self2
-            if not frame:IsMovable()  then
-                frame:SetMovable(true)
-            end
-            frame:StartMoving()
-        end
+    ReagentBankFrame:HookScript("OnDragStart", ReagentBankFrame.StartMoving)
+    ReagentBankFrame:HookScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        Save.pointReagentBank= {self:GetPoint(1)}
+        Save.pointReagentBank[2]= nil
     end)
-    ReagentBankFrame:HookScript("OnDragStop", function(self2)
-        stop_Drag(self)--停止移动
-        local moveFrame= self2.MoveFrame or self2
-        local frameName= self2.FrameName or moveFrame:GetName()
-        if frameName and frameName~='SettingsPanel' then
-            if self2.SavePoint then--保存点
-                Save.point[frameName]= {moveFrame:GetPoint(1)}
-                Save.point[frameName][2]= nil
-            else
-                Save.point[frameName]= nil
-            end
-        end
-        if not UnitAffectingCombat('player') and moveFrame.Raise then
-            moveFrame:Raise()
-        end
-    end)
-    self:HookScript("OnMouseUp", stop_Drag)--停止移动
-    self:HookScript('OnHide', stop_Drag)--停止移动
-    self:HookScript("OnMouseDown", function(self2, d)--设置, 光标
-        if not self2.ClickTypeMove or (self2.ClickTypeMove=='R' and d=='RightButton') or (self2.ClickTypeMove=='L' and d=='LeftButton') then
+    ReagentBankFrame:HookScript("OnMouseUp", ResetCursor)--停止移动
+    ReagentBankFrame:HookScript("OnMouseDown", function(_, d)--设置, 光标
+        if d=='RightButton' then
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
+    ReagentBankFrame:RegisterForDrag("RightButton")
 
     --设置，显示材料银行
     function ReagentBankFrame.ShowHideButton:show_hide(hide)
-        if (not Save.notShowReagentBankFrame or hide) and BankFrame.activeTabIndex then
+        if (not Save.hideReagentBankFrame or hide) and BankFrame.activeTabIndex then
             if BankFrame.activeTabIndex==1 and not hide then
+                ReagentBankFrame:ClearAllPoints()
                 if Save.pointReagentBank then
-                    ReagentBankFrame:SetPoint(Save.pointReagentBank, UIParent, Save.pointReagentBank[3], Save.pointReagentBank[4])
+                    ReagentBankFrame:SetPoint(Save.pointReagentBank[1], UIParent, Save.pointReagentBank[3], Save.pointReagentBank[4],  Save.pointReagentBank[5])
                 else
-                    ReagentBankFrame:SetPoint('TOPLEFT', BankFrame, 'BOTTOMLEFT', Save.xReagentBankFrame or -15, Save.yReagentBankFrame or 10)
+                    ReagentBankFrame:SetPoint('TOPLEFT', BankFrame, 'BOTTOMLEFT', Save.xReagentBankFrame, Save.yReagentBankFrame)
                 end
                 ReagentBankFrame:SetShown(true)
             elseif BankFrame.activeTabIndex==2 or hide then
+                ReagentBankFrame:ClearAllPoints()
                 ReagentBankFrame:SetPoint('TOPLEFT')
                 if hide then
                     ReagentBankFrame:SetShown(false)
@@ -194,7 +196,7 @@ local function Init_Bank_Frame()
         end
         ReagentBankFrame.ShowHideButton:SetShown(BankFrame.activeTabIndex==1)--选项
         ReagentBankFrame.ShowHideButton:set_scale()--缩放
-        ReagentBankFrame.autoSortButton:SetShown(not Save.notShowReagentBankFrame and BankFrame.activeTabIndex==1)--整理材料银行
+        ReagentBankFrame.autoSortButton:SetShown(not Save.hideReagentBankFrame and BankFrame.activeTabIndex==1)--整理材料银行
     end
     hooksecurefunc('BankFrame_ShowPanel', ReagentBankFrame.ShowHideButton.show_hide)
 end
