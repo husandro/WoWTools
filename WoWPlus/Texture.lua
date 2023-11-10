@@ -1932,6 +1932,7 @@ local function Init_Class_Power(init)--职业
         end
 
     elseif e.Player.class=='EVOKER' then
+        print(EssencePlayerFrame , EssencePlayerFrame.classResourceButtonTable)
         C_Timer.After(2, function()
             if EssencePlayerFrame and EssencePlayerFrame.classResourceButtonTable then--EssenceFramePlayer.lua
                 for _, btn in pairs(EssencePlayerFrame.classResourceButtonTable) do
