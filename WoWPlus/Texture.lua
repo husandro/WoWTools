@@ -116,6 +116,35 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###############
 --初始化, 隐藏材质
 --###############
@@ -361,6 +390,30 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_HideTexture_Event(arg1)
     if Save.disabledTexture then
         return
@@ -386,6 +439,28 @@ local function set_HideTexture_Event(arg1)
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -914,6 +989,39 @@ local function Init_Set_AlphaAndColor()
         hide_Texture(MerchantBuyBackItemSlotTexture)
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1836,6 +1944,29 @@ local function Init_Class_Power(init)--职业
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --##################
 --主菜单，颜色，透明度
 --##################
@@ -1981,6 +2112,34 @@ local function set_Chat_Bubbles(init)
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2135,6 +2294,26 @@ local function options_Init()--初始，选项
         category= Category,
     })
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
