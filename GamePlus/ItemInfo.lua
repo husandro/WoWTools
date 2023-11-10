@@ -513,10 +513,7 @@ end
 --初始
 --####
 local function Init()
-if MerchantBuyBackItemItemButton and MerchantBuyBackItemItemButton.UndoFrame and MerchantBuyBackItemItemButton.UndoFrame.Arrow then
-    MerchantBuyBackItemItemButton.UndoFrame.Arrow:ClearAllPoints()
-    MerchantBuyBackItemItemButton.UndoFrame.Arrow:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,-4)
-end
+
     --boss掉落，物品, 可能，会留下 StaticPopup1 框架
     hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
         --local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = GetItemInfo(data.itemLink)

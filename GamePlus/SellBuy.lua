@@ -16,7 +16,8 @@ local Save={
     },
     altDisabledAutoLoot= e.Player.husandro,--打开拾取窗口时，下次禁用，自动拾取
     --sellJunkMago=true,--出售，可幻化，垃圾物品
-    --notWidthx2=true,--加宽
+
+    --notPlus=true,--商人 Pluse,加宽
 
 
     --notShowReagentBankFrame=true,--银行,隐藏，材料包
@@ -37,6 +38,10 @@ local buySave={}--购买物品
 
 
 
+--MerchantFrame.lua
+
+
+
 
 
 
@@ -47,21 +52,17 @@ local buySave={}--购买物品
 --#########
 --设置耐久度
 --#########
-local function setDurabiliy()--设置耐久度
-    local btn=MerchantRepairAllButton
-    if not btn then
-        return
-    end
+local function set_Durabiliy_Value_Text()--设置耐久度
     local text
-    if not Save.notAutoRepairAll and btn then
-        if not btn.durabiliyText then
-            btn.durabiliyText=e.Cstr(btn)
-            btn.durabiliyText:SetPoint('TOPLEFT')
+    if not Save.notAutoRepairAll then
+        if not MerchantRepairAllButton.durabiliyText then
+            MerchantRepairAllButton.durabiliyText=e.Cstr(MerchantRepairAllButton)
+            MerchantRepairAllButton.durabiliyText:SetPoint('TOPLEFT')
         end
         text= e.GetDurabiliy()
     end
-    if btn.durabiliyText then
-        btn.durabiliyText:SetText(text or '')
+    if MerchantRepairAllButton.durabiliyText then
+        MerchantRepairAllButton.durabiliyText:SetText(text or '')
     end
 end
 
@@ -296,10 +297,26 @@ local function setSellItems()
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#######
 --购买物品
 --#######
-local function setBuyItems()--购买物品
+local function set_Buy_Items()--购买物品
     if IsModifierKeyDown() or Save.notAutoBuy then
         return
     end
@@ -407,7 +424,7 @@ end
 --###################
 --购回物品,禁止买出物品
 --###################
-local function setBuyBackItems()
+local function set_BuyBack_Items()
     if IsModifierKeyDown() then
         return
     end
@@ -452,21 +469,23 @@ end
 
 
 
---设置, 提示, 信息
---###############
+--商人Pluse. 设置, 提示, 信息
+--#########################
 local function Set_Merchant_Info()--设置, 提示, 信息
     local selectedTab= MerchantFrame.selectedTab
     local isMerce= selectedTab == 1
     local page= isMerce and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
+    local numItem= isMerce and  GetMerchantNumItems() or GetNumBuybackItems();
+    --for i=1, page do
+    for index=1, page do
+		--local index = selectedTab==1 and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
+        local btn= _G["MerchantItem"..index]
+        --local itemButton= _G["MerchantItem"..index.."ItemButton"]
 
-
-    for i=1, page do
-		local index = selectedTab==1 and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
-        local btn= _G["MerchantItem"..i]
-
-        if btn and btn:IsShown() then
+        local text, spellID
+        if btn and index<= numItem then
             local itemID, itemLink
-            if selectedTab==1 then
+            if isMerce then
                 itemID= GetMerchantItemID(index)
                 itemLink=  GetMerchantItemLink(index)
             else
@@ -476,12 +495,13 @@ local function Set_Merchant_Info()--设置, 提示, 信息
 
             local num=(not Save.notAutoBuy and itemID) and buySave[itemID]--自动购买， 数量
             num= num and num..'|T236994:0|t'
-            if not Save.notShowBagNum then--包里，银行，总数
+            --if not Save.notShowBagNum then--包里，银行，总数
+                --包里，银行，总数
                 local bag=itemID and GetItemCount(itemID,true)
                 if bag and bag>0 then
                     num=(num and num..'|n' or '')..bag..e.Icon.bank2
                 end
-            end
+            --end
             if num and not btn.buyItemNum then
                 btn.buyItemNum=e.Cstr(btn)
                 btn.buyItemNum:SetPoint('RIGHT')
@@ -505,10 +525,11 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                 btn.buyItemNum.itemID= itemID
             end
 
-            local text, spellID
+
+            --物品，属性
             local classID= itemLink and select(6, GetItemInfoInstant(itemLink))
             if classID==2 or classID==4 then--装备
-                local stat= e.Get_Item_Stats(itemLink)--物品，次属性，表
+                local stat= e.Get_Item_Stats(itemLink)--物品，属性，表
                 table.sort(stat, function(a,b) return a.value>b.value and a.index== b.index end)
                 for _, tab in pairs(stat) do
                     text= text and text..' ' or ''
@@ -519,10 +540,10 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                     text= (text or '').. '|A:soulbinds_tree_conduit_icon_utility:10:10|a'
                 end
                 if text and not btn.stats then
-                    btn.stats=e.Cstr(btn, {size=10})
+                    btn.stats=e.Cstr(btn, {size=10, mouse=true})
                     btn.stats:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT',0,6)
-                    btn.stats:EnableMouse(true)
-                    btn.stats:SetScript('OnLeave', function() e.tips:Hide() end)
+                    --btn.stats:EnableMouse(true)
+                    btn.stats:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
                     btn.stats:SetScript('OnEnter', function(self2)
                         if self2.spellID then
                             e.tips:SetOwner(self2, "ANCHOR_LEFT");
@@ -532,13 +553,14 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                             e.tips:AddDoubleLine(id, addName)
                             e.tips:Show();
                         end
+                        self2:SetAlpha(0.5)
                     end)
                 end
             end
-            if btn.stats then
-                btn.stats:SetText(text or '')
-                btn.stats.spellID= spellID
-            end
+        end
+        if btn and btn.stats then
+            btn.stats:SetText(text or '')
+            btn.stats.spellID= spellID
         end
     end
 end
@@ -546,6 +568,173 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+--商人 Pluse, 加宽，物品，信息
+--##########################
+local function Init_Frame_Plus()
+    if Save.notPlus then
+        return
+
+    elseif C_AddOns.IsAddOnLoaded("CompactVendor") then
+        print(id, addName, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '框体宽度' or COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH, 'x2'),
+            e.GetEnabeleDisable(false), 'CompactVendor',
+            e.onlyChinese and '插件' or ADDONS
+        )
+    end
+
+    MerchantFrame.width= MerchantFrame:GetWidth()--宽度
+    MERCHANT_ITEMS_PER_PAGE= 22
+
+    for i= 3, 6 do
+        if not _G['MerchantFrameTab'..i] then
+            --上一页
+            MerchantPrevPageButton:ClearAllPoints()
+            MerchantPrevPageButton:SetPoint('LEFT', _G['MerchantFrameTab'..(i-1)], 'RIGHT', 2,0)
+            local label, texture= MerchantPrevPageButton:GetRegions()
+            if texture and texture:GetObjectType()=='Texture' then texture:Hide() texture:SetTexture(0) end
+            if label and label:GetObjectType()=='FontString' then label:Hide() label:SetText('') end
+
+            --页数
+            MerchantPageText:ClearAllPoints()
+            MerchantPageText:SetPoint('LEFT', MerchantPrevPageButton, 'RIGHT')
+
+            --下一页
+            MerchantNextPageButton:ClearAllPoints()
+            MerchantNextPageButton:SetPoint('LEFT', MerchantPageText, 'RIGHT')
+            label, texture= MerchantNextPageButton:GetRegions()
+            if texture and texture:GetObjectType()=='Texture' then texture:Hide() texture:SetTexture(0) end
+            if label and label:GetObjectType()=='FontString' then label:Hide() label:SetText('') end
+            break
+        end
+    end
+
+    --[[
+        MERCHANT_ITEMS_PER_PAGE = 10;
+        BUYBACK_ITEMS_PER_PAGE = 12;
+        MAX_MERCHANT_CURRENCIES = 6;
+    ]]
+    MerchantItem11:ClearAllPoints()
+    MerchantItem11:SetPoint("TOPLEFT", MerchantItem2, "TOPRIGHT", 8, 0)
+    MerchantItem12:ClearAllPoints()
+	MerchantItem12:SetPoint("TOPLEFT", MerchantItem11, "TOPRIGHT", 8, 0)
+
+
+    MerchantItem11:SetShown(true)
+    MerchantItem12:SetShown(true)
+
+    MerchantSellAllJunkButton:ClearAllPoints()
+    MerchantSellAllJunkButton:SetPoint('RIGHT', MerchantBuyBackItemItemButtonNormalTexture, 'LEFT',2,0)
+
+    --新建，按钮
+    for i = 13, 22 do
+        local btn= _G['MerchantItem'..i] or CreateFrame('Frame', 'MerchantItem'.. i, MerchantFrame, 'MerchantItemTemplate')
+        btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-2)], 'BOTTOMLEFT', 0, -8)
+    end
+
+
+    --建立，索引，文本
+    for i=1, MERCHANT_ITEMS_PER_PAGE do
+        local btn= _G['MerchantItem'..i]
+        btn.IndexLable= e.Cstr(btn)
+        btn.IndexLable:SetPoint('TOPRIGHT', _G['MerchantItem'..i], -1, 4)
+        btn.IndexLable:SetAlpha(0.3)
+        btn.IndexLable.index=i
+        function btn:set_index_text(hide)
+            local itemButton= _G["MerchantItem"..self.IndexLable.index.."ItemButton"]
+            self.IndexLable:SetText(not hide and itemButton and itemButton.hasItem and itemButton:GetID() or '')
+        end
+
+        --建立，物品，背景
+        btn.itemBG= btn:CreateTexture(nil, 'BACKGROUND')
+        btn.itemBG:SetAtlas('ChallengeMode-guild-background')
+        btn.itemBG:SetSize(100,43)
+        btn.itemBG:SetPoint('TOPRIGHT',-7,-2)
+    end
+
+
+
+
+    --回购，数量，提示
+    MerchantFrameTab2.numLable= e.Cstr(MerchantFrameTab2)
+    MerchantFrameTab2.numLable:SetPoint('TOPRIGHT')
+    function MerchantFrameTab2:set_buyback_num()
+        local num
+        num= GetNumBuybackItems() or 0
+        if num>0 then
+            num= num==BUYBACK_ITEMS_PER_PAGE and '|cnRED_FONT_COLOR:'..num or num
+        else
+            num= ''
+        end
+        self.numLable:SetText(num)
+    end
+
+
+
+
+
+    --卖
+    hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
+        MerchantItem11:SetShown(true)
+        MerchantItem12:SetShown(true)
+        for i = 1, MERCHANT_ITEMS_PER_PAGE do
+            local btn= _G['MerchantItem'..i]
+            btn:SetShown(true)
+            btn:set_index_text()
+            if btn.itemBG and _G["MerchantItem"..i.."ItemButton"] then--Texture.lua
+                btn.itemBG:SetShown(_G["MerchantItem"..i.."ItemButton"].hasItem)
+            end
+        end
+        MerchantFrame:SetWidth(MerchantFrame.width*2)--宽度
+        MerchantItem11:SetPoint("TOPLEFT", MerchantItem2, "TOPRIGHT", 8, 0)
+        MerchantItem12:SetPoint("TOPLEFT", MerchantItem11, "TOPRIGHT", 8, 0)
+        Set_Merchant_Info()--设置, 提示, 信息
+        MerchantFrameTab2:set_buyback_num()--回购，数量，提示
+    end)
+
+
+
+
+
+    --回购
+    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
+        local numBuybackItems = GetNumBuybackItems() or 0
+        for i = 1, MERCHANT_ITEMS_PER_PAGE do
+            local btn= _G['MerchantItem'..i]
+            if i> BUYBACK_ITEMS_PER_PAGE then
+                btn:SetShown(false)
+                btn.itemBG:SetShown(numBuybackItems<=i)
+            end
+            btn:set_index_text(i> numBuybackItems)
+            btn.itemBG:SetShown(numBuybackItems>=i)--建立，物品，背景
+        end
+        MerchantFrame:SetWidth(MerchantFrame.width)--宽度
+        MerchantItem11:SetPoint("TOPLEFT", MerchantItem9, "BOTTOMLEFT", 0, -8)
+        MerchantItem12:SetPoint("TOPLEFT", MerchantItem10, "BOTTOMLEFT", 0, -8)
+        Set_Merchant_Info()--设置, 提示, 信息
+        MerchantFrameTab2:set_buyback_num()--回购，数量，提示
+    end)
+    hooksecurefunc('MerchantFrame_UpdateCurrencies', function()
+        MerchantExtraCurrencyInset:SetShown(false)
+        MerchantExtraCurrencyBg:SetShown(false)
+    end)
+    MerchantMoneyInset:SetShown(false)
+
+    --移动，回购买，图标
+    if MerchantBuyBackItemItemButton and MerchantBuyBackItemItemButton.UndoFrame and MerchantBuyBackItemItemButton.UndoFrame.Arrow then
+        MerchantBuyBackItemItemButton.UndoFrame.Arrow:ClearAllPoints()
+        MerchantBuyBackItemItemButton.UndoFrame.Arrow:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,-4)
+    end
+end
 
 
 
@@ -581,6 +770,8 @@ local function Init_Menu(self, level, type)
         info= {
             text= e.onlyChinese and '幻化' or TRANSMOGRIFICATION,
             checked= Save.sellJunkMago,
+            tooltipOnButton=true,
+            tooltipTitle= '|cff9d9d9d'..(e.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC),
             func=function ()
                 Save.sellJunkMago= not Save.sellJunkMago and true or nil
                 setSellItems()--出售物品
@@ -808,7 +999,7 @@ local function Init_Menu(self, level, type)
         else
             Save.notAutoRepairAll=true
         end
-        setDurabiliy()
+        set_Durabiliy_Value_Text()
     end
     info.tooltipOnButton=true
     info.tooltipTitle= (e.onlyChinese and '金币记录' or GUILD_BANK_MONEY_LOG).. ' '..RepairSave.date
@@ -824,7 +1015,7 @@ local function Init_Menu(self, level, type)
     info.tooltipText=text
     e.LibDD:UIDropDownMenu_AddButton(info)
 
-    e.LibDD:UIDropDownMenu_AddSeparator()
+    --[[e.LibDD:UIDropDownMenu_AddSeparator()
     info= {--显示数物品,拥有数量,在商人界面
         text= e.onlyChinese and '显示数量'..e.Icon.bank2 or (SHOW..e.Icon.bank2..AUCTION_HOUSE_QUANTITY_LABEL),
         checked= not Save.notShowBagNum,
@@ -833,7 +1024,7 @@ local function Init_Menu(self, level, type)
             Set_Merchant_Info()--设置, 提示, 信息
         end
     }
-    e.LibDD:UIDropDownMenu_AddButton(info)
+    e.LibDD:UIDropDownMenu_AddButton(info)]]
 
 
     info={--删除字符
@@ -858,10 +1049,10 @@ local function Init_Menu(self, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info)
 
     info= {--堆叠数量
-        text= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '框体宽度' or COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH, 'x2'),
-        checked= not Save.notWidthx2,
+        text= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, (e.onlyChinese and '商人' or MERCHANT ), 'Plus'),
+        checked= not Save.notPlus,
         func=function ()
-            Save.notWidthx2 = not Save.notWidthx2 and true or nil
+            Save.notPlus = not Save.notPlus and true or nil
             print(id, addName , '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }
@@ -972,7 +1163,7 @@ local function Init_Button(frame)
                             buySave[itemID]=num
                             Save.Sell[itemID]=nil
                             print(PURCHASE, '|cnGREEN_FONT_COLOR:'..num..'|r', itemLink)
-                            setBuyItems()
+                            set_Buy_Items()
                         end
                         Set_Merchant_Info()--设置, 提示, 信息
                         ClearCursor();
@@ -1028,7 +1219,7 @@ local function Init_Button(frame)
                 print(id,addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '添加' or ADD, e.onlyChinese and '回购' or BUYBACK, itemLink )
                 C_Timer.After(0.2, function()
                     if MerchantFrame and MerchantFrame:IsShown() then --and MerchantFrame.selectedTab == 1 then
-                        setBuyBackItems()--购回物品
+                        set_BuyBack_Items()--购回物品
                     end
                 end)
             end
@@ -1188,143 +1379,6 @@ end
 
 
 
---加宽，框架x2
---###########
-local function Init_Frame_Widthx2()
-    if Save.notWidthx2 then
-        return
-
-    elseif C_AddOns.IsAddOnLoaded("CompactVendor") then
-        print(id, addName, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '框体宽度' or COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH, 'x2'),
-            e.GetEnabeleDisable(false), 'CompactVendor',
-            e.onlyChinese and '插件' or ADDONS
-        )
-    end
-
-    MerchantFrame.width= MerchantFrame:GetWidth()--宽度
-    MERCHANT_ITEMS_PER_PAGE= 22
-
-    for i= 3, 6 do
-        if not _G['MerchantFrameTab'..i] then
-            --上一页
-            MerchantPrevPageButton:ClearAllPoints()
-            MerchantPrevPageButton:SetPoint('LEFT', _G['MerchantFrameTab'..(i-1)], 'RIGHT', 2,0)
-            local label, texture= MerchantPrevPageButton:GetRegions()
-            if texture and texture:GetObjectType()=='Texture' then texture:Hide() texture:SetTexture(0) end
-            if label and label:GetObjectType()=='FontString' then label:Hide() label:SetText('') end
-
-            --页数
-            MerchantPageText:ClearAllPoints()
-            MerchantPageText:SetPoint('LEFT', MerchantPrevPageButton, 'RIGHT')
-
-            --下一页
-            MerchantNextPageButton:ClearAllPoints()
-            MerchantNextPageButton:SetPoint('LEFT', MerchantPageText, 'RIGHT')
-            label, texture= MerchantNextPageButton:GetRegions()
-            if texture and texture:GetObjectType()=='Texture' then texture:Hide() texture:SetTexture(0) end
-            if label and label:GetObjectType()=='FontString' then label:Hide() label:SetText('') end
-            break
-        end
-    end
-
-    --[[
-        MERCHANT_ITEMS_PER_PAGE = 10;
-        BUYBACK_ITEMS_PER_PAGE = 12;
-        MAX_MERCHANT_CURRENCIES = 6;
-    ]]
-    MerchantItem11:ClearAllPoints()
-    MerchantItem11:SetPoint("TOPLEFT", MerchantItem2, "TOPRIGHT", 8, 0)
-    MerchantItem12:ClearAllPoints()
-	MerchantItem12:SetPoint("TOPLEFT", MerchantItem11, "TOPRIGHT", 8, 0)
-
-
-    MerchantItem11:SetShown(true)
-    MerchantItem12:SetShown(true)
-
-    MerchantSellAllJunkButton:ClearAllPoints()
-    MerchantSellAllJunkButton:SetPoint('RIGHT', MerchantBuyBackItemItemButtonNormalTexture, 'LEFT',2,0)
-
-    --新建，按钮
-    for i = 13, 22 do
-        local btn= _G['MerchantItem'..i] or CreateFrame('Frame', 'MerchantItem'.. i, MerchantFrame, 'MerchantItemTemplate')
-        btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-2)], 'BOTTOMLEFT', 0, -8)
-    end
-
-
-    --建立，索引，文本
-    for i=1, MERCHANT_ITEMS_PER_PAGE do
-        local btn= _G['MerchantItem'..i]
-        btn.IndexLable= e.Cstr(btn)
-        btn.IndexLable:SetPoint('TOPRIGHT', _G['MerchantItem'..i], -1, 4)
-        btn.IndexLable:SetAlpha(0.3)
-        btn.IndexLable.index=i
-        function btn:set_index_text(hide)
-            local itemButton= _G["MerchantItem"..self.IndexLable.index.."ItemButton"]
-            self.IndexLable:SetText(not hide and itemButton and itemButton.hasItem and itemButton:GetID() or '')
-        end
-
-        --建立，物品，背景
-        btn.itemBG= btn:CreateTexture(nil, 'BACKGROUND')
-        btn.itemBG:SetAtlas('ChallengeMode-guild-background')
-        btn.itemBG:SetSize(100,43)
-        btn.itemBG:SetPoint('TOPRIGHT',-7,-2)
-    end
-
-    --卖
-    hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
-        MerchantItem11:SetShown(true)
-        MerchantItem12:SetShown(true)
-        for i = 1, MERCHANT_ITEMS_PER_PAGE do
-            local btn= _G['MerchantItem'..i]
-            btn:SetShown(true)
-            btn:set_index_text()
-            if btn.itemBG and _G["MerchantItem"..i.."ItemButton"] then--Texture.lua
-                btn.itemBG:SetShown(_G["MerchantItem"..i.."ItemButton"].hasItem)
-            end
-        end
-
-        MerchantFrame:SetWidth(MerchantFrame.width*2)--宽度
-
-        MerchantItem11:SetPoint("TOPLEFT", MerchantItem2, "TOPRIGHT", 8, 0)
-        MerchantItem12:SetPoint("TOPLEFT", MerchantItem11, "TOPRIGHT", 8, 0)
-    end)
-
-    --回购
-    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
-        local numBuybackItems = GetNumBuybackItems() or 0
-        for i = 1, MERCHANT_ITEMS_PER_PAGE do
-            local btn= _G['MerchantItem'..i]
-            if i> BUYBACK_ITEMS_PER_PAGE then
-                btn:SetShown(false)
-                btn.itemBG:SetShown(numBuybackItems<=i)
-            end
-            btn:set_index_text(i> numBuybackItems)
-            btn.itemBG:SetShown(numBuybackItems>=i)--建立，物品，背景
-        end
-        MerchantFrame:SetWidth(MerchantFrame.width)--宽度
-        MerchantItem11:SetPoint("TOPLEFT", MerchantItem9, "BOTTOMLEFT", 0, -8)
-        MerchantItem12:SetPoint("TOPLEFT", MerchantItem10, "BOTTOMLEFT", 0, -8)
-    end)
-
-    hooksecurefunc('MerchantFrame_UpdateCurrencies', function()
-        MerchantExtraCurrencyInset:SetShown(false)
-        MerchantExtraCurrencyBg:SetShown(false)
-    end)
-    MerchantMoneyInset:SetShown(false)
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1445,11 +1499,11 @@ local function Init_Bank_Frame()
     end)
     ReagentBankFrame.ShowHideButton:set_scale()
     ReagentBankFrame.ShowHideButton:set_atlas()
-    
+
     ReagentBankFrame:ClearAllPoints()
     ReagentBankFrame:SetSize(386, 415)
     ReagentBankFrame:SetPoint('TOPLEFT')
-    
+
     --背景
     ReagentBankFrame.Bg= ReagentBankFrame:CreateTexture(nil, 'BACKGROUND')
     ReagentBankFrame.Bg:SetSize(715, 350)
@@ -1486,11 +1540,31 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
 local function Init()
     Init_Button(MerchantFrame)--初始，按钮
+
+
+
 
     --######
     --DELETE
@@ -1511,33 +1585,18 @@ local function Init()
         end
     end)
 
-    --回购，数量，提示
-    MerchantFrameTab2.numLable= e.Cstr(MerchantFrameTab2)
-    MerchantFrameTab2.numLable:SetPoint('TOPRIGHT')
-    function MerchantFrameTab2:set_buyback_num()
-        local num
-        num= GetNumBuybackItems() or 0
-        if num>0 then
-            num= num==BUYBACK_ITEMS_PER_PAGE and '|cnRED_FONT_COLOR:'..num or num
-        else
-            num= ''
-        end
-        self.numLable:SetText(num)
-    end
-
-    hooksecurefunc('MerchantFrame_UpdateMerchantInfo',function()
-        Set_Merchant_Info()--设置, 提示, 信息
-        MerchantFrameTab2:set_buyback_num()--回购，数量，提示
-    end)
 
 
 
-    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
-        Set_Merchant_Info()--设置, 提示, 信息
-        MerchantFrameTab2:set_buyback_num()--回购，数量，提示
-    end)
 
     hooksecurefunc(StackSplitFrame, 'OpenStackSplitFrame',set_StackSplitFrame_OpenStackSplitFrame)--StackSplitFrame.lua 堆叠,数量,框架
+
+
+
+
+
+
+
 
     --#################
     --拾取, 设置自动拾取
@@ -1580,8 +1639,8 @@ local function Init()
 
 
 
-        Init_Frame_Widthx2()--加宽，框架x2
-        Init_Bank_Frame()--银行
+    Init_Frame_Plus()--加宽，框架x2
+    Init_Bank_Frame()--银行
 end
 
 
@@ -1683,14 +1742,14 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
             WoWToolsSave.Repair[e.Player.name_realm] = RepairSave
         end
     elseif event=='MERCHANT_SHOW' then
-        setDurabiliy()--显示耐久度
+        set_Durabiliy_Value_Text()--显示耐久度
         setAutoRepairAll()--自动修理
         setSellItems()--出售物品
-        setBuyItems()--购买物品
+        set_Buy_Items()--购买物品
 
 
     elseif event=='UPDATE_INVENTORY_DURABILITY' then
-        setDurabiliy()
+        set_Durabiliy_Value_Text()
 
     elseif event=='ENCOUNTER_LOOT_RECEIVED' then--买出BOOS装备
         if IsInInstance() and arg5 and arg5:find(e.Player.name) then
@@ -1701,7 +1760,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
         avgItemLevel= GetAverageItemLevel()--装等
 
     elseif event=='MERCHANT_UPDATE' then
-        setBuyBackItems()--回购
+        set_BuyBack_Items()--回购
 
     elseif event=='LOOT_READY' then--拾取, 增强
         if arg1 then
