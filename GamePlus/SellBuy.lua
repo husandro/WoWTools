@@ -20,6 +20,7 @@ local Save={
     --notPlus=true,--商人 Pluse,加宽
 
 
+    --disabledBankFramePlus=true,--银行 Pluse
     --notShowReagentBankFrame=true,--银行,隐藏，材料包
     scaleReagentBankFrame=0.75,--银行，缩放
     --xReagentBankFrame=15,--坐标x
@@ -1392,7 +1393,7 @@ end
 --银行
 --BankFrame.lua
 local function Init_Bank_Frame()
-    if not ReagentBankFrame then
+    if not ReagentBankFrame or Save.disabledBankFramePlus then
         return
     end
 

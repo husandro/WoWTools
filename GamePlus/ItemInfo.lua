@@ -389,7 +389,7 @@ local function set_Item_Info(self, tab)
     end
 
     if topRightText and not self.topRightText then
-        self.topRightText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
+        self.topRightText=e.Cstr(self, {size=size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
         self.topRightText:SetPoint('TOPRIGHT', tab.point or self, 2,0)
     end
     if self.topRightText then
@@ -399,7 +399,7 @@ local function set_Item_Info(self, tab)
         end]]
     end
     if topLeftText and not self.topLeftText then
-        self.topLeftText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
+        self.topLeftText=e.Cstr(self, {size=size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
         self.topLeftText:SetPoint('TOPLEFT', tab.point or self)
     end
     if self.topLeftText then
@@ -410,7 +410,7 @@ local function set_Item_Info(self, tab)
     end
     if bottomRightText then
         if not self.bottomRightText then
-            self.bottomRightText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
+            self.bottomRightText=e.Cstr(self, {size=size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
             self.bottomRightText:SetPoint('BOTTOMRIGHT', tab.point or self)
         end
     end
@@ -422,7 +422,7 @@ local function set_Item_Info(self, tab)
     end
 
     if leftText and not self.leftText then
-        self.leftText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
+        self.leftText=e.Cstr(self, {size=size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
         self.leftText:SetPoint('LEFT', tab.point or self)
     end
     if self.leftText then
@@ -433,7 +433,7 @@ local function set_Item_Info(self, tab)
     end
 
     if rightText and not self.rightText then
-        self.rightText=e.Cstr(self, {size=size})--size, nil, nil, nil, 'OVERLAY')
+        self.rightText=e.Cstr(self, {size=size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
         self.rightText:SetPoint('RIGHT', tab.point or self)
     end
     if self.rightText then
@@ -444,7 +444,7 @@ local function set_Item_Info(self, tab)
     end
 
     if bottomLeftText and not self.bottomLeftText then
-        self.bottomLeftText=e.Cstr(self, {size=size})--size)
+        self.bottomLeftText=e.Cstr(self, {size=size, color={r=1,g=1,b=1}})--size)
         self.bottomLeftText:SetPoint('BOTTOMLEFT', tab.point or self)
     end
     if self.bottomLeftText then
@@ -461,6 +461,11 @@ local function set_Item_Info(self, tab)
     end
     if self.setIDItem then
         self.setIDItem:SetShown(setIDItem)
+    end
+    if not self.setCount and self.Count then
+        self.Count:ClearAllPoints()
+        self.Count:SetPoint('BottomRight')
+        self.setCount=true
     end
 end
 
