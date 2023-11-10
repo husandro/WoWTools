@@ -87,24 +87,26 @@ local function Init_Bank_Frame()
         e.tips:AddDoubleLine((col or '')..'X |cnGREEN_FONT_COLOR:'..Save.xReagentBankFrame, (col or '')..'Ctrl+'..e.Icon.mid)
         e.tips:AddDoubleLine((col or '')..'Y |cnGREEN_FONT_COLOR:'..Save.yReagentBankFrame, (col or '')..'Shift+'..e.Icon.mid)
         col= Save.pointReagentBank and '' or '|cff606060'
-        e.tips:AddDoubleLine(col..(e.onlyChinese and '还原位置' or RESET_POSITION), col..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '还原位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
         
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end
     ReagentBankFrame.ShowHideButton:SetScript('OnClick', function(self)
-        Save.hideReagentBankFrame= not Save.hideReagentBankFrame and true or nil
-        self:show_hide(Save.hideReagentBankFrame)
-        self:set_atlas()
-        self:set_tooltips()
+        if IsControlKeyDown() then
+            Save.pointReagentBank= nil
+            self:show_hide()
+            self:set_tooltips()
+            print(id, addName, e.onlyChinese and '还原位置' or RESET_POSITION)
+        else
+            Save.hideReagentBankFrame= not Save.hideReagentBankFrame and true or nil
+            self:show_hide(Save.hideReagentBankFrame)
+            self:set_atlas()
+            self:set_tooltips()
+        end
     end)
-    ReagentBankFrame.ShowHideButton:SetScript('OnDoubleClick', function(self)--还原，位置
-        Save.pointReagentBank= nil
-        self:show_hide()
-        self:set_tooltips()
-        print(id, addName, e.onlyChinese and '还原位置' or RESET_POSITION)
-    end)
+
     ReagentBankFrame.ShowHideButton:SetScript('OnLeave', function() e.tips:Hide() end)
     ReagentBankFrame.ShowHideButton:SetScript('OnEnter', ReagentBankFrame.ShowHideButton.set_tooltips)
     ReagentBankFrame.ShowHideButton:SetScript('OnMouseWheel', function(self, d)
