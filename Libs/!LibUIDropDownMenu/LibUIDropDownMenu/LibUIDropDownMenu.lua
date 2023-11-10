@@ -784,16 +784,18 @@ function lib:UIDropDownMenu_SetDisplayMode(frame, displayMode)
 		GetChild(frame, name, "Middle"):Hide();
 		GetChild(frame, name, "Right"):Hide();
 		local button = GetChild(frame, name, "Button");
+		if button then
 		local buttonName = button:GetName();
-		GetChild(button, buttonName, "NormalTexture"):SetTexture(nil);
-		GetChild(button, buttonName, "DisabledTexture"):SetTexture(nil);
-		GetChild(button, buttonName, "PushedTexture"):SetTexture(nil);
-		GetChild(button, buttonName, "HighlightTexture"):SetTexture(nil);
-		local text = GetChild(frame, name, "Text");
+			GetChild(button, buttonName, "NormalTexture"):SetTexture(nil);
+			GetChild(button, buttonName, "DisabledTexture"):SetTexture(nil);
+			GetChild(button, buttonName, "PushedTexture"):SetTexture(nil);
+			GetChild(button, buttonName, "HighlightTexture"):SetTexture(nil);
+			local text = GetChild(frame, name, "Text");
 
-		button:ClearAllPoints();
-		button:SetPoint("LEFT", text, "LEFT", -9, 0);
-		button:SetPoint("RIGHT", text, "RIGHT", 6, 0);
+			button:ClearAllPoints();
+			button:SetPoint("LEFT", text, "LEFT", -9, 0);
+			button:SetPoint("RIGHT", text, "RIGHT", 6, 0);
+		end
 		frame.displayMode = "MENU";
 	end
 end
@@ -1465,14 +1467,16 @@ function lib:UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 				if not button.ignoreAsMenuSelection then
 					somethingChecked = true;
 					local icon = GetChild(frame, frame:GetName(), "Icon");
-					if (button.iconOnly and icon and button.icon) then
-						lib:UIDropDownMenu_SetIconImage(icon, button.icon, button.iconInfo);
-					elseif ( useValue ) then
-						lib:UIDropDownMenu_SetText(frame, button.value);
-						icon:Hide();
-					else
-						lib:UIDropDownMenu_SetText(frame, button:GetText());
-						icon:Hide();
+					if icon then
+						if (button.iconOnly and icon and button.icon) then
+							lib:UIDropDownMenu_SetIconImage(icon, button.icon, button.iconInfo);
+						elseif ( useValue ) then
+							lib:UIDropDownMenu_SetText(frame, button.value);
+							icon:Hide();
+						else
+							lib:UIDropDownMenu_SetText(frame, button:GetText());
+							icon:Hide();
+						end
 					end
 				end
 				button:LockHighlight();
@@ -1495,7 +1499,9 @@ function lib:UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 	if(somethingChecked == nil) then
 		lib:UIDropDownMenu_SetText(frame, VIDEO_QUALITY_LABEL6);
 		local icon = GetChild(frame, frame:GetName(), "Icon");
-		icon:Hide();
+		if icon then
+			icon:Hide();
+		end
 	end
 	if (not frame.noResize) then
 		for i=1, L_UIDROPDOWNMENU_MAXBUTTONS do
@@ -1991,16 +1997,18 @@ end
 function lib:UIDropDownMenu_JustifyText(frame, justification, customXOffset, customYOffset)
 	local frameName = frame:GetName();
 	local text = GetChild(frame, frameName, "Text");
+	if text then
 	text:ClearAllPoints();
-	if ( justification == "LEFT" ) then
-		text:SetPoint("LEFT", GetChild(frame, frameName, "Left"), "LEFT", customXOffset or 27, customYOffset or 2);
-		text:SetJustifyH("LEFT");
-	elseif ( justification == "RIGHT" ) then
-		text:SetPoint("RIGHT", GetChild(frame, frameName, "Right"), "RIGHT", customXOffset or -43, customYOffset or 2);
-		text:SetJustifyH("RIGHT");
-	elseif ( justification == "CENTER" ) then
-		text:SetPoint("CENTER", GetChild(frame, frameName, "Middle"), "CENTER", customXOffset or -5, customYOffset or 2);
-		text:SetJustifyH("CENTER");
+		if ( justification == "LEFT" ) then
+			text:SetPoint("LEFT", GetChild(frame, frameName, "Left"), "LEFT", customXOffset or 27, customYOffset or 2);
+			text:SetJustifyH("LEFT");
+		elseif ( justification == "RIGHT" ) then
+			text:SetPoint("RIGHT", GetChild(frame, frameName, "Right"), "RIGHT", customXOffset or -43, customYOffset or 2);
+			text:SetJustifyH("RIGHT");
+		elseif ( justification == "CENTER" ) then
+			text:SetPoint("CENTER", GetChild(frame, frameName, "Middle"), "CENTER", customXOffset or -5, customYOffset or 2);
+			text:SetJustifyH("CENTER");
+		end
 	end
 end
 
@@ -2071,7 +2079,7 @@ function lib:UIDropDownMenu_SetButtonClickable(level, id)
 end
 
 
-function lib:UIDropDownMenu_DisableDropDown(dropDown)
+function lib:UIDropDownMenu_DisableDropDown(dropDown, disabledtooltip)
 	lib:UIDropDownMenu_SetDropDownEnabled(dropDown, false, disabledtooltip);
 end
 
@@ -2079,7 +2087,7 @@ function lib:UIDropDownMenu_EnableDropDown(dropDown)
 	lib:UIDropDownMenu_SetDropDownEnabled(dropDown, true);
 end
 
-function lib:UIDropDownMenu_SetDropDownEnabled(dropDown, enabled, disabledtooltip)
+function lib:UIDropDownMenu_SetDropDownEnabled(dropDown, enabled, disabledTooltip)
 	local dropDownName = dropDown:GetName();
 	local label = GetChild(dropDown, dropDownName, "Label");
 	if label then
