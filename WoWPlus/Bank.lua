@@ -7,11 +7,13 @@ local Save={
     xReagentBankFrame=-15,--坐标x
     yReagentBankFrame=10,--坐标y
     --pointReagentBank=｛｝--保存位置
+    line=2,
+    num=7
 }
 
 
 
-
+local panel= CreateFrame("Frame")
 
 
 
@@ -183,8 +185,7 @@ local function Init_Bank_Frame()
     --BankSlotsFrame:SetPoint('TOPLEFT')
     --BankSlotsFrame:SetSize(w,h)
 
-    local num=7
-    local line=2
+    
     local last
     for i=1, 28 do
         local btn= _G['BankFrameItem'..i]
@@ -194,21 +195,31 @@ local function Init_Bank_Frame()
                 btn:SetPoint('TOPLEFT', 8,-60)
                 last=btn
             else
-                btn:SetPoint('TOP', _G['BankFrameItem'..i-1], 'BOTTOM', 0, -line)
+                btn:SetPoint('TOP', _G['BankFrameItem'..i-1], 'BOTTOM', 0, -Save.line)
             end
         end
     end
-    for i=8, 28, num do
+    for i=8, 28, Save.num do
         local btn= _G['BankFrameItem'..i]
         if btn then
             btn:ClearAllPoints()
-            btn:SetPoint('LEFT', last, 'RIGHT', line, 0)
+            btn:SetPoint('LEFT', last, 'RIGHT', Save.line, 0)
             last= btn
         end
     end
 
+    
+    hooksecurefunc('ReagentBankFrameItemButton_OnLoad', function(btn)
+        local index= tonumber(btn:GetName():match('%d+'))
+        if index then
+            if index==1 then
+                btn:SetPoint('LEFT', last, 'RIGHT', Save.line, 0)
+            else
+                btn:SetPoint('TOP',_G['ReagentBankFrameItem'..(index-Save.num)], 'BOTTOM', 0, -Save.line)
+            end
+        end
+    end)
 
-    last=nil
     for i=1, 7 do
         local btn= BankSlotsFrame['Bag'..i]
         if btn then
@@ -216,11 +227,12 @@ local function Init_Bank_Frame()
             if i==1 then
                 btn:SetPoint('TOPLEFT', _G['BankFrameItem'..num], 'BOTTOMLEFT', 0,-8)
             else
-                btn:SetPoint('LEFT', last, 'RIGHT', line, 0)
+                btn:SetPoint('LEFT', last, 'RIGHT', Save.line, 0)
             end
             last= btn
         end
     end
+
     --BankSlotsFrame.Bag1:ClearAllPoints()
     --BankSlotsFrame.Bag1:SetPoint()
     --ReagentBankFrame:ClearAllPoints()
@@ -262,7 +274,7 @@ end
 --加载保存数据
 --###########
 
-local panel= CreateFrame("Frame")
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 

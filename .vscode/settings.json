@@ -3608,7 +3608,8 @@
         "BNet_GetClientAtlas",
         "COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH",
         "BankSlotsFrame",
-        "BankFrameItem1"
+        "BankFrameItem1",
+        "BankFrame_OnShow"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
