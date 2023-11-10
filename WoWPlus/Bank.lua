@@ -139,12 +139,51 @@ local function Init_Bank_Frame()
     ReagentBankFrame.Bg:SetAtlas('auctionhouse-background-buy-noncommodities-market')
     ReagentBankFrame.Bg:SetAlpha(0.7)
 
+    --移动
+    ReagentBankFrame:SetClampedToScreen(false)
+    ReagentBankFrame:SetMovable(true)
+    ReagentBankFrame:HookScript("OnDragStart", function(self2, d)--开始移动
+        if not self.ClickTypeMove or (self.ClickTypeMove=='R' and d=='RightButton') or (self.ClickTypeMove=='L' and d=='LeftButton') then
+            local frame= self2.MoveFrame or self2
+            if not frame:IsMovable()  then
+                frame:SetMovable(true)
+            end
+            frame:StartMoving()
+        end
+    end)
+    ReagentBankFrame:HookScript("OnDragStop", function(self2)
+        stop_Drag(self)--停止移动
+        local moveFrame= self2.MoveFrame or self2
+        local frameName= self2.FrameName or moveFrame:GetName()
+        if frameName and frameName~='SettingsPanel' then
+            if self2.SavePoint then--保存点
+                Save.point[frameName]= {moveFrame:GetPoint(1)}
+                Save.point[frameName][2]= nil
+            else
+                Save.point[frameName]= nil
+            end
+        end
+        if not UnitAffectingCombat('player') and moveFrame.Raise then
+            moveFrame:Raise()
+        end
+    end)
+    self:HookScript("OnMouseUp", stop_Drag)--停止移动
+    self:HookScript('OnHide', stop_Drag)--停止移动
+    self:HookScript("OnMouseDown", function(self2, d)--设置, 光标
+        if not self2.ClickTypeMove or (self2.ClickTypeMove=='R' and d=='RightButton') or (self2.ClickTypeMove=='L' and d=='LeftButton') then
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+
     --设置，显示材料银行
     function ReagentBankFrame.ShowHideButton:show_hide(hide)
         if (not Save.notShowReagentBankFrame or hide) and BankFrame.activeTabIndex then
-
             if BankFrame.activeTabIndex==1 and not hide then
-                ReagentBankFrame:SetPoint('TOPLEFT', BankFrame, 'BOTTOMLEFT', Save.xReagentBankFrame or -15, Save.yReagentBankFrame or 10)
+                if Save.pointReagentBank then
+                    ReagentBankFrame:SetPoint(Save.pointReagentBank, UIParent, Save.pointReagentBank[3], Save.pointReagentBank[4])
+                else
+                    ReagentBankFrame:SetPoint('TOPLEFT', BankFrame, 'BOTTOMLEFT', Save.xReagentBankFrame or -15, Save.yReagentBankFrame or 10)
+                end
                 ReagentBankFrame:SetShown(true)
             elseif BankFrame.activeTabIndex==2 or hide then
                 ReagentBankFrame:SetPoint('TOPLEFT')

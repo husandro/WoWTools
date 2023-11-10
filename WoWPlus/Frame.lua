@@ -244,7 +244,7 @@ local function set_Frame_Drag(self)
         end
     end)
     self:HookScript("OnDragStop", function(self2)
-        stop_Drag(self)--停止移动
+        stop_Drag(self2)--停止移动
         local moveFrame= self2.MoveFrame or self2
         local frameName= self2.FrameName or moveFrame:GetName()
         if frameName and frameName~='SettingsPanel' then
