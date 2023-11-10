@@ -156,7 +156,8 @@ local function Init_Bank_Frame()
     ReagentBankFrame.Bg:SetSize(715, 350)
     ReagentBankFrame.Bg:SetPoint('BOTTOMLEFT',10, 10)
     ReagentBankFrame.Bg:SetAtlas('auctionhouse-background-buy-noncommodities-market')
-    ReagentBankFrame.Bg:SetAlpha(0.7)
+    ReagentBankFrame.Bg:SetAlpha(0.5)
+    ReagentBankFrame.Bg:Set
 
     --移动
     ReagentBankFrame:SetClampedToScreen(false)
@@ -166,6 +167,7 @@ local function Init_Bank_Frame()
         self:StopMovingOrSizing()
         Save.pointReagentBank= {self:GetPoint(1)}
         Save.pointReagentBank[2]= nil
+        ResetCursor()
     end)
     ReagentBankFrame:HookScript("OnMouseUp", ResetCursor)--停止移动
     ReagentBankFrame:HookScript("OnMouseDown", function(_, d)--设置, 光标
