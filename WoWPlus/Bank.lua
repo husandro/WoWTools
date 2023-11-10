@@ -80,7 +80,7 @@ local function Init_Bank_Frame()
         local col= not ReagentBankFrame:IsShown() and '|cff606060'
         e.tips:AddDoubleLine((col or '')..(e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleReagentBankFrame or 1), (col or '')..'Alt+'..e.Icon.mid)
 
-        if not col or Save.pointReagentBank then
+        if Save.pointReagentBank then
             col='|cff606060'
         end
         e.tips:AddLine(' ')
@@ -93,8 +93,8 @@ local function Init_Bank_Frame()
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end
-    ReagentBankFrame.ShowHideButton:SetScript('OnClick', function(self)
-        if IsControlKeyDown() then
+    ReagentBankFrame.ShowHideButton:SetScript('OnClick', function(self, d)
+        if IsControlKeyDown() and d=='RightButton' then
             Save.pointReagentBank= nil
             self:show_hide()
             self:set_tooltips()
@@ -166,9 +166,7 @@ local function Init_Bank_Frame()
     end)
     ReagentBankFrame:HookScript("OnMouseUp", ResetCursor)--停止移动
     ReagentBankFrame:HookScript("OnMouseDown", function(_, d)--设置, 光标
-        if d=='RightButton' then
-            SetCursor('UI_MOVE_CURSOR')
-        end
+        SetCursor('UI_MOVE_CURSOR')
     end)
     ReagentBankFrame:RegisterForDrag("RightButton", "LeftButton")
 
