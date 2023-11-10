@@ -194,7 +194,7 @@ local function Init_Bank_Frame()
                 btn:SetPoint('TOPLEFT', 8,-60)
                 last=btn
             else
-                btn:SetPoint('TOP', _G['BankFrameItem'..i-1], 'BOTTOM', line, line)
+                btn:SetPoint('TOP', _G['BankFrameItem'..i-1], 'BOTTOM', 0, -line)
             end
         end
     end
@@ -202,7 +202,7 @@ local function Init_Bank_Frame()
         local btn= _G['BankFrameItem'..i]
         if btn then
             btn:ClearAllPoints()
-            btn:SetPoint('LEFT', last, 'RIGHT', line, line)
+            btn:SetPoint('LEFT', last, 'RIGHT', line, 0)
             last= btn
         end
     end
@@ -214,9 +214,9 @@ local function Init_Bank_Frame()
         if btn then
             btn:ClearAllPoints()
             if i==1 then
-                btn:SetPoint('TOPLEFT', _G['BankFrameItem'..num], 'BOTTOMRIGHT', 8,8)
+                btn:SetPoint('TOPLEFT', _G['BankFrameItem'..num], 'BOTTOMLEFT', 0,-8)
             else
-                btn:SetPoint('LEFT', last, 'RIGHT', line, line)
+                btn:SetPoint('LEFT', last, 'RIGHT', line, 0)
             end
             last= btn
         end
