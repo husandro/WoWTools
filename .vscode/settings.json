@@ -3605,7 +3605,8 @@
         "BAG_CLEANUP_REAGENT_BANK",
         "BankFrameTab2",
         "BankFrameTab1",
-        "BNet_GetClientAtlas"
+        "BNet_GetClientAtlas",
+        "COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -1049,7 +1049,7 @@ local function Init_Menu(self, level, type)
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
 
-    info= {--堆叠数量
+    info= {--商人 Pluse
         text= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, (e.onlyChinese and '商人' or MERCHANT ), 'Plus'),
         checked= not Save.notPlus,
         func=function ()
@@ -1058,9 +1058,6 @@ local function Init_Menu(self, level, type)
         end,
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
-
-
-    COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH = "框体宽度";
 end
 
 
