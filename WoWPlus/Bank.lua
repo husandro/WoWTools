@@ -185,7 +185,7 @@ local function Init_Bank_Frame()
     --BankSlotsFrame:SetPoint('TOPLEFT')
     --BankSlotsFrame:SetSize(w,h)
 
-    
+    --[[
     local last
     for i=1, 28 do
         local btn= _G['BankFrameItem'..i]
@@ -220,18 +220,19 @@ local function Init_Bank_Frame()
         end
     end)
 
+    local last2
     for i=1, 7 do
         local btn= BankSlotsFrame['Bag'..i]
         if btn then
             btn:ClearAllPoints()
             if i==1 then
-                btn:SetPoint('TOPLEFT', _G['BankFrameItem'..num], 'BOTTOMLEFT', 0,-8)
+                btn:SetPoint('TOPLEFT', _G['BankFrameItem'..Save.num], 'BOTTOMLEFT', 0,-8)
             else
-                btn:SetPoint('LEFT', last, 'RIGHT', Save.line, 0)
+                btn:SetPoint('LEFT', last2, 'RIGHT', Save.line, 0)
             end
-            last= btn
+            last2= btn
         end
-    end
+    end]]
 
     --BankSlotsFrame.Bag1:ClearAllPoints()
     --BankSlotsFrame.Bag1:SetPoint()
