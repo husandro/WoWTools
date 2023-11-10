@@ -657,6 +657,7 @@ local function Init_Set_AlphaAndColor()
     hide_Texture(BankFrameMoneyFrameBorderMiddle)
     hide_Texture(BankFrameMoneyFrameBorderRight)
     hide_Texture(BankFrameMoneyFrameBorderLeft)
+    hide_Texture(BankFrameMoneyFrameInset.NineSlice)
 
     BankFrame:DisableDrawLayer('BACKGROUND')
     local texture= BankFrame:CreateTexture(nil,'BORDER',nil, 1)
@@ -676,6 +677,18 @@ local function Init_Set_AlphaAndColor()
             end
         end
     end)
+    set_Alpha_Color(BankFrameTab1.LeftActive)
+    set_Alpha_Color(BankFrameTab1.MiddleActive)
+    set_Alpha_Color(BankFrameTab1.RightActive)
+    set_Alpha_Color(BankFrameTab1.Left)
+    set_Alpha_Color(BankFrameTab1.Middle)
+    set_Alpha_Color(BankFrameTab1.Right)
+    set_Alpha_Color(BankFrameTab2.LeftActive)
+    set_Alpha_Color(BankFrameTab2.MiddleActive)
+    set_Alpha_Color(BankFrameTab2.RightActive)
+    set_Alpha_Color(BankFrameTab2.Left)
+    set_Alpha_Color(BankFrameTab2.Middle)
+    set_Alpha_Color(BankFrameTab2.Right)
 
     --背包
     if ContainerFrameCombinedBags and ContainerFrameCombinedBags.NineSlice then

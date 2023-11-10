@@ -147,9 +147,6 @@ local function Init_Bank_Frame()
     ReagentBankFrame.ShowHideButton:set_scale()
     ReagentBankFrame.ShowHideButton:set_atlas()
 
-    ReagentBankFrame:ClearAllPoints()
-    ReagentBankFrame:SetSize(715, 415)--386, 415
-    ReagentBankFrame:SetPoint('TOPLEFT')
 
 
 
@@ -180,10 +177,17 @@ local function Init_Bank_Frame()
     ReagentBankFrame.Bg:SetAlpha(0.5)
     ReagentBankFrame.Bg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
+    
+    --ReagentBankFrame:ClearAllPoints()
+    ReagentBankFrame:SetSize(715, 415)--386, 415
+    --ReagentBankFrame:SetPoint('TOPLEFT')
+
     --设置，显示材料银行
     function ReagentBankFrame.ShowHideButton:show_hide(hide)
+        --local unlocked= IsReagentBankUnlocked()
         if (not Save.hideReagentBankFrame or hide) and BankFrame.activeTabIndex then
             if BankFrame.activeTabIndex==1 and not hide then
+                
                 ReagentBankFrame:ClearAllPoints()
                 if Save.pointReagentBank then
                     ReagentBankFrame:SetPoint(Save.pointReagentBank[1], UIParent, Save.pointReagentBank[3], Save.pointReagentBank[4],  Save.pointReagentBank[5])
