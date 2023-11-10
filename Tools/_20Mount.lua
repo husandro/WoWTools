@@ -626,7 +626,9 @@ end
 --打开界面, 收藏, 坐骑
 --##################
 local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)
-    if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then C_AddOns.LoadAddOn('Blizzard_Collections') end
+    if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
+        C_AddOns.LoadAddOn('Blizzard_Collections')
+    end
     if MountJournal and not MountJournal:IsVisible() then
         ToggleCollectionsJournal(1)
     end
@@ -1477,7 +1479,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     end
                 end
 
-                if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then C_AddOns.LoadAddOn('Blizzard_Collections') end
+                if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
+                    C_AddOns.LoadAddOn('Blizzard_Collections')
+                end
 
                 button= e.Cbtn2({
                     name= 'WoWToolsMountButton',

@@ -498,7 +498,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
                 panel:RegisterEvent('HEARTHSTONE_BOUND')
 
-                if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then C_AddOns.LoadAddOn('Blizzard_Collections') end
+                if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
+                    C_AddOns.LoadAddOn('Blizzard_Collections')
+                end
                 Init()--初始
             else
                 panel:UnregisterEvent('ADDON_LOADED')

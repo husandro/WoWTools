@@ -1073,7 +1073,7 @@ local function InitMenu(_, level, menuList)
         keepShownOnClick=true,
         func= function()
             if not C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') then
-                UIParentC_AddOns.LoadAddOn("Blizzard_EventTrace")
+                C_AddOns.LoadAddOn("Blizzard_EventTrace")
             else
                 EventTrace:SetShown(not EventTrace:IsShown() and true or false)
             end
