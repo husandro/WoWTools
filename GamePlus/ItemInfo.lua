@@ -26,6 +26,30 @@ local heirloomWeapontemEquipLocTab={--传家宝，武器，itemEquipLoc
     }
 
 --set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}, hyperLink=nil, point=nil})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_Item_Info(self, tab)
     local itemLink, containerInfo, itemID= tab.hyperLink, nil, nil
     if tab.bag then
@@ -440,6 +464,35 @@ local function set_Item_Info(self, tab)
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function setBags(self)--背包设置
     for _, itemButton in self:EnumerateValidItems() do
         if itemButton.hasItem then
@@ -450,6 +503,16 @@ local function setBags(self)--背包设置
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
 
 
 local function setMerchantInfo()--商人设置
@@ -465,6 +528,20 @@ local function setMerchantInfo()--商人设置
 	set_Item_Info(MerchantBuyBackItemItemButton, {merchant={slot=GetNumBuybackItems(), buyBack=true}})
 
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --hooksecurefunc(GuildBankFrame,'Update', function(self)--Blizzard_GuildBankUI.lua
@@ -488,6 +565,20 @@ local function setGuildBank()--公会银行,设置
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_BankFrameItemButton_Update(self)--银行, BankFrame.lua
     if not self.isBag then
         set_Item_Info(self, {bag={bag=self:GetParent():GetID(), slot=self:GetID()}})
@@ -507,6 +598,32 @@ local function set_BankFrameItemButton_Update(self)--银行, BankFrame.lua
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --####
@@ -835,6 +952,36 @@ local function Init()
     end
     --使用插件时，会退出，不要在下面加代码
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
