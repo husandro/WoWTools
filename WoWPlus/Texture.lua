@@ -1885,7 +1885,7 @@ local function Init_Class_Power(init)--职业
                 hide_Texture(btn.Chi_BG_Active)
                 hide_Texture(btn.BGInactive)
                 set_Alpha_Color(btn.Chi_BG, nil, nil, 0.2)
-                set_Num_Texture(btn)
+                set_Num_Texture(btn, nil, false)
             end
         end
         if init then
