@@ -177,17 +177,63 @@ local function Init_Bank_Frame()
     ReagentBankFrame.Bg:SetAlpha(0.5)
     ReagentBankFrame.Bg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
-    
+    --NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES
+    --local w, h= 370, 200
+    --BankSlotsFrame:ClearAllPoints()
+    --BankSlotsFrame:SetPoint('TOPLEFT')
+    --BankSlotsFrame:SetSize(w,h)
+
+    local num=7
+    local line=2
+    local last
+    for i=1, 28 do
+        local btn= _G['BankFrameItem'..i]
+        if btn then
+            btn:ClearAllPoints()
+            if i==1 then
+                btn:SetPoint('TOPLEFT', 8,-60)
+                last=btn
+            else
+                btn:SetPoint('TOP', _G['BankFrameItem'..i-1], 'BOTTOM', line, line)
+            end
+        end
+    end
+    for i=8, 28, num do
+        local btn= _G['BankFrameItem'..i]
+        if btn then
+            btn:ClearAllPoints()
+            btn:SetPoint('LEFT', last, 'RIGHT', line, line)
+            last= btn
+        end
+    end
+
+
+    last=nil
+    for i=1, 7 do
+        local btn= BankSlotsFrame['Bag'..i]
+        if btn then
+            btn:ClearAllPoints()
+            if i==1 then
+                btn:SetPoint('TOPLEFT', _G['BankFrameItem'..num], 'BOTTOMRIGHT', 8,8)
+            else
+                btn:SetPoint('LEFT', last, 'RIGHT', line, line)
+            end
+            last= btn
+        end
+    end
+    --BankSlotsFrame.Bag1:ClearAllPoints()
+    --BankSlotsFrame.Bag1:SetPoint()
     --ReagentBankFrame:ClearAllPoints()
     ReagentBankFrame:SetSize(715, 415)--386, 415
     --ReagentBankFrame:SetPoint('TOPLEFT')
+    
 
     --设置，显示材料银行
     function ReagentBankFrame.ShowHideButton:show_hide(hide)
         --local unlocked= IsReagentBankUnlocked()
         if (not Save.hideReagentBankFrame or hide) and BankFrame.activeTabIndex then
             if BankFrame.activeTabIndex==1 and not hide then
-                
+               -- BankFrame:SetSize(370, 300)--<Size x="386" y="415"/>
                 ReagentBankFrame:ClearAllPoints()
                 if Save.pointReagentBank then
                     ReagentBankFrame:SetPoint(Save.pointReagentBank[1], UIParent, Save.pointReagentBank[3], Save.pointReagentBank[4],  Save.pointReagentBank[5])
