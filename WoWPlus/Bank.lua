@@ -3,9 +3,9 @@ local addName= BANK
 local Save={
      --disabled=true,--禁用
     --hideReagentBankFrame=true,--银行,隐藏，材料包
-    scaleReagentBankFrame=0.75,--银行，缩放
-    xReagentBankFrame=-15,--坐标x
-    yReagentBankFrame=10,--坐标y
+    --scaleReagentBankFrame=0.75,--银行，缩放
+    --xReagentBankFrame=-15,--坐标x
+    --yReagentBankFrame=10,--坐标y
     --pointReagentBank=｛｝--保存位置
     line=2,
     num=7
@@ -185,7 +185,7 @@ local function Init_Bank_Frame()
     --BankSlotsFrame:SetPoint('TOPLEFT')
     --BankSlotsFrame:SetSize(w,h)
 
-    --[[
+   
     local last
     for i=1, 28 do
         local btn= _G['BankFrameItem'..i]
@@ -199,7 +199,7 @@ local function Init_Bank_Frame()
             end
         end
     end
-    for i=8, 28, Save.num do
+    for i=Save.num+1, 28, Save.num do
         local btn= _G['BankFrameItem'..i]
         if btn then
             btn:ClearAllPoints()
@@ -208,19 +208,8 @@ local function Init_Bank_Frame()
         end
     end
 
-    
-    hooksecurefunc('ReagentBankFrameItemButton_OnLoad', function(btn)
-        local index= tonumber(btn:GetName():match('%d+'))
-        if index then
-            if index==1 then
-                btn:SetPoint('LEFT', last, 'RIGHT', Save.line, 0)
-            else
-                btn:SetPoint('TOP',_G['ReagentBankFrameItem'..(index-Save.num)], 'BOTTOM', 0, -Save.line)
-            end
-        end
-    end)
 
-    local last2
+
     for i=1, 7 do
         local btn= BankSlotsFrame['Bag'..i]
         if btn then
@@ -228,11 +217,10 @@ local function Init_Bank_Frame()
             if i==1 then
                 btn:SetPoint('TOPLEFT', _G['BankFrameItem'..Save.num], 'BOTTOMLEFT', 0,-8)
             else
-                btn:SetPoint('LEFT', last2, 'RIGHT', Save.line, 0)
+                btn:SetPoint('LEFT', BankSlotsFrame['Bag'..(i-1)], 'RIGHT', Save.line, 0)
             end
-            last2= btn
         end
-    end]]
+    end
 
     --BankSlotsFrame.Bag1:ClearAllPoints()
     --BankSlotsFrame.Bag1:SetPoint()
@@ -267,6 +255,33 @@ local function Init_Bank_Frame()
         ReagentBankFrame.autoSortButton:SetShown(not Save.hideReagentBankFrame and BankFrame.activeTabIndex==1)--整理材料银行
     end
     hooksecurefunc('BankFrame_ShowPanel', ReagentBankFrame.ShowHideButton.show_hide)
+
+
+    ReagentBankFrame:HookScript('OnShow', function(self)
+        if self.isSetPoint or not self.slots_initialized or not IsReagentBankUnlocked() then
+            return
+        end
+        self.isSetPoint=true
+
+        local btnNum=0
+        for index, btn in self:EnumerateItems() do
+            btn:ClearAllPoints()
+            if index==1 then
+                btn:SetPoint('LEFT', last, 'RIGHT', Save.line+6, 0)
+                last=btn
+            else
+                btn:SetPoint('TOP', _G['ReagentBankFrameItem'..(index-1)], 'BOTTOM', 0, -Save.line)
+                --btn:SetPoint('TOP', last, 'TOP', 0, -Save.line)
+            end
+            btnNum=index
+        end
+        for i=Save.num+1, btnNum, Save.num do
+            local btn= _G['ReagentBankFrameItem'..i]
+            btn:ClearAllPoints()
+            btn:SetPoint('LEFT', last, 'RIGHT', Save.line, 0)
+            last= btn
+        end
+    end)
 end
 
 
