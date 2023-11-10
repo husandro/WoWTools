@@ -50,14 +50,16 @@ local function hide_Frame_Texture(frame, tab)
         tab= tab or {}
         local frames= {frame:GetRegions()}
         for index, icon in pairs(frames) do
-            if tab.index then
-                if tab.index==index then
-                    hide_Texture(icon)
-                    break
+            if icon:GetObjectType()=="Texture" then
+                if tab.index then
+                    if tab.index==index then
+                        hide_Texture(icon)
+                        break
+                    end
+                else
+                    icon:SetTexture(0)
+                    icon:SetShown(false)
                 end
-            elseif icon:GetObjectType()=="Texture" then
-                icon:SetTexture(0)
-                icon:SetShown(false)
             end
         end
     end
@@ -652,9 +654,9 @@ local function Init_Set_AlphaAndColor()
     set_Alpha_Color(BankFrame.NineSlice.TopRightCorner)
 
     hide_Texture(BankFrameMoneyFrameInset.Bg)
-    set_Alpha_Color(BankFrameMoneyFrameBorderMiddle)
-    set_Alpha_Color(BankFrameMoneyFrameBorderRight)
-    set_Alpha_Color(BankFrameMoneyFrameBorderLeft)
+    hide_Texture(BankFrameMoneyFrameBorderMiddle)
+    hide_Texture(BankFrameMoneyFrameBorderRight)
+    hide_Texture(BankFrameMoneyFrameBorderLeft)
 
     BankFrame:DisableDrawLayer('BACKGROUND')
     local texture= BankFrame:CreateTexture(nil,'BORDER',nil, 1)
