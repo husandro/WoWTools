@@ -8,12 +8,13 @@ local Save={
     yReagentBankFrame=10,--坐标y
     --pointReagentBank=｛｝--保存位置
     line=2,
-    num=10
+    num=14,
+    allBank=e.Player.husandro,--转化为联合的大包
 }
 
 
 
-local panel= CreateFrame("Frame")
+
 
 
 
@@ -268,9 +269,71 @@ local function Init_All_Bank()
     function BankFrame.setAllBank:set_bank()
         self.last=nil
         self.num=0
+        local last
+        local tab={}
         for i=1, NUM_BANKGENERIC_SLOTS do--NUM_BANKGENERIC_SLOTS 28
             local btn= BankSlotsFrame["Item"..i]
-            --local btn= _G['BankFrameItem'..i]
+            if btn then
+                btn:ClearAllPoints()
+                if not self.last then
+                    btn:SetPoint('TOPLEFT', 8,-60)
+                    self.last=btn
+                    self.num= self.num+1
+                    last=btn
+                else
+                    btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save.line)
+                    last=btn
+                end
+                table.insert(tab, btn)
+            end
+        end
+        local num=0
+        for i=1, NUM_BANKBAGSLOTS do
+            local button = BankSlotsFrame["Bag"..i];
+            if ( button ) then
+                local bag= button:GetID()+NUM_TOTAL_EQUIPPED_BAG_SLOTS
+                for slot=1, C_Container.GetContainerNumSlots(bag) do
+                    local slotIndex= bag+NUM_REAGENTBAG_FRAMES
+                    local bagFrame= _G['ContainerFrame'..slotIndex]
+                    if bagFrame then
+                        bagFrame:ClearAllPoints()
+                        bagFrame:SetPoint('RIGHT', UIParent, 'LEFT', -10, 0)
+                        local btn=_G['ContainerFrame'..(slotIndex)..'Item'..slot]
+                        if btn then
+                            if bagFrame:IsShown() then
+                                num=num+1
+                                btn:SetParent(BankSlotsFrame)
+                                btn:ClearAllPoints()
+                                btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save.line)
+                                last=btn
+                                table.insert(tab, btn)
+                                btn:SetShown(true)
+                            else
+                                btn:SetShown(false)
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        
+        for i=Save.num+1, #tab, Save.num do--NUM_BANKGENERIC_SLOTS 28
+            local btn= tab[i]
+            if btn then
+                btn:ClearAllPoints()
+                btn:SetPoint('LEFT', self.last, 'RIGHT', Save.line, 0)
+                self.last= btn
+                self.num= self.num+1
+            end
+        end
+       
+        
+        
+       
+        --[[
+        for i=1, NUM_BANKGENERIC_SLOTS do--NUM_BANKGENERIC_SLOTS 28
+        local btn= BankSlotsFrame["Item"..i]
+        --local btn= _G['BankFrameItem'..i]
             if btn then
                 btn:ClearAllPoints()
                 if i==1 then
@@ -291,6 +354,7 @@ local function Init_All_Bank()
                 self.num= self.num+1
             end
         end
+        ]]
         --材料包
         for i=1, NUM_BANKBAGSLOTS do--NUM_BANKBAGSLOTS 7
             local btn= BankSlotsFrame['Bag'..i]
@@ -303,14 +367,15 @@ local function Init_All_Bank()
                 end
             end
         end
+
     end
     
-    --银行，背包
-    function BankFrame.setAllBank:set_bag()
+    
+    --[[function BankFrame.setAllBank:set_bag()
         for i=1, NUM_BANKBAGSLOTS do--NUM_BANKBAGSLOTS 7
             local btn= BankSlotsFrame['Bag'..i]
         end
-    end
+    end]]
 
 
     --设置，材料，按钮
@@ -410,16 +475,7 @@ local function Init_All_Bank()
         
     end)
     
-    BankFrame:HookScript('OnShow', function(self)
-        local numSlots,full = GetNumBankSlots();
-        for i=1, NUM_BANKBAGSLOTS do
-            local button = BankSlotsFrame["Bag"..i];
-            if ( button ) then
-                local bag= button:GetID()+NUM_TOTAL_EQUIPPED_BAG_SLOTS+i
-                print(bag)
-            end
-        end
-    end)
+
     hooksecurefunc('BankFrame_ShowPanel', function()
         if BankFrame.activeTabIndex==1 then
             ReagentBankFrame:SetShown(true)
@@ -435,6 +491,11 @@ local function Init_All_Bank()
         BankFrame.setAllBank:set_size()--设置，外框，大小
     end)
 
+    hooksecurefunc('BankFrameItemButtonBag_OnClick', function()
+        BankFrame.setAllBank:set_bank()--设置，银行，按钮
+        BankFrame.setAllBank:set_reagent()--设置，材料，按钮
+        BankFrame.setAllBank:set_size()--设置，外框，大小
+    end)
     BankFrame.setAllBank:set_bank()--设置，银行，按钮
 end
 
@@ -494,11 +555,24 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
-
-
+local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -508,7 +582,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            e.AddPanel_Check({
+            local initializer2= e.AddPanel_Check({
                 name= e.Icon.bank2..(e.onlyChinese and '银行' or addName),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -517,12 +591,23 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
+            local initializer= e.AddPanel_Check({
+                name= (e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED ),
+                value= Save.allBank,
+                func= function()
+                    Save.allBank = not Save.allBank and true or nil
+                    print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 
             if not Save.disabled then
                 Init_Bank_Frame()--银行
             end
             panel:UnregisterEvent('ADDON_LOADED')
         end
+
+        
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

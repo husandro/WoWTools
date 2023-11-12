@@ -3616,7 +3616,10 @@
         "BankItemSearchBox",
         "HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS",
         "NUM_TOTAL_BAG_FRAMES",
-        "BANK_BAG"
+        "BANK_BAG",
+        "ContainerFrame8Item30",
+        "ContainerFrame7",
+        "BAG_COMMAND_CONVERT_TO_COMBINED"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
