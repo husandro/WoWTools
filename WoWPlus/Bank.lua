@@ -366,7 +366,7 @@ local function Init_All_Bank()
     function BankFrame.setAllBank:set_size()--设置，外框，大小
         if BankFrame.activeTabIndex==1 then
             local num= BankFrame.setAllBank.num + BankFrame.setAllBank.reagentNum
-            BankFrame:SetSize(8+num*37+((num-1)*Save.line)+8+8+2, (Save.num+1)*37 +((Save.num-1)*Save.line)+64+8+8)
+            BankFrame:SetSize(8+num*37+((num-1)*Save.line)+8+8+2, (Save.num+1)*37 +((Save.num-1)*Save.line)+64+8+6)
         elseif BankFrame.activeTabIndex==2 then
             local num= BankFrame.setAllBank.reagentNum
             BankFrame:SetSize(8+(num*38)+((num-1)*Save.line), 64+(Save.num*37)+(Save.num*Save.line)+8)--设置，大小
