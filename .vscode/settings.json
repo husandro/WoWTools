@@ -3609,7 +3609,14 @@
         "COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH",
         "BankSlotsFrame",
         "BankFrameItem1",
-        "BankFrame_OnShow"
+        "BankFrame_OnShow",
+        "BankFrame_ShowPanel",
+        "ITEMSLOTTEXT",
+        "BAGSLOTTEXT",
+        "BankItemSearchBox",
+        "HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS",
+        "NUM_TOTAL_BAG_FRAMES",
+        "BANK_BAG"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
