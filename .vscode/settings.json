@@ -3619,7 +3619,9 @@
         "BANK_BAG",
         "ContainerFrame8Item30",
         "ContainerFrame7",
-        "BAG_COMMAND_CONVERT_TO_COMBINED"
+        "BAG_COMMAND_CONVERT_TO_COMBINED",
+        "BankFramePurchaseInfo",
+        "BankFramePurchaseButton"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
