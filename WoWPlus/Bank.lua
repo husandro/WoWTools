@@ -218,8 +218,8 @@ local function Init_All_Bank()
         e.tips:AddDoubleLine((e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS)..' |cnGREEN_FONT_COLOR:'..Save.num, e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '间隔' or 'Interval')..' |cnGREEN_FONT_COLOR:'..Save.line, 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(Save.showBackground and (e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND) or (e.onlyChinese and '隐藏背景' or HIDE_PULLOUT_BG ), e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '索引' or 'Index', e.Icon.left)
+        e.tips:AddDoubleLine(Save.showBackground and (e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND) or (e.onlyChinese and '隐藏背景' or HIDE_PULLOUT_BG ), e.Icon.right)
         e.tips:Show()
         self:SetAlpha(1)
     end
@@ -288,7 +288,7 @@ local function Init_All_Bank()
             btn.indexLable:SetText(Save.showIndex and index or '')
         end
     end
-    
+
     --设置，银行，按钮
     function BankFrame.setAllBank:set_bank()
         self.last=nil
