@@ -62,7 +62,7 @@ local function Init_Bank_Plus()--增强，原生
         e.tips:AddDoubleLine((col or '')..'Y |cnGREEN_FONT_COLOR:'..Save.yReagentBankFrame, (col or '')..'Shift+'..e.Icon.mid)
         col= Save.pointReagentBank and '' or '|cff606060'
         e.tips:AddDoubleLine(col..(e.onlyChinese and '还原位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
-        
+
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
@@ -199,7 +199,6 @@ end
 
 --整合，一起
 --#########
-
 local function Init_All_Bank()
     BankFrame.setAllBank= e.Cbtn(BankFrame.TitleContainer, {size={22,22}, icon=true})
     BankFrame.setAllBank:SetAlpha(0.5)
@@ -245,7 +244,7 @@ local function Init_All_Bank()
         self:set_size()--设置，外框，大小
         self:set_tooltips()
     end)
-            
+
     BankFrame.setAllBank:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
     BankFrame.setAllBank:SetScript('OnEnter', BankFrame.setAllBank.set_tooltips)
 
@@ -300,7 +299,7 @@ local function Init_All_Bank()
                 end
             end
         end
-        
+
         for i=Save.num+1, #tab, Save.num do--NUM_BANKGENERIC_SLOTS 28
             local btn= tab[i]
             if btn then
@@ -310,35 +309,7 @@ local function Init_All_Bank()
                 self.num= self.num+1
             end
         end
-       
-        
-        
-       
-        --[[
-        for i=1, NUM_BANKGENERIC_SLOTS do--NUM_BANKGENERIC_SLOTS 28
-        local btn= BankSlotsFrame["Item"..i]
-        --local btn= _G['BankFrameItem'..i]
-            if btn then
-                btn:ClearAllPoints()
-                if i==1 then
-                    btn:SetPoint('TOPLEFT', 8,-60)
-                    self.last=btn
-                    self.num= self.num+1
-                else
-                    btn:SetPoint('TOP', _G['BankFrameItem'..i-1], 'BOTTOM', 0, -Save.line)
-                end
-            end
-        end
-        for i=Save.num+1, NUM_BANKGENERIC_SLOTS, Save.num do--NUM_BANKGENERIC_SLOTS 28
-            local btn= _G['BankFrameItem'..i]
-            if btn then
-                btn:ClearAllPoints()
-                btn:SetPoint('LEFT', self.last, 'RIGHT', Save.line, 0)
-                self.last= btn
-                self.num= self.num+1
-            end
-        end
-        ]]
+
         --材料包
         for i=1, NUM_BANKBAGSLOTS do--NUM_BANKBAGSLOTS 7
             local btn= BankSlotsFrame['Bag'..i]
@@ -351,21 +322,13 @@ local function Init_All_Bank()
                 end
             end
         end
-
     end
-    
-    
-    --[[function BankFrame.setAllBank:set_bag()
-        for i=1, NUM_BANKBAGSLOTS do--NUM_BANKBAGSLOTS 7
-            local btn= BankSlotsFrame['Bag'..i]
-        end
-    end]]
+
 
 
     --设置，材料，按钮
     function BankFrame.setAllBank:set_reagent()
         self.reagentNum= 0
-        
         local btnNum=0
         for index, btn in ReagentBankFrame:EnumerateItems() do
             btn:ClearAllPoints()
@@ -389,7 +352,6 @@ local function Init_All_Bank()
             end
             btnNum=index
         end
-        --self.reagentNum=0
         for i=Save.num+1, btnNum, Save.num do
             local btn= ReagentBankFrame["Item"..i]
             btn:ClearAllPoints()
@@ -397,23 +359,21 @@ local function Init_All_Bank()
             self.last= btn
             self.reagentNum= self.reagentNum+1
         end
-
-      
         self.last=nil
     end
 
-    
+
     function BankFrame.setAllBank:set_size()--设置，外框，大小
         if BankFrame.activeTabIndex==1 then
             local num= BankFrame.setAllBank.num + BankFrame.setAllBank.reagentNum
             BankFrame:SetSize(8+num*37+((num-1)*Save.line)+8+8+2, (Save.num+1)*37 +((Save.num-1)*Save.line)+64+8+8)
         elseif BankFrame.activeTabIndex==2 then
             local num= BankFrame.setAllBank.reagentNum
-            BankFrame:SetSize(8+((num+1)*38)+((num-1)*Save.line), 64+(Save.num*37)+(Save.num*Save.line)+8)--设置，大小
+            BankFrame:SetSize(8+(num*38)+((num-1)*Save.line), 64+(Save.num*37)+(Save.num*Save.line)+8)--设置，大小
         end
     end
 
-    
+
 
     --隐藏，ITEMSLOTTEXT"物品栏位" BAGSLOTTEXT"背包栏位";
     for _, region in pairs({BankSlotsFrame:GetRegions()}) do
@@ -424,12 +384,12 @@ local function Init_All_Bank()
     end
 
     ReagentBankFrame:HookScript('OnShow', function(self)
-       
+
         if self.isSetPoint or not self.slots_initialized then--or not IsReagentBankUnlocked() then
             return
         end
         self.isSetPoint=true
-        
+
         for _, region in pairs({ReagentBankFrame:GetRegions()}) do--隐藏，材料包，背景
             if region:GetObjectType()=='Texture' then
                 region:SetTexture(0)
@@ -460,16 +420,16 @@ local function Init_All_Bank()
             e.tips:Show()
         end)
 
-        
+
     end)
-    
+
 
     hooksecurefunc('BankFrame_ShowPanel', function()
         if BankFrame.activeTabIndex==1 then
             ReagentBankFrame:SetShown(true)
             BankFrame.setAllBank:set_bank()--设置，银行，按钮
             BankFrame.setAllBank:set_reagent()--设置，材料，按钮
-            
+
         elseif BankFrame.activeTabIndex==2 then
             local btn= ReagentBankFrame["Item1"]
             if btn then
@@ -489,7 +449,7 @@ local function Init_All_Bank()
         BankFrame.setAllBank:set_reagent()--设置，材料，按钮
         BankFrame.setAllBank:set_size()--设置，外框，大小
     end)
-    
+
     hooksecurefunc('UpdateBagSlotStatus', function()
         if BankFramePurchaseInfo then
             BankFramePurchaseInfo:ClearAllPoints()
@@ -554,7 +514,7 @@ local function Init_Bank_Frame()
             ReagentBankFrame[textrue]:SetAlpha(0)
         end
     end
-    
+
     --整理材料银行
     ReagentBankFrame.autoSortButton= CreateFrame("Button", nil, ReagentBankFrame, 'BankAutoSortButtonTemplate')
     ReagentBankFrame.autoSortButton:SetScript('OnEnter', function(self)
@@ -630,7 +590,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             panel:UnregisterEvent('ADDON_LOADED')
         end
 
-        
+
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
