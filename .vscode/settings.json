@@ -3623,7 +3623,9 @@
         "BankFramePurchaseInfo",
         "BankFramePurchaseButton",
         "HIDE_PULLOUT_BG",
-        "HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND"
+        "HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND",
+        "BankFrameCloseButton",
+        "SLASH_RELOAD2"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

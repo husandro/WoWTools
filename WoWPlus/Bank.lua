@@ -364,9 +364,9 @@ local function Init_All_Bank()
                 else
                     btn:SetPoint('LEFT', BankSlotsFrame['Bag'..(i-1)], 'RIGHT', Save.line, 0)
                 end
-               
+
             end
-            
+
         end
     end
 
@@ -511,7 +511,7 @@ local function Init_All_Bank()
     end)
     BankFrame.setAllBank:set_bank()--设置，银行，按钮
 
-    
+
     BankFrame.setAllBank:set_background()--设置，背景
 end
 
@@ -546,6 +546,40 @@ local function Init_Bank_Frame()
     if not ReagentBankFrame then
         return
     end
+    local btn= e.Cbtn(BankFrame.TitleContainer, {size={22,22}, icon='hide'})
+    if _G['MoveZoomInButtonPerBankFrame'] then
+        btn:SetPoint('LEFT', _G['MoveZoomInButtonPerBankFrame'], 'RIGHT')
+    else
+        btn:SetPoint('LEFT', 34,0)
+    end
+    function btn:set_atlas()
+        self:SetNormalAtlas(Save.allBank and 'Warfronts-BaseMapIcons-Alliance-Workshop-Minimap' or 'Warfronts-BaseMapIcons-Empty-Workshop-Minimap')
+    end
+    function btn:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED, e.GetEnabeleDisable(not Save.allBank)..e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(SLASH_RELOAD2, 'Alt+'..e.Icon.right)
+        e.tips:Show()
+        self:SetAlpha(1)
+    end
+    btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
+    btn:SetScript('OnEnter', btn.set_tooltips)
+    btn:SetScript('OnClick', function(self, d)
+        if not IsModifierKeyDown() then
+            Save.allBank = not Save.allBank and true or nil
+            print(id, addName,'|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            self:set_atlas()
+            self:set_tooltips()
+        elseif d=='RightButton' and IsAltKeyDown() then
+            e.Reload()
+        end
+    end)
+    btn:SetAlpha(0.5)
+    btn:set_atlas()
 
     local tab={--隐藏，背景
         'LeftTopCorner-Shadow',
@@ -584,8 +618,6 @@ local function Init_Bank_Frame()
     else
         Init_Bank_Plus()--增强，原生
     end
-
-  
 end
 
 
@@ -617,7 +649,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            local initializer2= e.AddPanel_Check({
+            --local initializer2= 
+            e.AddPanel_Check({
                 name= e.Icon.bank2..(e.onlyChinese and '银行' or addName),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -626,7 +659,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
-            local initializer= e.AddPanel_Check({
+            --[[local initializer= e.AddPanel_Check({
                 name= (e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED ),
                 value= Save.allBank,
                 func= function()
@@ -634,7 +667,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)]]
 
             if not Save.disabled then
                 Init_Bank_Frame()--银行
