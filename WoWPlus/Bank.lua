@@ -546,10 +546,9 @@ local function Init_Bank_Frame()
 
 
     if Save.allBank then
-        Init_Bank_Plus()--增强，原生
-    else
         Init_All_Bank()--整合，一起
-        
+    else
+        Init_Bank_Plus()--增强，原生
     end
 end
 
