@@ -3621,7 +3621,9 @@
         "ContainerFrame7",
         "BAG_COMMAND_CONVERT_TO_COMBINED",
         "BankFramePurchaseInfo",
-        "BankFramePurchaseButton"
+        "BankFramePurchaseButton",
+        "HIDE_PULLOUT_BG",
+        "HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

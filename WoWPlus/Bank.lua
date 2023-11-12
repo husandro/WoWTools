@@ -10,6 +10,7 @@ local Save={
     line=2,
     num=14,
     allBank=true,--转化为联合的大包
+    --showBackground= true,
 }
 
 
@@ -214,9 +215,26 @@ local function Init_All_Bank()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS)..' |cnGREEN_FONT_COLOR:'..Save.num, e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '间隔' or 'Interval')..' |cnGREEN_FONT_COLOR:'..Save.line, 'Alt+'..e.Icon.mid)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(Save.showBackground and (e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND) or (e.onlyChinese and '隐藏背景' or HIDE_PULLOUT_BG ), e.Icon.left)
         e.tips:Show()
         self:SetAlpha(1)
     end
+    --设置，背景
+    function BankFrame.setAllBank:set_background()
+        if Save.showBackground~=nil then
+            if Save.showBackground then
+                BankFrame:DisableDrawLayer('BACKGROUND')
+            else
+                BankFrame:EnableDrawLayer('BACKGROUND')
+            end
+        end
+    end
+    BankFrame.setAllBank:SetScript('OnClick', function(self, d)
+        Save.showBackground= not Save.showBackground and true or false
+        self:set_background()--设置，背景
+        self:set_tooltips()
+    end)
     BankFrame.setAllBank:SetScript('OnMouseWheel', function(self, d)
         if not IsModifierKeyDown() then
             local n= Save.num
@@ -463,6 +481,9 @@ local function Init_All_Bank()
         end
     end)
     BankFrame.setAllBank:set_bank()--设置，银行，按钮
+
+    
+    BankFrame.setAllBank:set_background()--设置，背景
 end
 
 
@@ -534,6 +555,8 @@ local function Init_Bank_Frame()
     else
         Init_Bank_Plus()--增强，原生
     end
+
+  
 end
 
 
