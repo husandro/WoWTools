@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= BANK
 local Save={
-     --disabled=true,--禁用
+    --disabled=true,--禁用
     --hideReagentBankFrame=true,--银行,隐藏，材料包
     --scaleReagentBankFrame=0.75,--银行，缩放
     xReagentBankFrame=-15,--坐标x
@@ -574,8 +574,6 @@ local function Init_Bank_Frame()
     else
         Init_Bank_Plus()--增强，原生
     end
-    
-
 end
 
 
