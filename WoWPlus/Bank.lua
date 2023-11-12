@@ -255,7 +255,7 @@ local function Init_All_Bank()
                 n=n +1
             end
             n= n<4 and 4 or n
-            n= n>14 and 14 or n
+            n= n>24 and 24 or n
             Save.num= n
         elseif IsAltKeyDown() then
             local n= Save.line
