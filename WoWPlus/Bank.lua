@@ -10,7 +10,9 @@ local Save={
     line=2,
     num=14,
     allBank=true,--转化为联合的大包
-    --showBackground= true,
+
+    showIndex=true,--显示，索引
+    --showBackground= true,--设置，背景
 }
 
 
@@ -216,7 +218,8 @@ local function Init_All_Bank()
         e.tips:AddDoubleLine((e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS)..' |cnGREEN_FONT_COLOR:'..Save.num, e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '间隔' or 'Interval')..' |cnGREEN_FONT_COLOR:'..Save.line, 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(Save.showBackground and (e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND) or (e.onlyChinese and '隐藏背景' or HIDE_PULLOUT_BG ), e.Icon.left)
+        e.tips:AddDoubleLine(Save.showBackground and (e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND) or (e.onlyChinese and '隐藏背景' or HIDE_PULLOUT_BG ), e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '索引' or 'Index', e.Icon.left)
         e.tips:Show()
         self:SetAlpha(1)
     end
@@ -231,8 +234,16 @@ local function Init_All_Bank()
         end
     end
     BankFrame.setAllBank:SetScript('OnClick', function(self, d)
-        Save.showBackground= not Save.showBackground and true or false
-        self:set_background()--设置，背景
+        if d=='LeftButton' then
+            Save.showIndex= not Save.showIndex and true or nil--显示，索引
+            BankFrame.setAllBank:set_bank()--设置，银行，按钮
+            BankFrame.setAllBank:set_reagent()--设置，材料，按钮
+            BankFrame.setAllBank:set_size()--设置，外框，大小
+
+        elseif d=='RightButton' then
+            Save.showBackground= not Save.showBackground and true or false
+            self:set_background()--设置，背景
+        end
         self:set_tooltips()
     end)
     BankFrame.setAllBank:SetScript('OnMouseWheel', function(self, d)
@@ -266,6 +277,18 @@ local function Init_All_Bank()
     BankFrame.setAllBank:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
     BankFrame.setAllBank:SetScript('OnEnter', BankFrame.setAllBank.set_tooltips)
 
+    --索引，提示
+    function BankFrame.setAllBank:set_index_label(btn, index)
+        if not btn.indexLable and Save.showIndex then
+            btn.indexLable= e.Cstr(btn, {layer='BACKGROUND', color={r=1,g=1,b=1}})
+            btn.indexLable:SetPoint('CENTER')
+            btn.indexLable:SetAlpha(0.2)
+        end
+        if btn.indexLable then
+            btn.indexLable:SetText(Save.showIndex and index or '')
+        end
+    end
+    
     --设置，银行，按钮
     function BankFrame.setAllBank:set_bank()
         self.last=nil
@@ -285,9 +308,11 @@ local function Init_All_Bank()
                     btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save.line)
                     last=btn
                 end
+                self:set_index_label(btn, i)--索引，提示
                 table.insert(tab, btn)
             end
         end
+
         local num=0
         local bagindex
         local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES
@@ -310,6 +335,7 @@ local function Init_All_Bank()
                             last=btn
                             table.insert(tab, btn)
                             btn:SetShown(true)
+                            self:set_index_label(btn, num+NUM_BANKGENERIC_SLOTS)--索引，提示
                         else
                             btn:SetShown(false)
                         end
@@ -338,7 +364,9 @@ local function Init_All_Bank()
                 else
                     btn:SetPoint('LEFT', BankSlotsFrame['Bag'..(i-1)], 'RIGHT', Save.line, 0)
                 end
+               
             end
+            
         end
     end
 
@@ -368,6 +396,7 @@ local function Init_All_Bank()
                 btn.Bg:SetAtlas('ChallengeMode-DungeonIconFrame')
                 btn.Bg:SetAlpha(0.5)
             end
+            self:set_index_label(btn, index)--索引，提示
             btnNum=index
         end
         for i=Save.num+1, btnNum, Save.num do
