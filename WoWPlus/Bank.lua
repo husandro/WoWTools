@@ -11,7 +11,7 @@ local Save={
     num=14,
     allBank=true,--转化为联合的大包
 
-    showIndex=true,--显示，索引
+    --showIndex=true,--显示，索引
     --showBackground= true,--设置，背景
 }
 
