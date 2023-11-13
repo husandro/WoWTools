@@ -1842,15 +1842,29 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             end)
 
-            hooksecurefunc(PlayerChoiceNormalOptionTemplateMixin,'SetupButtons', function(self,...)
-                local info2= self.optionInfo or {}
-                if info2 and not info2.disabledOption and info2.buttons
+            hooksecurefunc(PlayerChoiceNormalOptionTemplateMixin,'SetupButtons', function(frame)
+                local info2= frame.optionInfo or {}
+                if not info2.disabledOption and info2.buttons
                     and info2.buttons[2] and info2.buttons[2].id
                 then
                     if not PlayerChoiceFrame.allButton then
                         PlayerChoiceFrame.allButton= e.Cbtn(PlayerChoiceFrame, {size={60,22}, type=false, icon='hide'})
                         PlayerChoiceFrame.allButton:SetPoint('BOTTOMRIGHT')
                         PlayerChoiceFrame.allButton:SetFrameStrata('DIALOG')
+                        PlayerChoiceFrame.allButton:SetScript('OnLeave', function() e.tips:Hide() end)
+                        PlayerChoiceFrame.allButton:SetScript('OnEnter', function(s)
+                            e.tips:SetOwner(s, "ANCHOR_LEFT")
+                            e.tips:ClearLines()
+                            e.tips:AddDoubleLine(id ,addName)
+                            e.tips:AddDoubleLine(e.onlyChinese and '使用' or USE, format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, 100))
+                            e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1), 'Alt')
+                            e.tips:Show()
+                        end)
+                        PlayerChoiceFrame.allButton:SetScript('OnHide', function(s)
+                            if s.time and not s.time:IsCancelled() then
+                                s.time:Cancelled()
+                            end
+                        end)
                         function PlayerChoiceFrame.allButton:set_text()
                             self:SetText(
                                 (not self.time or self.time:IsCancelled()) and (e.onlyChinese and '全部' or ALL)
@@ -1884,9 +1898,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                                 then
                                     C_PlayerChoice.SendPlayerChoiceResponse(info.buttons[2].id);--Blizzard_PlayerChoiceOptionBase.lua
                                     n=n+1
-                                    print(id, addName, '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '' )
+                                    print(id, addName, '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '|cnRED_FONT_COLOR:Alt' )
                                     --self.parentOption:OnSelected();
-                                    
                                 elseif s.time then
                                    s.time:Cancel()
                                    print(id,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1, '|r'..n)
