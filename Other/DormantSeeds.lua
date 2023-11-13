@@ -183,9 +183,7 @@ local function Init()
 
     Button.btn={}
     function Button:set_button()
-        self.setButtonInCombat=nil
         if UnitAffectingCombat('player') then
-            self.setButtonInCombat=true
             return
         end
         local index=1
