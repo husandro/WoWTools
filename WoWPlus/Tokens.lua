@@ -217,9 +217,12 @@ end
 
 
 
-local function Set_TrackButton_Pushed(show)--提示
+local function Set_TrackButton_Pushed(show, text)--提示
 	if TrackButton then
 		TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
+	end
+	if text then
+		text:SetAlpha(show and 0.5 or 1)
 	end
 end
 
@@ -320,9 +323,9 @@ local function Set_TrackButton_Text()
 			end
 			btn:set_Text_Point()
 
-			btn:SetScript('OnLeave', function()
+			btn:SetScript('OnLeave', function(self)
 				e.tips:Hide()
-				Set_TrackButton_Pushed(false)--提示
+				Set_TrackButton_Pushed(false, self.text)--提示
 			end)
 			btn:SetScript('OnEnter', function(self)
 				if Save.toRightTrackText then
@@ -347,7 +350,7 @@ local function Set_TrackButton_Text()
 				end
 				e.tips:AddDoubleLine(id, addName)
 				e.tips:Show()
-				Set_TrackButton_Pushed(true)--提示
+				Set_TrackButton_Pushed(true, self.text)--提示
 			end)
 			btn:SetScript("OnMouseDown", function(self)
 				if not self.itemID or not IsAltKeyDown() or GetItemCount(self.itemID)==0 then return end

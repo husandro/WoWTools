@@ -266,9 +266,12 @@ end
 
 
 --TrackButton，提示
-local function Set_TrackButton_Pushed(show)
+local function Set_TrackButton_Pushed(show, text)
 	if TrackButton then
 		TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
+	end
+    if text then
+		text:SetAlpha(show and 0.5 or 1)
 	end
 end
 
@@ -370,9 +373,9 @@ local function Set_TrackButton_Text(monthOffset, day)
             else
 			    btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')
             end
-            btn:SetScript('OnLeave', function()
+            btn:SetScript('OnLeave', function(self)
 				e.tips:Hide()
-				Set_TrackButton_Pushed(false)--TrackButton，提示
+				Set_TrackButton_Pushed(false, self.text)--TrackButton，提示
 			end)
 
             btn:SetScript('OnEnter', function(self)
@@ -415,7 +418,7 @@ local function Set_TrackButton_Text(monthOffset, day)
                 e.tips:AddDoubleLine('eventID', self.eventID)
                 e.tips:AddDoubleLine(id,addName)
                 e.tips:Show()
-				Set_TrackButton_Pushed(true)--TrackButton，提示
+				Set_TrackButton_Pushed(true, self.text)--TrackButton，提示
 			end)
 
 
