@@ -1193,7 +1193,7 @@ local function Init_Quest()
             self.setQuestWatchTime:Cancel()
         end
         self.setQuestWatchTime= C_Timer.NewTimer(1, function()
-            local uiMapID= C_Map.GetBestMapForUnit('player') 
+            --local uiMapID= C_Map.GetBestMapForUnit('player') or 0
             --if uiMapID and uiMapID>0 then
                 for index=1, C_QuestLog.GetNumQuestLogEntries() do
                     local info = C_QuestLog.GetInfo(index)
@@ -1207,7 +1207,7 @@ local function Init_Quest()
                         and not C_QuestLog.IsWorldQuest(info.questID)
                     then
 
-                        if (info.isOnMap  or GetQuestUiMapID(info.questID)==uiMapID)
+                        if info.isOnMap  --or GetQuestUiMapID(info.questID)==uiMapID)
                             and not C_QuestLog.IsComplete(info.questID)
                             --and info.hasLocalPOI 
                         then
