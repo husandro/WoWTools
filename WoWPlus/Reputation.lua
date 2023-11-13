@@ -188,9 +188,12 @@ end
 
 
 --TrackButton，提示
-local function Set_TrackButton_Pushed(show)
+local function Set_TrackButton_Pushed(show, text)
 	if TrackButton then
 		TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
+	end
+	if text then
+		text:SetAlpha(show and 0.5 or 1)
 	end
 end
 
@@ -212,8 +215,9 @@ end
 
 --个人，声望，提示
 local function ShowFriendshipReputationTooltip(self)--ReputationFrame.lua
-	local repInfo = C_GossipInfo.GetFriendshipReputation(self.friendshipID);
+	local repInfo = C_GossipInfo.GetFriendshipReputation(self.friendshipID);--ReputationFrame.lua
 	if ( repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0) then
+		Set_SetOwner(self)
 		local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(repInfo.friendshipFactionID);
 		if ( rankInfo.maxLevel > 0 ) then
 			GameTooltip:SetText(repInfo.name.." ("..rankInfo.currentLevel.." / "..rankInfo.maxLevel..")", 1, 1, 1);
@@ -228,6 +232,8 @@ local function ShowFriendshipReputationTooltip(self)--ReputationFrame.lua
 		else
 			GameTooltip:AddLine(repInfo.reaction, 1, 1, 1, true);
 		end
+		GameTooltip:AddLine(' ')
+		GameTooltip:AddDoubleLine('friendshipID', self.factionID)
 		GameTooltip:Show();
 	end
 end
@@ -345,7 +351,7 @@ local function Set_TrackButton_Text()
 			btn:SetScript('OnLeave', function(self)
 				e.tips:Hide()
 				self.UpdateTooltip= nil
-				Set_TrackButton_Pushed(false)--TrackButton，提示
+				Set_TrackButton_Pushed(false, self.text)--TrackButton，提示
 			end)
 			btn:SetScript('OnEnter', function(self)
 				if C_Reputation.IsFactionParagon(self.factionID) then--ReputationFrame.lua
@@ -355,13 +361,16 @@ local function Set_TrackButton_Text()
 				else
 					if ( self.friendshipID ) then
 						ShowFriendshipReputationTooltip(self);--个人，声望，提示
+						
 					elseif self.factionID and C_Reputation.IsMajorFaction(self.factionID) and not C_MajorFactions.HasMaximumRenown(self.factionID) then
+						
 						ShowMajorFactionRenownTooltip(self);--名望，提示
 					else
+						
 						ShowFactionTooltip(self)--阵营声望，提示
 					end
 				end
-				Set_TrackButton_Pushed(true)--TrackButton，提示
+				Set_TrackButton_Pushed(true, self.text)--TrackButton，提示
 			end)
 
 			btn.text= e.Cstr(btn, {color=true})
