@@ -1193,13 +1193,24 @@ local function Init_Quest()
             self.setQuestWatchTime:Cancel()
         end
         self.setQuestWatchTime= C_Timer.NewTimer(1, function()
-            local uiMapID= C_Map.GetBestMapForUnit('player')
-            if uiMapID and uiMapID>0 then
+            --local uiMapID= C_Map.GetBestMapForUnit('player')
+            --if uiMapID and uiMapID>0 then
                 for index=1, C_QuestLog.GetNumQuestLogEntries() do
                     local info = C_QuestLog.GetInfo(index)
-                    if info and info.questID and not info.isHeader and not info.campaignID and not info.isHidden and not C_QuestLog.IsQuestCalling(info.questID) then
+                    if info
+                        and info.questID
+                        and not info.isHeader
+                        and not info.campaignID
+                        and not info.isHidden
+                        and not C_QuestLog.IsQuestCalling(info.questID)
+                        and not C_QuestLog.IsLegendaryQuest(info.questID)
+                        and not C_QuestLog.IsWorldQuest(info.questID)
+                    then
 
-                        if info.isOnMap and GetQuestUiMapID(info.questID)==uiMapID and not C_QuestLog.IsComplete(info.questID) or info.hasLocalPOI then
+                        if info.isOnMap -- or GetQuestUiMapID(info.questID)==uiMapID)
+                            and not C_QuestLog.IsComplete(info.questID)
+                            --and info.hasLocalPOI 
+                        then
                             C_QuestLog.AddQuestWatch(info.questID)
                         else
                             C_QuestLog.RemoveQuestWatch(info.questID)
@@ -1207,7 +1218,7 @@ local function Init_Quest()
                     end
                 end
                 C_QuestLog.SortQuestWatches()
-            end
+            --end
         end)
     end
 

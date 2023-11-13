@@ -149,10 +149,8 @@ local function Init()
         end
     end
     function Button:set_Shown()
-        if not UnitAffectingCombat('player') then
-            local show= self.uiMapID and not C_PetBattles.IsInBattle()
-            self:SetShown(show)
-        end
+        local show= self.uiMapID and not C_PetBattles.IsInBattle() and not UnitAffectingCombat('player') 
+        self:SetShown(show)
     end
     function Button:get_UIMapID()
         self.uiMapID= C_Map.GetBestMapForUnit('player')==2200 and true or false
@@ -189,7 +187,7 @@ local function Init()
         local index=1
         for _, itemID in pairs(ItemTab) do
             local num= GetItemCount(itemID)
-            if num>0 then
+            --if num>0 then
                 local btn= self.btn[index]
                 if not btn then
                     btn= e.Cbtn(self, {type=true, button='ItemButton', icon='hide'})
@@ -216,14 +214,14 @@ local function Init()
                 btn:SetItemButtonCount(GetItemCount(itemID))
                 index= index+1
             end
-        end
-        for i= index, #self.btn do
+        --end
+        --[[for i= index, #self.btn do
             local btn= self.btn[i]
             if btn then
                 btn:Reset()
                 btn:SetShown(false)
             end
-        end
+        end]]
     end
 
     --Button:SetScript('OnShow', Button.set_button)
