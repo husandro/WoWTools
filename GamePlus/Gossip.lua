@@ -1851,9 +1851,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         PlayerChoiceFrame.allButton= e.Cbtn(PlayerChoiceFrame, {size={60,22}, type=false, icon='hide'})
                         PlayerChoiceFrame.allButton:SetPoint('BOTTOMRIGHT')
                         PlayerChoiceFrame.allButton:SetFrameStrata('DIALOG')
-                        function PlayerChoiceFrame.allButton:set_text(all)
-                            PlayerChoiceFrame.allButton:SetText(
-                                all and (e.onlyChinese and '全部' or ALL)
+                        function PlayerChoiceFrame.allButton:set_text()
+                            self:SetText(
+                                (not self.time or self.time:IsCancelled()) and (e.onlyChinese and '全部' or ALL)
                                 or (e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
                             )
                         end
@@ -1861,9 +1861,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                             local n, all=0, 100
                             if s.time and not s.time:IsCancelled() then
                                 s.time:Cancel()
-                                s:set_text(true)
+                                s:set_text()
                                 print(id,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
                                 return
+                            else
+                                s:set_text()
                             end
 
                             s.time=C_Timer.NewTicker(0.5, function()
@@ -1877,16 +1879,17 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                                     and info.buttons[2].id
                                     and not info.buttons[2].disabled
                                     and not IsModifierKeyDown()
+                                    and s:IsEnabled()
+                                    and s:IsShown()
                                 then
                                     C_PlayerChoice.SendPlayerChoiceResponse(info.buttons[2].id);--Blizzard_PlayerChoiceOptionBase.lua
                                     n=n+1
                                     print(id, addName, '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '' )
                                     --self.parentOption:OnSelected();
-                                    s:set_text(false)
+                                    
                                 elseif s.time then
                                    s.time:Cancel()
                                    print(id,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1, '|r'..n)
-                                   s:set_text(true)
                                 end
                             end, all)
                         end)
@@ -1894,7 +1897,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     PlayerChoiceFrame.allButton.buttonID= info2.buttons[2].id
                     PlayerChoiceFrame.allButton.disabled= info2.buttons[2].disabled
                     PlayerChoiceFrame.allButton:SetEnabled(not info2.buttons[2].disabled and true or false)
-                    PlayerChoiceFrame.allButton:set_text(true)
+                    PlayerChoiceFrame.allButton:set_text()
                     PlayerChoiceFrame.allButton:SetShown(true)
                 elseif PlayerChoiceFrame.allButton then
                     PlayerChoiceFrame.allButton:SetShown(false)
