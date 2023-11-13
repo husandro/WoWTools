@@ -1872,7 +1872,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                             )
                         end
                         PlayerChoiceFrame.allButton:SetScript('OnClick', function(s)
-                            local n, all=0, 100
                             if s.time and not s.time:IsCancelled() then
                                 s.time:Cancel()
                                 s:set_text()
@@ -1881,7 +1880,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                             else
                                 s:set_text()
                             end
-
+                            local n, all=0, 100
                             s.time=C_Timer.NewTicker(0.5, function()
                                 local choiceInfo = C_PlayerChoice.GetCurrentPlayerChoiceInfo() or {}
                                 local info= choiceInfo.options and choiceInfo.options[1] or {}
