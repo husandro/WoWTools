@@ -49,6 +49,17 @@ local qualityToIconBorderAtlas4 ={
 	[Enum.ItemQuality.WoWToken] = "dressingroom-itemborder-account",
 }
 
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --监视声望按钮
 --###########
@@ -197,6 +208,15 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
 local function Set_TrackButton_Pushed(show)--提示
 	if TrackButton then
 		TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
@@ -306,9 +326,9 @@ local function Set_TrackButton_Text()
 			end)
 			btn:SetScript('OnEnter', function(self)
 				if Save.toRightTrackText then
-					GameTooltip:SetOwner(self.text, "ANCHOR_RIGHT");
+					e.tips:SetOwner(self.text, "ANCHOR_RIGHT");
 				else
-					GameTooltip:SetOwner(self.text, "ANCHOR_LEFT");
+					e.tips:SetOwner(self.text, "ANCHOR_LEFT");
 				end
 				e.tips:ClearLines()
 				if self.itemID then
@@ -322,6 +342,7 @@ local function Set_TrackButton_Text()
 				elseif self.index then
 					e.tips:SetCurrencyToken(self.index)
 				elseif self.currencyID then
+					
 					e.tips:SetCurrencyByID(self.currencyID)
 				end
 				e.tips:AddDoubleLine(id, addName)
@@ -493,15 +514,6 @@ local function MenuList_Item(level)
 	}
 	e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
-
-
-
-
-
-
-
-
-
 
 
 
@@ -795,6 +807,25 @@ local function Init_TrackButton()
 
 	Set_TrackButton_Text()
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
