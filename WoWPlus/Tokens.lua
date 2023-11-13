@@ -54,8 +54,20 @@ local qualityToIconBorderAtlas4 ={
 
 
 
-
-
+--从currencyID, index中取得 info, currencyID
+--从index直接取得info, 会出现，赛季内容错误，10.2中出现
+local function Get_For_index_To_currencyID(currencyID, index)--从currencyID, index中取得 info, currencyID
+	local link
+	if index then
+		link= C_CurrencyInfo.GetCurrencyListLink(index)
+		if link then
+			currencyID= C_CurrencyInfo.GetCurrencyIDFromLink(link)
+		end
+	end
+	if currencyID then
+		return C_CurrencyInfo.GetCurrencyInfo(currencyID), currencyID, link
+	end
+end
 
 
 
@@ -112,16 +124,7 @@ end
 
 
 local function Get_Currency(currencyID, index)--货币
-    local info
-	if index then
-		info= C_CurrencyInfo.GetCurrencyListInfo(index)
-		--local link= C_CurrencyInfo.GetCurrencyListLink(index)
-		--currencyID= link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
-	elseif currencyID then
-		info= C_CurrencyInfo.GetCurrencyInfo(currencyID)
-		--info= C_CurrencyInfo.GetCurrencyInfoFromLink(tab.link)
-	end
-
+    local info= Get_For_index_To_currencyID(currencyID, index)--从currencyID, index中取得 info, currencyID
 	local text
     if not info
 		or info.isHeader
@@ -159,6 +162,7 @@ local function Get_Currency(currencyID, index)--货币
 		max= Save.toRightTrackText and e.Icon.toLeft2 or e.Icon.toRight2
 		num= '|cnRED_FONT_COLOR:'..num..'|r'
 	end
+	
 
 	local need
 	if not weekMax--本周,收入
@@ -178,6 +182,7 @@ local function Get_Currency(currencyID, index)--货币
 	elseif info.maxQuantity and info.maxQuantity>0 and info.quantity< info.maxQuantity then
 		need= '|cnGREEN_FONT_COLOR:('..e.MK(info.maxQuantity- info.quantity, 0)..')|r'
 	end
+
 	if Save.toRightTrackText then
 		text=(name and name..' ' or '')
 			..(name and '|cffff7d00' or '')
@@ -933,9 +938,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	if not frame or not frame.index then
 		return
 	end
-	local info = C_CurrencyInfo.GetCurrencyListInfo(frame.index)
-	local link= C_CurrencyInfo.GetCurrencyListLink(frame.index)
-	local currencyID= link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
+	local info, currencyID = Get_For_index_To_currencyID(nil, frame.index)
 	if not frame.isHeader and info and currencyID  and not frame.check then
 		frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
 		frame.check:SetPoint('LEFT', -3,0)
@@ -1379,7 +1382,7 @@ local function Init()
 						and (
 							(info.maxQuantity and info.maxQuantity>0 and info.quantity==info.maxQuantity)--最大数
 							or (info.canEarnPerWeek and info.canEarnPerWeek>0 and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
-							or (info.useTotalEarnedForMaxQty and info.useTotalEarnedForMaxQty>0 and info.totalEarned==info.maxQuantity)--赛季
+							or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
 						)
 					then
 						tab[currencyID]= C_CurrencyInfo.GetCurrencyLink(currencyID) or info.name or currencyID
@@ -1387,23 +1390,19 @@ local function Init()
 				end
 			end
 			for i=1, C_CurrencyInfo.GetCurrencyListSize() do
-				local info = C_CurrencyInfo.GetCurrencyListInfo(i)
+				local info, currencyID, link= Get_For_index_To_currencyID(nil,i)--从 currencyID, index中取得 info, currencyID
 				if info and info.quantity and info.quantity>0
+					and currencyID and link and currencyID and not self.currencyMax[currencyID]
 					and (
 						(info.maxQuantity and info.maxQuantity>0 and info.quantity==info.maxQuantity)--最大数
 						or (info.canEarnPerWeek and info.canEarnPerWeek>0 and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
-						or (info.useTotalEarnedForMaxQty and info.useTotalEarnedForMaxQty>0 and info.totalEarned==info.maxQuantity)--赛季
+						or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
 					)
 				then
-					local link =C_CurrencyInfo.GetCurrencyListLink(i)
-					local currencyID = link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
-					if currencyID and not self.currencyMax[currencyID] then
-						tab[currencyID]= link
-					end
+					tab[currencyID]= link
 				end
 			end
 			for currencyID, link in pairs(tab) do
-				--local currencyLink= C_CurrencyInfo.GetCurrencyLink(currencyID)
 				text= (text and text..' ' or '|cnGREEN_FONT_COLOR:')..link
 				self.currencyMax[currencyID]=true
 			end
