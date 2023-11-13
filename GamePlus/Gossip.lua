@@ -1843,37 +1843,58 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end)
 
             hooksecurefunc(PlayerChoiceNormalOptionTemplateMixin,'SetupButtons', function(self,...)
-                local info= self.optionInfo or {}
-                if info and not self.disabledOption and info.buttons
-                    and info.buttons[2].id
-                    
+                local info2= self.optionInfo or {}
+                if info2 and not info2.disabledOption and info2.buttons
+                    and info2.buttons[2] and info2.buttons[2].id
                 then
                     if not PlayerChoiceFrame.allButton then
-                        PlayerChoiceFrame.allButton= e.Cbtn(PlayerChoiceFrame, {size={44,22}, type=false, icon='hide', text=e.onlyChinese and '全部' or ALL})
+                        PlayerChoiceFrame.allButton= e.Cbtn(PlayerChoiceFrame, {size={60,22}, type=false, icon='hide'})
                         PlayerChoiceFrame.allButton:SetPoint('BOTTOMRIGHT')
                         PlayerChoiceFrame.allButton:SetFrameStrata('DIALOG')
-                        PlayerChoiceFrame.allButton:SetFrameLevel(PlayerChoiceFrame:GetFrameLevel()+10)
-                        print(PlayerChoiceFrame:GetFrameLevel(), PlayerChoiceFrame:GetFrameStrata())
+                        function PlayerChoiceFrame.allButton:set_text(all)
+                            PlayerChoiceFrame.allButton:SetText(
+                                all and (e.onlyChinese and '全部' or ALL)
+                                or (e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
+                            )
+                        end
                         PlayerChoiceFrame.allButton:SetScript('OnClick', function(s)
-                            
-                            while not s.disabled and s.buttonID do
-                            --[[local choiceInfo = C_PlayerChoice.GetCurrentPlayerChoiceInfo() or {options={buttons={}}}
-                            local btn=choiceInfo.options.buttons[2]
-                            local buttonID= s.buttonID or btn.buttonID 
-                            if not buttonID or IsModifierKeyDown() or btn.disabledOption then
-                                disabled=true
-                                break
-                            else]]
-                                if IsModifierKeyDown() then
-                                    C_PlayerChoice.SendPlayerChoiceResponse(s.buttonID);--Blizzard_PlayerChoiceOptionBase.lua
-                                end
-                                --self.parentOption:OnSelected();
+                            local n, all=0, 100
+                            if s.time and not s.time:IsCancelled() then
+                                s.time:Cancel()
+                                s:set_text(true)
+                                print(id,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
+                                return
                             end
+
+                            s.time=C_Timer.NewTicker(0.5, function()
+                                local choiceInfo = C_PlayerChoice.GetCurrentPlayerChoiceInfo() or {}
+                                local info= choiceInfo.options and choiceInfo.options[1] or {}
+                                if info
+                                    and not info.disabledOption
+                                    and info.buttons
+                                    and info.buttons[2]
+                                    
+                                    and info.buttons[2].id
+                                    and not info.buttons[2].disabled
+                                    and not IsModifierKeyDown()
+                                then
+                                    C_PlayerChoice.SendPlayerChoiceResponse(info.buttons[2].id);--Blizzard_PlayerChoiceOptionBase.lua
+                                    n=n+1
+                                    print(id, addName, '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '' )
+                                    --self.parentOption:OnSelected();
+                                    s:set_text(false)
+                                elseif s.time then
+                                   s.time:Cancel()
+                                   print(id,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1, '|r'..n)
+                                   s:set_text(true)
+                                end
+                            end, all)
                         end)
                     end
-                    PlayerChoiceFrame.allButton.buttonID= info.buttons[2].id
-                    PlayerChoiceFrame.allButton.disabled= info.buttons[2].disabled
-                    PlayerChoiceFrame.allButton:SetEnabled(not info.buttons[2].disabled and true or false)
+                    PlayerChoiceFrame.allButton.buttonID= info2.buttons[2].id
+                    PlayerChoiceFrame.allButton.disabled= info2.buttons[2].disabled
+                    PlayerChoiceFrame.allButton:SetEnabled(not info2.buttons[2].disabled and true or false)
+                    PlayerChoiceFrame.allButton:set_text(true)
                     PlayerChoiceFrame.allButton:SetShown(true)
                 elseif PlayerChoiceFrame.allButton then
                     PlayerChoiceFrame.allButton:SetShown(false)

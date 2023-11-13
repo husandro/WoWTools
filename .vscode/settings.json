@@ -3628,7 +3628,8 @@
         "SLASH_RELOAD2",
         "PlayerChoiceBaseOptionTemplateMixin",
         "WidgetCenterDisplayFrameMixin",
-        "PlayerChoiceNormalOptionTemplateMixin"
+        "PlayerChoiceNormalOptionTemplateMixin",
+        "SLASH_STOPWATCH_PARAM_STOP1"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
