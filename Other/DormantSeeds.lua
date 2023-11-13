@@ -149,7 +149,7 @@ local function Init()
         end
     end
     function Button:set_Shown()
-        local show= self.uiMapID and not C_PetBattles.IsInBattle() and not UnitAffectingCombat('player') 
+        local show= self.uiMapID and not C_PetBattles.IsInBattle() and not UnitAffectingCombat('player')
         self:SetShown(show)
     end
     function Button:get_UIMapID()
