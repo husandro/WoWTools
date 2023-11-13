@@ -1863,7 +1863,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         end)
                         PlayerChoiceFrame.allButton:SetScript('OnHide', function(s)
                             if s.time and not s.time:IsCancelled() then
-                                s.time:Cancelled()
+                                s.time:Cancel()
                             end
                         end)
                         function PlayerChoiceFrame.allButton:set_text()
