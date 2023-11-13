@@ -1856,7 +1856,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                             e.tips:SetOwner(s, "ANCHOR_LEFT")
                             e.tips:ClearLines()
                             e.tips:AddDoubleLine(id ,addName)
-                            e.tips:AddDoubleLine(e.onlyChinese and '使用' or USE, format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, 100))
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine(s.tips or (e.onlyChinese and '使用' or USE), format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, 100))
                             e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1), 'Alt')
                             e.tips:Show()
                         end)
@@ -1901,12 +1902,14 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                                     --self.parentOption:OnSelected();
                                 elseif s.time then
                                    s.time:Cancel()
+                                   s:set_text()
                                    print(id,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1, '|r'..n)
                                 end
                             end, all)
                         end)
                     end
                     PlayerChoiceFrame.allButton.buttonID= info2.buttons[2].id
+                    PlayerChoiceFrame.allButton.tips=info2.buttons[2].text
                     PlayerChoiceFrame.allButton.disabled= info2.buttons[2].disabled
                     PlayerChoiceFrame.allButton:SetEnabled(not info2.buttons[2].disabled and true or false)
                     PlayerChoiceFrame.allButton:set_text()
