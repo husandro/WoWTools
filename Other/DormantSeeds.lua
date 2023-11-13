@@ -161,9 +161,7 @@ local function Init()
             self:set_Event()
             self:set_Shown()
         elseif event=='PLAYER_REGEN_ENABLED' then
-            if self.setButtonInCombat then
-                self:set_button()
-            end
+            self:set_button()
         elseif event=='BAG_UPDATE' or event=='BAG_UPDATE_DELAYED' then
             self:set_button()
         elseif event=='CURRENCY_DISPLAY_UPDATE' then--货币，数量
