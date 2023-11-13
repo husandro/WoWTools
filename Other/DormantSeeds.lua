@@ -158,8 +158,10 @@ local function Init()
     Button:SetScript("OnEvent", function(self, event, arg1)
         if event=='PLAYER_ENTERING_WORLD' or event=='ZONE_CHANGED' then
             self:get_UIMapID()
-            self:set_Event()
-            self:set_Shown()
+            if not UnitAffectingCombat('player') then
+                self:set_Event()
+                self:set_Shown()
+            end
         elseif event=='PLAYER_REGEN_ENABLED' then
             self:set_button()
         elseif event=='BAG_UPDATE' or event=='BAG_UPDATE_DELAYED' then
