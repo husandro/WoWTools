@@ -149,8 +149,10 @@ local function Init()
         end
     end
     function Button:set_Shown()
-        local show= self.uiMapID and not UnitAffectingCombat('player') and not C_PetBattles.IsInBattle()
-        self:SetShown(show)
+        if not UnitAffectingCombat('player') then
+            local show= self.uiMapID and not C_PetBattles.IsInBattle()
+            self:SetShown(show)
+        end
     end
     function Button:get_UIMapID()
         self.uiMapID= C_Map.GetBestMapForUnit('player')==2200 and true or false
