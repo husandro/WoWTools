@@ -228,11 +228,11 @@ function e.MK(number, bit)
             num= 0.00005
         end
         if number>=1e6 then
-            return format('%.'..bit..'fm', (number/1e6)-num)
+            return format('%.'..bit..'fm', (number-num)/1e6)---num)
         elseif number>= 1e4 and (LOCALE_zhCN or e.onlyChinese) then
-            return format('%.'..bit..'fw', (number/1e4)-num)
+            return format('%.'..bit..'fw', (number-num)/1e4)---num)
         elseif number>=1e3 then
-            return format('%.'..bit..'fk', (number/1e3)-num)
+            return format('%.'..bit..'fk', (number-num)/1e3)---num)
         else
             return format('%i', number)
         end
@@ -1724,6 +1724,7 @@ function e.Cbtn2(tab)
         showTexture=true,
         size=nil,
         alpha=1,
+        
     })
 ]]
     local button= CreateFrame("Button", tab.name, tab.parent or UIParent, not tab.notSecureActionButton and "SecureActionButtonTemplate" or nil)

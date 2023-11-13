@@ -3625,7 +3625,10 @@
         "HIDE_PULLOUT_BG",
         "HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND",
         "BankFrameCloseButton",
-        "SLASH_RELOAD2"
+        "SLASH_RELOAD2",
+        "PlayerChoiceBaseOptionTemplateMixin",
+        "WidgetCenterDisplayFrameMixin",
+        "PlayerChoiceNormalOptionTemplateMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

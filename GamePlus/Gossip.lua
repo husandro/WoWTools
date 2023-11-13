@@ -1201,14 +1201,15 @@ local function Init_Quest()
                         and info.questID
                         and not info.isHeader
                         and not info.campaignID
+                        and not info.isScaling
+                        and not info.isLegendarySort
                         and not info.isHidden
-                        and not C_QuestLog.IsQuestCalling(info.questID)
-                        and not C_QuestLog.IsLegendaryQuest(info.questID)
+                        --and not C_QuestLog.IsQuestCalling(info.questID)
                         and not C_QuestLog.IsWorldQuest(info.questID)
                     then
 
                         if info.isOnMap  --or GetQuestUiMapID(info.questID)==uiMapID)
-                            and not C_QuestLog.IsComplete(info.questID)
+                       --     and not C_QuestLog.IsComplete(info.questID)
                             --and info.hasLocalPOI 
                         then
                             C_QuestLog.AddQuestWatch(info.questID)
@@ -1840,7 +1841,47 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     GossipButton:Send_Player_Choice_Response(tab[1])
                 end
             end)
+
+            hooksecurefunc(PlayerChoiceNormalOptionTemplateMixin,'SetupButtons', function(self,...)
+                local info= self.optionInfo or {}
+                if info and not self.disabledOption and info.buttons
+                    and info.buttons[2].id
+                    
+                then
+                    if not PlayerChoiceFrame.allButton then
+                        PlayerChoiceFrame.allButton= e.Cbtn(PlayerChoiceFrame, {size={44,22}, type=false, icon='hide', text=e.onlyChinese and '全部' or ALL})
+                        PlayerChoiceFrame.allButton:SetPoint('BOTTOMRIGHT')
+                        PlayerChoiceFrame.allButton:SetFrameStrata('DIALOG')
+                        PlayerChoiceFrame.allButton:SetFrameLevel(PlayerChoiceFrame:GetFrameLevel()+10)
+                        print(PlayerChoiceFrame:GetFrameLevel(), PlayerChoiceFrame:GetFrameStrata())
+                        PlayerChoiceFrame.allButton:SetScript('OnClick', function(s)
+                            
+                            while not s.disabled and s.buttonID do
+                            --[[local choiceInfo = C_PlayerChoice.GetCurrentPlayerChoiceInfo() or {options={buttons={}}}
+                            local btn=choiceInfo.options.buttons[2]
+                            local buttonID= s.buttonID or btn.buttonID 
+                            if not buttonID or IsModifierKeyDown() or btn.disabledOption then
+                                disabled=true
+                                break
+                            else]]
+                                if IsModifierKeyDown() then
+                                    C_PlayerChoice.SendPlayerChoiceResponse(s.buttonID);--Blizzard_PlayerChoiceOptionBase.lua
+                                end
+                                --self.parentOption:OnSelected();
+                            end
+                        end)
+                    end
+                    PlayerChoiceFrame.allButton.buttonID= info.buttons[2].id
+                    PlayerChoiceFrame.allButton.disabled= info.buttons[2].disabled
+                    PlayerChoiceFrame.allButton:SetEnabled(not info.buttons[2].disabled and true or false)
+                    PlayerChoiceFrame.allButton:SetShown(true)
+                elseif PlayerChoiceFrame.allButton then
+                    PlayerChoiceFrame.allButton:SetShown(false)
+                end
+            end)
+            
         end
+
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
