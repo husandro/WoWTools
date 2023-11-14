@@ -890,7 +890,7 @@ local function set_All_Text()--所有记录
     --所有角色KEY
     --##########
     local keyText
-    for guid, infoWoW in pairs(e.WoWDate or {}) do
+    for guid, infoWoW in pairs(WoWDate or {}) do
         local key
         for link, _ in pairs(infoWoW.Keystone.itemLink) do
             local texture

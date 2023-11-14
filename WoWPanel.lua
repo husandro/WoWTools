@@ -38,7 +38,7 @@ function e.ReloadPanel(tab)
         if self.clearWoWData then
             StaticPopupDialogs[id..'restAllSetup'].button3= '|cffff00ff'..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data')..'|r'
             StaticPopupDialogs[id..'restAllSetup'].OnAlt= function()
-                e.WoWDate=nil
+                WoWDate=nil
                 e.Reload()
                 print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
             end
@@ -579,7 +579,7 @@ local function Init()
                 button2= e.onlyChinese and '取消' or CANCEL,
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 OnAccept=function ()
-                    e.WoWDate={}
+                    WoWDate={}
                     e.Reload()
                 end,
             }
@@ -797,7 +797,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1==id then
             WoWToolsSave= WoWToolsSave or {}
-            --e.WoWDate= WoWDate or e.WoWDate or {}
+            --WoWDate= WoWDate or WoWDate or {}
 
             Save= WoWToolsSave[addName] or Save
             Save.useColor= Save.useColor or 1

@@ -1,6 +1,6 @@
 local id, e = ...
 local panel=CreateFrame("Frame")
---local addName= 'e.WoWDate'
+--local addName= 'WoWDate'
 
 
 --##############
@@ -161,7 +161,7 @@ end
 --#########
 local function updateChallengeMode()--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数}
     local tab={
-        itemLink=e.WoWDate[e.Player.guid].Keystone.itemLink
+        itemLink=WoWDate[e.Player.guid].Keystone.itemLink
     }
     local score=C_ChallengeMode.GetOverallDungeonScore();
     if score and score>0 then
@@ -187,15 +187,15 @@ local function updateChallengeMode()--{score=总分数,itemLink={超连接}, wee
             end
         end
     end
-    e.WoWDate[e.Player.guid].Keystone=tab
+    WoWDate[e.Player.guid].Keystone=tab
 end
 
 --#######
 --更新物品
 --#######
 local function updateItems()
-    e.WoWDate[e.Player.guid].Keystone.itemLink={}
-    e.WoWDate[e.Player.guid].Item={}--{itemID={bag=包, bank=银行}}
+    WoWDate[e.Player.guid].Keystone.itemLink={}
+    WoWDate[e.Player.guid].Item={}--{itemID={bag=包, bank=银行}}
     for bagID= Enum.BagIndex.Backpack, Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES do
         for slotID=1, C_Container.GetContainerNumSlots(bagID) do
             local itemID = C_Container.GetContainerItemID(bagID, slotID)
@@ -203,11 +203,11 @@ local function updateItems()
                 if C_Item.IsItemKeystoneByID(itemID) then--挑战
                     local itemLink=C_Container.GetContainerItemLink(bagID, slotID)
                     if itemLink then
-                        e.WoWDate[e.Player.guid].Keystone.itemLink[itemLink]=true
+                        WoWDate[e.Player.guid].Keystone.itemLink[itemLink]=true
                     end
                 else
                     local bag=GetItemCount(itemID)--物品ID
-                    e.WoWDate[e.Player.guid].Item[itemID]={
+                    WoWDate[e.Player.guid].Item[itemID]={
                         bag=bag,
                         bank=GetItemCount(itemID,true)-bag,
                     }
@@ -219,7 +219,7 @@ end
 
 e.GetItemWoWNum= function(itemID)--e.GetItemWoWNum()--取得WOW物品数量
     local all,numPlayer=0,0
-    for guid, info in pairs(e.WoWDate) do
+    for guid, info in pairs(WoWDate) do
         if guid and info then --and guid~=e.Player.guid then
             local tab=info.Item[itemID]
             if tab and tab.bag and tab.bank then
@@ -239,7 +239,7 @@ local function updateCurrency(arg1)--{currencyID = 数量}
     if arg1 and arg1~=2032 then
         local info = C_CurrencyInfo.GetCurrencyInfo(arg1)
         if info and info.quantity then
-            e.WoWDate[e.Player.guid].Currency[arg1]=info.quantity==0 and nil or info.quantity
+            WoWDate[e.Player.guid].Currency[arg1]=info.quantity==0 and nil or info.quantity
         end
     else
         for i=1, C_CurrencyInfo.GetCurrencyListSize() do
@@ -247,7 +247,7 @@ local function updateCurrency(arg1)--{currencyID = 数量}
             local currencyID = link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
             local info = C_CurrencyInfo.GetCurrencyListInfo(i)
             if currencyID and info and info.quantity and currencyID~=2032 then
-                e.WoWDate[e.Player.guid].Currency[currencyID]= info.quantity<=0 and nil or info.quantity
+                WoWDate[e.Player.guid].Currency[currencyID]= info.quantity<=0 and nil or info.quantity
             end
         end
     end
@@ -262,13 +262,13 @@ local function undateInstance(encounterID, encounterName)
         local bossName,_,reset=GetSavedWorldBossInfo(i)
         if bossName and (not reset or reset>0) then
             tab[bossName] = true
-            if e.WoWDate[e.Player.guid].Rare.boss[bossName] then--清除稀有怪
-                e.WoWDate[e.Player.guid].Rare.boss[bossName]=nil
+            if WoWDate[e.Player.guid].Rare.boss[bossName] then--清除稀有怪
+                WoWDate[e.Player.guid].Rare.boss[bossName]=nil
             end
         end
     end
 
-    e.WoWDate[e.Player.guid].Worldboss={
+    WoWDate[e.Player.guid].Worldboss={
         week=e.Player.week,
         boss=tab
     }
@@ -284,7 +284,7 @@ local function undateInstance(encounterID, encounterName)
             tab[name][difficultyName]=killed
         end
     end
-    e.WoWDate[e.Player.guid].Instance = {
+    WoWDate[e.Player.guid].Instance = {
         week=e.Player.week,
         ins=tab
     }
@@ -300,7 +300,7 @@ local function setRareEliteKilled(unit)--稀有怪数据
         if classification == "rare" or classification == "rareelite" then
             local name=UnitName(unit)
             if name then
-                e.WoWDate[e.Player.guid].Rare.boss[name]=true
+                WoWDate[e.Player.guid].Rare.boss[name]=true
                 RequestRaidInfo()
             end
         end
@@ -311,7 +311,7 @@ local function setRareEliteKilled(unit)--稀有怪数据
             if threat and threat>0 then
                 local name=UnitName(unit)
                 if name then
-                    e.WoWDate[e.Player.guid].Rare.boss[name]=true
+                    WoWDate[e.Player.guid].Rare.boss[name]=true
                     RequestRaidInfo()
                 end
             end
@@ -324,7 +324,7 @@ end
 --##
 local function set_Money()--钱
     local money=GetMoney()
-    e.WoWDate[e.Player.guid].Money= money==0 and nil or money
+    WoWDate[e.Player.guid].Money= money==0 and nil or money
 end
 
 
@@ -372,8 +372,8 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
         if arg1==id then
             local day= date('%x')--日期
             print(WoWDate)
-            e.WoWDate= WoWDate or e.WoWDate or {}
-            e.WoWDate[e.Player.guid] = e.WoWDate[e.Player.guid] or
+            WoWDate= WoWDate or WoWDate or {}
+            WoWDate[e.Player.guid] = WoWDate[e.Player.guid] or
                 {--默认数据
                     Item={},--{itemID={bag=包, bank=银行}},
                     Currency={},--{currencyID = 数量}
@@ -387,22 +387,22 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
                     --GuildInfo=公会信息,
                     Bank={},--{[itemID]={num=数量,quality=品质}}银行，数据
                 }
-            e.WoWDate[e.Player.guid].faction= e.Player.faction--派系
-            e.WoWDate[e.Player.guid].Bank= e.WoWDate[e.Player.guid].Bank or {}--派系
+            WoWDate[e.Player.guid].faction= e.Player.faction--派系
+            WoWDate[e.Player.guid].Bank= WoWDate[e.Player.guid].Bank or {}--派系
 
-            for guid, tab in pairs(e.WoWDate) do--清除不是本周数据
+            for guid, tab in pairs(WoWDate) do--清除不是本周数据
                 if tab.Keystone.week ~=e.Player.week then
-                    e.WoWDate[guid].Keystone={itemLink={}}
+                    WoWDate[guid].Keystone={itemLink={}}
                 end
                 if tab.Instance.week~=e.Player.week then
-                    e.WoWDate[guid].Instance={ins={}}
+                    WoWDate[guid].Instance={ins={}}
                 end
                 if tab.Worldboss.week~=e.Player.week then
-                    e.WoWDate[guid].Worldboss={boss={}}
+                    WoWDate[guid].Worldboss={boss={}}
                 end
 
                 if tab.Rare.day~=day then
-                    e.WoWDate[guid].Rare={day=day,boss={}}
+                    WoWDate[guid].Rare={day=day,boss={}}
                 end
             end
 
@@ -453,7 +453,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
 
     elseif event=='TIME_PLAYED_MSG' then--总游戏时间：%s
         if arg1 and arg2 then
-            e.WoWDate[e.Player.guid].Time={
+            WoWDate[e.Player.guid].Time={
                 totalTime= arg1,
                 levelTime= arg2,
             }
@@ -529,8 +529,6 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
         if e.ClearAllSave then
             WoWToolsSave=nil
             WoWDate=nil
-        else
-            WoWDate= e.WoWDate
         end
     end
 end)

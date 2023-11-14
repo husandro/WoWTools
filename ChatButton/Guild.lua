@@ -29,12 +29,12 @@ end
 local guildMS= GUILD_INFO_TEMPLATE:gsub('(%%.+)', '')--公会创立
 local function set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
     if not IsInGuild() then
-        if e.WoWDate[e.Player.guid] then
-            e.WoWDate[e.Player.guid].GuildInfo=nil
+        if WoWDate[e.Player.guid] then
+            WoWDate[e.Player.guid].GuildInfo=nil
         end
         panel:UnregisterEvent('CHAT_MSG_SYSTEM')
     else
-        if Save.guildInfo or not e.WoWDate[e.Player.guid].GuildInfo then
+        if Save.guildInfo or not WoWDate[e.Player.guid].GuildInfo then
             panel:RegisterEvent('CHAT_MSG_SYSTEM')
             GuildInfo()
         else
@@ -48,7 +48,7 @@ end
 --#############
 local function setMsg_CHAT_MSG_SYSTEM(text)
     if text:find(guildMS) then
-        e.WoWDate[e.Player.guid].GuildInfo= text
+        WoWDate[e.Player.guid].GuildInfo= text
         panel:UnregisterEvent('CHAT_MSG_SYSTEM')
     end
 end
@@ -171,7 +171,7 @@ local function InitMenu(self, level, type)--主菜单
         text=e.onlyChinese and '公会信息' or GUILD_INFORMATION,
         checked=Save.guildInfo,
         tooltipOnButton=true,
-        tooltipTitle= e.WoWDate[e.Player.guid].GuildInfo or NONE,
+        tooltipTitle= WoWDate[e.Player.guid].GuildInfo or NONE,
         keepShownOnClick=true,
         func=function()
             Save.guildInfo= not Save.guildInfo and true or nil

@@ -46,7 +46,7 @@ local function get_Name_Info(name)--取得名称，信息
     if name then
         local reName
         name = e.GetUnitName(name)
-        for guid, tab in pairs(e.WoWDate or {}) do
+        for guid, tab in pairs(WoWDate or {}) do
             if name== e.GetUnitName(nil, nil, guid) then
                 reName= e.Icon.star2..e.GetPlayerInfo({guid=guid, faction=tab.faction, reName=true, realm=true})
                 break
@@ -64,7 +64,7 @@ local function Init_Menu(_, level, menuList)
     local info
     if menuList=='SELF' then
         local find
-        for guid, _ in pairs(e.WoWDate) do
+        for guid, _ in pairs(WoWDate) do
             if guid and guid~= e.Player.guid then
                 info={
                     text= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true}),
@@ -86,7 +86,7 @@ local function Init_Menu(_, level, menuList)
         local find
         for i=1 , C_FriendList.GetNumFriends() do
             local game=C_FriendList.GetFriendInfoByIndex(i)
-            if game and game.guid and (game.connected or Save.show['FRIEND']) and not e.WoWDate[game.guid] then
+            if game and game.guid and (game.connected or Save.show['FRIEND']) and not WoWDate[game.guid] then
 
                 local text= e.GetPlayerInfo({guid=game.guid, reName=true, reRealm=true})--角色信息
                 text= (game.level and game.level~=MAX_PLAYER_LEVEL and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
@@ -98,7 +98,7 @@ local function Init_Menu(_, level, menuList)
 
                 info={
                     text=text,
-                    icon= e.WoWDate[game.guid] and 'auctionhouse-icon-favorite',
+                    icon= WoWDate[game.guid] and 'auctionhouse-icon-favorite',
                     notCheckable= true,
                     tooltipOnButton=true,
                     keepShownOnClick= true,
@@ -150,7 +150,7 @@ local function Init_Menu(_, level, menuList)
 
                 info={
                     text= text,
-                    icon= e.WoWDate[wowInfo.playerGuid] and 'auctionhouse-icon-favorite',
+                    icon= WoWDate[wowInfo.playerGuid] and 'auctionhouse-icon-favorite',
                     keepShownOnClick= true,
                     notCheckable=true,
                     tooltipOnButton=true,
@@ -171,7 +171,7 @@ local function Init_Menu(_, level, menuList)
         local num=0
         for index=1, GetNumGuildMembers() do
             local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
-            if name and guid and (isOnline or rankIndex<2 or (Save.show['GUILD'] and num<60)) and not e.WoWDate[guid] then
+            if name and guid and (isOnline or rankIndex<2 or (Save.show['GUILD'] and num<60)) and not WoWDate[guid] then
 
                 local text= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true,})--角色信息
 
@@ -259,7 +259,7 @@ local function Init_Menu(_, level, menuList)
         local members= C_Club.GetClubMembers(menuList) or {}
         for index, memberID in pairs(members) do
             local tab = C_Club.GetMemberInfo(menuList, memberID) or {}
-            if tab.guid and tab.name and (tab.zone or tab.role<4 or (Save.show[menuList] and num<60)) and not e.WoWDate[tab.guid] then
+            if tab.guid and tab.name and (tab.zone or tab.role<4 or (Save.show[menuList] and num<60)) and not WoWDate[tab.guid] then
                 local faction= tab.faction==Enum.PvPFaction.Alliance and 'Alliance' or tab.faction==Enum.PvPFaction.Horde and 'Horde'
                 local  text= e.GetPlayerInfo({guid=tab.guid,  reName=true, reRealm=true, factionName=faction})--角色信息
 

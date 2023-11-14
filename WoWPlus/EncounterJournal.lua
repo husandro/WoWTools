@@ -23,7 +23,7 @@ local function set_EncounterJournal_World_Tips(self2)
     e.tips:ClearLines();
     e.tips:AddDoubleLine(ADVENTURE_JOURNAL, CHANNEL_CATEGORY_WORLD..'BOSS/'..GARRISON_MISSION_RARE..e.Icon.left..e.GetShowHide(Save.showWorldBoss))
     e.tips:AddLine(' ')
-    for guid, info in pairs(e.WoWDate or {}) do
+    for guid, info in pairs(WoWDate or {}) do
         local find
         local text, num= nil, 0
         for bossName, _ in pairs(info.Worldboss.boss) do--世界BOSS
@@ -68,7 +68,7 @@ local function encounterJournal_ListInstances_set_Instance(self,showTips)
             set_EncounterJournal_World_Tips(self)--角色世界BOSS提示
             find=true
         else
-            for guid, info in pairs(e.WoWDate or {}) do--世界BOSS
+            for guid, info in pairs(WoWDate or {}) do--世界BOSS
                 if guid==e.Player.guid then
                     local num=0
                     for bossName, _ in pairs(info.Worldboss.boss) do
@@ -183,7 +183,7 @@ local function EncounterJournal_Set_All_Info_Text()
     end
     local m, text, num
 
-    local tab=e.WoWDate[e.Player.guid].Instance.ins
+    local tab=WoWDate[e.Player.guid].Instance.ins
     for insName, info in pairs(tab) do
         text= text and text..'|n' or ''
         text= text..'|T450908:0|t'..insName
@@ -198,7 +198,7 @@ local function EncounterJournal_Set_All_Info_Text()
 
     text=nil--世界BOSS
     num=0
-    tab=e.WoWDate[e.Player.guid].Worldboss.boss
+    tab=WoWDate[e.Player.guid].Worldboss.boss
     for bossName, _ in pairs(tab) do
         num=num+1
         text= text and text..', ' or ''
@@ -209,7 +209,7 @@ local function EncounterJournal_Set_All_Info_Text()
         m= m..num..' |cnGREEN_FONT_COLOR:'..text..'|r'
     end
 
-    tab=e.WoWDate[e.Player.guid].Rare.boss--稀有怪
+    tab=WoWDate[e.Player.guid].Rare.boss--稀有怪
     text= nil
     num=0
     for name, _ in pairs(tab) do
@@ -343,7 +343,7 @@ local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
 
     local msg
     if not Save.hideWorldBossText then
-        for guid, info in pairs(e.WoWDate or {}) do
+        for guid, info in pairs(WoWDate or {}) do
             local text, numAll, find= nil, 0, nil
             for bossName, _ in pairs(info.Worldboss.boss) do--世界BOSS
                 numAll=numAll+1
@@ -428,7 +428,7 @@ local function Init_Set_InstanceBoss_Text()--显示副本击杀数据
 
     local msg
     if not Save.hideInstanceBossText then
-        for guid, info in pairs(e.WoWDate or {}) do
+        for guid, info in pairs(WoWDate or {}) do
             local text
             for bossName, tab in pairs(info.Instance.ins) do--ins={[名字]={[难度]=已击杀数}}
                 text= text and text..'|n   '..bossName or '   '..bossName
@@ -454,7 +454,7 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
     e.tips:SetOwner(self, "ANCHOR_LEFT");
     e.tips:ClearLines();
     e.tips:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
-    for guid, info in pairs(e.WoWDate or {}) do
+    for guid, info in pairs(WoWDate or {}) do
         if guid and info then
             local find
             for itemLink, _ in pairs(info.Keystone.itemLink) do
@@ -473,7 +473,7 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
     e.tips:SetOwner(self, "ANCHOR_LEFT");
     e.tips:ClearLines();
     local numPlayer, allMoney  = 0, 0
-    for guid, info in pairs(e.WoWDate or {}) do
+    for guid, info in pairs(WoWDate or {}) do
         if info.Money then
             e.tips:AddDoubleLine(e.GetPlayerInfo({ guid=guid, faction=info.faction, reName=true, reRealm=true}), GetCoinTextureString(info.Money))
             numPlayer=numPlayer+1
@@ -567,7 +567,7 @@ local function Init_EncounterJournal()--冒险指南界面
         e.tips:ClearLines();
         e.tips:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save.showInstanceBoss), e.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
         e.tips:AddLine(' ')
-        for guid, info in pairs(e.WoWDate or {}) do
+        for guid, info in pairs(WoWDate or {}) do
             if guid and info then
                 local find
                 for bossName, tab in pairs(info.Instance.ins) do----ins={[名字]={[难度]=已击杀数}}
