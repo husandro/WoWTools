@@ -535,7 +535,6 @@ function func.Set_Item(self, itemLink, itemID)
                 local find
                 for linkItem, _ in pairs(info.Keystone.itemLink) do
                     self:AddDoubleLine(' ', linkItem)
-                    print(linkItem, _)
                     find=true
                 end
                 if find then

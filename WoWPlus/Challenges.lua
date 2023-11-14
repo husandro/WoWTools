@@ -1228,8 +1228,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             local findKey= currentChallengeMapID== frame.mapID and not Save.hideIns or false
             if findKey and not frame.currentKey then--提示, 包里KEY地图
                 frame.currentKey= frame:CreateTexture(nil, 'OVERLAY')
-                frame.currentKey:SetPoint('BOTTOM', frame)
-                frame.currentKey:SetAtlas('auctionhouse-icon-favorite')
+                frame.currentKey:SetPoint('TOPRIGHT', frame)
+                frame.currentKey:SetTexture(180653)
                 --frame.currentKey:SetTexture(4352494)
                 frame.currentKey:SetSize(14,14)
                 frame.currentKey:EnableMouse(true)
@@ -1248,6 +1248,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             if frame.currentKey then
                 frame.currentKey:SetScale(Save.insScale or 1)
                 frame.currentKey:SetShown(findKey)
+                print(frame.currentKey:IsShown())
             end
 
             --#####
