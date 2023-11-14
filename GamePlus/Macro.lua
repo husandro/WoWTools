@@ -27,7 +27,7 @@ local MacroButtonList={
     {macro='/reload'},--134400
     {macro='/fstack'},
     {macro='/etrace'},
-    {macro='#showtooltip\n/cast [mod:alt]\n/cast [mod:ctrl]\n/cast [mod:shift][noflyable]\n/cast [swimming]\n/cast [flyable]', name='Mount'},
+    {macro='#showtooltip\n/cast [mod:alt]\n/cast [mod:ctrl]\n/cast [mod:shift][noflyable]\n/cast [advflyable]\n/cast [swimming]\n/cast [flyable]', name='Mount'},
     {macro='/click ExtraActionButton1', name='Extra'},
     --{macro=, name=, icon=, },
 }
