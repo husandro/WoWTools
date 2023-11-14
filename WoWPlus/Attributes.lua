@@ -1334,14 +1334,14 @@ local function set_Panle_Setting()--设置 panel
                 Save.disabledDragonridingSpeed= not Save.disabledDragonridingSpeed and true or nil
             end)
 
-              --载具，速度
-              local vehicleSpeedCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-              vehicleSpeedCheck:SetChecked(not Save.disabledVehicleSpeed)
-              vehicleSpeedCheck:SetPoint('LEFT', dragonriding.text, 'RIGHT',2,0)
-              vehicleSpeedCheck.text:SetFormattedText(e.onlyChinese and '%s载具' or UNITNAME_SUMMON_TITLE9, '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t')
-              vehicleSpeedCheck:SetScript('OnClick',function()
-                  Save.disabledVehicleSpeed= not Save.disabledVehicleSpeed and true or nil
-              end)
+            --载具，速度
+            local vehicleSpeedCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            vehicleSpeedCheck:SetChecked(not Save.disabledVehicleSpeed)
+            vehicleSpeedCheck:SetPoint('LEFT', dragonriding.text, 'RIGHT',2,0)
+            vehicleSpeedCheck.text:SetFormattedText(e.onlyChinese and '%s载具' or UNITNAME_SUMMON_TITLE9, '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t')
+            vehicleSpeedCheck:SetScript('OnClick',function()
+                Save.disabledVehicleSpeed= not Save.disabledVehicleSpeed and true or nil
+            end)
 
 
         elseif info.name=='VERSATILITY' then--全能5
@@ -2103,7 +2103,7 @@ local function Init()
             self2.speedBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
             self2.speedBar:SetStatusBarColor(e.Player.r, e.Player.g, e.Player.b)
             self2.speedBar:SetPoint('BOTTOM', self2, 'TOP')
-            self2.speedBar:SetMinMaxValues(0, 100)
+            self2.speedBar:SetMinMaxValues(0, 100)--100*100/BASE_MOVEMENT_SPEED
             self2.speedBar:SetSize(200, 6)
             local texture= self2.speedBar:CreateTexture(nil,'BACKGROUND')
             texture:SetAllPoints(self2.speedBar)
