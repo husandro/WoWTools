@@ -371,6 +371,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
             local day= date('%x')--日期
+            print(WoWDate)
             e.WoWDate= WoWDate or e.WoWDate or {}
             e.WoWDate[e.Player.guid] = e.WoWDate[e.Player.guid] or
                 {--默认数据
