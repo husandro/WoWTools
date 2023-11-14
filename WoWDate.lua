@@ -530,7 +530,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
             WoWToolsSave=nil
             WoWDate=nil
         else
-            --WoWDate= WoWDate or {}
+            WoWDate= WoWDate or {}
         end
     end
 end)
