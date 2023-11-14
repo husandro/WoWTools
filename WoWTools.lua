@@ -2,7 +2,6 @@ local id, e = ...
 --Blizzard_Deprecated/Deprecated_10_2_0.lua
 e.WoWDate={}
 e.tips=GameTooltip
-e.onlyChinese= LOCALE_zhCN
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
 e.call= securecall
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
