@@ -3631,7 +3631,7 @@
         "PlayerChoiceNormalOptionTemplateMixin",
         "SLASH_STOPWATCH_PARAM_STOP1",
         "BankFrame_Open",
-        "WoWDate"
+        "CloseBag"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -511,10 +511,17 @@ local function Init_All_Bank()
         end
     end)
     SetAllBank:set_bank()--设置，银行，按钮
-
-
     SetAllBank:set_background()--设置，背景
 end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -578,6 +585,7 @@ local function Init_Save_BankItem()
             if info and info.itemID then
                 local num=GetItemCount(info.itemID, true)- GetItemCount(info.itemID, nil)
                 e.WoWDate[e.Player.guid].Bank[info.itemID]={num=num, quality=info.quality}
+                print(info.hyperlink)
             end
         end
     end
@@ -586,14 +594,18 @@ local function Init_Save_BankItem()
         for i=1, NUM_BANKGENERIC_SLOTS do
             local button = BankSlotsFrame["Item"..i]
             AllPlayerBankItem:save_button_info(button)
-        end
-    end)
-    ReagentBankFrame:HookScript('OnHide', function(self)
-        for _, button in self:EnumerateItems() do
            
+        end
+
+        for i=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
+           
+        end
+        for _, button in ReagentBankFrame:EnumerateItems() do
+          
             AllPlayerBankItem:save_button_info(button)
         end
     end)
+
 end
 
 
