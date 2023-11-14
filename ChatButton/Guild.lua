@@ -171,7 +171,7 @@ local function InitMenu(self, level, type)--主菜单
         text=e.onlyChinese and '公会信息' or GUILD_INFORMATION,
         checked=Save.guildInfo,
         tooltipOnButton=true,
-        tooltipTitle= e.WoWDate[e.Player.guid].GuildInfo or NONE,
+        tooltipTitle= e.WoWDate[e.Player.guid].GuildInfo or (e.onlyChinese and '无' or NONE),
         keepShownOnClick=true,
         func=function()
             Save.guildInfo= not Save.guildInfo and true or nil

@@ -194,9 +194,6 @@ end
 --更新物品
 --#######
 local function Update_Bag_Items()
-    if UnitAffectingCombat('player') then
-        return
-    end
     e.WoWDate[e.Player.guid].Keystone.itemLink={}
     e.WoWDate[e.Player.guid].Item={}--{itemID={bag=包, bank=银行}}
     for bagID= Enum.BagIndex.Backpack,  NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do
