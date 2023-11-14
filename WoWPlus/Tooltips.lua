@@ -570,14 +570,12 @@ function func.Set_Item(self, itemLink, itemID)
     else
         local bagAll,bankAll,numPlayer=0,0,0--帐号数据
         for guid, info in pairs(e.WoWDate or {}) do
-            if guid and info and guid~=e.Player.guid then
+            if guid and guid~=e.Player.guid and info.Item[itemID] then
                 local tab=info.Item[itemID]
-                if tab and tab.bag and tab.bank then
-                    self:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
-                    bagAll=bagAll +tab.bag
-                    bankAll=bankAll +tab.bank
-                    numPlayer=numPlayer +1
-                end
+                self:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
+                bagAll=bagAll +tab.bag
+                bankAll=bankAll +tab.bank
+                numPlayer=numPlayer +1
             end
         end
 

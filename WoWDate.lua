@@ -486,8 +486,8 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
     elseif event=='CURRENCY_DISPLAY_UPDATE' then--货币
         updateCurrency(arg1)
 
-    --elseif event=='BAG_UPDATE_DELAYED' then
-        --Update_Bag_Items(true)
+    elseif event=='BAG_UPDATE_DELAYED' then
+        Update_Bag_Items(true)
 
     elseif event=='UPDATE_INSTANCE_INFO' then--副本
         undateInstance()
@@ -528,7 +528,6 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
             WoWToolsSave=nil
             e.WoWDate=nil
         else
-            Update_Bag_Items()--更新物品
             WoWDate= e.WoWDate
         end
     end
