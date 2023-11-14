@@ -531,7 +531,7 @@ function func.Set_Item(self, itemLink, itemID)
 
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         --local numPlayer=1 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
-        for guid, info in pairs(WoWDate or {}) do
+        for guid, info in pairs(e.WoWDate or {}) do
             if guid and info then
                 local find
                 for linkItem, _ in pairs(info.Keystone.itemLink) do
@@ -570,7 +570,7 @@ function func.Set_Item(self, itemLink, itemID)
 
     else
         local bagAll,bankAll,numPlayer=0,0,0--帐号数据
-        for guid, info in pairs(WoWDate or {}) do
+        for guid, info in pairs(e.WoWDate or {}) do
             if guid and info and guid~=e.Player.guid then
                 local tab=info.Item[itemID]
                 if tab and tab.bag and tab.bank then
@@ -643,7 +643,7 @@ function func.Set_Currency(self, currencyID)--货币
     end
 
     local all,numPlayer=0,0
-    for guid, info in pairs(WoWDate or {}) do--帐号数据
+    for guid, info in pairs(e.WoWDate or {}) do--帐号数据
         if guid~=e.Player.guid then
             local quantity=info.Currency[currencyID]
             if quantity and quantity>0 then

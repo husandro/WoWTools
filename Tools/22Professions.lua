@@ -469,7 +469,7 @@ local function Init_ProfessionsFrame()
             local itemID= GetItemInfoInstant(itemIDOrLink)
             if itemID then
                 local all= 0--帐号数据
-                for guid, info in pairs(WoWDate or {}) do
+                for guid, info in pairs(e.WoWDate or {}) do
                     if guid and info and guid~=e.Player.guid then
                         local tab=info.Item[itemID]
                         if tab and tab.bag and tab.bank then

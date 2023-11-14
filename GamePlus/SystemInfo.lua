@@ -25,7 +25,7 @@ local button
 local function get_Mony_Tips()
     local numPlayer, allMoney= 0, 0
     local tab={}
-    for guid, infoMoney in pairs(WoWDate or {}) do
+    for guid, infoMoney in pairs(e.WoWDate or {}) do
         if infoMoney.Money then
 
             local nameText= e.GetPlayerInfo({guid=guid, faction=infoMoney.faction, reName=true, reRealm=true})
@@ -136,7 +136,7 @@ end
 local function set_Money()
     local money=0
     if Save.moneyWoW then
-        for _, info in pairs(WoWDate or {}) do
+        for _, info in pairs(e.WoWDate or {}) do
             if info.Money then
                 money= money+ info.Money
             end

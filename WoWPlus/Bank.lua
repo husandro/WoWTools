@@ -530,6 +530,19 @@ end
 
 
 
+local function Init_Save_BankItem()
+    
+end
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -615,6 +628,8 @@ local function Init_Bank_Frame()
     else
         Init_Bank_Plus()--增强，原生
     end
+
+    Init_Save_BankItem()
 end
 
 

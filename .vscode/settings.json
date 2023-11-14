@@ -3629,7 +3629,8 @@
         "PlayerChoiceBaseOptionTemplateMixin",
         "WidgetCenterDisplayFrameMixin",
         "PlayerChoiceNormalOptionTemplateMixin",
-        "SLASH_STOPWATCH_PARAM_STOP1"
+        "SLASH_STOPWATCH_PARAM_STOP1",
+        "WoWDate"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

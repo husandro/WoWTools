@@ -1,6 +1,6 @@
 local id, e = ...
 --Blizzard_Deprecated/Deprecated_10_2_0.lua
-
+e.WoWDate={}
 e.tips=GameTooltip
 e.onlyChinese= LOCALE_zhCN
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
