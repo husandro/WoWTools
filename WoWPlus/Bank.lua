@@ -532,44 +532,46 @@ end
 
 local AllPlayerBankItem
 local function Init_Save_BankItem()
-    AllPlayerBankItem= e.Cbtn(BankFrame.TitleContainer, {size={22,22, atlas='Banker'}})
-    if SetAllBank or _G['MoveZoomInButtonPerBankFrame'] then
-        
-       -- AllPlayerBankItem:SetPoint('LEFT', SetAllBank , 'RIGHT')
-    else
-        AllPlayerBankItem:SetPoint('LEFT', 12, 0)
-    end
+    AllPlayerBankItem= e.Cbtn(BankFrame.TitleContainer, {size={22,22}, atlas='Banker'})
+    AllPlayerBankItem:SetPoint('LEFT', BankFrame.optionButton , 'RIGHT')
+    AllPlayerBankItem:SetAlpha(0.5)
     function AllPlayerBankItem:get_item_text(itemID, quality)
         e.LoadDate({id=itemID, type='item'})
         local name= GetItemInfo(itemID) or itemID
-        local hex= select(4, GetItemQualityColor(quality or 1)) or ''
+        local hex= select(4, GetItemQualityColor(quality or 1))
         local icon= C_Item.GetItemIconByID(itemID)
-        return (icon and '|T'..icon..':0|t' or '')..hex..name
+        return (icon and '|T'..icon..':0|t' or '')..(hex and '|c'..hex or '')..name
     end
     function AllPlayerBankItem:get_Player_item(playerGuid)
-        local find
-        if e.WoWDate[playerGuid] then
-            for itemID, tab in pairs(e.WoWDate[playerGuid].Bank or {}) do
-                e.tips:AddDoubleLine(self:get_item_text(itemID, tab.quality), tab.num)
-                find=true
+        local num=0
+        local tabs={}
+        for itemID, tab in pairs(e.WoWDate[playerGuid].Bank or {}) do
+            table.insert(tabs, {itemID= itemID, num=tab.num, quality=tab.quality or 1})
+        end
+        table.sort(tabs, function(a, b)
+            if a.quality==b.quality then
+                return a.itemID< b.itemID
+            else
+                return a.quality< b.quality
             end
+        end)
+        for _, tab in pairs(tabs) do
+            e.tips:AddDoubleLine(self:get_item_text(tab.itemID, tab.quality), tab.num)
+            num= num+1
         end
-        if not find then
-            e.tips:AddLine(e.onlyChinese and '无' or NONE)
-        end
+        e.tips:AddDoubleLine(e.GetPlayerInfo({guid=playerGuid}), num)
     end
 
-    AllPlayerBankItem:SetScript('OnLeave', function() e.tips:Hide() end)
+    AllPlayerBankItem:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
     AllPlayerBankItem:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         self:get_Player_item(e.Player.guid)
         e.tips:Show()
+        self:SetAlpha(1)
     end)
-    BankFrame:HookScript('OnShow', function()
-        e.WoWDate[e.Player.guid].Bank={}
-        for i=1, NUM_BANKGENERIC_SLOTS do
-            local button = BankSlotsFrame["Item"..i]
+    function AllPlayerBankItem:save_button_info(button)
+        if button then
             local container = button:GetParent():GetID();
             local buttonID = button:GetID();
             local info = C_Container.GetContainerItemInfo(container, buttonID);
@@ -577,6 +579,19 @@ local function Init_Save_BankItem()
                 local num=GetItemCount(info.itemID, true)- GetItemCount(info.itemID, nil)
                 e.WoWDate[e.Player.guid].Bank[info.itemID]={num=num, quality=info.quality}
             end
+        end
+    end
+    BankFrame:HookScript('OnHide', function()
+        e.WoWDate[e.Player.guid].Bank={}
+        for i=1, NUM_BANKGENERIC_SLOTS do
+            local button = BankSlotsFrame["Item"..i]
+            AllPlayerBankItem:save_button_info(button)
+        end
+    end)
+    ReagentBankFrame:HookScript('OnHide', function(self)
+        for _, button in self:EnumerateItems() do
+           
+            AllPlayerBankItem:save_button_info(button)
         end
     end)
 end
@@ -603,16 +618,16 @@ end
 --银行
 --BankFrame.lua
 local function Init_Bank_Frame()
-    local btn= e.Cbtn(BankFrame.TitleContainer, {size={22,22}, atlas='hide'})
+    BankFrame.optionButton= e.Cbtn(BankFrame.TitleContainer, {size={22,22}, atlas='hide'})
     if _G['MoveZoomInButtonPerBankFrame'] then
-        btn:SetPoint('LEFT', _G['MoveZoomInButtonPerBankFrame'], 'RIGHT')
+        BankFrame.optionButton:SetPoint('LEFT', _G['MoveZoomInButtonPerBankFrame'], 'RIGHT')
     else
-        btn:SetPoint('LEFT', 34,0)
+        BankFrame.optionButton:SetPoint('LEFT', 34,0)
     end
-    function btn:set_atlas()
+    function BankFrame.optionButton:set_atlas()
         self:SetNormalAtlas(Save.allBank and 'Warfronts-BaseMapIcons-Alliance-Workshop-Minimap' or 'Warfronts-BaseMapIcons-Empty-Workshop-Minimap')
     end
-    function btn:set_tooltips()
+    function BankFrame.optionButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
@@ -623,9 +638,9 @@ local function Init_Bank_Frame()
         e.tips:Show()
         self:SetAlpha(1)
     end
-    btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
-    btn:SetScript('OnEnter', btn.set_tooltips)
-    btn:SetScript('OnClick', function(self, d)
+    BankFrame.optionButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
+    BankFrame.optionButton:SetScript('OnEnter', BankFrame.optionButton.set_tooltips)
+    BankFrame.optionButton:SetScript('OnClick', function(self, d)
         if not IsModifierKeyDown() then
             Save.allBank = not Save.allBank and true or nil
             print(id, addName,'|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -635,8 +650,8 @@ local function Init_Bank_Frame()
             e.Reload()
         end
     end)
-    btn:SetAlpha(0.5)
-    btn:set_atlas()
+    BankFrame.optionButton:SetAlpha(0.5)
+    BankFrame.optionButton:set_atlas()
 
     local tab={--隐藏，背景
         'LeftTopCorner-Shadow',

@@ -339,7 +339,7 @@ local function get_Info_Challenge()--挑战
 end
 
 panel:RegisterEvent("ADDON_LOADED")
---panel:RegisterEvent('PLAYER_LOGOUT')
+panel:RegisterEvent('PLAYER_LOGOUT')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:RegisterEvent('GROUP_ROSTER_UPDATE')--队伍数据收集 e.GroupGuid
@@ -522,6 +522,12 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
     elseif event=='BN_FRIEND_INFO_CHANGED' then
         if arg1 then
             get_WoW_GUID_Info(arg1)--战网，好友GUID
+        end
+
+    elseif event == "PLAYER_LOGOUT" then
+        if e.ClearAllSave then
+            WoWToolsSave=nil
+            WoWDate=nil
         end
     end
 end)

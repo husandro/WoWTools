@@ -811,10 +811,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         end
 
     elseif event == "PLAYER_LOGOUT" then
-        if e.ClearAllSave then
-            WoWToolsSave=nil
-            e.WoWDate=nil
-        else
+        if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
     end

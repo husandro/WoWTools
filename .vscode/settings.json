@@ -3630,7 +3630,8 @@
         "WidgetCenterDisplayFrameMixin",
         "PlayerChoiceNormalOptionTemplateMixin",
         "SLASH_STOPWATCH_PARAM_STOP1",
-        "BankFrame_Open"
+        "BankFrame_Open",
+        "WoWDate"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
