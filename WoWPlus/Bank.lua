@@ -543,9 +543,6 @@ end
 --银行
 --BankFrame.lua
 local function Init_Bank_Frame()
-    if not ReagentBankFrame then
-        return
-    end
     local btn= e.Cbtn(BankFrame.TitleContainer, {size={22,22}, icon='hide'})
     if _G['MoveZoomInButtonPerBankFrame'] then
         btn:SetPoint('LEFT', _G['MoveZoomInButtonPerBankFrame'], 'RIGHT')
