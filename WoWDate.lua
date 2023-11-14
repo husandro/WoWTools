@@ -373,7 +373,6 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
             WoWToolsSave= WoWToolsSave or {}
             e.WoWDate= WoWDate or {}
             
-
             local day= date('%x')--日期
             e.WoWDate[e.Player.guid] = e.WoWDate[e.Player.guid] or
                 {--默认数据
@@ -529,7 +528,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
     elseif event == "PLAYER_LOGOUT" then
         if e.ClearAllSave then
             WoWToolsSave=nil
-            e.WoWDate=nil
+            WoWDate=nil
         else
             WoWDate= e.WoWDate or {}
         end
