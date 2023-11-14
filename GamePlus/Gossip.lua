@@ -1857,7 +1857,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                             e.tips:ClearLines()
                             e.tips:AddDoubleLine(id ,addName)
                             e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine(s.tips or (e.onlyChinese and '使用' or USE), format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, 100))
+                            e.tips:AddLine(s.tips or (e.onlyChinese and '使用' or USE))
+                            e.tips:AddDoubleLine(' ', format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, 44)..e.Icon.left)
+                            e.tips:AddDoubleLine(' ', format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, 100)..e.Icon.right)
                             e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1), 'Alt')
                             e.tips:Show()
                         end)
@@ -1872,7 +1874,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                                 or (e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
                             )
                         end
-                        PlayerChoiceFrame.allButton:SetScript('OnClick', function(s)
+                        PlayerChoiceFrame.allButton:SetScript('OnClick', function(s, d)
                             if s.time and not s.time:IsCancelled() then
                                 s.time:Cancel()
                                 s:set_text()
@@ -1881,7 +1883,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                             else
                                 s:set_text()
                             end
-                            local n, all=0, 100
+                            local n= 0
+                            local all= d=='LeftButton' and 44 or 100
                             s.time=C_Timer.NewTicker(0.5, function()
                                 local choiceInfo = C_PlayerChoice.GetCurrentPlayerChoiceInfo() or {}
                                 local info= choiceInfo.options and choiceInfo.options[1] or {}
