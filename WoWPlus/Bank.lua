@@ -539,6 +539,9 @@ end
 
 local AllPlayerBankItem
 local function Init_Save_BankItem()
+    if not e.Player.husandro then
+        return
+    end
     AllPlayerBankItem= e.Cbtn(BankFrame.TitleContainer, {size={22,22}, atlas='Banker'})
     AllPlayerBankItem:SetPoint('LEFT', BankFrame.optionButton , 'RIGHT')
     AllPlayerBankItem:SetAlpha(0.5)
@@ -587,17 +590,18 @@ local function Init_Save_BankItem()
             if info and info.itemID then
                 local num=GetItemCount(info.itemID, true)- GetItemCount(info.itemID, nil)
                 WoWDate[e.Player.guid].Bank[info.itemID]={num=num, quality=info.quality, isReagent=isReagent}
+                print(info.hyperlink)
             end
         end
     end
     
     BankSlotsFrame:HookScript('OnShow', function()
-        WoWDate[e.Player.guid].Bank={}
+        --WoWDate[e.Player.guid].Bank={}
     end)
     BankSlotsFrame:HookScript('OnHide', function()
         for i=1, NUM_BANKGENERIC_SLOTS do
             local button = BankSlotsFrame["Item"..i]
-            AllPlayerBankItem:save_button_info(button)
+            --AllPlayerBankItem:save_button_info(button)
         end
 
         --for i=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
@@ -609,13 +613,14 @@ local function Init_Save_BankItem()
             local bagFrame= _G['ContainerFrame'..bag]
             for slot=1, ContainerFrame_GetContainerNumSlots(bagFrame:GetID()) do-- C_Container.GetContainerNumSlots(bagindex) do
                 local button=_G['ContainerFrame'..(bagindex)..'Item'..slot]
+                
                 AllPlayerBankItem:save_button_info(button)
             end
         end
     end)
     ReagentBankFrame:HookScript('OnHide', function(self)
         for _, button in self:EnumerateItems() do
-            AllPlayerBankItem:save_button_info(button, true)
+            --AllPlayerBankItem:save_button_info(button, true)
         end
         
     end)

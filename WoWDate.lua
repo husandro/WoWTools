@@ -193,10 +193,13 @@ end
 --#######
 --更新物品
 --#######
-local function updateItems()
+local function Update_Bag_Items()
+    if UnitAffectingCombat('player') then
+        return
+    end
     WoWDate[e.Player.guid].Keystone.itemLink={}
     WoWDate[e.Player.guid].Item={}--{itemID={bag=包, bank=银行}}
-    for bagID= Enum.BagIndex.Backpack, Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES do
+    for bagID= Enum.BagIndex.Backpack,  NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do
         for slotID=1, C_Container.GetContainerNumSlots(bagID) do
             local itemID = C_Container.GetContainerItemID(bagID, slotID)
             if itemID then
@@ -353,7 +356,7 @@ panel:RegisterEvent('PLAYER_MONEY')--钱
 panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')--位面, 清除
 panel:RegisterEvent('BOSS_KILL')--显示世界BOSS击杀数据
 panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')--货币
-panel:RegisterEvent('BAG_UPDATE_DELAYED')--物品
+--panel:RegisterEvent('BAG_UPDATE_DELAYED')--物品
 panel:RegisterEvent('UPDATE_INSTANCE_INFO')--副本
 panel:RegisterEvent('PLAYER_LEVEL_UP')--更新等级
 panel:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')--更新阵营
@@ -371,7 +374,6 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
             local day= date('%x')--日期
-            print(WoWDate)
             WoWDate= WoWDate or WoWDate or {}
             WoWDate[e.Player.guid] = WoWDate[e.Player.guid] or
                 {--默认数据
@@ -442,7 +444,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
                 end
 
                 get_WoW_GUID_Info()--战网，好友GUID
-
+                Update_Bag_Items()--更新物品
 
             end)
             panel:UnregisterEvent('ADDON_LOADED')
@@ -489,7 +491,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
         updateCurrency(arg1)
 
     elseif event=='BAG_UPDATE_DELAYED' then
-        updateItems()
+        Update_Bag_Items()
 
     elseif event=='UPDATE_INSTANCE_INFO' then--副本
         undateInstance()
@@ -530,6 +532,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
             WoWToolsSave=nil
             WoWDate=nil
         else
+            Update_Bag_Items()--更新物品
             WoWDate= WoWDate or {}
         end
     end
