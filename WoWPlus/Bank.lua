@@ -555,7 +555,7 @@ local function Init_Save_BankItem()
     function AllPlayerBankItem:get_Player_item(playerGuid)
         local num=0
         local tabs={}
-        for itemID, tab in pairs(WoWDate[playerGuid].Bank or {}) do
+        for itemID, tab in pairs(e.WoWDate[playerGuid].Bank or {}) do
             table.insert(tabs, {itemID= itemID, num=tab.num, quality=tab.quality or 1})
         end
         table.sort(tabs, function(a, b)
@@ -589,14 +589,13 @@ local function Init_Save_BankItem()
             local info = C_Container.GetContainerItemInfo(container, buttonID);
             if info and info.itemID then
                 local num=GetItemCount(info.itemID, true)- GetItemCount(info.itemID, nil)
-                WoWDate[e.Player.guid].Bank[info.itemID]={num=num, quality=info.quality, isReagent=isReagent}
-                print(info.hyperlink)
+                e.WoWDate[e.Player.guid].Bank[info.itemID]={num=num, quality=info.quality, isReagent=isReagent}
             end
         end
     end
     
     BankSlotsFrame:HookScript('OnShow', function()
-        --WoWDate[e.Player.guid].Bank={}
+        --e.WoWDate[e.Player.guid].Bank={}
     end)
     BankSlotsFrame:HookScript('OnHide', function()
         for i=1, NUM_BANKGENERIC_SLOTS do

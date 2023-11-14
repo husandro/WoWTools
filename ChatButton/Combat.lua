@@ -65,7 +65,7 @@ local function set_Tooltips_Info()
     e.tips:AddLine(' ')
     local time=e.GetTimeInfo(OnLineTime)
     e.tips:AddDoubleLine((e.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..e.Icon.clock2, time)---在线时间
-    local tab=WoWDate[e.Player.guid].Time
+    local tab=e.WoWDate[e.Player.guid].Time
     e.tips:AddDoubleLine((e.onlyChinese and '总计' or TOTAL)..e.Icon.clock2, tab.totalTime and SecondsToTime(tab.totalTime))
     e.tips:AddDoubleLine(
         (e.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD'),
@@ -497,7 +497,7 @@ local function Init()
                     local info
                     if type=='AllOnlineTime' then--3级,所有角色时间
                         local timeAll=0
-                        for guid, tab in pairs(WoWDate or {}) do
+                        for guid, tab in pairs(e.WoWDate or {}) do
                             local time= tab.Time and tab.Time.totalTime
                             if time and time>0 then
                                 timeAll= timeAll + time
@@ -559,7 +559,7 @@ local function Init()
                         return
                     end
 
-                    local tab=WoWDate[e.Player.guid].Time
+                    local tab=e.WoWDate[e.Player.guid].Time
                     info={
                         text= e.onlyChinese and '总游戏时间'..((tab and tab.totalTime) and ': '..SecondsToTime(tab.totalTime) or '') or TIME_PLAYED_TOTAL:format((tab and tab.totalTime) and SecondsToTime(tab.totalTime) or ''),
                         checked= Save.AllOnlineTime,
@@ -748,7 +748,7 @@ local function Init()
     button:set_texture_Desaturated()--禁用/启用 TrackButton, 提示
     
 
-    if Save.AllOnlineTime or not WoWDate[e.Player.guid].Time.totalTime then--总游戏时间
+    if Save.AllOnlineTime or not e.WoWDate[e.Player.guid].Time.totalTime then--总游戏时间
         RequestTimePlayed()
     end
 
