@@ -635,6 +635,9 @@ end
 
 --宠物手册，增加按钮
 local function set_Button_setFrame_PetJournal()
+    if not TrackButton then
+        return
+    end
     TrackButton.btn= e.Cbtn(RematchJournal or PetJournal, {icon='hide', size={22, 22}})
     if _G['MoveZoomInButtonPerCollectionsJournal'] then
         TrackButton.btn:SetPoint('LEFT', _G['MoveZoomInButtonPerCollectionsJournal'], 'RIGHT')
@@ -1025,8 +1028,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             })
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 
-           -- panel:UnregisterEvent('ADDON_LOADED')
-            if not Save.disabled then
+            
+            if Save.disabled then
+                panel:UnregisterEvent('ADDON_LOADED')
+            else
                 Init()
                 add_Click_To_Move_Button()--点击移动，按钮
                 set_Click_To_Move()
