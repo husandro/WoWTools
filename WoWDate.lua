@@ -353,7 +353,7 @@ panel:RegisterEvent('PLAYER_MONEY')--钱
 panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')--位面, 清除
 panel:RegisterEvent('BOSS_KILL')--显示世界BOSS击杀数据
 panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')--货币
---panel:RegisterEvent('BAG_UPDATE_DELAYED')--物品
+panel:RegisterEvent('BAG_UPDATE_DELAYED')--物品
 panel:RegisterEvent('UPDATE_INSTANCE_INFO')--副本
 panel:RegisterEvent('PLAYER_LEVEL_UP')--更新等级
 panel:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')--更新阵营
@@ -489,7 +489,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
         updateCurrency(arg1)
 
     elseif event=='BAG_UPDATE_DELAYED' then
-        Update_Bag_Items(true)
+        Update_Bag_Items()
 
     elseif event=='UPDATE_INSTANCE_INFO' then--副本
         undateInstance()
