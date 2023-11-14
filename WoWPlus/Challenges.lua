@@ -891,22 +891,23 @@ local function set_All_Text()--所有记录
     --##########
     local keyText
     for guid, infoWoW in pairs(e.WoWDate or {}) do
-        local key
-        for link, _ in pairs(infoWoW.Keystone.itemLink) do
-            local texture
-            texture=  C_Item.GetItemIconByID(link)
-            texture= (not texture or texture==134400) and 4352494 or texture
-            key= (key or '')
-                ..(texture and '|T'..texture..':0|t' or '')
-                ..link
-        end
-        if key then
-            keyText= (keyText and keyText..'|n' or '')
-                ..(infoWoW.Keystone.weekLevel or 0)..' ('..(infoWoW.Keystone.weekNum or 0)..') '--次数
-                ..(infoWoW.Keystone.score and e.GetKeystoneScorsoColor(infoWoW.Keystone.score)..' ' or '')
-                ..e.GetPlayerInfo({guid=guid, faction=infoWoW.faction, reName=true, reRealm=true})
-                ..key
-                
+        if guid~=e.Player.guid then
+            local key
+            for link, _ in pairs(infoWoW.Keystone.itemLink) do
+                local texture
+                texture=  C_Item.GetItemIconByID(link)
+                texture= (not texture or texture==134400) and 4352494 or texture
+                key= (key or '')
+                    ..(texture and '|T'..texture..':0|t' or '')
+                    ..link
+            end
+            if key then
+                keyText= (keyText and keyText..'|n' or '')
+                    ..(infoWoW.Keystone.weekLevel or 0)..' ('..(infoWoW.Keystone.weekNum or 0)..') '--次数
+                    ..(infoWoW.Keystone.score and e.GetKeystoneScorsoColor(infoWoW.Keystone.score)..' ' or '')
+                    ..e.GetPlayerInfo({guid=guid, faction=infoWoW.faction, reName=true, reRealm=true})
+                    ..key
+            end
         end
     end
     if keyText then
