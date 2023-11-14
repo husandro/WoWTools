@@ -202,15 +202,16 @@ end
 
 --整合，一起
 --#########
+local SetAllBank
 local function Init_All_Bank()
-    BankFrame.setAllBank= e.Cbtn(BankFrame.TitleContainer, {size={22,22}, icon=true})
-    BankFrame.setAllBank:SetAlpha(0.5)
+    SetAllBank= e.Cbtn(BankFrame.TitleContainer, {size={22,22}, icon=true})
+    SetAllBank:SetAlpha(0.5)
     if _G['MoveZoomInButtonPerBankFrame'] then
-        BankFrame.setAllBank:SetPoint('RIGHT', _G['MoveZoomInButtonPerBankFrame'], 'LEFT')
+        SetAllBank:SetPoint('RIGHT', _G['MoveZoomInButtonPerBankFrame'], 'LEFT')
     else
-        BankFrame.setAllBank:SetPoint('LEFT', 12,0)
+        SetAllBank:SetPoint('LEFT', 12,0)
     end
-    function BankFrame.setAllBank:set_tooltips()
+    function SetAllBank:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
@@ -224,7 +225,7 @@ local function Init_All_Bank()
         self:SetAlpha(1)
     end
     --设置，背景
-    function BankFrame.setAllBank:set_background()
+    function SetAllBank:set_background()
         if Save.showBackground~=nil then
             if Save.showBackground then
                 BankFrame:DisableDrawLayer('BACKGROUND')
@@ -233,12 +234,12 @@ local function Init_All_Bank()
             end
         end
     end
-    BankFrame.setAllBank:SetScript('OnClick', function(self, d)
+    SetAllBank:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             Save.showIndex= not Save.showIndex and true or nil--显示，索引
-            BankFrame.setAllBank:set_bank()--设置，银行，按钮
-            BankFrame.setAllBank:set_reagent()--设置，材料，按钮
-            BankFrame.setAllBank:set_size()--设置，外框，大小
+            self:set_bank()--设置，银行，按钮
+            self:set_reagent()--设置，材料，按钮
+            self:set_size()--设置，外框，大小
 
         elseif d=='RightButton' then
             Save.showBackground= not Save.showBackground and true or false
@@ -246,7 +247,7 @@ local function Init_All_Bank()
         end
         self:set_tooltips()
     end)
-    BankFrame.setAllBank:SetScript('OnMouseWheel', function(self, d)
+    SetAllBank:SetScript('OnMouseWheel', function(self, d)
         if not IsModifierKeyDown() then
             local n= Save.num
             if d==1 then
@@ -274,11 +275,11 @@ local function Init_All_Bank()
         self:set_tooltips()
     end)
 
-    BankFrame.setAllBank:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
-    BankFrame.setAllBank:SetScript('OnEnter', BankFrame.setAllBank.set_tooltips)
+    SetAllBank:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
+    SetAllBank:SetScript('OnEnter', SetAllBank.set_tooltips)
 
     --索引，提示
-    function BankFrame.setAllBank:set_index_label(btn, index)
+    function SetAllBank:set_index_label(btn, index)
         if not btn.indexLable and Save.showIndex then
             btn.indexLable= e.Cstr(btn, {layer='BACKGROUND', color={r=1,g=1,b=1}})
             btn.indexLable:SetPoint('CENTER')
@@ -290,7 +291,7 @@ local function Init_All_Bank()
     end
 
     --设置，银行，按钮
-    function BankFrame.setAllBank:set_bank()
+    function SetAllBank:set_bank()
         self.last=nil
         self.num=0
         local last
@@ -373,7 +374,7 @@ local function Init_All_Bank()
 
 
     --设置，材料，按钮
-    function BankFrame.setAllBank:set_reagent()
+    function SetAllBank:set_reagent()
         self.reagentNum= 0
         local btnNum=0
         for index, btn in ReagentBankFrame:EnumerateItems() do
@@ -410,12 +411,12 @@ local function Init_All_Bank()
     end
 
 
-    function BankFrame.setAllBank:set_size()--设置，外框，大小
+    function SetAllBank:set_size()--设置，外框，大小
         if BankFrame.activeTabIndex==1 then
-            local num= BankFrame.setAllBank.num + BankFrame.setAllBank.reagentNum
+            local num= SetAllBank.num + SetAllBank.reagentNum
             BankFrame:SetSize(8+num*37+((num-1)*Save.line)+8+8+2, (Save.num+1)*37 +((Save.num-1)*Save.line)+64+8+6)
         elseif BankFrame.activeTabIndex==2 then
-            local num= BankFrame.setAllBank.reagentNum
+            local num= SetAllBank.reagentNum
             BankFrame:SetSize(8+(num*38)+((num-1)*Save.line), 64+(Save.num*37)+(Save.num*Save.line)+8)--设置，大小
         end
     end
@@ -474,8 +475,8 @@ local function Init_All_Bank()
     hooksecurefunc('BankFrame_ShowPanel', function()
         if BankFrame.activeTabIndex==1 then
             ReagentBankFrame:SetShown(true)
-            BankFrame.setAllBank:set_bank()--设置，银行，按钮
-            BankFrame.setAllBank:set_reagent()--设置，材料，按钮
+            SetAllBank:set_bank()--设置，银行，按钮
+            SetAllBank:set_reagent()--设置，材料，按钮
 
         elseif BankFrame.activeTabIndex==2 then
             local btn= ReagentBankFrame["Item1"]
@@ -484,7 +485,7 @@ local function Init_All_Bank()
                 btn:SetPoint('TOPLEFT', 8,-60)
             end
         end
-        BankFrame.setAllBank:set_size()--设置，外框，大小
+        SetAllBank:set_size()--设置，外框，大小
         if not IsReagentBankUnlocked() and ReagentBankFrame.UnlockInfo then
             ReagentBankFrame.UnlockInfo:SetShown(BankFrame.activeTabIndex==2)
         end
@@ -492,9 +493,9 @@ local function Init_All_Bank()
     end)
 
     hooksecurefunc('BankFrameItemButtonBag_OnClick', function()
-        BankFrame.setAllBank:set_bank()--设置，银行，按钮
-        BankFrame.setAllBank:set_reagent()--设置，材料，按钮
-        BankFrame.setAllBank:set_size()--设置，外框，大小
+        SetAllBank:set_bank()--设置，银行，按钮
+        SetAllBank:set_reagent()--设置，材料，按钮
+        SetAllBank:set_size()--设置，外框，大小
     end)
 
     hooksecurefunc('UpdateBagSlotStatus', function()
@@ -509,10 +510,10 @@ local function Init_All_Bank()
             end
         end
     end)
-    BankFrame.setAllBank:set_bank()--设置，银行，按钮
+    SetAllBank:set_bank()--设置，银行，按钮
 
 
-    BankFrame.setAllBank:set_background()--设置，背景
+    SetAllBank:set_background()--设置，背景
 end
 
 
@@ -529,9 +530,55 @@ end
 
 
 
-
+local AllPlayerBankItem
 local function Init_Save_BankItem()
-    
+    AllPlayerBankItem= e.Cbtn(BankFrame.TitleContainer, {size={22,22, atlas='Banker'}})
+    if SetAllBank or _G['MoveZoomInButtonPerBankFrame'] then
+        
+       -- AllPlayerBankItem:SetPoint('LEFT', SetAllBank , 'RIGHT')
+    else
+        AllPlayerBankItem:SetPoint('LEFT', 12, 0)
+    end
+    function AllPlayerBankItem:get_item_text(itemID, quality)
+        e.LoadDate({id=itemID, type='item'})
+        local name= GetItemInfo(itemID) or itemID
+        local hex= select(4, GetItemQualityColor(quality or 1)) or ''
+        local icon= C_Item.GetItemIconByID(itemID)
+        return (icon and '|T'..icon..':0|t' or '')..hex..name
+    end
+    function AllPlayerBankItem:get_Player_item(playerGuid)
+        local find
+        if e.WoWDate[playerGuid] then
+            for itemID, tab in pairs(e.WoWDate[playerGuid].Bank or {}) do
+                e.tips:AddDoubleLine(self:get_item_text(itemID, tab.quality), tab.num)
+                find=true
+            end
+        end
+        if not find then
+            e.tips:AddLine(e.onlyChinese and '无' or NONE)
+        end
+    end
+
+    AllPlayerBankItem:SetScript('OnLeave', function() e.tips:Hide() end)
+    AllPlayerBankItem:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        self:get_Player_item(e.Player.guid)
+        e.tips:Show()
+    end)
+    BankFrame:HookScript('OnShow', function()
+        e.WoWDate[e.Player.guid].Bank={}
+        for i=1, NUM_BANKGENERIC_SLOTS do
+            local button = BankSlotsFrame["Item"..i]
+            local container = button:GetParent():GetID();
+            local buttonID = button:GetID();
+            local info = C_Container.GetContainerItemInfo(container, buttonID);
+            if info and info.itemID then
+                local num=GetItemCount(info.itemID, true)- GetItemCount(info.itemID, nil)
+                e.WoWDate[e.Player.guid].Bank[info.itemID]={num=num, quality=info.quality}
+            end
+        end
+    end)
 end
 
 
@@ -556,7 +603,7 @@ end
 --银行
 --BankFrame.lua
 local function Init_Bank_Frame()
-    local btn= e.Cbtn(BankFrame.TitleContainer, {size={22,22}, icon='hide'})
+    local btn= e.Cbtn(BankFrame.TitleContainer, {size={22,22}, atlas='hide'})
     if _G['MoveZoomInButtonPerBankFrame'] then
         btn:SetPoint('LEFT', _G['MoveZoomInButtonPerBankFrame'], 'RIGHT')
     else
