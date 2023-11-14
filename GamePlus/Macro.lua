@@ -990,13 +990,13 @@ local function Init_List_Button()
                 },
                 {text='@player',  macro='@player',
                     tab={
-                        {text='advflyable', tips='IsAdvancedFlyableArea()'},
+                        
                         {text='canexitvehicle', tips='CanExitVehicle()'},
                         {text='channeling, channeling:spellName', tips='UnitChannelInfo("player")'},
                         {text='combat', tips='UnitAffectingCombat("player")'},
                         {text='equipped:type, worn:type', tips='IsEquippedItemType(type)'},
                         {text='flyable', tips='IsFlyableArea()'},
-                        {text='flying', tips='IsFlying()'},
+                        
                         {text='form:n, stance:n', tips='form:n, stance:n'},
                         {text='group, group:party, group:raid', tips='IsInGroup(), IsInRaid()'},
                         {text='indoors', tips='IsIndoors()'},
@@ -1010,7 +1010,9 @@ local function Init_List_Button()
                         {text='resting', tips='IsResting()'},
                         {text='spec:n', tips='GetSpecialization()'},
                         {text='stealth', tips='IsStealthed()'},
+                        {text='advflyable', tips='IsAdvancedFlyableArea()'},
                         {text='swimming', tips='IsSubmerged()'},
+                        {text='flying', tips='IsFlying()'},
                     }
                 },
             }

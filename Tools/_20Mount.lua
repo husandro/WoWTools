@@ -320,11 +320,11 @@ local function setClickAtt()--设置 Click属性
     end
     local spellID= IsIndoors() and button.spellID--进入战斗, 室内
                     or getRandomRoll(FLOOR)--区域
-                    or getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
-                    or (XD and IsUsableSpell(783)) and 783
-                    or IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC)--水平中
-                    or IsFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING)--飞行区域
-                    or IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND)--室外
+                    or (IsAdvancedFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))
+                    or ((XD and IsUsableSpell(783)) and 783)
+                    or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
+                    or (IsFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
+                    or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室外
                     or button.spellID
                     --or IsUsableSpell(368896) and C_MountJournal.GetMountUsabilityByID(1589, true) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
 
