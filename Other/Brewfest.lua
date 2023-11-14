@@ -202,7 +202,7 @@ function Init()
     button:SetScript('OnClick', function(_, d)
         if d=='LeftButton' and IsShiftKeyDown() then
             local macroId = CreateMacro('Ram', 236912, '/click ExtraActionButton1')
-            print(id, addName, e.onlyChinese and '创建宏"' or CREATE_MACROS, 'Ram',
+            print(id, addName, e.onlyChinese and '创建宏' or CREATE_MACROS, 'Ram',
                 macroId and '/click ExtraActionButton1' or (e.onlyChinese and '无法创建' or NONE)
             )
         end
