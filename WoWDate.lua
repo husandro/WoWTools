@@ -529,6 +529,8 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
         if e.ClearAllSave then
             WoWToolsSave=nil
             WoWDate=nil
+        else
+            --WoWDate= WoWDate or {}
         end
     end
 end)
