@@ -556,7 +556,9 @@ local function Init_Save_BankItem()
             table.insert(tabs, {itemID= itemID, num=tab.num, quality=tab.quality or 1})
         end
         table.sort(tabs, function(a, b)
-            if a.quality==b.quality then
+            if not a.isReagent and b.isReagent then
+                return true
+            elseif a.quality==b.quality then
                 return a.itemID< b.itemID
             else
                 return a.quality< b.quality
@@ -577,35 +579,45 @@ local function Init_Save_BankItem()
         e.tips:Show()
         self:SetAlpha(1)
     end)
-    function AllPlayerBankItem:save_button_info(button)
+    function AllPlayerBankItem:save_button_info(button, isReagent)
         if button then
             local container = button:GetParent():GetID();
             local buttonID = button:GetID();
             local info = C_Container.GetContainerItemInfo(container, buttonID);
             if info and info.itemID then
                 local num=GetItemCount(info.itemID, true)- GetItemCount(info.itemID, nil)
-                e.WoWDate[e.Player.guid].Bank[info.itemID]={num=num, quality=info.quality}
-                print(info.hyperlink)
+                e.WoWDate[e.Player.guid].Bank[info.itemID]={num=num, quality=info.quality, isReagent=isReagent}
             end
         end
     end
-    BankFrame:HookScript('OnHide', function()
+    
+    BankSlotsFrame:HookScript('OnShow', function()
         e.WoWDate[e.Player.guid].Bank={}
+    end)
+    BankSlotsFrame:HookScript('OnHide', function()
         for i=1, NUM_BANKGENERIC_SLOTS do
             local button = BankSlotsFrame["Item"..i]
             AllPlayerBankItem:save_button_info(button)
-           
         end
 
-        for i=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
-           
-        end
-        for _, button in ReagentBankFrame:EnumerateItems() do
-          
-            AllPlayerBankItem:save_button_info(button)
+        --for i=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
+        local bagindex
+        local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES
+        for i=1, NUM_BANKBAGSLOTS do
+            local bag= i+ numBag
+            bagindex= bagindex and bagindex+1 or bag
+            local bagFrame= _G['ContainerFrame'..bag]
+            for slot=1, ContainerFrame_GetContainerNumSlots(bagFrame:GetID()) do-- C_Container.GetContainerNumSlots(bagindex) do
+                local button=_G['ContainerFrame'..(bagindex)..'Item'..slot]
+                AllPlayerBankItem:save_button_info(button)
+            end
         end
     end)
-
+    ReagentBankFrame:HookScript('OnHide', function(self)
+        for _, button in self:EnumerateItems() do
+            AllPlayerBankItem:save_button_info(button, true)
+        end
+    end)
 end
 
 
