@@ -617,7 +617,9 @@ local function Init_Save_BankItem()
         for _, button in self:EnumerateItems() do
             AllPlayerBankItem:save_button_info(button, true)
         end
+        
     end)
+    
 end
 
 

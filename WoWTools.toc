@@ -3,7 +3,7 @@
 ## Author: husandro
 ## Version: 1
 ## Notes: WoW |cffff0000Plus|r
-## SavedVariables: WoWToolsSave, WoWDate
+## SavedVariables: WoWToolsSave, e.WoWDate
 ## DefaultState: Enabled
 ## X-Wago-ID: baND1J6o
 ## X-Curse-Project-ID: 715192
@@ -37,7 +37,7 @@ Libs\!LibUIDropDownMenu\LibUIDropDownMenu\LibUIDropDownMenu.lua
 
 ##主要，不能删除
 WoWTools.lua
-WoWDate.lua
+e.WoWDate.lua
 WoWPanel.lua
 
 

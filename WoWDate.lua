@@ -1,6 +1,6 @@
 local id, e = ...
 local panel=CreateFrame("Frame")
---local addName= 'WoWDate'
+--local addName= 'e.WoWDate'
 
 
 --##############
@@ -367,11 +367,11 @@ panel:RegisterEvent('ENCOUNTER_END')
 
 panel:RegisterEvent('BN_FRIEND_INFO_CHANGED')--战网，好友GUID
 
-panel:SetScript('OnEvent', function(self, event, arg1, arg2)
+panel:SetScript('OnEvent', function(_, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
             local day= date('%x')--日期
-            e.WoWDate=WoWDate or {}
+            e.WoWDate= WoWDate or e.WoWDate or {}
             e.WoWDate[e.Player.guid] = e.WoWDate[e.Player.guid] or
                 {--默认数据
                     Item={},--{itemID={bag=包, bank=银行}},
@@ -529,7 +529,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             WoWToolsSave=nil
             WoWDate=nil
         else
-            WoWDate=e.WoWDate
+            WoWDate= e.WoWDate
         end
     end
 end)
