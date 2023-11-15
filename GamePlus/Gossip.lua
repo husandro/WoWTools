@@ -1906,7 +1906,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                                     C_PlayerChoice.SendPlayerChoiceResponse(info.buttons[2].id);--Blizzard_PlayerChoiceOptionBase.lua
                                     n=n+1
                                     print(id, addName, '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '|cnRED_FONT_COLOR:Alt' )
-                                    if n==all then--完成
+                                    if n>=all then--完成
                                         s:set_text()
                                     end
                                     --self.parentOption:OnSelected();
