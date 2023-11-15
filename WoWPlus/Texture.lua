@@ -31,9 +31,7 @@ end
 
 local function set_Alpha_Color(self, notAlpha, notColor, value)
     if self then
-        if not (Save.disabledAlpha or notAlpha)  then
-            self:SetAlpha(value or Save.alpha)
-        end
+
         if not notColor and not Save.disabledColor and self:GetObjectType()=='Texture' then
             e.Set_Label_Texture_Color(self, {type='Texture'})
             --[[if e.Player.useColor then
@@ -41,6 +39,9 @@ local function set_Alpha_Color(self, notAlpha, notColor, value)
             else
                 self:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
             end]]
+        end
+        if not (Save.disabledAlpha or notAlpha)  then
+            self:SetAlpha(value or Save.alpha)
         end
     end
 end
@@ -74,22 +75,19 @@ local function set_Alpha_Frame_Texture(frame, tab)
         for index, icon in pairs(tabs) do
             if icon:GetObjectType()=="Texture" then
                 if tab.index== index then
+                    if not tab.notColor then
+                        e.Set_Label_Texture_Color(icon, {type='Texture'})
+                        --[[if e.Player.useColor then
+                            icon:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
+                        else
+                            icon:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+                        end]]
+                    end
                     if not Save.disabledAlpha  then
                         icon:SetAlpha(Save.alpha)
                     end
-                    if not tab.notColor then
-                        e.Set_Label_Texture_Color(icon, {type='Texture'})
-                        --[[if e.Player.useColor then
-                            icon:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
-                        else
-                            icon:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-                        end]]
-                    end
                     return
                 elseif not tab.index then
-                    if not Save.disabledAlpha and not tab.notAlpha  then
-                        icon:SetAlpha(Save.alpha)
-                    end
                     if not tab.notColor then
                         e.Set_Label_Texture_Color(icon, {type='Texture'})
                         --[[if e.Player.useColor then
@@ -97,6 +95,9 @@ local function set_Alpha_Frame_Texture(frame, tab)
                         else
                             icon:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
                         end]]
+                    end
+                    if not Save.disabledAlpha and not tab.notAlpha  then
+                        icon:SetAlpha(Save.alpha)
                     end
                 end
             end
