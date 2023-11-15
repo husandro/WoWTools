@@ -1169,7 +1169,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                 end)
                                 frame['affixInfo'..info.name]= label
                             end
-                            local level= info.overTime and '|cff828282:'..info.level..'|r' or info.level
+                            local level= info.overTime and '|cff828282'..info.level..'|r' or info.level
                             local icon='|T'..(info.name == nameA and filedataidA or filedataidB)..':0|t'
                             text= icon..level
 
@@ -1229,11 +1229,11 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             --################
             local findKey= currentChallengeMapID== frame.mapID and not Save.hideIns or false
             if findKey and not frame.currentKey then--提示, 包里KEY地图
-                frame.currentKey= frame:CreateTexture(nil, 'OVERLAY')
-                frame.currentKey:SetPoint('RIGHT', frame)
+                frame.currentKey= frame:CreateTexture(nil, 'OVERLAY', nil, self:GetFrameLevel()+1)
+                frame.currentKey:SetPoint('RIGHT', frame, 0, 8)
                 frame.currentKey:SetAtlas('common-icon-checkmark')
-                frame.currentKey:SetVertexColor(1,0,0)
-                frame.currentKey:SetSize(14,14)
+                --frame.currentKey:SetVertexColor(1,0,0)
+                frame.currentKey:SetSize(22,22)
                 frame.currentKey:EnableMouse(true)
                 frame.currentKey:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                 frame.currentKey:SetScript('OnEnter', function(self2)
