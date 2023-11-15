@@ -895,6 +895,7 @@ local function set_All_Text()--所有记录
                 key= (key or '')
                     ..'|T'..(C_Item.GetItemIconByID(link) or 134400)..':0|t'
                     ..link
+                    
             end
             if key then
                 keyText= (keyText and keyText..'|n' or '')
