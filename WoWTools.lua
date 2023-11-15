@@ -315,11 +315,12 @@ function e.Cstr(self, tab)
         if justifyH then font:SetJustifyH(justifyH) end
         if alpha then font:SetAlpha(alpha) end
     else
-        local fontName2, size2, fontFlag2= font:GetFont()
-        if e.onlyChinese then--THICKOUTLINE
-            fontName2= fontName and fontName2 or 'Fonts\\ARHei.ttf'--黑体字
+        if e.onlyChinese or size then--THICKOUTLINE
+            local fontName2, size2, fontFlag2= font:GetFont()
+            fontName2= 'Fonts\\ARHei.ttf'--黑体字
+            font:SetFont(fontName2, size or size2, notFlag and fontFlag2 or 'OUTLINE')
         end
-        font:SetFont(fontName2, size or size2 or 12, notFlag and fontFlag2 or 'OUTLINE')
+        
         font:SetJustifyH(justifyH or 'LEFT')
     end
     if not notShadow then
