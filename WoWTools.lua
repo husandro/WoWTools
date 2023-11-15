@@ -1616,7 +1616,7 @@ end
 function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
     local colorRe, name
     if difficultyID and difficultyID>0 then
-        local color={
+        local color= {
             ['经典']= {name= e.onlyChinese and '经典' or LEGACY_RAID_DIFFICULTY, hex='|cff9d9d9d', r=0.62, g=0.62, b=0.62},
             ['场景']= {name= e.onlyChinese and '场景' or PLAYER_DIFFICULTY3, hex='|cffc6ffc9', r=0.78, g=1, b=0.79},
             ['随机']= {name= e.onlyChinese and '随机' or PLAYER_DIFFICULTY3, hex='|cff1eff00', r=0.12, g=1, b=0},
@@ -1626,8 +1626,8 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
             ['挑战']= {name= e.onlyChinese and '挑战' or PLAYER_DIFFICULTY5,  hex='|cffff8200', r=1, g=0.51, b=0},
             ['漫游']= {name= e.onlyChinese and '漫游' or PLAYER_DIFFICULTY_TIMEWALKER, hex='|cff00ffff', r=0, g=1, b=1},
             ['pvp']= {name= 'PvP', hex='|cffff0000', r=1, g=0, b=0},
-        }
-        local type= {
+        } or {}
+        local type={
             [1]= '普通',--DifficultyUtil.ID.DungeonNormal
             [2]='英雄',--DifficultyUtil.ID.DungeonHeroic
             [3]='普通',--DifficultyUtil.ID.Raid10Normal
@@ -1672,7 +1672,7 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
             [170]='普通',--Path of Ascension: Wisdom	scenario	
             [171]='普通',--Path of Ascension: Humility	scenario
         }
-        name=type[difficultyID]
+        name= type[difficultyID]
         if name then
             local tab=color[name]
             string= string or tab.name or GetDifficultyInfo(difficultyID)
@@ -1680,7 +1680,9 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
             colorRe= tab
         end
     end
-    return string, colorRe or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=e.Player.col}, name
+    return  string,
+            colorRe or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=e.Player.col},
+            e.onlyChinese and name or GetDifficultyInfo(difficultyID)
 end
 
 

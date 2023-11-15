@@ -1528,6 +1528,23 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --################
 --当前缩放，显示数值
 --Minimap.lua
@@ -1581,6 +1598,29 @@ local function set_MINIMAP_UPDATE_ZOOM()
     end
     Minimap.viewRadius:SetFormattedText('%i', C_Minimap.GetViewRadius() or 100)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1717,6 +1757,24 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function click_Func(self, d)
     local key= IsModifierKeyDown()
     if IsAltKeyDown() and self and type(self)=='table' then
@@ -1779,11 +1837,36 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
 --####################
 --添加，游戏，自带，菜单
 --###################
 WowTools_OnAddonCompartmentClick= click_Func
 WowTools_OnAddonCompartmentFuncOnEnter= enter_Func
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1838,6 +1921,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
             self2.labelType:SetAlpha(0.5)
         end
         self2.labelType:SetText(name and e.WA_Utf8Sub(name, 2, 6) or '')
+        print(name)
         self2.tips= tips
     end)
 
