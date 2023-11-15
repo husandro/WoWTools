@@ -1665,8 +1665,8 @@ local function Init()
             CharacterLevelText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
             CharacterLevelText:SetJustifyH('LEFT')
             CharacterLevelText:EnableMouse(true)
-            CharacterLevelText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
-            CharacterLevelText:SetScript('OnEnter', function(self2)
+            CharacterLevelText:HookScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+            CharacterLevelText:HookScript('OnEnter', function(self2)
                 local info = C_PlayerInfo.GetPlayerCharacterData()
                 if Save.hide or not info then
                     return

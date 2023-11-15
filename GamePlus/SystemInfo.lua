@@ -756,7 +756,7 @@ local function Init()
     end)
 
     MainMenuMicroButton:EnableMouseWheel(true)--主菜单, 打开插件选项
-    MainMenuMicroButton:SetScript('OnMouseWheel', function()
+    MainMenuMicroButton:HookScript('OnMouseWheel', function()
         e.call('InterfaceOptionsFrame_OpenToCategory', id)
     end)
 
