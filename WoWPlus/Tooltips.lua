@@ -546,7 +546,7 @@ function func.Set_Item(self, itemLink, itemID)
         end
         local text
         for _, activities in pairs(C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.MythicPlus) or {}) do--本周完成
-            if activities.level and activities.level>=0 then
+            if activities.level and activities.level>0 then
                 text= (text and text..'/' or '')..activities.level
             end
         end
