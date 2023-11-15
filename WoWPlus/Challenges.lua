@@ -1230,8 +1230,9 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             local findKey= currentChallengeMapID== frame.mapID and not Save.hideIns or false
             if findKey and not frame.currentKey then--提示, 包里KEY地图
                 frame.currentKey= frame:CreateTexture(nil, 'OVERLAY')
-                frame.currentKey:SetPoint('BOTTOM', frame)
+                frame.currentKey:SetPoint('RIGHT', frame)
                 frame.currentKey:SetAtlas('common-icon-checkmark')
+                frame.currentKey:SetVertexColor(1,0,0)
                 frame.currentKey:SetSize(14,14)
                 frame.currentKey:EnableMouse(true)
                 frame.currentKey:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
