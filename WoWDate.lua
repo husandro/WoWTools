@@ -218,7 +218,7 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
         if info and #info>0 then
             tab.weekNum=#info--本周次数
             local activities=C_WeeklyRewards.GetActivities(1)
-            if activities and activities.type==1 then
+            if activities then
                 local lv=0
                 for _,v in pairs(activities) do
                     if v and v.level then
@@ -607,7 +607,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
                 Update_Currency()--{currencyID = 数量}
                 Update_Bag_Items()
                 Set_Money()--钱
-
+                Update_Challenge_Mode()
                 --################
                 --开启, 新手編輯模式
                 --################ LFDFrame.lua

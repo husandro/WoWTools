@@ -892,11 +892,8 @@ local function set_All_Text()--所有记录
         if guid~=e.Player.guid then
             local key
             for link, _ in pairs(infoWoW.Keystone.itemLink) do
-                local texture
-                texture=  C_Item.GetItemIconByID(link)
-                texture= (not texture or texture==134400) and 4352494 or texture
                 key= (key or '')
-                    ..(texture and '|T'..texture..':0|t' or '')
+                    ..'|T'..(C_Item.GetItemIconByID(link) or 134400)..':0|t'
                     ..link
             end
             if key then
