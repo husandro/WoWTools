@@ -1499,7 +1499,7 @@ local function Init()
     MacroFrameEnterMacroText:Hide()
 
     --设置，焦点
-    MacroFrameTextBackground.NineSlice:SetScript('OnMouseDown', function(_, d)
+    MacroFrameTextBackground.NineSlice:HookScript('OnMouseDown', function(_, d)
         if d=='LeftButton' then
             MacroFrameText:SetFocus()
         end
