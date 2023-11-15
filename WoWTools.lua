@@ -1120,7 +1120,7 @@ function e.Set_Item_Stats(self, link, setting) --setting= setting or {}
             if setID and not self.itemSet then
                 self.itemSet= self:CreateTexture()
                 self.itemSet:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
-                self.itemSet:SetVertexColor(0, 1, 0, 0.7)
+                self.itemSet:SetVertexColor(0, 1, 0, 0.8)
                 self.itemSet:SetAllPoints(setting.point or self)
             end
         end
