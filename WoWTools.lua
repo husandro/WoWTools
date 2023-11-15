@@ -340,6 +340,9 @@ function e.Cstr(self, tab)
     if wheel then
         font:EnableMouseWheel(true)
     end
+    if alpha then
+        font:SetAlpha(alpha)
+    end
     return font
 end
 
