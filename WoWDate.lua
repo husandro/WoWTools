@@ -208,7 +208,6 @@ end
 --#########
 local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数}
     local tab={
-        itemLink=e.WoWDate[e.Player.guid].Keystone.itemLink
     }
     local score=C_ChallengeMode.GetOverallDungeonScore();
     if score and score>0 then
@@ -219,7 +218,7 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
         if info and #info>0 then
             tab.weekNum=#info--本周次数
             local activities=C_WeeklyRewards.GetActivities(1)
-            if activities then
+            if activities and activities.type==1 then
                 local lv=0
                 for _,v in pairs(activities) do
                     if v and v.level then
@@ -234,26 +233,10 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
             end
         end
     end
+    
+    tab.itemLink=e.WoWDate[e.Player.guid].Keystone.itemLink
     e.WoWDate[e.Player.guid].Keystone=tab
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -279,6 +262,7 @@ local function Set_Bag(bagID)
         end
     end
 end
+
 local function Update_Bag_Items(arg1)
     if arg1 then
         Set_Bag(arg1)
@@ -568,7 +552,6 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
         if arg1==id then
             WoWToolsSave= WoWToolsSave or {}
             e.WoWDate= WoWDate or {}
-            local notDate=  e.WoWDate[e.Player.guid] and true or false
 
 
             local day= date('%x')--日期
@@ -617,18 +600,13 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
             end
 
 
-
-            if not notDate then
-                C_Timer.After(2, function()
-                    Update_Bag_Items()
-                    Set_Money()--钱
-                end)--更新物品
-            end
-
             C_Timer.After(2, function()
                 e.GetNotifyInspect(nil, 'player')--取得,自已, 装等
                 e.GetGroupGuidDate()--队伍数据收集
+
                 Update_Currency()--{currencyID = 数量}
+                Update_Bag_Items()
+                Set_Money()--钱
 
                 --################
                 --开启, 新手編輯模式
@@ -666,7 +644,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
 
     elseif event=='CHALLENGE_MODE_MAPS_UPDATE' or event=='WEEKLY_REWARDS_UPDATE' then--地下城挑战
         C_MythicPlus.RequestRewards()
-        C_Timer.After(2, Update_Challenge_Mode)
+        C_Timer.After(4, Update_Challenge_Mode)
 
     elseif event=='CHALLENGE_MODE_COMPLETED' then
         Get_Info_Challenge()--挑战

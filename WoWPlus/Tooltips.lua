@@ -533,20 +533,26 @@ function func.Set_Item(self, itemLink, itemID)
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         --local numPlayer=1 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
         for guid, info in pairs(e.WoWDate or {}) do
-            if guid and info then
-                local find
+            if guid and guid~=e.Player.guid and info and info.Keystone then
+                --local find
                 for linkItem, _ in pairs(info.Keystone.itemLink) do
-                    self:AddDoubleLine(' ', linkItem)
-                    find=true
+                    local num=''
+                    if info.Keystone.weekNum and info.Keystone.weekLevel then
+                        num= (info.Keystone.weekNum..'('..info.Keystone.weekLevel..') ')
+                    end
+                    self:AddDoubleLine(num..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), linkItem)
+                    break
+                    --find=true
                 end
-                if find then
-                    self:AddLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}))
-                end
+                --if find then
+                    --self:AddLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}))
+                --end
             end
         end
         local text
-        for _, activities in pairs(C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.MythicPlus) or {}) do--本周完成
-            if activities.level and activities.level>0 then
+        
+        for _, activities in pairs(C_WeeklyRewards.GetActivities(1) or {}) do--本周完成
+            if activities.level and activities.level>=0 and activities.type==1 then--Enum.WeeklyRewardChestThresholdType.MythicPlus 1
                 text= (text and text..'/' or '')..activities.level
             end
         end

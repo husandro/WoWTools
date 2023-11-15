@@ -113,8 +113,8 @@ local function set_Item_Info(self, tab)
                     bottomLeftText= e.WA_Utf8Sub(name, 3,6, true)
                 end
                 local text
-                for _, activities in pairs(C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.MythicPlus) or {}) do--本周完成
-                    if activities.level and activities.level>=0 and activities.threshold and activities.threshold>0 and activities.type==Enum.WeeklyRewardChestThresholdType.MythicPlus then
+                for _, activities in pairs(C_WeeklyRewards.GetActivities(1) or {}) do--本周完成 Enum.WeeklyRewardChestThresholdType.MythicPlus 1
+                    if activities.level and activities.level>=0 and activities.threshold and activities.threshold>0 and activities.type==1 then
                         text= (text and text..'/' or '')..activities.level
                     end
                 end
@@ -1087,7 +1087,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
         elseif arg1=='Blizzard_WeeklyRewards' then--周奖励, 物品提示，信息
             hooksecurefunc(WeeklyRewardsFrame, 'Refresh', function(self2)--Blizzard_WeeklyRewards.lua WeeklyRewardsMixin:Refresh(playSheenAnims)
-                local activities = C_WeeklyRewards.GetActivities();
+                local activities = C_WeeklyRewards.GetActivities() or {};
                 for _, activityInfo in ipairs(activities) do
                     local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index);
                     local itemFrame= frame and frame.ItemFrame
@@ -1097,7 +1097,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             end)
             hooksecurefunc(WeeklyRewardsFrame, 'UpdateSelection', function(self2)
-                local activities = C_WeeklyRewards.GetActivities();
+                local activities = C_WeeklyRewards.GetActivities() or {};
                 for _, activityInfo in ipairs(activities) do
                     local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index);
                     local itemFrame= frame and frame.ItemFrame
