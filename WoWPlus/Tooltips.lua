@@ -1567,7 +1567,7 @@ local function Init()
     --#########
     if not Save.hideHealth then
         int_Unit_Health_Bar(GameTooltipStatusBar)--生命条提示
-        GameTooltipStatusBar:SetScript("OnValueChanged", function(self)
+        GameTooltipStatusBar:HookScript("OnValueChanged", function(self)
             set_Unit_Health_Bar(self, select(2, TooltipUtil.GetDisplayedUnit(GameTooltip)))
         end)
     end
