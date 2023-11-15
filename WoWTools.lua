@@ -1120,7 +1120,7 @@ function e.Set_Item_Stats(self, link, setting) --setting= setting or {}
             if setID and not self.itemSet then
                 self.itemSet= self:CreateTexture()
                 self.itemSet:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
-                self.itemSet:SetVertexColor(1, 0.85, 0)
+                self.itemSet:SetVertexColor(0, 1, 0, 0.7)
                 self.itemSet:SetAllPoints(setting.point or self)
             end
         end
@@ -1171,7 +1171,7 @@ function e.Set_Item_Stats(self, link, setting) --setting= setting or {}
         local text=self['statText'..index]
         if tab[index] then
             if not text then
-                text= e.Cstr(self,{justifyH= (index==2 or index==4) and 'RIGHT', color={r=1,g=1,b=1}})
+                text= e.Cstr(self, {justifyH= (index==2 or index==4) and 'RIGHT'})
                 if index==1 then
                     text:SetPoint('BOTTOMLEFT', setting.point or self, 'BOTTOMLEFT')
                 elseif index==2 then
