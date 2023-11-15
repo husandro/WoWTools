@@ -1171,7 +1171,7 @@ function e.Set_Item_Stats(self, link, setting) --setting= setting or {}
         local text=self['statText'..index]
         if tab[index] then
             if not text then
-                text= e.Cstr(self,{justifyH= (index==2 or index==4) and 'RIGHT'})
+                text= e.Cstr(self,{justifyH= (index==2 or index==4) and 'RIGHT', color={r=1,g=1,b=1}})
                 if index==1 then
                     text:SetPoint('BOTTOMLEFT', setting.point or self, 'BOTTOMLEFT')
                 elseif index==2 then
