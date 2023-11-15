@@ -206,7 +206,7 @@ end
 --#########
 --地下城挑战
 --#########
-local function updateChallengeMode()--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数}
+local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数}
     local tab={
         itemLink=e.WoWDate[e.Player.guid].Keystone.itemLink
     }
@@ -443,7 +443,7 @@ end
 --#########
 --稀有怪数据
 --#########
-local function setRareEliteKilled(unit)--稀有怪数据
+local function Set_Rare_Elite_Killed(unit)--稀有怪数据
     if unit=='loot' then
         unit='target'
         local classification = UnitExists(unit) and UnitClassification(unit)
@@ -568,7 +568,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
         if arg1==id then
             WoWToolsSave= WoWToolsSave or {}
             e.WoWDate= WoWDate or {}
-            local find=  e.WoWDate[e.Player.guid] and true or false
+            local notDate=  e.WoWDate[e.Player.guid] and true or false
 
 
             local day= date('%x')--日期
@@ -618,7 +618,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
 
 
 
-            if not find then
+            if not notDate then
                 C_Timer.After(2, function()
                     Update_Bag_Items()
                     Set_Money()--钱
@@ -633,7 +633,6 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
                 --################
                 --开启, 新手編輯模式
                 --################ LFDFrame.lua
-
                 if C_PlayerInfo.IsPlayerNPERestricted() then
                     --C_PlayerInfo.IsPlayerNPERestricted= function() return false end
                     EditModeManagerFrame.CanEnterEditMode = function(self2)--EditModeManager.lua
@@ -667,7 +666,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
 
     elseif event=='CHALLENGE_MODE_MAPS_UPDATE' or event=='WEEKLY_REWARDS_UPDATE' then--地下城挑战
         C_MythicPlus.RequestRewards()
-        C_Timer.After(2, updateChallengeMode)
+        C_Timer.After(2, Update_Challenge_Mode)
 
     elseif event=='CHALLENGE_MODE_COMPLETED' then
         Get_Info_Challenge()--挑战
@@ -700,10 +699,10 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
         Update_Instance()
 
     elseif event=='UNIT_FLAGS' then--稀有怪
-        setRareEliteKilled(arg1)
+        Set_Rare_Elite_Killed(arg1)
 
     elseif event=='LOOT_OPENED' then
-        setRareEliteKilled('loot')
+        Set_Rare_Elite_Killed('loot')
 
     elseif event=='PLAYER_MONEY' then--钱
         Set_Money()--钱
