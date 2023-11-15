@@ -1885,7 +1885,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                             end
                             local n= 0
                             local all= d=='LeftButton' and 44 or 100
-                            s.time=C_Timer.NewTicker(0.5, function()
+                            s.time=C_Timer.NewTicker(0.6, function()
                                 local choiceInfo = C_PlayerChoice.GetCurrentPlayerChoiceInfo() or {}
                                 local info= choiceInfo.options and choiceInfo.options[1] or {}
                                 if info
