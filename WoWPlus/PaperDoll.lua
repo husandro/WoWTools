@@ -1662,7 +1662,8 @@ local function Init()
         local faction= e.Player.faction=='Alliance' and '|A:charcreatetest-logo-alliance:26:26|a' or e.Player.faction=='Horde' and '|A:charcreatetest-logo-horde:26:26|a' or ''
         CharacterLevelText:SetText('  '..faction..(race and '|A:'..race..':26:26|a' or '')..(class and '|A:'..class..':26:26|a  ' or '')..level)
         if not CharacterLevelText.set then
-            CharacterLevelText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+            e.Set_Label_Texture_Color(CharacterLevelText, {type='TextString'})
+            --CharacterLevelText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
             CharacterLevelText:SetJustifyH('LEFT')
             CharacterLevelText:EnableMouse(true)
             CharacterLevelText:HookScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)

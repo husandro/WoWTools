@@ -35,11 +35,12 @@ local function set_Alpha_Color(self, notAlpha, notColor, value)
             self:SetAlpha(value or Save.alpha)
         end
         if not notColor and not Save.disabledColor and self:GetObjectType()=='Texture' then
-            if e.Player.useColor then
+            e.Set_Label_Texture_Color(self, {type='Texture'})
+            --[[if e.Player.useColor then
                 self:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
             else
                 self:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-            end
+            end]]
         end
     end
 end
@@ -77,11 +78,12 @@ local function set_Alpha_Frame_Texture(frame, tab)
                         icon:SetAlpha(Save.alpha)
                     end
                     if not tab.notColor then
-                        if e.Player.useColor then
+                        e.Set_Label_Texture_Color(icon, {type='Texture'})
+                        --[[if e.Player.useColor then
                             icon:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
                         else
                             icon:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-                        end
+                        end]]
                     end
                     return
                 elseif not tab.index then
@@ -89,11 +91,12 @@ local function set_Alpha_Frame_Texture(frame, tab)
                         icon:SetAlpha(Save.alpha)
                     end
                     if not tab.notColor then
-                        if e.Player.useColor then
+                        e.Set_Label_Texture_Color(icon, {type='Texture'})
+                        --[[if e.Player.useColor then
                             icon:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
                         else
                             icon:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-                        end
+                        end]]
                     end
                 end
             end
@@ -2116,10 +2119,11 @@ local function set_Chat_Bubbles(init)
                 end
 
                 local tab={frame:GetRegions()}
-                for _, frame2 in pairs(tab) do
-                    if frame2:GetObjectType()=='Texture' then-- .String
-                        frame2:SetAlpha(Save.chatBubbleAlpha)
-                        frame2:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+                for _, region in pairs(tab) do
+                    if region:GetObjectType()=='Texture' then-- .String
+                        e.Set_Label_Texture_Color(region, {type='Texture', alpha=Save.chatBubbleAlpha})
+                        --frame2:SetAlpha(Save.chatBubbleAlpha)
+                        --frame2:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
                     end
                 end
                 buble.setAlphaOK= true
