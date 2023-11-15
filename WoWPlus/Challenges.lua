@@ -31,21 +31,17 @@ local TipsFrame
 
 
 -- AngryKeystones Schedule
--- 1:Overflowing, 2:Skittish, 3:Volcanic, 4:Necrotic, 5:Teeming, 6:Raging, 7:Bolstering, 8:Sanguine, 9:Tyrannical, 10:Fortified, 11:Bursting, 12:Grievous, 13:Explosive, 14:Quaking, 16:Infested, 117: Reaping, 119:Beguiling 120:Awakened, 121:Prideful, 122:Inspiring, 123:Spiteful, 124:Storming
--- Dragonflight Season 2
--- 134:Entangling, 135：Afflicted, 136:Incorporeal
 local affixSchedule = {
-
-	[1]  = { [1]=6,   [2]=124, [3]=9, }, -- Tyrannical | Raging      | Storming
-	[2]  = { [1]=134, [2]=7,   [3]=10,}, -- Fortified  | Entangling  | Bolstering
-	[3]  = { [1]=136, [2]=123, [3]=9, }, -- Tyrannical | Incorporeal | Spiteful
-	[4]  = { [1]=135, [2]=6,   [3]=10,}, -- Fortified  | Afflicted   | Raging
-	[5]  = { [1]=3,   [2]=8,   [3]=9, }, -- Tyrannical | Volcanic    | Sanguine
-	[6]  = { [1]=124, [2]=11,  [3]=10,}, -- Fortified  | Storming    | Bursting
-	[7]  = { [1]=135, [2]=7,   [3]=9, }, -- Tyrannical | Afflicted   | Bolstering
-	[8]  = { [1]=136, [2]=8,   [3]=10,}, -- Fortified  | Incorporeal | Sanguine
-	[9]  = { [1]=134, [2]=11,  [3]=9, }, -- Tyrannical | Entangling  | Bursting
-	[10] = { [1]=3,   [2]=123,   [3]=10,}, -- Fortified  |  | 
+	[1]  = { [1]=8,   [2]=136, [3]=10, },
+	--[2]  = { [1]=134, [2]=7,   [3]=9,},
+	--[3]  = { [1]=136, [2]=123, [3]=10, },
+	--[4]  = { [1]=135, [2]=6,   [3]=9,},
+	--[5]  = { [1]=3,   [2]=8,   [3]=10, },
+	--[6]  = { [1]=124, [2]=11,  [3]=9,}, 
+	--[7]  = { [1]=135, [2]=7,   [3]=10, },
+	--[8]  = { [1]=136, [2]=8,   [3]=9,}, 
+	--[9]  = { [1]=134, [2]=11,  [3]=10, },
+	--[10] = { [1]=3,   [2]=123,   [3]=9,},
     max= 10,
 
     season= 2,-- Dragonflight Season 2
@@ -947,6 +943,10 @@ end
 
 
 
+
+
+
+
 local function set_Update()--Blizzard_ChallengesUI.lua
     local self= ChallengesFrame
     if not self.maps or #self.maps==0 then
@@ -1330,6 +1330,14 @@ end
 
 
 
+
+
+
+
+
+
+
+
 --########################
 --打开周奖励时，提示拾取专精
 --########################
@@ -1402,6 +1410,28 @@ local function set_Week_Reward_Look_Specialization()
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1655,6 +1685,28 @@ local function Init()
     end
 
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
