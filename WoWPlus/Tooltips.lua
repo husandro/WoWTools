@@ -16,6 +16,8 @@ local Save={
     modelFacing= -0.35,--方向
     showModelFileID=e.Player.husandro,--显示，文件ID
     --WidgetSetID=848,--自定义，监视 WidgetSetID
+
+    --hideHealth=true,----生命条提示
 }
 local panel=CreateFrame("Frame")
 
