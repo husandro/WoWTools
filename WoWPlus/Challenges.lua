@@ -61,14 +61,6 @@ local SpellTabs={
     --spell= 传送门法术ID 
     --ins= 副本ID journalInstanceID
     --map= 跳战副本ID mapChallengeID
-    [403]={spell=393222, ins=1197, name='奥达曼'},--奥达曼：提尔的遗产
-    [405]={spell=393267, ins=1196, name='蕨皮山谷'},--蕨皮山谷
-    [406]={spell=393283, ins=1204, name='注能大厅'},--注能大厅
-    [404]={spell=393276, ins=1199, name='奈萨鲁斯'},--奈萨鲁斯
-    [245]={spell=410071, ins=1001, name='自由镇'},--自由镇
-    [206]={spell=410078, ins=767, name='巢穴'},--奈萨里奥的巢穴
-    [251]={spell=410074, ins=1022, name='地渊孢林'},--地渊孢林
-    [438]={spell=410080, ins=68, name='旋云之巅'},--旋云之巅
 
     [463]= {spell=424197, ins=1209},--永恒黎明：迦拉克隆的陨落 Dawn of the Infinite: Galakrond's Fall
     [464]= {spell=424197, ins=1209},--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise
@@ -84,6 +76,16 @@ for _, tab in pairs(SpellTabs) do
 end
 
 --[[
+    [403]={spell=393222, ins=1197, name='奥达曼'},--奥达曼：提尔的遗产
+    [405]={spell=393267, ins=1196, name='蕨皮山谷'},--蕨皮山谷
+    [406]={spell=393283, ins=1204, name='注能大厅'},--注能大厅
+    [404]={spell=393276, ins=1199, name='奈萨鲁斯'},--奈萨鲁斯
+    [245]={spell=410071, ins=1001, name='自由镇'},--自由镇
+    [206]={spell=410078, ins=767, name='巢穴'},--奈萨里奥的巢穴
+    [251]={spell=410074, ins=1022, name='地渊孢林'},--地渊孢林
+    [438]={spell=410080, ins=68, name='旋云之巅'},--旋云之巅
+
+
 {spell=393222, ins=1197, map=403},--奥达曼：提尔的遗产
 {spell=393267, ins=1196, map=405},--蕨皮山谷
 {spell=393283, ins=1204, map=406},--注能大厅
