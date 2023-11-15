@@ -809,7 +809,7 @@ local function Init_Blizzard_Calendar()
 
 
     --Blizzard_Calendar.lua
-    CalendarCreateEventFrame:SetScript('OnShow', function(self)
+    CalendarCreateEventFrame:HookScript('OnShow', function(self)
         if self.menu then
             return
         end
