@@ -1678,7 +1678,7 @@ local function Init()
     end
 
     if ExtraActionButton1 then
-        ExtraActionButton1:SetScript('OnLeave', function()
+        ExtraActionButton1:HookScript('OnLeave', function()
             e.tips:Hide()
         end)
     end
@@ -2308,8 +2308,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     end
                 end
                 AchievementFrameComparisonHeader:EnableMouse(true)
-                AchievementFrameComparisonHeader:SetScript('OnLeave', function() e.tips:Hide() end)
-                AchievementFrameComparisonHeader:SetScript('OnEnter', func)
+                AchievementFrameComparisonHeader:HookScript('OnLeave', function() e.tips:Hide() end)
+                AchievementFrameComparisonHeader:HookScript('OnEnter', func)
             end
 
         elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
