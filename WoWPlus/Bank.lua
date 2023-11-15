@@ -153,8 +153,9 @@ local function Init_Bank_Plus()--增强，原生
     ReagentBankFrame.Bg:SetSize(715, 350)
     ReagentBankFrame.Bg:SetPoint('BOTTOMLEFT',10, 10)
     ReagentBankFrame.Bg:SetAtlas('auctionhouse-background-buy-noncommodities-market')
-    ReagentBankFrame.Bg:SetAlpha(0.5)
-    ReagentBankFrame.Bg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    --ReagentBankFrame.Bg:SetAlpha(0.5)
+    e.Set_Label_Texture_Color(ReagentBankFrame.Bg, {type='Texture', alpha=0.5})--设置颜色
+    --ReagentBankFrame.Bg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
     ReagentBankFrame:SetSize(715, 415)--386, 415
     --设置，显示材料银行
     function ReagentBankFrame.ShowHideButton:show_hide(hide)

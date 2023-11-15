@@ -550,8 +550,7 @@ local function Init()
     button.texture= button:CreateTexture()
     button.texture:SetAllPoints(button)
     button.texture:SetAtlas(e.Icon.icon)
-    button.texture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-    button.texture:SetAlpha(0.3)
+    e.Set_Label_Texture_Color(button.texture, {type='Texture', alpha=0.3})--设置颜色
 
     set_Point()--设置位置
     button:SetFrameStrata('HIGH')

@@ -116,9 +116,8 @@ local function Init()
 
     --货币，数量
     if CurrencyID and CurrencyID>0 then
-        Button.label=e.Cstr(Button, {color={r=1,g=1,b=1}})
+        Button.label=e.Cstr(Button, {color=true})
         Button.label:SetPoint('BOTTOMRIGHT')
-        Button.label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
         local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(CurrencyID) or {}
         if currencyInfo.iconFileID then
             Button:SetNormalTexture(currencyInfo.iconFileID)

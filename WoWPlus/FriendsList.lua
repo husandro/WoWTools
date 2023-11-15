@@ -23,9 +23,13 @@ local panel=CreateFrame("Frame")
 local function set_SOCIAL_QUEUE_UPDATE()--更新, 快速加入
     if QuickJoinToastButton then
         if not QuickJoinToastButton.quickJoinText then
-            QuickJoinToastButton.quickJoinText= QuickJoinToastButton:CreateFontString()
-            QuickJoinToastButton.quickJoinText:SetFontObject('NumberFontNormal')
+            QuickJoinToastButton.quickJoinText= e.Cstr(QuickJoinToastButton, {color=true})--:CreateFontString()
+            --QuickJoinToastButton.quickJoinText:SetFontObject('NumberFontNormal')
             QuickJoinToastButton.quickJoinText:SetPoint('TOPRIGHT', -6, -3)
+            
+            if e.Player.useColor then
+                QuickJoinToastButton.FriendCount:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
+            end
         end
 
         local n=#C_SocialQueue.GetAllGroups()

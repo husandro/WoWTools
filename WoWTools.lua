@@ -76,9 +76,11 @@ e.Player={
     husandro= battleTag== '古月剑龙#5972' or battleTag=='SandroChina#2690' or battleTag=='Sandro126#2297' or battleTag=='Sandro163EU#2603',
     faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
     Layer= nil, --位面数字
-    useColor= nil,--使用颜色
+    --useColor= nil,--使用颜色
     L={},--多语言，文本
 }
+e.Player.useColor= {r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, hex= e.Player.col}--使用颜色
+
  --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
  --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
  --ver= select(4,GetBuildInfo())>=100100,--版本 100100
@@ -264,53 +266,78 @@ function e.GetYesNo(yesno)
     end
 end
 
+--设置颜色
+function e.Set_Label_Texture_Color(self, tab)--设置颜色
+    if self and e.Player.useColor then
+        tab= tab or {}
+        local type= tab.type or type(self)
+        local alpha= tab.alpha
+        if type=='FontString' then
+            self:SetText(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, alpha or e.Player.useColor.a or 1)
+        
+        elseif type=='Texture' then
+            self:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, alpha or e.Player.useColor.a or 1)
+        elseif type=='Button' then
+            local texture= self:GetNormalTexture()
+            if texture then
+                texture:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, alpha or e.Player.useColor.a or 1)
+            end
+        elseif type=='String' then
+            return e.Player.useColor.hex..self
+        end
+    end
+end
+
 function e.Cstr(self, tab)
-    --{size, copyFont, changeFont, fontName color={r=,g=,b=,a=}, layer=, justifyH=, mouse=false, wheel=false, notFlag=true, notShadow=true, level=1}
-    --Fonts.xml FontStyles.xml
-    --GameFontBlack
     tab= tab or {}
     self= self or UIParent
-    local font= tab.changeFont or
-    self:CreateFontString(nil,
-            tab.layer or 'OVERLAY',
-            tab.fontName or 'GameFontNormal',
-            tab.level or (self:GetFrameLevel()+1) or 7)
-    if tab.copyFont then
-        local fontName2, size, fontFlag = tab.copyFont:GetFont()
-        font:SetFont(fontName2, tab.size or size, fontFlag)
-        font:SetTextColor(tab.copyFont:GetTextColor())
-        font:SetFontObject(tab.copyFont:GetFontObject())
-        font:SetShadowColor(tab.copyFont:GetShadowColor())
-        font:SetShadowOffset(tab.copyFont:GetShadowOffset())
-        if tab.justifyH then font:SetJustifyH(tab.justifyH) end
+    local alpha= tab.alpha
+    local font= tab.changeFont
+    local layer= tab.layer or 'OVERLAY'
+    local fontName= tab.fontName or 'GameFontNormal'
+    local level= table.level or self:GetFrameLevel()+1
+    local copyFont= tab.copyFont
+    local size= tab.size
+    local justifyH= tab.justifyH
+    local notFlag= tab.notFlag
+    local notShadow= tab.notShadow
+    local color= tab.color
+    local mouse= tab.mouse
+    local wheel= tab.wheel
+    font = font or self:CreateFontString(nil, layer, fontName, level)
+    if copyFont then
+        local fontName2, size2, fontFlag2 = copyFont:GetFont()
+        font:SetFont(fontName2, size or size2, fontFlag2)
+        font:SetTextColor(copyFont:GetTextColor())
+        font:SetFontObject(copyFont:GetFontObject())
+        font:SetShadowColor(copyFont:GetShadowColor())
+        font:SetShadowOffset(copyFont:GetShadowOffset())
+        if justifyH then font:SetJustifyH(justifyH) end
+        if alpha then font:SetAlpha(alpha) end
     else
-        local fontName2, _, fontFlag= font:GetFont()
-        if (e.onlyChinese or LOCALE_zhCN) then--THICKOUTLINE
-            fontName2= tab.fontName and fontName2 or 'Fonts\\ARHei.ttf'--黑体字
+        local fontName2, size2, fontFlag2= font:GetFont()
+        if e.onlyChinese then--THICKOUTLINE
+            fontName2= fontName and fontName2 or 'Fonts\\ARHei.ttf'--黑体字
         end
-        font:SetFont(fontName2, (tab.size or 12), tab.notFlag and fontFlag or 'OUTLINE')
-        font:SetJustifyH(tab.justifyH or 'LEFT')
+        font:SetFont(fontName2, size or size2 or 12, notFlag and fontFlag2 or 'OUTLINE')
+        font:SetJustifyH(justifyH or 'LEFT')
     end
-    if not tab.notShadow then
+    if not notShadow then
         font:SetShadowOffset(1, -1)
     end
-    if tab.color~=false then
-        if tab.color==true then--颜色
-            if e.Player.useColor then
-                font:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a or 1)
-            else
-                font:SetTextColor(e.Player.r, e.Player.g, e.Player.b, 1)
-            end
-        elseif type(tab.color)=='table' then
-            font:SetTextColor(tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1)
+    if color~=false then
+        if color==true then--颜色
+            e.Set_Label_Texture_Color(font, {type='FontString'})
+        elseif type(color)=='table' then
+            font:SetTextColor(color.r, color.g, color.b, color.a or 1)
         else
             font:SetTextColor(1, 0.82, 0, 1)
         end
     end
-    if tab.mouse then
+    if mouse then
         font:EnableMouse(true)
     end
-    if tab.wheel then
+    if wheel then
         font:EnableMouseWheel(true)
     end
     return font
@@ -1681,7 +1708,8 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
         end
     end
     return  string,
-            colorRe or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=e.Player.col},
+            colorRe or (e.Player.useColor or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=e.Player.col}
+                    ),
             e.onlyChinese and name or GetDifficultyInfo(difficultyID)
 end
 
@@ -1764,10 +1792,8 @@ function e.Cbtn2(tab)
     button.border=button:CreateTexture(nil, 'ARTWORK')
     button.border:SetAllPoints(button)
     button.border:SetAtlas('bag-reagent-border')
-    if e.Player.useColor then--使用职业颜色
-        button.border:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a)
-        button.border:SetAlpha(0.5)
-    end
+    
+    e.Set_Label_Texture_Color(button.border, {type='Texture', alpha=0.5})
 
     return button
 end

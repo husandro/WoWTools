@@ -200,7 +200,8 @@ local function Init()
 
     set_Guild_Members()--在线人数
     button.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
-    button.texture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+
+    e.Set_Label_Texture_Color(button.texture, {type='Texture'})--设置颜色
 
     button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then

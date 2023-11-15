@@ -712,9 +712,7 @@ local function Init()
         if MainMenuBarBackpackButtonCount then
             MainMenuBarBackpackButtonCount:SetShadowOffset(1, -1)
         end
-        if e.Player.useColor and MainMenuBarBackpackButtonCount then
-            MainMenuBarBackpackButtonCount:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, e.Player.useColor.a)
-        end
+        e.Set_Label_Texture_Color(MainMenuBarBackpackButtonCount, {type='TextString'})--设置颜色
         hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
             local totalFree
             totalFree= 0

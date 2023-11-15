@@ -1885,9 +1885,13 @@ local function Init_InstanceDifficulty()--副本，难图，指示
         return
     end
 
-    self.Instance.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-    self.Guild.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-    self.ChallengeMode.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b, 1)
+    --self.Instance.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    --self.Guild.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    --self.ChallengeMode.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b, 1)
+    e.Set_Label_Texture_Color(self.Instance.Border, {type='Texture'})
+    e.Set_Label_Texture_Color(self.Guild.Border, {type='Texture'})
+    e.Set_Label_Texture_Color(self.ChallengeMode.Border, {type='Texture'})
+
     e.Cstr(nil,{size=14, copyFont=self.Instance.Text, changeFont= self.Instance.Text})--字体，大小
     self.Instance.Text:SetShadowOffset(1,-1)
     e.Cstr(nil,{size=14, copyFont=self.Guild.Instance.Text, changeFont= self.Instance.Text})--字体，大小
@@ -1916,12 +1920,11 @@ local function Init_InstanceDifficulty()--副本，难图，指示
             frame.Background:SetVertexColor(color.r, color.g, color.b)
         end
         if not self2.labelType then
-            self2.labelType= e.Cstr(self2, {color=true, level=22})
+            self2.labelType= e.Cstr(self2, {color=true, level=22, alpha=0.5})
             self2.labelType:SetPoint('TOP', self2, 'BOTTOM', 0, 4)
-            self2.labelType:SetAlpha(0.5)
+            --self2.labelType:SetAlpha(0.5)
         end
         self2.labelType:SetText(name and e.WA_Utf8Sub(name, 2, 6) or '')
-        print(name)
         self2.tips= tips
     end)
 

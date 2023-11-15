@@ -536,6 +536,19 @@ end
 
 
 
+--自定义，颜色
+local function Set_Color()
+    if Save.useColor==1 then
+        e.Player.useColor= {r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, hex= e.Player.col}
+    elseif Save.useColor==2 then
+        e.Player.useColor= Save.useCustomColorTab
+    else
+        e.Player.useColor=nil
+    end
+end
+
+
+
 
 --####
 --开始
@@ -588,17 +601,12 @@ local function Init()
     })
 
 
+  
 
-    local function set_Color()
-        if Save.useColor==1 then
-            e.Player.useColor= {r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, hex= e.Player.col}
-        elseif Save.useColor==2 then
-            e.Player.useColor= Save.useCustomColorTab
-        else
-            e.Player.useColor=nil
-        end
-    end
-    set_Color()
+
+
+
+
     e.AddPanel_DropDown({
         SetValueFunc= function(_, _, value)
             if value==2 then
@@ -607,7 +615,7 @@ local function Init()
                 local function func()
                     local hex=e.RGB_to_HEX(setR, setG, setB, setA)--RGB转HEX
                     Save.useCustomColorTab={r=setR, g=setG, b=setB, a=setA, hex= '|c'..hex }
-                    set_Color()
+                    Set_Color()--自定义，颜色
                     print(e.Player.useColor and e.Player.useColor.hex or '', id, addName,   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
                 e.ShowColorPicker(valueR, valueG, valueB, valueA, function()
@@ -622,7 +630,7 @@ local function Init()
                 if ColorPickerFrame:IsShown() then
                     ColorPickerCancelButton:Click()
                 end
-                set_Color()
+                Set_Color()--自定义，颜色
                 print(id, e.Player.useColor and e.Player.useColor.hex or '', (e.onlyChinese and '颜色' or COLOR)..'|r',   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
             Save.useColor= value
@@ -802,6 +810,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.useColor= Save.useColor or 1
             Save.useCustomColorTab= Save.useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
+            Set_Color()--自定义，颜色
 
             e.onlyChinese= Save.onlyChinese or LOCALE_zhCN
 

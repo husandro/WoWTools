@@ -75,7 +75,8 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
                         or frame.BorderFrame and frame.BorderFrame.TitleContainer
                         or frame
         , {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}, name='MoveZoomInButtonPer'..tab.name})
-    frame.ZoomInOutFrame:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    e.Set_Label_Texture_Color(frame.ZoomInOutFrame, {type='Button'})
+    --frame.ZoomInOutFrame:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
     frame.ZoomInOutFrame.ScaleName= tab.name
     frame.ZoomInOutFrame.ZoomFrame= frame

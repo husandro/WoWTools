@@ -173,15 +173,9 @@ local function Init()
 
         btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
 
-        local textrue= _G['PetStableStabledPet'..i..'Background']--处理，按钮，背景 Texture.lua，中有处理过
-        if textrue then
-            if e.Player.useColor then
-                textrue:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
-            else
-                textrue:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-            end
-            textrue:SetAlpha(0.5)
-        end
+        --处理，按钮，背景 Texture.lua，中有处理过
+        e.Set_Label_Texture_Color(_G['PetStableStabledPet'..i..'Background'], {type='Texture', alpha=0.5})--设置颜色
+        
 
         if i > 1 then--设置位置
             btn:ClearAllPoints()
@@ -234,8 +228,9 @@ local function Init()
             bg:SetPoint('LEFT')
             bg:SetSize(modelH+14, modelH)
             bg:SetAtlas('ShipMission_RewardsBG-Desaturate')
-            bg:SetAlpha(0.3)
-            bg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+            --bg:SetAlpha(0.3)
+            e.Set_Label_Texture_Color(bg, {type='Texture', alpha=0.3})
+            --bg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
             btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
             btn:ClearAllPoints()
@@ -245,8 +240,9 @@ local function Init()
             spellTexture:SetSize(25,25)
             spellTexture:SetPoint('RIGHT', btn, 'LEFT', -2,0)
             spellTexture:SetAtlas('services-number-'..i)
-            spellTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-            spellTexture:SetAlpha(0.3)
+            e.Set_Label_Texture_Color(spellTexture, {type='Texture', alpha=0.3})
+            --spellTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+            --spellTexture:SetAlpha(0.3)
             if CALL_PET_SPELL_IDS[i] then--召唤，宠物，法术
                 spellTexture.spellID= CALL_PET_SPELL_IDS[i]
                 spellTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.3) end)
@@ -264,7 +260,8 @@ local function Init()
             if label then
                 label:ClearAllPoints()
                 label:SetPoint('BOTTOM', _G['PetStableActivePet'..i..'Border'] or btn,0,-10)
-                label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+                e.Set_Label_Texture_Color(label, {type='FontString'})
+                --label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
                 label:SetShadowOffset(1, -1)
                 label:SetJustifyH('LEFT')
                 label:SetScale(0.85)
@@ -275,13 +272,15 @@ local function Init()
     hooksecurefunc('PetStable_UpdateSlot', set_PetStable_UpdateSlot)--宠物，类型，已激MODEL
 
 
-    PetStableFrameTitleText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)--标题
+    --PetStableFrameTitleText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)--标题
+    e.Set_Label_Texture_Color(PetStableFrameTitleText, {type='TextString'})--标题, 颜色
 
     PetStableActiveBg:ClearAllPoints()--已激活宠物，背景，大小
     PetStableActiveBg:SetAllPoints(PetStableLeftInset)
-    PetStableActiveBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-
-    PetStableActivePetsLabel:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+    e.Set_Label_Texture_Color(PetStableActiveBg, {type='Texture'})
+    --PetStableActiveBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    e.Set_Label_Texture_Color(PetStableActivePetsLabel, {type='TextString'})
+    --PetStableActivePetsLabel:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
 
 
     PetStableFrameInset.NineSlice:ClearAllPoints()--标示，背景
@@ -336,7 +335,8 @@ local function Init()
     PetStableFrameModelBg:SetAlpha(0.3)
     PetStableFrameInset.Bg:Hide()
     PetStableFrameModelBg:SetAtlas('ShipMission_RewardsBG-Desaturate')
-    PetStableFrameModelBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    e.Set_Label_Texture_Color(PetStableFrameModelBg, {type='Texture'})
+    --PetStableFrameModelBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
     PetStablePetInfo:ClearAllPoints()--宠物，信息
     PetStablePetInfo:SetPoint('BOTTOMLEFT', PetStableFrame, 'BOTTOMRIGHT',0, 4)
@@ -355,12 +355,14 @@ local function Init()
 
     PetStableNameText:ClearAllPoints()
     PetStableNameText:SetPoint('TOPLEFT', PetStableSelectedPetIcon, 'RIGHT',0, -2)
-    PetStableNameText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)--选定，宠物，名称
+    e.Set_Label_Texture_Color(PetStableNameText, {type='TextString'})--选定，宠物，名称
+    --PetStableNameText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)--选定，宠物，名称
 
     PetStableTypeText:ClearAllPoints()--选定，宠物，类型
     PetStableTypeText:SetPoint('BOTTOMLEFT', PetStableSelectedPetIcon, 'RIGHT', 0,2)
     PetStableTypeText:SetJustifyH('LEFT')
-    PetStableTypeText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+    e.Set_Label_Texture_Color(PetStableTypeText, {type='TextString'})
+    --PetStableTypeText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
     PetStableTypeText:SetShadowOffset(1, -1)
 
 
