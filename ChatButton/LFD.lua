@@ -135,6 +135,14 @@ end
 
 
 
+
+
+
+
+
+
+
+
 --#####
 --小眼睛
 --#####
@@ -540,6 +548,20 @@ local function setQueueStatus()--小眼睛, 信息
 
     set_tipsFrame_Tips(text, LFGListTab)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1192,6 +1214,14 @@ local function set_LFGPlus()--预创建队伍增强
         tooltip:AddDoubleLine(e.onlyChinese and '申请' or SIGN_UP, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left, 0,1,0, 0,1,0)
         tooltip:AddDoubleLine(id, addName)
         tooltip:Show()
+    end)
+
+    hooksecurefunc('LFGListSearchPanel_SetCategory', function(self, categoryID, filters, preferredFilters)
+        if categoryID==2 then
+            
+        end
+        --local categoryInfo = C_LFGList.GetLfgCategoryInfo(categoryID);
+        --local name = LFGListUtil_GetDecoratedCategoryName(categoryInfo.name, filters, false);
     end)
 end
 

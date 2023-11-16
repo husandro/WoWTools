@@ -3631,7 +3631,8 @@
         "PlayerChoiceNormalOptionTemplateMixin",
         "SLASH_STOPWATCH_PARAM_STOP1",
         "BankFrame_Open",
-        "CloseBag"
+        "CloseBag",
+        "LFGListUtil_GetDecoratedCategoryName"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
