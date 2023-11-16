@@ -32,8 +32,9 @@ local TipsFrame
 
 -- AngryKeystones Schedule
 local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrentUIDisplaySeason()
-    season=11,
-	[1]  = { [1]=8,   [2]=136, [3]=10, },
+    season=10,--当前赛季，必须设置
+
+	[1]  = { [1]=8,  [2]=136, [3]=10, },
 	--[2]  = { [1]=134, [2]=7,   [3]=9,},
 	--[3]  = { [1]=136, [2]=123, [3]=10, },
 	--[4]  = { [1]=135, [2]=6,   [3]=9,},
