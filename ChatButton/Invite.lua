@@ -19,6 +19,16 @@ local InvPlateGuid={}
 local button
 local panel= CreateFrame("Frame")
 
+
+
+
+
+
+
+
+
+
+
 local function getLeader()--取得权限
     return UnitIsGroupAssistant('player') or UnitIsGroupLeader('player') or not IsInGroup()
 end
