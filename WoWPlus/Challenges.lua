@@ -31,7 +31,8 @@ local TipsFrame
 
 
 -- AngryKeystones Schedule
-local affixSchedule = {--C_MythicPlus.GetCurrentSeason()
+local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrentUIDisplaySeason()
+    season=11,
 	[1]  = { [1]=8,   [2]=136, [3]=10, },
 	--[2]  = { [1]=134, [2]=7,   [3]=9,},
 	--[3]  = { [1]=136, [2]=123, [3]=10, },
@@ -43,14 +44,8 @@ local affixSchedule = {--C_MythicPlus.GetCurrentSeason()
 	--[9]  = { [1]=134, [2]=11,  [3]=10, },
 	--[10] = { [1]=3,   [2]=123,   [3]=9,},
     max= 10,
-
-    season= 2,-- Dragonflight Season 2
-    level=70,
 }
-local Season= C_MythicPlus.GetCurrentUIDisplaySeason()
-if (Season and Season>0 and affixSchedule.season~=Season) or affixSchedule.level~=MAX_PLAYER_LEVEL then
-    affixSchedule=nil
-end
+
 
 
 local SpellTabs={
@@ -564,7 +559,10 @@ local function Affix_CreateButton(self, affixID)--Blizzard_ScenarioObjectiveTrac
 end
 
 local function Affix()
-    if C_AddOns.IsAddOnLoaded("AngryKeystones") or not affixSchedule then
+    if C_AddOns.IsAddOnLoaded("AngryKeystones")
+        or not e.Player.levelMax
+        or C_MythicPlus.GetCurrentSeason()~= affixSchedule.season
+    then
         affixSchedule=nil
         return
     end
