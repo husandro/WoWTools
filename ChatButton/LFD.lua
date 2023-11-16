@@ -1215,14 +1215,14 @@ local function set_LFGPlus()--预创建队伍增强
         tooltip:AddDoubleLine(id, addName)
         tooltip:Show()
     end)
-
+--[[
     hooksecurefunc('LFGListSearchPanel_SetCategory', function(self, categoryID, filters, preferredFilters)
         if categoryID==2 then
-            
+
         end
         --local categoryInfo = C_LFGList.GetLfgCategoryInfo(categoryID);
         --local name = LFGListUtil_GetDecoratedCategoryName(categoryInfo.name, filters, false);
-    end)
+    end)]]
 end
 
 local function set_button_LFGPlus_Texture()--预创建队伍增强
