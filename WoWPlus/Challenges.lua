@@ -866,9 +866,9 @@ local function set_All_Text()--所有记录
     local min, max=10, 20
     if curLevel>0 or curKey>0 then
         local value= curLevel>0 and curLevel or curKey
-        min= value-5
+        min= value-4
         min= min<2 and 2 or min
-        max= value+5
+        max= value+4
         max= max<12 and 12 or max
     end
     
@@ -1206,8 +1206,11 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                 if self2.all or self2.week then
                                     e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                                     e.tips:ClearLines()
-                                    e.tips:AddDoubleLine(e.onlyChinese and '历史' or HISTORY , self2.all or (e.onlyChinese and '无' or NONE))
-                                    e.tips:AddDoubleLine(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK, self2.week or (e.onlyChinese and '无' or NONE))
+                                    e.tips:AddDoubleLine(
+                                        e.onlyChinese and '历史 |cnGREEN_FONT_COLOR:完成|r/总计' or (HISTORY..' |cnGREEN_FONT_COLOR:'..COMPLETE..'|r/'..TOTAL) ,
+                                        self2.all or (e.onlyChinese and '无' or NONE)
+                                    )
+                                    e.tips:AddDoubleLine(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK, self2.week and '('..self2.week..')' or (e.onlyChinese and '无' or NONE))
                                     if self2.completed and self2.totale and self2.completed < self2.totale then
                                         e.tips:AddLine(' ')
                                         e.tips:AddDoubleLine(self2.totale..' - |cnGREEN_FONT_COLOR:'..self2.completed..'|r =', '|cnRED_FONT_COLOR:'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, self2.totale-self2.completed))
@@ -1217,7 +1220,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                 end
                             end)
                         end
-                        numText= (all or '')..( week and ' |cffffffff(|r'..week..'|cffffffff)|r' or '')
+                        numText= (all or '')..((week and week~=all) and ' |cffffffff(|r'..week..'|cffffffff)|r' or '')
                         frame.completedLable.all=all or week
                         frame.completedLable.week= week
                         frame.completedLable.completed= completed
