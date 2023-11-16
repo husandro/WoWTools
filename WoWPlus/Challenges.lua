@@ -871,14 +871,22 @@ local function set_All_Text()--所有记录
         max= value+5
         max= max<12 and 12 or max
     end
-    for i=min, max do
-        local col= curLevel==i and '|cff00ff00' or select(2, math.modf(i/2))==0 and '|cffff8200' or '|cffffffff'
-        local weeklyRewardLevel2, endOfRunRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(i)
+    
+    local function get_Loot_itemLevel(level)
+        local col= curLevel==level and '|cff00ff00' or select(2, math.modf(level/2))==0 and '|cffff8200' or '|cffffffff'
+        local weeklyRewardLevel2, endOfRunRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
         if weeklyRewardLevel2 and weeklyRewardLevel2>0 then
-            local str=col..(i<10 and i..' ' or i)..'  '..weeklyRewardLevel2..'  '..(endOfRunRewardLevel2 or 0)..'|r'
+            local str=col..(level<10 and level..' ' or level)..'  '..weeklyRewardLevel2..'  '..(endOfRunRewardLevel2 or 0)..'|r'
             text2= text2 and text2..'|n' or ''
-            text2= text2..str..(curKey==i and '|T4352494:0|t' or '')..(curLevel==i and e.Icon.select2 or '')
+            text2= text2..str..(curKey==level and '|T4352494:0|t' or '')..(curLevel==level and e.Icon.select2 or '')
         end
+    end
+    if min> curKey and curKey>0 then--当前KEY，小于，显示等级
+        get_Loot_itemLevel(curKey)
+        min= min+1
+    end
+    for level=min, max do--显示，物品等级
+        get_Loot_itemLevel(level)
     end
     if text2 then
         m= m..'|n|n'..(e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..BATTLE_PET_SOURCE_1))..'|n'..text2
