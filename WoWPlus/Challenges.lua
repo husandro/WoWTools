@@ -898,7 +898,7 @@ local function set_All_Text()--所有记录
     --##########
     local keyText
     for guid, infoWoW in pairs(e.WoWDate or {}) do
-        if guid~=e.Player.guid then
+        --if guid~=e.Player.guid then
             local key
             for link, _ in pairs(infoWoW.Keystone.itemLink) do
                 local icon= C_Item.GetItemIconByID(link)
@@ -914,7 +914,7 @@ local function set_All_Text()--所有记录
                     ..e.GetPlayerInfo({guid=guid, faction=infoWoW.faction, reName=true, reRealm=true})
                     ..key
             end
-        end
+       -- end
     end
     if keyText then
         m= (m and m..'|n|n'..keyText or m)

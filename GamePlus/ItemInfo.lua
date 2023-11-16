@@ -112,12 +112,12 @@ local function set_Item_Info(self, tab)
                 if name then
                     bottomLeftText= e.WA_Utf8Sub(name, 3,6, true)
                 end
-                local text
-                for _, activities in pairs(C_WeeklyRewards.GetActivities(1) or {}) do--本周完成 Enum.WeeklyRewardChestThresholdType.MythicPlus 1
+                local text= e.Get_Week_Rewards_Text(1)--得到，周奖励，信息
+                --[[for _, activities in pairs(C_WeeklyRewards.GetActivities(1) or {}) do--本周完成 Enum.WeeklyRewardChestThresholdType.MythicPlus 1
                     if activities.level and activities.level>=0 and activities.threshold and activities.threshold>0 and activities.type==1 then
                         text= (text and text..'/' or '')..activities.level
                     end
-                end
+                end]]
                 if text then
                     leftText='|cnGREEN_FONT_COLOR:'..text..'|r'
                 end
@@ -1087,8 +1087,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
         elseif arg1=='Blizzard_WeeklyRewards' then--周奖励, 物品提示，信息
             hooksecurefunc(WeeklyRewardsFrame, 'Refresh', function(self2)--Blizzard_WeeklyRewards.lua WeeklyRewardsMixin:Refresh(playSheenAnims)
-                local activities = C_WeeklyRewards.GetActivities() or {};
-                for _, activityInfo in ipairs(activities) do
+                for _, activityInfo in ipairs(C_WeeklyRewards.GetActivities() or {}) do
                     local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index);
                     local itemFrame= frame and frame.ItemFrame
                     if itemFrame then
@@ -1097,8 +1096,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             end)
             hooksecurefunc(WeeklyRewardsFrame, 'UpdateSelection', function(self2)
-                local activities = C_WeeklyRewards.GetActivities() or {};
-                for _, activityInfo in ipairs(activities) do
+                for _, activityInfo in ipairs(C_WeeklyRewards.GetActivities() or {}) do
                     local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index);
                     local itemFrame= frame and frame.ItemFrame
                     if itemFrame then

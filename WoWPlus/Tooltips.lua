@@ -549,13 +549,13 @@ function func.Set_Item(self, itemLink, itemID)
                 --end
             end
         end
-        local text
-        
+        local text=e.Get_Week_Rewards_Text(1)--得到，周奖励，信息
+        --[[
         for _, activities in pairs(C_WeeklyRewards.GetActivities(1) or {}) do--本周完成
             if activities.level and activities.level>=0 and activities.type==1 then--Enum.WeeklyRewardChestThresholdType.MythicPlus 1
                 text= (text and text..'/' or '')..activities.level
             end
-        end
+        end]]
         local score= e.GetKeystoneScorsoColor(C_ChallengeMode.GetOverallDungeonScore())
         if text or score then
             self.textLeft:SetText((text and '|cnGREEN_FONT_COLOR:'..text..'|r ' or '')..(score or ''))

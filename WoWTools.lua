@@ -762,9 +762,15 @@ end
 
 
 
-
-
-
+function e.Get_Week_Rewards_Text(type, all)--得到，周奖励，信息
+    local text
+    for _, activities in pairs(C_WeeklyRewards.GetActivities(type) or {}) do--本周完成 Enum.WeeklyRewardChestThresholdType.MythicPlus 1
+        if activities.level and activities.level>=0 and activities.type==type then--and activities.threshold and activities.threshold>0 and activities.type==1 then
+            text= (text and text..'/' or '')..activities.level
+        end
+    end
+    return text
+end
 
 
 

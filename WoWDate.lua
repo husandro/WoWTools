@@ -233,7 +233,20 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
             end
         end
     end
+
+    tab.weekMythicPlus= e.Get_Week_Rewards_Text(1)--MythicPlus
+    tab.weekPvP= e.Get_Week_Rewards_Text(2)--RankedPvP
+    tab.weekPvE= e.Get_Week_Rewards_Text(3)--Raid
+    --[[
+	
+2	RankedPvP	
+3	Raid	
+4	AlsoReceive	
+5	Concession	
+    ]]
+
     tab.itemLink=e.WoWDate[e.Player.guid].Keystone.itemLink
+    
     e.WoWDate[e.Player.guid].Keystone=tab
 end
 
