@@ -214,28 +214,33 @@ end
 
 
 function e.MK(number, bit)
-    if number then
-        bit = bit or 1
-        local num= 0
-        if bit==0 then
-            num= 0.5
-        elseif bit==1 then
-            num= 0.05
-        elseif bit==2 then
-            num= 0.005
-        elseif bit==3 then
-            num= 0.0005
-        elseif bit==4 then
-            num= 0.00005
-        end
-        if number>=1e6 then
-            return format('%.'..bit..'fm', (number-num)/1e6)---num)
-        elseif number>= 1e4 and (LOCALE_zhCN or e.onlyChinese) then
-            return format('%.'..bit..'fw', (number-num)/1e4)---num)
-        elseif number>=1e3 then
-            return format('%.'..bit..'fk', (number-num)/1e3)---num)
+    if not number then
+        return
+    end
+    bit = bit or 1
+
+    local text= ''
+    if number>=1e6 then
+        number= number/1e6
+        text= 'm'
+    elseif number>= 1e4 and e.onlyChinese then
+        number= number/1e4
+        text='w'
+    elseif number>=1e3 then
+        number= number/1e3
+        text= 'k'
+    end
+
+    if bit==0 then
+        return math.modf(number)..text
+    else
+        local num, point= math.modf(number)
+        if point==0 then
+            return num..text
         else
-            return format('%i', number)
+            point= point*(10^2)
+            point= math.modf(point)
+            return num..(point>0 and '.'..point or '')..text
         end
     end
 end
