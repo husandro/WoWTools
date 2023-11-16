@@ -917,7 +917,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
     {type='currency', id=2706},--雏龙的酣梦纹章
     {type='currency', id=2245},--飞珑石
     {type='currency', id=2796, show=true},--苏生奇梦 10.2
-    {type='currency', id=2533},--苏生暗影烈焰
+    --{type='currency', id=2533},--苏生暗影烈焰10.10
     {type='currency', id=1602, line=true},--征服点数
     {type='currency', id=1191},--勇气点数
 }

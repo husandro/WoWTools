@@ -704,7 +704,6 @@ local function set_All_Text()--所有记录
     --历史
     --####
     if not ChallengesFrame.runHistoryLable then
-
         ChallengesFrame.runHistoryLable= e.Cstr(TipsFrame, {mouse=true, size=14})--最右边, 数据
 
         if _G['RaiderIO_ProfileTooltip'] then
@@ -783,18 +782,13 @@ local function set_All_Text()--所有记录
     )
 
 
+
+
+
     --#######
     --本周记录
     --#######
     local historyInfo = C_MythicPlus.GetRunHistory(false, true) or {}
-    --[[
-    table.sort(historyInfo, function(a, b)
-        if a.mapChallengeModeID== b.mapChallengeModeID then
-            return a.level> b.level
-        else
-            return a.runScore> b.runScore
-        --end
-    end)]]
     local completed, all= 0,0
     local tabs={}
     for _, tab in pairs(historyInfo) do
@@ -851,6 +845,9 @@ local function set_All_Text()--所有记录
 
 
 
+
+         
+
     --#############
     --难度 每周 掉落
     --#############
@@ -869,9 +866,9 @@ local function set_All_Text()--所有记录
         min= value-4
         min= min<2 and 2 or min
         max= value+4
-        max= max<12 and 12 or max
+        --max= max<12 and 12 or max
     end
-    
+
     local function get_Loot_itemLevel(level)
         local col= curLevel==level and '|cff00ff00' or select(2, math.modf(level/2))==0 and '|cffff8200' or '|cffffffff'
         local weeklyRewardLevel2, endOfRunRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
@@ -881,6 +878,7 @@ local function set_All_Text()--所有记录
             text2= text2..str..(curKey==level and '|T4352494:0|t' or '')..(curLevel==level and e.Icon.select2 or '')
         end
     end
+    min= min<2 and 2 or min
     if min> curKey and curKey>0 then--当前KEY，小于，显示等级
         get_Loot_itemLevel(curKey)
         min= min+1
@@ -892,6 +890,9 @@ local function set_All_Text()--所有记录
         m= m..'|n|n'..(e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..BATTLE_PET_SOURCE_1))..'|n'..text2
     end
 
+
+
+
     --##########
     --所有角色KEY
     --##########
@@ -900,8 +901,9 @@ local function set_All_Text()--所有记录
         if guid~=e.Player.guid then
             local key
             for link, _ in pairs(infoWoW.Keystone.itemLink) do
+                local icon= C_Item.GetItemIconByID(link)
                 key= (key or '')
-                    ..'|T'..(C_Item.GetItemIconByID(link) or 134400)..':0|t'
+                    ..'|T'..((not icon or icon==134400) and 4352494 or icon)..':0|t'
                     ..link
 
             end
