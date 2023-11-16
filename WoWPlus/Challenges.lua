@@ -54,14 +54,14 @@ local SpellTabs={
     --ins= 副本ID journalInstanceID
     --map= 跳战副本ID mapChallengeID
 
-    [463]= {spell=424197, ins=1209},--永恒黎明：迦拉克隆的陨落 Dawn of the Infinite: Galakrond's Fall
-    [464]= {spell=424197, ins=1209},--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise
-    [248]= {spell=424167, ins=1021},--维克雷斯庄园 Waycrest Manor (Battle for Azeroth)
-    [244]= {spell=424187, ins=1176},--阿塔达萨 Atal'Dazar (Battle for Azeroth)
-    [198]= {spell=424163, ins=762},--黑心林地 Darkheart Thicket (Legion)
-    [199]= {spell=424153, ins=740},--黑鸦堡垒 Black Rook Hold (Legion)
-    [168]= {spell=159901, ins=556},--永茂林地 The Everbloom (Warlords of Draenor)
-    [456]= {spell=424142, ins=65},--潮汐王座 Throne of the Tides (Cataclysm)
+    [463]= {spell=424197, ins=1209, name='陨落'},--永恒黎明：迦拉克隆的陨落 Dawn of the Infinite: Galakrond's Fall
+    [464]= {spell=424197, ins=1209, name='崛起'},--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise
+    [248]= {spell=424167, ins=1021, name='庄园'},--维克雷斯庄园 Waycrest Manor (Battle for Azeroth)
+    [244]= {spell=424187, ins=1176, name='阿塔达萨'},--阿塔达萨 Atal'Dazar (Battle for Azeroth)
+    [198]= {spell=424163, ins=762, name='黑心林地'},--黑心林地 Darkheart Thicket (Legion)
+    [199]= {spell=424153, ins=740, name='黑鸦堡垒'},--黑鸦堡垒 Black Rook Hold (Legion)
+    [168]= {spell=159901, ins=556, name='永茂林地'},--永茂林地 The Everbloom (Warlords of Draenor)
+    [456]= {spell=424142, ins=65, name='潮汐王座'},--潮汐王座 Throne of the Tides (Cataclysm)
 }
 for _, tab in pairs(SpellTabs) do
     e.LoadDate({id=tab.spell, type='spell'})
