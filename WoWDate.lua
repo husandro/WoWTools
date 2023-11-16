@@ -233,7 +233,6 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
             end
         end
     end
-    
     tab.itemLink=e.WoWDate[e.Player.guid].Keystone.itemLink
     e.WoWDate[e.Player.guid].Keystone=tab
 end
