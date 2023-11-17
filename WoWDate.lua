@@ -740,7 +740,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
         else
 
             --更新物品
-            e.WoWDate[e.Player.guid].Keystone.itemLink={}
+            --e.WoWDate[e.Player.guid].Keystone.itemLink={}
             e.WoWDate[e.Player.guid].Item={}--{itemID={bag=包, bank=银行}}
             for bagID= Enum.BagIndex.Backpack,  NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do
                 for slotID=1, C_Container.GetContainerNumSlots(bagID) do
@@ -748,7 +748,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
                     if itemID then
                         if C_Item.IsItemKeystoneByID(itemID) then--挑战
                             e.WoWDate[e.Player.guid].Keystone.link= C_Container.GetContainerItemLink(bagID, slotID)
-                            
+
                         else
                             local bag=GetItemCount(itemID)--物品ID
                             e.WoWDate[e.Player.guid].Item[itemID]={
@@ -759,7 +759,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
                     end
                 end
             end
-            
+
             --钱
             local money=GetMoney()
             e.WoWDate[e.Player.guid].Money= money==0 and nil or money

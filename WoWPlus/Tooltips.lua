@@ -533,20 +533,15 @@ function func.Set_Item(self, itemLink, itemID)
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         --local numPlayer=1 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
         for guid, info in pairs(e.WoWDate or {}) do
-            if guid and guid~=e.Player.guid and info and info.Keystone then
-                --local find
-                for linkItem, _ in pairs(info.Keystone.itemLink) do
-                    local num=''
-                    if info.Keystone.weekNum and info.Keystone.weekLevel then
-                        num= (info.Keystone.weekNum..'('..info.Keystone.weekLevel..') ')
-                    end
-                    self:AddDoubleLine(num..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), linkItem)
-                    break
-                    --find=true
+            if guid and guid~=e.Player.guid then
+                if info.Keystone.link then
+                    local num= info.Keystone.weekMythicPlus
+                    or (
+                        (info.Keystone.weekNum and info.Keystone.weekLevel)
+                        and (info.Keystone.weekNum..'-'..info.Keystone.weekLevel)
+                    )
+                    self:AddDoubleLine((num and '|cnGREEN_FONT_COLOR:('..num..')|r ' or '')..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), info.Keystone.link)
                 end
-                --if find then
-                    --self:AddLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}))
-                --end
             end
         end
         local text=e.Get_Week_Rewards_Text(1)--得到，周奖励，信息
