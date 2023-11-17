@@ -864,22 +864,31 @@ local function set_All_Text()--所有记录
             local col= self.curLevel==level and '|cff00ff00' or select(2, math.modf(level/2))==0 and '|cffff8200' or '|cffffffff'
             local weeklyRewardLevel2, endOfRunRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
             if weeklyRewardLevel2 and weeklyRewardLevel2>0 then
-                return col..(level<10 and level..' ' or level)..'  '..weeklyRewardLevel2..'  '..(endOfRunRewardLevel2 or 0)..'|r'
-                ..(self.curKey==level and '|T4352494:0|t' or '')..(self.curLevel==level and e.Icon.select2 or '')
+                return
+                    col
+                    ..(level<10 and level..' ' or level)
+                    ..'  '..weeklyRewardLevel2..'  '..(endOfRunRewardLevel2 or 0)
+                    ..'|r'
+                    ..(self.curKey==level and '|T4352494:0|t' or '')
+                    ..(self.curLevel==level and e.Icon.select2 or '')
             end
         end
         ChallengesFrame.weekLootItemLevelLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
         ChallengesFrame.weekLootItemLevelLable:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
+            e.tips:AddLine(self:GetText())
             for level=2, 24 do
-                C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
+                local text= self:get_Loot_itemLevel(level)
+                if text then
+                    e.tips:AddLine(text)
+                end
             end
             e.tips:Show()
             self:SetAlpha(0.5)
         end)
     end
-    ChallengesFrame.weekLootItemLevelLable:SetText(e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..BATTLE_PET_SOURCE_1))
+    ChallengesFrame.weekLootItemLevelLable:SetText(e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..LOOT))
 
     local lootText
     local curLevel=0
@@ -898,6 +907,7 @@ local function set_All_Text()--所有记录
         max= value+4
     end
     ChallengesFrame.weekLootItemLevelLable.curLevel= curLevel
+    ChallengesFrame.weekLootItemLevelLable.curKey= curKey
 
     min= min<2 and 2 or min
     if min> curKey and curKey>0 then--当前KEY，小于，显示等级
