@@ -730,52 +730,55 @@ local function All_Player_Info()--所以角色信息
     end
     local last
     for guid, info in pairs(e.WoWDate) do--[e.Player.guid].Keystone
-        local _, englishClass, _, englishRace, sex, namePlayer, realm = GetPlayerInfoByGUID(guid)
-        --if guid~=e.Player.guid and namePlayer then
-        local classColor = englishClass and C_ClassColor.GetClassColor(englishClass)
-        local btn= e.Cbtn(TipsFrame, {size={30,30}, atlas=e.GetUnitRaceInfo({guid=guid, reAtlas=true})})
-        if not last then
-            btn:SetPoint('TOPRIGHT', ChallengesFrame, 'TOPLEFT', -2, 0)
-        else
-            btn:SetPoint('TOPRIGHT', last, 'BOTTOMRIGHT')
-        end
-        create_lable(btn, 1, info.Keystone.weekPvE, classColor)
-        create_lable(btn, 2, info.Keystone.weekMythicPlus, classColor)
-        create_lable(btn, 3, info.Keystone.weekPvP, classColor)
-        create_lable(btn, 'b', info.Keystone.score, classColor)
-        create_lable(btn, 'r', info.Keystone.weekNum, classColor)
-        
-        if info.Keystone.link then
-            local link= info.Keystone.link
-            if e.onlyChinese and not LOCALE_zhCN then--取得中文，副本名称
-                local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
-                mapID= mapID and tonumber(mapID)
-                if mapID and name and SpellTabs[mapID] and SpellTabs[mapID].name then
-                    link= link:gsub(name, SpellTabs[mapID].name)
+        if guid~=e.Player.guid and info.Keystone.link then
+            local _, englishClass, _, englishRace, sex, namePlayer, realm = GetPlayerInfoByGUID(guid)
+            if namePlayer and namePlayer~='' then
+                local classColor = englishClass and C_ClassColor.GetClassColor(englishClass)
+                local btn= e.Cbtn(TipsFrame, {size={30,30}, atlas=e.GetUnitRaceInfo({guid=guid, reAtlas=true})})
+                if not last then
+                    btn:SetPoint('TOPRIGHT', ChallengesFrame, 'TOPLEFT', -4, 0)
+                else
+                    btn:SetPoint('TOPRIGHT', last, 'BOTTOMRIGHT')
+                end
+                create_lable(btn, 1, info.Keystone.weekPvE, classColor)--团队副本
+                create_lable(btn, 2, info.Keystone.weekMythicPlus, classColor)--挑战
+                create_lable(btn, 3, info.Keystone.weekPvP, classColor)--pvp
+                create_lable(btn, 'b', info.Keystone.score, classColor)--分数
+                create_lable(btn, 'r', info.Keystone.weekNum or 0, classColor)--次数
+                
+                if info.Keystone.link then
+                    local link= info.Keystone.link
+                    if e.onlyChinese and not LOCALE_zhCN then--取得中文，副本名称
+                        local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
+                        mapID= mapID and tonumber(mapID)
+                        if mapID and name and SpellTabs[mapID] and SpellTabs[mapID].name then
+                            link= link:gsub(name, SpellTabs[mapID].name)
+                        end
+                    end
+                    local nameLable= e.Cstr(btn, {color= classColor})--名字
+                    nameLable:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
+                    nameLable:SetText(
+                        (namePlayer or '')
+                        ..((realm and realm~='') and '-'..realm or '')
+                        ..(e.Class(nil, englishClass) or '')
+                    )
+                    
+                    local keyLable= e.Cstr(btn, {mouse=true})--KEY
+                    keyLable:SetPoint('RIGHT', nameLable, 'LEFT')
+                    keyLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+                    keyLable:SetScript('OnEnter', function(self)
+                        e.tips:SetOwner(self, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:SetHyperlink(self.link)
+                        e.tips:Show()
+                    end)
+                    keyLable:SetText(link)
+                    keyLable.link=link
+                    last= nameLable
+                else
+                    last= btn
                 end
             end
-            local nameLable= e.Cstr(btn, {color= classColor})--名字
-            nameLable:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
-            nameLable:SetText(
-                (namePlayer or '')
-                ..((realm and realm~='') and '-'..realm or '')
-                ..(e.Class(nil, englishClass) or '')
-            )
-            
-            local keyLable= e.Cstr(btn, {mouse=true})--KEY
-            keyLable:SetPoint('RIGHT', nameLable, 'LEFT')
-            keyLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
-            keyLable:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:SetHyperlink(self.link)
-                e.tips:Show()
-            end)
-            keyLable:SetText(link)
-            keyLable.link=link
-            last= nameLable
-        else
-            last= btn
         end
     end
     last=nil
@@ -1024,7 +1027,7 @@ local function set_All_Text()--所有记录
 
     --##########
     --所有角色KEY
-    --##########
+    --[[##########
     local keyText
     for guid, info in pairs(e.WoWDate or {}) do
         if guid~=e.Player.guid and info.Keystone.link then
@@ -1054,7 +1057,7 @@ local function set_All_Text()--所有记录
         ChallengesFrame.playerAllKey:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-12)
     end
     ChallengesFrame.playerAllKey:SetText(keyText or '')
-    last=ChallengesFrame.playerAllKey
+    last=ChallengesFrame.playerAllKe]]
 
     --物品，货币提示
     e.ItemCurrencyLabel({frame=TipsFrame, point={'TOPLEFT', last, 'BOTTOMLEFT',0, -12}})
