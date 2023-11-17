@@ -207,16 +207,13 @@ end
 --地下城挑战
 --#########
 local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数}
-    local tab={
-    }
-    local score=C_ChallengeMode.GetOverallDungeonScore();
+    local all, weekNum, weekLevel
+    local score=C_ChallengeMode.GetOverallDungeonScore()
     if score and score>0 then
-        tab.score=score--总分数
-        tab.all=#C_MythicPlus.GetRunHistory(true, true)--总次数
-        tab.week=e.Player.week
+        all=#C_MythicPlus.GetRunHistory(true, true)--总次数
         local info = C_MythicPlus.GetRunHistory(false, true)
         if info and #info>0 then
-            tab.weekNum=#info--本周次数
+            weekNum=#info--本周次数
             local activities=C_WeeklyRewards.GetActivities(1)
             if activities then
                 local lv=0
@@ -228,26 +225,23 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
                     end
                 end
                 if lv > 0 then
-                    tab.weekLevel=lv--本周最高
+                    weekLevel=lv--本周最高
                 end
             end
         end
     end
 
-    tab.weekMythicPlus= e.Get_Week_Rewards_Text(1)--MythicPlus
-    tab.weekPvP= e.Get_Week_Rewards_Text(2)--RankedPvP
-    tab.weekPvE= e.Get_Week_Rewards_Text(3)--Raid
-    --[[
-	
-2	RankedPvP	
-3	Raid	
-4	AlsoReceive	
-5	Concession	
-    ]]
-
-    tab.itemLink=e.WoWDate[e.Player.guid].Keystone.itemLink
-    
-    e.WoWDate[e.Player.guid].Keystone=tab
+    e.WoWDate[e.Player.guid].Keystone={
+        score= score,
+        all= all,
+        week= e.Player.week,
+        weekNum= weekNum,
+        weekLevel= weekLevel,
+        weekMythicPlus= e.Get_Week_Rewards_Text(1),--MythicPlus
+        weekPvP= e.Get_Week_Rewards_Text(2),--RankedPvP
+        weekPvE= e.Get_Week_Rewards_Text(3),--Raid
+        link= e.WoWDate[e.Player.guid].Keystone.link,
+    }
 end
 
 
@@ -572,7 +566,9 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
                     Item={},--{itemID={bag=包, bank=银行}},
                     Currency={},--{currencyID = 数量}
 
-                    Keystone={itemLink={}, week=e.Player.week},--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
+                    Keystone={week=e.Player.week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
+                    --KeystoneLink=挑战，Link
+
                     Instance={ins={}, week=e.Player.week},--ins={[名字]={[难度]=已击杀数}}
                     Worldboss={boss={}, week=e.Player.week},--{week=周数, boss=table}
                     Rare={day=day, boss={}},--稀有
@@ -583,10 +579,12 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
                 }
             e.WoWDate[e.Player.guid].faction= e.Player.faction--派系
             e.WoWDate[e.Player.guid].Bank= e.WoWDate[e.Player.guid].Bank or {}--派系
+            e.WoWDate[e.Player.guid].Keystone.itemLink=nil--清除，不用的数据
+
 
             for guid, tab in pairs(e.WoWDate) do--清除不是本周数据
                 if tab.Keystone.week ~=e.Player.week then
-                    e.WoWDate[guid].Keystone={itemLink={}}
+                    e.WoWDate[guid].Keystone={week=e.Player.week}
                 end
                 if tab.Instance.week~=e.Player.week then
                     e.WoWDate[guid].Instance={ins={}}
@@ -731,7 +729,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
 
 
 
-        
+
 
 
 
@@ -749,10 +747,8 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
                     local itemID = C_Container.GetContainerItemID(bagID, slotID)
                     if itemID then
                         if C_Item.IsItemKeystoneByID(itemID) then--挑战
-                            local itemLink=C_Container.GetContainerItemLink(bagID, slotID)
-                            if itemLink then
-                                e.WoWDate[e.Player.guid].Keystone.itemLink[itemLink]=true
-                            end
+                            e.WoWDate[e.Player.guid].Keystone.link= C_Container.GetContainerItemLink(bagID, slotID)
+                            
                         else
                             local bag=GetItemCount(itemID)--物品ID
                             e.WoWDate[e.Player.guid].Item[itemID]={
