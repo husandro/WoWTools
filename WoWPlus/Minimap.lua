@@ -1630,19 +1630,25 @@ local function Init_M_Portal_Room_Labels()
     MRoomFrame= CreateFrame('Frame')
 
     function MRoomFrame:set_evnet()
-        if Save.hideMPortalRoomLabels then
-            MRoomFrame:UnregisterEvent('PLAYER_ENTERING_WORLD')
-        else
+        MRoomFrame:UnregisterAllEvents()
+        if not Save.hideMPortalRoomLabels then
             MRoomFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+            if select(8, GetInstanceInfo())==2678 then
+                MRoomFrame:RegisterEvent('PLAYER_STARTED_MOVING')
+                MRoomFrame:RegisterEvent('PLAYER_STOPPED_MOVING')
+            end
         end
     end
     function MRoomFrame:set_shown()
         local instanceID= select(8, GetInstanceInfo())
-        self:SetShown(instanceID==2678 and not Save.hideMPortalRoomLabels)
+        self:SetShown(instanceID==2678 and not Save.hideMPortalRoomLabels and not IsPlayerMoving())
     end
-    
-
-    MRoomFrame:SetScript('OnEvent', MRoomFrame.set_shown)
+    MRoomFrame:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_ENTERING_WORLD' then
+            self:set_evnet()
+        end
+        self:set_shown()
+    end)
     MRoomFrame:set_evnet()
     MRoomFrame:set_shown()
 
