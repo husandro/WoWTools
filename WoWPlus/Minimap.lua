@@ -1652,11 +1652,13 @@ local function Init_M_Portal_Room_Labels()
     MRoomFrame:set_evnet()
     MRoomFrame:set_shown()
 
+    local cn= e.onlyChinese and not LOCALE_zhCN and not LOCALE_zhTW
+
     local lable= e.Cstr(MRoomFrame, {color=true, justifyH='CENTER'})
     local mapInfo=C_Map.GetMapInfo(641) or {}
     lable:SetPoint('CENTER', UIParent, 0, 200)
     lable:SetText(
-        (e.onlyChinese and '堡垒 | 林地|n' or '')
+        (cn and '堡垒 | 林地|n' or '')
         ..( EJ_GetInstanceInfo(740) or '')..' | '..( EJ_GetInstanceInfo(762) or '')
         ..(mapInfo.name and '|n'..mapInfo.name or '')
     )
@@ -1666,7 +1668,7 @@ local function Init_M_Portal_Room_Labels()
     lable:SetPoint('CENTER', UIParent, -150, 150)
     mapInfo=C_Map.GetMapInfo(543) or {}
     lable:SetText(
-        (e.onlyChinese and '永茂林地|n' or '')
+        (cn and '永茂林地|n' or '')
         ..(EJ_GetInstanceInfo(556) or '')
         ..(mapInfo.name and '|n'..mapInfo.name or '')
     )
@@ -1676,7 +1678,7 @@ local function Init_M_Portal_Room_Labels()
     mapInfo=C_Map.GetMapInfo(203) or {}
     lable:SetPoint('CENTER', UIParent, -200, 100)
     lable:SetText(
-        (e.onlyChinese and '潮汐王座|n' or '')
+        (cn and '潮汐王座|n' or '')
         ..(EJ_GetInstanceInfo(65) or '')
         ..(mapInfo.name and '|n'..mapInfo.name or '')
     )
@@ -1695,7 +1697,7 @@ local function Init_M_Portal_Room_Labels()
     lable:SetPoint('CENTER', UIParent, 150, 150)
     mapInfo=C_Map.GetMapInfo(862) or {}
     lable:SetText(
-        (e.onlyChinese and '阿塔达萨|n' or '')
+        (cn and '阿塔达萨|n' or '')
         ..(EJ_GetInstanceInfo(968) or '')
         ..(mapInfo.name and '|n'..mapInfo.name or '')
     )
@@ -1705,7 +1707,7 @@ local function Init_M_Portal_Room_Labels()
     mapInfo=C_Map.GetMapInfo(896) or {}
     lable:SetPoint('CENTER', UIParent, 200, 100)
     lable:SetText(
-        (e.onlyChinese and '维克雷斯庄园|n' or '')
+        (cn and '维克雷斯庄园|n' or '')
         ..(EJ_GetInstanceInfo(1021) or '')
         ..(mapInfo.name and '|n'..mapInfo.name or '')
     )
