@@ -3633,7 +3633,10 @@
         "BankFrame_Open",
         "CloseBag",
         "LFGListUtil_GetDecoratedCategoryName",
-        "DUNGEONS"
+        "DUNGEONS",
+        "PROVING_GROUNDS_SCORE",
+        "DUNGEON_SCORE",
+        "ARCHAEOLOGY_COMPLETION"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

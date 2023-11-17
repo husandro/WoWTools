@@ -704,6 +704,11 @@ local function All_Player_Info()--所以角色信息
             label:SetPoint('RIGHT', btn, 'LEFT')
         elseif point==3 then
             label:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
+        elseif point=='b' then
+            label:SetPoint('BOTTOMRIGHT')
+        elseif point=='r' then
+            label:SetPoint('TOPRIGHT')
+            label.num= text
         end
         label:SetText(text)
         label.point= point
@@ -714,7 +719,9 @@ local function All_Player_Info()--所以角色信息
             e.tips:AddLine(
                 self.point==1 and (e.onlyChinese and '团队副本' or RAIDS)
                 or self.point==2 and (e.onlyChinese and '地下城' or DUNGEONS)
-                or PVP
+                or self.point==3 and PVP
+                or self.point=='b' and (e.onlyChinese and '史诗钥石评分' or DUNGEON_SCORE)
+                or self.point=='r' and (e.onlyChinese and '本周次数' or format(CURRENCY_THIS_WEEK, format(ARCHAEOLOGY_COMPLETION,self.num)))
             )
             e.tips:AddLine(self:GetText())
             e.tips:Show()
@@ -732,8 +739,14 @@ local function All_Player_Info()--所以角色信息
             create_lable(btn, 1, info.Keystone.weekPvE)
             create_lable(btn, 2, info.Keystone.weekMythicPlus)
             create_lable(btn, 3, info.Keystone.weekPvP)
+            create_lable(btn, 'b', info.Keystone.score)
+            create_lable(btn, 'r', info.Keystone.weekNum)
         last= btn
     end
+    --[[score= score,
+    all= all,
+    week= e.Player.week,
+    weekNum= weekNum,]]
     last=nil
 end
 
