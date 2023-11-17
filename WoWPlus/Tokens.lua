@@ -172,24 +172,24 @@ local function Get_Currency(currencyID, index)--货币
 	
 
 	local need
-	if not weekMax--本周,收入
-		and info.canEarnPerWeek
-		and info.quantityEarnedThisWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0
-		and info.quantityEarnedThisWeek<info.maxWeeklyQuantity
-	then
-		need= '|cnGREEN_FONT_COLOR:('..e.MK(info.maxWeeklyQuantity- info.quantityEarnedThisWeek, 0)..')|r'
+	if not weekMax and not earnedMax then
+		if info.canEarnPerWeek--本周,收入
+			and info.quantityEarnedThisWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0
+			and info.quantityEarnedThisWeek<info.maxWeeklyQuantity
+		then
+			need= '|cnGREEN_FONT_COLOR:('..e.MK(info.maxWeeklyQuantity- info.quantityEarnedThisWeek, 0)..')|r'
 
-	elseif not earnedMax--赛季,收入
-		and info.useTotalEarnedForMaxQty
-		and info.totalEarned and info.maxQuantity and info.maxQuantity>0
-		and info.totalEarned< info.maxQuantity
-	then
-		need= '|cnGREEN_FONT_COLOR:('..e.MK(info.maxQuantity- info.totalEarned, 0)..')|r'
+		elseif --赛季,收入
+			info.useTotalEarnedForMaxQty
+			and info.totalEarned and info.maxQuantity and info.maxQuantity>0
+			and info.totalEarned< info.maxQuantity
+		then
+			need= '|cnGREEN_FONT_COLOR:('..e.MK(info.maxQuantity- info.totalEarned, 0)..')|r'
 
-	elseif info.maxQuantity and info.maxQuantity>0 and info.quantity< info.maxQuantity then
-		need= '|cnGREEN_FONT_COLOR:('..e.MK(info.maxQuantity- info.quantity, 0)..')|r'
+		elseif info.maxQuantity and info.maxQuantity>0 and info.quantity< info.maxQuantity then
+			need= '|cnGREEN_FONT_COLOR:('..e.MK(info.maxQuantity- info.quantity, 0)..')|r'
+		end
 	end
-
 	if Save.toRightTrackText then
 		text=(name and name..' ' or '')
 			..(name and '|cffff7d00' or '')
