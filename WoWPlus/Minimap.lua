@@ -1674,7 +1674,7 @@ local function Init_M_Portal_Room_Labels()
 
     lable= e.Cstr(MRoomFrame, {color=true, justifyH='CENTER', mouse=true})
     mapInfo=C_Map.GetMapInfo(203) or {}
-    lable:SetPoint('CENTER', UIParent, -200, 100)
+    lable:SetPoint('CENTER', UIParent, -200, 50)
     lable:SetText(
         (e.onlyChinese and '潮汐王座|n' or '')
         ..(EJ_GetInstanceInfo(65) or '')
@@ -1703,7 +1703,7 @@ local function Init_M_Portal_Room_Labels()
 
     lable= e.Cstr(MRoomFrame, {color=true, justifyH='CENTER'})
     mapInfo=C_Map.GetMapInfo(896) or {}
-    lable:SetPoint('CENTER', UIParent, 200, 100)
+    lable:SetPoint('CENTER', UIParent, 200, 50)
     lable:SetText(
         (e.onlyChinese and '维克雷斯庄园|n' or '')
         ..(EJ_GetInstanceInfo(1021) or '')
