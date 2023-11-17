@@ -712,7 +712,7 @@ local function All_Player_Info()--所以角色信息
         elseif point=='r' then
             label:SetPoint('TOPRIGHT')
         end
-        
+
         label:SetText(text)
         label.point= point
         label:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
@@ -734,8 +734,8 @@ local function All_Player_Info()--所以角色信息
     end
     local last
     for guid, info in pairs(e.WoWDate) do--[e.Player.guid].Keystone
-        if guid~=e.Player.guid and info.Keystone.link then
-            local _, englishClass, _, englishRace, sex, namePlayer, realm = GetPlayerInfoByGUID(guid)
+        if info.Keystone.link and guid~=e.Player.guid then
+            local _, englishClass, _, _, _, namePlayer, realm = GetPlayerInfoByGUID(guid)
             if namePlayer and namePlayer~='' then
                 local classColor = englishClass and C_ClassColor.GetClassColor(englishClass)
                 local btn= e.Cbtn(TipsFrame, {size={30,30}, atlas=e.GetUnitRaceInfo({guid=guid, reAtlas=true})})
@@ -747,10 +747,10 @@ local function All_Player_Info()--所以角色信息
                 create_lable(btn, 1, info.Keystone.weekPvE, classColor)--团队副本
                 create_lable(btn, 2, info.Keystone.weekMythicPlus, classColor)--挑战
                 create_lable(btn, 3, info.Keystone.weekPvP, classColor)--pvp
-                create_lable(btn, 'b', info.Keystone.score, classColor)--分数
-                create_lable(btn, 'l', info.Keystone.weekNum or 0, classColor)--次数
-                create_lable(btn, 'r', info.Keystone.weekLevel, classColor)--次数
-                
+                create_lable(btn, 'b', e.GetKeystoneScorsoColor(info.Keystone.score or 0), classColor)--分数
+                create_lable(btn, 'l', info.Keystone.weekNum or 0, {r=1,g=1,b=1})--次数
+                create_lable(btn, 'r', info.Keystone.weekLevel, {r=1,g=1,b=1})--次数
+
                 if info.Keystone.link then
                     local link= info.Keystone.link
                     if e.onlyChinese and not LOCALE_zhCN then--取得中文，副本名称
@@ -767,7 +767,7 @@ local function All_Player_Info()--所以角色信息
                         ..((realm and realm~='') and '-'..realm or '')
                         ..(e.Class(nil, englishClass) or '')
                     )
-                    
+
                     local keyLable= e.Cstr(btn, {mouse=true})--KEY
                     keyLable:SetPoint('RIGHT', nameLable, 'LEFT')
                     keyLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
@@ -1499,7 +1499,7 @@ local function Init_WeeklyRewardsFrame()
     WeeklyRewardsFrame.showChallenges =e.Cbtn(WeeklyRewardsFrame, {texture='Interface\\Icons\\achievement_bg_wineos_underxminutes', size={42,42}})--所有角色,挑战
     WeeklyRewardsFrame.showChallenges:SetPoint('RIGHT',-4,-42)
     WeeklyRewardsFrame.showChallenges:SetFrameStrata('HIGH')
-    
+
     WeeklyRewardsFrame.showChallenges:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
         e.tips:ClearLines();
