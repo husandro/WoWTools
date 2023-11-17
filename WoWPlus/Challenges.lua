@@ -897,24 +897,16 @@ local function set_All_Text()--所有记录
     --所有角色KEY
     --##########
     local keyText
-    for guid, infoWoW in pairs(e.WoWDate or {}) do
-        --if guid~=e.Player.guid then
-            local key
-            for link, _ in pairs(infoWoW.Keystone.itemLink) do
-                local icon= C_Item.GetItemIconByID(link)
-                key= (key or '')
-                    ..'|T'..((not icon or icon==134400) and 4352494 or icon)..':0|t'
-                    ..link
-
-            end
-            if key then
-                keyText= (keyText and keyText..'|n' or '')
-                    ..(infoWoW.Keystone.weekLevel or 0)..' ('..(infoWoW.Keystone.weekNum or 0)..') '--次数
-                    ..(infoWoW.Keystone.score and e.GetKeystoneScorsoColor(infoWoW.Keystone.score)..' ' or '')
-                    ..e.GetPlayerInfo({guid=guid, faction=infoWoW.faction, reName=true, reRealm=true})
-                    ..key
-            end
-       -- end
+    for guid, info in pairs(e.WoWDate or {}) do
+        if guid~=e.Player.guid and info.Keystone.link then
+            local icon= C_Item.GetItemIconByID(link)
+            keyText= (keyText and keyText..'|n' or '')
+                .. (info.Keystone.weekNum or 0)
+                .. (info.Keystone.weekMythicPlus and ' |cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
+                ..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
+                ..'|T'..((not icon or icon==134400) and 4352494 or icon)..':0|t'..info.Keystone.link
+            ..(info.Keystone.score and ' ' or '')..(e.GetKeystoneScorsoColor(info.Keystone.score))
+       end
     end
     if keyText then
         m= (m and m..'|n|n'..keyText or m)

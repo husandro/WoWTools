@@ -455,15 +455,13 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
     e.tips:ClearLines();
     e.tips:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
     for guid, info in pairs(e.WoWDate or {}) do
-        if guid and info then
-            local find
-            for itemLink, _ in pairs(info.Keystone.itemLink) do
-                e.tips:AddLine(itemLink)
-                find=true
-            end
-            if find then
-                e.tips:AddLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}))
-            end
+        if guid and  info.Keystone.link then
+            e.tips:AddDoubleLine(
+                (info.Keystone.weekNum or 0)
+                .. (info.Keystone.weekMythicPlus and ' |cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
+                ..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
+                ..(info.Keystone.score and ' ' or '')..(e.GetKeystoneScorsoColor(info.Keystone.score)),
+                info.Keystone.link)
         end
     end
     e.tips:Show()
