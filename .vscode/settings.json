@@ -3636,7 +3636,8 @@
         "DUNGEONS",
         "PROVING_GROUNDS_SCORE",
         "DUNGEON_SCORE",
-        "ARCHAEOLOGY_COMPLETION"
+        "ARCHAEOLOGY_COMPLETION",
+        "BEST"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

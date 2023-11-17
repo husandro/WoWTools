@@ -705,10 +705,12 @@ local function All_Player_Info()--所以角色信息
         elseif point==3 then
             label:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
         elseif point=='b' then
-            label:SetPoint('BOTTOMRIGHT')
+            label:SetPoint('BOTTOMLEFT')
+        elseif point=='l' then
+            label:SetPoint('TOPLEFT')
+            label.num= text
         elseif point=='r' then
             label:SetPoint('TOPRIGHT')
-            label.num= text
         end
         
         label:SetText(text)
@@ -722,7 +724,8 @@ local function All_Player_Info()--所以角色信息
                 or self.point==2 and (e.onlyChinese and '地下城' or DUNGEONS)
                 or self.point==3 and PVP
                 or self.point=='b' and (e.onlyChinese and '史诗钥石评分' or DUNGEON_SCORE)
-                or self.point=='r' and (e.onlyChinese and '本周次数' or format(CURRENCY_THIS_WEEK, format(ARCHAEOLOGY_COMPLETION,self.num)))
+                or self.point=='l' and (e.onlyChinese and '本周次数' or format(CURRENCY_THIS_WEEK, format(ARCHAEOLOGY_COMPLETION,self.num)))
+                or self.point=='r' and (e.onlyChinese and '本周最高等级' or format(CURRENCY_THIS_WEEK, BEST))
             )
             e.tips:AddLine(self:GetText())
             e.tips:Show()
@@ -745,7 +748,8 @@ local function All_Player_Info()--所以角色信息
                 create_lable(btn, 2, info.Keystone.weekMythicPlus, classColor)--挑战
                 create_lable(btn, 3, info.Keystone.weekPvP, classColor)--pvp
                 create_lable(btn, 'b', info.Keystone.score, classColor)--分数
-                create_lable(btn, 'r', info.Keystone.weekNum or 0, classColor)--次数
+                create_lable(btn, 'l', info.Keystone.weekNum or 0, classColor)--次数
+                create_lable(btn, 'r', info.Keystone.weekLevel, classColor)--次数
                 
                 if info.Keystone.link then
                     local link= info.Keystone.link
