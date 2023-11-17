@@ -78,7 +78,7 @@ end
 --########################
 --[[
 local createRun
-local function set_Creature_Num()--local distanceSquared, checkedDistance = UnitDistanceSquared(u)
+local function set_Creature_Num()--local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
     if not (Save.creature and targetFrame:IsShown()) or createRun then
         if targetFrame.Creature then
             targetFrame.Creature:SetText('')

@@ -128,7 +128,7 @@ end
 local NotifyInspectTicker
 e.GetNotifyInspect= function(tab, unit)
     if unit then
-        if UnitExists(unit) and CheckInteractDistance(unit, 1) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then
+        if UnitExists(unit) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit, 1)
             NotifyInspect(unit)
         end
     else
@@ -140,7 +140,7 @@ e.GetNotifyInspect= function(tab, unit)
             end
             NotifyInspectTicker=C_Timer.NewTimer(4, function()--InspectFrame,如果显示，查看玩家，天赋，出错
                 local unit2=tab[index]
-                if UnitExists(unit2) and CheckInteractDistance(unit2, 1) and CanInspect(unit2) and (not InspectFrame or not InspectFrame:IsShown()) then
+                if UnitExists(unit2) and CanInspect(unit2) and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit2, 1)
                     NotifyInspect(tab[index])
                     index= index+ 1
                 end
