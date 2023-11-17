@@ -24,6 +24,7 @@ local Save={
         useServerTimer=true,--小时图，使用服务器, 时间
        --disabledInstanceDifficulty=true,--副本，难图，指示
 
+       --hideMPortalRoomLabels=true,--'10.2 副本，挑战专送门'
 
 }
 
@@ -1611,6 +1612,107 @@ end
 
 
 
+--挑战专送门标签
+--10.2 第三赛季
+local MRoomFrame
+local function Init_M_Portal_Room_Labels()
+    if C_MythicPlus.GetCurrentSeason()~=11
+        or Save.hideMPortalRoomLabels
+        or MRoomFrame
+    then
+        if MRoomFrame then
+            MRoomFrame:set_evnet()
+            MRoomFrame:set_shown()
+        end
+        return
+    end
+
+    MRoomFrame= CreateFrame('Frame')
+
+    function MRoomFrame:set_evnet()
+        if Save.hideMPortalRoomLabels then
+            MRoomFrame:UnregisterEvent('PLAYER_ENTERING_WORLD')
+        else
+            MRoomFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+        end
+    end
+    function MRoomFrame:set_shown()
+        local instanceID= select(8, GetInstanceInfo())
+        self:SetShown(instanceID==2678 and not Save.hideMPortalRoomLabels)
+    end
+    
+
+    MRoomFrame:SetScript('OnEvent', MRoomFrame.set_shown)
+    MRoomFrame:set_evnet()
+    MRoomFrame:set_shown()
+
+    local lable= e.Cstr(MRoomFrame, {color=true, justifyH='CENTER'})
+    local mapInfo=C_Map.GetMapInfo(641) or {}
+    lable:SetPoint('CENTER', UIParent, 0, 200)
+    lable:SetText(
+        (e.onlyChinese and '堡垒 | 林地|n' or '')
+        ..( EJ_GetInstanceInfo(740) or '')..' | '..( EJ_GetInstanceInfo(762) or '')
+        ..(mapInfo.name and '|n'..mapInfo.name or '')
+    )
+
+
+    lable= e.Cstr(MRoomFrame, {color=true, justifyH='CENTER'})
+    lable:SetPoint('CENTER', UIParent, -150, 150)
+    mapInfo=C_Map.GetMapInfo(543) or {}
+    lable:SetText(
+        (e.onlyChinese and '永茂林地|n' or '')
+        ..(EJ_GetInstanceInfo(556) or '')
+        ..(mapInfo.name and '|n'..mapInfo.name or '')
+    )
+
+
+    lable= e.Cstr(MRoomFrame, {color=true, justifyH='CENTER', mouse=true})
+    mapInfo=C_Map.GetMapInfo(203) or {}
+    lable:SetPoint('CENTER', UIParent, -200, 100)
+    lable:SetText(
+        (e.onlyChinese and '潮汐王座|n' or '')
+        ..(EJ_GetInstanceInfo(65) or '')
+        ..(mapInfo.name and '|n'..mapInfo.name or '')
+    )
+    lable:SetScript('OnLeave', function(self) self:SetAlpha(1) end)
+    lable:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(e.onlyChinese and '挑战传送门标签' or 'M+ Portal Room Labels')
+        e.tips:Show()
+        self:SetAlpha(0.3)
+    end)
+
+
+    lable= e.Cstr(MRoomFrame, {color=true, justifyH='CENTER'})
+    lable:SetPoint('CENTER', UIParent, 150, 150)
+    mapInfo=C_Map.GetMapInfo(862) or {}
+    lable:SetText(
+        (e.onlyChinese and '阿塔达萨|n' or '')
+        ..(EJ_GetInstanceInfo(968) or '')
+        ..(mapInfo.name and '|n'..mapInfo.name or '')
+    )
+
+
+    lable= e.Cstr(MRoomFrame, {color=true, justifyH='CENTER'})
+    mapInfo=C_Map.GetMapInfo(896) or {}
+    lable:SetPoint('CENTER', UIParent, 200, 100)
+    lable:SetText(
+        (e.onlyChinese and '维克雷斯庄园|n' or '')
+        ..(EJ_GetInstanceInfo(1021) or '')
+        ..(mapInfo.name and '|n'..mapInfo.name or '')
+    )
+end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1744,6 +1846,22 @@ local function Init_Menu(_, level, menuList)
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    if C_MythicPlus.GetCurrentSeason()==11 then
+        local mapInfo= C_Map.GetMapInfo(947)
+        info={
+            text= e.onlyChinese and '挑战传送门标签' or 'M+ Portal Room Labels',
+            tooltipOnButton=true,
+            tooltipTitle='uiMapID 947',
+            tooltipText= mapInfo and mapInfo.name,
+            checked= not Save.hideMPortalRoomLabels,
+            func= function()
+                Save.hideMPortalRoomLabels= not Save.hideMPortalRoomLabels and true or nil
+                Init_M_Portal_Room_Labels()
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    end
 end
 
 
@@ -1973,8 +2091,10 @@ end
 --####
 local function Init()
     Init_InstanceDifficulty()--副本，难图，指示
-
     Init_Set_Button()--小地图, 标记, 文本
+    Init_M_Portal_Room_Labels()--挑战专送门标签
+
+
 
     --########
     --盟约图标
