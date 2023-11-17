@@ -23,7 +23,7 @@ Libs\CallbackHandler-1.0.lua
 Libs\LibDataBroker-1.1.lua
 
 Libs\LibDBIcon-1.0.lua
-Libs\LibRangeCheck-2.0.lua
+Libs\LibRangeCheck-3.0.lua
 Libs\LibUIDropDownMenu.lua
 
 ##Libs\LibNameplateRegistry-1.0\LibNameplateRegistry-1.0.lua
