@@ -848,7 +848,7 @@ local function set_All_Text()--所有记录
     end
     ChallengesFrame.weekCompledLabel:SetText(
         (e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)
-        ..' |cff00ff00'..completed..'|r/'..all
+        ..' |cff00ff00'..completed..'|r/'..all.. ' '..(e.Get_Week_Rewards_Text(1) or '')
         ..(weekText and '|n'..weekText or '')
     )
     last= ChallengesFrame.weekCompledLabel
