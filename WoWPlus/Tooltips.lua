@@ -531,16 +531,15 @@ function func.Set_Item(self, itemLink, itemID)
     local bag= GetItemCount(itemLink)--物品数量
     local bank= GetItemCount(itemLink,true) - bag
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
-        --local numPlayer=1 --帐号数据 --{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数},
         for guid, info in pairs(e.WoWDate or {}) do
             if guid and guid~=e.Player.guid then
                 if info.Keystone.link then
-                    local num= info.Keystone.weekMythicPlus
-                    or (
-                        (info.Keystone.weekNum and info.Keystone.weekLevel)
-                        and (info.Keystone.weekNum..'-'..info.Keystone.weekLevel)
-                    )
-                    self:AddDoubleLine((num and '|cnGREEN_FONT_COLOR:('..num..')|r ' or '')..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), info.Keystone.link)
+                    self:AddDoubleLine(
+                        (info.Keystone.weekNum or 0)
+                        .. (info.Keystone.weekMythicPlus and '|cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..')' or '')
+                        ..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
+                        ..(info.Keystone.score and ' ' or '')..(e.GetKeystoneScorsoColor(info.Keystone.score)),
+                        info.Keystone.link)
                 end
             end
         end
