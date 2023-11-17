@@ -701,6 +701,21 @@ local function All_Player_Info()--所以角色信息
         else
             btn:SetPoint('TOP', last, 'BOTTOM')
         end
+        if info.Keystone.weekPvE then
+            local weekPvE= e.Cstr(btn)
+            weekPvE:SetPoint('TOPRIGHT', btn, 'TOPLEFT')
+            weekPvE:SetText(info.Keystone.weekPvE)
+        end
+        if info.Keystone.weekMythicPlus then
+            local weekMythicPlus= e.Cstr(btn)
+            weekMythicPlus:SetPoint('RIGHT', btn, 'LEFT')
+            weekMythicPlus:SetText(info.Keystone.weekMythicPlus)
+        end
+        if info.Keystone.weekPvP then
+            local weekPvP= e.Cstr(btn)
+            weekPvP:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
+            weekPvP:SetText(info.Keystone.weekPvP)
+        end
         last= btn
     end
     last=nil

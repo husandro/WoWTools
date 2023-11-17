@@ -237,9 +237,9 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
         week= e.Player.week,
         weekNum= weekNum,
         weekLevel= weekLevel,
+        weekPvE= e.Get_Week_Rewards_Text(3),--Raid
         weekMythicPlus= e.Get_Week_Rewards_Text(1),--MythicPlus
         weekPvP= e.Get_Week_Rewards_Text(2),--RankedPvP
-        weekPvE= e.Get_Week_Rewards_Text(3),--Raid
         link= e.WoWDate[e.Player.guid].Keystone.link,
     }
 end
