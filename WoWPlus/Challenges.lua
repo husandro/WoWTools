@@ -692,15 +692,16 @@ end
 
 --所以角色信息
 --###########
-local function All_Player_Info()
+local function All_Player_Info()--所以角色信息
     local last
     for guid, info in pairs(e.WoWDate) do--[e.Player.guid].Keystone
-        if info.link then
-            
+        local btn= e.Cbtn(TipsFrame, {size={22,22}, atlas=e.GetUnitRaceInfo({guid=guid, reAtlas=true})})
+        if not last then
+            btn:SetPoint('TOPRIGHT', ChallengesFrame, 'TOPLEFT', -2, -62)
+        else
+            btn:SetPoint('TOP', last, 'BOTTOM')
         end
-        if info.Keystone then
-            
-        end
+        last= btn
     end
     last=nil
 end
@@ -1731,6 +1732,7 @@ local function Init()
     --周奖励，提示
     e.Get_Weekly_Rewards_Activities({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53}})
 
+    All_Player_Info()--所以角色信息
     C_Timer.After(2, set_All_Text)--所有记录
 
     hooksecurefunc(ChallengesFrame, 'Update', set_Update)
