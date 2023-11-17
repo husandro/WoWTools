@@ -690,9 +690,20 @@ end
 
 
 
-
-
-
+--所以角色信息
+--###########
+local function All_Player_Info()
+    local last
+    for guid, info in pairs(e.WoWDate) do--[e.Player.guid].Keystone
+        if info.link then
+            
+        end
+        if info.Keystone then
+            
+        end
+    end
+    last=nil
+end
 
 
 
@@ -942,11 +953,22 @@ local function set_All_Text()--所有记录
     for guid, info in pairs(e.WoWDate or {}) do
         if guid~=e.Player.guid and info.Keystone.link then
             local icon= C_Item.GetItemIconByID(info.Keystone.link)
+            --|Hkeystone:180653:244:2:10:0:0:0|h[Chiave del Potere: Atal'dazar (2)]|h
+            local link= info.Keystone.link
+            if e.onlyChinese and not LOCALE_zhCN then
+                --  ( ) . % + - * ? [ ^ $
+                local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
+                mapID= mapID and tonumber(mapID)
+                if mapID and name and SpellTabs[mapID] and SpellTabs[mapID].name then
+                    link= link:gsub(name, SpellTabs[mapID].name)
+                end
+            end
+
             keyText= (keyText and keyText..'|n' or '')
                 .. (info.Keystone.weekNum or 0)
                 .. (info.Keystone.weekMythicPlus and ' |cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
                 ..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
-                ..' |T'..((not icon or icon==134400) and 4352494 or icon)..':0|t'..info.Keystone.link
+                ..' |T'..((not icon or icon==134400) and 4352494 or icon)..':0|t'..link--info.Keystone.link
             ..(info.Keystone.score and ' ' or '')..(e.GetKeystoneScorsoColor(info.Keystone.score))
        end
     end
@@ -1383,6 +1405,54 @@ end
 
 
 
+
+
+--周奖励界面界面
+--#############
+local function Init_WeeklyRewardsFrame()
+    --添加一个按钮，打开挑战界面
+    WeeklyRewardsFrame.showChallengesFrame =e.Cbtn(WeeklyRewardsFrame, {texture=4352494, size={22,22}})--所有角色,挑战
+    if _G['MoveZoomInButtonPerWeeklyRewardsFrame'] then
+        WeeklyRewardsFrame.showChallengesFrame:SetPoint('LEFT', _G['MoveZoomInButtonPerWeeklyRewardsFrame'], 'RIGHT')
+    else
+        WeeklyRewardsFrame.showChallengesFrame:SetPoint('BOTTOMLEFT', WeeklyRewardsFrame, 'TOPLEFT')
+    end
+    WeeklyRewardsFrame.showChallengesFrame:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT");
+        e.tips:ClearLines();
+        e.tips:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
+        e.tips:Show()
+        self2:SetButtonState('NORMAL')
+    end)
+    WeeklyRewardsFrame.showChallengesFrame:SetScript("OnLeave",function() e.tips:Hide() end)
+    WeeklyRewardsFrame.showChallengesFrame:SetScript('OnMouseDown', function()
+        PVEFrame_ToggleFrame('ChallengesFrame', 3)
+    end)
+    WeeklyRewardsFrame:HookScript('OnShow', function(self)
+        self.showChallengesFrame:SetButtonState('NORMAL')
+    end)
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --########################
 --打开周奖励时，提示拾取专精
 --########################
@@ -1794,24 +1864,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
             Init()--史诗钥石地下城, 界面
 
-        elseif arg1=='Blizzard_WeeklyRewards' then--周奖励界面，添加一个按钮，打开挑战界面
-            local btn =e.Cbtn(WeeklyRewardsFrame, {texture=4352494, size={22,22}})--所有角色,挑战
-            if _G['MoveZoomInButtonPerWeeklyRewardsFrame'] then
-                btn:SetPoint('LEFT', _G['MoveZoomInButtonPerWeeklyRewardsFrame'], 'RIGHT')
-            else
-                btn:SetPoint('BOTTOMLEFT', WeeklyRewardsFrame, 'TOPLEFT')
-            end
-            btn:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT");
-                e.tips:ClearLines();
-                e.tips:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
-                e.tips:Show()
-                self2:SetButtonState('NORMAL')
-            end)
-            btn:SetScript("OnLeave",function() e.tips:Hide() end)
-            btn:SetScript('OnMouseDown', function()
-                PVEFrame_ToggleFrame('ChallengesFrame', 3)
-            end)
+        elseif arg1=='Blizzard_WeeklyRewards' then
+            Init_WeeklyRewardsFrame()--周奖励界面，添加一个按钮，打开挑战界面
         end
 
     elseif event == "PLAYER_LOGOUT" then

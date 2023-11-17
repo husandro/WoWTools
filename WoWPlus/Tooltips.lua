@@ -536,7 +536,7 @@ function func.Set_Item(self, itemLink, itemID)
                     (info.Keystone.weekNum or 0)
                     .. (info.Keystone.weekMythicPlus and '|cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
                     ..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
-                    ..(info.Keystone.score and ' ' or '')..(e.GetKeystoneScorsoColor(info.Keystone.score)),
+                    ..(info.Keystone.score and ' ' or '')..(e.GetKeystoneScorsoColor(info.Keystone.score,true)),
                     info.Keystone.link)
             end
         end
@@ -547,7 +547,7 @@ function func.Set_Item(self, itemLink, itemID)
                 text= (text and text..'/' or '')..activities.level
             end
         end]]
-        local score= e.GetKeystoneScorsoColor(C_ChallengeMode.GetOverallDungeonScore())
+        local score= e.GetKeystoneScorsoColor(C_ChallengeMode.GetOverallDungeonScore(), true)
         if text or score then
             self.textLeft:SetText((text and '|cnGREEN_FONT_COLOR:'..text..'|r ' or '')..(score or ''))
         end
