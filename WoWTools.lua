@@ -770,7 +770,7 @@ function e.Get_Week_Rewards_Text(type)--得到，周奖励，信息
             text= (text and text..'/' or '')..activities.level
         end
     end
-    return text
+    return text~='0/0/0' and text or nil
 end
 
 

@@ -3632,7 +3632,8 @@
         "SLASH_STOPWATCH_PARAM_STOP1",
         "BankFrame_Open",
         "CloseBag",
-        "LFGListUtil_GetDecoratedCategoryName"
+        "LFGListUtil_GetDecoratedCategoryName",
+        "DUNGEONS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

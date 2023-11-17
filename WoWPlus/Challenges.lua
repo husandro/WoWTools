@@ -693,29 +693,45 @@ end
 --所以角色信息
 --###########
 local function All_Player_Info()--所以角色信息
+    local function create_lable(btn, point, text)
+        if not text then
+            return
+        end
+        local label= e.Cstr(btn, {size=10, mouse=true})
+        if point==1 then
+            label:SetPoint('TOPRIGHT', btn, 'TOPLEFT')
+        elseif point==2 then
+            label:SetPoint('RIGHT', btn, 'LEFT')
+        elseif point==3 then
+            label:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
+        end
+        label:SetText(text)
+        label.point= point
+        label:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+        label:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(
+                self.point==1 and (e.onlyChinese and '团队副本' or RAIDS)
+                or self.point==2 and (e.onlyChinese and '地下城' or DUNGEONS)
+                or PVP
+            )
+            e.tips:AddLine(self:GetText())
+            e.tips:Show()
+        end)
+    end
     local last
     for guid, info in pairs(e.WoWDate) do--[e.Player.guid].Keystone
-        local btn= e.Cbtn(TipsFrame, {size={22,22}, atlas=e.GetUnitRaceInfo({guid=guid, reAtlas=true})})
+        --if guid~=e.Player.guid then
+        local btn= e.Cbtn(TipsFrame, {size={30,30}, atlas=e.GetUnitRaceInfo({guid=guid, reAtlas=true})})
         if not last then
-            btn:SetPoint('TOPRIGHT', ChallengesFrame, 'TOPLEFT', -2, -62)
+            btn:SetPoint('TOPRIGHT', ChallengesFrame, 'TOPLEFT', -2, 0)
         else
             btn:SetPoint('TOP', last, 'BOTTOM')
         end
-        if info.Keystone.weekPvE then
-            local weekPvE= e.Cstr(btn)
-            weekPvE:SetPoint('TOPRIGHT', btn, 'TOPLEFT')
-            weekPvE:SetText(info.Keystone.weekPvE)
-        end
-        if info.Keystone.weekMythicPlus then
-            local weekMythicPlus= e.Cstr(btn)
-            weekMythicPlus:SetPoint('RIGHT', btn, 'LEFT')
-            weekMythicPlus:SetText(info.Keystone.weekMythicPlus)
-        end
-        if info.Keystone.weekPvP then
-            local weekPvP= e.Cstr(btn)
-            weekPvP:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
-            weekPvP:SetText(info.Keystone.weekPvP)
-        end
+            create_lable(btn, 1, info.Keystone.weekPvE)
+            create_lable(btn, 2, info.Keystone.weekMythicPlus)
+            create_lable(btn, 3, info.Keystone.weekPvP)
         last= btn
     end
     last=nil
@@ -1427,25 +1443,23 @@ end
 --#############
 local function Init_WeeklyRewardsFrame()
     --添加一个按钮，打开挑战界面
-    WeeklyRewardsFrame.showChallengesFrame =e.Cbtn(WeeklyRewardsFrame, {texture=4352494, size={22,22}})--所有角色,挑战
-    if _G['MoveZoomInButtonPerWeeklyRewardsFrame'] then
-        WeeklyRewardsFrame.showChallengesFrame:SetPoint('LEFT', _G['MoveZoomInButtonPerWeeklyRewardsFrame'], 'RIGHT')
-    else
-        WeeklyRewardsFrame.showChallengesFrame:SetPoint('BOTTOMLEFT', WeeklyRewardsFrame, 'TOPLEFT')
-    end
-    WeeklyRewardsFrame.showChallengesFrame:SetScript('OnEnter', function(self2)
+    WeeklyRewardsFrame.showChallenges =e.Cbtn(WeeklyRewardsFrame, {texture='Interface\\Icons\\achievement_bg_wineos_underxminutes', size={42,42}})--所有角色,挑战
+    WeeklyRewardsFrame.showChallenges:SetPoint('RIGHT',-4,-42)
+    WeeklyRewardsFrame.showChallenges:SetFrameStrata('HIGH')
+    
+    WeeklyRewardsFrame.showChallenges:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
         e.tips:ClearLines();
         e.tips:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
         e.tips:Show()
         self2:SetButtonState('NORMAL')
     end)
-    WeeklyRewardsFrame.showChallengesFrame:SetScript("OnLeave",function() e.tips:Hide() end)
-    WeeklyRewardsFrame.showChallengesFrame:SetScript('OnMouseDown', function()
+    WeeklyRewardsFrame.showChallenges:SetScript("OnLeave",function() e.tips:Hide() end)
+    WeeklyRewardsFrame.showChallenges:SetScript('OnMouseDown', function()
         PVEFrame_ToggleFrame('ChallengesFrame', 3)
     end)
     WeeklyRewardsFrame:HookScript('OnShow', function(self)
-        self.showChallengesFrame:SetButtonState('NORMAL')
+        self.showChallenges:SetButtonState('NORMAL')
     end)
 
 end
