@@ -730,8 +730,8 @@ local function All_Player_Info()--所以角色信息
     end
     local last
     for guid, info in pairs(e.WoWDate) do--[e.Player.guid].Keystone
-        --if guid~=e.Player.guid then
         local _, englishClass, _, englishRace, sex, namePlayer, realm = GetPlayerInfoByGUID(guid)
+        --if guid~=e.Player.guid and namePlayer then
         local classColor = englishClass and C_ClassColor.GetClassColor(englishClass)
         local btn= e.Cbtn(TipsFrame, {size={30,30}, atlas=e.GetUnitRaceInfo({guid=guid, reAtlas=true})})
         if not last then
@@ -754,19 +754,25 @@ local function All_Player_Info()--所以角色信息
                     link= link:gsub(name, SpellTabs[mapID].name)
                 end
             end
-            local icon= C_Item.GetItemIconByID(info.Keystone.link)
-            local lable= e.Cstr(btn)
-            lable:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
-            lable:SetText(
-                '|T'..((not icon or icon==134400) and 4352494 or icon)..':0|t'
-                ..link
-                ..(namePlayer or '')..(realm and '-'..realm or '')
-            )
-            last= lable
+            local nameLable= e.Cstr(btn, {color= classColor})
+            nameLable:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
+            nameLable:SetText((namePlayer or '')..((realm and realm~='') and '-'..realm or ''))
+            nameLable:SetText()
+            local keyLable= e.Cstr(btn, {mouse=true})
+            keyLable:SetPoint('RIGHT', nameLable, 'LEFT')
+            keyLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+            keyLable:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:SetHyperlink(self.link)
+                e.tips:Show()
+            end)
+            keyLable:SetText(link)
+            keyLable.link=link
+            last= keyLable
         else
             last= btn
         end
-        
     end
     --[[score= score,
     all= all,
