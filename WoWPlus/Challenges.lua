@@ -693,11 +693,11 @@ end
 --所以角色信息
 --###########
 local function All_Player_Info()--所以角色信息
-    local function create_lable(btn, point, text)
+    local function create_lable(btn, point, text, col)
         if not text then
             return
         end
-        local label= e.Cstr(btn, {size=10, mouse=true})
+        local label= e.Cstr(btn, {size=10, mouse=true, color=col})
         if point==1 then
             label:SetPoint('TOPRIGHT', btn, 'TOPLEFT')
         elseif point==2 then
@@ -710,6 +710,7 @@ local function All_Player_Info()--所以角色信息
             label:SetPoint('TOPRIGHT')
             label.num= text
         end
+        
         label:SetText(text)
         label.point= point
         label:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
@@ -730,18 +731,42 @@ local function All_Player_Info()--所以角色信息
     local last
     for guid, info in pairs(e.WoWDate) do--[e.Player.guid].Keystone
         --if guid~=e.Player.guid then
+        local _, englishClass, _, englishRace, sex, namePlayer, realm = GetPlayerInfoByGUID(guid)
+        local classColor = englishClass and C_ClassColor.GetClassColor(englishClass)
         local btn= e.Cbtn(TipsFrame, {size={30,30}, atlas=e.GetUnitRaceInfo({guid=guid, reAtlas=true})})
         if not last then
             btn:SetPoint('TOPRIGHT', ChallengesFrame, 'TOPLEFT', -2, 0)
         else
-            btn:SetPoint('TOP', last, 'BOTTOM')
+            btn:SetPoint('TOPRIGHT', last, 'BOTTOMRIGHT')
         end
-            create_lable(btn, 1, info.Keystone.weekPvE)
-            create_lable(btn, 2, info.Keystone.weekMythicPlus)
-            create_lable(btn, 3, info.Keystone.weekPvP)
-            create_lable(btn, 'b', info.Keystone.score)
-            create_lable(btn, 'r', info.Keystone.weekNum)
-        last= btn
+        create_lable(btn, 1, info.Keystone.weekPvE, classColor)
+        create_lable(btn, 2, info.Keystone.weekMythicPlus, classColor)
+        create_lable(btn, 3, info.Keystone.weekPvP, classColor)
+        create_lable(btn, 'b', info.Keystone.score, classColor)
+        create_lable(btn, 'r', info.Keystone.weekNum, classColor)
+        
+        if info.Keystone.link then
+            local link= info.Keystone.link
+            if e.onlyChinese and not LOCALE_zhCN then
+                local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
+                mapID= mapID and tonumber(mapID)
+                if mapID and name and SpellTabs[mapID] and SpellTabs[mapID].name then
+                    link= link:gsub(name, SpellTabs[mapID].name)
+                end
+            end
+            local icon= C_Item.GetItemIconByID(info.Keystone.link)
+            local lable= e.Cstr(btn)
+            lable:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
+            lable:SetText(
+                '|T'..((not icon or icon==134400) and 4352494 or icon)..':0|t'
+                ..link
+                ..(namePlayer or '')..(realm and '-'..realm or '')
+            )
+            last= lable
+        else
+            last= btn
+        end
+        
     end
     --[[score= score,
     all= all,
