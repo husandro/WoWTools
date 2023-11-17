@@ -1854,13 +1854,13 @@ local function Init_Menu(_, level, menuList)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     if C_MythicPlus.GetCurrentSeason()==11 then
-        local mapInfo= C_Map.GetMapInfo(947)
+        
         info={
             text= e.onlyChinese and '挑战传送门标签' or 'M+ Portal Room Labels',
             tooltipOnButton=true,
-            tooltipTitle='uiMapID 947',
-            tooltipText= mapInfo and mapInfo.name,
+            --tooltipTitle= EJ_GetInstanceInfo(2678),
             checked= not Save.hideMPortalRoomLabels,
+            keepShownOnClick=true,
             func= function()
                 Save.hideMPortalRoomLabels= not Save.hideMPortalRoomLabels and true or nil
                 Init_M_Portal_Room_Labels()
