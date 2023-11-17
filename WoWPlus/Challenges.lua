@@ -726,6 +726,7 @@ local function All_Player_Info()--所以角色信息
             )
             e.tips:AddLine(self:GetText())
             e.tips:Show()
+            self:SetAlpha(0.5)
         end)
     end
     local last
@@ -771,6 +772,7 @@ local function All_Player_Info()--所以角色信息
                         e.tips:ClearLines()
                         e.tips:SetHyperlink(self.link)
                         e.tips:Show()
+                        self:SetAlpha(0.5)
                     end)
                     keyLable:SetText(link)
                     keyLable.link=link
