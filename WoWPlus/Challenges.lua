@@ -747,18 +747,18 @@ local function All_Player_Info()--所以角色信息
         
         if info.Keystone.link then
             local link= info.Keystone.link
-            if e.onlyChinese and not LOCALE_zhCN then
+            if e.onlyChinese and not LOCALE_zhCN then--取得中文，副本名称
                 local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
                 mapID= mapID and tonumber(mapID)
                 if mapID and name and SpellTabs[mapID] and SpellTabs[mapID].name then
                     link= link:gsub(name, SpellTabs[mapID].name)
                 end
             end
-            local nameLable= e.Cstr(btn, {color= classColor})
+            local nameLable= e.Cstr(btn, {color= classColor})--名字
             nameLable:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
             nameLable:SetText((namePlayer or '')..((realm and realm~='') and '-'..realm or ''))
-            nameLable:SetText()
-            local keyLable= e.Cstr(btn, {mouse=true})
+            
+            local keyLable= e.Cstr(btn, {mouse=true})--KEY
             keyLable:SetPoint('RIGHT', nameLable, 'LEFT')
             keyLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
             keyLable:SetScript('OnEnter', function(self)
@@ -769,15 +769,11 @@ local function All_Player_Info()--所以角色信息
             end)
             keyLable:SetText(link)
             keyLable.link=link
-            last= keyLable
+            last= nameLable
         else
             last= btn
         end
     end
-    --[[score= score,
-    all= all,
-    week= e.Player.week,
-    weekNum= weekNum,]]
     last=nil
 end
 
