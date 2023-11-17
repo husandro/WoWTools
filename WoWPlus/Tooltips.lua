@@ -536,7 +536,7 @@ function func.Set_Item(self, itemLink, itemID)
                 if info.Keystone.link then
                     self:AddDoubleLine(
                         (info.Keystone.weekNum or 0)
-                        .. (info.Keystone.weekMythicPlus and '|cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..')' or '')
+                        .. (info.Keystone.weekMythicPlus and '|cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
                         ..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
                         ..(info.Keystone.score and ' ' or '')..(e.GetKeystoneScorsoColor(info.Keystone.score)),
                         info.Keystone.link)
