@@ -407,7 +407,7 @@ function func.Set_Item(self, itemLink, itemID)
     end
     local itemName, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent= GetItemInfo(itemLink or itemID)
     itemID= itemID or GetItemInfoInstant(itemLink or itemID) or func.GetItemInfoFromHyperlink(itemLink)
-    itemTexture= itemTexture or C_Item.GetItemNameByID(itemLink or itemID)
+    
     --local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(itemLink)
     --local itemID, itemType, itemSubType, itemEquipLoc, itemTexture2, classID, subclassID = GetItemInfoInstant(itemLink)
     if not itemID then
@@ -424,9 +424,8 @@ function func.Set_Item(self, itemLink, itemID)
         self:AddDoubleLine(e.GetExpansionText(expacID))
     end
 
-    --local itemTexture= itemTexture2 or itemID and C_Item.GetItemIconByID(itemID)
+    itemTexture= itemTexture or C_Item.GetItemIconByID(itemID or itemLink)
     self:AddDoubleLine(itemID and (e.onlyChinese and '物品' or ITEMS)..' '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture, 1,1,1, 1,1,1)--ID, texture
-
     if classID and subclassID then
         self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..' '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..' '..subclassID)
     end
