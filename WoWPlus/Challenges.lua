@@ -756,7 +756,11 @@ local function All_Player_Info()--所以角色信息
             end
             local nameLable= e.Cstr(btn, {color= classColor})--名字
             nameLable:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
-            nameLable:SetText((namePlayer or '')..((realm and realm~='') and '-'..realm or ''))
+            nameLable:SetText(
+                (namePlayer or '')
+                ..((realm and realm~='') and '-'..realm or '')
+                ..(e.Class(nil, englishClass) or '')
+            )
             
             local keyLable= e.Cstr(btn, {mouse=true})--KEY
             keyLable:SetPoint('RIGHT', nameLable, 'LEFT')
