@@ -308,6 +308,7 @@ local function Init_TargetFrame()
             end
         end
     end)
+    --[[
     TargetFrame.rangeText= e.Cstr(TargetFrame, {justifyH='RIGHT'})
     TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22,0)
     hooksecurefunc(TargetFrame, 'OnUpdate', function(self, elapsed)--距离
@@ -338,7 +339,7 @@ local function Init_TargetFrame()
             end
             self.rangeText:SetText(text or '')
         end
-    end)
+    end)]]
 end
 
 

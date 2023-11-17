@@ -682,7 +682,7 @@ function e.Magic(text)
     end
     return text
 end
-
+--[[
 local LibRangeCheck = LibStub("LibRangeCheck-2.0", true)
 function e.GetRange(unit, checkVisible)--WA Prototypes.lua
     return LibRangeCheck:GetRange(unit, checkVisible);
@@ -695,7 +695,7 @@ function e.CheckRange(unit, range, operator)
     else
         return (min or 0) >= range;
     end
-end
+end]]
 
 function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=})--设置，提示
     if tab.show and not tab.frame.HelpTips then

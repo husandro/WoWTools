@@ -76,9 +76,9 @@ end
 --########################
 --怪物目标, 队员目标, 总怪物
 --########################
---local distanceSquared, checkedDistance = UnitDistanceSquared(u)
+--[[
 local createRun
-local function set_Creature_Num()
+local function set_Creature_Num()--local distanceSquared, checkedDistance = UnitDistanceSquared(u)
     if not (Save.creature and targetFrame:IsShown()) or createRun then
         if targetFrame.Creature then
             targetFrame.Creature:SetText('')
@@ -127,7 +127,7 @@ local function set_Creature_Num()
     targetFrame.Creature:SetText(e.Player.col..(T==0 and '-' or  T)..'|r |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
     createRun=nil
 end
-
+]]
 
 
 
@@ -259,7 +259,7 @@ local function set_Target()
         if Save.target then
            targetFrame.Target:SetShown(true)
         end
-        set_Creature_Num()
+        --set_Creature_Num()
     end
     targetFrame:SetShown(plate and true or false)
 end
@@ -287,14 +287,14 @@ local function set_Created_Texture_Text()
         targetFrame.Target:SetShown(false)
     end
 
-    if not targetFrame.Creature and Save.creature then
+    --[[if not targetFrame.Creature and Save.creature then
         targetFrame.Creature= e.Cstr(targetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}, layer='BORDER', justifyH='RIGHT'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
         targetFrame.Creature:SetPoint('RIGHT', -8, 0)
         targetFrame.Creature:SetTextColor(1,1,1)
     end
     if targetFrame.Creature and not Save.creature then
         targetFrame.Creature:SetText('')
-    end
+    end]]
    set_Target()
 end
 
@@ -319,22 +319,22 @@ local function set_Register_Event()
     targetFrame:UnregisterAllEvents()
     targetFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-    if Save.target or Save.creature then
+    if Save.target then--or Save.creature then
         targetFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
         targetFrame:RegisterEvent('RAID_TARGET_UPDATE')
         targetFrame:RegisterUnitEvent('UNIT_FLAGS', 'target')
     end
 
-    if Save.target and Save.targetInCombat then
+    if Save.target then--and Save.targetInCombat then
         targetFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
         targetFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
     end
 
-    if Save.creature then
+    --[[if Save.creature then
         targetFrame:RegisterEvent('UNIT_TARGET')
-    end
+    end]]
 
-    if (not isIns and Save.quest) or Save.creature then
+    if (not isIns and Save.quest) then--or Save.creature then
         targetFrame:RegisterEvent('NAME_PLATE_UNIT_ADDED')
         targetFrame:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
     end
@@ -399,7 +399,7 @@ local function Init()
                     end
                 end
             end
-            set_Creature_Num()
+            --set_Creature_Num()
         end
     end)
 end
@@ -660,7 +660,7 @@ local function set_Option()
     end)
 
 
-    local sel2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    --[[local sel2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     sel2.Text:SetText(e.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r'
                 or (e.Player.col..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, TARGET)..'('..YOU..')|r |cnGREEN_FONT_COLOR:'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)..'('..YOU..')|r |cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)..'|r')
             )
@@ -692,11 +692,11 @@ local function set_Option()
         e.Cstr(nil, {changeFont=targetFrame.Creature, size=value})
         set_All_Init()
     end})
-    sliderCreatureFontSize:SetPoint("LEFT", sliderRange, 'RIGHT',15,0)
+    sliderCreatureFontSize:SetPoint("LEFT", sliderRange, 'RIGHT',15,0)]]
 
     local questCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     questCheck.Text:SetText(e.onlyChinese and '任务进度' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, PVP_PROGRESS_REWARDS_HEADER)))
-    questCheck:SetPoint('TOPLEFT', sel2, 'BOTTOMLEFT',0,-86)
+    questCheck:SetPoint('TOPLEFT', sel, 'BOTTOMLEFT',0,-186)
     questCheck:SetChecked(Save.quest)
     questCheck:SetScript('OnClick', function()
         Save.quest= not Save.quest and true or nil
