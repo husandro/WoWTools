@@ -757,6 +757,9 @@ local function set_All_Text()--所有记录
             for _, tab in pairs(newTab) do
                 local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(tab.mapID)
                 if name then
+                    if e.onlyChinese and not LOCALE_zhCN then
+                        name= SpellTabs[tab.mapID] and SpellTabs[tab.mapID].name or name
+                    end
                     local text= (texture and '|T'..texture..':0|t' or '').. name..' ('..tab.level..') '
                     local text2= tab.c..'/'..tab.t
                     if tab.isCurrent then
@@ -848,7 +851,7 @@ local function set_All_Text()--所有记录
     end
     ChallengesFrame.weekCompledLabel:SetText(
         (e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)
-        ..' |cff00ff00'..completed..'|r/'..all.. ' '..(e.Get_Week_Rewards_Text(1) or '')
+        ..' |cff00ff00'..completed..'|r/'..all--.. ' '..(e.Get_Week_Rewards_Text(1) or '')
         ..(weekText and '|n'..weekText or '')
     )
     last= ChallengesFrame.weekCompledLabel
