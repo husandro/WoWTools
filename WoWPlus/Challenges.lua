@@ -703,6 +703,7 @@ local function set_All_Text()--所有记录
     --###
     --历史
     --####
+    local last
     if not ChallengesFrame.runHistoryLable then
         ChallengesFrame.runHistoryLable= e.Cstr(TipsFrame, {mouse=true, size=14})--最右边, 数据
 
@@ -779,7 +780,7 @@ local function set_All_Text()--所有记录
         ..' |cff00ff00'..#C_MythicPlus.GetRunHistory(true)
         ..'|r/'..#C_MythicPlus.GetRunHistory(true, true)
     )
-
+    last= ChallengesFrame.runHistoryLable
 
 
 
@@ -843,22 +844,40 @@ local function set_All_Text()--所有记录
     end
     if not ChallengesFrame.weekCompledLabel then
         ChallengesFrame.weekCompledLabel= e.Cstr(TipsFrame)--最右边, 数据
-        ChallengesFrame.weekCompledLabel:SetPoint('TOPLEFT', ChallengesFrame.runHistoryLable, 'BOTTOMLEFT')
+        ChallengesFrame.weekCompledLabel:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
     end
     ChallengesFrame.weekCompledLabel:SetText(
         (e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)
         ..' |cff00ff00'..completed..'|r/'..all
         ..(weekText and '|n'..weekText or '')
     )
-
+    last= ChallengesFrame.weekCompledLabel
 
 
     --#############
     --难度 每周 掉落
     --#############
     if not ChallengesFrame.weekLootItemLevelLable then
-        ChallengesFrame.weekLootItemLevelLable= e.Cstr(TipsFrame)--最右边, 数据
-        ChallengesFrame.weekLootItemLevelLable:SetPoint('TOPLEFT', ChallengesFrame.weekCompledLabel, 'BOTTOMLEFT',0,-12)
+        ChallengesFrame.weekLootItemLevelLable= e.Cstr(TipsFrame, {mouse=true})--最右边, 数据
+        ChallengesFrame.weekLootItemLevelLable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-12)
+        function ChallengesFrame.weekLootItemLevelLable:get_Loot_itemLevel(level)
+            local col= self.curLevel==level and '|cff00ff00' or select(2, math.modf(level/2))==0 and '|cffff8200' or '|cffffffff'
+            local weeklyRewardLevel2, endOfRunRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
+            if weeklyRewardLevel2 and weeklyRewardLevel2>0 then
+                return col..(level<10 and level..' ' or level)..'  '..weeklyRewardLevel2..'  '..(endOfRunRewardLevel2 or 0)..'|r'
+                ..(self.curKey==level and '|T4352494:0|t' or '')..(self.curLevel==level and e.Icon.select2 or '')
+            end
+        end
+        ChallengesFrame.weekLootItemLevelLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+        ChallengesFrame.weekLootItemLevelLable:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            for level=2, 24 do
+                C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
+            end
+            e.tips:Show()
+            self:SetAlpha(0.5)
+        end)
     end
     ChallengesFrame.weekLootItemLevelLable:SetText(e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..BATTLE_PET_SOURCE_1))
 
@@ -878,23 +897,21 @@ local function set_All_Text()--所有记录
         min= min<2 and 2 or min
         max= value+4
     end
+    ChallengesFrame.weekLootItemLevelLable.curLevel= curLevel
 
-    local function get_Loot_itemLevel(level)
-        local col= curLevel==level and '|cff00ff00' or select(2, math.modf(level/2))==0 and '|cffff8200' or '|cffffffff'
-        local weeklyRewardLevel2, endOfRunRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
-        if weeklyRewardLevel2 and weeklyRewardLevel2>0 then
-            local str=col..(level<10 and level..' ' or level)..'  '..weeklyRewardLevel2..'  '..(endOfRunRewardLevel2 or 0)..'|r'
-            lootText= lootText and lootText..'|n' or ''
-            lootText= lootText..str..(curKey==level and '|T4352494:0|t' or '')..(curLevel==level and e.Icon.select2 or '')
-        end
-    end
     min= min<2 and 2 or min
     if min> curKey and curKey>0 then--当前KEY，小于，显示等级
-        get_Loot_itemLevel(curKey)
+        local text= ChallengesFrame.weekLootItemLevelLable:get_Loot_itemLevel(curKey)
+        if text then
+            lootText= lootText and lootText..'|n'..text or text
+        end
         min= min+1
     end
     for level=min, max do--显示，物品等级
-        get_Loot_itemLevel(level)
+        local text= ChallengesFrame.weekLootItemLevelLable:get_Loot_itemLevel(level)
+        if text then
+            lootText= lootText and lootText..'|n'..text or text
+        end
     end
 
     if not ChallengesFrame.weekLootItemLevelLable2 then
@@ -902,7 +919,7 @@ local function set_All_Text()--所有记录
         ChallengesFrame.weekLootItemLevelLable2:SetPoint('TOPLEFT', ChallengesFrame.weekLootItemLevelLable, 'BOTTOMLEFT')
     end
     ChallengesFrame.weekLootItemLevelLable2:SetText(lootText or '')
-
+    last= ChallengesFrame.weekLootItemLevelLable2
 
 
     --##########
@@ -920,15 +937,17 @@ local function set_All_Text()--所有记录
             ..(info.Keystone.score and ' ' or '')..(e.GetKeystoneScorsoColor(info.Keystone.score))
        end
     end
-    
+
     if not ChallengesFrame.playerAllKey then
         ChallengesFrame.playerAllKey= e.Cstr(TipsFrame)--最右边, 数据
-        ChallengesFrame.playerAllKey:SetPoint('TOPLEFT', ChallengesFrame.weekCompledLabel2, 'BOTTOMLEFT')
+        ChallengesFrame.playerAllKey:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-12)
     end
     ChallengesFrame.playerAllKey:SetText(keyText or '')
+    last=ChallengesFrame.playerAllKey
 
     --物品，货币提示
-    e.ItemCurrencyLabel({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame.playerAllKey, 'BOTTOMLEFT',0, -12}})
+    e.ItemCurrencyLabel({frame=TipsFrame, point={'TOPLEFT', last, 'BOTTOMLEFT',0, -12}})
+    last=nil
 end
 
 
