@@ -254,7 +254,7 @@ end
 
 --#######
 --更新物品
---#######
+--[[#######
 local function Set_Bag(bagID)
     for slotID=1, C_Container.GetContainerNumSlots(bagID) do
         local itemID = C_Container.GetContainerItemID(bagID, slotID)
@@ -285,7 +285,7 @@ local function Update_Bag_Items(arg1)
             Set_Bag(bagID)
         end
     end
-end
+end]]
 
 
 
@@ -541,11 +541,11 @@ panel:RegisterEvent('INSPECT_READY')--取得装等
 panel:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')--地下城挑战
 panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')--地下城挑战
 panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')--地下城挑战
-panel:RegisterEvent('PLAYER_MONEY')--钱
+--panel:RegisterEvent('PLAYER_MONEY')--钱
 panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')--位面, 清除
 panel:RegisterEvent('BOSS_KILL')--显示世界BOSS击杀数据
 panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')--货币
-panel:RegisterEvent('BAG_UPDATE')--BAG_UPDATE_DELAYED')--物品
+--panel:RegisterEvent('BAG_UPDATE')--BAG_UPDATE_DELAYED')--物品
 panel:RegisterEvent('UPDATE_INSTANCE_INFO')--副本
 panel:RegisterEvent('PLAYER_LEVEL_UP')--更新等级
 panel:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')--更新阵营
@@ -617,8 +617,8 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
                 e.GetGroupGuidDate()--队伍数据收集
 
                 Update_Currency()--{currencyID = 数量}
-                Update_Bag_Items()
-                Set_Money()--钱
+                --Update_Bag_Items()
+                --Set_Money()--钱
                 Update_Challenge_Mode()
                 --################
                 --开启, 新手編輯模式
@@ -680,10 +680,10 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
     elseif event=='CURRENCY_DISPLAY_UPDATE' then--货币
         Update_Currency(arg1)
 
-    elseif event=='BAG_UPDATE' then
+    --[[elseif event=='BAG_UPDATE' then
         if arg1 then
             Update_Bag_Items(arg1)
-        end
+        end]]
 
     elseif event=='UPDATE_INSTANCE_INFO' then--副本
         Update_Instance()
@@ -694,8 +694,8 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
     elseif event=='LOOT_OPENED' then
         Set_Rare_Elite_Killed('loot')
 
-    elseif event=='PLAYER_MONEY' then--钱
-        Set_Money()--钱
+    --[[elseif event=='PLAYER_MONEY' then--钱
+        Set_Money()--钱]]
 
     elseif event=='PLAYER_LEVEL_UP' then--玩家是否最高等级
         local level= arg1 or UnitLevel('player')
@@ -720,11 +720,54 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
             Get_WoW_GUID_Info(arg1)--战网，好友GUID
         end
 
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
     elseif event == "PLAYER_LOGOUT" then
         if e.ClearAllSave then
             WoWToolsSave=nil
             WoWDate=nil
         else
+
+            --更新物品
+            e.WoWDate[e.Player.guid].Keystone.itemLink={}
+            e.WoWDate[e.Player.guid].Item={}--{itemID={bag=包, bank=银行}}
+            for bagID= Enum.BagIndex.Backpack,  NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do
+                for slotID=1, C_Container.GetContainerNumSlots(bagID) do
+                    local itemID = C_Container.GetContainerItemID(bagID, slotID)
+                    if itemID then
+                        if C_Item.IsItemKeystoneByID(itemID) then--挑战
+                            local itemLink=C_Container.GetContainerItemLink(bagID, slotID)
+                            if itemLink then
+                                e.WoWDate[e.Player.guid].Keystone.itemLink[itemLink]=true
+                            end
+                        else
+                            local bag=GetItemCount(itemID)--物品ID
+                            e.WoWDate[e.Player.guid].Item[itemID]={
+                                bag=bag,
+                                bank=GetItemCount(itemID,true)-bag,
+                            }
+                        end
+                    end
+                end
+            end
+            
+            --钱
+            local money=GetMoney()
+            e.WoWDate[e.Player.guid].Money= money==0 and nil or money
+
             WoWDate= e.WoWDate or {}
         end
     end
