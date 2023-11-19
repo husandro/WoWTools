@@ -930,7 +930,6 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
     {type='currency', id=2706},--幼龙的酣梦纹章
     {type='currency', id=2245},--飞珑石
     {type='currency', id=2796, show=true},--苏生奇梦 10.2
-    --{type='currency', id=2533},--苏生暗影烈焰10.10
     {type='currency', id=1602, line=true},--征服点数
     {type='currency', id=1191},--勇气点数
 }
@@ -941,7 +940,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
     local last
     for _, tab in pairs(itemS) do
         local text=''
-        if tab.type=='currency' then
+        if tab.type=='currency' and tab.id then
             local info=C_CurrencyInfo.GetCurrencyInfo(tab.id)
             if info and info.quantity and info.maxQuantity
                 and (tab.show or (info.discovered and info.quantity>0))
@@ -979,7 +978,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
                     ..text
                     ..(isMax and '|r' or '')
             end
-        elseif tab.type=='item' then
+        elseif tab.type=='item' and tab.id then
             e.LoadDate({id=tab.id, type='item'})
             local num= GetItemCount(tab.id, true)
             local itemQuality= C_Item.GetItemQualityByID(tab.id)
