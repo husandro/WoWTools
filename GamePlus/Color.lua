@@ -621,13 +621,6 @@ local function Init()
 		end)
 		ColorPickerFrame.Content.ColorPicker:HookScript("OnColorSelect", set_Text)
 	end
-
-
-
-
-
-
-
 	
 	Frame:SetShown(not Save.hide)
 end
