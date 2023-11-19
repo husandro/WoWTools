@@ -1062,7 +1062,7 @@ local function InitMenu(_, level, menuList)
                 ..e.Get_CVar_Tooltips({name='Sound_MasterVolume', msg=e.onlyChinese and '主音量' or MASTER_VOLUME})..'|n|n'
                 ..e.Get_CVar_Tooltips({name='Sound_DialogVolume', msg=e.onlyChinese and '对话' or DIALOG_VOLUME})..'|n|n'
                 ..e.Get_CVar_Tooltips({name='Sound_EnableDialog', msg=e.onlyChinese and '启用对话' or ENABLE_DIALOG }),
-        keepShownOnClick=true,
+        --keepShownOnClick=true,
         hasArrow=true,
         menuList='NPCTalking',
         disabled= UnitAffectingCombat('player'),
