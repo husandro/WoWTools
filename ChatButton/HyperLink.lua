@@ -1040,17 +1040,25 @@ local function InitMenu(_, level, menuList)
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-
+print(e.Get_CVar_Tooltips({name='Sound_EnableAllSound', msg=e.onlyChinese and '开启声效' or ENABLE_SOUND, value='1'})..'|n|n'
+..e.Get_CVar_Tooltips({name='Sound_MasterVolume', msg=e.onlyChinese and '主音量' or MASTER_VOLUME , value='1'})..'|n|n'
+..e.Get_CVar_Tooltips({name='Sound_DialogVolume', msg=e.onlyChinese and '主音量' or MASTER_VOLUME , value='1'})..'|n|n'
+..e.Get_CVar_Tooltips({name='Sound_EnableDialog', msg=e.onlyChinese and '开启声效' or ENABLE_SOUND, value='1'}))
     info={
         text= '|A:chatframe-button-icon-voicechat:0:0|a'..(e.onlyChinese and '事件声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTS_LABEL, SOUND)),
         checked= Save.setPlayerSound,
         colorCode= (
             not C_CVar.GetCVarBool('Sound_EnableAllSound')
             or C_CVar.GetCVar('Sound_MasterVolume')=='0'
+            or C_CVar.GetCVar('Sound_DialogVolume')=='0'
             or not C_CVar.GetCVarBool('Sound_EnableDialog')
         ) and '|cff606060',
         tooltipOnButton=true,
-        tooltipTitle= e.Get_CVar_Tooltips({name='Sound_EnableAllSound', msg='', value=''}),
+        tooltipTitle= e.Get_CVar_Tooltips({name='Sound_EnableAllSound', msg=e.onlyChinese and '开启声效' or ENABLE_SOUND, value='1'})..'|n|n'
+            ..e.Get_CVar_Tooltips({name='Sound_MasterVolume', msg=e.onlyChinese and '主音量' or MASTER_VOLUME , value='1'})..'|n|n'
+            ..e.Get_CVar_Tooltips({name='Sound_DialogVolume', msg=e.onlyChinese and '主音量' or MASTER_VOLUME , value='1'})..'|n|n'
+            ..e.Get_CVar_Tooltips({name='Sound_EnableDialog', msg=e.onlyChinese and '开启声效' or ENABLE_SOUND, value='1'}),
+            
         --'CVar Sound_EnableAllSound '..e.GetEnabeleDisable(C_CVar.GetCVarBool('Sound_EnableAllSound'))
                         --..'|nCVar Sound_MasterVolume: '..format('%.0f', C_CVar.GetCVar('Sound_MasterVolume')),
         --tooltipText= 'CVar Sound_EnableDialog '..e.GetEnabeleDisable(C_CVar.GetCVarBool('Sound_EnableDialog')),

@@ -3637,7 +3637,9 @@
         "PROVING_GROUNDS_SCORE",
         "DUNGEON_SCORE",
         "ARCHAEOLOGY_COMPLETION",
-        "BEST"
+        "BEST",
+        "ENABLE_SOUND",
+        "MASTER_VOLUME"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
