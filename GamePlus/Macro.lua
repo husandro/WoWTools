@@ -940,7 +940,7 @@ local function Init_List_Button()
     starButton:SetScript('OnClick', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level, menuList)
             local macroList={
-                {text='ping', icon='Ping_Map_Whole_Assist', macro=SLASH_PING1..'\n',
+                {text='ping', icon='Ping_Map_Whole_Assist', macro=SLASH_PING1,
                     tab={
                         {text=SLASH_PING1},-- icon='Ping_Map_Whole_NonThreat'},
                         {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGATTACK..'\n', icon='Ping_Map_Whole_Attack'},
@@ -949,7 +949,7 @@ local function Init_List_Button()
                         {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGWARNING..'\n', icon='Ping_Map_Whole_Warning'}
                     }
                 },
-                {text='worldmarker',  macro='/wm [@cursor]1\n',
+                {text='worldmarker',  macro='/wm [@cursor]1',
                     tab={
                         {text='/wm [@cursor]1\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_6'},
                         {text='/wm [@cursor]2\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_4'},
@@ -1069,7 +1069,7 @@ local function Init_List_Button()
                         hasArrow=info.tab and true or nil,
                         func= function(_, arg1)
                             if arg1 then
-                                MacroFrameText:Insert(arg1..'\n')
+                                MacroFrameText:Insert(arg1)
                                 MacroFrameText:SetFocus()
                             end
                         end,
