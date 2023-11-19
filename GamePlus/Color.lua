@@ -80,24 +80,25 @@ local function Init()
 		texture:EnableMouse(true)
 		a=a or 1
 		texture.r, texture.g, texture.b, texture.a= r, g, b, a
-		texture:SetScript('OnMouseDown', function(self2)
-			set_Edit_Text(self2.r, self2.g, self2.b, self2.a, self2.textCode)
-			self2:SetAlpha(0.1)
+		texture:SetScript('OnMouseDown', function(self)
+			set_Edit_Text(self.r, self.g, self.b, self.a, self.textCode)
+			self:SetAlpha(0.1)
 		end)
-		texture:SetScript('OnMouseUp', function(self2) self2:SetAlpha(0.7) end)
-		texture:SetScript('OnEnter', function(self2)
-			local col= '|c'..e.RGB_to_HEX(self2.r, self2.g, self2.b, self2.a)
+		texture:SetScript('OnMouseUp', function(self) self:SetAlpha(0.7) end)
+		texture:SetScript('OnEnter', function(self)
+			local col= '|c'..e.RGB_to_HEX(self.r, self.g, self.b, self.a)
 			e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
 			e.tips:ClearLines()
 			e.tips:AddDoubleLine(col..id, col..addName)
-			if self2.tooltip then
+			if self.tooltip then
 				e.tips:AddLine(' ')
-				e.tips:AddLine(self2.tooltip)
+				e.tips:AddLine(self.tooltip)
 			end
+			e.tips:AddDoubleLine(col..'r'..format('%.2f',self.r)..' g'..format('%.2f',self.g)..' b'..format('%.2f',self.b), col..'a'..(self.a and format('%.2f',self.a) or 1))
 			e.tips:Show()
-			self2:SetAlpha(0.7)
+			self:SetAlpha(0.7)
 		end)
-		texture:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+		texture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
 		if atlas then
 			texture:SetAtlas(atlas)
 		else
@@ -514,44 +515,40 @@ local function Init()
 
 
 
-	size= 18
 	local restColor= create_Texture(e.Player.r, e.Player.g, e.Player.b, 1)--记录，打开时的颜色， 和历史
-	if ColorSwatch then		
+	if ColorSwatch then
 		restColor:SetPoint('TOP', ColorSwatch, 'BOTTOM', 0, -60)
 	else
 		restColor:SetPoint('TOPLEFT', ColorPickerFrame.Content.ColorSwatchCurrent, 'TOPRIGHT', 2,0)
-		print(ColorPickerFrame.Content.ColorSwatchCurrent:GetObjectType())
 	end
-	restColor:SetScript('OnShow', function(self2)
+	restColor:SetScript('OnShow', function(self)
 		local r, g, b, a= e.Get_ColorFrame_RGBA()
-		self2:SetColorTexture(r, g, b, a)
-		self2.r, self2.g, self2.b, self2.a= r, g, b, a
+		self:SetColorTexture(r, g, b, a)
+		self.r, self.g, self.b, self.a= r, g, b, a
 
-		size, x, y, n= 16, 0, -15, 0
 		for i=1, #Save.color do
-			local texture= self2[i]
+			local texture= self[i]
 			local col= Save.color[i]
-			if not self2[i] then
+			if not self[i] then
 				texture= create_Texture(col.r, col.g, col.b, 1)--记录，打开时的颜色， 和历史
-				self2[i]= texture
-				texture:SetPoint('TOPRIGHT', ColorPickerFrame, 'TOPLEFT', x, y)
+				self[i]= texture
+				if i==1 then
+					texture:SetPoint('TOPRIGHT', ColorPickerFrame, "TOPLEFT", 0, -20)
+				else
+					texture:SetPoint('TOP', self[i-1], 'BOTTOM')
+				end
 			end
 			texture.r, texture.g, texture.b, texture.a= col.r, col.g, col.b, col.a
 			texture:SetColorTexture(col.r, col.g, col.b , col.a)
-
-			if n==10 then
-				n=0
-				x= x- size
-				y= -15
-			else
-				y= y- size
-			end
-			n=n+1
+		end
+		for i= 11, #Save.color, 10 do
+			self[i]:ClearAllPoints()
+			self[i]:SetPoint('TOPRIGHT', self[i-10], 'TOPLEFT')
 		end
 	end)
 
 
-	
+
 
 
 
@@ -564,8 +561,8 @@ local function Init()
 		Frame.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
 
 		OpacitySliderFrame:EnableMouseWheel(true)
-		OpacitySliderFrame:SetScript('OnMouseWheel', function(self2, d)
-			local value= self2:GetValue()
+		OpacitySliderFrame:SetScript('OnMouseWheel', function(self, d)
+			local value= self:GetValue()
 			if d== 1 then
 				value= value- 0.01
 			elseif d==-1 then
@@ -573,14 +570,14 @@ local function Init()
 			end
 			value= value> 1 and 1 or value
 			value= value< 0 and 0 or value
-			self2:SetValue(value)
+			self:SetValue(value)
 		end)
 	else
 		Frame.alphaText=e.Cstr(ColorPickerFrame, {mouse=true, size=14})--透明值，提示
 		Frame.alphaText:SetPoint('TOP', ColorPickerFrame.Content.ColorSwatchOriginal, 'BOTTOM')
 	end
 	Frame.alphaText:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
-	Frame.alphaText:SetScript('OnEnter', function(self) 
+	Frame.alphaText:SetScript('OnEnter', function(self)
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(id,addName)
@@ -608,9 +605,9 @@ local function Init()
 			end
 			table.insert(Save.color,{r=r, g=g, b=b, a=a})
 		end)
+		ColorPickerFrame:HookScript('OnUpdate', set_Text)
 	else
-		ColorPickerFrame:HookScript('OnHide', function()
-			print(id,addName)
+		ColorPickerFrame.Footer.OkayButton:HookScript('OnClick', function()
 			local r, g, b, a= e.Get_ColorFrame_RGBA()
 			for _, col in pairs(Save.color) do
 				if col.r==r and col.g==g and col.b==b and col.a== a then
@@ -621,8 +618,8 @@ local function Init()
 				table.remove(Save.color, 1)
 			end
 			table.insert(Save.color,{r=r, g=g, b=b, a=a})
-			
 		end)
+		ColorPickerFrame.Content.ColorPicker:HookScript("OnColorSelect", set_Text)
 	end
 
 
@@ -631,7 +628,7 @@ local function Init()
 
 
 
-	ColorPickerFrame:HookScript('OnUpdate', set_Text)
+	
 	Frame:SetShown(not Save.hide)
 end
 
@@ -705,7 +702,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				end)
 				check2:SetScript('OnLeave', function() e.tips:Hide() end)
 
-				
+
 				check2.type2:SetPoint("LEFT", check2, 'RIGHT',-4,0)
 				check2.type2:SetChecked(Save.colorType)
 				check2.type2:SetScript('OnMouseDown', function()
@@ -724,7 +721,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				if not Save.hide then
 					Init()
 				end
-				
+
 
             end
             panel:UnregisterEvent('ADDON_LOADED')
