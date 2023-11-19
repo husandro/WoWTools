@@ -544,7 +544,7 @@ local function Init()
 			self2:SetValue(value)
 		end)
 	else
-		Frame.alphaText=e.Cstr(ColorPickerFrame, {mouse=true})--透明值，提示
+		Frame.alphaText=e.Cstr(ColorPickerFrame, {mouse=true, size=14})--透明值，提示
 		Frame.alphaText:SetPoint('TOP', ColorPickerFrame.Content.ColorSwatchOriginal, 'BOTTOM')
 		Frame.alphaText:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
 		Frame.alphaText:SetScript('OnEnter', function(self) 
@@ -552,7 +552,7 @@ local function Init()
             e.tips:ClearLines()
 			e.tips:AddDoubleLine(id,addName)
 			e.tips:AddDoubleLine(e.onlyChinese and '透明度' or BATTLEFIELDMINIMAP_OPACITY_LABEL, 'Alpha')
-			e.tips:Shown()
+			e.tips:Show()
 		end)
 	end
 end
