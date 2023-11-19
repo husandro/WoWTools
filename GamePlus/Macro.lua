@@ -1040,6 +1040,7 @@ local function Init_List_Button()
                     }
                 },
                 {text='@mouseover', macro='[@mouseover]'},
+                {text='@cursor', macro='[@cursor]'},
             }
             for _, info in pairs(macroList) do
                 if menuList then
