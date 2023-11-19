@@ -1182,10 +1182,6 @@ local function set_Panle_Setting()--设置 panel
             findTank=true
             last= text
         end
-        local r= info.r or 1
-        local g= info.g or 0.82
-        local b= info.b or 0
-        local a= info.a or 1
 
         check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--禁用, 启用
         check:SetChecked(not Save.tab[info.name].hide)
@@ -1219,16 +1215,15 @@ local function set_Panle_Setting()--设置 panel
         end)
         check:SetScript('OnLeave', function() e.tips:Hide() end)
 
-        local text= e.Cstr(check, {color={r=r,g=g,b=b,a=a}})--nil, nil, nil, {r,g,b,a})--Text
+        local text= e.Cstr(check, {color={r=info.r or 1, g=info.g or 0.82, b=info.b or 0, a=info.a or 1}})--nil, nil, nil, {r,g,b,a})--Text
         text:SetPoint('LEFT', check, 'RIGHT')
         text:SetText(info.text)
         if index>1 then
             text:EnableMouse(true)
-            text.r, text.g, text.b, text.a= r, g, b, a
             text.name= info.name
             text.text= info.text
             text:SetScript('OnMouseDown', function(self)
-                local R,G,B,A= self.r, self.g, self.b, self.a
+                local R,G,B,A= Save.tab[self.name].r, Save.tab[self.name].g, Save.tab[self.name].r, Save.tab[self.name].a or 1-- self.r, self.g, self.b, self.a
                 local setA, setR, setG, setB
                 local function func()
                     Save.tab[self.name].r= setR
@@ -1245,7 +1240,7 @@ local function set_Panle_Setting()--设置 panel
                         end
                     end
                 end
-                e.ShowColorPicker(self.r, self.g, self.b,self.a, function()
+                e.ShowColorPicker(R,G,B,A, function()
                         setR, setG, setB, setA = e.Get_ColorFrame_RGBA()
                         func()
                     end,function()

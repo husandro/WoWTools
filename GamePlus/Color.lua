@@ -39,8 +39,13 @@ local function set_Text(self, elapsed)
 end
 
 local function set_Edit_Text(r, g, b, a, textCode)
-	ColorPickerFrame:SetColorRGB(r, g, b)
-	OpacitySliderFrame:SetValue(a and 1-a or 0);
+	if ColorPickerFrame.Content then
+		ColorPickerFrame.Content.ColorPicker:SetColorRGB(r, g, b)
+		ColorPickerFrame.Content.ColorPicker:SetColorAlpha(a or 1);
+	else
+		OpacitySliderFrame:SetValue(a and 1-a or 0);
+		ColorPickerFrame:SetColorRGB(r, g, b)
+	end
 	Frame.cn:SetText(textCode and textCode..'_CODE' or '')
 	Frame.cn2:SetText(textCode and '|cn'..textCode or '')
 end
@@ -523,20 +528,22 @@ local function Init()
 	ColorPickerFrame:SetScript('OnUpdate', set_Text)
 	Frame:SetShown(not Save.hide)
 
-	OpacitySliderFrame:EnableMouseWheel(true)
-	OpacitySliderFrame:SetScript('OnMouseWheel', function(self2, d)
-        local value= self2:GetValue()
-		--value= format('%.2f', self2:GetValue())
-		--value= tonumber(value)
-        if d== 1 then
-            value= value- 0.01
-        elseif d==-1 then
-            value= value+ 0.01
-        end
-        value= value> 1 and 1 or value
-        value= value< 0 and 0 or value
-        self2:SetValue(value)
-    end)
+	if OpacitySliderFrame then
+		OpacitySliderFrame:EnableMouseWheel(true)
+		OpacitySliderFrame:SetScript('OnMouseWheel', function(self2, d)
+			local value= self2:GetValue()
+			--value= format('%.2f', self2:GetValue())
+			--value= tonumber(value)
+			if d== 1 then
+				value= value- 0.01
+			elseif d==-1 then
+				value= value+ 0.01
+			end
+			value= value> 1 and 1 or value
+			value= value< 0 and 0 or value
+			self2:SetValue(value)
+		end)
+	end
 end
 
 
@@ -628,19 +635,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				if not Save.hide then
 					Init()
 				end
-
-				ColorPickerOkayButton:SetScript('OnMouseDown', function()--记录，历史
-					local r, g, b, a= e.Get_ColorFrame_RGBA()
-					for _, col in pairs(Save.color) do
-						if col.r==r and col.g==g and col.b==b and col.a== a then
-							return
+				if ColorPickerOkayButton then
+					ColorPickerOkayButton:HookScript('OnMouseDown', function()--记录，历史
+						local r, g, b, a= e.Get_ColorFrame_RGBA()
+						for _, col in pairs(Save.color) do
+							if col.r==r and col.g==g and col.b==b and col.a== a then
+								return
+							end
 						end
-					end
-					if #Save.color >=logNum then
-						table.remove(Save.color, 1)
-					end
-					table.insert(Save.color,{r=r, g=g, b=b, a=a})
-				end)
+						if #Save.color >=logNum then
+							table.remove(Save.color, 1)
+						end
+						table.insert(Save.color,{r=r, g=g, b=b, a=a})
+					end)
+				end
 
             end
             panel:UnregisterEvent('ADDON_LOADED')

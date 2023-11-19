@@ -2265,26 +2265,52 @@ function e.HEX_to_RGB(hexColor, self)--HEX转RGB -- ColorUtil.lua
 end
 
 function e.Get_ColorFrame_RGBA()--取得, ColorFrame, 颜色
-	local a= OpacitySliderFrame:IsShown() and OpacitySliderFrame:GetValue() or 0
 	local r, g, b = ColorPickerFrame:GetColorRGB()
-	return r, g, b, 1-a
+    print(ColorPickerFrame.hasOpacity , ColorPickerFrame:GetColorAlpha())
+	return r, g, b, ColorPickerFrame.hasOpacity and ColorPickerFrame:GetColorAlpha() or 1
 end
 
 function e.ShowColorPicker(valueR, valueG, valueB, valueA, func, cancelFunc)
-    ColorPickerFrame:SetShown(false); -- Need to run the OnShow handler.
-    valueR= valueR or 1
-    valueG= valueG or 0.8
-    valueB= valueB or 0
-    valueA= valueA or 1
-    --valueA= 1- valueA
-    ColorPickerFrame.hasOpacity= true
-    --ColorPickerFrame.previousValues = {valueR, valueG , valueB , valueA}
-    ColorPickerFrame.func= func
-    ColorPickerFrame.opacityFunc= func
-    ColorPickerFrame.cancelFunc = cancelFunc or func
-    ColorPickerFrame:SetColorRGB(valueR, valueG, valueB)
-    ColorPickerFrame.opacity = 1- valueA;
-    ColorPickerFrame:SetShown(true)
+    if ColorPickerFrame.SetupColorPickerAndShow then
+        ColorPickerFrame:SetupColorPickerAndShow({--ColorPickerFrame.lua
+            r=valueR,
+            g=valueG,
+            b=valueB,
+            hasOpacity=valueA and true or false,
+            swatchFunc=func,
+            cancelFunc=cancelFunc,
+            opacity=valueA,
+        })
+
+    --[[self.swatchFunc = info.swatchFunc;
+    self.hasOpacity = info.hasOpacity;
+    self.opacityFunc = info.opacityFunc;
+    self.opacity = info.opacity;
+    self.previousValues = {r = info.r, g = info.g, b = info.b, a = info.opacity};
+    self.cancelFunc = info.cancelFunc;
+    self.extraInfo = info.extraInfo;]]
+    else
+        ColorPickerFrame:SetShown(false); -- Need to run the OnShow handler.
+        valueR= valueR or 1
+        valueG= valueG or 0.8
+        valueB= valueB or 0
+        valueA= valueA or 1
+        --valueA= 1- valueA
+        
+        --ColorPickerFrame.previousValues = {valueR, valueG , valueB , valueA}
+        ColorPickerFrame.func= func
+        ColorPickerFrame.opacityFunc= func
+        ColorPickerFrame.cancelFunc = cancelFunc or func
+        if ColorPickerFrame.SetColorRGB then
+            ColorPickerFrame:SetColorRGB(valueR, valueG, valueB)
+        else
+            ColorPickerFrame.Content.ColorPicker:SetColorRGB(valueR, valueG, valueB)
+        end
+        ColorPickerFrame.hasOpacity= true
+        
+        ColorPickerFrame.opacity = 1- valueA;
+        ColorPickerFrame:SetShown(true)
+    end
 end
 
 
