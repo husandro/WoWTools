@@ -322,7 +322,7 @@ local function Init_TargetFrame()
                     text=mi..'|n'..ma
                     if mi>40 then
                         text='|cFFFF0000'..text--红色
-                        --[[
+                        
                     elseif mi>35 then
                         text='|cFFFFD000'..text
                     elseif mi>30 then
@@ -332,7 +332,7 @@ local function Init_TargetFrame()
                     elseif mi>5 then
                         text='|cFFAF00FF'..text
                     elseif mi>2 then
-                        text='|cFF00FF00'..text]]
+                        text='|cFF00FF00'..text
                     else
                         text='|cFFFFFFFF'..text----白色
                     end

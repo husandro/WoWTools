@@ -20,7 +20,7 @@ local Save= {
     --top=true,--位于，目标血条，上方
 
     creature= true,--怪物数量
-    creatureRange=35,
+    --creatureRange=40,
     creatureFontSize=10,
 
     quest= true,
@@ -320,22 +320,22 @@ local function set_Register_Event()
     targetFrame:UnregisterAllEvents()
     targetFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-    if Save.target then--or Save.creature then
+    if Save.target or Save.creature then
         targetFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
         targetFrame:RegisterEvent('RAID_TARGET_UPDATE')
         targetFrame:RegisterUnitEvent('UNIT_FLAGS', 'target')
     end
 
-    if Save.target then--and Save.targetInCombat then
+    if Save.target and Save.targetInCombat then
         targetFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
         targetFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
     end
 
-    --[[if Save.creature then
+    if Save.creature then
         targetFrame:RegisterEvent('UNIT_TARGET')
-    end]]
+    end
 
-    if (not isIns and Save.quest) then--or Save.creature then
+    if (not isIns and Save.quest) or Save.creature then
         targetFrame:RegisterEvent('NAME_PLATE_UNIT_ADDED')
         targetFrame:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
     end
@@ -665,7 +665,7 @@ local function set_Option()
     sel2.Text:SetText(e.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r'
                 or (e.Player.col..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, TARGET)..'('..YOU..')|r |cnGREEN_FONT_COLOR:'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)..'('..YOU..')|r |cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)..'|r')
             )
-    sel2:SetPoint('TOPLEFT', panel.targetTextureMenu.edit, 'BOTTOMLEFT', -32, -32)
+    sel2:SetPoint('TOPLEFT', panel.targetTextureMenu.edit, 'BOTTOMLEFT', -32, -60)
     sel2:SetChecked(Save.creature)
     sel2:SetScript('OnClick', function()
         Save.creature= not Save.creature and true or nil
@@ -693,7 +693,7 @@ local function set_Option()
         e.Cstr(nil, {changeFont=targetFrame.Creature, size=value})
         set_All_Init()
     end})
-    sliderCreatureFontSize:SetPoint("LEFT", sel2, 'RIGHT',15,0)
+    sliderCreatureFontSize:SetPoint("LEFT", sel2.Text, 'RIGHT',15,0)
 
     local questCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     questCheck.Text:SetText(e.onlyChinese and '任务进度' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, PVP_PROGRESS_REWARDS_HEADER)))
