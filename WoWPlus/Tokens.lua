@@ -981,12 +981,16 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	end
 
 	if info and frame.Count then--最大数
-		local max= info.quantity and info.quantity>0 and (
-						info.quantity==info.maxQuantity
-					or (info.canEarnPerWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
-					or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
-				)
-		if max then
+		local isMax= (info.canEarnPerWeek--本周
+					and info.maxWeeklyQuantity
+					and info.maxWeeklyQuantity>0
+					and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)
+				or (info.useTotalEarnedForMaxQty--赛季
+					and info.totalEarned
+					and info.totalEarned>0
+					and info.totalEarned==info.maxQuantity)
+				or (info.quantity==info.maxQuantity and info.maxQuantity>0)--最大数
+		if isMax then
 			frame.Count:SetTextColor(1,0,0)
 		elseif info.useTotalEarnedForMaxQty or info.canEarnPerWeek then
 			frame.Count:SetTextColor(1,0,1)

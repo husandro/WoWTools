@@ -280,7 +280,7 @@ function e.Set_Label_Texture_Color(self, tab)--设置颜色
         local alpha= tab.alpha
         if type=='FontString' or type=='EditBox' then
             self:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, alpha or e.Player.useColor.a or 1)
-        
+
         elseif type=='Texture' then
             self:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, alpha or e.Player.useColor.a or 1)
         elseif type=='Button' then
@@ -326,7 +326,7 @@ function e.Cstr(self, tab)
             fontName2= 'Fonts\\ARHei.ttf'--黑体字
             font:SetFont(fontName2, size or size2, notFlag and fontFlag2 or 'OUTLINE')
         end
-        
+
         font:SetJustifyH(justifyH or 'LEFT')
     end
     if not notShadow then
@@ -923,7 +923,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
     --{type='item', id=204194},--守护巨龙的暗影烈焰纹章
     --{type='item', id=204193},--雏龙的暗影烈焰纹章
 
-    
+
 
     {type='currency', id=2708},--守护巨龙的酣梦纹章
     {type='currency', id=2707},--魔龙的酣梦纹章
@@ -946,36 +946,38 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
             if info and info.quantity and info.maxQuantity
                 and (tab.show or (info.discovered and info.quantity>0))
             then
+                local isMax
                 if info.maxQuantity>0  then
-                    if info.quantity==info.maxQuantity then
-                        text=text..'|cnRED_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
-                    else
-                        text=text..info.quantity.. '/'..info.maxQuantity..' '
-                    end
-                    if info.useTotalEarnedForMaxQty then--本周还可获取                        
-                        local q
-                        q= info.maxQuantity - info.totalEarned
-                        if q>0 then
-                            q='|cnGREEN_FONT_COLOR:+'..q..'|r'
-                        else
-                            q='|cnGREEN_FONT_COLOR:+0|r'
+                    isMax= (info.canEarnPerWeek--本周
+                            and info.maxWeeklyQuantity
+                            and info.maxWeeklyQuantity>0
+                            and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)
+                        or (info.useTotalEarnedForMaxQty--赛季
+                            and info.totalEarned
+                            and info.totalEarned>0
+                            and info.totalEarned==info.maxQuantity)
+                        or (info.quantity==info.maxQuantity and info.maxQuantity>0)--最大数
+
+                    text=text..info.quantity.. '/'..info.maxQuantity..' '
+                    if info.canEarnPerWeek then
+                        if info.maxWeeklyQuantity>0 then
+                            text= text..' (|cnGREEN_FONT_COLOR:+'..info.maxWeeklyQuantity-info.quantityEarnedThisWeek..'|r)'
                         end
-                        text=text..' ('..q..') '
+                    elseif info.useTotalEarnedForMaxQty then--赛季
+                        text=text..' (|cnGREEN_FONT_COLOR:+'..info.maxQuantity - info.totalEarned..'|r)'
                     end
                 else
                     if info.maxQuantity==0 then
                         text=text..info.quantity..'/'.. (e.onlyChinese and '无限制' or UNLIMITED)..' '
                     else
-                        if info.quantity==info.maxQuantity then
-                            text=text..'|cnRED_FONT_COLOR:'..info.quantity.. '/'..info.maxQuantity..'|r '
-                        else
-                            text=text..info.quantity..'/'..info.maxQuantity..' '
-                        end
+                        text=text..info.quantity..'/'..info.maxQuantity..' '
                     end
                 end
                 text= (info.iconFileID and '|T'..info.iconFileID..':0|t' or '')
+                    ..(isMax and '|cnRED_FONT_COLOR:' or '')
                     ..((settings.showName and info.name) and info.name..' ' or '')
                     ..text
+                    ..(isMax and '|r' or '')
             end
         elseif tab.type=='item' then
             e.LoadDate({id=tab.id, type='item'})
@@ -1814,7 +1816,7 @@ function e.Cbtn2(tab)
     button.border=button:CreateTexture(nil, 'ARTWORK')
     button.border:SetAllPoints(button)
     button.border:SetAtlas('bag-reagent-border')
-    
+
     e.Set_Label_Texture_Color(button.border, {type='Texture', alpha=0.5})
 
     return button
@@ -2304,7 +2306,7 @@ function e.ShowColorPicker(valueR, valueG, valueB, valueA, func, cancelFunc)
         valueB= valueB or 0
         valueA= valueA or 1
         --valueA= 1- valueA
-        
+
         --ColorPickerFrame.previousValues = {valueR, valueG , valueB , valueA}
         ColorPickerFrame.func= func
         ColorPickerFrame.opacityFunc= func
@@ -2315,7 +2317,7 @@ function e.ShowColorPicker(valueR, valueG, valueB, valueA, func, cancelFunc)
             ColorPickerFrame.Content.ColorPicker:SetColorRGB(valueR, valueG, valueB)
         end
         ColorPickerFrame.hasOpacity= true
-        
+
         ColorPickerFrame.opacity = 1- valueA;
         ColorPickerFrame:SetShown(true)
     end
