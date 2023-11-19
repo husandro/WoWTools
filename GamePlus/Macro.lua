@@ -940,7 +940,7 @@ local function Init_List_Button()
     starButton:SetScript('OnClick', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level, menuList)
             local macroList={
-                {text='ping', icon='Ping_Map_Whole_Assist', macro=SLASH_PING1,
+                {text='ping', icon='Ping_Map_Whole_Assist', macro=SLASH_PING1..'\n',
                     tab={
                         {text=SLASH_PING1},-- icon='Ping_Map_Whole_NonThreat'},
                         {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGATTACK..'\n', icon='Ping_Map_Whole_Attack'},
@@ -949,7 +949,7 @@ local function Init_List_Button()
                         {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGWARNING..'\n', icon='Ping_Map_Whole_Warning'}
                     }
                 },
-                {text='worldmarker',  macro='/wm ',
+                {text='worldmarker',  macro='/wm [@cursor]1\n',
                     tab={
                         {text='/wm [@cursor]1\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_6'},
                         {text='/wm [@cursor]2\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_4'},
@@ -962,7 +962,7 @@ local function Init_List_Button()
                         {text='/cwm 0\n', icon='talents-button-reset'},
                     }
                 },
-                {text= 'target',
+                {text= 'SetRaidTarget', macro='/target [@mouseover]\n/script SetRaidTarget("target",1)',
                     tab={
                         {text='/target [@mouseover]\n/script SetRaidTarget("target",1)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_1'},
                         {text='/target [@mouseover]\n/script SetRaidTarget("target",2)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_2'},
@@ -974,7 +974,7 @@ local function Init_List_Button()
                         {text='/target [@mouseover]\n/script SetRaidTarget("target",8)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_8'},
                     }
                 },
-                {text='rt',
+                {text='rt', macro='{rt1}',
                     tab={
                         {text='{rt1}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_1'},
                         {text='{rt2}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_2'},
@@ -1000,7 +1000,7 @@ local function Init_List_Button()
                         {text='vehicleui', tips='HasVehicleActionBar()'},
                     }
                 },
-                {text='@target',  macro='@target',
+                {text='@target',  macro='[@target]',
                     tab={
                         {text='exists', tips='UnitExists()'},
                         {text='help', tips='UnitCanAssist()'},
@@ -1012,7 +1012,7 @@ local function Init_List_Button()
                         {text='unithasvehicleui', tips='UnitInVehicle()'},
                     }
                 },
-                {text='@player',  macro='@player',
+                {text='@player',  macro='[@player]',
                     tab={
 
                         {text='canexitvehicle', tips='CanExitVehicle()'},
@@ -1039,42 +1039,42 @@ local function Init_List_Button()
                         {text='flying', tips='IsFlying()'},
                     }
                 },
+                {text='@mouseover', macro='[@mouseover]'},
             }
             for _, info in pairs(macroList) do
-                if info.tab then
-                    if menuList then
-                        if menuList==info.text then
-                            for _, macro in pairs(info.tab) do
-                                e.LibDD:UIDropDownMenu_AddButton({
-                                    text=macro.text:gsub('\n', ' '),
-                                    notCheckable=true,
-                                    arg1=macro.text,
-                                    icon=macro.icon,
-                                    tooltipOnButton=true,
-                                    tooltipTitle= macro.tips and '|cff2aa2ff'..macro.tips or nil,
-                                    func= function(_, arg1)
-                                        MacroFrameText:Insert(arg1)
-                                        MacroFrameText:SetFocus()
-                                    end
-                                }, level)
-                            end
-                        end
-                    else
-                        e.LibDD:UIDropDownMenu_AddButton({
-                            text=info.text,
-                            notCheckable=true,
-                            arg1=info.macro,
-                            menuList=info.text,
-                            hasArrow=true,
-                            func= function(_, arg1)
-                                if arg1 then
-                                    MacroFrameText:Insert(arg1..'\n')
+                if menuList then
+                    if menuList==info.text then
+                        for _, macro in pairs(info.tab) do
+                            e.LibDD:UIDropDownMenu_AddButton({
+                                text=macro.text:gsub('\n', ' '),
+                                notCheckable=true,
+                                arg1=macro.text,
+                                icon=macro.icon,
+                                tooltipOnButton=true,
+                                tooltipTitle= macro.tips and '|cff2aa2ff'..macro.tips or nil,
+                                func= function(_, arg1)
+                                    MacroFrameText:Insert(arg1)
                                     MacroFrameText:SetFocus()
                                 end
-                            end,
-                        }, level)
+                            }, level)
+                        end
                     end
+                else
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text=info.text,
+                        notCheckable=true,
+                        arg1=info.macro,
+                        menuList=info.tab and info.text,
+                        hasArrow=info.tab and true or nil,
+                        func= function(_, arg1)
+                            if arg1 then
+                                MacroFrameText:Insert(arg1..'\n')
+                                MacroFrameText:SetFocus()
+                            end
+                        end,
+                    }, level)
                 end
+                
             end
         end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
