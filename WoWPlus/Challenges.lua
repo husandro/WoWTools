@@ -747,7 +747,7 @@ local function All_Player_Info()--所以角色信息
                 create_lable(btn, 1, info.Keystone.weekPvE, classColor)--团队副本
                 create_lable(btn, 2, info.Keystone.weekMythicPlus, classColor)--挑战
                 create_lable(btn, 3, info.Keystone.weekPvP, classColor)--pvp
-                create_lable(btn, 'b', e.GetKeystoneScorsoColor(info.Keystone.score or 0), classColor)--分数
+                create_lable(btn, 'b', info.Keystone.score or 0, {r=1,g=1,b=1})--分数
                 create_lable(btn, 'l', info.Keystone.weekNum or 0, {r=1,g=1,b=1})--次数
                 create_lable(btn, 'r', info.Keystone.weekLevel, {r=1,g=1,b=1})--次数
 
