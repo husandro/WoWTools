@@ -962,6 +962,30 @@ local function Init_List_Button()
                         {text='/cwm 0\n', icon='talents-button-reset'},
                     }
                 },
+                {text= 'target',
+                    tab={
+                        {text='/target [@mouseover]\n/script SetRaidTarget("target",1)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_1'},
+                        {text='/target [@mouseover]\n/script SetRaidTarget("target",2)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_2'},
+                        {text='/target [@mouseover]\n/script SetRaidTarget("target",3)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_3'},
+                        {text='/target [@mouseover]\n/script SetRaidTarget("target",4)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_4'},
+                        {text='/target [@mouseover]\n/script SetRaidTarget("target",5)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_5'},
+                        {text='/target [@mouseover]\n/script SetRaidTarget("target",6)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_6'},
+                        {text='/target [@mouseover]\n/script SetRaidTarget("target",7)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_7'},
+                        {text='/target [@mouseover]\n/script SetRaidTarget("target",8)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_8'},
+                    }
+                },
+                {text='rt',
+                    tab={
+                        {text='{rt1}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_1'},
+                        {text='{rt2}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_2'},
+                        {text='{rt3}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_3'},
+                        {text='{rt4}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_4'},
+                        {text='{rt5}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_5'},
+                        {text='{rt6}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_6'},
+                        {text='{rt7}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_7'},
+                        {text='{rt8}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_8'},
+                    }
+                },
                 {text='button',  macro='btn:1',
                     tab={
                         {text='btn:n', tips='OnClick()'},
@@ -990,13 +1014,13 @@ local function Init_List_Button()
                 },
                 {text='@player',  macro='@player',
                     tab={
-                        
+
                         {text='canexitvehicle', tips='CanExitVehicle()'},
                         {text='channeling, channeling:spellName', tips='UnitChannelInfo("player")'},
                         {text='combat', tips='UnitAffectingCombat("player")'},
                         {text='equipped:type, worn:type', tips='IsEquippedItemType(type)'},
                         {text='flyable', tips='IsFlyableArea()'},
-                        
+
                         {text='form:n, stance:n', tips='form:n, stance:n'},
                         {text='group, group:party, group:raid', tips='IsInGroup(), IsInRaid()'},
                         {text='indoors', tips='IsIndoors()'},
@@ -1022,7 +1046,7 @@ local function Init_List_Button()
                         if menuList==info.text then
                             for _, macro in pairs(info.tab) do
                                 e.LibDD:UIDropDownMenu_AddButton({
-                                    text=macro.text,
+                                    text=macro.text:gsub('\n', ' '),
                                     notCheckable=true,
                                     arg1=macro.text,
                                     icon=macro.icon,
