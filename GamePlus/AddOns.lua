@@ -426,6 +426,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Save.fast={
                     ['Auctionator']=18,
                     ['TextureAtlasViewer']=78,
+                    ['WoWeuCN_Tooltips']=96,
                 }
             end
 

@@ -923,10 +923,11 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
     --{type='item', id=204194},--守护巨龙的暗影烈焰纹章
     --{type='item', id=204193},--雏龙的暗影烈焰纹章
 
-    {type='currency', id=2709},--守护巨龙的酣梦纹章 10.1.5
-    {type='currency', id=2708},--魔龙的酣梦纹章
-    {type='currency', id=2707},--幼龙的酣梦纹章
-    {type='currency', id=2706},--雏龙的酣梦纹章
+    
+
+    {type='currency', id=2708},--守护巨龙的酣梦纹章
+    {type='currency', id=2707},--魔龙的酣梦纹章
+    {type='currency', id=2706},--幼龙的酣梦纹章
     {type='currency', id=2245},--飞珑石
     {type='currency', id=2796, show=true},--苏生奇梦 10.2
     --{type='currency', id=2533},--苏生暗影烈焰10.10
