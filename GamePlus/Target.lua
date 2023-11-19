@@ -260,7 +260,7 @@ local function set_Target()
         if Save.target then
            targetFrame.Target:SetShown(true)
         end
-        --set_Creature_Num()
+        set_Creature_Num()
     end
     targetFrame:SetShown(plate and true or false)
 end
@@ -400,7 +400,7 @@ local function Init()
                     end
                 end
             end
-            --set_Creature_Num()
+            set_Creature_Num()
         end
     end)
 end
