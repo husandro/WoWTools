@@ -76,7 +76,7 @@ end
 --########################
 --怪物目标, 队员目标, 总怪物
 --########################
---[[
+
 local createRun
 local function set_Creature_Num()--local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
     if not (Save.creature and targetFrame:IsShown()) or createRun then
@@ -91,7 +91,8 @@ local function set_Creature_Num()--local distanceSquared, checkedDistance = Unit
     for _, nameplat in pairs(nameplates) do
         local u = nameplat.namePlateUnitToken or nameplat.UnitFrame and nameplat.UnitFrame.unit
         local t= u and u..'target'
-        local range= Save.creatureRange>0 and e.CheckRange(u, Save.creatureRange, '<=') or Save.creatureRange==0
+        --local range= Save.creatureRange>0 and e.CheckRange(u, Save.creatureRange, '<=') or Save.creatureRange==0
+        local range= e.CheckRange(u, 40, '<=')
         if UnitExists(t) and UnitExists(u)
             and not UnitIsDeadOrGhost(u)
             and not UnitInParty(u)
@@ -127,7 +128,7 @@ local function set_Creature_Num()--local distanceSquared, checkedDistance = Unit
     targetFrame.Creature:SetText(e.Player.col..(T==0 and '-' or  T)..'|r |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
     createRun=nil
 end
-]]
+
 
 
 
@@ -287,14 +288,14 @@ local function set_Created_Texture_Text()
         targetFrame.Target:SetShown(false)
     end
 
-    --[[if not targetFrame.Creature and Save.creature then
+    if not targetFrame.Creature and Save.creature then
         targetFrame.Creature= e.Cstr(targetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}, layer='BORDER', justifyH='RIGHT'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
         targetFrame.Creature:SetPoint('RIGHT', -8, 0)
         targetFrame.Creature:SetTextColor(1,1,1)
     end
     if targetFrame.Creature and not Save.creature then
         targetFrame.Creature:SetText('')
-    end]]
+    end
    set_Target()
 end
 
@@ -660,7 +661,7 @@ local function set_Option()
     end)
 
 
-    --[[local sel2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    local sel2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     sel2.Text:SetText(e.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r'
                 or (e.Player.col..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, TARGET)..'('..YOU..')|r |cnGREEN_FONT_COLOR:'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)..'('..YOU..')|r |cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)..'|r')
             )
@@ -671,7 +672,7 @@ local function set_Option()
         set_All_Init()
     end)
 
-    local sliderRange = e.CSlider(panel, {min=0, max=60, value=Save.creatureRange, setp=1, w= 100 ,
+    --[[local sliderRange = e.CSlider(panel, {min=0, max=60, value=Save.creatureRange, setp=1, w= 100 ,
     text=format(e.onlyChinese and '码' or IN_GAME_NAVIGATION_RANGE, ''),
     func=function(self2, value)
         value= math.floor(value)
@@ -680,11 +681,11 @@ local function set_Option()
         Save.creatureRange= value
         set_All_Init()
     end})
-    sliderRange:SetPoint("TOPLEFT", sel2.Text, 'BOTTOMLEFT',0, -16)
+    sliderRange:SetPoint("TOPLEFT", sel2.Text, 'BOTTOMLEFT',0, -16)]]
 
     local sliderCreatureFontSize = e.CSlider(panel, {min=8, max=32, value=Save.creatureFontSize, setp=1, w=100, color=true,
     text= e.Player.L.size,
-    func=function(self2, value)
+    func=function(self2, value)--字体大小
         value= math.floor(value)
         self2:SetValue(value)
         self2.Text:SetText(value)
@@ -692,11 +693,11 @@ local function set_Option()
         e.Cstr(nil, {changeFont=targetFrame.Creature, size=value})
         set_All_Init()
     end})
-    sliderCreatureFontSize:SetPoint("LEFT", sliderRange, 'RIGHT',15,0)]]
+    sliderCreatureFontSize:SetPoint("LEFT", sel2, 'RIGHT',15,0)
 
     local questCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     questCheck.Text:SetText(e.onlyChinese and '任务进度' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, PVP_PROGRESS_REWARDS_HEADER)))
-    questCheck:SetPoint('TOPLEFT', sel, 'BOTTOMLEFT',0,-186)
+    questCheck:SetPoint('TOPLEFT', sel2, 'BOTTOMLEFT',0,-86)
     questCheck:SetChecked(Save.quest)
     questCheck:SetScript('OnClick', function()
         Save.quest= not Save.quest and true or nil
