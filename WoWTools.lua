@@ -2267,9 +2267,14 @@ end
 function e.Get_ColorFrame_RGBA()--取得, ColorFrame, 颜色
 	local r, g, b = ColorPickerFrame:GetColorRGB()
     local a
-    a= ColorPickerFrame.hasOpacity and ColorPickerFrame:GetColorAlpha() or 1
-    a= tonumber(format('%.2f', a))
-	return r, g, b, a
+    if OpacitySliderFrame then
+        a= OpacitySliderFrame:IsShown() and OpacitySliderFrame:GetValue() or 0
+        a= tonumber(format('%.2f', 1-a))
+    else
+        a= ColorPickerFrame.hasOpacity and ColorPickerFrame:GetColorAlpha() or 1
+        a= tonumber(format('%.2f', a))
+    end
+	return r, g, b, a or 1
 end
 
 function e.ShowColorPicker(valueR, valueG, valueB, valueA, func, cancelFunc)

@@ -528,7 +528,7 @@ local function Init()
 	Frame:SetShown(not Save.hide)
 
 	if OpacitySliderFrame then
-		Frame.alphaText=e.Cstr(OpacitySliderFrame, {size=14})--14)--透明值，提示
+		Frame.alphaText=e.Cstr(OpacitySliderFrame, {mouse=true, size=14})--14)--透明值，提示
 		Frame.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
 
 		OpacitySliderFrame:EnableMouseWheel(true)
@@ -546,15 +546,15 @@ local function Init()
 	else
 		Frame.alphaText=e.Cstr(ColorPickerFrame, {mouse=true, size=14})--透明值，提示
 		Frame.alphaText:SetPoint('TOP', ColorPickerFrame.Content.ColorSwatchOriginal, 'BOTTOM')
-		Frame.alphaText:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
-		Frame.alphaText:SetScript('OnEnter', function(self) 
-			e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-			e.tips:AddDoubleLine(id,addName)
-			e.tips:AddDoubleLine(e.onlyChinese and '透明度' or CHANGE_OPACITY, 'Alpha')
-			e.tips:Show()
-		end)
 	end
+	Frame.alphaText:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+	Frame.alphaText:SetScript('OnEnter', function(self) 
+		e.tips:SetOwner(self, "ANCHOR_LEFT")
+		e.tips:ClearLines()
+		e.tips:AddDoubleLine(id,addName)
+		e.tips:AddDoubleLine(e.onlyChinese and '透明度' or CHANGE_OPACITY, 'Alpha')
+		e.tips:Show()
+	end)
 end
 
 
