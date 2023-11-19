@@ -793,14 +793,21 @@ local function set_START_TIMER_Event()--事件, 声音
         panel:RegisterEvent('STOP_TIMER_OF_TYPE')
         if not C_CVar.GetCVarBool('Sound_EnableAllSound') then
             C_CVar.SetCVar('Sound_EnableAllSound', '1')
+            print(id, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableAllSound|r', e.onlyChinese and '开启声效' or ENABLE_SOUND)
         end
         if C_CVar.GetCVar('Sound_MasterVolume')=='0' then
-            C_CVar.SetCVar('Sound_MasterVolume', '1')
+            C_CVar.SetCVar('Sound_MasterVolume', '1.0')
+            print(id, addName, '|cnGREEN_FONT_COLOR:CVar Sound_MasterVolume|r', e.onlyChinese and '主音量' or MASTER_VOLUME, '1')
+        end
+
+        if C_CVar.GetCVar('Sound_DialogVolume')=='0' then
+            C_CVar.SetCVar('Sound_DialogVolume', '1.0')
+            print(id, addName, '|cnGREEN_FONT_COLOR:CVar Sound_DialogVolume|r',e.onlyChinese and '对话' or DIALOG_VOLUME, '1')
         end
         if not C_CVar.GetCVarBool('Sound_EnableDialog') then
             C_CVar.SetCVar('Sound_EnableDialog', '1')
+            print(id, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableDialog|r', e.onlyChinese and '启用对话' or ENABLE_DIALOG)
         end
-
         if not button.setPlayerSoundTips then
             button.setPlayerSoundTips= button:CreateTexture(nil,'OVERLAY')
             button.setPlayerSoundTips:SetPoint('BOTTOMLEFT',4, 4)
@@ -1040,10 +1047,7 @@ local function InitMenu(_, level, menuList)
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-print(e.Get_CVar_Tooltips({name='Sound_EnableAllSound', msg=e.onlyChinese and '开启声效' or ENABLE_SOUND, value='1'})..'|n|n'
-..e.Get_CVar_Tooltips({name='Sound_MasterVolume', msg=e.onlyChinese and '主音量' or MASTER_VOLUME , value='1'})..'|n|n'
-..e.Get_CVar_Tooltips({name='Sound_DialogVolume', msg=e.onlyChinese and '主音量' or MASTER_VOLUME , value='1'})..'|n|n'
-..e.Get_CVar_Tooltips({name='Sound_EnableDialog', msg=e.onlyChinese and '开启声效' or ENABLE_SOUND, value='1'}))
+
     info={
         text= '|A:chatframe-button-icon-voicechat:0:0|a'..(e.onlyChinese and '事件声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTS_LABEL, SOUND)),
         checked= Save.setPlayerSound,
@@ -1054,14 +1058,10 @@ print(e.Get_CVar_Tooltips({name='Sound_EnableAllSound', msg=e.onlyChinese and '�
             or not C_CVar.GetCVarBool('Sound_EnableDialog')
         ) and '|cff606060',
         tooltipOnButton=true,
-        tooltipTitle= e.Get_CVar_Tooltips({name='Sound_EnableAllSound', msg=e.onlyChinese and '开启声效' or ENABLE_SOUND, value='1'})..'|n|n'
-            ..e.Get_CVar_Tooltips({name='Sound_MasterVolume', msg=e.onlyChinese and '主音量' or MASTER_VOLUME , value='1'})..'|n|n'
-            ..e.Get_CVar_Tooltips({name='Sound_DialogVolume', msg=e.onlyChinese and '主音量' or MASTER_VOLUME , value='1'})..'|n|n'
-            ..e.Get_CVar_Tooltips({name='Sound_EnableDialog', msg=e.onlyChinese and '开启声效' or ENABLE_SOUND, value='1'}),
-            
-        --'CVar Sound_EnableAllSound '..e.GetEnabeleDisable(C_CVar.GetCVarBool('Sound_EnableAllSound'))
-                        --..'|nCVar Sound_MasterVolume: '..format('%.0f', C_CVar.GetCVar('Sound_MasterVolume')),
-        --tooltipText= 'CVar Sound_EnableDialog '..e.GetEnabeleDisable(C_CVar.GetCVarBool('Sound_EnableDialog')),
+        tooltipTitle= e.Get_CVar_Tooltips({name='Sound_EnableAllSound', msg=e.onlyChinese and '开启声效' or ENABLE_SOUND})..'|n|n'
+                ..e.Get_CVar_Tooltips({name='Sound_MasterVolume', msg=e.onlyChinese and '主音量' or MASTER_VOLUME})..'|n|n'
+                ..e.Get_CVar_Tooltips({name='Sound_DialogVolume', msg=e.onlyChinese and '对话' or DIALOG_VOLUME})..'|n|n'
+                ..e.Get_CVar_Tooltips({name='Sound_EnableDialog', msg=e.onlyChinese and '启用对话' or ENABLE_DIALOG }),
         keepShownOnClick=true,
         hasArrow=true,
         menuList='NPCTalking',

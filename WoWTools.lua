@@ -731,8 +731,8 @@ function e.Get_CVar_Tooltips(info)--取得CVar信息 e.Get_CVar_Tooltips({name= 
     return (info.msg and info.msg..'|n' or '')..info.name..'|n'
     ..(info.value and C_CVar.GetCVar(info.name)== info.value and e.Icon.select2 or '')
     ..(info.value and (e.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
-    ..'('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cnGREEN_FONT_COLOR:'..C_CVar.GetCVar(info.name)..'|r |r'
-    ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..C_CVar.GetCVarDefault(info.name)..')|r'
+    ..'('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cnGREEN_FONT_COLOR:'..format('%.1f',C_CVar.GetCVar(info.name))..'|r |r'
+    ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..format('%.1f', C_CVar.GetCVarDefault(info.name))..')|r'
 end
 
 --[[

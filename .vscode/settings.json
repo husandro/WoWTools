@@ -3639,7 +3639,8 @@
         "ARCHAEOLOGY_COMPLETION",
         "BEST",
         "ENABLE_SOUND",
-        "MASTER_VOLUME"
+        "MASTER_VOLUME",
+        "DIALOG_VOLUME"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
