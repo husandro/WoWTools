@@ -2266,8 +2266,10 @@ end
 
 function e.Get_ColorFrame_RGBA()--取得, ColorFrame, 颜色
 	local r, g, b = ColorPickerFrame:GetColorRGB()
-    print(ColorPickerFrame.hasOpacity , ColorPickerFrame:GetColorAlpha())
-	return r, g, b, ColorPickerFrame.hasOpacity and ColorPickerFrame:GetColorAlpha() or 1
+    local a
+    a= ColorPickerFrame.hasOpacity and ColorPickerFrame:GetColorAlpha() or 1
+    a= tonumber(format('%.2f', a))
+	return r, g, b, a
 end
 
 function e.ShowColorPicker(valueR, valueG, valueB, valueA, func, cancelFunc)

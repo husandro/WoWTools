@@ -3640,7 +3640,8 @@
         "BEST",
         "ENABLE_SOUND",
         "MASTER_VOLUME",
-        "DIALOG_VOLUME"
+        "DIALOG_VOLUME",
+        "BATTLEFIELDMINIMAP_OPACITY_LABEL"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

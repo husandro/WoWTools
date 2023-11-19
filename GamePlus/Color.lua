@@ -32,8 +32,7 @@ local function set_Text(self, elapsed)
 			end
 		end
 		ColorPickerFrame.Header.Text:SetTextColor(r,g,b)
-
-		Frame.alphaText:SetFormattedText('%.2f', a)
+		Frame.alphaText:SetText(a)
 		Frame.alphaText:SetTextColor(r,g,b)
 	end
 end
@@ -490,8 +489,7 @@ local function Init()
 	cnText2:SetPoint('LEFT', Frame.cn2, 'RIGHT', 2,0)
 	cnText2:SetText(':')
 
-	Frame.alphaText=e.Cstr(OpacitySliderFrame, {size=14})--14)--透明值，提示
-	Frame.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
+
 
 	size= 18
 	local restColor= create_Texture(e.Player.r, e.Player.g, e.Player.b, 1)--记录，打开时的颜色， 和历史
@@ -525,15 +523,17 @@ local function Init()
 	end)
 
 
-	ColorPickerFrame:SetScript('OnUpdate', set_Text)
+	
+	ColorPickerFrame:HookScript('OnUpdate', set_Text)
 	Frame:SetShown(not Save.hide)
 
 	if OpacitySliderFrame then
+		Frame.alphaText=e.Cstr(OpacitySliderFrame, {size=14})--14)--透明值，提示
+		Frame.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
+
 		OpacitySliderFrame:EnableMouseWheel(true)
 		OpacitySliderFrame:SetScript('OnMouseWheel', function(self2, d)
 			local value= self2:GetValue()
-			--value= format('%.2f', self2:GetValue())
-			--value= tonumber(value)
 			if d== 1 then
 				value= value- 0.01
 			elseif d==-1 then
@@ -542,6 +542,17 @@ local function Init()
 			value= value> 1 and 1 or value
 			value= value< 0 and 0 or value
 			self2:SetValue(value)
+		end)
+	else
+		Frame.alphaText=e.Cstr(ColorPickerFrame, {mouse=true})--透明值，提示
+		Frame.alphaText:SetPoint('TOP', ColorPickerFrame.Content.ColorSwatchOriginal, 'BOTTOM')
+		Frame.alphaText:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+		Frame.alphaText:SetScript('OnEnter', function(self) 
+			e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+			e.tips:AddDoubleLine(id,addName)
+			e.tips:AddDoubleLine(e.onlyChinese and '透明度' or BATTLEFIELDMINIMAP_OPACITY_LABEL, 'Alpha')
+			e.tips:Shown()
 		end)
 	end
 end
