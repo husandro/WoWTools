@@ -791,12 +791,23 @@ local function set_START_TIMER_Event()--事件, 声音
     if Save.setPlayerSound then
         panel:RegisterEvent('START_TIMER')
         panel:RegisterEvent('STOP_TIMER_OF_TYPE')
+        if not C_CVar.GetCVarBool('Sound_EnableAllSound') then
+            C_CVar.SetCVar('Sound_EnableAllSound', '1')
+        end
+        if C_CVar.GetCVar('Sound_MasterVolume')=='0' then
+            C_CVar.SetCVar('Sound_MasterVolume', '1')
+        end
+        if not C_CVar.GetCVarBool('Sound_EnableDialog') then
+            C_CVar.SetCVar('Sound_EnableDialog', '1')
+        end
+
         if not button.setPlayerSoundTips then
             button.setPlayerSoundTips= button:CreateTexture(nil,'OVERLAY')
             button.setPlayerSoundTips:SetPoint('BOTTOMLEFT',4, 4)
             button.setPlayerSoundTips:SetSize(12,12)
             button.setPlayerSoundTips:SetAtlas('chatframe-button-icon-voicechat')
         end
+
     else
         panel:UnregisterEvent('START_TIMER')
         panel:UnregisterEvent('STOP_TIMER_OF_TYPE')
@@ -1033,18 +1044,28 @@ local function InitMenu(_, level, menuList)
     info={
         text= '|A:chatframe-button-icon-voicechat:0:0|a'..(e.onlyChinese and '事件声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTS_LABEL, SOUND)),
         checked= Save.setPlayerSound,
-        colorCode= (not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0') and '|cff606060',
+        colorCode= (
+            not C_CVar.GetCVarBool('Sound_EnableAllSound')
+            or C_CVar.GetCVar('Sound_MasterVolume')=='0'
+            or not C_CVar.GetCVarBool('Sound_EnableDialog')
+        ) and '|cff606060',
+        tooltipOnButton=true,
+        tooltipTitle= e.Get_CVar_Tooltips({name='Sound_EnableAllSound', msg='', value=''}),
+        --'CVar Sound_EnableAllSound '..e.GetEnabeleDisable(C_CVar.GetCVarBool('Sound_EnableAllSound'))
+                        --..'|nCVar Sound_MasterVolume: '..format('%.0f', C_CVar.GetCVar('Sound_MasterVolume')),
+        --tooltipText= 'CVar Sound_EnableDialog '..e.GetEnabeleDisable(C_CVar.GetCVarBool('Sound_EnableDialog')),
         keepShownOnClick=true,
         hasArrow=true,
         menuList='NPCTalking',
+        disabled= UnitAffectingCombat('player'),
         func= function()
             Save.setPlayerSound= not Save.setPlayerSound and true or nil
             e.setPlayerSound= Save.setPlayerSound
             if Save.setPlayerSound then
                 e.PlaySound()--播放, 声音
             end
-            set_Talking()--隐藏NPC发言
             set_START_TIMER_Event()--事件, 声音
+            set_Talking()--隐藏NPC发言
             print(id, addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
         end
     }

@@ -735,11 +735,16 @@ function e.Get_CVar_Tooltips(info)--取得CVar信息 e.Get_CVar_Tooltips({name= 
     ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..C_CVar.GetCVarDefault(info.name)..')|r'
 end
 
-function e.set_CVar(name, value)-- e.set_CVar()--设置 Cvar
+--[[
+function e.Set_CVar(name, value)
     if value~= nil then
-        C_CVar.SetCVar(name, value and '1' or '0')
+        if type(value=='number') then
+            C_CVar.SetCVar(name, value)
+        else
+            C_CVar.SetCVar(name, value and '1' or '0')
+        end
     end
-end
+end]]
 
 function e.SetButtonKey(self, set, key, click)--设置清除快捷键
     if set then
