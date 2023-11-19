@@ -52,6 +52,20 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -59,6 +73,7 @@ local function Init()
 	Frame= CreateFrame("Frame", nil, ColorPickerFrame)
 
 	local size, x, y, n
+
 	local function create_Texture(r,g,b,a, atlas)
 		local texture= Frame:CreateTexture()
 		texture:SetSize(size, size)
@@ -491,9 +506,22 @@ local function Init()
 
 
 
+
+
+
+
+
+
+
+
 	size= 18
 	local restColor= create_Texture(e.Player.r, e.Player.g, e.Player.b, 1)--记录，打开时的颜色， 和历史
-	restColor:SetPoint('TOP', ColorSwatch, 'BOTTOM', 0, -60)
+	if ColorSwatch then		
+		restColor:SetPoint('TOP', ColorSwatch, 'BOTTOM', 0, -60)
+	else
+		restColor:SetPoint('TOPLEFT', ColorPickerFrame.Content.ColorSwatchCurrent, 'TOPRIGHT', 2,0)
+		print(ColorPickerFrame.Content.ColorSwatchCurrent:GetObjectType())
+	end
 	restColor:SetScript('OnShow', function(self2)
 		local r, g, b, a= e.Get_ColorFrame_RGBA()
 		self2:SetColorTexture(r, g, b, a)
@@ -524,8 +552,12 @@ local function Init()
 
 
 	
-	ColorPickerFrame:HookScript('OnUpdate', set_Text)
-	Frame:SetShown(not Save.hide)
+
+
+
+
+
+
 
 	if OpacitySliderFrame then
 		Frame.alphaText=e.Cstr(OpacitySliderFrame, {mouse=true, size=14})--14)--透明值，提示
@@ -555,6 +587,52 @@ local function Init()
 		e.tips:AddDoubleLine(e.onlyChinese and '透明度' or CHANGE_OPACITY, 'Alpha')
 		e.tips:Show()
 	end)
+
+
+
+
+
+
+
+
+	if ColorPickerOkayButton then
+		ColorPickerOkayButton:HookScript('OnMouseDown', function()--记录，历史
+			local r, g, b, a= e.Get_ColorFrame_RGBA()
+			for _, col in pairs(Save.color) do
+				if col.r==r and col.g==g and col.b==b and col.a== a then
+					return
+				end
+			end
+			if #Save.color >=logNum then
+				table.remove(Save.color, 1)
+			end
+			table.insert(Save.color,{r=r, g=g, b=b, a=a})
+		end)
+	else
+		ColorPickerFrame:HookScript('OnHide', function()
+			print(id,addName)
+			local r, g, b, a= e.Get_ColorFrame_RGBA()
+			for _, col in pairs(Save.color) do
+				if col.r==r and col.g==g and col.b==b and col.a== a then
+					return
+				end
+			end
+			if #Save.color >=logNum then
+				table.remove(Save.color, 1)
+			end
+			table.insert(Save.color,{r=r, g=g, b=b, a=a})
+			
+		end)
+	end
+
+
+
+
+
+
+
+	ColorPickerFrame:HookScript('OnUpdate', set_Text)
+	Frame:SetShown(not Save.hide)
 end
 
 
@@ -646,20 +724,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				if not Save.hide then
 					Init()
 				end
-				if ColorPickerOkayButton then
-					ColorPickerOkayButton:HookScript('OnMouseDown', function()--记录，历史
-						local r, g, b, a= e.Get_ColorFrame_RGBA()
-						for _, col in pairs(Save.color) do
-							if col.r==r and col.g==g and col.b==b and col.a== a then
-								return
-							end
-						end
-						if #Save.color >=logNum then
-							table.remove(Save.color, 1)
-						end
-						table.insert(Save.color,{r=r, g=g, b=b, a=a})
-					end)
-				end
+				
 
             end
             panel:UnregisterEvent('ADDON_LOADED')
