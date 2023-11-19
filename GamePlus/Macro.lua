@@ -959,7 +959,7 @@ local function Init_List_Button()
                         {text='/wm [@cursor]6\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_2'},
                         {text='/wm [@cursor]7\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_5'},
                         {text='/wm [@cursor]8\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_8'},
-                        {text='/cwm 1\n', icon='talents-button-reset'},
+                        {text='/cwm 0\n', icon='talents-button-reset'},
                     }
                 },
                 {text='button',  macro='btn:1',
