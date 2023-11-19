@@ -551,7 +551,7 @@ local function Init()
 			e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
 			e.tips:AddDoubleLine(id,addName)
-			e.tips:AddDoubleLine(e.onlyChinese and '透明度' or BATTLEFIELDMINIMAP_OPACITY_LABEL, 'Alpha')
+			e.tips:AddDoubleLine(e.onlyChinese and '透明度' or CHANGE_OPACITY, 'Alpha')
 			e.tips:Show()
 		end)
 	end
