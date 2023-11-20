@@ -794,7 +794,7 @@ local function Init_Gossip()
             self.sel:SetScript("OnMouseDown", function (self2)
                 if self2.id and self2.text then
                     Save.gossipOption[self2.id]= not Save.gossipOption[self2.id] and self2.text or nil
-                    if Save.gossipOption[self2.id] then
+                    if Save.gossipOption[self2.id] and not IsModifierKeyDown() then
                         C_GossipInfo.SelectOption(self2.id)
                     end
                 else
