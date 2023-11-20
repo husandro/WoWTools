@@ -1335,6 +1335,7 @@ end
 local function Init_BossFrame()
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
+
         frame.PortraitFrame= e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})--CreateFrame('Frame', nil, frame, 'SecureActionButtonTemplate')
         frame.PortraitFrame:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
         --frame.PortraitFrame:SetSize(38, 38)
@@ -1398,6 +1399,92 @@ local function Init_BossFrame()
 
         frame.PortraitFrame:set_Portrait()
         frame.PortraitFrame:set_Target_Segnale()
+
+        --目标的目标
+        frame.TotFrame=e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})
+        frame.TotFrame:SetPoint('TOPLEFT', frame.PortraitFrame, 'TOPRIGHT', 4,0)
+        frame.TotFrame:SetAttribute('type', 'target')
+        frame.TotFrame:SetAttribute('unit', frame.unit..'target')
+        frame.TotFrame:SetScript('OnLeave', function() e.tips:Hide() end)
+        frame.TotFrame:SetScript('OnEnter', function(self)
+            GameTooltip_SetDefaultAnchor(GameTooltip, self);
+            e.tips:ClearLines()
+            local unit= self:get_unit()
+            if UnitExists(unit) then
+                e.tips:SetUnit(unit)
+            else
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(e.onlyChinese and '目标的目标' or SHOW_TARGET_OF_TARGET_TEXT, unit)
+            end
+            e.tips:Show()
+        end)
+
+        frame.TotFrame.Portrait= frame.TotFrame:CreateTexture(nil, 'BACKGROUND')
+        
+        frame.TotFrame.Portrait:SetAllPoints(frame.TotFrame)
+
+        frame.TotFrame.targetTexture= frame.TotFrame:CreateTexture(nil, 'OVERLAY')
+        frame.TotFrame.targetTexture:SetSize(52,52)
+        frame.TotFrame.targetTexture:SetPoint('CENTER')
+        frame.TotFrame.targetTexture:SetAtlas('DK-Blood-Rune-CDFill')
+        frame.TotFrame.targetTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+        frame.TotFrame.unit= frame.unit
+        frame.TotFrame.targetUnit= frame.unit..'target'
+
+        frame.TotFrame.healthFrame= CreateFrame('Frame')
+        frame.TotFrame.healthFrame:SetAllPoints(frame.TotFrame)
+        frame.TotFrame.healthFrame:Hide()
+        frame.TotFrame.healthFrame.healthLable= e.Cstr(frame.TotFrame.healthFrame)
+        frame.TotFrame.healthFrame.healthLable:SetPoint('LEFT', frame.TotFrame, 'RIGHT')
+        frame.TotFrame.healthFrame.unit=frame.TotFrame.targetUnit
+        frame.TotFrame.healthFrame:SetScript('OnUpdate', function(self, elapsed)
+            self.elapsed= (self.elapsed or 0.3) +elapsed
+            if self.elapsed>0.3 then
+                local text=''
+                local value, max= UnitHealth(self.unit), UnitHealthMax(self.unit)
+                if value and max then
+                    text= format('%i', value/max*100)
+                end
+                self.healthLable:SetText(text)
+            end
+        end)
+                    
+        function frame.TotFrame:set_Portrait()
+            local exists=UnitExists(self.targetUnit)
+            if exists then
+                SetPortraitTexture(self.Portrait, self.targetUnit)
+            end
+            self.healthFrame:SetShown(exists)
+            self.Portrait:SetShown(exists)
+            self.targetTexture:SetShown(exists and UnitIsUnit('player', self.targetUnit))
+        end
+        
+        function frame.TotFrame:set_Event()
+            if not self:IsShown() then
+                self:UnregisterAllEvents()
+            else
+                self:RegisterUnitEvent('UNIT_TARGET', self.unit)
+                self:set_Portrait()
+            end
+        end
+
+        frame.TotFrame:SetScript('OnEvent', function(self)
+            self:set_Portrait()
+        end)
+
+        frame.TotFrame:set_Event()
+        frame.TotFrame:set_Portrait()
+
+
+
+        frame:HookScript('OnShow', function(self)
+            self.PortraitFrame:set_Event()
+            self.TotFrame:set_Event()
+        end)
+        frame:HookScript('OnHide', function(self)
+            self.PortraitFrame:set_Event()
+            self.TotFrame:set_Event()
+        end)
     end
 end
 
