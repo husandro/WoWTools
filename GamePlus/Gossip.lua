@@ -688,7 +688,7 @@ local function Init_Gossip()
     GossipButton:RegisterEvent('PET_BATTLE_OPENING_DONE')
     GossipButton:RegisterEvent('PET_BATTLE_CLOSE')
     GossipButton:RegisterEvent('ADDON_ACTION_FORBIDDEN')
-    GossipButton:SetScript('OnEvent', function(self, event, arg1)
+    GossipButton:SetScript('OnEvent', function(self, event, arg1, arg2)
         if event=='PET_BATTLE_OPENING_DONE' or event=='PET_BATTLE_CLOSE' then
             self:set_shown()
         elseif event=='PLAY_MOVIE' then
@@ -715,6 +715,9 @@ local function Init_Gossip()
                     StaticPopup1:Hide()
                 end
                 print(id, addName, '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or ''))
+                if e.Player.husandro then
+                    print(arg2)
+                end
             end
         end
     end)
