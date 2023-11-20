@@ -22,9 +22,31 @@ local Save={
 }
 
 
+
+
+
+
+
 local size=23--图标大小
 local panel= CreateFrame("Frame")
 local button
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function set_Text_SendMailNameEditBox(_, name)--设置，发送名称，文
     if name then
@@ -56,6 +78,30 @@ local function get_Name_Info(name)--取得名称，信息
         return reName and reName:gsub('%-'..e.Player.realm, '') or name
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#######
 --设置菜单
@@ -407,6 +453,33 @@ local function Init_Menu(_, level, menuList)
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Button()
     if button then
         return
@@ -728,6 +801,20 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --##################
 --设置，快速选取，按钮
 --##################
@@ -757,6 +844,20 @@ local function check_Enabled_Item(classID, subClassID, findString, bag, slot)
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -892,6 +993,24 @@ local function Init_Fast_Menu(_, level, menuList)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1268,6 +1387,22 @@ local function Init_Fast_Button()
     button.clearAllItmeButton.itemNumLabel= e.Cstr(button.clearAllItmeButton)
     button.clearAllItmeButton.itemNumLabel:SetPoint('BOTTOMRIGHT', button.clearAllItmeButton, 'BOTTOMLEFT',0,4)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1875,6 +2010,28 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -1954,7 +2111,7 @@ local function Init()--SendMailNameEditBox
         else
             C_Timer.After(timeUntilAvailable, set_Show_MailFrame_Init)
         end
-        C_Timer.After(0.5, function()
+        C_Timer.After(1, function()
             if GetInboxNumItems()==0 then--如果没有信，转到，发信
                 MailFrameTab_OnClick(nil, 2)
             end
