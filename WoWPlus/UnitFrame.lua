@@ -1409,12 +1409,11 @@ local function Init_BossFrame()
         frame.TotFrame:SetScript('OnEnter', function(self)
             GameTooltip_SetDefaultAnchor(GameTooltip, self);
             e.tips:ClearLines()
-            local unit= self:get_unit()
-            if UnitExists(unit) then
-                e.tips:SetUnit(unit)
+            if UnitExists(self.unit) then
+                e.tips:SetUnit(self.unit)
             else
                 e.tips:AddDoubleLine(id, addName)
-                e.tips:AddDoubleLine(e.onlyChinese and '目标的目标' or SHOW_TARGET_OF_TARGET_TEXT, unit)
+                e.tips:AddDoubleLine(e.onlyChinese and '目标的目标' or SHOW_TARGET_OF_TARGET_TEXT, self.unit)
             end
             e.tips:Show()
         end)
