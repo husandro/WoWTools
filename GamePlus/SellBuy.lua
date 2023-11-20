@@ -477,19 +477,19 @@ local function Set_Merchant_Info()--设置, 提示, 信息
         --local itemButton= _G["MerchantItem"..index.."ItemButton"]
 
         local text, spellID
+        local num, itemID
         if btn and index<= numItem then
-            local itemID, itemLink
-            if btn.hasItem then
-                if isMerce then
-                    itemID= GetMerchantItemID(index)
-                    itemLink=  GetMerchantItemLink(index)
-                else
-                    itemID= C_MerchantFrame.GetBuybackItemID(index)
-                    itemLink= GetBuybackItemLink(index)
-                end
+            local itemLink
+            if isMerce then
+                itemID= GetMerchantItemID(index)
+                itemLink=  GetMerchantItemLink(index)
+            else
+                itemID= C_MerchantFrame.GetBuybackItemID(index)
+                itemLink= GetBuybackItemLink(index)
             end
+            
 
-            local num=(not Save.notAutoBuy and itemID) and buySave[itemID]--自动购买， 数量
+            num=(not Save.notAutoBuy and itemID) and buySave[itemID]--自动购买， 数量
             num= num and num..'|T236994:0|t'
             --if not Save.notShowBagNum then--包里，银行，总数
                 --包里，银行，总数
@@ -516,10 +516,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
 					e.tips:Show();
                 end)
             end
-            if btn.buyItemNum then
-                btn.buyItemNum:SetText(num or '')
-                btn.buyItemNum.itemID= itemID
-            end
+            
 
 
             --物品，属性
@@ -554,9 +551,15 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                 end
             end
         end
-        if btn and btn.stats then
-            btn.stats:SetText(text or '')
-            btn.stats.spellID= spellID
+        if btn then
+            if btn.buyItemNum then
+                btn.buyItemNum:SetText(num or '')
+                btn.buyItemNum.itemID= itemID
+            end
+            if btn and btn.stats then
+                btn.stats:SetText(text or '')
+                btn.stats.spellID= spellID
+            end
         end
     end
 end
