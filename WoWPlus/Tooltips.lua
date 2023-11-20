@@ -1500,12 +1500,12 @@ local function Init()
             elseif data.type==25 then--宏
                 local frame= GetMouseFocus()
                 if frame and frame.action then
-                    local type, macroID= GetActionInfo(frame.action)
+                    local type, macroID, subType= GetActionInfo(frame.action)
                     if type=='macro' and macroID then
-                        local spellID= GetMacroSpell(macroID)
+                        print(GetActionInfo(frame.action))
+                        local spellID= subType=='spell' and macroID or GetMacroSpell(macroID)
                         if spellID then
                             func.Set_Spell(tooltip, spellID)
-                            tooltip:AddLine(' ')
                         end
                         local text=GetMacroBody(macroID)
                         if text then
