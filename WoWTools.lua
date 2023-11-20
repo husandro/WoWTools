@@ -1132,23 +1132,30 @@ function e.Set_Item_Stats(self, link, setting) --setting= setting or {}
         return
     end
     local setID, itemLevel
+    setting= setting or {}
+
+    local hideSet= setting.hideSet
+    local point= setting.point
+    local hideLevel= setting.hideLevel
+    local itemID= setting.itemID
+    local hideStats= setting.hideStats
 
     if link then
-        if not setting.hideSet then
+        if not hideSet then
             setID= select(16 , GetItemInfo(link))--套装
             if setID and not self.itemSet then
                 self.itemSet= self:CreateTexture()
                 self.itemSet:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
                 self.itemSet:SetVertexColor(0, 1, 0, 0.8)
-                self.itemSet:SetAllPoints(setting.point or self)
+                self.itemSet:SetAllPoints(point or self)
             end
         end
 
-        if not setting.hideLevel then--物品, 装等
+        if not hideLevel then--物品, 装等
             local quality = C_Item.GetItemQualityByID(link)--颜色
             if quality==7 then
                 local itemLevelStr=ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
-                local dataInfo= e.GetTooltipData({hyperLink=link, itemID= setting.itemID or GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
+                local dataInfo= e.GetTooltipData({hyperLink=link, itemID= itemID or GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
                 itemLevel= tonumber(dataInfo.text[itemLevelStr])
             end
             itemLevel= itemLevel or GetDetailedItemLevelInfo(link)
@@ -1158,33 +1165,25 @@ function e.Set_Item_Stats(self, link, setting) --setting= setting or {}
             local avgItemLevel= itemLevel and select(2, GetAverageItemLevel())--已装备, 装等
             if itemLevel and avgItemLevel then
                 local lv = itemLevel- avgItemLevel
-                --if lv>=7 then
-                  --  itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
-                --elseif quality and quality<= 6 then
                     if lv <= -6  then
                         itemLevel =RED_FONT_COLOR_CODE..itemLevel..'|r'
                     elseif lv>=7 then
                         itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
                     else
                         itemLevel='|cffffffff'..itemLevel..'|r'
-                        --[[local hexColor= quality and select(4, GetItemQualityColor(quality))
-                        if hexColor then
-                            itemLevel='|c'..hexColor..itemLevel..'|r'
-                        end]]
                     end
-                --end
             end
             if not self.itemLevel and itemLevel then
-                self.itemLevel= e.Cstr(self, {justifyH='CENTER'})--nil, nil, nil,nil,nil, 'CENTER')
+                self.itemLevel= e.Cstr(self, {justifyH='CENTER'})
                 self.itemLevel:SetShadowOffset(2,-2)
-                self.itemLevel:SetPoint('CENTER', setting.point)
+                self.itemLevel:SetPoint('CENTER', point)
             end
         end
     end
     if self.itemSet then self.itemSet:SetShown(setID) end--套装
     if self.itemLevel then self.itemLevel:SetText(itemLevel or '') end--装等
 
-    local tab= not setting.hideStats and e.Get_Item_Stats(link) or {}--物品，次属性，表
+    local tab= not hideStats and e.Get_Item_Stats(link) or {}--物品，次属性，表
     table.sort(tab, function(a,b) return a.value>b.value and a.index== b.index end)
     for index=1 ,4 do
         local text=self['statText'..index]
@@ -1192,13 +1191,13 @@ function e.Set_Item_Stats(self, link, setting) --setting= setting or {}
             if not text then
                 text= e.Cstr(self, {justifyH= (index==2 or index==4) and 'RIGHT'})
                 if index==1 then
-                    text:SetPoint('BOTTOMLEFT', setting.point or self, 'BOTTOMLEFT')
+                    text:SetPoint('BOTTOMLEFT', point or self, 'BOTTOMLEFT')
                 elseif index==2 then
-                    text:SetPoint('BOTTOMRIGHT', setting.point or self, 'BOTTOMRIGHT', 4,0)
+                    text:SetPoint('BOTTOMRIGHT', point or self, 'BOTTOMRIGHT', 4,0)
                 elseif index==3 then
-                    text:SetPoint('TOPLEFT', setting.point or self, 'TOPLEFT')
+                    text:SetPoint('TOPLEFT', point or self, 'TOPLEFT')
                 else
-                    text:SetPoint('TOPRIGHT', setting.point or self, 'TOPRIGHT',4,0)
+                    text:SetPoint('TOPRIGHT', point or self, 'TOPRIGHT',4,0)
                 end
                 self['statText'..index]=text
             end

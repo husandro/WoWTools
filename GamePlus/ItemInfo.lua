@@ -635,6 +635,11 @@ end
 --初始
 --####
 local function Init()
+    --战利品，拾取
+    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink, quantity, specID, baseQuality)--AlertFrameSystems.lua
+        
+    end)
+
 
     --boss掉落，物品, 可能，会留下 StaticPopup1 框架
     hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
