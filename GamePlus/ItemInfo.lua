@@ -636,7 +636,12 @@ end
 --####
 local function Init()
     --战利品，拾取
-    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink, quantity, specID, baseQuality)--AlertFrameSystems.lua
+    hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
+        e.Set_Item_Stats(self, itemLink, {
+            point= self.Icon
+        })
+    end)
+    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)
         e.Set_Item_Stats(self, itemLink, {
             point= self.Icon
         })
