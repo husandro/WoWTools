@@ -469,28 +469,27 @@ local function set_Shift_Click_focurs()
     local tab = {
         PlayerFrame,
         PetFrame,
-        PartyFrame.MemberFrame1,
-        PartyFrame.MemberFrame2,
-        PartyFrame.MemberFrame3,
-        PartyFrame.MemberFrame4,
-        PartyFrame.MemberFrame1.potFrame,
-        PartyFrame.MemberFrame2.potFrame,
-        PartyFrame.MemberFrame3.potFrame,
-        PartyFrame.MemberFrame4.potFrame,
-        CompactPartyFrameMember1,
-        CompactPartyFrameMember2,
-        CompactPartyFrameMember3,
-        CompactPartyFrameMember4,
-        CompactPartyFrameMember5,
         TargetFrame,
         TargetFrameToT,
-        Boss1TargetFrame,
-        Boss2TargetFrame,
-        Boss3TargetFrame,
-        Boss4TargetFrame,
-        Boss5TargetFrame,
         FocusFrameToT,
     }
+    for i=1, MAX_BOSS_FRAMES do--boss
+        if _G['Boss'..i..'TargetFrame'] then
+            table.insert(tab, _G['Boss'..i..'TargetFrame'])
+            table.insert(tab, _G['Boss'..i..'TargetFrame'].PortraitFrame)--UnitFrame.lua
+        end
+    end
+    for i=1, MAX_PARTY_MEMBERS do--队伍
+        local member= 'MemberFrame'..i
+        if PartyFrame and PartyFrame[member] then
+            table.insert(tab, PartyFrame[member])
+            if PartyFrame[member].potFrame then
+                table.insert(tab, PartyFrame[member].potFrame)--UnitFrame.lua
+            end
+        end
+        table.insert(tab, _G['CompactPartyFrameMember'..i])
+    end
+
     local keyTab={
         'shift-type1',
         'ctrl-type1',
