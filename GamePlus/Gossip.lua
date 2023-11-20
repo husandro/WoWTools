@@ -723,6 +723,19 @@ local function Init_Gossip()
     end)
 
 
+    --"%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。";
+    if Save.gossip then
+        StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= 0.3
+    end
+    --[[hooksecurefunc(StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"], "OnShow",function(s)
+        if Save.gossip then
+            local text= StaticPopup1Text and StaticPopup1Text:GetText() or (e.onlyChinese and '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN)
+            print(id, addName, '|n|cnRED_FONT_COLOR:', text)
+            s:Hide()
+        end
+    end)]]
+
+
 
 
     --禁用此npc闲话选项
@@ -1028,17 +1041,7 @@ local function Init_Gossip()
         end
     end)
 
-    --"%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。";
-    if Save.gossip then
-        StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= 0.3
-    end
-    --[[hooksecurefunc(StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"], "OnShow",function(s)
-        if Save.gossip then
-            local text= StaticPopup1Text and StaticPopup1Text:GetText() or (e.onlyChinese and '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN)
-            print(id, addName, '|n|cnRED_FONT_COLOR:', text)
-            s:Hide()
-        end
-    end)]]
+
 end
 
 
