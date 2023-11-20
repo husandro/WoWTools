@@ -402,12 +402,11 @@ end
 --设置,物品信息
 --############
 function func.Set_Item(self, itemLink, itemID)
-    if not (itemLink and itemID) then
+    if not itemLink and not itemID then
         return
     end
     local itemName, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent= GetItemInfo(itemLink or itemID)
     itemID= itemID or GetItemInfoInstant(itemLink or itemID) or func.GetItemInfoFromHyperlink(itemLink)
-    
     --local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(itemLink)
     --local itemID, itemType, itemSubType, itemEquipLoc, itemTexture2, classID, subclassID = GetItemInfoInstant(itemLink)
     if not itemID then
@@ -1468,11 +1467,12 @@ local function Init()
             end
 
         elseif data.id and data.type then
-            if data.type==0 or data.type==19 then
+            if data.type==0 then
                 local itemLink, itemID= select(2, TooltipUtil.GetDisplayedItem(tooltip))
                 itemLink= itemLink or itemID or data.id
                 func.Set_Item(tooltip, itemLink, itemID)
-
+            elseif data.type==19 then
+                func.Set_Item(tooltip, nil, data.id)
             elseif data.type==1 then
                 func.Set_Spell(tooltip, data.id)--法术
 
