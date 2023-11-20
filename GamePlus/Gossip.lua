@@ -687,24 +687,35 @@ local function Init_Gossip()
     GossipButton:RegisterEvent('PLAY_MOVIE')--movieID
     GossipButton:RegisterEvent('PET_BATTLE_OPENING_DONE')
     GossipButton:RegisterEvent('PET_BATTLE_CLOSE')
+    GossipButton:RegisterEvent('ADDON_ACTION_FORBIDDEN')
     GossipButton:SetScript('OnEvent', function(self, event, arg1)
         if event=='PET_BATTLE_OPENING_DONE' or event=='PET_BATTLE_CLOSE' then
             self:set_shown()
-        elseif arg1 then
-            if Save.movie[arg1] then
-                if Save.stopMovie then
-                    MovieFrame:StopMovie()
-                    print(id, addName, e.onlyChinese and '对话' or ENABLE_DIALOG,
-                        '|cnRED_FONT_COLOR:'..(e.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
-                        'movieID|cnGREEN_FONT_COLOR:',
-                        arg1
-                    )
-                    return
+        elseif event=='PLAY_MOVIE' then
+            if arg1 then
+                if Save.movie[arg1] then
+                    if Save.stopMovie then
+                        MovieFrame:StopMovie()
+                        print(id, addName, e.onlyChinese and '对话' or ENABLE_DIALOG,
+                            '|cnRED_FONT_COLOR:'..(e.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
+                            'movieID|cnGREEN_FONT_COLOR:',
+                            arg1
+                        )
+                        return
+                    end
+                else
+                    Save.movie[arg1]= date("%d/%m/%y %H:%M:%S")
                 end
-            else
-                Save.movie[arg1]= date("%d/%m/%y %H:%M:%S")
+                print(id, addName, '|cnGREEN_FONT_COLOR:movieID', arg1)
             end
-            print(id, addName, '|cnGREEN_FONT_COLOR:movieID', arg1)
+        
+        elseif event=='ADDON_ACTION_FORBIDDEN'  then
+            if Save.gossip then
+                if StaticPopup1:IsShown() then
+                    StaticPopup1:Hide()
+                end
+                print(id, addName, '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or ''))
+            end
         end
     end)
 
@@ -1015,7 +1026,9 @@ local function Init_Gossip()
     end)
 
     --"%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。";
-    StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= 0.1
+    if Save.gossip then
+        StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= 0.3
+    end
     --[[hooksecurefunc(StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"], "OnShow",function(s)
         if Save.gossip then
             local text= StaticPopup1Text and StaticPopup1Text:GetText() or (e.onlyChinese and '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN)
