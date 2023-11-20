@@ -262,6 +262,9 @@ end
 --高亮，动作条
 --ActionButton.lua
 local function Set_Action_Focus(spellID)
+    if UnitAffectingCombat('player') then
+        return
+    end
     if spellID then
         e.call('UpdateOnBarHighlightMarksBySpell', spellID)
     else
@@ -472,7 +475,7 @@ local function set_btn_tooltips(self, index)
                 col..(e.onlyChinese and '删除' or DELETE),
                 col..'Alt+'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
             )
-            local spellID=  GetMacroSpell(index)
+            local spellID= GetMacroSpell(index)
             if spellID then
                 e.LoadDate({id=spellID, type='spell'})
                 local spellName, _, spellIcon= GetSpellInfo(spellID)
