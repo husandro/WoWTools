@@ -812,7 +812,7 @@ local function Init_Gossip()
         self.sel.text=info.name
         self.sel.spellID= info.spellID
         self.sel.icon= info.overrideIconID or info.icon
-        self.sel:SetChecked(Save.gossipOption[index])
+        self.sel:SetChecked(Save.gossipOption[index] and true or false)
 
         if IsModifierKeyDown() or not index or GossipButton.selectGissipIDTab[index] then
             return
