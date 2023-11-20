@@ -28,6 +28,28 @@ local GossipButton
 local QuestButton
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function select_Reward(questID)--自动:选择奖励
     local numQuests = GetNumQuestChoices() or 0
     if numQuests <2 then
@@ -722,6 +744,24 @@ local function Init_Gossip()
         self.sel:SetChecked(Save.NPC[npc])
     end)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
     --自定义闲话选项, 按钮 GossipFrameShared.lua
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
         if not info or not info.gossipOptionID then
@@ -729,7 +769,7 @@ local function Init_Gossip()
         end
 
         if not self.sel then
-            self.sel=CreateFrame("CheckButton", nil, self, 'InterfaceOptionsCheckButtonTemplate')
+            self.sel=CreateFrame("CheckButton", nil, self, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
             self.sel:SetPoint("RIGHT", -2, 0)
             self.sel:SetSize(18, 18)
             self.sel:SetScript("OnEnter", function(self2)
@@ -772,6 +812,7 @@ local function Init_Gossip()
         self.sel.text=info.name
         self.sel.spellID= info.spellID
         self.sel.icon= info.overrideIconID or info.icon
+        self.sel:SetChecked(Save.gossipOption[index])
 
         if IsModifierKeyDown() or not index or GossipButton.selectGissipIDTab[index] then
             return
@@ -779,6 +820,7 @@ local function Init_Gossip()
 
         local find
         local quest= FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)
+
         if Save.gossipOption[index] then--自定义
             C_GossipInfo.SelectOption(index)
             find=true
@@ -853,6 +895,24 @@ local function Init_Gossip()
         end
     end)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     --自动接取任务,多个任务GossipFrameShared.lua questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial
     hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)
         local questID=info and info.questID or self:GetID()
@@ -909,6 +969,22 @@ local function Init_Gossip()
         end
     end)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     --完成已激活任务,多个任务GossipFrameShared.lua
     hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, info)
         local npc=e.GetNpcID('npc')
@@ -929,6 +1005,20 @@ local function Init_Gossip()
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
