@@ -479,12 +479,14 @@ local function Set_Merchant_Info()--设置, 提示, 信息
         local text, spellID
         if btn and index<= numItem then
             local itemID, itemLink
-            if isMerce then
-                itemID= GetMerchantItemID(index)
-                itemLink=  GetMerchantItemLink(index)
-            else
-                itemID= C_MerchantFrame.GetBuybackItemID(index)
-                itemLink= GetBuybackItemLink(index)
+            if btn.hasItem then
+                if isMerce then
+                    itemID= GetMerchantItemID(index)
+                    itemLink=  GetMerchantItemLink(index)
+                else
+                    itemID= C_MerchantFrame.GetBuybackItemID(index)
+                    itemLink= GetBuybackItemLink(index)
+                end
             end
 
             local num=(not Save.notAutoBuy and itemID) and buySave[itemID]--自动购买， 数量
@@ -509,8 +511,8 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine('|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), not Save.notAutoBuy and buySave[self2.itemID] or (e.onlyChinese and '无' or NONE))
                     local all= GetItemCount(self2.itemID, true)
-                    local bag= GetItemCount(self2.itemID)
-                    e.tips:AddDoubleLine(e.Icon.bank2..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL), all..'= '.. e.Icon.bag2.. bag..'+ '..e.Icon.bank2..(all-bag))
+                    local bag2= GetItemCount(self2.itemID)
+                    e.tips:AddDoubleLine(e.Icon.bank2..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL), all..'= '.. e.Icon.bag2.. bag2..'+ '..e.Icon.bank2..(all-bag))
 					e.tips:Show();
                 end)
             end
