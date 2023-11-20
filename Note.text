@@ -144,6 +144,7 @@ securecall('',)
 wrapFunc(C_PetBattles.DeclineQueuedPVPMatch)
 
 securecallfunction(GameTooltip_AddQuest, self, questID)
+GameTooltip_SetDefaultAnchor(GameTooltip, self);
 
 function IsRetail()
     return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE

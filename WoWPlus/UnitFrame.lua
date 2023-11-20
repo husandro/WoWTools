@@ -1335,10 +1335,20 @@ end
 local function Init_BossFrame()
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
-        frame.PortraitFrame=CreateFrame('Frame', nil, frame)
+        frame.PortraitFrame= e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})--CreateFrame('Frame', nil, frame, 'SecureActionButtonTemplate')
         frame.PortraitFrame:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
-        frame.PortraitFrame:SetSize(38, 38)
+        --frame.PortraitFrame:SetSize(38, 38)
         frame.PortraitFrame:Raise()
+
+        frame.PortraitFrame:SetAttribute('type', 'target')
+        frame.PortraitFrame:SetAttribute('unit', frame.unit)
+        frame.PortraitFrame:SetScript('OnLeave', function() e.tips:Hide() end)
+        frame.PortraitFrame:SetScript('OnEnter', function(self)
+            GameTooltip_SetDefaultAnchor(GameTooltip, self);
+            e.tips:ClearLines()
+            e.tips:SetUnit(self.unit)
+            e.tips:Show()
+        end)
 
         frame.PortraitFrame.Portrait= frame.PortraitFrame:CreateTexture(nil, 'BACKGROUND')
         frame.PortraitFrame.Portrait:SetAllPoints(frame.PortraitFrame)
