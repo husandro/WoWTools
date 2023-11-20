@@ -487,7 +487,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                 itemID= C_MerchantFrame.GetBuybackItemID(index)
                 itemLink= GetBuybackItemLink(index)
             end
-            
+
 
             num=(not Save.notAutoBuy and itemID) and buySave[itemID]--自动购买， 数量
             num= num and num..'|T236994:0|t'
@@ -516,7 +516,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
 					e.tips:Show();
                 end)
             end
-            
+
 
 
             --物品，属性
