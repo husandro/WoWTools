@@ -146,6 +146,15 @@ wrapFunc(C_PetBattles.DeclineQueuedPVPMatch)
 securecallfunction(GameTooltip_AddQuest, self, questID)
 GameTooltip_SetDefaultAnchor(GameTooltip, self);
 
+
+local myCheckButton = CreateFrame("CheckButton", nil, UIParent, "ChatConfigCheckButtonTemplate")
+myCheckButton:SetPoint("TOPLEFT", 200, -65)
+myCheckButton.Text:SetText("CheckBox Name")
+myCheckButton.tooltip = "This is where you place MouseOver Text."
+myCheckButton:HookScript("OnClick", function()
+        --do stuff
+end)
+
 function IsRetail()
     return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 end
