@@ -708,7 +708,7 @@ local function Init_Gossip()
                 end
                 print(id, addName, '|cnGREEN_FONT_COLOR:movieID', arg1)
             end
-        
+
         elseif event=='ADDON_ACTION_FORBIDDEN'  then
             if Save.gossip then
                 if StaticPopup1:IsShown() then
@@ -771,7 +771,7 @@ local function Init_Gossip()
 
 
 
-    
+
 
 
 
@@ -2021,7 +2021,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                                     and not info.disabledOption
                                     and info.buttons
                                     and info.buttons[2]
-                                    
+
                                     and info.buttons[2].id
                                     and not info.buttons[2].disabled
                                     and not IsModifierKeyDown()
@@ -2050,7 +2050,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     PlayerChoiceFrame.allButton:SetShown(false)
                 end
             end)
-            
+
         end
 
 
