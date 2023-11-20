@@ -259,8 +259,16 @@ end
 
 
 
-
-
+--高亮，动作条
+--ActionButton.lua
+local function Set_Action_Focus(spellID)
+    if spellID then
+        e.call('UpdateOnBarHighlightMarksBySpell', spellID)
+    else
+        e.call('ClearOnBarHighlightMarks')
+    end
+    e.call('ActionBarController_UpdateAllSpellHighlights')
+end
 
 
 
@@ -464,6 +472,15 @@ local function set_btn_tooltips(self, index)
                 col..(e.onlyChinese and '删除' or DELETE),
                 col..'Alt+'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
             )
+            local spellID=  GetMacroSpell(index)
+            if spellID then
+                e.LoadDate({id=spellID, type='spell'})
+                local spellName, _, spellIcon= GetSpellInfo(spellID)
+                if spellName and spellIcon then
+                    e.tips:AddDoubleLine('|T'..spellIcon..':0|t'..spellName, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '法术' or SPELLS, spellID))
+                end
+                Set_Action_Focus(spellID)
+            end
             e.tips:Show()
             return icon
         end
@@ -1204,7 +1221,7 @@ local function Init_Select_Macro_Button()
         )
         e.tips:Show()
     end)
-    MacroFrameSelectedMacroButton:HookScript('OnLeave', function() e.tips:Hide() end)
+    MacroFrameSelectedMacroButton:HookScript('OnLeave', function() e.tips:Hide() Set_Action_Focus() end)
 
     --选定宏，点击，弹出菜单，自定图标
     MacroFrameSelectedMacroButton:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
@@ -1224,7 +1241,7 @@ local function Init_Select_Macro_Button()
 
             --添加，物品，法术，图标=物品名称
             local function get_SpellItem_Texture(spell, item)
-                if spell then
+                if spell then--spell 字符
                     local icon= GetSpellTexture(spell) or select(3, GetSpellInfo(spell))
                     if icon then
                         local name= GetSpellInfo(spell) or spell
@@ -1538,7 +1555,7 @@ local function Init()
     --宏，提示
     hooksecurefunc(MacroButtonMixin, 'OnLoad', function(btn)
         btn:HookScript('OnEnter', set_btn_tooltips)--设置，宏，提示
-        btn:HookScript('OnLeave', function() e.tips:Hide() end)
+        btn:HookScript('OnLeave', function() e.tips:Hide() Set_Action_Focus() end)
         local texture2= btn:GetRegions()
         texture2:SetAlpha(0.3)--按钮，背景
         btn.Name:SetWidth(48)--名称，长度

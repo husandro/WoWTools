@@ -1504,10 +1504,11 @@ local function Init()
                     if type=='macro' and macroID then
                         if subType=='spell' then--and macroID or GetMacroSpell(macroID)
                             func.Set_Spell(tooltip, macroID)
-                        end
-                        local text=GetMacroBody(macroID)
-                        if text then
-                            tooltip:AddLine(text)
+                        elseif not subType or subType=='' then
+                            local text=GetMacroBody(macroID)
+                            if text then
+                                tooltip:AddLine(text)
+                            end
                         end
                         --tooltip:AddDoubleLine('|cffffffffaction', '|cffffffff'..frame.action)
                     end

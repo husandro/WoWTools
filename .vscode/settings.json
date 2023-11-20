@@ -3641,7 +3641,10 @@
         "ENABLE_SOUND",
         "MASTER_VOLUME",
         "DIALOG_VOLUME",
-        "BATTLEFIELDMINIMAP_OPACITY_LABEL"
+        "BATTLEFIELDMINIMAP_OPACITY_LABEL",
+        "ClearOnBarHighlightMarks",
+        "UpdateOnBarHighlightMarksBySpell",
+        "ActionBarController_UpdateAllSpellHighlights"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
