@@ -199,7 +199,7 @@ local function get_Items()--取得背包物品信息
                 and (not Save.no[info.itemID] or Save.use[info.itemID])--禁用使用
                 and C_PlayerInfo.CanUseItem(info.itemID)--是否可使用
                 and not (duration and duration>2 or enable==0) and classID~=8--冷却
-                and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel)--使用等级
+                and ((itemMinLevel and itemMinLevel<=e.Player.level) or not itemMinLevel)--使用等级
             then
                 --e.LoadDate({id=info.itemID, type='item'})
 
