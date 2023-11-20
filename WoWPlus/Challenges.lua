@@ -795,6 +795,24 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_All_Text()--所有记录
     --###
     --历史
