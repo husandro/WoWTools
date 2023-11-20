@@ -262,7 +262,7 @@ end
 --高亮，动作条
 --ActionButton.lua
 local function Set_Action_Focus(spellID)
-    if not e.Player.husandro then--出错，尝试调用保护功能 
+    --[[if not e.Player.husandro then--出错，尝试调用保护功能 
         return
     end
     if spellID then
@@ -270,7 +270,7 @@ local function Set_Action_Focus(spellID)
     else
         e.call('ClearOnBarHighlightMarks')
     end
-    e.call('ActionBarController_UpdateAllSpellHighlights')
+    e.call('ActionBarController_UpdateAllSpellHighlights')]]
 end
 
 

@@ -3644,7 +3644,10 @@
         "BATTLEFIELDMINIMAP_OPACITY_LABEL",
         "ClearOnBarHighlightMarks",
         "UpdateOnBarHighlightMarksBySpell",
-        "ActionBarController_UpdateAllSpellHighlights"
+        "ActionBarController_UpdateAllSpellHighlights",
+        "ADDON_ACTION_FORBIDDEN",
+        "IGNORE_DIALOG",
+        "StaticPopup1Text"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

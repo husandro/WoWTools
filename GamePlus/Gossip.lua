@@ -1004,6 +1004,25 @@ local function Init_Gossip()
             C_GossipInfo.SelectActiveQuest(questID)
         end
     end)
+
+
+
+
+    hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_ITEM"],"OnShow",function(self)
+        if not Save.notDELETE then
+            self.editBox:SetText(DELETE_ITEM_CONFIRM_STRING);
+        end
+    end)
+
+    --"%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。";
+    StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= 0.1
+    --[[hooksecurefunc(StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"], "OnShow",function(s)
+        if Save.gossip then
+            local text= StaticPopup1Text and StaticPopup1Text:GetText() or (e.onlyChinese and '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN)
+            print(id, addName, '|n|cnRED_FONT_COLOR:', text)
+            s:Hide()
+        end
+    end)]]
 end
 
 
