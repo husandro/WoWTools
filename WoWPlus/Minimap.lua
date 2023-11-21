@@ -2154,6 +2154,8 @@ local function Blizzard_TimeManager()
     --时钟，设置位置
     function TimeManagerClockButton:set_point()
         if Save.TimeManagerClockButtonPoint then
+            TimeManagerClockTicker:SetPoint('LEFT')
+            TimeManagerClockButton:SetWidth(TimeManagerClockButton:GetWidth()+5)
             TimeManagerClockButton:SetParent(UIParent)
             TimeManagerClockButton:ClearAllPoints()
             TimeManagerClockButton:SetPoint(Save.TimeManagerClockButtonPoint[1], UIParent, Save.TimeManagerClockButtonPoint[3], Save.TimeManagerClockButtonPoint[4], Save.TimeManagerClockButtonPoint[5])
@@ -2201,9 +2203,7 @@ local function Blizzard_TimeManager()
     end)
 
     --设置，时间，颜色
-    TimeManagerClockButton:SetWidth(TimeManagerClockButton:GetWidth()+5)
     TimeManagerClockTicker:SetShadowOffset(1, -1)
-    TimeManagerClockTicker:SetPoint('LEFT')
     e.Set_Label_Texture_Color(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
 
     TimeManagerClockButton:set_scale()
