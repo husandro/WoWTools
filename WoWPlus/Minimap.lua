@@ -2121,15 +2121,14 @@ local function Init_StopwatchFrame()
     if not StopwatchFrame or Save.disabledStopwatchFramePlus then
         return
     end
+
     --StopwatchCloseButton:SetParent(StopwatchTicker)
     StopwatchCloseButton:ClearAllPoints()
     StopwatchCloseButton:SetPoint('TOPLEFT')
     StopwatchTitle:SetText(e.onlyChinese and '秒表' or STOPWATCH_TITLE)
+    StopwatchTitle:SetPoint('LEFT', StopwatchCloseButton, 'RIGHT')
     --隐藏，开始/暂停，按钮
     StopwatchPlayPauseButton:Hide()
-    --设置，重置，按钮
-    
-    
 
     --移动
     StopwatchFrame:RegisterForDrag("LeftButton", 'RightButton')
@@ -2202,6 +2201,7 @@ local function Init_StopwatchFrame()
         Stopwatch_Toggle()
     end
     C_Timer.After(0.5, function()
+        --设置，重置，按钮
         if not StopwatchFrameBackgroundLeft:IsShown() then
             StopwatchResetButton:ClearAllPoints()
             StopwatchResetButton:SetPoint('RIGHT', StopwatchTickerHour, 'LEFT', -2,0)
