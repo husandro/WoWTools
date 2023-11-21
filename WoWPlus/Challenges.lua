@@ -727,7 +727,7 @@ local function All_Player_Info()--所以角色信息
                 or self.point=='l' and (e.onlyChinese and '本周次数' or format(CURRENCY_THIS_WEEK, format(ARCHAEOLOGY_COMPLETION,self.num)))
                 or self.point=='r' and (e.onlyChinese and '本周最高等级' or format(CURRENCY_THIS_WEEK, BEST))
             )
-            e.tips:AddLine(self:GetText())
+            e.tips:AddLine('|cffffffff'..(self:GetText() or ''))
             e.tips:Show()
             self:SetAlpha(0.5)
         end)
