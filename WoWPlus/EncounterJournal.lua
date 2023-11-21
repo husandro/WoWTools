@@ -679,7 +679,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     button.tipsText:SetText(textKill or '')
                 end
         
-                local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()--当前, KEY地图,ID                
+                
                 local instanceName=button.name:GetText()
                 button.mapChallengeModeID=nil
                 local challengeText, challengeText2
@@ -734,8 +734,6 @@ local function Init_EncounterJournal()--冒险指南界面
                                 challengeText2= text
                             end
                         end
-                        --button.isChallengeMap= currentChallengeMapID== mapChallengeModeID-- and '|T4352494:0|t' or '')--当前, KEY地图,ID
-                        print(button.isChallengeMap)
                     end
                 end
                 
@@ -770,17 +768,33 @@ local function Init_EncounterJournal()--冒险指南界面
                 button.challengeText:SetText(challengeText or '')
                 button.challengeText2:SetText(challengeText2 or '')
 
+                --当前, KEY地图,ID
+                local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()
                 if currentChallengeMapID and button.mapChallengeModeID==currentChallengeMapID then
                     if not button.KeyTexture then
                         button.KeyTexture= button:CreateTexture(nil, 'OVERLAY')
-                        button.KeyTexture:SetPoint('TOPRIGHT', 4,-4)
+                        button.KeyTexture:SetPoint('TOPLEFT', 2,0)
                         button.KeyTexture:SetSize(20,20)
                         button.KeyTexture:SetAtlas('common-icon-checkmark')
+                        --button.KeyTexture:EnabeleMouse(true)
+                        button.KeyTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+                        button.KeyTexture:SetScript('OnEnter', function(self)
+                            e.tips:SetOwner(self, "ANCHOR_LEFT")
+                            e.tips:ClearLines()
+                            local link= e.WoWDate[e.Player.guid].Keystone.link
+                            if link then
+                                e.tips:SetHyperlink(link)
+                            else
+                                e.tips:AddDoubleLine(id,addName)
+                                e.tips:AddLine(e.onlyChinese and '挑战' or PLAYER_DIFFICULTY5)
+                            end
+                            e.tips:Show()
+                            self:SetAlpha(0.3)
+                        end)
                     end
-                    button.KeyTexture： 
-                end
-                if button.KeyTexture then
-                    button.KeyTexture:SetShown(button.isChallengeMap)
+                    button.KeyTexture:SetShown(true)
+                elseif button.KeyTexture then
+                    button.KeyTexture:SetShown(false)
                 end
             end
        end
