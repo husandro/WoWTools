@@ -2127,16 +2127,21 @@ local function Init_StopwatchFrame()
     --隐藏，开始/暂停，按钮
     StopwatchPlayPauseButton:Hide()
     --设置，重置，按钮
-    StopwatchResetButton:ClearAllPoints()
-    StopwatchResetButton:SetPoint('RIGHT', StopwatchTickerHour, 'LEFT', -4,0)
-    StopwatchResetButton:SetAlpha(0)
+    if not StopwatchFrameBackgroundLeft:IsShown() then
+        StopwatchResetButton:ClearAllPoints()
+        StopwatchResetButton:SetPoint('RIGHT', StopwatchTickerHour, 'LEFT', -2,0)
+        StopwatchResetButton:SetAlpha(0.2)
+        StopwatchResetButton:HookScript('OnLeave', function(self) self:SetAlpha(0.2) end)
+        StopwatchResetButton:HookScript('OnEnter', function(self) self:SetAlpha(1) end)
+    end
+    
     --移动
     StopwatchFrame:RegisterForDrag("LeftButton", 'RightButton')
     StopwatchFrame:HookScript('OnMouseDown', function()
         SetCursor('UI_MOVE_CURSOR')
     end)
     StopwatchFrame:HookScript('OnMouseUp', ResetCursor)
-    StopwatchFrame:HookScript('OnLeave', function() e.tips:Hide() StopwatchResetButton:SetAlpha(0) end)
+    StopwatchFrame:HookScript('OnLeave', function() e.tips:Hide() end)
     StopwatchFrame:HookScript('OnEnter', function(self)
         StopwatchPlayPauseButton_OnClick(StopwatchPlayPauseButton)--开始/暂停
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -2144,9 +2149,10 @@ local function Init_StopwatchFrame()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddDoubleLine(e.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON, '|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '移过' or 'Move over'))
         e.tips:Show()
-        StopwatchResetButton:SetAlpha(1)
     end)
     
+    
+
     StopwatchTickerHour:SetTextColor(0,1,0,1)
     StopwatchTickerMinute:SetTextColor(0,1,0,1)
     StopwatchTickerSecond:SetTextColor(0,1,0,1)
