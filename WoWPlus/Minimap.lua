@@ -25,7 +25,8 @@ local Save={
        --disabledInstanceDifficulty=true,--副本，难图，指示
 
        --hideMPortalRoomLabels=true,--'10.2 副本，挑战专送门'
-
+       --disabledStopwatchFramePlus=true,--秒表
+       --showStopwatchFrame=true,--加载游戏时，显示秒表
 }
 
 for questID, _ in pairs(Save.questIDs or {}) do
@@ -1870,6 +1871,18 @@ local function Init_Menu(_, level, menuList)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
+
+    if StopwatchFrame then
+        info={
+            text= (e.onlyChinese and '秒表' or STOPWATCH_TITLE)..' Plus',
+            checked= not Save.disabledStopwatchFramePlus,
+            func= function()
+                Save.disabledStopwatchFramePlus= not Save.disabledStopwatchFramePlus and true or nil
+                print(id, addName, '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    end
 end
 
 
@@ -2094,6 +2107,86 @@ end
 
 
 
+
+
+
+
+
+
+
+--秒表
+--Blizzard_TimeManager.lua
+local function Init_StopwatchFrame()
+    if not StopwatchFrame or Save.disabledStopwatchFramePlus then
+        return
+    end
+    --StopwatchCloseButton:SetParent(StopwatchTicker)
+    StopwatchCloseButton:ClearAllPoints()
+    StopwatchCloseButton:SetPoint('TOPLEFT')
+    StopwatchTitle:SetText(e.onlyChinese and '秒表' or STOPWATCH_TITLE)
+    --隐藏，开始/暂停，按钮
+    StopwatchPlayPauseButton:Hide()
+    --设置，重置，按钮
+    StopwatchResetButton:ClearAllPoints()
+    StopwatchResetButton:SetPoint('RIGHT', StopwatchTickerHour, 'LEFT', -4,0)
+    StopwatchResetButton:SetAlpha(0)
+    --移动
+    StopwatchFrame:RegisterForDrag("LeftButton", 'RightButton')
+    StopwatchFrame:HookScript('OnMouseDown', function()
+        SetCursor('UI_MOVE_CURSOR')
+    end)
+    StopwatchFrame:HookScript('OnMouseUp', ResetCursor)
+    StopwatchFrame:HookScript('OnLeave', function() e.tips:Hide() StopwatchResetButton:SetAlpha(0) end)
+    StopwatchFrame:HookScript('OnEnter', function(self)
+        StopwatchPlayPauseButton_OnClick(StopwatchPlayPauseButton)--开始/暂停
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(e.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON, '|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '移过' or 'Move over'))
+        e.tips:Show()
+        StopwatchResetButton:SetAlpha(1)
+    end)
+    
+    StopwatchTickerHour:SetTextColor(0,1,0,1)
+    StopwatchTickerMinute:SetTextColor(0,1,0,1)
+    StopwatchTickerSecond:SetTextColor(0,1,0,1)
+
+    hooksecurefunc('StopwatchPlayPauseButton_OnClick', function()
+        if StopwatchPlayPauseButton.playing then
+            e.Set_Label_Texture_Color(StopwatchTickerHour, {type='FontString'})
+            e.Set_Label_Texture_Color(StopwatchTickerMinute, {type='FontString'})
+            e.Set_Label_Texture_Color(StopwatchTickerSecond, {type='FontString'})
+        else
+            StopwatchTickerHour:SetTextColor(0,1,0,1)
+            StopwatchTickerMinute:SetTextColor(0,1,0,1)
+            StopwatchTickerSecond:SetTextColor(0,1,0,1)
+        end
+    end)
+    --加载游戏时，显示秒表
+    StopwatchFrame:HookScript('OnShow', function()
+        Save.showStopwatchFrame=true
+    end)
+    StopwatchCloseButton:HookScript('OnClick', function()
+
+        Save.showStopwatchFrame=nil
+    end)
+    if Save.showStopwatchFrame and not StopwatchFrame:IsShown() then
+        Stopwatch_Toggle()
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -2146,6 +2239,8 @@ local function Init()
             end)
         end
     end
+
+    C_Timer.After(2, Init_StopwatchFrame)--秒表
 end
 --[[
     panel.Texture= UIParent:CreateTexture()
