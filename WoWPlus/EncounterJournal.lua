@@ -774,9 +774,8 @@ local function Init_EncounterJournal()--冒险指南界面
                     if not button.KeyTexture then
                         button.KeyTexture= button:CreateTexture(nil, 'OVERLAY')
                         button.KeyTexture:SetPoint('TOPLEFT', 2,0)
-                        button.KeyTexture:SetSize(20,20)
+                        button.KeyTexture:SetSize(26,26)
                         button.KeyTexture:SetAtlas('common-icon-checkmark')
-                        --button.KeyTexture:EnabeleMouse(true)
                         button.KeyTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
                         button.KeyTexture:SetScript('OnEnter', function(self)
                             e.tips:SetOwner(self, "ANCHOR_LEFT")
