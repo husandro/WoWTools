@@ -177,7 +177,7 @@ local function set_Keystones_Date()
         end
     end
     self.keystoneText:SetText(text or '')
-    
+
 end
 
 
@@ -308,7 +308,7 @@ local function Init_TargetFrame()
             end
         end
     end)
-    
+
     TargetFrame.rangeText= e.Cstr(TargetFrame, {justifyH='RIGHT'})
     TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22,0)
     hooksecurefunc(TargetFrame, 'OnUpdate', function(self, elapsed)--距离
@@ -322,7 +322,7 @@ local function Init_TargetFrame()
                     text=mi..'|n'..ma
                     if mi>40 then
                         text='|cFFFF0000'..text--红色
-                        
+
                     elseif mi>35 then
                         text='|cFFFFD000'..text
                     elseif mi>30 then
@@ -1419,7 +1419,7 @@ local function Init_BossFrame()
         end)
 
         frame.TotFrame.Portrait= frame.TotFrame:CreateTexture(nil, 'BACKGROUND')
-        
+
         frame.TotFrame.Portrait:SetAllPoints(frame.TotFrame)
 
         frame.TotFrame.targetTexture= frame.TotFrame:CreateTexture(nil, 'OVERLAY')
@@ -1447,7 +1447,7 @@ local function Init_BossFrame()
                 self.healthLable:SetText(text)
             end
         end)
-                    
+
         function frame.TotFrame:set_Portrait()
             local exists=UnitExists(self.targetUnit)
             if exists then
@@ -1457,7 +1457,7 @@ local function Init_BossFrame()
             self.Portrait:SetShown(exists)
             self.targetTexture:SetShown(exists and UnitIsUnit('player', self.targetUnit))
         end
-        
+
         function frame.TotFrame:set_Event()
             if not self:IsShown() then
                 self:UnregisterAllEvents()
