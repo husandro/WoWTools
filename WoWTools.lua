@@ -239,7 +239,7 @@ function e.MK(number, bit)
         if point==0 then
             return num..text
         else
-            point= point*(10^2)
+            point= point*(10^bit)
             point= math.modf(point)
             return num..(point>0 and '.'..point or '')..text
         end

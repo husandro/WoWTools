@@ -1502,8 +1502,8 @@ local function set_Panle_Setting()--设置 panel
     end)
 
     --位数，bit
-    local sliderBit= e.CSlider(panel, {w=100 ,h=20, min=0, max=3, value=Save.bit, setp=1, color=nil,
-        text=e.onlyChinese and '位数' or 'bit',
+    local sliderBit= e.CSlider(panel, {w=100 ,h=20, min=0, max=3, value=Save.bit or 0, setp=1, color=nil,
+        text=(e.onlyChinese and '位数' or 'bit'),
         func=function(self, value)
             value= math.ceil(value)
             self:SetValue(value)
