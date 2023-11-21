@@ -1019,9 +1019,6 @@ local function Init_Set_AlphaAndColor()
             hide_Texture(StopwatchTabFrameMiddle)
             hide_Texture(StopwatchTabFrameRight)
             hide_Texture(StopwatchTabFrameLeft)
-
-            
-            
         end
     end)
 end
