@@ -1100,9 +1100,10 @@ local function set_Alpha_Event(arg1)
         set_Alpha_Color(TimeManagerAlarmMessageEditBox.Middle)
         set_Alpha_Color(TimeManagerAlarmMessageEditBox.Left)
         set_Alpha_Color(TimeManagerAlarmMessageEditBox.Right)
-        if e.Player.useColor then
+        e.Set_Label_Texture_Color(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
+        --[[if e.Player.useColor then
             TimeManagerClockTicker:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
-        end
+        end]]
 
 
     elseif arg1=='Blizzard_ClassTalentUI' and not Save.disabledAlpha then--天赋

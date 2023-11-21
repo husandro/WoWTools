@@ -19,15 +19,22 @@ local Save={
         currentMapAreaPoiIDs=true,--当前地图，监视, areaPoiIDs，
         textToDown= e.Player.husandro,--文本，向下
 
-
         miniMapPoint={},--保存小图地, 按钮位置
-        useServerTimer=true,--小时图，使用服务器, 时间
-       --disabledInstanceDifficulty=true,--副本，难图，指示
 
+       --disabledInstanceDifficulty=true,--副本，难图，指示
        --hideMPortalRoomLabels=true,--'10.2 副本，挑战专送门'
-       --disabledStopwatchFramePlus=true,--秒表
+
+
+       --disabledClockPlus=true,--时钟，秒表
+       --时钟
+       useServerTimer=true,--小时图，使用服务器, 时间
+       --TimeManagerClockButtonScale=1--缩放
+       --TimeManagerClockButtonPoint={}--位置
+
+       --秒表
        --showStopwatchFrame=true,--加载游戏时，显示秒表
        --StopwatchFrameScale=1,--缩放
+
 }
 
 for questID, _ in pairs(Save.questIDs or {}) do
@@ -1875,10 +1882,10 @@ local function Init_Menu(_, level, menuList)
 
     if StopwatchFrame then
         info={
-            text= (e.onlyChinese and '秒表' or STOPWATCH_TITLE)..' Plus',
-            checked= not Save.disabledStopwatchFramePlus,
+            text= (e.onlyChinese and '时钟' or TIMEMANAGER_TITLE)..' Plus',
+            checked= not Save.disabledClockPlus,
             func= function()
-                Save.disabledStopwatchFramePlus= not Save.disabledStopwatchFramePlus and true or nil
+                Save.disabledClockPlus= not Save.disabledClockPlus and true or nil
                 print(id, addName, '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
@@ -2115,14 +2122,119 @@ end
 
 
 
---秒表
+--时间 Pluse
 --Blizzard_TimeManager.lua
-local function Init_StopwatchFrame()
-    if not StopwatchFrame or Save.disabledStopwatchFramePlus then
+local function Blizzard_TimeManager()
+    if Save.disabledClockPlus then
         return
     end
 
-    --StopwatchCloseButton:SetParent(StopwatchTicker)
+    --时钟，设置位置
+    function TimeManagerClockButton:set_point()
+        if Save.TimeManagerClockButtonPoint then
+            TimeManagerClockButton:SetParent(UIParent)
+            TimeManagerClockButton:ClearAllPoints()
+            TimeManagerClockButton:SetPoint(Save.TimeManagerClockButtonPoint[1], UIParent, Save.TimeManagerClockButtonPoint[3], Save.TimeManagerClockButtonPoint[4], Save.TimeManagerClockButtonPoint[5])
+        end
+    end
+    --时钟，缩放
+    TimeManagerClockButton:EnableMouseWheel(true)
+    function TimeManagerClockButton:set_scale()
+        self:SetScale(Save.TimeManagerClockButtonScale or 1)
+    end
+    TimeManagerClockButton:HookScript('OnMouseWheel', function(self, d)
+        local n= Save.TimeManagerClockButtonScale or 1
+        if d==1 then
+            n= n-0.05
+        elseif d==-1 then
+            n= n+0.05
+        end
+        n= n>4 and 4 or n
+        n= n<0.4 and 0.4 or n
+        Save.TimeManagerClockButtonScale= n
+        self:set_scale()
+        print(id, addName, '|cnGREEN_FONT_COLOR:', n)
+    end)
+    --时钟，移动
+    TimeManagerClockButton:SetMovable(true)
+    TimeManagerClockButton:SetClampedToScreen(true)
+    TimeManagerClockButton:RegisterForDrag('RightButton')
+    TimeManagerClockButton:HookScript('OnMouseDown', function(_, d)
+        if d=='RightButton' then
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+    TimeManagerClockButton:SetScript('OnMouseUp', ResetCursor)
+    TimeManagerClockButton:HookScript("OnDragStart", TimeManagerClockButton.StartMoving)
+    TimeManagerClockButton:HookScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        Save.TimeManagerClockButtonPoint={self:GetPoint(1)}
+        Save.TimeManagerClockButtonPoint[2]=nil
+    end)
+    --透明度
+    TimeManagerClockButton:HookScript('OnLeave', function(self) self:SetAlpha(1) end)
+    TimeManagerClockButton:HookScript('OnEnter', function(self)
+        self:SetAlpha(0.5)
+        e.call('TimeManagerClockButton_UpdateTooltip')
+    end)
+    
+    
+    TimeManagerClockButton:SetWidth(TimeManagerClockButton:GetWidth()+5)
+    TimeManagerClockTicker:SetShadowOffset(1, -1)
+    TimeManagerClockTicker:SetPoint('LEFT')
+    TimeManagerClockButton:set_scale()
+    TimeManagerClockButton:set_point()
+    
+    --小时图，使用服务器, 时间
+    local TimeManagerClockButton_Update_R= TimeManagerClockButton_Update
+    local function set_Server_Timer()--小时图，使用服务器, 时间
+        if Save.useServerTimer then
+            TimeManagerClockButton_Update=function()
+                TimeManagerClockTicker:SetText(e.SecondsToClock(GetServerTime(), true) or '')
+            end
+        else
+            TimeManagerClockButton_Update= TimeManagerClockButton_Update_R
+        end
+    end
+    if Save.useServerTimer then
+        set_Server_Timer()
+    end
+    local check= CreateFrame("CheckButton", nil, TimeManagerFrame, "UICheckButtonTemplate")
+    check:SetSize(24,24)
+    check:SetPoint('BOTTOMRIGHT', TimeManagerMilitaryTimeCheck, 'TOPRIGHT',0,-4)
+    check.Text:ClearAllPoints()
+    check.Text:SetPoint('RIGHT', check, 'LEFT', -2, 0)
+    check.Text:SetFontObject(GameFontHighlightSmall)
+
+    check.Text:SetText(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME)
+    check:SetChecked(Save.useServerTimer)
+    check:SetScript('OnClick', function()
+        Save.useServerTimer= not Save.useServerTimer and true or nil
+        set_Server_Timer()
+    end)
+    check:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT");
+        e.tips:ClearLines();
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine((e.onlyChinese and '时钟' or TIMEMANAGER_TITLE)..' Plus')
+        e.tips:Show()
+    end)
+    check:SetScript('OnLeave', function() e.tips:Hide() end)
+    --提示
+    hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(GetServerTime()))
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.TimeManagerClockButtonScale or 1), e.Icon.mid)
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+    end)
+
+
+
+
+    --秒表
+    --####
     StopwatchCloseButton:ClearAllPoints()
     StopwatchCloseButton:SetPoint('TOPLEFT')
     StopwatchTitle:SetText(e.onlyChinese and '秒表' or STOPWATCH_TITLE)
@@ -2142,7 +2254,7 @@ local function Init_StopwatchFrame()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
+        e.tips:AddLine((e.onlyChinese and '时钟' or TIMEMANAGER_TITLE)..' Plus')
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.StopwatchFrameScale or 1), e.Icon.mid)
         e.tips:AddDoubleLine(e.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON, '|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '移过' or 'Move over'))
         e.tips:Show()
@@ -2154,7 +2266,7 @@ local function Init_StopwatchFrame()
 
     --缩放
     StopwatchFrame:EnableMouseWheel(true)
-    function StopwatchFrame:set_sacle()
+    function StopwatchFrame:set_scale()
         self:SetScale(Save.StopwatchFrameScale or 1)
     end
     StopwatchFrame:SetScript('OnMouseWheel', function(self, d)
@@ -2167,11 +2279,11 @@ local function Init_StopwatchFrame()
         n= n>4 and 4 or n
         n= n<0.4 and 0.4 or n
         Save.StopwatchFrameScale= n
-        self:set_sacle()
+        self:set_scale()
         self:set_tooltips()
         print(id, addName, '|cnGREEN_FONT_COLOR:', n)
     end)
-    StopwatchFrame:set_sacle()
+    StopwatchFrame:set_scale()
 
     StopwatchTickerHour:SetTextColor(0,1,0,1)
     StopwatchTickerMinute:SetTextColor(0,1,0,1)
@@ -2202,7 +2314,7 @@ local function Init_StopwatchFrame()
     if Save.showStopwatchFrame and not StopwatchFrame:IsShown() then
         Stopwatch_Toggle()
     end
-    C_Timer.After(0.5, function()
+    C_Timer.After(2.5, function()
         --设置，重置，按钮
         if not StopwatchFrameBackgroundLeft:IsShown() then
             StopwatchResetButton:ClearAllPoints()
@@ -2279,7 +2391,7 @@ local function Init()
         end
     end
 
-    C_Timer.After(2, Init_StopwatchFrame)--秒表
+
 end
 --[[
     panel.Texture= UIParent:CreateTexture()
@@ -2368,41 +2480,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_TimeManager' then
-            local TimeManagerClockButton_Update_R= TimeManagerClockButton_Update--小时图，使用服务器, 时间
-            local function set_Server_Timer()--小时图，使用服务器, 时间
-                if Save.useServerTimer then
-                    TimeManagerClockButton_Update=function()
-                        TimeManagerClockTicker:SetText(e.SecondsToClock(GetServerTime(), true) or '')
-                    end
-                else
-                    TimeManagerClockButton_Update= TimeManagerClockButton_Update_R
-                end
-            end
-            if Save.useServerTimer then
-                set_Server_Timer()
-            end
-            local check= CreateFrame("CheckButton", nil, TimeManagerFrame, "InterfaceOptionsCheckButtonTemplate")
-            check:SetPoint('TOPLEFT', TimeManagerFrame, 'BOTTOMLEFT')
-            check.Text:SetText(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME)
-            check:SetChecked(Save.useServerTimer)
-            check:SetScript('OnClick', function()
-                Save.useServerTimer= not Save.useServerTimer and true or nil
-                set_Server_Timer()
-            end)
-            check:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT");
-                e.tips:ClearLines();
-                e.tips:AddDoubleLine(e.onlyChinese and '时间信息' or TIMEMANAGER_TOOLTIP_TITLE, e.onlyChinese and '使用' or USE)
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:Show()
-            end)
-            check:SetScript('OnLeave', function() e.tips:Hide() end)
 
-            hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
-                e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), e.SecondsToClock(GetServerTime()))
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:Show()
-            end)
+            Blizzard_TimeManager()--秒表
         --elseif arg1=='Blizzard_ExpansionLandingPage' then
         end
 

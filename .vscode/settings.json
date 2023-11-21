@@ -3665,7 +3665,9 @@
         "STOPWATCH_TITLE",
         "NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON",
         "StopwatchResetButton",
-        "Stopwatch_Toggle"
+        "Stopwatch_Toggle",
+        "TimeManagerMilitaryTimeCheck",
+        "TIMEMANAGER_TITLE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
