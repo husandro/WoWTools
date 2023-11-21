@@ -2127,7 +2127,7 @@ local function Init_StopwatchFrame()
     StopwatchCloseButton:SetPoint('TOPLEFT')
     StopwatchTitle:SetText(e.onlyChinese and '秒表' or STOPWATCH_TITLE)
     StopwatchTitle:SetPoint('LEFT', StopwatchCloseButton, 'RIGHT')
-    
+
     --隐藏，开始/暂停，按钮
     StopwatchPlayPauseButton:Hide()
 
