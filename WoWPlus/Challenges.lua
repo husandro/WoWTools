@@ -693,11 +693,11 @@ end
 --所以角色信息
 --###########
 local function All_Player_Info()--所以角色信息
-    local function create_lable(btn, point, text, col)
+    local function create_lable(btn, point, text, col, size)
         if not text then
             return
         end
-        local label= e.Cstr(btn, {size=10, mouse=true, color=col})
+        local label= e.Cstr(btn, {size=size or 10, mouse=true, color=col})
         if point==1 then
             label:SetPoint('TOPRIGHT', btn, 'TOPLEFT')
         elseif point==2 then
@@ -705,7 +705,7 @@ local function All_Player_Info()--所以角色信息
         elseif point==3 then
             label:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
         elseif point=='b' then
-            label:SetPoint('BOTTOMLEFT')
+            label:SetPoint('BOTTOM')
         elseif point=='l' then
             label:SetPoint('TOPLEFT')
             label.num= text
@@ -747,7 +747,7 @@ local function All_Player_Info()--所以角色信息
                 create_lable(btn, 1, info.Keystone.weekPvE, classColor)--团队副本
                 create_lable(btn, 2, info.Keystone.weekMythicPlus, classColor)--挑战
                 create_lable(btn, 3, info.Keystone.weekPvP, classColor)--pvp
-                create_lable(btn, 'b', info.Keystone.score or 0, {r=1,g=1,b=1})--分数
+                create_lable(btn, 'b', info.Keystone.score or 0, {r=1,g=1,b=1}, 12)--分数
                 create_lable(btn, 'l', info.Keystone.weekNum or 0, {r=1,g=1,b=1})--次数
                 create_lable(btn, 'r', info.Keystone.weekLevel, {r=1,g=1,b=1})--次数
 
