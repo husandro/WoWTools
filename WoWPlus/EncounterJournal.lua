@@ -674,14 +674,15 @@ local function Init_EncounterJournal()--冒险指南界面
                 if button.tipsText then
                     button.tipsText:SetText(text or '')
                 end
-
-                local info= C_ChallengeMode.GetMapTable() or {}--挑战地图 mapChallengeModeID
-                local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()--当前, KEY地图,ID
+        
+                local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()--当前, KEY地图,ID                
                 local instanceName=button.name:GetText()
                 button.mapChallengeModeID=nil
                 local challengeText
-                for _, mapChallengeModeID in pairs(info) do
+
+                for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do--挑战地图 mapChallengeModeID
                     local name=C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
+
                     if name==instanceName then
                         button.mapChallengeModeID= mapChallengeModeID--挑战,地图ID
 
@@ -1406,9 +1407,6 @@ local function Init_EncounterJournal()--冒险指南界面
         local numTier= Save.EncounterJournalTier or max--记录上次选择版本
         numTier= numTier>max and max or numTier
         EJ_SelectTier(numTier)
-        --[[C_Timer.After(2, function()
-            e.call('EJ_ContentTab_Select', numTier)
-        end)]]
     end
 
     --记录上次选择版本
@@ -1520,12 +1518,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            --[[添加控制面板        
-            local sel=e.AddPanel_Check('|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or addName), not Save.disabled)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)]]
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
@@ -1533,16 +1525,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if not Save.hideEncounterJournal then
                     set_Loot_Spec_Event()--BOSS战时, 指定拾取, 专精, 事件
                 end
-                --[[C_Timer.After(2, function()
-                    if not C_AddOns.IsAddOnLoaded("Blizzard_EncounterJournal") then C_AddOns.LoadAddOn('Blizzard_EncounterJournal') end
-                    if not EncounterJournal or not EncounterJournal:IsVisible() then
-                        ToggleEncounterJournal()
-                    end
-                    if EncounterJournal and EncounterJournal:IsVisible() then
-                       
-                        ToggleEncounterJournal()
-                    end
-                end)]]
 
                 Init()
             end
