@@ -166,10 +166,11 @@ local function Get_Currency(currencyID, index)--货币
 		or weekMax
 		or earnedMax
 	then
-		max= Save.toRightTrackText and e.Icon.toLeft2 or e.Icon.toRight2
+		--max= Save.toRightTrackText and e.Icon.toLeft2 or e.Icon.toRight2
+		max= '|A:QuestDaily-MainMap:0:0|a'--e.Icon.select2
 		num= '|cnRED_FONT_COLOR:'..num..'|r'
 	end
-	
+
 
 	local need
 	if not weekMax and not earnedMax then
@@ -357,7 +358,7 @@ local function Set_TrackButton_Text()
 				elseif self.index then
 					e.tips:SetCurrencyToken(self.index)
 				elseif self.currencyID then
-					
+
 					e.tips:SetCurrencyByID(self.currencyID)
 				end
 				e.tips:AddDoubleLine(id, addName)
@@ -875,8 +876,8 @@ local function set_ItemInteractionFrame_Currency(self)
 		--local ver= select(4,GetBuildInfo())-->=100100,--版本 100100
 		currencyID= 2796
 	end
-			
-	
+
+
 	if self==ItemInteractionFrame then
 		TokenFrame.chargeCurrencyTypeId= currencyID
 	end
@@ -907,7 +908,7 @@ local function set_ItemInteractionFrame_Currency(self)
 
         local chargeInfo = C_ItemInteraction.GetChargeInfo()
         local timeToNextCharge = chargeInfo.timeToNextCharge
-		
+
         if timeToNextCharge and (self.interactionType == Enum.UIItemInteractionType.ItemConversion) then
 			--text= text ..' |cnGREEN_FONT_COLOR:'..(SecondsToTime(timeToNextCharge) or '')..'|r'
             text= text ..' |cnGREEN_FONT_COLOR:'..(e.SecondsToClock(timeToNextCharge, true) or '')..'|r'
