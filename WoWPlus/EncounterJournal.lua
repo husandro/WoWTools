@@ -657,6 +657,10 @@ local function Init_EncounterJournal()--冒险指南界面
                     end
                     if button.challengeText then
                         button.challengeText:SetText('')
+                        button.challengeText2:SetText('')
+                    end
+                    if button.KeyTexture then
+                        button.KeyTexture:SetShown(false)
                     end
                 end
             end
@@ -665,27 +669,25 @@ local function Init_EncounterJournal()--冒险指南界面
 
         for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames()) do--ScrollBox.lua
             if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
-                local text=encounterJournal_ListInstances_set_Instance(button)--界面,击杀,数据
-                if not button.tipsText and text then
+                local textKill=encounterJournal_ListInstances_set_Instance(button)--界面,击杀,数据
+                if not button.tipsText and textKill then
                     button.tipsText=e.Cstr(button, {size=e.onlyChinese and 12 or 10, copyFont=button.name})--10, button.name)
                     button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
                     button.tipsText:SetJustifyH('RIGHT')
                 end
                 if button.tipsText then
-                    button.tipsText:SetText(text or '')
+                    button.tipsText:SetText(textKill or '')
                 end
         
                 local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()--当前, KEY地图,ID                
                 local instanceName=button.name:GetText()
                 button.mapChallengeModeID=nil
-                local challengeText
+                local challengeText, challengeText2
 
                 for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do--挑战地图 mapChallengeModeID
                     local name=C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
-
-                    if name==instanceName then
+                    if name==instanceName or name:find(instanceName) then
                         button.mapChallengeModeID= mapChallengeModeID--挑战,地图ID
-
                         local nu, all, leavel, runScore= 0, 0, 0, 0
                         local infoChalleng=C_MythicPlus.GetRunHistory(true, true) or {}--挑战,全部, 次数
                         for _,v in pairs(infoChalleng) do
@@ -717,47 +719,69 @@ local function Init_EncounterJournal()--冒险指南界面
                             leavel= intimeInfo.level
                         end
                         if all>0 then
-                            challengeText= '|cff00ff00'..nu..'|r/'..all
+                            local text= '|cff00ff00'..nu..'|r/'..all
                             ..'|n'..'|T4352494:0|t'..leavel
                             ..'|n'..'|A:AdventureMapIcon-MissionCombat:0:0|a'..runScore
                             ..(affix and '|n'..affix or '')
-                            ..(currentChallengeMapID== mapChallengeModeID and '|T4352494:0|t' or '')--当前, KEY地图,ID
+                            
                             local color= C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(runScore)
                             if color then
-                                challengeText= color:WrapTextInColorCode(challengeText)
+                                text= color:WrapTextInColorCode(text)
+                            end
+                            if not challengeText then
+                                challengeText= text
+                            else
+                                challengeText2= text
                             end
                         end
-                        break
+                        --button.isChallengeMap= currentChallengeMapID== mapChallengeModeID-- and '|T4352494:0|t' or '')--当前, KEY地图,ID
+                        print(button.isChallengeMap)
                     end
                 end
-                if challengeText and not button.challengeText then
+                
+                if not button.challengeText then
                     button.challengeText= e.Cstr(button, {size=e.onlyChinese and 12 or 10})
                     button.challengeText:SetPoint('BOTTOMLEFT',4,4)
-                end
-                if button.challengeText then
-                    button.challengeText:SetText(challengeText or '')
-                end
+                    button.challengeText2= e.Cstr(button, {size=e.onlyChinese and 12 or 10})
+                    button.challengeText2:SetPoint('BOTTOMLEFT', button.challengeText, 'BOTTOMRIGHT')
 
-                button:SetScript('OnEnter', function (self3)
-                    if Save.hideEncounterJournal then
-                        return
-                    end
-                    e.tips:SetOwner(self3, "ANCHOR_RIGHT");
-                    e.tips:ClearLines();
-                    local texture=self3.bgImage:GetTexture()
-                    e.tips:AddLine(self3.name:GetText())
-                    e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self3.instanceID, texture and '|T'..texture..':0|t'..texture)
-                    if self3.mapChallengeModeID then
-                        e.tips:AddLine('mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. self3.mapChallengeModeID)
-                    end
-                    e.tips:AddLine(' ')
-                    if encounterJournal_ListInstances_set_Instance(self3, true) then--界面,击杀,数据
+                    button:SetScript('OnEnter', function(self3)
+                        if Save.hideEncounterJournal then
+                            return
+                        end
+                        e.tips:SetOwner(self3, "ANCHOR_RIGHT");
+                        e.tips:ClearLines();
+                        local texture=self3.bgImage:GetTexture()
+                        e.tips:AddLine(self3.name:GetText())
+                        e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self3.instanceID, texture and '|T'..texture..':0|t'..texture)
+                        if self3.mapChallengeModeID then
+                            e.tips:AddLine('mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. self3.mapChallengeModeID)
+                        end
                         e.tips:AddLine(' ')
+                        if encounterJournal_ListInstances_set_Instance(self3, true) then--界面,击杀,数据
+                            e.tips:AddLine(' ')
+                        end
+                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:Show()
+                    end)
+                    button:SetScript('OnLeave', function() e.tips:Hide() end)
+                end
+                
+                button.challengeText:SetText(challengeText or '')
+                button.challengeText2:SetText(challengeText2 or '')
+
+                if currentChallengeMapID and button.mapChallengeModeID==currentChallengeMapID then
+                    if not button.KeyTexture then
+                        button.KeyTexture= button:CreateTexture(nil, 'OVERLAY')
+                        button.KeyTexture:SetPoint('TOPRIGHT', 4,-4)
+                        button.KeyTexture:SetSize(20,20)
+                        button.KeyTexture:SetAtlas('common-icon-checkmark')
                     end
-                    e.tips:AddDoubleLine(id, addName)
-                    e.tips:Show()
-                end)
-                button:SetScript('OnLeave', function() e.tips:Hide() end)
+                    button.KeyTexture： 
+                end
+                if button.KeyTexture then
+                    button.KeyTexture:SetShown(button.isChallengeMap)
+                end
             end
        end
     end)
