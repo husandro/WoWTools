@@ -645,7 +645,7 @@ local function Init_Set_AlphaAndColor()
         end
     end
 
-    
+
 
     set_Alpha_Color(MerchantFrameLootFilterMiddle)
     set_Alpha_Color(MerchantFrameLootFilterLeft)
@@ -968,10 +968,10 @@ local function Init_Set_AlphaAndColor()
         --end
     end)]]
 
-    
 
-   
-    
+
+
+
 
     --商人
     set_Alpha_Color(MerchantFrame.NineSlice.TopEdge)
@@ -993,8 +993,8 @@ local function Init_Set_AlphaAndColor()
             hide_Texture(SpellFlyout.Background.End)
             hide_Texture(SpellFlyout.Background.VerticalMiddle)
         end
-        
-        
+
+
         for i=1, C_AddOns.GetNumAddOns() do
             if C_AddOns.GetAddOnEnableState(i)==2 then
                 local name=C_AddOns.GetAddOnInfo(i)

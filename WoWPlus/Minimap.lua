@@ -27,6 +27,7 @@ local Save={
        --hideMPortalRoomLabels=true,--'10.2 副本，挑战专送门'
        --disabledStopwatchFramePlus=true,--秒表
        --showStopwatchFrame=true,--加载游戏时，显示秒表
+       --StopwatchFrameScale=1,--缩放
 }
 
 for questID, _ in pairs(Save.questIDs or {}) do
@@ -108,7 +109,7 @@ local function Get_QuestReward_Texture(questID)
         end
         if itemTexture then return itemTexture end
     end
-    
+
     local numQuestRewards = GetNumQuestLogRewards(questID)
     if numQuestRewards>0 then
         bestQuality = -1
@@ -120,7 +121,7 @@ local function Get_QuestReward_Texture(questID)
         end
         if itemTexture then return itemTexture end
     end
-    
+
 
     if C_QuestInfoSystem.HasQuestRewardSpells(questID) then
         for _, spell in pairs(C_QuestInfoSystem.GetQuestRewardSpells(questID) or {}) do
@@ -279,7 +280,7 @@ local function Get_widgetSetID_Text(widgetSetID, all)
             elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ItemDisplay then info= C_UIWidgetManager.GetItemDisplayVisualizationInfo(widget.widgetID)
             end
         end
-        
+
         if info and info.shownState == Enum.WidgetShownState.Shown and info.text and info.text~='' then
            if info.hasTimer or all then
                 local barText
@@ -410,7 +411,7 @@ local function get_vignette_Text()
         local bestUniqueVignetteIndex = C_VignetteInfo.FindBestUniqueVignette(vignetteGUIDs)
         local tab={}
 
-        
+
 
         for index, guid in pairs(vignetteGUIDs) do
             local info= C_VignetteInfo.GetVignetteInfo(guid) or {}
@@ -422,7 +423,7 @@ local function get_vignette_Text()
                     or (info.onWorldMap and not Save.hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
                 )
             then
-                
+
                 if info.rewardQuestID==0 then
                     info.rewardQuestID=nil
                 end
@@ -440,9 +441,9 @@ local function get_vignette_Text()
                     name= name..'|A:MajorFactions_Icons_Expedition512:0:0|a'
                 end
                 if info.rewardQuestID then--任务，奖励
-                    
+
                     local itemTexture= Get_QuestReward_Texture(info.rewardQuestID)
-                    
+
                     if itemTexture then
                         name= name..'|T'..itemTexture..':0|t'
                     end
@@ -611,7 +612,7 @@ local function set_OnEnter_btn_tips(self)
     end
 
     e.tips:AddLine(' ')
-    
+
     e.tips:AddDoubleLine(self.name and self.name~='' and '|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '信息' or INFO) or ' ', e.Icon.left)
     e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU , e.Icon.right)
     e.tips:Show()
@@ -779,7 +780,7 @@ local function set_Button_Text()
 
                 self.areaPoiID= tables.areaPoiID--areaPoi
                 self.uiMapID= tables.uiMapID
-                
+
                 self.name= tables.name
                 self.nameText:SetText(tables.name=='' and ' ' or tables.name or '')
                 self.text:SetText(tables.text or '')
@@ -833,7 +834,7 @@ local function set_Button_Text()
                 self.nameText:SetAlpha(0.5)
                 self.text:SetAlpha(0.5)
             end)
-            
+
 
             btn:set_btn_point()
 
@@ -1257,7 +1258,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         self:Raise()
     end)
 
-    
+
     Button:SetScript('OnClick', function(self, d)--显示，隐藏
         local key= IsModifierKeyDown()
         if d=='LeftButton' and not key then
@@ -1596,7 +1597,7 @@ local function set_MINIMAP_UPDATE_ZOOM()
             e.tips:Show()
             self:SetAlpha(1)
         end)
-        
+
     end
     Minimap.viewRadius:SetFormattedText('%i', C_Minimap.GetViewRadius() or 100)
 end
@@ -1857,7 +1858,7 @@ local function Init_Menu(_, level, menuList)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     if C_MythicPlus.GetCurrentSeason()==11 then
-        
+
         info={
             text= e.onlyChinese and '挑战传送门标签' or 'M+ Portal Room Labels',
             tooltipOnButton=true,
@@ -2127,14 +2128,9 @@ local function Init_StopwatchFrame()
     --隐藏，开始/暂停，按钮
     StopwatchPlayPauseButton:Hide()
     --设置，重置，按钮
-    if not StopwatchFrameBackgroundLeft:IsShown() then
-        StopwatchResetButton:ClearAllPoints()
-        StopwatchResetButton:SetPoint('RIGHT', StopwatchTickerHour, 'LEFT', -2,0)
-        StopwatchResetButton:SetAlpha(0.2)
-        StopwatchResetButton:HookScript('OnLeave', function(self) self:SetAlpha(0.2) end)
-        StopwatchResetButton:HookScript('OnEnter', function(self) self:SetAlpha(1) end)
-    end
     
+    
+
     --移动
     StopwatchFrame:RegisterForDrag("LeftButton", 'RightButton')
     StopwatchFrame:HookScript('OnMouseDown', function()
@@ -2142,16 +2138,39 @@ local function Init_StopwatchFrame()
     end)
     StopwatchFrame:HookScript('OnMouseUp', ResetCursor)
     StopwatchFrame:HookScript('OnLeave', function() e.tips:Hide() end)
-    StopwatchFrame:HookScript('OnEnter', function(self)
-        StopwatchPlayPauseButton_OnClick(StopwatchPlayPauseButton)--开始/暂停
+    function StopwatchFrame:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.StopwatchFrameScale or 1), e.Icon.mid)
         e.tips:AddDoubleLine(e.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON, '|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '移过' or 'Move over'))
         e.tips:Show()
+    end
+    StopwatchFrame:HookScript('OnEnter', function(self)
+        StopwatchPlayPauseButton_OnClick(StopwatchPlayPauseButton)--开始/暂停
+        self:set_tooltips()
     end)
-    
-    
+    --缩放
+    StopwatchFrame:EnableMouseWheel(true)
+    function StopwatchFrame:set_sacle()
+        self:SetScale(Save.StopwatchFrameScale or 1)
+    end
+    StopwatchFrame:SetScript('OnMouseWheel', function(self, d)
+        local n= Save.StopwatchFrameScale or 1
+        if d==1 then
+            n= n-0.05
+        elseif d==-1 then
+            n= n+0.05
+        end
+        n= n>4 and 4 or n
+        n= n<0.4 and 0.4 or n
+        Save.StopwatchFrameScale= n
+        self:set_sacle()
+        self:set_tooltips()
+        print(id, addName, '|cnGREEN_FONT_COLOR:', n)
+    end)
+    StopwatchFrame:set_sacle()
 
     StopwatchTickerHour:SetTextColor(0,1,0,1)
     StopwatchTickerMinute:SetTextColor(0,1,0,1)
@@ -2179,6 +2198,15 @@ local function Init_StopwatchFrame()
     if Save.showStopwatchFrame and not StopwatchFrame:IsShown() then
         Stopwatch_Toggle()
     end
+    C_Timer.After(0.5, function()
+        if not StopwatchFrameBackgroundLeft:IsShown() then
+            StopwatchResetButton:ClearAllPoints()
+            StopwatchResetButton:SetPoint('RIGHT', StopwatchTickerHour, 'LEFT', -2,0)
+            StopwatchResetButton:SetAlpha(0.2)
+            StopwatchResetButton:HookScript('OnLeave', function(self) self:SetAlpha(0.2) end)
+            StopwatchResetButton:HookScript('OnEnter', function(self) self:SetAlpha(1) end)
+        end
+    end)
 end
 
 
