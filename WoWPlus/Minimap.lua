@@ -2175,6 +2175,9 @@ local function Init_StopwatchFrame()
     StopwatchTickerHour:SetTextColor(0,1,0,1)
     StopwatchTickerMinute:SetTextColor(0,1,0,1)
     StopwatchTickerSecond:SetTextColor(0,1,0,1)
+    StopwatchTickerHour:SetShadowOffset(1, -1)
+    StopwatchTickerMinute:SetShadowOffset(1, -1)
+    StopwatchTickerSecond:SetShadowOffset(1, -1)
 
     hooksecurefunc('StopwatchPlayPauseButton_OnClick', function()
         if StopwatchPlayPauseButton.playing then
