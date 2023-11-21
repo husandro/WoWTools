@@ -1766,6 +1766,27 @@ local function Init_Menu(_, level, menuList)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif menuList=='ResetTimeManagerClockButton' then
+        info={
+            text= e.onlyChinese and '重置位置' or RESET_POSITION,
+            notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '时钟' or TIMEMANAGER_TITLE,
+            disabled= not Save.TimeManagerClockButtonScale and not Save.TimeManagerClockButtonPoint,
+            colorCode= Save.disabledClockPlus and '|cff606060',
+            func= function()
+                Save.TimeManagerClockButtonScale=nil
+                Save.TimeManagerClockButtonPoint=nil
+                TimeManagerClockButton:SetScale(1)
+                TimeManagerClockButton:ClearAllPoints()
+                TimeManagerClockButton:SetParent(MinimapCluster)
+                TimeManagerClockButton:SetPoint('TOPRIGHT', MinimapCluster.BorderTop,-4,0)--Blizzard_TimeManager.xml
+                --<Anchor point="TOPRIGHT" relativeKey="$parent.BorderTop" x="-4" y="0"/>
+                print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
     if menuList then
@@ -1880,17 +1901,18 @@ local function Init_Menu(_, level, menuList)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
-    if StopwatchFrame then
-        info={
-            text= (e.onlyChinese and '时钟' or TIMEMANAGER_TITLE)..' Plus',
-            checked= not Save.disabledClockPlus,
-            func= function()
-                Save.disabledClockPlus= not Save.disabledClockPlus and true or nil
-                print(id, addName, '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-    end
+    info={
+        text= (e.onlyChinese and '时钟' or TIMEMANAGER_TITLE)..' Plus',
+        checked= not Save.disabledClockPlus,
+        hasArrow=true,
+        menuList='ResetTimeManagerClockButton',
+        func= function()
+            Save.disabledClockPlus= not Save.disabledClockPlus and true or nil
+            print(id, addName, '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    --TimeManagerClockTicker
 end
 
 
@@ -2177,14 +2199,16 @@ local function Blizzard_TimeManager()
         self:SetAlpha(0.5)
         e.call('TimeManagerClockButton_UpdateTooltip')
     end)
-    
-    
+
+    --设置，时间，颜色
     TimeManagerClockButton:SetWidth(TimeManagerClockButton:GetWidth()+5)
     TimeManagerClockTicker:SetShadowOffset(1, -1)
     TimeManagerClockTicker:SetPoint('LEFT')
+    e.Set_Label_Texture_Color(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
+
     TimeManagerClockButton:set_scale()
     TimeManagerClockButton:set_point()
-    
+
     --小时图，使用服务器, 时间
     local TimeManagerClockButton_Update_R= TimeManagerClockButton_Update
     local function set_Server_Timer()--小时图，使用服务器, 时间
