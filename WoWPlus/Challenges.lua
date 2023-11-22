@@ -631,7 +631,7 @@ local function Affix()
                                         text= text..' '..(e.onlyChinese and '无' or NONE)
                                     end
                                 end
-                                e.tips:AddDoubleLine(i2..(sel and e.Icon.toLeft2 or ''), (sel and e.Icon.toRight2 or '')..text)
+                                e.tips:AddDoubleLine((sel and '|cnGREEN_FONT_COLOR:' or '')..i2..(sel and e.Icon.toLeft2 or ''), (sel and e.Icon.toRight2 or '')..text)
                             end
                             e.tips:Show()
                             self2:SetAlpha(0.3)
