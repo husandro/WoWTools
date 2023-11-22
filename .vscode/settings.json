@@ -3667,7 +3667,11 @@
         "StopwatchResetButton",
         "Stopwatch_Toggle",
         "TimeManagerMilitaryTimeCheck",
-        "TIMEMANAGER_TITLE"
+        "TIMEMANAGER_TITLE",
+        "GetClassColorObj",
+        "GetFactionColor",
+        "FormatFraction",
+        "FormatPercentage"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
