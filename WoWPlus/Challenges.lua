@@ -623,8 +623,8 @@ local function Affix()
                                 local text=''
                                 local sel= i2==self2.index
                                 for i3=1, 3 do
-                                    local affixID= affixSchedule[i2][i3]
-                                    if affixID>0 then
+                                    local affixID= affixSchedule[i2] and affixSchedule[i2][i3]
+                                    if affixID and affixID>0 then
                                         local filedataid = select(3, C_ChallengeMode.GetAffixInfo(affixID)) or 0
                                         text= text..' '..'|T'..filedataid..':0|t'
                                     else
