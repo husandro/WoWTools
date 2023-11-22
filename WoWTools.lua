@@ -924,7 +924,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
     --{type='item', id=204193},--雏龙的暗影烈焰纹章
 
 
-
+    {type='currency', id=2709},--守护巨龙的酣梦纹章
     {type='currency', id=2708},--守护巨龙的酣梦纹章
     {type='currency', id=2707},--魔龙的酣梦纹章
     {type='currency', id=2706},--幼龙的酣梦纹章
