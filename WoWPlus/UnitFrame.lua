@@ -1336,32 +1336,31 @@ local function Init_BossFrame()
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
 
-        frame.PortraitFrame= e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})--CreateFrame('Frame', nil, frame, 'SecureActionButtonTemplate')
-        frame.PortraitFrame:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
-        --frame.PortraitFrame:SetSize(38, 38)
-        frame.PortraitFrame:Raise()
+        frame.BossButton= e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})--CreateFrame('Frame', nil, frame, 'SecureActionButtonTemplate')
+        frame.BossButton:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
+        frame.BossButton:Raise()
 
-        frame.PortraitFrame:SetAttribute('type', 'target')
-        frame.PortraitFrame:SetAttribute('unit', frame.unit)
-        frame.PortraitFrame:SetScript('OnLeave', function() e.tips:Hide() end)
-        frame.PortraitFrame:SetScript('OnEnter', function(self)
+        frame.BossButton:SetAttribute('type', 'target')
+        frame.BossButton:SetAttribute('unit', frame.unit)
+        frame.BossButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        frame.BossButton:SetScript('OnEnter', function(self)
             GameTooltip_SetDefaultAnchor(GameTooltip, self);
             e.tips:ClearLines()
             e.tips:SetUnit(self.unit)
             e.tips:Show()
         end)
 
-        frame.PortraitFrame.Portrait= frame.PortraitFrame:CreateTexture(nil, 'BACKGROUND')
-        frame.PortraitFrame.Portrait:SetAllPoints(frame.PortraitFrame)
+        frame.BossButton.Portrait= frame.BossButton:CreateTexture(nil, 'BACKGROUND')
+        frame.BossButton.Portrait:SetAllPoints(frame.BossButton)
 
-        frame.PortraitFrame.targetTexture= frame.PortraitFrame:CreateTexture(nil, 'OVERLAY')
-        frame.PortraitFrame.targetTexture:SetSize(52,52)
-        frame.PortraitFrame.targetTexture:SetPoint('CENTER')
-        frame.PortraitFrame.targetTexture:SetAtlas('DK-Blood-Rune-CDFill')
+        frame.BossButton.targetTexture= frame.BossButton:CreateTexture(nil, 'OVERLAY')
+        frame.BossButton.targetTexture:SetSize(52,52)
+        frame.BossButton.targetTexture:SetPoint('CENTER')
+        frame.BossButton.targetTexture:SetAtlas('DK-Blood-Rune-CDFill')
 
-        frame.PortraitFrame.unit= frame.unit
+        frame.BossButton.unit= frame.unit
 
-        function frame.PortraitFrame:set_Portrait()
+        function frame.BossButton:set_Portrait()
             local exists=UnitExists(self.unit)
             if exists then
                 SetPortraitTexture(self.Portrait, self.unit)
@@ -1369,11 +1368,11 @@ local function Init_BossFrame()
             self.Portrait:SetShown(exists)
         end
 
-        function frame.PortraitFrame:set_Target_Segnale()
+        function frame.BossButton:set_Target_Segnale()
             self.targetTexture:SetShown(UnitExists('target') and UnitIsUnit('target', self.unit))
         end
 
-        function frame.PortraitFrame:set_Event()
+        function frame.BossButton:set_Event()
             if not UnitExists(self.unit) then
                 self:UnregisterAllEvents()
             else
@@ -1385,7 +1384,7 @@ local function Init_BossFrame()
             end
         end
 
-        frame.PortraitFrame:SetScript('OnEvent', function(self, event)
+        frame.BossButton:SetScript('OnEvent', function(self, event)
             if event == 'PLAYER_TARGET_CHANGED' then
                 self:set_Target_Segnale()
             else
@@ -1393,20 +1392,20 @@ local function Init_BossFrame()
             end
         end)
 
-        frame.PortraitFrame:set_Event()
-        frame:HookScript('OnShow', function(self) self.PortraitFrame:set_Event() end)
-        frame:HookScript('OnHide', function(self) self.PortraitFrame:set_Event() end)
+        frame.BossButton:set_Event()
+        frame.BossButton:set_Portrait()
+        frame.BossButton:set_Target_Segnale()
 
-        frame.PortraitFrame:set_Portrait()
-        frame.PortraitFrame:set_Target_Segnale()
 
-        --目标的目标
-        frame.TotFrame=e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})
-        frame.TotFrame:SetPoint('TOPLEFT', frame.PortraitFrame, 'TOPRIGHT', 4,0)
-        frame.TotFrame:SetAttribute('type', 'target')
-        frame.TotFrame:SetAttribute('unit', frame.unit..'target')
-        frame.TotFrame:SetScript('OnLeave', function() e.tips:Hide() end)
-        frame.TotFrame:SetScript('OnEnter', function(self)
+
+        --目标的目标，点击
+        --##############
+        frame.TotButton=e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})
+        frame.TotButton:SetPoint('TOPLEFT', frame.BossButton, 'TOPRIGHT', 4,0)
+        frame.TotButton:SetAttribute('type', 'target')
+        frame.TotButton:SetAttribute('unit', frame.unit..'target')
+        frame.TotButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        frame.TotButton:SetScript('OnEnter', function(self)
             GameTooltip_SetDefaultAnchor(GameTooltip, self);
             e.tips:ClearLines()
             if UnitExists(self.unit) then
@@ -1417,72 +1416,102 @@ local function Init_BossFrame()
             end
             e.tips:Show()
         end)
+        frame.TotButton.unit= frame.unit
+        frame.TotButton.targetUnit= frame.unit..'target'
 
-        frame.TotFrame.Portrait= frame.TotFrame:CreateTexture(nil, 'BACKGROUND')
+        --目标的目标，信息
+        frame.TotButton.frame= CreateFrame('Frame')
+        frame.TotButton.frame:SetAllPoints(frame.TotButton)
+        frame.TotButton.frame:Hide()
+        frame.TotButton.frame.unit= frame.unit..'target'
 
-        frame.TotFrame.Portrait:SetAllPoints(frame.TotFrame)
+        --目标的目标，图像
+        frame.TotButton.frame.Portrait= frame.TotButton.frame:CreateTexture(nil, 'BACKGROUND')
+        frame.TotButton.frame.Portrait:SetAllPoints(frame.TotButton.frame)
 
-        frame.TotFrame.targetTexture= frame.TotFrame:CreateTexture(nil, 'OVERLAY')
-        frame.TotFrame.targetTexture:SetSize(52,52)
-        frame.TotFrame.targetTexture:SetPoint('CENTER')
-        frame.TotFrame.targetTexture:SetAtlas('DK-Blood-Rune-CDFill')
-        frame.TotFrame.targetTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-        frame.TotFrame.unit= frame.unit
-        frame.TotFrame.targetUnit= frame.unit..'target'
+        --目标的目标，外框
+        frame.TotButton.frame.targetTexture= frame.TotButton.frame:CreateTexture(nil, 'BORDER')
+        frame.TotButton.frame.targetTexture:SetSize(42,42)
+        frame.TotButton.frame.targetTexture:SetPoint('CENTER')
+        frame.TotButton.frame.targetTexture:SetAtlas('UI-HUD-UnitFrame-TotemFrame-2x')
+        frame.TotButton.frame.targetTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
-        frame.TotFrame.healthFrame= CreateFrame('Frame')
-        frame.TotFrame.healthFrame:SetAllPoints(frame.TotFrame)
-        frame.TotFrame.healthFrame:Hide()
-        frame.TotFrame.healthFrame.healthLable= e.Cstr(frame.TotFrame.healthFrame)
-        frame.TotFrame.healthFrame.healthLable:SetPoint('LEFT', frame.TotFrame, 'RIGHT')
-        frame.TotFrame.healthFrame.unit=frame.TotFrame.targetUnit
-        frame.TotFrame.healthFrame:SetScript('OnUpdate', function(self, elapsed)
+        --目标的目标，生命条
+        frame.TotButton.frame.healthBar= CreateFrame('StatusBar', nil, frame.TotButton.frame)
+        frame.TotButton.frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+        frame.TotButton.frame.healthBar:SetSize(38, 8)
+        frame.TotButton.frame.healthBar:SetMinMaxValues(0,100)
+
+        --目标的目标，百份比
+        frame.TotButton.frame.healthLable= e.Cstr(frame.TotButton.frame.healthBar,{color={r=1,g=1,b=1}})
+        frame.TotButton.frame.healthLable:SetPoint('RIGHT')
+                
+        frame.TotButton.frame:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= (self.elapsed or 0.3) +elapsed
             if self.elapsed>0.3 then
                 local text=''
                 local value, max= UnitHealth(self.unit), UnitHealthMax(self.unit)
-                if value and max then
-                    text= format('%i', value/max*100)
+                value= (not value or value<=0) and 0 or value
+                if value and max and max>0 then
+                    local per= value/max*100
+                    self.healthBar:SetValue(per)
+                    text= format('%i', per)
                 end
                 self.healthLable:SetText(text)
             end
         end)
 
-        function frame.TotFrame:set_Portrait()
-            local exists=UnitExists(self.targetUnit)
+        function frame.TotButton.frame:set_settings()
+            local exists=UnitExists(self.unit)
             if exists then
-                SetPortraitTexture(self.Portrait, self.targetUnit)
+                --图像
+                if UnitIsUnit(self.unit, 'player') then--自已
+                    SetPortraitToTexture(self.Portrait, 'quest-important-available')
+                else
+                    local index = GetRaidTargetIndex(self.unit)
+                    if index and index>0 and index< 9 then
+                        SetRaidTargetIconTexture(self.Portrait, index)
+                    else
+                        SetPortraitTexture(self.Portrait, self.unit)--别人
+                    end
+                end
+                --颜色
+                local r,g,b
+                local class= UnitClassBase(self.unit)
+                if class then
+                    r, g, b= GetClassColor(class)
+                end
+                r,g,b= r or 1, g or 1, b or 1
+                
+                self.healthBar:SetStatusBarColor(r,g,b)
             end
-            self.healthFrame:SetShown(exists)
-            self.Portrait:SetShown(exists)
-            self.targetTexture:SetShown(exists and UnitIsUnit('player', self.targetUnit))
+            self:SetShown(exists)
         end
 
-        function frame.TotFrame:set_Event()
+        function frame.TotButton.frame:set_Event()
             if not self:IsShown() then
                 self:UnregisterAllEvents()
             else
                 self:RegisterUnitEvent('UNIT_TARGET', self.unit)
-                self:set_Portrait()
+                self:set_settings()
             end
         end
 
-        frame.TotFrame:SetScript('OnEvent', function(self)
-            self:set_Portrait()
+        frame.TotButton.frame:SetScript('OnEvent', function(self)
+            self:set_settings()
         end)
 
-        frame.TotFrame:set_Event()
-        frame.TotFrame:set_Portrait()
-
-
+        frame.TotButton.frame:set_settings()
+        frame.TotButton.frame:set_Event()
+        
 
         frame:HookScript('OnShow', function(self)
-            self.PortraitFrame:set_Event()
-            self.TotFrame:set_Event()
+            self.BossButton:set_Event()
+            self.TotButton.frame:set_Event()
         end)
         frame:HookScript('OnHide', function(self)
-            self.PortraitFrame:set_Event()
-            self.TotFrame:set_Event()
+            self.BossButton:set_Event()
+            self.TotButton.frame:set_Event()
         end)
     end
 end

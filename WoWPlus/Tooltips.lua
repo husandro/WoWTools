@@ -430,7 +430,7 @@ function func.Set_Item(self, itemLink, itemID)
     end
 
     if classID==2 or classID==4 then
-        itemLevel= GetDetailedItemLevelInfo(itemLink) or itemLevel--装等
+        itemLevel= itemLink and GetDetailedItemLevelInfo(itemLink) or itemLevel--装等
         if itemLevel and itemLevel>1 then
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
             if slot then
