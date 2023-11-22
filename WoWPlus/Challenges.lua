@@ -579,9 +579,6 @@ local function Affix()
                 if affix.id == affixes[1] or affix.id == affixes[2] or affix.id == affixes[3] then
                     matches = matches + 1
                 end
-                if matches >= 3 then
-                    break
-                end
             end
             if matches >= 3 then
                 currentWeek = index
