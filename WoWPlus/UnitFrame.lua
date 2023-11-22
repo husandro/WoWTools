@@ -1423,7 +1423,8 @@ local function Init_BossFrame()
         frame.TotButton.frame= CreateFrame('Frame')
         frame.TotButton.frame:SetAllPoints(frame.TotButton)
         frame.TotButton.frame:Hide()
-        frame.TotButton.frame.unit= frame.unit..'target'
+        frame.TotButton.frame.unit= frame.unit
+        frame.TotButton.frame.targetUnit= frame.unit..'target'
 
         --目标的目标，图像
         frame.TotButton.frame.Portrait= frame.TotButton.frame:CreateTexture(nil, 'BACKGROUND')
@@ -1450,7 +1451,7 @@ local function Init_BossFrame()
             self.elapsed= (self.elapsed or 0.3) +elapsed
             if self.elapsed>0.3 then
                 local text=''
-                local value, max= UnitHealth(self.unit), UnitHealthMax(self.unit)
+                local value, max= UnitHealth(self.targetUnit), UnitHealthMax(self.targetUnit)
                 value= (not value or value<=0) and 0 or value
                 if value and max and max>0 then
                     local per= value/max*100
@@ -1465,19 +1466,19 @@ local function Init_BossFrame()
             local exists=UnitExists(self.unit)
             if exists then
                 --图像
-                if UnitIsUnit(self.unit, 'player') then--自已
+                if UnitIsUnit(self.targetUnit, 'player') then--自已
                     SetPortraitToTexture(self.Portrait, 'quest-important-available')
                 else
-                    local index = GetRaidTargetIndex(self.unit)
+                    local index = GetRaidTargetIndex(self.targetUnit)
                     if index and index>0 and index< 9 then
                         SetRaidTargetIconTexture(self.Portrait, index)
                     else
-                        SetPortraitTexture(self.Portrait, self.unit)--别人
+                        SetPortraitTexture(self.Portrait, self.targetUnit)--别人
                     end
                 end
                 --颜色
                 local r,g,b
-                local class= UnitClassBase(self.unit)
+                local class= UnitClassBase(self.targetUnit)
                 if class then
                     r, g, b= GetClassColor(class)
                 end
@@ -1486,6 +1487,7 @@ local function Init_BossFrame()
                 self.healthBar:SetStatusBarColor(r,g,b)
             end
             self:SetShown(exists)
+            print(exists,self.targetUnit)
         end
 
         function frame.TotButton.frame:set_Event()
