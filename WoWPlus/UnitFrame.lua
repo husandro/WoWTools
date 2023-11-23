@@ -1503,13 +1503,13 @@ local function Init_BossFrame()
         end
 
         function frame.TotButton.frame:set_Event()
-            if not UnitExists(self.targetUnit) then
+            if not UnitExists(self.unit) then
                 self:UnregisterAllEvents()
             else
                 self:RegisterUnitEvent('UNIT_TARGET', self.unit)
                 self:RegisterEvent('RAID_TARGET_UPDATE')
             end
-            self:set_settings()
+            C_Timer.After(0.3, function() self:set_settings() end)
         end
 
         frame.TotButton.frame:SetScript('OnEvent', function(self)
@@ -1517,12 +1517,12 @@ local function Init_BossFrame()
         end)
 
         --frame.TotButton.frame:set_Event()
-        C_Timer.After(2, function() frame.TotButton.frame:set_Event() end)
+        frame.TotButton.frame:set_Event()
 
 
         frame:HookScript('OnShow', function(self)
             self.BossButton:set_Event()
-            C_Timer.After(1, function() self.TotButton.frame:set_Event() end)
+            self.TotButton.frame:set_Event()
         end)
         frame:HookScript('OnHide', function(self)
             self.BossButton:set_Event()
