@@ -874,7 +874,7 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
                 end
 
                 unitFrame.classFrame.Texture= unitFrame.classFrame:CreateTexture(nil, 'OVERLAY')--加个外框
-                unitFrame.classFrame.Texture:SetAtlas('UI-HUD-UnitFrame-TotemFrame-2x')
+                unitFrame.classFrame.Texture:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
                 unitFrame.classFrame.Texture:SetPoint('CENTER', unitFrame.classFrame, 1,-1)
                 unitFrame.classFrame.Texture:SetSize(20,20)
 
