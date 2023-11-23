@@ -485,9 +485,7 @@ local function set_Shift_Click_focurs()
         local member= 'MemberFrame'..i
         if PartyFrame and PartyFrame[member] then
             table.insert(tab, PartyFrame[member])
-            if PartyFrame[member].potFrame then
-                table.insert(tab, PartyFrame[member].potFrame)--UnitFrame.lua
-            end
+            table.insert(tab, PartyFrame[member].potFrame)--UnitFrame.lua
         end
         table.insert(tab, _G['CompactPartyFrameMember'..i])
     end

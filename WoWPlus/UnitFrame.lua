@@ -1550,7 +1550,6 @@ local function Init_BossFrame()
         for i=1, MAX_BOSS_FRAMES do
             local frame= _G['Boss'..i..'TargetFrame']
             if frame.TotButton then
-                print( Boss1TargetFrameSpellBar.castBarOnSide , BossTargetFrameContainer.smallSize)
                 frame.TotButton:ClearAllPoints()
                 --Boss1TargetFrameSpellBar.castBarOnSide 施法条左边
                 if Boss1TargetFrameSpellBar.castBarOnSide then
