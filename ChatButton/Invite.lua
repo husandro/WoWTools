@@ -876,7 +876,7 @@ local function InitList(self, level, type)
                 checked= Save.frameList[unit],
                 arg1=unit,
                 keepShownOnClick=true,
-                func= function(self2, arg1)
+                func= function(_, arg1)
                     Save.frameList[arg1]= not Save.frameList[arg1] and true or nil
                     set_Frame_Fun()
                 end,
@@ -1125,14 +1125,6 @@ local function Init()
 
 
 
-
-
-
-
-
-
-
-
     --#########
     --接受, 召唤
     --#########
@@ -1207,16 +1199,16 @@ local function Init()
 
 
 
-    if UnitAffectingCombat('player') and (Save.setFrameFun or Save.setFucus) then
+    --[[if UnitAffectingCombat('player') and (Save.setFrameFun or Save.setFucus) then
         panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-    else
+    else]]
         if Save.setFrameFun then
             set_Frame_Fun()--日标框, 向上:密语, 向下:跟随
         end
         if Save.setFucus then
             set_Shift_Click_focurs()--Shift+点击设置焦点
         end
-    end
+    --end
 end
 
 
@@ -1257,7 +1249,7 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('LFG_LIST_APPLICATION_STATUS_UPDATED')
 
-panel:SetScript("OnEvent", function(self, event, arg1, ...)
+panel:SetScript("OnEvent", function(_, event, arg1, ...)
     if event == "ADDON_LOADED" then
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
