@@ -1361,41 +1361,31 @@ local function Init_BossFrame()
 
         frame.BossButton.unit= frame.unit
 
-        function frame.BossButton:set_Portrait()
-            local exists=UnitExists(self.unit)
+        function frame.BossButton:set_settings()
+            local unit= BossTargetFrameContainer.isInEditMode and 'player' or self.targetUnit
+            local exists=UnitExists(unit)
             if exists then
-                SetPortraitTexture(self.Portrait, self.unit)
+                SetPortraitTexture(self.Portrait, unit)
             end
             self.Portrait:SetShown(exists)
+            self.targetTexture:SetShown(exists and UnitIsUnit('target', unit))
         end
 
-        function frame.BossButton:set_Target_Segnale()
-            self.targetTexture:SetShown(UnitExists('target') and UnitIsUnit('target', self.unit))
-        end
-
-        function frame.BossButton:set_Event()
+        function frame.BossButton:set_event()
             if not UnitExists(self.unit) then
                 self:UnregisterAllEvents()
             else
                 self:RegisterEvent('PLAYER_TARGET_CHANGED')
                 self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.unit)
                 self:RegisterEvent('INSTANCE_ENCOUNTER_ENGAGE_UNIT')
-                self:set_Portrait()
-                self:set_Target_Segnale()
             end
+            C_Timer.After(0.3, function() self:set_settings() end)
         end
 
-        frame.BossButton:SetScript('OnEvent', function(self, event)
-            if event == 'PLAYER_TARGET_CHANGED' then
-                self:set_Target_Segnale()
-            else
-                self:set_Portrait()
-            end
+        frame.BossButton:SetScript('OnEvent', function(self)
+            self:set_settings()
         end)
-
-        frame.BossButton:set_Event()
-        frame.BossButton:set_Portrait()
-        frame.BossButton:set_Target_Segnale()
+        frame.BossButton:set_event()
 
 
 
@@ -1460,8 +1450,9 @@ local function Init_BossFrame()
         frame.TotButton.frame:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= (self.elapsed or 0.3) +elapsed
             if self.elapsed>0.3 then
+                local unit= BossTargetFrameContainer.isInEditMode and 'player' or self.targetUnit
                 local text=''
-                local value, max= UnitHealth(self.targetUnit), UnitHealthMax(self.targetUnit)
+                local value, max= UnitHealth(unit), UnitHealthMax(unit)
                 value= (not value or value<=0) and 0 or value
                 if value and max and max>0 then
                     local per= value/max*100
@@ -1473,26 +1464,28 @@ local function Init_BossFrame()
         end)
 
         function frame.TotButton.frame:set_settings()
-            local exists=UnitExists(self.targetUnit)
+            local unit= BossTargetFrameContainer.isInEditMode and 'player' or self.targetUnit
+            local exists=UnitExists(unit)
             if exists then
                 --图像
-                if not UnitIsUnit(self.targetUnit, 'player') then--自已
+                if BossTargetFrameContainer.isInEditMode then
+                    SetPortraitTexture(self.Portrait, unit)
+                    frame.TargetFrameContent.TargetFrameContentMain.ManaBar:Show()
+                elseif not UnitIsUnit(unit, 'player') then--自已
                     self.Portrait:SetAtlas('quest-important-available')
-                elseif UnitIsUnit(self.targetUnit, 'target') then
+                elseif UnitIsUnit(unit, 'target') then
                     self.Portrait:SetAtlas('common-icon-checkmark')
                 else
-                    local index = GetRaidTargetIndex(self.targetUnit)
+                    local index = GetRaidTargetIndex(unit)
                     if index and index>0 and index< 9 then
                         self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
                     else
-                        SetPortraitTexture(self.Portrait, self.targetUnit)--别人
-                        
+                        SetPortraitTexture(self.Portrait, unit)--别人
                     end
-                    SetPortraitTexture(self.Portrait, self.targetUnit)--别人
                 end
                 --颜色
                 local r,g,b
-                local class= UnitClassBase(self.targetUnit)
+                local class= UnitClassBase(unit)
                 if class then
                     r, g, b= GetClassColor(class)
                 end
@@ -1510,7 +1503,7 @@ local function Init_BossFrame()
 
         end
 
-        function frame.TotButton.frame:set_Event()
+        function frame.TotButton.frame:set_event()
             if not UnitExists(self.unit) then
                 self:UnregisterAllEvents()
             else
@@ -1525,35 +1518,45 @@ local function Init_BossFrame()
             self:set_settings()
         end)
 
-        --frame.TotButton.frame:set_Event()
-        frame.TotButton.frame:set_Event()
+        frame.TotButton.frame:set_event()
 
 
         frame:HookScript('OnShow', function(self)
-            self.BossButton:set_Event()
-            self.TotButton.frame:set_Event()
+            self.BossButton:set_event()
+            self.TotButton.frame:set_event()
         end)
         frame:HookScript('OnHide', function(self)
-            self.BossButton:set_Event()
-            self.TotButton.frame:set_Event()
+            self.BossButton:set_event()
+            self.TotButton.frame:set_event()
         end)
     end
     --设置位置
-    hooksecurefunc(Boss1TargetFrameSpellBar,'AdjustPosition', function(self)
+    local function set_TotButton_point()
         for i=1, MAX_BOSS_FRAMES do
             local frame= _G['Boss'..i..'TargetFrame']
             if frame.TotButton then
                 frame.TotButton:ClearAllPoints()
-                if self.castBarOnSide or not self.smallSize  then
-                    --frame.TotButton:SetPoint('TOPLEFT', frame.BossButton, 'TOPRIGHT', 6,0)
+                --Boss1TargetFrameSpellBar.castBarOnSide 施法条左边
+                if Boss1TargetFrameSpellBar.castBarOnSide then
                     frame.TotButton:SetPoint('TOPLEFT', frame.TargetFrameContent.TargetFrameContentMain.ManaBar, 'BOTTOMLEFT')
                 else
                     frame.TotButton:SetPoint('RIGHT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'LEFT',-8,0)
-                    
+                end
+                if Boss1TargetFrameSpellBar.castBarOnSide and not BossTargetFrameContainer.smallSize then
+                    frame.TotButton:SetScale(0.7)
+                else
+                    frame.TotButton:SetScale(1)
                 end
             end
         end
+    end
+    hooksecurefunc(Boss1TargetFrameSpellBar,'AdjustPosition', function()
+        set_TotButton_point()
     end)
+    hooksecurefunc(BossTargetFrameContainer, 'SetSmallSize', function()
+        set_TotButton_point()
+    end)
+
 end
 
 
