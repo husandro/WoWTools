@@ -205,7 +205,6 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     --施法条
     PlayerCastingBarFrame:HookScript('OnShow', function(self)--图标
         self.Icon:SetShown(true)
-        self:Raise()--设置为， 最上层
     end)
 
     PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color={r=e.Player.r, g=e.Player.g, b=e.Player.b}, justifyH='RIGHT'})
@@ -542,7 +541,7 @@ local function set_memberFrame(memberFrame)
                 end
             end
             self.texture:SetTexture(texture or 0)
-            self:SetShown(find)
+            self:SetAlpha(find and 1 or 0)
         end
         frame:SetScript('OnEvent', function (self, _, _, _, spellID)
             self:set_Party_Casting()
@@ -631,8 +630,8 @@ local function set_memberFrame(memberFrame)
 
         frame.unit= unit
         frame:SetScript('OnUpdate', function(self, elapsed)
-            self.elapsed= (self.elapsed or 0.5) + elapsed
-            if self.elapsed>0.5 then
+            self.elapsed= (self.elapsed or 0.3) + elapsed
+            if self.elapsed>0.3 then
                 self.elapsed=0
                 self.texture:SetShown(UnitAffectingCombat(self.unit))
             end
@@ -1362,7 +1361,7 @@ local function Init_BossFrame()
         frame.BossButton.unit= frame.unit
 
         function frame.BossButton:set_settings()
-            local unit= BossTargetFrameContainer.isInEditMode and 'player' or self.targetUnit
+            local unit= BossTargetFrameContainer.isInEditMode and 'player' or self.unit
             local exists=UnitExists(unit)
             if exists then
                 SetPortraitTexture(self.Portrait, unit)
@@ -1470,7 +1469,7 @@ local function Init_BossFrame()
                 --图像
                 if BossTargetFrameContainer.isInEditMode then
                     SetPortraitTexture(self.Portrait, unit)
-                    frame.TargetFrameContent.TargetFrameContentMain.ManaBar:Show()
+                    --frame.TargetFrameContent.TargetFrameContentMain.ManaBar:Show()
                 elseif not UnitIsUnit(unit, 'player') then--自已
                     self.Portrait:SetAtlas('quest-important-available')
                 elseif UnitIsUnit(unit, 'target') then
@@ -1511,7 +1510,7 @@ local function Init_BossFrame()
                 self:RegisterEvent('RAID_TARGET_UPDATE')
                 self:RegisterEvent('PLAYER_TARGET_CHANGED')
             end
-            C_Timer.After(0.3, function() self:set_settings() end)
+            self:set_settings()
         end
 
         frame.TotButton.frame:SetScript('OnEvent', function(self)
@@ -1522,14 +1521,17 @@ local function Init_BossFrame()
 
 
         frame:HookScript('OnShow', function(self)
-            self.BossButton:set_event()
-            self.TotButton.frame:set_event()
+            C_Timer.After(0.5, function()
+                self.BossButton:set_event()
+                self.TotButton.frame:set_event()
+            end)
         end)
         frame:HookScript('OnHide', function(self)
             self.BossButton:set_event()
             self.TotButton.frame:set_event()
         end)
     end
+
     --设置位置
     local function set_TotButton_point()
         for i=1, MAX_BOSS_FRAMES do
@@ -1540,12 +1542,12 @@ local function Init_BossFrame()
                 if Boss1TargetFrameSpellBar.castBarOnSide then
                     frame.TotButton:SetPoint('TOPLEFT', frame.TargetFrameContent.TargetFrameContentMain.ManaBar, 'BOTTOMLEFT')
                 else
-                    frame.TotButton:SetPoint('RIGHT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'LEFT',-8,0)
+                    frame.TotButton:SetPoint('RIGHT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'LEFT',-2,0)
                 end
-                if Boss1TargetFrameSpellBar.castBarOnSide and not BossTargetFrameContainer.smallSize then
-                    frame.TotButton:SetScale(0.7)
+                if not Boss1TargetFrameSpellBar.castBarOnSide and not BossTargetFrameContainer.smallSize then
+                   frame.TotButton:SetScale(0.7)
                 else
-                    frame.TotButton:SetScale(1)
+                   frame.TotButton:SetScale(1)
                 end
             end
         end
