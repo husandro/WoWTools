@@ -34,11 +34,6 @@ local function set_Alpha_Color(self, notAlpha, notColor, value)
 
         if not notColor and not Save.disabledColor and self:GetObjectType()=='Texture' then
             e.Set_Label_Texture_Color(self, {type='Texture'})
-            --[[if e.Player.useColor then
-                self:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
-            else
-                self:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-            end]]
         end
         if not (Save.disabledAlpha or notAlpha)  then
             self:SetAlpha(value or Save.alpha)
@@ -77,11 +72,6 @@ local function set_Alpha_Frame_Texture(frame, tab)
                 if tab.index== index then
                     if not tab.notColor then
                         e.Set_Label_Texture_Color(icon, {type='Texture'})
-                        --[[if e.Player.useColor then
-                            icon:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
-                        else
-                            icon:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-                        end]]
                     end
                     if not Save.disabledAlpha  then
                         icon:SetAlpha(Save.alpha)
@@ -90,11 +80,6 @@ local function set_Alpha_Frame_Texture(frame, tab)
                 elseif not tab.index then
                     if not tab.notColor then
                         e.Set_Label_Texture_Color(icon, {type='Texture'})
-                        --[[if e.Player.useColor then
-                            icon:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
-                        else
-                            icon:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-                        end]]
                     end
                     if not Save.disabledAlpha and not tab.notAlpha  then
                         icon:SetAlpha(Save.alpha)
@@ -948,8 +933,8 @@ local function Init_Set_AlphaAndColor()
     set_Alpha_Frame_Texture(MinimapCluster.Tracking.Button)
     set_Alpha_Frame_Texture(GameTimeFrame)
 
-
-    --set_Alpha_Frame_Texture(PartyFrame.Background, {})
+    --小队，背景
+    set_Alpha_Frame_Texture(PartyFrame.Background, {})
 
     --任务，追踪柆
     hooksecurefunc('ObjectiveTracker_Initialize', function(self)
