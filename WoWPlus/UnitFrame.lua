@@ -456,6 +456,7 @@ local function set_memberFrame(memberFrame)
             self.healthBar:SetAlpha(exists2 and 1 or 0)
             --self.healthBar:SetShown(exists2)--队友， 目标， 生命条
             --self.healthBar.elapsed=1
+            self.playerTargetTexture:SetShown(UnitIsUnit(self.unit, 'target'))
         end
         function frame:set_IsPlayerTarget()
             self.playerTargetTexture:SetShown(UnitIsUnit(self.unit, 'target'))
@@ -783,11 +784,21 @@ local function set_memberFrame(memberFrame)
     end
     frame:set_Active()
 end
+
+
+
+
+
 local function set_UpdatePartyFrames(unitFrame)
     for memberFrame in unitFrame.PartyMemberFramePool:EnumerateActive() do
         set_memberFrame(memberFrame)
     end
 end
+
+
+
+
+
 local function Init_PartyFrame()--PartyFrame.lua
     set_UpdatePartyFrames(PartyFrame)--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
     hooksecurefunc(PartyFrame, 'UpdatePartyFrames', set_UpdatePartyFrames)
@@ -1539,6 +1550,7 @@ local function Init_BossFrame()
         for i=1, MAX_BOSS_FRAMES do
             local frame= _G['Boss'..i..'TargetFrame']
             if frame.TotButton then
+                print( Boss1TargetFrameSpellBar.castBarOnSide , BossTargetFrameContainer.smallSize)
                 frame.TotButton:ClearAllPoints()
                 --Boss1TargetFrameSpellBar.castBarOnSide 施法条左边
                 if Boss1TargetFrameSpellBar.castBarOnSide then
@@ -1546,8 +1558,8 @@ local function Init_BossFrame()
                 else
                     frame.TotButton:SetPoint('RIGHT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'LEFT',-2,0)
                 end
-                if not Boss1TargetFrameSpellBar.castBarOnSide and not BossTargetFrameContainer.smallSize then
-                   frame.TotButton:SetScale(0.7)
+                if Boss1TargetFrameSpellBar.castBarOnSide and not BossTargetFrameContainer.smallSize then
+                   frame.TotButton:SetScale(0.75)
                 else
                    frame.TotButton:SetScale(1)
                 end
