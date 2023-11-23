@@ -667,8 +667,8 @@ local function set_memberFrame(memberFrame)
             self:SetShown(show and not UnitAffectingCombat('player'))
         end
         frame:SetScript('OnUpdate', function(self, elapsed)
-            self.elapsed= (self.elapsed or 1) + elapsed
-            if self.elapsed>1 then
+            self.elapsed= (self.elapsed or 0.3) + elapsed
+            if self.elapsed>0.3 then
                 self.elapsed=0
                 local mapID= C_Map.GetBestMapForUnit(self.unit)--地图ID
                 local mapInfo= mapID and C_Map.GetMapInfo(mapID)
@@ -844,9 +844,10 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
                 r,g,b=GetClassColor(classFilename)
             end
         end
-        if not UnitExists(unit) or not (r and g and b) then
+        if not UnitExists(unit) then
             return
         end
+        r,g,b= r or 1, g or 1, b or 1
 
         local guid
         local unitIsPlayer=  UnitIsPlayer(unit)
@@ -858,6 +859,7 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
                 unitFrame.classFrame:SetSize(16,16)
                 unitFrame.classFrame.Portrait= unitFrame.classFrame:CreateTexture(nil, "BACKGROUND")
                 unitFrame.classFrame.Portrait:SetAllPoints(unitFrame.classFrame)
+                
 
                 if unitFrame==TargetFrame then
                     unitFrame.classFrame:SetPoint('RIGHT', unitFrame.TargetFrameContent.TargetFrameContentContextual.LeaderIcon, 'LEFT')
@@ -1686,7 +1688,7 @@ local function Init_RaidFrame()--设置,团队
             frame.roleIcon:SetShown(bool)
         end
         if frame.powerBar then
-            frame.powerBar:SetShown(bool)
+            frame.powerBar:SetAlpha(bool and 1 or 0)
         end
         if frame.background then
             frame.background:ClearAllPoints()--背景
