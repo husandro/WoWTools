@@ -105,7 +105,7 @@ local function set_Tabs()
         --Tabs[index].current= Save.tab[info.name].current
         Tabs[index].damageAndDefense= Save.tab[info.name].damageAndDefense
         Tabs[index].onlyDefense= Save.tab[info.name].onlyDefense
-        Tabs[index].bar= Save.tab[info.name].bar and true or Save.bar and Tabs[index].bar
+        Tabs[index].bar= Save.tab[info.name].bar and true or (Save.bar and Tabs[index].bar)
         Tabs[index].textValue= Save.setMaxMinValue and Tabs[index].textValue or false
 
         Tabs[index].hide= Save.tab[info.name].hide
@@ -159,7 +159,8 @@ local function set_Text_Value(frame, value, value2)
         frame.text:SetText(text)
     end
 
-    if frame.bar and frame.bar:IsShown() then
+    
+    if frame.bar and frame.bar:GetAlpha()>0 then
         if frame.value== value or (value<1 and not frame.zeroShow) then
             frame.bar:SetStatusBarColor(frame.r, frame.g, frame.b, frame.a)
             frame.bar:SetValue(value)
@@ -819,7 +820,7 @@ local function set_Frame(frame, rest)--设置, frame
         set_Shadow(frame.label)--设置，字体阴影
         set_Shadow(frame.text)--设置，字体阴影
 
-        if frame.bar and frame:IsShown() then
+        if frame.isBar then
             local value
             if frame.useNumber then
                 if frame.name=='STATUS' then
@@ -1046,8 +1047,10 @@ local function frame_Init(rest)--初始， 或设置
                     frame.barTextureSpark:SetAtlas('objectivewidget-bar-spark-neutral')
                     frame.barTextureSpark:SetSize(6,12)
                 end
+                frame.isBar= info.bar
                 if frame.bar then
-                    frame.bar:SetShown(info.bar)
+                    --frame.bar:SetShown(info.bar)
+                    frame.bar:SetAlpha(info.bar and 1 or 0)
                     frame.barTextureSpark:SetShown(false)
                 end
 

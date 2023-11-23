@@ -1482,7 +1482,6 @@ local function Init_BossFrame()
                 --图像
                 if BossTargetFrameContainer.isInEditMode then
                     SetPortraitTexture(self.Portrait, unit)
-                    --frame.TargetFrameContent.TargetFrameContentMain.ManaBar:Show()
                 elseif UnitIsUnit(unit, 'player') then--自已
                     self.Portrait:SetAtlas('quest-important-available')
                 elseif UnitIsUnit(unit, 'target') then
