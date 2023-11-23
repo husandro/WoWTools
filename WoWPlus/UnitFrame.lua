@@ -1442,7 +1442,7 @@ local function Init_BossFrame()
         frame.TotButton.frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         frame.TotButton.frame.healthBar:SetSize(44, 8)
         frame.TotButton.frame.healthBar:SetMinMaxValues(0,100)
-        frame.TotButton.frame.healthBar:SetPoint('TOP', frame.TotButton.frame, 'BOTTOM')
+        frame.TotButton.frame.healthBar:SetPoint('TOP', frame.TotButton.frame, 'BOTTOM',4,0)
 --[[
         frame.healthBar= CreateFrame('StatusBar', nil, frame)
         frame.healthBar:SetSize(55, 8)
@@ -1455,8 +1455,8 @@ local function Init_BossFrame()
 
         --目标的目标，百份比
         frame.TotButton.frame.healthLable= e.Cstr(frame.TotButton.frame.healthBar,{color={r=1,g=1,b=1}})
-        frame.TotButton.frame.healthLable:SetPoint('RIGHT')
-                
+        frame.TotButton.frame.healthLable:SetPoint('RIGHT',2,0)
+
         frame.TotButton.frame:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= (self.elapsed or 0.3) +elapsed
             if self.elapsed>0.3 then
@@ -1466,7 +1466,7 @@ local function Init_BossFrame()
                 if value and max and max>0 then
                     local per= value/max*100
                     self.healthBar:SetValue(per)
-                    text= format('%i', per)
+                    text= format('%0.f', per)
                 end
                 self.healthLable:SetText(text)
             end
@@ -1493,13 +1493,13 @@ local function Init_BossFrame()
                     r, g, b= GetClassColor(class)
                 end
                 r,g,b= r or 1, g or 1, b or 1
-                
+
                 self.healthBar:SetStatusBarColor(r,g,b)
                 self.Border:SetVertexColor(r,g,b)
-                
+
             end
             self:SetShown(exists)
-           
+
         end
 
         function frame.TotButton.frame:set_Event()
@@ -1516,16 +1516,15 @@ local function Init_BossFrame()
             self:set_settings()
         end)
 
-        frame.TotButton.frame:set_Event()
-        
+        --frame.TotButton.frame:set_Event()
+        C_Timer.After(2, function() frame.TotButton.frame:set_Event() end)
+
 
         frame:HookScript('OnShow', function(self)
             self.BossButton:set_Event()
-            self.TotButton.frame:set_Event()
-            print(id,addName,'show')
+            C_Timer.After(1, function() self.TotButton.frame:set_Event() end)
         end)
         frame:HookScript('OnHide', function(self)
-            print(id,addName,'hide')
             self.BossButton:set_Event()
             self.TotButton.frame:set_Event()
         end)
