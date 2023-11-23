@@ -1557,11 +1557,11 @@ local function Init_BossFrame()
                 else
                     frame.TotButton:SetPoint('RIGHT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'LEFT',-2,0)
                 end
-                if Boss1TargetFrameSpellBar.castBarOnSide and not BossTargetFrameContainer.smallSize then
+                --[[if Boss1TargetFrameSpellBar.castBarOnSide and not BossTargetFrameContainer.smallSize then
                    frame.TotButton:SetScale(0.75)
                 else
                    frame.TotButton:SetScale(1)
-                end
+                end]]
             end
         end
     end
