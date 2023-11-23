@@ -1494,7 +1494,7 @@ local function Init_BossFrame()
         end
 
         function frame.TotButton.frame:set_Event()
-            if not self:IsShown() then
+            if not UnitExists(self.targetUnit) then
                 self:UnregisterAllEvents()
             else
                 self:RegisterUnitEvent('UNIT_TARGET', self.unit)
@@ -1506,15 +1506,17 @@ local function Init_BossFrame()
         frame.TotButton.frame:SetScript('OnEvent', function(self)
             self:set_settings()
         end)
-        
+
         frame.TotButton.frame:set_Event()
         
 
         frame:HookScript('OnShow', function(self)
             self.BossButton:set_Event()
             self.TotButton.frame:set_Event()
+            print(id,addName,'show')
         end)
         frame:HookScript('OnHide', function(self)
+            print(id,addName,'hide')
             self.BossButton:set_Event()
             self.TotButton.frame:set_Event()
         end)
