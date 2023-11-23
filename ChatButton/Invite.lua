@@ -474,9 +474,11 @@ local function set_Shift_Click_focurs()
         FocusFrameToT,
     }
     for i=1, MAX_BOSS_FRAMES do--boss
-        if _G['Boss'..i..'TargetFrame'] then
-            table.insert(tab, _G['Boss'..i..'TargetFrame'])
-            table.insert(tab, _G['Boss'..i..'TargetFrame'].PortraitFrame)--UnitFrame.lua
+        local frame= _G['Boss'..i..'TargetFrame']
+        if frame then
+            table.insert(tab, frame)
+            table.insert(tab, frame.BossButton)--UnitFrame.lua
+            table.insert(tab, frame.TotButton)
         end
     end
     for i=1, MAX_PARTY_MEMBERS do--队伍
