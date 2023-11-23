@@ -1408,11 +1408,11 @@ local function Init_BossFrame()
         frame.TotButton:SetScript('OnEnter', function(self)
             GameTooltip_SetDefaultAnchor(GameTooltip, self);
             e.tips:ClearLines()
-            if UnitExists(self.unit) then
-                e.tips:SetUnit(self.unit)
+            if UnitExists(self.targetUnit) then
+                e.tips:SetUnit(self.targetUnit)
             else
                 e.tips:AddDoubleLine(id, addName)
-                e.tips:AddDoubleLine(e.onlyChinese and '目标的目标' or SHOW_TARGET_OF_TARGET_TEXT, self.unit)
+                e.tips:AddDoubleLine(e.onlyChinese and '目标的目标' or SHOW_TARGET_OF_TARGET_TEXT, self.targetUnit)
             end
             e.tips:Show()
         end)
@@ -1420,7 +1420,8 @@ local function Init_BossFrame()
         frame.TotButton.targetUnit= frame.unit..'target'
 
         --目标的目标，信息
-        frame.TotButton.frame= CreateFrame('Frame')
+        frame.TotButton.frame= CreateFrame('Frame', nil, frame.TotButton)
+        frame.TotButton.frame:SetFrameLevel(frame.TotButton:GetFrameLevel()-1)
         frame.TotButton.frame:SetAllPoints(frame.TotButton)
         frame.TotButton.frame:Hide()
         frame.TotButton.frame.unit= frame.unit
@@ -1431,11 +1432,10 @@ local function Init_BossFrame()
         frame.TotButton.frame.Portrait:SetAllPoints(frame.TotButton.frame)
 
         --目标的目标，外框
-        frame.TotButton.frame.targetTexture= frame.TotButton.frame:CreateTexture(nil, 'BORDER')
-        frame.TotButton.frame.targetTexture:SetSize(42,42)
-        frame.TotButton.frame.targetTexture:SetPoint('CENTER')
-        frame.TotButton.frame.targetTexture:SetAtlas('UI-HUD-UnitFrame-TotemFrame-2x')
-        frame.TotButton.frame.targetTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+        frame.TotButton.frame.Border= frame.TotButton.frame:CreateTexture(nil, 'OVERLAY')
+        frame.TotButton.frame.Border:SetSize(44,44)
+        frame.TotButton.frame.Border:SetPoint('CENTER',2,-2)
+        frame.TotButton.frame.Border:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
 
         --目标的目标，生命条
         frame.TotButton.frame.healthBar= CreateFrame('StatusBar', nil, frame.TotButton.frame)
@@ -1463,16 +1463,17 @@ local function Init_BossFrame()
         end)
 
         function frame.TotButton.frame:set_settings()
-            local exists=UnitExists(self.unit)
+            local exists=UnitExists(self.targetUnit)
             if exists then
                 --图像
-                if UnitIsUnit(self.targetUnit, 'player') then--自已
-                    SetPortraitToTexture(self.Portrait, 'quest-important-available')
+                if not UnitIsUnit(self.targetUnit, 'player') then--自已
+                    self.Portrait:SetAtlas('quest-important-available')
                 else
                     local index = GetRaidTargetIndex(self.targetUnit)
                     if index and index>0 and index< 9 then
-                        SetRaidTargetIconTexture(self.Portrait, index)
+                        self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
                     else
+                        print(self.targetUnit)
                         SetPortraitTexture(self.Portrait, self.targetUnit)--别人
                     end
                 end
@@ -1484,10 +1485,12 @@ local function Init_BossFrame()
                 end
                 r,g,b= r or 1, g or 1, b or 1
                 
-                self.healthBar:SetStatusBarColor(r,g,b)
+               -- self.healthBar:SetStatusBarColor(r,g,b)
+                self.Border:SetVertexColor(r,g,b)
+                
             end
             self:SetShown(exists)
-            print(exists,self.targetUnit)
+           
         end
 
         function frame.TotButton.frame:set_Event()
@@ -1495,15 +1498,15 @@ local function Init_BossFrame()
                 self:UnregisterAllEvents()
             else
                 self:RegisterUnitEvent('UNIT_TARGET', self.unit)
-                self:set_settings()
+                self:RegisterEvent('RAID_TARGET_UPDATE')
             end
+            self:set_settings()
         end
 
         frame.TotButton.frame:SetScript('OnEvent', function(self)
             self:set_settings()
         end)
-
-        frame.TotButton.frame:set_settings()
+        
         frame.TotButton.frame:set_Event()
         
 
