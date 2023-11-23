@@ -870,7 +870,7 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
                 unitFrame.classFrame:SetSize(16,16)
                 unitFrame.classFrame.Portrait= unitFrame.classFrame:CreateTexture(nil, "BACKGROUND")
                 unitFrame.classFrame.Portrait:SetAllPoints(unitFrame.classFrame)
-                
+
 
                 if unitFrame==TargetFrame then
                     unitFrame.classFrame:SetPoint('RIGHT', unitFrame.TargetFrameContent.TargetFrameContentContextual.LeaderIcon, 'LEFT')
@@ -1352,7 +1352,7 @@ local function Init_BossFrame()
 
         frame.BossButton:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
         frame.BossButton:Raise()
-  
+
         frame.BossButton:SetAttribute('type', 'target')
         frame.BossButton:SetAttribute('unit', frame.unit)
         frame.BossButton:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -1434,7 +1434,7 @@ local function Init_BossFrame()
         frame.TotButton.frame.Portrait= frame.TotButton.frame:CreateTexture(nil, 'BACKGROUND')
         frame.TotButton.frame.Portrait:SetAllPoints(frame.TotButton.frame)
 
-        
+
 
         --目标的目标，外框
         frame.TotButton.frame.Border= frame.TotButton.frame:CreateTexture(nil, 'ARTWORK')
@@ -1506,9 +1506,9 @@ local function Init_BossFrame()
                 --self.healthBar:SetStatusBarColor(r,g,b)
                     --self.IsTargetTexture:SetShown(UnitIsUnit(self.targetUnit, 'target'))
                     self.Border:SetVertexColor(0,1,0)
-                
+
                     self.Border:SetVertexColor(r,g,b)
-                
+
                 self.healthLable:SetTextColor(r,g,b)
             end
             self:SetShown(exists)
