@@ -31,7 +31,6 @@ end
 
 local function set_Alpha_Color(self, notAlpha, notColor, value)
     if self then
-
         if not notColor and not Save.disabledColor and self:GetObjectType()=='Texture' then
             e.Set_Label_Texture_Color(self, {type='Texture'})
         end
