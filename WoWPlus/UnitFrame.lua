@@ -1333,13 +1333,14 @@ end
 --BossFrame
 --#########
 local function Init_BossFrame()
+
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
-
         frame.BossButton= e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})--CreateFrame('Frame', nil, frame, 'SecureActionButtonTemplate')
+
         frame.BossButton:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
         frame.BossButton:Raise()
-
+  
         frame.BossButton:SetAttribute('type', 'target')
         frame.BossButton:SetAttribute('unit', frame.unit)
         frame.BossButton:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -1431,22 +1432,30 @@ local function Init_BossFrame()
         frame.TotButton.frame.Portrait= frame.TotButton.frame:CreateTexture(nil, 'BACKGROUND')
         frame.TotButton.frame.Portrait:SetAllPoints(frame.TotButton.frame)
 
+        
+
         --目标的目标，外框
-        frame.TotButton.frame.Border= frame.TotButton.frame:CreateTexture(nil, 'OVERLAY')
+        frame.TotButton.frame.Border= frame.TotButton.frame:CreateTexture(nil, 'ARTWORK')
         frame.TotButton.frame.Border:SetSize(44,44)
         frame.TotButton.frame.Border:SetPoint('CENTER',2,-2)
         frame.TotButton.frame.Border:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
 
-        --目标的目标，生命条
+        --目标的目标， 是我的目标
+        --[[frame.TotButton.frame.IsTargetTexture=frame.TotButton.frame:CreateTexture(nil, 'OVERLAY')
+        frame.TotButton.frame.IsTargetTexture:SetSize(32,32)
+        frame.TotButton.frame.IsTargetTexture:SetPoint('CENTER')
+        frame.TotButton.frame.IsTargetTexture:SetAtlas('DK-Blood-Rune-CDFill')
+
+        目标的目标，生命条
         frame.TotButton.frame.healthBar= CreateFrame('StatusBar', nil, frame.TotButton.frame)
         frame.TotButton.frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         frame.TotButton.frame.healthBar:SetSize(44, 8)
         frame.TotButton.frame.healthBar:SetMinMaxValues(0,100)
-        frame.TotButton.frame.healthBar:SetPoint('TOP', frame.TotButton.frame, 'BOTTOM',4,2)
+        frame.TotButton.frame.healthBar:SetPoint('TOP', frame.TotButton.frame, 'BOTTOM',4,2)]]
 
         --目标的目标，百份比
-        frame.TotButton.frame.healthLable= e.Cstr(frame.TotButton.frame.healthBar,{color={r=1,g=1,b=1}, size=18})
-        frame.TotButton.frame.healthLable:SetPoint('BOTTOMRIGHT',2,0)
+        frame.TotButton.frame.healthLable= e.Cstr(frame.TotButton.frame,{color={r=1,g=1,b=1}, size=14})
+        frame.TotButton.frame.healthLable:SetPoint('BOTTOM')--, frame.TotButton.frame, 'RIGHT')
 
         frame.TotButton.frame:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= (self.elapsed or 0.3) +elapsed
@@ -1456,7 +1465,7 @@ local function Init_BossFrame()
                 value= (not value or value<=0) and 0 or value
                 if value and max and max>0 then
                     local per= value/max*100
-                    self.healthBar:SetValue(per)
+                    --self.healthBar:SetValue(per)
                     text= format('%0.f', per)
                 end
                 self.healthLable:SetText(text)
@@ -1467,15 +1476,19 @@ local function Init_BossFrame()
             local exists=UnitExists(self.targetUnit)
             if exists then
                 --图像
-                if UnitIsUnit(self.targetUnit, 'player') then--自已
+                if not UnitIsUnit(self.targetUnit, 'player') then--自已
                     self.Portrait:SetAtlas('quest-important-available')
+                elseif UnitIsUnit(self.targetUnit, 'target') then
+                    self.Portrait:SetAtlas('common-icon-checkmark')
                 else
                     local index = GetRaidTargetIndex(self.targetUnit)
                     if index and index>0 and index< 9 then
                         self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
                     else
                         SetPortraitTexture(self.Portrait, self.targetUnit)--别人
+                        
                     end
+                    SetPortraitTexture(self.Portrait, self.targetUnit)--别人
                 end
                 --颜色
                 local r,g,b
@@ -1485,8 +1498,12 @@ local function Init_BossFrame()
                 end
                 r,g,b= r or 1, g or 1, b or 1
 
-                self.healthBar:SetStatusBarColor(r,g,b)
-                self.Border:SetVertexColor(r,g,b)
+                --self.healthBar:SetStatusBarColor(r,g,b)
+                    --self.IsTargetTexture:SetShown(UnitIsUnit(self.targetUnit, 'target'))
+                    self.Border:SetVertexColor(0,1,0)
+                
+                    self.Border:SetVertexColor(r,g,b)
+                
                 self.healthLable:SetTextColor(r,g,b)
             end
             self:SetShown(exists)
@@ -1499,6 +1516,7 @@ local function Init_BossFrame()
             else
                 self:RegisterUnitEvent('UNIT_TARGET', self.unit)
                 self:RegisterEvent('RAID_TARGET_UPDATE')
+                self:RegisterEvent('PLAYER_TARGET_CHANGED')
             end
             C_Timer.After(0.3, function() self:set_settings() end)
         end
@@ -1520,6 +1538,22 @@ local function Init_BossFrame()
             self.TotButton.frame:set_Event()
         end)
     end
+    --设置位置
+    hooksecurefunc(Boss1TargetFrameSpellBar,'AdjustPosition', function(self)
+        for i=1, MAX_BOSS_FRAMES do
+            local frame= _G['Boss'..i..'TargetFrame']
+            if frame.TotButton then
+                frame.TotButton:ClearAllPoints()
+                if self.castBarOnSide or not self.smallSize  then
+                    --frame.TotButton:SetPoint('TOPLEFT', frame.BossButton, 'TOPRIGHT', 6,0)
+                    frame.TotButton:SetPoint('TOPLEFT', frame.TargetFrameContent.TargetFrameContentMain.ManaBar, 'BOTTOMLEFT')
+                else
+                    frame.TotButton:SetPoint('RIGHT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'LEFT',-8,0)
+                    
+                end
+            end
+        end
+    end)
 end
 
 

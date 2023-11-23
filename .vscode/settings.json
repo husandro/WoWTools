@@ -3671,7 +3671,9 @@
         "GetClassColorObj",
         "GetFactionColor",
         "FormatFraction",
-        "FormatPercentage"
+        "FormatPercentage",
+        "BossSpellBarMixin",
+        "Boss1TargetFrameSpellBar"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
