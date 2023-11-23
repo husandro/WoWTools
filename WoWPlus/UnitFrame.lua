@@ -1442,20 +1442,11 @@ local function Init_BossFrame()
         frame.TotButton.frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         frame.TotButton.frame.healthBar:SetSize(44, 8)
         frame.TotButton.frame.healthBar:SetMinMaxValues(0,100)
-        frame.TotButton.frame.healthBar:SetPoint('TOP', frame.TotButton.frame, 'BOTTOM',4,0)
---[[
-        frame.healthBar= CreateFrame('StatusBar', nil, frame)
-        frame.healthBar:SetSize(55, 8)
-        frame.healthBar:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT')
-        frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-        frame.healthBar:SetMinMaxValues(0,100)
-        frame.healthBar:SetFrameLevel(frame:GetFrameLevel()+7)
-        frame.healthBar.unit= unit..'target'
-]]
+        frame.TotButton.frame.healthBar:SetPoint('TOP', frame.TotButton.frame, 'BOTTOM',4,2)
 
         --目标的目标，百份比
-        frame.TotButton.frame.healthLable= e.Cstr(frame.TotButton.frame.healthBar,{color={r=1,g=1,b=1}})
-        frame.TotButton.frame.healthLable:SetPoint('RIGHT',2,0)
+        frame.TotButton.frame.healthLable= e.Cstr(frame.TotButton.frame.healthBar,{color={r=1,g=1,b=1}, size=18})
+        frame.TotButton.frame.healthLable:SetPoint('BOTTOMRIGHT',2,0)
 
         frame.TotButton.frame:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= (self.elapsed or 0.3) +elapsed
@@ -1476,7 +1467,7 @@ local function Init_BossFrame()
             local exists=UnitExists(self.targetUnit)
             if exists then
                 --图像
-                if not UnitIsUnit(self.targetUnit, 'player') then--自已
+                if UnitIsUnit(self.targetUnit, 'player') then--自已
                     self.Portrait:SetAtlas('quest-important-available')
                 else
                     local index = GetRaidTargetIndex(self.targetUnit)
@@ -1496,7 +1487,7 @@ local function Init_BossFrame()
 
                 self.healthBar:SetStatusBarColor(r,g,b)
                 self.Border:SetVertexColor(r,g,b)
-
+                self.healthLable:SetTextColor(r,g,b)
             end
             self:SetShown(exists)
 
