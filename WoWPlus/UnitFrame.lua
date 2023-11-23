@@ -1440,8 +1440,18 @@ local function Init_BossFrame()
         --目标的目标，生命条
         frame.TotButton.frame.healthBar= CreateFrame('StatusBar', nil, frame.TotButton.frame)
         frame.TotButton.frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-        frame.TotButton.frame.healthBar:SetSize(38, 8)
+        frame.TotButton.frame.healthBar:SetSize(44, 8)
         frame.TotButton.frame.healthBar:SetMinMaxValues(0,100)
+        frame.TotButton.frame.healthBar:SetPoint('TOP', frame.TotButton.frame, 'BOTTOM')
+--[[
+        frame.healthBar= CreateFrame('StatusBar', nil, frame)
+        frame.healthBar:SetSize(55, 8)
+        frame.healthBar:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT')
+        frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+        frame.healthBar:SetMinMaxValues(0,100)
+        frame.healthBar:SetFrameLevel(frame:GetFrameLevel()+7)
+        frame.healthBar.unit= unit..'target'
+]]
 
         --目标的目标，百份比
         frame.TotButton.frame.healthLable= e.Cstr(frame.TotButton.frame.healthBar,{color={r=1,g=1,b=1}})
@@ -1473,7 +1483,6 @@ local function Init_BossFrame()
                     if index and index>0 and index< 9 then
                         self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
                     else
-                        print(self.targetUnit)
                         SetPortraitTexture(self.Portrait, self.targetUnit)--别人
                     end
                 end
@@ -1485,7 +1494,7 @@ local function Init_BossFrame()
                 end
                 r,g,b= r or 1, g or 1, b or 1
                 
-               -- self.healthBar:SetStatusBarColor(r,g,b)
+                self.healthBar:SetStatusBarColor(r,g,b)
                 self.Border:SetVertexColor(r,g,b)
                 
             end
