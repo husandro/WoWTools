@@ -1483,7 +1483,7 @@ local function Init_BossFrame()
                 if BossTargetFrameContainer.isInEditMode then
                     SetPortraitTexture(self.Portrait, unit)
                     --frame.TargetFrameContent.TargetFrameContentMain.ManaBar:Show()
-                elseif not UnitIsUnit(unit, 'player') then--自已
+                elseif UnitIsUnit(unit, 'player') then--自已
                     self.Portrait:SetAtlas('quest-important-available')
                 elseif UnitIsUnit(unit, 'target') then
                     self.Portrait:SetAtlas('common-icon-checkmark')
