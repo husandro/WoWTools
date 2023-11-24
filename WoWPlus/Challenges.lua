@@ -1117,6 +1117,9 @@ local function set_Update()--Blizzard_ChallengesUI.lua
     end
 
     local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()--当前, KEY地图,ID
+    local keyStoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()--当前KEY，等级
+
+
     local isInBat= UnitAffectingCombat('player')
 
     for i=1, #self.maps do
@@ -1398,10 +1401,9 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 frame.currentKey= frame:CreateTexture(nil, 'OVERLAY', nil, self:GetFrameLevel()+1)
                 frame.currentKey:SetPoint('RIGHT', frame, 0, 8)
                 frame.currentKey:SetAtlas('common-icon-checkmark')
-                --frame.currentKey:SetVertexColor(1,0,0)
                 frame.currentKey:SetSize(22,22)
                 frame.currentKey:EnableMouse(true)
-                frame.currentKey:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                frame.currentKey:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) self2.label:SetAlpha(1) end)
                 frame.currentKey:SetScript('OnEnter', function(self2)
                     e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                     e.tips:ClearLines()
@@ -1411,11 +1413,16 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     end
                     e.tips:Show()
                     self2:SetAlpha(0.3)
+                    self2.label:SetAlpha(0.3)
                 end)
+                --当前KEY，等级
+                frame.currentKey.label=e.Cstr(frame)
+                frame.currentKey.label:SetPoint('BOTTOM', frame.currentKey,-1, 6)
             end
             if frame.currentKey then
                 frame.currentKey:SetScale(Save.insScale or 1)
                 frame.currentKey:SetShown(findKey)
+                frame.currentKey.label:SetText(keyStoneLevel or '')
             end
 
             --#####
