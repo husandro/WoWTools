@@ -2117,8 +2117,8 @@ local function Init()
                     local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
                     local base = isGliding and forwardSpeed or GetUnitSpeed("player") or 0
                     if base>0 then
-                        local movespeed = Round(base / BASE_MOVEMENT_SPEED * 100)
-                        self3.Text:SetFormattedText('%i',movespeed)
+                        --local movespeed = Round(base / BASE_MOVEMENT_SPEED * 100)
+                        self3.Text:SetFormattedText('%i',base / BASE_MOVEMENT_SPEED * 100)
                     else
                         self3.Text:SetText('')
                     end
