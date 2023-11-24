@@ -40,7 +40,7 @@ License: Public Domain
 -- @class file
 -- @name LibRangeCheck-2.0
 local MAJOR_VERSION = "LibRangeCheck-2.0"
-local MINOR_VERSION = 10000000000002 -- mistakes were made...
+local MINOR_VERSION = 10000000000003 -- mistakes were made...
 
 local lib, oldminor = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then
@@ -179,6 +179,7 @@ FriendSpells["WARLOCK"] = {
 HarmSpells["WARLOCK"] = {
   686, -- ["Shadow Bolt"], -- 40
   5019, -- ["Shoot"], -- 30
+  6789, -- ["Mortal Coil"], -- 20
 }
 
 -- Items [Special thanks to Maldivia for the nice list]
@@ -540,7 +541,7 @@ local function findMinRangeChecker(origMinRange, origRange, spellList)
     -- print("### checking minChecker: " .. tostring(name) .. ", idx: " .. tostring(spellIdx) .. ", " .. tostring(minRange) .. " - " ..  tostring(range) .. " for range " .. origMinRange .. " - " .. origRange)
     if range and spellIdx and origMinRange <= range and range <= origRange and minRange == 0 then
       -- print("### using minChecker: " .. tostring(name) .. ", " .. tostring(minRange) .. " - " ..  tostring(range) .. " for range " .. origMinRange .. " - " .. origRange)
-      return checkers_Spell[findSpellIdx]
+      return checkers_Spell[findSpellIdx(name)]
     end
   end
 end
@@ -552,7 +553,7 @@ local function getCheckerForSpellWithMinRange(spellIdx, minRange, range, spellLi
   end
   local minRangeChecker = findMinRangeChecker(minRange, range, spellList)
   if minRangeChecker then
-    checker = function()
+    checker = function(unit)
       if IsSpellInRange(spellIdx, BOOKTYPE_SPELL, unit) == 1 then
         return true
       elseif minRangeChecker(unit) then
