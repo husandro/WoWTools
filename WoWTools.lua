@@ -232,16 +232,16 @@ function e.MK(number, bit)
     if bit==0 then
         return math.modf(number)..text
     else
-        return number - (number % (0.1 ^ bit))..text--[[
+        --return number - (number % (0.1 ^ bit))..text
         local num, point= math.modf(number)
         if point==0 then
             return num..text
         else
-            return number - (number % (0.1 ^ bit))..text
+            --return number - (number % (0.1 ^ bit))..text
             point= point*(10^bit)
             point= math.modf(point)
             return num..(point>0 and '.'..point or '')..text
-        end]]
+        end
     end
 end
 
