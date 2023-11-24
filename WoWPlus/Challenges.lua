@@ -750,7 +750,7 @@ local function All_Player_Info()--所以角色信息
 
                 if info.Keystone.link then
                     local link= info.Keystone.link
-                    if e.onlyChinese and not LOCALE_zhCN then--取得中文，副本名称
+                    if e.onlyChinese then--取得中文，副本名称
                         local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
                         mapID= mapID and tonumber(mapID)
                         if mapID and name and SpellTabs[mapID] and SpellTabs[mapID].name then
@@ -942,7 +942,7 @@ local function set_All_Text()--所有记录
     for _, tab in pairs(newTab) do
         local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(tab.mapID)
         if name then
-            if e.onlyChinese and not LOCALE_zhCN then
+            if e.onlyChinese then
                 name= SpellTabs[tab.mapID] and SpellTabs[tab.mapID].name or name
             end
             weekText= weekText and weekText..'|n' or ''
