@@ -920,7 +920,7 @@ local function set_All_Text()--所有记录
 
             tabs[mapID].runScore= (tab.runScore and tab.runScore> tabs[mapID].runScore) and tab.runScore or tabs[mapID].runScore
 
-            table.insert(tabs[mapID].LV, tab.completed and '|cff00ff00'..tab.level..'|r' or '|cff828282'..tab.level..'|r')
+            table.insert(tabs[mapID].LV, {level=tab.level, text=tab.completed and '|cff00ff00'..tab.level..'|r' or '|cff828282'..tab.level..'|r'})
 
             if tab.completed then
                 completed= completed+1
@@ -937,6 +937,7 @@ local function set_All_Text()--所有记录
     end
     table.sort(newTab, function(a, b)  return a.runScore> b.runScore end)
 
+
     local weekText
     for _, tab in pairs(newTab) do
         local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(tab.mapID)
@@ -951,8 +952,9 @@ local function set_All_Text()--所有记录
             weekText= weekText..(texture and '|T'..texture..':0|t' or '')
                     ..(tab.c>0 and '|cff00ff00' or '|cff828282')..tab.c..'|r/'..tab.t
                     ..' '..score..' '..name--(col and col:WrapTextInColorCode(name) or name)
+            table.sort(tab.LV, function(a, b) return a.level> b.level end)
             for _,v2 in pairs(tab.LV) do
-                weekText= weekText..' '..v2
+                weekText= weekText..' '..v2.text
             end
         end
     end
