@@ -2127,7 +2127,7 @@ local function Init()
             end)
         end
         if self2.speedBar then
-            self2.speedBar:SetShown(not Save.disabledDragonridingSpeed)
+            self2.speedBar:SetAlpha(not Save.disabledDragonridingSpeed and 1 or 0)
         end
     end
     local tab= UIWidgetPowerBarContainerFrame.widgetFrames or {}
