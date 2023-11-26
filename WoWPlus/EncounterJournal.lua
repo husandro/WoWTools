@@ -661,6 +661,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     end
                     if button.KeyTexture then
                         button.KeyTexture:SetShown(false)
+                        button.KeyTexture.label:SetText('')
                     end
                 end
             end
@@ -793,7 +794,7 @@ local function Init_EncounterJournal()--冒险指南界面
                             self.label:SetAlpha(0.3)
                         end)
                         button.KeyTexture.label=e.Cstr(button)
-                        button.KeyTexture.label:SetPoint('TOP', button.KeyTexture)
+                        button.KeyTexture.label:SetPoint('TOP', button.KeyTexture, -2, 0)
                     end
                     button.KeyTexture:SetShown(true)
                     button.KeyTexture.label:SetText(keyStoneLevel or '')
