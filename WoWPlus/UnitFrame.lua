@@ -295,6 +295,19 @@ end
 --目标
 --####
 local function Init_TargetFrame()
+
+    --目标，生命条，颜色，材质
+    hooksecurefunc(TargetFrame, 'CheckClassification', function(frame)--外框，颜色
+        frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')    
+        local classFilename= UnitClassBase(frame.unit)
+        if classFilename then
+            local r,g,b= GetClassColor(classFilename)
+            r,g,b= r or 1, g or 1, b or 1
+            frame.TargetFrameContainer.FrameTexture:SetVertexColor(r, g, b)
+            frame.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r, g, b)
+        end
+    end)
+
     hooksecurefunc(TargetFrame,'CheckLevel', function(self)--目标, 等级, 颜色
         local levelText = self.TargetFrameContent.TargetFrameContentMain.LevelText
         if levelText and levelText:IsShown() and self.unit then
@@ -788,20 +801,17 @@ end
 
 
 
---PartyFrame.lua
-local function set_UpdatePartyFrames(unitFrame)
-    for memberFrame in unitFrame.PartyMemberFramePool:EnumerateActive() do
-        set_memberFrame(memberFrame)
-    end
-end
-
-
-
-
-
 local function Init_PartyFrame()--PartyFrame.lua
+    --PartyFrame.lua
+    local function set_UpdatePartyFrames(unitFrame)
+        for memberFrame in unitFrame.PartyMemberFramePool:EnumerateActive() do
+            set_memberFrame(memberFrame)
+        end
+    end
+
     set_UpdatePartyFrames(PartyFrame)--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
     hooksecurefunc(PartyFrame, 'UpdatePartyFrames', set_UpdatePartyFrames)
+
     --##############
     --隐藏, DPS 图标
     --##############
@@ -809,6 +819,18 @@ local function Init_PartyFrame()--PartyFrame.lua
         hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
             if UnitGroupRolesAssigned(self.unit)=='DAMAGER' then
                 self.PartyMemberOverlay.RoleIcon:SetShown(false)
+            end
+        end)
+    end
+
+    --###################
+    --隐藏, 队伍, DPS 图标
+    --###################
+    for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
+        hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
+            local icon = self.PartyMemberOverlay.RoleIcon
+            if icon and icon:IsShown() then
+                icon:SetAlpha(UnitGroupRolesAssigned(self.unit)== 'DAMAGER' and 0 or 1)
             end
         end)
     end
@@ -1177,32 +1199,7 @@ if e.Player.husandro then
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
 end
 ]]
-    --###################
-    --隐藏, 队伍, DPS 图标
-    --###################
-    for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
-        hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
-            local icon = self.PartyMemberOverlay.RoleIcon
-            if icon and icon:IsShown() then
-                icon:SetAlpha(UnitGroupRolesAssigned(self.unit)== 'DAMAGER' and 0 or 1)
-            end
-        end)
-    end
-
-
-    --################
-    --生命条，颜色，材质
-    --################
-    hooksecurefunc(TargetFrame, 'CheckClassification', function(frame)--外框，颜色
-        frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')    
-        local classFilename= UnitClassBase(frame.unit)
-        if classFilename then
-            local r,g,b= GetClassColor(classFilename)
-            r,g,b= r or 1, g or 1, b or 1
-            frame.TargetFrameContainer.FrameTexture:SetVertexColor(r, g, b)
-            frame.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r, g, b)
-        end
-    end)
+    
 end
 
 
