@@ -1108,25 +1108,6 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
         if unitFrame.healthbar then
             unitFrame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
             unitFrame.healthbar:SetStatusBarColor(r,g,b)--颜色
-
-            if not unitFrame.setHealthbarTexture and unitFrame.CheckClassification then
-                hooksecurefunc(unitFrame, 'CheckClassification', function(self3)--外框，颜色
-                    self3.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-                    local classFilename= UnitClassBase(self3.unit)
-                    if classFilename then
-                        local r2,g2,b2=GetClassColor(classFilename)
-                        if r2 and g2 and b2 and self3.TargetFrameContainer then
-                            if self3.TargetFrameContainer.FrameTexture then
-                                self3.TargetFrameContainer.FrameTexture:SetVertexColor(r2, g2, b2)
-                            end
-                            if self3.TargetFrameContainer.BossPortraitFrameTexture:IsShown() then
-                                self3.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r2, g2, b2)
-                            end
-                        end
-                    end
-                end)
-                unitFrame.setHealthbarTexture= true
-            end
         end
     end)
 --[[
@@ -1203,11 +1184,25 @@ end
         hooksecurefunc(memberFrame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
             local icon = self.PartyMemberOverlay.RoleIcon
             if icon and icon:IsShown() then
-                --local role = UnitGroupRolesAssigned(self.unit)
                 icon:SetAlpha(UnitGroupRolesAssigned(self.unit)== 'DAMAGER' and 0 or 1)
             end
         end)
     end
+
+
+    --################
+    --生命条，颜色，材质
+    --################
+    hooksecurefunc(TargetFrame, 'CheckClassification', function(frame)--外框，颜色
+        frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')    
+        local classFilename= UnitClassBase(frame.unit)
+        if classFilename then
+            local r,g,b= GetClassColor(classFilename)
+            r,g,b= r or 1, g or 1, b or 1
+            frame.TargetFrameContainer.FrameTexture:SetVertexColor(r, g, b)
+            frame.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r, g, b)
+        end
+    end)
 end
 
 

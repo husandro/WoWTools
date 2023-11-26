@@ -523,7 +523,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         self.du:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         self.du:EnableMouse(true)
         self.du:SetMinMaxValues(0, 100)
-        self.du:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+        self.du:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(self2. du and 1 or 0) end)
         self.du:SetScript('OnEnter', function(self2)
             if self2.du then
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -552,7 +552,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         self.du.du=du
         self.du.min= min
         self.du.max= max
-        self.du.texture:SetShown(du and true or false)
+        self.du:SetAlpha(du and 1 or 0)
     end
 end
 
