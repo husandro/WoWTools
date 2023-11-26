@@ -90,7 +90,7 @@ function func.Set_Init_Item(self, hide)--创建，设置，内容
         func.Set_PlayerModel(self)
         self.playerModel:SetShown(false)
     end
-    if hide then
+    if hide and self.textLeft then
         self.textLeft:SetText('')
         self.text2Left:SetText('')
         self.textRight:SetText('')
