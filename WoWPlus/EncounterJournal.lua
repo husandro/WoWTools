@@ -770,13 +770,14 @@ local function Init_EncounterJournal()--冒险指南界面
 
                 --当前, KEY地图,ID
                 local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()
+                local keyStoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()--当前KEY，等级
                 if currentChallengeMapID and button.mapChallengeModeID==currentChallengeMapID then
                     if not button.KeyTexture then
                         button.KeyTexture= button:CreateTexture(nil, 'OVERLAY')
                         button.KeyTexture:SetPoint('TOPLEFT', 2,0)
                         button.KeyTexture:SetSize(26,26)
                         button.KeyTexture:SetAtlas('common-icon-checkmark')
-                        button.KeyTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+                        button.KeyTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) self.label:SetAlpha(1) end)
                         button.KeyTexture:SetScript('OnEnter', function(self)
                             e.tips:SetOwner(self, "ANCHOR_LEFT")
                             e.tips:ClearLines()
@@ -789,11 +790,16 @@ local function Init_EncounterJournal()--冒险指南界面
                             end
                             e.tips:Show()
                             self:SetAlpha(0.3)
+                            self.label:SetAlpha(0.3)
                         end)
+                        button.KeyTexture.label=e.Cstr(button)
+                        button.KeyTexture.label:SetPoint('TOP', button.KeyTexture)
                     end
                     button.KeyTexture:SetShown(true)
+                    button.KeyTexture.label:SetText(keyStoneLevel or '')
                 elseif button.KeyTexture then
                     button.KeyTexture:SetShown(false)
+                    button.KeyTexture.label:SetText('')
                 end
             end
        end

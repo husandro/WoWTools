@@ -3677,7 +3677,9 @@
         "SearchBoxTemplate_OnTextChanged",
         "UIDropDownMenu_Initialize",
         "RANK_COLON",
-        "EnumUtil"
+        "EnumUtil",
+        "CLUB_FINDER_ANY_FLAG",
+        "PLAYER_V_PLAYER"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
