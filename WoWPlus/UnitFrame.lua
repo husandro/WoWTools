@@ -894,7 +894,7 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
                     local isPlayer= UnitExists(unit2) and UnitIsPlayer(unit2)
                     local find2=false
                     if isPlayer then
-                        if unit2=='player' then
+                        if UnitIsUnit(unit2, 'player') then
                             local texture= select(4, GetSpecializationInfo(GetSpecialization() or 0))
                             if texture then
                                 SetPortraitToTexture(self.Portrait, texture)
@@ -942,7 +942,7 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
             unitFrame.classFrame:set_Class(guid)
             unitFrame.classFrame.Texture:SetVertexColor(r, g, b)
 
-            if unit~='player' then
+            if not UnitIsUnit(unit, 'player') then
                 if not unitFrame.itemLevel then
                     unitFrame.itemLevel= e.Cstr(unitFrame.classFrame, {size=12})--装等
                     if unit=='target' or unit=='focus' then
