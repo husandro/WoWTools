@@ -372,6 +372,9 @@ end
 --小队
 --####
 local function set_memberFrame(memberFrame)
+    if not PartyFrame:ShouldShow() then
+        return
+    end
     local unit= memberFrame.unit or memberFrame:GetUnit()
     local exists= memberFrame:IsShown()
 
@@ -406,8 +409,8 @@ local function set_memberFrame(memberFrame)
         frame.healthBar:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT')
         frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         frame.healthBar:SetMinMaxValues(0,100)
-        frame.healthBar:SetFrameLevel(frame:GetFrameLevel()+7)
-        frame.healthBar.unit= unit..'target'
+        frame.healthBar:SetFrameLevel(frame:GetFrameLevel()+1)
+        --frame.healthBar.unit= unit..'target'
 
         frame.healthBar.Text= e.Cstr(frame.healthBar)
         frame.healthBar.Text:SetPoint('RIGHT')
@@ -421,10 +424,10 @@ local function set_memberFrame(memberFrame)
         frame.playerTargetTexture:SetPoint('CENTER')
         frame.playerTargetTexture:SetAtlas('DK-Blood-Rune-CDFill')
 
-        local texture= frame.healthBar:CreateTexture(nil, 'BACKGROUND')--队友，目标，生命条，外框
+        --[[local texture= frame.healthBar:CreateTexture(nil, 'BACKGROUND')--队友，目标，生命条，外框
         texture:SetAtlas('MainPet-HealthBarFrame')
         texture:SetAllPoints(frame.healthBar)
-        texture:SetVertexColor(1, 0, 0)
+        texture:SetVertexColor(1, 0, 0)]]
 
         frame:SetPoint('LEFT', memberFrame, 'RIGHT', -3, 4)
         frame:SetAttribute('type', 'target')
@@ -454,8 +457,6 @@ local function set_memberFrame(memberFrame)
             self.Portrait:SetShown(exists2)--队友，目标，图像
             self.Text:SetText(text or '')--队友，目标，职业
             self.healthBar:SetAlpha(exists2 and 1 or 0)
-            --self.healthBar:SetShown(exists2)--队友， 目标， 生命条
-            --self.healthBar.elapsed=1
             self.playerTargetTexture:SetShown(UnitIsUnit(self.unit, 'target'))
         end
         function frame:set_IsPlayerTarget()
@@ -487,18 +488,17 @@ local function set_memberFrame(memberFrame)
         frame.unit= unit..'target'
 
         --队友， 目标， 生命条
-        frame.healthBar:SetScript('OnUpdate', function(self, elapsed)
-            self.elapsed= (self.elapsed or 0.75) +elapsed
-            if self.elapsed>0.75 then
+        frame:SetScript('OnUpdate', function(self, elapsed)
+            self.elapsed= (self.elapsed or 0.5) +elapsed
+            if self.elapsed>0.5 then
                 self.elapsed=0
                 local cur= UnitHealth(self.unit) or 0
                 local max= UnitHealthMax(self.unit)
-                if max and max>0 and cur < max then
+                cur= cur<0 and 0 or cur
+                if max and max>0 then
                     local value= cur/max*100
-                    self:SetValue(value)
-                    self.Text:SetFormattedText('%i', value)
-                else
-                    self.Text:SetText('')
+                    self.healthBar:SetValue(value)
+                    self.healthBar.Text:SetFormattedText('%i', value)
                 end
             end
         end)
@@ -625,7 +625,7 @@ local function set_memberFrame(memberFrame)
 
         frame.texture= frame:CreateTexture()
         frame.texture:SetAllPoints(frame)
-        frame.texture:SetAtlas('UI-HUD-UnitFrame-Player-CombatIcon-2x')
+        frame.texture:SetAtlas('UI-HUD-UnitFrame-Player-CombatIcon')
         frame.texture:SetVertexColor(1, 0, 0)
         frame.texture:SetShown(false)
 
@@ -788,7 +788,7 @@ end
 
 
 
-
+--PartyFrame.lua
 local function set_UpdatePartyFrames(unitFrame)
     for memberFrame in unitFrame.PartyMemberFramePool:EnumerateActive() do
         set_memberFrame(memberFrame)
