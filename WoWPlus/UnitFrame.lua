@@ -959,7 +959,7 @@ local function Init_UnitFrame_Update()--职业, 图标， 颜色
             unitFrame.classFrame:SetShown(unitIsPlayer)
         end
 
-        if unitFrame==PlayerFrame and unit=='player' then
+        if unitFrame==PlayerFrame and UnitIsUnit(unit, 'player') then
             if not unitFrame.lootSpecFrame then-- and unitFrame~= PetFrame and unitFrame.PlayerFrameContainer then
                 local frameLevel= unitFrame.PlayerFrameContainer:GetFrameLevel()+1
                 frameLevel= frameLevel<0 and 0 or frameLevel
