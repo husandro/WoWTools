@@ -802,7 +802,6 @@ end
 
 
 local function Init_PartyFrame()--PartyFrame.lua
-    --PartyFrame.lua
     local function set_UpdatePartyFrames(unitFrame)
         for memberFrame in unitFrame.PartyMemberFramePool:EnumerateActive() do
             set_memberFrame(memberFrame)
