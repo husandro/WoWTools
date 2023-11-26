@@ -3673,7 +3673,11 @@
         "FormatFraction",
         "FormatPercentage",
         "BossSpellBarMixin",
-        "Boss1TargetFrameSpellBar"
+        "Boss1TargetFrameSpellBar",
+        "SearchBoxTemplate_OnTextChanged",
+        "UIDropDownMenu_Initialize",
+        "RANK_COLON",
+        "EnumUtil"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
