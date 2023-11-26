@@ -1419,7 +1419,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 end)
                 --当前KEY，等级
                 frame.currentKey.label=e.Cstr(frame)
-                frame.currentKey.label:SetPoint('TOP', frame.currentKey,-1,3)
+                frame.currentKey.label:SetPoint('TOP', frame.currentKey,-2,2)
             end
             if frame.currentKey then
                 frame.currentKey:SetScale(Save.insScale or 1)
