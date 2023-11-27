@@ -84,7 +84,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
 
     --移动，小队，号
     PlayerFrameGroupIndicatorText:ClearAllPoints()
-    PlayerFrameGroupIndicatorText:SetPoint('BOTTOM', playerFrameTargetContextual.LeaderIcon, 'TOP', 0, -4)
+    PlayerFrameGroupIndicatorText:SetPoint('TOPRIGHT', PlayerFrame, -35, -24)
     --处理,小队, 号码
     hooksecurefunc('PlayerFrame_UpdateGroupIndicator', function()
         if IsInRaid() then
@@ -111,7 +111,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
             local level = UnitLevel(PlayerFrame.unit);
             local effectiveLevel = UnitEffectiveLevel(PlayerFrame.unit);
             if (effectiveLevel == level) or effectiveLevel== MAX_PLAYER_LEVEL then
-              --  PlayerLevelText:SetText('')
+                PlayerLevelText:SetText('')
             else
                 PlayerLevelText:SetText(effectiveLevel)
                 e.Set_Label_Texture_Color(PlayerLevelText, {type='FontString'})--设置颜色                
@@ -198,9 +198,9 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         if self.tips then
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddLine(self.tips)
-            e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
+            e.tips:AddLine(' ')
+            e.tips:AddLine(self.tips)
             e.tips:Show()
             self:SetAlpha(0.3)
         end
@@ -253,6 +253,8 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         if self.tips then
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddLine(' ')
             e.tips:AddDoubleLine(self.tips, '|A:poi-torghast:0:0|a')
             e.tips:AddLine(' ')
             local tab={
@@ -264,7 +266,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
                 local text= e.GetDifficultyColor(nil, ID)
                 e.tips:AddLine((text==self.name and e.Icon.toRight2 or '')..text..(text==self.name and e.Icon.toLeft2 or ''))
             end
-            e.tips:AddDoubleLine(id, addName)
+            
             e.tips:Show()
             self:SetAlpha(0.3)
         end
@@ -286,6 +288,8 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         if self.tips then
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddLine(' ')
             e.tips:AddDoubleLine(self.tips, '|A:DungeonSkull:0:0|a')
             e.tips:AddLine(' ')
             local tab={
@@ -297,7 +301,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
                 local text= e.GetDifficultyColor(nil, ID)
                 e.tips:AddLine((text==self.name and e.Icon.toRight2 or '')..text..(text==self.name and e.Icon.toLeft2 or ''))
             end
-            e.tips:AddDoubleLine(id, addName)
+            
             e.tips:Show()
             self:SetAlpha(0.3)
         end
@@ -428,12 +432,12 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrame.warModeButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, e.GetEnabeleDisable(C_PvP.IsWarModeDesired())..e.Icon.left)
         if not C_PvP.CanToggleWarMode(false)  then
             e.tips:AddLine(e.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
         end
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
     PlayerFrame.warModeButton:RegisterEvent('PLAYER_ENTERING_WORLD')
