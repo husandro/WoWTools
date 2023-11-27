@@ -625,73 +625,16 @@ local function set_memberFrame(memberFrame)
     --#########
     --目标的目标
     --#########
-    local frame= memberFrame.potFrame
-    if not frame then
-        frame= e.Cbtn(memberFrame, {type=true, size={35,35}, icon='hide', pushe=true})
+    local btn= memberFrame.potFrame
+    if not btn then
+        btn= e.Cbtn(memberFrame, {type=true, size={35,35}, icon='hide', pushe=true})
+        btn:SetPoint('LEFT', memberFrame, 'RIGHT', -3, 4)
+        btn:SetAttribute('type', 'target')
+        btn:SetAttribute('unit', unit..'target')
 
-        frame.Portrait= frame:CreateTexture(nil, 'BACKGROUND')--队友，目标，图像
-        frame.Portrait:SetAllPoints(frame)
-
-        frame.healthBar= CreateFrame('StatusBar', nil, frame)
-        frame.healthBar:SetSize(55, 8)
-        frame.healthBar:SetPoint('TOPLEFT', frame, 'BOTTOMLEFT')
-        frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-        frame.healthBar:SetMinMaxValues(0,100)
-        frame.healthBar:SetFrameLevel(frame:GetFrameLevel()+1)
-        --frame.healthBar.unit= unit..'target'
-
-        frame.healthBar.Text= e.Cstr(frame.healthBar)
-        frame.healthBar.Text:SetPoint('RIGHT')
-        frame.healthBar.Text:SetTextColor(1,1,1)
-
-        frame.Text= e.Cstr(frame, {size=14})--队友，目标，职业
-        frame.Text:SetPoint('BOTTOMRIGHT',3,-2)
-
-        frame.playerTargetTexture= frame:CreateTexture(nil, 'BORDER')
-        frame.playerTargetTexture:SetSize(52,52)
-        frame.playerTargetTexture:SetPoint('CENTER')
-        frame.playerTargetTexture:SetAtlas('DK-Blood-Rune-CDFill')
-
-        --[[local texture= frame.healthBar:CreateTexture(nil, 'BACKGROUND')--队友，目标，生命条，外框
-        texture:SetAtlas('MainPet-HealthBarFrame')
-        texture:SetAllPoints(frame.healthBar)
-        texture:SetVertexColor(1, 0, 0)]]
-
-        frame:SetPoint('LEFT', memberFrame, 'RIGHT', -3, 4)
-        frame:SetAttribute('type', 'target')
-        frame:SetAttribute('unit', frame.healthBar.unit)
-
-        function frame:set_Party_Target_Changed()
-            local text
-            local exists2= UnitExists(self.unit)
-            if exists2 then
-                if UnitIsUnit(self.unit, 'player') then--我
-                    self.Portrait:SetAtlas('auctionhouse-icon-favorite')
-                elseif UnitIsDeadOrGhost(self.unit) then--死亡
-                    self.Portrait:SetAtlas('xmarksthespot')
-                else
-                    local index = GetRaidTargetIndex(self.unit)
-                    if index and index>0 and index< 9 then--标记
-                        self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
-                    else
-                        SetPortraitTexture(self.Portrait, self.unit, true)--图像
-                    end
-                end
-                text= UnitIsPlayer(self.unit) and e.Class(self.unit)
-                local r2, g2, b2= GetClassColor(UnitClassBase(self.unit))
-                self.healthBar:SetStatusBarColor(r2 or 1, g2 or 1, b2 or 1, 1)
-                --self.playerTargetTexture:SetVertexColor(r2 or 1, g2 or 1, b2 or 1, 1)
-            end
-            self.Portrait:SetShown(exists2)--队友，目标，图像
-            self.Text:SetText(text or '')--队友，目标，职业
-            self.healthBar:SetAlpha(exists2 and 1 or 0)
-            self.playerTargetTexture:SetShown(UnitIsUnit(self.unit, 'target'))
-        end
-        function frame:set_IsPlayerTarget()
-            self.playerTargetTexture:SetShown(UnitIsUnit(self.unit, 'target'))
-        end
-        frame:SetScript('OnLeave', function() e.tips:Hide() end)
-        frame:SetScript('OnEnter', function(self)
+                
+        btn:SetScript('OnLeave', function() e.tips:Hide() end)
+        btn:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
             if UnitExists(self.unit) then
@@ -703,20 +646,83 @@ local function set_memberFrame(memberFrame)
             end
             e.tips:Show()
         end)
-        frame:SetScript('OnEvent', function(self, event)
-            if event=='PLAYER_TARGET_CHANGED' then
-                self:set_IsPlayerTarget()
-            else
-                if event=='UNIT_TARGET' then
-                    self:set_IsPlayerTarget()
+        
+
+        btn.frame=CreateFrame('Frame', nil, btn)
+        btn.frame:SetFrameLevel(btn.frame:GetFrameLevel()-1)
+        btn.frame:SetAllPoints(btn)
+        btn.frame:Hide()
+        btn.frame.unit= unit..'target'
+
+        btn.frame.isPlayerTargetTexture= btn.frame:CreateTexture(nil, 'BORDER')
+        btn.frame.isPlayerTargetTexture:SetSize(52,52)
+        btn.frame.isPlayerTargetTexture:SetPoint('CENTER',-1,0)
+        btn.frame.isPlayerTargetTexture:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
+        btn.frame.isPlayerTargetTexture:SetVertexColor(1,0,0)
+
+        
+
+        btn.frame.Portrait= btn.frame:CreateTexture(nil, 'BACKGROUND')--队友，目标，图像
+        btn.frame.Portrait:SetAllPoints(btn.frame)
+
+        --[[btn.frame.healthBar= CreateFrame('StatusBar', nil, btn)
+        btn.frame.healthBar:SetSize(55, 8)
+        btn.frame.healthBar:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
+        btn.frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+        btn.frame.healthBar:SetMinMaxValues(0,100)
+        btn.frame.healthBar:SetFrameLevel(btn.frame:GetFrameLevel()+1)]]
+        
+        btn.frame.healthLable= e.Cstr(btn.frame)
+        btn.frame.healthLable:SetPoint('BOTTOMRIGHT')
+        btn.frame.healthLable:SetTextColor(1,1,1)
+
+        btn.frame.class= btn.frame:CreateTexture(nil, "ARTWORK")-- e.Cstr(btn.frame, {size=14})--队友，目标，职业
+        btn.frame.class:SetSize(14,14)
+        btn.frame.class:SetPoint('BOTTOMRIGHT',3,-2)
+
+       
+
+        --[[local texture= frame.healthBar:CreateTexture(nil, 'BACKGROUND')--队友，目标，生命条，外框
+        texture:SetAtlas('MainPet-HealthBarFrame')
+        texture:SetAllPoints(frame.healthBar)
+        texture:SetVertexColor(1, 0, 0)]]
+
+
+        function btn.frame:set_settings()
+            local exists2= UnitExists(self.unit)
+            local unit2= exists2 and self.unit or (EditModeManagerFrame:IsEditModeActive() and 'player')
+            local atlas
+            if unit2 then
+                if UnitIsUnit(unit2, 'player') then--我
+                    self.Portrait:SetAtlas('auctionhouse-icon-favorite')
+                elseif UnitIsDeadOrGhost(unit2) then--死亡
+                    self.Portrait:SetAtlas('xmarksthespot')
+                else
+                    local index = GetRaidTargetIndex(unit2)
+                    if index and index>0 and index< 9 then--标记
+                        self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+                    else
+                        SetPortraitTexture(self.Portrait, self.unit, true)--图像
+                    end
                 end
-                self:set_Party_Target_Changed()
+                
+                if UnitIsPlayer(unit2) then
+                    atlas= e.Class(unit2, nil, true)
+                    self.class:SetAtlas(atlas)
+                end
+                
+                local r2, g2, b2= GetClassColor(UnitClassBase(unit2))
+                self.healthLable:SetTextColor(r2 or 1, g2 or 1, b2 or 1)
             end
-        end)
-        frame.unit= unit..'target'
+            self.class:SetShown(atlas and true or false)
+            self.isPlayerTargetTexture:SetShown(exists2 and UnitIsUnit(self.unit, 'target'))
+            self:SetShown(exists2)
+        end
+        btn.frame:SetScript('OnEvent', btn.frame.set_settings)
+        
 
         --队友， 目标， 生命条
-        frame:SetScript('OnUpdate', function(self, elapsed)
+        btn.frame:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= (self.elapsed or 0.5) +elapsed
             if self.elapsed>0.5 then
                 self.elapsed=0
@@ -725,29 +731,29 @@ local function set_memberFrame(memberFrame)
                 cur= cur<0 and 0 or cur
                 if max and max>0 then
                     local value= cur/max*100
-                    self.healthBar:SetValue(value)
-                    self.healthBar.Text:SetFormattedText('%i', value)
+                    --self.healthBar:SetValue(value)
+                    self.healthLable:SetFormattedText('%i', value)
                 end
             end
         end)
 
-        memberFrame.potFrame= frame
+        memberFrame.potFrame= btn
     end
 
-    frame:UnregisterAllEvents()
+    btn.frame:UnregisterAllEvents()
     if exists then
-        frame:RegisterEvent('RAID_TARGET_UPDATE')
-        frame:RegisterUnitEvent('UNIT_TARGET', unit)
-        frame:RegisterUnitEvent('UNIT_FLAGS', unit..'target')
-        frame:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit..'target')
-        frame:RegisterEvent('PLAYER_TARGET_CHANGED')
+        btn.frame:RegisterEvent('RAID_TARGET_UPDATE')
+        btn.frame:RegisterUnitEvent('UNIT_TARGET', unit)
+        btn.frame:RegisterUnitEvent('UNIT_FLAGS', unit..'target')
+        btn.frame:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit..'target')
+        btn.frame:RegisterEvent('PLAYER_TARGET_CHANGED')
     end
-    frame:set_Party_Target_Changed()
-    frame:set_IsPlayerTarget()
+    btn.frame:set_settings()
+
     --#########
     --队友，施法
     --#########
-    frame= memberFrame.castFrame
+    local frame= memberFrame.castFrame
     if not frame then
         frame= CreateFrame("Frame", nil, memberFrame)
         frame:SetPoint('BOTTOMLEFT', memberFrame.potFrame, 'BOTTOMRIGHT')
