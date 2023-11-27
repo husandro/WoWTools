@@ -47,8 +47,8 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     playerFrameTargetContextual.assisterButton:SetPoint(playerFrameTargetContextual.LeaderIcon:GetPoint())
     playerFrameTargetContextual.assisterButton:Hide()
     playerFrameTargetContextual.assisterButton:SetScript('OnLeave', function() e.tips:Hide() end)
-    playerFrameTargetContextual.assisterButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+    function playerFrameTargetContextual.assisterButton:set_tooltips()
+        e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
@@ -56,10 +56,12 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(' ', e.GetEnabeleDisable(IsEveryoneAssistant()))
         e.tips:Show()
-    end)
-    playerFrameTargetContextual.assisterButton:SetScript('OnClick', function()
+    end
+    playerFrameTargetContextual.assisterButton:SetScript('OnEnter', playerFrameTargetContextual.assisterButton.set_tooltips)
+    playerFrameTargetContextual.assisterButton:SetScript('OnClick', function(self)
         SetEveryoneIsAssistant(not IsEveryoneAssistant())
         C_Timer.After(0.7, function()
+            self:set_tooltips()
             print(id, addName, e.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, e.GetEnabeleDisable(IsEveryoneAssistant()))
         end)
     end)
@@ -119,32 +121,8 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         end
     end)
 
-    --施法条
-    PlayerCastingBarFrame:HookScript('OnShow', function(self)--图标
-        self.Icon:SetShown(true)
-    end)
-    PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color=true, justifyH='RIGHT'})
-    PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
-    PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
-    PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
-        self.elapsed= (self.elapsed or 0.1) + elapsed
-        if self.elapsed>=0.1 and self.value and self.maxValue then
-            self.elapsed=0
-            local value= self.channeling and self.value or (self.maxValue-self.value)
-            if value<=0 then
-                self.castingText:SetText(0)
-            elseif value>=3 then
-                self.castingText:SetFormattedText('%i', value)
-            else
-                self.castingText:SetFormattedText('%.01f', value)
-            end
-        end
-    end)
-    e.Set_Label_Texture_Color(PlayerCastingBarFrame.Text, {type='FontString'})--设置颜色
-
-
-
-    if PlayerHitIndicator then--玩家, 治疗，爆击，数字
+    --玩家, 治疗，爆击，数字
+    if PlayerHitIndicator then
         e.Set_Label_Texture_Color(PlayerHitIndicator, {type='FontString'})--设置颜色
         PlayerHitIndicator:ClearAllPoints()
         PlayerHitIndicator:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT')
@@ -155,19 +133,16 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         PetHitIndicator:SetPoint('TOPLEFT', PetPortrait or PetHitIndicator:GetParent(), 'BOTTOMLEFT')
     end
 
-    if PlayerFrame.PlayerFrameContainer and PlayerFrame.PlayerFrameContainer.FrameTexture then
-        e.Set_Label_Texture_Color(PlayerFrame.PlayerFrameContainer.FrameTexture, {type='Texture'})--设置颜色, 外框
-    end
-
-    if playerFrameTargetContextual.PlayerRestLoop.RestTexture then
-        playerFrameTargetContextual.PlayerRestLoop.RestTexture:ClearAllPoints()
-        playerFrameTargetContextual.PlayerRestLoop.RestTexture:SetPoint('CENTER', PlayerFrame.PlayerFrameContainer.PlayerPortrait)
-    end
-
-
+    --外框
+    e.Set_Label_Texture_Color(PlayerFrame.PlayerFrameContainer.FrameTexture, {type='Texture'})--设置颜色
 
     --移动zzZZ, 睡着了
-    playerFrameTargetContextual.PlayerRestLoop:SetPoint('TOPLEFT', 0, 24)
+    playerFrameTargetContextual.PlayerRestLoop.RestTexture:SetPoint('TOPRIGHT', PlayerFrame.portrait,10, 36)
+
+
+
+
+
 
 
 
@@ -196,7 +171,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrame.lootFrame:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
     PlayerFrame.lootFrame:SetScript('OnEnter', function(self)
         if self.tips then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
             e.tips:AddLine(' ')
@@ -251,7 +226,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrame.instanceFrame.raid:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
     PlayerFrame.instanceFrame.raid:SetScript('OnEnter', function(self)
         if self.tips then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
             e.tips:AddLine(' ')
@@ -266,7 +241,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
                 local text= e.GetDifficultyColor(nil, ID)
                 e.tips:AddLine((text==self.name and e.Icon.toRight2 or '')..text..(text==self.name and e.Icon.toLeft2 or ''))
             end
-            
+
             e.tips:Show()
             self:SetAlpha(0.3)
         end
@@ -286,7 +261,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrame.instanceFrame.dungeon:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
     PlayerFrame.instanceFrame.dungeon:SetScript('OnEnter', function(self)
         if self.tips then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
             e.tips:AddLine(' ')
@@ -301,7 +276,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
                 local text= e.GetDifficultyColor(nil, ID)
                 e.tips:AddLine((text==self.name and e.Icon.toRight2 or '')..text..(text==self.name and e.Icon.toLeft2 or ''))
             end
-            
+
             e.tips:Show()
             self:SetAlpha(0.3)
         end
@@ -427,10 +402,13 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     --设置, 战争模式
     PlayerFrame.warModeButton= e.Cbtn(PlayerFrame, {size={20,20}, icon='hide', pushe=true})
     PlayerFrame.warModeButton:SetPoint('LEFT', PlayerFrame, 10, 12)
-    PlayerFrame.warModeButton:SetScript('OnClick',  C_PvP.ToggleWarMode)
+    PlayerFrame.warModeButton:SetScript('OnClick',  function(self)
+        C_PvP.ToggleWarMode()
+        C_Timer.After(1, function() self:set_tooltips() end)
+    end)
     PlayerFrame.warModeButton:SetScript('OnLeave', function() e.tips:Hide() end)
-    PlayerFrame.warModeButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    function PlayerFrame.warModeButton:set_tooltips()
+        e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
@@ -439,7 +417,8 @@ local function Init_PlayerFrame()--PlayerFrame.lua
             e.tips:AddLine(e.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
         end
         e.tips:Show()
-    end)
+    end
+    PlayerFrame.warModeButton:SetScript('OnEnter', PlayerFrame.warModeButton.set_tooltips)
     PlayerFrame.warModeButton:RegisterEvent('PLAYER_ENTERING_WORLD')
     PlayerFrame.warModeButton:RegisterEvent('PLAYER_FLAGS_CHANGED')
     PlayerFrame.warModeButton:RegisterEvent('PLAYER_UPDATE_RESTING')
@@ -1650,6 +1629,29 @@ local function Init()
         end
     end)
 
+    --施法条
+    --#####
+    PlayerCastingBarFrame:HookScript('OnShow', function(self)--图标
+        self.Icon:SetShown(true)
+    end)
+    PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color=true, justifyH='RIGHT'})
+    PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
+    PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
+    PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
+        self.elapsed= (self.elapsed or 0.1) + elapsed
+        if self.elapsed>=0.1 and self.value and self.maxValue then
+            self.elapsed=0
+            local value= self.channeling and self.value or (self.maxValue-self.value)
+            if value<=0 then
+                self.castingText:SetText(0)
+            elseif value>=3 then
+                self.castingText:SetFormattedText('%i', value)
+            else
+                self.castingText:SetFormattedText('%.01f', value)
+            end
+        end
+    end)
+    e.Set_Label_Texture_Color(PlayerCastingBarFrame.Text, {type='FontString'})--设置颜色
 end
 
 
