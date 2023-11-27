@@ -37,8 +37,29 @@ end
 --玩家
 --####
 local function Init_PlayerFrame()--PlayerFrame.lua
+    --移动，小队，号
+    PlayerFrameGroupIndicatorText:ClearAllPoints()
+    PlayerFrameGroupIndicatorText:SetPoint('BOTTOM', PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon, 'TOP', 0, 2)
+    --处理,小队, 号码
+    hooksecurefunc('PlayerFrame_UpdateGroupIndicator', function()
+        if IsInRaid() then
+            local text= PlayerFrameGroupIndicatorText:GetText()
+            local num= text and text:match('(%d)')
+            if num then
+                PlayerFrameGroupIndicatorText:SetFormattedText('|A:services-number-%s:22:22|a', num)
+            end
+        end
+    end)
+    PlayerFrameGroupIndicatorLeft:SetTexture(0)
+    PlayerFrameGroupIndicatorLeft:SetShown(false)
+    PlayerFrameGroupIndicatorMiddle:SetTexture(0)
+    PlayerFrameGroupIndicatorMiddle:SetShown(false)
+    PlayerFrameGroupIndicatorRight:SetTexture(0)
+    PlayerFrameGroupIndicatorRight:SetShown(false)
+
     --移动zzZZ, 睡着了
     PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestLoop.RestTexture:SetPoint('TOPLEFT', 0, 24)
+
     --等级，颜色
     hooksecurefunc('PlayerFrame_UpdateLevel', function()
         if (UnitExists("player")) then
@@ -52,11 +73,11 @@ local function Init_PlayerFrame()--PlayerFrame.lua
             end
         end
     end)
+
     --施法条
     PlayerCastingBarFrame:HookScript('OnShow', function(self)--图标
         self.Icon:SetShown(true)
     end)
-
     PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color=true, justifyH='RIGHT'})
     PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
     PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
@@ -76,21 +97,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     end)
     e.Set_Label_Texture_Color(PlayerCastingBarFrame.Text, {type='FontString'})--设置颜色
 
-    hooksecurefunc('PlayerFrame_UpdateGroupIndicator', function()--处理,小队, 号码
-        if IsInRaid() and PlayerFrameGroupIndicatorText then
-            local text= PlayerFrameGroupIndicatorText:GetText()
-            local num= text and text:match('(%d)')
-            if num then
-                PlayerFrameGroupIndicatorText:SetText('|A:'..e.Icon.number..num..':18:18|a')
-            end
-        end
-    end)
-    PlayerFrameGroupIndicatorLeft:SetTexture(0)
-    PlayerFrameGroupIndicatorLeft:SetShown(false)
-    PlayerFrameGroupIndicatorMiddle:SetTexture(0)
-    PlayerFrameGroupIndicatorMiddle:SetShown(false)
-    PlayerFrameGroupIndicatorRight:SetTexture(0)
-    PlayerFrameGroupIndicatorRight:SetShown(false)
+    
 
     if PlayerHitIndicator then--玩家, 治疗，爆击，数字
         e.Set_Label_Texture_Color(PlayerHitIndicator, {type='FontString'})--设置颜色
@@ -311,22 +318,20 @@ local function Init_PlayerFrame()--PlayerFrame.lua
 
 
 
-    --移动，小队，号
-    if PlayerFrameGroupIndicatorText then
-        PlayerFrameGroupIndicatorText:ClearAllPoints()
-        PlayerFrameGroupIndicatorText:SetPoint('LEFT', PlayerFrame.keystoneText, 'RIGHT',12,0)
-    end
+    
+    
 
 
 
 
 
     --挑战，数据
+    --#########
     PlayerFrame.keystoneFrame= CreateFrame("Frame", nil, PlayerFrame)
     PlayerFrame.keystoneFrame:SetSize(1,1)
     PlayerFrame.keystoneFrame:SetPoint('LEFT', PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon, 'RIGHT')
     PlayerFrame.keystoneFrame.Text= e.Cstr(PlayerFrame, {color=true})
-    PlayerFrame.keystoneFrame.Text:SetPoint('LEFT')
+    PlayerFrame.keystoneFrame.Text:SetPoint('LEFT', PlayerFrame.keystoneFrame)
 
     function PlayerFrame.keystoneFrame:set_settings()
         if IsInInstance() then
@@ -352,6 +357,9 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrame.keystoneFrame:RegisterEvent('WEEKLY_REWARDS_UPDATE')--地下城挑战
     PlayerFrame.keystoneFrame:SetScript('OnEvent', PlayerFrame.keystoneFrame.set_settings)
 
+
+
+
     --移动，缩小，开启战争模式时，PVP图标
     hooksecurefunc('PlayerFrame_UpdatePvPStatus', function(self)--开启战争模式时，PVP图标
         local icon= PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PVPIcon
@@ -363,7 +371,8 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     end)
 
     --设置, 战争模式
-    PlayerFrame.warModeButton= e.Cbtn(PlayerFrame, {size={20,20}, icon='hide'})
+    PlayerFrame.warModeButton= e.Cbtn(PlayerFrame, {size={20,20}, icon='hide', pushe=true})
+    PlayerFrame.warModeButton:SetPoint('LEFT', PlayerFrame, 10, 12)
     PlayerFrame.warModeButton:SetScript('OnClick',  C_PvP.ToggleWarMode)
     PlayerFrame.warModeButton:SetScript('OnLeave', function() e.tips:Hide() end)
     PlayerFrame.warModeButton:SetScript('OnEnter', function(self)
@@ -388,6 +397,9 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         self:SetShown(isCan)
     end
     PlayerFrame.warModeButton:SetScript('OnEvent', PlayerFrame.warModeButton.set_settings)
+
+
+    
 end
 
 
