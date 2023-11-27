@@ -153,7 +153,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrame.lootButton= e.Cbtn(PlayerFrame, {size={14,14}, icon='hide', pushe=true})
     PlayerFrame.lootButton:SetPoint('TOPLEFT', PlayerFrame.portrait, 'TOPRIGHT',-32,16)
     PlayerFrame.lootButton:SetFrameLevel(frameLevel)
-    
+
 
     local portrait= PlayerFrame.lootButton:CreateTexture(nil, 'ARTWORK', nil, 7)--外框
     portrait:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
@@ -210,16 +210,17 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrame.lootButton:RegisterUnitEvent('UNIT_ENTERED_VEHICLE','player')
     PlayerFrame.lootButton:RegisterUnitEvent('UNIT_EXITED_VEHICLE','player')
     PlayerFrame.lootButton:SetScript('OnEvent', PlayerFrame.lootButton.set_shown)
-    
+
     PlayerFrame.lootButton:SetScript('OnClick', function()
         SetLootSpecialization(0)
         local currentSpec = GetSpecialization()
         local specID= currentSpec and GetSpecializationInfo(currentSpec)
         local name, _, texture= select(2, GetSpecializationInfoByID(specID or 0))
         print(id, addName,  e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, texture and '|T'..texture..':0|t' or '', name)
-            
-        
     end)
+
+
+    
 
     --Riad 副本, 地下城，指示
     --######################
@@ -242,6 +243,8 @@ local function Init_PlayerFrame()--PlayerFrame.lua
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
             e.tips:AddLine(' ')
+            local dungeonID= GetRaidDifficultyID()
+            local text=e.GetDifficultyColor(nil, dungeonID)
             e.tips:AddDoubleLine(self.tips, '|A:poi-torghast:0:0|a')
             e.tips:AddLine(' ')
             local tab={
@@ -250,7 +253,8 @@ local function Init_PlayerFrame()--PlayerFrame.lua
                 DifficultyUtil.ID.DungeonMythic
             }
             for _, ID in pairs(tab) do
-                local text= e.GetDifficultyColor(nil, ID)
+                text= e.GetDifficultyColor(nil, ID)
+                text= ID==dungeonID and e.Icon.toRight2..text..e.Icon.toLeft2 or text
                 e.tips:AddLine((text==self.name and e.Icon.toRight2 or '')..text..(text==self.name and e.Icon.toLeft2 or ''))
             end
 
@@ -276,13 +280,10 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-
         local dungeonID= GetDungeonDifficultyID()
         local text=e.GetDifficultyColor(nil, dungeonID)
-
         e.tips:AddDoubleLine((e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY), '|A:DungeonSkull:0:0|a'..text)
         e.tips:AddLine(' ')
-        
         local tab={
             DifficultyUtil.ID.DungeonNormal,
             DifficultyUtil.ID.DungeonHeroic,
@@ -335,6 +336,8 @@ local function Init_PlayerFrame()--PlayerFrame.lua
                 self.raid.text:SetText((size3 and not displayMythic3) and size3 or '')
                 self.raid.text:SetTextColor(color3.r, color3.g, color3.b)
                 findRiad=true
+            else
+                self.raid.text:SetText('')
             end
 
             if name2  then
