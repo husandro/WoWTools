@@ -898,7 +898,6 @@ function e.Get_Weekly_Rewards_Activities(settings)
                 end)
                 function label:Get_ItemLink()
                     local link
-                    print(self.itemDBID)
                     if self.itemDBID then
                         link= C_WeeklyRewards.GetItemHyperlink(self.itemDBID)
                     elseif self.id then
