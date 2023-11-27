@@ -137,7 +137,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     e.Set_Label_Texture_Color(PlayerFrame.PlayerFrameContainer.FrameTexture, {type='Texture'})--设置颜色
 
     --移动zzZZ, 睡着了
-    playerFrameTargetContextual.PlayerRestLoop.RestTexture:SetPoint('TOPRIGHT', PlayerFrame.portrait,10, 36)
+    playerFrameTargetContextual.PlayerRestLoop.RestTexture:SetPoint('TOPRIGHT', PlayerFrame.portrait, 14, 38)
 
 
 
@@ -150,38 +150,43 @@ local function Init_PlayerFrame()--PlayerFrame.lua
 
     --拾取专精
     --#######
-    PlayerFrame.lootFrame= CreateFrame("Frame", nil, PlayerFrame)
-    PlayerFrame.lootFrame:SetPoint('TOPLEFT', PlayerFrame.portrait, 'TOPRIGHT',-32,8)
-    PlayerFrame.lootFrame:SetSize(14,14)
-    PlayerFrame.lootFrame:SetFrameLevel(frameLevel)
-    PlayerFrame.lootFrame.texture=PlayerFrame.lootFrame:CreateTexture(nil, 'BORDER')
-    PlayerFrame.lootFrame.texture:SetAllPoints(PlayerFrame.lootFrame)
+    PlayerFrame.lootButton= e.Cbtn(PlayerFrame, {size={14,14}, icon='hide', pushe=true})
+    PlayerFrame.lootButton:SetPoint('TOPLEFT', PlayerFrame.portrait, 'TOPRIGHT',-32,16)
+    PlayerFrame.lootButton:SetFrameLevel(frameLevel)
+    
 
-    local portrait= PlayerFrame.lootFrame:CreateTexture(nil, 'ARTWORK', nil, 7)--外框
-    portrait:SetAtlas('DK-Base-Rune-CDFill')
-    portrait:SetPoint('CENTER', PlayerFrame.lootFrame)
-    portrait:SetSize(20,20)
+    local portrait= PlayerFrame.lootButton:CreateTexture(nil, 'ARTWORK', nil, 7)--外框
+    portrait:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
+    portrait:SetPoint('CENTER',1,-1)
+    portrait:SetSize(21,21)
     e.Set_Label_Texture_Color(portrait, {type='Texture'})--设置颜色
 
-    local lootTipsTexture= PlayerFrame.lootFrame:CreateTexture(nil, "OVERLAY")
+    local lootTipsTexture= PlayerFrame.lootButton:CreateTexture(nil, "OVERLAY")
     lootTipsTexture:SetSize(10,10)
     lootTipsTexture:SetPoint('TOP',0,8)
     lootTipsTexture:SetAtlas('Banker')
 
-    PlayerFrame.lootFrame:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
-    PlayerFrame.lootFrame:SetScript('OnEnter', function(self)
-        if self.tips then
-            e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:AddLine(' ')
-            e.tips:AddLine(self.tips)
-            e.tips:Show()
-            self:SetAlpha(0.3)
+    PlayerFrame.lootButton:SetScript('OnLeave', function() e.tips:Hide()  end)
+    PlayerFrame.lootButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        local text
+        local lootSpecID = GetLootSpecialization()
+        if lootSpecID then
+            local name, _, texture= select(2, GetSpecializationInfoByID(lootSpecID))
+            if texture and name then
+                text= '|T'..texture..':0|t'..name
+            end
         end
+        e.tips:AddDoubleLine('|A:Banker:0:0|a'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION), text)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION, e.Icon.left)
+        e.tips:Show()
     end)
 
-    function PlayerFrame.lootFrame:set_shown()
+    function PlayerFrame.lootButton:set_shown()
         local find=false
         if UnitIsUnit(PlayerFrame.unit, 'player') then
             local currentSpec = GetSpecialization()
@@ -191,9 +196,8 @@ local function Init_PlayerFrame()--PlayerFrame.lua
                 if lootSpecID and lootSpecID>0 and lootSpecID~=specID then
                     local name, _, texture= select(2, GetSpecializationInfoByID(lootSpecID))
                     if texture and name then
-                        SetPortraitToTexture(self.texture, texture)
+                        self:SetNormalTexture(texture)
                         find=true
-                        self.tips= (e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION).." "..('|T'..texture..':0|t')..name
                     end
                 end
             end
@@ -201,19 +205,27 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         self:SetShown(find)
     end
 
-    PlayerFrame.lootFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-    PlayerFrame.lootFrame:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
-    PlayerFrame.lootFrame:RegisterUnitEvent('UNIT_ENTERED_VEHICLE','player')
-    PlayerFrame.lootFrame:RegisterUnitEvent('UNIT_EXITED_VEHICLE','player')
-    PlayerFrame.lootFrame:SetScript('OnEvent', PlayerFrame.lootFrame.set_shown)
-
-
+    PlayerFrame.lootButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+    PlayerFrame.lootButton:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
+    PlayerFrame.lootButton:RegisterUnitEvent('UNIT_ENTERED_VEHICLE','player')
+    PlayerFrame.lootButton:RegisterUnitEvent('UNIT_EXITED_VEHICLE','player')
+    PlayerFrame.lootButton:SetScript('OnEvent', PlayerFrame.lootButton.set_shown)
+    
+    PlayerFrame.lootButton:SetScript('OnClick', function()
+        SetLootSpecialization(0)
+        local currentSpec = GetSpecialization()
+        local specID= currentSpec and GetSpecializationInfo(currentSpec)
+        local name, _, texture= select(2, GetSpecializationInfoByID(specID or 0))
+        print(id, addName,  e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, texture and '|T'..texture..':0|t' or '', name)
+            
+        
+    end)
 
     --Riad 副本, 地下城，指示
     --######################
     PlayerFrame.instanceFrame= CreateFrame("Frame", nil, PlayerFrame)
     PlayerFrame.instanceFrame:SetFrameLevel(frameLevel)
-    PlayerFrame.instanceFrame:SetPoint('RIGHT', PlayerFrame.lootFrame, 'LEFT',-2, 1)
+    PlayerFrame.instanceFrame:SetPoint('RIGHT', PlayerFrame.lootButton, 'LEFT',-2, 1)
     PlayerFrame.instanceFrame:SetSize(16,16)
     --图标
     PlayerFrame.instanceFrame.raid= PlayerFrame.instanceFrame:CreateTexture(nil,'BORDER', nil, 1)

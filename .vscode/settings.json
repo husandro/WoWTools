@@ -3681,7 +3681,8 @@
         "CLUB_FINDER_ANY_FLAG",
         "PLAYER_V_PLAYER",
         "PlayerFrame_UpdatePartyLeader",
-        "ALL_ASSIST_DESCRIPTION"
+        "ALL_ASSIST_DESCRIPTION",
+        "TRANSMOG_CURRENT_SPECIALIZATION"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
