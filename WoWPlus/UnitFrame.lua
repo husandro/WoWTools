@@ -396,18 +396,36 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     --挑战，数据
     --#########
     PlayerFrame.keystoneFrame= CreateFrame("Frame", nil, PlayerFrame)
-    PlayerFrame.keystoneFrame:SetSize(1,1)
-    PlayerFrame.keystoneFrame:SetPoint('LEFT', playerFrameTargetContextual.LeaderIcon, 'RIGHT')
-    PlayerFrame.keystoneFrame.Text= e.Cstr(PlayerFrame, {color=true})
-    PlayerFrame.keystoneFrame.Text:SetPoint('LEFT', PlayerFrame.keystoneFrame)
-
+    PlayerFrame.keystoneFrame:SetSize(12, 12)
+    PlayerFrame.keystoneFrame:SetPoint('LEFT', playerFrameTargetContextual.LeaderIcon, 'RIGHT',0,-2)
+    PlayerFrame.keystoneFrame.texture=PlayerFrame.keystoneFrame:CreateTexture()
+    PlayerFrame.keystoneFrame.texture:SetAllPoints(PlayerFrame.keystoneFrame)
+    PlayerFrame.keystoneFrame.texture:SetTexture(4352494)
+    PlayerFrame.keystoneFrame.Text= e.Cstr(PlayerFrame.keystoneFrame, {color=true})
+    PlayerFrame.keystoneFrame.Text:SetPoint('LEFT', PlayerFrame.keystoneFrame, 'RIGHT')
+    PlayerFrame.keystoneFrame:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+    PlayerFrame.keystoneFrame:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(addName)
+        e.tips:AddLine(' ')
+        if e.WoWDate[e.Player.guid].Keystone.link then
+            e.tips:AddLine('|T4352494:0|t'..e.WoWDate[e.Player.guid].Keystone.link)
+            e.tips:AddLine(' ')
+        end
+        e.Get_Weekly_Rewards_Activities({showTooltip=true})
+        e.tips:AddLine(' ')
+        e.ItemCurrencyLabel({showTooltip=true, showName=true, showAll=true})
+        e.tips:Show()
+        self:SetAlpha(0.5)
+    end)
     function PlayerFrame.keystoneFrame:set_settings()
         local text
         local score= C_ChallengeMode.GetOverallDungeonScore()
         if score and score>0 then
             local activeText= e.Get_Week_Rewards_Text(1)--得到，周奖励，信息
             activeText= activeText and ' ('..activeText..') '
-            text= e.GetKeystoneScorsoColor(score, true)..(activeText or '')--分数
+            text= e.GetKeystoneScorsoColor(score)..(activeText or '')--分数
             local info = C_MythicPlus.GetRunHistory(false, true) or {}--次数
             local num= #info
             if num>0 then
@@ -415,12 +433,13 @@ local function Init_PlayerFrame()--PlayerFrame.lua
             end
         end
         self.Text:SetText(text or '')
-        self.Text:SetShown(not IsInInstance())
+        self:SetShown(not IsInInstance() and text)
     end
 
     PlayerFrame.keystoneFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
     PlayerFrame.keystoneFrame:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')--地下城挑战
     PlayerFrame.keystoneFrame:RegisterEvent('WEEKLY_REWARDS_UPDATE')--地下城挑战
+    PlayerFrame.keystoneFrame:RegisterEvent('CHALLENGE_MODE_COMPLETED')
     PlayerFrame.keystoneFrame:SetScript('OnEvent', function(self)
         C_Timer.After(2, function() self:set_settings() end)
     end)

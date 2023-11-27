@@ -783,7 +783,13 @@ end
 
 
 --周奖励，提示
-function e.Get_Weekly_Rewards_Activities(settings)--{frame=Frame, point={'TOPLEFT', nil, 'BOTTOMLEFT', 0, -2}, anchor='ANCHOR_RIGHT'}
+function e.Get_Weekly_Rewards_Activities(settings)
+    --{frame=AllTipsFrame, point={'TOPLEFT', AllTipsFrame.weekLable, 'BOTTOMLEFT', 0, -2}, anchor='ANCHOR_RIGHT'}
+    local frame= settings.frame
+    local point= settings.point
+    local anchor= settings.anchor
+    local showTooltip= settings.showTooltip
+
     local R = {}
     for  _ , info in pairs( C_WeeklyRewards.GetActivities() or {}) do
         if info.type and info.type>= 1 and info.type<= 3 and info.level then
@@ -831,26 +837,43 @@ function e.Get_Weekly_Rewards_Activities(settings)--{frame=Frame, point={'TOPLEF
         end
     end
 
+    if showTooltip then
+        for head, tab in pairs(R) do
+            e.tips:AddLine(e.Icon.toRight2..head)
+            for index, info in pairs(tab) do
+                if info.unlocked then
+                    e.tips:AddLine('   '..index..') '..info.difficulty..e.Icon.select2..(info.level or ''))
+                else
+                    e.tips:AddLine('    |cff828282'..index..') '
+                        ..info.difficulty
+                        .. ' '..(info.progress>0 and '|cnGREEN_FONT_COLOR:'..info.progress..'|r' or info.progress)
+                        .."/"..info.threshold..'|r')
+                end
+            end
+        end
+        return
+    end
+
     local last
-    settings.frame.WeekRewards= settings.frame.WeekRewards or {}
+    frame.WeekRewards= frame.WeekRewards or {}
     for head, tab in pairs(R) do
-        local label= settings.frame.WeekRewards['rewardChestHead'..head]
+        local label= frame.WeekRewards['rewardChestHead'..head]
         if not label then
-            label= e.Cstr(settings.frame)
+            label= e.Cstr(frame)
             if last then
                 label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-4)
-            elseif settings.point then
-                label:SetPoint(settings.point[1], settings.point[2] or settings.frame, settings.point[3], settings.point[4], settings.point[5])
+            elseif point then
+                label:SetPoint(point[1], point[2] or frame, point[3], point[4], point[5])
             end
-            settings.frame.WeekRewards['rewardChestHead'..head]= label
+            frame.WeekRewards['rewardChestHead'..head]= label
         end
         label:SetText(e.Icon.toRight2..head)
         last= label
 
         for index, info in pairs(tab) do
-            label= settings.frame.WeekRewards['rewardChestSub'..head..index]
+            label= frame.WeekRewards['rewardChestSub'..head..index]
             if not label then
-                label= e.Cstr(settings.frame, {mouse= true})
+                label= e.Cstr(frame, {mouse= true})
                 label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
                 label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                 label:SetScript('OnEnter', function(self2)
@@ -879,12 +902,12 @@ function e.Get_Weekly_Rewards_Activities(settings)--{frame=Frame, point={'TOPLEF
                         return link
                     end
                 end
-                settings.frame.WeekRewards['rewardChestSub'..head..index]= label
+                frame.WeekRewards['rewardChestSub'..head..index]= label
             end
             label.id= info.id
             label.type= info.type
             label.itemDBID= info.itemDBID
-            label.anchor= settings.anchor
+            label.anchor= anchor
             last= label
 
             local text
@@ -917,35 +940,40 @@ end
 
 
 --物品升级界面，挑战界面，物品，货币提示
-function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true, showAll=true}
-    if not settings.frame then return end
+function e.ItemCurrencyLabel(settings)
+    local frame= settings.frame
+    local point= settings.point
+    local showName= settings.showName
+    local showAll= settings.showAll
+    local showTooltip= settings.showTooltip
+
     local itemS= {--数量提示
-    --{type='item', id=204196},--魔龙的暗影烈焰纹章10.1
-    --{type='item', id=204195},--幼龙的暗影烈焰纹章
-    --{type='item', id=204194},--守护巨龙的暗影烈焰纹章
-    --{type='item', id=204193},--雏龙的暗影烈焰纹章
+            --{type='item', id=204196},--魔龙的暗影烈焰纹章10.1
+            --{type='item', id=204195},--幼龙的暗影烈焰纹章
+            --{type='item', id=204194},--守护巨龙的暗影烈焰纹章
+            --{type='item', id=204193},--雏龙的暗影烈焰纹章
 
 
-    {type='currency', id=2709},--守护巨龙的酣梦纹章
-    {type='currency', id=2708},--守护巨龙的酣梦纹章
-    {type='currency', id=2707},--魔龙的酣梦纹章
-    {type='currency', id=2706},--幼龙的酣梦纹章
-    {type='currency', id=2245},--飞珑石
-    {type='currency', id=2796, show=true},--苏生奇梦 10.2
-    {type='currency', id=1602, line=true},--征服点数
-    {type='currency', id=1191},--勇气点数
-}
+            {type='currency', id=2709},--守护巨龙的酣梦纹章
+            {type='currency', id=2708},--守护巨龙的酣梦纹章
+            {type='currency', id=2707},--魔龙的酣梦纹章
+            {type='currency', id=2706},--幼龙的酣梦纹章
+            {type='currency', id=2245},--飞珑石
+            {type='currency', id=2796, show=true},--苏生奇梦 10.2
+            {type='currency', id=1602, line=true},--征服点数
+            {type='currency', id=1191},--勇气点数
+        }
 
-    settings.frame.tipsLabels= settings.frame.tipsLabels or {}
+   
 
-    local index=0
-    local last
+
+    local R={}
     for _, tab in pairs(itemS) do
         local text=''
         if tab.type=='currency' and tab.id then
             local info=C_CurrencyInfo.GetCurrencyInfo(tab.id)
             if info and info.quantity and info.maxQuantity
-                and (tab.show or (info.discovered and info.quantity>0))
+                and (showAll or tab.show or (info.discovered and info.quantity>0))
             then
                 local isMax
                 if info.maxQuantity>0  then
@@ -976,7 +1004,7 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
                 end
                 text= (info.iconFileID and '|T'..info.iconFileID..':0|t' or '')
                     ..(isMax and '|cnRED_FONT_COLOR:' or '')
-                    ..((settings.showName and info.name) and info.name..' ' or '')
+                    ..((showName and info.name) and info.name..' ' or '')
                     ..text
                     ..(isMax and '|r' or '')
             end
@@ -984,24 +1012,38 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
             e.LoadDate({id=tab.id, type='item'})
             local num= GetItemCount(tab.id, true)
             local itemQuality= C_Item.GetItemQualityByID(tab.id)
-            if (tab.show or num>0) and itemQuality>=1 then
+            if (showAll or tab.show or num>0) and itemQuality>=1 then
                 e.LoadDate({id=tab.id, type='item'})
                 local icon= C_Item.GetItemIconByID(tab.id)
-                local name=settings.showName and C_Item.GetItemNameByID(tab.id)
+                local name=showName and C_Item.GetItemNameByID(tab.id)
                 text= ((icon and icon>0) and '|T'..icon..':0|t' or id '')
                     ..(name and name..' |cnGREEN_FONT_COLOR:x|r' or '')
                     ..num
             end
         end
         if text~='' then
+            table.insert(R, {text=text, id= tab.id, type= tab.type})
+        end
+    end
+
+    if showTooltip then
+        for _, tab in pairs(R) do
+            e.tips:AddLine(tab.text)
+        end
+    elseif frame then
+        frame.tipsLabels= frame.tipsLabels or {}
+        local index=0
+        local last
+
+        for _, tab in pairs(R) do
             index= index +1
-            local lable= settings.frame.tipsLabels[index]
+            local lable= frame.tipsLabels[index]
             if not lable then
-                lable=e.Cstr(settings.frame, {mouse=true})
+                lable=e.Cstr(frame, {mouse=true})
                 if last then
                     lable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, tab.line and -6 or -2)
-                elseif settings.point then
-                    lable:SetPoint(settings.point[1], settings.point[2] or settings.frame, settings.point[3], settings.point[4], settings.point[5])
+                elseif point then
+                    lable:SetPoint(point[1], point[2] or frame, point[3], point[4], point[5])
                 end
                 lable:SetScript("OnEnter",function(self)
                     e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -1018,21 +1060,23 @@ function e.ItemCurrencyLabel(settings)--settings={frame, point={}, showName=true
                     e.tips:Hide()
                     self:SetAlpha(1)
                 end)
-                settings.frame.tipsLabels[index]= lable
+                frame.tipsLabels[index]= lable
                 last= lable
             end
             lable.id= tab.id
             lable.type= tab.type
-            lable:SetText(text)
+            lable:SetText(tab.text)
         end
-    end
 
-    for i= index+1, #settings.frame.tipsLabels do
-        local lable= settings.frame.tipsLabels[i]
-        if lable then
-            lable:SetText("")
+        for i= index+1, #frame.tipsLabels do
+            local lable= frame.tipsLabels[i]
+            if lable then
+                lable:SetText("")
+            end
         end
     end
+    R=nil
+    itemS=nil
 end
 
 
