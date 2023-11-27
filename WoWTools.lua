@@ -793,6 +793,8 @@ function e.Get_Weekly_Rewards_Activities(settings)
     local R = {}
     for  _ , info in pairs( C_WeeklyRewards.GetActivities() or {}) do
         if info.type and info.type>= 1 and info.type<= 3 and info.level then
+            
+
             local head
             local difficultyText
             if info.type == 1 then--1 Enum.WeeklyRewardChestThresholdType.MythicPlus
@@ -834,6 +836,7 @@ function e.Get_Weekly_Rewards_Activities(settings)
                     itemDBID= info.rewards and info.rewards.itemDBID or nil,
                 }
             end
+            
         end
     end
 
@@ -842,7 +845,10 @@ function e.Get_Weekly_Rewards_Activities(settings)
             e.tips:AddLine(e.Icon.toRight2..head)
             for index, info in pairs(tab) do
                 if info.unlocked then
-                    e.tips:AddLine('   '..index..') '..info.difficulty..e.Icon.select2..(info.level or ''))
+                    local itemLink=  C_WeeklyRewards.GetExampleRewardItemHyperlinks(info.id)
+                    local texture= itemLink and C_Item.GetItemIconByID(itemLink)
+                    local itemLevel= itemLink and GetDetailedItemLevelInfo(itemLink)
+                    e.tips:AddLine('   '..index..') '..(texture and itemLevel and '|T'..texture..':0|t'..itemLevel or info.difficulty)..e.Icon.select2..(info.level or ''))
                 else
                     e.tips:AddLine('    |cff828282'..index..') '
                         ..info.difficulty
@@ -892,6 +898,7 @@ function e.Get_Weekly_Rewards_Activities(settings)
                 end)
                 function label:Get_ItemLink()
                     local link
+                    print(self.itemDBID)
                     if self.itemDBID then
                         link= C_WeeklyRewards.GetItemHyperlink(self.itemDBID)
                     elseif self.id then
@@ -963,9 +970,6 @@ function e.ItemCurrencyLabel(settings)
             {type='currency', id=1602, line=true},--征服点数
             {type='currency', id=1191},--勇气点数
         }
-
-   
-
 
     local R={}
     for _, tab in pairs(itemS) do
