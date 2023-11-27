@@ -273,22 +273,25 @@ end
 
 --设置颜色
 function e.Set_Label_Texture_Color(self, tab)--设置颜色
-    if self and e.Player.useColor then
-        tab= tab or {}
-        local type= tab.type or type(self)
+    if self and (e.Player.useColor or tab.color) then
+        local type= tab.type or type(self)-- FontString Texture String
         local alpha= tab.alpha
+        local col= tab.color or e.Player.useColor
+
+        local r,g,b,a= col.r, col.g, col.b, alpha or col.a or 1
         if type=='FontString' or type=='EditBox' then
-            self:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, alpha or e.Player.useColor.a or 1)
+            self:SetTextColor(r, g, b, a)
 
         elseif type=='Texture' then
-            self:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, alpha or e.Player.useColor.a or 1)
+            self:SetVertexColor(r, g, b, a)
         elseif type=='Button' then
             local texture= self:GetNormalTexture()
             if texture then
-                texture:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b, alpha or e.Player.useColor.a or 1)
+                texture:SetVertexColor(r, g, b, a)
             end
         elseif type=='String' then
-            return e.Player.useColor.hex..self
+            local hex= tab.color and tab.color.hex or e.Player.useColor.hex
+            return hex..self
         end
     end
 end
