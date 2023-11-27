@@ -220,7 +220,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     end)
 
 
-    
+
 
     --Riad 副本, 地下城，指示
     --######################
@@ -236,7 +236,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrame.instanceFrame.raid.text= e.Cstr(PlayerFrame.instanceFrame, {color=true})
     PlayerFrame.instanceFrame.raid.text:SetPoint('TOP',0,8)
     --提示
-    PlayerFrame.instanceFrame.raid:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+    PlayerFrame.instanceFrame.raid:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) self.text:SetAlpha(1) end)
     PlayerFrame.instanceFrame.raid:SetScript('OnEnter', function(self)
         if self.tips then
             e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
@@ -260,6 +260,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
 
             e.tips:Show()
             self:SetAlpha(0.3)
+            self.text:SetAlpha(0.3)
         end
     end)
     --5人 副本, 地下城，指示
