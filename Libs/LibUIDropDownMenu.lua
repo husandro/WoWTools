@@ -1501,7 +1501,9 @@ function lib:UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 	if(somethingChecked == nil) then
 		lib:UIDropDownMenu_SetText(frame, VIDEO_QUALITY_LABEL6);
 		local icon = GetChild(frame, frame:GetName(), "Icon");
-		icon:Hide();
+		if icon then
+			icon:Hide();
+		end
 	end
 	if (not frame.noResize) then
 		for i=1, L_UIDROPDOWNMENU_MAXBUTTONS do
