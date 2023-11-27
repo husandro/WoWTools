@@ -78,7 +78,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         local isLeader= UnitIsGroupLeader("player")
         local isAssist= UnitIsGroupAssistant('player')
         contextual.assisterButton:SetShown(isLeader)
-        contextual.assisterIcon:SetShown(not isLeader and isAssist)        
+        contextual.assisterIcon:SetShown(not isLeader and isAssist)
         contextual.isEveryoneAssistantIcon:SetShown(IsEveryoneAssistant())
     end)
 
@@ -142,7 +142,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     end)
     e.Set_Label_Texture_Color(PlayerCastingBarFrame.Text, {type='FontString'})--设置颜色
 
-    
+
 
     if PlayerHitIndicator then--玩家, 治疗，爆击，数字
         e.Set_Label_Texture_Color(PlayerHitIndicator, {type='FontString'})--设置颜色
@@ -164,14 +164,14 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         playerFrameTargetContextual.PlayerRestLoop.RestTexture:SetPoint('CENTER', PlayerFrame.PlayerFrameContainer.PlayerPortrait)
     end
 
-    
+
 
     --移动zzZZ, 睡着了
     playerFrameTargetContextual.PlayerRestLoop:SetPoint('TOPLEFT', 0, 24)
 
 
 
-    
+
 
     --拾取专精
     --#######
@@ -367,8 +367,8 @@ local function Init_PlayerFrame()--PlayerFrame.lua
 
 
 
-    
-    
+
+
 
 
 
@@ -449,7 +449,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrame.warModeButton:SetScript('OnEvent', PlayerFrame.warModeButton.set_settings)
 
 
-    
+
 end
 
 
