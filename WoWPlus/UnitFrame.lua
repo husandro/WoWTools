@@ -85,6 +85,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     end)
 
     --移动，小队，号
+    --############
     PlayerFrameGroupIndicatorText:ClearAllPoints()
     PlayerFrameGroupIndicatorText:SetPoint('TOPRIGHT', PlayerFrame, -35, -24)
     --处理,小队, 号码
@@ -108,6 +109,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrameGroupIndicatorRight:SetShown(false)
 
     --等级，颜色
+    --#########
     hooksecurefunc('PlayerFrame_UpdateLevel', function()
         if (UnitExists("player")) then
             local level = UnitLevel(PlayerFrame.unit);
@@ -122,21 +124,25 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     end)
 
     --玩家, 治疗，爆击，数字
+    --###################
     if PlayerHitIndicator then
         e.Set_Label_Texture_Color(PlayerHitIndicator, {type='FontString'})--设置颜色
         PlayerHitIndicator:ClearAllPoints()
         PlayerHitIndicator:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT')
     end
     --宠物
+    --####
     if PetHitIndicator then
         PetHitIndicator:ClearAllPoints()
         PetHitIndicator:SetPoint('TOPLEFT', PetPortrait or PetHitIndicator:GetParent(), 'BOTTOMLEFT')
     end
 
     --外框
+    --####
     e.Set_Label_Texture_Color(PlayerFrame.PlayerFrameContainer.FrameTexture, {type='Texture'})--设置颜色
 
     --移动zzZZ, 睡着了
+    --###############
     playerFrameTargetContextual.PlayerRestLoop.RestTexture:SetPoint('TOPRIGHT', PlayerFrame.portrait, 14, 38)
 
 
@@ -396,9 +402,6 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrame.keystoneFrame.Text:SetPoint('LEFT', PlayerFrame.keystoneFrame)
 
     function PlayerFrame.keystoneFrame:set_settings()
-        if IsInInstance() then
-            self.Text:SetText('')
-        end
         local text
         local score= C_ChallengeMode.GetOverallDungeonScore()
         if score and score>0 then
@@ -412,12 +415,15 @@ local function Init_PlayerFrame()--PlayerFrame.lua
             end
         end
         self.Text:SetText(text or '')
+        self.Text:SetShown(not IsInInstance())
     end
 
     PlayerFrame.keystoneFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
     PlayerFrame.keystoneFrame:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')--地下城挑战
     PlayerFrame.keystoneFrame:RegisterEvent('WEEKLY_REWARDS_UPDATE')--地下城挑战
-    PlayerFrame.keystoneFrame:SetScript('OnEvent', PlayerFrame.keystoneFrame.set_settings)
+    PlayerFrame.keystoneFrame:SetScript('OnEvent', function(self)
+        C_Timer.After(2, function() self:set_settings() end)
+    end)
 
 
 
