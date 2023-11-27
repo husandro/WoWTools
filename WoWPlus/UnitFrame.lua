@@ -225,7 +225,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     --######################
     PlayerFrame.instanceFrame= CreateFrame("Frame", nil, PlayerFrame)
     PlayerFrame.instanceFrame:SetFrameLevel(frameLevel)
-    PlayerFrame.instanceFrame:SetPoint('RIGHT', PlayerFrame.lootButton, 'LEFT',-2, 1)
+    PlayerFrame.instanceFrame:SetPoint('RIGHT', PlayerFrame.lootButton, 'LEFT',-2,-2)
     PlayerFrame.instanceFrame:SetSize(16,16)
     --图标
     PlayerFrame.instanceFrame.raid= PlayerFrame.instanceFrame:CreateTexture(nil,'BORDER', nil, 1)
@@ -260,38 +260,56 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     end)
     --5人 副本, 地下城，指示
     PlayerFrame.instanceFrame.dungeon= PlayerFrame.instanceFrame:CreateTexture(nil,'BORDER', nil, 1)
-    PlayerFrame.instanceFrame.dungeon:SetPoint('RIGHT', PlayerFrame.instanceFrame, 'LEFT',0, -6)
+    PlayerFrame.instanceFrame.dungeon:SetPoint('RIGHT', PlayerFrame.instanceFrame, 'LEFT', 2, -8)
     PlayerFrame.instanceFrame.dungeon:SetSize(16,16)
     PlayerFrame.instanceFrame.dungeon:SetAtlas('DungeonSkull')
      --外框
     portrait= PlayerFrame.instanceFrame:CreateTexture(nil, 'OVERLAY')
-    portrait:SetAtlas('DK-Base-Rune-CDFill')
-    portrait:SetPoint('CENTER', PlayerFrame.instanceFrame.dungeon)
+    portrait:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
+    portrait:SetPoint('CENTER', PlayerFrame.instanceFrame.dungeon,1,0)
     portrait:SetSize(20,20)
     e.Set_Label_Texture_Color(portrait, {type='Texture'})--设置颜色
     --提示
     PlayerFrame.instanceFrame.dungeon:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
-    PlayerFrame.instanceFrame.dungeon:SetScript('OnEnter', function(self)
-        if self.tips then
-            e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(self.tips, '|A:DungeonSkull:0:0|a')
-            e.tips:AddLine(' ')
-            local tab={
-                DifficultyUtil.ID.DungeonNormal,
-                DifficultyUtil.ID.DungeonHeroic,
-                DifficultyUtil.ID.DungeonMythic
-            }
-            for _, ID in pairs(tab) do
-                local text= e.GetDifficultyColor(nil, ID)
-                e.tips:AddLine((text==self.name and e.Icon.toRight2 or '')..text..(text==self.name and e.Icon.toLeft2 or ''))
-            end
+    function PlayerFrame.instanceFrame.dungeon:set_tooltips()
+        e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
 
-            e.tips:Show()
-            self:SetAlpha(0.3)
+        local dungeonID= GetDungeonDifficultyID()
+        local text=e.GetDifficultyColor(nil, dungeonID)
+
+        e.tips:AddDoubleLine((e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY), '|A:DungeonSkull:0:0|a'..text)
+        e.tips:AddLine(' ')
+        
+        local tab={
+            DifficultyUtil.ID.DungeonNormal,
+            DifficultyUtil.ID.DungeonHeroic,
+            DifficultyUtil.ID.DungeonMythic
+        }
+        for index, ID in pairs(tab) do
+            text= e.GetDifficultyColor(nil, ID)
+            text= ID==dungeonID and e.Icon.toRight2..text..e.Icon.toLeft2 or text
+            local set
+            if index==3 then
+                set= ((UnitIsGroupLeader("player") or not IsInGroup()) and dungeonID~=ID and '|cnGREEN_FONT_COLOR:' or '|cff606060')
+                    ..(e.onlyChinese and '设置' or SETTINGS)
+                    ..e.Icon.left
+            end
+            e.tips:AddDoubleLine(text,set)
         end
+        e.tips:Show()
+        self:SetAlpha(0.5)
+    end
+    PlayerFrame.instanceFrame.dungeon:SetScript('OnEnter', PlayerFrame.instanceFrame.dungeon.set_tooltips)
+    PlayerFrame.instanceFrame.dungeon:SetScript('OnMouseUp', function(self) self:SetAlpha(0.5) end)
+    PlayerFrame.instanceFrame.dungeon:SetScript('OnMouseDown', function(self)
+        if (UnitIsGroupLeader("player") or not IsInGroup()) and GetDungeonDifficultyID()~=DifficultyUtil.ID.DungeonMythic then
+            SetDungeonDifficultyID(DifficultyUtil.ID.DungeonMythic)
+            C_Timer.After(0.5, function() self:set_tooltips() end)
+        end
+        self:SetAlpha(0.1)
     end)
     function PlayerFrame.instanceFrame:set_settings()
         local ins, findRiad, findDungeon=  IsInInstance(), false, false

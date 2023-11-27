@@ -1732,8 +1732,9 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
         end
     end
     return  string,
-            colorRe or (e.Player.useColor or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=e.Player.col}
-                    ),
+            colorRe or (
+                e.Player.useColor or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=e.Player.col}
+            ),
             e.onlyChinese and name or GetDifficultyInfo(difficultyID)
 end
 
