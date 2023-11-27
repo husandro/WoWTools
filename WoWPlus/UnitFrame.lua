@@ -37,9 +37,54 @@ end
 --玩家
 --####
 local function Init_PlayerFrame()--PlayerFrame.lua
+    local playerFrameTargetContextual = PlayerFrame_GetPlayerFrameContentContextual()
+    local frameLevel= PlayerFrame:GetFrameLevel() +1
+
+    --全部有权限，助手，提示
+    --####################
+    playerFrameTargetContextual.assisterButton= e.Cbtn(playerFrameTargetContextual,{size={16,16}, icon='hide'})--点击，设置全员，权限
+    playerFrameTargetContextual.assisterButton:SetFrameLevel(5)
+    playerFrameTargetContextual.assisterButton:SetPoint(playerFrameTargetContextual.LeaderIcon:GetPoint())
+    playerFrameTargetContextual.assisterButton:Hide()
+    playerFrameTargetContextual.assisterButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    playerFrameTargetContextual.assisterButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(' ', e.GetEnabeleDisable(IsEveryoneAssistant()))
+        e.tips:Show()
+    end)
+    playerFrameTargetContextual.assisterButton:SetScript('OnClick', function()
+        SetEveryoneIsAssistant(not IsEveryoneAssistant())
+        C_Timer.After(0.7, function()
+            print(id, addName, e.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, e.GetEnabeleDisable(IsEveryoneAssistant()))
+        end)
+    end)
+    playerFrameTargetContextual.assisterIcon= playerFrameTargetContextual:CreateTexture(nil, 'OVERLAY', nil, 1)--助手，提示 PlayerFrame.xml
+    playerFrameTargetContextual.assisterIcon:SetAllPoints(playerFrameTargetContextual.assisterButton)
+    playerFrameTargetContextual.assisterIcon:SetTexture('Interface\\GroupFrame\\UI-Group-AssistantIcon')
+    playerFrameTargetContextual.assisterIcon:Hide()
+    playerFrameTargetContextual.isEveryoneAssistantIcon= playerFrameTargetContextual:CreateTexture(nil, 'OVERLAY', nil, 6)--所有限员，有权限，提示
+    playerFrameTargetContextual.isEveryoneAssistantIcon:SetPoint('CENTER', playerFrameTargetContextual.assisterButton)
+    playerFrameTargetContextual.isEveryoneAssistantIcon:SetAtlas('runecarving-menu-reagent-selected')
+    playerFrameTargetContextual.isEveryoneAssistantIcon:SetSize(16,16)
+    playerFrameTargetContextual.isEveryoneAssistantIcon:Hide()
+
+    hooksecurefunc('PlayerFrame_UpdatePartyLeader', function()
+        local contextual = PlayerFrame_GetPlayerFrameContentContextual()
+        local isLeader= UnitIsGroupLeader("player")
+        local isAssist= UnitIsGroupAssistant('player')
+        contextual.assisterButton:SetShown(isLeader)
+        contextual.assisterIcon:SetShown(not isLeader and isAssist)        
+        contextual.isEveryoneAssistantIcon:SetShown(IsEveryoneAssistant())
+    end)
+
     --移动，小队，号
     PlayerFrameGroupIndicatorText:ClearAllPoints()
-    PlayerFrameGroupIndicatorText:SetPoint('BOTTOM', PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon, 'TOP', 0, 2)
+    PlayerFrameGroupIndicatorText:SetPoint('BOTTOM', playerFrameTargetContextual.LeaderIcon, 'TOP', 0, -4)
     --处理,小队, 号码
     hooksecurefunc('PlayerFrame_UpdateGroupIndicator', function()
         if IsInRaid() then
@@ -50,6 +95,9 @@ local function Init_PlayerFrame()--PlayerFrame.lua
             end
         end
     end)
+    if IsInRaid() then
+        e.call('PlayerFrame_UpdateGroupIndicator')
+    end
     PlayerFrameGroupIndicatorLeft:SetTexture(0)
     PlayerFrameGroupIndicatorLeft:SetShown(false)
     PlayerFrameGroupIndicatorMiddle:SetTexture(0)
@@ -57,16 +105,13 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrameGroupIndicatorRight:SetTexture(0)
     PlayerFrameGroupIndicatorRight:SetShown(false)
 
-    --移动zzZZ, 睡着了
-    PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestLoop.RestTexture:SetPoint('TOPLEFT', 0, 24)
-
     --等级，颜色
     hooksecurefunc('PlayerFrame_UpdateLevel', function()
         if (UnitExists("player")) then
             local level = UnitLevel(PlayerFrame.unit);
             local effectiveLevel = UnitEffectiveLevel(PlayerFrame.unit);
             if (effectiveLevel == level) or effectiveLevel== MAX_PLAYER_LEVEL then
-                PlayerLevelText:SetText('')
+              --  PlayerLevelText:SetText('')
             else
                 PlayerLevelText:SetText(effectiveLevel)
                 e.Set_Label_Texture_Color(PlayerLevelText, {type='FontString'})--设置颜色                
@@ -104,7 +149,8 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         PlayerHitIndicator:ClearAllPoints()
         PlayerHitIndicator:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT')
     end
-    if PetHitIndicator then--宠物
+    --宠物
+    if PetHitIndicator then
         PetHitIndicator:ClearAllPoints()
         PetHitIndicator:SetPoint('TOPLEFT', PetPortrait or PetHitIndicator:GetParent(), 'BOTTOMLEFT')
     end
@@ -113,20 +159,22 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         e.Set_Label_Texture_Color(PlayerFrame.PlayerFrameContainer.FrameTexture, {type='Texture'})--设置颜色, 外框
     end
 
-    if PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestLoop.RestTexture then
-        PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestLoop.RestTexture:ClearAllPoints()
-        PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestLoop.RestTexture:SetPoint('CENTER', PlayerFrame.PlayerFrameContainer.PlayerPortrait)
+    if playerFrameTargetContextual.PlayerRestLoop.RestTexture then
+        playerFrameTargetContextual.PlayerRestLoop.RestTexture:ClearAllPoints()
+        playerFrameTargetContextual.PlayerRestLoop.RestTexture:SetPoint('CENTER', PlayerFrame.PlayerFrameContainer.PlayerPortrait)
     end
 
     
 
+    --移动zzZZ, 睡着了
+    playerFrameTargetContextual.PlayerRestLoop:SetPoint('TOPLEFT', 0, 24)
 
 
-    local frameLevel= PlayerFrame.PlayerFrameContainer:GetFrameLevel()
-    frameLevel= frameLevel<0 and 0 or frameLevel
-    frameLevel=frameLevel +1
+
+    
 
     --拾取专精
+    --#######
     PlayerFrame.lootFrame= CreateFrame("Frame", nil, PlayerFrame)
     PlayerFrame.lootFrame:SetPoint('TOPLEFT', PlayerFrame.portrait, 'TOPRIGHT',-32,8)
     PlayerFrame.lootFrame:SetSize(14,14)
@@ -187,6 +235,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
 
 
     --Riad 副本, 地下城，指示
+    --######################
     PlayerFrame.instanceFrame= CreateFrame("Frame", nil, PlayerFrame)
     PlayerFrame.instanceFrame:SetFrameLevel(frameLevel)
     PlayerFrame.instanceFrame:SetPoint('RIGHT', PlayerFrame.lootFrame, 'LEFT',-2, 1)
@@ -329,7 +378,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     --#########
     PlayerFrame.keystoneFrame= CreateFrame("Frame", nil, PlayerFrame)
     PlayerFrame.keystoneFrame:SetSize(1,1)
-    PlayerFrame.keystoneFrame:SetPoint('LEFT', PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.LeaderIcon, 'RIGHT')
+    PlayerFrame.keystoneFrame:SetPoint('LEFT', playerFrameTargetContextual.LeaderIcon, 'RIGHT')
     PlayerFrame.keystoneFrame.Text= e.Cstr(PlayerFrame, {color=true})
     PlayerFrame.keystoneFrame.Text:SetPoint('LEFT', PlayerFrame.keystoneFrame)
 
@@ -361,8 +410,9 @@ local function Init_PlayerFrame()--PlayerFrame.lua
 
 
     --移动，缩小，开启战争模式时，PVP图标
-    hooksecurefunc('PlayerFrame_UpdatePvPStatus', function(self)--开启战争模式时，PVP图标
-        local icon= PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PVPIcon
+    hooksecurefunc('PlayerFrame_UpdatePvPStatus', function()--开启战争模式时，PVP图标
+        local contextual = PlayerFrame_GetPlayerFrameContentContextual();
+        local icon= contextual and contextual.PVPIcon
         if icon then
             icon:SetSize(25,25)
             icon:ClearAllPoints()

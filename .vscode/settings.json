@@ -3679,7 +3679,9 @@
         "RANK_COLON",
         "EnumUtil",
         "CLUB_FINDER_ANY_FLAG",
-        "PLAYER_V_PLAYER"
+        "PLAYER_V_PLAYER",
+        "PlayerFrame_UpdatePartyLeader",
+        "ALL_ASSIST_DESCRIPTION"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
