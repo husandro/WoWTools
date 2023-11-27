@@ -431,7 +431,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
 
     --设置, 战争模式
     PlayerFrame.warModeButton= e.Cbtn(PlayerFrame, {size={20,20}, icon='hide', pushe=true})
-    PlayerFrame.warModeButton:SetPoint('LEFT', PlayerFrame, 10, 12)
+    PlayerFrame.warModeButton:SetPoint('LEFT', PlayerFrame, 5, 12)
     PlayerFrame.warModeButton:SetScript('OnClick',  function(self)
         C_PvP.ToggleWarMode()
         C_Timer.After(1, function() self:set_tooltips() end)
