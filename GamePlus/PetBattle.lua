@@ -734,7 +734,7 @@ local function add_Click_To_Move_Button()--点击移动，按钮
             sizi=20,
             alpha=1,
         })
-        btn:SetPoint('RIGHT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'LEFT', 5,-8)
+        btn:SetPoint('RIGHT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'LEFT', 2,-8)
         btn:Raise()
         btn:SetSize(20,20)
         btn:SetNormalAtlas('transmog-nav-slot-feet')
