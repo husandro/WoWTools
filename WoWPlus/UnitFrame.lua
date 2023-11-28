@@ -659,7 +659,7 @@ local function set_memberFrame(memberFrame)
 
         btn.frame.isPlayerTargetTexture= btn.frame:CreateTexture(nil, 'BORDER')
         btn.frame.isPlayerTargetTexture:SetSize(42,42)
-        btn.frame.isPlayerTargetTexture:SetPoint('CENTER',-1,0)
+        btn.frame.isPlayerTargetTexture:SetPoint('CENTER',2,-2)
         btn.frame.isPlayerTargetTexture:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
         btn.frame.isPlayerTargetTexture:SetVertexColor(1,0,0)
 
@@ -675,7 +675,7 @@ local function set_memberFrame(memberFrame)
         btn.frame.healthBar:SetMinMaxValues(0,100)
         btn.frame.healthBar:SetFrameLevel(btn.frame:GetFrameLevel()+1)]]
 
-        btn.frame.healthLable= e.Cstr(btn.frame)
+        btn.frame.healthLable= e.Cstr(btn.frame, {size=14})
         btn.frame.healthLable:SetPoint('BOTTOMRIGHT')
         btn.frame.healthLable:SetTextColor(1,1,1)
 
@@ -1047,7 +1047,7 @@ local function set_memberFrame(memberFrame)
 
         --死亡，次数
         deadFrame.dead=0
-        deadFrame.Text= e.Cstr(deadFrame, {mouse=true})
+        deadFrame.Text= e.Cstr(deadFrame, {mouse=true, color={r=1,g=1,b=1}})
         deadFrame.Text:SetPoint('BOTTOMRIGHT', deadFrame, -2,0)
         deadFrame.Text:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
         deadFrame.Text:SetScript('OnEnter', function(self)
@@ -1064,7 +1064,7 @@ local function set_memberFrame(memberFrame)
         memberFrame.deadFrame= deadFrame
     end
 
-    deadFrame.Text:SetTextColor(r, g, b)
+    --deadFrame.Text:SetTextColor(r, g, b)
     deadFrame.isPlayer= isPlayer
     deadFrame.unit= unit
     deadFrame:set_settings()
@@ -1074,14 +1074,14 @@ end
 
 
 local function Init_PartyFrame()--PartyFrame.lua
-    local function set_UpdatePartyFrames(unitFrame)
-        for memberFrame, _ in unitFrame.PartyMemberFramePool:EnumerateActive() do
+    for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
+        set_memberFrame(memberFrame)
+    end
+    hooksecurefunc(PartyFrame, 'UpdatePartyFrames', function(unitFrame)
+        for memberFrame in unitFrame.PartyMemberFramePool:EnumerateActive() do
             set_memberFrame(memberFrame)
         end
-    end
-
-    set_UpdatePartyFrames(PartyFrame)--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
-    hooksecurefunc(PartyFrame, 'UpdatePartyFrames', set_UpdatePartyFrames)
+    end)
 
     --##############
     --隐藏, DPS 图标
