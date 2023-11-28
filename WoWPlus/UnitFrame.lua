@@ -631,8 +631,6 @@ local function set_memberFrame(memberFrame)
         btn:SetPoint('LEFT', memberFrame, 'RIGHT', -3, 4)
         btn:SetAttribute('type', 'target')
         btn:SetAttribute('unit', unit..'target')
-        btn.unit= unit..'target'
-
         btn:SetScript('OnLeave', function() e.tips:Hide() end)
         btn:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -646,13 +644,12 @@ local function set_memberFrame(memberFrame)
             end
             e.tips:Show()
         end)
-
+        btn.unit= unit..'target'
 
         btn.frame=CreateFrame('Frame', nil, btn)
         btn.frame:SetFrameLevel(btn.frame:GetFrameLevel()-1)
         btn.frame:SetAllPoints(btn)
         btn.frame:Hide()
-      
 
         btn.frame.isPlayerTargetTexture= btn.frame:CreateTexture(nil, 'BORDER')
         btn.frame.isPlayerTargetTexture:SetSize(42,42)
@@ -694,6 +691,8 @@ local function set_memberFrame(memberFrame)
             if self.unit then
                 if self.isPlayer then
                     SetPortraitTexture(self.Portrait, self.unit, true)--图像
+                elseif UnitIsUnit(self.isSelfUnit, self.unit) then--队员，选中他自已
+                    self.Portrait:SetAtlas(e.Icon.toLeft)
                 elseif UnitIsUnit(self.unit, 'player') then--我
                     self.Portrait:SetAtlas('auctionhouse-icon-favorite')
                 elseif UnitIsDeadOrGhost(self.unit) then--死亡
@@ -720,16 +719,13 @@ local function set_memberFrame(memberFrame)
             self:SetShown(exists2)
         end
 
-        btn.frame:SetScript('OnShow', function(self)
+        function btn.frame:set_evnet()
             self:RegisterEvent('RAID_TARGET_UPDATE')
             self:RegisterUnitEvent('UNIT_TARGET', self.unit)
             self:RegisterUnitEvent('UNIT_FLAGS', self.unit..'target')
             self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.unit..'target')
             self:RegisterEvent('PLAYER_TARGET_CHANGED')
-        end)
-        btn.frame:SetScript('OnHide', function(self)
-            self:UnregisterAllEvents()
-        end)
+        end
         btn.frame:SetScript('OnEvent', btn.frame.set_settings)
 
 
@@ -751,8 +747,14 @@ local function set_memberFrame(memberFrame)
         memberFrame.potFrame= btn
     end
     btn.frame.unit= unit..'target'
+    btn.frame.isSelfUnit= unit
     btn.frame.isPlayer= isPlayer
+    btn.frame:UnregisterAllEvents()
+    if exists then
+        btn.frame:set_evnet()
+    end
     btn.frame:set_settings()
+
     
 
     --#########
