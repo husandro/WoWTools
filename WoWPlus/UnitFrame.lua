@@ -750,7 +750,7 @@ local function set_memberFrame(memberFrame)
 
         memberFrame.potFrame= btn
     end
-    btn.frame.unit= unit
+    btn.frame.unit= unit..'target'
     btn.frame.isPlayer= isPlayer
     btn.frame:set_settings()
     
