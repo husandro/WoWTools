@@ -840,10 +840,18 @@ local function set_memberFrame(memberFrame)
             local faction= UnitFactionGroup(self.unit)
             local atlas
             if faction~= e.Player.faction or self.isPlayer then
-                atlas= faction=='Horde' and e.Icon.horde or (faction=='Alliance' and e.Icon.alliance) or 'nameplates-icon-flag-neutral'
-                self.faction:SetAtlas(atlas)
+                if faction=='Horde' then
+                    atlas= e.Icon.horde
+                elseif faction=='Alliance' then
+                    atlas= e.Icon.alliance
+                elseif faction=='Neutral' then
+                    atlas='nameplates-icon-flag-neutral'
+                end
             end
             self.faction:SetShown(atlas and true or false)
+            if atlas then
+                self.faction:SetAtlas(atlas)
+            end
         end
 
         raidTargetFrame:SetScript('OnEvent', function(self, event)
@@ -868,7 +876,6 @@ local function set_memberFrame(memberFrame)
         set_RaidTarget(raidTargetFrame.texture, raidTargetFrame.unit)--队伍, 标记
     end
     raidTargetFrame:set_faction()--成员派系
-
 
 
     --#######
