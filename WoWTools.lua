@@ -207,7 +207,14 @@ end
 
 
 
-
+e.MK=function(k,b) 
+    if not b then b=1 end if k>=1e6 then 
+        k=string.format('%.'..b..'fm',k/1e6) 
+    elseif k>= 1e4 and GetLocale() == "zhCN" then 
+        k=string.format('%.'..b..'fw',k/1e4) 
+    elseif k>=1e3 then k=string.format('%.'..b..'fk',k/1e3) 
+    else k=string.format('%i',k) end 
+    return k end--加k 9.1
 
 
 
@@ -228,20 +235,13 @@ function e.MK(number, bit)
         number= number/1e3
         text= 'k'
     end
-
-    if bit==0 then
-        return math.modf(number)..text
+    local num, point= math.modf(number)
+    if point==0 then
+        return num..text
+    elseif bit==0 then
+        return format('%i', number)..text
     else
-        --return number - (number % (0.1 ^ bit))..text
-        local num, point= math.modf(number)
-        if point==0 then
-            return num..text
-        else
-            --return number - (number % (0.1 ^ bit))..text
-            point= point*(10^bit)
-            point= math.modf(point)
-            return num..(point>0 and '.'..point or '')..text
-        end
+        return format('%.'..bit..'f', number)..text
     end
 end
 
