@@ -488,7 +488,13 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         end
         self:SetShown(isCan)
     end
-    PlayerFrame.warModeButton:SetScript('OnEvent', PlayerFrame.warModeButton.set_settings)
+    PlayerFrame.warModeButton:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_ENTERING_WORLD' then
+            C_Timer.After(2, function() self:set_settings() end)
+        else
+            self:set_settings()
+        end
+    end)
 
 
 
