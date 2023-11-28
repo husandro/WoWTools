@@ -3682,7 +3682,9 @@
         "PLAYER_V_PLAYER",
         "PlayerFrame_UpdatePartyLeader",
         "ALL_ASSIST_DESCRIPTION",
-        "TRANSMOG_CURRENT_SPECIALIZATION"
+        "TRANSMOG_CURRENT_SPECIALIZATION",
+        "SHOW_ARENA_ENEMY_CASTBAR_TEXT",
+        "LOSS_OF_CONTROL_DISPLAY_CHARM"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

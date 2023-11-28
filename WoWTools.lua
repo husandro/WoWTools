@@ -441,7 +441,7 @@ function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
     end
     if not self.cooldown then
         self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
-        self.cooldown:Raise()
+        self.cooldown:SetFrameLevel(self:GetFrameLevel()+5)
         self.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
         self.cooldown:SetDrawBling(not hideDrawBling)--闪光
         self.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
@@ -461,17 +461,40 @@ function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
     self.cooldown:SetCooldown(start, duration, modRate)
 end
 
-function e.SetItemSpellCool(tab)--{frame=, item=, spell=, type=} type=true圆形，false方形
-    if tab.frame then
-        if tab.item then
-            local startTime, duration = GetItemCooldown(tab.item)
-            e.Ccool(tab.frame, startTime, duration, nil, true, nil, not tab.type)
-        elseif tab.spell then
-            local start, duration, _, modRate = GetSpellCooldown(tab.spell)
-            e.Ccool(tab.frame, start, duration, modRate, true, nil, not tab.type)--冷却条
-        elseif tab.frame.cooldown then
-            tab.frame.cooldown:Clear()
+function e.SetItemSpellCool(tab)--{frame=, item=, spell=, type=, isUnit=true} type=true圆形，false方形
+    if not tab.frame then
+        return
+    end
+    local frame= tab.frame
+    local item= tab.item
+    local spell= tab.spell
+    local type= tab.type
+    local unit= tab.unit
+    if unit then
+        local texture, startTime, endTime, duration, channel
+        if UnitExists(unit) then
+            texture, startTime, endTime= select(3, UnitChannelInfo(unit))
+            if not (texture and startTime and endTime) then
+                texture, startTime, endTime= select(3, UnitCastingInfo(unit))
+            else
+                channel= true
+            end
+            if texture and startTime and endTime then
+                duration= (endTime - startTime) / 1000
+                e.Ccool(frame, nil, duration, nil, true, channel, nil,nil)
+                return texture
+            end
+            e.Ccool(frame)
         end
+
+    elseif item then
+        local startTime, duration = GetItemCooldown(item)
+        e.Ccool(frame, startTime, duration, nil, true, nil, not type)
+    elseif spell then
+        local start, duration, _, modRate = GetSpellCooldown(spell)
+        e.Ccool(frame, start, duration, modRate, true, nil, not type)--冷却条
+    elseif tab.frame.cooldown then
+        e.Ccool(frame)
     end
 end
 
