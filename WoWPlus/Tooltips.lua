@@ -470,7 +470,7 @@ function func.Set_Item(self, itemLink, itemID)
             self.Portrait:SetAtlas(e.Icon.unlocked)
         end
 
-        local specTable = GetItemSpecInfo(itemLink) or {}--专精图标
+        local specTable = itemLink and GetItemSpecInfo(itemLink) or {}--专精图标
         local specTableNum=#specTable
         if specTableNum>0 then
             --local num=math.modf(specTableNum/2)
