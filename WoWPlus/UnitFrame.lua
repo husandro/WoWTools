@@ -620,9 +620,7 @@ local function set_memberFrame(memberFrame)
     --####
     --外框
     --####
-    
-        memberFrame.Texture:SetVertexColor(r, g, b)
-    
+    memberFrame.Texture:SetVertexColor(r, g, b)
 
     --#########
     --目标的目标
@@ -633,7 +631,7 @@ local function set_memberFrame(memberFrame)
         btn:SetPoint('LEFT', memberFrame, 'RIGHT', -3, 4)
         btn:SetAttribute('type', 'target')
         btn:SetAttribute('unit', unit..'target')
-
+        btn.unit= unit..'target'
 
         btn:SetScript('OnLeave', function() e.tips:Hide() end)
         btn:SetScript('OnEnter', function(self)
@@ -654,7 +652,7 @@ local function set_memberFrame(memberFrame)
         btn.frame:SetFrameLevel(btn.frame:GetFrameLevel()-1)
         btn.frame:SetAllPoints(btn)
         btn.frame:Hide()
-        btn.frame.unit= unit..'target'
+      
 
         btn.frame.isPlayerTargetTexture= btn.frame:CreateTexture(nil, 'BORDER')
         btn.frame.isPlayerTargetTexture:SetSize(42,42)
@@ -693,7 +691,7 @@ local function set_memberFrame(memberFrame)
         function btn.frame:set_settings()
             local exists2= UnitExists(self.unit)
             local atlas
-            if exists2 then
+            if self.unit then
                 if self.isPlayer then
                     SetPortraitTexture(self.Portrait, self.unit, true)--图像
                 elseif UnitIsUnit(self.unit, 'player') then--我
@@ -724,12 +722,12 @@ local function set_memberFrame(memberFrame)
 
         btn.frame:SetScript('OnShow', function(self)
             self:RegisterEvent('RAID_TARGET_UPDATE')
-            self:RegisterUnitEvent('UNIT_TARGET', unit)
-            self:RegisterUnitEvent('UNIT_FLAGS', unit)
-            self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit)
+            self:RegisterUnitEvent('UNIT_TARGET', self.unit)
+            self:RegisterUnitEvent('UNIT_FLAGS', self.unit..'target')
+            self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.unit..'target')
             self:RegisterEvent('PLAYER_TARGET_CHANGED')
         end)
-        btn.frame:SetScript('OnShow', function(self)
+        btn.frame:SetScript('OnHide', function(self)
             self:UnregisterAllEvents()
         end)
         btn.frame:SetScript('OnEvent', btn.frame.set_settings)
@@ -752,7 +750,7 @@ local function set_memberFrame(memberFrame)
 
         memberFrame.potFrame= btn
     end
-    btn.frame.unit= unit..'target'
+    btn.frame.unit= unit
     btn.frame.isPlayer= isPlayer
     btn.frame:set_settings()
     
@@ -1062,7 +1060,7 @@ end
 
 local function Init_PartyFrame()--PartyFrame.lua
     local function set_UpdatePartyFrames(unitFrame)
-        for memberFrame in unitFrame.PartyMemberFramePool:EnumerateActive() do
+        for memberFrame, _ in unitFrame.PartyMemberFramePool:EnumerateActive() do
             set_memberFrame(memberFrame)
         end
     end
