@@ -840,7 +840,7 @@ local function set_memberFrame(memberFrame)
 
         --成员派系
         raidTargetFrame.faction=raidTargetFrame:CreateTexture(nil, 'ARTWORK')
-        raidTargetFrame.faction:SetSize(16,16)
+        raidTargetFrame.faction:SetSize(14,14)
         raidTargetFrame.faction:SetPoint('TOPLEFT', memberFrame.Portrait, -4, 0)
         function raidTargetFrame:set_faction()
             local faction= UnitFactionGroup(self.unit)
