@@ -620,9 +620,9 @@ local function set_memberFrame(memberFrame)
     --####
     --外框
     --####
-    if memberFrame.Texture then
+    
         memberFrame.Texture:SetVertexColor(r, g, b)
-    end
+    
 
     --#########
     --目标的目标
@@ -693,7 +693,7 @@ local function set_memberFrame(memberFrame)
         function btn.frame:set_settings()
             local exists2= UnitExists(self.unit)
             local atlas
-            if self.unit then
+            if exists2 then
                 if self.isPlayer then
                     SetPortraitTexture(self.Portrait, self.unit, true)--图像
                 elseif UnitIsUnit(self.unit, 'player') then--我
@@ -725,8 +725,8 @@ local function set_memberFrame(memberFrame)
         btn.frame:SetScript('OnShow', function(self)
             self:RegisterEvent('RAID_TARGET_UPDATE')
             self:RegisterUnitEvent('UNIT_TARGET', unit)
-            self:RegisterUnitEvent('UNIT_FLAGS', unit..'target')
-            self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit..'target')
+            self:RegisterUnitEvent('UNIT_FLAGS', unit)
+            self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit)
             self:RegisterEvent('PLAYER_TARGET_CHANGED')
         end)
         btn.frame:SetScript('OnShow', function(self)
