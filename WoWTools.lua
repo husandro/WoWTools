@@ -472,8 +472,10 @@ function e.SetItemSpellCool(tab)--{frame=, item=, spell=, type=, isUnit=true} ty
     local unit= tab.unit
     if unit then
         local texture, startTime, endTime, duration, channel
+      
         if UnitExists(unit) then
             texture, startTime, endTime= select(3, UnitChannelInfo(unit))
+            
             if not (texture and startTime and endTime) then
                 texture, startTime, endTime= select(3, UnitCastingInfo(unit))
             else

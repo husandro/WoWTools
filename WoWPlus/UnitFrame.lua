@@ -607,8 +607,8 @@ local function set_memberFrame(memberFrame)
     end
     local unit= memberFrame.unit or memberFrame:GetUnit()
     local isPlayer= unit=='player'
-    local exists= memberFrame:IsShown()
-    
+    local exists= UnitExists(unit)--memberFrame:IsShown()
+
 
     local r, g, b
     local classFilename= exists and UnitClassBase(unit)
@@ -755,7 +755,7 @@ local function set_memberFrame(memberFrame)
     end
     btn.frame:set_settings()
 
-    
+
 
     --#########
     --队友，施法
@@ -763,18 +763,17 @@ local function set_memberFrame(memberFrame)
     local castFrame= memberFrame.castFrame
     if not castFrame then
         castFrame= CreateFrame("Frame", nil, memberFrame)
-        castFrame:Hide()
         castFrame:SetPoint('BOTTOMLEFT', memberFrame.potFrame, 'BOTTOMRIGHT')
         castFrame:SetSize(20,20)
         castFrame.texture=  castFrame:CreateTexture(nil,'BACKGROUND')
         castFrame.texture:SetAllPoints(castFrame)
-        
         castFrame:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
         castFrame:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
-            if self.spellID then
-                e.tips:SetSpellByID(self.spellID)
+            local spellID= select(8, UnitChannelInfo(self.unit)) or select(9, UnitCastingInfo(self.unit))
+            if spellID then
+                e.tips:SetSpellByID(spellID)
             else
                 e.tips:AddDoubleLine(e.onlyChinese and '队员' or PLAYERS_IN_GROUP, e.onlyChinese and '施法条' or HUD_EDIT_MODE_CAST_BAR_LABEL)
             end
@@ -783,43 +782,43 @@ local function set_memberFrame(memberFrame)
             e.tips:Show()
             self:SetAlpha(0.5)
         end)
-
-        function castFrame:set_settings()
+        function castFrame:set_settings(spellID, stop)
             local texture= e.SetItemSpellCool({frame=self, unit=self.unit})
-            self.texture:SetTexture(texture or 0)
-            if not texture and self.isPlayer then
-                self.texture:SetAtlas('Relic-Life-TraitGlow')
+            if not texture and stop then
+                texture= GetSpellTexture(spellID)
             end
+            self.texture:SetTexture(texture or 0)
         end
-        castFrame:SetScript('OnHide', function(self)
-            self:UnregisterAllEvents()
-        end)
-        castFrame:SetScript('OnShow', function(self)
-            local events= {
-                'UNIT_SPELLCAST_CHANNEL_START',
-                'UNIT_SPELLCAST_CHANNEL_STOP',
-                'UNIT_SPELLCAST_CHANNEL_UPDATE',
-                'UNIT_SPELLCAST_START',
-                'UNIT_SPELLCAST_DELAYED',
-                'UNIT_SPELLCAST_FAILED',
-                'UNIT_SPELLCAST_FAILED_QUIET',
-                'UNIT_SPELLCAST_INTERRUPTED',
-                'UNIT_SPELLCAST_SUCCEEDED',
-                'UNIT_SPELLCAST_STOP',
-            }
-            FrameUtil.RegisterFrameForUnitEvents(self, events, unit)
-        end)
-        castFrame:SetScript('OnEvent', function (self, _, _, _, spellID)
-            self.spellID= spellID
-            self:set_settings()
+        castFrame:SetScript('OnEvent', function(self, event, _, _, spellID)
+            local stop= event=='UNIT_SPELLCAST_CHANNEL_STOP'
+                or event=='UNIT_SPELLCAST_FAILED'
+                or event=='UNIT_SPELLCAST_FAILED_QUIET'
+                or event=='UNIT_SPELLCAST_INTERRUPTED'
+                or event=='UNIT_SPELLCAST_STOP'
+            self:set_settings(spellID, stop)
         end)
         memberFrame.castFrame= castFrame
     end
-    castFrame.spellID=nil
+    castFrame:UnregisterAllEvents()
+    if exists then
+        local events= {
+            'UNIT_SPELLCAST_CHANNEL_START',
+            'UNIT_SPELLCAST_CHANNEL_STOP',
+            'UNIT_SPELLCAST_CHANNEL_UPDATE',
+            'UNIT_SPELLCAST_START',
+            'UNIT_SPELLCAST_DELAYED',
+            'UNIT_SPELLCAST_FAILED',
+            'UNIT_SPELLCAST_FAILED_QUIET',
+            'UNIT_SPELLCAST_INTERRUPTED',
+            'UNIT_SPELLCAST_SUCCEEDED',
+            'UNIT_SPELLCAST_STOP',
+        }
+        FrameUtil.RegisterFrameForUnitEvents(castFrame, events, unit)
+    end
     castFrame.unit= unit
-    castFrame.isPlayer= isPlayer
-    castFrame:SetShown(exists)
-    castFrame:set_settings()
+    if isPlayer then
+        castFrame.texture:SetAtlas('Relic-Life-TraitGlow')
+    end
 
     --##########
     --队伍, 标记, 成员派系
@@ -832,7 +831,7 @@ local function set_memberFrame(memberFrame)
         raidTargetFrame.texture= raidTargetFrame:CreateTexture()
         raidTargetFrame.texture:SetAllPoints(raidTargetFrame)
         raidTargetFrame.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
-        
+
         function raidTargetFrame:set_settings()
             if self.isPlayer then
                 SetRaidTargetIconTexture(self.texture, 1)
