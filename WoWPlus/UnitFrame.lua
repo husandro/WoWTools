@@ -782,26 +782,21 @@ local function set_memberFrame(memberFrame)
             e.tips:Show()
             self:SetAlpha(0.5)
         end)
-        function castFrame:set_settings(spellID, stop)
+        function castFrame:set_settings()
             local texture= e.SetItemSpellCool({frame=self, unit=self.unit})
-            if not texture and stop then
-                texture= GetSpellTexture(spellID)
-            end
             self.texture:SetTexture(texture or 0)
         end
-        castFrame:SetScript('OnEvent', function(self, event, _, _, spellID)
-            local stop= event=='UNIT_SPELLCAST_CHANNEL_STOP'
-                or event=='UNIT_SPELLCAST_FAILED'
-                or event=='UNIT_SPELLCAST_FAILED_QUIET'
-                or event=='UNIT_SPELLCAST_INTERRUPTED'
-                or event=='UNIT_SPELLCAST_STOP'
-            self:set_settings(spellID, stop)
+        castFrame:SetScript('OnEvent', function(self, event, arg1)
+            if event=='UNIT_SPELLCAST_SENT' and not UnitIsUnit(self.unit, arg1) then
+                return
+            end
+            self:set_settings()
         end)
         memberFrame.castFrame= castFrame
     end
     castFrame:UnregisterAllEvents()
     if exists then
-        local events= {
+        local events= {--ActionButton.lua
             'UNIT_SPELLCAST_CHANNEL_START',
             'UNIT_SPELLCAST_CHANNEL_STOP',
             'UNIT_SPELLCAST_CHANNEL_UPDATE',
@@ -812,8 +807,13 @@ local function set_memberFrame(memberFrame)
             'UNIT_SPELLCAST_INTERRUPTED',
             'UNIT_SPELLCAST_SUCCEEDED',
             'UNIT_SPELLCAST_STOP',
+            'UNIT_SPELLCAST_RETICLE_TARGET',
+            'UNIT_SPELLCAST_RETICLE_CLEAR',
+            'UNIT_SPELLCAST_EMPOWER_START',
+            'UNIT_SPELLCAST_EMPOWER_STOP',
         }
         FrameUtil.RegisterFrameForUnitEvents(castFrame, events, unit)
+        castFrame:RegisterEvent('UNIT_SPELLCAST_SENT')
     end
     castFrame.unit= unit
     if isPlayer then
@@ -832,22 +832,6 @@ local function set_memberFrame(memberFrame)
         raidTargetFrame.texture:SetAllPoints(raidTargetFrame)
         raidTargetFrame.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
 
-        function raidTargetFrame:set_settings()
-            if self.isPlayer then
-                SetRaidTargetIconTexture(self.texture, 1)
-            else
-                set_RaidTarget(self.texture, self.unit)
-            end
-        end
-        raidTargetFrame:SetScript('OnEvent', raidTargetFrame.set_settings)
-        raidTargetFrame:SetScript('OnHide', function()
-            raidTargetFrame:UnregisterEvent('RAID_TARGET_UPDATE')
-        end)
-        raidTargetFrame:SetScript('OnShow', function(self)
-            raidTargetFrame:RegisterEvent('RAID_TARGET_UPDATE')
-            self:set_settings()
-        end)
-
         --成员派系
         raidTargetFrame.faction=raidTargetFrame:CreateTexture(nil, 'ARTWORK')
         raidTargetFrame.faction:SetSize(16,16)
@@ -861,11 +845,28 @@ local function set_memberFrame(memberFrame)
             end
             self.faction:SetShown(atlas and true or false)
         end
+
+        raidTargetFrame:SetScript('OnEvent', function(self, event)
+            if event=='RAID_TARGET_UPDATE' then
+                set_RaidTarget(self.texture, self.unit)--队伍, 标记
+            elseif event=='UNIT_FACTION' then
+                self:set_faction()--成员派系
+            end
+        end)
         memberFrame.RaidTargetFrame= raidTargetFrame
     end
     raidTargetFrame.unit= unit
     raidTargetFrame.isPlayer= isPlayer
-    raidTargetFrame:set_settings()--队伍, 标记
+    raidTargetFrame:UnregisterAllEvents()
+    if exists then
+        raidTargetFrame:RegisterUnitEvent('UNIT_FACTION', unit)
+        raidTargetFrame:RegisterEvent('RAID_TARGET_UPDATE')
+    end
+    if isPlayer then
+        SetRaidTargetIconTexture(raidTargetFrame.texture, 1)
+    else
+        set_RaidTarget(raidTargetFrame.texture, raidTargetFrame.unit)--队伍, 标记
+    end
     raidTargetFrame:set_faction()--成员派系
 
 
