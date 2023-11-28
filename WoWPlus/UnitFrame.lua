@@ -607,6 +607,7 @@ local function set_memberFrame(memberFrame)
     end
     local unit= memberFrame.unit or memberFrame:GetUnit()
     local exists= memberFrame:IsShown()
+    
 
     local r, g, b
     local classFilename= exists and UnitClassBase(unit)
@@ -655,7 +656,7 @@ local function set_memberFrame(memberFrame)
         btn.frame.unit= unit..'target'
 
         btn.frame.isPlayerTargetTexture= btn.frame:CreateTexture(nil, 'BORDER')
-        btn.frame.isPlayerTargetTexture:SetSize(52,52)
+        btn.frame.isPlayerTargetTexture:SetSize(42,42)
         btn.frame.isPlayerTargetTexture:SetPoint('CENTER',-1,0)
         btn.frame.isPlayerTargetTexture:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
         btn.frame.isPlayerTargetTexture:SetVertexColor(1,0,0)
@@ -678,7 +679,7 @@ local function set_memberFrame(memberFrame)
 
         btn.frame.class= btn.frame:CreateTexture(nil, "ARTWORK")-- e.Cstr(btn.frame, {size=14})--队友，目标，职业
         btn.frame.class:SetSize(14,14)
-        btn.frame.class:SetPoint('BOTTOMRIGHT',3,-2)
+        btn.frame.class:SetPoint('TOPRIGHT')
 
 
 
@@ -690,7 +691,7 @@ local function set_memberFrame(memberFrame)
 
         function btn.frame:set_settings()
             local exists2= UnitExists(self.unit)
-            local unit2= exists2 and self.unit or (EditModeManagerFrame:IsEditModeActive() and 'player')
+            local unit2= exists2 and self.unit-- or (EditModeManagerFrame:IsEditModeActive() and 'player')
             local atlas
             if unit2 then
                 if UnitIsUnit(unit2, 'player') then--我
@@ -718,6 +719,18 @@ local function set_memberFrame(memberFrame)
             self.isPlayerTargetTexture:SetShown(exists2 and UnitIsUnit(self.unit, 'target'))
             self:SetShown(exists2)
         end
+
+        btn.frame:SetScript('OnShow', function(self)
+            self:RegisterEvent('RAID_TARGET_UPDATE')
+            self:RegisterUnitEvent('UNIT_TARGET', unit)
+            self:RegisterUnitEvent('UNIT_FLAGS', unit..'target')
+            self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit..'target')
+            self:RegisterEvent('PLAYER_TARGET_CHANGED')
+            self:set_settings()
+        end)
+        btn.frame:SetScript('OnShow', function(self)
+            self:UnregisterAllEvents()
+        end)
         btn.frame:SetScript('OnEvent', btn.frame.set_settings)
 
 
@@ -740,16 +753,7 @@ local function set_memberFrame(memberFrame)
         memberFrame.potFrame= btn
     end
 
-    btn.frame:UnregisterAllEvents()
-    if exists then
-        btn.frame:RegisterEvent('RAID_TARGET_UPDATE')
-        btn.frame:RegisterUnitEvent('UNIT_TARGET', unit)
-        btn.frame:RegisterUnitEvent('UNIT_FLAGS', unit..'target')
-        btn.frame:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', unit..'target')
-        btn.frame:RegisterEvent('PLAYER_TARGET_CHANGED')
-    end
-    btn.frame:set_settings()
-
+    
     --#########
     --队友，施法
     --#########
