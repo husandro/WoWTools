@@ -769,7 +769,7 @@ local function set_memberFrame(memberFrame)
         castFrame.texture=  castFrame:CreateTexture(nil,'BACKGROUND')
         castFrame.texture:SetAllPoints(castFrame)
         
-        castFrame:SetScript('OnLeave', function() e.tips:Hide() end)
+        castFrame:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
         castFrame:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
@@ -781,6 +781,7 @@ local function set_memberFrame(memberFrame)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
+            self:SetAlpha(0.5)
         end)
 
         function castFrame:set_settings()
@@ -814,33 +815,61 @@ local function set_memberFrame(memberFrame)
         end)
         memberFrame.castFrame= castFrame
     end
+    castFrame.spellID=nil
     castFrame.unit= unit
     castFrame.isPlayer= isPlayer
     castFrame:SetShown(exists)
     castFrame:set_settings()
 
     --##########
-    --队伍, 标记
+    --队伍, 标记, 成员派系
     --##########
     local raidTargetFrame= memberFrame.raidTargetFrame
     if not raidTargetFrame then
         raidTargetFrame= CreateFrame("Frame", nil, memberFrame)
         raidTargetFrame:SetSize(14,14)
         raidTargetFrame:SetPoint('RIGHT', memberFrame.PartyMemberOverlay.RoleIcon, 'LEFT')
-        raidTargetFrame:SetScript('OnEvent', function (self)
-            set_RaidTarget(self.texture, self.unit)
-        end)
         raidTargetFrame.texture= raidTargetFrame:CreateTexture()
         raidTargetFrame.texture:SetAllPoints(raidTargetFrame)
         raidTargetFrame.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
+        
+        function raidTargetFrame:set_settings()
+            if self.isPlayer then
+                SetRaidTargetIconTexture(self.texture, 1)
+            else
+                set_RaidTarget(self.texture, self.unit)
+            end
+        end
+        raidTargetFrame:SetScript('OnEvent', raidTargetFrame.set_settings)
+        raidTargetFrame:SetScript('OnHide', function()
+            raidTargetFrame:UnregisterEvent('RAID_TARGET_UPDATE')
+        end)
+        raidTargetFrame:SetScript('OnShow', function(self)
+            raidTargetFrame:RegisterEvent('RAID_TARGET_UPDATE')
+            self:set_settings()
+        end)
+
+        --成员派系
+        raidTargetFrame.faction=raidTargetFrame:CreateTexture(nil, 'ARTWORK')
+        raidTargetFrame.faction:SetSize(16,16)
+        raidTargetFrame.faction:SetPoint('TOPLEFT', memberFrame.Portrait, -4, 0)
+        function raidTargetFrame:set_faction()
+            local faction= UnitFactionGroup(self.unit)
+            local atlas
+            if faction~= e.Player.faction or self.isPlayer then
+                atlas= faction=='Horde' and e.Icon.horde or (faction=='Alliance' and e.Icon.alliance) or 'nameplates-icon-flag-neutral'
+                self.faction:SetAtlas(atlas)
+            end
+            self.faction:SetShown(atlas and true or false)
+        end
         memberFrame.RaidTargetFrame= raidTargetFrame
     end
-    raidTargetFrame:UnregisterEvent('RAID_TARGET_UPDATE')
-    if exists then
-        raidTargetFrame:RegisterEvent('RAID_TARGET_UPDATE')
-    end
     raidTargetFrame.unit= unit
-    set_RaidTarget(raidTargetFrame.texture, unit)--设置,标记
+    raidTargetFrame.isPlayer= isPlayer
+    raidTargetFrame:set_settings()--队伍, 标记
+    raidTargetFrame:set_faction()--成员派系
+
+
 
     --#######
     --战斗指示
@@ -848,10 +877,9 @@ local function set_memberFrame(memberFrame)
     local combatFrame= memberFrame.combatFrame
     if not combatFrame then
         combatFrame= CreateFrame('Frame', nil, memberFrame)
-        --frame:SetPoint('TOPLEFT', memberFrame.potFrame, 'TOPRIGHT', 2, 2)
         combatFrame:SetPoint('BOTTOMLEFT', memberFrame.potFrame, 'RIGHT', 2, 2)
         combatFrame:SetSize(16,16)
-        combatFrame:SetScript('OnLeave', function() e.tips:Hide() end)
+        combatFrame:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
         combatFrame:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
@@ -859,6 +887,7 @@ local function set_memberFrame(memberFrame)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
+            self:SetAlpha(0.5)
         end)
 
         combatFrame.texture= combatFrame:CreateTexture()
@@ -890,21 +919,8 @@ local function set_memberFrame(memberFrame)
         positionFrame:SetSize(1,1)
         positionFrame.Text= e.Cstr(positionFrame)
         positionFrame.Text:SetPoint('LEFT')
-        function positionFrame:set_Shown(isExists)
-            local show= not IsInInstance() and isExists
-            if isExists then
-                self:RegisterEvent('PLAYER_ENTERING_WORLD')
-            else
-                self:RegisterEvent('PLAYER_ENTERING_WORLD')
-            end
-            if show then
-                self:RegisterEvent('PLAYER_REGEN_DISABLED')
-                self:RegisterEvent('PLAYER_REGEN_ENABLED')
-            else
-                self:UnregisterEvent('PLAYER_REGEN_DISABLED')
-                self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-            end
-            self:SetShown(show and not UnitAffectingCombat('player'))
+        function positionFrame:set_shown()
+            self:SetShown(not IsInInstance() and not UnitAffectingCombat('player') or self.isPlayer)
         end
         positionFrame:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= (self.elapsed or 0.3) + elapsed
@@ -927,21 +943,27 @@ local function set_memberFrame(memberFrame)
                 self.Text:SetText(text or '')
             end
         end)
-        positionFrame:SetScript('OnEvent', function(self, event)
-            if event == 'PLAYER_ENTERING_WORLD' then
-                self:set_Shown(UnitExists(self.unit))
-            elseif event=='PLAYER_REGEN_DISABLED' then
-                self:SetShown(false)
-            elseif event=='PLAYER_REGEN_ENABLED' then
-                self.elapsed=1
-                self:SetShown(true)
+        function positionFrame:set_evnet()
+            if not IsInInstance() and UnitExists(self.unit) or self.isPlayer then
+                self:RegisterEvent('PLAYER_REGEN_DISABLED')
+                self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            else
+                self:UnregisterEvent('PLAYER_REGEN_DISABLED')
+                self:UnregisterEvent('PLAYER_REGEN_ENABLED')
             end
-        end)
+        end
+        positionFrame:SetScript('OnEvent',  positionFrame.set_shown)
+
+        positionFrame:SetScript('OnHide', positionFrame.set_evnet)
+        positionFrame:SetScript('OnShow', positionFrame.set_evnet)
         memberFrame.positionFrame= positionFrame
     end
+    positionFrame.isPlayer= isPlayer
     positionFrame.Text:SetTextColor(r, g, b)
     positionFrame.unit= unit
-    positionFrame:set_Shown(exists)
+    positionFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    positionFrame:set_evnet()
+    positionFrame:set_shown()
 
     --#########
     --队友，死亡
@@ -957,8 +979,14 @@ local function set_memberFrame(memberFrame)
         deadFrame.texture:SetAllPoints(deadFrame)
         function deadFrame:set_settings()
             local find= false
-            if UnitIsConnected(self.unit) and UnitIsPlayer(self.unit) then
-                if UnitIsCharmed(self.unit) then--被魅惑
+            if UnitIsConnected(self.unit) then
+                if UnitHasIncomingResurrection(self.unit) then--正在复活
+                    self.texture:SetAtlas('poi-traveldirections-arrow2')
+                    find=true
+                elseif UnitIsUnconscious(self.unit) then--失控
+                    self.texture:SetAtlas('cursor_legendaryquest_128')
+                    find=true
+                elseif UnitIsCharmed(self.unit) or UnitIsPossessed(self.unit)  then--被魅惑
                     self.texture:SetAtlas('CovenantSanctum-Reservoir-Idle-NightFae-Spiral3')
                     find= true
                 elseif UnitIsFeignDeath(self.unit) then--假死
@@ -993,18 +1021,26 @@ local function set_memberFrame(memberFrame)
             end
             self:set_settings()
         end)
+        deadFrame:SetScript('OnHide', function(self)
+            self:UnregisterAllEvents()
+            deadFrame.dead= 0
+        end)
+        deadFrame:SetScript('OnShow', function(self)
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            self:RegisterEvent('CHALLENGE_MODE_START')
+            self:RegisterUnitEvent('UNIT_FLAGS', unit)
+            self:RegisterUnitEvent('UNIT_HEALTH', unit)
+        end)
 
         --死亡，次数
         deadFrame.dead=0
         deadFrame.Text= e.Cstr(deadFrame, {mouse=true})
-        deadFrame.Text:SetPoint('BOTTOMRIGHT', deadFrame, 2,0)
+        deadFrame.Text:SetPoint('BOTTOMRIGHT', deadFrame, -2,0)
         deadFrame.Text:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
         deadFrame.Text:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '魅惑' or LOSS_OF_CONTROL_DISPLAY_CHARM, '|A:CovenantSanctum-Reservoir-Idle-NightFae-Spiral3:0:0|a')
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '死亡' or DEAD,
                     format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, self:GetParent().dead or 0 , e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
@@ -1015,15 +1051,6 @@ local function set_memberFrame(memberFrame)
         memberFrame.deadFrame= deadFrame
     end
 
-    deadFrame:UnregisterAllEvents()
-    if exists then
-        deadFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-        deadFrame:RegisterEvent('CHALLENGE_MODE_START')
-        deadFrame:RegisterUnitEvent('UNIT_FLAGS', unit)
-        deadFrame:RegisterUnitEvent('UNIT_HEALTH', unit)
-    else
-        deadFrame.dead= 0
-    end
     deadFrame.Text:SetTextColor(r, g, b)
     deadFrame.isPlayer= isPlayer
     deadFrame.unit= unit

@@ -3684,7 +3684,8 @@
         "ALL_ASSIST_DESCRIPTION",
         "TRANSMOG_CURRENT_SPECIALIZATION",
         "SHOW_ARENA_ENEMY_CASTBAR_TEXT",
-        "LOSS_OF_CONTROL_DISPLAY_CHARM"
+        "LOSS_OF_CONTROL_DISPLAY_CHARM",
+        "show"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
