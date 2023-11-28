@@ -632,7 +632,7 @@ local function set_memberFrame(memberFrame)
         btn:SetAttribute('type', 'target')
         btn:SetAttribute('unit', unit..'target')
 
-                
+
         btn:SetScript('OnLeave', function() e.tips:Hide() end)
         btn:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -646,7 +646,7 @@ local function set_memberFrame(memberFrame)
             end
             e.tips:Show()
         end)
-        
+
 
         btn.frame=CreateFrame('Frame', nil, btn)
         btn.frame:SetFrameLevel(btn.frame:GetFrameLevel()-1)
@@ -660,7 +660,7 @@ local function set_memberFrame(memberFrame)
         btn.frame.isPlayerTargetTexture:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
         btn.frame.isPlayerTargetTexture:SetVertexColor(1,0,0)
 
-        
+
 
         btn.frame.Portrait= btn.frame:CreateTexture(nil, 'BACKGROUND')--队友，目标，图像
         btn.frame.Portrait:SetAllPoints(btn.frame)
@@ -671,7 +671,7 @@ local function set_memberFrame(memberFrame)
         btn.frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         btn.frame.healthBar:SetMinMaxValues(0,100)
         btn.frame.healthBar:SetFrameLevel(btn.frame:GetFrameLevel()+1)]]
-        
+
         btn.frame.healthLable= e.Cstr(btn.frame)
         btn.frame.healthLable:SetPoint('BOTTOMRIGHT')
         btn.frame.healthLable:SetTextColor(1,1,1)
@@ -680,7 +680,7 @@ local function set_memberFrame(memberFrame)
         btn.frame.class:SetSize(14,14)
         btn.frame.class:SetPoint('BOTTOMRIGHT',3,-2)
 
-       
+
 
         --[[local texture= frame.healthBar:CreateTexture(nil, 'BACKGROUND')--队友，目标，生命条，外框
         texture:SetAtlas('MainPet-HealthBarFrame')
@@ -705,12 +705,12 @@ local function set_memberFrame(memberFrame)
                         SetPortraitTexture(self.Portrait, self.unit, true)--图像
                     end
                 end
-                
+
                 if UnitIsPlayer(unit2) then
                     atlas= e.Class(unit2, nil, true)
                     self.class:SetAtlas(atlas)
                 end
-                
+
                 local r2, g2, b2= GetClassColor(UnitClassBase(unit2))
                 self.healthLable:SetTextColor(r2 or 1, g2 or 1, b2 or 1)
             end
@@ -719,7 +719,7 @@ local function set_memberFrame(memberFrame)
             self:SetShown(exists2)
         end
         btn.frame:SetScript('OnEvent', btn.frame.set_settings)
-        
+
 
         --队友， 目标， 生命条
         btn.frame:SetScript('OnUpdate', function(self, elapsed)
