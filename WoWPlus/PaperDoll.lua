@@ -879,7 +879,7 @@ local function Init_TrackButton()--添加装备管理框
             panel.equipmentButton:SetAlpha(1)
         end
     end)
-    TrackButton:SetScript("OnLeave", function(self)
+    TrackButton:SetScript("OnLeave", function()
         ResetCursor()
         e.tips:Hide()
         panel.equipmentButton:SetButtonState('NORMAL')
@@ -923,16 +923,19 @@ local function Init_TrackButton()--添加装备管理框
         if not IsInInstance() or not self:IsShown() or not IsInGroup() then
             return
         end
-        local isEquipped
+        local equipped
         local num=0
         for _, setID in pairs(C_EquipmentSet.GetEquipmentSetIDs() or {}) do
-            num= num+1
-            isEquipped= select(4, C_EquipmentSet.GetEquipmentSetInfo(setID))
-            if isEquipped then
-                break
+            local isEquipped, numItems= select(4, C_EquipmentSet.GetEquipmentSetInfo(setID))
+            if numItems>0 then
+                num= num+1
+                if isEquipped then
+                    equipped=true
+                    break
+                end
             end
         end
-        e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=not isEquipped and num>0})
+        e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show= not equipped and num>0})
     end
 
     --建立，按钮
@@ -973,12 +976,14 @@ local function Init_TrackButton()--添加装备管理框
                 end
             end
             frame:GetParent():SetButtonState('PUSHED')
+            frame:SetAlpha(1)
         end)
         btn:SetScript("OnLeave",function(frame)
             frame:GetParent():SetButtonState('NORMAL')
             e.tips:Hide()
             panel.equipmentButton:SetButtonState('NORMAL')
             panel.equipmentButton:SetAlpha(0.5)
+            frame:SetAlpha(self.numItems==0 and 0.3 or 1)
         end)
         self.buttons[index]=btn
         return btn
@@ -991,12 +996,24 @@ local function Init_TrackButton()--添加装备管理框
         local setIDs= SortEquipmentSetIDs(C_EquipmentSet.GetEquipmentSetIDs() or {})--PaperDollFrame.lua
         local numIndex=0
         for index, setID in pairs(setIDs) do
-            local texture, _, isEquipped= select(2, C_EquipmentSet.GetEquipmentSetInfo(setID))
+            local texture, _, isEquipped, numItems= select(2, C_EquipmentSet.GetEquipmentSetInfo(setID))
             local btn=self.buttons[index] or self:create_button(index)
-            btn.setID=setID
-            btn:SetNormalTexture(texture)
+            if numItems==0 then
+                btn:SetNormalAtlas('groupfinder-eye-highlight')
+            else
+                if texture==134400 then--?图标
+                    local specIndex = C_EquipmentSet.GetEquipmentSetAssignedSpec(setID)
+                    if specIndex then
+                        texture= select(4, GetSpecializationInfo(specIndex))
+                    end
+                end
+                btn:SetNormalTexture(texture or 0)
+            end
             btn:SetShown(true)
+            btn:SetAlpha(numItems==0 and 0.3 or 1)
             btn.texture:SetShown(isEquipped)
+            btn.setID=setID
+            btn.numItems=numItems
             numIndex=index
         end
         for index= numIndex+1, #self.buttons, 1 do
