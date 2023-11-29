@@ -985,6 +985,12 @@ local function Init_TrackButton()--添加装备管理框
             panel.equipmentButton:SetAlpha(0.5)
             frame:SetAlpha(self.numItems==0 and 0.3 or 1)
         end)
+        btn:RegisterEvent('PLAYER_REGEN_DISABLED')
+        btn:RegisterEvent('PLAYER_REGEN_ENABLED')
+        function btn:set_shown()
+            self:SetShown(self.setID and (self.isEquipped or not UnitAffectingCombat('player')))
+        end
+        btn:SetScript('OnEvent', btn.set_shown)
         self.buttons[index]=btn
         return btn
     end
@@ -1009,15 +1015,19 @@ local function Init_TrackButton()--添加装备管理框
                 end
                 btn:SetNormalTexture(texture or 0)
             end
-            btn:SetShown(true)
-            btn:SetAlpha(numItems==0 and 0.3 or 1)
             btn.texture:SetShown(isEquipped)
             btn.setID=setID
+            btn.isEquipped= isEquipped
             btn.numItems=numItems
             numIndex=index
+            btn:set_shown()
+            btn:SetAlpha(numItems==0 and 0.3 or 1)
         end
         for index= numIndex+1, #self.buttons, 1 do
-            self.buttons[index]:SetShown(false)
+            self.buttons[index].setID=nil
+            self.buttons[index].isEquipped=nil
+            self.buttons[index].numItems=0
+            self.buttons[index]:set_shown()
         end
     end
 
