@@ -874,7 +874,10 @@ function e.Get_Weekly_Rewards_Activities(settings)
                     local itemLink=  C_WeeklyRewards.GetExampleRewardItemHyperlinks(info.id)
                     local texture= itemLink and C_Item.GetItemIconByID(itemLink)
                     local itemLevel= itemLink and GetDetailedItemLevelInfo(itemLink)
-                    e.tips:AddLine('   '..index..') '..(texture and itemLevel and '|T'..texture..':0|t'..itemLevel or info.difficulty)..e.Icon.select2..(info.level or ''))
+                    e.tips:AddLine(
+                        '   '..index..') '
+                        ..(texture and itemLevel and '|T'..texture..':0|t'..itemLevel or info.difficulty)
+                        ..e.Icon.select2..((info.level and info.level>0) and info.level or ''))
                 else
                     e.tips:AddLine('    |cff828282'..index..') '
                         ..info.difficulty
@@ -948,7 +951,7 @@ function e.Get_Weekly_Rewards_Activities(settings)
                 local texture= C_Item.GetItemIconByID(itemLink)
                 local itemLevel= GetDetailedItemLevelInfo(itemLink)
                 text= '    '..index..') '..(texture and '|T'..texture..':0|t' or itemLink)
-                text= text..((itemLevel and itemLevel>0) and itemLevel or '')..e.Icon.select2..(info.level or '')
+                text= text..((itemLevel and itemLevel>0) and itemLevel or '')..e.Icon.select2..((info.level and info.level>0) and info.level or '')
             else
                 if info.unlocked then
                     text='   '..index..') '..info.difficulty..e.Icon.select2..(info.level or '')--.. ' '..(e.onlyChinese and '完成' or COMPLETE)
