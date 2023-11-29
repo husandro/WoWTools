@@ -3686,7 +3686,8 @@
         "SHOW_ARENA_ENEMY_CASTBAR_TEXT",
         "LOSS_OF_CONTROL_DISPLAY_CHARM",
         "show",
-        "READY_CHECK"
+        "READY_CHECK",
+        "PaperDollEquipmentManagerPane_InitButton"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

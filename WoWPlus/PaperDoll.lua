@@ -606,6 +606,15 @@ local function set_item_Set(self, link)--套装
     end
 end
 
+
+
+
+
+
+
+
+
+
 local function Title()--头衔数量
     if not PaperDollSidebarTab2 or not PAPERDOLL_SIDEBARS[2].IsActive() then
         return
@@ -764,11 +773,8 @@ local function set_PaperDollSidebarTab3_Text()--标签, 内容,提示
         self.nu:SetShown(nu and true or false)
         self.nu.tooltip2= (e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(nu or '')
         self.nu.setID= setID
-    end
+    end   
 end
-
-
-
 
 
 
@@ -937,7 +943,7 @@ local function Init_TrackButton()--添加装备管理框
         btn.texture:SetPoint('CENTER')
         btn.texture:SetAtlas('AlliedRace-UnlockingFrame-GenderMouseOverGlow')
         self:set_button_point(btn, index)--设置位置
-        btn:SetScript("OnMouseDown",function(frame)
+        btn:SetScript("OnClick",function(frame)
             if not UnitAffectingCombat('player') then
                 C_EquipmentSet.UseEquipmentSet(frame.setID)
                 C_Timer.After(0.5, function() LvTo() end)--修改总装等
@@ -1732,6 +1738,66 @@ local function Init()
             end)
 
             CharacterLevelText.set=true
+        end
+    end)
+
+    --添加，空装，按钮
+    --PaperDollFrame.lua
+    hooksecurefunc('PaperDollEquipmentManagerPane_InitButton', function(btn)
+        if Save.hide then
+            if btn.createButton then
+                btn.createButton:SetShown(false)
+            end
+            return
+        end
+        if not btn.setID and not btn.createButton  then
+            btn.createButton= e.Cbtn(btn, {size={30,30}, atlas='groupfinder-eye-highlight'})
+            btn.createButton.str= e.onlyChinese and '空' or EMPTY
+            btn.createButton:SetPoint('RIGHT', 0,-4)
+            btn.createButton:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn.createButton:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(self.str,
+                    C_EquipmentSet.GetEquipmentSetID(self.str)
+                    and ('|cffff00ff'..(e.onlyChinese and '修改' or EQUIPMENT_SET_EDIT)..'|r')
+                    or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..'|r')
+                )
+                e.tips:Show()
+            end)
+
+            btn.createButton:SetScript('OnClick', function(self)
+                local setID= C_EquipmentSet.GetEquipmentSetID(self.str)
+                if setID then
+                    C_EquipmentSet.DeleteEquipmentSet(setID)
+                end
+                for i=1, 18 do
+                    C_EquipmentSet.IgnoreSlotForSave(i)
+                end
+                C_EquipmentSet.CreateEquipmentSet(self.str)
+                if setID then
+                    print(id,addName, '|cffff00ff'..(e.onlyChinese and '修改' or EQUIPMENT_SET_EDIT)..'|r', self.str)
+                else
+                    print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..'|r', self.str)
+                end
+            end)
+        end
+        if btn.createButton then
+            btn.createButton:SetShown(not btn.setID and true or false)
+        end
+        if not btn.setScripOK then
+            btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+            btn:HookScript('OnClick', function(self, d)
+                if UnitAffectingCombat('player') or not self.setID or Save.hide or d~='RightButton' then
+                    return
+                end
+                C_EquipmentSet.UseEquipmentSet(self.setID)
+                local name, iconFileID = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
+                print(id, addName, iconFileID and '|T'..iconFileID..':0|t|cnGREEN_FONT_COLOR:' or '', name)
+            end)
+            btn.setScripOK=true
         end
     end)
 
