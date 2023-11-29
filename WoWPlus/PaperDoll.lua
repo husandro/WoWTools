@@ -773,7 +773,7 @@ local function set_PaperDollSidebarTab3_Text()--标签, 内容,提示
         self.nu:SetShown(nu and true or false)
         self.nu.tooltip2= (e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(nu or '')
         self.nu.setID= setID
-    end   
+    end
 end
 
 
@@ -982,17 +982,21 @@ local function Init_TrackButton()--添加装备管理框
             frame:GetParent():SetButtonState('PUSHED')
             frame:SetAlpha(1)
         end)
+
         btn:SetScript("OnLeave",function(frame)
             frame:GetParent():SetButtonState('NORMAL')
             e.tips:Hide()
             panel.equipmentButton:SetButtonState('NORMAL')
             panel.equipmentButton:SetAlpha(0.5)
-            frame:SetAlpha(self.numItems==0 and 0.3 or 1)
+            frame:set_alpha()
         end)
         btn:RegisterEvent('PLAYER_REGEN_DISABLED')
         btn:RegisterEvent('PLAYER_REGEN_ENABLED')
         function btn:set_shown()
             self:SetShown(self.setID and (self.isEquipped or not UnitAffectingCombat('player')))
+        end
+        function btn:set_alpha()
+            self:SetAlpha(self.numItems==0 and 0.3 or 1)
         end
         btn:SetScript('OnEvent', btn.set_shown)
         self.buttons[index]=btn
@@ -1025,7 +1029,7 @@ local function Init_TrackButton()--添加装备管理框
             btn.numItems=numItems
             numIndex=index
             btn:set_shown()
-            btn:SetAlpha(numItems==0 and 0.3 or 1)
+            btn:set_alpha()
         end
         for index= numIndex+1, #self.buttons, 1 do
             self.buttons[index].setID=nil
