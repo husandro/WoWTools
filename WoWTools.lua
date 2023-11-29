@@ -724,7 +724,8 @@ function e.CheckRange(unit, range, operator)
     end
 end
 
-function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=})--设置，提示
+--设置，提示
+function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=})
     if tab.show and not tab.frame.HelpTips then
         tab.frame.HelpTips= e.Cbtn(tab.frame, {layer='OVERLAY',size=tab.size and {tab.size[1], tab.size[2]} or {40,40}})-- button:CreateTexture(nil, 'OVERLAY')
         if tab.point=='right' then
@@ -1929,25 +1930,21 @@ function e.GetDurabiliy(reTexture)--耐久度
             max= max +max2
         end
     end
-    local text, value= nil, 100
-    if max>0 then
-        if cur==max then
-            text= '100%'
+    local text, value= '100%', 100
+    if max>0 and cur<=max then
+        value = cur/max * 100
+        if value<30 then
+            text= format('|cnRED_FONT_COLOR:%i%%|r', value-0.5)
+        elseif value<=60 then
+            text= format('|cnYELLOW_FONT_COLOR:%i%%|r', value-0.5)
+        elseif value<=90 then
+            text= format('|cnGREEN_FONT_COLOR:%i%%|r', value-0.5)
         else
-            value = cur/max * 100
-            if value<30 then
-                text= format('|cnRED_FONT_COLOR:%i%%|r', value-0.5)
-            elseif value<=60 then
-                text= format('|cnYELLOW_FONT_COLOR:%i%%|r', value-0.5)
-            elseif value<=90 then
-                text= format('|cnGREEN_FONT_COLOR:%i%%|r', value-0.5)
-            else
-                text= format('%i%%', value-0.5)
-            end
+            text= format('%i%%', value-0.5)
         end
-        if reTexture then
-            text= '|T132281:0|t'..text
-        end
+    end
+    if reTexture then
+        text= '|T132281:0|t'..text
     end
     return text, value
 end

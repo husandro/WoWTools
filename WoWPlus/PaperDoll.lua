@@ -11,6 +11,14 @@ local Save={
 
 
 local panel= CreateFrame("Frame", nil, PaperDollFrame)
+local TrackButton
+
+
+
+
+
+
+
 
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
@@ -782,214 +790,239 @@ end
 --#######
 --装备管理
 --#######
-local function EquipmentStr(self)--套装已装备数量
-    local setID=self.setID
-    local nu
-    if setID and not Save.hide then
-        if not self.nu then
-            self.nu=e.Cstr(self)
-            self.nu:SetJustifyH('RIGHT')
-            self.nu:SetPoint('BOTTOMLEFT', self.text, 'BOTTOMLEFT')
-        end
-        local  numItems, numEquipped= select(5, C_EquipmentSet.GetEquipmentSetInfo(setID))
-        if numItems and numEquipped then
-            nu=numEquipped..'/'..numItems
-        end
-        self.nu:SetText(nu)
-    end
-
-    if self.nu then
-        self.nu:SetShown(nu)
-    end
-end
-
-local function set_equipmentButton_Size()--设置大小
-    if not Save.EquipmentH then
-        panel.equipmentButton.btn:SetSize(20,10)
-    else
-        panel.equipmentButton.btn:SetSize(10,20)
-    end
-end
-
-local function set_equipmentButton_bnt_button_Point(self, index)--添加装备管理框,设置位置
-    local btn= index==1 and panel.equipmentButton.btn or panel.equipmentButton.btn.buttons[index-1]
-    if Save.EquipmentH then
-        self:SetPoint('LEFT', btn, 'RIGHT')
-    else
-        self:SetPoint('TOP', btn, 'BOTTOM')
-    end
-end
-local function set_equipmentFrame_Scale()--缩放
-    panel.equipmentButton.btn:SetScale(Save.equipmentFrameScale or 1)
-end
-local function set_inti_Equipment_Frame()--添加装备管理框
-    if not Save.equipment or not PAPERDOLL_SIDEBARS[3].IsActive() or not panel.equipmentButton or Save.hide then
-        if panel.equipmentButton and panel.equipmentButton.btn then
-            panel.equipmentButton.btn:SetShown(false)
+local function Init_TrackButton()--添加装备管理框
+    if not Save.equipment or not PAPERDOLL_SIDEBARS[3].IsActive() or Save.hide or TrackButton then
+        if TrackButton then
+            TrackButton:set_shown()
+            TrackButton:init_buttons()
         end
         return
     end
 
-    if not panel.equipmentButton.btn and not Save.hide then
-        panel.equipmentButton.btn=e.Cbtn(UIParent, {icon='hide'})--添加移动按钮
-        set_equipmentButton_Size()--设置大小
 
-        function panel.equipmentButton:set_Point()
-            if Save.Equipment then
-                self.btn:SetPoint(Save.Equipment[1], UIParent, Save.Equipment[3], Save.Equipment[4], Save.Equipment[5])
-            elseif PlayerFrame.PlayerFrameContainer.FrameTexture:IsVisible() then
-                self.btn:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.FrameTexture, 'TOPRIGHT',-4,-3)
-            else
-                self.btn:SetPoint('BOTTOMRIGHT', PaperDollItemsFrame, 'TOPRIGHT')
+    TrackButton=e.Cbtn(UIParent, {icon='hide'})--添加移动按钮
+    TrackButton.buttons={}--添加装备管理按钮
+
+    TrackButton:SetSize(20,20)
+    TrackButton:RegisterForDrag("RightButton")
+    TrackButton:SetClampedToScreen(true)
+    TrackButton:SetMovable(true)
+    TrackButton:SetScript("OnDragStart", function(self)
+        if IsAltKeyDown() then
+            self:StartMoving()
+        end
+    end)
+    TrackButton:SetScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        Save.Equipment={self:GetPoint(1)}
+        Save.Equipment[2]=nil
+        self:Raise()
+    end)
+    TrackButton:SetScript('OnMouseDown', function(_, d)
+        if d=='RightButton' and IsAltKeyDown() then--移动图标
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+    TrackButton:SetScript("OnMouseUp", ResetCursor)
+    TrackButton:SetScript("OnClick", function(self, d)
+        if d=='RightButton' and IsControlKeyDown() then--图标横,或 竖
+            Save.EquipmentH= not Save.EquipmentH and true or nil
+            for index, btn in pairs(self.buttons) do
+                btn:ClearAllPoints()
+                self:set_button_point(btn, index)--设置位置
+            end
+
+        elseif d=='LeftButton' and not IsModifierKeyDown() then--打开/关闭角色界面
+            ToggleCharacter("PaperDollFrame")
+            if PaperDollFrame:IsShown() then
+                PaperDollFrame_SetSidebar(PaperDollFrame, 3)
             end
         end
-        panel.equipmentButton:set_Point()
+    end)
+    TrackButton:SetScript('OnMouseWheel',function(self, d)--放大
+        if IsAltKeyDown() then
+            local n=Save.equipmentFrameScale or 1
+            if d==1 then
+                n=n+0.05
+            elseif d==-1 then
+                n=n-0.05
+            end
+            n= n>4 and 4 or n
+            n= n<0.4 and 0.4 or n
+            Save.equipmentFrameScale=n
+            self:set_scale()--缩放
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
+        end
+    end)
+    TrackButton:SetScript("OnEnter", function (self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
 
-        panel.equipmentButton.btn:RegisterForDrag("RightButton")
-        panel.equipmentButton.btn:SetClampedToScreen(true)
-        panel.equipmentButton.btn:SetMovable(true)
-        panel.equipmentButton.btn:SetScript("OnDragStart", function(self)
-            if IsAltKeyDown() then
-                self:StartMoving()
+        e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.equipmentFrameScale or 1),'Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine(not Save.EquipmentH and e.Icon.toRight2..(e.onlyChinese and '向右' or BINDING_NAME_STRAFERIGHT) or (e.Icon.down2..(e.onlyChinese and '向下' or BINDING_NAME_PITCHDOWN)),
+                'Ctrl+'..e.Icon.right)
+
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, e.onlyChinese and '装备管理'or EQUIPMENT_MANAGER)
+        e.tips:Show()
+        if panel.equipmentButton:IsVisible() then
+            panel.equipmentButton:SetButtonState('PUSHED')
+            panel.equipmentButton:SetAlpha(1)
+        end
+    end)
+    TrackButton:SetScript("OnLeave", function(self)
+        ResetCursor()
+        e.tips:Hide()
+        panel.equipmentButton:SetButtonState('NORMAL')
+        panel.equipmentButton:SetAlpha(0.5)
+    end)
+
+    --位置保存
+    function TrackButton:set_point()
+        if Save.Equipment then
+            self:SetPoint(Save.Equipment[1], UIParent, Save.Equipment[3], Save.Equipment[4], Save.Equipment[5])
+        elseif e.Player.husandro then
+            self:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.FrameTexture, 'TOPRIGHT',-4,-3)
+        else
+            self:SetPoint('BOTTOMRIGHT', PaperDollItemsFrame, 'TOPRIGHT')
+        end
+    end
+
+    --缩放
+    function TrackButton:set_scale()
+        self:SetScale(Save.equipmentFrameScale or 1)
+    end
+
+
+    --设置，显示
+    function TrackButton:set_shown()
+        self:SetShown(not Save.hide and Save.equipment)
+    end
+
+    --设置，列表位置
+    function TrackButton:set_button_point(button, index)
+        local btn= index==1 and TrackButton or TrackButton.buttons[index-1]
+        if Save.EquipmentH then
+            button:SetPoint('LEFT', btn, 'RIGHT')
+        else
+            button:SetPoint('TOP', btn, 'BOTTOM')
+        end
+    end
+
+    --提示，没有装上
+    function TrackButton:tips_not_equipment()
+        if not IsInInstance() or not self:IsShown() or not IsInGroup() then
+            return
+        end
+        local isEquipped
+        local num=0
+        for _, setID in pairs(C_EquipmentSet.GetEquipmentSetIDs() or {}) do
+            num= num+1
+            isEquipped= select(4, C_EquipmentSet.GetEquipmentSetInfo(setID))
+            if isEquipped then
+                break
+            end
+        end
+        e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=not isEquipped and num>0})
+    end
+
+    --建立，按钮
+    function TrackButton:create_button(index)
+        local btn=e.Cbtn(self, {icon='hide',size={20,20}})
+        btn.texture= btn:CreateTexture(nil, 'OVERLAY')
+        btn.texture:SetSize(26,26)
+        btn.texture:SetPoint('CENTER')
+        btn.texture:SetAtlas('AlliedRace-UnlockingFrame-GenderMouseOverGlow')
+        self:set_button_point(btn, index)--设置位置
+        btn:SetScript("OnMouseDown",function(frame)
+            if not UnitAffectingCombat('player') then
+                C_EquipmentSet.UseEquipmentSet(frame.setID)
+                C_Timer.After(0.5, function() LvTo() end)--修改总装等
+            else
+                print(id, addName, RED_FONT_COLOR_CODE, e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT)
             end
         end)
-        panel.equipmentButton.btn:SetScript("OnDragStop", function(self)
-            self:StopMovingOrSizing()
-            Save.Equipment={self:GetPoint(1)}
-            Save.Equipment[2]=nil
-            self:Raise()
-        end)
-        panel.equipmentButton.btn:SetScript('OnMouseDown', function(_, d)
-            if d=='RightButton' and IsAltKeyDown() then--移动图标
-                SetCursor('UI_MOVE_CURSOR')
-            end
-        end)
-        panel.equipmentButton.btn:SetScript("OnMouseUp", ResetCursor)
-        panel.equipmentButton.btn:SetScript("OnClick", function(self, d)
-            if d=='RightButton' and IsControlKeyDown() then--图标横,或 竖
-                Save.EquipmentH= not Save.EquipmentH and true or nil
-                for index, btn in pairs(self.buttons) do
-                    btn:ClearAllPoints()
-                    set_equipmentButton_Size()--设置大小
-                    set_equipmentButton_bnt_button_Point(btn, index)--设置位置
+        btn:SetScript("OnEnter", function(frame)
+            if ( frame.setID ) then
+                e.tips:SetOwner(frame, "ANCHOR_LEFT")
+                e.tips:SetEquipmentSet(frame.setID)
+                local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(frame.setID)
+                if specIndex then
+                    local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
+                    if icon3 and specName2 then
+                        e.tips:AddLine(' ')
+                        e.tips:AddLine(format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, '|T'..icon3..':0|t'..specName2))
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine(id,addName)
+                        e.tips:Show()
+                    end
                 end
-
-            elseif d=='LeftButton' and not IsModifierKeyDown() then--打开/关闭角色界面
-                ToggleCharacter("PaperDollFrame")
-            end
-        end)
-        panel.equipmentButton.btn:SetScript('OnMouseWheel',function(_, d)--放大
-            if IsAltKeyDown() then
-                local n=Save.equipmentFrameScale or 1
-                if d==1 then
-                    n=n+0.05
-                elseif d==-1 then
-                    n=n-0.05
+                --local name, iconFileID, _, isEquipped2, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
+                if panel.equipmentButton:IsVisible() then
+                    panel.equipmentButton:SetButtonState('PUSHED')
+                    panel.equipmentButton:SetAlpha(1)
                 end
-                n= n>4 and 4 or n
-                n= n<0.4 and 0.4 or n
-                Save.equipmentFrameScale=n
-                set_equipmentFrame_Scale()--缩放
-                print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
             end
+            frame:GetParent():SetButtonState('PUSHED')
         end)
-        panel.equipmentButton.btn:SetScript("OnEnter", function (self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-
-            e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-            e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.equipmentFrameScale or 1),'Alt+'..e.Icon.mid)
-            e.tips:AddDoubleLine(not Save.EquipmentH and e.Icon.toRight2..(e.onlyChinese and '向右' or BINDING_NAME_STRAFERIGHT) or (e.Icon.down2..(e.onlyChinese and '向下' or BINDING_NAME_PITCHDOWN)),
-                    'Ctrl+'..e.Icon.right)
-
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, e.onlyChinese and '装备管理'or EQUIPMENT_MANAGER)
-            e.tips:Show()
-            if panel.equipmentButton:IsVisible() then
-                panel.equipmentButton:SetButtonState('PUSHED')
-                panel.equipmentButton:SetAlpha(1)
-            end
-        end)
-        panel.equipmentButton.btn:SetScript("OnLeave", function(self)
-            ResetCursor()
+        btn:SetScript("OnLeave",function(frame)
+            frame:GetParent():SetButtonState('NORMAL')
             e.tips:Hide()
             panel.equipmentButton:SetButtonState('NORMAL')
             panel.equipmentButton:SetAlpha(0.5)
         end)
-        panel.equipmentButton.btn.buttons={}--添加装备管理按钮
-        set_equipmentFrame_Scale()--缩放
+        self.buttons[index]=btn
+        return btn
     end
-    if panel.equipmentButton.btn then
-        panel.equipmentButton.btn:SetShown(not Save.hide and true or false)
-    end
-
-    local setIDs={}
-    if not Save.hide then
-        setIDs= C_EquipmentSet.GetEquipmentSetIDs() or {}
-        e.call(SortEquipmentSetIDs, setIDs)--PaperDollFrame.lua
-    end
-    local numIndex=0
-    for index, setID in pairs(setIDs) do
-        local texture, _, isEquipped= select(2, C_EquipmentSet.GetEquipmentSetInfo(setID))
-        local btn=panel.equipmentButton.btn.buttons[index]
-        if not btn then
-            btn=e.Cbtn(panel.equipmentButton.btn, {icon='hide',size={20,20}})
-            set_equipmentButton_bnt_button_Point(btn, index)--设置位置
-
-            btn:SetScript("OnMouseDown",function(self)
-                if not UnitAffectingCombat('player') then
-                    C_EquipmentSet.UseEquipmentSet(self.setID)
-                    C_Timer.After(0.5, function() LvTo() end)--修改总装等
-                else
-                    print(id, addName, RED_FONT_COLOR_CODE, e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT)
-                end
-            end)
-            btn:SetScript("OnEnter", function(self)
-                if ( self.setID ) then
-                    e.tips:SetOwner(self, "ANCHOR_LEFT")
-                    e.tips:SetEquipmentSet(self.setID)
-                    local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(self.setID)
-                    if specIndex then
-                        local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
-                        if icon3 and specName2 then
-                            e.tips:AddLine(' ')
-                            e.tips:AddLine(format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, '|T'..icon3..':0|t'..specName2))
-                            e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine(id,addName)
-                            e.tips:Show()
-                        end
-                    end
-                    --local name, iconFileID, _, isEquipped2, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
-                    if panel.equipmentButton:IsVisible() then
-                        panel.equipmentButton:SetButtonState('PUSHED')
-                        panel.equipmentButton:SetAlpha(1)
-                    end
-                end
-                self:GetParent():SetButtonState('PUSHED')
-            end)
-            btn:SetScript("OnLeave",function(self)
-                self:GetParent():SetButtonState('NORMAL')
-                e.tips:Hide()
-                panel.equipmentButton:SetButtonState('NORMAL')
-                panel.equipmentButton:SetAlpha(0.5)
-            end)
+    --设置，初始，按钮
+    function TrackButton:init_buttons()
+        if not self:IsShown() then
+            return
         end
-        btn.setID=setID
-        btn:SetNormalTexture(texture)
-        btn:SetShown(true)
-        if isEquipped then
-            btn:LockHighlight()
+        local setIDs= SortEquipmentSetIDs(C_EquipmentSet.GetEquipmentSetIDs() or {})--PaperDollFrame.lua
+        local numIndex=0
+        for index, setID in pairs(setIDs) do
+            local texture, _, isEquipped= select(2, C_EquipmentSet.GetEquipmentSetInfo(setID))
+            local btn=self.buttons[index] or self:create_button(index)
+            btn.setID=setID
+            btn:SetNormalTexture(texture)
+            btn:SetShown(true)
+            btn.texture:SetShown(isEquipped)
+            numIndex=index
+        end
+        for index= numIndex+1, #self.buttons, 1 do
+            self.buttons[index]:SetShown(false)
+        end
+    end
+
+    TrackButton:set_point()
+    TrackButton:set_scale()
+    TrackButton:set_shown()
+    TrackButton:init_buttons()
+    TrackButton:tips_not_equipment()
+
+    --更新
+    hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()
+        TrackButton:init_buttons()
+    end)
+    TrackButton:RegisterEvent('EQUIPMENT_SWAP_FINISHED')
+    TrackButton:RegisterEvent('EQUIPMENT_SETS_CHANGED')
+    TrackButton:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+
+    TrackButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+    TrackButton:RegisterEvent('READY_CHECK')
+
+    --TrackButton:RegisterEvent('BAG_UPDATE')
+    TrackButton:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_ENTERING_WORLD' or event=='READY_CHECK' then
+            self:tips_not_equipment()
         else
-            btn:UnlockHighlight()
+            C_Timer.After(0.6, function() self:init_buttons() end)
         end
-        numIndex=index
-        panel.equipmentButton.btn.buttons[index]=btn
-    end
-    for index= numIndex+1, #panel.equipmentButton.btn.buttons, 1 do
-        panel.equipmentButton.btn.buttons[index]:SetShown(false)
-    end
+    end)
 end
 
 
@@ -1010,6 +1043,11 @@ end
 --装备,总耐久度
 --############
 local function GetDurationTotale()
+    if Save.hide then
+        if panel.durabilityText then
+            panel.durabilityText:SetText('')
+        end
+    end
     if not panel.durabilityText then
         panel.durabilityText= e.Cstr(panel, {copyFont=CharacterLevelText, mouse=true})
         panel.durabilityText:SetPoint('LEFT', panel.serverText, 'RIGHT')
@@ -1024,28 +1062,9 @@ local function GetDurationTotale()
             self2:SetAlpha(0.3)
         end)
     end
-    local du
-    if not Save.hide then
-        local cu, max=0,0
-        for slot=1, 17 do
-            local cu2, max2= GetInventoryItemDurability(slot)
-            if cu2 and max2 and max2>0 then
-                cu = cu+ cu2
-                max= max + max2
-            end
-        end
-        if max>0 then
-            local to=cu/max*100
-            du=format('%i%%', to)
-            if to<30 then
-                du= '|cnRED_FONT_COLOR:'..du..'|r'
-            end
-        end
-        panel.durabilityText.value=du or '100%'
-    end
-    if panel.durabilityText then
-        panel.durabilityText:SetText(du or '')
-    end
+    local du= e.GetDurabiliy()--耐久度
+    panel.durabilityText.value=du
+    panel.durabilityText:SetText(du or '')
 end
 
 --#######
@@ -1205,7 +1224,7 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
             e.Chat(self2.link, nil, true)
             --local chat=SELECTED_DOCK_FRAME
             --ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
-            
+
         end)
     end
     self.link= link
@@ -1339,13 +1358,13 @@ local function Init_Server_equipmentButton_Lable()
             if d=='LeftButton' and not IsModifierKeyDown() then
                 Save.equipment= not Save.equipment and true or nil
                 self2:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
-                set_inti_Equipment_Frame()--添加装备管理框
+                Init_TrackButton()--添加装备管理框
                 print(id, addName, e.GetShowHide(Save.equipment))
             elseif d=='RightButton' and IsControlKeyDown() then
                 Save.Equipment=nil
-                if self2.btn then
-                    self2.btn:ClearAllPoints()
-                    self2:set_Point()
+                if TrackButton then
+                    TrackButton:ClearAllPoints()
+                    TrackButton:set_point()
                 end
                 print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
             end
@@ -1463,7 +1482,7 @@ panel.Init_Show_Hide_Button= function(self, frame)
     if not self or self.ShowHideButton then
         return
     end
-    
+
     local title= self==PaperDollItemsFrame and CharacterFrame.TitleContainer or self.TitleContainer
 
     local btn= e.Cbtn(self, {size={20,20}, atlas= not Save.hide and e.Icon.icon or e.Icon.disabled})
@@ -1490,7 +1509,7 @@ panel.Init_Show_Hide_Button= function(self, frame)
         set_PaperDollSidebarTab3_Text()--标签, 内容,提示
         Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
         set_ChromieTime()--时空漫游战役, 提示
-        set_inti_Equipment_Frame()--添加装备管理框
+        Init_TrackButton()--添加装备管理框
         e.call('PaperDollFrame_SetLevel')
         e.call('PaperDollFrame_UpdateStats')
 
@@ -1558,8 +1577,25 @@ local function Init()
         set_PaperDollSidebarTab3_Text()
         LvTo()--总装等
     end)
-    hooksecurefunc('GearSetButton_UpdateSpecInfo', EquipmentStr)--套装已装备数量
-    hooksecurefunc('PaperDollEquipmentManagerPane_Update',set_inti_Equipment_Frame)--添加装备管理框  
+    hooksecurefunc('GearSetButton_UpdateSpecInfo', function(self)--套装已装备数量
+        local setID=self.setID
+        local nu
+        if setID and not Save.hide then
+            if not self.nu then
+                self.nu=e.Cstr(self)
+                self.nu:SetJustifyH('RIGHT')
+                self.nu:SetPoint('BOTTOMLEFT', self.text, 'BOTTOMLEFT')
+            end
+            local  numItems, numEquipped= select(5, C_EquipmentSet.GetEquipmentSetInfo(setID))
+            if numItems and numEquipped then
+                nu=numEquipped..'/'..numItems
+            end
+        end
+        if self.nu then
+            self.nu:SetText(nu or '')
+        end
+    end)
+
 
     --#######
     --装备属性
@@ -1699,7 +1735,7 @@ local function Init()
         end
     end)
 
-    C_Timer.After(2, set_inti_Equipment_Frame)--装备管理框
+    C_Timer.After(2, Init_TrackButton)--装备管理框
     --set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
 end
 
@@ -1800,9 +1836,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
             if not Save.disabled then
                 Init()
-                panel:RegisterEvent("EQUIPMENT_SWAP_FINISHED")
                 panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-                panel:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
             else
                 panel:UnregisterEvent('ADDON_LOADED')
             end
@@ -1824,9 +1858,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
-
-    elseif event == 'EQUIPMENT_SWAP_FINISHED' or event=='PLAYER_EQUIPMENT_CHANGED' then
-        C_Timer.After(0.6, set_inti_Equipment_Frame)
 
     elseif event=='UPDATE_INVENTORY_DURABILITY' then
         GetDurationTotale()--装备,总耐久度
