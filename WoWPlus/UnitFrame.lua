@@ -824,6 +824,8 @@ local function set_memberFrame(memberFrame)
     castFrame.unit= unit
     if isPlayer then
         castFrame.texture:SetAtlas('Relic-Life-TraitGlow')
+    else
+        castFrame.texture:SetTexture(0)
     end
 
     --##########

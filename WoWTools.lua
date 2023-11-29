@@ -798,9 +798,9 @@ end
 
 function e.Get_Week_Rewards_Text(type)--得到，周奖励，信息
     local text
-    for _, activities in pairs(C_WeeklyRewards.GetActivities(type) or {}) do--本周完成 Enum.WeeklyRewardChestThresholdType.MythicPlus 1
-        if activities.level and activities.level>=0 and activities.type==type then--and activities.threshold and activities.threshold>0 and activities.type==1 then
-            text= (text and text..'/' or '')..activities.level
+    for _, info in pairs(C_WeeklyRewards.GetActivities(type) or {}) do--本周完成 Enum.WeeklyRewardChestThresholdType.MythicPlus 1
+        if info.level and info.level>=0 and info.type==type then--and info.threshold and info.threshold>0 and info.type==1 then
+            text= (text and text..'/' or '')..info.level
         end
     end
     return text~='0/0/0' and text or nil
@@ -819,8 +819,6 @@ function e.Get_Weekly_Rewards_Activities(settings)
     local R = {}
     for  _ , info in pairs( C_WeeklyRewards.GetActivities() or {}) do
         if info.type and info.type>= 1 and info.type<= 3 and info.level then
-            
-
             local head
             local difficultyText
             if info.type == 1 then--1 Enum.WeeklyRewardChestThresholdType.MythicPlus
