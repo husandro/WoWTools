@@ -958,17 +958,21 @@ local function Init_TrackButton()--添加装备管理框
             if ( frame.setID ) then
                 e.tips:SetOwner(frame, "ANCHOR_LEFT")
                 e.tips:SetEquipmentSet(frame.setID)
+                if UnitAffectingCombat('player') then
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(' ', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT))
+                end
                 local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(frame.setID)
                 if specIndex then
                     local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
                     if icon3 and specName2 then
                         e.tips:AddLine(' ')
-                        e.tips:AddLine(format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, '|T'..icon3..':0|t'..specName2))
-                        e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(id,addName)
-                        e.tips:Show()
+                        e.tips:AddLine(format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, '|T'..icon3..':0|t|cffff00ff'..specName2..'|r'))
                     end
                 end
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id,addName)
+                e.tips:Show()
                 --local name, iconFileID, _, isEquipped2, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
                 if panel.equipmentButton:IsVisible() then
                     panel.equipmentButton:SetButtonState('PUSHED')
