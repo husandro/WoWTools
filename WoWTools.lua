@@ -725,14 +725,14 @@ function e.CheckRange(unit, range, operator)
 end
 
 --设置，提示
-function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=})
+function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=, y=-10})
     if tab.show and not tab.frame.HelpTips then
         tab.frame.HelpTips= e.Cbtn(tab.frame, {layer='OVERLAY',size=tab.size and {tab.size[1], tab.size[2]} or {40,40}})-- button:CreateTexture(nil, 'OVERLAY')
         if tab.point=='right' then
-            tab.frame.HelpTips:SetPoint('BOTTOMLEFT', tab.topoint or tab.frame, 'BOTTOMRIGHT',0,-10)
+            tab.frame.HelpTips:SetPoint('BOTTOMLEFT', tab.topoint or tab.frame, 'BOTTOMRIGHT',0, tab.y or -10)
             tab.frame.HelpTips:SetNormalAtlas(tab.atlas or e.Icon.toLeft)
         else--left
-            tab.frame.HelpTips:SetPoint('BOTTOMRIGHT', tab.topoint or tab.frame, 'BOTTOMLEFT',0,-10)
+            tab.frame.HelpTips:SetPoint('BOTTOMRIGHT', tab.topoint or tab.frame, 'BOTTOMLEFT',0, tab.y or -10)
             tab.frame.HelpTips:SetNormalAtlas(tab.atlas or e.Icon.toRight)
         end
         if tab.color then

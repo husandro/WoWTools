@@ -1640,7 +1640,7 @@ local function Init_BossFrame()
 
                 self.healthLable:SetTextColor(r,g,b)
 
-                e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=isSelf})
+                e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=isSelf, y=-5})
             end
             self:SetShown(exists)
 
