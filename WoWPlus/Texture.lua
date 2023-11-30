@@ -1126,7 +1126,11 @@ local function set_Alpha_Event(arg1)
         set_Alpha_Color(ClassTalentFrame.TalentsTab.SearchBox.Left)
         set_Alpha_Color(ClassTalentFrame.TalentsTab.SearchBox.Right)
 
-        --set_Alpha_Frame_Texture(ClassTalentFrame.TabSystem)
+        --TabSystemOwner.lua
+        for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
+            local btn= ClassTalentFrame:GetTabButton(tabID)
+            set_Alpha_Frame_Texture(btn)
+        end
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
         set_Alpha_Color(AchievementFrame.Header.PointBorder)
