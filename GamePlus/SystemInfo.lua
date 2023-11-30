@@ -552,39 +552,7 @@ local function Init_Framerate_Plus()
     end
     MoveFPSFrame= e.Cbtn(FramerateFrame, {size={12,12}, icon='hide'})
     MoveFPSFrame:SetPoint('RIGHT',FramerateFrame.FramerateText)
-    function MoveFPSFrame:set_FramerateFrame_point()
-        if Save.frameratePoint and FramerateFrame then
-            FramerateFrame:ClearAllPoints()
-            FramerateFrame:SetPoint(Save.frameratePoint[1], UIParent, Save.frameratePoint[3], Save.frameratePoint[4], Save.frameratePoint[5])
-        end
-    end
-
-    MoveFPSFrame:SetScript('OnMouseWheel',function(self, d)
-        if IsModifierKeyDown() then
-            return
-        end
-        local size=Save.framerateSize or 12
-        if d==1 then
-            size=size+1
-            size = size>72 and 72 or size
-        elseif d==-1 then
-            size=size-1
-            size= size<6 and 6 or size
-        end
-        Save.framerateSize=size
-        self:set_size()
-        print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
-    end)
-
-    --QueueStatusButton:HookScript('OnShow', MoveFPSFrame.set_FramerateFrame_point)--会出错
-    --QueueStatusButton:HookScript('OnHide', MoveFPSFrame.set_FramerateFrame_point)
-
-    FramerateFrame:SetMovable(true)
-    FramerateFrame:SetClampedToScreen(true)
-    FramerateFrame:HookScript('OnShow', MoveFPSFrame.set_FramerateFrame_point)
-    FramerateFrame:SetFrameStrata('HIGH')
-
-
+   
     MoveFPSFrame:SetMovable(true)
     MoveFPSFrame:RegisterForDrag("RightButton");
     MoveFPSFrame:SetClampedToScreen(true)
@@ -611,9 +579,10 @@ local function Init_Framerate_Plus()
         end
     end)
 
-    FramerateFrame.Label:SetText('')--去掉FPS
-    FramerateFrame.Label:SetShown(false)
-
+    MoveFPSFrame:SetScript('OnLeave', function()
+        e.tips:Hide()
+        button:SetButtonState('NORMAL')
+    end)
     MoveFPSFrame:SetScript('OnEnter', function(self2)--提示
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -623,9 +592,22 @@ local function Init_Framerate_Plus()
         e.tips:Show()
         button:SetButtonState('PUSHED')
     end)
-    MoveFPSFrame:SetScript('OnLeave', function()
-        e.tips:Hide()
-        button:SetButtonState('NORMAL')
+
+    MoveFPSFrame:SetScript('OnMouseWheel',function(self, d)
+        if IsModifierKeyDown() then
+            return
+        end
+        local size=Save.framerateSize or 12
+        if d==1 then
+            size=size+1
+            size = size>72 and 72 or size
+        elseif d==-1 then
+            size=size-1
+            size= size<6 and 6 or size
+        end
+        Save.framerateSize=size
+        self:set_size()
+        print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
     end)
 
     function MoveFPSFrame:set_size()--修改大小
@@ -634,6 +616,18 @@ local function Init_Framerate_Plus()
     MoveFPSFrame:set_size()
 
 
+    function MoveFPSFrame:set_FramerateFrame_point()
+        if Save.frameratePoint and FramerateFrame then
+            FramerateFrame:ClearAllPoints()
+            FramerateFrame:SetPoint(Save.frameratePoint[1], UIParent, Save.frameratePoint[3], Save.frameratePoint[4], Save.frameratePoint[5])
+        end
+    end
+    FramerateFrame.Label:SetText('')--去掉FPS
+    FramerateFrame.Label:SetShown(false)
+    FramerateFrame:SetMovable(true)
+    FramerateFrame:SetClampedToScreen(true)
+    FramerateFrame:HookScript('OnShow', MoveFPSFrame.set_FramerateFrame_point)
+    FramerateFrame:SetFrameStrata('HIGH')
 
     if Save.framerateLogIn and not FramerateFrame:IsShown() then
         FramerateFrame:Toggle()
