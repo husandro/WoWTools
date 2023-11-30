@@ -91,11 +91,7 @@ end
 
 
 
-local function set_Label_Size_Color()
-    for _, label in pairs(Labels) do
-        e.Cstr(nil, {size=Save.size, changeFont=label, color=true})--Save.size, nil , Labels.fpsms, true)    
-    end
-end
+
 local function create_Set_lable(self, text)--建立,或设置,Labels
     local down
     local label= Labels[text] or e.Cstr(self, {size=Save.size, color=true})
@@ -548,11 +544,11 @@ end
 
 
 
---为FramerateText 帧数, 建立一个按钮, 移动, 大小
---###########################################
+--每秒帧数 Plus
+--############
 local function Init_Framerate_Plus()
     if not Save.frameratePlus then
-        return 
+        return
     end
     MoveFPSFrame= e.Cbtn(FramerateFrame, {size={12,12}, icon='hide'})
     MoveFPSFrame:SetPoint('RIGHT',FramerateFrame.FramerateText)
@@ -665,7 +661,7 @@ end
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, type)--主菜单
+local function InitMenu(_, level, type)--主菜单
     local info
     if type=='wowMony' then
         info={
@@ -689,7 +685,18 @@ local function InitMenu(self, level, type)--主菜单
         }
         e.LibDD:UIDropDownMenu_AddButton(info,level)
 
-
+        info={
+            text= (e.onlyChinese and '重置位置' or RESET_POSITION),
+            colorCode= not Save.frameratePoint and '|cff606060',
+            notCheckable=true,
+            disabled= not MoveFPSFrame,
+            func= function()
+                Save.frameratePoint=nil
+                MoveFPSFrame:ClearAllPoints()
+                MoveFPSFrame:SetPoint('CENTER')
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info,level)
         return
     end
 
@@ -789,23 +796,17 @@ local function InitMenu(self, level, type)--主菜单
         tooltipText= (e.onlyChinese and '系统' or SYSTEM)..' FPS',
         func= function()
             Save.frameratePlus= not Save.frameratePlus and true or nil
-            print(id, addName, e.GetEnabeleDisable(Save.frameratePlus) ,e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            if Save.frameratePlus and not MoveFPSFrame then
+                Init_Framerate_Plus()--每秒帧数 Plus
+            else
+                print(id, addName, e.GetEnabeleDisable(Save.frameratePlus) ,e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info,level)
 
 
-    info={
-        text= (e.onlyChinese and '重置位置' or RESET_POSITION),
-        colorCode= not Save.point and '|cff606060',
-        notCheckable=true,
-        func= function()
-            Save.point=nil
-            button:ClearAllPoints()
-            button:set_point()--设置位置
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info,level)
+
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
@@ -867,10 +868,9 @@ local function Init()
     button:SetMovable(true)
     button:RegisterForDrag("RightButton");
     button:SetClampedToScreen(true);
-    button:SetScript("OnDragStart", function(self2, d)
-        if d=='RightButton' then
-            SetCursor('UI_MOVE_CURSOR')
-            self2:StartMoving()
+    button:SetScript("OnDragStart", function(self, d)
+        if d=='RightButton' and IsAltKeyDown() then
+            self:StartMoving()
             e.LibDD:CloseDropDownMenus()
         end
     end)
@@ -881,8 +881,11 @@ local function Init()
         ResetCursor()
         self:Raise()
     end)
-    button:SetScript("OnMouseUp", function(self2,d)
-        ResetCursor()
+    button:SetScript("OnMouseUp", ResetCursor)
+    button:SetScript('OnMouseDown', function(_, d)
+        if d=='RightButton' and IsAltKeyDown() then--移动光标
+            SetCursor('UI_MOVE_CURSOR')
+        end
     end)
 
     button:SetScript('OnMouseWheel',function(self, d)
@@ -898,13 +901,12 @@ local function Init()
             size= size<6 and 6 or size
         end
         Save.size=size
-        set_Label_Size_Color()
+        self:set_Label_Size_Color()
         print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
     end)
 
     button:SetScript('OnClick', function(self, d)
         if d=='RightButton' then--移动光标
-            SetCursor('UI_MOVE_CURSOR')
             if not self.Menu then
                 self.Menu=CreateFrame("Frame", nil, button, "UIDropDownMenuTemplate")
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
@@ -938,6 +940,11 @@ local function Init()
 
 
     --设置位置
+    function button:set_Label_Size_Color()
+        for _, label in pairs(Labels) do
+            e.Cstr(nil, {size=Save.size, changeFont=label, color=true})--Save.size, nil , Labels.fpsms, true)    
+        end
+    end
     function button:set_point()
         if Save.point then
             button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
@@ -946,12 +953,7 @@ local function Init()
         end
     end
     button:set_point()
-
-
-    button:SetButtonState('PUSHED')
-    C_Timer.After(4, function()
-        button:SetButtonState('NORMAL')
-    end)
+    button:set_Label_Size_Color()
 
 
     --#########
@@ -987,12 +989,12 @@ local function Init()
     end)
 
     C_Timer.After(2, function()
-        set_Label_Size_Color()
         set_Money_Event()--设置,钱,事件
         set_Fps_Ms_Show_Hide()--设置, fps, ms, 数值
         set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
         set_perksActivitiesLastPoints_Event()--贸易站, 点数
         set_Label_Point()--设置 Label Poinst
+        Init_Framerate_Plus()--每秒帧数 Plus
         if Save.parent and Labels.ms then
             MainMenuMicroButton.MainMenuBarPerformanceBar:ClearAllPoints()
             MainMenuMicroButton.MainMenuBarPerformanceBar:SetPoint('BOTTOM',0,-6)
@@ -1045,31 +1047,34 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
-            --添加控制面板
-            e.AddPanel_Check({
-                name= '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '系统信息' or addName),
-                tooltip= addName,
-                value= not Save.disabled,
-                func= function()
+             --添加控制面板
+             e.AddPanel_Check_Button({
+                checkName= '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '系统信息' or addName),
+                checkValue= not Save.disabled,
+                checkFunc= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
+                    if not Save.disabled and not button then
+                        Init()
+                    else
+                        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    end
+                end,
+                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                buttonFunc= function()
+                    Save.point=nil
+                    if button then
+                        Save.point=nil
+                        button:ClearAllPoints()
+                        button:set_point()--设置位置
+                    end
+                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                end,
+                tooltip= addName,
+                layout= nil,
+                category= nil,
             })
-            --[[
-            local check=e.AddPanel_Check('|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '系统信息' or addName), not Save.disabled, true)
-            check:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-            check:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT");
-                e.tips:ClearLines();
-                e.tips:AddDoubleLine('fps ms', e.onlyChinese and '钱' or MONEY)
-                e.tips:AddDoubleLine(e.onlyChinese and '耐久度' or DURABILITY, e.onlyChinese and '装等' or (EQUIPSET_EQUIP..LEVEL))
-                e.tips:Show();
-            end)
-            check:SetScript('OnLeave', function() e.tips:Hide() end)
-]]
+
+
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
