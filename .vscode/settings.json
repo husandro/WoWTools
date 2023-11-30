@@ -3687,7 +3687,8 @@
         "LOSS_OF_CONTROL_DISPLAY_CHARM",
         "show",
         "READY_CHECK",
-        "PaperDollEquipmentManagerPane_InitButton"
+        "PaperDollEquipmentManagerPane_InitButton",
+        "EncounterJournalLootJournalTab"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

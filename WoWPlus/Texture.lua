@@ -1284,6 +1284,7 @@ local function set_Alpha_Event(arg1)
         set_Alpha_Frame_Texture(EncounterJournalMonthlyActivitiesTab)
         set_Alpha_Frame_Texture(EncounterJournalDungeonTab)
         set_Alpha_Frame_Texture(EncounterJournalRaidTab)
+        set_Alpha_Frame_Texture(EncounterJournalLootJournalTab)
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set_Alpha_Color(GuildBankFrame.BlackBG)
