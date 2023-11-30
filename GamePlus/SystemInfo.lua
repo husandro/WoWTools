@@ -616,17 +616,16 @@ local function Init_Framerate_Plus()
     MoveFPSFrame:set_size()
 
 
-    function MoveFPSFrame:set_FramerateFrame_point()
-        if Save.frameratePoint and FramerateFrame then
-            FramerateFrame:ClearAllPoints()
-            FramerateFrame:SetPoint(Save.frameratePoint[1], UIParent, Save.frameratePoint[3], Save.frameratePoint[4], Save.frameratePoint[5])
-        end
-    end
     FramerateFrame.Label:SetText('')--去掉FPS
     FramerateFrame.Label:SetShown(false)
     FramerateFrame:SetMovable(true)
     FramerateFrame:SetClampedToScreen(true)
-    FramerateFrame:HookScript('OnShow', MoveFPSFrame.set_FramerateFrame_point)
+    FramerateFrame:HookScript('OnShow', function(self)
+        if Save.frameratePoint and FramerateFrame then
+            self:ClearAllPoints()
+            self:SetPoint(Save.frameratePoint[1], UIParent, Save.frameratePoint[3], Save.frameratePoint[4], Save.frameratePoint[5])
+        end
+    end)
     FramerateFrame:SetFrameStrata('HIGH')
 
     if Save.framerateLogIn and not FramerateFrame:IsShown() then
@@ -681,13 +680,17 @@ local function InitMenu(_, level, type)--主菜单
 
         info={
             text= (e.onlyChinese and '重置位置' or RESET_POSITION),
-            colorCode= not Save.frameratePoint and '|cff606060',
+            tooltipOnButton=true,
+            tooltipTitle='CENTER',
             notCheckable=true,
-            disabled= not MoveFPSFrame,
+            disabled= not Save.frameratePoint,
             func= function()
                 Save.frameratePoint=nil
-                MoveFPSFrame:ClearAllPoints()
-                MoveFPSFrame:SetPoint('CENTER')
+                if MoveFPSFrame then
+                    FramerateFrame:ClearAllPoints()
+                    FramerateFrame:SetPoint('CENTER')
+                end
+                print(id,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info,level)
