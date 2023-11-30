@@ -1609,9 +1609,10 @@ local function Init_BossFrame()
             local exists=UnitExists(unit)
             if exists then
                 --图像
+                local isSelf= UnitIsUnit(unit, 'player')
                 if BossTargetFrameContainer.isInEditMode then
                     SetPortraitTexture(self.Portrait, unit)
-                elseif UnitIsUnit(unit, 'player') then--自已
+                elseif isSelf then--自已
                     self.Portrait:SetAtlas('auctionhouse-icon-favorite')
                 elseif UnitIsUnit(unit, 'target') then
                     self.Portrait:SetAtlas('common-icon-checkmark')
@@ -1638,6 +1639,8 @@ local function Init_BossFrame()
                     self.Border:SetVertexColor(r,g,b)
 
                 self.healthLable:SetTextColor(r,g,b)
+
+                e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=isSelf})
             end
             self:SetShown(exists)
 
