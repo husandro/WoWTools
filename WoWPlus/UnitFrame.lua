@@ -1612,7 +1612,7 @@ local function Init_BossFrame()
                 if BossTargetFrameContainer.isInEditMode then
                     SetPortraitTexture(self.Portrait, unit)
                 elseif UnitIsUnit(unit, 'player') then--自已
-                    self.Portrait:SetAtlas('quest-important-available')
+                    self.Portrait:SetAtlas('auctionhouse-icon-favorite')
                 elseif UnitIsUnit(unit, 'target') then
                     self.Portrait:SetAtlas('common-icon-checkmark')
                 else
