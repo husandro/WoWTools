@@ -985,7 +985,6 @@ local function set_memberFrame(memberFrame)
     --队友，死亡
     --#########
     local deadFrame= memberFrame.deadFrame
-    
     if not deadFrame then
         deadFrame= CreateFrame('Frame', nil, memberFrame)
         deadFrame:SetPoint("CENTER", memberFrame.Portrait)
@@ -1032,6 +1031,12 @@ local function set_memberFrame(memberFrame)
                 self.Text:SetText(self.dead>0 and self.dead or '')
             end
         end
+        function deadFrame:set_event()
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            self:RegisterEvent('CHALLENGE_MODE_START')
+            self:RegisterUnitEvent('UNIT_FLAGS', unit)
+            self:RegisterUnitEvent('UNIT_HEALTH', unit)
+        end
         deadFrame:SetScript('OnEvent', function(self, event)
             if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
                 self.dead= 0
@@ -1042,12 +1047,10 @@ local function set_memberFrame(memberFrame)
             self:UnregisterAllEvents()
             deadFrame.dead= 0
         end)
-        deadFrame:SetScript('OnShow', function(self)
-            self:RegisterEvent('PLAYER_ENTERING_WORLD')
-            self:RegisterEvent('CHALLENGE_MODE_START')
-            self:RegisterUnitEvent('UNIT_FLAGS', unit)
-            self:RegisterUnitEvent('UNIT_HEALTH', unit)
-        end)
+        deadFrame:SetScript('OnShow', deadFrame.set_event)
+        if exists then
+            deadFrame:set_event()
+        end
 
         --死亡，次数
         deadFrame.dead=0
