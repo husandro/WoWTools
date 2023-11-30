@@ -19,6 +19,26 @@ local panel= CreateFrame("Frame")
 local Labels
 local button
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --########
 --设置, 钱
 --########
@@ -49,6 +69,25 @@ local function get_Mony_Tips()
             --table.insert(tab, {text= all,
     return all, tab
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -130,6 +169,31 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --########
 --设置, 钱
 --########
@@ -166,6 +230,29 @@ local function set_Money_Event()
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --##################
 --设置装等,耐久度,事件
@@ -224,6 +311,30 @@ local function set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --##################
 --设置, fps, ms, 数值
 --##################
@@ -260,6 +371,27 @@ local function set_Fps_Ms_Show_Hide()--设置, fps, ms, 数值
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --###########
@@ -322,6 +454,22 @@ local function set_perksActivitiesLastPoints_Event()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#######
 --设置位置
 --#######
@@ -332,6 +480,16 @@ local function set_Point()
         button:SetPoint('BOTTOMRIGHT',-30, -2)
     end
 end
+
+
+
+
+
+
+
+
+
+
 
 
 --#################
@@ -387,6 +545,39 @@ local function set_Label_Point(clear)--设置 Label Poinst
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#####
 --主菜单
 --#####
@@ -413,6 +604,8 @@ local function InitMenu(self, level, type)--主菜单
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info,level)
+
+
         return
     end
 
@@ -538,6 +731,39 @@ local function InitMenu(self, level, type)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info,level)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --######
@@ -771,6 +997,45 @@ local function Init()
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(_, event, arg1)
