@@ -644,7 +644,7 @@ local function Init()
         end
 
 
-        QueueStatusButton:HookScript('OnShow', button.moveFPSFrame.set_Point)
+        --QueueStatusButton:HookScript('OnShow', button.moveFPSFrame.set_Point)--会出错
         --QueueStatusButton:HookScript('OnHide', button.moveFPSFrame.set_Point)
 
         FramerateFrame:SetMovable(true)
@@ -694,12 +694,12 @@ local function Init()
             button:SetButtonState('NORMAL')
         end)
 
-        local function set_FramerateText_Size()--修改大小
+        function button.moveFPSFrame:set_size()--修改大小
             e.Cstr(nil, {size=Save.framerateSize or 12, changeFont=FramerateFrame.FramerateText, color=true})--Save.size, nil , Labels.fpsms, true)    
         end
-        set_FramerateText_Size()
+        button.moveFPSFrame:set_size()
 
-        button.moveFPSFrame:SetScript('OnMouseWheel',function(_, d)
+        button.moveFPSFrame:SetScript('OnMouseWheel',function(self, d)
             if IsModifierKeyDown() then
                 return
             end
@@ -712,7 +712,7 @@ local function Init()
                 size= size<6 and 6 or size
             end
             Save.framerateSize=size
-            set_FramerateText_Size()
+            self:set_size()
             print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
         end)
 
