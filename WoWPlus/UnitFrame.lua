@@ -985,6 +985,7 @@ local function set_memberFrame(memberFrame)
     --队友，死亡
     --#########
     local deadFrame= memberFrame.deadFrame
+    
     if not deadFrame then
         deadFrame= CreateFrame('Frame', nil, memberFrame)
         deadFrame:SetPoint("CENTER", memberFrame.Portrait)
