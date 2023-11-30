@@ -1108,6 +1108,23 @@ local function GetDurationTotale()
     panel.durabilityText:SetText(du or '')
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#######
 --装备弹出
 --EquipmentFlyout.lua
