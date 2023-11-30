@@ -693,7 +693,6 @@ local function set_memberFrame(memberFrame)
 
         function btn.frame:set_settings()
             local exists2= UnitExists(self.unit)
-            local atlas
             if self.unit then
                 if self.isPlayer then
                     SetPortraitTexture(self.Portrait, self.unit, true)--图像
@@ -713,14 +712,16 @@ local function set_memberFrame(memberFrame)
                 end
 
                 if UnitIsPlayer(self.unit) then
-                    atlas= e.Class(self.unit, nil, true)
-                    self.class:SetAtlas(atlas)
+                    self.class:SetAtlas(e.Class(self.unit, nil, true))
+                elseif UnitIsBossMob(self.unit) then
+                    self.class:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
+                else
+                    self.class:SetTexture(0)
                 end
 
                 local r2, g2, b2= GetClassColor(UnitClassBase(self.unit))
                 self.healthLable:SetTextColor(r2 or 1, g2 or 1, b2 or 1)
             end
-            self.class:SetShown(atlas and true or false)
             self.isPlayerTargetTexture:SetShown(exists2 and UnitIsUnit(self.unit, 'target'))
             self:SetShown(exists2)
         end
@@ -1640,7 +1641,7 @@ local function Init_BossFrame()
 
                 self.healthLable:SetTextColor(r,g,b)
 
-                e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=isSelf, y=-5})
+                e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=isSelf, y=-2})
             end
             self:SetShown(exists)
 
