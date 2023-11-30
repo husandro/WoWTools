@@ -656,7 +656,7 @@ local function Init()
         button.moveFPSFrame:SetMovable(true)
         button.moveFPSFrame:RegisterForDrag("RightButton");
         button.moveFPSFrame:SetClampedToScreen(true)
-        button.moveFPSFrame:SetScript("OnDragStart", function(self2, d)
+        button.moveFPSFrame:SetScript("OnDragStart", function(_, d)
             if d=='RightButton' then
                 SetCursor('UI_MOVE_CURSOR')
                 local frame= FramerateFrame
@@ -666,15 +666,17 @@ local function Init()
                 frame:StartMoving()
             end
         end)
-        button.moveFPSFrame:SetScript("OnDragStop", function(self)
+        button.moveFPSFrame:SetScript("OnDragStop", function()
             FramerateFrame:StopMovingOrSizing()
             Save.frameratePoint={FramerateFrame:GetPoint(1)}
             Save.frameratePoint[2]=nil
             ResetCursor()
-            FramerateFrame:Raise()
         end)
-        button.moveFPSFrame:SetScript("OnMouseUp", function(self2,d)
-            ResetCursor()
+        button.moveFPSFrame:SetScript("OnMouseUp", ResetCursor)
+        button.moveFPSFrame:SetScript('OnMouseDown', function(_, d)
+            if d=='RightButton' then--移动光标
+                SetCursor('UI_MOVE_CURSOR')
+            end
         end)
 
         FramerateFrame.Label:SetText('')--去掉FPS
@@ -716,15 +718,12 @@ local function Init()
             print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
         end)
 
-        button.moveFPSFrame:SetScript('OnClick', function(self, d)
-            if d=='RightButton' then--移动光标
-                SetCursor('UI_MOVE_CURSOR')
+        C_Timer.After(2, function()
+            if Save.framerateLogIn and not FramerateFrame:IsShown() then
+                FramerateFrame:Toggle()
             end
         end)
-        if Save.framerateLogIn and not FramerateFrame:IsShown() then
-            FramerateFrame:Toggle()
-        end
-        C_Timer.After(2, button.moveFPSFrame.set_Point)--设置，位置
+            
     end
 
     --#########
