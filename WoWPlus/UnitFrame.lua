@@ -996,10 +996,10 @@ local function set_memberFrame(memberFrame)
         function deadFrame:set_settings()
             local find= false
             if UnitIsConnected(self.unit) then
-                if UnitHasIncomingResurrection(self.unit) then--正在复活
+               --[[ if UnitHasIncomingResurrection(self.unit) then--正在复活
                     self.texture:SetAtlas('poi-traveldirections-arrow2')
                     find=true
-                elseif UnitIsUnconscious(self.unit) then--失控
+                else]]if UnitIsUnconscious(self.unit) then--失控
                     self.texture:SetAtlas('cursor_legendaryquest_128')
                     find=true
                 elseif UnitIsCharmed(self.unit) or UnitIsPossessed(self.unit)  then--被魅惑
