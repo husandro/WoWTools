@@ -1158,15 +1158,9 @@ end
 --################
 local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图标， 颜色
     local unit= frame.unit
-    if e.Player.husandro then
-        if unit:find('nameplate') then
-            print(unit)
-        end
-    end
     if not UnitExists(unit) or unit:find('nameplate') then
         return
     end
-    
     local r,g,b= e.GetUnitColor(unit)
 
     local guid
@@ -1293,7 +1287,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
     --################
     --生命条，颜色，材质
     --################
-    if frame.healthbar and not e.Player.husandro then--BUG
+    if frame.healthbar then--BUG
         frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         frame.healthbar:SetStatusBarColor(r,g,b)--颜色
     end
