@@ -555,8 +555,8 @@ local function Init_TargetFrame()
         local r,g,b= e.GetUnitColor(frame.unit)
         frame.TargetFrameContainer.FrameTexture:SetVertexColor(r, g, b)
         frame.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r, g, b)
-        --frame.healthbar:SetStatusBarTexture(Save.healthbar)--生命条，材质
-        --frame.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
+        frame.healthbar:SetStatusBarTexture(Save.healthbar)--生命条，材质
+        frame.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
     end)
 
     hooksecurefunc(TargetFrame,'CheckLevel', function(self)--目标, 等级, 颜色
