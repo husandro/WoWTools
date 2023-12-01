@@ -41,21 +41,18 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     --生命条，颜色，材质
     PlayerFrame.healthbar:SetStatusBarTexture(Save.healthbar)
     hooksecurefunc('PlayerFrame_UpdateArt', function(self)
-        local r,g,b
-        if self.unit=='player' then
-            r,g,b= e.Player.r, e.Player.g, e.Player.b
-        else
-            local classFilename= UnitClassBase(self.unit)
-            if classFilename then
-                r,g,b= GetClassColor(classFilename)
-            end
-        end
-        r,g,b= r or 1, g or 1, b or 1
+        local r,g,b= e.GetUnitColor(self.unit)
         self.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
+    end)
+    PetFrame.healthbar:SetStatusBarTexture(Save.healthbar)
+    hooksecurefunc(PetFrame, 'UpdateShownState', function(self)
+        if UnitExists(self.unit) then
+            local r,g,b= e.GetUnitColor(self.unit)
+            PetFrame.healthbar:SetStatusBarColor(r,g,b)
+        end
     end)
 
 
-    
     local playerFrameTargetContextual = PlayerFrame_GetPlayerFrameContentContextual()
     local frameLevel= PlayerFrame:GetFrameLevel() +1
 
@@ -538,12 +535,7 @@ local function Init_TargetFrame()
 
     --目标，生命条，颜色，材质
     hooksecurefunc(TargetFrame, 'CheckClassification', function(frame)--外框，颜色
-        local r,g,b
-        local classFilename= UnitClassBase(frame.unit)
-        if classFilename then
-            r,g,b= GetClassColor(classFilename)
-        end
-        r,g,b= r or 1, g or 1, b or 1
+        local r,g,b= e.GetUnitColor(frame.unit)
         frame.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
         frame.TargetFrameContainer.FrameTexture:SetVertexColor(r, g, b)
         frame.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r, g, b)
@@ -551,14 +543,9 @@ local function Init_TargetFrame()
 
     hooksecurefunc(TargetFrame,'CheckLevel', function(self)--目标, 等级, 颜色
         local levelText = self.TargetFrameContent.TargetFrameContentMain.LevelText
-        if levelText and levelText:IsShown() and self.unit then
-            local classFilename= UnitClassBase(self.unit)
-            if classFilename then
-                local r,g,b=GetClassColor(classFilename)
-                if r and g and b then
-                    levelText:SetTextColor(r,g,b)
-                end
-            end
+        if levelText then
+            local r,g,b= e.GetUnitColor(self.unit)
+            levelText:SetTextColor(r,g,b)
         end
     end)
 
@@ -634,12 +621,7 @@ local function set_memberFrame(memberFrame)
     local exists= UnitExists(unit)--memberFrame:IsShown()
 
 
-    local r, g, b
-    local classFilename= exists and UnitClassBase(unit)
-    if classFilename then
-        r,g,b= GetClassColor(classFilename)
-    end
-    r, g, b= r or 1, g or 1, b or 1
+    local r, g, b= e.GetUnitColor(unit)
 
     --外框
     memberFrame.Texture:SetVertexColor(r, g, b)
@@ -734,8 +716,8 @@ local function set_memberFrame(memberFrame)
                     self.class:SetTexture(0)
                 end
 
-                local r2, g2, b2= GetClassColor(UnitClassBase(self.unit))
-                self.healthLable:SetTextColor(r2 or 1, g2 or 1, b2 or 1)
+                local r2, g2, b2= e.GetUnitColor(self.unit)
+                self.healthLable:SetTextColor(r2, g2, b2)
             end
             self.isPlayerTargetTexture:SetShown(exists2 and UnitIsUnit(self.unit, 'target'))
             self:SetShown(exists2)
@@ -1159,17 +1141,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
     if not UnitExists(unit) then
         return
     end
-    local r,g,b
-    if UnitIsUnit(unit, 'player') then
-        r,g,b= e.Player.r, e.Player.g, e.Player.b
-    else
-        local classFilename= unit and UnitClassBase(unit)
-        if classFilename then
-            r,g,b=GetClassColor(classFilename)
-        end
-    end
-
-    r,g,b= r or 1, g or 1, b or 1
+    local r,g,b= e.GetUnitColor(unit)
 
     local guid
     local unitIsPlayer=  UnitIsPlayer(unit)
@@ -1463,12 +1435,7 @@ local function Init_BossFrame()
             self.Portrait:SetShown(exists)
             self.targetTexture:SetShown(exists and UnitIsUnit('target', unit))
             --颜色
-            local r,g,b
-            local class= UnitClassBase(unit)
-            if class then
-                r, g, b= GetClassColor(class)
-            end
-            r,g,b= r or 1, g or 1, b or 1
+            local r,g,b= e.GetUnitColor(unit)
             self:GetParent().healthbar:SetStatusBarColor(r,g,b)--颜色
         end
 
@@ -1586,13 +1553,7 @@ local function Init_BossFrame()
                 end
 
                 --颜色
-                local r,g,b
-                local class= UnitClassBase(unit)
-                if class then
-                    r, g, b= GetClassColor(class)
-                end
-                r,g,b= r or 1, g or 1, b or 1
-
+                local r,g,b= e.GetUnitColor(unit)
                 --self.healthBar:SetStatusBarColor(r,g,b)
                 --self.IsTargetTexture:SetShown(UnitIsUnit(self.targetUnit, 'target'))
                 self.Border:SetVertexColor(r,g,b)

@@ -54,6 +54,9 @@ local function GetWeek()--周数
 end
 
 
+
+
+
 local battleTag= select(2, BNGetInfo())
 local baseClass= UnitClassBase('player')
 e.Player={
@@ -62,7 +65,7 @@ e.Player={
     name_realm= UnitName('player')..'-'..GetRealmName(),
     name= UnitName('player'),
     sex= UnitSex("player"),
-    class= baseClass,
+    class= UnitClassBase('player'),
     r= GetClassColor(baseClass),
     g= select(2,GetClassColor(baseClass)),
     b= select(3, GetClassColor(baseClass)),
@@ -80,6 +83,7 @@ e.Player={
     --useColor= nil,--使用颜色
     L={},--多语言，文本
 }
+--e.Player.r, e.Player.g, e.Player.b, e.Player.col= e.GetUnitColor('player')--职业颜色
 e.Player.useColor= {r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, hex= e.Player.col}--使用颜色
 
  --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
@@ -89,6 +93,7 @@ e.Player.useColor= {r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, hex= e.Player
 for k, v in pairs(GetAutoCompleteRealms()) do
     e.Player.Realms[v]=k
 end
+
 
 
 e.Icon={
@@ -1296,7 +1301,22 @@ end
 
 
 
-
+--职业颜色
+function e.GetUnitColor(unit)
+    local r, g, b, hex
+    if unit then
+        if UnitIsUnit('player', unit) then
+            return e.Player.r, e.Player.g, e.Player.b, e.Player.col
+        elseif UnitExists(unit) then
+            local classFilename= UnitClassBase(unit)
+            if classFilename then
+                r, g, b, hex= GetClassColor(classFilename)
+                hex= hex and '|c'..hex
+            end
+        end
+    end
+    return r or 1, g or 1, b or 1, hex or '|cffffffff'
+end
 
 
 local function GetPlayerNameRemoveRealm(name, realm)--玩家名称, 去服务器为*
