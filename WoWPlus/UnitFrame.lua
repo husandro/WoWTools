@@ -38,7 +38,7 @@ end
 --玩家
 --####
 local function Init_PlayerFrame()--PlayerFrame.lua
-    --生命条，颜色，材质
+    --[[生命条，颜色，材质
     PlayerFrame.healthbar:SetStatusBarTexture(Save.healthbar)
     hooksecurefunc('PlayerFrame_UpdateArt', function(self)
         local r,g,b= e.GetUnitColor(self.unit)
@@ -50,7 +50,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
             local r,g,b= e.GetUnitColor(self.unit)
             PetFrame.healthbar:SetStatusBarColor(r,g,b)
         end
-    end)
+    end)]]
 
 
     local playerFrameTargetContextual = PlayerFrame_GetPlayerFrameContentContextual()
@@ -555,8 +555,8 @@ local function Init_TargetFrame()
         local r,g,b= e.GetUnitColor(frame.unit)
         frame.TargetFrameContainer.FrameTexture:SetVertexColor(r, g, b)
         frame.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r, g, b)
-        frame.healthbar:SetStatusBarTexture(Save.healthbar)--生命条，材质
-        frame.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
+        --frame.healthbar:SetStatusBarTexture(Save.healthbar)--生命条，材质
+        --frame.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
     end)
 
     hooksecurefunc(TargetFrame,'CheckLevel', function(self)--目标, 等级, 颜色
@@ -645,8 +645,8 @@ local function set_memberFrame(memberFrame)
     memberFrame.Texture:SetVertexColor(r, g, b)
 
     --生命条，颜色，材质
-    memberFrame.healthbar:SetStatusBarTexture(Save.healthbar)
-    memberFrame.healthbar:SetStatusBarColor(r,g,b)
+    --memberFrame.healthbar:SetStatusBarTexture(Save.healthbar)
+    --memberFrame.healthbar:SetStatusBarColor(r,g,b)
 
     --目标的目标
     local btn= memberFrame.potFrame
@@ -1287,10 +1287,10 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
     --################
     --生命条，颜色，材质
     --################
-    --[[if frame.healthbar  then--BUG
+    if frame.healthbar and not e.Player.husandro then--BUG
         frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         frame.healthbar:SetStatusBarColor(r,g,b)--颜色
-    end]]
+    end
 end
 
 
@@ -1455,8 +1455,8 @@ local function Init_BossFrame()
             self.Portrait:SetShown(exists)
             self.targetTexture:SetShown(exists and UnitIsUnit('target', unit))
             --颜色
-            local r,g,b= e.GetUnitColor(unit)
-            self:GetParent().healthbar:SetStatusBarColor(r,g,b)--颜色
+           --local r,g,b= e.GetUnitColor(unit)
+            --self:GetParent().healthbar:SetStatusBarColor(r,g,b)--颜色
         end
 
         function frame.BossButton:set_event()
@@ -1577,9 +1577,7 @@ local function Init_BossFrame()
                 --self.healthBar:SetStatusBarColor(r,g,b)
                 --self.IsTargetTexture:SetShown(UnitIsUnit(self.targetUnit, 'target'))
                 self.Border:SetVertexColor(r,g,b)
-
                 self.healthLable:SetTextColor(r,g,b)
-
                 e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=isSelf, y=-2})
             end
             self:SetShown(exists)
