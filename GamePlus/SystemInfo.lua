@@ -254,11 +254,14 @@ end
 --设置装等,耐久度,事件
 --##################
 local function set_Durabiliy()
-    local du, value= e.GetDurabiliy(not Save.parent)
+    --[[local du, value= e.GetDurabiliy(not Save.parent)
     if not Save.parent then
         du= du..' '
     end
-    Labels.durabiliy:SetText(du or '')
+    Labels.durabiliy:SetText(du or '')]]
+    local value= select(2, e.GetDurabiliy(not Save.parent))
+    local du=math.modf(value)
+    Labels.durabiliy:SetText(Save.parent and du..' ' or du or '')
     e.Set_HelpTips({frame=button, topoint=Labels.durabiliy, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<=40})--设置，提示
 end
 local function set_EquipmentLevel()--装等

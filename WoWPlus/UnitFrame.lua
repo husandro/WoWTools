@@ -1158,9 +1158,15 @@ end
 --################
 local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图标， 颜色
     local unit= frame.unit
-    if not UnitExists(unit) then
+    if e.Player.husandro then
+        if unit:find('nameplate') then
+            print(unit)
+        end
+    end
+    if not UnitExists(unit) or unit:find('nameplate') then
         return
     end
+    
     local r,g,b= e.GetUnitColor(unit)
 
     local guid
