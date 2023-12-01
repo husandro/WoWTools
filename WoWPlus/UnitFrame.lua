@@ -870,7 +870,7 @@ local function set_memberFrame(memberFrame)
                 self:set_faction()--成员派系
             end
         end)
-        memberFrame.RaidTargetFrame= raidTargetFrame
+        memberFrame.raidTargetFrame= raidTargetFrame
     end
     raidTargetFrame.unit= unit
     raidTargetFrame.isPlayer= isPlayer
