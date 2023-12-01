@@ -643,9 +643,11 @@ local function set_memberFrame(memberFrame)
 
     --外框
     memberFrame.Texture:SetVertexColor(r, g, b)
+
+    --生命条，颜色，材质
     if exists then
-        memberFrame.healthbar:SetStatusBarTexture(Save.healthbar)--生命条，颜色，材质
-        memberFrame.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
+        memberFrame.healthbar:SetStatusBarTexture(Save.healthbar)
+        memberFrame.healthbar:SetStatusBarColor(r,g,b)
     end
 
     --目标的目标
