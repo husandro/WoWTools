@@ -4,6 +4,7 @@ local Save={
     --notRaidFrame= not e.Player.husandro,
     raidFrameScale=0.8,
     --raidFrameAlpha=1,
+    healthbar='UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
 }
 local panel=CreateFrame("Frame")
 
@@ -37,6 +38,24 @@ end
 --玩家
 --####
 local function Init_PlayerFrame()--PlayerFrame.lua
+    --生命条，颜色，材质
+    PlayerFrame.healthbar:SetStatusBarTexture(Save.healthbar)
+    hooksecurefunc('PlayerFrame_UpdateArt', function(self)
+        local r,g,b
+        if self.unit=='player' then
+            r,g,b= e.Player.r, e.Player.g, e.Player.b
+        else
+            local classFilename= UnitClassBase(self.unit)
+            if classFilename then
+                r,g,b= GetClassColor(classFilename)
+            end
+        end
+        r,g,b= r or 1, g or 1, b or 1
+        self.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
+    end)
+
+
+    
     local playerFrameTargetContextual = PlayerFrame_GetPlayerFrameContentContextual()
     local frameLevel= PlayerFrame:GetFrameLevel() +1
 
@@ -88,6 +107,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     --############
     PlayerFrameGroupIndicatorText:ClearAllPoints()
     PlayerFrameGroupIndicatorText:SetPoint('TOPRIGHT', PlayerFrame, -35, -24)
+
     --处理,小队, 号码
     hooksecurefunc('PlayerFrame_UpdateGroupIndicator', function()
         if IsInRaid() then
@@ -109,7 +129,6 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrameGroupIndicatorRight:SetShown(false)
 
     --等级，颜色
-    --#########
     hooksecurefunc('PlayerFrame_UpdateLevel', function()
         if (UnitExists("player")) then
             local level = UnitLevel(PlayerFrame.unit);
@@ -124,25 +143,22 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     end)
 
     --玩家, 治疗，爆击，数字
-    --###################
     if PlayerHitIndicator then
         e.Set_Label_Texture_Color(PlayerHitIndicator, {type='FontString'})--设置颜色
         PlayerHitIndicator:ClearAllPoints()
         PlayerHitIndicator:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT')
     end
+
     --宠物
-    --####
     if PetHitIndicator then
         PetHitIndicator:ClearAllPoints()
         PetHitIndicator:SetPoint('TOPLEFT', PetPortrait or PetHitIndicator:GetParent(), 'BOTTOMLEFT')
     end
 
     --外框
-    --####
-    e.Set_Label_Texture_Color(PlayerFrame.PlayerFrameContainer.FrameTexture, {type='Texture'})--设置颜色
+    PlayerFrame.PlayerFrameContainer.FrameTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)--设置颜色
 
-    --移动zzZZ, 睡着了
-    --###############
+    --移动zzZZ, 睡着
     playerFrameTargetContextual.PlayerRestLoop.RestTexture:SetPoint('TOPRIGHT', PlayerFrame.portrait, 14, 38)
 
 
@@ -518,17 +534,19 @@ end
 --目标
 --####
 local function Init_TargetFrame()
+    TargetFrame.healthbar:SetStatusBarTexture(Save.healthbar)--生命条，材质
 
     --目标，生命条，颜色，材质
     hooksecurefunc(TargetFrame, 'CheckClassification', function(frame)--外框，颜色
-        frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
+        local r,g,b
         local classFilename= UnitClassBase(frame.unit)
         if classFilename then
-            local r,g,b= GetClassColor(classFilename)
-            r,g,b= r or 1, g or 1, b or 1
-            frame.TargetFrameContainer.FrameTexture:SetVertexColor(r, g, b)
-            frame.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r, g, b)
+            r,g,b= GetClassColor(classFilename)
         end
+        r,g,b= r or 1, g or 1, b or 1
+        frame.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
+        frame.TargetFrameContainer.FrameTexture:SetVertexColor(r, g, b)
+        frame.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r, g, b)
     end)
 
     hooksecurefunc(TargetFrame,'CheckLevel', function(self)--目标, 等级, 颜色
@@ -623,14 +641,11 @@ local function set_memberFrame(memberFrame)
     end
     r, g, b= r or 1, g or 1, b or 1
 
-    --####
     --外框
-    --####
     memberFrame.Texture:SetVertexColor(r, g, b)
+    memberFrame.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
 
-    --#########
     --目标的目标
-    --#########
     local btn= memberFrame.potFrame
     if not btn then
         btn= e.Cbtn(memberFrame, {type=true, size={35,35}, icon='hide', pushe=true})
@@ -1082,6 +1097,7 @@ end
 
 local function Init_PartyFrame()--PartyFrame.lua
     for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
+        memberFrame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')--生命条，颜色，材质
         set_memberFrame(memberFrame)
     end
     hooksecurefunc(PartyFrame, 'UpdatePartyFrames', function(unitFrame)
@@ -1279,13 +1295,13 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
     --################
     --生命条，颜色，材质
     --################
-    if frame.healthbar  then--BUG
+    --[[if frame.healthbar  then--BUG
         frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         frame.healthbar:SetStatusBarColor(r,g,b)--颜色
-    end
+    end]]
 end
 
-       
+
 
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
 
@@ -1409,9 +1425,10 @@ end
 --BossFrame
 --#########
 local function Init_BossFrame()
-
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
+        frame.healthbar:SetStatusBarTexture(Save.healthbar)----生命条，颜色，材质
+
         frame.BossButton= e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})--CreateFrame('Frame', nil, frame, 'SecureActionButtonTemplate')
 
         frame.BossButton:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
@@ -1445,6 +1462,14 @@ local function Init_BossFrame()
             end
             self.Portrait:SetShown(exists)
             self.targetTexture:SetShown(exists and UnitIsUnit('target', unit))
+            --颜色
+            local r,g,b
+            local class= UnitClassBase(unit)
+            if class then
+                r, g, b= GetClassColor(class)
+            end
+            r,g,b= r or 1, g or 1, b or 1
+            self:GetParent().healthbar:SetStatusBarColor(r,g,b)--颜色
         end
 
         function frame.BossButton:set_event()
@@ -1559,6 +1584,7 @@ local function Init_BossFrame()
                         SetPortraitTexture(self.Portrait, unit)--别人
                     end
                 end
+
                 --颜色
                 local r,g,b
                 local class= UnitClassBase(unit)
@@ -1568,17 +1594,14 @@ local function Init_BossFrame()
                 r,g,b= r or 1, g or 1, b or 1
 
                 --self.healthBar:SetStatusBarColor(r,g,b)
-                    --self.IsTargetTexture:SetShown(UnitIsUnit(self.targetUnit, 'target'))
-                    self.Border:SetVertexColor(0,1,0)
-
-                    self.Border:SetVertexColor(r,g,b)
+                --self.IsTargetTexture:SetShown(UnitIsUnit(self.targetUnit, 'target'))
+                self.Border:SetVertexColor(r,g,b)
 
                 self.healthLable:SetTextColor(r,g,b)
 
                 e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=isSelf, y=-2})
             end
             self:SetShown(exists)
-
         end
 
         function frame.TotButton.frame:set_event()
@@ -1967,7 +1990,7 @@ local function Init()
     Init_PartyFrame()--小队
     Init_BossFrame()--BOSS
     Init_RaidFrame()--团队
-    
+
     hooksecurefunc('UnitFrame_Update', Init_UnitFrame_Update)--职业, 图标， 颜色
 
     set_CompactPartyFrame()--小队, 使用团框架
@@ -2025,7 +2048,6 @@ local function Init()
     --############
     --去掉生命条 % extStatusBar.lua TextStatusBar.lua
     --高CPU
-
     local deadText= e.onlyChinese and '死亡' or DEAD
     hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
         if value then--statusFrame.unit
@@ -2124,6 +2146,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
+            Save.healthbar = Save.healthbar or 'UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
 
             --添加控制面板
             --local initializer2= 

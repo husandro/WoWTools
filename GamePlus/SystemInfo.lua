@@ -255,7 +255,7 @@ end
 --##################
 local function set_Durabiliy()
     local du, value= e.GetDurabiliy(not Save.parent)
-    if not Save.parent and du then
+    if not Save.parent then
         du= du..' '
     end
     Labels.durabiliy:SetText(du or '')

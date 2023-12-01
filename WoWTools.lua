@@ -1920,17 +1920,20 @@ function e.GetDurabiliy(reTexture)--耐久度
             max= max +max2
         end
     end
-    local text, value= '100%', 100
+    local text, value= '', 100
     if max>0 and cur<=max then
-        value = cur/max * 100
-        if value<30 then
-            text= format('|cnRED_FONT_COLOR:%i%%|r', value-0.5)
-        elseif value<=60 then
-            text= format('|cnYELLOW_FONT_COLOR:%i%%|r', value-0.5)
-        elseif value<=90 then
-            text= format('|cnGREEN_FONT_COLOR:%i%%|r', value-0.5)
+        if cur==max then
+            text='100%'
         else
-            text= format('%i%%', value-0.5)
+            if value<30 then
+                text= format('|cnRED_FONT_COLOR:%i%%|r', value)---0.5)
+            elseif value<=60 then
+                text= format('|cnYELLOW_FONT_COLOR:%i%%|r', value)---0.5)
+            elseif value<=90 then
+                text= format('|cnGREEN_FONT_COLOR:%i%%|r', value)---0.5)
+            else
+                text= format('%i%%', value)---0.5)
+            end
         end
     end
     if reTexture then
