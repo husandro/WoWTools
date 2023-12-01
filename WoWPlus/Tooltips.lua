@@ -752,7 +752,7 @@ local function set_Buff(type, self, ...)
     end
     if source then--来源
         if source then
-            local r, g ,b , col= GetClassColor(UnitClassBase(source))
+            local r, g ,b , col= e.GetUnitColor(source)-- GetClassColor(UnitClassBase(source))
             if r and g and b then
                 self.backgroundColor:SetColorTexture(r, g, b, 0.3)
                 self.backgroundColor:SetShown(true)
@@ -889,8 +889,7 @@ function func.Set_Unit(self, unit)--设置单位提示信息
     local guid = UnitGUID(unit)
     local isSelf=UnitIsUnit('player', unit)--我
     local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
-    local r, g, b, col = GetClassColor(UnitClassBase(unit))--颜色
-          col= col and '|c'..col or ''
+    local r, g, b, col = e.GetUnitColor(unit)--颜色
     local isInCombat= UnitAffectingCombat('player')
 
     --设置单位图标  

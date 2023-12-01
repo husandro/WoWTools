@@ -73,14 +73,7 @@ local function Get_Player_Info(guid)--取得玩家信息
     if not unit then
         return
     end
-    local r, g, b, hex
-    local class= UnitClassBase(unit)
-    if class then
-        r, g, b, hex= GetClassColor(class)
-        if hex then
-            hex= '|c'..hex
-        end
-    end
+    local r, g, b, hex= e.GetUnitColor(unit)
     e.UnitItemLevel[guid] = {--玩家装等
         itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel),
         specID= GetInspectSpecialization(unit),

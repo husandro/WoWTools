@@ -298,7 +298,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         if guid and maxHP and role then
             info.name= (e.PlayerOnlineInfo(unit) or '')..e.GetPlayerInfo({unit=unit, guid=guid, reName=true, reRealm=true})..(e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLeve or '')
             info.maxHP= maxHP
-            info.col= '|c'..select(4, GetClassColor(UnitClassBase(unit)))
+            info.col= select(4, e.GetUnitColor(unit))
             if uiMapID then--不在同地图
                 local text, mapID=e.GetUnitMapName(unit)
                 if text and mapID and mapID~=uiMapID then
