@@ -550,14 +550,13 @@ end
 --目标
 --####
 local function Init_TargetFrame()
-    TargetFrame.healthbar:SetStatusBarTexture(Save.healthbar)--生命条，材质
-
     --目标，生命条，颜色，材质
     hooksecurefunc(TargetFrame, 'CheckClassification', function(frame)--外框，颜色
         local r,g,b= e.GetUnitColor(frame.unit)
-        frame.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
         frame.TargetFrameContainer.FrameTexture:SetVertexColor(r, g, b)
         frame.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r, g, b)
+        frame.healthbar:SetStatusBarTexture(Save.healthbar)--生命条，材质
+        frame.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
     end)
 
     hooksecurefunc(TargetFrame,'CheckLevel', function(self)--目标, 等级, 颜色
