@@ -1079,7 +1079,7 @@ end
 
 local function Init_PartyFrame()--PartyFrame.lua
     for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
-        memberFrame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')--生命条，颜色，材质
+        memberFrame.healthbar:SetStatusBarTexture(Save.healthbar)--生命条，颜色，材质
         set_memberFrame(memberFrame)
     end
     hooksecurefunc(PartyFrame, 'UpdatePartyFrames', function(unitFrame)
