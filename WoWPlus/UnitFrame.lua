@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= UNITFRAME_LABEL
 local Save={
-    notRaidFrame= not e.Player.husandro,
+    --notRaidFrame= not e.Player.husandro,
     raidFrameScale=0.8,
     --raidFrameAlpha=1,
 }
@@ -1652,136 +1652,6 @@ end
 
 
 
---######
---初始化
---######
-local function Init()
-    Init_PlayerFrame()--玩家
-    Init_TargetFrame()--目标
-    Init_PartyFrame()--小队
-    Init_BossFrame()--BOSS
-
-    hooksecurefunc('UnitFrame_Update', Init_UnitFrame_Update)--职业, 图标， 颜色
-
-    set_CompactPartyFrame()--小队, 使用团框架
-    hooksecurefunc(CompactPartyFrame,'UpdateVisibility', set_CompactPartyFrame)
-
-    --###############
-    --MirrorTimer.lua
-    --###############
-    hooksecurefunc(MirrorTimerContainer, 'SetupTimer', function(frame)--, value)
-        for _, activeTimer in pairs(frame.activeTimers) do
-            if not activeTimer.valueText then
-                activeTimer.valueText=e.Cstr(activeTimer, {justifyH='RIGHT'})
-                activeTimer.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
-
-                e.Set_Label_Texture_Color(activeTimer.valueText, {type='FontString'})--设置颜色
-                e.Set_Label_Texture_Color(activeTimer.Text, {type='FontString'})--设置颜色
-
-                hooksecurefunc(activeTimer, 'UpdateStatusBarValue', function(self)
-                    self.valueText:SetText(format('%i', self.StatusBar:GetValue()))
-                end)
-            end
-        end
-    end)
-
-    --施法条
-    --#####
-    PlayerCastingBarFrame:HookScript('OnShow', function(self)--图标
-        self.Icon:SetShown(true)
-    end)
-    PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color=true, justifyH='RIGHT'})
-    PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
-    PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
-    PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
-        self.elapsed= (self.elapsed or 0.1) + elapsed
-        if self.elapsed>=0.1 and self.value and self.maxValue then
-            self.elapsed=0
-            local value= self.channeling and self.value or (self.maxValue-self.value)
-            if value<=0 then
-                self.castingText:SetText(0)
-            elseif value>=3 then
-                self.castingText:SetFormattedText('%i', value)
-            else
-                self.castingText:SetFormattedText('%.01f', value)
-            end
-        end
-    end)
-    e.Set_Label_Texture_Color(PlayerCastingBarFrame.Text, {type='FontString'})--设置颜色
-
-    hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称)
-        if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
-            self.name:SetText(e.Icon.star2)
-        end
-    end)
-
-    --############
-    --去掉生命条 % extStatusBar.lua TextStatusBar.lua
-    --高CPU
-
-    local deadText= e.onlyChinese and '死亡' or DEAD
-    hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
-        if value then--statusFrame.unit
-            if textString and textString:IsShown() then
-                local text
-                if UnitIsGhost(frame.unit) then
-                    text= '|A:poi-soulspiritghost:18:18|a'..deadText
-                else
-                    text= textString:GetText()
-                end
-                if text then
-                    if text=='100%' then
-                        text= ''
-                    else
-                        text= text:gsub('%%', '')
-                    end
-                    textString:SetText(text)
-                end
-
-            elseif frame.LeftText and frame.LeftText:IsShown() then
-                local text
-                if UnitIsGhost(frame.unit) then
-                    text= '|A:poi-soulspiritghost:18:18|a'..deadText
-                else
-                    text= frame.LeftText:GetText()
-                end
-                if text then
-                    if text=='100%' then
-                        text= ''
-                    else
-                        text= text:gsub('%%', '')
-                    end
-                    frame.LeftText:SetText(text)
-                end
-            end
-        elseif frame.zeroText and frame.DeadText and frame.DeadText:IsShown() then
-            local text= deadText--死亡
-            if frame.unit then
-                if UnitIsGhost(frame.unit) then--灵魂
-                    text= '|A:poi-soulspiritghost:18:18|a'..text
-                elseif UnitIsDead(frame.unit) then--死亡
-                    text= '|A:deathrecap-icon-tombstone:18:18|a'..text
-                end
-            end
-            frame.DeadText:SetText(text)
-        end
-    end)
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2078,6 +1948,173 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+--######
+--初始化
+--######
+local function Init()
+    Init_PlayerFrame()--玩家
+    Init_TargetFrame()--目标
+    Init_PartyFrame()--小队
+    Init_BossFrame()--BOSS
+    Init_RaidFrame()--团队
+    
+    hooksecurefunc('UnitFrame_Update', Init_UnitFrame_Update)--职业, 图标， 颜色
+
+    set_CompactPartyFrame()--小队, 使用团框架
+    hooksecurefunc(CompactPartyFrame,'UpdateVisibility', set_CompactPartyFrame)
+
+    --###############
+    --MirrorTimer.lua
+    --###############
+    hooksecurefunc(MirrorTimerContainer, 'SetupTimer', function(frame)--, value)
+        for _, activeTimer in pairs(frame.activeTimers) do
+            if not activeTimer.valueText then
+                activeTimer.valueText=e.Cstr(activeTimer, {justifyH='RIGHT'})
+                activeTimer.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
+
+                e.Set_Label_Texture_Color(activeTimer.valueText, {type='FontString'})--设置颜色
+                e.Set_Label_Texture_Color(activeTimer.Text, {type='FontString'})--设置颜色
+
+                hooksecurefunc(activeTimer, 'UpdateStatusBarValue', function(self)
+                    self.valueText:SetText(format('%i', self.StatusBar:GetValue()))
+                end)
+            end
+        end
+    end)
+
+    --施法条
+    --#####
+    PlayerCastingBarFrame:HookScript('OnShow', function(self)--图标
+        self.Icon:SetShown(true)
+    end)
+    PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color=true, justifyH='RIGHT'})
+    PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
+    PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
+    PlayerCastingBarFrame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
+        self.elapsed= (self.elapsed or 0.1) + elapsed
+        if self.elapsed>=0.1 and self.value and self.maxValue then
+            self.elapsed=0
+            local value= self.channeling and self.value or (self.maxValue-self.value)
+            if value<=0 then
+                self.castingText:SetText(0)
+            elseif value>=3 then
+                self.castingText:SetFormattedText('%i', value)
+            else
+                self.castingText:SetFormattedText('%.01f', value)
+            end
+        end
+    end)
+    e.Set_Label_Texture_Color(PlayerCastingBarFrame.Text, {type='FontString'})--设置颜色
+
+    hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称)
+        if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
+            self.name:SetText(e.Icon.star2)
+        end
+    end)
+
+    --############
+    --去掉生命条 % extStatusBar.lua TextStatusBar.lua
+    --高CPU
+
+    local deadText= e.onlyChinese and '死亡' or DEAD
+    hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
+        if value then--statusFrame.unit
+            if textString and textString:IsShown() then
+                local text
+                if UnitIsGhost(frame.unit) then
+                    text= '|A:poi-soulspiritghost:18:18|a'..deadText
+                else
+                    text= textString:GetText()
+                end
+                if text then
+                    if text=='100%' then
+                        text= ''
+                    else
+                        text= text:gsub('%%', '')
+                    end
+                    textString:SetText(text)
+                end
+
+            elseif frame.LeftText and frame.LeftText:IsShown() then
+                local text
+                if UnitIsGhost(frame.unit) then
+                    text= '|A:poi-soulspiritghost:18:18|a'..deadText
+                else
+                    text= frame.LeftText:GetText()
+                end
+                if text then
+                    if text=='100%' then
+                        text= ''
+                    else
+                        text= text:gsub('%%', '')
+                    end
+                    frame.LeftText:SetText(text)
+                end
+            end
+        elseif frame.zeroText and frame.DeadText and frame.DeadText:IsShown() then
+            local text= deadText--死亡
+            if frame.unit then
+                if UnitIsGhost(frame.unit) then--灵魂
+                    text= '|A:poi-soulspiritghost:18:18|a'..text
+                elseif UnitIsDead(frame.unit) then--死亡
+                    text= '|A:deathrecap-icon-tombstone:18:18|a'..text
+                end
+            end
+            frame.DeadText:SetText(text)
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
@@ -2089,7 +2126,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            local initializer2= e.AddPanel_Check({
+            --local initializer2= 
+            e.AddPanel_Check({
                 name= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(e.onlyChinese and '单位框体' or addName),
                 tooltip= addName,
                 value= not Save.disabled,
@@ -2099,7 +2137,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             })
 
-            local initializer= e.AddPanel_Check({
+            --[[local initializer= e.AddPanel_Check({
                 name= e.onlyChinese and '团队框体' or HUD_EDIT_MODE_RAID_FRAMES_LABEL,
                 tooltip= addName,
                 value= not Save.notRaidFrame,
@@ -2108,12 +2146,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
-            initializer:SetParentInitializer(initializer2, function() return true end)
+            initializer:SetParentInitializer(initializer2, function() return true end)]]
 
-
-            if not Save.notRaidFrame then
-                Init_RaidFrame()--团队
-            end
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
