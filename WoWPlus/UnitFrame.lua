@@ -994,37 +994,37 @@ local function set_memberFrame(memberFrame)
         deadFrame.texture= deadFrame:CreateTexture()
         deadFrame.texture:SetAllPoints(deadFrame)
         function deadFrame:set_settings()
-            local find= false
+            local atlas,texture
             if UnitIsConnected(self.unit) then
-               --[[ if UnitHasIncomingResurrection(self.unit) then--正在复活
-                    self.texture:SetAtlas('poi-traveldirections-arrow2')
-                    find=true
-                else]]if UnitIsUnconscious(self.unit) then--失控
-                    self.texture:SetAtlas('cursor_legendaryquest_128')
-                    find=true
-                elseif UnitIsCharmed(self.unit) or UnitIsPossessed(self.unit)  then--被魅惑
-                    self.texture:SetAtlas('CovenantSanctum-Reservoir-Idle-NightFae-Spiral3')
-                    find= true
-                elseif UnitIsFeignDeath(self.unit) then--假死
-                    SetPortraitToTexture(self.texture, 132293)
-                    find= true
-
-                elseif UnitIsDead(self.unit) then
-                    self.texture:SetAtlas('xmarksthespot')
-                    find= true
-                    if not self.deadBool then--死亡，次数
+                local isDead= UnitIsDead(self.unit)
+                local isGhost= UnitIsGhost(self.unit)
+                if isDead or isGhost then--死亡，次数
+                    if not self.deadBool then
                         self.deadBool=true
                         self.dead= self.dead +1
                     end
-
-                elseif UnitIsGhost(self.unit) then
-                    self.texture:SetAtlas('poi-soulspiritghost')
-                    find= true
                 else
                     self.deadBool= nil
                 end
+                if UnitHasIncomingResurrection(self.unit) then--正在复活
+                    atlas='poi-traveldirections-arrow2'
+                elseif UnitIsUnconscious(self.unit) then--失控
+                    atlas='cursor_legendaryquest_128'
+                elseif UnitIsCharmed(self.unit) or UnitIsPossessed(self.unit)  then--被魅惑
+                    atlas= 'CovenantSanctum-Reservoir-Idle-NightFae-Spiral3'
+                elseif UnitIsFeignDeath(self.unit) then--假死
+                    texture= 132293
+                elseif isDead then
+                    atlas= 'xmarksthespot'
+                elseif isGhost then
+                    atlas='poi-soulspiritghost'
+                end
             end
-            self.texture:SetShown(find)
+            if atlas then
+                self.texture:SetAtlas(atlas)
+            else
+                self.texture:SetTexture(texture or 0)
+            end
             if self.isPlayer then
                 self.Text:SetText(10)
             else
