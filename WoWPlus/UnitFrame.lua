@@ -4,7 +4,7 @@ local Save={
     --notRaidFrame= not e.Player.husandro,
     raidFrameScale=0.8,
     --raidFrameAlpha=1,
-    healthbar='UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
+    --healthbar='UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
 }
 local panel=CreateFrame("Frame")
 
@@ -2125,7 +2125,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
-            Save.healthbar = Save.healthbar or 'UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
+            --Save.healthbar = Save.healthbar or 'UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
 
             --添加控制面板
             --local initializer2= 
