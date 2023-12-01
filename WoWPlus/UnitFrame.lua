@@ -1287,7 +1287,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
     --################
     --生命条，颜色，材质
     --################
-    if frame.healthbar then--BUG
+    if frame.healthbar then
         frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         frame.healthbar:SetStatusBarColor(r,g,b)--颜色
     end
