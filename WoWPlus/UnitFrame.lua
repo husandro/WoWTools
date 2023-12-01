@@ -645,10 +645,8 @@ local function set_memberFrame(memberFrame)
     memberFrame.Texture:SetVertexColor(r, g, b)
 
     --生命条，颜色，材质
-    if exists then
-        memberFrame.healthbar:SetStatusBarTexture(Save.healthbar)
-        memberFrame.healthbar:SetStatusBarColor(r,g,b)
-    end
+    memberFrame.healthbar:SetStatusBarTexture(Save.healthbar)
+    memberFrame.healthbar:SetStatusBarColor(r,g,b)
 
     --目标的目标
     local btn= memberFrame.potFrame
@@ -1766,7 +1764,7 @@ local function Init_RaidFrame()--设置,团队
         end
         local text= frame.statusText:GetText()
         if text then
-            if text== '100%' then
+            if text== '100%' or text=='0%' then
                 text= ''
             else
                 text= text:gsub('%%', '')
@@ -2042,7 +2040,7 @@ local function Init()
                     text= textString:GetText()
                 end
                 if text then
-                    if text=='100%' then
+                    if text=='100%' or text=='0%' then
                         text= ''
                     else
                         text= text:gsub('%%', '')
