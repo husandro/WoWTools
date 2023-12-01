@@ -207,17 +207,6 @@ end
 
 
 
-e.MK=function(k,b) 
-    if not b then b=1 end if k>=1e6 then 
-        k=string.format('%.'..b..'fm',k/1e6) 
-    elseif k>= 1e4 and GetLocale() == "zhCN" then 
-        k=string.format('%.'..b..'fw',k/1e4) 
-    elseif k>=1e3 then k=string.format('%.'..b..'fk',k/1e3) 
-    else k=string.format('%i',k) end 
-    return k end--加k 9.1
-
-
-
 function e.MK(number, bit)
     if not number then
         return

@@ -1279,80 +1279,15 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
     --################
     --生命条，颜色，材质
     --################
-    --[[if frame.healthbar then
+    if frame.healthbar  then--BUG
         frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         frame.healthbar:SetStatusBarColor(r,g,b)--颜色
-    end]]
+    end
 end
---[[
-if e.Player.husandro then
-        hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称)
-            if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
-                self.name:SetText(e.Icon.star2)
-            end
-        end)
 
-        --############
-        --去掉生命条 % extStatusBar.lua TextStatusBar.lua
-        --############会出现，错误
-
-        local deadText= e.onlyChinese and '死亡' or DEAD
-        hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
-            if not frame:IsShown() then
-                return
-            end
-            print(frame.displayedValue , frame.unit)
-            if value then--statusFrame.unit
-                if textString and textString:IsShown() then
-                    local text
-                    if UnitIsGhost(frame.unit) then
-                        text= '|A:poi-soulspiritghost:18:18|a'..deadText
-                    else
-                        text= textString:GetText()
-                    end
-                    if text then
-                        if text=='100%' then
-                            text= ''
-                        else
-                            text= text:gsub('%%', '')
-                        end
-                        textString:SetText(text)
-                    end
-
-                elseif frame.LeftText and frame.LeftText:IsShown() then
-                    local text
-                    if UnitIsGhost(frame.unit) then
-                        text= '|A:poi-soulspiritghost:18:18|a'..deadText
-                    else
-                        text= frame.LeftText:GetText()
-                    end
-                    if text then
-                        if text=='100%' then
-                            text= ''
-                        else
-                            text= text:gsub('%%', '')
-                        end
-                        frame.LeftText:SetText(text)
-                    end
-                end
-            elseif frame.zeroText and frame.DeadText and frame.DeadText:IsShown() then
-                local text= deadText--死亡
-                if frame.unit then
-                    if UnitIsGhost(frame.unit) then--灵魂
-                        text= '|A:poi-soulspiritghost:18:18|a'..text
-                    elseif UnitIsDead(frame.unit) then--死亡
-                        text= '|A:deathrecap-icon-tombstone:18:18|a'..text
-                    end
-                end
-                frame.DeadText:SetText(text)
-            end
-        end)
+       
 
     --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
-end
-]]
-
-
 
 
 
@@ -1773,6 +1708,64 @@ local function Init()
         end
     end)
     e.Set_Label_Texture_Color(PlayerCastingBarFrame.Text, {type='FontString'})--设置颜色
+
+    hooksecurefunc('UnitFrame_OnEvent', function(self, event)--修改, 宠物, 名称)
+        if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
+            self.name:SetText(e.Icon.star2)
+        end
+    end)
+
+    --############
+    --去掉生命条 % extStatusBar.lua TextStatusBar.lua
+    --高CPU
+
+    local deadText= e.onlyChinese and '死亡' or DEAD
+    hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
+        if value then--statusFrame.unit
+            if textString and textString:IsShown() then
+                local text
+                if UnitIsGhost(frame.unit) then
+                    text= '|A:poi-soulspiritghost:18:18|a'..deadText
+                else
+                    text= textString:GetText()
+                end
+                if text then
+                    if text=='100%' then
+                        text= ''
+                    else
+                        text= text:gsub('%%', '')
+                    end
+                    textString:SetText(text)
+                end
+
+            elseif frame.LeftText and frame.LeftText:IsShown() then
+                local text
+                if UnitIsGhost(frame.unit) then
+                    text= '|A:poi-soulspiritghost:18:18|a'..deadText
+                else
+                    text= frame.LeftText:GetText()
+                end
+                if text then
+                    if text=='100%' then
+                        text= ''
+                    else
+                        text= text:gsub('%%', '')
+                    end
+                    frame.LeftText:SetText(text)
+                end
+            end
+        elseif frame.zeroText and frame.DeadText and frame.DeadText:IsShown() then
+            local text= deadText--死亡
+            if frame.unit then
+                if UnitIsGhost(frame.unit) then--灵魂
+                    text= '|A:poi-soulspiritghost:18:18|a'..text
+                elseif UnitIsDead(frame.unit) then--死亡
+                    text= '|A:deathrecap-icon-tombstone:18:18|a'..text
+                end
+            end
+            frame.DeadText:SetText(text)
+        end
+    end)
 end
 
 
