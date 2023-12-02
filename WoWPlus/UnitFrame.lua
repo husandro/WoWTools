@@ -555,7 +555,7 @@ local function Init_TargetFrame()
         local r,g,b= e.GetUnitColor(frame.unit)
         frame.TargetFrameContainer.FrameTexture:SetVertexColor(r, g, b)
         frame.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r, g, b)
-        frame.healthbar:SetStatusBarTexture(Save.healthbar)--生命条，材质
+        frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')--生命条，材质
         frame.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
     end)
 
@@ -1419,7 +1419,7 @@ end
 local function Init_BossFrame()
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
-        frame.healthbar:SetStatusBarTexture(Save.healthbar)----生命条，颜色，材质
+        --frame.healthbar:SetStatusBarTexture(Save.healthbar)----生命条，颜色，材质
 
         frame.BossButton= e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})--CreateFrame('Frame', nil, frame, 'SecureActionButtonTemplate')
 
