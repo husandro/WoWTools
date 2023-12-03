@@ -192,8 +192,8 @@ Settings.RegisterAddOnCategory(Category)
 Settings.SetKeybindingsCategory(Category)
 
 --打开，选项
-function e.OpenPanelOpting(name, subCategoryName)
-    Settings.OpenToCategory(Category:GetID(), name or subCategoryName)
+function e.OpenPanelOpting(name)
+    Settings.OpenToCategory(Category:GetID(), name)
     --[[
     if subCategoryName and Category:HasSubcategories() then
         Settings.OpenToCategory(Category:GetID(), name)

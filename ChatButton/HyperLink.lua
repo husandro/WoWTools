@@ -997,7 +997,7 @@ local function InitMenu(_, level, menuList)
             text= e.onlyChinese and '设置' or SETTINGS,
             notCheckable=true,
             keepShownOnClick=true,
-            func= function() e.OpenPanelOpting(nil, e.onlyChinese and '超链接图标' or addName) end,
+            func= function() e.OpenPanelOpting() end,--nil, e.onlyChinese and '超链接图标' or addName) end,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 

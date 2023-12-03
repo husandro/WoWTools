@@ -2201,7 +2201,7 @@ local function options_Init()--初始，选项
         end,
         buttonText= e.onlyChinese and '设置' or SETTINGS,
         buttonFunc= function()
-            e.OpenPanelOpting()
+            e.OpenPanelOpting((e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR))
         end,
         tooltip= addName,
         layout= Layout,
