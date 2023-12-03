@@ -50,6 +50,7 @@ local Save={
     --strupper
 }
 
+local Category
 
 local function get_PrimaryStat()--取得主属
     local spec= GetSpecialization()
@@ -1996,7 +1997,7 @@ local function Init()
                         icon='mechagon-projects',
                         notCheckable=true,
                         func= function()
-                            e.OpenPanelOpting(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
+                            e.OpenPanelOpting(nil, '|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES))
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)

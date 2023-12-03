@@ -187,12 +187,29 @@ local function get_variableIndex()
     return variableIndex
 end
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
+Category.expanded=true
 Settings.RegisterAddOnCategory(Category)
 Settings.SetKeybindingsCategory(Category)
 
 --打开，选项
-function e.OpenPanelOpting(name)
-    Settings.OpenToCategory(Category:GetID(), name)
+function e.OpenPanelOpting(name, subCategoryName)
+    Settings.OpenToCategory(Category:GetID(), name or subCategoryName)
+    --[[
+    if subCategoryName and Category:HasSubcategories() then
+        Settings.OpenToCategory(Category:GetID(), name)
+        print(SettingsPanel.CategoryList.ScrollBox.ScrollTarget.SetExpanded)
+        --SettingsPanel.CategoryList.ScrollBox
+        
+       for _, info in pairs(Category:GetSubcategories() or {}) do
+            if info.name==subCategoryName then
+                for k, v in pairs(info) do if v and type(v)=='table' then print('---------',k..'STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---------',k..'END') end print(k,v) end
+                --Settings.OpenToCategory(info.ID, info.name)
+                return
+            end
+       end
+    else
+        Settings.OpenToCategory(Category:GetID(), name)
+    end]]
 end
 
 --添加，子目录
@@ -601,7 +618,7 @@ local function Init()
     })
 
 
-  
+
 
 
 

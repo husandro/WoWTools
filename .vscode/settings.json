@@ -3688,7 +3688,9 @@
         "show",
         "READY_CHECK",
         "PaperDollEquipmentManagerPane_InitButton",
-        "EncounterJournalLootJournalTab"
+        "EncounterJournalLootJournalTab",
+        "SettingsListMixin",
+        "SettingsCategoryListButtonMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

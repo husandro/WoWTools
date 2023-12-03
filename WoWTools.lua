@@ -4,6 +4,7 @@ e.WoWDate={}
 e.tips=GameTooltip
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
 e.call= securecall
+--securecallfunction
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
 --e.onlyChinese= Save.onlyChinese or LOCALE_zhCN
