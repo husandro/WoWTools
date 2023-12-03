@@ -420,7 +420,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrame.keystoneFrame:SetScript('OnEnter', function(self)
         e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine(addName)
+        e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
         if e.WoWDate[e.Player.guid].Keystone.link then
             e.tips:AddLine('|T4352494:0|t'..e.WoWDate[e.Player.guid].Keystone.link)
@@ -662,7 +662,7 @@ local function set_memberFrame(memberFrame)
             if UnitExists(self.unit) then
                 e.tips:SetUnit(self.unit)
             else
-                e.tips:AddDoubleLine(' ',e.Icon.left..(e.onlyChinese and '选中目标' or BINDING_HEADER_TARGETING))
+                e.tips:AddDoubleLine(self.unit, e.Icon.left..(e.onlyChinese and '选中目标' or BINDING_HEADER_TARGETING))
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(id, addName)
             end
@@ -800,7 +800,7 @@ local function set_memberFrame(memberFrame)
             if spellID then
                 e.tips:SetSpellByID(spellID)
             else
-                e.tips:AddDoubleLine(e.onlyChinese and '队员' or PLAYERS_IN_GROUP, e.onlyChinese and '施法条' or HUD_EDIT_MODE_CAST_BAR_LABEL)
+                e.tips:AddDoubleLine((e.onlyChinese and '队员' or PLAYERS_IN_GROUP)..' '..(self.unit or ''), e.onlyChinese and '施法条' or HUD_EDIT_MODE_CAST_BAR_LABEL)
             end
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
@@ -917,9 +917,9 @@ local function set_memberFrame(memberFrame)
         combatFrame:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
-            e.tips:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-            e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(self.unit, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
             e.tips:Show()
             self:SetAlpha(0.5)
         end)
@@ -1080,7 +1080,7 @@ local function set_memberFrame(memberFrame)
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '死亡' or DEAD,
+            e.tips:AddDoubleLine((e.onlyChinese and '死亡' or DEAD)..' '..(self.unit or ''),
                     format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, self:GetParent().dead or 0 , e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
             )
             e.tips:Show()
@@ -1192,7 +1192,14 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
             frame.classFrame.Texture:SetPoint('CENTER', frame.classFrame, 1,-1)
             frame.classFrame.Texture:SetSize(20,20)
 
-            function frame.classFrame:set_Class(guid3)
+            frame.classFrame.itemLevel= e.Cstr(frame.classFrame, {size=12})--装等
+            if unit=='target' or unit=='focus' then
+                frame.classFrame.itemLevel:SetPoint('RIGHT', frame.classFrame, 'LEFT')
+            else
+                frame.classFrame.itemLevel:SetPoint('TOPRIGHT', frame.classFrame, 'TOPLEFT')
+            end
+
+            function frame.classFrame:set_settings(guid3)
                 local unit2= self:GetParent().unit
                 local isPlayer= UnitExists(unit2) and UnitIsPlayer(unit2)
                 local find2=false
@@ -1228,6 +1235,8 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
                             end
                         end
                     end
+
+                    self.itemLevel:SetText(guid3 and e.UnitItemLevel[guid3] and e.UnitItemLevel[guid3].itemLevel or '')
                 end
                 self:SetShown(isPlayer and find2)
             end
@@ -1237,13 +1246,12 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
                 if UnitIsPlayer(unit2) then
                     e.GetNotifyInspect(nil, unit2)--取得玩家信息
                     C_Timer.After(2, function()
-                        self3:set_Class()
+                        self3:set_settings()
                     end)
                 end
             end)
         end
-        frame.classFrame:set_Class(guid)
-        frame.classFrame.Texture:SetVertexColor(r, g, b)
+        --[[
 
         if not UnitIsUnit(unit, 'player') then
             if not frame.itemLevel then
@@ -1256,10 +1264,13 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
             end
             frame.itemLevel:SetTextColor(r,g,b)
             frame.itemLevel:SetText(guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel or '')
-        end
+        end]]
     end
     if frame.classFrame then
-        frame.classFrame:SetShown(unitIsPlayer)
+        frame.classFrame:set_settings(guid)
+        frame.classFrame.Texture:SetVertexColor(r, g, b)
+        frame.classFrame.itemLevel:SetTextColor(r,g,b)
+        --frame.classFrame:SetShown(unitIsPlayer)
     end
 
     if frame.name then
