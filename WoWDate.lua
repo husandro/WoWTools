@@ -83,14 +83,10 @@ local function Get_Player_Info(guid)--取得玩家信息
         g=g,
         b=b,
     }
-    if UnitInParty(unit) and not IsInRaid() then
+    if UnitInParty(unit) and not IsInRaid() and PartyFrame.MemberFrame1.classFrame then
         for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
-            if memberFrame.classFrame then
-                if UnitIsUnit(memberFrame.unit, unit) then
-                    memberFrame.classFrame:set_settings(guid)
-                    break
-                end
-            else
+            if UnitIsUnit(memberFrame.unit, unit) then
+                memberFrame.classFrame:set_settings(guid)
                 break
             end
         end
@@ -99,36 +95,7 @@ local function Get_Player_Info(guid)--取得玩家信息
         TargetFrame.classFrame:set_settings(guid)
     end
 end
-    --[[if not UnitAffectingCombat('player') then
-        if UnitInParty(unit) and not IsInRaid() then
-            for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
-                if memberFrame.classFrame then
-                    if UnitIsUnit(memberFrame.unit, unit) then
-                        memberFrame.classFrame:set_settings(guid)
-                        break
-                    end
-                else
-                    break
-                end
-            end
-
-            for i=1, 4 do
-                local frame= PartyFrame['MemberFrame'..i]
-                if frame and UnitExists(frame.unit) and UnitIsUnit(frame.unit, unit) then
-                    e.call('UnitFrame_Update', frame, true)
-                    break
-                end
-            end
-        end
-        if UnitIsUnit(unit, 'target') and TargetFrame.classFrame then
-            TargetFrame.classFrame:set_Class(guid)
-            --e.call('UnitFrame_Update', TargetFrame, UnitInParty('target'))
-        end
-    --end
-end]]
-
-
-
+   
 
 
 
