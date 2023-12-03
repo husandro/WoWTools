@@ -1419,7 +1419,7 @@ end
 local function Init_BossFrame()
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
-        --frame.healthbar:SetStatusBarTexture(Save.healthbar)----生命条，颜色，材质
+        frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')--生命条，颜色，材质
 
         frame.BossButton= e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})--CreateFrame('Frame', nil, frame, 'SecureActionButtonTemplate')
 
@@ -1455,8 +1455,8 @@ local function Init_BossFrame()
             self.Portrait:SetShown(exists)
             self.targetTexture:SetShown(exists and UnitIsUnit('target', unit))
             --颜色
-           --local r,g,b= e.GetUnitColor(unit)
-            --self:GetParent().healthbar:SetStatusBarColor(r,g,b)--颜色
+            local r,g,b= e.GetUnitColor(unit)
+            self:GetParent().healthbar:SetStatusBarColor(r,g,b)--颜色
         end
 
         function frame.BossButton:set_event()
