@@ -194,6 +194,7 @@ Settings.SetKeybindingsCategory(Category)
 --打开，选项
 function e.OpenPanelOpting(name)
     Settings.OpenToCategory(Category:GetID(), name)
+end
     --[[
     if subCategoryName and Category:HasSubcategories() then
         Settings.OpenToCategory(Category:GetID(), name)
@@ -210,7 +211,7 @@ function e.OpenPanelOpting(name)
     else
         Settings.OpenToCategory(Category:GetID(), name)
     end]]
-end
+
 
 --添加，子目录
 function e.AddPanel_Sub_Category(tab)
