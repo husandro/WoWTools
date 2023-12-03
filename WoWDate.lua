@@ -96,7 +96,7 @@ local function Get_Player_Info(guid)--取得玩家信息
         end
     end
     if UnitIsUnit(unit, 'target') and TargetFrame.classFrame then
-        TargetFrame.classFrame:set_Class(guid)
+        TargetFrame.classFrame:set_settings(guid)
     end
 end
     --[[if not UnitAffectingCombat('player') then
