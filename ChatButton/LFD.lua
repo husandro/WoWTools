@@ -948,7 +948,7 @@ local set_Raid_Menu_List=function(level)--团队本
                         e.call('RaidFinderQueueFrame_SetRaid', arg1.id)
                         e.call('RaidFinderQueueFrame_Join')
                         printListInfo()--输出当前列表
-                        setTexture(nil, arg1, arg1.name, nil)--设置图标, 点击,提示
+                        setTexture(nil, arg1.id, arg1.name, nil)--设置图标, 点击,提示
                     end
                 end
             }
