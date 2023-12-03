@@ -1997,7 +1997,7 @@ local function Init()
                         icon='mechagon-projects',
                         notCheckable=true,
                         func= function()
-                            e.OpenPanelOpting(nil, '|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES))
+                            e.OpenPanelOpting()--nil, '|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES))
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
