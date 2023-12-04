@@ -2007,16 +2007,42 @@ local function Init()
     end)
 
     --施法条
-    --#####
+    --CastingBarFrame.lua
     PlayerCastingBarFrame:HookScript('OnShow', function(self)--图标
         self.Icon:SetShown(true)
     end)
-
-    --PlayerCastingBarFrame.CastTimeText:SetPoint('RIGHT')
-    e.Set_Label_Texture_Color(PlayerCastingBarFrame.CastTimeText, {type='FontString'})--设置颜色
-    --if PlayerCastingBarFrame:GetSettingValueBool(Enum.EditModeCastBarSetting.ShowCastTime) then
-
-
+    if PlayerCastingBarFrame.CastTimeText then
+        e.Set_Label_Texture_Color(PlayerCastingBarFrame.CastTimeText, {type='FontString'})--设置颜色
+        PlayerCastingBarFrame.CastTimeText:SetShadowOffset(1, -1)
+        PlayerCastingBarFrame.CastTimeText:ClearAllPoints()
+        PlayerCastingBarFrame.CastTimeText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
+        e.Set_Label_Texture_Color(PlayerCastingBarFrame.Text, {type='FontString'})--设置颜色
+        PlayerCastingBarFrame.Text:SetShadowOffset(1, -1)
+        hooksecurefunc(PlayerCastingBarFrame, 'UpdateCastTimeText', function(self)
+            local text= self.CastTimeText:GetText()
+            text= text:match('(%d+.%d)') or text
+            text= text=='0.0' and '' or text
+            self.CastTimeText:SetText(text)
+        end)
+        --[[function PlayerCastingBarFrame:UpdateCastTimeText()--bug
+            local seconds = 0;
+            if self.casting or self.channeling then
+                local min, max = self:GetMinMaxValues();
+                if self.casting then
+                    seconds = math.max(min, max - self:GetValue());
+                else
+                    seconds = math.max(min, self:GetValue());
+                end
+            elseif self.isInEditMode then
+                seconds = 10;
+            end
+            if seconds==0 then
+                self.CastTimeText:SetText('0')
+            else
+                self.CastTimeText:SetFormattedText('%.1f', seconds)
+            end
+        end]]
+    else
         PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color=true, justifyH='RIGHT'})
         PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
         PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
@@ -2035,6 +2061,7 @@ local function Init()
             end
         end)
         e.Set_Label_Texture_Color(PlayerCastingBarFrame.Text, {type='FontString'})--设置颜色
+    end
 
     --修改, 宠物, 名称)
     hooksecurefunc('UnitFrame_OnEvent', function(self, event)
