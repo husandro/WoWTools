@@ -3692,7 +3692,8 @@
         "SettingsListMixin",
         "SettingsCategoryListButtonMixin",
         "NUM_FACTIONS_DISPLAYED",
-        "CHARACTERFRAME_SUBFRAMES"
+        "CHARACTERFRAME_SUBFRAMES",
+        "CAST_BAR_CAST_TIME"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
