@@ -230,13 +230,15 @@ function e.MK(number, bit)
         number= number/1e3
         text= 'k'
     end
-    local num, point= math.modf(number)
-    if point==0 then
-        return num..text
-    elseif bit==0 then
+    if bit==0 then
         return format('%i', number)..text
     else
-        return format('%.'..bit..'f', number)..text
+        local num, point= math.modf(number)
+        if point==0 then
+            return num..text
+        else
+            return format('%0.'..bit..'f', number)..text
+        end
     end
 end
 
@@ -1946,8 +1948,7 @@ function e.GetDurabiliy(reTexture)--耐久度
         if cur==max then
             text='100%'
         else
-            value=(cur/max*100)-0.5
-            value= value<0 and 0 or value
+            value=cur/max*100
             if value<30 then
                 text= format('|cnRED_FONT_COLOR:%i%%|r', value)---0.5)
             elseif value<=60 then

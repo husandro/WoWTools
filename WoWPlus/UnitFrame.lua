@@ -2011,12 +2011,12 @@ local function Init()
     PlayerCastingBarFrame:HookScript('OnShow', function(self)--图标
         self.Icon:SetShown(true)
     end)
-    
+
     --PlayerCastingBarFrame.CastTimeText:SetPoint('RIGHT')
     e.Set_Label_Texture_Color(PlayerCastingBarFrame.CastTimeText, {type='FontString'})--设置颜色
     --if PlayerCastingBarFrame:GetSettingValueBool(Enum.EditModeCastBarSetting.ShowCastTime) then
-        
-    
+
+
         PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color=true, justifyH='RIGHT'})
         PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
         PlayerCastingBarFrame.castingText:SetPoint('RIGHT', PlayerCastingBarFrame.ChargeFlash, 'RIGHT')
@@ -2035,7 +2035,7 @@ local function Init()
             end
         end)
         e.Set_Label_Texture_Color(PlayerCastingBarFrame.Text, {type='FontString'})--设置颜色
-    
+
     --修改, 宠物, 名称)
     hooksecurefunc('UnitFrame_OnEvent', function(self, event)
         if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
