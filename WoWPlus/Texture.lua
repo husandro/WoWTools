@@ -42,22 +42,31 @@ end
 
 --隐藏, frame, 子材质
 local function hide_Frame_Texture(frame, tab)
-    if frame then
-        tab= tab or {}
-        local frames= {frame:GetRegions()}
-        for index, icon in pairs(frames) do
-            if icon:GetObjectType()=="Texture" then
-                if tab.index then
-                    if tab.index==index then
-                        hide_Texture(icon)
-                        break
-                    end
-                else
-                    icon:SetTexture(0)
-                    icon:SetShown(false)
+    if not frame then
+        return
+    end
+    tab= tab or {}
+    local hideIndex= tab.index
+    local showEnter= tab.showEnter
+    
+    local find
+    for index, icon in pairs({frame:GetRegions()}) do
+        if icon:GetObjectType()=="Texture" then
+            if hideIndex then
+                if hideIndex==index then
+                    hide_Texture(icon)
+                    find= true
+                    break
                 end
+            else
+                icon:SetTexture(0)
+                icon:SetShown(false)
+                find= true
             end
         end
+    end
+    if find and showEnter then
+        frame:HookScript('OnEnter')
     end
 end
 
@@ -916,9 +925,8 @@ local function Init_Set_AlphaAndColor()
         hide_Texture(MainStatusTrackingBarContainer.BarFrameTexture)
     end
 
-    hide_Frame_Texture(AddonCompartmentFrame)
+    hide_Frame_Texture(AddonCompartmentFrame, {})
     e.Set_Label_Texture_Color(AddonCompartmentFrame.Text, {type='FontString'})
-    set_Alpha_Color(AddonCompartmentFrame.Text)
     AddonCompartmentFrame:HookScript('OnEnter', function(self)
         self.Text:SetAlpha(1)
     end)
