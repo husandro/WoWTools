@@ -34,7 +34,7 @@ local function set_Alpha_Color(self, notAlpha, notColor, alpha)
         return
     end
     local type= self:GetObjectType()
-    if Save.disabledAlpha then
+    if Save.disabledAlpha or notAlpha then
         alpha=nil
     else
         alpha= alpha or Save.alpha
@@ -2048,7 +2048,6 @@ local function set_MainMenu_Color(init)--主菜单
         if self then
             if not Save.disabledMainMenu then
                 if init then
-
                     self:HookScript('OnEnter', function(self2)
                         local texture= self2.Portrait or self2:GetNormalTexture()
                         if texture then
@@ -2058,11 +2057,11 @@ local function set_MainMenu_Color(init)--主菜单
                     end)
                     self:HookScript('OnLeave', function(self2)
                         if not Save.disabledMainMenu then
-                            set_Alpha_Color(self2.Portrait or self2:GetNormalTexture(), true)
+                            set_Alpha_Color(self2.Portrait or self2:GetNormalTexture(), nil, nil, Save.alpha<0.1 and 0.1 or Save.alpha)
                         end
                     end)
                 end
-                set_Alpha_Color(self.Portrait or self:GetNormalTexture(), true)
+                set_Alpha_Color(self.Portrait or self:GetNormalTexture(), nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
 
             else
                 local texture= self.Portrait or self:GetNormalTexture()
