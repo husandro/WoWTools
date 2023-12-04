@@ -29,44 +29,39 @@ local function hide_Texture(self, notClear)
     end
 end
 
-local function set_Alpha_Color(self, notAlpha, notColor, value)
-    if self then
-        if not notColor and not Save.disabledColor and self:GetObjectType()=='Texture' then
-            e.Set_Label_Texture_Color(self, {type='Texture'})
-        end
-        if not (Save.disabledAlpha or notAlpha)  then
-            self:SetAlpha(value or Save.alpha)
-        end
+local function set_Alpha_Color(self, notAlpha, notColor, alpha)
+    if not self or (notColor and notAlpha) or Save.disabledAlpha then
+        return
     end
+    local type= self:GetObjectType()
+    if Save.disabledAlpha then
+        alpha=nil
+    else
+        alpha= alpha or Save.alpha
+    end
+    e.Set_Label_Texture_Color(self, {type=type, alpha= alpha})
 end
+
 
 --隐藏, frame, 子材质
 local function hide_Frame_Texture(frame, tab)
     if not frame then
         return
     end
-    tab= tab or {}
-    local hideIndex= tab.index
-    local showEnter= tab.showEnter
-    
-    local find
+    local hideIndex= tab and tab.index
     for index, icon in pairs({frame:GetRegions()}) do
         if icon:GetObjectType()=="Texture" then
             if hideIndex then
                 if hideIndex==index then
-                    hide_Texture(icon)
-                    find= true
+                    icon:SetTexture(0)
+                    icon:SetShown(false)
                     break
                 end
             else
                 icon:SetTexture(0)
                 icon:SetShown(false)
-                find= true
             end
         end
-    end
-    if find and showEnter then
-        frame:HookScript('OnEnter')
     end
 end
 
@@ -74,22 +69,26 @@ end
 local function set_Alpha_Frame_Texture(frame, tab)
     if frame and not (Save.disabledColor and Save.disabledAlpha) then
         tab=tab or {}
-        local tabs= {frame:GetRegions()}
-        for index, icon in pairs(tabs) do
+        local indexTexture= tab.index
+        local notColor= tab.notColor
+        local notAlpha= tab.notAlpha
+        for index, icon in pairs({frame:GetRegions()}) do
             if icon:GetObjectType()=="Texture" then
-                if tab.index== index then
-                    if not tab.notColor then
+                if indexTexture then
+                    if indexTexture== index then
+                        if not notColor then
+                            e.Set_Label_Texture_Color(icon, {type='Texture'})
+                        end
+                        if not Save.disabledAlpha and not notAlpha then
+                            icon:SetAlpha(Save.alpha)
+                        end
+                        break
+                    end
+                else
+                    if not notColor then
                         e.Set_Label_Texture_Color(icon, {type='Texture'})
                     end
-                    if not Save.disabledAlpha  then
-                        icon:SetAlpha(Save.alpha)
-                    end
-                    return
-                elseif not tab.index then
-                    if not tab.notColor then
-                        e.Set_Label_Texture_Color(icon, {type='Texture'})
-                    end
-                    if not Save.disabledAlpha and not tab.notAlpha  then
+                    if not Save.disabledAlpha and not notAlpha then
                         icon:SetAlpha(Save.alpha)
                     end
                 end
@@ -925,14 +924,9 @@ local function Init_Set_AlphaAndColor()
         hide_Texture(MainStatusTrackingBarContainer.BarFrameTexture)
     end
 
-    hide_Frame_Texture(AddonCompartmentFrame, {})
-    e.Set_Label_Texture_Color(AddonCompartmentFrame.Text, {type='FontString'})
-    AddonCompartmentFrame:HookScript('OnEnter', function(self)
-        self.Text:SetAlpha(1)
-    end)
-    AddonCompartmentFrame:HookScript('OnLeave', function(self)
-        set_Alpha_Color(self.Text)
-    end)
+    hide_Frame_Texture(AddonCompartmentFrame)
+    set_Alpha_Color(AddonCompartmentFrame.Text)
+   
 
     hide_Texture(PlayerFrameAlternateManaBarBorder)
     hide_Texture(PlayerFrameAlternateManaBarLeftBorder)
