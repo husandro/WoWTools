@@ -13,7 +13,7 @@ local Save={
 
     classPowerNum= e.Player.husandro,--职业，显示数字
     classPowerNumSize= 12,
-    disabledMainMenu= not e.Player.husandro, --主菜单，颜色，透明度
+    --disabledMainMenu= not e.Player.husandro, --主菜单，颜色，透明度
 }
 local panel=CreateFrame("Frame")
 
