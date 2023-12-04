@@ -236,7 +236,7 @@ function e.MK(number, bit)
         local num, point= math.modf(number)
         if point==0 then
             return num..text
-        else
+        else---0.5/10^bit
             return format('%0.'..bit..'f', number)..text
         end
     end

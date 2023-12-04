@@ -1283,7 +1283,7 @@ local function set_Panle_Setting()--设置 panel
             current:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
             --位数，bit
-            local sliderBit=e.CSlider(panel, {w=100,h=20, min=0, max=6, value=Save.tab['STATUS'].bit or 3, setp=1, color=nil,
+            local sliderBit=e.CSlider(panel, {w=100,h=20, min=0, max=3, value=Save.tab['STATUS'].bit or 3, setp=1, color=nil,
                 text= e.Player.col..(e.onlyChinese and '位数' or 'bit'),
                 func=function(self, value)
                     value= math.floor(value)
@@ -2219,9 +2219,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.vertical= Save.vertical or 3
             Save.horizontal= Save.horizontal or 8
             Save.barWidth= Save.barWidth or 0
+
             Save.barX= Save.barX or 0
-            Save.bit= Save.bit or 0
-            Save.bit= Save.bit== 0 and 0
+            Save.bit= Save.bit== 0 and 0 or Save.bit or 0
+
             Save.textColor= Save.textColor or {r=1,g=1,b=1,a=1}
             Save.font= Save.font or {r=0, g=0, b=0, a=1, x=1, y=-1}--阴影
             Save.tab['STAUTS']= Save.tab['STAUTS'] or {}
