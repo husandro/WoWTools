@@ -221,7 +221,7 @@ function Init()
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), e.Icon.mid)
         e.tips:Show()
     end)
-    button:SetScript('OnLeave', function() e.tips:Hide() end)
+    button:SetScript('OnLeave', GameTooltip_Hide)
 
     button:set_Scale()
     button:set_Point()

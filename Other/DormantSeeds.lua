@@ -202,7 +202,7 @@ local function Init()
                             e.tips:Show()
                         end
                     end)
-                    btn:SetScript('OnLeave', function() e.tips:Hide() end)
+                    btn:SetScript('OnLeave', GameTooltip_Hide)
                     btn:UpdateItemContextOverlayTextures(1)
                     self.btn[index]= btn
                 end

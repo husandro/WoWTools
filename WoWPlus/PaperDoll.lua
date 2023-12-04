@@ -156,7 +156,7 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增�
                     print(select(2, GetItemInfo(90146)) or (e.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
                 end
         end)
-        self.engineering:SetScript('OnLeave',function() e.tips:Hide() end)
+        self.engineering:SetScript('OnLeave',GameTooltip_Hide)
     end
     self.engineering:SetShown(true)
 end
@@ -1277,7 +1277,7 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
                 e.tips:Show()
             end
         end)
-        self:SetScript('OnLeave', function() e.tips:Hide() end)
+        self:SetScript('OnLeave', GameTooltip_Hide)
         self:SetScript('OnMouseDown', function(self2)
             e.Chat(self2.link, nil, true)
             --local chat=SELECTED_DOCK_FRAME
@@ -1806,7 +1806,7 @@ local function Init()
             btn.createButton= e.Cbtn(btn, {size={30,30}, atlas='groupfinder-eye-highlight'})
             btn.createButton.str= e.onlyChinese and '空' or EMPTY
             btn.createButton:SetPoint('RIGHT', 0,-4)
-            btn.createButton:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn.createButton:SetScript('OnLeave', GameTooltip_Hide)
             btn.createButton:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
@@ -1892,7 +1892,7 @@ local function add_Button_OpenOption(frame)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
-    btn:SetScript('OnLeave', function() e.tips:Hide() end)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
     if frame==ItemUpgradeFrameCloseButton then--装备升级, 界面
         --物品，货币提示
         e.ItemCurrencyLabel({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})

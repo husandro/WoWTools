@@ -66,7 +66,7 @@ local function set_Button_Init(self)
         end
         e.tips:Show()
     end)
-    self:SetScript("OnLeave",function() e.tips:Hide() end)
+    self:SetScript("OnLeave",GameTooltip_Hide)
 
     self:RegisterEvent('BAG_UPDATE')
     self:RegisterEvent('SPELL_UPDATE_COOLDOWN')

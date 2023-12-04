@@ -84,7 +84,7 @@ local function Init_Bank_Plus()--增强，原生
         end
     end)
 
-    ReagentBankFrame.ShowHideButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    ReagentBankFrame.ShowHideButton:SetScript('OnLeave', GameTooltip_Hide)
     ReagentBankFrame.ShowHideButton:SetScript('OnEnter', ReagentBankFrame.ShowHideButton.set_tooltips)
     ReagentBankFrame.ShowHideButton:SetScript('OnMouseWheel', function(self, d)
         if Save.hideReagentBankFrame then
@@ -461,7 +461,7 @@ local function Init_All_Bank()
         ReagentBankFrame.DespositButton:SetNormalAtlas('128-RedButton-Refresh')
         ReagentBankFrame.DespositButton:SetPushedAtlas('128-RedButton-Refresh-Pressed')
         ReagentBankFrame.DespositButton:SetPoint('TOPRIGHT', -8, -26)
-        ReagentBankFrame.DespositButton:HookScript('OnLeave', function() e.tips:Hide() end)
+        ReagentBankFrame.DespositButton:HookScript('OnLeave', GameTooltip_Hide)
         ReagentBankFrame.DespositButton:HookScript('OnEnter', function(s)
             e.tips:SetOwner(s, "ANCHOR_LEFT")
             e.tips:ClearLines()

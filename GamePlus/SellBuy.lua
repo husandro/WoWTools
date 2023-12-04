@@ -502,7 +502,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                 btn.buyItemNum=e.Cstr(btn)
                 btn.buyItemNum:SetPoint('RIGHT')
                 btn.buyItemNum:EnableMouse(true)
-                btn.buyItemNum:SetScript('OnLeave', function() e.tips:Hide() end)
+                btn.buyItemNum:SetScript('OnLeave', GameTooltip_Hide)
                 btn.buyItemNum:SetScript('OnEnter', function(self2)
                     if not self2.itemID then return end
                     e.tips:SetOwner(self2, "ANCHOR_LEFT");
@@ -1309,7 +1309,7 @@ local function set_StackSplitFrame_OpenStackSplitFrame(self, maxStack, parent, a
             e.tips:AddDoubleLine((e.onlyChinese and '堆叠数量' or AUCTION_STACK_SIZE)..' Plus', e.onlyChinese and '重置' or RESET, nil,nil,nil, 0,1,0)
             e.tips:Show()
         end)
-        self.restButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        self.restButton:SetScript('OnLeave', GameTooltip_Hide)
 
         self.MaxButton=e.Cbtn(self, {icon='hide', size={40,20}})
         self.MaxButton:SetNormalFontObject('NumberFontNormalYellow')

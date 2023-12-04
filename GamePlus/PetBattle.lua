@@ -847,7 +847,7 @@ local function Init()
         --SetCollectionsJournalShown(true, 2)--UIParent.lua
     end)
 
-    TrackButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    TrackButton:SetScript('OnLeave', GameTooltip_Hide)
     TrackButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()

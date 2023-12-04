@@ -125,7 +125,7 @@ local function Init()
                 --e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
                 e.tips:Show()
             end)
-            buttons[tab.spell]:SetScript('OnLeave', function() e.tips:Hide() end)
+            buttons[tab.spell]:SetScript('OnLeave', GameTooltip_Hide)
 
             --[[buttons[tab.spell]:SetScript('OnMouseDown', function(self, d)
                 if d=='RightButton' then

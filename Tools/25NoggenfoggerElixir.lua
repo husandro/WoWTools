@@ -184,7 +184,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
         e.tips:Show()
     end)
-    button:SetScript('OnLeave', function() e.tips:Hide() end)
+    button:SetScript('OnLeave', GameTooltip_Hide)
     button:SetScript('OnMouseWheel', function(self)
         if not self.Menu then
             self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")

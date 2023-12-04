@@ -693,7 +693,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 					e.tips:AddDoubleLine(id, addName)
 					e.tips:Show();
 				end)
-				check2:SetScript('OnLeave', function() e.tips:Hide() end)
+				check2:SetScript('OnLeave', GameTooltip_Hide)
 
 
 				check2.type2:SetPoint("LEFT", check2, 'RIGHT',-4,0)
@@ -709,7 +709,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 					e.tips:AddDoubleLine(id, addName)
 					e.tips:Show();
 				end)
-				check2.type2:SetScript('OnLeave', function() e.tips:Hide() end)
+				check2.type2:SetScript('OnLeave', GameTooltip_Hide)
 
 				if not Save.hide then
 					Init()

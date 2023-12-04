@@ -1217,7 +1217,7 @@ local function set_Panle_Setting()--设置 panel
             end
             e.tips:Show()
         end)
-        check:SetScript('OnLeave', function() e.tips:Hide() end)
+        check:SetScript('OnLeave', GameTooltip_Hide)
 
         local text= e.Cstr(check, {color={r=info.r or 1, g=info.g or 0.82, b=info.b or 0, a=info.a or 1}})--nil, nil, nil, {r,g,b,a})--Text
         text:SetPoint('LEFT', check, 'RIGHT')
@@ -1322,7 +1322,7 @@ local function set_Panle_Setting()--设置 panel
                 frame_Init(true)--初始， 或设置
             end)
             current:SetScript('OnEnter', set_SPEED_Tooltip)
-            current:SetScript('OnLeave', function() e.tips:Hide() end)]]
+            current:SetScript('OnLeave', GameTooltip_Hide)]]
 
             --驭龙术UI，速度
             local dragonriding= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -1358,7 +1358,7 @@ local function set_Panle_Setting()--设置 panel
                 frame_Init(true)--初始，设置
             end)
             check2:SetScript('OnEnter', set_VERSATILITY_Tooltip)
-            check2:SetScript('OnLeave', function() e.tips:Hide() end)
+            check2:SetScript('OnLeave', GameTooltip_Hide)
 
             check2.A=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--双属性 22/18%
             check2.A:SetChecked(Save.tab['VERSATILITY'].damageAndDefense)
@@ -1369,7 +1369,7 @@ local function set_Panle_Setting()--设置 panel
                 frame_Init(true)--初始，设置
             end)
             check2.A:SetScript('OnEnter', set_VERSATILITY_Tooltip)
-            check2.A:SetScript('OnLeave', function() e.tips:Hide() end)
+            check2.A:SetScript('OnLeave', GameTooltip_Hide)
 
             if Save.tab['VERSATILITY'].onlyDefense then
                 check2.A.text:SetTextColor(0.62, 0.62, 0.62)
@@ -1772,7 +1772,7 @@ local function set_Panle_Setting()--设置 panel
         Save.point=nil
         button:set_Point()--设置, 位置
     end)
-    restPosti:SetScript('OnLeave', function() e.tips:Hide() end)
+    restPosti:SetScript('OnLeave', GameTooltip_Hide)
     restPosti:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -2163,7 +2163,7 @@ local function Init()
                 if speed and not self.speedText then
                     self.speedText= e.Cstr(self, {mouse=true})
                     self.speedText:SetPoint('TOP')
-                    self.speedText:SetScript('OnLeave', function() e.tips:Hide() end)
+                    self.speedText:SetScript('OnLeave', GameTooltip_Hide)
                     self.speedText:SetScript('OnEnter', function(self2)
                         e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                         e.tips:ClearLines()

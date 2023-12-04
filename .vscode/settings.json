@@ -3693,7 +3693,9 @@
         "SettingsCategoryListButtonMixin",
         "NUM_FACTIONS_DISPLAYED",
         "CHARACTERFRAME_SUBFRAMES",
-        "CAST_BAR_CAST_TIME"
+        "CAST_BAR_CAST_TIME",
+        "GameTooltipDefaultContainer",
+        "EditModeAccountSettingsMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

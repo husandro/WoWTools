@@ -122,7 +122,7 @@ local function Init()
                 end)
             end
 
-            btn:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn:SetScript('OnLeave', GameTooltip_Hide)
             btn:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()

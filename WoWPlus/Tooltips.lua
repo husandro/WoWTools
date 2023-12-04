@@ -1554,10 +1554,18 @@ local function Init()
     --位置
     --****
     hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
-        if Save.setDefaultAnchor and not (Save.inCombatDefaultAnchor and UnitAffectingCombat('player')) then
+        if Save.setDefaultAnchor and not (Save.inCombatDefaultAnchor and UnitAffectingCombat('player')) and not GameTooltipDefaultContainer:IsShown() then
             self:ClearAllPoints()
             self:SetOwner(parent, Save.cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT', Save.cursorX or 0, Save.cursorY or 0)
         end
+    end)
+    
+    GameTooltipDefaultContainer:HookScript('OnShow', function(self)
+        print(id,addName)
+        GameTooltip_SetDefaultAnchor(GameTooltip, self);
+        e.tips:ClearLines()
+        e.tips:SetUnit('player')
+        e.tips:Show()
     end)
 
     --#########
@@ -2149,7 +2157,7 @@ end
     widgetEdit:ClearFocus()
     widgetEdit:SetJustifyH('CENTER')
     widgetEdit:SetScript('OnEscapePressed', function(self2) self2:ClearFocus() end)
-    widgetEdit:SetScript('OnLeave', function() e.tips:Hide() end)
+    widgetEdit:SetScript('OnLeave', GameTooltip_Hide)
 	widgetEdit:SetScript('OnEnterPressed', function(self2)
         local num= math.modf(self2:GetNumber())
         if num>=0 then
@@ -2248,7 +2256,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                             e.tips:Show()
                         end
                     end)
-                    frame.textID:SetScript('OnLeave', function() e.tips:Hide() end)
+                    frame.textID:SetScript('OnLeave', GameTooltip_Hide)
                 end
                 if frame.textID then
                     frame.ID=text
@@ -2264,7 +2272,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             hooksecurefunc('AchievementFrameComparison_UpdateDataProvider', function()--比较成就, Blizzard_AchievementUI.lua
                 for _, button in pairs(AchievementFrameComparison.AchievementContainer.ScrollBox:GetFrames()) do
                     if not button.OnEnter then
-                        button:SetScript('OnLeave', function() e.tips:Hide() end)
+                        button:SetScript('OnLeave', GameTooltip_Hide)
                         button:SetScript('OnEnter', function(self3)
                             if self3.id then
                                 e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
@@ -2304,7 +2312,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     end
                 end
                 AchievementFrameComparisonHeader:EnableMouse(true)
-                AchievementFrameComparisonHeader:HookScript('OnLeave', function() e.tips:Hide() end)
+                AchievementFrameComparisonHeader:HookScript('OnLeave', GameTooltip_Hide)
                 AchievementFrameComparisonHeader:HookScript('OnEnter', func)
             end
 

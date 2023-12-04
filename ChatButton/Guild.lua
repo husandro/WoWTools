@@ -116,7 +116,7 @@ local function set_check(search)
     check:SetScript('OnClick', function()
         Save.notAutoRequestToJoinClub= not Save.notAutoRequestToJoinClub and true or nil
     end)
-    check:SetScript('OnLeave', function() e.tips:Hide() end)
+    check:SetScript('OnLeave', GameTooltip_Hide)
     check:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_RIGHT")
         e.tips:ClearLines()

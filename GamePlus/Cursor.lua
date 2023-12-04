@@ -456,7 +456,7 @@ local function Init_Cursor_Options()
         e.tips:AddDoubleLine('Texture', (e.onlyChinese and '需求' or NEED)..' \\Interface')
         e.tips:Show()
     end)
-    addColorButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    addColorButton:SetScript('OnLeave', GameTooltip_Hide)
 end
 
 --Cursor, 初始化
@@ -692,7 +692,7 @@ local function Init_GCD_Options()
         e.tips:AddLine(format(e.onlyChinese and "仅限%s" or LFG_LIST_CROSS_FACTION , 'Texture'))
         e.tips:Show()
     end)
-    addColorButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    addColorButton:SetScript('OnLeave', GameTooltip_Hide)
 end
 
 --##########
@@ -841,7 +841,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, (e.onlyChinese and '颜色' or COLOR)..e.Icon.left)
         e.tips:Show()
     end)
-    colorText:SetScript('OnLeave', function() e.tips:Hide() end)
+    colorText:SetScript('OnLeave', GameTooltip_Hide)
 
     --不使用，颜色
     notUseColorCheck:SetPoint("LEFT", colorText, 'RIGHT')
@@ -877,7 +877,7 @@ local function Init()
         e.tips:AddDoubleLine('GCD', e.GetEnabeleDisable(true))
         e.tips:Show()
     end)
-    panel.randomTextureCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+    panel.randomTextureCheck:SetScript('OnLeave', GameTooltip_Hide)
 
     --[[战斗中， 随机，图片
     local randomTextureInCombatCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--随机, 图片
@@ -895,7 +895,7 @@ local function Init()
         e.tips:AddLine('GCD '..e.GetEnabeleDisable(true))
         e.tips:Show()
     end)
-    randomTextureInCombatCheck:SetScript('OnLeave', function() e.tips:Hide() end)
+    randomTextureInCombatCheck:SetScript('OnLeave', GameTooltip_Hide)
 ]]
 
     --Cursor, 启用/禁用
@@ -921,7 +921,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
         e.tips:Show()
     end)
-    panel.cursorCheck:SetScript('OnLeave', function() e.tips:Hide() end)]]
+    panel.cursorCheck:SetScript('OnLeave', GameTooltip_Hide)]]
 
     --GCD, 启用/禁用
     panel.gcdCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -947,7 +947,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
         e.tips:Show()
     end)
-    panel.gcdCheck:SetScript('OnLeave', function() e.tips:Hide() end)]]
+    panel.gcdCheck:SetScript('OnLeave', GameTooltip_Hide)]]
 
 
 

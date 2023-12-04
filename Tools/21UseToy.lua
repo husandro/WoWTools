@@ -652,7 +652,7 @@ local function Init()
     end
 
     button:SetScript("OnEnter", showTips)
-    button:SetScript("OnLeave",function() e.tips:Hide() end)
+    button:SetScript("OnLeave",GameTooltip_Hide)
     button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)

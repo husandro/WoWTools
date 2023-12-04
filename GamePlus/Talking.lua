@@ -62,7 +62,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.tips:AddDoubleLine('ChatButton, '..(e.onlyChinese and '超链接图标' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK..EMBLEM_SYMBOL), e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
                 e.tips:Show()
             end)
-            sel:SetScript('OnLeave', function() e.tips:Hide() end)
+            sel:SetScript('OnLeave', GameTooltip_Hide)
 
             local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
             sel2.text:SetText(e.onlyChinese and '文本' or LOCALE_TEXT_LABEL)

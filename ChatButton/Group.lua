@@ -404,7 +404,7 @@ local function Init()
         end
     end)
 
-    button:SetScript('OnLeave', function() e.tips:Hide() end)
+    button:SetScript('OnLeave', GameTooltip_Hide)
     button:SetScript('OnEnter', function(self2)
         if (Save.mouseDown or Save.mouseUP) then-- and IsInGroup()
             e.tips:SetOwner(self2, "ANCHOR_LEFT")

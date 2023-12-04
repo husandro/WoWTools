@@ -163,7 +163,7 @@ local function get_InviteButton_Frame(index)
         frame.ChatButton:SetScript('OnClick', function(self2)
             e.Say(nil, self2:GetParent().name)
         end)
-        frame.ChatButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        frame.ChatButton:SetScript('OnLeave', GameTooltip_Hide)
         frame.ChatButton:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -184,7 +184,7 @@ local function get_InviteButton_Frame(index)
                 C_LFGList.InviteApplicant(self2:GetParent().applicantID);
             end
         end)
-        frame.InviteButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        frame.InviteButton:SetScript('OnLeave', GameTooltip_Hide)
         frame.InviteButton:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -199,7 +199,7 @@ local function get_InviteButton_Frame(index)
             --C_LFGList.RemoveApplicant(self2:GetParent().applicantID);
             C_LFGList.DeclineApplicant(self2:GetParent().applicantID);
         end)
-        frame.DeclineButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        frame.DeclineButton:SetScript('OnLeave', GameTooltip_Hide)
         frame.DeclineButton:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -1076,7 +1076,7 @@ local function set_LFGPlus()--预创建队伍增强
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end)
-            self.autoAcceptTexture:SetScript("OnLeave", function() e.tips:Hide() end)
+            self.autoAcceptTexture:SetScript("OnLeave", GameTooltip_Hide)
         end
         if self.autoAcceptTexture then
             self.autoAcceptTexture:SetShown(autoAccept)
@@ -1103,7 +1103,7 @@ local function set_LFGPlus()--预创建队伍增强
                         e.tips:Show()
                     end
             end)
-            self.realmText:SetScript("OnLeave", function() e.tips:Hide() end)
+            self.realmText:SetScript("OnLeave", GameTooltip_Hide)
             end
         end
         if self.realmText then
@@ -2053,7 +2053,7 @@ local function Init()
                     btn.chatTexure:SetPoint('BOTTOMRIGHT', btn.NameFrame, 6, 4)
                     --1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
                     btn.chatTexure.text= (e.Player.region==1 or e.Player.region==3) and ' need, please!{rt1}' or (' '..NEED..', '..VOICEMACRO_16_Dw_0..'{rt1}')
-                    btn.chatTexure:SetScript('OnLeave', function() e.tips:Hide() end)
+                    btn.chatTexure:SetScript('OnLeave', GameTooltip_Hide)
                     btn.chatTexure:SetScript('OnEnter', function(self2)
                         e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                         e.tips:ClearLines()
@@ -2354,7 +2354,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
                 e.tips:Show()
             end)
-            button.RoleInfo:SetScript('OnLeave', function() e.tips:Hide() end)
+            button.RoleInfo:SetScript('OnLeave', GameTooltip_Hide)
             button.RoleInfo:SetScript('OnMouseDown', function(self, d)
                 if d=='RightButton' then--移动光标
                     SetCursor('UI_MOVE_CURSOR')

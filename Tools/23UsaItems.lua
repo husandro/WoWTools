@@ -334,7 +334,7 @@ local function init_Item_Button(self, equip)--设置按钮
         e.tips:SetItemByID(self.itemID)
         e.tips:Show()
     end)
-    self:SetScript('OnLeave', function() e.tips:Hide() end)
+    self:SetScript('OnLeave', GameTooltip_Hide)
     self:SetScript("OnEvent", function(self2, event, arg1)
         if event=='BAG_UPDATE_DELAYED' then
             set_Item_Count(self2)
@@ -416,7 +416,7 @@ local function init_Spell_Button(self)--设置按钮
         e.tips:SetSpellByID(self2.spellID)
         e.tips:Show()
     end)
-    self:SetScript('OnLeave', function() e.tips:Hide() end)
+    self:SetScript('OnLeave', GameTooltip_Hide)
     self:SetScript("OnEvent", function(self2, event)
         if event=='SPELL_UPDATE_USABLE' then
             set_Spell_Count(self2)

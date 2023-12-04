@@ -82,7 +82,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                     e.tips:Show()
                 end
             end)
-            btn:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn:SetScript('OnLeave', GameTooltip_Hide)
 
             btn.level=e.Cstr(btn)
             btn.level:SetPoint('TOPRIGHT')
@@ -236,7 +236,7 @@ for i=204000, 204030 do
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end)
-            texture:SetScript('OnLeave', function() e.tips:Hide() end)
+            texture:SetScript('OnLeave', GameTooltip_Hide)
             n=n+1
 
             texture:SetPoint('TOPLEFT', ItemSocketingFrame, 'TOPLEFT',x, y)

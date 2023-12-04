@@ -89,7 +89,7 @@ local function Init_Tools_Button()
                 end
                 e.tips:Show()
             end)
-            btn:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn:SetScript('OnLeave', GameTooltip_Hide)
 
             if index==3 or index==4 then--钓鱼，考古， 设置清除快捷键
                 btn:SetScript('OnMouseWheel', function(self, d)
@@ -238,7 +238,7 @@ local function Init_ProfessionsFrame_Button()
                     btn:SetScript('OnEvent', function(self)
                         e.SetItemSpellCool({frame=self, sepll=818})
                     end)
-                    btn:SetScript('OnLeave', function() e.tips:Hide() end)
+                    btn:SetScript('OnLeave', GameTooltip_Hide)
                     btn:SetScript('OnEnter', function(self)
                         e.tips:SetOwner(self, "ANCHOR_RIGHT")
                         e.tips:ClearLines()
@@ -313,7 +313,7 @@ local function set_Blizzard_TrainerU()
         e.tips:AddDoubleLine(id, addName)
 		e.tips:Show()
 	end)
-	ClassTrainerFrame.BuyAll:SetScript("OnLeave",function() e.tips:Hide() end)
+	ClassTrainerFrame.BuyAll:SetScript("OnLeave",GameTooltip_Hide)
 
 	ClassTrainerFrame.BuyAll:SetScript("OnClick",function()
         local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
@@ -621,7 +621,7 @@ local function Init_ProfessionsFrame()
                 e.tips:AddDoubleLine(id,addName)
                 e.tips:Show()
             end)
-            button:SetScript('OnLeave', function() e.tips:Hide() end)
+            button:SetScript('OnLeave', GameTooltip_Hide)
             self.DetailedView.SpendAllPointsButton= button
         end
         button:SetShown(self.DetailedView.SpendPointsButton:IsShown())

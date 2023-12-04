@@ -336,7 +336,7 @@ local function Create_Button(name)
         self:set_tooltips()
     end)
     btn:SetText(name)
-    btn:SetScript('OnLeave', function() e.tips:Hide() end)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
     btn:SetScript("OnEnter", btn.set_tooltips)
     return btn
 end

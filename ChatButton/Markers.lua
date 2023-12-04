@@ -788,7 +788,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         e.tips:AddLine('Ctrl+'..e.Icon.right..(e.onlyChinese and '设置' or SETTINGS))
         e.tips:Show()
     end)
-    Frame.countdown:SetScript('OnLeave', function() e.tips:Hide() end)
+    Frame.countdown:SetScript('OnLeave', GameTooltip_Hide)
     function Frame.countdown:set_Event()
         if self:IsVisible() then
             self:RegisterEvent('START_TIMER')
@@ -830,7 +830,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         e.tips:AddLine(EMOTE127_CMD3)
         e.tips:Show()
     end)
-    Frame.check:SetScript('OnLeave', function() e.tips:Hide() end)
+    Frame.check:SetScript('OnLeave', GameTooltip_Hide)
     function Frame.check:set_Event()
         if self:IsVisible() then
             self:RegisterEvent('READY_CHECK')

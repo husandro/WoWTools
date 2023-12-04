@@ -243,7 +243,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                     e.tips:Show()
                 end
             end)
-            check:SetScript('OnLeave', function() e.tips:Hide() end)]]
+            check:SetScript('OnLeave', GameTooltip_Hide)]]
 
             if not Save.disabled then
                 C_Timer.After(2, function()

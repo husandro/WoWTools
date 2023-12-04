@@ -554,7 +554,7 @@ local function Affix_CreateButton(self, affixID)--Blizzard_ScenarioObjectiveTrac
         GameTooltip:AddDoubleLine('affixID', self2.affixID)
 		GameTooltip:Show();
     end)
-    btn:SetScript("OnLeave", function() e.tips:Hide() end)
+    btn:SetScript("OnLeave", GameTooltip_Hide)
 	btn.affixID = affixID;
     return btn
 end
@@ -1531,7 +1531,7 @@ local function Init_WeeklyRewardsFrame()
         e.tips:Show()
         self2:SetButtonState('NORMAL')
     end)
-    WeeklyRewardsFrame.showChallenges:SetScript("OnLeave",function() e.tips:Hide() end)
+    WeeklyRewardsFrame.showChallenges:SetScript("OnLeave",GameTooltip_Hide)
     WeeklyRewardsFrame.showChallenges:SetScript('OnMouseDown', function()
         PVEFrame_ToggleFrame('ChallengesFrame', 3)
     end)

@@ -550,7 +550,7 @@ local function Init_Button()
             set_Text_SendMailNameEditBox(nil, self2.name)
         end
     end)
-    button.GetTargetNameButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    button.GetTargetNameButton:SetScript('OnLeave', GameTooltip_Hide)
     button.GetTargetNameButton:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -768,7 +768,7 @@ local function Init_Button()
     --隐藏， 邮资：，文本
     --#################
     if SendMailCostMoneyFrameCopperButton then
-        SendMailCostMoneyFrameCopperButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        SendMailCostMoneyFrameCopperButton:SetScript('OnLeave', GameTooltip_Hide)
         SendMailCostMoneyFrameCopperButton:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -1355,7 +1355,7 @@ local function Init_Fast_Button()
         button.FastButton.get_Send_Max_Item()--能发送，数量
         button.FastButton.set_Fast_Event()--清除，注册，事件，显示/隐藏，设置数量
     end)
-    button.clearAllItmeButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    button.clearAllItmeButton:SetScript('OnLeave', GameTooltip_Hide)
     button.clearAllItmeButton:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()

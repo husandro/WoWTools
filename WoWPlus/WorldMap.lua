@@ -644,7 +644,7 @@ local function Init_set_Map_ID()--显示地图ID
         end
         PlayerButton:SetNormalAtlas(e.Icon.player:match('|A:(.-):'))
         PlayerButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-        PlayerButton:SetScript('OnLeave', function() e.tips:Hide() end)
+        PlayerButton:SetScript('OnLeave', GameTooltip_Hide)
         PlayerButton:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()

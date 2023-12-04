@@ -145,6 +145,7 @@ wrapFunc(C_PetBattles.DeclineQueuedPVPMatch)
 
 securecallfunction(GameTooltip_AddQuest, self, questID)
 GameTooltip_SetDefaultAnchor(GameTooltip, self);
+GameTooltip_Hide()
 
 UICheckButtonTemplate
 local myCheckButton = CreateFrame("CheckButton", nil, UIParent, "ChatConfigCheckButtonTemplate")

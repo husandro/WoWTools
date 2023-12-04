@@ -902,7 +902,7 @@ local function set_ItemInteractionFrame_Currency(self)
 					e.tips:Show()
 				end
 			end)
-			self.ItemInteractionFrameCurrencyText:SetScript('OnLeave', function() e.tips:Hide() end)
+			self.ItemInteractionFrameCurrencyText:SetScript('OnLeave', GameTooltip_Hide)
         end
 		self.ItemInteractionFrameCurrencyText.chargeCurrencyTypeId= currencyID
 
@@ -968,7 +968,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 			e.tips:AddDoubleLine(id, addName)
 			e.tips:Show()
 		end)
-		frame.check:SetScript('OnLeave', function() e.tips:Hide() end)
+		frame.check:SetScript('OnLeave', GameTooltip_Hide)
 		frame.check:SetSize(15,15)
 		frame.check:SetCheckedTexture(e.Icon.icon)
 	end
@@ -1312,7 +1312,7 @@ local function Init()
 		end
 		e.call('TokenFrame_Update')
 	end)
-	Button.down:SetScript("OnLeave", function() e.tips:Hide() end)
+	Button.down:SetScript("OnLeave", GameTooltip_Hide)
 	Button.down:SetScript('OnEnter', function(self)
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
@@ -1332,7 +1332,7 @@ local function Init()
 		end
 		e.call('TokenFrame_Update')
 	end)
-	Button.up:SetScript("OnLeave", function() e.tips:Hide() end)
+	Button.up:SetScript("OnLeave", GameTooltip_Hide)
 	Button.up:SetScript('OnEnter', function(self)
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
@@ -1366,7 +1366,7 @@ local function Init()
 		end
 		e.tips:Show()
 	end)
-	Button.bag:SetScript('OnLeave', function() e.tips:Hide() end)
+	Button.bag:SetScript('OnLeave', GameTooltip_Hide)
 
 
 	function Button:currency_Max(init, curID)--已达到资源上限

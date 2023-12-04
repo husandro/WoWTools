@@ -20,7 +20,7 @@ local function set_UpdateSpendText(btn)
             btn.maxText:SetPoint('LEFT', btn.SpendText, 'RIGHT')
             btn.maxText:SetTextColor(1, 0, 1)
             btn.maxText:EnableMouse(true)
-            btn.maxText:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn.maxText:SetScript('OnLeave', GameTooltip_Hide)
             btn.maxText:SetScript('OnEnter', function(self)
                 if self.maxRanks then
                     e.tips:SetOwner(self, "ANCHOR_RIGHT");

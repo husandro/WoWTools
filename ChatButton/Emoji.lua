@@ -70,7 +70,7 @@ local function setButtons()--设置按钮
             e.tips:AddLine(text)
             e.tips:Show()
         end)
-        btn:SetScript('OnLeave', function() e.tips:Hide() end)
+        btn:SetScript('OnLeave', GameTooltip_Hide)
     end
     for i, texture in pairs(File) do
         local btn=e.Cbtn(button.btn, {icon='hide',size={size,size}})

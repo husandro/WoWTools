@@ -554,7 +554,7 @@ local function Init_EncounterJournal()--冒险指南界面
         end
         self:set_Tooltips()
     end)
-    Button:SetScript("OnLeave",function() e.tips:Hide() end)
+    Button:SetScript("OnLeave",GameTooltip_Hide)
     Button.btn={}
 
     Button.btn.instance =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色副本
@@ -583,7 +583,7 @@ local function Init_EncounterJournal()--冒险指南界面
         end
         e.tips:Show()
     end)
-    Button.btn.instance:SetScript("OnLeave",function() e.tips:Hide() end)
+    Button.btn.instance:SetScript("OnLeave",GameTooltip_Hide)
     Button.btn.instance:SetScript('OnClick', function()
         if  Save.showInstanceBoss then
             Save.showInstanceBoss=nil
@@ -614,14 +614,14 @@ local function Init_EncounterJournal()--冒险指南界面
             panel.WorldBoss:SetButtonState('PUSHED')
         end
     end)
-    Button.btn.Worldboss:SetScript("OnLeave",function() e.tips:Hide() end)
+    Button.btn.Worldboss:SetScript("OnLeave",GameTooltip_Hide)
 
     if e.Player.levelMax then
         Button.btn.keystones =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色,挑战
         Button.btn.keystones:SetPoint('RIGHT', Button.btn.Worldboss, 'LEFT')
         Button.btn.keystones:SetNormalTexture(4352494)
         Button.btn.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)
-        Button.btn.keystones:SetScript("OnLeave",function() e.tips:Hide() end)
+        Button.btn.keystones:SetScript("OnLeave",GameTooltip_Hide)
         Button.btn.keystones:SetScript('OnMouseDown', function()
             PVEFrame_ToggleFrame('ChallengesFrame', 3)
         end)
@@ -630,7 +630,7 @@ local function Init_EncounterJournal()--冒险指南界面
     Button.btn.money:SetPoint('RIGHT', Button.btn.keystones or Button.btn.Worldboss, 'LEFT')
     Button.btn.money:SetNormalAtlas('Front-Gold-Icon')
     Button.btn.money:SetScript('OnEnter',set_EncounterJournal_Money_Tips)
-    Button.btn.money:SetScript("OnLeave",function() e.tips:Hide() end)
+    Button.btn.money:SetScript("OnLeave",GameTooltip_Hide)
 
 
     function Button:set_Shown()
@@ -763,7 +763,7 @@ local function Init_EncounterJournal()--冒险指南界面
                         e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
                     end)
-                    button:SetScript('OnLeave', function() e.tips:Hide() end)
+                    button:SetScript('OnLeave', GameTooltip_Hide)
                 end
                 
                 button.challengeText:SetText(challengeText or '')
@@ -1183,7 +1183,7 @@ local function Init_EncounterJournal()--冒险指南界面
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
-    EncounterJournal.encounter.instance.mapButton:SetScript('OnLeave', function() e.tips:Hide() end)
+    EncounterJournal.encounter.instance.mapButton:SetScript('OnLeave', GameTooltip_Hide)
 
 
     hooksecurefunc(EncounterJournal.encounter.info.BossesScrollBox, 'SetScrollTargetOffset', function(self2)
@@ -1208,7 +1208,7 @@ local function Init_EncounterJournal()--冒险指南界面
                         e.tips:Show()
                     end
                 end)
-                button:SetScript('OnLeave', function() e.tips:Hide() end)
+                button:SetScript('OnLeave', GameTooltip_Hide)
             end
             set_Loot_Spec(button)--BOSS战时, 指定拾取, 专精
         end
@@ -1511,7 +1511,7 @@ local function Init()
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
         end)
-        self2:SetScript('OnLeave', function() e.tips:Hide() end)
+        self2:SetScript('OnLeave', GameTooltip_Hide)
         self2.setEnter=true
     end)
 

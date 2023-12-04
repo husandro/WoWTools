@@ -123,7 +123,7 @@ local function set_Buttons()--设置按钮, 和位置
                     end
                     e.tips:Show()
                 end)
-                button:SetScript('OnLeave', function() e.tips:Hide() end)
+                button:SetScript('OnLeave', GameTooltip_Hide)
 
                 button.lable= e.Cstr(button)--插件, 数量
                 button.lable:SetPoint('LEFT', button, 'RIGHT')

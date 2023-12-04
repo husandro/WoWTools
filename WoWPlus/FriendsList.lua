@@ -60,7 +60,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
                 nameObj.col= hex
                 if not nameObj:IsMouseEnabled() then
                     nameObj:EnableMouse(true)
-                    nameObj:SetScript('OnLeave', function() e.tips:Hide() end)
+                    nameObj:SetScript('OnLeave', GameTooltip_Hide)
                     nameObj:SetScript('OnEnter', function(self2)
                         e.tips:SetOwner(self2, "ANCHOR_LEFT")
                         e.tips:ClearLines()

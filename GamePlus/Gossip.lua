@@ -100,7 +100,7 @@ local function select_Reward(questID)--自动:选择奖励
                         e.tips:Show()
                     end
                 end)
-                frame.check:SetScript('OnLeave', function() e.tips:Hide() end)
+                frame.check:SetScript('OnLeave', GameTooltip_Hide)
             end
             frame.check:SetChecked(Save.questRewardCheck[questID] and Save.questRewardCheck[questID]==i)
             frame.check.index= i
@@ -760,7 +760,7 @@ local function Init_Gossip()
         end
         e.tips:Show()
     end)
-    GossipFrame.sel:SetScript("OnLeave", function() e.tips:Hide() end)
+    GossipFrame.sel:SetScript("OnLeave", GameTooltip_Hide)
 
     GossipFrame:SetScript('OnShow', function (self)
         QuestButton.questSelect={}--已选任务, 提示用
@@ -1909,7 +1909,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                                 print(id, addName,'|cnRED_FONT_COLOR:', not e.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误')
                             end
                         end)
-                        optionFrame.check:SetScript('OnLeave', function() e.tips:Hide() end)
+                        optionFrame.check:SetScript('OnLeave', GameTooltip_Hide)
                         optionFrame.check:SetScript('OnEnter', function(self3)
                             local optionInfo= self3:GetParent().optionInfo
                             e.tips:SetOwner(self3:GetParent(), "ANCHOR_BOTTOMRIGHT")
@@ -1979,7 +1979,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         PlayerChoiceFrame.allButton= e.Cbtn(PlayerChoiceFrame, {size={60,22}, type=false, icon='hide'})
                         PlayerChoiceFrame.allButton:SetPoint('BOTTOMRIGHT')
                         PlayerChoiceFrame.allButton:SetFrameStrata('DIALOG')
-                        PlayerChoiceFrame.allButton:SetScript('OnLeave', function() e.tips:Hide() end)
+                        PlayerChoiceFrame.allButton:SetScript('OnLeave', GameTooltip_Hide)
                         PlayerChoiceFrame.allButton:SetScript('OnEnter', function(s)
                             e.tips:SetOwner(s, "ANCHOR_LEFT")
                             e.tips:ClearLines()

@@ -151,7 +151,7 @@ local function Init()
         e.tips:AddLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU).. e.Icon.mid, 0,1,0)
         e.tips:Show()
     end)
-    button:SetScript('OnLeave', function() e.tips:Hide() end)
+    button:SetScript('OnLeave', GameTooltip_Hide)
 
     setGuLaiTip()--设置 是否使用 /招手
     setSummonedPetGUID()--召唤信息,自动召唤
