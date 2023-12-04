@@ -917,10 +917,14 @@ local function Init_Set_AlphaAndColor()
     end
 
     hide_Frame_Texture(AddonCompartmentFrame)
-    if e.Player.useColor then
-        AddonCompartmentFrame.Text:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
-        set_Alpha_Color(AddonCompartmentFrame.Text)
-    end
+    e.Set_Label_Texture_Color(AddonCompartmentFrame.Text, {type='FontString'})
+    set_Alpha_Color(AddonCompartmentFrame.Text)
+    AddonCompartmentFrame:HookScript('OnEnter', function(self)
+        self.Text:SetAlpha(1)
+    end)
+    AddonCompartmentFrame:HookScript('OnLeave', function(self)
+        set_Alpha_Color(self.Text)
+    end)
 
     hide_Texture(PlayerFrameAlternateManaBarBorder)
     hide_Texture(PlayerFrameAlternateManaBarLeftBorder)
