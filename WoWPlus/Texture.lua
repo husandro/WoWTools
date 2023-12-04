@@ -3,8 +3,8 @@ local addName= TEXTURES_SUBHEADER
 local Save={
     --disabledTexture= true,
     --disabledColor=true,
-    disabledAlpha= not e.Player.husandro,
 
+    --disabledAlpha= not e.Player.husandro,
     alpha= 0.5,
 
     --disabledChatBubble=true,--禁用，聊天泡泡
@@ -71,7 +71,11 @@ local function set_Alpha_Frame_Texture(frame, tab)
         tab=tab or {}
         local indexTexture= tab.index
         local notColor= tab.notColor
-        local notAlpha= tab.notAlpha
+        --local notAlpha= tab.notAlpha
+        local alpha
+        if (not Save.disabledAlpha and not tab.notAlpha) then
+            alpha= tab.alpha or Save.alpha
+        end
         for index, icon in pairs({frame:GetRegions()}) do
             if icon:GetObjectType()=="Texture" then
                 if indexTexture then
@@ -79,8 +83,8 @@ local function set_Alpha_Frame_Texture(frame, tab)
                         if not notColor then
                             e.Set_Label_Texture_Color(icon, {type='Texture'})
                         end
-                        if not Save.disabledAlpha and not notAlpha then
-                            icon:SetAlpha(Save.alpha)
+                        if alpha then
+                            icon:SetAlpha(alpha)
                         end
                         break
                     end
@@ -88,8 +92,8 @@ local function set_Alpha_Frame_Texture(frame, tab)
                     if not notColor then
                         e.Set_Label_Texture_Color(icon, {type='Texture'})
                     end
-                    if not Save.disabledAlpha and not notAlpha then
-                        icon:SetAlpha(Save.alpha)
+                    if alpha then
+                        icon:SetAlpha(alpha)
                     end
                 end
             end
@@ -643,6 +647,8 @@ local function Init_Set_AlphaAndColor()
     set_Alpha_Color(MerchantFrameLootFilterLeft)
     set_Alpha_Color(MerchantFrameLootFilterRight)
     set_Alpha_Color(MerchantFrameBottomLeftBorder)
+    set_Alpha_Frame_Texture(MerchantFrameTab1)
+    set_Alpha_Frame_Texture(MerchantFrameTab2)
 
     --银行
     set_Alpha_Color(BankFrame.NineSlice.TopEdge)
@@ -796,6 +802,9 @@ local function Init_Set_AlphaAndColor()
     set_Alpha_Color(OpenMailFrame.NineSlice)
     set_Alpha_Color(OpenMailFrameBg)
     set_Alpha_Color(OpenMailFrameInset.Bg)
+
+    set_Alpha_Frame_Texture(MailFrameTab1)
+    set_Alpha_Frame_Texture(MailFrameTab2)
 
     SendMailBodyEditBox:HookScript('OnEditFocusLost', function()
         set_Alpha_Color(SendStationeryBackgroundLeft)

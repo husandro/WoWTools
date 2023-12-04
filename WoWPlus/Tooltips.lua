@@ -1455,7 +1455,7 @@ local function Init()
         if tooltip~=GameTooltip and tooltip~=ItemRefTooltip then
             return
         end
-        
+
         --25宏, 11动作条, 4可交互物品, 14装备管理, 0物品 19玩具, 9宠物
         if data.type==2 then--单位
             if tooltip==e.tips then
@@ -1554,18 +1554,10 @@ local function Init()
     --位置
     --****
     hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
-        if Save.setDefaultAnchor and not (Save.inCombatDefaultAnchor and UnitAffectingCombat('player')) and not GameTooltipDefaultContainer:IsShown() then
+        if Save.setDefaultAnchor and not (Save.inCombatDefaultAnchor and UnitAffectingCombat('player')) then
             self:ClearAllPoints()
             self:SetOwner(parent, Save.cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT', Save.cursorX or 0, Save.cursorY or 0)
         end
-    end)
-    
-    GameTooltipDefaultContainer:HookScript('OnShow', function(self)
-        print(id,addName)
-        GameTooltip_SetDefaultAnchor(GameTooltip, self);
-        e.tips:ClearLines()
-        e.tips:SetUnit('player')
-        e.tips:Show()
     end)
 
     --#########
