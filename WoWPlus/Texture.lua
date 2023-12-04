@@ -933,8 +933,8 @@ local function Init_Set_AlphaAndColor()
         hide_Texture(MainStatusTrackingBarContainer.BarFrameTexture)
     end
 
-    hide_Frame_Texture(AddonCompartmentFrame)
-    set_Alpha_Color(AddonCompartmentFrame.Text)
+    hide_Frame_Texture(AddonCompartmentFrame, {alpha= Save.alpha<=0.3 and 0.3})
+    set_Alpha_Color(AddonCompartmentFrame.Text, nil, nil, Save.alpha<=0.3 and 0.3)
    
 
     hide_Texture(PlayerFrameAlternateManaBarBorder)
@@ -944,8 +944,9 @@ local function Init_Set_AlphaAndColor()
     --小地图
     set_Alpha_Color(MinimapCompassTexture)
     set_Alpha_Frame_Texture(MinimapCluster.BorderTop)
-    set_Alpha_Frame_Texture(MinimapCluster.Tracking.Button)
     set_Alpha_Frame_Texture(GameTimeFrame)
+    hide_Texture(MinimapCluster.Tracking.Background)
+    set_Alpha_Frame_Texture(MinimapCluster.Tracking.Button, {alpha= Save.alpha<=0.3 and 0.3})
 
     --小队，背景
     set_Alpha_Frame_Texture(PartyFrame.Background, {})
@@ -2054,10 +2055,16 @@ local function set_MainMenu_Color(init)--主菜单
                             texture:SetAlpha(1)
                             texture:SetVertexColor(1,1,1,1)
                         end
+                        if self.Background then
+                            self.Background:SetAlpha(1)
+                        end
                     end)
                     self:HookScript('OnLeave', function(self2)
                         if not Save.disabledMainMenu then
-                            set_Alpha_Color(self2.Portrait or self2:GetNormalTexture(), nil, nil, Save.alpha<0.1 and 0.1 or Save.alpha)
+                            set_Alpha_Color(self2.Portrait or self2:GetNormalTexture(), nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
+                            if self.Background then
+                                self.Background:SetAlpha(0.5)
+                            end
                         end
                     end)
                 end
@@ -2069,6 +2076,9 @@ local function set_MainMenu_Color(init)--主菜单
                     texture:SetAlpha(1)
                     texture:SetVertexColor(1,1,1,1)
                 end
+            end
+            if self.Background then
+                self.Background:SetAlpha(0.5)
             end
         end
     end
