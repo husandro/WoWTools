@@ -1385,9 +1385,9 @@ local function Init_Set_Button()--小地图, 标记, 文本
 
 
 
-    hooksecurefunc('TaskPOI_OnEnter', function(self2)--世界任务，提示 WorldMapFrame.lua
-        if self2.questID and self2.OnMouseClickAction then
-            e.tips:AddDoubleLine(addName2..(Save.questIDs[self2.questID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
+    hooksecurefunc('TaskPOI_OnEnter', function(self)--世界任务，提示 WorldMapFrame.lua
+        if self.questID and self.OnMouseClickAction then
+            e.tips:AddDoubleLine(addName2..(Save.questIDs[self.questID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
             e.tips:Show()
         end
     end)
@@ -1395,12 +1395,12 @@ local function Init_Set_Button()--小地图, 标记, 文本
         if not self.OnMouseClickAction or self.setTracking then
             return
         end
-        hooksecurefunc(self, 'OnMouseClickAction', function(self2, d)
-            if self2.questID and d=='LeftButton' and IsAltKeyDown() then
-                Save.questIDs[self2.questID]= not Save.questIDs[self2.questID] and true or nil
+        hooksecurefunc(self, 'OnMouseClickAction', function(self, d)
+            if self.questID and d=='LeftButton' and IsAltKeyDown() then
+                Save.questIDs[self.questID]= not Save.questIDs[self.questID] and true or nil
                 print(id,addName, addName2,
-                    GetQuestLink(self2.questID) or self2.questID,
-                    Save.questIDs[self2.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                    GetQuestLink(self.questID) or self.questID,
+                    Save.questIDs[self.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
                 )
             end
         end)
@@ -2049,25 +2049,25 @@ WowTools_OnAddonCompartmentFuncOnEnter= enter_Func
 --副本，难图，指示
 --##############
 local function Init_InstanceDifficulty()--副本，难图，指示
-    local self= MinimapCluster.InstanceDifficulty
+    local btn= MinimapCluster.InstanceDifficulty
     if Save.disabledInstanceDifficulty then
         return
     end
 
-    --self.Instance.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-    --self.Guild.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-    --self.ChallengeMode.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b, 1)
-    e.Set_Label_Texture_Color(self.Instance.Border, {type='Texture'})
-    e.Set_Label_Texture_Color(self.Guild.Border, {type='Texture'})
-    e.Set_Label_Texture_Color(self.ChallengeMode.Border, {type='Texture'})
+    --btn.Instance.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    --btn.Guild.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    --btn.ChallengeMode.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b, 1)
+    e.Set_Label_Texture_Color(btn.Instance.Border, {type='Texture'})
+    e.Set_Label_Texture_Color(btn.Guild.Border, {type='Texture'})
+    e.Set_Label_Texture_Color(btn.ChallengeMode.Border, {type='Texture'})
 
-    e.Cstr(nil,{size=14, copyFont=self.Instance.Text, changeFont= self.Instance.Text})--字体，大小
-    self.Instance.Text:SetShadowOffset(1,-1)
-    e.Cstr(nil,{size=14, copyFont=self.Guild.Instance.Text, changeFont= self.Instance.Text})--字体，大小
-    self.Guild.Instance.Text:SetShadowOffset(1,-1)
+    e.Cstr(nil,{size=14, copyFont=btn.Instance.Text, changeFont= btn.Instance.Text})--字体，大小
+    btn.Instance.Text:SetShadowOffset(1,-1)
+    e.Cstr(nil,{size=14, copyFont=btn.Guild.Instance.Text, changeFont= btn.Instance.Text})--字体，大小
+    btn.Guild.Instance.Text:SetShadowOffset(1,-1)
 
-    --MinimapCluster:HookScript('OnEvent', function(self2)--Minimap.luab
-    hooksecurefunc(self, 'Update', function(self2)--InstanceDifficulty.lua
+    --MinimapCluster:HookScript('OnEvent', function(self)--Minimap.luab
+    hooksecurefunc(btn, 'Update', function(self)--InstanceDifficulty.lua
         local isChallengeMode= self.ChallengeMode:IsShown()
         local tips, color, name
         local frame
@@ -2088,16 +2088,15 @@ local function Init_InstanceDifficulty()--副本，难图，指示
         if frame and color then
             frame.Background:SetVertexColor(color.r, color.g, color.b)
         end
-        if not self2.labelType then
-            self2.labelType= e.Cstr(self2, {color=true, level=22, alpha=0.5})
-            self2.labelType:SetPoint('TOP', self2, 'BOTTOM', 0, 4)
-            --self2.labelType:SetAlpha(0.5)
+        if not self.labelType then
+            self.labelType= e.Cstr(self, {color=true, level=22, alpha=0.5})
+            self.labelType:SetPoint('TOP', self, 'BOTTOM', 0, 4)
         end
-        self2.labelType:SetText(name and e.WA_Utf8Sub(name, 2, 6) or '')
-        self2.tips= tips
+        self.labelType:SetText(name and e.WA_Utf8Sub(name, 2, 6) or '')
+        self.tips= tips
     end)
 
-    self:HookScript('OnEnter', function(self2)
+    btn:HookScript('OnEnter', function(self)
         if not IsInInstance() then
             return
         end
@@ -2105,7 +2104,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
         e.tips:ClearLines()
         local difficultyID, name, maxPlayers= select(3,GetInstanceInfo())
         name= name..(maxPlayers and ' ('..maxPlayers..')' or '')
-        e.tips:AddDoubleLine(self2.tips, name)
+        e.tips:AddDoubleLine(self.tips, name)
         e.tips:AddLine(' ')
         local tab={
             DifficultyUtil.ID.Raid40,
@@ -2119,13 +2118,19 @@ local function Init_InstanceDifficulty()--副本，难图，指示
         }
         for _, ID in pairs(tab) do
             local text= e.GetDifficultyColor(nil, ID)
-            e.tips:AddLine((self2.tips==text and e.Icon.toRight2 or '')..text..(self2.tips==text and e.Icon.toLeft2 or ''))
+            e.tips:AddLine((self.tips==text and e.Icon.toRight2 or '')..text..(self.tips==text and e.Icon.toLeft2 or ''))
         end
         e.tips:AddDoubleLine('difficultyID', difficultyID)
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
+        if self.labelType then
+            self.labelType:SetAlpha(1)
+        end
     end)
-    self:HookScript('OnLeave', function()
+    btn:HookScript('OnLeave', function(self)
+        if self.labelType then
+            self.labelType:SetAlpha(0.5)
+        end
         e.tips:Hide()
     end)
 end
@@ -2236,8 +2241,8 @@ local function Blizzard_TimeManager()
         Save.useServerTimer= not Save.useServerTimer and true or nil
         set_Server_Timer()
     end)
-    check:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT");
+    check:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT");
         e.tips:ClearLines();
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine((e.onlyChinese and '时钟' or TIMEMANAGER_TITLE)..' Plus')
@@ -2408,8 +2413,8 @@ local function Init()
 
         if ExpansionLandingPageMinimapButton then
             ExpansionLandingPageMinimapButton:SetShown(false)
-            ExpansionLandingPageMinimapButton:HookScript('OnShow', function(self2)
-                self2:SetShown(false)
+            ExpansionLandingPageMinimapButton:HookScript('OnShow', function(self)
+                self:SetShown(false)
             end)
         end
     end

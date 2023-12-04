@@ -318,7 +318,7 @@ function e.Cstr(self, tab)
         font:SetShadowColor(copyFont:GetShadowColor())
         font:SetShadowOffset(copyFont:GetShadowOffset())
         if justifyH then font:SetJustifyH(justifyH) end
-        if alpha then font:SetAlpha(alpha) end
+        --if alpha then font:SetAlpha(alpha) end
     else
         if e.onlyChinese or size then--THICKOUTLINE
             local fontName2, size2, fontFlag2= font:GetFont()
