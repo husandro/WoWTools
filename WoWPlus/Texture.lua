@@ -2084,6 +2084,27 @@ local function set_MainMenu_Color(init)--主菜单
         end
     end
 
+    --提示，背包，总数
+    MainMenuBarBackpackButton:HookScript('OnEnter', function(self)
+        local num= 0
+        local tab={}
+        for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
+            local freeSlots, bagFamily = C_Container.GetContainerNumFreeSlots(i)
+            local numSlots= C_Container.GetContainerNumSlots(i) or 0
+            if bagFamily == 0 and numSlots>0 then
+                num= num + numSlots
+                table.insert(tab, (i+1)..') '..numSlots..'/|cnGREEN_FONT_COLOR:'..freeSlots)
+            end
+        end
+        if num>0 then
+            e.tips:AddLine(num..' '..(e.onlyChinese and '总计' or TOTAL))
+            e.tips:AddLine(' ')
+            for _, text in pairs(tab) do
+                e.tips:AddLine(text)
+            end
+            e.tips:Show()
+        end
+    end)
     --材料包
     set_Alpha_Color(CharacterReagentBag0SlotNormalTexture, nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
     set_Alpha_Color(CharacterReagentBag0SlotIconTexture, nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
