@@ -1539,6 +1539,26 @@ local function Init_WeeklyRewardsFrame()
         self.showChallenges:SetButtonState('NORMAL')
     end)
 
+    --移动，图片
+    hooksecurefunc(WeeklyRewardsFrame,'UpdateOverlay', function(self)--Blizzard_WeeklyRewards.lua
+        if self.Overlay and self.Overlay:IsShown() then--未提取,提示
+            self.Overlay:SetScale(0.4)
+            self.Overlay:ClearAllPoints()
+            self.Overlay:SetPoint('TOPLEFT', 80,-60)
+        end
+    end)
+    
+    --未提取,提示
+    if WeeklyRewardExpirationWarningDialog and WeeklyRewardExpirationWarningDialog:IsShown() then
+        if WeeklyRewardExpirationWarningDialog.Description then
+            print(id, addName, '|cffff00ff'..WeeklyRewardExpirationWarningDialog.Description:GetText())
+            WeeklyRewardExpirationWarningDialog:Hide()
+        else
+            C_Timer.After(5, function()
+                WeeklyRewardExpirationWarningDialog:Hide()
+            end)
+        end
+    end
 end
 
 
@@ -1973,9 +1993,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Init()--史诗钥石地下城, 界面
 
         elseif arg1=='Blizzard_WeeklyRewards' then
-            Init_WeeklyRewardsFrame()--周奖励界面，添加一个按钮，打开挑战界面
+            Init_WeeklyRewardsFrame()
         end
-
+    
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save

@@ -15,10 +15,30 @@ local Save={
     classPowerNumSize= 12,
     --disabledMainMenu= not e.Player.husandro, --主菜单，颜色，透明度
 }
-local panel=CreateFrame("Frame")
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--隐藏，材质
 local function hide_Texture(self, notClear)
+    if Save.disabledTexture then
+        return
+    end
     if self then
         if self:GetObjectType()=='Texture' then
             if not notClear then
@@ -29,19 +49,20 @@ local function hide_Texture(self, notClear)
     end
 end
 
+--设置，颜色，透明度
 local function set_Alpha_Color(self, notAlpha, notColor, alpha)
-    if not self or (notColor and notAlpha) or Save.disabledAlpha then
+    if not self then
         return
     end
-    local type= self:GetObjectType()
-    if Save.disabledAlpha or notAlpha then
-        alpha=nil
-    else
-        alpha= alpha or Save.alpha
+    if not notColor and not Save.disabledColor then
+        e.Set_Label_Texture_Color(self, {type=self:GetObjectType()})
     end
-    e.Set_Label_Texture_Color(self, {type=type, alpha= alpha})
+    if not Save.disabledAlpha and not notAlpha then
+        self:SetAlpha(alpha or Save.alpha)
+    end
 end
 
+--设置，按钮
 local function set_Button_Alpha(btn, tab)
     if Save.disabledAlpha or not btn then
         return
@@ -49,6 +70,30 @@ local function set_Button_Alpha(btn, tab)
     local alpha= tab and tab.alpha or Save.alpha
     alpha= alpha<0.3 and 0.3 or alpha
     e.Set_Label_Texture_Color(btn, {type='Button', alpha= alpha})
+end
+
+local function set_NineSlice(frame, hide)
+    if Save.disabledTexture or not frame or not frame.NineSlice then
+        return
+    end
+end
+
+--设置，滚动条，颜色
+local function set_ScrollBar(bar)
+    if not bar or not bar.ScrollBar then
+        return
+    end
+    if bar.ScrollBar.Track then
+        set_Alpha_Color(bar.ScrollBar.Track.Thumb.Middle, true)
+        set_Alpha_Color(bar.ScrollBar.Track.Thumb.Begin, true)
+        set_Alpha_Color(bar.ScrollBar.Track.Thumb.End, true)
+    end
+    if bar.ScrollBar.Back then
+        set_Alpha_Color(bar.ScrollBar.Back.Texture, true)
+    end
+    if bar.ScrollBar.Forward then
+        set_Alpha_Color(bar.ScrollBar.Forward.Texture, true)
+    end
 end
 
 --隐藏, frame, 子材质
@@ -158,11 +203,7 @@ end
 --###############
 --初始化, 隐藏材质
 --###############
-local function Init_HideTexture()
-    if Save.disabledTexture then
-        return
-    end
-
+local function Init()
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
         hide_Texture(frame.TargetFrameContainer.FrameTexture)
@@ -290,6 +331,596 @@ local function Init_HideTexture()
             CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateReadyCheckText:SetText('|A:'..e.Icon.select..':22:22|a')
         end
      end
+     set_Alpha_Color(PlayerCastingBarFrame.Border)
+     set_Alpha_Color(PlayerCastingBarFrame.Background)
+     set_Alpha_Color(PlayerCastingBarFrame.TextBorder)
+     set_Alpha_Color(PlayerCastingBarFrame.Shine)
+ 
+     --角色，界面
+     set_Alpha_Color(CharacterFrameBg)
+ 
+     hide_Texture(CharacterFrameInset.Bg)
+ 
+     set_Alpha_Color(CharacterFrameInset.NineSlice.TopEdge, nil, nil, Save.alpha<0.3 and 0.3)
+     set_Alpha_Color(CharacterFrameInset.NineSlice.BottomEdge, nil, nil, Save.alpha<0.3 and 0.3)
+     set_Alpha_Color(CharacterFrameInset.NineSlice.LeftEdge, nil, nil, Save.alpha<0.3 and 0.3)
+     set_Alpha_Color(CharacterFrameInset.NineSlice.RightEdge, nil, nil, Save.alpha<0.3 and 0.3)
+ 
+     hide_Texture(PaperDollInnerBorderBottom2)
+     hide_Texture(CharacterFrameInsetRight.Bg)
+ 
+     set_Alpha_Color(CharacterFrame.NineSlice.TopEdge)
+     set_Alpha_Color(CharacterFrame.NineSlice.BottomEdge)
+     set_Alpha_Color(CharacterFrame.NineSlice.LeftEdge)
+     set_Alpha_Color(CharacterFrame.NineSlice.RightEdge)
+ 
+     set_Alpha_Color(CharacterFrame.NineSlice.TopRightCorner)
+     set_Alpha_Color(CharacterFrame.NineSlice.TopLeftCorner)
+     set_Alpha_Color(CharacterFrame.NineSlice.BottomRightCorner)
+     set_Alpha_Color(CharacterFrame.NineSlice.BottomLeftCorner)
+ 
+     
+     set_Alpha_Color(CharacterStatsPane.ClassBackground)
+     set_Alpha_Color(CharacterStatsPane.EnhancementsCategory.Background)
+     set_Alpha_Color(CharacterStatsPane.AttributesCategory.Background)
+     set_Alpha_Color(CharacterStatsPane.ItemLevelCategory.Background)
+     hooksecurefunc('PaperDollTitlesPane_UpdateScrollBox', function()--PaperDollFrame.lua
+         for _, button in pairs(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrames()) do
+             hide_Texture(button.BgMiddle)
+         end
+     end)
+     hide_Texture(PaperDollFrame.TitleManagerPane.ScrollBar.Backplate)
+     hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()--PaperDollFrame.lua
+         for _, button in pairs(PaperDollFrame.EquipmentManagerPane.ScrollBox:GetFrames()) do
+             hide_Texture(button.BgMiddle)
+         end
+     end)
+     hide_Texture(PaperDollFrame.EquipmentManagerPane.ScrollBar.Backplate)
+     hide_Texture(ReputationFrame.ScrollBar.Backplate)
+     hide_Texture(TokenFrame.ScrollBar.Backplate)
+ 
+     hide_Texture(CharacterModelFrameBackgroundTopLeft)--角色3D背景
+     hide_Texture(CharacterModelFrameBackgroundTopRight)
+     hide_Texture(CharacterModelFrameBackgroundBotLeft)
+     hide_Texture(CharacterModelFrameBackgroundBotRight)
+     hide_Texture(CharacterModelFrameBackgroundOverlay)
+ 
+     --法术书
+     set_Alpha_Color(SpellBookFrame.NineSlice.TopLeftCorner)
+     set_Alpha_Color(SpellBookFrame.NineSlice.TopEdge)
+     set_Alpha_Color(SpellBookFrame.NineSlice.TopRightCorner)
+     set_Alpha_Color(SpellBookFrame.NineSlice.LeftEdge)
+     set_Alpha_Color(SpellBookFrame.NineSlice.RightEdge)
+     set_Alpha_Color(SpellBookFrame.NineSlice.BottomEdge)
+     set_Alpha_Color(SpellBookFrame.NineSlice.BottomLeftCorner)
+     set_Alpha_Color(SpellBookFrame.NineSlice.BottomRightCorner)
+     set_Alpha_Color(SpellBookFrameInset.NineSlice.TopEdge, nil, nil, Save.alpha<0.3 and 0.3)
+     set_Alpha_Color(SpellBookFrameInset.NineSlice.BottomEdge, nil, nil, Save.alpha<0.3 and 0.3)
+     set_Alpha_Color(SpellBookFrameInset.NineSlice.RightEdge, nil, nil, Save.alpha<0.3 and 0.3)
+     set_Alpha_Color(SpellBookFrameInset.NineSlice.LeftEdge, nil, nil, Save.alpha<0.3 and 0.3)
+     set_Alpha_Color(SpellBookFrameInset.NineSlice.BottomRightCorner, nil, nil, Save.alpha<0.3 and 0.3)
+     set_Alpha_Color(SpellBookFrameInset.NineSlice.BottomLeftCorner, nil, nil, Save.alpha<0.3 and 0.3)
+     set_Alpha_Color(SpellBookFrameInset.NineSlice.TopRightCorner, nil, nil, Save.alpha<0.3 and 0.3)
+     
+     if SpellBookPageText then
+         SpellBookPageText:SetTextColor(1, 0.82, 0)
+     end
+ 
+     hide_Texture(SpellBookPage1)
+     hide_Texture(SpellBookPage2)
+     set_Alpha_Color(SpellBookFrameBg)
+     hide_Texture(SpellBookFrameInset.Bg)
+ 
+     for i=1, 12 do
+         set_Alpha_Color(_G['SpellButton'..i..'Background'])
+         set_Alpha_Color(_G['SpellButton'..i..'SlotFrame'])
+ 
+         local frame= _G['SpellButton'..i]
+         if frame then
+             hooksecurefunc(frame, 'UpdateButton', function(self)--SpellBookFrame.lua
+                 self.SpellSubName:SetTextColor(1, 1, 1)
+             end)
+         end
+     end
+ 
+     set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=Save.alpha<0.3 and 0.3})
+     set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=Save.alpha<0.3 and 0.3})
+     set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=Save.alpha<0.3 and 0.3})
+ 
+ 
+     --世界地图
+     set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.TopLeftCorner)
+     set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.TopEdge)
+     set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.TopRightCorner)
+     set_Alpha_Color(WorldMapFrameBg)
+     set_Alpha_Color(QuestMapFrame.Background)
+     hide_Texture(WorldMapFrame.NavBar.overlay)
+     hide_Texture(WorldMapFrame.NavBar.InsetBorderBottom)
+     hide_Texture(WorldMapFrame.NavBar.InsetBorderRight)
+     hide_Texture(WorldMapFrame.NavBar.InsetBorderLeft)
+     hide_Texture(WorldMapFrame.NavBar.InsetBorderBottomRight)
+     hide_Texture(WorldMapFrame.NavBar.InsetBorderBottomLeft)
+     hide_Texture(WorldMapFrame.BorderFrame.InsetBorderTop)
+ 
+     set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.LeftEdge)
+     set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.BottomEdge)
+     set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.RightEdge)
+     set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.BottomLeftCorner)
+     set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.BottomRightCorner)
+     set_Alpha_Color(QuestMapFrame.VerticalSeparator)
+     set_Alpha_Color(QuestScrollFrame.DetailFrame.BottomDetail)
+     set_Alpha_Color(QuestScrollFrame.Edge)
+     set_Alpha_Color(QuestScrollFrame.DetailFrame.TopDetail)
+     
+     set_Alpha_Color(QuestScrollFrame.Contents.Separator.Divider, nil, nil, Save.alpha<0.3 and 0.3)
+ 
+     set_ScrollBar(QuestScrollFrame)
+         
+     WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
+ 
+     --地下城和团队副本
+     set_Alpha_Color(PVEFrame.NineSlice.TopLeftCorner)
+     set_Alpha_Color(PVEFrame.NineSlice.TopEdge)
+     set_Alpha_Color(PVEFrame.NineSlice.TopRightCorner)
+     set_Alpha_Color(LFGListFrame.CategorySelection.Inset.CustomBG)
+     hide_Texture(LFGListFrame.CategorySelection.Inset.Bg)
+     set_Alpha_Color(LFGListFrame.SearchPanel.SearchBox.Middle)
+     set_Alpha_Color(LFGListFrame.SearchPanel.SearchBox.Left)
+     set_Alpha_Color(LFGListFrame.SearchPanel.SearchBox.Right)
+     set_Alpha_Color(LFGListFrame.SearchPanel.ScrollBar.Backplate)
+     set_Alpha_Color(LFGListFrame.EntryCreation.Inset.CustomBG)
+     set_Alpha_Color(LFGListFrame.EntryCreation.Inset.Bg)
+     set_Alpha_Color(LFGListFrameMiddleMiddle)
+     set_Alpha_Color(LFGListFrameMiddleLeft)
+     set_Alpha_Color(LFGListFrameMiddleRight)
+     set_Alpha_Color(LFGListFrameBottomMiddle)
+     set_Alpha_Color(LFGListFrameTopMiddle)
+     set_Alpha_Color(LFGListFrameTopLeft)
+     set_Alpha_Color(LFGListFrameBottomLeft)
+     set_Alpha_Color(LFGListFrameTopRight)
+     set_Alpha_Color(LFGListFrameBottomRight)
+     set_Alpha_Color(RaidFinderFrameBottomInset.Bg)
+     set_Alpha_Color(RaidFinderQueueFrameBackground)
+     set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownMiddle)
+     set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownLeft)
+     set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownRight)
+     set_Alpha_Color(RaidFinderFrameRoleBackground, nil, true)
+     set_Alpha_Color(RaidFinderFrameRoleInset.Bg)
+ 
+     hide_Texture(PVEFrameBg)--左边
+     hide_Texture(PVEFrameBlueBg)
+     set_Alpha_Color(PVEFrameLeftInset.Bg)
+ 
+     set_Alpha_Color(LFDQueueFrameBackground)
+     set_Alpha_Color(LFDQueueFrameTypeDropDownMiddle)
+     set_Alpha_Color(LFDQueueFrameTypeDropDownRight)
+     set_Alpha_Color(LFDQueueFrameTypeDropDownLeft)
+ 
+     set_Alpha_Color(LFDParentFrameInset.Bg)
+     set_Alpha_Color(LFDParentFrameRoleBackground)
+ 
+ 
+     set_Alpha_Color(GossipFrame.NineSlice.TopEdge)
+     set_Alpha_Color(GossipFrame.NineSlice.TopLeftCorner)
+     set_Alpha_Color(GossipFrame.NineSlice.TopRightCorner)
+     set_Alpha_Color(GossipFrameBg)
+     hide_Texture(GossipFrameInset.Bg)
+     hide_Texture(GossipFrame.GreetingPanel.ScrollBar.Backplate)
+ 
+     set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
+     set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
+     set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
+ 
+     if PetStableFrame then--猎人，宠物
+         set_Alpha_Color(PetStableFrame.NineSlice.TopEdge)
+         set_Alpha_Color(PetStableFrame.NineSlice.TopLeftCorner)
+         set_Alpha_Color(PetStableFrame.NineSlice.TopRightCorner)
+         --set_Alpha_Color(PetStableFrame.NineSlice)
+         set_Alpha_Color(PetStableFrameModelBg)
+         hide_Texture(PetStableFrameInset.Bg)
+         set_Alpha_Color(PetStableFrameBg)
+         set_Alpha_Color(PetStableFrameStableBg)
+         set_Alpha_Color(PetStableActiveBg)
+         for i=1, NUM_PET_STABLE_SLOTS do--NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS do
+             if i<=5 then
+                 hide_Texture(_G['PetStableActivePet'..i..'Background'])
+                 set_Alpha_Color(_G['PetStableActivePet'..i..'Border'])
+             end
+             set_Alpha_Color(_G['PetStableStabledPet'..i..'Background'])
+         end
+     end
+ 
+ 
+ 
+     set_Alpha_Color(MerchantFrameLootFilterMiddle)
+     set_Alpha_Color(MerchantFrameLootFilterLeft)
+     set_Alpha_Color(MerchantFrameLootFilterRight)
+     set_Alpha_Color(MerchantFrameBottomLeftBorder)
+     set_Alpha_Frame_Texture(MerchantFrameTab1)
+     set_Alpha_Frame_Texture(MerchantFrameTab2)
+ 
+     --银行
+     set_Alpha_Color(BankFrame.NineSlice.TopEdge)
+     set_Alpha_Color(BankFrame.NineSlice.TopLeftCorner)
+     set_Alpha_Color(BankFrame.NineSlice.TopRightCorner)
+ 
+     hide_Texture(BankFrameMoneyFrameInset.Bg)
+     hide_Texture(BankFrameMoneyFrameBorderMiddle)
+     hide_Texture(BankFrameMoneyFrameBorderRight)
+     hide_Texture(BankFrameMoneyFrameBorderLeft)
+     hide_Texture(BankFrameMoneyFrameInset.NineSlice)
+ 
+     BankFrame:DisableDrawLayer('BACKGROUND')
+     local texture= BankFrame:CreateTexture(nil,'BORDER',nil, 1)
+     texture:SetAtlas('auctionhouse-background-buy-noncommodities-market')
+     texture:SetAllPoints(BankFrame)
+     set_Alpha_Color(texture)
+     hide_Texture(BankFrameBg)
+ 
+     hooksecurefunc('BankFrameItemButton_Update',function(button)--银行
+         if button.NormalTexture and button.NormalTexture:IsShown() then
+             hide_Texture(button.NormalTexture)
+         end
+         if ReagentBankFrame.numColumn and not ReagentBankFrame.hidexBG then
+             ReagentBankFrame.hidexBG=true
+             for column = 1, 7 do
+                 hide_Texture(ReagentBankFrame["BG"..column])
+             end
+         end
+     end)
+     set_Alpha_Color(BankFrameTab1.LeftActive)
+     set_Alpha_Color(BankFrameTab1.MiddleActive)
+     set_Alpha_Color(BankFrameTab1.RightActive)
+     set_Alpha_Color(BankFrameTab1.Left)
+     set_Alpha_Color(BankFrameTab1.Middle)
+     set_Alpha_Color(BankFrameTab1.Right)
+     set_Alpha_Color(BankFrameTab2.LeftActive)
+     set_Alpha_Color(BankFrameTab2.MiddleActive)
+     set_Alpha_Color(BankFrameTab2.RightActive)
+     set_Alpha_Color(BankFrameTab2.Left)
+     set_Alpha_Color(BankFrameTab2.Middle)
+     set_Alpha_Color(BankFrameTab2.Right)
+ 
+     --背包
+     if ContainerFrameCombinedBags and ContainerFrameCombinedBags.NineSlice then
+         set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.TopEdge)
+         set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.LeftEdge)
+         set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.RightEdge)
+ 
+         set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.BottomEdge)
+ 
+         set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.TopLeftCorner)
+         set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.TopRightCorner)
+         set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.BottomRightCorner)
+         set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.BottomLeftCorner)
+         set_Alpha_Color(ContainerFrameCombinedBags.MoneyFrame.Border.Middle)
+         set_Alpha_Color(ContainerFrameCombinedBags.MoneyFrame.Border.Right)
+         set_Alpha_Color(ContainerFrameCombinedBags.MoneyFrame.Border.Left)
+ 
+         set_Alpha_Color(ContainerFrameCombinedBags.Bg.TopSection, true)
+         --set_Alpha_Color(ContainerFrameCombinedBags.Bg.BottomEdge)
+         --set_Alpha_Color(ContainerFrameCombinedBags.Bg.BottomRight)
+         --set_Alpha_Color(ContainerFrameCombinedBags.Bg.BottomLeft)
+         set_Alpha_Color(BagItemSearchBox.Middle)
+         set_Alpha_Color(BagItemSearchBox.Left)
+         set_Alpha_Color(BagItemSearchBox.Right)
+     end
+     for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
+         local frame= _G['ContainerFrame'..i]
+         if frame and frame.NineSlice then
+             set_Alpha_Color(frame.Bg.TopSection, true)
+             set_Alpha_Color(frame.NineSlice.TopEdge)
+             set_Alpha_Color(frame.NineSlice.TopLeftCorner)
+             set_Alpha_Color(frame.NineSlice.TopRightCorner)
+         end
+     end
+ 
+ 
+     hide_Frame_Texture(CharacterHeadSlot)--1
+     hide_Frame_Texture(CharacterNeckSlot)--2
+     hide_Frame_Texture(CharacterShoulderSlot)--3
+     hide_Frame_Texture(CharacterShirtSlot)--4
+     hide_Frame_Texture(CharacterChestSlot)--5
+     hide_Frame_Texture(CharacterWaistSlot)--6
+     hide_Frame_Texture(CharacterLegsSlot)--7
+     hide_Frame_Texture(CharacterFeetSlot)--8
+     hide_Frame_Texture(CharacterWristSlot)--9
+     hide_Frame_Texture(CharacterHandsSlot)--10
+     hide_Frame_Texture(CharacterBackSlot)--15
+     hide_Frame_Texture(CharacterTabardSlot)--19
+     hide_Frame_Texture(CharacterFinger0Slot)--11
+     hide_Frame_Texture(CharacterFinger1Slot)--12
+     hide_Frame_Texture(CharacterTrinket0Slot)--13
+     hide_Frame_Texture(CharacterTrinket1Slot)--14
+     hide_Frame_Texture(CharacterMainHandSlot)--16
+     hide_Frame_Texture(CharacterSecondaryHandSlot)--17
+ 
+     set_Alpha_Frame_Texture(CharacterFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
+     set_Alpha_Frame_Texture(CharacterFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
+     set_Alpha_Frame_Texture(CharacterFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
+ 
+     --好友列表
+     set_Alpha_Color(FriendsFrame.NineSlice.TopEdge)
+     set_Alpha_Color(FriendsFrame.NineSlice.TopLeftCorner)
+     set_Alpha_Color(FriendsFrame.NineSlice.TopRightCorner)
+     set_Alpha_Color(FriendsFrameBg)
+     --hide_Texture(FriendsFrameInset.Bg)
+     hide_Texture(FriendsListFrame.ScrollBar.Backplate)
+     hide_Texture(IgnoreListFrame.ScrollBar.Backplate)
+     if RecruitAFriendFrame and RecruitAFriendFrame.RecruitList then
+         hide_Texture(RecruitAFriendFrame.RecruitList.ScrollBar.Backplate)
+         set_Alpha_Color(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
+     end
+     hide_Texture(WhoFrameListInset.Bg)
+     hide_Texture(WhoFrame.ScrollBar.Backplate)
+     set_Alpha_Color(WhoFrameDropDownMiddle)
+     set_Alpha_Color(WhoFrameDropDownLeft)
+     set_Alpha_Color(WhoFrameDropDownRight)
+     hide_Texture(WhoFrameEditBoxInset.Bg)
+     hide_Texture(QuickJoinFrame.ScrollBar.Backplate)
+ 
+     set_Alpha_Frame_Texture(FriendsFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
+     set_Alpha_Frame_Texture(FriendsFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
+     set_Alpha_Frame_Texture(FriendsFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
+     set_Alpha_Frame_Texture(FriendsFrameTab4, {alpha=Save.alpha<0.3 and 0.3})
+ 
+     --聊天设置
+     set_Alpha_Color(ChannelFrame.NineSlice.TopEdge)
+     set_Alpha_Color(ChannelFrame.NineSlice.TopLeftCorner)
+     set_Alpha_Color(ChannelFrame.NineSlice.TopRightCorner)
+     set_Alpha_Color(ChannelFrameBg)
+     hide_Texture(ChannelFrameInset.Bg)
+     hide_Texture(ChannelFrame.RightInset.Bg)
+     hide_Texture(ChannelFrame.LeftInset.Bg)
+     hide_Texture(ChannelFrame.ChannelRoster.ScrollBar.Backplate)
+ 
+     --任务
+     set_Alpha_Color(QuestFrame.NineSlice.TopEdge)
+     set_Alpha_Color(QuestFrame.NineSlice.TopLeftCorner)
+     set_Alpha_Color(QuestFrame.NineSlice.TopRightCorner)
+     set_Alpha_Color(QuestFrameBg)
+     hide_Texture(QuestFrameInset.Bg)
+ 
+     --信箱
+     set_Alpha_Color(MailFrame.NineSlice.TopEdge)
+     set_Alpha_Color(MailFrame.NineSlice.TopLeftCorner)
+     set_Alpha_Color(MailFrame.NineSlice.TopRightCorner)
+     set_Alpha_Color(MailFrameBg)
+     hide_Texture(InboxFrameBg)
+     hide_Texture(MailFrameInset.Bg)
+     set_Alpha_Color(OpenMailFrame.NineSlice)
+     set_Alpha_Color(OpenMailFrameBg)
+     set_Alpha_Color(OpenMailFrameInset.Bg)
+ 
+     set_Alpha_Frame_Texture(MailFrameTab1)
+     set_Alpha_Frame_Texture(MailFrameTab2)
+ 
+     SendMailBodyEditBox:HookScript('OnEditFocusLost', function()
+         set_Alpha_Color(SendStationeryBackgroundLeft)
+         set_Alpha_Color(SendStationeryBackgroundRight)
+     end)
+     SendMailBodyEditBox:HookScript('OnEditFocusGained', function()
+         if SendStationeryBackgroundLeft then
+             SendStationeryBackgroundLeft:SetAlpha(1)
+             SendStationeryBackgroundLeft:SetVertexColor(1,1,1)
+             SendStationeryBackgroundRight:SetAlpha(1)
+             SendStationeryBackgroundRight:SetVertexColor(1,1,1)
+         end
+     end)
+     set_Alpha_Color(SendStationeryBackgroundLeft)
+     set_Alpha_Color(SendStationeryBackgroundRight)
+ 
+     set_Alpha_Color(SendMailMoneyBgMiddle)
+     set_Alpha_Color(SendMailMoneyBgRight)
+     set_Alpha_Color(SendMailMoneyBgLeft)
+     hide_Texture(SendMailMoneyInset.Bg)
+     set_Alpha_Color(MailFrame.NineSlice.LeftEdge)
+     set_Alpha_Color(MailFrame.NineSlice.RightEdge)
+     set_Alpha_Color(MailFrame.NineSlice.BottomRightCorner)
+     set_Alpha_Color(MailFrame.NineSlice.BottomLeftCorner)
+     set_Alpha_Color(MailFrame.NineSlice.BottomEdge)
+     set_Alpha_Color(MailFrameInset.NineSlice.LeftEdge)
+ 
+ 
+     --拾取, 历史
+     set_Alpha_Color(GroupLootHistoryFrame.NineSlice.TopRightCorner)
+     set_Alpha_Color(GroupLootHistoryFrame.NineSlice.TopEdge)
+     set_Alpha_Color(GroupLootHistoryFrame.NineSlice.TopLeftCorner)
+     set_Alpha_Color(GroupLootHistoryFrame.NineSlice.RightEdge)
+     set_Alpha_Color(GroupLootHistoryFrame.NineSlice.LeftEdge)
+     set_Alpha_Color(GroupLootHistoryFrame.NineSlice.BottomLeftCorner)
+     set_Alpha_Color(GroupLootHistoryFrame.NineSlice.BottomRightCorner)
+     set_Alpha_Color(GroupLootHistoryFrame.NineSlice.BottomEdge)
+     set_Alpha_Color(GroupLootHistoryFrameBg)
+     
+     set_ScrollBar(GroupLootHistoryFrame)
+     
+     set_Alpha_Color(GroupLootHistoryFrameMiddle)
+     set_Alpha_Color(GroupLootHistoryFrameLeft)
+     set_Alpha_Color(GroupLootHistoryFrameRight)
+     set_Alpha_Color()
+ 
+ 
+ 
+ 
+     --频道, 设置
+     hide_Texture(ChatConfigCategoryFrame.NineSlice.Center)
+     hide_Texture(ChatConfigBackgroundFrame.NineSlice.Center)
+     hide_Texture(ChatConfigChatSettingsLeft.NineSlice.Center)
+ 
+     hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
+         if frame.NineSlice then
+             hide_Texture(frame.NineSlice.TopEdge)
+             hide_Texture(frame.NineSlice.BottomEdge)
+             hide_Texture(frame.NineSlice.RightEdge)
+             hide_Texture(frame.NineSlice.LeftEdge)
+             hide_Texture(frame.NineSlice.TopLeftCorner)
+             hide_Texture(frame.NineSlice.TopRightCorner)
+             hide_Texture(frame.NineSlice.BottomLeftCorner)
+             hide_Texture(frame.NineSlice.BottomRightCorner)
+             hide_Texture(frame.NineSlice.Center)
+         end
+         local checkBoxNameString = frame:GetName().."CheckBox";
+         for index, _ in ipairs(frame.checkBoxTable) do
+             local checkBox = _G[checkBoxNameString..index];
+             if checkBox and checkBox.NineSlice then
+                 hide_Texture(checkBox.NineSlice.TopEdge)
+                 hide_Texture(checkBox.NineSlice.RightEdge)
+                 hide_Texture(checkBox.NineSlice.LeftEdge)
+                 hide_Texture(checkBox.NineSlice.TopRightCorner)
+                 hide_Texture(checkBox.NineSlice.TopLeftCorner)
+                 hide_Texture(checkBox.NineSlice.BottomRightCorner)
+                 hide_Texture(checkBox.NineSlice.BottomLeftCorner)
+             end
+         end
+     end)
+     hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)--频道颜色设置 ChatConfigFrame.lua
+         if not FCF_GetCurrentChatFrame() then
+             return
+         end
+         local checkBoxNameString = frame:GetName().."CheckBox";
+         for index, value in ipairs(frame.checkBoxTable) do
+             if value and value.type then
+                 local r, g, b = GetMessageTypeColor(value.type)
+                 if r and g and b then
+                     if _G[checkBoxNameString..index.."CheckText"] then
+                         _G[checkBoxNameString..index.."CheckText"]:SetTextColor(r,g,b)
+                     end
+                     local checkBox = _G[checkBoxNameString..index]
+                     if checkBox and checkBox.NineSlice and checkBox.NineSlice.BottomEdge then
+                         checkBox.NineSlice.BottomEdge:SetVertexColor(r,g,b)
+                     end
+                 end
+             end
+         end
+     end)
+ 
+     --插件，管理
+     set_Alpha_Color(AddonList.NineSlice.TopEdge)
+     set_Alpha_Color(AddonList.NineSlice.TopLeftCorner)
+     set_Alpha_Color(AddonList.NineSlice.TopRightCorner)
+     set_Alpha_Color(AddonListBg)
+     set_Alpha_Color(AddonListInset.Bg)
+     hide_Texture(AddonList.ScrollBar.Backplate)
+     set_Alpha_Color(AddonCharacterDropDownMiddle)
+     set_Alpha_Color(AddonCharacterDropDownLeft)
+     set_Alpha_Color(AddonCharacterDropDownRight)
+ 
+     --场景 Blizzard_ScenarioObjectiveTracker.lua
+     --[[if ObjectiveTrackerBlocksFrame then
+         set_Alpha_Color(ObjectiveTrackerBlocksFrame.ScenarioHeader.Background)
+         set_Alpha_Color(ObjectiveTrackerBlocksFrame.AchievementHeader.Background)
+         set_Alpha_Color(ObjectiveTrackerBlocksFrame.QuestHeader.Background)
+         hooksecurefunc('ScenarioStage_UpdateOptionWidgetRegistration', function(stageBlock, widgetSetID)
+             set_Alpha_Color(stageBlock.NormalBG, nil, true)
+             set_Alpha_Color(stageBlock.FinalBG)
+         end)
+     end]]
+ 
+     if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
+         hide_Texture(MainStatusTrackingBarContainer.BarFrameTexture)
+     end
+ 
+     --插件，菜单
+     hide_Frame_Texture(AddonCompartmentFrame, {alpha= Save.alpha<=0.3 and 0.3})
+     set_Alpha_Color(AddonCompartmentFrame.Text, nil, nil, Save.alpha<=0.3 and 0.3)
+     C_Timer.After(2, function()
+         AddonCompartmentFrame:HookScript('OnEnter', function(self)
+             self.Text:SetAlpha(1)
+         end)
+         AddonCompartmentFrame:HookScript('OnLeave', function(self)
+             set_Alpha_Color(self.Text, nil, nil, Save.alpha<=0.3 and 0.3)
+         end)
+     end)
+     
+ 
+     hide_Texture(PlayerFrameAlternateManaBarBorder)
+     hide_Texture(PlayerFrameAlternateManaBarLeftBorder)
+     hide_Texture(PlayerFrameAlternateManaBarRightBorder)
+ 
+     --小地图
+     set_Alpha_Color(MinimapCompassTexture)
+     set_Alpha_Frame_Texture(MinimapCluster.BorderTop)
+     set_Alpha_Frame_Texture(GameTimeFrame)
+     hide_Texture(MinimapCluster.Tracking.Background)
+     set_Button_Alpha(MinimapCluster.Tracking.Button, {alpha= Save.alpha<=0.3 and 0.3})
+ 
+     --小队，背景
+     set_Alpha_Frame_Texture(PartyFrame.Background, {})
+ 
+     --任务，追踪柆
+     hooksecurefunc('ObjectiveTracker_Initialize', function(self)
+         for _, module in ipairs(self.MODULES) do
+             set_Alpha_Color(module.Header.Background)
+         end
+     end)
+ 
+     --社交，按钮
+     
+     set_Alpha_Color(QuickJoinToastButton.FriendsButton, nil, nil, Save.alpha<=0.3 and 0.3)
+     --set_Alpha_Color(QuickJoinToastButton.QueueButton, nil, nil, Save.alpha<=0.3 and 0.3)
+     set_Alpha_Frame_Texture(ChatFrameChannelButton, {alpha= Save.alpha<=0.3 and 0.3})
+     set_Alpha_Frame_Texture(ChatFrameMenuButton, {alpha= Save.alpha<=0.3 and 0.3})
+     --[[hooksecurefunc('ObjectiveTracker_UpdateOpacity', function()
+         --for _, module in ipairs(ObjectiveTrackerBlocksFrame.MODULES) do
+           --  set_Alpha_Color(module.Header.Background)
+         --end
+     end)]]
+ 
+ 
+ 
+ 
+ 
+ 
+     --商人
+     set_Alpha_Color(MerchantFrame.NineSlice.TopEdge)
+     set_Alpha_Color(MerchantFrame.NineSlice.TopLeftCorner)
+     set_Alpha_Color(MerchantFrame.NineSlice.TopRightCorner)
+     set_Alpha_Color(MerchantFrameBg)
+     hide_Texture(MerchantFrameInset.Bg)
+     set_Alpha_Color(MerchantMoneyInset.Bg)
+     hide_Texture(MerchantMoneyBgMiddle)
+     hide_Texture(MerchantMoneyBgLeft)
+     hide_Texture(MerchantMoneyBgRight)
+     set_Alpha_Color(MerchantExtraCurrencyBg)
+     set_Alpha_Color(MerchantExtraCurrencyInset)
+     hide_Texture(MerchantFrameBottomLeftBorder)
+ 
+     C_Timer.After(2, function()
+         if SpellFlyout and SpellFlyout.Background then--Spell Flyout
+             hide_Texture(SpellFlyout.Background.HorizontalMiddle)
+             hide_Texture(SpellFlyout.Background.End)
+             hide_Texture(SpellFlyout.Background.VerticalMiddle)
+         end
+ 
+ 
+         for i=1, C_AddOns.GetNumAddOns() do
+             if C_AddOns.GetAddOnEnableState(i)==2 then
+                 local name=C_AddOns.GetAddOnInfo(i)
+                 name= name:match('(.-)%-') or name
+                 if name then
+                     set_Alpha_Frame_Texture(_G['LibDBIcon10_'..name], {index=2})
+                 end
+             end
+         end
+ 
+         --商人, SellBuy.lua
+         for i=1, MERCHANT_ITEMS_PER_PAGE do--math.max(MERCHANT_ITEMS_PER_PAGE, BUYBACK_ITEMS_PER_PAGE) do --MERCHANT_ITEMS_PER_PAGE = 10; BUYBACK_ITEMS_PER_PAGE = 12;
+             set_Alpha_Color(_G['MerchantItem'..i..'SlotTexture'])
+         end
+         hide_Texture(MerchantBuyBackItemSlotTexture)
+ 
+         --秒表
+         --Blizzard_TimeManager.lua
+         hide_Texture(StopwatchFrameBackgroundLeft)
+         if StopwatchFrame then
+             hide_Texture(select(2, StopwatchFrame:GetRegions()))
+             hide_Texture(StopwatchTabFrameMiddle)
+             hide_Texture(StopwatchTabFrameRight)
+             hide_Texture(StopwatchTabFrameLeft)
+         end
+     end)
+
 
     --######
     --动作条
@@ -405,698 +1036,10 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function set_HideTexture_Event(arg1)
-    if Save.disabledTexture then
-        return
-    end
-
-    if arg1=='Blizzard_WeeklyRewards' then--周奖励提示
-        hooksecurefunc(WeeklyRewardsFrame,'UpdateOverlay', function(self)--Blizzard_WeeklyRewards.lua
-            if self.Overlay and self.Overlay:IsShown() then--未提取,提示
-                self.Overlay:SetScale(0.4)
-                self.Overlay:ClearAllPoints()
-                self.Overlay:SetPoint('TOPLEFT', 80,-60)
-            end
-        end)
-        if WeeklyRewardExpirationWarningDialog and WeeklyRewardExpirationWarningDialog:IsShown() then
-            if WeeklyRewardExpirationWarningDialog.Description then
-                print(id, addName, '|cffff00ff'..WeeklyRewardExpirationWarningDialog.Description:GetText())
-                WeeklyRewardExpirationWarningDialog:Hide()
-            else
-                C_Timer.After(5, function()
-                    WeeklyRewardExpirationWarningDialog:Hide()
-                end)
-            end
-        end
-    end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---###########
---初始化, 透明
---###########
-local function Init_Set_AlphaAndColor()
-    if Save.disabledAlpha then
-        return
-    end
-
-
-    set_Alpha_Color(PlayerCastingBarFrame.Border)
-    set_Alpha_Color(PlayerCastingBarFrame.Background)
-    set_Alpha_Color(PlayerCastingBarFrame.TextBorder)
-    set_Alpha_Color(PlayerCastingBarFrame.Shine)
-
-    --角色，界面
-    set_Alpha_Color(CharacterFrameBg)
-    hide_Texture(CharacterFrameInset.Bg)
-    set_Alpha_Color(CharacterFrame.NineSlice.TopEdge)
-    set_Alpha_Color(CharacterFrame.NineSlice.BottomEdge)
-    set_Alpha_Color(CharacterFrame.NineSlice.LeftEdge)
-    set_Alpha_Color(CharacterFrame.NineSlice.RightEdge)
-
-    set_Alpha_Color(CharacterFrame.NineSlice.TopRightCorner)
-    set_Alpha_Color(CharacterFrame.NineSlice.TopLeftCorner)
-    set_Alpha_Color(CharacterFrame.NineSlice.BottomRightCorner)
-    set_Alpha_Color(CharacterFrame.NineSlice.BottomLeftCorner)
-
-    hide_Texture(CharacterFrameInsetRight.Bg)
-    set_Alpha_Color(CharacterStatsPane.ClassBackground)
-    set_Alpha_Color(CharacterStatsPane.EnhancementsCategory.Background)
-    set_Alpha_Color(CharacterStatsPane.AttributesCategory.Background)
-    set_Alpha_Color(CharacterStatsPane.ItemLevelCategory.Background)
-    hooksecurefunc('PaperDollTitlesPane_UpdateScrollBox', function()--PaperDollFrame.lua
-        for _, button in pairs(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrames()) do
-            hide_Texture(button.BgMiddle)
-        end
-    end)
-    hide_Texture(PaperDollFrame.TitleManagerPane.ScrollBar.Backplate)
-    hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()--PaperDollFrame.lua
-        for _, button in pairs(PaperDollFrame.EquipmentManagerPane.ScrollBox:GetFrames()) do
-            hide_Texture(button.BgMiddle)
-        end
-    end)
-    hide_Texture(PaperDollFrame.EquipmentManagerPane.ScrollBar.Backplate)
-    hide_Texture(ReputationFrame.ScrollBar.Backplate)
-    hide_Texture(TokenFrame.ScrollBar.Backplate)
-
-    hide_Texture(CharacterModelFrameBackgroundTopLeft)--角色3D背景
-    hide_Texture(CharacterModelFrameBackgroundTopRight)
-    hide_Texture(CharacterModelFrameBackgroundBotLeft)
-    hide_Texture(CharacterModelFrameBackgroundBotRight)
-    hide_Texture(CharacterModelFrameBackgroundOverlay)
-
-    --法术书
-    set_Alpha_Color(SpellBookFrame.NineSlice.TopLeftCorner)
-    set_Alpha_Color(SpellBookFrame.NineSlice.TopEdge)
-    set_Alpha_Color(SpellBookFrame.NineSlice.TopRightCorner)
-    if SpellBookPageText then
-        SpellBookPageText:SetTextColor(1, 0.82, 0)
-    end
-
-    hide_Texture(SpellBookPage1)
-    hide_Texture(SpellBookPage2)
-    set_Alpha_Color(SpellBookFrameBg)
-    hide_Texture(SpellBookFrameInset.Bg)
-
-    for i=1, 12 do
-        set_Alpha_Color(_G['SpellButton'..i..'Background'])
-        set_Alpha_Color(_G['SpellButton'..i..'SlotFrame'])
-
-        local frame= _G['SpellButton'..i]
-        if frame then
-            hooksecurefunc(frame, 'UpdateButton', function(self)--SpellBookFrame.lua
-                self.SpellSubName:SetTextColor(1, 1, 1)
-            end)
-        end
-    end
-
-    set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=Save.alpha<0.3 and 0.3})
-    set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=Save.alpha<0.3 and 0.3})
-    set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=Save.alpha<0.3 and 0.3})
-
-
-    --世界地图
-    set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.TopLeftCorner)
-    set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.TopEdge)
-    set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.TopRightCorner)
-    set_Alpha_Color(WorldMapFrameBg)
-    set_Alpha_Color(QuestMapFrame.Background)
-    WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
-
-    --地下城和团队副本
-    set_Alpha_Color(PVEFrame.NineSlice.TopLeftCorner)
-    set_Alpha_Color(PVEFrame.NineSlice.TopEdge)
-    set_Alpha_Color(PVEFrame.NineSlice.TopRightCorner)
-    set_Alpha_Color(LFGListFrame.CategorySelection.Inset.CustomBG)
-    hide_Texture(LFGListFrame.CategorySelection.Inset.Bg)
-    set_Alpha_Color(LFGListFrame.SearchPanel.SearchBox.Middle)
-    set_Alpha_Color(LFGListFrame.SearchPanel.SearchBox.Left)
-    set_Alpha_Color(LFGListFrame.SearchPanel.SearchBox.Right)
-    set_Alpha_Color(LFGListFrame.SearchPanel.ScrollBar.Backplate)
-    set_Alpha_Color(LFGListFrame.EntryCreation.Inset.CustomBG)
-    set_Alpha_Color(LFGListFrame.EntryCreation.Inset.Bg)
-    set_Alpha_Color(LFGListFrameMiddleMiddle)
-    set_Alpha_Color(LFGListFrameMiddleLeft)
-    set_Alpha_Color(LFGListFrameMiddleRight)
-    set_Alpha_Color(LFGListFrameBottomMiddle)
-    set_Alpha_Color(LFGListFrameTopMiddle)
-    set_Alpha_Color(LFGListFrameTopLeft)
-    set_Alpha_Color(LFGListFrameBottomLeft)
-    set_Alpha_Color(LFGListFrameTopRight)
-    set_Alpha_Color(LFGListFrameBottomRight)
-    set_Alpha_Color(RaidFinderFrameBottomInset.Bg)
-    set_Alpha_Color(RaidFinderQueueFrameBackground)
-    set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownMiddle)
-    set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownLeft)
-    set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownRight)
-    set_Alpha_Color(RaidFinderFrameRoleBackground, nil, true)
-    set_Alpha_Color(RaidFinderFrameRoleInset.Bg)
-
-    hide_Texture(PVEFrameBg)--左边
-    hide_Texture(PVEFrameBlueBg)
-    set_Alpha_Color(PVEFrameLeftInset.Bg)
-
-    set_Alpha_Color(LFDQueueFrameBackground)
-    set_Alpha_Color(LFDQueueFrameTypeDropDownMiddle)
-    set_Alpha_Color(LFDQueueFrameTypeDropDownRight)
-    set_Alpha_Color(LFDQueueFrameTypeDropDownLeft)
-
-    set_Alpha_Color(LFDParentFrameInset.Bg)
-    set_Alpha_Color(LFDParentFrameRoleBackground)
-
-
-    set_Alpha_Color(GossipFrame.NineSlice.TopEdge)
-    set_Alpha_Color(GossipFrame.NineSlice.TopLeftCorner)
-    set_Alpha_Color(GossipFrame.NineSlice.TopRightCorner)
-    set_Alpha_Color(GossipFrameBg)
-    hide_Texture(GossipFrameInset.Bg)
-    hide_Texture(GossipFrame.GreetingPanel.ScrollBar.Backplate)
-
-    set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
-    set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
-    set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
-
-    if PetStableFrame then--猎人，宠物
-        set_Alpha_Color(PetStableFrame.NineSlice.TopEdge)
-        set_Alpha_Color(PetStableFrame.NineSlice.TopLeftCorner)
-        set_Alpha_Color(PetStableFrame.NineSlice.TopRightCorner)
-        --set_Alpha_Color(PetStableFrame.NineSlice)
-        set_Alpha_Color(PetStableFrameModelBg)
-        hide_Texture(PetStableFrameInset.Bg)
-        set_Alpha_Color(PetStableFrameBg)
-        set_Alpha_Color(PetStableFrameStableBg)
-        set_Alpha_Color(PetStableActiveBg)
-        for i=1, NUM_PET_STABLE_SLOTS do--NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS do
-            if i<=5 then
-                hide_Texture(_G['PetStableActivePet'..i..'Background'])
-                set_Alpha_Color(_G['PetStableActivePet'..i..'Border'])
-            end
-            set_Alpha_Color(_G['PetStableStabledPet'..i..'Background'])
-        end
-    end
-
-
-
-    set_Alpha_Color(MerchantFrameLootFilterMiddle)
-    set_Alpha_Color(MerchantFrameLootFilterLeft)
-    set_Alpha_Color(MerchantFrameLootFilterRight)
-    set_Alpha_Color(MerchantFrameBottomLeftBorder)
-    set_Alpha_Frame_Texture(MerchantFrameTab1)
-    set_Alpha_Frame_Texture(MerchantFrameTab2)
-
-    --银行
-    set_Alpha_Color(BankFrame.NineSlice.TopEdge)
-    set_Alpha_Color(BankFrame.NineSlice.TopLeftCorner)
-    set_Alpha_Color(BankFrame.NineSlice.TopRightCorner)
-
-    hide_Texture(BankFrameMoneyFrameInset.Bg)
-    hide_Texture(BankFrameMoneyFrameBorderMiddle)
-    hide_Texture(BankFrameMoneyFrameBorderRight)
-    hide_Texture(BankFrameMoneyFrameBorderLeft)
-    hide_Texture(BankFrameMoneyFrameInset.NineSlice)
-
-    BankFrame:DisableDrawLayer('BACKGROUND')
-    local texture= BankFrame:CreateTexture(nil,'BORDER',nil, 1)
-    texture:SetAtlas('auctionhouse-background-buy-noncommodities-market')
-    texture:SetAllPoints(BankFrame)
-    set_Alpha_Color(texture)
-    hide_Texture(BankFrameBg)
-
-    hooksecurefunc('BankFrameItemButton_Update',function(button)--银行
-        if button.NormalTexture and button.NormalTexture:IsShown() then
-            hide_Texture(button.NormalTexture)
-        end
-        if ReagentBankFrame.numColumn and not ReagentBankFrame.hidexBG then
-            ReagentBankFrame.hidexBG=true
-            for column = 1, 7 do
-                hide_Texture(ReagentBankFrame["BG"..column])
-            end
-        end
-    end)
-    set_Alpha_Color(BankFrameTab1.LeftActive)
-    set_Alpha_Color(BankFrameTab1.MiddleActive)
-    set_Alpha_Color(BankFrameTab1.RightActive)
-    set_Alpha_Color(BankFrameTab1.Left)
-    set_Alpha_Color(BankFrameTab1.Middle)
-    set_Alpha_Color(BankFrameTab1.Right)
-    set_Alpha_Color(BankFrameTab2.LeftActive)
-    set_Alpha_Color(BankFrameTab2.MiddleActive)
-    set_Alpha_Color(BankFrameTab2.RightActive)
-    set_Alpha_Color(BankFrameTab2.Left)
-    set_Alpha_Color(BankFrameTab2.Middle)
-    set_Alpha_Color(BankFrameTab2.Right)
-
-    --背包
-    if ContainerFrameCombinedBags and ContainerFrameCombinedBags.NineSlice then
-        set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.TopEdge)
-        set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.LeftEdge)
-        set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.RightEdge)
-
-        set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.BottomEdge)
-
-        set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.TopLeftCorner)
-        set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.TopRightCorner)
-        set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.BottomRightCorner)
-        set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.BottomLeftCorner)
-        set_Alpha_Color(ContainerFrameCombinedBags.MoneyFrame.Border.Middle)
-        set_Alpha_Color(ContainerFrameCombinedBags.MoneyFrame.Border.Right)
-        set_Alpha_Color(ContainerFrameCombinedBags.MoneyFrame.Border.Left)
-
-        set_Alpha_Color(ContainerFrameCombinedBags.Bg.TopSection, true)
-        --set_Alpha_Color(ContainerFrameCombinedBags.Bg.BottomEdge)
-        --set_Alpha_Color(ContainerFrameCombinedBags.Bg.BottomRight)
-        --set_Alpha_Color(ContainerFrameCombinedBags.Bg.BottomLeft)
-        set_Alpha_Color(BagItemSearchBox.Middle)
-        set_Alpha_Color(BagItemSearchBox.Left)
-        set_Alpha_Color(BagItemSearchBox.Right)
-    end
-    for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
-        local frame= _G['ContainerFrame'..i]
-        if frame and frame.NineSlice then
-            set_Alpha_Color(frame.Bg.TopSection, true)
-            set_Alpha_Color(frame.NineSlice.TopEdge)
-            set_Alpha_Color(frame.NineSlice.TopLeftCorner)
-            set_Alpha_Color(frame.NineSlice.TopRightCorner)
-        end
-    end
-
-
-    hide_Frame_Texture(CharacterHeadSlot)--1
-    hide_Frame_Texture(CharacterNeckSlot)--2
-    hide_Frame_Texture(CharacterShoulderSlot)--3
-    hide_Frame_Texture(CharacterShirtSlot)--4
-    hide_Frame_Texture(CharacterChestSlot)--5
-    hide_Frame_Texture(CharacterWaistSlot)--6
-    hide_Frame_Texture(CharacterLegsSlot)--7
-    hide_Frame_Texture(CharacterFeetSlot)--8
-    hide_Frame_Texture(CharacterWristSlot)--9
-    hide_Frame_Texture(CharacterHandsSlot)--10
-    hide_Frame_Texture(CharacterBackSlot)--15
-    hide_Frame_Texture(CharacterTabardSlot)--19
-    hide_Frame_Texture(CharacterFinger0Slot)--11
-    hide_Frame_Texture(CharacterFinger1Slot)--12
-    hide_Frame_Texture(CharacterTrinket0Slot)--13
-    hide_Frame_Texture(CharacterTrinket1Slot)--14
-    hide_Frame_Texture(CharacterMainHandSlot)--16
-    hide_Frame_Texture(CharacterSecondaryHandSlot)--17
-
-    set_Alpha_Frame_Texture(CharacterFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
-    set_Alpha_Frame_Texture(CharacterFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
-    set_Alpha_Frame_Texture(CharacterFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
-
-    --好友列表
-    set_Alpha_Color(FriendsFrame.NineSlice.TopEdge)
-    set_Alpha_Color(FriendsFrame.NineSlice.TopLeftCorner)
-    set_Alpha_Color(FriendsFrame.NineSlice.TopRightCorner)
-    set_Alpha_Color(FriendsFrameBg)
-    --hide_Texture(FriendsFrameInset.Bg)
-    hide_Texture(FriendsListFrame.ScrollBar.Backplate)
-    hide_Texture(IgnoreListFrame.ScrollBar.Backplate)
-    if RecruitAFriendFrame and RecruitAFriendFrame.RecruitList then
-        hide_Texture(RecruitAFriendFrame.RecruitList.ScrollBar.Backplate)
-        set_Alpha_Color(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
-    end
-    hide_Texture(WhoFrameListInset.Bg)
-    hide_Texture(WhoFrame.ScrollBar.Backplate)
-    set_Alpha_Color(WhoFrameDropDownMiddle)
-    set_Alpha_Color(WhoFrameDropDownLeft)
-    set_Alpha_Color(WhoFrameDropDownRight)
-    hide_Texture(WhoFrameEditBoxInset.Bg)
-    hide_Texture(QuickJoinFrame.ScrollBar.Backplate)
-
-    set_Alpha_Frame_Texture(FriendsFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
-    set_Alpha_Frame_Texture(FriendsFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
-    set_Alpha_Frame_Texture(FriendsFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
-    set_Alpha_Frame_Texture(FriendsFrameTab4, {alpha=Save.alpha<0.3 and 0.3})
-
-    --聊天设置
-    set_Alpha_Color(ChannelFrame.NineSlice.TopEdge)
-    set_Alpha_Color(ChannelFrame.NineSlice.TopLeftCorner)
-    set_Alpha_Color(ChannelFrame.NineSlice.TopRightCorner)
-    set_Alpha_Color(ChannelFrameBg)
-    hide_Texture(ChannelFrameInset.Bg)
-    hide_Texture(ChannelFrame.RightInset.Bg)
-    hide_Texture(ChannelFrame.LeftInset.Bg)
-    hide_Texture(ChannelFrame.ChannelRoster.ScrollBar.Backplate)
-
-    --任务
-    set_Alpha_Color(QuestFrame.NineSlice.TopEdge)
-    set_Alpha_Color(QuestFrame.NineSlice.TopLeftCorner)
-    set_Alpha_Color(QuestFrame.NineSlice.TopRightCorner)
-    set_Alpha_Color(QuestFrameBg)
-    hide_Texture(QuestFrameInset.Bg)
-
-    --信箱
-    set_Alpha_Color(MailFrame.NineSlice.TopEdge)
-    set_Alpha_Color(MailFrame.NineSlice.TopLeftCorner)
-    set_Alpha_Color(MailFrame.NineSlice.TopRightCorner)
-    set_Alpha_Color(MailFrameBg)
-    hide_Texture(InboxFrameBg)
-    hide_Texture(MailFrameInset.Bg)
-    set_Alpha_Color(OpenMailFrame.NineSlice)
-    set_Alpha_Color(OpenMailFrameBg)
-    set_Alpha_Color(OpenMailFrameInset.Bg)
-
-    set_Alpha_Frame_Texture(MailFrameTab1)
-    set_Alpha_Frame_Texture(MailFrameTab2)
-
-    SendMailBodyEditBox:HookScript('OnEditFocusLost', function()
-        set_Alpha_Color(SendStationeryBackgroundLeft)
-        set_Alpha_Color(SendStationeryBackgroundRight)
-    end)
-    SendMailBodyEditBox:HookScript('OnEditFocusGained', function()
-        if SendStationeryBackgroundLeft then
-            SendStationeryBackgroundLeft:SetAlpha(1)
-            SendStationeryBackgroundLeft:SetVertexColor(1,1,1)
-            SendStationeryBackgroundRight:SetAlpha(1)
-            SendStationeryBackgroundRight:SetVertexColor(1,1,1)
-        end
-    end)
-    set_Alpha_Color(SendStationeryBackgroundLeft)
-    set_Alpha_Color(SendStationeryBackgroundRight)
-
-    set_Alpha_Color(SendMailMoneyBgMiddle)
-    set_Alpha_Color(SendMailMoneyBgRight)
-    set_Alpha_Color(SendMailMoneyBgLeft)
-    hide_Texture(SendMailMoneyInset.Bg)
-    set_Alpha_Color(MailFrame.NineSlice.LeftEdge)
-    set_Alpha_Color(MailFrame.NineSlice.RightEdge)
-    set_Alpha_Color(MailFrame.NineSlice.BottomRightCorner)
-    set_Alpha_Color(MailFrame.NineSlice.BottomLeftCorner)
-    set_Alpha_Color(MailFrame.NineSlice.BottomEdge)
-    set_Alpha_Color(MailFrameInset.NineSlice.LeftEdge)
-
-
-    --拾取, 历史
-    set_Alpha_Color(GroupLootHistoryFrame.NineSlice.TopRightCorner)
-    set_Alpha_Color(GroupLootHistoryFrame.NineSlice.TopEdge)
-    set_Alpha_Color(GroupLootHistoryFrame.NineSlice.TopLeftCorner)
-    set_Alpha_Color(GroupLootHistoryFrame.NineSlice.RightEdge)
-    set_Alpha_Color(GroupLootHistoryFrame.NineSlice.LeftEdge)
-    set_Alpha_Color(GroupLootHistoryFrame.NineSlice.BottomLeftCorner)
-    set_Alpha_Color(GroupLootHistoryFrame.NineSlice.BottomRightCorner)
-    set_Alpha_Color(GroupLootHistoryFrame.NineSlice.BottomEdge)
-    set_Alpha_Color(GroupLootHistoryFrameBg)
-    set_Alpha_Color(GroupLootHistoryFrame.ScrollBar.Track.Middle)
-    set_Alpha_Color(GroupLootHistoryFrame.ScrollBar.Track.Begin)
-    set_Alpha_Color(GroupLootHistoryFrame.ScrollBar.Track.End)
-
-    set_Alpha_Color(GroupLootHistoryFrameMiddle)
-    set_Alpha_Color(GroupLootHistoryFrameLeft)
-    set_Alpha_Color(GroupLootHistoryFrameRight)
-    set_Alpha_Color()
-
-
-
-
-    --频道, 设置
-    hide_Texture(ChatConfigCategoryFrame.NineSlice.Center)
-    hide_Texture(ChatConfigBackgroundFrame.NineSlice.Center)
-    hide_Texture(ChatConfigChatSettingsLeft.NineSlice.Center)
-
-    hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
-        if frame.NineSlice then
-            hide_Texture(frame.NineSlice.TopEdge)
-            hide_Texture(frame.NineSlice.BottomEdge)
-            hide_Texture(frame.NineSlice.RightEdge)
-            hide_Texture(frame.NineSlice.LeftEdge)
-            hide_Texture(frame.NineSlice.TopLeftCorner)
-            hide_Texture(frame.NineSlice.TopRightCorner)
-            hide_Texture(frame.NineSlice.BottomLeftCorner)
-            hide_Texture(frame.NineSlice.BottomRightCorner)
-            hide_Texture(frame.NineSlice.Center)
-        end
-        local checkBoxNameString = frame:GetName().."CheckBox";
-        for index, _ in ipairs(frame.checkBoxTable) do
-            local checkBox = _G[checkBoxNameString..index];
-            if checkBox and checkBox.NineSlice then
-                hide_Texture(checkBox.NineSlice.TopEdge)
-                hide_Texture(checkBox.NineSlice.RightEdge)
-                hide_Texture(checkBox.NineSlice.LeftEdge)
-                hide_Texture(checkBox.NineSlice.TopRightCorner)
-                hide_Texture(checkBox.NineSlice.TopLeftCorner)
-                hide_Texture(checkBox.NineSlice.BottomRightCorner)
-                hide_Texture(checkBox.NineSlice.BottomLeftCorner)
-            end
-        end
-    end)
-    hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)--频道颜色设置 ChatConfigFrame.lua
-        if not FCF_GetCurrentChatFrame() then
-            return
-        end
-        local checkBoxNameString = frame:GetName().."CheckBox";
-        for index, value in ipairs(frame.checkBoxTable) do
-            if value and value.type then
-                local r, g, b = GetMessageTypeColor(value.type)
-                if r and g and b then
-                    if _G[checkBoxNameString..index.."CheckText"] then
-                        _G[checkBoxNameString..index.."CheckText"]:SetTextColor(r,g,b)
-                    end
-                    local checkBox = _G[checkBoxNameString..index]
-                    if checkBox and checkBox.NineSlice and checkBox.NineSlice.BottomEdge then
-                        checkBox.NineSlice.BottomEdge:SetVertexColor(r,g,b)
-                    end
-                end
-            end
-        end
-    end)
-
-    --插件，管理
-    set_Alpha_Color(AddonList.NineSlice.TopEdge)
-    set_Alpha_Color(AddonList.NineSlice.TopLeftCorner)
-    set_Alpha_Color(AddonList.NineSlice.TopRightCorner)
-    set_Alpha_Color(AddonListBg)
-    set_Alpha_Color(AddonListInset.Bg)
-    hide_Texture(AddonList.ScrollBar.Backplate)
-    set_Alpha_Color(AddonCharacterDropDownMiddle)
-    set_Alpha_Color(AddonCharacterDropDownLeft)
-    set_Alpha_Color(AddonCharacterDropDownRight)
-
-    --场景 Blizzard_ScenarioObjectiveTracker.lua
-    --[[if ObjectiveTrackerBlocksFrame then
-        set_Alpha_Color(ObjectiveTrackerBlocksFrame.ScenarioHeader.Background)
-        set_Alpha_Color(ObjectiveTrackerBlocksFrame.AchievementHeader.Background)
-        set_Alpha_Color(ObjectiveTrackerBlocksFrame.QuestHeader.Background)
-        hooksecurefunc('ScenarioStage_UpdateOptionWidgetRegistration', function(stageBlock, widgetSetID)
-            set_Alpha_Color(stageBlock.NormalBG, nil, true)
-            set_Alpha_Color(stageBlock.FinalBG)
-        end)
-    end]]
-
-    if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
-        hide_Texture(MainStatusTrackingBarContainer.BarFrameTexture)
-    end
-
-    --插件，菜单
-    hide_Frame_Texture(AddonCompartmentFrame, {alpha= Save.alpha<=0.3 and 0.3})
-    set_Alpha_Color(AddonCompartmentFrame.Text, nil, nil, Save.alpha<=0.3 and 0.3)
-    C_Timer.After(2, function()
-        AddonCompartmentFrame:HookScript('OnEnter', function(self)
-            self.Text:SetAlpha(1)
-        end)
-        AddonCompartmentFrame:HookScript('OnLeave', function(self)
-            set_Alpha_Color(self.Text, nil, nil, Save.alpha<=0.3 and 0.3)
-        end)
-    end)
-    
-
-    hide_Texture(PlayerFrameAlternateManaBarBorder)
-    hide_Texture(PlayerFrameAlternateManaBarLeftBorder)
-    hide_Texture(PlayerFrameAlternateManaBarRightBorder)
-
-    --小地图
-    set_Alpha_Color(MinimapCompassTexture)
-    set_Alpha_Frame_Texture(MinimapCluster.BorderTop)
-    set_Alpha_Frame_Texture(GameTimeFrame)
-    hide_Texture(MinimapCluster.Tracking.Background)
-    set_Button_Alpha(MinimapCluster.Tracking.Button, {alpha= Save.alpha<=0.3 and 0.3})
-
-    --小队，背景
-    set_Alpha_Frame_Texture(PartyFrame.Background, {})
-
-    --任务，追踪柆
-    hooksecurefunc('ObjectiveTracker_Initialize', function(self)
-        for _, module in ipairs(self.MODULES) do
-            set_Alpha_Color(module.Header.Background)
-        end
-    end)
-
-    --社交，按钮
-    
-    set_Alpha_Color(QuickJoinToastButton.FriendsButton, nil, nil, Save.alpha<=0.3 and 0.3)
-    --set_Alpha_Color(QuickJoinToastButton.QueueButton, nil, nil, Save.alpha<=0.3 and 0.3)
-    set_Alpha_Frame_Texture(ChatFrameChannelButton, {alpha= Save.alpha<=0.3 and 0.3})
-    set_Alpha_Frame_Texture(ChatFrameMenuButton, {alpha= Save.alpha<=0.3 and 0.3})
-    --[[hooksecurefunc('ObjectiveTracker_UpdateOpacity', function()
-        --for _, module in ipairs(ObjectiveTrackerBlocksFrame.MODULES) do
-          --  set_Alpha_Color(module.Header.Background)
-        --end
-    end)]]
-
-
-
-
-
-
-    --商人
-    set_Alpha_Color(MerchantFrame.NineSlice.TopEdge)
-    set_Alpha_Color(MerchantFrame.NineSlice.TopLeftCorner)
-    set_Alpha_Color(MerchantFrame.NineSlice.TopRightCorner)
-    set_Alpha_Color(MerchantFrameBg)
-    hide_Texture(MerchantFrameInset.Bg)
-    set_Alpha_Color(MerchantMoneyInset.Bg)
-    hide_Texture(MerchantMoneyBgMiddle)
-    hide_Texture(MerchantMoneyBgLeft)
-    hide_Texture(MerchantMoneyBgRight)
-    set_Alpha_Color(MerchantExtraCurrencyBg)
-    set_Alpha_Color(MerchantExtraCurrencyInset)
-    hide_Texture(MerchantFrameBottomLeftBorder)
-
-    C_Timer.After(2, function()
-        if SpellFlyout and SpellFlyout.Background then--Spell Flyout
-            hide_Texture(SpellFlyout.Background.HorizontalMiddle)
-            hide_Texture(SpellFlyout.Background.End)
-            hide_Texture(SpellFlyout.Background.VerticalMiddle)
-        end
-
-
-        for i=1, C_AddOns.GetNumAddOns() do
-            if C_AddOns.GetAddOnEnableState(i)==2 then
-                local name=C_AddOns.GetAddOnInfo(i)
-                name= name:match('(.-)%-') or name
-                if name then
-                    set_Alpha_Frame_Texture(_G['LibDBIcon10_'..name], {index=2})
-                end
-            end
-        end
-
-        --商人, SellBuy.lua
-        for i=1, MERCHANT_ITEMS_PER_PAGE do--math.max(MERCHANT_ITEMS_PER_PAGE, BUYBACK_ITEMS_PER_PAGE) do --MERCHANT_ITEMS_PER_PAGE = 10; BUYBACK_ITEMS_PER_PAGE = 12;
-            set_Alpha_Color(_G['MerchantItem'..i..'SlotTexture'])
-        end
-        hide_Texture(MerchantBuyBackItemSlotTexture)
-
-        --秒表
-        --Blizzard_TimeManager.lua
-        hide_Texture(StopwatchFrameBackgroundLeft)
-        if StopwatchFrame then
-            hide_Texture(select(2, StopwatchFrame:GetRegions()))
-            hide_Texture(StopwatchTabFrameMiddle)
-            hide_Texture(StopwatchTabFrameRight)
-            hide_Texture(StopwatchTabFrameLeft)
-        end
-    end)
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --#########
 --事件, 透明
 --#########
-local function set_Alpha_Event(arg1)
-    if Save.disabledAlpha then
-        return
-    end
+local function Init_Event(arg1)
     if arg1=='Blizzard_TrainerUI' then--专业训练师
         set_Alpha_Color(ClassTrainerFrame.NineSlice.TopEdge)
         set_Alpha_Color(ClassTrainerFrame.NineSlice.TopLeftCorner)
@@ -1127,9 +1070,18 @@ local function set_Alpha_Event(arg1)
 
     elseif arg1=='Blizzard_ClassTalentUI' and not Save.disabledAlpha then--天赋
         set_Alpha_Color(ClassTalentFrame.TalentsTab.BottomBar)--下面
-        set_Alpha_Color(ClassTalentFrame.NineSlice.TopLeftCorner)--顶部
-        set_Alpha_Color(ClassTalentFrame.NineSlice.TopEdge)--顶部
-        set_Alpha_Color(ClassTalentFrame.NineSlice.TopRightCorner)--顶部
+        
+
+        set_Alpha_Color(ClassTalentFrame.NineSlice.TopEdge, nil, nil, Save.alpha<0.3 and 0.3)--顶部
+        set_Alpha_Color(ClassTalentFrame.NineSlice.LeftEdge, nil, nil, Save.alpha<0.3 and 0.3)
+        set_Alpha_Color(ClassTalentFrame.NineSlice.BottomEdge, nil, nil, Save.alpha<0.3 and 0.3)
+        set_Alpha_Color(ClassTalentFrame.NineSlice.RightEdge, nil, nil, Save.alpha<0.3 and 0.3)
+        set_Alpha_Color(ClassTalentFrame.NineSlice.BottomRightCorner, nil, nil, Save.alpha<0.3 and 0.3)
+        set_Alpha_Color(ClassTalentFrame.NineSlice.BottomLeftCorner, nil, nil, Save.alpha<0.3 and 0.3)
+        set_Alpha_Color(ClassTalentFrame.NineSlice.TopLeftCorner, nil, nil, Save.alpha<0.3 and 0.3)--顶部
+        set_Alpha_Color(ClassTalentFrame.NineSlice.TopRightCorner, nil, nil, Save.alpha<0.3 and 0.3)--顶部
+        
+
         set_Alpha_Color(ClassTalentFrameBg)--里面
         hide_Texture(ClassTalentFrame.TalentsTab.BlackBG)
         hooksecurefunc(ClassTalentFrame.TalentsTab, 'UpdateSpecBackground', function(self2)--Blizzard_ClassTalentTalentsTab.lua
@@ -1160,6 +1112,8 @@ local function set_Alpha_Event(arg1)
         set_Alpha_Color(ClassTalentFrame.TalentsTab.SearchBox.Middle)
         set_Alpha_Color(ClassTalentFrame.TalentsTab.SearchBox.Left)
         set_Alpha_Color(ClassTalentFrame.TalentsTab.SearchBox.Right)
+
+        
 
         --TabSystemOwner.lua
         for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
@@ -1228,6 +1182,10 @@ local function set_Alpha_Event(arg1)
         set_Alpha_Frame_Texture(AchievementFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
         set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
 
+        set_ScrollBar(AchievementFrameCategories)
+        set_ScrollBar(AchievementFrameAchievements)
+        set_ScrollBar(AchievementFrameStats)
+        
     elseif arg1=='Blizzard_Communities' then--公会和社区
         set_Alpha_Color(CommunitiesFrame.NineSlice.TopEdge)
         set_Alpha_Color(CommunitiesFrame.NineSlice.TopLeftCorner)
@@ -1722,13 +1680,6 @@ local function set_Alpha_Event(arg1)
         hide_Texture(MacroFrame.MacroSelector.ScrollBar.Backplate)
         hide_Texture(MacroFrameSelectedMacroBackground)
     elseif arg1=='Blizzard_GarrisonUI' then--要塞
-        --[[
-        Move(GarrisonShipyardFrame,{})--海军行动
-        Move(GarrisonMissionFrame, {})--要塞任务
-        
-        Move(GarrisonLandingPage, {})--要塞报告
-        Move(OrderHallMissionFrame, {})
-        ]]
         if GarrisonCapacitiveDisplayFrame then--要塞订单
             set_Alpha_Color(GarrisonCapacitiveDisplayFrame.NineSlice.TopLeftCorner)
             set_Alpha_Color(GarrisonCapacitiveDisplayFrame.NineSlice.TopEdge)
@@ -1750,34 +1701,12 @@ local function set_Alpha_Event(arg1)
         set_Alpha_Color(GenericTraitFrame.NineSlice.BottomRightCorner)
 
     elseif arg1=='Blizzard_PlayerChoice' then----任务选择
-        --[[sPlayerChoiceFrame:HookScript('OnShow', function(self)
-            et_Alpha_Color(PlayerChoiceFrame.Header)
-            if self.NineSlice then
-                hide_Texture(self.NineSlice.TopLeftCorner)
-                hide_Texture(self.NineSlice.TopEdge)
-                hide_Texture(self.NineSlice.TopRightCorner)
-                hide_Texture(self.NineSlice.BottomLeftCorner)
-                hide_Texture(self.NineSlice.BottomEdge)
-                hide_Texture(self.NineSlice.BottomRightCorner)
-                hide_Texture(self.NineSlice.RightEdge)
-                hide_Texture(self.NineSlice.LeftEdge)
-            end
-            if self.Title then
-                set_Alpha_Color(self.Title.Middle)
-                set_Alpha_Color(self.Title.Left)
-                set_Alpha_Color(self.Title.Right)
-            end
-            if self.Background then
-              hide_Texture(self.Background.BackgroundTile or self.Background)
-            end
-        end)]]
         hooksecurefunc(PlayerChoiceFrame, 'SetupFrame', function(self)
             if self.Background then
                 hide_Texture(self.Background.BackgroundTile)
                 hide_Texture(self.Background)
             end
             set_Alpha_Color(self.NineSlice)
-            --set_Alpha_Color(self.Title)
             set_Alpha_Color(self.Header)
             set_Alpha_Color(self.Title.Left)
             set_Alpha_Color(self.Title.Middle)
@@ -1842,6 +1771,7 @@ local function Init_Class_Power(init)--职业
     if not Save.classPowerNum then
         return
     end
+
     local function set_Num_Texture(self, num, color, parent)
         if self and not self.numTexture and (self.layoutIndex or num) then
             self.numTexture= (parent or self):CreateTexture(nil, 'OVERLAY', nil, 7)
@@ -2183,6 +2113,34 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#######
 --聊天泡泡
 --#######
@@ -2204,7 +2162,6 @@ local function set_Chat_Bubbles_Event()
         FrameUtil.UnregisterFrameForEvents(panel, chatBubblesEvents);
     end
 end
-
 local function set_Chat_Bubbles(init)
     for _, buble in pairs(C_ChatBubbles.GetAllChatBubbles() or {}) do
         if not buble.setAlphaOK or init then
@@ -2272,7 +2229,7 @@ end
 --###########
 local Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
 
-local function options_Init()--初始，选项
+local function Init_Options()--初始，选项
     e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
 
     e.AddPanel_Check({
@@ -2452,6 +2409,7 @@ end
 --###########
 --加载保存数据
 --###########
+local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 
 panel:SetScript("OnEvent", function(_, event, arg1)
@@ -2474,11 +2432,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
-                options_Init()--初始，选项
-                Init_HideTexture()
-                Init_Set_AlphaAndColor()
+                Init_Options()--初始，选项
+                Init()
                 Init_Class_Power(true)--职业
-                if not Save.disabledChatBubble then
+                if not Save.disabledChatBubble then--聊天泡泡
                     set_Chat_Bubbles_Event()
                 end
                 C_Timer.After(2, function()
@@ -2489,8 +2446,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         else
-            set_HideTexture_Event(arg1)
-            set_Alpha_Event(arg1)
+            Init_Event(arg1)
         end
 
     elseif event == "PLAYER_LOGOUT" then

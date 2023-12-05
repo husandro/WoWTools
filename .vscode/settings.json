@@ -3698,7 +3698,8 @@
         "EditModeAccountSettingsMixin",
         "CharacterReagentBag0SlotNormalTexture",
         "CharacterReagentBag0SlotIconTexture",
-        "MainMenuBarBagManager"
+        "MainMenuBarBagManager",
+        "PaperDollInnerBorderBottom2"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
