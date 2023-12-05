@@ -706,7 +706,7 @@ local function Init()
      set_Alpha_Color(GroupLootHistoryFrameMiddle)
      set_Alpha_Color(GroupLootHistoryFrameLeft)
      set_Alpha_Color(GroupLootHistoryFrameRight)
-     set_Alpha_Color()
+ 
 
 
 
@@ -715,34 +715,56 @@ local function Init()
      hide_Texture(ChatConfigCategoryFrame.NineSlice.Center)
      hide_Texture(ChatConfigBackgroundFrame.NineSlice.Center)
      hide_Texture(ChatConfigChatSettingsLeft.NineSlice.Center)
-
+     set_Alpha_Color(ChatConfigFrame.Border, nil, nil, min03)
+     set_Alpha_Color(ChatConfigFrame.Header.RightBG, true)
+     set_Alpha_Color(ChatConfigFrame.Header.LeftBG, true)
+     set_Alpha_Color(ChatConfigFrame.Header.CenterBG, true)
      hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
-        set_NineSlice(frame, nil, true)
-         local checkBoxNameString = frame:GetName().."CheckBox";
-         for index, _ in ipairs(frame.checkBoxTable) do
-             set_NineSlice(_G[checkBoxNameString..index], nil, true)
-         end
-     end)
-     hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)--频道颜色设置 ChatConfigFrame.lua
-         if not FCF_GetCurrentChatFrame() then
-             return
-         end
-         local checkBoxNameString = frame:GetName().."CheckBox";
-         for index, value in ipairs(frame.checkBoxTable) do
-             if value and value.type then
-                 local r, g, b = GetMessageTypeColor(value.type)
-                 if r and g and b then
-                     if _G[checkBoxNameString..index.."CheckText"] then
-                         _G[checkBoxNameString..index.."CheckText"]:SetTextColor(r,g,b)
-                     end
-                     local checkBox = _G[checkBoxNameString..index]
-                     if checkBox and checkBox.NineSlice and checkBox.NineSlice.BottomEdge then
-                         checkBox.NineSlice.BottomEdge:SetVertexColor(r,g,b)
-                     end
-                 end
-             end
-         end
-     end)
+        if frame.NineSlice then
+            hide_Texture(frame.NineSlice.TopEdge)
+            hide_Texture(frame.NineSlice.BottomEdge)
+            hide_Texture(frame.NineSlice.RightEdge)
+            hide_Texture(frame.NineSlice.LeftEdge)
+            hide_Texture(frame.NineSlice.TopLeftCorner)
+            hide_Texture(frame.NineSlice.TopRightCorner)
+            hide_Texture(frame.NineSlice.BottomLeftCorner)
+            hide_Texture(frame.NineSlice.BottomRightCorner)
+            hide_Texture(frame.NineSlice.Center)
+        end
+        local checkBoxNameString = frame:GetName().."CheckBox";
+        for index, _ in ipairs(frame.checkBoxTable) do
+            local checkBox = _G[checkBoxNameString..index];
+            if checkBox and checkBox.NineSlice then
+                hide_Texture(checkBox.NineSlice.TopEdge)
+                hide_Texture(checkBox.NineSlice.RightEdge)
+                hide_Texture(checkBox.NineSlice.LeftEdge)
+                hide_Texture(checkBox.NineSlice.TopRightCorner)
+                hide_Texture(checkBox.NineSlice.TopLeftCorner)
+                hide_Texture(checkBox.NineSlice.BottomRightCorner)
+                hide_Texture(checkBox.NineSlice.BottomLeftCorner)
+            end
+        end
+    end)
+    hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)--频道颜色设置 ChatConfigFrame.lua
+        if not FCF_GetCurrentChatFrame() then
+            return
+        end
+        local checkBoxNameString = frame:GetName().."CheckBox";
+        for index, value in ipairs(frame.checkBoxTable) do
+            if value and value.type then
+                local r, g, b = GetMessageTypeColor(value.type)
+                if r and g and b then
+                    if _G[checkBoxNameString..index.."CheckText"] then
+                        _G[checkBoxNameString..index.."CheckText"]:SetTextColor(r,g,b)
+                    end
+                    local checkBox = _G[checkBoxNameString..index]
+                    if checkBox and checkBox.NineSlice and checkBox.NineSlice.BottomEdge then
+                        checkBox.NineSlice.BottomEdge:SetVertexColor(r,g,b)
+                    end
+                end
+            end
+        end
+    end)
 
      --插件，管理
      set_NineSlice(AddonList,true)
@@ -2281,8 +2303,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
+            else
+                Init()
             end
-            Init()
+            
             Init_Class_Power(true)--职业
             Init_Chat_Bubbles()--聊天泡泡
             Init_HelpTip()--隐藏教程
@@ -2296,7 +2320,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-
             WoWToolsSave[addName]=Save
         end
     end
