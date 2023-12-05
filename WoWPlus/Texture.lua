@@ -10,7 +10,9 @@ local Save={
 
     classPowerNum= e.Player.husandro,--职业，显示数字
     classPowerNumSize= 12,
+
     --disabledMainMenu= not e.Player.husandro, --主菜单，颜色，透明度
+    --disabledHelpTip=true,--隐藏所有教程
 }
 
 
@@ -129,7 +131,7 @@ local function set_ScrollBar(frame)
     if frame.ScrollBar.Forward then
         set_Alpha_Color(frame.ScrollBar.Forward.Texture, true)
     end
-    --hide_Texture(bar.ScrollBar.Backplate)
+    hide_Texture(frame.ScrollBar.Backplate, nil, true)
 end
 
 --隐藏, frame, 子材质
@@ -312,25 +314,7 @@ local function Init()
         hide_Texture(self.BottomFrame.TurnTimer.ArtFrame2);
     end)
 
-    hooksecurefunc(HelpTip,'Show', function(self, parent, info, relativeRegion)--隐藏所有HelpTip HelpTip.lua
-        HelpTip:HideAll(parent)
-    end)
 
-    C_CVar.SetCVar("showNPETutorials",'0')
-
-    --Blizzard_TutorialPointerFrame.lua 隐藏, 新手教程
-    hooksecurefunc(TutorialPointerFrame, 'Show',function(self, content, direction, anchorFrame, ofsX, ofsY, relativePoint, backupDirection, showMovieName, loopMovie, resolution)
-        if not anchorFrame or not self.DirectionData[direction] then
-            return
-        end
-        local ID=self.NextID
-        if ID then
-            C_Timer.After(2, function()
-                TutorialPointerFrame:Hide(ID-1)
-                print(id, addName, '|cffff00ff'..content)
-            end)
-        end
-    end)
 
     if MainMenuBar and MainMenuBar.BorderArt then--主动作条
         hide_Texture(MainMenuBar.BorderArt.TopEdge)
@@ -381,7 +365,7 @@ local function Init()
      set_NineSlice(CharacterFrameInset, true)
      set_NineSlice(CharacterFrame, true)
      set_NineSlice(CharacterFrameInsetRight, true)
-     
+
      set_Alpha_Color(CharacterFrameBg)
      hide_Texture(CharacterFrameInset.Bg)
 
@@ -402,7 +386,7 @@ local function Init()
      set_ScrollBar(ReputationFrame)
      set_ScrollBar(TokenFrame)
 
-     set_Alpha_Color(CharacterStatsPane.ClassBackground)
+     set_Alpha_Color(CharacterStatsPane.ClassBackground, nil, nil, min03)
      set_Alpha_Color(CharacterStatsPane.EnhancementsCategory.Background)
      set_Alpha_Color(CharacterStatsPane.AttributesCategory.Background)
      set_Alpha_Color(CharacterStatsPane.ItemLevelCategory.Background)
@@ -411,15 +395,15 @@ local function Init()
              hide_Texture(button.BgMiddle)
          end
      end)
-     hide_Texture(PaperDollFrame.TitleManagerPane.ScrollBar.Backplate)
+     set_ScrollBar(PaperDollFrame.TitleManagerPane)
      hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()--PaperDollFrame.lua
-         for _, button in pairs(PaperDollFrame.EquipmentManagerPane.ScrollBox:GetFrames()) do
+        for _, button in pairs(PaperDollFrame.EquipmentManagerPane.ScrollBox:GetFrames()) do
              hide_Texture(button.BgMiddle)
          end
      end)
-     hide_Texture(PaperDollFrame.EquipmentManagerPane.ScrollBar.Backplate)
-     hide_Texture(ReputationFrame.ScrollBar.Backplate)
-     hide_Texture(TokenFrame.ScrollBar.Backplate)
+     set_ScrollBar(PaperDollFrame.EquipmentManagerPane)
+     set_ScrollBar(ReputationFrame)
+     set_ScrollBar(TokenFrame)
 
      hide_Texture(CharacterModelFrameBackgroundTopLeft)--角色3D背景
      hide_Texture(CharacterModelFrameBackgroundTopRight)
@@ -468,7 +452,7 @@ local function Init()
      hide_Texture(WorldMapFrame.NavBar.InsetBorderBottomLeft)
      hide_Texture(WorldMapFrame.BorderFrame.InsetBorderTop)
 
-     
+
      set_Alpha_Color(QuestMapFrame.VerticalSeparator)
      set_Alpha_Color(QuestScrollFrame.DetailFrame.BottomDetail)
      set_Alpha_Color(QuestScrollFrame.Edge)
@@ -486,8 +470,8 @@ local function Init()
      set_ScrollBar(LFGListFrame.SearchPanel)
      set_Alpha_Color(LFGListFrame.CategorySelection.Inset.CustomBG)
      hide_Texture(LFGListFrame.CategorySelection.Inset.Bg)
-     
-     
+
+
      set_Alpha_Color(LFGListFrame.EntryCreation.Inset.CustomBG)
      set_Alpha_Color(LFGListFrame.EntryCreation.Inset.Bg)
      set_Alpha_Color(LFGListFrameMiddleMiddle)
@@ -597,7 +581,7 @@ local function Init()
      --背包
      if ContainerFrameCombinedBags and ContainerFrameCombinedBags.NineSlice then
         set_NineSlice(ContainerFrameCombinedBags, true)
-         
+
          set_Alpha_Color(ContainerFrameCombinedBags.MoneyFrame.Border.Middle)
          set_Alpha_Color(ContainerFrameCombinedBags.MoneyFrame.Border.Right)
          set_Alpha_Color(ContainerFrameCombinedBags.MoneyFrame.Border.Left)
@@ -644,7 +628,7 @@ local function Init()
 
      --好友列表
      set_NineSlice(FriendsFrame, true)
-     
+
      set_Alpha_Color(FriendsFrameBg)
      --hide_Texture(FriendsFrameInset.Bg)
      set_ScrollBar(FriendsListFrame)
@@ -1134,7 +1118,7 @@ local function Init_Event(arg1)
         set_ScrollBar(CommunitiesFrame.GuildBenefitsFrame.Rewards)
         set_ScrollBar(CommunitiesFrameGuildDetailsFrameNews)
         set_ScrollBar(ClubFinderCommunityAndGuildFinderFrame.CommunityCards)
-        
+
         set_Alpha_Color(CommunitiesFrameBg)
         set_Alpha_Color(CommunitiesFrame.MemberList.ColumnDisplay.Background)
         set_Alpha_Color(CommunitiesFrameCommunitiesList.Bg)
@@ -1157,7 +1141,7 @@ local function Init_Event(arg1)
         end)
 
         set_Alpha_Color(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.Bg)
-        
+
 
         hide_Frame_Texture(CommunitiesFrame.ChatTab, {index=1})
         hide_Frame_Texture(CommunitiesFrame.RosterTab, {index=1})
@@ -1182,11 +1166,11 @@ local function Init_Event(arg1)
         set_Alpha_Color(HonorFrameTypeDropDownRight)
         hide_Texture(ConquestFrame.RatedBGTexture)
         set_ScrollBar(LFDQueueFrameSpecific)
-        
+
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         set_NineSlice(EncounterJournal, true)
-        
+
         hide_Texture(EncounterJournalBg)
         hide_Texture(EncounterJournalInset.Bg)
 
@@ -1271,8 +1255,8 @@ local function Init_Event(arg1)
         set_Alpha_Color(AuctionHouseFrameBottomLeft)
         set_Alpha_Color(AuctionHouseFrameBottomRight)
 
-        hide_Texture(AuctionHouseFrame.CategoriesList.ScrollBar.Backplate)
-        hide_Texture(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBar.Backplate)
+        set_ScrollBar(AuctionHouseFrame.CategoriesList)
+        set_ScrollBar(AuctionHouseFrame.BrowseResultsFrame.ItemList)
         set_Alpha_Color(AuctionHouseFrameMiddle)
         set_Alpha_Color(AuctionHouseFrameLeft)
         set_Alpha_Color(AuctionHouseFrameRight)
@@ -1280,10 +1264,10 @@ local function Init_Event(arg1)
 
         set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.Background)--出售
         set_Alpha_Color(AuctionHouseFrame.ItemSellList.Background)
-        hide_Texture(AuctionHouseFrame.ItemSellList.ScrollBar.Backplate)
+        set_ScrollBar(AuctionHouseFrame.ItemSellList)
 
-        hide_Texture(AuctionHouseFrameAuctionsFrame.SummaryList.ScrollBar.Backplate)
-        hide_Texture(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBar.Backplate)
+        set_ScrollBar(AuctionHouseFrameAuctionsFrame.SummaryList)
+        set_ScrollBar(AuctionHouseFrameAuctionsFrame.AllAuctionsList)
 
         set_Alpha_Color(AuctionHouseFrameAuctionsFrame.SummaryList.Background)
         set_Alpha_Color(AuctionHouseFrameAuctionsFrame.AllAuctionsList.Background)
@@ -1314,7 +1298,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(BlackMarketFrame.LeftBorder)
         set_Alpha_Color(BlackMarketFrame.RightBorder)
         set_Alpha_Color(BlackMarketFrame.BottomBorder)
-        set_Alpha_Color(BlackMarketFrame.ScrollBar.Backplate)
+        set_ScrollBar(BlackMarketFrame)
 
     elseif arg1=='Blizzard_Collections' then--收藏
         set_NineSlice(CollectionsJournal, true)
@@ -1326,10 +1310,9 @@ local function Init_Event(arg1)
         set_Alpha_Color(MountJournal.BottomLeftInset.Background)
         hide_Texture(MountJournal.BottomLeftInset.Bg)
 
-        hide_Texture(MountJournal.ScrollBar.Backplate)
-        set_Alpha_Color(MountJournalSearchBox.Middle)
-        set_Alpha_Color(MountJournalSearchBox.Right)
-        set_Alpha_Color(MountJournalSearchBox.Left)
+        set_ScrollBar(MountJournal)
+
+        set_ScrollBar(MountJournalSearchBox)
 
         hide_Texture(PetJournalPetCardBG)
         set_Alpha_Color(PetJournalPetCardInset.Bg)
@@ -1340,10 +1323,8 @@ local function Init_Event(arg1)
         set_Alpha_Color(PetJournalLoadoutBorderSlotHeaderBG)
         hide_Texture(PetJournalLeftInset.Bg)
 
-        hide_Texture(PetJournal.ScrollBar.Backplate)
-        set_Alpha_Color(PetJournalSearchBox.Middle)
-        set_Alpha_Color(PetJournalSearchBox.Right)
-        set_Alpha_Color(PetJournalSearchBox.Left)
+        set_ScrollBar(PetJournal)
+        set_SearchBox(PetJournalSearchBox)
         set_Alpha_Color(PetJournal.PetCount.BorderTopMiddle)
         set_Alpha_Color(PetJournal.PetCount.Bg)
         set_Alpha_Color(PetJournal.PetCount.BorderBottomMiddle)
@@ -1356,16 +1337,12 @@ local function Init_Event(arg1)
 
         hide_Texture(ToyBox.iconsFrame.BackgroundTile)
         hide_Texture(ToyBox.iconsFrame.Bg)
-        set_Alpha_Color(ToyBox.searchBox.Middle)
-        set_Alpha_Color(ToyBox.searchBox.Right)
-        set_Alpha_Color(ToyBox.searchBox.Left)
+        set_SearchBox(ToyBox.searchBo)
         ToyBox.progressBar:DisableDrawLayer('BACKGROUND')
 
         hide_Texture(HeirloomsJournal.iconsFrame.BackgroundTile)
         hide_Texture(HeirloomsJournal.iconsFrame.Bg)
-        set_Alpha_Color(HeirloomsJournalSearchBox.Middle)
-        set_Alpha_Color(HeirloomsJournalSearchBox.Right)
-        set_Alpha_Color(HeirloomsJournalSearchBox.Left)
+        set_SearchBox(HeirloomsJournalSearchBox)
         set_Alpha_Color(HeirloomsJournalClassDropDownMiddle)
         set_Alpha_Color(HeirloomsJournalClassDropDownLeft)
         set_Alpha_Color(HeirloomsJournalClassDropDownRight)
@@ -1386,14 +1363,12 @@ local function Init_Event(arg1)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BackgroundTile)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.Bg)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset.Bg)
-        hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.ListContainer.ScrollBar.Backplate)
+        set_ScrollBar(WardrobeCollectionFrame.SetsCollectionFrame.ListContainer)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.ShadowLineTop)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BGCornerBottomRight)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BGCornerBottomLeft)
 
-        set_Alpha_Color(WardrobeCollectionFrameSearchBox.Middle)
-        set_Alpha_Color(WardrobeCollectionFrameSearchBox.Left)
-        set_Alpha_Color(WardrobeCollectionFrameSearchBox.Right)
+        set_SearchBox(WardrobeCollectionFrameSearchBox)
         set_Alpha_Color(WardrobeCollectionFrameMiddleMiddle)
         set_Alpha_Color(WardrobeCollectionFrameTopMiddle)
         set_Alpha_Color(WardrobeCollectionFrameBottomMiddle)
@@ -1580,7 +1555,7 @@ local function Init_Event(arg1)
         set_NineSlice(MacroFrame, true)
         hide_Texture(MacroFrameBg)
         set_Alpha_Color(MacroFrameInset.Bg)
-        hide_Texture(MacroFrame.MacroSelector.ScrollBar.Backplate)
+        set_ScrollBar(MacroFrame.MacroSelector)
         hide_Texture(MacroFrameSelectedMacroBackground)
     elseif arg1=='Blizzard_GarrisonUI' then--要塞
         set_NineSlice(GarrisonCapacitiveDisplayFrame, true)
@@ -2120,11 +2095,32 @@ end
 
 
 
+--隐藏教程
+--########
+local function Init_HelpTip()
+    if Save.disabledHelpTip then
+        return
+    end
+    hooksecurefunc(HelpTip, 'Show', function(self, parent, info, relativeRegion)--隐藏所有HelpTip HelpTip.lua
+        self:HideAll(parent)
+    end)
 
+    C_CVar.SetCVar("showNPETutorials",'0')
 
-
-
-
+    --Blizzard_TutorialPointerFrame.lua 隐藏, 新手教程
+    hooksecurefunc(TutorialPointerFrame, 'Show',function(self, content, direction, anchorFrame, ofsX, ofsY, relativePoint, backupDirection, showMovieName, loopMovie, resolution)
+        if not anchorFrame or not self.DirectionData[direction] then
+            return
+        end
+        local ID=self.NextID
+        if ID then
+            C_Timer.After(2, function()
+                TutorialPointerFrame:Hide(ID-1)
+                print(id, addName, '|cffff00ff'..content)
+            end)
+        end
+    end)
+end
 
 
 
@@ -2272,12 +2268,24 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 category= Category,
             })
 
+            e.AddPanel_Check({
+                name= e.onlyChinese and '隐藏教程' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, SHOW_TUTORIALS ),
+                tooltip='HelpTip',
+                category= Category,
+                value= not Save.disabledHelpTip,
+                func= function()
+                    Save.disabledHelpTip= not Save.disabledHelpTip and true or nil
+                    print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+
             if Save.disabled then
                 panel:UnregisterAllEvents()
             end
             Init()
             Init_Class_Power(true)--职业
             Init_Chat_Bubbles()--聊天泡泡
+            Init_HelpTip()--隐藏教程
             C_Timer.After(2, function()
                 Init_MainMenu(true)--主菜单, 颜色
             end)
