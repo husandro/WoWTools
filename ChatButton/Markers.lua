@@ -9,7 +9,7 @@ local Save={
         countdown=7,
         groupReadyTips=true,
 
-        markersScale=0.85,
+        markersScale=1,
         markersFrame= e.Player.husandro,
         pingTime= e.Player.husandro,--显示ping冷却时间
     }
@@ -457,7 +457,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
     end
 
-    local size, last, btn= 16, nil, nil
+    local size, last, btn= 22, nil, nil
     
     Frame=CreateFrame('Frame', nil, UIParent)
     Frame:Raise()
@@ -483,18 +483,18 @@ local function Init_Markers_Frame()--设置标记, 框架
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         else
             local raid= IsInRaid()
-
             local isLeader= Is_Leader()
             local isRaid= (raid and isLeader) or not raid
             local isInGroup= IsInGroup()
+            
             local enabled= not Is_In_PvP_Area()
                         and Save.markersFrame
-                        and not InCinematic()
-                        and not IsInCinematicScene()
-                        and not MovieFrame:IsShown()
+                        --and not InCinematic()
+                        --and not IsInCinematicScene()
+                        --and not MovieFrame:IsShown()
 
             local ping= C_CVar.GetCVarBool("enablePings") and Save.markersFrame
-            self.ping:SetShown(ping)
+            self.ping:SetShown(ping )
 
             local target= isRaid and enabled
             self.target:SetShown(target)
@@ -506,7 +506,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             self.countdown:SetShown(check)
             self.check:SetShown(check)
 
-            self:SetShown(ping or target or marker or check)
+            self:SetShown((ping or target or marker or check) and not C_PetBattles.IsInBattle())
         end
     end
     function Frame:set_Event()
@@ -516,6 +516,8 @@ local function Init_Markers_Frame()--设置标记, 框架
             self:RegisterEvent('GROUP_ROSTER_UPDATE')
             self:RegisterEvent('GROUP_LEFT')
             self:RegisterEvent('GROUP_JOINED')
+            self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+            self:RegisterEvent('PET_BATTLE_CLOSE')
             --self:RegisterEvent('CINEMATIC_START')
             --self:RegisterEvent('CINEMATIC_STOP')
             --self:RegisterEvent('PLAY_MOVIE')
