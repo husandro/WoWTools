@@ -224,7 +224,7 @@ local function Init()
     if Save.disabled then
         return
     end
-    local min03= Save.alpha<0.3 or 0.3 or nil
+    local min03= Save.alpha<0.3 and 0.3 or nil
 
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
