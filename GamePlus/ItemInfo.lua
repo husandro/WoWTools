@@ -724,27 +724,23 @@ local function Init()
         if MainMenuBarBackpackButtonCount then
             MainMenuBarBackpackButtonCount:SetShadowOffset(1, -1)
         end
-        e.Set_Label_Texture_Color(MainMenuBarBackpackButtonCount, {type='TextString'})--设置颜色
+        e.Set_Label_Texture_Color(MainMenuBarBackpackButtonCount, {type='FontString'})--设置颜色
         hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
-            local totalFree
-            totalFree= 0
-            for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS-1 do
-                local freeSlots, bagFamily= C_Container.GetContainerNumFreeSlots(i)
-                if ( bagFamily == 0 ) then
-                    totalFree = totalFree + freeSlots;
+            local freeSlots=self.freeSlots
+            if freeSlots then
+                if freeSlots==0 then
+                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(1,0,0,1)
+                    freeSlots= '|cnRED_FONT_COLOR:'..freeSlots..'|r'
+                elseif freeSlots<=5 then
+                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,1,0,1)
+                    freeSlots= '|cnGREEN_FONT_COLOR:'..freeSlots..'|r'
+                else
+                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
                 end
-            end
-            self.freeSlots= totalFree
-            if totalFree==0 then
-                MainMenuBarBackpackButtonIconTexture:SetColorTexture(1,0,0,1)
-                totalFree= '|cnRED_FONT_COLOR:'..totalFree..'|r'
-            elseif totalFree<=5 then
-                MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,1,0,1)
-                totalFree= '|cnGREEN_FONT_COLOR:'..totalFree..'|r'
+                self.Count:SetText(freeSlots)
             else
                 MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
             end
-            self.Count:SetText(totalFree)
         end)
     end
 

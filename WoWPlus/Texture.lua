@@ -935,7 +935,7 @@ local function Init_Set_AlphaAndColor()
 
     hide_Frame_Texture(AddonCompartmentFrame, {alpha= Save.alpha<=0.3 and 0.3})
     set_Alpha_Color(AddonCompartmentFrame.Text, nil, nil, Save.alpha<=0.3 and 0.3)
-   
+
 
     hide_Texture(PlayerFrameAlternateManaBarBorder)
     hide_Texture(PlayerFrameAlternateManaBarLeftBorder)
@@ -2043,6 +2043,7 @@ local function set_MainMenu_Color(init)--主菜单
         'HelpMicroButton',
         'StoreMicroButton',
         'MainMenuBarBackpackButton',--背包
+        --'CharacterReagentBag0Slot',--材料包
     }
     for _, frame in pairs(buttons) do
         local self= _G[frame]
@@ -2083,7 +2084,23 @@ local function set_MainMenu_Color(init)--主菜单
         end
     end
 
-    if init and not Save.disabledColor then
+    --材料包
+    set_Alpha_Color(CharacterReagentBag0SlotNormalTexture, nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
+    set_Alpha_Color(CharacterReagentBag0SlotIconTexture, nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
+    CharacterReagentBag0Slot:HookScript('OnLeave', function()
+        if not Save.disabledMainMenu then
+            set_Alpha_Color(CharacterReagentBag0SlotNormalTexture, nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
+            set_Alpha_Color(CharacterReagentBag0SlotIconTexture, nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
+        end
+    end)
+    CharacterReagentBag0Slot:HookScript('OnEnter', function()
+        CharacterReagentBag0SlotNormalTexture:SetVertexColor(1,1,1,1)
+        CharacterReagentBag0SlotIconTexture:SetVertexColor(1,1,1,1)
+        CharacterReagentBag0SlotNormalTexture:SetAlpha(1)
+        CharacterReagentBag0SlotIconTexture:SetAlpha(1)
+    end)
+
+    if init then
         hooksecurefunc('ContainerFrame_GenerateFrame',function()--ContainerFrame.lua 背包里，颜色
             for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
                 if not frame.SetBagAlpha then
@@ -2096,16 +2113,14 @@ local function set_MainMenu_Color(init)--主菜单
             end
         end)
 
-        if not Save.disabledMainMenu then
-            hooksecurefunc('PaperDollItemSlotButton_Update', function(self)--PaperDollFrame.lua 主菜单，包
-                local bagID= self:GetID()
-                if bagID>30 then
-                    set_Alpha_Color(self:GetNormalTexture())
-                    set_Alpha_Color(self.icon)
-                    self:SetAlpha(GetInventoryItemTexture("player", bagID)~=nil and 1 or 0.1)
-                end
-            end)
-        end
+        hooksecurefunc('PaperDollItemSlotButton_Update', function(self)--PaperDollFrame.lua 主菜单，包
+            local bagID= self:GetID()
+            if bagID>30 then
+                set_Alpha_Color(self:GetNormalTexture())
+                set_Alpha_Color(self.icon)
+                self:SetAlpha(GetInventoryItemTexture("player", bagID)~=nil and 1 or 0.1)
+            end
+        end)
     end
     --EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.MicroMenu][3].minValue=50--EditModeSettingDisplayInfo.lua
 end

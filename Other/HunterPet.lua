@@ -273,13 +273,13 @@ local function Init()
 
 
     --PetStableFrameTitleText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)--标题
-    e.Set_Label_Texture_Color(PetStableFrameTitleText, {type='TextString'})--标题, 颜色
+    e.Set_Label_Texture_Color(PetStableFrameTitleText, {type='FontString'})--标题, 颜色
 
     PetStableActiveBg:ClearAllPoints()--已激活宠物，背景，大小
     PetStableActiveBg:SetAllPoints(PetStableLeftInset)
     e.Set_Label_Texture_Color(PetStableActiveBg, {type='Texture'})
     --PetStableActiveBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-    e.Set_Label_Texture_Color(PetStableActivePetsLabel, {type='TextString'})
+    e.Set_Label_Texture_Color(PetStableActivePetsLabel, {type='FontString'})
     --PetStableActivePetsLabel:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
 
 
@@ -355,13 +355,13 @@ local function Init()
 
     PetStableNameText:ClearAllPoints()
     PetStableNameText:SetPoint('TOPLEFT', PetStableSelectedPetIcon, 'RIGHT',0, -2)
-    e.Set_Label_Texture_Color(PetStableNameText, {type='TextString'})--选定，宠物，名称
+    e.Set_Label_Texture_Color(PetStableNameText, {type='FontString'})--选定，宠物，名称
     --PetStableNameText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)--选定，宠物，名称
 
     PetStableTypeText:ClearAllPoints()--选定，宠物，类型
     PetStableTypeText:SetPoint('BOTTOMLEFT', PetStableSelectedPetIcon, 'RIGHT', 0,2)
     PetStableTypeText:SetJustifyH('LEFT')
-    e.Set_Label_Texture_Color(PetStableTypeText, {type='TextString'})
+    e.Set_Label_Texture_Color(PetStableTypeText, {type='FontString'})
     --PetStableTypeText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
     PetStableTypeText:SetShadowOffset(1, -1)
 

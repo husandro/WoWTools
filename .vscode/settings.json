@@ -3695,7 +3695,9 @@
         "CHARACTERFRAME_SUBFRAMES",
         "CAST_BAR_CAST_TIME",
         "GameTooltipDefaultContainer",
-        "EditModeAccountSettingsMixin"
+        "EditModeAccountSettingsMixin",
+        "CharacterReagentBag0SlotNormalTexture",
+        "CharacterReagentBag0SlotIconTexture"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
