@@ -2105,23 +2105,35 @@ local function set_MainMenu_Color(init)--主菜单
             e.tips:Show()
         end
     end)
-    --材料包
-    set_Alpha_Color(CharacterReagentBag0SlotNormalTexture, nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
-    set_Alpha_Color(CharacterReagentBag0SlotIconTexture, nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
-    CharacterReagentBag0Slot:HookScript('OnLeave', function()
-        if not Save.disabledMainMenu then
-            set_Alpha_Color(CharacterReagentBag0SlotNormalTexture, nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
-            set_Alpha_Color(CharacterReagentBag0SlotIconTexture, nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
-        end
-    end)
-    CharacterReagentBag0Slot:HookScript('OnEnter', function()
-        CharacterReagentBag0SlotNormalTexture:SetVertexColor(1,1,1,1)
-        CharacterReagentBag0SlotIconTexture:SetVertexColor(1,1,1,1)
-        CharacterReagentBag0SlotNormalTexture:SetAlpha(1)
-        CharacterReagentBag0SlotIconTexture:SetAlpha(1)
-    end)
+
+
 
     if init then
+         --材料包
+        if CharacterReagentBag0Slot then
+            set_Alpha_Color(CharacterReagentBag0SlotIconTexture, nil, nil, Save.alpha<0.3 and 0.3)--外框
+
+            local function set_Reagent_Bag_Alpha(show)
+                if show then
+                    CharacterReagentBag0SlotIconTexture:SetVertexColor(1,1,1,1)
+                else
+                    set_Alpha_Color(CharacterReagentBag0SlotNormalTexture, nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
+                end
+            end
+            set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
+            CharacterReagentBag0Slot:HookScript('OnLeave', function()
+                if not Save.disabledMainMenu then
+                    set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
+                end
+            end)
+            CharacterReagentBag0Slot:HookScript('OnEnter', function()
+                set_Reagent_Bag_Alpha(true)
+            end)
+            hooksecurefunc(MainMenuBarBagManager, 'ToggleExpandBar', function()
+                set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
+            end)
+        end
+
         hooksecurefunc('ContainerFrame_GenerateFrame',function()--ContainerFrame.lua 背包里，颜色
             for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
                 if not frame.SetBagAlpha then

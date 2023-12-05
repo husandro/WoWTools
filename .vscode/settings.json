@@ -3697,7 +3697,8 @@
         "GameTooltipDefaultContainer",
         "EditModeAccountSettingsMixin",
         "CharacterReagentBag0SlotNormalTexture",
-        "CharacterReagentBag0SlotIconTexture"
+        "CharacterReagentBag0SlotIconTexture",
+        "MainMenuBarBagManager"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
