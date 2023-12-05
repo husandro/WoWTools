@@ -3715,7 +3715,8 @@
         "WardrobeCollectionFrameTab2",
         "EncounterJournalInstanceSelect",
         "EncounterJournalSearchBox",
-        "EncounterJournalEncounterFrameInfoDetailsScrollFrame"
+        "EncounterJournalEncounterFrameInfoDetailsScrollFrame",
+        "CreateChannelPopup"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

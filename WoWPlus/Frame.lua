@@ -609,7 +609,7 @@ local function Init_Move()
         GroupLootHistoryFrame={},
 
         ChannelFrame={},--聊天设置
-
+        CreateChannelPopup={},
         ColorPickerFrame={save=true, click='R'},--颜色选择器
 
         [PartyFrame.Background]={frame=PartyFrame, notZoom=true},

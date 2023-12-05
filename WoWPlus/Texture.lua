@@ -627,9 +627,9 @@ local function Init()
      hide_Frame_Texture(CharacterMainHandSlot)--16
      hide_Frame_Texture(CharacterSecondaryHandSlot)--17
 
-     set_Alpha_Frame_Texture(CharacterFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
-     set_Alpha_Frame_Texture(CharacterFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
-     set_Alpha_Frame_Texture(CharacterFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
+     set_Alpha_Frame_Texture(CharacterFrameTab1, {alpha=min03})
+     set_Alpha_Frame_Texture(CharacterFrameTab2, {alpha=min03})
+     set_Alpha_Frame_Texture(CharacterFrameTab3, {alpha=min03})
 
      --好友列表
      set_NineSlice(FriendsFrame, true)
@@ -650,10 +650,10 @@ local function Init()
      hide_Texture(WhoFrameEditBoxInset.Bg)
      set_ScrollBar(QuickJoinFrame)
 
-     set_Alpha_Frame_Texture(FriendsFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
-     set_Alpha_Frame_Texture(FriendsFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
-     set_Alpha_Frame_Texture(FriendsFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
-     set_Alpha_Frame_Texture(FriendsFrameTab4, {alpha=Save.alpha<0.3 and 0.3})
+     for i=1, 4 do
+        set_Alpha_Frame_Texture(_G['FriendsFrameTab'..i], {alpha=min03})
+        set_Alpha_Frame_Texture(_G['FriendsTabHeaderTab'..i], {alpha=min03})
+     end
 
      --聊天设置
      set_NineSlice(ChannelFrame, true)
@@ -662,6 +662,8 @@ local function Init()
      hide_Texture(ChannelFrame.RightInset.Bg)
      hide_Texture(ChannelFrame.LeftInset.Bg)
      set_ScrollBar(ChannelFrame.ChannelRoster)
+     set_ScrollBar(ChannelFrame.ChannelList)
+     
 
      --任务
      set_NineSlice(QuestFrame, true)
