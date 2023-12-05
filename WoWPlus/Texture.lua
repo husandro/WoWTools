@@ -1128,7 +1128,11 @@ local function Init_Event(arg1)
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
         set_NineSlice(CommunitiesFrame, true)
-
+        set_ScrollBar(CommunitiesFrameCommunitiesList)
+        set_ScrollBar(CommunitiesFrame.Chat)
+        set_ScrollBar(CommunitiesFrame.MemberList)
+        set_ScrollBar(CommunitiesFrame.GuildBenefitsFrame.Rewards)
+        
         set_Alpha_Color(CommunitiesFrameBg)
         set_Alpha_Color(CommunitiesFrame.MemberList.ColumnDisplay.Background)
         set_Alpha_Color(CommunitiesFrameCommunitiesList.Bg)
