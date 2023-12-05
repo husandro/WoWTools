@@ -87,6 +87,8 @@ local function set_SearchBox(frame)
     set_Alpha_Color(frame.Middle, nil, nil, alpha)
     set_Alpha_Color(frame.Left, nil, nil, alpha)
     set_Alpha_Color(frame.Right, nil, nil, alpha)
+    set_Alpha_Color(frame.Mid, nil, nil, alpha)
+    
 end
 
 local setNineSliceTabs={
@@ -132,6 +134,8 @@ local function set_ScrollBar(frame)
         set_Alpha_Color(frame.ScrollBar.Forward.Texture, true)
     end
     hide_Texture(frame.ScrollBar.Backplate, nil, true)
+    set_Alpha_Color(frame.ScrollBar.Background, nil, true)
+    
 end
 
 --隐藏, frame, 子材质
@@ -452,6 +456,7 @@ local function Init()
      hide_Texture(WorldMapFrame.NavBar.InsetBorderBottomLeft)
      hide_Texture(WorldMapFrame.BorderFrame.InsetBorderTop)
 
+     --set_Button_Alpha(WorldMapFrameOverflowButton, {alpha=min03})
 
      set_Alpha_Color(QuestMapFrame.VerticalSeparator)
      set_Alpha_Color(QuestScrollFrame.DetailFrame.BottomDetail)
@@ -719,6 +724,16 @@ local function Init()
      set_Alpha_Color(ChatConfigFrame.Header.RightBG, true)
      set_Alpha_Color(ChatConfigFrame.Header.LeftBG, true)
      set_Alpha_Color(ChatConfigFrame.Header.CenterBG, true)
+
+     set_NineSlice(ChatConfigCategoryFrame, true)
+     set_NineSlice(ChatConfigBackgroundFrame, true)
+     set_NineSlice(ChatConfigCombatSettingsFilters, true)
+     set_ScrollBar(ChatConfigCombatSettingsFilters)
+
+     for i= 1, 5 do
+        set_Alpha_Frame_Texture(_G['CombatConfigTab'..i], {alpha=min03})
+     end
+
      hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
         if frame.NineSlice then
             hide_Texture(frame.NineSlice.TopEdge)
@@ -770,7 +785,7 @@ local function Init()
      set_NineSlice(AddonList,true)
      set_ScrollBar(AddonList)
      set_Alpha_Color(AddonListBg)
-     set_Alpha_Color(AddonListInset.Bg)
+     set_Alpha_Color(AddonListInset.Bg, nil, nil, min03)
      set_Alpha_Color(AddonCharacterDropDownMiddle)
      set_Alpha_Color(AddonCharacterDropDownLeft)
      set_Alpha_Color(AddonCharacterDropDownRight)
@@ -1127,10 +1142,8 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(AchievementFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
         set_Alpha_Frame_Texture(AchievementFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
         set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
-
-        set_ScrollBar(AchievementFrameCategories)
-        set_ScrollBar(AchievementFrameAchievements)
-        set_ScrollBar(AchievementFrameStats)
+        
+        set_NineSlice(AchievementFrameCategories)
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
         set_NineSlice(CommunitiesFrame, true)
@@ -1144,14 +1157,17 @@ local function Init_Event(arg1)
         set_Alpha_Color(CommunitiesFrameBg)
         set_Alpha_Color(CommunitiesFrame.MemberList.ColumnDisplay.Background)
         set_Alpha_Color(CommunitiesFrameCommunitiesList.Bg)
-        set_Alpha_Color(CommunitiesFrameInset.Bg)
+        set_Alpha_Color(CommunitiesFrameInset.Bg, nil, nil, Save.alpha<0.5 and 0.5)
         CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
         CommunitiesFrameGuildDetailsFrameInfo:DisableDrawLayer('BACKGROUND')
         CommunitiesFrameGuildDetailsFrameNews:DisableDrawLayer('BACKGROUND')
 
         set_SearchBox(CommunitiesFrame.ChatEditBox)
+        set_NineSlice(CommunitiesFrame.Chat.InsetFrame, true)
+        set_NineSlice(CommunitiesFrame.MemberList.InsetFrame, true)
         set_Alpha_Color(CommunitiesFrameMiddle)
-
+        
+        set_NineSlice(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
         hide_Texture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
 
         hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function(self)
@@ -1198,6 +1214,15 @@ local function Init_Event(arg1)
 
 
         set_Alpha_Color(EncounterJournalInstanceSelectBG)
+        set_ScrollBar(EncounterJournalInstanceSelect)
+        set_SearchBox(EncounterJournalSearchBox)
+
+        set_ScrollBar(EncounterJournal.LootJournalItems.ItemSetsFrame)
+        set_ScrollBar(EncounterJournalEncounterFrameInfo.LootContainer)
+        set_ScrollBar(EncounterJournalEncounterFrameInfoDetailsScrollFrame)
+
+        hide_Texture(EncounterJournalNavBar.overlay)
+
         --set_Alpha_Color(EncounterJournalEncounterFrameInfoBG)
         set_Alpha_Color(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
         EncounterJournalNavBar:DisableDrawLayer('BACKGROUND')
@@ -1206,10 +1231,12 @@ local function Init_Event(arg1)
         set_Alpha_Color(EncounterJournalInstanceSelectTierDropDownLeft)
         set_Alpha_Color(EncounterJournalInstanceSelectTierDropDownRight)
 
+
         C_Timer.After(0.3, function()
             if EncounterJournalMonthlyActivitiesFrame then
                 set_Alpha_Color(EncounterJournalMonthlyActivitiesFrame.Bg)
             end
+            set_ScrollBar(EncounterJournalMonthlyActivitiesFrame)
         end)
 
         set_Alpha_Frame_Texture(EncounterJournalSuggestTab, {alpha=Save.alpha<0.3 and 0.3})
@@ -1413,6 +1440,9 @@ local function Init_Event(arg1)
         set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonTopRight)
         set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonBottomRight)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.ModelFadeTexture)
+        
+        set_Alpha_Frame_Texture(WardrobeCollectionFrameTab1, {alpha=Save.alpha<0.5 and 0.5})
+        set_Alpha_Frame_Texture(WardrobeCollectionFrameTab2, {alpha=Save.alpha<0.5 and 0.5})
         --[[hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(button, displayData)--外观列表
             set_Alpha_Color(button.Background)
         end)]]

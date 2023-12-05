@@ -3707,7 +3707,15 @@
         "PaperDollInnerBorderTopLeft",
         "PaperDollInnerBorderTopRight",
         "PaperDollInnerBorderBottomLeft",
-        "PaperDollInnerBorderBottomRight"
+        "PaperDollInnerBorderBottomRight",
+        "ChatConfigCombatSettingsFilters",
+        "AchievementFrameFilterDropDownText",
+        "WorldMapFrameOverflowButton",
+        "WardrobeCollectionFrameTab1",
+        "WardrobeCollectionFrameTab2",
+        "EncounterJournalInstanceSelect",
+        "EncounterJournalSearchBox",
+        "EncounterJournalEncounterFrameInfoDetailsScrollFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
