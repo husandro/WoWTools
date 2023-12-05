@@ -459,7 +459,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
     local size, last, btn= 16, nil, nil
     
-    Frame=CreateFrame('Frame')
+    Frame=CreateFrame('Frame', nil, UIParent)
     Frame:Raise()
     Frame:SetMovable(true)--移动
     Frame:SetClampedToScreen(true)
@@ -516,10 +516,10 @@ local function Init_Markers_Frame()--设置标记, 框架
             self:RegisterEvent('GROUP_ROSTER_UPDATE')
             self:RegisterEvent('GROUP_LEFT')
             self:RegisterEvent('GROUP_JOINED')
-            self:RegisterEvent('CINEMATIC_START')
-            self:RegisterEvent('CINEMATIC_STOP')
-            self:RegisterEvent('PLAY_MOVIE')
-            self:RegisterEvent('STOP_MOVIE')
+            --self:RegisterEvent('CINEMATIC_START')
+            --self:RegisterEvent('CINEMATIC_STOP')
+            --self:RegisterEvent('PLAY_MOVIE')
+            --self:RegisterEvent('STOP_MOVIE')
         else
             self:UnregisterAllEvents()
         end
