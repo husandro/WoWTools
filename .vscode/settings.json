@@ -3699,7 +3699,15 @@
         "CharacterReagentBag0SlotNormalTexture",
         "CharacterReagentBag0SlotIconTexture",
         "MainMenuBarBagManager",
-        "PaperDollInnerBorderBottom2"
+        "PaperDollInnerBorderBottom2",
+        "PaperDollInnerBorderBottom",
+        "PaperDollInnerBorderRight",
+        "PaperDollInnerBorderLeft",
+        "PaperDollInnerBorderTop",
+        "PaperDollInnerBorderTopLeft",
+        "PaperDollInnerBorderTopRight",
+        "PaperDollInnerBorderBottomLeft",
+        "PaperDollInnerBorderBottomRight"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

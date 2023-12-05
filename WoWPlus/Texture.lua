@@ -1,10 +1,7 @@
 local id, e= ...
 local addName= TEXTURES_SUBHEADER
 local Save={
-    --disabledTexture= true,
-    --disabledColor=true,
-
-    --disabledAlpha= not e.Player.husandro,
+    --disabled=true,
     alpha= 0.5,
 
     --disabledChatBubble=true,--禁用，聊天泡泡
@@ -36,17 +33,13 @@ local Save={
 
 --隐藏，材质
 local function hide_Texture(self, notClear)
-    if Save.disabledTexture then
+    if not self then
         return
     end
-    if self then
-        if self:GetObjectType()=='Texture' then
-            if not notClear then
-                self:SetTexture(0)
-            end
-        end
-        self:SetShown(false)
+    if not notClear and self:GetObjectType()=='Texture' then
+        self:SetTexture(0)
     end
+    self:SetShown(false)
 end
 
 --设置，颜色，透明度
@@ -54,28 +47,52 @@ local function set_Alpha_Color(self, notAlpha, notColor, alpha)
     if not self then
         return
     end
-    if not notColor and not Save.disabledColor then
+    if not notColor and e.Player.useColor then
         e.Set_Label_Texture_Color(self, {type=self:GetObjectType()})
     end
-    if not Save.disabledAlpha and not notAlpha then
+    if not notAlpha then
         self:SetAlpha(alpha or Save.alpha)
     end
 end
 
 --设置，按钮
 local function set_Button_Alpha(btn, tab)
-    if Save.disabledAlpha or not btn then
+    if not btn or not e.Player.useColor then
         return
     end
-    local alpha= tab and tab.alpha or Save.alpha
-    alpha= alpha<0.3 and 0.3 or alpha
-    e.Set_Label_Texture_Color(btn, {type='Button', alpha= alpha})
+    local texture= btn:GetNormalTexture()
+    if texture then
+        tab = tab or {}
+        if e.Player.useColor then
+            local col= tab.color or e.Player.useColor
+            texture:SetVertexColor(col.r, col.g, col.b, 1)
+        end
+        texture:SetAlpha(tab.alpha or Save.alpha)
+    end
 end
+    --[[else
+        for index, icon in pairs({btn:GetRegions()}) do
+            if icon:GetObjectType()=="Texture" then
 
-local function set_NineSlice(frame, hide)
-    if Save.disabledTexture or not frame or not frame.NineSlice then
+            end
+        end
+    end]]
+
+local function set_NineSlice(frame, min03)
+    if not frame or not frame.NineSlice then
         return
     end
+    local alpha= min03 and Save.alpha<0.3 and 0.3
+
+    set_Alpha_Color(frame.NineSlice.TopEdge, nil, nil, alpha)
+    set_Alpha_Color(frame.NineSlice.LeftEdge, nil, nil, alpha)
+    set_Alpha_Color(frame.NineSlice.RightEdge, nil, nil, alpha)
+    set_Alpha_Color(frame.NineSlice.BottomEdge, nil, nil, alpha)
+
+    set_Alpha_Color(frame.NineSlice.TopLeftCorner, nil, nil, alpha)
+    set_Alpha_Color(frame.NineSlice.TopRightCorner, nil, nil, alpha)
+    set_Alpha_Color(frame.NineSlice.BottomRightCorner, nil, nil, alpha)
+    set_Alpha_Color(frame.NineSlice.BottomLeftCorner, nil, nil, alpha)
 end
 
 --设置，滚动条，颜色
@@ -120,34 +137,34 @@ end
 
 --透明度, 颜色, frame, 子材质 set_Alpha_Frame_Texture(frame, {index=nil, notAlpha=nil, notColor=nil})
 local function set_Alpha_Frame_Texture(frame, tab)
-    if frame and not (Save.disabledColor and Save.disabledAlpha) then
-        tab=tab or {}
-        local indexTexture= tab.index
-        local notColor= tab.notColor
-        --local notAlpha= tab.notAlpha
-        local alpha
-        if (not Save.disabledAlpha and not tab.notAlpha) then
-            alpha= tab.alpha or Save.alpha
-        end
-        for index, icon in pairs({frame:GetRegions()}) do
-            if icon:GetObjectType()=="Texture" then
-                if indexTexture then
-                    if indexTexture== index then
-                        if not notColor then
-                            e.Set_Label_Texture_Color(icon, {type='Texture'})
-                        end
-                        if alpha then
-                            icon:SetAlpha(alpha)
-                        end
-                        break
-                    end
-                else
+    if not frame then
+        return
+    end
+    tab=tab or {}
+    local indexTexture= tab.index
+    local notColor= tab.notColor
+    local alpha
+    if not tab.notAlpha then
+        alpha= tab.alpha or Save.alpha
+    end
+    for index, icon in pairs({frame:GetRegions()}) do
+        if icon:GetObjectType()=="Texture" then
+            if indexTexture then
+                if indexTexture== index then
                     if not notColor then
                         e.Set_Label_Texture_Color(icon, {type='Texture'})
                     end
                     if alpha then
                         icon:SetAlpha(alpha)
                     end
+                    break
+                end
+            else
+                if not notColor then
+                    e.Set_Label_Texture_Color(icon, {type='Texture'})
+                end
+                if alpha then
+                    icon:SetAlpha(alpha)
                 end
             end
         end
@@ -204,6 +221,11 @@ end
 --初始化, 隐藏材质
 --###############
 local function Init()
+    if Save.disabled then
+        return
+    end
+    local min03= Save.alpha<0.3 or 0.3 or nil
+
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
         hide_Texture(frame.TargetFrameContainer.FrameTexture)
@@ -335,31 +357,47 @@ local function Init()
      set_Alpha_Color(PlayerCastingBarFrame.Background)
      set_Alpha_Color(PlayerCastingBarFrame.TextBorder)
      set_Alpha_Color(PlayerCastingBarFrame.Shine)
- 
+
      --角色，界面
+     set_NineSlice(CharacterFrameInset, true)
+     set_NineSlice(CharacterFrame)
+
      set_Alpha_Color(CharacterFrameBg)
- 
      hide_Texture(CharacterFrameInset.Bg)
- 
-     set_Alpha_Color(CharacterFrameInset.NineSlice.TopEdge, nil, nil, Save.alpha<0.3 and 0.3)
+
+     set_Alpha_Color(PaperDollInnerBorderBottom, nil, nil, min03)
+     set_Alpha_Color(PaperDollInnerBorderRight, nil, nil, min03)
+     set_Alpha_Color(PaperDollInnerBorderLeft, nil, nil, min03)
+     set_Alpha_Color(PaperDollInnerBorderTop, nil, nil, min03)
+
+     set_Alpha_Color(PaperDollInnerBorderTopLeft, nil, nil, min03)
+     set_Alpha_Color(PaperDollInnerBorderTopRight, nil, nil, min03)
+     set_Alpha_Color(PaperDollInnerBorderBottomLeft, nil, nil, min03)
+     set_Alpha_Color(PaperDollInnerBorderBottomRight, nil, nil, min03)
+
+
+     hide_Texture(PaperDollInnerBorderBottom2)
+     hide_Texture(CharacterFrameInsetRight.Bg)
+
+     --[[set_Alpha_Color(CharacterFrameInset.NineSlice.TopEdge, nil, nil, Save.alpha<0.3 and 0.3)
      set_Alpha_Color(CharacterFrameInset.NineSlice.BottomEdge, nil, nil, Save.alpha<0.3 and 0.3)
      set_Alpha_Color(CharacterFrameInset.NineSlice.LeftEdge, nil, nil, Save.alpha<0.3 and 0.3)
      set_Alpha_Color(CharacterFrameInset.NineSlice.RightEdge, nil, nil, Save.alpha<0.3 and 0.3)
- 
-     hide_Texture(PaperDollInnerBorderBottom2)
-     hide_Texture(CharacterFrameInsetRight.Bg)
- 
+]]
+     
+     
+     --[[
      set_Alpha_Color(CharacterFrame.NineSlice.TopEdge)
      set_Alpha_Color(CharacterFrame.NineSlice.BottomEdge)
      set_Alpha_Color(CharacterFrame.NineSlice.LeftEdge)
      set_Alpha_Color(CharacterFrame.NineSlice.RightEdge)
- 
+
      set_Alpha_Color(CharacterFrame.NineSlice.TopRightCorner)
      set_Alpha_Color(CharacterFrame.NineSlice.TopLeftCorner)
      set_Alpha_Color(CharacterFrame.NineSlice.BottomRightCorner)
      set_Alpha_Color(CharacterFrame.NineSlice.BottomLeftCorner)
- 
-     
+]]
+
      set_Alpha_Color(CharacterStatsPane.ClassBackground)
      set_Alpha_Color(CharacterStatsPane.EnhancementsCategory.Background)
      set_Alpha_Color(CharacterStatsPane.AttributesCategory.Background)
@@ -378,13 +416,13 @@ local function Init()
      hide_Texture(PaperDollFrame.EquipmentManagerPane.ScrollBar.Backplate)
      hide_Texture(ReputationFrame.ScrollBar.Backplate)
      hide_Texture(TokenFrame.ScrollBar.Backplate)
- 
+
      hide_Texture(CharacterModelFrameBackgroundTopLeft)--角色3D背景
      hide_Texture(CharacterModelFrameBackgroundTopRight)
      hide_Texture(CharacterModelFrameBackgroundBotLeft)
      hide_Texture(CharacterModelFrameBackgroundBotRight)
      hide_Texture(CharacterModelFrameBackgroundOverlay)
- 
+
      --法术书
      set_Alpha_Color(SpellBookFrame.NineSlice.TopLeftCorner)
      set_Alpha_Color(SpellBookFrame.NineSlice.TopEdge)
@@ -401,20 +439,20 @@ local function Init()
      set_Alpha_Color(SpellBookFrameInset.NineSlice.BottomRightCorner, nil, nil, Save.alpha<0.3 and 0.3)
      set_Alpha_Color(SpellBookFrameInset.NineSlice.BottomLeftCorner, nil, nil, Save.alpha<0.3 and 0.3)
      set_Alpha_Color(SpellBookFrameInset.NineSlice.TopRightCorner, nil, nil, Save.alpha<0.3 and 0.3)
-     
+
      if SpellBookPageText then
          SpellBookPageText:SetTextColor(1, 0.82, 0)
      end
- 
+
      hide_Texture(SpellBookPage1)
      hide_Texture(SpellBookPage2)
      set_Alpha_Color(SpellBookFrameBg)
      hide_Texture(SpellBookFrameInset.Bg)
- 
+
      for i=1, 12 do
          set_Alpha_Color(_G['SpellButton'..i..'Background'])
          set_Alpha_Color(_G['SpellButton'..i..'SlotFrame'])
- 
+
          local frame= _G['SpellButton'..i]
          if frame then
              hooksecurefunc(frame, 'UpdateButton', function(self)--SpellBookFrame.lua
@@ -422,12 +460,12 @@ local function Init()
              end)
          end
      end
- 
+
      set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=Save.alpha<0.3 and 0.3})
      set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=Save.alpha<0.3 and 0.3})
      set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=Save.alpha<0.3 and 0.3})
- 
- 
+
+
      --世界地图
      set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.TopLeftCorner)
      set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.TopEdge)
@@ -441,7 +479,7 @@ local function Init()
      hide_Texture(WorldMapFrame.NavBar.InsetBorderBottomRight)
      hide_Texture(WorldMapFrame.NavBar.InsetBorderBottomLeft)
      hide_Texture(WorldMapFrame.BorderFrame.InsetBorderTop)
- 
+
      set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.LeftEdge)
      set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.BottomEdge)
      set_Alpha_Color(WorldMapFrame.BorderFrame.NineSlice.RightEdge)
@@ -451,13 +489,13 @@ local function Init()
      set_Alpha_Color(QuestScrollFrame.DetailFrame.BottomDetail)
      set_Alpha_Color(QuestScrollFrame.Edge)
      set_Alpha_Color(QuestScrollFrame.DetailFrame.TopDetail)
-     
+
      set_Alpha_Color(QuestScrollFrame.Contents.Separator.Divider, nil, nil, Save.alpha<0.3 and 0.3)
- 
+
      set_ScrollBar(QuestScrollFrame)
-         
+
      WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
- 
+
      --地下城和团队副本
      set_Alpha_Color(PVEFrame.NineSlice.TopLeftCorner)
      set_Alpha_Color(PVEFrame.NineSlice.TopEdge)
@@ -486,31 +524,31 @@ local function Init()
      set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownRight)
      set_Alpha_Color(RaidFinderFrameRoleBackground, nil, true)
      set_Alpha_Color(RaidFinderFrameRoleInset.Bg)
- 
+
      hide_Texture(PVEFrameBg)--左边
      hide_Texture(PVEFrameBlueBg)
      set_Alpha_Color(PVEFrameLeftInset.Bg)
- 
+
      set_Alpha_Color(LFDQueueFrameBackground)
      set_Alpha_Color(LFDQueueFrameTypeDropDownMiddle)
      set_Alpha_Color(LFDQueueFrameTypeDropDownRight)
      set_Alpha_Color(LFDQueueFrameTypeDropDownLeft)
- 
+
      set_Alpha_Color(LFDParentFrameInset.Bg)
      set_Alpha_Color(LFDParentFrameRoleBackground)
- 
- 
+
+
      set_Alpha_Color(GossipFrame.NineSlice.TopEdge)
      set_Alpha_Color(GossipFrame.NineSlice.TopLeftCorner)
      set_Alpha_Color(GossipFrame.NineSlice.TopRightCorner)
      set_Alpha_Color(GossipFrameBg)
      hide_Texture(GossipFrameInset.Bg)
      hide_Texture(GossipFrame.GreetingPanel.ScrollBar.Backplate)
- 
+
      set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
      set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
      set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
- 
+
      if PetStableFrame then--猎人，宠物
          set_Alpha_Color(PetStableFrame.NineSlice.TopEdge)
          set_Alpha_Color(PetStableFrame.NineSlice.TopLeftCorner)
@@ -529,34 +567,34 @@ local function Init()
              set_Alpha_Color(_G['PetStableStabledPet'..i..'Background'])
          end
      end
- 
- 
- 
+
+
+
      set_Alpha_Color(MerchantFrameLootFilterMiddle)
      set_Alpha_Color(MerchantFrameLootFilterLeft)
      set_Alpha_Color(MerchantFrameLootFilterRight)
      set_Alpha_Color(MerchantFrameBottomLeftBorder)
      set_Alpha_Frame_Texture(MerchantFrameTab1)
      set_Alpha_Frame_Texture(MerchantFrameTab2)
- 
+
      --银行
      set_Alpha_Color(BankFrame.NineSlice.TopEdge)
      set_Alpha_Color(BankFrame.NineSlice.TopLeftCorner)
      set_Alpha_Color(BankFrame.NineSlice.TopRightCorner)
- 
+
      hide_Texture(BankFrameMoneyFrameInset.Bg)
      hide_Texture(BankFrameMoneyFrameBorderMiddle)
      hide_Texture(BankFrameMoneyFrameBorderRight)
      hide_Texture(BankFrameMoneyFrameBorderLeft)
      hide_Texture(BankFrameMoneyFrameInset.NineSlice)
- 
+
      BankFrame:DisableDrawLayer('BACKGROUND')
      local texture= BankFrame:CreateTexture(nil,'BORDER',nil, 1)
      texture:SetAtlas('auctionhouse-background-buy-noncommodities-market')
      texture:SetAllPoints(BankFrame)
      set_Alpha_Color(texture)
      hide_Texture(BankFrameBg)
- 
+
      hooksecurefunc('BankFrameItemButton_Update',function(button)--银行
          if button.NormalTexture and button.NormalTexture:IsShown() then
              hide_Texture(button.NormalTexture)
@@ -580,15 +618,14 @@ local function Init()
      set_Alpha_Color(BankFrameTab2.Left)
      set_Alpha_Color(BankFrameTab2.Middle)
      set_Alpha_Color(BankFrameTab2.Right)
- 
+
      --背包
      if ContainerFrameCombinedBags and ContainerFrameCombinedBags.NineSlice then
          set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.TopEdge)
          set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.LeftEdge)
          set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.RightEdge)
- 
          set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.BottomEdge)
- 
+
          set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.TopLeftCorner)
          set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.TopRightCorner)
          set_Alpha_Color(ContainerFrameCombinedBags.NineSlice.BottomRightCorner)
@@ -596,7 +633,7 @@ local function Init()
          set_Alpha_Color(ContainerFrameCombinedBags.MoneyFrame.Border.Middle)
          set_Alpha_Color(ContainerFrameCombinedBags.MoneyFrame.Border.Right)
          set_Alpha_Color(ContainerFrameCombinedBags.MoneyFrame.Border.Left)
- 
+
          set_Alpha_Color(ContainerFrameCombinedBags.Bg.TopSection, true)
          --set_Alpha_Color(ContainerFrameCombinedBags.Bg.BottomEdge)
          --set_Alpha_Color(ContainerFrameCombinedBags.Bg.BottomRight)
@@ -614,8 +651,8 @@ local function Init()
              set_Alpha_Color(frame.NineSlice.TopRightCorner)
          end
      end
- 
- 
+
+
      hide_Frame_Texture(CharacterHeadSlot)--1
      hide_Frame_Texture(CharacterNeckSlot)--2
      hide_Frame_Texture(CharacterShoulderSlot)--3
@@ -634,11 +671,11 @@ local function Init()
      hide_Frame_Texture(CharacterTrinket1Slot)--14
      hide_Frame_Texture(CharacterMainHandSlot)--16
      hide_Frame_Texture(CharacterSecondaryHandSlot)--17
- 
+
      set_Alpha_Frame_Texture(CharacterFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
      set_Alpha_Frame_Texture(CharacterFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
      set_Alpha_Frame_Texture(CharacterFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
- 
+
      --好友列表
      set_Alpha_Color(FriendsFrame.NineSlice.TopEdge)
      set_Alpha_Color(FriendsFrame.NineSlice.TopLeftCorner)
@@ -658,12 +695,12 @@ local function Init()
      set_Alpha_Color(WhoFrameDropDownRight)
      hide_Texture(WhoFrameEditBoxInset.Bg)
      hide_Texture(QuickJoinFrame.ScrollBar.Backplate)
- 
+
      set_Alpha_Frame_Texture(FriendsFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
      set_Alpha_Frame_Texture(FriendsFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
      set_Alpha_Frame_Texture(FriendsFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
      set_Alpha_Frame_Texture(FriendsFrameTab4, {alpha=Save.alpha<0.3 and 0.3})
- 
+
      --聊天设置
      set_Alpha_Color(ChannelFrame.NineSlice.TopEdge)
      set_Alpha_Color(ChannelFrame.NineSlice.TopLeftCorner)
@@ -673,14 +710,14 @@ local function Init()
      hide_Texture(ChannelFrame.RightInset.Bg)
      hide_Texture(ChannelFrame.LeftInset.Bg)
      hide_Texture(ChannelFrame.ChannelRoster.ScrollBar.Backplate)
- 
+
      --任务
      set_Alpha_Color(QuestFrame.NineSlice.TopEdge)
      set_Alpha_Color(QuestFrame.NineSlice.TopLeftCorner)
      set_Alpha_Color(QuestFrame.NineSlice.TopRightCorner)
      set_Alpha_Color(QuestFrameBg)
      hide_Texture(QuestFrameInset.Bg)
- 
+
      --信箱
      set_Alpha_Color(MailFrame.NineSlice.TopEdge)
      set_Alpha_Color(MailFrame.NineSlice.TopLeftCorner)
@@ -691,10 +728,10 @@ local function Init()
      set_Alpha_Color(OpenMailFrame.NineSlice)
      set_Alpha_Color(OpenMailFrameBg)
      set_Alpha_Color(OpenMailFrameInset.Bg)
- 
+
      set_Alpha_Frame_Texture(MailFrameTab1)
      set_Alpha_Frame_Texture(MailFrameTab2)
- 
+
      SendMailBodyEditBox:HookScript('OnEditFocusLost', function()
          set_Alpha_Color(SendStationeryBackgroundLeft)
          set_Alpha_Color(SendStationeryBackgroundRight)
@@ -709,7 +746,7 @@ local function Init()
      end)
      set_Alpha_Color(SendStationeryBackgroundLeft)
      set_Alpha_Color(SendStationeryBackgroundRight)
- 
+
      set_Alpha_Color(SendMailMoneyBgMiddle)
      set_Alpha_Color(SendMailMoneyBgRight)
      set_Alpha_Color(SendMailMoneyBgLeft)
@@ -720,8 +757,8 @@ local function Init()
      set_Alpha_Color(MailFrame.NineSlice.BottomLeftCorner)
      set_Alpha_Color(MailFrame.NineSlice.BottomEdge)
      set_Alpha_Color(MailFrameInset.NineSlice.LeftEdge)
- 
- 
+
+
      --拾取, 历史
      set_Alpha_Color(GroupLootHistoryFrame.NineSlice.TopRightCorner)
      set_Alpha_Color(GroupLootHistoryFrame.NineSlice.TopEdge)
@@ -732,22 +769,22 @@ local function Init()
      set_Alpha_Color(GroupLootHistoryFrame.NineSlice.BottomRightCorner)
      set_Alpha_Color(GroupLootHistoryFrame.NineSlice.BottomEdge)
      set_Alpha_Color(GroupLootHistoryFrameBg)
-     
+
      set_ScrollBar(GroupLootHistoryFrame)
-     
+
      set_Alpha_Color(GroupLootHistoryFrameMiddle)
      set_Alpha_Color(GroupLootHistoryFrameLeft)
      set_Alpha_Color(GroupLootHistoryFrameRight)
      set_Alpha_Color()
- 
- 
- 
- 
+
+
+
+
      --频道, 设置
      hide_Texture(ChatConfigCategoryFrame.NineSlice.Center)
      hide_Texture(ChatConfigBackgroundFrame.NineSlice.Center)
      hide_Texture(ChatConfigChatSettingsLeft.NineSlice.Center)
- 
+
      hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
          if frame.NineSlice then
              hide_Texture(frame.NineSlice.TopEdge)
@@ -794,7 +831,7 @@ local function Init()
              end
          end
      end)
- 
+
      --插件，管理
      set_Alpha_Color(AddonList.NineSlice.TopEdge)
      set_Alpha_Color(AddonList.NineSlice.TopLeftCorner)
@@ -805,7 +842,7 @@ local function Init()
      set_Alpha_Color(AddonCharacterDropDownMiddle)
      set_Alpha_Color(AddonCharacterDropDownLeft)
      set_Alpha_Color(AddonCharacterDropDownRight)
- 
+
      --场景 Blizzard_ScenarioObjectiveTracker.lua
      --[[if ObjectiveTrackerBlocksFrame then
          set_Alpha_Color(ObjectiveTrackerBlocksFrame.ScenarioHeader.Background)
@@ -816,11 +853,11 @@ local function Init()
              set_Alpha_Color(stageBlock.FinalBG)
          end)
      end]]
- 
+
      if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
          hide_Texture(MainStatusTrackingBarContainer.BarFrameTexture)
      end
- 
+
      --插件，菜单
      hide_Frame_Texture(AddonCompartmentFrame, {alpha= Save.alpha<=0.3 and 0.3})
      set_Alpha_Color(AddonCompartmentFrame.Text, nil, nil, Save.alpha<=0.3 and 0.3)
@@ -832,31 +869,31 @@ local function Init()
              set_Alpha_Color(self.Text, nil, nil, Save.alpha<=0.3 and 0.3)
          end)
      end)
-     
- 
+
+
      hide_Texture(PlayerFrameAlternateManaBarBorder)
      hide_Texture(PlayerFrameAlternateManaBarLeftBorder)
      hide_Texture(PlayerFrameAlternateManaBarRightBorder)
- 
+
      --小地图
      set_Alpha_Color(MinimapCompassTexture)
      set_Alpha_Frame_Texture(MinimapCluster.BorderTop)
      set_Alpha_Frame_Texture(GameTimeFrame)
      hide_Texture(MinimapCluster.Tracking.Background)
      set_Button_Alpha(MinimapCluster.Tracking.Button, {alpha= Save.alpha<=0.3 and 0.3})
- 
+
      --小队，背景
      set_Alpha_Frame_Texture(PartyFrame.Background, {})
- 
+
      --任务，追踪柆
      hooksecurefunc('ObjectiveTracker_Initialize', function(self)
          for _, module in ipairs(self.MODULES) do
              set_Alpha_Color(module.Header.Background)
          end
      end)
- 
+
      --社交，按钮
-     
+
      set_Alpha_Color(QuickJoinToastButton.FriendsButton, nil, nil, Save.alpha<=0.3 and 0.3)
      --set_Alpha_Color(QuickJoinToastButton.QueueButton, nil, nil, Save.alpha<=0.3 and 0.3)
      set_Alpha_Frame_Texture(ChatFrameChannelButton, {alpha= Save.alpha<=0.3 and 0.3})
@@ -866,12 +903,12 @@ local function Init()
            --  set_Alpha_Color(module.Header.Background)
          --end
      end)]]
- 
- 
- 
- 
- 
- 
+
+
+
+
+
+
      --商人
      set_Alpha_Color(MerchantFrame.NineSlice.TopEdge)
      set_Alpha_Color(MerchantFrame.NineSlice.TopLeftCorner)
@@ -885,15 +922,15 @@ local function Init()
      set_Alpha_Color(MerchantExtraCurrencyBg)
      set_Alpha_Color(MerchantExtraCurrencyInset)
      hide_Texture(MerchantFrameBottomLeftBorder)
- 
+
      C_Timer.After(2, function()
          if SpellFlyout and SpellFlyout.Background then--Spell Flyout
              hide_Texture(SpellFlyout.Background.HorizontalMiddle)
              hide_Texture(SpellFlyout.Background.End)
              hide_Texture(SpellFlyout.Background.VerticalMiddle)
          end
- 
- 
+
+
          for i=1, C_AddOns.GetNumAddOns() do
              if C_AddOns.GetAddOnEnableState(i)==2 then
                  local name=C_AddOns.GetAddOnInfo(i)
@@ -903,13 +940,13 @@ local function Init()
                  end
              end
          end
- 
+
          --商人, SellBuy.lua
          for i=1, MERCHANT_ITEMS_PER_PAGE do--math.max(MERCHANT_ITEMS_PER_PAGE, BUYBACK_ITEMS_PER_PAGE) do --MERCHANT_ITEMS_PER_PAGE = 10; BUYBACK_ITEMS_PER_PAGE = 12;
              set_Alpha_Color(_G['MerchantItem'..i..'SlotTexture'])
          end
          hide_Texture(MerchantBuyBackItemSlotTexture)
- 
+
          --秒表
          --Blizzard_TimeManager.lua
          hide_Texture(StopwatchFrameBackgroundLeft)
@@ -1068,9 +1105,9 @@ local function Init_Event(arg1)
         end]]
 
 
-    elseif arg1=='Blizzard_ClassTalentUI' and not Save.disabledAlpha then--天赋
+    elseif arg1=='Blizzard_ClassTalentUI' then--天赋
         set_Alpha_Color(ClassTalentFrame.TalentsTab.BottomBar)--下面
-        
+
 
         set_Alpha_Color(ClassTalentFrame.NineSlice.TopEdge, nil, nil, Save.alpha<0.3 and 0.3)--顶部
         set_Alpha_Color(ClassTalentFrame.NineSlice.LeftEdge, nil, nil, Save.alpha<0.3 and 0.3)
@@ -1080,7 +1117,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(ClassTalentFrame.NineSlice.BottomLeftCorner, nil, nil, Save.alpha<0.3 and 0.3)
         set_Alpha_Color(ClassTalentFrame.NineSlice.TopLeftCorner, nil, nil, Save.alpha<0.3 and 0.3)--顶部
         set_Alpha_Color(ClassTalentFrame.NineSlice.TopRightCorner, nil, nil, Save.alpha<0.3 and 0.3)--顶部
-        
+
 
         set_Alpha_Color(ClassTalentFrameBg)--里面
         hide_Texture(ClassTalentFrame.TalentsTab.BlackBG)
@@ -1113,7 +1150,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(ClassTalentFrame.TalentsTab.SearchBox.Left)
         set_Alpha_Color(ClassTalentFrame.TalentsTab.SearchBox.Right)
 
-        
+
 
         --TabSystemOwner.lua
         for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
@@ -1185,7 +1222,7 @@ local function Init_Event(arg1)
         set_ScrollBar(AchievementFrameCategories)
         set_ScrollBar(AchievementFrameAchievements)
         set_ScrollBar(AchievementFrameStats)
-        
+
     elseif arg1=='Blizzard_Communities' then--公会和社区
         set_Alpha_Color(CommunitiesFrame.NineSlice.TopEdge)
         set_Alpha_Color(CommunitiesFrame.NineSlice.TopLeftCorner)
@@ -1976,7 +2013,7 @@ local function set_BagTexture(self)
     end
 end
 
-local function set_MainMenu_Color(init)--主菜单
+local function Init_MainMenu(init)--主菜单
     if init and Save.disabledMainMenu then
         return
     end
@@ -2143,235 +2180,86 @@ end
 
 --#######
 --聊天泡泡
---#######
-local function set_Chat_Bubbles_Event()
-    local chatBubblesEvents={
-        'CHAT_MSG_SAY',
-        'CHAT_MSG_YELL',
-        'CHAT_MSG_PARTY',
-        'CHAT_MSG_PARTY_LEADER',
-        'CHAT_MSG_RAID',
-        'CHAT_MSG_RAID_LEADER',
-        'CHAT_MSG_MONSTER_PARTY',
-        'CHAT_MSG_MONSTER_SAY',
-        'CHAT_MSG_MONSTER_YELL',
-    }
-    if not Save.disabledChatBubble then
-        FrameUtil.RegisterFrameForEvents(panel, chatBubblesEvents)
-    else
-        FrameUtil.UnregisterFrameForEvents(panel, chatBubblesEvents);
-    end
-end
-local function set_Chat_Bubbles(init)
-    for _, buble in pairs(C_ChatBubbles.GetAllChatBubbles() or {}) do
-        if not buble.setAlphaOK or init then
-            local frame= buble:GetChildren()
-            if frame then
-                local fontString = frame.String
-                local point, relativeTo, relativePoint, ofsx, ofsy = fontString:GetPoint(1)
-                local currentScale= buble:GetScale()
-
-                frame:SetScale(Save.chatBubbleSacal)
-                if point then
-                    local scaleRatio = Save.chatBubbleSacal / currentScale
-                    fontString:SetPoint(point, relativeTo, relativePoint, ofsx / scaleRatio, ofsy / scaleRatio)
-                end
-
-                local tab={frame:GetRegions()}
-                for _, region in pairs(tab) do
-                    if region:GetObjectType()=='Texture' then-- .String
-                        e.Set_Label_Texture_Color(region, {type='Texture', alpha=Save.chatBubbleAlpha})
-                        --frame2:SetAlpha(Save.chatBubbleAlpha)
-                        --frame2:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-                    end
-                end
-                buble.setAlphaOK= true
-            end
-        end
-    end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---###########
---添加控制面板
---###########
-local Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
-
-local function Init_Options()--初始，选项
-    e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
-
-    e.AddPanel_Check({
-        name= e.onlyChinese and '隐藏材质' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, addName),
-        tooltip= addName,
-        category= Category,
-        value= not Save.disabledTexture,
-        func= function()
-            Save.disabledTexture= not Save.disabledTexture and true or nil
-            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    })
-
-
-    local initializer2= e.AddPanel_Check_Button({
-        checkName= e.onlyChinese and '颜色' or COLOR,
-        checkValue= not Save.disabledColor,
-        checkFunc= function()
-            Save.disabledColor= not Save.disabledColor and true or false
-            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end,
-        buttonText= e.onlyChinese and '设置' or SETTINGS,
-        buttonFunc= function()
-            e.OpenPanelOpting((e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR))
-        end,
-        tooltip= addName,
-        layout= Layout,
-        category= Category
-    })
-
-
-        local initializer= e.AddPanel_Check({
-            name= e.onlyChinese and '主菜单' or MAINMENU_BUTTON,
-            tooltip= addName,
-            category= Category,
-            value= not Save.disabledMainMenu,
-            func= function()
-                Save.disabledMainMenu= not Save.disabledMainMenu and true or nil
-                set_MainMenu_Color()--主菜单，颜色，透明度
-            end
-        })
-        initializer:SetParentInitializer(initializer2, function() return not Save.disabledColor end)
-
-
-    e.AddPanel_Check_Sider({
-        checkName= e.onlyChinese and '透明度' or 'Alpha',
-        checkValue= not Save.disabledAlpha,
-        checkTooltip= addName,
-        checkFunc= function()
-            Save.disabledAlpha= not Save.disabledAlpha and true or false
-            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end,
-        sliderValue= Save.alpha or 0.5,
-        sliderMinValue= 0,
-        sliderMaxValue= 1,
-        sliderStep= 0.1,
-        siderName= nil,
-        siderTooltip= nil,
-        siderFunc= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, 0, 1)
-            Save.alpha= value3
-            print(id, addName, value3, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end,
-        layout= Layout,
-        category= Category,
-    })
-
-    initializer2= e.AddPanel_Check({
-        name= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
-        tooltip= (e.onlyChinese and '在副本无效' or (INSTANCE..' ('..DISABLE..')'))
-                ..'|n|n'..((e.onlyChinese and '说' or SAY)..' CVar: chatBubbles '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubbles")))
-                ..'|n'..((e.onlyChinese and '小队' or SAY)..' CVar: chatBubblesParty '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubblesParty"))),
-        category= Category,
-        value= not Save.disabledChatBubble,
-        func= function()
-            Save.disabledChatBubble= not Save.disabledChatBubble and true or nil
-            set_Chat_Bubbles_Event()
+--ChatBubbles https://wago.io/yyX84OlOD
+local BubblesFrame
+local function Init_Chat_Bubbles()
+    if BubblesFrame or Save.disabledChatBubble then
+        if BubblesFrame then
+            BubblesFrame:set_event()
             if not Save.disabledChatBubble then
-                set_Chat_Bubbles(true)
-            else
-                print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                BubblesFrame:set_chat_bubbles(true)
             end
         end
-    })
-
-    initializer= e.AddPanelSider({
-        name= e.onlyChinese and '透明度' or 'Alpha',
-        value= Save.chatBubbleAlpha,
-        minValue= 0,
-        maxValue= 1,
-        setp= 0.1,
-        tooltip= addName,
-        category= Category,
-        func= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, 0, 1)
-            Save.chatBubbleAlpha= value3
-            set_Chat_Bubbles(true)
+        return
+    end
+    BubblesFrame= CreateFrame('Frame')
+    function BubblesFrame:set_chat_bubbles(set)
+        for _, buble in pairs(C_ChatBubbles.GetAllChatBubbles() or {}) do
+            if not buble.setAlphaOK or set then
+                local frame= buble:GetChildren()
+                if frame then
+                    local fontString = frame.String
+                    local point, relativeTo, relativePoint, ofsx, ofsy = fontString:GetPoint(1)
+                    local currentScale= buble:GetScale()
+                    frame:SetScale(Save.chatBubbleSacal)
+                    if point then
+                        local scaleRatio = Save.chatBubbleSacal / currentScale
+                        fontString:SetPoint(point, relativeTo, relativePoint, ofsx / scaleRatio, ofsy / scaleRatio)
+                    end
+                    local tab={frame:GetRegions()}
+                    for _, region in pairs(tab) do
+                        if region:GetObjectType()=='Texture' then-- .String
+                            e.Set_Label_Texture_Color(region, {type='Texture', alpha=Save.chatBubbleAlpha})
+                        end
+                    end
+                    buble.setAlphaOK= true
+                end
+            end
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() return not Save.disabledChatBubble end)
+    end
 
-    initializer= e.AddPanelSider({
-        name= e.onlyChinese and '缩放' or UI_SCALE,
-        value= Save.chatBubbleSacal,
-        minValue= 0.3,
-        maxValue= 1,
-        setp= 0.1,
-        tooltip= addName,
-        category= Category,
-        func= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, 0.3, 1)
-            Save.chatBubbleSacal= value3
-            set_Chat_Bubbles(true)
+    function BubblesFrame:set_event()
+        self:UnregisterAllEvents()
+        if Save.disabledChatBubble then
+            return
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() return not Save.disabledChatBubble end)
-
-
-    e.AddPanel_Check_Sider({
-        checkName= (e.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
-        checkValue= Save.classPowerNum,
-        checkTooltip= addName,
-        checkFunc= function()
-            Save.classPowerNum= not Save.classPowerNum and true or false
-            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end,
-        sliderValue= Save.classPowerNumSize,
-        sliderMinValue= 6,
-        sliderMaxValue= 64,
-        sliderStep= 1,
-        siderName= nil,
-        siderTooltip= nil,
-        siderFunc= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, 6, 64)
-            Save.classPowerNumSize= value3
-            Init_Class_Power()--职业
-            print(id, addName,'|cnGREEN_FONT_COLOR:'.. value3..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end,
-        layout= Layout,
-        category= Category,
-    })
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
+        if not IsInInstance() then
+            local chatBubblesEvents={
+                'CHAT_MSG_SAY',
+                'CHAT_MSG_YELL',
+                'CHAT_MSG_PARTY',
+                'CHAT_MSG_PARTY_LEADER',
+                'CHAT_MSG_RAID',
+                'CHAT_MSG_RAID_LEADER',
+                'CHAT_MSG_MONSTER_PARTY',
+                'CHAT_MSG_MONSTER_SAY',
+                'CHAT_MSG_MONSTER_YELL',
+            }
+            FrameUtil.RegisterFrameForEvents(BubblesFrame, chatBubblesEvents)
+        end
+    end
+    BubblesFrame:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_ENTERING_WORLD' then
+            self:set_event()
+        else
+            self:set_chat_bubbles()
+        end
+    end)
+    BubblesFrame:set_event()
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2418,33 +2306,127 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.classPowerNumSize= Save.classPowerNumSize or 12
 
-            e.AddPanel_Check({
-                name= e.onlyChinese and '启用' or ENABLE,
-                tooltip= addName,
-                category= Category,
-                value= not Save.disabled,
-                func= function()
+            local Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
+
+            local initializer2= e.AddPanel_Check_Button({
+                checkName= e.onlyChinese and '材质' or TEXTURES_SUBHEADER,
+                checkValue= not Save.disabled,
+                checkFunc= function()
                     Save.disabled= not Save.disabled and true or nil
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+                buttonText= e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
+                buttonFunc= function()
+                    e.OpenPanelOpting((e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR))
+                end,
+                tooltip= addName,
+                layout= Layout,
+                category= Category
+            })
+
+            local initializer= e.AddPanelSider({
+                name= e.onlyChinese and '透明度' or 'Alpha',
+                value= Save.alpha,
+                minValue= 0,
+                maxValue= 1,
+                setp= 0.1,
+                tooltip= addName,
+                category= Category,
+                func= function(_, _, value2)
+                    local value3= e.GetFormatter1to10(value2, 0, 1)
+                    Save.alpha= value3
+                    Init()
+                    Init_Class_Power()--职业
+                    Init_Chat_Bubbles()--聊天泡泡
+                    Init_MainMenu()--主菜单, 颜色
+                    print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
+            })
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+
+            e.AddPanel_Header(Layout, e.onlyChinese and '其它' or OTHER)
+
+            initializer2= e.AddPanel_Check({
+                name= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
+                tooltip= (e.onlyChinese and '在副本无效' or (INSTANCE..' ('..DISABLE..')'))
+                        ..'|n|n'..((e.onlyChinese and '说' or SAY)..' CVar: chatBubbles '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubbles")))
+                        ..'|n'..((e.onlyChinese and '小队' or SAY)..' CVar: chatBubblesParty '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubblesParty"))),
+                category= Category,
+                value= not Save.disabledChatBubble,
+                func= function()
+                    Save.disabledChatBubble= not Save.disabledChatBubble and true or nil
+                    Init_Chat_Bubbles()
+                    if Save.disabledChatBubble and BubblesFrame then
+                        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    end
+                end
+            })
+            initializer= e.AddPanelSider({
+                name= e.onlyChinese and '透明度' or 'Alpha',
+                value= Save.chatBubbleAlpha,
+                minValue= 0,
+                maxValue= 1,
+                setp= 0.1,
+                tooltip= addName,
+                category= Category,
+                func= function(_, _, value2)
+                    local value3= e.GetFormatter1to10(value2, 0, 1)
+                    Save.chatBubbleAlpha= value3
+                    Init_Chat_Bubbles()
+                end
+            })
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabledChatBubble end)
+
+            initializer= e.AddPanelSider({
+                name= e.onlyChinese and '缩放' or UI_SCALE,
+                value= Save.chatBubbleSacal,
+                minValue= 0.3,
+                maxValue= 1,
+                setp= 0.1,
+                tooltip= addName,
+                category= Category,
+                func= function(_, _, value2)
+                    local value3= e.GetFormatter1to10(value2, 0.3, 1)
+                    Save.chatBubbleSacal= value3
+                    Init_Chat_Bubbles()
+                end
+            })
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabledChatBubble end)
+
+            e.AddPanel_Check_Sider({
+                checkName= (e.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
+                checkValue= Save.classPowerNum,
+                checkTooltip= addName,
+                checkFunc= function()
+                    Save.classPowerNum= not Save.classPowerNum and true or false
+                    print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+                sliderValue= Save.classPowerNumSize,
+                sliderMinValue= 6,
+                sliderMaxValue= 64,
+                sliderStep= 1,
+                siderName= nil,
+                siderTooltip= nil,
+                siderFunc= function(_, _, value2)
+                    local value3= e.GetFormatter1to10(value2, 6, 64)
+                    Save.classPowerNumSize= value3
+                    Init_Class_Power()--职业
+                    print(id, addName,'|cnGREEN_FONT_COLOR:'.. value3..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+                layout= Layout,
+                category= Category,
             })
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
-            else
-                Init_Options()--初始，选项
-                Init()
-                Init_Class_Power(true)--职业
-                if not Save.disabledChatBubble then--聊天泡泡
-                    set_Chat_Bubbles_Event()
-                end
-                C_Timer.After(2, function()
-                    set_MainMenu_Color(true)--主菜单, 颜色
-                end)
-
             end
+            Init()
+            Init_Class_Power(true)--职业
+            Init_Chat_Bubbles()--聊天泡泡
+            C_Timer.After(2, function()
+                Init_MainMenu(true)--主菜单, 颜色
+            end)
             panel:RegisterEvent("PLAYER_LOGOUT")
-
         else
             Init_Event(arg1)
         end
@@ -2454,9 +2436,5 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
             WoWToolsSave[addName]=Save
         end
-
-    else--ChatBubbles https://wago.io/yyX84OlOD
-        C_Timer.After(0, set_Chat_Bubbles)
-
     end
 end)
