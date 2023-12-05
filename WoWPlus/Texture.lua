@@ -42,6 +42,14 @@ local function set_Alpha_Color(self, notAlpha, notColor, alpha)
     e.Set_Label_Texture_Color(self, {type=type, alpha= alpha})
 end
 
+local function set_Button_Alpha(btn, tab)
+    if Save.disabledAlpha or not btn then
+        return
+    end
+    local alpha= tab and tab.alpha or Save.alpha
+    alpha= alpha<0.3 and 0.3 or alpha
+    e.Set_Label_Texture_Color(btn, {type='Button', alpha= alpha})
+end
 
 --隐藏, frame, 子材质
 local function hide_Frame_Texture(frame, tab)
@@ -556,9 +564,9 @@ local function Init_Set_AlphaAndColor()
         end
     end
 
-    set_Alpha_Frame_Texture(SpellBookFrameTabButton1)
-    set_Alpha_Frame_Texture(SpellBookFrameTabButton2)
-    set_Alpha_Frame_Texture(SpellBookFrameTabButton3)
+    set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=Save.alpha<0.3 and 0.3})
+    set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=Save.alpha<0.3 and 0.3})
+    set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=Save.alpha<0.3 and 0.3})
 
 
     --世界地图
@@ -618,9 +626,9 @@ local function Init_Set_AlphaAndColor()
     hide_Texture(GossipFrameInset.Bg)
     hide_Texture(GossipFrame.GreetingPanel.ScrollBar.Backplate)
 
-    set_Alpha_Frame_Texture(PVEFrameTab1)
-    set_Alpha_Frame_Texture(PVEFrameTab2)
-    set_Alpha_Frame_Texture(PVEFrameTab3)
+    set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
+    set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
+    set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
 
     if PetStableFrame then--猎人，宠物
         set_Alpha_Color(PetStableFrame.NineSlice.TopEdge)
@@ -746,9 +754,9 @@ local function Init_Set_AlphaAndColor()
     hide_Frame_Texture(CharacterMainHandSlot)--16
     hide_Frame_Texture(CharacterSecondaryHandSlot)--17
 
-    set_Alpha_Frame_Texture(CharacterFrameTab1)
-    set_Alpha_Frame_Texture(CharacterFrameTab2)
-    set_Alpha_Frame_Texture(CharacterFrameTab3)
+    set_Alpha_Frame_Texture(CharacterFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
+    set_Alpha_Frame_Texture(CharacterFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
+    set_Alpha_Frame_Texture(CharacterFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
 
     --好友列表
     set_Alpha_Color(FriendsFrame.NineSlice.TopEdge)
@@ -770,10 +778,10 @@ local function Init_Set_AlphaAndColor()
     hide_Texture(WhoFrameEditBoxInset.Bg)
     hide_Texture(QuickJoinFrame.ScrollBar.Backplate)
 
-    set_Alpha_Frame_Texture(FriendsFrameTab1)
-    set_Alpha_Frame_Texture(FriendsFrameTab2)
-    set_Alpha_Frame_Texture(FriendsFrameTab3)
-    set_Alpha_Frame_Texture(FriendsFrameTab4)
+    set_Alpha_Frame_Texture(FriendsFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
+    set_Alpha_Frame_Texture(FriendsFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
+    set_Alpha_Frame_Texture(FriendsFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
+    set_Alpha_Frame_Texture(FriendsFrameTab4, {alpha=Save.alpha<0.3 and 0.3})
 
     --聊天设置
     set_Alpha_Color(ChannelFrame.NineSlice.TopEdge)
@@ -933,9 +941,18 @@ local function Init_Set_AlphaAndColor()
         hide_Texture(MainStatusTrackingBarContainer.BarFrameTexture)
     end
 
+    --插件，菜单
     hide_Frame_Texture(AddonCompartmentFrame, {alpha= Save.alpha<=0.3 and 0.3})
     set_Alpha_Color(AddonCompartmentFrame.Text, nil, nil, Save.alpha<=0.3 and 0.3)
-
+    C_Timer.After(2, function()
+        AddonCompartmentFrame:HookScript('OnEnter', function(self)
+            self.Text:SetAlpha(1)
+        end)
+        AddonCompartmentFrame:HookScript('OnLeave', function(self)
+            set_Alpha_Color(self.Text, nil, nil, Save.alpha<=0.3 and 0.3)
+        end)
+    end)
+    
 
     hide_Texture(PlayerFrameAlternateManaBarBorder)
     hide_Texture(PlayerFrameAlternateManaBarLeftBorder)
@@ -946,7 +963,7 @@ local function Init_Set_AlphaAndColor()
     set_Alpha_Frame_Texture(MinimapCluster.BorderTop)
     set_Alpha_Frame_Texture(GameTimeFrame)
     hide_Texture(MinimapCluster.Tracking.Background)
-    set_Alpha_Frame_Texture(MinimapCluster.Tracking.Button, {alpha= Save.alpha<=0.3 and 0.3})
+    set_Button_Alpha(MinimapCluster.Tracking.Button, {alpha= Save.alpha<=0.3 and 0.3})
 
     --小队，背景
     set_Alpha_Frame_Texture(PartyFrame.Background, {})
@@ -958,10 +975,12 @@ local function Init_Set_AlphaAndColor()
         end
     end)
 
-    set_Alpha_Color(QuickJoinToastButton.FriendsButton)
-    set_Alpha_Color(QuickJoinToastButton.FriendsButton)
-    set_Alpha_Frame_Texture(ChatFrameChannelButton)
-    set_Alpha_Frame_Texture(ChatFrameMenuButton)
+    --社交，按钮
+    
+    set_Alpha_Color(QuickJoinToastButton.FriendsButton, nil, nil, Save.alpha<=0.3 and 0.3)
+    --set_Alpha_Color(QuickJoinToastButton.QueueButton, nil, nil, Save.alpha<=0.3 and 0.3)
+    set_Alpha_Frame_Texture(ChatFrameChannelButton, {alpha= Save.alpha<=0.3 and 0.3})
+    set_Alpha_Frame_Texture(ChatFrameMenuButton, {alpha= Save.alpha<=0.3 and 0.3})
     --[[hooksecurefunc('ObjectiveTracker_UpdateOpacity', function()
         --for _, module in ipairs(ObjectiveTrackerBlocksFrame.MODULES) do
           --  set_Alpha_Color(module.Header.Background)
@@ -1145,7 +1164,7 @@ local function set_Alpha_Event(arg1)
         --TabSystemOwner.lua
         for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
             local btn= ClassTalentFrame:GetTabButton(tabID)
-            set_Alpha_Frame_Texture(btn)
+            set_Alpha_Frame_Texture(btn, {alpha=Save.alpha<0.3 and 0.3})
         end
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
@@ -1205,9 +1224,9 @@ local function set_Alpha_Event(arg1)
         hide_Texture(AchievementFrameAchievements.ScrollBar.Backplate)
         hide_Texture(AchievementFrameStats.ScrollBar.Backplate)
         hide_Texture(AchievementFrameCategories.ScrollBar.Backplate)
-        set_Alpha_Frame_Texture(AchievementFrameTab1)
-        set_Alpha_Frame_Texture(AchievementFrameTab2)
-        set_Alpha_Frame_Texture(AchievementFrameTab3)
+        set_Alpha_Frame_Texture(AchievementFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
+        set_Alpha_Frame_Texture(AchievementFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
+        set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
         set_Alpha_Color(CommunitiesFrame.NineSlice.TopEdge)
@@ -1302,11 +1321,11 @@ local function set_Alpha_Event(arg1)
             end
         end)
 
-        set_Alpha_Frame_Texture(EncounterJournalSuggestTab)
-        set_Alpha_Frame_Texture(EncounterJournalMonthlyActivitiesTab)
-        set_Alpha_Frame_Texture(EncounterJournalDungeonTab)
-        set_Alpha_Frame_Texture(EncounterJournalRaidTab)
-        set_Alpha_Frame_Texture(EncounterJournalLootJournalTab)
+        set_Alpha_Frame_Texture(EncounterJournalSuggestTab, {alpha=Save.alpha<0.3 and 0.3})
+        set_Alpha_Frame_Texture(EncounterJournalMonthlyActivitiesTab, {alpha=Save.alpha<0.3 and 0.3})
+        set_Alpha_Frame_Texture(EncounterJournalDungeonTab, {alpha=Save.alpha<0.3 and 0.3})
+        set_Alpha_Frame_Texture(EncounterJournalRaidTab, {alpha=Save.alpha<0.3 and 0.3})
+        set_Alpha_Frame_Texture(EncounterJournalLootJournalTab, {alpha=Save.alpha<0.3 and 0.3})
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set_Alpha_Color(GuildBankFrame.BlackBG)
@@ -1558,11 +1577,13 @@ local function set_Alpha_Event(arg1)
         set_Alpha_Color(WardrobeCollectionFrameWeaponDropDownLeft)
         set_Alpha_Color(WardrobeCollectionFrameWeaponDropDownRight)
 
-        set_Alpha_Frame_Texture(CollectionsJournalTab1)
-        set_Alpha_Frame_Texture(CollectionsJournalTab2)
-        set_Alpha_Frame_Texture(CollectionsJournalTab3)
-        set_Alpha_Frame_Texture(CollectionsJournalTab4)
-        set_Alpha_Frame_Texture(CollectionsJournalTab5)
+        set_Alpha_Frame_Texture(CollectionsJournalTab1, {alpha=Save.alpha<0.3 and 0.3})
+        set_Alpha_Frame_Texture(CollectionsJournalTab2, {alpha=Save.alpha<0.3 and 0.3})
+        set_Alpha_Frame_Texture(CollectionsJournalTab3, {alpha=Save.alpha<0.3 and 0.3})
+        set_Alpha_Frame_Texture(CollectionsJournalTab4, {alpha=Save.alpha<0.3 and 0.3})
+        set_Alpha_Frame_Texture(CollectionsJournalTab5, {alpha=Save.alpha<0.3 and 0.3})
+        set_Alpha_Frame_Texture(_G['CollectionsJournalTab6'], {alpha=Save.alpha<0.3 and 0.3})
+        set_Alpha_Frame_Texture(_G['CollectionsJournalTab7'], {alpha=Save.alpha<0.3 and 0.3})
 
         if RematchJournal then
             set_Alpha_Color(RematchJournal.NineSlice.TopEdge)
@@ -2085,7 +2106,7 @@ local function set_MainMenu_Color(init)--主菜单
     end
 
     --提示，背包，总数
-    MainMenuBarBackpackButton:HookScript('OnEnter', function(self)
+    MainMenuBarBackpackButton:HookScript('OnEnter', function()
         local num= 0
         local tab={}
         for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
@@ -2102,6 +2123,7 @@ local function set_MainMenu_Color(init)--主菜单
             for _, text in pairs(tab) do
                 e.tips:AddLine(text)
             end
+            e.tips:AddLine(id..'  '..addName)
             e.tips:Show()
         end
     end)
@@ -2111,13 +2133,13 @@ local function set_MainMenu_Color(init)--主菜单
     if init then
          --材料包
         if CharacterReagentBag0Slot then
-            set_Alpha_Color(CharacterReagentBag0SlotIconTexture, nil, nil, Save.alpha<0.3 and 0.3)--外框
+            set_Alpha_Color(CharacterReagentBag0SlotNormalTexture, nil, nil, Save.alpha<0.3 and 0.3)--外框
 
             local function set_Reagent_Bag_Alpha(show)
                 if show then
                     CharacterReagentBag0SlotIconTexture:SetVertexColor(1,1,1,1)
                 else
-                    set_Alpha_Color(CharacterReagentBag0SlotNormalTexture, nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
+                    set_Alpha_Color(CharacterReagentBag0SlotIconTexture, nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
                 end
             end
             set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
@@ -2130,6 +2152,7 @@ local function set_MainMenu_Color(init)--主菜单
                 set_Reagent_Bag_Alpha(true)
             end)
             hooksecurefunc(MainMenuBarBagManager, 'ToggleExpandBar', function()
+                print(GetCVarBool("expandBagBar"))
                 set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
             end)
         end
