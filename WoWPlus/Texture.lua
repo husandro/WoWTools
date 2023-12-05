@@ -97,6 +97,7 @@ local setNineSliceTabs={
     'BottomRightCorner',
     'BottomLeftCorner',
     'Center',
+    'Background',
 }
 local function set_NineSlice(frame, min03, hide)
     if not frame or not frame.NineSlice then
@@ -482,12 +483,11 @@ local function Init()
      --地下城和团队副本
      set_NineSlice(PVEFrame, true)
      set_SearchBox(LFGListFrame.SearchPanel.SearchBox)
-     
+     set_ScrollBar(LFGListFrame.SearchPanel)
      set_Alpha_Color(LFGListFrame.CategorySelection.Inset.CustomBG)
      hide_Texture(LFGListFrame.CategorySelection.Inset.Bg)
      
      
-     set_Alpha_Color(LFGListFrame.SearchPanel.ScrollBar.Backplate)
      set_Alpha_Color(LFGListFrame.EntryCreation.Inset.CustomBG)
      set_Alpha_Color(LFGListFrame.EntryCreation.Inset.Bg)
      set_Alpha_Color(LFGListFrameMiddleMiddle)
@@ -647,19 +647,19 @@ local function Init()
      
      set_Alpha_Color(FriendsFrameBg)
      --hide_Texture(FriendsFrameInset.Bg)
-     hide_Texture(FriendsListFrame.ScrollBar.Backplate)
-     hide_Texture(IgnoreListFrame.ScrollBar.Backplate)
+     set_ScrollBar(FriendsListFrame)
+     set_ScrollBar(IgnoreListFrame)
      if RecruitAFriendFrame and RecruitAFriendFrame.RecruitList then
-         hide_Texture(RecruitAFriendFrame.RecruitList.ScrollBar.Backplate)
+        set_ScrollBar(RecruitAFriendFrame.RecruitList)
          set_Alpha_Color(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
      end
      hide_Texture(WhoFrameListInset.Bg)
-     hide_Texture(WhoFrame.ScrollBar.Backplate)
+     set_ScrollBar(WhoFrame)
      set_Alpha_Color(WhoFrameDropDownMiddle)
      set_Alpha_Color(WhoFrameDropDownLeft)
      set_Alpha_Color(WhoFrameDropDownRight)
      hide_Texture(WhoFrameEditBoxInset.Bg)
-     hide_Texture(QuickJoinFrame.ScrollBar.Backplate)
+     set_ScrollBar(QuickJoinFrame)
 
      set_Alpha_Frame_Texture(FriendsFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
      set_Alpha_Frame_Texture(FriendsFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
@@ -672,7 +672,7 @@ local function Init()
      hide_Texture(ChannelFrameInset.Bg)
      hide_Texture(ChannelFrame.RightInset.Bg)
      hide_Texture(ChannelFrame.LeftInset.Bg)
-     hide_Texture(ChannelFrame.ChannelRoster.ScrollBar.Backplate)
+     set_ScrollBar(ChannelFrame.ChannelRoster)
 
      --任务
      set_NineSlice(QuestFrame, true)
@@ -1010,7 +1010,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(ClassTrainerFrameFilterDropDownMiddle)
         set_Alpha_Color(ClassTrainerFrameFilterDropDownLeft)
         set_Alpha_Color(ClassTrainerFrameFilterDropDownRight)
-        hide_Texture(ClassTrainerFrame.ScrollBar.Backplate)
+        set_ScrollBar(ClassTrainerFrame)
 
     elseif arg1=='Blizzard_TimeManager' then--小时图，时间
         set_NineSlice(TimeManagerFrame, true)
@@ -1115,9 +1115,9 @@ local function Init_Event(arg1)
                 hide_Texture(self.Icon.frame)
             end
         end)
-        hide_Texture(AchievementFrameAchievements.ScrollBar.Backplate)
-        hide_Texture(AchievementFrameStats.ScrollBar.Backplate)
-        hide_Texture(AchievementFrameCategories.ScrollBar.Backplate)
+        set_ScrollBar(AchievementFrameAchievements)
+        set_ScrollBar(AchievementFrameStats)
+        set_ScrollBar(AchievementFrameCategories)
         set_Alpha_Frame_Texture(AchievementFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
         set_Alpha_Frame_Texture(AchievementFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
         set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
@@ -1132,6 +1132,8 @@ local function Init_Event(arg1)
         set_ScrollBar(CommunitiesFrame.Chat)
         set_ScrollBar(CommunitiesFrame.MemberList)
         set_ScrollBar(CommunitiesFrame.GuildBenefitsFrame.Rewards)
+        set_ScrollBar(CommunitiesFrameGuildDetailsFrameNews)
+        set_ScrollBar(ClubFinderCommunityAndGuildFinderFrame.CommunityCards)
         
         set_Alpha_Color(CommunitiesFrameBg)
         set_Alpha_Color(CommunitiesFrame.MemberList.ColumnDisplay.Background)
@@ -1140,11 +1142,6 @@ local function Init_Event(arg1)
         CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
         CommunitiesFrameGuildDetailsFrameInfo:DisableDrawLayer('BACKGROUND')
         CommunitiesFrameGuildDetailsFrameNews:DisableDrawLayer('BACKGROUND')
-
-        hide_Texture(CommunitiesFrameCommunitiesList.ScrollBar.Backplate)
-        hide_Texture(CommunitiesFrameCommunitiesList.ScrollBar.Background)
-        hide_Texture(CommunitiesFrame.MemberList.ScrollBar.Backplate)
-        hide_Texture(CommunitiesFrame.MemberList.ScrollBar.Background)
 
         set_SearchBox(CommunitiesFrame.ChatEditBox)
         set_Alpha_Color(CommunitiesFrameMiddle)
@@ -1160,10 +1157,7 @@ local function Init_Event(arg1)
         end)
 
         set_Alpha_Color(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.Bg)
-        hide_Texture(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBar.Backplate)
-        hide_Texture(CommunitiesFrame.GuildBenefitsFrame.Rewards.ScrollBar.Backplate)
-        hide_Texture(CommunitiesFrameGuildDetailsFrameNews.ScrollBar.Backplate)
-        hide_Texture(CommunitiesFrameGuildDetailsFrameNews.ScrollBar.Background)
+        
 
         hide_Frame_Texture(CommunitiesFrame.ChatTab, {index=1})
         hide_Frame_Texture(CommunitiesFrame.RosterTab, {index=1})
@@ -1187,7 +1181,8 @@ local function Init_Event(arg1)
         set_Alpha_Color(HonorFrameTypeDropDownLeft)
         set_Alpha_Color(HonorFrameTypeDropDownRight)
         hide_Texture(ConquestFrame.RatedBGTexture)
-        hide_Texture(LFDQueueFrameSpecific.ScrollBar.Backplate)
+        set_ScrollBar(LFDQueueFrameSpecific)
+        
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         set_NineSlice(EncounterJournal, true)
