@@ -3741,7 +3741,9 @@
         "EncounterJournalInstanceSelectTierDropDownButton",
         "EncounterJournalEncounterFrameInstanceFrame",
         "WhoFrameColumnHeader1",
-        "WhoFrameDropDownButton"
+        "WhoFrameDropDownButton",
+        "EncounterJournalLootJournalViewDropDownButton",
+        "EncounterJournalLootJournalViewDropDown"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

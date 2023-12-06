@@ -1246,6 +1246,9 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(EncounterJournalDungeonTab, {alpha=min05})
         set_Alpha_Frame_Texture(EncounterJournalRaidTab, {alpha=min05})
         set_Alpha_Frame_Texture(EncounterJournalLootJournalTab, {alpha=min05})
+        set_Alpha_Frame_Texture(EncounterJournalLootJournalViewDropDownButton, {alpha=min05})
+        set_Alpha_Frame_Texture(EncounterJournalLootJournalViewDropDown, {alpha=min05})
+        
 
         set_ScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
         set_ScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
