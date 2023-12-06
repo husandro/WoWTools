@@ -23,9 +23,10 @@ local Save={
 
 
 
-local min03
+local min03, min05
 local function GetMinValueAlpha()--min03，透明度，最小值
     min03= Save.alpha<0.3 and 0.3 or nil
+    min05= Save.alpha<0.5 and 0.5 or nil
 end
 
 
@@ -439,9 +440,9 @@ local function Init_All_Frame()
          end
      end
 
-     set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=min03})
-     set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=min03})
-     set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=min03})
+     set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=min05})
+     set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=min05})
+     set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=min05})
 
 
      --世界地图
@@ -514,9 +515,9 @@ local function Init_All_Frame()
      hide_Texture(GossipFrameInset.Bg)
      set_ScrollBar(GossipFrame.GreetingPanel)
 
-     set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=min03})
-     set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=min03})
-     set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=min03})
+     set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=min05})
+     set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=min05})
+     set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=min05})
 
      if PetStableFrame then--猎人，宠物
         set_NineSlice(PetStableFrame, true)
@@ -540,8 +541,8 @@ local function Init_All_Frame()
      set_Alpha_Color(MerchantFrameLootFilterLeft)
      set_Alpha_Color(MerchantFrameLootFilterRight)
      set_Alpha_Color(MerchantFrameBottomLeftBorder)
-     set_Alpha_Frame_Texture(MerchantFrameTab1)
-     set_Alpha_Frame_Texture(MerchantFrameTab2)
+     set_Alpha_Frame_Texture(MerchantFrameTab1, {alpha=min05})
+     set_Alpha_Frame_Texture(MerchantFrameTab2, {alpha=min05})
 
      --银行
      set_NineSlice(BankFrame,true)
@@ -570,19 +571,9 @@ local function Init_All_Frame()
              end
          end
      end)
-     set_Alpha_Color(BankFrameTab1.LeftActive)
-     set_Alpha_Color(BankFrameTab1.MiddleActive)
-     set_Alpha_Color(BankFrameTab1.RightActive)
-     set_Alpha_Color(BankFrameTab1.Left)
-     set_Alpha_Color(BankFrameTab1.Middle)
-     set_Alpha_Color(BankFrameTab1.Right)
-     set_Alpha_Color(BankFrameTab2.LeftActive)
-     set_Alpha_Color(BankFrameTab2.MiddleActive)
-     set_Alpha_Color(BankFrameTab2.RightActive)
-     set_Alpha_Color(BankFrameTab2.Left)
-     set_Alpha_Color(BankFrameTab2.Middle)
-     set_Alpha_Color(BankFrameTab2.Right)
-
+     set_Alpha_Frame_Texture(BankFrameTab1, {alpha=min05})
+     set_Alpha_Frame_Texture(BankFrameTab2, {alpha=min05})
+     
      --背包
      if ContainerFrameCombinedBags and ContainerFrameCombinedBags.NineSlice then
         set_NineSlice(ContainerFrameCombinedBags, true)
@@ -627,9 +618,9 @@ local function Init_All_Frame()
      hide_Frame_Texture(CharacterMainHandSlot)--16
      hide_Frame_Texture(CharacterSecondaryHandSlot)--17
 
-     set_Alpha_Frame_Texture(CharacterFrameTab1, {alpha=min03})
-     set_Alpha_Frame_Texture(CharacterFrameTab2, {alpha=min03})
-     set_Alpha_Frame_Texture(CharacterFrameTab3, {alpha=min03})
+     set_Alpha_Frame_Texture(CharacterFrameTab1, {alpha=min05})
+     set_Alpha_Frame_Texture(CharacterFrameTab2, {alpha=min05})
+     set_Alpha_Frame_Texture(CharacterFrameTab3, {alpha=min05})
 
      --好友列表
      set_NineSlice(FriendsFrame, true)
@@ -651,8 +642,8 @@ local function Init_All_Frame()
      set_ScrollBar(QuickJoinFrame)
 
      for i=1, 4 do
-        set_Alpha_Frame_Texture(_G['FriendsFrameTab'..i], {alpha=min03})
-        set_Alpha_Frame_Texture(_G['FriendsTabHeaderTab'..i], {alpha=min03})
+        set_Alpha_Frame_Texture(_G['FriendsFrameTab'..i], {alpha=min05})
+        set_Alpha_Frame_Texture(_G['FriendsTabHeaderTab'..i], {alpha=min05})
      end
 
      --聊天设置
@@ -679,8 +670,8 @@ local function Init_All_Frame()
      set_Alpha_Color(OpenMailFrameBg)
      set_Alpha_Color(OpenMailFrameInset.Bg)
 
-     set_Alpha_Frame_Texture(MailFrameTab1)
-     set_Alpha_Frame_Texture(MailFrameTab2)
+     set_Alpha_Frame_Texture(MailFrameTab1, {alpha=min05})
+     set_Alpha_Frame_Texture(MailFrameTab2, {alpha=min05})
 
      SendMailBodyEditBox:HookScript('OnEditFocusLost', function()
          set_Alpha_Color(SendStationeryBackgroundLeft)
@@ -733,7 +724,7 @@ local function Init_All_Frame()
      set_ScrollBar(ChatConfigCombatSettingsFilters)
 
      for i= 1, 5 do
-        set_Alpha_Frame_Texture(_G['CombatConfigTab'..i], {alpha=min03})
+        set_Alpha_Frame_Texture(_G['CombatConfigTab'..i], {alpha=min05})
      end
 
      hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
@@ -1141,9 +1132,9 @@ local function Init_Event(arg1)
         set_ScrollBar(AchievementFrameAchievements)
         set_ScrollBar(AchievementFrameStats)
         set_ScrollBar(AchievementFrameCategories)
-        set_Alpha_Frame_Texture(AchievementFrameTab1, {alpha=min03})
-        set_Alpha_Frame_Texture(AchievementFrameTab2, {alpha=min03})
-        set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=min03})
+        set_Alpha_Frame_Texture(AchievementFrameTab1, {alpha=min05})
+        set_Alpha_Frame_Texture(AchievementFrameTab2, {alpha=min05})
+        set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=min05})
 
         set_NineSlice(AchievementFrameCategories)
 
@@ -1241,11 +1232,11 @@ local function Init_Event(arg1)
             set_ScrollBar(EncounterJournalMonthlyActivitiesFrame)
         end)
 
-        set_Alpha_Frame_Texture(EncounterJournalSuggestTab, {alpha=min03})
-        set_Alpha_Frame_Texture(EncounterJournalMonthlyActivitiesTab, {alpha=min03})
-        set_Alpha_Frame_Texture(EncounterJournalDungeonTab, {alpha=min03})
-        set_Alpha_Frame_Texture(EncounterJournalRaidTab, {alpha=min03})
-        set_Alpha_Frame_Texture(EncounterJournalLootJournalTab, {alpha=min03})
+        set_Alpha_Frame_Texture(EncounterJournalSuggestTab, {alpha=min05})
+        set_Alpha_Frame_Texture(EncounterJournalMonthlyActivitiesTab, {alpha=min05})
+        set_Alpha_Frame_Texture(EncounterJournalDungeonTab, {alpha=min05})
+        set_Alpha_Frame_Texture(EncounterJournalRaidTab, {alpha=min05})
+        set_Alpha_Frame_Texture(EncounterJournalLootJournalTab, {alpha=min05})
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set_Alpha_Color(GuildBankFrame.BlackBG)
@@ -1267,7 +1258,7 @@ local function Init_Event(arg1)
             if frame then
                 hide_Texture(frame.Background)
             end
-            set_Alpha_Frame_Texture(_G['GuildBankFrameTab'..i], {alpha=min03})
+            set_Alpha_Frame_Texture(_G['GuildBankFrameTab'..i], {alpha=min05})
         end
 
         local MAX_GUILDBANK_SLOTS_PER_TAB = 98;
@@ -1360,21 +1351,20 @@ local function Init_Event(arg1)
         hide_Texture(MountJournal.BottomLeftInset.Bg)
         set_ScrollBar(MountJournal)
         set_SearchBox(MountJournalSearchBox)
-        set_NineSlice(MountJournal.BottomLeftInset, true)
-        set_NineSlice(MountJournal.RightInset)
+        set_NineSlice(MountJournal.BottomLeftInset, nil, true)
+        set_NineSlice(MountJournal.RightInset, nil, true)
+        set_NineSlice(MountJournal.LeftInset, nil, true)
         set_Alpha_Frame_Texture(MountJournalFilterButton, {alpha=min03})
 
-        hide_Texture(PetJournalPetCardBG)
+        set_Alpha_Color(PetJournalPetCardBG, nil, nil, min03)
         set_Alpha_Color(PetJournalPetCardInset.Bg)
         set_Alpha_Color(PetJournalRightInset.Bg)
-        hide_Texture(PetJournalLoadoutPet1BG)
-        hide_Texture(PetJournalLoadoutPet2BG)
-        hide_Texture(PetJournalLoadoutPet3BG)
+        set_Alpha_Color(PetJournalLoadoutPet1BG, nil, nil, min03)
+        set_Alpha_Color(PetJournalLoadoutPet2BG, nil, nil, min03)
+        set_Alpha_Color(PetJournalLoadoutPet3BG, nil, nil, min03)
         set_Alpha_Color(PetJournalLoadoutBorderSlotHeaderBG)
         hide_Texture(PetJournalLeftInset.Bg)
         hide_Texture(PetJournalLoadoutBorder)
-        set_Alpha_Color(PetJournalRightInset.NineSlice, nil, nil, min03)
-        set_Alpha_Color(PetJournalPetCardInset.NineSlice, nil, nil, min03)
 
         set_ScrollBar(PetJournal)
         set_SearchBox(PetJournalSearchBox)
@@ -1389,19 +1379,12 @@ local function Init_Event(arg1)
         set_Alpha_Color(PetJournal.PetCount.BorderBottomRight, nil, nil, min03)
         set_Alpha_Color(PetJournal.PetCount.BorderTopRight, nil, nil, min03)
         set_Alpha_Color(PetJournal.PetCount.BorderLeftMiddle, nil, nil, min03)
-        set_Alpha_Color(PetJournal.PetCount.BorderRightMiddle, nil, nil, min03)
-
+        set_Alpha_Color(PetJournal.PetCount.BorderRightMiddle, nil, nil, min03)        
         set_Alpha_Frame_Texture(PetJournalFilterButton, {alpha=min03})
+        set_NineSlice(PetJournalLeftInset, nil, true)
+        set_NineSlice(PetJournalPetCardInset, nil, true)
+        set_NineSlice(PetJournalRightInset, nil, true)
 
-        --[[set_Alpha_Color(PetJournalFilterButtonMiddleMiddle, true)
-        set_Alpha_Color(PetJournalFilterButtonMiddleLeft, true)
-        set_Alpha_Color(PetJournalFilterButtonMiddleRight, true)
-        set_Alpha_Color(PetJournalFilterButtonTopMiddle, true)
-        set_Alpha_Color(PetJournalFilterButtonTopLeft, true)
-        set_Alpha_Color(PetJournalFilterButtonTopRight, true)
-        set_Alpha_Color(PetJournalFilterButtonBottomMiddle, true)
-        set_Alpha_Color(PetJournalFilterButtonBottomLeft, true)
-        set_Alpha_Color(PetJournalFilterButtonBottomRight, true)]]
 
         hide_Texture(ToyBox.iconsFrame.BackgroundTile)
         hide_Texture(ToyBox.iconsFrame.Bg)
@@ -1451,6 +1434,7 @@ local function Init_Event(arg1)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BGCornerBottomLeft)
         set_NineSlice(WardrobeCollectionFrame.SetsCollectionFrame.RightInset, nil, true)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.ShadowLineBottom)
+        set_NineSlice(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset, nil, true)
 
         set_SearchBox(WardrobeCollectionFrameSearchBox)
         set_Alpha_Color(WardrobeCollectionFrameMiddleMiddle)
@@ -1476,8 +1460,8 @@ local function Init_Event(arg1)
         set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonBottomRight)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.ModelFadeTexture)
 
-        set_Alpha_Frame_Texture(WardrobeCollectionFrameTab1, {alpha=Save.alpha<0.5 and 0.5})
-        set_Alpha_Frame_Texture(WardrobeCollectionFrameTab2, {alpha=Save.alpha<0.5 and 0.5})
+        set_Alpha_Frame_Texture(WardrobeCollectionFrameTab1, {alpha=min05})
+        set_Alpha_Frame_Texture(WardrobeCollectionFrameTab2, {alpha=min05})
         --[[hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(button, displayData)--外观列表
             set_Alpha_Color(button.Background)
         end)]]
@@ -1516,13 +1500,13 @@ local function Init_Event(arg1)
         set_Alpha_Color(WardrobeCollectionFrameWeaponDropDownLeft)
         set_Alpha_Color(WardrobeCollectionFrameWeaponDropDownRight)
 
-        set_Alpha_Frame_Texture(CollectionsJournalTab1, {alpha=min03})
-        set_Alpha_Frame_Texture(CollectionsJournalTab2, {alpha=min03})
-        set_Alpha_Frame_Texture(CollectionsJournalTab3, {alpha=min03})
-        set_Alpha_Frame_Texture(CollectionsJournalTab4, {alpha=min03})
-        set_Alpha_Frame_Texture(CollectionsJournalTab5, {alpha=min03})
-        set_Alpha_Frame_Texture(_G['CollectionsJournalTab6'], {alpha=min03})
-        set_Alpha_Frame_Texture(_G['CollectionsJournalTab7'], {alpha=min03})
+        set_Alpha_Frame_Texture(CollectionsJournalTab1, {alpha=min05})
+        set_Alpha_Frame_Texture(CollectionsJournalTab2, {alpha=min05})
+        set_Alpha_Frame_Texture(CollectionsJournalTab3, {alpha=min05})
+        set_Alpha_Frame_Texture(CollectionsJournalTab4, {alpha=min05})
+        set_Alpha_Frame_Texture(CollectionsJournalTab5, {alpha=min05})
+        set_Alpha_Frame_Texture(_G['CollectionsJournalTab6'], {alpha=min05})
+        set_Alpha_Frame_Texture(_G['CollectionsJournalTab7'], {alpha=min05})
 
         if RematchJournal then
             set_NineSlice(RematchJournal, true)
