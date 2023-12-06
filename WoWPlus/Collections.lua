@@ -1261,81 +1261,29 @@ local function Init_Mount()
     end)
 end
 
-    --[[
-local showPlayer = GetCVarBool("mountJournalShowPlayer");
-if not disablePlayerMountPreview and not showPlayer then
-    disablePlayerMountPreview = true;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--宠物
+--Blizzard_PetCollection.lua
+local function Init_Pet()
+    --增加，总数
+    hooksecurefunc('PetJournal_UpdatePetList', function()
+        local numPets, numOwned = C_PetJournal.GetNumPets();
+	    PetJournal.PetCount.Count:SetText(numPets..'/'..numOwned)
+    end)
 end
-if not disablePlayerMountPreview then
-    if MountJournal.MountDisplay.infoText then
-        MountJournal.MountDisplay.infoText:SetText('')
-    end
-    return
-end
-    
-过滤, 选项
-    local mountTypeStrings = {
-        [Enum.MountType.Ground] = MOUNT_JOURNAL_FILTER_GROUND,--0
-        [Enum.MountType.Flying] = MOUNT_JOURNAL_FILTER_FLYING,
-        [Enum.MountType.Aquatic] = MOUNT_JOURNAL_FILTER_AQUATIC,
-        [Enum.MountType.Dragonriding] = MOUNT_JOURNAL_FILTER_DRAGONRIDING,
-    };
-
-    local function set_Check()
-        local Filtertab={
-            {text = COLLECTED, set = function(value) C_MountJournal.SetCollectedFilterSetting(1, not value) end, isSet = function() C_MountJournal.GetCollectedFilterSetting(1) end},
-            {text = NOT_COLLECTED, set = function(value) C_MountJournal.SetCollectedFilterSetting(2, not value) end, isSet = function() C_MountJournal.GetCollectedFilterSetting(2) end},
-            {text = MOUNT_JOURNAL_FILTER_UNUSABLE,set = function(value) C_MountJournal.SetCollectedFilterSetting(3, not value) end, isSet = function() C_MountJournal.GetCollectedFilterSetting(3) end},
-            {text= '-'},
-        }
-        for i = 1, Enum.MountTypeMeta.NumValues do
-            if not C_MountJournal.IsValidTypeFilter(i) then
-                break;
-            end
-            table.insert(Filtertab, {text= mountTypeStrings[i - 1],
-                set=function(value)
-                    C_MountJournal.SetTypeFilter(i, not value);
-                    e.call(MountJournalResetFiltersButton_UpdateVisibility)
-                end,
-                isSet=function() return C_MountJournal.IsTypeChecked(i) end
-            })
-        end
-
-        local y= 0
-        for _, tab in pairs(Filtertab) do
-            if tab.text~='-' then
-                local check= MountJournal.MountDisplay[tab.text]
-                if not check then
-                    check= CreateFrame("CheckButton", nil, MountJournal.MountDisplay, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
-                    check:SetPoint('LEFT', 0, y)
-                    check:SetScript('OnClick', function()
-                        tab.set(not tab.isSet)
-                    end)
-                    MountJournal.MountDisplay[tab.text]=check
-                end
-                check:SetChecked(tab.isSet())
-                check.Text:SetText(tab.text)
-            end
-            y= y-18
-        end
-    end
-    set_Check()
-    hooksecurefunc('MountJournalResetFiltersButton_UpdateVisibility', set_Check)]]
-
-
---###########
---加载保存数据
---###########
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1397,6 +1345,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Init_Wardrober_Items()--物品, 幻化, 界面
             Init_Wardrobe_Sets()--套装, 幻化, 界面
             Init_Mount()--坐骑, 界面
+            Init_Pet()
         end
 
     elseif event == "PLAYER_LOGOUT" then

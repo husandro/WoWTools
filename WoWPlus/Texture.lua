@@ -23,8 +23,10 @@ local Save={
 
 
 
-
-
+local min03
+local function GetMinValueAlpha()--min03，透明度，最小值
+    min03= Save.alpha<0.3 and 0.3 or nil
+end
 
 
 
@@ -83,12 +85,12 @@ local function set_SearchBox(frame)
     if not frame then-- or not frame.SearchBox then
         return
     end
-    local alpha= Save.alpha<0.3 and 0.3 or nil
+    local alpha= GetMinValueAlpha()
     set_Alpha_Color(frame.Middle, nil, nil, alpha)
     set_Alpha_Color(frame.Left, nil, nil, alpha)
     set_Alpha_Color(frame.Right, nil, nil, alpha)
     set_Alpha_Color(frame.Mid, nil, nil, alpha)
-    
+
 end
 
 local setNineSliceTabs={
@@ -107,7 +109,7 @@ local function set_NineSlice(frame, min03, hide)
     if not frame or not frame.NineSlice then
         return
     end
-    local alpha= min03 and Save.alpha<0.3 and 0.3
+    local alpha= min03 and GetMinValueAlpha()
     for _, text in pairs(setNineSliceTabs) do
         if not hide then
             set_Alpha_Color(frame.NineSlice[text], nil, nil, alpha)
@@ -135,7 +137,7 @@ local function set_ScrollBar(frame)
     end
     hide_Texture(frame.ScrollBar.Backplate, nil, true)
     set_Alpha_Color(frame.ScrollBar.Background, nil, true)
-    
+
 end
 
 --隐藏, frame, 子材质
@@ -245,11 +247,11 @@ end
 --###############
 --初始化, 隐藏材质
 --###############
-local function Init()
+local function Init_All_Frame()
     if Save.disabled then
         return
     end
-    local min03= Save.alpha<0.3 and 0.3 or nil
+    local min03= GetMinValueAlpha()
 
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
@@ -439,9 +441,9 @@ local function Init()
          end
      end
 
-     set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=Save.alpha<0.3 and 0.3})
-     set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=Save.alpha<0.3 and 0.3})
-     set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=Save.alpha<0.3 and 0.3})
+     set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=min03})
+     set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=min03})
+     set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=min03})
 
 
      --世界地图
@@ -463,7 +465,7 @@ local function Init()
      set_Alpha_Color(QuestScrollFrame.Edge)
      set_Alpha_Color(QuestScrollFrame.DetailFrame.TopDetail)
 
-     set_Alpha_Color(QuestScrollFrame.Contents.Separator.Divider, nil, nil, Save.alpha<0.3 and 0.3)
+     set_Alpha_Color(QuestScrollFrame.Contents.Separator.Divider, nil, nil, min03)
 
      set_ScrollBar(QuestScrollFrame)
 
@@ -514,9 +516,9 @@ local function Init()
      hide_Texture(GossipFrameInset.Bg)
      set_ScrollBar(GossipFrame.GreetingPanel)
 
-     set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
-     set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
-     set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
+     set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=min03})
+     set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=min03})
+     set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=min03})
 
      if PetStableFrame then--猎人，宠物
         set_NineSlice(PetStableFrame, true)
@@ -663,7 +665,7 @@ local function Init()
      hide_Texture(ChannelFrame.LeftInset.Bg)
      set_ScrollBar(ChannelFrame.ChannelRoster)
      set_ScrollBar(ChannelFrame.ChannelList)
-     
+
 
      --任务
      set_NineSlice(QuestFrame, true)
@@ -713,7 +715,7 @@ local function Init()
      set_Alpha_Color(GroupLootHistoryFrameMiddle)
      set_Alpha_Color(GroupLootHistoryFrameLeft)
      set_Alpha_Color(GroupLootHistoryFrameRight)
- 
+
 
 
 
@@ -808,14 +810,14 @@ local function Init()
      end
 
      --插件，菜单
-     hide_Frame_Texture(AddonCompartmentFrame, {alpha= Save.alpha<=0.3 and 0.3})
-     set_Alpha_Color(AddonCompartmentFrame.Text, nil, nil, Save.alpha<=0.3 and 0.3)
+     hide_Frame_Texture(AddonCompartmentFrame, {alpha= min03})
+     set_Alpha_Color(AddonCompartmentFrame.Text, nil, nil, min03)
      C_Timer.After(2, function()
          AddonCompartmentFrame:HookScript('OnEnter', function(self)
              self.Text:SetAlpha(1)
          end)
          AddonCompartmentFrame:HookScript('OnLeave', function(self)
-             set_Alpha_Color(self.Text, nil, nil, Save.alpha<=0.3 and 0.3)
+             set_Alpha_Color(self.Text, nil, nil, min03)
          end)
      end)
 
@@ -1024,6 +1026,7 @@ end
 --事件, 透明
 --#########
 local function Init_Event(arg1)
+    local min03= GetMinValueAlpha()
     if arg1=='Blizzard_TrainerUI' then--专业训练师
         set_NineSlice(ClassTrainerFrame, true)
         hide_Texture(ClassTrainerFrameInset.Bg)
@@ -1083,7 +1086,7 @@ local function Init_Event(arg1)
         --TabSystemOwner.lua
         for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
             local btn= ClassTalentFrame:GetTabButton(tabID)
-            set_Alpha_Frame_Texture(btn, {alpha=Save.alpha<0.3 and 0.3})
+            set_Alpha_Frame_Texture(btn, {alpha=min03})
         end
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
@@ -1141,10 +1144,10 @@ local function Init_Event(arg1)
         set_ScrollBar(AchievementFrameAchievements)
         set_ScrollBar(AchievementFrameStats)
         set_ScrollBar(AchievementFrameCategories)
-        set_Alpha_Frame_Texture(AchievementFrameTab1, {alpha=Save.alpha<0.3 and 0.3})
-        set_Alpha_Frame_Texture(AchievementFrameTab2, {alpha=Save.alpha<0.3 and 0.3})
-        set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=Save.alpha<0.3 and 0.3})
-        
+        set_Alpha_Frame_Texture(AchievementFrameTab1, {alpha=min03})
+        set_Alpha_Frame_Texture(AchievementFrameTab2, {alpha=min03})
+        set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=min03})
+
         set_NineSlice(AchievementFrameCategories)
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
@@ -1159,7 +1162,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(CommunitiesFrameBg)
         set_Alpha_Color(CommunitiesFrame.MemberList.ColumnDisplay.Background)
         set_Alpha_Color(CommunitiesFrameCommunitiesList.Bg)
-        set_Alpha_Color(CommunitiesFrameInset.Bg, nil, nil, Save.alpha<0.5 and 0.5)
+        set_Alpha_Color(CommunitiesFrameInset.Bg, nil, nil, min03)
         CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
         CommunitiesFrameGuildDetailsFrameInfo:DisableDrawLayer('BACKGROUND')
         CommunitiesFrameGuildDetailsFrameNews:DisableDrawLayer('BACKGROUND')
@@ -1168,7 +1171,7 @@ local function Init_Event(arg1)
         set_NineSlice(CommunitiesFrame.Chat.InsetFrame, true)
         set_NineSlice(CommunitiesFrame.MemberList.InsetFrame, true)
         set_Alpha_Color(CommunitiesFrameMiddle)
-        
+
         set_NineSlice(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
         hide_Texture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
 
@@ -1241,11 +1244,11 @@ local function Init_Event(arg1)
             set_ScrollBar(EncounterJournalMonthlyActivitiesFrame)
         end)
 
-        set_Alpha_Frame_Texture(EncounterJournalSuggestTab, {alpha=Save.alpha<0.3 and 0.3})
-        set_Alpha_Frame_Texture(EncounterJournalMonthlyActivitiesTab, {alpha=Save.alpha<0.3 and 0.3})
-        set_Alpha_Frame_Texture(EncounterJournalDungeonTab, {alpha=Save.alpha<0.3 and 0.3})
-        set_Alpha_Frame_Texture(EncounterJournalRaidTab, {alpha=Save.alpha<0.3 and 0.3})
-        set_Alpha_Frame_Texture(EncounterJournalLootJournalTab, {alpha=Save.alpha<0.3 and 0.3})
+        set_Alpha_Frame_Texture(EncounterJournalSuggestTab, {alpha=min03})
+        set_Alpha_Frame_Texture(EncounterJournalMonthlyActivitiesTab, {alpha=min03})
+        set_Alpha_Frame_Texture(EncounterJournalDungeonTab, {alpha=min03})
+        set_Alpha_Frame_Texture(EncounterJournalRaidTab, {alpha=min03})
+        set_Alpha_Frame_Texture(EncounterJournalLootJournalTab, {alpha=min03})
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set_Alpha_Color(GuildBankFrame.BlackBG)
@@ -1267,7 +1270,7 @@ local function Init_Event(arg1)
             if frame then
                 hide_Texture(frame.Background)
             end
-            set_Alpha_Frame_Texture(_G['GuildBankFrameTab'..i], {alpha=Save.alpha<0.3 and 0.3})
+            set_Alpha_Frame_Texture(_G['GuildBankFrameTab'..i], {alpha=min03})
         end
 
         local MAX_GUILDBANK_SLOTS_PER_TAB = 98;
@@ -1369,10 +1372,10 @@ local function Init_Event(arg1)
         hide_Texture(PetJournalLoadoutPet3BG)
         set_Alpha_Color(PetJournalLoadoutBorderSlotHeaderBG)
         hide_Texture(PetJournalLeftInset.Bg)
-        set_Alpha_Color(PetJournalLoadoutBorder, nil, nil, Save.alpha<0.3 and 0.3)
+        set_Alpha_Color(PetJournalLoadoutBorder, nil, nil, min03)
         hide_Texture(PetJournalRightInset.NineSlice)
-        set_Alpha_Color(PetJournalPetCardInset.NineSlice, nil, nil, Save.alpha<0.3 and 0.3)
-        
+        set_Alpha_Color(PetJournalPetCardInset.NineSlice, nil, nil, min03)
+
 
         set_ScrollBar(PetJournal)
         set_SearchBox(PetJournalSearchBox)
@@ -1454,7 +1457,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonTopRight)
         set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonBottomRight)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.ModelFadeTexture)
-        
+
         set_Alpha_Frame_Texture(WardrobeCollectionFrameTab1, {alpha=Save.alpha<0.5 and 0.5})
         set_Alpha_Frame_Texture(WardrobeCollectionFrameTab2, {alpha=Save.alpha<0.5 and 0.5})
         --[[hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(button, displayData)--外观列表
@@ -1495,13 +1498,13 @@ local function Init_Event(arg1)
         set_Alpha_Color(WardrobeCollectionFrameWeaponDropDownLeft)
         set_Alpha_Color(WardrobeCollectionFrameWeaponDropDownRight)
 
-        set_Alpha_Frame_Texture(CollectionsJournalTab1, {alpha=Save.alpha<0.3 and 0.3})
-        set_Alpha_Frame_Texture(CollectionsJournalTab2, {alpha=Save.alpha<0.3 and 0.3})
-        set_Alpha_Frame_Texture(CollectionsJournalTab3, {alpha=Save.alpha<0.3 and 0.3})
-        set_Alpha_Frame_Texture(CollectionsJournalTab4, {alpha=Save.alpha<0.3 and 0.3})
-        set_Alpha_Frame_Texture(CollectionsJournalTab5, {alpha=Save.alpha<0.3 and 0.3})
-        set_Alpha_Frame_Texture(_G['CollectionsJournalTab6'], {alpha=Save.alpha<0.3 and 0.3})
-        set_Alpha_Frame_Texture(_G['CollectionsJournalTab7'], {alpha=Save.alpha<0.3 and 0.3})
+        set_Alpha_Frame_Texture(CollectionsJournalTab1, {alpha=min03})
+        set_Alpha_Frame_Texture(CollectionsJournalTab2, {alpha=min03})
+        set_Alpha_Frame_Texture(CollectionsJournalTab3, {alpha=min03})
+        set_Alpha_Frame_Texture(CollectionsJournalTab4, {alpha=min03})
+        set_Alpha_Frame_Texture(CollectionsJournalTab5, {alpha=min03})
+        set_Alpha_Frame_Texture(_G['CollectionsJournalTab6'], {alpha=min03})
+        set_Alpha_Frame_Texture(_G['CollectionsJournalTab7'], {alpha=min03})
 
         if RematchJournal then
             set_NineSlice(RematchJournal, true)
@@ -1641,7 +1644,7 @@ local function Init_Event(arg1)
                 hide_Texture(self.Background.BackgroundTile)
                 hide_Texture(self.Background)
             end
-            
+
             set_NineSlice(self)
             set_Alpha_Color(self.Header)
             set_SearchBox(self.Title)
@@ -1912,6 +1915,7 @@ local function Init_MainMenu(init)--主菜单
     if init and Save.disabledMainMenu then
         return
     end
+    local min03= GetMinValueAlpha()
     local buttons = {
         'CharacterMicroButton',--菜单
         'SpellbookMicroButton',
@@ -1945,14 +1949,14 @@ local function Init_MainMenu(init)--主菜单
                     end)
                     self:HookScript('OnLeave', function(self2)
                         if not Save.disabledMainMenu then
-                            set_Alpha_Color(self2.Portrait or self2:GetNormalTexture(), nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
+                            set_Alpha_Color(self2.Portrait or self2:GetNormalTexture(), nil, nil, min03)
                             if self.Background then
                                 self.Background:SetAlpha(0.5)
                             end
                         end
                     end)
                 end
-                set_Alpha_Color(self.Portrait or self:GetNormalTexture(), nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
+                set_Alpha_Color(self.Portrait or self:GetNormalTexture(), nil, nil, min03)
 
             else
                 local texture= self.Portrait or self:GetNormalTexture()
@@ -1995,13 +1999,13 @@ local function Init_MainMenu(init)--主菜单
     if init then
          --材料包
         if CharacterReagentBag0Slot then
-            set_Alpha_Color(CharacterReagentBag0SlotNormalTexture, nil, nil, Save.alpha<0.3 and 0.3)--外框
+            set_Alpha_Color(CharacterReagentBag0SlotNormalTexture, nil, nil, min03)--外框
 
             local function set_Reagent_Bag_Alpha(show)
                 if show then
                     CharacterReagentBag0SlotIconTexture:SetVertexColor(1,1,1,1)
                 else
-                    set_Alpha_Color(CharacterReagentBag0SlotIconTexture, nil, nil, Save.alpha<0.3 and 0.3 or Save.alpha)
+                    set_Alpha_Color(CharacterReagentBag0SlotIconTexture, nil, nil, min03)
                 end
             end
             set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
@@ -2208,6 +2212,32 @@ end
 
 
 
+local function Init()
+    GetMinValueAlpha()--min03，透明度，最小值
+    Init_All_Frame()
+    Init_Class_Power(true)--职业
+    Init_Chat_Bubbles()--聊天泡泡
+    Init_HelpTip()--隐藏教程
+    C_Timer.After(2, function()
+        Init_MainMenu(true)--主菜单, 颜色
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --###########
@@ -2252,9 +2282,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     local value3= e.GetFormatter1to10(value2, 0, 1)
                     Save.alpha= value3
                     Init()
-                    Init_Class_Power()--职业
-                    Init_Chat_Bubbles()--聊天泡泡
-                    Init_MainMenu()--主菜单, 颜色
                     print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
@@ -2346,16 +2373,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
-            else
-                Init()
             end
-            
-            Init_Class_Power(true)--职业
-            Init_Chat_Bubbles()--聊天泡泡
-            Init_HelpTip()--隐藏教程
-            C_Timer.After(2, function()
-                Init_MainMenu(true)--主菜单, 颜色
-            end)
+            Init()
             panel:RegisterEvent("PLAYER_LOGOUT")
         else
             Init_Event(arg1)

@@ -200,8 +200,8 @@ local function set_PetBattleAbilityButton_UpdateBetterIcon(self)
                     self.up:SetSize(10,10)
                     self.up:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Strong')
 
-                    
-                  
+
+
 
                     self.petType= self:CreateTexture(nil, 'OVERLAY')
                     self.petType:SetPoint('LEFT', self, -4, 0)
@@ -230,7 +230,7 @@ local function set_PetBattleAbilityButton_UpdateBetterIcon(self)
         self.up:SetShown(weakHintsTexture and typeTexture and strongTexture)
         self.down:SetShown(weakHintsTexture and typeTexture and strongTexture)
         self.text:SetText(Cooldown and Cooldown>0 and Cooldown or '')
-        
+
     end
 end
 
@@ -340,7 +340,7 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
                             --if ( self2.requiredLevel ) then
                               --  PetBattleAbilityTooltip_SetAbilityByID(self2.petOwner, self2.petIndex, self2.abilityID, format(PET_ABILITY_REQUIRES_LEVEL, self2.requiredLevel));
                             PetBattleAbilityTooltip_SetAbilityByID(self2.petOwner, self2.petIndex, self2.abilityID);
-                            
+
                             PetBattleAbilityTooltip_Show("BOTTOMLEFT", self2, "TOPLEFT");
                         end
                     end)
@@ -362,7 +362,7 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
                     frame[i].up:SetSize(8,8)
                     frame[i].up:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Strong')
 
-                    
+
                     frame[i].petTypeTexture=frame[i]:CreateTexture(nil,'BORDER', nil, 1)
                     frame[i].petTypeTexture:SetPoint('LEFT', -4, 0)
                     frame[i].petTypeTexture:SetSize(15,15)
@@ -400,7 +400,7 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
 
         for i = 1, NUM_BATTLE_PET_ABILITIES do
             local abilityID, _, icon, _, _, _, petType, noStrongWeakHints = C_PetBattles.GetAbilityInfo(target, petIndex, i);
-            
+
             if abilityID and icon and petType then
                 --local speciesID = C_PetBattles.GetPetSpeciesID(target, petIndex)
                 --local abilities = speciesID and C_PetJournal.GetPetAbilityListTable(speciesID)
@@ -410,7 +410,7 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
 
                 frame[i].icon:SetTexture(icon)--设置图标
                 frame[i].petTypeTexture:SetTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType])--设置类型
-                
+
                 local strong, weakhints
                 if not noStrongWeakHints then
                     strong, weakhints= e.GetPetStrongWeakHints(petType)
@@ -459,13 +459,13 @@ local function set_PetBattleActionButton_UpdateState()
             local abilityID, name = C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Enemy, activeEnemy, i);
             if name and abilityID then
                 isUsable, currentCooldown, currentLockdown = C_PetBattles.GetAbilityState(Enum.BattlePetOwner.Enemy, activeEnemy, i)
-                
+
                 if currentCooldown and currentCooldown>0 then
                     text=currentCooldown
                 elseif currentLockdown and currentCooldown>0 then
                     text= currentLockdown
                 end
-                
+
             end
             if text and not frame[i].cooldownText then
                 frame[i].cooldownText=e.Cstr(frame[i], {size=22, color={r=1,g=0,b=0}})
@@ -476,8 +476,8 @@ local function set_PetBattleActionButton_UpdateState()
                 frame[i].cooldownText:SetText(text or '')
             end
             frame[i].icon:SetDesaturated(not isUsable)
-            
-            if currentCooldown and currentCooldown>0 then        
+
+            if currentCooldown and currentCooldown>0 then
                 frame[i].icon:SetVertexColor(0.62, 0.62, 0.62)
             elseif currentLockdown and currentLockdown>0 then
                 frame[i].icon:SetVertexColor(1, 0, 0)
@@ -610,7 +610,7 @@ local function set_Pet_Type(show)--提示,类型,
 
         last=texture
     end
-   
+
 end
 
 
@@ -655,7 +655,7 @@ local function set_Button_setFrame_PetJournal()
         end
         self:set_texture()
     end)
-    
+
     TrackButton.btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -1017,7 +1017,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     set_Click_To_Move()
                 end
             })
-            
+
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled and TrackButton end)
 
             initializer= e.AddPanel_Check({
@@ -1031,7 +1031,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             })
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 
-            
+
             if Save.disabled then
                 panel:UnregisterEvent('ADDON_LOADED')
             else
