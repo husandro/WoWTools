@@ -85,11 +85,10 @@ local function set_SearchBox(frame)
     if not frame then-- or not frame.SearchBox then
         return
     end
-    local alpha= GetMinValueAlpha()
-    set_Alpha_Color(frame.Middle, nil, nil, alpha)
-    set_Alpha_Color(frame.Left, nil, nil, alpha)
-    set_Alpha_Color(frame.Right, nil, nil, alpha)
-    set_Alpha_Color(frame.Mid, nil, nil, alpha)
+    set_Alpha_Color(frame.Middle, nil, nil, min03)
+    set_Alpha_Color(frame.Left, nil, nil, min03)
+    set_Alpha_Color(frame.Right, nil, nil, min03)
+    set_Alpha_Color(frame.Mid, nil, nil, min03)
 
 end
 
@@ -105,11 +104,11 @@ local setNineSliceTabs={
     'Center',
     'Background',
 }
-local function set_NineSlice(frame, min03, hide)
+local function set_NineSlice(frame, min, hide)
     if not frame or not frame.NineSlice then
         return
     end
-    local alpha= min03 and GetMinValueAlpha()
+    local alpha= min and min03 or nil
     for _, text in pairs(setNineSliceTabs) do
         if not hide then
             set_Alpha_Color(frame.NineSlice[text], nil, nil, alpha)
@@ -251,7 +250,6 @@ local function Init_All_Frame()
     if Save.disabled then
         return
     end
-    local min03= GetMinValueAlpha()
 
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
@@ -831,7 +829,7 @@ local function Init_All_Frame()
      set_Alpha_Frame_Texture(MinimapCluster.BorderTop)
      set_Alpha_Frame_Texture(GameTimeFrame)
      hide_Texture(MinimapCluster.Tracking.Background)
-     set_Button_Alpha(MinimapCluster.Tracking.Button, {alpha= Save.alpha<=0.3 and 0.3})
+     set_Button_Alpha(MinimapCluster.Tracking.Button, {alpha= min03})
 
      --小队，背景
      set_Alpha_Frame_Texture(PartyFrame.Background, {})
@@ -845,10 +843,10 @@ local function Init_All_Frame()
 
      --社交，按钮
 
-     set_Alpha_Color(QuickJoinToastButton.FriendsButton, nil, nil, Save.alpha<=0.3 and 0.3)
-     --set_Alpha_Color(QuickJoinToastButton.QueueButton, nil, nil, Save.alpha<=0.3 and 0.3)
-     set_Alpha_Frame_Texture(ChatFrameChannelButton, {alpha= Save.alpha<=0.3 and 0.3})
-     set_Alpha_Frame_Texture(ChatFrameMenuButton, {alpha= Save.alpha<=0.3 and 0.3})
+     set_Alpha_Color(QuickJoinToastButton.FriendsButton, nil, nil, min03)
+     --set_Alpha_Color(QuickJoinToastButton.QueueButton, nil, nil, min03)
+     set_Alpha_Frame_Texture(ChatFrameChannelButton, {alpha= min03})
+     set_Alpha_Frame_Texture(ChatFrameMenuButton, {alpha= min03})
      --[[hooksecurefunc('ObjectiveTracker_UpdateOpacity', function()
          --for _, module in ipairs(ObjectiveTrackerBlocksFrame.MODULES) do
            --  set_Alpha_Color(module.Header.Background)
@@ -1026,7 +1024,6 @@ end
 --事件, 透明
 --#########
 local function Init_Event(arg1)
-    local min03= GetMinValueAlpha()
     if arg1=='Blizzard_TrainerUI' then--专业训练师
         set_NineSlice(ClassTrainerFrame, true)
         hide_Texture(ClassTrainerFrameInset.Bg)
@@ -1363,6 +1360,8 @@ local function Init_Event(arg1)
         hide_Texture(MountJournal.BottomLeftInset.Bg)
         set_ScrollBar(MountJournal)
         set_ScrollBar(MountJournalSearchBox)
+        set_NineSlice(MountJournal.BottomLeftInset, true)
+        set_NineSlice(MountJournal.RightInset)
 
         hide_Texture(PetJournalPetCardBG)
         set_Alpha_Color(PetJournalPetCardInset.Bg)
@@ -1372,24 +1371,24 @@ local function Init_Event(arg1)
         hide_Texture(PetJournalLoadoutPet3BG)
         set_Alpha_Color(PetJournalLoadoutBorderSlotHeaderBG)
         hide_Texture(PetJournalLeftInset.Bg)
-        set_Alpha_Color(PetJournalLoadoutBorder, nil, nil, min03)
-        hide_Texture(PetJournalRightInset.NineSlice)
+        hide_Texture(PetJournalLoadoutBorder)
+        set_Alpha_Color(PetJournalRightInset.NineSlice, nil, nil, min03)
         set_Alpha_Color(PetJournalPetCardInset.NineSlice, nil, nil, min03)
-
 
         set_ScrollBar(PetJournal)
         set_SearchBox(PetJournalSearchBox)
-        set_Alpha_Color(PetJournal.PetCount.BorderTopMiddle)
-        set_Alpha_Color(PetJournal.PetCount.Bg)
-        set_Alpha_Color(PetJournal.PetCount.BorderBottomMiddle)
-        set_Alpha_Color(PetJournal.PetCount.BorderTopRightMiddle)
-        set_Alpha_Color(PetJournal.PetCount.BorderTopLeftMiddle)
-        set_Alpha_Color(PetJournal.PetCount.BorderBottomLeft)
-        set_Alpha_Color(PetJournal.PetCount.BorderTopLeft)
-        set_Alpha_Color(PetJournal.PetCount.BorderBottomRight)
-        set_Alpha_Color(PetJournal.PetCount.BorderTopRight)
-        set_Alpha_Color(PetJournal.PetCount.BorderLeftMiddle)
-        set_Alpha_Color(PetJournal.PetCount.BorderRightMiddle)
+
+        set_Alpha_Color(PetJournal.PetCount.BorderTopMiddle, nil, nil, min03)
+        set_Alpha_Color(PetJournal.PetCount.Bg, nil, nil, min03)
+        set_Alpha_Color(PetJournal.PetCount.BorderBottomMiddle, nil, nil, min03)
+        set_Alpha_Color(PetJournal.PetCount.BorderTopRightMiddle, nil, nil, min03)
+        set_Alpha_Color(PetJournal.PetCount.BorderTopLeftMiddle, nil, nil, min03)
+        set_Alpha_Color(PetJournal.PetCount.BorderBottomLeft, nil, nil, min03)
+        set_Alpha_Color(PetJournal.PetCount.BorderTopLeft, nil, nil, min03)
+        set_Alpha_Color(PetJournal.PetCount.BorderBottomRight, nil, nil, min03)
+        set_Alpha_Color(PetJournal.PetCount.BorderTopRight, nil, nil, min03)
+        set_Alpha_Color(PetJournal.PetCount.BorderLeftMiddle, nil, nil, min03)
+        set_Alpha_Color(PetJournal.PetCount.BorderRightMiddle, nil, nil, min03)
 
         set_Alpha_Color(PetJournalFilterButtonMiddleMiddle, true)
         set_Alpha_Color(PetJournalFilterButtonMiddleLeft, true)
@@ -1915,7 +1914,6 @@ local function Init_MainMenu(init)--主菜单
     if init and Save.disabledMainMenu then
         return
     end
-    local min03= GetMinValueAlpha()
     local buttons = {
         'CharacterMicroButton',--菜单
         'SpellbookMicroButton',
@@ -2214,6 +2212,7 @@ end
 
 local function Init()
     GetMinValueAlpha()--min03，透明度，最小值
+
     Init_All_Frame()
     Init_Class_Power(true)--职业
     Init_Chat_Bubbles()--聊天泡泡
