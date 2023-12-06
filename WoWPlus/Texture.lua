@@ -2300,6 +2300,18 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             })
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 
+            initializer= e.AddPanel_Check({
+                name= e.onlyChinese and '主菜单' or MAINMENU_BUTTON,
+                tooltip= addName,
+                category= Category,
+                value= not Save.disabledMainMenu,
+                func= function()
+                    Save.disabledMainMenu= not Save.disabledMainMenu and true or nil
+                    Init_MainMenu()
+                end
+            })
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabledColor end)
+
             e.AddPanel_Header(Layout, e.onlyChinese and '其它' or OTHER)
 
             initializer2= e.AddPanel_Check({
