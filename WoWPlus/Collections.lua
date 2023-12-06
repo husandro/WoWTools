@@ -295,7 +295,7 @@ local function Set_Sets_Colleced()--收集所有角色套装数据
                 all= info.all +all
                 t= t..format('%i%%', info.coll/info.all*100)..' '..info.coll..'/'.. info.all..'  '
             end
-           
+
             t=t..'('..info.numCollected..'/'..info.numTotal..')'
             m=m..'|c'..select(4,GetClassColor(info.class))..t..'|r'..'|n'
         end
@@ -303,7 +303,7 @@ local function Set_Sets_Colleced()--收集所有角色套装数据
     if all>0 then
         m=m..format((e.onlyChinese and '已收集 ' or TRANSMOG_COLLECTED)..' %d/%d %i%%', coll, all, coll/all*100)
     end
-    
+
     PlayerAllCollectedLabled:SetText(m)--所有玩家，收集情况
 end
 
@@ -313,7 +313,8 @@ local function Init_Wardrobe_Sets()
     SetsDataProvider = CreateFromMixins(WardrobeSetsDataProviderMixin);
 
     PlayerAllCollectedLabled= e.Cstr(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})--所有玩家，收集情况
-    PlayerAllCollectedLabled:SetPoint('BOTTOMLEFT', 10, 8)
+    --PlayerAllCollectedLabled:SetPoint('BOTTOMLEFT', 10, 8)
+    PlayerAllCollectedLabled:SetPoint('BOTTOMLEFT', WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, 'BOTTOMRIGHT', 12,6)
 
     AllSetsLable= e.Cstr(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14, justifyH='RIGHT'})--所有套装，数量
     AllSetsLable:SetPoint('BOTTOMRIGHT', -6, 8)
@@ -446,7 +447,7 @@ local function Init_Wardrobe_Sets()
         btn.numSetsLabel:SetText(numStes>1 and numStes or '')
         btn.numSetsLabel:SetTextColor(r, g, b)
 
-       
+
     end)
 
     hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'OnClick', function(btn, buttonName)--点击，显示套装情况Blizzard_Wardrobe.lua
@@ -507,7 +508,7 @@ local function Init_Wardrobe_Sets()
                     e.Chat(self2.link, nil, true)
                     --local chat=SELECTED_DOCK_FRAME
                     --ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
-                        
+
                 end)
                 btn:SetScript("OnLeave",function(self2)
                         self2:SetAlpha(0.2)
@@ -540,9 +541,9 @@ local function Init_Wardrobe_Sets()
             return
         end
         local sets = C_TransmogSets.GetAllSets() or {}
-        
+
         local a, h, o= 0, 0, 0--联盟, 部落, 其它
-        
+
         for _, info in pairs(sets) do
             if info and info.classMask and info.setID then
                 if info.requiredFaction=='Alliance' then
@@ -811,7 +812,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
         self:SetAlpha(0.5)
     end)
 
-    
+
 
     local function get_Link_Item_Type_Source(sourceID, type)
         if sourceID then
@@ -944,7 +945,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
             end
         end
     end)
-    
+
     WardrobeCollectionFrame.ItemsCollectionFrame:HookScript('OnShow', get_Items_Colleced)
     WardrobeCollectionFrame.ItemsCollectionFrame:HookScript('OnHide', get_Items_Colleced)
 end
