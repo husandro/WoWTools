@@ -3732,7 +3732,16 @@
         "ToyBoxFilterButton",
         "PetJournalFilterButton",
         "MountJournalFilterButton",
-        "HeirloomsJournalClassDropDownButton"
+        "HeirloomsJournalClassDropDownButton",
+        "EncounterJournalNavBarInsetBottomBorder",
+        "EncounterJournalNavBarInsetBotRightCorner",
+        "EncounterJournalNavBarInsetRightBorder",
+        "EncounterJournalNavBarInsetLeftBorder",
+        "EncounterJournalNavBarInsetBotLeftCorner",
+        "EncounterJournalInstanceSelectTierDropDownButton",
+        "EncounterJournalEncounterFrameInstanceFrame",
+        "WhoFrameColumnHeader1",
+        "WhoFrameDropDownButton"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

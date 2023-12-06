@@ -1259,6 +1259,17 @@ local function Init_Mount()
         end
         MountJournal.MountDisplay.infoButton:set_Text()
     end)
+
+    --总数
+    --MountJournal.MountCount.Count:ClearAllPoints()
+    MountJournal.MountCount.Count:SetPoint('RIGHT', -4,0)
+    hooksecurefunc('MountJournal_UpdateMountList', function()
+        local numMounts = C_MountJournal.GetNumMounts() or 0
+        if numMounts>1 then
+            local mountIDs = C_MountJournal.GetMountIDs() or {}
+            MountJournal.MountCount.Count:SetText(MountJournal.numOwned..'/'..#mountIDs);
+        end
+    end)
 end
 
 
@@ -1281,7 +1292,7 @@ local function Init_Pet()
     --增加，总数
     hooksecurefunc('PetJournal_UpdatePetList', function()
         local numPets, numOwned = C_PetJournal.GetNumPets();
-	    PetJournal.PetCount.Count:SetText(numPets..'/'..numOwned)
+	    PetJournal.PetCount.Count:SetText(numOwned..'/'..numPets)
     end)
 end
 

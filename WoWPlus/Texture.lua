@@ -121,23 +121,22 @@ end
 
 --设置，滚动条，颜色
 local function set_ScrollBar(frame)
-    if not frame or not frame.ScrollBar then
-        return
+    local bar= frame and frame.ScrollBar or frame
+    if bar then
+        if bar.Track then
+            set_Alpha_Color(bar.Track.Thumb.Middle, true)
+            set_Alpha_Color(bar.Track.Thumb.Begin, true)
+            set_Alpha_Color(bar.Track.Thumb.End, true)
+        end
+        if bar.Back then
+            set_Alpha_Color(bar.Back.Texture, true)
+        end
+        if bar.Forward then
+            set_Alpha_Color(bar.Forward.Texture, true)
+        end
+        hide_Texture(bar.Backplate, nil, true)
+        set_Alpha_Color(bar.Background, nil, true)
     end
-    if frame.ScrollBar.Track then
-        set_Alpha_Color(frame.ScrollBar.Track.Thumb.Middle, true)
-        set_Alpha_Color(frame.ScrollBar.Track.Thumb.Begin, true)
-        set_Alpha_Color(frame.ScrollBar.Track.Thumb.End, true)
-    end
-    if frame.ScrollBar.Back then
-        set_Alpha_Color(frame.ScrollBar.Back.Texture, true)
-    end
-    if frame.ScrollBar.Forward then
-        set_Alpha_Color(frame.ScrollBar.Forward.Texture, true)
-    end
-    hide_Texture(frame.ScrollBar.Backplate, nil, true)
-    set_Alpha_Color(frame.ScrollBar.Background, nil, true)
-
 end
 
 --隐藏, frame, 子材质
@@ -626,24 +625,29 @@ local function Init_All_Frame()
      set_NineSlice(FriendsFrame, true)
 
      set_Alpha_Color(FriendsFrameBg)
-     --hide_Texture(FriendsFrameInset.Bg)
+     set_NineSlice(FriendsFrameInset, true)
+     set_Alpha_Color(FriendsFrameInset.Bg, nil, nil, min05)
      set_ScrollBar(FriendsListFrame)
      set_ScrollBar(IgnoreListFrame)
      if RecruitAFriendFrame and RecruitAFriendFrame.RecruitList then
         set_ScrollBar(RecruitAFriendFrame.RecruitList)
          set_Alpha_Color(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
      end
+     set_NineSlice(WhoFrameListInset, true)
+     set_NineSlice(WhoFrameEditBoxInset, true)
+     
      hide_Texture(WhoFrameListInset.Bg)
      set_ScrollBar(WhoFrame)
-     set_Alpha_Color(WhoFrameDropDownMiddle)
-     set_Alpha_Color(WhoFrameDropDownLeft)
-     set_Alpha_Color(WhoFrameDropDownRight)
+     set_Alpha_Frame_Texture(WhoFrameDropDownButton, {alpha=min05})
+     set_Alpha_Frame_Texture(WhoFrameDropDown, {alpha=min05})
+
      hide_Texture(WhoFrameEditBoxInset.Bg)
      set_ScrollBar(QuickJoinFrame)
 
      for i=1, 4 do
         set_Alpha_Frame_Texture(_G['FriendsFrameTab'..i], {alpha=min05})
         set_Alpha_Frame_Texture(_G['FriendsTabHeaderTab'..i], {alpha=min05})
+        set_Alpha_Frame_Texture(_G['WhoFrameColumnHeader'..i], {alpha=min05})
      end
 
      --聊天设置
@@ -710,18 +714,20 @@ local function Init_All_Frame()
 
 
      --频道, 设置
-     hide_Texture(ChatConfigCategoryFrame.NineSlice.Center)
+     set_NineSlice(ChatConfigCategoryFrame,true)
+     set_NineSlice(ChatConfigBackgroundFrame,true)
+     set_NineSlice(ChatConfigChatSettingsLeft, true)
      hide_Texture(ChatConfigBackgroundFrame.NineSlice.Center)
+     hide_Texture(ChatConfigCategoryFrame.NineSlice.Center)
      hide_Texture(ChatConfigChatSettingsLeft.NineSlice.Center)
+
+     set_ScrollBar(ChatConfigCombatSettingsFilters)
+
      set_Alpha_Color(ChatConfigFrame.Border, nil, nil, min03)
      set_Alpha_Color(ChatConfigFrame.Header.RightBG, true)
      set_Alpha_Color(ChatConfigFrame.Header.LeftBG, true)
      set_Alpha_Color(ChatConfigFrame.Header.CenterBG, true)
 
-     set_NineSlice(ChatConfigCategoryFrame, true)
-     set_NineSlice(ChatConfigBackgroundFrame, true)
-     set_NineSlice(ChatConfigCombatSettingsFilters, true)
-     set_ScrollBar(ChatConfigCombatSettingsFilters)
 
      for i= 1, 5 do
         set_Alpha_Frame_Texture(_G['CombatConfigTab'..i], {alpha=min05})
@@ -850,7 +856,7 @@ local function Init_All_Frame()
 
 
      --商人
-     set_ScrollBar(MerchantFrame, true)
+     set_ScrollBar(MerchantFrame)
      set_Alpha_Color(MerchantFrameBg)
      hide_Texture(MerchantFrameInset.Bg)
      set_Alpha_Color(MerchantMoneyInset.Bg)
@@ -1203,26 +1209,29 @@ local function Init_Event(arg1)
         set_NineSlice(EncounterJournal, true)
 
         hide_Texture(EncounterJournalBg)
-        hide_Texture(EncounterJournalInset.Bg)
-
-
+        set_Alpha_Color(EncounterJournalInset.Bg, nil, nil, min03)
+        set_NineSlice(EncounterJournalInset, nil, true)
         set_Alpha_Color(EncounterJournalInstanceSelectBG)
         set_ScrollBar(EncounterJournalInstanceSelect)
         set_SearchBox(EncounterJournalSearchBox)
-
         set_ScrollBar(EncounterJournal.LootJournalItems.ItemSetsFrame)
         set_ScrollBar(EncounterJournalEncounterFrameInfo.LootContainer)
         set_ScrollBar(EncounterJournalEncounterFrameInfoDetailsScrollFrame)
-
         hide_Texture(EncounterJournalNavBar.overlay)
+        hide_Texture(EncounterJournalNavBarInsetBottomBorder)
+        hide_Texture(EncounterJournalNavBarInsetRightBorder)
+        hide_Texture(EncounterJournalNavBarInsetLeftBorder)
+        hide_Texture(EncounterJournalNavBarInsetBotRightCorner)
+        hide_Texture(EncounterJournalNavBarInsetBotLeftCorner)
 
+        set_Alpha_Color(EncounterJournalInstanceSelectTierDropDownButton, true)
         --set_Alpha_Color(EncounterJournalEncounterFrameInfoBG)
         set_Alpha_Color(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
         EncounterJournalNavBar:DisableDrawLayer('BACKGROUND')
 
-        set_Alpha_Color(EncounterJournalInstanceSelectTierDropDownMiddle)
-        set_Alpha_Color(EncounterJournalInstanceSelectTierDropDownLeft)
-        set_Alpha_Color(EncounterJournalInstanceSelectTierDropDownRight)
+        set_Alpha_Color(EncounterJournalInstanceSelectTierDropDownMiddle, nil, nil, min03)
+        set_Alpha_Color(EncounterJournalInstanceSelectTierDropDownLeft, nil, nil, min03)
+        set_Alpha_Color(EncounterJournalInstanceSelectTierDropDownRight, nil, nil, min03)
 
 
         C_Timer.After(0.3, function()
@@ -1237,6 +1246,9 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(EncounterJournalDungeonTab, {alpha=min05})
         set_Alpha_Frame_Texture(EncounterJournalRaidTab, {alpha=min05})
         set_Alpha_Frame_Texture(EncounterJournalLootJournalTab, {alpha=min05})
+
+        set_ScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
+        set_ScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set_Alpha_Color(GuildBankFrame.BlackBG)
@@ -1344,6 +1356,7 @@ local function Init_Event(arg1)
         set_NineSlice(CollectionsJournal, true)
         set_Alpha_Color(CollectionsJournalBg)
 
+        set_Alpha_Frame_Texture(MountJournal.MountCount, {alpha=min03})
         hide_Texture(MountJournal.LeftInset.Bg)
         set_Alpha_Color(MountJournal.MountDisplay.YesMountsTex)
         hide_Texture(MountJournal.RightInset.Bg)
@@ -1393,16 +1406,16 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(ToyBoxFilterButton, {alpha=min03})
         hide_Texture(ToyBox.iconsFrame.ShadowLineTop)
         hide_Texture(ToyBox.iconsFrame.ShadowLineBottom)
-        set_Alpha_Frame_Texture(HeirloomsJournalClassDropDownButton, {alpha=min03})
+        
         set_NineSlice(ToyBox.iconsFrame, nil, true)
         ToyBox.progressBar:DisableDrawLayer('BACKGROUND')
 
+        
+        set_Alpha_Frame_Texture(HeirloomsJournalClassDropDownButton, {alpha=min03})
+        set_Alpha_Frame_Texture(HeirloomsJournalClassDropDown, {alpha=min03})
         hide_Texture(HeirloomsJournal.iconsFrame.BackgroundTile)
         hide_Texture(HeirloomsJournal.iconsFrame.Bg)
         set_SearchBox(HeirloomsJournalSearchBox)
-        set_Alpha_Color(HeirloomsJournalClassDropDownMiddle)
-        set_Alpha_Color(HeirloomsJournalClassDropDownLeft)
-        set_Alpha_Color(HeirloomsJournalClassDropDownRight)
         set_Alpha_Color(HeirloomsJournalMiddleMiddle)
         set_Alpha_Color(HeirloomsJournalMiddleLeft)
         set_Alpha_Color(HeirloomsJournalMiddleRight)
@@ -1416,7 +1429,7 @@ local function Init_Event(arg1)
         hide_Texture(HeirloomsJournal.iconsFrame.ShadowLineTop)
         set_NineSlice(HeirloomsJournal.iconsFrame, nil, true)
         HeirloomsJournal.progressBar:DisableDrawLayer('BACKGROUND')
-
+        set_Alpha_Frame_Texture(HeirloomsJournal.FilterButton, {alpha=min03})
         
         hide_Texture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineBottom)
         hide_Texture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineTop)
@@ -1449,15 +1462,19 @@ local function Init_Event(arg1)
         set_Alpha_Color(WardrobeCollectionFrameTopLeft)
                  --WardrobeCollectionFrameBottomRight
 
-        set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonMiddleMiddle)
-        set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonBottomMiddle)
-        set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonTopMiddle)
+        set_Alpha_Frame_Texture(WardrobeCollectionFrame.FilterButton, {alpha=min03})
+        set_Alpha_Frame_Texture(WardrobeSetsCollectionVariantSetsButton, {alpha=min03})
+        
+        
+        --[[set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonMiddleMiddle, nil, nil, min03)
+        set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonBottomMiddle, nil, nil, min03)
+        set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonTopMiddle, nil, nil, min03)
         set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonMiddleLeft)
         set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonMiddleRight)
         set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonTopLeft)
         set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonBottomLeft)
         set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonTopRight)
-        set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonBottomRight)
+        set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonBottomRight)]]
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.ModelFadeTexture)
 
         set_Alpha_Frame_Texture(WardrobeCollectionFrameTab1, {alpha=min05})
@@ -1496,17 +1513,11 @@ local function Init_Event(arg1)
             end
         end
         WardrobeCollectionFrame.progressBar:DisableDrawLayer('BACKGROUND')
-        set_Alpha_Color(WardrobeCollectionFrameWeaponDropDownMiddle)
-        set_Alpha_Color(WardrobeCollectionFrameWeaponDropDownLeft)
-        set_Alpha_Color(WardrobeCollectionFrameWeaponDropDownRight)
+        set_Alpha_Frame_Texture(WardrobeCollectionFrameWeaponDropDown, {alpha=min05})
 
-        set_Alpha_Frame_Texture(CollectionsJournalTab1, {alpha=min05})
-        set_Alpha_Frame_Texture(CollectionsJournalTab2, {alpha=min05})
-        set_Alpha_Frame_Texture(CollectionsJournalTab3, {alpha=min05})
-        set_Alpha_Frame_Texture(CollectionsJournalTab4, {alpha=min05})
-        set_Alpha_Frame_Texture(CollectionsJournalTab5, {alpha=min05})
-        set_Alpha_Frame_Texture(_G['CollectionsJournalTab6'], {alpha=min05})
-        set_Alpha_Frame_Texture(_G['CollectionsJournalTab7'], {alpha=min05})
+        for i=1, 7 do
+            set_Alpha_Frame_Texture(_G['CollectionsJournalTab'..i], {alpha=min05})
+        end
 
         if RematchJournal then
             set_NineSlice(RematchJournal, true)
