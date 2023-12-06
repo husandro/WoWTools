@@ -572,7 +572,7 @@ local function Init_All_Frame()
      end)
      set_Alpha_Frame_Texture(BankFrameTab1, {alpha=min05})
      set_Alpha_Frame_Texture(BankFrameTab2, {alpha=min05})
-     
+
      --背包
      if ContainerFrameCombinedBags and ContainerFrameCombinedBags.NineSlice then
         set_NineSlice(ContainerFrameCombinedBags, true)
@@ -635,7 +635,7 @@ local function Init_All_Frame()
      end
      set_NineSlice(WhoFrameListInset, true)
      set_NineSlice(WhoFrameEditBoxInset, true)
-     
+
      hide_Texture(WhoFrameListInset.Bg)
      set_ScrollBar(WhoFrame)
      set_Alpha_Frame_Texture(WhoFrameDropDownButton, {alpha=min05})
@@ -1248,7 +1248,7 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(EncounterJournalLootJournalTab, {alpha=min05})
         set_Alpha_Frame_Texture(EncounterJournalLootJournalViewDropDownButton, {alpha=min05})
         set_Alpha_Frame_Texture(EncounterJournalLootJournalViewDropDown, {alpha=min05})
-        
+
 
         set_ScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
         set_ScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
@@ -1395,7 +1395,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(PetJournal.PetCount.BorderBottomRight, nil, nil, min03)
         set_Alpha_Color(PetJournal.PetCount.BorderTopRight, nil, nil, min03)
         set_Alpha_Color(PetJournal.PetCount.BorderLeftMiddle, nil, nil, min03)
-        set_Alpha_Color(PetJournal.PetCount.BorderRightMiddle, nil, nil, min03)        
+        set_Alpha_Color(PetJournal.PetCount.BorderRightMiddle, nil, nil, min03)
         set_Alpha_Frame_Texture(PetJournalFilterButton, {alpha=min03})
         set_NineSlice(PetJournalLeftInset, nil, true)
         set_NineSlice(PetJournalPetCardInset, nil, true)
@@ -1409,11 +1409,11 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(ToyBoxFilterButton, {alpha=min03})
         hide_Texture(ToyBox.iconsFrame.ShadowLineTop)
         hide_Texture(ToyBox.iconsFrame.ShadowLineBottom)
-        
+
         set_NineSlice(ToyBox.iconsFrame, nil, true)
         ToyBox.progressBar:DisableDrawLayer('BACKGROUND')
 
-        
+
         set_Alpha_Frame_Texture(HeirloomsJournalClassDropDownButton, {alpha=min03})
         set_Alpha_Frame_Texture(HeirloomsJournalClassDropDown, {alpha=min03})
         hide_Texture(HeirloomsJournal.iconsFrame.BackgroundTile)
@@ -1433,7 +1433,7 @@ local function Init_Event(arg1)
         set_NineSlice(HeirloomsJournal.iconsFrame, nil, true)
         HeirloomsJournal.progressBar:DisableDrawLayer('BACKGROUND')
         set_Alpha_Frame_Texture(HeirloomsJournal.FilterButton, {alpha=min03})
-        
+
         hide_Texture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineBottom)
         hide_Texture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineTop)
         set_NineSlice(WardrobeCollectionFrame.ItemsCollectionFrame, nil, true)
@@ -1467,8 +1467,8 @@ local function Init_Event(arg1)
 
         set_Alpha_Frame_Texture(WardrobeCollectionFrame.FilterButton, {alpha=min03})
         set_Alpha_Frame_Texture(WardrobeSetsCollectionVariantSetsButton, {alpha=min03})
-        
-        
+
+
         --[[set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonMiddleMiddle, nil, nil, min03)
         set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonBottomMiddle, nil, nil, min03)
         set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonTopMiddle, nil, nil, min03)
