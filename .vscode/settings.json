@@ -3728,7 +3728,11 @@
         "PetJournalFilterButtonBottomMiddle",
         "PetJournalFilterButtonBottomLeft",
         "PetJournalFilterButtonBottomRight",
-        "PetJournal_UpdatePetList"
+        "PetJournal_UpdatePetList",
+        "ToyBoxFilterButton",
+        "PetJournalFilterButton",
+        "MountJournalFilterButton",
+        "HeirloomsJournalClassDropDownButton"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
