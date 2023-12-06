@@ -498,7 +498,7 @@ local function Init_All_Frame()
 
      hide_Texture(PVEFrameBg)--左边
      hide_Texture(PVEFrameBlueBg)
-     set_Alpha_Color(PVEFrameLeftInset.Bg)
+     hide_Texture(PVEFrameLeftInset.Bg)
 
      set_Alpha_Color(LFDQueueFrameBackground)
      set_Alpha_Color(LFDQueueFrameTypeDropDownMiddle)
@@ -2308,6 +2308,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 func= function()
                     Save.disabledMainMenu= not Save.disabledMainMenu and true or nil
                     Init_MainMenu()
+                    print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
             initializer:SetParentInitializer(initializer2, function() return not Save.disabledColor end)
