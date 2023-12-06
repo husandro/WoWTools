@@ -3716,7 +3716,18 @@
         "EncounterJournalInstanceSelect",
         "EncounterJournalSearchBox",
         "EncounterJournalEncounterFrameInfoDetailsScrollFrame",
-        "CreateChannelPopup"
+        "CreateChannelPopup",
+        "GuildBankFrameTab1",
+        "PetJournalLoadoutBorder",
+        "PetJournalFilterButtonMiddleMiddle",
+        "PetJournalFilterButtonMiddleLeft",
+        "PetJournalFilterButtonMiddleRight",
+        "PetJournalFilterButtonTopMiddle",
+        "PetJournalFilterButtonTopLeft",
+        "PetJournalFilterButtonTopRight",
+        "PetJournalFilterButtonBottomMiddle",
+        "PetJournalFilterButtonBottomLeft",
+        "PetJournalFilterButtonBottomRight"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -1256,9 +1256,8 @@ local function Init_Event(arg1)
         set_Alpha_Color(GuildBankFrame.TabLimitBG)
         set_Alpha_Color(GuildBankFrame.TabLimitBGLeft)
         set_Alpha_Color(GuildBankFrame.TabLimitBGRight)
-        set_Alpha_Color(GuildItemSearchBox.Middle)
-        set_Alpha_Color(GuildItemSearchBox.Left)
-        set_Alpha_Color(GuildItemSearchBox.Right)
+        set_SearchBox(GuildItemSearchBox)
+
         set_Alpha_Color(GuildBankFrame.TabTitleBG)
         set_Alpha_Color(GuildBankFrame.TabTitleBGLeft)
         set_Alpha_Color(GuildBankFrame.TabTitleBGRight)
@@ -1268,6 +1267,7 @@ local function Init_Event(arg1)
             if frame then
                 hide_Texture(frame.Background)
             end
+            set_Alpha_Frame_Texture(_G['GuildBankFrameTab'..i], {alpha=Save.alpha<0.3 and 0.3})
         end
 
         local MAX_GUILDBANK_SLOTS_PER_TAB = 98;
@@ -1296,9 +1296,8 @@ local function Init_Event(arg1)
         set_Alpha_Color(AuctionHouseFrameBg)
         set_Alpha_Color(AuctionHouseFrame.CategoriesList.Background)
 
-        set_Alpha_Color(AuctionHouseFrame.SearchBar.SearchBox.Middle)
-        set_Alpha_Color(AuctionHouseFrame.SearchBar.SearchBox.Left)
-        set_Alpha_Color(AuctionHouseFrame.SearchBar.SearchBox.Right)
+        set_SearchBox(AuctionHouseFrame.SearchBar.SearchBox)
+
         set_Alpha_Color(AuctionHouseFrameMiddleMiddle)
         set_Alpha_Color(AuctionHouseFrameMiddleLeft)
         set_Alpha_Color(AuctionHouseFrameMiddleRight)
@@ -1326,9 +1325,8 @@ local function Init_Event(arg1)
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
         set_NineSlice(ProfessionsCustomerOrdersFrame, true)
         set_Alpha_Color(ProfessionsCustomerOrdersFrameBg)
-        set_Alpha_Color(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox.Middle)
-        set_Alpha_Color(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox.Left)
-        set_Alpha_Color(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox.Right)
+
+        set_SearchBox(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox)
 
         set_Alpha_Color(ProfessionsCustomerOrdersFrameMiddleMiddle)
         set_Alpha_Color(ProfessionsCustomerOrdersFrameMiddleLeft)
@@ -1360,9 +1358,7 @@ local function Init_Event(arg1)
         hide_Texture(MountJournal.RightInset.Bg)
         set_Alpha_Color(MountJournal.BottomLeftInset.Background)
         hide_Texture(MountJournal.BottomLeftInset.Bg)
-
         set_ScrollBar(MountJournal)
-
         set_ScrollBar(MountJournalSearchBox)
 
         hide_Texture(PetJournalPetCardBG)
@@ -1373,6 +1369,10 @@ local function Init_Event(arg1)
         hide_Texture(PetJournalLoadoutPet3BG)
         set_Alpha_Color(PetJournalLoadoutBorderSlotHeaderBG)
         hide_Texture(PetJournalLeftInset.Bg)
+        set_Alpha_Color(PetJournalLoadoutBorder, nil, nil, Save.alpha<0.3 and 0.3)
+        hide_Texture(PetJournalRightInset.NineSlice)
+        set_Alpha_Color(PetJournalPetCardInset.NineSlice, nil, nil, Save.alpha<0.3 and 0.3)
+        
 
         set_ScrollBar(PetJournal)
         set_SearchBox(PetJournalSearchBox)
@@ -1385,6 +1385,18 @@ local function Init_Event(arg1)
         set_Alpha_Color(PetJournal.PetCount.BorderTopLeft)
         set_Alpha_Color(PetJournal.PetCount.BorderBottomRight)
         set_Alpha_Color(PetJournal.PetCount.BorderTopRight)
+        set_Alpha_Color(PetJournal.PetCount.BorderLeftMiddle)
+        set_Alpha_Color(PetJournal.PetCount.BorderRightMiddle)
+
+        set_Alpha_Color(PetJournalFilterButtonMiddleMiddle, true)
+        set_Alpha_Color(PetJournalFilterButtonMiddleLeft, true)
+        set_Alpha_Color(PetJournalFilterButtonMiddleRight, true)
+        set_Alpha_Color(PetJournalFilterButtonTopMiddle, true)
+        set_Alpha_Color(PetJournalFilterButtonTopLeft, true)
+        set_Alpha_Color(PetJournalFilterButtonTopRight, true)
+        set_Alpha_Color(PetJournalFilterButtonBottomMiddle, true)
+        set_Alpha_Color(PetJournalFilterButtonBottomLeft, true)
+        set_Alpha_Color(PetJournalFilterButtonBottomRight, true)
 
         hide_Texture(ToyBox.iconsFrame.BackgroundTile)
         hide_Texture(ToyBox.iconsFrame.Bg)
@@ -1629,11 +1641,10 @@ local function Init_Event(arg1)
                 hide_Texture(self.Background.BackgroundTile)
                 hide_Texture(self.Background)
             end
-            set_Alpha_Color(self.NineSlice)
+            
+            set_NineSlice(self)
             set_Alpha_Color(self.Header)
-            set_Alpha_Color(self.Title.Left)
-            set_Alpha_Color(self.Title.Middle)
-            set_Alpha_Color(self.Title.Right)
+            set_SearchBox(self.Title)
         end)
     elseif arg1=='Blizzard_MajorFactions' then--派系声望
         set_Alpha_Color(MajorFactionRenownFrame.Background)
