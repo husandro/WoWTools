@@ -2140,7 +2140,11 @@ local function Init()--SendMailNameEditBox
             end
         end
     end)
+    SendMailFrame:HookScript('OnShow', function ()
+        SendMailNameEditBox:ClearFocus()
+    end)
 
+end
     --[[hooksecurefunc('HandleModifiedItemClick', function(itemLink, itemLocation)
         if not Save.disableCtrlFast and not Save.hide and button and itemLink and itemLocation~=nil and itemLocation.bagID and itemLocation.slotIndex and SendMailFrame:IsShown() and GetMouseButtonClicked()=='RightButton' and IsModifierKeyDown() then
             local findString
@@ -2154,11 +2158,33 @@ local function Init()--SendMailNameEditBox
             button.FastButton.set_PickupContainerItem(classID, subClassID, findString, {bag= itemLocation.bagID, slot= itemLocation.slotIndex, itemLink= itemLink})
         end
     end)]]
-end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 panel:RegisterEvent('ADDON_LOADED')
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -2205,13 +2231,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
-
-            --[[添加控制面板
-            local check=e.AddPanel_Check('|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or addName), not Save.disabled)
-            check:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
-            end)]]
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
