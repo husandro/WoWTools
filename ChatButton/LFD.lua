@@ -263,7 +263,7 @@ local function get_Status_Text(status)--列表，状态，信息
         or status=='suspended' and ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..'|r')
         or status or ''
 end
-local function setQueueStatus()--小眼睛, 信息
+local function Set_Queue_Status()--小眼睛, 信息
     if Save.hideQueueStatus then--列表信息 
         set_tipsFrame_Tips(nil, {})
        return
@@ -652,7 +652,7 @@ local function Init_tipsButton()
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
         button:SetButtonState('PUSHED')
-        setQueueStatus()--小眼睛, 更新信息
+        Set_Queue_Status()--小眼睛, 更新信息
     end)
 
 
@@ -694,17 +694,18 @@ local function Init_tipsButton()
     end)
 
 
-    tipsButton:SetScript('OnUpdate', function(self, elapsed)
+    --[[tipsButton:SetScript('OnUpdate', function(self, elapsed)
         if UnitAffectingCombat('player') then
             return
         end
         self.elapsed= (self.elapsed or 1) + elapsed
-        if self.elapsed>=1 then
+        if self.elapsed>=1 and not UnitAffectingCombat('player') then
             self.elapsed=0
-            e.call(QueueStatusFrame.Update, QueueStatusFrame)--小眼睛, 更新信息, QueueStatusFrame.lua
+            Set_Queue_Status{}
+            --e.call(QueueStatusFrame.Update, QueueStatusFrame)--小眼睛, 更新信息, QueueStatusFrame.lua
             --e.call(LFGListUtil_SetAutoAccept, C_LFGList.CanActiveEntryUseAutoAccept())--LFGList.lua 不可用
         end
-    end)
+    end)]]
 
     tipsButton.text= e.Cstr(tipsButton, {size=Save.tipsFrameTextSize, color=true})--Save.tipsFrameTextSize, nil, nil, true)
     tipsButton.text:SetPoint('BOTTOMLEFT', tipsButton, 'BOTTOMRIGHT')
@@ -1331,7 +1332,7 @@ local function InitList(_, level, type)--LFDFrame.lua
             keepShownOnClick=true,
             func=function()
                 Save.leaveInstance= not Save.leaveInstance and true or nil
-                setQueueStatus()--小眼睛, 信息
+                Set_Queue_Status()--小眼睛, 信息
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1345,7 +1346,7 @@ local function InitList(_, level, type)--LFDFrame.lua
             menuList='tipsButtonRestPoint',
             func=function()
                 Save.hideQueueStatus = not Save.hideQueueStatus and true or nil
-                setQueueStatus()
+                Set_Queue_Status()
             end,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1965,7 +1966,7 @@ local function Init()
     end)--自动进入FB
 
     Init_tipsButton()--建立，小眼睛, 更新信息
-    hooksecurefunc(QueueStatusFrame, 'Update', setQueueStatus)--小眼睛, 更新信息, QueueStatusFrame.lua
+    hooksecurefunc(QueueStatusFrame, 'Update', Set_Queue_Status)--小眼睛, 更新信息, QueueStatusFrame.lua
 
     set_button_LFGPlus_Texture()--预创建队伍增强
     if Save.LFGPlus then
