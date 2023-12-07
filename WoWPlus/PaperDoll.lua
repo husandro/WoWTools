@@ -949,8 +949,10 @@ local function Init_TrackButton()--添加装备管理框
         btn:SetScript("OnClick",function(frame)
             if not UnitAffectingCombat('player') then
                 C_EquipmentSet.UseEquipmentSet(frame.setID)
-                TrackButton:tips_not_equipment()
-                C_Timer.After(0.5, function() LvTo() end)--修改总装等
+                C_Timer.After(1.5, function()
+                    frame:GetParent():tips_not_equipment()
+                    LvTo()--修改总装等
+                end)
             else
                 print(id, addName, RED_FONT_COLOR_CODE, e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT)
             end
