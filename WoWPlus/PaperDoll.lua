@@ -949,8 +949,10 @@ local function Init_TrackButton()--添加装备管理框
         btn:SetScript("OnClick",function(frame)
             if not UnitAffectingCombat('player') then
                 C_EquipmentSet.UseEquipmentSet(frame.setID)
+                if TrackButton.HelpTips then
+                    TrackButton.HelpTips:SetShown(false)
+                end
                 C_Timer.After(1.5, function()
-                    frame:GetParent():tips_not_equipment()
                     LvTo()--修改总装等
                 end)
             else
@@ -999,7 +1001,7 @@ local function Init_TrackButton()--添加装备管理框
             self:SetShown(self.setID and (self.isEquipped or not UnitAffectingCombat('player')))
         end
         function btn:set_alpha()
-            self:SetAlpha(self.numItems==0 and 0.3 or 1)
+            self:SetAlpha((self.numItems==0 and not self.isEquipped) and 0.3 or 1)
         end
         btn:SetScript('OnEvent', btn.set_shown)
         self.buttons[index]=btn
