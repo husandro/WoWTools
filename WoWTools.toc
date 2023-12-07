@@ -171,6 +171,8 @@ Other\DormantSeeds.lua
 Other\HunterPet.lua
 ##法术弹出框，加名称, 和颜色
 Other\SpellFrame.lua
+##中文化，测试中
+Other\Chinese.lua
 
 ##副本, 挑战,之类
 ##Instance\Explosives.lua

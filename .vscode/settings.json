@@ -3743,7 +3743,8 @@
         "WhoFrameColumnHeader1",
         "WhoFrameDropDownButton",
         "EncounterJournalLootJournalViewDropDownButton",
-        "EncounterJournalLootJournalViewDropDown"
+        "EncounterJournalLootJournalViewDropDown",
+        "BUG_CATEGORY15"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
