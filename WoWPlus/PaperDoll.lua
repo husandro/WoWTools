@@ -945,6 +945,8 @@ local function Init_TrackButton()--添加装备管理框
         btn.texture:SetSize(26,26)
         btn.texture:SetPoint('CENTER')
         btn.texture:SetAtlas('AlliedRace-UnlockingFrame-GenderMouseOverGlow')
+        btn.text= e.Cstr(btn, {color={r=1,g=0,b=0}})
+        btn.text:SetPoint('BOTTOMRIGHT')
         self:set_button_point(btn, index)--设置位置
         btn:SetScript("OnClick",function(frame)
             if not UnitAffectingCombat('player') then
@@ -1015,7 +1017,8 @@ local function Init_TrackButton()--添加装备管理框
         local setIDs= SortEquipmentSetIDs(C_EquipmentSet.GetEquipmentSetIDs() or {})--PaperDollFrame.lua
         local numIndex=0
         for index, setID in pairs(setIDs) do
-            local texture, _, isEquipped, numItems= select(2, C_EquipmentSet.GetEquipmentSetInfo(setID))
+            local texture, _, isEquipped, numItems, _, _, numLost= select(2, C_EquipmentSet.GetEquipmentSetInfo(setID))
+            
             local btn=self.buttons[index] or self:create_button(index)
             if numItems==0 then
                 btn:SetNormalAtlas('groupfinder-eye-highlight')
@@ -1028,6 +1031,7 @@ local function Init_TrackButton()--添加装备管理框
                 end
                 btn:SetNormalTexture(texture or 0)
             end
+            btn.text:SetText(numLost>0 and numLost or '')
             btn.texture:SetShown(isEquipped)
             btn.setID=setID
             btn.isEquipped= isEquipped
@@ -1057,7 +1061,7 @@ local function Init_TrackButton()--添加装备管理框
     TrackButton:RegisterEvent('EQUIPMENT_SWAP_FINISHED')
     TrackButton:RegisterEvent('EQUIPMENT_SETS_CHANGED')
     TrackButton:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
-
+    TrackButton:RegisterEvent('BAG_UPDATE_DELAYED')
     TrackButton:RegisterEvent('PLAYER_ENTERING_WORLD')
     TrackButton:RegisterEvent('READY_CHECK')
 
