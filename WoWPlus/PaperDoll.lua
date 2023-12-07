@@ -1066,9 +1066,8 @@ local function Init_TrackButton()--添加装备管理框
     TrackButton:set_player_itemLevel()
 
     --更新
-    hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()
-        TrackButton:init_buttons()
-    end)
+    hooksecurefunc('PaperDollEquipmentManagerPane_Update',  TrackButton.init_buttons)
+
     TrackButton:RegisterEvent('EQUIPMENT_SWAP_FINISHED')
     TrackButton:RegisterEvent('EQUIPMENT_SETS_CHANGED')
     TrackButton:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
@@ -1078,14 +1077,14 @@ local function Init_TrackButton()--添加装备管理框
 
     --TrackButton:RegisterEvent('BAG_UPDATE')
     TrackButton:SetScript('OnEvent', function(self, event)
-
         if event=='PLAYER_ENTERING_WORLD' or event=='READY_CHECK' then
             self:tips_not_equipment()
-        else
-            if event=='PLAYER_EQUIPMENT_CHANGED' then
+        elseif not self.time or self.time:IsCancelled() then
+            self.time= C_Timer.NewTimer(0.6, function()
+                self:init_buttons()
                 self:set_player_itemLevel()
-            end
-            C_Timer.After(0.6, function() self:init_buttons() end)
+                self.time:Cancel()
+            end)
         end
     end)
 end
