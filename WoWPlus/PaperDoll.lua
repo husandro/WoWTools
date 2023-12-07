@@ -813,6 +813,9 @@ local function Init_TrackButton()--添加装备管理框
     TrackButton:RegisterForDrag("RightButton")
     TrackButton:SetClampedToScreen(true)
     TrackButton:SetMovable(true)
+    TrackButton.text= e.Cstr(TrackButton, {color=true, alpha=0.5})
+    TrackButton.text:SetPoint('BOTTOM')
+
     TrackButton:SetScript("OnDragStart", function(self)
         if IsAltKeyDown() then
             self:StartMoving()
@@ -885,6 +888,13 @@ local function Init_TrackButton()--添加装备管理框
         panel.equipmentButton:SetButtonState('NORMAL')
         panel.equipmentButton:SetAlpha(0.5)
     end)
+
+
+    --装等
+    function TrackButton:set_player_itemLevel()
+        self.text:SetFormattedText('%i', select(2, GetAverageItemLevel()) or 0)
+    end
+
 
     --位置保存
     function TrackButton:set_point()
@@ -1018,7 +1028,7 @@ local function Init_TrackButton()--添加装备管理框
         local numIndex=0
         for index, setID in pairs(setIDs) do
             local texture, _, isEquipped, numItems, _, _, numLost= select(2, C_EquipmentSet.GetEquipmentSetInfo(setID))
-            
+
             local btn=self.buttons[index] or self:create_button(index)
             if numItems==0 then
                 btn:SetNormalAtlas('groupfinder-eye-highlight')
@@ -1053,6 +1063,7 @@ local function Init_TrackButton()--添加装备管理框
     TrackButton:set_shown()
     TrackButton:init_buttons()
     TrackButton:tips_not_equipment()
+    TrackButton:set_player_itemLevel()
 
     --更新
     hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()
@@ -1067,9 +1078,13 @@ local function Init_TrackButton()--添加装备管理框
 
     --TrackButton:RegisterEvent('BAG_UPDATE')
     TrackButton:SetScript('OnEvent', function(self, event)
+
         if event=='PLAYER_ENTERING_WORLD' or event=='READY_CHECK' then
             self:tips_not_equipment()
         else
+            if event=='PLAYER_EQUIPMENT_CHANGED' then
+                self:set_player_itemLevel()
+            end
             C_Timer.After(0.6, function() self:init_buttons() end)
         end
     end)

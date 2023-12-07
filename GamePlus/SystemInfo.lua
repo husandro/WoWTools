@@ -217,7 +217,7 @@ end
 local function set_Money_Event()
     if Save.money then
         panel:RegisterEvent('PLAYER_MONEY')
-        Labels.money= create_Set_lable(button, 'money')--建立,或设置,Labels
+        Labels.money= Labels.money or create_Set_lable(button, 'money')--建立,或设置,Labels
         set_Money()
     else
         panel:UnregisterEvent('PLAYER_MONEY')
@@ -264,6 +264,7 @@ local function set_Durabiliy()
     Labels.durabiliy:SetText(Save.parent and du..' ' or du or '')
     e.Set_HelpTips({frame=button, topoint=Labels.durabiliy, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<=40})--设置，提示
 end
+
 local function set_EquipmentLevel()--装等
     local to, cu= GetAverageItemLevel()
     local text, red
@@ -282,6 +283,7 @@ local function set_EquipmentLevel()--装等
         e.Set_HelpTips({frame=button, topoint=Labels.equipmentLevel, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=red and not C_PvP.IsArena() and not C_PvP.IsBattleground()})--设置，提示
     end
 end
+
 local function set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
     if Save.equipmetLevel or Save.durabiliy then
         panel:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
@@ -290,7 +292,7 @@ local function set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
     end
 
     if Save.equipmetLevel then
-        Labels.equipmentLevel= create_Set_lable(button, 'equipmentLevel')--建立,或设置,Labels
+        Labels.equipmentLevel= Labels.equipmentLevel or create_Set_lable(button, 'equipmentLevel')--建立,或设置,Labels
         C_Timer.After(2, set_EquipmentLevel) --角色图标显示装等  
     else
         if Labels.equipmentLevel then
@@ -300,7 +302,7 @@ local function set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
 
     if Save.durabiliy then
         panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-        Labels.durabiliy= create_Set_lable(button, 'durabiliy')--建立,或设置,Labels
+        Labels.durabiliy= Labels.durabiliy or create_Set_lable(button, 'durabiliy')--建立,或设置,Labels
         set_Durabiliy()
     else
         panel:UnregisterEvent("UPDATE_INVENTORY_DURABILITY")
@@ -363,7 +365,7 @@ local function set_Fps_Ms_Show_Hide()--设置, fps, ms, 数值
             Labels.ms:SetText('')
         end
     else
-        if not Save.hideFpsMs then
+        if not Save.hideFpsMs and not Labels.fps then
             Labels.fps= create_Set_lable(button, 'fps')--建立,或设置,Labels
             Labels.ms= create_Set_lable(button, 'ms')--建立,或设置,Labels
             panel:HookScript("OnUpdate", set_Fps_Ms)
@@ -437,7 +439,7 @@ local function set_perksActivitiesLastPoints_CVar()--贸易站, 点数  MonthlyA
 end
 local function set_perksActivitiesLastPoints_Event()
     if Save.perksPoints and not ( IsTrialAccount() or IsVeteranTrialAccount()) then
-        Labels.perksPoints= create_Set_lable(button, 'perksPoints')--建立,或设置,Labels
+        Labels.perksPoints= Labels.perksPoints or create_Set_lable(button, 'perksPoints')--建立,或设置,Labels
         panel:RegisterEvent('CVAR_UPDATE')
         panel:RegisterEvent('PERKS_ACTIVITY_COMPLETED')
         panel:RegisterEvent('PLAYER_ENTERING_WORLD')
