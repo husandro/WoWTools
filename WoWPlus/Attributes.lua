@@ -50,7 +50,7 @@ local Save={
     --strupper
 }
 
-local Category
+
 
 local function get_PrimaryStat()--取得主属
     local spec= GetSpecialization()
@@ -160,7 +160,7 @@ local function set_Text_Value(frame, value, value2)
         frame.text:SetText(text)
     end
 
-    
+
     if frame.bar and frame.bar:GetAlpha()>0 then
         if frame.value== value or (value<1 and not frame.zeroShow) then
             frame.bar:SetStatusBarColor(frame.r, frame.g, frame.b, frame.a)

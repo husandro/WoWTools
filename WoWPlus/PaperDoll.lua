@@ -1772,7 +1772,8 @@ local function Init()
         end
         local race= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=true})
         local class= e.Class('player', nil, true)
-        local level = UnitLevel("player");
+        local level
+        level= UnitLevel("player");
         local effectiveLevel = UnitEffectiveLevel("player");
 
         if ( effectiveLevel ~= level ) then
