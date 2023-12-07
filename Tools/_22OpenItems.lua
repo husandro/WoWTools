@@ -118,9 +118,16 @@ local Save={
     noItemHide= true,--not e.Player.husandro,
     --disabledCheckReagentBag= true,--禁用，检查，材料包
 }
-local Combat, Bag= nil,{}
-local panel= CreateFrame("Frame")
+
+
+
+
+
+
 local button
+local Bag= {}
+local isInRun, Combat
+
 
 if e.Player.class=='ROGUE' then
     e.LoadDate({id=1804, type='spell'})--开锁 Pick Lock
@@ -137,8 +144,8 @@ local function setCooldown()--冷却条
                 button.texture:SetDesaturated(enable==1 and duration and duration>2)
             end
         end
+        e.Ccool(button, start, duration, nil, true,nil, true)
     end
-    e.Ccool(button, start, duration, nil, true,nil, true)
 end
 
 local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
@@ -168,16 +175,20 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
     button.count:SetText(num or '')
     button.texture:SetShown(bag and slot)
     Combat=nil
+    isInRun=nil
 end
 
 local equipItem--是装备时, 打开角色界面
 local function get_Items()--取得背包物品信息
-    if UnitAffectingCombat('player') or not UnitIsConnected('player') then
+    if isInRun then
+        return
+    elseif UnitAffectingCombat('player') or not UnitIsConnected('player') then
         Combat=true
         return
     end
 
     equipItem=nil
+    isInRun=true
     Bag={}
     local bagMax= not Save.disabledCheckReagentBag and NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES or NUM_BAG_FRAMES
     for bag= Enum.BagIndex.Backpack, bagMax do--Constants.InventoryConstants.NumBagSlots
@@ -322,7 +333,7 @@ end
 --####
 --菜单
 --####
-local function setMenuList(self, level, menuList)--主菜单
+local function setMenuList(_, level, menuList)--主菜单
     local info={}
     if menuList=='USE' then
         local find
@@ -586,47 +597,55 @@ end
 
 
 
---########
---设置属性
-local function shoTips(self)--显示提示
-    if e.tips:IsShown() then
-        e.tips:Hide()
-    end
-    if (BattlePetTooltip) then
-		BattlePetTooltip:Hide();
-	end
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-    if Bag.bag and Bag.slot then
-        local battlePetLink= C_Container.GetContainerItemLink(Bag.bag, Bag.slot)
-        if battlePetLink and battlePetLink:find('Hbattlepet:%d+') then
-            BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(battlePetLink))
-        else
-            e.tips:SetBagItem(Bag.bag, Bag.slot)
-            if not UnitAffectingCombat('player') then
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE))
-            end
-            e.tips:Show()
-        end
-    else
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:Show()
-    end
-end
-
-
 --######
 --初始化
 --######
 local function Init()
+    button= e.Cbtn2({
+        name= 'WoWToolsOpenItemsButton',
+        parent=_G['WoWToolsMountButton'],
+        click=true,-- right left
+        notSecureActionButton=nil,
+        notTexture=nil,
+        showTexture=true,
+        sizi=nil,
+    })
+
+    button:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT')
     button:SetAttribute("type", "macro")
     button.count=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
     button.count:SetPoint('BOTTOM',0,2)
 
     get_Items()--设置属性
 
-    button:SetScript("OnEnter", shoTips)--显示提示
+    function button:set_tooltips()
+        if e.tips:IsShown() then
+            e.tips:Hide()
+        end
+        if (BattlePetTooltip) then
+            BattlePetTooltip:Hide();
+        end
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        if Bag.bag and Bag.slot then
+            local battlePetLink= C_Container.GetContainerItemLink(Bag.bag, Bag.slot)
+            if battlePetLink and battlePetLink:find('Hbattlepet:%d+') then
+                BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(battlePetLink))
+            else
+                e.tips:SetBagItem(Bag.bag, Bag.slot)
+                if not UnitAffectingCombat('player') then
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE))
+                end
+                e.tips:Show()
+            end
+        else
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
+        end
+    end
+
+    button:SetScript("OnEnter",  button.set_tooltips)--显示提示
     button:SetScript("OnLeave",function()
         e.tips:Hide()
         BattlePetTooltip:Hide()
@@ -724,12 +743,12 @@ local function Init()
         end
     end)
 
-    button:SetScript('OnMouseWheel',function(self,d)
+    button:SetScript('OnMouseWheel',function(self, d)
         if d == 1 and not IsModifierKeyDown() then
             if Bag.slot and Bag.bag then
                 setDisableCursorItem()--禁用当物品
                 e.LibDD:CloseDropDownMenus()
-                shoTips(self)--显示提示
+                self:set_tooltips()
             end
         end
     end)
@@ -737,25 +756,44 @@ local function Init()
     C_Timer.After(2, get_Items)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local panel= CreateFrame("Frame")
 --##########
 --注册， 事件
 --##########
-local function set_Events()--注册， 事件
+function panel:set_Events()--注册， 事件
     if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then
-        panel:UnregisterEvent('BAG_UPDATE')
-        panel:UnregisterEvent('BAG_UPDATE_DELAYED')
-        panel:UnregisterEvent('BAG_UPDATE_COOLDOWN')
-        panel:UnregisterEvent('PLAYER_REGEN_DISABLED')
-        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
+        self:UnregisterEvent('BAG_UPDATE')
+        self:UnregisterEvent('BAG_UPDATE_DELAYED')
+        self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
+        self:UnregisterEvent('PLAYER_REGEN_DISABLED')
+        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
         if not UnitAffectingCombat('player') then
             button:SetShown(false)
         end
     else
-        panel:RegisterEvent('BAG_UPDATE')
-        panel:RegisterEvent('BAG_UPDATE_DELAYED')
-        panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
-        panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+        self:RegisterEvent('BAG_UPDATE')
+        self:RegisterEvent('BAG_UPDATE_DELAYED')
+        self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+        self:RegisterEvent('PLAYER_REGEN_DISABLED')
+        self:RegisterEvent('PLAYER_REGEN_ENABLED')
         get_Items()
     end
 end
@@ -769,25 +807,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
-
-                button= e.Cbtn2({
-                    name= 'WoWToolsOpenItemsButton',
-                    parent=_G['WoWToolsMountButton'],
-                    click=true,-- right left
-                    notSecureActionButton=nil,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
-
-                button:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT')
-
-                panel:RegisterEvent('CHALLENGE_MODE_START')
-                panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-                panel:RegisterEvent("PLAYER_LOGOUT")
                 Init()
+                self:RegisterEvent('CHALLENGE_MODE_START')
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                self:RegisterEvent("PLAYER_LOGOUT")
             end
-            panel:UnregisterEvent("ADDON_LOADED")
+            self:UnregisterEvent("ADDON_LOADED")
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -796,9 +821,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
-        set_Events()--注册， 事件
+        self:set_Events()--注册， 事件
 
-    elseif  event=='BAG_UPDATE_DELAYED' or event=='BAG_UPDATE' then
+    elseif event=='BAG_UPDATE_DELAYED' or event=='BAG_UPDATE' then
             get_Items()
 
     elseif event=='PLAYER_REGEN_DISABLED' then
