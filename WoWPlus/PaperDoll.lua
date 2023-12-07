@@ -1066,7 +1066,9 @@ local function Init_TrackButton()--添加装备管理框
     TrackButton:set_player_itemLevel()
 
     --更新
-    hooksecurefunc('PaperDollEquipmentManagerPane_Update',  TrackButton.init_buttons)
+    hooksecurefunc('PaperDollEquipmentManagerPane_Update',  function()
+        TrackButton:init_buttons()
+    end)
 
     TrackButton:RegisterEvent('EQUIPMENT_SWAP_FINISHED')
     TrackButton:RegisterEvent('EQUIPMENT_SETS_CHANGED')

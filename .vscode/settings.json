@@ -3744,7 +3744,11 @@
         "WhoFrameDropDownButton",
         "EncounterJournalLootJournalViewDropDownButton",
         "EncounterJournalLootJournalViewDropDown",
-        "BUG_CATEGORY15"
+        "BUG_CATEGORY15",
+        "PaperDollFrameEquipSetText",
+        "PaperDollFrameSaveSetText",
+        "GearManagerPopupFrameMixin",
+        "GearManagerPopupFrameText"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
