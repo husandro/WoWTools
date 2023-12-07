@@ -955,7 +955,7 @@ local function Init_TrackButton()--添加装备管理框
         btn.texture:SetSize(26,26)
         btn.texture:SetPoint('CENTER')
         btn.texture:SetAtlas('AlliedRace-UnlockingFrame-GenderMouseOverGlow')
-        btn.text= e.Cstr(btn, {color=true, alpha=0.5, size=10})
+        btn.text= e.Cstr(btn, {color=true, size=10, alpha=0.5})
         btn.text:SetPoint('BOTTOMRIGHT')
         self:set_button_point(btn, index)--设置位置
         btn:SetScript("OnClick",function(frame)
@@ -996,15 +996,11 @@ local function Init_TrackButton()--添加装备管理框
                     panel.equipmentButton:SetAlpha(1)
                 end
             end
-            frame:GetParent():SetButtonState('PUSHED')
             frame:SetAlpha(1)
         end)
 
         btn:SetScript("OnLeave",function(frame)
-            frame:GetParent():SetButtonState('NORMAL')
             e.tips:Hide()
-            panel.equipmentButton:SetButtonState('NORMAL')
-            panel.equipmentButton:SetAlpha(0.5)
             frame:set_alpha()
         end)
         btn:RegisterEvent('PLAYER_REGEN_DISABLED')

@@ -763,7 +763,7 @@ end
 --#######
 --设置菜单
 --#######
-local function Init_Menu(self, level, type)
+local function Init_Menu(_, level, type)
     local info
     if type=='SELLJUNK' then--出售垃圾
         info= {
