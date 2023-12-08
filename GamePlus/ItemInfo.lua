@@ -25,7 +25,7 @@ local heirloomWeapontemEquipLocTab={--传家宝，武器，itemEquipLoc
         ['INVTYPE_RANGEDRIGHT']= true,
     }
 
---set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}, hyperLink=nil, point=nil})
+--Set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}, hyperLink=nil, point=nil})
 
 
 
@@ -50,7 +50,7 @@ local heirloomWeapontemEquipLocTab={--传家宝，武器，itemEquipLoc
 
 
 
-local function set_Item_Info(self, tab)
+local function Set_Item_Info(self, tab)
     local itemLink, containerInfo, itemID= tab.hyperLink, nil, nil
     if tab.bag then
         containerInfo =C_Container.GetContainerItemInfo(tab.bag.bag, tab.bag.slot)
@@ -140,29 +140,6 @@ local function set_Item_Info(self, tab)
         elseif classID==3 then--宝石
             if expacID== e.ExpansionLevel or not e.Player.levelMax then
                 leftText, bottomLeftText= e.Get_Gem_Stats(tab, itemLink)
-                --[[local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+%d+ .+)', }})--物品提示，信息
-                local text= dateInfo.text['(%+%d+ .+)']
-                if text and text:find('%+') then
-                    local str2, str3
-                    if text:find(', ') then
-                        str2, str3= text:match('(.-), (.+)')
-                    elseif text:find('，') then
-                        str2, str3= text:match('(.-)，(.+)')
-                    else
-                        str2, str3= text:match(andStr)
-                    end
-                    str2= str2 or text:match('%+%d+ .+')
-                    if str2 then
-                        str2= str2:match('%+%d+ (.+)')
-                        leftText= e.WA_Utf8Sub(str2,1,3, true)
-                        leftText= leftText and '|cffffffff'..leftText..'|r'
-                        if str3 then
-                            str3= str3:match('%+%d+ (.+)')
-                            bottomLeftText= e.WA_Utf8Sub(str3,1,3, true)
-                            bottomLeftText= bottomLeftText and '|cffffffff'..bottomLeftText..'|r'
-                        end
-                    end
-                end]]
             end
             rightText= itemLevel
 
@@ -502,9 +479,9 @@ local function setBags(self)--背包设置
     for _, itemButton in self:EnumerateValidItems() do
         if itemButton.hasItem then
             local slotID, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
-            set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}})
+            Set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}})
         else
-            set_Item_Info(itemButton, {})
+            Set_Item_Info(itemButton, {})
         end
     end
 end
@@ -527,10 +504,10 @@ local function setMerchantInfo()--商人设置
         local slot = selectedTab==1 and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
         local itemButton= _G["MerchantItem"..i..'ItemButton']
         if itemButton then
-            set_Item_Info(itemButton, {merchant={slot=slot, buyBack= selectedTab==2}})
+            Set_Item_Info(itemButton, {merchant={slot=slot, buyBack= selectedTab==2}})
         end
     end
-	set_Item_Info(MerchantBuyBackItemItemButton, {merchant={slot=GetNumBuybackItems(), buyBack=true}})
+	Set_Item_Info(MerchantBuyBackItemItemButton, {merchant={slot=GetNumBuybackItems(), buyBack=true}})
 
 end
 
@@ -563,7 +540,7 @@ local function setGuildBank()--公会银行,设置
             local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
             local button = (GuildBankFrame.Columns[column] and GuildBankFrame.Columns[column].Buttons) and GuildBankFrame.Columns[column].Buttons[index];
             if button then
-                set_Item_Info(button,{guidBank={tab=tab, slot=i}})
+                Set_Item_Info(button,{guidBank={tab=tab, slot=i}})
             end
         end
     end
@@ -586,7 +563,7 @@ end
 
 local function set_BankFrameItemButton_Update(self)--银行, BankFrame.lua
     if not self.isBag then
-        set_Item_Info(self, {bag={bag=self:GetParent():GetID(), slot=self:GetID()}})
+        Set_Item_Info(self, {bag={bag=self:GetParent():GetID(), slot=self:GetID()}})
     else
         local slot = self:GetBagID()
         local numFreeSlots
@@ -662,7 +639,7 @@ local function Init()
             local btn=_G["MailItem"..i.."Button"]
             if btn and btn:IsShown() then
                 --local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(btn.index)
-                set_Item_Info(btn, {hyperLink= select(15, GetInboxHeaderInfo(btn.index))})
+                Set_Item_Info(btn, {hyperLink= select(15, GetInboxHeaderInfo(btn.index))})
             end
         end
     end)
@@ -673,7 +650,7 @@ local function Init()
         for i=1, ATTACHMENTS_MAX_RECEIVE do
             local attachmentButton = OpenMailFrame.OpenMailAttachments[i];
             if attachmentButton and attachmentButton:IsShown() then
-                set_Item_Info(attachmentButton, {hyperLink= HasInboxItem(InboxFrame.openMailID, i) and GetInboxItemLink(InboxFrame.openMailID, i)})
+                Set_Item_Info(attachmentButton, {hyperLink= HasInboxItem(InboxFrame.openMailID, i) and GetInboxItemLink(InboxFrame.openMailID, i)})
             end
         end
     end)
@@ -681,7 +658,7 @@ local function Init()
         for i=1, ATTACHMENTS_MAX_SEND do
             local sendMailAttachmentButton = SendMailFrame.SendMailAttachments[i]
             if sendMailAttachmentButton and sendMailAttachmentButton:IsShown() then
-                set_Item_Info(sendMailAttachmentButton, {hyperLink= HasSendMailItem(i) and GetSendMailItemLink(i)})
+                Set_Item_Info(sendMailAttachmentButton, {hyperLink= HasSendMailItem(i) and GetSendMailItemLink(i)})
             end
         end
     end)
@@ -826,9 +803,9 @@ local function Init()
                 if slot and bag then
                     if self.hasItem then
                         local slotID, bagID= self:GetSlotAndBagID()--:GetID() GetBagID()
-                        set_Item_Info(self, {bag={bag=bagID, slot=slotID}})
+                        Set_Item_Info(self, {bag={bag=bagID, slot=slotID}})
                     else
-                        set_Item_Info(self, {})
+                        Set_Item_Info(self, {})
                     end
                 end
             end)
@@ -838,7 +815,7 @@ local function Init()
     elseif C_AddOns.IsAddOnLoaded("Baggins") then
         hooksecurefunc(Baggins, 'UpdateItemButton', function(_, _, button, bagID, slotID)
             if button and bagID and slotID then
-                set_Item_Info(button, {bag={bag=bagID, slot=slotID}})
+                Set_Item_Info(button, {bag={bag=bagID, slot=slotID}})
             end
         end)
         return
@@ -849,7 +826,7 @@ local function Init()
             ADDON= lib:GetAddon("Inventorian")
             local InvLevel = ADDON:NewModule('InventorianWoWToolsItemInfo')
             function InvLevel:Update()
-                set_Item_Info(self, {bag={bag=self.bag, slot=self.slot}})
+                Set_Item_Info(self, {bag={bag=self.bag, slot=self.slot}})
             end
             function InvLevel:WrapItemButton(item)
                 hooksecurefunc(item, "Update", InvLevel.Update)
@@ -1067,7 +1044,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     local frame= PerksProgramFrame:GetFrozenItemFrame()
                     if frame then
                         local itemLink= frame.FrozenButton.itemID and select(2, GetItemInfo(frame.FrozenButton.itemID))
-                        set_Item_Info(frame.FrozenButton, {hyperLink=itemLink})
+                        Set_Item_Info(frame.FrozenButton, {hyperLink=itemLink})
                     end
                 end
             end
@@ -1075,12 +1052,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 for _, btn in pairs(self2:GetFrames()) do
                     if btn.itemID then
                         local itemLink= btn.itemID and select(2, GetItemInfo(btn.itemID))
-                        set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
+                        Set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
                     elseif btn.GetItemInfo then--10.2
                         local itemInfo=btn:GetItemInfo()
                         if itemInfo then
                             local itemLink= itemInfo.itemID and select(2, GetItemInfo(itemInfo.itemID))
-                            set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
+                            Set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
                         end
                     end
                 end
