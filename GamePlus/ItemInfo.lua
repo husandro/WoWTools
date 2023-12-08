@@ -134,8 +134,12 @@ local function Set_Item_Info(self, tab)
             if containerInfo and not containerInfo.isBound then--没有锁定
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
-            --local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={bagNumStr}})
-            --topLeftText= dateInfo.text[bagNumStr]--格数 CONTAINER_SLOTS  不知怎样处理--%2$s da %1$d |4scomparto:scomparti
+            --多少格
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, index=4})
+            local indexText= dateInfo.indexText
+            if indexText and indexText:find('%d+') then
+                leftText= indexText:match('%d+')
+            end
 
         elseif classID==3 then--宝石
             if expacID== e.ExpansionLevel or not e.Player.levelMax then

@@ -2202,7 +2202,9 @@ end
 --e.GetTooltipData({bag={bag=nil, slot=nil}, guidBank={tab=nil, slot=nil}, merchant={slot, buyBack=true}, inventory=nil, hyperLink=nil, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息
 function e.GetTooltipData(tab)
     local tooltipData
-    if tab.itemID and C_Heirloom.IsItemHeirloom(tab.itemID) then
+    if tab.hyperLink then
+        tooltipData=  C_TooltipInfo.GetHyperlink(tab.hyperLink)
+    elseif tab.itemID and C_Heirloom.IsItemHeirloom(tab.itemID) then
         tooltipData= C_TooltipInfo.GetHeirloomByItemID(tab.itemID)
     elseif tab.bag then
         tooltipData= C_TooltipInfo.GetBagItem(tab.bag.bag, tab.bag.slot)
@@ -2217,44 +2219,49 @@ function e.GetTooltipData(tab)
     elseif tab.inventory then
         tooltipData= C_TooltipInfo.GetInventoryItem('player', tab.inventory)
     end
-    tooltipData= tooltipData or tab.hyperLink and C_TooltipInfo.GetHyperlink(tab.hyperLink)
     local data={
         red=false,
         wow=false,
         text={},
+        indexText=nil,
     }
     if tooltipData and tooltipData.lines then
         local numText= tab.text and #tab.text or 0
         local findText= numText>0 or tab.wow
         local numFind=0
-        for _, line in ipairs(tooltipData.lines) do--是否
+        for index, line in ipairs(tooltipData.lines) do--是否
            -- TooltipUtil.SurfaceArgs(line)
-            if tab.red and not data.red then
-                local leftHex=line.leftColor and line.leftColor:GenerateHexColor()
-                local rightHex=line.rightColor and line.rightColor:GenerateHexColor()
-                if leftHex == 'ffff2020' or leftHex=='fefe1f1f' or rightHex== 'ffff2020' or rightHex=='fefe1f1f' then-- or hex=='fefe7f3f' then
-                    data.red=true
-                    if tab.onlyRed then
-                        break
-                    end
-                end
-            end
-            if line.leftText and findText then
-                if tab.text then
-                    for _, text in pairs(tab.text) do
-                        if text and (line.leftText:find(text) or line.leftText==text) then
-                            data.text[text]= line.leftText:match(text) or line.leftText
-                            numFind= numFind +1
-                            if tab.onlyText and numFind==numText then
-                                break
-                            end
+           if tab.index==index then
+                data.indexText= line.leftText
+                break
+           else
+                if tab.red and not data.red then
+                    local leftHex=line.leftColor and line.leftColor:GenerateHexColor()
+                    local rightHex=line.rightColor and line.rightColor:GenerateHexColor()
+                    if leftHex == 'ffff2020' or leftHex=='fefe1f1f' or rightHex== 'ffff2020' or rightHex=='fefe1f1f' then-- or hex=='fefe7f3f' then
+                        data.red=true
+                        if tab.onlyRed then
+                            break
                         end
                     end
                 end
-                if tab.wow and not data.wow and (line.leftText==ITEM_BNETACCOUNTBOUND or line.leftText==ITEM_ACCOUNTBOUND) then--暴雪游戏通行证绑定, 账号绑定
-                    data.wow=true
-                    if tab.onlyWoW then
-                        break
+                if line.leftText and findText then
+                    if tab.text then
+                        for _, text in pairs(tab.text) do
+                            if text and (line.leftText:find(text) or line.leftText==text) then
+                                data.text[text]= line.leftText:match(text) or line.leftText
+                                numFind= numFind +1
+                                if tab.onlyText and numFind==numText then
+                                    break
+                                end
+                            end
+                        end
+                    end
+                    if tab.wow and not data.wow and (line.leftText==ITEM_BNETACCOUNTBOUND or line.leftText==ITEM_ACCOUNTBOUND) then--暴雪游戏通行证绑定, 账号绑定
+                        data.wow=true
+                        if tab.onlyWoW then
+                            break
+                        end
                     end
                 end
             end
