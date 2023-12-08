@@ -175,7 +175,7 @@ local function Init()
 
         --处理，按钮，背景 Texture.lua，中有处理过
         e.Set_Label_Texture_Color(_G['PetStableStabledPet'..i..'Background'], {type='Texture', alpha=0.5})--设置颜色
-        
+
 
         if i > 1 then--设置位置
             btn:ClearAllPoints()
@@ -394,7 +394,7 @@ local function Init()
         local func= PetStable_Update--排序用
         PetStable_Update= function() end
 
-        
+
         --[[local type={
             ['狂野']=1,
             ['坚韧']=3,
@@ -419,7 +419,7 @@ local function Init()
             return a.icon < b.icon
         end)
 
-        
+
         if d=='LeftButton' then--点击，从前，向后
             for i, newTab in pairs(tab) do
                 do
@@ -439,10 +439,10 @@ local function Init()
 
         IsInSearch=nil
         PetStable_Update= func
-    
+
         self.num= self.num and self.num+1 or 1
         print(id, addName, e.onlyChinese and '完成' or DONE, '|cnGREEN_FONT_COLOR:'..self.num)
-        
+
         e.call('PetStable_Update')
     end)
 
