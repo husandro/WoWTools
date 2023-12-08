@@ -40,7 +40,7 @@ local function Init()
     set(CharacterStatsPane.ItemLevelCategory.Title, '物品等级')
     set(CharacterStatsPane.AttributesCategory.Title, '属性')
     set(CharacterStatsPane.EnhancementsCategory.Title, '强化属性')
-    
+
     set(PaperDollFrameEquipSetText, '装备')
     set(PaperDollFrameSaveSetText , '保存')
 
@@ -58,7 +58,7 @@ local function Init()
     set(SpellBookFrameTabButton2, '专业')
     set(SpellBookFrameTabButton3, '宠物')
 
-    
+
 STR_LCD = "力量";
 INT_LCD = "智力";
 PRIMARY_STAT1_TOOLTIP_NAME = "力量";
