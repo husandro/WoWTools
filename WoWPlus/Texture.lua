@@ -86,10 +86,10 @@ local function set_SearchBox(frame)
     if not frame then-- or not frame.SearchBox then
         return
     end
-    set_Alpha_Color(frame.Middle, nil, nil, min03)
-    set_Alpha_Color(frame.Left, nil, nil, min03)
-    set_Alpha_Color(frame.Right, nil, nil, min03)
-    set_Alpha_Color(frame.Mid, nil, nil, min03)
+    set_Alpha_Color(frame.Middle, nil, nil, min05)
+    set_Alpha_Color(frame.Left, nil, nil, min05)
+    set_Alpha_Color(frame.Right, nil, nil, min05)
+    set_Alpha_Color(frame.Mid, nil, nil, min05)
 
 end
 
@@ -858,6 +858,8 @@ local function Init_All_Frame()
      --商人
      set_ScrollBar(MerchantFrame)
      set_Alpha_Color(MerchantFrameBg)
+     set_NineSlice(MerchantFrameInset, true)
+     set_NineSlice(MerchantFrame, true)
      hide_Texture(MerchantFrameInset.Bg)
      set_Alpha_Color(MerchantMoneyInset.Bg)
      hide_Texture(MerchantMoneyBgMiddle)
@@ -1298,35 +1300,54 @@ local function Init_Event(arg1)
 
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
-        set_NineSlice(AuctionHouseFrame, true)
         set_Alpha_Color(AuctionHouseFrameBg)
+        set_NineSlice(AuctionHouseFrame, true)
+        set_Alpha_Color(AuctionHouseFrameMiddle, nil, nil, min03)
+        set_Alpha_Color(AuctionHouseFrameLeft, nil, nil, min03)
+        set_Alpha_Color(AuctionHouseFrameRight, nil, nil, min03)
+
+        set_Alpha_Frame_Texture(AuctionHouseFrameBuyTab, {alpha= min05})
+        set_Alpha_Frame_Texture(AuctionHouseFrameSellTab, {alpha= min05})
+        set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsTab, {alpha= min05})
+        set_Alpha_Frame_Texture(AuctionHouseFrame.SearchBar.FilterButton, {alpha= min05})
+
+        set_NineSlice(AuctionHouseFrame.CategoriesList, nil, true)
         set_Alpha_Color(AuctionHouseFrame.CategoriesList.Background)
-
-        set_SearchBox(AuctionHouseFrame.SearchBar.SearchBox)
-
-        set_Alpha_Color(AuctionHouseFrameMiddleMiddle)
-        set_Alpha_Color(AuctionHouseFrameMiddleLeft)
-        set_Alpha_Color(AuctionHouseFrameMiddleRight)
-        set_Alpha_Color(AuctionHouseFrameBottomMiddle)
-        set_Alpha_Color(AuctionHouseFrameBottomLeft)
-        set_Alpha_Color(AuctionHouseFrameBottomRight)
-
         set_ScrollBar(AuctionHouseFrame.CategoriesList)
+
+        set_NineSlice(AuctionHouseFrame.CommoditiesSellFrame, nil, true)
+        set_NineSlice(AuctionHouseFrame.CommoditiesSellList, nil, true)
+        set_ScrollBar(AuctionHouseFrame.CommoditiesSellList)
+
+        set_ScrollBar(AuctionHouseFrameAuctionsFrame.BidsList)
+        set_NineSlice(AuctionHouseFrameAuctionsFrame.BidsList, nil, true)
+        set_NineSlice(AuctionHouseFrameAuctionsFrame.AllAuctionsList, nil, true)
+        set_ScrollBar(AuctionHouseFrameAuctionsFrame.AllAuctionsList)
+        --set_Alpha_Color(AuctionHouseFrameAuctionsFrame.AllAuctionsList.Background, true)
+        set_ScrollBar(AuctionHouseFrameAuctionsFrame.SummaryList)
+        set_NineSlice(AuctionHouseFrameAuctionsFrame.SummaryList, nil, true)
+        set_Alpha_Color(AuctionHouseFrameAuctionsFrame.SummaryList.Background, true)
+        
+
+        set_NineSlice(AuctionHouseFrame.BrowseResultsFrame.ItemList, nil, true)
         set_ScrollBar(AuctionHouseFrame.BrowseResultsFrame.ItemList)
-        set_Alpha_Color(AuctionHouseFrameMiddle)
-        set_Alpha_Color(AuctionHouseFrameLeft)
-        set_Alpha_Color(AuctionHouseFrameRight)
+
+        set_NineSlice(AuctionHouseFrame.MoneyFrameInset, nil, true)
         hide_Texture(AuctionHouseFrame.MoneyFrameInset.Bg)
 
-        set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.Background)--出售
-        set_Alpha_Color(AuctionHouseFrame.ItemSellList.Background)
+        set_NineSlice(AuctionHouseFrame.ItemSellFrame, nil, true)
+        --set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.Background)--出售
+        set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabMiddle, nil, nil, min03)
+        set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabLeft, nil, nil, min03)
+        set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabRight, nil, nil, min03)
+        set_SearchBox(AuctionHouseFrame.ItemSellFrame.QuantityInput.InputBox)
+        set_SearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox)
+        set_SearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.SilverBox)
+        set_SearchBox(AuctionHouseFrame.SearchBar.SearchBox)
+        --set_Alpha_Color(AuctionHouseFrame.ItemSellList.Background)
         set_ScrollBar(AuctionHouseFrame.ItemSellList)
+        set_NineSlice(AuctionHouseFrame.ItemSellList, nil, true)
 
-        set_ScrollBar(AuctionHouseFrameAuctionsFrame.SummaryList)
-        set_ScrollBar(AuctionHouseFrameAuctionsFrame.AllAuctionsList)
-
-        set_Alpha_Color(AuctionHouseFrameAuctionsFrame.SummaryList.Background)
-        set_Alpha_Color(AuctionHouseFrameAuctionsFrame.AllAuctionsList.Background)
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
         set_NineSlice(ProfessionsCustomerOrdersFrame, true)

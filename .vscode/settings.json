@@ -3749,7 +3749,10 @@
         "PaperDollFrameSaveSetText",
         "GearManagerPopupFrameMixin",
         "GearManagerPopupFrameText",
-        "PLAYER_FACTION_GROUP"
+        "PLAYER_FACTION_GROUP",
+        "AuctionHouseFrameBuyTab",
+        "AuctionHouseFrameSellTab",
+        "AuctionHouseFrameAuctionsTab"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
