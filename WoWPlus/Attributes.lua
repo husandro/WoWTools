@@ -469,7 +469,7 @@ end
 
 --####
 --精通
---####
+--PaperDollFrame.lua
 local function set_MASTERY_Text(frame)
     local mastery
     if Save.useNumber then
