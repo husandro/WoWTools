@@ -5,6 +5,14 @@ local addName= MOUNT
 --IsFlyableArea()
 --IsOutdoors()
 
+local ITEMS= ITEMS
+local SPELLS= SPELLS
+local FLOOR= FLOOR
+local MOUNT_JOURNAL_FILTER_GROUND= MOUNT_JOURNAL_FILTER_GROUND
+local MOUNT_JOURNAL_FILTER_FLYING= MOUNT_JOURNAL_FILTER_FLYING
+local MOUNT_JOURNAL_FILTER_AQUATIC= MOUNT_JOURNAL_FILTER_AQUATIC
+local MOUNT_JOURNAL_FILTER_DRAGONRIDING= MOUNT_JOURNAL_FILTER_DRAGONRIDING
+
 local Save={
     --disabled= not e.Player.husandro,
     Mounts={
@@ -1443,14 +1451,10 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1, arg2)
+panel:SetScript("OnEvent", function(_, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if not WoWToolsSave[addName] then
-                WoWToolsSave[addName]= Save
-            else
-                Save= WoWToolsSave[addName]
-            end
+            Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
             e.AddPanel_Header(nil, 'Tools')
