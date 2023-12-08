@@ -1385,8 +1385,11 @@ end
 --拍卖行
 local AuctionHouseButton
 local function Init_AuctionHouse()
+    if not e.Player.husandro then
+        return
+    end
     local size= 32
-    AuctionHouseButton= e.Cbtn(AuctionHouseFrame.ItemSellList, {size={size, size}, icon=true})
+    AuctionHouseButton= e.Cbtn(AuctionHouseFrame.ItemSellFrame, {size={size, size}, icon=true})
     AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT')
     AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)
     AuctionHouseButton.frame:SetAllPoints(AuctionHouseButton)
@@ -1396,21 +1399,58 @@ local function Init_AuctionHouse()
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
             for slot=1, C_Container.GetContainerNumSlots(bag) do
                 local info = C_Container.GetContainerItemInfo(bag, slot)
-                if info and not info.hasNoValue and info.hyperlink and not info.isLocked and not info.isBound and not info.hasLoot then
+                if info and not info.hasNoValue and info.hyperlink and not info.isLocked and not info.isBound and not info.hasLoot and info.quality>=1 then
                     local btn= self.buttons[index]
                     if not btn then
                         btn= e.Cbtn(self.frame, {size={size,size}, button='ItemButton', icon='hide'})
-                        btn:SetPoint("TOP", index==1 and self.frame or self.buttons[index-1], 'BOTTOM', 0,-4)
+                        btn:SetPoint("TOP", index==1 and self.frame or self.buttons[index-1], 'BOTTOM')
+                        btn:UpdateItemContextOverlayTextures(1)
+                        btn:SetScript('OnLeave', GameTooltip_Hide)
+                        btn:SetScript('OnEnter', function(frame)
+                            if frame.bag  then
+                                e.tips:SetOwner(frame:GetParent(), "ANCHOR_LEFT")
+                                e.tips:ClearLines()
+                                e.tips:SetBagItem(frame.bag[1], frame.bag[2])
+                                e.tips:Show()
+                                --AuctionHouseFrame.ItemSellFrame
+                                print(frame:GetItemLocation())
+                            end
+                        end)
+                        btn:SetScript('OnClick', function(frame, d)
+                            if d=='RightButton' then
+                                C_Container.UseContainerItem(frame.bag[1], frame.bag[2])
+                            else
+                            end
+                        end)
+                        self.buttons[index]= btn
                     end
                     btn:SetItem(info.hyperlink)
                     btn:SetItemButtonCount(info.stackCount)
-                    self.buttons[index]= btn
+                    btn.bag= {bag, slot}
+                    btn:SetShown(true)
                     index= index +1
                 end
             end
         end
+        for i=16, index-1, 15 do
+            local btn= self.buttons[i]
+            btn:ClearAllPoints()
+            btn:SetPoint('LEFT', self.buttons[i-15], 'RIGHT')
+        end
+        for i= index, #self.buttons do
+            local btn= self.buttons[i]
+            if btn then
+                btn.bag=nil
+                btn:Reset()
+                btn:SetShown(false)
+            end
+        end
     end
     AuctionHouseButton:init_items()
+    
+    hooksecurefunc(AuctionHouseFrameDisplayModeTabMixin, 'OnClick', function()
+        print('AuctionHouseFrameDisplayModeTabMixin:OnClick()')
+    end)
 end
 
 

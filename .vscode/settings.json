@@ -3752,7 +3752,8 @@
         "PLAYER_FACTION_GROUP",
         "AuctionHouseFrameBuyTab",
         "AuctionHouseFrameSellTab",
-        "AuctionHouseFrameAuctionsTab"
+        "AuctionHouseFrameAuctionsTab",
+        "AuctionHouseFrameDisplayModeTabMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
