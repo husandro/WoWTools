@@ -37,7 +37,8 @@ local function Init()
         e.tips:AddLine(' ')
         for _, itemID in pairs(ItemTab) do
             local link= select(2, GetItemInfo(itemID)) or itemID
-            local icon= C_Item.GetItemIconByID(itemID)
+            local icon
+            icon= C_Item.GetItemIconByID(itemID)
             icon= icon and '|T'..icon..':0|t' or ''
             local num
             num= GetItemCount(itemID)

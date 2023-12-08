@@ -1382,9 +1382,36 @@ end
 
 
 
-
-
-
+--拍卖行
+local AuctionHouseButton
+local function Init_AuctionHouse()
+    local size= 32
+    AuctionHouseButton= e.Cbtn(AuctionHouseFrame.ItemSellList, {size={size, size}, icon=true})
+    AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT')
+    AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)
+    AuctionHouseButton.frame:SetAllPoints(AuctionHouseButton)
+    AuctionHouseButton.buttons={}
+    function AuctionHouseButton:init_items()
+        local index=1
+        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
+            for slot=1, C_Container.GetContainerNumSlots(bag) do
+                local info = C_Container.GetContainerItemInfo(bag, slot)
+                if info and not info.hasNoValue and info.hyperlink and not info.isLocked and not info.isBound and not info.hasLoot then
+                    local btn= self.buttons[index]
+                    if not btn then
+                        btn= e.Cbtn(self.frame, {size={size,size}, button='ItemButton', icon='hide'})
+                        btn:SetPoint("TOP", index==1 and self.frame or self.buttons[index-1], 'BOTTOM', 0,-4)
+                    end
+                    btn:SetItem(info.hyperlink)
+                    btn:SetItemButtonCount(info.stackCount)
+                    self.buttons[index]= btn
+                    index= index +1
+                end
+            end
+        end
+    end
+    AuctionHouseButton:init_items()
+end
 
 
 
@@ -1411,11 +1438,10 @@ end
 --####
 --初始
 --####
+
 local function Init()
     Init_Button(MerchantFrame)--初始，按钮
-
-
-
+    
 
     --######
     --DELETE
@@ -1579,9 +1605,12 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
                 avgItemLevel= GetAverageItemLevel()--装等
 
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+                --panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+
+        elseif arg1=='Blizzard_AuctionHouseUI' then
+            Init_AuctionHouse()
         end
 
     elseif event == "PLAYER_LOGOUT" then
