@@ -3748,7 +3748,8 @@
         "PaperDollFrameEquipSetText",
         "PaperDollFrameSaveSetText",
         "GearManagerPopupFrameMixin",
-        "GearManagerPopupFrameText"
+        "GearManagerPopupFrameText",
+        "PLAYER_FACTION_GROUP"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
