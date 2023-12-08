@@ -57,31 +57,48 @@ local function Init()
     set(SpellBookFrameTabButton1, '法术')
     set(SpellBookFrameTabButton2, '专业')
     set(SpellBookFrameTabButton3, '宠物')
-      
+
+    
+STR_LCD = "力量";
+INT_LCD = "智力";
 PRIMARY_STAT1_TOOLTIP_NAME = "力量";
 PRIMARY_STAT2_TOOLTIP_NAME = "敏捷";
 PRIMARY_STAT3_TOOLTIP_NAME = "耐力";
 PRIMARY_STAT4_TOOLTIP_NAME = "智力";
-
-
 SPEC_FRAME_PRIMARY_STAT = "主要属性：%s";
 SPEC_FRAME_PRIMARY_STAT_AGILITY = "敏捷";
 SPEC_FRAME_PRIMARY_STAT_INTELLECT = "智力";
-
 SPELL_STAT1_NAME = "力量";
 SPELL_STAT2_NAME = "敏捷";
 SPELL_STAT3_NAME = "耐力";
 SPELL_STAT4_NAME = "智力";
 SPELL_STAT5_NAME = "精神";
 
-STR_LCD = "力量";
-INT_LCD = "智力";
-PARRY_LCD = "招架 %.2f";
-RESILIENCE_LCD = "韧性 %d";
 
+
+PARRY_LCD = "招架 %.2f";
 PARRIED = "招架";
 PARRY = "招架";
 PARRY_CHANCE = "招架几率";
+DEFENSE = "防御";
+DEFLECT = "偏转";
+ARMOR = "护甲";
+ARMOR_TEMPLATE = "%s点护甲";
+RESILIENCE_LCD = "韧性 %d";
+
+DEFAULT_INTELLECT_TOOLTIP = "提高你的武器技能熟练度提升速度。";
+DEFAULT_SPIRIT_TOOLTIP = "提高你的生命值和法力值回复速度。";
+DEFAULT_STAMINA_TOOLTIP = "提高你的生命值上限。";
+DEFAULT_STAT1_TOOLTIP = "提高你的攻击和技能强度";
+DEFAULT_STAT2_TOOLTIP = "提高你的攻击和技能强度";
+DEFAULT_STAT3_TOOLTIP = "生命值提高%s点";
+DEFAULT_STAT4_TOOLTIP = "提高你的法术强度";
+DEFAULT_STATARMOR_TOOLTIP = "受到的物理伤害减免%0.2f%%";
+DEFAULT_STATDEFENSE_TOOLTIP = "%s点防御（+%s 防御）\n躲闪、格挡和招架几率提高%.2f%%\n被命中和被爆击的几率降低%.2f%%\n|cff888888（在效果递减之前）|r";
+DEFAULT_STATSPELLBONUS_TOOLTIP = "法术攻击的伤害加成。";
+
+DEFENSE_TOOLTIP = "防御";
+
 
 STAT_ARMOR = "护甲";
 STAT_ARMOR_BASE_TOOLTIP = "基础护甲值物理减伤：%0.2f%%";
