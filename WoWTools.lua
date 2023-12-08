@@ -2225,44 +2225,46 @@ function e.GetTooltipData(tab)
         text={},
         indexText=nil,
     }
-    if tooltipData and tooltipData.lines then
-        local numText= tab.text and #tab.text or 0
-        local findText= numText>0 or tab.wow
-        local numFind=0
-        for index, line in ipairs(tooltipData.lines) do--是否
-           -- TooltipUtil.SurfaceArgs(line)
-           if tab.index==index then
-                data.indexText= line.leftText
-                break
-           else
-                if tab.red and not data.red then
-                    local leftHex=line.leftColor and line.leftColor:GenerateHexColor()
-                    local rightHex=line.rightColor and line.rightColor:GenerateHexColor()
-                    if leftHex == 'ffff2020' or leftHex=='fefe1f1f' or rightHex== 'ffff2020' or rightHex=='fefe1f1f' then-- or hex=='fefe7f3f' then
-                        data.red=true
-                        if tab.onlyRed then
+    if not tooltipData or not tooltipData.lines then
+        return data
+
+    elseif tab.index then
+        if tooltipData.lines[tab.index] then
+            data.indexText= tooltipData.lines[tab.index].leftText
+        end
+        return data
+    end
+    
+    local numText= tab.text and #tab.text or 0
+    local findText= numText>0 or tab.wow
+    local numFind=0
+    for _, line in ipairs(tooltipData.lines) do--是否 TooltipUtil.SurfaceArgs(line)
+        if tab.red and not data.red then
+            local leftHex=line.leftColor and line.leftColor:GenerateHexColor()
+            local rightHex=line.rightColor and line.rightColor:GenerateHexColor()
+            if leftHex == 'ffff2020' or leftHex=='fefe1f1f' or rightHex== 'ffff2020' or rightHex=='fefe1f1f' then-- or hex=='fefe7f3f' then
+                data.red=true
+                if tab.onlyRed then
+                    break
+                end
+            end
+        end
+        if line.leftText and findText then
+            if tab.text then
+                for _, text in pairs(tab.text) do
+                    if text and (line.leftText:find(text) or line.leftText==text) then
+                        data.text[text]= line.leftText:match(text) or line.leftText
+                        numFind= numFind +1
+                        if tab.onlyText and numFind==numText then
                             break
                         end
                     end
                 end
-                if line.leftText and findText then
-                    if tab.text then
-                        for _, text in pairs(tab.text) do
-                            if text and (line.leftText:find(text) or line.leftText==text) then
-                                data.text[text]= line.leftText:match(text) or line.leftText
-                                numFind= numFind +1
-                                if tab.onlyText and numFind==numText then
-                                    break
-                                end
-                            end
-                        end
-                    end
-                    if tab.wow and not data.wow and (line.leftText==ITEM_BNETACCOUNTBOUND or line.leftText==ITEM_ACCOUNTBOUND) then--暴雪游戏通行证绑定, 账号绑定
-                        data.wow=true
-                        if tab.onlyWoW then
-                            break
-                        end
-                    end
+            end
+            if tab.wow and not data.wow and (line.leftText==ITEM_BNETACCOUNTBOUND or line.leftText==ITEM_ACCOUNTBOUND) then--暴雪游戏通行证绑定, 账号绑定
+                data.wow=true
+                if tab.onlyWoW then
+                    break
                 end
             end
         end
