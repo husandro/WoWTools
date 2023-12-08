@@ -3753,7 +3753,9 @@
         "AuctionHouseFrameBuyTab",
         "AuctionHouseFrameSellTab",
         "AuctionHouseFrameAuctionsTab",
-        "AuctionHouseFrameDisplayModeTabMixin"
+        "AuctionHouseFrameDisplayModeTabMixin",
+        "AuctionHouseSellFrameMixin",
+        "AuctionHouseCommoditiesSellFrameMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

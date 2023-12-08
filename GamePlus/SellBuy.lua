@@ -1389,21 +1389,27 @@ local function Init_AuctionHouse()
         return
     end
     local size= 32
-    AuctionHouseButton= e.Cbtn(AuctionHouseFrame.ItemSellFrame, {size={size, size}, icon=true})
+    
+    AuctionHouseButton= e.Cbtn(AuctionHouseFrame, {size={size, size}, icon=true})
     AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT')
     AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)
     AuctionHouseButton.frame:SetAllPoints(AuctionHouseButton)
     AuctionHouseButton.buttons={}
+    --AuctionHouseButton.ItemLocation= ItemLocation:CreateEmpty();
+    
     function AuctionHouseButton:init_items()
         local index=1
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
             for slot=1, C_Container.GetContainerNumSlots(bag) do
                 local info = C_Container.GetContainerItemInfo(bag, slot)
-                if info and not info.hasNoValue and info.hyperlink and not info.isLocked and not info.isBound and not info.hasLoot and info.quality>=1 then
+                local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)          
+                --self.ItemLocation:SetBagAndSlot(bag, slot)
+                
+                if info and  C_AuctionHouse.IsSellItemValid(itemLocation, false) then
                     local btn= self.buttons[index]
                     if not btn then
                         btn= e.Cbtn(self.frame, {size={size,size}, button='ItemButton', icon='hide'})
-                        btn:SetPoint("TOP", index==1 and self.frame or self.buttons[index-1], 'BOTTOM')
+                        btn:SetPoint("TOP", index==1 and self.frame or self.buttons[index-1], 'BOTTOM', 0, -4)
                         btn:UpdateItemContextOverlayTextures(1)
                         btn:SetScript('OnLeave', GameTooltip_Hide)
                         btn:SetScript('OnEnter', function(frame)
@@ -1412,19 +1418,20 @@ local function Init_AuctionHouse()
                                 e.tips:ClearLines()
                                 e.tips:SetBagItem(frame.bag[1], frame.bag[2])
                                 e.tips:Show()
-                                --AuctionHouseFrame.ItemSellFrame
-                                print(frame:GetItemLocation())
                             end
                         end)
                         btn:SetScript('OnClick', function(frame, d)
                             if d=='RightButton' then
-                                C_Container.UseContainerItem(frame.bag[1], frame.bag[2])
+                                
+                                AuctionHouseFrame.CommoditiesSellFrame:SetItem(frame.itemLocation)
+                                
+                                --AuctionHouseFrame.ItemSellFrame:SetItem(frame.itemLocation)
                             else
                             end
                         end)
                         self.buttons[index]= btn
                     end
-                    btn:SetItem(info.hyperlink)
+                    btn:SetItemLocation(itemLocation)
                     btn:SetItemButtonCount(info.stackCount)
                     btn.bag= {bag, slot}
                     btn:SetShown(true)
@@ -1435,7 +1442,7 @@ local function Init_AuctionHouse()
         for i=16, index-1, 15 do
             local btn= self.buttons[i]
             btn:ClearAllPoints()
-            btn:SetPoint('LEFT', self.buttons[i-15], 'RIGHT')
+            btn:SetPoint('LEFT', self.buttons[i-15], 'RIGHT', 4, 0)
         end
         for i= index, #self.buttons do
             local btn= self.buttons[i]
@@ -1446,10 +1453,26 @@ local function Init_AuctionHouse()
             end
         end
     end
-    AuctionHouseButton:init_items()
-    
-    hooksecurefunc(AuctionHouseFrameDisplayModeTabMixin, 'OnClick', function()
-        print('AuctionHouseFrameDisplayModeTabMixin:OnClick()')
+    function AuctionHouseButton:set_shown()
+        local show=  AuctionHouseFrame.CommoditiesSellFrame:IsShown() or  AuctionHouseFrame.ItemSellFrame:IsShown()
+        self:SetShown(show)
+        print(show)
+        if show then
+            self:init_items()
+        end
+    end
+    hooksecurefunc( AuctionHouseSellFrameMixin, 'OnShow', function()
+        AuctionHouseFrame.CommoditiesSellFrame:SetShown(true)
+        AuctionHouseFrame.ItemSellFrame:SetShown(false)
+    end)
+    hooksecurefunc( AuctionHouseSellFrameMixin, 'OnHide', function()
+        
+    end)
+    hooksecurefunc( AuctionHouseCommoditiesSellFrameMixin, 'OnShow', function()
+        AuctionHouseButton:set_shown()
+    end)
+    hooksecurefunc( AuctionHouseCommoditiesSellFrameMixin, 'OnHide', function()
+        AuctionHouseButton:set_shown()
     end)
 end
 
