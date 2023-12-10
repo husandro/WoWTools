@@ -413,7 +413,10 @@ local function setAddLoad(arg1)
         end
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
-        set_Move_Frame(AuctionHouseFrame)
+        set_Move_Frame(AuctionHouseFrame, {save=true})
+        --set_Move_Frame(AuctionHouseFrame.ItemSellFrame, {frame=AuctionHouseFrame})
+        set_Move_Frame(AuctionHouseFrame.CommoditiesSellFrame, {frame=AuctionHouseFrame, save=true})
+        
 
     elseif arg1=='Blizzard_BlackMarketUI' then--黑市
         set_Move_Frame(BlackMarketFrame)

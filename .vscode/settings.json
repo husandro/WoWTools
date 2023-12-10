@@ -3761,7 +3761,9 @@
         "UIDropDownMenu_SetWidth",
         "UIDropDownMenu_SetText",
         "PetStableStabledPet1Background",
-        "AuctionHouseAuctionsFrameMixin"
+        "AuctionHouseAuctionsFrameMixin",
+        "AuctionHouseFrameMixin",
+        "AuctionHouseFrameDisplayMode"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

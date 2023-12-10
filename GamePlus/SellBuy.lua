@@ -18,6 +18,8 @@ local Save={
     --sellJunkMago=true,--出售，可幻化，垃圾物品
 
     --notPlus=true,--商人 Pluse,加宽
+
+    intShowCommoditiesSell=true
 }
 
 local addName= MERCHANT
@@ -1396,6 +1398,13 @@ local function Init_AuctionHouse()
     AuctionHouseButton.frame:SetAllPoints(AuctionHouseButton)
     AuctionHouseButton.buttons={}
     --AuctionHouseButton.ItemLocation= ItemLocation:CreateEmpty();
+    local AuctionsFrameDisplayMode = {
+        AllAuctions = 1,
+        BidsList = 2,
+        Item = 3,
+        Commodity = 4,
+    };
+
 
     function AuctionHouseButton:init_items()
         local index=1
@@ -1421,10 +1430,9 @@ local function Init_AuctionHouse()
                             end
                         end)
                         btn:SetScript('OnClick', function(frame, d)
-                            
-                                local itemKey = C_AuctionHouse.GetItemKeyFromItem(frame.itemLocation)
-                                C_AuctionHouse.SearchForItemKeys(itemKey, 	Enum.AuctionHouseSortOrder.Price)
-                                --AuctionHouseFrame.CommoditiesSellFrame:SetItem(frame.itemLocation)
+                            AuctionHouseButton:show_CommoditiesSellFrame()
+                            --local itemKey = C_AuctionHouse.GetItemKeyFromItem(frame.itemLocation)
+                                AuctionHouseFrame.CommoditiesSellFrame:SetItem(frame.itemLocation)
 
                                 --AuctionHouseFrame.ItemSellFrame:SetItem(frame.itemLocation)
                             
@@ -1453,25 +1461,59 @@ local function Init_AuctionHouse()
             end
         end
     end
-    function AuctionHouseButton:set_shown()
-        local show=  AuctionHouseFrame.CommoditiesSellFrame:IsShown() or  AuctionHouseFrame.ItemSellFrame:IsShown()
-        self:SetShown(show)
-        if show then
-            self:init_items()
+
+    function AuctionHouseButton:get_displayMode()
+        local displayMode= AuctionHouseFrame:GetDisplayMode() or {}
+        return displayMode[1]
+    end
+    function AuctionHouseButton:show_CommoditiesSellFrame()
+        local displayMode= self:get_displayMode()
+        if displayMode ~='CommoditiesSellFrame' then
+           AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
         end
     end
-    hooksecurefunc( AuctionHouseSellFrameMixin, 'OnShow', function(self)
+
+    function AuctionHouseButton:set_shown()
+        local displayMode= self:get_displayMode()
+        self:SetShown(AuctionHouseFrame:IsShown() and (displayMode=='CommoditiesSellFrame' or displayMode=='ItemSellFrame'))
+    end
+
+    hooksecurefunc(AuctionHouseFrame, 'SetDisplayMode', function(self, displayMode)
+        if not displayMode or not self:IsShown() then
+            return
+        end
+        if displayMode[1]== "ItemSellFrame" then
+            self:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
+        elseif displayMode[1]=='CommoditiesSellFrame' then
+            AuctionHouseButton:init_items()
+		end
         AuctionHouseButton:set_shown()
     end)
-    hooksecurefunc( AuctionHouseCommoditiesSellFrameMixin, 'OnShow', function()
-        --AuctionHouseButton:set_shown()
+
+    AuctionHouseFrame:HookScript('OnShow', function(self)
+        if Save.intShowCommoditiesSell then
+            self:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
+        end
     end)
     AuctionHouseFrame:HookScript('OnHide', function()
         AuctionHouseButton:set_shown()
     end)
-    hooksecurefunc(AuctionHouseFrameDisplayModeTabMixin, 'OnClick', function(...)
-        print(...)
-    end)
+
+    --[[
+    <Anchor point="TOPLEFT" relativeKey="$parent.ItemSellFrame" relativePoint="TOPRIGHT" x="1" y="0"/>
+					<Anchor point="RIGHT" x="-5" y="0"/>
+					<Anchor point="BOTTOMLEFT" relativeKey="$parent.ItemSellFrame" relativePoint="BOTTOMRIGHT" x="1" y="0"/>
+--]]
+    AuctionHouseFrame.CommoditiesSellList:ClearAllPoints()
+    AuctionHouseFrame.CommoditiesSellList:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellFrame, 'TOPLEFT')
+    AuctionHouseFrame.CommoditiesSellList:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellFrame, 'BOTTOMRIGHT')
+    --AuctionHouseFrame.CommoditiesSellList.ScrollBar:ClearAllPoints()
+    --AuctionHouseFrame.CommoditiesSellList.ScrollBar:SetPoint('LEFT', AuctionHouseFrame.CommoditiesSellList, 'RIGHT')
+    
+    AuctionHouseFrame.CommoditiesSellFrame:ClearAllPoints()
+    AuctionHouseFrame.CommoditiesSellList:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellList, 'TOPLEFT')
+    AuctionHouseFrame.CommoditiesSellList:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'BOTTOMRIGHT')
+    --AuctionHouseFrame.CommoditiesSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.CommoditiesSellList, 'TOPRIGHT')
 end
 
 
