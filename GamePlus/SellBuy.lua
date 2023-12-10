@@ -1282,7 +1282,7 @@ end
 
 --StackSplitFrame.lua 堆叠,数量,框架
 --#################################
-local function set_StackSplitFrame_OpenStackSplitFrame(self, maxStack, parent, anchor, anchorTo, stackCount)
+local function set_StackSplitFrame_OpenStackSplitFrame(self)--, maxStack, parent, anchor, anchorTo, stackCount)
     if Save.notStackSplit then
         return
     end
@@ -1389,22 +1389,22 @@ local function Init_AuctionHouse()
         return
     end
     local size= 32
-    
+
     AuctionHouseButton= e.Cbtn(AuctionHouseFrame, {size={size, size}, icon=true})
     AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT')
     AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)
     AuctionHouseButton.frame:SetAllPoints(AuctionHouseButton)
     AuctionHouseButton.buttons={}
     --AuctionHouseButton.ItemLocation= ItemLocation:CreateEmpty();
-    
+
     function AuctionHouseButton:init_items()
         local index=1
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
             for slot=1, C_Container.GetContainerNumSlots(bag) do
                 local info = C_Container.GetContainerItemInfo(bag, slot)
-                local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)          
+                local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)
                 --self.ItemLocation:SetBagAndSlot(bag, slot)
-                
+
                 if info and  C_AuctionHouse.IsSellItemValid(itemLocation, false) then
                     local btn= self.buttons[index]
                     if not btn then
@@ -1422,9 +1422,9 @@ local function Init_AuctionHouse()
                         end)
                         btn:SetScript('OnClick', function(frame, d)
                             if d=='RightButton' then
-                                
+
                                 AuctionHouseFrame.CommoditiesSellFrame:SetItem(frame.itemLocation)
-                                
+
                                 --AuctionHouseFrame.ItemSellFrame:SetItem(frame.itemLocation)
                             else
                             end
@@ -1466,7 +1466,7 @@ local function Init_AuctionHouse()
         AuctionHouseFrame.ItemSellFrame:SetShown(false)
     end)
     hooksecurefunc( AuctionHouseSellFrameMixin, 'OnHide', function()
-        
+
     end)
     hooksecurefunc( AuctionHouseCommoditiesSellFrameMixin, 'OnShow', function()
         AuctionHouseButton:set_shown()
@@ -1505,7 +1505,7 @@ local DELETE_ITEM_CONFIRM_STRING= DELETE_ITEM_CONFIRM_STRING
 local COMMUNITIES_DELETE_CONFIRM_STRING= COMMUNITIES_DELETE_CONFIRM_STRING
 local function Init()
     Init_Button(MerchantFrame)--初始，按钮
-    
+
 
     --######
     --DELETE
