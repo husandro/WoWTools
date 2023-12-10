@@ -993,7 +993,7 @@ local function Init_All_Frame()
                 hideButtonText(_G['MultiBar'..index..'Button'..i])--作条6, 7, 8
             end
         end
-        MainMenuBar.Background:SetShown(false)
+        hide_Texture(MainMenuBar.Background)
     end)
 end
 
