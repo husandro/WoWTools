@@ -8,6 +8,8 @@ end
 
 local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  UnitClass('player'), DUNGEON_FLOOR_ORGRIMMARRAID8) --猎人兽栏
 local Save={
+    --hideIndex=true,--隐藏索引
+    --hideTalent=true,--隐藏天赋
     modelScale=0.65,
     sortIndex=4,--1, 2,3,4,5 icon, name, level, family, talent排序
     --line=15,
@@ -84,12 +86,8 @@ end
 
 
 local function set_PetStable_UpdateSlot(btn, petSlot)--宠物，类型，已激MODEL
-    if btn.talentText then--宠物，类型
-        local talent =petSlot and select(5, GetStablePetInfo(petSlot))
-        talent = talent and e.WA_Utf8Sub(talent, 2, 5, true) or ''
-        btn.talentText:SetText(talent)
-    end
-
+    btn:set_slot_talent(petSlot)--宠物，类型
+    
     if btn.model then--已激活宠物，提示
         local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(petSlot);
         if creatureDisplayID and creatureDisplayID>0 then
@@ -104,47 +102,150 @@ local function set_PetStable_UpdateSlot(btn, petSlot)--宠物，类型，已激M
 end
 
 
-local function Create_Text(btn, index, showSlotNum)--创建，提示内容
-    if showSlotNum then
-        btn.solotText= e.Cstr(btn, {layer='BACKGROUND', color={r=1,g=1,b=1,a=0.2}})--栏位
-        btn.solotText:SetPoint('CENTER')
-        btn.solotText:SetText(index)
+
+local function Set_Slot_Info(btn, index, isActiveSlot)--创建，提示内容
+    if not isActiveSlot then
+        function btn:set_slot_index()
+            if not Save.hideIndex and not self.slotIndexText then
+                self.slotIndexText= e.Cstr(self, {layer='BACKGROUND', color={r=1,g=1,b=1,a=0.2}})--栏位
+                self.slotIndexText:SetPoint('CENTER')
+            end
+            if self.slotIndexText then
+                self.slotIndexText:SetText(not Save.hideIndex and index or '')
+            end
+        end
+        btn:set_slot_index()
+    else
+        local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
+        btn.spellTexture= btn:CreateTexture()
+        btn.spellTexture:SetSize(25,25)
+        btn.spellTexture:SetPoint('RIGHT', btn, 'LEFT', -2,0)
+        btn.spellTexture:SetAtlas('services-number-'..index)
+        e.Set_Label_Texture_Color(btn.spellTexture, {type='Texture', alpha=0.3})
+        if CALL_PET_SPELL_IDS[index] then--召唤，宠物，法术
+            btn.spellTexture.spellID= CALL_PET_SPELL_IDS[index]
+            btn.spellTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.3) end)
+            btn.spellTexture:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:SetSpellByID(self.spellID)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+                self:SetAlpha(1)
+            end)
+        end
+        btn.spellTexture:SetShown(not Save.hideIndex)
+        function btn:set_slot_index()
+            self.spellTexture:SetShown(not Save.hideIndex)
+        end
+
+         --已激活宠物，提示
+         local modelH= (PetStableLeftInset:GetHeight()-28)/NUM_PET_ACTIVE_SLOTS
+         btn.model= CreateFrame("PlayerModel", nil, PetStableFrame)
+         btn.model:SetSize(modelH, modelH)
+         btn.model:SetFacing(0.3)
+         if index==1 then
+             btn.model:SetPoint('TOPRIGHT', PetStableLeftInset, 'TOPLEFT', -16,-28)
+         else
+             btn.model:SetPoint('TOP', _G['PetStableActivePet'..index-1].model, 'BOTTOM')
+         end
+
+         local bg=btn.model:CreateTexture('BACKGROUND')
+         bg:SetPoint('LEFT')
+         bg:SetSize(modelH+14, modelH)
+         bg:SetAtlas('ShipMission_RewardsBG-Desaturate')
+         e.Set_Label_Texture_Color(bg, {type='Texture', alpha=0.3})
+         function btn:set_model_info(petSlot)
+            local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(petSlot);
+            if creatureDisplayID and creatureDisplayID>0 then
+                if creatureDisplayID~=btn.creatureDisplayID then
+                    btn.model:SetDisplayInfo(creatureDisplayID)
+                end
+            else
+                btn.model:ClearModel()
+            end
+            btn.creatureDisplayID= creatureDisplayID--提示用，
+         end
+
+         btn:ClearAllPoints()
+         btn:SetPoint('LEFT', btn.model, 'RIGHT', 43,0)
+
+         if btn.PetName then
+            btn.PetName:ClearAllPoints()
+            btn.PetName:SetPoint('BOTTOM', btn.Border, 0,-10)
+            e.Set_Label_Texture_Color(btn.PetName, {type='FontString'})
+            btn.PetName:SetShadowOffset(1, -1)
+            btn.PetName:SetJustifyH('LEFT')
+            btn.PetName:SetScale(0.85)
+         end
     end
 
-    btn.dimOverlay = btn:CreateTexture(nil, "OVERLAY");--查询提示用
+    btn:HookScript('OnEnter', function(self)--GameTooltip 提示用 tooltips.lua
+        if e.tips.playerModel and self.petSlot then
+            local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(self.petSlot);
+            if creatureDisplayID and creatureDisplayID>0 then
+                e.tips.playerModel:SetDisplayInfo(creatureDisplayID)
+                e.tips.playerModel:SetShown(true)
+                local food= Get_Food_Text(self.petSlot)
+                if food then
+                    e.tips:AddLine(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, food, 1, 1, 1, true))
+                end
+                local petIcon, petName, petLevel, petType, petTalents = GetStablePetInfo(self.petSlot)
+                if petLevel then
+                    e.tips:AddDoubleLine((e.onlyChinese and '等级' or LEVEL)..': '..petLevel, petIcon and '|T'..petIcon..':0|t'..petIcon)
+                end
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine('creatureDisplayID', creatureDisplayID)
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end
+        end
+    end)
+
+    function btn:set_settings()
+        if not Save.hideTalent then
+            if not self.talentText then
+                self.talentText= e.Cstr(btn, {layer='ARTWORK', color=true})--天赋
+                self.talentText:SetPoint('BOTTOM')
+            end
+            local talent= self.petSlot and select(5, GetStablePetInfo(self.petSlot))
+            self.talentText:SetText(talent and e.WA_Utf8Sub(talent, 2, 5, true) or '')
+        elseif self.talentText then
+            self.talentText:SetText('')
+        end
+        if self.model then--已激活宠物，提示
+            local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(self.petSlot);
+            if creatureDisplayID and creatureDisplayID>0 then
+                if creatureDisplayID~=self.creatureDisplayID then
+                    self.model:SetDisplayInfo(creatureDisplayID)
+                end
+            else
+                self.model:ClearModel()
+            end
+            self.creatureDisplayID= creatureDisplayID--提示用，
+        end
+    end
+
+    btn.dimOverlay = btn.dimOverlay or btn:CreateTexture(nil, "OVERLAY");--查询提示用
     btn.dimOverlay:SetColorTexture(0, 0, 0, 0.8);
     btn.dimOverlay:SetAllPoints();
     btn.dimOverlay:Hide();
 
-    btn.talentText= e.Cstr(btn, {layer='ARTWORK', color=true})--天赋
-    btn.talentText:SetAlpha(1)
-    btn.talentText:SetPoint('BOTTOM')
+
+    if btn.Checked then
+        local w,h= btn:GetSize()
+        btn.Checked:ClearAllPoints()
+        btn.Checked:SetPoint('CENTER')
+        btn.Checked:SetSize(w+10, h+10)
+        btn.Checked:SetVertexColor(0,1,0)
+    end
 
     btn:RegisterForDrag('LeftButton', "RightButton")
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
 end
 
-local function HookEnter_Button(btn)--GameTooltip 提示用 tooltips.lua
-    if e.tips.playerModel and btn.petSlot then
-        local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(btn.petSlot);
-        if creatureDisplayID and creatureDisplayID>0 then
-            e.tips.playerModel:SetDisplayInfo(creatureDisplayID)
-            e.tips.playerModel:SetShown(true)
-            local food= Get_Food_Text(btn.petSlot)
-            if food then
-                e.tips:AddLine(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, food, 1, 1, 1, true))
-            end
-            local petIcon, petName, petLevel, petType, petTalents = GetStablePetInfo(btn.petSlot)
-            if petLevel then
-                e.tips:AddDoubleLine((e.onlyChinese and '等级' or LEVEL)..': '..petLevel, petIcon and '|T'..petIcon..':0|t'..petIcon)
-            end
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('creatureDisplayID', creatureDisplayID)
-            e.tips:AddDoubleLine(id, addName)
-            e.tips:Show()
-        end
-    end
-end
+
 
 
 
@@ -175,7 +276,7 @@ local function Init()
     --NUM_PER_ROW= Save.line or 15
 
     local w, h= 720, 620--get_Frame_Size()--720, 630
-    local layer= PetStableFrame:GetFrameLevel()+ 1
+    
 
     NUM_PET_STABLE_SLOTS = maxSlots
     NUM_PET_STABLE_PAGES = 1
@@ -188,28 +289,17 @@ local function Init()
 
     PetStableStabledPet1:ClearAllPoints()--设置，200个按钮，第一个位置
     PetStableStabledPet1:SetPoint("TOPLEFT", PetStableFrame, 97, -37)
-    
-    local w2, h2= _G["PetStableStabledPet1"]:GetSize()
+
+    local layer= PetStableFrame:GetFrameLevel()+ 1
     for i = 1, maxSlots do
         local btn= _G["PetStableStabledPet"..i] or CreateFrame("Button", "PetStableStabledPet"..i, PetStableFrame, "PetStableSlotTemplate", i)
         btn.petSlot= btn.petSlot or (NUM_PET_ACTIVE_SLOTS+i)
-
         btn:SetFrameLevel(layer)
-
-        Create_Text(btn, i, true)--创建，提示内容
-
-        btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
+        Set_Slot_Info(btn, i, nil)--创建，提示内容
 
         --处理，按钮，背景 Texture.lua，中有处理过
-        e.Set_Label_Texture_Color(_G['PetStableStabledPet'..i..'Background'], {type='Texture', alpha=0.5})--设置颜色
-        
-        local texture= _G['PetStableStabledPet'..i..'Checked']
-        if texture then
-            texture:ClearAllPoints()
-            texture:SetPoint('CENTER')
-            texture:SetSize(w2+10, h2+10)
-            texture:SetVertexColor(0,1,0)
-        end
+        e.Set_Label_Texture_Color(btn.Background, {type='Texture', alpha=0.5})--设置颜色
+
         if i > 1 then--设置位置
             btn:ClearAllPoints()
             btn:SetPoint("LEFT", _G["PetStableStabledPet"..i-1], "RIGHT", 4, 0)
@@ -221,19 +311,15 @@ local function Init()
         _G["PetStableStabledPet"..i]:SetPoint("TOPLEFT", _G["PetStableStabledPet"..i-NUM_PER_ROW], "BOTTOMLEFT", 0, -4)
     end
 
-    --设置，选定颜色和大小
-    w2, h2= _G['PetStableStabledPet1']:GetSize()
-    for i=1, 5 do--NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS do
-        local texture= _G['PetStableActivePet'..i..'Checked']
-        if texture then
-            texture:ClearAllPoints()
-            texture:SetPoint('CENTER')
-            texture:SetSize(w2+10, h2+10)
-            texture:SetVertexColor(0,1,0)
+
+    --已激活宠物
+    for i= 1, NUM_PET_ACTIVE_SLOTS do
+        local btn= _G['PetStableActivePet'..i]
+        if btn then
+            btn.petSlot= btn.petSlot or i
+            Set_Slot_Info(btn, i, true)--创建，提示内容
         end
     end
-    
-    
 
     --查询
     ISF_SearchInput = _G['ISF_SearchInput'] or CreateFrame("EditBox", nil, PetStableStabledPet1, "SearchBoxTemplate")
@@ -254,70 +340,13 @@ local function Init()
 
 
 
-    --已激活宠物
-    local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
-    local modelH= (PetStableLeftInset:GetHeight()-28)/NUM_PET_ACTIVE_SLOTS
-    for i= 1, NUM_PET_ACTIVE_SLOTS do
-        local btn= _G['PetStableActivePet'..i]
-        if btn then
-            Create_Text(btn, i)--创建，提示内容
 
-            --已激活宠物，提示
-            btn.model= CreateFrame("PlayerModel", nil, PetStableFrame)
-            btn.model:SetSize(modelH, modelH)
-            btn.model:SetFacing(0.3)
-            if i==1 then
-                btn.model:SetPoint('TOPRIGHT', PetStableLeftInset, 'TOPLEFT', -16,-28)
-            else
-                btn.model:SetPoint('TOP', _G['PetStableActivePet'..i-1].model, 'BOTTOM')
-            end
 
-            local bg=btn.model:CreateTexture('BACKGROUND')
-            bg:SetPoint('LEFT')
-            bg:SetSize(modelH+14, modelH)
-            bg:SetAtlas('ShipMission_RewardsBG-Desaturate')
-            --bg:SetAlpha(0.3)
-            e.Set_Label_Texture_Color(bg, {type='Texture', alpha=0.3})
-            --bg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-
-            btn:HookScript('OnEnter', HookEnter_Button)--GameTooltip 提示用 tooltips.lua
-            btn:ClearAllPoints()
-            btn:SetPoint('LEFT', btn.model, 'RIGHT', 43,0)
-
-            local spellTexture= btn:CreateTexture()
-            spellTexture:SetSize(25,25)
-            spellTexture:SetPoint('RIGHT', btn, 'LEFT', -2,0)
-            spellTexture:SetAtlas('services-number-'..i)
-            e.Set_Label_Texture_Color(spellTexture, {type='Texture', alpha=0.3})
-            --spellTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-            --spellTexture:SetAlpha(0.3)
-            if CALL_PET_SPELL_IDS[i] then--召唤，宠物，法术
-                spellTexture.spellID= CALL_PET_SPELL_IDS[i]
-                spellTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.3) end)
-                spellTexture:SetScript('OnEnter', function(self)
-                    e.tips:SetOwner(self, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:SetSpellByID(self.spellID)
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(id, addName)
-                    e.tips:Show()
-                    self:SetAlpha(1)
-                end)
-            end
-            local label= _G['PetStableActivePet'..i..'PetName']
-            if label then
-                label:ClearAllPoints()
-                label:SetPoint('BOTTOM', _G['PetStableActivePet'..i..'Border'] or btn,0,-10)
-                e.Set_Label_Texture_Color(label, {type='FontString'})
-                --label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
-                label:SetShadowOffset(1, -1)
-                label:SetJustifyH('LEFT')
-                label:SetScale(0.85)
-            end
+    hooksecurefunc('PetStable_UpdateSlot', function(btn)--, petSlot)--宠物，类型，已激MODEL
+        if btn.set_settings then
+            btn:set_settings()
         end
-    end
-
-    hooksecurefunc('PetStable_UpdateSlot', set_PetStable_UpdateSlot)--宠物，类型，已激MODEL
+    end)--宠物，类型，已激MODEL
 
 
     --PetStableFrameTitleText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)--标题
@@ -344,7 +373,7 @@ local function Init()
     PetStableModelScene:SetPoint('LEFT', PetStableFrame, 'RIGHT',0, -12)
     PetStableModelScene:SetSize(h-24, h-24)
 
-    PetStableModelScene.zoomModelButton= e.Cbtn(PetStableFrameCloseButton, {size={22,22}, atlas='UI-HUD-Minimap-Zoom-In'})
+    PetStableModelScene.zoomModelButton= e.Cbtn(PetStableFrameCloseButton, {size={22,22}, icon=true})--atlas='UI-HUD-Minimap-Zoom-In'})
     PetStableModelScene.zoomModelButton:SetPoint('RIGHT', PetStableFrameCloseButton, 'LEFT', -2,0)
     PetStableModelScene.zoomModelButton:SetAlpha(0.5)
     function PetStableModelScene.zoomModelButton:set_Tooltips()
@@ -352,7 +381,9 @@ local function Init()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.Icon.left, (e.onlyChinese and '模型缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MODEL, UI_SCALE))..' |cnGREEN_FONT_COLOR:'..Save.modelScale)
+        e.tips:AddDoubleLine((e.onlyChinese and '天赋' or TALENT)..': '..e.GetShowHide(not Save.hideTalent),  e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '索引' or 'Index')..': '..e.GetShowHide(not Save.hideIndex),  e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '模型缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MODEL, UI_SCALE))..' |cnGREEN_FONT_COLOR:'..Save.modelScale, e.Icon.mid)
         e.tips:Show()
     end
     function PetStableModelScene.zoomModelButton:set_Scale()
@@ -371,7 +402,36 @@ local function Init()
         self:set_Value_Scale(d==-1)
     end)
     PetStableModelScene.zoomModelButton:SetScript('OnClick', function(self, d)
-        self:set_Value_Scale(d=='LeftButton')
+        if d=='LeftButton' then--显示/隐藏 天赋
+            Save.hideTalent= not Save.hideTalent and true or nil
+            for i= 1, maxSlots do
+                local btn= _G['PetStableStabledPet'..i]
+                if btn then
+                    btn:set_settings()
+                end
+            end
+            for i=1, NUM_PET_ACTIVE_SLOTS do
+                local btn= _G['PetStableActivePet'..i]
+                if btn then
+                    btn:set_settings()
+                end
+            end
+        elseif d=='RightButton' then--显示/隐藏 索引
+            Save.hideIndex= not Save.hideIndex and true or nil
+            for i= 1, maxSlots do
+                local btn= _G['PetStableStabledPet'..i]
+                if btn then
+                    btn:set_slot_index()
+                end
+            end
+            for i=1, NUM_PET_ACTIVE_SLOTS do
+                local btn= _G['PetStableActivePet'..i]
+                if btn then
+                    btn:set_slot_index()
+                end
+            end
+        end
+        self:set_Tooltips()
     end)
     PetStableModelScene.zoomModelButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
     PetStableModelScene.zoomModelButton:SetScript('OnEnter', function(self)
