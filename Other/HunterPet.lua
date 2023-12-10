@@ -480,7 +480,6 @@ end
                 checked= Save.sortIndex==i,
                 arg1=i,
                 func=function(_, arg1)
-                    print(_==self, _:GetParent()== self, _:GetParent():GetParent()== self)
                     Save.sortIndex= arg1
                     e.LibDD:UIDropDownMenu_SetText(self,  self:get_text(Save.sortIndex))
                 end
