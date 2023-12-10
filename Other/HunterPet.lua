@@ -26,6 +26,27 @@ local IsInSearch--排序用
 local function Get_Food_Text(slotPet)
     return BuildListString(GetStablePetFoodTypes(slotPet))
 end
+local function Set_Food_Lable()--食物
+    PetStablePetInfo.foodLable:SetText(Get_Food_Text(PetStableFrame.selectedPet) or '')
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -80,26 +101,26 @@ local function set_PetStable_Update()--查询
 end
 
 
-local function Set_Food_Lable()--食物
-    PetStablePetInfo.foodLable:SetText(Get_Food_Text(PetStableFrame.selectedPet) or '')
-end
 
 
-local function set_PetStable_UpdateSlot(btn, petSlot)--宠物，类型，已激MODEL
-    btn:set_slot_talent(petSlot)--宠物，类型
-    
-    if btn.model then--已激活宠物，提示
-        local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(petSlot);
-        if creatureDisplayID and creatureDisplayID>0 then
-            if creatureDisplayID~=btn.creatureDisplayID then
-                btn.model:SetDisplayInfo(creatureDisplayID)
-            end
-        else
-            btn.model:ClearModel()
-        end
-        btn.creatureDisplayID= creatureDisplayID--提示用，
-    end
-end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -118,7 +139,7 @@ local function Set_Slot_Info(btn, index, isActiveSlot)--创建，提示内容
     else
         local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245}--召唤，宠物，法术
         btn.spellTexture= btn:CreateTexture()
-        btn.spellTexture:SetSize(25,25)
+        btn.spellTexture:SetSize(28,28)
         btn.spellTexture:SetPoint('RIGHT', btn, 'LEFT', -2,0)
         btn.spellTexture:SetAtlas('services-number-'..index)
         e.Set_Label_Texture_Color(btn.spellTexture, {type='Texture', alpha=0.3})
@@ -274,10 +295,7 @@ end
 
 
 local function Init()
-    --NUM_PER_ROW= Save.line or 15
-
     local w, h= 720, 620--get_Frame_Size()--720, 630
-    
 
     NUM_PET_STABLE_SLOTS = maxSlots
     NUM_PET_STABLE_PAGES = 1
@@ -350,15 +368,11 @@ local function Init()
     end)--宠物，类型，已激MODEL
 
 
-    --PetStableFrameTitleText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)--标题
     e.Set_Label_Texture_Color(PetStableFrameTitleText, {type='FontString'})--标题, 颜色
 
     PetStableActiveBg:ClearAllPoints()--已激活宠物，背景，大小
     PetStableActiveBg:SetAllPoints(PetStableLeftInset)
-    --e.Set_Label_Texture_Color(PetStableActiveBg, {type='Texture'})
-    --PetStableActiveBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
     e.Set_Label_Texture_Color(PetStableActivePetsLabel, {type='FontString'})
-    --PetStableActivePetsLabel:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
 
 
     PetStableFrameInset.NineSlice:ClearAllPoints()--标示，背景
@@ -367,7 +381,6 @@ local function Init()
     PetStableFrameInset.Bg:ClearAllPoints()
     PetStableFrameInset.Bg:SetPoint('TOPLEFT')
     PetStableFrameInset.Bg:SetPoint('BOTTOMRIGHT', PetStableFrame, -4, 4)
-    --PetStableFrameInset.Bg:Hide()
 
 
     PetStableModelScene:ClearAllPoints()--设置，3D，位置
@@ -444,13 +457,11 @@ local function Init()
 
     PetStableFrameModelBg:ClearAllPoints()--3D，背景
     PetStableFrameModelBg:SetAllPoints(PetStableModelScene)
-    --PetStableFrameModelBg:SetAlpha(0.5)
     PetStableFrameModelBg:SetAtlas('ShipMission_RewardsBG-Desaturate')
     PetStableFrameModelBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
     PetStablePetInfo:ClearAllPoints()--宠物，信息
     PetStablePetInfo:SetPoint('BOTTOMLEFT', PetStableFrame, 'BOTTOMRIGHT',0, 4)
-    --PetStablePetInfo:SetParent(PetStableModelScene)
 
     PetStableDiet:ClearAllPoints()--食物，提示
     PetStableDiet:SetSize(PetStableSelectedPetIcon:GetSize())
@@ -460,19 +471,18 @@ local function Init()
 
     PetStablePetInfo.foodLable= e.Cstr(PetStablePetInfo, {color=true})--食物
     PetStablePetInfo.foodLable:SetPoint('LEFT', PetStableDiet, 'Right',0,0)
+
     Set_Food_Lable()--食物
     hooksecurefunc('PetStable_UpdatePetModelScene', Set_Food_Lable)--食物
 
     PetStableNameText:ClearAllPoints()
     PetStableNameText:SetPoint('TOPLEFT', PetStableSelectedPetIcon, 'RIGHT',0, -2)
     e.Set_Label_Texture_Color(PetStableNameText, {type='FontString'})--选定，宠物，名称
-    --PetStableNameText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)--选定，宠物，名称
 
     PetStableTypeText:ClearAllPoints()--选定，宠物，类型
     PetStableTypeText:SetPoint('BOTTOMLEFT', PetStableSelectedPetIcon, 'RIGHT', 0,2)
     PetStableTypeText:SetJustifyH('LEFT')
     e.Set_Label_Texture_Color(PetStableTypeText, {type='FontString'})
-    --PetStableTypeText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
     PetStableTypeText:SetShadowOffset(1, -1)
 
 
@@ -480,7 +490,11 @@ local function Init()
 
     local sortButton= e.Cbtn(ISF_SearchInput, {atlas='bags-button-autosort-up', size={26,26}})
     sortButton:SetPoint('RIGHT', ISF_SearchInput, 'LEFT', -6, 0)
-    sortButton:SetScript('OnLeave', GameTooltip_Hide)
+    sortButton:SetAlpha(0.7)
+    sortButton:SetScript('OnLeave', function(self)
+        GameTooltip_Hide()
+        self:SetAlpha(0.7)
+    end)
     sortButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -495,6 +509,7 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
+        self:SetAlpha(1)
     end)
 
     sortButton:SetScript('OnClick', function(self, d)
@@ -559,11 +574,11 @@ end
     e.LibDD:UIDropDownMenu_SetWidth(menu, 90)
     menu:SetPoint('RIGHT', sortButton, 'LEFT', 15, -2)
     function menu:get_text(index)
-        return index==1 and e.Player.col..(e.onlyChinese and '图标' or EMBLEM_SYMBOL)--'icon'
-                or index==2 and e.Player.col..(e.onlyChinese and '名称' or NAME)--'name'
-                or index==3 and e.Player.col..(e.onlyChinese and '等级' or LEVEL)--'level'
-                or index==4 and e.Player.col..(e.onlyChinese and '类型' or TYPE)--'family'
-                or index==5 and e.Player.col..(e.onlyChinese and '天赋' or TALENT)--'talen'
+        return index==1 and (e.onlyChinese and '图标' or EMBLEM_SYMBOL)--'icon'
+                or index==2 and (e.onlyChinese and '名称' or NAME)--'name'
+                or index==3 and (e.onlyChinese and '等级' or LEVEL)--'level'
+                or index==4 and (e.onlyChinese and '类型' or TYPE)--'family'
+                or index==5 and (e.onlyChinese and '天赋' or TALENT)--'talen'
     end
     e.LibDD:UIDropDownMenu_SetText(menu,  menu:get_text(Save.sortIndex))
     e.LibDD:UIDropDownMenu_Initialize(menu, function(self, level)
@@ -596,6 +611,7 @@ end
         end
     end
 
+    e.Set_Label_Texture_Color(menu.Text, {type='FontString', alpha=0.5})
     e.call('PetStable_Update')
 end
 
