@@ -3755,7 +3755,8 @@
         "AuctionHouseFrameAuctionsTab",
         "AuctionHouseFrameDisplayModeTabMixin",
         "AuctionHouseSellFrameMixin",
-        "AuctionHouseCommoditiesSellFrameMixin"
+        "AuctionHouseCommoditiesSellFrameMixin",
+        "FOLLOWERLIST_LABEL_CHAMPIONS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

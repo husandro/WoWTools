@@ -975,14 +975,35 @@ local function set_All_Text()--所有记录
     if not ChallengesFrame.weekLootItemLevelLable then
         ChallengesFrame.weekLootItemLevelLable= e.Cstr(TipsFrame, {mouse=true})--最右边, 数据
         ChallengesFrame.weekLootItemLevelLable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-12)
+        function ChallengesFrame.weekLootItemLevelLable:get_item_label(level, isWeekReward)--https://www.wowhead.com/cn/guide/mythic-plus-dungeons/dragonflight-season-3
+            if isWeekReward then
+                if level<=8 then
+                    return '('..(e.onlyChinese and '老兵' or 'Veteran')..')'
+                elseif level<=16 then
+                    return '('..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..')'
+                else
+                    return '('..(e.onlyChinese and '英雄' or ITEM_HEROIC)..')'
+                end
+            else--掉落
+                if level<=7 then
+                    return '('..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..')'
+                elseif level<=17 then
+                    return '('..(e.onlyChinese and '英雄' or ITEM_HEROIC)..')'
+                else
+                    return '('..(e.onlyChinese and '史诗' or ITEM_QUALITY4_DESC)..')'
+                end
+            end
+        end
         function ChallengesFrame.weekLootItemLevelLable:get_Loot_itemLevel(level)
             local col= self.curLevel==level and '|cff00ff00' or select(2, math.modf(level/2))==0 and '|cffff8200' or '|cffffffff'
             local weeklyRewardLevel2, endOfRunRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
-            if weeklyRewardLevel2 and weeklyRewardLevel2>0 then
+            if weeklyRewardLevel2 and weeklyRewardLevel2>=2 then
                 return
                     col
                     ..(level<10 and level..' ' or level)
-                    ..'  '..weeklyRewardLevel2..'  '..(endOfRunRewardLevel2 or 0)
+                    ..'  '..weeklyRewardLevel2..(self:get_item_label(weeklyRewardLevel2, true))
+                    ..'  '..(endOfRunRewardLevel2 or 0)..(self:get_item_label(endOfRunRewardLevel2, false))
+                    ..' '
                     ..'|r'
                     ..(self.curKey==level and '|T4352494:0|t' or '')
                     ..(self.curLevel==level and e.Icon.select2 or '')
