@@ -3759,7 +3759,8 @@
         "FOLLOWERLIST_LABEL_CHAMPIONS",
         "PetStableActivePet2Checked",
         "UIDropDownMenu_SetWidth",
-        "UIDropDownMenu_SetText"
+        "UIDropDownMenu_SetText",
+        "PetStableStabledPet1Background"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

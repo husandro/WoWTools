@@ -146,17 +146,31 @@ local function HookEnter_Button(btn)--GameTooltip 提示用 tooltips.lua
     end
 end
 
---[[local function get_Frame_Size()
-    --local line= NUM_PER_ROW
-    local w, h= 37, 37--PetStableStabledPet1:GetSize()
-    local line, b=  math.modf(maxSlots/NUM_PER_ROW)
-    line= b>0 and line+1 or line
 
-    h= h*line + line*4 +45
-    w= w*NUM_PER_ROW + w*4 +15
 
-    return w, h
-end]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
     --NUM_PER_ROW= Save.line or 15
 
@@ -174,7 +188,8 @@ local function Init()
 
     PetStableStabledPet1:ClearAllPoints()--设置，200个按钮，第一个位置
     PetStableStabledPet1:SetPoint("TOPLEFT", PetStableFrame, 97, -37)
-
+    
+    local w2, h2= _G["PetStableStabledPet1"]:GetSize()
     for i = 1, maxSlots do
         local btn= _G["PetStableStabledPet"..i] or CreateFrame("Button", "PetStableStabledPet"..i, PetStableFrame, "PetStableSlotTemplate", i)
         btn.petSlot= btn.petSlot or (NUM_PET_ACTIVE_SLOTS+i)
@@ -187,8 +202,14 @@ local function Init()
 
         --处理，按钮，背景 Texture.lua，中有处理过
         e.Set_Label_Texture_Color(_G['PetStableStabledPet'..i..'Background'], {type='Texture', alpha=0.5})--设置颜色
-
-
+        
+        local texture= _G['PetStableStabledPet'..i..'Checked']
+        if texture then
+            texture:ClearAllPoints()
+            texture:SetPoint('CENTER')
+            texture:SetSize(w2+10, h2+10)
+            texture:SetVertexColor(0,1,0)
+        end
         if i > 1 then--设置位置
             btn:ClearAllPoints()
             btn:SetPoint("LEFT", _G["PetStableStabledPet"..i-1], "RIGHT", 4, 0)
@@ -200,6 +221,19 @@ local function Init()
         _G["PetStableStabledPet"..i]:SetPoint("TOPLEFT", _G["PetStableStabledPet"..i-NUM_PER_ROW], "BOTTOMLEFT", 0, -4)
     end
 
+    --设置，选定颜色和大小
+    w2, h2= _G['PetStableStabledPet1']:GetSize()
+    for i=1, 5 do--NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS do
+        local texture= _G['PetStableActivePet'..i..'Checked']
+        if texture then
+            texture:ClearAllPoints()
+            texture:SetPoint('CENTER')
+            texture:SetSize(w2+10, h2+10)
+            texture:SetVertexColor(0,1,0)
+        end
+    end
+    
+    
 
     --查询
     ISF_SearchInput = _G['ISF_SearchInput'] or CreateFrame("EditBox", nil, PetStableStabledPet1, "SearchBoxTemplate")
@@ -210,12 +244,12 @@ local function Init()
     if  _G['ISF_SearchInput'] then ISF_SearchInput:ClearAllPoints() end--处理插件，Improved Stable Frame
     ISF_SearchInput:SetPoint('BOTTOMRIGHT',PetStableFrame, -6, 10)
     ISF_SearchInput:SetScale(1.2)
-    ISF_SearchInput.Instructions:SetText(e.onlyChinese and '名称，类型，天赋，食物' or (NAME .. ", " .. TYPE .. ", " .. TALENT..', '..POWER_TYPE_FOOD))
+    ISF_SearchInput.Instructions:SetText(e.onlyChinese and '名称,类型,天赋,食物' or (NAME .. "," .. TYPE .. "," .. TALENT..','..POWER_TYPE_FOOD))
     ISF_SearchInput:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
     ISF_SearchInput:HookScript("OnTextChanged", set_PetStable_Update)
     hooksecurefunc("PetStable_Update", set_PetStable_Update)
     ISF_SearchInput.text= e.Cstr(ISF_SearchInput, {color=true})
-    ISF_SearchInput.text:SetPoint('BOTTOMLEFT', ISF_SearchInput, 'TOPLEFT')
+    ISF_SearchInput.text:SetPoint('BOTTOM', ISF_SearchInput, 'TOP')
 
 
 
@@ -327,8 +361,8 @@ local function Init()
     function PetStableModelScene.zoomModelButton:set_Value_Scale(add)
         local n= Save.modelScale or 1
         n= add and n+0.05 or (n-0.05)
-        n= n<0.4 and 0.4 or n
-        n= n>4 and 4 or n
+        n= n<0.1 and 0.1 or n
+        n= n>2 and 2 or n
         Save.modelScale=n
         self:set_Scale()
         self:set_Tooltips()
@@ -349,7 +383,7 @@ local function Init()
 
     PetStableFrameModelBg:ClearAllPoints()--3D，背景
     PetStableFrameModelBg:SetAllPoints(PetStableModelScene)
-    PetStableFrameModelBg:SetAlpha(0.5)
+    --PetStableFrameModelBg:SetAlpha(0.5)
     PetStableFrameModelBg:SetAtlas('ShipMission_RewardsBG-Desaturate')
     PetStableFrameModelBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
@@ -408,8 +442,6 @@ local function Init()
         local func= PetStable_Update--排序用
         PetStable_Update= function() end
 do
-
-
         local tab= {}
         for i= NUM_PET_ACTIVE_SLOTS+ 1, maxSlots+ NUM_PET_ACTIVE_SLOTS do
             local icon, name, level, family, talent = GetStablePetInfo(i)
@@ -463,7 +495,7 @@ end
 
 
     local menu= CreateFrame('Frame', 'SortHunterPetDropDownMenu', sortButton, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_SetWidth(menu, 80)
+    e.LibDD:UIDropDownMenu_SetWidth(menu, 90)
     menu:SetPoint('RIGHT', sortButton, 'LEFT', 15, -2)
     function menu:get_text(index)
         return index==1 and e.Player.col..(e.onlyChinese and '图标' or EMBLEM_SYMBOL)--'icon'
@@ -505,6 +537,29 @@ end
 
     e.call('PetStable_Update')
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local panel=CreateFrame("Frame")

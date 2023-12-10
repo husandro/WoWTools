@@ -526,22 +526,16 @@ local function Init_All_Frame()
         set_Alpha_Color(PetStableFrameBg)
         set_NineSlice(PetStableFrameInset, nil, true)
         hide_Texture(PetStableFrameInset.Bg)
-        if _G['PetStableStabledPet1Background'] then
-            local w, h= _G['PetStableStabledPet1Background']:GetSize()
-            for i=1, NUM_PET_STABLE_SLOTS do--NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS do
-                if i<=5 then
-                    hide_Texture(_G['PetStableActivePet'..i..'Background'])
-                    set_Alpha_Color(_G['PetStableActivePet'..i..'Border'], nil, nil, min03)
-                    local btn= _G['PetStableActivePet'..i..'Checked']
-                    if btn then
-                        btn:ClearAllPoints()
-                        btn:SetPoint('CENTER')
-                        btn:SetSize(w+10, h+10)
-                        btn:SetVertexColor(0,1,0)
-                    end
-                end
-                set_Alpha_Color(_G['PetStableStabledPet'..i..'Background'])
+        set_Alpha_Color(PetStableFrameModelBg, nil, nil, min05)
+
+        set_Alpha_Color(PetStableFrameStableBg, nil, nil, min05)
+
+        for i=1, NUM_PET_STABLE_SLOTS do--NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS do
+            if i<=5 then
+                hide_Texture(_G['PetStableActivePet'..i..'Background'])
+                set_Alpha_Color(_G['PetStableActivePet'..i..'Border'], nil, nil, min05)
             end
+            set_Alpha_Color(_G['PetStableStabledPet'..i..'Background'])
         end
      end
 
@@ -1338,7 +1332,7 @@ local function Init_Event(arg1)
         set_ScrollBar(AuctionHouseFrameAuctionsFrame.SummaryList)
         set_NineSlice(AuctionHouseFrameAuctionsFrame.SummaryList, nil, true)
         set_Alpha_Color(AuctionHouseFrameAuctionsFrame.SummaryList.Background, true)
-        
+
 
         set_NineSlice(AuctionHouseFrame.BrowseResultsFrame.ItemList, nil, true)
         set_ScrollBar(AuctionHouseFrame.BrowseResultsFrame.ItemList)
@@ -2260,7 +2254,7 @@ end
 
 
 local function Init()
-    
+
 
     Init_All_Frame()
     Init_Class_Power(true)--职业
