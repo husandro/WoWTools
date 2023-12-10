@@ -1501,7 +1501,8 @@ end
 --####
 --初始
 --####
-
+local DELETE_ITEM_CONFIRM_STRING= DELETE_ITEM_CONFIRM_STRING
+local COMMUNITIES_DELETE_CONFIRM_STRING= COMMUNITIES_DELETE_CONFIRM_STRING
 local function Init()
     Init_Button(MerchantFrame)--初始，按钮
     
