@@ -980,17 +980,17 @@ local function set_All_Text()--所有记录
                 if level<=8 then
                     return '(|cff00ff00'..(e.onlyChinese and '老兵' or 'Veteran')..'|r)'
                 elseif level<=16 then
-                    return '(|cff0000ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
+                    return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
                 else
                     return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
                 end
             else--掉落
                 if level<=7 then
-                    return '(|cff0000ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
+                    return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
                 elseif level<=17 then
                     return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
                 else
-                    return '(|cffff8200'..(e.onlyChinese and '史诗' or ITEM_QUALITY4_DESC)..'|r)'
+                    return '(|cffb78f6a'..(e.onlyChinese and '史诗' or ITEM_QUALITY4_DESC)..'|r)'
                 end
             end
         end
