@@ -104,6 +104,7 @@ local setNineSliceTabs={
     'BottomLeftCorner',
     'Center',
     'Background',
+    'Bg',
 }
 local function set_NineSlice(frame, min, hide)
     if not frame or not frame.NineSlice then
@@ -518,20 +519,30 @@ local function Init_All_Frame()
      set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=min05})
      set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=min05})
 
-     if PetStableFrame then--猎人，宠物
+     if e.Player.class=='HUNTER' and PetStableFrame then--猎人，宠物
         set_NineSlice(PetStableFrame, true)
-         set_Alpha_Color(PetStableFrameModelBg)
-         hide_Texture(PetStableFrameInset.Bg)
-         set_Alpha_Color(PetStableFrameBg)
-         set_Alpha_Color(PetStableFrameStableBg)
-         set_Alpha_Color(PetStableActiveBg)
-         for i=1, NUM_PET_STABLE_SLOTS do--NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS do
-             if i<=5 then
-                 hide_Texture(_G['PetStableActivePet'..i..'Background'])
-                 set_Alpha_Color(_G['PetStableActivePet'..i..'Border'])
-             end
-             set_Alpha_Color(_G['PetStableStabledPet'..i..'Background'])
-         end
+        set_NineSlice(PetStableLeftInset, nil, true)
+        set_Alpha_Color(PetStableActiveBg, nil, nil, min03)
+        set_Alpha_Color(PetStableFrameBg)
+        set_NineSlice(PetStableFrameInset, nil, true)
+        hide_Texture(PetStableFrameInset.Bg)
+        if _G['PetStableStabledPet1Background'] then
+            local w, h= _G['PetStableStabledPet1Background']:GetSize()
+            for i=1, NUM_PET_STABLE_SLOTS do--NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS do
+                if i<=5 then
+                    hide_Texture(_G['PetStableActivePet'..i..'Background'])
+                    set_Alpha_Color(_G['PetStableActivePet'..i..'Border'], nil, nil, min03)
+                    local btn= _G['PetStableActivePet'..i..'Checked']
+                    if btn then
+                        btn:ClearAllPoints()
+                        btn:SetPoint('CENTER')
+                        btn:SetSize(w+10, h+10)
+                        btn:SetVertexColor(0,1,0)
+                    end
+                end
+                set_Alpha_Color(_G['PetStableStabledPet'..i..'Background'])
+            end
+        end
      end
 
 
@@ -2249,7 +2260,7 @@ end
 
 
 local function Init()
-    GetMinValueAlpha()--min03，透明度，最小值
+    
 
     Init_All_Frame()
     Init_Class_Power(true)--职业
@@ -2288,6 +2299,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1== id then
             Save= WoWToolsSave[addName] or Save
             Save.classPowerNumSize= Save.classPowerNumSize or 12
+            GetMinValueAlpha()--min03，透明度，最小值
 
             local Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
 

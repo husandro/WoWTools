@@ -9,6 +9,7 @@ end
 local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  UnitClass('player'), DUNGEON_FLOOR_ORGRIMMARRAID8) --猎人兽栏
 local Save={
     modelScale=0.65,
+    sortIndex=4,--1, 2,3,4,5 icon, name, level, family, talent排序
     --line=15,
 }
 
@@ -43,28 +44,35 @@ local function set_PetStable_Update()--查询
         else
             btn= _G["PetStableStabledPet"..i- NUM_PET_ACTIVE_SLOTS]
         end
-        local show= isSearch
-        if icon then
-
-            if isSearch then
-                local food = BuildListString(GetStablePetFoodTypes(i)) or ''
-                local matched, expected = 0, 0
-                for str in input:gmatch("([^%s]+)") do
-                    expected = expected + 1
-                    str = str:trim():lower()
-                    if name:lower():find(str) or family:lower():find(str) or talent:lower():find(str) or food:lower():find(str) then
-                        matched = matched + 1
+        if btn and btn.dimOverlay then
+            local show= isSearch
+            if icon then
+                if isSearch then
+                    local food = BuildListString(GetStablePetFoodTypes(i)) or ''
+                    local matched, expected = 0, 0
+                    for str in input:gmatch("([^%s]+)") do
+                        expected = expected + 1
+                        str = str:trim():lower()
+                        if name:lower():find(str)
+                            or family:lower():find(str)
+                            or talent:lower():find(str)
+                            or food:lower():find(str)
+                           -- or level:lower():find(str)
+                        then
+                            matched = matched + 1
+                        end
                     end
-                end
-                if matched == expected then
-                   show= false
+                    if matched == expected then
+                    show= false
+                        num= num +1
+                    end
+                else
                     num= num +1
                 end
-            else
-                num= num +1
             end
+
+            btn.dimOverlay:SetShown(show)
         end
-        btn.dimOverlay:SetShown(show)
     end
     ISF_SearchInput.text:SetFormattedText(isSearch and (e.onlyChinese and '搜索' or SEARCH)..' |cnGREEN_FONT_COLOR:%d|r /%d' or (e.onlyChinese and '已收集（%d/%d）' or ITEM_PET_KNOWN), num, all)
 end
@@ -125,6 +133,10 @@ local function HookEnter_Button(btn)--GameTooltip 提示用 tooltips.lua
             local food= Get_Food_Text(btn.petSlot)
             if food then
                 e.tips:AddLine(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, food, 1, 1, 1, true))
+            end
+            local petIcon, petName, petLevel, petType, petTalents = GetStablePetInfo(btn.petSlot)
+            if petLevel then
+                e.tips:AddDoubleLine((e.onlyChinese and '等级' or LEVEL)..': '..petLevel, petIcon and '|T'..petIcon..':0|t'..petIcon)
             end
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('creatureDisplayID', creatureDisplayID)
@@ -194,7 +206,7 @@ local function Init()
     ISF_SearchInput.Middle:SetAlpha(0.5)
     ISF_SearchInput.Right:SetAlpha(0.5)
     ISF_SearchInput.Left:SetAlpha(0.5)
-    ISF_SearchInput:SetSize(270,20)
+    ISF_SearchInput:SetSize(200,20)
     if  _G['ISF_SearchInput'] then ISF_SearchInput:ClearAllPoints() end--处理插件，Improved Stable Frame
     ISF_SearchInput:SetPoint('BOTTOMRIGHT',PetStableFrame, -6, 10)
     ISF_SearchInput:SetScale(1.2)
@@ -204,6 +216,8 @@ local function Init()
     hooksecurefunc("PetStable_Update", set_PetStable_Update)
     ISF_SearchInput.text= e.Cstr(ISF_SearchInput, {color=true})
     ISF_SearchInput.text:SetPoint('BOTTOMLEFT', ISF_SearchInput, 'TOPLEFT')
+
+
 
 
     --已激活宠物
@@ -277,7 +291,7 @@ local function Init()
 
     PetStableActiveBg:ClearAllPoints()--已激活宠物，背景，大小
     PetStableActiveBg:SetAllPoints(PetStableLeftInset)
-    e.Set_Label_Texture_Color(PetStableActiveBg, {type='Texture'})
+    --e.Set_Label_Texture_Color(PetStableActiveBg, {type='Texture'})
     --PetStableActiveBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
     e.Set_Label_Texture_Color(PetStableActivePetsLabel, {type='FontString'})
     --PetStableActivePetsLabel:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
@@ -286,7 +300,10 @@ local function Init()
     PetStableFrameInset.NineSlice:ClearAllPoints()--标示，背景
     PetStableFrameInset.NineSlice:SetPoint('TOPLEFT')
     PetStableFrameInset.NineSlice:SetPoint('BOTTOMRIGHT', PetStableFrame, -4, 4)
-
+    PetStableFrameInset.Bg:ClearAllPoints()
+    PetStableFrameInset.Bg:SetPoint('TOPLEFT')
+    PetStableFrameInset.Bg:SetPoint('BOTTOMRIGHT', PetStableFrame, -4, 4)
+    --PetStableFrameInset.Bg:Hide()
 
 
     PetStableModelScene:ClearAllPoints()--设置，3D，位置
@@ -332,11 +349,9 @@ local function Init()
 
     PetStableFrameModelBg:ClearAllPoints()--3D，背景
     PetStableFrameModelBg:SetAllPoints(PetStableModelScene)
-    PetStableFrameModelBg:SetAlpha(0.3)
-    PetStableFrameInset.Bg:Hide()
+    PetStableFrameModelBg:SetAlpha(0.5)
     PetStableFrameModelBg:SetAtlas('ShipMission_RewardsBG-Desaturate')
-    e.Set_Label_Texture_Color(PetStableFrameModelBg, {type='Texture'})
-    --PetStableFrameModelBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+    PetStableFrameModelBg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
     PetStablePetInfo:ClearAllPoints()--宠物，信息
     PetStablePetInfo:SetPoint('BOTTOMLEFT', PetStableFrame, 'BOTTOMRIGHT',0, 4)
@@ -386,38 +401,39 @@ local function Init()
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
+
     sortButton:SetScript('OnClick', function(self, d)
-        if IsInSearch then
-            return
-        end
+        self:SetEnabled(false)
         IsInSearch=true
         local func= PetStable_Update--排序用
         PetStable_Update= function() end
+do
 
-
-        --[[local type={
-            ['狂野']=1,
-            ['坚韧']=3,
-        }]]
 
         local tab= {}
         for i= NUM_PET_ACTIVE_SLOTS+ 1, maxSlots+ NUM_PET_ACTIVE_SLOTS do
-            --local icon, name, _, family, talent = GetStablePetInfo(i)
-            local icon= GetStablePetInfo(i)
+            local icon, name, level, family, talent = GetStablePetInfo(i)
             if icon then
                 table.insert(tab, {
                     index= i,
-                    icon= icon or 0,
-                    --name= name,
-                    --family= family,
-                    --talen= type[talent] or 0,
+                    icon= icon,
+                    name= (string.byte(name, 1) or 0)+ (string.byte(name, 2) or 0)+ (string.byte(name, 3) or 0)+ (string.byte(name, 4) or 0),
+                    level= level or 0,
+                    family= (string.byte(family, 1) or 0)+ (string.byte(family, 2) or 0)+ (string.byte(family, 3) or 0)+ (string.byte(family, 4) or 0),
+                    talen= (string.byte(talent, 1) or 0)+ (string.byte(talent, 2) or 0)+ (string.byte(talent, 3) or 0)+ (string.byte(talent, 4) or 0),
                 })
+
             end
         end
+        local str= Save.sortIndex==1 and 'icon'
+                or Save.sortIndex==2 and 'name'
+                or Save.sortIndex==3 and 'level'
+                or Save.sortIndex==4 and 'family'
+                or Save.sortIndex==5 and 'talen'
 
-        table.sort(tab, function(a, b)
-            return a.icon < b.icon
-        end)
+            table.sort(tab, function(a, b)
+                return a[str] < b[str]
+            end)
 
 
         if d=='LeftButton' then--点击，从前，向后
@@ -436,15 +452,57 @@ local function Init()
                 end
             end
         end
-
-        IsInSearch=nil
+end
         PetStable_Update= func
-
         self.num= self.num and self.num+1 or 1
         print(id, addName, e.onlyChinese and '完成' or DONE, '|cnGREEN_FONT_COLOR:'..self.num)
-
+        IsInSearch=nil
         e.call('PetStable_Update')
+        self:SetEnabled(true)
     end)
+
+
+    local menu= CreateFrame('Frame', 'SortHunterPetDropDownMenu', sortButton, "UIDropDownMenuTemplate")
+    e.LibDD:UIDropDownMenu_SetWidth(menu, 80)
+    menu:SetPoint('RIGHT', sortButton, 'LEFT', 15, -2)
+    function menu:get_text(index)
+        return index==1 and e.Player.col..(e.onlyChinese and '图标' or EMBLEM_SYMBOL)--'icon'
+                or index==2 and e.Player.col..(e.onlyChinese and '名称' or NAME)--'name'
+                or index==3 and e.Player.col..(e.onlyChinese and '等级' or LEVEL)--'level'
+                or index==4 and e.Player.col..(e.onlyChinese and '类型' or TYPE)--'family'
+                or index==5 and e.Player.col..(e.onlyChinese and '天赋' or TALENT)--'talen'
+    end
+    e.LibDD:UIDropDownMenu_SetText(menu,  menu:get_text(Save.sortIndex))
+    e.LibDD:UIDropDownMenu_Initialize(menu, function(self, level)
+        for i=1, 5 do
+            local info={
+                text=self:get_text(i),
+                checked= Save.sortIndex==i,
+                arg1=i,
+                func=function(_, arg1)
+                    print(_==self, _:GetParent()== self, _:GetParent():GetParent()== self)
+                    Save.sortIndex= arg1
+                    e.LibDD:UIDropDownMenu_SetText(self,  self:get_text(Save.sortIndex))
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+    end)
+   menu.Button:SetScript('OnClick', function(self)
+        e.LibDD:CloseDropDownMenus()
+        e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
+    end)
+
+    for _, icon in pairs({menu:GetRegions()}) do
+        if icon:GetObjectType()=="Texture" then
+            icon:SetAlpha(0.5)
+        end
+    end
+    for _, icon in pairs({menu.Button:GetRegions()}) do
+        if icon:GetObjectType()=="Texture" then
+            icon:SetAlpha(0.5)
+        end
+    end
 
     e.call('PetStable_Update')
 end
@@ -459,6 +517,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             if PetStableFrame then
                 Save= WoWToolsSave[addName] or Save
+                Save.sortIndex= Save.sortIndex or 4
 
                 --添加控制面板
                 e.AddPanel_Check({

@@ -3756,7 +3756,10 @@
         "AuctionHouseFrameDisplayModeTabMixin",
         "AuctionHouseSellFrameMixin",
         "AuctionHouseCommoditiesSellFrameMixin",
-        "FOLLOWERLIST_LABEL_CHAMPIONS"
+        "FOLLOWERLIST_LABEL_CHAMPIONS",
+        "PetStableActivePet2Checked",
+        "UIDropDownMenu_SetWidth",
+        "UIDropDownMenu_SetText"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
