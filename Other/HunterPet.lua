@@ -182,24 +182,25 @@ local function Set_Slot_Info(btn, index, isActiveSlot)--创建，提示内容
     end
 
     btn:HookScript('OnEnter', function(self)--GameTooltip 提示用 tooltips.lua
-        if e.tips.playerModel and self.petSlot then
+        local petIcon, _, petLevel= GetStablePetInfo(self.petSlot)
+        if petIcon then
+            local food= Get_Food_Text(self.petSlot)
+            if food then
+                e.tips:AddLine(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, food, 1, 1, 1, true))
+            end
+            if petLevel then
+                e.tips:AddDoubleLine((e.onlyChinese and '等级' or LEVEL)..': '..petLevel, petIcon and '|T'..petIcon..':0|t'..petIcon)
+            end
+            e.tips:AddDoubleLine('petSlot:', self.petSlot)
             local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(self.petSlot);
-            if creatureDisplayID and creatureDisplayID>0 then
+            if creatureDisplayID and creatureDisplayID>0 and e.tips.playerModel then
                 e.tips.playerModel:SetDisplayInfo(creatureDisplayID)
                 e.tips.playerModel:SetShown(true)
-                local food= Get_Food_Text(self.petSlot)
-                if food then
-                    e.tips:AddLine(format(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, food, 1, 1, 1, true))
-                end
-                local petIcon, petName, petLevel, petType, petTalents = GetStablePetInfo(self.petSlot)
-                if petLevel then
-                    e.tips:AddDoubleLine((e.onlyChinese and '等级' or LEVEL)..': '..petLevel, petIcon and '|T'..petIcon..':0|t'..petIcon)
-                end
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine('creatureDisplayID', creatureDisplayID)
-                e.tips:AddDoubleLine(id, addName)
-                e.tips:Show()
             end
+            e.tips:AddDoubleLine('creatureDisplayID:', creatureDisplayID)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, addName)
+            e.tips:Show()
         end
     end)
 
