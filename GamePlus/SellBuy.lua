@@ -1421,13 +1421,13 @@ local function Init_AuctionHouse()
                             end
                         end)
                         btn:SetScript('OnClick', function(frame, d)
-                            if d=='RightButton' then
-
-                                AuctionHouseFrame.CommoditiesSellFrame:SetItem(frame.itemLocation)
+                            
+                                local itemKey = C_AuctionHouse.GetItemKeyFromItem(frame.itemLocation)
+                                C_AuctionHouse.SearchForItemKeys(itemKey, 	Enum.AuctionHouseSortOrder.Price)
+                                --AuctionHouseFrame.CommoditiesSellFrame:SetItem(frame.itemLocation)
 
                                 --AuctionHouseFrame.ItemSellFrame:SetItem(frame.itemLocation)
-                            else
-                            end
+                            
                         end)
                         self.buttons[index]= btn
                     end
@@ -1456,23 +1456,21 @@ local function Init_AuctionHouse()
     function AuctionHouseButton:set_shown()
         local show=  AuctionHouseFrame.CommoditiesSellFrame:IsShown() or  AuctionHouseFrame.ItemSellFrame:IsShown()
         self:SetShown(show)
-        print(show)
         if show then
             self:init_items()
         end
     end
-    hooksecurefunc( AuctionHouseSellFrameMixin, 'OnShow', function()
-        AuctionHouseFrame.CommoditiesSellFrame:SetShown(true)
-        AuctionHouseFrame.ItemSellFrame:SetShown(false)
-    end)
-    hooksecurefunc( AuctionHouseSellFrameMixin, 'OnHide', function()
-
+    hooksecurefunc( AuctionHouseSellFrameMixin, 'OnShow', function(self)
+        AuctionHouseButton:set_shown()
     end)
     hooksecurefunc( AuctionHouseCommoditiesSellFrameMixin, 'OnShow', function()
+        --AuctionHouseButton:set_shown()
+    end)
+    AuctionHouseFrame:HookScript('OnHide', function()
         AuctionHouseButton:set_shown()
     end)
-    hooksecurefunc( AuctionHouseCommoditiesSellFrameMixin, 'OnHide', function()
-        AuctionHouseButton:set_shown()
+    hooksecurefunc(AuctionHouseFrameDisplayModeTabMixin, 'OnClick', function(...)
+        print(...)
     end)
 end
 
