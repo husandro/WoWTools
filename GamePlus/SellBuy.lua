@@ -1511,8 +1511,8 @@ local function Init_AuctionHouse()
     --AuctionHouseFrame.CommoditiesSellList.ScrollBar:SetPoint('LEFT', AuctionHouseFrame.CommoditiesSellList, 'RIGHT')
     
     AuctionHouseFrame.CommoditiesSellFrame:ClearAllPoints()
-    AuctionHouseFrame.CommoditiesSellList:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellList, 'TOPLEFT')
-    AuctionHouseFrame.CommoditiesSellList:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'BOTTOMRIGHT')
+    AuctionHouseFrame.CommoditiesSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellList, 'TOPLEFT', 50,0)
+    AuctionHouseFrame.CommoditiesSellFrame:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'BOTTOMRIGHT', 50,0)
     --AuctionHouseFrame.CommoditiesSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.CommoditiesSellList, 'TOPRIGHT')
 end
 
