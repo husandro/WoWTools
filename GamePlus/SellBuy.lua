@@ -1587,11 +1587,9 @@ local function Init_AuctionHouse()
 
     --默认价格，替换，原生func
     --Blizzard_AuctionHouseSellFrame.lua
-    AuctionHouseFrame.CommoditiesSellFrame.vendorPriceLabel= e.Cstr(AuctionHouseFrame.CommoditiesSellFrame, {size=12})--单价，提示
-    AuctionHouseFrame.CommoditiesSellFrame.vendorPriceLabel:SetPoint('TOPRIGHT', AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox, 'BOTTOMRIGHT',0,4)
+    
     function AuctionHouseFrame.CommoditiesSellFrame:GetDefaultPrice()
         local itemLocation = self:GetItem();
-        local text= ''
         local price= 100000
         if itemLocation and itemLocation:IsValid() then
             local itemLink = C_Item.GetItemLink(itemLocation);
@@ -1611,42 +1609,57 @@ local function Init_AuctionHouse()
             elseif LinkUtil.IsLinkType(itemLink, "item") then
                 local vendorPrice = select(11, GetItemInfo(itemLink));
                 if vendorPrice then
-                    text= GetCoinTextureString(vendorPrice)..text
+                  
                     local defaultPrice = vendorPrice * 100--倍数，原1.5倍
                     price = defaultPrice + (COPPER_PER_SILVER - (defaultPrice % COPPER_PER_SILVER)); -- AH prices must be in silver increments.
                 end
             end
         end
 
-        self.vendorPriceLabel:SetText(text)
+      
         return price
     end
 
     --单价，倍数
     AuctionHouseFrame.CommoditiesSellFrame.percentLabel= e.Cstr(AuctionHouseFrame.CommoditiesSellFrame, {size=16})--单价，提示
     AuctionHouseFrame.CommoditiesSellFrame.percentLabel:SetPoint('BOTTOM', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'TOP')
+    AuctionHouseFrame.CommoditiesSellFrame.vendorPriceLabel= e.Cstr(AuctionHouseFrame.CommoditiesSellFrame, {size=12})--单价，提示
+    AuctionHouseFrame.CommoditiesSellFrame.vendorPriceLabel:SetPoint('TOPRIGHT', AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox, 'BOTTOMRIGHT',0,4)
     hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdateTotalPrice', function(self)
         local itemLocation= self:GetItem()
         local text=''
+        local text2=''
         if itemLocation and itemLocation:IsValid() then
             local itemLink = C_Item.GetItemLink(itemLocation);
             local vendorPrice = select(11, GetItemInfo(itemLink));
             local unitPrice= self:GetUnitPrice()
-            if vendorPrice and unitPrice and unitPrice> vendorPrice then
-                local x= unitPrice/vendorPrice
-                local col=''
-                if x<2 then
-                    col= '|cff606060'
-                elseif x<10 then
-                    col= '|cffffffff'
-                elseif x<50 then
-                    col='|cnGREEN_FONT_COLOR'
+            local col=''
+            if vendorPrice and unitPrice then
+                if unitPrice> (vendorPrice+1000) then
+                    local x= unitPrice/vendorPrice
+                    if x<2 then
+                        col= '|cff606060'
+                    elseif x<10 then
+                        col= '|cffffffff'
+                    elseif x<50 then
+                        col='|cnGREEN_FONT_COLOR'
+                    else
+                        col='|cffff00ff'
+                    end
+                    if x<10 then
+                        text= col..format('x%.2f', x)
+                    else
+                        text= col..format('x%i', x)
+                    end
                 else
-                    col='|cffff00ff'
+                    col='|cnRED_FONT_COLOR:'
                 end
-                text= col..format('x %.2f', x)
+            end
+            if vendorPrice then
+                text2= col..GetCoinTextureString(vendorPrice)
             end
         end
+        self.vendorPriceLabel:SetText(text2)
         self.percentLabel:SetText(text)
     end)
 
