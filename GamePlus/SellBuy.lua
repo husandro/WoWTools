@@ -20,6 +20,7 @@ local Save={
     --notPlus=true,--商人 Pluse,加宽
 
     intShowCommoditiesSell=true
+    
 }
 
 local addName= MERCHANT
@@ -1393,7 +1394,7 @@ local function Init_AuctionHouse()
     local size= 32
 
     AuctionHouseButton= e.Cbtn(AuctionHouseFrame, {size={size, size}, icon=true})
-    AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT')
+    AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT',0,10)
     AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)
     AuctionHouseButton.frame:SetAllPoints(AuctionHouseButton)
     AuctionHouseButton.buttons={}
@@ -1499,21 +1500,26 @@ local function Init_AuctionHouse()
         AuctionHouseButton:set_shown()
     end)
 
-    --[[
-    <Anchor point="TOPLEFT" relativeKey="$parent.ItemSellFrame" relativePoint="TOPRIGHT" x="1" y="0"/>
-					<Anchor point="RIGHT" x="-5" y="0"/>
-					<Anchor point="BOTTOMLEFT" relativeKey="$parent.ItemSellFrame" relativePoint="BOTTOMRIGHT" x="1" y="0"/>
---]]
+    --Blizzard_AuctionHouseSellFrame.lua
+    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'SetItem', function(self)
+        local quantity = self.QuantityInput:GetQuantity();
+        print(quantity)
+	    --self.QuantityInput.MaxButton:SetEnabled(quantity < self:GetMaxQuantity());
+
+    end)
+
+    --Blizzard_AuctionHouseFrame.xml
     AuctionHouseFrame.CommoditiesSellList:ClearAllPoints()
     AuctionHouseFrame.CommoditiesSellList:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellFrame, 'TOPLEFT')
-    AuctionHouseFrame.CommoditiesSellList:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellFrame, 'BOTTOMRIGHT')
-    --AuctionHouseFrame.CommoditiesSellList.ScrollBar:ClearAllPoints()
-    --AuctionHouseFrame.CommoditiesSellList.ScrollBar:SetPoint('LEFT', AuctionHouseFrame.CommoditiesSellList, 'RIGHT')
+    AuctionHouseFrame.CommoditiesSellList:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellFrame, 'BOTTOMRIGHT', 65,0)
     
     AuctionHouseFrame.CommoditiesSellFrame:ClearAllPoints()
-    AuctionHouseFrame.CommoditiesSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellList, 'TOPLEFT', 50,0)
-    AuctionHouseFrame.CommoditiesSellFrame:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'BOTTOMRIGHT', 50,0)
-    --AuctionHouseFrame.CommoditiesSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.CommoditiesSellList, 'TOPRIGHT')
+    AuctionHouseFrame.CommoditiesSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellList, 'TOPLEFT', 67,0)
+    AuctionHouseFrame.CommoditiesSellFrame:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'BOTTOMRIGHT')
+
+    --Blizzard_AuctionHouseSellFrame.xml
+    AuctionHouseFrame.CommoditiesSellFrame.PostButton:ClearAllPoints()
+    AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetPoint('LEFT', AuctionHouseFrame.CommoditiesSellFrame.DurationDropDown.DropDown, 'RIGHT')
 end
 
 
