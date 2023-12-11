@@ -69,7 +69,7 @@ local function Set_Item_Info(self, tab)
         itemLink= GetGuildBankItemLink(tab.guidBank.tab, tab.guidBank.slot)
     end
 
-    local topLeftText, bottomRightText, leftText, rightText, bottomLeftText, topRightText, r, g ,b, setIDItem--, isWoWItem--setIDItem套装
+    local topLeftText, bottomRightText, leftText, rightText, bottomLeftText, topRightText, setIDItem--, isWoWItem--setIDItem套装
 
     if itemLink then
         itemID= itemID or GetItemInfoInstant(itemLink)

@@ -3763,7 +3763,10 @@
         "PetStableStabledPet1Background",
         "AuctionHouseAuctionsFrameMixin",
         "AuctionHouseFrameMixin",
-        "AuctionHouseFrameDisplayMode"
+        "AuctionHouseFrameDisplayMode",
+        "AUCTION_HOUSE_MAX_QUANTITY_BUTTON",
+        "CREATE_AUCTION",
+        "COPPER_PER_SILVER"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
