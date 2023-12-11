@@ -1404,7 +1404,7 @@ local function Init_AuctionHouse()
     AuctionHouseButton.Text:SetPoint('CENTER')
     AuctionHouseButton.buttons={}
 
-    
+
     function AuctionHouseButton:init_items()
         local index=1
         if not Save.hideSellItemList then
@@ -1479,7 +1479,7 @@ local function Init_AuctionHouse()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.GetShowHide(not Save.hideSellItemList)..e.Icon.left)        
+        e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.GetShowHide(not Save.hideSellItemList)..e.Icon.left)
         e.tips:Show()
     end
     AuctionHouseButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -1490,7 +1490,7 @@ local function Init_AuctionHouse()
         self:init_items()
         self:set_tooltips()
     end)
-    
+
 
     function AuctionHouseButton:get_displayMode()
         local displayMode= AuctionHouseFrame:GetDisplayMode() or {}
@@ -1521,7 +1521,7 @@ local function Init_AuctionHouse()
             return
         end
         if displayMode[1]== "ItemSellFrame" then
-            self:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)            
+            self:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
         elseif displayMode[1]=='CommoditiesSellFrame' then
             AuctionHouseButton:init_items()
 		end
@@ -1587,39 +1587,69 @@ local function Init_AuctionHouse()
 
     --默认价格，替换，原生func
     --Blizzard_AuctionHouseSellFrame.lua
-    --AuctionHouseButton.GetDefaultPrice= AuctionHouseFrame.CommoditiesSellFrame.GetDefaultPrice    
+    AuctionHouseFrame.CommoditiesSellFrame.vendorPriceLabel= e.Cstr(AuctionHouseFrame.CommoditiesSellFrame, {size=12})--单价，提示
+    AuctionHouseFrame.CommoditiesSellFrame.vendorPriceLabel:SetPoint('TOPRIGHT', AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox, 'BOTTOMRIGHT',0,4)
     function AuctionHouseFrame.CommoditiesSellFrame:GetDefaultPrice()
         local itemLocation = self:GetItem();
+        local text= ''
+        local price= 100000
         if itemLocation and itemLocation:IsValid() then
             local itemLink = C_Item.GetItemLink(itemLocation);
             local itemID= C_Item.GetItemID(itemLocation)
-            local defaultPrice = 100000;--10金
+
             if itemID and Save.SellItemDefaultPrice[itemID] then--上次保存的，物价
-                return Save.SellItemDefaultPrice[itemID]
+                price= Save.SellItemDefaultPrice[itemID]
+
             elseif itemID and C_MountJournal.GetMountFromItem(itemID) or C_ToyBox.GetToyInfo(itemID) then--坐骑
-                return 999999999--9.9万
-            elseif itemID and C_PetJournal.GetPetInfoByItemID(itemID) then--宠物
-                return 99999999--0.9万
+                price= 999999900--9.9万
+
+            elseif itemID and C_PetJournal.GetPetInfoByItemID(itemID)--宠物
+                or (itemLink and (itemLink:find('Hbattlepet:(%d+)')))
+            then
+                price= 99999900--0.9万
+
             elseif LinkUtil.IsLinkType(itemLink, "item") then
                 local vendorPrice = select(11, GetItemInfo(itemLink));
-                defaultPrice = vendorPrice ~= nil and (vendorPrice * 100) or COPPER_PER_SILVER;
-                --defaultPrice = vendorPrice ~= nil and (vendorPrice * Constants.AuctionConstants.DEFAULT_AUCTION_PRICE_MULTIPLIER) or COPPER_PER_SILVER;
-                defaultPrice = defaultPrice + (COPPER_PER_SILVER - (defaultPrice % COPPER_PER_SILVER)); -- AH prices must be in silver increments.
+                if vendorPrice then
+                    text= GetCoinTextureString(vendorPrice)..text
+                    local defaultPrice = vendorPrice * 100--倍数，原1.5倍
+                    price = defaultPrice + (COPPER_PER_SILVER - (defaultPrice % COPPER_PER_SILVER)); -- AH prices must be in silver increments.
+                end
             end
-            return 999999999
-            --return math.max(defaultPrice, COPPER_PER_SILVER);
         end
-        return 10000;
+
+        self.vendorPriceLabel:SetText(text)
+        return price
     end
 
-hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdateTotalPrice', function(self)
-    local itemLocation= self:GetItem()
-    if not itemLocation or not itemLocation:IsValid() then
-        return
-    end
-    local totale= self:GetTotalPrice()
-    local itemLink = C_Item.GetItemLink(itemLocation);
-end)
+    --单价，倍数
+    AuctionHouseFrame.CommoditiesSellFrame.percentLabel= e.Cstr(AuctionHouseFrame.CommoditiesSellFrame, {size=12})--单价，提示
+    AuctionHouseFrame.CommoditiesSellFrame.percentLabel:SetPoint('TOP', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'BOTTOM')
+
+    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdateTotalPrice', function(self)
+        local itemLocation= self:GetItem()
+        local text=''
+        if itemLocation and itemLocation:IsValid() then
+            local itemLink = C_Item.GetItemLink(itemLocation);
+            local vendorPrice = select(11, GetItemInfo(itemLink));
+            local unitPrice= self:GetUnitPrice()
+            if vendorPrice and unitPrice and unitPrice> vendorPrice then
+                local x= unitPrice/vendorPrice
+                local col=''
+                if x<2 then
+                    col= '|cff606060'
+                elseif x<10 then
+                    col= '|cffffffff'
+                elseif x<50 then
+                    col='|cnGREEN_FONT_COLOR'
+                else
+                    col='|cffff00ff'
+                end
+                text= col..format('x %.2f', x)
+            end
+        end
+        self.percentLabel:SetText(text)
+    end)
 
     --移动, Frame
     --Blizzard_AuctionHouseFrame.xml

@@ -303,7 +303,7 @@ function e.Cstr(self, tab)
     local fontName= tab.fontName or 'GameFontNormal'
     local level= table.level or self:GetFrameLevel()+1
     local copyFont= tab.copyFont
-    local size= tab.size
+    local size= tab.size or 12
     local justifyH= tab.justifyH
     local notFlag= tab.notFlag
     local notShadow= tab.notShadow
@@ -323,7 +323,9 @@ function e.Cstr(self, tab)
     else
         if e.onlyChinese or size then--THICKOUTLINE
             local fontName2, size2, fontFlag2= font:GetFont()
-            fontName2= 'Fonts\\ARHei.ttf'--黑体字
+            if e.onlyChinese then
+                fontName2= 'Fonts\\ARHei.ttf'--黑体字
+            end
             font:SetFont(fontName2, size or size2, notFlag and fontFlag2 or 'OUTLINE')
         end
 

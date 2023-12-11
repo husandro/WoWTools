@@ -3766,7 +3766,8 @@
         "AuctionHouseFrameDisplayMode",
         "AUCTION_HOUSE_MAX_QUANTITY_BUTTON",
         "CREATE_AUCTION",
-        "COPPER_PER_SILVER"
+        "COPPER_PER_SILVER",
+        "AUCTION_HOUSE_UNIT_PRICE_LABEL"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
