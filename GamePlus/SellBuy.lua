@@ -1416,9 +1416,17 @@ local function Init_AuctionHouse()
                         local btn= self.buttons[index]
                         if not btn then
                             btn= e.Cbtn(self, {size={size,size}, button='ItemButton', icon='hide'})
+                            btn.selectTexture= btn:CreateTexture(nil, 'OVERLAY')
+                            btn.selectTexture:SetAtlas('Forge-ColorSwatchSelection')
+                            btn.selectTexture:SetPoint('CENTER')
+                            btn.selectTexture:SetSize(size+8, size+8)
+                            btn.selectTexture:Hide()
+                            --btn.selectTexture:SetVertexColor(0,1,0)
+                            
                             btn:SetPoint("TOP", index==1 and self or self.buttons[index-1], 'BOTTOM', 0, -2)
                             btn:UpdateItemContextOverlayTextures(1)
                             btn:SetScript('OnLeave', GameTooltip_Hide)
+
                             btn:SetScript('OnEnter', function(frame)
                                 e.tips:SetOwner(frame:GetParent(), "ANCHOR_LEFT")
                                 e.tips:ClearLines()
@@ -1476,6 +1484,19 @@ local function Init_AuctionHouse()
 
         self.Text:SetText(Save.hideSellItemList and '|cff606060'..(e.onlyChinese and '隐藏' or HIDE) or index-1)
     end
+
+    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'SetItem', function(self)
+        local itemLocation= self:GetItem()
+        local itemID= itemLocation and C_Item.GetItemID(itemLocation)
+        for _, btn in pairs(AuctionHouseButton.buttons) do
+            if btn.itemLocation then
+                btn.selectTexture:SetShown(C_Item.GetItemID(btn.itemLocation)==itemID)
+            else
+                break
+            end
+        end
+    end)
+
 
     function AuctionHouseButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -1590,7 +1611,6 @@ local function Init_AuctionHouse()
 
     --默认价格，替换，原生func
     --Blizzard_AuctionHouseSellFrame.lua
-
     function AuctionHouseFrame.CommoditiesSellFrame:GetDefaultPrice()
         local itemLocation = self:GetItem();
         local price= 100000
@@ -1667,28 +1687,32 @@ local function Init_AuctionHouse()
         self.percentLabel:SetText(text)
     end)
 
+    --下一个，拍卖，物品
     --AuctionHouseFrame.CommoditiesSellFrame.PostButton:HookScript('OnClick', function(self)
     hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'PostItem', function(self)
-        if not self.isInitSetItemTime or self.isInitSetItemTime:IsCancelled() then
-            self.isInitSetItemTime= C_Timer.NewTimer(0.5, function()
-                for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
-                    for slot=1, C_Container.GetContainerNumSlots(bag) do
-                        local info = C_Container.GetContainerItemInfo(bag, slot)
-                        local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)
-                        if info and info.itemID and not Save.hideSellItem[info.itemID] and itemLocation and C_AuctionHouse.IsSellItemValid(itemLocation, false) then
-                            --self:GetParent():SetItem(itemLocation)
-                            local fromItemDisplay = nil;
-                            local refreshListWithPreviousItem = true;
-                            self:SetItem(itemLocation, fromItemDisplay, refreshListWithPreviousItem)
-                            self.isInitSetItemTime:Cancel()
-                            return
-                        end
-                    end
-                end
-                self.isInitSetItemTime:Cancel()
-            end)
-        end
+        self.isNextItem=true
     end)
+    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdatePostButtonState', function(self)
+        if self.itemLocation or not C_AuctionHouse.IsThrottledMessageSystemReady() or not self.isNextItem then
+            return
+        end
+        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
+            for slot=1, C_Container.GetContainerNumSlots(bag) do
+                local info = C_Container.GetContainerItemInfo(bag, slot)
+                local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)
+                if info and info.itemID and not Save.hideSellItem[info.itemID] and itemLocation and C_AuctionHouse.IsSellItemValid(itemLocation, false) then
+                    local fromItemDisplay = nil;
+                    local refreshListWithPreviousItem = true;
+                    self:SetItem(itemLocation, fromItemDisplay, refreshListWithPreviousItem)
+                    self.isNextItem=nil
+                    return
+                end
+            end
+        end
+        self.isNextItem=nil
+    end)
+
+
     --移动, Frame
     --Blizzard_AuctionHouseFrame.xml
     AuctionHouseFrame.CommoditiesSellList:ClearAllPoints()
@@ -1705,8 +1729,32 @@ local function Init_AuctionHouse()
     AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetSize(270,22)]]
 
 
-
+    --Blizzard_AuctionHouseFrame.lua
     --C_AuctionHouse.CancelAuction(self.data.auctionID)
+    --[[
+        StaticPopupDialogs["CANCEL_AUCTION"] = {
+	text = CANCEL_AUCTION_CONFIRMATION,
+	button1 = ACCEPT,
+	button2 = CANCEL,
+	OnAccept = function(self)
+		C_AuctionHouse.CancelAuction(self.data.auctionID);
+	end,
+	OnShow = function(self)
+		local cancelCost = C_AuctionHouse.GetCancelCost(self.data.auctionID);
+		MoneyFrame_Update(self.moneyFrame, cancelCost);
+		if cancelCost > 0 then
+			self.text:SetText(CANCEL_AUCTION_CONFIRMATION_MONEY);
+		else
+			self.text:SetText(CANCEL_AUCTION_CONFIRMATION);
+		end
+	end,
+	hasMoneyFrame = 1,
+	showAlert = 1,
+	timeout = 0,
+	exclusive = 1,
+	hideOnEscape = 1
+};
+    ]]
 end
 
 
