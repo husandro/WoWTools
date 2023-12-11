@@ -1412,7 +1412,7 @@ local function Init_AuctionHouse()
                 for slot=1, C_Container.GetContainerNumSlots(bag) do
                     local info = C_Container.GetContainerItemInfo(bag, slot)
                     local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)
-                    if info and info.itemID and C_AuctionHouse.IsSellItemValid(itemLocation, false) then
+                    if info and info.itemID and itemLocation and C_AuctionHouse.IsSellItemValid(itemLocation, false) then
                         local btn= self.buttons[index]
                         if not btn then
                             btn= e.Cbtn(self, {size={size,size}, button='ItemButton', icon='hide'})
@@ -1437,7 +1437,10 @@ local function Init_AuctionHouse()
                             btn:SetScript('OnClick', function(frame, d)
                                 if d=='LeftButton' then--放入，物品
                                     AuctionHouseButton:show_CommoditiesSellFrame()
-                                    AuctionHouseFrame.CommoditiesSellFrame:SetItem(frame.itemLocation)
+                                    local fromItemDisplay = nil
+                                    local refreshListWithPreviousItem = true
+                                    AuctionHouseFrame.CommoditiesSellFrame:SetItem(frame.itemLocation, fromItemDisplay, refreshListWithPreviousItem)
+
                                 elseif d=='RightButton' then--隐藏，物品
                                     local itemID= C_Item.GetItemID(frame.itemLocation)
                                     if itemID then
@@ -1587,7 +1590,7 @@ local function Init_AuctionHouse()
 
     --默认价格，替换，原生func
     --Blizzard_AuctionHouseSellFrame.lua
-    
+
     function AuctionHouseFrame.CommoditiesSellFrame:GetDefaultPrice()
         local itemLocation = self:GetItem();
         local price= 100000
@@ -1609,14 +1612,14 @@ local function Init_AuctionHouse()
             elseif LinkUtil.IsLinkType(itemLink, "item") then
                 local vendorPrice = select(11, GetItemInfo(itemLink));
                 if vendorPrice then
-                  
+
                     local defaultPrice = vendorPrice * 100--倍数，原1.5倍
                     price = defaultPrice + (COPPER_PER_SILVER - (defaultPrice % COPPER_PER_SILVER)); -- AH prices must be in silver increments.
                 end
             end
         end
 
-      
+
         return price
     end
 
@@ -1634,18 +1637,19 @@ local function Init_AuctionHouse()
             local vendorPrice = select(11, GetItemInfo(itemLink));
             local unitPrice= self:GetUnitPrice()
             local col=''
-            if vendorPrice and unitPrice then
-                if unitPrice> (vendorPrice+1000) then
+            if vendorPrice and unitPrice and vendorPrice>0 and unitPrice>0 then
+                if unitPrice> vendorPrice then
                     local x= unitPrice/vendorPrice
-                    if x<2 then
+                    if x<5 then
                         col= '|cff606060'
                     elseif x<10 then
                         col= '|cffffffff'
                     elseif x<50 then
-                        col='|cnGREEN_FONT_COLOR'
+                        col='|cnGREEN_FONT_COLOR:'
                     else
                         col='|cffff00ff'
                     end
+                    x= x<0 and 0 or x
                     if x<10 then
                         text= col..format('x%.2f', x)
                     else
@@ -1663,6 +1667,28 @@ local function Init_AuctionHouse()
         self.percentLabel:SetText(text)
     end)
 
+    --AuctionHouseFrame.CommoditiesSellFrame.PostButton:HookScript('OnClick', function(self)
+    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'PostItem', function(self)
+        if not self.isInitSetItemTime or self.isInitSetItemTime:IsCancelled() then
+            self.isInitSetItemTime= C_Timer.NewTimer(0.5, function()
+                for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
+                    for slot=1, C_Container.GetContainerNumSlots(bag) do
+                        local info = C_Container.GetContainerItemInfo(bag, slot)
+                        local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)
+                        if info and info.itemID and not Save.hideSellItem[info.itemID] and itemLocation and C_AuctionHouse.IsSellItemValid(itemLocation, false) then
+                            --self:GetParent():SetItem(itemLocation)
+                            local fromItemDisplay = nil;
+                            local refreshListWithPreviousItem = true;
+                            self:SetItem(itemLocation, fromItemDisplay, refreshListWithPreviousItem)
+                            self.isInitSetItemTime:Cancel()
+                            return
+                        end
+                    end
+                end
+                self.isInitSetItemTime:Cancel()
+            end)
+        end
+    end)
     --移动, Frame
     --Blizzard_AuctionHouseFrame.xml
     AuctionHouseFrame.CommoditiesSellList:ClearAllPoints()
@@ -1677,6 +1703,10 @@ local function Init_AuctionHouse()
     local btn= AuctionHouseFrame.CommoditiesSellFrame.PostButton
     AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetPoint('RIGHT', AuctionHouseFrame.CommoditiesSellFrame)
     AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetSize(270,22)]]
+
+
+
+    --C_AuctionHouse.CancelAuction(self.data.auctionID)
 end
 
 
