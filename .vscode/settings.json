@@ -3767,7 +3767,10 @@
         "AUCTION_HOUSE_MAX_QUANTITY_BUTTON",
         "CREATE_AUCTION",
         "COPPER_PER_SILVER",
-        "AUCTION_HOUSE_UNIT_PRICE_LABEL"
+        "AUCTION_HOUSE_UNIT_PRICE_LABEL",
+        "CancelAuctionButtonMixin",
+        "CANCEL_AUCTION_CONFIRMATION",
+        "CANCEL_AUCTION_CONFIRMATION_MONEY"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

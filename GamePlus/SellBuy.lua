@@ -1485,6 +1485,7 @@ local function Init_AuctionHouse()
         self.Text:SetText(Save.hideSellItemList and '|cff606060'..(e.onlyChinese and '隐藏' or HIDE) or index-1)
     end
 
+    --提示，已放入物品
     hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'SetItem', function(self)
         local itemLocation= self:GetItem()
         local itemID= itemLocation and C_Item.GetItemID(itemLocation)
@@ -1723,15 +1724,31 @@ local function Init_AuctionHouse()
     AuctionHouseFrame.CommoditiesSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellList, 'TOPLEFT', 67,0)
     AuctionHouseFrame.CommoditiesSellFrame:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'BOTTOMRIGHT')
 
-    --[[AuctionHouseFrame.CommoditiesSellFrame.PostButton:ClearAllPoints()
+    --AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox:Ho
+    --[[Blizzard_AuctionHouseAuctionsFrame.lua
+    AuctionHouseFrameAuctionsFrame.CancelAuctionButton:SetScript('OnClick', function(self)
+        for _, info in pairs(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox:GetFrames() or {}) do
+            local auctionID= info.rowData and info.rowData.auctionID
+            if auctionID then
+                print(auctionID)
+                C_AuctionHouse.CancelAuction(auctionID);
+            end
+            
+        end
+        
+        local auctionsFrame = self:GetParent();
+        auctionsFrame:CancelSelectedAuction();
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+    end)
+    AuctionHouseFrame.CommoditiesSellFrame.PostButton:ClearAllPoints()
     local btn= AuctionHouseFrame.CommoditiesSellFrame.PostButton
     AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetPoint('RIGHT', AuctionHouseFrame.CommoditiesSellFrame)
-    AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetSize(270,22)]]
+    AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetSize(270,22)
 
 
     --Blizzard_AuctionHouseFrame.lua
     --C_AuctionHouse.CancelAuction(self.data.auctionID)
-    --[[
+
         StaticPopupDialogs["CANCEL_AUCTION"] = {
 	text = CANCEL_AUCTION_CONFIRMATION,
 	button1 = ACCEPT,
