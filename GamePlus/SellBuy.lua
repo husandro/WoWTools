@@ -1623,9 +1623,8 @@ local function Init_AuctionHouse()
     end
 
     --单价，倍数
-    AuctionHouseFrame.CommoditiesSellFrame.percentLabel= e.Cstr(AuctionHouseFrame.CommoditiesSellFrame, {size=12})--单价，提示
-    AuctionHouseFrame.CommoditiesSellFrame.percentLabel:SetPoint('TOP', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'BOTTOM')
-
+    AuctionHouseFrame.CommoditiesSellFrame.percentLabel= e.Cstr(AuctionHouseFrame.CommoditiesSellFrame, {size=16})--单价，提示
+    AuctionHouseFrame.CommoditiesSellFrame.percentLabel:SetPoint('BOTTOM', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'TOP')
     hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdateTotalPrice', function(self)
         local itemLocation= self:GetItem()
         local text=''
