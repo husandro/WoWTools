@@ -1353,7 +1353,7 @@ local function Init_Event(arg1)
         set_ScrollBar(AuctionHouseFrame.ItemSellList)
         set_NineSlice(AuctionHouseFrame.ItemSellList, nil, true)
 
-        set_Alpha_Frame_Texture(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionLabel, nil, nil, min03)
+        --set_Alpha_Frame_Texture(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionLabel, nil, nil, min03)
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
         set_NineSlice(ProfessionsCustomerOrdersFrame, true)
