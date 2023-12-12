@@ -1626,6 +1626,7 @@ local function Init_AuctionHouse()
     AuctionHouseFrame:HookScript('OnShow', function(self)
         if Save.intShowSellItem then
             self:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
+            print(id,addName)
             AuctionHouseButton:set_next_item()--放入，第一个，物品
         end
     end)
