@@ -376,7 +376,7 @@ local function Init_Sell()
 
     --显示，转到出售物品
     local showSellItemCheck= CreateFrame('CheckButton', nil, AuctionHouseFrame.CommoditiesSellFrame, 'InterfaceOptionsCheckButtonTemplate')
-    showSellItemCheck:SetPoint('BOTTOMLEFT', AuctionHouseFrame.CommoditiesSellFrame)
+    showSellItemCheck:SetPoint('BOTTOMLEFT', AuctionHouseFrame.CommoditiesSellFrame, 8, 8)
     showSellItemCheck:SetSize(24,24)
     showSellItemCheck:SetChecked(Save.intShowSellItem)
     showSellItemCheck.Text:SetText(e.onlyChinese and '显示' or SHOW)
