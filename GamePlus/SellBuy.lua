@@ -1447,7 +1447,7 @@ local function Init_AuctionHouse()
                             btn.selectTexture:SetSize(size+8, size+8)
                             btn.selectTexture:Hide()
                             --btn.selectTexture:SetVertexColor(0,1,0)
-                            
+
                             btn:SetPoint("TOP", index==1 and self or self.buttons[index-1], 'BOTTOM', 0, -2)
                             btn:UpdateItemContextOverlayTextures(1)
                             btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -1564,9 +1564,7 @@ local function Init_AuctionHouse()
         if not displayMode or not self:IsShown() then
             return
         end
-        if displayMode[1]== "ItemSellFrame" then
-            self:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
-        elseif displayMode[1]=='CommoditiesSellFrame' then
+        if displayMode[1]== "ItemSellFrame" or displayMode[1]=='CommoditiesSellFrame' then
             AuctionHouseButton:init_items()
 		end
         AuctionHouseButton:set_shown()
@@ -1575,7 +1573,6 @@ local function Init_AuctionHouse()
 
 
     AuctionHouseFrame:HookScript('OnHide', function()
-        AuctionHouseButton:set_shown()
         AuctionHouseButton:set_event()
     end)
 
@@ -1626,8 +1623,7 @@ local function Init_AuctionHouse()
     AuctionHouseFrame:HookScript('OnShow', function(self)
         if Save.intShowSellItem then
             self:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
-            print(id,addName)
-            AuctionHouseButton:set_next_item()--放入，第一个，物品
+            C_Timer.After(0.5, AuctionHouseButton.set_next_item)--放入，第一个，物品
         end
     end)
 
@@ -1739,11 +1735,11 @@ local function Init_AuctionHouse()
             if auctionID then
                 C_AuctionHouse.CancelAuction(auctionID);
             end
-            
+
         end
     end)
 
-    
+
     --AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox:Ho
     --[[Blizzard_AuctionHouseAuctionsFrame.lua
     AuctionHouseFrameAuctionsFrame.CancelAuctionButton:SetScript('OnClick', function(self)
