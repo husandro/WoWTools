@@ -24,10 +24,7 @@ local Save={
 
 --拍卖行
 local AuctionHouseButton
-local function Init_AuctionHouse()
-    if not e.Player.husandro then
-        return
-    end
+local function Init_Sell()
     local levelFrame= AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.MaxButton:GetFrameLevel()
 
     AuctionHouseButton= e.Cbtn(AuctionHouseFrame, {size={34, 34}, icon='hide'})
@@ -37,6 +34,20 @@ local function Init_AuctionHouse()
     AuctionHouseButton.Text= e.Cstr(AuctionHouseButton)
     AuctionHouseButton.Text:SetPoint('CENTER')
     AuctionHouseButton.buttons={}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     --转到，出售，商品
     function AuctionHouseButton:to_CommoditiesSell()
@@ -139,7 +150,7 @@ local function Init_AuctionHouse()
                             end)
                             self.buttons[index]= btn
                         end
-                        local classID= select(6, GetItemInfoInstant(info.hyperlink))
+                        --local classID= select(6, GetItemInfoInstant(info.hyperlink))
                         btn.isPet= info.hyperlink:find('Hbattlepet:(%d+)')
                         --btn.itemCommodityStatus= itemCommodityStatus
 
@@ -194,6 +205,22 @@ local function Init_AuctionHouse()
     hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'SetItem', function(self) AuctionHouseButton:set_select_tips(self) end)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --按钮
     function AuctionHouseButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -212,6 +239,23 @@ local function Init_AuctionHouse()
     end)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     function AuctionHouseButton:get_displayMode()
         local displayMode= AuctionHouseFrame:GetDisplayMode() or {}
         return displayMode[1]
@@ -227,16 +271,12 @@ local function Init_AuctionHouse()
         local displayMode= self:get_displayMode()
         self:SetShown(AuctionHouseFrame:IsShown() and (displayMode=='CommoditiesSellFrame' or displayMode=='ItemSellFrame'))
     end
-
-
     function AuctionHouseButton:set_event()
         self:UnregisterAllEvents()
         if self:IsShown() then
             self:RegisterEvent('BAG_UPDATE_DELAYED')
         end
     end
-
-
     hooksecurefunc(AuctionHouseFrame, 'SetDisplayMode', function(self, displayMode)
         if not displayMode or not self:IsShown() then
             return
@@ -247,11 +287,33 @@ local function Init_AuctionHouse()
         AuctionHouseButton:set_shown()
         AuctionHouseButton:set_event()
     end)
-
-
     AuctionHouseFrame:HookScript('OnHide', function()
         AuctionHouseButton:set_event()
     end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     --Blizzard_AuctionHouseSellFrame.lua
     --出售物品时，使用，最大数量
@@ -272,6 +334,7 @@ local function Init_AuctionHouse()
         Save.isMaxSellItem= not Save.isMaxSellItem and true or nil
         AuctionHouseFrame.maxSellItemCheck2:SetChecked(Save.isMaxSellItem)
     end)
+
 
     AuctionHouseFrame.maxSellItemCheck2= CreateFrame('CheckButton', nil, AuctionHouseFrame.ItemSellFrame.QuantityInput.MaxButton, 'InterfaceOptionsCheckButtonTemplate')
     AuctionHouseFrame.maxSellItemCheck2:SetPoint('LEFT', AuctionHouseFrame.ItemSellFrame.QuantityInput.MaxButton, 'RIGHT')
@@ -296,6 +359,31 @@ local function Init_AuctionHouse()
             self:SetToMaxQuantity()
         end
     end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     --显示，转到出售物品
     local showSellItemCheck= CreateFrame('CheckButton', nil, AuctionHouseFrame.CommoditiesSellFrame, 'InterfaceOptionsCheckButtonTemplate')
@@ -325,10 +413,38 @@ local function Init_AuctionHouse()
         end
     end)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     --默认价格，替换，原生func
     --Blizzard_AuctionHouseSellFrame.lua
-    function AuctionHouseFrame.CommoditiesSellFrame:GetDefaultPrice()
-        local itemLocation = self:GetItem();
+    function AuctionHouseButton:GetDefaultPrice(itemLocation)
         local price= 100000
         if itemLocation and itemLocation:IsValid() then
             local itemLink = C_Item.GetItemLink(itemLocation);
@@ -356,20 +472,56 @@ local function Init_AuctionHouse()
         end
         return price
     end
+    function AuctionHouseFrame.CommoditiesSellFrame:GetDefaultPrice()
+        return AuctionHouseButton:GetDefaultPrice(self:GetItem())
+    end
+    function AuctionHouseFrame.ItemSellFrame:GetDefaultPrice()
+        return AuctionHouseButton:GetDefaultPrice(self:GetItem())
+    end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     --单价，倍数
     AuctionHouseFrame.CommoditiesSellFrame.percentLabel= e.Cstr(AuctionHouseFrame.CommoditiesSellFrame, {size=16})--单价，提示
     AuctionHouseFrame.CommoditiesSellFrame.percentLabel:SetPoint('BOTTOM', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'TOP')
     AuctionHouseFrame.CommoditiesSellFrame.vendorPriceLabel= e.Cstr(AuctionHouseFrame.CommoditiesSellFrame, {size=12})--单价，提示
     AuctionHouseFrame.CommoditiesSellFrame.vendorPriceLabel:SetPoint('TOPRIGHT', AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox, 'BOTTOMRIGHT',0,4)
-    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdateTotalPrice', function(self)
-        local itemLocation= self:GetItem()
+
+    AuctionHouseFrame.ItemSellFrame.percentLabel= e.Cstr(AuctionHouseFrame.ItemSellFrame, {size=16})--单价，提示
+    AuctionHouseFrame.ItemSellFrame.percentLabel:SetPoint('BOTTOM', AuctionHouseFrame.ItemSellFrame.PostButton, 'TOP')
+    AuctionHouseFrame.ItemSellFrame.vendorPriceLabel= e.Cstr(AuctionHouseFrame.ItemSellFrame, {size=12})--单价，提示
+    AuctionHouseFrame.ItemSellFrame.vendorPriceLabel:SetPoint('TOPRIGHT', AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox, 'BOTTOMRIGHT',0,4)
+
+    function AuctionHouseButton:Update_Total_Price(frame)
+        local itemLocation= frame:GetItem()
         local text=''
         local text2=''
         if itemLocation and itemLocation:IsValid() then
             local itemLink = C_Item.GetItemLink(itemLocation);
             local vendorPrice = select(11, GetItemInfo(itemLink));
-            local unitPrice= self:GetUnitPrice()
+            local unitPrice= frame.PriceInput:GetAmount();-- frame:GetUnitPrice()
             local col=''
             if vendorPrice and unitPrice and vendorPrice>0 and unitPrice>0 then
                 if unitPrice> vendorPrice then
@@ -397,9 +549,41 @@ local function Init_AuctionHouse()
                 text2= col..GetMoneyString(vendorPrice)--GetCoinTextureString(vendorPrice)
             end
         end
-        self.vendorPriceLabel:SetText(text2)
-        self.percentLabel:SetText(text)
+        frame.vendorPriceLabel:SetText(text2)
+        frame.percentLabel:SetText(text)
+    end
+    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdateTotalPrice', function(self)
+        AuctionHouseButton:Update_Total_Price(self)
     end)
+    hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'UpdateTotalPrice', function(self)
+        AuctionHouseButton:Update_Total_Price(self)
+    end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     --下一个，拍卖，物品
     --AuctionHouseFrame.CommoditiesSellFrame.PostButton:HookScript('OnClick', function(self)
@@ -413,6 +597,36 @@ local function Init_AuctionHouse()
         AuctionHouseButton:set_next_item()--设置，第一个物品
         self.isNextItem=nil
     end)
+    hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'PostItem', function(self)
+        self.isNextItem=true
+    end)
+    hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'UpdatePostButtonState', function(self)
+        if self.itemLocation or not C_AuctionHouse.IsThrottledMessageSystemReady() or not self.isNextItem then
+            return
+        end
+        AuctionHouseButton:set_next_item()--设置，第一个物品
+        self.isNextItem=nil
+    end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     --移动, Frame
@@ -424,6 +638,27 @@ local function Init_AuctionHouse()
     AuctionHouseFrame.CommoditiesSellFrame:ClearAllPoints()
     AuctionHouseFrame.CommoditiesSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellList, 'TOPLEFT', 67,0)
     AuctionHouseFrame.CommoditiesSellFrame:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'BOTTOMRIGHT')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -456,6 +691,7 @@ local function Init_AuctionHouse()
         e.tips:Show();
     end)
     showSellButton:SetScript('OnClick', AuctionHouseButton.to_ItemSell)
+end
 
 
 
@@ -466,10 +702,72 @@ local function Init_AuctionHouse()
 
 
 
-    --出售，列表
-    --#########
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--所有，出售物品, 表表
+local function Init_AllAuctions()
+    --移动，刷新，按钮
+    AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton:ClearAllPoints()
+    AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton:SetPoint('RIGHT', AuctionHouseFrameAuctionsFrame.CancelAuctionButton, 'LEFT', -4, 0)
+
+    --取消
     local cancelAllAuctionButton= e.Cbtn(AuctionHouseFrameAuctionsFrame.CancelAuctionButton, {type=false, size={158,22}, text= e.onlyChinese and '取消' or CANCEL})
-    cancelAllAuctionButton:SetPoint('RIGHT', AuctionHouseFrameAuctionsFrame.CancelAuctionButton, 'LEFT')
+    cancelAllAuctionButton:SetPoint('RIGHT', AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton, 'LEFT', -4, 0)
     function cancelAllAuctionButton:get_auctionID()
         local tab={}
         for _, info in pairs(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox:GetFrames() or {}) do
@@ -511,55 +809,56 @@ local function Init_AuctionHouse()
         end
         self:set_tooltips()
     end)
-    --AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox:Ho
-    --[[Blizzard_AuctionHouseAuctionsFrame.lua
-    AuctionHouseFrameAuctionsFrame.CancelAuctionButton:SetScript('OnClick', function(self)
-        for _, info in pairs(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox:GetFrames() or {}) do
-            local auctionID= info.rowData and info.rowData.auctionID
-            if auctionID then
-                print(auctionID)
-                C_AuctionHouse.CancelAuction(auctionID);
+
+
+
+--[[
+    if not self.OnDoubleClick then
+        self:SetScript('OnDoubleClick', function(self2)--LFGListApplicationDialogSignUpButton_OnClick(button) LFG队长分数, 双击加入 LFGListSearchPanel_UpdateResults
+            if not Save.LFGPlus then
+                return
             end
-            
-        end
-        
-        local auctionsFrame = self:GetParent();
-        auctionsFrame:CancelSelectedAuction();
-        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
-    end)
-    AuctionHouseFrame.CommoditiesSellFrame.PostButton:ClearAllPoints()
-    local btn= AuctionHouseFrame.CommoditiesSellFrame.PostButton
-    AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetPoint('RIGHT', AuctionHouseFrame.CommoditiesSellFrame)
-    AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetSize(270,22)
+            if LFGListFrame.SearchPanel.SignUpButton:IsEnabled() then
+                LFGListFrame.SearchPanel.SignUpButton:Click()
+            end
+            local frame=LFGListApplicationDialog
+            if not frame.TankButton.CheckButton:GetChecked() and not frame.HealerButton.CheckButton:GetChecked() and not frame.DamagerButton.CheckButton:GetChecked() then
+                local specID=GetSpecialization()--当前专精
+                if specID then
+                    local role = select(5, GetSpecializationInfo(specID))
+                    if role=='DAMAGER' and frame.DamagerButton:IsShown() then
+                        frame.DamagerButton.CheckButton:SetChecked(true)
 
+                    elseif role=='TANK' and frame.TankButton:IsShown() then
+                        frame.TankButton.CheckButton:SetChecked(true)
 
-    --Blizzard_AuctionHouseFrame.lua
-    --C_AuctionHouse.CancelAuction(self.data.auctionID)
-
-        StaticPopupDialogs["CANCEL_AUCTION"] = {
-	text = CANCEL_AUCTION_CONFIRMATION,
-	button1 = ACCEPT,
-	button2 = CANCEL,
-	OnAccept = function(self)
-		C_AuctionHouse.CancelAuction(self.data.auctionID);
-	end,
-	OnShow = function(self)
-		local cancelCost = C_AuctionHouse.GetCancelCost(self.data.auctionID);
-		MoneyFrame_Update(self.moneyFrame, cancelCost);
-		if cancelCost > 0 then
-			self.text:SetText(CANCEL_AUCTION_CONFIRMATION_MONEY);
-		else
-			self.text:SetText(CANCEL_AUCTION_CONFIRMATION);
-		end
-	end,
-	hasMoneyFrame = 1,
-	showAlert = 1,
-	timeout = 0,
-	exclusive = 1,
-	hideOnEscape = 1
-};
-    ]]
+                    elseif role=='HEALER' and frame.HealerButton:IsShown() then
+                        frame.HealerButton.CheckButton:SetChecked(true)
+                    end
+                    LFGListApplicationDialog_UpdateValidState(frame)
+                end
+            end
+            if frame:IsShown() and frame.SignUpButton:IsEnabled() then
+                frame.SignUpButton:Click()
+            end
+        end)
+    end]]
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -609,7 +908,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end
 
         elseif arg1=='Blizzard_AuctionHouseUI' then
-            Init_AuctionHouse()
+            Init_Sell()
+            Init_AllAuctions()
             panel:UnregisterEvent('ADDON_LOADED')
         end
 
