@@ -1490,11 +1490,7 @@ local function Init_AuctionHouse()
         local itemLocation= self:GetItem()
         local itemID= itemLocation and C_Item.GetItemID(itemLocation)
         for _, btn in pairs(AuctionHouseButton.buttons) do
-            if btn.itemLocation then
-                btn.selectTexture:SetShown(C_Item.GetItemID(btn.itemLocation)==itemID)
-            else
-                break
-            end
+            btn.selectTexture:SetShown(btn.itemLocation and C_Item.GetItemID(btn.itemLocation)==itemID)
         end
     end)
 
