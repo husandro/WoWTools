@@ -1178,7 +1178,7 @@ local function Init()
         self.isCancelled=nil
     end
 
-    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnShow",function(self)--StaticPopup.lua
+    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnShow",function()--StaticPopup.lua
         e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
         local name= C_SummonInfo.GetSummonConfirmSummoner()
         local info= e.GroupGuid[name]

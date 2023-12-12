@@ -82,6 +82,8 @@ WoWPlus\Bank.lua
 GamePlus\Gossip.lua
 ##卖买
 GamePlus\SellBuy.lua
+##拍卖行
+GamePlus\AuctionHouse.lua
 ##宠物对战
 GamePlus\PetBattle.lua
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统

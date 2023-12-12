@@ -1035,13 +1035,6 @@ local function Init_Gossip()
 
 
 
-    hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_ITEM"],"OnShow",function(self)
-        if not Save.notDELETE then
-            self.editBox:SetText(DELETE_ITEM_CONFIRM_STRING);
-        end
-    end)
-
-
 end
 
 
@@ -1817,6 +1810,7 @@ end
 --###########
 --加载保存数据
 --###########
+local SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING= SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED"  then

@@ -653,6 +653,7 @@ end
 
 
 
+local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
 
 local function Init()
     --########################
@@ -683,6 +684,7 @@ local function Init()
     btn2:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha()end)
     btn2:SetScript('OnEnter', btn2.set_tooltips)
     btn2:set_alpha()
+
     hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow",function(self)
         if Save.wangquePrefessionText then
             self.editBox:SetText(UNLEARN_SKILL_CONFIRMATION);
