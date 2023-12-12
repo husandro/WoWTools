@@ -1404,6 +1404,31 @@ local function Init_AuctionHouse()
     AuctionHouseButton.Text:SetPoint('CENTER')
     AuctionHouseButton.buttons={}
 
+    --设置，放入，物品
+    function AuctionHouseButton:SetItem(itemLocation)
+        if itemLocation then
+            local fromItemDisplay = nil
+            local refreshListWithPreviousItem = true
+            AuctionHouseFrame.CommoditiesSellFrame:SetItem(itemLocation, fromItemDisplay, refreshListWithPreviousItem)
+        end
+    end
+
+    --放入，第一个，物品
+    function AuctionHouseButton:set_next_item()
+        if not C_AuctionHouse.IsThrottledMessageSystemReady() then
+            return
+        end
+        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
+            for slot=1, C_Container.GetContainerNumSlots(bag) do
+                local info = C_Container.GetContainerItemInfo(bag, slot)
+                local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)
+                if info and info.itemID and not Save.hideSellItem[info.itemID] and itemLocation and C_AuctionHouse.IsSellItemValid(itemLocation, false) then
+                    AuctionHouseButton:SetItem(itemLocation)
+                    return
+                end
+            end
+        end
+    end
 
     function AuctionHouseButton:init_items()
         local index=1
@@ -1445,9 +1470,7 @@ local function Init_AuctionHouse()
                             btn:SetScript('OnClick', function(frame, d)
                                 if d=='LeftButton' then--放入，物品
                                     AuctionHouseButton:show_CommoditiesSellFrame()
-                                    local fromItemDisplay = nil
-                                    local refreshListWithPreviousItem = true
-                                    AuctionHouseFrame.CommoditiesSellFrame:SetItem(frame.itemLocation, fromItemDisplay, refreshListWithPreviousItem)
+                                    self:SetItem(frame.itemLocation)
 
                                 elseif d=='RightButton' then--隐藏，物品
                                     local itemID= C_Item.GetItemID(frame.itemLocation)
@@ -1603,6 +1626,7 @@ local function Init_AuctionHouse()
     AuctionHouseFrame:HookScript('OnShow', function(self)
         if Save.intShowSellItem then
             self:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
+            AuctionHouseButton:set_next_item()--放入，第一个，物品
         end
     end)
 
@@ -1635,8 +1659,6 @@ local function Init_AuctionHouse()
                 end
             end
         end
-
-
         return price
     end
 
@@ -1693,19 +1715,7 @@ local function Init_AuctionHouse()
         if self.itemLocation or not C_AuctionHouse.IsThrottledMessageSystemReady() or not self.isNextItem then
             return
         end
-        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
-            for slot=1, C_Container.GetContainerNumSlots(bag) do
-                local info = C_Container.GetContainerItemInfo(bag, slot)
-                local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)
-                if info and info.itemID and not Save.hideSellItem[info.itemID] and itemLocation and C_AuctionHouse.IsSellItemValid(itemLocation, false) then
-                    local fromItemDisplay = nil;
-                    local refreshListWithPreviousItem = true;
-                    self:SetItem(itemLocation, fromItemDisplay, refreshListWithPreviousItem)
-                    self.isNextItem=nil
-                    return
-                end
-            end
-        end
+        AuctionHouseButton:set_next_item()--设置，第一个物品
         self.isNextItem=nil
     end)
 
@@ -1720,6 +1730,19 @@ local function Init_AuctionHouse()
     AuctionHouseFrame.CommoditiesSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellList, 'TOPLEFT', 67,0)
     AuctionHouseFrame.CommoditiesSellFrame:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'BOTTOMRIGHT')
 
+    local cancelAllAuctionButton= e.Cbtn(AuctionHouseFrameAuctionsFrame.CancelAuctionButton, {type=true, size={158,22}, text= e.onlyChinese and '全部' or ALL})
+    cancelAllAuctionButton:SetPoint('RIGHT', AuctionHouseFrameAuctionsFrame.CancelAuctionButton, 'LEFT')
+    cancelAllAuctionButton:SetScript('OnClick', function()
+        for _, info in pairs(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox:GetFrames() or {}) do
+            local auctionID= info.rowData and info.rowData.auctionID
+            if auctionID then
+                C_AuctionHouse.CancelAuction(auctionID);
+            end
+            
+        end
+    end)
+
+    
     --AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox:Ho
     --[[Blizzard_AuctionHouseAuctionsFrame.lua
     AuctionHouseFrameAuctionsFrame.CancelAuctionButton:SetScript('OnClick', function(self)
