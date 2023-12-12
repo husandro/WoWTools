@@ -51,7 +51,7 @@ local function Init_AuctionHouse()
     end
 
 
-    function AuctionHouseButton:itemIsValidAuctionItem(bag, slot)
+    function AuctionHouseButton:get_itemLocation(bag, slot)
         local itemLocation = ItemLocation:CreateFromBagAndSlot(bag, slot);
         if itemLocation and itemLocation:IsValid() and C_AuctionHouse.IsSellItemValid(itemLocation, false) then--ContainerFrame.lua
             return itemLocation, C_AuctionHouse.GetItemCommodityStatus(itemLocation) or 0
@@ -66,7 +66,7 @@ local function Init_AuctionHouse()
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
             for slot=1, C_Container.GetContainerNumSlots(bag) do
                 local info = C_Container.GetContainerItemInfo(bag, slot)
-                local itemLocation, itemCommodityStatus= self:itemIsValidAuctionItem(bag, slot)
+                local itemLocation, itemCommodityStatus= self:get_itemLocation(bag, slot)
                 if info
                     and itemLocation
                     and info.itemID
@@ -91,7 +91,7 @@ local function Init_AuctionHouse()
             for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
                 for slot=1, C_Container.GetContainerNumSlots(bag) do
                     local info = C_Container.GetContainerItemInfo(bag, slot)
-                    local itemLocation, itemCommodityStatus= self:itemIsValidAuctionItem(bag, slot)
+                    local itemLocation, itemCommodityStatus= self:get_itemLocation(bag, slot)
                     if info and info.hyperlink and itemLocation and itemCommodityStatus>0 then
                         local btn= self.buttons[index]
                         if not btn then
@@ -319,7 +319,9 @@ local function Init_AuctionHouse()
     AuctionHouseFrame:HookScript('OnShow', function(self)
         if Save.intShowSellItem then
             self:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
-            C_Timer.After(0.5, AuctionHouseButton.set_next_item)--放入，第一个，物品
+            C_Timer.After(0.5, function()
+                AuctionHouseButton:set_next_item()--放入，第一个，物品
+            end)
         end
     end)
 
