@@ -49,17 +49,6 @@ local function Init_Sell()
 
 
 
-    --转到，出售，商品
-    function AuctionHouseButton:to_CommoditiesSell()
-        AuctionHouseFrame.ItemSellFrame:ClearPost()
-        AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
-    end
-
-    --转到，出售，物品
-    function AuctionHouseButton:to_ItemSell()
-        AuctionHouseFrame.CommoditiesSellFrame:ClearPost()
-        AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.ItemSell)
-    end
 
 
     function AuctionHouseButton:get_itemLocation(bag, slot)
@@ -624,46 +613,8 @@ local function Init_Sell()
 
 
 
-
-
-
-
-
-    --移动, Frame
-    --Blizzard_AuctionHouseFrame.xml
-    AuctionHouseFrame.CommoditiesSellList:ClearAllPoints()
-    AuctionHouseFrame.CommoditiesSellList:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellFrame, 'TOPLEFT')
-    AuctionHouseFrame.CommoditiesSellList:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellFrame, 'BOTTOMRIGHT', 65,0)
-
-    AuctionHouseFrame.CommoditiesSellFrame:ClearAllPoints()
-    AuctionHouseFrame.CommoditiesSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellList, 'TOPLEFT', 67,0)
-    AuctionHouseFrame.CommoditiesSellFrame:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'BOTTOMRIGHT')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     --转到，一口价模式，按钮
-    local showCommoditiesButton=e.Cbtn(AuctionHouseFrame.ItemSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '一口价' or AUCTION_HOUSE_BUYOUT_BUTTON})
+    local showCommoditiesButton=e.Cbtn(AuctionHouseFrame.ItemSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '物品' or ITEMS})
     showCommoditiesButton:SetPoint('BOTTOMRIGHT', -15,15)
     showCommoditiesButton:SetFrameLevel(levelFrame)
     showCommoditiesButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -672,14 +623,18 @@ local function Init_Sell()
         e.tips:ClearLines();
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '显示' or SHOW, e.onlyChinese and '一口价模式' or AUCTION_HOUSE_BUYOUT_MODE_CHECK_BOX)
+        e.tips:AddDoubleLine(e.onlyChinese and '显示' or SHOW, e.onlyChinese and '物品' or ITEMS)
         e.tips:Show();
     end)
-    showCommoditiesButton:SetScript('OnClick', AuctionHouseButton.to_CommoditiesSell)
+    showCommoditiesButton:SetScript('OnClick', function()
+        AuctionHouseFrame.ItemSellFrame:ClearPost()
+        AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
+    end)
+
 
     --转到，出售商品，按钮
-    local showSellButton=e.Cbtn(AuctionHouseFrame.CommoditiesSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '竞标价格' or AUCTION_HOUSE_BID_LABEL})
-    showSellButton:SetPoint('BOTTOMRIGHT', -2,8)
+    local showSellButton=e.Cbtn(AuctionHouseFrame.CommoditiesSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS})
+    showSellButton:SetPoint('BOTTOMRIGHT',  -15,15)
     showSellButton:SetFrameLevel(levelFrame)
     showSellButton:SetScript('OnLeave', GameTooltip_Hide)
     showSellButton:SetScript('OnEnter', function(self)
@@ -687,10 +642,63 @@ local function Init_Sell()
         e.tips:ClearLines();
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '显示模式' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, MODE), e.onlyChinese and '竞标价格' or AUCTION_HOUSE_BID_LABEL)
+        e.tips:AddDoubleLine(e.onlyChinese and '显示模式' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, MODE), e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS)
         e.tips:Show();
     end)
-    showSellButton:SetScript('OnClick', AuctionHouseButton.to_ItemSell)
+    showSellButton:SetScript('OnClick', function()
+        AuctionHouseFrame.CommoditiesSellFrame:ClearPost()
+        AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.ItemSell)
+    end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    --移动, Frame
+    --Blizzard_AuctionHouseFrame.xml
+    AuctionHouseFrame.CommoditiesSellList:ClearAllPoints()
+    AuctionHouseFrame.CommoditiesSellList:SetSize(427, 442)
+    AuctionHouseFrame.CommoditiesSellList:SetPoint('BOTTOMLEFT', AuctionHouseFrame.MoneyFrameBorder, 'TOPLEFT')
+    AuctionHouseFrame.CommoditiesSellFrame:ClearAllPoints()
+    AuctionHouseFrame.CommoditiesSellFrame:SetSize(363, 442)
+    AuctionHouseFrame.CommoditiesSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.CommoditiesSellList, 'TOPRIGHT')
+
+    AuctionHouseFrame.ItemSellList:ClearAllPoints()
+    AuctionHouseFrame.ItemSellList:SetSize(427, 442)
+    AuctionHouseFrame.ItemSellList:SetPoint('BOTTOMLEFT', AuctionHouseFrame.MoneyFrameBorder, 'TOPLEFT')
+    AuctionHouseFrame.ItemSellFrame:ClearAllPoints()
+    AuctionHouseFrame.ItemSellFrame:SetSize(363, 442)
+    AuctionHouseFrame.ItemSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellList, 'TOPRIGHT')
+
+    --[[
+            <Frame parentKey="ItemSellFrame" inherits="AuctionHouseItemSellFrameTemplate" hidden="true">
+				<Size x="363" y="0"/>
+				<Anchors>
+					<Anchor point="TOP" x="0" y="-69"/>
+					<Anchor point="BOTTOM" relativeKey="$parent.MoneyFrameBorder" relativePoint="TOP" x="0" y="2"/>
+					<Anchor point="LEFT" x="4" y="0"/>
+				</Anchors>
+			</Frame>        
+    
+    AuctionHouseFrame.CommoditiesSellList:ClearAllPoints()
+    AuctionHouseFrame.CommoditiesSellList:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellFrame, 'TOPLEFT')
+    AuctionHouseFrame.CommoditiesSellList:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellFrame, 'BOTTOMRIGHT', 65,0)
+
+    AuctionHouseFrame.CommoditiesSellFrame:ClearAllPoints()
+    AuctionHouseFrame.CommoditiesSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellList, 'TOPLEFT', 67,0)
+    AuctionHouseFrame.CommoditiesSellFrame:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'BOTTOMRIGHT')]]
+
+    
 end
 
 

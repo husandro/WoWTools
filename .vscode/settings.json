@@ -3775,7 +3775,8 @@
         "AUCTION_HOUSE_BUYOUT_MODE_CHECK_BOX",
         "AUCTION_HOUSE_BID_LABEL",
         "AUCTION_HOUSE_HEADER_BID_PRICE",
-        "MODE"
+        "MODE",
+        "PROFESSIONS_COLUMN_HEADER_REAGENTS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
