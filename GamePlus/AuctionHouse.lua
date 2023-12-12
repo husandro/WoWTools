@@ -3,7 +3,7 @@ local addName= BUTTON_LAG_AUCTIONHOUSE--拍卖行
 local Save={
     --hideSellItemList=true,--隐藏，物品列表
     intShowSellItem= e.Player.husandro,--显示，转到出售物品
-    isMaxSellItem=e.Player.husandro,--出售物品时，使用，最大数量
+    isMaxSellItem= true,--出售物品时，使用，最大数量
     hideSellItem={},--跳过，拍卖行物品
     SellItemDefaultPrice={},--默认价格
 }
@@ -51,6 +51,13 @@ local function Init_AuctionHouse()
     end
 
 
+    function AuctionHouseButton:itemIsValidAuctionItem(bag, slot)
+        local itemLocation = ItemLocation:CreateFromBagAndSlot(bag, slot);
+        if itemLocation and itemLocation:IsValid() and C_AuctionHouse.IsSellItemValid(itemLocation, false) then--ContainerFrame.lua
+            return itemLocation, C_AuctionHouse.GetItemCommodityStatus(itemLocation) or 0
+        end
+    end
+
     --放入，第一个，物品
     function AuctionHouseButton:set_next_item()
         if not C_AuctionHouse.IsThrottledMessageSystemReady() then
@@ -59,8 +66,16 @@ local function Init_AuctionHouse()
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
             for slot=1, C_Container.GetContainerNumSlots(bag) do
                 local info = C_Container.GetContainerItemInfo(bag, slot)
-                local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)
-                if info and info.itemID and not Save.hideSellItem[info.itemID] and itemLocation and C_AuctionHouse.IsSellItemValid(itemLocation, false) then
+                local itemLocation, itemCommodityStatus= self:itemIsValidAuctionItem(bag, slot)
+                if info
+                    and itemLocation
+                    and info.itemID
+                    and not Save.hideSellItem[info.itemID]
+                    and (
+                        (itemCommodityStatus==Enum.ItemCommodityStatus.Commodity and AuctionHouseFrame.CommoditiesSellFrame:IsShown())
+                        or (itemCommodityStatus==Enum.ItemCommodityStatus.Item and AuctionHouseFrame.ItemSellFrame:IsShown())
+                    )
+                then
                     AuctionHouseFrame:SetPostItem(itemLocation)--ContainerFrame.lua
                     return
                 end
@@ -68,12 +83,7 @@ local function Init_AuctionHouse()
         end
     end
 
-    function AuctionHouseButton:itemIsValidAuctionItem(bag, slot)
-        local itemLocation = ItemLocation:CreateFromBagAndSlot(bag, slot);
-        if itemLocation and itemLocation:IsValid() and C_AuctionHouse.IsSellItemValid(itemLocation, false) then--ContainerFrame.lua
-            return itemLocation
-        end
-    end
+
 
     function AuctionHouseButton:init_items()
         local index=1
@@ -81,8 +91,7 @@ local function Init_AuctionHouse()
             for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
                 for slot=1, C_Container.GetContainerNumSlots(bag) do
                     local info = C_Container.GetContainerItemInfo(bag, slot)
-                    local itemLocation= self:itemIsValidAuctionItem(bag, slot)
-                    local itemCommodityStatus= itemLocation and C_AuctionHouse.GetItemCommodityStatus(itemLocation) or 0;
+                    local itemLocation, itemCommodityStatus= self:itemIsValidAuctionItem(bag, slot)
                     if info and info.hyperlink and itemLocation and itemCommodityStatus>0 then
                         local btn= self.buttons[index]
                         if not btn then
@@ -92,7 +101,6 @@ local function Init_AuctionHouse()
                             btn.selectTexture:SetPoint('CENTER')
                             btn.selectTexture:SetSize(42, 42)
                             btn.selectTexture:Hide()
-                            --btn.selectTexture:SetVertexColor(0,1,0)
 
                             btn:SetPoint("TOP", index==1 and self or self.buttons[index-1], 'BOTTOM', 0, -2)
                             btn:UpdateItemContextOverlayTextures(1)
@@ -173,7 +181,7 @@ local function Init_AuctionHouse()
         self.Text:SetText(Save.hideSellItemList and '|cff606060'..(e.onlyChinese and '隐藏' or HIDE) or index-1)
     end
 
- 
+
     --提示，已放入物品
     function AuctionHouseButton:set_select_tips(frame)
         local itemLocation= frame:GetItem()
@@ -228,7 +236,7 @@ local function Init_AuctionHouse()
         end
     end
 
-    
+
     hooksecurefunc(AuctionHouseFrame, 'SetDisplayMode', function(self, displayMode)
         if not displayMode or not self:IsShown() then
             return
@@ -262,6 +270,7 @@ local function Init_AuctionHouse()
     end)
     AuctionHouseFrame.maxSellItemCheck:SetScript('OnClick', function()
         Save.isMaxSellItem= not Save.isMaxSellItem and true or nil
+        AuctionHouseFrame.maxSellItemCheck2:SetChecked(Save.isMaxSellItem)
     end)
 
     AuctionHouseFrame.maxSellItemCheck2= CreateFrame('CheckButton', nil, AuctionHouseFrame.ItemSellFrame.QuantityInput.MaxButton, 'InterfaceOptionsCheckButtonTemplate')
@@ -277,8 +286,9 @@ local function Init_AuctionHouse()
         e.tips:AddDoubleLine(' ', e.onlyChinese and '最大数量' or AUCTION_HOUSE_MAX_QUANTITY_BUTTON)
         e.tips:Show()
     end)
-    AuctionHouseFrame.maxSellItemCheck2:SetScript('OnClick', function()
+    AuctionHouseFrame.maxSellItemCheck2:SetScript('OnClick', function(self)
         Save.isMaxSellItem= not Save.isMaxSellItem and true or nil
+        AuctionHouseFrame.maxSellItemCheck:SetChecked(Save.isMaxSellItem)
     end)
 
     hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'SetItem', function(self)
@@ -489,7 +499,7 @@ local function Init_AuctionHouse()
         local auctionID, itemLink= self:get_auctionID()
         if auctionID  then
             if C_AuctionHouse.CanCancelAuction(auctionID) then
-                            
+
                 local cost= C_AuctionHouse.GetCancelCost(auctionID)
                 C_AuctionHouse.CancelAuction(auctionID)
                 print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r', itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
@@ -592,7 +602,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             })
 
-            if not Save.disabled then
+            if Save.disabled then
                 panel:UnregisterEvent('ADDON_LOADED')
             end
 
