@@ -100,8 +100,9 @@ local function Init_Sell()
 
 
     function AuctionHouseButton:get_displayMode()
-        local displayMode= AuctionHouseFrame:GetDisplayMode() or {}
-        return displayMode[1]=='CommoditiesSellFrame', displayMode[1]=='ItemSellFrame'
+        local displayMode= AuctionHouseFrame:GetDisplayMode()
+        return displayMode==AuctionHouseFrameDisplayMode.CommoditiesSell, displayMode==AuctionHouseFrameDisplayMode.ItemSell
+        --return displayMode[1]=='CommoditiesSellFrame', displayMode[1]=='ItemSellFrame'
     end
 
 
@@ -176,19 +177,23 @@ local function Init_Sell()
                             btn:SetScript('OnEnter', function(frame)
                                 e.tips:SetOwner(frame:GetParent(), "ANCHOR_LEFT")
                                 e.tips:ClearLines()
-                                local itemLink= C_Item.GetItemLink(frame.itemLocation)
-                                if itemLink then
-                                    if frame.isPet then
-                                        BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(itemLink))
-                                    else
-                                        e.tips:SetHyperlink(itemLink)
-                                        e.tips:AddLine(' ')
-                                        e.tips:AddDoubleLine(e.onlyChinese and '开始拍卖' or CREATE_AUCTION, e.Icon.left)
+                                if frame.itemLocation then
+                                    local itemLink= C_Item.GetItemLink(frame.itemLocation)
+                                    if itemLink then
+                                        if frame.isPet then
+                                            BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(itemLink))
+                                        else
+                                            e.tips:SetHyperlink(itemLink)
+                                            e.tips:AddLine(' ')
+                                            e.tips:AddDoubleLine(e.onlyChinese and '开始拍卖' or CREATE_AUCTION, e.Icon.left)
+                                        end
                                     end
-                                end
-                                local itemID= C_Item.GetItemID(frame.itemLocation)
-                                if itemID then
-                                    e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.GetShowHide(Save.hideSellItem[itemID])..e.Icon.right)
+                                    local itemID= C_Item.GetItemID(frame.itemLocation)
+                                    if itemID then
+                                        e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.GetShowHide(Save.hideSellItem[itemID])..e.Icon.right)
+                                    end
+                                else
+                                    e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未发现物品' or BROWSE_ORDERS))
                                 end
                                 e.tips:Show()
                             end)
@@ -204,6 +209,9 @@ local function Init_Sell()
                                     if itemID then
                                         Save.hideSellItem[itemID]= not Save.hideSellItem[itemID] and true or nil
                                         frame:GetParent():GetParent():init_items()
+                                        if frame.selectTexture:IsShown() then
+                                            AuctionHouseFrame:ClearPostItem()
+                                        end
                                     end
                                 end
                             end)

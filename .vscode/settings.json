@@ -3783,7 +3783,8 @@
         "INTERRUPT",
         "AuctionHouseSearchContext",
         "AuctionHouseAuctionsSummaryListMixin",
-        "AUCTION_HOUSE_CANCEL_AUCTION_BUTTON"
+        "AUCTION_HOUSE_CANCEL_AUCTION_BUTTON",
+        "BROWSE_ORDERS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
