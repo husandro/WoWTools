@@ -996,119 +996,6 @@ local function Init_AllAuctions()
         end
         self:set_tooltips()
     end)
-
-
-    --[[取消
-    local cancelAllButton= e.Cbtn(cancelButton, {type=false, size={100,22}, text= e.onlyChinese and '全部' or ALL})
-    cancelAllButton:SetPoint('RIGHT', cancelButton, 'LEFT', -4, 0)
-    cancelAllButton:SetScript('OnLeave', GameTooltip_Hide)
-    cancelAllButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_BOTTOMLEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(' ', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消拍卖将使你失去保证金。' or CANCEL_AUCTION_CONFIRMATION))
-        e.tips:Show()
-    end)
-    function cancelAllButton:set_text()
-        if self.time and not self.time:IsCancelled() then
-            self:SetText(e.onlyChinese and '中断' or INTERRUPT)
-        else
-            self:SetText(e.onlyChinese and '全部' or ALL)
-        end
-    end
-    cancelAllButton:SetScript('OnClick', function(self)
-        if self.time and not self.time:IsCancelled() then
-            self.time:Cancel()
-            self:set_text()
-            return
-        end
-
-
-
-        local tab={}
-        local num=0
-        for _, info in pairs(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox:GetFrames() or {}) do
-            if info.rowData and info.rowData.auctionID and info.rowData.timeLeftSeconds and C_AuctionHouse.CanCancelAuction(info.rowData.auctionID) then
-                table.insert(tab, info.rowData)
-                num= num+1
-            end
-        end
-        if num==0 then
-            return
-        end
-
-        table.sort(tab, function(a, b)
-            return a.timeLeftSeconds< b.timeLeftSeconds
-        end)
-
-        local function AllAuctionsRefreshResults()
-            AuctionHouseFrameAuctionsFrame:GetAuctionHouseFrame():QueryAll(AuctionHouseSearchContext.AllAuctions);
-            AuctionHouseFrameAuctionsFrame.AllAuctionsList:DirtyScrollFrame();
-        end
-
-        if C_AuctionHouse.CanCancelAuction(tab[1].auctionID) then
-            local cost= C_AuctionHouse.GetCancelCost(tab[1].auctionID)
-            C_AuctionHouse.CancelAuction(tab[1].auctionID)
-            print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r', '1/'..num, tab[1].itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
-            AuctionHouseFrameAuctionsFrame.AllAuctionsList:SetRefreshFrameFunctions(nil, AllAuctionsRefreshResults)--Blizzard_AuctionHouseAuctionsFrame.lua
-        end
-        
-  
-        
-        if num>1 then
-            local index=1
-            self.time= C_Timer.NewTicker(3, function()
-                index= index+1
-                local auctionID= tab[index].auctionID
-                local itemLink= tab[index].itemLink
-                if C_AuctionHouse.CanCancelAuction(auctionID) then
-                    local cost= C_AuctionHouse.GetCancelCost(auctionID)
-                    C_AuctionHouse.CancelAuction(auctionID)
-                    print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r', index..'/'..num , itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
-                end
-                AuctionHouseFrameAuctionsFrame.AllAuctionsList:SetRefreshFrameFunctions(nil, AllAuctionsRefreshResults)--Blizzard_AuctionHouseAuctionsFrame.lua
-
-                if num==index then
-                    self.time:Cancel()
-                end
-            end, num)
-        end
-        
-        self:set_text()
-    end)]]
-
-
---[[
-    if not self.OnDoubleClick then
-        self:SetScript('OnDoubleClick', function(self2)--LFGListApplicationDialogSignUpButton_OnClick(button) LFG队长分数, 双击加入 LFGListSearchPanel_UpdateResults
-            if not Save.LFGPlus then
-                return
-            end
-            if LFGListFrame.SearchPanel.SignUpButton:IsEnabled() then
-                LFGListFrame.SearchPanel.SignUpButton:Click()
-            end
-            local frame=LFGListApplicationDialog
-            if not frame.TankButton.CheckButton:GetChecked() and not frame.HealerButton.CheckButton:GetChecked() and not frame.DamagerButton.CheckButton:GetChecked() then
-                local specID=GetSpecialization()--当前专精
-                if specID then
-                    local role = select(5, GetSpecializationInfo(specID))
-                    if role=='DAMAGER' and frame.DamagerButton:IsShown() then
-                        frame.DamagerButton.CheckButton:SetChecked(true)
-
-                    elseif role=='TANK' and frame.TankButton:IsShown() then
-                        frame.TankButton.CheckButton:SetChecked(true)
-
-                    elseif role=='HEALER' and frame.HealerButton:IsShown() then
-                        frame.HealerButton.CheckButton:SetChecked(true)
-                    end
-                    LFGListApplicationDialog_UpdateValidState(frame)
-                end
-            end
-            if frame:IsShown() and frame.SignUpButton:IsEnabled() then
-                frame.SignUpButton:Click()
-            end
-        end)
-    end]]
 end
 
 
@@ -1123,8 +1010,23 @@ end
 
 
 
+local function Init_BrowseResultsFrame()
+    --[[hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(self)
+        print(self==AuctionHouseFrame.BrowseResultsFrame)
+        for _, btn in pairs(self.ItemList.ScrollBox:GetFrames() or {}) do
+            local rowData= btn.rowData--itemKey,totalQuantity, minPrice, containsOwnerItem
+            local dropDown= btn.dropDown--Button,Text,icon
+            if not btn.lable then
+                btn.lable= e.Cstr(btn.lable)
+                btn.lable:SetPoint('LEFT', btn)
+            end
+            btn.lable:SetText('1/3')
+            
+            
+        end
 
-
+    end)]]
+end
 
 
 
@@ -1174,8 +1076,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end
 
         elseif arg1=='Blizzard_AuctionHouseUI' then
-            Init_Sell()
+            Init_BrowseResultsFrame()
             Init_AllAuctions()
+            Init_Sell()
             panel:UnregisterEvent('ADDON_LOADED')
         end
 
