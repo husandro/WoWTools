@@ -177,7 +177,7 @@ local function Init_Sell()
                             btn:SetScript('OnEnter', function(frame)
                                 e.tips:SetOwner(frame:GetParent(), "ANCHOR_LEFT")
                                 e.tips:ClearLines()
-                                if frame.itemLocation then
+                                if frame.itemLocation and frame.itemLocation:IsValid() then
                                     local itemLink= C_Item.GetItemLink(frame.itemLocation)
                                     if itemLink then
                                         if frame.isPet then
