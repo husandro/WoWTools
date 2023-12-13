@@ -127,6 +127,9 @@ local function Init_Sell()
                             end)
                             btn:SetScript('OnClick', function(frame, d)
                                 if d=='LeftButton' then--放入，物品
+                                    if AuctionHouseMultisellProgressFrame:IsShown() then
+                                        C_AuctionHouse.CancelSell()
+                                    end
                                     AuctionHouseFrame:SetPostItem(frame.itemLocation)--ContainerFrame.lua
 
                                 elseif d=='RightButton' then--隐藏，物品
@@ -583,7 +586,6 @@ local function Init_Sell()
         if self.itemLocation
             or not C_AuctionHouse.IsThrottledMessageSystemReady()
             or not self.isNextItem
-            or AuctionHouseMultisellProgressFrame:IsShown()
         then
             return
         end
@@ -594,7 +596,11 @@ local function Init_Sell()
         self.isNextItem=true
     end)
     hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'UpdatePostButtonState', function(self)
-        if self.itemLocation or not C_AuctionHouse.IsThrottledMessageSystemReady() or not self.isNextItem then
+        if self.itemLocation
+            or not C_AuctionHouse.IsThrottledMessageSystemReady()
+            or not self.isNextItem
+            or self.multisellInProgress
+        then
             return
         end
         AuctionHouseButton:set_next_item()--设置，第一个物品
@@ -632,6 +638,9 @@ local function Init_Sell()
     end)
     showCommoditiesButton:SetScript('OnClick', function()
         AuctionHouseFrame.ItemSellFrame:ClearPost()
+        if AuctionHouseFrame.ItemSellFrame.multisellInProgress then
+            C_AuctionHouse.CancelSell()
+        end
         AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
         C_Timer.After(0.3, AuctionHouseButton.set_next_item)--放入，第一个，物品
     end)
@@ -657,9 +666,23 @@ local function Init_Sell()
     end)
 
 
-
-
-
+--[[
+    <Button parentKey="CancelButton">
+    <Size x="32" y="32"/>
+    <Anchors>
+        <Anchor point="LEFT" relativeKey="$parent.ProgressBar" relativePoint="RIGHT" x="2" y="-7"/>
+    </Anchors>
+    <HitRectInsets left="9" right="7" top="-7" bottom="10"/>
+    <Scripts>
+        <OnClick>
+            C_AuctionHouse.CancelSell();
+        </OnClick>
+    </Scripts>
+    <NormalTexture file="Interface\Buttons\CancelButton-Up"/>
+    <PushedTexture file="Interface\Buttons\CancelButton-Down"/>
+    <HighlightTexture file="Interface\Buttons\CancelButton-Highlight" alphaMode="ADD"/>
+</Button>
+]]
 
 
 
@@ -698,7 +721,7 @@ local function Init_Sell()
     AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetPoint('LEFT', AuctionHouseFrame.ItemSellFrame.PostButton, 'RIGHT', 4, 0)
 
     AuctionHouseMultisellProgressFrame:ClearAllPoints()
-    AuctionHouseMultisellProgressFrame:SetPoint('TOP', AuctionHouseFrame.ItemSellFrame, 'BOTTOM')
+    AuctionHouseMultisellProgressFrame:SetPoint('BOTTOMRIGHT', AuctionHouseFrame, 'BOTTOMRIGHT', -8,0)
 end
 
 
