@@ -3786,7 +3786,9 @@
         "AUCTION_HOUSE_CANCEL_AUCTION_BUTTON",
         "BROWSE_ORDERS",
         "AuctionHouseFrameAuctionsFrameBidsTab",
-        "AuctionHouseFrameAuctionsFrameAuctionsTab"
+        "AuctionHouseFrameAuctionsFrameAuctionsTab",
+        "AuctionHouseFrameAuctionsFrameGold",
+        "AuctionHouseFrameAuctionsFrameSilver"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

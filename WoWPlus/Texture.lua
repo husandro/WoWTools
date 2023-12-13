@@ -1367,9 +1367,12 @@ local function Init_Event(arg1)
         set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabLeft, nil, nil, min05)
         set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabRight, nil, nil, min05)
 
+        --拍卖，所在物品，页面
         set_SearchBox(AuctionHouseFrameAuctionsFrameBidsTab)
-        set_SearchBox(AuctionHouseFrameAuctionsFrameAuctionsTab)
-
+        set_SearchBox(AuctionHouseFrameAuctionsFrameAuctionsTab)        
+        set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsFrameGold, {alpha=min05})
+        set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsFrameSilver, {alpha=min05})
+        
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
         set_NineSlice(ProfessionsCustomerOrdersFrame, true)
