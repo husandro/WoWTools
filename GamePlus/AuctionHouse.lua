@@ -164,7 +164,7 @@ local function Init_Sell()
 
                             btn.isCommoditiesTexture= btn:CreateTexture(nil, 'OVERLAY')
                             btn.isCommoditiesTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')--common-icon-checkmark')
-                            btn.isCommoditiesTexture:SetPoint('TOPRIGHT')
+                            btn.isCommoditiesTexture:SetPoint('TOPRIGHT',2,2)
                             btn.isCommoditiesTexture:SetSize(16, 16)
                             btn.isCommoditiesTexture:Hide()
 
@@ -713,7 +713,49 @@ local function Init_Sell()
         C_Timer.After(0.3, function() AuctionHouseButton:set_next_item() end)--放入，第一个，物品
     end)
 
+    --取消拍卖
+    local cancelButton= e.Cbtn(AuctionHouseFrame.CommoditiesSellFrame.PostButton, {size={32,32}, texture='Interface\\Buttons\\CancelButton-Up'})
+    cancelButton:SetHighlightTexture('Interface\\Buttons\\CancelButton-Highlight')
+    cancelButton:SetPushedTexture('Interface\\Buttons\\CancelButton-Down')
+    cancelButton:SetFrameLevel(1501)
+    cancelButton:SetPoint('RIGHT', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'LEFT', 0,-2)
+    cancelButton:SetScript('OnLeave', GameTooltip_Hide)
+    cancelButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT");
+        e.tips:ClearLines();
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(' ', e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)
+        e.tips:Show();
+    end)
+    cancelButton:SetScript('OnClick', C_AuctionHouse.CancelSell)
+    local cancelButton2= e.Cbtn(AuctionHouseFrame.ItemSellFrame.PostButton, {size={32,32}, texture='Interface\\Buttons\\CancelButton-Up'})
+    cancelButton2:SetHighlightTexture('Interface\\Buttons\\CancelButton-Highlight')
+    cancelButton2:SetPushedTexture('Interface\\Buttons\\CancelButton-Down')
+    cancelButton2:SetFrameLevel(1501)
+    cancelButton2:SetPoint('RIGHT', AuctionHouseFrame.ItemSellFrame.PostButton, 'LEFT', 0,-2)
+    cancelButton2:SetScript('OnLeave', GameTooltip_Hide)
+    cancelButton2:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT");
+        e.tips:ClearLines();
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(' ', e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)
+        e.tips:Show();
+    end)
+    cancelButton2:SetScript('OnClick', C_AuctionHouse.CancelSell)
 
+
+    AuctionHouseMultisellProgressFrame:HookScript('OnShow', function(self)
+        local isCommoditiesSellFrame, isItemSellFrame= AuctionHouseButton:get_displayMode()
+        if isCommoditiesSellFrame then
+            self:ClearAllPoints()
+            self:SetPoint('BOTTOM', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'TOP')
+        elseif isItemSellFrame then
+            self:ClearAllPoints()
+            self:SetPoint('BOTTOM', AuctionHouseFrame.ItemSellFrame.PostButton, 'TOP')
+        end
+    end)
 --[[
     <Button parentKey="CancelButton">
     <Size x="32" y="32"/>
@@ -768,19 +810,7 @@ local function Init_Sell()
     AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetParent(AuctionHouseFrame.ItemSellFrame.PostButton)
     AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetPoint('LEFT', AuctionHouseFrame.ItemSellFrame.PostButton, 'RIGHT', 4, 0)
 
-    AuctionHouseMultisellProgressFrame:HookScript('OnShow', function(self)
-        local isCommoditiesSellFrame, isItemSellFrame= AuctionHouseButton:get_displayMode()
-        print(isCommoditiesSellFrame, isItemSellFrame)
-        if isCommoditiesSellFrame then
-            self:ClearAllPoints()
-            self:SetPoint('BOTTOM', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'TOP')
-        elseif isItemSellFrame then
-            self:ClearAllPoints()
-            self:SetPoint('BOTTOM', AuctionHouseFrame.ItemSellFrame.PostButton, 'TOP')
-        end
-    end)
-    AuctionHouseMultisellProgressFrame:ClearAllPoints()
-    AuctionHouseMultisellProgressFrame:SetPoint('BOTTOMRIGHT', AuctionHouseFrame, 'BOTTOMRIGHT', -8,0)
+
 end
 
 
