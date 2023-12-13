@@ -1076,7 +1076,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end
 
         elseif arg1=='Blizzard_AuctionHouseUI' then
-            Init_BrowseResultsFrame()
+            --Init_BrowseResultsFrame()
             Init_AllAuctions()
             Init_Sell()
             panel:UnregisterEvent('ADDON_LOADED')
