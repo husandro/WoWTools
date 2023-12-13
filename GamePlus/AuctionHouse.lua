@@ -3,11 +3,14 @@ local addName= BUTTON_LAG_AUCTIONHOUSE--拍卖行
 local Save={
     --出售
     --hideSellItemList=true,--隐藏，物品列表
+    numButton=15,--行数
+    scaleSellButton=0.95,--综合
+    
     intShowSellItem= e.Player.husandro,--显示，转到出售物品
     isMaxSellItem= true,--出售物品时，使用，最大数量
     hideSellItem={},--跳过，拍卖行物品
     SellItemDefaultPrice={},--默认价格
-
+    
     --拍卖，列表
 
 
@@ -34,8 +37,8 @@ local function Init_Sell()
 
     AuctionHouseButton= e.Cbtn(AuctionHouseFrame, {size={34, 34}, icon='hide'})
     AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT',0,10)
-    --AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)
-    --AuctionHouseButton.frame:SetAllPoints(AuctionHouseButton)
+    AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)
+    AuctionHouseButton.frame:SetAllPoints(AuctionHouseButton)
     AuctionHouseButton.Text= e.Cstr(AuctionHouseButton)
     AuctionHouseButton.Text:SetPoint('CENTER')
     AuctionHouseButton.buttons={}
@@ -43,7 +46,50 @@ local function Init_Sell()
 
 
 
+    --按钮
+    function AuctionHouseButton:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.GetShowHide(not Save.hideSellItemList)..e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleSellButton or 1), 'Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS)..' |cnGREEN_FONT_COLOR:'..(Save.numButton or 15), 'Shift+'..e.Icon.mid)
+        e.tips:Show()
+    end
+    AuctionHouseButton:SetScript('OnLeave', GameTooltip_Hide)
+    AuctionHouseButton:SetScript('OnEnter', AuctionHouseButton.set_tooltips)
+    AuctionHouseButton:SetScript('OnEvent', AuctionHouseButton.init_items)
+    AuctionHouseButton:SetScript('OnClick', function(self)
+        Save.hideSellItemList= not Save.hideSellItemList and true or nil
+        self:init_items()
+        self:set_tooltips()
+    end)
 
+    function AuctionHouseButton:set_scale()
+        self.frame:SetScale(Save.scaleSellButton or 1)
+    end
+    AuctionHouseButton:SetScript('OnMouseWheel', function(self, d)
+        if IsShiftKeyDown() then
+            local n=Save.numButton
+            n= d==1 and n+1 or n-1
+            n= n>40 and 40 or n
+            n= n<1 and 1 or n
+            Save.numButton= n
+            self:init_items()
+
+        elseif IsAltKeyDown() then
+            local n= Save.scaleSellButton or 1
+            n= d==1 and n-0.05 or n+0.05
+            n= n>2 and 2 or n
+            n= n<0.4 and 0.4 or n
+            Save.scaleSellButton=n
+            self:set_scale()
+        end
+        self:set_tooltips()
+    end)
+    AuctionHouseButton:set_scale()
 
 
 
@@ -109,7 +155,7 @@ local function Init_Sell()
                     if info and info.hyperlink and itemLocation and itemCommodityStatus>0 then
                         local btn= self.buttons[index]
                         if not btn then
-                            btn= e.Cbtn(self, {button='ItemButton', icon='hide'})
+                            btn= e.Cbtn(self.frame, {button='ItemButton', icon='hide'})
                             btn.selectTexture= btn:CreateTexture(nil, 'OVERLAY')
                             btn.selectTexture:SetAtlas('Forge-ColorSwatchSelection')
                             btn.selectTexture:SetPoint('CENTER')
@@ -117,13 +163,13 @@ local function Init_Sell()
                             btn.selectTexture:Hide()
 
                             btn.isCommoditiesTexture= btn:CreateTexture(nil, 'OVERLAY')
-                            btn.isCommoditiesTexture:SetAtlas('common-icon-checkmark')
+                            btn.isCommoditiesTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')--common-icon-checkmark')
                             btn.isCommoditiesTexture:SetPoint('TOPRIGHT')
                             btn.isCommoditiesTexture:SetSize(16, 16)
                             btn.isCommoditiesTexture:Hide()
 
 
-                            btn:SetPoint("TOP", index==1 and self or self.buttons[index-1], 'BOTTOM', 0, -2)
+                            
                             btn:UpdateItemContextOverlayTextures(1)
                             btn:SetScript('OnLeave', GameTooltip_Hide)
 
@@ -157,16 +203,16 @@ local function Init_Sell()
                                     local itemID= C_Item.GetItemID(frame.itemLocation)
                                     if itemID then
                                         Save.hideSellItem[itemID]= not Save.hideSellItem[itemID] and true or nil
-                                        frame:GetParent():init_items()
+                                        frame:GetParent():GetParent():init_items()
                                     end
                                 end
                             end)
                             self.buttons[index]= btn
                         end
-                        --local classID= select(6, GetItemInfoInstant(info.hyperlink))
-                        btn.isPet= info.hyperlink:find('Hbattlepet:(%d+)')
-                        --btn.itemCommodityStatus= itemCommodityStatus
+                        btn:ClearAllPoints()
+                        btn:SetPoint("TOP", index==1 and self or self.buttons[index-1], 'BOTTOM', 0, -2)
 
+                        btn.isPet= info.hyperlink:find('Hbattlepet:(%d+)')
                         btn:SetItemLocation(itemLocation)
                         btn:SetItemButtonCount(info.stackCount)
                         btn:SetAlpha(Save.hideSellItem[info.itemID] and 0.3 or 1)
@@ -180,10 +226,10 @@ local function Init_Sell()
                     end
                 end
             end
-            for i=16, index-1, 15 do
+            for i= Save.numButton+1, index-1, Save.numButton  do
                 local btn= self.buttons[i]
                 btn:ClearAllPoints()
-                btn:SetPoint('LEFT', self.buttons[i-15], 'RIGHT', 2, 0)
+                btn:SetPoint('LEFT', self.buttons[i-Save.numButton], 'RIGHT', 2, 0)
             end
         end
         for i= index, #self.buttons do
@@ -206,7 +252,11 @@ local function Init_Sell()
         local itemLocation= frame:GetItem()
         local itemID= itemLocation and C_Item.GetItemID(itemLocation)
         for _, btn in pairs(self.buttons) do
-            btn.selectTexture:SetShown(btn.itemLocation and C_Item.GetItemID(btn.itemLocation)==itemID)
+            if not itemID then
+                btn.selectTexture:SetShown(false)
+            elseif btn.itemLocation and btn.itemLocation:IsValid() then
+                btn.selectTexture:SetShown(C_Item.GetItemID(btn.itemLocation)==itemID)
+            end
         end
     end
     hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'SetItem', function(self) AuctionHouseButton:set_select_tips(self) end)
@@ -228,23 +278,6 @@ local function Init_Sell()
 
 
 
-    --按钮
-    function AuctionHouseButton:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.GetShowHide(not Save.hideSellItemList)..e.Icon.left)
-        e.tips:Show()
-    end
-    AuctionHouseButton:SetScript('OnLeave', GameTooltip_Hide)
-    AuctionHouseButton:SetScript('OnEnter', AuctionHouseButton.set_tooltips)
-    AuctionHouseButton:SetScript('OnEvent', AuctionHouseButton.init_items)
-    AuctionHouseButton:SetScript('OnClick', function(self)
-        Save.hideSellItemList= not Save.hideSellItemList and true or nil
-        self:init_items()
-        self:set_tooltips()
-    end)
 
 
 
@@ -735,6 +768,17 @@ local function Init_Sell()
     AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetParent(AuctionHouseFrame.ItemSellFrame.PostButton)
     AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetPoint('LEFT', AuctionHouseFrame.ItemSellFrame.PostButton, 'RIGHT', 4, 0)
 
+    AuctionHouseMultisellProgressFrame:HookScript('OnShow', function(self)
+        local isCommoditiesSellFrame, isItemSellFrame= AuctionHouseButton:get_displayMode()
+        print(isCommoditiesSellFrame, isItemSellFrame)
+        if isCommoditiesSellFrame then
+            self:ClearAllPoints()
+            self:SetPoint('BOTTOM', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'TOP')
+        elseif isItemSellFrame then
+            self:ClearAllPoints()
+            self:SetPoint('BOTTOM', AuctionHouseFrame.ItemSellFrame.PostButton, 'TOP')
+        end
+    end)
     AuctionHouseMultisellProgressFrame:ClearAllPoints()
     AuctionHouseMultisellProgressFrame:SetPoint('BOTTOMRIGHT', AuctionHouseFrame, 'BOTTOMRIGHT', -8,0)
 end
@@ -866,9 +910,7 @@ local function Init_AllAuctions()
         self:set_tooltips()
     end)
 
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame, 'InitializeAllAuctionsList', function()
-        print( C_AuctionHouse.GetNumOwnedAuctionTypes())
-    end)
+
     --[[取消
     local cancelAllButton= e.Cbtn(cancelButton, {type=false, size={100,22}, text= e.onlyChinese and '全部' or ALL})
     cancelAllButton:SetPoint('RIGHT', cancelButton, 'LEFT', -4, 0)
