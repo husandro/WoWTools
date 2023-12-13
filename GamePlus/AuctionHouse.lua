@@ -303,18 +303,6 @@ local function Init_Sell()
 
 
 
-    --提示，已放入物品
-    function AuctionHouseButton:set_select_tips(frame)
-        local itemLocation= frame:GetItem()
-        local itemID= itemLocation and C_Item.GetItemID(itemLocation)
-        for _, btn in pairs(self.buttons) do
-            if not itemID then
-                btn.selectTexture:SetShown(false)
-            elseif btn.itemLocation and btn.itemLocation:IsValid() then
-                btn.selectTexture:SetShown(C_Item.GetItemID(btn.itemLocation)==itemID)
-            end
-        end
-    end
 
     --Blizzard_AuctionHouseSellFrame.lua
     --出售物品时，使用，最大数量
@@ -354,17 +342,34 @@ local function Init_Sell()
         AuctionHouseFrame.maxSellItemCheck:SetChecked(Save.isMaxSellItem)
     end)
 
-    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'SetItem', function(self) 
-        AuctionHouseButton:set_select_tips(self)--提示，已放入物品
-        if Save.isMaxSellItem and self.QuantityInput.MaxButton:IsEnabled() then
-            self:SetToMaxQuantity()--出售物品时，使用，最大数量
+    --提示，已放入物品
+    function AuctionHouseButton:set_select_tips()
+        local itemLocation= AuctionHouseFrame.CommoditiesSellFrame:GetItem() or AuctionHouseFrame.ItemSellFrame:GetItem()
+        local itemID= itemLocation and C_Item.GetItemID(itemLocation)
+        for _, btn in pairs(self.buttons) do
+            if not itemID then
+                btn.selectTexture:SetShown(false)
+            elseif btn.itemLocation and btn.itemLocation:IsValid() then
+                btn.selectTexture:SetShown(C_Item.GetItemID(btn.itemLocation)==itemID)
+            end
         end
+    end
+
+    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'SetItem', function(self)
+        C_Timer.After(0.3, function()
+            AuctionHouseButton:set_select_tips()--提示，已放入物品
+            if Save.isMaxSellItem and self.QuantityInput.MaxButton:IsEnabled() then
+                self:SetToMaxQuantity()--出售物品时，使用，最大数量
+            end
+        end)
     end)
     hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'SetItem', function(self)
-        AuctionHouseButton:set_select_tips(self)--提示，已放入物品
-        if Save.isMaxSellItem and self.QuantityInput.MaxButton:IsEnabled() then
-            self:SetToMaxQuantity()--出售物品时，使用，最大数量
-        end
+        C_Timer.After(0.3, function()
+            AuctionHouseButton:set_select_tips()--提示，已放入物品
+            if Save.isMaxSellItem and self.QuantityInput.MaxButton:IsEnabled() then
+                self:SetToMaxQuantity()--出售物品时，使用，最大数量
+            end
+        end)
     end)
 
 
@@ -458,7 +463,7 @@ local function Init_Sell()
 
 
 
-  
+
 
 
 
@@ -538,7 +543,7 @@ local function Init_Sell()
                 end
                 print(itemID, unitPrice)
             end
-            
+
         end
     end
     AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox:HookScript('OnTextChanged', function(_, userInput)
@@ -777,8 +782,8 @@ local function Init_Sell()
         e.tips:Show();
     end)
     showCommoditiesButton:SetScript('OnClick', function()
-        AuctionHouseFrame.ItemSellFrame:ClearPost()
-        if AuctionHouseFrame.ItemSellFrame.multisellInProgress then
+        AuctionHouseFrame:ClearPostItem()
+        if AuctionHouseMultisellProgressFrame:IsShown() then
             C_AuctionHouse.CancelSell()
         end
         AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
@@ -800,7 +805,7 @@ local function Init_Sell()
         e.tips:Show();
     end)
     showSellButton:SetScript('OnClick', function()
-        AuctionHouseFrame.CommoditiesSellFrame:ClearPost()
+        AuctionHouseFrame:ClearPostItem()
         AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.ItemSell)
         C_Timer.After(0.5, function() AuctionHouseButton:set_next_item() end)--放入，第一个，物品
     end)

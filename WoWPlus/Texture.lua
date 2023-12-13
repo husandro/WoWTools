@@ -1320,9 +1320,6 @@ local function Init_Event(arg1)
         set_Alpha_Color(AuctionHouseFrame.CategoriesList.Background)
         set_ScrollBar(AuctionHouseFrame.CategoriesList)
 
-        set_NineSlice(AuctionHouseFrame.CommoditiesSellFrame, nil, true)
-        set_NineSlice(AuctionHouseFrame.CommoditiesSellList, nil, true)
-        set_ScrollBar(AuctionHouseFrame.CommoditiesSellList)
 
         set_ScrollBar(AuctionHouseFrameAuctionsFrame.BidsList)
         set_NineSlice(AuctionHouseFrameAuctionsFrame.BidsList, nil, true)
@@ -1339,21 +1336,47 @@ local function Init_Event(arg1)
 
         set_NineSlice(AuctionHouseFrame.MoneyFrameInset, nil, true)
         hide_Texture(AuctionHouseFrame.MoneyFrameInset.Bg)
+        hide_Frame_Texture(AuctionHouseFrame.MoneyFrameBorder)
 
+        set_SearchBox(AuctionHouseFrame.SearchBar.SearchBox)
+
+
+        set_NineSlice(AuctionHouseFrame.CommoditiesSellList, nil, true)
+        set_ScrollBar(AuctionHouseFrame.CommoditiesSellList)
+        set_NineSlice(AuctionHouseFrame.CommoditiesSellFrame, nil, true)
+        set_Alpha_Frame_Texture(AuctionHouseFrame.CommoditiesSellFrame.ItemDisplay, {alpha=0})
+        set_SearchBox(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.InputBox)
+        set_SearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox)
+        set_SearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.SilverBox)
+        set_Alpha_Frame_Texture(AuctionHouseFrame.CommoditiesSellFrame.DurationDropDown.DropDown, {alpha=min05})
+        set_Alpha_Frame_Texture(AuctionHouseFrame.CommoditiesSellFrame.DurationDropDown.DropDown.Button, {alpha=min05})
+
+        set_NineSlice(AuctionHouseFrame.ItemSellList, nil, true)
+        set_ScrollBar(AuctionHouseFrame.ItemSellList)
         set_NineSlice(AuctionHouseFrame.ItemSellFrame, nil, true)
-        --set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.Background)--出售
-        set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabMiddle, nil, nil, min03)
-        set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabLeft, nil, nil, min03)
-        set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabRight, nil, nil, min03)
+        set_Alpha_Frame_Texture(AuctionHouseFrame.ItemSellFrame.ItemDisplay, {alpha=0})
         set_SearchBox(AuctionHouseFrame.ItemSellFrame.QuantityInput.InputBox)
         set_SearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox)
         set_SearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.SilverBox)
-        set_SearchBox(AuctionHouseFrame.SearchBar.SearchBox)
-        --set_Alpha_Color(AuctionHouseFrame.ItemSellList.Background)
-        set_ScrollBar(AuctionHouseFrame.ItemSellList)
-        set_NineSlice(AuctionHouseFrame.ItemSellList, nil, true)
+        set_Alpha_Frame_Texture(AuctionHouseFrame.ItemSellFrame.DurationDropDown.DropDown, {alpha=min05})
+        set_Alpha_Frame_Texture(AuctionHouseFrame.ItemSellFrame.DurationDropDown.DropDown.Button, {alpha=min05})
+        --set_ScrollBar(AuctionHouseFrame.ItemSellList)
+        --set_NineSlice(AuctionHouseFrame.ItemSellList, nil, true)
 
-        --set_Alpha_Frame_Texture(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionLabel, nil, nil, min03)
+        --set_NineSlice(AuctionHouseFrame.ItemSellFrame, nil, true)
+        --set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabMiddle, nil, nil, min03)
+        --set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabLeft, nil, nil, min03)
+        --set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabRight, nil, nil, min03)
+        --set_SearchBox(AuctionHouseFrame.ItemSellFrame.QuantityInput.InputBox)
+        --set_SearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox)
+        --set_SearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.SilverBox)
+
+
+        --
+        --set_NineSlice(AuctionHouseFrame.CommoditiesSellList, nil, true)
+        --
+
+
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
         set_NineSlice(ProfessionsCustomerOrdersFrame, true)
