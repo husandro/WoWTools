@@ -5,12 +5,12 @@ local Save={
     --hideSellItemList=true,--隐藏，物品列表
     numButton=15,--行数
     scaleSellButton=0.95,--综合
-    
+
     intShowSellItem= e.Player.husandro,--显示，转到出售物品
     isMaxSellItem= true,--出售物品时，使用，最大数量
     hideSellItem={},--跳过，拍卖行物品
     SellItemDefaultPrice={},--默认价格
-    
+
     --拍卖，列表
 
 
@@ -169,7 +169,7 @@ local function Init_Sell()
                             btn.isCommoditiesTexture:Hide()
 
 
-                            
+
                             btn:UpdateItemContextOverlayTextures(1)
                             btn:SetScript('OnLeave', GameTooltip_Hide)
 
@@ -297,7 +297,7 @@ local function Init_Sell()
 
 
 
-    
+
     function AuctionHouseButton:show_CommoditiesSellFrame()
         local isCommoditiesSellFrame= self:get_displayMode()
         if not isCommoditiesSellFrame then
@@ -556,7 +556,7 @@ local function Init_Sell()
         local text2=''
         if itemLocation and itemLocation:IsValid() then
             local itemLink = C_Item.GetItemLink(itemLocation);
-            local vendorPrice = select(11, GetItemInfo(itemLink));
+            local vendorPrice = select(11, GetItemInfo(itemLink)) or 10000;
             local unitPrice= frame.GetUnitPrice and frame:GetUnitPrice() or frame.PriceInput:GetAmount();-- frame:GetUnitPrice()
             local col=''
             if vendorPrice and unitPrice and vendorPrice>0 and unitPrice>0 then
@@ -627,7 +627,6 @@ local function Init_Sell()
         self.isNextItem=true
     end)
     hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdatePostButtonState', function(self)
-
         if self:GetItem()
             or not C_AuctionHouse.IsThrottledMessageSystemReady()
             or not self.isNextItem
@@ -642,7 +641,6 @@ local function Init_Sell()
         self.isNextItem=true
     end)
     hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'UpdatePostButtonState', function(self)
-
         if self:GetItem()
             or not C_AuctionHouse.IsThrottledMessageSystemReady()
             or not self.isNextItem
@@ -689,7 +687,7 @@ local function Init_Sell()
             C_AuctionHouse.CancelSell()
         end
         AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
-        C_Timer.After(0.3, function() AuctionHouseButton:set_next_item() end)--放入，第一个，物品
+        C_Timer.After(0.5, function() AuctionHouseButton:set_next_item() end)--放入，第一个，物品
     end)
 
 
@@ -704,13 +702,12 @@ local function Init_Sell()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '显示' or SHOW, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转到' or CONVERT)..'|r '..(e.onlyChinese and '物品' or ITEMS))
-        
         e.tips:Show();
     end)
     showSellButton:SetScript('OnClick', function()
         AuctionHouseFrame.CommoditiesSellFrame:ClearPost()
         AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.ItemSell)
-        C_Timer.After(0.3, function() AuctionHouseButton:set_next_item() end)--放入，第一个，物品
+        C_Timer.After(0.5, function() AuctionHouseButton:set_next_item() end)--放入，第一个，物品
     end)
 
     --取消拍卖
@@ -756,25 +753,6 @@ local function Init_Sell()
             self:SetPoint('BOTTOM', AuctionHouseFrame.ItemSellFrame.PostButton, 'TOP')
         end
     end)
---[[
-    <Button parentKey="CancelButton">
-    <Size x="32" y="32"/>
-    <Anchors>
-        <Anchor point="LEFT" relativeKey="$parent.ProgressBar" relativePoint="RIGHT" x="2" y="-7"/>
-    </Anchors>
-    <HitRectInsets left="9" right="7" top="-7" bottom="10"/>
-    <Scripts>
-        <OnClick>
-            C_AuctionHouse.CancelSell();
-        </OnClick>
-    </Scripts>
-    <NormalTexture file="Interface\Buttons\CancelButton-Up"/>
-    <PushedTexture file="Interface\Buttons\CancelButton-Down"/>
-    <HighlightTexture file="Interface\Buttons\CancelButton-Highlight" alphaMode="ADD"/>
-</Button>
-]]
-
-
 
 
 
@@ -794,7 +772,7 @@ local function Init_Sell()
     --刷新，列表
     AuctionHouseFrame.CommoditiesSellList.RefreshFrame.RefreshButton:ClearAllPoints()
     AuctionHouseFrame.CommoditiesSellList.RefreshFrame.RefreshButton:SetParent(AuctionHouseFrame.CommoditiesSellFrame.PostButton)
-    AuctionHouseFrame.CommoditiesSellList.RefreshFrame.RefreshButton:SetPoint('LEFT', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'RIGHT', 4, 0)
+    AuctionHouseFrame.CommoditiesSellList.RefreshFrame.RefreshButton:SetPoint('LEFT', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'RIGHT')
 
 
 
@@ -808,7 +786,11 @@ local function Init_Sell()
     --刷新，列表
     AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:ClearAllPoints()
     AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetParent(AuctionHouseFrame.ItemSellFrame.PostButton)
-    AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetPoint('LEFT', AuctionHouseFrame.ItemSellFrame.PostButton, 'RIGHT', 4, 0)
+    AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetPoint('LEFT', AuctionHouseFrame.ItemSellFrame.PostButton, 'RIGHT')
+
+    AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetParent(AuctionHouseFrame.CommoditiesSellFrame)
+    AuctionHouseFrame.CommoditiesSellFrame.PostButton:ClearAllPoints()
+    AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetPoint('BOTTOM', AuctionHouseFrame.CommoditiesSellFrame, 0, 20)
 
 
 end
