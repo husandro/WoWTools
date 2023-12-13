@@ -107,6 +107,13 @@ local function Init_Sell()
                             btn.selectTexture:SetSize(42, 42)
                             btn.selectTexture:Hide()
 
+                            btn.isCommoditiesTexture= btn:CreateTexture(nil, 'OVERLAY')
+                            btn.isCommoditiesTexture:SetAtlas('common-icon-checkmark')
+                            btn.isCommoditiesTexture:SetPoint('TOPRIGHT')
+                            btn.isCommoditiesTexture:SetSize(16, 16)
+                            btn.isCommoditiesTexture:Hide()
+                            
+
                             btn:SetPoint("TOP", index==1 and self or self.buttons[index-1], 'BOTTOM', 0, -2)
                             btn:UpdateItemContextOverlayTextures(1)
                             btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -153,16 +160,11 @@ local function Init_Sell()
 
                         btn:SetItemLocation(itemLocation)
                         btn:SetItemButtonCount(info.stackCount)
-                        if Save.hideSellItem[info.itemID]  then
-                            btn:SetAlpha(0.1)
-                        elseif (itemCommodityStatus==Enum.ItemCommodityStatus.Item and AuctionHouseFrame.CommoditiesSellFrame:IsShown())
+                        btn:SetAlpha(Save.hideSellItem[info.itemID] and 0.3 or 1)
+                        btn.isCommoditiesTexture:SetShown(
+                                (itemCommodityStatus==Enum.ItemCommodityStatus.Item and AuctionHouseFrame.CommoditiesSellFrame:IsShown())
                             or (itemCommodityStatus==Enum.ItemCommodityStatus.Commodity and AuctionHouseFrame.ItemSellFrame:IsShown())
-                        then
-                            btn:SetAlpha(0.3)
-                        else
-                            btn:SetAlpha(1)
-                        end
-
+                        )
 
                         btn:SetShown(true)
                         index= index +1
@@ -518,7 +520,7 @@ local function Init_Sell()
         if itemLocation and itemLocation:IsValid() then
             local itemLink = C_Item.GetItemLink(itemLocation);
             local vendorPrice = select(11, GetItemInfo(itemLink));
-            local unitPrice= frame.PriceInput:GetAmount();-- frame:GetUnitPrice()
+            local unitPrice= frame.GetUnitPrice and frame:GetUnitPrice() or frame.PriceInput:GetAmount();-- frame:GetUnitPrice()
             local col=''
             if vendorPrice and unitPrice and vendorPrice>0 and unitPrice>0 then
                 if unitPrice> vendorPrice then
@@ -588,9 +590,11 @@ local function Init_Sell()
         self.isNextItem=true
     end)
     hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdatePostButtonState', function(self)
-        if self.itemLocation
+        
+        if self:GetItem()
             or not C_AuctionHouse.IsThrottledMessageSystemReady()
             or not self.isNextItem
+            or AuctionHouseMultisellProgressFrame:IsShown()
         then
             return
         end
@@ -601,10 +605,11 @@ local function Init_Sell()
         self.isNextItem=true
     end)
     hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'UpdatePostButtonState', function(self)
-        if self.itemLocation
+        
+        if self:GetItem()
             or not C_AuctionHouse.IsThrottledMessageSystemReady()
             or not self.isNextItem
-            or self.multisellInProgress
+            or AuctionHouseMultisellProgressFrame:IsShown()
         then
             return
         end
@@ -896,7 +901,7 @@ local function Init_AllAuctions()
         do
             if num>1 then
                 local index=1
-                self.time= C_Timer.NewTicker(1.5, function()
+                self.time= C_Timer.NewTicker(2, function()
                     index= index+1
                     local auctionID= tab[index].auctionID
                     local itemLink= tab[index].itemLink
