@@ -472,7 +472,7 @@ local function Init_Sell()
 
 
 
-
+    --记录，用户，输入，价格
     function AuctionHouseButton:save_item_price(frame)
         local itemLocation= frame:GetItem()
         if itemLocation and itemLocation:IsValid() then
@@ -484,7 +484,9 @@ local function Init_Sell()
                 else
                     Save.SellItemDefaultPrice[itemID]=nil
                 end
+                print(itemID, unitPrice)
             end
+            
         end
     end
     AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox:HookScript('OnTextChanged', function(_, userInput)
