@@ -97,7 +97,7 @@ local function Init_Sell()
         elseif IsAltKeyDown() then
             local n= Save.scaleSellButton or 1
             n= d==1 and n-0.05 or n+0.05
-            n= n>2 and 2 or n
+            n= n>4 and 4 or n
             n= n<0.4 and 0.4 or n
             Save.scaleSellButton=n
             self:set_scale()
@@ -233,7 +233,7 @@ local function Init_Sell()
                             self.buttons[index]= btn
                         end
                         btn:ClearAllPoints()
-                        btn:SetPoint("TOP", index==1 and self or self.buttons[index-1], 'BOTTOM', 0, -2)
+                        btn:SetPoint("TOPLEFT", index==1 and self or self.buttons[index-1], 'BOTTOMLEFT', 0, -2)
 
                         btn.isPet= info.hyperlink:find('Hbattlepet:(%d+)')
                         btn:SetItemLocation(itemLocation)
