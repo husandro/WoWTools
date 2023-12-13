@@ -56,6 +56,12 @@ local function Init_Sell()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleSellButton or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS)..' |cnGREEN_FONT_COLOR:'..(Save.numButton or 15), 'Shift+'..e.Icon.mid)
+        e.tips:AddLine(' ')
+        local num= 0
+        for _ in pairs(Save.hideSellItem) do
+            num= num+1
+        end
+        e.tips:AddDoubleLine((e.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))..' |cnGREEN_FONT_COLOR:'..num, 'Ctrl+'..e.Icon.right)
         e.tips:Show()
     end
     AuctionHouseButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -63,9 +69,16 @@ local function Init_Sell()
     AuctionHouseButton:SetScript('OnEvent', function(self)
         C_Timer.After(0.3, function() self:init_items() end)
     end)
-    AuctionHouseButton:SetScript('OnClick', function(self)
-        Save.hideSellItemList= not Save.hideSellItemList and true or nil
-        self:init_items()
+    AuctionHouseButton:SetScript('OnClick', function(self, d)
+        if IsControlKeyDown() and d=='RightButton' then
+            Save.hideSellItem={}
+            self:init_items()
+            print(id, addName, e.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
+
+        elseif not IsModifierKeyDown() then
+            Save.hideSellItemList= not Save.hideSellItemList and true or nil
+            self:init_items()
+        end
         self:set_tooltips()
     end)
 
