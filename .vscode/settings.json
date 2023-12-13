@@ -3780,7 +3780,9 @@
         "CONVERT",
         "AuctionHouseMultisellProgressFrame",
         "CANCEL_AUCTION",
-        "INTERRUPT"
+        "INTERRUPT",
+        "AuctionHouseSearchContext",
+        "AuctionHouseAuctionsSummaryListMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

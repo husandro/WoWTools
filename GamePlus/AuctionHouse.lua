@@ -65,7 +65,10 @@ local function Init_Sell()
 
 
     function AuctionHouseButton:set_next_item()--放入，第一个，物品
-        if not C_AuctionHouse.IsThrottledMessageSystemReady() then
+        if not C_AuctionHouse.IsThrottledMessageSystemReady()
+            or (AuctionHouseFrame.CommoditiesSellFrame:IsShown() and AuctionHouseFrame.CommoditiesSellFrame:GetItem())
+            or (AuctionHouseFrame.ItemSellFrame:IsShown() and AuctionHouseFrame.ItemSellFrame:GetItem())
+        then
             return
         end
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
@@ -74,6 +77,7 @@ local function Init_Sell()
                 local itemLocation, itemCommodityStatus= self:get_itemLocation(bag, slot)
                 if info
                     and itemLocation
+                    and itemCommodityStatus>0
                     and info.itemID
                     and not Save.hideSellItem[info.itemID]
                     and (
@@ -112,7 +116,7 @@ local function Init_Sell()
                             btn.isCommoditiesTexture:SetPoint('TOPRIGHT')
                             btn.isCommoditiesTexture:SetSize(16, 16)
                             btn.isCommoditiesTexture:Hide()
-                            
+
 
                             btn:SetPoint("TOP", index==1 and self or self.buttons[index-1], 'BOTTOM', 0, -2)
                             btn:UpdateItemContextOverlayTextures(1)
@@ -406,9 +410,7 @@ local function Init_Sell()
     AuctionHouseFrame:HookScript('OnShow', function(self)
         if Save.intShowSellItem then
             self:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
-            C_Timer.After(0.5, function()
-                AuctionHouseButton:set_next_item()--放入，第一个，物品
-            end)
+            C_Timer.After(0.5, function() AuctionHouseButton:set_next_item() end)--放入，第一个，物品
         end
     end)
 
@@ -464,7 +466,7 @@ local function Init_Sell()
                 local vendorPrice = select(11, GetItemInfo(itemLink));
                 if vendorPrice then
 
-                    local defaultPrice = vendorPrice * 100--倍数，原1.5倍
+                    local defaultPrice = vendorPrice * 500--倍数，原1.5倍
                     price = defaultPrice + (COPPER_PER_SILVER - (defaultPrice % COPPER_PER_SILVER)); -- AH prices must be in silver increments.
                 end
             end
@@ -590,7 +592,7 @@ local function Init_Sell()
         self.isNextItem=true
     end)
     hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdatePostButtonState', function(self)
-        
+
         if self:GetItem()
             or not C_AuctionHouse.IsThrottledMessageSystemReady()
             or not self.isNextItem
@@ -598,14 +600,14 @@ local function Init_Sell()
         then
             return
         end
-        AuctionHouseButton:set_next_item()--设置，第一个物品
+        C_Timer.After(0.3, function() AuctionHouseButton:set_next_item() end)--放入，第一个，物品
         self.isNextItem=nil
     end)
     hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'PostItem', function(self)
         self.isNextItem=true
     end)
     hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'UpdatePostButtonState', function(self)
-        
+
         if self:GetItem()
             or not C_AuctionHouse.IsThrottledMessageSystemReady()
             or not self.isNextItem
@@ -613,7 +615,7 @@ local function Init_Sell()
         then
             return
         end
-        AuctionHouseButton:set_next_item()--设置，第一个物品
+        C_Timer.After(0.3, function() AuctionHouseButton:set_next_item() end)--放入，第一个，物品
         self.isNextItem=nil
     end)
 
@@ -652,7 +654,7 @@ local function Init_Sell()
             C_AuctionHouse.CancelSell()
         end
         AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
-        C_Timer.After(0.3, AuctionHouseButton.set_next_item)--放入，第一个，物品
+        C_Timer.After(0.3, function() AuctionHouseButton:set_next_item() end)--放入，第一个，物品
     end)
 
 
@@ -672,7 +674,7 @@ local function Init_Sell()
     showSellButton:SetScript('OnClick', function()
         AuctionHouseFrame.CommoditiesSellFrame:ClearPost()
         AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.ItemSell)
-        C_Timer.After(0.3, AuctionHouseButton.set_next_item)--放入，第一个，物品
+        C_Timer.After(0.3, function() AuctionHouseButton:set_next_item() end)--放入，第一个，物品
     end)
 
 
@@ -848,11 +850,17 @@ local function Init_AllAuctions()
             else
                 print(id,addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '出错' or ERRORS)..'|r', itemLink)
             end
+
+            --AuctionHouseFrame.AuctionsFrame:SetDataProviderIndexRange(C_AuctionHouse.GetNumOwnedAuctionTypes(), ScrollBoxConstants.RetainScrollPosition);
+            AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton:OnClick()
         end
         self:set_tooltips()
     end)
 
-    --取消
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame, 'InitializeAllAuctionsList', function()
+        print( C_AuctionHouse.GetNumOwnedAuctionTypes())
+    end)
+    --[[取消
     local cancelAllButton= e.Cbtn(cancelButton, {type=false, size={100,22}, text= e.onlyChinese and '全部' or ALL})
     cancelAllButton:SetPoint('RIGHT', cancelButton, 'LEFT', -4, 0)
     cancelAllButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -877,6 +885,8 @@ local function Init_AllAuctions()
             return
         end
 
+
+
         local tab={}
         local num=0
         for _, info in pairs(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox:GetFrames() or {}) do
@@ -893,31 +903,41 @@ local function Init_AllAuctions()
             return a.timeLeftSeconds< b.timeLeftSeconds
         end)
 
+        local function AllAuctionsRefreshResults()
+            AuctionHouseFrameAuctionsFrame:GetAuctionHouseFrame():QueryAll(AuctionHouseSearchContext.AllAuctions);
+            AuctionHouseFrameAuctionsFrame.AllAuctionsList:DirtyScrollFrame();
+        end
+
         if C_AuctionHouse.CanCancelAuction(tab[1].auctionID) then
             local cost= C_AuctionHouse.GetCancelCost(tab[1].auctionID)
             C_AuctionHouse.CancelAuction(tab[1].auctionID)
             print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r', '1/'..num, tab[1].itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
+            AuctionHouseFrameAuctionsFrame.AllAuctionsList:SetRefreshFrameFunctions(nil, AllAuctionsRefreshResults)--Blizzard_AuctionHouseAuctionsFrame.lua
         end
-        do
-            if num>1 then
-                local index=1
-                self.time= C_Timer.NewTicker(2, function()
-                    index= index+1
-                    local auctionID= tab[index].auctionID
-                    local itemLink= tab[index].itemLink
-                    if C_AuctionHouse.CanCancelAuction(auctionID) then
-                        local cost= C_AuctionHouse.GetCancelCost(auctionID)
-                        C_AuctionHouse.CancelAuction(auctionID)
-                        print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r', index..'/'..num , itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
-                    end
-                    if num==index then
-                        self.time:Cancel()
-                    end
-                end, num)
-            end
+        
+  
+        
+        if num>1 then
+            local index=1
+            self.time= C_Timer.NewTicker(3, function()
+                index= index+1
+                local auctionID= tab[index].auctionID
+                local itemLink= tab[index].itemLink
+                if C_AuctionHouse.CanCancelAuction(auctionID) then
+                    local cost= C_AuctionHouse.GetCancelCost(auctionID)
+                    C_AuctionHouse.CancelAuction(auctionID)
+                    print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r', index..'/'..num , itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
+                end
+                AuctionHouseFrameAuctionsFrame.AllAuctionsList:SetRefreshFrameFunctions(nil, AllAuctionsRefreshResults)--Blizzard_AuctionHouseAuctionsFrame.lua
+
+                if num==index then
+                    self.time:Cancel()
+                end
+            end, num)
         end
+        
         self:set_text()
-    end)
+    end)]]
 
 
 --[[
