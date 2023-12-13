@@ -127,7 +127,7 @@ local function Init_Sell()
                             end)
                             btn:SetScript('OnClick', function(frame, d)
                                 if d=='LeftButton' then--放入，物品
-                                    AuctionHouseFrame:SetPostItem(itemLocation)--ContainerFrame.lua
+                                    AuctionHouseFrame:SetPostItem(frame.itemLocation)--ContainerFrame.lua
 
                                 elseif d=='RightButton' then--隐藏，物品
                                     local itemID= C_Item.GetItemID(frame.itemLocation)
@@ -580,7 +580,11 @@ local function Init_Sell()
         self.isNextItem=true
     end)
     hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdatePostButtonState', function(self)
-        if self.itemLocation or not C_AuctionHouse.IsThrottledMessageSystemReady() or not self.isNextItem then
+        if self.itemLocation
+            or not C_AuctionHouse.IsThrottledMessageSystemReady()
+            or not self.isNextItem
+            or AuctionHouseMultisellProgressFrame:IsShown()
+        then
             return
         end
         AuctionHouseButton:set_next_item()--设置，第一个物品
@@ -629,7 +633,7 @@ local function Init_Sell()
     showCommoditiesButton:SetScript('OnClick', function()
         AuctionHouseFrame.ItemSellFrame:ClearPost()
         AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
-        AuctionHouseButton:set_next_item()--放入，第一个，物品
+        C_Timer.After(0.3, AuctionHouseButton.set_next_item)--放入，第一个，物品
     end)
 
 
@@ -649,7 +653,7 @@ local function Init_Sell()
     showSellButton:SetScript('OnClick', function()
         AuctionHouseFrame.CommoditiesSellFrame:ClearPost()
         AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.ItemSell)
-        AuctionHouseButton:set_next_item()--放入，第一个，物品
+        C_Timer.After(0.3, AuctionHouseButton.set_next_item)--放入，第一个，物品
     end)
 
 
@@ -692,6 +696,9 @@ local function Init_Sell()
     AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:ClearAllPoints()
     AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetParent(AuctionHouseFrame.ItemSellFrame.PostButton)
     AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetPoint('LEFT', AuctionHouseFrame.ItemSellFrame.PostButton, 'RIGHT', 4, 0)
+
+    AuctionHouseMultisellProgressFrame:ClearAllPoints()
+    AuctionHouseMultisellProgressFrame:SetPoint('TOP', AuctionHouseFrame.ItemSellFrame, 'BOTTOM')
 end
 
 

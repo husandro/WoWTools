@@ -3777,7 +3777,8 @@
         "AUCTION_HOUSE_HEADER_BID_PRICE",
         "MODE",
         "PROFESSIONS_COLUMN_HEADER_REAGENTS",
-        "CONVERT"
+        "CONVERT",
+        "AuctionHouseMultisellProgressFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
