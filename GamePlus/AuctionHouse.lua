@@ -36,7 +36,7 @@ local function Init_Sell()
     local levelFrame= AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.MaxButton:GetFrameLevel()
 
     AuctionHouseButton= e.Cbtn(AuctionHouseFrame, {size={34, 34}, icon='hide'})
-    AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT',0,10)
+    AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT',4,10)
     AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)
     AuctionHouseButton.frame:SetAllPoints(AuctionHouseButton)
     AuctionHouseButton.Text= e.Cstr(AuctionHouseButton)
@@ -270,6 +270,39 @@ local function Init_Sell()
     end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     --提示，已放入物品
     function AuctionHouseButton:set_select_tips(frame)
         local itemLocation= frame:GetItem()
@@ -282,8 +315,57 @@ local function Init_Sell()
             end
         end
     end
-    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'SetItem', function(self) AuctionHouseButton:set_select_tips(self) end)
-    hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'SetItem', function(self) AuctionHouseButton:set_select_tips(self) end)
+
+    --Blizzard_AuctionHouseSellFrame.lua
+    --出售物品时，使用，最大数量
+    AuctionHouseFrame.maxSellItemCheck= CreateFrame('CheckButton', nil, AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.MaxButton, 'InterfaceOptionsCheckButtonTemplate')
+    AuctionHouseFrame.maxSellItemCheck:SetPoint('LEFT', AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.MaxButton, 'RIGHT')
+    AuctionHouseFrame.maxSellItemCheck:SetSize(24,24)
+    AuctionHouseFrame.maxSellItemCheck:SetChecked(Save.isMaxSellItem)
+    AuctionHouseFrame.maxSellItemCheck:SetFrameLevel(levelFrame)
+    AuctionHouseFrame.maxSellItemCheck:SetScript('OnLeave', GameTooltip_Hide)
+    AuctionHouseFrame.maxSellItemCheck:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(' ', e.onlyChinese and '最大数量' or AUCTION_HOUSE_MAX_QUANTITY_BUTTON)
+        e.tips:Show()
+    end)
+    AuctionHouseFrame.maxSellItemCheck:SetScript('OnClick', function()
+        Save.isMaxSellItem= not Save.isMaxSellItem and true or nil
+        AuctionHouseFrame.maxSellItemCheck2:SetChecked(Save.isMaxSellItem)
+    end)
+
+    AuctionHouseFrame.maxSellItemCheck2= CreateFrame('CheckButton', nil, AuctionHouseFrame.ItemSellFrame.QuantityInput.MaxButton, 'InterfaceOptionsCheckButtonTemplate')
+    AuctionHouseFrame.maxSellItemCheck2:SetPoint('LEFT', AuctionHouseFrame.ItemSellFrame.QuantityInput.MaxButton, 'RIGHT')
+    AuctionHouseFrame.maxSellItemCheck2:SetSize(24,24)
+    AuctionHouseFrame.maxSellItemCheck2:SetChecked(Save.isMaxSellItem)
+    AuctionHouseFrame.maxSellItemCheck2:SetFrameLevel(levelFrame)
+    AuctionHouseFrame.maxSellItemCheck2:SetScript('OnLeave', GameTooltip_Hide)
+    AuctionHouseFrame.maxSellItemCheck2:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(' ', e.onlyChinese and '最大数量' or AUCTION_HOUSE_MAX_QUANTITY_BUTTON)
+        e.tips:Show()
+    end)
+    AuctionHouseFrame.maxSellItemCheck2:SetScript('OnClick', function()
+        Save.isMaxSellItem= not Save.isMaxSellItem and true or nil
+        AuctionHouseFrame.maxSellItemCheck:SetChecked(Save.isMaxSellItem)
+    end)
+
+    hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'SetItem', function(self) 
+        AuctionHouseButton:set_select_tips(self)--提示，已放入物品
+        if Save.isMaxSellItem and self.QuantityInput.MaxButton:IsEnabled() then
+            self:SetToMaxQuantity()--出售物品时，使用，最大数量
+        end
+    end)
+    hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'SetItem', function(self)
+        AuctionHouseButton:set_select_tips(self)--提示，已放入物品
+        if Save.isMaxSellItem and self.QuantityInput.MaxButton:IsEnabled() then
+            self:SetToMaxQuantity()--出售物品时，使用，最大数量
+        end
+    end)
 
 
 
@@ -376,50 +458,7 @@ local function Init_Sell()
 
 
 
-    --Blizzard_AuctionHouseSellFrame.lua
-    --出售物品时，使用，最大数量
-    AuctionHouseFrame.maxSellItemCheck= CreateFrame('CheckButton', nil, AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.MaxButton, 'InterfaceOptionsCheckButtonTemplate')
-    AuctionHouseFrame.maxSellItemCheck:SetPoint('LEFT', AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.MaxButton, 'RIGHT')
-    AuctionHouseFrame.maxSellItemCheck:SetSize(24,24)
-    AuctionHouseFrame.maxSellItemCheck:SetChecked(Save.isMaxSellItem)
-    AuctionHouseFrame.maxSellItemCheck:SetFrameLevel(levelFrame)
-    AuctionHouseFrame.maxSellItemCheck:SetScript('OnLeave', GameTooltip_Hide)
-    AuctionHouseFrame.maxSellItemCheck:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(' ', e.onlyChinese and '最大数量' or AUCTION_HOUSE_MAX_QUANTITY_BUTTON)
-        e.tips:Show()
-    end)
-    AuctionHouseFrame.maxSellItemCheck:SetScript('OnClick', function()
-        Save.isMaxSellItem= not Save.isMaxSellItem and true or nil
-        AuctionHouseFrame.maxSellItemCheck2:SetChecked(Save.isMaxSellItem)
-    end)
-
-
-    AuctionHouseFrame.maxSellItemCheck2= CreateFrame('CheckButton', nil, AuctionHouseFrame.ItemSellFrame.QuantityInput.MaxButton, 'InterfaceOptionsCheckButtonTemplate')
-    AuctionHouseFrame.maxSellItemCheck2:SetPoint('LEFT', AuctionHouseFrame.ItemSellFrame.QuantityInput.MaxButton, 'RIGHT')
-    AuctionHouseFrame.maxSellItemCheck2:SetSize(24,24)
-    AuctionHouseFrame.maxSellItemCheck2:SetChecked(Save.isMaxSellItem)
-    AuctionHouseFrame.maxSellItemCheck2:SetFrameLevel(levelFrame)
-    AuctionHouseFrame.maxSellItemCheck2:SetScript('OnLeave', GameTooltip_Hide)
-    AuctionHouseFrame.maxSellItemCheck2:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddDoubleLine(' ', e.onlyChinese and '最大数量' or AUCTION_HOUSE_MAX_QUANTITY_BUTTON)
-        e.tips:Show()
-    end)
-    AuctionHouseFrame.maxSellItemCheck2:SetScript('OnClick', function(self)
-        Save.isMaxSellItem= not Save.isMaxSellItem and true or nil
-        AuctionHouseFrame.maxSellItemCheck:SetChecked(Save.isMaxSellItem)
-    end)
-
-    hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'SetItem', function(self)
-        if Save.isMaxSellItem and self.QuantityInput.MaxButton:IsEnabled() then
-            self:SetToMaxQuantity()
-        end
-    end)
+  
 
 
 
@@ -767,21 +806,6 @@ local function Init_Sell()
     end)
 
     --取消拍卖
-    local cancelButton= e.Cbtn(AuctionHouseFrame.CommoditiesSellFrame.PostButton, {size={32,32}, texture='Interface\\Buttons\\CancelButton-Up'})
-    cancelButton:SetHighlightTexture('Interface\\Buttons\\CancelButton-Highlight')
-    cancelButton:SetPushedTexture('Interface\\Buttons\\CancelButton-Down')
-    cancelButton:SetFrameLevel(1501)
-    cancelButton:SetPoint('RIGHT', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'LEFT', 0,-2)
-    cancelButton:SetScript('OnLeave', GameTooltip_Hide)
-    cancelButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT");
-        e.tips:ClearLines();
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(' ', e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)
-        e.tips:Show();
-    end)
-    cancelButton:SetScript('OnClick', C_AuctionHouse.CancelSell)
     local cancelButton2= e.Cbtn(AuctionHouseFrame.ItemSellFrame.PostButton, {size={32,32}, texture='Interface\\Buttons\\CancelButton-Up'})
     cancelButton2:SetHighlightTexture('Interface\\Buttons\\CancelButton-Highlight')
     cancelButton2:SetPushedTexture('Interface\\Buttons\\CancelButton-Down')
@@ -799,16 +823,6 @@ local function Init_Sell()
     cancelButton2:SetScript('OnClick', C_AuctionHouse.CancelSell)
 
 
-    AuctionHouseMultisellProgressFrame:HookScript('OnShow', function(self)
-        local isCommoditiesSellFrame, isItemSellFrame= AuctionHouseButton:get_displayMode()
-        if isCommoditiesSellFrame then
-            self:ClearAllPoints()
-            self:SetPoint('BOTTOM', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'TOP')
-        elseif isItemSellFrame then
-            self:ClearAllPoints()
-            self:SetPoint('BOTTOM', AuctionHouseFrame.ItemSellFrame.PostButton, 'TOP')
-        end
-    end)
 
 
 
