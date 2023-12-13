@@ -3778,7 +3778,9 @@
         "MODE",
         "PROFESSIONS_COLUMN_HEADER_REAGENTS",
         "CONVERT",
-        "AuctionHouseMultisellProgressFrame"
+        "AuctionHouseMultisellProgressFrame",
+        "CANCEL_AUCTION",
+        "INTERRUPT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

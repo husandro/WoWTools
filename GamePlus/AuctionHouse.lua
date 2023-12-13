@@ -1,11 +1,16 @@
 local id, e = ...
 local addName= BUTTON_LAG_AUCTIONHOUSE--拍卖行
 local Save={
+    --出售
     --hideSellItemList=true,--隐藏，物品列表
     intShowSellItem= e.Player.husandro,--显示，转到出售物品
     isMaxSellItem= true,--出售物品时，使用，最大数量
     hideSellItem={},--跳过，拍卖行物品
     SellItemDefaultPrice={},--默认价格
+
+    --拍卖，列表
+
+
 }
 
 
@@ -58,7 +63,7 @@ local function Init_Sell()
         end
     end
 
-    
+
     function AuctionHouseButton:set_next_item()--放入，第一个，物品
         if not C_AuctionHouse.IsThrottledMessageSystemReady() then
             return
@@ -692,7 +697,7 @@ local function Init_Sell()
 
 
 
-    
+
     --移动, Frame
     --Blizzard_AuctionHouseFrame.xml
     AuctionHouseFrame.CommoditiesSellList:ClearAllPoints()
@@ -797,9 +802,9 @@ local function Init_AllAuctions()
     AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton:SetPoint('RIGHT', AuctionHouseFrameAuctionsFrame.CancelAuctionButton, 'LEFT', -4, 0)
 
     --取消
-    local cancelAllAuctionButton= e.Cbtn(AuctionHouseFrameAuctionsFrame.CancelAuctionButton, {type=false, size={158,22}, text= e.onlyChinese and '取消' or CANCEL})
-    cancelAllAuctionButton:SetPoint('RIGHT', AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton, 'LEFT', -4, 0)
-    function cancelAllAuctionButton:get_auctionID()
+    local cancelButton= e.Cbtn(AuctionHouseFrameAuctionsFrame.CancelAuctionButton, {type=false, size={100,22}, text= e.onlyChinese and '取消' or CANCEL})
+    cancelButton:SetPoint('RIGHT', AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton, 'LEFT', -4, 0)
+    function cancelButton:get_auctionID()
         local tab={}
         for _, info in pairs(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox:GetFrames() or {}) do
             if info.rowData and info.rowData.auctionID and info.rowData.timeLeftSeconds and C_AuctionHouse.CanCancelAuction(info.rowData.auctionID) then
@@ -813,7 +818,7 @@ local function Init_AllAuctions()
             return tab[1].auctionID, tab[1].itemLink, tab[1].buyoutAmount
         end
     end
-    function cancelAllAuctionButton:set_tooltips()
+    function cancelButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_BOTTOMLEFT")
         e.tips:ClearLines()
         local itemLink= select(2, self:get_auctionID())
@@ -821,17 +826,17 @@ local function Init_AllAuctions()
             e.tips:SetHyperlink(itemLink)
             e.tips:AddLine(' ')
         end
+        e.tips:AddDoubleLine(' ', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消拍卖将使你失去保证金。' or CANCEL_AUCTION_CONFIRMATION))
         e.tips:AddDoubleLine(e.onlyChinese and '备注' or 'Note', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要太快' or ERR_GENERIC_THROTTLE))
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end
-    cancelAllAuctionButton:SetScript('OnLeave', GameTooltip_Hide)
-    cancelAllAuctionButton:SetScript('OnEnter', cancelAllAuctionButton.set_tooltips)
-    cancelAllAuctionButton:SetScript('OnClick', function(self)
+    cancelButton:SetScript('OnLeave', GameTooltip_Hide)
+    cancelButton:SetScript('OnEnter', cancelButton.set_tooltips)
+    cancelButton:SetScript('OnClick', function(self)
         local auctionID, itemLink= self:get_auctionID()
         if auctionID  then
             if C_AuctionHouse.CanCancelAuction(auctionID) then
-
                 local cost= C_AuctionHouse.GetCancelCost(auctionID)
                 C_AuctionHouse.CancelAuction(auctionID)
                 print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r', itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
@@ -842,6 +847,72 @@ local function Init_AllAuctions()
         self:set_tooltips()
     end)
 
+    --取消
+    local cancelAllButton= e.Cbtn(cancelButton, {type=false, size={100,22}, text= e.onlyChinese and '全部' or ALL})
+    cancelAllButton:SetPoint('RIGHT', cancelButton, 'LEFT', -4, 0)
+    cancelAllButton:SetScript('OnLeave', GameTooltip_Hide)
+    cancelAllButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_BOTTOMLEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(' ', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消拍卖将使你失去保证金。' or CANCEL_AUCTION_CONFIRMATION))
+        e.tips:Show()
+    end)
+    function cancelAllButton:set_text()
+        if self.time and not self.time:IsCancelled() then
+            self:SetText(e.onlyChinese and '中断' or INTERRUPT)
+        else
+            self:SetText(e.onlyChinese and '全部' or ALL)
+        end
+    end
+    cancelAllButton:SetScript('OnClick', function(self)
+        if self.time and not self.time:IsCancelled() then
+            self.time:Cancel()
+            self:set_text()
+            return
+        end
+
+        local tab={}
+        local num=0
+        for _, info in pairs(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox:GetFrames() or {}) do
+            if info.rowData and info.rowData.auctionID and info.rowData.timeLeftSeconds and C_AuctionHouse.CanCancelAuction(info.rowData.auctionID) then
+                table.insert(tab, info.rowData)
+                num= num+1
+            end
+        end
+        if num==0 then
+            return
+        end
+
+        table.sort(tab, function(a, b)
+            return a.timeLeftSeconds< b.timeLeftSeconds
+        end)
+
+        if C_AuctionHouse.CanCancelAuction(tab[1].auctionID) then
+            local cost= C_AuctionHouse.GetCancelCost(tab[1].auctionID)
+            C_AuctionHouse.CancelAuction(tab[1].auctionID)
+            print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r', '1/'..num, tab[1].itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
+        end
+        do
+            if num>1 then
+                local index=1
+                self.time= C_Timer.NewTicker(1.5, function()
+                    index= index+1
+                    local auctionID= tab[index].auctionID
+                    local itemLink= tab[index].itemLink
+                    if C_AuctionHouse.CanCancelAuction(auctionID) then
+                        local cost= C_AuctionHouse.GetCancelCost(auctionID)
+                        C_AuctionHouse.CancelAuction(auctionID)
+                        print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r', index..'/'..num , itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
+                    end
+                    if num==index then
+                        self.time:Cancel()
+                    end
+                end, num)
+            end
+        end
+        self:set_text()
+    end)
 
 
 --[[
