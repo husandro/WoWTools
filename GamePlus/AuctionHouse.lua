@@ -53,7 +53,10 @@ local function Init_Sell()
 
 
 
-
+    function AuctionHouseButton:get_displayMode()
+        local displayMode= AuctionHouseFrame:GetDisplayMode() or {}
+        return displayMode[1]=='CommoditiesSellFrame', displayMode[1]=='ItemSellFrame'
+    end
 
 
     function AuctionHouseButton:get_itemLocation(bag, slot)
@@ -65,9 +68,10 @@ local function Init_Sell()
 
 
     function AuctionHouseButton:set_next_item()--放入，第一个，物品
+        local isCommoditiesSellFrame, isItemSellFrame= self:get_displayMode()
         if not C_AuctionHouse.IsThrottledMessageSystemReady()
-            or (AuctionHouseFrame.CommoditiesSellFrame:IsShown() and AuctionHouseFrame.CommoditiesSellFrame:GetItem())
-            or (AuctionHouseFrame.ItemSellFrame:IsShown() and AuctionHouseFrame.ItemSellFrame:GetItem())
+            or (isCommoditiesSellFrame and AuctionHouseFrame.CommoditiesSellFrame:GetItem())
+            or (isItemSellFrame and AuctionHouseFrame.ItemSellFrame:GetItem())
         then
             return
         end
@@ -81,8 +85,8 @@ local function Init_Sell()
                     and info.itemID
                     and not Save.hideSellItem[info.itemID]
                     and (
-                        (itemCommodityStatus==Enum.ItemCommodityStatus.Commodity and AuctionHouseFrame.CommoditiesSellFrame:IsShown())
-                        or (itemCommodityStatus==Enum.ItemCommodityStatus.Item and AuctionHouseFrame.ItemSellFrame:IsShown())
+                        (itemCommodityStatus==Enum.ItemCommodityStatus.Commodity and isCommoditiesSellFrame)
+                        or (itemCommodityStatus==Enum.ItemCommodityStatus.Item and isItemSellFrame)
                     )
                 then
                     AuctionHouseFrame:SetPostItem(itemLocation)--ContainerFrame.lua
@@ -97,6 +101,7 @@ local function Init_Sell()
     function AuctionHouseButton:init_items()
         local index=1
         if not Save.hideSellItemList then
+            local isCommoditiesSellFrame, isItemSellFrame= self:get_displayMode()
             for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
                 for slot=1, C_Container.GetContainerNumSlots(bag) do
                     local info = C_Container.GetContainerItemInfo(bag, slot)
@@ -166,8 +171,8 @@ local function Init_Sell()
                         btn:SetItemButtonCount(info.stackCount)
                         btn:SetAlpha(Save.hideSellItem[info.itemID] and 0.3 or 1)
                         btn.isCommoditiesTexture:SetShown(
-                                (itemCommodityStatus==Enum.ItemCommodityStatus.Item and AuctionHouseFrame.CommoditiesSellFrame:IsShown())
-                            or (itemCommodityStatus==Enum.ItemCommodityStatus.Commodity and AuctionHouseFrame.ItemSellFrame:IsShown())
+                                (itemCommodityStatus==Enum.ItemCommodityStatus.Item and isItemSellFrame)
+                            or (itemCommodityStatus==Enum.ItemCommodityStatus.Commodity and isCommoditiesSellFrame)
                         )
 
                         btn:SetShown(true)
@@ -259,20 +264,17 @@ local function Init_Sell()
 
 
 
-    function AuctionHouseButton:get_displayMode()
-        local displayMode= AuctionHouseFrame:GetDisplayMode() or {}
-        return displayMode[1]
-    end
+    
     function AuctionHouseButton:show_CommoditiesSellFrame()
-        local displayMode= self:get_displayMode()
-        if displayMode ~='CommoditiesSellFrame' then
+        local isCommoditiesSellFrame= self:get_displayMode()
+        if not isCommoditiesSellFrame then
            AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
         end
     end
 
     function AuctionHouseButton:set_shown()
-        local displayMode= self:get_displayMode()
-        self:SetShown(AuctionHouseFrame:IsShown() and (displayMode=='CommoditiesSellFrame' or displayMode=='ItemSellFrame'))
+        local isCommoditiesSellFrame, isItemSellFrame= self:get_displayMode()
+        self:SetShown(AuctionHouseFrame:IsShown() and (isCommoditiesSellFrame or isItemSellFrame))
     end
     function AuctionHouseButton:set_event()
         self:UnregisterAllEvents()
@@ -635,8 +637,8 @@ local function Init_Sell()
 
 
 
-    --转到，一口价模式，按钮
-    local showCommoditiesButton=e.Cbtn(AuctionHouseFrame.ItemSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS})
+    --转到，商品，模式，按钮
+    local showCommoditiesButton=e.Cbtn(AuctionHouseFrame.ItemSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '物品' or ITEMS)
     showCommoditiesButton:SetPoint('BOTTOMRIGHT', -15,15)
     showCommoditiesButton:SetFrameLevel(levelFrame)
     showCommoditiesButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -645,7 +647,7 @@ local function Init_Sell()
         e.tips:ClearLines();
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '显示' or SHOW, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转到' or CONVERT)..'|r '..(e.onlyChinese and '物品' or ITEMS))
+        e.tips:AddDoubleLine(e.onlyChinese and '显示模式' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, MODE), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转到' or CONVERT)..'|r '..(e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS))
         e.tips:Show();
     end)
     showCommoditiesButton:SetScript('OnClick', function()
@@ -659,7 +661,7 @@ local function Init_Sell()
 
 
     --转到，出售商品，按钮
-    local showSellButton=e.Cbtn(AuctionHouseFrame.CommoditiesSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '物品' or ITEMS})
+    local showSellButton=e.Cbtn(AuctionHouseFrame.CommoditiesSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS}})
     showSellButton:SetPoint('BOTTOMRIGHT',  -15,15)
     showSellButton:SetFrameLevel(levelFrame)
     showSellButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -668,7 +670,8 @@ local function Init_Sell()
         e.tips:ClearLines();
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '显示模式' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, MODE), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转到' or CONVERT)..'|r '..(e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS))
+        e.tips:AddDoubleLine(e.onlyChinese and '显示' or SHOW, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转到' or CONVERT)..'|r '..(e.onlyChinese and '物品' or ITEMS))
+        
         e.tips:Show();
     end)
     showSellButton:SetScript('OnClick', function()
@@ -822,7 +825,13 @@ local function Init_AllAuctions()
             return a.timeLeftSeconds< b.timeLeftSeconds
         end)
         if tab[1] and tab[1].auctionID then
-            return tab[1].auctionID, tab[1].itemLink, tab[1].buyoutAmount
+            local auctionID= tab[1].auctionID
+            local itemLink= tab[1].itemLink
+            if not itemLink then
+                local priceInfo = C_AuctionHouse.GetAuctionInfoByID(auctionID) or {}
+                itemLink= priceInfo.itemLink
+            end
+            return auctionID, itemLink
         end
     end
     function cancelButton:set_tooltips()
@@ -846,9 +855,9 @@ local function Init_AllAuctions()
             if C_AuctionHouse.CanCancelAuction(auctionID) then
                 local cost= C_AuctionHouse.GetCancelCost(auctionID)
                 C_AuctionHouse.CancelAuction(auctionID)
-                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r', itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
+                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r', itemLink or '', cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
             else
-                print(id,addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '出错' or ERRORS)..'|r', itemLink)
+                print(id,addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '出错' or ERRORS)..'|r', itemLink or '')
             end
 
             --AuctionHouseFrame.AuctionsFrame:SetDataProviderIndexRange(C_AuctionHouse.GetNumOwnedAuctionTypes(), ScrollBoxConstants.RetainScrollPosition);
