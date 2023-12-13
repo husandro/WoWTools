@@ -60,7 +60,9 @@ local function Init_Sell()
     end
     AuctionHouseButton:SetScript('OnLeave', GameTooltip_Hide)
     AuctionHouseButton:SetScript('OnEnter', AuctionHouseButton.set_tooltips)
-    AuctionHouseButton:SetScript('OnEvent', AuctionHouseButton.init_items)
+    AuctionHouseButton:SetScript('OnEvent', function(self)
+        C_Timer.After(0.3, function() self:init_items() end)
+    end)
     AuctionHouseButton:SetScript('OnClick', function(self)
         Save.hideSellItemList= not Save.hideSellItemList and true or nil
         self:init_items()
@@ -153,7 +155,7 @@ local function Init_Sell()
                 for slot=1, C_Container.GetContainerNumSlots(bag) do
                     local info = C_Container.GetContainerItemInfo(bag, slot)
                     local itemLocation, itemCommodityStatus= self:get_itemLocation(bag, slot)
-                    if info and info.hyperlink and itemLocation and itemCommodityStatus>0 then
+                    if info and info.hyperlink and info.itemID and itemLocation and itemCommodityStatus>0 then
                         local btn= self.buttons[index]
                         if not btn then
                             btn= e.Cbtn(self.frame, {button='ItemButton', icon='hide'})
@@ -224,10 +226,10 @@ local function Init_Sell()
                         btn:SetItemLocation(itemLocation)
                         btn:SetItemButtonCount(info.stackCount)
                         btn:SetAlpha(Save.hideSellItem[info.itemID] and 0.3 or 1)
-                        btn.isCommoditiesTexture:SetShown(
-                                (itemCommodityStatus==Enum.ItemCommodityStatus.Item and isItemSellFrame)
+                        btn.isCommoditiesTexture:SetShown(not Save.hideSellItem[info.itemID] and (
+                            (itemCommodityStatus==Enum.ItemCommodityStatus.Item and isItemSellFrame)
                             or (itemCommodityStatus==Enum.ItemCommodityStatus.Commodity and isCommoditiesSellFrame)
-                        )
+                        ))
 
                         btn:SetShown(true)
                         index= index +1
@@ -464,6 +466,37 @@ local function Init_Sell()
 
 
 
+
+
+
+
+
+
+
+    function AuctionHouseButton:save_item_price(frame)
+        local itemLocation= frame:GetItem()
+        if itemLocation and itemLocation:IsValid() then
+            local itemID= C_Item.GetItemID(itemLocation)
+            if itemID  then
+                local unitPrice= frame.PriceInput:GetAmount()
+                if unitPrice and unitPrice>100000 then--10金
+                    Save.SellItemDefaultPrice[itemID]= unitPrice
+                else
+                    Save.SellItemDefaultPrice[itemID]=nil
+                end
+            end
+        end
+    end
+    AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox:HookScript('OnTextChanged', function(_, userInput)
+        if userInput then
+            AuctionHouseButton:save_item_price(AuctionHouseFrame.CommoditiesSellFrame)
+        end
+    end)
+    AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox:HookScript('OnTextChanged', function(_, userInput)
+        if userInput then
+            AuctionHouseButton:save_item_price(AuctionHouseFrame.ItemSellFrame)
+        end
+    end)
 
 
 
