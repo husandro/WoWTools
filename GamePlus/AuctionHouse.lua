@@ -58,8 +58,8 @@ local function Init_Sell()
         end
     end
 
-    --放入，第一个，物品
-    function AuctionHouseButton:set_next_item()
+    
+    function AuctionHouseButton:set_next_item()--放入，第一个，物品
         if not C_AuctionHouse.IsThrottledMessageSystemReady() then
             return
         end
@@ -614,7 +614,7 @@ local function Init_Sell()
 
 
     --转到，一口价模式，按钮
-    local showCommoditiesButton=e.Cbtn(AuctionHouseFrame.ItemSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '物品' or ITEMS})
+    local showCommoditiesButton=e.Cbtn(AuctionHouseFrame.ItemSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS})
     showCommoditiesButton:SetPoint('BOTTOMRIGHT', -15,15)
     showCommoditiesButton:SetFrameLevel(levelFrame)
     showCommoditiesButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -623,17 +623,18 @@ local function Init_Sell()
         e.tips:ClearLines();
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '显示' or SHOW, e.onlyChinese and '物品' or ITEMS)
+        e.tips:AddDoubleLine(e.onlyChinese and '显示' or SHOW, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转到' or CONVERT)..'|r '..(e.onlyChinese and '物品' or ITEMS))
         e.tips:Show();
     end)
     showCommoditiesButton:SetScript('OnClick', function()
         AuctionHouseFrame.ItemSellFrame:ClearPost()
         AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
+        AuctionHouseButton:set_next_item()--放入，第一个，物品
     end)
 
 
     --转到，出售商品，按钮
-    local showSellButton=e.Cbtn(AuctionHouseFrame.CommoditiesSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS})
+    local showSellButton=e.Cbtn(AuctionHouseFrame.CommoditiesSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '物品' or ITEMS})
     showSellButton:SetPoint('BOTTOMRIGHT',  -15,15)
     showSellButton:SetFrameLevel(levelFrame)
     showSellButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -642,12 +643,13 @@ local function Init_Sell()
         e.tips:ClearLines();
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '显示模式' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, MODE), e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS)
+        e.tips:AddDoubleLine(e.onlyChinese and '显示模式' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, MODE), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转到' or CONVERT)..'|r '..(e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS))
         e.tips:Show();
     end)
     showSellButton:SetScript('OnClick', function()
         AuctionHouseFrame.CommoditiesSellFrame:ClearPost()
         AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.ItemSell)
+        AuctionHouseButton:set_next_item()--放入，第一个，物品
     end)
 
 
@@ -672,6 +674,13 @@ local function Init_Sell()
     AuctionHouseFrame.CommoditiesSellFrame:ClearAllPoints()
     AuctionHouseFrame.CommoditiesSellFrame:SetSize(363, 442)
     AuctionHouseFrame.CommoditiesSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.CommoditiesSellList, 'TOPRIGHT')
+    --刷新，列表
+    AuctionHouseFrame.CommoditiesSellList.RefreshFrame.RefreshButton:ClearAllPoints()
+    AuctionHouseFrame.CommoditiesSellList.RefreshFrame.RefreshButton:SetParent(AuctionHouseFrame.CommoditiesSellFrame.PostButton)
+    AuctionHouseFrame.CommoditiesSellList.RefreshFrame.RefreshButton:SetPoint('LEFT', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'RIGHT', 4, 0)
+
+
+
 
     AuctionHouseFrame.ItemSellList:ClearAllPoints()
     AuctionHouseFrame.ItemSellList:SetSize(427, 442)
@@ -679,26 +688,10 @@ local function Init_Sell()
     AuctionHouseFrame.ItemSellFrame:ClearAllPoints()
     AuctionHouseFrame.ItemSellFrame:SetSize(363, 442)
     AuctionHouseFrame.ItemSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellList, 'TOPRIGHT')
-
-    --[[
-            <Frame parentKey="ItemSellFrame" inherits="AuctionHouseItemSellFrameTemplate" hidden="true">
-				<Size x="363" y="0"/>
-				<Anchors>
-					<Anchor point="TOP" x="0" y="-69"/>
-					<Anchor point="BOTTOM" relativeKey="$parent.MoneyFrameBorder" relativePoint="TOP" x="0" y="2"/>
-					<Anchor point="LEFT" x="4" y="0"/>
-				</Anchors>
-			</Frame>        
-    
-    AuctionHouseFrame.CommoditiesSellList:ClearAllPoints()
-    AuctionHouseFrame.CommoditiesSellList:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellFrame, 'TOPLEFT')
-    AuctionHouseFrame.CommoditiesSellList:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellFrame, 'BOTTOMRIGHT', 65,0)
-
-    AuctionHouseFrame.CommoditiesSellFrame:ClearAllPoints()
-    AuctionHouseFrame.CommoditiesSellFrame:SetPoint('TOPLEFT', AuctionHouseFrame.ItemSellList, 'TOPLEFT', 67,0)
-    AuctionHouseFrame.CommoditiesSellFrame:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'BOTTOMRIGHT')]]
-
-    
+    --刷新，列表
+    AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:ClearAllPoints()
+    AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetParent(AuctionHouseFrame.ItemSellFrame.PostButton)
+    AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetPoint('LEFT', AuctionHouseFrame.ItemSellFrame.PostButton, 'RIGHT', 4, 0)
 end
 
 
@@ -791,13 +784,14 @@ local function Init_AllAuctions()
         end
     end
     function cancelAllAuctionButton:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:SetOwner(self, "ANCHOR_BOTTOMLEFT")
         e.tips:ClearLines()
         local itemLink= select(2, self:get_auctionID())
         if itemLink then
             e.tips:SetHyperlink(itemLink)
             e.tips:AddLine(' ')
         end
+        e.tips:AddDoubleLine(e.onlyChinese and '备注' or 'Note', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要太快' or ERR_GENERIC_THROTTLE))
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end
