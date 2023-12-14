@@ -172,16 +172,20 @@ local function Init_Loaded(arg1)
                 [GetItemSubClassInfo(17, 3)] = "亡灵",
                 [GetItemSubClassInfo(17, 4)] = "小动物",
                 [GetItemSubClassInfo(17, 5)] = "魔法",
-                [GetItemSubClassInfo(17, 5)] = "元素",
+                [GetItemSubClassInfo(17, 6)] = "元素",
                 [GetItemSubClassInfo(17, 7)] = "野兽",
                 [GetItemSubClassInfo(17, 8)] = "水栖",
                 [GetItemSubClassInfo(17, 9)] = "机械",
             [AUCTION_CATEGORY_QUEST_ITEMS] = "任务物品",
             [AUCTION_CATEGORY_MISCELLANEOUS] = "杂项",
-            [INVTYPE_PROFESSION_TOOL] = "专业工具",
+                [GetItemSubClassInfo(15, 0)] = "垃圾",
+                [GetItemSubClassInfo(15, 1)] = "材料",
+                [GetItemSubClassInfo(15, 3)] = "节日",
+                [GetItemSubClassInfo(15, 5)] = "坐骑",
+                [GetItemSubClassInfo(15, 6)] = "坐骑装备",
             [AUCTION_SUBCATEGORY_PROFESSION_ACCESSORIES] = "配饰",
             [AUCTION_SUBCATEGORY_PROFESSION_TOOLS] = "工具",
-            [GetItemSubClassInfo(18, 0)] = "时光",
+            [GetItemSubClassInfo(18, 0)] = "时光徽章",
         }
 
         hooksecurefunc('AuctionHouseFilterButton_SetUp', function(btn, info)
