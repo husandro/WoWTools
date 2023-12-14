@@ -79,7 +79,7 @@ local function Init_Loaded(arg1)
                     [GetItemSubClassInfo(2, 20)]= "鱼竿",
                     [AUCTION_SUBCATEGORY_OTHER] = "其他",
             [AUCTION_CATEGORY_ARMOR] = "护甲",
-                [RUNEFORGE_LEGENDARY_CRAFTING_FRAME_TITLE] = "符文铭刻",
+                ['|cff00ccff'..RUNEFORGE_LEGENDARY_CRAFTING_FRAME_TITLE..'|r'] = "|cff00ccff符文铭刻|r",
                 [GetItemSubClassInfo(4, 4)]= "板甲",
                 [GetItemSubClassInfo(4, 3)]= "锁甲",
                 [GetItemSubClassInfo(4, 2)]= "皮甲",
@@ -190,6 +190,8 @@ local function Init_Loaded(arg1)
         hooksecurefunc('AuctionHouseFilterButton_SetUp', function(btn, info)
             set(btn, strText[info.name])
         end)
+
+        
     end
 end
 
