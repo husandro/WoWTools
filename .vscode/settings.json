@@ -3835,7 +3835,8 @@
         "INVTYPE_TRINKET",
         "INVTYPE_WAIST",
         "INVTYPE_WRIST",
-        "INVTYPE_CHEST"
+        "INVTYPE_CHEST",
+        "INVTYPE_CLOAK"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
