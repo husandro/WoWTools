@@ -152,7 +152,7 @@ local function Init_Loaded(arg1)
                 [GetItemSubClassInfo(9, 2)] = "裁缝",
                 [GetItemSubClassInfo(9, 3)] = "工程",
                 [GetItemSubClassInfo(9, 4)] = "锻造",
-                [GetItemSubClassInfo(9, 6)] = "	炼金术",
+                [GetItemSubClassInfo(9, 6)] = "炼金术",
                 [GetItemSubClassInfo(9, 8)] = "附魔",
                 [GetItemSubClassInfo(9, 10)] = "珠宝加工",
                 [GetItemSubClassInfo(9, 11)] = "铭文",
@@ -162,6 +162,7 @@ local function Init_Loaded(arg1)
                 [GetItemSubClassInfo(9, 0)] = "书籍",
             [AUCTION_CATEGORY_PROFESSION_EQUIPMENT] = "专业装备",
             [AUCTION_CATEGORY_BATTLE_PETS] = "战斗宠物",
+            
             [AUCTION_CATEGORY_QUEST_ITEMS] = "任务物品",
             [AUCTION_CATEGORY_MISCELLANEOUS] = "杂项",
             [INVTYPE_PROFESSION_TOOL] = "专业工具",
