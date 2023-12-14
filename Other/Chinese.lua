@@ -8,7 +8,7 @@ local addName= BUG_CATEGORY15
 local Save={
     disabled= not e.Player.husandro
 }
-
+local panel= CreateFrame("Frame")
 
 
 
@@ -194,17 +194,24 @@ local function Init_Loaded(arg1)
 end
 
 
+local function cancel_all()
+    Init=function() end
+    Init_Loaded= function() end
+    panel:UnregisterEvent('ADDON_LOADED')
+end
+
+
+
 --###########
 --加载保存数据
 --###########
-local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             if not e.onlyChinese then
-                Init=function() end
+                cancel_all()
                 return
             end
 
@@ -222,9 +229,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save.disabled then
-                Init=function() end
-                Init_Loaded= function() end
-                self:UnregisterEvent('ADDON_LOADED')
+                cancel_all()
             else
                Init()
             end
