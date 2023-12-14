@@ -1008,24 +1008,30 @@ end
 
 
 
-
-
+--浏览拍卖行
+--Blizzard_AuctionHouseUI.lua
 local function Init_BrowseResultsFrame()
-    --[[hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(self)
-        print(self==AuctionHouseFrame.BrowseResultsFrame)
+    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(self)
         for _, btn in pairs(self.ItemList.ScrollBox:GetFrames() or {}) do
-            local rowData= btn.rowData--itemKey,totalQuantity, minPrice, containsOwnerItem
-            local dropDown= btn.dropDown--Button,Text,icon
-            if not btn.lable then
-                btn.lable= e.Cstr(btn.lable)
-                btn.lable:SetPoint('LEFT', btn)
+            local text
+            if btn.rowData then
+                local itemKey= btn.rowData.itemKey----itemKey, totalQuantity, minPrice, containsOwnerItem btn:GetRowData() 
+                local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey) or {}--itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
+                if itemKeyInfo.isPet then
+                    text= select(3, e.GetPetCollectedNum(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
+                elseif itemKeyInfo.isEquipment then
+                    text= e.GetItemCollected(itemKeyInfo.itemID, nil, true)--物品是否收集
+                end
+                if text and  not btn.lable then
+                    btn.lable= e.Cstr(btn)
+                    btn.lable:SetPoint('RIGHT', btn.cells[2].Icon, 'LEFT')
+                end
             end
-            btn.lable:SetText('1/3')
-            
-            
+            if btn.lable then
+                btn.lable:SetText(text or '')
+            end
         end
-
-    end)]]
+    end)
 end
 
 
@@ -1076,7 +1082,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end
 
         elseif arg1=='Blizzard_AuctionHouseUI' then
-            --Init_BrowseResultsFrame()
+            Init_BrowseResultsFrame()
             Init_AllAuctions()
             Init_Sell()
             panel:UnregisterEvent('ADDON_LOADED')
