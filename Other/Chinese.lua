@@ -1,5 +1,5 @@
 local id, e= ...
-if LOCALE_zhCN or LOCALE_zhTW or not e.onlyChinese.husandro then
+if LOCALE_zhCN or LOCALE_zhTW or not e.Player.husandro then
     return
 end
 
