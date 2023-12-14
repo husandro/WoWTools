@@ -3838,7 +3838,11 @@
         "INVTYPE_CHEST",
         "INVTYPE_CLOAK",
         "RUNEFORGE_LEGENDARY_CRAFTING_FRAME_TITLE",
-        "AuctionHouseFrameAuctionsFrameText"
+        "AuctionHouseFrameAuctionsFrameText",
+        "enabled",
+        "AuctionHouseFrameText",
+        "AUCTION_HOUSE_BUYOUT_LABEL",
+        "AUCTION_HOUSE_BUYOUT_OPTIONAL_LABEL"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

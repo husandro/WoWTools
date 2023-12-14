@@ -132,6 +132,19 @@ local function Init_Loaded(arg1)
                 [GetItemSubClassInfo(0, 7)] = "绷带",
                 [GetItemSubClassInfo(0, 9)] = "凡图斯符文",
             [AUCTION_CATEGORY_GLYPHS] = "雕文",
+                [GetItemSubClassInfo(16, 1)] = "|cffc69b6d战士|r",
+                [GetItemSubClassInfo(16, 2)] = "|cfff48cba圣骑士|r",
+                [GetItemSubClassInfo(16, 3)] = "|cffaad372猎人|r",
+                [GetItemSubClassInfo(16, 4)] = "|cfffff468盗贼|r",
+                [GetItemSubClassInfo(16, 5)] = "|cffffffff牧师|r",
+                [GetItemSubClassInfo(16, 6)] = "|cffc41e3a死亡骑士|r",
+                [GetItemSubClassInfo(16, 7)] = "|cff0070dd萨满|r",
+                [GetItemSubClassInfo(16, 8)] = "|cff3fc7eb法师|r",
+                [GetItemSubClassInfo(16, 9)] = "|cff8788ee术士|r",
+                [GetItemSubClassInfo(16, 10)] = "|cff00ff98武僧|r",
+                [GetItemSubClassInfo(16, 11)] = "|cffff7c0a德鲁伊|r",
+                [GetItemSubClassInfo(16, 12)] = "|cffa330c9恶魔猎手|r",
+
             [AUCTION_CATEGORY_TRADE_GOODS] = "杂货",
                 [GetItemSubClassInfo(7, 5)] = "布料",
                 [GetItemSubClassInfo(7, 6)] = "皮料",
@@ -199,16 +212,27 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrameAuctionsFrameBidsTab.Text, '竞标')
         set(AuctionHouseFrameAuctionsFrameText, '一口价')
 
+        set(AuctionHouseFrame.SearchBar.SearchButton, '搜索')
+        
         set(AuctionHouseFrame.ItemSellFrame.CreateAuctionLabel, '开始拍卖')
+        set(AuctionHouseFrame.ItemSellFrame.PostButton,'创建拍卖')
         set(AuctionHouseFrame.ItemSellFrame.QuantityInput.Label, '数量')
-        set(AuctionHouseFrame.ItemSellFrame.PriceInput.Label, '一口价')
         set(AuctionHouseFrame.ItemSellFrame.DurationDropDown.Label, '持续时间')
         set(AuctionHouseFrame.ItemSellFrame.Deposit.Label, '保证金')
         set(AuctionHouseFrame.ItemSellFrame.TotalPrice.Label, '总价')
         set(AuctionHouseFrame.ItemSellFrame.QuantityInput.MaxButton, '最大数量')
         set(AuctionHouseFrame.ItemSellFrame.PriceInput.PerItemPostfix, '每个物品')
+        set(AuctionHouseFrame.ItemSellFrame.SecondaryPriceInput.Label, '竞标价格')
+        --Blizzard_AuctionHouseUI
+        hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'SetSecondaryPriceInputEnabled', function(self, enabled)
+            self.PriceInput:SetLabel('一口价')--AUCTION_HOUSE_BUYOUT_LABEL);
+            if enabled then
+                self.PriceInput:SetSubtext('|cff777777(可选)|r')--AUCTION_HOUSE_BUYOUT_OPTIONAL_LABEL
+            end
+        end)
 
         set(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionLabel, '开始拍卖')
+        set(AuctionHouseFrame.CommoditiesSellFrame.PostButton,'创建拍卖')
         set(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.Label, '数量')
         set(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.Label, '一口价')
         set(AuctionHouseFrame.CommoditiesSellFrame.DurationDropDown.Label, '持续时间')
@@ -216,6 +240,7 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.CommoditiesSellFrame.TotalPrice.Label, '总价')
         set(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.MaxButton, '最大数量')
         set(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.PerItemPostfix, '每个物品')
+        set(AuctionHouseFrame.ItemSellFrame.BuyoutModeCheckButton.Text, '一口价')
     end
 end
 
