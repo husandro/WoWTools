@@ -1317,7 +1317,6 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(AuctionHouseFrame.SearchBar.FilterButton, {alpha= min05})
 
         set_NineSlice(AuctionHouseFrame.CategoriesList, nil, true)
-        set_Alpha_Color(AuctionHouseFrame.CategoriesList.Background)
         set_ScrollBar(AuctionHouseFrame.CategoriesList)
 
 
@@ -1325,10 +1324,8 @@ local function Init_Event(arg1)
         set_NineSlice(AuctionHouseFrameAuctionsFrame.BidsList, nil, true)
         set_NineSlice(AuctionHouseFrameAuctionsFrame.AllAuctionsList, nil, true)
         set_ScrollBar(AuctionHouseFrameAuctionsFrame.AllAuctionsList)
-        --set_Alpha_Color(AuctionHouseFrameAuctionsFrame.AllAuctionsList.Background, true)
         set_ScrollBar(AuctionHouseFrameAuctionsFrame.SummaryList)
         set_NineSlice(AuctionHouseFrameAuctionsFrame.SummaryList, nil, true)
-        --set_Alpha_Color(AuctionHouseFrameAuctionsFrame.SummaryList.Background, true)
 
 
         set_NineSlice(AuctionHouseFrame.BrowseResultsFrame.ItemList, nil, true)
@@ -1373,6 +1370,13 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsFrameGold, {alpha=min05})
         set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsFrameSilver, {alpha=min05})
         
+        --时光
+        set_ScrollBar(AuctionHouseFrame.WoWTokenResults.DummyScrollBar)
+        set_NineSlice(AuctionHouseFrame.WoWTokenResults, nil, true)
+        --购买
+        set_NineSlice(AuctionHouseFrame.ItemBuyFrame.ItemDisplay, nil, true)
+        set_ScrollBar(AuctionHouseFrame.ItemBuyFrame.ItemList)
+        set_NineSlice(AuctionHouseFrame.ItemBuyFrame.ItemList, nil, true)
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
         set_NineSlice(ProfessionsCustomerOrdersFrame, true)
