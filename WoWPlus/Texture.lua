@@ -1318,7 +1318,7 @@ local function Init_Event(arg1)
 
         set_NineSlice(AuctionHouseFrame.CategoriesList, nil, true)
         set_ScrollBar(AuctionHouseFrame.CategoriesList)
-
+        hide_Texture(AuctionHouseFrame.CategoriesList.Background)
 
         set_ScrollBar(AuctionHouseFrameAuctionsFrame.BidsList)
         set_NineSlice(AuctionHouseFrameAuctionsFrame.BidsList, nil, true)
