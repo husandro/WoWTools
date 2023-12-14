@@ -3836,7 +3836,8 @@
         "INVTYPE_WAIST",
         "INVTYPE_WRIST",
         "INVTYPE_CHEST",
-        "INVTYPE_CLOAK"
+        "INVTYPE_CLOAK",
+        "RUNEFORGE_LEGENDARY_CRAFTING_FRAME_TITLE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
