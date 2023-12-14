@@ -1328,7 +1328,7 @@ local function Init_Event(arg1)
         --set_Alpha_Color(AuctionHouseFrameAuctionsFrame.AllAuctionsList.Background, true)
         set_ScrollBar(AuctionHouseFrameAuctionsFrame.SummaryList)
         set_NineSlice(AuctionHouseFrameAuctionsFrame.SummaryList, nil, true)
-        set_Alpha_Color(AuctionHouseFrameAuctionsFrame.SummaryList.Background, true)
+        --set_Alpha_Color(AuctionHouseFrameAuctionsFrame.SummaryList.Background, true)
 
 
         set_NineSlice(AuctionHouseFrame.BrowseResultsFrame.ItemList, nil, true)
