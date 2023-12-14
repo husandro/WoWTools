@@ -3788,7 +3788,10 @@
         "AuctionHouseFrameAuctionsFrameBidsTab",
         "AuctionHouseFrameAuctionsFrameAuctionsTab",
         "AuctionHouseFrameAuctionsFrameGold",
-        "AuctionHouseFrameAuctionsFrameSilver"
+        "AuctionHouseFrameAuctionsFrameSilver",
+        "AuctionHouseFilterButton_SetUp",
+        "ITEM_HEROIC",
+        "ITEM_QUALITY4_DESC"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

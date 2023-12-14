@@ -1014,6 +1014,8 @@ local function Init_BrowseResultsFrame()
         end
     end)
     --hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'SetSortOrder', Set_BrowseResultsFrame)
+
+    
 end
 
 

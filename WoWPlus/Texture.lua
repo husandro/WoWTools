@@ -1366,10 +1366,12 @@ local function Init_Event(arg1)
 
         --拍卖，所在物品，页面
         set_SearchBox(AuctionHouseFrameAuctionsFrameBidsTab)
-        set_SearchBox(AuctionHouseFrameAuctionsFrameAuctionsTab)        
+        set_SearchBox(AuctionHouseFrameAuctionsFrameAuctionsTab)
         set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsFrameGold, {alpha=min05})
         set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsFrameSilver, {alpha=min05})
-        
+        set_NineSlice(AuctionHouseFrameAuctionsFrame.ItemDisplay, nil, true)
+        set_NineSlice(AuctionHouseFrameAuctionsFrame.CommoditiesList, nil, true)
+
         --时光
         set_ScrollBar(AuctionHouseFrame.WoWTokenResults.DummyScrollBar)
         set_NineSlice(AuctionHouseFrame.WoWTokenResults, nil, true)
