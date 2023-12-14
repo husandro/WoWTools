@@ -3,8 +3,7 @@ local id, e = ...
 e.WoWDate={}
 e.tips=GameTooltip
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
-e.call= securecall
-
+e.call=securecall
 --securecallfunction
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
