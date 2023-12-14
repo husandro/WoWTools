@@ -3862,7 +3862,14 @@
         "ZEN_MASTER",
         "DRAENOR_MASTER",
         "LEGION_MASTER",
-        "BATTLE_FOR_AZEROTH_MASTER"
+        "BATTLE_FOR_AZEROTH_MASTER",
+        "GroupFinderFrameGroupButton1",
+        "GroupFinderFrameGroupButton2",
+        "GroupFinderFrameGroupButton3",
+        "GroupFinderFrame",
+        "LFG_LIST_CONVERT_TO_RAID_WARNING",
+        "LFG_LIST_APP_DECLINED_MESSAGE",
+        "LFDQueueFrameFindGroupButton"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

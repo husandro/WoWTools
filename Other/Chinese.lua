@@ -230,6 +230,69 @@ local function Init()
         set(SpellBookFrameTabButton2, '专业')
         set(SpellBookFrameTabButton3, '宠物')
     end)
+
+    --LFD PVEFrame.lua
+    set(PVEFrameTab1, '地下城和团队副本')
+    set(PVEFrameTab2, 'PvP')
+    set(PVEFrameTab3, '史诗钥石地下城')
+    
+    
+    set(GroupFinderFrame.groupButton1.name, '地下城查找器')
+    set(GroupFinderFrame.groupButton2.name, '团队查找器')
+    set(GroupFinderFrame.groupButton3.name, '预创建队伍')
+    set(LFGListFrame.CategorySelection.StartGroupButton, '创建队伍')
+    set(LFGListFrame.CategorySelection.FindGroupButton, '寻找队伍')
+
+    LEAVE_QUEUE = "离开队列";
+    JOIN_AS_PARTY = "小队加入";
+    INSTANCE_ROLE_WARNING_TITLE = "该角色在某些地下城不可用。";
+    INSTANCE_ROLE_WARNING_TEXT = "该角色在你所选择的一个或更多地下城中不可用。在这些地下城中，你将作为可胜任的角色加入队列。";
+    ERR_NOT_LEADER = "你现在不是队长";
+    CANNOT_DO_THIS_WHILE_LFGLIST_LISTED = "你不能在你的队伍出现在预创建队伍列表中时那样做。";
+    CROSS_FACTION_RAID_DUNGEON_FINDER_ERROR = "在跨阵营队伍中无法这么做。你可以参加非队列匹配模式的团队副本和地下城。";
+    START_A_GROUP = "创建队伍";
+    LFG_LIST_FIND_A_GROUP = "寻找队伍";
+    LFG_RANDOM_COOLDOWN_YOU = "你近期加入过一个随机地下城队列。\n需要过一段时间才可加入另一个，等待时间为：";
+    LFG_DESERTER_YOU = "你刚刚逃离了随机队伍，在接下来的时间内无法再度排队：";
+    LFG_DESERTER_OTHER = "你的一名队伍成员刚刚逃离了随机副本队伍，在接下来的时间内无法再度排队。";
+    LFG_RANDOM_COOLDOWN_OTHER = "你的一名队友近期加入过一个随机地下城队列，暂时无法加入另一个。";
+    YOU_MAY_NOT_QUEUE_FOR_DUNGEON = "你不能进入这个地下城的队列。";
+    ERR_ROLE_UNAVAILABLE = "该职责不可用。";
+    ROLE_DESCRIPTION_DAMAGER = "表示你愿意担当对敌人输出伤害的职责。";
+    ROLE_DESCRIPTION_HEALER = "表示你愿意在队友受到伤害时为他们提供治疗。";
+    ROLE_DESCRIPTION_TANK = "表示你愿意通过使敌人攻击自己，保护队友不受攻击。";
+    VOTE_BOOT_PLAYER = "有人发起了一个将%1$s从队伍中移出的投票。\n\n理由为：\n|cffffd200%2$s|r\n\n你同意将%1$s移出队伍吗？";
+    VOTE_BOOT_PLAYER_NO_REASON = "有人发起了一个将%1$s从队伍中移出的投票。\n\n你同意将%1$s移出队伍吗？";
+    REQUEUE_CONFIRM_YOUR_ROLE = "你的队友已经将你加入另一场练习赛的队列。\n\n请确认你的角色：";
+    CONFIRM_YOUR_ROLE = "确定你的职责：";
+
+    INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED = "你还没完成所需的成就。";
+    INSTANCE_UNAVAILABLE_SELF_AREA_NOT_EXPLORED = "你需要发现%2$s。";
+    INSTANCE_UNAVAILABLE_SELF_CANNOT_RUN_ANY_CHILD_DUNGEON = "你不满足此分类下任何地下城的要求。";
+    INSTANCE_UNAVAILABLE_SELF_ENGAGED_IN_PVP = "你已进入PvP状态。";
+    INSTANCE_UNAVAILABLE_SELF_EXPANSION_TOO_LOW = "你没有安装正确的《魔兽世界》内容更新。";
+    INSTANCE_UNAVAILABLE_SELF_GEAR_TOO_HIGH = "你的装备物品平均等级太高。（需要 %2$d，当前%3$d。）";
+    INSTANCE_UNAVAILABLE_SELF_GEAR_TOO_LOW = "你的装备物品平均等级不够。（需要 %2$d，当前%3$d。）";
+    INSTANCE_UNAVAILABLE_SELF_LEVEL_TOO_HIGH = "你的级别太高了。";
+    INSTANCE_UNAVAILABLE_SELF_LEVEL_TOO_LOW = "你的级别不够。";
+    INSTANCE_UNAVAILABLE_SELF_MISSING_ITEM = "你没有所需的物品。";
+    INSTANCE_UNAVAILABLE_SELF_NO_SPEC = "在进入此地下城前，你必须选择一项职业专精";
+    INSTANCE_UNAVAILABLE_SELF_NO_VALID_ROLES = "你没有有效的角色。";
+    INSTANCE_UNAVAILABLE_SELF_OTHER = "你的级别没有达到该地下城的要求。";
+    INSTANCE_UNAVAILABLE_SELF_PVP_GEAR_TOO_LOW = "你需要更高的PvP装备物品平均等级才能加入队列。|n（需要 %2$d，当前%3$d。）";
+    INSTANCE_UNAVAILABLE_SELF_QUEST_NOT_COMPLETED = "你没有完成所需的任务。";
+    INSTANCE_UNAVAILABLE_SELF_RAID_LOCKED = "你已与该副本锁定。";
+    INSTANCE_UNAVAILABLE_SELF_TEMPORARILY_DISABLED = "你不能进入。这个副本暂时不可用。";
+
+    StaticPopupDialogs["LFG_LIST_INVITING_CONVERT_TO_RAID"].text= "邀请这名玩家或队伍会将你的小队转化为团队。"
+    StaticPopupDialogs["LFG_LIST_INVITING_CONVERT_TO_RAID"].button1 = '邀请'
+	StaticPopupDialogs["LFG_LIST_INVITING_CONVERT_TO_RAID"].button2 = '取消'
+    LFG_LIST_APP_DECLINED_MESSAGE = "你发送给“%s”的申请已被拒绝。";
+    LFG_LIST_APP_DECLINED_FULL_MESSAGE = "“%s”已满，已被移出列表。";
+    LFG_LIST_APP_DECLINED_DELISTED_MESSAGE = "“%s”已被移出列表。";
+    LFG_LIST_APP_TIMED_OUT_MESSAGE = "你发送给“%s”的申请已过期。";
+    --hooksecurefunc('LFGListCategorySelection_AddButton', function(self, btnIndex, categoryID, filters)
+  
 end
 
 
@@ -422,8 +485,53 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.MaxButton, '最大数量')
         set(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.PerItemPostfix, '每个物品')
         set(AuctionHouseFrame.ItemSellFrame.BuyoutModeCheckButton.Text, '一口价')
+
+    elseif arg1=='Blizzard_ClassTalentUI' then--Blizzard_TalentUI.lua
+         for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
+            local btn= ClassTalentFrame:GetTabButton(tabID)
+           if btn then
+            if tabID==1 then
+                set(btn, '专精')
+            elseif tabID==2 then
+                set(btn, '天赋')
+            end
+           end
+        end
+        set(ClassTalentFrame.TalentsTab.ApplyButton, '应用改动')
+        PVP_LABEL_WAR_MODE = "战争模式";
+        PVP_WAR_MODE_ENABLED = "开启";
+        PVP_WAR_MODE_DESCRIPTION = "加入战争模式即可激活世界PvP，使任务的奖励和经验值最多提高10%，并可以在野外使用PvP天赋。";
+        PVP_WAR_MODE_DESCRIPTION_FORMAT = "加入战争模式即可激活世界PvP，使任务的奖励和经验值提高%1$d%%，并可以在野外使用PvP天赋。";
+        SPELL_FAILED_AFFECTING_COMBAT = "你正处于交战状态";
+        PVP_WAR_MODE_NOT_NOW_ALLIANCE = "只能在暴风城或瓦德拉肯进入战争模式。";
+        PVP_WAR_MODE_NOT_NOW_ALLIANCE_RESTAREA = "战争模式可以在任何休息区域关闭，但只能在暴风城或瓦德拉肯开启。";
+        PVP_WAR_MODE_NOT_NOW_HORDE = "只能在奥格瑞玛或瓦德拉肯进入战争模式。";
+        PVP_WAR_MODE_NOT_NOW_HORDE_RESTAREA = "战争模式可以在任何休息区域关闭，但只能在奥格瑞玛或瓦德拉肯开启。";
+
+        WAR_MODE_CALL_TO_ARMS = "战争模式：战斗的召唤";
+        WAR_MODE_BONUS_INCENTIVE_TOOLTIP = "战争模式的加成提升至%2$d%%。";
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local function cancel_all()
@@ -431,8 +539,6 @@ local function cancel_all()
     Init_Loaded= function() end
     panel:UnregisterEvent('ADDON_LOADED')
 end
-
-
 
 --###########
 --加载保存数据
@@ -451,7 +557,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             --添加控制面板
             e.AddPanel_Check({
-                name= e.onlyChinese and '语言翻译' or addName,
+                name= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '语言翻译' or addName),
                 tooltip= '仅限中文，|cnRED_FONT_COLOR:可能会出错|r|nChinese only',
                 value= not Save.disabled,
                 func= function()
