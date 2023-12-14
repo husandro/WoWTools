@@ -191,6 +191,31 @@ local function Init_Loaded(arg1)
             set(btn, strText[info.name])
         end)
 
+        set(AuctionHouseFrameBuyTab.Text, '购买')
+        set(AuctionHouseFrameSellTab.Text, '出售')
+        set(AuctionHouseFrameAuctionsTab.Text, '拍卖')
+        set(AuctionHouseFrameAuctionsFrameAuctionsTab.Text, '拍卖')
+        set(AuctionHouseFrameAuctionsFrameBidsTab.Text, '竞标')
+        set(AuctionHouseFrameAuctionsFrameBidsTab.Text, '竞标')
+        set(AuctionHouseFrameAuctionsFrameText, '一口价')
+
+        set(AuctionHouseFrame.ItemSellFrame.CreateAuctionLabel, '开始拍卖')
+        set(AuctionHouseFrame.ItemSellFrame.QuantityInput.Label, '数量')
+        set(AuctionHouseFrame.ItemSellFrame.PriceInput.Label, '一口价')
+        set(AuctionHouseFrame.ItemSellFrame.DurationDropDown.Label, '持续时间')
+        set(AuctionHouseFrame.ItemSellFrame.Deposit.Label, '保证金')
+        set(AuctionHouseFrame.ItemSellFrame.TotalPrice.Label, '总价')
+        set(AuctionHouseFrame.ItemSellFrame.QuantityInput.MaxButton, '最大数量')
+        set(AuctionHouseFrame.ItemSellFrame.PriceInput.PerItemPostfix, '每个物品')
+
+        set(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionLabel, '开始拍卖')
+        set(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.Label, '数量')
+        set(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.Label, '一口价')
+        set(AuctionHouseFrame.CommoditiesSellFrame.DurationDropDown.Label, '持续时间')
+        set(AuctionHouseFrame.CommoditiesSellFrame.Deposit.Label, '保证金')
+        set(AuctionHouseFrame.CommoditiesSellFrame.TotalPrice.Label, '总价')
+        set(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.MaxButton, '最大数量')
+        set(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.PerItemPostfix, '每个物品')
         
     end
 end
