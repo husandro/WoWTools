@@ -1,5 +1,5 @@
 local id, e= ...
-if LOCALE_zhCN or LOCALE_zhTW then
+if LOCALE_zhCN or LOCALE_zhTW or not e.onlyChinese.husandro then
     return
 end
 
@@ -266,7 +266,7 @@ local function Init()
     REQUEUE_CONFIRM_YOUR_ROLE = "你的队友已经将你加入另一场练习赛的队列。\n\n请确认你的角色：";
     CONFIRM_YOUR_ROLE = "确定你的职责：";
 
-    INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED = "你还没完成所需的成就。";
+    --[[INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED = "你还没完成所需的成就。";
     INSTANCE_UNAVAILABLE_SELF_AREA_NOT_EXPLORED = "你需要发现%2$s。";
     INSTANCE_UNAVAILABLE_SELF_CANNOT_RUN_ANY_CHILD_DUNGEON = "你不满足此分类下任何地下城的要求。";
     INSTANCE_UNAVAILABLE_SELF_ENGAGED_IN_PVP = "你已进入PvP状态。";
@@ -282,17 +282,142 @@ local function Init()
     INSTANCE_UNAVAILABLE_SELF_PVP_GEAR_TOO_LOW = "你需要更高的PvP装备物品平均等级才能加入队列。|n（需要 %2$d，当前%3$d。）";
     INSTANCE_UNAVAILABLE_SELF_QUEST_NOT_COMPLETED = "你没有完成所需的任务。";
     INSTANCE_UNAVAILABLE_SELF_RAID_LOCKED = "你已与该副本锁定。";
-    INSTANCE_UNAVAILABLE_SELF_TEMPORARILY_DISABLED = "你不能进入。这个副本暂时不可用。";
+    INSTANCE_UNAVAILABLE_SELF_TEMPORARILY_DISABLED = "你不能进入。这个副本暂时不可用。";]]
 
     StaticPopupDialogs["LFG_LIST_INVITING_CONVERT_TO_RAID"].text= "邀请这名玩家或队伍会将你的小队转化为团队。"
     StaticPopupDialogs["LFG_LIST_INVITING_CONVERT_TO_RAID"].button1 = '邀请'
 	StaticPopupDialogs["LFG_LIST_INVITING_CONVERT_TO_RAID"].button2 = '取消'
-    LFG_LIST_APP_DECLINED_MESSAGE = "你发送给“%s”的申请已被拒绝。";
+    --[[LFG_LIST_APP_DECLINED_MESSAGE = "你发送给“%s”的申请已被拒绝。";
     LFG_LIST_APP_DECLINED_FULL_MESSAGE = "“%s”已满，已被移出列表。";
     LFG_LIST_APP_DECLINED_DELISTED_MESSAGE = "“%s”已被移出列表。";
-    LFG_LIST_APP_TIMED_OUT_MESSAGE = "你发送给“%s”的申请已过期。";
+    LFG_LIST_APP_TIMED_OUT_MESSAGE = "你发送给“%s”的申请已过期。";]]
     --hooksecurefunc('LFGListCategorySelection_AddButton', function(self, btnIndex, categoryID, filters)
   
+--[[
+        ITEM_MOD_AGILITY = "%c%s 敏捷";
+        ITEM_MOD_AGILITY_OR_INTELLECT_SHORT = "敏捷或智力";
+        ITEM_MOD_AGILITY_OR_STRENGTH_OR_INTELLECT_SHORT = "敏捷、力量或智力";
+        ITEM_MOD_AGILITY_OR_STRENGTH_SHORT = "敏捷或力量";
+        ITEM_MOD_AGILITY_SHORT = "敏捷";
+        ITEM_MOD_ARMOR_PENETRATION_RATING = "使你的护甲穿透提高%s点。";
+        ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT = "护甲穿透";
+        ITEM_MOD_ATTACK_POWER = "攻击强度提高%s点。";
+        ITEM_MOD_ATTACK_POWER_SHORT = "攻击强度";
+        ITEM_MOD_BLOCK_RATING = "使你的盾牌格挡提高%s点。";
+        ITEM_MOD_BLOCK_RATING_SHORT = "格挡";
+        ITEM_MOD_BLOCK_VALUE = "使你的盾牌格挡值提高%s点。";
+        ITEM_MOD_BLOCK_VALUE_SHORT = "格挡值";
+        ITEM_MOD_CORRUPTION = "腐蚀";
+        ITEM_MOD_CORRUPTION_RESISTANCE = "腐蚀抗性";
+        ITEM_MOD_CRAFTING_SPEED_SHORT = "制作速度";
+        ITEM_MOD_CRIT_MELEE_RATING = "近战爆击提高%s点。";
+        ITEM_MOD_CRIT_MELEE_RATING_SHORT = "爆击（近战）";
+        ITEM_MOD_CRIT_RANGED_RATING = "远程爆击提高%s点。";
+        ITEM_MOD_CRIT_RANGED_RATING_SHORT = "爆击（远程）";
+        ITEM_MOD_CRIT_RATING = "使你的爆击提高%s点。";
+        ITEM_MOD_CRIT_RATING_SHORT = "爆击";
+        ITEM_MOD_CRIT_SPELL_RATING = "法术爆击提高%s点。";
+        ITEM_MOD_CRIT_SPELL_RATING_SHORT = "爆击（法术）";
+        ITEM_MOD_CRIT_TAKEN_MELEE_RATING = "近战爆击躲闪提高%s点。";
+        ITEM_MOD_CRIT_TAKEN_MELEE_RATING_SHORT = "爆击躲闪（近战）";
+        ITEM_MOD_CRIT_TAKEN_RANGED_RATING = "远程爆击躲闪提高%s点。";
+        ITEM_MOD_CRIT_TAKEN_RANGED_RATING_SHORT = "爆击躲闪（远程）";
+        ITEM_MOD_CRIT_TAKEN_RATING = "爆击躲闪提高%s点。";
+        ITEM_MOD_CRIT_TAKEN_RATING_SHORT = "爆击躲闪";
+        ITEM_MOD_CRIT_TAKEN_SPELL_RATING = "法术爆击躲闪提高%s点。";
+        ITEM_MOD_CRIT_TAKEN_SPELL_RATING_SHORT = "爆击躲闪（法术）";
+        ITEM_MOD_CR_AVOIDANCE_SHORT = "闪避";
+        ITEM_MOD_CR_LIFESTEAL_SHORT = "吸血";
+        ITEM_MOD_CR_MULTISTRIKE_SHORT = "溅射";
+        ITEM_MOD_CR_SPEED_SHORT = "加速";
+        ITEM_MOD_CR_STURDINESS_SHORT = "永不磨损";
+        ITEM_MOD_CR_UNUSED_6_SHORT = "永不磨损";
+        ITEM_MOD_DAMAGE_PER_SECOND_SHORT = "每秒伤害";
+        ITEM_MOD_DEFENSE_SKILL_RATING = "防御提高%s点。";
+        ITEM_MOD_DEFENSE_SKILL_RATING_SHORT = "防御";
+        ITEM_MOD_DEFTNESS_SHORT = "熟练";
+        ITEM_MOD_DODGE_RATING = "使你的躲闪提高%s点。";
+        ITEM_MOD_DODGE_RATING_SHORT = "躲闪";
+        ITEM_MOD_EXPERTISE_RATING = "使你的精准提高%s点。";
+        ITEM_MOD_EXPERTISE_RATING_SHORT = "精准";
+        ITEM_MOD_EXTRA_ARMOR = "使你的护甲值提高%s。";
+        ITEM_MOD_EXTRA_ARMOR_SHORT = "护甲加成";
+        ITEM_MOD_FERAL_ATTACK_POWER = "在猎豹、熊、巨熊和枭兽形态下的攻击强度提高%s点。";
+        ITEM_MOD_FERAL_ATTACK_POWER_SHORT = "变形形态下的攻击强度";
+        ITEM_MOD_FINESSE_SHORT = "精细";
+        ITEM_MOD_HASTE_RATING = "使你的急速提高%s点。";
+        ITEM_MOD_HASTE_RATING_SHORT = "急速";
+        ITEM_MOD_HEALTH = "%c%s 生命值";
+        ITEM_MOD_HEALTH_REGEN = "每5秒恢复%s点生命值。";
+        ITEM_MOD_HEALTH_REGENERATION = "每5秒恢复%s点生命值。";
+        ITEM_MOD_HEALTH_REGENERATION_SHORT = "生命值恢复";
+        ITEM_MOD_HEALTH_REGEN_SHORT = "每5秒的生命值恢复";
+        ITEM_MOD_HEALTH_SHORT = "生命值";
+        ITEM_MOD_HIT_MELEE_RATING = "近战命中提高%s点。";
+        ITEM_MOD_HIT_MELEE_RATING_SHORT = "命中（近战）";
+        ITEM_MOD_HIT_RANGED_RATING = "远程命中提高%s点。";
+        ITEM_MOD_HIT_RANGED_RATING_SHORT = "命中（远程）";
+        ITEM_MOD_HIT_RATING = "使你的命中提高%s点。";
+        ITEM_MOD_HIT_RATING_SHORT = "命中";
+        ITEM_MOD_HIT_SPELL_RATING = "法术命中提高%s点。";
+        ITEM_MOD_HIT_SPELL_RATING_SHORT = "命中（法术）";
+        ITEM_MOD_HIT_TAKEN_MELEE_RATING = "近战命中躲闪提高%s点。";
+        ITEM_MOD_HIT_TAKEN_MELEE_RATING_SHORT = "命中躲闪（近战）";
+        ITEM_MOD_HIT_TAKEN_RANGED_RATING = "远程命中躲闪提高%s点。";
+        ITEM_MOD_HIT_TAKEN_RANGED_RATING_SHORT = "命中躲闪（远程）";
+        ITEM_MOD_HIT_TAKEN_RATING = "命中躲闪提高%s点。";
+        ITEM_MOD_HIT_TAKEN_RATING_SHORT = "命中躲闪";
+        ITEM_MOD_HIT_TAKEN_SPELL_RATING = "法术命中躲闪提高%s点。";
+        ITEM_MOD_HIT_TAKEN_SPELL_RATING_SHORT = "命中躲闪（法术）";
+        ITEM_MOD_INSPIRATION_SHORT = "灵感";
+        ITEM_MOD_INTELLECT = "%c%s 智力";
+        ITEM_MOD_INTELLECT_SHORT = "智力";
+        ITEM_MOD_MANA = "%c%s 法力值";
+        ITEM_MOD_MANA_REGENERATION = "每5秒回复%s点法力值。";
+        ITEM_MOD_MANA_REGENERATION_SHORT = "法力回复";
+        ITEM_MOD_MANA_SHORT = "法力值";
+        ITEM_MOD_MASTERY_RATING = "使你的精通提高%s点。";
+        ITEM_MOD_MASTERY_RATING_SHORT = "精通";
+        ITEM_MOD_MASTERY_RATING_SPELL = "(%s)";
+        ITEM_MOD_MASTERY_RATING_TWO_SPELLS = "(%s/%s)";
+        ITEM_MOD_MELEE_ATTACK_POWER_SHORT = "近战攻击强度";
+        ITEM_MOD_MODIFIED_CRAFTING_STAT_1 = "随机属性1";
+        ITEM_MOD_MODIFIED_CRAFTING_STAT_2 = "随机属性2";
+        ITEM_MOD_MULTICRAFT_SHORT = "产能";
+        ITEM_MOD_PARRY_RATING = "使你的招架提高%s点。";
+        ITEM_MOD_PARRY_RATING_SHORT = "招架";
+        ITEM_MOD_PERCEPTION_SHORT = "感知";
+        ITEM_MOD_POWER_REGEN0_SHORT = "每5秒的法力值恢复";
+        ITEM_MOD_POWER_REGEN1_SHORT = "每5秒的怒气增长";
+        ITEM_MOD_POWER_REGEN2_SHORT = "每5秒的专注获得";
+        ITEM_MOD_POWER_REGEN3_SHORT = "每5秒的能量恢复";
+        ITEM_MOD_POWER_REGEN4_SHORT = "每5秒的快乐值获得";
+        ITEM_MOD_POWER_REGEN5_SHORT = "每5秒的符文恢复";
+        ITEM_MOD_POWER_REGEN6_SHORT = "每5秒的符文能量恢复";
+        ITEM_MOD_PVP_POWER = "使你的PvP强度提高%s点。";
+        ITEM_MOD_PVP_POWER_SHORT = "PvP强度";
+        ITEM_MOD_PVP_PRIMARY_STAT_SHORT = "PvP强度";
+        ITEM_MOD_RANGED_ATTACK_POWER = "远程攻击强度提高%s点。";
+        ITEM_MOD_RANGED_ATTACK_POWER_SHORT = "远程攻击强度";
+        ITEM_MOD_RESILIENCE_RATING = "使你的PvP韧性提高%s点。";
+        ITEM_MOD_RESILIENCE_RATING_SHORT = "PvP韧性";
+        ITEM_MOD_RESOURCEFULNESS_SHORT = "充裕";
+        ITEM_MOD_SPELL_DAMAGE_DONE = "魔法法术和效果的伤害量提高最多%s点。";
+        ITEM_MOD_SPELL_DAMAGE_DONE_SHORT = "伤害加成";
+        ITEM_MOD_SPELL_HEALING_DONE = "魔法法术和效果的治疗量提高最多%s点。";
+        ITEM_MOD_SPELL_HEALING_DONE_SHORT = "治疗加成";
+        ITEM_MOD_SPELL_PENETRATION = "法术穿透提高%s点。";
+        ITEM_MOD_SPELL_PENETRATION_SHORT = "法术穿透";
+        ITEM_MOD_SPELL_POWER = "法术强度提高%s点。";
+        ITEM_MOD_SPELL_POWER_SHORT = "法术强度";
+        ITEM_MOD_SPIRIT = "%c%s 精神";
+        ITEM_MOD_SPIRIT_SHORT = "精神";
+        ITEM_MOD_STAMINA = "%c%s 耐力";
+        ITEM_MOD_STAMINA_SHORT = "耐力";
+        ITEM_MOD_STRENGTH = "%c%s 力量";
+        ITEM_MOD_STRENGTH_OR_INTELLECT_SHORT = "力量或智力";
+        ITEM_MOD_STRENGTH_SHORT = "力量";
+        ITEM_MOD_VERSATILITY = "全能";]]
 end
 
 
