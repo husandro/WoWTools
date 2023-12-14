@@ -264,7 +264,7 @@ local function Init()
     VOTE_BOOT_PLAYER = "有人发起了一个将%1$s从队伍中移出的投票。\n\n理由为：\n|cffffd200%2$s|r\n\n你同意将%1$s移出队伍吗？";
     VOTE_BOOT_PLAYER_NO_REASON = "有人发起了一个将%1$s从队伍中移出的投票。\n\n你同意将%1$s移出队伍吗？";
     REQUEUE_CONFIRM_YOUR_ROLE = "你的队友已经将你加入另一场练习赛的队列。\n\n请确认你的角色：";
-    CONFIRM_YOUR_ROLE = "确定你的职责：";
+    CONFIRM_YOUR_ROLE = "确定你的职责：";]]
 
     --[[INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED = "你还没完成所需的成就。";
     INSTANCE_UNAVAILABLE_SELF_AREA_NOT_EXPLORED = "你需要发现%2$s。";
