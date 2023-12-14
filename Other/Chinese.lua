@@ -224,14 +224,14 @@ local function Init()
     STAT_VERSATILITY = "全能";
 
 
-    --法术 SpellBookFrame.lua
+    --[[法术 SpellBookFrame.lua
     hooksecurefunc('SpellBookFrame_Update', function()
         set(SpellBookFrameTabButton1, '法术')
         set(SpellBookFrameTabButton2, '专业')
         set(SpellBookFrameTabButton3, '宠物')
-    end)
+    end)]]
 
-    --LFD PVEFrame.lua
+    --[[LFD PVEFrame.lua
     set(PVEFrameTab1, '地下城和团队副本')
     set(PVEFrameTab2, 'PvP')
     set(PVEFrameTab3, '史诗钥石地下城')
