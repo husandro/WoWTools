@@ -50,7 +50,7 @@ local Save={
     --strupper
 }
 
-
+--PaperDollFrame.lua
 
 local function get_PrimaryStat()--取得主属
     local spec= GetSpecialization()
