@@ -912,30 +912,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --所有，出售物品, 表表
 local function Init_AllAuctions()
     --移动，刷新，按钮
@@ -1008,31 +984,48 @@ end
 
 
 
+
+
+
+
 --浏览拍卖行
 --Blizzard_AuctionHouseUI.lua
 local function Init_BrowseResultsFrame()
-    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(self)
-        for _, btn in pairs(self.ItemList.ScrollBox:GetFrames() or {}) do
+    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(frame)
+        for _, btn in pairs(frame.ItemList.ScrollBox:GetFrames() or {}) do
             local text
-            if btn.rowData then
-                local itemKey= btn.rowData.itemKey----itemKey, totalQuantity, minPrice, containsOwnerItem btn:GetRowData() 
-                local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey) or {}--itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
+            local rowData= btn:GetRowData()
+            if rowData and rowData.itemKey then
+                --local itemKey= rowData.itemKey----itemKey, totalQuantity, minPrice, containsOwnerItem btn:GetRowData() 
+                local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(rowData.itemKey) or {}--itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
                 if itemKeyInfo.isPet then
                     text= select(3, e.GetPetCollectedNum(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
                 elseif itemKeyInfo.isEquipment then
                     text= e.GetItemCollected(itemKeyInfo.itemID, nil, true)--物品是否收集
                 end
-                if text and  not btn.lable then
-                    btn.lable= e.Cstr(btn)
-                    btn.lable:SetPoint('RIGHT', btn.cells[2].Icon, 'LEFT')
-                end
+            end
+            if text and not btn.lable then
+                btn.lable= e.Cstr(btn)
             end
             if btn.lable then
+                btn.lable:SetPoint('RIGHT', btn.cells[2].Icon, 'LEFT')
                 btn.lable:SetText(text or '')
             end
         end
     end)
+    --hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'SetSortOrder', Set_BrowseResultsFrame)
 end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
