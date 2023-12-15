@@ -66,8 +66,8 @@ local function Init()
     set(PVEFrameTab1, '地下城和团队副本')
     set(PVEFrameTab2, 'PvP')
     set(PVEFrameTab3, '史诗钥石地下城')
-    
-    
+
+
     set(GroupFinderFrame.groupButton1.name, '地下城查找器')
     set(GroupFinderFrame.groupButton2.name, '团队查找器')
     set(GroupFinderFrame.groupButton3.name, '预创建队伍')
@@ -318,8 +318,6 @@ local strText={
 
 local function Init_Loaded(arg1)
     if arg1=='Blizzard_AuctionHouseUI' then
-        
-
         hooksecurefunc('AuctionHouseFilterButton_SetUp', function(btn, info)
             set(btn, strText[info.name])
         end)
@@ -402,19 +400,19 @@ local function Init_Loaded(arg1)
         set(ProfessionsCustomerOrdersFrame.Form.TrackRecipeCheckBox.Text, '追踪配方')
         set(ProfessionsCustomerOrdersFrame.Form.AllocateBestQualityCheckBox.Text, '使用最高品质材料')
         --set(ProfessionsCustomerOrdersFrame.Form.ReagentContainer.Reagents.Label.Text, '提供材料：')
-        
+
         set(ProfessionsCustomerOrdersFrame.Form.MinimumQuality.Text, '')
         set(ProfessionsCustomerOrdersFrame.Form.PaymentContainer.NoteEditBox.TitleBox.Title, '给制作者的信息：')
         set(ProfessionsCustomerOrdersFrame.Form.PaymentContainer.Tip, '佣金')
-        set(ProfessionsCustomerOrdersFrame.Form.PaymentContainer.Duration.TimeRemaining, '过期时间')        
-    
+        set(ProfessionsCustomerOrdersFrame.Form.PaymentContainer.Duration.TimeRemaining, '过期时间')
+
     elseif arg1=='Blizzard_Collections' then--收藏
         set(CollectionsJournalTab1, '坐骑')
         set(CollectionsJournalTab2, '宠物手册')
         set(CollectionsJournalTab3, '玩具箱')
         set(CollectionsJournalTab4, '传家宝')
         set(CollectionsJournalTab5, '外观')
-        
+
         hooksecurefunc('MountJournal_UpdateMountDisplay', function()--Blizzard_MountCollection.lua
             if ( MountJournal.selectedMountID ) then
                 local active = select(4, C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID))
