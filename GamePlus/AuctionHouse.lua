@@ -1022,9 +1022,24 @@ local function Init_BrowseResultsFrame()
    
     local function OnDoubleClick_ItemBuyFrame(frame)
         for _, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
+            --[[local rowData= btn:GetRowData()
+            if rowData and rowData.itemLink then
+                local tab= e.Get_Item_Stats(rowData.itemLink)
+                if tab then
+                    table.sort(tab, function(a,b) return a.value>b.value and a.index== b.index end)
+                    for index=1 ,4 do
+                        if tab[index] then
+                            print(tab[index])
+                        end
+                    end
+                end
+            end]]
             if not btn.setOnDoubleClick then
                 btn:SetScript('OnDoubleClick', function()
                     if AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton and AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton:IsEnabled() then
+                        if StaticPopup1:IsShown() then
+                            StaticPopup1:Hide()
+                        end
                         AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton:Click()
                     end
                 end)
@@ -1034,12 +1049,6 @@ local function Init_BrowseResultsFrame()
     end
     hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'DirtyScrollFrame', OnDoubleClick_ItemBuyFrame)
     hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'UpdateRefreshFrame', OnDoubleClick_ItemBuyFrame)
-
-    --购买，物品，信息
-    hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemDisplay, 'SetItemKey' ,function(self, itemKey)
-                
-                
-    end)
 end
 
 
