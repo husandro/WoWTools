@@ -821,10 +821,10 @@ local function set_All_Text()--所有记录
         
             ChallengesFrame.moveRightTipsButton= e.Cbtn(ChallengesFrame, {size={22,22}, atlas='common-icon-rotateright'})
             ChallengesFrame.moveRightTipsButton:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
-            ChallengesFrame.moveRightTipsButton:SetPoint('TOP', PVEFrameCloseButton, 'BOTTOM', -2, -8)
+            ChallengesFrame.moveRightTipsButton:SetPoint('TOP', PVEFrameCloseButton, 'BOTTOM', -8, 0)
             ChallengesFrame.moveRightTipsButton:SetAlpha(0.3)
             function ChallengesFrame.moveRightTipsButton:set_tooltips()
-                e.tips:SetOwner(self, "ANCHOR_RIGHT")
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:AddLine(' ')
