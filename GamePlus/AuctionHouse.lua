@@ -991,8 +991,9 @@ end
 --浏览拍卖行
 --Blizzard_AuctionHouseUI.lua
 local function Init_BrowseResultsFrame()
-    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(frame)
-        for _, btn in pairs(frame.ItemList.ScrollBox:GetFrames() or {}) do
+
+    local function Set_BrowseResultsFrame()
+        for _, btn in pairs(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox:GetFrames() or {}) do
             local text
             local rowData= btn:GetRowData()
             if rowData and rowData.itemKey then
@@ -1012,7 +1013,10 @@ local function Init_BrowseResultsFrame()
                 btn.lable:SetText(text or '')
             end
         end
-    end)
+    end
+
+    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetScrollTargetOffset', Set_BrowseResultsFrame)
+    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', Set_BrowseResultsFrame)
     --hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'SetSortOrder', Set_BrowseResultsFrame)
 
     
