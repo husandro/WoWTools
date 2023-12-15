@@ -464,19 +464,7 @@ local function Init_Loaded(arg1)
             end
         end)
 
-    elseif arg1=='Blizzard_Professions' then--专业
-        
-        for _, tabID in pairs(ProfessionsFrame:GetTabSet() or {}) do
-            local btn= ProfessionsFrame:GetTabButton(tabID)
-            print(btn, tabID)
-            if tabID==1 then
-                set(btn.Text, '配方')
-            elseif tabID==2 then
-                set(btn.Text, '专精')
-            elseif tabID==3 then
-                set(btn.Text, '制造订单')
-            end
-        end
+    --elseif arg1=='Blizzard_Professions' then--专业
     end
 end
 
