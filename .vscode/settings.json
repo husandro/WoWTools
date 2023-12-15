@@ -3876,7 +3876,9 @@
         "ITEM_MOD_AGILITY",
         "ProfessionsCustomerOrdersCategoryButtonMixin",
         "ProfessionsCustomerOrdersFrameBrowseTab",
-        "ProfessionsCustomerOrdersFrameOrdersTab"
+        "ProfessionsCustomerOrdersFrameOrdersTab",
+        "MountJournalMountButton",
+        "BINDING_NAME_DISMOUNT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

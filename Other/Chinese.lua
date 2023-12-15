@@ -287,7 +287,7 @@ local function Init_Loaded(arg1)
         set(ProfessionsCustomerOrdersFrameOrdersTab, '我的订单')
         set(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchButton, '搜索')
 
-        --[[set(ProfessionsCustomerOrdersFrame.Form.BackButton, '返回' )
+        set(ProfessionsCustomerOrdersFrame.Form.BackButton, '返回' )
         set(ProfessionsCustomerOrdersFrame.Form.ReagentContainer.RecraftInfoText, "再造功能可以让你改变某些制作的装备的附加材料和品质。\n\n你可以在再造时提升技能，但几率较低。")
         set(ProfessionsCustomerOrdersFrame.Form.TrackRecipeCheckBox.Text, '追踪配方')
         set(ProfessionsCustomerOrdersFrame.Form.AllocateBestQualityCheckBox.Text, '使用最高品质材料')
@@ -296,8 +296,31 @@ local function Init_Loaded(arg1)
         set(ProfessionsCustomerOrdersFrame.Form.MinimumQuality.Text, '')
         set(ProfessionsCustomerOrdersFrame.Form.PaymentContainer.NoteEditBox.TitleBox.Title, '给制作者的信息：')
         set(ProfessionsCustomerOrdersFrame.Form.PaymentContainer.Tip, '佣金')
-        set(ProfessionsCustomerOrdersFrame.Form.PaymentContainer.Duration.TimeRemaining, '过期时间')]]
-        --set(ProfessionsCustomerOrdersFrame.Form.PaymentContainer.PostingFee, '')
+        set(ProfessionsCustomerOrdersFrame.Form.PaymentContainer.Duration.TimeRemaining, '过期时间')        
+    
+    elseif arg1=='Blizzard_Collections' then--收藏
+        set(CollectionsJournalTab1, '坐骑')
+        set(CollectionsJournalTab2, '宠物手册')
+        set(CollectionsJournalTab3, '玩具箱')
+        set(CollectionsJournalTab4, '传家宝')
+        set(CollectionsJournalTab5, '外观')
+        
+        hooksecurefunc('MountJournal_UpdateMountDisplay', function()--Blizzard_MountCollection.lua
+            if ( MountJournal.selectedMountID ) then
+                local active = select(4, C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID))
+                local needsFanfare = C_MountJournal.NeedsFanfare(MountJournal.selectedMountID);
+                if ( needsFanfare ) then
+                    MountJournal.MountButton:SetText('打开')
+                elseif ( active ) then
+                    MountJournal.MountButton:SetText('解散坐骑');
+                else
+                    MountJournal.MountButton:SetText('召唤');
+                end
+            end
+        end)
+
+        set(WardrobeCollectionFrameTab1, '物品')
+        set(WardrobeCollectionFrameTab2, '套装')
     end
 end
 
