@@ -449,7 +449,7 @@ local function Init()
 
 
 
-        --[[ITEM_MOUSE_OVER = "将鼠标移动到图标上可以获得更多的信息";
+        ITEM_MOUSE_OVER = "将鼠标移动到图标上可以获得更多的信息";
         ITEM_NAMES = "物品名";
         ITEM_NAMES_SHOW_BRACES_COMBATLOG_TOOLTIP = "在物品名称外显示括号。";
         ITEM_NO_DROP = "无法丢弃";
@@ -461,15 +461,6 @@ local function Init()
         ITEM_PROPOSED_ENCHANT = "将获得%s的效果。";
         ITEM_PROSPECTABLE = "可选矿";
         ITEM_PURCHASED_COLON = "物品购入：";
-        ITEM_QUALITY0_DESC = "粗糙";
-        ITEM_QUALITY1_DESC = "普通";
-        ITEM_QUALITY2_DESC = "优秀";
-        ITEM_QUALITY3_DESC = "精良";
-        ITEM_QUALITY4_DESC = "史诗";
-        ITEM_QUALITY5_DESC = "传说";
-        ITEM_QUALITY6_DESC = "神器";
-        ITEM_QUALITY7_DESC = "传家宝";
-        ITEM_QUALITY8_DESC = "时光徽章";
         ITEM_RACES_ALLOWED = "种族：%s";
         ITEM_RANDOM_ENCHANT = "<随机额外属性>";
         ITEM_READABLE = "<右键点击阅读>";
@@ -567,7 +558,7 @@ local function Init()
         ITEM_WRAPPED_BY = "|cff00ff00<%s的礼物>|r";
         ITEM_WRITTEN_BY = "由%s撰写";
         ITEM_WRONG_CLASS = "你的职业无法使用这件物品！";
-        ITEM_WRONG_RACE = "你的种族无法使用这件物品！";]]
+        ITEM_WRONG_RACE = "你的种族无法使用这件物品！";
 
 
 
