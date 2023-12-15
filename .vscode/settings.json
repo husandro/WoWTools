@@ -3874,7 +3874,9 @@
         "BUTTON_LAG_MOVEMENT",
         "DAMAGE_SCHOOL2",
         "ITEM_MOD_AGILITY",
-        "ProfessionsCustomerOrdersCategoryButtonMixin"
+        "ProfessionsCustomerOrdersCategoryButtonMixin",
+        "ProfessionsCustomerOrdersFrameBrowseTab",
+        "ProfessionsCustomerOrdersFrameOrdersTab"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -1399,6 +1399,16 @@ local function Init_Event(arg1)
         set_Alpha_Color(ProfessionsCustomerOrdersFrameMiddle)
         set_Alpha_Color(ProfessionsCustomerOrdersFrameRight)
 
+        set_NineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList, nil, true)
+        set_NineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList, nil, true)
+        set_ScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList)
+        set_ScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList)
+        set_Alpha_Frame_Texture(ProfessionsCustomerOrdersFrameBrowseTab, {alpha=min05})
+        set_Alpha_Frame_Texture(ProfessionsCustomerOrdersFrameOrdersTab, {alpha=min05})
+
+        set_NineSlice(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList, nil, true)
+        set_ScrollBar(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList)
+
     elseif arg1=='Blizzard_BlackMarketUI' then--黑市
         set_Alpha_Color(BlackMarketFrameTitleBg)
         set_Alpha_Color(BlackMarketFrameBg)

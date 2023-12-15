@@ -500,7 +500,8 @@ local function setAddLoad(arg1)
         set_Move_Frame(ItemInteractionFrame)
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
-        set_Move_Frame(ProfessionsCustomerOrdersFrame)
+        set_Move_Frame(ProfessionsCustomerOrdersFrame, {save=true})
+        set_Move_Frame(ProfessionsCustomerOrdersFrame.Form, {frame=ProfessionsCustomerOrdersFrame, save=true})
 
     elseif arg1=='Blizzard_VoidStorageUI' then--虚空，仓库
          set_Move_Frame(VoidStorageFrame)
