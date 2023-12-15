@@ -365,13 +365,11 @@ local function Init_Loaded(arg1)
     elseif arg1=='Blizzard_ClassTalentUI' then--Blizzard_TalentUI.lua
          for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
             local btn= ClassTalentFrame:GetTabButton(tabID)
-           if btn then
             if tabID==1 then
                 set(btn, '专精')
             elseif tabID==2 then
                 set(btn, '天赋')
             end
-           end
         end
         set(ClassTalentFrame.TalentsTab.ApplyButton, '应用改动')
         --[[PVP_LABEL_WAR_MODE = "战争模式";
@@ -465,6 +463,20 @@ local function Init_Loaded(arg1)
                 end
             end
         end)
+
+    elseif arg1=='Blizzard_Professions' then--专业
+        
+        for _, tabID in pairs(ProfessionsFrame:GetTabSet() or {}) do
+            local btn= ProfessionsFrame:GetTabButton(tabID)
+            print(btn, tabID)
+            if tabID==1 then
+                set(btn.Text, '配方')
+            elseif tabID==2 then
+                set(btn.Text, '专精')
+            elseif tabID==3 then
+                set(btn.Text, '制造订单')
+            end
+        end
     end
 end
 

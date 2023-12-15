@@ -1087,7 +1087,7 @@ local function Init_Event(arg1)
         --TabSystemOwner.lua
         for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
             local btn= ClassTalentFrame:GetTabButton(tabID)
-            set_Alpha_Frame_Texture(btn, {alpha=min03})
+            set_Alpha_Frame_Texture(btn, {alpha=min05})
         end
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
@@ -1747,7 +1747,10 @@ local function Init_Event(arg1)
 
         set_Alpha_Color(InspectRecipeFrameBg)
         set_Alpha_Color(InspectRecipeFrame.SchematicForm.MinimalBackground)
-
+        for _, tabID in pairs(ProfessionsFrame:GetTabSet() or {}) do
+            local btn= ProfessionsFrame:GetTabButton(tabID)
+            set_Alpha_Frame_Texture(btn, {alpha=min05})
+        end
     end
 end
 
