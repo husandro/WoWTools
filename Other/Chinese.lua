@@ -321,6 +321,11 @@ local function Init_Loaded(arg1)
 
         set(WardrobeCollectionFrameTab1, '物品')
         set(WardrobeCollectionFrameTab2, '套装')
+
+    elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
+        set(EncounterJournalMonthlyActivitiesTab, '旅行者日志')
+        set(EncounterJournalSuggestTab, '推荐玩法')
+        set(EncounterJournalDungeonTab, '地下城')
     end
 end
 
