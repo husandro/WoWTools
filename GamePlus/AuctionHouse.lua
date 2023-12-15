@@ -1019,7 +1019,27 @@ local function Init_BrowseResultsFrame()
     hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', Set_BrowseResultsFrame)
     --hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'SetSortOrder', Set_BrowseResultsFrame)
 
-    
+   
+    local function OnDoubleClick_ItemBuyFrame(frame)
+        for _, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
+            if not btn.setOnDoubleClick then
+                btn:SetScript('OnDoubleClick', function()
+                    if AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton and AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton:IsEnabled() then
+                        AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton:Click()
+                    end
+                end)
+                btn.setOnDoubleClick=true
+            end
+        end
+    end
+    hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'DirtyScrollFrame', OnDoubleClick_ItemBuyFrame)
+    hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'UpdateRefreshFrame', OnDoubleClick_ItemBuyFrame)
+
+    --购买，物品，信息
+    hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemDisplay, 'SetItemKey' ,function(self, itemKey)
+                
+                
+    end)
 end
 
 

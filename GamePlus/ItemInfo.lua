@@ -1093,6 +1093,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     end
                 end
             end)
+
+        --elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
+            
         end
 
     elseif event == "PLAYER_LOGOUT" then

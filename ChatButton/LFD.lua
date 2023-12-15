@@ -1112,7 +1112,7 @@ local function set_LFGPlus()--预创建队伍增强
             self.realmText:SetText(realm or '')
         end
         if not self.OnDoubleClick then
-            self:SetScript('OnDoubleClick', function(self2)--LFGListApplicationDialogSignUpButton_OnClick(button) LFG队长分数, 双击加入 LFGListSearchPanel_UpdateResults
+            self:SetScript('OnDoubleClick', function()--LFGListApplicationDialogSignUpButton_OnClick(button) LFG队长分数, 双击加入 LFGListSearchPanel_UpdateResults
                 if not Save.LFGPlus then
                     return
                 end

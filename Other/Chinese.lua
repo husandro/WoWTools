@@ -325,10 +325,11 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrameBuyTab.Text, '购买')
         set(AuctionHouseFrameSellTab.Text, '出售')
         set(AuctionHouseFrameAuctionsTab.Text, '拍卖')
+        set(AuctionHouseFrameAuctionsFrame.CancelAuctionButton, '取消拍卖')
         set(AuctionHouseFrameAuctionsFrameAuctionsTab.Text, '拍卖')
         set(AuctionHouseFrameAuctionsFrameBidsTab.Text, '竞标')
         set(AuctionHouseFrameAuctionsFrameBidsTab.Text, '竞标')
-        set(AuctionHouseFrameAuctionsFrameText, '一口价')
+        --set(AuctionHouseFrameAuctionsFrameText, '一口价')
 
         set(AuctionHouseFrame.SearchBar.SearchButton, '搜索')
 
@@ -359,6 +360,18 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.MaxButton, '最大数量')
         set(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.PerItemPostfix, '每个物品')
         set(AuctionHouseFrame.ItemSellFrame.BuyoutModeCheckButton.Text, '一口价')
+
+        
+
+        set(AuctionHouseFrame.CommoditiesBuyFrame.BackButton, '返回')
+        set(AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.BuyButton, '一口价')
+        set(AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.QuantityInput.Label, '数量')
+        set(AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.UnitPrice.Label, '单价')
+        set(AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.TotalPrice.Label, '总价')
+
+        set(AuctionHouseFrame.ItemBuyFrame.BackButton, '返回')
+        set(AuctionHouseFrame.ItemBuyFrame.BidFrame.BidButton, '竞标')
+        set(AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton, '一口价')
 
     elseif arg1=='Blizzard_ClassTalentUI' then--Blizzard_TalentUI.lua
          for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
