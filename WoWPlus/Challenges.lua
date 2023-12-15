@@ -9,6 +9,7 @@ local Save= {
 
     --hideTips=true,--提示信息
     --tipsScale=0.8,--提示信息，缩放
+    --RaiderIOToLeft=true,--RaiderIO_ProfileTooltip 放左边
 
     hidePort= not e.Player.husandro,--传送门
     portScale=0.85,--传送门, 缩放
@@ -817,7 +818,41 @@ local function set_All_Text()--所有记录
         ChallengesFrame.runHistoryLable= e.Cstr(TipsFrame, {mouse=true, size=14})--最右边, 数据
 
         if _G['RaiderIO_ProfileTooltip'] then
-            ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', _G['RaiderIO_ProfileTooltip'], 'TOPRIGHT', 2, 0)
+            local btn= e.Cbtn(ChallengesFrame, {size={18,18}, atlas='common-icon-rotateleft'})
+            btn:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
+            btn:SetPoint('RIGHT', PVEFrameCloseButton, 'LEFT', -2, 0)
+            btn:SetAlpha(0.3)
+            function btn:set_tooltips()
+                e.tips:SetOwner(self, "ANCHOR_RIGHT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine('RaiderIO_ProfileTooltip: '..(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT), e.GetYesNo(Save.RaiderIOToLeft))
+                e.tips:Show()
+                self:SetAlpha(1)
+            end
+            btn:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
+            btn:SetScript('OnEnter', btn.set_tooltips)
+            function btn:set_point()
+                if Save.RaiderIOToLeft then
+                    ChallengesFrame.runHistoryLable:ClearAllPoints()
+                    ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', 2, -26)
+                    _G['RaiderIO_ProfileTooltip']:ClearAllPoints()
+                    _G['RaiderIO_ProfileTooltip']:SetPoint('TOPRIGHT', PVEFrame, 'TOPLEFT')
+                else
+                    _G['RaiderIO_ProfileTooltip']:ClearAllPoints()
+                    _G['RaiderIO_ProfileTooltip']:SetPoint('TOPLEFT', PVEFrame, 'TOPRIGHT')
+                    ChallengesFrame.runHistoryLable:ClearAllPoints()
+                    ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', _G['RaiderIO_ProfileTooltip'], 'TOPRIGHT', 2, 0)
+                end
+            end
+            btn:SetScript('OnClick', function(self)
+                Save.RaiderIOToLeft= not Save.RaiderIOToLeft and true or nil
+                self:set_point()
+                self:set_tooltips()
+            end)
+            btn:set_point()
+
         else
             ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', 2, -26)
         end

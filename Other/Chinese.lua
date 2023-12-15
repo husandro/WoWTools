@@ -1,5 +1,5 @@
 local id, e= ...
-if LOCALE_zhCN or LOCALE_zhTW or not e.Player.husandro then
+if LOCALE_zhCN or LOCALE_zhTW then
     return
 end
 
@@ -224,19 +224,19 @@ local function Init()
     STAT_VERSATILITY = "全能";
 
 
-    --[[法术 SpellBookFrame.lua
+    --法术 SpellBookFrame.lua
     hooksecurefunc('SpellBookFrame_Update', function()
         set(SpellBookFrameTabButton1, '法术')
         set(SpellBookFrameTabButton2, '专业')
         set(SpellBookFrameTabButton3, '宠物')
-    end)]]
+    end)
 
-    --[[LFD PVEFrame.lua
+    --LFD PVEFrame.lua
     set(PVEFrameTab1, '地下城和团队副本')
     set(PVEFrameTab2, 'PvP')
     set(PVEFrameTab3, '史诗钥石地下城')
-    
-    
+
+
     set(GroupFinderFrame.groupButton1.name, '地下城查找器')
     set(GroupFinderFrame.groupButton2.name, '团队查找器')
     set(GroupFinderFrame.groupButton3.name, '预创建队伍')
@@ -264,9 +264,9 @@ local function Init()
     VOTE_BOOT_PLAYER = "有人发起了一个将%1$s从队伍中移出的投票。\n\n理由为：\n|cffffd200%2$s|r\n\n你同意将%1$s移出队伍吗？";
     VOTE_BOOT_PLAYER_NO_REASON = "有人发起了一个将%1$s从队伍中移出的投票。\n\n你同意将%1$s移出队伍吗？";
     REQUEUE_CONFIRM_YOUR_ROLE = "你的队友已经将你加入另一场练习赛的队列。\n\n请确认你的角色：";
-    CONFIRM_YOUR_ROLE = "确定你的职责：";]]
+    CONFIRM_YOUR_ROLE = "确定你的职责：";
 
-    --[[INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED = "你还没完成所需的成就。";
+    INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED = "你还没完成所需的成就。";
     INSTANCE_UNAVAILABLE_SELF_AREA_NOT_EXPLORED = "你需要发现%2$s。";
     INSTANCE_UNAVAILABLE_SELF_CANNOT_RUN_ANY_CHILD_DUNGEON = "你不满足此分类下任何地下城的要求。";
     INSTANCE_UNAVAILABLE_SELF_ENGAGED_IN_PVP = "你已进入PvP状态。";
@@ -282,18 +282,17 @@ local function Init()
     INSTANCE_UNAVAILABLE_SELF_PVP_GEAR_TOO_LOW = "你需要更高的PvP装备物品平均等级才能加入队列。|n（需要 %2$d，当前%3$d。）";
     INSTANCE_UNAVAILABLE_SELF_QUEST_NOT_COMPLETED = "你没有完成所需的任务。";
     INSTANCE_UNAVAILABLE_SELF_RAID_LOCKED = "你已与该副本锁定。";
-    INSTANCE_UNAVAILABLE_SELF_TEMPORARILY_DISABLED = "你不能进入。这个副本暂时不可用。";]]
+    INSTANCE_UNAVAILABLE_SELF_TEMPORARILY_DISABLED = "你不能进入。这个副本暂时不可用。";
 
-    StaticPopupDialogs["LFG_LIST_INVITING_CONVERT_TO_RAID"].text= "邀请这名玩家或队伍会将你的小队转化为团队。"
+    --[[StaticPopupDialogs["LFG_LIST_INVITING_CONVERT_TO_RAID"].text= "邀请这名玩家或队伍会将你的小队转化为团队。"
     StaticPopupDialogs["LFG_LIST_INVITING_CONVERT_TO_RAID"].button1 = '邀请'
-	StaticPopupDialogs["LFG_LIST_INVITING_CONVERT_TO_RAID"].button2 = '取消'
-    --[[LFG_LIST_APP_DECLINED_MESSAGE = "你发送给“%s”的申请已被拒绝。";
+	StaticPopupDialogs["LFG_LIST_INVITING_CONVERT_TO_RAID"].button2 = '取消']]
+    LFG_LIST_APP_DECLINED_MESSAGE = "你发送给“%s”的申请已被拒绝。";
     LFG_LIST_APP_DECLINED_FULL_MESSAGE = "“%s”已满，已被移出列表。";
     LFG_LIST_APP_DECLINED_DELISTED_MESSAGE = "“%s”已被移出列表。";
-    LFG_LIST_APP_TIMED_OUT_MESSAGE = "你发送给“%s”的申请已过期。";]]
+    LFG_LIST_APP_TIMED_OUT_MESSAGE = "你发送给“%s”的申请已过期。";
     --hooksecurefunc('LFGListCategorySelection_AddButton', function(self, btnIndex, categoryID, filters)
-  
---[[
+
         ITEM_MOD_AGILITY = "%c%s 敏捷";
         ITEM_MOD_AGILITY_OR_INTELLECT_SHORT = "敏捷或智力";
         ITEM_MOD_AGILITY_OR_STRENGTH_OR_INTELLECT_SHORT = "敏捷、力量或智力";
@@ -417,7 +416,7 @@ local function Init()
         ITEM_MOD_STRENGTH = "%c%s 力量";
         ITEM_MOD_STRENGTH_OR_INTELLECT_SHORT = "力量或智力";
         ITEM_MOD_STRENGTH_SHORT = "力量";
-        ITEM_MOD_VERSATILITY = "全能";]]
+        ITEM_MOD_VERSATILITY = "全能";
 end
 
 

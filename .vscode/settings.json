@@ -3869,7 +3869,8 @@
         "GroupFinderFrame",
         "LFG_LIST_CONVERT_TO_RAID_WARNING",
         "LFG_LIST_APP_DECLINED_MESSAGE",
-        "LFDQueueFrameFindGroupButton"
+        "LFDQueueFrameFindGroupButton",
+        "INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
