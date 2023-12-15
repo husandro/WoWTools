@@ -346,7 +346,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             --添加控制面板
             e.AddPanel_Check({
-                name= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '语言翻译' or addName),
+                name= e.onlyChinese and '语言翻译' or addName,
                 tooltip= '仅限中文，|cnRED_FONT_COLOR:可能会出错|r|nChinese only',
                 value= not Save.disabled,
                 func= function()
