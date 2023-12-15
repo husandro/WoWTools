@@ -2075,8 +2075,11 @@ local function Init()
     --高CPU
     local deadText= e.onlyChinese and '死亡' or DEAD
     hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
+        if not UnitExists(frame.unit) then
+            return
+        end
         if value then--statusFrame.unit
-            if textString and textString:IsShown() then
+            if textString then
                 local text
                 if UnitIsGhost(frame.unit) then
                     text= '|A:poi-soulspiritghost:18:18|a'..deadText
