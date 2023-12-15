@@ -55,7 +55,47 @@ local function Init()
     set(TokenFramePopup.InactiveCheckBox.Text, '未使用')
     set(TokenFramePopup.BackpackCheckBox.Text, '在行囊上显示')
 
+    --法术 SpellBookFrame.lua
+    hooksecurefunc('SpellBookFrame_Update', function()
+        set(SpellBookFrameTabButton1, '法术')
+        set(SpellBookFrameTabButton2, '专业')
+        set(SpellBookFrameTabButton3, '宠物')
+    end)
+
+    --LFD PVEFrame.lua
+    set(PVEFrameTab1, '地下城和团队副本')
+    set(PVEFrameTab2, 'PvP')
+    set(PVEFrameTab3, '史诗钥石地下城')
+    
+    
+    set(GroupFinderFrame.groupButton1.name, '地下城查找器')
+    set(GroupFinderFrame.groupButton2.name, '团队查找器')
+    set(GroupFinderFrame.groupButton3.name, '预创建队伍')
+    set(LFGListFrame.CategorySelection.StartGroupButton, '创建队伍')
+    set(LFGListFrame.CategorySelection.FindGroupButton, '寻找队伍')
+
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local strText={
@@ -326,6 +366,8 @@ local function Init_Loaded(arg1)
         set(EncounterJournalMonthlyActivitiesTab, '旅行者日志')
         set(EncounterJournalSuggestTab, '推荐玩法')
         set(EncounterJournalDungeonTab, '地下城')
+        set(EncounterJournalRaidTab, '团队副本')
+        set(EncounterJournalLootJournalTab, '套装物品')
     end
 end
 
