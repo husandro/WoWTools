@@ -3878,7 +3878,11 @@
         "ProfessionsCustomerOrdersFrameBrowseTab",
         "ProfessionsCustomerOrdersFrameOrdersTab",
         "MountJournalMountButton",
-        "BINDING_NAME_DISMOUNT"
+        "BINDING_NAME_DISMOUNT",
+        "AchievementFrameSummaryAchievementsHeaderTitle",
+        "AchievementFrameSummaryCategoriesHeaderTitle",
+        "GUILD_ACHIEVEMENTS_TITLE",
+        "ACHIEVEMENT_SUMMARY_CATEGORY"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

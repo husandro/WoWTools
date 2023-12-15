@@ -215,7 +215,7 @@ local strText={
         [GetItemSubClassInfo(9, 11)] = "铭文",
         [GetItemSubClassInfo(9, 5)] = "烹饪",
         [GetItemSubClassInfo(9, 7)] = "急救",
-        [GetItemSubClassInfo(9, 9)] = "钓鱼",
+        --[GetItemSubClassInfo(9, 9)] = "钓鱼",
         [GetItemSubClassInfo(9, 0)] = "书籍",
     [AUCTION_CATEGORY_PROFESSION_EQUIPMENT] = "专业装备",
         [GetItemSubClassInfo(19, 5)] = "采矿",
@@ -242,7 +242,79 @@ local strText={
     [AUCTION_SUBCATEGORY_PROFESSION_ACCESSORIES] = "配饰",
     [AUCTION_SUBCATEGORY_PROFESSION_TOOLS] = "工具",
     [GetItemSubClassInfo(18, 0)] = "时光徽章",
+
+
+
+
+
+    --成就
+    [ACHIEVEMENT_SUMMARY_CATEGORY] = "总览",
+    [CHARACTER] = "角色",
+    [QUESTS_LABEL] = "任务",
+    [GROUP_FINDER] = "地下城和团队副本",
+    [TRADE_SKILLS] = "专业",
+    [PROFESSIONS_ARCHAEOLOGY] = "考古学",
+    [REPUTATION] = "声望",
+    [HONOR] = "荣誉",
+    [COLLECTIONS] = "藏品",
+    [GENERAL] = "综合",
+    [KILLS] = "杀敌",
+    [DEATHS] = "死亡",
+    [SKILLS] = "技能",
+    [TUTORIAL_TITLE35] = "旅行",
+    [SOCIALS] = "社交",
+    [TRACKER_HEADER_PROVINGGROUNDS] = "试炼场",
+    [COMBAT_TEXT_SHOW_HONOR_GAINED_TEXT] = "荣誉消灭",
+    [KILLING_BLOW_TOOLTIP_TITLE] = "消灭",
+    [EVENTS_LABEL] = "事件",
+
+    [BATTLE_PET_SOURCE_5] = "宠物对战",
+    [BATTLE_PET_SOURCE_7] = "世界事件",
+    [BATTLE_PET_SOURCE_8] = "特殊",
+    [GAMES] = "比赛",
+
+    [EXPANSION_NAME0] = "经典旧世",
+    [EXPANSION_NAME1] = "燃烧的远征",
+    [EXPANSION_NAME2] = "巫妖王之怒",
+    [EXPANSION_NAME3] = "大地的裂变",
+    [EXPANSION_NAME4] = "熊猫人之谜",
+    [POSTMASTER_PIPE_PANDARIA] = "潘达利亚",
+    [POSTMASTER_PIPE_DRAENOR] = "德拉诺",
+    [EXPANSION_NAME5] = "德拉诺之王",
+    [EXPANSION_NAME6] = "军团再临",
+    [EXPANSION_NAME7] = "争霸艾泽拉斯",
+    [EXPANSION_NAME8] = "暗影国度",
+    [EXPANSION_NAME9] = "巨龙时代",
+    [BATTLEGROUNDS] = "战场",
+    --[CHANNEL_CATEGORY_WORLD] = "世界",
+    [GUILD_CHALLENGE_TYPE1] = "地下城",
+    [GUILD_CHALLENGE_TYPE2] = "团队副本",
+    [GUILD_CHALLENGE_TYPE3] = "评级战场",
+    [GUILD_CHALLENGE_TYPE4] = "场景战役",
+    [GUILD_CHALLENGE_TYPE5] = "史诗钥石地下城",
+
+
+    [DUNGEON_FLOOR_TOLBARADWARLOCKSCENARIO0] = "托尔巴拉德",
+    [POSTMASTER_PIPE_EASTERNKINGDOMS] = "东部王国",
+    [POSTMASTER_PIPE_KALIMDOR] = "卡利姆多";
+    [POSTMASTER_PIPE_NORTHREND] = "诺森德",
+    [POSTMASTER_PIPE_OUTLAND] = "外域",
+    [WORLD_PVP] = "阿什兰",
+    [WORLD] = "世界",
+    [TOY_BOX] = "玩具箱",
+    [WARDROBE] = "外观",
 }
+
+
+
+
+
+
+
+
+
+
+
 
 local function Init_Loaded(arg1)
     if arg1=='Blizzard_AuctionHouseUI' then
@@ -302,7 +374,7 @@ local function Init_Loaded(arg1)
            end
         end
         set(ClassTalentFrame.TalentsTab.ApplyButton, '应用改动')
-        PVP_LABEL_WAR_MODE = "战争模式";
+        --[[PVP_LABEL_WAR_MODE = "战争模式";
         PVP_WAR_MODE_ENABLED = "开启";
         PVP_WAR_MODE_DESCRIPTION = "加入战争模式即可激活世界PvP，使任务的奖励和经验值最多提高10%，并可以在野外使用PvP天赋。";
         PVP_WAR_MODE_DESCRIPTION_FORMAT = "加入战争模式即可激活世界PvP，使任务的奖励和经验值提高%1$d%%，并可以在野外使用PvP天赋。";
@@ -313,7 +385,7 @@ local function Init_Loaded(arg1)
         PVP_WAR_MODE_NOT_NOW_HORDE_RESTAREA = "战争模式可以在任何休息区域关闭，但只能在奥格瑞玛或瓦德拉肯开启。";
 
         WAR_MODE_CALL_TO_ARMS = "战争模式：战斗的召唤";
-        WAR_MODE_BONUS_INCENTIVE_TOOLTIP = "战争模式的加成提升至%2$d%%。";
+        WAR_MODE_BONUS_INCENTIVE_TOOLTIP = "战争模式的加成提升至%2$d%%。";]]
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then
         hooksecurefunc(ProfessionsCustomerOrdersCategoryButtonMixin, 'Init', function(self, categoryInfo, _, isRecraftCategory)
@@ -368,6 +440,31 @@ local function Init_Loaded(arg1)
         set(EncounterJournalDungeonTab, '地下城')
         set(EncounterJournalRaidTab, '团队副本')
         set(EncounterJournalLootJournalTab, '套装物品')
+
+    elseif arg1=='Blizzard_AchievementUI' then--成就
+        set(AchievementFrameTab1, '成就')
+        set(AchievementFrameTab2, '公会')
+        set(AchievementFrameTab3, '统计')
+
+        set(AchievementFrameSummaryAchievementsHeaderTitle, '近期成就')
+        set(AchievementFrameSummaryCategoriesHeaderTitle, '进展总览')
+
+        hooksecurefunc('AchievementFrame_RefreshView', function()--Blizzard_AchievementUI.lua
+            if AchievementFrame.Header.Title:GetText()==GUILD_ACHIEVEMENTS_TITLE then
+                AchievementFrame.Header.Title:SetText('公会成就');
+            else
+                AchievementFrame.Header.Title:SetText('成就点数');
+            end
+        end)
+
+
+        hooksecurefunc('AchievementFrameCategories_UpdateDataProvider', function()
+            for _, btn in pairs(AchievementFrameCategories.ScrollBox:GetFrames() or {}) do
+                if btn.Button then
+                    set(btn.Button.Label, strText[btn.Button.name])
+                end
+            end
+        end)
     end
 end
 
