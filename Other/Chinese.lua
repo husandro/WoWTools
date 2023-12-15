@@ -109,12 +109,12 @@ local function Init()
     DEFAULT_STATDEFENSE_TOOLTIP = "%s点防御（+%s 防御）\n躲闪、格挡和招架几率提高%.2f%%\n被命中和被爆击的几率降低%.2f%%\n|cff888888（在效果递减之前）|r";
     DEFAULT_STATSPELLBONUS_TOOLTIP = "法术攻击的伤害加成。";
 
-    DAMAGE_SCHOOL2 = "神圣";
+    --[[DAMAGE_SCHOOL2 = "神圣";
     DAMAGE_SCHOOL3 = "火焰";
     DAMAGE_SCHOOL4 = "自然";
     DAMAGE_SCHOOL5 = "冰霜";
     DAMAGE_SCHOOL6 = "暗影";
-    DAMAGE_SCHOOL7 = "奥术";
+    DAMAGE_SCHOOL7 = "奥术";]]
 
     STAT_ARMOR = "护甲";
     STAT_ARMOR_BASE_TOOLTIP = "基础护甲值物理减伤：%0.2f%%";
@@ -224,74 +224,103 @@ local function Init()
     STAT_VERSATILITY = "全能";
 
 
-    --法术 SpellBookFrame.lua
-    hooksecurefunc('SpellBookFrame_Update', function()
-        set(SpellBookFrameTabButton1, '法术')
-        set(SpellBookFrameTabButton2, '专业')
-        set(SpellBookFrameTabButton3, '宠物')
-    end)
+        --[[ITEMS_EQUIPPED = "已装备%d件物品";
+        ITEMS_IN_INVENTORY = "背包中有%d件物品";
+        ITEMS_NOT_IN_INVENTORY = "缺少%d件物品";
+        ITEMS_VARIABLE_QUANTITY = "%d件物品";
+        ITEM_ACCOUNTBOUND = "账号绑定";
+        ITEM_ARTIFACT_VIEWABLE = "<Shift+右键点击查看神器>";
+        ITEM_AZERITE_EMPOWERED_VIEWABLE = "<Shift+右键点击查看艾泽里特之力>";
+        ITEM_AZERITE_ESSENCES_VIEWABLE = "<Shift+右键点击查看精华>";
+        ITEM_BIND_ON_EQUIP = "装备后绑定";
+        ITEM_BIND_ON_PICKUP = "拾取后绑定";
+        ITEM_BIND_ON_USE = "使用后绑定";
+        ITEM_BIND_QUEST = "任务物品";
+        ITEM_BIND_TO_ACCOUNT = "账号绑定";
+        ITEM_BIND_TO_BNETACCOUNT = "绑定至暴雪游戏通行证";
+        ITEM_BNETACCOUNTBOUND = "暴雪游戏通行证绑定";
+        ITEM_CANT_BE_DESTROYED = "这件物品无法被摧毁。";
+        ITEM_CAN_BE_READ = "<可以阅读该物品>";
+        ITEM_CHARGEUP_TOTAL = "（需要%s）";
+        ITEM_CHARGEUP_TOTAL_DAYS = "（需要%d天）";
+        ITEM_CHARGEUP_TOTAL_HOURS = "（需要%d小时）";
+        ITEM_CHARGEUP_TOTAL_MIN = "（需要%d分钟）";
+        ITEM_CHARGEUP_TOTAL_SEC = "（需要%d秒）";
+        ITEM_CLASSES_ALLOWED = "职业：%s";
+        ITEM_COMPARISON_CYCLING_DISABLED_MSG_MAINHAND = "访问按键设置菜单，开启主手物品的循环比较。（推荐快捷键：SHIFT-C）";
+        ITEM_COMPARISON_CYCLING_DISABLED_MSG_OFFHAND = "访问按键设置菜单，开启副手物品的循环比较。（推荐快捷键：SHIFT-C）";
+        ITEM_COMPARISON_RELIC_BONUS_RANKS = "%d级";
+        ITEM_COMPARISON_SWAP_ITEM_MAINHAND_DESCRIPTION = "按%s来切换用于搭配的主手物品。";
+        ITEM_COMPARISON_SWAP_ITEM_OFFHAND_DESCRIPTION = "按%s来切换用于搭配的副手物品。";
+        ITEM_CONJURED = "魔法制造的物品";
+        ITEM_CONTAINER = "容器";
+        ITEM_COOLDOWN_TIME = "冷却时间剩余：%s";
+        ITEM_COOLDOWN_TIME_DAYS = "剩余冷却时间：%d天";
+        ITEM_COOLDOWN_TIME_HOURS = "剩余冷却时间：%d小时";
+        ITEM_COOLDOWN_TIME_MIN = "冷却时间剩余：%d 分钟";
+        ITEM_COOLDOWN_TIME_SEC = "冷却时间剩余：%d秒";
+        ITEM_COOLDOWN_TOTAL = "（%s冷却）";
+        ITEM_COOLDOWN_TOTAL_DAYS = "(%d天冷却时间)";
+        ITEM_COOLDOWN_TOTAL_HOURS = "(%d小时冷却时间)";
+        ITEM_COOLDOWN_TOTAL_MIN = "(%d分钟冷却时间)";
+        ITEM_COOLDOWN_TOTAL_SEC = "(%d秒冷却时间)";
+        ITEM_CORRUPTION_BONUS_STAT = "+%d 腐蚀";
+        ITEM_COSMETIC = "装饰品";
+        ITEM_COSMETIC_LEARN = "使用：将此外观添加到你的收藏中。";
+        ITEM_CREATED_BY = "|cff00ff00<由%s制造>|r";
+        ITEM_CREATE_LOOT_SPEC_ITEM = "使用：制造一件适用于你当前拾取专精(%s)的灵魂绑定物品。";
+        ITEM_DELTA_DESCRIPTION = "如果你替换该物品，将会产生以下的属性变更：";
+        ITEM_DELTA_DUAL_WIELD_COMPARISON_MAINHAND_DESCRIPTION = "（与搭配了主手装备|c%s%s|r后相比）";
+        ITEM_DELTA_DUAL_WIELD_COMPARISON_OFFHAND_DESCRIPTION = "（与搭配了副手装备|c%s%s|r后相比）";
+        ITEM_DELTA_MULTIPLE_COMPARISON_DESCRIPTION = "如果你替换这些物品，将会产生以下的属性变更：";
+        ITEM_DISENCHANT_ANY_SKILL = "可分解";
+        ITEM_DISENCHANT_MIN_SKILL = "分解需要%s (%d)";
+        ITEM_DISENCHANT_NOT_DISENCHANTABLE = "无法分解";
+        ITEM_DURATION_DAYS = "持续时间：%d天";
+        ITEM_DURATION_HOURS = "持续时间：%d小时";
+        ITEM_DURATION_MIN = "持续时间：%d分钟";
+        ITEM_DURATION_SEC = "持续时间：%d秒";
+        ITEM_ENCHANT_DISCLAIMER = "物品将不会被交易！";
+        ITEM_ENCHANT_TIME_LEFT_DAYS = "%s（%d天）";
+        ITEM_ENCHANT_TIME_LEFT_HOURS = "%s（%d小时）";
+        ITEM_ENCHANT_TIME_LEFT_MIN = "%s（%d分钟）";
+        ITEM_ENCHANT_TIME_LEFT_SEC = "%s（%d秒）";
+        ITEM_GLYPH_ONUSE = "永久教会你使用这个雕文。";
+        ITEM_HEROIC = "英雄";
+        ITEM_HEROIC_EPIC = "英雄级别史诗品质";
+        ITEM_HEROIC_QUALITY0_DESC = "英雄粗糙";
+        ITEM_HEROIC_QUALITY1_DESC = "英雄普通";
+        ITEM_HEROIC_QUALITY2_DESC = "英雄优秀";
+        ITEM_HEROIC_QUALITY3_DESC = "英雄稀有";
+        ITEM_HEROIC_QUALITY4_DESC = "英雄史诗";
+        ITEM_HEROIC_QUALITY5_DESC = "英雄传说";
+        ITEM_HEROIC_QUALITY6_DESC = "英雄神器";
+        ITEM_HEROIC_QUALITY7_DESC = "英雄传家宝";
+        ITEM_IS_NOT_AZERITE_EMPOWERED = "这个物品没有被艾泽里特强化";
+        ITEM_LEGACY_INACTIVE_EFFECTS = "传承物品：效果未激活";
+        ITEM_LEVEL = "物品等级%d";
+        ITEM_LEVEL_ALT = "物品等级%d (%d)";
+        ITEM_LEVEL_AND_MIN = "等级 %d （最小 %d）";
+        ITEM_LEVEL_PLUS = "物品等级%d+";
+        ITEM_LEVEL_RANGE = "需要等级%d到%d";
+        ITEM_LEVEL_RANGE_CURRENT = "需要等级 %d到%d （%d）";
+        ITEM_LEVEL_UPGRADE_MAX = "物品等级 %d";
+        ITEM_LIMIT_CATEGORY = "唯一：%s（%d）";
+        ITEM_LIMIT_CATEGORY_MULTIPLE = "装备唯一：%s （%d）";
+        ITEM_LOOT = "物品拾取";
+        ITEM_MILLABLE = "可研磨";
+        ITEM_MIN_LEVEL = "需要等级 %d";
+        ITEM_MIN_SKILL = "需要%s（%d）";
+        ITEM_MISSING = "%s缺失";]]
 
-    --LFD PVEFrame.lua
-    set(PVEFrameTab1, '地下城和团队副本')
-    set(PVEFrameTab2, 'PvP')
-    set(PVEFrameTab3, '史诗钥石地下城')
 
 
-    set(GroupFinderFrame.groupButton1.name, '地下城查找器')
-    set(GroupFinderFrame.groupButton2.name, '团队查找器')
-    set(GroupFinderFrame.groupButton3.name, '预创建队伍')
-    set(LFGListFrame.CategorySelection.StartGroupButton, '创建队伍')
-    set(LFGListFrame.CategorySelection.FindGroupButton, '寻找队伍')
 
-    LEAVE_QUEUE = "离开队列";
-    JOIN_AS_PARTY = "小队加入";
-    INSTANCE_ROLE_WARNING_TITLE = "该角色在某些地下城不可用。";
-    INSTANCE_ROLE_WARNING_TEXT = "该角色在你所选择的一个或更多地下城中不可用。在这些地下城中，你将作为可胜任的角色加入队列。";
-    ERR_NOT_LEADER = "你现在不是队长";
-    CANNOT_DO_THIS_WHILE_LFGLIST_LISTED = "你不能在你的队伍出现在预创建队伍列表中时那样做。";
-    CROSS_FACTION_RAID_DUNGEON_FINDER_ERROR = "在跨阵营队伍中无法这么做。你可以参加非队列匹配模式的团队副本和地下城。";
-    START_A_GROUP = "创建队伍";
-    LFG_LIST_FIND_A_GROUP = "寻找队伍";
-    LFG_RANDOM_COOLDOWN_YOU = "你近期加入过一个随机地下城队列。\n需要过一段时间才可加入另一个，等待时间为：";
-    LFG_DESERTER_YOU = "你刚刚逃离了随机队伍，在接下来的时间内无法再度排队：";
-    LFG_DESERTER_OTHER = "你的一名队伍成员刚刚逃离了随机副本队伍，在接下来的时间内无法再度排队。";
-    LFG_RANDOM_COOLDOWN_OTHER = "你的一名队友近期加入过一个随机地下城队列，暂时无法加入另一个。";
-    YOU_MAY_NOT_QUEUE_FOR_DUNGEON = "你不能进入这个地下城的队列。";
-    ERR_ROLE_UNAVAILABLE = "该职责不可用。";
-    ROLE_DESCRIPTION_DAMAGER = "表示你愿意担当对敌人输出伤害的职责。";
-    ROLE_DESCRIPTION_HEALER = "表示你愿意在队友受到伤害时为他们提供治疗。";
-    ROLE_DESCRIPTION_TANK = "表示你愿意通过使敌人攻击自己，保护队友不受攻击。";
-    VOTE_BOOT_PLAYER = "有人发起了一个将%1$s从队伍中移出的投票。\n\n理由为：\n|cffffd200%2$s|r\n\n你同意将%1$s移出队伍吗？";
-    VOTE_BOOT_PLAYER_NO_REASON = "有人发起了一个将%1$s从队伍中移出的投票。\n\n你同意将%1$s移出队伍吗？";
-    REQUEUE_CONFIRM_YOUR_ROLE = "你的队友已经将你加入另一场练习赛的队列。\n\n请确认你的角色：";
-    CONFIRM_YOUR_ROLE = "确定你的职责：";
 
-    INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED = "你还没完成所需的成就。";
-    INSTANCE_UNAVAILABLE_SELF_AREA_NOT_EXPLORED = "你需要发现%2$s。";
-    INSTANCE_UNAVAILABLE_SELF_CANNOT_RUN_ANY_CHILD_DUNGEON = "你不满足此分类下任何地下城的要求。";
-    INSTANCE_UNAVAILABLE_SELF_ENGAGED_IN_PVP = "你已进入PvP状态。";
-    INSTANCE_UNAVAILABLE_SELF_EXPANSION_TOO_LOW = "你没有安装正确的《魔兽世界》内容更新。";
-    INSTANCE_UNAVAILABLE_SELF_GEAR_TOO_HIGH = "你的装备物品平均等级太高。（需要 %2$d，当前%3$d。）";
-    INSTANCE_UNAVAILABLE_SELF_GEAR_TOO_LOW = "你的装备物品平均等级不够。（需要 %2$d，当前%3$d。）";
-    INSTANCE_UNAVAILABLE_SELF_LEVEL_TOO_HIGH = "你的级别太高了。";
-    INSTANCE_UNAVAILABLE_SELF_LEVEL_TOO_LOW = "你的级别不够。";
-    INSTANCE_UNAVAILABLE_SELF_MISSING_ITEM = "你没有所需的物品。";
-    INSTANCE_UNAVAILABLE_SELF_NO_SPEC = "在进入此地下城前，你必须选择一项职业专精";
-    INSTANCE_UNAVAILABLE_SELF_NO_VALID_ROLES = "你没有有效的角色。";
-    INSTANCE_UNAVAILABLE_SELF_OTHER = "你的级别没有达到该地下城的要求。";
-    INSTANCE_UNAVAILABLE_SELF_PVP_GEAR_TOO_LOW = "你需要更高的PvP装备物品平均等级才能加入队列。|n（需要 %2$d，当前%3$d。）";
-    INSTANCE_UNAVAILABLE_SELF_QUEST_NOT_COMPLETED = "你没有完成所需的任务。";
-    INSTANCE_UNAVAILABLE_SELF_RAID_LOCKED = "你已与该副本锁定。";
-    INSTANCE_UNAVAILABLE_SELF_TEMPORARILY_DISABLED = "你不能进入。这个副本暂时不可用。";
 
-    --[[StaticPopupDialogs["LFG_LIST_INVITING_CONVERT_TO_RAID"].text= "邀请这名玩家或队伍会将你的小队转化为团队。"
-    StaticPopupDialogs["LFG_LIST_INVITING_CONVERT_TO_RAID"].button1 = '邀请'
-	StaticPopupDialogs["LFG_LIST_INVITING_CONVERT_TO_RAID"].button2 = '取消']]
-    LFG_LIST_APP_DECLINED_MESSAGE = "你发送给“%s”的申请已被拒绝。";
-    LFG_LIST_APP_DECLINED_FULL_MESSAGE = "“%s”已满，已被移出列表。";
-    LFG_LIST_APP_DECLINED_DELISTED_MESSAGE = "“%s”已被移出列表。";
-    LFG_LIST_APP_TIMED_OUT_MESSAGE = "你发送给“%s”的申请已过期。";
-    --hooksecurefunc('LFGListCategorySelection_AddButton', function(self, btnIndex, categoryID, filters)
+
+
+
 
         ITEM_MOD_AGILITY = "%c%s 敏捷";
         ITEM_MOD_AGILITY_OR_INTELLECT_SHORT = "敏捷或智力";
@@ -377,8 +406,6 @@ local function Init()
         ITEM_MOD_MANA_SHORT = "法力值";
         ITEM_MOD_MASTERY_RATING = "使你的精通提高%s点。";
         ITEM_MOD_MASTERY_RATING_SHORT = "精通";
-        ITEM_MOD_MASTERY_RATING_SPELL = "(%s)";
-        ITEM_MOD_MASTERY_RATING_TWO_SPELLS = "(%s/%s)";
         ITEM_MOD_MELEE_ATTACK_POWER_SHORT = "近战攻击强度";
         ITEM_MOD_MODIFIED_CRAFTING_STAT_1 = "随机属性1";
         ITEM_MOD_MODIFIED_CRAFTING_STAT_2 = "随机属性2";
@@ -417,6 +444,166 @@ local function Init()
         ITEM_MOD_STRENGTH_OR_INTELLECT_SHORT = "力量或智力";
         ITEM_MOD_STRENGTH_SHORT = "力量";
         ITEM_MOD_VERSATILITY = "全能";
+
+
+
+
+
+        --[[ITEM_MOUSE_OVER = "将鼠标移动到图标上可以获得更多的信息";
+        ITEM_NAMES = "物品名";
+        ITEM_NAMES_SHOW_BRACES_COMBATLOG_TOOLTIP = "在物品名称外显示括号。";
+        ITEM_NO_DROP = "无法丢弃";
+        ITEM_OBLITERATEABLE = "可拆解";
+        ITEM_OBLITERATEABLE_NOT = "无法拆解";
+        ITEM_ONLY_TOURNAMENT_GEAR_ALLOWED = "本次战争游戏只能使用竞技装备。";
+        ITEM_OPENABLE = "<右键点击打开>";
+        ITEM_PET_KNOWN = "已收集（%d/%d）";
+        ITEM_PROPOSED_ENCHANT = "将获得%s的效果。";
+        ITEM_PROSPECTABLE = "可选矿";
+        ITEM_PURCHASED_COLON = "物品购入：";
+        ITEM_QUALITY0_DESC = "粗糙";
+        ITEM_QUALITY1_DESC = "普通";
+        ITEM_QUALITY2_DESC = "优秀";
+        ITEM_QUALITY3_DESC = "精良";
+        ITEM_QUALITY4_DESC = "史诗";
+        ITEM_QUALITY5_DESC = "传说";
+        ITEM_QUALITY6_DESC = "神器";
+        ITEM_QUALITY7_DESC = "传家宝";
+        ITEM_QUALITY8_DESC = "时光徽章";
+        ITEM_RACES_ALLOWED = "种族：%s";
+        ITEM_RANDOM_ENCHANT = "<随机额外属性>";
+        ITEM_READABLE = "<右键点击阅读>";
+        ITEM_REFUND_MSG = "物品已退还。获得退款：";
+        ITEM_RELIC_VIEWABLE = "<右键点击查看装备的神器>";
+        ITEM_REQ_ALLIANCE = "只限联盟";
+        ITEM_REQ_AMOUNT_EARNED = "需要在本赛季总共获得%1$d\n%2$s。";
+        ITEM_REQ_ARENA_RATING = "需要个人竞技场等级达到%d";
+        ITEM_REQ_ARENA_RATING_3V3 = "需要3v3的个人竞技场等级达到%d|n";
+        ITEM_REQ_ARENA_RATING_3V3_BG = "需要战场等级达到%d或者|n3v3的个人|n竞技场等级达到%d";
+        ITEM_REQ_ARENA_RATING_5V5 = "需要5v5的个人竞技场等级达到%d|n";
+        ITEM_REQ_ARENA_RATING_BG = "需要战场等级达到%d或者|n个人竞技场等级达到%d";
+        ITEM_REQ_HORDE = "只限部落";
+        ITEM_REQ_PURCHASE_ACHIEVEMENT = "需要成就：%s";
+        ITEM_REQ_PURCHASE_GUILD = "需要一个公会";
+        ITEM_REQ_PURCHASE_GUILD_LEVEL = "需要公会等级%d";
+        ITEM_REQ_REPUTATION = "需要 %s - %s";
+        ITEM_REQ_SKILL = "需要%s";
+        ITEM_REQ_SPECIALIZATION = "需要：%s";
+        ITEM_RESIST_ALL = "%c%d 所有抗性";
+        ITEM_RESIST_SINGLE = "%c%d %s抗性";
+        ITEM_SCRAPABLE = "可拆解";
+        ITEM_SCRAPABLE_NOT = "不可拆解";
+        ITEM_SET_BONUS = "套装：%s";
+        ITEM_SET_BONUS_GRAY = "(%d) 套装：%s";
+        ITEM_SET_BONUS_NO_VALID_SPEC = "套装奖励将根据玩家专精变化。";
+        ITEM_SET_LEGACY_INACTIVE_BONUS = "传承套装：套装奖励未激活";
+        ITEM_SET_NAME = "%s（%d/%d）";
+        ITEM_SIGNABLE = "<右键点击以了解详情>";
+        ITEM_SLOTS_IGNORED = "忽略%d个栏位";
+        ITEM_SOCKETABLE = "<Shift+右键点击打开镶嵌界面>";
+        ITEM_SOCKETING = "物品镶嵌";
+        ITEM_SOCKET_BONUS = "镶孔奖励：%s";
+        ITEM_SOLD_COLON = "物品售出：";
+        ITEM_SOULBOUND = "灵魂绑定";
+        ITEM_SPELL_CHARGES = "%d次";
+        ITEM_SPELL_CHARGES_NONE = "耗尽次数";
+        ITEM_SPELL_EFFECT = "效果：%s";
+        ITEM_SPELL_KNOWN = "已经学会";
+        ITEM_SPELL_MAX_USABLE_LEVEL = "（要求等级不高于%d）";
+        ITEM_SPELL_TRIGGER_ONEQUIP = "装备：";
+        ITEM_SPELL_TRIGGER_ONPROC = "击中时可能：";
+        ITEM_SPELL_TRIGGER_ONUSE = "使用：";
+        ITEM_STARTS_QUEST = "该物品将触发一个任务";
+        ITEM_TEXT_FROM = "发信人，";
+        ITEM_TOURNAMENT_GEAR = "竞技装备";
+        ITEM_TOURNAMENT_GEAR_WARNING = "竞技装备只能在战争游戏中使用。";
+        ITEM_TOY_ONUSE = "使用：将该玩具添加到你的玩具箱。";
+        ITEM_UNIQUE = "唯一";
+        ITEM_UNIQUE_EQUIPPABLE = "装备唯一";
+        ITEM_UNIQUE_MULTIPLE = "唯一（%d）";
+        ITEM_UNSELLABLE = "无法出售";
+        ITEM_UPGRADE = "物品升级";
+        ITEM_UPGRADED_LABEL = "物品已升级！";
+        ITEM_UPGRADE_BONUS_DAMAGE_TEMPLATE = "|cff20ff20%1$s - %2$s|r点伤害";
+        ITEM_UPGRADE_COST_LABEL = "总花费：";
+        ITEM_UPGRADE_CURRENT = "当前：";
+        ITEM_UPGRADE_DESCRIPTION = "许多可装备的物品都可以进行升级，从而提高其物品等级。不同来源的物品升级所需的货币也各不相同。";
+        ITEM_UPGRADE_DISCOUNT_ITEM_TYPE_FINGER = "戒指";
+        ITEM_UPGRADE_DISCOUNT_ITEM_TYPE_ONE_HANDED_WEAPON = "单手武器";
+        ITEM_UPGRADE_DISCOUNT_ITEM_TYPE_TRINKET = "饰品";
+        ITEM_UPGRADE_DISCOUNT_TOOLTIP_ACCOUNT_WIDE = "账号通用";
+        ITEM_UPGRADE_DISCOUNT_TOOLTIP_CURRENT_CHARACTER = "这次升级花费较少的%s，因为你已经在此栏位获得了更高物品等级（%d）的物品。";
+        ITEM_UPGRADE_DISCOUNT_TOOLTIP_OTHER_CHARACTER = "这次升级花费较少的%s，因为你账号上的一名角色已经在此栏位获得了更高物品等级（%d）的物品。";
+        ITEM_UPGRADE_DISCOUNT_TOOLTIP_PARTIAL_TWO_HAND_CURRENT_CHARACTER = "这次升级花费较少的%s，因为你已经拥有了一套更高物品等级（%d）的武器。";
+        ITEM_UPGRADE_DISCOUNT_TOOLTIP_PARTIAL_TWO_HAND_OTHER_CHARACTER = "这次升级花费较少的%s，因为你账号上的一名角色已经获得了一套更高物品等级（%d）的武器。";
+        ITEM_UPGRADE_DISCOUNT_TOOLTIP_TITLE = "%s折扣";
+        ITEM_UPGRADE_DISCOUNT_TOOLTIP_TWO_SLOT_CURRENT_CHARACTER = "这次升级花费较少的%1$s，因为你已经获得了两个更高物品等级（%3$d）的%2$s。";
+        ITEM_UPGRADE_DISCOUNT_TOOLTIP_TWO_SLOT_OTHER_CHARACTER = "这次升级花费较少的%1$s，因为你账号上的一名角色已经获得了两个更高物品等级（%3$d）的%2$s。";
+        ITEM_UPGRADE_DROPDOWN_LEVEL_FORMAT = "等级%d/%d";
+        ITEM_UPGRADE_ERROR_NOT_ENOUGH_CURRENCY = "%s不足。";
+        ITEM_UPGRADE_ERROR_NOT_ENOUGH_CURRENCY_DOWNGRADE = "较高等级的暗影烈焰纹章可以在峈姆的瓦斯卡尔恩处进行降级。";
+        ITEM_UPGRADE_ERROR_NOT_ENOUGH_CURRENCY_MULTIPLE = "升级货币不足。";
+        ITEM_UPGRADE_ERROR_NOT_ENOUGH_CURRENCY_TWO = "%s和%s不足。";
+        ITEM_UPGRADE_ERROR_UNDEFINED_MESSAGE = "该物品无法升级";
+        ITEM_UPGRADE_FRAGMENTS_TOTAL = "获得碎片：|c%s%s/%s|r";
+        ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT = "升级：%s/%s";
+        ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT_STRING = "升级：%s %s/%s";
+        ITEM_UPGRADE_FRAME_PREVIEW_RANK_TOOLTIP_ERROR = "需要之前的升级";
+        ITEM_UPGRADE_FRAME_UPGRADE_TO = "升级至：";
+        ITEM_UPGRADE_ITEM_LEVEL_BONUS_STAT_FORMAT = "物品等级 |cff20ff20%1$d(+%2$d)|r";
+        ITEM_UPGRADE_ITEM_LEVEL_STAT_FORMAT = "物品等级%d";
+        ITEM_UPGRADE_ITEM_UPGRADED_NOTIFICATION = "物品已升级";
+        ITEM_UPGRADE_MISSING_ITEM = "将物品拖曳至此处升级。";
+        ITEM_UPGRADE_NEXT_UPGRADE = "升级：";
+        ITEM_UPGRADE_NO_MORE_UPGRADES = "该物品不能再升级了。";
+        ITEM_UPGRADE_PROGRESS_LEVEL_FORMAT = "等级 %d/%d  %d |cnDISABLED_FONT_COLOR:(%d-%d)|r";
+        ITEM_UPGRADE_PVP_ITEM_LEVEL_BONUS_STAT_FORMAT = "PvP物品等级 |cff20ff20%1$d(+%2$d)|r";
+        ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT = "PvP物品等级 %d";
+        ITEM_UPGRADE_STAT_AVERAGE_ITEM_LEVEL = "物品等级";
+        ITEM_UPGRADE_TOOLTIP_FORMAT = "升级：%d/%d";
+        ITEM_UPGRADE_TOOLTIP_FORMAT_STRING = "升级：%s %d/%d";
+        ITEM_UPGRADE_TUTORIAL_ITEM_IN_SLOT = "把这件装备带到主城的物品升级专员处提升其强度";
+        ITEM_VENDOR_STACK_BUY = "<按住Shift点击以购买不同数量>";
+        ITEM_WRAPPED_BY = "|cff00ff00<%s的礼物>|r";
+        ITEM_WRITTEN_BY = "由%s撰写";
+        ITEM_WRONG_CLASS = "你的职业无法使用这件物品！";
+        ITEM_WRONG_RACE = "你的种族无法使用这件物品！";]]
+
+
+
+
+
+
+       --[[CANNOT_DO_THIS_IN_BATTLEGROUND = "你不能在战场或竞技场队列中那样做，也不能在进入战场或竞技场后那样做。";
+        CANNOT_DO_THIS_IN_LFG_PARTY = "你不能在自动匹配队伍中那样做。";
+        CANNOT_DO_THIS_IN_PVE_QUEUE = "你不能在地下城、团队副本或场景战役队列中那样做。";
+        CANNOT_DO_THIS_IN_PVP_QUEUE = "你不能在战场或竞技场队列中那样做。";
+        CANNOT_DO_THIS_WHILE_LFGLIST_LISTED = "你不能在你的队伍出现在预创建队伍列表中时那样做。";
+        CANNOT_DO_THIS_WHILE_PVE_QUEUING = "你不能在地下城、团队副本或场景战役队列中那样做。";
+        CANNOT_DO_THIS_WHILE_PVP_QUEUING = "你不能在战场或竞技场队列中那样做。";
+        CANNOT_DO_THIS_WITH_LFGLIST_APP = "你不能在拥有有效的预创建队伍申请时那样做。";
+        CANNOT_UNEQUIP_ARENA = "不能在竞技场改变装备状态";
+        CANNOT_UNEQUIP_COMBAT = "不能在战斗中改变装备状态";
+        CANNOT_UNEQUIP_MYTHIC_PLUS = "不能在激活史诗钥石的状态下改变装备状态";
+        CANNOT_UNEQUIP_RATED_BATTLEGROUND = "不能在评级战场改变装备状态";
+        CANNOT_UNEQUIP_TORGHAST = "不能在托加斯特改变装备状态";]]
+
+        --[[EQUIPMENT_MANAGER = "装备管理";
+        EQUIPMENT_MANAGER_IGNORE_SLOT = "忽略此栏位";
+        EQUIPMENT_MANAGER_IS_DISABLED = "装备管理已禁用。";
+        EQUIPMENT_MANAGER_ITEMS_MISSING_TOOLTIP = "%d %s |cffff0000（缺少%d）|r";
+        EQUIPMENT_MANAGER_PLACE_IN_BAGS = "放入背包";
+        EQUIPMENT_MANAGER_UNIGNORE_SLOT = "包括此栏位";
+        EQUIPMENT_SETS = "装备配置方案：|cFFFFFFFF%s|r";
+        EQUIPMENT_SETS_CANT_RENAME = "一个重名的装备方案已经存在。";
+        EQUIPMENT_SETS_TOO_MANY = "你不能再创建新的装备方案了。";
+        EQUIPMENT_SET_ASSIGN_TO_SPEC = "指定专精：";
+        EQUIPMENT_SET_EDIT = "修改名称/图标";
+        EQUIPMENT_SET_SETTINGS = "设置";
+        EQUIPSET_EQUIP = "装备";
+        EQUIP_CONTAINER = "装备容器";
+        EQUIP_CONTAINER_REAGENT = "装备材料包";
+        EQUIP_NO_DROP = "装备之后，该物品将与你绑定。";]]
 end
 
 

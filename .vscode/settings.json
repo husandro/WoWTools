@@ -3871,7 +3871,9 @@
         "LFG_LIST_APP_DECLINED_MESSAGE",
         "LFDQueueFrameFindGroupButton",
         "INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED",
-        "BUTTON_LAG_MOVEMENT"
+        "BUTTON_LAG_MOVEMENT",
+        "DAMAGE_SCHOOL2",
+        "ITEM_MOD_AGILITY"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
