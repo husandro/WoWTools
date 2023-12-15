@@ -817,8 +817,6 @@ local function set_All_Text()--所有记录
     local last
     if not ChallengesFrame.runHistoryLable then
         ChallengesFrame.runHistoryLable= e.Cstr(TipsFrame, {mouse=true, size=14})--最右边, 数据
-
-        
             ChallengesFrame.moveRightTipsButton= e.Cbtn(ChallengesFrame, {size={22,22}, atlas='common-icon-rotateright'})
             ChallengesFrame.moveRightTipsButton:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
             ChallengesFrame.moveRightTipsButton:SetPoint('TOP', PVEFrameCloseButton, 'BOTTOM', -8, 0)
@@ -828,6 +826,7 @@ local function set_All_Text()--所有记录
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, addName)
                 e.tips:AddLine(' ')
+                e.tips:AddLine(e.onlyChinese and '移动' or BUTTON_LAG_MOVEMENT)
                 e.tips:AddDoubleLine('x: '..Save.rightX, 'Shift+'..e.Icon.mid)
                 e.tips:AddDoubleLine('y: '..Save.rightY, 'Alt+'..e.Icon.mid)
                 e.tips:Show()

@@ -3870,7 +3870,8 @@
         "LFG_LIST_CONVERT_TO_RAID_WARNING",
         "LFG_LIST_APP_DECLINED_MESSAGE",
         "LFDQueueFrameFindGroupButton",
-        "INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED"
+        "INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED",
+        "BUTTON_LAG_MOVEMENT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
