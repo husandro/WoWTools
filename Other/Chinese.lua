@@ -224,7 +224,7 @@ local function Init()
     STAT_VERSATILITY = "全能";
 
 
-        --[[ITEMS_EQUIPPED = "已装备%d件物品";
+        ITEMS_EQUIPPED = "已装备%d件物品";
         ITEMS_IN_INVENTORY = "背包中有%d件物品";
         ITEMS_NOT_IN_INVENTORY = "缺少%d件物品";
         ITEMS_VARIABLE_QUANTITY = "%d件物品";
@@ -311,7 +311,7 @@ local function Init()
         ITEM_MILLABLE = "可研磨";
         ITEM_MIN_LEVEL = "需要等级 %d";
         ITEM_MIN_SKILL = "需要%s（%d）";
-        ITEM_MISSING = "%s缺失";]]
+        ITEM_MISSING = "%s缺失";
 
 
 
@@ -579,7 +579,7 @@ local function Init()
         CANNOT_UNEQUIP_RATED_BATTLEGROUND = "不能在评级战场改变装备状态";
         CANNOT_UNEQUIP_TORGHAST = "不能在托加斯特改变装备状态";]]
 
-        --[[EQUIPMENT_MANAGER = "装备管理";
+        EQUIPMENT_MANAGER = "装备管理";
         EQUIPMENT_MANAGER_IGNORE_SLOT = "忽略此栏位";
         EQUIPMENT_MANAGER_IS_DISABLED = "装备管理已禁用。";
         EQUIPMENT_MANAGER_ITEMS_MISSING_TOOLTIP = "%d %s |cffff0000（缺少%d）|r";
@@ -594,7 +594,7 @@ local function Init()
         EQUIPSET_EQUIP = "装备";
         EQUIP_CONTAINER = "装备容器";
         EQUIP_CONTAINER_REAGENT = "装备材料包";
-        EQUIP_NO_DROP = "装备之后，该物品将与你绑定。";]]
+        EQUIP_NO_DROP = "装备之后，该物品将与你绑定。";
 end
 
 
