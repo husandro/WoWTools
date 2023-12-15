@@ -10,7 +10,7 @@ local Save= {
     --hideTips=true,--提示信息
     --tipsScale=0.8,--提示信息，缩放
     rightX= 2,--右边，提示，位置
-    rightY= -26,
+    rightY= -22,
 
     hidePort= not e.Player.husandro,--传送门
     portScale=0.85,--传送门, 缩放
@@ -2027,7 +2027,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
             Save.rightX= Save.rightX or 2--右边，提示，位置
-            Save.rightY= Save.rightY or -26
+            Save.rightY= Save.rightY or -22
 
             --添加控制面板
             e.AddPanel_Check({
