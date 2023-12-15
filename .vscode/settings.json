@@ -3873,7 +3873,8 @@
         "INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED",
         "BUTTON_LAG_MOVEMENT",
         "DAMAGE_SCHOOL2",
-        "ITEM_MOD_AGILITY"
+        "ITEM_MOD_AGILITY",
+        "ProfessionsCustomerOrdersCategoryButtonMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
