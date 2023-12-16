@@ -1049,6 +1049,7 @@ local function Init_BrowseResultsFrame()
                 elseif itemKeyInfo.isEquipment then
                     text= e.GetItemCollected(itemKeyInfo.itemID, nil, true)--物品是否收集
                 end
+                --appearanceLink
             end
             if text and not btn.lable then
                 btn.lable= e.Cstr(btn)
