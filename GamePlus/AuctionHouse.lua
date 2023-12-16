@@ -1069,7 +1069,7 @@ local function Init_BrowseResultsFrame()
 
 
     local function OnDoubleClick_AllAuctionsList(frame)
-        if not frame.ScrollBox then
+        if not frame:IsVisible() then
             return
         end
         for _, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
@@ -1086,6 +1086,8 @@ local function Init_BrowseResultsFrame()
             end
         end
     end
+    AuctionHouseFrameAuctionsFrame.CommoditiesList.RefreshFrame.RefreshButton
+    
     hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
     hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
 
