@@ -3913,7 +3913,8 @@
         "POSTMASTER_PIPE_KALIMDOR",
         "POSTMASTER_PIPE_NORTHREND",
         "POSTMASTER_PIPE_OUTLAND",
-        "ProfessionsMixin"
+        "ProfessionsMixin",
+        "C_AuctionHouse"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
