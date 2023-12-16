@@ -240,6 +240,7 @@ local function Init_Sell()
                                         if frame.selectTexture:IsShown() then
                                             AuctionHouseFrame:ClearPostItem()
                                         end
+                                        AuctionHouseButton:set_next_item()
                                     end
                                 end
                             end)
