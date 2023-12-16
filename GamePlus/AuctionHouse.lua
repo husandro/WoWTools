@@ -541,9 +541,7 @@ local function Init_Sell()
                 else
                     Save.SellItemDefaultPrice[itemID]=nil
                 end
-                print(itemID, unitPrice)
             end
-
         end
     end
     AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox:HookScript('OnTextChanged', function(_, userInput)
