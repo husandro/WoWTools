@@ -1010,14 +1010,9 @@ local function Init_AllAuctions()
             end
         end
     end
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
-
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.ItemList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.ItemList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
-
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.CommoditiesList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.CommoditiesList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'Update', OnDoubleClick_AllAuctionsList)
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.ItemList, 'Update', OnDoubleClick_AllAuctionsList)
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.CommoditiesList, 'Update', OnDoubleClick_AllAuctionsList)
 end
 
 
@@ -1037,9 +1032,8 @@ end
 --浏览拍卖行
 --Blizzard_AuctionHouseUI.lua
 local function Init_BrowseResultsFrame()
-
-    local function Set_BrowseResultsFrame()
-        for _, btn in pairs(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox:GetFrames() or {}) do
+    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', function(frame)
+        for _, btn in pairs(frame:GetFrames() or {}) do
             local text
             local rowData= btn:GetRowData()
             if rowData and rowData.itemKey then
@@ -1060,31 +1054,15 @@ local function Init_BrowseResultsFrame()
                 btn.lable:SetText(text or '')
             end
         end
-    end
-
-    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetScrollTargetOffset', Set_BrowseResultsFrame)
-    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', Set_BrowseResultsFrame)
+    end)
+    --hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, 'SetDataProvider', Set_BrowseResultsFrame)
+    --hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', Set_BrowseResultsFrame)
    -- hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, 'DirtyScrollFrame', Set_BrowseResultsFrame)
     --hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'SetSortOrder', Set_BrowseResultsFrame)
 
     --双击，一口价
-    local function OnDoubleClick_ItemBuyFrame(frame)
-        if not frame:IsVisible() then
-            return
-        end
+    hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList.ScrollBox, 'Update', function(frame)
         for _, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
-            --[[local rowData= btn:GetRowData()
-            if rowData and rowData.itemLink then
-                local tab= e.Get_Item_Stats(rowData.itemLink)
-                if tab then
-                    table.sort(tab, function(a,b) return a.value>b.value and a.index== b.index end)
-                    for index=1 ,4 do
-                        if tab[index] then
-                            print(tab[index])
-                        end
-                    end
-                end
-            end]]
             if not btn.setOnDoubleClick then
                 btn:SetScript('OnDoubleClick', function()
                     if AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton and AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton:IsEnabled() then
@@ -1098,9 +1076,9 @@ local function Init_BrowseResultsFrame()
                 btn.setOnDoubleClick=true
             end
         end
-    end
-    hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'DirtyScrollFrame', OnDoubleClick_ItemBuyFrame)
-    hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'UpdateRefreshFrame', OnDoubleClick_ItemBuyFrame)
+    end)
+    --hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'DirtyScrollFrame', OnDoubleClick_ItemBuyFrame)
+    --hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'UpdateRefreshFrame', OnDoubleClick_ItemBuyFrame)
 end
 
 
