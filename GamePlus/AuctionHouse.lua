@@ -1068,7 +1068,7 @@ local function Init_BrowseResultsFrame()
         if not frame:GetView() then
             return
         end
-        for _, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
+        for _, btn in pairs(frame:GetFrames() or {}) do
             if not btn.setOnDoubleClick then
                 btn:SetScript('OnDoubleClick', function()
                     if AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton and AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton:IsEnabled() then
