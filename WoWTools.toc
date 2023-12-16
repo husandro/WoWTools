@@ -72,7 +72,6 @@ WowPlus\Minimap.lua
 WoWPlus\EncounterJournal.lua
 ##史诗钥石地下城, 挑战增强
 WoWPlus\Challenges.lua
-##WowPlus\AuctionHouse.lua
 ##邮件，增加
 WoWPlus\mail.lua
 ##银行
