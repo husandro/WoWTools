@@ -993,10 +993,10 @@ local function Init_AllAuctions()
 
     --双击，取消拍卖
     local function OnDoubleClick_AllAuctionsList(frame)
-        if not frame:IsVisible() then
+        if not frame:GetView() then
             return
         end
-        for _, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
+        for _, btn in pairs(frame:GetFrames() or {}) do
             if not btn.setOnDoubleClick then
                 btn:SetScript('OnDoubleClick', function(self)
                     if self.rowData and self.rowData.auctionID and C_AuctionHouse.CanCancelAuction(self.rowData.auctionID) then
@@ -1010,9 +1010,9 @@ local function Init_AllAuctions()
             end
         end
     end
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'Update', OnDoubleClick_AllAuctionsList)
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.ItemList, 'Update', OnDoubleClick_AllAuctionsList)
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.CommoditiesList, 'Update', OnDoubleClick_AllAuctionsList)
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox, 'Update', OnDoubleClick_AllAuctionsList)
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.ItemList.ScrollBox, 'Update', OnDoubleClick_AllAuctionsList)
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.CommoditiesList.ScrollBox, 'Update', OnDoubleClick_AllAuctionsList)
 end
 
 
@@ -1033,6 +1033,9 @@ end
 --Blizzard_AuctionHouseUI.lua
 local function Init_BrowseResultsFrame()
     hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', function(frame)
+        if not frame:GetView() then
+            return
+        end
         for _, btn in pairs(frame:GetFrames() or {}) do
             local text
             local rowData= btn:GetRowData()
@@ -1062,6 +1065,9 @@ local function Init_BrowseResultsFrame()
 
     --双击，一口价
     hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList.ScrollBox, 'Update', function(frame)
+        if not frame:GetView() then
+            return
+        end
         for _, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
             if not btn.setOnDoubleClick then
                 btn:SetScript('OnDoubleClick', function()
