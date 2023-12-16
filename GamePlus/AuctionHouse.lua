@@ -1015,9 +1015,10 @@ local function Init_BrowseResultsFrame()
 
     hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetScrollTargetOffset', Set_BrowseResultsFrame)
     hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', Set_BrowseResultsFrame)
+    AuctionHouseFrame.BrowseResultsFrame.ItemList:HookScript('OnShow', Set_BrowseResultsFrame)
     --hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'SetSortOrder', Set_BrowseResultsFrame)
 
-   
+
     local function OnDoubleClick_ItemBuyFrame(frame)
         for _, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
             --[[local rowData= btn:GetRowData()
