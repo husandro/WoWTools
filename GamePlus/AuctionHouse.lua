@@ -239,8 +239,8 @@ local function Init_Sell()
                                         frame:GetParent():GetParent():init_items()
                                         if frame.selectTexture:IsShown() then
                                             AuctionHouseFrame:ClearPostItem()
+                                            AuctionHouseButton:set_next_item()
                                         end
-                                        AuctionHouseButton:set_next_item()
                                     end
                                 end
                             end)
