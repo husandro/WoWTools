@@ -1970,7 +1970,11 @@ local function click_Func(self, d)
             end
 
     elseif d=='RightButton' and not key then
-        e.OpenPanelOpting()--'|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName))
+        if SettingsPanel:IsShown() then
+            e.OpenPanelOpting('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName))
+        else
+            e.OpenPanelOpting()
+        end
     end
 end
 local function enter_Func(self)
