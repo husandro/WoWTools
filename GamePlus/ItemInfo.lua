@@ -51,6 +51,9 @@ local heirloomWeapontemEquipLocTab={--传家宝，武器，itemEquipLoc
 
 
 local function Set_Item_Info(self, tab)
+    if not self then
+        return
+    end
     local itemLink, containerInfo, itemID= tab.hyperLink, nil, nil
     if tab.bag then
         containerInfo =C_Container.GetContainerItemInfo(tab.bag.bag, tab.bag.slot)
@@ -1094,8 +1097,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             end)
 
-        --elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
-            
+        elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
+            --买卖，物品信息 Blizzard_AuctionHouseSellFrame.lua
+            hooksecurefunc(AuctionHouseSellFrameMixin, 'SetItem', function(self, itemLocation, fromItemDisplay)
+                local itemLink= itemLocation and itemLocation:IsValid() and C_Item.GetItemLink(itemLocation)
+                Set_Item_Info(self.ItemDisplay.ItemButton, {hyperLink= itemLink})
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then
