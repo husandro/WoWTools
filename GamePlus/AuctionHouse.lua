@@ -20,7 +20,23 @@ local Save={
 
 
 
-
+local function Get_ItemLink_For_rowData(rowData)
+    local itemLink= rowData.itemLink
+    
+    if not itemLink and rowData.auctionID then
+        local priceInfo = C_AuctionHouse.GetAuctionInfoByID(rowData.auctionID) or {}
+        itemLink= priceInfo.itemLink or priceInfo.battlePetLink
+    end
+    if not itemLink and rowData.itemKey and rowData.itemKey.itemID then
+        itemLink= select(2, GetItemInfo(rowData.itemKey.itemID)) or ('itemID:'..rowData.itemKey.itemID)
+    end
+    local itemID, isPet
+    if rowData and rowData.itemKey then
+        itemID= rowData.itemKey.itemID
+        isPet= rowData.itemKey.battlePetSpeciesID and rowData.itemKey.battlePetSpeciesID>0
+    end
+    return itemLink, itemID, isPet
+end
 
 
 
@@ -654,7 +670,7 @@ local function Init_Sell()
         local text2=''
         if itemLocation and itemLocation:IsValid() then
             local itemLink = C_Item.GetItemLink(itemLocation);
-            local vendorPrice = select(11, GetItemInfo(itemLink)) or 10000;
+            local vendorPrice =itemLink and select(11, GetItemInfo(itemLink)) or 10000;
             local unitPrice= frame.GetUnitPrice and frame:GetUnitPrice() or frame.PriceInput:GetAmount();-- frame:GetUnitPrice()
             local col=''
             if vendorPrice and unitPrice and vendorPrice>0 and unitPrice>0 then
@@ -931,21 +947,24 @@ local function Init_AllAuctions()
         end)
         if tab[1] and tab[1].auctionID then
             local auctionID= tab[1].auctionID
-            local itemLink= tab[1].itemLink
-            if not itemLink then
-                local priceInfo = C_AuctionHouse.GetAuctionInfoByID(auctionID) or {}
-                itemLink= priceInfo.itemLink
-            end
-            return auctionID, itemLink
+            local itemLink, itemID, isPet = Get_ItemLink_For_rowData(tab[1])
+            return auctionID, itemLink, itemID, isPet
         end
     end
     function cancelButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_BOTTOMLEFT")
         e.tips:ClearLines()
-        local itemLink= select(2, self:get_auctionID())
+        local itemLink, itemID, isPet= select(2, self:get_auctionID())
         if itemLink then
-            e.tips:SetHyperlink(itemLink)
+            if isPet then
+                BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(itemLink))
+            else
+                e.tips:SetHyperlink(itemLink)
+            end
             e.tips:AddLine(' ')
+        elseif itemID then
+            e.tips:SetItemByID(itemID)
+            e.tips:AddDoubleLine(' ')
         end
         e.tips:AddDoubleLine(' ', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消拍卖将使你失去保证金。' or CANCEL_AUCTION_CONFIRMATION))
         e.tips:AddDoubleLine(e.onlyChinese and '备注' or 'Note', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要太快' or ERR_GENERIC_THROTTLE))
@@ -960,15 +979,12 @@ local function Init_AllAuctions()
             if C_AuctionHouse.CanCancelAuction(auctionID) then
                 local cost= C_AuctionHouse.GetCancelCost(auctionID)
                 C_AuctionHouse.CancelAuction(auctionID)
-                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r', itemLink or '', cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
+                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)..'|r', itemLink or '', cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
             else
                 print(id,addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '出错' or ERRORS)..'|r', itemLink or '')
             end
-
-            --AuctionHouseFrame.AuctionsFrame:SetDataProviderIndexRange(C_AuctionHouse.GetNumOwnedAuctionTypes(), ScrollBoxConstants.RetainScrollPosition);
             AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton:OnClick()
         end
-        self:set_tooltips()
     end)
 end
 
@@ -1015,10 +1031,10 @@ local function Init_BrowseResultsFrame()
 
     hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetScrollTargetOffset', Set_BrowseResultsFrame)
     hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', Set_BrowseResultsFrame)
-    AuctionHouseFrame.BrowseResultsFrame.ItemList:HookScript('OnShow', Set_BrowseResultsFrame)
+   -- hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, 'DirtyScrollFrame', Set_BrowseResultsFrame)
     --hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'SetSortOrder', Set_BrowseResultsFrame)
 
-
+    --双击，一口价
     local function OnDoubleClick_ItemBuyFrame(frame)
         for _, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
             --[[local rowData= btn:GetRowData()
@@ -1038,8 +1054,9 @@ local function Init_BrowseResultsFrame()
                     if AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton and AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton:IsEnabled() then
                         if StaticPopup1:IsShown() then
                             StaticPopup1:Hide()
+                        else
+                            AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton:Click()
                         end
-                        AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton:Click()
                     end
                 end)
                 btn.setOnDoubleClick=true
@@ -1048,6 +1065,26 @@ local function Init_BrowseResultsFrame()
     end
     hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'DirtyScrollFrame', OnDoubleClick_ItemBuyFrame)
     hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'UpdateRefreshFrame', OnDoubleClick_ItemBuyFrame)
+
+
+    local function OnDoubleClick_AllAuctionsList(frame)
+        for _, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
+            if not btn.setOnDoubleClick then
+                btn:SetScript('OnDoubleClick', function(self)
+                    if self.rowData and self.rowData.auctionID and C_AuctionHouse.CanCancelAuction(self.rowData.auctionID) then
+                            local cost= C_AuctionHouse.GetCancelCost(self.rowData.auctionID)
+                            local itemLink= Get_ItemLink_For_rowData(self.rowData)
+                            C_AuctionHouse.CancelAuction(self.rowData.auctionID)
+                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)..'|r', itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
+                    end
+                end)
+                btn.setOnDoubleClick=true
+            end
+        end
+    end
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
+    
 end
 
 
