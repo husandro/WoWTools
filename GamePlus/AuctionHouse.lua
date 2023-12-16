@@ -1086,8 +1086,8 @@ local function Init_BrowseResultsFrame()
             end
         end
     end
-    AuctionHouseFrameAuctionsFrame.CommoditiesList.RefreshFrame.RefreshButton
     
+
     hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
     hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
 
