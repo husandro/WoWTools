@@ -22,19 +22,16 @@ local Save={
 
 local function Get_ItemLink_For_rowData(rowData)
     local itemLink= rowData.itemLink
-    
+    local itemID, isPet
+    itemID= rowData.itemID or (rowData and rowData.itemKey and rowData.itemKey.itemID)
     if not itemLink and rowData.auctionID then
         local priceInfo = C_AuctionHouse.GetAuctionInfoByID(rowData.auctionID) or {}
         itemLink= priceInfo.itemLink or priceInfo.battlePetLink
     end
-    if not itemLink and rowData.itemKey and rowData.itemKey.itemID then
-        itemLink= select(2, GetItemInfo(rowData.itemKey.itemID)) or ('itemID:'..rowData.itemKey.itemID)
+    if not itemLink and itemID then
+        itemLink= select(2, GetItemInfo(itemID))
     end
-    local itemID, isPet
-    if rowData and rowData.itemKey then
-        itemID= rowData.itemKey.itemID
-        isPet= rowData.itemKey.battlePetSpeciesID and rowData.itemKey.battlePetSpeciesID>0
-    end
+    isPet= rowData and rowData.itemKey and rowData.itemKey.battlePetSpeciesID and rowData.itemKey.battlePetSpeciesID>0
     return itemLink, itemID, isPet
 end
 
