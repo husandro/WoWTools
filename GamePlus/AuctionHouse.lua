@@ -375,6 +375,7 @@ local function Init_Sell()
                 self:SetToMaxQuantity()--出售物品时，使用，最大数量
             end
         end)
+        
     end)
     hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'SetItem', function(self)
         C_Timer.After(0.3, function()
@@ -383,6 +384,7 @@ local function Init_Sell()
                 self:SetToMaxQuantity()--出售物品时，使用，最大数量
             end
         end)
+        
     end)
 
 
@@ -874,11 +876,13 @@ local function Init_Sell()
     AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetParent(AuctionHouseFrame.ItemSellFrame.PostButton)
     AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetPoint('LEFT', AuctionHouseFrame.ItemSellFrame.PostButton, 'RIGHT')
 
-    AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetParent(AuctionHouseFrame.CommoditiesSellFrame)
-    AuctionHouseFrame.CommoditiesSellFrame.PostButton:ClearAllPoints()
-    AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetPoint('BOTTOM', AuctionHouseFrame.CommoditiesSellFrame, 0, 20)
-
-
+    
+--[[
+    
+            AuctionHouseFrame.CommoditiesSellFrame.PostButton:ClearAllPoints()
+            AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetPoint('BOTTOM', AuctionHouseFrame.CommoditiesSellFrame, 0, 40)
+]]
+    
 end
 
 
