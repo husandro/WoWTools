@@ -984,6 +984,7 @@ local function Init_AllAuctions()
                 print(id,addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '出错' or ERRORS)..'|r', itemLink or '')
             end
             AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton:OnClick()
+            self:set_tooltips()
         end
     end)
 end
@@ -1068,6 +1069,9 @@ local function Init_BrowseResultsFrame()
 
 
     local function OnDoubleClick_AllAuctionsList(frame)
+        if not frame.ScrollBox then
+            return
+        end
         for _, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
             if not btn.setOnDoubleClick then
                 btn:SetScript('OnDoubleClick', function(self)
@@ -1084,7 +1088,12 @@ local function Init_BrowseResultsFrame()
     end
     hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
     hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
-    
+
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.ItemList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.ItemList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
+
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.CommoditiesList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.CommoditiesList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
 end
 
 
