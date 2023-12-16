@@ -984,6 +984,35 @@ local function Init_AllAuctions()
             self:set_tooltips()
         end
     end)
+
+
+    --双击，取消拍卖
+    local function OnDoubleClick_AllAuctionsList(frame)
+        if not frame:IsVisible() then
+            return
+        end
+        for _, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
+            if not btn.setOnDoubleClick then
+                btn:SetScript('OnDoubleClick', function(self)
+                    if self.rowData and self.rowData.auctionID and C_AuctionHouse.CanCancelAuction(self.rowData.auctionID) then
+                        local cost= C_AuctionHouse.GetCancelCost(self.rowData.auctionID)
+                        local itemLink= Get_ItemLink_For_rowData(self.rowData)
+                        C_AuctionHouse.CancelAuction(self.rowData.auctionID)
+                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)..'|r', itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
+                    end
+                end)
+                btn.setOnDoubleClick=true
+            end
+        end
+    end
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
+
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.ItemList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.ItemList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
+
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.CommoditiesList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
+    hooksecurefunc(AuctionHouseFrameAuctionsFrame.CommoditiesList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
 end
 
 
@@ -1034,6 +1063,9 @@ local function Init_BrowseResultsFrame()
 
     --双击，一口价
     local function OnDoubleClick_ItemBuyFrame(frame)
+        if not frame:IsVisible() then
+            return
+        end
         for _, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
             --[[local rowData= btn:GetRowData()
             if rowData and rowData.itemLink then
@@ -1063,36 +1095,6 @@ local function Init_BrowseResultsFrame()
     end
     hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'DirtyScrollFrame', OnDoubleClick_ItemBuyFrame)
     hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'UpdateRefreshFrame', OnDoubleClick_ItemBuyFrame)
-
-
-    local function OnDoubleClick_AllAuctionsList(frame)
-        if not frame:IsVisible() then
-            return
-        end
-        for _, btn in pairs(frame.ScrollBox:GetFrames() or {}) do
-            if not btn.setOnDoubleClick then
-                btn:SetScript('OnDoubleClick', function(self)
-                    if self.rowData and self.rowData.auctionID and C_AuctionHouse.CanCancelAuction(self.rowData.auctionID) then
-                            local cost= C_AuctionHouse.GetCancelCost(self.rowData.auctionID)
-                            local itemLink= Get_ItemLink_For_rowData(self.rowData)
-                            C_AuctionHouse.CancelAuction(self.rowData.auctionID)
-                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)..'|r', itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
-                    end
-                end)
-                btn.setOnDoubleClick=true
-            end
-        end
-    end
-    
-
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
-
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.ItemList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.ItemList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
-
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.CommoditiesList, 'DirtyScrollFrame', OnDoubleClick_AllAuctionsList)
-    hooksecurefunc(AuctionHouseFrameAuctionsFrame.CommoditiesList, 'UpdateRefreshFrame', OnDoubleClick_AllAuctionsList)
 end
 
 
