@@ -370,9 +370,11 @@ local strText={
     [SETTING_GROUP_ACCESSIBILITY] = "易用性",--Accessibility.lua
         [MOVE_PAD] = "显示移动框",
         [CINEMATIC_SUBTITLES] = "动画字幕",
+        [ALTERNATE_SCREEN_EFFECTS] = "开启光敏模式",
         [ENABLE_QUEST_TEXT_CONTRAST] = "任务文本颜色反差",
         [MINIMUM_CHARACTER_NAME_SIZE_TEXT] = "最小角色名尺寸",
         [ADJUST_MOTION_SICKNESS_SHAKE] = "视角晃动",
+        [CURSOR_SIZE] = "鼠标指针大小",
         [TARGET_TOOLTIP_OPTION] = "动作瞄准提示信息",
         [INTERACT_ICONS_OPTION] = "交互按键图标",
 
