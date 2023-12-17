@@ -365,14 +365,23 @@ local strText={
         [PING_MODE] = "信号模式",
         [ENABLE_PING_SOUNDS] = "信号音效",
         [SHOW_PINGS_IN_CHAT] = "在聊天中显示信号",
-    
-
 
     [SETTINGS_KEYBINDINGS_LABEL] = "快捷键",
-    [SETTING_GROUP_ACCESSIBILITY] = "易用性",
-        --综合
-        [COLORBLIND_LABEL] = "色盲模式",
-        [TTS_LABEL] = "文本转语音",
+    [SETTING_GROUP_ACCESSIBILITY] = "易用性",--Accessibility.lua
+        [MOVE_PAD] = "显示移动框",
+        [CINEMATIC_SUBTITLES] = "动画字幕",
+        [ENABLE_QUEST_TEXT_CONTRAST] = "任务文本颜色反差",
+        [MINIMUM_CHARACTER_NAME_SIZE_TEXT] = "最小角色名尺寸",
+        [ADJUST_MOTION_SICKNESS_SHAKE] = "视角晃动",
+        [TARGET_TOOLTIP_OPTION] = "动作瞄准提示信息",
+        [INTERACT_ICONS_OPTION] = "交互按键图标",
+
+
+
+
+    --综合
+    [COLORBLIND_LABEL] = "色盲模式",
+    [TTS_LABEL] = "文本转语音",
         --坐骑
     [SETTING_GROUP_SYSTEM] = "系统",
         [GRAPHICS_LABEL] = "图形",

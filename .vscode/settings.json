@@ -4284,7 +4284,13 @@
         "PING_VOLUME",
         "PING_SYSTEM_SETTINGS",
         "PING_MODE",
-        "SHOW_PINGS_IN_CHAT"
+        "SHOW_PINGS_IN_CHAT",
+        "ENABLE_QUEST_TEXT_CONTRAST",
+        "MINIMUM_CHARACTER_NAME_SIZE_TEXT",
+        "ADJUST_MOTION_SICKNESS_SHAKE",
+        "TARGET_TOOLTIP_OPTION",
+        "INTERACT_ICONS_OPTION",
+        "MOVE_PAD"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
