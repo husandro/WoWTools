@@ -232,121 +232,111 @@ local strText={
     [SETTINGS_TAB_GAME] = "游戏",
         [CONTROLS_LABEL] = "控制",
             [GAMEFIELD_DESELECT_TEXT] = "目标锁定",
-                [OPTION_TOOLTIP_GAMEFIELD_DESELECT] = "钩选此框可以让你避免因为点击画面上的空白区域而取消对当前目标的选择。你只能通过按下ESC键或点击另一个目标来切换你所选择的目标。",
+
             [AUTO_DISMOUNT_FLYING_TEXT] = "自动取消飞行",
-                [OPTION_TOOLTIP_AUTO_DISMOUNT_FLYING] = "钩选此项之后，你的角色在施放法术前会自动解散飞行坐骑。",
+
             [CLEAR_AFK] = "自动解除离开状态",
-                [OPTION_TOOLTIP_CLEAR_AFK] = "移动或者说话时\n自动解除离开状态。",
+
             [INTERACT_ON_LEFT_CLICK_TEXT] = "左键点击操作",
-                [OPTION_TOOLTIP_INTERACT_ON_LEFT_CLICK] = "使用左键或右键点击与物体或友善NPC角色互动。",
+
             [LOOT_UNDER_MOUSE_TEXT] = "鼠标位置打开拾取窗口",
-                [OPTION_TOOLTIP_LOOT_UNDER_MOUSE] = "钩选此项后，拾取窗口将在当前鼠标位置打开。",
+
             [AUTO_LOOT_DEFAULT_TEXT] = "自动拾取",
-                [OPTION_TOOLTIP_AUTO_LOOT_DEFAULT] = "将自动拾取设置为点击一个可拾取物品的目标时的默认动作。（通过按住拾取键/自动拾取键，可以在钩选此项时手动拾取，或在未钩选此项时自动拾取。）",
+
             [AUTO_LOOT_KEY_TEXT] = "自动拾取按键",
             [USE_COMBINED_BAGS_TEXT] = "组合背包",
-                [OPTION_TOOLTIP_USE_COMBINED_BAGS] = "查看你的背包时会显示为一个单一的物品栏窗口",
+
             [ENABLE_INTERACT_TEXT] = "开启交互按键",
             [BINDING_NAME_INTERACTTARGET] = "与目标互动",
-                [OPTION_TOOLTIP_ENABLE_INTERACT] = "使你可以通过按键与NPC和物体进行交互",
+
             [ENABLE_INTERACT_SOUND_OPTION] = "交互按键音效提示",
                 [ENABLE_INTERACT_SOUND_OPTION_TOOLTIP] = "你变得可以或者不可以与一个目标互动时，播放音效提示。",
         [MOUSE_LABEL] = "鼠标",
             [LOCK_CURSOR] = "将鼠标指针锁定在窗口内",
-                [OPTION_TOOLTIP_LOCK_CURSOR] = "不让鼠标指针离开游戏窗口",
+
             [INVERT_MOUSE] = "反转鼠标",
-                [OPTION_TOOLTIP_INVERT_MOUSE] = "鼠标移动方向与改变视角方向相反。",
+
             [MOUSE_LOOK_SPEED] = "鼠标观察速度",
-                [OPTION_TOOLTIP_MOUSE_LOOK_SPEED] = "调节使用鼠标改变视角时的移动速度。",
+
             [ENABLE_MOUSE_SPEED] = "启用鼠标灵敏度",
-                [OPTION_TOOLTIP_AUTO_FOLLOW_SPEED] = "调节在总是跟随和智能跟随模式下的镜头移动速度。",
+
             [MOUSE_SENSITIVITY] = "鼠标灵敏度",
-                [OPTION_TOOLTIP_MOUSE_SENSITIVITY] = "调节鼠标指针移动速度。",
+
             [CLICK_TO_MOVE] = "点击移动",
-                [OPTION_TOOLTIP_CLICK_TO_MOVE] = "使用鼠标点击来把你的角色移动到指定的地点。",
+
         [CAMERA_LABEL] = "镜头",
             [WATER_COLLISION] = "水体碰撞",
-                [OPTION_TOOLTIP_WATER_COLLISION] = "设置视角，使其在你角色处于水面之上的时候镜头在水面之上，而当你在水下的时候，视角在水面之下。",
+
             [AUTO_FOLLOW_SPEED] = "自动跟随速度",
-                [OPTION_TOOLTIP_AUTO_FOLLOW_SPEED] = "调节在总是跟随和智能跟随模式下的镜头移动速度。",
+
             [CAMERA_CTM_FOLLOWING_STYLE] = "镜头跟随模式",
 
     [INTERFACE_LABEL] = "界面",--Interface.lua
         [NAMES_LABEL] = "名字",
             [UNIT_NAME_OWN] = "我的名字";
-                [OPTION_TOOLTIP_UNIT_NAME_OWN] = "在游戏中显示你的角色的名字。",
             [SHOW_NPC_NAMES] = "NPC姓名",
-                [OPTION_TOOLTIP_SHOW_NPC_NAMES] = "总是显示游戏世界中的NPC名字。",
             [UNIT_NAME_NONCOMBAT_CREATURE] = "小动物和小伙伴",
-                [OPTION_TOOLTIP_UNIT_NAME_NONCOMBAT_CREATURE] = "在游戏中显示小动物和小伙伴的名字。",
             [UNIT_NAME_FRIENDLY] = "友方玩家",
-                [OPTION_TOOLTIP_UNIT_NAME_FRIENDLY] = "在游戏中显示友方玩家的名字。",
                 [UNIT_NAME_FRIENDLY_MINIONS] = "仆从",
-                    [OPTION_TOOLTIP_UNIT_NAME_FRIENDLY_MINIONS] = "在游戏中显示友方宠物、护卫和图腾的名字。",
             [UNIT_NAME_ENEMY] = "敌方玩家";
-                [OPTION_TOOLTIP_UNIT_NAME_ENEMY] = "在游戏中显示敌方玩家的名字。",
-                [OPTION_TOOLTIP_UNIT_NAME_ENEMY_MINIONS] = "在游戏中显示敌方宠物、护卫和图腾的名字。",
         [NAMEPLATES_LABEL] = "姓名板",
             [UNIT_NAMEPLATES_AUTOMODE] = "显示所有姓名板",
-                [OPTION_TOOLTIP_UNIT_NAMEPLATES_AUTOMODE] = "在默认设置下，只有在战斗中才会显示姓名板。钩选此项后可始终显示所有姓名板。",
-            [OPTION_TOOLTIP_UNIT_NAMEPLATES_AUTOMODE] = "在默认设置下，只有在战斗中才会显示姓名板。钩选此项后可始终显示所有姓名板。",
                 [UNIT_NAMEPLATES_MAKE_LARGER] = "大姓名板",
-                [OPTION_TOOLTIP_UNIT_NAMEPLATES_MAKE_LARGER] = "使用大姓名板",
             [UNIT_NAMEPLATES_SHOW_ENEMIES] = "敌方单位姓名板",
-                [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_ENEMIES] = "显示敌方单位姓名板",
                 [UNIT_NAMEPLATES_SHOW_ENEMY_MINIONS] = "仆从",
-                    [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_ENEMY_MINIONS] = "选中此选项可以显示敌方宠物、护卫和图腾的姓名板。",
                 [UNIT_NAMEPLATES_SHOW_ENEMY_MINUS] = "杂兵",
-                    [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_ENEMY_MINUS] = "选中此选项可以显示杂兵类敌人的单位姓名板。",
             [UNIT_NAMEPLATES_SHOW_FRIENDS] = "友方玩家姓名板",
-                [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_FRIENDS] = "显示友方玩家姓名板",
             [UNIT_NAMEPLATES_SHOW_FRIENDLY_MINIONS] = "仆从",
-                [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_FRIENDLY_MINIONS] = "选中此选项可以显示友方宠物、护卫和图腾的姓名板。",
             [SHOW_NAMEPLATE_LOSE_AGGRO_FLASH] = "失去怪物威胁时闪烁",
-                [OPTION_TOOLTIP_SHOW_NAMEPLATE_LOSE_AGGRO_FLASH] = "你对敌人的威胁值降低时，其姓名板会闪烁。主要用于坦克。",
             [UNIT_NAMEPLATES_TYPES] = "姓名板排列方式",
         [DISPLAY_LABEL] = "显示",
             [HIDE_ADVENTURE_JOURNAL_ALERTS] = "隐藏冒险指南提示",
-                [OPTION_TOOLTIP_HIDE_ADVENTURE_JOURNAL_ALERTS] = "隐藏新冒险机会的提示",
             [SHOW_IN_GAME_NAVIGATION] = "游戏内导航",
-                [OPTION_TOOLTIP_SHOW_IN_GAME_NAVIGATION] = "在世界中显示一个标记，标明当前追踪的任务、前往的地点的方向和距离。",
-            --[RESET_TUTORIALS] = "重置教程",
             [SHOW_TUTORIALS]= "教程",
-                [OPTION_TOOLTIP_SHOW_TUTORIALS] = "显示介绍你如何进行魔兽世界游戏的教程。",
             [OBJECT_NPC_OUTLINE] = "轮廓线模式",
-                [OPTION_TOOLTIP_OBJECT_NPC_OUTLINE] = "除任务目标外，鼠标悬停对象和目标也可以高亮显示轮廓线。",
             [STATUSTEXT_LABEL] = "状态文字",
-                [OPTION_TOOLTIP_STATUS_TEXT_DISPLAY] = "在状态栏中显示数值、百分比还是同时显示。",
             [CHAT_BUBBLES_TEXT] = "聊天泡泡",
-                [OPTION_TOOLTIP_CHAT_BUBBLES] = "在说话者头顶上显示文字泡泡。",
             [REPLACE_OTHER_PLAYER_PORTRAITS] = "替换玩家框体头像",
-                [OPTION_TOOLTIP_REPLACE_OTHER_PLAYER_PORTRAITS] = "用职业图标替换其他玩家单位框体头像",
             [REPLACE_MY_PLAYER_PORTRAIT] = "替换我的框体头像",
-                [OPTION_TOOLTIP_REPLACE_MY_PLAYER_PORTRAIT] = "用你的职业图标替换你的玩家单位框体头像",
         [RAID_FRAMES_LABEL] = "团队框体",--InterfaceOverrides.lua
             [COMPACT_UNIT_FRAME_PROFILE_DISPLAYHEALPREDICTION] = "显示预计治疗",
-                [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYHEALPREDICTION] = "显示你的队伍成员即将获得的治疗效果",
-            [COMPACT_UNIT_FRAME_PROFILE_DISPLAYPOWERBAR] = "显示能量条",
-                [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYPOWERBAR] = "显示你的队伍成员的能量条",
+                [COMPACT_UNIT_FRAME_PROFILE_DISPLAYPOWERBAR] = "显示能量条",
             [COMPACT_UNIT_FRAME_PROFILE_DISPLAYAGGROHIGHLIGHT] = "高亮显示仇恨目标",
-                [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYAGGROHIGHLIGHT] = "如果玩家获得威胁值，显示红色外框",
             [COMPACT_UNIT_FRAME_PROFILE_DISPLAYONLYHEALERPOWERBARS] = "只显示治疗者能量条",
-                [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYONLYHEALERPOWERBARS] = "只显示治疗者能量条。非治疗者能量条会被隐藏。",
             [PVP_COMPACT_UNIT_FRAME_PROFILE_USECLASSCOLORS] = "显示职业颜色",
-                [OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_USECLASSCOLORS] = "显示职业颜色。如果取消勾选，会使用默认的颜色。",
             [PVP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYPETS] = "显示宠物",
-                [OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYPETS] = "显示PvP对手召唤的宠物。",
             [COMPACT_UNIT_FRAME_PROFILE_DISPLAYMAINTANKANDASSIST] = "显示主坦克和主助理",
-                [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYMAINTANKANDASSIST] = "高亮显示你队伍里的主坦克和副坦克",
-                
+            [COMPACT_UNIT_FRAME_PROFILE_DISPLAYNONBOSSDEBUFFS] = "显示负面效果",
+                [DISPLAY_ONLY_DISPELLABLE_DEBUFFS] = "只显示可供驱散的负面效果",
             [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT] = "显示生命值数值",
-                [OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT] = "决定PvP框架里显示的生命值文字类型。",
+
+        [PVP_FRAMES_LABEL] = "竞技场对手框体",
 
 
         [SETTING_GROUP_GAMEPLAY] = "游戏功能",
 
-    [ACTIONBARS_LABEL] = "动作条",
-    [COMBAT_LABEL] = "战斗",
+    [ACTIONBARS_LABEL] = "动作条",--ActionBars.lua
+        [COUNTDOWN_FOR_COOLDOWNS_TEXT] = "显示冷却时间",
+        [LOCK_ACTIONBAR_TEXT] = "锁定动作条",
+
+    [COMBAT_LABEL] = "战斗",--Combat.lua
+    [DISPLAY_PERSONAL_RESOURCE] = "显示个人资源",
+    [NAMEPLATE_HIDE_HEALTH_AND_POWER] = "隐藏生命值和能量条",
+    [DISPLAY_PERSONAL_RESOURCE_ON_ENEMY] = "在敌方目标上显示玩家的特殊资源",
+    [DISPLAY_PERSONAL_COOLDOWNS] = "显示个人冷却时间",
+    [DISPLAY_PERSONAL_FRIENDLY_BUFFS] = "显示友方增益效果",
+    [SELF_HIGHLIGHT_OPTION] = "团队中自身高亮",
+    [SHOW_TARGET_OF_TARGET_TEXT] = "目标的目标",
+    [FLASH_LOW_HEALTH_WARNING] = "生命值过低时不闪烁屏幕",
+    [LOSS_OF_CONTROL] = "失控警报",
+    [ENABLE_MOUSEOVER_CAST] = "鼠标悬停施法",
+    [AUTO_SELF_CAST_KEY_TEXT] = "自我施法",
+    [FOCUS_CAST_KEY_TEXT] = "焦点施法按键",
+    [SETTING_EMPOWERED_SPELL_INPUT] = "蓄力法术输入",
+    [SPELL_ALERT_OPACITY] = "法术警报不透明度",
+    [PRESS_AND_HOLD_CASTING_OPTION] = "按住施法",
+    [ACTION_TARGETING_OPTION] = "开启动作瞄准",
+
     [PING_SYSTEM_LABEL] = "信号系统",
     [SETTINGS_KEYBINDINGS_LABEL] = "快捷键",
     [SETTING_GROUP_ACCESSIBILITY] = "易用性",
@@ -359,6 +349,12 @@ local strText={
         [AUDIO_LABEL] = "音频",
         [LANGUAGES_LABEL] = "语言",
         [NETWORK_LABEL] = "网络",
+
+
+
+
+
+
 }
 
 
