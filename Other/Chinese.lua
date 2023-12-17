@@ -273,12 +273,12 @@ local strText={
 
     [INTERFACE_LABEL] = "界面",--Interface.lua
         [NAMES_LABEL] = "名字",
-            [UNIT_NAME_OWN] = "我的名字";
+            [UNIT_NAME_OWN] = "我的名字",
             [SHOW_NPC_NAMES] = "NPC姓名",
             [UNIT_NAME_NONCOMBAT_CREATURE] = "小动物和小伙伴",
             [UNIT_NAME_FRIENDLY] = "友方玩家",
                 [UNIT_NAME_FRIENDLY_MINIONS] = "仆从",
-            [UNIT_NAME_ENEMY] = "敌方玩家";
+            [UNIT_NAME_ENEMY] = "敌方玩家",
         [NAMEPLATES_LABEL] = "姓名板",
             [UNIT_NAMEPLATES_AUTOMODE] = "显示所有姓名板",
                 [UNIT_NAMEPLATES_MAKE_LARGER] = "大姓名板",
@@ -320,26 +320,54 @@ local strText={
         [LOCK_ACTIONBAR_TEXT] = "锁定动作条",
 
     [COMBAT_LABEL] = "战斗",--Combat.lua
-    [DISPLAY_PERSONAL_RESOURCE] = "显示个人资源",
-        [NAMEPLATE_HIDE_HEALTH_AND_POWER] = "隐藏生命值和能量条",
-        [DISPLAY_PERSONAL_RESOURCE_ON_ENEMY] = "在敌方目标上显示玩家的特殊资源",
-        [DISPLAY_PERSONAL_COOLDOWNS] = "显示个人冷却时间",
-        [DISPLAY_PERSONAL_FRIENDLY_BUFFS] = "显示友方增益效果",
-    [SELF_HIGHLIGHT_OPTION] = "团队中自身高亮",
-    [SHOW_TARGET_OF_TARGET_TEXT] = "目标的目标",
-    [FLASH_LOW_HEALTH_WARNING] = "生命值过低时不闪烁屏幕",
-    [LOSS_OF_CONTROL] = "失控警报",
-    [SHOW_COMBAT_TEXT_TEXT] = "滚动战斗记录",
-    [ENABLE_MOUSEOVER_CAST] = "鼠标悬停施法",
-    [AUTO_SELF_CAST_TEXT] = "自动自我施法",
-        [AUTO_SELF_CAST_KEY_TEXT] = "自我施法",
-    [FOCUS_CAST_KEY_TEXT] = "焦点施法按键",
-    [SETTING_EMPOWERED_SPELL_INPUT] = "蓄力法术输入",
-    [SPELL_ALERT_OPACITY] = "法术警报不透明度",
-    [PRESS_AND_HOLD_CASTING_OPTION] = "按住施法",
-    [ACTION_TARGETING_OPTION] = "开启动作瞄准",
+        [DISPLAY_PERSONAL_RESOURCE] = "显示个人资源",
+            [NAMEPLATE_HIDE_HEALTH_AND_POWER] = "隐藏生命值和能量条",
+            [DISPLAY_PERSONAL_RESOURCE_ON_ENEMY] = "在敌方目标上显示玩家的特殊资源",
+            [DISPLAY_PERSONAL_COOLDOWNS] = "显示个人冷却时间",
+            [DISPLAY_PERSONAL_FRIENDLY_BUFFS] = "显示友方增益效果",
+        [SELF_HIGHLIGHT_OPTION] = "团队中自身高亮",
+        [SHOW_TARGET_OF_TARGET_TEXT] = "目标的目标",
+        [FLASH_LOW_HEALTH_WARNING] = "生命值过低时不闪烁屏幕",
+        [LOSS_OF_CONTROL] = "失控警报",
+        [SHOW_COMBAT_TEXT_TEXT] = "滚动战斗记录",
+        [ENABLE_MOUSEOVER_CAST] = "鼠标悬停施法",
+        [AUTO_SELF_CAST_TEXT] = "自动自我施法",
+            [AUTO_SELF_CAST_KEY_TEXT] = "自我施法",
+        [FOCUS_CAST_KEY_TEXT] = "焦点施法按键",
+        [SETTING_EMPOWERED_SPELL_INPUT] = "蓄力法术输入",
+        [SPELL_ALERT_OPACITY] = "法术警报不透明度",
+        [PRESS_AND_HOLD_CASTING_OPTION] = "按住施法",
+        [ACTION_TARGETING_OPTION] = "开启动作瞄准",
 
-    [PING_SYSTEM_LABEL] = "信号系统",
+    --社交 Social.lua
+        [RESTRICT_CHAT_CONFIG_DISABLE] = "关闭聊天",
+        [CENSOR_SOURCE_EXCLUDE] = "屏蔽信息",
+        [PROFANITY_FILTER] = "语言过滤器",
+        [GUILDMEMBER_ALERT] = "公会成员提示",
+        [BLOCK_TRADES] = "阻止交易",
+        [BLOCK_GUILD_INVITES] = "阻止公会邀请",
+        [RESTRICT_CALENDAR_INVITES] = "限制日历邀请",
+        [SHOW_ACCOUNT_ACHIEVEMENTS] = "对他人只显示角色成就",
+        [BLOCK_CHAT_CHANNEL_INVITE] = "阻止聊天频道邀请",
+        [SHOW_TOAST_ONLINE_TEXT] = "好友上线",
+        [SHOW_TOAST_OFFLINE_TEXT] = "好友下线",
+        [SHOW_TOAST_BROADCAST_TEXT] = "通告更新",
+        [SHOW_TOAST_FRIEND_REQUEST_TEXT] = "实名和战网昵称好友请求",
+        [SHOW_TOAST_WINDOW_TEXT] = "显示浮窗",
+        [AUTO_ACCEPT_QUICK_JOIN_TEXT] = "自动接受快速加入申请",
+        [CHAT_STYLE] = "聊天风格",
+        [WHISPER_MODE] = "新的悄悄话",
+        [TIMESTAMPS_LABEL] = "聊天时间戳",
+        [RESET_CHAT_POSITION] = "重置聊天窗口位置",
+
+    [PING_SYSTEM_LABEL] = "信号系统",--PingSystem.lua AudioOverrides.lua
+        [ENABLE_PINGS] = "开启信号",
+        [PING_MODE] = "信号模式",
+        [ENABLE_PING_SOUNDS] = "信号音效",
+        [SHOW_PINGS_IN_CHAT] = "在聊天中显示信号",
+    
+
+
     [SETTINGS_KEYBINDINGS_LABEL] = "快捷键",
     [SETTING_GROUP_ACCESSIBILITY] = "易用性",
         --综合
@@ -492,7 +520,7 @@ local function Init()
 
     --Blizzard_CategoryList.lua
     hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--hooksecurefunc(SettingsPanel.CategoryList.ScrollBox, 'Update', function(frame)
-        local category = initializer.data.category;
+        local category = initializer.data.category
         set(self.Label, strText[category:GetName()])
     end)
     hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
@@ -564,7 +592,7 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.ItemSellFrame.SecondaryPriceInput.Label, '竞标价格')
         --Blizzard_AuctionHouseUI
         hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'SetSecondaryPriceInputEnabled', function(self, enabled)
-            self.PriceInput:SetLabel('一口价')--AUCTION_HOUSE_BUYOUT_LABEL);
+            self.PriceInput:SetLabel('一口价')--AUCTION_HOUSE_BUYOUT_LABEL)
             if enabled then
                 self.PriceInput:SetSubtext('|cff777777(可选)|r')--AUCTION_HOUSE_BUYOUT_OPTIONAL_LABEL
             end
@@ -637,13 +665,13 @@ local function Init_Loaded(arg1)
         hooksecurefunc('MountJournal_UpdateMountDisplay', function()--Blizzard_MountCollection.lua
             if ( MountJournal.selectedMountID ) then
                 local active = select(4, C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID))
-                local needsFanfare = C_MountJournal.NeedsFanfare(MountJournal.selectedMountID);
+                local needsFanfare = C_MountJournal.NeedsFanfare(MountJournal.selectedMountID)
                 if ( needsFanfare ) then
                     MountJournal.MountButton:SetText('打开')
                 elseif ( active ) then
-                    MountJournal.MountButton:SetText('解散坐骑');
+                    MountJournal.MountButton:SetText('解散坐骑')
                 else
-                    MountJournal.MountButton:SetText('召唤');
+                    MountJournal.MountButton:SetText('召唤')
                 end
             end
         end)
@@ -668,9 +696,9 @@ local function Init_Loaded(arg1)
 
         hooksecurefunc('AchievementFrame_RefreshView', function()--Blizzard_AchievementUI.lua
             if AchievementFrame.Header.Title:GetText()==GUILD_ACHIEVEMENTS_TITLE then
-                AchievementFrame.Header.Title:SetText('公会成就');
+                AchievementFrame.Header.Title:SetText('公会成就')
             else
-                AchievementFrame.Header.Title:SetText('成就点数');
+                AchievementFrame.Header.Title:SetText('成就点数')
             end
         end)
 
