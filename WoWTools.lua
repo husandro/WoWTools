@@ -2034,32 +2034,38 @@ end
     end
 end]]
 
-function e.GetItemCollected(link, sourceID, icon)--物品是否收集
-    sourceID= sourceID or link and select(2, C_TransmogCollection.GetItemInfo(link))
-    local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
-    if sourceInfo then
-        --local hasData, canCollect= C_TransmogCollection.PlayerCanCollectSource(sourceID)
-        local isSelf= select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID))
-        if sourceInfo.isCollected then
-            if icon then
-                if isSelf then
-                    return e.Icon.select2, sourceInfo.isCollected, isSelf
-                else
-                    return '|A:Adventures-Checkmark:0:0|a', sourceInfo.isCollected, isSelf--黄色√
-                end
+function e.GetItemCollected(itemIDOrLink, sourceID, icon)--物品是否收集
+    local isCollected, isSelf
+    if itemIDOrLink and IsCosmeticItem(itemIDOrLink) then
+        isCollected= C_TransmogCollection.PlayerHasTransmogByItemInfo(itemIDOrLink)
+        isSelf= true
+    else
+        sourceID= sourceID or itemIDOrLink and select(2, C_TransmogCollection.GetItemInfo(itemIDOrLink))
+        local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
+        if sourceInfo then
+            isSelf= select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID))
+            isCollected= sourceInfo.isCollected
+        end
+    end
+    if isCollected==true then
+        if icon then
+            if isSelf then
+                return e.Icon.select2, isCollected, isSelf
             else
-                return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r', sourceInfo.isCollected, isSelf
+                return '|A:Adventures-Checkmark:0:0|a', isCollected, isSelf--黄色√
             end
         else
-            if icon then
-                if isSelf then
-                    return '|T132288:0|t', sourceInfo.isCollected, isSelf
-                else
-                    return  '|A:transmog-icon-hidden:0:0|a', sourceInfo.isCollected, isSelf--e.Icon.star2,
-                end
+            return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r', isCollected, isSelf
+        end
+    elseif isCollected==false then
+        if icon then
+            if isSelf then
+                return '|T132288:0|t', isCollected, isSelf
             else
-                return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', sourceInfo.isCollected, isSelf
+                return  '|A:transmog-icon-hidden:0:0|a', isCollected, isSelf--e.Icon.star2,
             end
+        else
+            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', isCollected, isSelf
         end
     end
 end
@@ -2110,7 +2116,6 @@ function e.GetPetCollectedNum(speciesID, itemID, onlyNum)--总收集数量， 25
         else
             CollectedText= numCollected..'/'..limit
         end
-        
         return AllCollected, CollectedNum, CollectedText, isCollectedAll
     end
 end

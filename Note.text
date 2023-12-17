@@ -55,6 +55,65 @@ if IsModifiedClick("CHATLINK") then
     ChatEdit_InsertLink(spellLink)
 end
 
+--ItemButtonTemplate.lua
+if C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemIDOrLink) then
+	button.IconOverlay:SetAtlas("AzeriteIconFrame");
+elseif IsCorruptedItem(itemIDOrLink) then
+	button.IconOverlay:SetAtlas("Nzoth-inventory-icon");
+elseif IsCosmeticItem(itemIDOrLink) then
+	button.IconOverlay:SetAtlas("CosmeticIconFrame");
+elseif C_Soulbinds.IsItemConduitByItemInfo(itemIDOrLink) then
+	if not quality or not BAG_ITEM_QUALITY_COLORS[quality] then
+		quality = Enum.ItemQuality.Common;
+	end
+	local color = BAG_ITEM_QUALITY_COLORS[quality];
+	button.IconOverlay:SetVertexColor(color.r, color.g, color.b);
+	button.IconOverlay:SetAtlas("ConduitIconFrame");
+	-- If this is missing, the texture will make it apparant instead of error.
+	if button.IconOverlay2 then
+		button.IconOverlay2:SetAtlas("ConduitIconFrame-Corners");
+		button.IconOverlay2:Show();
+	end
+else
+
+
+function HandleModifiedItemClick(link, itemLocation)--ItemButtonTemplate.lua
+	if ( not link ) then
+		return false;
+	end
+	if ( IsModifiedClick("CHATLINK") ) then
+		local linkType = string.match(link, "|H([^:]+)");
+		if ( linkType == "instancelock" ) then	--People can't re-link instances that aren't their own.
+			local guid = string.match(link, "|Hinstancelock:([^:]+)");
+			if ( not string.find(UnitGUID("player"), guid) ) then
+				return true;
+			end
+		end
+		if ( ChatEdit_InsertLink(link) ) then
+			return true;
+		elseif ( SocialPostFrame and Social_IsShown() ) then
+			Social_InsertLink(link);
+			return true;
+		end
+	end
+	if ( IsModifiedClick("DRESSUP") ) then
+		return DressUpItemLocation(itemLocation) or DressUpLink(link);
+	end
+	if ( IsModifiedClick("EXPANDITEM") ) then
+		if C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(link) then
+			OpenAzeriteEmpoweredItemUIFromLink(link);
+			return true;
+		end
+		
+		local skillLineID = C_TradeSkillUI.GetSkillLineForGear(link);
+		if skillLineID then
+			OpenProfessionUIToSkillLine(skillLineID);
+			return true;
+		end
+	end
+	return false;
+end
+
 if ChatEdit_GetActiveWindow() then
     securecall(ChatEdit_InsertLink, link)
 else

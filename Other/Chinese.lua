@@ -12,93 +12,8 @@ local panel= CreateFrame("Frame")
 
 
 
-local function set(self, text)
-    if self and text and not self:IsForbidden() then--CanAccessObject(self) then
-        self:SetText(text)
-    end
-end
-
-
-
-local function Init()
-    --角色
-    set(CharacterFrameTab1, '角色')
-    set(CharacterFrameTab2, '声望')
-    set(CharacterFrameTab3, '货币')
-    set(CharacterStatsPane.ItemLevelCategory.Title, '物品等级')
-    set(CharacterStatsPane.AttributesCategory.Title, '属性')
-    set(CharacterStatsPane.EnhancementsCategory.Title, '强化属性')
-
-    set(PaperDollFrameEquipSetText, '装备')
-    set(PaperDollFrameSaveSetText , '保存')
-
-    set(GearManagerPopupFrame.BorderBox.EditBoxHeaderText, '输入方案名称（最多16个字符）：')
-    set(GearManagerPopupFrame.BorderBox.IconSelectionText, '选择一个图标：')
-    set(GearManagerPopupFrame.BorderBox.OkayButton, '确认')
-    set(GearManagerPopupFrame.BorderBox.CancelButton, '取消')
-    GearManagerPopupFrame:HookScript('OnShow', function(self)
-        set(self.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconHeader, '当前已选择')
-        set(self.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconDescription, '点击在列表中浏览')
-    end)
-
-    PAPERDOLL_SIDEBARS[1].name= '角色属性'
-    PAPERDOLL_SIDEBARS[2].name= '头衔'
-    PAPERDOLL_SIDEBARS[3].name= '装备管理'
-
-    --ReputationFrame.xml
-    set(ReputationDetailViewRenownButton, '浏览名望')
-    set(ReputationDetailMainScreenCheckBoxText, '显示为经验条')
-    set(ReputationDetailInactiveCheckBoxText, '隐藏')
-    set(ReputationDetailAtWarCheckBoxText, '交战状态')
-
-    set(TokenFramePopup.Title, '货币设置')
-    set(TokenFramePopup.InactiveCheckBox.Text, '未使用')
-    set(TokenFramePopup.BackpackCheckBox.Text, '在行囊上显示')
-
-    --法术 SpellBookFrame.lua
-    hooksecurefunc('SpellBookFrame_Update', function()
-        set(SpellBookFrameTabButton1, '法术')
-        set(SpellBookFrameTabButton2, '专业')
-        set(SpellBookFrameTabButton3, '宠物')
-    end)
-
-    --LFD PVEFrame.lua
-    set(PVEFrameTab1, '地下城和团队副本')
-    set(PVEFrameTab2, 'PvP')
-    set(PVEFrameTab3, '史诗钥石地下城')
-
-
-    set(GroupFinderFrame.groupButton1.name, '地下城查找器')
-    set(GroupFinderFrame.groupButton2.name, '团队查找器')
-    set(GroupFinderFrame.groupButton3.name, '预创建队伍')
-    set(LFGListFrame.CategorySelection.StartGroupButton, '创建队伍')
-    set(LFGListFrame.CategorySelection.FindGroupButton, '寻找队伍')
-
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 local strText={
+    --Blizzard_AuctionData.lua
     [AUCTION_CATEGORY_WEAPONS] = "武器",
         [AUCTION_SUBCATEGORY_ONE_HANDED] = "单手",
             [GetItemSubClassInfo(2, 0)]= "单手斧",
@@ -228,6 +143,7 @@ local strText={
         [GetItemSubClassInfo(19, 5)] = "采矿",
         [GetItemSubClassInfo(19, 3)] = "草药学",
         [GetItemSubClassInfo(19, 10)] = "剥皮",
+        [PROFESSIONS_FISHING] = "钓鱼",
     [AUCTION_CATEGORY_BATTLE_PETS] = "战斗宠物",
         [GetItemSubClassInfo(17, 0)] = "人形",
         [GetItemSubClassInfo(17, 1)] = "龙类",
@@ -239,6 +155,7 @@ local strText={
         [GetItemSubClassInfo(17, 7)] = "野兽",
         [GetItemSubClassInfo(17, 8)] = "水栖",
         [GetItemSubClassInfo(17, 9)] = "机械",
+        [COMPANIONS] = "小伙伴",
     [AUCTION_CATEGORY_QUEST_ITEMS] = "任务物品",
     [AUCTION_CATEGORY_MISCELLANEOUS] = "杂项",
         [GetItemSubClassInfo(15, 0)] = "垃圾",
@@ -303,14 +220,240 @@ local strText={
 
     [DUNGEON_FLOOR_TOLBARADWARLOCKSCENARIO0] = "托尔巴拉德",
     [POSTMASTER_PIPE_EASTERNKINGDOMS] = "东部王国",
-    [POSTMASTER_PIPE_KALIMDOR] = "卡利姆多";
+    [POSTMASTER_PIPE_KALIMDOR] = "卡利姆多",
     [POSTMASTER_PIPE_NORTHREND] = "诺森德",
     [POSTMASTER_PIPE_OUTLAND] = "外域",
     [WORLD_PVP] = "阿什兰",
     [WORLD] = "世界",
     [TOY_BOX] = "玩具箱",
     [WARDROBE] = "外观",
+
+    --选项
+    [SETTINGS_TAB_GAME] = "游戏",
+        [CONTROLS_LABEL] = "控制",
+            [GAMEFIELD_DESELECT_TEXT] = "目标锁定",
+                [OPTION_TOOLTIP_GAMEFIELD_DESELECT] = "钩选此框可以让你避免因为点击画面上的空白区域而取消对当前目标的选择。你只能通过按下ESC键或点击另一个目标来切换你所选择的目标。",
+            [AUTO_DISMOUNT_FLYING_TEXT] = "自动取消飞行",
+                [OPTION_TOOLTIP_AUTO_DISMOUNT_FLYING] = "钩选此项之后，你的角色在施放法术前会自动解散飞行坐骑。",
+            [CLEAR_AFK] = "自动解除离开状态",
+                [OPTION_TOOLTIP_CLEAR_AFK] = "移动或者说话时\n自动解除离开状态。",
+            [INTERACT_ON_LEFT_CLICK_TEXT] = "左键点击操作",
+                [OPTION_TOOLTIP_INTERACT_ON_LEFT_CLICK] = "使用左键或右键点击与物体或友善NPC角色互动。",
+            [LOOT_UNDER_MOUSE_TEXT] = "鼠标位置打开拾取窗口",
+                [OPTION_TOOLTIP_LOOT_UNDER_MOUSE] = "钩选此项后，拾取窗口将在当前鼠标位置打开。",
+            [AUTO_LOOT_DEFAULT_TEXT] = "自动拾取",
+                [OPTION_TOOLTIP_AUTO_LOOT_DEFAULT] = "将自动拾取设置为点击一个可拾取物品的目标时的默认动作。（通过按住拾取键/自动拾取键，可以在钩选此项时手动拾取，或在未钩选此项时自动拾取。）",
+            [AUTO_LOOT_KEY_TEXT] = "自动拾取按键",
+            [USE_COMBINED_BAGS_TEXT] = "组合背包",
+                [OPTION_TOOLTIP_USE_COMBINED_BAGS] = "查看你的背包时会显示为一个单一的物品栏窗口",
+            [ENABLE_INTERACT_TEXT] = "开启交互按键",
+            [BINDING_NAME_INTERACTTARGET] = "与目标互动",
+                [OPTION_TOOLTIP_ENABLE_INTERACT] = "使你可以通过按键与NPC和物体进行交互",
+            [ENABLE_INTERACT_SOUND_OPTION] = "交互按键音效提示",
+                [ENABLE_INTERACT_SOUND_OPTION_TOOLTIP] = "你变得可以或者不可以与一个目标互动时，播放音效提示。",
+        [MOUSE_LABEL] = "鼠标",
+            [LOCK_CURSOR] = "将鼠标指针锁定在窗口内",
+                [OPTION_TOOLTIP_LOCK_CURSOR] = "不让鼠标指针离开游戏窗口",
+            [INVERT_MOUSE] = "反转鼠标",
+                [OPTION_TOOLTIP_INVERT_MOUSE] = "鼠标移动方向与改变视角方向相反。",
+            [MOUSE_LOOK_SPEED] = "鼠标观察速度",
+                [OPTION_TOOLTIP_MOUSE_LOOK_SPEED] = "调节使用鼠标改变视角时的移动速度。",
+            [ENABLE_MOUSE_SPEED] = "启用鼠标灵敏度",
+                [OPTION_TOOLTIP_AUTO_FOLLOW_SPEED] = "调节在总是跟随和智能跟随模式下的镜头移动速度。",
+            [MOUSE_SENSITIVITY] = "鼠标灵敏度",
+                [OPTION_TOOLTIP_MOUSE_SENSITIVITY] = "调节鼠标指针移动速度。",
+            [CLICK_TO_MOVE] = "点击移动",
+        [CAMERA_LABEL] = "镜头",
+            [WATER_COLLISION] = "水体碰撞",
+                [OPTION_TOOLTIP_WATER_COLLISION] = "设置视角，使其在你角色处于水面之上的时候镜头在水面之上，而当你在水下的时候，视角在水面之下。",
+            [AUTO_FOLLOW_SPEED] = "自动跟随速度",
+                [OPTION_TOOLTIP_AUTO_FOLLOW_SPEED] = "调节在总是跟随和智能跟随模式下的镜头移动速度。",
+            [CAMERA_CTM_FOLLOWING_STYLE] = "镜头跟随模式",
+
+        [INTERFACE_LABEL] = "界面",
+        [ACTIONBARS_LABEL] = "动作条",
+        [COMBAT_LABEL] = "战斗",
+        [PING_SYSTEM_LABEL] = "信号系统",
+        [SETTINGS_KEYBINDINGS_LABEL] = "快捷键",
+
+    [COLORBLIND_LABEL] = "色盲模式",
+    [TTS_LABEL] = "文本转语音",
+    [GRAPHICS_LABEL] = "图形",
+    [AUDIO_LABEL] = "音频",
+    [LANGUAGES_LABEL] = "语言",
+    [NETWORK_LABEL] = "网络",
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function set(self, text)
+    if self and text and not self:IsForbidden() then--CanAccessObject(self) then
+        self:SetText(text)
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
+    --角色
+    set(CharacterFrameTab1, '角色')
+    set(CharacterFrameTab2, '声望')
+    set(CharacterFrameTab3, '货币')
+    set(CharacterStatsPane.ItemLevelCategory.Title, '物品等级')
+    set(CharacterStatsPane.AttributesCategory.Title, '属性')
+    set(CharacterStatsPane.EnhancementsCategory.Title, '强化属性')
+
+    set(PaperDollFrameEquipSetText, '装备')
+    set(PaperDollFrameSaveSetText , '保存')
+
+    set(GearManagerPopupFrame.BorderBox.EditBoxHeaderText, '输入方案名称（最多16个字符）：')
+    set(GearManagerPopupFrame.BorderBox.IconSelectionText, '选择一个图标：')
+    set(GearManagerPopupFrame.BorderBox.OkayButton, '确认')
+    set(GearManagerPopupFrame.BorderBox.CancelButton, '取消')
+    GearManagerPopupFrame:HookScript('OnShow', function(self)
+        set(self.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconHeader, '当前已选择')
+        set(self.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconDescription, '点击在列表中浏览')
+    end)
+
+    PAPERDOLL_SIDEBARS[1].name= '角色属性'
+    PAPERDOLL_SIDEBARS[2].name= '头衔'
+    PAPERDOLL_SIDEBARS[3].name= '装备管理'
+
+    --ReputationFrame.xml
+    set(ReputationDetailViewRenownButton, '浏览名望')
+    set(ReputationDetailMainScreenCheckBoxText, '显示为经验条')
+    set(ReputationDetailInactiveCheckBoxText, '隐藏')
+    set(ReputationDetailAtWarCheckBoxText, '交战状态')
+
+    set(TokenFramePopup.Title, '货币设置')
+    set(TokenFramePopup.InactiveCheckBox.Text, '未使用')
+    set(TokenFramePopup.BackpackCheckBox.Text, '在行囊上显示')
+
+    --法术 SpellBookFrame.lua
+    hooksecurefunc('SpellBookFrame_Update', function()
+        set(SpellBookFrameTabButton1, '法术')
+        set(SpellBookFrameTabButton2, '专业')
+        set(SpellBookFrameTabButton3, '宠物')
+    end)
+
+    --LFD PVEFrame.lua
+    set(PVEFrameTab1, '地下城和团队副本')
+    set(PVEFrameTab2, 'PvP')
+    set(PVEFrameTab3, '史诗钥石地下城')
+
+
+    set(GroupFinderFrame.groupButton1.name, '地下城查找器')
+    set(GroupFinderFrame.groupButton2.name, '团队查找器')
+    set(GroupFinderFrame.groupButton3.name, '预创建队伍')
+    set(LFGListFrame.CategorySelection.StartGroupButton, '创建队伍')
+    set(LFGListFrame.CategorySelection.FindGroupButton, '寻找队伍')
+
+
+    --选项
+    --Blizzard_CategoryList.lua
+    hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--hooksecurefunc(SettingsPanel.CategoryList.ScrollBox, 'Update', function(frame)
+        local category = initializer.data.category;
+        set(self.Label, strText[category:GetName()])
+    end)
+
+    hooksecurefunc(SettingsPanel.Container.SettingsList.ScrollBox, 'Update', function(frame)
+        if not frame:GetView() then
+            return
+        end
+        for _, btn in pairs(frame:GetFrames() or {}) do
+            if btn.data and btn.data.name then
+                if  btn.Label then
+                    print(btn.Label:GetObjectType())
+                end
+                set(btn.Text or btn.Label, strText[btn.data.name])
+                btn.data.tooltip= strText[btn.data.tooltip] or btn.data.tooltip
+            end
+        end
+    end)
+    --[[Blizzard_CategoryList.lua
+    hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--hooksecurefunc(SettingsPanel.CategoryList.ScrollBox, 'Update', function(frame)
+        local category = initializer.data.category;
+        set(self.Label, strText[category:GetName()])
+    end)
+    --Blizzard_Settings.lua
+    hooksecurefunc(Settings, 'CreateCheckBox', function(category, variable, label, tooltip)
+        local text= strText[category.name]
+        
+        print(category:GetName(),text)
+        if text then
+            category:SetName(text)
+        end
+    
+       -- for k, v in pairs(info) do if v and type(v)=='table' then print('---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---',k, '---END') else print(k,v) end end
+    end)]]
+    set(SettingsPanel.Container.SettingsList.Header.DefaultsButton, '默认设置')
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -368,7 +511,7 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.PerItemPostfix, '每个物品')
         set(AuctionHouseFrame.ItemSellFrame.BuyoutModeCheckButton.Text, '一口价')
 
-        
+
 
         set(AuctionHouseFrame.CommoditiesBuyFrame.BackButton, '返回')
         set(AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.BuyButton, '一口价')
@@ -380,7 +523,7 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.ItemBuyFrame.BidFrame.BidButton, '竞标')
         set(AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton, '一口价')
 
-    elseif arg1=='Blizzard_ClassTalentUI' then--Blizzard_TalentUI.lua
+    elseif arg1=='Blizzard_ClassTalentUI' then--Blizzard_TalentUI.lua Blizzard_AuctionData.lua
          for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
             local btn= ClassTalentFrame:GetTabButton(tabID)
             if tabID==1 then
@@ -390,18 +533,6 @@ local function Init_Loaded(arg1)
             end
         end
         set(ClassTalentFrame.TalentsTab.ApplyButton, '应用改动')
-        --[[PVP_LABEL_WAR_MODE = "战争模式";
-        PVP_WAR_MODE_ENABLED = "开启";
-        PVP_WAR_MODE_DESCRIPTION = "加入战争模式即可激活世界PvP，使任务的奖励和经验值最多提高10%，并可以在野外使用PvP天赋。";
-        PVP_WAR_MODE_DESCRIPTION_FORMAT = "加入战争模式即可激活世界PvP，使任务的奖励和经验值提高%1$d%%，并可以在野外使用PvP天赋。";
-        SPELL_FAILED_AFFECTING_COMBAT = "你正处于交战状态";
-        PVP_WAR_MODE_NOT_NOW_ALLIANCE = "只能在暴风城或瓦德拉肯进入战争模式。";
-        PVP_WAR_MODE_NOT_NOW_ALLIANCE_RESTAREA = "战争模式可以在任何休息区域关闭，但只能在暴风城或瓦德拉肯开启。";
-        PVP_WAR_MODE_NOT_NOW_HORDE = "只能在奥格瑞玛或瓦德拉肯进入战争模式。";
-        PVP_WAR_MODE_NOT_NOW_HORDE_RESTAREA = "战争模式可以在任何休息区域关闭，但只能在奥格瑞玛或瓦德拉肯开启。";
-
-        WAR_MODE_CALL_TO_ARMS = "战争模式：战斗的召唤";
-        WAR_MODE_BONUS_INCENTIVE_TOOLTIP = "战争模式的加成提升至%2$d%%。";]]
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then
         hooksecurefunc(ProfessionsCustomerOrdersCategoryButtonMixin, 'Init', function(self, categoryInfo, _, isRecraftCategory)
