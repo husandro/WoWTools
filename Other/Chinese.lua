@@ -263,6 +263,7 @@ local strText={
             [MOUSE_SENSITIVITY] = "鼠标灵敏度",
                 [OPTION_TOOLTIP_MOUSE_SENSITIVITY] = "调节鼠标指针移动速度。",
             [CLICK_TO_MOVE] = "点击移动",
+                [OPTION_TOOLTIP_CLICK_TO_MOVE] = "使用鼠标点击来把你的角色移动到指定的地点。",
         [CAMERA_LABEL] = "镜头",
             [WATER_COLLISION] = "水体碰撞",
                 [OPTION_TOOLTIP_WATER_COLLISION] = "设置视角，使其在你角色处于水面之上的时候镜头在水面之上，而当你在水下的时候，视角在水面之下。",
@@ -414,7 +415,7 @@ local function Init()
                 set(btn.Text, strText[btn.data.name])
                 btn.data.tooltip= strText[btn.data.tooltip] or btn.data.tooltip
                 if not strText[btn.data.tooltip] then
-                    print(btn.dada.tooltip)
+                    print(btn.data.tooltip)
                 end
             end
         end
