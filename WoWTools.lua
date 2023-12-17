@@ -2065,10 +2065,10 @@ function e.GetItemCollected(link, sourceID, icon)--物品是否收集
 end
 
 function e.GetPetCollectedNum(speciesID, itemID, onlyNum)--总收集数量， 25 25 25， 3/3
-    if not speciesID and itemID then--宠物物品
+    if (not speciesID or speciesID==0) and itemID then--宠物物品
         speciesID= select(13, C_PetJournal.GetPetInfoByItemID(itemID))
     end
-    if not speciesID then
+    if not speciesID or speciesID==0 then
         return
     end
     local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
@@ -2101,14 +2101,17 @@ function e.GetPetCollectedNum(speciesID, itemID, onlyNum)--总收集数量， 25
                 end
             end
         end
+        local isCollectedAll--是否已全部收集
         if numCollected==0 then
             CollectedText='|cnRED_FONT_COLOR:'..numCollected..'|r/'..limit
         elseif limit and numCollected==limit and limit>0 then
             CollectedText= '|cnGREEN_FONT_COLOR:'..numCollected..'/'..limit..'|r'
+            isCollectedAll= true
         else
             CollectedText= numCollected..'/'..limit
         end
-        return AllCollected, CollectedNum, CollectedText
+        
+        return AllCollected, CollectedNum, CollectedText, isCollectedAll
     end
 end
 

@@ -1032,22 +1032,30 @@ end
 --浏览拍卖行
 --Blizzard_AuctionHouseUI.lua
 local function Init_BrowseResultsFrame()
-    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', function(frame)
-        if not frame:GetView() then
+    local function Set_BrowseResultsFrame(ScrollBox)
+        if not ScrollBox:GetView() then
             return
         end
-        for _, btn in pairs(frame:GetFrames() or {}) do
+        for _, btn in pairs(ScrollBox:GetFrames() or {}) do
             local text
             local rowData= btn:GetRowData()
             if rowData and rowData.itemKey then
                 --local itemKey= rowData.itemKey----itemKey, totalQuantity, minPrice, containsOwnerItem btn:GetRowData() 
                 local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(rowData.itemKey) or {}--itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
-                if itemKeyInfo.isPet then
-                    text= select(3, e.GetPetCollectedNum(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
-                elseif itemKeyInfo.isEquipment then
-                    text= e.GetItemCollected(itemKeyInfo.itemID, nil, true)--物品是否收集
+                local isCollectedAll
+                text, isCollectedAll= select(3, e.GetPetCollectedNum(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
+                if isCollectedAll then
+                    text= '|A:common-icon-checkmark-yellow:0:0|a'
                 end
-                --appearanceLink
+                if itemKeyInfo.isEquipment then
+                    text= e.GetItemCollected(itemKeyInfo.itemID, nil, true)--物品是否收集
+                elseif not text then
+                    local isMountCollected= select(2, e.GetMountCollected(nil, itemKeyInfo.itemID))
+                    if isMountCollected then
+                        text= '|A:common-icon-checkmark-yellow:0:0|a'
+                    end
+                end
+                print(itemKeyInfo.appearanceLink)
             end
             if text and not btn.lable then
                 btn.lable= e.Cstr(btn)
@@ -1057,11 +1065,13 @@ local function Init_BrowseResultsFrame()
                 btn.lable:SetText(text or '')
             end
         end
+    end
+    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)
+    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(self)
+        Set_BrowseResultsFrame(self.ItemList.ScrollBox)
     end)
-    --hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, 'SetDataProvider', Set_BrowseResultsFrame)
-    --hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', Set_BrowseResultsFrame)
-   -- hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, 'DirtyScrollFrame', Set_BrowseResultsFrame)
-    --hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'SetSortOrder', Set_BrowseResultsFrame)
+    
+    
 
     --双击，一口价
     hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList.ScrollBox, 'Update', function(frame)
