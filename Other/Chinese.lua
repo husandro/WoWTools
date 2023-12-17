@@ -407,12 +407,15 @@ local function Init()
             return
         end
         for _, btn in pairs(frame:GetFrames() or {}) do
-            if btn.data and btn.data.name then
-                if  btn.Label then
-                    print(btn.Label:GetObjectType())
-                end
-                set(btn.Text or btn.Label, strText[btn.data.name])
+            if btn.Label then
+                set(btn.Label, strText[btn.Label:GetText()])
+
+            elseif btn.Text and btn.data and btn.data.name then
+                set(btn.Text, strText[btn.data.name])
                 btn.data.tooltip= strText[btn.data.tooltip] or btn.data.tooltip
+                if not strText[btn.data.tooltip] then
+                    print(btn.dada.tooltip)
+                end
             end
         end
     end)
