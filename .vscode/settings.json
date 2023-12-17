@@ -3962,7 +3962,12 @@
         "WATER_COLLISION",
         "OPTION_TOOLTIP_WATER_COLLISION",
         "AUTO_FOLLOW_SPEED",
-        "GetBindingName"
+        "GetBindingName",
+        "OPTION_TOOLTIP_CLICK_TO_MOVE",
+        "SettingsCategoryListHeaderMixin",
+        "SETTING_GROUP_ACCESSIBILITY",
+        "SETTING_GROUP_SYSTEM",
+        "SettingsListSearchCategoryMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

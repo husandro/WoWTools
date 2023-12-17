@@ -271,18 +271,21 @@ local strText={
                 [OPTION_TOOLTIP_AUTO_FOLLOW_SPEED] = "调节在总是跟随和智能跟随模式下的镜头移动速度。",
             [CAMERA_CTM_FOLLOWING_STYLE] = "镜头跟随模式",
 
-        [INTERFACE_LABEL] = "界面",
-        [ACTIONBARS_LABEL] = "动作条",
-        [COMBAT_LABEL] = "战斗",
-        [PING_SYSTEM_LABEL] = "信号系统",
-        [SETTINGS_KEYBINDINGS_LABEL] = "快捷键",
-
-    [COLORBLIND_LABEL] = "色盲模式",
-    [TTS_LABEL] = "文本转语音",
-    [GRAPHICS_LABEL] = "图形",
-    [AUDIO_LABEL] = "音频",
-    [LANGUAGES_LABEL] = "语言",
-    [NETWORK_LABEL] = "网络",
+    [INTERFACE_LABEL] = "界面",
+    [ACTIONBARS_LABEL] = "动作条",
+    [COMBAT_LABEL] = "战斗",
+    [PING_SYSTEM_LABEL] = "信号系统",
+    [SETTINGS_KEYBINDINGS_LABEL] = "快捷键",
+    [SETTING_GROUP_ACCESSIBILITY] = "易用性",
+        --综合
+        [COLORBLIND_LABEL] = "色盲模式",
+        [TTS_LABEL] = "文本转语音",
+        --坐骑
+    [SETTING_GROUP_SYSTEM] = "系统",
+        [GRAPHICS_LABEL] = "图形",
+        [AUDIO_LABEL] = "音频",
+        [LANGUAGES_LABEL] = "语言",
+        [NETWORK_LABEL] = "网络",
 }
 
 
@@ -397,45 +400,37 @@ local function Init()
 
 
     --选项
-    --Blizzard_CategoryList.lua
-    hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--hooksecurefunc(SettingsPanel.CategoryList.ScrollBox, 'Update', function(frame)
-        local category = initializer.data.category;
-        set(self.Label, strText[category:GetName()])
-    end)
-
     hooksecurefunc(SettingsPanel.Container.SettingsList.ScrollBox, 'Update', function(frame)
         if not frame:GetView() then
             return
         end
         for _, btn in pairs(frame:GetFrames() or {}) do
-            if btn.Label then
+            if btn.Title then
+                set(btn.Title, strText[btn.Title:GetText()])
+
+            elseif btn.Label then
                 set(btn.Label, strText[btn.Label:GetText()])
 
-            elseif btn.Text and btn.data and btn.data.name then
+            elseif btn.Text and btn.data and btn.data.name and strText[btn.data.name] then
                 set(btn.Text, strText[btn.data.name])
                 btn.data.tooltip= strText[btn.data.tooltip] or btn.data.tooltip
-                if not strText[btn.data.tooltip] then
-                    print(btn.data.tooltip)
-                end
             end
         end
     end)
-    --[[Blizzard_CategoryList.lua
+    --hooksecurefunc(SettingsListSearchCategoryMixin, 'Init', function(self, initializer)
+
+    --Blizzard_CategoryList.lua
     hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--hooksecurefunc(SettingsPanel.CategoryList.ScrollBox, 'Update', function(frame)
         local category = initializer.data.category;
         set(self.Label, strText[category:GetName()])
     end)
-    --Blizzard_Settings.lua
-    hooksecurefunc(Settings, 'CreateCheckBox', function(category, variable, label, tooltip)
-        local text= strText[category.name]
-        
-        print(category:GetName(),text)
+    hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
+        local text= strText[initializer.data.label]
         if text then
-            category:SetName(text)
+            self.Label:SetText(text)
         end
-    
-       -- for k, v in pairs(info) do if v and type(v)=='table' then print('---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---',k, '---END') else print(k,v) end end
-    end)]]
+    end)
+
     set(SettingsPanel.Container.SettingsList.Header.DefaultsButton, '默认设置')
 end
 
