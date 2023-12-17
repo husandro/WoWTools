@@ -373,6 +373,7 @@ local strText={
         [ALTERNATE_SCREEN_EFFECTS] = "开启光敏模式",
         [ENABLE_QUEST_TEXT_CONTRAST] = "任务文本颜色反差",
         [MINIMUM_CHARACTER_NAME_SIZE_TEXT] = "最小角色名尺寸",
+        [MOTION_SICKNESS_DROPDOWN] = "动态眩晕",
         [ADJUST_MOTION_SICKNESS_SHAKE] = "视角晃动",
         [CURSOR_SIZE] = "鼠标指针大小",
         [TARGET_TOOLTIP_OPTION] = "动作瞄准提示信息",
