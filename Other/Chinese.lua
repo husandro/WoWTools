@@ -1344,7 +1344,7 @@ local function Init()
             local text= btn:GetText()
             if text==CHAT then
                 set(btn, '聊天')
-            elseif text==CHANNEL then
+            elseif text==CHANNELS then
                 set(btn, '频道')
             elseif text==OTHER then
                 set(btn, '其它')
