@@ -1288,7 +1288,7 @@ local function Init()
     
     --原LUA 错误 两个5
     COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].text='法术'
-        for index, tab in pairs(COMBAT_CONFIG_MESSAGETYPES_RIGHT[1]) do
+        for index, tab in pairs(COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes) do
             if tab.text==DAMAGE then
                 COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='伤害'
             elseif tab.text==MISSES then
@@ -1304,7 +1304,7 @@ local function Init()
             elseif tab.text==SPECIAL then
                 COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='特殊'
             elseif tab.text==EXTRA_ATTACKS then
-                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='额外攻击"'
+                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='额外攻击'
             elseif tab.text==SUMMONS then
                 COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='召唤'
             elseif tab.text==RESURRECT then
