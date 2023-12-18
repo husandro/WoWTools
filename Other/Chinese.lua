@@ -1348,6 +1348,10 @@ local function Init()
                 set(btn, '频道')
             elseif text==OTHER then
                 set(btn, '其它')
+            elseif text==COMBAT then
+                set(btn, '战斗')
+            elseif text==SETTINGS then
+                set(btn, '设置')
             end
         end
     end
