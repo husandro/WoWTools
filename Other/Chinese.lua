@@ -263,6 +263,10 @@ local strText={
             [MOUSE_SENSITIVITY] = "鼠标灵敏度",
 
             [CLICK_TO_MOVE] = "点击移动",
+                [CAMERA_SMART] = "移动时只调整水平角度",
+                [CAMERA_SMARTER] = "仅在移动时",
+                [CAMERA_ALWAYS] = "总是调整视角",
+                [CAMERA_NEVER] = "从不调整镜头",
 
         [CAMERA_LABEL] = "镜头",
             [WATER_COLLISION] = "水体碰撞",
@@ -270,6 +274,7 @@ local strText={
             [AUTO_FOLLOW_SPEED] = "自动跟随速度",
 
             [CAMERA_CTM_FOLLOWING_STYLE] = "镜头跟随模式",
+
 
     [INTERFACE_LABEL] = "界面",--Interface.lua
         [NAMES_LABEL] = "名字",
@@ -1030,15 +1035,21 @@ local function Init()
 
     --选项
     hooksecurefunc(SettingsPanel.Container.SettingsList.ScrollBox, 'Update', function(frame)
-        if not frame:GetView() then
+        if not frame:GetView() or not frame:IsVisible() then
             return
         end
+        --标提
+        set(SettingsPanel.Container.SettingsList.Header.Title, strText[SettingsPanel.Container.SettingsList.Header.Title:GetText()])
         for _, btn in pairs(frame:GetFrames() or {}) do
             local lable= btn.Button
-            if lable then
+            if lable then--按钮
                 set(lable, strText[lable:GetText()])
             end
-            lable= btn.Text or btn.Label
+            if btn.DropDown then--下拉，菜单info= btn
+                set(btn.DropDown.Button.SelectionDetails.SelectionName, strText[btn.DropDown.Button.SelectionDetails.SelectionName:GetText()])
+            end
+
+            lable= btn.Text or btn.Label or btn.Title
             if lable then
                 set(lable, strText[lable:GetText()])
             elseif btn.Text and btn.data and btn.data.name and strText[btn.data.name] then

@@ -4789,7 +4789,11 @@
         "BINDING_HEADER_ACTIONBAR2",
         "CHARACTER_SPECIFIC_KEYBINDINGS",
         "PING_KEYBINDINGS",
-        "PING_CHAT_SETTINGS"
+        "PING_CHAT_SETTINGS",
+        "CAMERA_SMART",
+        "CAMERA_SMARTER",
+        "CAMERA_ALWAYS",
+        "CAMERA_NEVER"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
