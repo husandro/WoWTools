@@ -4880,7 +4880,9 @@
         "GameMenuButtonEditModeText",
         "GameMenuButtonMacrosText",
         "GameMenuButtonAddonsText",
-        "GameMenuButtonLogoutText"
+        "GameMenuButtonLogoutText",
+        "GameMenuButtonQuitText",
+        "GameMenuButtonContinueText"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
