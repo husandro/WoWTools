@@ -1085,7 +1085,7 @@ local function Init()
     set(GameMenuButtonEditModeText, '编辑模式')
     set(GameMenuButtonMacrosText, '宏')
     set(GameMenuButtonAddonsText, '插件')
-    set(GameMenuButtonLogoutText, '登出"')
+    set(GameMenuButtonLogoutText, '登出')
     set(GameMenuButtonQuitText, '退出游戏')
     set(GameMenuButtonContinueText, '返回游戏')
 end
