@@ -171,6 +171,16 @@ local strText={
 
 
 
+
+
+
+
+
+
+
+
+
+
     --成就
     [ACHIEVEMENT_SUMMARY_CATEGORY] = "总览",
     [CHARACTER] = "角色",
@@ -228,8 +238,20 @@ local strText={
     [TOY_BOX] = "玩具箱",
     [WARDROBE] = "外观",
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     --选项
-    [SYSTEM_DEFAULT] = "系统默认",
     [SETTINGS_TAB_GAME] = "游戏",
         [CONTROLS_LABEL] = "控制",
             [GAMEFIELD_DESELECT_TEXT] = "目标锁定",
@@ -238,7 +260,8 @@ local strText={
             [INTERACT_ON_LEFT_CLICK_TEXT] = "左键点击操作",
             [LOOT_UNDER_MOUSE_TEXT] = "鼠标位置打开拾取窗口",
             [AUTO_LOOT_DEFAULT_TEXT] = "自动拾取",
-            [AUTO_LOOT_KEY_TEXT] = "自动拾取按键",
+            --[AUTO_LOOT_KEY_TEXT] = "自动拾取按键",
+            [LOOT_KEY_TEXT] = "拾取键",
             [USE_COMBINED_BAGS_TEXT] = "组合背包",
             [ENABLE_INTERACT_TEXT] = "开启交互按键",
             [BINDING_NAME_INTERACTTARGET] = "与目标互动",
@@ -527,6 +550,10 @@ local strText={
         [OPTIMIZE_NETWORK_SPEED] = "优化网络速度",
         [USEIPV6] = "当IPv6可用时开启",
         [ADVANCED_COMBAT_LOGGING] = "高级战斗日志",
+
+
+
+
 
 
 
@@ -908,6 +935,30 @@ local strText={
         [BINDING_NAME_VEHICLEEXIT] = "离开载具",
         [BINDING_NAME_VEHICLENEXTSEAT] = "后一座位",
         [BINDING_NAME_VEHICLEPREVSEAT] = "前一座位",
+
+
+
+    
+    [SYSTEM_DEFAULT] = "系统默认",
+
+    [KEY1] = "按键设置1",
+    [KEY2] = "按键设置2",
+    [KEY_BACKSPACE] = "退格",
+    [KEY_BUTTON1] = "鼠标左键",
+    [KEY_BUTTON2] = "鼠标右键",
+    [KEY_BUTTON3] = "鼠标中键",
+    [KEY_MOUSEWHEELDOWN] = "鼠标滚轮向下滚动",
+    [KEY_MOUSEWHEELUP] = "鼠标滚轮向上滚动",
+    [KEY_UP] = "方向键上",
+    [KEY_DOWN] = "方向键下",
+    [KEY_ENTER] = "回车",
+    [KEY_LEFT] = "方向键左",
+    [KEY_RIGHT] = "方向键右",
+    [KEY_NUMPADDECIMAL] = "数字键盘.",
+    [KEY_NUMPADDIVIDE] = "数字键盘/",
+    [KEY_NUMPADMINUS] = "数字键盘-",
+    [KEY_NUMPADMULTIPLY] = "数字键盘*",
+    [KEY_NUMPADPLUS] = "数字键盘+",
 }
 
 
@@ -1037,7 +1088,12 @@ local function Init()
                 lable= btn.DropDown.Button.SelectionDetails.SelectionName
                 set(lable, strText[lable:GetText()])
             end
-
+            if btn.Button1 then
+                set(btn.Button1, strText[btn.Button1:GetText()])
+            end
+            if btn.Button2 then
+                set(btn.Button2, strText[btn.Button1:GetText()])
+            end
             lable= btn.Text or btn.Label or btn.Title
             if lable then
                 set(lable, strText[lable:GetText()])

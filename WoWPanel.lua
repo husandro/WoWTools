@@ -740,6 +740,10 @@ local function Init()
         e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
+
+    SettingsPanel.OutputText:ClearAllPoints()
+    SettingsPanel.OutputText:SetPoint('BOTTOMLEFT', 2,2)
+
 end
 
 

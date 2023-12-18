@@ -4882,7 +4882,20 @@
         "GameMenuButtonAddonsText",
         "GameMenuButtonLogoutText",
         "GameMenuButtonQuitText",
-        "GameMenuButtonContinueText"
+        "GameMenuButtonContinueText",
+        "LOOT_KEY_TEXT",
+        "KEY_UP",
+        "KEY_DOWN",
+        "KEY_LEFT",
+        "KEY_RIGHT",
+        "KEY_NUMPADDECIMAL",
+        "KEY_NUMPADDIVIDE",
+        "KEY_NUMPADMINUS",
+        "KEY_NUMPADMULTIPLY",
+        "KEY_NUMPADPLUS",
+        "KEY1",
+        "KEY2",
+        "KEY_BACKSPACE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
