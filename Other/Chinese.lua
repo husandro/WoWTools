@@ -1338,6 +1338,19 @@ local function Init()
     COMBAT_CONFIG_UNIT_COLORS[5].text='敌方玩家'
     COMBAT_CONFIG_UNIT_COLORS[6].text='中立'
     COMBAT_CONFIG_UNIT_COLORS[7].text='未知'
+    for i=1, 7 do
+        local btn=_G['ChatConfigCategoryFrameButton'..i]
+        if btn then
+            local text= btn:GetText()
+            if text==CHAT then
+                set(btn, '聊天')
+            elseif text==CHANNEL then
+                set(btn, '频道')
+            elseif text==OTHER then
+                set(btn, '其它')
+            end
+        end
+    end
 end
 
 

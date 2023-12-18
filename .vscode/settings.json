@@ -4934,7 +4934,11 @@
         "EXTRA_ATTACKS",
         "BUILDING_DAMAGE",
         "BUILDING_HEAL",
-        "EMPOWERS"
+        "EMPOWERS",
+        "ChatConfigCategoryFrameButton1",
+        "ChatConfigCategoryFrameButton2",
+        "ChatConfigCategoryFrameButton3",
+        "ChatConfigCategoryFrameButton4"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
