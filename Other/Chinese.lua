@@ -398,6 +398,7 @@ local strText={
         [PING_KEYBINDINGS] = "信号快捷键",
 
     [SETTINGS_KEYBINDINGS_LABEL] = "快捷键",
+
     [SETTING_GROUP_ACCESSIBILITY] = "易用性",--Accessibility.lua
         [MOVE_PAD] = "显示移动框",
         [CINEMATIC_SUBTITLES] = "动画字幕",
@@ -409,7 +410,8 @@ local strText={
         [CURSOR_SIZE] = "鼠标指针大小",
         [TARGET_TOOLTIP_OPTION] = "动作瞄准提示信息",
         [INTERACT_ICONS_OPTION] = "交互按键图标",
-
+            [INTERACT_ICONS_SHOW_ALL] = "显示全部",
+            [INTERACT_ICONS_SHOW_NONE] = "全不显示",
     --综合
     [COLORBLIND_LABEL] = "色盲模式",
     [TTS_LABEL] = "文本转语音",
@@ -420,8 +422,15 @@ local strText={
     --[ACCESSIBILITY_MOUNT_LABEL] = "坐骑", Mounts.lua
         [ACCESSIBILITY_ADV_FLY_LABEL] = "动态飞行",
         [MOTION_SICKNESS_DRAGONRIDING] = "晕动症",
+            [DEFAULT] = "默认",
+            [MOTION_SICKNESS_CHARACTER_CENTERED] = "保持角色处于正中";
+            [MOTION_SICKNESS_REDUCE_CAMERA_MOTION] = "减少镜头运动",
+            [MOTION_SICKNESS_BOTH] = "保持角色居中，减少镜头运动",
+            [MOTION_SICKNESS_NONE] = "允许动态镜头运动",
         "动态飞行屏幕效果",
         [MOTION_SICKNESS_DRAGONRIDING_SPEED_EFFECTS] = "动态飞行速度效果",
+            [SHAKE_INTENSITY_FULL] = "高",
+            [SHAKE_INTENSITY_REDUCED] = "低",
         [ADV_FLY_PITCH_CONTROL] = "倾角控制",
         [ADV_FLY_PITCH_CONTROL_GROUND_DEBOUNCE] = "防抖倾角输入",
         [ADV_FLY_CAMERA_PITCH_CHASE_TEXT] = "键盘倾斜镜头跟随",
@@ -481,7 +490,7 @@ local strText={
 
         [CHARACTER_SPECIFIC_KEYBINDINGS] = "角色专用按键设置",
             [CLICK_BIND_MODE] = "点击施法",
-            [QUICK_KEYBIND_MODE_BUTTON] = "快速快捷键模式",
+            [QUICK_KEYBIND_MODE] = "快速快捷键模式",
 
         [BINDING_HEADER_ACTIONBAR] = "动作条",
         [BINDING_HEADER_ACTIONBAR2] = "动作条2",
