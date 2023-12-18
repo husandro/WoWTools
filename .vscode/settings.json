@@ -4895,7 +4895,8 @@
         "KEY_NUMPADPLUS",
         "KEY1",
         "KEY2",
-        "KEY_BACKSPACE"
+        "KEY_BACKSPACE",
+        "SHIFT_KEY"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

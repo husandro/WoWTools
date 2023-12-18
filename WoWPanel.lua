@@ -742,7 +742,7 @@ local function Init()
     end)
 
     SettingsPanel.OutputText:ClearAllPoints()
-    SettingsPanel.OutputText:SetPoint('BOTTOMLEFT', 2,2)
+    SettingsPanel.OutputText:SetPoint('BOTTOMLEFT', 20, 18)
 
 end
 
