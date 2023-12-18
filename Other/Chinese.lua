@@ -232,54 +232,42 @@ local strText={
     [SETTINGS_TAB_GAME] = "游戏",
         [CONTROLS_LABEL] = "控制",
             [GAMEFIELD_DESELECT_TEXT] = "目标锁定",
-
             [AUTO_DISMOUNT_FLYING_TEXT] = "自动取消飞行",
-
             [CLEAR_AFK] = "自动解除离开状态",
-
             [INTERACT_ON_LEFT_CLICK_TEXT] = "左键点击操作",
-
             [LOOT_UNDER_MOUSE_TEXT] = "鼠标位置打开拾取窗口",
-
             [AUTO_LOOT_DEFAULT_TEXT] = "自动拾取",
-
             [AUTO_LOOT_KEY_TEXT] = "自动拾取按键",
             [USE_COMBINED_BAGS_TEXT] = "组合背包",
-
             [ENABLE_INTERACT_TEXT] = "开启交互按键",
             [BINDING_NAME_INTERACTTARGET] = "与目标互动",
-
             [ENABLE_INTERACT_SOUND_OPTION] = "交互按键音效提示",
                 [ENABLE_INTERACT_SOUND_OPTION_TOOLTIP] = "你变得可以或者不可以与一个目标互动时，播放音效提示。",
         [MOUSE_LABEL] = "鼠标",
             [LOCK_CURSOR] = "将鼠标指针锁定在窗口内",
-
             [INVERT_MOUSE] = "反转鼠标",
-
             [MOUSE_LOOK_SPEED] = "鼠标观察速度",
-
             [ENABLE_MOUSE_SPEED] = "启用鼠标灵敏度",
-
             [MOUSE_SENSITIVITY] = "鼠标灵敏度",
-
             [CLICK_TO_MOVE] = "点击移动",
                 [CAMERA_SMART] = "移动时只调整水平角度",
                 [CAMERA_SMARTER] = "仅在移动时",
                 [CAMERA_ALWAYS] = "总是调整视角",
                 [CAMERA_NEVER] = "从不调整镜头",
-
         [CAMERA_LABEL] = "镜头",
             [WATER_COLLISION] = "水体碰撞",
-
             [AUTO_FOLLOW_SPEED] = "自动跟随速度",
-
             [CAMERA_CTM_FOLLOWING_STYLE] = "镜头跟随模式",
-
 
     [INTERFACE_LABEL] = "界面",--Interface.lua
         [NAMES_LABEL] = "名字",
             [UNIT_NAME_OWN] = "我的名字",
             [SHOW_NPC_NAMES] = "NPC姓名",
+                [NPC_NAMES_DROPDOWN_TRACKED] = "任务NPC",
+                [NPC_NAMES_DROPDOWN_HOSTILE] = "敌对及任务NPC",
+                [NPC_NAMES_DROPDOWN_INTERACTIVE] = "敌对、任务及可互动的NPC",
+                [NPC_NAMES_DROPDOWN_ALL] = "所有NPC",
+                [NPC_NAMES_DROPDOWN_NONE] = "无",
             [UNIT_NAME_NONCOMBAT_CREATURE] = "小动物和小伙伴",
             [UNIT_NAME_FRIENDLY] = "友方玩家",
                 [UNIT_NAME_FRIENDLY_MINIONS] = "仆从",
@@ -294,13 +282,24 @@ local strText={
             [UNIT_NAMEPLATES_SHOW_FRIENDLY_MINIONS] = "仆从",
             [SHOW_NAMEPLATE_LOSE_AGGRO_FLASH] = "失去怪物威胁时闪烁",
             [UNIT_NAMEPLATES_TYPES] = "姓名板排列方式",
+                [UNIT_NAMEPLATES_TYPE_1] = "重叠姓名板",
+                [UNIT_NAMEPLATES_TYPE_2] = "堆叠姓名板",
         [DISPLAY_LABEL] = "显示",
             [HIDE_ADVENTURE_JOURNAL_ALERTS] = "隐藏冒险指南提示",
             [SHOW_IN_GAME_NAVIGATION] = "游戏内导航",
             [SHOW_TUTORIALS]= "教程", [RESET_TUTORIALS] = "重置教程",
             [OBJECT_NPC_OUTLINE] = "轮廓线模式",
+                [OBJECT_NPC_OUTLINE_DISABLED] = "禁用",
+                [OBJECT_NPC_OUTLINE_MODE_ONE] = "仅限任务目标",
+                [OBJECT_NPC_OUTLINE_MODE_THREE] = "任务目标、鼠标悬停及目标",
+                [OBJECT_NPC_OUTLINE_MODE_TWO] = "任务目标和鼠标悬停（默认）",
             [STATUSTEXT_LABEL] = "状态文字",
+                [STATUS_TEXT_VALUE] = "数值",
+                [STATUS_TEXT_PERCENT] = "百分比",
+                [STATUS_TEXT_BOTH] = "同时显示",
             [CHAT_BUBBLES_TEXT] = "聊天泡泡",
+                [ALL] = "全部",
+                [CHAT_BUBBLES_EXCLUDE_PARTY_CHAT] = "屏蔽小队聊天",
             [REPLACE_OTHER_PLAYER_PORTRAITS] = "替换玩家框体头像",
             [REPLACE_MY_PLAYER_PORTRAIT] = "替换我的框体头像",
         [RAID_FRAMES_LABEL] = "团队框体",--InterfaceOverrides.lua
@@ -314,7 +313,11 @@ local strText={
             [COMPACT_UNIT_FRAME_PROFILE_DISPLAYNONBOSSDEBUFFS] = "显示负面效果",
                 [DISPLAY_ONLY_DISPELLABLE_DEBUFFS] = "只显示可供驱散的负面效果",
             [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT] = "显示生命值数值",
-
+                [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT] = "显示生命值数值",
+                [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_HEALTH] = "剩余生命值",
+                [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_LOSTHEALTH] = "损失生命值",
+                --[PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_NONE] = "无",
+                [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_PERC] = "生命值百分比",
         [PVP_FRAMES_LABEL] = "竞技场对手框体",
 
 
@@ -330,16 +333,28 @@ local strText={
             [DISPLAY_PERSONAL_RESOURCE_ON_ENEMY] = "在敌方目标上显示玩家的特殊资源",
             [DISPLAY_PERSONAL_COOLDOWNS] = "显示个人冷却时间",
             [DISPLAY_PERSONAL_FRIENDLY_BUFFS] = "显示友方增益效果",
+        --[BINDING_NAME_TOGGLESELFHIGHLIGHT] = "开启/关闭自身高亮",
+            [SELF_HIGHLIGHT_MODE_CIRCLE] = "圆环",--CombatOverrides.lua
+            [SELF_HIGHLIGHT_MODE_CIRCLE_AND_OUTLINE] = "圆环&轮廓线",
+            [SELF_HIGHLIGHT_MODE_OUTLINE] = "轮廓线",
+            [OFF] = "禁用",
+
         [SELF_HIGHLIGHT_OPTION] = "团队中自身高亮",
+
         [SHOW_TARGET_OF_TARGET_TEXT] = "目标的目标",
         [FLASH_LOW_HEALTH_WARNING] = "生命值过低时不闪烁屏幕",
         [LOSS_OF_CONTROL] = "失控警报",
         [SHOW_COMBAT_TEXT_TEXT] = "滚动战斗记录",
         [ENABLE_MOUSEOVER_CAST] = "鼠标悬停施法",
         [AUTO_SELF_CAST_TEXT] = "自动自我施法",
+            [SELF_CAST_AUTO] = "自动",
+            [SELF_CAST_KEY_PRESS] = "按键",
+            [SELF_CAST_AUTO_AND_KEY_PRESS] = "自动和按键",
             [AUTO_SELF_CAST_KEY_TEXT] = "自我施法",
         [FOCUS_CAST_KEY_TEXT] = "焦点施法按键",
         [SETTING_EMPOWERED_SPELL_INPUT] = "蓄力法术输入",
+            [SETTING_EMPOWERED_SPELL_INPUT_HOLD_OPTION] = "按下后放开",
+            [SETTING_EMPOWERED_SPELL_INPUT_TAP_OPTION] = "两次按键",
         [SPELL_ALERT_OPACITY] = "法术警报不透明度",
         [PRESS_AND_HOLD_CASTING_OPTION] = "按住施法",
         [ACTION_TARGETING_OPTION] = "开启动作瞄准",
@@ -1046,7 +1061,8 @@ local function Init()
                 set(lable, strText[lable:GetText()])
             end
             if btn.DropDown then--下拉，菜单info= btn
-                set(btn.DropDown.Button.SelectionDetails.SelectionName, strText[btn.DropDown.Button.SelectionDetails.SelectionName:GetText()])
+                lable= btn.DropDown.Button.SelectionDetails.SelectionName
+                set(lable, strText[lable:GetText()])
             end
 
             lable= btn.Text or btn.Label or btn.Title
