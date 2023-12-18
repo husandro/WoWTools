@@ -362,6 +362,9 @@ local strText={
     --社交 Social.lua
         [RESTRICT_CHAT_CONFIG_DISABLE] = "关闭聊天",
         [CENSOR_SOURCE_EXCLUDE] = "屏蔽信息",
+            [CENSOR_SOURCE_EVERYONE] = "所有人",
+            [CENSOR_SOURCE_EXCLUDE_FRIENDS] = "朋友外的所有人",
+            [CENSOR_SOURCE_EXCLUDE_FRIENDS_AND_GUILD] = "朋友和公会成员外的所有人",
         [PROFANITY_FILTER] = "语言过滤器",
         [GUILDMEMBER_ALERT] = "公会成员提示",
         [BLOCK_TRADES] = "阻止交易",
@@ -376,13 +379,20 @@ local strText={
         [SHOW_TOAST_WINDOW_TEXT] = "显示浮窗",
         [AUTO_ACCEPT_QUICK_JOIN_TEXT] = "自动接受快速加入申请",
         [CHAT_STYLE] = "聊天风格",
+            [IM_STYLE] = "即时通讯风格",
+            [CLASSIC_STYLE] = "经典风格",
         [WHISPER_MODE] = "新的悄悄话",
+            [CONVERSATION_MODE_POPOUT] = "新标签页",
+            [CONVERSATION_MODE_INLINE] = "一致模式",
+            [CONVERSATION_MODE_POPOUT_AND_INLINE] = "同时",
         [TIMESTAMPS_LABEL] = "聊天时间戳",
         [RESET_CHAT_POSITION] = "重置聊天窗口位置", [RESET] = "重置",
 
     [PING_SYSTEM_LABEL] = "信号系统",--PingSystem.lua AudioOverrides.lua
         [ENABLE_PINGS] = "开启信号",
         [PING_MODE] = "信号模式",
+            [PING_MODE_KEY_DOWN] = "快速信号",
+            [PING_MODE_CLICK_DRAG] = "从容信号",
         [ENABLE_PING_SOUNDS] = "信号音效",
         [SHOW_PINGS_IN_CHAT] = "在聊天中显示信号", [PING_CHAT_SETTINGS] = "聊天设置",
         [PING_KEYBINDINGS] = "信号快捷键",
@@ -470,6 +480,9 @@ local strText={
 
 
         [CHARACTER_SPECIFIC_KEYBINDINGS] = "角色专用按键设置",
+            [CLICK_BIND_MODE] = "点击施法",
+            [QUICK_KEYBIND_MODE_BUTTON] = "快速快捷键模式",
+
         [BINDING_HEADER_ACTIONBAR] = "动作条",
         [BINDING_HEADER_ACTIONBAR2] = "动作条2",
         [BINDING_HEADER_ACTIONBAR3] = "动作条3",
