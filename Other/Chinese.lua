@@ -594,18 +594,7 @@ local strText={
             [BINDING_HEADER_TARGETING] = "选中目标",
             [BINDING_HEADER_VEHICLE] = "载具控制",
             [BINDING_HEADER_VOICE_CHAT] = "语音聊天",
---[[            [BINDING_NAME_ACTIONBUTTON1] = "快捷键1",
-            [BINDING_NAME_ACTIONBUTTON10] = "快捷键10",
-            [BINDING_NAME_ACTIONBUTTON11] = "快捷键11",
-            [BINDING_NAME_ACTIONBUTTON12] = "快捷键12",
-            [BINDING_NAME_ACTIONBUTTON2] = "快捷键2",
-            [BINDING_NAME_ACTIONBUTTON3] = "快捷键3",
-            [BINDING_NAME_ACTIONBUTTON4] = "快捷键4",
-            [BINDING_NAME_ACTIONBUTTON5] = "快捷键5",
-            [BINDING_NAME_ACTIONBUTTON6] = "快捷键6",
-            [BINDING_NAME_ACTIONBUTTON7] = "快捷键7",
-            [BINDING_NAME_ACTIONBUTTON8] = "快捷键8",
-            [BINDING_NAME_ACTIONBUTTON9] = "快捷键9",]]
+            
             [BINDING_NAME_ACTIONPAGE1] = "动作条1",
             [BINDING_NAME_ACTIONPAGE2] = "动作条2",
             [BINDING_NAME_ACTIONPAGE3] = "动作条3",
@@ -723,90 +712,7 @@ local strText={
             [BINDING_NAME_MOVIE_RECORDING_COMPRESS] = "压缩视频",
             [BINDING_NAME_MOVIE_RECORDING_GUI] = "显示/隐藏用户界面",
             [BINDING_NAME_MOVIE_RECORDING_STARTSTOP] = "开始录制/停止录制",
-            --[[[BINDING_NAME_MULTIACTIONBAR1BUTTON1] = "动作条2快捷键1",
-            [BINDING_NAME_MULTIACTIONBAR1BUTTON10] = "动作条2快捷键10",
-            [BINDING_NAME_MULTIACTIONBAR1BUTTON11] = "动作条2快捷键11",
-            [BINDING_NAME_MULTIACTIONBAR1BUTTON12] = "动作条2快捷键12",
-            [BINDING_NAME_MULTIACTIONBAR1BUTTON2] = "动作条2快捷键2",
-            [BINDING_NAME_MULTIACTIONBAR1BUTTON3] = "动作条2快捷键3",
-            [BINDING_NAME_MULTIACTIONBAR1BUTTON4] = "动作条2快捷键4",
-            [BINDING_NAME_MULTIACTIONBAR1BUTTON5] = "动作条2快捷键5",
-            [BINDING_NAME_MULTIACTIONBAR1BUTTON6] = "动作条2快捷键6",
-            [BINDING_NAME_MULTIACTIONBAR1BUTTON7] = "动作条2快捷键7",
-            [BINDING_NAME_MULTIACTIONBAR1BUTTON8] = "动作条2快捷键8",
-            [BINDING_NAME_MULTIACTIONBAR1BUTTON9] = "动作条2快捷键9",
-            [BINDING_NAME_MULTIACTIONBAR2BUTTON1] = "动作条3快捷键1",
-            [BINDING_NAME_MULTIACTIONBAR2BUTTON10] = "动作条3快捷键10",
-            [BINDING_NAME_MULTIACTIONBAR2BUTTON11] = "动作条3快捷键11",
-            [BINDING_NAME_MULTIACTIONBAR2BUTTON12] = "动作条3快捷键12",
-            [BINDING_NAME_MULTIACTIONBAR2BUTTON2] = "动作条3快捷键2",
-            [BINDING_NAME_MULTIACTIONBAR2BUTTON3] = "动作条3快捷键3",
-            [BINDING_NAME_MULTIACTIONBAR2BUTTON4] = "动作条3快捷键4",
-            [BINDING_NAME_MULTIACTIONBAR2BUTTON5] = "动作条3快捷键5",
-            [BINDING_NAME_MULTIACTIONBAR2BUTTON6] = "动作条3快捷键6",
-            [BINDING_NAME_MULTIACTIONBAR2BUTTON7] = "动作条3快捷键7",
-            [BINDING_NAME_MULTIACTIONBAR2BUTTON8] = "动作条3快捷键8",
-            [BINDING_NAME_MULTIACTIONBAR2BUTTON9] = "动作条3快捷键9",
-            [BINDING_NAME_MULTIACTIONBAR3BUTTON1] = "动作条4快捷键1",
-            [BINDING_NAME_MULTIACTIONBAR3BUTTON10] = "动作条4快捷键10",
-            [BINDING_NAME_MULTIACTIONBAR3BUTTON11] = "动作条4快捷键11",
-            [BINDING_NAME_MULTIACTIONBAR3BUTTON12] = "动作条4快捷键12",
-            [BINDING_NAME_MULTIACTIONBAR3BUTTON2] = "动作条4快捷键2",
-            [BINDING_NAME_MULTIACTIONBAR3BUTTON3] = "动作条4快捷键3",
-            [BINDING_NAME_MULTIACTIONBAR3BUTTON4] = "动作条4快捷键4",
-            [BINDING_NAME_MULTIACTIONBAR3BUTTON5] = "动作条4快捷键5",
-            [BINDING_NAME_MULTIACTIONBAR3BUTTON6] = "动作条4快捷键6",
-            [BINDING_NAME_MULTIACTIONBAR3BUTTON7] = "动作条4快捷键7",
-            [BINDING_NAME_MULTIACTIONBAR3BUTTON8] = "动作条4快捷键8",
-            [BINDING_NAME_MULTIACTIONBAR3BUTTON9] = "动作条4快捷键9",
-            [BINDING_NAME_MULTIACTIONBAR4BUTTON1] = "动作条5快捷键1",
-            [BINDING_NAME_MULTIACTIONBAR4BUTTON10] = "动作条5快捷键10",
-            [BINDING_NAME_MULTIACTIONBAR4BUTTON11] = "动作条5快捷键11",
-            [BINDING_NAME_MULTIACTIONBAR4BUTTON12] = "动作条5快捷键12",
-            [BINDING_NAME_MULTIACTIONBAR4BUTTON2] = "动作条5快捷键2",
-            [BINDING_NAME_MULTIACTIONBAR4BUTTON3] = "动作条5快捷键3",
-            [BINDING_NAME_MULTIACTIONBAR4BUTTON4] = "动作条5快捷键4",
-            [BINDING_NAME_MULTIACTIONBAR4BUTTON5] = "动作条5快捷键5",
-            [BINDING_NAME_MULTIACTIONBAR4BUTTON6] = "动作条5快捷键6",
-            [BINDING_NAME_MULTIACTIONBAR4BUTTON7] = "动作条5快捷键7",
-            [BINDING_NAME_MULTIACTIONBAR4BUTTON8] = "动作条5快捷键8",
-            [BINDING_NAME_MULTIACTIONBAR4BUTTON9] = "动作条5快捷键9",
-            [BINDING_NAME_MULTIACTIONBAR5BUTTON1] = "动作条6按键1",
-            [BINDING_NAME_MULTIACTIONBAR5BUTTON10] = "动作条6按键10",
-            [BINDING_NAME_MULTIACTIONBAR5BUTTON11] = "动作条6按键11",
-            [BINDING_NAME_MULTIACTIONBAR5BUTTON12] = "动作条6按键12",
-            [BINDING_NAME_MULTIACTIONBAR5BUTTON2] = "动作条6按键2",
-            [BINDING_NAME_MULTIACTIONBAR5BUTTON3] = "动作条6按键3",
-            [BINDING_NAME_MULTIACTIONBAR5BUTTON4] = "动作条6按键4",
-            [BINDING_NAME_MULTIACTIONBAR5BUTTON5] = "动作条6按键5",
-            [BINDING_NAME_MULTIACTIONBAR5BUTTON6] = "动作条6按键6",
-            [BINDING_NAME_MULTIACTIONBAR5BUTTON7] = "动作条6按键7",
-            [BINDING_NAME_MULTIACTIONBAR5BUTTON8] = "动作条6按键8",
-            [BINDING_NAME_MULTIACTIONBAR5BUTTON9] = "动作条6按键9",
-            [BINDING_NAME_MULTIACTIONBAR6BUTTON1] = "动作条7按键1",
-            [BINDING_NAME_MULTIACTIONBAR6BUTTON10] = "动作条7按键10",
-            [BINDING_NAME_MULTIACTIONBAR6BUTTON11] = "动作条7按键11",
-            [BINDING_NAME_MULTIACTIONBAR6BUTTON12] = "动作条7按键12",
-            [BINDING_NAME_MULTIACTIONBAR6BUTTON2] = "动作条7按键2",
-            [BINDING_NAME_MULTIACTIONBAR6BUTTON3] = "动作条7按键3",
-            [BINDING_NAME_MULTIACTIONBAR6BUTTON4] = "动作条7按键4",
-            [BINDING_NAME_MULTIACTIONBAR6BUTTON5] = "动作条7按键5",
-            [BINDING_NAME_MULTIACTIONBAR6BUTTON6] = "动作条7按键6",
-            [BINDING_NAME_MULTIACTIONBAR6BUTTON7] = "动作条7按键7",
-            [BINDING_NAME_MULTIACTIONBAR6BUTTON8] = "动作条7按键8",
-            [BINDING_NAME_MULTIACTIONBAR6BUTTON9] = "动作条7按键9",
-            [BINDING_NAME_MULTIACTIONBAR7BUTTON1] = "动作条8按键1",
-            [BINDING_NAME_MULTIACTIONBAR7BUTTON10] = "动作条8按键10",
-            [BINDING_NAME_MULTIACTIONBAR7BUTTON11] = "动作条8按键11",
-            [BINDING_NAME_MULTIACTIONBAR7BUTTON12] = "动作条8按键12",
-            [BINDING_NAME_MULTIACTIONBAR7BUTTON2] = "动作条8按键2",
-            [BINDING_NAME_MULTIACTIONBAR7BUTTON3] = "动作条8按键3",
-            [BINDING_NAME_MULTIACTIONBAR7BUTTON4] = "动作条8按键4",
-            [BINDING_NAME_MULTIACTIONBAR7BUTTON5] = "动作条8按键5",
-            [BINDING_NAME_MULTIACTIONBAR7BUTTON6] = "动作条8按键6",
-            [BINDING_NAME_MULTIACTIONBAR7BUTTON7] = "动作条8按键7",
-            [BINDING_NAME_MULTIACTIONBAR7BUTTON8] = "动作条8按键8",
-            [BINDING_NAME_MULTIACTIONBAR7BUTTON9] = "动作条8按键9",]]
+            
             [BINDING_NAME_MULTICASTACTIONBUTTON1] = "大地图腾",
             [BINDING_NAME_MULTICASTACTIONBUTTON10] = "火焰图腾",
             [BINDING_NAME_MULTICASTACTIONBUTTON11] = "水图腾",
@@ -1052,6 +958,8 @@ local strText={
     [KEY_NUMPADMULTIPLY] = "数字键盘*",
     [KEY_NUMPADPLUS] = "数字键盘+",
     [SHIFT_KEY] = "SHIFT键",
+
+    
 }
 
 
@@ -1238,6 +1146,198 @@ local function Init()
     set(GameMenuButtonLogoutText, '登出')
     set(GameMenuButtonQuitText, '退出游戏')
     set(GameMenuButtonContinueText, '返回游戏')
+
+    set(FriendsFrameTab1, '好友')
+        set(FriendsFrameAddFriendButton, '添加好友')
+        set(FriendsTabHeaderTab1, '好友')
+        set(FriendsTabHeaderTab2, '屏蔽')
+            set(FriendsFrameIgnorePlayerButton, '添加')
+            set(FriendsFrameUnsquelchButton, '移除')
+        set(FriendsTabHeaderTab3, '招募战友')
+            set(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton, '查看所有奖励')
+            set(RecruitAFriendFrame.RecruitList.Header.RecruitedFriends, '已招募的战友')
+            set(RecruitAFriendFrame.RecruitList.NoRecruitsDesc,  "|cffffd200招募战友后，战友每充值一个月的游戏时间，你就能获得一次奖励。|n|n若战友一次充值的游戏时间超过一个月，奖励会逐月进行发放。|n|n一起游戏还能解锁额外奖励！|r|n|n更多信息：|n|HurlIndex:49|h|cff82c5ff访问我们的战友招募网站|r|h")
+            set(RecruitAFriendFrame.RecruitmentButton, '招募')
+    set(FriendsFrameTab2, '查询')
+        set(WhoFrameWhoButton, '刷新')
+        set(WhoFrameAddFriendButton, '添加好友')
+        set(WhoFrameGroupInviteButton, '组队邀请')
+        set(FriendsFrameSendMessageButton, '发送信息')
+    set(FriendsFrameTab3, '团队')
+        set(RaidFrameRaidInfoButton, '团队信息')
+        set(RaidFrameConvertToRaidButton, '转化为团队')
+        set(RaidFrameRaidDescription, '团队是超过5个人的队伍，这是为了击败高等级的特定挑战而准备的大型队伍模式。\n\n|cffffffff- 团队成员无法获得非团队任务所需的物品或者杀死怪物的纪录。\n\n- 在团队中，你通过杀死怪物获得的经验值相对普通小队要少。\n\n- 团队让你可以赢得用其它方法根本无法通过的挑战。|r')
+    hooksecurefunc('FriendsFrame_UpdateQuickJoinTab', function(numGroups)--FriendsFrame.lua
+        set(FriendsFrameTab4, '快速加入'.. numGroups)
+    end)
+    hooksecurefunc(QuickJoinFrame, 'UpdateJoinButtonState', function(self)--QuickJoin.lua
+        set(self.JoinQueueButton, '申请加入')
+        if ( IsInGroup(LE_PARTY_CATEGORY_HOME) ) then
+            self.JoinQueueButton.tooltip = '你已在一个队伍中。你必须离开队伍才能加入此队列。'
+        elseif  self:GetSelectedGroup() ~= nil then
+            local queues = C_SocialQueue.GetGroupQueues(self:GetSelectedGroup());
+            if ( queues and queues[1] and queues[1].queueData.queueType == "lfglist" ) then
+                set(self.JoinQueueButton, '申请')
+            end
+        end
+    end)
+        
+    
+    hooksecurefunc('FCF_SetWindowName', function(frame, name)--FloatingChatFrame.lua
+        if name==GENERAL_LABEL then
+            set(_G[frame:GetName().."Tab"], '综合')
+        elseif name==COMBAT_LOG then
+            set(_G[frame:GetName().."Tab"], '战斗记录')
+        elseif name==PET_BATTLE_COMBAT_LOG  then
+            set(_G[frame:GetName().."Tab"], '宠物对战')
+        elseif name==VOICE then
+            set(_G[frame:GetName().."Tab"], '语音')
+        end
+    end)
+    hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame, checkBoxTable, checkBoxTemplate, title)--ChatConfigFrame.lua
+        local titleText= title and strText[title]
+        if titleText then
+            _G[frame:GetName().."Title"]:SetText(titleText);
+        end
+    end)
+    CHAT_CONFIG_CHAT_LEFT[1].text='说'--ChatConfigFrame.lua
+    CHAT_CONFIG_CHAT_LEFT[2].text='表情'
+    CHAT_CONFIG_CHAT_LEFT[3].text='大喊'
+    CHAT_CONFIG_CHAT_LEFT[4].text='公会聊天'
+    CHAT_CONFIG_CHAT_LEFT[5].text='官员聊天'
+    CHAT_CONFIG_CHAT_LEFT[6].text='公会通告'
+    CHAT_CONFIG_CHAT_LEFT[7].text='成就通告'
+    CHAT_CONFIG_CHAT_LEFT[8].text='悄悄话'
+    CHAT_CONFIG_CHAT_LEFT[9].text='战网昵称密语'
+    CHAT_CONFIG_CHAT_LEFT[10].text='小队'
+    CHAT_CONFIG_CHAT_LEFT[11].text='小队队长'
+    CHAT_CONFIG_CHAT_LEFT[12].text='团队'
+    CHAT_CONFIG_CHAT_LEFT[13].text='团队领袖'
+    CHAT_CONFIG_CHAT_LEFT[14].text='团队通知'
+    CHAT_CONFIG_CHAT_LEFT[15].text='副本'
+    CHAT_CONFIG_CHAT_LEFT[16].text='副本向导'
+    if C_VoiceChat.IsTranscriptionAllowed() then
+        CHAT_CONFIG_CHAT_LEFT[17].text='语音识别'
+    end
+
+    CHAT_CONFIG_CHAT_CREATURE_LEFT[1].text='说'
+    CHAT_CONFIG_CHAT_CREATURE_LEFT[2].text='表情'
+    CHAT_CONFIG_CHAT_CREATURE_LEFT[3].text='大喊'
+    CHAT_CONFIG_CHAT_CREATURE_LEFT[4].text='怪物悄悄话'
+    CHAT_CONFIG_CHAT_CREATURE_LEFT[5].text='首领台词'
+    CHAT_CONFIG_CHAT_CREATURE_LEFT[6].text='首领密语'
+
+    CHAT_CONFIG_OTHER_COMBAT[1].text='经验'
+    CHAT_CONFIG_OTHER_COMBAT[2].text='荣誉'
+    CHAT_CONFIG_OTHER_COMBAT[3].text='声望'
+    CHAT_CONFIG_OTHER_COMBAT[4].text='技能提升'
+    CHAT_CONFIG_OTHER_COMBAT[5].text='物品拾取'
+    CHAT_CONFIG_OTHER_COMBAT[6].text='货币'
+    CHAT_CONFIG_OTHER_COMBAT[7].text='金钱拾取'
+    CHAT_CONFIG_OTHER_COMBAT[8].text='商业技能'
+    CHAT_CONFIG_OTHER_COMBAT[9].text='正在打开'
+    CHAT_CONFIG_OTHER_COMBAT[10].text='宠物信息'
+    CHAT_CONFIG_OTHER_COMBAT[11].text='其它信息'
+
+    CHAT_CONFIG_OTHER_PVP[1].text='战场部落'
+    CHAT_CONFIG_OTHER_PVP[3].text='战场联盟'
+    CHAT_CONFIG_OTHER_PVP[3].text='战场中立'
+
+    CHAT_CONFIG_OTHER_SYSTEM[1].text='系统信息'
+    CHAT_CONFIG_OTHER_SYSTEM[2].text='错误"'
+    CHAT_CONFIG_OTHER_SYSTEM[3].text='已屏蔽'
+    CHAT_CONFIG_OTHER_SYSTEM[4].text='频道'
+    CHAT_CONFIG_OTHER_SYSTEM[5].text='目标图标'
+    CHAT_CONFIG_OTHER_SYSTEM[6].text='暴雪游戏服务提示'
+    CHAT_CONFIG_OTHER_SYSTEM[7].text='宠物对战'
+    CHAT_CONFIG_OTHER_SYSTEM[8].text='宠物对战信息'
+    CHAT_CONFIG_OTHER_SYSTEM[9].text='信号'
+
+    COMBAT_CONFIG_MESSAGESOURCES_BY[1].text= function () return ( UsesGUID("SOURCE") and '自定义单位' or '我') end
+    COMBAT_CONFIG_MESSAGESOURCES_BY[2].text='宠物'
+    COMBAT_CONFIG_MESSAGESOURCES_BY[3].text='友方'
+    COMBAT_CONFIG_MESSAGESOURCES_BY[4].text='敌方玩家'
+    COMBAT_CONFIG_MESSAGESOURCES_BY[5].text='敌方单位'
+    COMBAT_CONFIG_MESSAGESOURCES_BY[6].text='中立'
+    COMBAT_CONFIG_MESSAGESOURCES_BY[7].text='未知'
+    
+    COMBAT_CONFIG_MESSAGESOURCES_TO[1].text= function () return ( UsesGUID("DEST") and '自定义单位' or '我') end
+    COMBAT_CONFIG_MESSAGESOURCES_TO[2].text='宠物'
+    COMBAT_CONFIG_MESSAGESOURCES_TO[3].text='友方'
+    COMBAT_CONFIG_MESSAGESOURCES_TO[4].text='敌方玩家'
+    COMBAT_CONFIG_MESSAGESOURCES_TO[5].text='敌方单位'
+    COMBAT_CONFIG_MESSAGESOURCES_TO[6].text='中立'
+    COMBAT_CONFIG_MESSAGESOURCES_TO[7].text='未知'
+
+    COMBAT_CONFIG_MESSAGETYPES_LEFT[1].text='近战'
+        COMBAT_CONFIG_MESSAGETYPES_LEFT[1].subTypes[1].text='伤害'
+        COMBAT_CONFIG_MESSAGETYPES_LEFT[1].subTypes[2].text='未命中'
+    COMBAT_CONFIG_MESSAGETYPES_LEFT[2].text='远程'
+        COMBAT_CONFIG_MESSAGETYPES_LEFT[2].subTypes[1].text='伤害'
+        COMBAT_CONFIG_MESSAGETYPES_LEFT[2].subTypes[2].text='未命中'
+    COMBAT_CONFIG_MESSAGETYPES_LEFT[3].text='光环'
+        COMBAT_CONFIG_MESSAGETYPES_LEFT[3].subTypes[1].text='增益'
+        COMBAT_CONFIG_MESSAGETYPES_LEFT[3].subTypes[2].text='"敌对'
+        COMBAT_CONFIG_MESSAGETYPES_LEFT[3].subTypes[3].text='驱散'
+        COMBAT_CONFIG_MESSAGETYPES_LEFT[3].subTypes[4].text='附魔'
+    COMBAT_CONFIG_MESSAGETYPES_LEFT[4].text='周期'
+        COMBAT_CONFIG_MESSAGETYPES_LEFT[4].subTypes[1].text='伤害'
+        COMBAT_CONFIG_MESSAGETYPES_LEFT[4].subTypes[2].text='未命中'
+        COMBAT_CONFIG_MESSAGETYPES_LEFT[4].subTypes[3].text='治疗'
+        COMBAT_CONFIG_MESSAGETYPES_LEFT[4].subTypes[4].text='其它'
+    
+    --原LUA 错误 两个5
+    COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].text='法术'
+        for index, tab in pairs(COMBAT_CONFIG_MESSAGETYPES_RIGHT[1]) do
+            if tab.text==DAMAGE then
+                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='伤害'
+            elseif tab.text==MISSES then
+                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='未命中'
+            elseif tab.text==HEALS then
+                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='治疗'
+            elseif tab.text==POWER_GAINS then
+                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='获得能量'
+            elseif tab.text==DRAINS then
+                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='吸取'
+            elseif tab.text==INTERRUPTS then
+                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='打断'
+            elseif tab.text==SPECIAL then
+                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='特殊'
+            elseif tab.text==EXTRA_ATTACKS then
+                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='额外攻击"'
+            elseif tab.text==SUMMONS then
+                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='召唤'
+            elseif tab.text==RESURRECT then
+                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='复活'
+            elseif tab.text==BUILDING_DAMAGE then
+                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='攻城'
+            elseif tab.text==BUILDING_HEAL then
+                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='修理'
+            elseif tab.text==EMPOWERS then
+                COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[index].text='蓄力'
+            end
+        end
+        COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[1].text='伤害'
+        COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[2].text='未命中'
+        COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[3].text='治疗'
+        COMBAT_CONFIG_MESSAGETYPES_RIGHT[1].subTypes[4].text='获得能量'
+    COMBAT_CONFIG_MESSAGETYPES_RIGHT[2].text='法术施放'
+        COMBAT_CONFIG_MESSAGETYPES_RIGHT[2].subTypes[1].text='开始'
+        COMBAT_CONFIG_MESSAGETYPES_RIGHT[2].subTypes[2].text='成功'
+        COMBAT_CONFIG_MESSAGETYPES_RIGHT[2].subTypes[3].text='失败'
+
+    COMBAT_CONFIG_MESSAGETYPES_MISC[1].text='伤害护盾'
+    COMBAT_CONFIG_MESSAGETYPES_MISC[2].text='环境伤害'
+    COMBAT_CONFIG_MESSAGETYPES_MISC[3].text='杀敌'
+    COMBAT_CONFIG_MESSAGETYPES_MISC[4].text='死亡'
+
+    COMBAT_CONFIG_UNIT_COLORS[1].text='我'
+    COMBAT_CONFIG_UNIT_COLORS[2].text='宠物'
+    COMBAT_CONFIG_UNIT_COLORS[3].text='友方'
+    COMBAT_CONFIG_UNIT_COLORS[4].text='敌方单位'
+    COMBAT_CONFIG_UNIT_COLORS[5].text='敌方玩家'
+    COMBAT_CONFIG_UNIT_COLORS[6].text='中立'
+    COMBAT_CONFIG_UNIT_COLORS[7].text='未知'
 end
 
 
