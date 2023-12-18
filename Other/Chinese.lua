@@ -1059,7 +1059,7 @@ local function Init()
             self.Label:SetText(text)
         end
     end)
-    set(SettingsPanel.Container.SettingsList.Header.DefaultsButton, '默认设置')
+    
 
     --快捷键
     hooksecurefunc(KeyBindingFrameBindingTemplateMixin,'Init', function(self, initializer)
@@ -1067,6 +1067,26 @@ local function Init()
         local text= label and strText[label:GetText()]
         set(label, text)
     end)
+
+    --Blizzard_SettingsPanel.lua 
+    set(SettingsPanel.Container.SettingsList.Header.DefaultsButton, '默认设置')
+    StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].text= '你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？'--Blizzard_Dialogs.lua
+    StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].button1= '所有设置'
+    StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].button2= '取消'
+    StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].button3= '这些设置'
+    set(SettingsPanel.GameTab.Text, '游戏')
+    set(SettingsPanel.AddOnsTab.Text, '插件')
+    
+    set(GameMenuFrame.Header.Text, '游戏菜单')
+    set(GameMenuButtonHelpText, '帮助')
+    set(GameMenuButtonStoreText, '商店')
+    set(GameMenuButtonWhatsNewText, '新内容')
+    set(GameMenuButtonSettingsText, '选项')
+    set(GameMenuButtonEditModeText, '编辑模式')
+    set(GameMenuButtonMacrosText, '宏')
+    set(GameMenuButtonAddonsText, '插件')
+    set(GameMenuButtonLogoutText, '退出游戏')
+    set(GameMenuButtonLogoutText, '返回游戏')
 end
 
 

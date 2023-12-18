@@ -4872,7 +4872,15 @@
         "PUSH_TO_TALK",
         "ADVANCED_COMBAT_LOGGING",
         "OPTIMIZE_NETWORK_SPEED",
-        "USEIPV6"
+        "USEIPV6",
+        "GameMenuButtonHelpText",
+        "GameMenuButtonStoreText",
+        "GameMenuButtonWhatsNewText",
+        "GameMenuButtonSettingsText",
+        "GameMenuButtonEditModeText",
+        "GameMenuButtonMacrosText",
+        "GameMenuButtonAddonsText",
+        "GameMenuButtonLogoutText"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
