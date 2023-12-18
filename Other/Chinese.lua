@@ -1244,7 +1244,7 @@ local function Init()
     CHAT_CONFIG_OTHER_PVP[3].text='战场中立'
 
     CHAT_CONFIG_OTHER_SYSTEM[1].text='系统信息'
-    CHAT_CONFIG_OTHER_SYSTEM[2].text='错误"'
+    CHAT_CONFIG_OTHER_SYSTEM[2].text='错误'
     CHAT_CONFIG_OTHER_SYSTEM[3].text='已屏蔽'
     CHAT_CONFIG_OTHER_SYSTEM[4].text='频道'
     CHAT_CONFIG_OTHER_SYSTEM[5].text='目标图标'
