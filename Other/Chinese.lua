@@ -378,16 +378,69 @@ local strText={
         [CURSOR_SIZE] = "鼠标指针大小",
         [TARGET_TOOLTIP_OPTION] = "动作瞄准提示信息",
         [INTERACT_ICONS_OPTION] = "交互按键图标",
-
-
-
-
+        
     --综合
     [COLORBLIND_LABEL] = "色盲模式",
     [TTS_LABEL] = "文本转语音",
-        --坐骑
+        [ENABLE_SPEECH_TO_TEXT_TRANSCRIPTION] = "语音聊天文字转录",
+        [ENABLE_TEXT_TO_SPEECH] = "大声朗读聊天文本",
+        [ENABLE_REMOTE_TEXT_TO_SPEECH] = "在语音聊天中为我发言",
+        [VOICE] = "语音",
+    --[ACCESSIBILITY_MOUNT_LABEL] = "坐骑", Mounts.lua
+        [ACCESSIBILITY_ADV_FLY_LABEL] = "动态飞行",
+        [MOTION_SICKNESS_DRAGONRIDING] = "晕动症",
+        "动态飞行屏幕效果",
+        [MOTION_SICKNESS_DRAGONRIDING_SPEED_EFFECTS] = "动态飞行速度效果",
+        [ADV_FLY_PITCH_CONTROL] = "倾角控制",
+        [ADV_FLY_PITCH_CONTROL_GROUND_DEBOUNCE] = "防抖倾角输入",
+        [ADV_FLY_CAMERA_PITCH_CHASE_TEXT] = "键盘倾斜镜头跟随",
+        [ADV_FLY_MINIMUM_PITCH_TEXT] = "最低键盘倾斜速度",
+        [ADV_FLY_MINIMUM_TURN_TEXT] = "最低键盘转向速度",
+        [ADV_FLY_MAXIMUM_PITCH_TEXT] = "最高键盘倾斜速度",
+        [ADV_FLY_MAXIMUM_TURN_TEXT] = "最高键盘转向速度",
+        [ADV_FLY_MINIMUM_TURN_TEXT] = "最低键盘转向速度",
+        
+
     [SETTING_GROUP_SYSTEM] = "系统",
-        [GRAPHICS_LABEL] = "图形",
+        [GRAPHICS_LABEL] = "图形",--Graphics.lua
+            [PRIMARY_MONITOR] = "显示器",
+            [DISPLAY_MODE] = "显示模式",
+            [WINDOW_SIZE] = "分辨率",
+            [CUSTOM] = "自定义",
+            [RENDER_SCALE] = "渲染倍数",
+            [VERTICAL_SYNC] = "垂直同步",
+            [NOTCH_MODE] = "刘海屏模式",
+            [LOW_LATENCY_MODE] = "低延迟模式",
+            [ANTIALIASING] = "抗锯齿",
+            [FXAA_CMAA_LABEL] = "基于图像的技术",
+            [MSAA_LABEL] = "多重采样技术",
+            [MULTISAMPLE_ALPHA_TEST] = "多重采样测试",
+            [RENDER_SCALE] = "渲染倍数",
+            [CAMERA_FOV] = "镜头视野范围",
+            [USE_UISCALE] = "使用UI缩放",
+            [RAID_SETTINGS_ENABLED] = "启用团队副本和战场设置",
+            [GRAPHICS_QUALITY] = "图像质量",
+            [ADVANCED_LABEL] = "高级",
+            [TRIPLE_BUFFER] = "三倍缓冲",
+            [ANISOTROPIC] = "材质过滤",
+            [RT_SHADOW_QUALITY] = "光线追踪阴影",
+            [SSAO_TYPE_LABEL] = "环境光遮蔽类型",
+            [RESAMPLE_QUALITY] = "重新采样品质",
+            [VRS_MODE] = "VRS模式",
+            [GXAPI] = "图形接口",
+            [PHYSICS_INTERACTION] = "物理交互",
+            [GRAPHICS_CARD] = "显卡",
+            [MAXFPS_CHECK] = "最高前台帧数开关",
+            [MAXFPS] = "最高前台帧数",
+            [MAXFPSBK_CHECK] = "最高后台帧数开关",
+            [MAXFPSBK] = "最高后台帧数",
+            [TARGETFPS] = "目标帧数",
+            [RESAMPLE_SHARPNESS] = "重新采样锐度",
+            [OPTION_CONTRAST] = "对比度",
+            [OPTIONS_BRIGHTNESS] = "亮度",
+            [GAMMA] = "伽马值",
+
+            --[LIQUID_DETAIL] = "液体细节",
         [AUDIO_LABEL] = "音频",
         [LANGUAGES_LABEL] = "语言",
         [NETWORK_LABEL] = "网络",
@@ -541,7 +594,7 @@ local function Init()
             self.Label:SetText(text)
         end
     end)
-
+    
     set(SettingsPanel.Container.SettingsList.Header.DefaultsButton, '默认设置')
 end
 
