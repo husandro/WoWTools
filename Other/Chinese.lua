@@ -1524,11 +1524,7 @@ local function Init()
         end
     end)
 
-    set(MacroSaveButton, '保存')
-    set(MacroCancelButton, '取消')
-    set(MacroDeleteButton, '删除')
-    set(MacroNewButton, '新建')
-    set(MacroExitButton, '退出')
+
 
 end
 
@@ -1709,6 +1705,16 @@ local function Init_Loaded(arg1)
                 end
             end
         end)
+
+    elseif arg1=='Blizzard_MacroUI' then
+        set(MacroSaveButton, '保存')
+        set(MacroCancelButton, '取消')
+        set(MacroDeleteButton, '删除')
+        set(MacroNewButton, '新建')
+        set(MacroExitButton, '退出')
+        StaticPopupDialogs["CONFIRM_DELETE_SELECTED_MACRO"].text= '确定要删除这个宏吗？'
+        StaticPopupDialogs["CONFIRM_DELETE_SELECTED_MACRO"].button1= '是'
+        StaticPopupDialogs["CONFIRM_DELETE_SELECTED_MACRO"].button2= '取消'
 
     --elseif arg1=='Blizzard_Professions' then--专业
     end
