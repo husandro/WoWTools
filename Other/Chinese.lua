@@ -960,6 +960,7 @@ local strText={
     [SHIFT_KEY] = "SHIFT键",
 
     
+
 }
 
 
@@ -1197,9 +1198,21 @@ local function Init()
         end
     end)
     hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame, checkBoxTable, checkBoxTemplate, title)--ChatConfigFrame.lua
-        local titleText= title and strText[title]
-        if titleText then
-            _G[frame:GetName().."Title"]:SetText(titleText);
+        if not title then
+            return
+        end
+        if strText[title] then
+            set(_G[frame:GetName().."Title"], strText[title])
+        elseif title==PLAYER_MESSAGES then
+            set(_G[frame:GetName().."Title"], '玩家信息')
+        elseif title==CREATURE_MESSAGES then
+            set(_G[frame:GetName().."Title"], '怪物信息')
+        elseif title==DONE_BY then
+            set(_G[frame:GetName().."Title"], '来源为：')
+        elseif title==DONE_TO then
+            set(_G[frame:GetName().."Title"], '目标为：')
+        elseif title==UNIT_COLORS then
+            set(_G[frame:GetName().."Title"], '单位颜色：')
         end
     end)
     CHAT_CONFIG_CHAT_LEFT[1].text='说'--ChatConfigFrame.lua
@@ -1242,7 +1255,7 @@ local function Init()
     CHAT_CONFIG_OTHER_COMBAT[11].text='其它信息'
 
     CHAT_CONFIG_OTHER_PVP[1].text='战场部落'
-    CHAT_CONFIG_OTHER_PVP[3].text='战场联盟'
+    CHAT_CONFIG_OTHER_PVP[2].text='战场联盟'
     CHAT_CONFIG_OTHER_PVP[3].text='战场中立'
 
     CHAT_CONFIG_OTHER_SYSTEM[1].text='系统信息'
@@ -1279,7 +1292,7 @@ local function Init()
         COMBAT_CONFIG_MESSAGETYPES_LEFT[2].subTypes[2].text='未命中'
     COMBAT_CONFIG_MESSAGETYPES_LEFT[3].text='光环'
         COMBAT_CONFIG_MESSAGETYPES_LEFT[3].subTypes[1].text='增益'
-        COMBAT_CONFIG_MESSAGETYPES_LEFT[3].subTypes[2].text='"敌对'
+        COMBAT_CONFIG_MESSAGETYPES_LEFT[3].subTypes[2].text='敌对'
         COMBAT_CONFIG_MESSAGETYPES_LEFT[3].subTypes[3].text='驱散'
         COMBAT_CONFIG_MESSAGETYPES_LEFT[3].subTypes[4].text='附魔'
     COMBAT_CONFIG_MESSAGETYPES_LEFT[4].text='周期'
@@ -1354,9 +1367,41 @@ local function Init()
                 set(btn, '战斗')
             elseif text==SETTINGS then
                 set(btn, '设置')
+            elseif text== UNIT_COLORS then
+                set(btn, '"单位颜色：')
+            elseif text== COLORIZE then
+                set(btn, '彩色标记：')
+            elseif text== HIGHLIGHTING then
+                set(btn, '高亮显示：')
             end
         end
     end
+
+    set(ChatConfigFrameDefaultButton, '聊天默认')
+    set(ChatConfigFrameRedockButton, '重置聊天窗口位置')
+    set(ChatConfigFrameOkayButton, '确定')
+    set(CombatLogDefaultButton, '战斗记录默认')
+    set(TextToSpeechDefaultButton, '文字转语音默认设置')
+
+    set(ChatConfigCombatSettingsFiltersCopyFilterButton, '复制')
+    set(ChatConfigCombatSettingsFiltersAddFilterButton, '添加')
+    set(ChatConfigCombatSettingsFiltersDeleteButton, '删除')
+    set(CombatConfigSettingsSaveButton, '保存')
+
+    set(TextToSpeechFramePlaySampleAlternateButton, '播放样本')
+    set(TextToSpeechFramePlaySampleButton, '播放样本')
+    StaticPopupDialogs["TTS_CONFIRM_SAVE_SETTINGS"].text= '你想让这个角色使用已经在这台电脑上保存的文字转语音设置吗？如果你从另一台电脑上登入，此设置会保存并覆盖之前你拥有的任何设定。'
+    StaticPopupDialogs["TTS_CONFIRM_SAVE_SETTINGS"].button1= '是'
+    StaticPopupDialogs["TTS_CONFIRM_SAVE_SETTINGS"].button2= '取消'
+    set(TextToSpeechFramePanelContainer.PlaySoundSeparatingChatLinesCheckButton.text, '每条新信息之间播放声音')
+    set(TextToSpeechFramePanelContainer.PlayActivitySoundWhenNotFocusedCheckButton.text, '某个聊天窗口有活动，而且不是当前焦点窗口时，播放一个音效')
+    set(TextToSpeechFramePanelContainer.AddCharacterNameToSpeechCheckButton.text, '在语音中添加<角色名说>')
+    set(TextToSpeechFramePanelContainer.NarrateMyMessagesCheckButton.text, '大声朗读我自己的信息')
+    set(TextToSpeechFrameTtsVoiceDropdownLabel, '语音设置"')
+    set(TextToSpeechFrameTtsVoiceDropdownMoreVoicesLabel, '更多信息请查阅|cff00aaff|HurlIndex:56|h支持页面|h|r')
+    set(TextToSpeechFramePanelContainerText, '使用另一个声音来朗读系统信息')
+    set(TextToSpeechFrameAdjustRateSliderLabel, '调节讲话速度')
+    set(TextToSpeechFrameAdjustVolumeSliderLabel, '音量')
 end
 
 
