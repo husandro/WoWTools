@@ -1711,6 +1711,17 @@ local function Init_Loaded(arg1)
             hooksecurefunc('PetJournal_UpdateSummonButtonState', Set_Pet_Button_Name)
             Set_Pet_Button_Name()
 
+            local function set_PetJournalFindBattle()
+                local queueState = C_PetBattles.GetPVPMatchmakingInfo();
+                if ( queueState == "queued" or queueState == "proposal" or queueState == "suspended" ) then
+                    PetJournalFindBattle:SetText('离开队列');
+                else
+                    PetJournalFindBattle:SetText('搜寻战斗');
+                end
+            end
+            hooksecurefunc('PetJournalFindBattle_Update', set_PetJournalFindBattle)
+            set_PetJournalFindBattle()
+            
         set(CollectionsJournalTab3, '玩具箱')
         set(CollectionsJournalTab4, '传家宝')
         set(CollectionsJournalTab5, '外观')

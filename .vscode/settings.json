@@ -5032,7 +5032,9 @@
         "PVPQueueFrameCategoryButton1",
         "PVPQueueFrameCategoryButton2",
         "PVPQueueFrameCategoryButton3",
-        "ChannelFrameTitleText"
+        "ChannelFrameTitleText",
+        "PetJournalFindBattle",
+        "FIND_BATTLE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
