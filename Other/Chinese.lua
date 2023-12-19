@@ -1530,6 +1530,9 @@ local function Init()
 
 
 
+    set(ChannelFrameTitleText, '聊天频道')
+    set(ChannelFrame.NewButton, '添加')
+    set(ChannelFrame.SettingsButton, '设置')
 end
 
 

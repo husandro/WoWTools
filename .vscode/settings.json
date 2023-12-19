@@ -5031,7 +5031,8 @@
         "MountJournalSummonRandomFavoriteButton",
         "PVPQueueFrameCategoryButton1",
         "PVPQueueFrameCategoryButton2",
-        "PVPQueueFrameCategoryButton3"
+        "PVPQueueFrameCategoryButton3",
+        "ChannelFrameTitleText"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
