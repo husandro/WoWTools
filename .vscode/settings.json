@@ -5021,7 +5021,17 @@
         "CURRENT_CHAT_FRAME_ID",
         "VOICE_WINDOW_ID",
         "TEXT_TO_SPEECH_CONFIG",
-        "CHATCONFIG_HEADER"
+        "CHATCONFIG_HEADER",
+        "PetJournal_UpdateSummonButtonState",
+        "PET_DISMISS",
+        "BATTLE_PET_SUMMON",
+        "CollectionsJournal_UpdateSelectedTab",
+        "CollectionsJournal_GetTab",
+        "MOUNT_JOURNAL_SUMMON_RANDOM_FAVORITE_MOUNT",
+        "MountJournalSummonRandomFavoriteButton",
+        "PVPQueueFrameCategoryButton1",
+        "PVPQueueFrameCategoryButton2",
+        "PVPQueueFrameCategoryButton3"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

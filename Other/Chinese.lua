@@ -11,7 +11,7 @@ local Save={
 local panel= CreateFrame("Frame")
 
 local function set(self, text)
-    if self and text and self.IsForbidden and not self:IsForbidden() then--CanAccessObject(self) then
+    if self and text and not self:IsForbidden() then--CanAccessObject(self) then
         self:SetText(text)
     end
 end
@@ -1170,6 +1170,10 @@ local function Init()
     set(PVEFrameTab2, 'PvP')
     set(PVEFrameTab3, '史诗钥石地下城')
 
+    set(PVPQueueFrameCategoryButton1, '快速比赛')
+    set(PVPQueueFrameCategoryButton2, '评级')
+    set(PVPQueueFrameCategoryButton3, '预创建队伍')
+
 
     set(GroupFinderFrame.groupButton1.name, '地下城查找器')
     set(GroupFinderFrame.groupButton2.name, '团队查找器')
@@ -1651,25 +1655,61 @@ local function Init_Loaded(arg1)
         set(ProfessionsCustomerOrdersFrame.Form.PaymentContainer.Duration.TimeRemaining, '过期时间')
 
     elseif arg1=='Blizzard_Collections' then--收藏
+        --设置，标题
+        --Blizzard_Collections.lua
+        hooksecurefunc('CollectionsJournal_UpdateSelectedTab', function(self)
+            local selected = CollectionsJournal_GetTab(self)
+            if selected==1 then
+                self:SetTitle('坐骑')
+            elseif selected==2 then
+                self:SetTitle('宠物手册')
+            elseif selected==3 then
+                self:SetTitle('玩具箱')
+            elseif selected==4 then
+                self:SetTitle('传家宝')
+            elseif selected==5 then
+                self:SetTitle('外观')
+            end
+        end)
+
         set(CollectionsJournalTab1, '坐骑')
+            hooksecurefunc('MountJournal_UpdateMountDisplay', function()--Blizzard_MountCollection.lua
+                if ( MountJournal.selectedMountID ) then
+                    local active = select(4, C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID))
+                    local needsFanfare = C_MountJournal.NeedsFanfare(MountJournal.selectedMountID)
+                    if ( needsFanfare ) then
+                        MountJournal.MountButton:SetText('打开')
+                    elseif ( active ) then
+                        MountJournal.MountButton:SetText('解散坐骑')
+                    else
+                        MountJournal.MountButton:SetText('召唤')
+                    end
+                end
+            end)
+            set(MountJournalSummonRandomFavoriteButton.spellname, "随机召唤\n偏好坐骑")--hooksecurefunc('MountJournalSummonRandomFavoriteButton_OnLoad', function(self)
+            set(MountJournal.MountDisplay.ModelScene.TogglePlayer.TogglePlayerText, '显示角色')
+
         set(CollectionsJournalTab2, '宠物手册')
+            local function Set_Pet_Button_Name()
+                local petID = PetJournalPetCard.petID
+                local hasPetID = petID ~= nil
+                local needsFanfare = hasPetID and C_PetJournal.PetNeedsFanfare(petID)
+                if hasPetID and petID == C_PetJournal.GetSummonedPetGUID() then
+                    PetJournal.SummonButton:SetText('解散')
+                elseif needsFanfare then
+                    PetJournal.SummonButton:SetText('打开')
+                else
+                    PetJournal.SummonButton:SetText('召唤')
+                end
+            end
+            hooksecurefunc('PetJournal_UpdateSummonButtonState', Set_Pet_Button_Name)
+            Set_Pet_Button_Name()
+
         set(CollectionsJournalTab3, '玩具箱')
         set(CollectionsJournalTab4, '传家宝')
         set(CollectionsJournalTab5, '外观')
 
-        hooksecurefunc('MountJournal_UpdateMountDisplay', function()--Blizzard_MountCollection.lua
-            if ( MountJournal.selectedMountID ) then
-                local active = select(4, C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID))
-                local needsFanfare = C_MountJournal.NeedsFanfare(MountJournal.selectedMountID)
-                if ( needsFanfare ) then
-                    MountJournal.MountButton:SetText('打开')
-                elseif ( active ) then
-                    MountJournal.MountButton:SetText('解散坐骑')
-                else
-                    MountJournal.MountButton:SetText('召唤')
-                end
-            end
-        end)
+        
 
         set(WardrobeCollectionFrameTab1, '物品')
         set(WardrobeCollectionFrameTab2, '套装')
