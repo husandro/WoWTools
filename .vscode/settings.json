@@ -5010,7 +5010,9 @@
         "ENVIRONMENTAL_DAMAGE",
         "CHAT_MSG_MONSTER_EMOTE",
         "CHAT_MSG_MONSTER_WHISPER",
-        "TextToSpeechCharacterSpecificButtonText"
+        "TextToSpeechCharacterSpecificButtonText",
+        "CHAT_CONFIG_CHANNEL_SETTINGS_TITLE_WITH_DRAG_INSTRUCTIONS",
+        "OFFICER"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

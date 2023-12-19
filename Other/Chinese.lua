@@ -973,7 +973,9 @@ local strText={
     [SAY] = "说",
     [EMOTE] = "表情",
     [YELL] = "大喊",
+    [GUILD] = "公会",
     [GUILD_CHAT] = "公会聊天",
+    [OFFICER] = "官员",
     [OFFICER_CHAT] = "官员聊天",
     [GUILD_ACHIEVEMENT] = "公会通告",
     [ACHIEVEMENT] = "成就通告",
@@ -1061,6 +1063,13 @@ local strText={
     [CHAT_MSG_MONSTER_WHISPER] = "怪物悄悄话",
     [CHAT_MSG_MONSTER_YELL] = "怪物大喊",
     [MONSTER_BOSS_WHISPER] = "首领密语",
+    [CHAT_CONFIG_CHANNEL_SETTINGS_TITLE_WITH_DRAG_INSTRUCTIONS] = "频道|cff808080（拖拽可重排顺序）|r",
+
+    [GENERAL_LABEL] = "综合",
+    [COMBAT_LOG] = "战斗记录",
+    [PET_BATTLE_COMBAT_LOG] = "宠物对战",
+    [VOICE] = "语音",
+    [TEXT_TO_SPEECH] = "文本转语音",
 }
 
 
@@ -1282,18 +1291,9 @@ local function Init()
         
     
     hooksecurefunc('FCF_SetWindowName', function(frame, name)--FloatingChatFrame.lua
-        if name==GENERAL_LABEL then
-            set(_G[frame:GetName().."Tab"], '综合')
-        elseif name==COMBAT_LOG then
-            set(_G[frame:GetName().."Tab"], '战斗记录')
-        elseif name==PET_BATTLE_COMBAT_LOG  then
-            set(_G[frame:GetName().."Tab"], '宠物对战')
-        elseif name==VOICE then
-            set(_G[frame:GetName().."Tab"], '语音')
-        end
+        set(_G[frame:GetName().."Tab"], strText[name])
     end)
     hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame, checkBoxTable, checkBoxTemplate, title)--ChatConfigFrame.lua
-        
         if title then
             if strText[title] then
                 set(_G[frame:GetName().."Title"], strText[title])
