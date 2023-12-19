@@ -990,7 +990,7 @@ local strText={
     [INSTANCE_CHAT_LEADER] = "副本向导",
     [VOICE_CHAT_TRANSCRIPTION] = "语音识别",
     [MONSTER_BOSS_EMOTE] = "首领台词",
-    [MONSTER_BOSS_WHISPER] = "首领密语",
+    [RAID_BOSS_WHISPER] = "首领密语",
 
     [COMBAT_XP_GAIN] = "经验",
     [COMBAT_HONOR_GAIN] = "荣誉",
@@ -1303,7 +1303,15 @@ local function Init()
         for index in ipairs(checkBoxTable or {}) do
             local label = _G[box..index.."CheckText"]
             if label then
-                set(label, strText[label:GetText()])
+                local text= label:GetText()
+                if strText[text] then
+                    set(label, strText[text])
+                else
+                    local num, name= text:match('(%d+%.)(.+)')
+                    if num and name and strText[name] then
+                        set(label, num..strText[name])
+                    end
+                end
             end
         end
     end)
@@ -1497,7 +1505,7 @@ local function Init()
     set(ChatConfigTextToSpeechMessageSettingsSubTitle, '对特定信息开启文字转语音')
 
     hooksecurefunc('TextToSpeechFrame_UpdateMessageCheckboxes', function(frame)--TextToSpeechFrame.lua
-        local checkBoxNameString = frame:GetName().."CheckBox";
+        local checkBoxNameString = frame:GetName().."CheckBox"
         for index in ipairs(frame.checkBoxTable or {}) do
             local checkBoxText = _G[checkBoxNameString..index].text
             if checkBoxText then
@@ -1505,8 +1513,23 @@ local function Init()
             end
         end
     end)
-
     set(TextToSpeechCharacterSpecificButtonText, '角色专用设置')
+
+    hooksecurefunc('ChatConfigCategoryFrame_Refresh', function()--ChatConfigFrame.lua
+        local currentChatFrame = FCF_GetCurrentChatFrame()
+        if  CURRENT_CHAT_FRAME_ID == VOICE_WINDOW_ID then
+            ChatConfigFrame.Header:Setup('文字转语音选项')
+        else
+            ChatConfigFrame.Header:Setup(currentChatFrame ~= nil and format('%s设置', strText[currentChatFrame.name] or currentChatFrame.name) or "")
+        end
+    end)
+
+    set(MacroSaveButton, '保存')
+    set(MacroCancelButton, '取消')
+    set(MacroDeleteButton, '删除')
+    set(MacroNewButton, '新建')
+    set(MacroExitButton, '退出')
+
 end
 
 

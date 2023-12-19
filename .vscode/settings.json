@@ -5012,7 +5012,16 @@
         "CHAT_MSG_MONSTER_WHISPER",
         "TextToSpeechCharacterSpecificButtonText",
         "CHAT_CONFIG_CHANNEL_SETTINGS_TITLE_WITH_DRAG_INSTRUCTIONS",
-        "OFFICER"
+        "OFFICER",
+        "RAID_BOSS_WHISPER",
+        "MacroCancelButton",
+        "MacroDeleteButton",
+        "MacroExitButton",
+        "ChatConfigCategoryFrame_Refresh",
+        "CURRENT_CHAT_FRAME_ID",
+        "VOICE_WINDOW_ID",
+        "TEXT_TO_SPEECH_CONFIG",
+        "CHATCONFIG_HEADER"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
