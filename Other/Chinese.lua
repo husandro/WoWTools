@@ -1218,7 +1218,9 @@ local function Init()
     --列表 Blizzard_CategoryList.lua
     hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--hooksecurefunc(SettingsPanel.CategoryList.ScrollBox, 'Update', function(frame)
         local category = initializer.data.category
-        set(self.Label, strText[category:GetName()])
+        if category then
+            set(self.Label, strText[category:GetName()])
+        end
     end)
     hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
         local text= strText[initializer.data.label]
