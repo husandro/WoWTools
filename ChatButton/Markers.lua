@@ -140,11 +140,17 @@ local function Init_set_Tank_Healer()
             local tab={}--设置团队标记
             for index=1, members do-- MAX_RAID_MEMBERS do
                 local online, _, role, _, combatRole = select(8, GetRaidRosterInfo(index))
+                local unit= 'raid'..index
                 if (role=='TANK' or  combatRole=='TANK') and online then
                     table.insert(tab, {
                         unit='raid'..index,
-                        hp=UnitHealthMax('raid'..index)
+                        hp=UnitHealthMax(unit)
                     })
+                else
+                    local raidIndex= GetRaidTargetIndex(unit)
+                    if raidIndex and raidIndex>0 and raidIndex<=8 then
+                        set_Taget(unit, 0)
+                    end
                 end
             end
             table.sort(tab, function(a,b) return a.hp>b.hp end)
@@ -171,6 +177,11 @@ local function Init_set_Tank_Healer()
                         if not healer then
                             set_Taget(unit, Save.healer)--设置,目标,标记
                             healer=true
+                        end
+                    else
+                        local raidIndex= GetRaidTargetIndex(unit)
+                        if raidIndex and raidIndex>0 and raidIndex<=8 then
+                            set_Taget(unit, 0)
                         end
                     end
                 end
