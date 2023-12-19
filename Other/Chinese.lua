@@ -1282,7 +1282,9 @@ local function Init()
         set(RaidFrameConvertToRaidButton, '转化为团队')
         set(RaidFrameRaidDescription, '团队是超过5个人的队伍，这是为了击败高等级的特定挑战而准备的大型队伍模式。\n\n|cffffffff- 团队成员无法获得非团队任务所需的物品或者杀死怪物的纪录。\n\n- 在团队中，你通过杀死怪物获得的经验值相对普通小队要少。\n\n- 团队让你可以赢得用其它方法根本无法通过的挑战。|r')
     hooksecurefunc('FriendsFrame_UpdateQuickJoinTab', function(numGroups)--FriendsFrame.lua
-        set(FriendsFrameTab4, '快速加入'.. numGroups)
+        if numGroups then
+            set(FriendsFrameTab4, '快速加入'.. (numGroups>0 and '|cnGREEN_FONT_COLOR:' or '')..numGroups)
+        end
     end)
     hooksecurefunc(QuickJoinFrame, 'UpdateJoinButtonState', function(self)--QuickJoin.lua
         set(self.JoinQueueButton, '申请加入')
