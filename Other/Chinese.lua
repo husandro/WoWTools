@@ -1243,6 +1243,7 @@ local function Init()
     StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].button3= '这些设置'
     set(SettingsPanel.GameTab.Text, '游戏')
     set(SettingsPanel.AddOnsTab.Text, '插件')
+    set(SettingsPanel.NineSlice.Text, '选项')
 
 
     --[[可能会出错
