@@ -10,6 +10,11 @@ local Save={
 }
 local panel= CreateFrame("Frame")
 
+local function set(self, text)
+    if self and text and self.IsForbidden and not self:IsForbidden() then--CanAccessObject(self) then
+        self:SetText(text)
+    end
+end
 
 
 local strText={
@@ -960,7 +965,102 @@ local strText={
     [SHIFT_KEY] = "SHIFT键",
 
     
+    [PLAYER_MESSAGES] = "玩家信息",
+    [CREATURE_MESSAGES] = "怪物信息",
+    [DONE_BY] = "来源为：",
+    [DONE_TO] = "目标为：",
+    [UNIT_COLORS] = "单位颜色：",
+    [SAY] = "说",
+    [EMOTE] = "表情",
+    [YELL] = "大喊",
+    [GUILD_CHAT] = "公会聊天",
+    [OFFICER_CHAT] = "官员聊天",
+    [GUILD_ACHIEVEMENT] = "公会通告",
+    [ACHIEVEMENT] = "成就通告",
+    [WHISPER] = "悄悄话",
+    [BN_WHISPER] = "战网昵称密语",
+    [PARTY] = "小队",
+    [PARTY_LEADER] = "小队队长",
+    [RAID] = "团队",
+    [RAID_LEADER] = "团队领袖",
+    [RAID_WARNING] = "团队通知",
+    [INSTANCE_CHAT] = "副本",
+    [INSTANCE_CHAT_LEADER] = "副本向导",
+    [VOICE_CHAT_TRANSCRIPTION] = "语音识别",
+    [MONSTER_BOSS_EMOTE] = "首领台词",
+    [MONSTER_BOSS_WHISPER] = "首领密语",
 
+    [COMBAT_XP_GAIN] = "经验",
+    [COMBAT_HONOR_GAIN] = "荣誉",
+    [COMBAT_FACTION_CHANGE] = "声望",
+    [SKILLUPS] = "技能提升",
+    [ITEM_LOOT] = "物品拾取",
+    [CURRENCY] = "货币",
+    [MONEY_LOOT] = "金钱拾取",
+    [TRADESKILLS] = "商业技能",
+    [OPENING] = "正在打开",
+    [PET_INFO] = "宠物信息",
+    [COMBAT_MISC_INFO] = "其它信息",
+
+    [BG_SYSTEM_ALLIANCE] = "战场联盟",
+    [BG_SYSTEM_HORDE] = "战场部落",
+    [BG_SYSTEM_NEUTRAL] = "战场中立",
+
+    [SYSTEM_MESSAGES] = "系统信息",
+    [ERRORS] = "错误",
+    [IGNORED] = "已屏蔽",
+    [CHANNEL] = "频道",
+    [TARGETICONS] = "目标图标",
+    [BN_INLINE_TOAST_ALERT] = "暴雪游戏服务提示",
+    [PET_BATTLE_COMBAT_LOG] = "宠物对战",
+    [PET_BATTLE_INFO] = "宠物对战信息",
+
+    [COMBATLOG_FILTER_STRING_CUSTOM_UNIT] = "自定义单位",
+    [COMBATLOG_FILTER_STRING_ME] = "我",
+    [COMBATLOG_FILTER_STRING_MY_PET] = "宠物",
+    [COMBATLOG_FILTER_STRING_FRIENDLY_UNITS] = "友方",
+    [COMBATLOG_FILTER_STRING_HOSTILE_PLAYERS] = "敌方玩家",
+    [COMBATLOG_FILTER_STRING_HOSTILE_UNITS] = "敌方单位",
+    [COMBATLOG_FILTER_STRING_NEUTRAL_UNITS] = "中立",
+    [COMBATLOG_FILTER_STRING_UNKNOWN_UNITS] = "未知",
+
+    [MELEE] = "近战",
+    [RANGED] = "远程",
+    [AURAS] = "光环",
+    [PERIODIC] = "周期",
+    [DAMAGE] = "伤害",
+    [MISSES] = "未命中",
+    [BENEFICIAL] = "增益",
+    [HOSTILE] = "敌对",
+    [DISPELS] = "驱散",
+    [ENCHANTS] = "附魔",
+    [HEALS] = "治疗",
+    [OTHER] = "其它",
+    [SPELLS] = "法术",
+    [POWER_GAINS] = "获得能量",
+    [DRAINS] = "吸取",
+    [INTERRUPTS] = "打断",
+    [SPECIAL] = "特殊",
+    [EXTRA_ATTACKS] = "额外攻击",
+    [SUMMONS] = "召唤",
+    [RESURRECT] = "复活",
+    [BUILDING_DAMAGE] = "攻城",
+    [BUILDING_HEAL] = "修理",
+    [EMPOWERS] = "蓄力",
+    [SPELL_CASTING] = "法术施放",
+    [START] = "开始",
+    [SUCCESS] = "成功",
+    [FAILURES] = "失败",
+    [DAMAGE_SHIELD] = "伤害护盾",
+    [ENVIRONMENTAL_DAMAGE] = "环境伤害",
+    [KILLS] = "杀敌",
+    [DEATHS] = "死亡",
+    [CHAT_MSG_MONSTER_EMOTE] = "怪物表情",
+    [CHAT_MSG_MONSTER_PARTY] = "怪物小队",
+    [CHAT_MSG_MONSTER_SAY] = "怪物说",
+    [CHAT_MSG_MONSTER_WHISPER] = "怪物悄悄话",
+    [CHAT_MSG_MONSTER_YELL] = "怪物大喊",
+    [MONSTER_BOSS_WHISPER] = "首领密语",
 }
 
 
@@ -988,11 +1088,6 @@ local strText={
 
 
 
-local function set(self, text)
-    if self and text and not self:IsForbidden() then--CanAccessObject(self) then
-        self:SetText(text)
-    end
-end
 
 
 
@@ -1178,7 +1273,7 @@ local function Init()
         if ( IsInGroup(LE_PARTY_CATEGORY_HOME) ) then
             self.JoinQueueButton.tooltip = '你已在一个队伍中。你必须离开队伍才能加入此队列。'
         elseif  self:GetSelectedGroup() ~= nil then
-            local queues = C_SocialQueue.GetGroupQueues(self:GetSelectedGroup());
+            local queues = C_SocialQueue.GetGroupQueues(self:GetSelectedGroup())
             if ( queues and queues[1] and queues[1].queueData.queueType == "lfglist" ) then
                 set(self.JoinQueueButton, '申请')
             end
@@ -1198,24 +1293,21 @@ local function Init()
         end
     end)
     hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame, checkBoxTable, checkBoxTemplate, title)--ChatConfigFrame.lua
-        if not title then
-            return
+        
+        if title then
+            if strText[title] then
+                set(_G[frame:GetName().."Title"], strText[title])
+            end
         end
-        if strText[title] then
-            set(_G[frame:GetName().."Title"], strText[title])
-        elseif title==PLAYER_MESSAGES then
-            set(_G[frame:GetName().."Title"], '玩家信息')
-        elseif title==CREATURE_MESSAGES then
-            set(_G[frame:GetName().."Title"], '怪物信息')
-        elseif title==DONE_BY then
-            set(_G[frame:GetName().."Title"], '来源为：')
-        elseif title==DONE_TO then
-            set(_G[frame:GetName().."Title"], '目标为：')
-        elseif title==UNIT_COLORS then
-            set(_G[frame:GetName().."Title"], '单位颜色：')
+        local box = frame:GetName().."CheckBox"
+        for index in ipairs(checkBoxTable or {}) do
+            local label = _G[box..index.."CheckText"]
+            if label then
+                set(label, strText[label:GetText()])
+            end
         end
     end)
-    CHAT_CONFIG_CHAT_LEFT[1].text='说'--ChatConfigFrame.lua
+    --[[CHAT_CONFIG_CHAT_LEFT[1].text='说'--ChatConfigFrame.lua
     CHAT_CONFIG_CHAT_LEFT[2].text='表情'
     CHAT_CONFIG_CHAT_LEFT[3].text='大喊'
     CHAT_CONFIG_CHAT_LEFT[4].text='公会聊天'
@@ -1352,7 +1444,7 @@ local function Init()
     COMBAT_CONFIG_UNIT_COLORS[4].text='敌方单位'
     COMBAT_CONFIG_UNIT_COLORS[5].text='敌方玩家'
     COMBAT_CONFIG_UNIT_COLORS[6].text='中立'
-    COMBAT_CONFIG_UNIT_COLORS[7].text='未知'
+    COMBAT_CONFIG_UNIT_COLORS[7].text='未知']]
     for i=1, 7 do
         local btn=_G['ChatConfigCategoryFrameButton'..i]
         if btn then
@@ -1402,6 +1494,19 @@ local function Init()
     set(TextToSpeechFramePanelContainerText, '使用另一个声音来朗读系统信息')
     set(TextToSpeechFrameAdjustRateSliderLabel, '调节讲话速度')
     set(TextToSpeechFrameAdjustVolumeSliderLabel, '音量')
+    set(ChatConfigTextToSpeechMessageSettingsSubTitle, '对特定信息开启文字转语音')
+
+    hooksecurefunc('TextToSpeechFrame_UpdateMessageCheckboxes', function(frame)--TextToSpeechFrame.lua
+        local checkBoxNameString = frame:GetName().."CheckBox";
+        for index in ipairs(frame.checkBoxTable or {}) do
+            local checkBoxText = _G[checkBoxNameString..index].text
+            if checkBoxText then
+                set(checkBoxText, strText[checkBoxText:GetText()])
+            end
+        end
+    end)
+
+    set(TextToSpeechCharacterSpecificButtonText, '角色专用设置')
 end
 
 
