@@ -910,7 +910,6 @@ local function set_ItemInteractionFrame_Currency(self)
         local timeToNextCharge = chargeInfo.timeToNextCharge
 
         if timeToNextCharge and (self.interactionType == Enum.UIItemInteractionType.ItemConversion) then
-			--text= text ..' |cnGREEN_FONT_COLOR:'..(SecondsToTime(timeToNextCharge) or '')..'|r'
             text= text ..' |cnGREEN_FONT_COLOR:'..(e.SecondsToClock(timeToNextCharge, true) or '')..'|r'
         end
 
@@ -1000,6 +999,10 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		else
 			frame.Count:SetTextColor(1,1,1)
 		end
+	end
+	if frame.Name then
+		local r, g, b= GetItemQualityColor(info and info.quality or 1)
+		frame.Name:SetTextColor(r or 1, g or 1, b or 1)
 	end
 end
 
@@ -1499,13 +1502,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 				end
 			})
 
-
-            --[[添加控制面板        
-            local sel=e.AddPanel_Check('|A:bags-junkcoin:0:0|a'..(e.onlyChinese and '货币' or addName), not Save.disabled)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)]]
 
             if Save.disabled then
                 panel:UnregisterAllEvents()

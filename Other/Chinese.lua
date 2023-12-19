@@ -599,7 +599,7 @@ local strText={
             [BINDING_HEADER_TARGETING] = "选中目标",
             [BINDING_HEADER_VEHICLE] = "载具控制",
             [BINDING_HEADER_VOICE_CHAT] = "语音聊天",
-            
+
             [BINDING_NAME_ACTIONPAGE1] = "动作条1",
             [BINDING_NAME_ACTIONPAGE2] = "动作条2",
             [BINDING_NAME_ACTIONPAGE3] = "动作条3",
@@ -717,7 +717,7 @@ local strText={
             [BINDING_NAME_MOVIE_RECORDING_COMPRESS] = "压缩视频",
             [BINDING_NAME_MOVIE_RECORDING_GUI] = "显示/隐藏用户界面",
             [BINDING_NAME_MOVIE_RECORDING_STARTSTOP] = "开始录制/停止录制",
-            
+
             [BINDING_NAME_MULTICASTACTIONBUTTON1] = "大地图腾",
             [BINDING_NAME_MULTICASTACTIONBUTTON10] = "火焰图腾",
             [BINDING_NAME_MULTICASTACTIONBUTTON11] = "水图腾",
@@ -964,7 +964,7 @@ local strText={
     [KEY_NUMPADPLUS] = "数字键盘+",
     [SHIFT_KEY] = "SHIFT键",
 
-    
+
     [PLAYER_MESSAGES] = "玩家信息",
     [CREATURE_MESSAGES] = "怪物信息",
     [DONE_BY] = "来源为：",
@@ -1295,8 +1295,8 @@ local function Init()
             end
         end
     end)
-        
-    
+
+
     hooksecurefunc('FCF_SetWindowName', function(frame, name)--FloatingChatFrame.lua
         set(_G[frame:GetName().."Tab"], strText[name])
     end)
@@ -1721,12 +1721,12 @@ local function Init_Loaded(arg1)
             end
             hooksecurefunc('PetJournalFindBattle_Update', set_PetJournalFindBattle)
             set_PetJournalFindBattle()
-            
+
         set(CollectionsJournalTab3, '玩具箱')
         set(CollectionsJournalTab4, '传家宝')
         set(CollectionsJournalTab5, '外观')
 
-        
+
 
         set(WardrobeCollectionFrameTab1, '物品')
         set(WardrobeCollectionFrameTab2, '套装')
