@@ -961,7 +961,7 @@ local function Init()
     --#########
     --添加版本号
     --MainMenuBar.lua
-    hooksecurefunc('MainMenuBarPerformanceBarFrame_OnEnter', function(self)
+    hooksecurefunc('MainMenuBarPerformanceBarFrame_OnEnter', function()
         e.tips:AddLine(' ')
         local version, build, date, tocversion, localizedVersion, buildType = GetBuildInfo()
         e.tips:AddLine(version..' '..build.. ' '..date.. ' '..tocversion..(buildType and ' '..buildType or ''), 1,0,1)

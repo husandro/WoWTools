@@ -2060,7 +2060,17 @@ local function Init_MainMenu(init)--主菜单
             local numSlots= C_Container.GetContainerNumSlots(i) or 0
             if bagFamily == 0 and numSlots>0 then
                 num= num + numSlots
-                table.insert(tab, (i+1)..') '..numSlots..'/|cnGREEN_FONT_COLOR:'..freeSlots)
+                local icon
+                if i== BACKPACK_CONTAINER then
+                    icon= e.Icon.bag2
+                else
+                    local inventoryID = C_Container.ContainerIDToInventoryID(i)
+                    local texture = inventoryID and GetInventoryItemTexture('player', inventoryID)
+                    if texture then
+                        icon= '|T'..texture..':0|t'
+                    end
+                end
+                table.insert(tab, (i+1)..') '..(icon or '')..numSlots..'/|cnGREEN_FONT_COLOR:'..freeSlots)
             end
         end
         if num>0 then
