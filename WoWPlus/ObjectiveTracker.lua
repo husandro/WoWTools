@@ -2,7 +2,7 @@ local id, e = ...
 local addName=	HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL
 local Save={
         scale= 0.85,
-        autoHide=true
+        autoHide=true,
     }
 
 
@@ -152,6 +152,7 @@ local function Init()
             end
         end
     end
+
     function ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -159,7 +160,8 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a/收起选项 |A:editmode-up-arrow:16:11:0:3|a' or (HUD_EDIT_MODE_EXPAND_OPTIONS..'/'..HUD_EDIT_MODE_COLLAPSE_OPTIONS), e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt + '..e.Icon.mid)
-        e.tips:AddDoubleLine('')
+        e.tips:AddLine(e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE), e.GetEnabeleDisable(Save.autoHide))
+        e.tips:AddDoubleLine()
         e.tips:Show()
     end
     ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript("OnLeave", GameTooltip_Hide)
@@ -167,11 +169,6 @@ local function Init()
     ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript('OnMouseWheel',function(self, d)
         if not IsModifierKeyDown() then
             self:colla_module( d==1 and true or false)
-            self:colla_module(true)
-            print(id, addName, d==1 and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-                or '|cnGREEN_FONT_COLOR:'..( e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a') or HUD_EDIT_MODE_EXPAND_OPTIONS
-            )
-
         elseif IsAltKeyDown() then
             local num= Save.scale or 1
             num= d==1 and num-0.05 or num
@@ -183,7 +180,29 @@ local function Init()
             self:set_tooltips()
         end
     end)
+
+    --战斗中收起
+    function ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_evnet()
+        if Save.autoHide then
+            self:RegisterEvent('PLAYER_REGEN_DISABLED')
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+        else
+            self:UnregisterEvent('PLAYER_REGEN_DISABLED')
+            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+        end
+    end
+    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript('OnEvent', function(self, event)
+        if event=='PLAYER_REGEN_DISABLED' then
+            e.call('ObjectiveTracker_Collapse')
+
+        elseif event=='PLAYER_REGEN_ENABLED' then
+            e.call('ObjectiveTracker_Expand')
+        end
+    end)
+
     ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_scale()
+    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_evnet()
+
 
 
 
