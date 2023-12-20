@@ -516,17 +516,13 @@ local function Init()
                 module.Header.clearAll.tooltip= e.onlyChinese and '成就' or TRACKER_HEADER_ACHIEVEMENTS
                 module.Header.clearAll:SetScript('OnDoubleClick', function(self2)
                     local num=0
-                    if GetTrackedAchievements then--10.1.5无效
-                        for _, achievementID in pairs({GetTrackedAchievements()}) do
-                            RemoveTrackedAchievement(achievementID)
-                            num= num +1
-                        end
-                    else
-                        for index, achievementID in pairs(C_ContentTracking.GetTrackedIDs(Enum.ContentTrackingType.Achievement)) do
-                            C_ContentTracking.StopTracking(Enum.ContentTrackingType.Achievement, achievementID)
-                            print(index..')', GetAchievementLink(achievementID) or achievementID)
-                            num= num +1
-                        end
+                    for index, achievementID in pairs(C_ContentTracking.GetTrackedIDs(Enum.ContentTrackingType.Achievement)) do
+                        C_ContentTracking.StopTracking(Enum.ContentTrackingType.Achievement, achievementID,  Enum.ContentTrackingStopType.Manual)
+                        print(index..')', GetAchievementLink(achievementID) or achievementID)
+                        num= num +1
+                    end
+                    if num>0 and AchievementFrame then
+                        e.call('AchievementFrameAchievements_ForceUpdate')--Blizzard_ObjectiveTracker
                     end
                     print(id, addName, '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self2.tooltip, '|cffff00ff'..num)
                 end)
