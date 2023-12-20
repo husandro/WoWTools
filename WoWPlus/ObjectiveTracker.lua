@@ -160,8 +160,7 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a/收起选项 |A:editmode-up-arrow:16:11:0:3|a' or (HUD_EDIT_MODE_EXPAND_OPTIONS..'/'..HUD_EDIT_MODE_COLLAPSE_OPTIONS), e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt + '..e.Icon.mid)
-        e.tips:AddLine(e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE), e.GetEnabeleDisable(Save.autoHide))
-        e.tips:AddDoubleLine()
+        e.tips:AddDoubleLine(e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE), e.GetEnabeleDisable(Save.autoHide))
         e.tips:Show()
     end
     ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript("OnLeave", GameTooltip_Hide)
@@ -620,13 +619,17 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     ..'|n'..(e.onlyChinese and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..' '..e.GetShowHide(false)
                     ..'|n'..(e.onlyChinese and '追踪任务' or TRACK_QUEST)..' '..e.GetShowHide(false)
                     ..'|n'..(e.onlyChinese and '追踪成就' or TRACKER_HEADER_ACHIEVEMENTS)..' '..e.GetShowHide(false)
-                    ..'|n'..(e.onlyChinese and '追踪配方' or PROFESSIONS_TRACK_RECIPE)..' '..e.GetShowHide(false),
+                    ..'|n'..(e.onlyChinese and '追踪配方' or PROFESSIONS_TRACK_RECIPE)..' '..e.GetShowHide(false)
+                    ..'|n|n'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT )..' '..e.GetShowHide(false),
                 value= Save.autoHide,
                 func= function()
                     Save.autoHide= not Save.autoHide and true or nil
                     print(id, addName, e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
                         e.onlyChinese and '任务追踪栏' or QUEST_OBJECTIVES, e.GetEnabeleDisable(Save.autoHide)
                     )
+                    if ObjectiveTrackerFrame.HeaderMenu.MinimizeButton.set_evnet then
+                        ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_evnet()
+                    end
                 end
             })
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)

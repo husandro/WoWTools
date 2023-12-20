@@ -1540,7 +1540,7 @@ local function Init()
     set(ChannelFrame.NewButton, '添加')
     set(ChannelFrame.SettingsButton, '设置')
 
-    
+
     hooksecurefunc(QuestHeaderMixin, 'UpdateHeader', function(self)
         if C_QuestSession.HasJoined() then
             self.Text:SetText('任务场景');
@@ -1554,7 +1554,7 @@ local function Init()
         set(ObjectiveTrackerBlocksFrame.ProfessionHeader.Text, '专业')
         set(ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader.Text, '旅行者日志')
         set(ObjectiveTrackerBlocksFrame.AchievementHeader.Text, '成就')
-        set(ObjectiveTrackerBlocksFrame.QuestHeader.Text, '任务')
+        --set(ObjectiveTrackerBlocksFrame.QuestHeader.Text, '任务')
     end)
 
 end
