@@ -1570,7 +1570,12 @@ local function Init()
 
 
 
-
+    EQUIPMENT_SETS = "装备配置方案：|cFFFFFFFF%s|r";
+    EQUIPMENT_SETS_CANT_RENAME = "一个重名的装备方案已经存在。";
+    EQUIPMENT_SETS_TOO_MANY = "你不能再创建新的装备方案了。";
+    EQUIPMENT_SET_ASSIGN_TO_SPEC = "指定专精：";
+    EQUIPMENT_SET_EDIT = "修改名称/图标";
+    EQUIPMENT_SET_SETTINGS = "设置";
 
 
 
