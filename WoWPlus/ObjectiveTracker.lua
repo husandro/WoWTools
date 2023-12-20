@@ -3,6 +3,7 @@ local addName=	HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL
 local Save={
         scale= 0.85,
         autoHide=true,
+        inCombatHide=e.Player.husandro,--战斗中隐藏
     }
 
 
@@ -182,7 +183,7 @@ local function Init()
 
     --战斗中收起
     function ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_evnet()
-        if Save.autoHide then
+        if Save.inCombatHide then
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         else
@@ -629,6 +630,18 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             })
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+            initializer= e.AddPanel_Check({
+                name= e.onlyChinese and '战斗中隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, HIDE),
+                value= Save.inCombatHide,
+                func= function()
+                    Save.inCombatHide= not Save.inCombatHide and true or nil
+                    if ObjectiveTrackerFrame.HeaderMenu.MinimizeButton.set_evnet then
+                        ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_evnet()
+                    end
+                end
+            })
+            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+
 
             if not Save.disabled then
                 Init()
