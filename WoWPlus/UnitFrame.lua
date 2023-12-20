@@ -186,8 +186,8 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     lootTipsTexture:SetPoint('TOP',0,8)
     lootTipsTexture:SetAtlas('Banker')
 
-    PlayerFrame.lootButton:SetScript('OnLeave', function() e.tips:Hide()  end)
-    PlayerFrame.lootButton:SetScript('OnEnter', function(self)
+    PlayerFrame.lootButton:SetScript('OnLeave', GameTooltip_Hide)
+    PlayerFrame.lootButton:SetScript('OnEnter', function()
         e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)

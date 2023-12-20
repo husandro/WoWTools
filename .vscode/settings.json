@@ -5034,7 +5034,10 @@
         "PVPQueueFrameCategoryButton3",
         "ChannelFrameTitleText",
         "PetJournalFindBattle",
-        "FIND_BATTLE"
+        "FIND_BATTLE",
+        "GameTooltip_HideResetCursor",
+        "QuestHeaderMixin",
+        "TRACKER_HEADER_PARTY_QUESTS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

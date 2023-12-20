@@ -36,31 +36,8 @@ local function ItemNum(button)--增加物品数量
     end
 end
 
-local colla_Module=function(type)
-    for _, self in pairs(ModulTab) do
-        self= _G[self]
-        if self and self.Header and self.Header.MinimizeButton then
-            if self.collapsed ~=type and self.Header.added and self.Header:IsVisible() then
-                local module = self.Header.MinimizeButton:GetParent().module
-                module:SetCollapsed(type)
-                ObjectiveTracker_Update(0, nil, module)
-                self.Header.MinimizeButton:SetCollapsed(type)
-            end
-        end
-    end
-end
 
-local function set_Scale(setPrint)
-    if Save.scale<0.5 then
-        Save.scale=0.5
-    elseif Save.scale>1.5 then
-        Save.scale=1.5
-    end
-    ObjectiveTrackerFrame:SetScale(Save.scale)
-    if setPrint then
-        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:',Save.scale)
-    end
-end
+
 
 
 
@@ -158,36 +135,62 @@ end
 --初始
 --####
 local function Init()
-    if Save.scale and Save.scale~=1 then
-        set_Scale()
-    end--缩放
 
-    local btn=ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
-    btn:SetScript("OnLeave", function(self) e.tips:Hide() end)
-    btn:SetScript("OnEnter",function(self)
+    function ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_scale()
+        ObjectiveTrackerFrame:SetScale(Save.scale or 1)
+    end
+    function ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:colla_module(type)
+        for _, frame in pairs(ModulTab) do
+            frame= _G[frame]
+            if frame and frame.Header and frame.Header.MinimizeButton then
+                if frame.collapsed ~=type and frame.Header.added and frame.Header:IsVisible() then
+                    local module = frame.Header.MinimizeButton:GetParent().module
+                    module:SetCollapsed(type)
+                    e.call('ObjectiveTracker_Update', 0, nil, module)
+                    frame.Header.MinimizeButton:SetCollapsed(type)
+                end
+            end
+        end
+    end
+    function ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a/收起选项 |A:editmode-up-arrow:16:11:0:3|a' or (HUD_EDIT_MODE_EXPAND_OPTIONS..'/'..HUD_EDIT_MODE_COLLAPSE_OPTIONS))
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': '..(Save.scale or 1), 'Ctrl + '..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a/收起选项 |A:editmode-up-arrow:16:11:0:3|a' or (HUD_EDIT_MODE_EXPAND_OPTIONS..'/'..HUD_EDIT_MODE_COLLAPSE_OPTIONS), e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt + '..e.Icon.mid)
+        e.tips:AddDoubleLine('')
         e.tips:Show()
-    end)
-    btn:SetScript('OnMouseWheel',function(_, d)
-        if d == 1 and not IsModifierKeyDown() then
-            colla_Module(true)
-            print(id, addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-        elseif d == -1 and not IsModifierKeyDown() then
-            colla_Module()
-            print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
-        elseif d==1 and IsControlKeyDown() then
-            Save.scale=Save.scale+0.05
-            set_Scale(true)
-        elseif d==-1 and IsControlKeyDown() then
-            Save.scale=Save.scale-0.05
-            set_Scale(true)
+    end
+    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript("OnLeave", GameTooltip_Hide)
+    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript("OnEnter",ObjectiveTrackerFrame.HeaderMenu.MinimizeButton.set_tooltips)
+    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript('OnMouseWheel',function(self, d)
+        if not IsModifierKeyDown() then
+            self:colla_module( d==1 and true or false)
+            self:colla_module(true)
+            print(id, addName, d==1 and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
+                or '|cnGREEN_FONT_COLOR:'..( e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a') or HUD_EDIT_MODE_EXPAND_OPTIONS
+            )
+
+        elseif IsAltKeyDown() then
+            local num= Save.scale or 1
+            num= d==1 and num-0.05 or num
+            num= d==-1 and num+ 0.05 or num
+            num= num>4 and 4 or num
+            num= num< 0.4 and 0.4 or num
+            Save.scale=num
+            self:set_scale(true)
+            self:set_tooltips()
         end
     end)
+    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_scale()
+
+
+
+
+
+
+
 
     hooksecurefunc(QUEST_TRACKER_MODULE, 'OnBlockHeaderLeave', function(_ ,block)
         set_Color(block, block.id)

@@ -1539,6 +1539,24 @@ local function Init()
     set(ChannelFrameTitleText, '聊天频道')
     set(ChannelFrame.NewButton, '添加')
     set(ChannelFrame.SettingsButton, '设置')
+
+    
+    hooksecurefunc(QuestHeaderMixin, 'UpdateHeader', function(self)
+        if C_QuestSession.HasJoined() then
+            self.Text:SetText('任务场景');
+        else
+            self.Text:SetText('任务');
+        end
+    end)
+    C_Timer.After(2, function()
+        set(ObjectiveTrackerFrame.HeaderMenu.Title, '追踪')
+        set(ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text, '战役')
+        set(ObjectiveTrackerBlocksFrame.ProfessionHeader.Text, '专业')
+        set(ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader.Text, '旅行者日志')
+        set(ObjectiveTrackerBlocksFrame.AchievementHeader.Text, '成就')
+        set(ObjectiveTrackerBlocksFrame.QuestHeader.Text, '任务')
+    end)
+
 end
 
 
