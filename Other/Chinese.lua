@@ -1541,12 +1541,9 @@ local function Init()
     set(ChannelFrame.SettingsButton, '设置')
 
 
-    hooksecurefunc(QuestHeaderMixin, 'UpdateHeader', function(self)
-        if C_QuestSession.HasJoined() then
-            self.Text:SetText('任务场景');
-        else
-            self.Text:SetText('任务');
-        end
+    hooksecurefunc(ObjectiveTrackerBlocksFrame.QuestHeader, 'UpdateHeader', function(self)
+        --if C_QuestSession.HasJoined() then self.Text:SetText('任务场景')
+        self.Text:SetText('任务')
     end)
     C_Timer.After(2, function()
         set(ObjectiveTrackerFrame.HeaderMenu.Title, '追踪')
@@ -1556,7 +1553,7 @@ local function Init()
         set(ObjectiveTrackerBlocksFrame.AchievementHeader.Text, '成就')
         --set(ObjectiveTrackerBlocksFrame.QuestHeader.Text, '任务')
     end)
-
+    print(ObjectiveTrackerBlocksFrame.WORLD_QUEST_TRACKER_MODULE)
 end
 
 
