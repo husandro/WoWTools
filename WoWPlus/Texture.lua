@@ -1719,8 +1719,8 @@ local function Init_Event(arg1)
     elseif arg1=='Blizzard_PlayerChoice' then----任务选择
         hooksecurefunc(PlayerChoiceFrame, 'SetupFrame', function(self)
             if self.Background then
-                hide_Texture(self.Background.BackgroundTile)
-                hide_Texture(self.Background)
+                set_Alpha_Color(self.Background.BackgroundTile, nil, nil, 0)
+                set_Alpha_Color(self.Background, nil, nil, 0)
             end
 
             set_NineSlice(self)

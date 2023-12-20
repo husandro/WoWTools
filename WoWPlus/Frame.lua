@@ -894,7 +894,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
             Save.scale= Save.scale or {}
-
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
                 tooltip= addName,

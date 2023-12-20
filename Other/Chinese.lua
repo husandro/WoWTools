@@ -242,7 +242,7 @@ local strText={
     [WORLD] = "世界",
     [TOY_BOX] = "玩具箱",
     [WARDROBE] = "外观",
-
+    [ARENA] = "竞技场",
 
 
 
