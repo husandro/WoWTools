@@ -557,7 +557,7 @@ local function Init_Framerate_Plus()
     end
     MoveFPSFrame= e.Cbtn(FramerateFrame, {size={12,12}, icon='hide'})
     MoveFPSFrame:SetPoint('RIGHT',FramerateFrame.FramerateText)
-   
+
     MoveFPSFrame:SetMovable(true)
     MoveFPSFrame:RegisterForDrag("RightButton");
     MoveFPSFrame:SetClampedToScreen(true)
@@ -1000,6 +1000,40 @@ local function Init()
         if Save.parent and Labels.ms then
             MainMenuMicroButton.MainMenuBarPerformanceBar:ClearAllPoints()
             MainMenuMicroButton.MainMenuBarPerformanceBar:SetPoint('BOTTOM',0,-6)
+        end
+    end)
+
+    --提示，背包，总数
+    MainMenuBarBackpackButton:HookScript('OnEnter', function()
+        local num= 0
+        local tab={}
+        for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
+            local freeSlots, bagFamily = C_Container.GetContainerNumFreeSlots(i)
+            local numSlots= C_Container.GetContainerNumSlots(i) or 0
+            if bagFamily == 0 and numSlots>0 and freeSlots then
+                num= num + numSlots
+                local icon
+                if i== BACKPACK_CONTAINER then
+                    icon= e.Icon.bag2
+                else
+                    local inventoryID = C_Container.ContainerIDToInventoryID(i)
+                    local texture = inventoryID and GetInventoryItemTexture('player', inventoryID)
+                    if texture then
+                        icon= '|T'..texture..':0|t'
+                    end
+                end
+                table.insert(tab, (freeSlots==0 and '|cnRED_FONT_COLOR:' or '')..(i+1)..') '..numSlots..(icon or '')..(freeSlots>0 and '|cnGREEN_FONT_COLOR:' or '')..freeSlots)
+            end
+        end
+        if num>0 then
+            e.tips:AddLine(num..' '..(e.onlyChinese and '总计' or TOTAL))
+            e.tips:AddLine(' ')
+            for _, text in pairs(tab) do
+                e.tips:AddLine(text)
+            end
+            e.tips:AddLine(' ')
+            e.tips:AddLine(id..'  '..addName)
+            e.tips:Show()
         end
     end)
 end
