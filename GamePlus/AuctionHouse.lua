@@ -529,7 +529,24 @@ local function Init_Sell()
         Save.intShowSellItem= not Save.intShowSellItem and true or nil
     end)
     AuctionHouseFrame:HookScript('OnShow', function(self)
-        if Save.intShowSellItem then
+        if not Save.intShowSellItem then
+            return
+        end
+        local find
+        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
+            for slot=1, C_Container.GetContainerNumSlots(bag) do
+                local info = C_Container.GetContainerItemInfo(bag, slot)
+                local itemCommodityStatus= info and info.itemID and not Save.hideSellItem[info.itemID] and select(2, AuctionHouseButton:get_itemLocation(bag, slot)) or 0
+                if itemCommodityStatus>0 then
+                    find=true
+                    break
+                end
+            end
+            if find then
+                break
+            end
+        end
+        if find then
             self:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
             C_Timer.After(0.5, function() AuctionHouseButton:set_next_item() end)--放入，第一个，物品
         end

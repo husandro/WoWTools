@@ -1904,7 +1904,32 @@ local function Init()
     
     STA_LCD = "耐力";
     INT_LCD = "智力";
-    
+    DURABILITY_TEMPLATE = "耐久度 %d / %d";
+    BIND_TRADE_TIME_REMAINING = "你可以在接下来的%s内将这个物品交易给同样拥有资格拾取它的其他玩家（包括离线时间）。";
+
+
+    CR_AVOIDANCE_TOOLTIP = "范围效果法术的伤害降低。\n\n闪避：%s [+%.2f%%]";
+    CR_BLOCK_TOOLTIP = "格挡可使一次攻击的伤害降低%0.2f%%.\n|cff888888（对抗与你实力相当的敌人时）|r";
+    CR_CRIT_MELEE_TOOLTIP = "攻击造成额外伤害的几率。\n%s点爆击（+%.2f%%爆击率）";
+    CR_CRIT_PARRY_RATING_TOOLTIP = "攻击和法术造成额外效果的几率。\n\n爆击：%s [+%.2f%%]\n\n招架几率提高%.2f%%。";
+    CR_CRIT_RANGED_TOOLTIP = "攻击造成额外伤害的几率。\n%s点爆击（+%.2f%%爆击率）";
+    CR_CRIT_SPELL_TOOLTIP = "法术造成额外伤害的几率。\n%s点爆击（+%.2f%%爆击率）";
+    CR_CRIT_TOOLTIP = "攻击和法术造成额外效果的几率。\n\n爆击：%s [+%.2f%%]";
+    CR_DODGE_BASE_STAT_TOOLTIP = "躲闪几率提高%.2f%%|n|cff888888（在效果递减之前）|r";
+    CR_DODGE_TOOLTIP = "%d点躲闪可使躲闪几率提高%.2f%%\n|cff888888（在效果递减之前）|r";
+    CR_EXPERTISE_TOOLTIP = "被躲闪或招架的几率降低%s\n%s点精准(+%.2F%% 精准)";
+    CR_HASTE_RATING_TOOLTIP = "%d点急速  (%.2f%% 急速)";
+    CR_HIT_MELEE_TOOLTIP = "使你的近战攻击命中%d级目标的几率提高%.2f%%。";
+    CR_HIT_RANGED_TOOLTIP = "使你的远程攻击命中%d级目标的几率提高%.2f%%。";
+    CR_HIT_SPELL_TOOLTIP = "使你的法术命中%d级目标的几率提高%.2f%%。";
+    CR_LIFESTEAL_TOOLTIP = "你所造成伤害和治疗的一部分将转而治疗你。\n\n吸血：%s [+%.2f%%]";
+    CR_MULTISTRIKE_TOOLTIP = "有%.2f%%几率对每个目标造成相当于普通伤害或治疗量%.0f%%的额外伤害或治疗。\n\n溅射：%s [%.2f%%]";
+    CR_PARRY_BASE_STAT_TOOLTIP = "招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r";
+    CR_PARRY_TOOLTIP = "%d点招架可使招架几率提高%.2f%%\n|cff888888（在效果递减之前）|r";
+    CR_RANGED_EXPERTISE_TOOLTIP = "被躲闪的几率降低%s\n%s点精准(+%.2F%% 精准)";
+    CR_SPEED_TOOLTIP = "提升移动速度。|n|n速度：%s [+%.2f%%]";
+    CR_STURDINESS_TOOLTIP = "防止物品的耐久度降低。";
+    CR_VERSATILITY_TOOLTIP = "造成的伤害值和治疗量提高%.2f%%，受到的伤害降低%.2f%%。\n\n全能：%s [%.2f%%/%.2f%%]";
 end
 
 
