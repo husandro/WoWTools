@@ -2076,7 +2076,6 @@ local function Init_MainMenu(init)--主菜单
                 set_Reagent_Bag_Alpha(true)
             end)
             hooksecurefunc(MainMenuBarBagManager, 'ToggleExpandBar', function()
-                print(GetCVarBool("expandBagBar"))
                 set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
             end)
         end
