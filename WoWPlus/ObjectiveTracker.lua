@@ -191,7 +191,7 @@ local function Init()
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
         end
     end
-    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript('OnEvent', function(self, event)
+    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript('OnEvent', function(_, event)
         if event=='PLAYER_REGEN_DISABLED' then
             e.call('ObjectiveTracker_Collapse')
 
