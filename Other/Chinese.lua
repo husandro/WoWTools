@@ -1905,7 +1905,6 @@ local function Init()
     STA_LCD = "耐力";
     INT_LCD = "智力";
     
-    
 end
 
 
