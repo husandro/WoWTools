@@ -1246,7 +1246,7 @@ local function Init()
     set(SettingsPanel.GameTab.Text, '游戏')
     set(SettingsPanel.AddOnsTab.Text, '插件')
     set(SettingsPanel.NineSlice.Text, '选项')
-
+    set(SettingsPanel.CloseButton, '关闭')
 
     --[[可能会出错
     set(GameMenuFrame.Header.Text, '游戏菜单')
