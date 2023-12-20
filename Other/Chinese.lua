@@ -1070,6 +1070,7 @@ local strText={
     [PET_BATTLE_COMBAT_LOG] = "宠物对战",
     [VOICE] = "语音",
     [TEXT_TO_SPEECH] = "文本转语音",
+
 }
 
 
@@ -1553,7 +1554,358 @@ local function Init()
         set(ObjectiveTrackerBlocksFrame.AchievementHeader.Text, '成就')
         --set(ObjectiveTrackerBlocksFrame.QuestHeader.Text, '任务')
     end)
-    print(ObjectiveTrackerBlocksFrame.WORLD_QUEST_TRACKER_MODULE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    ITEMS_EQUIPPED = "已装备%d件物品";
+    ITEMS_IN_INVENTORY = "背包中有%d件物品";
+    ITEMS_NOT_IN_INVENTORY = "缺少%d件物品";
+    ITEMS_VARIABLE_QUANTITY = "%d件物品";
+    ITEM_ACCOUNTBOUND = "账号绑定";
+    ITEM_ARTIFACT_VIEWABLE = "<Shift+右键点击查看神器>";
+    ITEM_AZERITE_EMPOWERED_VIEWABLE = "<Shift+右键点击查看艾泽里特之力>";
+    ITEM_AZERITE_ESSENCES_VIEWABLE = "<Shift+右键点击查看精华>";
+    ITEM_BIND_ON_EQUIP = "装备后绑定";
+    ITEM_BIND_ON_PICKUP = "拾取后绑定";
+    ITEM_BIND_ON_USE = "使用后绑定";
+    ITEM_BIND_QUEST = "任务物品";
+    ITEM_BIND_TO_ACCOUNT = "账号绑定";
+    ITEM_BIND_TO_BNETACCOUNT = "绑定至暴雪游戏通行证";
+    ITEM_BNETACCOUNTBOUND = "暴雪游戏通行证绑定";
+    ITEM_CANT_BE_DESTROYED = "这件物品无法被摧毁。";
+    ITEM_CAN_BE_READ = "<可以阅读该物品>";
+    ITEM_CHARGEUP_TOTAL = "（需要%s）";
+    ITEM_CHARGEUP_TOTAL_DAYS = "（需要%d天）";
+    ITEM_CHARGEUP_TOTAL_HOURS = "（需要%d小时）";
+    ITEM_CHARGEUP_TOTAL_MIN = "（需要%d分钟）";
+    ITEM_CHARGEUP_TOTAL_SEC = "（需要%d秒）";
+    ITEM_CLASSES_ALLOWED = "职业：%s";
+    ITEM_COMPARISON_CYCLING_DISABLED_MSG_MAINHAND = "访问按键设置菜单，开启主手物品的循环比较。（推荐快捷键：SHIFT-C）";
+    ITEM_COMPARISON_CYCLING_DISABLED_MSG_OFFHAND = "访问按键设置菜单，开启副手物品的循环比较。（推荐快捷键：SHIFT-C）";
+    ITEM_COMPARISON_RELIC_BONUS_RANKS = "%d级";
+    ITEM_COMPARISON_SWAP_ITEM_MAINHAND_DESCRIPTION = "按%s来切换用于搭配的主手物品。";
+    ITEM_COMPARISON_SWAP_ITEM_OFFHAND_DESCRIPTION = "按%s来切换用于搭配的副手物品。";
+    ITEM_CONJURED = "魔法制造的物品";
+    ITEM_CONTAINER = "容器";
+    ITEM_COOLDOWN_TIME = "冷却时间剩余：%s";
+    ITEM_COOLDOWN_TIME_DAYS = "剩余冷却时间：%d天";
+    ITEM_COOLDOWN_TIME_HOURS = "剩余冷却时间：%d小时";
+    ITEM_COOLDOWN_TIME_MIN = "冷却时间剩余：%d 分钟";
+    ITEM_COOLDOWN_TIME_SEC = "冷却时间剩余：%d秒";
+    ITEM_COOLDOWN_TOTAL = "（%s冷却）";
+    ITEM_COOLDOWN_TOTAL_DAYS = "(%d天冷却时间)";
+    ITEM_COOLDOWN_TOTAL_HOURS = "(%d小时冷却时间)";
+    ITEM_COOLDOWN_TOTAL_MIN = "(%d分钟冷却时间)";
+    ITEM_COOLDOWN_TOTAL_SEC = "(%d秒冷却时间)";
+    ITEM_CORRUPTION_BONUS_STAT = "+%d 腐蚀";
+    ITEM_COSMETIC = "装饰品";
+    ITEM_COSMETIC_LEARN = "使用：将此外观添加到你的收藏中。";
+    ITEM_CREATED_BY = "|cff00ff00<由%s制造>|r";
+    ITEM_CREATE_LOOT_SPEC_ITEM = "使用：制造一件适用于你当前拾取专精(%s)的灵魂绑定物品。";
+    ITEM_DELTA_DESCRIPTION = "如果你替换该物品，将会产生以下的属性变更：";
+    ITEM_DELTA_DUAL_WIELD_COMPARISON_MAINHAND_DESCRIPTION = "（与搭配了主手装备|c%s%s|r后相比）";
+    ITEM_DELTA_DUAL_WIELD_COMPARISON_OFFHAND_DESCRIPTION = "（与搭配了副手装备|c%s%s|r后相比）";
+    ITEM_DELTA_MULTIPLE_COMPARISON_DESCRIPTION = "如果你替换这些物品，将会产生以下的属性变更：";
+    ITEM_DISENCHANT_ANY_SKILL = "可分解";
+    ITEM_DISENCHANT_MIN_SKILL = "分解需要%s (%d)";
+    ITEM_DISENCHANT_NOT_DISENCHANTABLE = "无法分解";
+    ITEM_DURATION_DAYS = "持续时间：%d天";
+    ITEM_DURATION_HOURS = "持续时间：%d小时";
+    ITEM_DURATION_MIN = "持续时间：%d分钟";
+    ITEM_DURATION_SEC = "持续时间：%d秒";
+    ITEM_ENCHANT_DISCLAIMER = "物品将不会被交易！";
+    ITEM_ENCHANT_TIME_LEFT_DAYS = "%s（%d天）";
+    ITEM_ENCHANT_TIME_LEFT_HOURS = "%s（%d小时）";
+    ITEM_ENCHANT_TIME_LEFT_MIN = "%s（%d分钟）";
+    ITEM_ENCHANT_TIME_LEFT_SEC = "%s（%d秒）";
+    ITEM_GLYPH_ONUSE = "永久教会你使用这个雕文。";
+    ITEM_HEROIC = "英雄";
+    ITEM_HEROIC_EPIC = "英雄级别史诗品质";
+    ITEM_HEROIC_QUALITY0_DESC = "英雄粗糙";
+    ITEM_HEROIC_QUALITY1_DESC = "英雄普通";
+    ITEM_HEROIC_QUALITY2_DESC = "英雄优秀";
+    ITEM_HEROIC_QUALITY3_DESC = "英雄稀有";
+    ITEM_HEROIC_QUALITY4_DESC = "英雄史诗";
+    ITEM_HEROIC_QUALITY5_DESC = "英雄传说";
+    ITEM_HEROIC_QUALITY6_DESC = "英雄神器";
+    ITEM_HEROIC_QUALITY7_DESC = "英雄传家宝";
+    ITEM_IS_NOT_AZERITE_EMPOWERED = "这个物品没有被艾泽里特强化";
+    ITEM_LEGACY_INACTIVE_EFFECTS = "传承物品：效果未激活";
+    ITEM_LEVEL = "物品等级%d";
+    ITEM_LEVEL_ALT = "物品等级%d (%d)";
+    ITEM_LEVEL_AND_MIN = "等级 %d （最小 %d）";
+    ITEM_LEVEL_PLUS = "物品等级%d+";
+    ITEM_LEVEL_RANGE = "需要等级%d到%d";
+    ITEM_LEVEL_RANGE_CURRENT = "需要等级 %d到%d （%d）";
+    ITEM_LEVEL_UPGRADE_MAX = "物品等级 %d";
+    ITEM_LIMIT_CATEGORY = "唯一：%s（%d）";
+    ITEM_LIMIT_CATEGORY_MULTIPLE = "装备唯一：%s （%d）";
+    ITEM_LOOT = "物品拾取";
+    ITEM_MILLABLE = "可研磨";
+    ITEM_MIN_LEVEL = "需要等级 %d";
+    ITEM_MIN_SKILL = "需要%s（%d）";
+    ITEM_MISSING = "%s缺失";
+    ITEM_MOD_AGILITY = "%c%s 敏捷";
+    ITEM_MOD_AGILITY_OR_INTELLECT_SHORT = "敏捷或智力";
+    ITEM_MOD_AGILITY_OR_STRENGTH_OR_INTELLECT_SHORT = "敏捷、力量或智力";
+    ITEM_MOD_AGILITY_OR_STRENGTH_SHORT = "敏捷或力量";
+    ITEM_MOD_AGILITY_SHORT = "敏捷";
+    ITEM_MOD_ARMOR_PENETRATION_RATING = "使你的护甲穿透提高%s点。";
+    ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT = "护甲穿透";
+    ITEM_MOD_ATTACK_POWER = "攻击强度提高%s点。";
+    ITEM_MOD_ATTACK_POWER_SHORT = "攻击强度";
+    ITEM_MOD_BLOCK_RATING = "使你的盾牌格挡提高%s点。";
+    ITEM_MOD_BLOCK_RATING_SHORT = "格挡";
+    ITEM_MOD_BLOCK_VALUE = "使你的盾牌格挡值提高%s点。";
+    ITEM_MOD_BLOCK_VALUE_SHORT = "格挡值";
+    ITEM_MOD_CORRUPTION = "腐蚀";
+    ITEM_MOD_CORRUPTION_RESISTANCE = "腐蚀抗性";
+    ITEM_MOD_CRAFTING_SPEED_SHORT = "制作速度";
+    ITEM_MOD_CRIT_MELEE_RATING = "近战爆击提高%s点。";
+    ITEM_MOD_CRIT_MELEE_RATING_SHORT = "爆击（近战）";
+    ITEM_MOD_CRIT_RANGED_RATING = "远程爆击提高%s点。";
+    ITEM_MOD_CRIT_RANGED_RATING_SHORT = "爆击（远程）";
+    ITEM_MOD_CRIT_RATING = "使你的爆击提高%s点。";
+    ITEM_MOD_CRIT_RATING_SHORT = "爆击";
+    ITEM_MOD_CRIT_SPELL_RATING = "法术爆击提高%s点。";
+    ITEM_MOD_CRIT_SPELL_RATING_SHORT = "爆击（法术）";
+    ITEM_MOD_CRIT_TAKEN_MELEE_RATING = "近战爆击躲闪提高%s点。";
+    ITEM_MOD_CRIT_TAKEN_MELEE_RATING_SHORT = "爆击躲闪（近战）";
+    ITEM_MOD_CRIT_TAKEN_RANGED_RATING = "远程爆击躲闪提高%s点。";
+    ITEM_MOD_CRIT_TAKEN_RANGED_RATING_SHORT = "爆击躲闪（远程）";
+    ITEM_MOD_CRIT_TAKEN_RATING = "爆击躲闪提高%s点。";
+    ITEM_MOD_CRIT_TAKEN_RATING_SHORT = "爆击躲闪";
+    ITEM_MOD_CRIT_TAKEN_SPELL_RATING = "法术爆击躲闪提高%s点。";
+    ITEM_MOD_CRIT_TAKEN_SPELL_RATING_SHORT = "爆击躲闪（法术）";
+    ITEM_MOD_CR_AVOIDANCE_SHORT = "闪避";
+    ITEM_MOD_CR_LIFESTEAL_SHORT = "吸血";
+    ITEM_MOD_CR_MULTISTRIKE_SHORT = "溅射";
+    ITEM_MOD_CR_SPEED_SHORT = "加速";
+    ITEM_MOD_CR_STURDINESS_SHORT = "永不磨损";
+    ITEM_MOD_CR_UNUSED_6_SHORT = "永不磨损";
+    ITEM_MOD_DAMAGE_PER_SECOND_SHORT = "每秒伤害";
+    ITEM_MOD_DEFENSE_SKILL_RATING = "防御提高%s点。";
+    ITEM_MOD_DEFENSE_SKILL_RATING_SHORT = "防御";
+    ITEM_MOD_DEFTNESS_SHORT = "熟练";
+    ITEM_MOD_DODGE_RATING = "使你的躲闪提高%s点。";
+    ITEM_MOD_DODGE_RATING_SHORT = "躲闪";
+    ITEM_MOD_EXPERTISE_RATING = "使你的精准提高%s点。";
+    ITEM_MOD_EXPERTISE_RATING_SHORT = "精准";
+    ITEM_MOD_EXTRA_ARMOR = "使你的护甲值提高%s。";
+    ITEM_MOD_EXTRA_ARMOR_SHORT = "护甲加成";
+    ITEM_MOD_FERAL_ATTACK_POWER = "在猎豹、熊、巨熊和枭兽形态下的攻击强度提高%s点。";
+    ITEM_MOD_FERAL_ATTACK_POWER_SHORT = "变形形态下的攻击强度";
+    ITEM_MOD_FINESSE_SHORT = "精细";
+    ITEM_MOD_HASTE_RATING = "使你的急速提高%s点。";
+    ITEM_MOD_HASTE_RATING_SHORT = "急速";
+    ITEM_MOD_HEALTH = "%c%s 生命值";
+    ITEM_MOD_HEALTH_REGEN = "每5秒恢复%s点生命值。";
+    ITEM_MOD_HEALTH_REGENERATION = "每5秒恢复%s点生命值。";
+    ITEM_MOD_HEALTH_REGENERATION_SHORT = "生命值恢复";
+    ITEM_MOD_HEALTH_REGEN_SHORT = "每5秒的生命值恢复";
+    ITEM_MOD_HEALTH_SHORT = "生命值";
+    ITEM_MOD_HIT_MELEE_RATING = "近战命中提高%s点。";
+    ITEM_MOD_HIT_MELEE_RATING_SHORT = "命中（近战）";
+    ITEM_MOD_HIT_RANGED_RATING = "远程命中提高%s点。";
+    ITEM_MOD_HIT_RANGED_RATING_SHORT = "命中（远程）";
+    ITEM_MOD_HIT_RATING = "使你的命中提高%s点。";
+    ITEM_MOD_HIT_RATING_SHORT = "命中";
+    ITEM_MOD_HIT_SPELL_RATING = "法术命中提高%s点。";
+    ITEM_MOD_HIT_SPELL_RATING_SHORT = "命中（法术）";
+    ITEM_MOD_HIT_TAKEN_MELEE_RATING = "近战命中躲闪提高%s点。";
+    ITEM_MOD_HIT_TAKEN_MELEE_RATING_SHORT = "命中躲闪（近战）";
+    ITEM_MOD_HIT_TAKEN_RANGED_RATING = "远程命中躲闪提高%s点。";
+    ITEM_MOD_HIT_TAKEN_RANGED_RATING_SHORT = "命中躲闪（远程）";
+    ITEM_MOD_HIT_TAKEN_RATING = "命中躲闪提高%s点。";
+    ITEM_MOD_HIT_TAKEN_RATING_SHORT = "命中躲闪";
+    ITEM_MOD_HIT_TAKEN_SPELL_RATING = "法术命中躲闪提高%s点。";
+    ITEM_MOD_HIT_TAKEN_SPELL_RATING_SHORT = "命中躲闪（法术）";
+    ITEM_MOD_INSPIRATION_SHORT = "灵感";
+    ITEM_MOD_INTELLECT = "%c%s 智力";
+    ITEM_MOD_INTELLECT_SHORT = "智力";
+    ITEM_MOD_MANA = "%c%s 法力值";
+    ITEM_MOD_MANA_REGENERATION = "每5秒回复%s点法力值。";
+    ITEM_MOD_MANA_REGENERATION_SHORT = "法力回复";
+    ITEM_MOD_MANA_SHORT = "法力值";
+    ITEM_MOD_MASTERY_RATING = "使你的精通提高%s点。";
+    ITEM_MOD_MASTERY_RATING_SHORT = "精通";
+    ITEM_MOD_MELEE_ATTACK_POWER_SHORT = "近战攻击强度";
+    ITEM_MOD_MODIFIED_CRAFTING_STAT_1 = "随机属性1";
+    ITEM_MOD_MODIFIED_CRAFTING_STAT_2 = "随机属性2";
+    ITEM_MOD_MULTICRAFT_SHORT = "产能";
+    ITEM_MOD_PARRY_RATING = "使你的招架提高%s点。";
+    ITEM_MOD_PARRY_RATING_SHORT = "招架";
+    ITEM_MOD_PERCEPTION_SHORT = "感知";
+    ITEM_MOD_POWER_REGEN0_SHORT = "每5秒的法力值恢复";
+    ITEM_MOD_POWER_REGEN1_SHORT = "每5秒的怒气增长";
+    ITEM_MOD_POWER_REGEN2_SHORT = "每5秒的专注获得";
+    ITEM_MOD_POWER_REGEN3_SHORT = "每5秒的能量恢复";
+    ITEM_MOD_POWER_REGEN4_SHORT = "每5秒的快乐值获得";
+    ITEM_MOD_POWER_REGEN5_SHORT = "每5秒的符文恢复";
+    ITEM_MOD_POWER_REGEN6_SHORT = "每5秒的符文能量恢复";
+    ITEM_MOD_PVP_POWER = "使你的PvP强度提高%s点。";
+    ITEM_MOD_PVP_POWER_SHORT = "PvP强度";
+    ITEM_MOD_PVP_PRIMARY_STAT_SHORT = "PvP强度";
+    ITEM_MOD_RANGED_ATTACK_POWER = "远程攻击强度提高%s点。";
+    ITEM_MOD_RANGED_ATTACK_POWER_SHORT = "远程攻击强度";
+    ITEM_MOD_RESILIENCE_RATING = "使你的PvP韧性提高%s点。";
+    ITEM_MOD_RESILIENCE_RATING_SHORT = "PvP韧性";
+    ITEM_MOD_RESOURCEFULNESS_SHORT = "充裕";
+    ITEM_MOD_SPELL_DAMAGE_DONE = "魔法法术和效果的伤害量提高最多%s点。";
+    ITEM_MOD_SPELL_DAMAGE_DONE_SHORT = "伤害加成";
+    ITEM_MOD_SPELL_HEALING_DONE = "魔法法术和效果的治疗量提高最多%s点。";
+    ITEM_MOD_SPELL_HEALING_DONE_SHORT = "治疗加成";
+    ITEM_MOD_SPELL_PENETRATION = "法术穿透提高%s点。";
+    ITEM_MOD_SPELL_PENETRATION_SHORT = "法术穿透";
+    ITEM_MOD_SPELL_POWER = "法术强度提高%s点。";
+    ITEM_MOD_SPELL_POWER_SHORT = "法术强度";
+    ITEM_MOD_SPIRIT = "%c%s 精神";
+    ITEM_MOD_SPIRIT_SHORT = "精神";
+    ITEM_MOD_STAMINA = "%c%s 耐力";
+    ITEM_MOD_STAMINA_SHORT = "耐力";
+    ITEM_MOD_STRENGTH = "%c%s 力量";
+    ITEM_MOD_STRENGTH_OR_INTELLECT_SHORT = "力量或智力";
+    ITEM_MOD_STRENGTH_SHORT = "力量";
+    ITEM_MOD_VERSATILITY = "全能";
+    ITEM_MOUSE_OVER = "将鼠标移动到图标上可以获得更多的信息";
+    ITEM_NAMES = "物品名";
+    ITEM_NAMES_SHOW_BRACES_COMBATLOG_TOOLTIP = "在物品名称外显示括号。";
+    ITEM_NAME_DESCRIPTION_DELIMITER = " ";
+    ITEM_NO_DROP = "无法丢弃";
+    ITEM_OBLITERATEABLE = "可拆解";
+    ITEM_OBLITERATEABLE_NOT = "无法拆解";
+    ITEM_ONLY_TOURNAMENT_GEAR_ALLOWED = "本次战争游戏只能使用竞技装备。";
+    ITEM_OPENABLE = "<右键点击打开>";
+    ITEM_PET_KNOWN = "已收集（%d/%d）";
+    ITEM_PROPOSED_ENCHANT = "将获得%s的效果。";
+    ITEM_PROSPECTABLE = "可选矿";
+    ITEM_PURCHASED_COLON = "物品购入：";
+    ITEM_RACES_ALLOWED = "种族：%s";
+    ITEM_RANDOM_ENCHANT = "<随机额外属性>";
+    ITEM_READABLE = "<右键点击阅读>";
+    ITEM_REFUND_MSG = "物品已退还。获得退款：";
+    ITEM_RELIC_VIEWABLE = "<右键点击查看装备的神器>";
+    ITEM_REQ_ALLIANCE = "只限联盟";
+    ITEM_REQ_AMOUNT_EARNED = "需要在本赛季总共获得%1$d\n%2$s。";
+    ITEM_REQ_ARENA_RATING = "需要个人竞技场等级达到%d";
+    ITEM_REQ_ARENA_RATING_3V3 = "需要3v3的个人竞技场等级达到%d|n";
+    ITEM_REQ_ARENA_RATING_3V3_BG = "需要战场等级达到%d或者|n3v3的个人|n竞技场等级达到%d";
+    ITEM_REQ_ARENA_RATING_5V5 = "需要5v5的个人竞技场等级达到%d|n";
+    ITEM_REQ_ARENA_RATING_BG = "需要战场等级达到%d或者|n个人竞技场等级达到%d";
+    ITEM_REQ_HORDE = "只限部落";
+    ITEM_REQ_PURCHASE_ACHIEVEMENT = "需要成就：%s";
+    ITEM_REQ_PURCHASE_GUILD = "需要一个公会";
+    ITEM_REQ_PURCHASE_GUILD_LEVEL = "需要公会等级%d";
+    ITEM_REQ_REPUTATION = "需要 %s - %s";
+    ITEM_REQ_SKILL = "需要%s";
+    ITEM_REQ_SPECIALIZATION = "需要：%s";
+    ITEM_RESIST_ALL = "%c%d 所有抗性";
+    ITEM_RESIST_SINGLE = "%c%d %s抗性";
+    ITEM_SCRAPABLE = "可拆解";
+    ITEM_SCRAPABLE_NOT = "不可拆解";
+    ITEM_SET_BONUS = "套装：%s";
+    ITEM_SET_BONUS_GRAY = "(%d) 套装：%s";
+    ITEM_SET_BONUS_NO_VALID_SPEC = "套装奖励将根据玩家专精变化。";
+    ITEM_SET_LEGACY_INACTIVE_BONUS = "传承套装：套装奖励未激活";
+    ITEM_SIGNABLE = "<右键点击以了解详情>";
+    ITEM_SLOTS_IGNORED = "忽略%d个栏位";
+    ITEM_SOCKETABLE = "<Shift+右键点击打开镶嵌界面>";
+    ITEM_SOCKETING = "物品镶嵌";
+    ITEM_SOCKET_BONUS = "镶孔奖励：%s";
+    ITEM_SOLD_COLON = "物品售出：";
+    ITEM_SOULBOUND = "灵魂绑定";
+    ITEM_SPELL_CHARGES = "%d次";
+    ITEM_SPELL_CHARGES_NONE = "耗尽次数";
+    ITEM_SPELL_EFFECT = "效果：%s";
+    ITEM_SPELL_KNOWN = "已经学会";
+    ITEM_SPELL_MAX_USABLE_LEVEL = "（要求等级不高于%d）";
+    ITEM_SPELL_TRIGGER_ONEQUIP = "装备：";
+    ITEM_SPELL_TRIGGER_ONPROC = "击中时可能：";
+    ITEM_SPELL_TRIGGER_ONUSE = "使用：";
+    ITEM_STARTS_QUEST = "该物品将触发一个任务";
+    ITEM_TEXT_FROM = "发信人，";
+    ITEM_TOURNAMENT_GEAR = "竞技装备";
+    ITEM_TOURNAMENT_GEAR_WARNING = "竞技装备只能在战争游戏中使用。";
+    ITEM_TOY_ONUSE = "使用：将该玩具添加到你的玩具箱。";
+    ITEM_UNIQUE = "唯一";
+    ITEM_UNIQUE_EQUIPPABLE = "装备唯一";
+    ITEM_UNIQUE_MULTIPLE = "唯一（%d）";
+    ITEM_UNSELLABLE = "无法出售";
+    ITEM_UPGRADE = "物品升级";
+    ITEM_UPGRADED_LABEL = "物品已升级！";
+    ITEM_UPGRADE_BONUS_DAMAGE_TEMPLATE = "|cff20ff20%1$s - %2$s|r点伤害";
+    ITEM_UPGRADE_COST_LABEL = "总花费：";
+    ITEM_UPGRADE_CURRENT = "当前：";
+    ITEM_UPGRADE_DESCRIPTION = "许多可装备的物品都可以进行升级，从而提高其物品等级。不同来源的物品升级所需的货币也各不相同。";
+    ITEM_UPGRADE_DISCOUNT_ITEM_TYPE_FINGER = "戒指";
+    ITEM_UPGRADE_DISCOUNT_ITEM_TYPE_ONE_HANDED_WEAPON = "单手武器";
+    ITEM_UPGRADE_DISCOUNT_ITEM_TYPE_TRINKET = "饰品";
+    ITEM_UPGRADE_DISCOUNT_TOOLTIP_ACCOUNT_WIDE = "账号通用";
+    ITEM_UPGRADE_DISCOUNT_TOOLTIP_CURRENT_CHARACTER = "这次升级花费较少的%s，因为你已经在此栏位获得了更高物品等级（%d）的物品。";
+    ITEM_UPGRADE_DISCOUNT_TOOLTIP_OTHER_CHARACTER = "这次升级花费较少的%s，因为你账号上的一名角色已经在此栏位获得了更高物品等级（%d）的物品。";
+    ITEM_UPGRADE_DISCOUNT_TOOLTIP_PARTIAL_TWO_HAND_CURRENT_CHARACTER = "这次升级花费较少的%s，因为你已经拥有了一套更高物品等级（%d）的武器。";
+    ITEM_UPGRADE_DISCOUNT_TOOLTIP_PARTIAL_TWO_HAND_OTHER_CHARACTER = "这次升级花费较少的%s，因为你账号上的一名角色已经获得了一套更高物品等级（%d）的武器。";
+    ITEM_UPGRADE_DISCOUNT_TOOLTIP_TITLE = "%s折扣";
+    ITEM_UPGRADE_DISCOUNT_TOOLTIP_TWO_SLOT_CURRENT_CHARACTER = "这次升级花费较少的%1$s，因为你已经获得了两个更高物品等级（%3$d）的%2$s。";
+    ITEM_UPGRADE_DISCOUNT_TOOLTIP_TWO_SLOT_OTHER_CHARACTER = "这次升级花费较少的%1$s，因为你账号上的一名角色已经获得了两个更高物品等级（%3$d）的%2$s。";
+    ITEM_UPGRADE_DROPDOWN_LEVEL_FORMAT = "等级%d/%d";
+    ITEM_UPGRADE_DROPDOWN_LEVEL_FORMAT_STRING = "%s %d/%d";
+    ITEM_UPGRADE_ERROR_NOT_ENOUGH_CURRENCY = "%s不足。";
+    ITEM_UPGRADE_ERROR_NOT_ENOUGH_CURRENCY_DOWNGRADE = "较高等级的纹章可以在峈姆的瓦斯卡尔恩处进行降级。";
+    ITEM_UPGRADE_ERROR_NOT_ENOUGH_CURRENCY_MULTIPLE = "升级货币不足。";
+    ITEM_UPGRADE_ERROR_NOT_ENOUGH_CURRENCY_TWO = "%s和%s不足。";
+    ITEM_UPGRADE_ERROR_UNDEFINED_MESSAGE = "该物品无法升级";
+    ITEM_UPGRADE_FRAGMENTS_TOTAL = "获得碎片：|c%s%s/%s|r";
+    ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT = "升级：%s/%s";
+    ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT_STRING = "升级：%s %s/%s";
+    ITEM_UPGRADE_FRAME_PREVIEW_RANK_TOOLTIP_ERROR = "需要之前的升级";
+    ITEM_UPGRADE_FRAME_UPGRADE_TO = "升级至：";
+    ITEM_UPGRADE_ITEM_LEVEL_BONUS_STAT_FORMAT = "物品等级 |cff20ff20%1$d(+%2$d)|r";
+    ITEM_UPGRADE_ITEM_LEVEL_STAT_FORMAT = "物品等级%d";
+    ITEM_UPGRADE_ITEM_UPGRADED_NOTIFICATION = "物品已升级";
+    ITEM_UPGRADE_MISSING_ITEM = "将物品拖曳至此处升级。";
+    ITEM_UPGRADE_NEXT_UPGRADE = "升级：";
+    ITEM_UPGRADE_NO_MORE_UPGRADES = "该物品不能再升级了。";
+    ITEM_UPGRADE_PROGRESS_LEVEL_FORMAT = "等级 %d/%d  %d |cnDISABLED_FONT_COLOR:(%d-%d)|r";
+    ITEM_UPGRADE_PVP_ITEM_LEVEL_BONUS_STAT_FORMAT = "PvP物品等级 |cff20ff20%1$d(+%2$d)|r";
+    ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT = "PvP物品等级 %d";
+    ITEM_UPGRADE_STAT_AVERAGE_ITEM_LEVEL = "物品等级";
+    ITEM_UPGRADE_TOOLTIP_FORMAT = "升级：%d/%d";
+    ITEM_UPGRADE_TOOLTIP_FORMAT_STRING = "升级：%s %d/%d";
+    ITEM_UPGRADE_TUTORIAL_ITEM_IN_SLOT = "把这件装备带到主城的物品升级专员处提升其强度";
+    ITEM_VENDOR_STACK_BUY = "<按住Shift点击以购买不同数量>";
+    ITEM_WRAPPED_BY = "|cff00ff00<%s的礼物>|r";
+    ITEM_WRITTEN_BY = "由%s撰写";
+    ITEM_WRONG_CLASS = "你的职业无法使用这件物品！";
+    ITEM_WRONG_RACE = "你的种族无法使用这件物品！";
+    
+    
+    
+    
+    
+    
+    STA_LCD = "耐力";
+    INT_LCD = "智力";
+    
+    
 end
 
 

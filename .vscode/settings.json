@@ -5038,7 +5038,8 @@
         "GameTooltip_HideResetCursor",
         "QuestHeaderMixin",
         "TRACKER_HEADER_PARTY_QUESTS",
-        "AchievementFrameAchievements_ForceUpdate"
+        "AchievementFrameAchievements_ForceUpdate",
+        "STAT_TEMPLATE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
