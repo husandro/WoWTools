@@ -1250,19 +1250,6 @@ local function Init()
     set(SettingsPanel.CloseButton, '关闭')
     set(SettingsPanel.ApplyButton, '应用')
 
-    --[[可能会出错
-    set(GameMenuFrame.Header.Text, '游戏菜单')
-    set(GameMenuButtonHelpText, '帮助')
-    set(GameMenuButtonStoreText, '商店')
-    set(GameMenuButtonWhatsNewText, '新内容')
-    set(GameMenuButtonSettingsText, '选项')
-    set(GameMenuButtonEditModeText, '编辑模式')
-    set(GameMenuButtonMacrosText, '宏')
-    set(GameMenuButtonAddonsText, '插件')
-    set(GameMenuButtonLogoutText, '登出')
-    set(GameMenuButtonQuitText, '退出游戏')
-        set(GameMenuButtonContinueText, '返回游戏')]]
-
     set(FriendsFrameTab1, '好友')
         set(FriendsFrameAddFriendButton, '添加好友')
         set(FriendsTabHeaderTab1, '好友')
