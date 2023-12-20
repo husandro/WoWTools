@@ -1450,7 +1450,6 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrameAuctionsFrameAuctionsTab.Text, '拍卖')
         set(AuctionHouseFrameAuctionsFrameBidsTab.Text, '竞标')
         set(AuctionHouseFrameAuctionsFrameBidsTab.Text, '竞标')
-        --set(AuctionHouseFrameAuctionsFrameText, '一口价')
 
         set(AuctionHouseFrame.SearchBar.SearchButton, '搜索')
 
@@ -1463,6 +1462,7 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.ItemSellFrame.QuantityInput.MaxButton, '最大数量')
         set(AuctionHouseFrame.ItemSellFrame.PriceInput.PerItemPostfix, '每个物品')
         set(AuctionHouseFrame.ItemSellFrame.SecondaryPriceInput.Label, '竞标价格')
+
         --Blizzard_AuctionHouseUI
         hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'SetSecondaryPriceInputEnabled', function(self, enabled)
             self.PriceInput:SetLabel('一口价')--AUCTION_HOUSE_BUYOUT_LABEL)
@@ -1672,6 +1672,10 @@ local function cancel_all()
     strText={}
     panel:UnregisterEvent('ADDON_LOADED')
 end
+
+
+
+
 
 --###########
 --加载保存数据
