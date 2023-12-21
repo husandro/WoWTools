@@ -537,7 +537,7 @@ end
 
 
 
-
+--[[
 local AllPlayerBankItem
 local function Init_Save_BankItem()
     if not e.Player.husandro then
@@ -594,7 +594,7 @@ local function Init_Save_BankItem()
             end
         end
     end
-    
+
     BankSlotsFrame:HookScript('OnShow', function()
         --e.WoWDate[e.Player.guid].Bank={}
     end)
@@ -613,7 +613,7 @@ local function Init_Save_BankItem()
             local bagFrame= _G['ContainerFrame'..bag]
             for slot=1, ContainerFrame_GetContainerNumSlots(bagFrame:GetID()) do-- C_Container.GetContainerNumSlots(bagindex) do
                 local button=_G['ContainerFrame'..(bagindex)..'Item'..slot]
-                
+
                 AllPlayerBankItem:save_button_info(button)
             end
         end
@@ -622,11 +622,11 @@ local function Init_Save_BankItem()
         for _, button in self:EnumerateItems() do
             --AllPlayerBankItem:save_button_info(button, true)
         end
-        
-    end)
-    
-end
 
+    end)
+
+end
+]]
 
 
 
@@ -722,7 +722,7 @@ local function Init_Bank_Frame()
         Init_Bank_Plus()--增强，原生
     end
 
-    Init_Save_BankItem()
+    --Init_Save_BankItem()
 end
 
 
