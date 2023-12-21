@@ -232,8 +232,6 @@ local function Init_Sell()
                                     e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未发现物品' or BROWSE_ORDERS))
                                 end
                                 e.tips:Show()
-
-
                             end)
                             btn:SetScript('OnClick', function(frame, d)
                                 if d=='LeftButton' then--放入，物品
@@ -433,24 +431,26 @@ local function Init_Sell()
 
 
 
-
+    --转到出售
     function AuctionHouseButton:show_CommoditiesSellFrame()
         local isCommoditiesSellFrame= self:get_displayMode()
         if not isCommoditiesSellFrame then
            AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
         end
     end
-
+    --当页面是 出售 时，显示按钮
     function AuctionHouseButton:set_shown()
         local isCommoditiesSellFrame, isItemSellFrame= self:get_displayMode()
         self:SetShown(AuctionHouseFrame:IsShown() and (isCommoditiesSellFrame or isItemSellFrame))
     end
+    --设置事件
     function AuctionHouseButton:set_event()
         self:UnregisterAllEvents()
         if self:IsShown() then
             self:RegisterEvent('BAG_UPDATE_DELAYED')
         end
     end
+    --事件
     hooksecurefunc(AuctionHouseFrame, 'SetDisplayMode', function(self, displayMode)
         if not displayMode or not self:IsShown() then
             return
@@ -516,7 +516,7 @@ local function Init_Sell()
 
 
 
-    --显示，转到出售物品
+    --显示拍卖行时，转到出售物品
     local showSellItemCheck= CreateFrame('CheckButton', nil, AuctionHouseFrame.CommoditiesSellFrame, 'InterfaceOptionsCheckButtonTemplate')
     showSellItemCheck:SetPoint('BOTTOMLEFT', AuctionHouseFrame.CommoditiesSellFrame, 8, 8)
     showSellItemCheck:SetSize(24,24)
@@ -872,6 +872,48 @@ local function Init_Sell()
 
 
 
+    --Blizzard_AuctionHouseSearchBar.lua
+    --出售，物品，双击列表，转到购买界面
+    hooksecurefunc(AuctionHouseFrame.CommoditiesSellList.ScrollBox, 'Update', function(frame)
+        if not frame:GetView() then
+            return
+        end
+        for _, btn in pairs(frame:GetFrames() or {}) do
+            if not btn.setOnDoubleClick then
+                btn:SetScript('OnDoubleClick', function()
+                    local itemLink= AuctionHouseFrame.CommoditiesSellFrame.ItemDisplay:GetItemLink()
+                    local itemName= itemLink and GetItemInfo(itemLink)
+                    if itemName then
+                        AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.Buy)
+                        AuctionHouseFrame.SearchBar.SearchBox:SetText(itemName)
+                        AuctionHouseFrame.SearchBar:StartSearch()
+                    end
+                end)
+                btn.setOnDoubleClick=true
+            end
+        end
+    end)
+    hooksecurefunc(AuctionHouseFrame.ItemSellList.ScrollBox, 'Update', function(frame)
+        if not frame:GetView() then
+            return
+        end
+        for _, btn in pairs(frame:GetFrames() or {}) do
+            if not btn.setOnDoubleClick then
+                btn:SetScript('OnDoubleClick', function()
+                    local itemLink= AuctionHouseFrame.ItemSellFrame.ItemDisplay:GetItemLink()
+                    local itemName= itemLink and GetItemInfo(itemLink)
+                    if itemName then
+                        AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.Buy)
+                        AuctionHouseFrame.SearchBar.SearchBox:SetText(itemName)
+                        AuctionHouseFrame.SearchBar:StartSearch()
+                    end
+                end)
+                btn.setOnDoubleClick=true
+            end
+        end
+    end)
+
+
 
 
 
@@ -1145,7 +1187,6 @@ local function Init_BrowseResultsFrame()
     --hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'DirtyScrollFrame', OnDoubleClick_ItemBuyFrame)
     --hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'UpdateRefreshFrame', OnDoubleClick_ItemBuyFrame)
 end
-
 
 
 
