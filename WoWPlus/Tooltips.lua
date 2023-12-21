@@ -2236,7 +2236,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 local text= self2.id
                 if text and not frame.textID  then
                     frame.textID= e.Cstr(frame)
-                    frame.textID:SetPoint('BOTTOM', frame.texture, 'BOTTOM')
+                    frame.textID:SetPoint('TOP', frame.texture, 'BOTTOM')
                     frame.textID:EnableMouse(true)
                     frame:SetScript('OnEnter', function(self3)
                         if self3.ID then
