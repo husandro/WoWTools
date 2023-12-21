@@ -2228,37 +2228,44 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_AchievementUI' then--成就ID
-            hooksecurefunc(AchievementTemplateMixin, 'Init', function(self2)
-                local frame= self2.Icon
-                if not frame then
-                    return
-                end
-                local text= self2.id
-                if text and not frame.textID  then
-                    frame.textID= e.Cstr(frame)
-                    frame.textID:SetPoint('TOP', frame.texture, 'BOTTOM')
-                    frame.textID:EnableMouse(true)
-                    frame:SetScript('OnEnter', function(self3)
-                        if self3.ID then
-                            e.tips:SetOwner(self3, "ANCHOR_LEFT")
-                            e.tips:ClearLines()
-                            e.tips:SetAchievementByID(self3.ID)
-                            e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine(id, addName)
-                            e.tips:Show()
-                        end
-                    end)
-                    frame.textID:SetScript('OnLeave', GameTooltip_Hide)
-                end
-                if frame.textID then
-                    frame.ID=text
-                    if text then
-                        local flags= select(9, GetAchievementInfo(self2.id))
-                        if flags==0x20000 then
-                            text= e.Icon.net2..'|cffff00ff'..text..'|r'
-                        end
+            hooksecurefunc(AchievementTemplateMixin, 'Init', function(frame)
+                if frame.Shield and frame.id then
+                    if not frame.AchievementIDLabel  then
+                        frame.AchievementIDLabel= e.Cstr(frame.Shield)
+                        frame.AchievementIDLabel:SetPoint('TOP', frame.Shield.Icon)
+                        frame.Shield:SetScript('OnEnter', function(self)
+                            local achievementID= self:GetParent().id
+                            if achievementID then
+                                e.tips:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
+                                e.tips:ClearLines()
+                                e.tips:SetAchievementByID(achievementID)
+                                e.tips:AddLine(' ')
+                                e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
+                                e.tips:AddDoubleLine(id, addName)
+                                e.tips:Show()
+                            end
+                            self:SetAlpha(0.5)
+                        end)
+                        frame.Shield:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip_Hide() end)
+                        frame.Shield:SetScript('OnMouseUp', function(self) self:SetAlpha(0.5) end)
+                        frame.Shield:SetScript('OnMouseDown', function(self) self:SetAlpha(0.3) end)
+                        frame.Shield:SetScript('OnClick', function(self)
+                            local achievementID= self:GetParent().id
+                            local achievementLink = achievementID and GetAchievementLink(achievementID)
+                            if achievementLink then
+                                e.Chat(achievementLink)
+                            end
+                        end)
+                        frame.Shield:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
                     end
-                    frame.textID:SetText(text or '')
+                end
+                if frame.AchievementIDLabel then
+                    local text= frame.id
+                    local flags= frame.id and select(9, GetAchievementInfo(frame.id))
+                    if flags==0x20000 then
+                        text= e.Icon.net2..'|cff00ccff'..frame.id..'|r'
+                    end
+                    frame.AchievementIDLabel:SetText(text or '')
                 end
             end)
             hooksecurefunc('AchievementFrameComparison_UpdateDataProvider', function()--比较成就, Blizzard_AchievementUI.lua
