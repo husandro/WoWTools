@@ -1196,7 +1196,7 @@ local function Init()
                 lable= btn.Button.Text or btn.Button
                 set(lable, strText[lable:GetText()])
             end
-            if btn.DropDown then--下拉，菜单info= btn
+            if btn.DropDown and btn.DropDown.Button and btn.DropDown.Button.SelectionDetails  then--下拉，菜单info= btn
                 lable= btn.DropDown.Button.SelectionDetails.SelectionName
                 set(lable, strText[lable:GetText()])
             end
@@ -1232,13 +1232,17 @@ local function Init()
 
 
     --快捷键
-    hooksecurefunc(KeyBindingFrameBindingTemplateMixin,'Init', function(self, initializer)
+    hooksecurefunc(KeyBindingFrameBindingTemplateMixin,'Init', function(self)
         local label= self.Text or self.Label
         local text= label and strText[label:GetText()]
         set(label, text)
     end)
 
     --Blizzard_SettingsPanel.lua 
+    local label= e.Cstr(SettingsPanel.CategoryList)
+    label:SetPoint('RIGHT', SettingsPanel.ClosePanelButton, 'LEFT', -2, 0)
+    label:SetText(id..' 语言翻译 提示：请要不在战斗中修改选项')
+
     set(SettingsPanel.Container.SettingsList.Header.DefaultsButton, '默认设置')
     StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].text= '你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？'--Blizzard_Dialogs.lua
     StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].button1= '所有设置'
