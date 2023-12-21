@@ -203,12 +203,15 @@ local function Init_Sell()
 
 
                             btn:UpdateItemContextOverlayTextures(1)
-                            btn:SetScript('OnLeave', GameTooltip_Hide)
+                            btn:SetScript('OnLeave', function()
+                                C_Container.SetItemSearch('')
+                                GameTooltip_Hide()
+                            end)
 
                             btn:SetScript('OnEnter', function(frame)
                                 e.tips:SetOwner(frame:GetParent(), "ANCHOR_LEFT")
                                 e.tips:ClearLines()
-                                if frame.itemLocation and frame.itemLocation:IsValid() then
+                                if frame.itemLocation and frame.itemLocation:IsValid() and C_Item.DoesItemExist(frame.itemLocation) then
                                     local itemLink= C_Item.GetItemLink(frame.itemLocation)
                                     if itemLink then
                                         if frame.isPet then
@@ -220,13 +223,17 @@ local function Init_Sell()
                                         end
                                     end
                                     local itemID= C_Item.GetItemID(frame.itemLocation)
+                                    local itemName=C_Item.GetItemNameByID(itemLink)
                                     if itemID then
                                         e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.GetShowHide(Save.hideSellItem[itemID])..e.Icon.right)
                                     end
+                                    C_Container.SetItemSearch(itemName or '')
                                 else
                                     e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未发现物品' or BROWSE_ORDERS))
                                 end
                                 e.tips:Show()
+
+
                             end)
                             btn:SetScript('OnClick', function(frame, d)
                                 if d=='LeftButton' then--放入，物品
@@ -1105,7 +1112,7 @@ local function Init_BrowseResultsFrame()
                 btn.lable:SetText(text or '')
             end
 
-            
+
         end
     end
     hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)

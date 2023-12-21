@@ -325,9 +325,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.ready:SetText((e.onlyChinese and '就绪' or READY)..e.Icon.select2)
     self.ready:SetPoint('LEFT', self.StartButton, 'RIGHT',2, 0)
     self.ready:SetSize(100,24)
-    self.ready:SetScript("OnMouseDown",function()
-        DoReadyCheck()
-    end)
+    self.ready:SetScript("OnMouseDown", DoReadyCheck)
 
     self.mark = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--标记
     self.mark:SetText(e.Icon['TANK']..(e.onlyChinese and '标记' or EVENTTRACE_MARKER)..e.Icon['HEALER'])
