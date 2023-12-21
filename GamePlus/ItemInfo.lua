@@ -25,7 +25,7 @@ local heirloomWeapontemEquipLocTab={--传家宝，武器，itemEquipLoc
         ['INVTYPE_RANGEDRIGHT']= true,
     }
 
---Set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}, hyperLink=nil, point=nil})
+--Set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}, itemLink=nil, point=nil})
 
 
 
@@ -54,8 +54,12 @@ local function Set_Item_Info(self, tab)
     if not self then
         return
     end
-    local itemLink, containerInfo, itemID= tab.hyperLink, nil, nil
-    if tab.bag then
+    local itemLevel, itemQuality, battlePetSpeciesID
+
+    local itemLink, containerInfo, itemID
+    if tab.itemLink then
+        itemLink= tab.itemlink
+    elseif tab.bag then
         containerInfo =C_Container.GetContainerItemInfo(tab.bag.bag, tab.bag.slot)
         if containerInfo then
             itemLink= containerInfo.hyperlink
@@ -70,6 +74,16 @@ local function Set_Item_Info(self, tab)
         end
     elseif tab.guidBank then
         itemLink= GetGuildBankItemLink(tab.guidBank.tab, tab.guidBank.slot)
+    elseif tab.itemLocation and tab.itemLocation:IsValid() then
+        itemLink= C_Item.GetItemLink(tab.itemLocation)
+        itemID= C_Item.GetItemID(tab.itemLocation)
+    elseif tab.itemKey then
+        local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(tab.itemKey) or {}
+        itemID= tab.itemKey.itemID or itemKeyInfo.itemID
+        itemLevel= tab.itemKey.itemLevel
+        itemLink= itemKeyInfo.battlePetLink or itemKeyInfo.appearanceLink or (itemID and select(2, GetItemInfo(itemID)))
+        itemQuality= itemKeyInfo.quality
+        battlePetSpeciesID= tab.itemKey.battlePetSpeciesID
     end
 
     local topLeftText, bottomRightText, leftText, rightText, bottomLeftText, topRightText, setIDItem--, isWoWItem--setIDItem套装
@@ -77,10 +91,12 @@ local function Set_Item_Info(self, tab)
     if itemLink then
         itemID= itemID or GetItemInfoInstant(itemLink)
 
-        local _, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
+        local _, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, _, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
+
+        itemLevel= itemLevel or itemLevel2 or GetDetailedItemLevelInfo(itemLink) or 1
+        itemQuality= itemQuality or itemQuality2
 
         setIDItem= setID and true or nil--套装
-        itemLevel=  itemLevel or GetDetailedItemLevelInfo(itemLink) or 1
 
         --[[if itemQuality then
             r,g,b = GetItemQualityColor(itemQuality)
@@ -293,6 +309,7 @@ local function Set_Item_Info(self, tab)
                 --[[if (containerInfo and not containerInfo.isBound) or tab.guidBank then--没有锁定
                     topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,2,3, true) or '|A:'..e.Icon.unlocked..':0:0|a'
                 end]]
+                
             end
             if containerInfo and not containerInfo.isBound or not containerInfo then
                 local isCollected
@@ -304,8 +321,8 @@ local function Set_Item_Info(self, tab)
                 end
             end
 
-        elseif classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
-            local speciesID = itemLink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物
+        elseif battlePetSpeciesID or classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
+            local speciesID = battlePetSpeciesID or itemLink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物
             if speciesID then
                 topLeftText= select(3, e.GetPetCollectedNum(speciesID)) or topLeftText--宠物, 收集数量
                 local petType= select(3, C_PetJournal.GetPetInfoBySpeciesID(speciesID))
@@ -451,6 +468,7 @@ local function Set_Item_Info(self, tab)
         self.Count:SetPoint('BottomRight')
         self.setCount=true
     end
+   
 end
 
 
@@ -646,7 +664,7 @@ local function Init()
             local btn=_G["MailItem"..i.."Button"]
             if btn and btn:IsShown() then
                 --local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(btn.index)
-                Set_Item_Info(btn, {hyperLink= select(15, GetInboxHeaderInfo(btn.index))})
+                Set_Item_Info(btn, {itemLink= select(15, GetInboxHeaderInfo(btn.index))})
             end
         end
     end)
@@ -657,7 +675,7 @@ local function Init()
         for i=1, ATTACHMENTS_MAX_RECEIVE do
             local attachmentButton = OpenMailFrame.OpenMailAttachments[i];
             if attachmentButton and attachmentButton:IsShown() then
-                Set_Item_Info(attachmentButton, {hyperLink= HasInboxItem(InboxFrame.openMailID, i) and GetInboxItemLink(InboxFrame.openMailID, i)})
+                Set_Item_Info(attachmentButton, {itemLink= HasInboxItem(InboxFrame.openMailID, i) and GetInboxItemLink(InboxFrame.openMailID, i)})
             end
         end
     end)
@@ -665,7 +683,7 @@ local function Init()
         for i=1, ATTACHMENTS_MAX_SEND do
             local sendMailAttachmentButton = SendMailFrame.SendMailAttachments[i]
             if sendMailAttachmentButton and sendMailAttachmentButton:IsShown() then
-                Set_Item_Info(sendMailAttachmentButton, {hyperLink= HasSendMailItem(i) and GetSendMailItemLink(i)})
+                Set_Item_Info(sendMailAttachmentButton, {itemLink= HasSendMailItem(i) and GetSendMailItemLink(i)})
             end
         end
     end)
@@ -1051,7 +1069,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     local frame= PerksProgramFrame:GetFrozenItemFrame()
                     if frame then
                         local itemLink= frame.FrozenButton.itemID and select(2, GetItemInfo(frame.FrozenButton.itemID))
-                        Set_Item_Info(frame.FrozenButton, {hyperLink=itemLink})
+                        Set_Item_Info(frame.FrozenButton, {itemLink=itemLink})
                     end
                 end
             end
@@ -1059,12 +1077,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 for _, btn in pairs(self2:GetFrames()) do
                     if btn.itemID then
                         local itemLink= btn.itemID and select(2, GetItemInfo(btn.itemID))
-                        Set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
+                        Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon})
                     elseif btn.GetItemInfo then--10.2
                         local itemInfo=btn:GetItemInfo()
                         if itemInfo then
                             local itemLink= itemInfo.itemID and select(2, GetItemInfo(itemInfo.itemID))
-                            Set_Item_Info(btn.ContentsContainer, {hyperLink=itemLink, point=btn.ContentsContainer.Icon})
+                            Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon})
                         end
                     end
                 end
@@ -1098,10 +1116,19 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end)
 
         elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
-            --买卖，物品信息 Blizzard_AuctionHouseSellFrame.lua
-            hooksecurefunc(AuctionHouseSellFrameMixin, 'SetItem', function(self, itemLocation, fromItemDisplay)
-                local itemLink= itemLocation and itemLocation:IsValid() and C_Item.GetItemLink(itemLocation)
-                Set_Item_Info(self.ItemDisplay.ItemButton, {hyperLink= itemLink})
+            --出售页面，买卖，物品信息 Blizzard_AuctionHouseSellFrame.lua
+            hooksecurefunc(AuctionHouseSellFrameMixin, 'SetItem', function(self, itemLocation)
+                Set_Item_Info(self.ItemDisplay.ItemButton, {itemLocation= itemLocation})
+            end)
+
+            hooksecurefunc(AuctionHouseFrame, 'SelectBrowseResult', function(self, browseResult)
+                local itemKey = browseResult.itemKey;
+                local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey) or {}
+                if itemKeyInfo.isCommodity then
+                    Set_Item_Info(self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay.ItemButton, {itemKey= itemKey})
+                else
+                    Set_Item_Info(self.ItemBuyFrame.ItemDisplay.ItemButton, {itemKey= itemKey})
+                end
             end)
         end
 
