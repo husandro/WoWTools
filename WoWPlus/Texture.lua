@@ -2080,7 +2080,7 @@ local function Init_MainMenu(init)--主菜单
             end)
         end
 
-        --[[hooksecurefunc('ContainerFrame_GenerateFrame',function()--ContainerFrame.lua 背包里，颜色
+        hooksecurefunc('ContainerFrame_GenerateFrame',function()--ContainerFrame.lua 背包里，颜色
             for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
                 if not frame.SetBagAlpha then
                     set_BagTexture(frame)
@@ -2090,7 +2090,7 @@ local function Init_MainMenu(init)--主菜单
                     frame.SetBagAlpha=true
                 end
             end
-        end)]]
+        end)
 
         hooksecurefunc('PaperDollItemSlotButton_Update', function(self)--PaperDollFrame.lua 主菜单，包
             local bagID= self:GetID()
