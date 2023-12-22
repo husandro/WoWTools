@@ -1071,7 +1071,53 @@ local strText={
     [VOICE] = "语音",
     [TEXT_TO_SPEECH] = "文本转语音",
 
-}
+    [HEALTH] = "生命值",
+    [MANA] = "法力值",
+    --[powerType, powerToken, altR, altG, altB = UnitPowerType(unit [, index])
+    --_G[powerToken]
+    [RAGE] = "怒气",
+    [FOCUS] = "集中值",
+    [ENERGY] = "能量",
+    [HAPPINESS] = "快乐",
+    [RUNES] = "符文",
+    [RUNIC_POWER] = "符文能量",
+    [SOUL_SHARDS] = "灵魂碎片",
+    [ECLIPSE] = "日蚀",
+    [HOLY_POWER] = "神圣能量",
+    [AMMOSLOT] = "弹药",
+    [FUEL] = "燃料",
+    [STAGGER] = "醉拳",
+    [CHI] = "真气",
+    [INSANITY] = "狂乱值",
+    [STAT_AVERAGE_ITEM_LEVEL] = "物品等级",
+    [STAT_MOVEMENT_SPEED] = "移动速度",
+    [SPELL_STAT1_NAME] = "力量",
+    [SPELL_STAT2_NAME] = "敏捷",
+    [SPELL_STAT3_NAME] = "耐力",
+    [SPELL_STAT4_NAME] = "智力",
+    [SPELL_STAT5_NAME] = "精神",
+    [STAT_CRITICAL_STRIKE] = "爆击",
+    [STAT_HASTE] = "急速",
+    [STAT_MASTERY] = "精通",
+    [STAT_VERSATILITY] = "全能",
+    [STAT_LIFESTEAL] = "吸血",
+    [STAT_AVOIDANCE] = "闪避",
+    [STAT_SPEED] = "加速",
+    [DAMAGE] = "伤害",
+    [STAT_ATTACK_POWER] = "攻击强度",
+    [WEAPON_SPEED] = "攻击速度",
+
+    [STAT_ENERGY_REGEN] = "能量值回复",
+    [STAT_RUNE_REGEN] = "符文速度",
+
+    [STAT_FOCUS_REGEN] = "集中值回复",
+    [STAT_SPELLPOWER] = "法术强度",
+    [MANA_REGEN] = "法力回复",
+    [STAT_ARMOR] = "护甲",
+    [STAT_DODGE] = "躲闪",
+    [STAT_BLOCK] = "格挡",
+    [STAT_STAGGER] = "醉拳",
+    }
 
 
 
@@ -1127,6 +1173,12 @@ local strText={
 local function Init()
     --角色
     set(CharacterFrameTab1, '角色')
+        hooksecurefunc('PaperDollFrame_SetLabelAndText', function(statFrame, label)--PaperDollFrame.lua
+            local text= strText[label]
+            if text then
+                set(statFrame.Label, format('%s：', text))
+            end
+        end)
     set(CharacterFrameTab2, '声望')
     set(CharacterFrameTab3, '货币')
     set(CharacterStatsPane.ItemLevelCategory.Title, '物品等级')
