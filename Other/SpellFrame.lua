@@ -97,7 +97,6 @@ local function Init()
                     if self.inRange==false then
                         self.icon:SetVertexColor(1,0,0)
                     end
-                    
                 end)
                 frame.setHooksecurefunc= true
             end
