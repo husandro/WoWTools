@@ -203,6 +203,7 @@ local function Set_Item_Info(self, tab)
 
         elseif classID==2 or classID==4 then--装备
             if itemQuality and itemQuality>1 then
+                local upItemLevel= 0
                 local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
                                                 text={equipStr, pvpItemStr, upgradeStr, classStr, itemLevelStr}, wow=true, red=true})--物品提示，信息
                 if dateInfo.text[itemLevelStr] then--传家宝
@@ -256,16 +257,15 @@ local function Set_Item_Info(self, tab)
                     rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
                 end
                 if dateInfo.text[upgradeStr] then--"升级：%s/%s"
-
                     local min, max= dateInfo.text[upgradeStr]:match('(%d+)/(%d+)')
                     local upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
                     upText= upText and strlower(e.WA_Utf8Sub(upText,1,3, true)) or ''
-
                     if min and max then
                         if min==max then
                             leftText= "|A:VignetteKill:0:0|a"..upText
                         else
-                            min, max= tonumber(min), tonumber(max)
+                            min, max= tonumber(min) or 0, tonumber(max) or 0
+                            upItemLevel= max-min
                             leftText= '|cnGREEN_FONT_COLOR:'..max-min..'|r'..upText
                         end
                     end
@@ -279,22 +279,23 @@ local function Set_Item_Info(self, tab)
                         if itemLinkPlayer then
                             local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
                             if lv then
-                                if itemLevel-lv>0 then
+                                local itemAllLevel= itemLevel + upItemLevel*5
+                                if itemAllLevel- lv>5 then
                                     upLevel=true
-                                elseif itemLevel-lv< 0 and itemLevel>29 then
+                                elseif itemAllLevel-lv< 5 and itemLevel>29 then
                                     downLevel=true
                                 end
                             end
                         else
                             upLevel=true
                         end
-                        if upLevel and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel) then
+                        --[[if upLevel and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel) then
                             topLeftText=e.Icon.up2
                         elseif downLevel then
                             topLeftText= e.Icon.down2
-                        end
+                        end]]
                         if itemQuality>2 or (not e.Player.levelMax and itemQuality==2) or upLevel then
-                            topLeftText='|cffffffff'..itemLevel..'|r' ..(topLeftText or '')
+                            topLeftText=(upLevel and '|cnGREEN_FONT_COLOR:'  or (downLevel and '|cnRED_FONT_COLOR:') or  '|cffffffff')..itemLevel..'|r' ..(topLeftText or '')
                             --topLeftText= itemLevel ..(topLeftText or '')
                         end
                     elseif itemMinLevel and itemMinLevel<=e.Player.level then--不可使用
