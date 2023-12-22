@@ -89,14 +89,27 @@ local function Init()
     --#############
     --法术按键, 颜色
     --#############
-    hooksecurefunc('ActionButton_UpdateRangeIndicator', function(self, checksRange, inRange)--ActionButton.lua
-        if checksRange then
+    hooksecurefunc('ActionButton_UpdateRangeIndicator', function(frame, checksRange, inRange)--ActionButton.lua
+        if checksRange and frame.UpdateUsable then
+            frame.inRange= inRange
+            if not frame.setHooksecurefunc then
+                hooksecurefunc(frame, 'UpdateUsable', function(self)
+                    if self.inRange==false then
+                        self.icon:SetVertexColor(1,0,0)
+                    end
+                    
+                end)
+                frame.setHooksecurefunc= true
+            end
+            frame:UpdateUsable()
+        end
+        --[[if checksRange then
            if not inRange then
                 self.icon:SetVertexColor(RED_FONT_COLOR:GetRGB())
-           elseif self.action then
+           else--if self.action then
                 self:UpdateUsable()
             end
-        end
+        --end]]
     end)
 end
 
