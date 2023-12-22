@@ -670,7 +670,7 @@ local function Init_Move()
         end
     end
 
-    hooksecurefunc('UpdateContainerFrameAnchors', function()--ContainerFrame.lua
+    --[[hooksecurefunc('UpdateContainerFrameAnchors', function()--ContainerFrame.lua
         for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
             local name= frame and frame:GetName()
             if name then
@@ -684,7 +684,7 @@ local function Init_Move()
                 end
             end
         end
-    end)
+    end)]]
 
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
