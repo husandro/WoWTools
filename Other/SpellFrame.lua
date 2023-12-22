@@ -96,11 +96,11 @@ local function Init()
                 hooksecurefunc(frame, 'UpdateUsable', function(self)
                     if self.inRange==false then
                         self.icon:SetVertexColor(1,0,0)
-                    elseif self.action then
+                    --[[elseif self.action then
                         local actionType, typeID, subType= GetActionInfo(self.action)
                         if subType== 'spellID' and typeID and IsAttackSpell(typeID) and not UnitExists('target') then
-                            self.icon:SetVertexColor(1,0,1)
-                        end
+                            self.icon:SetVertexColor(0,1,1)
+                        end]]
                     end
                 end)
                 frame.setHooksecurefunc= true
