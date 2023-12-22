@@ -114,13 +114,10 @@ local function PetType(petType)
 end
 
 local function Item(link)--物品超链接    
+    local itemID= link:match('Hitem:(%d+)')
     local t=link
-    local icon=C_Item.GetItemIconByID(link)
-    if icon then----加图标        
-        t='|T'..icon..':0|t'..t
-    end
-    local id2, _, _, _, _, classID, subclassID=GetItemInfoInstant(link)
-    id2=id2 or link:match('Hitem:(%d+)')
+    local icon, classID, subclassID= select(5, GetItemInfoInstant(itemID))
+    t= icon and '|T'..icon..':0|t'..t or t--加图标
     if classID==2 or classID==4 then
         local lv=GetDetailedItemLevelInfo(link)--装等
         if lv and lv>10 then
@@ -140,26 +137,27 @@ local function Item(link)--物品超链接
                 end
             end
         end
-    elseif  classID==15 and (subclassID==2 or subclassID==5) then
+    elseif classID==15 and (subclassID==2 or subclassID==5) then
         if  subclassID==2 then----宠物数量
-            local _, _, petType, _, _, _, _, _, _, _, _, _, speciesID=C_PetJournal.GetPetInfoByItemID(id2)
+            local _, _, petType, _, _, _, _, _, _, _, _, _, speciesID=C_PetJournal.GetPetInfoByItemID(itemID)
             local nu=Pet(speciesID)
             if nu then
                 t=(PetType(petType) or '')..t..nu
             end
         elseif subclassID==5 then--坐骑是不收集            
-            local nu= Mount(id2, true)
+            local nu= Mount(itemID, true)
             if nu then
                 t=t..nu
             end
         end
-    elseif C_ToyBox.GetToyInfo(id2) then--玩具
-        t=PlayerHasToy(id2) and t..e.Icon.select2 or t..e.Icon.info2
+    elseif C_ToyBox.GetToyInfo(itemID) then--玩具
+        t= PlayerHasToy(itemID) and t..e.Icon.select2 or t..e.Icon.info2
     end
-    local bag=GetItemCount(link, true)--数量
+    local bag= GetItemCount(link, true)--数量
     if bag and bag>0 then
         t=t..e.Icon.bag2..e.MK(bag, 3)
     end
+
     if t~=link then
         return t
     end
