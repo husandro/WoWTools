@@ -2272,7 +2272,6 @@ function e.GetTooltipData(tab)
             end
            
             if tab.wow and not data.wow and (line.leftText==ITEM_BNETACCOUNTBOUND or line.leftText==ITEM_ACCOUNTBOUND) then--暴雪游戏通行证绑定, 账号绑定
-                print(tab.hyperLink, line.leftText)
                 data.wow=true
                 if tab.onlyWoW then
                     break

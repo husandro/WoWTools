@@ -209,7 +209,6 @@ local function Set_Item_Info(self, tab)
                 if dateInfo.text[itemLevelStr] then--传家宝
                     itemLevel= tonumber(dateInfo.text[itemLevelStr]) or 0
                 end
-                print(itemLink, dateInfo.wow)
                 if dateInfo.text[equipStr] then--套装名称，
                     local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
                     bottomLeftText= e.WA_Utf8Sub(text,3,3, true)
@@ -217,7 +216,6 @@ local function Set_Item_Info(self, tab)
                     bottomLeftText='|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
                 elseif dateInfo.wow then--战网
                     bottomLeftText= e.Icon.wow2
-                    print(dateInfo.text[classStr], classStr, itemLink)
                     if subclassID==0 then
                         if itemLevel and itemLevel>1 then
                             bottomLeftText= bottomLeftText.. itemLevel
