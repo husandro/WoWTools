@@ -728,7 +728,7 @@ end
 --####
 --Buff
 --####
-local function set_All_Aura(self, data)--Aura
+function func.set_All_Aura(self, data)--Aura
     local name, _, icon, _, _, _, spellID = GetSpellInfo(data.id)
    if icon and spellID then
         self:AddLine(' ')
@@ -1372,7 +1372,7 @@ local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     func.Set_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=true})--取得网页，数据链接
 end
 
-local function set_Azerite(self, powerID)--艾泽拉斯之心
+function func.set_Azerite(self, powerID)--艾泽拉斯之心
     if powerID then
         self:AddLine(' ')
         self:AddDoubleLine('powerID', powerID)
@@ -1467,11 +1467,12 @@ local function Init()
 
         elseif data.id and data.type then
             if data.type==0 then
-                local itemLink, itemID= select(2, TooltipUtil.GetDisplayedItem(tooltip))
+                local itemLink, itemID= select(2, TooltipUtil.GetDisplayedItem(tooltip))--物品
                 itemLink= itemLink or itemID or data.id
                 func.Set_Item(tooltip, itemLink, itemID)
             elseif data.type==19 then
-                func.Set_Item(tooltip, nil, data.id)
+                func.Set_Item(tooltip, nil, data.id)--物品
+                
             elseif data.type==1 then
                 func.Set_Spell(tooltip, data.id)--法术
 
@@ -1479,10 +1480,10 @@ local function Init()
                 func.Set_Currency(tooltip, data.id)--货币
 
             elseif data.type==7 then--Aura
-                set_All_Aura(tooltip, data)
+                func.set_All_Aura(tooltip, data)
 
             elseif data.type==8 then--艾泽拉斯之心
-                set_Azerite(tooltip, data.id)
+                func.set_Azerite(tooltip, data.id)
 
             elseif data.type==10 then
                 func.Set_Mount(tooltip, data.id)--坐骑
