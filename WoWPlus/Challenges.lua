@@ -1658,7 +1658,7 @@ local function set_Week_Reward_Look_Specialization()
             self:RegisterEvent('UNIT_SPELLCAST_SENT')
         end
     end
-    WeekRewardLookFrame:set_Event()
+    C_Timer.After(4, function() WeekRewardLookFrame:set_Event() end)
     function WeekRewardLookFrame:set_Show(show)
         if self.time and not self.time:IsCancelled() then
             self.time:Cancel()
