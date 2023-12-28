@@ -1246,11 +1246,15 @@ local function Init()
             local lable
             if btn.Button then--按钮
                 lable= btn.Button.Text or btn.Button
-                set(lable, strText[lable:GetText()])
+                if lable then
+                    set(lable, strText[lable:GetText()])
+                end
             end
             if btn.DropDown and btn.DropDown.Button and btn.DropDown.Button.SelectionDetails  then--下拉，菜单info= btn
                 lable= btn.DropDown.Button.SelectionDetails.SelectionName
-                set(lable, strText[lable:GetText()])
+                if lable then
+                    set(lable, strText[lable:GetText()])
+                end
             end
             if btn.Button1 then
                 set(btn.Button1, strText[btn.Button1:GetText()])
