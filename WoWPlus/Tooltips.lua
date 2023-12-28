@@ -1103,7 +1103,7 @@ function func.Set_Unit(self)--设置单位提示信息
         else
             e.GetNotifyInspect(nil, unit)--取得装等
         end
-       
+
         self.backgroundColor:SetColorTexture(r, g, b, 0.2)--背景颜色
         self.backgroundColor:SetShown(true)
 
