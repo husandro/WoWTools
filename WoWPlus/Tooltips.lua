@@ -976,57 +976,59 @@ end
 --#########
 --生命条提示
 --#########
-local function int_Unit_Health_Bar(self)
-    if self then
-        self.text= e.Cstr(self, {justifyH='CENTER'})
-        self.text:SetPoint('TOP', self, 'BOTTOM')--生命条
-
-        self.textLeft = e.Cstr(self, {justifyH='LEFT'})
-        self.textLeft:SetPoint('TOPLEFT', self, 'BOTTOMLEFT')--生命条
-
-        self.textRight = e.Cstr(self, {size=18, justifyH='RIGHT'})
-        self.textRight:SetPoint('TOPRIGHT',0, -2)--生命条
-    end
-end
-
-local function set_Unit_Health_Bar(self, unit)
-    if Save.hideHealth or self:GetWidth()<100 or not unit then
+local function Int_Health_Bar_Unit()
+    if not Save.hideHealth then
         return
     end
-    local value= unit and UnitHealth(unit)
-    local max= unit and UnitHealthMax(unit)
-    local r, g, b, left, right, col, text
-    if value and max then
-        r, g, b, col = GetClassColor(select(2, UnitClass(unit)))
-        if UnitIsFeignDeath(unit) then
-            text= e.onlyChinese and '假死' or BOOST2_HUNTERBEAST_FEIGNDEATH:match('|cFFFFFFFF(.+)|r') or NO..DEAD
-        elseif value <= 0 then
-            text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '死亡' or DEAD)..'|r'
-        else
-            local hp = value / max * 100;
-            text = ('%i%%'):format(hp)..'  ';
-            if hp<30 then
-                text = '|A:GarrisonTroops-Health-Consume:0:0|a'..'|cnRED_FONT_COLOR:' .. text..'|r'
-            elseif hp<60 then
-                text='|cnGREEN_FONT_COLOR:'..text..'|r'
-            elseif hp<90 then
-                text='|cnYELLOW_FONT_COLOR:'..text..'|r'
-            else
-                text= '|c'..col..text..'|r'
-            end
-            left =e.MK(value, 2)
+    GameTooltipStatusBar.text= e.Cstr(GameTooltipStatusBar, {justifyH='CENTER'})
+    GameTooltipStatusBar.text:SetPoint('TOP', GameTooltipStatusBar, 'BOTTOM')--生命条
+
+    GameTooltipStatusBar.textLeft = e.Cstr(GameTooltipStatusBar, {justifyH='LEFT'})
+    GameTooltipStatusBar.textLeft:SetPoint('TOPLEFT', GameTooltipStatusBar, 'BOTTOMLEFT')--生命条
+
+    GameTooltipStatusBar.textRight = e.Cstr(GameTooltipStatusBar, {size=18, justifyH='RIGHT'})
+    GameTooltipStatusBar.textRight:SetPoint('TOPRIGHT',0, -2)--生命条
+
+    GameTooltipStatusBar:HookScript("OnValueChanged", function(self)
+        local unit= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
+        if not unit or self:GetWidth()<100 then
+            return
         end
-        right = e.MK(max, 2)
-        self:SetStatusBarColor(r, g, b)
-    end
-    self.text:SetText(text or '')
-    self.textLeft:SetText(left or '')
-    self.textRight:SetText(right or '')
-    if r and g and b then
-        self.textLeft:SetTextColor(r,g,b)
-        self.textRight:SetTextColor(r,g,b)
-    end
+        local value= unit and UnitHealth(unit)
+        local max= unit and UnitHealthMax(unit)
+        local r, g, b, left, right, col, text
+        if value and max then
+            r, g, b, col = GetClassColor(select(2, UnitClass(unit)))
+            if UnitIsFeignDeath(unit) then
+                text= e.onlyChinese and '假死' or BOOST2_HUNTERBEAST_FEIGNDEATH:match('|cFFFFFFFF(.+)|r') or NO..DEAD
+            elseif value <= 0 then
+                text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '死亡' or DEAD)..'|r'
+            else
+                local hp = value / max * 100;
+                text = ('%i%%'):format(hp)..'  ';
+                if hp<30 then
+                    text = '|A:GarrisonTroops-Health-Consume:0:0|a'..'|cnRED_FONT_COLOR:' .. text..'|r'
+                elseif hp<60 then
+                    text='|cnGREEN_FONT_COLOR:'..text..'|r'
+                elseif hp<90 then
+                    text='|cnYELLOW_FONT_COLOR:'..text..'|r'
+                else
+                    text= '|c'..col..text..'|r'
+                end
+                left =e.MK(value, 2)
+            end
+            right = e.MK(max, 2)
+            self:SetStatusBarColor(r or 1, g or 1, b or 1)
+        end
+        self.text:SetText(text or '')
+        self.textLeft:SetText(left or '')
+        self.textRight:SetText(right or '')
+        self.textLeft:SetTextColor(r or 1, g or 1, b or 1)
+        self.textRight:SetTextColor(r or 1, g or 1, b or 1)
+    end)
 end
+
+
 
 
 
@@ -1760,15 +1762,7 @@ local function Init()
         end
     end)
 
-    --#########
-    --生命条提示
-    --#########
-    if not Save.hideHealth then
-        int_Unit_Health_Bar(GameTooltipStatusBar)--生命条提示
-        GameTooltipStatusBar:HookScript("OnValueChanged", function(self)
-            set_Unit_Health_Bar(self, select(2, TooltipUtil.GetDisplayedUnit(GameTooltip)))
-        end)
-    end
+
 
     --####
     --声望
