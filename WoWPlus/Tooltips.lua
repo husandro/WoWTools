@@ -151,154 +151,176 @@ end
 --################
 --取得网页，数据链接
 --################
-StaticPopupDialogs["WowheadQuickLinkUrl"] = {
-    text= id..' '..addName..'|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..BROWSER_COPY_LINK,
-    button1 = e.onlyChinese and '关闭' or CLOSE,
-    OnShow = function(self, web)
-        self.editBox:SetScript("OnKeyUp", function(s, key)
-            if IsControlKeyDown() and key == "C" then
-                print(id,addName,
-                        '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
-                        s:GetText()
-                    )
-                s:GetParent():Hide()
-            end
-        end)
-        self.editBox:SetScript('OnCursorChanged', function(s)
-            s:SetText(web)
-            s:HighlightText()
-        end)
-        self.editBox:SetMaxLetters(0)
-        self.editBox:SetWidth(self:GetWidth())
-        self.button1:SetText(e.onlyChinese and '关闭' or CLOSE)
-    end,
-    OnHide= function(self)
-        self.editBox:SetScript("OnKeyUp", nil)
-        self.editBox:SetScript("OnCursorChanged", nil)
-        self.editBox:SetText("")
-        e.call('ChatEdit_FocusActiveWindow')
-    end,
-    EditBoxOnTextChanged= function (self, web)
-        self:SetText(web)
-        self:HighlightText()
-    end,
-    EditBoxOnEnterPressed = function(self)
-        local parent= self:GetParent()
-        parent.button1:Click()
-        parent:Hide()
-	end,
-    EditBoxOnEscapePressed = function(self2)
-        self2:SetAutoFocus(false)
-        self2:ClearFocus()
-        self2:GetParent():Hide()
-    end,
-    hasEditBox = true,
-    editBoxWidth = 320,
-    timeout = 0,
-    whileDead=true, hideOnEscape=true, exclusive=true,
-}
---https://www.wowhead.com/cn/pet-ability=509/汹涌
-local wowheadText= 'https://www.wowhead.com/%s=%d'
-local raiderioText= 'https://raider.io/characters/%s/%s/%s'
-if LOCALE_zhCN or LOCALE_zhTW then
-    wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
-    raiderioText= 'https://raider.io/cn/characters/%s/%s/%s'
-elseif LOCALE_deDE then
-    wowheadText= 'https://www.wowhead.com/de/%s=%d/%s'
-    raiderioText= 'https://raider.io/de/characters/%s/%s/%s'
-elseif LOCALE_esES or LOCALE_esMX then
-    wowheadText= 'https://www.wowhead.com/es/%s=%d/%s'
-    raiderioText= 'https://raider.io/es/characters/%s/%s/%s'
-elseif LOCALE_frFR then
-    wowheadText= 'https://www.wowhead.com/fr/%s=%d/%s'
-    raiderioText= 'https://raider.io/fr/characters/%s/%s/%s'
-elseif LOCALE_itIT then
-    wowheadText= 'https://www.wowhead.com/it/%s=%d/%s'
-    raiderioText= 'https://raider.io/it/characters/%s/%s/%s'
-elseif LOCALE_ptBR then
-    wowheadText= 'https://www.wowhead.com/pt/%s=%d/%s'
-    raiderioText= 'https://raider.io/br/characters/%s/%s/%s'
-elseif LOCALE_ruRU then
-    wowheadText= 'https://www.wowhead.com/ru/%s=%d/%s'
-    raiderioText= 'https://raider.io/ru/characters/%s/%s/%s'
-elseif LOCALE_koKR then
-    wowheadText= 'https://www.wowhead.com/ko/%s=%d/%s'
-    raiderioText= 'https://raider.io/kr/characters/%s/%s/%s'
-end
+local wowheadText
+local raiderioText
+local RegionName
+local function Init_Web_Link()
+    StaticPopupDialogs["WowheadQuickLinkUrl"] = {
+        text= id..' '..addName..'|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..BROWSER_COPY_LINK,
+        button1 = e.onlyChinese and '关闭' or CLOSE,
+        OnShow = function(self, web)
+            self.editBox:SetScript("OnKeyUp", function(s, key)
+                if IsControlKeyDown() and key == "C" then
+                    print(id,addName,
+                            '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
+                            s:GetText()
+                        )
+                    s:GetParent():Hide()
+                end
+            end)
+            self.editBox:SetScript('OnCursorChanged', function(s)
+                s:SetText(web)
+                s:HighlightText()
+            end)
+            self.editBox:SetMaxLetters(0)
+            self.editBox:SetWidth(self:GetWidth())
+            self.button1:SetText(e.onlyChinese and '关闭' or CLOSE)
+        end,
+        OnHide= function(self)
+            self.editBox:SetScript("OnKeyUp", nil)
+            self.editBox:SetScript("OnCursorChanged", nil)
+            self.editBox:SetText("")
+            e.call('ChatEdit_FocusActiveWindow')
+        end,
+        EditBoxOnTextChanged= function (self, web)
+            self:SetText(web)
+            self:HighlightText()
+        end,
+        EditBoxOnEnterPressed = function(self)
+            local parent= self:GetParent()
+            parent.button1:Click()
+            parent:Hide()
+        end,
+        EditBoxOnEscapePressed = function(self2)
+            self2:SetAutoFocus(false)
+            self2:ClearFocus()
+            self2:GetParent():Hide()
+        end,
+        hasEditBox = true,
+        editBoxWidth = 320,
+        timeout = 0,
+        whileDead=true, hideOnEscape=true, exclusive=true,
+    }
 
-local function create_Tooltip_Button(self)
-    self.wowhead=e.Cbtn(self, {size={20,20},type=false})--取得网页，数据链接
-    self.wowhead:SetPoint('RIGHT',self.CloseButton, 'LEFT',0,2)
-    self.wowhead:SetNormalAtlas('questlegendary')
-    self.wowhead:SetScript('OnClick', function(self)
-        if self.web then
-            StaticPopup_Show("WowheadQuickLinkUrl",
-                'WoWHead',
-                nil,
-                self.web
-            )
-        end
-    end)
-    self.wowhead:SetShown(false)
-end
-
---func.Set_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
---func.Set_Web_Link({unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
-local RegionName= GetCurrentRegionName()
-function func.Set_Web_Link(tab)
-    if tab.frame==ItemRefTooltip or tab.frame==FloatingBattlePetTooltip then
-        if tab.type and tab.id then
-            if not tab.frame.wowhead then
-                create_Tooltip_Button(tab.frame)
-            end
-            tab.frame.wowhead.web=format(wowheadText, tab.type, tab.id, tab.name or '')
-            tab.frame.wowhead:SetShown(true)
-        end
-        return
-    end
-    if not Save.ctrl or UnitAffectingCombat('player')  then
-        return
+    if LOCALE_zhCN or LOCALE_zhTW then--https://www.wowhead.com/cn/pet-ability=509/汹涌
+        wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
+        raiderioText= 'https://raider.io/cn/characters/%s/%s/%s'
+    elseif LOCALE_deDE then
+        wowheadText= 'https://www.wowhead.com/de/%s=%d/%s'
+        raiderioText= 'https://raider.io/de/characters/%s/%s/%s'
+    elseif LOCALE_esES or LOCALE_esMX then
+        wowheadText= 'https://www.wowhead.com/es/%s=%d/%s'
+        raiderioText= 'https://raider.io/es/characters/%s/%s/%s'
+    elseif LOCALE_frFR then
+        wowheadText= 'https://www.wowhead.com/fr/%s=%d/%s'
+        raiderioText= 'https://raider.io/fr/characters/%s/%s/%s'
+    elseif LOCALE_itIT then
+        wowheadText= 'https://www.wowhead.com/it/%s=%d/%s'
+        raiderioText= 'https://raider.io/it/characters/%s/%s/%s'
+    elseif LOCALE_ptBR then
+        wowheadText= 'https://www.wowhead.com/pt/%s=%d/%s'
+        raiderioText= 'https://raider.io/br/characters/%s/%s/%s'
+    elseif LOCALE_ruRU then
+        wowheadText= 'https://www.wowhead.com/ru/%s=%d/%s'
+        raiderioText= 'https://raider.io/ru/characters/%s/%s/%s'
+    elseif LOCALE_koKR then
+        wowheadText= 'https://www.wowhead.com/ko/%s=%d/%s'
+        raiderioText= 'https://raider.io/kr/characters/%s/%s/%s'
+    else
+        wowheadText= 'https://www.wowhead.com/%s=%d'
+        raiderioText= 'https://raider.io/characters/%s/%s/%s'
     end
 
-    if tab.id then
-        if tab.type=='quest' then
-            if not tab.name then
-                local index= C_QuestLog.GetLogIndexForQuestID(tab.id)
-                local info= index and C_QuestLog.GetInfo(index)
-                tab.name= info and info.title
+    RegionName= GetCurrentRegionName()
+
+    --func.Set_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
+    --func.Set_Web_Link({unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
+    function func.Set_Web_Link(tab)
+        if tab.frame==ItemRefTooltip or tab.frame==FloatingBattlePetTooltip then
+            if tab.type and tab.id then
+                if not tab.frame.wowhead then
+                    tab.frame.wowhead=e.Cbtn(tab.frame, {size={20,20},type=false})--取得网页，数据链接
+                    tab.frame.wowhead:SetPoint('RIGHT',tab.frame.CloseButton, 'LEFT',0,2)
+                    tab.frame.wowhead:SetNormalAtlas('questlegendary')
+                    tab.frame.wowhead:SetScript('OnClick', function(self)
+                        if self.web then
+                            StaticPopup_Show("WowheadQuickLinkUrl",
+                                'WoWHead',
+                                nil,
+                                self.web
+                            )
+                        end
+                    end)
+                end
+                tab.frame.wowhead.web= format(wowheadText, tab.type, tab.id, tab.name or '')
+                tab.frame.wowhead:SetShown(true)
             end
+            return
         end
-        if tab.isPetUI then
+        if not Save.ctrl or UnitAffectingCombat('player')  then
+            return
+        end
+
+        if tab.id then
+            if tab.type=='quest' then
+                if not tab.name then
+                    local index= C_QuestLog.GetLogIndexForQuestID(tab.id)
+                    local info= index and C_QuestLog.GetInfo(index)
+                    tab.name= info and info.title
+                end
+            end
+            if tab.isPetUI then
+                if tab.frame then
+                    BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')
+                end
+            elseif tab.frame== e.tips then
+                tab.frame:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
+            end
+            if IsControlKeyDown() and IsShiftKeyDown() then
+                StaticPopup_Show("WowheadQuickLinkUrl",
+                    'WoWHead',
+                    nil,
+                    format(wowheadText, tab.type, tab.id, tab.name or '')
+                )
+            end
+        elseif tab.unitName then
             if tab.frame then
-                BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')
+                tab.frame:SetText(e.Icon.info2..(tab.col or '')..'Raider.IO Ctrl+Shift')
+                tab.frame:SetShown(true)
+            else
+                e.tips:AddDoubleLine(e.Icon.info2..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
+                e.tips:SetShown(true)
             end
-        elseif tab.frame== e.tips then
-            tab.frame:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
-        end
-        if IsControlKeyDown() and IsShiftKeyDown() then
-            StaticPopup_Show("WowheadQuickLinkUrl",
-                'WoWHead',
-                nil,
-                format(wowheadText, tab.type, tab.id, tab.name or '')
-            )
-        end
-    elseif tab.unitName then
-        if tab.frame then
-            tab.frame:SetText(e.Icon.info2..(tab.col or '')..'Raider.IO Ctrl+Shift')
-            tab.frame:SetShown(true)
-        else
-            e.tips:AddDoubleLine(e.Icon.info2..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
-            e.tips:SetShown(true)
-        end
-        if IsControlKeyDown() and IsShiftKeyDown() then
-            StaticPopup_Show("WowheadQuickLinkUrl",
-                'Raider.IO',
-                nil,
-                format(raiderioText, RegionName, tab.realm or e.Player.realm, tab.unitName)
-            )
+            if IsControlKeyDown() and IsShiftKeyDown() then
+                StaticPopup_Show("WowheadQuickLinkUrl",
+                    'Raider.IO',
+                    nil,
+                    format(raiderioText, RegionName, tab.realm or e.Player.realm, tab.unitName)
+                )
+            end
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function func.Set_Mount(self, mountID)--坐骑
     if mountID==268435455 then
@@ -337,6 +359,29 @@ function func.Set_Mount(self, mountID)--坐骑
 
     func.Set_Web_Link({frame=self, type='spell', id=spellID, name=creatureName, col=nil, isPetUI=false})--取得网页，数据链接
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function func.Set_Pet(self, speciesID, setSearchText)--宠物
@@ -397,6 +442,26 @@ function func.GetItemInfoFromHyperlink(link)--LinkUtil.lua  GetItemInfoFromHyper
 		return tonumber(itemID)
 	end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --############
 --设置,物品信息
@@ -595,6 +660,20 @@ function func.Set_Item(self, itemLink, itemID)
     self:Show()
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function func.Set_Spell(self, spellID)--法术
     spellID = spellID or select(2, self:GetSpell())
     if not spellID then
@@ -657,6 +736,21 @@ function func.Set_Currency(self, currencyID)--货币
     self:Show()
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function func.Set_Achievement(self, achievementID)--成就
     if not achievementID then
         return
@@ -673,6 +767,25 @@ function func.Set_Achievement(self, achievementID)--成就
     end
     func.Set_Web_Link({frame=self, type='achievement', id=achievementID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function func.Set_Quest(self, questID, info)----任务
     questID= questID or (info and info.questID or nil)
@@ -725,6 +838,23 @@ function func.Set_Quest(self, questID, info)----任务
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --Buff
 --####
@@ -771,6 +901,24 @@ local function set_Buff(type, self, ...)
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --声望
 --####
@@ -805,6 +953,22 @@ function func.Set_MajorFactionRenown(self, majorFactionID)--名望
         self:Show()
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --#########
@@ -1386,10 +1550,43 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
 local function Init()
+    Init_Web_Link()--取得网页，数据链接
     func.Set_Init_Item(ItemRefTooltip)
     func.Set_Init_Item(e.tips)
     func.Set_Init_Item(EmbeddedItemTooltip)
@@ -1472,7 +1669,7 @@ local function Init()
                 func.Set_Item(tooltip, itemLink, itemID)
             elseif data.type==19 then
                 func.Set_Item(tooltip, nil, data.id)--物品
-                
+
             elseif data.type==1 then
                 func.Set_Spell(tooltip, data.id)--法术
 
