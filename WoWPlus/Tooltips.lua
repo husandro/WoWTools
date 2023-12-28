@@ -1071,8 +1071,10 @@ function func.Set_Unit(self)--设置单位提示信息
     local r, g, b, col = e.GetUnitColor(unit)--颜色
     local isInCombat= UnitAffectingCombat('player')
 
-    --设置单位图标  
+    --设置单位图标
     local englishFaction = isPlayer and UnitFactionGroup(unit)
+
+    local textLeft, text2Left
     if isPlayer then
         local hideLine--取得网页，数据链接
 
@@ -1082,7 +1084,6 @@ function func.Set_Unit(self)--设置单位提示信息
         end
 
         --取得玩家信息
-        local textLeft, text2Left
         local info= e.UnitItemLevel[guid]
         if info then
             if not isInCombat then
@@ -1092,6 +1093,8 @@ function func.Set_Unit(self)--设置单位提示信息
                 if info.itemLevel>1 then
                     col= col or select(4, e.GetUnitColor(unit))
                     textLeft= (col or '|cffffffff')..info.itemLevel..'|r'
+                else
+                    textLeft= ' '
                 end
             end
             if info.specID then
@@ -1129,9 +1132,6 @@ function func.Set_Unit(self)--设置单位提示信息
         if not IsInInstance() and UnitHasLFGRandomCooldown(unit) then
             text2Left= (text2Left or '')..'|T236347:0|t'
         end
-
-        self.textLeft:SetText(textLeft or ' ')
-        self.text2Left:SetText(text2Left or ' ')
 
         local isInGuild= guid and IsPlayerInGuildFromGUID(guid)
         local line=GameTooltipTextLeft1--名称
@@ -1332,6 +1332,9 @@ function func.Set_Unit(self)--设置单位提示信息
             self.textRight:SetText(col..type..'|r')
         end
     end
+
+    self.textLeft:SetText(textLeft or '')
+    self.text2Left:SetText(text2Left or '')
 
     func.Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
     func.Set_Item_Model(self, {unit=unit, guid=guid, col= col})--设置, 3D模型

@@ -751,7 +751,7 @@ local function get_Items_Colleced()
             local icon= info.Icon or slots[info.index]
             table.insert(tip, {
                 name=(icon or '')..(info.Collected==info.All and '|cnGREEN_FONT_COLOR:'..name..'|r' or (name..format(' %i%%', info.Collected/info.All*100))),
-                num= info.Collected==info.All and '|cnGREEN_FONT_COLOR:'..info.Collected..'/'.. info.All..'|r' or info.Collected..'/'.. info.All
+                num= (info.Collected==info.All and '|cnGREEN_FONT_COLOR:'..info.Collected..'/'.. info.All..'|r' or info.Collected..'/'.. info.All)..icon
             })
         end
         totaleCollected= totaleCollected+ collected
