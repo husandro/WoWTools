@@ -976,55 +976,62 @@ end
 --#########
 --生命条提示
 --#########
+function func.Set_HealthBar_Unit(frame, unit)
+    if Save.hideHealth then
+        return
+    end
+    unit= unit or select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
+    if not unit or frame:GetWidth()<100 then
+        frame.text:SetText('')
+        frame.textLeft:SetText('')
+        frame.textRight:SetText('')
+        return
+    end
+    local value= unit and UnitHealth(unit)
+    local max= unit and UnitHealthMax(unit)
+    local r, g, b, left, right, col, text
+    if value and max then
+        r, g, b, col = GetClassColor(select(2, UnitClass(unit)))
+        if UnitIsFeignDeath(unit) then
+            text= e.onlyChinese and '假死' or BOOST2_HUNTERBEAST_FEIGNDEATH:match('|cFFFFFFFF(.+)|r') or NO..DEAD
+        elseif value <= 0 then
+            text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '死亡' or DEAD)..'|r'
+        else
+            local hp = value / max * 100;
+            text = ('%i%%'):format(hp)..'  ';
+            if hp<30 then
+                text = '|A:GarrisonTroops-Health-Consume:0:0|a'..'|cnRED_FONT_COLOR:' .. text..'|r'
+            elseif hp<60 then
+                text='|cnGREEN_FONT_COLOR:'..text..'|r'
+            elseif hp<90 then
+                text='|cnYELLOW_FONT_COLOR:'..text..'|r'
+            else
+                text= '|c'..col..text..'|r'
+            end
+            left =e.MK(value, 2)
+        end
+        right = e.MK(max, 2)
+        frame:SetStatusBarColor(r or 1, g or 1, b or 1)
+    end
+    frame.text:SetText(text or '')
+    frame.textLeft:SetText(left or '')
+    frame.textRight:SetText(right or '')
+    frame.textLeft:SetTextColor(r or 1, g or 1, b or 1)
+    frame.textRight:SetTextColor(r or 1, g or 1, b or 1)
+end
+
 local function Int_Health_Bar_Unit()
-    if not Save.hideHealth then
+    if Save.hideHealth then
         return
     end
     GameTooltipStatusBar.text= e.Cstr(GameTooltipStatusBar, {justifyH='CENTER'})
     GameTooltipStatusBar.text:SetPoint('TOP', GameTooltipStatusBar, 'BOTTOM')--生命条
-
     GameTooltipStatusBar.textLeft = e.Cstr(GameTooltipStatusBar, {justifyH='LEFT'})
     GameTooltipStatusBar.textLeft:SetPoint('TOPLEFT', GameTooltipStatusBar, 'BOTTOMLEFT')--生命条
-
     GameTooltipStatusBar.textRight = e.Cstr(GameTooltipStatusBar, {size=18, justifyH='RIGHT'})
     GameTooltipStatusBar.textRight:SetPoint('TOPRIGHT',0, -2)--生命条
-
     GameTooltipStatusBar:HookScript("OnValueChanged", function(self)
-        local unit= select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
-        if not unit or self:GetWidth()<100 then
-            return
-        end
-        local value= unit and UnitHealth(unit)
-        local max= unit and UnitHealthMax(unit)
-        local r, g, b, left, right, col, text
-        if value and max then
-            r, g, b, col = GetClassColor(select(2, UnitClass(unit)))
-            if UnitIsFeignDeath(unit) then
-                text= e.onlyChinese and '假死' or BOOST2_HUNTERBEAST_FEIGNDEATH:match('|cFFFFFFFF(.+)|r') or NO..DEAD
-            elseif value <= 0 then
-                text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '死亡' or DEAD)..'|r'
-            else
-                local hp = value / max * 100;
-                text = ('%i%%'):format(hp)..'  ';
-                if hp<30 then
-                    text = '|A:GarrisonTroops-Health-Consume:0:0|a'..'|cnRED_FONT_COLOR:' .. text..'|r'
-                elseif hp<60 then
-                    text='|cnGREEN_FONT_COLOR:'..text..'|r'
-                elseif hp<90 then
-                    text='|cnYELLOW_FONT_COLOR:'..text..'|r'
-                else
-                    text= '|c'..col..text..'|r'
-                end
-                left =e.MK(value, 2)
-            end
-            right = e.MK(max, 2)
-            self:SetStatusBarColor(r or 1, g or 1, b or 1)
-        end
-        self.text:SetText(text or '')
-        self.textLeft:SetText(left or '')
-        self.textRight:SetText(right or '')
-        self.textLeft:SetTextColor(r or 1, g or 1, b or 1)
-        self.textRight:SetTextColor(r or 1, g or 1, b or 1)
+        func.Set_HealthBar_Unit(self)
     end)
 end
 
@@ -1051,192 +1058,206 @@ end
 --#######
 --设置单位
 --#######
-function func.Set_Unit(self, unit)--设置单位提示信息
-    local name, realm= UnitName(unit)
-    local isPlayer = UnitIsPlayer(unit)
-    local guid = UnitGUID(unit)
-    local isSelf=UnitIsUnit('player', unit)--我
-    local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
-    local r, g, b, col = e.GetUnitColor(unit)--颜色
-    local isInCombat= UnitAffectingCombat('player')
-
-    --设置单位图标  
-    local englishFaction = isPlayer and UnitFactionGroup(unit)
-    if isPlayer then
-        local hideLine--取得网页，数据链接
-
-        if (englishFaction=='Alliance' or englishFaction=='Horde') then--派系
-            self.Portrait:SetAtlas(englishFaction=='Alliance' and e.Icon.alliance or e.Icon.horde)
-            self.Portrait:SetShown(true)
+function Init_Set_Unit()
+    function GameTooltip:Set_Unit()--设置单位提示信息
+        local name, unit, guid= TooltipUtil.GetDisplayedUnit(self)
+        if not name or not unit or not guid then
+            return
         end
 
-        --取得玩家信息
-        local textLeft, text2Left
-        local info= e.UnitItemLevel[guid]
-        if info then
-            if not isInCombat then
+        local realm= select(2, UnitName(unit)) or e.Player.realm--服务器
+        local isPlayer = UnitIsPlayer(unit)
+        local isSelf= UnitIsUnit('player', unit)--我
+        local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
+        local r, g, b, col = e.GetUnitColor(unit)--颜色
+        local isInCombat= UnitAffectingCombat('player')
+
+        --设置单位图标  
+        local englishFaction = isPlayer and UnitFactionGroup(unit)
+        if isPlayer then
+            local hideLine--取得网页，数据链接
+
+            if (englishFaction=='Alliance' or englishFaction=='Horde') then--派系
+                self.Portrait:SetAtlas(englishFaction=='Alliance' and e.Icon.alliance or e.Icon.horde)
+                self.Portrait:SetShown(true)
+            end
+
+            --取得玩家信息
+            local textLeft, text2Left
+            local info= e.UnitItemLevel[guid]
+            if info then
+                if not isInCombat then
+                    e.GetNotifyInspect(nil, unit)--取得装等
+                end
+                if info.itemLevel and info.itemLevel>1 then--设置装等
+                    textLeft= col..info.itemLevel..'|r'
+                end
+                if info.specID then
+                    local icon, role= select(4, GetSpecializationInfoByID(info.specID))--设置天赋
+                    if icon then
+                        text2Left= "|T"..icon..':0|t'..(e.Icon[role] or '')
+                    end
+                end
+            else
                 e.GetNotifyInspect(nil, unit)--取得装等
             end
-            if info.itemLevel and info.itemLevel>1 then--设置装等
-                textLeft= col..info.itemLevel..'|r'
-            end
-            if info.specID then
-                local icon, role= select(4, GetSpecializationInfoByID(info.specID))--设置天赋
-                if icon then
-                    text2Left= "|T"..icon..':0|t'..(e.Icon[role] or '')
-                end
-            end
-        else
-            e.GetNotifyInspect(nil, unit)--取得装等
-        end
 
-        self.backgroundColor:SetColorTexture(r, g, b, 0.2)--背景颜色
-        self.backgroundColor:SetShown(true)
+            self.backgroundColor:SetColorTexture(r, g, b, 0.2)--背景颜色
+            self.backgroundColor:SetShown(true)
 
-        local isWarModeDesired=C_PvP.IsWarModeDesired()--争模式
-        local statusIcon, statusText= e.PlayerOnlineInfo(unit)--单位，状态信息
-        if statusIcon and statusText then
-            textLeft= (textLeft or '')..statusIcon..statusText
+            local isWarModeDesired=C_PvP.IsWarModeDesired()--争模式
+            local statusIcon, statusText= e.PlayerOnlineInfo(unit)--单位，状态信息
+            if statusIcon and statusText then
+                textLeft= (textLeft or '')..statusIcon..statusText
 
-        elseif isGroupPlayer then--队友
-            local reason=UnitPhaseReason(unit)
-            if reason then
-                if reason==0 then
-                    textLeft= (e.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..(textLeft or '')
-                elseif reason==1 then
-                    textLeft= (e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.layer))..(textLeft or '')
-                elseif reason==2 then--战争模
-                    textLeft= (isWarModeDesired and (e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))..(textLeft or '')
-                elseif reason==3 then
-                    textLeft= (e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..(textLeft or '')
-                end
-            end
-        end
-        if not IsInInstance() and UnitHasLFGRandomCooldown(unit) then
-            text2Left= (text2Left or '')..'|T236347:0|t'
-        end
-        if textLeft then
-            self.textLeft:SetText(textLeft)
-        end
-        if text2Left then
-            self.text2Left:SetText(text2Left)
-        end
-
-        local isInGuild= guid and IsPlayerInGuildFromGUID(guid)
-        local line=GameTooltipTextLeft1--名称
-        if line then
-            if isSelf then--魔兽世界时光徽章
-                C_WowTokenPublic.UpdateMarketPrice()
-                local price= C_WowTokenPublic.GetCurrentMarketPrice()
-                if price and price>0 then
-                    local all, numPlayer= e.GetItemWoWNum(122284)--取得WOW物品数量
-                    GameTooltipTextRight1:SetText(col..all..(numPlayer>1 and '('..numPlayer..')' or '')..'|A:token-choice-wow:0:0|a'..e.MK(price/10000,3)..'|r|A:Front-Gold-Icon:0:0|a')
-                    GameTooltipTextRight1:SetShown(true)
-                end
-            end
-            line:SetText((isSelf and e.Icon.star2 or e.GetFriend(nil, guid, nil) or '')
-                         ..col..e.Icon.toRight2..name..e.Icon.toLeft2
-                         ..'|r')
-        end
-
-        realm= realm or e.Player.realm--服务器
-        local region= e.Get_Region(realm)--服务器，EU， US
-        self.textRight:SetText(col..realm..'|r'..(isSelf and e.Icon.star2 or realm==e.Player.realm and e.Icon.select2 or e.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or ''))
-
-        line=isInGuild and GameTooltipTextLeft2
-        if line then
-            local text=line:GetText()
-            if text then
-                line:SetText(e.Icon.guild2..col..text:gsub('(%-.+)','')..'|r')
-                if GameTooltipTextRight2 then
-                    GameTooltipTextRight2:SetText(' ')
-                    GameTooltipTextRight2:SetShown(false)
-                end
-            end
-        end
-
-        line= isInGuild and GameTooltipTextLeft3 or GameTooltipTextLeft2
-        if line then
-            local classFilename= select(2, UnitClass(unit))--职业名称
-            local sex = UnitSex(unit)
-            local raceName, raceFile= UnitRace(unit)
-            local level= UnitLevel(unit)
-            local text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
-
-            if MAX_PLAYER_LEVEL==level then
-                text= text.. level
-            else
-                text= text..'|cnGREEN_FONT_COLOR:'..level..'|r'
-            end
-
-            local effectiveLevel= UnitEffectiveLevel(unit)
-            if effectiveLevel~=level then
-                text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r) '
-            end
-
-            info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
-            if info and info.currentSeasonScore and info.currentSeasonScore>0 then
-                text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false}) or '')
-                        ..' '..e.Class(nil, classFilename)
-                        ..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and 'PvP' or PVP)..'|r' or (e.onlyChinese and 'PvE' or TRANSMOG_SET_PVE))
-                        ..'  '..e.GetKeystoneScorsoColor(info.currentSeasonScore,true)
-
-                if info.runs and info.runs then
-                    local bestRunLevel=0
-                    for _, run in pairs(info.runs) do
-                        if run.bestRunLevel and run.bestRunLevel>bestRunLevel then
-                            bestRunLevel=run.bestRunLevel
-                        end
-                    end
-                    if bestRunLevel>0 then
-                        text= text..' ('..bestRunLevel..')'
+            elseif isGroupPlayer then--队友
+                local reason=UnitPhaseReason(unit)
+                if reason then
+                    if reason==0 then
+                        textLeft= (e.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..(textLeft or '')
+                    elseif reason==1 then
+                        textLeft= (e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.layer))..(textLeft or '')
+                    elseif reason==2 then--战争模
+                        textLeft= (isWarModeDesired and (e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))..(textLeft or '')
+                    elseif reason==3 then
+                        textLeft= (e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..(textLeft or '')
                     end
                 end
-            else
-                text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false})  or '')
-                        ..(raceName or '')
-                        ..' '..(e.Class(nil, classFilename) or '')
-                        ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:'..(e.onlyChinese and 'PvP' or TRANSMOG_SET_PVP)..'|r)' or ('('..(e.onlyChinese and 'PvE' or TRANSMOG_SET_PVE)..')'))
             end
-            text= col and col..text..'|r' or text
-            line:SetText(text)
-
-            line= isInGuild and GameTooltipTextRight3 or GameTooltipTextRight2
-            if line then
-                line:SetText(' ')
-                line:SetShown(true)
+            if not IsInInstance() and UnitHasLFGRandomCooldown(unit) then
+                text2Left= (text2Left or '')..'|T236347:0|t'
             end
-        end
+            if textLeft then
+                self.textLeft:SetText(textLeft)
+            end
+            if text2Left then
+                self.text2Left:SetText(text2Left)
+            end
 
-        local num= isInGuild and 4 or 3
-        local allNum= self:NumLines()
-        for i=num, allNum do
-            line=_G["GameTooltipTextLeft"..i]
+            local isInGuild= guid and IsPlayerInGuildFromGUID(guid)
+            local line=GameTooltipTextLeft1--名称
             if line then
-                if i==num then
-                    if isSelf then--位面ID, 战争模式
-                        line:SetText(e.Player.Layer and '|A:nameplates-holypower2-on:0:0|a'..col..e.Player.L.layer..' '..e.Player.Layer..'|r' or ' ')
-                        line=_G["GameTooltipTextRight"..i]
-                        if line then
-                            if isWarModeDesired then
-                                line:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE))
-                            else
-                                line:SetText(col..(e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF))
+                if isSelf then--魔兽世界时光徽章
+                    C_WowTokenPublic.UpdateMarketPrice()
+                    local price= C_WowTokenPublic.GetCurrentMarketPrice()
+                    if price and price>0 then
+                        local all, numPlayer= e.GetItemWoWNum(122284)--取得WOW物品数量
+                        GameTooltipTextRight1:SetText(col..all..(numPlayer>1 and '('..numPlayer..')' or '')..'|A:token-choice-wow:0:0|a'..e.MK(price/10000,3)..'|r|A:Front-Gold-Icon:0:0|a')
+                        GameTooltipTextRight1:SetShown(true)
+                    end
+                end
+                line:SetText((isSelf and e.Icon.star2 or e.GetFriend(nil, guid, nil) or '')
+                            ..col..e.Icon.toRight2..name..e.Icon.toLeft2
+                            ..'|r')
+            end
+
+
+            local region= e.Get_Region(realm)--服务器，EU， US
+            self.textRight:SetText(col..realm..'|r'..(isSelf and e.Icon.star2 or realm==e.Player.realm and e.Icon.select2 or e.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or ''))
+
+            line=isInGuild and GameTooltipTextLeft2
+            if line then
+                local text=line:GetText()
+                if text then
+                    line:SetText(e.Icon.guild2..col..text:gsub('(%-.+)','')..'|r')
+                    if GameTooltipTextRight2 then
+                        GameTooltipTextRight2:SetText(' ')
+                        GameTooltipTextRight2:SetShown(false)
+                    end
+                end
+            end
+
+            line= isInGuild and GameTooltipTextLeft3 or GameTooltipTextLeft2
+            if line then
+                local classFilename= select(2, UnitClass(unit))--职业名称
+                local sex = UnitSex(unit)
+                local raceName, raceFile= UnitRace(unit)
+                local level= UnitLevel(unit)
+                local text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
+
+                if MAX_PLAYER_LEVEL==level then
+                    text= text.. level
+                else
+                    text= text..'|cnGREEN_FONT_COLOR:'..level..'|r'
+                end
+
+                local effectiveLevel= UnitEffectiveLevel(unit)
+                if effectiveLevel~=level then
+                    text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r) '
+                end
+
+                info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
+                if info and info.currentSeasonScore and info.currentSeasonScore>0 then
+                    text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false}) or '')
+                            ..' '..e.Class(nil, classFilename)
+                            ..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and 'PvP' or PVP)..'|r' or (e.onlyChinese and 'PvE' or TRANSMOG_SET_PVE))
+                            ..'  '..e.GetKeystoneScorsoColor(info.currentSeasonScore,true)
+
+                    if info.runs and info.runs then
+                        local bestRunLevel=0
+                        for _, run in pairs(info.runs) do
+                            if run.bestRunLevel and run.bestRunLevel>bestRunLevel then
+                                bestRunLevel=run.bestRunLevel
                             end
-                            line:SetShown(true)
                         end
-                    elseif isGroupPlayer then--队友位置
-                        local mapID= C_Map.GetBestMapForUnit(unit)--地图ID
-                        local mapInfo= mapID and C_Map.GetMapInfo(mapID)
-                        if mapInfo and mapInfo.name and _G["GameTooltipTextLeft"..i] then
-                            if mapInfo.name then
-                                line=_G["GameTooltipTextLeft"..i]
-                                line:SetText(e.Icon.map2..col..mapInfo.name)
+                        if bestRunLevel>0 then
+                            text= text..' ('..bestRunLevel..')'
+                        end
+                    end
+                else
+                    text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false})  or '')
+                            ..(raceName or '')
+                            ..' '..(e.Class(nil, classFilename) or '')
+                            ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:'..(e.onlyChinese and 'PvP' or TRANSMOG_SET_PVP)..'|r)' or ('('..(e.onlyChinese and 'PvE' or TRANSMOG_SET_PVE)..')'))
+                end
+                text= col and col..text..'|r' or text
+                line:SetText(text)
+
+                line= isInGuild and GameTooltipTextRight3 or GameTooltipTextRight2
+                if line then
+                    line:SetText(' ')
+                    line:SetShown(true)
+                end
+            end
+
+            local num= isInGuild and 4 or 3
+            local allNum= self:NumLines()
+            for i=num, allNum do
+                line=_G["GameTooltipTextLeft"..i]
+                if line then
+                    if i==num then
+                        if isSelf then--位面ID, 战争模式
+                            line:SetText(e.Player.Layer and '|A:nameplates-holypower2-on:0:0|a'..col..e.Player.L.layer..' '..e.Player.Layer..'|r' or ' ')
+                            line=_G["GameTooltipTextRight"..i]
+                            if line then
+                                if isWarModeDesired then
+                                    line:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE))
+                                else
+                                    line:SetText(col..(e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF))
+                                end
                                 line:SetShown(true)
+                            end
+                        elseif isGroupPlayer then--队友位置
+                            local mapID= C_Map.GetBestMapForUnit(unit)--地图ID
+                            local mapInfo= mapID and C_Map.GetMapInfo(mapID)
+                            if mapInfo and mapInfo.name and _G["GameTooltipTextLeft"..i] then
+                                if mapInfo.name then
+                                    line=_G["GameTooltipTextLeft"..i]
+                                    line:SetText(e.Icon.map2..col..mapInfo.name)
+                                    line:SetShown(true)
+                                end
+                            end
+                        else
+                            if not hideLine  then
+                                hideLine=line
+                                line:SetTextColor(r,g,b)
+                            else
+                                line:SetText('')
+                                line:SetShown(false)
                             end
                         end
                     else
-                        if not hideLine  then
+                        if not hideLine then
                             hideLine=line
                             line:SetTextColor(r,g,b)
                         else
@@ -1244,97 +1265,83 @@ function func.Set_Unit(self, unit)--设置单位提示信息
                             line:SetShown(false)
                         end
                     end
-                else
-                    if not hideLine then
-                        hideLine=line
-                        line:SetTextColor(r,g,b)
-                    else
-                        line:SetText('')
-                        line:SetShown(false)
-                    end
                 end
             end
-        end
-        if isInCombat then
-            if hideLine then
-                hideLine:SetText('')
-                hideLine:SetShown(false)
+            if isInCombat then
+                if hideLine then
+                    hideLine:SetText('')
+                    hideLine:SetShown(false)
+                end
+            else
+                func.Set_Web_Link({frame=hideLine, unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
             end
+
+        elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
+            func.Set_Pet(self, UnitBattlePetSpeciesID(unit), true)
+
         else
-            func.Set_Web_Link({frame=hideLine, unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
-        end
-
-    elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
-        func.Set_Pet(self, UnitBattlePetSpeciesID(unit), true)
-
-    else
-        for i=1, self:NumLines() do
-            local line=_G["GameTooltipTextLeft"..i]
-            if line then
-                line:SetTextColor(r,g,b)
+            for i=1, self:NumLines() do
+                local line=_G["GameTooltipTextLeft"..i]
+                if line then
+                    line:SetTextColor(r,g,b)
+                end
             end
-        end
 
-        local uiWidgetSet= UnitWidgetSet(unit)
-        if uiWidgetSet and uiWidgetSet>0 then
-            e.tips:AddDoubleLine('WidgetSetID', uiWidgetSet, r,g,b, r,g,b)
-        end
-
-
-        if guid then
-            local zone, npc = select(5, strsplit("-", guid))--位面,NPCID
-            if zone then
-                self:AddDoubleLine(col..e.Player.L.layer..' '..zone, col..'NPC '..npc, r,g,b, r,g,b)
-                e.Player.Layer=zone
+            local uiWidgetSet= UnitWidgetSet(unit)
+            if uiWidgetSet and uiWidgetSet>0 then
+                e.tips:AddDoubleLine('WidgetSetID', uiWidgetSet, r,g,b, r,g,b)
             end
-            func.Set_Web_Link({frame=self, type='npc', id=npc, name=name, col=col, isPetUI=false})--取得网页，数据链接 
-        end
 
-        --怪物, 图标
-        if UnitIsQuestBoss(unit) then--任务
-            self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest')
-            self.Portrait:SetShown(true)
 
-        elseif UnitIsBossMob(unit) then--世界BOSS
-            self.textLeft:SetText(col..(e.onlyChinese and '首领' or BOSS)..'|r')
-            self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
-            self.Portrait:SetShown(true)
-        else
-            local classification = UnitClassification(unit);--TargetFrame.lua
-            if classification == "rareelite" then--稀有, 精英
-                self.textLeft:SetText(col..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r')
+            if guid then
+                local zone, npc = select(5, strsplit("-", guid))--位面,NPCID
+                if zone then
+                    self:AddDoubleLine(col..e.Player.L.layer..' '..zone, col..'NPC '..npc, r,g,b, r,g,b)
+                    e.Player.Layer=zone
+                end
+                func.Set_Web_Link({frame=self, type='npc', id=npc, name=name, col=col, isPetUI=false})--取得网页，数据链接 
+            end
+
+            --怪物, 图标
+            if UnitIsQuestBoss(unit) then--任务
+                self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest')
+                self.Portrait:SetShown(true)
+
+            elseif UnitIsBossMob(unit) then--世界BOSS
+                self.textLeft:SetText(col..(e.onlyChinese and '首领' or BOSS)..'|r')
                 self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
                 self.Portrait:SetShown(true)
-
-            elseif classification == "rare" then--稀有
-                self.textLeft:SetText(col..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r')
-                self.Portrait:SetAtlas('UUnitFrame-Target-PortraitOn-Boss-Rare-Star')
-                self.Portrait:SetShown(true)
             else
-                SetPortraitTexture(self.Portrait, unit)
-                self.Portrait:SetShown(true)
+                local classification = UnitClassification(unit);--TargetFrame.lua
+                if classification == "rareelite" then--稀有, 精英
+                    self.textLeft:SetText(col..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r')
+                    self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
+                    self.Portrait:SetShown(true)
+
+                elseif classification == "rare" then--稀有
+                    self.textLeft:SetText(col..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r')
+                    self.Portrait:SetAtlas('UUnitFrame-Target-PortraitOn-Boss-Rare-Star')
+                    self.Portrait:SetShown(true)
+                else
+                    SetPortraitTexture(self.Portrait, unit)
+                    self.Portrait:SetShown(true)
+                end
+            end
+
+            local type=UnitCreatureType(unit)--生物类型
+            if type and not type:find(COMBAT_ALLY_START_MISSION) then
+                self.textRight:SetText(col..type..'|r')
             end
         end
 
-        local type=UnitCreatureType(unit)--生物类型
-        if type and not type:find(COMBAT_ALLY_START_MISSION) then
-            self.textRight:SetText(col..type..'|r')
-        end
+        func.Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
+        func.Set_Item_Model(self, {unit=unit, guid=guid, col= col})--设置, 3D模型
+
+        --[[if isSelf and not isInCombat and Save.WidgetSetID>0 then
+            GameTooltip_AddWidgetSet(e.tips, Save.WidgetSetID, 10)
+        end]]
     end
-
-
-    set_Unit_Health_Bar(GameTooltipStatusBar, unit)--生命条提示
-
-
-    func.Set_Item_Model(self, {unit=unit, guid=guid, col= col})--设置, 3D模型
-
-
-    --[[if isSelf and not isInCombat and Save.WidgetSetID>0 then
-        GameTooltip_AddWidgetSet(e.tips, Save.WidgetSetID, 10)
-    end]]
 end
-
-
 
 
 
@@ -1590,10 +1597,13 @@ end
 --初始
 --####
 local function Init()
-    Init_Web_Link()--取得网页，数据链接
     func.Set_Init_Item(ItemRefTooltip)
     func.Set_Init_Item(e.tips)
     func.Set_Init_Item(EmbeddedItemTooltip)
+
+    Init_Web_Link()--取得网页，数据链接
+    Int_Health_Bar_Unit()--生命条提示
+    Init_Set_Unit()--设置单位
 
     e.tips:HookScript("OnHide", function(self)--隐藏
         func.Set_Init_Item(self, true)
@@ -1659,11 +1669,8 @@ local function Init()
 
         --25宏, 11动作条, 4可交互物品, 14装备管理, 0物品 19玩具, 9宠物
         if data.type==2 then--单位
-            if tooltip==e.tips then
-                local unit= select(2, TooltipUtil.GetDisplayedUnit(tooltip))
-                if unit then
-                    func.Set_Unit(tooltip, unit)
-                end
+            if tooltip== GameTooltip then
+                GameTooltip:Set_Unit()
             end
 
         elseif data.id and data.type then
