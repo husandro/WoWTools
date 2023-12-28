@@ -39,6 +39,8 @@ local func={
     --func.Set_Item_Model(self, tab)--设置, 3D模型{unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=, col=}
     --func.Set_Web_Link(tab)
     --func.Set_Unit(self, unit)--设置单位提示信息
+    --func.set_All_Aura(self, data)--Aura
+    --func.set_Buff(type, self, ...)
 }
 
 function func.Set_PlayerModel(self)
@@ -871,7 +873,7 @@ function func.set_All_Aura(self, data)--Aura
         end
     end
 end
-local function set_Buff(type, self, ...)
+function func.set_Buff(type, self, ...)
     local source--local unit= ...
     if type=='Buff' then
         source= select(7, UnitBuff(...))
@@ -1738,13 +1740,13 @@ local function Init()
     --Buff, 来源, 数据, 不可删除，如果删除，目标buff没有数据
     --################
     hooksecurefunc(e.tips, "SetUnitBuff", function(...)
-        set_Buff('Buff', ...)
+        func.set_Buff('Buff', ...)
     end)
     hooksecurefunc(e.tips, "SetUnitDebuff", function(...)
-        set_Buff('Debuff', ...)
+        func.set_Buff('Debuff', ...)
     end)
     hooksecurefunc(e.tips, "SetUnitAura", function(...)
-        set_Buff('Aura', ...)
+        func.set_Buff('Aura', ...)
     end)
 
 

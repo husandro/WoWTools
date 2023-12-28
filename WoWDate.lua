@@ -95,7 +95,7 @@ local function Get_Player_Info(guid)--取得玩家信息
         TargetFrame.classFrame:set_settings(guid)
     end
 end
-   
+
 
 
 
@@ -760,7 +760,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
             WoWDate=nil
         else
 
-            
+
 
             WoWDate= e.WoWDate or {}
         end
