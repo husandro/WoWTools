@@ -95,9 +95,7 @@ local function Get_Player_Info(guid)--取得玩家信息
         TargetFrame.classFrame:set_settings(guid)
     end
 
-    if UnitIsUnit(unit, 'mouseover') and GameTooltip.Set_Unit and GameTooltip:IsShown() then
-        GameTooltip:Set_Unit()
-    end
+    --if UnitIsUnit(unit, 'mouseover') and GameTooltip.textLeft and GameTooltip:IsShown() then
 end
 
 
