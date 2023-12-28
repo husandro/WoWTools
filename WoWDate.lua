@@ -113,7 +113,7 @@ end
 --取得装等
 --#######
 local NotifyInspectTicker
-e.GetNotifyInspect= function(tab, unit)
+function e.GetNotifyInspect(tab, unit)
     if unit then
         if UnitExists(unit) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit, 1)
             NotifyInspect(unit)
