@@ -116,7 +116,7 @@ local function Set_Item_Info(self, tab)
             end
 
         elseif itemID==6948 then--炉石
-            bottomLeftText= e.WA_Utf8Sub(GetBindLocation(), 2, 5, true)
+            bottomLeftText=e.WA_Utf8Sub(GetBindLocation(), 3, 4, true)
 
         elseif containerInfo and containerInfo.hasLoot then--宝箱
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
