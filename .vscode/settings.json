@@ -5090,7 +5090,13 @@
         "GuildBankInfoScrollFrame",
         "GuildBankInfoSaveButton",
         "InspectFrameTab2",
-        "InspectFrameTab3"
+        "InspectFrameTab3",
+        "INSPECT_HONORABLE_KILLS",
+        "HONOR_LEVEL_LABEL",
+        "PVP_RECORD_DESCRIPTION",
+        "PetJournalSummonRandomFavoritePetButton",
+        "PetJournalSummonRandomFavoritePetButtonSpellName",
+        "PetJournalHealPetButtonSpellName"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

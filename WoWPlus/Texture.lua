@@ -1702,7 +1702,9 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(InspectFrameTab1, {alpha=min05})
         set_Alpha_Frame_Texture(InspectFrameTab2, {alpha=min05})
         set_Alpha_Frame_Texture(InspectFrameTab3, {alpha=min05})
-
+        set_NineSlice(InspectFrame, true)
+        set_NineSlice(InspectFrameInset, nil, true)
+        
     elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面 
         set_NineSlice(ItemUpgradeFrame, true)
         set_Alpha_Color(ItemUpgradeFrameBg)

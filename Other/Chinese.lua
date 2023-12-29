@@ -1674,6 +1674,12 @@ local function Init_Loaded(arg1)
             hooksecurefunc('PetJournalFindBattle_Update', set_PetJournalFindBattle)
             set_PetJournalFindBattle()
 
+            set(PetJournal.PetCount.Label, '宠物')
+            set(PetJournalSummonRandomFavoritePetButtonSpellName, '召唤随机偏好战斗宠物')
+            set(PetJournalHealPetButtonSpellName, '复活战斗宠物')
+            
+            
+
         set(CollectionsJournalTab3, '玩具箱')
         set(CollectionsJournalTab4, '传家宝')
         set(CollectionsJournalTab5, '外观')
@@ -1851,6 +1857,14 @@ local function Init_Loaded(arg1)
 
     elseif arg1=='Blizzard_InspectUI' then--玩家, 观察角色, 界面
         set(InspectFrameTab1, '角色')
+        --pvp
+            hooksecurefunc('InspectPVPFrame_Update', function()
+                local _, _, _, _, lifetimeHKs, _, honorLevel = GetInspectHonorData();
+                InspectPVPFrame.HKs:SetFormattedText('|cffffd200荣誉消灭：|r %d', lifetimeHKs or 0)
+                if C_SpecializationInfo.CanPlayerUsePVPTalentUI() then
+                    InspectPVPFrame.HonorLevel:SetFormattedText('荣誉等级：%d', honorLevel)
+                end
+            end)
         set(InspectFrameTab3, '公会')
     --elseif arg1=='Blizzard_Professions' then--专业
     end
