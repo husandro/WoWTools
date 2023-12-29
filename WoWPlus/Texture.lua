@@ -855,7 +855,17 @@ local function Init_All_Frame()
          --end
      end)]]
 
-
+     
+     for i=1, NUM_CHAT_WINDOWS do
+        local frame= _G["ChatFrame"..i]
+        if frame then
+            set_Alpha_Color(_G['ChatFrame'..i..'EditBoxMid'], nil, nil, min03)
+            set_Alpha_Color(_G['ChatFrame'..i..'EditBoxLeft'], nil, nil, min03)
+            set_Alpha_Color(_G['ChatFrame'..i..'EditBoxRight'], nil, nil, min03)
+            set_ScrollBar(frame)
+            set_Alpha_Frame_Texture(frame.ScrollToBottomButton, {notAlpha=true})
+        end
+     end
 
 
 

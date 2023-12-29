@@ -5058,7 +5058,12 @@
         "SOUL_SHARDS",
         "ECLIPSE",
         "FUEL",
-        "STAT_ENERGY_REGEN"
+        "STAT_ENERGY_REGEN",
+        "ChatFrame1EditBox",
+        "ChatFrame1EditBoxMid",
+        "ChatFrame1EditBoxLeft",
+        "ChatFrame1EditBoxRight",
+        "ChatFrame2"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
