@@ -1201,7 +1201,7 @@ local function Init()
     PAPERDOLL_SIDEBARS[2].name= '头衔'
     PAPERDOLL_SIDEBARS[3].name= '装备管理'
 
-   
+
 
 
     --ReputationFrame.xml
@@ -1677,8 +1677,8 @@ local function Init_Loaded(arg1)
             set(PetJournal.PetCount.Label, '宠物')
             set(PetJournalSummonRandomFavoritePetButtonSpellName, '召唤随机偏好战斗宠物')
             set(PetJournalHealPetButtonSpellName, '复活战斗宠物')
-            
-            
+
+
 
         set(CollectionsJournalTab3, '玩具箱')
         set(CollectionsJournalTab4, '传家宝')
@@ -1695,6 +1695,26 @@ local function Init_Loaded(arg1)
         set(EncounterJournalDungeonTab, '地下城')
         set(EncounterJournalRaidTab, '团队副本')
         set(EncounterJournalLootJournalTab, '套装物品')
+
+        hooksecurefunc('EJInstanceSelect_UpdateTitle', function(tabId)
+            local text
+            if ( tabId == EncounterJournal.suggestTab:GetID()) then
+                text= '推荐玩法'
+            elseif ( tabId == EncounterJournal.raidsTab:GetID()) then
+                text= '团队副本'
+            elseif ( tabId == EncounterJournal.dungeonsTab:GetID()) then
+                text= '地下城'
+            --elseif ( tabId == EncounterJournal.MonthlyActivitiesTab:GetID()) then
+            elseif (tabId == EncounterJournal.LootJournalTab:GetID()) then
+                text= '套装物品'
+            end
+            if text then
+                set(EncounterJournal.instanceSelect.Title, text)
+            end
+        end)
+        if EncounterJournalMonthlyActivitiesFrame and EncounterJournalMonthlyActivitiesFrame.HeaderContainer then
+            set(EncounterJournalMonthlyActivitiesFrame.HeaderContainer.Title, '旅行者日志')
+        end
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
         set(AchievementFrameTab1, '成就')

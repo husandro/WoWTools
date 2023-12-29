@@ -5096,7 +5096,9 @@
         "PVP_RECORD_DESCRIPTION",
         "PetJournalSummonRandomFavoritePetButton",
         "PetJournalSummonRandomFavoritePetButtonSpellName",
-        "PetJournalHealPetButtonSpellName"
+        "PetJournalHealPetButtonSpellName",
+        "AJ_SUGGESTED_CONTENT_TAB",
+        "LOOT_JOURNAL_ITEM_SETS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
