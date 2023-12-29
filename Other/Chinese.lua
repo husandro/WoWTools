@@ -1201,6 +1201,9 @@ local function Init()
     PAPERDOLL_SIDEBARS[2].name= '头衔'
     PAPERDOLL_SIDEBARS[3].name= '装备管理'
 
+   
+
+
     --ReputationFrame.xml
     set(ReputationDetailViewRenownButton, '浏览名望')
     set(ReputationDetailMainScreenCheckBoxText, '显示为经验条')
@@ -1484,7 +1487,7 @@ local function Init()
     if ReagentBankFrame.DespositButton:GetText()~='' then
         set(ReagentBankFrame.DespositButton, '存放各种材料')
     end
-    
+
 end
 
 
@@ -1752,7 +1755,7 @@ local function Init_Loaded(arg1)
         set(CommunitiesFrame.RecruitmentDialog.Cancel, '取消')
         set(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame.Child.QuickJoinButton.Text, '快速加入通知')
         --set(CommunitiesFrame.RecruitmentDialog.MaxLevelOnly, '')
-    
+
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set(GuildBankFrameTab1, '公会银行')
             set(GuildBankFrame.WithdrawButton, '提取')
@@ -1846,6 +1849,9 @@ local function Init_Loaded(arg1)
         set(GuildBankFrameTab4, '信息')
             set(GuildBankInfoSaveButton, '保存改变')
 
+    elseif arg1=='Blizzard_InspectUI' then--玩家, 观察角色, 界面
+        set(InspectFrameTab1, '角色')
+        set(InspectFrameTab3, '公会')
     --elseif arg1=='Blizzard_Professions' then--专业
     end
 end

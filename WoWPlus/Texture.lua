@@ -1699,6 +1699,9 @@ local function Init_Event(arg1)
         hide_Texture(InspectFrameInset.Bg)
         hide_Texture(InspectPVPFrame.BG)
         hide_Texture(InspectGuildFrameBG)
+        set_Alpha_Frame_Texture(InspectFrameTab1, {alpha=min05})
+        set_Alpha_Frame_Texture(InspectFrameTab2, {alpha=min05})
+        set_Alpha_Frame_Texture(InspectFrameTab3, {alpha=min05})
 
     elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面 
         set_NineSlice(ItemUpgradeFrame, true)

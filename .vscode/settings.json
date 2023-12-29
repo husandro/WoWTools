@@ -5088,7 +5088,9 @@
         "SetDesaturation",
         "GUILDBANK_TAB_NUMBER",
         "GuildBankInfoScrollFrame",
-        "GuildBankInfoSaveButton"
+        "GuildBankInfoSaveButton",
+        "InspectFrameTab2",
+        "InspectFrameTab3"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
