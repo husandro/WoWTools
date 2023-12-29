@@ -1160,6 +1160,7 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=min05})
 
         set_NineSlice(AchievementFrameCategories)
+        hide_Texture(AchievementFrame.BackgroundBlackCover)
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
         set_NineSlice(CommunitiesFrame, true)

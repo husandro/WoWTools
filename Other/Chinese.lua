@@ -1234,6 +1234,17 @@ local function Init()
     set(LFGListFrame.CategorySelection.StartGroupButton, '创建队伍')
     set(LFGListFrame.CategorySelection.FindGroupButton, '寻找队伍')
 
+    set(LFGListFrame.ApplicationViewer.AutoAcceptButton.Label, '自动邀请')
+    set(LFGListFrame.ApplicationViewer.BrowseGroupsButton, '浏览队伍')
+    set(LFGListFrame.ApplicationViewer.RemoveEntryButton, '移除')
+    set(LFGListFrame.ApplicationViewer.EditButton, '编辑')
+
+    set(LFGListFrame.SearchPanel.BackToGroupButton, '回到队伍')
+    set(LFGListFrame.SearchPanel.SignUpButton, '申请')
+    set(LFGListFrame.SearchPanel.BackButton, '后退')
+
+    set(LFGListFrame.EntryCreation.CancelButton, '后退')
+    --set(LFGListFrame.EntryCreation.ListGroupButton, '列出队伍')
 
     --选项
     hooksecurefunc(SettingsPanel.Container.SettingsList.ScrollBox, 'Update', function(frame)
