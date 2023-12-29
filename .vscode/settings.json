@@ -5063,7 +5063,13 @@
         "ChatFrame1EditBoxMid",
         "ChatFrame1EditBoxLeft",
         "ChatFrame1EditBoxRight",
-        "ChatFrame2"
+        "ChatFrame2",
+        "CommunitiesControlFrameMixin",
+        "COMMUNITIES_SETTINGS_BUTTON_CHARACTER_LABEL",
+        "COMMUNITIES_SETTINGS_BUTTON_LABEL",
+        "ClubFinderClubFocusDropdown",
+        "ClubFinderLookingForDropdown",
+        "ClubFinderLanguageDropdown"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

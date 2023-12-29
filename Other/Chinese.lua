@@ -1712,6 +1712,35 @@ local function Init_Loaded(arg1)
         StaticPopupDialogs["CONFIRM_DELETE_SELECTED_MACRO"].button1= '是'
         StaticPopupDialogs["CONFIRM_DELETE_SELECTED_MACRO"].button2= '取消'
 
+    elseif arg1=='Blizzard_Communities' then--公会和社区
+        set(CommunitiesFrame.CommunitiesControlFrame.GuildRecruitmentButton, '公会招募')
+        set(CommunitiesFrame.InviteButton, '邀请成员')
+        set(CommunitiesFrame.CommunitiesControlFrame.GuildControlButton, '公会设置')
+        hooksecurefunc(CommunitiesFrame.CommunitiesControlFrame, 'Update', function(self)
+            if self.CommunitiesSettingsButton:IsShown() then
+                local communitiesFrame = self:GetCommunitiesFrame()
+                local clubId = communitiesFrame:GetSelectedClubId()
+                if clubId then
+                    local clubInfo = C_Club.GetClubInfo(clubId)
+                    if clubInfo then
+                        self.CommunitiesSettingsButton:SetText(clubInfo.clubType == Enum.ClubType.BattleNet and '群组设置' or '社区设置');
+                    end
+                end
+            end
+            set(CommunitiesFrame.CommunitiesControlFrame.CommunitiesSettingsButton, '社区设置')
+        end)
+
+        set(CommunitiesFrame.RecruitmentDialog.DialogLabel, '招募')
+        set(CommunitiesFrame.RecruitmentDialog.ShouldListClub.Label, '在公会查找器里列出我的公会')
+        set(ClubFinderClubFocusDropdown.Label, '活动倾向')
+        set(ClubFinderLookingForDropdown.Label, '寻找：')
+        set(ClubFinderLanguageDropdown.Label, '语言')
+        set(CommunitiesFrame.RecruitmentDialog.RecruitmentMessageFrame.Label, '招募信息')
+        set(CommunitiesFrame.RecruitmentDialog.MaxLevelOnly.Label, '只限满级')
+        set(CommunitiesFrame.RecruitmentDialog.MinIlvlOnly.Label, '最低物品等级')
+        set(CommunitiesFrame.RecruitmentDialog.Accept, '接受')
+        set(CommunitiesFrame.RecruitmentDialog.Cancel, '取消')
+        --set(CommunitiesFrame.RecruitmentDialog.MaxLevelOnly, '')
     --elseif arg1=='Blizzard_Professions' then--专业
     end
 end
