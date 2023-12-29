@@ -1475,6 +1475,16 @@ local function Init()
         set(ObjectiveTrackerBlocksFrame.AchievementHeader.Text, '成就')
         --set(ObjectiveTrackerBlocksFrame.QuestHeader.Text, '任务')
     end)
+
+    --银行
+    --BankFrame.lua
+    set(BankFrameTab1.Text, '银行')
+    set(BankFrameTab2.Text, '材料')
+    BANK_PANELS[2].SetTitle=function() BankFrame:SetTitle('材料银行') end
+    if ReagentBankFrame.DespositButton:GetText()~='' then
+        set(ReagentBankFrame.DespositButton, '存放各种材料')
+    end
+    
 end
 
 
@@ -1742,6 +1752,100 @@ local function Init_Loaded(arg1)
         set(CommunitiesFrame.RecruitmentDialog.Cancel, '取消')
         set(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame.Child.QuickJoinButton.Text, '快速加入通知')
         --set(CommunitiesFrame.RecruitmentDialog.MaxLevelOnly, '')
+    
+    elseif arg1=="Blizzard_GuildBankUI" then--公会银行
+        set(GuildBankFrameTab1, '公会银行')
+            set(GuildBankFrame.WithdrawButton, '提取')
+            set(GuildBankFrame.DepositButton, '存放')
+            set(GuildBankMoneyLimitLabel, '可用数量：')
+            hooksecurefunc(GuildBankFrame, 'UpdateTabs', function(self)--Blizzard_GuildBankUI.lua
+                local name, isViewable, canDeposit, numWithdrawals, remainingWithdrawals, disableAll, titleText, withdrawalText
+                local numTabs = GetNumGuildBankTabs()
+                local currentTab = GetCurrentGuildBankTab()
+                -- Set buyable tab
+                local tabToBuyIndex;
+                if ( numTabs < MAX_BUY_GUILDBANK_TABS ) then
+                    tabToBuyIndex = numTabs + 1;
+                end
+                -- Disable and gray out all tabs if in the moneyLog since the tab is irrelevant
+                if ( self.mode == "moneylog" ) then
+                    disableAll = 1;
+                end
+                for i=1, MAX_GUILDBANK_TABS do
+                    local tab = self.BankTabs[i];
+                    local tabButton = tab.Button;
+                    name, _, isViewable = GetGuildBankTabInfo(i);
+                    if ( not name or name == "" ) then
+                        name = format('标签%d', i);
+                    end
+                    if ( i == tabToBuyIndex and IsGuildLeader() ) then
+                        tabButton.tooltip = '购买新的公会银行标签';
+                        if ( disableAll or self.mode == "log" or self.mode == "tabinfo" ) then
+                        else
+                            if ( i == currentTab ) then
+                                titleText = '购买新的公会银行标签'
+                            end
+                        end
+                    elseif ( i > numTabs ) then
+                    else
+                        if ( isViewable ) then
+                            if ( i == currentTab ) then
+                                withdrawalText = name;
+                                titleText =  name;
+                            end
+                        end
+                    end
+                end
+
+                -- Set Title
+                if ( self.mode == "moneylog" ) then
+                    titleText = '金币记录';
+                    withdrawalText = nil;
+                elseif ( self.mode == "log" ) then
+                    if ( titleText ) then
+                        titleText = format('%s 记录', titleText);
+                    end
+                elseif ( self.mode == "tabinfo" ) then
+                    withdrawalText = nil;
+                    if ( titleText ) then
+                        titleText = format('%s 信息', titleText);
+                    end
+                end
+                -- Get selected tab info
+                name, _, _, canDeposit, numWithdrawals, remainingWithdrawals = GetGuildBankTabInfo(currentTab);
+                if ( titleText and (self.mode ~= "moneylog" and titleText ~= BUY_GUILDBANK_TAB) ) then
+                    local access;
+                    if ( not canDeposit and numWithdrawals == 0 ) then
+                        access = '|cffff2020（锁定）|r';
+                    elseif ( not canDeposit ) then
+                        access = '|cffff2020（只能提取）|r';
+                    elseif ( numWithdrawals == 0 ) then
+                        access = '|cffff2020（只能存放）|r';
+                    else
+                        access = '|cff20ff20（全部权限）|r';
+                    end
+                    titleText = titleText.."  "..access;
+                end
+                if ( titleText ) then
+                    self.TabTitle:SetText(titleText);
+                end
+                if ( withdrawalText ) then
+                    local stackString;
+                    if ( remainingWithdrawals > 0 ) then
+                        stackString = format('%d 堆', remainingWithdrawals);
+                    elseif ( remainingWithdrawals == 0 ) then
+                        stackString = '无';
+                    else
+                        stackString = '无限';
+                    end
+                    self.LimitLabel:SetText(format('%s的每日提取额度剩余：|cffffffff%s|r', withdrawalText, stackString));
+                end
+            end)
+        set(GuildBankFrameTab2, '记录')
+        set(GuildBankFrameTab3, '金币记录')
+        set(GuildBankFrameTab4, '信息')
+            set(GuildBankInfoSaveButton, '保存改变')
+
     --elseif arg1=='Blizzard_Professions' then--专业
     end
 end

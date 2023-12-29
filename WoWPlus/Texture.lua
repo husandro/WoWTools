@@ -557,6 +557,8 @@ local function Init_All_Frame()
      hide_Texture(BankFrameMoneyFrameBorderLeft)
      hide_Texture(BankFrameMoneyFrameInset.NineSlice)
 
+     set_SearchBox(BankItemSearchBox)
+
      BankFrame:DisableDrawLayer('BACKGROUND')
      local texture= BankFrame:CreateTexture(nil,'BORDER',nil, 1)
      texture:SetAtlas('auctionhouse-background-buy-noncommodities-market')
@@ -1314,6 +1316,8 @@ local function Init_Event(arg1)
             end
         end)
 
+        set_ScrollBar(GuildBankFrame.Log)
+        set_ScrollBar(GuildBankInfoScrollFrame)
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
         set_Alpha_Color(AuctionHouseFrameBg)

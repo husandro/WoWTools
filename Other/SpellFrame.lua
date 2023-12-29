@@ -89,24 +89,25 @@ local function Init()
     --#############
     --法术按键, 颜色
     --#############
-    hooksecurefunc('ActionButton_UpdateRangeIndicator', function(frame, checksRange, inRange)--ActionButton.lua
-        frame.inRange= inRange
-        if frame.UpdateUsable then
-            if not frame.setHooksecurefunc then
-                hooksecurefunc(frame, 'UpdateUsable', function(self)
-                    if self.inRange==false then
-                        self.icon:SetVertexColor(1,0,0)
-                    --[[elseif self.action then
-                        local actionType, typeID, subType= GetActionInfo(self.action)
-                        if subType== 'spellID' and typeID and IsAttackSpell(typeID) and not UnitExists('target') then
-                            self.icon:SetVertexColor(0,1,1)
-                        end]]
-                    end
-                end)
-                frame.setHooksecurefunc= true
-            end
-            frame:UpdateUsable()
+    
+
+    hooksecurefunc('ActionButton_UpdateRangeIndicator', function(frame)--, checksRange, inRange)--ActionButton.lua
+        if not frame.UpdateUsable then
+            return
         end
+        if not frame.setHooksecurefunc then
+            hooksecurefunc(frame, 'UpdateUsable', function(self)
+                if self.action and ActionHasRange(self.action) and IsUsableAction(self.action) then
+                    if not UnitExists('target')  then
+                        self.icon:SetVertexColor(1, 0, 1)
+                    elseif not IsActionInRange(self.action) then
+                        self.icon:SetVertexColor(1,0,0)
+                    end
+                end
+            end)
+            frame.setHooksecurefunc= true
+        end
+        frame:UpdateUsable()
         --[[if checksRange then
            if not inRange then
                 self.icon:SetVertexColor(RED_FONT_COLOR:GetRGB())
