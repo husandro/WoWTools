@@ -3,7 +3,7 @@ local addName=	HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL
 local Save={
         scale= 0.85,
         autoHide=true,
-        inCombatHide=e.Player.husandro,--战斗中隐藏
+        --inCombatHide=e.Player.husandro,--战斗中隐藏
     }
 
 
@@ -160,8 +160,8 @@ local function Init()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a/收起选项 |A:editmode-up-arrow:16:11:0:3|a' or (HUD_EDIT_MODE_EXPAND_OPTIONS..'/'..HUD_EDIT_MODE_COLLAPSE_OPTIONS), e.Icon.mid)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt + '..e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE), e.GetEnabeleDisable(Save.autoHide))
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt+ '..e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))..': '..e.GetEnabeleDisable(Save.autoHide), 'Alt+ '..e.Icon.right)
         e.tips:Show()
     end
     ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript("OnLeave", GameTooltip_Hide)
@@ -197,6 +197,13 @@ local function Init()
 
         elseif event=='PLAYER_REGEN_ENABLED' then
             e.call('ObjectiveTracker_Expand')
+        end
+    end)
+
+    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript('OnClick', function(_, d)
+        if IsAltKeyDown() and d=='RightButton' then
+            e.OpenPanelOpting('|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL))
         end
     end)
 

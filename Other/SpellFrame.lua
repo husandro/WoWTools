@@ -90,8 +90,8 @@ local function Init()
     --法术按键, 颜色
     --#############
     hooksecurefunc('ActionButton_UpdateRangeIndicator', function(frame, checksRange, inRange)--ActionButton.lua
-        if checksRange and frame.UpdateUsable then
-            frame.inRange= inRange
+        frame.inRange= inRange
+        if frame.UpdateUsable then
             if not frame.setHooksecurefunc then
                 hooksecurefunc(frame, 'UpdateUsable', function(self)
                     if self.inRange==false then
