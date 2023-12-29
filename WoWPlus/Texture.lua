@@ -252,6 +252,13 @@ local function Init_All_Frame()
         return
     end
 
+    hide_Texture(GameMenuFrame.Header.RightBG)
+    hide_Texture(GameMenuFrame.Header.CenterBG)
+    hide_Texture(GameMenuFrame.Header.LeftBG)
+    GameMenuFrame.Header.Text:ClearAllPoints()
+    GameMenuFrame.Header.Text:SetPoint('TOP', 0 ,-24)
+    set_Alpha_Frame_Texture(GameMenuFrame.Border, {alpha= min05})
+
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
         hide_Texture(frame.TargetFrameContainer.FrameTexture)
@@ -474,9 +481,11 @@ local function Init_All_Frame()
      set_NineSlice(PVEFrame, true)
      set_SearchBox(LFGListFrame.SearchPanel.SearchBox)
      set_ScrollBar(LFGListFrame.SearchPanel)
-     set_Alpha_Color(LFGListFrame.CategorySelection.Inset.CustomBG)
-     hide_Texture(LFGListFrame.CategorySelection.Inset.Bg)
-
+     --set_Alpha_Color(LFGListFrame.CategorySelection.Inset.CustomBG)
+     --hide_Texture(LFGListFrame.CategorySelection.Inset.Bg)
+     hide_Frame_Texture(LFGListFrame.CategorySelection.Inset)
+     set_NineSlice(RaidFinderFrameRoleInset, true)
+     set_NineSlice(LFGListFrame.CategorySelection.Inset, nil, true)
 
      set_Alpha_Color(LFGListFrame.EntryCreation.Inset.CustomBG)
      set_Alpha_Color(LFGListFrame.EntryCreation.Inset.Bg)
@@ -500,6 +509,8 @@ local function Init_All_Frame()
      hide_Texture(PVEFrameBg)--左边
      hide_Texture(PVEFrameBlueBg)
      hide_Texture(PVEFrameLeftInset.Bg)
+     set_NineSlice(PVEFrameLeftInset, nil, true)
+     hide_Frame_Texture(PVEFrame.shadows)
 
      set_Alpha_Color(LFDQueueFrameBackground)
      set_Alpha_Color(LFDQueueFrameTypeDropDownMiddle)
@@ -1272,6 +1283,7 @@ local function Init_Event(arg1)
 
         set_ScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
         set_ScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
+        set_ScrollBar(EncounterJournal.LootJournal)
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set_Alpha_Color(GuildBankFrame.BlackBG)

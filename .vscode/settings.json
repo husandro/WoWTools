@@ -5098,7 +5098,19 @@
         "PetJournalSummonRandomFavoritePetButtonSpellName",
         "PetJournalHealPetButtonSpellName",
         "AJ_SUGGESTED_CONTENT_TAB",
-        "LOOT_JOURNAL_ITEM_SETS"
+        "LOOT_JOURNAL_ITEM_SETS",
+        "EncounterJournalTitleText",
+        "GameMenuButtonHelp",
+        "GameMenuButtonStore",
+        "GameMenuButtonWhatsNew",
+        "GameMenuButtonSettings",
+        "GameMenuButtonEditMode",
+        "GameMenuButtonMacros",
+        "GameMenuButtonAddons",
+        "GameMenuButtonLogout",
+        "GameMenuButtonQuit",
+        "GameMenuButtonContinue",
+        "JOIN_AS_PARTY"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

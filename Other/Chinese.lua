@@ -1171,6 +1171,19 @@ local strText={
 
 
 local function Init()
+        --可能会出错
+        set(GameMenuFrame.Header.Text, '游戏菜单')
+        set(GameMenuButtonHelp, '帮助')
+        set(GameMenuButtonStore, '商店')
+        set(GameMenuButtonWhatsNew, '新内容')
+        set(GameMenuButtonSettings, '选项')
+        set(GameMenuButtonEditMode, '编辑模式')
+        set(GameMenuButtonMacros, '宏')
+        set(GameMenuButtonAddons, '插件')
+        set(GameMenuButtonLogout, '登出')
+        set(GameMenuButtonQuit, '退出游戏')
+        set(GameMenuButtonContinue, '返回游戏')
+
     --角色
     set(CharacterFrameTab1, '角色')
         hooksecurefunc('PaperDollFrame_SetLabelAndText', function(statFrame, label)--PaperDollFrame.lua
@@ -1247,6 +1260,19 @@ local function Init()
     set(LFGListFrame.SearchPanel.BackButton, '后退')
 
     set(LFGListFrame.EntryCreation.CancelButton, '后退')
+
+    hooksecurefunc('LFDQueueFrameFindGroupButton_Update', function()--LFDFrame.lua
+        local mode = GetLFGMode(LE_LFG_CATEGORY_LFD);
+        if ( mode == "queued" or mode == "rolecheck" or mode == "proposal" or mode == "suspended" ) then
+            set(LFDQueueFrameFindGroupButton, '离开队列');
+        else
+            if ( IsInGroup() and GetNumGroupMembers() > 1 ) then
+                set(LFDQueueFrameFindGroupButton, '小队加入');
+            else
+                set(LFDQueueFrameFindGroupButton, '寻找组队');
+            end
+        end
+    end)
     --set(LFGListFrame.EntryCreation.ListGroupButton, '列出队伍')
 
     --选项
@@ -1690,6 +1716,8 @@ local function Init_Loaded(arg1)
         set(WardrobeCollectionFrameTab2, '套装')
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
+        set(EncounterJournalTitleText, '冒险指南')
+
         set(EncounterJournalMonthlyActivitiesTab, '旅行者日志')
         set(EncounterJournalSuggestTab, '推荐玩法')
         set(EncounterJournalDungeonTab, '地下城')
