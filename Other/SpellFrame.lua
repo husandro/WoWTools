@@ -91,7 +91,55 @@ local function Init()
     --#############
     
 
-    hooksecurefunc('ActionButton_UpdateRangeIndicator', function(frame)--, checksRange, inRange)--ActionButton.lua
+    hooksecurefunc('ActionButton_UpdateRangeIndicator', function(frame, checksRange, inRange)--ActionButton.lua
+        if not frame.setHooksecurefunc and frame.UpdateUsable then
+            hooksecurefunc(frame, 'UpdateUsable', function(self, _, isUsable)
+                if isUsable == nil then
+                    isUsable = IsUsableAction(self.action);
+                end
+                if isUsable and UnitExists('target')  and ActionHasRange(self.action) and not IsActionInRange(self.action) then
+                    self.icon:SetVertexColor(1,0,0)
+                end
+            end)
+            frame.setHooksecurefunc= true
+        end
+
+        if ( frame.HotKey:GetText() == RANGE_INDICATOR ) then
+            if ( checksRange ) then
+                if ( inRange ) then
+                    if frame.UpdateUsable then
+                        frame:UpdateUsable()
+                    end
+                else
+                    frame.icon:SetVertexColor(1,0,0);
+                end
+            end
+        else
+            if ( checksRange and not inRange ) then
+                frame.icon:SetVertexColor(1,0,0);
+            elseif frame.UpdateUsable then
+                frame:UpdateUsable()
+            end
+        end
+
+    end)
+
+
+end
+        --[[
+            
+        
+        local isNotInRange= checksRange and inRange==false
+        if not frame.isNotInRange then
+            frame.isNotInRange= frame:CreateTexture(nil, 'OVERLAY')
+            frame.isNotInRange:SetAtlas('jailerstower-wayfinder-rewardbackground-mouseover')
+           -- frame.isNotInRange:SetVertexColor(1,0,0)
+            frame.isNotInRange:SetAllPoints(frame)
+        end
+        if frame.isNotInRange then
+           -- frame.isNotInRange:SetShown(isNotInRange)
+        end
+        
         if not frame.UpdateUsable then
             return
         end
@@ -108,15 +156,13 @@ local function Init()
             frame.setHooksecurefunc= true
         end
         frame:UpdateUsable()
-        --[[if checksRange then
+        if checksRange then
            if not inRange then
                 self.icon:SetVertexColor(RED_FONT_COLOR:GetRGB())
            else--if self.action then
                 self:UpdateUsable()
             end
         --end]]
-    end)
-end
 
 
 --###########
