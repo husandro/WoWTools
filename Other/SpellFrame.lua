@@ -94,10 +94,7 @@ local function Init()
     hooksecurefunc('ActionButton_UpdateRangeIndicator', function(frame, checksRange, inRange)--ActionButton.lua
         if not frame.setHooksecurefunc and frame.UpdateUsable then
             hooksecurefunc(frame, 'UpdateUsable', function(self, _, isUsable)
-                if isUsable == nil then
-                    isUsable = IsUsableAction(self.action);
-                end
-                if isUsable and UnitExists('target')  and ActionHasRange(self.action) and not IsActionInRange(self.action) then
+                if IsUsableAction(self.action) and ActionHasRange(self.action) and IsActionInRange(self.action)==false then
                     self.icon:SetVertexColor(1,0,0)
                 end
             end)

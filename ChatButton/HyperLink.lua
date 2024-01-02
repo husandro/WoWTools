@@ -1,6 +1,9 @@
 local id, e = ...
 local addName = format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL)
 local Save={
+    --disabed=true, --使用，禁用
+    --notShowPlayerInfo=true,--不处理，玩家信息
+
     channels={--频道名称替换 
         --['世界'] = '[世]',
     },
@@ -24,7 +27,7 @@ local Save={
 }
 local button
 local panel= CreateFrame("Frame")
-DEFAULT_CHAT_FRAME.ADD=DEFAULT_CHAT_FRAME.AddMessage
+DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
 
 
 local set_LOOT_ITEM= LOOT_ITEM:gsub('%%s', '(.+)')--%s获得了战利品：%s。
@@ -480,7 +483,7 @@ local function setAddMessageFunc(self, s, ...)
     local petChannel=s:find('|Hchannel:.-'..PET_BATTLE_COMBAT_LOG..']|h') and true or false
 
     s=s:gsub('|Hchannel:.-]|h', SetChannels)
-    s=s:gsub('|Hplayer:.-]|h', Realm)
+
     s=s:gsub('|Hitem:.-]|h',Item)
     s=s:gsub('|Hspell:.-]|h',Spell)
     s=s:gsub('|Hmount:.-]|h',setMount)
@@ -508,13 +511,17 @@ local function setAddMessageFunc(self, s, ...)
 
     s=s:gsub('(%d+%.%d%d %d+%.%d%d)', Waypoint)--地图标记xy, 格式 60.00 70.50
 
-    if not showTimestamps and s:find(set_LOOT_ITEM) then--	%s获得了战利品：%s。
-        local unitName= s:match(set_LOOT_ITEM)
-        if unitName then
-            if unitName==e.Player.name then
-                s=s:gsub(unitName..'['..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
-            else
-                s=s:gsub(e.Magic(unitName), e.PlayerLink(unitName))
+    if not Save.notShowPlayerInfo then--不处理，玩家信息
+        s=s:gsub('|Hplayer:.-]|h', Realm)
+
+        if not showTimestamps and s:find(set_LOOT_ITEM) then--	%s获得了战利品：%s。
+            local unitName= s:match(set_LOOT_ITEM)
+            if unitName then
+                if unitName==e.Player.name then
+                    s=s:gsub(unitName..'['..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
+                else
+                    s=s:gsub(e.Magic(unitName), e.PlayerLink(unitName))
+                end
             end
         end
     end
@@ -1013,7 +1020,14 @@ local function InitMenu(_, level, menuList)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-
+        info= {
+            text= e.onlyChinese and '玩家信息' or PLAYER_MESSAGES,
+            checked= not Save.notShowPlayerInfo,
+            func= function()
+                Save.notShowPlayerInfo= not Save.notShowPlayerInfo and true or nil
+            end,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
     if menuList then
@@ -1159,12 +1173,21 @@ end
 --初始
 --####
 local function Init()
+    button= e.Cbtn2({
+        name=nil,
+        parent=WoWToolsChatButtonFrame,
+        click=true,-- right left
+        notSecureActionButton=true,
+        notTexture=nil,
+        showTexture=true,
+        sizi=nil,
+    })
+
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')
 
     WoWToolsChatButtonFrame.last=button
     button.texture:SetAtlas(e.Icon.icon)
 
-    Init_Panel()--设置控制面板
 
     button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
@@ -1214,6 +1237,9 @@ local function Init()
             end
         end
     end)
+
+    Init_Panel()--设置控制面板
+    set_Talking()--隐藏NPC发言
 end
 
 
@@ -1239,17 +1265,8 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                 Save.groupWelcomeText= Save.groupWelcomeText or (e.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
                 Save.guildWelcomeText= Save.guildWelcomeText or (e.Player.cn and '宝贝，欢迎你加入' or EMOTE103_CMD1:gsub('/',''))
 
-                button= e.Cbtn2({
-                    name=nil,
-                    parent=WoWToolsChatButtonFrame,
-                    click=true,-- right left
-                    notSecureActionButton=true,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
 
-                set_Talking()--隐藏NPC发言
+
                 Init()
                 panel:RegisterEvent('CVAR_UPDATE')
             else
