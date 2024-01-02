@@ -1271,6 +1271,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                 panel:RegisterEvent('CVAR_UPDATE')
             else
                 panel:UnregisterEvent('ADDON_LOADED')
+                DEFAULT_CHAT_FRAME.ADD= nil
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
