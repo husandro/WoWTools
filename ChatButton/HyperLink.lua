@@ -24,7 +24,7 @@ local Save={
 }
 local button
 local panel= CreateFrame("Frame")
-local Prima_AddMessage= DEFAULT_CHAT_FRAME.AddMessage
+DEFAULT_CHAT_FRAME.ADD=DEFAULT_CHAT_FRAME.AddMessage
 
 
 local set_LOOT_ITEM= LOOT_ITEM:gsub('%%s', '(.+)')--%s获得了战利品：%s。
