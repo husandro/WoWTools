@@ -1103,6 +1103,7 @@ local strText={
     [STAT_LIFESTEAL] = "吸血",
     [STAT_AVOIDANCE] = "闪避",
     [STAT_SPEED] = "加速",
+    [STAT_PARRY] = "招架",
     [DAMAGE] = "伤害",
     [STAT_ATTACK_POWER] = "攻击强度",
     [WEAPON_SPEED] = "攻击速度",
