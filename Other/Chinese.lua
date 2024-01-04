@@ -1118,7 +1118,11 @@ local strText={
     [STAT_DODGE] = "躲闪",
     [STAT_BLOCK] = "格挡",
     [STAT_STAGGER] = "醉拳",
-    }
+
+    --[ARENA] = "竞技场",
+    --[SOCIAL_QUEUE_FORMAT_ARENA_SKIRMISH] = "竞技场练习赛",
+    [AUCTION_HOUSE_FILTER_DROPDOWN_CUSTOM] = "自定义",
+}
 
 
 
@@ -1236,21 +1240,91 @@ local function Init()
     end)
 
     --LFD PVEFrame.lua
+    set(PVEFrameTitleText, '地下城和团队副本')
+
     set(PVEFrameTab1, '地下城和团队副本')
     set(PVEFrameTab2, 'PvP')
     set(PVEFrameTab3, '史诗钥石地下城')
 
-    set(PVPQueueFrameCategoryButton1, '快速比赛')
-    set(PVPQueueFrameCategoryButton2, '评级')
-    set(PVPQueueFrameCategoryButton3, '预创建队伍')
-
-
     set(GroupFinderFrame.groupButton1.name, '地下城查找器')
+        set(LFDQueueFrameTypeDropDownName, '类型：')
     set(GroupFinderFrame.groupButton2.name, '团队查找器')
+        set(RaidFinderQueueFrameSelectionDropDownName, '团队')
+            hooksecurefunc('RaidFinderFrameFindRaidButton_Update', function()--RaidFinder.lua
+                local mode = GetLFGMode(LE_LFG_CATEGORY_RF, RaidFinderQueueFrame.raid);
+	            --Update the text on the button
+                if ( mode == "queued" or mode == "rolecheck" or mode == "proposal" or mode == "suspended" ) then
+                    set(RaidFinderFrameFindRaidButton, '离开队列')--LEAVE_QUEUE
+                else
+                    if ( IsInGroup() and GetNumGroupMembers() > 1 ) then
+                        set(RaidFinderFrameFindRaidButton, '小队加入')--:SetText(JOIN_AS_PARTY);
+                    else
+                        set(RaidFinderFrameFindRaidButton, '寻找组队')--:SetText(FIND_A_GROUP);
+                    end
+                end
+            end)
     set(GroupFinderFrame.groupButton3.name, '预创建队伍')
-    set(LFGListFrame.CategorySelection.StartGroupButton, '创建队伍')
-    set(LFGListFrame.CategorySelection.FindGroupButton, '寻找队伍')
-
+        set(LFGListFrame.CategorySelection.Label, '预创建队伍')
+        hooksecurefunc('LFGListCategorySelection_AddButton', function(self, btnIndex, categoryID, filters)--LFGList.lua
+            local baseFilters = self:GetParent().baseFilters;
+            local allFilters = bit.bor(baseFilters, filters);
+            if ( filters ~= 0 and #C_LFGList.GetAvailableActivities(categoryID, nil, allFilters) == 0) then
+                return
+            end
+            local categoryInfo = C_LFGList.GetLfgCategoryInfo(categoryID)
+            local text=LFGListUtil_GetDecoratedCategoryName(categoryInfo.name, filters, true)
+            local button= self.CategoryButtons[btnIndex]
+            if button and button.Label and text then
+                local fontName2, size2, fontFlag2= button.Label:GetFont()
+                if e.onlyChinese then
+                    fontName2= 'Fonts\\ARHei.ttf'--黑体字
+                end
+                button.Label:SetFont(fontName2, size2, fontFlag2 or 'OUTLINE')
+                set(button.Label, strText[text])
+            end
+        end)
+        set(LFGListFrame.CategorySelection.StartGroupButton, '创建队伍')
+        set(LFGListFrame.CategorySelection.FindGroupButton, '寻找队伍')
+        set(LFGListFrame.CategorySelection.Label, '预创建队伍')
+            set(LFGListFrame.EntryCreation.NameLabel, '名称')
+            set(LFGListFrame.EntryCreation.DescriptionLabel, '详细信息')
+            hooksecurefunc('LFGListEntryCreation_SetPlaystyleLabelTextFromActivityInfo', function(self, activityInfo)--LFGList.lua
+                if(not activityInfo) then
+                    return;
+                end
+                local labelText;
+                if(activityInfo.isRatedPvpActivity) then
+                    labelText = '目标'--LFG_PLAYSTYLE_LABEL_PVP
+                elseif (activityInfo.isMythicPlusActivity) then
+                    labelText = '目标'--LFG_PLAYSTYLE_LABEL_PVE;
+                else
+                    labelText = '游戏风格'--LFG_PLAYSTYLE_LABEL_PVE_MYTHICZERO;
+                end
+                set(self.PlayStyleLabel, labelText)
+            end)
+            set(LFGListFrame.EntryCreation.PlayStyleLabel, '目标')
+            set(LFGListFrame.EntryCreation.MythicPlusRating.Label, '最低史诗钥石评分')
+            set(LFGListFrame.EntryCreation.ItemLevel.Label, '最低物品等级')
+            set(LFGListFrame.EntryCreation.PvpItemLevel.Label, '最低PvP物品等级')
+            set(LFGListFrame.EntryCreation.VoiceChat.Label, '语音聊天')
+            hooksecurefunc('LFGListEntryCreation_Select', function(self)
+                local faction = UnitFactionGroup("player")
+                if faction=='Alliance' then
+                    set(self.CrossFactionGroup.Label, '仅限联盟')
+                elseif faction=='Horde' then
+                    set(self.CrossFactionGroup.Label, '仅限部落')
+                end
+            end)
+            set(LFGListFrame.EntryCreation.PrivateGroup.Label, '个人')
+            hooksecurefunc('LFGListEntryCreation_SetEditMode', function(self)--LFGList.lua
+                if self.editMode then
+                    set(self.ListGroupButton, '编辑完毕')
+                else
+                    set(self.ListGroupButton, '列出队伍')
+                end
+            end)
+            
+            --hooksecurefunc('LFGListEntryCreation_Show', function()
     set(LFGListFrame.ApplicationViewer.AutoAcceptButton.Label, '自动邀请')
     set(LFGListFrame.ApplicationViewer.BrowseGroupsButton, '浏览队伍')
     set(LFGListFrame.ApplicationViewer.RemoveEntryButton, '移除')
@@ -1274,7 +1348,7 @@ local function Init()
             end
         end
     end)
-    --set(LFGListFrame.EntryCreation.ListGroupButton, '列出队伍')
+    
 
     --选项
     hooksecurefunc(SettingsPanel.Container.SettingsList.ScrollBox, 'Update', function(frame)
@@ -1915,6 +1989,18 @@ local function Init_Loaded(arg1)
                 end
             end)
         set(InspectFrameTab3, '公会')
+
+    elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
+        set(PVPQueueFrameCategoryButton1.Name, '快速比赛')
+            hooksecurefunc('HonorFrameBonusFrame_Update', function()--Blizzard_PVPUI.lua
+                set(HonorFrame.BonusFrame.RandomBGButton.Title, '随机战场')
+                set(HonorFrame.BonusFrame.RandomEpicBGButton.Title, '随机史诗战场')
+                set(HonorFrame.BonusFrame.Arena1Button.Title, '竞技场练习赛')
+            end)
+        set(PVPQueueFrameCategoryButton2.Name, '评级')
+        set(PVPQueueFrameCategoryButton3.Name, '预创建队伍')
+
+        
     --elseif arg1=='Blizzard_Professions' then--专业
     end
 end

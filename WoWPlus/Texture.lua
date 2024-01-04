@@ -478,17 +478,20 @@ local function Init_All_Frame()
      WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
 
      --地下城和团队副本
+     hide_Texture(PVEFrame.TopTileStreaks)--最上面
+
      set_NineSlice(PVEFrame, true)
      set_SearchBox(LFGListFrame.SearchPanel.SearchBox)
      set_ScrollBar(LFGListFrame.SearchPanel)
      --set_Alpha_Color(LFGListFrame.CategorySelection.Inset.CustomBG)
      --hide_Texture(LFGListFrame.CategorySelection.Inset.Bg)
      hide_Frame_Texture(LFGListFrame.CategorySelection.Inset)
-     set_NineSlice(RaidFinderFrameRoleInset, true)
-     set_NineSlice(LFGListFrame.CategorySelection.Inset, nil, true)
 
-     set_Alpha_Color(LFGListFrame.EntryCreation.Inset.CustomBG)
-     set_Alpha_Color(LFGListFrame.EntryCreation.Inset.Bg)
+     set_NineSlice(LFGListFrame.CategorySelection.Inset, nil, true)
+     set_NineSlice(LFGListFrame.EntryCreation.Inset, nil, true)
+     hide_Texture(LFGListFrame.EntryCreation.Inset.CustomBG)
+     hide_Texture(LFGListFrame.EntryCreation.Inset.Bg)
+
      set_Alpha_Color(LFGListFrameMiddleMiddle)
      set_Alpha_Color(LFGListFrameMiddleLeft)
      set_Alpha_Color(LFGListFrameMiddleRight)
@@ -498,15 +501,28 @@ local function Init_All_Frame()
      set_Alpha_Color(LFGListFrameBottomLeft)
      set_Alpha_Color(LFGListFrameTopRight)
      set_Alpha_Color(LFGListFrameBottomRight)
-     set_Alpha_Color(RaidFinderFrameBottomInset.Bg)
+
      set_Alpha_Color(RaidFinderQueueFrameBackground)
      set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownMiddle)
      set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownLeft)
      set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownRight)
-     set_Alpha_Color(RaidFinderFrameRoleBackground, nil, true)
-     set_Alpha_Color(RaidFinderFrameRoleInset.Bg)
+     hide_Texture(RaidFinderFrameRoleBackground)
+
+
+     --右边
+     hide_Texture(PVEFrameLLVert)
+     hide_Texture(PVEFrameRLVert)
+     hide_Texture(PVEFrameBLCorner)
+     hide_Texture(PVEFrameBottomLine)
+     hide_Texture(PVEFrameBRCorner)
+     hide_Texture(PVEFrameTLCorner)
+     hide_Texture(PVEFrameTopLine)
+     hide_Texture(PVEFrameTRCorner)
+
 
      set_Alpha_Color(PVEFrameBg)--左边
+
+
      hide_Texture(PVEFrameBlueBg)
      hide_Texture(PVEFrameLeftInset.Bg)
      set_NineSlice(PVEFrameLeftInset, nil, true)
@@ -517,8 +533,17 @@ local function Init_All_Frame()
      set_Alpha_Color(LFDQueueFrameTypeDropDownRight)
      set_Alpha_Color(LFDQueueFrameTypeDropDownLeft)
 
+     set_NineSlice(LFDParentFrameInset, nil, true)
      set_Alpha_Color(LFDParentFrameInset.Bg)
+     set_NineSlice(RaidFinderFrameBottomInset, nil, true)
+     set_Alpha_Color(RaidFinderFrameBottomInset.Bg)
+
      set_Alpha_Color(LFDParentFrameRoleBackground)
+
+    hide_Texture(LFDParentFrameRoleBackground)
+    set_NineSlice(RaidFinderFrameRoleInset, nil, true)
+    hide_Texture(RaidFinderFrameRoleInset.Bg)
+
 
     --GossipFrame
     set_NineSlice(GossipFrame, true)
@@ -868,7 +893,7 @@ local function Init_All_Frame()
          --end
      end)]]
 
-     
+
      for i=1, NUM_CHAT_WINDOWS do
         local frame= _G["ChatFrame"..i]
         if frame then
@@ -1223,9 +1248,25 @@ local function Init_Event(arg1)
 
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
         hide_Texture(HonorFrame.Inset.Bg)
+        hide_Texture(HonorFrame.BonusFrame.ShadowOverlay)
+        hide_Texture(HonorFrame.BonusFrame.WorldBattlesTexture)
+        set_NineSlice(HonorFrame.Inset, nil, true)
         set_Alpha_Color(HonorFrame.BonusFrame.WorldBattlesTexture)
         hide_Texture(HonorFrame.ConquestBar.Background)
-        set_Alpha_Color(ConquestFrame.Inset.Bg)
+
+        set_NineSlice(PVPQueueFrame.HonorInset, nil, true)--最右边
+
+        set_NineSlice(ConquestFrame.Inset, nil, true)--中间
+        hide_Texture(ConquestFrame.Inset.Bg)
+        hide_Texture(ConquestFrameLeft)
+        hide_Texture(ConquestFrameRight)
+        hide_Texture(ConquestFrameTopRight)
+        hide_Texture(ConquestFrameTop)
+        hide_Texture(ConquestFrameTopLeft)
+        hide_Texture(ConquestFrameBottomLeft)
+        hide_Texture(ConquestFrameBottom)
+        hide_Texture(ConquestFrameBottomRight)
+
         set_Alpha_Color(ConquestFrame.RatedBGTexture)
         PVPQueueFrame.HonorInset:DisableDrawLayer('BACKGROUND')
         set_Alpha_Color(PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay.Background)
@@ -1716,7 +1757,7 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(InspectFrameTab3, {alpha=min05})
         set_NineSlice(InspectFrame, true)
         set_NineSlice(InspectFrameInset, nil, true)
-        
+
     elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面 
         set_NineSlice(ItemUpgradeFrame, true)
         set_Alpha_Color(ItemUpgradeFrameBg)
