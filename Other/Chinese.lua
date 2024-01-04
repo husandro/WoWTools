@@ -1240,7 +1240,7 @@ local function Init()
     end)
 
     --LFD PVEFrame.lua
-    set(PVEFrameTitleText, '地下城和团队副本')
+    --set(PVEFrameTitleText, '地下城和团队副本')
 
     set(PVEFrameTab1, '地下城和团队副本')
     set(PVEFrameTab2, 'PvP')
@@ -1999,6 +1999,7 @@ local function Init_Loaded(arg1)
             end)
         set(PVPQueueFrameCategoryButton2.Name, '评级')
         set(PVPQueueFrameCategoryButton3.Name, '预创建队伍')
+--hooksecurefunc('HonorFrame_UpdateQueueButtons', function()
 
         
     --elseif arg1=='Blizzard_Professions' then--专业
