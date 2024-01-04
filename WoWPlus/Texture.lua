@@ -506,7 +506,7 @@ local function Init_All_Frame()
      set_Alpha_Color(RaidFinderFrameRoleBackground, nil, true)
      set_Alpha_Color(RaidFinderFrameRoleInset.Bg)
 
-     hide_Texture(PVEFrameBg)--左边
+     set_Alpha_Color(PVEFrameBg)--左边
      hide_Texture(PVEFrameBlueBg)
      hide_Texture(PVEFrameLeftInset.Bg)
      set_NineSlice(PVEFrameLeftInset, nil, true)
