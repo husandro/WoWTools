@@ -577,12 +577,7 @@ local function Init_All_Frame()
 
 
 
-     set_Alpha_Color(MerchantFrameLootFilterMiddle)
-     set_Alpha_Color(MerchantFrameLootFilterLeft)
-     set_Alpha_Color(MerchantFrameLootFilterRight)
-     set_Alpha_Color(MerchantFrameBottomLeftBorder)
-     set_Alpha_Frame_Texture(MerchantFrameTab1, {alpha=min05})
-     set_Alpha_Frame_Texture(MerchantFrameTab2, {alpha=min05})
+
 
      --银行
      set_NineSlice(BankFrame,true)
@@ -909,6 +904,12 @@ local function Init_All_Frame()
 
 
      --商人
+     set_Alpha_Color(MerchantFrameLootFilterMiddle)
+     set_Alpha_Color(MerchantFrameLootFilterLeft)
+     set_Alpha_Color(MerchantFrameLootFilterRight)
+     set_Alpha_Color(MerchantFrameBottomLeftBorder)
+     set_Alpha_Frame_Texture(MerchantFrameTab1, {alpha=min05})
+     set_Alpha_Frame_Texture(MerchantFrameTab2, {alpha=min05})
      set_ScrollBar(MerchantFrame)
      set_Alpha_Color(MerchantFrameBg)
      set_NineSlice(MerchantFrameInset, true)

@@ -1589,6 +1589,9 @@ local function Init()
         set(ReagentBankFrame.DespositButton, '存放各种材料')
     end
 
+    --商人
+    set(MerchantFrameTab1, '商人')
+    set(MerchantFrameTab2, '购回')
 end
 
 
