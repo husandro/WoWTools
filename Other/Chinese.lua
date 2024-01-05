@@ -16,6 +16,15 @@ local function set(self, text)
     end
 end
 
+local function font(lable)
+    if lable then
+        local fontName2, size2, fontFlag2= lable:GetFont()
+        if e.onlyChinese then
+            fontName2= 'Fonts\\ARHei.ttf'--黑体字
+        end
+        lable:SetFont(fontName2, size2, fontFlag2 or 'OUTLINE')
+    end
+end
 
 local strText={
     --Blizzard_AuctionData.lua
@@ -1277,11 +1286,7 @@ local function Init()
             local text=LFGListUtil_GetDecoratedCategoryName(categoryInfo.name, filters, true)
             local button= self.CategoryButtons[btnIndex]
             if button and button.Label and text then
-                local fontName2, size2, fontFlag2= button.Label:GetFont()
-                if e.onlyChinese then
-                    fontName2= 'Fonts\\ARHei.ttf'--黑体字
-                end
-                button.Label:SetFont(fontName2, size2, fontFlag2 or 'OUTLINE')
+                font(button.Label)
                 set(button.Label, strText[text])
             end
         end)
@@ -1573,6 +1578,7 @@ local function Init()
         --if C_QuestSession.HasJoined() then self.Text:SetText('任务场景')
         self.Text:SetText('任务')
     end)
+
     C_Timer.After(2, function()
         set(ObjectiveTrackerFrame.HeaderMenu.Title, '追踪')
         set(ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text, '战役')
@@ -2076,7 +2082,27 @@ local function Init_Loaded(arg1)
 --hooksecurefunc('HonorFrame_UpdateQueueButtons', function()
 
 
-    --elseif arg1=='Blizzard_Professions' then--专业
+    elseif arg1=='Blizzard_Professions' then--专业
+        hooksecurefunc(ProfessionsFrame, 'UpdateTabs', function(self)
+            local recipesTab = self:GetTabButton(self.recipesTabID)
+            font(recipesTab.Text)
+            set(recipesTab.Text, '配方')
+
+            recipesTab = self:GetTabButton(self.specializationsTabID )
+            font(recipesTab.Text)
+            set(recipesTab.Text, '专精')
+
+            recipesTab = self:GetTabButton(self.craftingOrdersTabID  )
+            font(recipesTab.Text)
+            set(recipesTab.Text, '制造订单')
+        end)
+
+        if ProfessionsFrame.SpecPage then
+            set(ProfessionsFrame.SpecPage.BackToFullTreeButton, '后退')
+            set(ProfessionsFrame.SpecPage.ViewPreviewButton, '综述')
+            set(ProfessionsFrame.SpecPage.DetailedView.SpendPointsButton, '运用知识')
+            set(ProfessionsFrame.SpecPage.ApplyButton, '应用改动')
+        end
     end
 end
 

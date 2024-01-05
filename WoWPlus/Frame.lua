@@ -582,7 +582,7 @@ local function Init_Move()
 
     local FrameTab={
         AddonList={},--插件
-        GameMenuFrame={save=true,},--菜单
+        GameMenuFrame={},--菜单
         --ProfessionsFrame={},--专业 10.1.5出错
         InspectRecipeFrame={},
 
