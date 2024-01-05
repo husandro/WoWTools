@@ -2008,6 +2008,70 @@ local function Init()
     StaticPopupDialogs["DELETE_QUEST_ITEM"].button1 = '是'
     StaticPopupDialogs["DELETE_QUEST_ITEM"].button2 = '否'
 
+    StaticPopupDialogs["DELETE_GOOD_ITEM"].text = '你真的要摧毁%s吗？\n\n请在输入框中输入\"'..DELETE_ITEM_CONFIRM_STRING..'\"以确认。'
+    StaticPopupDialogs["DELETE_GOOD_ITEM"].button1 = '是'
+    StaticPopupDialogs["DELETE_GOOD_ITEM"].button2 = '否'
+
+    StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"].text = '确定要摧毁%s吗？\n|cffff2020摧毁该物品也将同时放弃相关任务。|r\n\n请在输入框中输入\"'..DELETE_ITEM_CONFIRM_STRING..'\"以确认。'
+    StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"].button1 = '是'
+    StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"].button2 = '否'
+
+    StaticPopupDialogs["QUEST_ACCEPT"].text = '%s即将开始%s\n你也想这样吗？'
+    StaticPopupDialogs["QUEST_ACCEPT"].button1 = '是'
+    StaticPopupDialogs["QUEST_ACCEPT"].button2 = '否'
+
+    StaticPopupDialogs["QUEST_ACCEPT_LOG_FULL"].text = '%s正在开始%s任务\n你的任务纪录已满。如果能够在任务纪录中\n空出位置，你也可以参与此任务。'
+    StaticPopupDialogs["QUEST_ACCEPT_LOG_FULL"].button1 = '是'
+    StaticPopupDialogs["QUEST_ACCEPT_LOG_FULL"].button2 = '否'
+
+    StaticPopupDialogs["ABANDON_PET"].text = '你是否决定永远地遗弃你的宠物？你将再也不能召唤它了。'
+    StaticPopupDialogs["ABANDON_PET"].button1 = '确定'
+    StaticPopupDialogs["ABANDON_PET"].button2 = '取消'
+
+    StaticPopupDialogs["ABANDON_QUEST"].text = '放弃\"%s\"？'
+    StaticPopupDialogs["ABANDON_QUEST"].button1 = '是'
+    StaticPopupDialogs["ABANDON_QUEST"].button2 = '否'
+
+
+    StaticPopupDialogs["ABANDON_QUEST_WITH_ITEMS"].text = '确定要放弃\"%s\"并摧毁%s吗？'
+    StaticPopupDialogs["ABANDON_QUEST_WITH_ITEMS"].button1 = '是'
+    StaticPopupDialogs["ABANDON_QUEST_WITH_ITEMS"].button2 = '否'
+
+    StaticPopupDialogs["ADD_FRIEND"].text = '输入好友的角色名：'
+    StaticPopupDialogs["ADD_FRIEND"].button1 = '接受'
+    StaticPopupDialogs["ADD_FRIEND"].button2 = '取消'
+
+    StaticPopupDialogs["SET_FRIENDNOTE"].text = '为%s设置备注：'
+    StaticPopupDialogs["SET_FRIENDNOTE"].button1 = '接受'
+    StaticPopupDialogs["SET_FRIENDNOTE"].button2 = '取消'
+
+    StaticPopupDialogs["SET_BNFRIENDNOTE"].text = '为%s设置备注：'
+    StaticPopupDialogs["SET_BNFRIENDNOTE"].button1 = '接受'
+    StaticPopupDialogs["SET_BNFRIENDNOTE"].button2 = '取消'
+
+    StaticPopupDialogs["SET_COMMUNITY_MEMBER_NOTE"].text = '为%s设置备注：'
+    StaticPopupDialogs["SET_COMMUNITY_MEMBER_NOTE"].button1 = '接受'
+    StaticPopupDialogs["SET_COMMUNITY_MEMBER_NOTE"].button2 = '取消'
+
+    StaticPopupDialogs["CONFIRM_REMOVE_COMMUNITY_MEMBER"].text = '你确定要将%s从群组中移除吗？'
+    StaticPopupDialogs["ABANDON_QUEST"].button1 = '是'
+    StaticPopupDialogs["ABANDON_QUEST"].button2 = '否'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
