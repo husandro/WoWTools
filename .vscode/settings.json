@@ -5136,7 +5136,8 @@
         "LFG_PLAYSTYLE_LABEL_PVP",
         "LFG_PLAYSTYLE_LABEL_PVE",
         "LFG_PLAYSTYLE_LABEL_PVE_MYTHICZERO",
-        "PVEFrameTitleText"
+        "PVEFrameTitleText",
+        "STANDING"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

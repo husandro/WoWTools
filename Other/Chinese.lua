@@ -1191,20 +1191,31 @@ local function Init()
 
     --角色
     set(CharacterFrameTab1, '角色')
+        set(CharacterStatsPane.ItemLevelCategory.Title, '物品等级')
+        set(CharacterStatsPane.AttributesCategory.Title, '属性')
+        set(CharacterStatsPane.EnhancementsCategory.Title, '强化属性')
         hooksecurefunc('PaperDollFrame_SetLabelAndText', function(statFrame, label)--PaperDollFrame.lua
             local text= strText[label]
             if text then
                 set(statFrame.Label, format('%s：', text))
             end
         end)
+        set(PaperDollFrameEquipSetText, '装备')
+        set(PaperDollFrameSaveSetText , '保存')
     set(CharacterFrameTab2, '声望')
+        set(ReputationFrameFactionLabel, '阵营')--FACTION
+        set(ReputationFrameStandingLabel,  "关系")--STANDING
+        set(ReputationDetailViewRenownButton, '浏览名望')--ReputationFrame.xml
+        set(ReputationDetailMainScreenCheckBoxText, '显示为经验条')
+        set(ReputationDetailInactiveCheckBoxText, '隐藏')
+        set(ReputationDetailAtWarCheckBoxText, '交战状态')
     set(CharacterFrameTab3, '货币')
-    set(CharacterStatsPane.ItemLevelCategory.Title, '物品等级')
-    set(CharacterStatsPane.AttributesCategory.Title, '属性')
-    set(CharacterStatsPane.EnhancementsCategory.Title, '强化属性')
+        set(TokenFramePopup.Title, '货币设置')
+        set(TokenFramePopup.InactiveCheckBox.Text, '未使用')
+        set(TokenFramePopup.BackpackCheckBox.Text, '在行囊上显示')
 
-    set(PaperDollFrameEquipSetText, '装备')
-    set(PaperDollFrameSaveSetText , '保存')
+
+
 
     set(GearManagerPopupFrame.BorderBox.EditBoxHeaderText, '输入方案名称（最多16个字符）：')
     set(GearManagerPopupFrame.BorderBox.IconSelectionText, '选择一个图标：')
@@ -1222,15 +1233,10 @@ local function Init()
 
 
 
-    --ReputationFrame.xml
-    set(ReputationDetailViewRenownButton, '浏览名望')
-    set(ReputationDetailMainScreenCheckBoxText, '显示为经验条')
-    set(ReputationDetailInactiveCheckBoxText, '隐藏')
-    set(ReputationDetailAtWarCheckBoxText, '交战状态')
 
-    set(TokenFramePopup.Title, '货币设置')
-    set(TokenFramePopup.InactiveCheckBox.Text, '未使用')
-    set(TokenFramePopup.BackpackCheckBox.Text, '在行囊上显示')
+
+
+
 
     --法术 SpellBookFrame.lua
     hooksecurefunc('SpellBookFrame_Update', function()
