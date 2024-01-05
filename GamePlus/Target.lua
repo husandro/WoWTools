@@ -70,6 +70,16 @@ local Save= {
     questShowPlayerClass=true,--显示，玩家职业
 }
 
+
+
+
+
+
+
+
+
+
+
 local panel= CreateFrame("Frame")
 local targetFrame
 local isPvPArena, isIns--, isPvPZone
@@ -83,6 +93,24 @@ local function get_isAddOnPlater(unit)
         end
     end
 end]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function set_Target_Texture(self)--设置，图片
     if self then
@@ -115,10 +143,24 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --########################
 --怪物目标, 队员目标, 总怪物
 --########################
-
 local createRun
 local function set_Creature_Num()--local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
     if not (Save.creature and targetFrame:IsShown()) or createRun then
@@ -170,6 +212,22 @@ local function set_Creature_Num()--local distanceSquared, checkedDistance = Unit
     targetFrame.Creature:SetText(e.Player.col..(T==0 and '-' or  T)..'|r |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
     createRun=nil
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -276,6 +334,32 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --##########################
 --设置,指示目标,位置,显示,隐藏
 --##########################
@@ -314,6 +398,34 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####################################
 --设置 targetFrame Target Creature 属性
 --####################################
@@ -340,6 +452,32 @@ local function set_Created_Texture_Text()
     end
    set_Target()
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -406,6 +544,29 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -446,6 +607,25 @@ local function Init()
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -764,6 +944,28 @@ local function set_Option()
         set_All_Init()
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
