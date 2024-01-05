@@ -51,7 +51,7 @@ local heirloomWeapontemEquipLocTab={--传家宝，武器，itemEquipLoc
 
 
 local function Set_Item_Info(self, tab)
-    if not self then
+    if not self or not self:IsVisible() then
         return
     end
     local itemLevel, itemQuality, battlePetSpeciesID
@@ -95,7 +95,6 @@ local function Set_Item_Info(self, tab)
         if not itemID then
             itemID= itemLink:match('|H.-:(%d+):')
             itemID= itemID and tonumber(itemID)
-            print(itemID)
         end
 
         local _, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, _, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
