@@ -1594,6 +1594,74 @@ local function Init()
     --商人
     set(MerchantFrameTab1, '商人')
     set(MerchantFrameTab2, '购回')
+
+    --就绪
+    --ReadyCheck.lua
+    set(ReadyCheckFrameYesButton, '就绪')--:SetText(GetText("READY", UnitSex("player")));
+	set(ReadyCheckFrameNoButton, '未就绪')--:SetText(GetText("NOT_READY", UnitSex("player")));
+    hooksecurefunc('ShowReadyCheck', function(initiator)
+        if ReadyCheckListenerFrame:IsShown() then
+            local _, _, difficultyID = GetInstanceInfo();
+            if ( not difficultyID or difficultyID == 0 ) then
+                if (UnitInRaid("player")) then-- not in an instance, go by current difficulty setting
+                    difficultyID = GetRaidDifficultyID();
+                else
+                    difficultyID = GetDungeonDifficultyID();
+                end
+            end
+            local difficultyName, _, _, _, _, _, toggleDifficultyID = GetDifficultyInfo(difficultyID);
+            local name= e.GetPlayerInfo({name= initiator, reName=true})
+            name= name~='' and name or initiator
+            if ( toggleDifficultyID and toggleDifficultyID > 0 ) then
+                -- the current difficulty might change while inside an instance so show the difficulty on the ready check
+                ReadyCheckFrameText:SetFormattedText("%s正在进行就位确认。\n团队副本难度: "..difficultyName, name);
+            else
+                ReadyCheckFrameText:SetFormattedText('%s正在进行就位确认。', name);
+            end
+           -- ReadyCheckListenerFrame:Show()
+        end
+    end)
+
+    --插件
+    set(AddonListTitleText, '插件列表')
+    --AddonListForceLoad:SetText('加载过期插件')
+    set(AddonListEnableAllButton, '全部启用')
+    set(AddonListDisableAllButton, '全部禁用')
+    hooksecurefunc('AddonList_Update', function()--AddonList.lua
+        if ( not InGlue() ) then
+            if ( AddonList_HasAnyChanged() ) then
+                set(AddonListOkayButton, '重新加载UI')
+            else
+                set(AddonListOkayButton, '确定')
+            end
+        end
+    end)
+    set(AddonListCancelButton, '取消')
+
+    --拾取
+    set(GroupLootHistoryFrameTitleText, '战利品掷骰')
+
+    --StaticPopup.lua
+    StaticPopupDialogs["CONFIRM_OVERWRITE_EQUIPMENT_SET"].text = '你已经有一个名为%s的装备方案了。是否要覆盖已有方案'
+    StaticPopupDialogs["CONFIRM_OVERWRITE_EQUIPMENT_SET"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_OVERWRITE_EQUIPMENT_SET"].button2 = '否'
+
+    
+    StaticPopupDialogs["CONFIRM_SAVE_EQUIPMENT_SET"].text = '你想要保存装备方案\"%s\"吗？'
+    StaticPopupDialogs["CONFIRM_SAVE_EQUIPMENT_SET"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_SAVE_EQUIPMENT_SET"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_DELETE_EQUIPMENT_SET"].text = '你你确认要删除装备方案%s吗？'
+    StaticPopupDialogs["CONFIRM_DELETE_EQUIPMENT_SET"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_DELETE_EQUIPMENT_SET"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_RESET_TEXTTOSPEECH_SETTINGS"].text = '确定将所有文字转语音设定重置为默认值吗？'
+    StaticPopupDialogs["CONFIRM_RESET_TEXTTOSPEECH_SETTINGS"].button1 = '接受'
+    StaticPopupDialogs["CONFIRM_RESET_TEXTTOSPEECH_SETTINGS"].button2 = '取消'
+
+    StaticPopupDialogs["CONFIRM_REDOCK_CHAT"].text = '这么做会将你的聊天窗口重新并入综合标签页。'
+    StaticPopupDialogs["CONFIRM_REDOCK_CHAT"].button1 = '接受'
+    StaticPopupDialogs["CONFIRM_REDOCK_CHAT"].button2 = '取消'
 end
 
 
@@ -1737,6 +1805,7 @@ local function Init_Loaded(arg1)
         end)
 
         set(CollectionsJournalTab1, '坐骑')
+            set(MountJournal.MountCount.Label, '坐骑')
             hooksecurefunc('MountJournal_UpdateMountDisplay', function()--Blizzard_MountCollection.lua
                 if ( MountJournal.selectedMountID ) then
                     local active = select(4, C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID))

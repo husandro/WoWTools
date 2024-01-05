@@ -5137,7 +5137,22 @@
         "LFG_PLAYSTYLE_LABEL_PVE",
         "LFG_PLAYSTYLE_LABEL_PVE_MYTHICZERO",
         "PVEFrameTitleText",
-        "STANDING"
+        "STANDING",
+        "ReadyCheckFrameYesButton",
+        "ReadyCheckFrameNoButton",
+        "ShowReadyCheck",
+        "ReadyCheckPortrait",
+        "ReadyCheckFrameText",
+        "READY_CHECK_MESSAGE",
+        "CONFIRM_OVERWRITE_EQUIPMENT_SET",
+        "CONFIRM_SAVE_EQUIPMENT_SET",
+        "GroupLootHistoryFrameTitleText",
+        "AddonListEnableAllButton",
+        "AddonListOkayButton",
+        "AddonListCancelButton",
+        "InGlue",
+        "AddonListTitleText",
+        "AddonListForceLoad"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

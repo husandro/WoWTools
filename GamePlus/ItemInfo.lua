@@ -55,12 +55,17 @@ local function Set_Item_Info(self, tab)
         return
     end
     local itemLevel, itemQuality, battlePetSpeciesID
-
     local itemLink, containerInfo, itemID
+    local topLeftText, bottomRightText, leftText, rightText, bottomLeftText, topRightText, setIDItem--, isWoWItem--setIDItem套装
+    local currencyID
+
     if tab.itemLink then
         itemLink= tab.itemLink
     elseif tab.lootIndex then
-        itemLink= GetLootSlotLink(tab.lootIndex)
+        currencyID= select(4, GetLootSlotInfo(tab.lootIndex))
+        if not currencyID then
+            itemLink= GetLootSlotLink(tab.lootIndex)
+        end
     elseif tab.bag then
         containerInfo =C_Container.GetContainerItemInfo(tab.bag.bag, tab.bag.slot)
         if containerInfo then
@@ -88,7 +93,6 @@ local function Set_Item_Info(self, tab)
         battlePetSpeciesID= tab.itemKey.battlePetSpeciesID
     end
 
-    local topLeftText, bottomRightText, leftText, rightText, bottomLeftText, topRightText, setIDItem--, isWoWItem--setIDItem套装
 
     if itemLink then
         itemID= itemID or GetItemInfoInstant(itemLink)
@@ -388,6 +392,12 @@ local function Set_Item_Info(self, tab)
             if num>0  then
                 leftText= '+'..e.MK(num, 0)
             end
+        end
+
+    elseif currencyID then--货币
+        local info= C_CurrencyInfo.GetCurrencyInfo(currencyID) or {}
+        if info.quantity and info.quantity>0 then
+            topLeftText= e.MK(info.quantity, 3)
         end
     end
 
@@ -994,7 +1004,11 @@ local function Init()
             Set_Item_Info(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
         end
     end)
-
+    hooksecurefunc(LootFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
+        for index, btn in pairs(self:GetFrames() or {}) do
+            Set_Item_Info(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
+        end
+    end)
     Init_Bag()
 end
 
@@ -1049,6 +1063,7 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
+
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
