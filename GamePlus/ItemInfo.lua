@@ -58,7 +58,9 @@ local function Set_Item_Info(self, tab)
 
     local itemLink, containerInfo, itemID
     if tab.itemLink then
-        itemLink= tab.itemlink
+        itemLink= tab.itemLink
+    elseif tab.lootIndex then
+        itemLink= GetLootSlotLink(tab.lootIndex)
     elseif tab.bag then
         containerInfo =C_Container.GetContainerItemInfo(tab.bag.bag, tab.bag.slot)
         if containerInfo then
@@ -90,6 +92,11 @@ local function Set_Item_Info(self, tab)
 
     if itemLink then
         itemID= itemID or GetItemInfoInstant(itemLink)
+        if not itemID then
+            itemID= itemLink:match('|H.-:(%d+):')
+            itemID= itemID and tonumber(itemID)
+            print(itemID)
+        end
 
         local _, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, _, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
 
@@ -364,7 +371,7 @@ local function Set_Item_Info(self, tab)
                 end
             end
 
-        elseif C_ToyBox.GetToyInfo(itemID) then--玩具
+        elseif itemID and C_ToyBox.GetToyInfo(itemID) then--玩具
             bottomRightText= PlayerHasToy(itemID) and e.Icon.select2 or e.Icon.star2
 
         elseif itemStackCount==1 then
@@ -464,7 +471,7 @@ local function Set_Item_Info(self, tab)
         self.Count:SetPoint('BottomRight')
         self.setCount=true
     end
-
+--print(topLeftText, bottomRightText, leftText, rightText, bottomLeftText, topRightText, setIDItem, itemLink)
 end
 
 
@@ -620,199 +627,10 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
---####
---初始
---####
-local function Init()
-    --战利品，拾取
-    hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
-        e.Set_Item_Stats(self, itemLink, {
-            point= self.Icon
-        })
-    end)
-    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)
-        e.Set_Item_Stats(self, itemLink, {
-            point= self.Icon
-        })
-    end)
-
-
-    --boss掉落，物品, 可能，会留下 StaticPopup1 框架
-    hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
-        --local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = GetItemInfo(data.itemLink)
-        e.Set_Item_Stats(lootFrame, data.itemLink, {point=lootFrame.Icon})
-    end)
-
-    --################
-    --设置，收信箱，物品
-    --################
-    hooksecurefunc('InboxFrame_Update',function()
-        for i=1, INBOXITEMS_TO_DISPLAY do
-            local btn=_G["MailItem"..i.."Button"]
-            if btn and btn:IsShown() then
-                --local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(btn.index)
-                Set_Item_Info(btn, {itemLink= select(15, GetInboxHeaderInfo(btn.index))})
-            end
-        end
-    end)
-    hooksecurefunc('OpenMail_Update', function()--多物品，打开时
-        if not OpenMailFrame_IsValidMailID() then
-            return
-        end
-        for i=1, ATTACHMENTS_MAX_RECEIVE do
-            local attachmentButton = OpenMailFrame.OpenMailAttachments[i];
-            if attachmentButton and attachmentButton:IsShown() then
-                Set_Item_Info(attachmentButton, {itemLink= HasInboxItem(InboxFrame.openMailID, i) and GetInboxItemLink(InboxFrame.openMailID, i)})
-            end
-        end
-    end)
-    hooksecurefunc('SendMailFrame_Update', function()--发信箱，物品
-        for i=1, ATTACHMENTS_MAX_SEND do
-            local sendMailAttachmentButton = SendMailFrame.SendMailAttachments[i]
-            if sendMailAttachmentButton and sendMailAttachmentButton:IsShown() then
-                Set_Item_Info(sendMailAttachmentButton, {itemLink= HasSendMailItem(i) and GetSendMailItemLink(i)})
-            end
-        end
-    end)
-    --#################
-    --拾取时, 弹出, 物品提示，信息
-    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
-        e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
-    end)
-    hooksecurefunc('LootWonAlertFrame_SetUp', function(self, itemLink)
-        e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
-    end)
-    hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(self, itemLink)
-        e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
-    end)
-
-    --#####################################
-    --职业图标 ClassNameIconTab['法师']=图标
-    --#####################################
-    for classID= 1, GetNumClasses() do
-        local classInfo = C_CreatureInfo.GetClassInfo(classID)
-        if classInfo and classInfo.className and classInfo.classFile then
-            ClassNameIconTab[classInfo.className]= e.Class(nil, classInfo.classFile, false)--职业图标
-        end
-    end
-
-    --###############
-    --收起，背包小按钮
-    --###############
-    if C_CVar.GetCVarBool("expandBagBar") and C_CVar.GetCVarBool("combinedBags") then--MainMenuBarBagButtons.lua
-        C_CVar.SetCVar("expandBagBar", '0')
-    end
-
-    --#########
-    --背包, 数量
-    --MainMenuBarBagButtons.lua
-    if MainMenuBarBackpackButton then
-        if MainMenuBarBackpackButtonCount then
-            MainMenuBarBackpackButtonCount:SetShadowOffset(1, -1)
-        end
-        e.Set_Label_Texture_Color(MainMenuBarBackpackButtonCount, {type='FontString'})--设置颜色
-        hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
-            local freeSlots=self.freeSlots
-            if freeSlots then
-                if freeSlots==0 then
-                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(1,0,0,1)
-                    freeSlots= '|cnRED_FONT_COLOR:'..freeSlots..'|r'
-                elseif freeSlots<=5 then
-                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,1,0,1)
-                    freeSlots= '|cnGREEN_FONT_COLOR:'..freeSlots..'|r'
-                else
-                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
-                end
-                self.Count:SetText(freeSlots)
-            else
-                MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
-            end
-        end)
-    end
-
-
-    --####
-    --商人
-    --####
-    hooksecurefunc('MerchantFrame_UpdateMerchantInfo', setMerchantInfo)--MerchantFrame.lua
-    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
-
-
-    --######################
-    --##商人，物品，货币，数量
-    --MerchantFrame.lua
-    hooksecurefunc('MerchantFrame_UpdateAltCurrency', function(index, indexOnPage, canAfford)
-        local itemCount = GetMerchantItemCostInfo(index);
-        local frameName = "MerchantItem"..indexOnPage.."AltCurrencyFrame";
-        local usedCurrencies = 0;
-        if ( itemCount > 0 ) then
-            for i=1, MAX_ITEM_COST do
-                local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i);
-                if itemLink then
-                    usedCurrencies = usedCurrencies + 1;
-                    local btn = _G[frameName.."Item"..usedCurrencies];
-                    if btn and btn:IsShown() then
-                        local num
-                        if currencyName then
-                            num= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink).quantity
-                        else
-                            num= GetItemCount(itemLink, true)
-                        end
-                        if itemValue and num then
-                            if num>=itemValue then
-                                num= '|cnGREEN_FONT_COLOR:'..e.MK(num,0)..'|r'
-                            else
-                                num= '|cnRED_FONT_COLOR:'..e.MK(num,0)..'|r'
-                            end
-                        end
-                        if not btn.quantityAll then
-                            btn.quantityAll= e.Cstr(btn, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
-                            btn.quantityAll:SetPoint('BOTTOMRIGHT', btn, 'TOPRIGHT', 3,0)
-                            btn.quantityAll:SetAlpha(0.7)
-                            btn:EnableMouse(true)
-                            btn:HookScript('OnMouseDown', function(self)
-                                if self.itemLink then
-                                    local link= self.itemLink..(
-                                        self.quantityAll.itemValue and ' x'..self.quantityAll.itemValue or ''
-                                    )
-                                    e.Chat(link, nil, true)
-                                end
-                                self:SetAlpha(0.3)
-                            end)
-                            btn:HookScript('OnEnter', function(self)
-                                self:SetAlpha(0.5)
-                            end)
-                            btn:HookScript('OnMouseUp', function(self)
-                                self:SetAlpha(0.5)
-                            end)
-                            btn:HookScript('OnLeave', function(self) self:SetAlpha(1) end)
-                            btn:HookScript('OnEnter', function(self)
-                                if self.itemLink and e.tips:IsShown() then
-                                    e.tips:AddLine(' ')
-                                    e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
-                                    e.tips:AddDoubleLine(id, addName)
-                                    e.tips:Show()
-                                end
-                            end)
-                        end
-                        btn.quantityAll.itemValue= itemValue
-                        btn.quantityAll:SetText(num or '');
-                    end
-                end
-            end
-        end
-    end)
-
-
+--###
+--BAG
+--###
+local function Init_Bag()
     if C_AddOns.IsAddOnLoaded("Bagnon") then
         local itemButton = Bagnon.ItemSlot or Bagnon.Item
         if (itemButton) and (itemButton.Update)  then
@@ -956,7 +774,229 @@ local function Init()
             end
         end)
     end
-    --使用插件时，会退出，不要在下面加代码
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--####
+--初始
+--####
+local function Init()
+    --战利品，拾取
+    hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
+        e.Set_Item_Stats(self, itemLink, {
+            point= self.Icon
+        })
+    end)
+    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)
+        e.Set_Item_Stats(self, itemLink, {
+            point= self.Icon
+        })
+    end)
+
+
+
+    --boss掉落，物品, 可能，会留下 StaticPopup1 框架
+    hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
+        --local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = GetItemInfo(data.itemLink)
+        e.Set_Item_Stats(lootFrame, data.itemLink, {point=lootFrame.Icon})
+    end)
+
+
+
+    --设置，收信箱，物品
+    hooksecurefunc('InboxFrame_Update',function()
+        for i=1, INBOXITEMS_TO_DISPLAY do
+            local btn=_G["MailItem"..i.."Button"]
+            if btn and btn:IsShown() then
+                --local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(btn.index)
+                Set_Item_Info(btn, {itemLink= select(15, GetInboxHeaderInfo(btn.index))})
+            end
+        end
+    end)
+    hooksecurefunc('OpenMail_Update', function()--多物品，打开时
+        if not OpenMailFrame_IsValidMailID() then
+            return
+        end
+        for i=1, ATTACHMENTS_MAX_RECEIVE do
+            local attachmentButton = OpenMailFrame.OpenMailAttachments[i];
+            if attachmentButton and attachmentButton:IsShown() then
+                Set_Item_Info(attachmentButton, {itemLink= HasInboxItem(InboxFrame.openMailID, i) and GetInboxItemLink(InboxFrame.openMailID, i)})
+            end
+        end
+    end)
+    hooksecurefunc('SendMailFrame_Update', function()--发信箱，物品
+        for i=1, ATTACHMENTS_MAX_SEND do
+            local sendMailAttachmentButton = SendMailFrame.SendMailAttachments[i]
+            if sendMailAttachmentButton and sendMailAttachmentButton:IsShown() then
+                Set_Item_Info(sendMailAttachmentButton, {itemLink= HasSendMailItem(i) and GetSendMailItemLink(i)})
+            end
+        end
+    end)
+
+
+    
+    --拾取时, 弹出, 物品提示，信息
+    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
+        e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
+    end)
+    hooksecurefunc('LootWonAlertFrame_SetUp', function(self, itemLink)
+        e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
+    end)
+    hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(self, itemLink)
+        e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
+    end)
+
+    
+    --职业图标 ClassNameIconTab['法师']=图标
+    for classID= 1, GetNumClasses() do
+        local classInfo = C_CreatureInfo.GetClassInfo(classID)
+        if classInfo and classInfo.className and classInfo.classFile then
+            ClassNameIconTab[classInfo.className]= e.Class(nil, classInfo.classFile, false)--职业图标
+        end
+    end
+
+
+    --收起，背包小按钮
+    if C_CVar.GetCVarBool("expandBagBar") and C_CVar.GetCVarBool("combinedBags") then--MainMenuBarBagButtons.lua
+        C_CVar.SetCVar("expandBagBar", '0')
+    end
+
+
+
+
+    --背包, 数量
+    --MainMenuBarBagButtons.lua
+    if MainMenuBarBackpackButton then
+        if MainMenuBarBackpackButtonCount then
+            MainMenuBarBackpackButtonCount:SetShadowOffset(1, -1)
+        end
+        e.Set_Label_Texture_Color(MainMenuBarBackpackButtonCount, {type='FontString'})--设置颜色
+        hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
+            local freeSlots=self.freeSlots
+            if freeSlots then
+                if freeSlots==0 then
+                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(1,0,0,1)
+                    freeSlots= '|cnRED_FONT_COLOR:'..freeSlots..'|r'
+                elseif freeSlots<=5 then
+                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,1,0,1)
+                    freeSlots= '|cnGREEN_FONT_COLOR:'..freeSlots..'|r'
+                else
+                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
+                end
+                self.Count:SetText(freeSlots)
+            else
+                MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
+            end
+        end)
+    end
+
+
+    
+
+    --商人
+    --####
+    hooksecurefunc('MerchantFrame_UpdateMerchantInfo', setMerchantInfo)--MerchantFrame.lua
+    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
+
+
+
+    --##商人，物品，货币，数量
+    --MerchantFrame.lua
+    hooksecurefunc('MerchantFrame_UpdateAltCurrency', function(index, indexOnPage, canAfford)
+        local itemCount = GetMerchantItemCostInfo(index);
+        local frameName = "MerchantItem"..indexOnPage.."AltCurrencyFrame";
+        local usedCurrencies = 0;
+        if ( itemCount > 0 ) then
+            for i=1, MAX_ITEM_COST do
+                local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i);
+                if itemLink then
+                    usedCurrencies = usedCurrencies + 1;
+                    local btn = _G[frameName.."Item"..usedCurrencies];
+                    if btn and btn:IsShown() then
+                        local num
+                        if currencyName then
+                            num= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink).quantity
+                        else
+                            num= GetItemCount(itemLink, true)
+                        end
+                        if itemValue and num then
+                            if num>=itemValue then
+                                num= '|cnGREEN_FONT_COLOR:'..e.MK(num,0)..'|r'
+                            else
+                                num= '|cnRED_FONT_COLOR:'..e.MK(num,0)..'|r'
+                            end
+                        end
+                        if not btn.quantityAll then
+                            btn.quantityAll= e.Cstr(btn, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
+                            btn.quantityAll:SetPoint('BOTTOMRIGHT', btn, 'TOPRIGHT', 3,0)
+                            btn.quantityAll:SetAlpha(0.7)
+                            btn:EnableMouse(true)
+                            btn:HookScript('OnMouseDown', function(self)
+                                if self.itemLink then
+                                    local link= self.itemLink..(
+                                        self.quantityAll.itemValue and ' x'..self.quantityAll.itemValue or ''
+                                    )
+                                    e.Chat(link, nil, true)
+                                end
+                                self:SetAlpha(0.3)
+                            end)
+                            btn:HookScript('OnEnter', function(self)
+                                self:SetAlpha(0.5)
+                            end)
+                            btn:HookScript('OnMouseUp', function(self)
+                                self:SetAlpha(0.5)
+                            end)
+                            btn:HookScript('OnLeave', function(self) self:SetAlpha(1) end)
+                            btn:HookScript('OnEnter', function(self)
+                                if self.itemLink and e.tips:IsShown() then
+                                    e.tips:AddLine(' ')
+                                    e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
+                                    e.tips:AddDoubleLine(id, addName)
+                                    e.tips:Show()
+                                end
+                            end)
+                        end
+                        btn.quantityAll.itemValue= itemValue
+                        btn.quantityAll:SetText(num or '');
+                    end
+                end
+            end
+        end
+    end)
+
+    --拾取
+    hooksecurefunc(LootFrame, 'Open', function(self)--LootFrame.lua
+        for index, btn in pairs(self.ScrollBox:GetFrames() or {}) do
+            Set_Item_Info(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
+        end
+    end)
+
+    Init_Bag()
 end
 
 
