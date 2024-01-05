@@ -1935,45 +1935,78 @@ local function Init()
     StaticPopupDialogs["GROUP_INVITE_CONFIRMATION"].button1 = '接受'
     StaticPopupDialogs["GROUP_INVITE_CONFIRMATION"].button2 = '拒绝'
 
-
-
     StaticPopupDialogs["CHAT_CHANNEL_INVITE"].text = '%2$s邀请你加入\'%1$s\'频道。'
     StaticPopupDialogs["CHAT_CHANNEL_INVITE"].button1 = '接受'
     StaticPopupDialogs["CHAT_CHANNEL_INVITE"].button2 = '拒绝'
 
+    StaticPopupDialogs["BN_BLOCK_FAILED_TOO_MANY_RID"].text = '你能够屏蔽的实名和战网昵称好友已达上限。'
+    StaticPopupDialogs["BN_BLOCK_FAILED_TOO_MANY_RID"].button1 = '确定'
 
+    StaticPopupDialogs["BN_BLOCK_FAILED_TOO_MANY_CID"].text = '你通过暴雪游戏服务屏蔽的角色数量已达上限。'
+    StaticPopupDialogs["BN_BLOCK_FAILED_TOO_MANY_CID"].button1 = '确定'
 
+    StaticPopupDialogs["CHAT_CHANNEL_PASSWORD"].text = '请输入\'%1$s\'的密码。'
+    StaticPopupDialogs["CHAT_CHANNEL_PASSWORD"].button1 = '接受'
+    StaticPopupDialogs["CHAT_CHANNEL_PASSWORD"].button2 = '取消'
 
+    StaticPopupDialogs["CAMP"].text = '请输入\'%1$s\'的密码。'
+    StaticPopupDialogs["CAMP"].button1 = '取消'
 
+    StaticPopupDialogs["QUIT"].text = '%d%s后退出游戏'
+    StaticPopupDialogs["QUIT"].button1 = '立刻退出'
+    StaticPopupDialogs["QUIT"].button2 = '取消'
 
+    StaticPopupDialogs["LOOT_BIND"].text = '拾取%s后，该物品将与你绑定'
+    StaticPopupDialogs["LOOT_BIND"].button1 = '确定'
+    StaticPopupDialogs["LOOT_BIND"].button2 = '取消'
 
+    StaticPopupDialogs["EQUIP_BIND"].text = '装备之后，该物品将与你绑定。'
+    StaticPopupDialogs["EQUIP_BIND"].button1 = '确定'
+    StaticPopupDialogs["EQUIP_BIND"].button2 = '取消'
 
+    StaticPopupDialogs["EQUIP_BIND_REFUNDABLE"].text = '进行此项操作会使该物品无法退还'
+    StaticPopupDialogs["EQUIP_BIND_REFUNDABLE"].button1 = '确定'
+    StaticPopupDialogs["EQUIP_BIND_REFUNDABLE"].button2 = '取消'
 
+    StaticPopupDialogs["EQUIP_BIND_TRADEABLE"].text = '执行此项操作会使该物品不可交易。'
+    StaticPopupDialogs["EQUIP_BIND_TRADEABLE"].button1 = '确定'
+    StaticPopupDialogs["EQUIP_BIND_TRADEABLE"].button2 = '取消'
 
+    StaticPopupDialogs["USE_BIND"].text = '使用该物品后会将它和你绑定'
+    StaticPopupDialogs["USE_BIND"].button1 = '确定'
+    StaticPopupDialogs["USE_BIND"].button2 = '取消'
 
+    StaticPopupDialogs["CONFIM_BEFORE_USE"].text = '你确定要使用这个物品吗？'
+    StaticPopupDialogs["CONFIM_BEFORE_USE"].button1 = '确定'
+    StaticPopupDialogs["CONFIM_BEFORE_USE"].button2 = '取消'
 
+    StaticPopupDialogs["USE_NO_REFUND_CONFIRM"].text = '进行此项操作会使该物品无法退还'
+    StaticPopupDialogs["USE_NO_REFUND_CONFIRM"].button1 = '确定'
+    StaticPopupDialogs["USE_NO_REFUND_CONFIRM"].button2 = '取消'
 
+    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_BIND"].text = '选择一种力量后，此物品会与你绑定。'
+    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_BIND"].button1 = '确定'
+    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_BIND"].button2 = '取消'
 
+    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_SELECT_POWER"].text = '你确定要选择这项艾泽里特之力吗？'
+    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_SELECT_POWER"].button1 = '确定'
+    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_SELECT_POWER"].button2 = '取消'
 
+    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_RESPEC"].text = '重铸的花费会随使用的次数而提升。\n\n你确定要花费如下金额来重铸%s吗？'
+    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_RESPEC"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_RESPEC"].button2 = '否'
 
+    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_RESPEC_EXPENSIVE"].text = '重铸的花费会随使用的次数而提升。|n|n你确定要花费%s来重铸%s吗？|n|n请输入 %s 以确认。'
+    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_RESPEC_EXPENSIVE"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_RESPEC_EXPENSIVE"].button2 = '否'
 
+    StaticPopupDialogs["DELETE_ITEM"].text = '你确定要摧毁%s？'
+    StaticPopupDialogs["DELETE_ITEM"].button1 = '是'
+    StaticPopupDialogs["DELETE_ITEM"].button2 = '否'
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    StaticPopupDialogs["DELETE_QUEST_ITEM"].text = '确定要销毁%s吗？\n\n|cffff2020销毁该物品的同时也将放弃所有相关任务。|r'
+    StaticPopupDialogs["DELETE_QUEST_ITEM"].button1 = '是'
+    StaticPopupDialogs["DELETE_QUEST_ITEM"].button2 = '否'
 
 
 
