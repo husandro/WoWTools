@@ -5152,7 +5152,9 @@
         "AddonListCancelButton",
         "InGlue",
         "AddonListTitleText",
-        "AddonListForceLoad"
+        "AddonListForceLoad",
+        "CONFIRM_UPGRADE_ITEM",
+        "CONFIRM_UPGRADE_ITEM_BIND"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -26,6 +26,7 @@ local function font(lable)
     end
 end
 
+
 local strText={
     --Blizzard_AuctionData.lua
     [AUCTION_CATEGORY_WEAPONS] = "武器",
@@ -1657,7 +1658,7 @@ local function Init()
     StaticPopupDialogs["CONFIRM_SAVE_EQUIPMENT_SET"].button1 = '是'
     StaticPopupDialogs["CONFIRM_SAVE_EQUIPMENT_SET"].button2 = '否'
 
-    StaticPopupDialogs["CONFIRM_DELETE_EQUIPMENT_SET"].text = '你你确认要删除装备方案%s吗？'
+    StaticPopupDialogs["CONFIRM_DELETE_EQUIPMENT_SET"].text = '你确认要删除装备方案%s吗？'
     StaticPopupDialogs["CONFIRM_DELETE_EQUIPMENT_SET"].button1 = '是'
     StaticPopupDialogs["CONFIRM_DELETE_EQUIPMENT_SET"].button2 = '否'
 
@@ -1668,6 +1669,319 @@ local function Init()
     StaticPopupDialogs["CONFIRM_REDOCK_CHAT"].text = '这么做会将你的聊天窗口重新并入综合标签页。'
     StaticPopupDialogs["CONFIRM_REDOCK_CHAT"].button1 = '接受'
     StaticPopupDialogs["CONFIRM_REDOCK_CHAT"].button2 = '取消'
+
+    StaticPopupDialogs["CONFIRM_PURCHASE_TOKEN_ITEM"].text = '你确定要将%s兑换为下列物品吗？ %s'
+    StaticPopupDialogs["CONFIRM_PURCHASE_TOKEN_ITEM"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_PURCHASE_TOKEN_ITEM"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_PURCHASE_NONREFUNDABLE_ITEM"].text = '你确定要将%s兑换为下列物品吗？本次购买将无法退还。%s'
+    StaticPopupDialogs["CONFIRM_PURCHASE_NONREFUNDABLE_ITEM"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_PURCHASE_NONREFUNDABLE_ITEM"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_UPGRADE_ITEM"].OnShow  = function(self, data)
+		if data.isItemBound then
+			self.text:SetFormattedText('你确定要花费%s升级下列物品吗？',data.costString);
+		else
+			self.text:SetFormattedText('你确定要花费%s升级下列物品吗？升级会将该物品变成灵魂绑定物品。', data.costString)
+		end
+    end
+    StaticPopupDialogs["CONFIRM_UPGRADE_ITEM"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_UPGRADE_ITEM"].button2 = '否'
+
+
+    StaticPopupDialogs["CONFIRM_REFUND_TOKEN_ITEM"].text = '你确定要退还下面这件物品%s，获得%s的退款吗？'
+    StaticPopupDialogs["CONFIRM_REFUND_TOKEN_ITEM"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_REFUND_TOKEN_ITEM"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_REFUND_MAX_HONOR"].text = '你的荣誉已接近上限。卖掉这件物品会让你损失%d点荣誉。确认要继续吗？'
+    StaticPopupDialogs["CONFIRM_REFUND_MAX_HONOR"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_REFUND_MAX_HONOR"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_REFUND_MAX_ARENA_POINTS"].text = '你的竞技场点数已接近上限。出售这件物品会让你损失%d点竞技场点数。确认要继续吗？'
+    StaticPopupDialogs["CONFIRM_REFUND_MAX_ARENA_POINTS"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_REFUND_MAX_ARENA_POINTS"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_REFUND_MAX_HONOR_AND_ARENA"].text = '你的荣誉已接近上限。卖掉此物品会使你损失%1$d点荣誉和%2$d的竞技场点数。要继续吗？'
+    StaticPopupDialogs["CONFIRM_REFUND_MAX_HONOR_AND_ARENA"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_REFUND_MAX_HONOR_AND_ARENA"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_HIGH_COST_ITEM"].text = '你确定要花费如下金额的货币购买%s吗？'
+    StaticPopupDialogs["CONFIRM_HIGH_COST_ITEM"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_HIGH_COST_ITEM"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_COMPLETE_EXPENSIVE_QUEST"].text = '完成这个任务需要缴纳如下数额的金币。你确定要完成这个任务吗？'
+    StaticPopupDialogs["CONFIRM_COMPLETE_EXPENSIVE_QUEST"].button1 = '完成任务'
+    StaticPopupDialogs["CONFIRM_COMPLETE_EXPENSIVE_QUEST"].button2 = '取消'
+
+    StaticPopupDialogs["CONFIRM_ACCEPT_PVP_QUEST"].text = '接受这个任务之后，你将被标记为PvP状态，直到你放弃或完成此任务。你确定要接受任务吗？'
+    StaticPopupDialogs["CONFIRM_ACCEPT_PVP_QUEST"].button1 = '接受'
+    StaticPopupDialogs["CONFIRM_ACCEPT_PVP_QUEST"].button2 = '取消'
+
+    StaticPopupDialogs["USE_GUILDBANK_REPAIR"].text = '你想要使用公会资金修理吗？'
+    StaticPopupDialogs["USE_GUILDBANK_REPAIR"].button1 = '使用个人资金'
+    StaticPopupDialogs["USE_GUILDBANK_REPAIR"].button2 = '确定'
+
+    StaticPopupDialogs["GUILDBANK_WITHDRAW"].text = '接提取数量：'
+    StaticPopupDialogs["GUILDBANK_WITHDRAW"].button1 = '接受'
+    StaticPopupDialogs["GUILDBANK_WITHDRAW"].button2 = '取消'
+
+    StaticPopupDialogs["GUILDBANK_DEPOSIT"].text = '存放数量：'
+    StaticPopupDialogs["GUILDBANK_DEPOSIT"].button1 = '接受'
+    StaticPopupDialogs["GUILDBANK_DEPOSIT"].button2 = '取消'
+
+    StaticPopupDialogs["CONFIRM_BUY_GUILDBANK_TAB"].text = '你是否想要购买一个公会银行标签？'
+    StaticPopupDialogs["CONFIRM_BUY_GUILDBANK_TAB"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_BUY_GUILDBANK_TAB"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_BUY_REAGENTBANK_TAB"].text = '确定购买材料银行栏位吗？'
+    StaticPopupDialogs["CONFIRM_BUY_REAGENTBANK_TAB"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_BUY_REAGENTBANK_TAB"].button2 = '否'
+
+    StaticPopupDialogs["TOO_MANY_LUA_ERRORS"].text = '你的插件有大量错误，可能会导致游戏速度降低。你可以在界面选项中打开Lua错误显示。'
+    StaticPopupDialogs["TOO_MANY_LUA_ERRORS"].button1 = '禁用插件'
+    StaticPopupDialogs["TOO_MANY_LUA_ERRORS"].button2 = '忽略'
+
+    StaticPopupDialogs["CONFIRM_ACCEPT_SOCKETS"].text = '镶嵌之后，一颗或多颗宝石将被摧毁。你确定要镶嵌新的宝石吗？'
+    StaticPopupDialogs["CONFIRM_ACCEPT_SOCKETS"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_ACCEPT_SOCKETS"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_RESET_INSTANCES"].text = '你确定想要重置你的所有副本吗？'
+    StaticPopupDialogs["CONFIRM_RESET_INSTANCES"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_RESET_INSTANCES"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_RESET_CHALLENGE_MODE"].text = '你确定要重置地下城吗？'
+    StaticPopupDialogs["CONFIRM_RESET_CHALLENGE_MODE"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_RESET_CHALLENGE_MODE"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_GUILD_DISBAND"].text = '你真的要解散公会吗？'
+    StaticPopupDialogs["CONFIRM_GUILD_DISBAND"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_GUILD_DISBAND"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_BUY_BANK_SLOT"].text = '你愿意付钱购买银行空位吗？'
+    StaticPopupDialogs["CONFIRM_BUY_BANK_SLOT"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_BUY_BANK_SLOT"].button2 = '否'
+
+    StaticPopupDialogs["MACRO_ACTION_FORBIDDEN"].text = '一段宏代码已被禁止，因为其功能只对暴雪UI开放。'
+    StaticPopupDialogs["MACRO_ACTION_FORBIDDEN"].button1 = '确定'
+
+    StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].text = '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。'
+    StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].button1 = '禁用'
+    StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].button2 = '忽略'
+
+    StaticPopupDialogs["CONFIRM_LOOT_DISTRIBUTION"].text = '你想要将%s分配给%s，确定吗？'
+    StaticPopupDialogs["CONFIRM_LOOT_DISTRIBUTION"].button1 = '是'
+    StaticPopupDialogs["CONFIRM_LOOT_DISTRIBUTION"].button2 = '否'
+
+    StaticPopupDialogs["CONFIRM_BATTLEFIELD_ENTRY"].text = '你现在可以进入战斗：\n\n|cff20ff20%s|r\n'
+    StaticPopupDialogs["CONFIRM_BATTLEFIELD_ENTRY"].button1 = '进入'
+    StaticPopupDialogs["CONFIRM_BATTLEFIELD_ENTRY"].button2 = '离开队列'
+
+    StaticPopupDialogs["BFMGR_CONFIRM_WORLD_PVP_QUEUED"].text = '你已在%s队列中。请等候。'
+    StaticPopupDialogs["BFMGR_CONFIRM_WORLD_PVP_QUEUED"].button1 = '确定'
+
+    StaticPopupDialogs["BFMGR_CONFIRM_WORLD_PVP_QUEUED_WARMUP"].text = '你正在下一场%s战斗的等待队列中。'
+    StaticPopupDialogs["BFMGR_CONFIRM_WORLD_PVP_QUEUED_WARMUP"].button1 = '确定'
+
+    StaticPopupDialogs["BFMGR_DENY_WORLD_PVP_QUEUED"].text = '你现在无法进入%s战场的等待队列。'
+    StaticPopupDialogs["BFMGR_DENY_WORLD_PVP_QUEUED"].button1 = '确定'
+
+    StaticPopupDialogs["BFMGR_INVITED_TO_QUEUE"].text = '你想要加入%s的战斗吗？'
+    StaticPopupDialogs["BFMGR_INVITED_TO_QUEUE"].button1 = '接受'
+    StaticPopupDialogs["BFMGR_INVITED_TO_QUEUE"].button2 = '取消'
+
+    StaticPopupDialogs["BFMGR_INVITED_TO_QUEUE_WARMUP"].text = '%s的战斗即将打响！你要加入等待队列吗？'
+    StaticPopupDialogs["BFMGR_INVITED_TO_QUEUE_WARMUP"].button1 = '接受'
+    StaticPopupDialogs["BFMGR_INVITED_TO_QUEUE_WARMUP"].button2 = '取消'
+
+    StaticPopupDialogs["BFMGR_INVITED_TO_ENTER"].text = '%s的战斗又一次在召唤你！|n现在进入？|n剩余时间：%d %s'
+    StaticPopupDialogs["BFMGR_INVITED_TO_ENTER"].button1 = '接受'
+    StaticPopupDialogs["BFMGR_INVITED_TO_ENTER"].button2 = '取消'
+
+
+    StaticPopupDialogs["BFMGR_EJECT_PENDING"].text = '你已在%s队列中但还没有收到战斗的召唤。稍后你将被传出战场。'
+    StaticPopupDialogs["BFMGR_EJECT_PENDING"].button1 = '确定'
+
+    StaticPopupDialogs["BFMGR_EJECT_PENDING_REMOTE"].text = '你已在%s队列中但还没有收到战斗的召唤。'
+    StaticPopupDialogs["BFMGR_EJECT_PENDING_REMOTE"].button1 = '确定'
+
+    StaticPopupDialogs["BFMGR_PLAYER_EXITED_BATTLE"].text = '你已经从%s的战斗中退出。'
+    StaticPopupDialogs["BFMGR_PLAYER_EXITED_BATTLE"].button1 = '确定'
+
+    StaticPopupDialogs["BFMGR_PLAYER_LOW_LEVEL"].text = '你的级别太低，无法进入%s。'
+    StaticPopupDialogs["BFMGR_PLAYER_LOW_LEVEL"].button1 = '确定'
+
+    StaticPopupDialogs["BFMGR_PLAYER_NOT_WHILE_IN_RAID"].text = '你不能在团队中进入%s。'
+    StaticPopupDialogs["BFMGR_PLAYER_NOT_WHILE_IN_RAID"].button1 = '确定'
+
+    StaticPopupDialogs["BFMGR_PLAYER_DESERTER"].text = '在你的逃亡者负面效果消失之前，你无法进入%s。'
+    StaticPopupDialogs["BFMGR_PLAYER_DESERTER"].button1 = '确定'
+
+
+    StaticPopupDialogs["CONFIRM_GUILD_LEAVE"].text = '确定要退出%s？'
+    StaticPopupDialogs["CONFIRM_GUILD_LEAVE"].button1 = '接受'
+    StaticPopupDialogs["CONFIRM_GUILD_LEAVE"].button2 = '取消'
+
+    StaticPopupDialogs["CONFIRM_GUILD_PROMOTE"].text = '确定要将%s提升为会长？'
+    StaticPopupDialogs["CONFIRM_GUILD_PROMOTE"].button1 = '接受'
+    StaticPopupDialogs["CONFIRM_GUILD_PROMOTE"].button2 = '取消'
+
+    StaticPopupDialogs["RENAME_GUILD"].text = '输入新的公会名：'
+    StaticPopupDialogs["RENAME_GUILD"].button1 = '接受'
+    StaticPopupDialogs["RENAME_GUILD"].button2 = '取消'
+
+    StaticPopupDialogs["HELP_TICKET_QUEUE_DISABLED"].text = 'GM帮助请求暂时不可用。'
+    StaticPopupDialogs["HELP_TICKET_QUEUE_DISABLED"].button1 = '确定'
+
+    StaticPopupDialogs["CLIENT_RESTART_ALERT"].text = '你的有些设置需要你重新启动游戏才能够生效。'
+    StaticPopupDialogs["CLIENT_RESTART_ALERT"].button1 = '确定'
+
+
+    StaticPopupDialogs["CLIENT_LOGOUT_ALERT"].text = '你的某些设置将在你登出游戏并重新登录之后生效。'
+    StaticPopupDialogs["CLIENT_LOGOUT_ALERT"].button1 = '确定'
+
+    StaticPopupDialogs["COD_ALERT"].text = '你没有足够的钱来支付付款取信邮件。'
+    StaticPopupDialogs["COD_ALERT"].button1 = '关闭'
+
+
+    StaticPopupDialogs["COD_CONFIRMATION"].text = '收下这件物品将花费：'
+    StaticPopupDialogs["COD_CONFIRMATION"].button1 = '接受'
+    StaticPopupDialogs["COD_CONFIRMATION"].button2 = '取消'
+
+
+    StaticPopupDialogs["COD_CONFIRMATION_AUTO_LOOT"].text = '收下这件物品将花费：'
+    StaticPopupDialogs["COD_CONFIRMATION_AUTO_LOOT"].button1 = '接受'
+    StaticPopupDialogs["COD_CONFIRMATION_AUTO_LOOT"].button2 = '取消'
+
+    StaticPopupDialogs["DELETE_MAIL"].text = '删除这封邮件会摧毁%s'
+    StaticPopupDialogs["DELETE_MAIL"].button1 = '接受'
+    StaticPopupDialogs["DELETE_MAIL"].button2 = '取消'
+
+    StaticPopupDialogs["DELETE_MONEY"].text = '删除这封邮件会摧毁：'
+    StaticPopupDialogs["DELETE_MONEY"].button1 = '接受'
+    StaticPopupDialogs["DELETE_MONEY"].button2 = '取消'
+
+    StaticPopupDialogs["CONFIRM_REPORT_BATTLEPET_NAME"].text = '你确定要举报%s 使用不当战斗宠物名吗？'
+    StaticPopupDialogs["CONFIRM_REPORT_BATTLEPET_NAME"].button1 = '接受'
+    StaticPopupDialogs["CONFIRM_REPORT_BATTLEPET_NAME"].button2 = '取消'
+
+    StaticPopupDialogs["CONFIRM_REPORT_PET_NAME"].text = '你确定要举报%s 使用不当战斗宠物名吗？'
+    StaticPopupDialogs["CONFIRM_REPORT_PET_NAME"].button1 = '接受'
+    StaticPopupDialogs["CONFIRM_REPORT_PET_NAME"].button2 = '取消'
+
+    StaticPopupDialogs["CONFIRM_REPORT_SPAM_MAIL"].text = '你确定要举报%s为骚扰者吗？'
+    StaticPopupDialogs["CONFIRM_REPORT_SPAM_MAIL"].button1 = '接受'
+    StaticPopupDialogs["CONFIRM_REPORT_SPAM_MAIL"].button2 = '取消'
+
+    StaticPopupDialogs["JOIN_CHANNEL"].text = '输入频道名称'
+    StaticPopupDialogs["JOIN_CHANNEL"].button1 = '接受'
+    StaticPopupDialogs["JOIN_CHANNEL"].button2 = '取消'
+
+    StaticPopupDialogs["CHANNEL_INVITE"].text = '你想要将谁邀请至%s？'
+    StaticPopupDialogs["CHANNEL_INVITE"].button1 = '接受'
+    StaticPopupDialogs["CHANNEL_INVITE"].button2 = '取消'
+
+
+    StaticPopupDialogs["CHANNEL_PASSWORD"].text = '为%s输入一个密码。'
+    StaticPopupDialogs["CHANNEL_PASSWORD"].button1 = '接受'
+    StaticPopupDialogs["CHANNEL_PASSWORD"].button2 = '取消'
+
+    StaticPopupDialogs["NAME_CHAT"].text = '输入对话窗口名称'
+    StaticPopupDialogs["NAME_CHAT"].button1 = '接受'
+    StaticPopupDialogs["NAME_CHAT"].button2 = '取消'
+
+    StaticPopupDialogs["RESET_CHAT"].text = '"将你的聊天窗口重置为默认设置。\n你会失去所有自定义设置。'
+    StaticPopupDialogs["RESET_CHAT"].button1 = '接受'
+    StaticPopupDialogs["RESET_CHAT"].button2 = '取消'
+
+    StaticPopupDialogs["PETRENAMECONFIRM"].text = '你确定要将宠物命名为\'%s\'吗？'
+    StaticPopupDialogs["PETRENAMECONFIRM"].button1 = '是'
+    StaticPopupDialogs["PETRENAMECONFIRM"].button2 = '否'
+
+
+    StaticPopupDialogs["DEATH"].text = '%d%s后释放灵魂'
+    StaticPopupDialogs["DEATH"].button1 = '释放灵魂'
+    StaticPopupDialogs["DEATH"].button2 = '复活'
+    StaticPopupDialogs["DEATH"].button3 = '复活'
+    StaticPopupDialogs["DEATH"].button4 = '摘要'
+
+    StaticPopupDialogs["RESURRECT"].text = '%s想要复活你。一旦这样复活，你将会进入复活虚弱状态'
+    StaticPopupDialogs["RESURRECT"].delayText = '%s要复活你，%d%s内生效。一旦这样复活，你将会进入复活虚弱状态。'
+    StaticPopupDialogs["RESURRECT"].button1 = '接受'
+    StaticPopupDialogs["RESURRECT"].button2 = '拒绝'
+
+    StaticPopupDialogs["RESURRECT_NO_SICKNESS"].text = '%s想要复活你'
+    StaticPopupDialogs["RESURRECT_NO_SICKNESS"].delayText = '%s要复活你，%d%s内生效'
+    StaticPopupDialogs["RESURRECT_NO_SICKNESS"].button1 = '接受'
+    StaticPopupDialogs["RESURRECT_NO_SICKNESS"].button2 = '拒绝'
+
+    StaticPopupDialogs["RESURRECT_NO_TIMER"].text = '%s想要复活你'
+    StaticPopupDialogs["RESURRECT_NO_TIMER"].button1 = '接受'
+    StaticPopupDialogs["RESURRECT_NO_TIMER"].button2 = '拒绝'
+
+    StaticPopupDialogs["SKINNED"].text = '徽记被取走 - 你只能在墓地复活'
+    StaticPopupDialogs["SKINNED"].button1 = '接受'
+
+    StaticPopupDialogs["SKINNED_REPOP"].text = '徽记被取走 - 你只能在墓地复活'
+    StaticPopupDialogs["SKINNED_REPOP"].button1 = '释放灵魂'
+    StaticPopupDialogs["SKINNED_REPOP"].button2 = '拒绝'
+
+    StaticPopupDialogs["TRADE"].text = '和%s交易吗？'
+    StaticPopupDialogs["TRADE"].button1 = '是'
+    StaticPopupDialogs["TRADE"].button2 = '否'
+
+    StaticPopupDialogs["PARTY_INVITE"].button1 = '接受'
+    StaticPopupDialogs["PARTY_INVITE"].button2 = '拒绝'
+
+    StaticPopupDialogs["GROUP_INVITE_CONFIRMATION"].button1 = '接受'
+    StaticPopupDialogs["GROUP_INVITE_CONFIRMATION"].button2 = '拒绝'
+
+
+
+    StaticPopupDialogs["CHAT_CHANNEL_INVITE"].text = '%2$s邀请你加入\'%1$s\'频道。'
+    StaticPopupDialogs["CHAT_CHANNEL_INVITE"].button1 = '接受'
+    StaticPopupDialogs["CHAT_CHANNEL_INVITE"].button2 = '拒绝'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 end
 
 

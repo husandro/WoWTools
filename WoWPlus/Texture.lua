@@ -1138,16 +1138,7 @@ local function Init_Event(arg1)
             local btn= ClassTalentFrame:GetTabButton(tabID)
             set_Alpha_Frame_Texture(btn, {alpha=min05})
         end
-        if ProfessionsFrame.SpecPage then
-            hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateTabs', function()
-                print(id,addName)
-            end)
-            for _, tabID in pairs(ProfessionsFrame.SpecPage:GetTabSet() or {}) do
-                local btn= ProfessionsFrame.SpecPage:GetTabButton(tabID)
-                print(btn)
-                set_Alpha_Frame_Texture(btn, {alpha=min05})
-            end
-        end
+
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
         set_Alpha_Color(AchievementFrame.Header.PointBorder)
@@ -1834,6 +1825,14 @@ local function Init_Event(arg1)
         for _, tabID in pairs(ProfessionsFrame:GetTabSet() or {}) do
             local btn= ProfessionsFrame:GetTabButton(tabID)
             set_Alpha_Frame_Texture(btn, {alpha=min05})
+        end
+
+        if ProfessionsFrame.SpecPage then
+            hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateTabs', function(self)
+                for _, tabID in pairs(self:GetTabSet() or {}) do
+                    set_Alpha_Frame_Texture(self:GetTabButton(tabID), {alpha=min05})
+                end
+            end)
         end
     end
 end
