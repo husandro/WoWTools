@@ -1191,17 +1191,24 @@ local function Init()
 
     --角色
     set(CharacterFrameTab1, '角色')
-        set(CharacterStatsPane.ItemLevelCategory.Title, '物品等级')
-        set(CharacterStatsPane.AttributesCategory.Title, '属性')
-        set(CharacterStatsPane.EnhancementsCategory.Title, '强化属性')
-        hooksecurefunc('PaperDollFrame_SetLabelAndText', function(statFrame, label)--PaperDollFrame.lua
-            local text= strText[label]
-            if text then
-                set(statFrame.Label, format('%s：', text))
-            end
-        end)
-        set(PaperDollFrameEquipSetText, '装备')
-        set(PaperDollFrameSaveSetText , '保存')
+        PAPERDOLL_SIDEBARS[1].name= '角色属性'
+            set(CharacterStatsPane.ItemLevelCategory.Title, '物品等级')
+            set(CharacterStatsPane.AttributesCategory.Title, '属性')
+            set(CharacterStatsPane.EnhancementsCategory.Title, '强化属性')
+            hooksecurefunc('PaperDollFrame_SetLabelAndText', function(statFrame, label)--PaperDollFrame.lua
+                local text= strText[label]
+                if text then
+                    set(statFrame.Label, format('%s：', text))
+                end
+            end)
+        PAPERDOLL_SIDEBARS[2].name= '头衔'
+        PAPERDOLL_SIDEBARS[3].name= '装备管理'
+            set(PaperDollFrameEquipSetText, '装备')
+            set(PaperDollFrameSaveSetText , '保存')
+                set(GearManagerPopupFrame.BorderBox.EditBoxHeaderText, '输入方案名称（最多16个字符）：')
+                set(GearManagerPopupFrame.BorderBox.IconSelectionText, '选择一个图标：')
+                set(GearManagerPopupFrame.BorderBox.OkayButton, '确认')
+                set(GearManagerPopupFrame.BorderBox.CancelButton, '取消')
     set(CharacterFrameTab2, '声望')
         set(ReputationFrameFactionLabel, '阵营')--FACTION
         set(ReputationFrameStandingLabel,  "关系")--STANDING
@@ -1216,19 +1223,8 @@ local function Init()
 
 
 
+   
 
-    set(GearManagerPopupFrame.BorderBox.EditBoxHeaderText, '输入方案名称（最多16个字符）：')
-    set(GearManagerPopupFrame.BorderBox.IconSelectionText, '选择一个图标：')
-    set(GearManagerPopupFrame.BorderBox.OkayButton, '确认')
-    set(GearManagerPopupFrame.BorderBox.CancelButton, '取消')
-    GearManagerPopupFrame:HookScript('OnShow', function(self)
-        set(self.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconHeader, '当前已选择')
-        set(self.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconDescription, '点击在列表中浏览')
-    end)
-
-    PAPERDOLL_SIDEBARS[1].name= '角色属性'
-    PAPERDOLL_SIDEBARS[2].name= '头衔'
-    PAPERDOLL_SIDEBARS[3].name= '装备管理'
 
 
 
@@ -1329,7 +1325,7 @@ local function Init()
                     set(self.ListGroupButton, '列出队伍')
                 end
             end)
-            
+
             --hooksecurefunc('LFGListEntryCreation_Show', function()
     set(LFGListFrame.ApplicationViewer.AutoAcceptButton.Label, '自动邀请')
     set(LFGListFrame.ApplicationViewer.BrowseGroupsButton, '浏览队伍')
@@ -1354,7 +1350,7 @@ local function Init()
             end
         end
     end)
-    
+
 
     --选项
     hooksecurefunc(SettingsPanel.Container.SettingsList.ScrollBox, 'Update', function(frame)
@@ -2010,7 +2006,7 @@ local function Init_Loaded(arg1)
         set(PVPQueueFrameCategoryButton3.Name, '预创建队伍')
 --hooksecurefunc('HonorFrame_UpdateQueueButtons', function()
 
-        
+
     --elseif arg1=='Blizzard_Professions' then--专业
     end
 end
