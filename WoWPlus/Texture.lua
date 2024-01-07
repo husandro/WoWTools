@@ -738,6 +738,8 @@ local function Init_All_Frame()
      set_NineSlice(MailFrameInset, true)
      set_ScrollBar(SendMailScrollFrame)
 
+     set_ScrollBar(OpenMailScrollFrame)
+
      --拾取, 历史
      set_NineSlice(GroupLootHistoryFrame, true)
      set_Alpha_Color(GroupLootHistoryFrameBg)

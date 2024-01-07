@@ -1617,44 +1617,45 @@ local function Init_InBox()
         for i=1, INBOXITEMS_TO_DISPLAY do
             local btn=_G["MailItem"..i.."Button"]
             if btn and btn:IsShown() then
-                local _, _, sender, subject, money2, CODAmount2, _, itemCount2, wasRead, wasReturned, textCreated, canReply, isGM = GetInboxHeaderInfo(btn.index)
-
+                
+                --local _, _, sender, subject, money2, CODAmount2, _, itemCount2, wasRead, wasReturned, textCreated, canReply, isGM = GetInboxHeaderInfo(btn.index)
+                local packageIcon, stationeryIcon, sender, subject, money2, CODAmount2, daysLeft, itemCount2, wasRead, wasReturned, textCreated, canReply, isGM = GetInboxHeaderInfo(btn.index)
                 local invoiceType, itemName, playerName, bid, buyout, deposit, consignment = GetInboxInvoiceInfo(btn.index)
                 local CODAmount= (CODAmount2 and CODAmount2>0) and CODAmount2 or nil
                 local money= (money2 and money2>0) and money2 or nil
                 local itemCount= (itemCount2 and itemCount2>0) and itemCount2 or nil
+                --local isPlayer= sender and canReply and sender ~= UnitName("player") and not isGM
 
                 --发信人，提示, 点击回复
                 if sender then
                     local frame=_G["MailItem"..i.."Sender"]
                     if frame then
-
-
                         if not frame:IsMouseEnabled()  then--回复
                             frame:EnableMouse(true)
                             frame:SetScript('OnMouseDown', function(self2)
-                                if not Save.hide and not self2.isGM and (self2.playerName or self2.sender)  then
+                                if not Save.hide and not self2.isGM and (self2.playerName or self2.sender) and self2.canReply  then
                                     OpenMailSender.Name:SetText(self2.playerName or self2.sender)
                                     OpenMailSubject:SetText(self2.subject)
                                     InboxFrame.openMailID= self2.openMailID
                                     e.call('OpenMail_Reply')--回复
-                                    self2:SetAlpha(1)
                                 end
+                                self2:SetAlpha(1)
                             end)
                             frame:SetScript('OnEnter', function(self2)
-                                if not Save.hide and not self2.isGM and (self2.playerName or self2.sender)  then
+                                if not Save.hide and not self2.isGM and (self2.playerName or self2.sender) and self2.canReply  then
                                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
                                     e.tips:ClearLines()
                                     e.tips:AddDoubleLine(e.onlyChinese and '回复' or REPLY_MESSAGE, self2.playerName or self2.sender)
                                     e.tips:Show()
-                                    self2:SetAlpha(0.3)
                                 end
+                                self2:SetAlpha(0.3)
                             end)
                             frame:SetScript('OnLeave', function(self2)
                                 e.tips:Hide()
                                 self2:SetAlpha(1)
                             end)
                         end
+                        frame.canReply= canReply
                         frame.sender= sender
                         frame.subject= subject
                         frame.openMailID= btn.index
@@ -1671,7 +1672,7 @@ local function Init_InBox()
                 --信件，索引，提示
                 if not _G['PostalSelectReturnButton'] then
                     if not btn.indexText and not Save.hide then
-                        btn.indexText= e.Cstr(btn)
+                        btn.indexText= e.Cstr(btn, {alpha= 0.5})
                         btn.indexText:SetPoint('RIGHT', btn, 'LEFT',-2,0)
                     end
                     if btn.indexText then
@@ -1772,10 +1773,12 @@ local function Init_InBox()
                 if btn.DeleteButton then--删除，或退信，按钮，设置参数
                     btn.DeleteButton:SetNormalTexture(InboxItemCanDelete(btn.index) and 'xmarksthespot' or 'common-icon-undo')
                     btn.DeleteButton.openMailID= btn.index
+
                     local show= true
                     if Save.hide or invoiceType or (sender and strlower(sender) == strlower(BUTTON_LAG_AUCTIONHOUSE)) then
                         show=false
                     end
+
                     btn.DeleteButton:SetShown(show)
                     if btn.DeleteButton.numItemLabel then
                         btn.DeleteButton.numItemLabel:SetText((itemCount and itemCount>1) and itemCount or '')

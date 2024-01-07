@@ -1680,21 +1680,75 @@ local function Init()
     end)
     set(MailFrameTab1, '收件箱')
         set(OpenAllMail, '全部打开')
+        hooksecurefunc(OpenAllMail,'StartOpening', function(self)
+            set(self, '正在打开……')
+        end)
+        hooksecurefunc(OpenAllMail,'StopOpening', function(self)
+            set(self, '全部打开')
+        end)
+
+
     set(MailFrameTab2, '发件箱')
         set(SendMailMailButton, '发送')
         set(SendMailCancelButton, '取消')
         hooksecurefunc('SendMailRadioButton_OnClick', function(index)--MailFrame.lua
             if ( index == 1 ) then
-                SendMailMoneyText:SetText('寄送金额：');
+                SendMailMoneyText:SetText('|cnRED_FONT_COLOR:寄送金额：');
             else
                 SendMailMoneyText:SetText('|cnGREEN_FONT_COLOR:付款取信邮件的金额');
             end
         end)
-        set(SendMailSendMoneyButtonText, '发送钱币')
+        set(SendMailSendMoneyButtonText, '|cnRED_FONT_COLOR:发送钱币')
         set(SendMailCODButtonText, '|cnGREEN_FONT_COLOR:付款取信')
-    
 
 
+        set(OpenMailSenderLabel, '来自：')
+        set(OpenMailSubjectLabel, '主题：')
+        hooksecurefunc('OpenMail_Update', function()
+            if not InboxFrame.openMailID then
+                return
+            end
+            if select(5, GetInboxText(InboxFrame.openMailID)) then
+                local invoiceType, itemName, playerName, _, _, _, _, _, etaHour, etaMin, count, commerceAuction = GetInboxInvoiceInfo(InboxFrame.openMailID);
+                if ( invoiceType ) then
+                    if ( playerName == nil ) then
+                        playerName = (invoiceType == "buyer") and '多个卖家' or '多个买家';
+                    end
+                    local multipleSale = count and count > 1;
+                    if ( multipleSale ) then
+                        itemName = format(AUCTION_MAIL_ITEM_STACK, itemName, count);
+                    end
+                    OpenMailInvoicePurchaser:SetShown(not commerceAuction);
+                    if ( invoiceType == "buyer" ) then
+                        OpenMailInvoicePurchaser:SetText("销售者： "..playerName);
+                        OpenMailInvoiceAmountReceived:SetText('|cnRED_FONT_COLOR:付费金额：');
+                    elseif (invoiceType == "seller") then
+                        OpenMailInvoiceItemLabel:SetText("物品售出： "..itemName);
+                        OpenMailInvoicePurchaser:SetText("购买者： "..playerName);
+                        OpenMailInvoiceAmountReceived:SetText('|cnGREEN_FONT_COLOR:收款金额：');
+
+                    elseif (invoiceType == "seller_temp_invoice") then
+                        OpenMailInvoiceItemLabel:SetText("物品售出： "..itemName);
+                        OpenMailInvoicePurchaser:SetText("购买者： "..playerName);
+                        OpenMailInvoiceAmountReceived:SetText('等待发送的数量：');
+                        OpenMailInvoiceMoneyDelay:SetFormattedText('预计投递时间%s', GameTime_GetFormattedTime(etaHour, etaMin, true));
+                    end
+                end
+            end
+            if (OpenMailFrame.itemButtonCount and OpenMailFrame.itemButtonCount > 0 ) then
+                OpenMailAttachmentText:SetText('|cnGREEN_FONT_COLOR:拿取附件：')
+            else
+                OpenMailAttachmentText:SetText('无附件')
+            end
+            if InboxItemCanDelete(InboxFrame.openMailID) then
+                OpenMailDeleteButton:SetText('删除');
+            else
+                OpenMailDeleteButton:SetText('退信');
+            end
+            set(OpenMailFrameTitleText, '打开邮件')
+        end)
+        set(OpenMailReplyButton, '回复')
+        set(OpenMailCancelButton, '关闭')
 
 
 
