@@ -496,7 +496,7 @@ local strText={
         [MOTION_SICKNESS_DRAGONRIDING_SPEED_EFFECTS] = "动态飞行速度效果",
             [SHAKE_INTENSITY_FULL] = "高",
             [SHAKE_INTENSITY_REDUCED] = "低",
-        
+
         [ADV_FLY_PITCH_CONTROL] = "倾角控制",
         [ADV_FLY_PITCH_CONTROL_GROUND_DEBOUNCE] = "防抖倾角输入",
         [ADV_FLY_CAMERA_PITCH_CHASE_TEXT] = "键盘倾斜镜头跟随",
@@ -1152,7 +1152,7 @@ local strText={
     --[ARENA] = "竞技场",
     --[SOCIAL_QUEUE_FORMAT_ARENA_SKIRMISH] = "竞技场练习赛",
     [AUCTION_HOUSE_FILTER_DROPDOWN_CUSTOM] = "自定义",
-    
+
 }
 
 if MOTION_SICKNESS_DROPDOWN then
@@ -1258,7 +1258,7 @@ local function Init()
 
 
 
-   
+
 
 
 
@@ -1982,7 +1982,7 @@ local function Init()
     dia("BACKPACK_INCREASE_SIZE", {text = '为您的《魔兽世界》账号添加安全令和短信安全保护功能，即可获得4格额外的背包空间。|n|n战网安全令完全免费，而且使用方便，可以有效地保护您的账号。短信安全保护功能可以在账号有重要改动时为您通知提醒。|n|n点击“启用”以打开账号安全设置页面。', button1 = '启用', button2 = '取消'})
     dia("GROUP_FINDER_AUTHENTICATOR_POPUP", {text = '为你的账号添加安全令和短信安全保护功能后就能使用队伍查找器的全部功能。|n|n战网安全令完全免费，而且使用方便，可以有效地保护您的账号，短信安全保护功能可以在账号有重要改动时为您通知提醒。|n|n点击“启用”即可打开安全令设置网站。', button1 = '启用', button2 = '取消'})
     dia("CLIENT_INVENTORY_FULL_OVERFLOW", {text= '你的背包满了。给背包腾出空间才能获得遗漏的物品。', button1 = '确定'})
-    
+
     dia("LEAVING_TUTORIAL_AREA", {OnShow = function(self)
 		if UnitFactionGroup("player") == "Horde" then
 			self.button1:SetText('返回');
