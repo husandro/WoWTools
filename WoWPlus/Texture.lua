@@ -704,6 +704,7 @@ local function Init_All_Frame()
      hide_Texture(QuestFrameInset.Bg)
 
      --信箱
+     
      set_NineSlice(MailFrame, true)
      set_Alpha_Color(MailFrameBg)
      hide_Texture(InboxFrameBg)
@@ -735,7 +736,7 @@ local function Init_All_Frame()
      set_Alpha_Color(SendMailMoneyBgLeft)
      hide_Texture(SendMailMoneyInset.Bg)
      set_NineSlice(MailFrameInset, true)
-
+     set_ScrollBar(SendMailScrollFrame)
 
      --拾取, 历史
      set_NineSlice(GroupLootHistoryFrame, true)

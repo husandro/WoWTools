@@ -10,9 +10,13 @@ local Save={
 }
 local panel= CreateFrame("Frame")
 
-local function set(self, text)
+local function set(self, text, affer)
     if self and text and not self:IsForbidden() then--CanAccessObject(self) then
-        self:SetText(text)
+        if affer then
+            C_Timer.After(affer, function() self:SetText(text) end)
+        else
+            self:SetText(text)
+        end
     end
 end
 
@@ -1155,11 +1159,11 @@ local strText={
 
 }
 
-if MOTION_SICKNESS_DROPDOWN then
-    strText[MOTION_SICKNESS_DROPDOWN] = "动态眩晕"
+if _G['MOTION_SICKNESS_DROPDOWN'] then
+    strText[_G['MOTION_SICKNESS_DROPDOWN']] = "动态眩晕"
 end
-if MOTION_SICKNESS_DROPDOWN then
-    strText[MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS] = "动态飞行屏幕效果"
+if _G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS'] then
+    strText[_G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS']] = "动态飞行屏幕效果"
 end
 
 
@@ -1663,9 +1667,32 @@ local function Init()
     --拾取
     set(GroupLootHistoryFrameTitleText, '战利品掷骰')
 
-
-
-
+    --邮箱 MailFrame.lua
+    --MailFrame:HookScript('OnShow', function(self)
+        --self:SetTitle('打开邮件')
+    hooksecurefunc('MailFrameTab_OnClick', function(self, tabID)
+        tabID = tabID or self:GetID()
+        if tabID == 1  then
+            MailFrame:SetTitle('收件箱');
+        elseif tabID==2 then
+            MailFrame:SetTitle('发件箱');
+        end
+    end)
+    set(MailFrameTab1, '收件箱')
+        set(OpenAllMail, '全部打开')
+    set(MailFrameTab2, '发件箱')
+        set(SendMailMailButton, '发送')
+        set(SendMailCancelButton, '取消')
+        hooksecurefunc('SendMailRadioButton_OnClick', function(index)--MailFrame.lua
+            if ( index == 1 ) then
+                SendMailMoneyText:SetText('寄送金额：');
+            else
+                SendMailMoneyText:SetText('|cnGREEN_FONT_COLOR:付款取信邮件的金额');
+            end
+        end)
+        set(SendMailSendMoneyButtonText, '发送钱币')
+        set(SendMailCODButtonText, '|cnGREEN_FONT_COLOR:付款取信')
+    
 
 
 
@@ -1853,7 +1880,7 @@ local function Init()
 		if data then
 			self.text:SetFormattedText('你确定想要从公会中移除%s吗？', data.name);
 		else
-			self.text:SetText(GuildFrame.selectedName);
+			self.text:SetText(GuildFrame.selectedName or '');
 		end
 	end, button1 = '是', button2 = '否'})
 
@@ -2360,9 +2387,7 @@ local function Init_Loaded(arg1)
 
     elseif arg1=='Blizzard_MacroUI' then
         set(MacroFrameTab1, '通用宏')
-        C_Timer.After(0.3, function()
-            set(MacroFrameTab2, '专用宏')
-        end)
+        set(MacroFrameTab2, '专用宏', 0.3)
         set(MacroSaveButton, '保存')
         set(MacroCancelButton, '取消')
         set(MacroDeleteButton, '删除')
@@ -2654,7 +2679,7 @@ local function Init_Loaded(arg1)
 
     elseif arg1=='Blizzard_BlackMarketUI' then
         dia("BID_BLACKMARKET", {text = '确定要出价%s竞拍以下物品吗？', button1 = '确定', button2 = '取消'})
-    
+
     elseif arg1=='Blizzard_TrainerUI' then
         dia("CONFIRM_PROFESSION", {text = format('你只能学习两个专业。你要学习|cffffd200%s|r作为你的第一个专业吗？', "XXX"), OnShow = function(self)
             local prof1, prof2 = GetProfessions();

@@ -5224,7 +5224,21 @@
         "PROFESSION_CONFIRMATION2",
         "GARRISON_SHIPYARD_DANGEROUS_MISSION_WARNING",
         "STATICPOPUP_TEXTURE_ALERT",
-        "GARRISON_SHIP_DECOMMISSION_CONFIRMATION"
+        "GARRISON_SHIP_DECOMMISSION_CONFIRMATION",
+        "ButtonFrameTemplate_HideButtonBar",
+        "ButtonFrameTemplate_ShowButtonBar",
+        "INBOX",
+        "OPENMAIL",
+        "InboxPrevPageButton",
+        "SendMailMoneyText",
+        "SendMailSendMoneyButton",
+        "SEND_MONEY",
+        "SendMailMoneyButton",
+        "SendMailCODButton",
+        "AMOUNT_TO_SEND",
+        "COD_AMOUNT",
+        "SendMailSendMoneyButtonText",
+        "SendMailCODButtonText"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
