@@ -5154,7 +5154,8 @@
         "AddonListTitleText",
         "AddonListForceLoad",
         "CONFIRM_UPGRADE_ITEM",
-        "CONFIRM_UPGRADE_ITEM_BIND"
+        "CONFIRM_UPGRADE_ITEM_BIND",
+        "MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

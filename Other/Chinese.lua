@@ -445,7 +445,7 @@ local strText={
         [ALTERNATE_SCREEN_EFFECTS] = "开启光敏模式",
         [ENABLE_QUEST_TEXT_CONTRAST] = "任务文本颜色反差",
         [MINIMUM_CHARACTER_NAME_SIZE_TEXT] = "最小角色名尺寸",
-        --[MOTION_SICKNESS_DROPDOWN] = "动态眩晕",
+
         [ADJUST_MOTION_SICKNESS_SHAKE] = "视角晃动",
         [CURSOR_SIZE] = "鼠标指针大小",
         [TARGET_TOOLTIP_OPTION] = "动作瞄准提示信息",
@@ -477,6 +477,7 @@ local strText={
         [MOTION_SICKNESS_DRAGONRIDING_SPEED_EFFECTS] = "动态飞行速度效果",
             [SHAKE_INTENSITY_FULL] = "高",
             [SHAKE_INTENSITY_REDUCED] = "低",
+        [MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS] = "动态飞行屏幕效果",
         [ADV_FLY_PITCH_CONTROL] = "倾角控制",
         [ADV_FLY_PITCH_CONTROL_GROUND_DEBOUNCE] = "防抖倾角输入",
         [ADV_FLY_CAMERA_PITCH_CHASE_TEXT] = "键盘倾斜镜头跟随",
@@ -1132,10 +1133,12 @@ local strText={
     --[ARENA] = "竞技场",
     --[SOCIAL_QUEUE_FORMAT_ARENA_SKIRMISH] = "竞技场练习赛",
     [AUCTION_HOUSE_FILTER_DROPDOWN_CUSTOM] = "自定义",
+    
 }
 
-
-
+if MOTION_SICKNESS_DROPDOWN then
+    strText[MOTION_SICKNESS_DROPDOWN] = "动态眩晕"
+end
 
 
 
