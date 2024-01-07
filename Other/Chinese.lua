@@ -2360,11 +2360,9 @@ local function Init_Loaded(arg1)
 
     elseif arg1=='Blizzard_MacroUI' then
         set(MacroFrameTab1, '通用宏')
-        --hooksecurefunc(MacroFrameTab2, 'OnLoad', function(self)--Blizzard_MacroUI.xml
-        C_Timer.After(1, function()
+        C_Timer.After(0.3, function()
             set(MacroFrameTab2, '专用宏')
         end)
-        --end)
         set(MacroSaveButton, '保存')
         set(MacroCancelButton, '取消')
         set(MacroDeleteButton, '删除')
