@@ -5199,7 +5199,9 @@
         "REGIONAL_RESTRICT_CHAT_DIALOG_DISABLE",
         "RETURNING_PLAYER_PROMPT",
         "STORMWIND",
-        "ORGRIMMAR"
+        "ORGRIMMAR",
+        "GuildFrame",
+        "MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

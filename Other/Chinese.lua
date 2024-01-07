@@ -496,7 +496,7 @@ local strText={
         [MOTION_SICKNESS_DRAGONRIDING_SPEED_EFFECTS] = "动态飞行速度效果",
             [SHAKE_INTENSITY_FULL] = "高",
             [SHAKE_INTENSITY_REDUCED] = "低",
-        [MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS] = "动态飞行屏幕效果",
+        
         [ADV_FLY_PITCH_CONTROL] = "倾角控制",
         [ADV_FLY_PITCH_CONTROL_GROUND_DEBOUNCE] = "防抖倾角输入",
         [ADV_FLY_CAMERA_PITCH_CHASE_TEXT] = "键盘倾斜镜头跟随",
@@ -1157,6 +1157,9 @@ local strText={
 
 if MOTION_SICKNESS_DROPDOWN then
     strText[MOTION_SICKNESS_DROPDOWN] = "动态眩晕"
+end
+if MOTION_SICKNESS_DROPDOWN then
+    strText[MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS] = "动态飞行屏幕效果"
 end
 
 
