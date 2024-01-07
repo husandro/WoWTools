@@ -10,6 +10,7 @@ local Save={
 }
 local panel= CreateFrame("Frame")
 
+
 local function set(self, text, affer)
     if self and text and not self:IsForbidden() then--CanAccessObject(self) then
         if affer then
@@ -1156,6 +1157,16 @@ local strText={
     --[ARENA] = "竞技场",
     --[SOCIAL_QUEUE_FORMAT_ARENA_SKIRMISH] = "竞技场练习赛",
     [AUCTION_HOUSE_FILTER_DROPDOWN_CUSTOM] = "自定义",
+
+
+
+
+
+
+
+
+
+
 
 }
 
@@ -2379,21 +2390,37 @@ local function Init_Loaded(arg1)
         end)
         set(CollectionsJournalTab1, '坐骑')
             set(MountJournal.MountCount.Label, '坐骑')
-            hooksecurefunc('MountJournal_UpdateMountDisplay', function()--Blizzard_MountCollection.lua
+            set(MountJournalSummonRandomFavoriteButton.spellname, "随机召唤\n偏好坐骑")--hooksecurefunc('MountJournalSummonRandomFavoriteButton_OnLoad', function(self)
+            set(MountJournal.MountDisplay.ModelScene.TogglePlayer.TogglePlayerText, '显示角色')
+            hooksecurefunc('MountJournal_OnLoad', function(self)
+	            self.SlotRequirementLabel:SetFormattedText('坐骑装备在%s级解锁', C_MountJournal.GetMountEquipmentUnlockLevel())
+            end)
+            hooksecurefunc('MountJournal_InitializeEquipmentSlot', function(self, item)
+                if not item then
+                    set(self.SlotLabel, '使用坐骑装备来强化你的坐骑。')
+                end
+            end)
+            hooksecurefunc('MountJournal_UpdateMountDisplay', function()
                 if ( MountJournal.selectedMountID ) then
-                    local active = select(4, C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID))
-                    local needsFanfare = C_MountJournal.NeedsFanfare(MountJournal.selectedMountID)
-                    if ( needsFanfare ) then
-                        MountJournal.MountButton:SetText('打开')
-                    elseif ( active ) then
-                        MountJournal.MountButton:SetText('解散坐骑')
+                    if (  C_MountJournal.NeedsFanfare(MountJournal.selectedMountID) ) then
+                        set(MountJournal.MountButton, '打开')
+                    elseif ( select(4, C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID)) ) then
+                        set(MountJournal.MountButton, '解散坐骑')
                     else
-                        MountJournal.MountButton:SetText('召唤')
+                        set(MountJournal.MountButton, '召唤坐骑')
                     end
                 end
             end)
-            set(MountJournalSummonRandomFavoriteButton.spellname, "随机召唤\n偏好坐骑")--hooksecurefunc('MountJournalSummonRandomFavoriteButton_OnLoad', function(self)
-            set(MountJournal.MountDisplay.ModelScene.TogglePlayer.TogglePlayerText, '显示角色')
+            MountJournalMountButton:HookScript('OnEnter', function()	
+                local needsFanFare = MountJournal.selectedMountID and C_MountJournal.NeedsFanfare(MountJournal.selectedMountID);
+                if needsFanFare then
+                    GameTooltip_AddNormalLine(GameTooltip, '打开即可获得你的崭新坐骑。', true);
+                else
+                    GameTooltip_AddNormalLine(GameTooltip, '召唤或解散你选定的坐骑。', true);
+                end
+                GameTooltip:Show();
+            end)
+
         set(CollectionsJournalTab2, '宠物手册')
             local function Set_Pet_Button_Name()
                 local petID = PetJournalPetCard.petID

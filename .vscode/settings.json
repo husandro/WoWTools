@@ -5284,7 +5284,15 @@
         "TIME_UNTIL_DELETED",
         "TIME_UNTIL_RETURNED",
         "OpenMailFrameIcon",
-        "DAYS_ABBR"
+        "DAYS_ABBR",
+        "MOUNT_EQUIPMENT_UNLOCK_REQUIREMENT",
+        "MOUNT_EQUIPMENT_NOTICE",
+        "MountJournal_InitializeEquipmentTooltip",
+        "COLLECTIONS_FANFARE_ICON",
+        "MountJournalMountButton_ChooseFallbackMountToDisplay",
+        "PlayerUtil",
+        "MOUNT_UNWRAP_TOOLTIP",
+        "MOUNT_SUMMON_TOOLTIP"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
