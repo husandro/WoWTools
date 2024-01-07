@@ -5269,7 +5269,17 @@
         "AUCTION_HOUSE_MAIL_FORMAT_COUNT",
         "OpenMailBodyText",
         "OpenStationeryBackgroundLeft",
-        "OpenStationeryBackgroundRight"
+        "OpenStationeryBackgroundRight",
+        "ConsortiumMailFrame",
+        "CRAFTING_ORDER_MAIL_CANCELED_BODY",
+        "CRAFTING_ORDER_MAIL_EXPIRED_BODY",
+        "NumberFontNormalRightRed",
+        "CRAFTING_ORDER_MAIL_ORDER_HEADER",
+        "CRAFTING_ORDER_MAIL_FULFILLED_BY",
+        "CRAFTING_ORDER_MAIL_REJECTED_BY",
+        "CRAFTING_ORDER_MAIL_FULFILLED_TO",
+        "CRAFTING_ORDER_AUTO_FULFILL_BODY",
+        "ATTACHMENT_TEXT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

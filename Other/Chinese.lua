@@ -1700,6 +1700,12 @@ local function Init()
         end)
         set(SendMailSendMoneyButtonText, '|cnRED_FONT_COLOR:发送钱币')
         set(SendMailCODButtonText, '|cnGREEN_FONT_COLOR:付款取信')
+        hooksecurefunc('SendMailAttachment_OnEnter', function(self)
+            local index = self:GetID();
+            if ( not HasSendMailItem(index) ) then
+                GameTooltip:SetText('将物品放在这里随邮件发送', 1.0, 1.0, 1.0);
+            end
+        end)
 
 
         set(OpenMailSenderLabel, '来自：')
@@ -1708,7 +1714,8 @@ local function Init()
             if not InboxFrame.openMailID then
                 return
             end
-            if select(5, GetInboxText(InboxFrame.openMailID)) then
+            local bodyText, stationeryID1, stationeryID2, isTakeable, isInvoice, isConsortium = GetInboxText(InboxFrame.openMailID);
+            if ( isInvoice ) then
                 local invoiceType, itemName, playerName, _, _, _, _, _, etaHour, etaMin, count, commerceAuction = GetInboxInvoiceInfo(InboxFrame.openMailID);
                 if ( invoiceType ) then
                     if ( playerName == nil ) then
@@ -1735,6 +1742,26 @@ local function Init()
                     end
                 end
             end
+
+            if ( isConsortium ) then
+                local info = C_Mail.GetCraftingOrderMailInfo(InboxFrame.openMailID) or {}
+                if ( info.reason == Enum.RcoCloseReason.RcoCloseCancel ) then
+                    ConsortiumMailFrame.OpeningText:SetText('你的制造订单已被取消。');
+                elseif ( info.reason == Enum.RcoCloseReason.RcoCloseExpire ) then
+                    ConsortiumMailFrame.OpeningText:SetText('你的制造订单已过期。');
+                elseif ( info.reason == Enum.RcoCloseReason.RcoCloseFulfill ) then
+                    ConsortiumMailFrame.OpeningText:SetFormattedText('订单：%s',info.recipeName)
+                    ConsortiumMailFrame.CrafterText:SetFormattedText('完成者：|cnHIGHLIGHT_FONT_COLOR:%s|r', info.crafterName or "")
+                elseif ( info.reason == Enum.RcoCloseReason.RcoCloseReject ) then
+                    ConsortiumMailFrame.OpeningText:SetFormattedText('订单：%s', info.recipeName)
+                    ConsortiumMailFrame.CrafterText:SetFormattedText('|cnHIGHLIGHT_FONT_COLOR:%s|r决定不完成此订单。', info.crafterName or "")
+                elseif ( info.reason == Enum.RcoCloseReason.RcoCloseCrafterFulfill ) then
+                    ConsortiumMailFrame.OpeningText:SetFormattedText('订单：%s', info.recipeName)
+                    ConsortiumMailFrame.CrafterText:SetFormattedText('收件人：%s', info.customerName or "")
+                    ConsortiumMailFrame.ConsortiumNote:SetFormattedText('嗨，%1$s，你完成了%3$s的%2$s的订单，但还没寄给对方。因为你的订单即将过期，所以我们在没有收取额外费用的情况下帮你寄出去了！附上你的佣金。', UnitName("player"), info.recipeName, info.customerName or "")
+                end
+            end
+
             if (OpenMailFrame.itemButtonCount and OpenMailFrame.itemButtonCount > 0 ) then
                 OpenMailAttachmentText:SetText('|cnGREEN_FONT_COLOR:拿取附件：')
             else
