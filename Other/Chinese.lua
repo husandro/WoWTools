@@ -1666,6 +1666,25 @@ local function Init()
     set(GroupLootHistoryFrameTitleText, '战利品掷骰')
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     --StaticPopup.lua
     dia("CONFIRM_OVERWRITE_EQUIPMENT_SET", {text = '你已经有一个名为%s的装备方案了。是否要覆盖已有方案', button1 = '是', button2 = '否'})
     dia("CONFIRM_SAVE_EQUIPMENT_SET", {text = '你想要保存装备方案\"%s\"吗？', button1 = '是', button2 = '否'})
@@ -2020,27 +2039,31 @@ local function Init()
 		end
 	end, button1 = '发送', button2 = '取消'})
 
-    dia("CONVERT_TO_RAID", {text = '你的队伍已经满了。你想要将队伍转换成团队吗？\n\n注意：在团队中，你的大部分任务都无法完成！', button1 = '转换', button2 = '取消'})
-    dia("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID", {text = '你的队伍已经满了。你想要将队伍转换成团队吗？\n\n注意：在团队中，你的大部分任务都无法完成！', button1 = '转换', button2 = '取消'})
+    dia("CONFIRM_RAF_REMOVE_RECRUIT", {text = '你确定要从你的招募战友中移除|n|cffffd200%s|r|n吗？|n|n请在输入框中输入“'..REMOVE_RECRUIT_CONFIRM_STRING..'”以确定。', button1 = '是', button2 = '否'})
 
-    dia("REMOVE_GUILDMEMBER", {text = format('你确定想要从公会中移除%s吗？', "XXX"), OnShow = function(self, data)
-		if data then
-			self.text:SetFormattedText('你确定想要从公会中移除%s吗？', data.name);
-		else
-			self.text:SetText(GuildFrame.selectedName);
+    dia("REGIONAL_CHAT_DISABLED", {
+        text = '聊天已关闭',
+        subText = '某些区域规定对此账号有影响。聊天功能已经默认关闭。你现在可以重新开启这些功能。或者你之后决定开启的话，可以在聊天设置面板里进行操作。\n\n如果你决定开启这些功能，请注意我们的社区互动规则，如果你遇到了任何的不当言论、行为，只要这些言论和行为对游戏体验造成了破坏或者干扰，您就可以使用我们在游戏内的举报选项进行举报。我们会评估聊天记录并采取对应的措施。',
+        button1 = '打开聊天',
+        button2 = '聊天保持关闭'
+    })
+
+    dia("CHAT_CONFIG_DISABLE_CHAT", {text = '你确定要完全关闭聊天吗？你将无法发送和接收任何信息。', button1 = '关闭聊天', button2 = '取消'})
+
+    dia("RETURNING_PLAYER_PROMPT", {OnShow = function(self)
+        local factionMajorCities = {
+            ["Alliance"] = '暴风城',
+            ["Horde"] = '奥格瑞玛',
+        }
+		local playerFactionGroup = UnitFactionGroup("player");
+		local factionCity = playerFactionGroup and factionMajorCities[playerFactionGroup] or nil;
+		if(factionCity) then
+			self.text:SetFormattedText('我们有好一阵子没见到你了！|n|n在%s可以开始全新的冒险之旅！|n|n你希望传送到那里吗？', factionCity)
 		end
 	end, button1 = '是', button2 = '否'})
 
-    dia("SET_GUILDPLAYERNOTE", {text = '设置玩家信息', button1 = '接受', button2 = '取消'})
-
-    dia("SET_GUILDPLAYERNOTE", {text = '设置玩家信息', button1 = '接受', button2 = '取消'})
-
-
-
-
-
-
-
+    dia("CRAFTING_HOUSE_DISABLED", {text = '工匠商盟目前不接受制造订单。|n请稍后再来看看！', button1 = '确定'})
+    dia("PERKS_PROGRAM_DISABLED", {text = '商栈目前关闭。|n请稍后再试。', button1 = '确定'})
 end
 
 
