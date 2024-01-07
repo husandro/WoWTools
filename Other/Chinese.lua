@@ -2556,13 +2556,15 @@ local function Init_Loaded(arg1)
         --Blizzard_ArtifactPerks.lua
         dia("CONFIRM_RELIC_REPLACE", {text = '你确定要替换此圣物吗？已有的圣物将被摧毁。', button1 = '接受', button2 = '取消'})
 
-    elseif arg1=='Blizzard_Soulbinds' then--Blizzard_SoulbindsTree.lua
+    elseif arg1=='Blizzard_Soulbinds' then
         dia("SOULBIND_DIALOG_MOVE_CONDUIT", {text = '一个导灵器只能同时被放置在一个插槽内，所以之前插槽里的该导灵器已被移除。', button1 = '接受'})
         dia("SOULBIND_DIALOG_INSTALL_CONDUIT_UNUSABLE", {text = '此插槽目前未激活。你确定想在此添加一个导灵器吗？', button1 = '接受', button2 = '取消'})
 
     elseif arg1=='Blizzard_AnimaDiversionUI' then--Blizzard_AnimaDiversionUI.lua
         dia("ANIMA_DIVERSION_CONFIRM_CHANNEL", {text = '你确定想引导心能到%s吗？|n|n|cffffd200%s|r', button1 = '是', button2 = '取消'})
         dia("ANIMA_DIVERSION_CONFIRM_REINFORCE", {text = '你确定想强化%s吗？|n|n|cffffd200这样会永久激活此地点，而且无法撤销。|r', button1 = '是', button2 = '取消'})
+
+        dia("SOULBIND_CONDUIT_NO_CHANGES_CONFIRMATION", {text = '你对你的导灵器进行了改动，但并没有应用这些改动。你确定想要离开吗？', button1 = '离开', button2 = '取消'})
 
     elseif arg1=='Blizzard_CovenantSanctum' then--Blizzard_CovenantSanctumUpgrades.lua
         dia("CONFIRM_ARTIFACT_RESPEC", {OnShow = function(self, data)
@@ -2597,7 +2599,6 @@ local function Init_Loaded(arg1)
         dia("CLASS_TRIAL_CHOOSE_BOOST_LOGOUT_PROMPT", {text = '要使用此角色直升服务，请登出游戏，返回角色选择界面。', button1 = '立刻返回角色选择画面', button2 = '取消'})
 
     elseif arg1=='Blizzard_GarrisonUI' then--要塞
-        --Blizzard_GarrisonMissionUI.lua
         dia("DEACTIVATE_FOLLOWER", {OnShow = function(self)
             local quality = C_Garrison.GetFollowerQuality(self.data);
             local name = FOLLOWER_QUALITY_COLORS[quality].hex..C_Garrison.GetFollowerName(self.data)..FONT_COLOR_CODE_CLOSE;
@@ -2615,6 +2616,24 @@ local function Init_Loaded(arg1)
         end, button1 = '是', button2 = '否'})
 
         dia("CONFIRM_RECRUIT_FOLLOWER", {text  = '确定要招募%s吗？', button1 = '是', button2 = '否'})
+
+        dia("DANGEROUS_MISSIONS", {OnShow = function(self)
+            local warningIconText = "|T" .. STATICPOPUP_TEXTURE_ALERT .. ":15:15:0:-2|t";
+            self.text:SetFormattedText('|n %s |cffff2020警告！|r %s |n|n你即将执行一项高危行动。如果行动失败，所有参与任务的舰船都有一定几率永久损毁。', warningIconText, warningIconText)
+        end, button1 = '确定', button2 = '取消'})
+
+        dia("GARRISON_SHIP_RENAME", {text  = '输入你想要的名字：', button1 = '接受', button2 = '取消', button3= '默认'})
+        dia("GARRISON_SHIP_DECOMMISSION", {OnShow = function(self)
+            local quality = C_Garrison.GetFollowerQuality(self.data.followerID);
+            local name = FOLLOWER_QUALITY_COLORS[quality].hex..C_Garrison.GetFollowerName(self.data.followerID)..FONT_COLOR_CODE_CLOSE;
+            self.text:SetFormattedText('你确定要永久报废|n%s吗？|n|n你将无法重新获得这艘舰船。', name);
+        end,  button1 = '是', button2 = '否'})
+
+        dia("GARRISON_CANCEL_UPGRADE_BUILDING", {text  = '确定要取消这次建筑升级吗？升级的费用将被退还。', button1 = '是', button2 = '否'})
+        dia("GARRISON_CANCEL_BUILD_BUILDING", {text  = '确定要取消建造这座建筑吗？建造的费用将被退还。', button1 = '是', button2 = '否'})
+        dia("COVENANT_MISSIONS_CONFIRM_ADVENTURE", {text  = '开始冒险？', button1 = '确认', button2 = '取消'})
+        dia("COVENANT_MISSIONS_HEAL_CONFIRMATION", {text  = '你确定要彻底治愈这名追随者吗？', button1 = '确认', button2 = '取消'})
+        dia("COVENANT_MISSIONS_HEAL_ALL_CONFIRMATION", {text  = '你确定要付出%s，治疗所有受伤的伙伴？', button1 = '治疗全部', button2 = '取消'})
 
     --elseif arg1=='Blizzard_RuneforgeUI' then--Blizzard_RuneforgeCreateFrame.lua
         --dia("CONFIRM_RUNEFORGE_LEGENDARY_CRAFT", {button1 = '是', button2 = '否'})
@@ -2640,6 +2659,10 @@ local function Init_Loaded(arg1)
                 self.text:SetFormattedText('你只能学习两个专业。你要学习|cffffd200%s|r作为你的第一个专业吗？', GetTrainerServiceSkillLine(ClassTrainerFrame.selectedService));
             end
         end, button1 = '接受', button2 = '取消'})
+
+    --elseif arg1=='Blizzard_Calendar' then
+        --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
+        --dia("CALENDAR_ERROR", {button1 = '确定'})
     end
 end
 
@@ -2716,6 +2739,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         end
     end
 end)
+
 
 
 
