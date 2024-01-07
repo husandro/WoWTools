@@ -2550,6 +2550,9 @@ local function Init_Loaded(arg1)
             self.text:Show();
         end, button1 = '是', button2 = '取消'})
 
+        --Blizzard_ProfessionsFrame.lua
+        dia("PROFESSIONS_SPECIALIZATION_CONFIRM_CLOSE", {text = '你想在离开前应用改动吗？', button1 = '是', button2 = '否',})
+
     elseif arg1=='Blizzard_ArtifactUI' then--Blizzard_ArtifactUI.lua
         dia("CONFIRM_ARTIFACT_RESPEC", {text = '确定要重置你的神器专长吗？|n|n这将消耗%s点|cffe6cc80神器能量|r。', button1 = '是', button2 = '否'})
         dia("NOT_ENOUGH_POWER_ARTIFACT_RESPEC", {text = '你没有足够的|cffe6cc80神器能量|r来重置你的专长。|n|n需要%s点|cffe6cc80神器能量|r。', button1 = '确定'})
@@ -2576,6 +2579,20 @@ local function Init_Loaded(arg1)
         dia("PERKS_PROGRAM_SERVER_ERROR", {text= '商栈与服务器交换数据时出现困难，请稍后再试。', button1 = '确定'})
         dia("PERKS_PROGRAM_ITEM_PROCESSING_ERROR", {text= '正在处理一件物品。请稍后再试。。', button1 = '确定'})
         dia("PERKS_PROGRAM_CONFIRM_OVERRIDE_FROZEN_ITEM", {text= '你确定想替换当前的冻结物品吗？现在的冻结物品有可能已经下架了。', button1 = '确认', button2 = '取消'})
+
+    elseif arg1=='Blizzard_WeeklyRewards' then--Blizzard_WeeklyRewards.lua
+        dia("CONFIRM_SELECT_WEEKLY_REWARD", {text = '你一旦选好奖励就不能变更了。|n|n你确定要选择这件物品吗？', button1 = '是', button2 = '取消'})
+
+    elseif arg1=='Blizzard_PlayerChoice' then
+        dia("CONFIRM_PLAYER_CHOICE", {button1 = '确定', button2 = '取消'})
+        dia("CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING", {button1 = '接受', button2 = '拒绝'})
+
+    elseif arg1=='Blizzard_GarrisonTemplates' then--Blizzard_GarrisonSharedTemplates.lua
+        dia("CONFIRM_FOLLOWER_UPGRADE", {button1 = '是', button2 = '否'})
+        dia("CONFIRM_FOLLOWER_ABILITY_UPGRADE", {button1 = '是', button2 = '否'})
+        dia("CONFIRM_FOLLOWER_TEMPORARY_ABILITY", {text = '确定要赋予%s这个临时技能吗？', button1 = '是', button2 = '否'})
+        dia("CONFIRM_FOLLOWER_EQUIPMENT", {button1 = '是', button2 = '否'})
+
     end
 end
 
@@ -2652,4 +2669,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         end
     end
 end)
+
+
 

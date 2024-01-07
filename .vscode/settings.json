@@ -5214,7 +5214,7 @@
         "PROFESSIONS_SPECIALIZATION_CONFIRM_PURCHASE_TAB_TITLE",
         "GetGarrisonTalentCostString",
         "SANCTUM_UPGRADE_CONFIRMATION",
-        "MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS"
+        "PROFESSIONS_SPECS_CONFIRM_CLOSE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
