@@ -2411,7 +2411,7 @@ local function Init_Loaded(arg1)
                     end
                 end
             end)
-            MountJournalMountButton:HookScript('OnEnter', function()	
+            MountJournalMountButton:HookScript('OnEnter', function()
                 local needsFanFare = MountJournal.selectedMountID and C_MountJournal.NeedsFanfare(MountJournal.selectedMountID);
                 if needsFanFare then
                     GameTooltip_AddNormalLine(GameTooltip, '打开即可获得你的崭新坐骑。', true);
@@ -2462,12 +2462,12 @@ local function Init_Loaded(arg1)
         set(CollectionsJournalTab5, '外观')
         set(WardrobeCollectionFrameTab1, '物品')
         set(WardrobeCollectionFrameTab2, '套装')
-        
+
 
         dia("BATTLE_PET_RENAME", {text = '重命名', button1 = '接受', button2 = '取消', button3 = '默认'})
         dia("BATTLE_PET_PUT_IN_CAGE", {text = '把这只宠物放入笼中？', button1 = '确定', button2 = '取消'})
         dia("BATTLE_PET_RELEASE", {text = "\n\n你确定要释放|cffffd200%s|r吗？\n\n", button1 = '确定', button2 = '取消'})
-        
+
 
         dia("DIALOG_REPLACE_MOUNT_EQUIPMENT", {text = '你确定要替换此坐骑装备吗？已有的坐骑装备将被摧毁。', button1 = '是', button2 = '否'})
 
