@@ -1946,20 +1946,94 @@ local function Init()
     dia("TRANSMOG_APPLY_WARNING", {button1 = '确定', button2 = '取消'})
     dia("TRANSMOG_FAVORITE_WARNING", {text = '将此外观设置为偏好外观将使你背包中的这个物品无法退款且无法交易。\n确定要继续吗？', button1 = '确定', button2 = '取消'})
     dia("CONFIRM_UNLOCK_TRIAL_CHARACTER", {text = '确定要升级这个角色吗？完成此步骤之后，你将无法更改自己的选择。', button1 = '确定', button2 = '取消'})
+    dia("DANGEROUS_SCRIPTS_WARNING", {text = '你正试图运行自定义脚本。运行自定义脚本可能危害到你的角色，导致物品或金币损失。|n|n确定要运行吗？', button1 = '是', button2 = '否'})
+    dia("EXPERIMENTAL_CVAR_WARNING", {text = '您已开启了一项或多项实验性镜头功能。这可能对部分玩家造成视觉上的不适。', button1 = '接受', button2 = '禁用"'})
+    dia("PREMADE_GROUP_SEARCH_DELIST_WARNING", {text = '你的预创建队伍界面上已有一组队伍列表。是否要清除列表，开始新的搜索？', button1 = '是', button2 = '否'})
 
+    dia("PREMADE_GROUP_LEADER_CHANGE_DELIST_WARNING", {text = '你已经被提升为队伍领袖|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0:0:0:-1|t |n|n|cffffd200你想以此队名重新列出队伍吗？|r|n%s|n', OnShow = function(self, data)
+		self.text:SetFormattedText('你已经被提升为队伍领袖|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0:0:0:-1|t |n|n|cffffd200你想以此队名重新列出队伍吗？|r|n%s|n', data.listingTitle)
+		self.timeleft = data.delistTime;
+		self.delistOnHide = true;
+	end, subText = '|n%s后自动从列表移除', button1 = '列出我的队伍', button2 = '我想编辑队名', button3 = '不列出我的队伍',})
 
+    dia("PREMADE_GROUP_INSECURE_SEARCH", {text= '你的队伍已被移出列表，要搜索|n%s吗？', button1 = '是', button2 = '否'})
+    dia("BACKPACK_INCREASE_SIZE", {text = '为您的《魔兽世界》账号添加安全令和短信安全保护功能，即可获得4格额外的背包空间。|n|n战网安全令完全免费，而且使用方便，可以有效地保护您的账号。短信安全保护功能可以在账号有重要改动时为您通知提醒。|n|n点击“启用”以打开账号安全设置页面。', button1 = '启用', button2 = '取消'})
+    dia("GROUP_FINDER_AUTHENTICATOR_POPUP", {text = '为你的账号添加安全令和短信安全保护功能后就能使用队伍查找器的全部功能。|n|n战网安全令完全免费，而且使用方便，可以有效地保护您的账号，短信安全保护功能可以在账号有重要改动时为您通知提醒。|n|n点击“启用”即可打开安全令设置网站。', button1 = '启用', button2 = '取消'})
+    dia("CLIENT_INVENTORY_FULL_OVERFLOW", {text= '你的背包满了。给背包腾出空间才能获得遗漏的物品。', button1 = '确定'})
+    
+    dia("LEAVING_TUTORIAL_AREA", {OnShow = function(self)
+		if UnitFactionGroup("player") == "Horde" then
+			self.button1:SetText('返回');
+			self.text:SetText('你距离奥格瑞玛太远了。|n |n如果你继续走的话，就会脱离教程。|n |n你想返回奥格瑞玛吗？|n |n |n');
+		else
+			self.button1:SetText('返回');
+			self.text:SetText('你距离暴风城太远了。|n |n如果你继续走的话，就会脱离教程。|n |n你想返回暴风城吗？|n |n |n');
+		end
+	end, button2 = '结束教程"'})
 
+    dia("CLUB_FINDER_ENABLED_DISABLED", {text = '公会和社区查找器已可用或不可用。', button1 = '确定'})
 
+    dia("INVITE_COMMUNITY_MEMBER", {text = '邀请成员', subText = '输入战网昵称。', OnShow = function(self, data)
+		self.editBox:SetFocus();
 
+		local clubInfo = C_Club.GetClubInfo(data.clubId) or {}
+		if clubInfo.clubType == Enum.ClubType.BattleNet then
+			AutoCompleteEditBox_SetAutoCompleteSource(self.editBox, C_Club.GetInvitationCandidates, data.clubId);
+			self.SubText:SetText('输入一位战网好友名称');
+			self.editBox.Instructions:SetText('实名好友或战网昵称');
+		else
+			AutoCompleteEditBox_SetAutoCompleteSource(self.editBox, GetAutoCompleteResults, AUTOCOMPLETE_LIST.COMMUNITY.include, AUTOCOMPLETE_LIST.COMMUNITY.exclude);
+			self.SubText:SetText('输入角色名-服务器名。');
+			self.editBox.Instructions:SetText("");
+		end
+		self.button1:SetMotionScriptsWhileDisabled(true);
+		self.button1:SetScript("OnEnter", function(self2)
+			if(not self2:IsEnabled()) then
+                GameTooltip:SetOwner(self2, "ANCHOR_BOTTOMRIGHT");
+                GameTooltip_AddColoredLine(GameTooltip, '已经达到最大人数。移除一名玩家后才能进行邀请。', RED_FONT_COLOR, true);
+                GameTooltip:Show();
+            end
+		end );
+		self.button1:SetScript("OnLeave", GameTooltip_Hide);
+		if (self.extraButton) then
+			self.extraButton:SetMotionScriptsWhileDisabled(true);
+			self.extraButton:SetScript("OnEnter", function(self2)
+				if(not self2:IsEnabled()) then
+                    GameTooltip:SetOwner(self2, "ANCHOR_BOTTOMRIGHT");
+                    GameTooltip_AddColoredLine(GameTooltip, '已经达到最大人数。移除一名玩家后才能进行邀请。', RED_FONT_COLOR, true);
+                    GameTooltip:Show();
+                end
+			end );
+			self.extraButton:SetScript("OnLeave", GameTooltip_Hide);
+		end
 
+		if(clubInfo and clubInfo.memberCount and clubInfo.memberCount >= C_Club.GetClubCapacity()) then
+			self.button1:Disable();
+			if (self.extraButton) then
+				self.extraButton:Disable();
+			end
+		else
+			self.button1:Enable();
+			if (self.extraButton) then
+				self.extraButton:Enable();
+			end
+		end
+	end, button1 = '发送', button2 = '取消'})
 
+    dia("CONVERT_TO_RAID", {text = '你的队伍已经满了。你想要将队伍转换成团队吗？\n\n注意：在团队中，你的大部分任务都无法完成！', button1 = '转换', button2 = '取消'})
+    dia("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID", {text = '你的队伍已经满了。你想要将队伍转换成团队吗？\n\n注意：在团队中，你的大部分任务都无法完成！', button1 = '转换', button2 = '取消'})
 
+    dia("REMOVE_GUILDMEMBER", {text = format('你确定想要从公会中移除%s吗？', "XXX"), OnShow = function(self, data)
+		if data then
+			self.text:SetFormattedText('你确定想要从公会中移除%s吗？', data.name);
+		else
+			self.text:SetText(GuildFrame.selectedName);
+		end
+	end, button1 = '是', button2 = '否'})
 
+    dia("SET_GUILDPLAYERNOTE", {text = '设置玩家信息', button1 = '接受', button2 = '取消'})
 
-
-
-
-
+    dia("SET_GUILDPLAYERNOTE", {text = '设置玩家信息', button1 = '接受', button2 = '取消'})
 
 
 
@@ -2229,9 +2303,7 @@ local function Init_Loaded(arg1)
         set(MacroDeleteButton, '删除')
         set(MacroNewButton, '新建')
         set(MacroExitButton, '退出')
-        dia("CONFIRM_DELETE_SELECTED_MACRO", {text= '确定要删除这个宏吗？'
-        dia("CONFIRM_DELETE_SELECTED_MACRO"].button1= '是'
-        dia("CONFIRM_DELETE_SELECTED_MACRO"].button2= '取消'
+        dia("CONFIRM_DELETE_SELECTED_MACRO", {text= '确定要删除这个宏吗？', button1= '是', button2= '取消'})
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
         set(CommunitiesFrame.CommunitiesControlFrame.GuildRecruitmentButton, '公会招募')
@@ -2478,3 +2550,4 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         end
     end
 end)
+
