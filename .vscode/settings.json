@@ -5279,7 +5279,12 @@
         "CRAFTING_ORDER_MAIL_REJECTED_BY",
         "CRAFTING_ORDER_MAIL_FULFILLED_TO",
         "CRAFTING_ORDER_AUTO_FULFILL_BODY",
-        "ATTACHMENT_TEXT"
+        "ATTACHMENT_TEXT",
+        "InboxNextPageButton",
+        "TIME_UNTIL_DELETED",
+        "TIME_UNTIL_RETURNED",
+        "OpenMailFrameIcon",
+        "DAYS_ABBR"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

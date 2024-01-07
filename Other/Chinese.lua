@@ -1686,6 +1686,30 @@ local function Init()
         hooksecurefunc(OpenAllMail,'StopOpening', function(self)
             set(self, '全部打开')
         end)
+        hooksecurefunc('InboxFrame_Update', function()
+            local numItems = GetInboxNumItems();
+            local index = ((InboxFrame.pageNum - 1) * INBOXITEMS_TO_DISPLAY) + 1;
+            for i=1, INBOXITEMS_TO_DISPLAY do
+                if ( index <= numItems ) then
+                    local daysLeft = select(7, GetInboxHeaderInfo(index))
+                    if ( daysLeft >= 1 ) then
+                        daysLeft = GREEN_FONT_COLOR_CODE..format('%d|4天:天', floor(daysLeft)).." "..FONT_COLOR_CODE_CLOSE;
+                    else
+                        daysLeft = RED_FONT_COLOR_CODE..SecondsToTime(floor(daysLeft * 24 * 60 * 60))..FONT_COLOR_CODE_CLOSE;
+                    end
+                    local expireTime= _G["MailItem"..i.."ExpireTime"]
+                    if expireTime then
+                        set(expireTime, daysLeft)
+                        if ( InboxItemCanDelete(index) ) then
+                            expireTime.tooltip = '信息保留时间';
+                        else
+                            expireTime.tooltip = '信息退回时间';
+                        end
+                    end
+                end
+                index = index + 1;
+            end
+        end)
 
 
     set(MailFrameTab2, '发件箱')
