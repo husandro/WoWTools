@@ -1277,7 +1277,6 @@ local function Init()
 
     --LFD PVEFrame.lua
     --set(PVEFrameTitleText, '地下城和团队副本')
-
     set(PVEFrameTab1, '地下城和团队副本')
     set(PVEFrameTab2, 'PvP')
     set(PVEFrameTab3, '史诗钥石地下城')
@@ -1355,19 +1354,15 @@ local function Init()
                     set(self.ListGroupButton, '列出队伍')
                 end
             end)
-
             --hooksecurefunc('LFGListEntryCreation_Show', function()
     set(LFGListFrame.ApplicationViewer.AutoAcceptButton.Label, '自动邀请')
     set(LFGListFrame.ApplicationViewer.BrowseGroupsButton, '浏览队伍')
     set(LFGListFrame.ApplicationViewer.RemoveEntryButton, '移除')
     set(LFGListFrame.ApplicationViewer.EditButton, '编辑')
-
     set(LFGListFrame.SearchPanel.BackToGroupButton, '回到队伍')
     set(LFGListFrame.SearchPanel.SignUpButton, '申请')
     set(LFGListFrame.SearchPanel.BackButton, '后退')
-
     set(LFGListFrame.EntryCreation.CancelButton, '后退')
-
     hooksecurefunc('LFDQueueFrameFindGroupButton_Update', function()--LFDFrame.lua
         local mode = GetLFGMode(LE_LFG_CATEGORY_LFD);
         if ( mode == "queued" or mode == "rolecheck" or mode == "proposal" or mode == "suspended" ) then
@@ -1380,7 +1375,8 @@ local function Init()
             end
         end
     end)
-
+    --LFGList.lua
+    dia("LFG_LIST_INVITING_CONVERT_TO_RAID", {text = '邀请这名玩家或队伍会将你的小队转化为团队。', button1 = '邀请', button2 = '取消'})
 
     --选项
     hooksecurefunc(SettingsPanel.Container.SettingsList.ScrollBox, 'Update', function(frame)
@@ -1555,7 +1551,7 @@ local function Init()
 
     set(TextToSpeechFramePlaySampleAlternateButton, '播放样本')
     set(TextToSpeechFramePlaySampleButton, '播放样本')
-    
+
     set(TextToSpeechFramePanelContainer.PlaySoundSeparatingChatLinesCheckButton.text, '每条新信息之间播放声音')
     set(TextToSpeechFramePanelContainer.PlayActivitySoundWhenNotFocusedCheckButton.text, '某个聊天窗口有活动，而且不是当前焦点窗口时，播放一个音效')
     set(TextToSpeechFramePanelContainer.AddCharacterNameToSpeechCheckButton.text, '在语音中添加<角色名说>')
@@ -2080,6 +2076,9 @@ local function Init()
 
     --TextToSpeechFrame.lua
     dia("TTS_CONFIRM_SAVE_SETTINGS", {text= '你想让这个角色使用已经在这台电脑上保存的文字转语音设置吗？如果你从另一台电脑上登入，此设置会保存并覆盖之前你拥有的任何设定。', button1= '是', button2= '取消'})
+
+    --Keybindings.lua
+    dia("CONFIRM_DELETING_CHARACTER_SPECIFIC_BINDINGS", {text = '确定要切换到通用键位设定吗？所有本角色专用的键位设定都将被永久删除。', button1 = '确定', button2 = '取消'})
 end
 
 
@@ -2206,7 +2205,7 @@ local function Init_Loaded(arg1)
         end, button1 = '是', button2 = '否',})
 
         dia("CONFIRM_EXIT_WITH_UNSPENT_TALENT_POINTS", {text = '你还有未分配的天赋。你确定要关闭这个窗口？', button1 = '是', button2 = '否',})
-        
+
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then
         hooksecurefunc(ProfessionsCustomerOrdersCategoryButtonMixin, 'Init', function(self, categoryInfo, _, isRecraftCategory)
@@ -2232,9 +2231,7 @@ local function Init_Loaded(arg1)
         set(ProfessionsCustomerOrdersFrame.Form.PaymentContainer.Duration.TimeRemaining, '过期时间')
 
     elseif arg1=='Blizzard_Collections' then--收藏
-        --设置，标题
-        --Blizzard_Collections.lua
-        hooksecurefunc('CollectionsJournal_UpdateSelectedTab', function(self)
+        hooksecurefunc('CollectionsJournal_UpdateSelectedTab', function(self)--设置，标题
             local selected = CollectionsJournal_GetTab(self)
             if selected==1 then
                 self:SetTitle('坐骑')
@@ -2248,7 +2245,6 @@ local function Init_Loaded(arg1)
                 self:SetTitle('外观')
             end
         end)
-
         set(CollectionsJournalTab1, '坐骑')
             set(MountJournal.MountCount.Label, '坐骑')
             hooksecurefunc('MountJournal_UpdateMountDisplay', function()--Blizzard_MountCollection.lua
@@ -2266,7 +2262,6 @@ local function Init_Loaded(arg1)
             end)
             set(MountJournalSummonRandomFavoriteButton.spellname, "随机召唤\n偏好坐骑")--hooksecurefunc('MountJournalSummonRandomFavoriteButton_OnLoad', function(self)
             set(MountJournal.MountDisplay.ModelScene.TogglePlayer.TogglePlayerText, '显示角色')
-
         set(CollectionsJournalTab2, '宠物手册')
             local function Set_Pet_Button_Name()
                 local petID = PetJournalPetCard.petID
@@ -2293,21 +2288,21 @@ local function Init_Loaded(arg1)
             end
             hooksecurefunc('PetJournalFindBattle_Update', set_PetJournalFindBattle)
             set_PetJournalFindBattle()
-
             set(PetJournal.PetCount.Label, '宠物')
             set(PetJournalSummonRandomFavoritePetButtonSpellName, '召唤随机偏好战斗宠物')
             set(PetJournalHealPetButtonSpellName, '复活战斗宠物')
-
-
-
         set(CollectionsJournalTab3, '玩具箱')
         set(CollectionsJournalTab4, '传家宝')
         set(CollectionsJournalTab5, '外观')
-
-
-
         set(WardrobeCollectionFrameTab1, '物品')
         set(WardrobeCollectionFrameTab2, '套装')
+
+
+        dia("BATTLE_PET_RENAME", {text = '重命名', button1 = '接受', button2 = '取消', button3 = '默认'})
+        dia("BATTLE_PET_PUT_IN_CAGE", {text = '把这只宠物放入笼中？', button1 = '确定', button2 = '取消'})
+        dia("BATTLE_PET_RELEASE", {text = "\n\n你确定要释放|cffffd200%s|r吗？\n\n", button1 = '确定', button2 = '取消'})
+
+        dia("DIALOG_REPLACE_MOUNT_EQUIPMENT", {text = '你确定要替换此坐骑装备吗？已有的坐骑装备将被摧毁。', button1 = '是', button2 = '否'})
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         set(EncounterJournalTitleText, '冒险指南')
@@ -2553,9 +2548,13 @@ local function Init_Loaded(arg1)
         --Blizzard_ProfessionsFrame.lua
         dia("PROFESSIONS_SPECIALIZATION_CONFIRM_CLOSE", {text = '你想在离开前应用改动吗？', button1 = '是', button2 = '否',})
 
-    elseif arg1=='Blizzard_ArtifactUI' then--Blizzard_ArtifactUI.lua
+    elseif arg1=='Blizzard_ArtifactUI' then
+        --Blizzard_ArtifactUI.lua
         dia("CONFIRM_ARTIFACT_RESPEC", {text = '确定要重置你的神器专长吗？|n|n这将消耗%s点|cffe6cc80神器能量|r。', button1 = '是', button2 = '否'})
         dia("NOT_ENOUGH_POWER_ARTIFACT_RESPEC", {text = '你没有足够的|cffe6cc80神器能量|r来重置你的专长。|n|n需要%s点|cffe6cc80神器能量|r。', button1 = '确定'})
+
+        --Blizzard_ArtifactPerks.lua
+        dia("CONFIRM_RELIC_REPLACE", {text = '你确定要替换此圣物吗？已有的圣物将被摧毁。', button1 = '接受', button2 = '取消'})
 
     elseif arg1=='Blizzard_Soulbinds' then--Blizzard_SoulbindsTree.lua
         dia("SOULBIND_DIALOG_MOVE_CONDUIT", {text = '一个导灵器只能同时被放置在一个插槽内，所以之前插槽里的该导灵器已被移除。', button1 = '接受'})
@@ -2593,6 +2592,54 @@ local function Init_Loaded(arg1)
         dia("CONFIRM_FOLLOWER_TEMPORARY_ABILITY", {text = '确定要赋予%s这个临时技能吗？', button1 = '是', button2 = '否'})
         dia("CONFIRM_FOLLOWER_EQUIPMENT", {button1 = '是', button2 = '否'})
 
+    elseif arg1=='Blizzard_ClassTrial' then--Blizzard_WeeklyRewards.lua
+        dia("CLASS_TRIAL_CHOOSE_BOOST_TYPE", {text = '你希望使用哪种角色直升？', button1 = '接受', button2 = '接受', button3 = '取消'})
+        dia("CLASS_TRIAL_CHOOSE_BOOST_LOGOUT_PROMPT", {text = '要使用此角色直升服务，请登出游戏，返回角色选择界面。', button1 = '立刻返回角色选择画面', button2 = '取消'})
+
+    elseif arg1=='Blizzard_GarrisonUI' then--要塞
+        --Blizzard_GarrisonMissionUI.lua
+        dia("DEACTIVATE_FOLLOWER", {OnShow = function(self)
+            local quality = C_Garrison.GetFollowerQuality(self.data);
+            local name = FOLLOWER_QUALITY_COLORS[quality].hex..C_Garrison.GetFollowerName(self.data)..FONT_COLOR_CODE_CLOSE;
+            local cost = GetMoneyString(C_Garrison.GetFollowerActivationCost());
+            local uses = C_Garrison.GetNumFollowerDailyActivations();
+            self.text:SetFormattedText('确定要遣散|n%s吗？|n|n重新激活一名追随者需要花费%s。|n你每天可重新激活%d名追随者。', name, cost, uses);
+        end, button1 = '是', button2 = '否'})
+
+        dia("ACTIVATE_FOLLOWER", {OnShow = function(self)
+            local quality = C_Garrison.GetFollowerQuality(self.data);
+            local name = FOLLOWER_QUALITY_COLORS[quality].hex..C_Garrison.GetFollowerName(self.data)..FONT_COLOR_CODE_CLOSE;
+            local cost = GetMoneyString(C_Garrison.GetFollowerActivationCost());
+            local uses = C_Garrison.GetNumFollowerDailyActivations();
+            self.text:SetFormattedText('确定要激活|n%s吗？|n|n你今天还能激活%d名追随者，这将花费：', name, cost, uses);
+        end, button1 = '是', button2 = '否'})
+
+        dia("CONFIRM_RECRUIT_FOLLOWER", {text  = '确定要招募%s吗？', button1 = '是', button2 = '否'})
+
+    --elseif arg1=='Blizzard_RuneforgeUI' then--Blizzard_RuneforgeCreateFrame.lua
+        --dia("CONFIRM_RUNEFORGE_LEGENDARY_CRAFT", {button1 = '是', button2 = '否'})
+
+    elseif arg1=='Blizzard_ClickBindingUI' then
+        dia("CONFIRM_LOSE_UNSAVED_CLICK_BINDINGS", {text  = '你有未保存的点击施法按键绑定。如果你现在关闭，会丢失所有改动。', button1 = '确定', button2 = '取消'})
+        dia("CONFIRM_RESET_CLICK_BINDINGS", {text  = '确定将所有点击施法按键绑定重置为默认值吗？\n', button1 = '确定', button2 = '取消'})
+
+    elseif arg1=='Blizzard_ProfessionsTemplates' then
+        dia("PROFESSIONS_RECRAFT_REPLACE_OPTIONAL_REAGENT", {OnShow = function(self, data)
+            self.text:SetFormattedText('你想替换%s吗？\n它会在再造时被摧毁。', data.itemName)
+        end, button1 = '接受', button2 = '取消'})
+
+    elseif arg1=='Blizzard_BlackMarketUI' then
+        dia("BID_BLACKMARKET", {text = '确定要出价%s竞拍以下物品吗？', button1 = '确定', button2 = '取消'})
+    
+    elseif arg1=='Blizzard_TrainerUI' then
+        dia("CONFIRM_PROFESSION", {text = format('你只能学习两个专业。你要学习|cffffd200%s|r作为你的第一个专业吗？', "XXX"), OnShow = function(self)
+            local prof1, prof2 = GetProfessions();
+            if ( prof1 and not prof2 ) then
+                self.text:SetFormattedText('你只能学习两个专业。你要学习|cffffd200%s|r作为你的第二个专业吗？', GetTrainerServiceSkillLine(ClassTrainerFrame.selectedService));
+            elseif ( not prof1 ) then
+                self.text:SetFormattedText('你只能学习两个专业。你要学习|cffffd200%s|r作为你的第一个专业吗？', GetTrainerServiceSkillLine(ClassTrainerFrame.selectedService));
+            end
+        end, button1 = '接受', button2 = '取消'})
     end
 end
 
