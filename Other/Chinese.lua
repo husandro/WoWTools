@@ -29,8 +29,8 @@ end
 local function dia(string, tab)
     if StaticPopupDialogs[string] then
         for name, text in pairs(tab) do
-            if StaticPopupDialogs[string].name then
-                StaticPopupDialogs[string].name= text
+            if StaticPopupDialogs[string][name] then
+                StaticPopupDialogs[string][name]= text
             end
         end
     end
@@ -1161,7 +1161,6 @@ end
 if MOTION_SICKNESS_DROPDOWN then
     strText[MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS] = "动态飞行屏幕效果"
 end
-
 
 
 
