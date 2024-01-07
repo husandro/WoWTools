@@ -2418,6 +2418,13 @@ local function Init_Loaded(arg1)
                 else
                     GameTooltip_AddNormalLine(GameTooltip, '召唤或解散你选定的坐骑。', true);
                 end
+                --[[if MountJournal.selectedMountID ~= nil then
+                    local checkIndoors = true;
+                    local errorText = select(2, C_MountJournal.GetMountUsabilityByID(MountJournal.selectedMountID, checkIndoors))
+                    if errorText and strText[errorText] then
+                        GameTooltip_AddErrorLine(GameTooltip, '|cnRED_FONT_COLOR:'..strText[errorText], true);
+                    end
+                end]]
                 GameTooltip:Show();
             end)
 
@@ -2448,8 +2455,8 @@ local function Init_Loaded(arg1)
             hooksecurefunc('PetJournalFindBattle_Update', set_PetJournalFindBattle)
             set_PetJournalFindBattle()
             set(PetJournal.PetCount.Label, '宠物')
-            set(PetJournalSummonRandomFavoritePetButtonSpellName, '召唤随机偏好战斗宠物')
-            set(PetJournalHealPetButtonSpellName, '复活战斗宠物')
+            set(PetJournalSummonRandomFavoritePetButtonSpellName, '召唤随机\n偏好战斗宠物')
+            set(PetJournalHealPetButtonSpellName, '复活\n战斗宠物')
         set(CollectionsJournalTab3, '玩具箱')
         set(CollectionsJournalTab4, '传家宝')
         set(CollectionsJournalTab5, '外观')
