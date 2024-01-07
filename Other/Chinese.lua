@@ -26,6 +26,25 @@ local function font(lable)
     end
 end
 
+local function dia(string, tab)
+    if StaticPopupDialogs[string] then
+        for name, text in pairs(tab) do
+            if StaticPopupDialogs[string].name then
+                StaticPopupDialogs[string].name= text
+            end
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
 
 local strText={
     --Blizzard_AuctionData.lua
@@ -1426,10 +1445,7 @@ local function Init()
     label:SetText(id..' 语言翻译 提示：请要不在战斗中修改选项')
 
     set(SettingsPanel.Container.SettingsList.Header.DefaultsButton, '默认设置')
-    StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].text= '你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？'--Blizzard_Dialogs.lua
-    StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].button1= '所有设置'
-    StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].button2= '取消'
-    StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].button3= '这些设置'
+    dia('GAME_SETTINGS_APPLY_DEFAULTS', {text= '你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？', button1= '所有设置', button2= '取消', button3= '这些设置'})--Blizzard_Dialogs.lua
     set(SettingsPanel.GameTab.Text, '游戏')
     set(SettingsPanel.AddOnsTab.Text, '插件')
     set(SettingsPanel.NineSlice.Text, '选项')
@@ -1537,9 +1553,7 @@ local function Init()
 
     set(TextToSpeechFramePlaySampleAlternateButton, '播放样本')
     set(TextToSpeechFramePlaySampleButton, '播放样本')
-    StaticPopupDialogs["TTS_CONFIRM_SAVE_SETTINGS"].text= '你想让这个角色使用已经在这台电脑上保存的文字转语音设置吗？如果你从另一台电脑上登入，此设置会保存并覆盖之前你拥有的任何设定。'
-    StaticPopupDialogs["TTS_CONFIRM_SAVE_SETTINGS"].button1= '是'
-    StaticPopupDialogs["TTS_CONFIRM_SAVE_SETTINGS"].button2= '取消'
+    dia("TTS_CONFIRM_SAVE_SETTINGS", {text= '你想让这个角色使用已经在这台电脑上保存的文字转语音设置吗？如果你从另一台电脑上登入，此设置会保存并覆盖之前你拥有的任何设定。', button1= '是', button2= '取消'})
     set(TextToSpeechFramePanelContainer.PlaySoundSeparatingChatLinesCheckButton.text, '每条新信息之间播放声音')
     set(TextToSpeechFramePanelContainer.PlayActivitySoundWhenNotFocusedCheckButton.text, '某个聊天窗口有活动，而且不是当前焦点窗口时，播放一个音效')
     set(TextToSpeechFramePanelContainer.AddCharacterNameToSpeechCheckButton.text, '在语音中添加<角色名说>')
@@ -1651,416 +1665,287 @@ local function Init()
     --拾取
     set(GroupLootHistoryFrameTitleText, '战利品掷骰')
 
+
     --StaticPopup.lua
-    StaticPopupDialogs["CONFIRM_OVERWRITE_EQUIPMENT_SET"].text = '你已经有一个名为%s的装备方案了。是否要覆盖已有方案'
-    StaticPopupDialogs["CONFIRM_OVERWRITE_EQUIPMENT_SET"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_OVERWRITE_EQUIPMENT_SET"].button2 = '否'
-
-    
-    StaticPopupDialogs["CONFIRM_SAVE_EQUIPMENT_SET"].text = '你想要保存装备方案\"%s\"吗？'
-    StaticPopupDialogs["CONFIRM_SAVE_EQUIPMENT_SET"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_SAVE_EQUIPMENT_SET"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_DELETE_EQUIPMENT_SET"].text = '你确认要删除装备方案%s吗？'
-    StaticPopupDialogs["CONFIRM_DELETE_EQUIPMENT_SET"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_DELETE_EQUIPMENT_SET"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_RESET_TEXTTOSPEECH_SETTINGS"].text = '确定将所有文字转语音设定重置为默认值吗？'
-    StaticPopupDialogs["CONFIRM_RESET_TEXTTOSPEECH_SETTINGS"].button1 = '接受'
-    StaticPopupDialogs["CONFIRM_RESET_TEXTTOSPEECH_SETTINGS"].button2 = '取消'
-
-    StaticPopupDialogs["CONFIRM_REDOCK_CHAT"].text = '这么做会将你的聊天窗口重新并入综合标签页。'
-    StaticPopupDialogs["CONFIRM_REDOCK_CHAT"].button1 = '接受'
-    StaticPopupDialogs["CONFIRM_REDOCK_CHAT"].button2 = '取消'
-
-    StaticPopupDialogs["CONFIRM_PURCHASE_TOKEN_ITEM"].text = '你确定要将%s兑换为下列物品吗？ %s'
-    StaticPopupDialogs["CONFIRM_PURCHASE_TOKEN_ITEM"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_PURCHASE_TOKEN_ITEM"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_PURCHASE_NONREFUNDABLE_ITEM"].text = '你确定要将%s兑换为下列物品吗？本次购买将无法退还。%s'
-    StaticPopupDialogs["CONFIRM_PURCHASE_NONREFUNDABLE_ITEM"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_PURCHASE_NONREFUNDABLE_ITEM"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_UPGRADE_ITEM"].OnShow  = function(self, data)
+    dia("CONFIRM_OVERWRITE_EQUIPMENT_SET", {text = '你已经有一个名为%s的装备方案了。是否要覆盖已有方案', button1 = '是', button2 = '否'})
+    dia("CONFIRM_SAVE_EQUIPMENT_SET", {text = '你想要保存装备方案\"%s\"吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_DELETE_EQUIPMENT_SET", {text = '你确认要删除装备方案%s吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_GLYPH_PLACEMENT",{OnShow = function(self)
+		self.text:SetFormattedText('你确定要使用%s铭文吗？这将取代%s。', self.data.name, self.data.currentName);
+	end, button1 = '是', button2 = '否'})
+    dia("CONFIRM_GLYPH_REMOVAL",{OnShow = function(self)
+		self.text:SetFormattedText('你确定要移除%s吗？', self.data.name);
+	end, button1 = '是', button2 = '否'})
+    dia("CONFIRM_RESET_TEXTTOSPEECH_SETTINGS", {text = '确定将所有文字转语音设定重置为默认值吗？', button1 = '接受', button2 = '取消'})
+    dia("CONFIRM_REDOCK_CHAT", {text = '这么做会将你的聊天窗口重新并入综合标签页。', button1 = '接受', button2 = '取消'})
+    dia("CONFIRM_PURCHASE_TOKEN_ITEM", {text = '你确定要将%s兑换为下列物品吗？ %s', button1 = '是', button2 = '否'})
+    dia("CONFIRM_PURCHASE_NONREFUNDABLE_ITEM", {text = '你确定要将%s兑换为下列物品吗？本次购买将无法退还。%s', button1 = '是', button2 = '否'})
+    dia("CONFIRM_UPGRADE_ITEM", {OnShow  = function(self, data)
 		if data.isItemBound then
-			self.text:SetFormattedText('你确定要花费%s升级下列物品吗？',data.costString);
+			self.text:SetFormattedText('你确定要花费%s升级下列物品吗？', data.costString);
 		else
 			self.text:SetFormattedText('你确定要花费%s升级下列物品吗？升级会将该物品变成灵魂绑定物品。', data.costString)
 		end
-    end
-    StaticPopupDialogs["CONFIRM_UPGRADE_ITEM"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_UPGRADE_ITEM"].button2 = '否'
-
-
-    StaticPopupDialogs["CONFIRM_REFUND_TOKEN_ITEM"].text = '你确定要退还下面这件物品%s，获得%s的退款吗？'
-    StaticPopupDialogs["CONFIRM_REFUND_TOKEN_ITEM"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_REFUND_TOKEN_ITEM"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_REFUND_MAX_HONOR"].text = '你的荣誉已接近上限。卖掉这件物品会让你损失%d点荣誉。确认要继续吗？'
-    StaticPopupDialogs["CONFIRM_REFUND_MAX_HONOR"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_REFUND_MAX_HONOR"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_REFUND_MAX_ARENA_POINTS"].text = '你的竞技场点数已接近上限。出售这件物品会让你损失%d点竞技场点数。确认要继续吗？'
-    StaticPopupDialogs["CONFIRM_REFUND_MAX_ARENA_POINTS"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_REFUND_MAX_ARENA_POINTS"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_REFUND_MAX_HONOR_AND_ARENA"].text = '你的荣誉已接近上限。卖掉此物品会使你损失%1$d点荣誉和%2$d的竞技场点数。要继续吗？'
-    StaticPopupDialogs["CONFIRM_REFUND_MAX_HONOR_AND_ARENA"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_REFUND_MAX_HONOR_AND_ARENA"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_HIGH_COST_ITEM"].text = '你确定要花费如下金额的货币购买%s吗？'
-    StaticPopupDialogs["CONFIRM_HIGH_COST_ITEM"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_HIGH_COST_ITEM"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_COMPLETE_EXPENSIVE_QUEST"].text = '完成这个任务需要缴纳如下数额的金币。你确定要完成这个任务吗？'
-    StaticPopupDialogs["CONFIRM_COMPLETE_EXPENSIVE_QUEST"].button1 = '完成任务'
-    StaticPopupDialogs["CONFIRM_COMPLETE_EXPENSIVE_QUEST"].button2 = '取消'
-
-    StaticPopupDialogs["CONFIRM_ACCEPT_PVP_QUEST"].text = '接受这个任务之后，你将被标记为PvP状态，直到你放弃或完成此任务。你确定要接受任务吗？'
-    StaticPopupDialogs["CONFIRM_ACCEPT_PVP_QUEST"].button1 = '接受'
-    StaticPopupDialogs["CONFIRM_ACCEPT_PVP_QUEST"].button2 = '取消'
-
-    StaticPopupDialogs["USE_GUILDBANK_REPAIR"].text = '你想要使用公会资金修理吗？'
-    StaticPopupDialogs["USE_GUILDBANK_REPAIR"].button1 = '使用个人资金'
-    StaticPopupDialogs["USE_GUILDBANK_REPAIR"].button2 = '确定'
-
-    StaticPopupDialogs["GUILDBANK_WITHDRAW"].text = '接提取数量：'
-    StaticPopupDialogs["GUILDBANK_WITHDRAW"].button1 = '接受'
-    StaticPopupDialogs["GUILDBANK_WITHDRAW"].button2 = '取消'
-
-    StaticPopupDialogs["GUILDBANK_DEPOSIT"].text = '存放数量：'
-    StaticPopupDialogs["GUILDBANK_DEPOSIT"].button1 = '接受'
-    StaticPopupDialogs["GUILDBANK_DEPOSIT"].button2 = '取消'
-
-    StaticPopupDialogs["CONFIRM_BUY_GUILDBANK_TAB"].text = '你是否想要购买一个公会银行标签？'
-    StaticPopupDialogs["CONFIRM_BUY_GUILDBANK_TAB"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_BUY_GUILDBANK_TAB"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_BUY_REAGENTBANK_TAB"].text = '确定购买材料银行栏位吗？'
-    StaticPopupDialogs["CONFIRM_BUY_REAGENTBANK_TAB"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_BUY_REAGENTBANK_TAB"].button2 = '否'
-
-    StaticPopupDialogs["TOO_MANY_LUA_ERRORS"].text = '你的插件有大量错误，可能会导致游戏速度降低。你可以在界面选项中打开Lua错误显示。'
-    StaticPopupDialogs["TOO_MANY_LUA_ERRORS"].button1 = '禁用插件'
-    StaticPopupDialogs["TOO_MANY_LUA_ERRORS"].button2 = '忽略'
-
-    StaticPopupDialogs["CONFIRM_ACCEPT_SOCKETS"].text = '镶嵌之后，一颗或多颗宝石将被摧毁。你确定要镶嵌新的宝石吗？'
-    StaticPopupDialogs["CONFIRM_ACCEPT_SOCKETS"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_ACCEPT_SOCKETS"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_RESET_INSTANCES"].text = '你确定想要重置你的所有副本吗？'
-    StaticPopupDialogs["CONFIRM_RESET_INSTANCES"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_RESET_INSTANCES"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_RESET_CHALLENGE_MODE"].text = '你确定要重置地下城吗？'
-    StaticPopupDialogs["CONFIRM_RESET_CHALLENGE_MODE"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_RESET_CHALLENGE_MODE"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_GUILD_DISBAND"].text = '你真的要解散公会吗？'
-    StaticPopupDialogs["CONFIRM_GUILD_DISBAND"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_GUILD_DISBAND"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_BUY_BANK_SLOT"].text = '你愿意付钱购买银行空位吗？'
-    StaticPopupDialogs["CONFIRM_BUY_BANK_SLOT"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_BUY_BANK_SLOT"].button2 = '否'
-
-    StaticPopupDialogs["MACRO_ACTION_FORBIDDEN"].text = '一段宏代码已被禁止，因为其功能只对暴雪UI开放。'
-    StaticPopupDialogs["MACRO_ACTION_FORBIDDEN"].button1 = '确定'
-
-    StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].text = '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。'
-    StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].button1 = '禁用'
-    StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].button2 = '忽略'
-
-    StaticPopupDialogs["CONFIRM_LOOT_DISTRIBUTION"].text = '你想要将%s分配给%s，确定吗？'
-    StaticPopupDialogs["CONFIRM_LOOT_DISTRIBUTION"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_LOOT_DISTRIBUTION"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_BATTLEFIELD_ENTRY"].text = '你现在可以进入战斗：\n\n|cff20ff20%s|r\n'
-    StaticPopupDialogs["CONFIRM_BATTLEFIELD_ENTRY"].button1 = '进入'
-    StaticPopupDialogs["CONFIRM_BATTLEFIELD_ENTRY"].button2 = '离开队列'
-
-    StaticPopupDialogs["BFMGR_CONFIRM_WORLD_PVP_QUEUED"].text = '你已在%s队列中。请等候。'
-    StaticPopupDialogs["BFMGR_CONFIRM_WORLD_PVP_QUEUED"].button1 = '确定'
-
-    StaticPopupDialogs["BFMGR_CONFIRM_WORLD_PVP_QUEUED_WARMUP"].text = '你正在下一场%s战斗的等待队列中。'
-    StaticPopupDialogs["BFMGR_CONFIRM_WORLD_PVP_QUEUED_WARMUP"].button1 = '确定'
-
-    StaticPopupDialogs["BFMGR_DENY_WORLD_PVP_QUEUED"].text = '你现在无法进入%s战场的等待队列。'
-    StaticPopupDialogs["BFMGR_DENY_WORLD_PVP_QUEUED"].button1 = '确定'
-
-    StaticPopupDialogs["BFMGR_INVITED_TO_QUEUE"].text = '你想要加入%s的战斗吗？'
-    StaticPopupDialogs["BFMGR_INVITED_TO_QUEUE"].button1 = '接受'
-    StaticPopupDialogs["BFMGR_INVITED_TO_QUEUE"].button2 = '取消'
-
-    StaticPopupDialogs["BFMGR_INVITED_TO_QUEUE_WARMUP"].text = '%s的战斗即将打响！你要加入等待队列吗？'
-    StaticPopupDialogs["BFMGR_INVITED_TO_QUEUE_WARMUP"].button1 = '接受'
-    StaticPopupDialogs["BFMGR_INVITED_TO_QUEUE_WARMUP"].button2 = '取消'
-
-    StaticPopupDialogs["BFMGR_INVITED_TO_ENTER"].text = '%s的战斗又一次在召唤你！|n现在进入？|n剩余时间：%d %s'
-    StaticPopupDialogs["BFMGR_INVITED_TO_ENTER"].button1 = '接受'
-    StaticPopupDialogs["BFMGR_INVITED_TO_ENTER"].button2 = '取消'
-
-
-    StaticPopupDialogs["BFMGR_EJECT_PENDING"].text = '你已在%s队列中但还没有收到战斗的召唤。稍后你将被传出战场。'
-    StaticPopupDialogs["BFMGR_EJECT_PENDING"].button1 = '确定'
-
-    StaticPopupDialogs["BFMGR_EJECT_PENDING_REMOTE"].text = '你已在%s队列中但还没有收到战斗的召唤。'
-    StaticPopupDialogs["BFMGR_EJECT_PENDING_REMOTE"].button1 = '确定'
-
-    StaticPopupDialogs["BFMGR_PLAYER_EXITED_BATTLE"].text = '你已经从%s的战斗中退出。'
-    StaticPopupDialogs["BFMGR_PLAYER_EXITED_BATTLE"].button1 = '确定'
-
-    StaticPopupDialogs["BFMGR_PLAYER_LOW_LEVEL"].text = '你的级别太低，无法进入%s。'
-    StaticPopupDialogs["BFMGR_PLAYER_LOW_LEVEL"].button1 = '确定'
-
-    StaticPopupDialogs["BFMGR_PLAYER_NOT_WHILE_IN_RAID"].text = '你不能在团队中进入%s。'
-    StaticPopupDialogs["BFMGR_PLAYER_NOT_WHILE_IN_RAID"].button1 = '确定'
-
-    StaticPopupDialogs["BFMGR_PLAYER_DESERTER"].text = '在你的逃亡者负面效果消失之前，你无法进入%s。'
-    StaticPopupDialogs["BFMGR_PLAYER_DESERTER"].button1 = '确定'
-
-
-    StaticPopupDialogs["CONFIRM_GUILD_LEAVE"].text = '确定要退出%s？'
-    StaticPopupDialogs["CONFIRM_GUILD_LEAVE"].button1 = '接受'
-    StaticPopupDialogs["CONFIRM_GUILD_LEAVE"].button2 = '取消'
-
-    StaticPopupDialogs["CONFIRM_GUILD_PROMOTE"].text = '确定要将%s提升为会长？'
-    StaticPopupDialogs["CONFIRM_GUILD_PROMOTE"].button1 = '接受'
-    StaticPopupDialogs["CONFIRM_GUILD_PROMOTE"].button2 = '取消'
-
-    StaticPopupDialogs["RENAME_GUILD"].text = '输入新的公会名：'
-    StaticPopupDialogs["RENAME_GUILD"].button1 = '接受'
-    StaticPopupDialogs["RENAME_GUILD"].button2 = '取消'
-
-    StaticPopupDialogs["HELP_TICKET_QUEUE_DISABLED"].text = 'GM帮助请求暂时不可用。'
-    StaticPopupDialogs["HELP_TICKET_QUEUE_DISABLED"].button1 = '确定'
-
-    StaticPopupDialogs["CLIENT_RESTART_ALERT"].text = '你的有些设置需要你重新启动游戏才能够生效。'
-    StaticPopupDialogs["CLIENT_RESTART_ALERT"].button1 = '确定'
-
-
-    StaticPopupDialogs["CLIENT_LOGOUT_ALERT"].text = '你的某些设置将在你登出游戏并重新登录之后生效。'
-    StaticPopupDialogs["CLIENT_LOGOUT_ALERT"].button1 = '确定'
-
-    StaticPopupDialogs["COD_ALERT"].text = '你没有足够的钱来支付付款取信邮件。'
-    StaticPopupDialogs["COD_ALERT"].button1 = '关闭'
-
-
-    StaticPopupDialogs["COD_CONFIRMATION"].text = '收下这件物品将花费：'
-    StaticPopupDialogs["COD_CONFIRMATION"].button1 = '接受'
-    StaticPopupDialogs["COD_CONFIRMATION"].button2 = '取消'
-
-
-    StaticPopupDialogs["COD_CONFIRMATION_AUTO_LOOT"].text = '收下这件物品将花费：'
-    StaticPopupDialogs["COD_CONFIRMATION_AUTO_LOOT"].button1 = '接受'
-    StaticPopupDialogs["COD_CONFIRMATION_AUTO_LOOT"].button2 = '取消'
-
-    StaticPopupDialogs["DELETE_MAIL"].text = '删除这封邮件会摧毁%s'
-    StaticPopupDialogs["DELETE_MAIL"].button1 = '接受'
-    StaticPopupDialogs["DELETE_MAIL"].button2 = '取消'
-
-    StaticPopupDialogs["DELETE_MONEY"].text = '删除这封邮件会摧毁：'
-    StaticPopupDialogs["DELETE_MONEY"].button1 = '接受'
-    StaticPopupDialogs["DELETE_MONEY"].button2 = '取消'
-
-    StaticPopupDialogs["CONFIRM_REPORT_BATTLEPET_NAME"].text = '你确定要举报%s 使用不当战斗宠物名吗？'
-    StaticPopupDialogs["CONFIRM_REPORT_BATTLEPET_NAME"].button1 = '接受'
-    StaticPopupDialogs["CONFIRM_REPORT_BATTLEPET_NAME"].button2 = '取消'
-
-    StaticPopupDialogs["CONFIRM_REPORT_PET_NAME"].text = '你确定要举报%s 使用不当战斗宠物名吗？'
-    StaticPopupDialogs["CONFIRM_REPORT_PET_NAME"].button1 = '接受'
-    StaticPopupDialogs["CONFIRM_REPORT_PET_NAME"].button2 = '取消'
-
-    StaticPopupDialogs["CONFIRM_REPORT_SPAM_MAIL"].text = '你确定要举报%s为骚扰者吗？'
-    StaticPopupDialogs["CONFIRM_REPORT_SPAM_MAIL"].button1 = '接受'
-    StaticPopupDialogs["CONFIRM_REPORT_SPAM_MAIL"].button2 = '取消'
-
-    StaticPopupDialogs["JOIN_CHANNEL"].text = '输入频道名称'
-    StaticPopupDialogs["JOIN_CHANNEL"].button1 = '接受'
-    StaticPopupDialogs["JOIN_CHANNEL"].button2 = '取消'
-
-    StaticPopupDialogs["CHANNEL_INVITE"].text = '你想要将谁邀请至%s？'
-    StaticPopupDialogs["CHANNEL_INVITE"].button1 = '接受'
-    StaticPopupDialogs["CHANNEL_INVITE"].button2 = '取消'
-
-
-    StaticPopupDialogs["CHANNEL_PASSWORD"].text = '为%s输入一个密码。'
-    StaticPopupDialogs["CHANNEL_PASSWORD"].button1 = '接受'
-    StaticPopupDialogs["CHANNEL_PASSWORD"].button2 = '取消'
-
-    StaticPopupDialogs["NAME_CHAT"].text = '输入对话窗口名称'
-    StaticPopupDialogs["NAME_CHAT"].button1 = '接受'
-    StaticPopupDialogs["NAME_CHAT"].button2 = '取消'
-
-    StaticPopupDialogs["RESET_CHAT"].text = '"将你的聊天窗口重置为默认设置。\n你会失去所有自定义设置。'
-    StaticPopupDialogs["RESET_CHAT"].button1 = '接受'
-    StaticPopupDialogs["RESET_CHAT"].button2 = '取消'
-
-    StaticPopupDialogs["PETRENAMECONFIRM"].text = '你确定要将宠物命名为\'%s\'吗？'
-    StaticPopupDialogs["PETRENAMECONFIRM"].button1 = '是'
-    StaticPopupDialogs["PETRENAMECONFIRM"].button2 = '否'
-
-
-    StaticPopupDialogs["DEATH"].text = '%d%s后释放灵魂'
-    StaticPopupDialogs["DEATH"].button1 = '释放灵魂'
-    StaticPopupDialogs["DEATH"].button2 = '复活'
-    StaticPopupDialogs["DEATH"].button3 = '复活'
-    StaticPopupDialogs["DEATH"].button4 = '摘要'
-
-    StaticPopupDialogs["RESURRECT"].text = '%s想要复活你。一旦这样复活，你将会进入复活虚弱状态'
-    StaticPopupDialogs["RESURRECT"].delayText = '%s要复活你，%d%s内生效。一旦这样复活，你将会进入复活虚弱状态。'
-    StaticPopupDialogs["RESURRECT"].button1 = '接受'
-    StaticPopupDialogs["RESURRECT"].button2 = '拒绝'
-
-    StaticPopupDialogs["RESURRECT_NO_SICKNESS"].text = '%s想要复活你'
-    StaticPopupDialogs["RESURRECT_NO_SICKNESS"].delayText = '%s要复活你，%d%s内生效'
-    StaticPopupDialogs["RESURRECT_NO_SICKNESS"].button1 = '接受'
-    StaticPopupDialogs["RESURRECT_NO_SICKNESS"].button2 = '拒绝'
-
-    StaticPopupDialogs["RESURRECT_NO_TIMER"].text = '%s想要复活你'
-    StaticPopupDialogs["RESURRECT_NO_TIMER"].button1 = '接受'
-    StaticPopupDialogs["RESURRECT_NO_TIMER"].button2 = '拒绝'
-
-    StaticPopupDialogs["SKINNED"].text = '徽记被取走 - 你只能在墓地复活'
-    StaticPopupDialogs["SKINNED"].button1 = '接受'
-
-    StaticPopupDialogs["SKINNED_REPOP"].text = '徽记被取走 - 你只能在墓地复活'
-    StaticPopupDialogs["SKINNED_REPOP"].button1 = '释放灵魂'
-    StaticPopupDialogs["SKINNED_REPOP"].button2 = '拒绝'
-
-    StaticPopupDialogs["TRADE"].text = '和%s交易吗？'
-    StaticPopupDialogs["TRADE"].button1 = '是'
-    StaticPopupDialogs["TRADE"].button2 = '否'
-
-    StaticPopupDialogs["PARTY_INVITE"].button1 = '接受'
-    StaticPopupDialogs["PARTY_INVITE"].button2 = '拒绝'
-
-    StaticPopupDialogs["GROUP_INVITE_CONFIRMATION"].button1 = '接受'
-    StaticPopupDialogs["GROUP_INVITE_CONFIRMATION"].button2 = '拒绝'
-
-    StaticPopupDialogs["CHAT_CHANNEL_INVITE"].text = '%2$s邀请你加入\'%1$s\'频道。'
-    StaticPopupDialogs["CHAT_CHANNEL_INVITE"].button1 = '接受'
-    StaticPopupDialogs["CHAT_CHANNEL_INVITE"].button2 = '拒绝'
-
-    StaticPopupDialogs["BN_BLOCK_FAILED_TOO_MANY_RID"].text = '你能够屏蔽的实名和战网昵称好友已达上限。'
-    StaticPopupDialogs["BN_BLOCK_FAILED_TOO_MANY_RID"].button1 = '确定'
-
-    StaticPopupDialogs["BN_BLOCK_FAILED_TOO_MANY_CID"].text = '你通过暴雪游戏服务屏蔽的角色数量已达上限。'
-    StaticPopupDialogs["BN_BLOCK_FAILED_TOO_MANY_CID"].button1 = '确定'
-
-    StaticPopupDialogs["CHAT_CHANNEL_PASSWORD"].text = '请输入\'%1$s\'的密码。'
-    StaticPopupDialogs["CHAT_CHANNEL_PASSWORD"].button1 = '接受'
-    StaticPopupDialogs["CHAT_CHANNEL_PASSWORD"].button2 = '取消'
-
-    StaticPopupDialogs["CAMP"].text = '请输入\'%1$s\'的密码。'
-    StaticPopupDialogs["CAMP"].button1 = '取消'
-
-    StaticPopupDialogs["QUIT"].text = '%d%s后退出游戏'
-    StaticPopupDialogs["QUIT"].button1 = '立刻退出'
-    StaticPopupDialogs["QUIT"].button2 = '取消'
-
-    StaticPopupDialogs["LOOT_BIND"].text = '拾取%s后，该物品将与你绑定'
-    StaticPopupDialogs["LOOT_BIND"].button1 = '确定'
-    StaticPopupDialogs["LOOT_BIND"].button2 = '取消'
-
-    StaticPopupDialogs["EQUIP_BIND"].text = '装备之后，该物品将与你绑定。'
-    StaticPopupDialogs["EQUIP_BIND"].button1 = '确定'
-    StaticPopupDialogs["EQUIP_BIND"].button2 = '取消'
-
-    StaticPopupDialogs["EQUIP_BIND_REFUNDABLE"].text = '进行此项操作会使该物品无法退还'
-    StaticPopupDialogs["EQUIP_BIND_REFUNDABLE"].button1 = '确定'
-    StaticPopupDialogs["EQUIP_BIND_REFUNDABLE"].button2 = '取消'
-
-    StaticPopupDialogs["EQUIP_BIND_TRADEABLE"].text = '执行此项操作会使该物品不可交易。'
-    StaticPopupDialogs["EQUIP_BIND_TRADEABLE"].button1 = '确定'
-    StaticPopupDialogs["EQUIP_BIND_TRADEABLE"].button2 = '取消'
-
-    StaticPopupDialogs["USE_BIND"].text = '使用该物品后会将它和你绑定'
-    StaticPopupDialogs["USE_BIND"].button1 = '确定'
-    StaticPopupDialogs["USE_BIND"].button2 = '取消'
-
-    StaticPopupDialogs["CONFIM_BEFORE_USE"].text = '你确定要使用这个物品吗？'
-    StaticPopupDialogs["CONFIM_BEFORE_USE"].button1 = '确定'
-    StaticPopupDialogs["CONFIM_BEFORE_USE"].button2 = '取消'
-
-    StaticPopupDialogs["USE_NO_REFUND_CONFIRM"].text = '进行此项操作会使该物品无法退还'
-    StaticPopupDialogs["USE_NO_REFUND_CONFIRM"].button1 = '确定'
-    StaticPopupDialogs["USE_NO_REFUND_CONFIRM"].button2 = '取消'
-
-    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_BIND"].text = '选择一种力量后，此物品会与你绑定。'
-    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_BIND"].button1 = '确定'
-    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_BIND"].button2 = '取消'
-
-    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_SELECT_POWER"].text = '你确定要选择这项艾泽里特之力吗？'
-    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_SELECT_POWER"].button1 = '确定'
-    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_SELECT_POWER"].button2 = '取消'
-
-    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_RESPEC"].text = '重铸的花费会随使用的次数而提升。\n\n你确定要花费如下金额来重铸%s吗？'
-    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_RESPEC"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_RESPEC"].button2 = '否'
-
-    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_RESPEC_EXPENSIVE"].text = '重铸的花费会随使用的次数而提升。|n|n你确定要花费%s来重铸%s吗？|n|n请输入 %s 以确认。'
-    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_RESPEC_EXPENSIVE"].button1 = '是'
-    StaticPopupDialogs["CONFIRM_AZERITE_EMPOWERED_RESPEC_EXPENSIVE"].button2 = '否'
-
-    StaticPopupDialogs["DELETE_ITEM"].text = '你确定要摧毁%s？'
-    StaticPopupDialogs["DELETE_ITEM"].button1 = '是'
-    StaticPopupDialogs["DELETE_ITEM"].button2 = '否'
-
-    StaticPopupDialogs["DELETE_QUEST_ITEM"].text = '确定要销毁%s吗？\n\n|cffff2020销毁该物品的同时也将放弃所有相关任务。|r'
-    StaticPopupDialogs["DELETE_QUEST_ITEM"].button1 = '是'
-    StaticPopupDialogs["DELETE_QUEST_ITEM"].button2 = '否'
-
-    StaticPopupDialogs["DELETE_GOOD_ITEM"].text = '你真的要摧毁%s吗？\n\n请在输入框中输入\"'..DELETE_ITEM_CONFIRM_STRING..'\"以确认。'
-    StaticPopupDialogs["DELETE_GOOD_ITEM"].button1 = '是'
-    StaticPopupDialogs["DELETE_GOOD_ITEM"].button2 = '否'
-
-    StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"].text = '确定要摧毁%s吗？\n|cffff2020摧毁该物品也将同时放弃相关任务。|r\n\n请在输入框中输入\"'..DELETE_ITEM_CONFIRM_STRING..'\"以确认。'
-    StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"].button1 = '是'
-    StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"].button2 = '否'
-
-    StaticPopupDialogs["QUEST_ACCEPT"].text = '%s即将开始%s\n你也想这样吗？'
-    StaticPopupDialogs["QUEST_ACCEPT"].button1 = '是'
-    StaticPopupDialogs["QUEST_ACCEPT"].button2 = '否'
-
-    StaticPopupDialogs["QUEST_ACCEPT_LOG_FULL"].text = '%s正在开始%s任务\n你的任务纪录已满。如果能够在任务纪录中\n空出位置，你也可以参与此任务。'
-    StaticPopupDialogs["QUEST_ACCEPT_LOG_FULL"].button1 = '是'
-    StaticPopupDialogs["QUEST_ACCEPT_LOG_FULL"].button2 = '否'
-
-    StaticPopupDialogs["ABANDON_PET"].text = '你是否决定永远地遗弃你的宠物？你将再也不能召唤它了。'
-    StaticPopupDialogs["ABANDON_PET"].button1 = '确定'
-    StaticPopupDialogs["ABANDON_PET"].button2 = '取消'
-
-    StaticPopupDialogs["ABANDON_QUEST"].text = '放弃\"%s\"？'
-    StaticPopupDialogs["ABANDON_QUEST"].button1 = '是'
-    StaticPopupDialogs["ABANDON_QUEST"].button2 = '否'
-
-
-    StaticPopupDialogs["ABANDON_QUEST_WITH_ITEMS"].text = '确定要放弃\"%s\"并摧毁%s吗？'
-    StaticPopupDialogs["ABANDON_QUEST_WITH_ITEMS"].button1 = '是'
-    StaticPopupDialogs["ABANDON_QUEST_WITH_ITEMS"].button2 = '否'
-
-    StaticPopupDialogs["ADD_FRIEND"].text = '输入好友的角色名：'
-    StaticPopupDialogs["ADD_FRIEND"].button1 = '接受'
-    StaticPopupDialogs["ADD_FRIEND"].button2 = '取消'
-
-    StaticPopupDialogs["SET_FRIENDNOTE"].text = '为%s设置备注：'
-    StaticPopupDialogs["SET_FRIENDNOTE"].button1 = '接受'
-    StaticPopupDialogs["SET_FRIENDNOTE"].button2 = '取消'
-
-    StaticPopupDialogs["SET_BNFRIENDNOTE"].text = '为%s设置备注：'
-    StaticPopupDialogs["SET_BNFRIENDNOTE"].button1 = '接受'
-    StaticPopupDialogs["SET_BNFRIENDNOTE"].button2 = '取消'
-
-    StaticPopupDialogs["SET_COMMUNITY_MEMBER_NOTE"].text = '为%s设置备注：'
-    StaticPopupDialogs["SET_COMMUNITY_MEMBER_NOTE"].button1 = '接受'
-    StaticPopupDialogs["SET_COMMUNITY_MEMBER_NOTE"].button2 = '取消'
-
-    StaticPopupDialogs["CONFIRM_REMOVE_COMMUNITY_MEMBER"].text = '你确定要将%s从群组中移除吗？'
-    StaticPopupDialogs["ABANDON_QUEST"].button1 = '是'
-    StaticPopupDialogs["ABANDON_QUEST"].button2 = '否'
-
-
+    end, button1 = '是', button2 = '否'})
+    dia("CONFIRM_REFUND_TOKEN_ITEM", {text = '你确定要退还下面这件物品%s，获得%s的退款吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_REFUND_MAX_HONOR", {text = '你的荣誉已接近上限。卖掉这件物品会让你损失%d点荣誉。确认要继续吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_REFUND_MAX_ARENA_POINTS", {text = '你的竞技场点数已接近上限。出售这件物品会让你损失%d点竞技场点数。确认要继续吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_REFUND_MAX_HONOR_AND_ARENA", {text = '你的荣誉已接近上限。卖掉此物品会使你损失%1$d点荣誉和%2$d的竞技场点数。要继续吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_HIGH_COST_ITEM", {text = '你确定要花费如下金额的货币购买%s吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_COMPLETE_EXPENSIVE_QUEST", {text = '完成这个任务需要缴纳如下数额的金币。你确定要完成这个任务吗？', button1 = '完成任务', button2 = '取消'})
+    dia("CONFIRM_ACCEPT_PVP_QUEST", {text = '接受这个任务之后，你将被标记为PvP状态，直到你放弃或完成此任务。你确定要接受任务吗？', button1 = '接受', button2 = '取消'})
+    dia("USE_GUILDBANK_REPAIR", {text = '你想要使用公会资金修理吗？', button1 = '使用个人资金', button2 = '确定'})
+    dia("GUILDBANK_WITHDRAW", {text = '接提取数量：', button1 = '接受', button2 = '取消'})
+    dia("GUILDBANK_DEPOSIT", {text = '存放数量：', button1 = '接受', button2 = '取消'})
+    dia("CONFIRM_BUY_GUILDBANK_TAB", {text = '你是否想要购买一个公会银行标签？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_BUY_REAGENTBANK_TAB", {text = '确定购买材料银行栏位吗？', button1 = '是', button2 = '否'})
+    dia("TOO_MANY_LUA_ERRORS", {text = '你的插件有大量错误，可能会导致游戏速度降低。你可以在界面选项中打开Lua错误显示。', button1 = '禁用插件', button2 = '忽略'})
+    dia("CONFIRM_ACCEPT_SOCKETS", {text = '镶嵌之后，一颗或多颗宝石将被摧毁。你确定要镶嵌新的宝石吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_RESET_INSTANCES", {text = '你确定想要重置你的所有副本吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_RESET_CHALLENGE_MODE", {text = '你确定要重置地下城吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_GUILD_DISBAND", {text = '你真的要解散公会吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_BUY_BANK_SLOT", {text = '你愿意付钱购买银行空位吗？', button1 = '是', button2 = '否'})
+    dia("MACRO_ACTION_FORBIDDEN", {text = '一段宏代码已被禁止，因为其功能只对暴雪UI开放。', button1 = '确定'})
+    dia("ADDON_ACTION_FORBIDDEN", {text = '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。', button1 = '禁用', button2 = '忽略'})
+    dia("CONFIRM_LOOT_DISTRIBUTION", {text = '你想要将%s分配给%s，确定吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_BATTLEFIELD_ENTRY", {text = '你现在可以进入战斗：\n\n|cff20ff20%s|r\n', button1 = '进入', button2 = '离开队列'})
+    dia("BFMGR_CONFIRM_WORLD_PVP_QUEUED", {text = '你已在%s队列中。请等候。', button1 = '确定'})
+    dia("BFMGR_CONFIRM_WORLD_PVP_QUEUED_WARMUP", {text = '你正在下一场%s战斗的等待队列中。', button1 = '确定'})
+    dia("BFMGR_DENY_WORLD_PVP_QUEUED", {text = '你现在无法进入%s战场的等待队列。', button1 = '确定'})
+    dia("BFMGR_INVITED_TO_QUEUE", {text = '你想要加入%s的战斗吗？', button1 = '接受', button2 = '取消'})
+    dia("BFMGR_INVITED_TO_QUEUE_WARMUP", {text = '%s的战斗即将打响！你要加入等待队列吗？', button1 = '接受', button2 = '取消'})
+    dia("BFMGR_INVITED_TO_ENTER", {text = '%s的战斗又一次在召唤你！|n现在进入？|n剩余时间：%d %s', button1 = '接受', button2 = '取消'})
+    dia("BFMGR_EJECT_PENDING", {text = '你已在%s队列中但还没有收到战斗的召唤。稍后你将被传出战场。', button1 = '确定'})
+    dia("BFMGR_EJECT_PENDING_REMOTE", {text = '你已在%s队列中但还没有收到战斗的召唤。', button1 = '确定'})
+    dia("BFMGR_PLAYER_EXITED_BATTLE", {text = '你已经从%s的战斗中退出。', button1 = '确定'})
+    dia("BFMGR_PLAYER_LOW_LEVEL", {text = '你的级别太低，无法进入%s。', button1 = '确定'})
+    dia("BFMGR_PLAYER_NOT_WHILE_IN_RAID", {text = '你不能在团队中进入%s。', button1 = '确定'})
+    dia("BFMGR_PLAYER_DESERTER", {text = '在你的逃亡者负面效果消失之前，你无法进入%s。', button1 = '确定'})
+    dia("CONFIRM_GUILD_LEAVE", {text = '确定要退出%s？', button1 = '接受', button2 = '取消'})
+    dia("CONFIRM_GUILD_PROMOTE", {text = '确定要将%s提升为会长？', button1 = '接受', button2 = '取消'})
+    dia("RENAME_GUILD", {text = '输入新的公会名：', button1 = '接受', button2 = '取消'})
+    dia("HELP_TICKET_QUEUE_DISABLED", {text = 'GM帮助请求暂时不可用。', button1 = '确定'})
+    dia("CLIENT_RESTART_ALERT", {text = '你的有些设置需要你重新启动游戏才能够生效。', button1 = '确定'})
+    dia("CLIENT_LOGOUT_ALERT", {text = '你的某些设置将在你登出游戏并重新登录之后生效。', button1 = '确定'})
+    dia("COD_ALERT", {text = '你没有足够的钱来支付付款取信邮件。', button1 = '关闭'})
+    dia("COD_CONFIRMATION", {text = '收下这件物品将花费：', button1 = '接受', button2 = '取消'})
+    dia("COD_CONFIRMATION_AUTO_LOOT", {text = '收下这件物品将花费：', button1 = '接受', button2 = '取消'})
+    dia("DELETE_MAIL", {text = '删除这封邮件会摧毁%s', button1 = '接受', button2 = '取消'})
+    dia("DELETE_MONEY", {text = '删除这封邮件会摧毁：', button1 = '接受', button2 = '取消'})
+    dia("CONFIRM_REPORT_BATTLEPET_NAME", {text = '你确定要举报%s 使用不当战斗宠物名吗？', button1 = '接受', button2 = '取消'})
+    dia("CONFIRM_REPORT_PET_NAME", {text = '你确定要举报%s 使用不当战斗宠物名吗？', button1 = '接受', button2 = '取消'})
+    dia("CONFIRM_REPORT_SPAM_MAIL", {text = '你确定要举报%s为骚扰者吗？', button1 = '接受', button2 = '取消'})
+    dia("JOIN_CHANNEL", {text = '输入频道名称', button1 = '接受', button2 = '取消'})
+    dia("CHANNEL_INVITE", {text = '你想要将谁邀请至%s？', button1 = '接受', button2 = '取消'})
+    dia("CHANNEL_PASSWORD", {text = '为%s输入一个密码。', button1 = '接受', button2 = '取消'})
+    dia("NAME_CHAT", {text = '输入对话窗口名称', button1 = '接受', button2 = '取消'})
+    dia("RESET_CHAT", {text = '"将你的聊天窗口重置为默认设置。\n你会失去所有自定义设置。', button1 = '接受', button2 = '取消'})
+    dia("PETRENAMECONFIRM", {text = '你确定要将宠物命名为\'%s\'吗？', button1 = '是', button2 = '否'})
+    dia("DEATH", {text = '%d%s后释放灵魂', button1 = '释放灵魂', button2 = '复活', button3 = '复活', button4 = '摘要'})
+    dia("RESURRECT", {text = '%s想要复活你。一旦这样复活，你将会进入复活虚弱状态', delayText = '%s要复活你，%d%s内生效。一旦这样复活，你将会进入复活虚弱状态。', button1 = '接受', button2 = '拒绝'})
+    dia("RESURRECT_NO_SICKNESS", {text = '%s想要复活你', delayText = '%s要复活你，%d%s内生效', button1 = '接受', button2 = '拒绝'})
+    dia("RESURRECT_NO_TIMER", {text = '%s想要复活你', button1 = '接受', button2 = '拒绝'})
+    dia("SKINNED", {text = '徽记被取走 - 你只能在墓地复活', button1 = '接受'})
+    dia("SKINNED_REPOP", {text = '徽记被取走 - 你只能在墓地复活', button1 = '释放灵魂', button2 = '拒绝'})
+    dia("TRADE", {text = '和%s交易吗？', button1 = '是', button2 = '否'})
+    dia("PARTY_INVITE", {button1 = '接受', button2 = '拒绝'})
+    dia("GROUP_INVITE_CONFIRMATION", {button1 = '接受', button2 = '拒绝'})
+    dia("CHAT_CHANNEL_INVITE", {text = '%2$s邀请你加入\'%1$s\'频道。', button1 = '接受', button2 = '拒绝'})
+    dia("BN_BLOCK_FAILED_TOO_MANY_RID", {text = '你能够屏蔽的实名和战网昵称好友已达上限。', button1 = '确定'})
+    dia("BN_BLOCK_FAILED_TOO_MANY_CID", {text = '你通过暴雪游戏服务屏蔽的角色数量已达上限。', button1 = '确定'})
+    dia("CHAT_CHANNEL_PASSWORD", {text = '请输入\'%1$s\'的密码。', button1 = '接受', button2 = '取消'})
+    dia("CAMP", {text = '请输入\'%1$s\'的密码。', button1 = '取消'})
+    dia("QUIT", {text = '%d%s后退出游戏', button1 = '立刻退出', button2 = '取消'})
+    dia("LOOT_BIND", {text = '拾取%s后，该物品将与你绑定', button1 = '确定', button2 = '取消'})
+    dia("EQUIP_BIND", {text = '装备之后，该物品将与你绑定。', button1 = '确定', button2 = '取消'})
+    dia("EQUIP_BIND_REFUNDABLE", {text = '进行此项操作会使该物品无法退还', button1 = '确定', button2 = '取消'})
+    dia("EQUIP_BIND_TRADEABLE", {text = '执行此项操作会使该物品不可交易。', button1 = '确定', button2 = '取消'})
+    dia("USE_BIND", {text = '使用该物品后会将它和你绑定', button1 = '确定', button2 = '取消'})
+    dia("CONFIM_BEFORE_USE", {text = '你确定要使用这个物品吗？', button1 = '确定', button2 = '取消'})
+    dia("USE_NO_REFUND_CONFIRM", {text = '进行此项操作会使该物品无法退还', button1 = '确定', button2 = '取消'})
+    dia("CONFIRM_AZERITE_EMPOWERED_BIND", {text = '选择一种力量后，此物品会与你绑定。', button1 = '确定', button2 = '取消'})
+    dia("CONFIRM_AZERITE_EMPOWERED_SELECT_POWER", {text = '你确定要选择这项艾泽里特之力吗？', button1 = '确定', button2 = '取消'})
+    dia("CONFIRM_AZERITE_EMPOWERED_RESPEC", {text = '重铸的花费会随使用的次数而提升。\n\n你确定要花费如下金额来重铸%s吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_AZERITE_EMPOWERED_RESPEC_EXPENSIVE", {text = '重铸的花费会随使用的次数而提升。|n|n你确定要花费%s来重铸%s吗？|n|n请输入 %s 以确认。', button1 = '是', button2 = '否'})
+    dia("DELETE_ITEM", {text = '你确定要摧毁%s？', button1 = '是', button2 = '否'})
+    dia("DELETE_QUEST_ITEM", {text = '确定要销毁%s吗？\n\n|cffff2020销毁该物品的同时也将放弃所有相关任务。|r', button1 = '是', button2 = '否'})
+    dia("DELETE_GOOD_ITEM", {text = '你真的要摧毁%s吗？\n\n请在输入框中输入\"'..DELETE_ITEM_CONFIRM_STRING..'\"以确认。', button1 = '是', button2 = '否'})
+    dia("DELETE_GOOD_QUEST_ITEM", {text = '确定要摧毁%s吗？\n|cffff2020摧毁该物品也将同时放弃相关任务。|r\n\n请在输入框中输入\"'..DELETE_ITEM_CONFIRM_STRING..'\"以确认。', button1 = '是', button2 = '否'})
+    dia("QUEST_ACCEPT", {text = '%s即将开始%s\n你也想这样吗？', button1 = '是', button2 = '否'})
+    dia("QUEST_ACCEPT_LOG_FULL", {text = '%s正在开始%s任务\n你的任务纪录已满。如果能够在任务纪录中\n空出位置，你也可以参与此任务。', button1 = '是', button2 = '否'})
+    dia("ABANDON_PET", {text = '你是否决定永远地遗弃你的宠物？你将再也不能召唤它了。', button1 = '确定', button2 = '取消'})
+    dia("ABANDON_QUEST", {text = '放弃\"%s\"？', button1 = '是', button2 = '否'})
+    dia("ABANDON_QUEST_WITH_ITEMS", {text = '确定要放弃\"%s\"并摧毁%s吗？', button1 = '是', button2 = '否'})
+    dia("ADD_FRIEND", {text = '输入好友的角色名：', button1 = '接受', button2 = '取消'})
+    dia("SET_FRIENDNOTE", {text = '为%s设置备注：', button1 = '接受', button2 = '取消'})
+    dia("SET_BNFRIENDNOTE", {text = '为%s设置备注：', button1 = '接受', button2 = '取消'})
+    dia("SET_COMMUNITY_MEMBER_NOTE", {text = '为%s设置备注：', button1 = '接受', button2 = '取消'})
+    dia("CONFIRM_REMOVE_COMMUNITY_MEMBER", {text = '你确定要将%s从群组中移除吗？', OnShow = function(self, data)
+		if data.clubType == Enum.ClubType.Character then
+			self.text:SetFormattedText('你确定要将%s从社区中移除吗？', data.name)
+		else
+			self.text:SetFormattedText('你确定要将%s从群组中移除吗？', data.name)
+		end
+	end,button1 = '是', button2 = '否'})
+
+    dia("CONFIRM_DESTROY_COMMUNITY_STREAM", {text = '你确定要删除频道%s吗？', OnShow = function(self, data)
+		local streamInfo = C_Club.GetStreamInfo(data.clubId, data.streamId);
+		if streamInfo then
+			self.text:SetFormattedText('你确定要删除频道%s吗', streamInfo.name)
+		end
+	end, button1 = '是', button2 = '否'})
+    dia("CONFIRM_LEAVE_AND_DESTROY_COMMUNITY", {text = '确定要退出并删除群组吗？', subText = '退出后群组会被删除。你确定要删除群组吗？此操作无法撤销。', OnShow = function(self, clubInfo)
+        if clubInfo.clubType == Enum.ClubType.Character then
+			self.text:SetText('确定要退出并删除社区吗？');
+			self.SubText:SetText('退出后社区会被删除。你确定要删除社区吗？此操作无法撤销。');
+		else
+			self.text:SetText('确定要退出并删除群组吗？');
+			self.SubText:SetText('退出后群组会被删除。你确定要删除群组吗？此操作无法撤销。');
+		end
+    end, button1 = '接受', button2 = '取消'})
+
+    dia("CONFIRM_LEAVE_COMMUNITY", {text = '退出群组？', subText = '你确定要退出%s吗？', OnShow = function(self, clubInfo)
+        if clubInfo.clubType == Enum.ClubType.Character then
+			self.text:SetText('退出社区？');
+			self.SubText:SetFormattedText('你确定要退出%s吗？', clubInfo.name)
+		else
+			self.text:SetText('退出群组？');
+			self.SubText:SetFormattedText('你确定要退出%s吗？', clubInfo.name)
+		end
+    end, button1 = '接受', button2 = '取消'})
+
+
+    dia("CONFIRM_DESTROY_COMMUNITY", {OnShow = function(self, clubInfo)
+        if clubInfo.clubType == Enum.ClubType.BattleNet then
+			self.text:SetFormattedText('你确定要删除群组\"%s\"吗？此操作无法撤销。|n|n请在输入框中输入\"'..COMMUNITIES_DELETE_CONFIRM_STRING ..'\"以确认。', clubInfo.name)
+		else
+			self.text:SetFormattedText('你确定要删除社区\"%s\"吗？此操作无法撤销。|n|n请在输入框中输入\"'..COMMUNITIES_DELETE_CONFIRM_STRING ..'\"以确认。', clubInfo.name)
+		end
+
+		self.button1:Disable();
+		self.button2:Enable();
+		self.editBox:SetFocus();
+    end, button1 = '接受', button2 = '取消'})
+
+    dia("ADD_IGNORE", {text = '输入想要屏蔽的玩家名字\n或者\n在聊天窗口中按住Shift并点击该玩家的名字：', button1 = '接受', button2 = '取消'})
+    dia("ADD_GUILDMEMBER", {text = '添加公会成员：', button1 = '接受', button2 = '取消'})
+    dia("CONVERT_TO_RAID", {text = '你的队伍已经满了。你想要将队伍转换成团队吗？\n\n注意：在团队中，你的大部分任务都无法完成！', button1 = '转换', button2 = '取消'})
+    dia("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID", {text = '你的队伍已经满了。你想要将队伍转换成团队吗？\n\n注意：在团队中，你的大部分任务都无法完成！', button1 = '转换', button2 = '取消'})
+
+    dia("REMOVE_GUILDMEMBER", {text = format('确定想要从公会中移除%s吗？', "XXX"), OnShow = function(self, data)
+		if data then
+			self.text:SetFormattedText('你确定想要从公会中移除%s吗？', data.name);
+		else
+			self.text:SetText(GuildFrame.selectedName);
+		end
+	end, button1 = '是', button2 = '否'})
+
+    dia("SET_GUILDPLAYERNOTE", {text = '设置玩家信息', button1 = '接受', button2 = '取消'})
+    dia("SET_GUILDOFFICERNOTE", {text = '设置公会官员信息', button1 = '接受', button2 = '取消'})
+
+    dia("SET_GUILD_COMMUNITIY_NOTE", {text = '设置玩家信息', OnShow = function(self, data)
+		self.text:SetText(data.isPublic and '设置玩家信息' or '设置公会官员信息"')
+		self.editBox:SetText(data.currentNote)
+		self.editBox:SetFocus()
+	end, button1 = '接受', button2 = '取消'})
+
+    dia("RENAME_PET", {text = '输入你想要给宠物起的名字：', button1 = '接受', button2 = '取消'})
+    dia("DUEL_REQUESTED", {text = '%s向你发出决斗要求。', button1 = '接受', button2 = '拒绝'})
+    dia("DUEL_OUTOFBOUNDS", {text = '正在离开决斗区域,你将在%d%s内失败。'})
+    dia("PET_BATTLE_PVP_DUEL_REQUESTED", {text = '%s向你发出宠物对战要求。', button1 = '接受', button2 = '拒绝'})
+    dia("UNLEARN_SKILL", {text = '你确定要忘却%s并遗忘所有已经学会的配方？如果你选择回到此专业，你的专精知识将依然存在。|n|n在框内输入 \"'..UNLEARN_SKILL_CONFIRMATION ..'\" 以确认。', button1 = '忘却这个技能', button2 = '取消'})
+    dia("XP_LOSS", {text = '如果你找到你的尸体，那么你可以在没有任何惩罚的情况下复活。现在由我来复活你，那么你的所有物品（包括已装备的和物品栏中的）将损失50%%的耐久度，你也要承受%s的|cff71d5ff|Hspell:15007|h[复活虚弱]|h|r时间。', button1 = '接受', button2 = '取消'})
+    dia("XP_LOSS_NO_SICKNESS_NO_DURABILITY", {text = '你可以找到你的尸体并在尸体位置复活。10级以下的玩家可以在此复活并不受任何惩罚。"', button1 = '接受', button2 = '取消'})
+    dia("RECOVER_CORPSE", {delayText = '%d%s后复活', text= '现在复活吗？', button1 = '接受'})
+    dia("RECOVER_CORPSE_INSTANCE", {text= '你必须进入副本才能捡回你的尸体。'})
+    dia("AREA_SPIRIT_HEAL", {text = '%d%s后复活', button1 = '选择位置', button2 = '取消'})
+    dia("BIND_ENCHANT", {text = '对这件物品进行附魔将使其与你绑定。', button1 = '确定', button2 = '取消'})
+    dia("BIND_SOCKET", {text = '该操作将使此物品与你绑定。', button1 = '确定', button2 = '取消'})
+    dia("REFUNDABLE_SOCKET", {text = '进行此项操作会使该物品无法退还', button1 = '确定', button2 = '取消'})
+    dia("ACTION_WILL_BIND_ITEM", {text = '该操作将使此物品与你绑定。', button1 = '确定', button2 = '取消'})
+    dia("REPLACE_ENCHANT", {text = '你要将\"%s\"替换为\"%s\"吗？', button1 = '是', button2 = '否'})
+    dia("REPLACE_TRADESKILL_ENCHANT", {text = '你要将\"%s\"替换为\"%s\"吗？', button1 = '是', button2 = '否'})
+    dia("TRADE_REPLACE_ENCHANT", {text = '你要将\"%s\"替换为\"%s\"吗？', button1 = '是', button2 = '否'})
+    dia("TRADE_POTENTIAL_BIND_ENCHANT", {text = '将此物品附魔会使其与你绑定。', button1 = '确定', button2 = '取消'})
+    dia("TRADE_POTENTIAL_REMOVE_TRANSMOG", {text = '交易%s后，将把它从你的外观收藏中移除。', button1 = '确定'})
+    dia("CONFIRM_MERCHANT_TRADE_TIMER_REMOVAL", {text = '出售后%s将变为不可交易物品，即使你将其回购也无法恢复。', button1 = '确定', button2 = '取消'})
+    dia("END_BOUND_TRADEABLE", {text = '执行此项操作会使该物品不可交易。', button1 = '确定', button2 = '取消'})
+    dia("INSTANCE_BOOT", {text = '你现在不在这个副本的队伍里。你将在%d%s内被传送到最近的墓地中。'})
+    dia("GARRISON_BOOT", {text = '该要塞不属于你或者你的队长。你将在%d %s后被传送出要塞。'})
+    dia("INSTANCE_LOCK", {text = '你进入了一个已经保存进度的副本！你将在%2$s内被保存到%1$s的副本进度中！', button1 = '接受', button2 = '离开副本'})
+    --dia("CONFIRM_TALENT_WIPE", {text = '你确定要遗忘所有的天赋吗', button1 = '接受', button2 = '取消'})
+    dia("CONFIRM_BINDER", {text = '你想要将%s设为你的新家吗？', button1 = '接受', button2 = '取消'})
+    dia("CONFIRM_SUMMON", {text = '%s想将你召唤到%s去。这个法术将在%d%s后取消。', button1 = '接受', button2 = '取消'})
+    dia("CONFIRM_SUMMON_SCENARIO", {text = '%s已在%s开启一个场景战役。你是否愿意加入他们？\n\n此邀请将在%d%s后失效。', button1 = '接受', button2 = '取消'})
+    dia("CONFIRM_SUMMON_STARTING_AREA", {text = '%s想召唤你前往%s。\n\n你将无法返回此初始区域。\n\n该法术将在%d %s后取消。', button1 = '接受', button2 = '取消'})
+    dia("BILLING_NAG", {text = '您的帐户中还有%d%s的剩余游戏时间', button1 = '确定'})
+    dia("IGR_BILLING_NAG", {text = '你的IGR游戏时间即将用尽，你很快会被断开连接。', button1 = '确定'})
+    dia("CONFIRM_LOOT_ROLL", {text = '拾取%s后，该物品将与你绑定。', button1 = '确定', button2 = '取消'})
+    dia("GOSSIP_CONFIRM", {button1 = '接受', button2 = '取消'})
+    dia("GOSSIP_ENTER_CODE", {text = '请输入电子兑换券号码：', button1 = '接受', button2 = '取消'})
+    dia("CREATE_COMBAT_FILTER", {text = '输入过滤名称：', button1 = '接受', button2 = '取消'})
+    dia("COPY_COMBAT_FILTER", {text = '输入过滤名称：', button1 = '接受', button2 = '取消'})
+    dia("CONFIRM_COMBAT_FILTER_DELETE", {text = '你确认要删除这个过滤条件？', button1 = '确定', button2 = '取消'})
+    dia("CONFIRM_COMBAT_FILTER_DEFAULTS", {text = '你确定要将过滤条件设定为初始状态吗？', button1 = '确定', button2 = '取消'})
+    dia("WOW_MOUSE_NOT_FOUND", {text = '无法找到魔兽世界专用鼠标。请连接鼠标后在用户界面中再次启动该选项。', button1 = '确定'})
+    dia("CONFIRM_BUY_STABLE_SLOT", {text = '你确定要支付以下数量的金币来购买一个新的兽栏栏位吗？', button1 = '是', button2 = '否'})
+    dia("TALENTS_INVOLUNTARILY_RESET", {text = '因为天赋树有了一些改动，你的某些天赋已被重置。', button1 = '确定'})
+    dia("TALENTS_INVOLUNTARILY_RESET_PET", {text = '你的宠物天赋已被重置。', button1 = '确定'})
+    dia("SPEC_INVOLUNTARILY_CHANGED", {text = '由于该专精暂时无法使用，你的角色专精已发生改变。', button1 = '确定'})
+    dia("VOTE_BOOT_PLAYER", {text = '有人发起了一个将%1$s从队伍中移出的投票。\n\n理由为：\n|cffffd200%2$s|r\n\n你同意将%1$s移出队伍吗？', button1 = '是', button2 = '否'})
+    dia("VOTE_BOOT_REASON_REQUIRED", {text = '请写明将%s投票移出的理由：', button1 = '确定', button2 = '取消'})
+    dia("LAG_SUCCESS", {text = '你的延迟报告已经成功提交。', button1 = '确定'})
+    dia("LFG_OFFER_CONTINUE", {text = '一名玩家离开了你的队伍。是否寻找另一名玩家以完成%s？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_MAIL_ITEM_UNREFUNDABLE", {text = '进行此项操作会使该物品无法退还', button1 = '确定', button2 = '取消'})
+    dia("AUCTION_HOUSE_DISABLED", {text = '拍卖行目前暂时关闭。|n请稍后再试。', button1 = '确定'})
+    dia("CONFIRM_BLOCK_INVITES", {text = '你确定要屏蔽任何来自%s的邀请？', button1 = '接受', button2 = '取消'})
+    dia("BATTLENET_UNAVAILABLE", {text = '暴雪游戏服务暂时不可用。\n\n你的实名和战网昵称好友无法显示，你也无法发送或收到实名或战网昵称好友邀请。也许需要重启游戏以重新启用暴雪游戏服务功能。', button1 = '确定'})
+    dia("WEB_PROXY_FAILED", {text = '在配置浏览器时发生错误。请重启魔兽世界并再试一次。', button1 = '确定'})
+    dia("WEB_ERROR", {text = '错误：%d|n浏览器无法完成你的请求。请重试。', button1 = '确定'})
+    dia("CONFIRM_REMOVE_FRIEND", {button1 = '接受', button2 = '取消'})
+    dia("PICKUP_MONEY", {text = '提取总额', button1 = '接受', button2 = '取消'})
+    dia("CONFIRM_GUILD_CHARTER_PURCHASE", {text = '你会失去在上一个公会中的一级公会声望\n你是否要继续？', button1 = '是', button2 = '否'})
+    dia("GUILD_DEMOTE_CONFIRM", {button1 = '是', button2 = '否'})
+    dia("GUILD_PROMOTE_CONFIRM", {button1 = '是', button2 = '否'})
+    dia("CONFIRM_RANK_AUTHENTICATOR_REMOVE", {button1 = '是', button2 = '否'})
+    dia("VOID_DEPOSIT_CONFIRM", {text = '储存这件物品将移除该物品上的一切改动并使其无法退还，且无法交易。\n你是否要继续？', button1 = '确定', button2 = '取消'})
+    dia("GUILD_IMPEACH", {text = '你所在公会的领袖已被标记为非活动状态。你现在可以争取公会领导权。是否要移除公会领袖？', button1 = '弹劾', button2 = '取消'})
+    dia("SPELL_CONFIRMATION_PROMPT", {button1 = '是', button2 = '否'})
+    dia("SPELL_CONFIRMATION_WARNING", {button1 = '确定'})
+    dia("CONFIRM_LAUNCH_URL", {text = '点击“确定”后将在你的网络浏览器中打开一个窗口。', button1 = '确定', button2 = '取消'})
+    dia("CONFIRM_LEAVE_INSTANCE_PARTY", {button1 = '是', button2 = '取消'})
+
+    dia("CONFIRM_LEAVE_BATTLEFIELD", {text = '确定要离开战场吗？', OnShow = function(self)
+		local ratedDeserterPenalty = C_PvP.GetPVPActiveRatedMatchDeserterPenalty();
+		if ( ratedDeserterPenalty ) then
+			local ratingChange = math.abs(ratedDeserterPenalty.personalRatingChange);
+			local queuePenaltySpellLink, queuePenaltyDuration = C_SpellBook.GetSpellLinkFromSpellID(ratedDeserterPenalty.queuePenaltySpellID), SecondsToTime(ratedDeserterPenalty.queuePenaltyDuration);
+			self.text:SetFormattedText('现在离开比赛会使你失去至少|cnORANGE_FONT_COLOR:%1$d|r点评级分数，而且你会受到%3$s的影响，持续%2$s。|n|n如果你现在离开，你将无法获得你完成的回合的荣誉或征服点数。|n|n你确定要离开比赛吗？', ratingChange, queuePenaltyDuration, queuePenaltySpellLink)
+		elseif ( IsActiveBattlefieldArena() and not C_PvP.IsInBrawl() ) then
+			self.text:SetText('确定要离开竞技场吗？');
+		else
+			self.text:SetText('确定要离开战场吗？');
+		end
+	end, button1 = '是', button2 = '取消'})
+
+    dia("CONFIRM_SURRENDER_ARENA", {text= '放弃？', OnShow = function(self)
+		self.text:SetText('放弃？');
+	end, button1 = '是', button2 = '取消'})
+
+    dia("SAVED_VARIABLES_TOO_LARGE", {text = '你的计算机内存不足，无法加载下列插件设置。请关闭部分插件。\n\n|cffffd200%s|r', button1 = '确定'})
+    dia("PRODUCT_ASSIGN_TO_TARGET_FAILED", {text = '获取物品错误。请重试一次。', button1 = '确定'})
+    --BATTLEFIELD_BORDER_WARNING
+    dia("LFG_LIST_ENTRY_EXPIRED_TOO_MANY_PLAYERS", {text = '针对此项活动，你的队伍人数已满，将被移出列表。', button1 = '确定'})
+    dia("LFG_LIST_ENTRY_EXPIRED_TIMEOUT", {text = '你的队伍由于长期处于非活跃状态，已被移出列表。如果你还需要寻找申请者，请重新加入列表。', button1 = '确定'})
+    dia("NAME_TRANSMOG_OUTFIT", {text = '输入外观方案名称：', button1 = '保存', button2 = '取消'})
+    dia("CONFIRM_OVERWRITE_TRANSMOG_OUTFIT", {text = '你已经有一个名为%s的外观方案了。是否要覆盖已有方案？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_DELETE_TRANSMOG_OUTFIT", {text = '确定要删除外观方案%s吗？', button1 = '是', button2 = '否'})
+    dia("TRANSMOG_OUTFIT_CHECKING_APPEARANCES", {text = '检查外观……', button1 = '取消'})
+    dia("TRANSMOG_OUTFIT_ALL_INVALID_APPEARANCES", {text = '由于你的角色无法幻化此套装下的任何外观，因此你无法保存此外观方案。', button1 = '确定'})
+    dia("TRANSMOG_OUTFIT_SOME_INVALID_APPEARANCES", {text = '此外观方案无法保存，因为你的角色有一件或多件物品无法幻化。', button1 = '确定', button2 = '取消'})
+    dia("TRANSMOG_APPLY_WARNING", {button1 = '确定', button2 = '取消'})
+    dia("TRANSMOG_FAVORITE_WARNING", {text = '将此外观设置为偏好外观将使你背包中的这个物品无法退款且无法交易。\n确定要继续吗？', button1 = '确定', button2 = '取消'})
+    dia("CONFIRM_UNLOCK_TRIAL_CHARACTER", {text = '确定要升级这个角色吗？完成此步骤之后，你将无法更改自己的选择。', button1 = '确定', button2 = '取消'})
 
 
 
@@ -2344,9 +2229,9 @@ local function Init_Loaded(arg1)
         set(MacroDeleteButton, '删除')
         set(MacroNewButton, '新建')
         set(MacroExitButton, '退出')
-        StaticPopupDialogs["CONFIRM_DELETE_SELECTED_MACRO"].text= '确定要删除这个宏吗？'
-        StaticPopupDialogs["CONFIRM_DELETE_SELECTED_MACRO"].button1= '是'
-        StaticPopupDialogs["CONFIRM_DELETE_SELECTED_MACRO"].button2= '取消'
+        dia("CONFIRM_DELETE_SELECTED_MACRO", {text= '确定要删除这个宏吗？'
+        dia("CONFIRM_DELETE_SELECTED_MACRO"].button1= '是'
+        dia("CONFIRM_DELETE_SELECTED_MACRO"].button2= '取消'
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
         set(CommunitiesFrame.CommunitiesControlFrame.GuildRecruitmentButton, '公会招募')
