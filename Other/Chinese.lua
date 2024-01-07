@@ -2359,11 +2359,18 @@ local function Init_Loaded(arg1)
         end)
 
     elseif arg1=='Blizzard_MacroUI' then
+        set(MacroFrameTab1, '通用宏')
+        --hooksecurefunc(MacroFrameTab2, 'OnLoad', function(self)--Blizzard_MacroUI.xml
+        C_Timer.After(1, function()
+            set(MacroFrameTab2, '专用宏')
+        end)
+        --end)
         set(MacroSaveButton, '保存')
         set(MacroCancelButton, '取消')
         set(MacroDeleteButton, '删除')
         set(MacroNewButton, '新建')
         set(MacroExitButton, '退出')
+
         dia("CONFIRM_DELETE_SELECTED_MACRO", {text= '确定要删除这个宏吗？', button1= '是', button2= '取消'})
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
