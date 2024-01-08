@@ -1903,6 +1903,25 @@ local function Init()
 
 
     --StaticPopup.lua
+    hookDia("GENERIC_CONFIRMATION", 'OnShow', function(self, data)
+		self.text:SetFormattedText(data.text, data.text_arg1, data.text_arg2);
+        if not data.acceptText then
+		    self.button1:SetText('是');
+        end
+        if not data.cancelText then
+		    self.button2:SetText('否');
+        end
+	end)
+
+    hookDia("GENERIC_INPUT_BOX", 'OnShow', function(self, data)
+        if not data.acceptText then
+		    self.button1:SetText('完成')
+        end
+        if not data.cancelText then
+		    self.button2:SetText('取消');
+        end
+	end)
+
     dia("CONFIRM_OVERWRITE_EQUIPMENT_SET", {text = '你已经有一个名为%s的装备方案了。是否要覆盖已有方案', button1 = '是', button2 = '否'})
     dia("CONFIRM_SAVE_EQUIPMENT_SET", {text = '你想要保存装备方案\"%s\"吗？', button1 = '是', button2 = '否'})
     dia("CONFIRM_DELETE_EQUIPMENT_SET", {text = '你确认要删除装备方案%s吗？', button1 = '是', button2 = '否'})
@@ -1911,7 +1930,7 @@ local function Init()
     hookDia("CONFIRM_GLYPH_PLACEMENT", 'OnShow', function(self)
 		self.text:SetFormattedText('你确定要使用%s铭文吗？这将取代%s。', self.data.name, self.data.currentName);
 	end)
-    
+
     dia("CONFIRM_GLYPH_REMOVAL",{button1 = '是', button2 = '否'})
     hookDia("CONFIRM_GLYPH_REMOVAL", 'OnShow', function(self)
 		self.text:SetFormattedText('你确定要移除%s吗？', self.data.name);
@@ -2223,7 +2242,9 @@ local function Init()
 
     dia("SAVED_VARIABLES_TOO_LARGE", {text = '你的计算机内存不足，无法加载下列插件设置。请关闭部分插件。\n\n|cffffd200%s|r', button1 = '确定'})
     dia("PRODUCT_ASSIGN_TO_TARGET_FAILED", {text = '获取物品错误。请重试一次。', button1 = '确定'})
-    --BATTLEFIELD_BORDER_WARNING
+    hookDia("BATTLEFIELD_BORDER_WARNING", 'OnUpdate', function(self)
+        self.text:SetFormattedText('你已经脱离了%s的战斗。\n\n为你保留的位置将在%s后失效。', self.data.name, SecondsToTime(self.timeleft, false, true));
+    end)
     dia("LFG_LIST_ENTRY_EXPIRED_TOO_MANY_PLAYERS", {text = '针对此项活动，你的队伍人数已满，将被移出列表。', button1 = '确定'})
     dia("LFG_LIST_ENTRY_EXPIRED_TIMEOUT", {text = '你的队伍由于长期处于非活跃状态，已被移出列表。如果你还需要寻找申请者，请重新加入列表。', button1 = '确定'})
     dia("NAME_TRANSMOG_OUTFIT", {text = '输入外观方案名称：', button1 = '保存', button2 = '取消'})

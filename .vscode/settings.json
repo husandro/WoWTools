@@ -6275,7 +6275,7 @@
         "CAN_NOT_RELEASE_RIGHT_NOW",
         "DeathRecapFrame",
         "GhostFrameContentsFrameText",
-        "GuildFrame"
+        "BATTLEFIELD_BORDER_WARNING"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
