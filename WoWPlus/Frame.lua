@@ -525,6 +525,9 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_EventTrace' then--ETRACE
         set_Move_Frame(EventTrace, {notZoom=true, save=true})
+
+    elseif arg1=='Blizzard_DeathRecap' then--死亡
+        set_Move_Frame(DeathRecapFrame, {save=true})
     end
 end
 

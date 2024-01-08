@@ -6263,7 +6263,19 @@
         "NewRecipeLearnedAlertFrame_SetUp",
         "NewRecipeLearnedAlertFrame_GetStarTextureFromRank",
         "SkillLineSpecsUnlockedAlertFrameMixin",
-        "WorldQuestCompleteAlertFrame_SetUp"
+        "WorldQuestCompleteAlertFrame_SetUp",
+        "NewCosmeticAlertFrameMixin",
+        "ItemAlertFrameMixin",
+        "DEATH_RELEASE_SPECTATOR",
+        "DEATH_RELEASE_NOTIMER",
+        "DEATH_RECAP_UNAVAILABLE",
+        "StaticPopup_Resize",
+        "DEATH_RELEASE",
+        "CAN_NOT_RELEASE_IN_COMBAT",
+        "CAN_NOT_RELEASE_RIGHT_NOW",
+        "DeathRecapFrame",
+        "GhostFrameContentsFrameText",
+        "GuildFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

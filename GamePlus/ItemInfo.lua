@@ -399,15 +399,10 @@ local function Set_Item_Info(self, tab)
         if info.quantity and info.quantity>0 then
             topLeftText= e.MK(info.quantity, 3)
         end
+    --[[
     elseif tab.petID then
-        local speciesID = battlePetSpeciesID or (itemLink and itemLink:match('Hbattlepet:(%d+)')) or select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物
-        if speciesID then
-            topLeftText= select(3, e.GetPetCollectedNum(speciesID)) or topLeftText--宠物, 收集数量
-            local petType= select(3, C_PetJournal.GetPetInfoBySpeciesID(speciesID))
-            if petType then
-                topRightText='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':0|t'
-            end
-        end
+        local speciesID, customName, level, xp, maxXp, displayID, isFavorite, name, icon = C_PetJournal.GetPetInfoByPetID(petID);
+        ]]
     end
 
     if topRightText and not self.topRightText then
@@ -916,10 +911,10 @@ local function Init()
         e.Set_Item_Stats(frame, frame.hyperlink, {point= frame.Icon})
     end)
 
-    --hooksecurefunc('NewPetAlertFrame_SetUp', function(frame, petID)
-    hooksecurefunc('NewCosmeticAlertFrameSystem_SetUp', function(...)
-        print(...)
-    end)
+    
+    --hooksecurefunc('NewPetAlertFrameMixin', function(self, petID)
+    --hooksecurefunc(NewCosmeticAlertFrameMixin, 'SetUp', function(self, itemModifiedAppearanceID)
+        --local info =  C_TransmogCollection.GetSourceInfo(itemModifiedAppearanceID)
 
 --[[
     LootWonAlertFrame_SetUp

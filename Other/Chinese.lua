@@ -41,6 +41,11 @@ local function dia(string, tab)
     end
 end
 
+local function hookDia(string, text, func)
+    if StaticPopupDialogs[string] and StaticPopupDialogs[string][text] then
+        hooksecurefunc(StaticPopupDialogs[string], text, func)
+    end
+end
 
 
 
@@ -1457,9 +1462,9 @@ local function Init()
     end)
 
     --Blizzard_SettingsPanel.lua 
-    local label= e.Cstr(SettingsPanel.CategoryList)
-    label:SetPoint('RIGHT', SettingsPanel.ClosePanelButton, 'LEFT', -2, 0)
-    label:SetText(id..' 语言翻译 提示：请要不在战斗中修改选项')
+    local label2= e.Cstr(SettingsPanel.CategoryList)
+    label2:SetPoint('RIGHT', SettingsPanel.ClosePanelButton, 'LEFT', -2, 0)
+    label2:SetText(id..' 语言翻译 提示：请要不在战斗中修改选项')
 
     set(SettingsPanel.Container.SettingsList.Header.DefaultsButton, '默认设置')
     dia('GAME_SETTINGS_APPLY_DEFAULTS', {text= '你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？', button1= '所有设置', button2= '取消', button3= '这些设置'})--Blizzard_Dialogs.lua
@@ -1816,67 +1821,82 @@ local function Init()
         set(OpenMailReplyButton, '回复')
         set(OpenMailCancelButton, '关闭')
 
-        hooksecurefunc('GuildChallengeAlertFrame_SetUp', function(frame, challengeType)--AlertFrameSystems.lua
-            local text= strText[_G["GUILD_CHALLENGE_TYPE"..challengeType]]
-            if text then
-                frame.Type:SetText(text)
-            end
-        end)
+    hooksecurefunc('GuildChallengeAlertFrame_SetUp', function(frame, challengeType)--AlertFrameSystems.lua
+        local text= strText[_G["GUILD_CHALLENGE_TYPE"..challengeType]]
+        if text then
+            frame.Type:SetText(text)
+        end
+    end)
 
-        hooksecurefunc('AchievementAlertFrame_SetUp', function(frame, achievementID, alreadyEarned)
-            --local _, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuildAch, wasEarnedByMe, earnedBy = select(12, GetAchievementInfo(achievementID);
-            local unlocked = frame.Unlocked;
-            if select(12, GetAchievementInfo(achievementID)) then
-                unlocked:SetText('获得公会成就')
-            else
-                unlocked:SetText('已获得成就');
-            end
-        end)
+    hooksecurefunc('AchievementAlertFrame_SetUp', function(frame, achievementID, alreadyEarned)
+        --local _, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuildAch, wasEarnedByMe, earnedBy = select(12, GetAchievementInfo(achievementID);
+        local unlocked = frame.Unlocked;
+        if select(12, GetAchievementInfo(achievementID)) then
+            unlocked:SetText('获得公会成就')
+        else
+            unlocked:SetText('已获得成就');
+        end
+    end)
 
-        hooksecurefunc('LootWonAlertFrame_SetUp', function(self, _, _, _, _, _, _, _, _, _, _, _, _, _, isSecondaryResult)
-            if isSecondaryResult then
-                self.Label:SetText('你获得了')--YOU_RECEIVED_LABEL
-            end
-        end)
+    hooksecurefunc('LootWonAlertFrame_SetUp', function(self, _, _, _, _, _, _, _, _, _, _, _, _, _, isSecondaryResult)
+        if isSecondaryResult then
+            self.Label:SetText('你获得了')--YOU_RECEIVED_LABEL
+        end
+    end)
 
-        hooksecurefunc('HonorAwardedAlertFrame_SetUp', function(self, amount)
-            self.Amount:SetFormattedText('%d点荣誉', amount)
-        end)
-        hooksecurefunc('GarrisonShipFollowerAlertFrame_SetUp', function(frame, _, _, _, _, _, _, isUpgraded)
-            if ( isUpgraded ) then
-                frame.Title:SetText('升级的舰船已加入你的舰队');
-            else
-                frame.Title:SetText('舰船已加入你的舰队');
-            end
-        end)
-        hooksecurefunc('NewRecipeLearnedAlertFrame_SetUp', function(self, recipeID, recipeLevel)
-            local tradeSkillID = C_TradeSkillUI.GetTradeSkillLineForRecipe(recipeID);
-            if tradeSkillID then
-                local recipeName = GetSpellInfo(recipeID);
-                if recipeName then
-                    local rank = GetSpellRank(recipeID);
-                    self.Title:SetText(rank and rank > 1 and '配方升级！' or '学会了新配方！')
+    hooksecurefunc('HonorAwardedAlertFrame_SetUp', function(self, amount)
+        self.Amount:SetFormattedText('%d点荣誉', amount)
+    end)
+    hooksecurefunc('GarrisonShipFollowerAlertFrame_SetUp', function(frame, _, _, _, _, _, _, isUpgraded)
+        if ( isUpgraded ) then
+            frame.Title:SetText('升级的舰船已加入你的舰队');
+        else
+            frame.Title:SetText('舰船已加入你的舰队');
+        end
+    end)
+    hooksecurefunc('NewRecipeLearnedAlertFrame_SetUp', function(self, recipeID, recipeLevel)
+        local tradeSkillID = C_TradeSkillUI.GetTradeSkillLineForRecipe(recipeID);
+        if tradeSkillID then
+            local recipeName = GetSpellInfo(recipeID);
+            if recipeName then
+                local rank = GetSpellRank(recipeID);
+                self.Title:SetText(rank and rank > 1 and '配方升级！' or '学会了新配方！')
 
-                    if recipeLevel ~= nil then
-                        recipeName = format('%s (等级 %i)', recipeName, recipeLevel);
-                        local rankTexture = NewRecipeLearnedAlertFrame_GetStarTextureFromRank(rank);
-                        if rankTexture then
-                            self.Name:SetFormattedText("%s %s", recipeName, rankTexture);
-                        else
-                            self.Name:SetText(recipeName);
-                        end
+                if recipeLevel ~= nil then
+                    recipeName = format('%s (等级 %i)', recipeName, recipeLevel);
+                    local rankTexture = NewRecipeLearnedAlertFrame_GetStarTextureFromRank(rank);
+                    if rankTexture then
+                        self.Name:SetFormattedText("%s %s", recipeName, rankTexture);
+                    else
+                        self.Name:SetText(recipeName);
                     end
                 end
             end
-        end)
+        end
+    end)
 
-        hooksecurefunc(SkillLineSpecsUnlockedAlertFrameMixin,'SetUp', function(self, skillLineID)
-            self.Title:SetText('解锁新要素：');
-            self.Name:SetFormattedText('%s专精', C_TradeSkillUI.GetTradeSkillDisplayName(skillLineID));
-        end)
-        hooksecurefunc('WorldQuestCompleteAlertFrame_SetUp', function(frame, questData)
-            frame.ToastText:SetText(questData.displayAsObjective and '目标完成！' or '世界任务完成！');
-        end)
+    hooksecurefunc(SkillLineSpecsUnlockedAlertFrameMixin,'SetUp', function(self, skillLineID)
+        self.Title:SetText('解锁新要素：');
+        self.Name:SetFormattedText('%s专精', C_TradeSkillUI.GetTradeSkillDisplayName(skillLineID));
+    end)
+    hooksecurefunc('WorldQuestCompleteAlertFrame_SetUp', function(frame, questData)
+        frame.ToastText:SetText(questData.displayAsObjective and '目标完成！' or '世界任务完成！');
+    end)
+
+    hooksecurefunc(ItemAlertFrameMixin, 'SetUpDisplay', function(self, _, _, _, label)
+        if label== YOU_COLLECTED_LABEL then
+            self.Label:SetText('你收集到了')
+        end
+    end)
+
+    --死亡
+    set(GhostFrameContentsFrameText, '返回墓地')
+
+
+
+
+
+
 
 
 
@@ -1886,23 +1906,31 @@ local function Init()
     dia("CONFIRM_OVERWRITE_EQUIPMENT_SET", {text = '你已经有一个名为%s的装备方案了。是否要覆盖已有方案', button1 = '是', button2 = '否'})
     dia("CONFIRM_SAVE_EQUIPMENT_SET", {text = '你想要保存装备方案\"%s\"吗？', button1 = '是', button2 = '否'})
     dia("CONFIRM_DELETE_EQUIPMENT_SET", {text = '你确认要删除装备方案%s吗？', button1 = '是', button2 = '否'})
-    dia("CONFIRM_GLYPH_PLACEMENT",{OnShow = function(self)
+
+    dia("CONFIRM_GLYPH_PLACEMENT",{button1 = '是', button2 = '否'})
+    hookDia("CONFIRM_GLYPH_PLACEMENT", 'OnShow', function(self)
 		self.text:SetFormattedText('你确定要使用%s铭文吗？这将取代%s。', self.data.name, self.data.currentName);
-	end, button1 = '是', button2 = '否'})
-    dia("CONFIRM_GLYPH_REMOVAL",{OnShow = function(self)
+	end)
+    
+    dia("CONFIRM_GLYPH_REMOVAL",{button1 = '是', button2 = '否'})
+    hookDia("CONFIRM_GLYPH_REMOVAL", 'OnShow', function(self)
 		self.text:SetFormattedText('你确定要移除%s吗？', self.data.name);
-	end, button1 = '是', button2 = '否'})
+	end)
+
     dia("CONFIRM_RESET_TEXTTOSPEECH_SETTINGS", {text = '确定将所有文字转语音设定重置为默认值吗？', button1 = '接受', button2 = '取消'})
     dia("CONFIRM_REDOCK_CHAT", {text = '这么做会将你的聊天窗口重新并入综合标签页。', button1 = '接受', button2 = '取消'})
     dia("CONFIRM_PURCHASE_TOKEN_ITEM", {text = '你确定要将%s兑换为下列物品吗？ %s', button1 = '是', button2 = '否'})
     dia("CONFIRM_PURCHASE_NONREFUNDABLE_ITEM", {text = '你确定要将%s兑换为下列物品吗？本次购买将无法退还。%s', button1 = '是', button2 = '否'})
-    dia("CONFIRM_UPGRADE_ITEM", {OnShow  = function(self, data)
+
+    dia("CONFIRM_UPGRADE_ITEM", {button1 = '是', button2 = '否'})
+    hookDia("CONFIRM_UPGRADE_ITEM", 'OnShow', function(self, data)
 		if data.isItemBound then
 			self.text:SetFormattedText('你确定要花费%s升级下列物品吗？', data.costString);
 		else
 			self.text:SetFormattedText('你确定要花费%s升级下列物品吗？升级会将该物品变成灵魂绑定物品。', data.costString)
 		end
-    end, button1 = '是', button2 = '否'})
+    end)
+
     dia("CONFIRM_REFUND_TOKEN_ITEM", {text = '你确定要退还下面这件物品%s，获得%s的退款吗？', button1 = '是', button2 = '否'})
     dia("CONFIRM_REFUND_MAX_HONOR", {text = '你的荣誉已接近上限。卖掉这件物品会让你损失%d点荣誉。确认要继续吗？', button1 = '是', button2 = '否'})
     dia("CONFIRM_REFUND_MAX_ARENA_POINTS", {text = '你的竞技场点数已接近上限。出售这件物品会让你损失%d点竞技场点数。确认要继续吗？', button1 = '是', button2 = '否'})
@@ -1957,7 +1985,46 @@ local function Init()
     dia("NAME_CHAT", {text = '输入对话窗口名称', button1 = '接受', button2 = '取消'})
     dia("RESET_CHAT", {text = '"将你的聊天窗口重置为默认设置。\n你会失去所有自定义设置。', button1 = '接受', button2 = '取消'})
     dia("PETRENAMECONFIRM", {text = '你确定要将宠物命名为\'%s\'吗？', button1 = '是', button2 = '否'})
+
     dia("DEATH", {text = '%d%s后释放灵魂', button1 = '释放灵魂', button2 = '复活', button3 = '复活', button4 = '摘要'})
+    hookDia("DEATH", 'OnShow', function(self)
+		if ( IsActiveBattlefieldArena() and not C_PvP.IsInBrawl() ) then
+			self.text:SetText('你死亡了。释放灵魂后将进入观察模式。');
+		elseif ( self.timeleft == -1 ) then
+			self.text:SetText('你死亡了。要释放灵魂到最近的墓地吗？');
+		end
+	end)
+    hookDia("DEATH", 'OnUpdate', function(self)--, elapsed)
+		if ( IsFalling() and not IsOutOfBounds()) then
+			return;
+		end
+
+		local b1_enabled = self.button1:IsEnabled();
+		local encounterSupressRelease = IsEncounterSuppressingRelease();
+		if ( encounterSupressRelease ) then
+			self.button1:SetText('释放灵魂');
+		else
+			local hasNoReleaseAura, _, hasUntilCancelledDuration = HasNoReleaseAura();
+			if ( hasNoReleaseAura ) then
+				if hasUntilCancelledDuration then
+					self.button1:SetText('释放灵魂');
+				end
+			else
+				self.button1:SetText('释放灵魂');
+			end
+		end
+		if ( b1_enabled ~= self.button1:IsEnabled() ) then
+			if ( b1_enabled ) then
+				if ( encounterSupressRelease ) then
+					self.text:SetText('你队伍中有一名成员正在战斗中。');
+				else
+					self.text:SetText('现在无法释放。');
+				end
+			end
+		end
+	end)
+
+
     dia("RESURRECT", {text = '%s想要复活你。一旦这样复活，你将会进入复活虚弱状态', delayText = '%s要复活你，%d%s内生效。一旦这样复活，你将会进入复活虚弱状态。', button1 = '接受', button2 = '拒绝'})
     dia("RESURRECT_NO_SICKNESS", {text = '%s想要复活你', delayText = '%s要复活你，%d%s内生效', button1 = '接受', button2 = '拒绝'})
     dia("RESURRECT_NO_TIMER", {text = '%s想要复活你', button1 = '接受', button2 = '拒绝'})
@@ -1996,31 +2063,38 @@ local function Init()
     dia("SET_FRIENDNOTE", {text = '为%s设置备注：', button1 = '接受', button2 = '取消'})
     dia("SET_BNFRIENDNOTE", {text = '为%s设置备注：', button1 = '接受', button2 = '取消'})
     dia("SET_COMMUNITY_MEMBER_NOTE", {text = '为%s设置备注：', button1 = '接受', button2 = '取消'})
-    dia("CONFIRM_REMOVE_COMMUNITY_MEMBER", {text = '你确定要将%s从群组中移除吗？', OnShow = function(self, data)
+
+    dia("CONFIRM_REMOVE_COMMUNITY_MEMBER", {text = '你确定要将%s从群组中移除吗？', button1 = '是', button2 = '否'})
+    hookDia("CONFIRM_REMOVE_COMMUNITY_MEMBER", 'OnShow', function(self, data)
 		if data.clubType == Enum.ClubType.Character then
 			self.text:SetFormattedText('你确定要将%s从社区中移除吗？', data.name)
 		else
 			self.text:SetFormattedText('你确定要将%s从群组中移除吗？', data.name)
 		end
-	end,button1 = '是', button2 = '否'})
+	end)
 
-    dia("CONFIRM_DESTROY_COMMUNITY_STREAM", {text = '你确定要删除频道%s吗？', OnShow = function(self, data)
+
+    dia("CONFIRM_DESTROY_COMMUNITY_STREAM", {text = '你确定要删除频道%s吗？', button1 = '是', button2 = '否'})
+    hookDia("CONFIRM_DESTROY_COMMUNITY_STREAM", 'OnShow', function(self, data)
 		local streamInfo = C_Club.GetStreamInfo(data.clubId, data.streamId);
 		if streamInfo then
 			self.text:SetFormattedText('你确定要删除频道%s吗', streamInfo.name)
 		end
-	end, button1 = '是', button2 = '否'})
-    dia("CONFIRM_LEAVE_AND_DESTROY_COMMUNITY", {text = '确定要退出并删除群组吗？', subText = '退出后群组会被删除。你确定要删除群组吗？此操作无法撤销。', OnShow = function(self, clubInfo)
-        if clubInfo.clubType == Enum.ClubType.Character then
-			self.text:SetText('确定要退出并删除社区吗？');
-			self.SubText:SetText('退出后社区会被删除。你确定要删除社区吗？此操作无法撤销。');
-		else
-			self.text:SetText('确定要退出并删除群组吗？');
-			self.SubText:SetText('退出后群组会被删除。你确定要删除群组吗？此操作无法撤销。');
-		end
-    end, button1 = '接受', button2 = '取消'})
+	end)
 
-    dia("CONFIRM_LEAVE_COMMUNITY", {text = '退出群组？', subText = '你确定要退出%s吗？', OnShow = function(self, clubInfo)
+    dia("CONFIRM_LEAVE_AND_DESTROY_COMMUNITY", {text = '确定要退出并删除群组吗？', subText = '退出后群组会被删除。你确定要删除群组吗？此操作无法撤销。', button1 = '接受', button2 = '取消'})
+    hookDia("CONFIRM_LEAVE_AND_DESTROY_COMMUNITY", 'OnShow', function(self, clubInfo)
+        if clubInfo.clubType == Enum.ClubType.Character then
+            self.text:SetText('确定要退出并删除社区吗？');
+            self.SubText:SetText('退出后社区会被删除。你确定要删除社区吗？此操作无法撤销。');
+        else
+            self.text:SetText('确定要退出并删除群组吗？');
+            self.SubText:SetText('退出后群组会被删除。你确定要删除群组吗？此操作无法撤销。');
+        end
+    end)
+
+    dia("CONFIRM_LEAVE_COMMUNITY", {text = '退出群组？', subText = '你确定要退出%s吗？', button1 = '接受', button2 = '取消'})
+    hookDia("CONFIRM_LEAVE_COMMUNITY", 'OnShow', function(self, clubInfo)
         if clubInfo.clubType == Enum.ClubType.Character then
 			self.text:SetText('退出社区？');
 			self.SubText:SetFormattedText('你确定要退出%s吗？', clubInfo.name)
@@ -2028,42 +2102,38 @@ local function Init()
 			self.text:SetText('退出群组？');
 			self.SubText:SetFormattedText('你确定要退出%s吗？', clubInfo.name)
 		end
-    end, button1 = '接受', button2 = '取消'})
+    end)
 
-
-    dia("CONFIRM_DESTROY_COMMUNITY", {OnShow = function(self, clubInfo)
+    dia("CONFIRM_DESTROY_COMMUNITY", {button1 = '接受', button2 = '取消'})
+    hookDia("CONFIRM_DESTROY_COMMUNITY", 'OnShow', function(self, clubInfo)
         if clubInfo.clubType == Enum.ClubType.BattleNet then
 			self.text:SetFormattedText('你确定要删除群组\"%s\"吗？此操作无法撤销。|n|n请在输入框中输入\"'..COMMUNITIES_DELETE_CONFIRM_STRING ..'\"以确认。', clubInfo.name)
 		else
 			self.text:SetFormattedText('你确定要删除社区\"%s\"吗？此操作无法撤销。|n|n请在输入框中输入\"'..COMMUNITIES_DELETE_CONFIRM_STRING ..'\"以确认。', clubInfo.name)
 		end
-
-		self.button1:Disable();
-		self.button2:Enable();
-		self.editBox:SetFocus();
-    end, button1 = '接受', button2 = '取消'})
+    end)
 
     dia("ADD_IGNORE", {text = '输入想要屏蔽的玩家名字\n或者\n在聊天窗口中按住Shift并点击该玩家的名字：', button1 = '接受', button2 = '取消'})
     dia("ADD_GUILDMEMBER", {text = '添加公会成员：', button1 = '接受', button2 = '取消'})
     dia("CONVERT_TO_RAID", {text = '你的队伍已经满了。你想要将队伍转换成团队吗？\n\n注意：在团队中，你的大部分任务都无法完成！', button1 = '转换', button2 = '取消'})
     dia("LFG_LIST_AUTO_ACCEPT_CONVERT_TO_RAID", {text = '你的队伍已经满了。你想要将队伍转换成团队吗？\n\n注意：在团队中，你的大部分任务都无法完成！', button1 = '转换', button2 = '取消'})
 
-    dia("REMOVE_GUILDMEMBER", {text = format('确定想要从公会中移除%s吗？', "XXX"), OnShow = function(self, data)
+    dia("REMOVE_GUILDMEMBER", {text = format('确定想要从公会中移除%s吗？', "XXX"), button1 = '是', button2 = '否'})
+    hookDia("REMOVE_GUILDMEMBER", 'OnShow', function(self, data)
 		if data then
-			self.text:SetFormattedText('你确定想要从公会中移除%s吗？', data.name);
-		else
-			self.text:SetText(GuildFrame.selectedName or '');
+			self.text:SetFormattedText('你确定想要从公会中移除%s吗？', data.name)
 		end
-	end, button1 = '是', button2 = '否'})
+	end)
 
     dia("SET_GUILDPLAYERNOTE", {text = '设置玩家信息', button1 = '接受', button2 = '取消'})
     dia("SET_GUILDOFFICERNOTE", {text = '设置公会官员信息', button1 = '接受', button2 = '取消'})
 
-    dia("SET_GUILD_COMMUNITIY_NOTE", {text = '设置玩家信息', OnShow = function(self, data)
-		self.text:SetText(data.isPublic and '设置玩家信息' or '设置公会官员信息"')
-		self.editBox:SetText(data.currentNote)
-		self.editBox:SetFocus()
-	end, button1 = '接受', button2 = '取消'})
+    dia("SET_GUILD_COMMUNITIY_NOTE", {text = '设置玩家信息', button1 = '接受', button2 = '取消'})
+    hookDia("SET_GUILD_COMMUNITIY_NOTE", 'OnShow', function(self, data)
+		if data then
+			self.text:SetText(data.isPublic and '设置玩家信息' or '设置公会官员信息')
+		end
+	end)
 
     dia("RENAME_PET", {text = '输入你想要给宠物起的名字：', button1 = '接受', button2 = '取消'})
     dia("DUEL_REQUESTED", {text = '%s向你发出决斗要求。', button1 = '接受', button2 = '拒绝'})
@@ -2131,7 +2201,8 @@ local function Init()
     dia("CONFIRM_LAUNCH_URL", {text = '点击“确定”后将在你的网络浏览器中打开一个窗口。', button1 = '确定', button2 = '取消'})
     dia("CONFIRM_LEAVE_INSTANCE_PARTY", {button1 = '是', button2 = '取消'})
 
-    dia("CONFIRM_LEAVE_BATTLEFIELD", {text = '确定要离开战场吗？', OnShow = function(self)
+    dia("CONFIRM_LEAVE_BATTLEFIELD", {text = '确定要离开战场吗？', button1 = '是', button2 = '取消'})
+    hookDia("CONFIRM_LEAVE_BATTLEFIELD", 'OnShow', function(self)
 		local ratedDeserterPenalty = C_PvP.GetPVPActiveRatedMatchDeserterPenalty();
 		if ( ratedDeserterPenalty ) then
 			local ratingChange = math.abs(ratedDeserterPenalty.personalRatingChange);
@@ -2142,11 +2213,13 @@ local function Init()
 		else
 			self.text:SetText('确定要离开战场吗？');
 		end
-	end, button1 = '是', button2 = '取消'})
+	end)
 
-    dia("CONFIRM_SURRENDER_ARENA", {text= '放弃？', OnShow = function(self)
+    dia("CONFIRM_SURRENDER_ARENA", {text= '放弃？', button1 = '是', button2 = '取消'})
+    hookDia("CONFIRM_SURRENDER_ARENA", 'OnShow', function(self)
 		self.text:SetText('放弃？');
-	end, button1 = '是', button2 = '取消'})
+	end)
+
 
     dia("SAVED_VARIABLES_TOO_LARGE", {text = '你的计算机内存不足，无法加载下列插件设置。请关闭部分插件。\n\n|cffffd200%s|r', button1 = '确定'})
     dia("PRODUCT_ASSIGN_TO_TARGET_FAILED", {text = '获取物品错误。请重试一次。', button1 = '确定'})
@@ -2166,18 +2239,20 @@ local function Init()
     dia("EXPERIMENTAL_CVAR_WARNING", {text = '您已开启了一项或多项实验性镜头功能。这可能对部分玩家造成视觉上的不适。', button1 = '接受', button2 = '禁用"'})
     dia("PREMADE_GROUP_SEARCH_DELIST_WARNING", {text = '你的预创建队伍界面上已有一组队伍列表。是否要清除列表，开始新的搜索？', button1 = '是', button2 = '否'})
 
-    dia("PREMADE_GROUP_LEADER_CHANGE_DELIST_WARNING", {text = '你已经被提升为队伍领袖|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0:0:0:-1|t |n|n|cffffd200你想以此队名重新列出队伍吗？|r|n%s|n', OnShow = function(self, data)
+    dia("PREMADE_GROUP_LEADER_CHANGE_DELIST_WARNING", {text = '你已经被提升为队伍领袖|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0:0:0:-1|t |n|n|cffffd200你想以此队名重新列出队伍吗？|r|n%s|n', subText = '|n%s后自动从列表移除', button1 = '列出我的队伍', button2 = '我想编辑队名', button3 = '不列出我的队伍'})
+    hookDia("PREMADE_GROUP_LEADER_CHANGE_DELIST_WARNING", 'OnShow', function(self, data)
 		self.text:SetFormattedText('你已经被提升为队伍领袖|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0:0:0:-1|t |n|n|cffffd200你想以此队名重新列出队伍吗？|r|n%s|n', data.listingTitle)
 		self.timeleft = data.delistTime;
 		self.delistOnHide = true;
-	end, subText = '|n%s后自动从列表移除', button1 = '列出我的队伍', button2 = '我想编辑队名', button3 = '不列出我的队伍',})
+	end)
 
     dia("PREMADE_GROUP_INSECURE_SEARCH", {text= '你的队伍已被移出列表，要搜索|n%s吗？', button1 = '是', button2 = '否'})
     dia("BACKPACK_INCREASE_SIZE", {text = '为您的《魔兽世界》账号添加安全令和短信安全保护功能，即可获得4格额外的背包空间。|n|n战网安全令完全免费，而且使用方便，可以有效地保护您的账号。短信安全保护功能可以在账号有重要改动时为您通知提醒。|n|n点击“启用”以打开账号安全设置页面。', button1 = '启用', button2 = '取消'})
     dia("GROUP_FINDER_AUTHENTICATOR_POPUP", {text = '为你的账号添加安全令和短信安全保护功能后就能使用队伍查找器的全部功能。|n|n战网安全令完全免费，而且使用方便，可以有效地保护您的账号，短信安全保护功能可以在账号有重要改动时为您通知提醒。|n|n点击“启用”即可打开安全令设置网站。', button1 = '启用', button2 = '取消'})
     dia("CLIENT_INVENTORY_FULL_OVERFLOW", {text= '你的背包满了。给背包腾出空间才能获得遗漏的物品。', button1 = '确定'})
 
-    dia("LEAVING_TUTORIAL_AREA", {OnShow = function(self)
+    dia("LEAVING_TUTORIAL_AREA", {button2 = '结束教程"'})
+    hookDia("LEAVING_TUTORIAL_AREA", 'OnShow', function(self)
 		if UnitFactionGroup("player") == "Horde" then
 			self.button1:SetText('返回');
 			self.text:SetText('你距离奥格瑞玛太远了。|n |n如果你继续走的话，就会脱离教程。|n |n你想返回奥格瑞玛吗？|n |n |n');
@@ -2185,32 +2260,26 @@ local function Init()
 			self.button1:SetText('返回');
 			self.text:SetText('你距离暴风城太远了。|n |n如果你继续走的话，就会脱离教程。|n |n你想返回暴风城吗？|n |n |n');
 		end
-	end, button2 = '结束教程"'})
+	end)
 
     dia("CLUB_FINDER_ENABLED_DISABLED", {text = '公会和社区查找器已可用或不可用。', button1 = '确定'})
 
-    dia("INVITE_COMMUNITY_MEMBER", {text = '邀请成员', subText = '输入战网昵称。', OnShow = function(self, data)
-		self.editBox:SetFocus();
-
+    dia("INVITE_COMMUNITY_MEMBER", {text = '邀请成员', subText = '输入战网昵称。',button1 = '发送', button2 = '取消'})
+    hookDia("INVITE_COMMUNITY_MEMBER", 'OnShow', function(self, data)
 		local clubInfo = C_Club.GetClubInfo(data.clubId) or {}
 		if clubInfo.clubType == Enum.ClubType.BattleNet then
-			AutoCompleteEditBox_SetAutoCompleteSource(self.editBox, C_Club.GetInvitationCandidates, data.clubId);
 			self.SubText:SetText('输入一位战网好友名称');
 			self.editBox.Instructions:SetText('实名好友或战网昵称');
 		else
-			AutoCompleteEditBox_SetAutoCompleteSource(self.editBox, GetAutoCompleteResults, AUTOCOMPLETE_LIST.COMMUNITY.include, AUTOCOMPLETE_LIST.COMMUNITY.exclude);
 			self.SubText:SetText('输入角色名-服务器名。');
-			self.editBox.Instructions:SetText("");
 		end
-		self.button1:SetMotionScriptsWhileDisabled(true);
 		self.button1:SetScript("OnEnter", function(self2)
 			if(not self2:IsEnabled()) then
                 GameTooltip:SetOwner(self2, "ANCHOR_BOTTOMRIGHT");
                 GameTooltip_AddColoredLine(GameTooltip, '已经达到最大人数。移除一名玩家后才能进行邀请。', RED_FONT_COLOR, true);
                 GameTooltip:Show();
             end
-		end );
-		self.button1:SetScript("OnLeave", GameTooltip_Hide);
+		end)
 		if (self.extraButton) then
 			self.extraButton:SetMotionScriptsWhileDisabled(true);
 			self.extraButton:SetScript("OnEnter", function(self2)
@@ -2219,22 +2288,9 @@ local function Init()
                     GameTooltip_AddColoredLine(GameTooltip, '已经达到最大人数。移除一名玩家后才能进行邀请。', RED_FONT_COLOR, true);
                     GameTooltip:Show();
                 end
-			end );
-			self.extraButton:SetScript("OnLeave", GameTooltip_Hide);
+			end)
 		end
-
-		if(clubInfo and clubInfo.memberCount and clubInfo.memberCount >= C_Club.GetClubCapacity()) then
-			self.button1:Disable();
-			if (self.extraButton) then
-				self.extraButton:Disable();
-			end
-		else
-			self.button1:Enable();
-			if (self.extraButton) then
-				self.extraButton:Enable();
-			end
-		end
-	end, button1 = '发送', button2 = '取消'})
+	end)
 
     dia("CONFIRM_RAF_REMOVE_RECRUIT", {text = '你确定要从你的招募战友中移除|n|cffffd200%s|r|n吗？|n|n请在输入框中输入“'..REMOVE_RECRUIT_CONFIRM_STRING..'”以确定。', button1 = '是', button2 = '否'})
 
@@ -2247,17 +2303,18 @@ local function Init()
 
     dia("CHAT_CONFIG_DISABLE_CHAT", {text = '你确定要完全关闭聊天吗？你将无法发送和接收任何信息。', button1 = '关闭聊天', button2 = '取消'})
 
-    dia("RETURNING_PLAYER_PROMPT", {OnShow = function(self)
+    dia("RETURNING_PLAYER_PROMPT", {button1 = '是', button2 = '否'})
+    hookDia("RETURNING_PLAYER_PROMPT", 'OnShow', function(self)
         local factionMajorCities = {
             ["Alliance"] = '暴风城',
             ["Horde"] = '奥格瑞玛',
         }
 		local playerFactionGroup = UnitFactionGroup("player");
 		local factionCity = playerFactionGroup and factionMajorCities[playerFactionGroup] or nil;
-		if(factionCity) then
+		if factionCity then
 			self.text:SetFormattedText('我们有好一阵子没见到你了！|n|n在%s可以开始全新的冒险之旅！|n|n你希望传送到那里吗？', factionCity)
 		end
-	end, button1 = '是', button2 = '否'})
+	end)
 
     dia("CRAFTING_HOUSE_DISABLED", {text = '工匠商盟目前不接受制造订单。|n请稍后再来看看！', button1 = '确定'})
     dia("PERKS_PROGRAM_DISABLED", {text = '商栈目前关闭。|n请稍后再试。', button1 = '确定'})
@@ -2885,6 +2942,10 @@ local function Init_Loaded(arg1)
                 self.text:SetFormattedText('你只能学习两个专业。你要学习|cffffd200%s|r作为你的第一个专业吗？', GetTrainerServiceSkillLine(ClassTrainerFrame.selectedService));
             end
         end, button1 = '接受', button2 = '取消'})
+
+    elseif arg1=='Blizzard_DeathRecap' then
+        set(DeathRecapFrame.CloseButton, '关闭')
+        set(DeathRecapFrame.Title, '死亡摘要')
 
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
