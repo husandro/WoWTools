@@ -6297,7 +6297,8 @@
         "AUCTION_HOUSE_BROWSE_HEADER_QUANTITY",
         "AUCTION_HOUSE_HEADER_BUYOUT_PRICE",
         "AuctionHouseTableBuilder",
-        "AUCTION_HOUSE_BROWSE_HEADER_NAME"
+        "AUCTION_HOUSE_BROWSE_HEADER_NAME",
+        "ItemSocketingSocketButton"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

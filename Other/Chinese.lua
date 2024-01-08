@@ -3040,6 +3040,9 @@ local function Init_Loaded(arg1)
         set(DeathRecapFrame.CloseButton, '关闭')
         set(DeathRecapFrame.Title, '死亡摘要')
 
+    elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
+        set(ItemSocketingSocketButton, '应用')
+
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
         --dia("CALENDAR_ERROR", {button1 = '确定'})

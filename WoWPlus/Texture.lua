@@ -1695,11 +1695,12 @@ local function Init_Event(arg1)
 
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
         set_NineSlice(FlightMapFrame.BorderFrame, true)
-
         hide_Texture(FlightMapFrame.ScrollContainer.Child.TiledBackground)
         hide_Texture(FlightMapFrameBg)
+
     elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
         set_NineSlice(ItemSocketingFrame, true)
+        set_NineSlice(ItemSocketingFrameInset, nil, true)
         set_Alpha_Color(ItemSocketingFrameBg)
         hide_Texture(ItemSocketingFrameInset.Bg)
         hide_Texture(ItemSocketingFrame['SocketFrame-Right'])
@@ -1719,6 +1720,14 @@ local function Init_Event(arg1)
         set_Alpha_Color(ItemSocketingScrollFrameMiddle)
         set_Alpha_Color(ItemSocketingScrollFrameTop)
         set_Alpha_Color(ItemSocketingScrollFrameBottom)
+        set_ScrollBar(ItemSocketingScrollFrame)
+
+        hide_Texture(ItemSocketingFrame.TopLeftNub)
+        hide_Texture(ItemSocketingFrame.TopRightNub)
+        hide_Texture(ItemSocketingFrame.MiddleLeftNub)
+        hide_Texture(ItemSocketingFrame.MiddleRightNub)
+        hide_Texture(ItemSocketingFrame.BottomLeftNub)
+        hide_Texture(ItemSocketingFrame.BottomRightNub)
 
     elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插入， 界面
         set_Alpha_Color(ChallengesFrameInset.Bg)
