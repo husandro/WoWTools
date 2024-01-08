@@ -815,20 +815,6 @@ end
 --初始
 --####
 local function Init()
-    --战利品，拾取
-    hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
-        e.Set_Item_Stats(self, itemLink, {
-            point= self.Icon
-        })
-    end)
-    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)
-        e.Set_Item_Stats(self, itemLink, {
-            point= self.Icon
-        })
-    end)
-
-
-
     --boss掉落，物品, 可能，会留下 StaticPopup1 框架
     hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
         --local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = GetItemInfo(data.itemLink)
@@ -868,19 +854,63 @@ local function Init()
     end)
 
 
+
+    --拾取时, 弹出, 物品提示，信息, 战利品
+      --，拾取
+      --[[hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
+        e.Set_Item_Stats(self, itemLink, {
+            point= self.Icon
+        })
+    end)
+    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)
+        e.Set_Item_Stats(self, itemLink, {
+            point= self.Icon
+        })
+    end)
+    GuildChallengeAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GuildChallengeAlertFrameTemplate", GuildChallengeAlertFrame_SetUp);
+	DungeonCompletionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("DungeonCompletionAlertFrameTemplate", DungeonCompletionAlertFrame_SetUp);
+	ScenarioAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("ScenarioAlertFrameTemplate", ScenarioAlertFrame_SetUp);
+	InvasionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("ScenarioLegionInvasionAlertFrameTemplate", ScenarioLegionInvasionAlertFrame_SetUp, ScenarioLegionInvasionAlertFrame_Coalesce);
+	DigsiteCompleteAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("DigsiteCompleteToastFrameTemplate", DigsiteCompleteToastFrame_SetUp);
+	EntitlementDeliveredAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("EntitlementDeliveredAlertFrameTemplate", EntitlementDeliveredAlertFrame_SetUp);
+	RafRewardDeliveredAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("RafRewardDeliveredAlertFrameTemplate", RafRewardDeliveredAlertFrame_SetUp);
+	GarrisonBuildingAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GarrisonBuildingAlertFrameTemplate", GarrisonBuildingAlertFrame_SetUp);
+	GarrisonMissionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GarrisonStandardMissionAlertFrameTemplate", GarrisonMissionAlertFrame_SetUp);
+	GarrisonShipMissionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GarrisonShipMissionAlertFrameTemplate", GarrisonMissionAlertFrame_SetUp);
+	GarrisonRandomMissionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GarrisonRandomMissionAlertFrameTemplate", GarrisonRandomMissionAlertFrame_SetUp);
+	GarrisonFollowerAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GarrisonStandardFollowerAlertFrameTemplate", GarrisonFollowerAlertFrame_SetUp);
+	GarrisonShipFollowerAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GarrisonShipFollowerAlertFrameTemplate", GarrisonShipFollowerAlertFrame_SetUp);
+	GarrisonTalentAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GarrisonTalentAlertFrameTemplate", GarrisonTalentAlertFrame_SetUp);
+	WorldQuestCompleteAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("WorldQuestCompleteAlertFrameTemplate", WorldQuestCompleteAlertFrame_SetUp, WorldQuestCompleteAlertFrame_Coalesce);
+	LegendaryItemAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("LegendaryItemAlertFrameTemplate", LegendaryItemAlertFrame_SetUp);
+	NewPetAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("NewPetAlertFrameTemplate", NewPetAlertFrame_SetUp);
+	NewMountAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("NewMountAlertFrameTemplate", NewMountAlertFrame_SetUp);
+	NewToyAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("NewToyAlertFrameTemplate", NewToyAlertFrame_SetUp);
+	NewRuneforgePowerAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("NewRuneforgePowerAlertFrameTemplate", NewRuneforgePowerAlertSystem_SetUp);
+	NewCosmeticAlertFrameSystem = AlertFrame:AddQueuedAlertFrameSubSystem("NewCosmeticAlertFrameTemplate", NewCosmeticAlertFrameSystem_SetUp);
     
-    --拾取时, 弹出, 物品提示，信息
-    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
-        e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
+    
+    
+    ]]
+    --AlertFrameSystems.lua
+    hooksecurefunc('DungeonCompletionAlertFrameReward_SetRewardItem', function(frame, itemLink)
+        e.Set_Item_Stats(frame, frame.itemLink or itemLink , {point=frame.texture})
     end)
-    hooksecurefunc('LootWonAlertFrame_SetUp', function(self, itemLink)
-        e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
+    hooksecurefunc('LootWonAlertFrame_SetUp', function(self)
+        e.Set_Item_Stats(self, self.hyperlink, {point= self.lootItem.Icon})
     end)
-    hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(self, itemLink)
-        e.Set_Item_Stats(self, itemLink, self.lootItem and self.lootItem.Icon or self.Icon)
+    hooksecurefunc('LootUpgradeFrame_SetUp', function(self)
+        e.Set_Item_Stats(self, self.hyperlink, {point=self.Icon})
     end)
 
-    
+    hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(self, itemLink)
+        print(id,addName, 'LegendaryItemAlertFrame_SetUp')
+        e.Set_Item_Stats(self, itemLink, {point= self.lootItem and self.lootItem.Icon or self.Icon})
+    end)
+
+--[[
+    LootWonAlertFrame_SetUp
+]]
     --职业图标 ClassNameIconTab['法师']=图标
     for classID= 1, GetNumClasses() do
         local classInfo = C_CreatureInfo.GetClassInfo(classID)
@@ -925,7 +955,7 @@ local function Init()
     end
 
 
-    
+
 
     --商人
     --####
@@ -1009,6 +1039,7 @@ local function Init()
             Set_Item_Info(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
         end
     end)
+
     Init_Bag()
 end
 
@@ -1116,7 +1147,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     local frame= PerksProgramFrame:GetFrozenItemFrame()
                     if frame then
                         local itemLink= frame.FrozenButton.itemID and select(2, GetItemInfo(frame.FrozenButton.itemID))
-                        Set_Item_Info(frame.FrozenButton, {itemLink=itemLink})
+                        Set_Item_Info(frame.FrozenButton, {itemLink=itemLink, size=12})
                     end
                 end
             end
@@ -1124,23 +1155,17 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 for _, btn in pairs(self2:GetFrames()) do
                     if btn.itemID then
                         local itemLink= btn.itemID and select(2, GetItemInfo(btn.itemID))
-                        Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon})
+                        Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
                     elseif btn.GetItemInfo then--10.2
                         local itemInfo=btn:GetItemInfo()
                         if itemInfo then
                             local itemLink= itemInfo.itemID and select(2, GetItemInfo(itemInfo.itemID))
-                            Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon})
+                            Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
                         end
                     end
                 end
                 set_FrozenButton_Tips()
             end)
-        --[[elseif arg1=='Blizzard_AuctionHouseUI' then
-            hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(self2, addedBrowseResults)
-                info= self2.browseResults 
-                for k, v in pairs(info) do if v and type(v)=='table' then print('---------',k..'STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---------',k..'END') end print(k,v) end
-                print(id,addName)
-            end)]]
 
         elseif arg1=='Blizzard_WeeklyRewards' then--周奖励, 物品提示，信息
             hooksecurefunc(WeeklyRewardsFrame, 'Refresh', function(self2)--Blizzard_WeeklyRewards.lua WeeklyRewardsMixin:Refresh(playSheenAnims)

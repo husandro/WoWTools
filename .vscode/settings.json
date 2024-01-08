@@ -6253,7 +6253,17 @@
         "SPELL_FAILED_WRONG_BATTLE_PET_TYPE",
         "SPELL_FAILED_WRONG_FACTION",
         "SPELL_FAILED_WRONG_PET_FOOD",
-        "SPELL_FAILED_WRONG_WEATHER"
+        "SPELL_FAILED_WRONG_WEATHER",
+        "GuildChallengeAlertFrame_SetUp",
+        "AchievementAlertFrame_SetUp",
+        "AchievementShield_SetPoints",
+        "GameFontNormalSmall",
+        "GUILD_ACHIEVEMENT_UNLOCKED",
+        "ACHIEVEMENT_UNLOCKED",
+        "NewRecipeLearnedAlertFrame_SetUp",
+        "NewRecipeLearnedAlertFrame_GetStarTextureFromRank",
+        "SkillLineSpecsUnlockedAlertFrameMixin",
+        "WorldQuestCompleteAlertFrame_SetUp"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

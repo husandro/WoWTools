@@ -1162,7 +1162,11 @@ local strText={
 
 
 
-
+    [GUILD_CHALLENGE_TYPE1] = "地下城",--GuildChallengeAlertFrame_SetUp
+    [GUILD_CHALLENGE_TYPE2] = "团队副本",
+    [GUILD_CHALLENGE_TYPE3] = "评级战场",
+    [GUILD_CHALLENGE_TYPE4] = "场景战役",
+    [GUILD_CHALLENGE_TYPE5] = "史诗钥石地下城",
 
 
 
@@ -1812,15 +1816,67 @@ local function Init()
         set(OpenMailReplyButton, '回复')
         set(OpenMailCancelButton, '关闭')
 
+        hooksecurefunc('GuildChallengeAlertFrame_SetUp', function(frame, challengeType)--AlertFrameSystems.lua
+            local text= strText[_G["GUILD_CHALLENGE_TYPE"..challengeType]]
+            if text then
+                frame.Type:SetText(text)
+            end
+        end)
 
+        hooksecurefunc('AchievementAlertFrame_SetUp', function(frame, achievementID, alreadyEarned)
+            --local _, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuildAch, wasEarnedByMe, earnedBy = select(12, GetAchievementInfo(achievementID);
+            local unlocked = frame.Unlocked;
+            if select(12, GetAchievementInfo(achievementID)) then
+                unlocked:SetText('获得公会成就')
+            else
+                unlocked:SetText('已获得成就');
+            end
+        end)
 
+        hooksecurefunc('LootWonAlertFrame_SetUp', function(self, _, _, _, _, _, _, _, _, _, _, _, _, _, isSecondaryResult)
+            if isSecondaryResult then
+                self.Label:SetText('你获得了')--YOU_RECEIVED_LABEL
+            end
+        end)
 
+        hooksecurefunc('HonorAwardedAlertFrame_SetUp', function(self, amount)
+            self.Amount:SetFormattedText('%d点荣誉', amount)
+        end)
+        hooksecurefunc('GarrisonShipFollowerAlertFrame_SetUp', function(frame, _, _, _, _, _, _, isUpgraded)
+            if ( isUpgraded ) then
+                frame.Title:SetText('升级的舰船已加入你的舰队');
+            else
+                frame.Title:SetText('舰船已加入你的舰队');
+            end
+        end)
+        hooksecurefunc('NewRecipeLearnedAlertFrame_SetUp', function(self, recipeID, recipeLevel)
+            local tradeSkillID = C_TradeSkillUI.GetTradeSkillLineForRecipe(recipeID);
+            if tradeSkillID then
+                local recipeName = GetSpellInfo(recipeID);
+                if recipeName then
+                    local rank = GetSpellRank(recipeID);
+                    self.Title:SetText(rank and rank > 1 and '配方升级！' or '学会了新配方！')
 
+                    if recipeLevel ~= nil then
+                        recipeName = format('%s (等级 %i)', recipeName, recipeLevel);
+                        local rankTexture = NewRecipeLearnedAlertFrame_GetStarTextureFromRank(rank);
+                        if rankTexture then
+                            self.Name:SetFormattedText("%s %s", recipeName, rankTexture);
+                        else
+                            self.Name:SetText(recipeName);
+                        end
+                    end
+                end
+            end
+        end)
 
-
-
-
-
+        hooksecurefunc(SkillLineSpecsUnlockedAlertFrameMixin,'SetUp', function(self, skillLineID)
+            self.Title:SetText('解锁新要素：');
+            self.Name:SetFormattedText('%s专精', C_TradeSkillUI.GetTradeSkillDisplayName(skillLineID));
+        end)
+        hooksecurefunc('WorldQuestCompleteAlertFrame_SetUp', function(frame, questData)
+            frame.ToastText:SetText(questData.displayAsObjective and '目标完成！' or '世界任务完成！');
+        end)
 
 
 
