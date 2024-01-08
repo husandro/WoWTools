@@ -399,6 +399,15 @@ local function Set_Item_Info(self, tab)
         if info.quantity and info.quantity>0 then
             topLeftText= e.MK(info.quantity, 3)
         end
+    elseif tab.petID then
+        local speciesID = battlePetSpeciesID or (itemLink and itemLink:match('Hbattlepet:(%d+)')) or select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物
+        if speciesID then
+            topLeftText= select(3, e.GetPetCollectedNum(speciesID)) or topLeftText--宠物, 收集数量
+            local petType= select(3, C_PetJournal.GetPetInfoBySpeciesID(speciesID))
+            if petType then
+                topRightText='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':0|t'
+            end
+        end
     end
 
     if topRightText and not self.topRightText then
@@ -903,10 +912,12 @@ local function Init()
         e.Set_Item_Stats(self, self.hyperlink, {point=self.Icon})
     end)
 
-    hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(self, itemLink)
-        print(id,addName, 'LegendaryItemAlertFrame_SetUp')
-        e.Set_Item_Stats(self, itemLink, {point= self.lootItem and self.lootItem.Icon or self.Icon})
+    hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(frame)
+        e.Set_Item_Stats(frame, frame.hyperlink, {point= frame.Icon})
     end)
+
+    --hooksecurefunc('NewPetAlertFrame_SetUp', function(frame, petID)
+
 
 --[[
     LootWonAlertFrame_SetUp
