@@ -917,7 +917,9 @@ local function Init()
     end)
 
     --hooksecurefunc('NewPetAlertFrame_SetUp', function(frame, petID)
-
+    hooksecurefunc('NewCosmeticAlertFrameSystem_SetUp', function(...)
+        print(...)
+    end)
 
 --[[
     LootWonAlertFrame_SetUp
