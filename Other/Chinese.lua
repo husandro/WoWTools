@@ -2896,11 +2896,914 @@ local function Init_Loaded(arg1)
             set(recipesTab.Text, '制造订单')
         end)
 
+        if ProfessionsFrame.CraftingPage then--Blizzard_ProfessionsCrafting.lua
+            local FailValidationReason = EnumUtil.MakeEnum("Cooldown", "InsufficientReagents", "PrerequisiteReagents", "Disabled", "Requirement", "LockedReagentSlot", "RecraftOptionalReagentLimit");
+            local FailValidationTooltips = {
+                [FailValidationReason.Cooldown] = '配方冷却中。',
+                [FailValidationReason.InsufficientReagents] = '你的材料不足。',
+                [FailValidationReason.PrerequisiteReagents] = '一种或多种附加材料不满足必要条件。',
+                [FailValidationReason.Requirement] = '你不满足一个或更多的条件，不能制作此配方。',
+                [FailValidationReason.LockedReagentSlot] = '你尚未解锁必需的附加材料栏位。',
+                [FailValidationReason.RecraftOptionalReagentLimit] = '你尝试再造的物品有装备唯一限制。需要先脱下该装备后进行再造。',
+            }
+           hooksecurefunc(ProfessionsFrame.CraftingPage, 'ValidateControls', function(self)
+                local currentRecipeInfo = self.SchematicForm:GetRecipeInfo();
+                local isRuneforging = C_TradeSkillUI.IsRuneforging();
+                if currentRecipeInfo ~= nil and currentRecipeInfo.learned and (Professions.InLocalCraftingMode() or C_TradeSkillUI.IsNPCCrafting() or isRuneforging)
+                    and not currentRecipeInfo.isRecraft
+                    and not currentRecipeInfo.isDummyRecipe and not currentRecipeInfo.isGatheringRecipe
+                then
+                    local transaction = self.SchematicForm:GetTransaction();
+                    local isEnchant = transaction:IsRecipeType(Enum.TradeskillRecipeType.Enchant);
+                    local countMax = self:GetCraftableCount()
+                    if isEnchant then
+                        self.CreateButton:SetTextToFit('附魔');
+                        local quantity = math.max(1, countMax);
+                        self.CreateAllButton:SetTextToFit(format('"%s [%d]', '附魔所有', quantity));
+                    elseif not currentRecipeInfo.abilityVerb and not currentRecipeInfo.alternateVerb then
+                        if self.SchematicForm.recraftSlot and self.SchematicForm.recraftSlot.InputSlot:IsVisible() then
+                            self.CreateButton:SetTextToFit('再造');
+                        else
+                            self.CreateButton:SetTextToFit('制造');
+                        end
+                        if not currentRecipeInfo.abilityAllVerb then
+                            self.CreateAllButton:SetTextToFit(format('%s [%d]', '全部制造', countMax));
+                        end
+                    end
+                    local enabled = true;
+                    if PartialPlayTime() then
+                        local reasonText = format('你的在线时间已经超过3小时。在目前阶段下，你不能这么做。在下线休息%d小时后，你的防沉迷时间将会清零。请退出游戏下线休息。', REQUIRED_REST_HOURS - math.floor(GetBillingTimeRested() / 60));
+                        self:SetCreateButtonTooltipText(reasonText);
+                        enabled = false;
+                    elseif NoPlayTime() then
+                        local reasonText = format('你的在线时间已经超过5小时。在目前阶段下，你不能这么做。在下线休息%d小时后，你的防沉迷时间将会清零。请退出游戏，下线休息和运动。', REQUIRED_REST_HOURS - math.floor(GetBillingTimeRested() / 60));
+                        self:SetCreateButtonTooltipText(reasonText);
+                        enabled = false;
+                    end
+                    if enabled then
+                        local failValidationReason = self:ValidateCraftRequirements(currentRecipeInfo, transaction, isRuneforging, countMax);
+                        if failValidationReason and FailValidationTooltips[failValidationReason] then
+                            self:SetCreateButtonTooltipText(FailValidationTooltips[failValidationReason])
+                        end
+                    end
+                end
+            end)
+
+            if ProfessionsFrame.CraftingPage.SchematicForm then--Blizzard_ProfessionsRecipeSchematicForm.lua
+                set(ProfessionsFrame.CraftingPage.SchematicForm.AllocateBestQualityCheckBox.text, LIGHTGRAY_FONT_COLOR:WrapTextInColorCode('使用最高品质材料'))
+                ProfessionsFrame.CraftingPage.SchematicForm.AllocateBestQualityCheckBox:HookScript("OnEnter", function(button)
+                    local checked = button:GetChecked();
+                    if checked then
+                        GameTooltip_AddNormalLine(GameTooltip, '取消勾选后，总会使用可用的最低品质的材料。');
+                    else
+                        GameTooltip_AddNormalLine(GameTooltip, '勾选后，总会使用可用的最高品质的材料。');
+                    end
+                    GameTooltip:Show();
+                end)
+                set(ProfessionsFrame.CraftingPage.SchematicForm.TrackRecipeCheckBox.text, LIGHTGRAY_FONT_COLOR:WrapTextInColorCode('追踪配方'))
+                ProfessionsFrame.CraftingPage.SchematicForm.FavoriteButton:HookScript("OnEnter", function(button)
+                    GameTooltip_AddHighlightLine(GameTooltip, button:GetChecked() and '从偏好中移除' or '设置为偏好');
+                    GameTooltip:Show();
+                end)
+                ProfessionsFrame.CraftingPage.SchematicForm.FavoriteButton:HookScript("OnClick", function(button)
+                    GameTooltip_AddHighlightLine(GameTooltip, button:GetChecked() and '从偏好中移除' or '设置为偏好');
+                    GameTooltip:Show();
+                end)
+                ProfessionsFrame.CraftingPage.SchematicForm.FirstCraftBonus:SetScript("OnEnter", function()
+                    GameTooltip_AddNormalLine(GameTooltip, '首次制造此配方会教会你某种新东西。');
+                    GameTooltip:Show();
+                end);
+            end
+
+             --[[hooksecurefunc(ProfessionsFrame.CraftingPage.SchematicForm, 'Init', function(self, recipeInfo, isRecraftOverride)
+                local xPadding = 0;
+                local yPadding = 4;
+                local anchor = AnchorUtil.CreateAnchor("TOPLEFT", self.OutputIcon, "BOTTOMLEFT", -1, -12);
+                local organizer = CreateVerticalLayoutOrganizer(anchor, xPadding, yPadding);
+            
+                self.UpdateRequiredTools = nil;
+                self.UpdateCooldown = nil;
+            
+                self.OutputIcon:Hide();
+                self.OutputText:Hide();
+                self.OutputSubText:Hide();
+                self.Description:Hide();
+                self:ClearRecipeDescription();
+            
+                self.RecraftingDescription:Hide();
+                self.RequiredTools:Hide();
+                self.RecraftingRequiredTools:Hide();
+                self.RecraftingOutputText:Hide();
+                self.Stars:SetScript("OnEnter", nil);
+                self.Stars:Hide();
+                self.RecipeLevelBar:Hide();
+                self.RecipeLevelSelector:Hide();
+                self.MinimizedCooldown:Hide();
+                self.MinimizedCooldown:SetText("");
+                self.Cooldown:Hide();
+                self.Cooldown:SetText("");
+                self.RecipeSourceButton:Hide();
+                self.FirstCraftBonus:Hide();
+                self.FavoriteButton:Hide();
+                self.TrackRecipeCheckBox:Hide();
+                self.AllocateBestQualityCheckBox:Hide();
+            
+                self.Reagents:Hide();
+                self.OptionalReagents:Hide();
+                self.FinishingReagents:Hide();
+                self.Details:Hide();
+            
+                self.currentRecipeInfo = recipeInfo;
+            
+                local mimimized = ProfessionsUtil.IsCraftingMinimized();
+                if self.NineSlice then
+                    self.NineSlice:SetShown(not self.isInspection and not mimimized);
+                end
+            
+                local hasRecipe = recipeInfo ~= nil;
+            
+                for _, frame in ipairs(self.extraSlotFrames) do
+                    frame:SetShown(false);
+                end
+            
+                if not hasRecipe then
+                    self.Details:CancelAllAnims();
+                    return;
+                end
+            
+                local recipeID = recipeInfo.recipeID;
+                local isRecipeInfoRecraft = recipeInfo.isRecraft;
+                local isRecraft = isRecraftOverride;
+                if isRecraft == nil then
+                    isRecraft = isRecipeInfoRecraft;
+                end
+                self.isRecraftOverride = isRecraftOverride;
+            
+                local recraftTransitionData = Professions.GetRecraftingTransitionData();
+                if self.isInspection then
+                    recraftTransitionData = nil;
+                end
+            
+                if recraftTransitionData and isRecraftOverride == nil then
+                    isRecraft = true;
+                end
+            
+                local newTransaction = not self.transaction or (self.transaction:GetRecipeID() ~= recipeID);
+                if not newTransaction and (self.transaction and self.transaction:IsRecraft()) and isRecraftOverride == nil then
+                    isRecraft = true;
+                end
+                
+                if newTransaction then
+                    self.QualityDialog:Close();
+                end
+            
+                ItemButtonUtil.TriggerEvent(ItemButtonUtil.Event.ItemContextChanged);
+            
+                self.RecraftingDescription:SetShown(isRecipeInfoRecraft);
+            
+                if isRecraft then
+                    self.RecraftingOutputText:Show();
+                else
+                    self.OutputIcon:Show();
+                    self.OutputText:Show();
+                    if self.isInspection then
+                        self.OutputText:SetPoint("LEFT", self.OutputIcon, "RIGHT", 14, 0);
+                    else
+                        self.OutputText:SetPoint("LEFT", self.OutputIcon, "RIGHT", 14, 17);
+                    end
+                end
+            
+                if mimimized or self.isInspection then
+                    self.OutputIcon:SetPoint("TOPLEFT", 28, -33);
+                    self.RecraftingOutputText:SetPoint("TOPLEFT", 28, -12);
+                else
+                    self.OutputIcon:SetPoint("TOPLEFT", 28, -28);
+                    self.RecraftingOutputText:SetPoint("TOPLEFT", 28, -32);
+                end
+            
+                local showFavoriteButton = not self.isInspection and self.canShowFavoriteButton and recipeInfo.learned and not isRecraft and not C_TradeSkillUI.IsNPCCrafting();
+                self.FavoriteButton:SetShown(showFavoriteButton);
+                if showFavoriteButton then
+                    local isFavorite = C_TradeSkillUI.IsRecipeFavorite(recipeID);
+                    self.FavoriteButton:SetChecked(isFavorite);
+                    self.FavoriteButton:SetIsFavorite(isFavorite);
+            
+                    self.FavoriteButton:ClearAllPoints();
+            
+                    if mimimized then
+                        self.FavoriteButton:SetPoint("TOPRIGHT", -10, -10);
+                    else
+                        self.FavoriteButton:SetPoint("LEFT", self.OutputText, "RIGHT", 4, 1);
+                    end
+                end
+            
+                self.recipeSchematic = C_TradeSkillUI.GetRecipeSchematic(recipeID, isRecraft, self:GetCurrentRecipeLevel());
+                local isSalvage = self.recipeSchematic.recipeType == Enum.TradeskillRecipeType.Salvage;
+            
+                if newTransaction then
+                    self.transaction = CreateProfessionsRecipeTransaction(self.recipeSchematic);
+                    self.transaction:SetRecraft(isRecraft);
+                else
+                    -- Remove allocation handlers while we're initializing the form
+                    -- otherwise we're going to flood the details stats panel with
+                    -- irrelevant events. Altrnatively, the details panel could
+                    -- defer handling the changed event until end of frame, but it
+                    -- would first need to be guaranteed that no state is accessed
+                    -- off the details frame that would not have been set as expected.
+                    self.transaction:SetAllocationsChangedHandler(nil);
+                end
+            
+                local function AllocateModification(slotIndex, reagentSlotSchematic)
+                    local modification = self.transaction:GetModification(reagentSlotSchematic.dataSlotIndex);
+                    if modification and modification.itemID > 0 then
+                        local reagent = Professions.CreateCraftingReagentByItemID(modification.itemID);
+                        self.transaction:OverwriteAllocation(slotIndex, reagent, reagentSlotSchematic.quantityRequired);
+                    end
+                end
+            
+                if recraftTransitionData then
+                    self.transaction:SetRecraftAllocation(recraftTransitionData.itemGUID);
+            
+                    if newTransaction then
+                        for slotIndex, reagentSlotSchematic in ipairs(self.recipeSchematic.reagentSlotSchematics) do
+                            if reagentSlotSchematic.dataSlotType == Enum.TradeskillSlotDataType.ModifiedReagent then
+                                AllocateModification(slotIndex, reagentSlotSchematic);
+                            end
+                        end
+                    end
+                end
+            
+                local shouldShowTrackRecipe = not (mimimized or self.isInspection) and self.showTrackRecipe and self.transaction:HasReagentSlots() and Professions.CanTrackRecipe(recipeInfo);
+                self.TrackRecipeCheckBox:SetShown(shouldShowTrackRecipe);
+                self.TrackRecipeCheckBox:SetChecked(C_TradeSkillUI.IsRecipeTracked(recipeInfo.recipeID, isRecraft));
+            
+                -- If the item we're creating has no quality then default to using the lowest quality
+                -- reagents. If so, also hide the check box so that the player doesn't reactivate the option for no benefit.
+                local alwaysUsesLowestQuality = recipeInfo.alwaysUsesLowestQuality;
+                local shouldAllocateBest = not alwaysUsesLowestQuality and Professions.ShouldAllocateBestQualityReagents();
+                
+                if newTransaction or not self.transaction:IsManuallyAllocated() then
+                    self.transaction:SanitizeOptionalAllocations();
+                    -- Unless the allocation has been manually changed, the 'best quality reagent' option is used to
+                    -- auto-allocate the reagents.
+                    Professions.AllocateAllBasicReagents(self.transaction, shouldAllocateBest);
+                else
+                    -- We still need to sanitize the transaction to remove allocations we no longer have even if
+                    -- we're manually allocating. When we run out of a reagent, we expect the allocation to be
+                    -- removed.
+                    self.transaction:SanitizeAllocations();
+                end
+            
+                -- Verifies that targets are still valid, and that the item modifications
+                -- for the item are updated if a recraft target.
+                self.transaction:SanitizeTargetAllocations();
+            
+                if self.QualityDialog:IsShown() then
+                    local slotIndex = self.QualityDialog:GetSlotIndex();
+                    local allocationsCopy = self.transaction:GetAllocationsCopy(slotIndex);
+                    self.QualityDialog:ReinitAllocations(allocationsCopy);
+                end
+                    
+                local isCooldownOrganized = false;
+                local function UpdateCooldown()
+                    local function UpdateText(fontString)
+                        if recipeInfo.disabled then
+                            fontString:SetTextColor(RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b);
+                            fontString:SetText(recipeInfo.disabledReason);
+                            return true;
+                        end
+            
+                        cooldownFormatter:SetMinInterval(SecondsFormatter.Interval.Seconds);
+            
+                        local cooldown, isDayCooldown, charges, maxCharges = C_TradeSkillUI.GetRecipeCooldown(recipeID);
+                        if maxCharges and charges and maxCharges > 0 and (charges > 0 or not cooldown) then
+                            if charges < maxCharges and cooldown then
+                                cooldownFormatter:SetConvertToLower(true);
+                                fontString:SetFormattedText(TRADESKILL_CHARGES_REMAINING_NEXT_USE:format(charges, maxCharges, cooldownFormatter:Format(cooldown)));
+                            else
+                                fontString:SetFormattedText(TRADESKILL_CHARGES_REMAINING, charges, maxCharges);
+                            end
+                            fontString:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+                            return true;
+                        end
+                        
+                        if cooldown then
+                            local function SetCooldownRemaining(cooldown)
+                                fontString:SetText(COOLDOWN_REMAINING.." "..cooldownFormatter:Format(cooldown));
+                            end
+            
+                            if not isDayCooldown then
+                                cooldownFormatter:SetConvertToLower(false);
+                                SetCooldownRemaining(cooldown);
+                            elseif cooldown > SECONDS_PER_DAY then
+                                cooldownFormatter:SetConvertToLower(false);
+                                cooldownFormatter:SetMinInterval(SecondsFormatter.Interval.Hours);
+                                SetCooldownRemaining(cooldown);
+                            else
+                                fontString:SetText(COOLDOWN_EXPIRES_AT_MIDNIGHT);
+                            end
+            
+                            fontString:SetTextColor(RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b);
+                            return true;
+                        end
+            
+                        fontString:SetText("");
+                        return false;
+                    end
+                        
+                    local cooldownFontString;
+                    if mimimized then
+                        cooldownFontString = self.MinimizedCooldown;
+                    else
+                        cooldownFontString = self.Cooldown;
+                    end
+            
+                    local shown = UpdateText(cooldownFontString);
+                    cooldownFontString:SetShown(shown);
+                    if shown then
+                        if mimimized then
+                            local anchorTo;
+                            if #C_TradeSkillUI.GetRecipeRequirements(recipeID) > 0 then
+                                anchorTo = isRecraft and self.RecraftingRequiredTools or self.RequiredTools;
+                            elseif self.RecraftingOutputText:IsShown() then
+                                anchorTo = self.RecraftingOutputText;
+                            else
+                                anchorTo = self.OutputText;
+                            end
+            
+                            self.MinimizedCooldown:SetPoint("TOPLEFT", anchorTo, "BOTTOMLEFT", 0, -5);
+                        else
+                        if not isCooldownOrganized then
+                            isCooldownOrganized = true;
+                            organizer:Add(self.Cooldown, LayoutEntry.Cooldown);
+                            organizer:Layout();
+                        end
+                    end
+                end
+                end
+            
+                if not self.isInspection then
+                    self.UpdateCooldown = UpdateCooldown;
+                    UpdateCooldown();
+                end
+            
+                local sourceText, sourceTextIsForNextRank;
+                if not recipeInfo.learned then
+                    sourceText = C_TradeSkillUI.GetRecipeSourceText(recipeID);
+                elseif recipeInfo.nextRecipeID then
+                    sourceText = C_TradeSkillUI.GetRecipeSourceText(recipeInfo.nextRecipeID);
+                    sourceTextIsForNextRank = true;
+                end
+            
+                if (not (mimimized or self.isInspection or isRecraft)) and sourceText then
+                    if sourceTextIsForNextRank then
+                        self.RecipeSourceButton.Text:SetText(TRADESKILL_NEXT_RANK_HEADER);
+                    else
+                        self.RecipeSourceButton.Text:SetText(TRADESKILL_UNLEARNED_RECIPE_HEADER);
+                    end
+            
+                    self.RecipeSourceButton:SetScript("OnEnter", function()
+                        GameTooltip:SetOwner(self.RecipeSourceButton.Text, "ANCHOR_RIGHT");
+                        GameTooltip:SetCustomWordWrapMinWidth(350);
+                        GameTooltip_AddHighlightLine(GameTooltip, sourceText);
+                        GameTooltip:Show();
+                    end);
+            
+                    self.RecipeSourceButton:Show();
+                    organizer:Add(self.RecipeSourceButton, LayoutEntry.Source, 0, 10);
+                end
+            
+                if not (mimimized or self.isInspection or isRecraft) and recipeInfo.learned and (not self.RecipeSourceButton:IsVisible()) and C_TradeSkillUI.IsRecipeFirstCraft(recipeID) then
+                    self.FirstCraftBonus:Show();
+                    organizer:Add(self.FirstCraftBonus, LayoutEntry.FirstCraftBonus, 0, 10);
+                end
+            
+                if self.loader then
+                    self.loader:Cancel();
+                end
+                self.loader = CreateProfessionsRecipeLoader(self.recipeSchematic, function()
+                    local reagents = self.transaction:CreateCraftingReagentInfoTbl();
+            
+                    if not (mimimized or self.isInspection or isRecraft) then
+                        self:UpdateRecipeDescription();
+                    end
+                    
+                    -- Description needs to be included in layout since other frames are anchored to it.
+                    organizer:Add(self.Description, LayoutEntry.Description, 0, 5);
+                    organizer:Layout();
+            
+                    local outputItemInfo = C_TradeSkillUI.GetRecipeOutputItemData(recipeID, reagents, self.transaction:GetAllocationItemGUID());
+                    local text;
+                    if outputItemInfo.hyperlink then
+                        local item = Item:CreateFromItemLink(outputItemInfo.hyperlink);
+                        text = WrapTextInColor(item:GetItemName(), item:GetItemQualityColor().color);
+                    else
+                        text = WrapTextInColor(self.recipeSchematic.name, NORMAL_FONT_COLOR);
+                    end
+                    
+                    local maxWidth = mimimized and 250 or 800;
+                    local multiline = mimimized;
+                    if isRecipeInfoRecraft then
+                        SetTextToFit(self.RecraftingOutputText, PROFESSIONS_CRAFTING_RECRAFTING, maxWidth, multiline);
+                    elseif isRecraft then
+                        SetTextToFit(self.RecraftingOutputText, PROFESSIONS_CRAFTING_FORM_RECRAFTING_HEADER:format(text), maxWidth, multiline);
+                    else
+                        SetTextToFit(self.OutputText, text, maxWidth, multiline);
+                    end
+            
+                    Professions.SetupOutputIcon(self.OutputIcon, self.transaction, outputItemInfo);
+                end);
+            
+                self.OutputIcon:SetScript("OnEnter", function()
+                    GameTooltip:SetOwner(self.OutputIcon, "ANCHOR_RIGHT");
+                    local reagents = self.transaction:CreateCraftingReagentInfoTbl();
+            
+                    self.OutputIcon:SetScript("OnUpdate", function() 
+                        GameTooltip:SetRecipeResultItem(self.recipeSchematic.recipeID, reagents, self.transaction:GetAllocationItemGUID(), self:GetCurrentRecipeLevel());
+                    end);
+                end);
+            
+                self.OutputIcon:SetScript("OnLeave", function()
+                    GameTooltip_Hide(); 
+                    self.OutputIcon:SetScript("OnUpdate", nil);
+                end);
+            
+                self.OutputIcon:SetScript("OnClick", function()
+                    local outputItemInfo = C_TradeSkillUI.GetRecipeOutputItemData(recipeID, self.transaction:CreateCraftingReagentInfoTbl(), self.transaction:GetAllocationItemGUID());
+                    HandleModifiedItemClick(outputItemInfo.hyperlink);
+                end);
+            
+                if Professions.HasRecipeRanks(recipeInfo) then
+                    if not mimimized then
+                        local rank = Professions.GetRecipeRankLearned(recipeInfo);
+            
+                        self.Stars:SetScript("OnEnter", function()
+                            GameTooltip:SetOwner(self.Stars, "ANCHOR_TOPLEFT");
+                            GameTooltip:SetRecipeRankInfo(recipeID, rank);
+                            GameTooltip:Show();
+                        end);
+            
+                        for index, star in ipairs(self.Stars.Stars) do
+                            star.Earned:SetShown(index <= rank);
+                        end
+            
+                        self.Stars:Show();
+                    end
+                elseif recipeInfo.unlockedRecipeLevel then
+                    if not mimimized then
+                        self.RecipeLevelBar:SetExperience(recipeInfo.currentRecipeExperience, recipeInfo.nextLevelRecipeExperience, recipeInfo.unlockedRecipeLevel);
+                    end
+            
+                    if not self:GetCurrentRecipeLevel() then
+                        self:SetSelectedRecipeLevel(recipeID, recipeInfo.unlockedRecipeLevel);
+                    end
+            
+                    if not mimimized then
+                        self.RecipeLevelSelector:SetRecipeInfo(recipeInfo, self:GetCurrentRecipeLevel());
+                        self.RecipeLevelSelector:Show();
+                        self.RecipeLevelBar:Show();
+                    end
+                end
+                
+                self.RecraftingRequiredTools:Hide();
+                self.RequiredTools:Hide();
+                if not self.isInspection then
+                    if #C_TradeSkillUI.GetRecipeRequirements(recipeID) > 0 then
+                        local fontString = isRecraft and self.RecraftingRequiredTools or self.RequiredTools;
+                        fontString:Show();
+                        
+                        self.UpdateRequiredTools = function()
+                            -- Requirements need to be fetched on every update because it contains the updated
+                            -- .met field that we need to colorize the string correctly.
+                            local requirements = C_TradeSkillUI.GetRecipeRequirements(recipeID);
+                            if (#requirements > 0) then
+                                local requirementsText = BuildColoredListString(unpack(FormatRequirements(requirements)));
+                                local maxWidth = mimimized and 250 or 800;
+                                local multiline = mimimized;
+                                SetTextToFit(fontString, PROFESSIONS_REQUIRED_TOOLS:format(requirementsText), maxWidth, multiline);
+                            else
+                                fontString:SetText("");
+                            end
+                        end
+            
+                        self.UpdateRequiredTools();
+                    end
+            
+                    if self.Stars:IsShown() then
+                        self.RequiredTools:SetPoint("TOPLEFT", self.OutputText, "BOTTOMLEFT", 0, -20);
+                    else
+                        self.RequiredTools:SetPoint("TOPLEFT", self.OutputText, "BOTTOMLEFT", 0, -4);
+                    end
+                end
+            
+                self.reagentSlotPool:ReleaseAll();
+                self.reagentSlots = {};
+                self.Reagents:Show();
+            
+                local slotParents =
+                {
+                    [Enum.CraftingReagentType.Basic] = self.Reagents, 
+                    [Enum.CraftingReagentType.Modifying] = self.OptionalReagents,
+                };
+            
+                if mimimized then
+                    slotParents[Enum.CraftingReagentType.Finishing] = self.FinishingReagents;
+                else
+                    slotParents[Enum.CraftingReagentType.Finishing] = self.Details.FinishingReagentSlotContainer;
+                end
+            
+                if isRecraft then
+                    self.recraftSlot:Show();
+                    self.recraftSlot:Init(self.transaction);
+            
+                    self.recraftSlot.InputSlot:SetScript("OnMouseDown", function(button, buttonName, down)
+                        if buttonName == "LeftButton" then
+                            local flyout = ToggleProfessionsItemFlyout(self.recraftSlot.InputSlot, self);
+                            if flyout then
+                                local function OnFlyoutItemSelected(o, flyout, elementData)
+                                    Professions.TransitionToRecraft(elementData.itemGUID);
+                                    
+                                    local itemLocation = C_Item.GetItemLocation(elementData.itemGUID);
+                                    C_Sound.PlayItemSound(Enum.ItemSoundType.Drop, itemLocation);
+                                end
+                    
+                                flyout.GetElementsImplementation = function(self)
+                                    local itemGUIDs = C_TradeSkillUI.GetRecraftItems(recipeID);
+                                    local items = ItemUtil.TransformItemGUIDsToItems(itemGUIDs);
+                                    local elementData = {items = items, itemGUIDs = itemGUIDs};
+                                    return elementData;
+                                end
+            
+                                flyout.OnElementEnterImplementation = function(elementData, tooltip)
+                                    tooltip:SetItemByGUID(elementData.itemGUID);
+            
+                                    local learned = C_TradeSkillUI.IsOriginalCraftRecipeLearned(elementData.itemGUID);
+                                    if not learned then
+                                        GameTooltip_AddBlankLineToTooltip(tooltip);
+                                        GameTooltip_AddErrorLine(tooltip, PROFESSIONS_ITEM_RECRAFT_UNLEARNED);
+                                    end
+                                end
+                                
+                                flyout.OnElementEnabledImplementation = function(button, elementData)
+                                    return C_TradeSkillUI.IsOriginalCraftRecipeLearned(elementData.itemGUID);
+                                end
+            
+                                local canModifyFilter = false;
+                                flyout:Init(self.recraftSlot.InputSlot, self.transaction, canModifyFilter);
+                                flyout:RegisterCallback(ProfessionsItemFlyoutMixin.Event.ItemSelected, OnFlyoutItemSelected, slot);
+                            end
+                        end
+                    end);
+            
+                    self.recraftSlot.InputSlot:SetScript("OnEnter", function()
+                        GameTooltip:SetOwner(self.recraftSlot.InputSlot, "ANCHOR_RIGHT");
+            
+                        local itemGUID = self.transaction:GetRecraftAllocation();
+                        if itemGUID then
+                            GameTooltip:SetItemByGUID(itemGUID);
+                            GameTooltip_AddBlankLineToTooltip(GameTooltip);
+                            GameTooltip_AddInstructionLine(GameTooltip, RECRAFT_REAGENT_TOOLTIP_CLICK_TO_REPLACE);
+                        else
+                            GameTooltip_AddInstructionLine(GameTooltip, RECRAFT_REAGENT_TOOLTIP_CLICK_TO_ADD);
+                        end
+                        GameTooltip:Show();
+                    end);
+            
+                    self.recraftSlot.OutputSlot:SetScript("OnEnter", function()
+                        local itemGUID = self.transaction:GetRecraftAllocation();
+                        if itemGUID then
+                            GameTooltip:SetOwner(self.recraftSlot.OutputSlot, "ANCHOR_RIGHT");
+            
+                            local reagents = self.transaction:CreateCraftingReagentInfoTbl();
+                            GameTooltip:SetRecipeResultItem(self.recipeSchematic.recipeID, reagents, self.transaction:GetRecraftAllocation(), self:GetCurrentRecipeLevel());
+                        end
+                    end);
+            
+                    self.recraftSlot.OutputSlot:SetScript("OnClick", function()
+                        local itemGUID = self.transaction:GetRecraftAllocation();
+                        if itemGUID then
+                            local reagents = self.transaction:CreateCraftingReagentInfoTbl();
+                            local optionalReagents = self.transaction:CreateOptionalCraftingReagentInfoTbl();
+                            local outputItemInfo = C_TradeSkillUI.GetRecipeOutputItemData(self.recipeSchematic.recipeID, reagents, itemGUID);
+                            if outputItemInfo and outputItemInfo.hyperlink then
+                                HandleModifiedItemClick(outputItemInfo.hyperlink);
+                            end
+                        end
+                    end);
+                end
+            
+                if isRecipeInfoRecraft then
+                    self.RecraftingDescription:SetPoint("TOPLEFT", self.recraftSlot, "BOTTOMLEFT");
+                    self.RecraftingDescription:SetTextColor(GRAY_FONT_COLOR:GetRGB());
+                end
+            
+                for slotIndex, reagentSlotSchematic in ipairs(self.recipeSchematic.reagentSlotSchematics) do
+                    local reagentType = reagentSlotSchematic.reagentType;
+                    -- modifying-required slots cannot be correctly ordered by their logical slot indices, but design wants them at the top.
+                    local isModifyingRequiredSlot = ProfessionsUtil.IsReagentSlotModifyingRequired(reagentSlotSchematic);
+                    local sectionType = (isModifyingRequiredSlot and Enum.CraftingReagentType.Basic) or reagentType;
+                    
+                    local slots = self.reagentSlots[sectionType];
+                    if not slots then
+                        slots = {};
+                        self.reagentSlots[sectionType] = slots;
+                    end
+            
+                    local slot = self.reagentSlotPool:Acquire();
+                    if isModifyingRequiredSlot then
+                        table.insert(slots, 1, slot);
+                    else
+                        table.insert(slots, slot);
+                    end
+            
+                    slot:SetParent(slotParents[sectionType]);
+                    
+                    slot.CustomerState:SetShown(false);
+                    slot:Init(self.transaction, reagentSlotSchematic);
+                    slot:Show();
+            
+                    if reagentType == Enum.CraftingReagentType.Basic then
+                        if Professions.GetReagentInputMode(reagentSlotSchematic) == Professions.ReagentInputMode.Quality then
+                            slot.Button:SetScript("OnClick", function(button, buttonName, down)
+                                if IsShiftKeyDown() then
+                                    local qualityIndex = Professions.FindFirstQualityAllocated(self.transaction, reagentSlotSchematic) or 1;
+                                    local handled, link = Professions.HandleQualityReagentItemLink(recipeID, reagentSlotSchematic, qualityIndex);
+                                    if not handled then
+                                        Professions.TriggerReagentClickedEvent(link);
+                                    end
+                                    return;
+                                end
+            
+                                if not Professions.InLocalCraftingMode() then
+                                    return;
+                                end
+            
+                                if not slot:IsUnallocatable() and not self.isInspection then
+                                    if buttonName == "LeftButton" then
+                                        local function OnAllocationsAccepted(dialog, allocations, reagentSlotSchematic)
+                                            self.transaction:OverwriteAllocations(reagentSlotSchematic.slotIndex, allocations);
+                                            self.transaction:SetManuallyAllocated(true);
+            
+                                            slot:Update();
+            
+                                            self:TriggerEvent(ProfessionsRecipeSchematicFormMixin.Event.AllocationsModified);
+                                        end
+            
+                                        self.QualityDialog:RegisterCallback(ProfessionsQualityDialogMixin.Event.Accepted, OnAllocationsAccepted, slot);
+                                        
+                                        local allocationsCopy = self.transaction:GetAllocationsCopy(slotIndex);
+                                        local disallowZeroAllocations = true;
+                                        self.QualityDialog:Open(recipeID, reagentSlotSchematic, allocationsCopy, slotIndex, disallowZeroAllocations);
+                                    end
+                                end
+                            end);
+            
+                            slot.Button:SetScript("OnEnter", function()
+                                GameTooltip:SetOwner(slot.Button, "ANCHOR_RIGHT");
+                                local noInstruction = self.isInspection;
+                                Professions.SetupQualityReagentTooltip(slot, self.transaction, noInstruction);
+                                GameTooltip:Show();
+                            end);
+                        else
+                            slot.Button:SetScript("OnClick", function(button, buttonName, down)
+                                if IsShiftKeyDown() then
+                                    local handled, link = Professions.HandleFixedReagentItemLink(recipeID, reagentSlotSchematic);
+                                    if not handled then
+                                        Professions.TriggerReagentClickedEvent(link);
+                                    end
+                                end
+                            end);
+            
+                            slot.Button:SetScript("OnEnter", function()
+                                GameTooltip:SetOwner(slot.Button, "ANCHOR_RIGHT");
+                                local currencyID = slot.Button:GetCurrencyID();
+                                if currencyID then
+                                    GameTooltip:SetCurrencyByID(currencyID);
+                                else
+                                    GameTooltip:SetRecipeReagentItem(recipeID, reagentSlotSchematic.dataSlotIndex);
+                                end
+                                GameTooltip:Show();
+                            end);
+                        end
+                    elseif not (self.isInspection and reagentType == Enum.CraftingReagentType.Finishing) then
+                        local locked, lockedReason;
+            
+                        if not self.isInspection then
+                            locked, lockedReason = Professions.GetReagentSlotStatus(reagentSlotSchematic, recipeInfo);
+                        end
+                        slot.Button:SetLocked(locked);
+            
+                        slot.Button:SetScript("OnEnter", function()
+                            GameTooltip:SetOwner(slot.Button, "ANCHOR_RIGHT");
+            
+                            local slotInfo = reagentSlotSchematic.slotInfo;
+            
+                            if locked then
+                                local title;
+                                if reagentType == Enum.CraftingReagentType.Finishing then
+                                    title = FINISHING_REAGENT_TOOLTIP_TITLE:format(slotInfo.slotText);
+                                else
+                                    title = slotInfo.slotText or OPTIONAL_REAGENT_POSTFIX;
+                                end
+            
+                                GameTooltip_SetTitle(GameTooltip, title);
+                                GameTooltip_AddErrorLine(GameTooltip, lockedReason);
+                            else
+                                local exchangeOnly = self.transaction:HasModification(reagentSlotSchematic.dataSlotIndex);
+                                Professions.SetupOptionalReagentTooltip(slot, recipeID, reagentSlotSchematic, exchangeOnly, 
+                                    self.transaction:GetAllocationItemGUID(), slot:IsUnallocatable(), self.transaction);
+            
+                                if slot.Button.InputOverlay.AddIcon:IsShown() then
+                                    slot.Button.InputOverlay.AddIconHighlight:SetShown(not slot:IsUnallocatable());
+                                end
+                            end
+                            GameTooltip:Show();
+                        end);
+                        
+                        slot.Button:SetScript("OnMouseDown", function(button, buttonName, down)
+                            if locked then
+                                return;
+                            end
+            
+                            if not slot:IsUnallocatable() then
+                                if buttonName == "LeftButton" then
+                                    local flyout = ToggleProfessionsItemFlyout(slot.Button, self);
+                                    if flyout then
+                                        local function OnUndoClicked(o, flyout)
+                                            AllocateModification(slotIndex, reagentSlotSchematic);
+                                            
+                                            slot:RestoreOriginalItem();
+                                            
+                                            self:TriggerEvent(ProfessionsRecipeSchematicFormMixin.Event.AllocationsModified);
+                                        end
+                                        
+                                        local function OnFlyoutItemShiftClicked(o, flyout, elementData)
+                                            local item = elementData.item;
+                                            local itemLink = ItemUtil.GetItemHyperlink(item:GetItemID());
+                                            local handled, link = Professions.HandleReagentLink(itemLink);
+                                            if not handled then
+                                                Professions.TriggerReagentClickedEvent(link);
+                                            end
+                                        end
+            
+                                        local function OnFlyoutItemSelected(o, flyout, elementData)
+                                            local item = elementData.item;
+                                            
+                                            local function AllocateFlyoutItem()
+                                                if ItemUtil.GetCraftingReagentCount(item:GetItemID()) == 0 then
+                                                    return;
+                                                end
+            
+                                                local reagent = Professions.CreateCraftingReagentByItemID(item:GetItemID());
+                                                self.transaction:OverwriteAllocation(slotIndex, reagent, reagentSlotSchematic.quantityRequired);
+                                                
+                                                slot:SetItem(item);
+            
+                                                self:TriggerEvent(ProfessionsRecipeSchematicFormMixin.Event.AllocationsModified);
+                                            end
+                                            
+                                            -- The existing modification should never produce a warning, and we only want a warning if the new
+                                            -- allocation would deallocate the modification.
+                                            local modification = self.transaction:GetModification(reagentSlotSchematic.dataSlotIndex);
+                                            local isIdenticalToModification = modification and (modification.itemID == item:GetItemID());
+                                            local wouldDeallocateModification = modification and self.transaction:HasAllocatedItemID(modification.itemID);
+                                            if isIdenticalToModification or not wouldDeallocateModification then
+                                                AllocateFlyoutItem();
+                                            else
+                                                local modItem = Item:CreateFromItemID(modification.itemID);
+                                                local dialogData = {callback = AllocateFlyoutItem, itemName = modItem:GetItemName()};
+                                                StaticPopup_Show("PROFESSIONS_RECRAFT_REPLACE_OPTIONAL_REAGENT", nil, nil, dialogData);	
+                                            end
+                                        end
+            
+                                        flyout.GetUndoElementImplementation = function(self)
+                                            if not slot:IsOriginalItemSet() then
+                                                return slot:GetOriginalItem();
+                                            end
+                                        end
+            
+                                        flyout.GetElementsImplementation = function(self, filterAvailable)
+                                            local itemIDs = Professions.ExtractItemIDsFromCraftingReagents(reagentSlotSchematic.reagents);
+                                            local items = Professions.GenerateFlyoutItemsTable(itemIDs, filterAvailable);
+                                            local elementData = {items = items, forceAccumulateInventory = true};
+                                            return elementData;
+                                        end
+                                        
+                                        flyout.OnElementEnterImplementation = function(elementData, tooltip)
+                                            Professions.FlyoutOnElementEnterImplementation(elementData, tooltip, recipeID, self.transaction:GetAllocationItemGUID(), self.transaction);
+                                        end
+                                        
+                                        flyout.OnElementEnabledImplementation = function(button, elementData)
+                                            local item = elementData.item;
+                                            if not self.transaction:AreAllRequirementsAllocated(item) then
+                                                return false;
+                                            end
+                                            
+                                            local reagent = Professions.CreateCraftingReagentByItemID(item:GetItemID());
+                                            if self.transaction:HasAllocatedReagent(reagent) then
+                                                return false;
+                                            end
+            
+                                            local recraftAllocation = self.transaction:GetRecraftAllocation();
+                                            if recraftAllocation and not C_TradeSkillUI.IsRecraftReagentValid(recraftAllocation, item:GetItemID()) then
+                                                return false;
+                                            end
+            
+                                            local quantity = nil;
+                                            if item:GetItemGUID() then
+                                                quantity = item:GetStackCount();
+                                            else
+                                                quantity = ItemUtil.GetCraftingReagentCount(item:GetItemID());
+                                            end
+            
+                                            if quantity and quantity < reagentSlotSchematic.quantityRequired then
+                                                return false;
+                                            end
+            
+                                            return true;
+                                        end
+                                        
+                                        flyout.GetElementValidImplementation = function(button, elementData)
+                                            return self.transaction:AreAllRequirementsAllocated(elementData.item);
+                                        end
+            
+                                        flyout:Init(slot.Button, self.transaction);
+                                        flyout:RegisterCallback(ProfessionsItemFlyoutMixin.Event.ItemSelected, OnFlyoutItemSelected, slot);
+                                        flyout:RegisterCallback(ProfessionsItemFlyoutMixin.Event.ShiftClicked, OnFlyoutItemShiftClicked, slot);
+                                        flyout:RegisterCallback(ProfessionsItemFlyoutMixin.Event.UndoClicked, OnUndoClicked, slot);
+                                    end
+                                elseif buttonName == "RightButton" then
+                                    if self.transaction:HasAllocations(slotIndex) then
+                                        local function Deallocate()
+                                            self.transaction:ClearAllocations(slotIndex);
+            
+                                            slot:ClearItem();
+            
+                                            self:TriggerEvent(ProfessionsRecipeSchematicFormMixin.Event.AllocationsModified);
+                                        end
+                                        
+                                        local modification = self.transaction:GetModification(reagentSlotSchematic.dataSlotIndex);
+                                        local allocate = not (modification and self.transaction:HasAllocatedItemID(modification.itemID));
+                                        if allocate then
+                                            Deallocate();
+                                        else
+                                            local modItem = Item:CreateFromItemID(modification.itemID);
+                                            local dialogData = {callback = Deallocate, itemName = modItem:GetItemName()};
+                                            StaticPopup_Show("PROFESSIONS_RECRAFT_REPLACE_OPTIONAL_REAGENT", nil, nil, dialogData);	
+                                        end
+                                    end
+                                end
+                            end
+                        end);
+                    end
+                end
+                
+                if isSalvage then
+                    if not self.salvageSlot.Button.setEnter then
+                        self.salvageSlot.Button:HookScript("OnEnter", function()
+                            local salvageItem = self.transaction:GetSalvageAllocation();
+                            if salvageItem then
+                                local itemID = salvageItem:GetItemID();
+                                if itemID then
+                                    GameTooltip_AddInstructionLine(GameTooltip, '|cnDISABLED_FONT_COLOR:右键点击移除此材料|r');
+                                end
+                            else
+                                GameTooltip_AddInstructionLine(GameTooltip, '左键点击选择一种材料来消耗');
+                            end
+                            GameTooltip:Show();
+                        end)
+                        self.salvageSlot.Button.setEnter=true
+                    end
+                end
+            
+                local isEnchant = (self.recipeSchematic.recipeType == Enum.TradeskillRecipeType.Enchant) and not C_TradeSkillUI.IsRuneforging();
+                if isEnchant and not self.enchantSlot.Button.setEnter then
+                    self.enchantSlot.Button:HookScript("OnEnter", function(button)
+                        local item = self.transaction:GetEnchantAllocation();
+                        if item then
+                            GameTooltip_AddInstructionLine(GameTooltip, '|cnDISABLED_FONT_COLOR:左键点击替换此物品|r');
+                        else
+                            GameTooltip_AddInstructionLine(GameTooltip, '左键点击选择一件物品来附魔');
+                        end
+                        GameTooltip:Show();
+                    end);
+                    self.enchantSlot.Button.setEnter=true
+                end
+                if isEnchant then
+                    self.OptionalReagents:SetText('可选目标：');
+                else
+                    self.OptionalReagents:SetText('附加材料：');
+                end
+            end)]]
+        end
+
+        
         if ProfessionsFrame.SpecPage then
             set(ProfessionsFrame.SpecPage.BackToFullTreeButton, '后退')
             set(ProfessionsFrame.SpecPage.ViewPreviewButton, '综述')
             set(ProfessionsFrame.SpecPage.DetailedView.SpendPointsButton, '运用知识')
             set(ProfessionsFrame.SpecPage.ApplyButton, '应用改动')
+          
         end
 
         --Blizzard_ProfessionsSpecializations.lua

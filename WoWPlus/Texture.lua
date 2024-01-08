@@ -1841,10 +1841,13 @@ local function Init_Event(arg1)
 
         if ProfessionsFrame.SpecPage then
             hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateTabs', function(self)
-                for _, tabID in pairs(self:GetTabSet() or {}) do
-                    set_Alpha_Frame_Texture(self:GetTabButton(tabID), {alpha=min05})
+                for tab, bool in self.tabsPool:EnumerateActive() do
+                    if bool then
+                        set_Alpha_Frame_Texture(tab, {alpha=min05})
+                    end
                 end
             end)
+            set_Alpha_Color(ProfessionsFrame.SpecPage.PanelFooter)
         end
     end
 end
