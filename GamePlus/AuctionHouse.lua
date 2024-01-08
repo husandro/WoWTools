@@ -699,6 +699,7 @@ local function Init_Sell()
             local itemLink = C_Item.GetItemLink(itemLocation);
             local vendorPrice =itemLink and select(11, GetItemInfo(itemLink)) or 10000;
             local unitPrice= frame.GetUnitPrice and frame:GetUnitPrice() or frame.PriceInput:GetAmount();-- frame:GetUnitPrice()
+            unitPrice= (unitPrice==0 or not unitPrice) and 1 or unitPrice
             local col=''
             if vendorPrice and unitPrice and vendorPrice>0 and unitPrice>0 then
                 if unitPrice> vendorPrice then
@@ -720,6 +721,7 @@ local function Init_Sell()
                     end
                 else
                     col='|cnRED_FONT_COLOR:'
+                    text= col..(e.onlyChinese and '危险' or VOICEMACRO_1_Sc_0)
                 end
             end
             if vendorPrice then

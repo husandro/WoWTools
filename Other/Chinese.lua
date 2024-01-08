@@ -1259,6 +1259,30 @@ local function Init()
                     set(statFrame.Label, format('%s：', text))
                 end
             end)
+            --[[替换，原生
+            function Mastery_OnEnter(statFrame)
+                GameTooltip:SetOwner(statFrame, "ANCHOR_RIGHT");
+                local _, bonusCoeff = GetMasteryEffect();
+                local masteryBonus = GetCombatRatingBonus(CR_MASTERY) * bonusCoeff;
+                local primaryTalentTree = GetSpecialization();
+                if (primaryTalentTree) then
+                    local masterySpell, masterySpell2 = GetSpecializationMasterySpells(primaryTalentTree);
+                    if (masterySpell) then
+                        GameTooltip:AppendInfo("GetSpellByID", masterySpell);
+                    end
+                    if (masterySpell2) then
+                        GameTooltip:AppendInfoWithSpacer("GetSpellByID", masterySpell2);
+                    end
+                    GameTooltip:AddLine(" ");
+                    GameTooltip:AddLine(format('精通： %s [+%.2f%%]', BreakUpLargeNumbers(GetCombatRating(CR_MASTERY)), masteryBonus), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true);
+                else
+                    GameTooltip:AddLine(format('精通： %s [+%.2f%%]', BreakUpLargeNumbers(GetCombatRating(CR_MASTERY)), masteryBonus), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true);
+                    GameTooltip:AddLine(" ");
+                    GameTooltip:AddLine('你必须选择一项天赋专精以激活精通技能。', GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b, true);
+                end
+                statFrame.UpdateTooltip = statFrame.onEnterFunc;
+                GameTooltip:Show();
+            end]]
         PAPERDOLL_SIDEBARS[2].name= '头衔'
         PAPERDOLL_SIDEBARS[3].name= '装备管理'
             set(PaperDollFrameEquipSetText, '装备')
@@ -2356,6 +2380,21 @@ local function Init()
 
     --Keybindings.lua
     dia("CONFIRM_DELETING_CHARACTER_SPECIFIC_BINDINGS", {text = '确定要切换到通用键位设定吗？所有本角色专用的键位设定都将被永久删除。', button1 = '确定', button2 = '取消'})
+
+
+
+
+
+
+
+
+
+
+
+
+    hookDia('GameTooltip_SetBottomText', function(self, text)
+        print(text)
+    end)
 end
 
 
@@ -2450,11 +2489,21 @@ local function Init_Loaded(arg1)
         dia("BUYOUT_AUCTION", {text = '以一口价购买：', button1 = '接受', button2 = '取消',})
         dia("BID_AUCTION", {text = '出价为：', button1 = '接受', button2 = '取消',})
 
-        dia("PURCHASE_AUCTION_UNIQUE", {text = '出价为：', OnShow = function(self, data)
+        dia("PURCHASE_AUCTION_UNIQUE", {text = '出价为：', button1 = '确定', button2 = '取消',})
+        hookDia("PURCHASE_AUCTION_UNIQUE", 'OnShow', function(self, data)
             self.text:SetFormattedText('|cffffd200此物品属于“%s”。|n|n你同时只能装备一件拥有此标签的装备。|r', data.categoryName)
-        end, button1 = '确定', button2 = '取消',})
+        end)
 
-        dia("CANCEL_AUCTION", {text = '取消拍卖将使你失去保证金。', button1 = '接受', button2 = '取消',})
+        dia("CANCEL_AUCTION", {text = '取消拍卖将使你失去保证金。', button1 = '接受', button2 = '取消'})
+        hookDia("CANCEL_AUCTION", 'OnShow', function(self)
+            local cancelCost = C_AuctionHouse.GetCancelCost(self.data.auctionID);
+            if cancelCost > 0 then
+                self.text:SetText('取消拍卖会没收你所有的保证金和：');
+            else
+                self.text:SetText('取消拍卖将使你失去保证金。');
+            end
+        end)
+
         dia("AUCTION_HOUSE_POST_WARNING", {text = NORMAL_FONT_COLOR:WrapTextInColorCode('拍卖行即将在已经预定的每周维护时间段中进行重大更新。|n|n如果你的拍卖品到时还未售出，你的物品会被提前退回，而且你会失去你的保证金。'), button1 = '接受', button2 = '取消',})
         dia("AUCTION_HOUSE_POST_ERROR", {text =  NORMAL_FONT_COLOR:WrapTextInColorCode('目前无法拍卖物品。|n|n拍卖行即将进行重大更新。'), button1 = '确定'})
 
