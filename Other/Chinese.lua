@@ -2401,6 +2401,16 @@ end
 
 local function Init_Loaded(arg1)
     if arg1=='Blizzard_AuctionHouseUI' then
+        hooksecurefunc(AuctionHouseFrame, 'UpdateTitle', function(self)
+            local tab = PanelTemplates_GetSelectedTab(self);
+            local title = '浏览拍卖';
+            if tab == 2 then
+                title = '发布拍卖';
+            elseif tab == 3 then
+                title = '拍卖';
+            end
+            self:SetTitle(title);
+        end)
         hooksecurefunc('AuctionHouseFilterButton_SetUp', function(btn, info)
             set(btn, strText[info.name])
         end)
@@ -2412,6 +2422,11 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrameAuctionsFrameAuctionsTab.Text, '拍卖')
         set(AuctionHouseFrameAuctionsFrameBidsTab.Text, '竞标')
         set(AuctionHouseFrameAuctionsFrameBidsTab.Text, '竞标')
+        hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, 'SetDataProvider', function(self)
+            if self.ResultsText and self.ResultsText:IsShown() then
+                set(self.ResultsText, '小窍门：右键点击物品可以设置偏好。偏好的物品会在你打开拍卖行时立即出现。')
+            end
+        end)
 
         set(AuctionHouseFrame.SearchBar.SearchButton, '搜索')
 
@@ -2455,6 +2470,33 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.ItemBuyFrame.BackButton, '返回')
         set(AuctionHouseFrame.ItemBuyFrame.BidFrame.BidButton, '竞标')
         set(AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton, '一口价')
+
+        --[[local TIME_LEFT_ATLAS_MARKUP = CreateAtlasMarkup("auctionhouse-icon-clock", 16, 16, 2, -2);
+        function AuctionHouseUtil.GetHeaderNameFromSortOrder(sortOrder)
+            if sortOrder == Enum.AuctionHouseSortOrder.Price then
+                return '价格';
+            elseif sortOrder == Enum.AuctionHouseSortOrder.Name then
+                return '物品';
+            elseif sortOrder == Enum.AuctionHouseSortOrder.Quantity then
+                return '可购买数量';
+            elseif sortOrder == Enum.AuctionHouseSortOrder.Bid then
+                return '竞标价格';
+            elseif sortOrder == Enum.AuctionHouseSortOrder.Buyout then
+                return '一口价';
+            elseif sortOrder == Enum.AuctionHouseSortOrder.TimeRemaining then
+                return TIME_LEFT_ATLAS_MARKUP;
+            -- Note: Level is contextual and must be set manually.
+            -- elseif sortOrder == Enum.AuctionHouseSortOrder.Level then
+            end
+            return "";
+        end]]
+
+        set(AuctionHouseFrame.WoWTokenResults.Buyout, '一口价')
+        set(AuctionHouseFrame.WoWTokenResults.BuyoutLabel, '一口价')
+        AuctionHouseFrame.WoWTokenResults.HelpButton:HookScript('OnEnter', function()
+            GameTooltip:AddLine('关于魔兽世界时光徽章')
+            GameTooltip:Show()
+        end)
 
         --Blizzard_AuctionHouseFrame.lua
         dia("BUYOUT_AUCTION", {text = '以一口价购买：', button1 = '接受', button2 = '取消',})

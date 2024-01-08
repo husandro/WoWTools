@@ -6287,7 +6287,17 @@
         "DAMAGE_SCHOOL5",
         "DAMAGE_SCHOOL6",
         "DAMAGE_SCHOOL7",
-        "DAMAGE_SCHOOL_TEXT"
+        "DAMAGE_SCHOOL_TEXT",
+        "AUCTION_HOUSE_FRAME_TITLE_BUY",
+        "AUCTION_HOUSE_FRAME_TITLE_SELL",
+        "AUCTION_HOUSE_AUCTIONS_SUB_TAB",
+        "AuctionHouseUtil",
+        "AUCTION_HOUSE_BROWSE_HEADER_PRICE",
+        "AUCTION_HOUSE_HEADER_ITEM",
+        "AUCTION_HOUSE_BROWSE_HEADER_QUANTITY",
+        "AUCTION_HOUSE_HEADER_BUYOUT_PRICE",
+        "AuctionHouseTableBuilder",
+        "AUCTION_HOUSE_BROWSE_HEADER_NAME"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
