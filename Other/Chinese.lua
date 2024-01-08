@@ -1066,11 +1066,11 @@ local strText={
     [COMBATLOG_FILTER_STRING_NEUTRAL_UNITS] = "中立",
     [COMBATLOG_FILTER_STRING_UNKNOWN_UNITS] = "未知",
 
+    [DAMAGE] = "伤害",
     [MELEE] = "近战",
     [RANGED] = "远程",
     [AURAS] = "光环",
     [PERIODIC] = "周期",
-    [DAMAGE] = "伤害",
     [MISSES] = "未命中",
     [BENEFICIAL] = "增益",
     [HOSTILE] = "敌对",
@@ -1144,7 +1144,6 @@ local strText={
     [STAT_AVOIDANCE] = "闪避",
     [STAT_SPEED] = "加速",
     [STAT_PARRY] = "招架",
-    [DAMAGE] = "伤害",
     [STAT_ATTACK_POWER] = "攻击强度",
     [WEAPON_SPEED] = "攻击速度",
 
@@ -1159,6 +1158,7 @@ local strText={
     [STAT_BLOCK] = "格挡",
     [STAT_STAGGER] = "醉拳",
 
+    
     --[ARENA] = "竞技场",
     --[SOCIAL_QUEUE_FORMAT_ARENA_SKIRMISH] = "竞技场练习赛",
     [AUCTION_HOUSE_FILTER_DROPDOWN_CUSTOM] = "自定义",
@@ -1259,30 +1259,8 @@ local function Init()
                     set(statFrame.Label, format('%s：', text))
                 end
             end)
-            --[[替换，原生
-            function Mastery_OnEnter(statFrame)
-                GameTooltip:SetOwner(statFrame, "ANCHOR_RIGHT");
-                local _, bonusCoeff = GetMasteryEffect();
-                local masteryBonus = GetCombatRatingBonus(CR_MASTERY) * bonusCoeff;
-                local primaryTalentTree = GetSpecialization();
-                if (primaryTalentTree) then
-                    local masterySpell, masterySpell2 = GetSpecializationMasterySpells(primaryTalentTree);
-                    if (masterySpell) then
-                        GameTooltip:AppendInfo("GetSpellByID", masterySpell);
-                    end
-                    if (masterySpell2) then
-                        GameTooltip:AppendInfoWithSpacer("GetSpellByID", masterySpell2);
-                    end
-                    GameTooltip:AddLine(" ");
-                    GameTooltip:AddLine(format('精通： %s [+%.2f%%]', BreakUpLargeNumbers(GetCombatRating(CR_MASTERY)), masteryBonus), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true);
-                else
-                    GameTooltip:AddLine(format('精通： %s [+%.2f%%]', BreakUpLargeNumbers(GetCombatRating(CR_MASTERY)), masteryBonus), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true);
-                    GameTooltip:AddLine(" ");
-                    GameTooltip:AddLine('你必须选择一项天赋专精以激活精通技能。', GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b, true);
-                end
-                statFrame.UpdateTooltip = statFrame.onEnterFunc;
-                GameTooltip:Show();
-            end]]
+            
+
         PAPERDOLL_SIDEBARS[2].name= '头衔'
         PAPERDOLL_SIDEBARS[3].name= '装备管理'
             set(PaperDollFrameEquipSetText, '装备')
@@ -2287,8 +2265,6 @@ local function Init()
     dia("PREMADE_GROUP_LEADER_CHANGE_DELIST_WARNING", {text = '你已经被提升为队伍领袖|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0:0:0:-1|t |n|n|cffffd200你想以此队名重新列出队伍吗？|r|n%s|n', subText = '|n%s后自动从列表移除', button1 = '列出我的队伍', button2 = '我想编辑队名', button3 = '不列出我的队伍'})
     hookDia("PREMADE_GROUP_LEADER_CHANGE_DELIST_WARNING", 'OnShow', function(self, data)
 		self.text:SetFormattedText('你已经被提升为队伍领袖|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0:0:0:-1|t |n|n|cffffd200你想以此队名重新列出队伍吗？|r|n%s|n', data.listingTitle)
-		self.timeleft = data.delistTime;
-		self.delistOnHide = true;
 	end)
 
     dia("PREMADE_GROUP_INSECURE_SEARCH", {text= '你的队伍已被移出列表，要搜索|n%s吗？', button1 = '是', button2 = '否'})
@@ -2326,7 +2302,6 @@ local function Init()
             end
 		end)
 		if (self.extraButton) then
-			self.extraButton:SetMotionScriptsWhileDisabled(true);
 			self.extraButton:SetScript("OnEnter", function(self2)
 				if(not self2:IsEnabled()) then
                     GameTooltip:SetOwner(self2, "ANCHOR_BOTTOMRIGHT");
@@ -2391,10 +2366,6 @@ local function Init()
 
 
 
-
-    hookDia('GameTooltip_SetBottomText', function(self, text)
-        print(text)
-    end)
 end
 
 
@@ -2522,13 +2493,14 @@ local function Init_Loaded(arg1)
         end
         set(ClassTalentFrame.TalentsTab.ApplyButton, '应用改动')
 
-        dia("CONFIRM_LEARN_SPEC", {OnShow = function(self)
+        dia("CONFIRM_LEARN_SPEC", {button1 = '是', button2 = '否',})
+        hookDia("CONFIRM_LEARN_SPEC", 'OnShow', function(self)
             if (self.data.previewSpecCost and self.data.previewSpecCost > 0) then
                 self.text:SetFormattedText('激活此专精需要花费%s。确定要学习此专精吗？', GetMoneyString(self.data.previewSpecCost))
             else
                 self.text:SetText('你确定要学习这种天赋专精吗？');
             end
-        end, button1 = '是', button2 = '否',})
+        end)
 
         dia("CONFIRM_EXIT_WITH_UNSPENT_TALENT_POINTS", {text = '你还有未分配的天赋。你确定要关闭这个窗口？', button1 = '是', button2 = '否',})
 
@@ -2890,13 +2862,14 @@ local function Init_Loaded(arg1)
         end
 
         --Blizzard_ProfessionsSpecializations.lua
-        dia("PROFESSIONS_SPECIALIZATION_CONFIRM_PURCHASE_TAB", {OnShow = function(self, info)
+        dia("PROFESSIONS_SPECIALIZATION_CONFIRM_PURCHASE_TAB", {button1 = '是', button2 = '取消'})
+        hookDia("PROFESSIONS_SPECIALIZATION_CONFIRM_PURCHASE_TAB", 'OnShow', function(self, info)
             local headerText = HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(format('学习%s？', info.specName).."\n\n");
             local bodyKey = info.hasAnyConfigChanges and '所有待定的改动都会在解锁此专精后进行应用。您确定要学习%s副专精吗？' or '您确定想学习%s专精吗？您将来可以在%s专业里更加精进后选择额外的专精。';
             local bodyText = NORMAL_FONT_COLOR:WrapTextInColorCode(bodyKey:format(info.specName, info.profName));
             self.text:SetText(headerText..bodyText);
             self.text:Show();
-        end, button1 = '是', button2 = '取消'})
+        end)
 
         --Blizzard_ProfessionsFrame.lua
         dia("PROFESSIONS_SPECIALIZATION_CONFIRM_CLOSE", {text = '你想在离开前应用改动吗？', button1 = '是', button2 = '否',})
@@ -2920,12 +2893,13 @@ local function Init_Loaded(arg1)
         dia("SOULBIND_CONDUIT_NO_CHANGES_CONFIRMATION", {text = '你对你的导灵器进行了改动，但并没有应用这些改动。你确定想要离开吗？', button1 = '离开', button2 = '取消'})
 
     elseif arg1=='Blizzard_CovenantSanctum' then--Blizzard_CovenantSanctumUpgrades.lua
-        dia("CONFIRM_ARTIFACT_RESPEC", {OnShow = function(self, data)
+        dia("CONFIRM_ARTIFACT_RESPEC", {button1 = '是', button2 = '否'})
+        hookDia("CONFIRM_ARTIFACT_RESPEC", 'OnShow', function(self, data)
             if data then
                 local costString = GetGarrisonTalentCostString(data.talent);
                 self.text:SetFormattedText('把|cff20ff20%s|r升到%d级会花费|n%s', data.talent.name, data.talent.tier + 1, costString)
             end
-        end, button1 = '是', button2 = '否'})
+        end)
 
     elseif arg1=='Blizzard_PerksProgram' then--Blizzard_PerksProgramElements.lua
         dia("PERKS_PROGRAM_CONFIRM_PURCHASE", {text= '用%s%s 交易下列物品？', button1 = '购买', button2 = '取消'})
@@ -2952,35 +2926,40 @@ local function Init_Loaded(arg1)
         dia("CLASS_TRIAL_CHOOSE_BOOST_LOGOUT_PROMPT", {text = '要使用此角色直升服务，请登出游戏，返回角色选择界面。', button1 = '立刻返回角色选择画面', button2 = '取消'})
 
     elseif arg1=='Blizzard_GarrisonUI' then--要塞
-        dia("DEACTIVATE_FOLLOWER", {OnShow = function(self)
+        dia("DEACTIVATE_FOLLOWER", {button1 = '是', button2 = '否'})
+        hookDia("DEACTIVATE_FOLLOWER", 'OnShow', function(self)
             local quality = C_Garrison.GetFollowerQuality(self.data);
             local name = FOLLOWER_QUALITY_COLORS[quality].hex..C_Garrison.GetFollowerName(self.data)..FONT_COLOR_CODE_CLOSE;
             local cost = GetMoneyString(C_Garrison.GetFollowerActivationCost());
             local uses = C_Garrison.GetNumFollowerDailyActivations();
             self.text:SetFormattedText('确定要遣散|n%s吗？|n|n重新激活一名追随者需要花费%s。|n你每天可重新激活%d名追随者。', name, cost, uses);
-        end, button1 = '是', button2 = '否'})
+        end)
 
-        dia("ACTIVATE_FOLLOWER", {OnShow = function(self)
+        dia("ACTIVATE_FOLLOWER", {button1 = '是', button2 = '否'})
+        hookDia("ACTIVATE_FOLLOWER", 'OnShow', function(self)
             local quality = C_Garrison.GetFollowerQuality(self.data);
             local name = FOLLOWER_QUALITY_COLORS[quality].hex..C_Garrison.GetFollowerName(self.data)..FONT_COLOR_CODE_CLOSE;
             local cost = GetMoneyString(C_Garrison.GetFollowerActivationCost());
             local uses = C_Garrison.GetNumFollowerDailyActivations();
             self.text:SetFormattedText('确定要激活|n%s吗？|n|n你今天还能激活%d名追随者，这将花费：', name, cost, uses);
-        end, button1 = '是', button2 = '否'})
+        end)
 
         dia("CONFIRM_RECRUIT_FOLLOWER", {text  = '确定要招募%s吗？', button1 = '是', button2 = '否'})
 
-        dia("DANGEROUS_MISSIONS", {OnShow = function(self)
+        dia("DANGEROUS_MISSIONS", {button1 = '确定', button2 = '取消'})
+        hookDia("DANGEROUS_MISSIONS", 'OnShow', function(self)
             local warningIconText = "|T" .. STATICPOPUP_TEXTURE_ALERT .. ":15:15:0:-2|t";
             self.text:SetFormattedText('|n %s |cffff2020警告！|r %s |n|n你即将执行一项高危行动。如果行动失败，所有参与任务的舰船都有一定几率永久损毁。', warningIconText, warningIconText)
-        end, button1 = '确定', button2 = '取消'})
+        end)
 
         dia("GARRISON_SHIP_RENAME", {text  = '输入你想要的名字：', button1 = '接受', button2 = '取消', button3= '默认'})
-        dia("GARRISON_SHIP_DECOMMISSION", {OnShow = function(self)
+
+        dia("GARRISON_SHIP_DECOMMISSION", {button1 = '是', button2 = '否'})
+        hookDia("GARRISON_SHIP_DECOMMISSION", 'OnShow', function(self)
             local quality = C_Garrison.GetFollowerQuality(self.data.followerID);
             local name = FOLLOWER_QUALITY_COLORS[quality].hex..C_Garrison.GetFollowerName(self.data.followerID)..FONT_COLOR_CODE_CLOSE;
             self.text:SetFormattedText('你确定要永久报废|n%s吗？|n|n你将无法重新获得这艘舰船。', name);
-        end,  button1 = '是', button2 = '否'})
+        end)
 
         dia("GARRISON_CANCEL_UPGRADE_BUILDING", {text  = '确定要取消这次建筑升级吗？升级的费用将被退还。', button1 = '是', button2 = '否'})
         dia("GARRISON_CANCEL_BUILD_BUILDING", {text  = '确定要取消建造这座建筑吗？建造的费用将被退还。', button1 = '是', button2 = '否'})
@@ -2996,22 +2975,24 @@ local function Init_Loaded(arg1)
         dia("CONFIRM_RESET_CLICK_BINDINGS", {text  = '确定将所有点击施法按键绑定重置为默认值吗？\n', button1 = '确定', button2 = '取消'})
 
     elseif arg1=='Blizzard_ProfessionsTemplates' then
-        dia("PROFESSIONS_RECRAFT_REPLACE_OPTIONAL_REAGENT", {OnShow = function(self, data)
+        dia("PROFESSIONS_RECRAFT_REPLACE_OPTIONAL_REAGENT", {button1 = '接受', button2 = '取消'})
+        hookDia("PROFESSIONS_RECRAFT_REPLACE_OPTIONAL_REAGENT", 'OnShow', function(self, data)
             self.text:SetFormattedText('你想替换%s吗？\n它会在再造时被摧毁。', data.itemName)
-        end, button1 = '接受', button2 = '取消'})
+        end)
 
     elseif arg1=='Blizzard_BlackMarketUI' then
         dia("BID_BLACKMARKET", {text = '确定要出价%s竞拍以下物品吗？', button1 = '确定', button2 = '取消'})
 
     elseif arg1=='Blizzard_TrainerUI' then
-        dia("CONFIRM_PROFESSION", {text = format('你只能学习两个专业。你要学习|cffffd200%s|r作为你的第一个专业吗？', "XXX"), OnShow = function(self)
+        dia("CONFIRM_PROFESSION", {text = format('你只能学习两个专业。你要学习|cffffd200%s|r作为你的第一个专业吗？', "XXX"), button1 = '接受', button2 = '取消'})
+        hookDia("CONFIRM_PROFESSION", 'OnShow', function(self)
             local prof1, prof2 = GetProfessions();
             if ( prof1 and not prof2 ) then
                 self.text:SetFormattedText('你只能学习两个专业。你要学习|cffffd200%s|r作为你的第二个专业吗？', GetTrainerServiceSkillLine(ClassTrainerFrame.selectedService));
             elseif ( not prof1 ) then
                 self.text:SetFormattedText('你只能学习两个专业。你要学习|cffffd200%s|r作为你的第一个专业吗？', GetTrainerServiceSkillLine(ClassTrainerFrame.selectedService));
             end
-        end, button1 = '接受', button2 = '取消'})
+        end)
 
     elseif arg1=='Blizzard_DeathRecap' then
         set(DeathRecapFrame.CloseButton, '关闭')

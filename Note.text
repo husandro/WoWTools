@@ -205,6 +205,9 @@ wrapFunc(C_PetBattles.DeclineQueuedPVPMatch)
 securecallfunction(GameTooltip_AddQuest, self, questID)
 GameTooltip_SetDefaultAnchor(GameTooltip, self);
 GameTooltip_Hide()
+GameTooltip_AddColoredLine(GameTooltip, '', NORMAL_FONT_COLOR, true);
+
+
 
 UICheckButtonTemplate
 local myCheckButton = CreateFrame("CheckButton", nil, UIParent, "ChatConfigCheckButtonTemplate")
@@ -294,6 +297,7 @@ ORANGE_FONT_COLOR,
 EPIC_PURPLE_COLOR,
 GREEN_FONT_COLOR,
 RARE_BLUE_COLOR,
+GRAY_FONT_COLOR
 
 ITEM_QUALITY_COLORS[quality]
 0 Poor 9d9d9d

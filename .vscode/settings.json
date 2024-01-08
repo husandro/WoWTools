@@ -6275,7 +6275,19 @@
         "CAN_NOT_RELEASE_RIGHT_NOW",
         "DeathRecapFrame",
         "GhostFrameContentsFrameText",
-        "BATTLEFIELD_BORDER_WARNING"
+        "BATTLEFIELD_BORDER_WARNING",
+        "ComputePetBonus",
+        "DAMAGE_BONUS_TOOLTIP",
+        "DAMAGE_DONE_TOOLTIP",
+        "DAMAGE_DONE_TOOLTIP_TITLE",
+        "DAMAGE_NUMBER",
+        "DAMAGE_PER_SECOND",
+        "DAMAGE_SCHOOL3",
+        "DAMAGE_SCHOOL4",
+        "DAMAGE_SCHOOL5",
+        "DAMAGE_SCHOOL6",
+        "DAMAGE_SCHOOL7",
+        "DAMAGE_SCHOOL_TEXT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
