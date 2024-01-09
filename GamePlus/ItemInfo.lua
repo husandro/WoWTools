@@ -159,7 +159,7 @@ local function Set_Item_Info(self, tab)
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
             --多少格
-            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, index=4})
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, index=3})
             local indexText= dateInfo.indexText
             if indexText and indexText:find('%d+') then
                 leftText= indexText:match('%d+')

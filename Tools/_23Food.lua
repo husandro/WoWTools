@@ -116,7 +116,7 @@ local function create_Button(self)
 end
 
 for classID=0, 20 do
-    if classID~=6 and classID~=10 and classID~=13 and classID~=11 and classID~=18 then
+    if classID~=6 and classID~=10 and classID~=13 and classID~=14 and classID~=11 and classID~=18 then
         local className=GetItemClassInfo(classID)--生成,物品列表
         if className then
             for subClassID= 0, 20 do

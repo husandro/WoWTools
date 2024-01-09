@@ -1176,7 +1176,6 @@ e.strText={
 
 
     [GetItemClassInfo(8)] = "物品强化",
-    [GetItemClassInfo(1)] = "钥匙",
     [GetItemClassInfo(14)] = "永久物品",
     [PROFESSIONS_TRACKER_HEADER_PROFESSION]= "专业技能",
 
