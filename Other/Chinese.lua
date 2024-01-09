@@ -1195,6 +1195,8 @@ e.strText={
     [RAF_BENEFIT4] = "30天免费游戏时间",
     [RAF_BENEFIT5] = "虚拟坐骑/虚拟宠物",
     [RAF_BENEFITS] = "福利",]]
+    [THE_ALLIANCE] = PLAYER_FACTION_COLOR_ALLIANCE:WrapTextInColorCode('联盟'),
+    [THE_HORDE] = PLAYER_FACTION_COLOR_HORDE:WrapTextInColorCode('部落'),
 }
 
 if _G['MOTION_SICKNESS_DROPDOWN'] then
@@ -1597,36 +1599,33 @@ local function Init()
                 local latestRAFVersionInfo = RecruitAFriendFrame:GetLatestRAFVersionInfo() or {}
                 set_UpdateNextReward(RecruitAFriendFrame, latestRAFVersionInfo.nextReward)
 
-            end
-
-            hooksecurefunc(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton, 'Update', function(self)
-                if self.haveUnclaimedReward then
-                    self:SetText('获取奖励');
+                hooksecurefunc(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton, 'Update', function(self)
+                    if self.haveUnclaimedReward then
+                        self:SetText('获取奖励');
+                    else
+                        self:SetText('查看所有奖励')
+                    end
+                end)
+                if RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton.haveUnclaimedReward then
+                    set(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton, '获取奖励')
                 else
-                    self:SetText('查看所有奖励')
+                    set(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton, '查看所有奖励')
                 end
-            end)
-            if RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton.haveUnclaimedReward then
-                set(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton, '获取奖励')
-            else
-                set(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton, '查看所有奖励')
-            end
 
-            set(RecruitAFriendFrame.RecruitList.Header.RecruitedFriends, '已招募的战友')
-            set(RecruitAFriendFrame.RecruitList.NoRecruitsDesc,  "|cffffd200招募战友后，战友每充值一个月的游戏时间，你就能获得一次奖励。|n|n若战友一次充值的游戏时间超过一个月，奖励会逐月进行发放。|n|n一起游戏还能解锁额外奖励！|r|n|n更多信息：|n|HurlIndex:49|h|cff82c5ff访问我们的战友招募网站|r|h")
-            set(RecruitAFriendFrame.RecruitmentButton, '招募')
-            RecruitAFriendFrame.RewardClaiming.NextRewardInfoButton:HookScript('OnEnter', function()
-                GameTooltip_AddNormalLine(GameTooltip, '招募好友后，当好友开始订阅时，你就能开始获得奖励。')
-	            GameTooltip:Show()
-            end)
-
+                set(RecruitAFriendFrame.RecruitList.Header.RecruitedFriends, '已招募的战友')
+                set(RecruitAFriendFrame.RecruitList.NoRecruitsDesc,  "|cffffd200招募战友后，战友每充值一个月的游戏时间，你就能获得一次奖励。|n|n若战友一次充值的游戏时间超过一个月，奖励会逐月进行发放。|n|n一起游戏还能解锁额外奖励！|r|n|n更多信息：|n|HurlIndex:49|h|cff82c5ff访问我们的战友招募网站|r|h")
+                set(RecruitAFriendFrame.RecruitmentButton, '招募')
+                RecruitAFriendFrame.RewardClaiming.NextRewardInfoButton:HookScript('OnEnter', function()
+                    GameTooltip_AddNormalLine(GameTooltip, '招募好友后，当好友开始订阅时，你就能开始获得奖励。')
+                    GameTooltip:Show()
+                end)
 
                 set(RecruitAFriendRewardsFrame.Title, '战友招募奖励')
-
                 hooksecurefunc(RecruitAFriendRewardsFrame, 'UpdateDescription', function(self, selectedRAFVersionInfo)
                     self.Description:SetText((selectedRAFVersionInfo.rafVersion == self:GetRecruitAFriendFrame():GetLatestRAFVersion()) and '每名拥有可用的游戏时间的被招募者|n每30天可以为你提供一份月度奖励。' or '不能再为旧版招募活动再招募新的战友，但是旧版现有的被招募的战友还会继续提供战友招募奖励。');
                 end)
                 --set(RecruitAFriendRewardsFrame.Description, '每名拥有可用的游戏时间的被招募者|n每30天可以为你提供一份月度奖励。')
+
 
                 RecruitAFriendRewardsFrame.VersionInfoButton:HookScript('OnEnter', function(self)
                     local recruitAFriendFrame = self:GetRecruitAFriendFrame()
@@ -1636,6 +1635,73 @@ local function Init()
                     GameTooltip_AddNormalLine(GameTooltip, helpText:format(selectedVersionInfo.numRecruits, selectedVersionInfo.numAffordableRewards))
                     GameTooltip:Show()
                 end)
+               -- RecruitAFriendRewardsFrame:Refresh()
+
+
+                set(RecruitAFriendRecruitmentFrame.Title, '招募')
+
+                --[[local maxRecruits = 0;
+                local maxRecruitLinkUses = 0;
+                local daysInCycle = 0;
+                hooksecurefunc(RecruitAFriendFrame, 'UpdateRAFSystemInfo', function(_, rafSystemInfo)
+                    if rafSystemInfo then
+                        maxRecruits = rafSystemInfo.maxRecruits;
+                        maxRecruitLinkUses = rafSystemInfo.maxRecruitmentUses;
+                        daysInCycle = rafSystemInfo.daysInCycle;
+                    end
+                end)]]
+                hooksecurefunc(RecruitAFriendRecruitmentFrame, 'UpdateRecruitmentInfo', function(self, recruitmentInfo, recruitsAreMaxed)
+                    local maxRecruits = 0;
+                    local maxRecruitLinkUses = 0;
+                    local daysInCycle = 0;
+                    local rafSystemInfo = C_RecruitAFriend.GetRAFSystemInfo()
+                    if rafSystemInfo then
+                        maxRecruits = rafSystemInfo.maxRecruits;
+                        maxRecruitLinkUses = rafSystemInfo.maxRecruitmentUses;
+                        daysInCycle = rafSystemInfo.daysInCycle;
+                    end
+                    
+                    if recruitmentInfo then
+                        local expireDate = date("*t", recruitmentInfo.expireTime);
+                        recruitmentInfo.expireDateString = FormatShortDate(expireDate.day, expireDate.month, expireDate.year)
+
+                        set(self.Description, format('招募战友，与你一起游玩《魔兽世界》！|n你每%2$d天可以邀请%1$d个战友。', recruitmentInfo.totalUses, daysInCycle))
+
+                        if recruitmentInfo.sourceFaction ~= "" then
+                            local region= e.Get_Region(recruitmentInfo.sourceRealm)
+                            local reaml= (region and region.col or '')..(recruitmentInfo.sourceRealm or '')
+                            set(self.FactionAndRealm, format('我们会鼓励你的战友在%2$s服务器创建一个%1$s角色，从而加入你的冒险。', e.strText[recruitmentInfo.sourceFaction] or recruitmentInfo.sourceFaction, reaml))
+                        end
+                    else
+                        local PLAYER_FACTION_NAME= e.Player.faction=='Alliance' and PLAYER_FACTION_COLOR_ALLIANCE:WrapTextInColorCode('联盟') or (e.Player.faction=='Horde' and PLAYER_FACTION_COLOR_HORDE:WrapTextInColorCode('部落')) or '中立'    
+                        set(self.Description, format('招募战友，与你一起游玩《魔兽世界》！|n你每%2$d天可以邀请%1$d个战友。', maxRecruitLinkUses, daysInCycle))
+                        set(self.FactionAndRealm, format('我们会鼓励你的战友在%2$s服务器创建一个%1$s角色，从而加入你的冒险。', PLAYER_FACTION_NAME, e.Player.realm))
+                    end
+
+                    if recruitsAreMaxed then
+                        set(self.InfoText1, format('"%d/%d 已招募的战友。已达到最大招募数量。', maxRecruits, maxRecruits))
+                    elseif recruitmentInfo then
+                        if recruitmentInfo.remainingUses > 0 then
+                            set(self.InfoText1, format('此链接会在%s后过期', recruitmentInfo.expireDateString))
+                        else
+                            set(self.InfoText1, format('你在%s后即可创建一个新链接', recruitmentInfo.expireDateString))
+                        end
+
+
+                        local timesUsed = recruitmentInfo.totalUses - recruitmentInfo.remainingUses;
+                        set(self.InfoText2, format('%d/%d 名朋友已经使用了这个链接。', timesUsed, recruitmentInfo.totalUses))
+                    end
+                end)
+            end
+
+            hooksecurefunc(RecruitAFriendRecruitmentFrame.GenerateOrCopyLinkButton, 'Update', function(self, recruitmentInfo)
+                recruitmentInfo= recruitmentInfo or self.recruitmentInfo
+                if recruitmentInfo then
+                    set(RecruitAFriendRecruitmentFrameText, '复制链接')
+                else
+                    set(RecruitAFriendRecruitmentFrameText, '创建链接')
+                end
+            end)
 
     set(FriendsFrameTab2, '查询')
         set(WhoFrameWhoButton, '刷新')

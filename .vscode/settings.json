@@ -6408,7 +6408,19 @@
         "RAF_VIEW_ALL_REWARDS",
         "RecruitAFriendRewardsFrameMixin",
         "RAF_LEGACY_REWARDS_DESC",
-        "RAF_REWARDS_DESC"
+        "RAF_REWARDS_DESC",
+        "RAF_RECRUITMENT_DESC",
+        "RAF_RECRUITS_FACTION_AND_REALM",
+        "RAF_NO_ACTIVE_LINK",
+        "RAF_FULL_RECRUITS",
+        "RAF_LINK_REMAINING_USES",
+        "RAF_ACTIVE_LINK_EXPIRE_DATE",
+        "RAF_EXPENDED_LINK_EXPIRE_DATE",
+        "RecruitAFriendRecruitmentFrameText",
+        "RAF_COPY_LINK",
+        "RAF_GENERATE_LINK",
+        "PLAYER_FACTION_COLOR_HORDE",
+        "PLAYER_FACTION_COLOR_ALLIANCE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
