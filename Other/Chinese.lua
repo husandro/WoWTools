@@ -1569,7 +1569,7 @@ local function Init()
                 hooksecurefunc(RecruitAFriendFrame, 'UpdateRAFInfo', set_UpdateRAFInfo)
                 set_UpdateRAFInfo(RecruitAFriendFrame, RecruitAFriendFrame.rafInfo)
 
-                local function set_UpdateNextReward(self, nextReward)
+                local function set_UpdateNextReward(self, nextReward)--C_RecruitAFriend.GetRAFInfo()
                     if nextReward then
                         if nextReward.canClaim then
                             self.RewardClaiming.EarnInfo:SetText('你获得了：');
@@ -1581,22 +1581,15 @@ local function Init()
                             self.RewardClaiming.EarnInfo:SetText('下一个奖励：');
                         end
 
-                        if nextReward.petInfo then
-                            --self:SetNextRewardName(nextReward.petInfo.speciesName, nextReward.repeatableClaimCount, nextReward.rewardType);
-                        elseif nextReward.mountInfo then
-                            --local name = C_MountJournal.GetMountInfoByID(nextReward.mountInfo.mountID);
-                            --self:SetNextRewardName(name, nextReward.repeatableClaimCount, nextReward.rewardType);
-                        elseif nextReward.appearanceInfo or nextReward.appearanceSetInfo or nextReward.illusionInfo then
-                            --self.RewardClaiming.NextRewardButton.item:ContinueOnItemLoad(function()
-                              --  self:SetNextRewardName(self.RewardClaiming.NextRewardButton.item:GetItemName(), nextReward.repeatableClaimCount, nextReward.rewardType);
-                            --end);
-                        elseif nextReward.titleInfo then
-                            local titleName = TitleUtil.GetNameFromTitleMaskID(nextReward.titleInfo.titleMaskID);
-                            if titleName then
-                                self:SetNextRewardName(format('新头衔： %s', titleName), nextReward.repeatableClaimCount, nextReward.rewardType);
+                        if not nextReward.petInfo and not nextReward.appearanceInfo and not nextReward.appearanceSetInfo and not nextReward.illusionInfo then
+                            if nextReward.titleInfo then
+                                local titleName = TitleUtil.GetNameFromTitleMaskID(nextReward.titleInfo.titleMaskID);
+                                if titleName then
+                                    self:SetNextRewardName(format('新头衔： %s', titleName), nextReward.repeatableClaimCount, nextReward.rewardType);
+                                end
+                            else
+                                self:SetNextRewardName('30天免费游戏时间', nextReward.repeatableClaimCount, nextReward.rewardType);
                             end
-                        else
-                            self:SetNextRewardName('30天免费游戏时间', nextReward.repeatableClaimCount, nextReward.rewardType);
                         end
                     end
                 end
@@ -1605,7 +1598,20 @@ local function Init()
                 set_UpdateNextReward(RecruitAFriendFrame, latestRAFVersionInfo.nextReward)
 
             end
-            set(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton, '查看所有奖励')
+
+            hooksecurefunc(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton, 'Update', function(self)
+                if self.haveUnclaimedReward then
+                    self:SetText('获取奖励');
+                else
+                    self:SetText('查看所有奖励')
+                end
+            end)
+            if RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton.haveUnclaimedReward then
+                set(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton, '获取奖励')
+            else
+                set(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton, '查看所有奖励')
+            end
+
             set(RecruitAFriendFrame.RecruitList.Header.RecruitedFriends, '已招募的战友')
             set(RecruitAFriendFrame.RecruitList.NoRecruitsDesc,  "|cffffd200招募战友后，战友每充值一个月的游戏时间，你就能获得一次奖励。|n|n若战友一次充值的游戏时间超过一个月，奖励会逐月进行发放。|n|n一起游戏还能解锁额外奖励！|r|n|n更多信息：|n|HurlIndex:49|h|cff82c5ff访问我们的战友招募网站|r|h")
             set(RecruitAFriendFrame.RecruitmentButton, '招募')
@@ -1613,8 +1619,15 @@ local function Init()
                 GameTooltip_AddNormalLine(GameTooltip, '招募好友后，当好友开始订阅时，你就能开始获得奖励。')
 	            GameTooltip:Show()
             end)
+
+
                 set(RecruitAFriendRewardsFrame.Title, '战友招募奖励')
-                set(RecruitAFriendRewardsFrame.Description, '每名拥有可用的游戏时间的被招募者|n每30天可以为你提供一份月度奖励。')
+
+                hooksecurefunc(RecruitAFriendRewardsFrame, 'UpdateDescription', function(self, selectedRAFVersionInfo)
+                    self.Description:SetText((selectedRAFVersionInfo.rafVersion == self:GetRecruitAFriendFrame():GetLatestRAFVersion()) and '每名拥有可用的游戏时间的被招募者|n每30天可以为你提供一份月度奖励。' or '不能再为旧版招募活动再招募新的战友，但是旧版现有的被招募的战友还会继续提供战友招募奖励。');
+                end)
+                --set(RecruitAFriendRewardsFrame.Description, '每名拥有可用的游戏时间的被招募者|n每30天可以为你提供一份月度奖励。')
+
                 RecruitAFriendRewardsFrame.VersionInfoButton:HookScript('OnEnter', function(self)
                     local recruitAFriendFrame = self:GetRecruitAFriendFrame()
                     local selectedVersionInfo = recruitAFriendFrame:GetSelectedRAFVersionInfo()

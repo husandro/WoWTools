@@ -656,8 +656,9 @@ local function Init_Move()
         SettingsPanel={},--选项
 
         FriendsFrame={},--好友列表
-        --RaidInfoFrame={frame=FriendsFrame},
-        RecruitAFriendRewardsFrame={},
+        --RaidInfoFrame={frame=FriendsFrame},--再次打开，错误
+        RecruitAFriendRewardsFrame={},--招募，奖励
+        --RecruitAFriendRecruitmentFrame={},--招募，链接，再次打开，错误
 
         GossipFrame={},
         QuestFrame={},

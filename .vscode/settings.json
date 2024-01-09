@@ -6403,7 +6403,12 @@
         "RAF_BENEFIT2",
         "RAF_BENEFIT3",
         "RAF_BENEFIT5",
-        "RAF_BENEFITS"
+        "RAF_BENEFITS",
+        "CLAIM_REWARD",
+        "RAF_VIEW_ALL_REWARDS",
+        "RecruitAFriendRewardsFrameMixin",
+        "RAF_LEGACY_REWARDS_DESC",
+        "RAF_REWARDS_DESC"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
