@@ -877,42 +877,6 @@ local function Init()
 
 
     --拾取时, 弹出, 物品提示，信息, 战利品
-      --，拾取
-      --[[hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(self, itemLink)--AlertFrameSystems.lua
-        e.Set_Item_Stats(self, itemLink, {
-            point= self.Icon
-        })
-    end)
-    hooksecurefunc('LootUpgradeFrame_SetUp', function(self, itemLink)
-        e.Set_Item_Stats(self, itemLink, {
-            point= self.Icon
-        })
-    end)
-    GuildChallengeAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GuildChallengeAlertFrameTemplate", GuildChallengeAlertFrame_SetUp);
-	DungeonCompletionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("DungeonCompletionAlertFrameTemplate", DungeonCompletionAlertFrame_SetUp);
-	ScenarioAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("ScenarioAlertFrameTemplate", ScenarioAlertFrame_SetUp);
-	InvasionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("ScenarioLegionInvasionAlertFrameTemplate", ScenarioLegionInvasionAlertFrame_SetUp, ScenarioLegionInvasionAlertFrame_Coalesce);
-	DigsiteCompleteAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("DigsiteCompleteToastFrameTemplate", DigsiteCompleteToastFrame_SetUp);
-	EntitlementDeliveredAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("EntitlementDeliveredAlertFrameTemplate", EntitlementDeliveredAlertFrame_SetUp);
-	RafRewardDeliveredAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("RafRewardDeliveredAlertFrameTemplate", RafRewardDeliveredAlertFrame_SetUp);
-	GarrisonBuildingAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GarrisonBuildingAlertFrameTemplate", GarrisonBuildingAlertFrame_SetUp);
-	GarrisonMissionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GarrisonStandardMissionAlertFrameTemplate", GarrisonMissionAlertFrame_SetUp);
-	GarrisonShipMissionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GarrisonShipMissionAlertFrameTemplate", GarrisonMissionAlertFrame_SetUp);
-	GarrisonRandomMissionAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GarrisonRandomMissionAlertFrameTemplate", GarrisonRandomMissionAlertFrame_SetUp);
-	GarrisonFollowerAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GarrisonStandardFollowerAlertFrameTemplate", GarrisonFollowerAlertFrame_SetUp);
-	GarrisonShipFollowerAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GarrisonShipFollowerAlertFrameTemplate", GarrisonShipFollowerAlertFrame_SetUp);
-	GarrisonTalentAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("GarrisonTalentAlertFrameTemplate", GarrisonTalentAlertFrame_SetUp);
-	WorldQuestCompleteAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("WorldQuestCompleteAlertFrameTemplate", WorldQuestCompleteAlertFrame_SetUp, WorldQuestCompleteAlertFrame_Coalesce);
-	LegendaryItemAlertSystem = AlertFrame:AddSimpleAlertFrameSubSystem("LegendaryItemAlertFrameTemplate", LegendaryItemAlertFrame_SetUp);
-	NewPetAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("NewPetAlertFrameTemplate", NewPetAlertFrame_SetUp);
-	NewMountAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("NewMountAlertFrameTemplate", NewMountAlertFrame_SetUp);
-	NewToyAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("NewToyAlertFrameTemplate", NewToyAlertFrame_SetUp);
-	NewRuneforgePowerAlertSystem = AlertFrame:AddQueuedAlertFrameSubSystem("NewRuneforgePowerAlertFrameTemplate", NewRuneforgePowerAlertSystem_SetUp);
-	NewCosmeticAlertFrameSystem = AlertFrame:AddQueuedAlertFrameSubSystem("NewCosmeticAlertFrameTemplate", NewCosmeticAlertFrameSystem_SetUp);
-    
-    
-    
-    ]]
     --AlertFrameSystems.lua
     hooksecurefunc('DungeonCompletionAlertFrameReward_SetRewardItem', function(frame, itemLink)
         e.Set_Item_Stats(frame, frame.itemLink or itemLink , {point=frame.texture})

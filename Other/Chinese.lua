@@ -1175,9 +1175,10 @@ e.strText={
     [GUILD_CHALLENGE_TYPE5] = "史诗钥石地下城",
 
 
-    [ITEM_HEROIC] = "英雄",
-    [PVP_RANK_14_0] = "勇士",
-    [PVP_RANK_0_0] = "斥候",
+    [GetItemClassInfo(8)] = "物品强化",
+    [GetItemClassInfo(1)] = "钥匙",
+    [GetItemClassInfo(14)] = "永久物品",
+    [PROFESSIONS_TRACKER_HEADER_PROFESSION]= "专业技能",
 
 
 }

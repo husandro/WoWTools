@@ -116,7 +116,7 @@ local function create_Button(self)
 end
 
 for classID=0, 20 do
-    if classID~=10 then
+    if classID~=6 and classID~=10 and classID~=13 and classID~=11 and classID~=18 then
         local className=GetItemClassInfo(classID)--生成,物品列表
         if className then
             for subClassID= 0, 20 do
@@ -174,6 +174,32 @@ local function set_Item_Button()--检查,物品
         btn:SetShown(false)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -276,7 +302,7 @@ local function InitMenu(self, level, type)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinese and '仅当前版本物品' or 	LFG_LIST_CROSS_FACTION:format(REFORGE_CURRENT..(VERSION or GAME_VERSION_LABEL)),
+            text= e.onlyChinese and '仅当前版本物品' or LFG_LIST_CROSS_FACTION:format(REFORGE_CURRENT..(VERSION or GAME_VERSION_LABEL)),
             checked= Save.onlyMaxExpansion,
             keepShownOnClick=true,
             tooltipOnButton=true,
@@ -293,7 +319,7 @@ local function InitMenu(self, level, type)--主菜单
         for _, tab in pairs(itemClass) do
             if type==tab.className then
                 info={
-                    text=tab.subClassID..' '..tab.subclassName,
+                    text=tab.subClassID..' '..(e.strText[tab.subclassName] or tab.subclassName),
                     keepShownOnClick=true,
                     checked= Save.itemClass[tab.className..tab.subclassName],
                     tooltipOnButton=true,
@@ -329,10 +355,10 @@ local function InitMenu(self, level, type)--主菜单
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     local find={}
-    for _, tab in pairs(itemClass) do
+    for index, tab in pairs(itemClass) do
         if not find[tab.className] then
             info={
-                text=get_Save_Numer_SubClass(tab.className)..tab.className,
+                text= tab.classID.. ' '..(e.strText[tab.className] or tab.className)..' '..get_Save_Numer_SubClass(tab.className),
                 notCheckable=true,
                 keepShownOnClick=true,
                 menuList=tab.className,
@@ -387,6 +413,28 @@ local function InitMenu(self, level, type)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --####
 --初始
@@ -444,6 +492,27 @@ local function Init()
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --###########
 --加载保存数据
