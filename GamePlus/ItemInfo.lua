@@ -293,6 +293,15 @@ local function Set_Item_Info(self, tab)
                         if itemLinkPlayer then
                             local equipedLevel= GetDetailedItemLevelInfo(itemLinkPlayer)
                             if equipedLevel then
+                                local equipedInfo= e.GetTooltipData({hyperLink=itemLinkPlayer, text={upgradeStr}, onlyText=true})--物品提示，信息
+                                if equipedInfo.text[upgradeStr] then--"升级：%s/%s"
+                                    local min, max= equipedInfo.text[upgradeStr]:match('(%d+)/(%d+)')
+                                    if min and max and min<max then
+                                        min, max= tonumber(min) or 0, tonumber(max) or 0
+                                        equipedLevel=equipedLevel+ (max-min)*5--已装备，物品，总装等
+                                    end
+                                end
+
                                 local level= (itemLevel + upItemLevel*5) - equipedLevel
                                 if level> 5 then
                                     upLevel=true
