@@ -219,11 +219,14 @@ local function Set_Item_Info(self, tab)
                 if dateInfo.text[itemLevelStr] then--传家宝
                     itemLevel= tonumber(dateInfo.text[itemLevelStr]) or 0
                 end
+
                 if dateInfo.text[equipStr] then--套装名称，
                     local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
                     bottomLeftText= e.WA_Utf8Sub(text,3,3, true)
+
                 elseif itemMinLevel>e.Player.level then--低装等
                     bottomLeftText='|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
+
                 elseif dateInfo.wow then--战网
                     bottomLeftText= e.Icon.wow2
                     if subclassID==0 then
@@ -283,17 +286,17 @@ local function Set_Item_Info(self, tab)
                 end
 
                 local invSlot = e.itemSlotTable[itemEquipLoc]
-                if invSlot and itemLevel and itemLevel>1 then
-                    if not dateInfo.red then--装等
-                        local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
+                if invSlot and itemLevel and itemLevel>1 and itemLevel>29 then
+                    if not dateInfo.red then--装等，提示
                         local upLevel, downLevel
+                        local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
                         if itemLinkPlayer then
-                            local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
-                            if lv then
-                                local itemAllLevel= itemLevel + upItemLevel*5
-                                if itemAllLevel- lv>5 then
+                            local equipedLevel= GetDetailedItemLevelInfo(itemLinkPlayer)
+                            if equipedLevel then
+                                local level= (itemLevel + upItemLevel*5) - equipedLevel
+                                if level> 5 then
                                     upLevel=true
-                                elseif itemAllLevel-lv< 5 and itemLevel>29 then
+                                elseif level< -5 then
                                     downLevel=true
                                 end
                             end
@@ -306,7 +309,9 @@ local function Set_Item_Info(self, tab)
                             topLeftText= e.Icon.down2
                         end]]
                         if itemQuality>2 or (not e.Player.levelMax and itemQuality==2) or upLevel then
-                            topLeftText=(upLevel and '|cnGREEN_FONT_COLOR:'  or (downLevel and '|cnRED_FONT_COLOR:') or  '|cffffffff')..itemLevel..'|r' ..(topLeftText or '')
+                            topLeftText=(upLevel and '|cnGREEN_FONT_COLOR:'  or (downLevel and '|cnRED_FONT_COLOR:') or  '|cffffffff')
+                                        ..itemLevel
+                                        ..'|r' ..(topLeftText or '')
                             --topLeftText= itemLevel ..(topLeftText or '')
                         end
                     elseif itemMinLevel and itemMinLevel<=e.Player.level then--不可使用
