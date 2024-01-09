@@ -6390,7 +6390,20 @@
         "RecruitAFriendRecruitmentFrame",
         "RAF_FIRST_MONTH",
         "RAF_MONTHS_EARNED",
-        "RecruitAFriendFrameMixin"
+        "RecruitAFriendFrameMixin",
+        "RAFUtil",
+        "RAF_YOU_HAVE_EARNED",
+        "RAF_FIRST_REWARD",
+        "RAF_NEXT_REWARD",
+        "RAF_BENEFIT4",
+        "RAF_NEXT_REWARD_AFTER",
+        "TitleUtil",
+        "RAF_REWARD_TITLE",
+        "RAF_BENEFIT1",
+        "RAF_BENEFIT2",
+        "RAF_BENEFIT3",
+        "RAF_BENEFIT5",
+        "RAF_BENEFITS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
