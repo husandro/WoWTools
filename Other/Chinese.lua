@@ -1,5 +1,6 @@
 local id, e= ...
 if LOCALE_zhCN or LOCALE_zhTW then
+    e.strText={}
     return
 end
 
@@ -56,7 +57,7 @@ end
 
 
 
-local strText={
+e.strText={
     --Blizzard_AuctionData.lua
     [AUCTION_CATEGORY_WEAPONS] = "武器",
         [AUCTION_SUBCATEGORY_ONE_HANDED] = "单手",
@@ -1174,16 +1175,18 @@ local strText={
     [GUILD_CHALLENGE_TYPE5] = "史诗钥石地下城",
 
 
-
+    [ITEM_HEROIC] = "英雄",
+    [PVP_RANK_14_0] = "勇士",
+    [PVP_RANK_0_0] = "斥候",
 
 
 }
 
 if _G['MOTION_SICKNESS_DROPDOWN'] then
-    strText[_G['MOTION_SICKNESS_DROPDOWN']] = "动态眩晕"
+    e.strText[_G['MOTION_SICKNESS_DROPDOWN']] = "动态眩晕"
 end
 if _G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS'] then
-    strText[_G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS']] = "动态飞行屏幕效果"
+    e.strText[_G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS']] = "动态飞行屏幕效果"
 end
 
 
@@ -1254,7 +1257,7 @@ local function Init()
             set(CharacterStatsPane.AttributesCategory.Title, '属性')
             set(CharacterStatsPane.EnhancementsCategory.Title, '强化属性')
             hooksecurefunc('PaperDollFrame_SetLabelAndText', function(statFrame, label)--PaperDollFrame.lua
-                local text= strText[label]
+                local text= e.strText[label]
                 if text then
                     set(statFrame.Label, format('%s：', text))
                 end
@@ -1337,7 +1340,7 @@ local function Init()
             local button= self.CategoryButtons[btnIndex]
             if button and button.Label and text then
                 font(button.Label)
-                set(button.Label, strText[text])
+                set(button.Label, e.strText[text])
             end
         end)
         set(LFGListFrame.CategorySelection.StartGroupButton, '创建队伍')
@@ -1410,33 +1413,33 @@ local function Init()
             return
         end
         --标提
-        set(SettingsPanel.Container.SettingsList.Header.Title, strText[SettingsPanel.Container.SettingsList.Header.Title:GetText()])
+        set(SettingsPanel.Container.SettingsList.Header.Title, e.strText[SettingsPanel.Container.SettingsList.Header.Title:GetText()])
         for _, btn in pairs(frame:GetFrames() or {}) do
             local lable
             if btn.Button then--按钮
                 lable= btn.Button.Text or btn.Button
                 if lable then
-                    set(lable, strText[lable:GetText()])
+                    set(lable, e.strText[lable:GetText()])
                 end
             end
             if btn.DropDown and btn.DropDown.Button and btn.DropDown.Button.SelectionDetails  then--下拉，菜单info= btn
                 lable= btn.DropDown.Button.SelectionDetails.SelectionName
                 if lable then
-                    set(lable, strText[lable:GetText()])
+                    set(lable, e.strText[lable:GetText()])
                 end
             end
             if btn.Button1 then
-                set(btn.Button1, strText[btn.Button1:GetText()])
+                set(btn.Button1, e.strText[btn.Button1:GetText()])
             end
             if btn.Button2 then
-                set(btn.Button2, strText[btn.Button1:GetText()])
+                set(btn.Button2, e.strText[btn.Button1:GetText()])
             end
             lable= btn.Text or btn.Label or btn.Title
             if lable then
-                set(lable, strText[lable:GetText()])
-            elseif btn.Text and btn.data and btn.data.name and strText[btn.data.name] then
-                set(btn.Text, strText[btn.data.name])
-                btn.data.tooltip= strText[btn.data.tooltip] or btn.data.tooltip
+                set(lable, e.strText[lable:GetText()])
+            elseif btn.Text and btn.data and btn.data.name and e.strText[btn.data.name] then
+                set(btn.Text, e.strText[btn.data.name])
+                btn.data.tooltip= e.strText[btn.data.tooltip] or btn.data.tooltip
             end
         end
     end)
@@ -1445,11 +1448,11 @@ local function Init()
     hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--hooksecurefunc(SettingsPanel.CategoryList.ScrollBox, 'Update', function(frame)
         local category = initializer.data.category
         if category then
-            set(self.Label, strText[category:GetName()])
+            set(self.Label, e.strText[category:GetName()])
         end
     end)
     hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
-        local text= strText[initializer.data.label]
+        local text= e.strText[initializer.data.label]
         if text then
             self.Label:SetText(text)
         end
@@ -1459,7 +1462,7 @@ local function Init()
     --快捷键
     hooksecurefunc(KeyBindingFrameBindingTemplateMixin,'Init', function(self)
         local label= self.Text or self.Label
-        local text= label and strText[label:GetText()]
+        local text= label and e.strText[label:GetText()]
         set(label, text)
     end)
 
@@ -1515,12 +1518,12 @@ local function Init()
 
 
     hooksecurefunc('FCF_SetWindowName', function(frame, name)--FloatingChatFrame.lua
-        set(_G[frame:GetName().."Tab"], strText[name])
+        set(_G[frame:GetName().."Tab"], e.strText[name])
     end)
     hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame, checkBoxTable, checkBoxTemplate, title)--ChatConfigFrame.lua
         if title then
-            if strText[title] then
-                set(_G[frame:GetName().."Title"], strText[title])
+            if e.strText[title] then
+                set(_G[frame:GetName().."Title"], e.strText[title])
             end
         end
         local box = frame:GetName().."CheckBox"
@@ -1528,12 +1531,12 @@ local function Init()
             local label = _G[box..index.."CheckText"]
             if label then
                 local text= label:GetText()
-                if strText[text] then
-                    set(label, strText[text])
+                if e.strText[text] then
+                    set(label, e.strText[text])
                 else
                     local num, name= text:match('(%d+%.)(.+)')
-                    if num and name and strText[name] then
-                        set(label, num..strText[name])
+                    if num and name and e.strText[name] then
+                        set(label, num..e.strText[name])
                     end
                 end
             end
@@ -1594,7 +1597,7 @@ local function Init()
         for index in ipairs(frame.checkBoxTable or {}) do
             local checkBoxText = _G[checkBoxNameString..index].text
             if checkBoxText then
-                set(checkBoxText, strText[checkBoxText:GetText()])
+                set(checkBoxText, e.strText[checkBoxText:GetText()])
             end
         end
     end)
@@ -1605,7 +1608,7 @@ local function Init()
         if  CURRENT_CHAT_FRAME_ID == VOICE_WINDOW_ID then
             ChatConfigFrame.Header:Setup('文字转语音选项')
         else
-            ChatConfigFrame.Header:Setup(currentChatFrame ~= nil and format('%s设置', strText[currentChatFrame.name] or currentChatFrame.name) or "")
+            ChatConfigFrame.Header:Setup(currentChatFrame ~= nil and format('%s设置', e.strText[currentChatFrame.name] or currentChatFrame.name) or "")
         end
     end)
 
@@ -1824,7 +1827,7 @@ local function Init()
         set(OpenMailCancelButton, '关闭')
 
     hooksecurefunc('GuildChallengeAlertFrame_SetUp', function(frame, challengeType)--AlertFrameSystems.lua
-        local text= strText[_G["GUILD_CHALLENGE_TYPE"..challengeType]]
+        local text= e.strText[_G["GUILD_CHALLENGE_TYPE"..challengeType]]
         if text then
             frame.Type:SetText(text)
         end
@@ -2441,7 +2444,7 @@ local function Init_Loaded(arg1)
             self:SetTitle(title);
         end)
         hooksecurefunc('AuctionHouseFilterButton_SetUp', function(btn, info)
-            set(btn, strText[info.name])
+            set(btn, e.strText[info.name])
         end)
 
         set(AuctionHouseFrameBuyTab.Text, '购买')
@@ -2580,8 +2583,8 @@ local function Init_Loaded(arg1)
         hooksecurefunc(ProfessionsCustomerOrdersCategoryButtonMixin, 'Init', function(self, categoryInfo, _, isRecraftCategory)
             if isRecraftCategory then
                 set(self, '开始再造订单')
-            elseif categoryInfo and categoryInfo.categoryName and strText[categoryInfo.categoryName] then
-                set(self, strText[categoryInfo.categoryName])
+            elseif categoryInfo and categoryInfo.categoryName and e.strText[categoryInfo.categoryName] then
+                set(self, e.strText[categoryInfo.categoryName])
             end
         end)
         set(ProfessionsCustomerOrdersFrameBrowseTab, '发布订单')
@@ -2647,8 +2650,8 @@ local function Init_Loaded(arg1)
                 --[[if MountJournal.selectedMountID ~= nil then
                     local checkIndoors = true;
                     local errorText = select(2, C_MountJournal.GetMountUsabilityByID(MountJournal.selectedMountID, checkIndoors))
-                    if errorText and strText[errorText] then
-                        GameTooltip_AddErrorLine(GameTooltip, '|cnRED_FONT_COLOR:'..strText[errorText], true);
+                    if errorText and e.strText[errorText] then
+                        GameTooltip_AddErrorLine(GameTooltip, '|cnRED_FONT_COLOR:'..e.strText[errorText], true);
                     end
                 end]]
                 GameTooltip:Show();
@@ -2746,7 +2749,7 @@ local function Init_Loaded(arg1)
         hooksecurefunc('AchievementFrameCategories_UpdateDataProvider', function()
             for _, btn in pairs(AchievementFrameCategories.ScrollBox:GetFrames() or {}) do
                 if btn.Button then
-                    set(btn.Button.Label, strText[btn.Button.name])
+                    set(btn.Button.Label, e.strText[btn.Button.name])
                 end
             end
         end)
@@ -3184,7 +3187,7 @@ end
 local function cancel_all()
     Init=function() end
     Init_Loaded= function() end
-    strText={}
+    e.strText={}
     panel:UnregisterEvent('ADDON_LOADED')
 end
 

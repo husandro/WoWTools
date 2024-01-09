@@ -561,8 +561,8 @@ function e.WA_Utf8Sub(input, size, letterSize, lower)
     if type(input) ~= "string" then
       return output or ''
     end
+    input= e.strText[input] or input
     local i = 1
-
     if letterSize and input:find('%w')  then--英文
         size=letterSize
     end
@@ -2254,11 +2254,13 @@ function e.GetTooltipData(tab)
         if tab.red and not data.red then
             local leftHex=line.leftColor and line.leftColor:GenerateHexColor()
             local rightHex=line.rightColor and line.rightColor:GenerateHexColor()
-            if leftHex == 'ffff2020' or leftHex=='fefe1f1f' or rightHex== 'ffff2020' or rightHex=='fefe1f1f' then-- or hex=='fefe7f3f' then
-                data.red=true
-                if tab.onlyRed then
-                    break
-                end
+            if leftHex == 'ffff2020' or leftHex=='fefe1f1f' then-- or hex=='fefe7f3f' then
+                data.red= line.leftText
+            elseif rightHex== 'ffff2020' or rightHex=='fefe1f1f' then
+                data.red= line.rightText
+            end
+            if tab.onlyRed and data.red then
+                break
             end
         end
         if line.leftText and findText then

@@ -264,7 +264,10 @@ local function Set_Item_Info(self, tab)
                             end
                             --rightText= dateInfo.red and e.Icon.X2 or e.Icon.select2
                             topLeftText= text
+
                         end
+                    elseif dateInfo.red then
+                        topRightText= '|cnRED_FONT_COLOR:'..strlower(e.WA_Utf8Sub(dateInfo.red,1,3, true)) ..'|r'
                     end
                 end
                 if dateInfo.text[pvpItemStr] then--PvP装备
@@ -925,7 +928,7 @@ local function Init()
         e.Set_Item_Stats(frame, frame.hyperlink, {point= frame.Icon})
     end)
 
-    
+
     --hooksecurefunc('NewPetAlertFrameMixin', function(self, petID)
     --hooksecurefunc(NewCosmeticAlertFrameMixin, 'SetUp', function(self, itemModifiedAppearanceID)
         --local info =  C_TransmogCollection.GetSourceInfo(itemModifiedAppearanceID)

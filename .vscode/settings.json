@@ -6322,7 +6322,9 @@
         "PROFESSIONS_FIRST_CRAFT_DESCRIPTION",
         "GridLayoutMixin",
         "TRADESKILL_CHARGES_REMAINING_NEXT_USE",
-        "OPTIONAL_REAGENT_POSTFIX"
+        "OPTIONAL_REAGENT_POSTFIX",
+        "PVP_RANK_14_0",
+        "PVP_RANK_0_0"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
