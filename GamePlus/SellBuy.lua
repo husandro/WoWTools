@@ -136,10 +136,10 @@ end
 --#######
 --出售物品
 --#######
-local avgItemLevel--装等
-local function bossLoot(itemID, itemLink)--BOSS掉落
-    avgItemLevel=avgItemLevel or GetAverageItemLevel()
-    if not itemID or not itemLink or not avgItemLevel then
+--local avgItemLevel--装等
+local function bossLoot(itemLink)--BOSS掉落
+    local avgItemLevel= GetAverageItemLevel()
+    if not itemLink or not avgItemLevel then
         return
     end
     local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, _, bindType = GetItemInfo(itemLink);
@@ -148,11 +148,11 @@ local function bossLoot(itemID, itemLink)--BOSS掉落
     and (classID==2 or classID==3 or classID==4)--2武器 3宝石 4盔甲
     and bindType == LE_ITEM_BIND_ON_ACQUIRE--1     LE_ITEM_BIND_ON_ACQUIRE    拾取绑定
     and itemLevel and itemLevel>1 and avgItemLevel-itemLevel>=15
-    and not Save.noSell[itemID]
+    and not Save.noSell[itemLink]
     then
-        bossSave[itemID]=true
+        bossSave[itemLink]=true
         if not Save.notSellBoss then
-            print(addName, '|cnGREEN_FONT_COLOR:'.. (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB) ,itemLink, itemID)
+            print(addName, '|cnGREEN_FONT_COLOR:'.. (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB) , itemLink)
         end
     end
 end
@@ -181,7 +181,7 @@ end
 --####################
 --检测是否是出售物品
 --为 ItemInfo.lua, 用
-e.CheckItemSell= function(itemID, quality)
+e.CheckItemSell= function(itemID, itemLink, quality)
     if itemID then
         if Save.noSell[itemID] then
             return
@@ -192,7 +192,7 @@ e.CheckItemSell= function(itemID, quality)
         elseif quality==0 and e.GetPet9Item(itemID, true) then--宠物兑换, wow9.0
             return e.onlyChinese and '宠物' or PET
 
-        elseif bossSave[itemID] and not Save.notSellBoss then
+        elseif bossSave[itemLink] and not Save.notSellBoss then
             return e.onlyChinese and '首领' or BOSS
 
         elseif quality==0 and not Save.notSellJunk then--垃圾
@@ -258,7 +258,7 @@ local function setSellItems()
                 and info.quality
                 and (info.quality<5 or Save.Sell[info.itemID]and not Save.notSellCustom)
             then
-                local checkText= e.CheckItemSell(info.itemID, info.quality)--检察 ,boss掉落, 指定 或 出售灰色,宠物
+                local checkText= e.CheckItemSell(info.itemID, info.hyperlink, info.quality)--检察 ,boss掉落, 指定 或 出售灰色,宠物
                 if not info.isLocked and checkText then
                     C_Container.UseContainerItem(bag, slot)--买出
 
@@ -810,19 +810,17 @@ local function Init_Menu(_, level, type)
         return
 
     elseif type=='BOSS' then--二级菜单, BOSS
-        for itemID, _ in pairs(bossSave) do
-            if itemID then
-                e.LoadDate({id=itemID, type='item'})
-                info= {
-                    text= select(2,GetItemInfo(itemID)) or itemID,
-                    notCheckable=true,
-                    icon= C_Item.GetItemIconByID(itemID),
-                    func=function()
-                        Save.bossSave[itemID]=nil
-                    end,
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-            end
+        for itemLink, _ in pairs(bossSave) do
+            e.LoadDate({itemLink=itemLink, type='item'})
+            info= {
+                text= itemLink,
+                notCheckable=true,
+                icon= C_Item.GetItemIconByID(itemLink),
+                func=function()
+                    Save.bossSave[itemLink]=nil
+                end,
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info= {
@@ -938,6 +936,8 @@ local function Init_Menu(_, level, type)
             num=num+1
         end
     end
+    local avgItemLevel= GetAverageItemLevel() or 30
+    avgItemLevel= avgItemLevel<30 and 30 or avgItemLevel
     info = {--出售BOSS掉落
         text= (e.onlyChinese and '出售首领掉落' or AUCTION_HOUSE_SELL_TAB..TRANSMOG_SOURCE_1)..'|cnRED_FONT_COLOR: #'..num..'|r',
         checked= not Save.notSellBoss,
@@ -947,7 +947,7 @@ local function Init_Menu(_, level, type)
         menuList='BOSS',
         hasArrow=true,
         tooltipOnButton=true,
-        tooltipTitle= (e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)..' < ' ..(avgItemLevel and math.ceil(avgItemLevel)-15 or 15)
+        tooltipTitle= (e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)..' < ' ..math.ceil(avgItemLevel)
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
 
@@ -1527,7 +1527,7 @@ panel:RegisterEvent('MERCHANT_SHOW')
 panel:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
 
 panel:RegisterEvent('ENCOUNTER_LOOT_RECEIVED')
-panel:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
+--panel:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')
 
 panel:RegisterEvent('MERCHANT_UPDATE')--购回
 
@@ -1570,7 +1570,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
                     buySave=WoWToolsSave.BuyItems and WoWToolsSave.BuyItems[e.Player.name_realm] or buySave--购买物品
                     RepairSave=WoWToolsSave.Repair and WoWToolsSave.Repair[e.Player.name_realm] or RepairSave--修理
                 end
-                avgItemLevel= GetAverageItemLevel()--装等
+                --avgItemLevel= GetAverageItemLevel()--装等
 
                 Init()
                 panel:UnregisterEvent('ADDON_LOADED')
@@ -1598,11 +1598,11 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
 
     elseif event=='ENCOUNTER_LOOT_RECEIVED' then--买出BOOS装备
         if IsInInstance() and arg5 and arg5:find(e.Player.name) then
-            bossLoot(arg2, arg3)
+            bossLoot(arg3)
         end
 
-    elseif event=='PLAYER_AVG_ITEM_LEVEL_UPDATE' then
-        avgItemLevel= GetAverageItemLevel()--装等
+    --elseif event=='PLAYER_AVG_ITEM_LEVEL_UPDATE' then
+        --avgItemLevel= GetAverageItemLevel()--装等
 
     elseif event=='MERCHANT_UPDATE' then
         set_BuyBack_Items()--回购

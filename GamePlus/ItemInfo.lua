@@ -114,7 +114,7 @@ local function Set_Item_Info(self, tab)
 
         local sellItem
         if tab.bag and containerInfo and not containerInfo.isLocked and e.CheckItemSell then
-            sellItem= e.CheckItemSell(itemID, itemQuality)--检测是否是出售物品
+            sellItem= e.CheckItemSell(itemID, itemLink, itemQuality)--检测是否是出售物品
         end
 
         if sellItem then--检测是否是出售物品
