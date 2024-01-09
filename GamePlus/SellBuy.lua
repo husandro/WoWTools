@@ -137,9 +137,9 @@ end
 --出售物品
 --#######
 --local avgItemLevel--装等
-local function bossLoot(itemLink)--BOSS掉落
-    local avgItemLevel= GetAverageItemLevel()
-    if not itemLink or not avgItemLevel then
+local function bossLoot(itemID, itemLink)--BOSS掉落
+    local avgItemLevel= GetAverageItemLevel() or 30
+    if not itemID or not itemLink or not avgItemLevel then
         return
     end
     local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, _, bindType = GetItemInfo(itemLink);
@@ -148,7 +148,7 @@ local function bossLoot(itemLink)--BOSS掉落
     and (classID==2 or classID==3 or classID==4)--2武器 3宝石 4盔甲
     and bindType == LE_ITEM_BIND_ON_ACQUIRE--1     LE_ITEM_BIND_ON_ACQUIRE    拾取绑定
     and itemLevel and itemLevel>1 and avgItemLevel-itemLevel>=15
-    and not Save.noSell[itemLink]
+    and not Save.noSell[itemID]
     then
         bossSave[itemLink]=true
         if not Save.notSellBoss then
@@ -1598,7 +1598,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
 
     elseif event=='ENCOUNTER_LOOT_RECEIVED' then--买出BOOS装备
         if IsInInstance() and arg5 and arg5:find(e.Player.name) then
-            bossLoot(arg3)
+            bossLoot(arg2, arg3)
         end
 
     --elseif event=='PLAYER_AVG_ITEM_LEVEL_UPDATE' then
