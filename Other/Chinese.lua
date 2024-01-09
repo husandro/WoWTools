@@ -1902,7 +1902,8 @@ local function Init()
         set(PetBattleFrame.BottomFrame.TurnTimer.SkipButton, '待命')
     end
 
-
+    --任务对话框
+    set(GossipFrame.GreetingPanel.GoodbyeButton, '再见')
 
 
 

@@ -741,7 +741,7 @@ local function Init_Gossip()
     --禁用此npc闲话选项
     GossipFrame.sel=CreateFrame("CheckButton", nil, GossipFrame, 'InterfaceOptionsCheckButtonTemplate')
     GossipFrame.sel:SetPoint("BOTTOMLEFT",5,2)
-    GossipFrame.sel.Text:SetText(DISABLE)
+    GossipFrame.sel.Text:SetText(e.onlyChinese and '禁用' or DISABLE)
     GossipFrame.sel:SetScript("OnMouseDown", function (self, d)
         if not self.npc and self.name then
             return

@@ -340,7 +340,7 @@ local function Set_Item_Info(self, tab)
                 if itemQuality==0 and isCollected then
                     topRightText= '|A:Coin-Silver:0:0|a'
                 elseif not isCollected and itemSubType then
-                    topRightText= e.WA_Utf8Sub(itemSubType,2,3, true)
+                    topRightText= e.WA_Utf8Sub(itemSubType,1,3, true)
                 end
             end
 
