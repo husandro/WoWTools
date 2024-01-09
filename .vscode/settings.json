@@ -6376,7 +6376,21 @@
         "REACTIVATE_RAID_LOCK",
         "ButtonFrameTemplate_ShowAttic",
         "RaidFrame_Update",
-        "UpdateMicroButtons"
+        "UpdateMicroButtons",
+        "RaidInfoFrame_SetButtonSelected",
+        "RAID_INSTANCE_EXPIRES_EXPIRED",
+        "RaidFrameAllAssistCheckButton",
+        "RaidFrameAllAssistCheckButtonText",
+        "ALL_ASSIST_NOT_LEADER_ERROR",
+        "RecruitAFriendRewardsFrame",
+        "RAF_LATEST_REWARDS_HELP_TEXT",
+        "RAF_LEGACY_REWARDS_HELP_TEXT",
+        "RAF_NEXT_REWARD_HELP_TEXT",
+        "PLAYER_DIFFICULTY4",
+        "RecruitAFriendRecruitmentFrame",
+        "RAF_FIRST_MONTH",
+        "RAF_MONTHS_EARNED",
+        "RecruitAFriendFrameMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

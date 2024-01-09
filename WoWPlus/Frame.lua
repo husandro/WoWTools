@@ -657,6 +657,7 @@ local function Init_Move()
 
         FriendsFrame={},--好友列表
         --RaidInfoFrame={frame=FriendsFrame},
+        RecruitAFriendRewardsFrame={},
 
         GossipFrame={},
         QuestFrame={},

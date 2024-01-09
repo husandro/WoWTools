@@ -1179,6 +1179,15 @@ e.strText={
     [GetItemClassInfo(14)] = "永久物品",
     [PROFESSIONS_TRACKER_HEADER_PROFESSION]= "专业技能",
 
+    [RAID_INFO_WORLD_BOSS] = "世界首领",
+    [PLAYER_DIFFICULTY1] = "普通",
+    [PLAYER_DIFFICULTY2] = "英雄",
+    [PLAYER_DIFFICULTY3] = "随机团队",
+    [PLAYER_DIFFICULTY4] = "弹性团队",
+    [PLAYER_DIFFICULTY5] = "挑战",
+    [PLAYER_DIFFICULTY6] = "史诗",
+    [PLAYER_DIFFICULTY_MYTHIC_PLUS] = "史诗钥石",
+    [PLAYER_DIFFICULTY_TIMEWALKER] = "时空漫游",
 
 }
 
@@ -1508,22 +1517,22 @@ local function Init()
             set(AddFriendEntryFrameOrLabel, '或')
             hooksecurefunc('AddFriendFrame_ShowEntry', function()
                 if ( BNFeaturesEnabledAndConnected() ) then
-                    local _, battleTag, _, _, _, _, isRIDEnabled = BNGetInfo();
+                    local _, battleTag, _, _, _, _, isRIDEnabled = BNGetInfo()
                     if ( battleTag and isRIDEnabled ) then
-                        AddFriendEntryFrameLeftTitle:SetText('实名');
-                        AddFriendEntryFrameLeftDescription:SetText('输入电子邮件地址\n(或战网昵称)');
-                        AddFriendNameEditBoxFill:SetText('输入：电子邮件地址、战网昵称、角色名');
+                        AddFriendEntryFrameLeftTitle:SetText('实名')
+                        AddFriendEntryFrameLeftDescription:SetText('输入电子邮件地址\n(或战网昵称)')
+                        AddFriendNameEditBoxFill:SetText('输入：电子邮件地址、战网昵称、角色名')
                     elseif ( isRIDEnabled ) then
-                        AddFriendEntryFrameLeftTitle:SetText('实名');
-                        AddFriendEntryFrameLeftDescription:SetText('输入电子邮件地址');
-                        AddFriendNameEditBoxFill:SetText('输入：电子邮件地址、角色名');
+                        AddFriendEntryFrameLeftTitle:SetText('实名')
+                        AddFriendEntryFrameLeftDescription:SetText('输入电子邮件地址')
+                        AddFriendNameEditBoxFill:SetText('输入：电子邮件地址、角色名')
                     elseif ( battleTag ) then
-                        AddFriendEntryFrameLeftTitle:SetText('战网昵称');
-                        AddFriendEntryFrameLeftDescription:SetText('输入战网昵称');
-                        AddFriendNameEditBoxFill:SetText('输入：战网昵称、角色名');
+                        AddFriendEntryFrameLeftTitle:SetText('战网昵称')
+                        AddFriendEntryFrameLeftDescription:SetText('输入战网昵称')
+                        AddFriendNameEditBoxFill:SetText('输入：战网昵称、角色名')
                     end
                 else
-                    AddFriendEntryFrameLeftDescription:SetText('暴雪游戏服务不可用');
+                    AddFriendEntryFrameLeftDescription:SetText('暴雪游戏服务不可用')
                 end
             end)
             set(AddFriendEntryFrameRightDescription, '输入角色名')
@@ -1540,10 +1549,36 @@ local function Init()
             set(FriendsFrameIgnorePlayerButton, '添加')
             set(FriendsFrameUnsquelchButton, '移除')
         set(FriendsTabHeaderTab3, '招募战友')
+            hooksecurefunc(RecruitAFriendFrame, 'UpdateRAFInfo', function(self, rafInfo)
+                print(id,addName, self.RewardClaiming.MonthCount)
+                if self.rafEnabled and rafInfo and #rafInfo.versions > 0 then
+                    local latestRAFVersionInfo = self:GetLatestRAFVersionInfo()            
+                    if (latestRAFVersionInfo.numRecruits == 0) and (latestRAFVersionInfo.monthCount.lifetimeMonths == 0) then
+                        self.RewardClaiming.MonthCount:SetText('招募战友即可开始！')
+                    else
+                        self.RewardClaiming.MonthCount:SetFormattedText('招募战友已奖励%d个月', latestRAFVersionInfo.monthCount.lifetimeMonths)
+                    end
+                end
+            end)
+            print(RecruitAFriendFrame:GetLatestRAFVersionInfo())
             set(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton, '查看所有奖励')
             set(RecruitAFriendFrame.RecruitList.Header.RecruitedFriends, '已招募的战友')
             set(RecruitAFriendFrame.RecruitList.NoRecruitsDesc,  "|cffffd200招募战友后，战友每充值一个月的游戏时间，你就能获得一次奖励。|n|n若战友一次充值的游戏时间超过一个月，奖励会逐月进行发放。|n|n一起游戏还能解锁额外奖励！|r|n|n更多信息：|n|HurlIndex:49|h|cff82c5ff访问我们的战友招募网站|r|h")
             set(RecruitAFriendFrame.RecruitmentButton, '招募')
+            RecruitAFriendFrame.RewardClaiming.NextRewardInfoButton:HookScript('OnEnter', function()
+                GameTooltip_AddNormalLine(GameTooltip, '招募好友后，当好友开始订阅时，你就能开始获得奖励。')
+	            GameTooltip:Show()
+            end)
+                set(RecruitAFriendRewardsFrame.Title, '战友招募奖励')
+                set(RecruitAFriendRewardsFrame.Description, '每名拥有可用的游戏时间的被招募者|n每30天可以为你提供一份月度奖励。')
+                RecruitAFriendRewardsFrame.VersionInfoButton:HookScript('OnEnter', function(self)
+                    local recruitAFriendFrame = self:GetRecruitAFriendFrame()
+                    local selectedVersionInfo = recruitAFriendFrame:GetSelectedRAFVersionInfo()
+                    local helpText = recruitAFriendFrame:IsLegacyRAFVersion(selectedVersionInfo.rafVersion) and '当前激活的旧版招募战友：|cnHIGHLIGHT_FONT_COLOR:%d|r|n尚未领取的奖励：|cnHIGHLIGHT_FONT_COLOR:%d|r' or '当前激活的招募战友：|cnHIGHLIGHT_FONT_COLOR:%d|r|n尚未领取的奖励：|cnHIGHLIGHT_FONT_COLOR:%d|r'
+                    GameTooltip_AddNormalLine(GameTooltip, ' ')
+                    GameTooltip_AddNormalLine(GameTooltip, helpText:format(selectedVersionInfo.numRecruits, selectedVersionInfo.numAffordableRewards))
+                    GameTooltip:Show()
+                end)
 
     set(FriendsFrameTab2, '查询')
         set(WhoFrameWhoButton, '刷新')
@@ -1551,6 +1586,14 @@ local function Init()
         set(WhoFrameGroupInviteButton, '组队邀请')
         set(FriendsFrameSendMessageButton, '发送信息')
     set(FriendsFrameTab3, '团队')
+        set(RaidFrameAllAssistCheckButtonText, '所有|TInterface\\GroupFrame\\UI-Group-AssistantIcon:12:12:0:1|t')
+        RaidFrameAllAssistCheckButton:HookScript('OnEnter', function(self)
+            GameTooltip:AddLine('钩选此项可使所有团队成员都获得团队助理权限', nil, nil, nil, true)
+            if ( not self:IsEnabled() ) then
+                GameTooltip:AddLine('|cnRED_FONT_COLOR:只有团队领袖才能更改此项设置。', nil, nil, nil, true)
+            end
+            GameTooltip:Show()
+        end)
         set(RaidFrameRaidInfoButton, '团队信息')
             set(RaidInfoFrame.Header.Text, '团队信息')
             set(RaidInfoInstanceLabel.text, '副本')
@@ -1560,19 +1603,50 @@ local function Init()
                     if RaidInfoFrame.selectedIsInstance then
                         local _, _, _, _, locked, extended= GetSavedInstanceInfo(RaidInfoFrame.selectedIndex)
                         if extended then
-                            RaidInfoExtendButton:SetText('移除副本锁定延长');
+                            RaidInfoExtendButton:SetText('移除副本锁定延长')
                         else
-                            RaidInfoExtendButton:SetText(locked and '延长副本锁定' or '重新激活副本锁定');
+                            RaidInfoExtendButton:SetText(locked and '延长副本锁定' or '重新激活副本锁定')
                         end
                     else
-                        RaidInfoExtendButton:SetText('延长副本锁定');
+                        RaidInfoExtendButton:SetText('延长副本锁定')
                     end
                 else
-                    RaidInfoExtendButton:SetText('延长副本锁定');
+                    RaidInfoExtendButton:SetText('延长副本锁定')
+                end
+            end)
+            hooksecurefunc('RaidInfoFrame_InitButton', function(button, elementData)--RaidFrame.lua
+                local function InitButton(extended, locked, name, difficulty)
+                    if extended or locked then
+                        if e.strText[name] then
+                            set(button.name, e.strText[name])
+                        end
+                    else
+                        button.reset:SetFormattedText("|cff808080%s|r", '已过期')
+                        if e.strText[name] then
+                            button.name:SetFormattedText("|cff808080%s|r", e.strText[name])
+                        end
+                    end
+                    if e.strText[difficulty] then
+                        button.difficulty:SetText(e.strText[difficulty])
+                    end
+                    if button.extended:IsShown() then
+                        set(button.extended, '|cff00ff00已延长|r')
+                    end
+                end
+
+                local index = elementData.index
+                if elementData.isInstance then
+                    local name, _, _, _, locked, extended, _, _, _, difficultyName = GetSavedInstanceInfo(index)
+                    InitButton(extended, locked, name, difficultyName)
+                else
+                    local name = GetSavedWorldBossInfo(index)
+                    local locked = true
+                    local extended = false
+                    InitButton(extended, locked, name, RAID_INFO_WORLD_BOSS)
                 end
             end)
             hooksecurefunc('RaidFrame_OnShow', function(self)
-                self:GetParent():GetTitleText():SetText('团队');
+                self:GetParent():GetTitleText():SetText('团队')
             end)
             set(RaidInfoCancelButton, '关闭')
 
