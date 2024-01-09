@@ -26,7 +26,6 @@ local function set_SOCIAL_QUEUE_UPDATE()--更新, 快速加入
             QuickJoinToastButton.quickJoinText= e.Cstr(QuickJoinToastButton, {color=true})--:CreateFontString()
             --QuickJoinToastButton.quickJoinText:SetFontObject('NumberFontNormal')
             QuickJoinToastButton.quickJoinText:SetPoint('TOPRIGHT', -6, -3)
-            
             if e.Player.useColor then
                 QuickJoinToastButton.FriendCount:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
             end
@@ -36,6 +35,11 @@ local function set_SOCIAL_QUEUE_UPDATE()--更新, 快速加入
         QuickJoinToastButton.quickJoinText:SetText(n~=0 and n or '')
     end
 end
+
+
+
+
+
 local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
     set_SOCIAL_QUEUE_UPDATE()
 
@@ -393,7 +397,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
                     return
-                
+
                 elseif menuList=='PlayerList' then--玩家，列表
                     local find
                     for name, tab in pairs(Save.Friends) do
@@ -485,7 +489,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     menuList='PlayerList',
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
-                
+
                 e.LibDD:UIDropDownMenu_AddSeparator()
                 info={
                     text=  e.Icon.net2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' ('..(e.onlyChinese and '好友' or FRIEND)..') '..( e.onlyChinese and '信息' or INFO)..'|A:communities-icon-chat:0:0|a',
@@ -575,6 +579,17 @@ local function set_FriendsList_Init()--好友列表, 初始化
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -704,6 +719,28 @@ local function set_RaidGroupFrame_Update()--团队, 模块
     e.GetNotifyInspect(getItemLevelTab)--取得装等
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_WhoList_Update()--查询, 名单列表
     for _, btn in pairs(WhoFrame.ScrollBox:GetFrames()) do
         if not btn.setOnDoubleClick then
@@ -735,7 +772,7 @@ local function set_WhoList_Update()--查询, 名单列表
                     e.tips:AddLine('|A:groupfinder-waitdot:0:0|a'..self.col..(info.raceStr or ''))
                     e.tips:AddLine(e.Icon.map2..self.col..(info.area or ''))
                 end
-                
+
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(self.col..'index', self.index)
                 e.tips:AddDoubleLine(self.col..(e.onlyChinese and '组队邀请' or GROUP_INVITE), (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
@@ -820,6 +857,15 @@ local function Init()--FriendsFrame.lua
     set_FriendsList_Init()--好友列表, 模块
     hooksecurefunc('WhoList_Update', set_WhoList_Update)
     hooksecurefunc(WhoFrame.ScrollBox, 'SetScrollTargetOffset', set_WhoList_Update)
+
+    --团队，团队信息
+    --增加长度
+    if RaidInfoFrame then--RaidFrame.xml
+        RaidInfoFrame:ClearAllPoints()
+        RaidInfoFrame:SetPoint('TOPLEFT', RaidFrame, 'TOPRIGHT', 0, 28)
+        RaidInfoFrame:SetSize(345, 485)--<Size x="345" y="250"/>
+        RaidInfoFrame.ScrollBox:SetHeight(390)
+    end
 end
 
 

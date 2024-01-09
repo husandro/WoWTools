@@ -667,13 +667,31 @@ local function Init_All_Frame()
      set_Alpha_Color(FriendsFrameInset.Bg, nil, nil, min05)
      set_ScrollBar(FriendsListFrame)
      set_ScrollBar(IgnoreListFrame)
+     --好友列表，团队
      if RecruitAFriendFrame and RecruitAFriendFrame.RecruitList then
         set_ScrollBar(RecruitAFriendFrame.RecruitList)
-         set_Alpha_Color(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
+        set_Alpha_Color(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
      end
+     if RaidInfoFrame then--团队信息
+        hide_Texture(RaidInfoDetailHeader)
+        set_Alpha_Color(RaidInfoFrame.Header.LeftBG)
+        set_Alpha_Color(RaidInfoFrame.Header.CenterBG)
+        set_Alpha_Color(RaidInfoFrame.Header.RightBG)
+        set_Alpha_Color(RaidInfoDetailFooter)
+        set_Alpha_Color(RaidInfoFrame.Border.LeftEdge, nil, nil, min03)
+        set_Alpha_Color(RaidInfoFrame.Border.RightEdge, nil, nil, min03)
+        set_Alpha_Color(RaidInfoFrame.Border.TopEdge, nil, nil, min03)
+        set_Alpha_Color(RaidInfoFrame.Border.BottomEdge, nil, nil, min03)
+        set_Alpha_Color(RaidInfoFrame.Border.TopLeftCorner, nil, nil, min03)
+        set_Alpha_Color(RaidInfoFrame.Border.BottomLeftCorner, nil, nil, min03)
+        set_Alpha_Color(RaidInfoFrame.Border.BottomRightCorner, nil, nil, min03)
+        set_Alpha_Color(RaidInfoFrame.Border.TopRightCorner, nil, nil, min03)
+        set_ScrollBar(RaidInfoFrame)
+        set_Alpha_Color(RaidInfoFrame.Border.Bg, nil, nil, min05)
+     end
+
      set_NineSlice(WhoFrameListInset, true)
      set_NineSlice(WhoFrameEditBoxInset, true)
-
      hide_Texture(WhoFrameListInset.Bg)
      set_ScrollBar(WhoFrame)
      set_Alpha_Frame_Texture(WhoFrameDropDownButton, {alpha=min05})
@@ -688,6 +706,7 @@ local function Init_All_Frame()
         set_Alpha_Frame_Texture(_G['WhoFrameColumnHeader'..i], {alpha=min05})
      end
 
+    
      --聊天设置
      set_NineSlice(ChannelFrame, true)
      set_Alpha_Color(ChannelFrameBg)

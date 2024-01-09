@@ -347,12 +347,67 @@ local function created_Move_Button(self, tab)--created_Move_Button(self, {frame=
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local combatCollectionsJournal--藏品
 local function set_Move_CollectionJournal()--藏品
     set_Move_Frame(CollectionsJournal)--藏品
     --set_Move_Frame(RematchJournal, {frame=CollectionsJournal})--藏品
     set_Move_Frame(WardrobeFrame)--幻化
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function setAddLoad(arg1)
     if arg1=='Blizzard_TimeManager' then--小时图，时间
@@ -601,7 +656,7 @@ local function Init_Move()
         SettingsPanel={},--选项
 
         FriendsFrame={},--好友列表
-        RaidInfoFrame={frame=FriendsFrame},
+        --RaidInfoFrame={frame=FriendsFrame},
 
         GossipFrame={},
         QuestFrame={},
@@ -646,8 +701,10 @@ local function Init_Move()
             set_Move_Frame(_G[text])
        end
     end
-    FrameTab=nil
-
+    
+    
+    --好友列表
+    --set_Move_Frame(AddFriendFrame)
 
 
     created_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer})

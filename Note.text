@@ -310,8 +310,10 @@ ITEM_QUALITY_COLORS[quality]
 7 Heirloom 00ccff
 8 WoW Token 00ccff
 
-测试
+FriendsFrame.xml
+<EditBox name="AddFriendNameEditBox" autoFocus="false" letters="255" inherits="AutoCompleteEditBoxTemplate">
 
+测试
 local frame= CreateFrame('Frame',nil,nil,'ScrollingEditBoxTemplate')--ScrollTemplates.lua
 frame:SetPoint('CENTER')
 frame:SetSize(150,150)
