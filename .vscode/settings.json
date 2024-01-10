@@ -6513,7 +6513,11 @@
         "HEROIC_PREFIX",
         "LFG_RETURN_VALUES",
         "LFG_LEVEL_REDUCED",
-        "LFG_PVP_LEVEL_REDUCED"
+        "LFG_PVP_LEVEL_REDUCED",
+        "RaidFinderQueueFrameScrollFrameChildFrameRewardsLabel",
+        "LFDQueueFrameRandomScrollFrameChildFrameRewardsLabel",
+        "ERR_LOOT_GONE",
+        "RaidFinderQueueFrameScrollFrameChildFrameEncounterList"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

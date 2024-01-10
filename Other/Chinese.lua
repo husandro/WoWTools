@@ -1351,7 +1351,7 @@ local function Init()
 
 
 
-    
+
 
 
 
@@ -1631,7 +1631,20 @@ local function Init()
     set(LFGDungeonReadyStatusLabel, '就位确认')
 
     set(LFGDungeonReadyDialogRandomInProgressFrameStatusText, '该地下城正在进行中。')
-
+    set(RaidFinderQueueFrameScrollFrameChildFrameRewardsLabel, '奖励')
+    set(LFDQueueFrameRandomScrollFrameChildFrameRewardsLabel, '奖励')
+    
+    RaidFinderQueueFrameScrollFrameChildFrameEncounterList:HookScript('OnEnter', function(self)
+        print(self.dungeonID, id, addName)
+        if self.dungeonID then
+            local numEncounters, numCompleted = GetLFGDungeonNumEncounters(self.dungeonID);
+            if ( numCompleted > 0 ) then
+                GameTooltip:AddLine(' ')
+                GameTooltip:AddLine(format('|cnHIGHLIGHT_FONT_COLOR:物品已经被拾取（%d/%d）', numCompleted, numEncounters));
+                GameTooltip:Show();
+            end
+        end
+    end)
 
 
 
