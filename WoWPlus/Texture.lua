@@ -1055,7 +1055,7 @@ local function Init_All_Frame()
             end
         end
     end
-    hooksecurefunc('CooldownFrame_Set', function(self, start, duration, enable, forceShowDrawEdge, modRate)
+    hooksecurefunc('CooldownFrame_Set', function(self, start, duration, enable)
         if enable and enable ~= 0 and start > 0 and duration > 0 then
             self:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
         end
@@ -1073,6 +1073,12 @@ local function Init_All_Frame()
         end
         hide_Texture(MainMenuBar.Background)
     end)
+
+    --编辑模式
+    set_ScrollBar(EditModeManagerFrame.AccountSettings.SettingsContainer)
+    set_Alpha_Frame_Texture(EditModeManagerFrame.Border, {alpha=min05})
+    set_Alpha_Frame_Texture(EditModeManagerFrame.AccountSettings.SettingsContainer.BorderArt, {alpha=min05})
+    
 end
 
 

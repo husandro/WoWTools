@@ -2273,6 +2273,9 @@ local function Init()
 
     --编辑模式
     set(EditModeManagerFrame.Title, 'HUD编辑模式')
+    set(EditModeManagerFrame.ShowGridCheckButton.Label, '显示网格')
+    set(EditModeManagerFrame.EnableSnapCheckButton.Label, '贴附到界面元素上')
+    set(EditModeManagerFrame.EnableAdvancedOptionsCheckButton.Label, '高级选项')
     set(EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.FramesTitle.Title, '框体')
     set(EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.CombatTitle.Title, '战斗')
     set(EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.MiscTitle.Title, '其它')
