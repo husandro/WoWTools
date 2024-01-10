@@ -1900,7 +1900,7 @@ local function Init()
                 print(id,addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
             end
         end,
-        OnUpdate= function(self, elapsed)
+        OnUpdate= function(self)
             if IsModifierKeyDown() then
                 self:Hide()
                 ExitIns=nil
