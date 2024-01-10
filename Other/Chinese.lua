@@ -1197,6 +1197,10 @@ e.strText={
     [RAF_BENEFITS] = "福利",]]
     [THE_ALLIANCE] = PLAYER_FACTION_COLOR_ALLIANCE:WrapTextInColorCode('联盟'),
     [THE_HORDE] = PLAYER_FACTION_COLOR_HORDE:WrapTextInColorCode('部落'),
+
+    [TANK] = "坦克",
+    [HEALER] = "治疗者",
+    [DAMAGER] = "伤害输出",
 }
 
 if _G['MOTION_SICKNESS_DROPDOWN'] then
@@ -1321,8 +1325,24 @@ local function Init()
         set(SpellBookFrameTabButton3, '宠物')
     end)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     --LFD PVEFrame.lua
-    --set(PVEFrameTitleText, '地下城和团队副本')
+    --地下城和团队副本
     set(PVEFrameTab1, '地下城和团队副本')
     set(PVEFrameTab2, 'PvP')
     set(PVEFrameTab3, '史诗钥石地下城')
@@ -1421,8 +1441,63 @@ local function Init()
             end
         end
     end)
+
     --LFGList.lua
     dia("LFG_LIST_INVITING_CONVERT_TO_RAID", {text = '邀请这名玩家或队伍会将你的小队转化为团队。', button1 = '邀请', button2 = '取消'})
+
+    hooksecurefunc('LFGDungeonReadyPopup_Update', function()--LFGFrame.lua
+        local proposalExists, _, typeID, subtypeID, _, _, role, hasResponded, _, _, numMembers, _, _, _, isSilent = GetLFGProposal();
+        if ( not proposalExists ) then
+            return;
+        elseif ( isSilent ) then
+            return;
+        end
+
+        if ( role == "NONE" ) then
+            role = "DAMAGER";
+        end
+
+        local leaveText = '离开队列';
+        if ( subtypeID == LFG_SUBTYPEID_RAID or subtypeID == LFG_SUBTYPEID_FLEXRAID ) then
+            LFGDungeonReadyDialog.enterButton:SetText('进入');
+        elseif ( subtypeID == LFG_SUBTYPEID_SCENARIO ) then
+            if ( numMembers > 1 ) then
+                LFGDungeonReadyDialog.enterButton:SetText('进入');
+            else
+                LFGDungeonReadyDialog.enterButton:SetText('接受');
+                leaveText = '取消'
+            end
+        else
+            LFGDungeonReadyDialog.enterButton:SetText('进入');
+        end
+        LFGDungeonReadyDialog.leaveButton:SetText(leaveText);
+
+        if not hasResponded then
+            local LFGDungeonReadyDialog = LFGDungeonReadyDialog;
+            if ( typeID == TYPEID_RANDOM_DUNGEON and subtypeID ~= LFG_SUBTYPEID_SCENARIO ) then
+                LFGDungeonReadyDialog.label:SetText('你的随机地下城小队已经整装待发！');
+            else
+                 if ( numMembers > 1 ) then
+                    LFGDungeonReadyDialog.label:SetText('已经建好了一个队伍，准备前往：');
+                else
+                    LFGDungeonReadyDialog.label:SetText('已经建好了一个副本，准备前往：');
+                end
+            end
+            if ( subtypeID ~= LFG_SUBTYPEID_SCENARIO and subtypeID ~= LFG_SUBTYPEID_FLEXRAID  and e.strText[_G[role]]) then
+                LFGDungeonReadyDialogRoleLabel:SetText(e.strText[_G[role]])
+            end
+        end
+    end)
+    set(LFGDungeonReadyDialogYourRoleDescription, '职责')
+
+
+
+
+
+
+
+
+
 
     --选项
     hooksecurefunc(SettingsPanel.Container.SettingsList.ScrollBox, 'Update', function(frame)
@@ -2180,9 +2255,12 @@ local function Init()
     --任务对话框
     set(GossipFrame.GreetingPanel.GoodbyeButton, '再见')
 
-
-
-
+    set(QuestFrameAcceptButton, '接受')
+    set(QuestFrameGreetingGoodbyeButton, '再见')
+    set(QuestFrameCompleteQuestButton, '完成任务')
+    set(QuestFrameCompleteButton, '继续')
+    set(QuestFrameGoodbyeButton, '再见')
+    set(QuestFrameDeclineButton, '拒绝')
 
 
 
@@ -3415,7 +3493,7 @@ local function Init_Loaded(arg1)
     elseif arg1=='Blizzard_BlackMarketUI' then
         dia("BID_BLACKMARKET", {text = '确定要出价%s竞拍以下物品吗？', button1 = '确定', button2 = '取消'})
 
-    elseif arg1=='Blizzard_TrainerUI' then
+    elseif arg1=='Blizzard_TrainerUI' then--专业，训练师
         dia("CONFIRM_PROFESSION", {text = format('你只能学习两个专业。你要学习|cffffd200%s|r作为你的第一个专业吗？', "XXX"), button1 = '接受', button2 = '取消'})
         hookDia("CONFIRM_PROFESSION", 'OnShow', function(self)
             local prof1, prof2 = GetProfessions()
@@ -3425,6 +3503,7 @@ local function Init_Loaded(arg1)
                 self.text:SetFormattedText('你只能学习两个专业。你要学习|cffffd200%s|r作为你的第一个专业吗？', GetTrainerServiceSkillLine(ClassTrainerFrame.selectedService))
             end
         end)
+        set(ClassTrainerTrainButton, '训练')
 
     elseif arg1=='Blizzard_DeathRecap' then
         set(DeathRecapFrame.CloseButton, '关闭')
@@ -3432,6 +3511,11 @@ local function Init_Loaded(arg1)
 
     elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
         set(ItemSocketingSocketButton, '应用')
+
+    elseif arg1=='Blizzard_CombatLog' then--聊天框，战斗记录
+        print(CombatLogQuickButtonFrameButton1, id, addName)
+        set(CombatLogQuickButtonFrameButton1, '我的动作')
+    
 
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})

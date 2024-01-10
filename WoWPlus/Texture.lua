@@ -721,10 +721,12 @@ local function Init_All_Frame()
      set_NineSlice(QuestFrame, true)
      set_Alpha_Color(QuestFrameBg)
      hide_Texture(QuestFrameInset.Bg)
+     set_ScrollBar(QuestFrame)
+     set_ScrollBar(QuestProgressScrollFrame)
+     set_ScrollBar(QuestDetailScrollFrame)
 
      --信箱
-     
-     set_NineSlice(MailFrame, true)
+          set_NineSlice(MailFrame, true)
      set_Alpha_Color(MailFrameBg)
      hide_Texture(InboxFrameBg)
      hide_Texture(MailFrameInset.Bg)
