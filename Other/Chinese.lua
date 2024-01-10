@@ -1596,8 +1596,10 @@ local function Init()
                     end
                 end
                 hooksecurefunc(RecruitAFriendFrame, 'UpdateNextReward', set_UpdateNextReward)
-                local latestRAFVersionInfo = RecruitAFriendFrame:GetLatestRAFVersionInfo() or {}
-                set_UpdateNextReward(RecruitAFriendFrame, latestRAFVersionInfo.nextReward)
+                if RecruitAFriendFrame.rafEnabled and RecruitAFriendFrame.rafInfo and #RecruitAFriendFrame.rafInfo.versions > 0 then
+                    local latestRAFVersionInfo = RecruitAFriendFrame:GetLatestRAFVersionInfo() or {}
+                    set_UpdateNextReward(RecruitAFriendFrame, latestRAFVersionInfo.nextReward)
+                end
 
                 hooksecurefunc(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton, 'Update', function(self)
                     if self.haveUnclaimedReward then
