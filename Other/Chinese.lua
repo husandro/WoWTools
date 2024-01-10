@@ -2611,7 +2611,16 @@ local function Init()
     dia("SPELL_CONFIRMATION_PROMPT", {button1 = '是', button2 = '否'})
     dia("SPELL_CONFIRMATION_WARNING", {button1 = '确定'})
     dia("CONFIRM_LAUNCH_URL", {text = '点击“确定”后将在你的网络浏览器中打开一个窗口。', button1 = '确定', button2 = '取消'})
+
     dia("CONFIRM_LEAVE_INSTANCE_PARTY", {button1 = '是', button2 = '取消'})
+    StaticPopupDialogs["CONFIRM_LEAVE_INSTANCE_PARTY"].OnShow= function(self)
+        local text= self.text:GetText()
+        if text== CONFIRM_LEAVE_BATTLEFIELD then
+            set(self.text, '确定要离开战场吗？')
+        elseif text== CONFIRM_LEAVE_INSTANCE_PARTY then
+            set(self.text, '确定要离开副本队伍吗？\n\n一旦离开队伍，你将无法返回该副本。')
+        end
+    end
 
     dia("CONFIRM_LEAVE_BATTLEFIELD", {text = '确定要离开战场吗？', button1 = '是', button2 = '取消'})
     hookDia("CONFIRM_LEAVE_BATTLEFIELD", 'OnShow', function(self)
