@@ -6461,7 +6461,11 @@
         "LFGDungeonReadyStatusRoleless_UpdateCount",
         "GetIconForRole",
         "SPECIFIC_INSTANCE_IS_READY",
-        "StaticPopup_IsLastDisplayedFrame"
+        "StaticPopup_IsLastDisplayedFrame",
+        "LFGDungeonReadyDialogRewardsFrameLabel",
+        "LFGDungeonReadyStatusLabel",
+        "LFGDungeonReadyDialogRandomInProgressFrame",
+        "LFGDungeonReadyDialogRandomInProgressFrameStatusText"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

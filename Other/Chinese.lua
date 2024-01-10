@@ -1488,7 +1488,12 @@ local function Init()
             end
         end
     end)
-    set(LFGDungeonReadyDialogYourRoleDescription, '职责')
+    set(LFGDungeonReadyDialogYourRoleDescription, '你的职责')
+    set(LFGDungeonReadyDialogRoleLabel, '治疗者')    
+    set(LFGDungeonReadyDialogRewardsFrameLabel, '奖励')
+    set(LFGDungeonReadyStatusLabel, '就位确认')
+
+    set(LFGDungeonReadyDialogRandomInProgressFrameStatusText, '该地下城正在进行中。')
 
 
 

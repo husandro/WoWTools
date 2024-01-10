@@ -1888,8 +1888,8 @@ end
 local function Init()
     StaticPopupDialogs[addName..'ExitIns']={
         text =id..'('..addName..')|n|n|cff00ff00'..(e.onlyChinese and '离开' or LEAVE)..'|r: ' ..(e.onlyChinese and '副本' or INSTANCE).. '|cff00ff00 '..sec..' |r'..(e.onlyChinese and '秒' or SECONDS),
-        button1 = LEAVE,
-        button2 = CANCEL,
+        button1 = e.onlyChinese and '离开' or  LEAVE,
+        button2 = e.onlyChinese and '取消' or CANCEL,
         OnAccept=function()
             ExitIns=true
             exit_Instance()
