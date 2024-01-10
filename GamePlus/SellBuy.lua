@@ -18,7 +18,7 @@ local Save={
     --sellJunkMago=true,--出售，可幻化，垃圾物品
     --notPlus=true,--商人 Pluse,加宽
 
-   
+
 }
 
 local addName= MERCHANT
@@ -467,20 +467,20 @@ end
 --商人Pluse. 设置, 提示, 信息
 --#########################
 local function Set_Merchant_Info()--设置, 提示, 信息
+    if not MerchantFrame:IsShown() then
+        return
+    end
+
     local selectedTab= MerchantFrame.selectedTab
     local isMerce= selectedTab == 1
     local page= isMerce and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
-    local numItem= isMerce and  GetMerchantNumItems() or GetNumBuybackItems();
-    --for i=1, page do
-    for index=1, page do
-		--local index = selectedTab==1 and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
-        local btn= _G["MerchantItem"..index]
-        --local itemButton= _G["MerchantItem"..index.."ItemButton"]
+    local numItem= isMerce and GetMerchantNumItems() or GetNumBuybackItems();
+    for i=1, page do
+        local index = (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i);
+        local btn= _G["MerchantItem"..i]
+        local text, spellID, num, itemID, itemLink
 
-        local text, spellID
-        local num, itemID
         if btn and index<= numItem then
-            local itemLink
             if isMerce then
                 itemID= GetMerchantItemID(index)
                 itemLink=  GetMerchantItemLink(index)
@@ -489,16 +489,13 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                 itemLink= GetBuybackItemLink(index)
             end
 
-
             num=(not Save.notAutoBuy and itemID) and buySave[itemID]--自动购买， 数量
             num= num and num..'|T236994:0|t'
-            --if not Save.notShowBagNum then--包里，银行，总数
-                --包里，银行，总数
-                local bag=itemID and GetItemCount(itemID,true)
-                if bag and bag>0 then
-                    num=(num and num..'|n' or '')..bag..e.Icon.bank2
-                end
-            --end
+            --包里，银行，总数
+            local bag=itemID and GetItemCount(itemID,true)
+            if bag and bag>0 then
+                num=(num and num..'|n' or '')..bag..e.Icon.bank2
+            end
             if num and not btn.buyItemNum then
                 btn.buyItemNum=e.Cstr(btn)
                 btn.buyItemNum:SetPoint('RIGHT')
@@ -528,7 +525,6 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                 for _, tab in pairs(stat) do
                     text= text and text..' ' or ''
                     text= (text and text..' ' or '')..tab.text
-                    print(tab.text)
                 end
                 spellID= select(2, GetItemSpell(itemLink))
                 if spellID then
@@ -552,12 +548,13 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                 end
             end
         end
+
         if btn then
             if btn.buyItemNum then
                 btn.buyItemNum:SetText(num or '')
                 btn.buyItemNum.itemID= itemID
             end
-            if btn and btn.stats then
+            if btn.stats then
                 btn.stats:SetText(text or '')
                 btn.stats.spellID= spellID
             end
