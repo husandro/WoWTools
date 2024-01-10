@@ -12,16 +12,6 @@ local Save={
 local panel= CreateFrame("Frame")
 
 
-local function set(self, text, affer)
-    if self and text and not self:IsForbidden() then--CanAccessObject(self) then
-        if affer then
-            C_Timer.After(affer, function() self:SetText(text) end)
-        else
-            self:SetText(text)
-        end
-    end
-end
-
 local function font(lable)
     if lable then
         local fontName2, size2, fontFlag2= lable:GetFont()
@@ -31,6 +21,21 @@ local function font(lable)
         lable:SetFont(fontName2, size2, fontFlag2 or 'OUTLINE')
     end
 end
+
+
+local function set(self, text, affer, setFont)
+    if self and text and not self:IsForbidden() then--CanAccessObject(self) then
+        if setFont then
+            font(self)
+        end
+        if affer then
+            C_Timer.After(affer, function() self:SetText(text) end)
+        else
+            self:SetText(text)
+        end
+    end
+end
+
 
 local function dia(string, tab)
     if StaticPopupDialogs[string] then
@@ -1349,6 +1354,7 @@ local function Init()
 
     set(GroupFinderFrame.groupButton1.name, '地下城查找器')
         set(LFDQueueFrameTypeDropDownName, '类型：')
+        set(LFDQueueFrameRandomScrollFrameChildFrameTitle, '')
     set(GroupFinderFrame.groupButton2.name, '团队查找器')
         set(RaidFinderQueueFrameSelectionDropDownName, '团队')
             hooksecurefunc('RaidFinderFrameFindRaidButton_Update', function()--RaidFinder.lua
@@ -1420,11 +1426,17 @@ local function Init()
                     set(self.ListGroupButton, '列出队伍')
                 end
             end)
+            set(LFGListFrame.ApplicationViewer.NameColumnHeader.Label, '名称', nil, true)
+            set(LFGListFrame.ApplicationViewer.RoleColumnHeader.Label, '职责', nil, true)
+            set(LFGListFrame.ApplicationViewer.ItemLevelColumnHeader.Label, '装等', nil, true)
+            set(LFGApplicationViewerRatingColumnHeader.Label, '分数', nil, true)
+
             --hooksecurefunc('LFGListEntryCreation_Show', function()
     set(LFGListFrame.ApplicationViewer.AutoAcceptButton.Label, '自动邀请')
     set(LFGListFrame.ApplicationViewer.BrowseGroupsButton, '浏览队伍')
     set(LFGListFrame.ApplicationViewer.RemoveEntryButton, '移除')
     set(LFGListFrame.ApplicationViewer.EditButton, '编辑')
+    set(LFGListFrame.ApplicationViewer.UnempoweredCover.Label, '你的队伍正在组建中。')
     set(LFGListFrame.SearchPanel.BackToGroupButton, '回到队伍')
     set(LFGListFrame.SearchPanel.SignUpButton, '申请')
     set(LFGListFrame.SearchPanel.BackButton, '后退')
@@ -1440,6 +1452,122 @@ local function Init()
                 set(LFDQueueFrameFindGroupButton, '寻找组队')
             end
         end
+    end)
+
+    hooksecurefunc('LFDRoleCheckPopup_Update', function()
+        local slots, bgQueue = GetLFGRoleUpdate();
+        local isLFGList, activityID = C_LFGList.GetRoleCheckInfo();
+        local displayName;
+        if( isLFGList ) then
+            displayName = C_LFGList.GetActivityFullName(activityID);
+        elseif ( bgQueue ) then
+            displayName = GetLFGRoleUpdateBattlegroundInfo();
+        elseif ( slots == 1 ) then
+            local dungeonID, _, dungeonSubType = GetLFGRoleUpdateSlot(1);
+            if ( dungeonSubType == LFG_SUBTYPEID_HEROIC ) then
+                displayName = format('英雄难度：%s', select(LFG_RETURN_VALUES.name, GetLFGDungeonInfo(dungeonID)));
+            else
+                displayName = select(LFG_RETURN_VALUES.name, GetLFGDungeonInfo(dungeonID));
+            end
+        else
+            displayName = '多个地下城';
+        end
+        displayName = displayName and NORMAL_FONT_COLOR:WrapTextInColorCode(displayName) or "";
+
+        if ( isLFGList ) then
+            LFDRoleCheckPopupDescriptionText:SetFormattedText('申请加入%s', displayName);
+        else
+            LFDRoleCheckPopupDescriptionText:SetFormattedText('在等待%s的队列中', displayName);
+        end
+
+        local maxLevel, isLevelReduced = C_LFGInfo.GetRoleCheckDifficultyDetails();
+        if isLevelReduced then
+            local canDisplayLevel = maxLevel and maxLevel < UnitEffectiveLevel("player");
+            if canDisplayLevel then
+                LFDRoleCheckPopupDescription.SubText:SetFormattedText(bgQueue and '等级和技能限制为小队的最低等级范围（%s）。' or '等级和技能限制为地下城的最高等级（%s）。', maxLevel);
+            else
+                LFDRoleCheckPopupDescription.SubText:SetText('进入战场时，等级和技能可能会受到限制。');
+            end
+        end
+    end)
+    
+
+    hooksecurefunc('LFDFrame_OnEvent', function(_, event, ...)
+        if ( event == "LFG_ROLE_CHECK_SHOW" ) then
+            local requeue = ...;
+            set(LFDRoleCheckPopup.Text, requeue and '你的队友已经将你加入另一场练习赛的队列。\n\n请确认你的角色：' or '确定你的职责：')
+        elseif ( event == "LFG_READY_CHECK_SHOW" ) then
+            local _, readyCheckBgQueue = GetLFGReadyCheckUpdate();
+            local displayName;
+            if ( readyCheckBgQueue ) then
+                displayName = GetLFGReadyCheckUpdateBattlegroundInfo();
+            else
+                displayName = '未知';
+            end
+            set(LFDReadyCheckPopup.Text, format('你的队长将你加入%s的队列。准备好了吗？', displayName))
+            
+        --[[elseif ( event == "LFG_BOOT_PROPOSAL_UPDATE" ) then
+            local voteInProgress, didVote, myVote, targetName, totalVotes, bootVotes, timeLeft, reason = GetLFGBootProposal();
+            if ( voteInProgress and not didVote and targetName ) then
+                if (reason and reason ~= "") then
+                    StaticPopupDialogs["VOTE_BOOT_PLAYER"].text = VOTE_BOOT_PLAYER;
+                else
+                    StaticPopupDialogs["VOTE_BOOT_PLAYER"].text = VOTE_BOOT_PLAYER_NO_REASON;
+                end
+                -- Person who started the vote voted yes, the person being voted against voted no, so weve seen this before if we have more than 2 votes.
+                StaticPopup_Show("VOTE_BOOT_PLAYER", targetName, reason, totalVotes > 2 );
+            else
+                StaticPopup_Hide("VOTE_BOOT_PLAYER");
+            end]]
+        end
+    end)
+
+    hooksecurefunc('LFDQueueFrameRandomCooldownFrame_Update', function()--LFDFrame.lua
+        local cooldownFrame = LFDQueueFrameCooldownFrame;
+        local hasDeserter = false; --If we have deserter, we want to show this over the specific frame as well as the random frame.
+
+        local deserterExpiration = GetLFGDeserterExpiration();
+
+        local myExpireTime;
+        if ( deserterExpiration ) then
+            myExpireTime = deserterExpiration;
+            hasDeserter = true;
+        else
+            myExpireTime = GetLFGRandomCooldownExpiration();
+        end
+
+
+        for i = 1, GetNumSubgroupMembers() do
+            --local nameLabel = _G["LFDQueueFrameCooldownFrameName"..i];
+            local statusLabel = _G["LFDQueueFrameCooldownFrameStatus"..i];
+            
+            --local _, classFilename = UnitClass("party"..i);
+            --local classColor = classFilename and RAID_CLASS_COLORS[classFilename] or NORMAL_FONT_COLOR;
+            --nameLabel:SetFormattedText("|cff%.2x%.2x%.2x%s|r", classColor.r * 255, classColor.g * 255, classColor.b * 255, GetUnitName("party"..i, true));
+
+            if ( UnitHasLFGDeserter("party"..i) ) then
+                statusLabel:SetFormattedText(RED_FONT_COLOR_CODE.."%s|r", '逃亡者');
+                hasDeserter = true;
+            elseif ( UnitHasLFGRandomCooldown("party"..i) ) then
+                statusLabel:SetFormattedText(RED_FONT_COLOR_CODE.."%s|r", '冷却中');
+            else
+                statusLabel:SetFormattedText(GREEN_FONT_COLOR_CODE.."%s|r", '就绪');
+            end
+        end
+        if ( myExpireTime and GetTime() < myExpireTime ) then
+            if ( deserterExpiration ) then
+                cooldownFrame.description:SetText('你刚刚逃离了随机队伍，在接下来的时间内无法再度排队：');
+            else
+                cooldownFrame.description:SetText('你近期加入过一个随机地下城队列。\n需要过一段时间才可加入另一个，等待时间为：');
+            end
+        else
+            if ( hasDeserter ) then
+                cooldownFrame.description:SetText('你的一名队伍成员刚刚逃离了随机副本队伍，在接下来的时间内无法再度排队。');
+            else
+                cooldownFrame.description:SetText('的一名队友近期加入过一个随机地下城队列，暂时无法加入另一个。');
+            end
+        end
+
     end)
 
     --LFGList.lua
@@ -2604,7 +2732,9 @@ local function Init()
     dia("TALENTS_INVOLUNTARILY_RESET", {text = '因为天赋树有了一些改动，你的某些天赋已被重置。', button1 = '确定'})
     dia("TALENTS_INVOLUNTARILY_RESET_PET", {text = '你的宠物天赋已被重置。', button1 = '确定'})
     dia("SPEC_INVOLUNTARILY_CHANGED", {text = '由于该专精暂时无法使用，你的角色专精已发生改变。', button1 = '确定'})
-    dia("VOTE_BOOT_PLAYER", {text = '有人发起了一个将%1$s从队伍中移出的投票。\n\n理由为：\n|cffffd200%2$s|r\n\n你同意将%1$s移出队伍吗？', button1 = '是', button2 = '否'})
+
+    dia("VOTE_BOOT_PLAYER", {button1 = '是', button2 = '否'})
+
     dia("VOTE_BOOT_REASON_REQUIRED", {text = '请写明将%s投票移出的理由：', button1 = '确定', button2 = '取消'})
     dia("LAG_SUCCESS", {text = '你的延迟报告已经成功提交。', button1 = '确定'})
     dia("LFG_OFFER_CONTINUE", {text = '一名玩家离开了你的队伍。是否寻找另一名玩家以完成%s？', button1 = '是', button2 = '否'})

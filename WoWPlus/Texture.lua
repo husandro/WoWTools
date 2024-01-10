@@ -502,6 +502,8 @@ local function Init_All_Frame()
      set_Alpha_Color(LFGListFrameTopRight)
      set_Alpha_Color(LFGListFrameBottomRight)
 
+     set_ScrollBar(LFGListFrame.ApplicationViewer)
+
      set_Alpha_Color(RaidFinderQueueFrameBackground)
      set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownMiddle)
      set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownLeft)
