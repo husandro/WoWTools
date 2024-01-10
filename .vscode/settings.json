@@ -6517,7 +6517,22 @@
         "RaidFinderQueueFrameScrollFrameChildFrameRewardsLabel",
         "LFDQueueFrameRandomScrollFrameChildFrameRewardsLabel",
         "ERR_LOOT_GONE",
-        "RaidFinderQueueFrameScrollFrameChildFrameEncounterList"
+        "RaidFinderQueueFrameScrollFrameChildFrameEncounterList",
+        "HonorFrameQueueButton",
+        "HonorFrameQueueButtonText",
+        "INSTANCE_UNAVAILABLE_SELF_LEVEL_TOO_LOW",
+        "CANNOT_DO_THIS_WITH_LFGLIST_APP",
+        "CANNOT_DO_THIS_WHILE_LFGLIST_LISTED",
+        "BATTLEFIELD_GROUP_JOIN",
+        "BATTLEFIELD_JOIN",
+        "SOLO_BRAWL_CANT_QUEUE",
+        "ERR_NOT_LEADER",
+        "INSTANCE_UNAVAILABLE_SELF_PVP_GEAR_TOO_LOW",
+        "PVP_ARENA_NEED_LESS",
+        "PVP_ARENA_NEED_MORE",
+        "QUEUE_UNAVAILABLE_PARTY_MIN_LEVEL",
+        "CROSS_FACTION_PVP_ERROR",
+        "INSTANCE_UNAVAILABLE_OTHER_GEAR_TOO_LOW"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -3469,6 +3469,119 @@ local function Init_Loaded(arg1)
             end)
         set(PVPQueueFrameCategoryButton2.Name, '评级')
         set(PVPQueueFrameCategoryButton3.Name, '预创建队伍')
+        set(PVPQueueFrame.NewSeasonPopup.Leave, '关闭')
+
+        hooksecurefunc('HonorFrame_UpdateQueueButtons', function()
+            local HonorFrame = HonorFrame;
+            local canQueue;
+            local arenaID;
+            local isBrawl;
+            local isSpecialBrawl
+            if ( HonorFrame.type == "specific" ) then
+                if ( HonorFrame.SpecificScrollBox.selectionID ) then
+                    canQueue = true;
+                end
+            elseif ( HonorFrame.type == "bonus" ) then
+                if ( HonorFrame.BonusFrame.selectedButton ) then
+                    canQueue = HonorFrame.BonusFrame.selectedButton.canQueue;
+                    arenaID = HonorFrame.BonusFrame.selectedButton.arenaID;
+                    isBrawl = HonorFrame.BonusFrame.selectedButton.isBrawl;
+                    isSpecialBrawl = HonorFrame.BonusFrame.selectedButton.isSpecialBrawl;
+                end
+            end
+
+            local disabledReason;
+
+            if arenaID then
+                local battlemasterListInfo = C_PvP.GetSkirmishInfo(arenaID);
+                if battlemasterListInfo then
+                    local groupSize = GetNumGroupMembers();
+                    local minPlayers = battlemasterListInfo.minPlayers;
+                    local maxPlayers = battlemasterListInfo.maxPlayers;
+                    if groupSize > maxPlayers then
+                        canQueue = false;
+                        disabledReason = format('要进入该竞技场，你的团队需要减少%d名玩家。', groupSize - maxPlayers);
+                    elseif groupSize < minPlayers then
+                        canQueue = false;
+                        disabledReason = format('要进入该竞技场，你的团队需要增加%d名玩家。', minPlayers - groupSize);
+                    end
+                end
+            end
+
+            if (isBrawl or isSpecialBrawl) and not canQueue then
+                if IsInGroup(LE_PARTY_CATEGORY_HOME) then
+                    local brawlInfo = isSpecialBrawl and C_PvP.GetSpecialEventBrawlInfo() or C_PvP.GetAvailableBrawlInfo() or {};
+                    if brawlInfo then
+                        disabledReason = format('你的小队未满足最低等级要求（%s）。', isSpecialBrawl and brawlInfo.minLevel or GetMaxLevelForPlayerExpansion());
+                    end
+                else
+                    disabledReason = '你的级别不够。';
+                end
+            end
+
+            if isBrawl or isSpecialBrawl and canQueue then
+                local brawlInfo = isSpecialBrawl and C_PvP.GetSpecialEventBrawlInfo() or C_PvP.GetAvailableBrawlInfo() or {};
+                local brawlHasMinItemLevelRequirement = brawlInfo and brawlInfo.brawlType == Enum.BrawlType.SoloRbg;
+                if (IsInGroup(LE_PARTY_CATEGORY_HOME)) then
+                    if(brawlInfo and not brawlInfo.groupsAllowed) then
+                        canQueue = false;
+                        disabledReason = '你不能在队伍中那样做。';
+                    end
+                    if (brawlHasMinItemLevelRequirement and brawlInfo.groupsAllowed) then
+                        local brawlMinItemLevel = brawlInfo.minItemLevel;
+                        local partyMinItemLevel, playerWithLowestItemLevel = C_PartyInfo.GetMinItemLevel(Enum.AvgItemLevelCategories.PvP);
+                        if (UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME) and partyMinItemLevel < brawlMinItemLevel) then
+                            canQueue = false;
+                            disabledReason = format('"%1$s需要更高的平均装备物品等级。（需要：%2$d。当前%3$d。）', playerWithLowestItemLevel, brawlMinItemLevel, partyMinItemLevel);
+                        end
+                    end
+                end 
+                local _, _, playerPvPItemLevel = GetAverageItemLevel();
+                if (brawlHasMinItemLevelRequirement and playerPvPItemLevel < brawlInfo.minItemLevel) then
+                    canQueue = false;
+                    disabledReason = format('你需要更高的PvP装备物品平均等级才能加入队列。|n（需要 %2$d，当前%3$d。）', brawlInfo.minItemLevel, playerPvPItemLevel);
+                end
+            end
+
+            --Disable the button if the person is active in LFGList
+            if not disabledReason then
+                if ( select(2,C_LFGList.GetNumApplications()) > 0 ) then
+                    disabledReason = '你不能在拥有有效的预创建队伍申请时那样做。';
+                    canQueue = false;
+                elseif ( C_LFGList.HasActiveEntryInfo() ) then
+                    disabledReason = '你不能在你的队伍出现在预创建队伍列表中时那样做。';
+                    canQueue = false;
+                end
+            end
+
+            local isInCrossFactionGroup = C_PartyInfo.IsCrossFactionParty();
+            if ( canQueue ) then
+                if ( IsInGroup(LE_PARTY_CATEGORY_HOME) ) then
+                    HonorFrame.QueueButton:SetText('小队加入');
+                    if (not UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME)) then
+                        disabledReason = '你现在不是队长'
+                    elseif(isInCrossFactionGroup) then
+                        if isBrawl or isSpecialBrawl then 
+                            local brawlInfo = isSpecialBrawl and C_PvP.GetSpecialEventBrawlInfo() or C_PvP.GetAvailableBrawlInfo();
+                            local allowCrossFactionGroups = brawlInfo and brawlInfo.brawlType == Enum.BrawlType.SoloRbg;
+                            if (not allowCrossFactionGroups) then
+                                disabledReason ='在跨阵营队伍中无法这么做。你可以参加竞技场或者评级战场。';
+                            end
+                        end
+                    end
+                else
+                    HonorFrame.QueueButton:SetText('加入战斗');
+                end
+            else
+                if (HonorFrame.type == "bonus" and HonorFrame.BonusFrame.selectedButton and HonorFrame.BonusFrame.selectedButton.queueID) then
+                    if not disabledReason then
+                        disabledReason = LFGConstructDeclinedMessage(HonorFrame.BonusFrame.selectedButton.queueID);
+                    end
+                end
+            end
+            HonorFrame.QueueButton.tooltip = disabledReason;
+        end)
+        
 --hooksecurefunc('HonorFrame_UpdateQueueButtons', function()
 
 
