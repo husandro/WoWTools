@@ -202,6 +202,7 @@ Interface\Cursor\UI-Cursor-Move   Redlist.xml
 securecall('',)
 wrapFunc(C_PetBattles.DeclineQueuedPVPMatch)
 
+SharedTooltipTemplates.lua
 securecallfunction(GameTooltip_AddQuest, self, questID)
 GameTooltip_SetDefaultAnchor(GameTooltip, self);
 GameTooltip_Hide()
