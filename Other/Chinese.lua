@@ -2271,7 +2271,18 @@ local function Init()
 
 
 
-
+    --编辑模式
+    set(EditModeManagerFrame.Title, 'HUD编辑模式')
+    set(EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.FramesTitle.Title, '框体')
+    set(EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.CombatTitle.Title, '战斗')
+    set(EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.MiscTitle.Title, '其它')
+    set(EditModeManagerFrame.LayoutDropdown.Label, '布局：')
+    hooksecurefunc(EditModeManagerFrame.AccountSettings, 'SetExpandedState', function(self, expanded, isUserInput)
+        set(self.Expander.Label, expanded and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or '展开选项 |A:editmode-down-arrow:16:11:0:-7|a')
+    end)
+    set(EditModeManagerFrame.AccountSettings.Expander.Label, '展开选项 |A:editmode-down-arrow:16:11:0:-7|a')
+    set(EditModeManagerFrame.RevertAllChangesButton, '撤销所有变更')
+    set(EditModeManagerFrame.SaveChangesButton, '保存')
 
 
 

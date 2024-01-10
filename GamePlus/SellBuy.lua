@@ -528,6 +528,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                 for _, tab in pairs(stat) do
                     text= text and text..' ' or ''
                     text= (text and text..' ' or '')..tab.text
+                    print(tab.text)
                 end
                 spellID= select(2, GetItemSpell(itemLink))
                 if spellID then
@@ -536,7 +537,6 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                 if text and not btn.stats then
                     btn.stats=e.Cstr(btn, {size=10, mouse=true})
                     btn.stats:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT',0,6)
-                    --btn.stats:EnableMouse(true)
                     btn.stats:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
                     btn.stats:SetScript('OnEnter', function(self2)
                         if self2.spellID then
