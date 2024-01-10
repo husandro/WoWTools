@@ -6420,7 +6420,13 @@
         "RAF_COPY_LINK",
         "RAF_GENERATE_LINK",
         "PLAYER_FACTION_COLOR_HORDE",
-        "PLAYER_FACTION_COLOR_ALLIANCE"
+        "PLAYER_FACTION_COLOR_ALLIANCE",
+        "WhoFrameColumnHeader3",
+        "WhoFrameColumnHeader4",
+        "WhoFrameTotals",
+        "MAX_WHOS_FROM_SERVER",
+        "WHO_FRAME_TOTAL_TEMPLATE",
+        "WHO_FRAME_SHOWN_TEMPLATE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

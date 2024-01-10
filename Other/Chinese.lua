@@ -1558,7 +1558,7 @@ local function Init()
             set(FriendsFrameUnsquelchButton, '移除')
         set(FriendsTabHeaderTab3, '招募战友')
             if RecruitAFriendFrame then
-                local function set_UpdateRAFInfo(self ,rafInfo)
+                local function set_UpdateRAFInfo(self, rafInfo)
                     if self.rafEnabled and rafInfo and #rafInfo.versions > 0 then
                         local latestRAFVersionInfo = self:GetLatestRAFVersionInfo()
                         if (latestRAFVersionInfo.numRecruits == 0) and (latestRAFVersionInfo.monthCount.lifetimeMonths == 0) then
@@ -1626,7 +1626,6 @@ local function Init()
                 hooksecurefunc(RecruitAFriendRewardsFrame, 'UpdateDescription', function(self, selectedRAFVersionInfo)
                     self.Description:SetText((selectedRAFVersionInfo.rafVersion == self:GetRecruitAFriendFrame():GetLatestRAFVersion()) and '每名拥有可用的游戏时间的被招募者|n每30天可以为你提供一份月度奖励。' or '不能再为旧版招募活动再招募新的战友，但是旧版现有的被招募的战友还会继续提供战友招募奖励。');
                 end)
-                --set(RecruitAFriendRewardsFrame.Description, '每名拥有可用的游戏时间的被招募者|n每30天可以为你提供一份月度奖励。')
 
 
                 RecruitAFriendRewardsFrame.VersionInfoButton:HookScript('OnEnter', function(self)
@@ -1637,21 +1636,9 @@ local function Init()
                     GameTooltip_AddNormalLine(GameTooltip, helpText:format(selectedVersionInfo.numRecruits, selectedVersionInfo.numAffordableRewards))
                     GameTooltip:Show()
                 end)
-               -- RecruitAFriendRewardsFrame:Refresh()
-
 
                 set(RecruitAFriendRecruitmentFrame.Title, '招募')
 
-                --[[local maxRecruits = 0;
-                local maxRecruitLinkUses = 0;
-                local daysInCycle = 0;
-                hooksecurefunc(RecruitAFriendFrame, 'UpdateRAFSystemInfo', function(_, rafSystemInfo)
-                    if rafSystemInfo then
-                        maxRecruits = rafSystemInfo.maxRecruits;
-                        maxRecruitLinkUses = rafSystemInfo.maxRecruitmentUses;
-                        daysInCycle = rafSystemInfo.daysInCycle;
-                    end
-                end)]]
                 hooksecurefunc(RecruitAFriendRecruitmentFrame, 'UpdateRecruitmentInfo', function(self, recruitmentInfo, recruitsAreMaxed)
                     local maxRecruits = 0;
                     local maxRecruitLinkUses = 0;
@@ -1718,6 +1705,16 @@ local function Init()
                 GameTooltip:AddLine('|cnRED_FONT_COLOR:只有团队领袖才能更改此项设置。', nil, nil, nil, true)
             end
             GameTooltip:Show()
+        end)
+        set(WhoFrameColumnHeader1, '名称')
+        set(WhoFrameColumnHeader4, '职业')
+        hooksecurefunc('WhoList_Update', function()
+            local numWhos, totalCount = C_FriendList.GetNumWhoResults();
+            local displayedText = "";
+            if ( totalCount > MAX_WHOS_FROM_SERVER ) then
+                displayedText = format('（显示%d）', MAX_WHOS_FROM_SERVER);
+            end
+            WhoFrameTotals:SetText(format('找到%d个人', totalCount).."  "..displayedText);
         end)
         set(RaidFrameRaidInfoButton, '团队信息')
             set(RaidInfoFrame.Header.Text, '团队信息')
