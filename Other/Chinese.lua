@@ -1346,6 +1346,15 @@ local function Init()
 
 
 
+
+
+
+
+
+    
+
+
+
     --LFD PVEFrame.lua
     --地下城和团队副本
     set(PVEFrameTab1, '地下城和团队副本')
@@ -1490,7 +1499,7 @@ local function Init()
             end
         end
     end)
-    
+
 
     hooksecurefunc('LFDFrame_OnEvent', function(_, event, ...)
         if ( event == "LFG_ROLE_CHECK_SHOW" ) then
@@ -1505,7 +1514,7 @@ local function Init()
                 displayName = '未知';
             end
             set(LFDReadyCheckPopup.Text, format('你的队长将你加入%s的队列。准备好了吗？', displayName))
-            
+
         --[[elseif ( event == "LFG_BOOT_PROPOSAL_UPDATE" ) then
             local voteInProgress, didVote, myVote, targetName, totalVotes, bootVotes, timeLeft, reason = GetLFGBootProposal();
             if ( voteInProgress and not didVote and targetName ) then
@@ -1540,7 +1549,7 @@ local function Init()
         for i = 1, GetNumSubgroupMembers() do
             --local nameLabel = _G["LFDQueueFrameCooldownFrameName"..i];
             local statusLabel = _G["LFDQueueFrameCooldownFrameStatus"..i];
-            
+
             --local _, classFilename = UnitClass("party"..i);
             --local classColor = classFilename and RAID_CLASS_COLORS[classFilename] or NORMAL_FONT_COLOR;
             --nameLabel:SetFormattedText("|cff%.2x%.2x%.2x%s|r", classColor.r * 255, classColor.g * 255, classColor.b * 255, GetUnitName("party"..i, true));
@@ -1617,11 +1626,33 @@ local function Init()
         end
     end)
     set(LFGDungeonReadyDialogYourRoleDescription, '你的职责')
-    set(LFGDungeonReadyDialogRoleLabel, '治疗者')    
+    set(LFGDungeonReadyDialogRoleLabel, '治疗者')
     set(LFGDungeonReadyDialogRewardsFrameLabel, '奖励')
     set(LFGDungeonReadyStatusLabel, '就位确认')
 
     set(LFGDungeonReadyDialogRandomInProgressFrameStatusText, '该地下城正在进行中。')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1857,7 +1888,7 @@ local function Init()
                         maxRecruitLinkUses = rafSystemInfo.maxRecruitmentUses;
                         daysInCycle = rafSystemInfo.daysInCycle;
                     end
-                    
+
                     if recruitmentInfo then
                         local expireDate = date("*t", recruitmentInfo.expireTime);
                         recruitmentInfo.expireDateString = FormatShortDate(expireDate.day, expireDate.month, expireDate.year)
@@ -1870,7 +1901,7 @@ local function Init()
                             set(self.FactionAndRealm, format('我们会鼓励你的战友在%2$s服务器创建一个%1$s角色，从而加入你的冒险。', e.strText[recruitmentInfo.sourceFaction] or recruitmentInfo.sourceFaction, reaml))
                         end
                     else
-                        local PLAYER_FACTION_NAME= e.Player.faction=='Alliance' and PLAYER_FACTION_COLOR_ALLIANCE:WrapTextInColorCode('联盟') or (e.Player.faction=='Horde' and PLAYER_FACTION_COLOR_HORDE:WrapTextInColorCode('部落')) or '中立'    
+                        local PLAYER_FACTION_NAME= e.Player.faction=='Alliance' and PLAYER_FACTION_COLOR_ALLIANCE:WrapTextInColorCode('联盟') or (e.Player.faction=='Horde' and PLAYER_FACTION_COLOR_HORDE:WrapTextInColorCode('部落')) or '中立'
                         set(self.Description, format('招募战友，与你一起游玩《魔兽世界》！|n你每%2$d天可以邀请%1$d个战友。', maxRecruitLinkUses, daysInCycle))
                         set(self.FactionAndRealm, format('我们会鼓励你的战友在%2$s服务器创建一个%1$s角色，从而加入你的冒险。', PLAYER_FACTION_NAME, e.Player.realm))
                     end
@@ -3680,7 +3711,7 @@ local function Init_Loaded(arg1)
     elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面
         set(ItemUpgradeFrameTitleText, '物品升级')
         set(ItemUpgradeFrame.UpgradeButton, '升级')
-        set(ItemUpgradeFrame.ItemInfo.MissingItemText, '将物品拖曳至此处升级。')        
+        set(ItemUpgradeFrame.ItemInfo.MissingItemText, '将物品拖曳至此处升级。')
         set(ItemUpgradeFrame.MissingDescription, '许多可装备的物品都可以进行升级，从而提高其物品等级。不同来源的物品升级所需的货币也各不相同。')
         set(ItemUpgradeFrame.ItemInfo.UpgradeTo, '升级至：')
         set(ItemUpgradeFrame.UpgradeCostFrame.Label, '总花费：')
