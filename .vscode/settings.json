@@ -6466,7 +6466,10 @@
         "LFGDungeonReadyStatusLabel",
         "LFGDungeonReadyDialogRandomInProgressFrame",
         "LFGDungeonReadyDialogRandomInProgressFrameStatusText",
-        "CONFIRM_LEAVE_INSTANCE_PARTY"
+        "CONFIRM_LEAVE_INSTANCE_PARTY",
+        "ItemUpgradeFrameLeftItemPreviewFrameTextLeft1",
+        "ItemUpgradeFrameRightItemPreviewFrameTextLeft1",
+        "ItemUpgradeFrameTitleText"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

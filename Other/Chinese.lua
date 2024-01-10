@@ -2938,6 +2938,9 @@ local function Init_Loaded(arg1)
         dia("TOKEN_NONE_FOR_SALE", {text = '目前没有可售的魔兽世界时光徽章。请稍后再来查看。', button1 = '确定'})
         dia("TOKEN_AUCTIONABLE_TOKEN_OWNED", {text = '你必须先将从商城购得的魔兽世界时光徽章售出后才能从拍卖行中购买新的徽章。', button1 = '确定'})
 
+        set(AuctionHouseFrame.BuyDialog.BuyNowButton, '立即购买')
+        set(AuctionHouseFrame.BuyDialog.CancelButton, '取消')
+
     elseif arg1=='Blizzard_ClassTalentUI' then--Blizzard_TalentUI.lua Blizzard_AuctionData.lua
          for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
             local btn= ClassTalentFrame:GetTabButton(tabID)
@@ -3540,10 +3543,19 @@ local function Init_Loaded(arg1)
     elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
         set(ItemSocketingSocketButton, '应用')
 
-    elseif arg1=='Blizzard_CombatLog' then--聊天框，战斗记录
+    --[[elseif arg1=='Blizzard_CombatLog' then--聊天框，战斗记录
         print(CombatLogQuickButtonFrameButton1, id, addName)
-        set(CombatLogQuickButtonFrameButton1, '我的动作')
-    
+        set(CombatLogQuickButtonFrameButton1, '我的动作')]]
+
+    elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面
+        set(ItemUpgradeFrameTitleText, '物品升级')
+        set(ItemUpgradeFrame.UpgradeButton, '升级')
+        set(ItemUpgradeFrame.ItemInfo.MissingItemText, '将物品拖曳至此处升级。')        
+        set(ItemUpgradeFrame.MissingDescription, '许多可装备的物品都可以进行升级，从而提高其物品等级。不同来源的物品升级所需的货币也各不相同。')
+        set(ItemUpgradeFrame.ItemInfo.UpgradeTo, '升级至：')
+        set(ItemUpgradeFrame.UpgradeCostFrame.Label, '总花费：')
+        set(ItemUpgradeFrameLeftItemPreviewFrameTextLeft1, '当前：')
+        set(ItemUpgradeFrameRightItemPreviewFrameTextLeft1, '升级：')
 
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})

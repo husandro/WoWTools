@@ -154,7 +154,7 @@ local function Set_Item_Info(self, tab)
             topRightText='|A:Coin-Silver:0:0|a'
 
         elseif classID==1 then--背包
-            bottomLeftText= e.WA_Utf8Sub(itemSubType, 2,3, true)
+            bottomLeftText= e.WA_Utf8Sub(itemSubType, 2, 3, true)
             if containerInfo and not containerInfo.isBound then--没有锁定
                 topRightText='|A:'..e.Icon.unlocked..':0:0|a'
             end
@@ -267,7 +267,7 @@ local function Set_Item_Info(self, tab)
 
                         end
                     elseif dateInfo.red then
-                        topRightText= '|cnRED_FONT_COLOR:'..strlower(e.WA_Utf8Sub(dateInfo.red,1,3, true)) ..'|r'
+                        topRightText= '|cnRED_FONT_COLOR:'..strlower(e.WA_Utf8Sub(dateInfo.red, 2,3, true)) ..'|r'
                     end
                 end
                 if dateInfo.text[pvpItemStr] then--PvP装备
@@ -276,7 +276,7 @@ local function Set_Item_Info(self, tab)
                 if dateInfo.text[upgradeStr] then--"升级：%s/%s"
                     local min, max= dateInfo.text[upgradeStr]:match('(%d+)/(%d+)')
                     local upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
-                    upText= upText and strlower(e.WA_Utf8Sub(upText,1,3, true)) or ''
+                    upText= upText and strlower(e.WA_Utf8Sub(upText, 1,3, true)) or ''
                     if min and max then
                         if min==max then
                             leftText= "|A:VignetteKill:0:0|a"..upText
@@ -340,7 +340,7 @@ local function Set_Item_Info(self, tab)
                 if itemQuality==0 and isCollected then
                     topRightText= '|A:Coin-Silver:0:0|a'
                 elseif not isCollected and itemSubType then
-                    topRightText= e.WA_Utf8Sub(itemSubType,1,3, true)
+                    topRightText= e.WA_Utf8Sub(itemSubType, 2, 3, true)
                 end
             end
 

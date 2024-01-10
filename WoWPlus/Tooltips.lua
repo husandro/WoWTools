@@ -472,7 +472,7 @@ function func.Set_Item(self, itemLink, itemID)
     if not itemLink and not itemID then
         return
     end
-    local itemName, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expacID, setID, isCraftingReagent= GetItemInfo(itemLink or itemID)
+    local itemName, _, itemQuality, itemLevel, _, itemType, itemSubType, _, itemEquipLoc, itemTexture, _, classID, subclassID, bindType, expacID = GetItemInfo(itemLink or itemID)
     itemID= itemID or GetItemInfoInstant(itemLink or itemID) or func.GetItemInfoFromHyperlink(itemLink)
     --local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(itemLink)
     --local itemID, itemType, itemSubType, itemEquipLoc, itemTexture2, classID, subclassID = GetItemInfoInstant(itemLink)
@@ -493,7 +493,7 @@ function func.Set_Item(self, itemLink, itemID)
     itemTexture= itemTexture or C_Item.GetItemIconByID(itemID or itemLink)
     self:AddDoubleLine(itemID and (e.onlyChinese and '物品' or ITEMS)..' '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture, 1,1,1, 1,1,1)--ID, texture
     if classID and subclassID then
-        self:AddDoubleLine((itemType and itemType..' classID'  or 'classID') ..' '..classID, (itemSubType and itemSubType..' subID' or 'subclassID')..' '..subclassID)
+        self:AddDoubleLine((itemType and (e.strText[itemType] or itemType)..' classID'  or 'classID') ..' '..classID, (itemSubType and (e.strText[itemSubType] or itemSubType)..' subID' or 'subclassID')..' '..subclassID)
     end
 
     if classID==2 or classID==4 then
@@ -501,7 +501,7 @@ function func.Set_Item(self, itemLink, itemID)
         if itemLevel and itemLevel>1 then
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
             if slot then
-                self:AddDoubleLine(_G[itemEquipLoc]..' '..itemEquipLoc, (e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot, 1,1,1, 1,1,1)--栏位
+                self:AddDoubleLine((e.strText[_G[itemEquipLoc]] or _G[itemEquipLoc] or '')..' '..itemEquipLoc, (e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot, 1,1,1, 1,1,1)--栏位
                 local slotLink=GetInventoryItemLink('player', slot)
                 local text
                 if slotLink then
