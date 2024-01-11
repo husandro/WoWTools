@@ -1525,7 +1525,7 @@ local function Init()
             else
                 displayName = '未知'
             end
-            set(LFDReadyCheckPopup.Text, format('你的队长将你加入%s的队列。准备好了吗？', displayName))
+            set(LFDReadyCheckPopup.Text, format('你的队长将你加入|cnGREEN_FONT_COLOR:%s|r的队列。准备好了吗？', displayName))
 
         --[[elseif ( event == "LFG_BOOT_PROPOSAL_UPDATE" ) then
             local voteInProgress, didVote, myVote, targetName, totalVotes, bootVotes, timeLeft, reason = GetLFGBootProposal()
@@ -1840,7 +1840,7 @@ local function Init()
                         if nextReward.canClaim then
                             self.RewardClaiming.EarnInfo:SetText('你获得了：')
                         elseif nextReward.monthCost > 1 then
-                            self.RewardClaiming.EarnInfo:SetFormattedText('下一个奖励 (%d/%d个月)：', nextReward.monthCost - nextReward.availableInMonths, nextReward.monthCost)
+                            self.RewardClaiming.EarnInfo:SetFormattedText('下一个奖励 (|cnGREEN_FONT_COLOR:%d|r/%d个月)：', nextReward.monthCost - nextReward.availableInMonths, nextReward.monthCost)
                         elseif nextReward.monthsRequired == 0 then
                             self.RewardClaiming.EarnInfo:SetText('第一个奖励：')
                         else
@@ -1851,7 +1851,7 @@ local function Init()
                             if nextReward.titleInfo then
                                 local titleName = TitleUtil.GetNameFromTitleMaskID(nextReward.titleInfo.titleMaskID)
                                 if titleName then
-                                    self:SetNextRewardName(format('新头衔： %s', titleName), nextReward.repeatableClaimCount, nextReward.rewardType)
+                                    self:SetNextRewardName(format('新头衔：|cnGREEN_FONT_COLOR:%s|r', titleName), nextReward.repeatableClaimCount, nextReward.rewardType)
                                 end
                             else
                                 self:SetNextRewardName('30天免费游戏时间', nextReward.repeatableClaimCount, nextReward.rewardType)
@@ -1935,9 +1935,9 @@ local function Init()
                         set(self.InfoText1, format('"%d/%d 已招募的战友。已达到最大招募数量。', maxRecruits, maxRecruits))
                     elseif recruitmentInfo then
                         if recruitmentInfo.remainingUses > 0 then
-                            set(self.InfoText1, format('此链接会在%s后过期', recruitmentInfo.expireDateString))
+                            set(self.InfoText1, format('此链接会在|cnGREEN_FONT_COLOR:%s|r后过期', recruitmentInfo.expireDateString))
                         else
-                            set(self.InfoText1, format('你在%s后即可创建一个新链接', recruitmentInfo.expireDateString))
+                            set(self.InfoText1, format('你在|cnGREEN_FONT_COLOR:%s|r后即可创建一个新链接', recruitmentInfo.expireDateString))
                         end
 
 
@@ -2204,7 +2204,8 @@ local function Init()
             name= name~='' and name or initiator
             if ( toggleDifficultyID and toggleDifficultyID > 0 ) then
                 -- the current difficulty might change while inside an instance so show the difficulty on the ready check
-                ReadyCheckFrameText:SetFormattedText("%s正在进行就位确认。\n团队副本难度: "..difficultyName, name)
+                difficultyName=  e.GetDifficultyColor(nil, difficultyID) or difficultyName
+                ReadyCheckFrameText:SetFormattedText("%s正在进行就位确认。\n团队副本难度: |cnGREEN_FONT_COLOR:"..difficultyName..'|r', name)
             else
                 ReadyCheckFrameText:SetFormattedText('%s正在进行就位确认。', name)
             end
@@ -2579,7 +2580,7 @@ local function Init()
     --StaticPopup.lua
     hookDia("GENERIC_CONFIRMATION", 'OnShow', function(self, data)--StaticPopup.lua
         if data.text==HUD_EDIT_MODE_DELETE_LAYOUT_DIALOG_TITLE then
-            set(self.text, format('你确定要删除布局|n |cnGREEN_FONT_COLOR:%s|r吗？', data.text_arg1, data.text_arg2))
+            set(self.text, format('你确定要删除布局|n|cnGREEN_FONT_COLOR:%s|r吗？', data.text_arg1, data.text_arg2))
 
         elseif data.text==SELL_ALL_JUNK_ITEMS_POPUP then
             set(self.text, format('你即将出售所有垃圾物品，而且无法回购。\n你确定要继续吗？', data.text_arg1, data.text_arg2))
@@ -2600,7 +2601,7 @@ local function Init()
             set(self.text, format('此物品目前不能使用，而且拾取后就会绑定。确定要下达此订单吗？', data.text_arg1, data.text_arg2))
 
         elseif data.text==CRAFTING_ORDERS_IGNORE_CONFIRMATION then
-            set(self.text, format('你确定要屏蔽 %s 吗？', data.text_arg1, data.text_arg2))
+            set(self.text, format('你确定要屏蔽|cnGREEN_FONT_COLOR:%s|r吗？', data.text_arg1, data.text_arg2))
 
         elseif data.text==CRAFTING_ORDERS_OWN_REAGENTS_CONFIRMATION then
             set(self.text, format('你即将完成一个制造订单，里面包含一些你自己的材料。你确定吗？', data.text_arg1, data.text_arg2))
@@ -2639,11 +2640,11 @@ local function Init()
 	end)
 
     hookDia("GENERIC_INPUT_BOX", 'OnShow', function(self, data)
-
         if data.text==HUD_EDIT_MODE_RENAME_LAYOUT_DIALOG_TITLE then
             set(self.text, format('为布局|cnGREEN_FONT_COLOR:%s|r输入新名称', data.text_arg1, data.text_arg2))
+        end
 
-        elseif not data.acceptText then
+        if not data.acceptText then
             self.button1:SetText('完成')
 
         elseif data.acceptText==OKAY then
@@ -2664,18 +2665,18 @@ local function Init()
         end
 	end)
 
-    dia("CONFIRM_OVERWRITE_EQUIPMENT_SET", {text = '你已经有一个名为%s的装备方案了。是否要覆盖已有方案', button1 = '是', button2 = '否'})
-    dia("CONFIRM_SAVE_EQUIPMENT_SET", {text = '你想要保存装备方案\"%s\"吗？', button1 = '是', button2 = '否'})
-    dia("CONFIRM_DELETE_EQUIPMENT_SET", {text = '你确认要删除装备方案%s吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_OVERWRITE_EQUIPMENT_SET", {text = '你已经有一个名为|cnGREEN_FONT_COLOR:%s|r的装备方案了。是否要覆盖已有方案', button1 = '是', button2 = '否'})
+    dia("CONFIRM_SAVE_EQUIPMENT_SET", {text = '你想要保存装备方案\"|cnGREEN_FONT_COLOR:%s|r\"吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_DELETE_EQUIPMENT_SET", {text = '你确认要删除装备方案 |cnGREEN_FONT_COLOR:%s|r 吗？', button1 = '是', button2 = '否'})
 
     dia("CONFIRM_GLYPH_PLACEMENT",{button1 = '是', button2 = '否'})
     hookDia("CONFIRM_GLYPH_PLACEMENT", 'OnShow', function(self)
-		self.text:SetFormattedText('你确定要使用%s铭文吗？这将取代%s。', self.data.name, self.data.currentName)
+		self.text:SetFormattedText('你确定要使用|cnGREEN_FONT_COLOR:%s|r铭文吗？这将取代|cnGREEN_FONT_COLOR:%s|r。', self.data.name, self.data.currentName)
 	end)
 
     dia("CONFIRM_GLYPH_REMOVAL",{button1 = '是', button2 = '否'})
     hookDia("CONFIRM_GLYPH_REMOVAL", 'OnShow', function(self)
-		self.text:SetFormattedText('你确定要移除%s吗？', self.data.name)
+		self.text:SetFormattedText('你确定要移除|cnGREEN_FONT_COLOR:%s|r吗？', self.data.name)
 	end)
 
     dia("CONFIRM_RESET_TEXTTOSPEECH_SETTINGS", {text = '确定将所有文字转语音设定重置为默认值吗？', button1 = '接受', button2 = '取消'})
@@ -2686,15 +2687,15 @@ local function Init()
     dia("CONFIRM_UPGRADE_ITEM", {button1 = '是', button2 = '否'})
     hookDia("CONFIRM_UPGRADE_ITEM", 'OnShow', function(self, data)
 		if data.isItemBound then
-			self.text:SetFormattedText('你确定要花费%s升级下列物品吗？', data.costString)
+			self.text:SetFormattedText('你确定要花费|cnGREEN_FONT_COLOR:%s|r升级下列物品吗？', data.costString)
 		else
-			self.text:SetFormattedText('你确定要花费%s升级下列物品吗？升级会将该物品变成灵魂绑定物品。', data.costString)
+			self.text:SetFormattedText('你确定要花费|cnGREEN_FONT_COLOR:%s|r升级下列物品吗？升级会将该物品变成灵魂绑定物品。', data.costString)
 		end
     end)
 
     dia("CONFIRM_REFUND_TOKEN_ITEM", {text = '你确定要退还下面这件物品%s，获得%s的退款吗？', button1 = '是', button2 = '否'})
     dia("CONFIRM_REFUND_MAX_HONOR", {text = '你的荣誉已接近上限。卖掉这件物品会让你损失%d点荣誉。确认要继续吗？', button1 = '是', button2 = '否'})
-    dia("CONFIRM_REFUND_MAX_ARENA_POINTS", {text = '你的竞技场点数已接近上限。出售这件物品会让你损失%d点竞技场点数。确认要继续吗？', button1 = '是', button2 = '否'})
+    dia("CONFIRM_REFUND_MAX_ARENA_POINTS", {text = '你的竞技场点数已接近上限。出售这件物品会让你损失|cnGREEN_FONT_COLOR:%d|r点竞技场点数。确认要继续吗？', button1 = '是', button2 = '否'})
     dia("CONFIRM_REFUND_MAX_HONOR_AND_ARENA", {text = '你的荣誉已接近上限。卖掉此物品会使你损失%1$d点荣誉和%2$d的竞技场点数。要继续吗？', button1 = '是', button2 = '否'})
     dia("CONFIRM_HIGH_COST_ITEM", {text = '你确定要花费如下金额的货币购买%s吗？', button1 = '是', button2 = '否'})
     dia("CONFIRM_COMPLETE_EXPENSIVE_QUEST", {text = '完成这个任务需要缴纳如下数额的金币。你确定要完成这个任务吗？', button1 = '完成任务', button2 = '取消'})
@@ -2711,7 +2712,7 @@ local function Init()
     dia("CONFIRM_GUILD_DISBAND", {text = '你真的要解散公会吗？', button1 = '是', button2 = '否'})
     dia("CONFIRM_BUY_BANK_SLOT", {text = '你愿意付钱购买银行空位吗？', button1 = '是', button2 = '否'})
     dia("MACRO_ACTION_FORBIDDEN", {text = '一段宏代码已被禁止，因为其功能只对暴雪UI开放。', button1 = '确定'})
-    dia("ADDON_ACTION_FORBIDDEN", {text = '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。', button1 = '禁用', button2 = '忽略'})
+    dia("ADDON_ACTION_FORBIDDEN", {text = '|cnRED_FONT_COLOR:%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。', button1 = '禁用', button2 = '忽略'})
     dia("CONFIRM_LOOT_DISTRIBUTION", {text = '你想要将%s分配给%s，确定吗？', button1 = '是', button2 = '否'})
     dia("CONFIRM_BATTLEFIELD_ENTRY", {text = '你现在可以进入战斗：\n\n|cff20ff20%s|r\n', button1 = '进入', button2 = '离开队列'})
     dia("BFMGR_CONFIRM_WORLD_PVP_QUEUED", {text = '你已在%s队列中。请等候。', button1 = '确定'})
@@ -3300,7 +3301,7 @@ local function Init_Loaded(arg1)
         end)
         ClassTalentFrame.TalentsTab.InspectCopyButton:SetTextToFit('复制配置代码')
 
-        if ClassTalentFrame.SpecTab.numSpecs and ClassTalentFrame.SpecTab.numSpecs>0 and ClassTalentFrame.SpecTab.SpecContentFramePool then 
+        if ClassTalentFrame.SpecTab.numSpecs and ClassTalentFrame.SpecTab.numSpecs>0 and ClassTalentFrame.SpecTab.SpecContentFramePool then
             local sex= UnitSex("player")
             local SPEC_STAT_STRINGS = {
                 [LE_UNIT_STAT_STRENGTH] = '力量',
