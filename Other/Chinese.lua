@@ -2578,10 +2578,7 @@ local function Init()
 
     --StaticPopup.lua
     hookDia("GENERIC_CONFIRMATION", 'OnShow', function(self, data)--StaticPopup.lua
-        if data.text==HUD_EDIT_MODE_RENAME_LAYOUT_DIALOG_TITLE then
-            set(self.text, format('为布局|cnGREEN_FONT_COLOR:%s|r输入新名称', data.text_arg1, data.text_arg2))
-
-        elseif data.text==HUD_EDIT_MODE_DELETE_LAYOUT_DIALOG_TITLE then
+        if data.text==HUD_EDIT_MODE_DELETE_LAYOUT_DIALOG_TITLE then
             set(self.text, format('你确定要删除布局|n |cnGREEN_FONT_COLOR:%s|r吗？', data.text_arg1, data.text_arg2))
 
         elseif data.text==SELL_ALL_JUNK_ITEMS_POPUP then
@@ -2641,12 +2638,27 @@ local function Init()
 
 	end)
 
-    --[[
-
-    ]]
     hookDia("GENERIC_INPUT_BOX", 'OnShow', function(self, data)
-        if not data.acceptText then		    self.button1:SetText('完成')
+
+        if data.text==HUD_EDIT_MODE_RENAME_LAYOUT_DIALOG_TITLE then
+            set(self.text, format('为布局|cnGREEN_FONT_COLOR:%s|r输入新名称', data.text_arg1, data.text_arg2))
+
+        elseif not data.acceptText then
+            self.button1:SetText('完成')
+
+        elseif data.acceptText==OKAY then
+            set(self.button1, '确定')
+
+        elseif data.acceptText==SAVE then
+            set(self.button1, '保存')
+
+        elseif data.acceptText==ACCEPT then
+                set(self.button1, '接受')
+
+        elseif data.acceptText==CONTINUE then
+            set(self.button1, '继续')
         end
+
         if not data.cancelText then
 		    self.button2:SetText('取消')
         end
