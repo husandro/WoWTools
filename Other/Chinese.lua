@@ -2554,7 +2554,7 @@ local function Init()
         end
     end)
 
-
+    --EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.CombatContainer
 
 
 
@@ -3291,6 +3291,16 @@ local function Init_Loaded(arg1)
 
         --Blizzard_ClassTalentTalentsTab.lua
         set(ClassTalentFrame.TalentsTab.ApplyButton, '应用改动')
+        set(ClassTalentFrame.TalentsTab.SearchBox.Instructions, '搜索')
+        hooksecurefunc(ClassTalentFrame.TalentsTab.ApplyButton, 'SetDisabledTooltip', function(self, canChangeError)
+            if canChangeError then
+                if canChangeError ==  TALENT_FRAME_REFUND_INVALID_ERROR  then
+                    self.disabledTooltip = '你必须修复所有错误。忘却天赋来释放点数，并在其他地方花费这些点数来构建可用的配置。'
+                elseif canChangeError== ERR_TALENT_FAILED_UNSPENT_TALENT_POINTS then
+                    self.disabledTooltip= '你必须花费所有可用的天赋点才能应用改动'
+                end
+            end
+        end)
         ClassTalentFrame.TalentsTab.ApplyButton:HookScript('OnEnter', function()
         end)
         hooksecurefunc(ClassTalentFrame.TalentsTab.ClassCurrencyDisplay, 'SetPointTypeText', function(self, text)
