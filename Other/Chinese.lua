@@ -1449,6 +1449,7 @@ local function Init()
     set(LFGListFrame.SearchPanel.BackToGroupButton, '回到队伍')
     set(LFGListFrame.SearchPanel.SignUpButton, '申请')
     set(LFGListFrame.SearchPanel.BackButton, '后退')
+    set(LFGListFrame.SearchPanel.ScrollBox.NoResultsFound, '未找到队伍。如果你找不到想要的队伍，可以自己创建一支。')
     set(LFGListFrame.EntryCreation.CancelButton, '后退')
     hooksecurefunc('LFDQueueFrameFindGroupButton_Update', function()--LFDFrame.lua
         local mode = GetLFGMode(LE_LFG_CATEGORY_LFD)
