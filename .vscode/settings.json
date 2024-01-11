@@ -6734,7 +6734,12 @@
         "TOOLTIP_QUEST_REWARDS_STYLE_ISLANDS_QUEUE",
         "TOOLTIP_QUEST_REWARDS_STYLE_CONTRIBUTION",
         "TOOLTIP_QUEST_REWARDS_STYLE_WORLD_QUEST",
-        "TOOLTIP_QUEST_REWARDS_STYLE_DEFAULT"
+        "TOOLTIP_QUEST_REWARDS_STYLE_DEFAULT",
+        "SecondaryStatusTrackingBarContainer",
+        "EditModeActionBarSystemMixin",
+        "QuickKeybindFrame",
+        "QuickKeybindFrameText",
+        "CONFIRM_RESET_KEYBINDINGS"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

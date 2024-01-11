@@ -1209,7 +1209,7 @@ e.strText={
 
 
 
-    [HUD_EDIT_MODE_TARGET_AND_FOCUS] = "目标和焦点",
+    --[[[HUD_EDIT_MODE_TARGET_AND_FOCUS] = "目标和焦点",
     [HUD_EDIT_MODE_PET_FRAME_LABEL] = "宠物框体",
     [HUD_EDIT_MODE_PARTY_FRAMES_LABEL] = "小队框体",
     [HUD_EDIT_MODE_BOSS_FRAMES_LABEL] = "首领框体",
@@ -1223,19 +1223,51 @@ e.strText={
     [HUD_EDIT_MODE_POSSESS_ACTION_BAR_LABEL] = "附身条",
     [HUD_EDIT_MODE_ENCOUNTER_BAR_LABEL] = "战斗条",
     [HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL] = "对话特写头像",
-    [HUD_EDIT_MODE_STATUS_TRACKING_BAR_LABEL] = "状态栏 %d",
+    --[HUD_EDIT_MODE_STATUS_TRACKING_BAR_LABEL] = "状态栏 %d",
     [HUD_EDIT_MODE_VEHICLE_LEAVE_BUTTON_LABEL] = "退出载具按钮",
     [HUD_EDIT_MODE_HUD_TOOLTIP_LABEL] = "HUD提示信息",
     [HUD_EDIT_MODE_DURABILITY_FRAME_LABEL] = "装备耐久度",
     [HUD_EDIT_MODE_TIMER_BARS_LABEL] = "时长条",
     [HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL] = "载具座位",
     [HUD_EDIT_MODE_ARCHAEOLOGY_BAR_LABEL] = "考古条",
-    [HUD_EDIT_MODE_LOOT_FRAME_LABEL] = "拾取窗口",
+    [HUD_EDIT_MODE_LOOT_FRAME_LABEL] = "拾取窗口",]]
     
 
 
 
-
+    [HUD_EDIT_MODE_ARCHAEOLOGY_BAR_LABEL] = "考古条",
+    [HUD_EDIT_MODE_ARENA_FRAMES_LABEL] = "竞技场框体",
+    [HUD_EDIT_MODE_BAGS_LABEL] = "背包",
+    [HUD_EDIT_MODE_BOSS_FRAMES_LABEL] = "首领框体",
+    [HUD_EDIT_MODE_BUFFS_AND_DEBUFFS_LABEL] = "增益效果和负面效果",
+    [HUD_EDIT_MODE_BUFF_FRAME_LABEL] = "增益效果框",
+    [HUD_EDIT_MODE_CAST_BAR_LABEL] = "施法条",
+    [HUD_EDIT_MODE_CHAT_FRAME_LABEL] = "聊天框体",
+    [HUD_EDIT_MODE_DEBUFF_FRAME_LABEL] = "减益效果框",
+    [HUD_EDIT_MODE_DURABILITY_FRAME_LABEL] = "装备耐久度",
+    [HUD_EDIT_MODE_ENCOUNTER_BAR_LABEL] = "战斗条",
+    [HUD_EDIT_MODE_EXPERIENCE_BAR_LABEL] = "经验条",
+    [HUD_EDIT_MODE_EXTRA_ABILITIES_LABEL] = "额外技能",
+    [HUD_EDIT_MODE_FOCUS_FRAME_LABEL] = "焦点框体",
+    [HUD_EDIT_MODE_HUD_TOOLTIP_LABEL] = "HUD提示信息",
+    [HUD_EDIT_MODE_LOOT_FRAME_LABEL] = "拾取窗口",
+    [HUD_EDIT_MODE_MICRO_MENU_LABEL] = "菜单",
+    [HUD_EDIT_MODE_MINIMAP_LABEL] = "小地图",
+    [HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL] = "目标追踪栏",
+    [HUD_EDIT_MODE_PARTY_FRAMES_LABEL] = "小队框体",
+    [HUD_EDIT_MODE_PET_ACTION_BAR_LABEL] = "宠物条",
+    [HUD_EDIT_MODE_PET_FRAME_LABEL] = "宠物框体",
+    [HUD_EDIT_MODE_PLAYER_FRAME_LABEL] = "玩家框体",
+    [HUD_EDIT_MODE_POSSESS_ACTION_BAR_LABEL] = "附身条",
+    [HUD_EDIT_MODE_RAID_FRAMES_LABEL] = "团队框体",
+    [HUD_EDIT_MODE_STANCE_BAR_LABEL] = "姿态条",
+    [HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL] = "对话特写头像",
+    [HUD_EDIT_MODE_TARGET_AND_FOCUS] = "目标和焦点",
+    [HUD_EDIT_MODE_TARGET_FRAME_LABEL] = "目标框体",
+    [HUD_EDIT_MODE_TIMER_BARS_LABEL] = "时长条",
+    [HUD_EDIT_MODE_UNSAVED_CHANGES] = "你有未保存的改动",
+    [HUD_EDIT_MODE_VEHICLE_LEAVE_BUTTON_LABEL] = "退出载具按钮",
+    [HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL] = "载具座位",
 
 
 
@@ -2501,6 +2533,42 @@ local function Init()
 
 
 
+
+
+    --快速快捷键模式
+    --QuickKeybind.xml
+    set(QuickKeybindFrame.Header.Text, '快速快捷键模式')
+    set(QuickKeybindFrame.InstructionText, '你处于快速快捷键模式。将鼠标移到一个按钮上并按下你想要的按键，即可设置那个按钮的快捷键。')
+    set(QuickKeybindFrame.CancelDescriptionText, '取消会使你离开快速快捷键模式。')
+    --set(QuickKeybindFrameText, '')
+    set(QuickKeybindFrame.OkayButton, '确定')
+    set(QuickKeybindFrame.DefaultsButton, '恢复默认设置')
+    set(QuickKeybindFrame.CancelButton, '取消')
+    set(QuickKeybindFrame.UseCharacterBindingsButton.text, '角色专用按键设置')
+
+    --Blizzard_Dialogs.lua
+    dia('CONFIRM_RESET_TO_DEFAULT_KEYBINDINGS', {text = '确定将所有快捷键设置为默认值吗？', button1 = '确定', button2 = '取消'})
+    dia('GAME_SETTINGS_TIMED_CONFIRMATION', {button1 = '确定', button2 = '取消'})
+    dia('GAME_SETTINGS_CONFIRM_DISCARD', {text= '你尚有还未应用的设置。\n你确定要退出吗？', button1 = '退出', button2 = '应用并退出', button3 = '取消'})
+    dia('GAME_SETTINGS_APPLY_DEFAULTS', {text= '你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？', button1 = '所有设置', button2 = '这些设置', button3 = '取消'})
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     --编辑模式    
     set(EditModeManagerFrame.Title, 'HUD编辑模式')
     EditModeManagerFrame.Tutorial.MainHelpPlateButtonTooltipText= '点击这里打开/关闭编辑模式的帮助系统。'
@@ -2593,35 +2661,67 @@ local function Init()
 
     --EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.CombatContainer
 
-for _, frame in pairs(EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.BasicOptionsContainer:GetLayoutChildren() or {}) do
-    if frame.labelText then
-        set(frame.Label, e.strText[frame.labelText])
-    end
-end
-
-EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.FramesContainer:HookScript('OnShow', function(self)
-    for _,frame in pairs(self:GetLayoutChildren() or {}) do
+    for _, frame in pairs(EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.BasicOptionsContainer:GetLayoutChildren() or {}) do
         if frame.labelText then
             set(frame.Label, e.strText[frame.labelText])
         end
     end
-end)
-EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.CombatContainer:HookScript('OnShow', function(self)
-    for _,frame in pairs(self:GetLayoutChildren() or {}) do
-        if frame.labelText then
-            set(frame.Label, e.strText[frame.labelText])
-        end
-    end
-end)
-EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.MiscContainer:HookScript('OnShow', function(self)
-    for _,frame in pairs(self:GetLayoutChildren() or {}) do
-        if frame.labelText then
-            set(frame.Label, e.strText[frame.labelText])
-        end
-    end
-end)
 
+    EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.FramesContainer:HookScript('OnShow', function(self)
+        for _,frame in pairs(self:GetLayoutChildren() or {}) do
+            local text= e.strText[frame.labelText]
+            if text then
+                frame:SetLabelText(text)
+                --set(frame.Label, e.strText[frame.labelText])
+            end
+        end
+    end)
+    EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.CombatContainer:HookScript('OnShow', function(self)
+        for _,frame in pairs(self:GetLayoutChildren() or {}) do
+            local text= e.strText[frame.labelText]
+            if text then
+                frame:SetLabelText(text)
+                --set(frame.Label, e.strText[frame.labelText])
+            end
+        end
+    end)
+    EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.MiscContainer:HookScript('OnShow', function(self)
+        for _,frame in pairs(self:GetLayoutChildren() or {}) do
+            local text= e.strText[frame.labelText]
+            if text then
+                frame:SetLabelText(text)
+            end
+            if frame.disabledTooltipText== HUD_EDIT_MODE_LOOT_FRAME_DISABLED_TOOLTIP then
+                frame.disabledTooltipText= '你必须关闭位于：界面 > 控制菜单中的“鼠标位置打开拾取窗口”选项，才能自定义拾取窗口布局。'
+            end
+        end
+    end)
+    hooksecurefunc(EditModeManagerFrame.AccountSettings, 'SetupStatusTrackingBar2', function(self)
+        self.settingsCheckButtons.StatusTrackingBar2:SetLabelText('状态栏 2')
+    end)
 
+    set(EditModeSystemSettingsDialog.Buttons.RevertChangesButton, '撤销变更')
+    hooksecurefunc(EditModeSystemMixin, 'AddExtraButtons', function(self)
+        set(self.resetToDefaultPositionButton, '重设到默认位置')
+    end)
+
+    --[[ hooksecurefunc(EditModeActionBarSystemMixin, 'AddExtraButtons', function(self, extraButtonPool)
+        print(id,addName)
+        local quickKeybindModeButton = extraButtonPool:Acquire();
+        set(quickKeybindModeButton, '快速快捷键模式')
+        if self.systemIndex ~= Enum.EditModeActionBarSystemIndices.StanceBar
+            and self.systemIndex ~= Enum.EditModeActionBarSystemIndices.PetActionBar
+            and self.systemIndex ~= Enum.EditModeActionBarSystemIndices.PossessActionBar then
+            local actionBarSettingsButton = extraButtonPool:Acquire();
+            actionBarSettingsButton:SetText('动作条设定');
+        end
+    end)
+   
+    set(PlayerFrame.Selection.HorizontalLabel, '玩家框体')
+    set(PetFrame.Selection.HorizontalLabel, '宠物框体')
+    set(FocusFrame.Selection.HorizontalLabel, '焦点框体')
+    set(TargetFrame.Selection.HorizontalLabel, '目标框体')
+]]
 
 
 
@@ -3196,7 +3296,7 @@ end)
     --Keybindings.lua
     dia("CONFIRM_DELETING_CHARACTER_SPECIFIC_BINDINGS", {text = '确定要切换到通用键位设定吗？所有本角色专用的键位设定都将被永久删除。', button1 = '确定', button2 = '取消'})
 
-
+    
 
 
 
