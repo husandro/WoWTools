@@ -1209,6 +1209,29 @@ e.strText={
 
 
 
+    [HUD_EDIT_MODE_TARGET_AND_FOCUS] = "目标和焦点",
+    [HUD_EDIT_MODE_PET_FRAME_LABEL] = "宠物框体",
+    [HUD_EDIT_MODE_PARTY_FRAMES_LABEL] = "小队框体",
+    [HUD_EDIT_MODE_BOSS_FRAMES_LABEL] = "首领框体",
+    [HUD_EDIT_MODE_RAID_FRAMES_LABEL] = "团队框体",
+    [HUD_EDIT_MODE_ARENA_FRAMES_LABEL] = "竞技场框体",
+    [HUD_EDIT_MODE_BUFFS_AND_DEBUFFS_LABEL] = "增益效果和负面效果",
+    [HUD_EDIT_MODE_CAST_BAR_LABEL] = "施法条",
+    [HUD_EDIT_MODE_STANCE_BAR_LABEL] = "姿态条",
+    [HUD_EDIT_MODE_EXTRA_ABILITIES_LABEL] = "额外技能",
+    [HUD_EDIT_MODE_PET_ACTION_BAR_LABEL] = "宠物条",
+    [HUD_EDIT_MODE_POSSESS_ACTION_BAR_LABEL] = "附身条",
+    [HUD_EDIT_MODE_ENCOUNTER_BAR_LABEL] = "战斗条",
+    [HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL] = "对话特写头像",
+    [HUD_EDIT_MODE_STATUS_TRACKING_BAR_LABEL] = "状态栏 %d",
+    [HUD_EDIT_MODE_VEHICLE_LEAVE_BUTTON_LABEL] = "退出载具按钮",
+    [HUD_EDIT_MODE_HUD_TOOLTIP_LABEL] = "HUD提示信息",
+    [HUD_EDIT_MODE_DURABILITY_FRAME_LABEL] = "装备耐久度",
+    [HUD_EDIT_MODE_TIMER_BARS_LABEL] = "时长条",
+    [HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL] = "载具座位",
+    [HUD_EDIT_MODE_ARCHAEOLOGY_BAR_LABEL] = "考古条",
+    [HUD_EDIT_MODE_LOOT_FRAME_LABEL] = "拾取窗口",
+    
 
 
 
@@ -2478,8 +2501,9 @@ local function Init()
 
 
 
-    --编辑模式
+    --编辑模式    
     set(EditModeManagerFrame.Title, 'HUD编辑模式')
+    EditModeManagerFrame.Tutorial.MainHelpPlateButtonTooltipText= '点击这里打开/关闭编辑模式的帮助系统。'
     set(EditModeManagerFrame.ShowGridCheckButton.Label, '显示网格')
     set(EditModeManagerFrame.EnableSnapCheckButton.Label, '贴附到界面元素上')
     set(EditModeManagerFrame.EnableAdvancedOptionsCheckButton.Label, '高级选项')
@@ -2569,12 +2593,33 @@ local function Init()
 
     --EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.CombatContainer
 
+for _, frame in pairs(EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.BasicOptionsContainer:GetLayoutChildren() or {}) do
+    if frame.labelText then
+        set(frame.Label, e.strText[frame.labelText])
+    end
+end
 
-
-
-
-
-
+EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.FramesContainer:HookScript('OnShow', function(self)
+    for _,frame in pairs(self:GetLayoutChildren() or {}) do
+        if frame.labelText then
+            set(frame.Label, e.strText[frame.labelText])
+        end
+    end
+end)
+EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.CombatContainer:HookScript('OnShow', function(self)
+    for _,frame in pairs(self:GetLayoutChildren() or {}) do
+        if frame.labelText then
+            set(frame.Label, e.strText[frame.labelText])
+        end
+    end
+end)
+EditModeManagerFrame.AccountSettings.SettingsContainer.ScrollChild.AdvancedOptionsContainer.MiscContainer:HookScript('OnShow', function(self)
+    for _,frame in pairs(self:GetLayoutChildren() or {}) do
+        if frame.labelText then
+            set(frame.Label, e.strText[frame.labelText])
+        end
+    end
+end)
 
 
 
