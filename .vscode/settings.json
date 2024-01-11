@@ -6687,7 +6687,21 @@
         "EditModeNewLayoutDialog",
         "EditModeImportLayoutDialog",
         "EditModeNewLayoutDialogMixin",
-        "UserEditBoxNonEmpty"
+        "UserEditBoxNonEmpty",
+        "StaticPopup_ShowCustomGenericInputBox",
+        "SELL_ALL_JUNK_ITEMS_POPUP",
+        "PROFESSIONS_CRAFTING_ORDER_MAIL_REPORT_WARNING",
+        "CONTINUE",
+        "TALENT_FRAME_CONFIRM_CLOSE",
+        "ClassTalentFrameMixin",
+        "TALENTS_INSPECT_FORMAT",
+        "TALENTS_LINK_FORMAT",
+        "CRAFTING_ORDER_RECRAFT_WARNING2",
+        "PROFESSIONS_ORDER_UNUSABLE_WARNING",
+        "CRAFTING_ORDERS_IGNORE_CONFIRMATION",
+        "CRAFTING_ORDERS_OWN_REAGENTS_CONFIRMATION",
+        "TALENT_FRAME_CONFIRM_LEAVE_DEFAULT_LOADOUT",
+        "TALENT_FRAME_CONFIRM_STARTER_DEVIATION"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

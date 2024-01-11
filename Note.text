@@ -210,6 +210,7 @@ GameTooltip_AddColoredLine(GameTooltip, '', NORMAL_FONT_COLOR, true);
 
 
 
+
 UICheckButtonTemplate
 local myCheckButton = CreateFrame("CheckButton", nil, UIParent, "ChatConfigCheckButtonTemplate")
 myCheckButton:SetPoint("TOPLEFT", 200, -65)
@@ -270,6 +271,18 @@ StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"] = {
 		ClearCursor();
 	end
 };
+
+function EditModeManagerFrameMixin:ShowRenameLayoutDialog(layoutButton)
+	local function onAcceptCallback(layoutName)
+		self:RenameLayout(layoutButton.layoutIndex, layoutName);
+	end
+	local data = {text = HUD_EDIT_MODE_RENAME_LAYOUT_DIALOG_TITLE, text_arg1 = layoutButton.layoutData.layoutName, callback = onAcceptCallback, acceptText = SAVE }
+	StaticPopup_ShowCustomGenericInputBox(data);
+end
+function StaticPopup_ShowCustomGenericInputBox(customData, insertedFrame)
+	StaticPopup_Show("GENERIC_INPUT_BOX", nil, nil, customData, insertedFrame);
+end
+
 
 材质
 SetPortraitTexture(textureObject, unitToken [, disableMasking])

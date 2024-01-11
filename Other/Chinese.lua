@@ -2480,6 +2480,7 @@ local function Init()
     set(EditModeManagerFrame.RevertAllChangesButton, '撤销所有变更')
     set(EditModeManagerFrame.SaveChangesButton, '保存')
 
+    --EditModeDialogs.lua
     set(EditModeUnsavedChangesDialog.CancelButton, '取消')
     hooksecurefunc(EditModeUnsavedChangesDialog, 'ShowDialog', function(self, selectedLayoutIndex)
         if selectedLayoutIndex then
@@ -2492,6 +2493,7 @@ local function Init()
             set(self.ProceedButton, '退出');
         end
     end)
+
     hooksecurefunc(EditModeSystemSettingsDialog, 'AttachToSystemFrame', function(self, systemFrame)
         local name= systemFrame:GetSystemName()
         if name and e.strText[name] then
@@ -2512,8 +2514,10 @@ local function Init()
     set(EditModeImportLayoutDialog.AcceptButton, '导入')
     set(EditModeImportLayoutDialog.CancelButton, '取消')
 
-    --EditModeDialogs.lua
+
     EditModeImportLayoutDialog.AcceptButton.disabledTooltip= '输入布局的名称'
+    EditModeNewLayoutDialog.AcceptButton.disabledTooltip= '输入布局的名称'
+
     local function CheckForMaxLayouts(acceptButton, charSpecificButton)
         if EditModeManagerFrame:AreLayoutsFullyMaxed() then
             acceptButton.disabledTooltip = format('最多允许%d种角色布局和%d种账号布局', Constants.EditModeConsts.EditModeMaxLayoutsPerType, Constants.EditModeConsts.EditModeMaxLayoutsPerType);
@@ -2537,14 +2541,18 @@ local function Init()
         end
     end
     hooksecurefunc(EditModeImportLayoutDialog, 'UpdateAcceptButtonEnabledState', function(self)
-        print(id, addName)
+        if not CheckForMaxLayouts(self.AcceptButton, self.CharacterSpecificLayoutCheckButton)
+            and not CheckForDuplicateLayoutName(self.AcceptButton, self.LayoutNameEditBox)  then
+            self.AcceptButton.disabledTooltip = '输入布局的名称';
+        end
+    end)
+    hooksecurefunc(EditModeNewLayoutDialog, 'UpdateAcceptButtonEnabledState', function(self)
         if not CheckForMaxLayouts(self.AcceptButton, self.CharacterSpecificLayoutCheckButton)
             and not CheckForDuplicateLayoutName(self.AcceptButton, self.LayoutNameEditBox)  then
             self.AcceptButton.disabledTooltip = '输入布局的名称';
         end
     end)
 
-    
 
 
 
@@ -2569,19 +2577,75 @@ local function Init()
 
 
     --StaticPopup.lua
-    hookDia("GENERIC_CONFIRMATION", 'OnShow', function(self, data)
-		self.text:SetFormattedText(data.text, data.text_arg1, data.text_arg2)
+    hookDia("GENERIC_CONFIRMATION", 'OnShow', function(self, data)--StaticPopup.lua
+        if data.text==HUD_EDIT_MODE_RENAME_LAYOUT_DIALOG_TITLE then
+            set(self.text, format('为布局|cnGREEN_FONT_COLOR:%s|r输入新名称', data.text_arg1, data.text_arg2))
+
+        elseif data.text==HUD_EDIT_MODE_DELETE_LAYOUT_DIALOG_TITLE then
+            set(self.text, format('你确定要删除布局|n |cnGREEN_FONT_COLOR:%s|r吗？', data.text_arg1, data.text_arg2))
+
+        elseif data.text==SELL_ALL_JUNK_ITEMS_POPUP then
+            set(self.text, format('你即将出售所有垃圾物品，而且无法回购。\n你确定要继续吗？', data.text_arg1, data.text_arg2))
+
+        elseif data.text==PROFESSIONS_CRAFTING_ORDER_MAIL_REPORT_WARNING then
+            set(self.text, format('这名玩家有你还未认领的物品。如果你在认领前举报这名玩家，你会失去所有这些物品。', data.text_arg1, data.text_arg2))
+
+        elseif data.text==SELL_ALL_JUNK_ITEMS_POPUP then
+            set(self.text, format('你即将出售所有垃圾物品，而且无法回购。\n你确定要继续吗？', data.text_arg1, data.text_arg2))
+
+        elseif data.text==TALENT_FRAME_CONFIRM_CLOSE then
+            set(self.text, format('如果你继续，会失去所有待定的改动。', data.text_arg1, data.text_arg2))
+
+        elseif data.text==CRAFTING_ORDER_RECRAFT_WARNING2 then
+            set(self.text, format('再造可能导致你的物品的品质下降。|n|n\n\n你确定要发布此订单吗？', data.text_arg1, data.text_arg2))
+
+        elseif data.text==PROFESSIONS_ORDER_UNUSABLE_WARNING then
+            set(self.text, format('此物品目前不能使用，而且拾取后就会绑定。确定要下达此订单吗？', data.text_arg1, data.text_arg2))
+
+        elseif data.text==CRAFTING_ORDERS_IGNORE_CONFIRMATION then
+            set(self.text, format('你确定要屏蔽 %s 吗？', data.text_arg1, data.text_arg2))
+
+        elseif data.text==CRAFTING_ORDERS_OWN_REAGENTS_CONFIRMATION then
+            set(self.text, format('你即将完成一个制造订单，里面包含一些你自己的材料。你确定吗？', data.text_arg1, data.text_arg2))
+
+        elseif data.text==TALENT_FRAME_CONFIRM_LEAVE_DEFAULT_LOADOUT then
+            set(self.text, format('你如果不先将你当前的天赋配置储存下来，就会永远失去此配置。|n|n你确定要继续吗？', data.text_arg1, data.text_arg2))
+
+        elseif data.text==TALENT_FRAME_CONFIRM_STARTER_DEVIATION then
+            set(self.text, format('选择此天赋会使你离开入门天赋配置指引。', data.text_arg1, data.text_arg2))
+
+        end
+
         if not data.acceptText then
-		    self.button1:SetText('是')
+		    set(self.button1, '是')
+            
+        elseif data.acceptText==OKAY then
+            set(self.button1, '确定')
+
+        elseif data.acceptText==SAVE then
+            set(self.button1, '保存')
+
+        elseif data.acceptText==ACCEPT then
+                set(self.button1, '接受')
+
+        elseif data.acceptText==CONTINUE then
+            set(self.button1, '继续')
         end
+
         if not data.cancelText then
-		    self.button2:SetText('否')
+            set(self.button2, '否')
+
+        elseif data.cancelText==CANCEL then
+            set(self.button2, '取消')
         end
+
 	end)
 
+    --[[
+
+    ]]
     hookDia("GENERIC_INPUT_BOX", 'OnShow', function(self, data)
-        if not data.acceptText then
-		    self.button1:SetText('完成')
+        if not data.acceptText then		    self.button1:SetText('完成')
         end
         if not data.cancelText then
 		    self.button2:SetText('取消')
@@ -3202,7 +3266,8 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.BuyDialog.BuyNowButton, '立即购买')
         set(AuctionHouseFrame.BuyDialog.CancelButton, '取消')
 
-    elseif arg1=='Blizzard_ClassTalentUI' then--Blizzard_TalentUI.lua Blizzard_AuctionData.lua
+    elseif arg1=='Blizzard_ClassTalentUI' then--Blizzard_TalentUI.lua
+        --Blizzard_AuctionData.lua
          for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
             local btn= ClassTalentFrame:GetTabButton(tabID)
             if tabID==1 then
@@ -3222,8 +3287,34 @@ local function Init_Loaded(arg1)
             end
         end)
 
-        dia("CONFIRM_EXIT_WITH_UNSPENT_TALENT_POINTS", {text = '你还有未分配的天赋。你确定要关闭这个窗口？', button1 = '是', button2 = '否',})
+        dia("CONFIRM_EXIT_WITH_UNSPENT_TALENT_POINTS", {text = '你还有未分配的天赋。你确定要关闭这个窗口？', button1 = '是', button2 = '否'})
 
+        hooksecurefunc(ClassTalentFrame, 'UpdateFrameTitle', function(self)
+            local tabID = self:GetTab();
+            if self:IsInspecting() then
+                local inspectUnit = self:GetInspectUnit();
+                if inspectUnit then
+                    self:SetTitle(format('天赋 - %s', UnitName(self:GetInspectUnit())));
+                else
+                    self:SetTitle(format('天赋链接 (%s %s)', self:GetSpecName(), self:GetClassName()));
+                end
+            elseif tabID == self.specTabID then
+                self:SetTitle('专精');
+            else -- tabID == self.talentTabID
+                self:SetTitle('天赋');
+            end
+        end)
+
+        --Blizzard_ClassTalentLoadoutEditDialog.lua
+        dia("LOADOUT_CONFIRM_DELETE_DIALOG", {text = '你确定要删除配置%s吗？', button1 = '删除', button2 = '取消'})
+        dia("LOADOUT_CONFIRM_SHARED_ACTION_BARS", {text = '此配置的动作条会被你共享的动作条替换。', button1 = '接受', button2 = '取消'})
+
+        --Blizzard_ClassTalentSpecTab.lua
+        SPEC_STAT_STRINGS = {
+            [LE_UNIT_STAT_STRENGTH] = '力量',
+            [LE_UNIT_STAT_AGILITY] = '敏捷',
+            [LE_UNIT_STAT_INTELLECT] = '智力',
+        };
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then
         hooksecurefunc(ProfessionsCustomerOrdersCategoryButtonMixin, 'Init', function(self, categoryInfo, _, isRecraftCategory)
