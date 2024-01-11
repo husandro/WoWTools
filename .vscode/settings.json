@@ -6683,7 +6683,11 @@
         "HUD_EDIT_MODE_UNSAVED_CHANGES",
         "HUD_EDIT_MODE_UNSAVED_CHANGES_DIALOG_TITLE",
         "HUD_EDIT_MODE_VEHICLE_LEAVE_BUTTON_LABEL",
-        "HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL"
+        "HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL",
+        "EditModeNewLayoutDialog",
+        "EditModeImportLayoutDialog",
+        "EditModeNewLayoutDialogMixin",
+        "UserEditBoxNonEmpty"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
