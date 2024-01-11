@@ -75,13 +75,8 @@ local function set_Button_Alpha(btn, tab)
         texture:SetAlpha(tab.alpha or Save.alpha)
     end
 end
-    --[[else
-        for index, icon in pairs({btn:GetRegions()}) do
-            if icon:GetObjectType()=="Texture" then
 
-            end
-        end
-    end]]
+
 local function set_SearchBox(frame)
     if not frame then-- or not frame.SearchBox then
         return
@@ -90,7 +85,6 @@ local function set_SearchBox(frame)
     set_Alpha_Color(frame.Left, nil, nil, min05)
     set_Alpha_Color(frame.Right, nil, nil, min05)
     set_Alpha_Color(frame.Mid, nil, nil, min05)
-
 end
 
 local setNineSliceTabs={
@@ -137,6 +131,26 @@ local function set_ScrollBar(frame)
         end
         hide_Texture(bar.Backplate, nil, true)
         set_Alpha_Color(bar.Background, nil, true)
+    end
+end
+
+local function set_Slider(frame)
+    if frame.Slider then
+        if frame.Slider.Back then
+            for _, icon in pairs({frame.Slider.Back:GetRegions()}) do
+                if icon:GetObjectType()=="Texture" then
+                    e.Set_Label_Texture_Color(icon, {type='Texture'})
+                end
+            end
+        end
+        if frame.Slider.Forward then
+            for _, icon in pairs({frame.Slider.Forward:GetRegions()}) do
+                if icon:GetObjectType()=="Texture" then
+                    e.Set_Label_Texture_Color(icon, {type='Texture'})
+                end
+            end
+        end
+        set_Alpha_Color(frame.Slider.Slider.Thumb, true)
     end
 end
 
@@ -1080,7 +1094,7 @@ local function Init_All_Frame()
     set_ScrollBar(EditModeManagerFrame.AccountSettings.SettingsContainer)
     set_Alpha_Frame_Texture(EditModeManagerFrame.Border, {alpha=min05})
     set_Alpha_Frame_Texture(EditModeManagerFrame.AccountSettings.SettingsContainer.BorderArt, {alpha=min05})
-    
+    set_Slider(EditModeManagerFrame.GridSpacingSlider)
 end
 
 
