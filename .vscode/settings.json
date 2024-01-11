@@ -6717,7 +6717,12 @@
         "PVP_WAR_MODE_NOT_NOW_HORDE",
         "TALENT_FRAME_CURRENCY_DISPLAY_FORMAT",
         "TALENT_FRAME_REFUND_INVALID_ERROR",
-        "ERR_TALENT_FAILED_UNSPENT_TALENT_POINTS"
+        "ERR_TALENT_FAILED_UNSPENT_TALENT_POINTS",
+        "BOOKTYPE_PET",
+        "SPELLBOOK",
+        "SpellBook_UpdatePlayerTab",
+        "SpellBook_UpdateProfTab",
+        "SpellBook_UpdatePetTab"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
