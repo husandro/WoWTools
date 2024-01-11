@@ -6707,7 +6707,15 @@
         "UseSharedActionBarsMixin",
         "HUD_CLASS_TALENTS_EDIT_LOADOUT_USES_SHARED_ACTION_BARS_TOOLTIP",
         "SPEC_STAT_STRINGS",
-        "ClassTalentLoadoutCreateDialog"
+        "ClassTalentLoadoutCreateDialog",
+        "PVP_WAR_MODE_ENABLED",
+        "PVP_WAR_MODE_DESCRIPTION_FORMAT",
+        "PVP_TALENT_SLOT_LOCKED",
+        "PVP_WAR_MODE_NOT_NOW_ALLIANCE_RESTAREA",
+        "PVP_WAR_MODE_NOT_NOW_ALLIANCE",
+        "PVP_WAR_MODE_NOT_NOW_HORDE_RESTAREA",
+        "PVP_WAR_MODE_NOT_NOW_HORDE",
+        "TALENT_FRAME_CURRENCY_DISPLAY_FORMAT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

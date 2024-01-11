@@ -1476,38 +1476,38 @@ local function Init()
     end)
 
     hooksecurefunc('LFDRoleCheckPopup_Update', function()
-        local slots, bgQueue = GetLFGRoleUpdate();
-        local isLFGList, activityID = C_LFGList.GetRoleCheckInfo();
-        local displayName;
+        local slots, bgQueue = GetLFGRoleUpdate()
+        local isLFGList, activityID = C_LFGList.GetRoleCheckInfo()
+        local displayName
         if( isLFGList ) then
-            displayName = C_LFGList.GetActivityFullName(activityID);
+            displayName = C_LFGList.GetActivityFullName(activityID)
         elseif ( bgQueue ) then
-            displayName = GetLFGRoleUpdateBattlegroundInfo();
+            displayName = GetLFGRoleUpdateBattlegroundInfo()
         elseif ( slots == 1 ) then
-            local dungeonID, _, dungeonSubType = GetLFGRoleUpdateSlot(1);
+            local dungeonID, _, dungeonSubType = GetLFGRoleUpdateSlot(1)
             if ( dungeonSubType == LFG_SUBTYPEID_HEROIC ) then
-                displayName = format('英雄难度：%s', select(LFG_RETURN_VALUES.name, GetLFGDungeonInfo(dungeonID)));
+                displayName = format('英雄难度：%s', select(LFG_RETURN_VALUES.name, GetLFGDungeonInfo(dungeonID)))
             else
-                displayName = select(LFG_RETURN_VALUES.name, GetLFGDungeonInfo(dungeonID));
+                displayName = select(LFG_RETURN_VALUES.name, GetLFGDungeonInfo(dungeonID))
             end
         else
-            displayName = '多个地下城';
+            displayName = '多个地下城'
         end
-        displayName = displayName and NORMAL_FONT_COLOR:WrapTextInColorCode(displayName) or "";
+        displayName = displayName and NORMAL_FONT_COLOR:WrapTextInColorCode(displayName) or ""
 
         if ( isLFGList ) then
-            LFDRoleCheckPopupDescriptionText:SetFormattedText('申请加入%s', displayName);
+            LFDRoleCheckPopupDescriptionText:SetFormattedText('申请加入%s', displayName)
         else
-            LFDRoleCheckPopupDescriptionText:SetFormattedText('在等待%s的队列中', displayName);
+            LFDRoleCheckPopupDescriptionText:SetFormattedText('在等待%s的队列中', displayName)
         end
 
-        local maxLevel, isLevelReduced = C_LFGInfo.GetRoleCheckDifficultyDetails();
+        local maxLevel, isLevelReduced = C_LFGInfo.GetRoleCheckDifficultyDetails()
         if isLevelReduced then
-            local canDisplayLevel = maxLevel and maxLevel < UnitEffectiveLevel("player");
+            local canDisplayLevel = maxLevel and maxLevel < UnitEffectiveLevel("player")
             if canDisplayLevel then
-                LFDRoleCheckPopupDescription.SubText:SetFormattedText(bgQueue and '等级和技能限制为小队的最低等级范围（%s）。' or '等级和技能限制为地下城的最高等级（%s）。', maxLevel);
+                LFDRoleCheckPopupDescription.SubText:SetFormattedText(bgQueue and '等级和技能限制为小队的最低等级范围（%s）。' or '等级和技能限制为地下城的最高等级（%s）。', maxLevel)
             else
-                LFDRoleCheckPopupDescription.SubText:SetText('进入战场时，等级和技能可能会受到限制。');
+                LFDRoleCheckPopupDescription.SubText:SetText('进入战场时，等级和技能可能会受到限制。')
             end
         end
     end)
@@ -1515,77 +1515,77 @@ local function Init()
 
     hooksecurefunc('LFDFrame_OnEvent', function(_, event, ...)
         if ( event == "LFG_ROLE_CHECK_SHOW" ) then
-            local requeue = ...;
+            local requeue = ...
             set(LFDRoleCheckPopup.Text, requeue and '你的队友已经将你加入另一场练习赛的队列。\n\n请确认你的角色：' or '确定你的职责：')
         elseif ( event == "LFG_READY_CHECK_SHOW" ) then
-            local _, readyCheckBgQueue = GetLFGReadyCheckUpdate();
-            local displayName;
+            local _, readyCheckBgQueue = GetLFGReadyCheckUpdate()
+            local displayName
             if ( readyCheckBgQueue ) then
-                displayName = GetLFGReadyCheckUpdateBattlegroundInfo();
+                displayName = GetLFGReadyCheckUpdateBattlegroundInfo()
             else
-                displayName = '未知';
+                displayName = '未知'
             end
             set(LFDReadyCheckPopup.Text, format('你的队长将你加入%s的队列。准备好了吗？', displayName))
 
         --[[elseif ( event == "LFG_BOOT_PROPOSAL_UPDATE" ) then
-            local voteInProgress, didVote, myVote, targetName, totalVotes, bootVotes, timeLeft, reason = GetLFGBootProposal();
+            local voteInProgress, didVote, myVote, targetName, totalVotes, bootVotes, timeLeft, reason = GetLFGBootProposal()
             if ( voteInProgress and not didVote and targetName ) then
                 if (reason and reason ~= "") then
-                    StaticPopupDialogs["VOTE_BOOT_PLAYER"].text = VOTE_BOOT_PLAYER;
+                    StaticPopupDialogs["VOTE_BOOT_PLAYER"].text = VOTE_BOOT_PLAYER
                 else
-                    StaticPopupDialogs["VOTE_BOOT_PLAYER"].text = VOTE_BOOT_PLAYER_NO_REASON;
+                    StaticPopupDialogs["VOTE_BOOT_PLAYER"].text = VOTE_BOOT_PLAYER_NO_REASON
                 end
                 -- Person who started the vote voted yes, the person being voted against voted no, so weve seen this before if we have more than 2 votes.
-                StaticPopup_Show("VOTE_BOOT_PLAYER", targetName, reason, totalVotes > 2 );
+                StaticPopup_Show("VOTE_BOOT_PLAYER", targetName, reason, totalVotes > 2 )
             else
-                StaticPopup_Hide("VOTE_BOOT_PLAYER");
+                StaticPopup_Hide("VOTE_BOOT_PLAYER")
             end]]
         end
     end)
 
     hooksecurefunc('LFDQueueFrameRandomCooldownFrame_Update', function()--LFDFrame.lua
-        local cooldownFrame = LFDQueueFrameCooldownFrame;
-        local hasDeserter = false; --If we have deserter, we want to show this over the specific frame as well as the random frame.
+        local cooldownFrame = LFDQueueFrameCooldownFrame
+        local hasDeserter = false --If we have deserter, we want to show this over the specific frame as well as the random frame.
 
-        local deserterExpiration = GetLFGDeserterExpiration();
+        local deserterExpiration = GetLFGDeserterExpiration()
 
-        local myExpireTime;
+        local myExpireTime
         if ( deserterExpiration ) then
-            myExpireTime = deserterExpiration;
-            hasDeserter = true;
+            myExpireTime = deserterExpiration
+            hasDeserter = true
         else
-            myExpireTime = GetLFGRandomCooldownExpiration();
+            myExpireTime = GetLFGRandomCooldownExpiration()
         end
 
 
         for i = 1, GetNumSubgroupMembers() do
-            --local nameLabel = _G["LFDQueueFrameCooldownFrameName"..i];
-            local statusLabel = _G["LFDQueueFrameCooldownFrameStatus"..i];
+            --local nameLabel = _G["LFDQueueFrameCooldownFrameName"..i]
+            local statusLabel = _G["LFDQueueFrameCooldownFrameStatus"..i]
 
-            --local _, classFilename = UnitClass("party"..i);
-            --local classColor = classFilename and RAID_CLASS_COLORS[classFilename] or NORMAL_FONT_COLOR;
-            --nameLabel:SetFormattedText("|cff%.2x%.2x%.2x%s|r", classColor.r * 255, classColor.g * 255, classColor.b * 255, GetUnitName("party"..i, true));
+            --local _, classFilename = UnitClass("party"..i)
+            --local classColor = classFilename and RAID_CLASS_COLORS[classFilename] or NORMAL_FONT_COLOR
+            --nameLabel:SetFormattedText("|cff%.2x%.2x%.2x%s|r", classColor.r * 255, classColor.g * 255, classColor.b * 255, GetUnitName("party"..i, true))
 
             if ( UnitHasLFGDeserter("party"..i) ) then
-                statusLabel:SetFormattedText(RED_FONT_COLOR_CODE.."%s|r", '逃亡者');
-                hasDeserter = true;
+                statusLabel:SetFormattedText(RED_FONT_COLOR_CODE.."%s|r", '逃亡者')
+                hasDeserter = true
             elseif ( UnitHasLFGRandomCooldown("party"..i) ) then
-                statusLabel:SetFormattedText(RED_FONT_COLOR_CODE.."%s|r", '冷却中');
+                statusLabel:SetFormattedText(RED_FONT_COLOR_CODE.."%s|r", '冷却中')
             else
-                statusLabel:SetFormattedText(GREEN_FONT_COLOR_CODE.."%s|r", '就绪');
+                statusLabel:SetFormattedText(GREEN_FONT_COLOR_CODE.."%s|r", '就绪')
             end
         end
         if ( myExpireTime and GetTime() < myExpireTime ) then
             if ( deserterExpiration ) then
-                cooldownFrame.description:SetText('你刚刚逃离了随机队伍，在接下来的时间内无法再度排队：');
+                cooldownFrame.description:SetText('你刚刚逃离了随机队伍，在接下来的时间内无法再度排队：')
             else
-                cooldownFrame.description:SetText('你近期加入过一个随机地下城队列。\n需要过一段时间才可加入另一个，等待时间为：');
+                cooldownFrame.description:SetText('你近期加入过一个随机地下城队列。\n需要过一段时间才可加入另一个，等待时间为：')
             end
         else
             if ( hasDeserter ) then
-                cooldownFrame.description:SetText('你的一名队伍成员刚刚逃离了随机副本队伍，在接下来的时间内无法再度排队。');
+                cooldownFrame.description:SetText('你的一名队伍成员刚刚逃离了随机副本队伍，在接下来的时间内无法再度排队。')
             else
-                cooldownFrame.description:SetText('的一名队友近期加入过一个随机地下城队列，暂时无法加入另一个。');
+                cooldownFrame.description:SetText('的一名队友近期加入过一个随机地下城队列，暂时无法加入另一个。')
             end
         end
 
@@ -1595,41 +1595,41 @@ local function Init()
     dia("LFG_LIST_INVITING_CONVERT_TO_RAID", {text = '邀请这名玩家或队伍会将你的小队转化为团队。', button1 = '邀请', button2 = '取消'})
 
     hooksecurefunc('LFGDungeonReadyPopup_Update', function()--LFGFrame.lua
-        local proposalExists, _, typeID, subtypeID, _, _, role, hasResponded, _, _, numMembers, _, _, _, isSilent = GetLFGProposal();
+        local proposalExists, _, typeID, subtypeID, _, _, role, hasResponded, _, _, numMembers, _, _, _, isSilent = GetLFGProposal()
         if ( not proposalExists ) then
-            return;
+            return
         elseif ( isSilent ) then
-            return;
+            return
         end
 
         if ( role == "NONE" ) then
-            role = "DAMAGER";
+            role = "DAMAGER"
         end
 
-        local leaveText = '离开队列';
+        local leaveText = '离开队列'
         if ( subtypeID == LFG_SUBTYPEID_RAID or subtypeID == LFG_SUBTYPEID_FLEXRAID ) then
-            LFGDungeonReadyDialog.enterButton:SetText('进入');
+            LFGDungeonReadyDialog.enterButton:SetText('进入')
         elseif ( subtypeID == LFG_SUBTYPEID_SCENARIO ) then
             if ( numMembers > 1 ) then
-                LFGDungeonReadyDialog.enterButton:SetText('进入');
+                LFGDungeonReadyDialog.enterButton:SetText('进入')
             else
-                LFGDungeonReadyDialog.enterButton:SetText('接受');
+                LFGDungeonReadyDialog.enterButton:SetText('接受')
                 leaveText = '取消'
             end
         else
-            LFGDungeonReadyDialog.enterButton:SetText('进入');
+            LFGDungeonReadyDialog.enterButton:SetText('进入')
         end
-        LFGDungeonReadyDialog.leaveButton:SetText(leaveText);
+        LFGDungeonReadyDialog.leaveButton:SetText(leaveText)
 
         if not hasResponded then
-            local LFGDungeonReadyDialog = LFGDungeonReadyDialog;
+            local LFGDungeonReadyDialog = LFGDungeonReadyDialog
             if ( typeID == TYPEID_RANDOM_DUNGEON and subtypeID ~= LFG_SUBTYPEID_SCENARIO ) then
-                LFGDungeonReadyDialog.label:SetText('你的随机地下城小队已经整装待发！');
+                LFGDungeonReadyDialog.label:SetText('你的随机地下城小队已经整装待发！')
             else
                  if ( numMembers > 1 ) then
-                    LFGDungeonReadyDialog.label:SetText('已经建好了一个队伍，准备前往：');
+                    LFGDungeonReadyDialog.label:SetText('已经建好了一个队伍，准备前往：')
                 else
-                    LFGDungeonReadyDialog.label:SetText('已经建好了一个副本，准备前往：');
+                    LFGDungeonReadyDialog.label:SetText('已经建好了一个副本，准备前往：')
                 end
             end
             if ( subtypeID ~= LFG_SUBTYPEID_SCENARIO and subtypeID ~= LFG_SUBTYPEID_FLEXRAID  and e.strText[_G[role]]) then
@@ -1649,11 +1649,11 @@ local function Init()
     RaidFinderQueueFrameScrollFrameChildFrameEncounterList:HookScript('OnEnter', function(self)
         print(self.dungeonID, id, addName)
         if self.dungeonID then
-            local numEncounters, numCompleted = GetLFGDungeonNumEncounters(self.dungeonID);
+            local numEncounters, numCompleted = GetLFGDungeonNumEncounters(self.dungeonID)
             if ( numCompleted > 0 ) then
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddLine(format('|cnHIGHLIGHT_FONT_COLOR:物品已经被拾取（%d/%d）', numCompleted, numEncounters));
-                GameTooltip:Show();
+                GameTooltip:AddLine(format('|cnHIGHLIGHT_FONT_COLOR:物品已经被拾取（%d/%d）', numCompleted, numEncounters))
+                GameTooltip:Show()
             end
         end
     end)
@@ -1838,23 +1838,23 @@ local function Init()
                 local function set_UpdateNextReward(self, nextReward)--C_RecruitAFriend.GetRAFInfo()
                     if nextReward then
                         if nextReward.canClaim then
-                            self.RewardClaiming.EarnInfo:SetText('你获得了：');
+                            self.RewardClaiming.EarnInfo:SetText('你获得了：')
                         elseif nextReward.monthCost > 1 then
                             self.RewardClaiming.EarnInfo:SetFormattedText('下一个奖励 (%d/%d个月)：', nextReward.monthCost - nextReward.availableInMonths, nextReward.monthCost)
                         elseif nextReward.monthsRequired == 0 then
-                            self.RewardClaiming.EarnInfo:SetText('第一个奖励：');
+                            self.RewardClaiming.EarnInfo:SetText('第一个奖励：')
                         else
-                            self.RewardClaiming.EarnInfo:SetText('下一个奖励：');
+                            self.RewardClaiming.EarnInfo:SetText('下一个奖励：')
                         end
 
                         if not nextReward.petInfo and not nextReward.appearanceInfo and not nextReward.appearanceSetInfo and not nextReward.illusionInfo then
                             if nextReward.titleInfo then
-                                local titleName = TitleUtil.GetNameFromTitleMaskID(nextReward.titleInfo.titleMaskID);
+                                local titleName = TitleUtil.GetNameFromTitleMaskID(nextReward.titleInfo.titleMaskID)
                                 if titleName then
-                                    self:SetNextRewardName(format('新头衔： %s', titleName), nextReward.repeatableClaimCount, nextReward.rewardType);
+                                    self:SetNextRewardName(format('新头衔： %s', titleName), nextReward.repeatableClaimCount, nextReward.rewardType)
                                 end
                             else
-                                self:SetNextRewardName('30天免费游戏时间', nextReward.repeatableClaimCount, nextReward.rewardType);
+                                self:SetNextRewardName('30天免费游戏时间', nextReward.repeatableClaimCount, nextReward.rewardType)
                             end
                         end
                     end
@@ -1867,7 +1867,7 @@ local function Init()
 
                 hooksecurefunc(RecruitAFriendFrame.RewardClaiming.ClaimOrViewRewardButton, 'Update', function(self)
                     if self.haveUnclaimedReward then
-                        self:SetText('获取奖励');
+                        self:SetText('获取奖励')
                     else
                         self:SetText('查看所有奖励')
                     end
@@ -1888,7 +1888,7 @@ local function Init()
 
                 set(RecruitAFriendRewardsFrame.Title, '战友招募奖励')
                 hooksecurefunc(RecruitAFriendRewardsFrame, 'UpdateDescription', function(self, selectedRAFVersionInfo)
-                    self.Description:SetText((selectedRAFVersionInfo.rafVersion == self:GetRecruitAFriendFrame():GetLatestRAFVersion()) and '每名拥有可用的游戏时间的被招募者|n每30天可以为你提供一份月度奖励。' or '不能再为旧版招募活动再招募新的战友，但是旧版现有的被招募的战友还会继续提供战友招募奖励。');
+                    self.Description:SetText((selectedRAFVersionInfo.rafVersion == self:GetRecruitAFriendFrame():GetLatestRAFVersion()) and '每名拥有可用的游戏时间的被招募者|n每30天可以为你提供一份月度奖励。' or '不能再为旧版招募活动再招募新的战友，但是旧版现有的被招募的战友还会继续提供战友招募奖励。')
                 end)
 
 
@@ -1904,18 +1904,18 @@ local function Init()
                 set(RecruitAFriendRecruitmentFrame.Title, '招募')
 
                 hooksecurefunc(RecruitAFriendRecruitmentFrame, 'UpdateRecruitmentInfo', function(self, recruitmentInfo, recruitsAreMaxed)
-                    local maxRecruits = 0;
-                    local maxRecruitLinkUses = 0;
-                    local daysInCycle = 0;
+                    local maxRecruits = 0
+                    local maxRecruitLinkUses = 0
+                    local daysInCycle = 0
                     local rafSystemInfo = C_RecruitAFriend.GetRAFSystemInfo()
                     if rafSystemInfo then
-                        maxRecruits = rafSystemInfo.maxRecruits;
-                        maxRecruitLinkUses = rafSystemInfo.maxRecruitmentUses;
-                        daysInCycle = rafSystemInfo.daysInCycle;
+                        maxRecruits = rafSystemInfo.maxRecruits
+                        maxRecruitLinkUses = rafSystemInfo.maxRecruitmentUses
+                        daysInCycle = rafSystemInfo.daysInCycle
                     end
 
                     if recruitmentInfo then
-                        local expireDate = date("*t", recruitmentInfo.expireTime);
+                        local expireDate = date("*t", recruitmentInfo.expireTime)
                         recruitmentInfo.expireDateString = FormatShortDate(expireDate.day, expireDate.month, expireDate.year)
 
                         set(self.Description, format('招募战友，与你一起游玩《魔兽世界》！|n你每%2$d天可以邀请%1$d个战友。', recruitmentInfo.totalUses, daysInCycle))
@@ -1941,7 +1941,7 @@ local function Init()
                         end
 
 
-                        local timesUsed = recruitmentInfo.totalUses - recruitmentInfo.remainingUses;
+                        local timesUsed = recruitmentInfo.totalUses - recruitmentInfo.remainingUses
                         set(self.InfoText2, format('%d/%d 名朋友已经使用了这个链接。', timesUsed, recruitmentInfo.totalUses))
                     end
                 end)
@@ -1973,12 +1973,12 @@ local function Init()
         set(WhoFrameColumnHeader1, '名称')
         set(WhoFrameColumnHeader4, '职业')
         hooksecurefunc('WhoList_Update', function()
-            local numWhos, totalCount = C_FriendList.GetNumWhoResults();
-            local displayedText = "";
+            local numWhos, totalCount = C_FriendList.GetNumWhoResults()
+            local displayedText = ""
             if ( totalCount > MAX_WHOS_FROM_SERVER ) then
-                displayedText = format('（显示%d）', MAX_WHOS_FROM_SERVER);
+                displayedText = format('（显示%d）', MAX_WHOS_FROM_SERVER)
             end
-            WhoFrameTotals:SetText(format('找到%d个人', totalCount).."  "..displayedText);
+            WhoFrameTotals:SetText(format('找到%d个人', totalCount).."  "..displayedText)
         end)
         set(RaidFrameRaidInfoButton, '团队信息')
             set(RaidInfoFrame.Header.Text, '团队信息')
@@ -2484,13 +2484,13 @@ local function Init()
     set(EditModeUnsavedChangesDialog.CancelButton, '取消')
     hooksecurefunc(EditModeUnsavedChangesDialog, 'ShowDialog', function(self, selectedLayoutIndex)
         if selectedLayoutIndex then
-            set(self.Title, '如果你切换布局，你会丢失所有未保存的改动。|n你想继续吗？');
-            set(self.SaveAndProceedButton, '保存并切换');
-            set(self.ProceedButton, '切换');
+            set(self.Title, '如果你切换布局，你会丢失所有未保存的改动。|n你想继续吗？')
+            set(self.SaveAndProceedButton, '保存并切换')
+            set(self.ProceedButton, '切换')
         else
-            set(self.Title, '如果你现在退出，你会丢失所有未保存的改动。|n你想继续吗？');
-            set(self.SaveAndProceedButton, '保存并退出');
-            set(self.ProceedButton, '退出');
+            set(self.Title, '如果你现在退出，你会丢失所有未保存的改动。|n你想继续吗？')
+            set(self.SaveAndProceedButton, '保存并退出')
+            set(self.ProceedButton, '退出')
         end
     end)
 
@@ -2520,36 +2520,36 @@ local function Init()
 
     local function CheckForMaxLayouts(acceptButton, charSpecificButton)
         if EditModeManagerFrame:AreLayoutsFullyMaxed() then
-            acceptButton.disabledTooltip = format('最多允许%d种角色布局和%d种账号布局', Constants.EditModeConsts.EditModeMaxLayoutsPerType, Constants.EditModeConsts.EditModeMaxLayoutsPerType);
-            return true;
+            acceptButton.disabledTooltip = format('最多允许%d种角色布局和%d种账号布局', Constants.EditModeConsts.EditModeMaxLayoutsPerType, Constants.EditModeConsts.EditModeMaxLayoutsPerType)
+            return true
         end
-        local layoutType = charSpecificButton:IsControlChecked() and Enum.EditModeLayoutType.Character or Enum.EditModeLayoutType.Account;
-        local areLayoutsMaxed = EditModeManagerFrame:AreLayoutsOfTypeMaxed(layoutType);
+        local layoutType = charSpecificButton:IsControlChecked() and Enum.EditModeLayoutType.Character or Enum.EditModeLayoutType.Account
+        local areLayoutsMaxed = EditModeManagerFrame:AreLayoutsOfTypeMaxed(layoutType)
         if areLayoutsMaxed then
             acceptButton.disabledTooltip = (layoutType == Enum.EditModeLayoutType.Character) and format('只允许有%d个角色专用的布局。勾选以保存一种账号通用的布局', Constants.EditModeConsts.EditModeMaxLayoutsPerType) or format('只允许有%d个账号通用的布局。勾选以保存一种角色专用的布局', Constants.EditModeConsts.EditModeMaxLayoutsPerType)
-            return true;
+            return true
         end
     end
     local function CheckForDuplicateLayoutName(acceptButton, editBox)
-        local editBoxText = editBox:GetText();
-        local editModeLayouts = EditModeManagerFrame:GetLayouts();
+        local editBoxText = editBox:GetText()
+        local editModeLayouts = EditModeManagerFrame:GetLayouts()
         for _, layout in ipairs(editModeLayouts) do
             if layout.layoutName == editBoxText then
-                acceptButton.disabledTooltip = '该名称已被使用。';
-                return true;
+                acceptButton.disabledTooltip = '该名称已被使用。'
+                return true
             end
         end
     end
     hooksecurefunc(EditModeImportLayoutDialog, 'UpdateAcceptButtonEnabledState', function(self)
         if not CheckForMaxLayouts(self.AcceptButton, self.CharacterSpecificLayoutCheckButton)
             and not CheckForDuplicateLayoutName(self.AcceptButton, self.LayoutNameEditBox)  then
-            self.AcceptButton.disabledTooltip = '输入布局的名称';
+            self.AcceptButton.disabledTooltip = '输入布局的名称'
         end
     end)
     hooksecurefunc(EditModeNewLayoutDialog, 'UpdateAcceptButtonEnabledState', function(self)
         if not CheckForMaxLayouts(self.AcceptButton, self.CharacterSpecificLayoutCheckButton)
             and not CheckForDuplicateLayoutName(self.AcceptButton, self.LayoutNameEditBox)  then
-            self.AcceptButton.disabledTooltip = '输入布局的名称';
+            self.AcceptButton.disabledTooltip = '输入布局的名称'
         end
     end)
 
@@ -3266,8 +3266,7 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.BuyDialog.BuyNowButton, '立即购买')
         set(AuctionHouseFrame.BuyDialog.CancelButton, '取消')
 
-    elseif arg1=='Blizzard_ClassTalentUI' then--Blizzard_TalentUI.lua
-        --Blizzard_AuctionData.lua
+    elseif arg1=='Blizzard_ClassTalentUI' then
          for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
             local btn= ClassTalentFrame:GetTabButton(tabID)
             if tabID==1 then
@@ -3276,7 +3275,82 @@ local function Init_Loaded(arg1)
                 set(btn, '天赋')
             end
         end
+
+        --Blizzard_ClassTalentTalentsTab.lua
         set(ClassTalentFrame.TalentsTab.ApplyButton, '应用改动')
+        ClassTalentFrame.TalentsTab.ApplyButton:HookScript('OnEnter', function()
+        end)
+        hooksecurefunc(ClassTalentFrame.TalentsTab.ClassCurrencyDisplay, 'SetPointTypeText', function(self, text)
+            set(self.CurrencyLabel, format('%s 可用点数', text))
+        end)
+        hooksecurefunc(ClassTalentFrame.TalentsTab.SpecCurrencyDisplay, 'SetPointTypeText', function(self, text)
+            set(self.CurrencyLabel, format('%s 可用点数', text))
+        end)
+        ClassTalentFrame.TalentsTab.InspectCopyButton:SetTextToFit('复制配置代码')
+
+        if ClassTalentFrame.SpecTab.numSpecs and ClassTalentFrame.SpecTab.numSpecs>0 and ClassTalentFrame.SpecTab.SpecContentFramePool then 
+            local sex= UnitSex("player")
+            local SPEC_STAT_STRINGS = {
+                [LE_UNIT_STAT_STRENGTH] = '力量',
+                [LE_UNIT_STAT_AGILITY] = '敏捷',
+                [LE_UNIT_STAT_INTELLECT] = '智力',
+            }
+            for frame in pairs(ClassTalentFrame.SpecTab.SpecContentFramePool.activeObjects or {}) do
+                set(frame.ActivatedText, '激活')
+                set(frame.ActivateButton, '激活')
+                if frame.RoleName then
+                    set(frame.RoleName, e.strText[frame.RoleName:GetText()])
+                end
+                set(frame.SampleAbilityText, '典型技能')
+                if frame.specIndex then
+                    local specID, _, description, _, _, primaryStat = GetSpecializationInfo(frame.specIndex, false, false, nil, sex)
+                    if specID and primaryStat and primaryStat ~= 0 then
+                        set(frame.Description, description.."|n"..format('主要属性：%s', SPEC_STAT_STRINGS[primaryStat]))
+                    end
+                end
+            end
+        end
+
+        --Blizzard_WarmodeButtonTemplate.lua
+        ClassTalentFrame.TalentsTab.WarmodeButton:HookScript('OnEnter', function(self)
+            --GameTooltip:SetOwner(self, "ANCHOR_LEFT", 14, 0)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddLine('战争模式')
+            --GameTooltip_SetTitle(GameTooltip, '战争模式')
+            if C_PvP.IsWarModeActive() or self:GetWarModeDesired() then
+                GameTooltip_AddInstructionLine(GameTooltip, '|cnGREEN_FONT_COLOR:开启')
+            end
+            local wrap = true
+            local warModeRewardBonus = C_PvP.GetWarModeRewardBonus()
+            GameTooltip_AddNormalLine(GameTooltip, format('加入战争模式即可激活世界PvP，使任务的奖励和经验值提高%1$d%%，并可以在野外使用PvP天赋。', warModeRewardBonus), wrap)
+            local canToggleWarmode = C_PvP.CanToggleWarMode(true)
+            local canToggleWarmodeOFF = C_PvP.CanToggleWarMode(false)
+
+            if(not canToggleWarmode or not canToggleWarmodeOFF) then
+                if (not C_PvP.ArePvpTalentsUnlocked()) then
+                    GameTooltip_AddErrorLine(GameTooltip, format('|cnRED_FONT_COLOR:在%d级解锁', C_PvP.GetPvpTalentsUnlockedLevel()), wrap)
+                else
+                    local warmodeErrorText
+                    if(not C_PvP.CanToggleWarModeInArea()) then
+                        if(self:GetWarModeDesired()) then
+                            if(not canToggleWarmodeOFF and not IsResting()) then
+                                warmodeErrorText = UnitFactionGroup("player") == PLAYER_FACTION_GROUP[0] and '战争模式可以在任何休息区域关闭，但只能在奥格瑞玛或瓦德拉肯开启。' or '战争模式可以在任何休息区域关闭，但只能在暴风城或瓦德拉肯开启。'
+                            end
+                        else
+                            if(not canToggleWarmode) then
+                                warmodeErrorText = UnitFactionGroup("player") == PLAYER_FACTION_GROUP[0] and '只能在奥格瑞玛或瓦德拉肯进入战争模式。' or '只能在暴风城或瓦德拉肯进入战争模式。'
+                            end
+                        end
+                    end
+                    if(warmodeErrorText) then
+                        GameTooltip_AddErrorLine(GameTooltip, '|cnRED_FONT_COLOR:'..warmodeErrorText, wrap)
+                    elseif (UnitAffectingCombat("player")) then
+                        GameTooltip_AddErrorLine(GameTooltip, '|cnRED_FONT_COLOR:你正处于交战状态', wrap)
+                    end
+                end
+            end
+            GameTooltip:Show()
+        end)
 
         dia("CONFIRM_LEARN_SPEC", {button1 = '是', button2 = '否',})
         hookDia("CONFIRM_LEARN_SPEC", 'OnShow', function(self)
@@ -3290,18 +3364,18 @@ local function Init_Loaded(arg1)
         dia("CONFIRM_EXIT_WITH_UNSPENT_TALENT_POINTS", {text = '你还有未分配的天赋。你确定要关闭这个窗口？', button1 = '是', button2 = '否'})
 
         hooksecurefunc(ClassTalentFrame, 'UpdateFrameTitle', function(self)
-            local tabID = self:GetTab();
+            local tabID = self:GetTab()
             if self:IsInspecting() then
-                local inspectUnit = self:GetInspectUnit();
+                local inspectUnit = self:GetInspectUnit()
                 if inspectUnit then
-                    self:SetTitle(format('天赋 - %s', UnitName(self:GetInspectUnit())));
+                    self:SetTitle(format('天赋 - %s', UnitName(self:GetInspectUnit())))
                 else
-                    self:SetTitle(format('天赋链接 (%s %s)', self:GetSpecName(), self:GetClassName()));
+                    self:SetTitle(format('天赋链接 (%s %s)', self:GetSpecName(), self:GetClassName()))
                 end
             elseif tabID == self.specTabID then
-                self:SetTitle('专精');
+                self:SetTitle('专精')
             else -- tabID == self.talentTabID
-                self:SetTitle('天赋');
+                self:SetTitle('天赋')
             end
         end)
 
@@ -3310,16 +3384,16 @@ local function Init_Loaded(arg1)
         dia("LOADOUT_CONFIRM_SHARED_ACTION_BARS", {text = '此配置的动作条会被你共享的动作条替换。', button1 = '接受', button2 = '取消'})
         ClassTalentLoadoutEditDialog.UsesSharedActionBars:HookScript('OnEnter', function()
             GameTooltip:AddLine(' ')
-            GameTooltip_AddNormalLine(GameTooltip, '默认条件下，每个配置都有自己保存的一套动作条。\n\n所有开启此选项的配置都会共享同样的动作条。');
-            GameTooltip:Show();
+            GameTooltip_AddNormalLine(GameTooltip, '默认条件下，每个配置都有自己保存的一套动作条。\n\n所有开启此选项的配置都会共享同样的动作条。')
+            GameTooltip:Show()
         end)
 
-        --Blizzard_ClassTalentSpecTab.lua
+        --[[Blizzard_ClassTalentSpecTab.lua
         SPEC_STAT_STRINGS = {
             [LE_UNIT_STAT_STRENGTH] = '力量',
             [LE_UNIT_STAT_AGILITY] = '敏捷',
             [LE_UNIT_STAT_INTELLECT] = '智力',
-        };
+        }]]
 
         --Blizzard_ClassTalentLoadoutImportDialog.xml
         set(ClassTalentLoadoutImportDialog.Title, '导入配置')
@@ -3678,114 +3752,114 @@ local function Init_Loaded(arg1)
         set(PVPQueueFrame.NewSeasonPopup.Leave, '关闭')
 
         hooksecurefunc('HonorFrame_UpdateQueueButtons', function()
-            local HonorFrame = HonorFrame;
-            local canQueue;
-            local arenaID;
-            local isBrawl;
+            local HonorFrame = HonorFrame
+            local canQueue
+            local arenaID
+            local isBrawl
             local isSpecialBrawl
             if ( HonorFrame.type == "specific" ) then
                 if ( HonorFrame.SpecificScrollBox.selectionID ) then
-                    canQueue = true;
+                    canQueue = true
                 end
             elseif ( HonorFrame.type == "bonus" ) then
                 if ( HonorFrame.BonusFrame.selectedButton ) then
-                    canQueue = HonorFrame.BonusFrame.selectedButton.canQueue;
-                    arenaID = HonorFrame.BonusFrame.selectedButton.arenaID;
-                    isBrawl = HonorFrame.BonusFrame.selectedButton.isBrawl;
-                    isSpecialBrawl = HonorFrame.BonusFrame.selectedButton.isSpecialBrawl;
+                    canQueue = HonorFrame.BonusFrame.selectedButton.canQueue
+                    arenaID = HonorFrame.BonusFrame.selectedButton.arenaID
+                    isBrawl = HonorFrame.BonusFrame.selectedButton.isBrawl
+                    isSpecialBrawl = HonorFrame.BonusFrame.selectedButton.isSpecialBrawl
                 end
             end
 
-            local disabledReason;
+            local disabledReason
 
             if arenaID then
-                local battlemasterListInfo = C_PvP.GetSkirmishInfo(arenaID);
+                local battlemasterListInfo = C_PvP.GetSkirmishInfo(arenaID)
                 if battlemasterListInfo then
-                    local groupSize = GetNumGroupMembers();
-                    local minPlayers = battlemasterListInfo.minPlayers;
-                    local maxPlayers = battlemasterListInfo.maxPlayers;
+                    local groupSize = GetNumGroupMembers()
+                    local minPlayers = battlemasterListInfo.minPlayers
+                    local maxPlayers = battlemasterListInfo.maxPlayers
                     if groupSize > maxPlayers then
-                        canQueue = false;
-                        disabledReason = format('要进入该竞技场，你的团队需要减少%d名玩家。', groupSize - maxPlayers);
+                        canQueue = false
+                        disabledReason = format('要进入该竞技场，你的团队需要减少%d名玩家。', groupSize - maxPlayers)
                     elseif groupSize < minPlayers then
-                        canQueue = false;
-                        disabledReason = format('要进入该竞技场，你的团队需要增加%d名玩家。', minPlayers - groupSize);
+                        canQueue = false
+                        disabledReason = format('要进入该竞技场，你的团队需要增加%d名玩家。', minPlayers - groupSize)
                     end
                 end
             end
 
             if (isBrawl or isSpecialBrawl) and not canQueue then
                 if IsInGroup(LE_PARTY_CATEGORY_HOME) then
-                    local brawlInfo = isSpecialBrawl and C_PvP.GetSpecialEventBrawlInfo() or C_PvP.GetAvailableBrawlInfo() or {};
+                    local brawlInfo = isSpecialBrawl and C_PvP.GetSpecialEventBrawlInfo() or C_PvP.GetAvailableBrawlInfo() or {}
                     if brawlInfo then
-                        disabledReason = format('你的小队未满足最低等级要求（%s）。', isSpecialBrawl and brawlInfo.minLevel or GetMaxLevelForPlayerExpansion());
+                        disabledReason = format('你的小队未满足最低等级要求（%s）。', isSpecialBrawl and brawlInfo.minLevel or GetMaxLevelForPlayerExpansion())
                     end
                 else
-                    disabledReason = '你的级别不够。';
+                    disabledReason = '你的级别不够。'
                 end
             end
 
             if isBrawl or isSpecialBrawl and canQueue then
-                local brawlInfo = isSpecialBrawl and C_PvP.GetSpecialEventBrawlInfo() or C_PvP.GetAvailableBrawlInfo() or {};
-                local brawlHasMinItemLevelRequirement = brawlInfo and brawlInfo.brawlType == Enum.BrawlType.SoloRbg;
+                local brawlInfo = isSpecialBrawl and C_PvP.GetSpecialEventBrawlInfo() or C_PvP.GetAvailableBrawlInfo() or {}
+                local brawlHasMinItemLevelRequirement = brawlInfo and brawlInfo.brawlType == Enum.BrawlType.SoloRbg
                 if (IsInGroup(LE_PARTY_CATEGORY_HOME)) then
                     if(brawlInfo and not brawlInfo.groupsAllowed) then
-                        canQueue = false;
-                        disabledReason = '你不能在队伍中那样做。';
+                        canQueue = false
+                        disabledReason = '你不能在队伍中那样做。'
                     end
                     if (brawlHasMinItemLevelRequirement and brawlInfo.groupsAllowed) then
-                        local brawlMinItemLevel = brawlInfo.minItemLevel;
-                        local partyMinItemLevel, playerWithLowestItemLevel = C_PartyInfo.GetMinItemLevel(Enum.AvgItemLevelCategories.PvP);
+                        local brawlMinItemLevel = brawlInfo.minItemLevel
+                        local partyMinItemLevel, playerWithLowestItemLevel = C_PartyInfo.GetMinItemLevel(Enum.AvgItemLevelCategories.PvP)
                         if (UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME) and partyMinItemLevel < brawlMinItemLevel) then
-                            canQueue = false;
-                            disabledReason = format('"%1$s需要更高的平均装备物品等级。（需要：%2$d。当前%3$d。）', playerWithLowestItemLevel, brawlMinItemLevel, partyMinItemLevel);
+                            canQueue = false
+                            disabledReason = format('"%1$s需要更高的平均装备物品等级。（需要：%2$d。当前%3$d。）', playerWithLowestItemLevel, brawlMinItemLevel, partyMinItemLevel)
                         end
                     end
                 end
-                local _, _, playerPvPItemLevel = GetAverageItemLevel();
+                local _, _, playerPvPItemLevel = GetAverageItemLevel()
                 if (brawlHasMinItemLevelRequirement and playerPvPItemLevel < brawlInfo.minItemLevel) then
-                    canQueue = false;
-                    disabledReason = format('你需要更高的PvP装备物品平均等级才能加入队列。|n（需要 %2$d，当前%3$d。）', brawlInfo.minItemLevel, playerPvPItemLevel);
+                    canQueue = false
+                    disabledReason = format('你需要更高的PvP装备物品平均等级才能加入队列。|n（需要 %2$d，当前%3$d。）', brawlInfo.minItemLevel, playerPvPItemLevel)
                 end
             end
 
             --Disable the button if the person is active in LFGList
             if not disabledReason then
                 if ( select(2,C_LFGList.GetNumApplications()) > 0 ) then
-                    disabledReason = '你不能在拥有有效的预创建队伍申请时那样做。';
-                    canQueue = false;
+                    disabledReason = '你不能在拥有有效的预创建队伍申请时那样做。'
+                    canQueue = false
                 elseif ( C_LFGList.HasActiveEntryInfo() ) then
-                    disabledReason = '你不能在你的队伍出现在预创建队伍列表中时那样做。';
-                    canQueue = false;
+                    disabledReason = '你不能在你的队伍出现在预创建队伍列表中时那样做。'
+                    canQueue = false
                 end
             end
 
-            local isInCrossFactionGroup = C_PartyInfo.IsCrossFactionParty();
+            local isInCrossFactionGroup = C_PartyInfo.IsCrossFactionParty()
             if ( canQueue ) then
                 if ( IsInGroup(LE_PARTY_CATEGORY_HOME) ) then
-                    HonorFrame.QueueButton:SetText('小队加入');
+                    HonorFrame.QueueButton:SetText('小队加入')
                     if (not UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME)) then
                         disabledReason = '你现在不是队长'
                     elseif(isInCrossFactionGroup) then
                         if isBrawl or isSpecialBrawl then
-                            local brawlInfo = isSpecialBrawl and C_PvP.GetSpecialEventBrawlInfo() or C_PvP.GetAvailableBrawlInfo();
-                            local allowCrossFactionGroups = brawlInfo and brawlInfo.brawlType == Enum.BrawlType.SoloRbg;
+                            local brawlInfo = isSpecialBrawl and C_PvP.GetSpecialEventBrawlInfo() or C_PvP.GetAvailableBrawlInfo()
+                            local allowCrossFactionGroups = brawlInfo and brawlInfo.brawlType == Enum.BrawlType.SoloRbg
                             if (not allowCrossFactionGroups) then
-                                disabledReason ='在跨阵营队伍中无法这么做。你可以参加竞技场或者评级战场。';
+                                disabledReason ='在跨阵营队伍中无法这么做。你可以参加竞技场或者评级战场。'
                             end
                         end
                     end
                 else
-                    HonorFrame.QueueButton:SetText('加入战斗');
+                    HonorFrame.QueueButton:SetText('加入战斗')
                 end
             else
                 if (HonorFrame.type == "bonus" and HonorFrame.BonusFrame.selectedButton and HonorFrame.BonusFrame.selectedButton.queueID) then
                     if not disabledReason then
-                        disabledReason = LFGConstructDeclinedMessage(HonorFrame.BonusFrame.selectedButton.queueID);
+                        disabledReason = LFGConstructDeclinedMessage(HonorFrame.BonusFrame.selectedButton.queueID)
                     end
                 end
             end
-            HonorFrame.QueueButton.tooltip = disabledReason;
+            HonorFrame.QueueButton.tooltip = disabledReason
         end)
 
 --hooksecurefunc('HonorFrame_UpdateQueueButtons', function()
