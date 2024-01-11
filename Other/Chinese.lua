@@ -2618,7 +2618,7 @@ local function Init()
 
         if not data.acceptText then
 		    set(self.button1, '是')
-            
+
         elseif data.acceptText==OKAY then
             set(self.button1, '确定')
 
@@ -3308,6 +3308,11 @@ local function Init_Loaded(arg1)
         --Blizzard_ClassTalentLoadoutEditDialog.lua
         dia("LOADOUT_CONFIRM_DELETE_DIALOG", {text = '你确定要删除配置%s吗？', button1 = '删除', button2 = '取消'})
         dia("LOADOUT_CONFIRM_SHARED_ACTION_BARS", {text = '此配置的动作条会被你共享的动作条替换。', button1 = '接受', button2 = '取消'})
+        ClassTalentLoadoutEditDialog.UsesSharedActionBars:HookScript('OnEnter', function()
+            GameTooltip:AddLine(' ')
+            GameTooltip_AddNormalLine(GameTooltip, '默认条件下，每个配置都有自己保存的一套动作条。\n\n所有开启此选项的配置都会共享同样的动作条。');
+            GameTooltip:Show();
+        end)
 
         --Blizzard_ClassTalentSpecTab.lua
         SPEC_STAT_STRINGS = {
@@ -3315,6 +3320,29 @@ local function Init_Loaded(arg1)
             [LE_UNIT_STAT_AGILITY] = '敏捷',
             [LE_UNIT_STAT_INTELLECT] = '智力',
         };
+
+        --Blizzard_ClassTalentLoadoutImportDialog.xml
+        set(ClassTalentLoadoutImportDialog.Title, '导入配置')
+        set(ClassTalentLoadoutImportDialog.ImportControl.Label, '导入文本')
+        set(ClassTalentLoadoutImportDialog.ImportControl.InputContainer.EditBox.Instructions, '在此粘贴配置代码')
+        set(ClassTalentLoadoutImportDialog.NameControl.Label, '新配置名称')
+        set(ClassTalentLoadoutImportDialog.AcceptButton, '导入')
+        set(ClassTalentLoadoutImportDialog.CancelButton, '取消')
+        ClassTalentLoadoutImportDialog.AcceptButton.disabledTooltip = '输入可用的配置代码'
+
+        --Blizzard_ClassTalentLoadoutEditDialog.xml
+        set(ClassTalentLoadoutEditDialog.Title, '配置设定')
+        set(ClassTalentLoadoutEditDialog.NameControl.Label, '名字')
+        set(ClassTalentLoadoutEditDialog.UsesSharedActionBars.Label, '使用共享的动作条')
+        set(ClassTalentLoadoutEditDialog.AcceptButton, '接受')
+        set(ClassTalentLoadoutEditDialog.DeleteButton, '删除')
+        set(ClassTalentLoadoutEditDialog.CancelButton, '取消')
+
+        --Blizzard_ClassTalentLoadoutCreateDialog.xml
+        set(ClassTalentLoadoutCreateDialog.Title, '新配置')
+        set(ClassTalentLoadoutCreateDialog.NameControl.Label, '名字')
+        set(ClassTalentLoadoutCreateDialog.AcceptButton, '保存')
+        set(ClassTalentLoadoutCreateDialog.CancelButton, '取消')
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then
         hooksecurefunc(ProfessionsCustomerOrdersCategoryButtonMixin, 'Init', function(self, categoryInfo, _, isRecraftCategory)

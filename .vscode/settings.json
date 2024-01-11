@@ -6701,7 +6701,13 @@
         "CRAFTING_ORDERS_IGNORE_CONFIRMATION",
         "CRAFTING_ORDERS_OWN_REAGENTS_CONFIRMATION",
         "TALENT_FRAME_CONFIRM_LEAVE_DEFAULT_LOADOUT",
-        "TALENT_FRAME_CONFIRM_STARTER_DEVIATION"
+        "TALENT_FRAME_CONFIRM_STARTER_DEVIATION",
+        "ClassTalentLoadoutImportDialog",
+        "ClassTalentLoadoutEditDialog",
+        "UseSharedActionBarsMixin",
+        "HUD_CLASS_TALENTS_EDIT_LOADOUT_USES_SHARED_ACTION_BARS_TOOLTIP",
+        "SPEC_STAT_STRINGS",
+        "ClassTalentLoadoutCreateDialog"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
