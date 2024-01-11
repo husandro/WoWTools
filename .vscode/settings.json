@@ -6722,7 +6722,19 @@
         "SPELLBOOK",
         "SpellBook_UpdatePlayerTab",
         "SpellBook_UpdateProfTab",
-        "SpellBook_UpdatePetTab"
+        "SpellBook_UpdatePetTab",
+        "PAGE_NUMBER",
+        "SpellBook_GetCurrentPage",
+        "SELL_PRICE",
+        "BNToastFrame",
+        "CONTRIBUTION_REWARD_TOOLTIP_TEXT",
+        "ISLAND_QUEUE_REWARD_FOR_WINNING",
+        "TOOLTIP_QUEST_REWARDS_PRIORITIZE_CURRENCY_OVER_ITEM",
+        "TOOLTIP_QUEST_REWARDS_STYLE_EMISSARY_REWARD",
+        "TOOLTIP_QUEST_REWARDS_STYLE_ISLANDS_QUEUE",
+        "TOOLTIP_QUEST_REWARDS_STYLE_CONTRIBUTION",
+        "TOOLTIP_QUEST_REWARDS_STYLE_WORLD_QUEST",
+        "TOOLTIP_QUEST_REWARDS_STYLE_DEFAULT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

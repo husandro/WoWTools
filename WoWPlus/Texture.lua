@@ -1095,6 +1095,8 @@ local function Init_All_Frame()
     set_Alpha_Frame_Texture(EditModeManagerFrame.Border, {alpha=min05})
     set_Alpha_Frame_Texture(EditModeManagerFrame.AccountSettings.SettingsContainer.BorderArt, {alpha=min05})
     set_Slider(EditModeManagerFrame.GridSpacingSlider)
+
+    set_Alpha_Frame_Texture(BNToastFrame, {alpha=min05})
 end
 
 

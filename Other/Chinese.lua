@@ -1339,6 +1339,21 @@ local function Init()
         set(SpellBookFrameTabButton1, '法术')
         set(SpellBookFrameTabButton2, '专业')
         set(SpellBookFrameTabButton3, '宠物')
+
+        if SpellBookFrame.bookType== BOOKTYPE_SPELL then
+            SpellBookFrame:SetTitle('法术');
+        elseif SpellBookFrame.bookType== BOOKTYPE_PROFESSION then
+            SpellBookFrame:SetTitle('专业');
+        elseif SpellBookFrame.bookType== BOOKTYPE_PET then
+            SpellBookFrame:SetTitle('宠物');
+        end
+    end)
+    hooksecurefunc('SpellBookFrame_UpdatePages', function()
+        local currentPage, maxPages = SpellBook_GetCurrentPage();
+        if ( maxPages == nil or maxPages == 0 ) then
+            return;
+        end
+        SpellBookPageText:SetFormattedText('第%d页', currentPage);
     end)
 
 
@@ -2557,6 +2572,36 @@ local function Init()
 
 
 
+
+
+
+
+
+
+
+
+
+
+    --GameTooltip.lua
+    --替换，原生
+    function GameTooltip_OnTooltipAddMoney(self, cost, maxcost)
+        if( not maxcost or maxcost < 1 ) then --We just have 1 price to display
+            SetTooltipMoney(self, cost, nil, string.format("%s:", '卖价'));
+        else
+            GameTooltip_AddColoredLine(self, ("%s:"):format('卖价'), HIGHLIGHT_FONT_COLOR);
+            local indent = string.rep(" ",4)
+            SetTooltipMoney(self, cost, nil, string.format("%s%s:", indent, '最小'));
+            SetTooltipMoney(self, maxcost, nil, string.format("%s%s:", indent, '最大'));
+        end
+    end
+
+    TOOLTIP_QUEST_REWARDS_STYLE_DEFAULT.headerText = '奖励'
+    TOOLTIP_QUEST_REWARDS_STYLE_WORLD_QUEST.headerText = '奖励'
+    TOOLTIP_QUEST_REWARDS_STYLE_CONTRIBUTION.headerText = '为该建筑捐献物资会奖励你：'
+    TOOLTIP_QUEST_REWARDS_STYLE_PVP_BOUNTY.headerText = '悬赏奖励'
+    TOOLTIP_QUEST_REWARDS_STYLE_ISLANDS_QUEUE.headerText = '获胜奖励：'
+    TOOLTIP_QUEST_REWARDS_STYLE_EMISSARY_REWARD.headerText = '奖励'
+    TOOLTIP_QUEST_REWARDS_PRIORITIZE_CURRENCY_OVER_ITEM.headerText = '奖励'
 
 
 
@@ -4142,6 +4187,7 @@ local function Init_Loaded(arg1)
         set(ItemUpgradeFrame.MissingDescription, '许多可装备的物品都可以进行升级，从而提高其物品等级。不同来源的物品升级所需的货币也各不相同。')
         set(ItemUpgradeFrame.ItemInfo.UpgradeTo, '升级至：')
         set(ItemUpgradeFrame.UpgradeCostFrame.Label, '总花费：')
+        set(ItemUpgradeFrame.FrameErrorText, '该物品已经升到满级了')
         --set(ItemUpgradeFrameLeftItemPreviewFrameTextLeft1, '当前：')
         --set(ItemUpgradeFrameRightItemPreviewFrameTextLeft1, '升级：')
 
