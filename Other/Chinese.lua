@@ -1808,13 +1808,25 @@ local function Init()
     set(QuickKeybindFrame.CancelButton, '取消')
     set(QuickKeybindFrame.UseCharacterBindingsButton.text, '角色专用按键设置')
 
-    
 
+
+    --列表 Blizzard_CategoryList.lua
+    hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--hooksecurefunc(SettingsPanel.CategoryList.ScrollBox, 'Update', function(frame)
+        local category = initializer.data.category
+        if category then
+            set(self.Label, e.strText[category:GetName()])
+        end
+    end)
+    hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
+        local text= e.strText[initializer.data.label]
+        if text then
+            self.Label:SetText(text)
+        end
+    end)
 
 
 
     e.Cstr(nil, {changeFont= QuickKeybindFrame.OutputText, size=16})
-    e.Cstr(nil, {changeFont= SettingsPanel.OutputText, size=14})
     local function set_SetOutputText(self, text)
         if not text then
             return
@@ -1839,23 +1851,6 @@ local function Init()
     hooksecurefunc(QuickKeybindFrame, 'SetOutputText', set_SetOutputText)
     hooksecurefunc(SettingsPanel, 'SetOutputText', set_SetOutputText)
 
-
-
-    --列表 Blizzard_CategoryList.lua
-    hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--hooksecurefunc(SettingsPanel.CategoryList.ScrollBox, 'Update', function(frame)
-        local category = initializer.data.category
-        if category then
-            set(self.Label, e.strText[category:GetName()])
-        end
-    end)
-    hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
-        local text= e.strText[initializer.data.label]
-        if text then
-            self.Label:SetText(text)
-        end
-    end)
-
-
     --快捷键
     hooksecurefunc(KeyBindingFrameBindingTemplateMixin,'Init', function(self)
         local label= self.Text or self.Label
@@ -1863,18 +1858,8 @@ local function Init()
         set(label, text)
     end)
 
-    --Blizzard_SettingsPanel.lua 
-    local label2= e.Cstr(SettingsPanel.CategoryList)
-    label2:SetPoint('RIGHT', SettingsPanel.ClosePanelButton, 'LEFT', -2, 0)
-    label2:SetText(id..' 语言翻译 提示：请要不在战斗中修改选项')
 
-    set(SettingsPanel.Container.SettingsList.Header.DefaultsButton, '默认设置')
-    dia('GAME_SETTINGS_APPLY_DEFAULTS', {text= '你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？', button1= '所有设置', button2= '取消', button3= '这些设置'})--Blizzard_Dialogs.lua
-    set(SettingsPanel.GameTab.Text, '游戏')
-    set(SettingsPanel.AddOnsTab.Text, '插件')
-    set(SettingsPanel.NineSlice.Text, '选项')
-    set(SettingsPanel.CloseButton, '关闭')
-    set(SettingsPanel.ApplyButton, '应用')
+
 
     --好友
     hooksecurefunc('FriendsFrame_Update', function()
@@ -4587,6 +4572,22 @@ local function Init_Loaded(arg1)
         --set(ItemUpgradeFrameLeftItemPreviewFrameTextLeft1, '当前：')
         --set(ItemUpgradeFrameRightItemPreviewFrameTextLeft1, '升级：')
 
+
+
+    elseif arg1=='Blizzard_Settings' then--Blizzard_SettingsPanel.lua 
+        local label2= e.Cstr(SettingsPanel.CategoryList)
+        label2:SetPoint('RIGHT', SettingsPanel.ClosePanelButton, 'LEFT', -2, 0)
+        label2:SetText(id..' 语言翻译 提示：请要不在战斗中修改选项')
+
+        set(SettingsPanel.Container.SettingsList.Header.DefaultsButton, '默认设置')
+        dia('GAME_SETTINGS_APPLY_DEFAULTS', {text= '你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？', button1= '所有设置', button2= '取消', button3= '这些设置'})--Blizzard_Dialogs.lua
+        set(SettingsPanel.GameTab.Text, '游戏')
+        set(SettingsPanel.AddOnsTab.Text, '插件')
+        set(SettingsPanel.NineSlice.Text, '选项')
+        set(SettingsPanel.CloseButton, '关闭')
+        set(SettingsPanel.ApplyButton, '应用')
+
+        set(SettingsPanel.NineSlice.Text, '选项')
 
 
     --elseif arg1=='Blizzard_Calendar' then

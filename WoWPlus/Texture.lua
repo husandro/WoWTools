@@ -176,7 +176,7 @@ local function hide_Frame_Texture(frame, tab)
     end
 end
 
---透明度, 颜色, frame, 子材质 set_Alpha_Frame_Texture(frame, {index=nil, notAlpha=nil, notColor=nil})
+--透明度, 颜色, frame, 子材质
 local function set_Alpha_Frame_Texture(frame, tab)
     if not frame then
         return
@@ -722,7 +722,7 @@ local function Init_All_Frame()
         set_Alpha_Frame_Texture(_G['WhoFrameColumnHeader'..i], {alpha=min05})
      end
 
-    
+
      --聊天设置
      set_NineSlice(ChannelFrame, true)
      set_Alpha_Color(ChannelFrameBg)
@@ -1901,9 +1901,13 @@ local function Init_Event(arg1)
         set_Alpha_Color(ClickBindingFrameBg)
         ClickBindingFrame.ScrollBoxBackground:Hide()
         --set_NineSlice(ClickBindingFrame.ScrollBoxBackground, nil, true)
-    
+
         set_NineSlice(ClickBindingFrame.TutorialFrame, true)
-       
+
+    elseif arg1=='Blizzard_Settings' then
+        set_Alpha_Frame_Texture(SettingsPanel.NineSlice, {alpha=min05})
+        set_Alpha_Color(SettingsPanel.Bg, nil, nil, min05)
+        set_ScrollBar(SettingsPanel.Container.SettingsList)
     end
 end
 

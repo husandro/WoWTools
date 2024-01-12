@@ -741,6 +741,7 @@ local function Init()
         e.tips:Show()
     end)
 
+    e.Cstr(nil, {changeFont= SettingsPanel.OutputText, size=14})
     SettingsPanel.OutputText:ClearAllPoints()
     SettingsPanel.OutputText:SetPoint('BOTTOMLEFT', 20, 18)
 
