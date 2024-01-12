@@ -2574,7 +2574,6 @@ local function Init()
                 set(self.OutputText, format('|cffff0000动作 %s 现在没有绑定！|r', e.strText[findb] or findb))
             end
         end
-        
     end)
 
     --Blizzard_Dialogs.lua
