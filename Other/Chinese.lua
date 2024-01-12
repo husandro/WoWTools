@@ -4369,6 +4369,144 @@ local function Init_Loaded(arg1)
         dia("CONFIRM_LOSE_UNSAVED_CLICK_BINDINGS", {text  = '你有未保存的点击施法按键绑定。如果你现在关闭，会丢失所有改动。', button1 = '确定', button2 = '取消'})
         dia("CONFIRM_RESET_CLICK_BINDINGS", {text  = '确定将所有点击施法按键绑定重置为默认值吗？\n', button1 = '确定', button2 = '取消'})
 
+
+        set(ClickBindingFrameTitleText, '关于点击施法按键绑定')
+        ClickBindingFrame.TutorialFrame:SetTitle('关于点击施法按键绑定')
+
+        set(ClickBindingFrame.SaveButton, '保存')
+        set(ClickBindingFrame.AddBindingButton, '添加绑定')
+        set(ClickBindingFrame.ResetButton, '恢复默认设置')
+        set(ClickBindingFrame.EnableMouseoverCastCheckbox.Label, '鼠标悬停施法')
+        ClickBindingFrame.EnableMouseoverCastCheckbox:HookScript('OnEnter', function()
+            GameTooltip:SetText('启用后，鼠标悬停到一个单位框体并使用一个键盘快捷键施放法术时，会直接对该单位施法，无需将该单位设为目标。', nil, nil, nil, nil, true);
+
+        end)
+        set(ClickBindingFrame.MouseoverCastKeyDropDown.Label, '鼠标悬停施法按键')
+        set(ClickBindingFrame.TutorialFrame.SummaryText, '将法术和宏绑定到鼠标点击')
+        set(ClickBindingFrame.TutorialFrame.InfoText, '通过点击单位框体施放绑定的法术和宏')
+        set(ClickBindingFrame.TutorialFrame.AlternateText, '可以使用Shift键、Ctrl键或者Alt键来设定其他的点击绑定')
+        set(ClickBindingFrame.TutorialFrame.ThrallName, '萨尔')
+        ClickBindingFrame.SpellbookPortrait:HookScript('OnEnter', function()
+            GameTooltip_SetTitle(GameTooltip, MicroButtonTooltipText('法术书和专业', "TOGGLESPELLBOOK"))
+            GameTooltip:Show();
+        end)
+        ClickBindingFrame.MacrosPortrait:HookScript('OnEnter', function()
+            GameTooltip_SetTitle(GameTooltip, '宏')
+            GameTooltip:Show();
+        end)
+
+        local function NameAndIconFromElementData(elementData)
+            if elementData.bindingInfo then
+                local bindingInfo = elementData.bindingInfo;
+                local type = bindingInfo.type;
+                local actionID = bindingInfo.actionID;
+        
+                local actionName
+                if type == Enum.ClickBindingType.Spell or type == Enum.ClickBindingType.PetAction then
+                    local overrideID = FindSpellOverrideByID(actionID);
+                    actionName = GetSpellInfo(overrideID);
+                elseif type == Enum.ClickBindingType.Macro then
+                    local macroName;
+                    macroName = GetMacroInfo(actionID);
+                    actionName = format('%s (宏)', macroName)
+                elseif type == Enum.ClickBindingType.Interaction then
+                    if actionID == Enum.ClickBindingInteraction.Target then
+                        actionName = '目标单位框架 (默认)'
+                    elseif actionID == Enum.ClickBindingInteraction.OpenContextMenu then
+                        actionName = '打开上下文菜单 (默认)'
+                    end
+                end
+                return actionName;
+            elseif elementData.elementType == 1 then
+                return '默认鼠标绑定';
+            elseif elementData.elementType == 3 then
+                return '自定义鼠标绑定';
+            elseif elementData.elementType == 5 then
+                return '空'
+            end
+        end
+        hooksecurefunc(ClickBindingFrame, 'SetUnboundText', function(self, elementData)
+            set(self.UnboundText, format('%s 解除绑定', NameAndIconFromElementData(elementData)))
+        end)
+
+        local ButtonStrings = {
+            LeftButton = '左键',
+            Button1 = '左键',
+            RightButton = '右键',
+            Button2 = '右键',
+            MiddleButton = '中键',
+            Button3 = '中键',
+            Button4 = '按键4',
+            Button5 = '按键5',
+            Button6 = '按键6',
+            Button7 = '按键7',
+            Button8 = '按键8',
+            Button9 = '按键9',
+            Button10 = '按键10',
+            Button11 = '按键11',
+            Button12 = '按键12',
+            Button13 = '按键13',
+            Button14 = '按键14',
+            Button15 = '按键15',
+            Button16 = '按键16',
+            Button17 = '按键17',
+            Button18 = '按键18',
+            Button19 = '按键19',
+            Button20 = '按键20',
+            Button21 = '按键21',
+            Button22 = '按键22',
+            Button23 = '按键23',
+            Button24 = '按键24',
+            Button25 = '按键25',
+            Button26 = '按键26',
+            Button27 = '按键27',
+            Button28 = '按键28',
+            Button29 = '按键29',
+            Button30 = '按键30',
+            Button31 = '按键31',
+        }
+
+        local function BindingTextFromElementData(elementData)
+            if elementData.elementType == 5 then
+                local bindingText = elementData.bindingInfo and '鼠标移到该位置并点击一个鼠标按键来进行绑定' or '点击一个法术或宏以开始';
+                return GREEN_FONT_COLOR:WrapTextInColorCode(bindingText);
+            end
+        
+            local bindingInfo = elementData.bindingInfo;
+            if not bindingInfo or not bindingInfo.button then
+                return RED_FONT_COLOR:WrapTextInColorCode('解除绑定 - 把鼠标移到目标上并点击来设置');
+            end
+        
+            local buttonString = ButtonStrings[bindingInfo.button];
+            local modifierText = C_ClickBindings.GetStringFromModifiers(bindingInfo.modifiers);
+            if modifierText ~= "" then
+                return format('%s-%s', modifierText, buttonString);
+            else
+                return buttonString;
+            end
+        end
+        local function ColoredNameAndIconFromElementData(elementData)
+            local name = NameAndIconFromElementData(elementData);
+            local isDisabled;
+            if elementData.elementType == 5 then
+                isDisabled = (elementData.bindingInfo == nil);
+            else
+                isDisabled = elementData.unbound;
+            end
+            if isDisabled then
+                name = DISABLED_FONT_COLOR:WrapTextInColorCode(name);
+            end
+            return name;
+        end
+        hooksecurefunc(ClickBindingLineMixin, 'Init', function(self, elementData)
+            set(self.BindingText, BindingTextFromElementData(elementData))
+            
+            set(self.Name, ColoredNameAndIconFromElementData(elementData))
+        end)
+        hooksecurefunc(ClickBindingHeaderMixin, 'Init', function(self, elementData)
+	        set(self.Name, ColoredNameAndIconFromElementData(elementData))
+        end)
+        
     elseif arg1=='Blizzard_ProfessionsTemplates' then
         dia("PROFESSIONS_RECRAFT_REPLACE_OPTIONAL_REAGENT", {button1 = '接受', button2 = '取消'})
         hookDia("PROFESSIONS_RECRAFT_REPLACE_OPTIONAL_REAGENT", 'OnShow', function(self, data)
@@ -4412,11 +4550,7 @@ local function Init_Loaded(arg1)
         --set(ItemUpgradeFrameLeftItemPreviewFrameTextLeft1, '当前：')
         --set(ItemUpgradeFrameRightItemPreviewFrameTextLeft1, '升级：')
 
-    elseif arg1=='Blizzard_ClickBindingUI' then--点击，施法
-        set(ClickBindingFrame.SaveButton, '保存')
-        set(ClickBindingFrame.AddBindingButton, '添加绑定')
-        set(ClickBindingFrame.ResetButton, '添加绑定')
-        print(ClickBindingFrame.ResetButton)
+   
 
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})

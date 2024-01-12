@@ -210,7 +210,9 @@ GameTooltip_AddColoredLine(GameTooltip, '', NORMAL_FONT_COLOR, true);
 BattlePetToolTip_ShowLink(itemKeyInfo.battlePetLink);
 
 
+ MicroButtonTooltipText('法术书和专业', "TOGGLESPELLBOOK")
 
+ 
 UICheckButtonTemplate
 local myCheckButton = CreateFrame("CheckButton", nil, UIParent, "ChatConfigCheckButtonTemplate")
 myCheckButton:SetPoint("TOPLEFT", 200, -65)

@@ -1896,8 +1896,14 @@ local function Init_Event(arg1)
         end
 
     elseif arg1=='Blizzard_ClickBindingUI' then--点击，施法
-
+        set_NineSlice(ClickBindingFrame, true)
+        set_ScrollBar(ClickBindingFrame)
+        set_Alpha_Color(ClickBindingFrameBg)
+        ClickBindingFrame.ScrollBoxBackground:Hide()
+        --set_NineSlice(ClickBindingFrame.ScrollBoxBackground, nil, true)
     
+        set_NineSlice(ClickBindingFrame.TutorialFrame, true)
+       
     end
 end
 

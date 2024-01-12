@@ -583,8 +583,32 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_DeathRecap' then--死亡
         set_Move_Frame(DeathRecapFrame, {save=true})
+
+    elseif arg1=='Blizzard_ClickBindingUI' then--点击，施法
+        set_Move_Frame(ClickBindingFrame)
+        set_Move_Frame(ClickBindingFrame.ScrollBox, {frame=ClickBindingFrame})
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -703,8 +727,8 @@ local function Init_Move()
             set_Move_Frame(_G[text])
        end
     end
-    
-    
+
+
     --好友列表
     --set_Move_Frame(AddFriendFrame)
 
