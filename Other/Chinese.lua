@@ -2546,6 +2546,36 @@ local function Init()
     set(QuickKeybindFrame.DefaultsButton, '恢复默认设置')
     set(QuickKeybindFrame.CancelButton, '取消')
     set(QuickKeybindFrame.UseCharacterBindingsButton.text, '角色专用按键设置')
+    hooksecurefunc(QuickKeybindFrame, 'OnKeybindUnbindFailed', function(self, _, unbindAction, unbindSlotIndex)
+	    set(self.OutputText, format(unbindSlotIndex == 1 and '|cffff0000主要动作 %s 现在没有绑定！|r' or '|cffff0000动作 %s 现在没有绑定！|r', GetBindingName(unbindAction)));
+        print('OnKeybindUnbindFailed')
+    end)
+    hooksecurefunc(QuickKeybindFrame, 'OnKeybindRebindFailed', function(self)
+        set(self.OutputText, '无法将鼠标滚轮的上下滚动状态绑定在动作条上');
+        print('OnKeybindRebindFailed')
+    end)
+    hooksecurefunc(QuickKeybindFrame, 'OnKeybindRebindSuccess', function(self)
+        set(self.OutputText, '按键设置成功')
+        print('OnKeybindRebindSuccess')
+    end)
+
+    e.Cstr(nil, {changeFont= QuickKeybindFrame.OutputText, size=16})
+    hooksecurefunc(QuickKeybindFrame, 'SetOutputText', function(self, text)
+        if text==KEYBINDINGFRAME_MOUSEWHEEL_ERROR then
+            set(self.OutputText, '无法将鼠标滚轮的上下滚动状态绑定在动作条上')
+        elseif text==KEY_BOUND then
+            set(self.OutputText, '按键设置成功')
+        else
+            local a, b= e.Magic(PRIMARY_KEY_UNBOUND_ERROR), e.Magic(KEY_UNBOUND_ERROR)
+            local finda, findb= text:match(a), text:match(b)
+            if finda then
+                set(self.OutputText, format('|cffff0000主要动作 %s 现在没有绑定！|r', e.strText[finda] or finda))
+            elseif findb then
+                set(self.OutputText, format('|cffff0000动作 %s 现在没有绑定！|r', e.strText[findb] or findb))
+            end
+        end
+        
+    end)
 
     --Blizzard_Dialogs.lua
     dia('CONFIRM_RESET_TO_DEFAULT_KEYBINDINGS', {text = '确定将所有快捷键设置为默认值吗？', button1 = '确定', button2 = '取消'})

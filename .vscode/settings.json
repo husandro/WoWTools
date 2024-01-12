@@ -6802,7 +6802,12 @@
         "ClickBindingFrameTitleText",
         "MicroButtonTooltipText",
         "SPELLBOOK_ABILITIES_BUTTON",
-        "ClickBindingHeaderMixin"
+        "ClickBindingHeaderMixin",
+        "KEY_UNBOUND_ERROR",
+        "PRIMARY_KEY_UNBOUND_ERROR",
+        "KEYBINDINGFRAME_MOUSEWHEEL_ERROR",
+        "QuickKeybindFrameMixin",
+        "KEY_BOUND"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
