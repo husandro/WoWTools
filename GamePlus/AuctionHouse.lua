@@ -760,18 +760,17 @@ local function Init_Sell()
 
 
 
+    AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetHeight(32)--<Size x="194" y="22"/>
+    AuctionHouseFrame.ItemSellFrame.PostButton:SetHeight(32)
 
-
-
-
-    --下一个，拍卖，物品
-    --AuctionHouseFrame.CommoditiesSellFrame.PostButton:HookScript('OnClick', function(self)
+    
+    --下一个，拍卖，物品        
     hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'PostItem', function(self)
         self.isNextItem=true
     end)
     hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdatePostButtonState', function(self)
         self.PostButton:ClearAllPoints()
-        self.PostButton:SetPoint('BOTTOM', 45, 85)
+        self.PostButton:SetPoint('BOTTOM', 45, 75)
         if self:GetItem()
             or not C_AuctionHouse.IsThrottledMessageSystemReady()
             or not self.isNextItem
@@ -787,7 +786,7 @@ local function Init_Sell()
     end)
     hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'UpdatePostButtonState', function(self)
         self.PostButton:ClearAllPoints()
-        self.PostButton:SetPoint('BOTTOM', 45, 85)
+        self.PostButton:SetPoint('BOTTOM', 45, 75)
         if self:GetItem()
             or not C_AuctionHouse.IsThrottledMessageSystemReady()
             or not self.isNextItem
