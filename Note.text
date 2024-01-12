@@ -207,7 +207,7 @@ securecallfunction(GameTooltip_AddQuest, self, questID)
 GameTooltip_SetDefaultAnchor(GameTooltip, self);
 GameTooltip_Hide()
 GameTooltip_AddColoredLine(GameTooltip, '', NORMAL_FONT_COLOR, true);
-
+BattlePetToolTip_ShowLink(itemKeyInfo.battlePetLink);
 
 
 

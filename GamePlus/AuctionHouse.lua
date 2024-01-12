@@ -770,6 +770,8 @@ local function Init_Sell()
         self.isNextItem=true
     end)
     hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdatePostButtonState', function(self)
+        self.PostButton:ClearAllPoints()
+        self.PostButton:SetPoint('BOTTOM', 45, 85)
         if self:GetItem()
             or not C_AuctionHouse.IsThrottledMessageSystemReady()
             or not self.isNextItem
@@ -784,6 +786,8 @@ local function Init_Sell()
         self.isNextItem=true
     end)
     hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'UpdatePostButtonState', function(self)
+        self.PostButton:ClearAllPoints()
+        self.PostButton:SetPoint('BOTTOM', 45, 85)
         if self:GetItem()
             or not C_AuctionHouse.IsThrottledMessageSystemReady()
             or not self.isNextItem
@@ -955,6 +959,8 @@ local function Init_Sell()
 
     AuctionHouseFrame.ItemSellList.RefreshFrame.TotalQuantity:ClearAllPoints()
     AuctionHouseFrame.ItemSellList.RefreshFrame.TotalQuantity:SetPoint('TOP', AuctionHouseFrame.ItemSellFrame.PostButton, 'BOTTOM', 0, -2)
+
+
 end
 
 

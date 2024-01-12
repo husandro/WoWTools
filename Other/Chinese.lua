@@ -3380,7 +3380,7 @@ local function Init_Loaded(arg1)
                 set(self.ResultsText, '小窍门：右键点击物品可以设置偏好。偏好的物品会在你打开拍卖行时立即出现。')
             end
         end)
-
+        
         set(AuctionHouseFrame.SearchBar.SearchButton, '搜索')
 
         set(AuctionHouseFrame.ItemSellFrame.CreateAuctionLabel, '开始拍卖')
@@ -3411,9 +3411,12 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.MaxButton, '最大数量')
         set(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.PerItemPostfix, '每个物品')
         set(AuctionHouseFrame.ItemSellFrame.BuyoutModeCheckButton.Text, '一口价')
+        AuctionHouseFrame.ItemSellFrame.BuyoutModeCheckButton:HookScript('OnEnter', function()
+            GameTooltip_AddNormalLine(GameTooltip, '取消勾选此项以允许对你的拍卖品进行竞拍。', true);
+            GameTooltip:Show();
+        end)
 
-
-
+        --刷新，列表
         set(AuctionHouseFrame.CommoditiesBuyFrame.BackButton, '返回')
         set(AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.BuyButton, '一口价')
         set(AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.QuantityInput.Label, '数量')
@@ -3423,6 +3426,15 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.ItemBuyFrame.BackButton, '返回')
         set(AuctionHouseFrame.ItemBuyFrame.BidFrame.BidButton, '竞标')
         set(AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton, '一口价')
+
+        AuctionHouseFrame.CommoditiesSellList.RefreshFrame.RefreshButton:HookScript('OnEnter', function()
+            GameTooltip_SetTitle(GameTooltip, '刷新')
+            GameTooltip:Show();
+        end)
+        AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:HookScript('OnEnter', function()
+            GameTooltip_SetTitle(GameTooltip, '刷新')
+            GameTooltip:Show();
+        end)
 
 
         --Blizzard_AuctionHouseSharedTemplates.lua
@@ -3446,6 +3458,7 @@ local function Init_Loaded(arg1)
             end
         end)
 
+        --Blizzard_AuctionHouseSellFrame.lua
         hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdatePostButtonState', function(self)
             local canPostItem, reasonTooltip = self:CanPostItem();  
             if not canPostItem and reasonTooltip then
