@@ -4412,6 +4412,12 @@ local function Init_Loaded(arg1)
         --set(ItemUpgradeFrameLeftItemPreviewFrameTextLeft1, '当前：')
         --set(ItemUpgradeFrameRightItemPreviewFrameTextLeft1, '升级：')
 
+    elseif arg1=='Blizzard_ClickBindingUI' then--点击，施法
+        set(ClickBindingFrame.SaveButton, '保存')
+        set(ClickBindingFrame.AddBindingButton, '添加绑定')
+        set(ClickBindingFrame.ResetButton, '添加绑定')
+        print(ClickBindingFrame.ResetButton)
+
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
         --dia("CALENDAR_ERROR", {button1 = '确定'})

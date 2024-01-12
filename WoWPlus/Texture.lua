@@ -1894,6 +1894,10 @@ local function Init_Event(arg1)
             end)
             set_Alpha_Color(ProfessionsFrame.SpecPage.PanelFooter)
         end
+
+    elseif arg1=='Blizzard_ClickBindingUI' then--点击，施法
+
+    
     end
 end
 
