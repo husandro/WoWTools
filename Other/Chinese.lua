@@ -1231,7 +1231,7 @@ e.strText={
     [HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL] = "载具座位",
     [HUD_EDIT_MODE_ARCHAEOLOGY_BAR_LABEL] = "考古条",
     [HUD_EDIT_MODE_LOOT_FRAME_LABEL] = "拾取窗口",]]
-    
+
 
 
 
@@ -2255,6 +2255,7 @@ local function Init()
 
     --就绪
     --ReadyCheck.lua
+    set(ReadyCheckListenerFrame.TitleContainer.TitleText, '就位确认')
     set(ReadyCheckFrameYesButton, '就绪')--:SetText(GetText("READY", UnitSex("player")))
 	set(ReadyCheckFrameNoButton, '未就绪')--:SetText(GetText("NOT_READY", UnitSex("player")))
     hooksecurefunc('ShowReadyCheck', function(initiator)
@@ -2551,7 +2552,7 @@ local function Init()
     dia('GAME_SETTINGS_TIMED_CONFIRMATION', {button1 = '确定', button2 = '取消'})
     dia('GAME_SETTINGS_CONFIRM_DISCARD', {text= '你尚有还未应用的设置。\n你确定要退出吗？', button1 = '退出', button2 = '应用并退出', button3 = '取消'})
     dia('GAME_SETTINGS_APPLY_DEFAULTS', {text= '你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？', button1 = '所有设置', button2 = '这些设置', button3 = '取消'})
-    
+
 
 
 
@@ -3296,7 +3297,7 @@ local function Init()
     --Keybindings.lua
     dia("CONFIRM_DELETING_CHARACTER_SPECIFIC_BINDINGS", {text = '确定要切换到通用键位设定吗？所有本角色专用的键位设定都将被永久删除。', button1 = '确定', button2 = '取消'})
 
-    
+
 
 
 
@@ -3410,6 +3411,21 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.ItemBuyFrame.BackButton, '返回')
         set(AuctionHouseFrame.ItemBuyFrame.BidFrame.BidButton, '竞标')
         set(AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton, '一口价')
+
+        local ItemListState = {
+            NoSearch = 1,
+            NoResults = 2,
+            ResultsPending = 3,
+            ShowResults = 4,
+        };
+
+        hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, '', function(self, state)
+            if self.state ~= state and state == 2 then
+                set(self.ResultsText, '未发现物品')
+            end
+        end)
+
+        --set(AuctionHouseFrame.CommoditiesSellList.RefreshFrame.TotalQuantity, '')
 
         --[[local TIME_LEFT_ATLAS_MARKUP = CreateAtlasMarkup("auctionhouse-icon-clock", 16, 16, 2, -2)
         function AuctionHouseUtil.GetHeaderNameFromSortOrder(sortOrder)

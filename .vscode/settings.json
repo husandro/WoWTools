@@ -6739,7 +6739,8 @@
         "EditModeActionBarSystemMixin",
         "QuickKeybindFrame",
         "QuickKeybindFrameText",
-        "CONFIRM_RESET_KEYBINDINGS"
+        "CONFIRM_RESET_KEYBINDINGS",
+        "AuctionHouseCommoditiesBuyDisplayMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
