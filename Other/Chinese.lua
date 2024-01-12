@@ -2557,6 +2557,52 @@ local function Init()
 
 
 
+    --小地图
+    MinimapCluster.ZoneTextButton.tooltipText = MicroButtonTooltipText('世界地图', "TOGGLEWORLDMAP")
+    MinimapCluster.ZoneTextButton:HookScript('OnEvent', function(self)
+        self.tooltipText = MicroButtonTooltipText('世界地图', "TOGGLEWORLDMAP")
+    end)
+    Minimap.ZoomIn:HookScript('OnEnter', function()
+        if GameTooltip:IsShown() then
+            GameTooltip:SetText('放大');
+        end
+    end)
+    Minimap.ZoomOut:HookScript('OnEnter', function()
+        if GameTooltip:IsShown() then
+            GameTooltip:SetText('缩小');
+        end
+    end)
+    MinimapCluster.Tracking.Button:HookScript('OnEnter', function()
+        GameTooltip:SetText('追踪', 1, 1, 1);
+	    GameTooltip:AddLine('点击以开启或关闭追踪类型。', nil, nil, nil, true);
+        GameTooltip:Show()
+    end)
+
+--[[
+    local function set_UpdateIconForGarrison(self)
+        
+        local garrisonType = C_Garrison.GetLandingPageGarrisonType();
+        print(id,addName, garrisonType)
+        if (garrisonType == Enum.GarrisonType.Type_6_0_Garrison) then
+            self.title = '要塞报告';
+            self.description = '点击显示要塞报告';
+        elseif (garrisonType == Enum.GarrisonType.Type_7_0_Garrison) then
+            self.title = '职业大厅报告';
+            self.description = '点击显示职业大厅报告';
+        elseif (garrisonType == Enum.GarrisonType.Type_8_0_Garrison) then
+            self.title = '任务';
+            self.description = '点击显示任务报告';
+        elseif (garrisonType == Enum.GarrisonType.Type_9_0_Garrison) then
+            self.title = '盟约圣所';
+            self.description = '点击显示圣所报告';
+        end
+    end
+
+    hooksecurefunc(ExpansionLandingPageMinimapButton, 'UpdateIconForGarrison', set_UpdateIconForGarrison)
+    set_UpdateIconForGarrison(ExpansionLandingPageMinimapButton)
+print(ExpansionLandingPage.overlay)]]
+
+
 
 
 
@@ -4600,6 +4646,30 @@ local function Init_Loaded(arg1)
         set(SettingsPanel.NineSlice.Text, '选项')
         set(SettingsPanel.SearchBox.Instructions, '搜索')
 
+    elseif arg1=='Blizzard_TimeManager' then--小时图，时间
+        --set(TimeManagerFrame.TitleContainer.TitleText, '时钟')
+        set(TimeManagerStopwatchFrameText, '显示秒表')
+        set(TimeManagerAlarmTimeLabel, '提醒时间')
+        set(TimeManagerAlarmMessageLabel, '提醒信息')
+        set(TimeManagerAlarmEnabledButtonText, '开启提醒')
+        set(TimeManagerMilitaryTimeCheckText, '24小时模式')
+        set(TimeManagerLocalTimeCheckText, '使用本地时间')
+        set(StopwatchTitle, '秒表')
+
+        hooksecurefunc('GameTime_UpdateTooltip', function()--GameTime.lua
+            GameTooltip:SetText('时间信息', HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+            GameTooltip:AddDoubleLine( '服务器时间：', GameTime_GetGameTime(true), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+            GameTooltip:AddDoubleLine( '本地时间：', GameTime_GetLocalTime(true), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+        end)
+        hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
+            if ( TimeManagerClockButton.alarmFiring ) then
+                GameTooltip:AddLine('点击这里关闭提醒。');
+            else
+                GameTooltip:AddLine('点击这里显示时钟设置选项。');
+            end
+            GameTooltip:Show();
+        end)
+        
 
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})

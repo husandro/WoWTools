@@ -986,16 +986,6 @@ local function Init_All_Frame()
              set_Alpha_Color(_G['MerchantItem'..i..'SlotTexture'])
          end
          hide_Texture(MerchantBuyBackItemSlotTexture)
-
-         --秒表
-         --Blizzard_TimeManager.lua
-         hide_Texture(StopwatchFrameBackgroundLeft)
-         if StopwatchFrame then
-             hide_Texture(select(2, StopwatchFrame:GetRegions()))
-             hide_Texture(StopwatchTabFrameMiddle)
-             hide_Texture(StopwatchTabFrameRight)
-             hide_Texture(StopwatchTabFrameLeft)
-         end
      end)
 
 
@@ -1145,7 +1135,16 @@ local function Init_Event(arg1)
         --[[if e.Player.useColor then
             TimeManagerClockTicker:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
         end]]
-
+        --秒表
+        
+         --Blizzard_TimeManager.lua
+         hide_Texture(StopwatchFrameBackgroundLeft)
+         if StopwatchFrame then
+             hide_Texture(select(2, StopwatchFrame:GetRegions()))
+             hide_Texture(StopwatchTabFrameMiddle)
+             hide_Texture(StopwatchTabFrameRight)
+             hide_Texture(StopwatchTabFrameLeft)
+         end
 
     elseif arg1=='Blizzard_ClassTalentUI' then--天赋
         set_Alpha_Color(ClassTalentFrame.TalentsTab.BottomBar)--下面
