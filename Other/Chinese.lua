@@ -1814,7 +1814,7 @@ local function Init()
 
 
     e.Cstr(nil, {changeFont= QuickKeybindFrame.OutputText, size=16})
-    e.Cstr(nil, {changeFont= SettingsPanel.OutputText, size=16})
+    e.Cstr(nil, {changeFont= SettingsPanel.OutputText, size=14})
     local function set_SetOutputText(self, text)
         if not text then
             return
