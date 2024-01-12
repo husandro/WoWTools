@@ -2772,6 +2772,16 @@ local function Init()
     TOOLTIP_QUEST_REWARDS_PRIORITIZE_CURRENCY_OVER_ITEM.headerText = '奖励'
 
 
+    --Ping系统
+    set(PingSystemTutorialTitleText, '信号系统')
+    set(PingSystemTutorial.Tutorial1.TutorialHeader, '|cnTUTORIAL_BLUE_FONT_COLOR:按下|r信号键，在世界上放置快速信号。')
+    set(PingSystemTutorial.Tutorial2.TutorialHeader, '|cnTUTORIAL_BLUE_FONT_COLOR:按下并按住|r信号键，选择一个特定的信号。')
+    set(PingSystemTutorial.Tutorial3.TutorialHeader, '|cnTUTORIAL_BLUE_FONT_COLOR:直接|r向一名生物或角色发送信号。')
+    set(PingSystemTutorial.Tutorial4.TutorialHeader, '|cnTUTORIAL_BLUE_FONT_COLOR:设置使用|r信号的宏。')
+    set(PingSystemTutorial.Tutorial4.ImageBounds.TutorialBody1, "在聊天中|cnNORMAL_FONT_COLOR:输入/macro|r")
+    set(PingSystemTutorial.Tutorial4.ImageBounds.TutorialBody2, "宏命令：")
+    set(PingSystemTutorial.Tutorial4.ImageBounds.TutorialBody3, "|cnNORMAL_FONT_COLOR:/ping [@target] 信号类型|r")
+
 
 
 
@@ -4588,6 +4598,7 @@ local function Init_Loaded(arg1)
         set(SettingsPanel.ApplyButton, '应用')
 
         set(SettingsPanel.NineSlice.Text, '选项')
+        set(SettingsPanel.SearchBox.Instructions, '搜索')
 
 
     --elseif arg1=='Blizzard_Calendar' then

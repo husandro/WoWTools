@@ -6808,7 +6808,11 @@
         "KEYBINDINGFRAME_MOUSEWHEEL_ERROR",
         "QuickKeybindFrameMixin",
         "KEY_BOUND",
-        "SETTINGS_BIND_KEY_TO_COMMAND_OR_CANCEL"
+        "SETTINGS_BIND_KEY_TO_COMMAND_OR_CANCEL",
+        "PingSystemTutorialTitleText",
+        "PingSystemTutorial",
+        "PingSystemTutorialBg",
+        "PingSystemTutorialInset"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

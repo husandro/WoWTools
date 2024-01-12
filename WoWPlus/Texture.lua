@@ -1909,6 +1909,10 @@ local function Init_Event(arg1)
         set_Alpha_Color(SettingsPanel.Bg, nil, nil, min05)
         set_ScrollBar(SettingsPanel.Container.SettingsList)
         set_ScrollBar(SettingsPanel.CategoryList)
+
+        set_NineSlice(PingSystemTutorial, true)
+        set_NineSlice(PingSystemTutorialInset, nil, true)
+        hide_Texture(PingSystemTutorialBg)
     end
 end
 
