@@ -1908,6 +1908,7 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(SettingsPanel.NineSlice, {alpha=min05})
         set_Alpha_Color(SettingsPanel.Bg, nil, nil, min05)
         set_ScrollBar(SettingsPanel.Container.SettingsList)
+        set_ScrollBar(SettingsPanel.CategoryList)
     end
 end
 
