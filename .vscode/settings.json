@@ -6833,7 +6833,14 @@
         "GAMETIME_TOOLTIP_TOGGLE_CLOCK",
         "TIMEMANAGER_TOOLTIP_LOCALTIME",
         "GameTime_GetGameTime",
-        "GameTime_GetLocalTime"
+        "GameTime_GetLocalTime",
+        "GameTimeFrame_OnUpdate",
+        "GameTimeTexture",
+        "GameTimeCalendarInvitesTexture",
+        "GameTimeCalendarInvitesGlow",
+        "GameTimeFrame_SetDate",
+        "GAMETIME_TOOLTIP_CALENDAR_INVITES",
+        "TimeManager_IsAlarmFiring"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -2842,6 +2842,36 @@ print(ExpansionLandingPage.overlay)]]
 
 
 
+    GameTimeFrame:HookScript('OnEnter', function()
+        if ( GameTimeCalendarInvitesTexture:IsShown() ) then
+            GameTooltip:SetText('|cnGREEN_FONT_COLOR:你有未回复的日程邀请。|r');
+            if ( CalendarFrame and not CalendarFrame:IsShown() ) then
+                GameTooltip:AddLine('点击这里显示日历。');
+            end
+        else
+            GameTooltip:AddLine('点击这里显示日历。');
+        end
+        GameTooltip:Show();
+    end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     --StaticPopup.lua
