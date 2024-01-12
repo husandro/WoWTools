@@ -949,12 +949,12 @@ local function Init_Sell()
     AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:SetPoint('LEFT', AuctionHouseFrame.ItemSellFrame.PostButton, 'RIGHT')
 
 
---[[
-    
-            AuctionHouseFrame.CommoditiesSellFrame.PostButton:ClearAllPoints()
-            AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetPoint('BOTTOM', AuctionHouseFrame.CommoditiesSellFrame, 0, 40)
-]]
+    --可购买数量：
+    AuctionHouseFrame.CommoditiesSellList.RefreshFrame.TotalQuantity:ClearAllPoints()
+    AuctionHouseFrame.CommoditiesSellList.RefreshFrame.TotalQuantity:SetPoint('TOP', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'BOTTOM', 0, -2)
 
+    AuctionHouseFrame.ItemSellList.RefreshFrame.TotalQuantity:ClearAllPoints()
+    AuctionHouseFrame.ItemSellList.RefreshFrame.TotalQuantity:SetPoint('TOP', AuctionHouseFrame.ItemSellFrame.PostButton, 'BOTTOM', 0, -2)
 end
 
 

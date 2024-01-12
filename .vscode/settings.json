@@ -6740,7 +6740,17 @@
         "QuickKeybindFrame",
         "QuickKeybindFrameText",
         "CONFIRM_RESET_KEYBINDINGS",
-        "AuctionHouseCommoditiesBuyDisplayMixin"
+        "AuctionHouseCommoditiesBuyDisplayMixin",
+        "AuctionHouseRefreshFrameMixin",
+        "AUCTION_HOUSE_QUANTITY_AVAILABLE_FORMAT",
+        "CRAFTER_CRAFTING_ORDERS_BROWSE_FAVORITES_TIP",
+        "AUCTION_HOUSE_BROWSE_FAVORITES_TIP",
+        "MoneyInputFrame_SetEnabled",
+        "AUCTION_HOUSE_TOOLTIP_TITLE_NOT_ENOUGH_MONEY",
+        "AUCTION_HOUSE_TOOLTIP_TITLE_OWN_AUCTION",
+        "AUCTION_HOUSE_SELL_FRAME_ERROR_ITEM",
+        "AUCTION_HOUSE_SELL_FRAME_ERROR_DEPOSIT",
+        "AUCTION_HOUSE_SELL_FRAME_ERROR_QUANTITY"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

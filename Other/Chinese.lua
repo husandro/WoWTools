@@ -3357,6 +3357,18 @@ local function Init_Loaded(arg1)
         end)
 
         set(AuctionHouseFrameBuyTab.Text, '购买')
+            set(AuctionHouseFrame.SearchBar.FilterButton, '过滤器')
+            hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, 'SetState', function(self, state)
+                if state == 1 then
+                    local searchResultsText = self.searchStartedFunc and select(2, self.searchStartedFunc())
+                    if searchResultsText== AUCTION_HOUSE_BROWSE_FAVORITES_TIP then
+                        set(self.ResultsText, '小窍门：右键点击物品可以设置偏好。偏好的物品会在你打开拍卖行时立即出现。')
+                    end
+                elseif state == 2 then
+                    set(self.ResultsText, '未发现物品')
+                end
+            end)
+
         set(AuctionHouseFrameSellTab.Text, '出售')
         set(AuctionHouseFrameAuctionsTab.Text, '拍卖')
         set(AuctionHouseFrameAuctionsFrame.CancelAuctionButton, '取消拍卖')
@@ -3412,21 +3424,56 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.ItemBuyFrame.BidFrame.BidButton, '竞标')
         set(AuctionHouseFrame.ItemBuyFrame.BuyoutFrame.BuyoutButton, '一口价')
 
-        local ItemListState = {
-            NoSearch = 1,
-            NoResults = 2,
-            ResultsPending = 3,
-            ShowResults = 4,
-        };
 
-        hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList, '', function(self, state)
-            if self.state ~= state and state == 2 then
-                set(self.ResultsText, '未发现物品')
+        --Blizzard_AuctionHouseSharedTemplates.lua
+        hooksecurefunc(AuctionHouseFrame.ItemSellList.RefreshFrame, 'SetQuantity', function(self, totalQuantity)
+            if totalQuantity ~= 0 then
+                set(self.TotalQuantity, format('可购买数量：|cnGREEN_FONT_COLOR:%s|r', e.MK(totalQuantity, 0)))
+            end
+        end)
+        hooksecurefunc(AuctionHouseFrame.CommoditiesSellList.RefreshFrame, 'SetQuantity', function(self, totalQuantity)
+            if totalQuantity ~= 0 then
+                set(self.TotalQuantity, format('可购买数量：|cnGREEN_FONT_COLOR:%s|r', e.MK(totalQuantity, 0)))
+            end
+        end)
+        hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.BidFrame, 'SetPrice', function(self, minBid, isOwnerItem, isPlayerHighBid)
+            if not (isPlayerHighBid or minBid == 0) then
+                if minBid > GetMoney() then
+                    self.BidButton:SetDisableTooltip('你的钱不够');
+                elseif isOwnerItem then
+                    self.BidButton:SetDisableTooltip('你不能购买自己的拍卖品');
+                end
             end
         end)
 
-        --set(AuctionHouseFrame.CommoditiesSellList.RefreshFrame.TotalQuantity, '')
-
+        hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdatePostButtonState', function(self)
+            local canPostItem, reasonTooltip = self:CanPostItem();  
+            if not canPostItem and reasonTooltip then
+                if reasonTooltip== AUCTION_HOUSE_SELL_FRAME_ERROR_ITEM then
+                    self.PostButton:SetTooltip('没有选择物品');
+                elseif reasonTooltip== AUCTION_HOUSE_SELL_FRAME_ERROR_DEPOSIT then
+                    self.PostButton:SetTooltip('你没有足够的钱来支付保证金');
+                elseif reasonTooltip== AUCTION_HOUSE_SELL_FRAME_ERROR_QUANTITY then
+                    self.PostButton:SetTooltip('数量必须大于0');
+                elseif reasonTooltip== ERR_GENERIC_THROTTLE then
+                    self.PostButton:SetTooltip('你太快了');
+                end
+            end
+        end)
+        hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'UpdatePostButtonState', function(self)
+            local canPostItem, reasonTooltip = self:CanPostItem();  
+            if not canPostItem and reasonTooltip then
+                if reasonTooltip== AUCTION_HOUSE_SELL_FRAME_ERROR_ITEM then
+                    self.PostButton:SetTooltip('没有选择物品');
+                elseif reasonTooltip== AUCTION_HOUSE_SELL_FRAME_ERROR_DEPOSIT then
+                    self.PostButton:SetTooltip('你没有足够的钱来支付保证金');
+                elseif reasonTooltip== AUCTION_HOUSE_SELL_FRAME_ERROR_QUANTITY then
+                    self.PostButton:SetTooltip('数量必须大于0');
+                elseif reasonTooltip== ERR_GENERIC_THROTTLE then
+                    self.PostButton:SetTooltip('你太快了');
+                end
+            end
+        end)
         --[[local TIME_LEFT_ATLAS_MARKUP = CreateAtlasMarkup("auctionhouse-icon-clock", 16, 16, 2, -2)
         function AuctionHouseUtil.GetHeaderNameFromSortOrder(sortOrder)
             if sortOrder == Enum.AuctionHouseSortOrder.Price then
