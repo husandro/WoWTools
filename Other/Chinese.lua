@@ -1793,6 +1793,54 @@ local function Init()
         end
     end)
 
+
+
+
+
+    --快速快捷键模式
+    --QuickKeybind.xml
+    set(QuickKeybindFrame.Header.Text, '快速快捷键模式')
+    set(QuickKeybindFrame.InstructionText, '你处于快速快捷键模式。将鼠标移到一个按钮上并按下你想要的按键，即可设置那个按钮的快捷键。')
+    set(QuickKeybindFrame.CancelDescriptionText, '取消会使你离开快速快捷键模式。')
+    --set(QuickKeybindFrameText, '')
+    set(QuickKeybindFrame.OkayButton, '确定')
+    set(QuickKeybindFrame.DefaultsButton, '恢复默认设置')
+    set(QuickKeybindFrame.CancelButton, '取消')
+    set(QuickKeybindFrame.UseCharacterBindingsButton.text, '角色专用按键设置')
+
+    
+
+
+
+
+    e.Cstr(nil, {changeFont= QuickKeybindFrame.OutputText, size=16})
+    e.Cstr(nil, {changeFont= SettingsPanel.OutputText, size=16})
+    local function set_SetOutputText(self, text)
+        if not text then
+            return
+        end
+        if text==KEYBINDINGFRAME_MOUSEWHEEL_ERROR then
+            set(self.OutputText, '|cnRED_FONT_COLOR:无法将鼠标滚轮的上下滚动状态绑定在动作条上|r')
+        elseif text==KEY_BOUND then
+            set(self.OutputText, '|cnGREEN_FONT_COLOR:按键设置成功|r')
+        else
+            local a, b, c= e.Magic(PRIMARY_KEY_UNBOUND_ERROR), e.Magic(KEY_UNBOUND_ERROR), e.Magic(SETTINGS_BIND_KEY_TO_COMMAND_OR_CANCEL)
+            local finda, findb= text:match(a), text:match(b)
+            local findc1, findc2= text:match(c)
+            if finda then
+                set(self.OutputText, format('|cffff0000主要动作 |cffff00ff%s|r 现在没有绑定！|r', e.strText[finda] or finda))
+            elseif findb then
+                set(self.OutputText, format('|cffff0000动作 |cffff00ff%s|r 现在没有绑定！|r', e.strText[findb] or findb))
+            elseif findc1 and findc2 then
+                set(self.OutputText, format('设置 |cnGREEN_FONT_COLOR:%s|r 的快捷键，或者按 %s 取消', e.strText[findc1] or findc1, findc2))
+            end
+        end
+    end
+    hooksecurefunc(QuickKeybindFrame, 'SetOutputText', set_SetOutputText)
+    hooksecurefunc(SettingsPanel, 'SetOutputText', set_SetOutputText)
+
+
+
     --列表 Blizzard_CategoryList.lua
     hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--hooksecurefunc(SettingsPanel.CategoryList.ScrollBox, 'Update', function(frame)
         local category = initializer.data.category
@@ -2535,46 +2583,6 @@ local function Init()
 
 
 
-
-    --快速快捷键模式
-    --QuickKeybind.xml
-    set(QuickKeybindFrame.Header.Text, '快速快捷键模式')
-    set(QuickKeybindFrame.InstructionText, '你处于快速快捷键模式。将鼠标移到一个按钮上并按下你想要的按键，即可设置那个按钮的快捷键。')
-    set(QuickKeybindFrame.CancelDescriptionText, '取消会使你离开快速快捷键模式。')
-    --set(QuickKeybindFrameText, '')
-    set(QuickKeybindFrame.OkayButton, '确定')
-    set(QuickKeybindFrame.DefaultsButton, '恢复默认设置')
-    set(QuickKeybindFrame.CancelButton, '取消')
-    set(QuickKeybindFrame.UseCharacterBindingsButton.text, '角色专用按键设置')
-    hooksecurefunc(QuickKeybindFrame, 'OnKeybindUnbindFailed', function(self, _, unbindAction, unbindSlotIndex)
-	    set(self.OutputText, format(unbindSlotIndex == 1 and '|cffff0000主要动作 %s 现在没有绑定！|r' or '|cffff0000动作 %s 现在没有绑定！|r', GetBindingName(unbindAction)));
-        print('OnKeybindUnbindFailed')
-    end)
-    hooksecurefunc(QuickKeybindFrame, 'OnKeybindRebindFailed', function(self)
-        set(self.OutputText, '无法将鼠标滚轮的上下滚动状态绑定在动作条上');
-        print('OnKeybindRebindFailed')
-    end)
-    hooksecurefunc(QuickKeybindFrame, 'OnKeybindRebindSuccess', function(self)
-        set(self.OutputText, '按键设置成功')
-        print('OnKeybindRebindSuccess')
-    end)
-
-    e.Cstr(nil, {changeFont= QuickKeybindFrame.OutputText, size=16})
-    hooksecurefunc(QuickKeybindFrame, 'SetOutputText', function(self, text)
-        if text==KEYBINDINGFRAME_MOUSEWHEEL_ERROR then
-            set(self.OutputText, '无法将鼠标滚轮的上下滚动状态绑定在动作条上')
-        elseif text==KEY_BOUND then
-            set(self.OutputText, '按键设置成功')
-        else
-            local a, b= e.Magic(PRIMARY_KEY_UNBOUND_ERROR), e.Magic(KEY_UNBOUND_ERROR)
-            local finda, findb= text:match(a), text:match(b)
-            if finda then
-                set(self.OutputText, format('|cffff0000主要动作 %s 现在没有绑定！|r', e.strText[finda] or finda))
-            elseif findb then
-                set(self.OutputText, format('|cffff0000动作 %s 现在没有绑定！|r', e.strText[findb] or findb))
-            end
-        end
-    end)
 
     --Blizzard_Dialogs.lua
     dia('CONFIRM_RESET_TO_DEFAULT_KEYBINDINGS', {text = '确定将所有快捷键设置为默认值吗？', button1 = '确定', button2 = '取消'})
@@ -3409,7 +3417,7 @@ local function Init_Loaded(arg1)
                 set(self.ResultsText, '小窍门：右键点击物品可以设置偏好。偏好的物品会在你打开拍卖行时立即出现。')
             end
         end)
-        
+
         set(AuctionHouseFrame.SearchBar.SearchButton, '搜索')
 
         set(AuctionHouseFrame.ItemSellFrame.CreateAuctionLabel, '开始拍卖')
@@ -3489,7 +3497,7 @@ local function Init_Loaded(arg1)
 
         --Blizzard_AuctionHouseSellFrame.lua
         hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdatePostButtonState', function(self)
-            local canPostItem, reasonTooltip = self:CanPostItem();  
+            local canPostItem, reasonTooltip = self:CanPostItem();
             if not canPostItem and reasonTooltip then
                 if reasonTooltip== AUCTION_HOUSE_SELL_FRAME_ERROR_ITEM then
                     self.PostButton:SetTooltip('没有选择物品');
@@ -3503,7 +3511,7 @@ local function Init_Loaded(arg1)
             end
         end)
         hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'UpdatePostButtonState', function(self)
-            local canPostItem, reasonTooltip = self:CanPostItem();  
+            local canPostItem, reasonTooltip = self:CanPostItem();
             if not canPostItem and reasonTooltip then
                 if reasonTooltip== AUCTION_HOUSE_SELL_FRAME_ERROR_ITEM then
                     self.PostButton:SetTooltip('没有选择物品');
@@ -4429,7 +4437,7 @@ local function Init_Loaded(arg1)
                 local bindingInfo = elementData.bindingInfo;
                 local type = bindingInfo.type;
                 local actionID = bindingInfo.actionID;
-        
+
                 local actionName
                 if type == Enum.ClickBindingType.Spell or type == Enum.ClickBindingType.PetAction then
                     local overrideID = FindSpellOverrideByID(actionID);
@@ -4500,12 +4508,12 @@ local function Init_Loaded(arg1)
                 local bindingText = elementData.bindingInfo and '鼠标移到该位置并点击一个鼠标按键来进行绑定' or '点击一个法术或宏以开始';
                 return GREEN_FONT_COLOR:WrapTextInColorCode(bindingText);
             end
-        
+
             local bindingInfo = elementData.bindingInfo;
             if not bindingInfo or not bindingInfo.button then
                 return RED_FONT_COLOR:WrapTextInColorCode('解除绑定 - 把鼠标移到目标上并点击来设置');
             end
-        
+
             local buttonString = ButtonStrings[bindingInfo.button];
             local modifierText = C_ClickBindings.GetStringFromModifiers(bindingInfo.modifiers);
             if modifierText ~= "" then
@@ -4529,13 +4537,13 @@ local function Init_Loaded(arg1)
         end
         hooksecurefunc(ClickBindingLineMixin, 'Init', function(self, elementData)
             set(self.BindingText, BindingTextFromElementData(elementData))
-            
+
             set(self.Name, ColoredNameAndIconFromElementData(elementData))
         end)
         hooksecurefunc(ClickBindingHeaderMixin, 'Init', function(self, elementData)
 	        set(self.Name, ColoredNameAndIconFromElementData(elementData))
         end)
-        
+
     elseif arg1=='Blizzard_ProfessionsTemplates' then
         dia("PROFESSIONS_RECRAFT_REPLACE_OPTIONAL_REAGENT", {button1 = '接受', button2 = '取消'})
         hookDia("PROFESSIONS_RECRAFT_REPLACE_OPTIONAL_REAGENT", 'OnShow', function(self, data)
@@ -4579,7 +4587,7 @@ local function Init_Loaded(arg1)
         --set(ItemUpgradeFrameLeftItemPreviewFrameTextLeft1, '当前：')
         --set(ItemUpgradeFrameRightItemPreviewFrameTextLeft1, '升级：')
 
-   
+
 
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
