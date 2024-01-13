@@ -4718,6 +4718,7 @@ end
 local function cancel_all()
     Init=function() end
     Init_Loaded= function() end
+    Init_Set= function() end
     e.strText={}
     panel:UnregisterEvent('ADDON_LOADED')
 end
@@ -4764,7 +4765,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 					
                Init()
             end
-        else
+        elseif e.onlyChinese and not Save.disabled then
             Init_Loaded(arg1)
         end
 
