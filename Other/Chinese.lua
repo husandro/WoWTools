@@ -60,7 +60,7 @@ end
 
 
 
-
+local function Init_Set()
 
 e.strText={
     --Blizzard_AuctionData.lua
@@ -1274,6 +1274,7 @@ e.strText={
 
 }
 
+
 if _G['MOTION_SICKNESS_DROPDOWN'] then
     e.strText[_G['MOTION_SICKNESS_DROPDOWN']] = "动态眩晕"
 end
@@ -1281,7 +1282,7 @@ if _G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS'] then
     e.strText[_G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS']] = "动态飞行屏幕效果"
 end
 
-
+end
 
 
 
@@ -4736,7 +4737,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
 	    Save= WoWToolsSave[addName] or Save	
 				
-            if not e.onlyChinese or Save.disabled then
+            if not e.onlyChinese then
                 cancel_all()
                 return
             end
@@ -4757,6 +4758,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if Save.disabled then
                 cancel_all()
             else
+	        do
+		   Init_Set()
+		end
+					
                Init()
             end
         else
