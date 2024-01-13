@@ -4733,12 +4733,15 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if not e.onlyChinese then
+
+	    Save= WoWToolsSave[addName] or Save	
+				
+            if not e.onlyChinese or Save.disabled then
                 cancel_all()
                 return
             end
 
-            Save= WoWToolsSave[addName] or Save
+             
 
             --添加控制面板
             e.AddPanel_Check({
