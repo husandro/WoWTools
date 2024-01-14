@@ -1,6 +1,5 @@
 local id, e= ...
 if LOCALE_zhCN or LOCALE_zhTW then
-    e.strText={}
     return
 end
 
@@ -3537,7 +3536,7 @@ local function Init_Loaded(arg1)
                 end
             end
         end)
-        
+
 
         set(AuctionHouseFrame.WoWTokenResults.Buyout, '一口价')
         set(AuctionHouseFrame.WoWTokenResults.BuyoutLabel, '一口价')
@@ -4633,15 +4632,14 @@ end
 
 
 
-
+local EnabledTab={}
 local function cancel_all()
+    panel:UnregisterEvent('ADDON_LOADED')
+    EnabledTab=nil
     Init=function() end
     Init_Loaded= function() end
     Init_Set= function() end
-    e.strText={}
-    panel:UnregisterEvent('ADDON_LOADED')
 end
-
 
 
 
@@ -4675,14 +4673,26 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if Save.disabled then
                 cancel_all()
             else
+
                 do
                     Init_Set()
                 end
-               Init()
+
+                Init()
+
+                for _, name in pairs(EnabledTab) do
+                    Init_Loaded(name)
+                end
+                EnabledTab=nil
             end
 
-        elseif e.onlyChinese and not Save.disabled then
-            Init_Loaded(arg1)
+        elseif e.onlyChinese and arg1 then
+            if EnabledTab then
+                table.insert(EnabledTab, arg1)
+
+            elseif not Save.disabled then
+                Init_Loaded(arg1)
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then
