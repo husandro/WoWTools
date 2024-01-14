@@ -773,23 +773,38 @@ local function Init()
     })
 
     if not LOCALE_zhCN then
-        e.AddPanel_Check_Button({
-            checkName= 'Chinese',
-            checkValue= Save.onlyChinese,
-            checkFunc= function()
-                e.onlyChinese= not e.onlyChinese and true or nil
-                Save.onlyChinese = e.onlyChinese
-                print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end,
-            buttonText= e.onlyChinese and '语言翻译' or BUG_CATEGORY15,
-            buttonFunc= function()
-                e.OpenPanelOpting(e.onlyChinese and '语言翻译' or BUG_CATEGORY15)
-            end,
-            tooltip=  e.onlyChinese and '语言: 简体中文'
-                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
-            layout= Layout,
-            category= Category
-        })
+        if not e.onlyChinese then
+            e.AddPanel_Check({
+                name= 'Chinese',
+                tooltip= e.onlyChinese and '语言: 简体中文'
+                        or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
+                category=Category,
+                value= Save.onlyChinese,
+                func= function()
+                    e.onlyChinese= not e.onlyChinese and true or nil
+                    Save.onlyChinese = e.onlyChinese
+                    print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+        else
+            e.AddPanel_Check_Button({
+                checkName= 'Chinese',
+                checkValue= Save.onlyChinese,
+                checkFunc= function()
+                    e.onlyChinese= not e.onlyChinese and true or nil
+                    Save.onlyChinese = e.onlyChinese
+                    print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+                buttonText= e.onlyChinese and '语言翻译' or BUG_CATEGORY15,
+                buttonFunc= function()
+                    e.OpenPanelOpting(e.onlyChinese and '语言翻译' or BUG_CATEGORY15)
+                end,
+                tooltip=  e.onlyChinese and '语言: 简体中文'
+                    or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
+                layout= Layout,
+                category= Category
+            })
+        end
     end
 
     if e.Player.region==1 or e.Player.region==3 then--US EU realm提示
