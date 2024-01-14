@@ -14,6 +14,44 @@ local panel = CreateFrame("Frame", 'WoWTools')--Panel
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#####################
 --重新加载UI, 重置, 按钮
 --#####################
@@ -168,6 +206,33 @@ function e.CSlider(self, tab)--e.CSlider(self, {w=, h=, min=, max=, value=, setp
     end
     return slider
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -568,10 +633,50 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --开始
 --####
-
 local function Init()
     e.AddPanel_Header(nil, e.onlyChinese and '设置' or SETTINGS)
 
@@ -668,17 +773,22 @@ local function Init()
     })
 
     if not LOCALE_zhCN then
-        e.AddPanel_Check({
-            name= 'Chinese',
-            tooltip= e.onlyChinese and '语言: 简体中文'
-                    or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
-            category=Category,
-            value= Save.onlyChinese,
-            func= function()
+        e.AddPanel_Check_Button({
+            checkName= 'Chinese',
+            checkValue= Save.onlyChinese,
+            checkFunc= function()
                 e.onlyChinese= not e.onlyChinese and true or nil
                 Save.onlyChinese = e.onlyChinese
                 print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end
+            end,
+            buttonText= e.onlyChinese and '语言翻译' or BUG_CATEGORY15,
+            buttonFunc= function()
+                e.OpenPanelOpting(e.onlyChinese and '语言翻译' or BUG_CATEGORY15)
+            end,
+            tooltip=  e.onlyChinese and '语言: 简体中文'
+                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
+            layout= Layout,
+            category= Category
         })
     end
 
@@ -727,6 +837,14 @@ local function Init()
     end
 
 
+
+
+
+
+
+
+
+
     local btn= e.Cbtn(SettingsPanel, {type=false, size={140, 25}})
     btn:SetPoint('RIGHT', SettingsPanel.ApplyButton, 'LEFT', -15,0)
     btn:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
@@ -744,8 +862,34 @@ local function Init()
     e.Cstr(nil, {changeFont= SettingsPanel.OutputText, size=14})
     SettingsPanel.OutputText:ClearAllPoints()
     SettingsPanel.OutputText:SetPoint('BOTTOMLEFT', 20, 18)
-
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local tabzhCN={
@@ -816,6 +960,27 @@ else
         key='Key words',
     }
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

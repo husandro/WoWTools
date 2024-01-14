@@ -4686,7 +4686,7 @@ local function Init_Loaded(arg1)
             end
             GameTooltip:Show();
         end)
-        
+
 
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
@@ -4736,14 +4736,14 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
 
-	    Save= WoWToolsSave[addName] or Save	
-				
+	    Save= WoWToolsSave[addName] or Save
+
             if not e.onlyChinese then
                 cancel_all()
                 return
             end
 
-             
+
 
             --添加控制面板
             e.AddPanel_Check({
@@ -4762,7 +4762,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 	        do
 		   Init_Set()
 		end
-					
+
                Init()
             end
         elseif e.onlyChinese and not Save.disabled then
