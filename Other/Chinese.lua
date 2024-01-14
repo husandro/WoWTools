@@ -1194,12 +1194,6 @@ e.strText={
     [PLAYER_DIFFICULTY_MYTHIC_PLUS] = "史诗钥石",
     [PLAYER_DIFFICULTY_TIMEWALKER] = "时空漫游",
 
-    --[[[RAF_BENEFIT1] = "快速升级",
-    [RAF_BENEFIT2] = "赠送等级",
-    [RAF_BENEFIT3] = "召唤战友",
-    [RAF_BENEFIT4] = "30天免费游戏时间",
-    [RAF_BENEFIT5] = "虚拟坐骑/虚拟宠物",
-    [RAF_BENEFITS] = "福利",]]
     [THE_ALLIANCE] = PLAYER_FACTION_COLOR_ALLIANCE:WrapTextInColorCode('联盟'),
     [THE_HORDE] = PLAYER_FACTION_COLOR_HORDE:WrapTextInColorCode('部落'),
 
@@ -1207,30 +1201,6 @@ e.strText={
     [HEALER] = "治疗者",
     [DAMAGER] = "伤害输出",
 
-
-
-    --[[[HUD_EDIT_MODE_TARGET_AND_FOCUS] = "目标和焦点",
-    [HUD_EDIT_MODE_PET_FRAME_LABEL] = "宠物框体",
-    [HUD_EDIT_MODE_PARTY_FRAMES_LABEL] = "小队框体",
-    [HUD_EDIT_MODE_BOSS_FRAMES_LABEL] = "首领框体",
-    [HUD_EDIT_MODE_RAID_FRAMES_LABEL] = "团队框体",
-    [HUD_EDIT_MODE_ARENA_FRAMES_LABEL] = "竞技场框体",
-    [HUD_EDIT_MODE_BUFFS_AND_DEBUFFS_LABEL] = "增益效果和负面效果",
-    [HUD_EDIT_MODE_CAST_BAR_LABEL] = "施法条",
-    [HUD_EDIT_MODE_STANCE_BAR_LABEL] = "姿态条",
-    [HUD_EDIT_MODE_EXTRA_ABILITIES_LABEL] = "额外技能",
-    [HUD_EDIT_MODE_PET_ACTION_BAR_LABEL] = "宠物条",
-    [HUD_EDIT_MODE_POSSESS_ACTION_BAR_LABEL] = "附身条",
-    [HUD_EDIT_MODE_ENCOUNTER_BAR_LABEL] = "战斗条",
-    [HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL] = "对话特写头像",
-    --[HUD_EDIT_MODE_STATUS_TRACKING_BAR_LABEL] = "状态栏 %d",
-    [HUD_EDIT_MODE_VEHICLE_LEAVE_BUTTON_LABEL] = "退出载具按钮",
-    [HUD_EDIT_MODE_HUD_TOOLTIP_LABEL] = "HUD提示信息",
-    [HUD_EDIT_MODE_DURABILITY_FRAME_LABEL] = "装备耐久度",
-    [HUD_EDIT_MODE_TIMER_BARS_LABEL] = "时长条",
-    [HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL] = "载具座位",
-    [HUD_EDIT_MODE_ARCHAEOLOGY_BAR_LABEL] = "考古条",
-    [HUD_EDIT_MODE_LOOT_FRAME_LABEL] = "拾取窗口",]]
 
 
 
@@ -2264,7 +2234,7 @@ local function Init()
     set(CreateChannelPopup.Password.Label, '密码')
     set(CreateChannelPopup.OKButton, '确定')
     set(CreateChannelPopup.CancelButton, '取消')
-    
+
     hooksecurefunc(ObjectiveTrackerBlocksFrame.QuestHeader, 'UpdateHeader', function(self)
         --if C_QuestSession.HasJoined() then self.Text:SetText('任务场景')
         self.Text:SetText('任务')
@@ -2779,26 +2749,6 @@ print(ExpansionLandingPage.overlay)]]
     hooksecurefunc(EditModeSystemMixin, 'AddExtraButtons', function(self)
         set(self.resetToDefaultPositionButton, '重设到默认位置')
     end)
-
-    --[[ hooksecurefunc(EditModeActionBarSystemMixin, 'AddExtraButtons', function(self, extraButtonPool)
-        print(id,addName)
-        local quickKeybindModeButton = extraButtonPool:Acquire();
-        set(quickKeybindModeButton, '快速快捷键模式')
-        if self.systemIndex ~= Enum.EditModeActionBarSystemIndices.StanceBar
-            and self.systemIndex ~= Enum.EditModeActionBarSystemIndices.PetActionBar
-            and self.systemIndex ~= Enum.EditModeActionBarSystemIndices.PossessActionBar then
-            local actionBarSettingsButton = extraButtonPool:Acquire();
-            actionBarSettingsButton:SetText('动作条设定');
-        end
-    end)
-   
-    set(PlayerFrame.Selection.HorizontalLabel, '玩家框体')
-    set(PetFrame.Selection.HorizontalLabel, '宠物框体')
-    set(FocusFrame.Selection.HorizontalLabel, '焦点框体')
-    set(TargetFrame.Selection.HorizontalLabel, '目标框体')
-]]
-
-
 
 
 
@@ -3587,25 +3537,7 @@ local function Init_Loaded(arg1)
                 end
             end
         end)
-        --[[local TIME_LEFT_ATLAS_MARKUP = CreateAtlasMarkup("auctionhouse-icon-clock", 16, 16, 2, -2)
-        function AuctionHouseUtil.GetHeaderNameFromSortOrder(sortOrder)
-            if sortOrder == Enum.AuctionHouseSortOrder.Price then
-                return '价格'
-            elseif sortOrder == Enum.AuctionHouseSortOrder.Name then
-                return '物品'
-            elseif sortOrder == Enum.AuctionHouseSortOrder.Quantity then
-                return '可购买数量'
-            elseif sortOrder == Enum.AuctionHouseSortOrder.Bid then
-                return '竞标价格'
-            elseif sortOrder == Enum.AuctionHouseSortOrder.Buyout then
-                return '一口价'
-            elseif sortOrder == Enum.AuctionHouseSortOrder.TimeRemaining then
-                return TIME_LEFT_ATLAS_MARKUP
-            -- Note: Level is contextual and must be set manually.
-            -- elseif sortOrder == Enum.AuctionHouseSortOrder.Level then
-            end
-            return ""
-        end]]
+        
 
         set(AuctionHouseFrame.WoWTokenResults.Buyout, '一口价')
         set(AuctionHouseFrame.WoWTokenResults.BuyoutLabel, '一口价')
@@ -3775,13 +3707,6 @@ local function Init_Loaded(arg1)
             GameTooltip:Show()
         end)
 
-        --[[Blizzard_ClassTalentSpecTab.lua
-        SPEC_STAT_STRINGS = {
-            [LE_UNIT_STAT_STRENGTH] = '力量',
-            [LE_UNIT_STAT_AGILITY] = '敏捷',
-            [LE_UNIT_STAT_INTELLECT] = '智力',
-        }]]
-
         --Blizzard_ClassTalentLoadoutImportDialog.xml
         set(ClassTalentLoadoutImportDialog.Title, '导入配置')
         set(ClassTalentLoadoutImportDialog.ImportControl.Label, '导入文本')
@@ -3873,13 +3798,6 @@ local function Init_Loaded(arg1)
                 else
                     GameTooltip_AddNormalLine(GameTooltip, '召唤或解散你选定的坐骑。', true)
                 end
-                --[[if MountJournal.selectedMountID ~= nil then
-                    local checkIndoors = true
-                    local errorText = select(2, C_MountJournal.GetMountUsabilityByID(MountJournal.selectedMountID, checkIndoors))
-                    if errorText and e.strText[errorText] then
-                        GameTooltip_AddErrorLine(GameTooltip, '|cnRED_FONT_COLOR:'..e.strText[errorText], true)
-                    end
-                end]]
                 GameTooltip:Show()
             end)
 
@@ -4647,9 +4565,6 @@ local function Init_Loaded(arg1)
         set(ItemUpgradeFrame.ItemInfo.UpgradeTo, '升级至：')
         set(ItemUpgradeFrame.UpgradeCostFrame.Label, '总花费：')
         set(ItemUpgradeFrame.FrameErrorText, '该物品已经升到满级了')
-        --set(ItemUpgradeFrameLeftItemPreviewFrameTextLeft1, '当前：')
-        --set(ItemUpgradeFrameRightItemPreviewFrameTextLeft1, '升级：')
-
 
 
     elseif arg1=='Blizzard_Settings' then--Blizzard_SettingsPanel.lua 
@@ -4669,7 +4584,6 @@ local function Init_Loaded(arg1)
         set(SettingsPanel.SearchBox.Instructions, '搜索')
 
     elseif arg1=='Blizzard_TimeManager' then--小时图，时间
-        --set(TimeManagerFrame.TitleContainer.TitleText, '时钟')
         set(TimeManagerStopwatchFrameText, '显示秒表')
         set(TimeManagerAlarmTimeLabel, '提醒时间')
         set(TimeManagerAlarmMessageLabel, '提醒信息')
@@ -4740,15 +4654,12 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-
-	    Save= WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
 
             if not e.onlyChinese then
                 cancel_all()
                 return
             end
-
-
 
             --添加控制面板
             e.AddPanel_Check({
@@ -4764,12 +4675,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if Save.disabled then
                 cancel_all()
             else
-	        do
-		   Init_Set()
-		end
-
+                do
+                    Init_Set()
+                end
                Init()
             end
+
         elseif e.onlyChinese and not Save.disabled then
             Init_Loaded(arg1)
         end
