@@ -21,7 +21,11 @@ end
 local function set_EncounterJournal_World_Tips(self2)
     e.tips:SetOwner(self2, "ANCHOR_LEFT");
     e.tips:ClearLines();
-    e.tips:AddDoubleLine(ADVENTURE_JOURNAL, CHANNEL_CATEGORY_WORLD..'BOSS/'..GARRISON_MISSION_RARE..e.Icon.left..e.GetShowHide(Save.showWorldBoss))
+    if e.onlyChinese then
+        e.tips:AddDoubleLine('冒险指南', '世界BOSS/稀有'..e.Icon.left..e.GetShowHide(Save.showWorldBoss))
+    else
+        e.tips:AddDoubleLine(ADVENTURE_JOURNAL, CHANNEL_CATEGORY_WORLD..'BOSS/'..GARRISON_MISSION_RARE..e.Icon.left..e.GetShowHide(Save.showWorldBoss))
+    end
     e.tips:AddLine(' ')
     for guid, info in pairs(e.WoWDate or {}) do
         local find
@@ -95,7 +99,7 @@ local function encounterJournal_ListInstances_set_Instance(self,showTips)
                         e.tips:AddLine(' ')
                     end
 
-                    e.tips:AddDoubleLine(name..'(|cnGREEN_FONT_COLOR:'..difficultyName..'|r): ',num);
+                    e.tips:AddDoubleLine(name..'(|cnGREEN_FONT_COLOR:'..(e.strText[difficultyName] or difficultyName)..'|r): ',num);
                     local t;
                     for j=1,numEncounters do
                         local bossName,_,isKilled = GetSavedInstanceEncounterInfo(i,j);
@@ -119,6 +123,7 @@ local function encounterJournal_ListInstances_set_Instance(self,showTips)
                     find=true
                 else
                     text= text and text..'|n' or ''
+                    difficultyName= e.strText[difficultyName] or difficultyName
                     difficultyName=difficultyName:gsub('%(', '')
                     difficultyName=difficultyName:gsub('%)', '')
                     difficultyName=difficultyName:gsub('（', ' ')
@@ -188,7 +193,7 @@ local function EncounterJournal_Set_All_Info_Text()
         text= text and text..'|n' or ''
         text= text..'|T450908:0|t'..insName
         for difficultyName, index in pairs(info) do
-            text=text..'|n     '..index..' '..difficultyName
+            text=text..'|n     '..index..' '..(e.strText[difficultyName] or difficultyName)
         end
     end
     if text then
@@ -316,7 +321,12 @@ local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
             e.tips:SetOwner(self2, "ANCHOR_LEFT");
             e.tips:ClearLines();
             e.tips:AddDoubleLine(id, addName)
-            e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinese and '世界BOSS和稀有怪' or (CHANNEL_CATEGORY_WORLD..'BOSS/'..GARRISON_MISSION_RARE))
+            e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinese and '世界BOSS和稀有怪'
+                or format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, 
+                        format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WORLD, 'BOSS')
+                        ,GARRISON_MISSION_RARE
+                    )
+            )
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.GetShowHide(not Save.hideWorldBossText), e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or  NPE_MOVE, e.Icon.right)
@@ -571,7 +581,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 for bossName, tab in pairs(info.Instance.ins) do----ins={[名字]={[难度]=已击杀数}}
                     local text
                     for difficultyName, killed in pairs(tab) do
-                        text= (text and text..' ' or '')..difficultyName..killed
+                        text= (text and text..' ' or '')..(e.strText[difficultyName] or difficultyName)..killed
                     end
                     e.tips:AddDoubleLine(bossName, text)
                     find= true

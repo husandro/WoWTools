@@ -6875,7 +6875,12 @@
         "EncounterJournal_UpdateButtonState",
         "EncounterJournal_ToggleHeaders",
         "EncounterJournal_MoveSectionUpdate",
-        "EncounterJournal_FocusSectionCallback"
+        "EncounterJournal_FocusSectionCallback",
+        "MONTHLY_ACTIVITIES_TRADING_POST_HORDE",
+        "MONTHLY_ACTIVITIES_TRADING_POST_ALLIANCE",
+        "AreMonthlyActivitiesRestricted",
+        "MONTHLY_ACTIVITIES_UNAVAILABLE_TOOLTIP",
+        "MONTHLY_ACTIVITIES_RESTRICTED_TOOLTIP"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

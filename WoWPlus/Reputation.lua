@@ -1162,7 +1162,7 @@ local function Init()
 		Set_TrackButton_Pushed(false)--TrackButton，提示
 	end)
 
-	Button.up= e.Cbtn(Button, {size={22,22}, texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
+	Button.up= e.Cbtn(Button, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
 	Button.up:SetPoint("LEFT", ReputationFrameFactionLabel, 'RIGHT',5,0)
 	Button.up:SetScript("OnClick", function()
 		for i=GetNumFactions(), 1, -1 do
@@ -1178,7 +1178,7 @@ local function Init()
 		e.tips:Show()
 	end)
 
-	Button.down= e.Cbtn(Button.up, {size={22,22}, texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
+	Button.down= e.Cbtn(Button.up, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
 	Button.down:SetPoint('LEFT', Button.up, 'RIGHT')
 	Button.down:SetScript("OnClick", ExpandAllFactionHeaders)
 	Button.down:SetScript("OnLeave", GameTooltip_Hide)

@@ -52,6 +52,15 @@ local function hookDia(string, text, func)
     end
 end
 
+local function hookScript(self, name, func)
+    if self and self:GetObjectType()=='Frame' and not self:IsForbidden() then
+        if self.name then
+            self:HookScript(name, func)
+        else
+            self:SetScript(name, func)
+        end
+    end
+end
 
 
 
@@ -1240,7 +1249,6 @@ e.strText={
 
 
     [HOME] = "首页",
-
 }
 
 
@@ -3877,6 +3885,20 @@ local function Init_Loaded(arg1)
         set(EncounterJournalTitleText, '冒险指南')
 
         set(EncounterJournalMonthlyActivitiesTab, '旅行者日志')
+            hookScript(EncounterJournalMonthlyActivitiesTab, 'OnEnter', function()
+                if not C_PlayerInfo.IsTravelersLogAvailable() then
+                    local tradingPostLocation = e.Player.faction == "Alliance" and '暴风城' or '奥格瑞玛';
+                    GameTooltip_AddBlankLineToTooltip(GameTooltip);
+                    GameTooltip_AddErrorLine(GameTooltip, format('拜访%s的商栈，查看旅行者日志。', tradingPostLocation));
+                    if AreMonthlyActivitiesRestricted() then
+                        GameTooltip_AddBlankLineToTooltip(GameTooltip);
+                        GameTooltip_AddErrorLine(GameTooltip, '需要可用的游戏时间。');
+                    end
+            
+                    GameTooltip:Show();
+                end
+            end)
+
         set(EncounterJournalSuggestTab, '推荐玩法')
         set(EncounterJournalDungeonTab, '地下城')
         set(EncounterJournalRaidTab, '团队副本')
@@ -3907,7 +3929,7 @@ local function Init_Loaded(arg1)
         set(EncounterJournalEncounterFrameInstanceFrameMapButtonText, '显示\n地图')
         set(EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildTitle, '综述')
 
-        local function EncounterJournal_SetupIconFlags(sectionID, infoHeaderButton)--Blizzard_EncounterJournal.lua
+        local function EncounterJournal_SetupIconFlags(sectionID, infoHeaderButton, index)--Blizzard_EncounterJournal.lua
             local iconFlags = C_EncounterJournal.GetSectionIconFlags(sectionID)
             for index2, icon in ipairs(infoHeaderButton.icons or {}) do
                 local iconFlag = iconFlags and iconFlags[index2];
@@ -3930,12 +3952,14 @@ local function Init_Loaded(arg1)
                     }
                     if tab[iconFlag] then
                         icon.tooltipTitle = tab[iconFlag]--_G["ENCOUNTER_JOURNAL_SECTION_FLAG"..iconFlag];
-                        if iconFlag==1 then
-                            set(infoHeaderButton.title, '伤害')
-                        elseif iconFlag==2 then
-                            set(infoHeaderButton.title, '治疗者')
-                        elseif iconFlag==0 then
-                            set(infoHeaderButton.title, '坦克')
+                        if index then
+                            if iconFlag==1 then
+                                set(infoHeaderButton.title, '伤害')
+                            elseif iconFlag==2 then
+                                set(infoHeaderButton.title, '治疗者')
+                            elseif iconFlag==0 then
+                                set(infoHeaderButton.title, '坦克')
+                            end
                         end
                     end
                 end
@@ -3943,11 +3967,18 @@ local function Init_Loaded(arg1)
         end
         hooksecurefunc('EncounterJournal_SetUpOverview', function(self, overviewSectionID, index)
             local infoHeader= self.overviews[index]
-            local sectionInfo = C_EncounterJournal.GetSectionInfo(overviewSectionID);
-            if infoHeader and sectionInfo then
+            --local sectionInfo = C_EncounterJournal.GetSectionInfo(overviewSectionID);
+            if infoHeader and infoHeader.button and overviewSectionID then
                 EncounterJournal_SetupIconFlags(overviewSectionID, infoHeader.button, index);
             end
-            print(self, overviewSectionID, index)
+        end)
+        hooksecurefunc('EncounterJournal_ToggleHeaders', function()
+            for _, infoHeader in pairs(EncounterJournal.encounter.usedHeaders or {}) do
+                if infoHeader.myID and  infoHeader.button then
+                    --local sectionInfo = C_EncounterJournal.GetSectionInfo(infoHeader.myID);
+                    EncounterJournal_SetupIconFlags(infoHeader.myID, infoHeader.button);
+                end
+            end
         end)
 
     elseif arg1=='Blizzard_AchievementUI' then--成就

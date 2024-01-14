@@ -1304,7 +1304,7 @@ local function Init()
 
 
 	--展开,合起
-	Button.down= e.Cbtn(Button, {size={22,22}, texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
+	Button.down= e.Cbtn(Button, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
 	Button.down:SetPoint('RIGHT', Button, 'LEFT', -2, 0)
 	Button.down:SetScript("OnClick", function()
 		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
@@ -1324,7 +1324,7 @@ local function Init()
 		e.tips:Show()
 	end)
 
-	Button.up= e.Cbtn(Button, {size={22,22}, texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
+	Button.up= e.Cbtn(Button, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
 	Button.up:SetPoint('RIGHT', Button.down, 'LEFT', -2, 0)
 	Button.up:SetScript("OnClick", function()
 		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
