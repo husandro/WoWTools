@@ -52,15 +52,6 @@ local function hookDia(string, text, func)
     end
 end
 
-local function hookScript(self, name, func)
-    if self and self:GetObjectType()=='Frame' and not self:IsForbidden() then
-        if self.name then
-            self:HookScript(name, func)
-        else
-            self:SetScript(name, func)
-        end
-    end
-end
 
 
 
@@ -1201,6 +1192,15 @@ e.strText={
     [PLAYER_DIFFICULTY6] = "史诗",
     [PLAYER_DIFFICULTY_MYTHIC_PLUS] = "史诗钥石",
     [PLAYER_DIFFICULTY_TIMEWALKER] = "时空漫游",
+
+    --[[[ITEM_QUALITY0_DESC] = "粗糙",
+    [ITEM_QUALITY1_DESC] = "普通",
+    [ITEM_QUALITY2_DESC] = "优秀",
+    [ITEM_QUALITY3_DESC] = "精良",
+    [ITEM_QUALITY4_DESC] = "史诗",
+    [ITEM_QUALITY5_DESC] = "传说",
+    [ITEM_QUALITY6_DESC] = "神器",
+    [ITEM_QUALITY7_DESC] = "传家宝",]]
 
     [THE_ALLIANCE] = PLAYER_FACTION_COLOR_ALLIANCE:WrapTextInColorCode('联盟'),
     [THE_HORDE] = PLAYER_FACTION_COLOR_HORDE:WrapTextInColorCode('部落'),
@@ -3883,21 +3883,23 @@ local function Init_Loaded(arg1)
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         set(EncounterJournalTitleText, '冒险指南')
-
-        set(EncounterJournalMonthlyActivitiesTab, '旅行者日志')
-            hookScript(EncounterJournalMonthlyActivitiesTab, 'OnEnter', function()
-                if not C_PlayerInfo.IsTravelersLogAvailable() then
-                    local tradingPostLocation = e.Player.faction == "Alliance" and '暴风城' or '奥格瑞玛';
-                    GameTooltip_AddBlankLineToTooltip(GameTooltip);
-                    GameTooltip_AddErrorLine(GameTooltip, format('拜访%s的商栈，查看旅行者日志。', tradingPostLocation));
-                    if AreMonthlyActivitiesRestricted() then
+        
+        if EncounterJournalMonthlyActivitiesTab then
+            set(EncounterJournalMonthlyActivitiesTab, '旅行者日志')
+                EncounterJournalMonthlyActivitiesTab:SetScript('OnEnter', function()
+                    if not C_PlayerInfo.IsTravelersLogAvailable() then
+                        local tradingPostLocation = e.Player.faction == "Alliance" and '暴风城' or '奥格瑞玛';
                         GameTooltip_AddBlankLineToTooltip(GameTooltip);
-                        GameTooltip_AddErrorLine(GameTooltip, '需要可用的游戏时间。');
+                        GameTooltip_AddErrorLine(GameTooltip, format('拜访%s的商栈，查看旅行者日志。', tradingPostLocation));
+                        if AreMonthlyActivitiesRestricted() then
+                            GameTooltip_AddBlankLineToTooltip(GameTooltip);
+                            GameTooltip_AddErrorLine(GameTooltip, '需要可用的游戏时间。');
+                        end
+                
+                        GameTooltip:Show();
                     end
-            
-                    GameTooltip:Show();
-                end
-            end)
+                end)
+            end
 
         set(EncounterJournalSuggestTab, '推荐玩法')
         set(EncounterJournalDungeonTab, '地下城')
@@ -4714,7 +4716,40 @@ local function Init_Loaded(arg1)
             GameTooltip:Show()
         end)
 
+    elseif arg1=='Blizzard_ArchaeologyUI' then
+        set(ArchaeologyFrameTitleText, '考古学')
+        set(ArchaeologyFrameSummaryPageTitle, '种族')
+        set(ArchaeologyFrameCompletedPage.infoText, '你还没有完成任何神器。寻找碎片及钥石以完成神器。')
+        set(ArchaeologyFrameCompletedPage.titleBig, '已完成神器')
+        set(ArchaeologyFrameCompletedPage.titleMid, '已完成的普通神器')
+        
+        set(ArchaeologyFrameCompletedPage.titleTop, '已完成的普通神器')
 
+        set(ArchaeologyFrameArtifactPage.historyTitle, '历史')
+        set(ArchaeologyFrameArtifactPage.raceRarity, '种族')
+        set(ArchaeologyFrame.backButton, '后退')
+        set(ArchaeologyFrameArtifactPageSolveFrameSolveButton, '解密')
+
+        --[[
+            self.summaryPage.UpdateFrame = ArchaeologyFrame_UpdateSummary;
+            self.completedPage.UpdateFrame = ArchaeologyFrame_UpdateComplete;
+            self.artifactPage.UpdateFrame = ArchaeologyFrame_CurrentArtifactUpdate;
+        ]]
+        hooksecurefunc(ArchaeologyFrame.summaryPage, 'UpdateFrame', function(self)
+            set(self.pageText, format('第%d页', self.currentPage))
+        end)
+        hooksecurefunc(ArchaeologyFrame.completedPage, 'UpdateFrame', function(self)
+            set(self.pageText, format('第%d页', self.currentPage))
+            set(self.titleTop, self.currData.onRare and '已完成的精良神器' or '已完成的普通神器')
+        end)
+        ArchaeologyFrame.rankBar:HookScript('OnEnter', function()
+            GameTooltip:SetText('考古学技能', HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true);
+			GameTooltip:Show()
+        end)
+
+        set(ArchaeologyFrameHelpPageTitle, '考古学')
+        set(ArchaeologyFrameHelpPageHelpScrollHelpText, '你需要搜集散落在世界各处的神器碎片来将它们复原为完整的神器。你能够在挖掘场里找到这些碎片，挖掘场的位置会标记在你的地图上。在挖掘场使用调查技能，你的调查工具就会显示出神器碎片大致的埋藏方向和位置。在前往一个新的挖掘地址前你可以在一个挖掘场中收集六次碎片。当你拥有了足够的碎片之后，你就可以破译隐藏在神器中的秘密，了解更多关于艾泽拉斯昔日的历史和传说。寻宝愉快！')
+        set(ArchaeologyFrameHelpPageDigTitle, '考古学地图位置标记')
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
         --dia("CALENDAR_ERROR", {button1 = '确定'})

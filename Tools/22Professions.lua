@@ -636,9 +636,36 @@ end
 
 
 
+local function Init_Archaeology()
 
-
-
+    hooksecurefunc(ArchaeologyFrame.completedPage, 'UpdateFrame', function(self)
+        if not IsArtifactCompletionHistoryAvailable() then
+            return
+        end
+        for i=1, ARCHAEOLOGY_MAX_COMPLETED_SHOWN do
+            local btn=  self["artifact"..i]
+            if btn and btn:IsShown() then
+                local name, description, rarity, icon, spellDescription,  _, _, spellID, firstCompletionTime, completionCount = GetArtifactInfoByRace(btn.raceIndex, btn.projectIndex);
+                local raceName = GetArchaeologyRaceInfo(btn.raceIndex)
+                if raceName and name and completionCount and completionCount>0 then
+                    local sub= raceName
+                    if rarity == 0 then
+                        name= '|cffffffff'..name..'|r'
+                        sub= sub.."-|cffffffff"..(e.onlyChinese and '普通' or ITEM_QUALITY1_DESC).."|r"
+                    else
+                        name='|cff0070dd'..name..'|r'
+                        sub= sub.."-|cff0070dd"..(e.onlyChinese and '精良' or ITEM_QUALITY3_DESC).."|r"
+                    end
+                    btn.artifactName:SetText(name)
+                    btn.artifactSubText:SetText(sub..' |cnGREEN_FONT_COLOR:'..completionCount..'|r')                   
+                end
+            end
+        end
+    end)
+    
+    
+    ArchaeologyFrameInfoButton:SetFrameStrata('DIALOG')
+end
 
 
 
@@ -738,6 +765,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1== 'Blizzard_Professions' then --10.1.5
             Init_ProfessionsFrame()--初始
+        elseif arg1=='Blizzard_ArchaeologyUI' then
+            Init_Archaeology()
         end
 
     elseif event == "PLAYER_LOGOUT" then

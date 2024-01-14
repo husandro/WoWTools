@@ -1912,6 +1912,9 @@ local function Init_Event(arg1)
         set_NineSlice(PingSystemTutorial, true)
         set_NineSlice(PingSystemTutorialInset, nil, true)
         hide_Texture(PingSystemTutorialBg)
+    
+    elseif arg1=='Blizzard_ArchaeologyUI' then
+        set_NineSlice(ArchaeologyFrame, true)
     end
 end
 

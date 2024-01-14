@@ -587,6 +587,9 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_ClickBindingUI' then--点击，施法
         set_Move_Frame(ClickBindingFrame)
         set_Move_Frame(ClickBindingFrame.ScrollBox, {frame=ClickBindingFrame})
+
+    elseif arg1=='Blizzard_ArchaeologyUI' then
+        set_Move_Frame(ArchaeologyFrame)
     end
 end
 
