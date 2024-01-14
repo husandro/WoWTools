@@ -1239,7 +1239,7 @@ e.strText={
     [HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL] = "载具座位",
 
 
-
+    [HOME] = "首页",
 
 }
 
@@ -1366,19 +1366,19 @@ local function Init()
         set(SpellBookFrameTabButton3, '宠物')
 
         if SpellBookFrame.bookType== BOOKTYPE_SPELL then
-            SpellBookFrame:SetTitle('法术');
+            SpellBookFrame:SetTitle('法术')
         elseif SpellBookFrame.bookType== BOOKTYPE_PROFESSION then
-            SpellBookFrame:SetTitle('专业');
+            SpellBookFrame:SetTitle('专业')
         elseif SpellBookFrame.bookType== BOOKTYPE_PET then
-            SpellBookFrame:SetTitle('宠物');
+            SpellBookFrame:SetTitle('宠物')
         end
     end)
     hooksecurefunc('SpellBookFrame_UpdatePages', function()
-        local currentPage, maxPages = SpellBook_GetCurrentPage();
+        local currentPage, maxPages = SpellBook_GetCurrentPage()
         if ( maxPages == nil or maxPages == 0 ) then
-            return;
+            return
         end
-        SpellBookPageText:SetFormattedText('第%d页', currentPage);
+        SpellBookPageText:SetFormattedText('第%d页', currentPage)
     end)
 
 
@@ -2539,37 +2539,37 @@ local function Init()
     end)
     Minimap.ZoomIn:HookScript('OnEnter', function()
         if GameTooltip:IsShown() then
-            GameTooltip:SetText('放大');
+            GameTooltip:SetText('放大')
         end
     end)
     Minimap.ZoomOut:HookScript('OnEnter', function()
         if GameTooltip:IsShown() then
-            GameTooltip:SetText('缩小');
+            GameTooltip:SetText('缩小')
         end
     end)
     MinimapCluster.Tracking.Button:HookScript('OnEnter', function()
-        GameTooltip:SetText('追踪', 1, 1, 1);
-	    GameTooltip:AddLine('点击以开启或关闭追踪类型。', nil, nil, nil, true);
+        GameTooltip:SetText('追踪', 1, 1, 1)
+	    GameTooltip:AddLine('点击以开启或关闭追踪类型。', nil, nil, nil, true)
         GameTooltip:Show()
     end)
 
 --[[
     local function set_UpdateIconForGarrison(self)
         
-        local garrisonType = C_Garrison.GetLandingPageGarrisonType();
+        local garrisonType = C_Garrison.GetLandingPageGarrisonType()
         print(id,addName, garrisonType)
         if (garrisonType == Enum.GarrisonType.Type_6_0_Garrison) then
-            self.title = '要塞报告';
-            self.description = '点击显示要塞报告';
+            self.title = '要塞报告'
+            self.description = '点击显示要塞报告'
         elseif (garrisonType == Enum.GarrisonType.Type_7_0_Garrison) then
-            self.title = '职业大厅报告';
-            self.description = '点击显示职业大厅报告';
+            self.title = '职业大厅报告'
+            self.description = '点击显示职业大厅报告'
         elseif (garrisonType == Enum.GarrisonType.Type_8_0_Garrison) then
-            self.title = '任务';
-            self.description = '点击显示任务报告';
+            self.title = '任务'
+            self.description = '点击显示任务报告'
         elseif (garrisonType == Enum.GarrisonType.Type_9_0_Garrison) then
-            self.title = '盟约圣所';
-            self.description = '点击显示圣所报告';
+            self.title = '盟约圣所'
+            self.description = '点击显示圣所报告'
         end
     end
 
@@ -2755,12 +2755,12 @@ print(ExpansionLandingPage.overlay)]]
     --替换，原生
     function GameTooltip_OnTooltipAddMoney(self, cost, maxcost)
         if( not maxcost or maxcost < 1 ) then --We just have 1 price to display
-            SetTooltipMoney(self, cost, nil, string.format("%s:", '卖价'));
+            SetTooltipMoney(self, cost, nil, string.format("%s:", '卖价'))
         else
-            GameTooltip_AddColoredLine(self, ("%s:"):format('卖价'), HIGHLIGHT_FONT_COLOR);
+            GameTooltip_AddColoredLine(self, ("%s:"):format('卖价'), HIGHLIGHT_FONT_COLOR)
             local indent = string.rep(" ",4)
-            SetTooltipMoney(self, cost, nil, string.format("%s%s:", indent, '最小'));
-            SetTooltipMoney(self, maxcost, nil, string.format("%s%s:", indent, '最大'));
+            SetTooltipMoney(self, cost, nil, string.format("%s%s:", indent, '最小'))
+            SetTooltipMoney(self, maxcost, nil, string.format("%s%s:", indent, '最大'))
         end
     end
 
@@ -2798,8 +2798,12 @@ print(ExpansionLandingPage.overlay)]]
 
 
 
-
-
+    --NavigationBar.lua
+    hooksecurefunc('NavBar_Initialize', function(_, _, homeData, homeButton)
+        local name= homeData and homeData.name or HOME
+        name = name==HOME and '首页' or e.strText[name]
+        set(homeButton.Text or homeButton.text, name, nil, true)
+    end)
 
 
 
@@ -3461,8 +3465,8 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.PerItemPostfix, '每个物品')
         set(AuctionHouseFrame.ItemSellFrame.BuyoutModeCheckButton.Text, '一口价')
         AuctionHouseFrame.ItemSellFrame.BuyoutModeCheckButton:HookScript('OnEnter', function()
-            GameTooltip_AddNormalLine(GameTooltip, '取消勾选此项以允许对你的拍卖品进行竞拍。', true);
-            GameTooltip:Show();
+            GameTooltip_AddNormalLine(GameTooltip, '取消勾选此项以允许对你的拍卖品进行竞拍。', true)
+            GameTooltip:Show()
         end)
 
         --刷新，列表
@@ -3478,11 +3482,11 @@ local function Init_Loaded(arg1)
 
         AuctionHouseFrame.CommoditiesSellList.RefreshFrame.RefreshButton:HookScript('OnEnter', function()
             GameTooltip_SetTitle(GameTooltip, '刷新')
-            GameTooltip:Show();
+            GameTooltip:Show()
         end)
         AuctionHouseFrame.ItemSellList.RefreshFrame.RefreshButton:HookScript('OnEnter', function()
             GameTooltip_SetTitle(GameTooltip, '刷新')
-            GameTooltip:Show();
+            GameTooltip:Show()
         end)
 
 
@@ -3500,39 +3504,39 @@ local function Init_Loaded(arg1)
         hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.BidFrame, 'SetPrice', function(self, minBid, isOwnerItem, isPlayerHighBid)
             if not (isPlayerHighBid or minBid == 0) then
                 if minBid > GetMoney() then
-                    self.BidButton:SetDisableTooltip('你的钱不够');
+                    self.BidButton:SetDisableTooltip('你的钱不够')
                 elseif isOwnerItem then
-                    self.BidButton:SetDisableTooltip('你不能购买自己的拍卖品');
+                    self.BidButton:SetDisableTooltip('你不能购买自己的拍卖品')
                 end
             end
         end)
 
         --Blizzard_AuctionHouseSellFrame.lua
         hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'UpdatePostButtonState', function(self)
-            local canPostItem, reasonTooltip = self:CanPostItem();
+            local canPostItem, reasonTooltip = self:CanPostItem()
             if not canPostItem and reasonTooltip then
                 if reasonTooltip== AUCTION_HOUSE_SELL_FRAME_ERROR_ITEM then
-                    self.PostButton:SetTooltip('没有选择物品');
+                    self.PostButton:SetTooltip('没有选择物品')
                 elseif reasonTooltip== AUCTION_HOUSE_SELL_FRAME_ERROR_DEPOSIT then
-                    self.PostButton:SetTooltip('你没有足够的钱来支付保证金');
+                    self.PostButton:SetTooltip('你没有足够的钱来支付保证金')
                 elseif reasonTooltip== AUCTION_HOUSE_SELL_FRAME_ERROR_QUANTITY then
-                    self.PostButton:SetTooltip('数量必须大于0');
+                    self.PostButton:SetTooltip('数量必须大于0')
                 elseif reasonTooltip== ERR_GENERIC_THROTTLE then
-                    self.PostButton:SetTooltip('你太快了');
+                    self.PostButton:SetTooltip('你太快了')
                 end
             end
         end)
         hooksecurefunc(AuctionHouseFrame.ItemSellFrame, 'UpdatePostButtonState', function(self)
-            local canPostItem, reasonTooltip = self:CanPostItem();
+            local canPostItem, reasonTooltip = self:CanPostItem()
             if not canPostItem and reasonTooltip then
                 if reasonTooltip== AUCTION_HOUSE_SELL_FRAME_ERROR_ITEM then
-                    self.PostButton:SetTooltip('没有选择物品');
+                    self.PostButton:SetTooltip('没有选择物品')
                 elseif reasonTooltip== AUCTION_HOUSE_SELL_FRAME_ERROR_DEPOSIT then
-                    self.PostButton:SetTooltip('你没有足够的钱来支付保证金');
+                    self.PostButton:SetTooltip('你没有足够的钱来支付保证金')
                 elseif reasonTooltip== AUCTION_HOUSE_SELL_FRAME_ERROR_QUANTITY then
-                    self.PostButton:SetTooltip('数量必须大于0');
+                    self.PostButton:SetTooltip('数量必须大于0')
                 elseif reasonTooltip== ERR_GENERIC_THROTTLE then
-                    self.PostButton:SetTooltip('你太快了');
+                    self.PostButton:SetTooltip('你太快了')
                 end
             end
         end)
@@ -3768,6 +3772,8 @@ local function Init_Loaded(arg1)
             end
         end)
         set(CollectionsJournalTab1, '坐骑')
+            set(MountJournalSearchBox.Instructions, '搜索')
+            set(MountJournalFilterButtonText, '过滤器')
             set(MountJournal.MountCount.Label, '坐骑')
             set(MountJournalSummonRandomFavoriteButton.spellname, "随机召唤\n偏好坐骑")--hooksecurefunc('MountJournalSummonRandomFavoriteButton_OnLoad', function(self)
             set(MountJournal.MountDisplay.ModelScene.TogglePlayer.TogglePlayerText, '显示角色')
@@ -3801,6 +3807,8 @@ local function Init_Loaded(arg1)
             end)
 
         set(CollectionsJournalTab2, '宠物手册')
+            set(PetJournalSearchBox.Instructions, '搜索')
+            set(PetJournalFilterButtonText, '过滤器')
             local function Set_Pet_Button_Name()
                 local petID = PetJournalPetCard.petID
                 local hasPetID = petID ~= nil
@@ -3830,17 +3838,30 @@ local function Init_Loaded(arg1)
             set(PetJournalSummonRandomFavoritePetButtonSpellName, '召唤随机\n偏好战斗宠物')
             set(PetJournalHealPetButtonSpellName, '复活\n战斗宠物')
         set(CollectionsJournalTab3, '玩具箱')
+            set(ToyBox.searchBox.Instructions, '搜索')
+            set(ToyBoxFilterButtonText, '过滤器')
             hooksecurefunc(ToyBox.PagingFrame, 'Update', function(self)--Blizzard_CollectionTemplates.lua
-                self.PageText:SetFormattedText('%d/%d页', self.currentPage, self.maxPages);
+                self.PageText:SetFormattedText('%d/%d页', self.currentPage, self.maxPages)
             end)
         set(CollectionsJournalTab4, '传家宝')
+            set(HeirloomsJournalText, '过滤器')
+            set(HeirloomsJournalSearchBox.Instructions, '搜索')
             hooksecurefunc(HeirloomsJournal.PagingFrame, 'Update', function(self)--Blizzard_CollectionTemplates.lua
-                self.PageText:SetFormattedText('%d/%d页', self.currentPage, self.maxPages);
+                self.PageText:SetFormattedText('%d/%d页', self.currentPage, self.maxPages)
             end)
         set(CollectionsJournalTab5, '外观')
+            set(WardrobeCollectionFrameSearchBox.Instructions, '搜索')
+            hooksecurefunc(WardrobeCollectionFrame, 'SetContainer', function(self, parent)
+                if parent == CollectionsJournal then
+                    set(self.FilterButton, '过滤器')
+                elseif parent == WardrobeFrame then
+                    set(self.FilterButton, '来源')
+                end
+            end)
+            set(WardrobeCollectionFrame.FilterButton.text, '过滤器')
             set(WardrobeCollectionFrameTab1, '物品')
                 hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame, 'Update', function(self)--Blizzard_CollectionTemplates.lua
-                    self.PageText:SetFormattedText('%d/%d页', self.currentPage, self.maxPages);
+                    self.PageText:SetFormattedText('%d/%d页', self.currentPage, self.maxPages)
                 end)
             set(WardrobeCollectionFrameTab2, '套装')
 
@@ -3860,6 +3881,7 @@ local function Init_Loaded(arg1)
         set(EncounterJournalDungeonTab, '地下城')
         set(EncounterJournalRaidTab, '团队副本')
         set(EncounterJournalLootJournalTab, '套装物品')
+        set(EncounterJournalSearchBox.Instructions, '搜索')
 
         hooksecurefunc('EJInstanceSelect_UpdateTitle', function(tabId)
             local text
@@ -3880,6 +3902,53 @@ local function Init_Loaded(arg1)
         if EncounterJournalMonthlyActivitiesFrame and EncounterJournalMonthlyActivitiesFrame.HeaderContainer then
             set(EncounterJournalMonthlyActivitiesFrame.HeaderContainer.Title, '旅行者日志')
         end
+
+        set(EncounterJournalEncounterFrameInfoFilterToggle.Text, '过滤器')
+        set(EncounterJournalEncounterFrameInstanceFrameMapButtonText, '显示\n地图')
+        set(EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildTitle, '综述')
+
+        local function EncounterJournal_SetupIconFlags(sectionID, infoHeaderButton)--Blizzard_EncounterJournal.lua
+            local iconFlags = C_EncounterJournal.GetSectionIconFlags(sectionID)
+            for index2, icon in ipairs(infoHeaderButton.icons or {}) do
+                local iconFlag = iconFlags and iconFlags[index2];
+                if iconFlag then
+                    local tab={
+                        [0] = "坦克预警",
+                        [1] = "伤害输出预警",
+                        [10] = "疾病效果",
+                        [11] = "激怒",
+                        [12] = "史诗难度",
+                        [13] = "流血",
+                        [2] = "治疗预警",
+                        [3] = "英雄难度",
+                        [4] = "灭团技",
+                        [5] = "重要",
+                        [6] = "可打断技能",
+                        [7] = "法术效果",
+                        [8] = "诅咒效果",
+                        [9] = "中毒效果",
+                    }
+                    if tab[iconFlag] then
+                        icon.tooltipTitle = tab[iconFlag]--_G["ENCOUNTER_JOURNAL_SECTION_FLAG"..iconFlag];
+                        if iconFlag==1 then
+                            set(infoHeaderButton.title, '伤害')
+                        elseif iconFlag==2 then
+                            set(infoHeaderButton.title, '治疗者')
+                        elseif iconFlag==0 then
+                            set(infoHeaderButton.title, '坦克')
+                        end
+                    end
+                end
+            end
+        end
+        hooksecurefunc('EncounterJournal_SetUpOverview', function(self, overviewSectionID, index)
+            local infoHeader= self.overviews[index]
+            local sectionInfo = C_EncounterJournal.GetSectionInfo(overviewSectionID);
+            if infoHeader and sectionInfo then
+                EncounterJournal_SetupIconFlags(overviewSectionID, infoHeader.button, index);
+            end
+            print(self, overviewSectionID, index)
+        end)
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
         set(AchievementFrameTab1, '成就')
@@ -4404,7 +4473,7 @@ local function Init_Loaded(arg1)
         set(ClickBindingFrame.ResetButton, '恢复默认设置')
         set(ClickBindingFrame.EnableMouseoverCastCheckbox.Label, '鼠标悬停施法')
         ClickBindingFrame.EnableMouseoverCastCheckbox:HookScript('OnEnter', function()
-            GameTooltip:SetText('启用后，鼠标悬停到一个单位框体并使用一个键盘快捷键施放法术时，会直接对该单位施法，无需将该单位设为目标。', nil, nil, nil, nil, true);
+            GameTooltip:SetText('启用后，鼠标悬停到一个单位框体并使用一个键盘快捷键施放法术时，会直接对该单位施法，无需将该单位设为目标。', nil, nil, nil, nil, true)
 
         end)
         set(ClickBindingFrame.MouseoverCastKeyDropDown.Label, '鼠标悬停施法按键')
@@ -4414,26 +4483,26 @@ local function Init_Loaded(arg1)
         set(ClickBindingFrame.TutorialFrame.ThrallName, '萨尔')
         ClickBindingFrame.SpellbookPortrait:HookScript('OnEnter', function()
             GameTooltip_SetTitle(GameTooltip, MicroButtonTooltipText('法术书和专业', "TOGGLESPELLBOOK"))
-            GameTooltip:Show();
+            GameTooltip:Show()
         end)
         ClickBindingFrame.MacrosPortrait:HookScript('OnEnter', function()
             GameTooltip_SetTitle(GameTooltip, '宏')
-            GameTooltip:Show();
+            GameTooltip:Show()
         end)
 
         local function NameAndIconFromElementData(elementData)
             if elementData.bindingInfo then
-                local bindingInfo = elementData.bindingInfo;
-                local type = bindingInfo.type;
-                local actionID = bindingInfo.actionID;
+                local bindingInfo = elementData.bindingInfo
+                local type = bindingInfo.type
+                local actionID = bindingInfo.actionID
 
                 local actionName
                 if type == Enum.ClickBindingType.Spell or type == Enum.ClickBindingType.PetAction then
-                    local overrideID = FindSpellOverrideByID(actionID);
-                    actionName = GetSpellInfo(overrideID);
+                    local overrideID = FindSpellOverrideByID(actionID)
+                    actionName = GetSpellInfo(overrideID)
                 elseif type == Enum.ClickBindingType.Macro then
-                    local macroName;
-                    macroName = GetMacroInfo(actionID);
+                    local macroName
+                    macroName = GetMacroInfo(actionID)
                     actionName = format('%s (宏)', macroName)
                 elseif type == Enum.ClickBindingType.Interaction then
                     if actionID == Enum.ClickBindingInteraction.Target then
@@ -4442,11 +4511,11 @@ local function Init_Loaded(arg1)
                         actionName = '打开上下文菜单 (默认)'
                     end
                 end
-                return actionName;
+                return actionName
             elseif elementData.elementType == 1 then
-                return '默认鼠标绑定';
+                return '默认鼠标绑定'
             elseif elementData.elementType == 3 then
-                return '自定义鼠标绑定';
+                return '自定义鼠标绑定'
             elseif elementData.elementType == 5 then
                 return '空'
             end
@@ -4494,35 +4563,35 @@ local function Init_Loaded(arg1)
 
         local function BindingTextFromElementData(elementData)
             if elementData.elementType == 5 then
-                local bindingText = elementData.bindingInfo and '鼠标移到该位置并点击一个鼠标按键来进行绑定' or '点击一个法术或宏以开始';
-                return GREEN_FONT_COLOR:WrapTextInColorCode(bindingText);
+                local bindingText = elementData.bindingInfo and '鼠标移到该位置并点击一个鼠标按键来进行绑定' or '点击一个法术或宏以开始'
+                return GREEN_FONT_COLOR:WrapTextInColorCode(bindingText)
             end
 
-            local bindingInfo = elementData.bindingInfo;
+            local bindingInfo = elementData.bindingInfo
             if not bindingInfo or not bindingInfo.button then
-                return RED_FONT_COLOR:WrapTextInColorCode('解除绑定 - 把鼠标移到目标上并点击来设置');
+                return RED_FONT_COLOR:WrapTextInColorCode('解除绑定 - 把鼠标移到目标上并点击来设置')
             end
 
-            local buttonString = ButtonStrings[bindingInfo.button];
-            local modifierText = C_ClickBindings.GetStringFromModifiers(bindingInfo.modifiers);
+            local buttonString = ButtonStrings[bindingInfo.button]
+            local modifierText = C_ClickBindings.GetStringFromModifiers(bindingInfo.modifiers)
             if modifierText ~= "" then
-                return format('%s-%s', modifierText, buttonString);
+                return format('%s-%s', modifierText, buttonString)
             else
-                return buttonString;
+                return buttonString
             end
         end
         local function ColoredNameAndIconFromElementData(elementData)
-            local name = NameAndIconFromElementData(elementData);
-            local isDisabled;
+            local name = NameAndIconFromElementData(elementData)
+            local isDisabled
             if elementData.elementType == 5 then
-                isDisabled = (elementData.bindingInfo == nil);
+                isDisabled = (elementData.bindingInfo == nil)
             else
-                isDisabled = elementData.unbound;
+                isDisabled = elementData.unbound
             end
             if isDisabled then
-                name = DISABLED_FONT_COLOR:WrapTextInColorCode(name);
+                name = DISABLED_FONT_COLOR:WrapTextInColorCode(name)
             end
-            return name;
+            return name
         end
         hooksecurefunc(ClickBindingLineMixin, 'Init', function(self, elementData)
             set(self.BindingText, BindingTextFromElementData(elementData))
@@ -4601,17 +4670,17 @@ local function Init_Loaded(arg1)
         set(StopwatchTitle, '秒表')
 
         hooksecurefunc('GameTime_UpdateTooltip', function()--GameTime.lua
-            GameTooltip:SetText('时间信息', HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-            GameTooltip:AddDoubleLine( '服务器时间：', GameTime_GetGameTime(true), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-            GameTooltip:AddDoubleLine( '本地时间：', GameTime_GetLocalTime(true), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+            GameTooltip:SetText('时间信息', HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+            GameTooltip:AddDoubleLine( '服务器时间：', GameTime_GetGameTime(true), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+            GameTooltip:AddDoubleLine( '本地时间：', GameTime_GetLocalTime(true), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
         end)
         hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
             if ( TimeManagerClockButton.alarmFiring ) then
-                GameTooltip:AddLine('点击这里关闭提醒。');
+                GameTooltip:AddLine('点击这里关闭提醒。')
             else
-                GameTooltip:AddLine('点击这里显示时钟设置选项。');
+                GameTooltip:AddLine('点击这里显示时钟设置选项。')
             end
-            GameTooltip:Show();
+            GameTooltip:Show()
         end)
 
 

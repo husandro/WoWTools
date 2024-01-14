@@ -619,11 +619,11 @@ function e.SecondsToClock(seconds, displayZeroHours)--TimeUtil.lua
     end
 end
 
-function e.Chat(text, name, sendChat)
+function e.Chat(text, name, printText)
     if text then
         if name then
             SendChatMessage(text, 'WHISPER', nil, name)
-        elseif sendChat then
+        elseif printText then
             if not e.call('ChatEdit_InsertLink', text) then
                 e.call('ChatFrame_OpenChat', text)
             end

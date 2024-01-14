@@ -1349,12 +1349,7 @@ local function Init_EncounterJournal()--冒险指南界面
         frame:HookScript('OnClick', function(self, d)
             local spellID= self:GetParent().spellID--self3.link
             if not Save.hideEncounterJournal and spellID and spellID>0 and d=='RightButton' then
-                local link=GetSpellLink(spellID)
-                if IsInGroup() then
-                    e.Chat(link or spellID, nil, nil)
-                else
-                    e.Chat(link and link..'spellID' or spellID, nil, true)
-                end
+                e.Chat(GetSpellLink(spellID) or spellID, nil, not IsInGroup())
             end
         end)
         frame.hook=true
