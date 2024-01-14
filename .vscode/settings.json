@@ -6840,7 +6840,9 @@
         "GameTimeCalendarInvitesGlow",
         "GameTimeFrame_SetDate",
         "GAMETIME_TOOLTIP_CALENDAR_INVITES",
-        "TimeManager_IsAlarmFiring"
+        "TimeManager_IsAlarmFiring",
+        "ToyBox_FindPageForToyID",
+        "COLLECTION_PAGE_NUMBER"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -3830,10 +3830,19 @@ local function Init_Loaded(arg1)
             set(PetJournalSummonRandomFavoritePetButtonSpellName, '召唤随机\n偏好战斗宠物')
             set(PetJournalHealPetButtonSpellName, '复活\n战斗宠物')
         set(CollectionsJournalTab3, '玩具箱')
+            hooksecurefunc(ToyBox.PagingFrame, 'Update', function(self)--Blizzard_CollectionTemplates.lua
+                self.PageText:SetFormattedText('%d/%d页', self.currentPage, self.maxPages);
+            end)
         set(CollectionsJournalTab4, '传家宝')
+            hooksecurefunc(HeirloomsJournal.PagingFrame, 'Update', function(self)--Blizzard_CollectionTemplates.lua
+                self.PageText:SetFormattedText('%d/%d页', self.currentPage, self.maxPages);
+            end)
         set(CollectionsJournalTab5, '外观')
-        set(WardrobeCollectionFrameTab1, '物品')
-        set(WardrobeCollectionFrameTab2, '套装')
+            set(WardrobeCollectionFrameTab1, '物品')
+                hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame, 'Update', function(self)--Blizzard_CollectionTemplates.lua
+                    self.PageText:SetFormattedText('%d/%d页', self.currentPage, self.maxPages);
+                end)
+            set(WardrobeCollectionFrameTab2, '套装')
 
 
         dia("BATTLE_PET_RENAME", {text = '重命名', button1 = '接受', button2 = '取消', button3 = '默认'})
