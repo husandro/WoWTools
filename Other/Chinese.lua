@@ -2258,8 +2258,13 @@ local function Init()
     set(ChannelFrameTitleText, '聊天频道')
     set(ChannelFrame.NewButton, '添加')
     set(ChannelFrame.SettingsButton, '设置')
-
-
+    set(CreateChannelPopup.UseVoiceChat.Text, '启用语音聊天')
+    set(CreateChannelPopup.Header.Text, '新建频道')
+    set(CreateChannelPopup.Name.Label, '频道名称')
+    set(CreateChannelPopup.Password.Label, '密码')
+    set(CreateChannelPopup.OKButton, '确定')
+    set(CreateChannelPopup.CancelButton, '取消')
+    
     hooksecurefunc(ObjectiveTrackerBlocksFrame.QuestHeader, 'UpdateHeader', function(self)
         --if C_QuestSession.HasJoined() then self.Text:SetText('任务场景')
         self.Text:SetText('任务')
