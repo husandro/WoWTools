@@ -638,6 +638,7 @@ end
 
 local function Init_Archaeology()
 
+    --提示
     hooksecurefunc(ArchaeologyFrame.completedPage, 'UpdateFrame', function(self)
         if not IsArtifactCompletionHistoryAvailable() then
             return
@@ -663,6 +664,14 @@ local function Init_Archaeology()
         end
     end)
     
+    --[[增加一个按钮， 提示物品
+    hooksecurefunc('ArchaeologyFrame_CurrentArtifactUpdate', function(self)
+        local itemID= select(3, GetArchaeologyRaceInfo(ArchaeologyFrame.artifactPage.raceID))
+        local btn= ArchaeologyFrame.artifactPage.tipsButton
+        if itemID and not ArchaeologyFrame.artifactPage.tipButton then
+            btn= e.Cbtn(self, {button='ItemButton', icon='hide', size=20, 20})
+        end
+    end)]]
     
     ArchaeologyFrameInfoButton:SetFrameStrata('DIALOG')
 end

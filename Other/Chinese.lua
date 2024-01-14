@@ -1692,8 +1692,7 @@ local function Init()
     set(RaidFinderQueueFrameScrollFrameChildFrameRewardsLabel, '奖励')
     set(LFDQueueFrameRandomScrollFrameChildFrameRewardsLabel, '奖励')
 
-    RaidFinderQueueFrameScrollFrameChildFrameEncounterList:HookScript('OnEnter', function(self)
-        print(self.dungeonID, id, addName)
+    RaidFinderQueueFrameScrollFrameChildFrameEncounterList:HookScript('OnEnter', function(self)        
         if self.dungeonID then
             local numEncounters, numCompleted = GetLFGDungeonNumEncounters(self.dungeonID)
             if ( numCompleted > 0 ) then
@@ -4742,14 +4741,49 @@ local function Init_Loaded(arg1)
             set(self.pageText, format('第%d页', self.currentPage))
             set(self.titleTop, self.currData.onRare and '已完成的精良神器' or '已完成的普通神器')
         end)
+        hooksecurefunc('ArchaeologyFrame_CurrentArtifactUpdate', function(self)
+            local RaceName, _, RaceitemID	= GetArchaeologyRaceInfo(self.raceID, true);
+            
+            local runeName
+            if RaceitemID and RaceitemID > 0 then
+                runeName = GetItemInfo(RaceitemID);
+            end
+            if runeName then
+                for i=1, ARCHAEOLOGY_MAX_STONES do
+                    local slot= self.solveFrame["keystone"..i]
+                    if slot and slot:IsShown() then
+                        if ItemAddedToArtifact(i) then
+                            self.solveFrame["keystone"..i].tooltip = format('点此以移除 |cnGREEN_FONT_COLOR:%s|r 。', runeName);
+                        else
+                            self.solveFrame["keystone"..i].tooltip = format('点此以从你的背包中选择一块 |cnGREEN_FONT_COLOR:%s|r 来降低完成该神器所需要的碎片数量。', runeName);
+                        end
+                    end
+                end
+            end
+            
+            if select(3, GetSelectedArtifactInfo()) == 0 then --Common Item
+                self.raceRarity:SetText(RaceName.." - |cffffffff普通|r");
+            else
+                self.raceRarity:SetText(RaceName.." - |cff0070dd精良|r");
+            end
+        end)
+
         ArchaeologyFrame.rankBar:HookScript('OnEnter', function()
             GameTooltip:SetText('考古学技能', HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true);
 			GameTooltip:Show()
         end)
 
+        ArchaeologyFrameArtifactPageSolveFrameStatusBar:HookScript('OnEnter', function()
+            local _, _, _, _, _, maxCount = GetArchaeologyRaceInfo(ArchaeologyFrame.artifactPage.raceID);
+            
+            GameTooltip:SetText(format('拼出该神器所需的碎片数量。\n\n每个种族的碎片最多只能保存%d块。', maxCount), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true);
+			GameTooltip:Show();
+        end)
         set(ArchaeologyFrameHelpPageTitle, '考古学')
         set(ArchaeologyFrameHelpPageHelpScrollHelpText, '你需要搜集散落在世界各处的神器碎片来将它们复原为完整的神器。你能够在挖掘场里找到这些碎片，挖掘场的位置会标记在你的地图上。在挖掘场使用调查技能，你的调查工具就会显示出神器碎片大致的埋藏方向和位置。在前往一个新的挖掘地址前你可以在一个挖掘场中收集六次碎片。当你拥有了足够的碎片之后，你就可以破译隐藏在神器中的秘密，了解更多关于艾泽拉斯昔日的历史和传说。寻宝愉快！')
         set(ArchaeologyFrameHelpPageDigTitle, '考古学地图位置标记')
+
+
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
         --dia("CALENDAR_ERROR", {button1 = '确定'})

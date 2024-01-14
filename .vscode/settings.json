@@ -6906,7 +6906,12 @@
         "ArchaeologyFrameInfoButton",
         "ArchaeologyFrameHelpPageTitle",
         "ArchaeologyFrameHelpPageHelpScrollHelpText",
-        "ArchaeologyFrameHelpPageDigTitle"
+        "ArchaeologyFrameHelpPageDigTitle",
+        "ARCHAEOLOGY_MAX_STONES",
+        "ARCHAEOLOGY_KEYSTONE_REMOVE_TOOLTIP",
+        "ARCHAEOLOGY_KEYSTONE_ADD_TOOLTIP",
+        "ArchaeologyFrameArtifactPageSolveFrameStatusBar",
+        "ARCHAEOLOGY_POJECTBAR_TOOLTIP"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
