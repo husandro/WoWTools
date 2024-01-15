@@ -658,21 +658,38 @@ local function Init_Archaeology()
                         sub= sub.."-|cff0070dd"..(e.onlyChinese and '精良' or ITEM_QUALITY3_DESC).."|r"
                     end
                     btn.artifactName:SetText(name)
-                    btn.artifactSubText:SetText(sub..' |cnGREEN_FONT_COLOR:'..completionCount..'|r')                   
+                    btn.artifactSubText:SetText(sub..' |cnGREEN_FONT_COLOR:'..completionCount..'|r')
                 end
             end
         end
     end)
-    
-    --[[增加一个按钮， 提示物品
+
+    --增加一个按钮， 提示物品
     hooksecurefunc('ArchaeologyFrame_CurrentArtifactUpdate', function(self)
         local itemID= select(3, GetArchaeologyRaceInfo(ArchaeologyFrame.artifactPage.raceID))
+        --local slot= _G['ArchaeologyFrameArtifactPageSolveFrameKeystone1']
         local btn= ArchaeologyFrame.artifactPage.tipsButton
-        if itemID and not ArchaeologyFrame.artifactPage.tipButton then
-            btn= e.Cbtn(self, {button='ItemButton', icon='hide', size=20, 20})
+        if itemID and not btn then
+            btn= e.Cbtn(self, {button='ItemButton', icon='hide'})
+            btn:SetPoint('RIGHT', ArchaeologyFrameArtifactPageSolveFrameStatusBar, 'LEFT', -60, 0)
+            btn:SetScript('OnLeave', function() e.tips:Hide() end)
+            btn:SetScript('OnEnter', function(frame)
+                e.tips:SetOwner(frame, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                if frame.itemID then
+                    e.tips:SetItemID(frame.itemID)
+                end
+                e.tips:AddLine(id, addName)
+                e.tips:Show()
+            end)
+            btn:SetItem(itemID)
         end
-    end)]]
-    
+        if btn then
+            btn.itemID= itemID
+            btn:SetShown(itemID and true or false)
+        end
+    end)
+
     ArchaeologyFrameInfoButton:SetFrameStrata('DIALOG')
 end
 

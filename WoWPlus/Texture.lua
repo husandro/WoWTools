@@ -1136,7 +1136,7 @@ local function Init_Event(arg1)
             TimeManagerClockTicker:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
         end]]
         --秒表
-        
+
          --Blizzard_TimeManager.lua
          hide_Texture(StopwatchFrameBackgroundLeft)
          if StopwatchFrame then
@@ -1912,9 +1912,12 @@ local function Init_Event(arg1)
         set_NineSlice(PingSystemTutorial, true)
         set_NineSlice(PingSystemTutorialInset, nil, true)
         hide_Texture(PingSystemTutorialBg)
-    
+
     elseif arg1=='Blizzard_ArchaeologyUI' then
         set_NineSlice(ArchaeologyFrame, true)
+        set_NineSlice(ArchaeologyFrameInset, nil, true)
+        hide_Texture(ArchaeologyFrameBg)
+        hide_Texture(ArchaeologyFrameInset.Bg)
     end
 end
 

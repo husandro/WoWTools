@@ -6911,7 +6911,10 @@
         "ARCHAEOLOGY_KEYSTONE_REMOVE_TOOLTIP",
         "ARCHAEOLOGY_KEYSTONE_ADD_TOOLTIP",
         "ArchaeologyFrameArtifactPageSolveFrameStatusBar",
-        "ARCHAEOLOGY_POJECTBAR_TOOLTIP"
+        "ARCHAEOLOGY_POJECTBAR_TOOLTIP",
+        "ArchaeologyFrameInset",
+        "ArchaeologyFrameBg",
+        "ArchaeologyFrameArtifactPageSolveFrameKeystone1"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
