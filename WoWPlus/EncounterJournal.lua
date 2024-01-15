@@ -9,8 +9,19 @@ local Button
 local AllTipsFrame--冒险指南,右边,显示所数据
 
 local function getBossNameSort(name, worldBossID)--取得怪物名称, 短名称
-   -- if type(worldBossID)=='number' and e.onlyChinese then
-        
+    if e.onlyChinese and not LOCALE_zhCN and not LOCALE_zhTW and worldBossID then
+        if worldBossID==1 then--Sha della Rabbia
+            return '怒之煞'
+        elseif worldBossID==2 then --Galeone
+            return '炮舰'
+        elseif worldBossID==3 then--Nalak
+            return '纳拉克'
+        elseif worldBossID==4 then --Undasta
+            return '乌达斯塔'
+        elseif worldBossID==9 then--Rukhmar
+            return '鲁克玛'
+        end
+    end
     
     name=name:gsub('(,.+)','')
     name=name:gsub('(，.+)','')
@@ -79,11 +90,12 @@ local function encounterJournal_ListInstances_set_Instance(self,showTips)
                 if guid==e.Player.guid then
                     local num=0
                     for bossName, worldBossID in pairs(info.Worldboss.boss) do
+                        num= num+1
                         text= text and text..' ' or ''
-                        if num>0 and math.modf(num/3)==0 then
+                        if num>2 and  select(2, math.modf(num / 3))==0 then
                             text=text..'|n'
                         end
-                        text= text..'|cnGREEN_FONT_COLOR:'..num..')'..getBossNameSort(bossName, worldBossID)
+                        text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'..getBossNameSort(bossName, worldBossID)
                     end
                     break
                 end
@@ -93,8 +105,9 @@ local function encounterJournal_ListInstances_set_Instance(self,showTips)
         local n=GetNumSavedInstances()
         local instancename= self.tooltipTitle or EJ_GetInstanceInfo(instanceID)
         for i=1, n do
-            local name, _, reset, _, _, _, _, _, _, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i);
+            local name, _, reset, difficultyID, _, _, _, _, _, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i);
             if instancename==name and (not reset or reset>0) and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 then
+                difficultyName= e.GetDifficultyColor(difficultyName, difficultyID) or difficultyName
                 local num=encounterProgress..'/'..numEncounters..'|r'
                 num= encounterProgress==numEncounters and '|cnGREEN_FONT_COLOR:'..num..'|r' or num
                 if showTips then
@@ -102,7 +115,7 @@ local function encounterJournal_ListInstances_set_Instance(self,showTips)
                         e.tips:AddLine(' ')
                     end
 
-                    e.tips:AddDoubleLine(name..'(|cnGREEN_FONT_COLOR:'..(e.strText[difficultyName] or difficultyName)..'|r): ',num);
+                    e.tips:AddDoubleLine(name..'(|cnGREEN_FONT_COLOR:'..difficultyName..'|r): ',num);
                     local t;
                     for j=1,numEncounters do
                         local bossName,_,isKilled = GetSavedInstanceEncounterInfo(i,j);
@@ -126,11 +139,6 @@ local function encounterJournal_ListInstances_set_Instance(self,showTips)
                     find=true
                 else
                     text= text and text..'|n' or ''
-                    difficultyName= e.strText[difficultyName] or difficultyName
-                    difficultyName=difficultyName:gsub('%(', '')
-                    difficultyName=difficultyName:gsub('%)', '')
-                    difficultyName=difficultyName:gsub('（', ' ')
-                    difficultyName=difficultyName:gsub('）', '')
                     text=text..difficultyName..' '..num
                 end
             end;
@@ -196,7 +204,7 @@ local function EncounterJournal_Set_All_Info_Text()
         text= text and text..'|n' or ''
         text= text..'|T450908:0|t'..insName
         for difficultyName, index in pairs(info) do
-            text=text..'|n     '..index..' '..(e.strText[difficultyName] or difficultyName)
+            text=text..'|n     '..index..' '.. difficultyName
         end
     end
     if text then
@@ -584,7 +592,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 for bossName, tab in pairs(info.Instance.ins) do----ins={[名字]={[难度]=已击杀数}}
                     local text
                     for difficultyName, killed in pairs(tab) do
-                        text= (text and text..' ' or '')..(e.strText[difficultyName] or difficultyName)..killed
+                        text= (text and text..' ' or '')..difficultyName..killed
                     end
                     e.tips:AddDoubleLine(bossName, text)
                     find= true
@@ -683,9 +691,9 @@ local function Init_EncounterJournal()--冒险指南界面
 
         for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames()) do--ScrollBox.lua
             if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
-                local textKill=encounterJournal_ListInstances_set_Instance(button)--界面,击杀,数据
+                local textKill= encounterJournal_ListInstances_set_Instance(button)--界面,击杀,数据
                 if not button.tipsText and textKill then
-                    button.tipsText=e.Cstr(button, {size=e.onlyChinese and 12 or 10, copyFont=button.name})--10, button.name)
+                    button.tipsText=e.Cstr(button, {size=e.onlyChinese and 12 or 10, copyFont= not e.onlyChinese and button.name or nil})--10, button.name)
                     button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
                     button.tipsText:SetJustifyH('RIGHT')
                 end

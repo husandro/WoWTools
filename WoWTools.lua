@@ -1829,9 +1829,8 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
         }
         name= type[difficultyID]
         if name then
-            local tab=color[name]
-            string= string or tab.name or GetDifficultyInfo(difficultyID)
-            string= tab.hex..string..'|r'
+            local tab= color[name]
+            string= tab.hex..tab.name..'|r'
             colorRe= tab
         end
     end
@@ -1839,7 +1838,7 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
             colorRe or (
                 e.Player.useColor or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=e.Player.col}
             ),
-            e.onlyChinese and name or GetDifficultyInfo(difficultyID)
+            e.onlyChinese and name or (difficultyID and GetDifficultyInfo(difficultyID))
 end
 
 
