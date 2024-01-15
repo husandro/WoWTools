@@ -227,7 +227,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
 
 
 
-    --Riad 副本, 地下城，指示,  会出错误，冒险指南，打开世界BOSS
+    --Riad 副本, 地下城，指示,  
     --######################
     PlayerFrame.instanceFrame= CreateFrame("Frame", nil, PlayerFrame)
     PlayerFrame.instanceFrame:SetFrameLevel(frameLevel)
@@ -374,7 +374,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrame.instanceFrame:SetScript('OnEvent', function(self, event, arg1)
         if event=='PLAYER_ENTERING_WORLD' then
             if IsInInstance() then
-                self:UnregisterEvent('CHAT_MSG_SYSTEM')
+                self:UnregisterEvent('CHAT_MSG_SYSTEM')--会出错误，冒险指南，打开世界BOSS
             else
                 self:RegisterEvent('CHAT_MSG_SYSTEM')
             end
@@ -495,7 +495,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         if event=='PLAYER_ENTERING_WORLD' then
             C_Timer.After(2, function() self:set_settings() end)
         else
-            self:set_settings()
+            C_Timer.After(1, function() self:set_settings() end)
         end
     end)
 
