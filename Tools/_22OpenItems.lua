@@ -288,9 +288,16 @@ local function get_Items()--取得背包物品信息
 
                         elseif Save.alt and classID~=12 and (classID~=0 or classID==0 and subclassID==8)  then-- 8 使用: 在龙鳞探险队中的声望提高1000点
                             local spell= select(2, GetItemSpell(info.hyperlink))
-                            if spell and IsUsableSpell(spell) and not C_Item.IsAnimaItemByID(info.hyperlink) then
-                                setAtt(bag, slot, info.iconFileID, info.itemID)
-                                return
+                            if spell and IsUsableSpell(spell) and not C_Item.IsAnimaItemByID(info.hyperlink) and IsUsableItem(info.hyperlink) then
+                                if info.itemID==207002 then--封装命运
+                                    if not e.WA_GetUnitBuff('player', 415603, 'HELPFUL') then
+                                        setAtt(bag, slot, info.iconFileID, info.itemID)
+                                        return
+                                    end
+                                else
+                                    setAtt(bag, slot, info.iconFileID, info.itemID)
+                                    return
+                                end
                             end
                         end
                     end
