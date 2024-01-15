@@ -672,7 +672,7 @@ local function Init_Archaeology()
         if itemID then
             if not btn then
                 btn= e.Cbtn(ArchaeologyFrame.artifactPage, {button='ItemButton', icon='hide'})
-                btn:SetPoint('RIGHT', ArchaeologyFrameArtifactPageSolveFrameStatusBar, 'LEFT', -37, 0)
+                btn:SetPoint('RIGHT', ArchaeologyFrameArtifactPageSolveFrameStatusBar, 'LEFT', -39, 0)
                 btn:SetScript('OnLeave', function() e.tips:Hide() end)
                 btn:SetScript('OnEnter', function(frame)
                     e.tips:SetOwner(frame, "ANCHOR_LEFT")
@@ -684,7 +684,7 @@ local function Init_Archaeology()
                     e.tips:Show()
                 end)
 
-                btn.btn2= e.Cbtn(btn, {button='ItemButton', icon='hide'})
+                btn.btn2= e.Cbtn(ArchaeologyFrame.artifactPage, {button='ItemButton', icon='hide'})
                 btn.btn2:SetPoint('BOTTOM', btn, 'TOP', 0, 7)
                 btn.btn2:SetScript('OnLeave', function() e.tips:Hide() end)
                 btn.btn2:SetScript('OnEnter', function(frame)
@@ -700,21 +700,25 @@ local function Init_Archaeology()
                         self:RegisterEvent('BAG_UPDATE_DELAYED')
                     else
                         self:UnregisterAllEvents()
+                        self:Reset()
                     end
                 end
                 btn:SetScript("OnShow", btn.set_Event)
                 btn:SetScript("OnHide", btn.set_Event)
                 function btn:set_Item()
-                    print(self.itemID)
+                    local num
                     if self.itemID then
                         self:SetItem(self.itemID)
-                        self:SetItemButtonCount(GetItemCount(self.itemID, true, nil, true))
+                        num= GetItemCount(self.itemID, true, nil, true)
+                        self:SetItemButtonCount(num)
+                        self:SetAlpha(num==0 and 0.3 or 1)
                     end
                     self.btn2:SetItem(87399)
-                    self.btn2:SetItemButtonCount(GetItemCount(87399, true, nil, true))
+                    num= GetItemCount(87399, true, nil, true)
+                    self.btn2:SetItemButtonCount(num)
+                    self.btn2:SetAlpha(num==0 and 0.3 or 1)
                 end
                 btn:SetScript('OnEvent', btn.set_Item)
-                
                 ArchaeologyFrame.artifactPage.tipsButton= btn
             end
             btn.itemID= itemID
