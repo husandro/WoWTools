@@ -2050,39 +2050,37 @@ end
     end
 end]]
 
-function e.GetItemCollected(itemIDOrLink, sourceID, icon)--物品是否收集
-    local isCollected, isSelf
-    if itemIDOrLink and IsCosmeticItem(itemIDOrLink) then
-        isCollected= C_TransmogCollection.PlayerHasTransmogByItemInfo(itemIDOrLink)
-        isSelf= true
-    else
-        sourceID= sourceID or itemIDOrLink and select(2, C_TransmogCollection.GetItemInfo(itemIDOrLink))
-        local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
-        if sourceInfo then
-            isSelf= select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID))
-            isCollected= sourceInfo.isCollected
-        end
-    end
-    if isCollected==true then
-        if icon then
-            if isSelf then
-                return e.Icon.select2, isCollected, isSelf
-            else
-                return '|A:Adventures-Checkmark:0:0|a', isCollected, isSelf--黄色√
+function e.GetItemCollected(itemIDOrLink, sourceID, icon, onlyBool)--物品是否收集 --if itemIDOrLink and IsCosmeticItem(itemIDOrLink) then isCollected= C_TransmogCollection.PlayerHasTransmogByItemInfo(itemIDOrLink)
+    sourceID= sourceID or itemIDOrLink and select(2, C_TransmogCollection.GetItemInfo(itemIDOrLink))
+    local sourceInfo = sourceID and C_TransmogCollection.GetSourceInfo(sourceID)
+    if sourceInfo then
+        local isCollected= sourceInfo.isCollected
+        local isSelf= select(2, C_TransmogCollection.PlayerCanCollectSource(sourceID))
+        local text
+        if not onlyBool then
+            if isCollected==true then
+                if icon then
+                    if isSelf then
+                        text= e.Icon.select2
+                    else
+                        text= '|A:Adventures-Checkmark:0:0|a'--黄色√
+                    end
+                else
+                    text= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r'
+                end
+            elseif isCollected==false then
+                if icon then
+                    if isSelf then
+                        text='|T132288:0|t'
+                    else
+                        text= '|A:transmog-icon-hidden:0:0|a'
+                    end
+                else
+                    text= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+                end
             end
-        else
-            return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r', isCollected, isSelf
         end
-    elseif isCollected==false then
-        if icon then
-            if isSelf then
-                return '|T132288:0|t', isCollected, isSelf
-            else
-                return  '|A:transmog-icon-hidden:0:0|a', isCollected, isSelf--e.Icon.star2,
-            end
-        else
-            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', isCollected, isSelf
-        end
+        return text, sourceInfo.isCollected, isSelf
     end
 end
 

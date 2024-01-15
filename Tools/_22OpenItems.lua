@@ -225,8 +225,9 @@ local function get_Items()--取得背包物品信息
 
                     if not dateInfo.red then--不出售, 可以使用
                         if itemEquipLoc and _G[itemEquipLoc] then--幻化
+                            
                             if Save.mago and info.quality then
-                                local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink))
+                                local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink, nil, nil, true))
                                 if not isCollected and isSelf then
                                     setAtt(bag, slot, info.iconFileID, info.itemID)
                                     equipItem=true
