@@ -2815,7 +2815,9 @@ print(ExpansionLandingPage.overlay)]]
 
 
 
-
+    --考古学 ArchaeologyProgressBar.xml
+    font(ArcheologyDigsiteProgressBar.BarTitle)
+    set(ArcheologyDigsiteProgressBar.BarTitle, '挖掘进度')
 
 
 
@@ -4788,6 +4790,8 @@ local function Init_Loaded(arg1)
         ArchaeologyFrameCompletedButton:HookScript('OnEnter', function()
             GameTooltip:SetText('已完成神器')
         end)
+
+        
 
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})

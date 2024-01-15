@@ -989,6 +989,25 @@ local function Init_All_Frame()
      end)
 
 
+    --考古学 ArchaeologyProgressBar.xml
+    if ArcheologyDigsiteProgressBar then
+        set_Alpha_Color(ArcheologyDigsiteProgressBar.BarBorderAndOverlay, true)
+        hide_Texture(ArcheologyDigsiteProgressBar.Shadow)
+        ArcheologyDigsiteProgressBar.BarTitle:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+        ArcheologyDigsiteProgressBar.BarTitle:SetShadowOffset(1, -1)
+        hide_Texture(ArcheologyDigsiteProgressBar.BarBackground)
+    end
+
+
+
+
+
+
+
+
+
+
+
     --######
     --动作条
     --######

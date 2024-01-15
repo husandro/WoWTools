@@ -6921,7 +6921,8 @@
         "ArchaeologyFrameRankBarBackground",
         "ArchaeologyFrameRaceFilterMiddle",
         "ArchaeologyFrameRaceFilterLeft",
-        "ArchaeologyFrameRaceFilterRight"
+        "ArchaeologyFrameRaceFilterRight",
+        "ArcheologyDigsiteProgressBar"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

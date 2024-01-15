@@ -5,13 +5,14 @@ local Save={
     --disabledClassTrainer=true,--隐藏，全学，按钮
     --disabledEnchant=true,--禁用，自动放入，附魔纸
     --disabled--禁用，按钮
+    ArcheologySound=true, --考古学
 }
 local panel=CreateFrame("Frame")
 
 
 
 
-
+local ArcheologyButton
 
 
 
@@ -55,7 +56,7 @@ local function Init_Tools_Button()
             btn.texture:SetTexture(icon)
             btn.texture:SetShown(true)
 
-            btn:SetScript('OnEnter', function(self)
+            function btn:set_tooltip()
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:SetSpellByID(self.spellID)
@@ -82,31 +83,42 @@ local function Init_Tools_Button()
                     end
                 end
 
-                if self.index==3 or self.index==4 then
+                if (self.index==3 or self.index==4) and not UnitAffectingCombat('player') then
                     e.tips:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, 'F', 0,1,0, 0,1,0)
                     e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.mid..(e.onlyChinese and '滚轮向上滚动' or KEY_MOUSEWHEELUP))
                     e.tips:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Icon.mid..(e.onlyChinese and '轮向下滚动' or KEY_MOUSEWHEELDOWN))
                 end
                 e.tips:Show()
-            end)
+            end
             btn:SetScript('OnLeave', GameTooltip_Hide)
+            btn:SetScript('OnEnter', btn.set_tooltip)
+
 
             if index==3 or index==4 then--钓鱼，考古， 设置清除快捷键
-                btn:SetScript('OnMouseWheel', function(self, d)
+                function btn:set_key_text(text)
+                    self.text:SetText(text)
+                    if self.keyButton then
+                        self.keyButton:set_text()
+                    end
+                end
+                function btn:set_OnMouseWheel(d)
                     if d==1 then
                         e.SetButtonKey(self, true,'F', 'RightButton')
                         self:RegisterEvent('PLAYER_REGEN_ENABLED')
                         self:RegisterEvent('PLAYER_REGEN_DISABLED')
                         print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '设置' or SETTINGS), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF')
-                        self.text:SetText('F')
+
                     elseif d==-1 then
                         e.SetButtonKey(self)
                         self:UnregisterEvent('PLAYER_REGEN_DISABLED')
                         self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-                        self.text:SetText('')
+
                         print(id, addName,'|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
                     end
-                end)
+                    self:set_tooltip()
+                    self:set_key_text(d==1 and 'F' or '')
+                end
+                btn:SetScript('OnMouseWheel', btn.set_OnMouseWheel)
                 btn:SetScript("OnEvent", function(self, event)
                     if event=='PLAYER_REGEN_ENABLED' then
                         e.SetButtonKey(self, true,'F', 'RightButton')
@@ -115,9 +127,14 @@ local function Init_Tools_Button()
                         e.SetButtonKey(self)
                         print(id, addName,'|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
                     end
+                    self:set_key_text(event=='PLAYER_REGEN_ENABLED' and 'F' or '')
                 end)
                 btn.text=e.Cstr(btn, {color={r=1,g=0,b=0}})--nil,nil,nil,{1,0,0})
                 btn.text:SetPoint('TOPRIGHT',-4,0)
+
+                if index==3 then
+                    ArcheologyButton= btn
+                end
             end
 
             if index==5 then--烹饪用火
@@ -456,8 +473,9 @@ local function Init_ProfessionsFrame()
     end
 
 
-    Init_ProfessionsFrame_Button()--专业界面, 按钮
-
+    do
+        Init_ProfessionsFrame_Button()--专业界面, 按钮
+    end
 
     --###
     --数量
@@ -667,7 +685,7 @@ local function Init_Archaeology()
     --增加一个按钮， 提示物品
     e.LoadDate({id=87399, type='item'})
     hooksecurefunc('ArchaeologyFrame_CurrentArtifactUpdate', function()
-        local itemID= select(3, GetArchaeologyRaceInfo(ArchaeologyFrame.artifactPage.raceID))        
+        local itemID= select(3, GetArchaeologyRaceInfo(ArchaeologyFrame.artifactPage.raceID))
         local btn= ArchaeologyFrame.artifactPage.tipsButton
         if itemID then
             if not btn then
@@ -747,7 +765,6 @@ end
 
 
 local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
-
 local function Init()
     --########################
     --自动输入，忘却，文字，专业
@@ -781,6 +798,104 @@ local function Init()
     hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow",function(self)
         if Save.wangquePrefessionText then
             self.editBox:SetText(UNLEARN_SKILL_CONFIRMATION);
+        end
+    end)
+
+
+    ArcheologyDigsiteProgressBar:HookScript('OnShow', function(frame)
+        if not frame.tipsButton then
+            frame.tipsButton= e.Cbtn(frame, {size={20,20}, icon='hide'})
+            frame.tipsButton:SetPoint('RIGHT', frame, 'LEFT', 0, -4)
+            function frame.tipsButton:set_atlas()
+                self:SetNormalAtlas(Save.ArcheologySound and 'chatframe-button-icon-voicechat' or 'chatframe-button-icon-speaker-off')
+            end
+            function frame.tipsButton:set_tooltips()
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(e.onlyChinese and '声音提示' or  SOUND, e.GetEnabeleDisable(Save.ArcheologySound))
+                e.tips:AddDoubleLine(id, addName)
+                e.tips:Show()
+            end
+            frame.tipsButton:SetAlpha(0.3)
+            frame.tipsButton:SetScript('OnLeave', function(self) GameTooltip_Hide() self:SetAlpha(0.3) end)
+            frame.tipsButton:SetScript('OnEnter', function(self)
+                self:set_tooltips()
+                self:SetAlpha(1)
+            end)
+
+            function frame.tipsButton:play_sound()
+                e.PlaySound()
+                e.Set_HelpTips({frame=ArcheologyDigsiteProgressBar, point='left', topoint=self, size={40,40}, color={r=1,g=0,b=0,a=1}, show=true, hideTime=3, y=0})--设置，提示
+            end
+
+            frame.tipsButton:SetScript('OnClick', function(self)
+                Save.ArcheologySound= not Save.ArcheologySound and true or nil
+                self:set_atlas()
+                self:set_event()
+                self:set_tooltips()
+                if Save.ArcheologySound then
+                    self:play_sound()
+                end
+            end)
+
+            function frame.tipsButton:set_event()
+                if self:IsVisible() and Save.ArcheologySound then
+                    self:RegisterUnitEvent('UNIT_AURA', 'player')
+                else
+                    self:UnregisterAllEvents()
+                end
+            end
+            frame.tipsButton:SetScript('OnEvent', function(self, _, _, tab)
+                if tab and tab.addedAuras then
+                    for _, info in pairs(tab.addedAuras) do
+                        if info.spellId==210837 then
+                            self:play_sound()
+                            break
+                        end
+                    end
+                end
+            end)
+            frame.tipsButton:SetScript('OnShow', frame.tipsButton.set_event)
+            frame.tipsButton:SetScript('OnHide', frame.tipsButton.set_event)
+
+            frame.tipsButton:set_event()
+            frame.tipsButton:set_atlas()
+
+
+            if ArcheologyButton then
+                ArcheologyButton.keyButton= e.Cbtn(frame, {size={20,20}, icon='hide'})
+                ArcheologyButton.keyButton:SetPoint('LEFT', frame, 'RIGHT', 0, -4)
+                ArcheologyButton.keyButton.text=e.Cstr(ArcheologyButton.keyButton, {color={r=0, g=1, b=0}, size=14})
+                ArcheologyButton.keyButton.text:SetPoint('CENTER')
+                
+                
+
+                ArcheologyButton.keyButton:SetScript('OnLeave', GameTooltip_Hide)
+                ArcheologyButton.keyButton:SetScript('OnEnter', ArcheologyButton.set_tooltip)
+
+                ArcheologyButton.keyButton:SetScript('OnMouseWheel', function(_, d)
+                    if not UnitAffectingCombat('player') then
+                        ArcheologyButton:set_OnMouseWheel(d)
+                    end
+                end)
+
+                ArcheologyButton.keyButton.index=3
+                ArcheologyButton.keyButton.spellID= ArcheologyButton.spellID
+                ArcheologyButton.keyButton.index= ArcheologyButton.index
+
+                function ArcheologyButton.keyButton:set_text()
+                    local text= ArcheologyButton.text:GetText() or ''
+                    self.text:SetText(text)
+                    if text=='' then
+                        self:SetNormalAtlas('newplayertutorial-icon-key')
+                    else
+                        self:SetNormalTexture(134435)
+                    end
+                    self:SetAlpha(text=='' and 0.3 or 1)
+                end
+
+                ArcheologyButton.keyButton:set_text()
+            end
         end
     end)
 end

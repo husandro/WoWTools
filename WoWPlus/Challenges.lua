@@ -48,7 +48,6 @@ local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrent
 }
 
 
-
 local SpellTabs={
     --spell= 传送门法术ID 
     --ins= 副本ID journalInstanceID

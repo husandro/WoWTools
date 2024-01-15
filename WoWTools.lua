@@ -728,7 +728,7 @@ function e.CheckRange(unit, range, operator)
 end
 
 --设置，提示
-function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=, y=-10})
+function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=, y=-10, hideTime=3})
     if tab.show and not tab.frame.HelpTips then
         tab.frame.HelpTips= e.Cbtn(tab.frame, {layer='OVERLAY',size=tab.size and {tab.size[1], tab.size[2]} or {40,40}})-- button:CreateTexture(nil, 'OVERLAY')
         if tab.point=='right' then
@@ -741,21 +741,33 @@ function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', si
         if tab.color then
             SetItemButtonNormalTextureVertexColor(tab.frame.HelpTips, tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1);
         end
+        function tab.frame.HelpTips:set_hide()
+            self.time=nil
+            self.elapsed=nil
+            self:SetShown(false)
+        end
         tab.frame.HelpTips:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= (self.elapsed or 0.5) + elapsed
             if self.elapsed>0.5 then
                 self.elapsed=0
                 self:SetScale(self:GetScale()==1 and 0.5 or 1)
             end
+            if self.hideTime then
+                self.time= (self.time or 0)+  elapsed
+                if self.time>= self.hideTime then
+                    self:set_hide()
+                end
+            end
         end)
-        tab.frame.HelpTips:SetScript('OnEnter', function(self) self:SetShown(false) end)
+        tab.frame.HelpTips:SetScript('OnEnter', tab.frame.HelpTips.set_hide)
         if tab.onlyOne then
             tab.frame.HelpTips.onlyOne=true
         end
+        tab.frame.HelpTips.hideTime= tab.hideTime
     end
     if tab.frame.HelpTips and not tab.frame.HelpTips.onlyOne then
         tab.frame.HelpTips:SetShown(tab.show)
-    end
+    end    
 end
 
 function e.Get_CVar_Tooltips(info)--取得CVar信息 e.Get_CVar_Tooltips({name= ,msg=, value=})
