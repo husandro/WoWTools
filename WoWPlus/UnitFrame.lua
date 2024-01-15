@@ -466,7 +466,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrame.warModeButton:SetPoint('LEFT', PlayerFrame, 5, 12)
     PlayerFrame.warModeButton:SetScript('OnClick',  function(self)
         C_PvP.ToggleWarMode()
-        C_Timer.After(1, function() self:set_tooltips() end)
+        C_Timer.After(1, function() if e.tips:IsShown() then self:set_tooltips() end end)
     end)
     PlayerFrame.warModeButton:SetScript('OnLeave', GameTooltip_Hide)
     function PlayerFrame.warModeButton:set_tooltips()
