@@ -38,21 +38,6 @@ end
 --玩家
 --####
 local function Init_PlayerFrame()--PlayerFrame.lua
-    --[[生命条，颜色，材质
-    PlayerFrame.healthbar:SetStatusBarTexture(Save.healthbar)
-    hooksecurefunc('PlayerFrame_UpdateArt', function(self)
-        local r,g,b= e.GetUnitColor(self.unit)
-        self.healthbar:SetStatusBarColor(r,g,b)--生命条，颜色
-    end)
-    PetFrame.healthbar:SetStatusBarTexture(Save.healthbar)
-    hooksecurefunc(PetFrame, 'UpdateShownState', function(self)
-        if UnitExists(self.unit) then
-            local r,g,b= e.GetUnitColor(self.unit)
-            PetFrame.healthbar:SetStatusBarColor(r,g,b)
-        end
-    end)]]
-
-
     local playerFrameTargetContextual = PlayerFrame_GetPlayerFrameContentContextual()
     local frameLevel= PlayerFrame:GetFrameLevel() +1
 
@@ -637,17 +622,13 @@ local function set_memberFrame(memberFrame)
     end
     local unit= memberFrame.unit or memberFrame:GetUnit()
     local isPlayer= unit=='player'
-    local exists= UnitExists(unit)--memberFrame:IsShown()
+    local exists= UnitExists(unit)
 
 
     local r, g, b= e.GetUnitColor(unit)
 
     --外框
     memberFrame.Texture:SetVertexColor(r, g, b)
-
-    --生命条，颜色，材质
-    --memberFrame.healthbar:SetStatusBarTexture(Save.healthbar)
-    --memberFrame.healthbar:SetStatusBarColor(r,g,b)
 
     --目标的目标
     local btn= memberFrame.potFrame
@@ -682,17 +663,9 @@ local function set_memberFrame(memberFrame)
         btn.frame.isPlayerTargetTexture:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
         btn.frame.isPlayerTargetTexture:SetVertexColor(1,0,0)
 
-
-
         btn.frame.Portrait= btn.frame:CreateTexture(nil, 'BACKGROUND')--队友，目标，图像
         btn.frame.Portrait:SetAllPoints(btn.frame)
 
-        --[[btn.frame.healthBar= CreateFrame('StatusBar', nil, btn)
-        btn.frame.healthBar:SetSize(55, 8)
-        btn.frame.healthBar:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
-        btn.frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-        btn.frame.healthBar:SetMinMaxValues(0,100)
-        btn.frame.healthBar:SetFrameLevel(btn.frame:GetFrameLevel()+1)]]
 
         btn.frame.healthLable= e.Cstr(btn.frame, {size=14})
         btn.frame.healthLable:SetPoint('BOTTOMRIGHT')
@@ -701,14 +674,6 @@ local function set_memberFrame(memberFrame)
         btn.frame.class= btn.frame:CreateTexture(nil, "ARTWORK")
         btn.frame.class:SetSize(14,14)
         btn.frame.class:SetPoint('TOPRIGHT')
-
-
-
-        --[[local texture= frame.healthBar:CreateTexture(nil, 'BACKGROUND')--队友，目标，生命条，外框
-        texture:SetAtlas('MainPet-HealthBarFrame')
-        texture:SetAllPoints(frame.healthBar)
-        texture:SetVertexColor(1, 0, 0)]]
-
 
         function btn.frame:set_settings()
             local exists2= UnitExists(self.unit)
@@ -1252,20 +1217,6 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
                 end
             end)
         end
-        --[[
-
-        if not UnitIsUnit(unit, 'player') then
-            if not frame.itemLevel then
-                frame.itemLevel= e.Cstr(frame.classFrame, {size=12})--装等
-                if unit=='target' or unit=='focus' then
-                    frame.itemLevel:SetPoint('RIGHT', frame.classFrame, 'LEFT')
-                else
-                    frame.itemLevel:SetPoint('TOPRIGHT', frame.classFrame, 'TOPLEFT')
-                end
-            end
-            frame.itemLevel:SetTextColor(r,g,b)
-            frame.itemLevel:SetText(guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel or '')
-        end]]
     end
     if frame.classFrame then
         frame.classFrame:set_settings(guid)
@@ -1307,9 +1258,6 @@ end
 
 
 
-    --hooksecurefunc('SetTextStatusBarTextZeroText', function(self)
-
-
 
 
 
@@ -1340,7 +1288,6 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame.title:Hide()
     --新建, 移动, 按钮
     CompactPartyFrame.moveFrame= e.Cbtn(CompactPartyFrame, {icon=true, size={20,20}})
-    --CompactPartyFrame.moveFrame:SetFrameStrata('MEDIUM')
     CompactPartyFrame.moveFrame:SetAlpha(0.3)
     CompactPartyFrame.moveFrame:SetPoint('TOP', CompactPartyFrame, 'TOP',0, 10)
     CompactPartyFrame.moveFrame:SetClampedToScreen(true)
@@ -1529,19 +1476,6 @@ local function Init_BossFrame()
         frame.TotButton.frame.Border:SetSize(44,44)
         frame.TotButton.frame.Border:SetPoint('CENTER',2,-2)
         frame.TotButton.frame.Border:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
-
-        --目标的目标， 是我的目标
-        --[[frame.TotButton.frame.IsTargetTexture=frame.TotButton.frame:CreateTexture(nil, 'OVERLAY')
-        frame.TotButton.frame.IsTargetTexture:SetSize(32,32)
-        frame.TotButton.frame.IsTargetTexture:SetPoint('CENTER')
-        frame.TotButton.frame.IsTargetTexture:SetAtlas('DK-Blood-Rune-CDFill')
-
-        目标的目标，生命条
-        frame.TotButton.frame.healthBar= CreateFrame('StatusBar', nil, frame.TotButton.frame)
-        frame.TotButton.frame.healthBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-        frame.TotButton.frame.healthBar:SetSize(44, 8)
-        frame.TotButton.frame.healthBar:SetMinMaxValues(0,100)
-        frame.TotButton.frame.healthBar:SetPoint('TOP', frame.TotButton.frame, 'BOTTOM',4,2)]]
 
         --目标的目标，百份比
         frame.TotButton.frame.healthLable= e.Cstr(frame.TotButton.frame,{color={r=1,g=1,b=1}, size=14})
@@ -1755,19 +1689,6 @@ local function Init_RaidFrame()--设置,团队
         end
     end)
 
-    --[[hooksecurefunc('CompactUnitFrame_UpdateHealthColor', function(frame)--颜色
-        if frame.unit:find('pet') and frame.healthBar then
-            local class= UnitClassBase(frame.unit)
-            if class then
-                local r, g, b= GetClassColor(class)
-                if r and g and b then
-                    frame.healthBar:SetStatusBarColor(r,g,b)
-                    frame.healthBar.r, frame.healthBar.g, frame.healthBar.b = r, g, b
-                end
-            end
-        end
-    end)]]
-
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)--去掉,生命条, %
         if not UnitExists(frame.unit) or frame.unit:find('nameplate') or not frame.statusText or not frame.statusText:IsShown() or frame.optionTable.healthText ~= "perc" then
             return
@@ -1889,16 +1810,6 @@ local function Init_RaidFrame()--设置,团队
     if Save.managerScale and Save.managerScale~=1 then
         CompactRaidFrameManager:SetScale(Save.managerScale)
     end
-
-    --[[hooksecurefunc('CompactUnitFrame_UpdateDistance', function(frame)--取得装等, 高CPU
-        if not frame.unitItemLevel and UnitExists(frame.unit) and CheckInteractDistance(frame.unit, 1) and CanInspect(frame.unit) then --frame.inDistance and frame.inDistance< DISTANCE_THRESHOLD_SQUARED then
-            NotifyInspect(frame.unit)--取得装等
-            local guid= UnitGUID(frame.unit)
-            if guid and e.UnitItemLevel[guid] then
-                frame.unitItemLevel= e.UnitItemLevel[guid].itemLevel
-            end
-        end
-    end)]]
 
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)
         if frame.unit:find('nameplate') then
@@ -2024,24 +1935,7 @@ local function Init()
             text= text=='0.0' and '' or text
             self.CastTimeText:SetText(text)
         end)
-        --[[function PlayerCastingBarFrame:UpdateCastTimeText()--bug
-            local seconds = 0;
-            if self.casting or self.channeling then
-                local min, max = self:GetMinMaxValues();
-                if self.casting then
-                    seconds = math.max(min, max - self:GetValue());
-                else
-                    seconds = math.max(min, self:GetValue());
-                end
-            elseif self.isInEditMode then
-                seconds = 10;
-            end
-            if seconds==0 then
-                self.CastTimeText:SetText('0')
-            else
-                self.CastTimeText:SetFormattedText('%.1f', seconds)
-            end
-        end]]
+        
     else
         PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color=true, justifyH='RIGHT'})
         PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)

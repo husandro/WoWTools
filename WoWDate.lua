@@ -378,9 +378,9 @@ end
 local function Update_Instance()--encounterID, encounterName)
     local tab={}--已杀世界BOSS
     for i=1, GetNumSavedWorldBosses() do--{week=周数, boss={name=true}}}
-        local bossName,_,reset=GetSavedWorldBossInfo(i)
+        local bossName, worldBossID, reset=GetSavedWorldBossInfo(i)
         if bossName and (not reset or reset>0) then
-            tab[bossName] = true
+            tab[bossName] = worldBossID
             if e.WoWDate[e.Player.guid].Rare.boss[bossName] then--清除稀有怪
                 e.WoWDate[e.Player.guid].Rare.boss[bossName]=nil
             end

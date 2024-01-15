@@ -8,7 +8,10 @@ local panel=CreateFrame("Frame")
 local Button
 local AllTipsFrame--冒险指南,右边,显示所数据
 
-local function getBossNameSort(name)--取得怪物名称, 短名称
+local function getBossNameSort(name, worldBossID)--取得怪物名称, 短名称
+   -- if type(worldBossID)=='number' and e.onlyChinese then
+        
+    
     name=name:gsub('(,.+)','')
     name=name:gsub('(，.+)','')
     name=name:gsub('·.+','')
@@ -30,10 +33,10 @@ local function set_EncounterJournal_World_Tips(self2)
     for guid, info in pairs(e.WoWDate or {}) do
         local find
         local text, num= nil, 0
-        for bossName, _ in pairs(info.Worldboss.boss) do--世界BOSS
+        for bossName, worldBossID in pairs(info.Worldboss.boss) do--世界BOSS
             num=num+1
             text= text and text..' ' or '   '
-            text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'..getBossNameSort(bossName)
+            text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'..getBossNameSort(bossName, worldBossID)
         end
         if text then
             e.tips:AddLine(text, nil,nil,nil, true)
@@ -75,12 +78,12 @@ local function encounterJournal_ListInstances_set_Instance(self,showTips)
             for guid, info in pairs(e.WoWDate or {}) do--世界BOSS
                 if guid==e.Player.guid then
                     local num=0
-                    for bossName, _ in pairs(info.Worldboss.boss) do
+                    for bossName, worldBossID in pairs(info.Worldboss.boss) do
                         text= text and text..' ' or ''
                         if num>0 and math.modf(num/3)==0 then
                             text=text..'|n'
                         end
-                        text= text..'|cnGREEN_FONT_COLOR:'..num..')'..getBossNameSort(bossName)
+                        text= text..'|cnGREEN_FONT_COLOR:'..num..')'..getBossNameSort(bossName, worldBossID)
                     end
                     break
                 end
@@ -188,8 +191,8 @@ local function EncounterJournal_Set_All_Info_Text()
     end
     local m, text, num
 
-    local tab=e.WoWDate[e.Player.guid].Instance.ins
-    for insName, info in pairs(tab) do
+
+    for insName, info in pairs(e.WoWDate[e.Player.guid].Instance.ins or {}) do
         text= text and text..'|n' or ''
         text= text..'|T450908:0|t'..insName
         for difficultyName, index in pairs(info) do
@@ -201,23 +204,23 @@ local function EncounterJournal_Set_All_Info_Text()
         m= m..text
     end
 
-    text=nil--世界BOSS
+    text=nil
     num=0
-    tab=e.WoWDate[e.Player.guid].Worldboss.boss
-    for bossName, _ in pairs(tab) do
+
+    for bossName, worldBossID in pairs(e.WoWDate[e.Player.guid].Worldboss.boss or {}) do--世界BOSS
         num=num+1
         text= text and text..', ' or ''
-        text= text.. getBossNameSort(bossName)
+        text= text.. getBossNameSort(bossName, worldBossID)
     end
     if text then
         m= m and m..'|n|n' or ''
         m= m..num..' |cnGREEN_FONT_COLOR:'..text..'|r'
     end
 
-    tab=e.WoWDate[e.Player.guid].Rare.boss--稀有怪
+
     text= nil
     num=0
-    for name, _ in pairs(tab) do
+    for name, _ in pairs(e.WoWDate[e.Player.guid].Rare.boss or {}) do--稀有怪
         text= text and text..', ' or ''
         text= text..getBossNameSort(name)
         num=num+1
@@ -322,7 +325,7 @@ local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
             e.tips:ClearLines();
             e.tips:AddDoubleLine(id, addName)
             e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinese and '世界BOSS和稀有怪'
-                or format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, 
+                or format(COVENANT_RENOWN_TOAST_REWARD_COMBINER,
                         format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WORLD, 'BOSS')
                         ,GARRISON_MISSION_RARE
                     )
@@ -355,10 +358,10 @@ local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
     if not Save.hideWorldBossText then
         for guid, info in pairs(e.WoWDate or {}) do
             local text, numAll, find= nil, 0, nil
-            for bossName, _ in pairs(info.Worldboss.boss) do--世界BOSS
+            for bossName, worldBossID in pairs(info.Worldboss.boss) do--世界BOSS
                 numAll=numAll+1
                 text= text and text ..' ' or '   '
-                text= text..'|cnGREEN_FONT_COLOR:'..numAll..')|r'..getBossNameSort(bossName)
+                text= text..'|cnGREEN_FONT_COLOR:'..numAll..')|r'..getBossNameSort(bossName, worldBossID)
             end
             if text then
                 msg= msg and msg..'|n' or ''
@@ -689,8 +692,8 @@ local function Init_EncounterJournal()--冒险指南界面
                 if button.tipsText then
                     button.tipsText:SetText(textKill or '')
                 end
-        
-                
+
+
                 local instanceName=button.name:GetText()
                 button.mapChallengeModeID=nil
                 local challengeText, challengeText2
@@ -734,7 +737,7 @@ local function Init_EncounterJournal()--冒险指南界面
                             ..'|n'..'|T4352494:0|t'..leavel
                             ..'|n'..'|A:AdventureMapIcon-MissionCombat:0:0|a'..runScore
                             ..(affix and '|n'..affix or '')
-                            
+
                             local color= C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(runScore)
                             if color then
                                 text= color:WrapTextInColorCode(text)
@@ -747,7 +750,7 @@ local function Init_EncounterJournal()--冒险指南界面
                         end
                     end
                 end
-                
+
                 if not button.challengeText then
                     button.challengeText= e.Cstr(button, {size=e.onlyChinese and 12 or 10})
                     button.challengeText:SetPoint('BOTTOMLEFT',4,4)
@@ -775,7 +778,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     end)
                     button:SetScript('OnLeave', GameTooltip_Hide)
                 end
-                
+
                 button.challengeText:SetText(challengeText or '')
                 button.challengeText2:SetText(challengeText2 or '')
 
@@ -842,7 +845,7 @@ local function Init_EncounterJournal()--冒险指南界面
         local tips--itemText提示用
         local classText--物品专精
         local upText--升级：
- 
+
 
         local slotText= btn.slot and btn.slot:GetText()
         local isEquipItem= not Save.hideEncounterJournal and slotText and slotText~=''--是装备物品

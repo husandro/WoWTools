@@ -2815,9 +2815,7 @@ print(ExpansionLandingPage.overlay)]]
 
 
 
-    --考古学 ArchaeologyProgressBar.xml
-    font(ArcheologyDigsiteProgressBar.BarTitle)
-    set(ArcheologyDigsiteProgressBar.BarTitle, '挖掘进度')
+
 
 
 
@@ -4791,8 +4789,6 @@ local function Init_Loaded(arg1)
             GameTooltip:SetText('已完成神器')
         end)
 
-        
-
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
         --dia("CALENDAR_ERROR", {button1 = '确定'})
@@ -4849,7 +4845,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             e.AddPanel_Check({
                 name= e.onlyChinese and '语言翻译' or addName,
-                tooltip= '仅限中文，|cnRED_FONT_COLOR:可能会出错|r|nChinese only',
+                tooltip= 'UI, 仅限中文，|cnRED_FONT_COLOR:可能会出错|r|nChinese only',
                 value= not Save.disabled,
                 func= function()
                     Save.disabled = not Save.disabled and true or nil
