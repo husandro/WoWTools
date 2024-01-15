@@ -839,6 +839,7 @@ local function Init()
             end)
 
             function frame.tipsButton:set_event()
+                print(self:IsVisible() , Save.ArcheologySound)
                 if self:IsVisible() and Save.ArcheologySound then
                     self:RegisterUnitEvent('UNIT_AURA', 'player')
                 else
@@ -861,42 +862,44 @@ local function Init()
             frame.tipsButton:set_event()
             frame.tipsButton:set_atlas()
 
-
-            if ArcheologyButton then
-                ArcheologyButton.keyButton= e.Cbtn(frame, {size={20,20}, icon='hide'})
-                ArcheologyButton.keyButton:SetPoint('LEFT', frame, 'RIGHT', 0, -4)
-                ArcheologyButton.keyButton.text=e.Cstr(ArcheologyButton.keyButton, {color={r=0, g=1, b=0}, size=14})
-                ArcheologyButton.keyButton.text:SetPoint('CENTER')
-                
-                
-
-                ArcheologyButton.keyButton:SetScript('OnLeave', GameTooltip_Hide)
-                ArcheologyButton.keyButton:SetScript('OnEnter', ArcheologyButton.set_tooltip)
-
-                ArcheologyButton.keyButton:SetScript('OnMouseWheel', function(_, d)
-                    if not UnitAffectingCombat('player') then
-                        ArcheologyButton:set_OnMouseWheel(d)
-                    end
-                end)
-
-                ArcheologyButton.keyButton.index=3
-                ArcheologyButton.keyButton.spellID= ArcheologyButton.spellID
-                ArcheologyButton.keyButton.index= ArcheologyButton.index
-
-                function ArcheologyButton.keyButton:set_text()
-                    local text= ArcheologyButton.text:GetText() or ''
-                    self.text:SetText(text)
-                    if text=='' then
-                        self:SetNormalAtlas('newplayertutorial-icon-key')
-                    else
-                        self:SetNormalTexture(134435)
-                    end
-                    self:SetAlpha(text=='' and 0.3 or 1)
-                end
-
-                ArcheologyButton.keyButton:set_text()
-            end
+            ArcheologyDigsiteProgressBar:HookScript('OnHide', function(self)
+                self.tipsButton:set_event()
+            end)
         end
+
+        if ArcheologyButton and not ArcheologyButton.keyButton then
+            ArcheologyButton.keyButton= e.Cbtn(frame, {size={20,20}, icon='hide'})
+            ArcheologyButton.keyButton:SetPoint('LEFT', frame, 'RIGHT', 0, -4)
+            ArcheologyButton.keyButton.text=e.Cstr(ArcheologyButton.keyButton, {color={r=0, g=1, b=0}, size=14})
+            ArcheologyButton.keyButton.text:SetPoint('CENTER')
+
+            ArcheologyButton.keyButton:SetScript('OnLeave', GameTooltip_Hide)
+            ArcheologyButton.keyButton:SetScript('OnEnter', ArcheologyButton.set_tooltip)
+
+            ArcheologyButton.keyButton:SetScript('OnMouseWheel', function(_, d)
+                if not UnitAffectingCombat('player') then
+                    ArcheologyButton:set_OnMouseWheel(d)
+                end
+            end)
+
+            ArcheologyButton.keyButton.index=3
+            ArcheologyButton.keyButton.spellID= ArcheologyButton.spellID
+            ArcheologyButton.keyButton.index= ArcheologyButton.index
+
+            function ArcheologyButton.keyButton:set_text()
+                local text= ArcheologyButton.text:GetText() or ''
+                self.text:SetText(text)
+                if text=='' then
+                    self:SetNormalAtlas('newplayertutorial-icon-key')
+                else
+                    self:SetNormalTexture(134435)
+                end
+                self:SetAlpha(text=='' and 0.3 or 1)
+            end
+
+            ArcheologyButton.keyButton:set_text()
+        end
+
     end)
 end
 
