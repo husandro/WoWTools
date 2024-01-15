@@ -665,28 +665,64 @@ local function Init_Archaeology()
     end)
 
     --增加一个按钮， 提示物品
-    hooksecurefunc('ArchaeologyFrame_CurrentArtifactUpdate', function(self)
-        local itemID= select(3, GetArchaeologyRaceInfo(ArchaeologyFrame.artifactPage.raceID))
-        --local slot= _G['ArchaeologyFrameArtifactPageSolveFrameKeystone1']
+    e.LoadDate({id=87399, type='item'})
+    hooksecurefunc('ArchaeologyFrame_CurrentArtifactUpdate', function()
+        local itemID= select(3, GetArchaeologyRaceInfo(ArchaeologyFrame.artifactPage.raceID))        
         local btn= ArchaeologyFrame.artifactPage.tipsButton
-        if itemID and not btn then
-            btn= e.Cbtn(self, {button='ItemButton', icon='hide'})
-            btn:SetPoint('RIGHT', ArchaeologyFrameArtifactPageSolveFrameStatusBar, 'LEFT', -60, 0)
-            btn:SetScript('OnLeave', function() e.tips:Hide() end)
-            btn:SetScript('OnEnter', function(frame)
-                e.tips:SetOwner(frame, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                if frame.itemID then
-                    e.tips:SetItemID(frame.itemID)
+        if itemID then
+            if not btn then
+                btn= e.Cbtn(ArchaeologyFrame.artifactPage, {button='ItemButton', icon='hide'})
+                btn:SetPoint('RIGHT', ArchaeologyFrameArtifactPageSolveFrameStatusBar, 'LEFT', -37, 0)
+                btn:SetScript('OnLeave', function() e.tips:Hide() end)
+                btn:SetScript('OnEnter', function(frame)
+                    e.tips:SetOwner(frame, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    if frame.itemID then
+                        e.tips:SetItemByID(frame.itemID)
+                    end
+                    e.tips:AddLine(id, addName)
+                    e.tips:Show()
+                end)
+
+                btn.btn2= e.Cbtn(btn, {button='ItemButton', icon='hide'})
+                btn.btn2:SetPoint('BOTTOM', btn, 'TOP', 0, 7)
+                btn.btn2:SetScript('OnLeave', function() e.tips:Hide() end)
+                btn.btn2:SetScript('OnEnter', function(frame)
+                    e.tips:SetOwner(frame, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:SetItemByID(87399)
+                    e.tips:AddLine(id, addName)
+                    e.tips:Show()
+                end)
+
+                function btn:set_Event()
+                    if self:IsShown() then
+                        self:RegisterEvent('BAG_UPDATE_DELAYED')
+                    else
+                        self:UnregisterAllEvents()
+                    end
                 end
-                e.tips:AddLine(id, addName)
-                e.tips:Show()
-            end)
-            btn:SetItem(itemID)
+                btn:SetScript("OnShow", btn.set_Event)
+                btn:SetScript("OnHide", btn.set_Event)
+                function btn:set_Item()
+                    print(self.itemID)
+                    if self.itemID then
+                        self:SetItem(self.itemID)
+                        self:SetItemButtonCount(GetItemCount(self.itemID, true, nil, true))
+                    end
+                    self.btn2:SetItem(87399)
+                    self.btn2:SetItemButtonCount(GetItemCount(87399, true, nil, true))
+                end
+                btn:SetScript('OnEvent', btn.set_Item)
+                
+                ArchaeologyFrame.artifactPage.tipsButton= btn
+            end
+            btn.itemID= itemID
+            btn:set_Item()
+            btn:set_Event()
         end
         if btn then
-            btn.itemID= itemID
-            btn:SetShown(itemID and true or false)
+            btn:SetShown((itemID and ArchaeologyFrame:IsVisible()) and true or false)
         end
     end)
 

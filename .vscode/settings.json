@@ -6914,7 +6914,14 @@
         "ARCHAEOLOGY_POJECTBAR_TOOLTIP",
         "ArchaeologyFrameInset",
         "ArchaeologyFrameBg",
-        "ArchaeologyFrameArtifactPageSolveFrameKeystone1"
+        "ArchaeologyFrameArtifactPageSolveFrameKeystone1",
+        "ArchaeologyFrameSummarytButton",
+        "ARCHAEOLOGY_CURRENT",
+        "ArchaeologyFrameCompletedButton",
+        "ArchaeologyFrameRankBarBackground",
+        "ArchaeologyFrameRaceFilterMiddle",
+        "ArchaeologyFrameRaceFilterLeft",
+        "ArchaeologyFrameRaceFilterRight"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

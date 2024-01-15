@@ -1918,6 +1918,10 @@ local function Init_Event(arg1)
         set_NineSlice(ArchaeologyFrameInset, nil, true)
         hide_Texture(ArchaeologyFrameBg)
         hide_Texture(ArchaeologyFrameInset.Bg)
+        hide_Texture(ArchaeologyFrameRankBarBackground)
+        set_Alpha_Color(ArchaeologyFrameRaceFilterMiddle, nil, nil, min03)
+        set_Alpha_Color(ArchaeologyFrameRaceFilterLeft, nil, nil, min03)
+        set_Alpha_Color(ArchaeologyFrameRaceFilterRight, nil, nil, min03)
     end
 end
 

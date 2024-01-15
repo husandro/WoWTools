@@ -1692,7 +1692,7 @@ local function Init()
     set(RaidFinderQueueFrameScrollFrameChildFrameRewardsLabel, '奖励')
     set(LFDQueueFrameRandomScrollFrameChildFrameRewardsLabel, '奖励')
 
-    RaidFinderQueueFrameScrollFrameChildFrameEncounterList:HookScript('OnEnter', function(self)        
+    RaidFinderQueueFrameScrollFrameChildFrameEncounterList:HookScript('OnEnter', function(self)
         if self.dungeonID then
             local numEncounters, numCompleted = GetLFGDungeonNumEncounters(self.dungeonID)
             if ( numCompleted > 0 ) then
@@ -3882,20 +3882,20 @@ local function Init_Loaded(arg1)
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         set(EncounterJournalTitleText, '冒险指南')
-        
+
         if EncounterJournalMonthlyActivitiesTab then
             set(EncounterJournalMonthlyActivitiesTab, '旅行者日志')
                 EncounterJournalMonthlyActivitiesTab:SetScript('OnEnter', function()
                     if not C_PlayerInfo.IsTravelersLogAvailable() then
-                        local tradingPostLocation = e.Player.faction == "Alliance" and '暴风城' or '奥格瑞玛';
-                        GameTooltip_AddBlankLineToTooltip(GameTooltip);
-                        GameTooltip_AddErrorLine(GameTooltip, format('拜访%s的商栈，查看旅行者日志。', tradingPostLocation));
+                        local tradingPostLocation = e.Player.faction == "Alliance" and '暴风城' or '奥格瑞玛'
+                        GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                        GameTooltip_AddErrorLine(GameTooltip, format('拜访%s的商栈，查看旅行者日志。', tradingPostLocation))
                         if AreMonthlyActivitiesRestricted() then
-                            GameTooltip_AddBlankLineToTooltip(GameTooltip);
-                            GameTooltip_AddErrorLine(GameTooltip, '需要可用的游戏时间。');
+                            GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                            GameTooltip_AddErrorLine(GameTooltip, '需要可用的游戏时间。')
                         end
-                
-                        GameTooltip:Show();
+
+                        GameTooltip:Show()
                     end
                 end)
             end
@@ -3933,7 +3933,7 @@ local function Init_Loaded(arg1)
         local function EncounterJournal_SetupIconFlags(sectionID, infoHeaderButton, index)--Blizzard_EncounterJournal.lua
             local iconFlags = C_EncounterJournal.GetSectionIconFlags(sectionID)
             for index2, icon in ipairs(infoHeaderButton.icons or {}) do
-                local iconFlag = iconFlags and iconFlags[index2];
+                local iconFlag = iconFlags and iconFlags[index2]
                 if iconFlag then
                     local tab={
                         [0] = "坦克预警",
@@ -3952,7 +3952,7 @@ local function Init_Loaded(arg1)
                         [9] = "中毒效果",
                     }
                     if tab[iconFlag] then
-                        icon.tooltipTitle = tab[iconFlag]--_G["ENCOUNTER_JOURNAL_SECTION_FLAG"..iconFlag];
+                        icon.tooltipTitle = tab[iconFlag]--_G["ENCOUNTER_JOURNAL_SECTION_FLAG"..iconFlag]
                         if index then
                             if iconFlag==1 then
                                 set(infoHeaderButton.title, '伤害')
@@ -3968,16 +3968,16 @@ local function Init_Loaded(arg1)
         end
         hooksecurefunc('EncounterJournal_SetUpOverview', function(self, overviewSectionID, index)
             local infoHeader= self.overviews[index]
-            --local sectionInfo = C_EncounterJournal.GetSectionInfo(overviewSectionID);
+            --local sectionInfo = C_EncounterJournal.GetSectionInfo(overviewSectionID)
             if infoHeader and infoHeader.button and overviewSectionID then
-                EncounterJournal_SetupIconFlags(overviewSectionID, infoHeader.button, index);
+                EncounterJournal_SetupIconFlags(overviewSectionID, infoHeader.button, index)
             end
         end)
         hooksecurefunc('EncounterJournal_ToggleHeaders', function()
             for _, infoHeader in pairs(EncounterJournal.encounter.usedHeaders or {}) do
                 if infoHeader.myID and  infoHeader.button then
-                    --local sectionInfo = C_EncounterJournal.GetSectionInfo(infoHeader.myID);
-                    EncounterJournal_SetupIconFlags(infoHeader.myID, infoHeader.button);
+                    --local sectionInfo = C_EncounterJournal.GetSectionInfo(infoHeader.myID)
+                    EncounterJournal_SetupIconFlags(infoHeader.myID, infoHeader.button)
                 end
             end
         end)
@@ -4721,7 +4721,7 @@ local function Init_Loaded(arg1)
         set(ArchaeologyFrameCompletedPage.infoText, '你还没有完成任何神器。寻找碎片及钥石以完成神器。')
         set(ArchaeologyFrameCompletedPage.titleBig, '已完成神器')
         set(ArchaeologyFrameCompletedPage.titleMid, '已完成的普通神器')
-        
+
         set(ArchaeologyFrameCompletedPage.titleTop, '已完成的普通神器')
 
         set(ArchaeologyFrameArtifactPage.historyTitle, '历史')
@@ -4730,9 +4730,9 @@ local function Init_Loaded(arg1)
         set(ArchaeologyFrameArtifactPageSolveFrameSolveButton, '解密')
 
         --[[
-            self.summaryPage.UpdateFrame = ArchaeologyFrame_UpdateSummary;
-            self.completedPage.UpdateFrame = ArchaeologyFrame_UpdateComplete;
-            self.artifactPage.UpdateFrame = ArchaeologyFrame_CurrentArtifactUpdate;
+            self.summaryPage.UpdateFrame = ArchaeologyFrame_UpdateSummary
+            self.completedPage.UpdateFrame = ArchaeologyFrame_UpdateComplete
+            self.artifactPage.UpdateFrame = ArchaeologyFrame_CurrentArtifactUpdate
         ]]
         hooksecurefunc(ArchaeologyFrame.summaryPage, 'UpdateFrame', function(self)
             set(self.pageText, format('第%d页', self.currentPage))
@@ -4742,47 +4742,52 @@ local function Init_Loaded(arg1)
             set(self.titleTop, self.currData.onRare and '已完成的精良神器' or '已完成的普通神器')
         end)
         hooksecurefunc('ArchaeologyFrame_CurrentArtifactUpdate', function(self)
-            local RaceName, _, RaceitemID	= GetArchaeologyRaceInfo(self.raceID, true);
-            
+            local RaceName, _, RaceitemID	= GetArchaeologyRaceInfo(self.raceID, true)
+
             local runeName
             if RaceitemID and RaceitemID > 0 then
-                runeName = GetItemInfo(RaceitemID);
+                runeName = GetItemInfo(RaceitemID)
             end
             if runeName then
                 for i=1, ARCHAEOLOGY_MAX_STONES do
                     local slot= self.solveFrame["keystone"..i]
                     if slot and slot:IsShown() then
                         if ItemAddedToArtifact(i) then
-                            self.solveFrame["keystone"..i].tooltip = format('点此以移除 |cnGREEN_FONT_COLOR:%s|r 。', runeName);
+                            self.solveFrame["keystone"..i].tooltip = format('点此以移除 |cnGREEN_FONT_COLOR:%s|r 。', runeName)
                         else
-                            self.solveFrame["keystone"..i].tooltip = format('点此以从你的背包中选择一块 |cnGREEN_FONT_COLOR:%s|r 来降低完成该神器所需要的碎片数量。', runeName);
+                            self.solveFrame["keystone"..i].tooltip = format('点此以从你的背包中选择一块 |cnGREEN_FONT_COLOR:%s|r 来降低完成该神器所需要的碎片数量。', runeName)
                         end
                     end
                 end
             end
-            
+
             if select(3, GetSelectedArtifactInfo()) == 0 then --Common Item
-                self.raceRarity:SetText(RaceName.." - |cffffffff普通|r");
+                self.raceRarity:SetText(RaceName.." - |cffffffff普通|r")
             else
-                self.raceRarity:SetText(RaceName.." - |cff0070dd精良|r");
+                self.raceRarity:SetText(RaceName.." - |cff0070dd精良|r")
             end
         end)
 
         ArchaeologyFrame.rankBar:HookScript('OnEnter', function()
-            GameTooltip:SetText('考古学技能', HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true);
+            GameTooltip:SetText('考古学技能', HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true)
 			GameTooltip:Show()
         end)
 
         ArchaeologyFrameArtifactPageSolveFrameStatusBar:HookScript('OnEnter', function()
-            local _, _, _, _, _, maxCount = GetArchaeologyRaceInfo(ArchaeologyFrame.artifactPage.raceID);
-            
-            GameTooltip:SetText(format('拼出该神器所需的碎片数量。\n\n每个种族的碎片最多只能保存%d块。', maxCount), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true);
-			GameTooltip:Show();
+            local _, _, _, _, _, maxCount = GetArchaeologyRaceInfo(ArchaeologyFrame.artifactPage.raceID)
+            GameTooltip:SetText(format('拼出该神器所需的碎片数量。\n\n每个种族的碎片最多只能保存%d块。', maxCount), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, true)
+			GameTooltip:Show()
         end)
         set(ArchaeologyFrameHelpPageTitle, '考古学')
         set(ArchaeologyFrameHelpPageHelpScrollHelpText, '你需要搜集散落在世界各处的神器碎片来将它们复原为完整的神器。你能够在挖掘场里找到这些碎片，挖掘场的位置会标记在你的地图上。在挖掘场使用调查技能，你的调查工具就会显示出神器碎片大致的埋藏方向和位置。在前往一个新的挖掘地址前你可以在一个挖掘场中收集六次碎片。当你拥有了足够的碎片之后，你就可以破译隐藏在神器中的秘密，了解更多关于艾泽拉斯昔日的历史和传说。寻宝愉快！')
         set(ArchaeologyFrameHelpPageDigTitle, '考古学地图位置标记')
 
+        ArchaeologyFrameSummarytButton:HookScript('OnEnter', function()
+            GameTooltip:SetText('当前神器')
+        end)
+        ArchaeologyFrameCompletedButton:HookScript('OnEnter', function()
+            GameTooltip:SetText('已完成神器')
+        end)
 
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
