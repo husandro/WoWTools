@@ -227,7 +227,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
 
 
 
-    --Riad 副本, 地下城，指示
+    --Riad 副本, 地下城，指示,  会出错误，冒险指南，打开世界BOSS
     --######################
     PlayerFrame.instanceFrame= CreateFrame("Frame", nil, PlayerFrame)
     PlayerFrame.instanceFrame:SetFrameLevel(frameLevel)
@@ -314,7 +314,11 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     PlayerFrame.instanceFrame.dungeon:SetScript('OnMouseDown', function(self)
         if (UnitIsGroupLeader("player") or not IsInGroup()) and GetDungeonDifficultyID()~=DifficultyUtil.ID.DungeonMythic then
             SetDungeonDifficultyID(DifficultyUtil.ID.DungeonMythic)
-            C_Timer.After(0.5, function() self:set_tooltips() end)
+            C_Timer.After(0.5, function()
+                if e.tips:IsShown() then
+                    self:set_tooltips()
+                end
+            end)
         end
         self:SetAlpha(0.1)
     end)
@@ -1935,7 +1939,7 @@ local function Init()
             text= text=='0.0' and '' or text
             self.CastTimeText:SetText(text)
         end)
-        
+
     else
         PlayerCastingBarFrame.castingText= e.Cstr(PlayerCastingBarFrame, {color=true, justifyH='RIGHT'})
         PlayerCastingBarFrame.castingText:SetDrawLayer('OVERLAY', 2)
