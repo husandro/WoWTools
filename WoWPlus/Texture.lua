@@ -1927,8 +1927,15 @@ local function Init_Event(arg1)
         set_NineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.NineSlice, true)
         set_NineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.NineSlice, true)
         
-
+        set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Middle, nil, nil, min05)
+        set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Right, nil, nil, min05)
+        set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Left, nil, nil, min05)
+        set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Middle, nil, nil, min05)
+        set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Right, nil, nil, min05)
+        set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Left, nil, nil, min05)
         
+        set_NineSlice(ProfessionsFrame.CraftingPage.CraftingOutputLog, true)        
+        set_ScrollBar(ProfessionsFrame.CraftingPage.CraftingOutputLog)
 
     elseif arg1=='Blizzard_ClickBindingUI' then--点击，施法
         set_NineSlice(ClickBindingFrame, true)

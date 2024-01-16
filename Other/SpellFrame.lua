@@ -197,7 +197,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_ClassTalentUI' then--天赋
-            hooksecurefunc(ClassTalentButtonSpendMixin,'UpdateSpendText', set_UpdateSpendText)--天赋, 点数
+            hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数
         end
 
     elseif event == "PLAYER_LOGOUT" then

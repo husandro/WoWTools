@@ -4043,7 +4043,7 @@ local function Init_Loaded(arg1)
 
 
 
-        
+
 
 
 
@@ -4081,6 +4081,11 @@ local function Init_Loaded(arg1)
             font(recipesTab.Text)
             set(recipesTab.Text, '制造订单')
         end)
+
+        set(ProfessionsFrame.CraftingPage.RecipeList.SearchBox.Instructions, '搜索')
+        set(ProfessionsFrame.CraftingPage.RecipeList.FilterButton, "过滤器")
+        set(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList.SearchBox.Instructions, '搜索')
+        set(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList.FilterButton, '过滤器')
 
         --Blizzard_ProfessionsCrafting.lua
         set(ProfessionsFrame.CraftingPage.ViewGuildCraftersButton, '查看工匠')
@@ -4231,15 +4236,71 @@ local function Init_Loaded(arg1)
             end
         end)
 
-
-        set(ProfessionsFrame.SpecPage.BackToFullTreeButton, '后退')
-        set(ProfessionsFrame.SpecPage.ViewPreviewButton, '综述')
-        set(ProfessionsFrame.SpecPage.DetailedView.SpendPointsButton, '运用知识')
         set(ProfessionsFrame.SpecPage.ApplyButton, '应用改动')
+        set(ProfessionsFrame.SpecPage.UnlockTabButton, '解锁专精')
+        set(ProfessionsFrame.SpecPage.ViewTreeButton, '解锁专精')
+        set(ProfessionsFrame.SpecPage.BackToPreviewButton, '后退')
+        set(ProfessionsFrame.SpecPage.ViewPreviewButton, '综述')
+        set(ProfessionsFrame.SpecPage.BackToFullTreeButton, '后退')
+        ProfessionsFrame.SpecPage.UndoButton.tooltipText= '取消待定改动'
+        set(ProfessionsFrame.SpecPage.DetailedView.SpendPointsButton, '运用知识')
+        set(ProfessionsFrame.SpecPage.DetailedView.UnlockPathButton, '学习副专精')
+        set(ProfessionsFrame.SpecPage.TreePreview.HighlightsHeader, '专精特色：')
+
+        ProfessionsFrame.SpecPage.DetailedView.SpendPointsButton:HookScript("OnEnter", function()
+            local self= ProfessionsFrame.SpecPage
+            local spendCurrency = C_ProfSpecs.GetSpendCurrencyForPath(self:GetDetailedPanelNodeID());
+            if spendCurrency ~= nil then
+                local currencyTypesID = self:GetSpendCurrencyTypesID();
+                if currencyTypesID then
+                    local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(currencyTypesID);
+                    if self.treeCurrencyInfoMap[spendCurrency] ~= nil and self.treeCurrencyInfoMap[spendCurrency].quantity == 0 then
+                        GameTooltip:SetText(format('|cnRED_FONT_COLOR:你没有可以消耗的|r|n|cffffffff%s|r|r', currencyInfo.name), nil, nil, nil, nil, true);
+                        GameTooltip:Show();
+                    end
+                end
+            end
+        end);
+        hooksecurefunc(ProfessionsFrame.SpecPage, 'ConfigureButtons', function(self)
+            print('ConfigureButtons')
+            self.DetailedView.SpendPointsButton:SetScript("OnEnter", function()
+                print('enter')
+                local spendCurrency = C_ProfSpecs.GetSpendCurrencyForPath(self:GetDetailedPanelNodeID());
+                if spendCurrency ~= nil then
+                    local currencyTypesID = self:GetSpendCurrencyTypesID();
+                    if currencyTypesID then
+                        local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(currencyTypesID);
+                        if self.treeCurrencyInfoMap[spendCurrency] ~= nil and self.treeCurrencyInfoMap[spendCurrency].quantity == 0 then
+                            GameTooltip:SetOwner(self.DetailedView.SpendPointsButton, "ANCHOR_RIGHT", 0, 0);
+                            GameTooltip_AddErrorLine(GameTooltip, format('你没有可以消耗的%s。', currencyInfo.name));
+                            
+                            GameTooltip:Show();
+                        end
+                    end
+                end
+            end);
+        end)
 
 
         set(ProfessionsFrame.OrdersPage.BrowseFrame.SearchButton, '搜索')
         set(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.BackButton, '返回')
+
+        font(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Text)
+        font(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Text)
+        set(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Text, '公开')
+        set(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Text, '个人')
+
+        ProfessionsFrame.OrdersPage.BrowseFrame.OrdersRemainingDisplay:HookScript('OnEnter', function()
+            local claimInfo = C_CraftingOrders.GetOrderClaimInfo(ProfessionsFrame.OrdersPage.professionInfo.profession);
+            local tooltipText;
+            if claimInfo.secondsToRecharge then
+                tooltipText = format('你目前还能完成|cnGREEN_FONT_COLOR:%d|r份公开订单。|cnGREEN_FONT_COLOR:%s|r后才有更多可用的订单。', claimInfo.claimsRemaining, SecondsToTime(claimInfo.secondsToRecharge));
+            else
+                tooltipText = format('你目前还能完成|cnGREEN_FONT_COLOR:%d|r份公开订单。', claimInfo.claimsRemaining);
+            end
+            GameTooltip_AddNormalLine(GameTooltip, tooltipText);
+            GameTooltip:Show();
+        end)
 
         local orderTypeTabTitles ={
             [Enum.CraftingOrderType.Public] = '公开',
@@ -4249,9 +4310,9 @@ local function Init_Loaded(arg1)
             local title = orderTypeTabTitles[type]
             if tabButton and title then
                 if type == Enum.CraftingOrderType.Public then
-                    tabButton.Text:SetText(title)
+                    set(tabButton.Text, title)
                 else
-                    tabButton.Text:SetText(string.format("%s (%s)", title, count))
+                    set(tabButton.Text, format("%s (%s)", title, count))
                 end
             end
         end
@@ -4458,6 +4519,42 @@ local function Init_Loaded(arg1)
         end)
 
 
+
+        ProfessionsFrame.CraftingPage.CraftingOutputLog:SetTitle('制作成果')
+
+        set(ProfessionsFrame.CraftingPage.SchematicForm.Details.FinishingReagentSlotContainer.Label, '成品材料：')
+        set(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.SchematicForm.Details.FinishingReagentSlotContainer.Label, '成品材料：')
+        ProfessionsFrame.CraftingPage.SchematicForm.Details:HookScript('OnShow', function(self)
+            set(self.Label, '制作详情')
+            set(self.StatLines.DifficultyStatLine.LeftLabel, '配方难度：')
+            set(self.StatLines.SkillStatLine.LeftLabel, '技能：')
+        end)
+
+        ProfessionsFrame.OrdersPage.OrderView.OrderDetails.SchematicForm.Details:HookScript('OnShow', function(self)
+            set(self.Label, '制作详情')
+            set(self.StatLines.DifficultyStatLine.LeftLabel, '配方难度：')
+            set(self.StatLines.SkillStatLine.LeftLabel, '技能：')
+        end)
+
+
+
+
+        --set(ProfessionsFrame.CraftingPage.SchematicForm.Details.StatLines.DifficultyStatLine.LeftLabel, '配方难度：')
+        --set(ProfessionsFrame.CraftingPage.SchematicForm.Details.StatLines.SkillStatLine.LeftLabel, '技能：')
+
+        hooksecurefunc(ProfessionsCrafterDetailsStatLineMixin, 'SetLabel', function(self, label)--Blizzard_ProfessionsRecipeCrafterDetails.lua
+            if label== PROFESSIONS_CRAFTING_STAT_TT_CRIT_HEADER then
+                set(self.LeftLabel, '灵感')
+            elseif label== PROFESSIONS_CRAFTING_STAT_TT_RESOURCE_RETURN_HEADER then
+                set(self.LeftLabel, '充裕')
+            elseif label== ITEM_MOD_CRAFTING_SPEED_SHORT then
+                set(self.LeftLabel, '制作速度')
+            elseif label== PROFESSIONS_OUTPUT_MULTICRAFT_TITLE then
+                set(self.LeftLabel, '产能')
+            end
+
+        end)
+
         --Blizzard_ProfessionsSpecializations.lua
         dia("PROFESSIONS_SPECIALIZATION_CONFIRM_PURCHASE_TAB", {button1 = '是', button2 = '取消'})
         hookDia("PROFESSIONS_SPECIALIZATION_CONFIRM_PURCHASE_TAB", 'OnShow', function(self, info)
@@ -4470,6 +4567,9 @@ local function Init_Loaded(arg1)
 
         --Blizzard_ProfessionsFrame.lua
         dia("PROFESSIONS_SPECIALIZATION_CONFIRM_CLOSE", {text = '你想在离开前应用改动吗？', button1 = '是', button2 = '否',})
+
+
+
 
 
 
