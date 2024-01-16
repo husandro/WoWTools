@@ -886,7 +886,9 @@ local function Init_Fast_Menu(_, level, menuList)
                 local icon= C_Item.GetItemIconByID(link)
                 tooltip= (tooltip and tooltip..'|n' or '|n')..(icon and '|T'..icon..':0|t' or '')..link..'|cnGREEN_FONT_COLOR:#'..num..'|r'
             end
-            local text =(tab.subClass<10 and ' ' or '')..tab.subClass..') '.. GetItemSubClassInfo(menuList.class, tab.subClass)
+            local className= GetItemSubClassInfo(menuList.class, tab.subClass) or ''
+            className= e.strText[className] or className
+            local text =(tab.subClass<10 and ' ' or '')..tab.subClass..') '.. className
             info={
                 text= text..' |cnGREEN_FONT_COLOR:#'..tab.num,
                 keepShownOnClick= true,
@@ -904,8 +906,10 @@ local function Init_Fast_Menu(_, level, menuList)
         end
 
         e.LibDD:UIDropDownMenu_AddSeparator(level)
+        local className= GetItemClassInfo(menuList.class)
+        className= e.strText[className] or className
         info= {
-            text= menuList.class..') '..GetItemClassInfo(menuList.class)..' #'..menuList.num,
+            text= menuList.class..') '..className..' #'..menuList.num,
             notCheckable= true,
             isTitle= true,
         }
@@ -969,8 +973,10 @@ local function Init_Fast_Menu(_, level, menuList)
 
     local find
     for _, tab2 in pairs(newTab) do
+        local className=  GetItemClassInfo(tab2.class) or ''
+        className= e.strText[className] or className
         info={
-            text= (tab2.class<10 and ' ' or '')..tab2.class..') '.. GetItemClassInfo(tab2.class)..((tab2.class==2 or tab2==4) and '|T132288:0|t' or ' ')..'|cnGREEN_FONT_COLOR:#'..tab2.num,
+            text= (tab2.class<10 and ' ' or '')..tab2.class..') '..className..((tab2.class==2 or tab2==4) and '|T132288:0|t' or ' ')..'|cnGREEN_FONT_COLOR:#'..tab2.num,
             keepShownOnClick= true,
             notCheckable=true,
             menuList= {class=tab2.class, subClass=tab2.subClass, num=tab2.num},

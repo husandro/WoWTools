@@ -2267,7 +2267,14 @@ local function Init()
     --商人
     set(MerchantFrameTab1, '商人')
     set(MerchantFrameTab2, '购回')
-
+    set(MerchantPageText, '')
+    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function ()
+        MerchantFrame:SetTitle('从商人处购回')
+    end)
+    hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
+        MerchantPageText:SetFormattedText('页数 %s/%s', MerchantFrame.page, math.ceil(GetMerchantNumItems() / MERCHANT_ITEMS_PER_PAGE));
+    end)
+    
     --就绪
     --ReadyCheck.lua
     set(ReadyCheckListenerFrame.TitleContainer.TitleText, '就位确认')

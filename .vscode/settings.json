@@ -6925,7 +6925,8 @@
         "ArcheologyDigsiteProgressBar",
         "InboxTooMuchMailText",
         "MailFrameTrialError",
-        "OpenMailReportSpamButton"
+        "OpenMailReportSpamButton",
+        "MERCHANT_BUYBACK"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
