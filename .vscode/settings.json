@@ -7024,7 +7024,8 @@
         "ProfessionsCraftingOrderPageMixin",
         "CRAFTING_ORDERS_CLAIMS_REMAINING_REFRESH_TOOLTIP",
         "CRAFTING_ORDERS_CLAIMS_REMAINING_TOOLTIP",
-        "PROFESSIONS_SPECS_OUT_OF_KNOWLEDGE"
+        "PROFESSIONS_SPECS_OUT_OF_KNOWLEDGE",
+        "PROFESSIONS_SPECIALIZATION_CURRENCY_TOTAL"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

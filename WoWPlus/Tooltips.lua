@@ -2586,6 +2586,20 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     e.tips:Show()
                 end
             end)
+
+        elseif arg1=='Blizzard_Professions' then--专业
+            hooksecurefunc(Professions, 'SetupProfessionsCurrencyTooltip', function(currencyInfo, currencyCount)--lizzard_Professions.lua
+                if currencyInfo then
+                    local nodeID = ProfessionsFrame.SpecPage:GetDetailedPanelNodeID();
+                    local currencyTypesID = Professions.GetCurrencyTypesID(nodeID);
+                    if currencyTypesID then
+                        GameTooltip_AddBlankLineToTooltip(GameTooltip);
+                        GameTooltip_AddNormalLine(GameTooltip, 'currencyTypesID |cffffffff'..currencyTypesID)
+                        GameTooltip_AddNormalLine(GameTooltip, 'nodeID |cffffffff'..nodeID)
+                        GameTooltip_AddNormalLine(GameTooltip, id..' '..addName)
+                    end
+                end
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then
