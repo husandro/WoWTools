@@ -2594,8 +2594,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     local currencyTypesID = Professions.GetCurrencyTypesID(nodeID);
                     if currencyTypesID then
                         GameTooltip_AddBlankLineToTooltip(GameTooltip);
-                        GameTooltip_AddNormalLine(GameTooltip, 'currencyTypesID |cffffffff'..currencyTypesID)
-                        GameTooltip_AddNormalLine(GameTooltip, 'nodeID |cffffffff'..nodeID)
+                        GameTooltip_AddNormalLine(GameTooltip, (e.onlyChinese and '货币' or CURRENCY)..' |cffffffff'..currencyTypesID..'|r')
+                        GameTooltip_AddNormalLine(GameTooltip, 'nodeID |cffffffff'..nodeID..'|r')
                         GameTooltip_AddNormalLine(GameTooltip, id..' '..addName)
                     end
                 end
