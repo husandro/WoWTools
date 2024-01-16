@@ -1889,8 +1889,8 @@ local function Init_Event(arg1)
     elseif arg1=='Blizzard_Professions' then--专业, 初始化, 透明
         set_NineSlice(ProfessionsFrame, true)
         set_Alpha_Color(ProfessionsFrameBg)
-        set_Alpha_Color(ProfessionsFrame.CraftingPage.SchematicForm.Background)
-        set_Alpha_Color(ProfessionsFrame.CraftingPage.RankBar.Background)
+        set_Alpha_Color(ProfessionsFrame.CraftingPage.SchematicForm.Background, nil, nil, min05)
+        set_Alpha_Color(ProfessionsFrame.CraftingPage.RankBar.Background, nil, nil, min05)
 
         set_Alpha_Color(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
         set_Alpha_Color(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
@@ -1917,7 +1917,18 @@ local function Init_Event(arg1)
                 end
             end)
             set_Alpha_Color(ProfessionsFrame.SpecPage.PanelFooter)
+
+            set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList.Background, nil, nil, min05)
+            set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList.Background, nil,nil, min05)
         end
+
+        set_Alpha_Color(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.Background, nil, nil, min05)
+        set_Alpha_Color(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.Background, nil, nil, min05)
+        set_NineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.NineSlice, true)
+        set_NineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.NineSlice, true)
+        
+
+        
 
     elseif arg1=='Blizzard_ClickBindingUI' then--点击，施法
         set_NineSlice(ClickBindingFrame, true)

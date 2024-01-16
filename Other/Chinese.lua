@@ -2272,7 +2272,7 @@ local function Init()
         MerchantFrame:SetTitle('从商人处购回')
     end)
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
-        MerchantPageText:SetFormattedText('页数 %s/%s', MerchantFrame.page, math.ceil(GetMerchantNumItems() / MERCHANT_ITEMS_PER_PAGE));
+        MerchantPageText:SetFormattedText('页数 %s/%s', MerchantFrame.page, math.ceil(GetMerchantNumItems() / MERCHANT_ITEMS_PER_PAGE))
     end)
 
     --就绪
@@ -3602,6 +3602,23 @@ local function Init_Loaded(arg1)
         set(AuctionHouseFrame.BuyDialog.BuyNowButton, '立即购买')
         set(AuctionHouseFrame.BuyDialog.CancelButton, '取消')
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     elseif arg1=='Blizzard_ClassTalentUI' then
          for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
             local btn= ClassTalentFrame:GetTabButton(tabID)
@@ -3757,6 +3774,23 @@ local function Init_Loaded(arg1)
         set(ClassTalentLoadoutCreateDialog.AcceptButton, '保存')
         set(ClassTalentLoadoutCreateDialog.CancelButton, '取消')
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then
         hooksecurefunc(ProfessionsCustomerOrdersCategoryButtonMixin, 'Init', function(self, categoryInfo, _, isRecraftCategory)
             if isRecraftCategory then
@@ -3771,22 +3805,22 @@ local function Init_Loaded(arg1)
 
         ProfessionsCustomerOrdersFrame.BrowseOrders:HookScript('OnEvent', function (self, event)
             if event == "CRAFTINGORDERS_CUSTOMER_OPTIONS_PARSED" and not C_CraftingOrders.HasFavoriteCustomerOptions() then
-                set(self.RecipeList.ResultsText, '小窍门：右键点击配方可以设置偏好。偏好的配方会在你打开商盟时立即出现。');
+                set(self.RecipeList.ResultsText, '小窍门：右键点击配方可以设置偏好。偏好的配方会在你打开商盟时立即出现。')
             end
         end)
         hooksecurefunc(ProfessionsCustomerOrdersFrame.BrowseOrders, 'StartSearch', function (self)
             if self.RecipeList.ResultsText:IsShown() then
-                self.RecipeList.ResultsText:SetText('未找到配方');
+                self.RecipeList.ResultsText:SetText('未找到配方')
             end
         end)
         set(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchButton, '搜索')
         ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.FavoritesSearchButton:HookScript("OnEnter", function(frame)
-            GameTooltip:SetText('|cffffffff收藏');
+            GameTooltip:SetText('|cffffffff收藏')
             if not C_CraftingOrders.HasFavoriteCustomerOptions() then
-                GameTooltip_AddNormalLine(GameTooltip, '你的偏好列表是空的。右键点击订单列表的一个物品可以将其添加到偏好中。');
+                GameTooltip_AddNormalLine(GameTooltip, '你的偏好列表是空的。右键点击订单列表的一个物品可以将其添加到偏好中。')
             end
-            GameTooltip:Show();
-         end);
+            GameTooltip:Show()
+         end)
 
 
 
@@ -3800,7 +3834,7 @@ local function Init_Loaded(arg1)
 
         set(ProfessionsCustomerOrdersFrame.Form.OrderRecipientDisplay.Crafter, '制作者：')
         hooksecurefunc(ProfessionsCustomerOrdersFrame.Form, 'SetupDurationDropDown', function(self)
-            self.PaymentContainer.Duration:SetText('持续时间');
+            self.PaymentContainer.Duration:SetText('持续时间')
         end)
 
         set(ProfessionsCustomerOrdersFrame.Form.PaymentContainer.Tip, '佣金')
@@ -3813,176 +3847,172 @@ local function Init_Loaded(arg1)
         set(ProfessionsCustomerOrdersFrame.Form.PaymentContainer.CancelOrderButton, '取消订单')
 
         ProfessionsCustomerOrdersFrame.Form.FavoriteButton:HookScript('OnEnter', function (self)
-            local isFavorite = self:GetChecked();
+            local isFavorite = self:GetChecked()
             if not isFavorite and C_CraftingOrders.GetNumFavoriteCustomerOptions() >= Constants.CraftingOrderConsts.MAX_CRAFTING_ORDER_FAVORITE_RECIPES then
-                GameTooltip_AddErrorLine(GameTooltip, '你的偏好列表已满。取消偏好一个配方后才能添加此配方。');
+                GameTooltip_AddErrorLine(GameTooltip, '你的偏好列表已满。取消偏好一个配方后才能添加此配方。')
             else
-                GameTooltip_AddHighlightLine(GameTooltip, isFavorite and '从偏好中移除' or '设置为偏好');
+                GameTooltip_AddHighlightLine(GameTooltip, isFavorite and '从偏好中移除' or '设置为偏好')
             end
-            GameTooltip:Show();
+            GameTooltip:Show()
         end)
         ProfessionsCustomerOrdersFrame.Form.RecraftSlot.InputSlot:HookScript('OnEnter', function()
             local self= ProfessionsCustomerOrdersFrame.Form
-            local itemGUID = ProfessionsCustomerOrdersFrame.Form.transaction and self.transaction:GetRecraftAllocation();
+            local itemGUID = ProfessionsCustomerOrdersFrame.Form.transaction and self.transaction:GetRecraftAllocation()
             if itemGUID then
                 if not self.committed then
-                    GameTooltip_AddInstructionLine(GameTooltip, '|cnDISABLED_FONT_COLOR:左键点击替换此装备|r');
-                    GameTooltip:Show();
+                    GameTooltip_AddInstructionLine(GameTooltip, '|cnDISABLED_FONT_COLOR:左键点击替换此装备|r')
+                    GameTooltip:Show()
                 end
             elseif not self.order.recraftItemHyperlink then
-                GameTooltip_AddInstructionLine(GameTooltip, '左键点击选择一件可用的装备来再造');
-                GameTooltip:Show();
+                GameTooltip_AddInstructionLine(GameTooltip, '左键点击选择一件可用的装备来再造')
+                GameTooltip:Show()
             end
         end)
 
 
         hooksecurefunc(ProfessionsCustomerOrdersFrame.Form, 'UpdateListOrderButton', function(self)
             if self.committed or self.pendingOrderPlacement then
-                return;
+                return
             end
-            local errorText;
+            local errorText
             if self.order.isRecraft and not self.order.skillLineAbilityID then
-                errorText = '你必须选择一个此订单要再造的物品';
+                errorText = '你必须选择一个此订单要再造的物品'
             elseif self.order.isRecraft and self:GetPendingRecraftItemQuality() == #self.minQualityIDs and not self:AnyModifyingReagentsChanged() then
-                errorText = '"你不能在不改变任何附加材料的情况下发布最高品质的物品的再造订单。';
+                errorText = '"你不能在不改变任何附加材料的情况下发布最高品质的物品的再造订单。'
             elseif not self:AreRequiredReagentsProvided() then
-                errorText = '你没有发布此订单所需的材料。';
+                errorText = '你没有发布此订单所需的材料。'
             elseif not self.transaction:HasMetPrerequisiteRequirements() then
-                errorText = '一种或多种附加材料不满足必要条件。';
+                errorText = '一种或多种附加材料不满足必要条件。'
             elseif self.order.orderType == Enum.CraftingOrderType.Personal and self.OrderRecipientTarget:GetText() == "" then
-                errorText = '你必须指定收件人才能发布个人订单。';
+                errorText = '你必须指定收件人才能发布个人订单。'
             elseif self.PaymentContainer.TipMoneyInputFrame:GetAmount() <= 0 then
-                errorText = '你必须提供佣金。';
+                errorText = '你必须提供佣金。'
             elseif self.PaymentContainer.TotalPriceMoneyDisplayFrame:GetAmount() > GetMoney() then
-                errorText = '金币不足，无法购买建筑。';
+                errorText = '金币不足，无法购买建筑。'
             end
             if errorText then
-                local listOrderButton = self.PaymentContainer.ListOrderButton;
+                local listOrderButton = self.PaymentContainer.ListOrderButton
                 listOrderButton:SetScript("OnEnter", function()
-                    GameTooltip:SetOwner(listOrderButton, "ANCHOR_RIGHT");
-                    GameTooltip_AddErrorLine(GameTooltip, errorText);
-                    GameTooltip:Show();
-                end);
+                    GameTooltip:SetOwner(listOrderButton, "ANCHOR_RIGHT")
+                    GameTooltip_AddErrorLine(GameTooltip, errorText)
+                    GameTooltip:Show()
+                end)
             end
         end)
 
         ProfessionsCustomerOrdersFrame.Form:HookScript('OnEvent', function(self, event, ...)
             if event == "CRAFTINGORDERS_ORDER_PLACEMENT_RESPONSE" or event == "CRAFTINGORDERS_ORDER_CANCEL_RESPONSE" then
-                local result = ...;
-                local success = (result == Enum.CraftingOrderResult.Ok);
+                local result = ...
+                local success = (result == Enum.CraftingOrderResult.Ok)
                 if not success then
-                    local errorText;
+                    local errorText
                     if event == "CRAFTINGORDERS_ORDER_PLACEMENT_RESPONSE" then
                         if result == Enum.CraftingOrderResult.InvalidTarget then
-                            errorText = '该玩家不存在。';
+                            errorText = '该玩家不存在。'
                         elseif result == Enum.CraftingOrderResult.TargetCannotCraft then
-                            errorText = '该玩家没有所需的专业来制作此订单。';
+                            errorText = '该玩家没有所需的专业来制作此订单。'
                         elseif result == Enum.CraftingOrderResult.MaxOrdersReached then
-                            errorText = '订单数量已达上限。';
+                            errorText = '订单数量已达上限。'
                         else
-                            errorText = '制造订单生成失败。请稍后重试。';
+                            errorText = '制造订单生成失败。请稍后重试。'
                         end
                     elseif event == "CRAFTINGORDERS_ORDER_CANCEL_RESPONSE" then
-                        errorText = (result == Enum.CraftingOrderResult.AlreadyClaimed) and '取消订单失败。订单被认领后就无法再取消。' or '取消订单失败。请稍后再试。';
+                        errorText = (result == Enum.CraftingOrderResult.AlreadyClaimed) and '取消订单失败。订单被认领后就无法再取消。' or '取消订单失败。请稍后再试。'
                     end
-                    UIErrorsFrame:AddExternalErrorMessage(errorText);
+                    UIErrorsFrame:AddExternalErrorMessage(errorText)
                 end
             end
         end)
 
         ProfessionsCustomerOrdersFrame.Form.PaymentContainer.ViewListingsButton:SetScript("OnEnter", function(frame)
-            GameTooltip_AddHighlightLine(GameTooltip, '查看类似的订单。');
-            GameTooltip:Show();
-         end);
+            GameTooltip_AddHighlightLine(GameTooltip, '查看类似的订单。')
+            GameTooltip:Show()
+         end)
 
-        set(ProfessionsCustomerOrdersFrame.Form.TrackRecipeCheckBox.Text, LIGHTGRAY_FONT_COLOR:WrapTextInColorCode('追踪配方'));
+        set(ProfessionsCustomerOrdersFrame.Form.TrackRecipeCheckBox.Text, LIGHTGRAY_FONT_COLOR:WrapTextInColorCode('追踪配方'))
 
         ProfessionsCustomerOrdersFrame.Form.AllocateBestQualityCheckBox:HookScript("OnEnter", function(button)
-            local checked = button:GetChecked();
+            local checked = button:GetChecked()
             if checked then
-                GameTooltip_AddNormalLine(GameTooltip, '取消勾选后，总会使用可用的最低品质的材料。');
+                GameTooltip_AddNormalLine(GameTooltip, '取消勾选后，总会使用可用的最低品质的材料。')
             else
-                GameTooltip_AddNormalLine(GameTooltip, '勾选后，总会使用可用的最高品质的材料。');
+                GameTooltip_AddNormalLine(GameTooltip, '勾选后，总会使用可用的最高品质的材料。')
             end
-            GameTooltip:Show();
-        end);
+            GameTooltip:Show()
+        end)
 
 
         hooksecurefunc(ProfessionsCustomerOrdersFrame.Form, 'InitSchematic', function(self, order)
-            local professionName = C_TradeSkillUI.GetProfessionNameForSkillLineAbility(self.order.skillLineAbilityID);
+            local professionName = C_TradeSkillUI.GetProfessionNameForSkillLineAbility(self.order.skillLineAbilityID)
             professionName= e.strText[professionName] or professionName
 	        set(self.ProfessionText, format('%s 配方', professionName))
         end)
 
         hooksecurefunc(ProfessionsCustomerOrdersFrame.Form, 'Init', function(self, order)
             if not self.committed then
-                set(self.ReagentContainer.Reagents.Label, '提供材料：');
-                set(self.ReagentContainer.OptionalReagents.Label, '提供附加材料：');
+                set(self.ReagentContainer.Reagents.Label, '提供材料：')
+                set(self.ReagentContainer.OptionalReagents.Label, '提供附加材料：')
             else
                 if self.order.orderState ~= Enum.CraftingOrderState.Created then
-                    local remainingTime = Professions.GetCraftingOrderRemainingTime(order.expirationTime);
-                    local seconds = remainingTime >= 60 and remainingTime or 60; -- Never show < 1min
-                    local timeRemainingText = Professions.OrderTimeLeftFormatter:Format(seconds);
-                    timeRemainingText = format('%s （等待中）', timeRemainingText);
-                    set(self.PaymentContainer.TimeRemainingDisplay.Text, timeRemainingText);
+                    local remainingTime = Professions.GetCraftingOrderRemainingTime(order.expirationTime)
+                    local seconds = remainingTime >= 60 and remainingTime or 60 -- Never show < 1min
+                    local timeRemainingText = Professions.OrderTimeLeftFormatter:Format(seconds)
+                    timeRemainingText = format('%s （等待中）', timeRemainingText)
+                    set(self.PaymentContainer.TimeRemainingDisplay.Text, timeRemainingText)
                 end
 
                 if not order.crafterName then
-                    local crafterText;
+                    local crafterText
                     if self.order.orderState == Enum.CraftingOrderState.Created then
-                        crafterText = '尚未被认领';
+                        crafterText = '尚未被认领'
                     else
-                        crafterText = '未领取';
+                        crafterText = '未领取'
                     end
-                    set(self.OrderRecipientDisplay.CrafterValue, crafterText);
+                    set(self.OrderRecipientDisplay.CrafterValue, crafterText)
                 end
 
-                local orderTypeText;
+                local orderTypeText
                 if self.order.orderType == Enum.CraftingOrderType.Public then
-                    orderTypeText = '公开订单';
+                    orderTypeText = '公开订单'
                 elseif self.order.orderType == Enum.CraftingOrderType.Guild then
-                    orderTypeText = '公会订单';
+                    orderTypeText = '公会订单'
                 elseif self.order.orderType == Enum.CraftingOrderType.Personal then
-                    orderTypeText = '个人订单';
+                    orderTypeText = '个人订单'
                 end
                 set(self.OrderRecipientDisplay.PostedTo, orderTypeText)
 
-                local orderStateText;
+                local orderStateText
                 if self.order.orderState == Enum.CraftingOrderState.Created then
-                    orderStateText = '未领取';
+                    orderStateText = '未领取'
                 elseif self.order.orderState == Enum.CraftingOrderState.Expired then
-                    orderStateText = '订单过期';
+                    orderStateText = '订单过期'
                 elseif self.order.orderState == Enum.CraftingOrderState.Canceled then
-                    orderStateText = '订单取消';
+                    orderStateText = '订单取消'
                 elseif self.order.orderState == Enum.CraftingOrderState.Rejected then
-                    orderStateText = '订单被拒绝';
+                    orderStateText = '订单被拒绝'
                 elseif self.order.orderState == Enum.CraftingOrderState.Claimed then
-                    orderStateText = '订单正在进行中';
+                    orderStateText = '订单正在进行中'
                 else
-                    orderStateText = '|cnGREEN_FONT_COLOR:订单完成！|r';
+                    orderStateText = '|cnGREEN_FONT_COLOR:订单完成！|r'
                 end
-                set(self.OrderStateText, orderStateText);
+                set(self.OrderStateText, orderStateText)
 
-                set(self.ReagentContainer.Reagents.Label, '提供的材料：');
+                set(self.ReagentContainer.Reagents.Label, '提供的材料：')
                 set(self.ReagentContainer.OptionalReagents.Label, '提供的附加材料：')
             end
         end)
 
 
         hooksecurefunc(ProfessionsCustomerOrdersFrame.Form, 'DisplayCurrentListings', function(self)
-            local orders = C_CraftingOrders.GetCustomerOrders();
+            local orders = C_CraftingOrders.GetCustomerOrders()
             if #orders == 0 then
-                set(self.CurrentListings.OrderList.ResultsText, '没有发现订单');
+                set(self.CurrentListings.OrderList.ResultsText, '没有发现订单')
             end
         end)
         ProfessionsCustomerOrdersFrame.Form.CurrentListings:SetTitle('当前列表')
-        --[[hooksecurefunc(ProfessionsCustomerOrdersFrame.Form, 'InitCurrentListings', function(self)
-            print(id,addName)
-            self.CurrentListings:SetTitle('当前列表');
-        end)]]
         set(ProfessionsCustomerOrdersFrame.Form.CurrentListings.CloseButton, '关闭')
 
-        
+
         hooksecurefunc(ProfessionsCustomerOrdersFrame, 'SelectMode', function(self, mode)
             if mode== ProfessionsCustomerOrdersMode.Browse then
 	            self:SetTitle('发布制造订单')
@@ -3991,6 +4021,23 @@ local function Init_Loaded(arg1)
             end
         end)
         set(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList.ResultsText, '没有发现订单')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     elseif arg1=='Blizzard_Collections' then--收藏
@@ -4110,6 +4157,20 @@ local function Init_Loaded(arg1)
 
         dia("DIALOG_REPLACE_MOUNT_EQUIPMENT", {text = '你确定要替换此坐骑装备吗？已有的坐骑装备将被摧毁。', button1 = '是', button2 = '否'})
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         set(EncounterJournalTitleText, '冒险指南')
 
@@ -4212,6 +4273,18 @@ local function Init_Loaded(arg1)
             end
         end)
 
+
+
+
+
+
+
+
+
+
+
+
+
     elseif arg1=='Blizzard_AchievementUI' then--成就
         set(AchievementFrameTab1, '成就')
         set(AchievementFrameTab2, '公会')
@@ -4237,6 +4310,15 @@ local function Init_Loaded(arg1)
             end
         end)
 
+
+
+
+
+
+
+
+
+
     elseif arg1=='Blizzard_MacroUI' then
         set(MacroFrameTab1, '通用宏')
         set(MacroFrameTab2, '专用宏', 0.3)
@@ -4247,6 +4329,15 @@ local function Init_Loaded(arg1)
         set(MacroExitButton, '退出')
 
         dia("CONFIRM_DELETE_SELECTED_MACRO", {text= '确定要删除这个宏吗？', button1= '是', button2= '取消'})
+
+
+
+
+
+
+
+
+
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
         set(CommunitiesFrame.CommunitiesControlFrame.GuildRecruitmentButton, '公会招募')
@@ -4278,6 +4369,22 @@ local function Init_Loaded(arg1)
         set(CommunitiesFrame.RecruitmentDialog.Cancel, '取消')
         set(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame.Child.QuickJoinButton.Text, '快速加入通知')
         --set(CommunitiesFrame.RecruitmentDialog.MaxLevelOnly, '')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set(GuildBankFrameTab1, '公会银行')
@@ -4372,6 +4479,19 @@ local function Init_Loaded(arg1)
         set(GuildBankFrameTab4, '信息')
             set(GuildBankInfoSaveButton, '保存改变')
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     elseif arg1=='Blizzard_InspectUI' then--玩家, 观察角色, 界面
         set(InspectFrameTab1, '角色')
         --pvp
@@ -4383,6 +4503,25 @@ local function Init_Loaded(arg1)
                 end
             end)
         set(InspectFrameTab3, '公会')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
         set(PVPQueueFrameCategoryButton1.Name, '快速比赛')
@@ -4509,7 +4648,50 @@ local function Init_Loaded(arg1)
 --hooksecurefunc('HonorFrame_UpdateQueueButtons', function()
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     elseif arg1=='Blizzard_Professions' then--专业
+        hooksecurefunc(ProfessionsFrame, 'SetTitle', function(self, skillLineName)
+            if e.strText[skillLineName] then
+                skillLineName= e.strText[skillLineName]
+                if C_TradeSkillUI.IsTradeSkillGuild() then
+                    self:SetTitleFormatted('公会%s"', skillLineName)
+                else
+                    local linked, linkedName = C_TradeSkillUI.IsTradeSkillLinked()
+                    if linked and linkedName then
+                        self:SetTitleFormatted("%s %s[%s]|r", TRADE_SKILL_TITLE:format(skillLineName), HIGHLIGHT_FONT_COLOR_CODE, linkedName)
+                    else
+                        self:SetTitleFormatted(TRADE_SKILL_TITLE, skillLineName)
+                    end
+                end
+            elseif C_TradeSkillUI.IsTradeSkillGuild() then
+                self:SetTitleFormatted('公会%s"', skillLineName)
+            end
+        end)
+
         hooksecurefunc(ProfessionsFrame, 'UpdateTabs', function(self)
             local recipesTab = self:GetTabButton(self.recipesTabID)
             font(recipesTab.Text)
@@ -4525,6 +4707,8 @@ local function Init_Loaded(arg1)
         end)
 
         if ProfessionsFrame.CraftingPage then--Blizzard_ProfessionsCrafting.lua
+            set(ProfessionsFrame.CraftingPage.ViewGuildCraftersButton, '查看工匠')
+
             local FailValidationReason = EnumUtil.MakeEnum("Cooldown", "InsufficientReagents", "PrerequisiteReagents", "Disabled", "Requirement", "LockedReagentSlot", "RecraftOptionalReagentLimit")
             local FailValidationTooltips = {
                 [FailValidationReason.Cooldown] = '配方冷却中。',
@@ -4577,31 +4761,95 @@ local function Init_Loaded(arg1)
                 end
             end)
 
-            if ProfessionsFrame.CraftingPage.SchematicForm then--Blizzard_ProfessionsRecipeSchematicForm.lua
-                set(ProfessionsFrame.CraftingPage.SchematicForm.AllocateBestQualityCheckBox.text, LIGHTGRAY_FONT_COLOR:WrapTextInColorCode('使用最高品质材料'))
-                ProfessionsFrame.CraftingPage.SchematicForm.AllocateBestQualityCheckBox:HookScript("OnEnter", function(button)
-                    local checked = button:GetChecked()
-                    if checked then
-                        GameTooltip_AddNormalLine(GameTooltip, '取消勾选后，总会使用可用的最低品质的材料。')
+            --Blizzard_ProfessionsRecipeSchematicForm.lua
+            set(ProfessionsFrame.CraftingPage.SchematicForm.AllocateBestQualityCheckBox.text, LIGHTGRAY_FONT_COLOR:WrapTextInColorCode('使用最高品质材料'))
+            ProfessionsFrame.CraftingPage.SchematicForm.AllocateBestQualityCheckBox:HookScript("OnEnter", function(button)
+                local checked = button:GetChecked()
+                if checked then
+                    GameTooltip_AddNormalLine(GameTooltip, '取消勾选后，总会使用可用的最低品质的材料。')
+                else
+                    GameTooltip_AddNormalLine(GameTooltip, '勾选后，总会使用可用的最高品质的材料。')
+                end
+                GameTooltip:Show()
+            end)
+            set(ProfessionsFrame.CraftingPage.SchematicForm.TrackRecipeCheckBox.text, LIGHTGRAY_FONT_COLOR:WrapTextInColorCode('追踪配方'))
+            ProfessionsFrame.CraftingPage.SchematicForm.FavoriteButton:HookScript("OnEnter", function(button)
+                GameTooltip_AddHighlightLine(GameTooltip, button:GetChecked() and '从偏好中移除' or '设置为偏好')
+                GameTooltip:Show()
+            end)
+            ProfessionsFrame.CraftingPage.SchematicForm.FavoriteButton:HookScript("OnClick", function(button)
+                GameTooltip_AddHighlightLine(GameTooltip, button:GetChecked() and '从偏好中移除' or '设置为偏好')
+                GameTooltip:Show()
+            end)
+            ProfessionsFrame.CraftingPage.SchematicForm.FirstCraftBonus:SetScript("OnEnter", function()
+                GameTooltip_AddNormalLine(GameTooltip, '首次制造此配方会教会你某种新东西。')
+                GameTooltip:Show()
+            end)
+
+            hooksecurefunc(ProfessionsFrame.CraftingPage, 'Init', function(self)--Blizzard_ProfessionsCrafting.lua
+                local minimized = ProfessionsUtil.IsCraftingMinimized();
+                if minimized and self.MinimizedSearchBox:IsCurrentTextValidForSearch() then
+                    set(self.MinimizedSearchResults:GetTitleText(),  format('搜索结果\"%s\"(%d)', self.MinimizedSearchBox:GetText(), self.searchDataProvider:GetSize()))
+                end
+            end)
+
+            hooksecurefunc(ProfessionsFrame.CraftingPage, 'ValidateControls', function(self)--Blizzard_ProfessionsCrafting.lua
+                local currentRecipeInfo = self.SchematicForm:GetRecipeInfo();
+                local isRuneforging = C_TradeSkillUI.IsRuneforging();
+                if currentRecipeInfo ~= nil and currentRecipeInfo.learned and (Professions.InLocalCraftingMode() or C_TradeSkillUI.IsNPCCrafting() or isRuneforging)
+                    and not currentRecipeInfo.isRecraft
+                    and not currentRecipeInfo.isDummyRecipe and not currentRecipeInfo.isGatheringRecipe then
+
+                    local transaction = self.SchematicForm:GetTransaction();
+                    local isEnchant = transaction:IsRecipeType(Enum.TradeskillRecipeType.Enchant);
+
+                    local countMax = self:GetCraftableCount();                  
+
+                    if isEnchant then
+                        self.CreateButton:SetTextToFit('附魔');
+                        local quantity = math.max(1, countMax);
+                        self.CreateAllButton:SetTextToFit(format('%s [%d]', '附魔所有', quantity));
                     else
-                        GameTooltip_AddNormalLine(GameTooltip, '勾选后，总会使用可用的最高品质的材料。')
+                        if currentRecipeInfo.abilityVerb then
+                            -- abilityVerb is recipe-level override
+                            --self.CreateButton:SetTextToFit(currentRecipeInfo.abilityVerb);
+                        elseif currentRecipeInfo.alternateVerb then
+                            -- alternateVerb is profession-level override
+                            --self.CreateButton:SetTextToFit(currentRecipeInfo.alternateVerb);
+                        elseif self.SchematicForm.recraftSlot and self.SchematicForm.recraftSlot.InputSlot:IsVisible() then
+                            self.CreateButton:SetTextToFit('再造');
+                        else
+                            self.CreateButton:SetTextToFit('制造');
+                        end
+
+                        local createAllFormat;
+                        if currentRecipeInfo.abilityAllVerb then
+                            -- abilityAllVerb is recipe-level override
+                            createAllFormat = currentRecipeInfo.abilityAllVerb;
+                        else
+                            createAllFormat = '全部制造';
+                        end
+                        self.CreateAllButton:SetTextToFit(format('%s [%d]', createAllFormat, countMax));
                     end
-                    GameTooltip:Show()
-                end)
-                set(ProfessionsFrame.CraftingPage.SchematicForm.TrackRecipeCheckBox.text, LIGHTGRAY_FONT_COLOR:WrapTextInColorCode('追踪配方'))
-                ProfessionsFrame.CraftingPage.SchematicForm.FavoriteButton:HookScript("OnEnter", function(button)
-                    GameTooltip_AddHighlightLine(GameTooltip, button:GetChecked() and '从偏好中移除' or '设置为偏好')
-                    GameTooltip:Show()
-                end)
-                ProfessionsFrame.CraftingPage.SchematicForm.FavoriteButton:HookScript("OnClick", function(button)
-                    GameTooltip_AddHighlightLine(GameTooltip, button:GetChecked() and '从偏好中移除' or '设置为偏好')
-                    GameTooltip:Show()
-                end)
-                ProfessionsFrame.CraftingPage.SchematicForm.FirstCraftBonus:SetScript("OnEnter", function()
-                    GameTooltip_AddNormalLine(GameTooltip, '首次制造此配方会教会你某种新东西。')
-                    GameTooltip:Show()
-                end)
-            end
+
+                    local enabled = true;
+                    if PartialPlayTime() then
+                        local reasonText = format('你的在线时间已经超过3小时。在目前阶段下，你不能这么做。在下线休息%d小时后，你的防沉迷时间将会清零。请退出游戏下线休息。', REQUIRED_REST_HOURS - math.floor(GetBillingTimeRested() / 60));
+                        self:SetCreateButtonTooltipText(reasonText);
+                        enabled = false;
+                    elseif NoPlayTime() then
+                        local reasonText = format('你的在线时间已经超过5小时。在目前阶段下，你不能这么做。在下线休息%d小时后，你的防沉迷时间将会清零。请退出游戏，下线休息和运动。', REQUIRED_REST_HOURS - math.floor(GetBillingTimeRested() / 60));
+                        self:SetCreateButtonTooltipText(reasonText);
+                        enabled = false;
+                    end
+
+                    if enabled then
+                        local failValidationReason = self:ValidateCraftRequirements(currentRecipeInfo, transaction, isRuneforging, countMax);
+                        self:SetCreateButtonTooltipText(FailValidationTooltips[failValidationReason]);
+                    end
+
+                end
+            end)
         end
 
 
@@ -4610,7 +4858,177 @@ local function Init_Loaded(arg1)
             set(ProfessionsFrame.SpecPage.ViewPreviewButton, '综述')
             set(ProfessionsFrame.SpecPage.DetailedView.SpendPointsButton, '运用知识')
             set(ProfessionsFrame.SpecPage.ApplyButton, '应用改动')
+        end
 
+        if ProfessionsFrame.OrdersPage then
+            set(ProfessionsFrame.OrdersPage.BrowseFrame.SearchButton, '搜索')
+            set(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.BackButton, '返回')
+
+            local orderTypeTabTitles ={
+                [Enum.CraftingOrderType.Public] = '公开',
+                [Enum.CraftingOrderType.Guild] = '公会',
+                [Enum.CraftingOrderType.Personal] = '个人',}
+            local function SetTabTitleWithCount(tabButton, type, count)
+                local title = orderTypeTabTitles[type]
+                if tabButton and title then
+                    if type == Enum.CraftingOrderType.Public then
+                        tabButton.Text:SetText(title)
+                    else
+                        tabButton.Text:SetText(string.format("%s (%s)", title, count))
+                    end
+                end
+            end
+            hooksecurefunc(ProfessionsFrame.OrdersPage, 'InitOrderTypeTabs', function(self)
+                for _, typeTab in ipairs(self.BrowseFrame.orderTypeTabs) do
+                    SetTabTitleWithCount(typeTab, typeTab.orderType, 0);
+                end
+            end)
+            ProfessionsFrame.OrdersPage:HookScript('OnEvent', function(self, event, ...)
+                if event == "CRAFTINGORDERS_UPDATE_ORDER_COUNT" then
+                    local type, count = ...;
+                    local tabButton;
+                    if type == Enum.CraftingOrderType.Guild then
+                        tabButton = self.BrowseFrame.GuildOrdersButton;
+                    elseif type == Enum.CraftingOrderType.Personal then
+                        tabButton = self.BrowseFrame.PersonalOrdersButton;
+                    end
+                    SetTabTitleWithCount(tabButton, type, count);
+                elseif event == "CRAFTINGORDERS_REJECT_ORDER_RESPONSE" then
+                    local result = ...;
+                    local success = (result == Enum.CraftingOrderResult.Ok);
+                    if not success then
+                        UIErrorsFrame:AddExternalErrorMessage('拒绝订单失败。请稍后再试。');
+                    end
+                end
+            end)
+
+            hooksecurefunc(ProfessionsFrame.OrdersPage, 'StartDefaultSearch', function(self)
+                if self.BrowseFrame.OrderList.ResultsText:IsShown() then
+                    set(self.BrowseFrame.OrderList.ResultsText, '小窍门：右键点击配方可以设置偏好。偏好的配方会在你打开你的公开订单时立即出现。')
+                end
+            end)
+            hooksecurefunc(ProfessionsFrame.OrdersPage, 'UpdateOrdersRemaining', function(self)
+                if self.professionInfo then
+                    local isPublic = self.orderType == Enum.CraftingOrderType.Public
+                    if isPublic and self.professionInfo and self.professionInfo.profession then
+                        set(self.BrowseFrame.OrdersRemainingDisplay.OrdersRemaining, format('剩余订单：%s', C_CraftingOrders.GetOrderClaimInfo(self.professionInfo.profession).claimsRemaining))
+                    end
+                end
+            end)
+            hooksecurefunc(ProfessionsFrame.OrdersPage, 'ShowGeneric', function(self)
+                if self.BrowseFrame.OrderList.ResultsText:IsShown() then
+                    set(self.BrowseFrame.OrderList.ResultsText, '没有发现订单')
+                end
+            end)
+            
+            set(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.PostedByTitle, '订单发布人：')
+            set(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.CommissionTitle, '佣金：')
+            set(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.ConsortiumCutTitle, '财团分成：')
+            set(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.FinalTipTitle, '你的分成：')
+            set(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.TimeRemainingTitle, '剩余时间：')
+            set(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.NoteBox.NoteTitle, '给制作者的信息：')
+            set(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.StartOrderButton, '开始接单')
+            set(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.DeclineOrderButton, '拒绝订单')
+            set(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.ReleaseOrderButton, '取消订单')
+            ProfessionsFrame.OrdersPage.OrderView.OrderDetails.FulfillmentForm.NoteEditBox.ScrollingEditBox.defaultText= '在此输入消息'
+            --set(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.OrderCompleteText, '订单完成！')
+            set(ProfessionsFrame.OrdersPage.OrderView.CompleteOrderButton, '完成订单')
+            set(ProfessionsFrame.OrdersPage.OrderView.StartRecraftButton, '再造')
+            set(ProfessionsFrame.OrdersPage.OrderView.StopRecraftButton, '取消再造')
+            set(ProfessionsFrame.OrdersPage.OrderView.DeclineOrderDialog.ConfirmationText, '你确定想拒绝此订单吗？')
+            set(ProfessionsFrame.OrdersPage.OrderView.DeclineOrderDialog.NoteEditBox.TitleBox.Title, '拒绝原因：')
+            set(ProfessionsFrame.OrdersPage.OrderView.DeclineOrderDialog.CancelButton, '否')
+            set(ProfessionsFrame.OrdersPage.OrderView.DeclineOrderDialog.ConfirmButton, '是')
+
+            hooksecurefunc(ProfessionsFrame.OrdersPage.OrderView, 'InitRegions', function(self)
+                self.OrderDetails.FulfillmentForm.OrderCompleteText:SetText('订单完成！')
+                self.DeclineOrderDialog:SetTitle('拒绝订单')
+            end)
+
+            ProfessionsFrame.OrdersPage.OrderView:HookScript('OnEvent', function(self, event, ...)
+                if event == "CRAFTINGORDERS_CLAIM_ORDER_RESPONSE" then
+                    local result, orderID = ...
+                    if orderID == self.order.orderID then
+                        local success = result == Enum.CraftingOrderResult.Ok
+                        if not success then
+                            if result == Enum.CraftingOrderResult.CannotClaimOwnOrder then
+                                UIErrorsFrame:AddExternalErrorMessage('你不能认领你自己的制造订单。')
+                            elseif result == Enum.CraftingOrderResult.OutOfPublicOrderCapacity then
+                                UIErrorsFrame:AddExternalErrorMessage('你没有剩余的每日公开订单，现在只能完成即将过期的订单。')
+                            else
+                                UIErrorsFrame:AddExternalErrorMessage('此订单已不可用。')
+                            end
+                        end
+                    end
+                elseif event == "CRAFTINGORDERS_RELEASE_ORDER_RESPONSE" or event == "CRAFTINGORDERS_REJECT_ORDER_RESPONSE" then
+                    local result, orderID = ...
+                    if orderID == self.order.orderID then
+                        local success = result == Enum.CraftingOrderResult.Ok
+                        if not success then
+                            UIErrorsFrame:AddExternalErrorMessage('制造订单运行失败。请稍后重试。')
+                        end
+                    end
+                elseif event == "CRAFTINGORDERS_FULFILL_ORDER_RESPONSE" then
+                    local result, orderID = ...
+                    if orderID == self.order.orderID then
+                        local success = result == Enum.CraftingOrderResult.Ok
+                        if not success then
+                            UIErrorsFrame:AddExternalErrorMessage('制造订单运行失败。请稍后重试。')
+                        end
+                    end
+                elseif event == "CRAFTINGORDERS_UNEXPECTED_ERROR" then
+                    UIErrorsFrame:AddExternalErrorMessage('制造订单运行失败。请稍后重试。')
+                end
+            end)
+
+            hooksecurefunc(ProfessionsFrame.OrdersPage.OrderView, 'UpdateCreateButton', function(self)
+                local transaction = self.OrderDetails.SchematicForm.transaction
+                local recipeInfo = C_TradeSkillUI.GetRecipeInfo(self.order.spellID)
+                if transaction:IsRecipeType(Enum.TradeskillRecipeType.Enchant) then
+                    self.CreateButton:SetText('附魔')
+                else
+                    if recipeInfo and recipeInfo.abilityVerb then
+                        --self.CreateButton:SetText(recipeInfo.abilityVerb)
+                    elseif recipeInfo and recipeInfo.alternateVerb then
+                        -- alternateVerb is profession-level override
+                        --self.CreateButton:SetText(recipeInfo.alternateVerb)
+                    elseif self:IsRecrafting() then
+                        self.CreateButton:SetText('再造')
+                    else
+                        self.CreateButton:SetText('制造')
+                    end
+                end
+            
+                
+                local errorReason
+                if Professions.IsRecipeOnCooldown(self.order.spellID) then
+                    errorReason = '配方冷却中。'
+                elseif not transaction:HasMetAllRequirements() then
+                    errorReason = '你的材料不足。'
+                elseif self.order.minQuality and self.OrderDetails.SchematicForm.Details:GetProjectedQuality() and self.order.minQuality > self.OrderDetails.SchematicForm.Details:GetProjectedQuality() then
+                    local smallIcon = true
+                    errorReason = format('此订单要求的最低品质是%s', Professions.GetChatIconMarkupForQuality(self.order.minQuality, smallIcon))
+                end
+                if not errorReason then
+                    self.CreateButton:SetScript("OnEnter", function()
+                        GameTooltip:SetOwner(self.CreateButton, "ANCHOR_RIGHT")
+                        GameTooltip_AddErrorLine(GameTooltip, errorReason)
+                        GameTooltip:Show()
+                    end)
+                end
+            end)
+
+            hooksecurefunc(ProfessionsFrame.OrdersPage.OrderView, 'SetOrder', function(self)
+                local warningText
+                if self.order.reagentState == Enum.CraftingOrderReagentsType.All then
+                    warningText = '所有材料都由顾客提供。'
+                elseif self.order.reagentState == Enum.CraftingOrderReagentsType.Some then
+                    warningText = '将由你来提供某些材料。'
+                elseif self.order.reagentState == Enum.CraftingOrderReagentsType.None then
+                    warningText = '将由你来提供全部材料。'
+                end
+                set(self.OrderInfo.OrderReagentsWarning.Text, warningText)
+            end)
         end
 
         --Blizzard_ProfessionsSpecializations.lua
@@ -4625,6 +5043,21 @@ local function Init_Loaded(arg1)
 
         --Blizzard_ProfessionsFrame.lua
         dia("PROFESSIONS_SPECIALIZATION_CONFIRM_CLOSE", {text = '你想在离开前应用改动吗？', button1 = '是', button2 = '否',})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     elseif arg1=='Blizzard_ArtifactUI' then
         --Blizzard_ArtifactUI.lua
