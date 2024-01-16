@@ -2318,7 +2318,9 @@ local function Init()
 
     --邮箱 MailFrame.lua
     --MailFrame:HookScript('OnShow', function(self)
-        --self:SetTitle('打开邮件')
+    set(InboxTooMuchMailText, '你的收件箱已满。')
+    set(MailFrameTrialError, '你需要升级你的账号才能开启这项功能。')
+
     hooksecurefunc('MailFrameTab_OnClick', function(self, tabID)
         tabID = tabID or self:GetID()
         if tabID == 1  then
@@ -2449,6 +2451,14 @@ local function Init()
         end)
         set(OpenMailReplyButton, '回复')
         set(OpenMailCancelButton, '关闭')
+    set(OpenMailInvoiceSalePrice, '售价：')
+    set(OpenMailInvoiceDeposit, '保证金：')
+    set(OpenMailInvoiceHouseCut, '拍卖费：')
+    set(OpenMailInvoiceNotYetSent, '未发送的数量')
+
+    set(OpenMailReportSpamButton, '举报玩家')
+    set(ConsortiumMailFrame.CommissionReceived, '附上佣金：')
+    set(ConsortiumMailFrame.CommissionPaidDisplay.CommissionPaidText, '已支付佣金：')
 
     hooksecurefunc('GuildChallengeAlertFrame_SetUp', function(frame, challengeType)--AlertFrameSystems.lua
         local text= e.strText[_G["GUILD_CHALLENGE_TYPE"..challengeType]]
