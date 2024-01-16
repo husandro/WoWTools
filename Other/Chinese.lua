@@ -3821,6 +3821,19 @@ local function Init_Loaded(arg1)
             end
             GameTooltip:Show();
         end)
+        ProfessionsCustomerOrdersFrame.Form.RecraftSlot.InputSlot:HookScript('OnEnter', function()
+            local self= ProfessionsCustomerOrdersFrame.Form
+            local itemGUID = ProfessionsCustomerOrdersFrame.Form.transaction and self.transaction:GetRecraftAllocation();
+            if itemGUID then
+                if not self.committed then
+                    GameTooltip_AddInstructionLine(GameTooltip, '|cnDISABLED_FONT_COLOR:左键点击替换此装备|r');
+                    GameTooltip:Show();
+                end
+            elseif not self.order.recraftItemHyperlink then
+                GameTooltip_AddInstructionLine(GameTooltip, '左键点击选择一件可用的装备来再造');
+                GameTooltip:Show();
+            end
+        end)
 
 
         hooksecurefunc(ProfessionsCustomerOrdersFrame.Form, 'UpdateListOrderButton', function(self)
@@ -3876,18 +3889,7 @@ local function Init_Loaded(arg1)
                 end
             end
         end)
-        --[[ProfessionsCustomerOrdersFrame.Form.RecraftSlot.InputSlot:HookScript("OnEnter", function(self)
-            local itemGUID = self.transaction and self.transaction:GetRecraftAllocation();
-            if itemGUID then
-                if not self.committed then
-                    GameTooltip_AddInstructionLine(GameTooltip, '|cnDISABLED_FONT_COLOR:左键点击替换此装备|r');
-                    GameTooltip:Show();
-                end
-            elseif not self.order.recraftItemHyperlink then
-                GameTooltip_AddInstructionLine(GameTooltip, '左键点击选择一件可用的装备来再造');
-                GameTooltip:Show();
-            end
-        end)]]
+
         ProfessionsCustomerOrdersFrame.Form.PaymentContainer.ViewListingsButton:SetScript("OnEnter", function(frame)
             GameTooltip_AddHighlightLine(GameTooltip, '查看类似的订单。');
             GameTooltip:Show();
