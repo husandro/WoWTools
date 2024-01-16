@@ -1518,7 +1518,6 @@ local function Init_Event(arg1)
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
         set_NineSlice(ProfessionsCustomerOrdersFrame, true)
-        set_Alpha_Color(ProfessionsCustomerOrdersFrameBg)
 
         set_SearchBox(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox)
 
@@ -1544,6 +1543,13 @@ local function Init_Event(arg1)
 
         set_NineSlice(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList, nil, true)
         set_ScrollBar(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList)
+
+        set_NineSlice(ProfessionsCustomerOrdersFrame.Form.CurrentListings, true)
+        set_ScrollBar(ProfessionsCustomerOrdersFrame.Form.CurrentListings.OrderList)
+        hide_Texture(ProfessionsCustomerOrdersFrameBg)
+        
+        set_NineSlice(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground, true)
+        set_NineSlice(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground, true)
 
     elseif arg1=='Blizzard_BlackMarketUI' then--黑市
         set_Alpha_Color(BlackMarketFrameTitleBg)
