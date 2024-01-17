@@ -1414,6 +1414,10 @@ local function Init()
 
     --LFD PVEFrame.lua
     --地下城和团队副本
+    hooksecurefunc('GroupFinderFrame_OnShow', function()
+        PVEFrame:SetTitle('地下城和团队副本');
+    end)
+
     set(PVEFrameTab1, '地下城和团队副本')
     set(PVEFrameTab2, 'PvP')
     set(PVEFrameTab3, '史诗钥石地下城')
@@ -5084,6 +5088,15 @@ local function Init_Loaded(arg1)
 
 
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
+        hooksecurefunc('PVPQueueFrame_UpdateTitle', function()--Blizzard_PVPUI.lua
+            if ConquestFrame.seasonState == 2 then--SEASON_STATE_PRESEASON
+                PVEFrame:SetTitle('PvP（季前赛）');
+            elseif ConquestFrame.seasonState == 1 then--SEASON_STATE_OFFSEASON
+                PVEFrame:SetTitle('玩家VS玩家（休赛期）');
+            elseif PLAYER_V_PLAYER_SEASON == "玩家VS玩家（“巨龙时代”第%d赛季）" then
+                PVEFrame:SetTitleFormatted('玩家VS玩家（“巨龙时代”第%d赛季）', PVPUtil.GetCurrentSeasonNumber());
+            end
+        end)
         set(PVPQueueFrameCategoryButton1.Name, '快速比赛')
             hooksecurefunc('HonorFrameBonusFrame_Update', function()--Blizzard_PVPUI.lua
                 set(HonorFrame.BonusFrame.RandomBGButton.Title, '随机战场')
@@ -5332,13 +5345,10 @@ local function Init_Loaded(arg1)
         end)]]
         ChallengesFrame.WeeklyInfo.Child.WeeklyChest:HookScript('OnEnter', function(self)
             GameTooltip_SetTitle(GameTooltip, '宏伟宝库奖励');
-
-            -- always direct players to great vault if there are rewards to be claimed
             if self.state == 4 then--CHEST_STATE_COLLECT
                 GameTooltip_AddColoredLine(GameTooltip, '宏伟宝库里有奖励在等待着你。', GREEN_FONT_COLOR);
                 GameTooltip_AddBlankLineToTooltip(GameTooltip);
             end
-
             local lastCompletedActivityInfo, nextActivityInfo = WeeklyRewardsUtil.GetActivitiesProgress();
             if not lastCompletedActivityInfo then
                 GameTooltip_AddNormalLine(GameTooltip, '在本周内完成一个满级英雄或史诗地下城可以解锁一个宏伟宝库奖励。时空漫游地下城算作英雄地下城。|n|n你的奖励的物品等级会以你本周最高等级的成绩为依据。');
@@ -5359,11 +5369,11 @@ local function Init_Loaded(arg1)
                     end
                 end
             end
-
             GameTooltip_AddInstructionLine(GameTooltip, '点击预览宏伟宝库');
             GameTooltip:Show();
         end)
 
+        set(ChallengesFrame.WeeklyInfo.Child.DungeonScoreInfo.Title, '史诗钥石评分')
         ChallengesFrame.WeeklyInfo.Child.DungeonScoreInfo:HookScript('OnEnter', function()
             GameTooltip_SetTitle(GameTooltip, '史诗钥石评分');
             GameTooltip_AddNormalLine(GameTooltip, '基于你在每个地下城的最佳成绩得出的总体评分。你可以通过更迅速地完成地下城或者完成更高难度的地下城来提高你的评分。|n|n提升你的史诗地下城评分后，你就能把你的地下城装备升级到最高等级。|n|cff1eff00<Shift+点击以链接到聊天栏>|r');

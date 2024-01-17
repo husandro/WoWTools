@@ -7050,7 +7050,11 @@
         "GREAT_VAULT_IMPROVE_REWARD",
         "GREAT_VAULT_REWARDS_MYTHIC_COMPLETED_FIRST",
         "GREAT_VAULT_REWARDS_HEROIC_IMPROVE",
-        "GREAT_VAULT_REWARDS_MYTHIC_IMPROVE"
+        "GREAT_VAULT_REWARDS_MYTHIC_IMPROVE",
+        "PVPQueueFrame_UpdateTitle",
+        "PLAYER_V_PLAYER_PRE_SEASON",
+        "PLAYER_V_PLAYER_OFF_SEASON",
+        "PLAYER_V_PLAYER_SEASON"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
