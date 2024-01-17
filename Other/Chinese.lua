@@ -1730,6 +1730,7 @@ local function Init()
     set(LFGListInviteDialog.OfflineNotice, '有一名队伍成员处于离线状态，将无法收到邀请。')
     set(LFGListInviteDialog.AcceptButton, '接受')
     set(LFGListInviteDialog.DeclineButton, '拒绝')
+    set(LFGListInviteDialog.AcknowledgeButton, '确定')
 
 
 
