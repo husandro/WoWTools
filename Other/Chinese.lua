@@ -4172,65 +4172,65 @@ local function Init_Loaded(arg1)
         end)
 
         hooksecurefunc(ProfessionsFrame.CraftingPage, 'Init', function(self)--Blizzard_ProfessionsCrafting.lua
-            local minimized = ProfessionsUtil.IsCraftingMinimized();
+            local minimized = ProfessionsUtil.IsCraftingMinimized()
             if minimized and self.MinimizedSearchBox:IsCurrentTextValidForSearch() then
                 set(self.MinimizedSearchResults:GetTitleText(),  format('搜索结果\"%s\"(%d)', self.MinimizedSearchBox:GetText(), self.searchDataProvider:GetSize()))
             end
         end)
 
         hooksecurefunc(ProfessionsFrame.CraftingPage, 'ValidateControls', function(self)--Blizzard_ProfessionsCrafting.lua
-            local currentRecipeInfo = self.SchematicForm:GetRecipeInfo();
-            local isRuneforging = C_TradeSkillUI.IsRuneforging();
+            local currentRecipeInfo = self.SchematicForm:GetRecipeInfo()
+            local isRuneforging = C_TradeSkillUI.IsRuneforging()
             if currentRecipeInfo ~= nil and currentRecipeInfo.learned and (Professions.InLocalCraftingMode() or C_TradeSkillUI.IsNPCCrafting() or isRuneforging)
                 and not currentRecipeInfo.isRecraft
                 and not currentRecipeInfo.isDummyRecipe and not currentRecipeInfo.isGatheringRecipe then
 
-                local transaction = self.SchematicForm:GetTransaction();
-                local isEnchant = transaction:IsRecipeType(Enum.TradeskillRecipeType.Enchant);
+                local transaction = self.SchematicForm:GetTransaction()
+                local isEnchant = transaction:IsRecipeType(Enum.TradeskillRecipeType.Enchant)
 
-                local countMax = self:GetCraftableCount();
+                local countMax = self:GetCraftableCount()
 
                 if isEnchant then
-                    self.CreateButton:SetTextToFit('附魔');
-                    local quantity = math.max(1, countMax);
-                    self.CreateAllButton:SetTextToFit(format('%s [%d]', '附魔所有', quantity));
+                    self.CreateButton:SetTextToFit('附魔')
+                    local quantity = math.max(1, countMax)
+                    self.CreateAllButton:SetTextToFit(format('%s [%d]', '附魔所有', quantity))
                 else
                     if currentRecipeInfo.abilityVerb then
                         -- abilityVerb is recipe-level override
-                        --self.CreateButton:SetTextToFit(currentRecipeInfo.abilityVerb);
+                        --self.CreateButton:SetTextToFit(currentRecipeInfo.abilityVerb)
                     elseif currentRecipeInfo.alternateVerb then
                         -- alternateVerb is profession-level override
-                        --self.CreateButton:SetTextToFit(currentRecipeInfo.alternateVerb);
+                        --self.CreateButton:SetTextToFit(currentRecipeInfo.alternateVerb)
                     elseif self.SchematicForm.recraftSlot and self.SchematicForm.recraftSlot.InputSlot:IsVisible() then
-                        self.CreateButton:SetTextToFit('再造');
+                        self.CreateButton:SetTextToFit('再造')
                     else
-                        self.CreateButton:SetTextToFit('制造');
+                        self.CreateButton:SetTextToFit('制造')
                     end
 
-                    local createAllFormat;
+                    local createAllFormat
                     if currentRecipeInfo.abilityAllVerb then
                         -- abilityAllVerb is recipe-level override
-                        createAllFormat = currentRecipeInfo.abilityAllVerb;
+                        createAllFormat = currentRecipeInfo.abilityAllVerb
                     else
-                        createAllFormat = '全部制造';
+                        createAllFormat = '全部制造'
                     end
-                    self.CreateAllButton:SetTextToFit(format('%s [%d]', createAllFormat, countMax));
+                    self.CreateAllButton:SetTextToFit(format('%s [%d]', createAllFormat, countMax))
                 end
 
-                local enabled = true;
+                local enabled = true
                 if PartialPlayTime() then
-                    local reasonText = format('你的在线时间已经超过3小时。在目前阶段下，你不能这么做。在下线休息%d小时后，你的防沉迷时间将会清零。请退出游戏下线休息。', REQUIRED_REST_HOURS - math.floor(GetBillingTimeRested() / 60));
-                    self:SetCreateButtonTooltipText(reasonText);
-                    enabled = false;
+                    local reasonText = format('你的在线时间已经超过3小时。在目前阶段下，你不能这么做。在下线休息%d小时后，你的防沉迷时间将会清零。请退出游戏下线休息。', REQUIRED_REST_HOURS - math.floor(GetBillingTimeRested() / 60))
+                    self:SetCreateButtonTooltipText(reasonText)
+                    enabled = false
                 elseif NoPlayTime() then
-                    local reasonText = format('你的在线时间已经超过5小时。在目前阶段下，你不能这么做。在下线休息%d小时后，你的防沉迷时间将会清零。请退出游戏，下线休息和运动。', REQUIRED_REST_HOURS - math.floor(GetBillingTimeRested() / 60));
-                    self:SetCreateButtonTooltipText(reasonText);
-                    enabled = false;
+                    local reasonText = format('你的在线时间已经超过5小时。在目前阶段下，你不能这么做。在下线休息%d小时后，你的防沉迷时间将会清零。请退出游戏，下线休息和运动。', REQUIRED_REST_HOURS - math.floor(GetBillingTimeRested() / 60))
+                    self:SetCreateButtonTooltipText(reasonText)
+                    enabled = false
                 end
 
                 if enabled then
-                    local failValidationReason = self:ValidateCraftRequirements(currentRecipeInfo, transaction, isRuneforging, countMax);
-                    self:SetCreateButtonTooltipText(FailValidationTooltips[failValidationReason]);
+                    local failValidationReason = self:ValidateCraftRequirements(currentRecipeInfo, transaction, isRuneforging, countMax)
+                    self:SetCreateButtonTooltipText(FailValidationTooltips[failValidationReason])
                 end
 
             end
@@ -4249,36 +4249,36 @@ local function Init_Loaded(arg1)
 
         ProfessionsFrame.SpecPage.DetailedView.SpendPointsButton:HookScript("OnEnter", function()
             local self= ProfessionsFrame.SpecPage
-            local spendCurrency = C_ProfSpecs.GetSpendCurrencyForPath(self:GetDetailedPanelNodeID());
+            local spendCurrency = C_ProfSpecs.GetSpendCurrencyForPath(self:GetDetailedPanelNodeID())
             if spendCurrency ~= nil then
-                local currencyTypesID = self:GetSpendCurrencyTypesID();
+                local currencyTypesID = self:GetSpendCurrencyTypesID()
                 if currencyTypesID then
-                    local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(currencyTypesID);
+                    local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(currencyTypesID)
                     if self.treeCurrencyInfoMap[spendCurrency] ~= nil and self.treeCurrencyInfoMap[spendCurrency].quantity == 0 then
-                        GameTooltip:SetText(format('|cnRED_FONT_COLOR:你没有可以消耗的|r|n|cffffffff%s|r|r', currencyInfo.name), nil, nil, nil, nil, true);
-                        GameTooltip:Show();
+                        GameTooltip:SetText(format('|cnRED_FONT_COLOR:你没有可以消耗的|r|n|cffffffff%s|r|r', currencyInfo.name), nil, nil, nil, nil, true)
+                        GameTooltip:Show()
                     end
                 end
             end
-        end);
+        end)
         hooksecurefunc(ProfessionsFrame.SpecPage, 'ConfigureButtons', function(self)
             print('ConfigureButtons')
             self.DetailedView.SpendPointsButton:SetScript("OnEnter", function()
                 print('enter')
-                local spendCurrency = C_ProfSpecs.GetSpendCurrencyForPath(self:GetDetailedPanelNodeID());
+                local spendCurrency = C_ProfSpecs.GetSpendCurrencyForPath(self:GetDetailedPanelNodeID())
                 if spendCurrency ~= nil then
-                    local currencyTypesID = self:GetSpendCurrencyTypesID();
+                    local currencyTypesID = self:GetSpendCurrencyTypesID()
                     if currencyTypesID then
-                        local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(currencyTypesID);
+                        local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(currencyTypesID)
                         if self.treeCurrencyInfoMap[spendCurrency] ~= nil and self.treeCurrencyInfoMap[spendCurrency].quantity == 0 then
-                            GameTooltip:SetOwner(self.DetailedView.SpendPointsButton, "ANCHOR_RIGHT", 0, 0);
-                            GameTooltip_AddErrorLine(GameTooltip, format('你没有可以消耗的%s。', currencyInfo.name));
+                            GameTooltip:SetOwner(self.DetailedView.SpendPointsButton, "ANCHOR_RIGHT", 0, 0)
+                            GameTooltip_AddErrorLine(GameTooltip, format('你没有可以消耗的%s。', currencyInfo.name))
                             
-                            GameTooltip:Show();
+                            GameTooltip:Show()
                         end
                     end
                 end
-            end);
+            end)
         end)
 
 
@@ -4291,15 +4291,15 @@ local function Init_Loaded(arg1)
         set(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Text, '个人')
 
         ProfessionsFrame.OrdersPage.BrowseFrame.OrdersRemainingDisplay:HookScript('OnEnter', function()
-            local claimInfo = C_CraftingOrders.GetOrderClaimInfo(ProfessionsFrame.OrdersPage.professionInfo.profession);
-            local tooltipText;
+            local claimInfo = C_CraftingOrders.GetOrderClaimInfo(ProfessionsFrame.OrdersPage.professionInfo.profession)
+            local tooltipText
             if claimInfo.secondsToRecharge then
-                tooltipText = format('你目前还能完成|cnGREEN_FONT_COLOR:%d|r份公开订单。|cnGREEN_FONT_COLOR:%s|r后才有更多可用的订单。', claimInfo.claimsRemaining, SecondsToTime(claimInfo.secondsToRecharge));
+                tooltipText = format('你目前还能完成|cnGREEN_FONT_COLOR:%d|r份公开订单。|cnGREEN_FONT_COLOR:%s|r后才有更多可用的订单。', claimInfo.claimsRemaining, SecondsToTime(claimInfo.secondsToRecharge))
             else
-                tooltipText = format('你目前还能完成|cnGREEN_FONT_COLOR:%d|r份公开订单。', claimInfo.claimsRemaining);
+                tooltipText = format('你目前还能完成|cnGREEN_FONT_COLOR:%d|r份公开订单。', claimInfo.claimsRemaining)
             end
-            GameTooltip_AddNormalLine(GameTooltip, tooltipText);
-            GameTooltip:Show();
+            GameTooltip_AddNormalLine(GameTooltip, tooltipText)
+            GameTooltip:Show()
         end)
 
         local orderTypeTabTitles ={
@@ -4318,24 +4318,24 @@ local function Init_Loaded(arg1)
         end
         hooksecurefunc(ProfessionsFrame.OrdersPage, 'InitOrderTypeTabs', function(self)
             for _, typeTab in ipairs(self.BrowseFrame.orderTypeTabs) do
-                SetTabTitleWithCount(typeTab, typeTab.orderType, 0);
+                SetTabTitleWithCount(typeTab, typeTab.orderType, 0)
             end
         end)
         ProfessionsFrame.OrdersPage:HookScript('OnEvent', function(self, event, ...)
             if event == "CRAFTINGORDERS_UPDATE_ORDER_COUNT" then
-                local type, count = ...;
-                local tabButton;
+                local type, count = ...
+                local tabButton
                 if type == Enum.CraftingOrderType.Guild then
-                    tabButton = self.BrowseFrame.GuildOrdersButton;
+                    tabButton = self.BrowseFrame.GuildOrdersButton
                 elseif type == Enum.CraftingOrderType.Personal then
-                    tabButton = self.BrowseFrame.PersonalOrdersButton;
+                    tabButton = self.BrowseFrame.PersonalOrdersButton
                 end
-                SetTabTitleWithCount(tabButton, type, count);
+                SetTabTitleWithCount(tabButton, type, count)
             elseif event == "CRAFTINGORDERS_REJECT_ORDER_RESPONSE" then
-                local result = ...;
-                local success = (result == Enum.CraftingOrderResult.Ok);
+                local result = ...
+                local success = (result == Enum.CraftingOrderResult.Ok)
                 if not success then
-                    UIErrorsFrame:AddExternalErrorMessage('拒绝订单失败。请稍后再试。');
+                    UIErrorsFrame:AddExternalErrorMessage('拒绝订单失败。请稍后再试。')
                 end
             end
         end)
@@ -4372,43 +4372,43 @@ local function Init_Loaded(arg1)
         set(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.SchematicForm.OptionalReagents.Label, '附加材料：')
         ProfessionsFrame.OrdersPage.OrderView.OrderDetails.SchematicForm.OptionalReagents.labelText= '附加材料：'--Blizzard_ProfessionsRecipeSchematicForm.xml
         ProfessionsFrame.OrdersPage.OrderView.OrderDetails.SchematicForm.AllocateBestQualityCheckBox:HookScript("OnEnter", function(button)
-            local checked = button:GetChecked();
+            local checked = button:GetChecked()
             if checked then
-                GameTooltip:SetText('取消勾选后，总会使用可用的最低品质的材料。');
+                GameTooltip:SetText('取消勾选后，总会使用可用的最低品质的材料。')
             else
-                GameTooltip:SetText('勾选后，总会使用可用的最高品质的材料。');
+                GameTooltip:SetText('勾选后，总会使用可用的最高品质的材料。')
             end
-            GameTooltip:Show();
-        end);
+            GameTooltip:Show()
+        end)
 
 
         hooksecurefunc(ProfessionsFrame.OrdersPage.OrderView, 'UpdateStartOrderButton', function(self)--Blizzard_ProfessionsCrafterOrderView.lua
-            local errorReason;
-            local recipeInfo = C_TradeSkillUI.GetRecipeInfo(self.order.spellID);
-            local profession = C_TradeSkillUI.GetChildProfessionInfo().profession;
-            local claimInfo = profession and C_CraftingOrders.GetOrderClaimInfo(profession);
+            local errorReason
+            local recipeInfo = C_TradeSkillUI.GetRecipeInfo(self.order.spellID)
+            local profession = C_TradeSkillUI.GetChildProfessionInfo().profession
+            local claimInfo = profession and C_CraftingOrders.GetOrderClaimInfo(profession)
             if self.order.customerGuid == UnitGUID("player") then
-                errorReason = '你不能认领你自己的订单。';
+                errorReason = '你不能认领你自己的订单。'
             elseif claimInfo and self.order.orderType == Enum.CraftingOrderType.Public and claimInfo.claimsRemaining <= 0 and Professions.GetCraftingOrderRemainingTime(self.order.expirationTime) > Constants.ProfessionConsts.PUBLIC_CRAFTING_ORDER_STALE_THRESHOLD then
-                errorReason = format('你目前无法认领更多的公开订单。%s后才有更多可用的订单。', SecondsToTime(claimInfo.secondsToRecharge));
+                errorReason = format('你目前无法认领更多的公开订单。%s后才有更多可用的订单。', SecondsToTime(claimInfo.secondsToRecharge))
             elseif not recipeInfo or not recipeInfo.learned or (self.order.isRecraft and not C_CraftingOrders.OrderCanBeRecrafted(self.order.orderID)) then
-                errorReason = '你还没有学会此配方。';
+                errorReason = '你还没有学会此配方。'
             elseif not self.hasOptionalReagentSlots then
-                errorReason = '你尚未解锁完成此订单所需的附加材料栏位。';
+                errorReason = '你尚未解锁完成此订单所需的附加材料栏位。'
             end
 
             if errorReason then
                 self.OrderInfo.StartOrderButton:SetScript("OnEnter", function()
-                    GameTooltip:SetOwner(self.OrderInfo.StartOrderButton, "ANCHOR_RIGHT");
-                    GameTooltip_AddErrorLine(GameTooltip, errorReason);
-                    GameTooltip:Show();
-                end);
+                    GameTooltip:SetOwner(self.OrderInfo.StartOrderButton, "ANCHOR_RIGHT")
+                    GameTooltip_AddErrorLine(GameTooltip, errorReason)
+                    GameTooltip:Show()
+                end)
             else
                 self.OrderInfo.StartOrderButton:SetScript("OnEnter", function()
-                    GameTooltip:SetOwner(self.OrderInfo.StartOrderButton, "ANCHOR_RIGHT");
-                    GameTooltip_AddHighlightLine(GameTooltip, '此订单开始后，你有30分钟的时间来完成此订单。');
-                    GameTooltip:Show();
-                end);
+                    GameTooltip:SetOwner(self.OrderInfo.StartOrderButton, "ANCHOR_RIGHT")
+                    GameTooltip_AddHighlightLine(GameTooltip, '此订单开始后，你有30分钟的时间来完成此订单。')
+                    GameTooltip:Show()
+                end)
             end
         end)
 
@@ -4558,11 +4558,11 @@ local function Init_Loaded(arg1)
         --[[hooksecurefunc(Professions, 'SetupProfessionsCurrencyTooltip', function(currencyInfo, currencyCount)--lizzard_Professions.lua
             if currencyInfo and currencyInfo.name then
                 GameTooltip:SetText('|cffffffff'..currencyInfo.name..'|r')
-                GameTooltip_AddNormalLine(GameTooltip, currencyInfo.description);
-                GameTooltip_AddBlankLineToTooltip(GameTooltip);
+                GameTooltip_AddNormalLine(GameTooltip, currencyInfo.description)
+                GameTooltip_AddBlankLineToTooltip(GameTooltip)
 
-                local count = currencyCount or currencyInfo.quantity;
-                GameTooltip_AddHighlightLine(GameTooltip, format('|cnNORMAL_FONT_COLOR:总计：|r %d', count));
+                local count = currencyCount or currencyInfo.quantity
+                GameTooltip_AddHighlightLine(GameTooltip, format('|cnNORMAL_FONT_COLOR:总计：|r %d', count))
             end
         end)]]
 
@@ -5282,6 +5282,17 @@ local function Init_Loaded(arg1)
         dia("PERKS_PROGRAM_CONFIRM_OVERRIDE_FROZEN_ITEM", {text= '你确定想替换当前的冻结物品吗？现在的冻结物品有可能已经下架了。', button1 = '确认', button2 = '取消'})
 
     elseif arg1=='Blizzard_WeeklyRewards' then--Blizzard_WeeklyRewards.lua
+        print(id,addName)
+        hooksecurefunc(WeeklyRewardsFrame, 'UpdateTitle', function(self)
+            local canClaimRewards = C_WeeklyRewards.CanClaimRewards()
+            if canClaimRewards then
+                set(self.HeaderFrame.Text, '你只能从宏伟宝库选择一件奖励。')
+            elseif not C_WeeklyRewards.HasInteraction() and C_WeeklyRewards.HasAvailableRewards() then
+                set(self.HeaderFrame.Text, '返回宏伟宝库，获取你的奖励')
+            else
+                set(self.HeaderFrame.Text, '每周完成活动可以将物品添加到宏伟宝库中。|n你每周可以选择一件奖励。')
+            end
+        end)
         dia("CONFIRM_SELECT_WEEKLY_REWARD", {text = '你一旦选好奖励就不能变更了。|n|n你确定要选择这件物品吗？', button1 = '是', button2 = '取消'})
 
     elseif arg1=='Blizzard_PlayerChoice' then
