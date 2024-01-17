@@ -52,8 +52,16 @@ local function hookDia(string, text, func)
     end
 end
 
-
-
+local function regions(self, text)
+    if self and text then
+        for _, region in pairs({self:GetRegions()}) do
+            if region:GetObjectType()=='FontString' then
+                set(region, text)
+                return
+            end
+        end
+    end
+end
 
 
 
@@ -1452,8 +1460,10 @@ local function Init()
             local text=LFGListUtil_GetDecoratedCategoryName(categoryInfo.name, filters, true)
             local button= self.CategoryButtons[btnIndex]
             if button and button.Label and text then
-                font(button.Label)
-                set(button.Label, e.strText[text])
+                if e.strText[text] then
+                    font(button.Label)
+                    set(button.Label, e.strText[text])
+                end
             end
         end)
         set(LFGListFrame.CategorySelection.StartGroupButton, '创建队伍')
@@ -1734,7 +1744,17 @@ local function Init()
     set(LFGListInviteDialog.DeclineButton, '拒绝')
     set(LFGListInviteDialog.AcknowledgeButton, '确定')
 
-
+    set(LFGListCreationDescription.EditBox.Instructions, '关于你的队伍的更多细节（可选）')
+    hooksecurefunc('LFGListSearchPanel_SetCategory', function(self, categoryID, filters)--LFGList.lua
+        local categoryInfo = C_LFGList.GetLfgCategoryInfo(categoryID) or {};
+        if categoryInfo.searchPromptOverride then
+            set(self.SearchBox.Instructions, e.strText[categoryInfo.searchPromptOverride])
+        else
+            set(self.SearchBox.Instructions,'过滤器')
+        end
+        local name = LFGListUtil_GetDecoratedCategoryName(categoryInfo.name, filters, false);
+        set(self.CategoryName, e.strText[name])
+    end)
 
 
 
@@ -2335,7 +2355,9 @@ local function Init()
 
     --插件
     set(AddonListTitleText, '插件列表')
-    --AddonListForceLoad:SetText('加载过期插件')
+    set(AddonListForceLoad, '加载过期插件')
+    regions(AddonListForceLoad, '加载过期插件')
+
     set(AddonListEnableAllButton, '全部启用')
     set(AddonListDisableAllButton, '全部禁用')
     hooksecurefunc('AddonList_Update', function()--AddonList.lua
@@ -2874,12 +2896,12 @@ print(ExpansionLandingPage.overlay)]]
         end
     end)
     hooksecurefunc(StackSplitFrame, 'UpdateStackText', function(self)
-        if self.isMultiStack then 
+        if self.isMultiStack then
             set(self.StackSplitText, format('%d 堆', self.split/self.minSplit))
             set(self.StackItemCountText, format('总计%d', self.split))
         end
     end)
-    
+
 
 
 
@@ -2895,7 +2917,7 @@ print(ExpansionLandingPage.overlay)]]
         set(PetStableActivePetsLabel, '使用中')
         hooksecurefunc('PetStable_Update', function()
             PetStableFrame:SetTitleFormatted('%s 的小宠物', UnitName("player"));
-            
+
             if ( PetStableFrame.selectedPet ) then
                 if ( GetStablePetFoodTypes(PetStableFrame.selectedPet) ) then
                     PetStableDiet.tooltip = format('|cffffd200食物：|r%s', BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet)));

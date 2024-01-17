@@ -7085,7 +7085,8 @@
         "PetStable_GetPetSlot",
         "PetStable_UpdatePetModelScene",
         "EMPTY_STABLE_SLOT",
-        "STABLE_PET_INFO_TOOLTIP_TEXT"
+        "STABLE_PET_INFO_TOOLTIP_TEXT",
+        "LFGListCreationDescription"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
