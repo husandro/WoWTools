@@ -4273,7 +4273,7 @@ local function Init_Loaded(arg1)
                         if self.treeCurrencyInfoMap[spendCurrency] ~= nil and self.treeCurrencyInfoMap[spendCurrency].quantity == 0 then
                             GameTooltip:SetOwner(self.DetailedView.SpendPointsButton, "ANCHOR_RIGHT", 0, 0)
                             GameTooltip_AddErrorLine(GameTooltip, format('你没有可以消耗的%s。', currencyInfo.name))
-                            
+
                             GameTooltip:Show()
                         end
                     end
@@ -5293,14 +5293,82 @@ local function Init_Loaded(arg1)
                 set(self.HeaderFrame.Text, '每周完成活动可以将物品添加到宏伟宝库中。|n你每周可以选择一件奖励。')
             end
         end)
-        
+
         dia("CONFIRM_SELECT_WEEKLY_REWARD", {text = '你一旦选好奖励就不能变更了。|n|n你确定要选择这件物品吗？', button1 = '是', button2 = '取消'})
 
     elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插入， 界面
         set(ChallengesFrame.WeeklyInfo.Child.SeasonBest, '赛季最佳')
         set(ChallengesFrame.WeeklyInfo.Child.ThisWeekLabel, '本周')
         set(ChallengesFrame.WeeklyInfo.Child.Description, '在史诗难度下，你每完成一个地下城，都会提升下一个地下城的难度和奖励。\n\n每周你都会根据完成的史诗地下城获得一系列奖励。\n\n要想开始挑战，把你的地下城难度设置为史诗，然后前往任意下列地下城吧。')
+
+        hooksecurefunc(ChallengesFrame.WeeklyInfo.Child.WeeklyChest, 'Update', function(self, bestMapID, dungeonScore)
+            if C_WeeklyRewards.HasAvailableRewards() then
+                self.RunStatus:SetText('拜访宏伟宝库获取你的奖励！');
+            elseif self:HasUnlockedRewards(Enum.WeeklyRewardChestThresholdType.Activities)  then
+                self.RunStatus:SetText('完成史诗钥石地下城即可获得：');
+            elseif C_MythicPlus.GetOwnedKeystoneLevel() or (dungeonScore and dungeonScore > 0) then
+                self.RunStatus:SetText('完成史诗钥石地下城即可获得：');
+            end
+        end)
+
         
+        --[[hooksecurefunc(ChallengesFrame.WeeklyInfo.Child.WeeklyChest, 'SetupChest', function(self, chestFrame)
+            if (chestFrame == self.CollectChest) then
+                --chestFrame.Level:SetText(self.level);
+                print(chestFrame.Level)
+                self.rewardTooltipText = format('你的每周宝箱里会有物品等级为%d的装备奖励。', self.rewardLevel);
+            elseif (chestFrame == self.CompletedKeystoneChest) then
+                --chestFrame.Level:SetText(self.level);
+                print(chestFrame.Level)
+                self.rewardTooltipText = format('你的每周宝箱里会有物品等级为%d的装备奖励。', self.rewardLevel);
+                if (self.level >= 15) then--MAXIMUM_REWARDS_LEVEL
+                    self.rewardTooltipText2 = '完成高等级地下城会获得更多的神器能量奖励。';
+                else
+                    self.rewardTooltipText2 = format('完成一个%d级史诗难度地下城会使你的奖励物品提升至%d级。', self.nextBestLevel, self.nextRewardLevel);
+                end
+            elseif (chestFrame == self.MissingKeystoneChest) then
+                self.rewardTooltipText = format('完成一个%d级的史诗难度地下城后，你能够从每周宝箱中获得一件物品等级为%d的装备。', self.ownedKeystoneLevel, self.rewardLevel);
+            end
+        end)]]
+        ChallengesFrame.WeeklyInfo.Child.WeeklyChest:HookScript('OnEnter', function(self)
+            GameTooltip_SetTitle(GameTooltip, '宏伟宝库奖励');
+
+            -- always direct players to great vault if there are rewards to be claimed
+            if self.state == 4 then--CHEST_STATE_COLLECT
+                GameTooltip_AddColoredLine(GameTooltip, '宏伟宝库里有奖励在等待着你。', GREEN_FONT_COLOR);
+                GameTooltip_AddBlankLineToTooltip(GameTooltip);
+            end
+
+            local lastCompletedActivityInfo, nextActivityInfo = WeeklyRewardsUtil.GetActivitiesProgress();
+            if not lastCompletedActivityInfo then
+                GameTooltip_AddNormalLine(GameTooltip, '在本周内完成一个满级英雄或史诗地下城可以解锁一个宏伟宝库奖励。时空漫游地下城算作英雄地下城。|n|n你的奖励的物品等级会以你本周最高等级的成绩为依据。');
+            else
+                if nextActivityInfo then
+                    local globalString = (lastCompletedActivityInfo.index == 1) and '再完成%1$d个满级英雄或史诗地下城可以解锁第二个宏伟宝库奖励。时空漫游地下城算作英雄地下城。' or '再完成%1$d个满级英雄或史诗地下城可以解锁第三个宏伟宝库奖励。时空漫游地下城算作英雄地下城。';
+                    GameTooltip_AddNormalLine(GameTooltip, globalString:format(nextActivityInfo.threshold - nextActivityInfo.progress));
+                else
+                    GameTooltip_AddNormalLine(GameTooltip, '你已经解锁了本周可提供的所有奖励。在下周开始时拜访宏伟宝库，从你解锁的奖励里进行选择！');
+                    GameTooltip_AddBlankLineToTooltip(GameTooltip);
+                    GameTooltip_AddColoredLine(GameTooltip, '提升你的奖励', GREEN_FONT_COLOR);
+                    local level, count = WeeklyRewardsUtil.GetLowestLevelInTopDungeonRuns(lastCompletedActivityInfo.threshold);
+                    if level == WeeklyRewardsUtil.HeroicLevel then
+                        GameTooltip_AddNormalLine(GameTooltip, format('完成%1$d次史诗难度的地下城，提升你的奖励。', count));
+                    else
+                        local nextLevel = WeeklyRewardsUtil.GetNextMythicLevel(level);
+                        GameTooltip_AddNormalLine(GameTooltip, format('完成%1$d个%2$d级或更高的史诗地下城可以提升你的奖励。', count, nextLevel));
+                    end
+                end
+            end
+
+            GameTooltip_AddInstructionLine(GameTooltip, '点击预览宏伟宝库');
+            GameTooltip:Show();
+        end)
+
+        ChallengesFrame.WeeklyInfo.Child.DungeonScoreInfo:HookScript('OnEnter', function()
+            GameTooltip_SetTitle(GameTooltip, '史诗钥石评分');
+            GameTooltip_AddNormalLine(GameTooltip, '基于你在每个地下城的最佳成绩得出的总体评分。你可以通过更迅速地完成地下城或者完成更高难度的地下城来提高你的评分。|n|n提升你的史诗地下城评分后，你就能把你的地下城装备升级到最高等级。|n|cff1eff00<Shift+点击以链接到聊天栏>|r');
+            GameTooltip:Show();
+        end)
 
     elseif arg1=='Blizzard_PlayerChoice' then
         dia("CONFIRM_PLAYER_CHOICE", {button1 = '确定', button2 = '取消'})

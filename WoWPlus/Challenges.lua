@@ -1601,13 +1601,13 @@ local function Init_WeeklyRewardsFrame()
         WeeklyRewardExpirationWarningDialog:HookScript('OnShow', function(self)
             local title = _G["EXPANSION_NAME"..LE_EXPANSION_LEVEL_CURRENT];
             local text
-            if title then
+            if title and e.strText[title] then
                 title= e.strText[title] or title
                 text = C_WeeklyRewards.ShouldShowFinalRetirementMessage()
                             and format(e.onlyChinese and '所有未领取的奖励都会在|cnGREEN_FONT_COLOR:%s|r上线后消失。' or GREAT_VAULT_RETIRE_WARNING_FINAL_WEEK, title)
                             or format(e.onlyChinese and '本周后就不能获得新的奖励了。|cnGREEN_FONT_COLOR:%s|r上线后，所有未领取的奖励都会丢失。' or GREAT_VAULT_RETIRE_WARNING, title)
             else
-                text= WeeklyRewardExpirationWarningDialog.Description:GetText()
+                text= self.Description:GetText()
             end
             print(id, addName, '|n|cffff00ff', text or (e.onlyChinese and '关闭' or CLOSE))
             self:Hide()
