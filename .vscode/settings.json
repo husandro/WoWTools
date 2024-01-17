@@ -7027,7 +7027,11 @@
         "PROFESSIONS_SPECS_OUT_OF_KNOWLEDGE",
         "PROFESSIONS_SPECIALIZATION_CURRENCY_TOTAL",
         "WEEKLY_REWARDS_CHOOSE_REWARD",
-        "WEEKLY_REWARDS_ADD_ITEMS"
+        "WEEKLY_REWARDS_ADD_ITEMS",
+        "GREAT_VAULT_RETIRE_WARNING",
+        "LE_EXPANSION_LEVEL_CURRENT",
+        "GREAT_VAULT_RETIRE_WARNING_FINAL_WEEK",
+        "GreatVaultRetirementWarningFrameMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

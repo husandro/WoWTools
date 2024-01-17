@@ -1532,14 +1532,14 @@ local function set_Update()--Blizzard_ChallengesUI.lua
         end
     end
 
-    if ChallengesFrame.WeeklyInfo.Child.WeeklyChest and ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus and ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:GetText()==MYTHIC_PLUS_COMPLETE_MYTHIC_DUNGEONS then
+    --[[if ChallengesFrame.WeeklyInfo.Child.WeeklyChest and ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus and ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:GetText()==MYTHIC_PLUS_COMPLETE_MYTHIC_DUNGEONS then
         ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetText('')--隐藏，完成史诗钥石地下城即可获得
         ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:Hide()
     end
     if ChallengesFrame and ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child and ChallengesFrame.WeeklyInfo.Child.Description then
         ChallengesFrame.WeeklyInfo.Child.Description:SetText('')
         ChallengesFrame.WeeklyInfo.Child.Description:Hide()
-    end
+    end]]
 end
 
 
@@ -1595,17 +1595,23 @@ local function Init_WeeklyRewardsFrame()
             self.Overlay:SetPoint('TOPLEFT', 80,-60)
         end
     end)
-    
+
     --未提取,提示
-    if WeeklyRewardExpirationWarningDialog and WeeklyRewardExpirationWarningDialog:IsShown() then
-        if WeeklyRewardExpirationWarningDialog.Description then
-            print(id, addName, '|cffff00ff'..WeeklyRewardExpirationWarningDialog.Description:GetText())
-            WeeklyRewardExpirationWarningDialog:Hide()
-        else
-            C_Timer.After(5, function()
-                WeeklyRewardExpirationWarningDialog:Hide()
-            end)
-        end
+    if WeeklyRewardExpirationWarningDialog then
+        WeeklyRewardExpirationWarningDialog:HookScript('OnShow', function(self)
+            local title = _G["EXPANSION_NAME"..LE_EXPANSION_LEVEL_CURRENT];
+            local text
+            if title then
+                title= e.strText[title] or title
+                text = C_WeeklyRewards.ShouldShowFinalRetirementMessage()
+                            and format(e.onlyChinese and '所有未领取的奖励都会在|cnGREEN_FONT_COLOR:%s|r上线后消失。' or GREAT_VAULT_RETIRE_WARNING_FINAL_WEEK, title)
+                            or format(e.onlyChinese and '本周后就不能获得新的奖励了。|cnGREEN_FONT_COLOR:%s|r上线后，所有未领取的奖励都会丢失。' or GREAT_VAULT_RETIRE_WARNING, title)
+            else
+                text= WeeklyRewardExpirationWarningDialog.Description:GetText()
+            end
+            print(id, addName, '|n|cffff00ff', text or (e.onlyChinese and '关闭' or CLOSE))
+            self:Hide()
+        end)
     end
 end
 
@@ -2049,7 +2055,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         elseif arg1=='Blizzard_WeeklyRewards' then
             Init_WeeklyRewardsFrame()
         end
-    
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save

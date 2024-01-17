@@ -5282,7 +5282,7 @@ local function Init_Loaded(arg1)
         dia("PERKS_PROGRAM_CONFIRM_OVERRIDE_FROZEN_ITEM", {text= '你确定想替换当前的冻结物品吗？现在的冻结物品有可能已经下架了。', button1 = '确认', button2 = '取消'})
 
     elseif arg1=='Blizzard_WeeklyRewards' then--Blizzard_WeeklyRewards.lua
-        print(id,addName)
+        font(WeeklyRewardsFrame.HeaderFrame.Text)
         hooksecurefunc(WeeklyRewardsFrame, 'UpdateTitle', function(self)
             local canClaimRewards = C_WeeklyRewards.CanClaimRewards()
             if canClaimRewards then
@@ -5293,7 +5293,14 @@ local function Init_Loaded(arg1)
                 set(self.HeaderFrame.Text, '每周完成活动可以将物品添加到宏伟宝库中。|n你每周可以选择一件奖励。')
             end
         end)
+        
         dia("CONFIRM_SELECT_WEEKLY_REWARD", {text = '你一旦选好奖励就不能变更了。|n|n你确定要选择这件物品吗？', button1 = '是', button2 = '取消'})
+
+    elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插入， 界面
+        set(ChallengesFrame.WeeklyInfo.Child.SeasonBest, '赛季最佳')
+        set(ChallengesFrame.WeeklyInfo.Child.ThisWeekLabel, '本周')
+        set(ChallengesFrame.WeeklyInfo.Child.Description, '在史诗难度下，你每完成一个地下城，都会提升下一个地下城的难度和奖励。\n\n每周你都会根据完成的史诗地下城获得一系列奖励。\n\n要想开始挑战，把你的地下城难度设置为史诗，然后前往任意下列地下城吧。')
+        
 
     elseif arg1=='Blizzard_PlayerChoice' then
         dia("CONFIRM_PLAYER_CHOICE", {button1 = '确定', button2 = '取消'})
