@@ -1708,6 +1708,28 @@ local function Init()
     end)
 
 
+    hooksecurefunc('LFGListInviteDialog_Show', function(self, resultID, kstringGroupName)
+        local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID) or {};
+        local activityName = C_LFGList.GetActivityFullName(searchResultInfo.activityID, nil, searchResultInfo.isWarMode);
+        local _, status, _, _, role = C_LFGList.GetApplicationInfo(resultID);
+        local name= kstringGroupName or searchResultInfo.name
+        if e.strText[name] then
+            self.GroupName:SetText(e.strText[name]);
+        end
+        if e.strText[activityName] then
+            self.ActivityName:SetText(e.strText[activityName]);
+        end
+        role= _G[role]
+        if e.strText[role] then
+            self.Role:SetText(e.strText[role]);
+        end
+        self.Label:SetText(status ~= "invited" and '你已经加入了一支队伍：' or '你收到了一支队伍的邀请：');
+    end)
+    set(LFGListInviteDialog.Label, '你收到了一支队伍的邀请：')
+    set(LFGListInviteDialog.RoleDescription, '你的职责')
+    set(LFGListInviteDialog.OfflineNotice, '有一名队伍成员处于离线状态，将无法收到邀请。')
+    set(LFGListInviteDialog.AcceptButton, '接受')
+    set(LFGListInviteDialog.DeclineButton, '拒绝')
 
 
 
@@ -2834,7 +2856,9 @@ print(ExpansionLandingPage.overlay)]]
     end)
 
 
-
+    --MovieFrame.xml
+    set(MovieFrame.CloseDialog.ConfirmButton, '是')
+    set(MovieFrame.CloseDialog.ResumeButton, '否')
 
 
 

@@ -7072,7 +7072,10 @@
         "BONUS_BUTTON_TOOLTIPS",
         "PVP_PRESTIGE_RANK_UP_NEXT_MAX_LEVEL_REWARD",
         "PVPConquestLockTooltipShow",
-        "FEATURE_BECOMES_AVAILABLE_AT_LEVEL"
+        "FEATURE_BECOMES_AVAILABLE_AT_LEVEL",
+        "LFG_LIST_INVITED_TO_GROUP",
+        "LFGListInviteDialog_UpdateOfflineNotice",
+        "LFG_LIST_JOINED_GROUP_NOTICE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
