@@ -1415,7 +1415,7 @@ local function Init()
     --LFD PVEFrame.lua
     --地下城和团队副本
     GroupFinderFrame:HookScript('OnShow', function()
-        PVEFrame:SetTitle('地下城和团队副本');
+        PVEFrame:SetTitle('地下城和团队副本')
     end)
 
     set(PVEFrameTab1, '地下城和团队副本')
@@ -5090,11 +5090,12 @@ local function Init_Loaded(arg1)
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
         hooksecurefunc('PVPQueueFrame_UpdateTitle', function()--Blizzard_PVPUI.lua
             if ConquestFrame.seasonState == 2 then--SEASON_STATE_PRESEASON
-                PVEFrame:SetTitle('PvP（季前赛）');
+                PVEFrame:SetTitle('PvP（季前赛）')
             elseif ConquestFrame.seasonState == 1 then--SEASON_STATE_OFFSEASON
-                PVEFrame:SetTitle('玩家VS玩家（休赛期）');
+                PVEFrame:SetTitle('玩家VS玩家（休赛期）')
             else
-                PVEFrame:SetTitleFormatted('玩家VS玩家（“巨龙时代”第%d赛季）', PVPUtil.GetCurrentSeasonNumber());
+                local expName = _G["EXPANSION_NAME"..GetExpansionLevel()]
+                PVEFrame:SetTitleFormatted('玩家VS玩家 '..(e.strText[expName] or expName)..' 第 %d 赛季', PVPUtil.GetCurrentSeasonNumber())
             end
         end)
         set(PVPQueueFrameCategoryButton1.Name, '快速比赛')
@@ -5178,8 +5179,6 @@ local function Init_Loaded(arg1)
                     disabledReason = format('你需要更高的PvP装备物品平均等级才能加入队列。|n（需要 %2$d，当前%3$d。）', brawlInfo.minItemLevel, playerPvPItemLevel)
                 end
             end
-
-            --Disable the button if the person is active in LFGList
             if not disabledReason then
                 if ( select(2,C_LFGList.GetNumApplications()) > 0 ) then
                     disabledReason = '你不能在拥有有效的预创建队伍申请时那样做。'
@@ -5189,7 +5188,6 @@ local function Init_Loaded(arg1)
                     canQueue = false
                 end
             end
-
             local isInCrossFactionGroup = C_PartyInfo.IsCrossFactionParty()
             if ( canQueue ) then
                 if ( IsInGroup(LE_PARTY_CATEGORY_HOME) ) then
@@ -5218,6 +5216,85 @@ local function Init_Loaded(arg1)
             HonorFrame.QueueButton.tooltip = disabledReason
         end)
 
+        hooksecurefunc('PVPConquestLockTooltipShow', function()
+            GameTooltip:SetText(string.format('该功能将在%d级开启。', GetMaxLevelForLatestExpansion()));
+            GameTooltip:Show();
+        end)
+
+        PVPQueueFrame.HonorInset.CasualPanel:HookScript('OnShow', function(self)
+            if self.HKLabel:IsShown() then
+                set(self.HKLabel, '宏伟宝库')
+            end
+        end)
+        set(PVPQueueFrame.HonorInset.CasualPanel.HKLabel, '宏伟宝库')
+        PVPQueueFrame.HonorInset.CasualPanel.WeeklyChest:HookScript('OnEnter', function()
+            if not ConquestFrame_HasActiveSeason() then
+                GameTooltip_SetTitle(GameTooltip, '宏伟宝库奖励')
+                GameTooltip_AddDisabledLine(GameTooltip, '无效会阶')
+                GameTooltip_AddNormalLine(GameTooltip, '征服点数只能在PvP赛季开启期间获得。')
+                GameTooltip:Show()
+            else
+                local weeklyProgress = C_WeeklyRewards.GetConquestWeeklyProgress()
+                local unlocksCompleted = weeklyProgress.unlocksCompleted or 0
+                local maxUnlocks = weeklyProgress.maxUnlocks or 3
+                local description
+                if unlocksCompleted > 0 then
+                    description = format('通过评级PvP获得获得荣誉点数以解锁宏伟宝库的奖励。你的奖励的物品等级会以你本周胜场的最高段位为基准。\n\n%s/%s奖励已解锁。', unlocksCompleted, maxUnlocks)
+                else
+                    description = format('通过评级PvP获得获得荣誉点数以解锁宏伟宝库的奖励。你的奖励的物品等级会以你本周胜场的最高段位为基准。\n\n%s/%s奖励已解锁。', unlocksCompleted, maxUnlocks)
+                end
+                GameTooltip_SetTitle(GameTooltip, '宏伟宝库奖励')
+                local hasRewards = C_WeeklyRewards.HasAvailableRewards()
+                if hasRewards then
+                    GameTooltip_AddColoredLine(GameTooltip, '宏伟宝库里有奖励在等待着你。', GREEN_FONT_COLOR)
+                    GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                end
+                GameTooltip_AddNormalLine(GameTooltip, description)
+                GameTooltip_AddInstructionLine(GameTooltip, '点击预览宏伟宝库')
+                GameTooltip:Show()
+            end
+        end)
+
+        hooksecurefunc(PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay, 'Update', function(self)
+            local honorLevel = UnitHonorLevel("player");
+	        set(self.LevelLabel, format('荣誉等级 %d', honorLevel))
+        end)
+        PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay:HookScript('OnEnter', function()
+            GameTooltip_SetTitle(GameTooltip, '生涯荣誉');
+            GameTooltip_AddColoredLine(GameTooltip, '所有角色获得的荣誉。', NORMAL_FONT_COLOR);
+            GameTooltip_AddBlankLineToTooltip(GameTooltip);
+            local currentHonor = UnitHonor("player");
+            local maxHonor = UnitHonorMax("player");
+            GameTooltip_AddColoredLine(GameTooltip, string.format('%d / %d', currentHonor, maxHonor), HIGHLIGHT_FONT_COLOR);
+            GameTooltip:Show();
+        end)
+        PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay.NextRewardLevel:HookScript('OnEnter', function(self)
+            local honorLevel = UnitHonorLevel("player");
+            local nextHonorLevelForReward = C_PvP.GetNextHonorLevelForReward(honorLevel);
+            local rewardInfo = nextHonorLevelForReward and C_PvP.GetHonorRewardInfo(nextHonorLevelForReward);
+            if rewardInfo then
+                local rewardText = select(11, GetAchievementInfo(rewardInfo.achievementRewardedID));
+                if rewardText and rewardText ~= "" then
+                    GameTooltip:SetText(format('到达荣誉等级%d级后可获得下一个奖励', nextHonorLevelForReward));
+                    local WRAP = true;
+                    GameTooltip_AddColoredLine(GameTooltip, rewardText, HIGHLIGHT_FONT_COLOR, WRAP);
+                    GameTooltip:Show();
+                end
+            end
+        end)
+
+        BONUS_BUTTON_TOOLTIPS.RandomBG.func= function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText('随机战场', 1, 1, 1);
+            GameTooltip:AddLine('在随机战场上与敌对阵营竞争。', nil, nil, nil, true);
+            GameTooltip:Show();
+        end
+        BONUS_BUTTON_TOOLTIPS.EpicBattleground.func = function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+            GameTooltip:SetText('随机史诗战场', 1, 1, 1);
+            GameTooltip:AddLine('在40人的大型战场上与敌对阵营竞争。', nil, nil, nil, true);
+            GameTooltip:Show();
+        end
 --hooksecurefunc('HonorFrame_UpdateQueueButtons', function()
 
 
@@ -5310,74 +5387,67 @@ local function Init_Loaded(arg1)
         dia("CONFIRM_SELECT_WEEKLY_REWARD", {text = '你一旦选好奖励就不能变更了。|n|n你确定要选择这件物品吗？', button1 = '是', button2 = '取消'})
 
     elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插入， 界面
+        hooksecurefunc(ChallengesFrame, 'UpdateTitle', function()
+            local currentDisplaySeason =  C_MythicPlus.GetCurrentUIDisplaySeason()
+            if ( not currentDisplaySeason ) then
+                PVEFrame:SetTitle('史诗钥石地下城')
+            else
+                local currExpID = GetExpansionLevel()
+                local expName = _G["EXPANSION_NAME"..currExpID]
+                local title = format('史诗钥石地下城 %s 赛季 %d', e.strText[expName] or expName, currentDisplaySeason)
+                PVEFrame:SetTitle(title)
+            end
+        end)
         set(ChallengesFrame.WeeklyInfo.Child.SeasonBest, '赛季最佳')
         set(ChallengesFrame.WeeklyInfo.Child.ThisWeekLabel, '本周')
         set(ChallengesFrame.WeeklyInfo.Child.Description, '在史诗难度下，你每完成一个地下城，都会提升下一个地下城的难度和奖励。\n\n每周你都会根据完成的史诗地下城获得一系列奖励。\n\n要想开始挑战，把你的地下城难度设置为史诗，然后前往任意下列地下城吧。')
 
         hooksecurefunc(ChallengesFrame.WeeklyInfo.Child.WeeklyChest, 'Update', function(self, bestMapID, dungeonScore)
             if C_WeeklyRewards.HasAvailableRewards() then
-                self.RunStatus:SetText('拜访宏伟宝库获取你的奖励！');
+                self.RunStatus:SetText('拜访宏伟宝库获取你的奖励！')
             elseif self:HasUnlockedRewards(Enum.WeeklyRewardChestThresholdType.Activities)  then
-                self.RunStatus:SetText('完成史诗钥石地下城即可获得：');
+                self.RunStatus:SetText('完成史诗钥石地下城即可获得：')
             elseif C_MythicPlus.GetOwnedKeystoneLevel() or (dungeonScore and dungeonScore > 0) then
-                self.RunStatus:SetText('完成史诗钥石地下城即可获得：');
+                self.RunStatus:SetText('完成史诗钥石地下城即可获得：')
             end
         end)
 
-        
-        --[[hooksecurefunc(ChallengesFrame.WeeklyInfo.Child.WeeklyChest, 'SetupChest', function(self, chestFrame)
-            if (chestFrame == self.CollectChest) then
-                --chestFrame.Level:SetText(self.level);
-                print(chestFrame.Level)
-                self.rewardTooltipText = format('你的每周宝箱里会有物品等级为%d的装备奖励。', self.rewardLevel);
-            elseif (chestFrame == self.CompletedKeystoneChest) then
-                --chestFrame.Level:SetText(self.level);
-                print(chestFrame.Level)
-                self.rewardTooltipText = format('你的每周宝箱里会有物品等级为%d的装备奖励。', self.rewardLevel);
-                if (self.level >= 15) then--MAXIMUM_REWARDS_LEVEL
-                    self.rewardTooltipText2 = '完成高等级地下城会获得更多的神器能量奖励。';
-                else
-                    self.rewardTooltipText2 = format('完成一个%d级史诗难度地下城会使你的奖励物品提升至%d级。', self.nextBestLevel, self.nextRewardLevel);
-                end
-            elseif (chestFrame == self.MissingKeystoneChest) then
-                self.rewardTooltipText = format('完成一个%d级的史诗难度地下城后，你能够从每周宝箱中获得一件物品等级为%d的装备。', self.ownedKeystoneLevel, self.rewardLevel);
-            end
-        end)]]
+       
         ChallengesFrame.WeeklyInfo.Child.WeeklyChest:HookScript('OnEnter', function(self)
-            GameTooltip_SetTitle(GameTooltip, '宏伟宝库奖励');
+            GameTooltip_SetTitle(GameTooltip, '宏伟宝库奖励')
             if self.state == 4 then--CHEST_STATE_COLLECT
-                GameTooltip_AddColoredLine(GameTooltip, '宏伟宝库里有奖励在等待着你。', GREEN_FONT_COLOR);
-                GameTooltip_AddBlankLineToTooltip(GameTooltip);
+                GameTooltip_AddColoredLine(GameTooltip, '宏伟宝库里有奖励在等待着你。', GREEN_FONT_COLOR)
+                GameTooltip_AddBlankLineToTooltip(GameTooltip)
             end
-            local lastCompletedActivityInfo, nextActivityInfo = WeeklyRewardsUtil.GetActivitiesProgress();
+            local lastCompletedActivityInfo, nextActivityInfo = WeeklyRewardsUtil.GetActivitiesProgress()
             if not lastCompletedActivityInfo then
-                GameTooltip_AddNormalLine(GameTooltip, '在本周内完成一个满级英雄或史诗地下城可以解锁一个宏伟宝库奖励。时空漫游地下城算作英雄地下城。|n|n你的奖励的物品等级会以你本周最高等级的成绩为依据。');
+                GameTooltip_AddNormalLine(GameTooltip, '在本周内完成一个满级英雄或史诗地下城可以解锁一个宏伟宝库奖励。时空漫游地下城算作英雄地下城。|n|n你的奖励的物品等级会以你本周最高等级的成绩为依据。')
             else
                 if nextActivityInfo then
-                    local globalString = (lastCompletedActivityInfo.index == 1) and '再完成%1$d个满级英雄或史诗地下城可以解锁第二个宏伟宝库奖励。时空漫游地下城算作英雄地下城。' or '再完成%1$d个满级英雄或史诗地下城可以解锁第三个宏伟宝库奖励。时空漫游地下城算作英雄地下城。';
-                    GameTooltip_AddNormalLine(GameTooltip, globalString:format(nextActivityInfo.threshold - nextActivityInfo.progress));
+                    local globalString = (lastCompletedActivityInfo.index == 1) and '再完成%1$d个满级英雄或史诗地下城可以解锁第二个宏伟宝库奖励。时空漫游地下城算作英雄地下城。' or '再完成%1$d个满级英雄或史诗地下城可以解锁第三个宏伟宝库奖励。时空漫游地下城算作英雄地下城。'
+                    GameTooltip_AddNormalLine(GameTooltip, globalString:format(nextActivityInfo.threshold - nextActivityInfo.progress))
                 else
-                    GameTooltip_AddNormalLine(GameTooltip, '你已经解锁了本周可提供的所有奖励。在下周开始时拜访宏伟宝库，从你解锁的奖励里进行选择！');
-                    GameTooltip_AddBlankLineToTooltip(GameTooltip);
-                    GameTooltip_AddColoredLine(GameTooltip, '提升你的奖励', GREEN_FONT_COLOR);
-                    local level, count = WeeklyRewardsUtil.GetLowestLevelInTopDungeonRuns(lastCompletedActivityInfo.threshold);
+                    GameTooltip_AddNormalLine(GameTooltip, '你已经解锁了本周可提供的所有奖励。在下周开始时拜访宏伟宝库，从你解锁的奖励里进行选择！')
+                    GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                    GameTooltip_AddColoredLine(GameTooltip, '提升你的奖励', GREEN_FONT_COLOR)
+                    local level, count = WeeklyRewardsUtil.GetLowestLevelInTopDungeonRuns(lastCompletedActivityInfo.threshold)
                     if level == WeeklyRewardsUtil.HeroicLevel then
-                        GameTooltip_AddNormalLine(GameTooltip, format('完成%1$d次史诗难度的地下城，提升你的奖励。', count));
+                        GameTooltip_AddNormalLine(GameTooltip, format('完成%1$d次史诗难度的地下城，提升你的奖励。', count))
                     else
-                        local nextLevel = WeeklyRewardsUtil.GetNextMythicLevel(level);
-                        GameTooltip_AddNormalLine(GameTooltip, format('完成%1$d个%2$d级或更高的史诗地下城可以提升你的奖励。', count, nextLevel));
+                        local nextLevel = WeeklyRewardsUtil.GetNextMythicLevel(level)
+                        GameTooltip_AddNormalLine(GameTooltip, format('完成%1$d个%2$d级或更高的史诗地下城可以提升你的奖励。', count, nextLevel))
                     end
                 end
             end
-            GameTooltip_AddInstructionLine(GameTooltip, '点击预览宏伟宝库');
-            GameTooltip:Show();
+            GameTooltip_AddInstructionLine(GameTooltip, '点击预览宏伟宝库')
+            GameTooltip:Show()
         end)
 
         set(ChallengesFrame.WeeklyInfo.Child.DungeonScoreInfo.Title, '史诗钥石评分')
         ChallengesFrame.WeeklyInfo.Child.DungeonScoreInfo:HookScript('OnEnter', function()
-            GameTooltip_SetTitle(GameTooltip, '史诗钥石评分');
-            GameTooltip_AddNormalLine(GameTooltip, '基于你在每个地下城的最佳成绩得出的总体评分。你可以通过更迅速地完成地下城或者完成更高难度的地下城来提高你的评分。|n|n提升你的史诗地下城评分后，你就能把你的地下城装备升级到最高等级。|n|cff1eff00<Shift+点击以链接到聊天栏>|r');
-            GameTooltip:Show();
+            GameTooltip_SetTitle(GameTooltip, '史诗钥石评分')
+            GameTooltip_AddNormalLine(GameTooltip, '基于你在每个地下城的最佳成绩得出的总体评分。你可以通过更迅速地完成地下城或者完成更高难度的地下城来提高你的评分。|n|n提升你的史诗地下城评分后，你就能把你的地下城装备升级到最高等级。|n|cff1eff00<Shift+点击以链接到聊天栏>|r')
+            GameTooltip:Show()
         end)
 
     elseif arg1=='Blizzard_PlayerChoice' then
