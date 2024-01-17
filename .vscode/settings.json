@@ -7075,7 +7075,17 @@
         "FEATURE_BECOMES_AVAILABLE_AT_LEVEL",
         "LFG_LIST_INVITED_TO_GROUP",
         "LFGListInviteDialog_UpdateOfflineNotice",
-        "LFG_LIST_JOINED_GROUP_NOTICE"
+        "LFG_LIST_JOINED_GROUP_NOTICE",
+        "StackSplitMixin",
+        "TOTAL_STACKS",
+        "PET_STABLE_TITLE",
+        "PetStableCurrentPage",
+        "PetStable_NoPetsAllowed",
+        "PetStable_SetSelectedPetInfo",
+        "PetStable_GetPetSlot",
+        "PetStable_UpdatePetModelScene",
+        "EMPTY_STABLE_SLOT",
+        "STABLE_PET_INFO_TOOLTIP_TEXT"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -1282,22 +1282,21 @@ end
 --#################################
 local function set_StackSplitFrame_OpenStackSplitFrame(self)--, maxStack, parent, anchor, anchorTo, stackCount)
     if Save.notStackSplit then
+        if self.restButton then
+            self.restButton:SetShown(false)
+        end
         return
     end
     if not self.restButton then
-        local function setButton()
-            self.RightButton:SetEnabled(self.split<self.maxStack)
-            self.LeftButton:SetEnabled(self.split>self.minSplit)
-        end
         self.restButton=e.Cbtn(self, {size={22,22}})--重置
         self.restButton:SetPoint('TOP')
         self.restButton:SetNormalAtlas('characterundelete-RestoreButton')
-        self.restButton:SetScript('OnMouseDown', function(self2)
+        self.restButton:SetScript('OnMouseDown', function()
             self.split=self.minSplit
             self.LeftButton:SetEnabled(false)
             self.RightButton:SetEnabled(true)
             StackSplitFrame:UpdateStackText()
-            setButton()
+            StackSplitFrame:UpdateStackSplitFrame(StackSplitFrame.maxStack)
         end)
         self.restButton:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, 'ANCHOR_LEFT')
@@ -1315,7 +1314,7 @@ local function set_StackSplitFrame_OpenStackSplitFrame(self)--, maxStack, parent
         self.MaxButton:SetScript('OnMouseDown', function(self2)
             self.split=self.maxStack
             StackSplitFrame:UpdateStackText()
-            setButton()
+            StackSplitFrame:UpdateStackSplitFrame(StackSplitFrame.maxStack)
         end)
 
         self.MetaButton=e.Cbtn(self, {icon='hide', size={40,20}})
@@ -1324,12 +1323,13 @@ local function set_StackSplitFrame_OpenStackSplitFrame(self)--, maxStack, parent
         self.MetaButton:SetScript('OnMouseDown', function(self2)
             self.split=floor(self.maxStack/2)
             StackSplitFrame:UpdateStackText()
-            setButton()
+            StackSplitFrame:UpdateStackSplitFrame(StackSplitFrame.maxStack)
         end)
 
         self.editBox=CreateFrame('EditBox', nil, self)--输入框
         self.editBox:SetSize(100, 23)
-        self.editBox:SetPoint('RIGHT', self.RightButton, 'LEFT',-12, 0)
+        self.editBox:SetPoint('TOPLEFT', 38, -18)
+        self.editBox:SetTextColor(0,1,0)
         self.editBox:SetAutoFocus(false)
         self.editBox:ClearFocus()
         self.editBox:SetFontObject("ChatFontNormal")
@@ -1352,12 +1352,27 @@ local function set_StackSplitFrame_OpenStackSplitFrame(self)--, maxStack, parent
             self.LeftButton:SetEnabled(num==self.minSplit)
             self.split=num
             StackSplitFrame:UpdateStackText()
-            setButton()
+            StackSplitFrame:UpdateStackSplitFrame(StackSplitFrame.maxStack)
+        end)
+        self:HookScript('OnMouseWheel', function(frame, d)
+            local minSplit= self.minSplit or 1
+            local maxStack= self.maxStack or 1
+            local num= frame.split or 1
+            num= d==1 and num+ minSplit or num
+            num= d==-1 and num- minSplit or num
+            num= num< minSplit and minSplit or num
+            num= num> maxStack and maxStack or num
+            --frame.split= math.modf(num/minSplit)
+            frame.split= num
+            frame:UpdateStackText()
+            frame:UpdateStackSplitFrame(self.maxStack);
         end)
     end
 
     self.MaxButton:SetText(self.maxStack)
     self.MetaButton:SetText(floor(self.maxStack/2))
+
+    self:SetShown(true)
 end
 
 

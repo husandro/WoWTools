@@ -210,6 +210,10 @@ GameTooltip_AddColoredLine(GameTooltip, '', NORMAL_FONT_COLOR, true);
 GameTooltip_AddBlankLineToTooltip(GameTooltip);
 BattlePetToolTip_ShowLink(itemKeyInfo.battlePetLink);
 
+if ( GameTooltip:IsOwned(button) ) then
+	button:GetScript("OnEnter")(button);
+end
+
 
  MicroButtonTooltipText('法术书和专业', "TOGGLESPELLBOOK")
 

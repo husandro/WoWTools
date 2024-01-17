@@ -1507,6 +1507,8 @@ local function Init()
     set(LFGListFrame.ApplicationViewer.RemoveEntryButton, '移除')
     set(LFGListFrame.ApplicationViewer.EditButton, '编辑')
     set(LFGListFrame.ApplicationViewer.UnempoweredCover.Label, '你的队伍正在组建中。')
+    --set(LFGListFrame.SearchPanel.SearchBox.Instructions, '')
+    set(LFGListFrame.SearchPanel.FilterButton, '过滤器')
     set(LFGListFrame.SearchPanel.BackToGroupButton, '回到队伍')
     set(LFGListFrame.SearchPanel.SignUpButton, '申请')
     set(LFGListFrame.SearchPanel.BackButton, '后退')
@@ -2864,8 +2866,55 @@ print(ExpansionLandingPage.overlay)]]
 
 
 
+    --StackSplitFrame.lua
+    hooksecurefunc(StackSplitFrame, 'ChooseFrameType', function(self, splitAmount)
+        if splitAmount ~= 1 then
+            set(self.StackSplitText, format('%d 堆', self.split/self.minSplit))
+            set(self.StackItemCountText, format('总计%d', self.split))
+        end
+    end)
+    hooksecurefunc(StackSplitFrame, 'UpdateStackText', function(self)
+        if self.isMultiStack then 
+            set(self.StackSplitText, format('%d 堆', self.split/self.minSplit))
+            set(self.StackItemCountText, format('总计%d', self.split))
+        end
+    end)
+    
 
 
+
+    set(StackSplitFrame.OkayButton, '确定')
+    set(StackSplitFrame.CancelButton, '取消')
+
+    set(ColorPickerFrame.Footer.OkayButton, '确定')
+    set(ColorPickerFrame.Footer.CancelButton, '取消')
+    set(ColorPickerFrame.Header.Text, '颜色选择器')
+
+
+    if PetStableFrame and e.Player.class=='HUNTER' then--PetStable.lua
+        set(PetStableActivePetsLabel, '使用中')
+        hooksecurefunc('PetStable_Update', function()
+            PetStableFrame:SetTitleFormatted('%s 的小宠物', UnitName("player"));
+            
+            if ( PetStableFrame.selectedPet ) then
+                if ( GetStablePetFoodTypes(PetStableFrame.selectedPet) ) then
+                    PetStableDiet.tooltip = format('|cffffd200食物：|r%s', BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet)));
+                end
+            end
+            PetStableCurrentPage:SetFormattedText('页数 %s/%s', PetStableFrame.page, NUM_PET_STABLE_PAGES);
+        end)
+
+        hooksecurefunc('PetStable_UpdateSlot', function(button, petSlot)
+            local icon, name, _, family, talent = GetStablePetInfo(petSlot);
+            if ( icon and family and talent) then
+                button.tooltip = e.strText[name] or name;
+                button.tooltipSubtext = format(STABLE_PET_INFO_TOOLTIP_TEXT, e.strText[family] or family, e.strText[talent] or talent);
+            else
+                button.tooltip = '空的兽栏位置';
+            end
+        end)
+
+    end
 
 
 
@@ -3802,11 +3851,6 @@ local function Init_Loaded(arg1)
         set(ClassTalentLoadoutCreateDialog.NameControl.Label, '名字')
         set(ClassTalentLoadoutCreateDialog.AcceptButton, '保存')
         set(ClassTalentLoadoutCreateDialog.CancelButton, '取消')
-
-
-
-
-
 
 
 
@@ -5437,7 +5481,7 @@ local function Init_Loaded(arg1)
             end
         end)
 
-       
+
         ChallengesFrame.WeeklyInfo.Child.WeeklyChest:HookScript('OnEnter', function(self)
             GameTooltip_SetTitle(GameTooltip, '宏伟宝库奖励')
             if self.state == 4 then--CHEST_STATE_COLLECT

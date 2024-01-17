@@ -988,6 +988,9 @@ local function Init_All_Frame()
          hide_Texture(MerchantBuyBackItemSlotTexture)
      end)
 
+     set_Alpha_Color(StackSplitFrame.SingleItemSplitBackground, true)
+     set_Alpha_Color(StackSplitFrame.MultiItemSplitBackground, true)
+
 
     --考古学 ArchaeologyProgressBar.xml
     if ArcheologyDigsiteProgressBar then
