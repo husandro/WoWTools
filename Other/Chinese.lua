@@ -1414,7 +1414,7 @@ local function Init()
 
     --LFD PVEFrame.lua
     --地下城和团队副本
-    hooksecurefunc('GroupFinderFrame_OnShow', function()
+    GroupFinderFrame:HookScript('OnShow', function()
         PVEFrame:SetTitle('地下城和团队副本');
     end)
 
@@ -5093,7 +5093,7 @@ local function Init_Loaded(arg1)
                 PVEFrame:SetTitle('PvP（季前赛）');
             elseif ConquestFrame.seasonState == 1 then--SEASON_STATE_OFFSEASON
                 PVEFrame:SetTitle('玩家VS玩家（休赛期）');
-            elseif PLAYER_V_PLAYER_SEASON == "玩家VS玩家（“巨龙时代”第%d赛季）" then
+            else
                 PVEFrame:SetTitleFormatted('玩家VS玩家（“巨龙时代”第%d赛季）', PVPUtil.GetCurrentSeasonNumber());
             end
         end)
