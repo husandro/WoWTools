@@ -1102,6 +1102,10 @@ local function Init_All_Frame()
         hide_Texture(MainMenuBar.Background)
     end)
 
+    --颜色
+    set_Alpha_Frame_Texture(ColorPickerFrame.Header, {alpha= min05})
+    set_Alpha_Frame_Texture(ColorPickerFrame.Border, {alpha= min05})
+
     --编辑模式
     set_ScrollBar(EditModeManagerFrame.AccountSettings.SettingsContainer)
     set_Alpha_Frame_Texture(EditModeManagerFrame.Border, {alpha=min05})
