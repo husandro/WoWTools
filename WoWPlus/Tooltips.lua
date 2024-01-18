@@ -1709,7 +1709,7 @@ local function Init()
 
             elseif data.type==25 then--宏
                 local frame= GetMouseFocus()
-                if frame and frame.action then
+                if frame and frame.action then                    
                     local type, macroID, subType= GetActionInfo(frame.action)
                     if type=='macro' and macroID then
                         if subType=='spell' then--and macroID or GetMacroSpell(macroID)
@@ -2020,25 +2020,21 @@ local function Init()
         end
     end)
 
-    for i= 1, NUM_OVERRIDE_BUTTONS do-- ActionButton.lua
+   for i= 1, NUM_OVERRIDE_BUTTONS do-- ActionButton.lua
         if _G['OverrideActionBarButton'..i] then
             hooksecurefunc(_G['OverrideActionBarButton'..i], 'SetTooltip', function(self)
                 if self.action then
                     local actionType, ID, subType = GetActionInfo(self.action)
                     if actionType=='spell' and ID then
-                        func.Set_Spell(e.tips, ID)
                         e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType or nil)
                         e.tips:Show()
 
                     elseif actionType=='item' and ID then
-                        func.Set_Item(e.tips, nil, ID)
                         e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType or nil)
                         e.tips:Show()
                     end
                 end
             end)
-        else
-            break
         end
     end
 end
