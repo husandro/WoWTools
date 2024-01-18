@@ -2038,9 +2038,9 @@ local function Init()
         end
     end
 
-    hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self)
-        if not self.CheckBox.onEnter then
-            self.CheckBox:HookScript('OnEnter', function(frame)
+    local function set_onenter(self)
+        if not self.onEnter then
+            self:HookScript('OnEnter', function(frame)
                 if frame.variable then
                     GameTooltip_AddBlankLineToTooltip(SettingsTooltip);
                     GameTooltip_AddNormalLine(SettingsTooltip, HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar |cff00ff00'..e.Icon.right..frame.variable..'|r'))
@@ -2048,14 +2048,25 @@ local function Init()
                     SettingsTooltip:Show()
                 end
             end)
-            self.CheckBox:HookScript('OnMouseDown', function(frame, d)
+            self:HookScript('OnMouseDown', function(frame, d)
                 if d=='RightButton' and frame.variable then
                     e.Chat(frame.variable, nil, true)
                 end
             end)
-            self.CheckBox.onEnter=true
+            self.onEnter=true
         end
+    end
+    hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self)
+        set_onenter(self.CheckBox)
         self.CheckBox.variable= (self:GetSetting() or {}).variable
+    end)
+    hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self)
+        set_onenter(self.SliderWithSteppers.Slider)
+        self.SliderWithSteppers.Slider.variable= (self:GetSetting() or {}).variable
+    end)
+    hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self)
+        set_onenter(self.DropDown.Button)
+        self.DropDown.Button.variable= (self:GetSetting() or {}).variable
     end)
 end
 

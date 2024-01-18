@@ -60,6 +60,66 @@ local function set_Alpha_Color(self, notAlpha, notColor, alpha)
     end
 end
 
+
+--隐藏, frame, 子材质
+local function hide_Frame_Texture(frame, tab)
+    if not frame then
+        return
+    end
+    local hideIndex= tab and tab.index
+    for index, icon in pairs({frame:GetRegions()}) do
+        if icon:GetObjectType()=="Texture" then
+            if hideIndex then
+                if hideIndex==index then
+                    icon:SetTexture(0)
+                    icon:SetShown(false)
+                    break
+                end
+            else
+                icon:SetTexture(0)
+                icon:SetShown(false)
+            end
+        end
+    end
+end
+
+--透明度, 颜色, frame, 子材质
+local function set_Alpha_Frame_Texture(frame, tab)
+    if not frame then
+        return
+    end
+    tab=tab or {}
+    local indexTexture= tab.index
+    local notColor= tab.notColor
+    local alpha
+    if not tab.notAlpha then
+        alpha= tab.alpha or Save.alpha
+    end
+    for index, icon in pairs({frame:GetRegions()}) do
+        if icon:GetObjectType()=="Texture" then
+            if indexTexture then
+                if indexTexture== index then
+                    if not notColor then
+                        e.Set_Label_Texture_Color(icon, {type='Texture'})
+                    end
+                    if alpha then
+                        icon:SetAlpha(alpha)
+                    end
+                    break
+                end
+            else
+                if not notColor then
+                    e.Set_Label_Texture_Color(icon, {type='Texture'})
+                end
+                if alpha then
+                    icon:SetAlpha(alpha)
+                end
+            end
+        end
+    end
+end
+
+
 --设置，按钮
 local function set_Button_Alpha(btn, tab)
     if not btn or not e.Player.useColor then
@@ -135,82 +195,38 @@ local function set_ScrollBar(frame)
 end
 
 local function set_Slider(frame)
-    if frame.Slider then
-        if frame.Slider.Back then
-            for _, icon in pairs({frame.Slider.Back:GetRegions()}) do
-                if icon:GetObjectType()=="Texture" then
-                    e.Set_Label_Texture_Color(icon, {type='Texture'})
-                end
-            end
-        end
-        if frame.Slider.Forward then
-            for _, icon in pairs({frame.Slider.Forward:GetRegions()}) do
-                if icon:GetObjectType()=="Texture" then
-                    e.Set_Label_Texture_Color(icon, {type='Texture'})
-                end
-            end
-        end
-        set_Alpha_Color(frame.Slider.Slider.Thumb, true)
-    end
-end
-
---隐藏, frame, 子材质
-local function hide_Frame_Texture(frame, tab)
-    if not frame then
+    if not frame or not frame.Slider then
         return
     end
-    local hideIndex= tab and tab.index
-    for index, icon in pairs({frame:GetRegions()}) do
-        if icon:GetObjectType()=="Texture" then
-            if hideIndex then
-                if hideIndex==index then
-                    icon:SetTexture(0)
-                    icon:SetShown(false)
-                    break
-                end
-            else
-                icon:SetTexture(0)
-                icon:SetShown(false)
+
+    local thumb= frame.Slider.Slider and frame.Slider.Slider.Thumb or frame.Slider.Thumb
+    set_Alpha_Color(thumb, true)
+
+    local back= frame.Slider.Back or frame.Back
+    if back then
+        for _, icon in pairs({back:GetRegions()}) do
+            if icon:GetObjectType()=="Texture" then
+                e.Set_Label_Texture_Color(icon, {type='Texture'})
             end
         end
     end
+    local forward= frame.Slider.Forward or frame.Forward
+    if forward then
+        for _, icon in pairs({forward:GetRegions()}) do
+            if icon:GetObjectType()=="Texture" then
+                e.Set_Label_Texture_Color(icon, {type='Texture'})
+            end
+        end
+    end
+
+    local middle= frame.Slider.Slider and frame.Slider.Slider.Middle or frame.Slider.Middle
+    local right= frame.Slider.Slider and frame.Slider.Slider.Right or frame.Slider.Right
+    local left= frame.Slider.Slider and frame.Slider.Slider.Left or frame.Slider.Left
+    e.Set_Label_Texture_Color(middle, {type='Texture'})
+    e.Set_Label_Texture_Color(right, {type='Texture'})
+    e.Set_Label_Texture_Color(left, {type='Texture'})
 end
 
---透明度, 颜色, frame, 子材质
-local function set_Alpha_Frame_Texture(frame, tab)
-    if not frame then
-        return
-    end
-    tab=tab or {}
-    local indexTexture= tab.index
-    local notColor= tab.notColor
-    local alpha
-    if not tab.notAlpha then
-        alpha= tab.alpha or Save.alpha
-    end
-    for index, icon in pairs({frame:GetRegions()}) do
-        if icon:GetObjectType()=="Texture" then
-            if indexTexture then
-                if indexTexture== index then
-                    if not notColor then
-                        e.Set_Label_Texture_Color(icon, {type='Texture'})
-                    end
-                    if alpha then
-                        icon:SetAlpha(alpha)
-                    end
-                    break
-                end
-            else
-                if not notColor then
-                    e.Set_Label_Texture_Color(icon, {type='Texture'})
-                end
-                if alpha then
-                    icon:SetAlpha(alpha)
-                end
-            end
-        end
-    end
-end
 
 
 
@@ -478,8 +494,8 @@ local function Init_All_Frame()
      set_Alpha_Color(QuestScrollFrame.Contents.Separator.Divider, nil, nil, min03)
      set_ScrollBar(QuestScrollFrame)
      set_ScrollBar(QuestMapFrame.DetailsFrame.RewardsFrame.RewardsScrollFrame)
-     
-     
+
+
 
      --地下城和团队副本
      hide_Texture(PVEFrame.TopTileStreaks)--最上面
@@ -1037,16 +1053,16 @@ local function Init_All_Frame()
         [KEY_BUTTON8]= 'M8',--鼠标按键8";
         [KEY_BUTTON9]= 'M9',--鼠标按键9";
     }
-    
+
     hooksecurefunc('CooldownFrame_Set', function(self, start, duration, enable)
         if enable and enable ~= 0 and start > 0 and duration > 0 then
             self:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
         end
     end)
 
-    
-    
-   
+
+
+
 
     if MainMenuBar then--主动作条
         hide_Texture(MainMenuBar.BorderArt)
@@ -1058,7 +1074,7 @@ local function Init_All_Frame()
         hide_Texture(MainMenuBar.BorderArt.BottomLeftCorner)
         hide_Texture(MainMenuBar.BorderArt.TopRightCorner)
         hide_Texture(MainMenuBar.BorderArt.BottomRightCorner)
-        
+
         hide_Texture(MainMenuBar.Background)
         hooksecurefunc(MainMenuBar, 'UpdateEndCaps', function()
             hide_Texture(MainMenuBar.EndCaps.LeftEndCap)
@@ -1134,6 +1150,10 @@ local function Init_All_Frame()
     set_Slider(EditModeManagerFrame.GridSpacingSlider)
 
     set_Alpha_Frame_Texture(BNToastFrame, {alpha=min05})
+
+    hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self)
+        set_Slider(self.SliderWithSteppers)
+    end)
 end
 
 
@@ -1575,7 +1595,7 @@ local function Init_Event(arg1)
         set_NineSlice(ProfessionsCustomerOrdersFrame.Form.CurrentListings, true)
         set_ScrollBar(ProfessionsCustomerOrdersFrame.Form.CurrentListings.OrderList)
         hide_Texture(ProfessionsCustomerOrdersFrameBg)
-        
+
         set_NineSlice(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground, true)
         set_NineSlice(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground, true)
 
@@ -1758,7 +1778,7 @@ local function Init_Event(arg1)
             set_Alpha_Color(RematchOptionPanel.List.Background.InsetBack)
             set_Alpha_Color(RematchLoadoutPanel.TopLoadout.InsetBack)
         end
-        
+
     elseif arg1=='Blizzard_Calendar' then--日历
         set_Alpha_Color(CalendarFrameTopMiddleTexture)
         set_Alpha_Color(CalendarFrameTopLeftTexture)
@@ -1947,15 +1967,15 @@ local function Init_Event(arg1)
         set_Alpha_Color(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.Background, nil, nil, min05)
         set_NineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.NineSlice, true)
         set_NineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.NineSlice, true)
-        
+
         set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Middle, nil, nil, min05)
         set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Right, nil, nil, min05)
         set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Left, nil, nil, min05)
         set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Middle, nil, nil, min05)
         set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Right, nil, nil, min05)
         set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Left, nil, nil, min05)
-        
-        set_NineSlice(ProfessionsFrame.CraftingPage.CraftingOutputLog, true)        
+
+        set_NineSlice(ProfessionsFrame.CraftingPage.CraftingOutputLog, true)
         set_ScrollBar(ProfessionsFrame.CraftingPage.CraftingOutputLog)
 
     elseif arg1=='Blizzard_ClickBindingUI' then--点击，施法
@@ -1976,6 +1996,8 @@ local function Init_Event(arg1)
         set_NineSlice(PingSystemTutorial, true)
         set_NineSlice(PingSystemTutorialInset, nil, true)
         hide_Texture(PingSystemTutorialBg)
+
+
 
     elseif arg1=='Blizzard_ArchaeologyUI' then
         set_NineSlice(ArchaeologyFrame, true)
