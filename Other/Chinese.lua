@@ -1741,21 +1741,21 @@ local function Init()
 
 
     hooksecurefunc('LFGListInviteDialog_Show', function(self, resultID, kstringGroupName)
-        local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID) or {};
-        local activityName = C_LFGList.GetActivityFullName(searchResultInfo.activityID, nil, searchResultInfo.isWarMode);
-        local _, status, _, _, role = C_LFGList.GetApplicationInfo(resultID);
+        local searchResultInfo = C_LFGList.GetSearchResultInfo(resultID) or {}
+        local activityName = C_LFGList.GetActivityFullName(searchResultInfo.activityID, nil, searchResultInfo.isWarMode)
+        local _, status, _, _, role = C_LFGList.GetApplicationInfo(resultID)
         local name= kstringGroupName or searchResultInfo.name
         if e.strText[name] then
-            self.GroupName:SetText(e.strText[name]);
+            self.GroupName:SetText(e.strText[name])
         end
         if e.strText[activityName] then
-            self.ActivityName:SetText(e.strText[activityName]);
+            self.ActivityName:SetText(e.strText[activityName])
         end
         role= _G[role]
         if e.strText[role] then
-            self.Role:SetText(e.strText[role]);
+            self.Role:SetText(e.strText[role])
         end
-        self.Label:SetText(status ~= "invited" and '你已经加入了一支队伍：' or '你收到了一支队伍的邀请：');
+        self.Label:SetText(status ~= "invited" and '你已经加入了一支队伍：' or '你收到了一支队伍的邀请：')
     end)
     set(LFGListInviteDialog.Label, '你收到了一支队伍的邀请：')
     set(LFGListInviteDialog.RoleDescription, '你的职责')
@@ -1766,13 +1766,13 @@ local function Init()
 
     set(LFGListCreationDescription.EditBox.Instructions, '关于你的队伍的更多细节（可选）')
     hooksecurefunc('LFGListSearchPanel_SetCategory', function(self, categoryID, filters)--LFGList.lua
-        local categoryInfo = C_LFGList.GetLfgCategoryInfo(categoryID) or {};
+        local categoryInfo = C_LFGList.GetLfgCategoryInfo(categoryID) or {}
         if categoryInfo.searchPromptOverride then
             set(self.SearchBox.Instructions, e.strText[categoryInfo.searchPromptOverride])
         else
             set(self.SearchBox.Instructions,'过滤器')
         end
-        local name = LFGListUtil_GetDecoratedCategoryName(categoryInfo.name, filters, false);
+        local name = LFGListUtil_GetDecoratedCategoryName(categoryInfo.name, filters, false)
         set(self.CategoryName, e.strText[name])
     end)
 
@@ -2945,23 +2945,23 @@ print(ExpansionLandingPage.overlay)]]
     if PetStableFrame and e.Player.class=='HUNTER' then--PetStable.lua
         set(PetStableActivePetsLabel, '使用中')
         hooksecurefunc('PetStable_Update', function()
-            PetStableFrame:SetTitleFormatted('%s 的小宠物', UnitName("player"));
+            PetStableFrame:SetTitleFormatted('%s 的小宠物', UnitName("player"))
 
             if ( PetStableFrame.selectedPet ) then
                 if ( GetStablePetFoodTypes(PetStableFrame.selectedPet) ) then
-                    PetStableDiet.tooltip = format('|cffffd200食物：|r%s', BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet)));
+                    PetStableDiet.tooltip = format('|cffffd200食物：|r%s', BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet)))
                 end
             end
-            PetStableCurrentPage:SetFormattedText('页数 %s/%s', PetStableFrame.page, NUM_PET_STABLE_PAGES);
+            PetStableCurrentPage:SetFormattedText('页数 %s/%s', PetStableFrame.page, NUM_PET_STABLE_PAGES)
         end)
 
         hooksecurefunc('PetStable_UpdateSlot', function(button, petSlot)
-            local icon, name, _, family, talent = GetStablePetInfo(petSlot);
+            local icon, name, _, family, talent = GetStablePetInfo(petSlot)
             if ( icon and family and talent) then
-                button.tooltip = e.strText[name] or name;
-                button.tooltipSubtext = format(STABLE_PET_INFO_TOOLTIP_TEXT, e.strText[family] or family, e.strText[talent] or talent);
+                button.tooltip = e.strText[name] or name
+                button.tooltipSubtext = format(STABLE_PET_INFO_TOOLTIP_TEXT, e.strText[family] or family, e.strText[talent] or talent)
             else
-                button.tooltip = '空的兽栏位置';
+                button.tooltip = '空的兽栏位置'
             end
         end)
 
@@ -5355,8 +5355,8 @@ local function Init_Loaded(arg1)
         end)
 
         hooksecurefunc('PVPConquestLockTooltipShow', function()
-            GameTooltip:SetText(string.format('该功能将在%d级开启。', GetMaxLevelForLatestExpansion()));
-            GameTooltip:Show();
+            GameTooltip:SetText(string.format('该功能将在%d级开启。', GetMaxLevelForLatestExpansion()))
+            GameTooltip:Show()
         end)
 
         PVPQueueFrame.HonorInset.CasualPanel:HookScript('OnShow', function(self)
@@ -5394,44 +5394,44 @@ local function Init_Loaded(arg1)
         end)
 
         hooksecurefunc(PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay, 'Update', function(self)
-            local honorLevel = UnitHonorLevel("player");
+            local honorLevel = UnitHonorLevel("player")
 	        set(self.LevelLabel, format('荣誉等级 %d', honorLevel))
         end)
         PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay:HookScript('OnEnter', function()
-            GameTooltip_SetTitle(GameTooltip, '生涯荣誉');
-            GameTooltip_AddColoredLine(GameTooltip, '所有角色获得的荣誉。', NORMAL_FONT_COLOR);
-            GameTooltip_AddBlankLineToTooltip(GameTooltip);
-            local currentHonor = UnitHonor("player");
-            local maxHonor = UnitHonorMax("player");
-            GameTooltip_AddColoredLine(GameTooltip, string.format('%d / %d', currentHonor, maxHonor), HIGHLIGHT_FONT_COLOR);
-            GameTooltip:Show();
+            GameTooltip_SetTitle(GameTooltip, '生涯荣誉')
+            GameTooltip_AddColoredLine(GameTooltip, '所有角色获得的荣誉。', NORMAL_FONT_COLOR)
+            GameTooltip_AddBlankLineToTooltip(GameTooltip)
+            local currentHonor = UnitHonor("player")
+            local maxHonor = UnitHonorMax("player")
+            GameTooltip_AddColoredLine(GameTooltip, string.format('%d / %d', currentHonor, maxHonor), HIGHLIGHT_FONT_COLOR)
+            GameTooltip:Show()
         end)
         PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay.NextRewardLevel:HookScript('OnEnter', function(self)
-            local honorLevel = UnitHonorLevel("player");
-            local nextHonorLevelForReward = C_PvP.GetNextHonorLevelForReward(honorLevel);
-            local rewardInfo = nextHonorLevelForReward and C_PvP.GetHonorRewardInfo(nextHonorLevelForReward);
+            local honorLevel = UnitHonorLevel("player")
+            local nextHonorLevelForReward = C_PvP.GetNextHonorLevelForReward(honorLevel)
+            local rewardInfo = nextHonorLevelForReward and C_PvP.GetHonorRewardInfo(nextHonorLevelForReward)
             if rewardInfo then
-                local rewardText = select(11, GetAchievementInfo(rewardInfo.achievementRewardedID));
+                local rewardText = select(11, GetAchievementInfo(rewardInfo.achievementRewardedID))
                 if rewardText and rewardText ~= "" then
-                    GameTooltip:SetText(format('到达荣誉等级%d级后可获得下一个奖励', nextHonorLevelForReward));
-                    local WRAP = true;
-                    GameTooltip_AddColoredLine(GameTooltip, rewardText, HIGHLIGHT_FONT_COLOR, WRAP);
-                    GameTooltip:Show();
+                    GameTooltip:SetText(format('到达荣誉等级%d级后可获得下一个奖励', nextHonorLevelForReward))
+                    local WRAP = true
+                    GameTooltip_AddColoredLine(GameTooltip, rewardText, HIGHLIGHT_FONT_COLOR, WRAP)
+                    GameTooltip:Show()
                 end
             end
         end)
 
         BONUS_BUTTON_TOOLTIPS.RandomBG.func= function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-            GameTooltip:SetText('随机战场', 1, 1, 1);
-            GameTooltip:AddLine('在随机战场上与敌对阵营竞争。', nil, nil, nil, true);
-            GameTooltip:Show();
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetText('随机战场', 1, 1, 1)
+            GameTooltip:AddLine('在随机战场上与敌对阵营竞争。', nil, nil, nil, true)
+            GameTooltip:Show()
         end
         BONUS_BUTTON_TOOLTIPS.EpicBattleground.func = function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-            GameTooltip:SetText('随机史诗战场', 1, 1, 1);
-            GameTooltip:AddLine('在40人的大型战场上与敌对阵营竞争。', nil, nil, nil, true);
-            GameTooltip:Show();
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetText('随机史诗战场', 1, 1, 1)
+            GameTooltip:AddLine('在40人的大型战场上与敌对阵营竞争。', nil, nil, nil, true)
+            GameTooltip:Show()
         end
 --hooksecurefunc('HonorFrame_UpdateQueueButtons', function()
 
@@ -5944,6 +5944,18 @@ local function Init_Loaded(arg1)
             GameTooltip:SetText('已完成神器')
         end)
 
+    elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
+        set(ItemInteractionFrame.CurrencyCost.Costs, '花费：')
+        --set(ItemInteractionFrameTitleText, '')
+        hooksecurefunc(ItemInteractionFrame, 'LoadInteractionFrameData', function(self, frameData)
+            info= frameData
+            for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+        end)
+
+
+        dia("ITEM_INTERACTION_CONFIRMATION", {button2 = '取消'})
+        dia("ITEM_INTERACTION_CONFIRMATION_DELAYED", {button2 = '取消'})
+        dia("ITEM_INTERACTION_CONFIRMATION_DELAYED_WITH_CHARGE_INFO", {button2 = '取消'})
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
         --dia("CALENDAR_ERROR", {button1 = '确定'})

@@ -332,7 +332,7 @@ function func.Set_Mount(self, mountID)--坐骑
         return
     end
     self:AddLine(' ')
-    --local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, isFiltered, isCollected, mountID, isForDragonriding = C_MountJournal.GetDisplayedMountInfo(elementData.index);
+    --local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, isFiltered, isCollected, mountID, isForDragonriding = C_MountJournal.GetDisplayedMountInfo(elementData.index)
     local creatureName, spellID, _, _, _, _, _, isFactionSpecific, faction, _, isCollected, _, isForDragonriding =C_MountJournal.GetMountInfoByID(mountID)
     local spell
     if spellID then
@@ -927,7 +927,7 @@ end
 --声望
 --####
 function func.Set_FriendshipFaction(self, friendshipID)--friend声望
-    local repInfo = C_GossipInfo.GetFriendshipReputation(friendshipID);
+    local repInfo = C_GossipInfo.GetFriendshipReputation(friendshipID)
 	if ( repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0) then
         local icon = (repInfo.texture and repInfo.texture>0) and repInfo.texture
         self:AddDoubleLine((e.onlyChinese and '个人声望' or (INDIVIDUALS..REPUTATION))..' '..friendshipID, icon and '|T'..icon..':0|t'..icon)
@@ -999,8 +999,8 @@ function func.Set_HealthBar_Unit(frame, unit)
         elseif value <= 0 then
             text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '死亡' or DEAD)..'|r'
         else
-            local hp = value / max * 100;
-            text = ('%i%%'):format(hp)..'  ';
+            local hp = value / max * 100
+            text = ('%i%%'):format(hp)..'  '
             if hp<30 then
                 text = '|A:GarrisonTroops-Health-Consume:0:0|a'..'|cnRED_FONT_COLOR:' .. text..'|r'
             elseif hp<60 then
@@ -1313,7 +1313,7 @@ function func.Set_Unit(self)--设置单位提示信息
             self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
             self.Portrait:SetShown(true)
         else
-            local classification = UnitClassification(unit);--TargetFrame.lua
+            local classification = UnitClassification(unit)--TargetFrame.lua
             if classification == "rareelite" then--稀有, 精英
                 self.textLeft:SetText(col..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r')
                 self.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
@@ -1649,7 +1649,7 @@ local function Init()
 
     --战斗宠物，技能 SharedPetBattleTemplates.lua
     hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo, additionalText)
-        local abilityID = abilityInfo:GetAbilityID();
+        local abilityID = abilityInfo:GetAbilityID()
         if abilityID then
             local _, name, icon, _, unparsedDescription = C_PetBattles.GetAbilityInfoByID(abilityID)
             local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)
@@ -1801,12 +1801,12 @@ local function Init()
 
         local name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
         if factionID and not isHeader or (isHeader and hasRep) then
-            e.tips:SetOwner(self, "ANCHOR_RIGHT");
+            e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:AddLine(name..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
             e.tips:AddLine(description, nil,nil,nil, true)
             e.tips:AddLine(' ')
-            local gender = e.Player.sex
-            local factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
+            local factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex)
+            factionStandingtext= e.strText[factionStandingtext] or factionStandingtext
             local barColor = FACTION_BAR_COLORS[standingID]
             factionStandingtext=barColor:WrapTextInColorCode(factionStandingtext)--颜色
             if barValue and barMax then
@@ -1820,7 +1820,7 @@ local function Init()
 
             e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..self.factionID, completedParagon)
             func.Set_Web_Link({frame=e.tips, type='faction', id=factionID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
-            e.tips:Show();
+            e.tips:Show()
         elseif factionID or self.factionID then
             e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..(self.factionID or factionID), completedParagon)
             func.Set_Web_Link({frame=e.tips, type='faction', id=factionID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
@@ -1829,7 +1829,7 @@ local function Init()
     end)
 
     hooksecurefunc('ReputationFrame_InitReputationRow',function(factionRow, elementData)--ReputationFrame.lua 声望 界面,
-        local factionIndex = elementData.index;
+        local factionIndex = elementData.index
         local factionID
         if ( factionIndex == GetSelectedFaction() ) then
             if ( ReputationDetailFrame:IsShown() ) then
@@ -1871,16 +1871,15 @@ local function Init()
             C_BattleNet.GetFriendGameAccountInfo = function(...)
                 local gameAccountInfo = pre(...)
                 gameAccountInfo.isInCurrentRegion = true
-                return gameAccountInfo;
+                return gameAccountInfo
             end
         end
     end
 
-    if ExtraActionButton1 then
-        ExtraActionButton1:HookScript('OnLeave', function()
-            e.tips:Hide()
-        end)
-    end
+    --[[if ExtraActionButton1 then
+        ExtraActionButton1:HookScript('OnLeave', GameTooltip_Hide)
+    end]]
+
 
     hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--POI提示 AreaPOIDataProvider.lua
         e.tips:AddLine(' ')
@@ -1918,8 +1917,8 @@ local function Init()
         hooksecurefunc( ScenarioChallengeModeAffixMixin, 'OnEnter', function(self2)
             if self2.affixID then
                 local _, _, filedataid = C_ChallengeMode.GetAffixInfo(self2.affixID)
-                e.tips:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ');
-                e.tips:Show();
+                e.tips:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
+                e.tips:Show()
             end
         end)
     end
@@ -1933,7 +1932,7 @@ local function Init()
                 if self2.questID then
                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
                     e.tips:ClearLines()
-                    e.call(GameTooltip_AddQuest, self2, self2.questID)
+                    GameTooltip_AddQuest(self2, self2.questID)
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(id, addName..e.Icon.left)
                     e.tips:Show()
@@ -2014,7 +2013,7 @@ local function Init()
         if block.id and not block.module.tooltipBlock and block.TrackedQuest then
             e.tips:SetOwner(block, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.call('GameTooltip_AddQuest', block.TrackedQuest or block, block.id)
+            GameTooltip_AddQuest(block.TrackedQuest or block, block.id)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
@@ -2319,7 +2318,7 @@ local function Init_Panel()
             local container = Settings.CreateControlTextContainer()
             container:Add(1, e.onlyChinese and '是' or YES)
             container:Add(2, e.onlyChinese and '不' or NO)
-            return container:GetData();
+            return container:GetData()
         end,
         value=C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 1 or 2,
         name= e.onlyChinese and '按下快捷键时施法' or ACTION_BUTTON_USE_KEY_DOWN,
@@ -2529,7 +2528,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 if self2.affixID then
                     if self2.affixID then
                         local _, _, filedataid = C_ChallengeMode.GetAffixInfo(self2.affixID)
-                        e.tips:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ');
+                        e.tips:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
                         e.tips:Show()
                     end
                 end
@@ -2537,7 +2536,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
         elseif arg1=='Blizzard_OrderHallUI' then--要塞，技能树
             hooksecurefunc(GarrisonTalentButtonMixin, 'OnEnter', function(self2)--Blizzard_OrderHallTalents.lua
-                local info=self2.talent--C_Garrison.GetTalentInfo(self.talent.id);
+                local info=self2.talent--C_Garrison.GetTalentInfo(self.talent.id)
                 if not info or not info.id then
                     return
                 end
@@ -2588,15 +2587,14 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end)
 
         elseif arg1=='Blizzard_Professions' then--专业
-            hooksecurefunc(Professions, 'SetupProfessionsCurrencyTooltip', function(currencyInfo, currencyCount)--lizzard_Professions.lua
+            hooksecurefunc(Professions, 'SetupProfessionsCurrencyTooltip', function(currencyInfo)--lizzard_Professions.lua
                 if currencyInfo then
-                    local nodeID = ProfessionsFrame.SpecPage:GetDetailedPanelNodeID();
-                    local currencyTypesID = Professions.GetCurrencyTypesID(nodeID);
+                    local nodeID = ProfessionsFrame.SpecPage:GetDetailedPanelNodeID()
+                    local currencyTypesID = Professions.GetCurrencyTypesID(nodeID)
                     if currencyTypesID then
-                        GameTooltip_AddBlankLineToTooltip(GameTooltip);
-                        GameTooltip_AddNormalLine(GameTooltip, (e.onlyChinese and '货币' or CURRENCY)..' |cffffffff'..currencyTypesID..'|r')
-                        GameTooltip_AddNormalLine(GameTooltip, 'nodeID |cffffffff'..nodeID..'|r')
-                        GameTooltip_AddNormalLine(GameTooltip, id..' '..addName)
+                        GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                        func.Set_Currency(GameTooltip, currencyTypesID)--货币
+                        GameTooltip:AddDoubleLine('nodeID', '|cffffffff'..nodeID..'|r')
                     end
                 end
             end)

@@ -7098,7 +7098,8 @@
         "ITEM_HEROIC_QUALITY4_DESC",
         "ITEM_HEROIC_QUALITY5_DESC",
         "ITEM_HEROIC_QUALITY6_DESC",
-        "ITEM_HEROIC_QUALITY7_DESC"
+        "ITEM_HEROIC_QUALITY7_DESC",
+        "ItemInteractionFrameTitleText"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
