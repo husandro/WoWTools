@@ -2657,7 +2657,13 @@ local function Init()
     hooksecurefunc(WorldMapFrame, 'SetupTitle', function(self)
         self.BorderFrame:SetTitle('地图和任务日志')
     end)
-
+    hooksecurefunc(WorldMapFrame, 'SynchronizeDisplayState', function(self)
+        if self:IsMaximized() then
+            self.BorderFrame:SetTitle('地图');
+        else
+            self.BorderFrame:SetTitle('地图和任务日志')
+        end
+    end)
 
 
 

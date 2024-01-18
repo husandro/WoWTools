@@ -7122,7 +7122,10 @@
         "UNTRACK_QUEST_ABBREV",
         "QuestInfoRequiredMoneyText",
         "QuestInfoRewardsFrame",
-        "MAP_AND_QUEST_LOG"
+        "MAP_AND_QUEST_LOG",
+        "WorldMapMixin",
+        "MaximizeUIPanel",
+        "RestoreUIPanelArea"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
