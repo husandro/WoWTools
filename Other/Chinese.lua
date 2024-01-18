@@ -2616,13 +2616,19 @@ local function Init()
 
     --任务对话框
     set(GossipFrame.GreetingPanel.GoodbyeButton, '再见')
-
     set(QuestFrameAcceptButton, '接受')
     set(QuestFrameGreetingGoodbyeButton, '再见')
     set(QuestFrameCompleteQuestButton, '完成任务')
     set(QuestFrameCompleteButton, '继续')
     set(QuestFrameGoodbyeButton, '再见')
     set(QuestFrameDeclineButton, '拒绝')
+
+    set(QuestMapFrame.DetailsFrame.BackButton, '返回')
+    set(QuestMapFrame.DetailsFrame.AbandonButton, '放弃')
+    set(QuestMapFrame.DetailsFrame.TrackButton, '追踪')
+    set(QuestMapFrame.DetailsFrame.ShareButton, '共享')
+    QuestMapFrame.DetailsFrame.DestinationMapButton.tooltipText= '显示最终目的地'
+    QuestMapFrame.DetailsFrame.WaypointMapButton.tooltipText= '显示旅行路径'
 
 
 
@@ -5946,16 +5952,11 @@ local function Init_Loaded(arg1)
 
     elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
         set(ItemInteractionFrame.CurrencyCost.Costs, '花费：')
-        --set(ItemInteractionFrameTitleText, '')
-        hooksecurefunc(ItemInteractionFrame, 'LoadInteractionFrameData', function(self, frameData)
-            info= frameData
-            for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
-        end)
-
-
-        dia("ITEM_INTERACTION_CONFIRMATION", {button2 = '取消'})
+        --hooksecurefunc(ItemInteractionFrame, 'LoadInteractionFrameData', function(self, frameData)dia("ITEM_INTERACTION_CONFIRMATION", {button2 = '取消'})
         dia("ITEM_INTERACTION_CONFIRMATION_DELAYED", {button2 = '取消'})
         dia("ITEM_INTERACTION_CONFIRMATION_DELAYED_WITH_CHARGE_INFO", {button2 = '取消'})
+
+
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
         --dia("CALENDAR_ERROR", {button1 = '确定'})

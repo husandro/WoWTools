@@ -477,19 +477,18 @@ local function Init_All_Frame()
      hide_Texture(WorldMapFrame.NavBar.InsetBorderBottomRight)
      hide_Texture(WorldMapFrame.NavBar.InsetBorderBottomLeft)
      hide_Texture(WorldMapFrame.BorderFrame.InsetBorderTop)
+     WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
+    set_NineSlice(QuestMapDetailsScrollFrame)
 
-     --set_Button_Alpha(WorldMapFrameOverflowButton, {alpha=min03})
 
      set_Alpha_Color(QuestMapFrame.VerticalSeparator)
      set_Alpha_Color(QuestScrollFrame.DetailFrame.BottomDetail)
      set_Alpha_Color(QuestScrollFrame.Edge)
      set_Alpha_Color(QuestScrollFrame.DetailFrame.TopDetail)
-
      set_Alpha_Color(QuestScrollFrame.Contents.Separator.Divider, nil, nil, min03)
-
      set_ScrollBar(QuestScrollFrame)
 
-     WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
+     
 
      --地下城和团队副本
      hide_Texture(PVEFrame.TopTileStreaks)--最上面
