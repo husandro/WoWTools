@@ -1483,8 +1483,8 @@ local function Init()
             local button= self.CategoryButtons[btnIndex]
             if button and button.Label and text then
                 if e.strText[text] then
-                    font(button.Label)
-                    set(button.Label, e.strText[text])
+                    
+                    set(button.Label, e.strText[text], nil, true)
                 end
             end
         end)
@@ -2664,6 +2664,7 @@ local function Init()
             self.BorderFrame:SetTitle('地图和任务日志')
         end
     end)
+    set(WorldMapFrameHomeButtonText, '世界', nil, true)
 
 
 
@@ -4207,16 +4208,13 @@ local function Init_Loaded(arg1)
 
         hooksecurefunc(ProfessionsFrame, 'UpdateTabs', function(self)
             local recipesTab = self:GetTabButton(self.recipesTabID)
-            font(recipesTab.Text)
-            set(recipesTab.Text, '配方')
+            set(recipesTab.Text, '配方', nil, true)
 
-            recipesTab = self:GetTabButton(self.specializationsTabID )
-            font(recipesTab.Text)
-            set(recipesTab.Text, '专精')
+            recipesTab = self:GetTabButton(self.specializationsTabID)
+            set(recipesTab.Text, '专精', nil, true)
 
-            recipesTab = self:GetTabButton(self.craftingOrdersTabID  )
-            font(recipesTab.Text)
-            set(recipesTab.Text, '制造订单')
+            recipesTab = self:GetTabButton(self.craftingOrdersTabID )
+            set(recipesTab.Text, '制造订单', nil, true)
         end)
 
         set(ProfessionsFrame.CraftingPage.RecipeList.SearchBox.Instructions, '搜索')
@@ -4420,10 +4418,8 @@ local function Init_Loaded(arg1)
         set(ProfessionsFrame.OrdersPage.BrowseFrame.SearchButton, '搜索')
         set(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.BackButton, '返回')
 
-        font(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Text)
-        font(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Text)
-        set(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Text, '公开')
-        set(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Text, '个人')
+        set(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Text, '公开', nil, true)
+        set(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Text, '个人', nil, true)
 
         ProfessionsFrame.OrdersPage.BrowseFrame.OrdersRemainingDisplay:HookScript('OnEnter', function()
             local claimInfo = C_CraftingOrders.GetOrderClaimInfo(ProfessionsFrame.OrdersPage.professionInfo.profession)

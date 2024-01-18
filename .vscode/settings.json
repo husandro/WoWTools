@@ -7125,7 +7125,8 @@
         "MAP_AND_QUEST_LOG",
         "WorldMapMixin",
         "MaximizeUIPanel",
-        "RestoreUIPanelArea"
+        "RestoreUIPanelArea",
+        "WorldMapFrameHomeButtonText"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
