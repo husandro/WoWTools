@@ -7143,7 +7143,10 @@
         "SettingsTooltip",
         "WARNING_FONT_COLOR",
         "SettingsSliderControlMixin",
-        "SettingsDropDownControlMixin"
+        "SettingsDropDownControlMixin",
+        "SettingsCheckBoxWithButtonControlMixin",
+        "SettingsCheckBoxSliderControlMixin",
+        "SettingsCheckBoxDropDownControlMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

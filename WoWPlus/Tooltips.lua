@@ -2043,7 +2043,7 @@ local function Init()
             self:HookScript('OnEnter', function(frame)
                 if frame.variable then
                     GameTooltip_AddBlankLineToTooltip(SettingsTooltip);
-                    GameTooltip_AddNormalLine(SettingsTooltip, HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar |cff00ff00'..e.Icon.right..frame.variable..'|r'))
+                    GameTooltip_AddNormalLine(SettingsTooltip, HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar|cff00ff00'..e.Icon.right..frame.variable..'|r'), true)
                     GameTooltip_AddNormalLine(SettingsTooltip, id.. ' '..addName)
                     SettingsTooltip:Show()
                 end
@@ -2067,6 +2067,20 @@ local function Init()
     hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self)
         set_onenter(self.DropDown.Button)
         self.DropDown.Button.variable= (self:GetSetting() or {}).variable
+    end)
+    hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self)
+        set_onenter(self.CheckBox)
+        self.CheckBox.variable= (self:GetSetting() or {}).variable
+    end)
+    hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)
+        set_onenter(self.CheckBox)
+        local cbSetting = initializer.data.cbSetting;
+        self.CheckBox.variable= cbSetting.variable
+    end)
+    hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)
+        set_onenter(self.CheckBox)
+        local cbSetting = initializer.data.cbSetting;
+        self.CheckBox.variable= cbSetting.variable
     end)
 end
 
