@@ -2037,6 +2037,26 @@ local function Init()
             end)
         end
     end
+
+    hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self)
+        if not self.CheckBox.onEnter then
+            self.CheckBox:HookScript('OnEnter', function(frame)
+                if frame.variable then
+                    GameTooltip_AddBlankLineToTooltip(SettingsTooltip);
+                    GameTooltip_AddNormalLine(SettingsTooltip, HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar |cff00ff00'..e.Icon.right..frame.variable..'|r'))
+                    GameTooltip_AddNormalLine(SettingsTooltip, id.. ' '..addName)
+                    SettingsTooltip:Show()
+                end
+            end)
+            self.CheckBox:HookScript('OnMouseDown', function(frame, d)
+                if d=='RightButton' and frame.variable then
+                    e.Chat(frame.variable, nil, true)
+                end
+            end)
+            self.CheckBox.onEnter=true
+        end
+        self.CheckBox.variable= (self:GetSetting() or {}).variable
+    end)
 end
 
 

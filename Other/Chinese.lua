@@ -1829,7 +1829,15 @@ local function Init()
                 set(btn.Button1, e.strText[btn.Button1:GetText()])
             end
             if btn.Button2 then
-                set(btn.Button2, e.strText[btn.Button1:GetText()])
+                local text= btn.Button2:GetText() or ''
+                local col, name= text:match('(|cff......)(.-)|r')
+                name= name or text
+                if name~='' then
+                    name= e.strText[name]
+                    if name then
+                        set(btn.Button2, (col or '')..name)
+                    end
+                end
             end
             lable= btn.Text or btn.Label or btn.Title
             if lable then

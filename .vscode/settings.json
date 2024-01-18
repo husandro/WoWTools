@@ -7138,7 +7138,10 @@
         "BATTLENET_FONT_COLOR",
         "BNet_GetValidatedCharacterNameWithClientEmbeddedTexture",
         "BNToastMixin",
-        "NOT_BOUND"
+        "NOT_BOUND",
+        "SettingsCheckBoxControlMixin",
+        "SettingsTooltip",
+        "WARNING_FONT_COLOR"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
