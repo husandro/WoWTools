@@ -478,7 +478,7 @@ local function Init_All_Frame()
      hide_Texture(WorldMapFrame.NavBar.InsetBorderBottomLeft)
      hide_Texture(WorldMapFrame.BorderFrame.InsetBorderTop)
      WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
-    set_NineSlice(QuestMapDetailsScrollFrame)
+     set_ScrollBar(QuestMapDetailsScrollFrame)
 
 
      set_Alpha_Color(QuestMapFrame.VerticalSeparator)
@@ -487,7 +487,8 @@ local function Init_All_Frame()
      set_Alpha_Color(QuestScrollFrame.DetailFrame.TopDetail)
      set_Alpha_Color(QuestScrollFrame.Contents.Separator.Divider, nil, nil, min03)
      set_ScrollBar(QuestScrollFrame)
-
+     set_ScrollBar(QuestMapFrame.DetailsFrame.RewardsFrame.RewardsScrollFrame)
+     
      
 
      --地下城和团队副本

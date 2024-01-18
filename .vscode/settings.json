@@ -7115,7 +7115,13 @@
         "REWARD_ABILITY",
         "REWARD_AURA",
         "REWARD_SPELL",
-        "REWARD_UNLOCK"
+        "REWARD_UNLOCK",
+        "QuestMapFrame_UpdateQuestDetailsButtons",
+        "QuestLogPopupDetailFrame",
+        "QuestUtils_IsQuestWatched",
+        "UNTRACK_QUEST_ABBREV",
+        "QuestInfoRequiredMoneyText",
+        "QuestInfoRewardsFrame"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

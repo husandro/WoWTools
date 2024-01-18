@@ -52,7 +52,7 @@ local function hookDia(string, text, func)
     end
 end
 
-local function regions(self, text)
+local function reg(self, text)
     if self and text then
         for _, region in pairs({self:GetRegions()}) do
             if region:GetObjectType()=='FontString' then
@@ -1268,7 +1268,7 @@ e.strText={
     [ITEM_HEROIC_QUALITY5_DESC] = "英雄传说",
     [ITEM_HEROIC_QUALITY6_DESC] = "英雄神器",
     [ITEM_HEROIC_QUALITY7_DESC] = "英雄传家宝",
-    
+
     [ITEM_QUALITY0_DESC] = "粗糙",
     [ITEM_QUALITY1_DESC] = "普通",
     [ITEM_QUALITY2_DESC] = "优秀",
@@ -2376,7 +2376,7 @@ local function Init()
     --插件
     set(AddonListTitleText, '插件列表')
     set(AddonListForceLoad, '加载过期插件')
-    regions(AddonListForceLoad, '加载过期插件')
+    reg(AddonListForceLoad, '加载过期插件')
 
     set(AddonListEnableAllButton, '全部启用')
     set(AddonListDisableAllButton, '全部禁用')
@@ -2625,10 +2625,36 @@ local function Init()
 
     set(QuestMapFrame.DetailsFrame.BackButton, '返回')
     set(QuestMapFrame.DetailsFrame.AbandonButton, '放弃')
-    set(QuestMapFrame.DetailsFrame.TrackButton, '追踪')
+
+   hooksecurefunc('QuestMapFrame_UpdateQuestDetailsButtons', function()
+        local questID = C_QuestLog.GetSelectedQuest();
+        local isWatched = QuestUtils_IsQuestWatched(questID);
+        if isWatched then
+            QuestMapFrame.DetailsFrame.TrackButton:SetText('取消追踪');
+            QuestLogPopupDetailFrame.TrackButton:SetText('取消追踪');
+        else
+            QuestMapFrame.DetailsFrame.TrackButton:SetText('追踪');
+            QuestLogPopupDetailFrame.TrackButton:SetText('追踪');
+        end
+    end)
+
     set(QuestMapFrame.DetailsFrame.ShareButton, '共享')
     QuestMapFrame.DetailsFrame.DestinationMapButton.tooltipText= '显示最终目的地'
     QuestMapFrame.DetailsFrame.WaypointMapButton.tooltipText= '显示旅行路径'
+
+    reg(QuestMapFrame.DetailsFrame.RewardsFrame, '奖励')
+    set(MapQuestInfoRewardsFrame.Header, '奖励')
+    set(MapQuestInfoRewardsFrame.ItemChooseText, '你可以从这些奖励品中选择一件：')
+    set(MapQuestInfoRewardsFrame.PlayerTitleText, '新头衔： %s')
+    set(MapQuestInfoRewardsFrame.QuestSessionBonusReward, '在小队同步状态下完成此任务有可能获得奖励：')
+    set(QuestInfoRequiredMoneyText, '需要金钱：')
+    set(QuestInfoRewardsFrame.Header, '奖励')
+    set(QuestInfoRewardsFrame.ItemChooseText, '你可以从这些奖励品中选择一件：')
+    set(QuestInfoRewardsFrame.PlayerTitleText, '新头衔： %s')
+    set(QuestInfoRewardsFrame.QuestSessionBonusReward, '在小队同步状态下完成此任务有可能获得奖励：')
+    set(QuestInfoRewardsFrame.XPFrame, '经验值：')
+
+    set(WorldMapFrameTitleText, '地图和任务日志')
 
 
 
