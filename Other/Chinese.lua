@@ -1844,7 +1844,9 @@ local function Init()
                 set(lable, e.strText[lable:GetText()])
             elseif btn.Text and btn.data and btn.data.name and e.strText[btn.data.name] then
                 set(btn.Text, e.strText[btn.data.name])
-                btn.data.tooltip= e.strText[btn.data.tooltip] or btn.data.tooltip
+                if btn.data.tooltip and e.strText[btn.data.tooltip] then
+                    btn.data.tooltip= e.strText[btn.data.tooltip] or btn.data.tooltip
+                end
             end
         end
     end)
