@@ -306,8 +306,7 @@ local function Init_All_Frame()
     if ExtraActionButton1 then hide_Texture(ExtraActionButton1.style) end--额外技能
     if ZoneAbilityFrame then hide_Texture(ZoneAbilityFrame.Style) end--区域技能
 
-    if MainMenuBar and MainMenuBar.EndCaps then hide_Texture(MainMenuBar.EndCaps.LeftEndCap) end
-    if MainMenuBar and MainMenuBar.EndCaps then hide_Texture(MainMenuBar.EndCaps.RightEndCap) end
+
 
     if PetBattleFrame then--宠物
         hide_Texture(PetBattleFrame.TopArtLeft)
@@ -342,16 +341,7 @@ local function Init_All_Frame()
 
 
 
-    if MainMenuBar and MainMenuBar.BorderArt then--主动作条
-        hide_Texture(MainMenuBar.BorderArt.TopEdge)
-        hide_Texture(MainMenuBar.BorderArt.BottomEdge)
-        hide_Texture(MainMenuBar.BorderArt.LeftEdge)
-        hide_Texture(MainMenuBar.BorderArt.RightEdge)
-        hide_Texture(MainMenuBar.BorderArt.TopLeftCorner)
-        hide_Texture(MainMenuBar.BorderArt.BottomLeftCorner)
-        hide_Texture(MainMenuBar.BorderArt.TopRightCorner)
-        hide_Texture(MainMenuBar.BorderArt.BottomRightCorner)
-    end
+
     if MultiBarBottomLeftButton10 then hide_Texture(MultiBarBottomLeftButton10.SlotBackground) end
 
      if CompactRaidFrameManager then--隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
@@ -1047,59 +1037,90 @@ local function Init_All_Frame()
         [KEY_BUTTON8]= 'M8',--鼠标按键8";
         [KEY_BUTTON9]= 'M9',--鼠标按键9";
     }
-    local function hideButtonText(self)
-        if self then
-            hide_Texture(self.SlotArt)
-            hide_Texture(self.SlotBackground)--背景，
-            hide_Texture(self.NormalTexture)--外框，方块
-            if self.RightDivider and self.BottomDivider then
-                self.RightDivider:SetShown(false)--frame
-                self.BottomDivider:SetShown(false)
-                hide_Texture(self.RightDivider.TopEdge)
-                hide_Texture(self.RightDivider.BottomEdge)
-                hide_Texture(self.RightDivider.Center)
-            end
-            if self.HotKey then--快捷键
-                self.HotKey:SetShadowOffset(1, -1)
-                local text=self.HotKey:GetText()
-                if text and text~='' and text~= RANGE_INDICATOR and #text>4 then
-                    for key, mouse in pairs(KEY_BUTTON_Tab) do
-                        if text:find(key) then
-                            self.HotKey:SetText(text:gsub(key, mouse))
-                        end
-                    end
-                end
-            end
-            if self.Count then--数量
-                self.Count:SetShadowOffset(1, -1)
-            end
-            if self.Name then--名称
-                self.Name:SetShadowOffset(1, -1)
-            end
-            if self.cooldown then
-                --self.cooldown:SetBlingTexture('Interface\\Cooldown\\star4')--闪光
-                --self.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge", 1,0,0,1);
-                self.cooldown:SetCountdownFont('NumberFontNormal')
-            end
-        end
-    end
+    
     hooksecurefunc('CooldownFrame_Set', function(self, start, duration, enable)
         if enable and enable ~= 0 and start > 0 and duration > 0 then
             self:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
         end
     end)
+
+    
+    
+   
+
+    if MainMenuBar then--主动作条
+        hide_Texture(MainMenuBar.BorderArt)
+        hide_Texture(MainMenuBar.BorderArt.TopEdge)
+        hide_Texture(MainMenuBar.BorderArt.BottomEdge)
+        hide_Texture(MainMenuBar.BorderArt.LeftEdge)
+        hide_Texture(MainMenuBar.BorderArt.RightEdge)
+        hide_Texture(MainMenuBar.BorderArt.TopLeftCorner)
+        hide_Texture(MainMenuBar.BorderArt.BottomLeftCorner)
+        hide_Texture(MainMenuBar.BorderArt.TopRightCorner)
+        hide_Texture(MainMenuBar.BorderArt.BottomRightCorner)
+        
+        hide_Texture(MainMenuBar.Background)
+        hooksecurefunc(MainMenuBar, 'UpdateEndCaps', function()
+            hide_Texture(MainMenuBar.EndCaps.LeftEndCap)
+            hide_Texture(MainMenuBar.EndCaps.RightEndCap)
+        end)
+    end
+    --[[local function set_divider(dividersPool)
+        for _ in pairs(MainMenuBar.actionButtons) do
+            local divider = dividersPool:Acquire();
+            divider:Hide();
+        end
+    end
+    set_divider(MainMenuBar.HorizontalDividersPool)
+    set_divider(MainMenuBar.VerticalDividersPool)
+    hooksecurefunc(MainMenuBar, 'UpdateDividers', function(self)
+        set_divider(self.isHorizontal and self.HorizontalDividersPool or self.VerticalDividersPool)
+    end)]]
     C_Timer.After(2, function()
-        for i=1, 12 do
-            hideButtonText(_G['ActionButton'..i])--主动作条
-            hideButtonText(_G['MultiBarBottomLeftButton'..i])--作条2
-            hideButtonText(_G['MultiBarBottomRightButton'..i])--作条3
-            hideButtonText(_G['MultiBarLeftButton'..i])--作条4
-            hideButtonText(_G['MultiBarRightButton'..i])--作条5
-            for index=5, 7 do
-                hideButtonText(_G['MultiBar'..index..'Button'..i])--作条6, 7, 8
+        local function hideButtonTexture(self)
+            if self then
+                hide_Texture(self.SlotArt)
+                hide_Texture(self.SlotBackground)--背景，
+                hide_Texture(self.NormalTexture)--外框，方块
+                if self.RightDivider and self.BottomDivider then
+                    self.RightDivider:SetShown(false)--frame
+                    self.BottomDivider:SetShown(false)
+                    hide_Texture(self.RightDivider.TopEdge)
+                    hide_Texture(self.RightDivider.BottomEdge)
+                    hide_Texture(self.RightDivider.Center)
+                end
+                if self.HotKey then--快捷键
+                    self.HotKey:SetShadowOffset(1, -1)
+                    local text=self.HotKey:GetText()
+                    if text and text~='' and text~= RANGE_INDICATOR and #text>4 then
+                        for key, mouse in pairs(KEY_BUTTON_Tab) do
+                            if text:find(key) then
+                                self.HotKey:SetText(text:gsub(key, mouse))
+                            end
+                        end
+                    end
+                end
+                if self.Count then--数量
+                    self.Count:SetShadowOffset(1, -1)
+                end
+                if self.Name then--名称
+                    self.Name:SetShadowOffset(1, -1)
+                end
+                if self.cooldown then
+                    self.cooldown:SetCountdownFont('NumberFontNormal')
+                end
             end
         end
-        hide_Texture(MainMenuBar.Background)
+        for i=1, 12 do
+            hideButtonTexture(_G['ActionButton'..i])--主动作条
+            hideButtonTexture(_G['MultiBarBottomLeftButton'..i])--作条2
+            hideButtonTexture(_G['MultiBarBottomRightButton'..i])--作条3
+            hideButtonTexture(_G['MultiBarLeftButton'..i])--作条4
+            hideButtonTexture(_G['MultiBarRightButton'..i])--作条5
+            for index=5, 7 do
+                hideButtonTexture(_G['MultiBar'..index..'Button'..i])--作条6, 7, 8
+            end
+        end
     end)
 
     --颜色

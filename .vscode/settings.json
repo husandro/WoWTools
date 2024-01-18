@@ -7126,7 +7126,19 @@
         "WorldMapMixin",
         "MaximizeUIPanel",
         "RestoreUIPanelArea",
-        "WorldMapFrameHomeButtonText"
+        "WorldMapFrameHomeButtonText",
+        "MainMenuBarMixin",
+        "AlertFrame_ShowNewAlert",
+        "BN_TOAST_NEW_INVITE",
+        "BN_TOAST_PENDING_INVITES",
+        "BN_TOAST_OFFLINE",
+        "BNToastFrameIconTexture",
+        "BN_TOAST_ONLINE",
+        "BN_TOAST_NEW_CLUB_INVITATION",
+        "BATTLENET_FONT_COLOR",
+        "BNet_GetValidatedCharacterNameWithClientEmbeddedTexture",
+        "BNToastMixin",
+        "NOT_BOUND"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

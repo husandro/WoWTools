@@ -998,7 +998,7 @@ e.strText={
 
 
     [SYSTEM_DEFAULT] = "系统默认",
-
+    [NOT_BOUND] = "未设置",
     [KEY1] = "按键设置1",
     [KEY2] = "按键设置2",
     [KEY_BACKSPACE] = "退格",
@@ -1483,7 +1483,7 @@ local function Init()
             local button= self.CategoryButtons[btnIndex]
             if button and button.Label and text then
                 if e.strText[text] then
-                    
+
                     set(button.Label, e.strText[text], nil, true)
                 end
             end
@@ -2629,14 +2629,14 @@ local function Init()
     set(QuestMapFrame.DetailsFrame.AbandonButton, '放弃')
 
    hooksecurefunc('QuestMapFrame_UpdateQuestDetailsButtons', function()
-        local questID = C_QuestLog.GetSelectedQuest();
-        local isWatched = QuestUtils_IsQuestWatched(questID);
+        local questID = C_QuestLog.GetSelectedQuest()
+        local isWatched = QuestUtils_IsQuestWatched(questID)
         if isWatched then
-            QuestMapFrame.DetailsFrame.TrackButton:SetText('取消追踪');
-            QuestLogPopupDetailFrame.TrackButton:SetText('取消追踪');
+            QuestMapFrame.DetailsFrame.TrackButton:SetText('取消追踪')
+            QuestLogPopupDetailFrame.TrackButton:SetText('取消追踪')
         else
-            QuestMapFrame.DetailsFrame.TrackButton:SetText('追踪');
-            QuestLogPopupDetailFrame.TrackButton:SetText('追踪');
+            QuestMapFrame.DetailsFrame.TrackButton:SetText('追踪')
+            QuestLogPopupDetailFrame.TrackButton:SetText('追踪')
         end
     end)
 
@@ -2659,7 +2659,7 @@ local function Init()
     end)
     hooksecurefunc(WorldMapFrame, 'SynchronizeDisplayState', function(self)
         if self:IsMaximized() then
-            self.BorderFrame:SetTitle('地图');
+            self.BorderFrame:SetTitle('地图')
         else
             self.BorderFrame:SetTitle('地图和任务日志')
         end
@@ -2894,6 +2894,56 @@ local function Init()
     set(PingSystemTutorial.Tutorial4.ImageBounds.TutorialBody1, "在聊天中|cnNORMAL_FONT_COLOR:输入/macro|r")
     set(PingSystemTutorial.Tutorial4.ImageBounds.TutorialBody2, "宏命令：")
     set(PingSystemTutorial.Tutorial4.ImageBounds.TutorialBody3, "|cnNORMAL_FONT_COLOR:/ping [@target] 信号类型|r")
+
+
+
+
+    --BNet.lua
+    hooksecurefunc(BNToastFrame, 'ShowToast', function(self)
+        local toastType, toastData = self.toastType or {}, self.toastData or {}
+        if ( toastType == 5 ) then
+            set(self.DoubleLine, '你收到了一个新的好友请求。')
+        elseif ( toastType == 4 ) then
+            set(self.DoubleLine, format('你共有|cff82c5ff%d|r条好友请求。', toastData))
+        elseif ( toastType == 1 ) then
+            if C_BattleNet.GetAccountInfoByID(toastData) then
+                set(self.BottomLine, FRIENDS_GRAY_COLOR:WrapTextInColorCode('已经|cff00ff00上线|r'))
+            end
+        elseif ( toastType == 2 ) then
+            if C_BattleNet.GetAccountInfoByID(toastData) then
+                set(self.BottomLine, '已经|cffff0000下线|r。')
+            end
+        elseif ( toastType == 6 ) then
+            local clubName
+
+            if toastData.club.clubType == Enum.ClubType.BattleNet then
+                clubName = BATTLENET_FONT_COLOR:WrapTextInColorCode(toastData.club.name)
+            else
+                clubName = NORMAL_FONT_COLOR:WrapTextInColorCode(toastData.club.name)
+            end
+            set(self.DoubleLine, format('你已受邀加入|n%s', clubName or ''))
+        elseif (toastType == 7) then
+            local clubName = NORMAL_FONT_COLOR:WrapTextInColorCode(toastData.name)
+            set(self.DoubleLine, format('你已受邀加入|n%s', clubName or ''))
+        end
+    end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
