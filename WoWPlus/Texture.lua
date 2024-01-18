@@ -1710,14 +1710,6 @@ local function Init_Event(arg1)
         set_Alpha_Color(WardrobeTransmogFrame.MoneyMiddle)
         set_Alpha_Color(WardrobeTransmogFrame.MoneyLeft)
         set_Alpha_Color(WardrobeTransmogFrame.MoneyRight)
-        --[[for v=1,6 do--物品,幻化, 背景
-            for h= 1, 3 do
-                local button= WardrobeCollectionFrame.ItemsCollectionFrame['ModelR'..h..'C'..v]
-                if button then
-                    button:DisableDrawLayer('BACKGROUND')
-                end
-            end
-        end]]
         for v=1,4 do
             for h= 1, 2 do
                 local button= WardrobeCollectionFrame.SetsTransmogFrame['ModelR'..h..'C'..v]
@@ -1745,6 +1737,7 @@ local function Init_Event(arg1)
             set_Alpha_Color(RematchOptionPanel.List.Background.InsetBack)
             set_Alpha_Color(RematchLoadoutPanel.TopLoadout.InsetBack)
         end
+        
     elseif arg1=='Blizzard_Calendar' then--日历
         set_Alpha_Color(CalendarFrameTopMiddleTexture)
         set_Alpha_Color(CalendarFrameTopLeftTexture)

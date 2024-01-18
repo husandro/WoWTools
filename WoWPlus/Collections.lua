@@ -403,10 +403,11 @@ local function Init_Wardrobe_Sets()
                 if meno and numAll then
 
                     text= (text or '').. meno..' '--未收集，数量
-                    version= version or _G['EXPANSION_NAME'..(info.expansionID or '')]--版本
+                    --version= version or _G['EXPANSION_NAME'..(info.expansionID or '')]--版本
                     isLimited= isLimited or info.limitedTimeSet--限时套装
 
                     local name= info.description or info.name or ''
+                    name= e.strText[name] or name
                     name= numAll==collect and '|cnGREEN_FONT_COLOR:'..name..'|r' or name--已收集
 
                     local isCollected= collect== numAll--是否已收
@@ -422,6 +423,7 @@ local function Init_Wardrobe_Sets()
                 end
                 patch= patch or (info.patchID and 'v.'..info.patchID)
                 version= version or (info.expansionID and _G['EXPANSION_NAME'..info.expansionID])
+                version= e.strText[version] or version
             end
         end
         btn.tooltip= tipsText

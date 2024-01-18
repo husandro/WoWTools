@@ -1257,6 +1257,26 @@ e.strText={
 
 
     [HOME] = "首页",
+
+    [ITEM_HEROIC] = "英雄",
+    [ITEM_HEROIC_EPIC] = "英雄级别史诗品质",
+    [ITEM_HEROIC_QUALITY0_DESC] = "英雄粗糙",
+    [ITEM_HEROIC_QUALITY1_DESC] = "英雄普通",
+    [ITEM_HEROIC_QUALITY2_DESC] = "英雄优秀",
+    [ITEM_HEROIC_QUALITY3_DESC] = "英雄稀有",
+    [ITEM_HEROIC_QUALITY4_DESC] = "英雄史诗",
+    [ITEM_HEROIC_QUALITY5_DESC] = "英雄传说",
+    [ITEM_HEROIC_QUALITY6_DESC] = "英雄神器",
+    [ITEM_HEROIC_QUALITY7_DESC] = "英雄传家宝",
+    
+    [ITEM_QUALITY0_DESC] = "粗糙",
+    [ITEM_QUALITY1_DESC] = "普通",
+    [ITEM_QUALITY2_DESC] = "优秀",
+    [ITEM_QUALITY3_DESC] = "精良",
+    [ITEM_QUALITY4_DESC] = "史诗",
+    [ITEM_QUALITY5_DESC] = "传说",
+    [ITEM_QUALITY6_DESC] = "神器",
+    [ITEM_QUALITY7_DESC] = "传家宝",
 }
 
 
@@ -2665,11 +2685,20 @@ print(ExpansionLandingPage.overlay)]]
 
 
 
-    --Blizzard_Dialogs.lua
-    dia('CONFIRM_RESET_TO_DEFAULT_KEYBINDINGS', {text = '确定将所有快捷键设置为默认值吗？', button1 = '确定', button2 = '取消'})
-    dia('GAME_SETTINGS_TIMED_CONFIRMATION', {button1 = '确定', button2 = '取消'})
-    dia('GAME_SETTINGS_CONFIRM_DISCARD', {text= '你尚有还未应用的设置。\n你确定要退出吗？', button1 = '退出', button2 = '应用并退出', button3 = '取消'})
-    dia('GAME_SETTINGS_APPLY_DEFAULTS', {text= '你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？', button1 = '所有设置', button2 = '这些设置', button3 = '取消'})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2941,6 +2970,12 @@ print(ExpansionLandingPage.overlay)]]
 
 
 
+
+    --Blizzard_Dialogs.lua
+    dia('CONFIRM_RESET_TO_DEFAULT_KEYBINDINGS', {text = '确定将所有快捷键设置为默认值吗？', button1 = '确定', button2 = '取消'})
+    dia('GAME_SETTINGS_TIMED_CONFIRMATION', {button1 = '确定', button2 = '取消'})
+    dia('GAME_SETTINGS_CONFIRM_DISCARD', {text= '你尚有还未应用的设置。\n你确定要退出吗？', button1 = '退出', button2 = '应用并退出', button3 = '取消'})
+    dia('GAME_SETTINGS_APPLY_DEFAULTS', {text= '你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？', button1 = '所有设置', button2 = '这些设置', button3 = '取消'})
 
 
     --StaticPopup.lua
@@ -4803,7 +4838,9 @@ local function Init_Loaded(arg1)
                     self.PageText:SetFormattedText('%d/%d页', self.currentPage, self.maxPages)
                 end)
             set(WardrobeCollectionFrameTab2, '套装')
-
+                hooksecurefunc(WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame, 'Update', function(self)--Blizzard_CollectionTemplates.lua
+                    self.PageText:SetFormattedText('%d/%d页', self.currentPage, self.maxPages)
+                end)
 
         dia("BATTLE_PET_RENAME", {text = '重命名', button1 = '接受', button2 = '取消', button3 = '默认'})
         dia("BATTLE_PET_PUT_IN_CAGE", {text = '把这只宠物放入笼中？', button1 = '确定', button2 = '取消'})
@@ -4811,6 +4848,16 @@ local function Init_Loaded(arg1)
 
 
         dia("DIALOG_REPLACE_MOUNT_EQUIPMENT", {text = '你确定要替换此坐骑装备吗？已有的坐骑装备将被摧毁。', button1 = '是', button2 = '否'})
+
+        --试衣间
+        set(WardrobeFrameTitleText, '幻化')
+        set(WardrobeOutfitDropDown.SaveButton, '保存')
+        set(WardrobeTransmogFrame.ApplyButton, '应用')
+        set(WardrobeOutfitEditFrame.Title, '输入外观方案名称：')
+        set(WardrobeOutfitEditFrame.AcceptButton, '接受')
+        set(WardrobeOutfitEditFrame.CancelButton, '取消')
+        set(WardrobeOutfitEditFrame.DeleteButton, '删除外观方案')
+
 
 
 
