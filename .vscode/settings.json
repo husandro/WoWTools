@@ -7121,7 +7121,8 @@
         "QuestUtils_IsQuestWatched",
         "UNTRACK_QUEST_ABBREV",
         "QuestInfoRequiredMoneyText",
-        "QuestInfoRewardsFrame"
+        "QuestInfoRewardsFrame",
+        "MAP_AND_QUEST_LOG"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -23,7 +23,7 @@ end
 
 
 local function set(self, text, affer, setFont)
-    if self and text and not self:IsForbidden() then--CanAccessObject(self) then
+    if self and text and not self:IsForbidden() and self.SetText then--CanAccessObject(self) then
         if setFont then
             font(self)
         end
@@ -32,6 +32,8 @@ local function set(self, text, affer, setFont)
         else
             self:SetText(text)
         end
+    elseif self and e.Player.husandro and text then
+        print(self.GetName and self:GetName() or '', text)
     end
 end
 
@@ -2643,18 +2645,18 @@ local function Init()
     QuestMapFrame.DetailsFrame.WaypointMapButton.tooltipText= '显示旅行路径'
 
     reg(QuestMapFrame.DetailsFrame.RewardsFrame, '奖励')
-    set(MapQuestInfoRewardsFrame.Header, '奖励')
     set(MapQuestInfoRewardsFrame.ItemChooseText, '你可以从这些奖励品中选择一件：')
     set(MapQuestInfoRewardsFrame.PlayerTitleText, '新头衔： %s')
     set(MapQuestInfoRewardsFrame.QuestSessionBonusReward, '在小队同步状态下完成此任务有可能获得奖励：')
     set(QuestInfoRequiredMoneyText, '需要金钱：')
-    set(QuestInfoRewardsFrame.Header, '奖励')
     set(QuestInfoRewardsFrame.ItemChooseText, '你可以从这些奖励品中选择一件：')
     set(QuestInfoRewardsFrame.PlayerTitleText, '新头衔： %s')
     set(QuestInfoRewardsFrame.QuestSessionBonusReward, '在小队同步状态下完成此任务有可能获得奖励：')
-    set(QuestInfoRewardsFrame.XPFrame, '经验值：')
 
-    set(WorldMapFrameTitleText, '地图和任务日志')
+
+    hooksecurefunc(WorldMapFrame, 'SetupTitle', function(self)
+        self.BorderFrame:SetTitle('地图和任务日志')
+    end)
 
 
 
@@ -2679,39 +2681,6 @@ local function Init()
 	    GameTooltip:AddLine('点击以开启或关闭追踪类型。', nil, nil, nil, true)
         GameTooltip:Show()
     end)
-
---[[
-    local function set_UpdateIconForGarrison(self)
-        
-        local garrisonType = C_Garrison.GetLandingPageGarrisonType()
-        print(id,addName, garrisonType)
-        if (garrisonType == Enum.GarrisonType.Type_6_0_Garrison) then
-            self.title = '要塞报告'
-            self.description = '点击显示要塞报告'
-        elseif (garrisonType == Enum.GarrisonType.Type_7_0_Garrison) then
-            self.title = '职业大厅报告'
-            self.description = '点击显示职业大厅报告'
-        elseif (garrisonType == Enum.GarrisonType.Type_8_0_Garrison) then
-            self.title = '任务'
-            self.description = '点击显示任务报告'
-        elseif (garrisonType == Enum.GarrisonType.Type_9_0_Garrison) then
-            self.title = '盟约圣所'
-            self.description = '点击显示圣所报告'
-        end
-    end
-
-    hooksecurefunc(ExpansionLandingPageMinimapButton, 'UpdateIconForGarrison', set_UpdateIconForGarrison)
-    set_UpdateIconForGarrison(ExpansionLandingPageMinimapButton)
-print(ExpansionLandingPage.overlay)]]
-
-
-
-
-
-
-
-
-
 
 
 
@@ -4424,9 +4393,7 @@ local function Init_Loaded(arg1)
             end
         end)
         hooksecurefunc(ProfessionsFrame.SpecPage, 'ConfigureButtons', function(self)
-            print('ConfigureButtons')
             self.DetailedView.SpendPointsButton:SetScript("OnEnter", function()
-                print('enter')
                 local spendCurrency = C_ProfSpecs.GetSpendCurrencyForPath(self:GetDetailedPanelNodeID())
                 if spendCurrency ~= nil then
                     local currencyTypesID = self:GetSpendCurrencyTypesID()
