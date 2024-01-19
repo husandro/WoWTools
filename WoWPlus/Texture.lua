@@ -227,7 +227,12 @@ local function set_Slider(frame)
     e.Set_Label_Texture_Color(left, {type='Texture'})
 end
 
-
+local function set_Menu(self)
+    if self then
+        set_Alpha_Frame_Texture(self, {notAlpha=true})
+        set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
+    end
+end
 
 
 
@@ -509,8 +514,8 @@ local function Init_All_Frame()
      set_Alpha_Frame_Texture(LFGDungeonReadyDialog.Border, {alpha= min05})
      set_Alpha_Frame_Texture(LFDRoleCheckPopup.Border, {alpha= min05})
      set_Alpha_Frame_Texture(LFGDungeonReadyStatus.Border, {alpha= min05})
-     
-     
+
+
 
      set_NineSlice(LFGListFrame.CategorySelection.Inset, nil, true)
      set_NineSlice(LFGListFrame.EntryCreation.Inset, nil, true)
@@ -530,9 +535,7 @@ local function Init_All_Frame()
      set_ScrollBar(LFGListFrame.ApplicationViewer)
 
      set_Alpha_Color(RaidFinderQueueFrameBackground)
-     set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownMiddle)
-     set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownLeft)
-     set_Alpha_Color(RaidFinderQueueFrameSelectionDropDownRight)
+     set_Menu(RaidFinderQueueFrameSelectionDropDown)
      hide_Texture(RaidFinderFrameRoleBackground)
 
 
@@ -556,9 +559,7 @@ local function Init_All_Frame()
      hide_Frame_Texture(PVEFrame.shadows)
 
      set_Alpha_Color(LFDQueueFrameBackground)
-     set_Alpha_Color(LFDQueueFrameTypeDropDownMiddle)
-     set_Alpha_Color(LFDQueueFrameTypeDropDownRight)
-     set_Alpha_Color(LFDQueueFrameTypeDropDownLeft)
+     set_Menu(LFDQueueFrameTypeDropDown)
 
      set_NineSlice(LFDParentFrameInset, nil, true)
      set_Alpha_Color(LFDParentFrameInset.Bg)
@@ -721,8 +722,7 @@ local function Init_All_Frame()
      set_NineSlice(WhoFrameEditBoxInset, true)
      hide_Texture(WhoFrameListInset.Bg)
      set_ScrollBar(WhoFrame)
-     set_Alpha_Frame_Texture(WhoFrameDropDownButton, {alpha=min05})
-     set_Alpha_Frame_Texture(WhoFrameDropDown, {alpha=min05})
+     set_Menu(WhoFrameDropDown)
 
      hide_Texture(WhoFrameEditBoxInset.Bg)
      set_ScrollBar(QuickJoinFrame)
@@ -874,9 +874,7 @@ local function Init_All_Frame()
      set_ScrollBar(AddonList)
      set_Alpha_Color(AddonListBg)
      set_Alpha_Color(AddonListInset.Bg, nil, nil, min03)
-     set_Alpha_Color(AddonCharacterDropDownMiddle)
-     set_Alpha_Color(AddonCharacterDropDownLeft)
-     set_Alpha_Color(AddonCharacterDropDownRight)
+     set_Menu(AddonCharacterDropDown)
 
      --场景 Blizzard_ScenarioObjectiveTracker.lua
      --[[if ObjectiveTrackerBlocksFrame then
@@ -1196,9 +1194,7 @@ local function Init_Event(arg1)
         hide_Texture(ClassTrainerFrameBg)
 
         hide_Texture(ClassTrainerFrameBottomInset.Bg)
-        set_Alpha_Color(ClassTrainerFrameFilterDropDownMiddle)
-        set_Alpha_Color(ClassTrainerFrameFilterDropDownLeft)
-        set_Alpha_Color(ClassTrainerFrameFilterDropDownRight)
+        set_Menu(ClassTrainerFrameFilterDropDown)
         set_ScrollBar(ClassTrainerFrame)
 
     elseif arg1=='Blizzard_TimeManager' then--小时图，时间
@@ -1359,16 +1355,32 @@ local function Init_Event(arg1)
 
         set_Alpha_Color(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.Bg)
 
-
         hide_Frame_Texture(CommunitiesFrame.ChatTab, {index=1})
         hide_Frame_Texture(CommunitiesFrame.RosterTab, {index=1})
         hide_Frame_Texture(CommunitiesFrame.GuildBenefitsTab, {index=1})
         hide_Frame_Texture(CommunitiesFrame.GuildInfoTab, {index=1})
+        set_Menu(CommunitiesFrame.StreamDropDownMenu)
+        set_Alpha_Frame_Texture(CommunitiesFrame.AddToChatButton, {notAlpha=true})
+
         hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
         hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
 
         set_Alpha_Color(ClubFinderGuildFinderFrame.InsetFrame.Bg)
-        set_Alpha_Color(CommunitiesFrame.NotificationSettingsDialog.Selector, {alpha=min05})
+
+        set_Alpha_Frame_Texture(CommunitiesFrame.NotificationSettingsDialog.Selector)
+        set_ScrollBar(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
+        set_Alpha_Color(CommunitiesFrame.NotificationSettingsDialog.BG, {notAlpha=true})
+        set_Menu(CommunitiesFrame.NotificationSettingsDialog.CommunitiesListDropDownMenu)
+
+        set_Alpha_Frame_Texture(GuildControlUI)
+        set_Alpha_Frame_Texture(GuildControlUIHbar)
+        set_Menu(GuildControlUINavigationDropDown)
+
+        set_Menu(CommunitiesFrame.GuildMemberListDropDownMenu)
+        
+        set_Alpha_Frame_Texture(CommunitiesGuildLogFrame)
+        set_NineSlice(CommunitiesGuildLogFrame.Container, true)
+        set_ScrollBar(CommunitiesGuildLogFrame.Container.ScrollFrame)
 
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
         hide_Texture(HonorFrame.Inset.Bg)
@@ -1394,9 +1406,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(ConquestFrame.RatedBGTexture)
         PVPQueueFrame.HonorInset:DisableDrawLayer('BACKGROUND')
         set_Alpha_Color(PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay.Background)
-        set_Alpha_Color(HonorFrameTypeDropDownMiddle)
-        set_Alpha_Color(HonorFrameTypeDropDownLeft)
-        set_Alpha_Color(HonorFrameTypeDropDownRight)
+        set_Menu(HonorFrameTypeDropDown)
         hide_Texture(ConquestFrame.RatedBGTexture)
         set_ScrollBar(LFDQueueFrameSpecific)
 
@@ -1420,14 +1430,11 @@ local function Init_Event(arg1)
         hide_Texture(EncounterJournalNavBarInsetBotRightCorner)
         hide_Texture(EncounterJournalNavBarInsetBotLeftCorner)
 
-        set_Alpha_Color(EncounterJournalInstanceSelectTierDropDownButton, true)
-        --set_Alpha_Color(EncounterJournalEncounterFrameInfoBG)
+
         set_Alpha_Color(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
         EncounterJournalNavBar:DisableDrawLayer('BACKGROUND')
 
-        set_Alpha_Color(EncounterJournalInstanceSelectTierDropDownMiddle, nil, nil, min03)
-        set_Alpha_Color(EncounterJournalInstanceSelectTierDropDownLeft, nil, nil, min03)
-        set_Alpha_Color(EncounterJournalInstanceSelectTierDropDownRight, nil, nil, min03)
+        set_Alpha_Color(EncounterJournalInstanceSelectTierDropDown)
 
 
         C_Timer.After(0.3, function()
@@ -1442,8 +1449,7 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(EncounterJournalDungeonTab, {alpha=min05})
         set_Alpha_Frame_Texture(EncounterJournalRaidTab, {alpha=min05})
         set_Alpha_Frame_Texture(EncounterJournalLootJournalTab, {alpha=min05})
-        set_Alpha_Frame_Texture(EncounterJournalLootJournalViewDropDownButton, {alpha=min05})
-        set_Alpha_Frame_Texture(EncounterJournalLootJournalViewDropDown, {alpha=min05})
+        set_Menu(EncounterJournalLootJournalViewDropDown)
 
 
         set_ScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
@@ -1537,8 +1543,7 @@ local function Init_Event(arg1)
         set_SearchBox(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.InputBox)
         set_SearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox)
         set_SearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.SilverBox)
-        set_Alpha_Frame_Texture(AuctionHouseFrame.CommoditiesSellFrame.DurationDropDown.DropDown, {alpha=min05})
-        set_Alpha_Frame_Texture(AuctionHouseFrame.CommoditiesSellFrame.DurationDropDown.DropDown.Button, {alpha=min05})
+        set_Menu(AuctionHouseFrame.CommoditiesSellFrame.DurationDropDown.DropDown)
         set_Alpha_Color(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabMiddle, nil, nil, min05)
         set_Alpha_Color(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabLeft, nil, nil, min05)
         set_Alpha_Color(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabRight, nil, nil, min05)
@@ -1550,8 +1555,7 @@ local function Init_Event(arg1)
         set_SearchBox(AuctionHouseFrame.ItemSellFrame.QuantityInput.InputBox)
         set_SearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox)
         set_SearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.SilverBox)
-        set_Alpha_Frame_Texture(AuctionHouseFrame.ItemSellFrame.DurationDropDown.DropDown, {alpha=min05})
-        set_Alpha_Frame_Texture(AuctionHouseFrame.ItemSellFrame.DurationDropDown.DropDown.Button, {alpha=min05})
+        set_Menu(AuctionHouseFrame.ItemSellFrame.DurationDropDown.DropDown)
         set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabMiddle, nil, nil, min05)
         set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabLeft, nil, nil, min05)
         set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabRight, nil, nil, min05)
@@ -1674,8 +1678,7 @@ local function Init_Event(arg1)
         ToyBox.progressBar:DisableDrawLayer('BACKGROUND')
 
 
-        set_Alpha_Frame_Texture(HeirloomsJournalClassDropDownButton, {alpha=min03})
-        set_Alpha_Frame_Texture(HeirloomsJournalClassDropDown, {alpha=min03})
+        set_Menu(HeirloomsJournalClassDropDown)
         hide_Texture(HeirloomsJournal.iconsFrame.BackgroundTile)
         hide_Texture(HeirloomsJournal.iconsFrame.Bg)
         set_SearchBox(HeirloomsJournalSearchBox)
@@ -1753,9 +1756,8 @@ local function Init_Event(arg1)
         set_Alpha_Color(WardrobeTransmogFrame.Inset.BG)
         hide_Texture(WardrobeCollectionFrame.SetsTransmogFrame.BackgroundTile)
         set_Alpha_Color(WardrobeCollectionFrame.SetsTransmogFrame.Bg)
-        set_Alpha_Color(WardrobeOutfitDropDownMiddle)
-        set_Alpha_Color(WardrobeOutfitDropDownLeft)
-        set_Alpha_Color(WardrobeOutfitDropDownRight)
+        set_Menu(WardrobeOutfitDropDown)
+
         set_Alpha_Color(WardrobeTransmogFrame.MoneyMiddle)
         set_Alpha_Color(WardrobeTransmogFrame.MoneyLeft)
         set_Alpha_Color(WardrobeTransmogFrame.MoneyRight)
@@ -1768,7 +1770,7 @@ local function Init_Event(arg1)
             end
         end
         WardrobeCollectionFrame.progressBar:DisableDrawLayer('BACKGROUND')
-        set_Alpha_Frame_Texture(WardrobeCollectionFrameWeaponDropDown, {alpha=min05})
+        set_Menu(WardrobeCollectionFrameWeaponDropDown)
 
         for i=1, 7 do
             set_Alpha_Frame_Texture(_G['CollectionsJournalTab'..i], {alpha=min05})

@@ -1580,9 +1580,7 @@ local function Init()
             LFDRoleCheckPopupAcceptButton.tooltipText = '该角色在某些地下城不可用。'
         end
     end)
-    hooksecurefunc('LFGRoleIconIncentive_OnEnter', function()
-        print(id, 'LFGRoleIconIncentive_OnEnter')
-    end)
+  
     hooksecurefunc('LFDRoleCheckPopup_Update', function()
         local slots, bgQueue = GetLFGRoleUpdate()
         local isLFGList, activityID = C_LFGList.GetRoleCheckInfo()
@@ -5790,8 +5788,8 @@ local function Init_Loaded(arg1)
 
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
-
-
+        set(CommunitiesFrameTitleText, '公会与社区')
+        set(CommunitiesFrame.AddToChatButton.Label, '添加至聊天窗口')
         set(CommunitiesFrame.CommunitiesControlFrame.GuildRecruitmentButton, '公会招募')
         set(CommunitiesFrame.InviteButton, '邀请成员')
         set(CommunitiesFrame.CommunitiesControlFrame.GuildControlButton, '公会设置')
@@ -5830,16 +5828,128 @@ local function Init_Loaded(arg1)
         set(CommunitiesFrame.NotificationSettingsDialog.Selector.OkayButton, '确定')
         set(CommunitiesFrame.NotificationSettingsDialog.Selector.CancelButton, '取消')
 
+        hooksecurefunc(CommunitiesFrame, 'UpdateCommunitiesButtons', function(self)--CommunitiesFrameMixin
+            local clubId = self:GetSelectedClubId();
+            local inviteButton = self.InviteButton;
+            if clubId ~= nil then
+                local clubInfo = C_Club.GetClubInfo(clubId)
+                local isClubAtCapacity = clubInfo and clubInfo.memberCount and clubInfo.memberCount >= C_Club.GetClubCapacity();
+                if clubInfo and clubInfo.clubType == Enum.ClubType.Guild then
+                    local hasGuildPermissions = CanGuildInvite();
+                    local isButtonEnabled = inviteButton:IsEnabled();
+                    if(hasGuildPermissions and not isButtonEnabled) then
+                        if(isClubAtCapacity) then
+                            inviteButton.disabledTooltip = '你无法邀请新成员，你的公会已满。';
+                        end
+                    elseif(not isButtonEnabled) then
+                        inviteButton.disabledTooltip = '你没有邀请的权限。';
+                    end
+                elseif clubInfo and (clubInfo.clubType == Enum.ClubType.Character or clubInfo.clubType == Enum.ClubType.BattleNet) then
+                    local privileges = self:GetPrivilegesForClub(clubId);
+                    inviteButton:SetEnabled(not isClubAtCapacity and privileges.canSendInvitation);
+                    local isButtonEnabled = inviteButton:IsEnabled();
+                    if(privileges.canSendInvitation and not isButtonEnabled) then
+                        if(isClubAtCapacity) then
+                            inviteButton.disabledTooltip = '你无法邀请新成员，你的社区已满。';
+                        end
+                    elseif(not isButtonEnabled) then
+                        inviteButton.disabledTooltip = '你没有邀请的权限。';
+                    end
+                end
+            end
+        end)
         
+        hooksecurefunc(CommunitiesFrame.TicketFrame, 'DisplayTicket', function(self, ticketInfo)--CommunitiesTicketFrameMixin
+            local clubInfo = ticketInfo.clubInfo;
+            self.Type:SetText(clubInfo.clubType == Enum.ClubType.Character and '《魔兽世界》社区' or '暴雪群组');
+            self.MemberCount:SetFormattedText('成员：|cffffffff%d|r', clubInfo.memberCount or 1)
+        end)
+        hooksecurefunc(CommunitiesFrame.InvitationFrame, 'DisplayInvitation', function(self)--CommunitiesInvitationFrame.lua
+            local clubInfo = self.invitationInfo.club;
+            local inviterInfo = self.invitationInfo.inviter;
+            local isCharacterClub = clubInfo.clubType == Enum.ClubType.Character;
+            local inviterName = inviterInfo.name or "";
+            local classInfo = inviterInfo.classID and C_CreatureInfo.GetClassInfo(inviterInfo.classID);
+            local inviterText;
+            if isCharacterClub and classInfo then
+                local classColorInfo = RAID_CLASS_COLORS[classInfo.classFile];
+                inviterText = GetPlayerLink(inviterName, ("[%s]"):format(WrapTextInColorCode(inviterName, classColorInfo.colorStr)));
+            elseif isCharacterClub then
+                inviterText = GetPlayerLink(inviterName, ("[%s]"):format(inviterName));
+            else
+                inviterText = inviterName;
+            end
+            self.InvitationText:SetFormattedText('%s邀请你加入', inviterText)
+            self.Type:SetText(isCharacterClub and '《魔兽世界》社区' or '暴雪群组')
+            local leadersText = "";
+            for i, leader in ipairs(self.invitationInfo.leaders) do
+                if leader.name then
+                    leadersText = leadersText..leader.name;
+                    if i ~= #self.invitationInfo.leaders then
+                        leadersText = leadersText..', ';
+                    end
+                end
+            end
+            self.Leader:SetFormattedText('管理员：|cffffffff%s|r', leadersText)
+            self.MemberCount:SetFormattedText('成员：|cffffffff%d|r', clubInfo.memberCount or 1)
+        end)
+
+
+        --CommunitiesMemberList.lua
+        COMMUNITY_MEMBER_ROLE_NAMES[Enum.ClubRoleIdentifier.Owner] = '拥有者'
+        COMMUNITY_MEMBER_ROLE_NAMES[Enum.ClubRoleIdentifier.Leader] = '管理员'
+        COMMUNITY_MEMBER_ROLE_NAMES[Enum.ClubRoleIdentifier.Moderator] = '协管员'
+        COMMUNITY_MEMBER_ROLE_NAMES[Enum.ClubRoleIdentifier.Member] = '成员'
+        hooksecurefunc(CommunitiesFrame.MemberList, 'UpdateMemberCount', function(self)
+            local numOnlineMembers = 0;
+            for i, memberInfo in ipairs(self.allMemberList) do
+                if memberInfo.presence == Enum.ClubMemberPresence.Online or
+                    memberInfo.presence == Enum.ClubMemberPresence.Away or
+                    memberInfo.presence == Enum.ClubMemberPresence.Busy then
+                    numOnlineMembers = numOnlineMembers + 1;
+                end
+            end
+            self.MemberCount:SetFormattedText('%s/%s人在线', AbbreviateNumbers(numOnlineMembers), AbbreviateNumbers(#self.allMemberList))
+        end)
+
+        set(CommunitiesFrame.MemberList.ShowOfflineButton.Text, '显示离线成员')
+        set(CommunitiesFrame.GuildBenefitsFrame.Rewards.TitleText, '公会奖励')
+        CommunitiesFrame.GuildBenefitsFrame.GuildRewardsTutorialButton:HookScript('OnEnter', function()--GuildRewards.xml
+            GameTooltip:SetText('访问任一主城中的公会商人以购买奖励', nil, nil, nil, nil, true);
+            GameTooltip:Show();
+        end)
+        CommunitiesFrame.GuildBenefitsFrame.GuildAchievementPointDisplay:HookScript('OnEnter', function()--GuildRewards.lua
+            GameTooltip_SetTitle(GameTooltip, '公会成就');
+	        GameTooltip:Show();
+        end)
+
+        set(CommunitiesFrameGuildDetailsFrameInfo.TitleText, '信息')
+        
+        
+        set(CommunitiesSettingsDialog.DialogLabel, '群组设置')--CommunitiesSettings.xml
+        set(CommunitiesSettingsDialog.NameLabel, '名称')
+        set(CommunitiesSettingsDialog.ShortNameLabel, '简称')
+        set(CommunitiesSettingsDialog.DescriptionLabel, '介绍')
+        set(CommunitiesSettingsDialog.MessageOfTheDayLabel, '今日信息')
+        set(CommunitiesSettingsDialog.ChangeAvatarButton, '更换')
+        set(CommunitiesSettingsDialog.CrossFactionToggle.Label, '跨阵营')
+        set(CommunitiesSettingsDialog.ShouldListClub.Label, '在社区查找器里列出')
+        set(CommunitiesSettingsDialog.AutoAcceptApplications.Label, '自动接受申请者')
+        set(CommunitiesSettingsDialog.MaxLevelOnly.Label, '只限满级')
+        set(CommunitiesSettingsDialog.MinIlvlOnly.EditBox.Text, '物品等级')
+        set(CommunitiesSettingsDialog.MinIlvlOnly.Label, '最低物品等级')
+        set(CommunitiesSettingsDialog.LookingForDropdown.Label, '寻找：')
+        set(CommunitiesSettingsDialog.LanguageDropdown.Label, '语言')
+        CommunitiesSettingsDialog.Description.instructions= '介绍一下你的社区（可选）。'
+        set(CommunitiesSettingsDialog.Delete, '删除')
+        set(CommunitiesSettingsDialog.Accept, '接受')
+        set(CommunitiesSettingsDialog.Cancel, '取消')
 
 
 
-
-
-
-
-
-
+        
+        set(CommunitiesFrame.GuildLogButton, '查看日志')
+        set(CommunitiesGuildLogFrameCloseButton, '关闭')
 
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
