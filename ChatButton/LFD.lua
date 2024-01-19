@@ -2080,7 +2080,7 @@ local function Init()
         end
         if not self.bossTips and text then
             self.bossTips= e.Cstr(self)
-            self.bossTips:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', 4, 0)
+            self.bossTips:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', 4, 4)
         end
         if self.bossTips then
             text= text and '|cff606060'..(e.onlyChinese and '首领：' or BOSSES)..'|r'

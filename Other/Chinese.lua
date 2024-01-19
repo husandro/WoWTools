@@ -1259,6 +1259,8 @@ e.strText={
 
 
     [HOME] = "首页",
+    [BUTTON_LAG_AUCTIONHOUSE] = "拍卖行",
+    [BLACK_MARKET_AUCTION_HOUSE] = "黑市拍卖行",
 
     [ITEM_HEROIC] = "英雄",
     [ITEM_HEROIC_EPIC] = "英雄级别史诗品质",
@@ -3179,8 +3181,17 @@ local function Init()
 	    GameTooltip:AddLine('点击以开启或关闭追踪类型。', nil, nil, nil, true)
         GameTooltip:Show()
     end)
-
-
+    hooksecurefunc('MinimapMailFrameUpdate', function()
+        local senders = { GetLatestThreeSenders() };
+        local headerText = #senders >= 1 and '未读邮件来自：' or '你有未阅读的邮件';
+        for i, sender in ipairs(senders) do
+            headerText = headerText.."\n"..(e.strText[sender] or sender)
+        end
+        GameTooltip:SetText(headerText);
+        GameTooltip:Show();
+    end)
+    MinimapCluster.IndicatorFrame.MailFrame:HookScript('OnEnter', function()
+    end)
 
 
 
@@ -3448,7 +3459,7 @@ local function Init()
 
 
 
-
+    
 
 
     --NavigationBar.lua

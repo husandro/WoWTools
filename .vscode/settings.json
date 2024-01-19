@@ -7354,7 +7354,10 @@
         "BOSSES_KILLED",
         "BOSSES",
         "BOSS_DEAD",
-        "BOSS_ALIVE"
+        "BOSS_ALIVE",
+        "HAVE_MAIL",
+        "HAVE_MAIL_FROM",
+        "BLACK_MARKET_AUCTION_HOUSE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
