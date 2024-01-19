@@ -1354,6 +1354,9 @@ local function Init()
 
     --角色
     set(CharacterFrameTab1, '角色')
+    CharacterFrameTab1:HookScript('OnEnter', function()
+        GameTooltip:SetText(MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"), 1.0,1.0,1.0 );
+    end)
         PAPERDOLL_SIDEBARS[1].name= '角色属性'
             set(CharacterStatsPane.ItemLevelCategory.Title, '物品等级')
             set(CharacterStatsPane.AttributesCategory.Title, '属性')
@@ -1375,6 +1378,9 @@ local function Init()
                 set(GearManagerPopupFrame.BorderBox.OkayButton, '确认')
                 set(GearManagerPopupFrame.BorderBox.CancelButton, '取消')
     set(CharacterFrameTab2, '声望')
+    CharacterFrameTab2:HookScript('OnEnter', function()
+        GameTooltip:SetText(MicroButtonTooltipText('声望', "TOGGLECHARACTER2"), 1.0,1.0,1.0 );
+    end)
         set(ReputationFrameFactionLabel, '阵营')--FACTION
         set(ReputationFrameStandingLabel,  "关系")--STANDING
         set(ReputationDetailViewRenownButton, '浏览名望')--ReputationFrame.xml
@@ -1382,6 +1388,9 @@ local function Init()
         set(ReputationDetailInactiveCheckBoxText, '隐藏')
         set(ReputationDetailAtWarCheckBoxText, '交战状态')
     set(CharacterFrameTab3, '货币')
+    CharacterFrameTab3:HookScript('OnEnter', function()
+        GameTooltip:SetText(MicroButtonTooltipText('货币', "TOGGLECURRENCY"), 1.0,1.0,1.0 );
+    end)
         set(TokenFramePopup.Title, '货币设置')
         set(TokenFramePopup.InactiveCheckBox.Text, '未使用')
         set(TokenFramePopup.BackpackCheckBox.Text, '在行囊上显示')
@@ -2312,7 +2321,15 @@ local function Init()
                 end
             end
             if btn.Button1 then
-                set(btn.Button1, e.strText[btn.Button1:GetText()])
+                local text= btn.Button1:GetText() or ''
+                local col, name= text:match('(|cff......)(.-)|r')
+                name= name or text
+                if name~='' then
+                    name= e.strText[name]
+                    if name then
+                        set(btn.Button1, (col or '')..name)
+                    end
+                end
             end
             if btn.Button2 then
                 local text= btn.Button2:GetText() or ''
@@ -3480,6 +3497,143 @@ local function Init()
     ChatFrameChannelButton:SetTooltipFunction(function()--ChannelFrameButtonMixin.lua
 		return MicroButtonTooltipText('聊天频道', "TOGGLECHATTAB");
 	end);
+
+    MainMenuBarVehicleLeaveButton:HookScript('OnEnter', function()
+        if UnitOnTaxi("player") then
+            GameTooltip_SetTitle(GameTooltip, '请求终止');
+            GameTooltip:AddLine('将在下一个可用的飞行管理员处着陆。', NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true);
+            GameTooltip:Show();
+        else
+            GameTooltip_SetTitle(GameTooltip, '退出');
+            GameTooltip:Show();
+        end
+    end)
+
+
+    CharacterMicroButton.tooltipText = MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0")--MainMenuBarMicroButtons.lua
+    CharacterMicroButton:HookScript('OnEvent', function(self, event)
+        if ( event == "UPDATE_BINDINGS" ) then
+		    self.tooltipText = MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0")
+        end
+    end)
+
+    SpellbookMicroButton.tooltipText = MicroButtonTooltipText('法术书和专业', "TOGGLESPELLBOOK")
+    SpellbookMicroButton:HookScript('OnEvent', function(self, event)
+        if ( event == "UPDATE_BINDINGS" ) then
+		    self.tooltipText = MicroButtonTooltipText('法术书和专业', "TOGGLESPELLBOOK")
+        end
+    end)
+
+    TalentMicroButton.tooltipText = MicroButtonTooltipText('专精和天赋', "TOGGLETALENTS")
+    TalentMicroButton.newbieText = '天赋的各种组合选择能够强化你的角色，并使你的角色与众不同。';
+    TalentMicroButton:HookScript('OnEvent', function(self, event)
+        if ( event == "UPDATE_BINDINGS" ) then
+		    self.tooltipText = MicroButtonTooltipText('专精和天赋', "TOGGLETALENTS")
+        end
+    end)
+
+    AchievementMicroButton.tooltipText = MicroButtonTooltipText('成就', "TOGGLEACHIEVEMENT")
+    AchievementMicroButton.newbieText = '浏览有关你的成就和统计数据的信息。';
+    AchievementMicroButton:HookScript('OnEvent', function(self, event)
+        if not Kiosk.IsEnabled() and event == "UPDATE_BINDINGS" then
+		    self.tooltipText = MicroButtonTooltipText('成就', "TOGGLEACHIEVEMENT")
+        end
+    end)
+
+    hooksecurefunc(QuestLogMicroButton, 'UpdateTooltipText', function(self)
+        self.tooltipText = MicroButtonTooltipText('任务日志', "TOGGLEQUESTLOG");
+	    self.newbieText = '你现在所拥有的任务。你最多可以同时拥有25条任务记录。';
+    end)
+
+    hooksecurefunc(GuildMicroButton, 'UpdateMicroButton', function(self)
+        if ( IsCommunitiesUIDisabledByTrialAccount() or self.factionGroup == "Neutral" or Kiosk.IsEnabled() ) then
+            if not Kiosk.IsEnabled() then
+                self.disabledTooltip = '免费试玩账号无法进行此项操作';
+            end
+        elseif ( C_Club.IsEnabled() and not BNConnected() ) then
+            self.disabledTooltip = '不可用|n|n暴雪游戏服务目前不可用。';
+        elseif ( C_Club.IsEnabled() and C_Club.IsRestricted() ~= Enum.ClubRestrictionReason.None ) then
+            self.disabledTooltip = '不可用';
+        elseif not (( CommunitiesFrame and CommunitiesFrame:IsShown() ) or ( _G['GuildFrame'] and _G['GuildFrame']:IsShown() )) then
+
+            if ( CommunitiesFrame_IsEnabled() ) then
+                self.tooltipText = MicroButtonTooltipText('公会与社区', "TOGGLEGUILDTAB");
+                --self.newbieText = NEWBIE_TOOLTIP_COMMUNITIESTAB;
+            elseif ( IsInGuild() ) then
+                self.tooltipText = MicroButtonTooltipText('公会', "TOGGLEGUILDTAB");
+                self.newbieText = '查看关于你所在的公会及其会员的信息。如果你是公会的管理人员，还可以在这个窗口中进行公会管理工作。';
+            else
+                self.tooltipText = MicroButtonTooltipText('公会查找器', "TOGGLEGUILDTAB");
+                self.newbieText = '让您找到一个公会。';
+            end
+        end
+    end)
+
+    LFDMicroButton.tooltipText = MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER")
+    LFDMicroButton.disabledTooltip = function()
+		local canUse, failureReason = C_LFGInfo.CanPlayerUseGroupFinder();
+		return canUse and '此功能在你选择阵营前不可用。' or (e.strText[failureReason] or failureReason)
+	end
+    hooksecurefunc(LFDMicroButton, 'UpdateMicroButton',function(self)
+        if not ( PVEFrame and PVEFrame:IsShown() ) and not self:IsActive() then
+            self.disabledTooltip = function()
+                local canUse, failureReason = C_LFGInfo.CanPlayerUseGroupFinder();
+                return canUse and '此功能在你选择阵营前不可用。' or (e.strText[failureReason] or failureReason)
+            end
+        end
+    end)
+    LFDMicroButton:HookScript('OnEvent', function(self, event)
+        if ( event == "UPDATE_BINDINGS" ) then
+		    self.tooltipText = MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER")
+        end
+    end)
+
+    CollectionsMicroButton.tooltipText = MicroButtonTooltipText('藏品', "TOGGLECOLLECTIONS")
+    CollectionsMicroButton:HookScript('OnEvent', function(self, event)
+        if CollectionsJournal and CollectionsJournal:IsShown() then
+            return;
+        end
+        if ( event == "UPDATE_BINDINGS" ) then
+		    self.tooltipText = MicroButtonTooltipText('藏品', "TOGGLECOLLECTIONS")
+        end
+    end)
+
+    EJMicroButton.tooltipText = MicroButtonTooltipText('地下城手册', "TOGGLEENCOUNTERJOURNAL")
+    EJMicroButton.newbieText = '查看各个地下城及团队副本首领的资料，包括他们的技能和收藏的宝物。';
+    EJMicroButton:HookScript('OnEvent', function(self, event)
+        if event == "UPDATE_BINDINGS" then
+		    self.tooltipText = MicroButtonTooltipText('冒险指南', "TOGGLEENCOUNTERJOURNAL")
+            EJMicroButton.newbieText = '查看各个地下城及团队副本首领的资料，包括他们的技能和收藏的宝物。';
+        end
+    end)
+    hooksecurefunc(EJMicroButton, 'UpdateDisplay', function(self)
+        if not ( EncounterJournal and EncounterJournal:IsShown() ) and not AdventureGuideUtil.IsAvailable() then
+            self.disabledTooltip = Kiosk.IsEnabled() and ERR_SYSTEM_DISABLED or FEATURE_NOT_YET_AVAILABLE;
+        end
+    end)
+
+
+    StoreMicroButton.tooltipText = '商城'
+    hooksecurefunc(StoreMicroButton, 'UpdateMicroButton', function(self)
+        if ( C_StorePublic.IsDisabledByParentalControls() ) then
+            self.disabledTooltip = '家长监控已禁用了该功能。';
+        elseif ( Kiosk.IsEnabled() ) then
+            self.disabledTooltip = '该系统目前已被禁用。';
+        elseif ( not C_StorePublic.IsEnabled() ) then
+            if not ( GetCurrentRegionName() == "CN" ) then
+                self.disabledTooltip = '商城当前不可用。';
+            end
+        end
+    end)
+
+
+
+
+
+
+
+
+
 
     --NavigationBar.lua
     hooksecurefunc('NavBar_Initialize', function(_, _, homeData, homeButton)

@@ -1159,6 +1159,9 @@ local function Init_All_Frame()
     hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self)
         set_Slider(self.SliderWithSteppers)
     end)
+    hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)
+        set_Slider(self.SliderWithSteppers)
+    end)
 end
 
 
