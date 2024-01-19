@@ -508,6 +508,8 @@ local function Init_All_Frame()
      hide_Frame_Texture(LFGListFrame.CategorySelection.Inset)
      set_Alpha_Frame_Texture(LFGDungeonReadyDialog.Border, {alpha= min05})
      set_Alpha_Frame_Texture(LFDRoleCheckPopup.Border, {alpha= min05})
+     set_Alpha_Frame_Texture(LFGDungeonReadyStatus.Border, {alpha= min05})
+     
      
 
      set_NineSlice(LFGListFrame.CategorySelection.Inset, nil, true)

@@ -7351,7 +7351,10 @@
         "OPTION_TOOTIP_RETINA_CURSOR",
         "LFDPopupCheckRoleSelectionValid",
         "LFDRoleCheckPopupDeclineButton",
-        "BOSSES_KILLED"
+        "BOSSES_KILLED",
+        "BOSSES",
+        "BOSS_DEAD",
+        "BOSS_ALIVE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

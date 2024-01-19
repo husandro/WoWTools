@@ -2051,6 +2051,45 @@ local function Init()
         end)
     end)
 
+
+    LFGDungeonReadyDialog:HookScript('OnHide', function(self)
+        if self.bossTips then
+            self.bossTips:SetText('')
+        end
+    end)
+    LFGDungeonReadyDialog:HookScript('OnShow', function(self)
+        local numBosses = select(9, GetLFGProposal()) or 0
+        local isHoliday = select(13, GetLFGProposal());
+        if ( numBosses == 0 or isHoliday) then
+            return;
+        end
+        local text
+        local dead=0
+        for i=1, numBosses do
+            local bossName, _, isKilled = GetLFGProposalEncounter(i);
+            if bossName then
+                text= (text and text..'|n' or '')..i..') '
+                if ( isKilled ) then
+                    text= text..e.Icon.X2..'|cnRED_FONT_COLOR:'..bossName..' '..(e.onlyChinese and '已消灭' or BOSS_DEAD);
+                    dead= dead+1
+                else
+                    text= text..e.Icon.select2..'|cnGREEN_FONT_COLOR:'..bossName..' '..(e.onlyChinese and '可消灭' or BOSS_ALIVE);
+                end
+                text= text..'|r'
+            end
+        end
+        if not self.bossTips and text then
+            self.bossTips= e.Cstr(self)
+            self.bossTips:SetPoint('TOPLEFT', self, 'TOPRIGHT', 4, 24)
+        end
+        if self.bossTips then
+            text= text and '|cff606060'..(e.onlyChinese and '首领：' or BOSSES)..'|r'
+                ..format(e.onlyChinese and '已消灭%d/%d个首领' or BOSSES_KILLED, dead, numBosses)
+                ..'|n|n'..text..'|n|n|cff606060'..id..' '..addName..' ' or ''
+            self.bossTips:SetText(text)
+        end
+    end)
+
     C_Timer.After(2, setHoliday)--节日, 提示, button.texture
 
     --###########

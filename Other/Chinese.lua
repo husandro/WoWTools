@@ -1569,7 +1569,9 @@ local function Init()
             LFDRoleCheckPopupAcceptButton.tooltipText = '该角色在某些地下城不可用。'
         end
     end)
-
+    hooksecurefunc('LFGRoleIconIncentive_OnEnter', function()
+        print(id, 'LFGRoleIconIncentive_OnEnter')
+    end)
     hooksecurefunc('LFDRoleCheckPopup_Update', function()
         local slots, bgQueue = GetLFGRoleUpdate()
         local isLFGList, activityID = C_LFGList.GetRoleCheckInfo()
@@ -1609,11 +1611,9 @@ local function Init()
 
 
     LFDParentFrame:HookScript('OnEvent', function(_, event, ...)
-        print(id,addName)
         if ( event == "LFG_ROLE_CHECK_SHOW" ) then
             local requeue = ...
             set(LFDRoleCheckPopup.Text, requeue and '你的队友已经将你加入另一场练习赛的队列。\n\n请确认你的角色：' or '确定你的职责：')
-            
         elseif ( event == "LFG_READY_CHECK_SHOW" ) then
             local _, readyCheckBgQueue = GetLFGReadyCheckUpdate()
             local displayName
@@ -1623,20 +1623,6 @@ local function Init()
                 displayName = '未知'
             end
             set(LFDReadyCheckPopup.Text, format('你的队长将你加入|cnGREEN_FONT_COLOR:%s|r的队列。准备好了吗？', displayName))
-
-        --[[elseif ( event == "LFG_BOOT_PROPOSAL_UPDATE" ) then
-            local voteInProgress, didVote, myVote, targetName, totalVotes, bootVotes, timeLeft, reason = GetLFGBootProposal()
-            if ( voteInProgress and not didVote and targetName ) then
-                if (reason and reason ~= "") then
-                    StaticPopupDialogs["VOTE_BOOT_PLAYER"].text = VOTE_BOOT_PLAYER
-                else
-                    StaticPopupDialogs["VOTE_BOOT_PLAYER"].text = VOTE_BOOT_PLAYER_NO_REASON
-                end
-                -- Person who started the vote voted yes, the person being voted against voted no, so weve seen this before if we have more than 2 votes.
-                StaticPopup_Show("VOTE_BOOT_PLAYER", targetName, reason, totalVotes > 2 )
-            else
-                StaticPopup_Hide("VOTE_BOOT_PLAYER")
-            end]]
         end
     end)
 
@@ -1695,6 +1681,23 @@ local function Init()
         if ( totalEncounters > 0 ) then
             LFGDungeonReadyDialogInstanceInfoFrame.statusText:SetFormattedText('已消灭|cnGREEN_FONT_COLOR:%d/%d|r个首领', completedEncounters, totalEncounters);
         end
+    end)
+    LFGDungeonReadyDialogInstanceInfoFrame:HookScript('OnEnter', function()--LFGDungeonReadyDialogInstanceInfo_OnEnter
+        local numBosses = select(9, GetLFGProposal());
+        local isHoliday = select(13, GetLFGProposal());
+        if ( numBosses == 0 or isHoliday) then
+            return;
+        end
+        GameTooltip:SetText('首领：')
+        for i=1, numBosses do
+            local bossName, _, isKilled = GetLFGProposalEncounter(i);
+            if ( isKilled ) then
+                GameTooltip:AddDoubleLine(e.Icon.X2.. bossName, '|cnRED_FONT_COLOR:已消灭');
+            else
+                GameTooltip:AddDoubleLine(e.Icon.select2..bossName, '|cnGREEN_FONT_COLOR:可消灭');
+            end
+        end
+        GameTooltip:Show();
     end)
     hooksecurefunc('LFGDungeonReadyPopup_Update', function()--LFGFrame.lua
         local proposalExists, _, typeID, subtypeID, _, _, role, hasResponded, _, _, numMembers, _, _, _, isSilent = GetLFGProposal()
