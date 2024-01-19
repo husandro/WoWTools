@@ -18,6 +18,7 @@
 ## AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter
 
 
+##库，不能删除
 Libs\LibStub.lua
 Libs\CallbackHandler-1.0.lua
 Libs\LibDataBroker-1.1.lua
@@ -35,7 +36,7 @@ Libs\LibUIDropDownMenu.lua
 ##Libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua
 
 
-##主要，不能删除
+##主要function，不能删除
 WoWTools.lua
 WoWDate.lua
 WoWPanel.lua
@@ -130,8 +131,6 @@ Tools\23UsaItems.lua
 Tools\24Daisy.lua
 ##诺格弗格药剂 Noggenfogger Elixir
 Tools\25NoggenfoggerElixir.lua
-##挑战者之路
-##Tools\26ChallengerPath.lua
 ##法师传送门
 Tools\27MagePortal.lua
 
@@ -168,12 +167,11 @@ ChatButton\Combat.lua
 ##其它
 ##美酒节 Brewfest
 Other\Brewfest.lua
+##10.1 梦境之种
 Other\DormantSeeds.lua
+##仅限猎人加载，专门，宠物管理，增强
 Other\HunterPet.lua
 ##法术弹出框，加名称, 和颜色
 Other\SpellFrame.lua
-##中文化，测试中
+##界面，中文化，欧服，专用，中文不会载加
 Other\Chinese.lua
-
-##副本, 挑战,之类
-##Instance\Explosives.lua

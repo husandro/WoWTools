@@ -1368,7 +1368,7 @@ local function Init_Event(arg1)
         hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
 
         set_Alpha_Color(ClubFinderGuildFinderFrame.InsetFrame.Bg)
-
+        set_Alpha_Color(CommunitiesFrame.NotificationSettingsDialog.Selector, {alpha=min05})
 
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
         hide_Texture(HonorFrame.Inset.Bg)

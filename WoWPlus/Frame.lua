@@ -487,6 +487,10 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_Communities' then--公会和社区
         set_Move_Frame(CommunitiesFrame)
         set_Move_Frame(CommunitiesFrame.RecruitmentDialog)
+        set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog)
+        set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
+        set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
+        print(CommunitiesFrame.NotificationSettingsDialog)
 
     elseif arg1=='Blizzard_Collections' then--收藏
         local checkbox = WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox

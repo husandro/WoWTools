@@ -5790,6 +5790,8 @@ local function Init_Loaded(arg1)
 
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
+
+
         set(CommunitiesFrame.CommunitiesControlFrame.GuildRecruitmentButton, '公会招募')
         set(CommunitiesFrame.InviteButton, '邀请成员')
         set(CommunitiesFrame.CommunitiesControlFrame.GuildControlButton, '公会设置')
@@ -5810,21 +5812,25 @@ local function Init_Loaded(arg1)
         set(CommunitiesFrame.RecruitmentDialog.DialogLabel, '招募')
         set(CommunitiesFrame.RecruitmentDialog.ShouldListClub.Label, '在公会查找器里列出我的公会')
         set(ClubFinderClubFocusDropdown.Label, '活动倾向')
-        --set(ClubFinderLookingForDropdown.Label, '寻找：')
-        --set(ClubFinderLanguageDropdown.Label, '语言')
+        
         set(CommunitiesFrame.RecruitmentDialog.RecruitmentMessageFrame.Label, '招募信息')
         set(CommunitiesFrame.RecruitmentDialog.MaxLevelOnly.Label, '只限满级')
         set(CommunitiesFrame.RecruitmentDialog.MinIlvlOnly.Label, '最低物品等级')
         set(CommunitiesFrame.RecruitmentDialog.Accept, '接受')
         set(CommunitiesFrame.RecruitmentDialog.Cancel, '取消')
+        
+        set(CommunitiesFrame.GuildBenefitsFrame.FactionFrame.Label, '公会声望：')
+
+        set(CommunitiesFrame.NotificationSettingsDialog.TitleLabel, '通知设置')--CommunitiesStreams.xml
+        set(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame.Child.SettingsLabel, '通知')
         set(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame.Child.QuickJoinButton.Text, '快速加入通知')
-        --set(CommunitiesFrame.RecruitmentDialog.MaxLevelOnly, '')
+        set(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame.Child.NoneButton, '无')
+        set(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame.Child.AllButton, '全部')
 
+        set(CommunitiesFrame.NotificationSettingsDialog.Selector.OkayButton, '确定')
+        set(CommunitiesFrame.NotificationSettingsDialog.Selector.CancelButton, '取消')
 
-
-
-
-
+        
 
 
 

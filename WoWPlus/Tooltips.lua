@@ -4,7 +4,9 @@ local Save={
     setDefaultAnchor=true,--指定点
     --AnchorPoint={},--指定点，位置
     --cursorRight=nil,--'ANCHOR_CURSOR_RIGHT',
+    
     setCVar=e.Player.husandro,
+    ShowOptionsCVarTips=e.Player.husandro,--显示选项中的CVar
     inCombatDefaultAnchor=true,
     ctrl= e.Player.husandro,--取得网页，数据链接
 
@@ -2038,50 +2040,53 @@ local function Init()
         end
     end
 
-    local function set_onenter(self)
-        if not self.onEnter then
-            self:HookScript('OnEnter', function(frame)
-                if frame.variable then
-                    GameTooltip_AddBlankLineToTooltip(SettingsTooltip);
-                    GameTooltip_AddNormalLine(SettingsTooltip, HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar|cff00ff00'..e.Icon.right..frame.variable..'|r'), true)
-                    GameTooltip_AddNormalLine(SettingsTooltip, id.. ' '..addName)
-                    SettingsTooltip:Show()
-                end
-            end)
-            self:HookScript('OnMouseDown', function(frame, d)
-                if d=='RightButton' and frame.variable then
-                    e.Chat(frame.variable, nil, true)
-                end
-            end)
-            self.onEnter=true
+    --显示选项中的CVar
+    if Save.ShowOptionsCVarTips then
+        local function set_onenter(self)
+            if not self.onEnter then
+                self:HookScript('OnEnter', function(frame)
+                    if frame.variable then
+                        GameTooltip_AddBlankLineToTooltip(SettingsTooltip);
+                        GameTooltip_AddNormalLine(SettingsTooltip, HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar|cff00ff00'..e.Icon.right..frame.variable..'|r'), true)
+                        GameTooltip_AddNormalLine(SettingsTooltip, id.. ' '..addName)
+                        SettingsTooltip:Show()
+                    end
+                end)
+                self:HookScript('OnMouseDown', function(frame, d)
+                    if d=='RightButton' and frame.variable then
+                        e.Chat(frame.variable, nil, true)
+                    end
+                end)
+                self.onEnter=true
+            end
         end
+        hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self)
+            set_onenter(self.CheckBox)
+            self.CheckBox.variable= (self:GetSetting() or {}).variable
+        end)
+        hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self)
+            set_onenter(self.SliderWithSteppers.Slider)
+            self.SliderWithSteppers.Slider.variable= (self:GetSetting() or {}).variable
+        end)
+        hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self)
+            set_onenter(self.DropDown.Button)
+            self.DropDown.Button.variable= (self:GetSetting() or {}).variable
+        end)
+        hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self)
+            set_onenter(self.CheckBox)
+            self.CheckBox.variable= (self:GetSetting() or {}).variable
+        end)
+        hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)
+            set_onenter(self.CheckBox)
+            local cbSetting = initializer.data.cbSetting;
+            self.CheckBox.variable= cbSetting.variable
+        end)
+        hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)
+            set_onenter(self.CheckBox)
+            local cbSetting = initializer.data.cbSetting;
+            self.CheckBox.variable= cbSetting.variable
+        end)
     end
-    hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self)
-        set_onenter(self.CheckBox)
-        self.CheckBox.variable= (self:GetSetting() or {}).variable
-    end)
-    hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self)
-        set_onenter(self.SliderWithSteppers.Slider)
-        self.SliderWithSteppers.Slider.variable= (self:GetSetting() or {}).variable
-    end)
-    hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self)
-        set_onenter(self.DropDown.Button)
-        self.DropDown.Button.variable= (self:GetSetting() or {}).variable
-    end)
-    hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self)
-        set_onenter(self.CheckBox)
-        self.CheckBox.variable= (self:GetSetting() or {}).variable
-    end)
-    hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)
-        set_onenter(self.CheckBox)
-        local cbSetting = initializer.data.cbSetting;
-        self.CheckBox.variable= cbSetting.variable
-    end)
-    hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)
-        set_onenter(self.CheckBox)
-        local cbSetting = initializer.data.cbSetting;
-        self.CheckBox.variable= cbSetting.variable
-    end)
 end
 
 
@@ -2315,7 +2320,7 @@ local function Init_Panel()
     })
 
 
-    e.AddPanel_Header(Layout, 'Cvar')
+    e.AddPanel_Header(Layout, 'CVar')
 
     initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS),
@@ -2369,6 +2374,18 @@ local function Init_Panel()
                     msg=e.onlyChinese and '在按下快捷键时施法，而不是在松开快捷键时施法。' or OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN,
                 }) end,
         category=Category
+    })
+
+    initializer2= e.AddPanel_Check({
+        name= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '提示选项CVar名称' or 'Show Option CVar Name'),
+        tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '这选项会出错误' or 'This option will cause an error')..'|r|n|nGetCVarInfo(|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '名称' or NAME)..'|r)'
+        ..'|n|nnote: |cffffffff'..USE_COMBINED_BAGS_TEXT..'|r|n|cnORANGE_FONT_COLOR:'..OPTION_TOOLTIP_USE_COMBINED_BAGS..'|r|nCVar |cnGREEN_FONT_COLOR:combinedBags',
+        value= Save.ShowOptionsCVarTips,
+        category= Category,
+        func= function()
+            Save.ShowOptionsCVarTips= not Save.ShowOptionsCVarTips and true or nil
+            print(id, addName, e.GetEnabeleDisable(not Save.ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
     })
 end
 --[[
@@ -2451,7 +2468,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 category= Category,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
