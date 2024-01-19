@@ -506,6 +506,9 @@ local function Init_All_Frame()
      --set_Alpha_Color(LFGListFrame.CategorySelection.Inset.CustomBG)
      --hide_Texture(LFGListFrame.CategorySelection.Inset.Bg)
      hide_Frame_Texture(LFGListFrame.CategorySelection.Inset)
+     set_Alpha_Frame_Texture(LFGDungeonReadyDialog.Border, {alpha= min05})
+     set_Alpha_Frame_Texture(LFDRoleCheckPopup.Border, {alpha= min05})
+     
 
      set_NineSlice(LFGListFrame.CategorySelection.Inset, nil, true)
      set_NineSlice(LFGListFrame.EntryCreation.Inset, nil, true)

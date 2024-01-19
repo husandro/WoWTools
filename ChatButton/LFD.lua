@@ -2017,7 +2017,18 @@ local function Init()
     end
     set_PvPRoles()
 
-    LFDRoleCheckPopup:SetScript("OnShow",function(self)--副本职责
+    function LFDRoleCheckPopup:CancellORSetTime(seconds)
+        if self.acceptTime then
+            self.acceptTime:Cancel()
+        end
+        e.Ccool(self, nil, seconds, nil, true, true)--设置冷却
+    end
+    LFDRoleCheckPopup:HookScript("OnUpdate",function(self)--副本职责
+        if IsModifierKeyDown() then
+            self:CancellORSetTime(nil)
+        end
+    end)
+    LFDRoleCheckPopup:HookScript("OnShow",function(self)--副本职责
         if not Save.autoSetPvPRole then
             return
         end
@@ -2026,15 +2037,16 @@ local function Init()
         if not LFDRoleCheckPopupAcceptButton:IsEnabled() then
             LFDRoleCheckPopup_UpdateAcceptButton()
         end
-        print(id, addName, e.onlyChinese and '职责确认' or ROLE_POLL,'|cff00ff00'..ACCEPT, SecondsToTime(sec))
-        e.Ccool(self, nil, sec, nil, true, true)--设置冷却
-        C_Timer.After(sec, function()
+        print(id, addName,
+                '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '职责确认' or ROLE_POLL)..': |cfff00fff'.. SecondsToTime(sec).. '|r '..(e.onlyChinese and '接受' or ACCEPT)..'|r',
+                '|cnRED_FONT_COLOR:'..'Alt '..(e.onlyChinese and '取消' or CANCEL)
+            )
+        self:CancellORSetTime(sec)
+        self.acceptTime= C_Timer.NewTimer(sec, function()
             if LFDRoleCheckPopupAcceptButton:IsEnabled() and not IsModifierKeyDown() then
                 local t=LFDRoleCheckPopupDescriptionText:GetText()
-                if t then
-                    print(id, addName, '|cffff00ff'.. t)
-                end
-                LFDRoleCheckPopupAcceptButton:Click()
+                print(id, addName, '|cffff00ff', t)
+                LFDRoleCheckPopupAcceptButton:Click()--LFDRoleCheckPopupAccept_OnClick
             end
         end)
     end)

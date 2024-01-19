@@ -1559,6 +1559,17 @@ local function Init()
         end
     end)
 
+    set(LFDRoleCheckPopupAcceptButton, '接受')
+    set(LFDRoleCheckPopupDeclineButton, '拒绝')
+    set(LFDRoleCheckPopup.Text, '确定你的职责：')
+    hooksecurefunc('LFDRoleCheckPopup_UpdateAcceptButton', function()
+        if not ( LFDPopupCheckRoleSelectionValid( LFGRole_GetChecked(LFDRoleCheckPopupRoleButtonTank),
+                                            LFGRole_GetChecked(LFDRoleCheckPopupRoleButtonHealer),
+                                            LFGRole_GetChecked(LFDRoleCheckPopupRoleButtonDPS)) ) then
+            LFDRoleCheckPopupAcceptButton.tooltipText = '该角色在某些地下城不可用。'
+        end
+    end)
+
     hooksecurefunc('LFDRoleCheckPopup_Update', function()
         local slots, bgQueue = GetLFGRoleUpdate()
         local isLFGList, activityID = C_LFGList.GetRoleCheckInfo()
@@ -1597,10 +1608,12 @@ local function Init()
     end)
 
 
-    hooksecurefunc('LFDFrame_OnEvent', function(_, event, ...)
+    LFDParentFrame:HookScript('OnEvent', function(_, event, ...)
+        print(id,addName)
         if ( event == "LFG_ROLE_CHECK_SHOW" ) then
             local requeue = ...
             set(LFDRoleCheckPopup.Text, requeue and '你的队友已经将你加入另一场练习赛的队列。\n\n请确认你的角色：' or '确定你的职责：')
+            
         elseif ( event == "LFG_READY_CHECK_SHOW" ) then
             local _, readyCheckBgQueue = GetLFGReadyCheckUpdate()
             local displayName
@@ -1678,6 +1691,11 @@ local function Init()
     --LFGList.lua
     dia("LFG_LIST_INVITING_CONVERT_TO_RAID", {text = '邀请这名玩家或队伍会将你的小队转化为团队。', button1 = '邀请', button2 = '取消'})
 
+    hooksecurefunc('LFGDungeonReadyDialog_UpdateInstanceInfo', function(_, completedEncounters, totalEncounters)
+        if ( totalEncounters > 0 ) then
+            LFGDungeonReadyDialogInstanceInfoFrame.statusText:SetFormattedText('已消灭|cnGREEN_FONT_COLOR:%d/%d|r个首领', completedEncounters, totalEncounters);
+        end
+    end)
     hooksecurefunc('LFGDungeonReadyPopup_Update', function()--LFGFrame.lua
         local proposalExists, _, typeID, subtypeID, _, _, role, hasResponded, _, _, numMembers, _, _, _, isSilent = GetLFGProposal()
         if ( not proposalExists ) then

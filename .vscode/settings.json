@@ -7348,7 +7348,10 @@
         "OPTION_TOOLTIP_WORLD_PVP_DISPLAY_NEVER",
         "OPTION_TOOLTIP_WOW_MOUSE",
         "OPTION_TOOLTIP_XP_BAR",
-        "OPTION_TOOTIP_RETINA_CURSOR"
+        "OPTION_TOOTIP_RETINA_CURSOR",
+        "LFDPopupCheckRoleSelectionValid",
+        "LFDRoleCheckPopupDeclineButton",
+        "BOSSES_KILLED"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
