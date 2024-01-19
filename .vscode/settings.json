@@ -7357,7 +7357,13 @@
         "BOSS_ALIVE",
         "HAVE_MAIL",
         "HAVE_MAIL_FROM",
-        "BLACK_MARKET_AUCTION_HOUSE"
+        "BLACK_MARKET_AUCTION_HOUSE",
+        "KeybindFrames_InQuickKeybindMode",
+        "SocialQueueUtil_SetTooltip",
+        "SOCIAL_QUEUE_CLICK_TO_JOIN",
+        "SOCIAL_BUTTON",
+        "SocialQueueUtil_HasRelationshipWithLeader",
+        "SocialQueueUtil_GetHeaderName"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

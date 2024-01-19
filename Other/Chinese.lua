@@ -3457,8 +3457,29 @@ local function Init()
 
 
 
+    QuickJoinToastButton:HookScript('OnEnter', function(self)
+        if ( not KeybindFrames_InQuickKeybindMode() ) then
+            if ( self.displayedToast ) then
+                local queues = C_SocialQueue.GetGroupQueues(self.displayedToast.guid);
+                if ( queues ) then
+                    local knowsLeader = SocialQueueUtil_HasRelationshipWithLeader(self.displayedToast.guid);
+                    GameTooltip:SetOwner(self.Toast, self.isOnRight and "ANCHOR_LEFT" or "ANCHOR_RIGHT");
+                    SocialQueueUtil_SetTooltip(GameTooltip, SocialQueueUtil_GetHeaderName(self.displayedToast.guid), queues, true, knowsLeader);
+                    GameTooltip:AddLine(" ");
+                    GameTooltip:AddLine('|cnGREEN_FONT_COLOR:<点击加入>');
+                    GameTooltip:Show();
+                end
+            else
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+                GameTooltip_SetTitle(GameTooltip, MicroButtonTooltipText('社交', "TOGGLESOCIAL"));
+                GameTooltip:Show();
+            end
+        end
+    end)
 
-
+    ChatFrameChannelButton:SetTooltipFunction(function()--ChannelFrameButtonMixin.lua
+		return MicroButtonTooltipText('聊天频道', "TOGGLECHATTAB");
+	end);
 
     --NavigationBar.lua
     hooksecurefunc('NavBar_Initialize', function(_, _, homeData, homeButton)
@@ -4066,7 +4087,6 @@ local function Init()
 
     --Keybindings.lua
     dia("CONFIRM_DELETING_CHARACTER_SPECIFIC_BINDINGS", {text = '确定要切换到通用键位设定吗？所有本角色专用的键位设定都将被永久删除。', button1 = '确定', button2 = '取消'})
-
 
 
 
