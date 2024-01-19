@@ -7448,7 +7448,13 @@
         "CommunitiesGuildLogFrameBg",
         "CommunitiesGuildLogFrame",
         "CommunitiesFrameGuildDetailsFrame",
-        "CommunitiesSettingsDialog"
+        "CommunitiesSettingsDialog",
+        "COMMUNITIES_CREATE_DIALOG_BATTLE_NET_LABEL",
+        "COMMUNITIES_CREATE_DIALOG_WOW_LABEL",
+        "CLUB_FINDER_SEARCH_NOTHING_FOUND",
+        "SetLargeGuildTabardTextures",
+        "CLUB_FINDER_TYPE_GUILD",
+        "CLUB_FINDER_COMMUNITY_TYPE"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -5925,9 +5925,21 @@ local function Init_Loaded(arg1)
 
         set(CommunitiesFrameGuildDetailsFrameInfo.TitleText, '信息')
         
-        
-        set(CommunitiesSettingsDialog.DialogLabel, '群组设置')--CommunitiesSettings.xml
-        set(CommunitiesSettingsDialog.NameLabel, '名称')
+        set(ClubFinderGuildFinderFrame.InsetFrame.CommunityCards, 'BuildCardList', function(self)--ClubFinderCommunitiesCardsMixin
+            set(self:GetParent().InsetFrame.GuildDescription, '未发现结果。请修改你的搜索条件。')
+        end)
+        set(ClubFinderGuildFinderFrame.InsetFrame.PendingCommunityCards, 'BuildCardList', function(self)
+            set(self:GetParent().InsetFrame.GuildDescription, '未发现结果。请修改你的搜索条件。')
+        end)
+
+        CommunitiesSettingsDialog:HookScript('OnShow', function(self)
+            if self:GetClubType() == Enum.ClubType.BattleNet then
+                self.DialogLabel:SetText('创建暴雪群组');
+            else
+                self.DialogLabel:SetText('创建《魔兽世界》社区');
+            end
+        end)
+        set(CommunitiesSettingsDialog.NameLabel, '名称')--CommunitiesSettings.xml
         set(CommunitiesSettingsDialog.ShortNameLabel, '简称')
         set(CommunitiesSettingsDialog.DescriptionLabel, '介绍')
         set(CommunitiesSettingsDialog.MessageOfTheDayLabel, '今日信息')
@@ -5951,6 +5963,24 @@ local function Init_Loaded(arg1)
         set(CommunitiesFrame.GuildLogButton, '查看日志')
         set(CommunitiesGuildLogFrameCloseButton, '关闭')
 
+        set(CommunitiesFrame.ClubFinderInvitationFrame.AcceptButton, '接受')
+        set(CommunitiesFrame.ClubFinderInvitationFrame.DeclineButton, '拒绝')
+        set(CommunitiesFrame.ClubFinderInvitationFrame.InvitationText, '')
+
+        hooksecurefunc(CommunitiesFrame.ClubFinderInvitationFrame, 'DisplayInvitation', function(self, clubInfo)--ClubFinderInvitationsFrameMixin
+            if clubInfo then
+                local isGuild = clubInfo.isGuild;
+                --self.isLinkInvitation = isLinkInvitation;
+                if	(isGuild) then
+                    self.Type:SetText('公会');
+                else
+                    self.Type:SetText('社区');
+                end
+                self.Leader:SetFormattedText('管理员：|cffffffff%s|r', clubInfo.guildLeader)
+                self.MemberCount:SetFormattedText('成员：|cffffffff%d|r', clubInfo.numActiveMembers or 1)
+                self.InvitationText:SetFormattedText('%s邀请你加入', clubInfo.guildLeader)
+            end
+        end)
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set(GuildBankFrameTab1, '公会银行')
