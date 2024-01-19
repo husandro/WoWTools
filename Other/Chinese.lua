@@ -3459,8 +3459,6 @@ local function Init()
 
 
 
-    
-
 
     --NavigationBar.lua
     hooksecurefunc('NavBar_Initialize', function(_, _, homeData, homeButton)
@@ -4094,7 +4092,13 @@ local function Init()
 
 
 
-
+    C_Timer.After(2, function()
+        AddonCompartmentFrame:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT");
+            GameTooltip_SetTitle(GameTooltip, '插件');
+            GameTooltip:Show();
+        end)
+    end)
 
 end
 
