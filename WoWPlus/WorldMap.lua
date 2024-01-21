@@ -208,14 +208,14 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
             QuestScrollFrame.btnCollapse:SetShown(not Save.hide)
             QuestScrollFrame.btnDeleteAllQuest:SetShown(not Save.hide)
             QuestScrollFrame.SearchBox:SetShown(not Save.hide)
+            QuestScrollFrame.SearchBox.week:SetShown(not Save.hide)
+            QuestScrollFrame.SearchBox.Daily:SetShown(not Save.hide)
         end
         return
     end
 
-    QuestScrollFrame.btnCollapse= e.Cbtn(QuestScrollFrame, {size={22,22}, atlas='campaign_headericon_closed'})--campaign_headericon_closed
+    QuestScrollFrame.btnCollapse= e.Cbtn(QuestScrollFrame, {size={22,22}, atlas='NPE_ArrowUp'})--campaign_headericon_closed
     QuestScrollFrame.btnCollapse:SetPoint('TOPLEFT', QuestScrollFrame,'BOTTOMLEFT', 24,0)
-    QuestScrollFrame.btnCollapse:SetPushedAtlas('campaign_headericon_closedpressed')
-    QuestScrollFrame.btnCollapse:SetHighlightAtlas('Forge-ColorSwatchSelection')
     QuestScrollFrame.btnCollapse:SetAlpha(0.5)
     QuestScrollFrame.btnCollapse:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
     QuestScrollFrame.btnCollapse:SetScript('OnEnter', function(self)
@@ -231,10 +231,8 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
         end
     end)
 
-    QuestScrollFrame.btnExpand= e.Cbtn(QuestScrollFrame, {size={22,22}, atlas='campaign_headericon_open'})
+    QuestScrollFrame.btnExpand= e.Cbtn(QuestScrollFrame, {size={22,22}, atlas='NPE_ArrowDown'})
     QuestScrollFrame.btnExpand:SetPoint('LEFT', QuestScrollFrame.btnCollapse, 'RIGHT', 2, 0)
-    QuestScrollFrame.btnExpand:SetPushedAtlas('campaign_headericon_openpressed')
-    QuestScrollFrame.btnExpand:SetHighlightAtlas('Forge-ColorSwatchSelection')
     QuestScrollFrame.btnExpand:SetAlpha(0.5)
     QuestScrollFrame.btnExpand:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
     QuestScrollFrame.btnExpand:SetScript('OnEnter', function(self)
