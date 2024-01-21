@@ -882,7 +882,9 @@ local function Init()
         e.Set_Item_Stats(frame, frame.itemLink or itemLink , {point=frame.texture})
     end)
     hooksecurefunc('LootWonAlertFrame_SetUp', function(self)
-        print('LootWonAlertFrame_SetUp', self.hyperlink, self.lootItem.Icon)
+        if e.Player.husandro then
+            print('LootWonAlertFrame_SetUp', self.hyperlink, self.lootItem.Icon)
+        end
         e.Set_Item_Stats(self, self.hyperlink, {point= self.lootItem.Icon})
     end)
     hooksecurefunc('LootUpgradeFrame_SetUp', function(self)

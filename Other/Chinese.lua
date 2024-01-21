@@ -4693,7 +4693,7 @@ local function Init_Loaded(arg1)
         end)
         set(ProfessionsCustomerOrdersFrameBrowseTab, '发布订单')
         set(ProfessionsCustomerOrdersFrameOrdersTab, '我的订单')
-
+        set(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.FilterButton, '过滤器')
 
         ProfessionsCustomerOrdersFrame.BrowseOrders:HookScript('OnEvent', function (self, event)
             if event == "CRAFTINGORDERS_CUSTOMER_OPTIONS_PARSED" and not C_CraftingOrders.HasFavoriteCustomerOptions() then
