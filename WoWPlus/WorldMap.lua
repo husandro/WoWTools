@@ -295,14 +295,110 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
         }
         StaticPopup_Show(id..addName.."ABANDON_QUEST", '|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '|n|A:groupfinder-icon-redx:0:0|a所有任务' or ('|n|A:groupfinder-icon-redx:0:0|a'..ALL))..' |r#|cnGREEN_FONT_COLOR:'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r')
     end)
-    
+
     QuestScrollFrame.SearchBox= CreateFrame('EditBox', nil, QuestScrollFrame, 'SearchBoxTemplate')
-    QuestScrollFrame.SearchBox:SetSize(220, 22)
+    QuestScrollFrame.SearchBox:SetSize(174, 22)
     QuestScrollFrame.SearchBox:SetPoint('LEFT', QuestScrollFrame.btnExpand, 'RIGHT')
     QuestScrollFrame.SearchBox.Instructions:SetText(e.onlyChinese and '搜索' or SEARCH)
-    QuestScrollFrame.SearchBox:HookScript("OnTextChanged",  function(self)
-        print(id,addName)
-    end);
+    QuestScrollFrame.SearchBox.DAILY= e.onlyChinese and '日常' or DAILY:lower()
+    QuestScrollFrame.SearchBox.WEEKLY= e.onlyChinese and '周长' or WEEKLY:lower()
+
+    function QuestScrollFrame.SearchBox:set_search()
+        local text= self:GetText()
+        text= text:trim():lower()
+        if text=='' then
+            return
+        end
+        local num= tonumber(text)
+
+        local head={}
+        local isHealerIndex= 0
+        QuestMapFrame.ignoreQuestLogUpdate = true;
+        for index=1, C_QuestLog.GetNumQuestLogEntries() do
+            local info = C_QuestLog.GetInfo(index) or {}
+            local name= info.title:trim():lower()
+
+            isHealerIndex= info.isHeader and index or isHealerIndex
+            local find= false
+
+            if (info.questID and info.questID==num)
+                or (info.campaignID and info.campaignID==num)
+                or (info.level and info.level==num)
+                or (text==self.DAILY and info.frequency==Enum.QuestFrequency.Daily)
+                or (text==self.WEEKLY and info.frequency==Enum.QuestFrequency.Weekly)
+            then
+                find=true
+            elseif name:find(text) then
+                find=true
+            else
+                for _, boje in pairs(C_QuestLog.GetQuestObjectives(info.questID) or {}) do
+                    local str= boje.text
+                    if str then
+                        str= str:lower()
+                        if str:find(text) then
+                            find=true
+                            break
+                        end
+                    end
+                end
+            end
+            head[isHealerIndex]= head[isHealerIndex] or find
+        end
+        for index, expan in pairs(head) do
+            if expan then
+                ExpandQuestHeader(index)
+            else
+                CollapseQuestHeader(index)
+            end
+        end
+        QuestMapFrame.ignoreQuestLogUpdate = nil;
+    end
+    QuestScrollFrame.SearchBox:HookScript("OnTextChanged",  QuestScrollFrame.SearchBox.set_search);
+    QuestScrollFrame.SearchBox:SetAlpha(0.3)
+    QuestScrollFrame.SearchBox:HookScript("OnEditFocusGained",  function(self)
+        self:SetAlpha(1)
+        self:set_search()
+    end)
+
+    QuestScrollFrame.SearchBox:HookScript("OnEditFocusLost",  function(self)
+        self:SetAlpha(0.3)
+    end)
+
+    QuestScrollFrame.SearchBox.week= e.Cbtn(QuestScrollFrame, {size={22,22}, atlas='questlog-questtypeicon-weekly'})
+    QuestScrollFrame.SearchBox.week:SetPoint('LEFT', QuestScrollFrame.SearchBox, 'RIGHT')
+    QuestScrollFrame.SearchBox.week:SetScript('OnClick', function(self)
+        local edit= self:GetParent().SearchBox
+        edit:SetText('')
+        edit:SetText(e.onlyChinese and '周长' or WEEKLY)
+    end)
+    QuestScrollFrame.SearchBox.week:SetAlpha(0.5)
+    QuestScrollFrame.SearchBox.week:SetScript("OnLeave", function(self) GameTooltip_Hide() self:SetAlpha(0.5) end)
+    QuestScrollFrame.SearchBox.week:SetScript("OnEnter", function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddLine('|A:questlog-questtypeicon-weekly:0:0|a'..(e.onlyChinese and '周长' or WEEKLY))
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+        self:SetAlpha(1)
+    end)
+
+    QuestScrollFrame.SearchBox.Daily= e.Cbtn(QuestScrollFrame, {size={22,22}, atlas='AdventureMapIcon-DailyQuest'})
+    QuestScrollFrame.SearchBox.Daily:SetPoint('LEFT', QuestScrollFrame.SearchBox.week, 'RIGHT')
+    QuestScrollFrame.SearchBox.Daily:SetScript('OnClick', function(self)
+        local edit= self:GetParent().SearchBox
+        edit:SetText('')
+        edit:SetText(e.onlyChinese and '日常' or DAILY)
+    end)
+    QuestScrollFrame.SearchBox.Daily:SetAlpha(0.5)
+    QuestScrollFrame.SearchBox.Daily:SetScript("OnLeave", function(self) GameTooltip_Hide() self:SetAlpha(0.5) end)
+    QuestScrollFrame.SearchBox.Daily:SetScript("OnEnter", function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddLine('|A:AdventureMapIcon-DailyQuest:0:0|a'..(e.onlyChinese and '日常' or DAILY))
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+        self:SetAlpha(1)
+    end)
 
 end
 

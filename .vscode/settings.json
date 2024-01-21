@@ -7523,7 +7523,10 @@
         "LFDQueueCheckRoleSelectionValid",
         "LFD_IsEmpowered",
         "GUIDE_TOOLTIP",
-        "LootItemExtendedMixin"
+        "LootItemExtendedMixin",
+        "LFDQueueFrameFollowerTitle",
+        "LFDQueueFrameFollowerDescription",
+        "LFG_TYPE_FOLLOWER_DUNGEON"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
