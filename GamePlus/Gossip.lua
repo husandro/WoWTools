@@ -1321,12 +1321,12 @@ local function Init_Quest()
                     if info
                         and info.questID
                         and not info.isHeader
-                        and not info.campaignID
-                        and not info.isScaling
-                        and not info.isLegendarySort
+                        --and not info.campaignID
+                        --and not info.isScaling
+                        --and not info.isLegendarySort
                         and not info.isHidden
                         --and not C_QuestLog.IsQuestCalling(info.questID)
-                        and not C_QuestLog.IsWorldQuest(info.questID)
+                        --and not C_QuestLog.IsWorldQuest(info.questID)
                     then
 
                         if info.isOnMap  --or GetQuestUiMapID(info.questID)==uiMapID)

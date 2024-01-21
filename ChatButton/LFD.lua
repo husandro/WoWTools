@@ -785,6 +785,7 @@ local function printListInfo()--输出当前列表
         end
     end)
 end
+
 local function set_Party_Menu_List(level)--5人，随机 LFDFrame.lua
     for i=1, GetNumRandomDungeons() do
         local dungeonID, name = GetLFGRandomDungeonInfo(i)
@@ -927,7 +928,7 @@ local set_Raid_Menu_List=function(level)--团队本
                 end
             end
 
-            
+
             info={
                 text=((LfgDungeonID==sortedDungeons[i].id or scenarioName== strlower(sortedDungeons[i].name or '')) and e.Icon.star2 or '')--在当前副本
                     ..sortedDungeons[i].name

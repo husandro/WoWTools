@@ -1787,7 +1787,7 @@ local DIFFICULTY_NAMES =
 	[DifficultyUtil.ID.RaidTimewalker] = PLAYER_DIFFICULTY_TIMEWALKER,
 	[DifficultyUtil.ID.Raid40] = PLAYER_DIFFICULTY1,
 }
-print(DIFFICULTY_NAMES[205])
+
 --副本，难道，颜色
 function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
     local colorRe, name
