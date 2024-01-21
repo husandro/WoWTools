@@ -7522,7 +7522,8 @@
         "LFDFrameRoleCheckButton_OnClick",
         "LFDQueueCheckRoleSelectionValid",
         "LFD_IsEmpowered",
-        "GUIDE_TOOLTIP"
+        "GUIDE_TOOLTIP",
+        "LootItemExtendedMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

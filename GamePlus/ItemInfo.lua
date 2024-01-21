@@ -894,7 +894,21 @@ local function Init()
     hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(frame)
         e.Set_Item_Stats(frame, frame.hyperlink, {point= frame.Icon})
     end)
-
+    --[[hooksecurefunc(LootItemExtended, 'Init', function(self, itemLink2, originalQuantity, _, isCurrency)--ItemDisplay.lua
+        local _, _, _, _, itemLink = ItemUtil.GetItemDetails(itemLink2, originalQuantity, isCurrency);
+        e.Set_Item_Stats(self, itemLink, {point= self.lootItem.Icon})
+        if e.Player.husandro then
+            print('LootItemExtended', itemLink, self.lootItem.Icon)
+        end
+    end)]]
+    
+    hooksecurefunc(LootItemExtendedMixin, 'Init', function(self, itemLink2, originalQuantity, _, isCurrency)--ItemDisplay.lua
+        local _, _, _, _, itemLink = ItemUtil.GetItemDetails(itemLink2, originalQuantity, isCurrency);
+        e.Set_Item_Stats(self, itemLink, {point= self.lootItem.Icon})
+        if e.Player.husandro then
+            print('LootItemExtendedMixin', itemLink, self.lootItem.Icon)
+        end
+    end)
 
     --hooksecurefunc('NewPetAlertFrameMixin', function(self, petID)
     --hooksecurefunc(NewCosmeticAlertFrameMixin, 'SetUp', function(self, itemModifiedAppearanceID)
