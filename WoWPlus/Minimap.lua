@@ -2070,6 +2070,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
     e.Cstr(nil,{size=14, copyFont=btn.Guild.Instance.Text, changeFont= btn.Instance.Text})--字体，大小
     btn.Guild.Instance.Text:SetShadowOffset(1,-1)
 
+
     --MinimapCluster:HookScript('OnEvent', function(self)--Minimap.luab
     hooksecurefunc(btn, 'Update', function(self)--InstanceDifficulty.lua
         local isChallengeMode= self.ChallengeMode:IsShown()
@@ -2100,7 +2101,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
         self.tips= tips
     end)
 
-    btn:HookScript('OnEnter', function(self)
+   --[[ btn:HookScript('OnEnter', function(self)
         if not IsInInstance() then
             return
         end
@@ -2136,7 +2137,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
             self.labelType:SetAlpha(0.5)
         end
         e.tips:Hide()
-    end)
+    end)]]
 end
 
 
