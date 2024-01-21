@@ -1767,6 +1767,27 @@ function e.QuestLogQuests_GetBestTagID(questID, info, tagInfo, isComplete)--Ques
     return atlas, color
 end
 
+local DIFFICULTY_NAMES =
+{
+	[DifficultyUtil.ID.DungeonNormal] = PLAYER_DIFFICULTY1,
+	[DifficultyUtil.ID.DungeonHeroic] = PLAYER_DIFFICULTY2,
+	[DifficultyUtil.ID.Raid10Normal] = PLAYER_DIFFICULTY1,
+	[DifficultyUtil.ID.Raid25Normal] = PLAYER_DIFFICULTY1,
+	[DifficultyUtil.ID.Raid10Heroic] = PLAYER_DIFFICULTY2,
+	[DifficultyUtil.ID.Raid25Heroic] = PLAYER_DIFFICULTY2,
+	[DifficultyUtil.ID.RaidLFR] = PLAYER_DIFFICULTY3,
+	[DifficultyUtil.ID.DungeonChallenge] = PLAYER_DIFFICULTY_MYTHIC_PLUS,
+	[DifficultyUtil.ID.Raid40] = LEGACY_RAID_DIFFICULTY,
+	[DifficultyUtil.ID.PrimaryRaidNormal] = PLAYER_DIFFICULTY1,
+	[DifficultyUtil.ID.PrimaryRaidHeroic] = PLAYER_DIFFICULTY2,
+	[DifficultyUtil.ID.PrimaryRaidMythic] = PLAYER_DIFFICULTY6,
+	[DifficultyUtil.ID.PrimaryRaidLFR] = PLAYER_DIFFICULTY3,
+	[DifficultyUtil.ID.DungeonMythic] = PLAYER_DIFFICULTY6,
+	[DifficultyUtil.ID.DungeonTimewalker] = PLAYER_DIFFICULTY_TIMEWALKER,
+	[DifficultyUtil.ID.RaidTimewalker] = PLAYER_DIFFICULTY_TIMEWALKER,
+	[DifficultyUtil.ID.Raid40] = PLAYER_DIFFICULTY1,
+}
+print(DIFFICULTY_NAMES[205])
 --副本，难道，颜色
 function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
     local colorRe, name
@@ -1781,6 +1802,8 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
             ['挑战']= {name= e.onlyChinese and '挑战' or PLAYER_DIFFICULTY5,  hex='|cffff8200', r=1, g=0.51, b=0},
             ['漫游']= {name= e.onlyChinese and '漫游' or PLAYER_DIFFICULTY_TIMEWALKER, hex='|cff00ffff', r=0, g=1, b=1},
             ['pvp']= {name= 'PvP', hex='|cffff0000', r=1, g=0, b=0},
+            ['追随']= {name= e.onlyChinese and '追随' or LFG_TYPE_FOLLOWER_DUNGEON, hex='|cff0b5f00', r=0.04, g=0.37, b=0, a=1},
+
         } or {}
         local type={
             [1]= '普通',--DifficultyUtil.ID.DungeonNormal
@@ -1826,12 +1849,15 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
             [169]='普通',--Path of Ascension: Loyalty	scenario	
             [170]='普通',--Path of Ascension: Wisdom	scenario	
             [171]='普通',--Path of Ascension: Humility	scenario
+            [205]='追随',--Seguace (5) LFG_TYPE_FOLLOWER_DUNGEON = "追随者地下城";
         }
         name= type[difficultyID]
         if name then
             local tab= color[name]
-            string= tab.hex..tab.name..'|r'
-            colorRe= tab
+            if tab then
+                string= tab.hex..tab.name..'|r'
+                colorRe= tab
+            end
         end
     end
     return  string,

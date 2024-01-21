@@ -7454,7 +7454,8 @@
         "CLUB_FINDER_SEARCH_NOTHING_FOUND",
         "SetLargeGuildTabardTextures",
         "CLUB_FINDER_TYPE_GUILD",
-        "CLUB_FINDER_COMMUNITY_TYPE"
+        "CLUB_FINDER_COMMUNITY_TYPE",
+        "LFG_TYPE_FOLLOWER_DUNGEON"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
