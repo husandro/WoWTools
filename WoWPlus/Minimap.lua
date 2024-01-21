@@ -2088,8 +2088,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
         if isChallengeMode then--挑战
             tips, color, name= e.GetDifficultyColor(nil, DifficultyUtil.ID.DungeonChallenge)
         elseif IsInInstance() then
-             difficultyID = select(3, GetInstanceInfo())
-             print(GetInstanceInfo())
+            difficultyID = select(3, GetInstanceInfo())
             tips, color, name= e.GetDifficultyColor(nil, difficultyID)
         end
         if frame and color then
