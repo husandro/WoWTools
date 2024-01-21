@@ -1355,7 +1355,7 @@ local function Init()
     --角色
     set(CharacterFrameTab1, '角色')
     CharacterFrameTab1:HookScript('OnEnter', function()
-        GameTooltip:SetText(MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"), 1.0,1.0,1.0 );
+        GameTooltip:SetText(MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"), 1.0,1.0,1.0 )
     end)
         PAPERDOLL_SIDEBARS[1].name= '角色属性'
             set(CharacterStatsPane.ItemLevelCategory.Title, '物品等级')
@@ -1379,7 +1379,7 @@ local function Init()
                 set(GearManagerPopupFrame.BorderBox.CancelButton, '取消')
     set(CharacterFrameTab2, '声望')
     CharacterFrameTab2:HookScript('OnEnter', function()
-        GameTooltip:SetText(MicroButtonTooltipText('声望', "TOGGLECHARACTER2"), 1.0,1.0,1.0 );
+        GameTooltip:SetText(MicroButtonTooltipText('声望', "TOGGLECHARACTER2"), 1.0,1.0,1.0 )
     end)
         set(ReputationFrameFactionLabel, '阵营')--FACTION
         set(ReputationFrameStandingLabel,  "关系")--STANDING
@@ -1389,7 +1389,7 @@ local function Init()
         set(ReputationDetailAtWarCheckBoxText, '交战状态')
     set(CharacterFrameTab3, '货币')
     CharacterFrameTab3:HookScript('OnEnter', function()
-        GameTooltip:SetText(MicroButtonTooltipText('货币', "TOGGLECURRENCY"), 1.0,1.0,1.0 );
+        GameTooltip:SetText(MicroButtonTooltipText('货币', "TOGGLECURRENCY"), 1.0,1.0,1.0 )
     end)
         set(TokenFramePopup.Title, '货币设置')
         set(TokenFramePopup.InactiveCheckBox.Text, '未使用')
@@ -1580,7 +1580,7 @@ local function Init()
             LFDRoleCheckPopupAcceptButton.tooltipText = '该角色在某些地下城不可用。'
         end
     end)
-  
+
     hooksecurefunc('LFDRoleCheckPopup_Update', function()
         local slots, bgQueue = GetLFGRoleUpdate()
         local isLFGList, activityID = C_LFGList.GetRoleCheckInfo()
@@ -1688,25 +1688,25 @@ local function Init()
 
     hooksecurefunc('LFGDungeonReadyDialog_UpdateInstanceInfo', function(_, completedEncounters, totalEncounters)
         if ( totalEncounters > 0 ) then
-            LFGDungeonReadyDialogInstanceInfoFrame.statusText:SetFormattedText('已消灭|cnGREEN_FONT_COLOR:%d/%d|r个首领', completedEncounters, totalEncounters);
+            LFGDungeonReadyDialogInstanceInfoFrame.statusText:SetFormattedText('已消灭|cnGREEN_FONT_COLOR:%d/%d|r个首领', completedEncounters, totalEncounters)
         end
     end)
     LFGDungeonReadyDialogInstanceInfoFrame:HookScript('OnEnter', function()--LFGDungeonReadyDialogInstanceInfo_OnEnter
-        local numBosses = select(9, GetLFGProposal());
-        local isHoliday = select(13, GetLFGProposal());
+        local numBosses = select(9, GetLFGProposal())
+        local isHoliday = select(13, GetLFGProposal())
         if ( numBosses == 0 or isHoliday) then
-            return;
+            return
         end
         GameTooltip:SetText('首领：')
         for i=1, numBosses do
-            local bossName, _, isKilled = GetLFGProposalEncounter(i);
+            local bossName, _, isKilled = GetLFGProposalEncounter(i)
             if ( isKilled ) then
-                GameTooltip:AddDoubleLine(e.Icon.X2.. bossName, '|cnRED_FONT_COLOR:已消灭');
+                GameTooltip:AddDoubleLine(e.Icon.X2.. bossName, '|cnRED_FONT_COLOR:已消灭')
             else
-                GameTooltip:AddDoubleLine(e.Icon.select2..bossName, '|cnGREEN_FONT_COLOR:可消灭');
+                GameTooltip:AddDoubleLine(e.Icon.select2..bossName, '|cnGREEN_FONT_COLOR:可消灭')
             end
         end
-        GameTooltip:Show();
+        GameTooltip:Show()
     end)
     hooksecurefunc('LFGDungeonReadyPopup_Update', function()--LFGFrame.lua
         local proposalExists, _, typeID, subtypeID, _, _, role, hasResponded, _, _, numMembers, _, _, _, isSilent = GetLFGProposal()
@@ -1809,7 +1809,63 @@ local function Init()
     end)
 
 
+    set(LFDQueueFrameFollowerTitle, '追随者地下城')
+    set(LFDQueueFrameFollowerDescription, '与NPC队友一起完成地下城')
+    --set(LFDQueueFrameRandomScrollFrameChildFrameTitle, '')
+    hooksecurefunc('LFGRewardsFrame_UpdateFrame', function(parentFrame, dungeonID, background)--LFGFrame.lua
+        if ( not dungeonID ) then
+            return
+        end
+        local _, _, subtypeID,_,_,_,_,_,_,_,_,_,_,_, isHoliday, _, _, isTimewalker = GetLFGDungeonInfo(dungeonID)
+        local isScenario = (subtypeID == LFG_SUBTYPEID_SCENARIO)
+        local doneToday = GetLFGDungeonRewards(dungeonID)
+        if ( isTimewalker ) then
+            parentFrame.rewardsDescription:SetText('你将获得该奖励：')
+            parentFrame.title:SetText('随机时空漫游地下城')
+            parentFrame.description:SetText('时空漫游将让你回到低级地下城中，并将你的角色实力降低到与之相适应程度，但首领会掉落与你当前等级相符的战利品。')
+        elseif ( isHoliday ) then
+            if ( doneToday ) then
+                parentFrame.rewardsDescription:SetText('每天继首次胜利之后的每次胜利将为你赢得：')
+            else
+                parentFrame.rewardsDescription:SetText('你每天取得的首次胜利将为你赢得：')
+            end
+            --parentFrame.title:SetText(dungeonName)
+            --parentFrame.description:SetText(dungeonDescription)
+        elseif ( subtypeID == LFG_SUBTYPEID_RAID ) then
+            if ( doneToday ) then --May not actually be today, but whatever this reset period is.
+                parentFrame.rewardsDescription:SetText('当你完成每周的首次副本之后，每次胜利都可为你赢得：')
+            else
+                parentFrame.rewardsDescription:SetText('每周第一次完成可获得：')
+            end
+            --parentFrame.title:SetText(dungeonName)
+            --parentFrame.description:SetText(dungeonDescription)
+        else
+            local numCompletions, isWeekly = LFGRewardsFrame_EstimateRemainingCompletions(dungeonID)
+            if ( numCompletions <= 0 ) then
+                parentFrame.rewardsDescription:SetText('你将获得该奖励：')
+            elseif ( isWeekly ) then
+                parentFrame.rewardsDescription:SetText(format('本周你还能获取此奖励%d|4次:次：', numCompletions))
+            else
+                parentFrame.rewardsDescription:SetText(format('今天你还能获取此奖励%d|4次:次：', numCompletions))
+            end
+            if ( isScenario ) then
+                if ( LFG_IsHeroicScenario(dungeonID) ) then
+                    parentFrame.title:SetText('随机英雄场景战役')
+                    parentFrame.description:SetText('使用随机英雄场景战役排队可获得额外奖励。但你需要组满队伍')
+                else
+                    parentFrame.title:SetText('随机场景战役')
+                    parentFrame.description:SetText('使用随机场景战役排队，会获得额外奖励哦！')
+                end
+            else
+                parentFrame.title:SetText('随机地下城')
+                parentFrame.description:SetText('使用地下城查找器前往随机地下城，会有额外奖励哦！')
+            end
+        end
 
+
+
+
+    end)
 
 
 
@@ -3197,13 +3253,13 @@ local function Init()
         GameTooltip:Show()
     end)
     hooksecurefunc('MinimapMailFrameUpdate', function()
-        local senders = { GetLatestThreeSenders() };
-        local headerText = #senders >= 1 and '未读邮件来自：' or '你有未阅读的邮件';
+        local senders = { GetLatestThreeSenders() }
+        local headerText = #senders >= 1 and '未读邮件来自：' or '你有未阅读的邮件'
         for i, sender in ipairs(senders) do
             headerText = headerText.."\n"..(e.strText[sender] or sender)
         end
-        GameTooltip:SetText(headerText);
-        GameTooltip:Show();
+        GameTooltip:SetText(headerText)
+        GameTooltip:Show()
     end)
     MinimapCluster.IndicatorFrame.MailFrame:HookScript('OnEnter', function()
     end)
@@ -3475,35 +3531,35 @@ local function Init()
     QuickJoinToastButton:HookScript('OnEnter', function(self)
         if ( not KeybindFrames_InQuickKeybindMode() ) then
             if ( self.displayedToast ) then
-                local queues = C_SocialQueue.GetGroupQueues(self.displayedToast.guid);
+                local queues = C_SocialQueue.GetGroupQueues(self.displayedToast.guid)
                 if ( queues ) then
-                    local knowsLeader = SocialQueueUtil_HasRelationshipWithLeader(self.displayedToast.guid);
-                    GameTooltip:SetOwner(self.Toast, self.isOnRight and "ANCHOR_LEFT" or "ANCHOR_RIGHT");
-                    SocialQueueUtil_SetTooltip(GameTooltip, SocialQueueUtil_GetHeaderName(self.displayedToast.guid), queues, true, knowsLeader);
-                    GameTooltip:AddLine(" ");
-                    GameTooltip:AddLine('|cnGREEN_FONT_COLOR:<点击加入>');
-                    GameTooltip:Show();
+                    local knowsLeader = SocialQueueUtil_HasRelationshipWithLeader(self.displayedToast.guid)
+                    GameTooltip:SetOwner(self.Toast, self.isOnRight and "ANCHOR_LEFT" or "ANCHOR_RIGHT")
+                    SocialQueueUtil_SetTooltip(GameTooltip, SocialQueueUtil_GetHeaderName(self.displayedToast.guid), queues, true, knowsLeader)
+                    GameTooltip:AddLine(" ")
+                    GameTooltip:AddLine('|cnGREEN_FONT_COLOR:<点击加入>')
+                    GameTooltip:Show()
                 end
             else
-                GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-                GameTooltip_SetTitle(GameTooltip, MicroButtonTooltipText('社交', "TOGGLESOCIAL"));
-                GameTooltip:Show();
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                GameTooltip_SetTitle(GameTooltip, MicroButtonTooltipText('社交', "TOGGLESOCIAL"))
+                GameTooltip:Show()
             end
         end
     end)
 
     ChatFrameChannelButton:SetTooltipFunction(function()--ChannelFrameButtonMixin.lua
-		return MicroButtonTooltipText('聊天频道', "TOGGLECHATTAB");
-	end);
+		return MicroButtonTooltipText('聊天频道', "TOGGLECHATTAB")
+	end)
 
     MainMenuBarVehicleLeaveButton:HookScript('OnEnter', function()
         if UnitOnTaxi("player") then
-            GameTooltip_SetTitle(GameTooltip, '请求终止');
-            GameTooltip:AddLine('将在下一个可用的飞行管理员处着陆。', NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true);
-            GameTooltip:Show();
+            GameTooltip_SetTitle(GameTooltip, '请求终止')
+            GameTooltip:AddLine('将在下一个可用的飞行管理员处着陆。', NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, true)
+            GameTooltip:Show()
         else
-            GameTooltip_SetTitle(GameTooltip, '退出');
-            GameTooltip:Show();
+            GameTooltip_SetTitle(GameTooltip, '退出')
+            GameTooltip:Show()
         end
     end)
 
@@ -3523,7 +3579,7 @@ local function Init()
     end)
 
     TalentMicroButton.tooltipText = MicroButtonTooltipText('专精和天赋', "TOGGLETALENTS")
-    TalentMicroButton.newbieText = '天赋的各种组合选择能够强化你的角色，并使你的角色与众不同。';
+    TalentMicroButton.newbieText = '天赋的各种组合选择能够强化你的角色，并使你的角色与众不同。'
     TalentMicroButton:HookScript('OnEvent', function(self, event)
         if ( event == "UPDATE_BINDINGS" ) then
 		    self.tooltipText = MicroButtonTooltipText('专精和天赋', "TOGGLETALENTS")
@@ -3531,7 +3587,7 @@ local function Init()
     end)
 
     AchievementMicroButton.tooltipText = MicroButtonTooltipText('成就', "TOGGLEACHIEVEMENT")
-    AchievementMicroButton.newbieText = '浏览有关你的成就和统计数据的信息。';
+    AchievementMicroButton.newbieText = '浏览有关你的成就和统计数据的信息。'
     AchievementMicroButton:HookScript('OnEvent', function(self, event)
         if not Kiosk.IsEnabled() and event == "UPDATE_BINDINGS" then
 		    self.tooltipText = MicroButtonTooltipText('成就', "TOGGLEACHIEVEMENT")
@@ -3539,43 +3595,43 @@ local function Init()
     end)
 
     hooksecurefunc(QuestLogMicroButton, 'UpdateTooltipText', function(self)
-        self.tooltipText = MicroButtonTooltipText('任务日志', "TOGGLEQUESTLOG");
-	    self.newbieText = '你现在所拥有的任务。你最多可以同时拥有25条任务记录。';
+        self.tooltipText = MicroButtonTooltipText('任务日志', "TOGGLEQUESTLOG")
+	    self.newbieText = '你现在所拥有的任务。你最多可以同时拥有25条任务记录。'
     end)
 
     hooksecurefunc(GuildMicroButton, 'UpdateMicroButton', function(self)
         if ( IsCommunitiesUIDisabledByTrialAccount() or self.factionGroup == "Neutral" or Kiosk.IsEnabled() ) then
             if not Kiosk.IsEnabled() then
-                self.disabledTooltip = '免费试玩账号无法进行此项操作';
+                self.disabledTooltip = '免费试玩账号无法进行此项操作'
             end
         elseif ( C_Club.IsEnabled() and not BNConnected() ) then
-            self.disabledTooltip = '不可用|n|n暴雪游戏服务目前不可用。';
+            self.disabledTooltip = '不可用|n|n暴雪游戏服务目前不可用。'
         elseif ( C_Club.IsEnabled() and C_Club.IsRestricted() ~= Enum.ClubRestrictionReason.None ) then
-            self.disabledTooltip = '不可用';
+            self.disabledTooltip = '不可用'
         elseif not (( CommunitiesFrame and CommunitiesFrame:IsShown() ) or ( _G['GuildFrame'] and _G['GuildFrame']:IsShown() )) then
 
             if ( CommunitiesFrame_IsEnabled() ) then
-                self.tooltipText = MicroButtonTooltipText('公会与社区', "TOGGLEGUILDTAB");
-                --self.newbieText = NEWBIE_TOOLTIP_COMMUNITIESTAB;
+                self.tooltipText = MicroButtonTooltipText('公会与社区', "TOGGLEGUILDTAB")
+                --self.newbieText = NEWBIE_TOOLTIP_COMMUNITIESTAB
             elseif ( IsInGuild() ) then
-                self.tooltipText = MicroButtonTooltipText('公会', "TOGGLEGUILDTAB");
-                self.newbieText = '查看关于你所在的公会及其会员的信息。如果你是公会的管理人员，还可以在这个窗口中进行公会管理工作。';
+                self.tooltipText = MicroButtonTooltipText('公会', "TOGGLEGUILDTAB")
+                self.newbieText = '查看关于你所在的公会及其会员的信息。如果你是公会的管理人员，还可以在这个窗口中进行公会管理工作。'
             else
-                self.tooltipText = MicroButtonTooltipText('公会查找器', "TOGGLEGUILDTAB");
-                self.newbieText = '让您找到一个公会。';
+                self.tooltipText = MicroButtonTooltipText('公会查找器', "TOGGLEGUILDTAB")
+                self.newbieText = '让您找到一个公会。'
             end
         end
     end)
 
     LFDMicroButton.tooltipText = MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER")
     LFDMicroButton.disabledTooltip = function()
-		local canUse, failureReason = C_LFGInfo.CanPlayerUseGroupFinder();
+		local canUse, failureReason = C_LFGInfo.CanPlayerUseGroupFinder()
 		return canUse and '此功能在你选择阵营前不可用。' or (e.strText[failureReason] or failureReason)
 	end
     hooksecurefunc(LFDMicroButton, 'UpdateMicroButton',function(self)
         if not ( PVEFrame and PVEFrame:IsShown() ) and not self:IsActive() then
             self.disabledTooltip = function()
-                local canUse, failureReason = C_LFGInfo.CanPlayerUseGroupFinder();
+                local canUse, failureReason = C_LFGInfo.CanPlayerUseGroupFinder()
                 return canUse and '此功能在你选择阵营前不可用。' or (e.strText[failureReason] or failureReason)
             end
         end
@@ -3589,7 +3645,7 @@ local function Init()
     CollectionsMicroButton.tooltipText = MicroButtonTooltipText('藏品', "TOGGLECOLLECTIONS")
     CollectionsMicroButton:HookScript('OnEvent', function(self, event)
         if CollectionsJournal and CollectionsJournal:IsShown() then
-            return;
+            return
         end
         if ( event == "UPDATE_BINDINGS" ) then
 		    self.tooltipText = MicroButtonTooltipText('藏品', "TOGGLECOLLECTIONS")
@@ -3597,16 +3653,16 @@ local function Init()
     end)
 
     EJMicroButton.tooltipText = MicroButtonTooltipText('地下城手册', "TOGGLEENCOUNTERJOURNAL")
-    EJMicroButton.newbieText = '查看各个地下城及团队副本首领的资料，包括他们的技能和收藏的宝物。';
+    EJMicroButton.newbieText = '查看各个地下城及团队副本首领的资料，包括他们的技能和收藏的宝物。'
     EJMicroButton:HookScript('OnEvent', function(self, event)
         if event == "UPDATE_BINDINGS" then
 		    self.tooltipText = MicroButtonTooltipText('冒险指南', "TOGGLEENCOUNTERJOURNAL")
-            EJMicroButton.newbieText = '查看各个地下城及团队副本首领的资料，包括他们的技能和收藏的宝物。';
+            EJMicroButton.newbieText = '查看各个地下城及团队副本首领的资料，包括他们的技能和收藏的宝物。'
         end
     end)
     hooksecurefunc(EJMicroButton, 'UpdateDisplay', function(self)
         if not ( EncounterJournal and EncounterJournal:IsShown() ) and not AdventureGuideUtil.IsAvailable() then
-            self.disabledTooltip = Kiosk.IsEnabled() and ERR_SYSTEM_DISABLED or FEATURE_NOT_YET_AVAILABLE;
+            self.disabledTooltip = Kiosk.IsEnabled() and ERR_SYSTEM_DISABLED or FEATURE_NOT_YET_AVAILABLE
         end
     end)
 
@@ -3614,12 +3670,12 @@ local function Init()
     StoreMicroButton.tooltipText = '商城'
     hooksecurefunc(StoreMicroButton, 'UpdateMicroButton', function(self)
         if ( C_StorePublic.IsDisabledByParentalControls() ) then
-            self.disabledTooltip = '家长监控已禁用了该功能。';
+            self.disabledTooltip = '家长监控已禁用了该功能。'
         elseif ( Kiosk.IsEnabled() ) then
-            self.disabledTooltip = '该系统目前已被禁用。';
+            self.disabledTooltip = '该系统目前已被禁用。'
         elseif ( not C_StorePublic.IsEnabled() ) then
             if not ( GetCurrentRegionName() == "CN" ) then
-                self.disabledTooltip = '商城当前不可用。';
+                self.disabledTooltip = '商城当前不可用。'
             end
         end
     end)
@@ -4266,9 +4322,9 @@ local function Init()
 
     C_Timer.After(2, function()
         AddonCompartmentFrame:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT");
-            GameTooltip_SetTitle(GameTooltip, '插件');
-            GameTooltip:Show();
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip_SetTitle(GameTooltip, '插件')
+            GameTooltip:Show()
         end)
     end)
 
@@ -5810,13 +5866,13 @@ local function Init_Loaded(arg1)
         set(CommunitiesFrame.RecruitmentDialog.DialogLabel, '招募')
         set(CommunitiesFrame.RecruitmentDialog.ShouldListClub.Label, '在公会查找器里列出我的公会')
         set(ClubFinderClubFocusDropdown.Label, '活动倾向')
-        
+
         set(CommunitiesFrame.RecruitmentDialog.RecruitmentMessageFrame.Label, '招募信息')
         set(CommunitiesFrame.RecruitmentDialog.MaxLevelOnly.Label, '只限满级')
         set(CommunitiesFrame.RecruitmentDialog.MinIlvlOnly.Label, '最低物品等级')
         set(CommunitiesFrame.RecruitmentDialog.Accept, '接受')
         set(CommunitiesFrame.RecruitmentDialog.Cancel, '取消')
-        
+
         set(CommunitiesFrame.GuildBenefitsFrame.FactionFrame.Label, '公会声望：')
 
         set(CommunitiesFrame.NotificationSettingsDialog.TitleLabel, '通知设置')--CommunitiesStreams.xml
@@ -5829,64 +5885,64 @@ local function Init_Loaded(arg1)
         set(CommunitiesFrame.NotificationSettingsDialog.Selector.CancelButton, '取消')
 
         hooksecurefunc(CommunitiesFrame, 'UpdateCommunitiesButtons', function(self)--CommunitiesFrameMixin
-            local clubId = self:GetSelectedClubId();
-            local inviteButton = self.InviteButton;
+            local clubId = self:GetSelectedClubId()
+            local inviteButton = self.InviteButton
             if clubId ~= nil then
                 local clubInfo = C_Club.GetClubInfo(clubId)
-                local isClubAtCapacity = clubInfo and clubInfo.memberCount and clubInfo.memberCount >= C_Club.GetClubCapacity();
+                local isClubAtCapacity = clubInfo and clubInfo.memberCount and clubInfo.memberCount >= C_Club.GetClubCapacity()
                 if clubInfo and clubInfo.clubType == Enum.ClubType.Guild then
-                    local hasGuildPermissions = CanGuildInvite();
-                    local isButtonEnabled = inviteButton:IsEnabled();
+                    local hasGuildPermissions = CanGuildInvite()
+                    local isButtonEnabled = inviteButton:IsEnabled()
                     if(hasGuildPermissions and not isButtonEnabled) then
                         if(isClubAtCapacity) then
-                            inviteButton.disabledTooltip = '你无法邀请新成员，你的公会已满。';
+                            inviteButton.disabledTooltip = '你无法邀请新成员，你的公会已满。'
                         end
                     elseif(not isButtonEnabled) then
-                        inviteButton.disabledTooltip = '你没有邀请的权限。';
+                        inviteButton.disabledTooltip = '你没有邀请的权限。'
                     end
                 elseif clubInfo and (clubInfo.clubType == Enum.ClubType.Character or clubInfo.clubType == Enum.ClubType.BattleNet) then
-                    local privileges = self:GetPrivilegesForClub(clubId);
-                    inviteButton:SetEnabled(not isClubAtCapacity and privileges.canSendInvitation);
-                    local isButtonEnabled = inviteButton:IsEnabled();
+                    local privileges = self:GetPrivilegesForClub(clubId)
+                    inviteButton:SetEnabled(not isClubAtCapacity and privileges.canSendInvitation)
+                    local isButtonEnabled = inviteButton:IsEnabled()
                     if(privileges.canSendInvitation and not isButtonEnabled) then
                         if(isClubAtCapacity) then
-                            inviteButton.disabledTooltip = '你无法邀请新成员，你的社区已满。';
+                            inviteButton.disabledTooltip = '你无法邀请新成员，你的社区已满。'
                         end
                     elseif(not isButtonEnabled) then
-                        inviteButton.disabledTooltip = '你没有邀请的权限。';
+                        inviteButton.disabledTooltip = '你没有邀请的权限。'
                     end
                 end
             end
         end)
-        
+
         hooksecurefunc(CommunitiesFrame.TicketFrame, 'DisplayTicket', function(self, ticketInfo)--CommunitiesTicketFrameMixin
-            local clubInfo = ticketInfo.clubInfo;
-            self.Type:SetText(clubInfo.clubType == Enum.ClubType.Character and '《魔兽世界》社区' or '暴雪群组');
+            local clubInfo = ticketInfo.clubInfo
+            self.Type:SetText(clubInfo.clubType == Enum.ClubType.Character and '《魔兽世界》社区' or '暴雪群组')
             self.MemberCount:SetFormattedText('成员：|cffffffff%d|r', clubInfo.memberCount or 1)
         end)
         hooksecurefunc(CommunitiesFrame.InvitationFrame, 'DisplayInvitation', function(self)--CommunitiesInvitationFrame.lua
-            local clubInfo = self.invitationInfo.club;
-            local inviterInfo = self.invitationInfo.inviter;
-            local isCharacterClub = clubInfo.clubType == Enum.ClubType.Character;
-            local inviterName = inviterInfo.name or "";
-            local classInfo = inviterInfo.classID and C_CreatureInfo.GetClassInfo(inviterInfo.classID);
-            local inviterText;
+            local clubInfo = self.invitationInfo.club
+            local inviterInfo = self.invitationInfo.inviter
+            local isCharacterClub = clubInfo.clubType == Enum.ClubType.Character
+            local inviterName = inviterInfo.name or ""
+            local classInfo = inviterInfo.classID and C_CreatureInfo.GetClassInfo(inviterInfo.classID)
+            local inviterText
             if isCharacterClub and classInfo then
-                local classColorInfo = RAID_CLASS_COLORS[classInfo.classFile];
-                inviterText = GetPlayerLink(inviterName, ("[%s]"):format(WrapTextInColorCode(inviterName, classColorInfo.colorStr)));
+                local classColorInfo = RAID_CLASS_COLORS[classInfo.classFile]
+                inviterText = GetPlayerLink(inviterName, ("[%s]"):format(WrapTextInColorCode(inviterName, classColorInfo.colorStr)))
             elseif isCharacterClub then
-                inviterText = GetPlayerLink(inviterName, ("[%s]"):format(inviterName));
+                inviterText = GetPlayerLink(inviterName, ("[%s]"):format(inviterName))
             else
-                inviterText = inviterName;
+                inviterText = inviterName
             end
             self.InvitationText:SetFormattedText('%s邀请你加入', inviterText)
             self.Type:SetText(isCharacterClub and '《魔兽世界》社区' or '暴雪群组')
-            local leadersText = "";
+            local leadersText = ""
             for i, leader in ipairs(self.invitationInfo.leaders) do
                 if leader.name then
-                    leadersText = leadersText..leader.name;
+                    leadersText = leadersText..leader.name
                     if i ~= #self.invitationInfo.leaders then
-                        leadersText = leadersText..', ';
+                        leadersText = leadersText..', '
                     end
                 end
             end
@@ -5901,12 +5957,12 @@ local function Init_Loaded(arg1)
         COMMUNITY_MEMBER_ROLE_NAMES[Enum.ClubRoleIdentifier.Moderator] = '协管员'
         COMMUNITY_MEMBER_ROLE_NAMES[Enum.ClubRoleIdentifier.Member] = '成员'
         hooksecurefunc(CommunitiesFrame.MemberList, 'UpdateMemberCount', function(self)
-            local numOnlineMembers = 0;
+            local numOnlineMembers = 0
             for i, memberInfo in ipairs(self.allMemberList) do
                 if memberInfo.presence == Enum.ClubMemberPresence.Online or
                     memberInfo.presence == Enum.ClubMemberPresence.Away or
                     memberInfo.presence == Enum.ClubMemberPresence.Busy then
-                    numOnlineMembers = numOnlineMembers + 1;
+                    numOnlineMembers = numOnlineMembers + 1
                 end
             end
             self.MemberCount:SetFormattedText('%s/%s人在线', AbbreviateNumbers(numOnlineMembers), AbbreviateNumbers(#self.allMemberList))
@@ -5915,16 +5971,16 @@ local function Init_Loaded(arg1)
         set(CommunitiesFrame.MemberList.ShowOfflineButton.Text, '显示离线成员')
         set(CommunitiesFrame.GuildBenefitsFrame.Rewards.TitleText, '公会奖励')
         CommunitiesFrame.GuildBenefitsFrame.GuildRewardsTutorialButton:HookScript('OnEnter', function()--GuildRewards.xml
-            GameTooltip:SetText('访问任一主城中的公会商人以购买奖励', nil, nil, nil, nil, true);
-            GameTooltip:Show();
+            GameTooltip:SetText('访问任一主城中的公会商人以购买奖励', nil, nil, nil, nil, true)
+            GameTooltip:Show()
         end)
         CommunitiesFrame.GuildBenefitsFrame.GuildAchievementPointDisplay:HookScript('OnEnter', function()--GuildRewards.lua
-            GameTooltip_SetTitle(GameTooltip, '公会成就');
-	        GameTooltip:Show();
+            GameTooltip_SetTitle(GameTooltip, '公会成就')
+	        GameTooltip:Show()
         end)
 
         set(CommunitiesFrameGuildDetailsFrameInfo.TitleText, '信息')
-        
+
         set(ClubFinderGuildFinderFrame.InsetFrame.CommunityCards, 'BuildCardList', function(self)--ClubFinderCommunitiesCardsMixin
             set(self:GetParent().InsetFrame.GuildDescription, '未发现结果。请修改你的搜索条件。')
         end)
@@ -5934,9 +5990,9 @@ local function Init_Loaded(arg1)
 
         CommunitiesSettingsDialog:HookScript('OnShow', function(self)
             if self:GetClubType() == Enum.ClubType.BattleNet then
-                self.DialogLabel:SetText('创建暴雪群组');
+                self.DialogLabel:SetText('创建暴雪群组')
             else
-                self.DialogLabel:SetText('创建《魔兽世界》社区');
+                self.DialogLabel:SetText('创建《魔兽世界》社区')
             end
         end)
         set(CommunitiesSettingsDialog.NameLabel, '名称')--CommunitiesSettings.xml
@@ -5959,7 +6015,7 @@ local function Init_Loaded(arg1)
 
 
 
-        
+
         set(CommunitiesFrame.GuildLogButton, '查看日志')
         set(CommunitiesGuildLogFrameCloseButton, '关闭')
 
@@ -5969,12 +6025,12 @@ local function Init_Loaded(arg1)
 
         hooksecurefunc(CommunitiesFrame.ClubFinderInvitationFrame, 'DisplayInvitation', function(self, clubInfo)--ClubFinderInvitationsFrameMixin
             if clubInfo then
-                local isGuild = clubInfo.isGuild;
-                --self.isLinkInvitation = isLinkInvitation;
+                local isGuild = clubInfo.isGuild
+                --self.isLinkInvitation = isLinkInvitation
                 if	(isGuild) then
-                    self.Type:SetText('公会');
+                    self.Type:SetText('公会')
                 else
-                    self.Type:SetText('社区');
+                    self.Type:SetText('社区')
                 end
                 self.Leader:SetFormattedText('管理员：|cffffffff%s|r', clubInfo.guildLeader)
                 self.MemberCount:SetFormattedText('成员：|cffffffff%d|r', clubInfo.numActiveMembers or 1)
