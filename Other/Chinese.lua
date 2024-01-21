@@ -1281,6 +1281,44 @@ e.strText={
     [ITEM_QUALITY5_DESC] = "传说",
     [ITEM_QUALITY6_DESC] = "神器",
     [ITEM_QUALITY7_DESC] = "传家宝",
+
+    [INSTANCE_UNAVAILABLE_OTHER_ACHIEVEMENT_NOT_COMPLETED ] = "%s还没有完成所需的成就。",
+    [INSTANCE_UNAVAILABLE_OTHER_AREA_NOT_EXPLORED ] = "%s需要发现%2$s。",
+    [INSTANCE_UNAVAILABLE_OTHER_CANNOT_RUN_ANY_CHILD_DUNGEON ] = "%s不满足此分类下任何地下城的要求。",
+    [INSTANCE_UNAVAILABLE_OTHER_ENGAGED_IN_PVP ] = "%s已进入PvP状态。",
+    [INSTANCE_UNAVAILABLE_OTHER_EXPANSION_TOO_LOW ] = "%s没有安装正确的《魔兽世界》内容更新。",
+    [INSTANCE_UNAVAILABLE_OTHER_GEAR_TOO_HIGH ] = "%1$s需要更高的平均装备物品等级。（需要：%2$d。当前%3$d。）",
+    [INSTANCE_UNAVAILABLE_OTHER_GEAR_TOO_LOW ] = "%1$s需要更高的平均装备物品等级。（需要：%2$d。当前%3$d。）",
+    [INSTANCE_UNAVAILABLE_OTHER_LEVEL_TOO_HIGH ] = "%s的级别太高了。",
+    [INSTANCE_UNAVAILABLE_OTHER_LEVEL_TOO_LOW ] = "%s的级别不够。",
+    [INSTANCE_UNAVAILABLE_OTHER_MISSING_ITEM ] = "%s没有所需的物品。",
+    [INSTANCE_UNAVAILABLE_OTHER_NO_SPEC ] = "在进入此地下城前，%s必须选择一项职业专精",
+    [INSTANCE_UNAVAILABLE_OTHER_NO_VALID_ROLES ] = "%s没有有效的角色。",
+    [INSTANCE_UNAVAILABLE_OTHER_OTHER ] = "%s没有满足进入该地下城的要求。",
+    [INSTANCE_UNAVAILABLE_OTHER_QUEST_NOT_COMPLETED ] = "%s没有完成所需的任务。",
+    [INSTANCE_UNAVAILABLE_OTHER_RAID_LOCKED ] = "%s已与该副本锁定。",
+    [INSTANCE_UNAVAILABLE_OTHER_TEMPORARILY_DISABLED ] = "不能进入%s。这个副本暂时不可用。",
+    [INSTANCE_UNAVAILABLE_OTHER_TOO_SOON ] = "这个副本暂时不可用。",
+    [INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED ] = "你还没完成所需的成就。",
+    [INSTANCE_UNAVAILABLE_SELF_AREA_NOT_EXPLORED ] = "你需要发现%2$s。",
+    [INSTANCE_UNAVAILABLE_SELF_CANNOT_RUN_ANY_CHILD_DUNGEON ] = "你不满足此分类下任何地下城的要求。",
+    [INSTANCE_UNAVAILABLE_SELF_ENGAGED_IN_PVP ] = "你已进入PvP状态。",
+    [INSTANCE_UNAVAILABLE_SELF_EXPANSION_TOO_LOW ] = "你没有安装正确的《魔兽世界》内容更新。",
+    [INSTANCE_UNAVAILABLE_SELF_GEAR_TOO_HIGH ] = "你的装备物品平均等级太高。（需要 %2$d，当前%3$d。）",
+    [INSTANCE_UNAVAILABLE_SELF_GEAR_TOO_LOW ] = "你的装备物品平均等级不够。（需要 %2$d，当前%3$d。）",
+    [INSTANCE_UNAVAILABLE_SELF_LEVEL_TOO_HIGH ] = "你的级别太高了。",
+    [INSTANCE_UNAVAILABLE_SELF_LEVEL_TOO_LOW ] = "你的级别不够。",
+    [INSTANCE_UNAVAILABLE_SELF_MISSING_ITEM ] = "你没有所需的物品。",
+    [INSTANCE_UNAVAILABLE_SELF_NO_SPEC ] = "在进入此地下城前，你必须选择一项职业专精",
+    [INSTANCE_UNAVAILABLE_SELF_NO_VALID_ROLES ] = "你没有有效的角色。",
+    [INSTANCE_UNAVAILABLE_SELF_OTHER ] = "你的级别没有达到该地下城的要求。",
+    [INSTANCE_UNAVAILABLE_SELF_PVP_GEAR_TOO_LOW ] = "你需要更高的PvP装备物品平均等级才能加入队列。|n（需要 %2$d，当前%3$d。）",
+    [INSTANCE_UNAVAILABLE_SELF_QUEST_NOT_COMPLETED ] = "你没有完成所需的任务。",
+    [INSTANCE_UNAVAILABLE_SELF_RAID_LOCKED ] = "你已与该副本锁定。",
+    [INSTANCE_UNAVAILABLE_SELF_TEMPORARILY_DISABLED ] = "你不能进入。这个副本暂时不可用。",
+    [ROLE_DESCRIPTION_DAMAGER] = "表示你愿意担当对敌人输出伤害的职责。",
+    [ROLE_DESCRIPTION_HEALER] = "表示你愿意在队友受到伤害时为他们提供治疗。",
+    [ROLE_DESCRIPTION_TANK] = "表示你愿意通过使敌人攻击自己，保护队友不受攻击。",
 }
 
 
@@ -1568,6 +1606,31 @@ local function Init()
                 set(LFDQueueFrameFindGroupButton, '寻找组队')
             end
         end
+        if C_PlayerInfo.IsPlayerNPERestricted() then
+            if not LFDQueueCheckRoleSelectionValid(LFGRole_GetChecked(LFDQueueFrameRoleButtonTank), LFGRole_GetChecked(LFDQueueFrameRoleButtonHealer), LFGRole_GetChecked(LFDQueueFrameRoleButtonDPS)) then
+                -- the NPE restricted player needs to at least be a DPS role if nothing is selected
+                LFDQueueFrameRoleButtonDPS.checkButton:SetChecked(true);
+                LFDFrameRoleCheckButton_OnClick(LFDQueueFrameRoleButtonDPS.checkButton);
+            end
+        end
+        if ( not LFDQueueCheckRoleSelectionValid( LFGRole_GetChecked(LFDQueueFrameRoleButtonTank),
+                                                    LFGRole_GetChecked(LFDQueueFrameRoleButtonHealer),
+                                                    LFGRole_GetChecked(LFDQueueFrameRoleButtonDPS)) ) then
+            LFDQueueFrameFindGroupButton.tooltip = '该角色在某些地下城不可用。';
+            return;
+        end
+        if not ( LFD_IsEmpowered() and mode ~= "proposal" and mode ~= "listed"  ) and ( IsInGroup(LE_PARTY_CATEGORY_HOME) and not UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME) ) then
+                LFDQueueFrameFindGroupButton.tooltip = '你现在不是队长';
+        end
+        local lfgListDisabled;
+        if ( C_LFGList.HasActiveEntryInfo() ) then
+            lfgListDisabled = '你不能在你的队伍出现在预创建队伍列表中时那样做。';
+        elseif(C_PartyInfo.IsCrossFactionParty()) then 
+            lfgListDisabled = '在跨阵营队伍中无法这么做。你可以参加非队列匹配模式的团队副本和地下城。';
+        end
+        if ( lfgListDisabled ) then
+            LFDQueueFrameFindGroupButton.tooltip = lfgListDisabled;
+        end
     end)
 
     set(LFDRoleCheckPopupAcceptButton, '接受')
@@ -1812,7 +1875,7 @@ local function Init()
     set(LFDQueueFrameFollowerTitle, '追随者地下城')
     set(LFDQueueFrameFollowerDescription, '与NPC队友一起完成地下城')
     --set(LFDQueueFrameRandomScrollFrameChildFrameTitle, '')
-    hooksecurefunc('LFGRewardsFrame_UpdateFrame', function(parentFrame, dungeonID, background)--LFGFrame.lua
+    hooksecurefunc('LFGRewardsFrame_UpdateFrame', function(parentFrame, dungeonID)--LFGFrame.lua
         if ( not dungeonID ) then
             return
         end
@@ -1861,24 +1924,76 @@ local function Init()
                 parentFrame.description:SetText('使用地下城查找器前往随机地下城，会有额外奖励哦！')
             end
         end
-
-
-
-
     end)
 
 
+    local function role_check_tooltips_enter(self)
+        local desc= _G["ROLE_DESCRIPTION_"..self.role]
+        GameTooltip:SetText(e.strText[desc] or desc, nil, nil, nil, nil, true)
+        if ( self.permDisabled ) then
+            if(self.permDisabledTip)then
+                GameTooltip:AddLine(self.permDisabledTip, 1, 0, 0, true)
+            end
+        elseif ( self.disabledTooltip and not self:IsEnabled() ) then
+            GameTooltip:AddLine(self.disabledTooltip, 1, 0, 0, true)
+        elseif ( not self:IsEnabled() ) then
+            local roleID = self:GetID()
+            GameTooltip:SetText('该职责不可用。', 1.0, 1.0, 1.0)
+            local reasons = GetLFGInviteRoleRestrictions(roleID) or {}
+            for i = 1, #reasons do
+                local text = _G["INSTANCE_UNAVAILABLE_SELF_"..(LFG_INSTANCE_INVALID_CODES[reasons[i]] or "OTHER")]
+                if( text ) then
+                    GameTooltip:AddLine(e.strText[text] or text)
+                end
+            end
+        elseif self.alert and self.alert:IsShown() then
+            GameTooltip:SetText('该角色在某些地下城不可用。', 1.0, 1.0, 1.0, true)
+            GameTooltip:AddLine('该角色在你所选择的一个或更多地下城中不可用。在这些地下城中，你将作为可胜任的角色加入队列。', nil, nil, nil, true)
+        end
+        GameTooltip:Show()
+    end
+    local function role_tooltips(str)
+        local tank= _G[str..'RoleButtonTank']
+        local header= _G[str..'RoleButtonHealer']
+        local dps= _G[str..'RoleButtonDPS']
+        local leader= _G[str..'RoleButtonLeader']
+        if tank then
+            tank:HookScript('OnEnter', role_check_tooltips_enter)
+            tank.permDisabledTip= '你的职业无法担任该职责。'
+        end
+        if header then
+            header:HookScript('OnEnter', role_check_tooltips_enter)
+            header.permDisabledTip= '你的职业无法担任该职责。'
+        end
+        if dps then
+            dps:HookScript('OnEnter', role_check_tooltips_enter)
+            dps.permDisabledTip= '你的职业无法担任该职责。'
+        end
+        if leader then
+            leader:HookScript('OnEnter', function()
+                GameTooltip:SetText('表示你拥有在副本中战斗的经验，并愿意指导团队攻克难关。', nil, nil, nil, nil, true);
+            end)
+        end
+    end
+    role_tooltips('LFDQueueFrame')
+    role_tooltips('RaidFinderQueueFrame')
 
 
-
-
-
-
-
-
-
-
-
+    --[[RolePoll.xml
+    local function set_RolePoll_Tooltip(self)
+        local desc= _G["ROLE_DESCRIPTION"..self:GetID()]
+        GameTooltip:SetText(e.str[desc] or desc, nil, nil, nil, nil, true);
+        if ( self.permDisabled ) then
+            GameTooltip:AddLine('|cnRED_FONT_COLOR:你的职业无法担任该职责。', nil, nil, nil, true);
+        end
+    end
+    RolePollPopupRoleButtonTank.permDisabledTip= '你的职业无法担任该职责。'
+    RolePollPopupRoleButtonHealer.permDisabledTip= '你的职业无法担任该职责。'
+    RolePollPopupRoleButtonDPS.permDisabledTip= '你的职业无法担任该职责。'
+    set(RolePollPopupAcceptButton, '接受')
+    RolePollPopupRoleButtonTank:HookScript('OnEnter', set_RolePoll_Tooltip)
+    RolePollPopupRoleButtonHealer:HookScript('OnEnter', set_RolePoll_Tooltip)
+    RolePollPopupRoleButtonDPS:HookScript('OnEnter', set_RolePoll_Tooltip)]]
 
 
 

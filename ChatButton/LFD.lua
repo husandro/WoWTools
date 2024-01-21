@@ -35,7 +35,7 @@ local get_Reward_Info=function(dungeonID)--FB奖励
         return t
     end
     --local numRewards = select(6, GetLFGDungeonRewards(dungeonID))
-    local doneToday, moneyAmount, moneyVar, experienceGained, experienceVar, numRewards, spellID = GetLFGDungeonRewards(dungeonID)
+    local _, moneyAmount, _, _, experienceVar, numRewards = GetLFGDungeonRewards(dungeonID)
     if numRewards and numRewards>0 then--奖励物品
         for i=1 , numRewards do
             local texturePath=select(2, GetLFGDungeonRewardInfo(dungeonID, i))
