@@ -65,8 +65,60 @@ local function reg(self, text)
     end
 end
 
-
-
+local function role_check_tooltips_enter(self)
+    local desc= _G["ROLE_DESCRIPTION_"..(self.role or '')]
+    if not desc then
+        return
+    end
+    GameTooltip:SetText(e.strText[desc] or desc, nil, nil, nil, nil, true)
+    if ( self.permDisabled ) then
+        if self.permDisabledTip then
+            GameTooltip:AddLine('|cnRED_FONT_COLOR: '..(
+                self.permDisabledTip==YOUR_CLASS_MAY_NOT_PERFORM_ROLE and '你的职业无法担任该职责。'
+                or self.permDisabledTip
+            ), nil, nil, nil, true)
+        end
+    elseif self.disabledTooltip and not self:IsEnabled()  then
+        GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(
+            self.disabledTooltip==BLIZZARD_STORE_ERROR_PARENTAL_CONTROLS and '家长监控已禁用了该功能。'
+            or self.disabledTooltip
+        ), nil, nil, nil, true)
+    elseif ( not self:IsEnabled() ) then
+        local roleID = self:GetID()
+        GameTooltip:SetText('该职责不可用。', 1.0, 1.0, 1.0)
+        local reasons = GetLFGInviteRoleRestrictions(roleID) or {}
+        for i = 1, #reasons do
+            local text = _G["INSTANCE_UNAVAILABLE_SELF_"..(LFG_INSTANCE_INVALID_CODES[reasons[i]] or "OTHER")]
+            if( text ) then
+                GameTooltip:AddLine(e.strText[text] or text)
+            end
+        end
+    elseif self.alert and self.alert:IsShown() then
+        GameTooltip:SetText('该角色在某些地下城不可用。', 1.0, 1.0, 1.0, true)
+        GameTooltip:AddLine('该角色在你所选择的一个或更多地下城中不可用。在这些地下城中，你将作为可胜任的角色加入队列。', nil, nil, nil, true)
+    end
+    GameTooltip:Show()
+end
+local function role_tooltips(str)
+    local tank= _G[str..'RoleButtonTank'] or (_G[str] and _G[str].DPSIcon)
+    local header= _G[str..'RoleButtonHealer']or (_G[str] and _G[str].HealerIcon)
+    local dps= _G[str..'RoleButtonDPS']or (_G[str] and _G[str].TankIcon)
+    local leader= _G[str..'RoleButtonLeader']
+    if tank then
+        tank:HookScript('OnEnter', role_check_tooltips_enter)
+    end
+    if header then
+        header:HookScript('OnEnter', role_check_tooltips_enter)
+    end
+    if dps then
+        dps:HookScript('OnEnter', role_check_tooltips_enter)
+    end
+    if leader then
+        leader:HookScript('OnEnter', function()
+            GameTooltip:SetText('表示你拥有在副本中战斗的经验，并愿意指导团队攻克难关。', nil, nil, nil, nil, true);
+        end)
+    end
+end
 
 
 local function Init_Set()
@@ -1926,55 +1978,6 @@ local function Init()
         end
     end)
 
-
-    local function role_check_tooltips_enter(self)
-        local desc= _G["ROLE_DESCRIPTION_"..self.role]
-        GameTooltip:SetText(e.strText[desc] or desc, nil, nil, nil, nil, true)
-        if ( self.permDisabled ) then
-            if(self.permDisabledTip)then
-                GameTooltip:AddLine(self.permDisabledTip, 1, 0, 0, true)
-            end
-        elseif ( self.disabledTooltip and not self:IsEnabled() ) then
-            GameTooltip:AddLine(self.disabledTooltip, 1, 0, 0, true)
-        elseif ( not self:IsEnabled() ) then
-            local roleID = self:GetID()
-            GameTooltip:SetText('该职责不可用。', 1.0, 1.0, 1.0)
-            local reasons = GetLFGInviteRoleRestrictions(roleID) or {}
-            for i = 1, #reasons do
-                local text = _G["INSTANCE_UNAVAILABLE_SELF_"..(LFG_INSTANCE_INVALID_CODES[reasons[i]] or "OTHER")]
-                if( text ) then
-                    GameTooltip:AddLine(e.strText[text] or text)
-                end
-            end
-        elseif self.alert and self.alert:IsShown() then
-            GameTooltip:SetText('该角色在某些地下城不可用。', 1.0, 1.0, 1.0, true)
-            GameTooltip:AddLine('该角色在你所选择的一个或更多地下城中不可用。在这些地下城中，你将作为可胜任的角色加入队列。', nil, nil, nil, true)
-        end
-        GameTooltip:Show()
-    end
-    local function role_tooltips(str)
-        local tank= _G[str..'RoleButtonTank']
-        local header= _G[str..'RoleButtonHealer']
-        local dps= _G[str..'RoleButtonDPS']
-        local leader= _G[str..'RoleButtonLeader']
-        if tank then
-            tank:HookScript('OnEnter', role_check_tooltips_enter)
-            tank.permDisabledTip= '你的职业无法担任该职责。'
-        end
-        if header then
-            header:HookScript('OnEnter', role_check_tooltips_enter)
-            header.permDisabledTip= '你的职业无法担任该职责。'
-        end
-        if dps then
-            dps:HookScript('OnEnter', role_check_tooltips_enter)
-            dps.permDisabledTip= '你的职业无法担任该职责。'
-        end
-        if leader then
-            leader:HookScript('OnEnter', function()
-                GameTooltip:SetText('表示你拥有在副本中战斗的经验，并愿意指导团队攻克难关。', nil, nil, nil, nil, true);
-            end)
-        end
-    end
     role_tooltips('LFDQueueFrame')
     role_tooltips('RaidFinderQueueFrame')
 
@@ -6498,6 +6501,8 @@ local function Init_Loaded(arg1)
             GameTooltip:AddLine('在40人的大型战场上与敌对阵营竞争。', nil, nil, nil, true)
             GameTooltip:Show()
         end
+
+        role_tooltips('HonorFrame')
 --hooksecurefunc('HonorFrame_UpdateQueueButtons', function()
 
 
