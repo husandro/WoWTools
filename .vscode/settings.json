@@ -7524,9 +7524,7 @@
         "LFD_IsEmpowered",
         "GUIDE_TOOLTIP",
         "LootItemExtendedMixin",
-        "LFDQueueFrameFollowerTitle",
-        "LFDQueueFrameFollowerDescription",
-        "LFG_TYPE_FOLLOWER_DUNGEON"
+        "QuestMapFrame_ResetFilters"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
