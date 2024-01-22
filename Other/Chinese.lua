@@ -3045,6 +3045,7 @@ local function Init()
     if ReagentBankFrame.DespositButton:GetText()~='' then
         set(ReagentBankFrame.DespositButton, '存放各种材料')
     end
+    set(BankItemSearchBox.Instructions, '搜索')
 
     --商人
     set(MerchantFrameTab1, '商人')
@@ -6188,6 +6189,7 @@ local function Init_Loaded(arg1)
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set(GuildBankFrameTab1, '公会银行')
+            set(GuildItemSearchBox.Instructions, '搜索')
             set(GuildBankFrame.WithdrawButton, '提取')
             set(GuildBankFrame.DepositButton, '存放')
             set(GuildBankMoneyLimitLabel, '可用数量：')
