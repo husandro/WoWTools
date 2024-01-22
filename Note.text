@@ -216,6 +216,7 @@ end
 
 
  MicroButtonTooltipText('法术书和专业', "TOGGLESPELLBOOK")
+ GetBindingText
 
  
 UICheckButtonTemplate

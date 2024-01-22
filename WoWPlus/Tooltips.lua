@@ -4,7 +4,7 @@ local Save={
     setDefaultAnchor=true,--指定点
     --AnchorPoint={},--指定点，位置
     --cursorRight=nil,--'ANCHOR_CURSOR_RIGHT',
-    
+
     setCVar=e.Player.husandro,
     ShowOptionsCVarTips=e.Player.husandro,--显示选项中的CVar
     inCombatDefaultAnchor=true,
@@ -1711,7 +1711,7 @@ local function Init()
 
             elseif data.type==25 then--宏
                 local frame= GetMouseFocus()
-                if frame and frame.action then                    
+                if frame and frame.action then
                     local type, macroID, subType= GetActionInfo(frame.action)
                     if type=='macro' and macroID then
                         if subType=='spell' then--and macroID or GetMacroSpell(macroID)
@@ -2041,50 +2041,140 @@ local function Init()
     end
 
     --显示选项中的CVar
+    --Blizzard_SettingControls.lua
     if Save.ShowOptionsCVarTips then
-        local function set_onenter(self)
-            if not self.onEnter then
-                self:HookScript('OnEnter', function(frame)
-                    if frame.variable then
-                        GameTooltip_AddBlankLineToTooltip(SettingsTooltip);
-                        GameTooltip_AddNormalLine(SettingsTooltip, HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar|cff00ff00'..e.Icon.right..frame.variable..'|r'), true)
-                        GameTooltip_AddNormalLine(SettingsTooltip, id.. ' '..addName)
-                        SettingsTooltip:Show()
-                    end
-                end)
-                self:HookScript('OnMouseDown', function(frame, d)
-                    if d=='RightButton' and frame.variable then
-                        e.Chat(frame.variable, nil, true)
-                    end
-                end)
-                self.onEnter=true
+        --[[local function set_onenter(self)
+            if self.onEnter or not self.variable then
+                return
+            end
+            self:HookScript('OnEnter', function(frame)
+                if not frame.variable then
+                    return
+                end
+                local value, defaultValue, _, _, _, isSecure = C_CVar.GetCVarInfo(frame.variable)
+                GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
+                GameTooltip_AddNormalLine(SettingsTooltip,
+                    HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar|cff00ff00'..e.Icon.right..frame.variable..'|r')
+                    ..(value and ' ('..(value or '')..'/'..(defaultValue or '')..')' or ''),
+                    true)
+                if isSecure then
+                    GameTooltip_AddNormalLine(SettingsTooltip, '|cnRED_FONT_COLOR:isSecure: true|r', true)
+                end
+                GameTooltip_AddNormalLine(SettingsTooltip, id.. ' '..addName)
+                SettingsTooltip:Show()
+            end)
+            self:HookScript('OnMouseDown', function(frame, d)
+                if d=='RightButton' and frame.variable then
+                    e.Chat(frame.variable, nil, true)
+                end
+            end)
+            self.onEnter=true
+        end]]
+        local function InitTooltip(name, tooltip, variable)
+            GameTooltip_AddHighlightLine(SettingsTooltip, e.strText[name] or name);
+            if tooltip then
+                if type(tooltip) == "function" then
+                    GameTooltip_AddNormalLine(SettingsTooltip, tooltip());
+                else
+                    GameTooltip_AddNormalLine(SettingsTooltip, e.strOption[tooltip] or tooltip);
+                end
+            end
+            if variable then
+                local value, defaultValue, _, _, _, isSecure = C_CVar.GetCVarInfo(variable)
+                GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
+                GameTooltip_AddNormalLine(SettingsTooltip,
+                    HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar|cff00ff00'..e.Icon.right..variable..'|r')
+                    ..(value and ' ('..(value or '')..'/'..(defaultValue or '')..')' or ''),
+                    true)
+                if isSecure then
+                    GameTooltip_AddNormalLine(SettingsTooltip, '|cnRED_FONT_COLOR:isSecure: true|r', true)
+                end
+                GameTooltip_AddNormalLine(SettingsTooltip, id.. ' '..addName)
             end
         end
-        hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self)
+        hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
+            --[[self.CheckBox.variable= initializer.data.setting.variable
+            set_onenter(self.CheckBox)]]
+            local setting = initializer.data.setting
+            local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
+            self:SetTooltipFunc(initTooltip)
+            self.CheckBox:SetTooltipFunc(initTooltip);
+        end)
+        hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self, initializer)
+            --[[self.SliderWithSteppers.Slider.variable= initializer.data.setting.variable
+            set_onenter(self.SliderWithSteppers.Slider)]]
+            local setting = initializer.data.setting
+            local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
+            self:SetTooltipFunc(initTooltip)
+            self.SliderWithSteppers.Slider:SetTooltipFunc(initTooltip);
+        end)
+        hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self, initializer)
+            --[[self.DropDown.Button.variable= initializer.data.setting.variable
+            set_onenter(self.DropDown.Button)]]
+            local setting = initializer.data.setting
+            local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
+            self:SetTooltipFunc(initTooltip)
+            self.DropDown.Button:SetTooltipFunc(initTooltip)
+        end)
+        hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self, initializer)
+            --[[self.CheckBox.variable= initializer.data.setting.variable
+            set_onenter(self.CheckBox)]]
+            local setting = initializer:GetSetting()
+            local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
+	        self:SetTooltipFunc(initTooltip)
+            self.CheckBox:SetTooltipFunc(initTooltip)
+        end)
+        hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
+            --[[self.CheckBox.variable= initializer.data.cbSetting.variable
             set_onenter(self.CheckBox)
-            self.CheckBox.variable= (self:GetSetting() or {}).variable
-        end)
-        hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self)
-            set_onenter(self.SliderWithSteppers.Slider)
-            self.SliderWithSteppers.Slider.variable= (self:GetSetting() or {}).variable
-        end)
-        hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self)
-            set_onenter(self.DropDown.Button)
-            self.DropDown.Button.variable= (self:GetSetting() or {}).variable
-        end)
-        hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self)
-            set_onenter(self.CheckBox)
-            self.CheckBox.variable= (self:GetSetting() or {}).variable
-        end)
-        hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)
-            set_onenter(self.CheckBox)
+            self.SliderWithSteppers.Slider.variable= initializer.data.sliderSetting.variable
+            set_onenter(self.SliderWithSteppers.Slider)]]
             local cbSetting = initializer.data.cbSetting;
-            self.CheckBox.variable= cbSetting.variable
+            local cbLabel = initializer.data.cbLabel;
+            local cbTooltip = initializer.data.cbTooltip;
+            local sliderLabel = initializer.data.sliderLabel;
+            local sliderTooltip = initializer.data.sliderTooltip;
+            local cbInitTooltip = GenerateClosure(InitTooltip, cbLabel, cbTooltip, cbSetting.variable);
+            self:SetTooltipFunc(cbInitTooltip);
+            self.CheckBox:SetTooltipFunc(cbInitTooltip)
+            self.SliderWithSteppers.Slider:SetTooltipFunc(GenerateClosure(InitTooltip, sliderLabel, sliderTooltip, cbSetting.variable));
         end)
-        hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)
+        hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
+            --[[self.CheckBox.variable= initializer.data.cbSetting.variable
             set_onenter(self.CheckBox)
+            self.DropDown.Button.variable= initializer.data.dropDownSetting.variable
+            set_onenter(self.DropDown.Button)]]
             local cbSetting = initializer.data.cbSetting;
-            self.CheckBox.variable= cbSetting.variable
+            local cbLabel = initializer.data.cbLabel;
+            local cbTooltip = initializer.data.cbTooltip;
+            local initTooltip= GenerateClosure(InitTooltip, cbLabel, cbTooltip, cbSetting.variable)
+	        self:SetTooltipFunc(initTooltip)
+            self.CheckBox.tooltipFunc= initTooltip
+            self.DropDown.Button:SetTooltipFunc(GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), cbSetting.variable));
+        end)
+
+        hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)--Blizzard_Keybindings.lua
+            local bindingIndex = initializer.data.bindingIndex;
+            local action, category = GetBinding(bindingIndex);
+            local bindingName = GetBindingName(action);
+            bindingName= e.strText[bindingName] or bindingName
+            local function InitializeKeyBindingButtonTooltip(index)
+                local key = select(index, GetBindingKey(action));
+                if key then
+                    Settings.InitTooltip(format(KEY_BINDING_NAME_AND_KEY, bindingName, GetBindingText(key)), e.onlyChinese and '<右键解除键位>' or KEY_BINDING_TOOLTIP);
+                end
+                GameTooltip_AddNormalLine(SettingsTooltip, 'bindingIndex |cnGREEN_FONT_COLOR:'..bindingIndex..'|r', true)
+                GameTooltip_AddNormalLine(SettingsTooltip, 'action |cnGREEN_FONT_COLOR:'..action..'|r', true)
+                if category then
+                    GameTooltip_AddNormalLine(SettingsTooltip, category, true)
+                end
+                GameTooltip_AddNormalLine(SettingsTooltip, id..' '..addName, true)
+            end
+            
+            for index, button in ipairs(self.Buttons) do
+                button:SetTooltipFunc(GenerateClosure(InitializeKeyBindingButtonTooltip, index));
+            end
+            self.onEnter=true
         end)
     end
 end

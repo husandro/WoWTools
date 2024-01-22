@@ -7524,7 +7524,13 @@
         "LFD_IsEmpowered",
         "GUIDE_TOOLTIP",
         "LootItemExtendedMixin",
-        "QuestMapFrame_ResetFilters"
+        "QuestMapFrame_ResetFilters",
+        "KEY_BINDING_TOOLTIP",
+        "KEY_BINDING_NAME_AND_KEY",
+        "KeybindListener",
+        "SettingsCheckBoxMixin",
+        "SelectionPopoutButtonMixin",
+        "SettingsControlMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

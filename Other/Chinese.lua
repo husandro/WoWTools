@@ -120,6 +120,36 @@ local function role_tooltips(str)
     end
 end
 
+local function set_button(btn)
+    if btn then
+        local text= btn:GetText() or ''
+        local col, name= text:match('(|cff......)(.-)|r')
+        name= name or text
+        if name and name~='' then
+            name= e.strText[name]
+            if name then
+                set(btn.Button1, (col or '')..name)
+            end
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function Init_Set()
 
@@ -1374,16 +1404,14 @@ e.strText={
 }
 
 
-if _G['MOTION_SICKNESS_DROPDOWN'] then
-    e.strText[_G['MOTION_SICKNESS_DROPDOWN']] = "动态眩晕"
-end
-if _G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS'] then
-    e.strText[_G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS']] = "动态飞行屏幕效果"
-end
+    if _G['MOTION_SICKNESS_DROPDOWN'] then
+        e.strText[_G['MOTION_SICKNESS_DROPDOWN']] = "动态眩晕"
+    end
+    if _G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS'] then
+        e.strText[_G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS']] = "动态飞行屏幕效果"
+    end
 
 end
-
-
 
 
 
@@ -2000,9 +2028,26 @@ local function Init()
 
 
 
---[[
 
-    local  strOption= {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    SettingsPanel:HookScript('OnShow', function()    
+        e.strOption= {
         [OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN] = "在按下快捷键时施法，而不是在松开快捷键时施法。",
         [OPTION_TOOLTIP_ACTION_TARGETING] = "此瞄准系统可以以你观看的方向动态地瞄准敌人。可以和标准的瞄准系统一起使用。",
         [OPTION_TOOLTIP_ADJUST_COLORBLIND_STRENGTH] = "调整选择的色盲过滤器强度。",
@@ -2465,13 +2510,15 @@ local function Init()
         [OPTION_TOOLTIP_WOW_MOUSE] = "启用此项以启用魔兽世界专用鼠标并对其进行额外的键位绑定。",
         [OPTION_TOOLTIP_XP_BAR] = "总是在你的经验条上显示文字。",
         [OPTION_TOOTIP_RETINA_CURSOR] = "打开此项可使用高分辨率鼠标指针。\n（主要针对极高分辨率/视网膜显示器）",
-}]]
+    }end)
+    SettingsPanel:HookScript('OnHide', function() e.strOption={} end)
 
 
 
 
 
     --选项
+    
     hooksecurefunc(SettingsPanel.Container.SettingsList.ScrollBox, 'Update', function(frame)
         if not frame:GetView() or not frame:IsVisible() then
             return
@@ -2492,28 +2539,8 @@ local function Init()
                     set(lable, e.strText[lable:GetText()])
                 end
             end
-            if btn.Button1 then
-                local text= btn.Button1:GetText() or ''
-                local col, name= text:match('(|cff......)(.-)|r')
-                name= name or text
-                if name~='' then
-                    name= e.strText[name]
-                    if name then
-                        set(btn.Button1, (col or '')..name)
-                    end
-                end
-            end
-            if btn.Button2 then
-                local text= btn.Button2:GetText() or ''
-                local col, name= text:match('(|cff......)(.-)|r')
-                name= name or text
-                if name~='' then
-                    name= e.strText[name]
-                    if name then
-                        set(btn.Button2, (col or '')..name)
-                    end
-                end
-            end
+            set_button(btn.Button1)
+            set_button(btn.Button2)
             lable= btn.Text or btn.Label or btn.Title
             if lable then
                 set(lable, e.strText[lable:GetText()])
@@ -2524,7 +2551,10 @@ local function Init()
     end)
 
 
-
+    hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)
+        set_button(self.Buttons[1])
+        set_button(self.Buttons[2])
+    end)
 
 
     --快速快捷键模式

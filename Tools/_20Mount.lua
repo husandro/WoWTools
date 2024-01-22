@@ -969,7 +969,7 @@ local function InitMenu(_, level, type)--主菜单
     for _, tab in pairs(mainMenuTable) do
         local indexType= tab.type
         if indexType=='-' then
-            e.LibDD:UIDropDownMenu_AddSeparator()
+            e.LibDD:UIDropDownMenu_AddSeparator(level)
 
         elseif indexType==SPELLS or indexType==ITEMS then
             local num=getTableNum(indexType)--检测,表里的数量
@@ -1043,7 +1043,7 @@ local function InitMenu(_, level, type)--主菜单
         end
     end
 
-    e.LibDD:UIDropDownMenu_AddSeparator()
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text=Save.KEY or (e.onlyChinese and '设置' or SETTINGS),
         notCheckable=true,
@@ -1139,7 +1139,7 @@ local function Init_Menu_Set_UI(self, level, menuList)--坐骑界面, 菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level);
     end
 
-    e.LibDD:UIDropDownMenu_AddSeparator()
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text=name,
         icon=icon,

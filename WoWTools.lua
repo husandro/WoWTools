@@ -2,6 +2,7 @@ local id, e = ...
 --Blizzard_Deprecated/Deprecated_10_2_0.lua
 e.WoWDate={}
 e.strText={}
+e.strOption={}
 e.tips=GameTooltip
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
 e.call=securecall
@@ -767,7 +768,7 @@ function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', si
     end
     if tab.frame.HelpTips and not tab.frame.HelpTips.onlyOne then
         tab.frame.HelpTips:SetShown(tab.show)
-    end    
+    end
 end
 
 function e.Get_CVar_Tooltips(info)--取得CVar信息 e.Get_CVar_Tooltips({name= ,msg=, value=})
@@ -2239,7 +2240,7 @@ end
 function e.GetExpansionText(expacID, questID)--版本数据
     expacID= expacID or questID and GetQuestExpansion(questID)
     if expacID and _G['EXPANSION_NAME'..expacID] then
-        local text= e.strText[_G['EXPANSION_NAME'..expacID]] or _G['EXPANSION_NAME'..expacID] 
+        local text= e.strText[_G['EXPANSION_NAME'..expacID]] or _G['EXPANSION_NAME'..expacID]
         if e.ExpansionLevel >= expacID then
             return text, (e.onlyChinese and '版本' or GAME_VERSION_LABEL)..' '..(expacID+1)
         else

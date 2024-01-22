@@ -501,7 +501,7 @@ local function InitMenu(_, level, menuList)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    -- e.LibDD:UIDropDownMenu_AddSeparator()
+    -- e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text=Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL),
         notCheckable=true,

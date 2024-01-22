@@ -948,7 +948,7 @@ local function Init_Menu(_, level, type)
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
 
-    e.LibDD:UIDropDownMenu_AddSeparator()
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     num=0
     for _, boolean in pairs(Save.noSell) do
         if boolean then
@@ -969,7 +969,7 @@ local function Init_Menu(_, level, type)
             num=num+1
         end
     end
-    e.LibDD:UIDropDownMenu_AddSeparator()
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={--购买物品
         text=  (e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..'|cnGREEN_FONT_COLOR: #'..num..'|r',
         checked=not Save.notAutoBuy,
@@ -986,7 +986,7 @@ local function Init_Menu(_, level, type)
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
 
-    e.LibDD:UIDropDownMenu_AddSeparator()
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={}--自动修理
     info.text= e.onlyChinese and '修理所有物品' or REPAIR_ALL_ITEMS
     info.checked=not Save.notAutoRepairAll
@@ -1012,7 +1012,7 @@ local function Init_Menu(_, level, type)
     info.tooltipText=text
     e.LibDD:UIDropDownMenu_AddButton(info)
 
-    --[[e.LibDD:UIDropDownMenu_AddSeparator()
+    --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
     info= {--显示数物品,拥有数量,在商人界面
         text= e.onlyChinese and '显示数量'..e.Icon.bank2 or (SHOW..e.Icon.bank2..AUCTION_HOUSE_QUANTITY_LABEL),
         checked= not Save.notShowBagNum,

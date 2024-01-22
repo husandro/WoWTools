@@ -11,6 +11,7 @@ local Save={
 
         markersScale=1,
         markersFrame= e.Player.husandro,
+        FrameStrata='MEDIUM',
         pingTime= e.Player.husandro,--显示ping冷却时间
     }
 
@@ -28,14 +29,6 @@ local Color={
     [8]={r=1, g=1, b=1, col='|cffffffff'},--骷髅,白色
 }
 --[[
-local PingColor={
-    ["Assist"] = {r=0.09, g=0.78, b=0.39, col='|cff17c864'},--协助
-    ["Attack"] = {r=1.00, g=0.50, b=0.00, col='|cffff8000' },--攻击
-    ["OnMyWay"] = {r=0.16, g=0.64, b=1.00, col='|cff2aa2ff'},--正在赶来
-    ["Warning"] = {r=1.00, g=0.13, b=0.08, col='|c3fff2114'},--警告
-    ["NonThreat"] = {r=0.16, g=0.64, b=1.00, col='|cff2aa2ff'},--看这里
-    ["Threat"] = {r=0.8, g=0, b=0, col='|cffcc0000'},--威胁提示
-}
 
 WORLD_MARKER = "世界标记%d";
 WORLD_MARKER1 = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14|t |cff0070dd 蓝色|r世界标记"
@@ -469,9 +462,9 @@ local function Init_Markers_Frame()--设置标记, 框架
     end
 
     local size, last, btn= 22, nil, nil
-    
+
     Frame=CreateFrame('Frame', nil, UIParent)
-    Frame:Raise()
+    Frame:SetFrameStrata(Save.FrameStrata)
     Frame:SetMovable(true)--移动
     Frame:SetClampedToScreen(true)
 
@@ -497,7 +490,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             local isLeader= Is_Leader()
             local isRaid= (raid and isLeader) or not raid
             local isInGroup= IsInGroup()
-            
+
             local enabled= not Is_In_PvP_Area()
                         and Save.markersFrame
                         --and not InCinematic()
@@ -701,17 +694,17 @@ local function Init_Markers_Frame()--设置标记, 框架
             Frame:set_Tooltips_Point(self)
             e.tips:ClearLines()
             if self.action then
-                local key1= GetBindingKey(self.action)
-                e.tips:AddDoubleLine(self.name, (key1 and key1~='') and '|cnGREEN_FONT_COLOR:'..key1..'|r' or nil)
-                e.tips:AddLine(e.Icon.left..(not UnitExists('target') and '|cff606060' or '')..(e.onlyChinese and '目标' or TARGET))
-                e.tips:AddLine(e.Icon.right..e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME))
+                e.tips:AddLine(MicroButtonTooltipText(self.name, self.action), 1,1,1)
+                e.tips:AddLine(e.Icon.left..(not UnitExists('target') and '|cff606060' or '')..(e.onlyChinese and '设置' or SETTINGS), 1,1,1)
+                e.tips:AddLine(e.Icon.right..e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME), 1,1,1)
             else
                 local find
                 local pingTab= self:GetParent().tab
                 for _, pingIndex in pairs({7, 0, 1, 3, 2}) do
-                    local key1= GetBindingKey(pingTab[pingIndex].action)
-                    if key1 and key1~='' then
-                        e.tips:AddDoubleLine('|A:'..pingTab[pingIndex].atlas..':0:0|a'..pingTab[pingIndex].name, '|cnGREEN_FONT_COLOR:'..key1..'|r')
+                    local name= pingTab[pingIndex].name
+                    local text= MicroButtonTooltipText(name, pingTab[pingIndex].action)
+                    if text and text~=name then
+                        e.tips:AddLine('|A:'..pingTab[pingIndex].atlas..':0:0|a'..text, 1,1,1)
                         find=true
                     end
                 end
@@ -720,7 +713,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 end
                 local guid= UnitExists('target') and UnitGUID('target')
                 local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
-                e.tips:AddLine(e.Icon.left..(not UnitExists('target') and '|cff606060' or '')..(e.onlyChinese and '目标' or TARGET)
+                e.tips:AddLine(e.Icon.left..(not UnitExists('target') and '|cff606060' or '')..(e.onlyChinese and '设置' or SETTINGS)
                             ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or '')
                 )
 
@@ -954,16 +947,17 @@ local function Init_Markers_Frame()--设置标记, 框架
             btn:SetScript('OnEnter', function(self)
                 Frame:set_Tooltips_Point(self)
                 e.tips:ClearLines()
-                local key1= GetBindingKey('RAIDTARGET'..self.index)
-                local key2= GetBindingKey('RAIDTARGETNONE')
                 local can= CanBeRaidTarget('target')
-                e.tips:AddDoubleLine(Color[self.index].col..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..get_RaidTargetTexture(self.index)..'Alt+', key2 or nil)
+                e.tips:AddLine(MicroButtonTooltipText(get_RaidTargetTexture(self.index), 'RAIDTARGET'..self.index))
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.Icon.left..(can and Color[self.index].col or '|cff606060')
-                                    ..(e.onlyChinese and '目标' or TARGET)
-                                    ..(not can and ' '..(e.onlyChinese and '禁用' or DISABLE) or ''),
-                                    key1 or nil)
+                e.tips:AddDoubleLine(
+                    e.Icon.left..(e.onlyChinese and '设置' or SETTINGS),
+                    not can and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)
+                )
                 e.tips:AddLine(e.Icon.right..e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME))
+                e.tips:AddLine(' ')
+                e.tips:AddLine(MicroButtonTooltipText('Alt+'..e.Icon.left..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), 'RAIDTARGETNONE'))
+                
                 e.tips:Show()
                 self:SetButtonState('NORMAL')
                 self:SetAlpha(1)
@@ -1108,11 +1102,49 @@ end
 
 
 
+local function Init_Ping()
+    if not Save.pingTime or not IsAddOnLoaded('Blizzard_PingUI') then
+        return
+    end
+ --[[
+local PingColor={
+    ["Assist"] = {r=0.09, g=0.78, b=0.39, col='|cff17c864'},--协助
+    ["Attack"] = {r=1.00, g=0.50, b=0.00, col='|cffff8000' },--攻击
+    ["OnMyWay"] = {r=0.16, g=0.64, b=1.00, col='|cff2aa2ff'},--正在赶来
+    ["Warning"] = {r=1.00, g=0.13, b=0.08, col='|c3fff2114'},--警告
+    ["NonThreat"] = {r=0.16, g=0.64, b=1.00, col='|cff2aa2ff'},--看这里
+    ["Threat"] = {r=0.8, g=0, b=0, col='|cffcc0000'},--威胁提示
+}
+    hooksecurefunc( PingListenerFrame, 'OnPingPinFrameAdded', function(self3, frame, uiTextureKit)
+        local ping= self3.activePinFrames[frame]
+        if not ping.valueFrame then
+            ping.valueFrame=CreateFrame("Frame",nil, ping)
+            ping.valueFrame.value=5
+            ping.valueFrame.elapsed=1
+            ping.valueFrame:SetSize(1,1)
+            ping.valueFrame:SetPoint('CENTER')
+            ping.valueFrame.text= e.Cstr(ping.valueFrame)
+            ping.valueFrame.text:SetPoint('CENTER')
+            ping.valueFrame:SetScript('OnUpdate', function(self2, elapsed)
+                self2.elapsed = self2.elapsed + elapsed
+                self2.value= self2.value - elapsed
+                if self2.elapsed>=1 then
+                    self2.text:SetFormattedText("%i", self2.value)
+                    self2.elapsed=0
+                end
+            end)
+        else
+            ping.valueFrame.value=5
+            ping.valueFrame.elapsed=1
+        end
 
-
-
-
-
+        local color= PingColor[uiTextureKit]
+        if color then
+            ping.valueFrame.text:SetTextColor(color.r, color.g, color.b)
+        end
+        ping.valueFrame:SetShown(true)
+    end)]]
+end
 
 
 
@@ -1200,7 +1232,7 @@ local function InitMenu(_, level, type)--主菜单
 
 
 
-    elseif type=='MakerFrameResetPost' then--重置位置， 队伍标记工具
+    
         --[[info={
             text= e.onlyChinese and '冷却时间：信号' or format(CAPACITANCE_SHIPMENT_COOLDOWN, PING),
             tooltipOnButton=true,
@@ -1215,7 +1247,48 @@ local function InitMenu(_, level, type)--主菜单
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
         e.LibDD:UIDropDownMenu_AddSeparator(level)]]
+    elseif type=='MakerFrameSetFrameStrata' then
+        local tab={
+            'BACKGROUND',
+            'LOW',
+            'MEDIUM',
+            'HIGH',
+            'DIALOG',
+            'FULLSCREEN',
+            'FULLSCREEN_DIALOG',
+            'TOOLTIP',
+        }
+        for _, name in pairs(tab) do
+            info={
+                text= name,
+                checked= Save.FrameStrata==name,
+                colorCode= not Frame and '|cff606060' or nil,
+                tooltipOnButton=true,
+                tooltipTitle='SetFrameStrata()',
+                keepShownOnClick=true,
+                arg1= name,
+                func=function(_, arg1)
+                    Save.FrameStrata= arg1
+                    if Frame then
+                        Frame:SetFrameStrata(arg1)
+                    end
+                    print(id, addName, 'SetFrameStrata|cnGREEN_FONT_COLOR:', Save.FrameStrata)
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+    elseif type=='MakerFrameResetPost' then--重置位置， 队伍标记工具
+        info={
+            text= 'FrameStrata: '..Save.FrameStrata,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '' or 'The frame layering strata',
+            menuList='MakerFrameSetFrameStrata',
+            hasArrow=true,
+            notCheckable=true,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinese and '重置位置' or RESET_POSITION,
             notCheckable=true,
@@ -1271,7 +1344,7 @@ local function InitMenu(_, level, type)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
-    e.LibDD:UIDropDownMenu_AddSeparator()
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text=e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET),
         checked=Save.markersFrame,
@@ -1289,7 +1362,7 @@ local function InitMenu(_, level, type)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    e.LibDD:UIDropDownMenu_AddSeparator()
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)),
         checked=Save.groupReadyTips,
@@ -1435,37 +1508,7 @@ local function Init()
     end
 
 
-    --if Save.pingTime then
-        --[[hooksecurefunc( PingManager, 'OnPingPinFrameAdded', function(self3, frame, uiTextureKit)
-            local ping= self3.activePinFrames[frame]
-            if not ping.valueFrame then
-                ping.valueFrame=CreateFrame("Frame",nil, ping)
-                ping.valueFrame.value=5
-                ping.valueFrame.elapsed=1
-                ping.valueFrame:SetSize(1,1)
-                ping.valueFrame:SetPoint('CENTER')
-                ping.valueFrame.text= e.Cstr(ping.valueFrame)
-                ping.valueFrame.text:SetPoint('CENTER')
-                ping.valueFrame:SetScript('OnUpdate', function(self2, elapsed)
-                    self2.elapsed = self2.elapsed + elapsed
-                    self2.value= self2.value - elapsed
-                    if self2.elapsed>=1 then
-                        self2.text:SetFormattedText("%i", self2.value)
-                        self2.elapsed=0
-                    end
-                end)
-            else
-                ping.valueFrame.value=5
-                ping.valueFrame.elapsed=1
-            end
-
-            local color= PingColor[uiTextureKit]
-            if color then
-                ping.valueFrame.text:SetTextColor(color.r, color.g, color.b)
-            end
-            ping.valueFrame:SetShown(true)
-        end)]]
-    --end
+   
 end
 
 
@@ -1497,7 +1540,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 Save.tank= Save.tank==0 and Save.tank or 2
                 Save.tank2= Save.tank2==0 and 6 or Save.tank2
                 Save.healer= Save.healer==0 and 1 or Save.healer
-
+                Save.FrameStrata= Save.FrameStrata or 'MEDIUM'
 
                 button= e.Cbtn2({
                     name=nil,
@@ -1509,13 +1552,16 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     sizi=nil,
                 })
 
+                Init_Ping()
                 Init()
-
                 panel:RegisterEvent("PLAYER_LOGOUT")
                 panel:RegisterEvent('READY_CHECK')
-
             end
             panel:UnregisterEvent('ADDON_LOADED')
+            
+
+        --elseif arg1=='Blizzard_PingUI' then
+            
         end
 
     elseif event == "PLAYER_LOGOUT" then

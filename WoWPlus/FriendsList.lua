@@ -481,7 +481,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-                --e.LibDD:UIDropDownMenu_AddSeparator()
+                --e.LibDD:UIDropDownMenu_AddSeparator(level)
                 info={
                     text=e.onlyChinese and '其他玩家' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC, PLAYER) ,
                     notCheckable=true,
@@ -490,7 +490,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-                e.LibDD:UIDropDownMenu_AddSeparator()
+                e.LibDD:UIDropDownMenu_AddSeparator(level)
                 info={
                     text=  e.Icon.net2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' ('..(e.onlyChinese and '好友' or FRIEND)..') '..( e.onlyChinese and '信息' or INFO)..'|A:communities-icon-chat:0:0|a',
                     checked= not Save.disabledBNFriendInfo,
