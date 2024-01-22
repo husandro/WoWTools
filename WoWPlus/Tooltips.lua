@@ -2071,19 +2071,19 @@ local function Init()
             self.onEnter=true
         end]]
         local function InitTooltip(name, tooltip, variable)
-            GameTooltip_AddHighlightLine(SettingsTooltip, e.strText[name] or name);
+            GameTooltip_AddHighlightLine(SettingsTooltip, e.strText[name] or name)
             if tooltip then
                 if type(tooltip) == "function" then
-                    GameTooltip_AddNormalLine(SettingsTooltip, tooltip());
+                    GameTooltip_AddNormalLine(SettingsTooltip, tooltip())
                 else
-                    GameTooltip_AddNormalLine(SettingsTooltip, e.strOption[tooltip] or tooltip);
+                    GameTooltip_AddNormalLine(SettingsTooltip, e.strOption[tooltip] or tooltip)
                 end
             end
             if variable then
                 local value, defaultValue, _, _, _, isSecure = C_CVar.GetCVarInfo(variable)
                 GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
                 GameTooltip_AddNormalLine(SettingsTooltip,
-                    HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar|cff00ff00'..e.Icon.right..variable..'|r')
+                    HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar|cff00ff00'..variable..'|r')
                     ..(value and ' ('..(value or '')..'/'..(defaultValue or '')..')' or ''),
                     true)
                 if isSecure then
@@ -2093,65 +2093,67 @@ local function Init()
             end
         end
         local function CreateOptionsInitTooltip(setting, name, tooltip, options, variable)--Blizzard_SettingControls.lua
-            InitTooltip(name, tooltip, variable);
-            local optionData = type(options) == 'function' and options() or options;
-            local default2 = setting:GetDefaultValue();
-            local warningOption = nil;
-            local defaultOption = nil;
-            for _, option in ipairs(optionData or {}) do
-                local default = option.value == default2;
-                if default then
-                    defaultOption = option;
-                end
-                if option.warning then
-                    warningOption = option;
-                end
-                if option.tooltip or option.disabled then
-                    GameTooltip_AddBlankLineToTooltip(SettingsTooltip);
-                    if option.label then
-                        local optionLabel= e.strOption[option.label] or option.label
-                        if option.disabled then
-                            optionLabel = DISABLED_FONT_COLOR:WrapTextInColorCode(optionLabel);
-                        else
-                            optionLabel = HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(optionLabel);
-                        end
-                        local optionTooltip= option.tooltip
-                        if optionTooltip then
-                            optionTooltip= e.strOption[optionTooltip] or optionTooltip
+            local initTooltip= function()
+                InitTooltip(name, tooltip, variable)
+                local optionData = type(options) == 'function' and options() or options
+                local default2 = setting:GetDefaultValue()
+                local warningOption = nil
+                local defaultOption = nil
+                for _, option in ipairs(optionData or {}) do
+                    local default = option.value == default2
+                    if default then
+                        defaultOption = option
+                    end
+                    if option.warning then
+                        warningOption = option
+                    end
+                    if option.tooltip or option.disabled then
+                        GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
+                        if option.label then
+                            local optionLabel= e.strOption[option.label] or option.label
                             if option.disabled then
-                                optionTooltip = DISABLED_FONT_COLOR:WrapTextInColorCode(optionTooltip);
-                            elseif default and option.recommend then
-                                optionTooltip = GREEN_FONT_COLOR:WrapTextInColorCode(optionTooltip);
+                                optionLabel = DISABLED_FONT_COLOR:WrapTextInColorCode(optionLabel)
                             else
-                                optionTooltip = NORMAL_FONT_COLOR:WrapTextInColorCode(optionTooltip);
+                                optionLabel = HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(optionLabel)
                             end
-                            GameTooltip_AddDisabledLine(SettingsTooltip, string.format("%s: %s", optionLabel, optionTooltip));
-                        else
-                            GameTooltip_AddDisabledLine(SettingsTooltip, string.format("%s:", optionLabel));
+                            local optionTooltip= option.tooltip
+                            if optionTooltip then
+                                optionTooltip= e.strOption[optionTooltip] or optionTooltip
+                                if option.disabled then
+                                    optionTooltip = DISABLED_FONT_COLOR:WrapTextInColorCode(optionTooltip)
+                                elseif default and option.recommend then
+                                    optionTooltip = GREEN_FONT_COLOR:WrapTextInColorCode(optionTooltip)
+                                else
+                                    optionTooltip = NORMAL_FONT_COLOR:WrapTextInColorCode(optionTooltip)
+                                end
+                                GameTooltip_AddDisabledLine(SettingsTooltip, string.format("%s: %s", optionLabel, optionTooltip))
+                            else
+                                GameTooltip_AddDisabledLine(SettingsTooltip, string.format("%s:", optionLabel))
+                            end
+                        end
+                        if option.disabled then
+                            GameTooltip_AddErrorLine(SettingsTooltip, option.disabled)
                         end
                     end
-                    if option.disabled then
-                        GameTooltip_AddErrorLine(SettingsTooltip, option.disabled);
-                    end
+                end
+                if defaultOption and defaultOption.recommend and defaultOption.label then
+                    GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
+                    local label= e.strOption[defaultOption.label] or defaultOption.label
+                    GameTooltip_AddHighlightLine(SettingsTooltip, string.format("%s: %s", e.onlyChinese and '推荐' or VIDEO_OPTIONS_RECOMMENDED, GREEN_FONT_COLOR:WrapTextInColorCode(label)))
+                end
+                
+                if warningOption and warningOption.value == setting:GetValue() and warningOption.warning then
+                    GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
+                    local warning= e.strOption[warningOption.warning] or warningOption.warning
+                    GameTooltip_AddNormalLine(SettingsTooltip, WARNING_FONT_COLOR:WrapTextInColorCode(warning))
+                end
+                
+                if setting:HasCommitFlag(Settings.CommitFlag.ClientRestart) then
+                    GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
+                    GameTooltip_AddErrorLine(SettingsTooltip, e.onlyChinese and '更改此选项需要重新启动客户端' or VIDEO_OPTIONS_NEED_CLIENTRESTART)
                 end
             end
-            if defaultOption and defaultOption.recommend and defaultOption.label then
-                GameTooltip_AddBlankLineToTooltip(SettingsTooltip);
-                local label= e.strOption[defaultOption.label] or defaultOption.label
-                GameTooltip_AddHighlightLine(SettingsTooltip, string.format("%s: %s", e.onlyChinese and '推荐' or VIDEO_OPTIONS_RECOMMENDED, GREEN_FONT_COLOR:WrapTextInColorCode(label)));
-            end
-            
-            if warningOption and warningOption.value == setting:GetValue() and warningOption.warning then
-                GameTooltip_AddBlankLineToTooltip(SettingsTooltip);
-                local warning= e.strOption[warningOption.warning] or warningOption.warning
-                GameTooltip_AddNormalLine(SettingsTooltip, WARNING_FONT_COLOR:WrapTextInColorCode(warning));
-            end
-            
-            if setting:HasCommitFlag(Settings.CommitFlag.ClientRestart) then
-                GameTooltip_AddBlankLineToTooltip(SettingsTooltip);
-                GameTooltip_AddErrorLine(SettingsTooltip, e.onlyChinese and '更改此选项需要重新启动客户端' or VIDEO_OPTIONS_NEED_CLIENTRESTART);
-            end
-            print(id,addName)
+            return initTooltip
         end
 
       
@@ -2161,7 +2163,7 @@ local function Init()
             local setting = initializer.data.setting
             local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
             self:SetTooltipFunc(initTooltip)
-            self.CheckBox:SetTooltipFunc(initTooltip);
+            self.CheckBox:SetTooltipFunc(initTooltip)
         end)
         hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self, initializer)
             --[[self.SliderWithSteppers.Slider.variable= initializer.data.setting.variable
@@ -2169,19 +2171,18 @@ local function Init()
             local setting = initializer.data.setting
             local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
             self:SetTooltipFunc(initTooltip)
-            self.SliderWithSteppers.Slider:SetTooltipFunc(initTooltip);
+            self.SliderWithSteppers.Slider:SetTooltipFunc(initTooltip)
         end)
-        hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self)--, initializer)
+        hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self, initializer)
             --[[self.DropDown.Button.variable= initializer.data.setting.variable
             set_onenter(self.DropDown.Button)]]
-            local setting = self:GetSetting();
-            local initializer = self:GetElementData();
-            --local options = initializer:GetOptions();
+            local setting = self:GetSetting()
+            local options = initializer:GetOptions()
             local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
             self:SetTooltipFunc(initTooltip)
                        
-            --initTooltip = GenerateClosure(CreateOptionsInitTooltip(setting, initializer:GetName(), initializer:GetTooltip(), options, setting.variable));
-          --  self.DropDown.Button:SetTooltipFunc(initTooltip)
+            initTooltip = GenerateClosure(CreateOptionsInitTooltip(setting, initializer:GetName(), initializer:GetTooltip(), options, setting.variable))
+            self.DropDown.Button:SetTooltipFunc(initTooltip)
         end)
         hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self, initializer)
             --[[self.CheckBox.variable= initializer.data.setting.variable
@@ -2196,39 +2197,43 @@ local function Init()
             set_onenter(self.CheckBox)
             self.SliderWithSteppers.Slider.variable= initializer.data.sliderSetting.variable
             set_onenter(self.SliderWithSteppers.Slider)]]
-            local cbSetting = initializer.data.cbSetting;
-            local cbLabel = initializer.data.cbLabel;
-            local cbTooltip = initializer.data.cbTooltip;
-            local sliderLabel = initializer.data.sliderLabel;
-            local sliderTooltip = initializer.data.sliderTooltip;
-            local cbInitTooltip = GenerateClosure(InitTooltip, cbLabel, cbTooltip, cbSetting.variable);
-            self:SetTooltipFunc(cbInitTooltip);
+            local cbSetting = initializer.data.cbSetting
+            local cbLabel = initializer.data.cbLabel
+            local cbTooltip = initializer.data.cbTooltip
+            local sliderLabel = initializer.data.sliderLabel
+            local sliderTooltip = initializer.data.sliderTooltip
+            local cbInitTooltip = GenerateClosure(InitTooltip, cbLabel, cbTooltip, cbSetting.variable)
+            self:SetTooltipFunc(cbInitTooltip)
             self.CheckBox:SetTooltipFunc(cbInitTooltip)
-            self.SliderWithSteppers.Slider:SetTooltipFunc(GenerateClosure(InitTooltip, sliderLabel, sliderTooltip, cbSetting.variable));
+            self.SliderWithSteppers.Slider:SetTooltipFunc(GenerateClosure(InitTooltip, sliderLabel, sliderTooltip, cbSetting.variable))
         end)
         hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
             --[[self.CheckBox.variable= initializer.data.cbSetting.variable
             set_onenter(self.CheckBox)
             self.DropDown.Button.variable= initializer.data.dropDownSetting.variable
             set_onenter(self.DropDown.Button)]]
-            local cbSetting = initializer.data.cbSetting;
-            local cbLabel = initializer.data.cbLabel;
-            local cbTooltip = initializer.data.cbTooltip;
+            local cbSetting = initializer.data.cbSetting
+            local cbLabel = initializer.data.cbLabel
+            local cbTooltip = initializer.data.cbTooltip
             local initTooltip= GenerateClosure(InitTooltip, cbLabel, cbTooltip, cbSetting.variable)
 	        self:SetTooltipFunc(initTooltip)
             self.CheckBox:SetTooltipFunc(initTooltip)
-            --self.DropDown.Button:SetTooltipFunc(GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), cbSetting.variable));
+
+            local setting = self:GetSetting()            
+            local options = initializer:GetOptions()
+            initTooltip = GenerateClosure(CreateOptionsInitTooltip(setting, initializer:GetName(), initializer:GetTooltip(), options, setting.variable))
+            self.DropDown.Button:SetTooltipFunc(initTooltip)
         end)
 
         hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)--Blizzard_Keybindings.lua
-            local bindingIndex = initializer.data.bindingIndex;
-            local action, category = GetBinding(bindingIndex);
-            local bindingName = GetBindingName(action);
+            local bindingIndex = initializer.data.bindingIndex
+            local action, category = GetBinding(bindingIndex)
+            local bindingName = GetBindingName(action)
             bindingName= e.strText[bindingName] or bindingName
             local function InitializeKeyBindingButtonTooltip(index)
-                local key = select(index, GetBindingKey(action));
+                local key = select(index, GetBindingKey(action))
                 if key then
-                    Settings.InitTooltip(format(KEY_BINDING_NAME_AND_KEY, bindingName, GetBindingText(key)), e.onlyChinese and '<右键解除键位>' or KEY_BINDING_TOOLTIP);
+                    Settings.InitTooltip(format(KEY_BINDING_NAME_AND_KEY, bindingName, GetBindingText(key)), e.onlyChinese and '<右键解除键位>' or KEY_BINDING_TOOLTIP)
                 end
                 GameTooltip_AddNormalLine(SettingsTooltip, 'bindingIndex |cnGREEN_FONT_COLOR:'..bindingIndex..'|r', true)
                 GameTooltip_AddNormalLine(SettingsTooltip, 'action |cnGREEN_FONT_COLOR:'..action..'|r', true)
@@ -2239,7 +2244,7 @@ local function Init()
             end
             
             for index, button in ipairs(self.Buttons) do
-                button:SetTooltipFunc(GenerateClosure(InitializeKeyBindingButtonTooltip, index));
+                button:SetTooltipFunc(GenerateClosure(InitializeKeyBindingButtonTooltip, index))
             end
             self.onEnter=true
         end)
