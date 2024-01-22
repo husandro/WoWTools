@@ -3579,9 +3579,15 @@ local function Init()
     end)
 
     set(EditModeSystemSettingsDialog.Buttons.RevertChangesButton, '撤销变更')
-    hooksecurefunc(EditModeSystemMixin, 'AddExtraButtons', function(self)
-        set(self.resetToDefaultPositionButton, '重设到默认位置')
+    hooksecurefunc(EditModeSystemSettingsDialog, 'UpdateExtraButtons', function(self,systemFrame)
+        if systemFrame == self.attachedToSystem then
+            set(systemFrame.resetToDefaultPositionButton, '重设到默认位置')    
+        end
     end)
+
+    --hooksecurefunc(EditModeSystemSettingsDialog.Buttons, 'AddExtraButtons', function(self)
+        --set(self.resetToDefaultPositionButton, '重设到默认位置')
+    --end)
 
 
 
