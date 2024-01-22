@@ -2083,7 +2083,7 @@ local function Init()
                 local value, defaultValue, _, _, _, isSecure = C_CVar.GetCVarInfo(variable)
                 GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
                 GameTooltip_AddNormalLine(SettingsTooltip,
-                    HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar|cff00ff00'..variable..'|r')
+                    HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar |cff00ff00'..variable..'|r')
                     ..(value and ' ('..(value or '')..'/'..(defaultValue or '')..')' or ''),
                     true)
                 if isSecure then
@@ -2219,8 +2219,8 @@ local function Init()
 	        self:SetTooltipFunc(initTooltip)
             self.CheckBox:SetTooltipFunc(initTooltip)
 
-            local setting = self:GetSetting()            
-            local options = initializer:GetOptions()
+            local setting = initializer.data.dropDownSetting
+            local options = initializer.data.dropDownOptions
             initTooltip = GenerateClosure(CreateOptionsInitTooltip(setting, initializer:GetName(), initializer:GetTooltip(), options, setting.variable))
             self.DropDown.Button:SetTooltipFunc(initTooltip)
         end)
