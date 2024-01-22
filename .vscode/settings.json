@@ -7533,7 +7533,8 @@
         "SettingsControlMixin",
         "VIDEO_OPTIONS_NEED_CLIENTRESTART",
         "VIDEO_OPTIONS_RECOMMENDED",
-        "CustomBindingManager"
+        "CustomBindingManager",
+        "ContainerFrame6"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

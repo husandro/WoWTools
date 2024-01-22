@@ -3412,7 +3412,8 @@ local function Init()
     end)
 
 
-
+    --背包
+    set(BagItemSearchBox.Instructions, '搜索')
 
 
 

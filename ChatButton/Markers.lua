@@ -1559,10 +1559,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 panel:RegisterEvent('READY_CHECK')
             end
             panel:UnregisterEvent('ADDON_LOADED')
-            
-
-        --elseif arg1=='Blizzard_PingUI' then
-            
         end
 
     elseif event == "PLAYER_LOGOUT" then

@@ -2319,7 +2319,12 @@ local function Init_MainMenu(init)--主菜单
     end
 
 
-
+    for i=1, 6 do--10.25 出现错误
+        local frame= _G['ContainerFrame'..i]
+        if frame and frame.Bg and frame.Bg:GetObjectType()=='Frame' then
+            frame.Bg:SetFrameStrata('BACKGROUND')
+        end
+    end
 
     if init then
          --材料包
