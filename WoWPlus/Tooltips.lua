@@ -2246,7 +2246,6 @@ local function Init()
             for index, button in ipairs(self.Buttons) do
                 button:SetTooltipFunc(GenerateClosure(InitializeKeyBindingButtonTooltip, index))
             end
-            self.onEnter=true
         end)
     end
 end

@@ -32,8 +32,6 @@ local function set(self, text, affer, setFont)
         else
             self:SetText(text)
         end
-    elseif self and e.Player.husandro and text then
-        print(self.GetName and self:GetName() or '', text)
     end
 end
 
@@ -120,19 +118,20 @@ local function role_tooltips(str)
     end
 end
 
-local function set_button(btn)
-    if btn then
-        local text= btn:GetText() or ''
+--[[local function set_button(btn)
+    local label = btn and (btn.Text or btn.text)
+    if label then
+        local text= label:GetText() or ''
         local col, name= text:match('(|cff......)(.-)|r')
         name= name or text
         if name and name~='' then
             name= e.strText[name]
             if name then
-                set(btn.Button1, (col or '')..name)
+                set(label, (col or '')..name)
             end
         end
     end
-end
+end]]
 
 
 
@@ -2518,7 +2517,6 @@ local function Init()
 
 
     --选项
-    
     hooksecurefunc(SettingsPanel.Container.SettingsList.ScrollBox, 'Update', function(frame)
         if not frame:GetView() or not frame:IsVisible() then
             return
@@ -2539,8 +2537,6 @@ local function Init()
                     set(lable, e.strText[lable:GetText()])
                 end
             end
-            set_button(btn.Button1)
-            set_button(btn.Button2)
             lable= btn.Text or btn.Label or btn.Title
             if lable then
                 set(lable, e.strText[lable:GetText()])
@@ -2550,10 +2546,13 @@ local function Init()
         end
     end)
 
-
-    hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)
-        set_button(self.Buttons[1])
-        set_button(self.Buttons[2])
+    hooksecurefunc('BindingButtonTemplate_SetupBindingButton', function(_, button)--BindingUtil.lua
+        local text= button:GetText()
+        if button:GetText()==GRAY_FONT_COLOR:WrapTextInColorCode(NOT_BOUND) then
+            set(button, GRAY_FONT_COLOR:WrapTextInColorCode('未设置'))
+        else
+            set(button, e.strText[text])
+        end
     end)
 
 

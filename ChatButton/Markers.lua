@@ -1551,8 +1551,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                     showTexture=true,
                     sizi=nil,
                 })
-
-                Init_Ping()
+                if e.Player.husandro then
+                    Init_Ping()
+                end
                 Init()
                 panel:RegisterEvent("PLAYER_LOGOUT")
                 panel:RegisterEvent('READY_CHECK')

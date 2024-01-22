@@ -7532,7 +7532,8 @@
         "SelectionPopoutButtonMixin",
         "SettingsControlMixin",
         "VIDEO_OPTIONS_NEED_CLIENTRESTART",
-        "VIDEO_OPTIONS_RECOMMENDED"
+        "VIDEO_OPTIONS_RECOMMENDED",
+        "CustomBindingManager"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
