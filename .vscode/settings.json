@@ -7530,7 +7530,9 @@
         "KeybindListener",
         "SettingsCheckBoxMixin",
         "SelectionPopoutButtonMixin",
-        "SettingsControlMixin"
+        "SettingsControlMixin",
+        "VIDEO_OPTIONS_NEED_CLIENTRESTART",
+        "VIDEO_OPTIONS_RECOMMENDED"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

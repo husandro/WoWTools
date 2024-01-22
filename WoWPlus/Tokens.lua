@@ -521,7 +521,7 @@ local function MenuList_Item(level)
 		keepShownOnClick= true,
 		tooltipOnButton= true,
 		disabled=UnitAffectingCombat('player'),
-		tooltipTitle= e.onlyChinese and '友情提示: 可能会出现错误' or ('note: '..ENABLE_ERROR_SPEECH),
+		tooltipTitle= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '友情提示: 可能会出现错误' or ('note: '..ENABLE_ERROR_SPEECH)..'|r'),
 		tooltipText= (e.onlyChinese and '重新加载UI' or RELOADUI)..'|n'..SLASH_RELOAD1,
 		func= function()
 			Save.itemButtonUse= not Save.itemButtonUse and true or nil
