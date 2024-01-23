@@ -1803,7 +1803,7 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
             ['挑战']= {name= e.onlyChinese and '挑战' or PLAYER_DIFFICULTY5,  hex='|cffff8200', r=1, g=0.51, b=0},
             ['漫游']= {name= e.onlyChinese and '漫游' or PLAYER_DIFFICULTY_TIMEWALKER, hex='|cff00ffff', r=0, g=1, b=1},
             ['pvp']= {name= 'PvP', hex='|cffff0000', r=1, g=0, b=0},
-            ['追随']= {name= e.onlyChinese and '追随' or LFG_TYPE_FOLLOWER_DUNGEON, hex='|cffb1ff00', r=0.69, g=1, b=0, a=1},
+            ['追随']= {name= e.onlyChinese and '追随' or _G['LFG_TYPE_FOLLOWER_DUNGEON'], hex='|cffb1ff00', r=0.69, g=1, b=0, a=1},
 
         } or {}
         local type={

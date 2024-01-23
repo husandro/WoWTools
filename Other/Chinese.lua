@@ -1951,8 +1951,8 @@ local function Init()
     end)
 
 
-    set(LFDQueueFrameFollowerTitle, '追随者地下城')
-    set(LFDQueueFrameFollowerDescription, '与NPC队友一起完成地下城')
+    set(_G['LFDQueueFrameFollowerTitle'], '追随者地下城')
+    set(_G['LFDQueueFrameFollowerDescription'], '与NPC队友一起完成地下城')
     --set(LFDQueueFrameRandomScrollFrameChildFrameTitle, '')
     hooksecurefunc('LFGRewardsFrame_UpdateFrame', function(parentFrame, dungeonID)--LFGFrame.lua
         if ( not dungeonID ) then
@@ -2257,7 +2257,7 @@ local function Init()
         [OPTION_TOOLTIP_MASTER_VOLUME] = "调整主音量。",
         [OPTION_TOOLTIP_MAX_FOLLOW_DIST] = "调节镜头在角色身后的最大跟随距离。",
         [OPTION_TOOLTIP_MINIMUM_CHARACTER_NAME_SIZE] = "调整最小角色名尺寸。",
-        [OPTION_TOOLTIP_MOTION_SICKNESS_CHECKBOX] = "开启晕动症设置可以降低镜头运动，保持角色在中间。",
+        [_G['OPTION_TOOLTIP_MOTION_SICKNESS_CHECKBOX']] = "开启晕动症设置可以降低镜头运动，保持角色在中间。",
         [OPTION_TOOLTIP_MOTION_SICKNESS_DRAGONRIDING] = "在巨龙群岛使用驭龙术时，可以帮助降低晕动症。\n\n|cffffffff地表变暗：|r玩家使用驭龙术时，屏幕外围变暗\n\n|cffffffff聚焦圆环：|r在屏幕中心添加聚焦圆环十字",
         [OPTION_TOOLTIP_MOUSEOVER_CAST_ALT_KEY] = "按住ALT键以对你的鼠标悬停目标施放需要指定目标的法术。",
         [OPTION_TOOLTIP_MOUSEOVER_CAST_CTRL_KEY] = "按住CTRL键以对你的鼠标悬停目标施放需要指定目标的法术。",
