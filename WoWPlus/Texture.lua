@@ -1154,12 +1154,51 @@ local function Init_All_Frame()
 
     set_Alpha_Frame_Texture(BNToastFrame, {alpha=min05})
 
-    hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self)
+
+    hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--列表 Blizzard_CategoryList.lua
+        set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
+    end)
+    hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
+        set_Alpha_Frame_Texture(self.Background, {alpha=min05})
+        
+    end)
+
+   
+    hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
+        set_Alpha_Frame_Texture(self.CheckBox, {notAlpha=true})
+    end)
+
+    hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self, initializer)
         set_Slider(self.SliderWithSteppers)
     end)
-    hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)
+    hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self, initializer)
+        set_Menu(DropDown.Button)
+    end)
+    hooksecurefunc(SettingsButtonControlMixin, 'Init', function(self, initializer)
+      
+    end)
+    hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self, initializer)
+       
+    end)
+    hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
         set_Slider(self.SliderWithSteppers)
     end)
+    end)
+    hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
+       
+    end)
+    hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)
+
+    end)
+    hooksecurefunc('BindingButtonTemplate_SetupBindingButton', function(_, button)--BindingUtil.lua
+       
+    end)
+    
+    hooksecurefunc(SettingsListElementInitializer, 'Init', function(self, data)
+       
+    end)
+
+    --StoreFrame
 end
 
 

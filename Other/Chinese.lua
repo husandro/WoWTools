@@ -2284,6 +2284,8 @@ local function Init()
     set(GameMenuButtonQuit, '退出游戏')
     set(GameMenuButtonContinue, '返回游戏')
 
+    
+
     --角色
     set(CharacterFrameTab1, '角色')
     CharacterFrameTab1:HookScript('OnEnter', function()
@@ -4251,7 +4253,7 @@ local function Init()
 
 
 
-
+    set(StoreFrame.TitleContainer, '商城')
 
 
 
@@ -6541,7 +6543,7 @@ local function Init_Loaded(arg1)
         set(AchievementFrameTab1, '成就')
         set(AchievementFrameTab2, '公会')
         set(AchievementFrameTab3, '统计')
-
+        set(AchievementFrame.SearchBox.Instructions, '搜索')
         set(AchievementFrameSummaryAchievementsHeaderTitle, '近期成就')
         set(AchievementFrameSummaryCategoriesHeaderTitle, '进展总览')
 
