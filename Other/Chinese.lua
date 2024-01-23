@@ -113,10 +113,21 @@ local function role_tooltips(str)
     end
     if leader then
         leader:HookScript('OnEnter', function()
-            GameTooltip:SetText('表示你拥有在副本中战斗的经验，并愿意指导团队攻克难关。', nil, nil, nil, nil, true);
+            GameTooltip:SetText('表示你拥有在副本中战斗的经验，并愿意指导团队攻克难关。', nil, nil, nil, nil, true)
         end)
     end
 end
+
+local function getText(text)
+    if text then
+        return e.strOption[text] or e.strText[text]
+    end
+end
+
+local function setLabel(lable, text)
+    set(lable, getText(text))
+end
+
 
 --[[local function set_button(btn)
     local label = btn and (btn.Text or btn.text)
@@ -135,1282 +146,1928 @@ end]]
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 local function Init_Set()
-
 e.strText={
-    --Blizzard_AuctionData.lua
-    [AUCTION_CATEGORY_WEAPONS] = "武器",
-        [AUCTION_SUBCATEGORY_ONE_HANDED] = "单手",
-            [GetItemSubClassInfo(2, 0)]= "单手斧",
-            [GetItemSubClassInfo(2, 4)]= "单手锤",
-            [GetItemSubClassInfo(2, 7)]= "单手剑",
-            [GetItemSubClassInfo(2, 9)]= "战刃",
-            [GetItemSubClassInfo(2, 15)]= "匕首",
-            [GetItemSubClassInfo(2, 13)]= "拳套",
-            [GetItemSubClassInfo(2, 19)]= "魔杖",
-        [AUCTION_SUBCATEGORY_TWO_HANDED] = "双手",
-            [GetItemSubClassInfo(2, 1)]= "双手斧",
-            [GetItemSubClassInfo(2, 5)]= "双手锤",
-            [GetItemSubClassInfo(2, 8)]= "双手剑",
-            [GetItemSubClassInfo(2, 6)]= "长柄武器",
-            [GetItemSubClassInfo(2, 10)]= "法杖",
-        [AUCTION_SUBCATEGORY_RANGED] = "远程",
-            [GetItemSubClassInfo(2, 2)]= "弓",
-            [GetItemSubClassInfo(2, 18)]= "弩",
-            [GetItemSubClassInfo(2, 3)]= "枪械",
-            [GetItemSubClassInfo(2, 16)]= "投掷武器",
-        [AUCTION_SUBCATEGORY_MISCELLANEOUS] = "杂项",
-            [GetItemSubClassInfo(2, 20)]= "鱼竿",
-            [AUCTION_SUBCATEGORY_OTHER] = "其他",
-    [AUCTION_CATEGORY_ARMOR] = "护甲",
-        ['|cff00ccff'..RUNEFORGE_LEGENDARY_CRAFTING_FRAME_TITLE..'|r'] = "|cff00ccff符文铭刻|r",
-        [GetItemSubClassInfo(4, 4)]= "板甲",
-        [GetItemSubClassInfo(4, 3)]= "锁甲",
-        [GetItemSubClassInfo(4, 2)]= "皮甲",
-        [GetItemSubClassInfo(4, 1)]= "布甲",
-        --[AUCTION_SUBCATEGORY_MISCELLANEOUS] = "杂项",
-            [AUCTION_SUBCATEGORY_CLOAK] = "披风",
-            [INVTYPE_FINGER]= "手指",
-            [INVTYPE_TRINKET] = "饰品",
-            [INVTYPE_HOLDABLE] = "副手物品",
-            [SHOW_COMBAT_HEALING_ABSORB_SELF] = "护盾",
-            [INVTYPE_BODY] = "衬衣",
-        [ITEM_COSMETIC] = "装饰品",
-    [AUCTION_CATEGORY_CONTAINERS] = "容器",
-        [GetItemSubClassInfo(1, 0)]= "容器",
-        [GetItemSubClassInfo(1, 2)]= "草药",
-        [GetItemSubClassInfo(1, 3)]= "附魔",
-        [GetItemSubClassInfo(1, 4)]= "工程",
-        [GetItemSubClassInfo(1, 5)]= "宝石",
-        [GetItemSubClassInfo(1, 6)]= "矿石",
-        [GetItemSubClassInfo(1, 7)]= "制皮",
-        [GetItemSubClassInfo(1, 8)]= "铭文",
-        [GetItemSubClassInfo(1, 9)]= "钓鱼",
-        [GetItemSubClassInfo(1, 10)]= "烹饪",
-        [GetItemSubClassInfo(1, 11)]= "材料",
-    [AUCTION_CATEGORY_GEMS] = "宝石",
-        [GetItemSubClassInfo(3, 11)]= "神器圣物",
-        [GetItemSubClassInfo(3, 0)]= "智力",
-        [GetItemSubClassInfo(3, 1)]= "敏捷",
-        [GetItemSubClassInfo(3, 2)]= "力量",
-        [GetItemSubClassInfo(3, 3)]= "耐力",
-        [GetItemSubClassInfo(3, 5)]= "爆机",
-        [GetItemSubClassInfo(3, 6)]= "精通",
-        [GetItemSubClassInfo(3, 7)]= "急速",
-        [GetItemSubClassInfo(3, 8)]= "全能",
-        [GetItemSubClassInfo(3, 10)]= "复合属性",
-    [AUCTION_CATEGORY_ITEM_ENHANCEMENT] = "物品强化",
-        [GetItemSubClassInfo(8, 0)] = "头部",
-        [GetItemSubClassInfo(8, 1)] = "颈部",
-        [GetItemSubClassInfo(8, 2)] = "肩部",
-        [GetItemSubClassInfo(8, 3)] = "披风",
-        [GetItemSubClassInfo(8, 4)] = "胸部",
-        [GetItemSubClassInfo(8, 5)] = "手腕",
-        [GetItemSubClassInfo(8, 6)] = "手部",
-        [GetItemSubClassInfo(8, 7)] = "腰部",
-        [GetItemSubClassInfo(8, 8)] = "腿部",
-        [GetItemSubClassInfo(8, 9)] = "脚部",
-        [GetItemSubClassInfo(8, 10)] = "手指",
-        [GetItemSubClassInfo(8, 11)] = "武器",
-        [GetItemSubClassInfo(8, 12)] = "双手武器",
-        [GetItemSubClassInfo(8, 13)] = "盾牌/副手",
-    [AUCTION_CATEGORY_CONSUMABLES] = "消耗品",
-        [GetItemSubClassInfo(0, 0)] = "爆炸物和装置",
-        [GetItemSubClassInfo(0, 1)] = "药水",
-        [GetItemSubClassInfo(0, 2)] = "药剂",
-        [GetItemSubClassInfo(0, 3)] = "合剂和瓶剂",
-        [GetItemSubClassInfo(0, 5)] = "食物和饮水",
-        [GetItemSubClassInfo(0, 7)] = "绷带",
-        [GetItemSubClassInfo(0, 9)] = "凡图斯符文",
-    [AUCTION_CATEGORY_GLYPHS] = "雕文",
-        [GetItemSubClassInfo(16, 1)] = "|cffc69b6d战士|r",
-        [GetItemSubClassInfo(16, 2)] = "|cfff48cba圣骑士|r",
-        [GetItemSubClassInfo(16, 3)] = "|cffaad372猎人|r",
-        [GetItemSubClassInfo(16, 4)] = "|cfffff468盗贼|r",
-        [GetItemSubClassInfo(16, 5)] = "|cffffffff牧师|r",
-        [GetItemSubClassInfo(16, 6)] = "|cffc41e3a死亡骑士|r",
-        [GetItemSubClassInfo(16, 7)] = "|cff0070dd萨满|r",
-        [GetItemSubClassInfo(16, 8)] = "|cff3fc7eb法师|r",
-        [GetItemSubClassInfo(16, 9)] = "|cff8788ee术士|r",
-        [GetItemSubClassInfo(16, 10)] = "|cff00ff98武僧|r",
-        [GetItemSubClassInfo(16, 11)] = "|cffff7c0a德鲁伊|r",
-        [GetItemSubClassInfo(16, 12)] = "|cffa330c9恶魔猎手|r",
-
-    [AUCTION_CATEGORY_TRADE_GOODS] = "杂货",
-        [GetItemSubClassInfo(7, 5)] = "布料",
-        [GetItemSubClassInfo(7, 6)] = "皮料",
-        [GetItemSubClassInfo(7, 7)] = "金属和矿石",
-        [GetItemSubClassInfo(7, 8)] = "烹饪",
-
-        [GetItemSubClassInfo(7, 9)] = "草药",
-        [GetItemSubClassInfo(7, 12)] = "附魔材料",
-        [GetItemSubClassInfo(7, 16)] = "铭文",
-        [GetItemSubClassInfo(7, 4)] = "珠宝加工",
-        [GetItemSubClassInfo(7, 1)] = "零件",
-        [GetItemSubClassInfo(7, 10)] = "元素",
-
-        [GetItemSubClassInfo(7, 18)] = "附加材料",
-        [GetItemSubClassInfo(7, 19)] = "成器材料",
-    [AUCTION_CATEGORY_RECIPES] = "配方",
-        [GetItemSubClassInfo(9, 1)] = "制皮",
-        [GetItemSubClassInfo(9, 2)] = "裁缝",
-        [GetItemSubClassInfo(9, 3)] = "工程",
-        [GetItemSubClassInfo(9, 4)] = "锻造",
-        [GetItemSubClassInfo(9, 6)] = "炼金术",
-        [GetItemSubClassInfo(9, 8)] = "附魔",
-        [GetItemSubClassInfo(9, 10)] = "珠宝加工",
-        [GetItemSubClassInfo(9, 11)] = "铭文",
-        [GetItemSubClassInfo(9, 5)] = "烹饪",
-        [GetItemSubClassInfo(9, 7)] = "急救",
-        --[GetItemSubClassInfo(9, 9)] = "钓鱼",
-        [GetItemSubClassInfo(9, 0)] = "书籍",
-    [AUCTION_CATEGORY_PROFESSION_EQUIPMENT] = "专业装备",
-        [GetItemSubClassInfo(19, 5)] = "采矿",
-        [GetItemSubClassInfo(19, 3)] = "草药学",
-        [GetItemSubClassInfo(19, 10)] = "剥皮",
-        [PROFESSIONS_FISHING] = "钓鱼",
-    [AUCTION_CATEGORY_BATTLE_PETS] = "战斗宠物",
-        [GetItemSubClassInfo(17, 0)] = "人形",
-        [GetItemSubClassInfo(17, 1)] = "龙类",
-        [GetItemSubClassInfo(17, 2)] = "飞行",
-        [GetItemSubClassInfo(17, 3)] = "亡灵",
-        [GetItemSubClassInfo(17, 4)] = "小动物",
-        [GetItemSubClassInfo(17, 5)] = "魔法",
-        [GetItemSubClassInfo(17, 6)] = "元素",
-        [GetItemSubClassInfo(17, 7)] = "野兽",
-        [GetItemSubClassInfo(17, 8)] = "水栖",
-        [GetItemSubClassInfo(17, 9)] = "机械",
-        [COMPANIONS] = "小伙伴",
-    [AUCTION_CATEGORY_QUEST_ITEMS] = "任务物品",
-    [AUCTION_CATEGORY_MISCELLANEOUS] = "杂项",
-        [GetItemSubClassInfo(15, 0)] = "垃圾",
-        [GetItemSubClassInfo(15, 1)] = "材料",
-        [GetItemSubClassInfo(15, 3)] = "节日",
-        [GetItemSubClassInfo(15, 5)] = "坐骑",
-        [GetItemSubClassInfo(15, 6)] = "坐骑装备",
-    [AUCTION_SUBCATEGORY_PROFESSION_ACCESSORIES] = "配饰",
-    [AUCTION_SUBCATEGORY_PROFESSION_TOOLS] = "工具",
-    [GetItemSubClassInfo(18, 0)] = "时光徽章",
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    --成就
-    [ACHIEVEMENT_SUMMARY_CATEGORY] = "总览",
-    [CHARACTER] = "角色",
-    [QUESTS_LABEL] = "任务",
-    [GROUP_FINDER] = "地下城和团队副本",
-    [TRADE_SKILLS] = "专业",
-    [PROFESSIONS_ARCHAEOLOGY] = "考古学",
-    [REPUTATION] = "声望",
-    [HONOR] = "荣誉",
-    [COLLECTIONS] = "藏品",
-    [GENERAL] = "综合",
-    [KILLS] = "杀敌",
-    [DEATHS] = "死亡",
-    [SKILLS] = "技能",
-    [TUTORIAL_TITLE35] = "旅行",
-    [SOCIALS] = "社交",
-    [TRACKER_HEADER_PROVINGGROUNDS] = "试炼场",
-    [COMBAT_TEXT_SHOW_HONOR_GAINED_TEXT] = "荣誉消灭",
-    [KILLING_BLOW_TOOLTIP_TITLE] = "消灭",
-    [EVENTS_LABEL] = "事件",
-
-    [BATTLE_PET_SOURCE_5] = "宠物对战",
-    [BATTLE_PET_SOURCE_7] = "世界事件",
-    [BATTLE_PET_SOURCE_8] = "特殊",
-    [GAMES] = "比赛",
-
-    [EXPANSION_NAME0] = "经典旧世",
-    [EXPANSION_NAME1] = "燃烧的远征",
-    [EXPANSION_NAME2] = "巫妖王之怒",
-    [EXPANSION_NAME3] = "大地的裂变",
-    [EXPANSION_NAME4] = "熊猫人之谜",
-    [POSTMASTER_PIPE_PANDARIA] = "潘达利亚",
-    [POSTMASTER_PIPE_DRAENOR] = "德拉诺",
-    [EXPANSION_NAME5] = "德拉诺之王",
-    [EXPANSION_NAME6] = "军团再临",
-    [EXPANSION_NAME7] = "争霸艾泽拉斯",
-    [EXPANSION_NAME8] = "暗影国度",
-    [EXPANSION_NAME9] = "巨龙时代",
-    [BATTLEGROUNDS] = "战场",
-    --[CHANNEL_CATEGORY_WORLD] = "世界",
-    [GUILD_CHALLENGE_TYPE1] = "地下城",
-    [GUILD_CHALLENGE_TYPE2] = "团队副本",
-    [GUILD_CHALLENGE_TYPE3] = "评级战场",
-    [GUILD_CHALLENGE_TYPE4] = "场景战役",
-    [GUILD_CHALLENGE_TYPE5] = "史诗钥石地下城",
-
-
-    [DUNGEON_FLOOR_TOLBARADWARLOCKSCENARIO0] = "托尔巴拉德",
-    [POSTMASTER_PIPE_EASTERNKINGDOMS] = "东部王国",
-    [POSTMASTER_PIPE_KALIMDOR] = "卡利姆多",
-    [POSTMASTER_PIPE_NORTHREND] = "诺森德",
-    [POSTMASTER_PIPE_OUTLAND] = "外域",
-    [WORLD_PVP] = "阿什兰",
-    [WORLD] = "世界",
-    [TOY_BOX] = "玩具箱",
-    [WARDROBE] = "外观",
-    [ARENA] = "竞技场",
-
-
-
-
-
-
-
-
-
-
-
-
-
-    --选项
-    [SETTINGS_TAB_GAME] = "游戏",
-        [CONTROLS_LABEL] = "控制",
-            [GAMEFIELD_DESELECT_TEXT] = "目标锁定",
-            [AUTO_DISMOUNT_FLYING_TEXT] = "自动取消飞行",
-            [CLEAR_AFK] = "自动解除离开状态",
-            [INTERACT_ON_LEFT_CLICK_TEXT] = "左键点击操作",
-            [LOOT_UNDER_MOUSE_TEXT] = "鼠标位置打开拾取窗口",
-            [AUTO_LOOT_DEFAULT_TEXT] = "自动拾取",
-            [AUTO_LOOT_KEY_TEXT] = "自动拾取按键",
-            [LOOT_KEY_TEXT] = "拾取键",
-            [USE_COMBINED_BAGS_TEXT] = "组合背包",
-            [ENABLE_INTERACT_TEXT] = "开启交互按键",
-            [BINDING_NAME_INTERACTTARGET] = "与目标互动",
-            [ENABLE_INTERACT_SOUND_OPTION] = "交互按键音效提示",
-                --[ENABLE_INTERACT_SOUND_OPTION_TOOLTIP] = "你变得可以或者不可以与一个目标互动时，播放音效提示。",
-        [MOUSE_LABEL] = "鼠标",
-            [LOCK_CURSOR] = "将鼠标指针锁定在窗口内",
-            [INVERT_MOUSE] = "反转鼠标",
-            [MOUSE_LOOK_SPEED] = "鼠标观察速度",
-            [ENABLE_MOUSE_SPEED] = "启用鼠标灵敏度",
-            [MOUSE_SENSITIVITY] = "鼠标灵敏度",
-            [CLICK_TO_MOVE] = "点击移动",
-                [CAMERA_SMART] = "移动时只调整水平角度",
-                [CAMERA_SMARTER] = "仅在移动时",
-                [CAMERA_ALWAYS] = "总是调整视角",
-                [CAMERA_NEVER] = "从不调整镜头",
-        [CAMERA_LABEL] = "镜头",
-            [WATER_COLLISION] = "水体碰撞",
-            [AUTO_FOLLOW_SPEED] = "自动跟随速度",
-            [CAMERA_CTM_FOLLOWING_STYLE] = "镜头跟随模式",
-
-    [INTERFACE_LABEL] = "界面",--Interface.lua
-        [NAMES_LABEL] = "名字",
-            [UNIT_NAME_OWN] = "我的名字",
-            [SHOW_NPC_NAMES] = "NPC姓名",
-                [NPC_NAMES_DROPDOWN_TRACKED] = "任务NPC",
-                [NPC_NAMES_DROPDOWN_HOSTILE] = "敌对及任务NPC",
-                [NPC_NAMES_DROPDOWN_INTERACTIVE] = "敌对、任务及可互动的NPC",
-                [NPC_NAMES_DROPDOWN_ALL] = "所有NPC",
-                [NPC_NAMES_DROPDOWN_NONE] = "无",
-            [UNIT_NAME_NONCOMBAT_CREATURE] = "小动物和小伙伴",
-            [UNIT_NAME_FRIENDLY] = "友方玩家",
-                [UNIT_NAME_FRIENDLY_MINIONS] = "仆从",
-            [UNIT_NAME_ENEMY] = "敌方玩家",
-        [NAMEPLATES_LABEL] = "姓名板",
-            [UNIT_NAMEPLATES_AUTOMODE] = "显示所有姓名板",
-                [UNIT_NAMEPLATES_MAKE_LARGER] = "大姓名板",
-            [UNIT_NAMEPLATES_SHOW_ENEMIES] = "敌方单位姓名板",
-                [UNIT_NAMEPLATES_SHOW_ENEMY_MINIONS] = "仆从",
-                [UNIT_NAMEPLATES_SHOW_ENEMY_MINUS] = "杂兵",
-            [UNIT_NAMEPLATES_SHOW_FRIENDS] = "友方玩家姓名板",
-            [UNIT_NAMEPLATES_SHOW_FRIENDLY_MINIONS] = "仆从",
-            [SHOW_NAMEPLATE_LOSE_AGGRO_FLASH] = "失去怪物威胁时闪烁",
-            [UNIT_NAMEPLATES_TYPES] = "姓名板排列方式",
-                [UNIT_NAMEPLATES_TYPE_1] = "重叠姓名板",
-                [UNIT_NAMEPLATES_TYPE_2] = "堆叠姓名板",
-        [DISPLAY_LABEL] = "显示",
-            [HIDE_ADVENTURE_JOURNAL_ALERTS] = "隐藏冒险指南提示",
-            [SHOW_IN_GAME_NAVIGATION] = "游戏内导航",
-            [SHOW_TUTORIALS]= "教程", [RESET_TUTORIALS] = "重置教程",
-            [OBJECT_NPC_OUTLINE] = "轮廓线模式",
-                [OBJECT_NPC_OUTLINE_DISABLED] = "禁用",
-                [OBJECT_NPC_OUTLINE_MODE_ONE] = "仅限任务目标",
-                [OBJECT_NPC_OUTLINE_MODE_THREE] = "任务目标、鼠标悬停及目标",
-                [OBJECT_NPC_OUTLINE_MODE_TWO] = "任务目标和鼠标悬停（默认）",
-            [STATUSTEXT_LABEL] = "状态文字",
-                [STATUS_TEXT_VALUE] = "数值",
-                [STATUS_TEXT_PERCENT] = "百分比",
-                [STATUS_TEXT_BOTH] = "同时显示",
-            [CHAT_BUBBLES_TEXT] = "聊天泡泡",
-                [ALL] = "全部",
-                [CHAT_BUBBLES_EXCLUDE_PARTY_CHAT] = "屏蔽小队聊天",
-            [REPLACE_OTHER_PLAYER_PORTRAITS] = "替换玩家框体头像",
-            [REPLACE_MY_PLAYER_PORTRAIT] = "替换我的框体头像",
-        [RAID_FRAMES_LABEL] = "团队框体",--InterfaceOverrides.lua
-            [COMPACT_UNIT_FRAME_PROFILE_DISPLAYHEALPREDICTION] = "显示预计治疗",
-                [COMPACT_UNIT_FRAME_PROFILE_DISPLAYPOWERBAR] = "显示能量条",
-            [COMPACT_UNIT_FRAME_PROFILE_DISPLAYAGGROHIGHLIGHT] = "高亮显示仇恨目标",
-            [COMPACT_UNIT_FRAME_PROFILE_DISPLAYONLYHEALERPOWERBARS] = "只显示治疗者能量条",
-            [PVP_COMPACT_UNIT_FRAME_PROFILE_USECLASSCOLORS] = "显示职业颜色",
-            [PVP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYPETS] = "显示宠物",
-            [COMPACT_UNIT_FRAME_PROFILE_DISPLAYMAINTANKANDASSIST] = "显示主坦克和主助理",
-            [COMPACT_UNIT_FRAME_PROFILE_DISPLAYNONBOSSDEBUFFS] = "显示负面效果",
-                [DISPLAY_ONLY_DISPELLABLE_DEBUFFS] = "只显示可供驱散的负面效果",
-            [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT] = "显示生命值数值",
-                [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT] = "显示生命值数值",
-                [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_HEALTH] = "剩余生命值",
-                [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_LOSTHEALTH] = "损失生命值",
-                --[PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_NONE] = "无",
-                [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_PERC] = "生命值百分比",
-        [PVP_FRAMES_LABEL] = "竞技场对手框体",
-
-
-        [SETTING_GROUP_GAMEPLAY] = "游戏功能",
-
-    [ACTIONBARS_LABEL] = "动作条",--ActionBars.lua
-        [COUNTDOWN_FOR_COOLDOWNS_TEXT] = "显示冷却时间",
-        [LOCK_ACTIONBAR_TEXT] = "锁定动作条",
-
-    [COMBAT_LABEL] = "战斗",--Combat.lua
-        [DISPLAY_PERSONAL_RESOURCE] = "显示个人资源",
-            [NAMEPLATE_HIDE_HEALTH_AND_POWER] = "隐藏生命值和能量条",
-            [DISPLAY_PERSONAL_RESOURCE_ON_ENEMY] = "在敌方目标上显示玩家的特殊资源",
-            [DISPLAY_PERSONAL_COOLDOWNS] = "显示个人冷却时间",
-            [DISPLAY_PERSONAL_FRIENDLY_BUFFS] = "显示友方增益效果",
-        --[BINDING_NAME_TOGGLESELFHIGHLIGHT] = "开启/关闭自身高亮",
-            [SELF_HIGHLIGHT_MODE_CIRCLE] = "圆环",--CombatOverrides.lua
-            [SELF_HIGHLIGHT_MODE_CIRCLE_AND_OUTLINE] = "圆环&轮廓线",
-            [SELF_HIGHLIGHT_MODE_OUTLINE] = "轮廓线",
-            [OFF] = "禁用",
-
-        [SELF_HIGHLIGHT_OPTION] = "团队中自身高亮",
-
-        [SHOW_TARGET_OF_TARGET_TEXT] = "目标的目标",
-        [FLASH_LOW_HEALTH_WARNING] = "生命值过低时不闪烁屏幕",
-        [LOSS_OF_CONTROL] = "失控警报",
-        [SHOW_COMBAT_TEXT_TEXT] = "滚动战斗记录",
-        [ENABLE_MOUSEOVER_CAST] = "鼠标悬停施法",
-        [AUTO_SELF_CAST_TEXT] = "自动自我施法",
-            [SELF_CAST_AUTO] = "自动",
-            [SELF_CAST_KEY_PRESS] = "按键",
-            [SELF_CAST_AUTO_AND_KEY_PRESS] = "自动和按键",
-            [AUTO_SELF_CAST_KEY_TEXT] = "自我施法",
-        [FOCUS_CAST_KEY_TEXT] = "焦点施法按键",
-        [SETTING_EMPOWERED_SPELL_INPUT] = "蓄力法术输入",
-            [SETTING_EMPOWERED_SPELL_INPUT_HOLD_OPTION] = "按下后放开",
-            [SETTING_EMPOWERED_SPELL_INPUT_TAP_OPTION] = "两次按键",
-        [SPELL_ALERT_OPACITY] = "法术警报不透明度",
-        [PRESS_AND_HOLD_CASTING_OPTION] = "按住施法",
-        [ACTION_TARGETING_OPTION] = "开启动作瞄准",
-
-    --社交 Social.lua
-        [RESTRICT_CHAT_CONFIG_DISABLE] = "关闭聊天",
-        [CENSOR_SOURCE_EXCLUDE] = "屏蔽信息",
-            [CENSOR_SOURCE_EVERYONE] = "所有人",
-            [CENSOR_SOURCE_EXCLUDE_FRIENDS] = "朋友外的所有人",
-            [CENSOR_SOURCE_EXCLUDE_FRIENDS_AND_GUILD] = "朋友和公会成员外的所有人",
-        [PROFANITY_FILTER] = "语言过滤器",
-        [GUILDMEMBER_ALERT] = "公会成员提示",
-        [BLOCK_TRADES] = "阻止交易",
-        [BLOCK_GUILD_INVITES] = "阻止公会邀请",
-        [RESTRICT_CALENDAR_INVITES] = "限制日历邀请",
-        [SHOW_ACCOUNT_ACHIEVEMENTS] = "对他人只显示角色成就",
-        [BLOCK_CHAT_CHANNEL_INVITE] = "阻止聊天频道邀请",
-        [SHOW_TOAST_ONLINE_TEXT] = "好友上线",
-        [SHOW_TOAST_OFFLINE_TEXT] = "好友下线",
-        [SHOW_TOAST_BROADCAST_TEXT] = "通告更新",
-        [SHOW_TOAST_FRIEND_REQUEST_TEXT] = "实名和战网昵称好友请求",
-        [SHOW_TOAST_WINDOW_TEXT] = "显示浮窗",
-        [AUTO_ACCEPT_QUICK_JOIN_TEXT] = "自动接受快速加入申请",
-        [CHAT_STYLE] = "聊天风格",
-            [IM_STYLE] = "即时通讯风格",
-            [CLASSIC_STYLE] = "经典风格",
-        [WHISPER_MODE] = "新的悄悄话",
-            [CONVERSATION_MODE_POPOUT] = "新标签页",
-            [CONVERSATION_MODE_INLINE] = "一致模式",
-            [CONVERSATION_MODE_POPOUT_AND_INLINE] = "同时",
-        [TIMESTAMPS_LABEL] = "聊天时间戳",
-        [RESET_CHAT_POSITION] = "重置聊天窗口位置", [RESET] = "重置",
-
-    [PING_SYSTEM_LABEL] = "信号系统",--PingSystem.lua AudioOverrides.lua
-        [ENABLE_PINGS] = "开启信号",
-        [PING_MODE] = "信号模式",
-            [PING_MODE_KEY_DOWN] = "快速信号",
-            [PING_MODE_CLICK_DRAG] = "从容信号",
-        [ENABLE_PING_SOUNDS] = "信号音效",
-        [SHOW_PINGS_IN_CHAT] = "在聊天中显示信号", [PING_CHAT_SETTINGS] = "聊天设置",
-        [PING_KEYBINDINGS] = "信号快捷键",
-
-    [SETTINGS_KEYBINDINGS_LABEL] = "快捷键",
-
-    [SETTING_GROUP_ACCESSIBILITY] = "易用性",--Accessibility.lua
-    --综合
-        [MOVE_PAD] = "显示移动框",
-        [CINEMATIC_SUBTITLES] = "动画字幕",
-        [ALTERNATE_SCREEN_EFFECTS] = "开启光敏模式",
-        [ENABLE_QUEST_TEXT_CONTRAST] = "任务文本颜色反差",
-        [MINIMUM_CHARACTER_NAME_SIZE_TEXT] = "最小角色名尺寸",
-
-        [ADJUST_MOTION_SICKNESS_SHAKE] = "视角晃动",
-        [CURSOR_SIZE] = "鼠标指针大小",
-        [TARGET_TOOLTIP_OPTION] = "动作瞄准提示信息",
-        [INTERACT_ICONS_OPTION] = "交互按键图标",
-            [INTERACT_ICONS_SHOW_ALL] = "显示全部",
-            [INTERACT_ICONS_SHOW_NONE] = "全不显示",
-
-    [COLORBLIND_LABEL] = "色盲模式",
-        [USE_COLORBLIND_MODE] = "开启色盲模式界面",
-        [COLORBLIND_FILTER] = "色盲过滤器",
-            [COLORBLIND_OPTION_PROTANOPIA] = "1. 红色盲模式",
-            [COLORBLIND_OPTION_DEUTERANOPIA] = "2. 绿色盲模式",
-            [COLORBLIND_OPTION_TRITANOPIA] = "3. 蓝色盲模式",
-        [ADJUST_COLORBLIND_STRENGTH] = "调整强度",
-    [TTS_LABEL] = "文本转语音",
-        [ENABLE_SPEECH_TO_TEXT_TRANSCRIPTION] = "语音聊天文字转录",
-        [ENABLE_TEXT_TO_SPEECH] = "大声朗读聊天文本",
-        [ENABLE_REMOTE_TEXT_TO_SPEECH] = "在语音聊天中为我发言",
-        [VOICE] = "语音",
-    --[ACCESSIBILITY_MOUNT_LABEL] = "坐骑", Mounts.lua
-        [ACCESSIBILITY_ADV_FLY_LABEL] = "动态飞行",
-        [MOTION_SICKNESS_DRAGONRIDING] = "晕动症",
-            [DEFAULT] = "默认",
-            [MOTION_SICKNESS_CHARACTER_CENTERED] = "保持角色处于正中",
-            [MOTION_SICKNESS_REDUCE_CAMERA_MOTION] = "减少镜头运动",
-            [MOTION_SICKNESS_BOTH] = "保持角色居中，减少镜头运动",
-            [MOTION_SICKNESS_NONE] = "允许动态镜头运动",
-
-        [MOTION_SICKNESS_DRAGONRIDING_SPEED_EFFECTS] = "动态飞行速度效果",
-            [SHAKE_INTENSITY_FULL] = "高",
-            [SHAKE_INTENSITY_REDUCED] = "低",
-
-        [ADV_FLY_PITCH_CONTROL] = "倾角控制",
-        [ADV_FLY_PITCH_CONTROL_GROUND_DEBOUNCE] = "防抖倾角输入",
-        [ADV_FLY_CAMERA_PITCH_CHASE_TEXT] = "键盘倾斜镜头跟随",
-        [ADV_FLY_MINIMUM_PITCH_TEXT] = "最低键盘倾斜速度",
-        [ADV_FLY_MINIMUM_TURN_TEXT] = "最低键盘转向速度",
-        [ADV_FLY_MAXIMUM_PITCH_TEXT] = "最高键盘倾斜速度",
-        [ADV_FLY_MAXIMUM_TURN_TEXT] = "最高键盘转向速度",
-        [ADV_FLY_MINIMUM_TURN_TEXT] = "最低键盘转向速度",
-    [SETTING_GROUP_SYSTEM] = "系统",
-    [GRAPHICS_LABEL] = "图形",--Graphics.lua
-        [PRIMARY_MONITOR] = "显示器",
-        [DISPLAY_MODE] = "显示模式",
-        [WINDOW_SIZE] = "分辨率",
-        [CUSTOM] = "自定义",
-        [RENDER_SCALE] = "渲染倍数",
-        [VERTICAL_SYNC] = "垂直同步",
-        [NOTCH_MODE] = "刘海屏模式",
-        [LOW_LATENCY_MODE] = "低延迟模式",
-        [ANTIALIASING] = "抗锯齿",
-        [FXAA_CMAA_LABEL] = "基于图像的技术",
-        [MSAA_LABEL] = "多重采样技术",
-        [MULTISAMPLE_ALPHA_TEST] = "多重采样测试",
-        [RENDER_SCALE] = "渲染倍数",
-        [CAMERA_FOV] = "镜头视野范围",
-        [USE_UISCALE] = "使用UI缩放",
-        [RAID_SETTINGS_ENABLED] = "启用团队副本和战场设置",
-        [GRAPHICS_QUALITY] = "图像质量",
-        [ADVANCED_LABEL] = "高级",
-        [TRIPLE_BUFFER] = "三倍缓冲",
-        [ANISOTROPIC] = "材质过滤",
-        [RT_SHADOW_QUALITY] = "光线追踪阴影",
-        [SSAO_TYPE_LABEL] = "环境光遮蔽类型",
-        [RESAMPLE_QUALITY] = "重新采样品质",
-        [VRS_MODE] = "VRS模式",
-        [GXAPI] = "图形接口",
-        [PHYSICS_INTERACTION] = "物理交互",
-        [GRAPHICS_CARD] = "显卡",
-        [MAXFPS_CHECK] = "最高前台帧数开关",
-        [MAXFPS] = "最高前台帧数",
-        [MAXFPSBK_CHECK] = "最高后台帧数开关",
-        [MAXFPSBK] = "最高后台帧数",
-        [TARGETFPS] = "目标帧数",
-        [RESAMPLE_SHARPNESS] = "重新采样锐度",
-        [OPTION_CONTRAST] = "对比度",
-        [OPTIONS_BRIGHTNESS] = "亮度",
-        [GAMMA] = "伽马值",
-
-            --[LIQUID_DETAIL] = "液体细节",
-    [AUDIO_LABEL] = "音频",--Audio.lua
-        [ENABLE_SOUND] = "开启声效",
-        [AUDIO_OUTPUT_DEVICE] = "输出设备",
-        [MASTER_VOLUME] = "主音量",
-        [MUSIC_VOLUME] = "音乐",
-        [FX_VOLUME] = "效果",
-        [AMBIENCE_VOLUME] = "环境音",
-        [DIALOG_VOLUME] = "对话",
-        [ENABLE_MUSIC] = "音乐",
-        [ENABLE_MUSIC_LOOPING] = "音乐循环",
-        [ENABLE_PET_BATTLE_MUSIC] = "宠物对战音乐",
-        [ENABLE_SOUNDFX] = "声音效果",
-        [ENABLE_PET_SOUNDS] = "启用宠物音效",
-        [ENABLE_EMOTE_SOUNDS] = "表情音效",
-        [ENABLE_DIALOG] = "对话",
-        [ENABLE_ERROR_SPEECH] = "错误提示",
-        [ENABLE_AMBIENCE] = "环境音效",
-        [ENABLE_BGSOUND] = "背景声音",
-        [ENABLE_REVERB] = "启用混响",
-        [ENABLE_SOFTWARE_HRTF] = "距离过滤",
-        [AUDIO_CHANNELS] = "伴音通道",
-        [AUDIO_CACHE_SIZE] = "音频缓存大小",
-        [VOICE_CHAT_VOLUME] = "语音聊天音量",
-        [VOICE_CHAT_DUCKING_SCALE] = "语音聊天降噪",
-        [VOICE_CHAT_MIC_DEVICE] = "麦克风设备",
-        [VOICE_CHAT_MIC_VOLUME] = "麦克风音量",
-        [VOICE_CHAT_MIC_SENSITIVITY] = "麦克风灵敏度",
-        [VOICE_CHAT_TEST_MIC_DEVICE] = "测试麦克风",
-        [VOICE_CHAT_MODE] = "语音聊天模式",
-        [OPEN_MIC] = "自由发言",
-        [PUSH_TO_TALK] = "按键发言",
-        [VOICE_CHAT_MODE_KEY] = "按键发言键位",
-        [PING_SYSTEM_SETTINGS] = "信号系统设置",
-    [LANGUAGES_LABEL] = "语言",
-        [LOCALE_TEXT_LABEL] = "文本",
-        [SOUND] = "声音",
-    [NETWORK_LABEL] = "网络",--Network.lua
-        [OPTIMIZE_NETWORK_SPEED] = "优化网络速度",
-        [USEIPV6] = "当IPv6可用时开启",
-        [ADVANCED_COMBAT_LOGGING] = "高级战斗日志",
-
-
-
-
-
-
-
-
-        [CHARACTER_SPECIFIC_KEYBINDINGS] = "角色专用按键设置",
-            [CLICK_BIND_MODE] = "点击施法",
-            [QUICK_KEYBIND_MODE] = "快速快捷键模式",
-
-            [BINDING_HEADER_ACTIONBAR] = "动作条",
-            [BINDING_HEADER_ACTIONBAR2] = "动作条2",
-            [BINDING_HEADER_ACTIONBAR3] = "动作条3",
-            [BINDING_HEADER_ACTIONBAR4] = "动作条4",
-            [BINDING_HEADER_ACTIONBAR5] = "动作条5",
-            [BINDING_HEADER_ACTIONBAR6] = "动作条6",
-            [BINDING_HEADER_ACTIONBAR7] = "动作条7",
-            [BINDING_HEADER_ACTIONBAR8] = "动作条8",
-            [BINDING_HEADER_BLANK] = "  ",
-            [BINDING_HEADER_CAMERA] = "视角",
-            [BINDING_HEADER_CHAT] = "聊天",
-            [BINDING_HEADER_COMMENTATOR] = "解说员",
-            [BINDING_HEADER_COMMENTATORCAMERA] = "综合镜头设置",
-            [BINDING_HEADER_COMMENTATORFOLLOW] = "跟随",
-            [BINDING_HEADER_COMMENTATORFOLLOWSNAP] = "对焦",
-            [BINDING_HEADER_COMMENTATORLOOKAT] = "追踪",
-            [BINDING_HEADER_COMMENTATORMISC] = "其他",
-            [BINDING_HEADER_COMMENTATORSCORING] = "打分",
-            [BINDING_HEADER_DEBUG] = "调试",
-            [BINDING_HEADER_INTERFACE] = "界面面板",
-            [BINDING_HEADER_ITUNES_REMOTE] = "iTunes遥控",
-            [BINDING_HEADER_MISC] = "其他",
-            [BINDING_HEADER_MOVEMENT] = "移动按键",
-            [BINDING_HEADER_MOVIE_RECORDING_SECTION] = "视频录制",
-            [BINDING_HEADER_MULTIACTIONBAR] = "额外的动作条",
-            [BINDING_HEADER_MULTICASTFUNCTIONS] = "萨满图腾栏功能",
-            [BINDING_HEADER_OTHER] = "其他",
-            [BINDING_HEADER_PING_SYSTEM] = "信号系统",
-            [BINDING_HEADER_RAID_TARGET] = "队伍标记",
-            [BINDING_HEADER_TARGETING] = "选中目标",
-            [BINDING_HEADER_VEHICLE] = "载具控制",
-            [BINDING_HEADER_VOICE_CHAT] = "语音聊天",
-
-            [BINDING_NAME_ACTIONPAGE1] = "动作条1",
-            [BINDING_NAME_ACTIONPAGE2] = "动作条2",
-            [BINDING_NAME_ACTIONPAGE3] = "动作条3",
-            [BINDING_NAME_ACTIONPAGE4] = "动作条4",
-            [BINDING_NAME_ACTIONPAGE5] = "动作条5",
-            [BINDING_NAME_ACTIONPAGE6] = "动作条6",
-            [BINDING_NAME_ACTIONWINDOW1] = "移动动作条1",
-            [BINDING_NAME_ACTIONWINDOW2] = "移动动作条2",
-            [BINDING_NAME_ACTIONWINDOW3] = "移动动作条3",
-            [BINDING_NAME_ACTIONWINDOW4] = "移动动作条4",
-            [BINDING_NAME_ACTIONWINDOWDECREMENT] = "将移动动作条滑向左边",
-            [BINDING_NAME_ACTIONWINDOWINCREMENT] = "将移动动作条滑向右边",
-            [BINDING_NAME_ACTIONWINDOWMOVE] = "改变移动动作条位置",
-            [BINDING_NAME_ALLNAMEPLATES] = "显示所有姓名板",
-            [BINDING_NAME_ASSISTTARGET] = "协助目标",
-            [BINDING_NAME_ATTACKTARGET] = "攻击目标",
-            [BINDING_NAME_BONUSACTIONBUTTON1] = "宠物快捷键 1",
-            [BINDING_NAME_BONUSACTIONBUTTON10] = "宠物快捷键 10",
-            [BINDING_NAME_BONUSACTIONBUTTON2] = "宠物快捷键 2",
-            [BINDING_NAME_BONUSACTIONBUTTON3] = "宠物快捷键 3",
-            [BINDING_NAME_BONUSACTIONBUTTON4] = "宠物快捷键 4",
-            [BINDING_NAME_BONUSACTIONBUTTON5] = "宠物快捷键 5",
-            [BINDING_NAME_BONUSACTIONBUTTON6] = "宠物快捷键 6",
-            [BINDING_NAME_BONUSACTIONBUTTON7] = "宠物快捷键 7",
-            [BINDING_NAME_BONUSACTIONBUTTON8] = "宠物快捷键 8",
-            [BINDING_NAME_BONUSACTIONBUTTON9] = "宠物快捷键 9",
-            [BINDING_NAME_CAMERAZOOMIN] = "放大",
-            [BINDING_NAME_CAMERAZOOMOUT] = "缩小",
-            [BINDING_NAME_CENTERCAMERA] = "镜头居中",
-            [BINDING_NAME_CHATBOTTOM] = "翻至对话最下端",
-            [BINDING_NAME_CHATPAGEDOWN] = "对话向下翻页",
-            [BINDING_NAME_CHATPAGEUP] = "对话向上翻页",
-            [BINDING_NAME_CHECK_FOR_SCOREBOARD] = "生成终场计分板",
-            [BINDING_NAME_COMBATLOGBOTTOM] = "战斗日志翻至最下端",
-            [BINDING_NAME_COMBATLOGPAGEDOWN] = "战斗日志向下翻页",
-            [BINDING_NAME_COMBATLOGPAGEUP] = "战斗日志向上翻页",
-            [BINDING_NAME_COMMENTATORFOLLOW1] = "跟随队伍1的玩家1",
-            [BINDING_NAME_COMMENTATORFOLLOW10] = "跟随队伍2的玩家4",
-            [BINDING_NAME_COMMENTATORFOLLOW10SNAP] = "对焦队伍2的玩家4",
-            [BINDING_NAME_COMMENTATORFOLLOW11] = "跟随队伍2的玩家5",
-            [BINDING_NAME_COMMENTATORFOLLOW11SNAP] = "对焦队伍2的玩家5",
-            [BINDING_NAME_COMMENTATORFOLLOW12] = "跟随队伍2的玩家6",
-            [BINDING_NAME_COMMENTATORFOLLOW12SNAP] = "对焦队伍2的玩家6",
-            [BINDING_NAME_COMMENTATORFOLLOW1SNAP] = "对焦队伍1的玩家1",
-            [BINDING_NAME_COMMENTATORFOLLOW2] = "跟随队伍1的玩家2",
-            [BINDING_NAME_COMMENTATORFOLLOW2SNAP] = "对焦队伍1的玩家2",
-            [BINDING_NAME_COMMENTATORFOLLOW3] = "跟随队伍1的玩家3",
-            [BINDING_NAME_COMMENTATORFOLLOW3SNAP] = "对焦队伍1的玩家3",
-            [BINDING_NAME_COMMENTATORFOLLOW4] = "跟随队伍1的玩家4",
-            [BINDING_NAME_COMMENTATORFOLLOW4SNAP] = "对焦队伍1的玩家4",
-            [BINDING_NAME_COMMENTATORFOLLOW5] = "跟随队伍1的玩家5",
-            [BINDING_NAME_COMMENTATORFOLLOW5SNAP] = "对焦队伍1的玩家5",
-            [BINDING_NAME_COMMENTATORFOLLOW6] = "跟随队伍1的玩家6",
-            [BINDING_NAME_COMMENTATORFOLLOW6SNAP] = "对焦队伍1的玩家6",
-            [BINDING_NAME_COMMENTATORFOLLOW7] = "跟随队伍2的玩家1",
-            [BINDING_NAME_COMMENTATORFOLLOW7SNAP] = "对焦队伍2的玩家1",
-            [BINDING_NAME_COMMENTATORFOLLOW8] = "跟随队伍2的玩家2",
-            [BINDING_NAME_COMMENTATORFOLLOW8SNAP] = "对焦队伍2的玩家2",
-            [BINDING_NAME_COMMENTATORFOLLOW9] = "跟随队伍2的玩家3",
-            [BINDING_NAME_COMMENTATORFOLLOW9SNAP] = "对焦队伍2的玩家3",
-            [BINDING_NAME_COMMENTATORLOOKAT1] = "追踪队伍1的玩家1",
-            [BINDING_NAME_COMMENTATORLOOKAT10] = "追踪队伍2的玩家4",
-            [BINDING_NAME_COMMENTATORLOOKAT11] = "追踪队伍2的玩家5",
-            [BINDING_NAME_COMMENTATORLOOKAT12] = "追踪队伍2的玩家6",
-            [BINDING_NAME_COMMENTATORLOOKAT2] = "追踪队伍1的玩家2",
-            [BINDING_NAME_COMMENTATORLOOKAT3] = "追踪队伍1的玩家3",
-            [BINDING_NAME_COMMENTATORLOOKAT4] = "追踪队伍1的玩家4",
-            [BINDING_NAME_COMMENTATORLOOKAT5] = "追踪队伍1的玩家5",
-            [BINDING_NAME_COMMENTATORLOOKAT6] = "追踪队伍1的玩家6",
-            [BINDING_NAME_COMMENTATORLOOKAT7] = "追踪队伍2的玩家1",
-            [BINDING_NAME_COMMENTATORLOOKAT8] = "追踪队伍2的玩家2",
-            [BINDING_NAME_COMMENTATORLOOKAT9] = "追踪队伍2的玩家3",
-            [BINDING_NAME_COMMENTATORLOOKATNONE] = "停止跟随/追踪玩家",
-            [BINDING_NAME_COMMENTATORMOVESPEEDDECREASE] = "降低镜头机速度",
-            [BINDING_NAME_COMMENTATORMOVESPEEDINCREASE] = "提高镜头速度",
-            [BINDING_NAME_COMMENTATORRESET] = "重置解说员",
-            [BINDING_NAME_COMMENTATORRESETZOOM] = "Reset Zoom",
-            [BINDING_NAME_COMMENTATORZOOMIN] = "镜头推进",
-            [BINDING_NAME_COMMENTATORZOOMOUT] = "镜头拉远",
-            [BINDING_NAME_CYCLEFOLLOWTRANSITONSPEED] = "循环切换速度",
-            [BINDING_NAME_DISMOUNT] = "解散坐骑",
-            [BINDING_NAME_EXTRAACTIONBUTTON1] = "额外快捷键1",
-            [BINDING_NAME_FLIPCAMERAYAW] = "水平视角",
-            [BINDING_NAME_FOCUSARENA1] = "将竞技场敌人1设为焦点",
-            [BINDING_NAME_FOCUSARENA2] = "将竞技场敌人2设为焦点",
-            [BINDING_NAME_FOCUSARENA3] = "将竞技场敌人3设为焦点",
-            [BINDING_NAME_FOCUSARENA4] = "将竞技场敌人4设为焦点",
-            [BINDING_NAME_FOCUSARENA5] = "将竞技场敌人5设为焦点",
-            [BINDING_NAME_FOCUSTARGET] = "焦点目标",
-            [BINDING_NAME_FOLLOWTARGET] = "跟随目标",
-            [BINDING_NAME_FORCEFOLLOWTRANSITON] = "对焦以跟随目标",
-            [BINDING_NAME_FRIENDNAMEPLATES] = "显示友方姓名板",
-            [BINDING_NAME_INTERACTMOUSEOVER] = "与鼠标悬停处互动",
-            [BINDING_NAME_INTERACTTARGET] = "与目标互动",
-            [BINDING_NAME_INVERTBINDINGMODE1] = "动作条绑定模式变更",
-            [BINDING_NAME_INVERTBINDINGMODE2] = "目标绑定模式变更",
-            [BINDING_NAME_INVERTBINDINGMODE3] = "自定义绑定模式变更",
-            [BINDING_NAME_ITEMCOMPARISONCYCLING] = "物品比较循环",
-            [BINDING_NAME_ITUNES_BACKTRACK] = "iTunes上一首",
-            [BINDING_NAME_ITUNES_NEXTTRACK] = "iTunes下一首",
-            [BINDING_NAME_ITUNES_PLAYPAUSE] = "iTunes播放/暂停",
-            [BINDING_NAME_ITUNES_VOLUMEDOWN] = "iTunes音量降低",
-            [BINDING_NAME_ITUNES_VOLUMEUP] = "iTunes音量提高",
-            [BINDING_NAME_JUMP] = "跳跃",
-            [BINDING_NAME_MASTERVOLUMEDOWN] = "主音量缩小",
-            [BINDING_NAME_MASTERVOLUMEUP] = "主音量放大",
-            [BINDING_NAME_MINIMAPZOOMIN] = "放大地图",
-            [BINDING_NAME_MINIMAPZOOMOUT] = "缩小地图",
-            [BINDING_NAME_MOVEANDSTEER] = "移动控制",
-            [BINDING_NAME_MOVEBACKWARD] = "后退",
-            [BINDING_NAME_MOVEFORWARD] = "前进",
-            [BINDING_NAME_MOVEVIEWIN] = "视角拉近",
-            [BINDING_NAME_MOVEVIEWOUT] = "视角拉远",
-            [BINDING_NAME_MOVIE_RECORDING_CANCEL] = "取消录制/压缩",
-            [BINDING_NAME_MOVIE_RECORDING_COMPRESS] = "压缩视频",
-            [BINDING_NAME_MOVIE_RECORDING_GUI] = "显示/隐藏用户界面",
-            [BINDING_NAME_MOVIE_RECORDING_STARTSTOP] = "开始录制/停止录制",
-
-            [BINDING_NAME_MULTICASTACTIONBUTTON1] = "大地图腾",
-            [BINDING_NAME_MULTICASTACTIONBUTTON10] = "火焰图腾",
-            [BINDING_NAME_MULTICASTACTIONBUTTON11] = "水图腾",
-            [BINDING_NAME_MULTICASTACTIONBUTTON12] = "空气图腾",
-            [BINDING_NAME_MULTICASTACTIONBUTTON2] = "火焰图腾",
-            [BINDING_NAME_MULTICASTACTIONBUTTON3] = "水图腾",
-            [BINDING_NAME_MULTICASTACTIONBUTTON4] = "空气图腾",
-            [BINDING_NAME_MULTICASTACTIONBUTTON5] = "大地图腾",
-            [BINDING_NAME_MULTICASTACTIONBUTTON6] = "火焰图腾",
-            [BINDING_NAME_MULTICASTACTIONBUTTON7] = "水图腾",
-            [BINDING_NAME_MULTICASTACTIONBUTTON8] = "空气图腾",
-            [BINDING_NAME_MULTICASTACTIONBUTTON9] = "大地图腾",
-            [BINDING_NAME_MULTICASTRECALLBUTTON1] = "收回图腾",
-            [BINDING_NAME_MULTICASTSUMMONBUTTON1] = "元素的召唤",
-            [BINDING_NAME_MULTICASTSUMMONBUTTON2] = "先祖的召唤",
-            [BINDING_NAME_MULTICASTSUMMONBUTTON3] = "灵魂的召唤",
-            [BINDING_NAME_NAMEPLATES] = "显示敌方姓名板",
-            [BINDING_NAME_NEXTACTIONPAGE] = "下一动作条",
-            [BINDING_NAME_NEXTVIEW] = "下一个视角",
-            [BINDING_NAME_OPENALLBAGS] = "打开/关闭所有的背包",
-            [BINDING_NAME_OPENCHAT] = "打开对话框",
-            [BINDING_NAME_OPENCHATSLASH] = "打开带“/”的对话框",
-            [BINDING_NAME_PETATTACK] = "宠物攻击",
-            [BINDING_NAME_PINGASSIST] = "协助",
-            [BINDING_NAME_PINGATTACK] = "攻击",
-            [BINDING_NAME_PINGONMYWAY] = "正在赶来",
-            [BINDING_NAME_PINGWARNING] = "警告",
-            [BINDING_NAME_PITCHDECREMENT] = "减小倾角",
-            [BINDING_NAME_PITCHDOWN] = "向下倾斜",
-            [BINDING_NAME_PITCHINCREMENT] = "增大倾角",
-            [BINDING_NAME_PITCHUP] = "向上倾斜",
-            [BINDING_NAME_PREVIOUSACTIONPAGE] = "前一动作条",
-            [BINDING_NAME_PREVVIEW] = "前一个视角",
-            [BINDING_NAME_PUSHTOTALK] = "按键发言",
-            [BINDING_NAME_RAIDTARGET1] = "为目标指定星形",
-            [BINDING_NAME_RAIDTARGET2] = "为目标指定圆形",
-            [BINDING_NAME_RAIDTARGET3] = "为目标指定菱形",
-            [BINDING_NAME_RAIDTARGET4] = "为目标指定三角",
-            [BINDING_NAME_RAIDTARGET5] = "为目标指定月亮",
-            [BINDING_NAME_RAIDTARGET6] = "为目标指定方块",
-            [BINDING_NAME_RAIDTARGET7] = "为目标指定十字",
-            [BINDING_NAME_RAIDTARGET8] = "为目标指定骷髅",
-            [BINDING_NAME_RAIDTARGETNONE] = "清除队伍标记图标",
-            [BINDING_NAME_REPLY] = "回复对话",
-            [BINDING_NAME_REPLY2] = "再次密语",
-            [BINDING_NAME_RESETVIEW1] = "重置视角1",
-            [BINDING_NAME_RESETVIEW2] = "重置视角2",
-            [BINDING_NAME_RESETVIEW3] = "重置视角3",
-            [BINDING_NAME_RESETVIEW4] = "重置视角4",
-            [BINDING_NAME_RESETVIEW5] = "重置视角5",
-            [BINDING_NAME_RESET_SCORE_COUNT] = "重置比赛分数",
-            [BINDING_NAME_SAVEVIEW1] = "保存视角1",
-            [BINDING_NAME_SAVEVIEW2] = "保存视角2",
-            [BINDING_NAME_SAVEVIEW3] = "保存视角3",
-            [BINDING_NAME_SAVEVIEW4] = "保存视角4",
-            [BINDING_NAME_SAVEVIEW5] = "保存视角5",
-            [BINDING_NAME_SCREENSHOT] = "截图",
-            [BINDING_NAME_SETVIEW1] = "设置1号视角",
-            [BINDING_NAME_SETVIEW2] = "设置2号视角",
-            [BINDING_NAME_SETVIEW3] = "设置3号视角",
-            [BINDING_NAME_SETVIEW4] = "设置4号视角",
-            [BINDING_NAME_SETVIEW5] = "设置5号视角",
-            [BINDING_NAME_SHAPESHIFTBUTTON1] = "特殊快捷键1",
-            [BINDING_NAME_SHAPESHIFTBUTTON10] = "特殊快捷键10",
-            [BINDING_NAME_SHAPESHIFTBUTTON2] = "特殊快捷键2",
-            [BINDING_NAME_SHAPESHIFTBUTTON3] = "特殊快捷键3",
-            [BINDING_NAME_SHAPESHIFTBUTTON4] = "特殊快捷键4",
-            [BINDING_NAME_SHAPESHIFTBUTTON5] = "特殊快捷键5",
-            [BINDING_NAME_SHAPESHIFTBUTTON6] = "特殊快捷键6",
-            [BINDING_NAME_SHAPESHIFTBUTTON7] = "特殊快捷键7",
-            [BINDING_NAME_SHAPESHIFTBUTTON8] = "特殊快捷键8",
-            [BINDING_NAME_SHAPESHIFTBUTTON9] = "特殊快捷键9",
-            [BINDING_NAME_SITORSTAND] = "坐下/下降",
-            [BINDING_NAME_STARTATTACK] = "开始攻击",
-            [BINDING_NAME_STARTAUTORUN] = "开始自动奔跑",
-            [BINDING_NAME_STOPATTACK] = "停止攻击",
-            [BINDING_NAME_STOPAUTORUN] = "停止自动奔跑",
-            [BINDING_NAME_STOPCASTING] = "停止施法",
-            [BINDING_NAME_STRAFELEFT] = "向左平移",
-            [BINDING_NAME_STRAFERIGHT] = "向右平移",
-            [BINDING_NAME_SWAPUNITFRAMES] = "交换场地",
-            [BINDING_NAME_SWINGCAMERA] = "晃动镜头",
-            [BINDING_NAME_SWINGCAMERAANDPLAYER] = "晃动镜头和玩家",
-            [BINDING_NAME_TARGETARENA1] = "选中竞技场敌人1",
-            [BINDING_NAME_TARGETARENA2] = "选中竞技场敌人2",
-            [BINDING_NAME_TARGETARENA3] = "选中竞技场敌人3",
-            [BINDING_NAME_TARGETARENA4] = "选中竞技场敌人4",
-            [BINDING_NAME_TARGETARENA5] = "选中竞技场敌人5",
-            [BINDING_NAME_TARGETENEMYDIRECTIONAL] = "锁定前方敌人",
-            [BINDING_NAME_TARGETFOCUS] = "目标焦点",
-            [BINDING_NAME_TARGETFRIENDDIRECTIONAL] = "锁定前方友军",
-            [BINDING_NAME_TARGETLASTHOSTILE] = "选中上一个敌对目标",
-            [BINDING_NAME_TARGETLASTTARGET] = "选中上一个目标",
-            [BINDING_NAME_TARGETMOUSEOVER] = "选中鼠标悬停目标",
-            [BINDING_NAME_TARGETNEARESTENEMY] = "选中最近的敌人",
-            [BINDING_NAME_TARGETNEARESTENEMYPLAYER] = "选中最近的敌对玩家",
-            [BINDING_NAME_TARGETNEARESTFRIEND] = "选中最近的盟友",
-            [BINDING_NAME_TARGETNEARESTFRIENDPLAYER] = "选中最近的友方玩家",
-            [BINDING_NAME_TARGETPARTYMEMBER1] = "选中队友1",
-            [BINDING_NAME_TARGETPARTYMEMBER2] = "选中队友2",
-            [BINDING_NAME_TARGETPARTYMEMBER3] = "选中队友3",
-            [BINDING_NAME_TARGETPARTYMEMBER4] = "选中队友4",
-            [BINDING_NAME_TARGETPARTYPET1] = "选中队友宠物1",
-            [BINDING_NAME_TARGETPARTYPET2] = "选中队友宠物2",
-            [BINDING_NAME_TARGETPARTYPET3] = "选中队友宠物3",
-            [BINDING_NAME_TARGETPARTYPET4] = "选中队友宠物4",
-            [BINDING_NAME_TARGETPET] = "选中宠物",
-            [BINDING_NAME_TARGETPREVIOUSENEMY] = "选中前一个敌人",
-            [BINDING_NAME_TARGETPREVIOUSENEMYPLAYER] = "选中上一个敌对玩家",
-            [BINDING_NAME_TARGETPREVIOUSFRIEND] = "选中前一个盟友",
-            [BINDING_NAME_TARGETPREVIOUSFRIENDPLAYER] = "选中上一个友方玩家",
-            [BINDING_NAME_TARGETSCANENEMY] = "目标扫描敌人",
-            [BINDING_NAME_TARGETSELF] = "选中自己",
-            [BINDING_NAME_TARGETTALKER] = "选中当前发言者",
-            [BINDING_NAME_TEAM_1_ADD_SCORE] = "为队伍1加分",
-            [BINDING_NAME_TEAM_1_REMOVE_SCORE] = "为队伍1减分",
-            [BINDING_NAME_TEAM_2_ADD_SCORE] = "为队伍2加分",
-            [BINDING_NAME_TEAM_2_REMOVE_SCORE] = "为队伍2减分",
-            [BINDING_NAME_TEXT_TO_SPEECH_STOP] = "停止文本转语音回放",
-            [BINDING_NAME_TOGGLEABILITYBOOK] = "打开/关闭能力界面",
-            [BINDING_NAME_TOGGLEACHIEVEMENT] = "打开/关闭成就面板",
-            [BINDING_NAME_TOGGLEACTIONBARLOCK] = "打开/关闭动作条锁定",
-            [BINDING_NAME_TOGGLEAUTORUN] = "打开/关闭自动奔跑",
-            [BINDING_NAME_TOGGLEAUTOSELFCAST] = "打开/关闭自动自我施法",
-            [BINDING_NAME_TOGGLEBACKPACK] = "打开/关闭行囊",
-            [BINDING_NAME_TOGGLEBAG1] = "打开/关闭1号背包",
-            [BINDING_NAME_TOGGLEBAG2] = "打开/关闭2号背包",
-            [BINDING_NAME_TOGGLEBAG3] = "打开/关闭3号背包",
-            [BINDING_NAME_TOGGLEBAG4] = "打开/关闭4号背包",
-            [BINDING_NAME_TOGGLEBAG5] = "打开/关闭5号背包",
-            [BINDING_NAME_TOGGLEBATTLEFIELDMINIMAP] = "打开/关闭区域地图开关",
-            [BINDING_NAME_TOGGLEBINDINGMODE1] = "动作条绑定模式切换",
-            [BINDING_NAME_TOGGLEBINDINGMODE2] = "目标绑定模式切换",
-            [BINDING_NAME_TOGGLEBINDINGMODE3] = "自定义绑定模式切换",
-            [BINDING_NAME_TOGGLECAMERACOLLISION] = "开启/关闭镜头碰撞",
-            [BINDING_NAME_TOGGLECHANNELPULLOUT] = "打开/关闭频道拖出列表",
-            [BINDING_NAME_TOGGLECHANNELS_UNUSED] = "切换频道",
-            [BINDING_NAME_TOGGLECHANNELTAB] = "切换频道面板",
-            [BINDING_NAME_TOGGLECHARACTER0] = "打开/关闭角色界面",
-            [BINDING_NAME_TOGGLECHARACTER1] = "打开/关闭技能界面",
-            [BINDING_NAME_TOGGLECHARACTER2] = "打开/关闭声望界面",
-            [BINDING_NAME_TOGGLECHARACTER3] = "打开/关闭宠物面板",
-            [BINDING_NAME_TOGGLECHARACTER4] = "打开/关闭PvP面板",
-            [BINDING_NAME_TOGGLECHATTAB] = "打开/关闭聊天面板",
-            [BINDING_NAME_TOGGLECOLLECTIONS] = "打开/关闭藏品窗口",
-            [BINDING_NAME_TOGGLECOLLECTIONSHEIRLOOM] = "打开/关闭传家宝面板",
-            [BINDING_NAME_TOGGLECOLLECTIONSMOUNTJOURNAL] = "打开/关闭坐骑手册",
-            [BINDING_NAME_TOGGLECOLLECTIONSPETJOURNAL] = "打开/关闭宠物手册",
-            [BINDING_NAME_TOGGLECOLLECTIONSTOYBOX] = "打开/关闭玩具箱",
-            [BINDING_NAME_TOGGLECOLLECTIONSWARDROBE] = "显示/隐藏外观",
-            [BINDING_NAME_TOGGLECOMBATLOG] = "打开/关闭战斗日志",
-            [BINDING_NAME_TOGGLECOMPANIONJOURNAL] = "打开/关闭小伙伴手册",
-            [BINDING_NAME_TOGGLECOREABILITIESBOOK] = "打开/关闭核心技能",
-            [BINDING_NAME_TOGGLECURRENCY] = "打开/关闭货币页面",
-            [BINDING_NAME_TOGGLEDUNGEONSANDRAIDS] = "打开/关闭地下城查找器",
-            [BINDING_NAME_TOGGLEENCOUNTERJOURNAL] = "打开/关闭冒险指南",
-            [BINDING_NAME_TOGGLEFPS] = "打开/关闭帧数显示",
-            [BINDING_NAME_TOGGLEFRIENDSTAB] = "打开/关闭好友面板",
-            [BINDING_NAME_TOGGLEGAMEMENU] = "打开/关闭游戏菜单",
-            [BINDING_NAME_TOGGLEGARRISONLANDINGPAGE] = "打开/关闭要塞报告",
-            [BINDING_NAME_TOGGLEGRAPHICSSETTINGS] = "打开/关闭画质设定",
-            [BINDING_NAME_TOGGLEGROUPFINDER] = "打开/关闭队伍查找器",
-            [BINDING_NAME_TOGGLEGUILDTAB] = "打开/关闭公会和社区",
-            [BINDING_NAME_TOGGLEIGNORETAB] = "切换忽略面板",
-            --[BINDING_NAME_TOGGLEINSCRIPTION] = "打开/关闭雕文面板",
-            [BINDING_NAME_TOGGLEKEYRING] = "打开/关闭钥匙链",
-            [BINDING_NAME_TOGGLELFGPARENT] = "打开/关闭地下城查找器",
-            [BINDING_NAME_TOGGLELFRPARENT] = "打开/关闭其他团队",
-            [BINDING_NAME_TOGGLEMINIMAP] = "打开/关闭地图",
-            [BINDING_NAME_TOGGLEMINIMAPROTATION] = "打开/关闭微缩地图旋转",
-            [BINDING_NAME_TOGGLEMOUNTJOURNAL] = "打开/关闭坐骑手册",
-            [BINDING_NAME_TOGGLEMOUSE] = "摇杆鼠标模式",
-            [BINDING_NAME_TOGGLEMUSIC] = "打开/关闭音乐",
-            [BINDING_NAME_TOGGLEPETBOOK] = "打开/关闭宠物法术书",
-            [BINDING_NAME_TOGGLEPETJOURNAL] = "打开/关闭宠物手册",
-            [BINDING_NAME_TOGGLEPINGLISTENER] = "信号",
-            [BINDING_NAME_TOGGLEPROFESSIONBOOK] = "打开/关闭专业技能书",
-            [BINDING_NAME_TOGGLEPVP] = "打开/关闭PvP面板",
-            [BINDING_NAME_TOGGLEQUESTLOG] = "打开/关闭任务日志",
-            [BINDING_NAME_TOGGLEQUICKJOINTAB] = "开启/关闭快速加入",
-            [BINDING_NAME_TOGGLERAIDFINDER] = "打开/关闭团队查找器",
-            [BINDING_NAME_TOGGLERAIDTAB] = "打开/关闭团队面板",
-            [BINDING_NAME_TOGGLEREAGENTBAG1] = "打开/关闭材料包",
-            [BINDING_NAME_TOGGLERUN] = "跑/走",
-            [BINDING_NAME_TOGGLESELFHIGHLIGHT] = "开启/关闭自身高亮",
-            [BINDING_NAME_TOGGLESHEATH] = "取出/收起武器",
-            [BINDING_NAME_TOGGLESMOOTHFOLLOWTRANSITIONS] = "开启/关闭平滑跟随切换",
-            [BINDING_NAME_TOGGLESOCIAL] = "打开/关闭社交界面",
-            [BINDING_NAME_TOGGLESOUND] = "打开/关闭声效",
-            [BINDING_NAME_TOGGLESPELLBOOK] = "打开/关闭法术书",
-            [BINDING_NAME_TOGGLESTATISTICS] = "打开/关闭统计数据面板",
-            [BINDING_NAME_TOGGLETALENTS] = "打开/关闭天赋面板",
-            [BINDING_NAME_TOGGLETEXTTOSPEECH] = "开启/关闭文字转语音选项",
-            [BINDING_NAME_TOGGLETOYBOX] = "打开/关闭玩具箱",
-            [BINDING_NAME_TOGGLEUI] = "打开/关闭用户界面",
-            [BINDING_NAME_TOGGLEWHATHASCHANGEDBOOK] = "打开/关闭“最新改动”",
-            [BINDING_NAME_TOGGLEWHOTAB] = "打开/关闭查询面板",
-            [BINDING_NAME_TOGGLEWINDOWED] = "打开/关闭窗口模式",
-            [BINDING_NAME_TOGGLEWORLDMAP] = "打开/关闭世界地图",
-            [BINDING_NAME_TOGGLEWORLDMAPSIZE] = "切换世界地图大小",
-            [BINDING_NAME_TOGGLEWORLDSTATESCORES] = "打开/关闭积分窗口",
-            [BINDING_NAME_TOGGLE_CASTER_COOLDOWN_DISPLAY] = "开启/关闭施法者冷却显示",
-            [BINDING_NAME_TOGGLE_FRAME_LOCK] = "开启/关闭默认用户界面",
-            [BINDING_NAME_TOGGLE_NAMEPLATE_SIZE] = "切换姓名板尺寸",
-            [BINDING_NAME_TOGGLE_SMART_CAMERA] = "开启/关闭智能镜头",
-            [BINDING_NAME_TOGGLE_SMART_CAMERA_LOCK] = "锁定智能镜头",
-            [BINDING_NAME_TOGGLE_VOICE_PUSH_TO_TALK] = "语音聊天：按键发言",
-            [BINDING_NAME_TOGGLE_VOICE_SELF_DEAFEN] = "语音聊天：开启/解除自我隔音",
-            [BINDING_NAME_TOGGLE_VOICE_SELF_MUTE] = "语音聊天：开启/解除自我禁音",
-            [BINDING_NAME_TURNLEFT] = "左转",
-            [BINDING_NAME_TURNRIGHT] = "右转",
-            [BINDING_NAME_VEHICLEAIMDECREMENT] = "减小仰角",
-            [BINDING_NAME_VEHICLEAIMDOWN] = "向下瞄准",
-            [BINDING_NAME_VEHICLEAIMINCREMENT] = "增大仰角",
-            [BINDING_NAME_VEHICLEAIMUP] = "向上瞄准",
-            [BINDING_NAME_VEHICLECAMERAZOOMIN] = "镜头拉近",
-            [BINDING_NAME_VEHICLECAMERAZOOMOUT] = "镜头拉远",
-            [BINDING_NAME_VEHICLEEXIT] = "离开载具",
-            [BINDING_NAME_VEHICLENEXTSEAT] = "后一座位",
-            [BINDING_NAME_VEHICLEPREVSEAT] = "前一座位",
-
-
-
-
-    [SYSTEM_DEFAULT] = "系统默认",
-    [NOT_BOUND] = "未设置",
-    [KEY1] = "按键设置1",
-    [KEY2] = "按键设置2",
-    [KEY_BACKSPACE] = "退格",
-    [KEY_BUTTON1] = "鼠标左键",
-    [KEY_BUTTON2] = "鼠标右键",
-    [KEY_BUTTON3] = "鼠标中键",
-    [KEY_MOUSEWHEELDOWN] = "鼠标滚轮向下滚动",
-    [KEY_MOUSEWHEELUP] = "鼠标滚轮向上滚动",
-    [KEY_UP] = "方向键上",
-    [KEY_DOWN] = "方向键下",
-    [KEY_ENTER] = "回车",
-    [KEY_LEFT] = "方向键左",
-    [KEY_RIGHT] = "方向键右",
-    [KEY_NUMPADDECIMAL] = "数字键盘.",
-    [KEY_NUMPADDIVIDE] = "数字键盘/",
-    [KEY_NUMPADMINUS] = "数字键盘-",
-    [KEY_NUMPADMULTIPLY] = "数字键盘*",
-    [KEY_NUMPADPLUS] = "数字键盘+",
-    [SHIFT_KEY] = "SHIFT键",
-
-
-    [PLAYER_MESSAGES] = "玩家信息",
-    [CREATURE_MESSAGES] = "怪物信息",
-    [DONE_BY] = "来源为：",
-    [DONE_TO] = "目标为：",
-    [UNIT_COLORS] = "单位颜色：",
-    [SAY] = "说",
-    [EMOTE] = "表情",
-    [YELL] = "大喊",
-    [GUILD] = "公会",
-    [GUILD_CHAT] = "公会聊天",
-    [OFFICER] = "官员",
-    [OFFICER_CHAT] = "官员聊天",
-    [GUILD_ACHIEVEMENT] = "公会通告",
-    [ACHIEVEMENT] = "成就通告",
-    [WHISPER] = "悄悄话",
-    [BN_WHISPER] = "战网昵称密语",
-    [PARTY] = "小队",
-    [PARTY_LEADER] = "小队队长",
-    [RAID] = "团队",
-    [RAID_LEADER] = "团队领袖",
-    [RAID_WARNING] = "团队通知",
-    [INSTANCE_CHAT] = "副本",
-    [INSTANCE_CHAT_LEADER] = "副本向导",
-    [VOICE_CHAT_TRANSCRIPTION] = "语音识别",
-    [MONSTER_BOSS_EMOTE] = "首领台词",
-    [RAID_BOSS_WHISPER] = "首领密语",
-
-    [COMBAT_XP_GAIN] = "经验",
-    [COMBAT_HONOR_GAIN] = "荣誉",
-    [COMBAT_FACTION_CHANGE] = "声望",
-    [SKILLUPS] = "技能提升",
-    [ITEM_LOOT] = "物品拾取",
-    [CURRENCY] = "货币",
-    [MONEY_LOOT] = "金钱拾取",
-    [TRADESKILLS] = "商业技能",
-    [OPENING] = "正在打开",
-    [PET_INFO] = "宠物信息",
-    [COMBAT_MISC_INFO] = "其它信息",
-
-    [BG_SYSTEM_ALLIANCE] = "战场联盟",
-    [BG_SYSTEM_HORDE] = "战场部落",
-    [BG_SYSTEM_NEUTRAL] = "战场中立",
-
-    [SYSTEM_MESSAGES] = "系统信息",
-    [ERRORS] = "错误",
-    [IGNORED] = "已屏蔽",
-    [CHANNEL] = "频道",
-    [TARGETICONS] = "目标图标",
-    [BN_INLINE_TOAST_ALERT] = "暴雪游戏服务提示",
-    [PET_BATTLE_COMBAT_LOG] = "宠物对战",
-    [PET_BATTLE_INFO] = "宠物对战信息",
-
-    [COMBATLOG_FILTER_STRING_CUSTOM_UNIT] = "自定义单位",
-    [COMBATLOG_FILTER_STRING_ME] = "我",
-    [COMBATLOG_FILTER_STRING_MY_PET] = "宠物",
-    [COMBATLOG_FILTER_STRING_FRIENDLY_UNITS] = "友方",
-    [COMBATLOG_FILTER_STRING_HOSTILE_PLAYERS] = "敌方玩家",
-    [COMBATLOG_FILTER_STRING_HOSTILE_UNITS] = "敌方单位",
-    [COMBATLOG_FILTER_STRING_NEUTRAL_UNITS] = "中立",
-    [COMBATLOG_FILTER_STRING_UNKNOWN_UNITS] = "未知",
-
-    [DAMAGE] = "伤害",
-    [MELEE] = "近战",
-    [RANGED] = "远程",
-    [AURAS] = "光环",
-    [PERIODIC] = "周期",
-    [MISSES] = "未命中",
-    [BENEFICIAL] = "增益",
-    [HOSTILE] = "敌对",
-    [DISPELS] = "驱散",
-    [ENCHANTS] = "附魔",
-    [HEALS] = "治疗",
-    [OTHER] = "其它",
-    [SPELLS] = "法术",
-    [POWER_GAINS] = "获得能量",
-    [DRAINS] = "吸取",
-    [INTERRUPTS] = "打断",
-    [SPECIAL] = "特殊",
-    [EXTRA_ATTACKS] = "额外攻击",
-    [SUMMONS] = "召唤",
-    [RESURRECT] = "复活",
-    [BUILDING_DAMAGE] = "攻城",
-    [BUILDING_HEAL] = "修理",
-    [EMPOWERS] = "蓄力",
-    [SPELL_CASTING] = "法术施放",
-    [START] = "开始",
-    [SUCCESS] = "成功",
-    [FAILURES] = "失败",
-    [DAMAGE_SHIELD] = "伤害护盾",
-    [ENVIRONMENTAL_DAMAGE] = "环境伤害",
-    [KILLS] = "杀敌",
-    [DEATHS] = "死亡",
-    [CHAT_MSG_MONSTER_EMOTE] = "怪物表情",
-    [CHAT_MSG_MONSTER_PARTY] = "怪物小队",
-    [CHAT_MSG_MONSTER_SAY] = "怪物说",
-    [CHAT_MSG_MONSTER_WHISPER] = "怪物悄悄话",
-    [CHAT_MSG_MONSTER_YELL] = "怪物大喊",
-    [MONSTER_BOSS_WHISPER] = "首领密语",
-    [CHAT_CONFIG_CHANNEL_SETTINGS_TITLE_WITH_DRAG_INSTRUCTIONS] = "频道|cff808080（拖拽可重排顺序）|r",
-
-    [GENERAL_LABEL] = "综合",
-    [COMBAT_LOG] = "战斗记录",
-    [PET_BATTLE_COMBAT_LOG] = "宠物对战",
-    [VOICE] = "语音",
-    [TEXT_TO_SPEECH] = "文本转语音",
-
-    [HEALTH] = "生命值",
-    [MANA] = "法力值",
-    --[powerType, powerToken, altR, altG, altB = UnitPowerType(unit [, index])
-    --_G[powerToken]
-    [RAGE] = "怒气",
-    [FOCUS] = "集中值",
-    [ENERGY] = "能量",
-    [HAPPINESS] = "快乐",
-    [RUNES] = "符文",
-    [RUNIC_POWER] = "符文能量",
-    [SOUL_SHARDS] = "灵魂碎片",
-    [ECLIPSE] = "日蚀",
-    [HOLY_POWER] = "神圣能量",
-    [AMMOSLOT] = "弹药",
-    [FUEL] = "燃料",
-    [STAGGER] = "醉拳",
-    [CHI] = "真气",
-    [INSANITY] = "狂乱值",
-    [STAT_AVERAGE_ITEM_LEVEL] = "物品等级",
-    [STAT_MOVEMENT_SPEED] = "移动速度",
-    [SPELL_STAT1_NAME] = "力量",
-    [SPELL_STAT2_NAME] = "敏捷",
-    [SPELL_STAT3_NAME] = "耐力",
-    [SPELL_STAT4_NAME] = "智力",
-    [SPELL_STAT5_NAME] = "精神",
-    [STAT_CRITICAL_STRIKE] = "爆击",
-    [STAT_HASTE] = "急速",
-    [STAT_MASTERY] = "精通",
-    [STAT_VERSATILITY] = "全能",
-    [STAT_LIFESTEAL] = "吸血",
-    [STAT_AVOIDANCE] = "闪避",
-    [STAT_SPEED] = "加速",
-    [STAT_PARRY] = "招架",
-    [STAT_ATTACK_POWER] = "攻击强度",
-    [WEAPON_SPEED] = "攻击速度",
-
-    [STAT_ENERGY_REGEN] = "能量值回复",
-    [STAT_RUNE_REGEN] = "符文速度",
-
-    [STAT_FOCUS_REGEN] = "集中值回复",
-    [STAT_SPELLPOWER] = "法术强度",
-    [MANA_REGEN] = "法力回复",
-    [STAT_ARMOR] = "护甲",
-    [STAT_DODGE] = "躲闪",
-    [STAT_BLOCK] = "格挡",
-    [STAT_STAGGER] = "醉拳",
-
-
-    --[ARENA] = "竞技场",
-    --[SOCIAL_QUEUE_FORMAT_ARENA_SKIRMISH] = "竞技场练习赛",
-    [AUCTION_HOUSE_FILTER_DROPDOWN_CUSTOM] = "自定义",
-
-
-
-
-
-    [GUILD_CHALLENGE_TYPE1] = "地下城",--GuildChallengeAlertFrame_SetUp
-    [GUILD_CHALLENGE_TYPE2] = "团队副本",
-    [GUILD_CHALLENGE_TYPE3] = "评级战场",
-    [GUILD_CHALLENGE_TYPE4] = "场景战役",
-    [GUILD_CHALLENGE_TYPE5] = "史诗钥石地下城",
-
-
-    [GetItemClassInfo(8)] = "物品强化",
-    [GetItemClassInfo(14)] = "永久物品",
-    [PROFESSIONS_TRACKER_HEADER_PROFESSION]= "专业技能",
-
-    [RAID_INFO_WORLD_BOSS] = "世界首领",
-    [PLAYER_DIFFICULTY1] = "普通",
-    [PLAYER_DIFFICULTY2] = "英雄",
-    [PLAYER_DIFFICULTY3] = "随机团队",
-    [PLAYER_DIFFICULTY4] = "弹性团队",
-    [PLAYER_DIFFICULTY5] = "挑战",
-    [PLAYER_DIFFICULTY6] = "史诗",
-    [PLAYER_DIFFICULTY_MYTHIC_PLUS] = "史诗钥石",
-    [PLAYER_DIFFICULTY_TIMEWALKER] = "时空漫游",
-
-    --[[[ITEM_QUALITY0_DESC] = "粗糙",
-    [ITEM_QUALITY1_DESC] = "普通",
-    [ITEM_QUALITY2_DESC] = "优秀",
-    [ITEM_QUALITY3_DESC] = "精良",
-    [ITEM_QUALITY4_DESC] = "史诗",
-    [ITEM_QUALITY5_DESC] = "传说",
-    [ITEM_QUALITY6_DESC] = "神器",
-    [ITEM_QUALITY7_DESC] = "传家宝",]]
-
-    [THE_ALLIANCE] = PLAYER_FACTION_COLOR_ALLIANCE:WrapTextInColorCode('联盟'),
-    [THE_HORDE] = PLAYER_FACTION_COLOR_HORDE:WrapTextInColorCode('部落'),
-
-    [TANK] = "坦克",
-    [HEALER] = "治疗者",
-    [DAMAGER] = "伤害输出",
-
-
-
-
-
-    [HUD_EDIT_MODE_ARCHAEOLOGY_BAR_LABEL] = "考古条",
-    [HUD_EDIT_MODE_ARENA_FRAMES_LABEL] = "竞技场框体",
-    [HUD_EDIT_MODE_BAGS_LABEL] = "背包",
-    [HUD_EDIT_MODE_BOSS_FRAMES_LABEL] = "首领框体",
-    [HUD_EDIT_MODE_BUFFS_AND_DEBUFFS_LABEL] = "增益效果和负面效果",
-    [HUD_EDIT_MODE_BUFF_FRAME_LABEL] = "增益效果框",
-    [HUD_EDIT_MODE_CAST_BAR_LABEL] = "施法条",
-    [HUD_EDIT_MODE_CHAT_FRAME_LABEL] = "聊天框体",
-    [HUD_EDIT_MODE_DEBUFF_FRAME_LABEL] = "减益效果框",
-    [HUD_EDIT_MODE_DURABILITY_FRAME_LABEL] = "装备耐久度",
-    [HUD_EDIT_MODE_ENCOUNTER_BAR_LABEL] = "战斗条",
-    [HUD_EDIT_MODE_EXPERIENCE_BAR_LABEL] = "经验条",
-    [HUD_EDIT_MODE_EXTRA_ABILITIES_LABEL] = "额外技能",
-    [HUD_EDIT_MODE_FOCUS_FRAME_LABEL] = "焦点框体",
-    [HUD_EDIT_MODE_HUD_TOOLTIP_LABEL] = "HUD提示信息",
-    [HUD_EDIT_MODE_LOOT_FRAME_LABEL] = "拾取窗口",
-    [HUD_EDIT_MODE_MICRO_MENU_LABEL] = "菜单",
-    [HUD_EDIT_MODE_MINIMAP_LABEL] = "小地图",
-    [HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL] = "目标追踪栏",
-    [HUD_EDIT_MODE_PARTY_FRAMES_LABEL] = "小队框体",
-    [HUD_EDIT_MODE_PET_ACTION_BAR_LABEL] = "宠物条",
-    [HUD_EDIT_MODE_PET_FRAME_LABEL] = "宠物框体",
-    [HUD_EDIT_MODE_PLAYER_FRAME_LABEL] = "玩家框体",
-    [HUD_EDIT_MODE_POSSESS_ACTION_BAR_LABEL] = "附身条",
-    [HUD_EDIT_MODE_RAID_FRAMES_LABEL] = "团队框体",
-    [HUD_EDIT_MODE_STANCE_BAR_LABEL] = "姿态条",
-    [HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL] = "对话特写头像",
-    [HUD_EDIT_MODE_TARGET_AND_FOCUS] = "目标和焦点",
-    [HUD_EDIT_MODE_TARGET_FRAME_LABEL] = "目标框体",
-    [HUD_EDIT_MODE_TIMER_BARS_LABEL] = "时长条",
-    [HUD_EDIT_MODE_UNSAVED_CHANGES] = "你有未保存的改动",
-    [HUD_EDIT_MODE_VEHICLE_LEAVE_BUTTON_LABEL] = "退出载具按钮",
-    [HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL] = "载具座位",
-
-
-    [HOME] = "首页",
-    [BUTTON_LAG_AUCTIONHOUSE] = "拍卖行",
-    [BLACK_MARKET_AUCTION_HOUSE] = "黑市拍卖行",
-
-    [ITEM_HEROIC] = "英雄",
-    [ITEM_HEROIC_EPIC] = "英雄级别史诗品质",
-    [ITEM_HEROIC_QUALITY0_DESC] = "英雄粗糙",
-    [ITEM_HEROIC_QUALITY1_DESC] = "英雄普通",
-    [ITEM_HEROIC_QUALITY2_DESC] = "英雄优秀",
-    [ITEM_HEROIC_QUALITY3_DESC] = "英雄稀有",
-    [ITEM_HEROIC_QUALITY4_DESC] = "英雄史诗",
-    [ITEM_HEROIC_QUALITY5_DESC] = "英雄传说",
-    [ITEM_HEROIC_QUALITY6_DESC] = "英雄神器",
-    [ITEM_HEROIC_QUALITY7_DESC] = "英雄传家宝",
-
-    [ITEM_QUALITY0_DESC] = "粗糙",
-    [ITEM_QUALITY1_DESC] = "普通",
-    [ITEM_QUALITY2_DESC] = "优秀",
-    [ITEM_QUALITY3_DESC] = "精良",
-    [ITEM_QUALITY4_DESC] = "史诗",
-    [ITEM_QUALITY5_DESC] = "传说",
-    [ITEM_QUALITY6_DESC] = "神器",
-    [ITEM_QUALITY7_DESC] = "传家宝",
-
-    [INSTANCE_UNAVAILABLE_OTHER_ACHIEVEMENT_NOT_COMPLETED ] = "%s还没有完成所需的成就。",
-    [INSTANCE_UNAVAILABLE_OTHER_AREA_NOT_EXPLORED ] = "%s需要发现%2$s。",
-    [INSTANCE_UNAVAILABLE_OTHER_CANNOT_RUN_ANY_CHILD_DUNGEON ] = "%s不满足此分类下任何地下城的要求。",
-    [INSTANCE_UNAVAILABLE_OTHER_ENGAGED_IN_PVP ] = "%s已进入PvP状态。",
-    [INSTANCE_UNAVAILABLE_OTHER_EXPANSION_TOO_LOW ] = "%s没有安装正确的《魔兽世界》内容更新。",
-    [INSTANCE_UNAVAILABLE_OTHER_GEAR_TOO_HIGH ] = "%1$s需要更高的平均装备物品等级。（需要：%2$d。当前%3$d。）",
-    [INSTANCE_UNAVAILABLE_OTHER_GEAR_TOO_LOW ] = "%1$s需要更高的平均装备物品等级。（需要：%2$d。当前%3$d。）",
-    [INSTANCE_UNAVAILABLE_OTHER_LEVEL_TOO_HIGH ] = "%s的级别太高了。",
-    [INSTANCE_UNAVAILABLE_OTHER_LEVEL_TOO_LOW ] = "%s的级别不够。",
-    [INSTANCE_UNAVAILABLE_OTHER_MISSING_ITEM ] = "%s没有所需的物品。",
-    [INSTANCE_UNAVAILABLE_OTHER_NO_SPEC ] = "在进入此地下城前，%s必须选择一项职业专精",
-    [INSTANCE_UNAVAILABLE_OTHER_NO_VALID_ROLES ] = "%s没有有效的角色。",
-    [INSTANCE_UNAVAILABLE_OTHER_OTHER ] = "%s没有满足进入该地下城的要求。",
-    [INSTANCE_UNAVAILABLE_OTHER_QUEST_NOT_COMPLETED ] = "%s没有完成所需的任务。",
-    [INSTANCE_UNAVAILABLE_OTHER_RAID_LOCKED ] = "%s已与该副本锁定。",
-    [INSTANCE_UNAVAILABLE_OTHER_TEMPORARILY_DISABLED ] = "不能进入%s。这个副本暂时不可用。",
-    [INSTANCE_UNAVAILABLE_OTHER_TOO_SOON ] = "这个副本暂时不可用。",
-    [INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED ] = "你还没完成所需的成就。",
-    [INSTANCE_UNAVAILABLE_SELF_AREA_NOT_EXPLORED ] = "你需要发现%2$s。",
-    [INSTANCE_UNAVAILABLE_SELF_CANNOT_RUN_ANY_CHILD_DUNGEON ] = "你不满足此分类下任何地下城的要求。",
-    [INSTANCE_UNAVAILABLE_SELF_ENGAGED_IN_PVP ] = "你已进入PvP状态。",
-    [INSTANCE_UNAVAILABLE_SELF_EXPANSION_TOO_LOW ] = "你没有安装正确的《魔兽世界》内容更新。",
-    [INSTANCE_UNAVAILABLE_SELF_GEAR_TOO_HIGH ] = "你的装备物品平均等级太高。（需要 %2$d，当前%3$d。）",
-    [INSTANCE_UNAVAILABLE_SELF_GEAR_TOO_LOW ] = "你的装备物品平均等级不够。（需要 %2$d，当前%3$d。）",
-    [INSTANCE_UNAVAILABLE_SELF_LEVEL_TOO_HIGH ] = "你的级别太高了。",
-    [INSTANCE_UNAVAILABLE_SELF_LEVEL_TOO_LOW ] = "你的级别不够。",
-    [INSTANCE_UNAVAILABLE_SELF_MISSING_ITEM ] = "你没有所需的物品。",
-    [INSTANCE_UNAVAILABLE_SELF_NO_SPEC ] = "在进入此地下城前，你必须选择一项职业专精",
-    [INSTANCE_UNAVAILABLE_SELF_NO_VALID_ROLES ] = "你没有有效的角色。",
-    [INSTANCE_UNAVAILABLE_SELF_OTHER ] = "你的级别没有达到该地下城的要求。",
-    [INSTANCE_UNAVAILABLE_SELF_PVP_GEAR_TOO_LOW ] = "你需要更高的PvP装备物品平均等级才能加入队列。|n（需要 %2$d，当前%3$d。）",
-    [INSTANCE_UNAVAILABLE_SELF_QUEST_NOT_COMPLETED ] = "你没有完成所需的任务。",
-    [INSTANCE_UNAVAILABLE_SELF_RAID_LOCKED ] = "你已与该副本锁定。",
-    [INSTANCE_UNAVAILABLE_SELF_TEMPORARILY_DISABLED ] = "你不能进入。这个副本暂时不可用。",
-    [ROLE_DESCRIPTION_DAMAGER] = "表示你愿意担当对敌人输出伤害的职责。",
-    [ROLE_DESCRIPTION_HEALER] = "表示你愿意在队友受到伤害时为他们提供治疗。",
-    [ROLE_DESCRIPTION_TANK] = "表示你愿意通过使敌人攻击自己，保护队友不受攻击。",
-}
-
-
-    if _G['MOTION_SICKNESS_DROPDOWN'] then
-        e.strText[_G['MOTION_SICKNESS_DROPDOWN']] = "动态眩晕"
-    end
-    if _G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS'] then
-        e.strText[_G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS']] = "动态飞行屏幕效果"
-    end
 
+[SETTINGS_TAB_GAME] = "游戏",
+[CONTROLS_LABEL] = "控制",
+[INTERFACE_LABEL] = "界面",
+[ACTIONBARS_LABEL] = "动作条",
+[COMBAT_LABEL] = "战斗",
+[PING_SYSTEM_LABEL] = "信号系统",
+[SETTINGS_KEYBINDINGS_LABEL] = "快捷键",
+[SETTING_GROUP_ACCESSIBILITY] = "易用性",
+[SETTING_GROUP_SYSTEM] = "系统",
+[GRAPHICS_LABEL] = "图形",
+[AUDIO_LABEL] = "音频",
+[LANGUAGES_LABEL] = "语言",
+[NETWORK_LABEL] = "网络",
+[COLORBLIND_LABEL] = "色盲模式",
+
+--Blizzard_AuctionData.lua
+[AUCTION_CATEGORY_WEAPONS] = "武器",
+    [AUCTION_SUBCATEGORY_ONE_HANDED] = "单手",
+        [GetItemSubClassInfo(2, 0)]= "单手斧",
+        [GetItemSubClassInfo(2, 4)]= "单手锤",
+        [GetItemSubClassInfo(2, 7)]= "单手剑",
+        [GetItemSubClassInfo(2, 9)]= "战刃",
+        [GetItemSubClassInfo(2, 15)]= "匕首",
+        [GetItemSubClassInfo(2, 13)]= "拳套",
+        [GetItemSubClassInfo(2, 19)]= "魔杖",
+    [AUCTION_SUBCATEGORY_TWO_HANDED] = "双手",
+        [GetItemSubClassInfo(2, 1)]= "双手斧",
+        [GetItemSubClassInfo(2, 5)]= "双手锤",
+        [GetItemSubClassInfo(2, 8)]= "双手剑",
+        [GetItemSubClassInfo(2, 6)]= "长柄武器",
+        [GetItemSubClassInfo(2, 10)]= "法杖",
+    [AUCTION_SUBCATEGORY_RANGED] = "远程",
+        [GetItemSubClassInfo(2, 2)]= "弓",
+        [GetItemSubClassInfo(2, 18)]= "弩",
+        [GetItemSubClassInfo(2, 3)]= "枪械",
+        [GetItemSubClassInfo(2, 16)]= "投掷武器",
+    [AUCTION_SUBCATEGORY_MISCELLANEOUS] = "杂项",
+        [GetItemSubClassInfo(2, 20)]= "鱼竿",
+        [AUCTION_SUBCATEGORY_OTHER] = "其他",
+[AUCTION_CATEGORY_ARMOR] = "护甲",
+    ['|cff00ccff'..RUNEFORGE_LEGENDARY_CRAFTING_FRAME_TITLE..'|r'] = "|cff00ccff符文铭刻|r",
+    [GetItemSubClassInfo(4, 4)]= "板甲",
+    [GetItemSubClassInfo(4, 3)]= "锁甲",
+    [GetItemSubClassInfo(4, 2)]= "皮甲",
+    [GetItemSubClassInfo(4, 1)]= "布甲",
+    --[AUCTION_SUBCATEGORY_MISCELLANEOUS] = "杂项",
+        [AUCTION_SUBCATEGORY_CLOAK] = "披风",
+        [INVTYPE_FINGER]= "手指",
+        [INVTYPE_TRINKET] = "饰品",
+        [INVTYPE_HOLDABLE] = "副手物品",
+        [SHOW_COMBAT_HEALING_ABSORB_SELF] = "护盾",
+        [INVTYPE_BODY] = "衬衣",
+    [ITEM_COSMETIC] = "装饰品",
+[AUCTION_CATEGORY_CONTAINERS] = "容器",
+    [GetItemSubClassInfo(1, 0)]= "容器",
+    [GetItemSubClassInfo(1, 2)]= "草药",
+    [GetItemSubClassInfo(1, 3)]= "附魔",
+    [GetItemSubClassInfo(1, 4)]= "工程",
+    [GetItemSubClassInfo(1, 5)]= "宝石",
+    [GetItemSubClassInfo(1, 6)]= "矿石",
+    [GetItemSubClassInfo(1, 7)]= "制皮",
+    [GetItemSubClassInfo(1, 8)]= "铭文",
+    [GetItemSubClassInfo(1, 9)]= "钓鱼",
+    [GetItemSubClassInfo(1, 10)]= "烹饪",
+    [GetItemSubClassInfo(1, 11)]= "材料",
+[AUCTION_CATEGORY_GEMS] = "宝石",
+    [GetItemSubClassInfo(3, 11)]= "神器圣物",
+    [GetItemSubClassInfo(3, 0)]= "智力",
+    [GetItemSubClassInfo(3, 1)]= "敏捷",
+    [GetItemSubClassInfo(3, 2)]= "力量",
+    [GetItemSubClassInfo(3, 3)]= "耐力",
+    [GetItemSubClassInfo(3, 5)]= "爆机",
+    [GetItemSubClassInfo(3, 6)]= "精通",
+    [GetItemSubClassInfo(3, 7)]= "急速",
+    [GetItemSubClassInfo(3, 8)]= "全能",
+    [GetItemSubClassInfo(3, 10)]= "复合属性",
+[AUCTION_CATEGORY_ITEM_ENHANCEMENT] = "物品强化",
+    [GetItemSubClassInfo(8, 0)] = "头部",
+    [GetItemSubClassInfo(8, 1)] = "颈部",
+    [GetItemSubClassInfo(8, 2)] = "肩部",
+    [GetItemSubClassInfo(8, 3)] = "披风",
+    [GetItemSubClassInfo(8, 4)] = "胸部",
+    [GetItemSubClassInfo(8, 5)] = "手腕",
+    [GetItemSubClassInfo(8, 6)] = "手部",
+    [GetItemSubClassInfo(8, 7)] = "腰部",
+    [GetItemSubClassInfo(8, 8)] = "腿部",
+    [GetItemSubClassInfo(8, 9)] = "脚部",
+    [GetItemSubClassInfo(8, 10)] = "手指",
+    [GetItemSubClassInfo(8, 11)] = "武器",
+    [GetItemSubClassInfo(8, 12)] = "双手武器",
+    [GetItemSubClassInfo(8, 13)] = "盾牌/副手",
+[AUCTION_CATEGORY_CONSUMABLES] = "消耗品",
+    [GetItemSubClassInfo(0, 0)] = "爆炸物和装置",
+    [GetItemSubClassInfo(0, 1)] = "药水",
+    [GetItemSubClassInfo(0, 2)] = "药剂",
+    [GetItemSubClassInfo(0, 3)] = "合剂和瓶剂",
+    [GetItemSubClassInfo(0, 5)] = "食物和饮水",
+    [GetItemSubClassInfo(0, 7)] = "绷带",
+    [GetItemSubClassInfo(0, 9)] = "凡图斯符文",
+[AUCTION_CATEGORY_GLYPHS] = "雕文",
+    [GetItemSubClassInfo(16, 1)] = "|cffc69b6d战士|r",
+    [GetItemSubClassInfo(16, 2)] = "|cfff48cba圣骑士|r",
+    [GetItemSubClassInfo(16, 3)] = "|cffaad372猎人|r",
+    [GetItemSubClassInfo(16, 4)] = "|cfffff468盗贼|r",
+    [GetItemSubClassInfo(16, 5)] = "|cffffffff牧师|r",
+    [GetItemSubClassInfo(16, 6)] = "|cffc41e3a死亡骑士|r",
+    [GetItemSubClassInfo(16, 7)] = "|cff0070dd萨满|r",
+    [GetItemSubClassInfo(16, 8)] = "|cff3fc7eb法师|r",
+    [GetItemSubClassInfo(16, 9)] = "|cff8788ee术士|r",
+    [GetItemSubClassInfo(16, 10)] = "|cff00ff98武僧|r",
+    [GetItemSubClassInfo(16, 11)] = "|cffff7c0a德鲁伊|r",
+    [GetItemSubClassInfo(16, 12)] = "|cffa330c9恶魔猎手|r",
+
+[AUCTION_CATEGORY_TRADE_GOODS] = "杂货",
+    [GetItemSubClassInfo(7, 5)] = "布料",
+    [GetItemSubClassInfo(7, 6)] = "皮料",
+    [GetItemSubClassInfo(7, 7)] = "金属和矿石",
+    [GetItemSubClassInfo(7, 8)] = "烹饪",
+
+    [GetItemSubClassInfo(7, 9)] = "草药",
+    [GetItemSubClassInfo(7, 12)] = "附魔材料",
+    [GetItemSubClassInfo(7, 16)] = "铭文",
+    [GetItemSubClassInfo(7, 4)] = "珠宝加工",
+    [GetItemSubClassInfo(7, 1)] = "零件",
+    [GetItemSubClassInfo(7, 10)] = "元素",
+
+    [GetItemSubClassInfo(7, 18)] = "附加材料",
+    [GetItemSubClassInfo(7, 19)] = "成器材料",
+[AUCTION_CATEGORY_RECIPES] = "配方",
+    [GetItemSubClassInfo(9, 1)] = "制皮",
+    [GetItemSubClassInfo(9, 2)] = "裁缝",
+    [GetItemSubClassInfo(9, 3)] = "工程",
+    [GetItemSubClassInfo(9, 4)] = "锻造",
+    [GetItemSubClassInfo(9, 6)] = "炼金术",
+    [GetItemSubClassInfo(9, 8)] = "附魔",
+    [GetItemSubClassInfo(9, 10)] = "珠宝加工",
+    [GetItemSubClassInfo(9, 11)] = "铭文",
+    [GetItemSubClassInfo(9, 5)] = "烹饪",
+    [GetItemSubClassInfo(9, 7)] = "急救",
+    --[GetItemSubClassInfo(9, 9)] = "钓鱼",
+    [GetItemSubClassInfo(9, 0)] = "书籍",
+[AUCTION_CATEGORY_PROFESSION_EQUIPMENT] = "专业装备",
+    [GetItemSubClassInfo(19, 5)] = "采矿",
+    [GetItemSubClassInfo(19, 3)] = "草药学",
+    [GetItemSubClassInfo(19, 10)] = "剥皮",
+    [PROFESSIONS_FISHING] = "钓鱼",
+[AUCTION_CATEGORY_BATTLE_PETS] = "战斗宠物",
+    [GetItemSubClassInfo(17, 0)] = "人形",
+    [GetItemSubClassInfo(17, 1)] = "龙类",
+    [GetItemSubClassInfo(17, 2)] = "飞行",
+    [GetItemSubClassInfo(17, 3)] = "亡灵",
+    [GetItemSubClassInfo(17, 4)] = "小动物",
+    [GetItemSubClassInfo(17, 5)] = "魔法",
+    [GetItemSubClassInfo(17, 6)] = "元素",
+    [GetItemSubClassInfo(17, 7)] = "野兽",
+    [GetItemSubClassInfo(17, 8)] = "水栖",
+    [GetItemSubClassInfo(17, 9)] = "机械",
+    [COMPANIONS] = "小伙伴",
+[AUCTION_CATEGORY_QUEST_ITEMS] = "任务物品",
+[AUCTION_CATEGORY_MISCELLANEOUS] = "杂项",
+    [GetItemSubClassInfo(15, 0)] = "垃圾",
+    [GetItemSubClassInfo(15, 1)] = "材料",
+    [GetItemSubClassInfo(15, 3)] = "节日",
+    [GetItemSubClassInfo(15, 5)] = "坐骑",
+    [GetItemSubClassInfo(15, 6)] = "坐骑装备",
+[AUCTION_SUBCATEGORY_PROFESSION_ACCESSORIES] = "配饰",
+[AUCTION_SUBCATEGORY_PROFESSION_TOOLS] = "工具",
+[GetItemSubClassInfo(18, 0)] = "时光徽章",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--成就
+[ACHIEVEMENT_SUMMARY_CATEGORY] = "总览",
+[CHARACTER] = "角色",
+[QUESTS_LABEL] = "任务",
+[GROUP_FINDER] = "地下城和团队副本",
+[TRADE_SKILLS] = "专业",
+[PROFESSIONS_ARCHAEOLOGY] = "考古学",
+[REPUTATION] = "声望",
+[HONOR] = "荣誉",
+[COLLECTIONS] = "藏品",
+[GENERAL] = "综合",
+[KILLS] = "杀敌",
+[DEATHS] = "死亡",
+[SKILLS] = "技能",
+[TUTORIAL_TITLE35] = "旅行",
+[SOCIALS] = "社交",
+[TRACKER_HEADER_PROVINGGROUNDS] = "试炼场",
+[COMBAT_TEXT_SHOW_HONOR_GAINED_TEXT] = "荣誉消灭",
+[KILLING_BLOW_TOOLTIP_TITLE] = "消灭",
+[EVENTS_LABEL] = "事件",
+
+[BATTLE_PET_SOURCE_5] = "宠物对战",
+[BATTLE_PET_SOURCE_7] = "世界事件",
+[BATTLE_PET_SOURCE_8] = "特殊",
+[GAMES] = "比赛",
+
+[EXPANSION_NAME0] = "经典旧世",
+[EXPANSION_NAME1] = "燃烧的远征",
+[EXPANSION_NAME2] = "巫妖王之怒",
+[EXPANSION_NAME3] = "大地的裂变",
+[EXPANSION_NAME4] = "熊猫人之谜",
+[POSTMASTER_PIPE_PANDARIA] = "潘达利亚",
+[POSTMASTER_PIPE_DRAENOR] = "德拉诺",
+[EXPANSION_NAME5] = "德拉诺之王",
+[EXPANSION_NAME6] = "军团再临",
+[EXPANSION_NAME7] = "争霸艾泽拉斯",
+[EXPANSION_NAME8] = "暗影国度",
+[EXPANSION_NAME9] = "巨龙时代",
+[BATTLEGROUNDS] = "战场",
+[LFG_LIST_LEGACY] = "经典旧世",
+
+--[CHANNEL_CATEGORY_WORLD] = "世界",
+[GUILD_CHALLENGE_TYPE1] = "地下城",
+[GUILD_CHALLENGE_TYPE2] = "团队副本",
+[GUILD_CHALLENGE_TYPE3] = "评级战场",
+[GUILD_CHALLENGE_TYPE4] = "场景战役",
+[GUILD_CHALLENGE_TYPE5] = "史诗钥石地下城",
+
+
+[DUNGEON_FLOOR_TOLBARADWARLOCKSCENARIO0] = "托尔巴拉德",
+[POSTMASTER_PIPE_EASTERNKINGDOMS] = "东部王国",
+[POSTMASTER_PIPE_KALIMDOR] = "卡利姆多",
+[POSTMASTER_PIPE_NORTHREND] = "诺森德",
+[POSTMASTER_PIPE_OUTLAND] = "外域",
+[WORLD_PVP] = "阿什兰",
+[WORLD] = "世界",
+[TOY_BOX] = "玩具箱",
+[WARDROBE] = "外观",
+[ARENA] = "竞技场",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[PLAYER_MESSAGES] = "玩家信息",
+[CREATURE_MESSAGES] = "怪物信息",
+[DONE_BY] = "来源为：",
+[DONE_TO] = "目标为：",
+[UNIT_COLORS] = "单位颜色：",
+[SAY] = "说",
+[EMOTE] = "表情",
+[YELL] = "大喊",
+[GUILD] = "公会",
+[GUILD_CHAT] = "公会聊天",
+[OFFICER] = "官员",
+[OFFICER_CHAT] = "官员聊天",
+[GUILD_ACHIEVEMENT] = "公会通告",
+[ACHIEVEMENT] = "成就通告",
+[WHISPER] = "悄悄话",
+[BN_WHISPER] = "战网昵称密语",
+[PARTY] = "小队",
+[PARTY_LEADER] = "小队队长",
+[RAID] = "团队",
+[RAID_LEADER] = "团队领袖",
+[RAID_WARNING] = "团队通知",
+[INSTANCE_CHAT] = "副本",
+[INSTANCE_CHAT_LEADER] = "副本向导",
+[VOICE_CHAT_TRANSCRIPTION] = "语音识别",
+[MONSTER_BOSS_EMOTE] = "首领台词",
+[RAID_BOSS_WHISPER] = "首领密语",
+
+[COMBAT_XP_GAIN] = "经验",
+[COMBAT_HONOR_GAIN] = "荣誉",
+[COMBAT_FACTION_CHANGE] = "声望",
+[SKILLUPS] = "技能提升",
+[ITEM_LOOT] = "物品拾取",
+[CURRENCY] = "货币",
+[MONEY_LOOT] = "金钱拾取",
+[TRADESKILLS] = "商业技能",
+[OPENING] = "正在打开",
+[PET_INFO] = "宠物信息",
+[COMBAT_MISC_INFO] = "其它信息",
+
+[BG_SYSTEM_ALLIANCE] = "战场联盟",
+[BG_SYSTEM_HORDE] = "战场部落",
+[BG_SYSTEM_NEUTRAL] = "战场中立",
+
+[SYSTEM_MESSAGES] = "系统信息",
+[ERRORS] = "错误",
+[IGNORED] = "已屏蔽",
+[CHANNEL] = "频道",
+[TARGETICONS] = "目标图标",
+[BN_INLINE_TOAST_ALERT] = "暴雪游戏服务提示",
+[PET_BATTLE_COMBAT_LOG] = "宠物对战",
+[PET_BATTLE_INFO] = "宠物对战信息",
+
+[COMBATLOG_FILTER_STRING_CUSTOM_UNIT] = "自定义单位",
+[COMBATLOG_FILTER_STRING_ME] = "我",
+[COMBATLOG_FILTER_STRING_MY_PET] = "宠物",
+[COMBATLOG_FILTER_STRING_FRIENDLY_UNITS] = "友方",
+[COMBATLOG_FILTER_STRING_HOSTILE_PLAYERS] = "敌方玩家",
+[COMBATLOG_FILTER_STRING_HOSTILE_UNITS] = "敌方单位",
+[COMBATLOG_FILTER_STRING_NEUTRAL_UNITS] = "中立",
+[COMBATLOG_FILTER_STRING_UNKNOWN_UNITS] = "未知",
+
+[DAMAGE] = "伤害",
+[MELEE] = "近战",
+[RANGED] = "远程",
+[AURAS] = "光环",
+[PERIODIC] = "周期",
+[MISSES] = "未命中",
+[BENEFICIAL] = "增益",
+[HOSTILE] = "敌对",
+[DISPELS] = "驱散",
+[ENCHANTS] = "附魔",
+[HEALS] = "治疗",
+[OTHER] = "其它",
+[SPELLS] = "法术",
+[POWER_GAINS] = "获得能量",
+[DRAINS] = "吸取",
+[INTERRUPTS] = "打断",
+[SPECIAL] = "特殊",
+[EXTRA_ATTACKS] = "额外攻击",
+[SUMMONS] = "召唤",
+[RESURRECT] = "复活",
+[BUILDING_DAMAGE] = "攻城",
+[BUILDING_HEAL] = "修理",
+[EMPOWERS] = "蓄力",
+[SPELL_CASTING] = "法术施放",
+[START] = "开始",
+[SUCCESS] = "成功",
+[FAILURES] = "失败",
+[DAMAGE_SHIELD] = "伤害护盾",
+[ENVIRONMENTAL_DAMAGE] = "环境伤害",
+[KILLS] = "杀敌",
+[DEATHS] = "死亡",
+[CHAT_MSG_MONSTER_EMOTE] = "怪物表情",
+[CHAT_MSG_MONSTER_PARTY] = "怪物小队",
+[CHAT_MSG_MONSTER_SAY] = "怪物说",
+[CHAT_MSG_MONSTER_WHISPER] = "怪物悄悄话",
+[CHAT_MSG_MONSTER_YELL] = "怪物大喊",
+[MONSTER_BOSS_WHISPER] = "首领密语",
+[CHAT_CONFIG_CHANNEL_SETTINGS_TITLE_WITH_DRAG_INSTRUCTIONS] = "频道|cff808080（拖拽可重排顺序）|r",
+
+[GENERAL_LABEL] = "综合",
+[COMBAT_LOG] = "战斗记录",
+[PET_BATTLE_COMBAT_LOG] = "宠物对战",
+[VOICE] = "语音",
+[TEXT_TO_SPEECH] = "文本转语音",
+
+[HEALTH] = "生命值",
+[MANA] = "法力值",
+--[powerType, powerToken, altR, altG, altB = UnitPowerType(unit [, index])
+--_G[powerToken]
+[RAGE] = "怒气",
+[FOCUS] = "集中值",
+[ENERGY] = "能量",
+[HAPPINESS] = "快乐",
+[RUNES] = "符文",
+[RUNIC_POWER] = "符文能量",
+[SOUL_SHARDS] = "灵魂碎片",
+[ECLIPSE] = "日蚀",
+[HOLY_POWER] = "神圣能量",
+[AMMOSLOT] = "弹药",
+[FUEL] = "燃料",
+[STAGGER] = "醉拳",
+[CHI] = "真气",
+[INSANITY] = "狂乱值",
+[STAT_AVERAGE_ITEM_LEVEL] = "物品等级",
+[STAT_MOVEMENT_SPEED] = "移动速度",
+[SPELL_STAT1_NAME] = "力量",
+[SPELL_STAT2_NAME] = "敏捷",
+[SPELL_STAT3_NAME] = "耐力",
+[SPELL_STAT4_NAME] = "智力",
+[SPELL_STAT5_NAME] = "精神",
+[STAT_CRITICAL_STRIKE] = "爆击",
+[STAT_HASTE] = "急速",
+[STAT_MASTERY] = "精通",
+[STAT_VERSATILITY] = "全能",
+[STAT_LIFESTEAL] = "吸血",
+[STAT_AVOIDANCE] = "闪避",
+[STAT_SPEED] = "加速",
+[STAT_PARRY] = "招架",
+[STAT_ATTACK_POWER] = "攻击强度",
+[WEAPON_SPEED] = "攻击速度",
+
+[STAT_ENERGY_REGEN] = "能量值回复",
+[STAT_RUNE_REGEN] = "符文速度",
+
+[STAT_FOCUS_REGEN] = "集中值回复",
+[STAT_SPELLPOWER] = "法术强度",
+[MANA_REGEN] = "法力回复",
+[STAT_ARMOR] = "护甲",
+[STAT_DODGE] = "躲闪",
+[STAT_BLOCK] = "格挡",
+[STAT_STAGGER] = "醉拳",
+
+
+--[ARENA] = "竞技场",
+--[SOCIAL_QUEUE_FORMAT_ARENA_SKIRMISH] = "竞技场练习赛",
+[AUCTION_HOUSE_FILTER_DROPDOWN_CUSTOM] = "自定义",
+
+
+
+
+
+[GUILD_CHALLENGE_TYPE1] = "地下城",--GuildChallengeAlertFrame_SetUp
+[GUILD_CHALLENGE_TYPE2] = "团队副本",
+[GUILD_CHALLENGE_TYPE3] = "评级战场",
+[GUILD_CHALLENGE_TYPE4] = "场景战役",
+[GUILD_CHALLENGE_TYPE5] = "史诗钥石地下城",
+
+
+[GetItemClassInfo(8)] = "物品强化",
+[GetItemClassInfo(14)] = "永久物品",
+[PROFESSIONS_TRACKER_HEADER_PROFESSION]= "专业技能",
+
+[RAID_INFO_WORLD_BOSS] = "世界首领",
+[PLAYER_DIFFICULTY1] = "普通",
+[PLAYER_DIFFICULTY2] = "英雄",
+[PLAYER_DIFFICULTY3] = "随机团队",
+[PLAYER_DIFFICULTY4] = "弹性团队",
+[PLAYER_DIFFICULTY5] = "挑战",
+[PLAYER_DIFFICULTY6] = "史诗",
+[PLAYER_DIFFICULTY_MYTHIC_PLUS] = "史诗钥石",
+[PLAYER_DIFFICULTY_TIMEWALKER] = "时空漫游",
+
+--[[[ITEM_QUALITY0_DESC] = "粗糙",
+[ITEM_QUALITY1_DESC] = "普通",
+[ITEM_QUALITY2_DESC] = "优秀",
+[ITEM_QUALITY3_DESC] = "精良",
+[ITEM_QUALITY4_DESC] = "史诗",
+[ITEM_QUALITY5_DESC] = "传说",
+[ITEM_QUALITY6_DESC] = "神器",
+[ITEM_QUALITY7_DESC] = "传家宝",]]
+
+[THE_ALLIANCE] = PLAYER_FACTION_COLOR_ALLIANCE:WrapTextInColorCode('联盟'),
+[THE_HORDE] = PLAYER_FACTION_COLOR_HORDE:WrapTextInColorCode('部落'),
+
+[TANK] = "坦克",
+[HEALER] = "治疗者",
+[DAMAGER] = "伤害输出",
+
+
+
+
+
+[HUD_EDIT_MODE_ARCHAEOLOGY_BAR_LABEL] = "考古条",
+[HUD_EDIT_MODE_ARENA_FRAMES_LABEL] = "竞技场框体",
+[HUD_EDIT_MODE_BAGS_LABEL] = "背包",
+[HUD_EDIT_MODE_BOSS_FRAMES_LABEL] = "首领框体",
+[HUD_EDIT_MODE_BUFFS_AND_DEBUFFS_LABEL] = "增益效果和负面效果",
+[HUD_EDIT_MODE_BUFF_FRAME_LABEL] = "增益效果框",
+[HUD_EDIT_MODE_CAST_BAR_LABEL] = "施法条",
+[HUD_EDIT_MODE_CHAT_FRAME_LABEL] = "聊天框体",
+[HUD_EDIT_MODE_DEBUFF_FRAME_LABEL] = "减益效果框",
+[HUD_EDIT_MODE_DURABILITY_FRAME_LABEL] = "装备耐久度",
+[HUD_EDIT_MODE_ENCOUNTER_BAR_LABEL] = "战斗条",
+[HUD_EDIT_MODE_EXPERIENCE_BAR_LABEL] = "经验条",
+[HUD_EDIT_MODE_EXTRA_ABILITIES_LABEL] = "额外技能",
+[HUD_EDIT_MODE_FOCUS_FRAME_LABEL] = "焦点框体",
+[HUD_EDIT_MODE_HUD_TOOLTIP_LABEL] = "HUD提示信息",
+[HUD_EDIT_MODE_LOOT_FRAME_LABEL] = "拾取窗口",
+[HUD_EDIT_MODE_MICRO_MENU_LABEL] = "菜单",
+[HUD_EDIT_MODE_MINIMAP_LABEL] = "小地图",
+[HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL] = "目标追踪栏",
+[HUD_EDIT_MODE_PARTY_FRAMES_LABEL] = "小队框体",
+[HUD_EDIT_MODE_PET_ACTION_BAR_LABEL] = "宠物条",
+[HUD_EDIT_MODE_PET_FRAME_LABEL] = "宠物框体",
+[HUD_EDIT_MODE_PLAYER_FRAME_LABEL] = "玩家框体",
+[HUD_EDIT_MODE_POSSESS_ACTION_BAR_LABEL] = "附身条",
+[HUD_EDIT_MODE_RAID_FRAMES_LABEL] = "团队框体",
+[HUD_EDIT_MODE_STANCE_BAR_LABEL] = "姿态条",
+[HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL] = "对话特写头像",
+[HUD_EDIT_MODE_TARGET_AND_FOCUS] = "目标和焦点",
+[HUD_EDIT_MODE_TARGET_FRAME_LABEL] = "目标框体",
+[HUD_EDIT_MODE_TIMER_BARS_LABEL] = "时长条",
+[HUD_EDIT_MODE_UNSAVED_CHANGES] = "你有未保存的改动",
+[HUD_EDIT_MODE_VEHICLE_LEAVE_BUTTON_LABEL] = "退出载具按钮",
+[HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL] = "载具座位",
+
+
+[HOME] = "首页",
+[BUTTON_LAG_AUCTIONHOUSE] = "拍卖行",
+[BLACK_MARKET_AUCTION_HOUSE] = "黑市拍卖行",
+
+[ITEM_HEROIC] = "英雄",
+[ITEM_HEROIC_EPIC] = "英雄级别史诗品质",
+[ITEM_HEROIC_QUALITY0_DESC] = "英雄粗糙",
+[ITEM_HEROIC_QUALITY1_DESC] = "英雄普通",
+[ITEM_HEROIC_QUALITY2_DESC] = "英雄优秀",
+[ITEM_HEROIC_QUALITY3_DESC] = "英雄稀有",
+[ITEM_HEROIC_QUALITY4_DESC] = "英雄史诗",
+[ITEM_HEROIC_QUALITY5_DESC] = "英雄传说",
+[ITEM_HEROIC_QUALITY6_DESC] = "英雄神器",
+[ITEM_HEROIC_QUALITY7_DESC] = "英雄传家宝",
+
+[ITEM_QUALITY0_DESC] = "粗糙",
+[ITEM_QUALITY1_DESC] = "普通",
+[ITEM_QUALITY2_DESC] = "优秀",
+[ITEM_QUALITY3_DESC] = "精良",
+[ITEM_QUALITY4_DESC] = "史诗",
+[ITEM_QUALITY5_DESC] = "传说",
+[ITEM_QUALITY6_DESC] = "神器",
+[ITEM_QUALITY7_DESC] = "传家宝",
+
+[INSTANCE_UNAVAILABLE_OTHER_ACHIEVEMENT_NOT_COMPLETED ] = "%s还没有完成所需的成就。",
+[INSTANCE_UNAVAILABLE_OTHER_AREA_NOT_EXPLORED ] = "%s需要发现%2$s。",
+[INSTANCE_UNAVAILABLE_OTHER_CANNOT_RUN_ANY_CHILD_DUNGEON ] = "%s不满足此分类下任何地下城的要求。",
+[INSTANCE_UNAVAILABLE_OTHER_ENGAGED_IN_PVP ] = "%s已进入PvP状态。",
+[INSTANCE_UNAVAILABLE_OTHER_EXPANSION_TOO_LOW ] = "%s没有安装正确的《魔兽世界》内容更新。",
+[INSTANCE_UNAVAILABLE_OTHER_GEAR_TOO_HIGH ] = "%1$s需要更高的平均装备物品等级。（需要：%2$d。当前%3$d。）",
+[INSTANCE_UNAVAILABLE_OTHER_GEAR_TOO_LOW ] = "%1$s需要更高的平均装备物品等级。（需要：%2$d。当前%3$d。）",
+[INSTANCE_UNAVAILABLE_OTHER_LEVEL_TOO_HIGH ] = "%s的级别太高了。",
+[INSTANCE_UNAVAILABLE_OTHER_LEVEL_TOO_LOW ] = "%s的级别不够。",
+[INSTANCE_UNAVAILABLE_OTHER_MISSING_ITEM ] = "%s没有所需的物品。",
+[INSTANCE_UNAVAILABLE_OTHER_NO_SPEC ] = "在进入此地下城前，%s必须选择一项职业专精",
+[INSTANCE_UNAVAILABLE_OTHER_NO_VALID_ROLES ] = "%s没有有效的角色。",
+[INSTANCE_UNAVAILABLE_OTHER_OTHER ] = "%s没有满足进入该地下城的要求。",
+[INSTANCE_UNAVAILABLE_OTHER_QUEST_NOT_COMPLETED ] = "%s没有完成所需的任务。",
+[INSTANCE_UNAVAILABLE_OTHER_RAID_LOCKED ] = "%s已与该副本锁定。",
+[INSTANCE_UNAVAILABLE_OTHER_TEMPORARILY_DISABLED ] = "不能进入%s。这个副本暂时不可用。",
+[INSTANCE_UNAVAILABLE_OTHER_TOO_SOON ] = "这个副本暂时不可用。",
+[INSTANCE_UNAVAILABLE_SELF_ACHIEVEMENT_NOT_COMPLETED ] = "你还没完成所需的成就。",
+[INSTANCE_UNAVAILABLE_SELF_AREA_NOT_EXPLORED ] = "你需要发现%2$s。",
+[INSTANCE_UNAVAILABLE_SELF_CANNOT_RUN_ANY_CHILD_DUNGEON ] = "你不满足此分类下任何地下城的要求。",
+[INSTANCE_UNAVAILABLE_SELF_ENGAGED_IN_PVP ] = "你已进入PvP状态。",
+[INSTANCE_UNAVAILABLE_SELF_EXPANSION_TOO_LOW ] = "你没有安装正确的《魔兽世界》内容更新。",
+[INSTANCE_UNAVAILABLE_SELF_GEAR_TOO_HIGH ] = "你的装备物品平均等级太高。（需要 %2$d，当前%3$d。）",
+[INSTANCE_UNAVAILABLE_SELF_GEAR_TOO_LOW ] = "你的装备物品平均等级不够。（需要 %2$d，当前%3$d。）",
+[INSTANCE_UNAVAILABLE_SELF_LEVEL_TOO_HIGH ] = "你的级别太高了。",
+[INSTANCE_UNAVAILABLE_SELF_LEVEL_TOO_LOW ] = "你的级别不够。",
+[INSTANCE_UNAVAILABLE_SELF_MISSING_ITEM ] = "你没有所需的物品。",
+[INSTANCE_UNAVAILABLE_SELF_NO_SPEC ] = "在进入此地下城前，你必须选择一项职业专精",
+[INSTANCE_UNAVAILABLE_SELF_NO_VALID_ROLES ] = "你没有有效的角色。",
+[INSTANCE_UNAVAILABLE_SELF_OTHER ] = "你的级别没有达到该地下城的要求。",
+[INSTANCE_UNAVAILABLE_SELF_PVP_GEAR_TOO_LOW ] = "你需要更高的PvP装备物品平均等级才能加入队列。|n（需要 %2$d，当前%3$d。）",
+[INSTANCE_UNAVAILABLE_SELF_QUEST_NOT_COMPLETED ] = "你没有完成所需的任务。",
+[INSTANCE_UNAVAILABLE_SELF_RAID_LOCKED ] = "你已与该副本锁定。",
+[INSTANCE_UNAVAILABLE_SELF_TEMPORARILY_DISABLED ] = "你不能进入。这个副本暂时不可用。",
+[ROLE_DESCRIPTION_DAMAGER] = "表示你愿意担当对敌人输出伤害的职责。",
+[ROLE_DESCRIPTION_HEALER] = "表示你愿意在队友受到伤害时为他们提供治疗。",
+[ROLE_DESCRIPTION_TANK] = "表示你愿意通过使敌人攻击自己，保护队友不受攻击。",
+[MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS] = "动态飞行屏幕效果",
+}end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local optionTab
+local function Init_Option_Text()
+if optionTab then
+    return
 end
+optionTab=true
+e.strOption= {
+
+--选项
+
+[SYSTEM_DEFAULT] = "系统默认",
+[NOT_BOUND] = "未设置",
+[KEY1] = "按键设置1",
+[KEY2] = "按键设置2",
+[KEY_BUTTON1] = "鼠标左键",
+[KEY_BUTTON10] = "鼠标按键10",
+[KEY_BUTTON11] = "鼠标按键11",
+[KEY_BUTTON12] = "鼠标按键12",
+[KEY_BUTTON13] = "鼠标按键13",
+[KEY_BUTTON14] = "鼠标按键14",
+[KEY_BUTTON15] = "鼠标按键15",
+[KEY_BUTTON16] = "鼠标按键16",
+[KEY_BUTTON17] = "鼠标按键17",
+[KEY_BUTTON18] = "鼠标按键18",
+[KEY_BUTTON19] = "鼠标按键19",
+[KEY_BUTTON2] = "鼠标右键",
+[KEY_BUTTON20] = "鼠标按键20",
+[KEY_BUTTON21] = "鼠标按键21",
+[KEY_BUTTON22] = "鼠标按键22",
+[KEY_BUTTON23] = "鼠标按键23",
+[KEY_BUTTON24] = "鼠标按键24",
+[KEY_BUTTON25] = "鼠标按键25",
+[KEY_BUTTON26] = "鼠标按键26",
+[KEY_BUTTON27] = "鼠标按键27",
+[KEY_BUTTON28] = "鼠标按键28",
+[KEY_BUTTON29] = "鼠标按键29",
+[KEY_BUTTON3] = "鼠标中键",
+[KEY_BUTTON30] = "鼠标按键30",
+[KEY_BUTTON31] = "鼠标按键31",
+[KEY_BUTTON4] = "鼠标按键4",
+[KEY_BUTTON5] = "鼠标按键5",
+[KEY_BUTTON6] = "鼠标按键6",
+[KEY_BUTTON7] = "鼠标按键7",
+[KEY_BUTTON8] = "鼠标按键8",
+[KEY_BUTTON9] = "鼠标按键9",
+[KEY_DOWN] = "方向键下",
+[KEY_ENTER] = "回车",
+[KEY_ENTER_MAC] = "返回",
+[KEY_INSERT_MAC] = "帮助",
+[KEY_LEFT] = "方向键左",
+[KEY_MOUSEWHEELDOWN] = "鼠标滚轮向下滚动",
+[KEY_MOUSEWHEELUP] = "鼠标滚轮向上滚动",
+[KEY_NUMLOCK_MAC] = "清除",
+[KEY_NUMPAD0] = "数字键盘0",
+[KEY_NUMPAD1] = "数字键盘1",
+[KEY_NUMPAD2] = "数字键盘2",
+[KEY_NUMPAD3] = "数字键盘3",
+[KEY_NUMPAD4] = "数字键盘4",
+[KEY_NUMPAD5] = "数字键盘5",
+[KEY_NUMPAD6] = "数字键盘6",
+[KEY_NUMPAD7] = "数字键盘7",
+[KEY_NUMPAD8] = "数字键盘8",
+[KEY_NUMPAD9] = "数字键盘9",
+[KEY_NUMPADDECIMAL] = "数字键盘.",
+[KEY_NUMPADDIVIDE] = "数字键盘/",
+[KEY_NUMPADMINUS] = "数字键盘-",
+[KEY_NUMPADMULTIPLY] = "数字键盘*",
+[KEY_NUMPADPLUS] = "数字键盘+",
+[KEY_RIGHT] = "方向键右",
+[KEY_SPACE] = "空格键",
+[SHIFT_KEY] = "SHIFT键",
+
+
+[GAMEFIELD_DESELECT_TEXT] = "目标锁定",
+[AUTO_DISMOUNT_FLYING_TEXT] = "自动取消飞行",
+[CLEAR_AFK] = "自动解除离开状态",
+[INTERACT_ON_LEFT_CLICK_TEXT] = "左键点击操作",
+[LOOT_UNDER_MOUSE_TEXT] = "鼠标位置打开拾取窗口",
+[AUTO_LOOT_DEFAULT_TEXT] = "自动拾取",
+[AUTO_LOOT_KEY_TEXT] = "自动拾取按键",
+[LOOT_KEY_TEXT] = "拾取键",
+[USE_COMBINED_BAGS_TEXT] = "组合背包",
+[ENABLE_INTERACT_TEXT] = "开启交互按键",
+[BINDING_NAME_INTERACTTARGET] = "与目标互动",
+[ENABLE_INTERACT_SOUND_OPTION] = "交互按键音效提示",
+    --[ENABLE_INTERACT_SOUND_OPTION_TOOLTIP] = "你变得可以或者不可以与一个目标互动时，播放音效提示。",
+[MOUSE_LABEL] = "鼠标",
+[LOCK_CURSOR] = "将鼠标指针锁定在窗口内",
+[INVERT_MOUSE] = "反转鼠标",
+[MOUSE_LOOK_SPEED] = "鼠标观察速度",
+[ENABLE_MOUSE_SPEED] = "启用鼠标灵敏度",
+[MOUSE_SENSITIVITY] = "鼠标灵敏度",
+[CLICK_TO_MOVE] = "点击移动",
+    [CAMERA_SMART] = "移动时只调整水平角度",
+    [CAMERA_SMARTER] = "仅在移动时",
+    [CAMERA_ALWAYS] = "总是调整视角",
+    [CAMERA_NEVER] = "从不调整镜头",
+[CAMERA_LABEL] = "镜头",
+[WATER_COLLISION] = "水体碰撞",
+[AUTO_FOLLOW_SPEED] = "自动跟随速度",
+[CAMERA_CTM_FOLLOWING_STYLE] = "镜头跟随模式",
+
+--Interface.lua
+[NAMES_LABEL] = "名字",
+[UNIT_NAME_OWN] = "我的名字",
+[SHOW_NPC_NAMES] = "NPC姓名",
+    [NPC_NAMES_DROPDOWN_TRACKED] = "任务NPC",
+    [NPC_NAMES_DROPDOWN_HOSTILE] = "敌对及任务NPC",
+    [NPC_NAMES_DROPDOWN_INTERACTIVE] = "敌对、任务及可互动的NPC",
+    [NPC_NAMES_DROPDOWN_ALL] = "所有NPC",
+    [NPC_NAMES_DROPDOWN_NONE] = "无",
+[UNIT_NAME_NONCOMBAT_CREATURE] = "小动物和小伙伴",
+[UNIT_NAME_FRIENDLY] = "友方玩家",
+    [UNIT_NAME_FRIENDLY_MINIONS] = "仆从",
+[UNIT_NAME_ENEMY] = "敌方玩家",
+[NAMEPLATES_LABEL] = "姓名板",
+[UNIT_NAMEPLATES_AUTOMODE] = "显示所有姓名板",
+    [UNIT_NAMEPLATES_MAKE_LARGER] = "大姓名板",
+[UNIT_NAMEPLATES_SHOW_ENEMIES] = "敌方单位姓名板",
+    [UNIT_NAMEPLATES_SHOW_ENEMY_MINIONS] = "仆从",
+    [UNIT_NAMEPLATES_SHOW_ENEMY_MINUS] = "杂兵",
+[UNIT_NAMEPLATES_SHOW_FRIENDS] = "友方玩家姓名板",
+[UNIT_NAMEPLATES_SHOW_FRIENDLY_MINIONS] = "仆从",
+[SHOW_NAMEPLATE_LOSE_AGGRO_FLASH] = "失去怪物威胁时闪烁",
+[UNIT_NAMEPLATES_TYPES] = "姓名板排列方式",
+    [UNIT_NAMEPLATES_TYPE_1] = "重叠姓名板",
+    [UNIT_NAMEPLATES_TYPE_2] = "堆叠姓名板",
+[DISPLAY_LABEL] = "显示",
+[HIDE_ADVENTURE_JOURNAL_ALERTS] = "隐藏冒险指南提示",
+[SHOW_IN_GAME_NAVIGATION] = "游戏内导航",
+[SHOW_TUTORIALS]= "教程", [RESET_TUTORIALS] = "重置教程",
+[OBJECT_NPC_OUTLINE] = "轮廓线模式",
+    [OBJECT_NPC_OUTLINE_DISABLED] = "禁用",
+    [OBJECT_NPC_OUTLINE_MODE_ONE] = "仅限任务目标",
+    [OBJECT_NPC_OUTLINE_MODE_THREE] = "任务目标、鼠标悬停及目标",
+    [OBJECT_NPC_OUTLINE_MODE_TWO] = "任务目标和鼠标悬停（默认）",
+[STATUSTEXT_LABEL] = "状态文字",
+    [STATUS_TEXT_VALUE] = "数值",
+    [STATUS_TEXT_PERCENT] = "百分比",
+    [STATUS_TEXT_BOTH] = "同时显示",
+[CHAT_BUBBLES_TEXT] = "聊天泡泡",
+    [ALL] = "全部",
+    [CHAT_BUBBLES_EXCLUDE_PARTY_CHAT] = "屏蔽小队聊天",
+[REPLACE_OTHER_PLAYER_PORTRAITS] = "替换玩家框体头像",
+[REPLACE_MY_PLAYER_PORTRAIT] = "替换我的框体头像",
+[RAID_FRAMES_LABEL] = "团队框体",--InterfaceOverrides.lua
+[COMPACT_UNIT_FRAME_PROFILE_DISPLAYHEALPREDICTION] = "显示预计治疗",
+    [COMPACT_UNIT_FRAME_PROFILE_DISPLAYPOWERBAR] = "显示能量条",
+[COMPACT_UNIT_FRAME_PROFILE_DISPLAYAGGROHIGHLIGHT] = "高亮显示仇恨目标",
+[COMPACT_UNIT_FRAME_PROFILE_DISPLAYONLYHEALERPOWERBARS] = "只显示治疗者能量条",
+[PVP_COMPACT_UNIT_FRAME_PROFILE_USECLASSCOLORS] = "显示职业颜色",
+[PVP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYPETS] = "显示宠物",
+[COMPACT_UNIT_FRAME_PROFILE_DISPLAYMAINTANKANDASSIST] = "显示主坦克和主助理",
+[COMPACT_UNIT_FRAME_PROFILE_DISPLAYNONBOSSDEBUFFS] = "显示负面效果",
+    [DISPLAY_ONLY_DISPELLABLE_DEBUFFS] = "只显示可供驱散的负面效果",
+[PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT] = "显示生命值数值",
+    [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT] = "显示生命值数值",
+    [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_HEALTH] = "剩余生命值",
+    [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_LOSTHEALTH] = "损失生命值",
+    --[PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_NONE] = "无",
+    [PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_PERC] = "生命值百分比",
+[PVP_FRAMES_LABEL] = "竞技场对手框体",
+
+
+[SETTING_GROUP_GAMEPLAY] = "游戏功能",
+
+--ActionBars.lua
+[COUNTDOWN_FOR_COOLDOWNS_TEXT] = "显示冷却时间",
+[LOCK_ACTIONBAR_TEXT] = "锁定动作条",
+
+--Combat.lua
+[DISPLAY_PERSONAL_RESOURCE] = "显示个人资源",
+[NAMEPLATE_HIDE_HEALTH_AND_POWER] = "隐藏生命值和能量条",
+[DISPLAY_PERSONAL_RESOURCE_ON_ENEMY] = "在敌方目标上显示玩家的特殊资源",
+[DISPLAY_PERSONAL_COOLDOWNS] = "显示个人冷却时间",
+[DISPLAY_PERSONAL_FRIENDLY_BUFFS] = "显示友方增益效果",
+--[BINDING_NAME_TOGGLESELFHIGHLIGHT] = "开启/关闭自身高亮",
+[SELF_HIGHLIGHT_MODE_CIRCLE] = "圆环",--CombatOverrides.lua
+[SELF_HIGHLIGHT_MODE_CIRCLE_AND_OUTLINE] = "圆环&轮廓线",
+[SELF_HIGHLIGHT_MODE_OUTLINE] = "轮廓线",
+[OFF] = "禁用",
+
+[SELF_HIGHLIGHT_OPTION] = "团队中自身高亮",
+
+[SHOW_TARGET_OF_TARGET_TEXT] = "目标的目标",
+[FLASH_LOW_HEALTH_WARNING] = "生命值过低时不闪烁屏幕",
+[LOSS_OF_CONTROL] = "失控警报",
+[SHOW_COMBAT_TEXT_TEXT] = "滚动战斗记录",
+[ENABLE_MOUSEOVER_CAST] = "鼠标悬停施法",
+[AUTO_SELF_CAST_TEXT] = "自动自我施法",
+[SELF_CAST_AUTO] = "自动",
+[SELF_CAST_KEY_PRESS] = "按键",
+[SELF_CAST_AUTO_AND_KEY_PRESS] = "自动和按键",
+[AUTO_SELF_CAST_KEY_TEXT] = "自我施法",
+[FOCUS_CAST_KEY_TEXT] = "焦点施法按键",
+[SETTING_EMPOWERED_SPELL_INPUT] = "蓄力法术输入",
+[SETTING_EMPOWERED_SPELL_INPUT_HOLD_OPTION] = "按下后放开",
+[SETTING_EMPOWERED_SPELL_INPUT_TAP_OPTION] = "两次按键",
+[SPELL_ALERT_OPACITY] = "法术警报不透明度",
+[PRESS_AND_HOLD_CASTING_OPTION] = "按住施法",
+[ACTION_TARGETING_OPTION] = "开启动作瞄准",
+
+--社交 Social.lua
+[RESTRICT_CHAT_CONFIG_DISABLE] = "关闭聊天",
+[CENSOR_SOURCE_EXCLUDE] = "屏蔽信息",
+[CENSOR_SOURCE_EVERYONE] = "所有人",
+[CENSOR_SOURCE_EXCLUDE_FRIENDS] = "朋友外的所有人",
+[CENSOR_SOURCE_EXCLUDE_FRIENDS_AND_GUILD] = "朋友和公会成员外的所有人",
+[PROFANITY_FILTER] = "语言过滤器",
+[GUILDMEMBER_ALERT] = "公会成员提示",
+[BLOCK_TRADES] = "阻止交易",
+[BLOCK_GUILD_INVITES] = "阻止公会邀请",
+[RESTRICT_CALENDAR_INVITES] = "限制日历邀请",
+[SHOW_ACCOUNT_ACHIEVEMENTS] = "对他人只显示角色成就",
+[BLOCK_CHAT_CHANNEL_INVITE] = "阻止聊天频道邀请",
+[SHOW_TOAST_ONLINE_TEXT] = "好友上线",
+[SHOW_TOAST_OFFLINE_TEXT] = "好友下线",
+[SHOW_TOAST_BROADCAST_TEXT] = "通告更新",
+[SHOW_TOAST_FRIEND_REQUEST_TEXT] = "实名和战网昵称好友请求",
+[SHOW_TOAST_WINDOW_TEXT] = "显示浮窗",
+[AUTO_ACCEPT_QUICK_JOIN_TEXT] = "自动接受快速加入申请",
+[CHAT_STYLE] = "聊天风格",
+[IM_STYLE] = "即时通讯风格",
+[CLASSIC_STYLE] = "经典风格",
+[WHISPER_MODE] = "新的悄悄话",
+[CONVERSATION_MODE_POPOUT] = "新标签页",
+[CONVERSATION_MODE_INLINE] = "一致模式",
+[CONVERSATION_MODE_POPOUT_AND_INLINE] = "同时",
+[TIMESTAMPS_LABEL] = "聊天时间戳",
+[RESET_CHAT_POSITION] = "重置聊天窗口位置", [RESET] = "重置",
+
+--PingSystem.lua AudioOverrides.lua
+[ENABLE_PINGS] = "开启信号",
+[PING_MODE] = "信号模式",
+[PING_MODE_KEY_DOWN] = "快速信号",
+[PING_MODE_CLICK_DRAG] = "从容信号",
+[ENABLE_PING_SOUNDS] = "信号音效",
+[SHOW_PINGS_IN_CHAT] = "在聊天中显示信号", [PING_CHAT_SETTINGS] = "聊天设置",
+[PING_KEYBINDINGS] = "信号快捷键",
+
+
+
+--Accessibility.lua
+--综合
+[MOVE_PAD] = "显示移动框",
+[CINEMATIC_SUBTITLES] = "动画字幕",
+[ALTERNATE_SCREEN_EFFECTS] = "开启光敏模式",
+[ENABLE_QUEST_TEXT_CONTRAST] = "任务文本颜色反差",
+[MINIMUM_CHARACTER_NAME_SIZE_TEXT] = "最小角色名尺寸",
+
+[ADJUST_MOTION_SICKNESS_SHAKE] = "视角晃动",
+[CURSOR_SIZE] = "鼠标指针大小",
+[TARGET_TOOLTIP_OPTION] = "动作瞄准提示信息",
+[INTERACT_ICONS_OPTION] = "交互按键图标",
+[INTERACT_ICONS_SHOW_ALL] = "显示全部",
+[INTERACT_ICONS_SHOW_NONE] = "全不显示",
+
+
+[USE_COLORBLIND_MODE] = "开启色盲模式界面",
+[COLORBLIND_FILTER] = "色盲过滤器",
+[COLORBLIND_OPTION_PROTANOPIA] = "1. 红色盲模式",
+[COLORBLIND_OPTION_DEUTERANOPIA] = "2. 绿色盲模式",
+[COLORBLIND_OPTION_TRITANOPIA] = "3. 蓝色盲模式",
+[ADJUST_COLORBLIND_STRENGTH] = "调整强度",
+[TTS_LABEL] = "文本转语音",
+[ENABLE_SPEECH_TO_TEXT_TRANSCRIPTION] = "语音聊天文字转录",
+[ENABLE_TEXT_TO_SPEECH] = "大声朗读聊天文本",
+[ENABLE_REMOTE_TEXT_TO_SPEECH] = "在语音聊天中为我发言",
+[VOICE] = "语音",
+--[ACCESSIBILITY_MOUNT_LABEL] = "坐骑", Mounts.lua
+[ACCESSIBILITY_ADV_FLY_LABEL] = "动态飞行",
+[MOTION_SICKNESS_DRAGONRIDING] = "晕动症",
+[DEFAULT] = "默认",
+[MOTION_SICKNESS_CHARACTER_CENTERED] = "保持角色处于正中",
+[MOTION_SICKNESS_REDUCE_CAMERA_MOTION] = "减少镜头运动",
+[MOTION_SICKNESS_BOTH] = "保持角色居中，减少镜头运动",
+[MOTION_SICKNESS_NONE] = "允许动态镜头运动",
+
+[MOTION_SICKNESS_DRAGONRIDING_SPEED_EFFECTS] = "动态飞行速度效果",
+[SHAKE_INTENSITY_FULL] = "高",
+[SHAKE_INTENSITY_REDUCED] = "低",
+
+[ADV_FLY_PITCH_CONTROL] = "倾角控制",
+[ADV_FLY_PITCH_CONTROL_GROUND_DEBOUNCE] = "防抖倾角输入",
+[ADV_FLY_CAMERA_PITCH_CHASE_TEXT] = "键盘倾斜镜头跟随",
+[ADV_FLY_MINIMUM_PITCH_TEXT] = "最低键盘倾斜速度",
+[ADV_FLY_MINIMUM_TURN_TEXT] = "最低键盘转向速度",
+[ADV_FLY_MAXIMUM_PITCH_TEXT] = "最高键盘倾斜速度",
+[ADV_FLY_MAXIMUM_TURN_TEXT] = "最高键盘转向速度",
+[ADV_FLY_MINIMUM_TURN_TEXT] = "最低键盘转向速度",
+
+--Graphics.lua
+[PRIMARY_MONITOR] = "显示器",
+[DISPLAY_MODE] = "显示模式",
+[WINDOW_SIZE] = "分辨率",
+[CUSTOM] = "自定义",
+[RENDER_SCALE] = "渲染倍数",
+[VERTICAL_SYNC] = "垂直同步",
+[NOTCH_MODE] = "刘海屏模式",
+[LOW_LATENCY_MODE] = "低延迟模式",
+[ANTIALIASING] = "抗锯齿",
+[FXAA_CMAA_LABEL] = "基于图像的技术",
+[MSAA_LABEL] = "多重采样技术",
+[MULTISAMPLE_ALPHA_TEST] = "多重采样测试",
+[RENDER_SCALE] = "渲染倍数",
+[CAMERA_FOV] = "镜头视野范围",
+[USE_UISCALE] = "使用UI缩放",
+[RAID_SETTINGS_ENABLED] = "启用团队副本和战场设置",
+[GRAPHICS_QUALITY] = "图像质量",
+[ADVANCED_LABEL] = "高级",
+[TRIPLE_BUFFER] = "三倍缓冲",
+[ANISOTROPIC] = "材质过滤",
+[RT_SHADOW_QUALITY] = "光线追踪阴影",
+[SSAO_TYPE_LABEL] = "环境光遮蔽类型",
+[RESAMPLE_QUALITY] = "重新采样品质",
+[VRS_MODE] = "VRS模式",
+[GXAPI] = "图形接口",
+[PHYSICS_INTERACTION] = "物理交互",
+[GRAPHICS_CARD] = "显卡",
+[MAXFPS_CHECK] = "最高前台帧数开关",
+[MAXFPS] = "最高前台帧数",
+[MAXFPSBK_CHECK] = "最高后台帧数开关",
+[MAXFPSBK] = "最高后台帧数",
+[TARGETFPS] = "目标帧数",
+[RESAMPLE_SHARPNESS] = "重新采样锐度",
+[OPTION_CONTRAST] = "对比度",
+[OPTIONS_BRIGHTNESS] = "亮度",
+[GAMMA] = "伽马值",
+
+--[LIQUID_DETAIL] = "液体细节",
+--Audio.lua
+[ENABLE_SOUND] = "开启声效",
+[AUDIO_OUTPUT_DEVICE] = "输出设备",
+[MASTER_VOLUME] = "主音量",
+[MUSIC_VOLUME] = "音乐",
+[FX_VOLUME] = "效果",
+[AMBIENCE_VOLUME] = "环境音",
+[DIALOG_VOLUME] = "对话",
+[ENABLE_MUSIC] = "音乐",
+[ENABLE_MUSIC_LOOPING] = "音乐循环",
+[ENABLE_PET_BATTLE_MUSIC] = "宠物对战音乐",
+[ENABLE_SOUNDFX] = "声音效果",
+[ENABLE_PET_SOUNDS] = "启用宠物音效",
+[ENABLE_EMOTE_SOUNDS] = "表情音效",
+[ENABLE_DIALOG] = "对话",
+[ENABLE_ERROR_SPEECH] = "错误提示",
+[ENABLE_AMBIENCE] = "环境音效",
+[ENABLE_BGSOUND] = "背景声音",
+[ENABLE_REVERB] = "启用混响",
+[ENABLE_SOFTWARE_HRTF] = "距离过滤",
+[AUDIO_CHANNELS] = "伴音通道",
+[AUDIO_CACHE_SIZE] = "音频缓存大小",
+[VOICE_CHAT_VOLUME] = "语音聊天音量",
+[VOICE_CHAT_DUCKING_SCALE] = "语音聊天降噪",
+[VOICE_CHAT_MIC_DEVICE] = "麦克风设备",
+[VOICE_CHAT_MIC_VOLUME] = "麦克风音量",
+[VOICE_CHAT_MIC_SENSITIVITY] = "麦克风灵敏度",
+[VOICE_CHAT_TEST_MIC_DEVICE] = "测试麦克风",
+[VOICE_CHAT_MODE] = "语音聊天模式",
+[OPEN_MIC] = "自由发言",
+[PUSH_TO_TALK] = "按键发言",
+[VOICE_CHAT_MODE_KEY] = "按键发言键位",
+[PING_SYSTEM_SETTINGS] = "信号系统设置",
+
+[LOCALE_TEXT_LABEL] = "文本",
+[SOUND] = "声音",
+--Network.lua
+[OPTIMIZE_NETWORK_SPEED] = "优化网络速度",
+[USEIPV6] = "当IPv6可用时开启",
+[ADVANCED_COMBAT_LOGGING] = "高级战斗日志",
+
+
+
+
+
+
+
+
+[CHARACTER_SPECIFIC_KEYBINDINGS] = "角色专用按键设置",
+[CLICK_BIND_MODE] = "点击施法",
+[QUICK_KEYBIND_MODE] = "快速快捷键模式",
+
+[BINDING_HEADER_ACTIONBAR]  = "动作条",
+[BINDING_HEADER_ACTIONBAR2]  = "动作条2",
+[BINDING_HEADER_ACTIONBAR3]  = "动作条3",
+[BINDING_HEADER_ACTIONBAR4]  = "动作条4",
+[BINDING_HEADER_ACTIONBAR5]  = "动作条5",
+[BINDING_HEADER_ACTIONBAR6]  = "动作条6",
+[BINDING_HEADER_ACTIONBAR7]  = "动作条7",
+[BINDING_HEADER_ACTIONBAR8]  = "动作条8",
+[BINDING_HEADER_BLANK]  = "  ",
+[BINDING_HEADER_CAMERA]  = "视角",
+[BINDING_HEADER_CHAT]  = "聊天",
+[BINDING_HEADER_COMMENTATOR]  = "解说员",
+[BINDING_HEADER_COMMENTATORCAMERA]  = "综合镜头设置",
+[BINDING_HEADER_COMMENTATORFOLLOW]  = "跟随",
+[BINDING_HEADER_COMMENTATORFOLLOWSNAP]  = "对焦",
+[BINDING_HEADER_COMMENTATORLOOKAT]  = "追踪",
+[BINDING_HEADER_COMMENTATORMISC]  = "其他",
+[BINDING_HEADER_COMMENTATORSCORING]  = "打分",
+[BINDING_HEADER_DEBUG]  = "调试",
+[BINDING_HEADER_INTERFACE]  = "界面面板",
+[BINDING_HEADER_ITUNES_REMOTE]  = "iTunes遥控",
+[BINDING_HEADER_MISC]  = "其他",
+[BINDING_HEADER_MOVEMENT]  = "移动按键",
+[BINDING_HEADER_MOVIE_RECORDING_SECTION]  = "视频录制",
+[BINDING_HEADER_MULTIACTIONBAR]  = "额外的动作条",
+[BINDING_HEADER_MULTICASTFUNCTIONS]  = "萨满图腾栏功能",
+[BINDING_HEADER_OTHER]  = "其他",
+[BINDING_HEADER_PING_SYSTEM]  = "信号系统",
+[BINDING_HEADER_RAID_TARGET]  = "队伍标记",
+[BINDING_HEADER_TARGETING]  = "选中目标",
+[BINDING_HEADER_VEHICLE]  = "载具控制",
+[BINDING_HEADER_VOICE_CHAT]  = "语音聊天",
+[BINDING_NAME_ACTIONBUTTON1]  = "快捷键1",
+[BINDING_NAME_ACTIONBUTTON10]  = "快捷键10",
+[BINDING_NAME_ACTIONBUTTON11]  = "快捷键11",
+[BINDING_NAME_ACTIONBUTTON12]  = "快捷键12",
+[BINDING_NAME_ACTIONBUTTON2]  = "快捷键2",
+[BINDING_NAME_ACTIONBUTTON3]  = "快捷键3",
+[BINDING_NAME_ACTIONBUTTON4]  = "快捷键4",
+[BINDING_NAME_ACTIONBUTTON5]  = "快捷键5",
+[BINDING_NAME_ACTIONBUTTON6]  = "快捷键6",
+[BINDING_NAME_ACTIONBUTTON7]  = "快捷键7",
+[BINDING_NAME_ACTIONBUTTON8]  = "快捷键8",
+[BINDING_NAME_ACTIONBUTTON9]  = "快捷键9",
+[BINDING_NAME_ACTIONPAGE1]  = "动作条1",
+[BINDING_NAME_ACTIONPAGE2]  = "动作条2",
+[BINDING_NAME_ACTIONPAGE3]  = "动作条3",
+[BINDING_NAME_ACTIONPAGE4]  = "动作条4",
+[BINDING_NAME_ACTIONPAGE5]  = "动作条5",
+[BINDING_NAME_ACTIONPAGE6]  = "动作条6",
+[BINDING_NAME_ACTIONWINDOW1]  = "移动动作条1",
+[BINDING_NAME_ACTIONWINDOW2]  = "移动动作条2",
+[BINDING_NAME_ACTIONWINDOW3]  = "移动动作条3",
+[BINDING_NAME_ACTIONWINDOW4]  = "移动动作条4",
+[BINDING_NAME_ACTIONWINDOWDECREMENT]  = "将移动动作条滑向左边",
+[BINDING_NAME_ACTIONWINDOWINCREMENT]  = "将移动动作条滑向右边",
+[BINDING_NAME_ACTIONWINDOWMOVE]  = "改变移动动作条位置",
+[BINDING_NAME_ALLNAMEPLATES]  = "显示所有姓名板",
+[BINDING_NAME_ASSISTTARGET]  = "协助目标",
+[BINDING_NAME_ATTACKTARGET]  = "攻击目标",
+[BINDING_NAME_BONUSACTIONBUTTON1]  = "宠物快捷键 1",
+[BINDING_NAME_BONUSACTIONBUTTON10]  = "宠物快捷键 10",
+[BINDING_NAME_BONUSACTIONBUTTON2]  = "宠物快捷键 2",
+[BINDING_NAME_BONUSACTIONBUTTON3]  = "宠物快捷键 3",
+[BINDING_NAME_BONUSACTIONBUTTON4]  = "宠物快捷键 4",
+[BINDING_NAME_BONUSACTIONBUTTON5]  = "宠物快捷键 5",
+[BINDING_NAME_BONUSACTIONBUTTON6]  = "宠物快捷键 6",
+[BINDING_NAME_BONUSACTIONBUTTON7]  = "宠物快捷键 7",
+[BINDING_NAME_BONUSACTIONBUTTON8]  = "宠物快捷键 8",
+[BINDING_NAME_BONUSACTIONBUTTON9]  = "宠物快捷键 9",
+[BINDING_NAME_CAMERAZOOMIN]  = "放大",
+[BINDING_NAME_CAMERAZOOMOUT]  = "缩小",
+[BINDING_NAME_CENTERCAMERA]  = "镜头居中",
+[BINDING_NAME_CHATBOTTOM]  = "翻至对话最下端",
+[BINDING_NAME_CHATPAGEDOWN]  = "对话向下翻页",
+[BINDING_NAME_CHATPAGEUP]  = "对话向上翻页",
+[BINDING_NAME_CHECK_FOR_SCOREBOARD]  = "生成终场计分板",
+[BINDING_NAME_COMBATLOGBOTTOM]  = "战斗日志翻至最下端",
+[BINDING_NAME_COMBATLOGPAGEDOWN]  = "战斗日志向下翻页",
+[BINDING_NAME_COMBATLOGPAGEUP]  = "战斗日志向上翻页",
+[BINDING_NAME_COMMENTATORFOLLOW1]  = "跟随队伍1的玩家1",
+[BINDING_NAME_COMMENTATORFOLLOW10]  = "跟随队伍2的玩家4",
+[BINDING_NAME_COMMENTATORFOLLOW10SNAP]  = "对焦队伍2的玩家4",
+[BINDING_NAME_COMMENTATORFOLLOW11]  = "跟随队伍2的玩家5",
+[BINDING_NAME_COMMENTATORFOLLOW11SNAP]  = "对焦队伍2的玩家5",
+[BINDING_NAME_COMMENTATORFOLLOW12]  = "跟随队伍2的玩家6",
+[BINDING_NAME_COMMENTATORFOLLOW12SNAP]  = "对焦队伍2的玩家6",
+[BINDING_NAME_COMMENTATORFOLLOW1SNAP]  = "对焦队伍1的玩家1",
+[BINDING_NAME_COMMENTATORFOLLOW2]  = "跟随队伍1的玩家2",
+[BINDING_NAME_COMMENTATORFOLLOW2SNAP]  = "对焦队伍1的玩家2",
+[BINDING_NAME_COMMENTATORFOLLOW3]  = "跟随队伍1的玩家3",
+[BINDING_NAME_COMMENTATORFOLLOW3SNAP]  = "对焦队伍1的玩家3",
+[BINDING_NAME_COMMENTATORFOLLOW4]  = "跟随队伍1的玩家4",
+[BINDING_NAME_COMMENTATORFOLLOW4SNAP]  = "对焦队伍1的玩家4",
+[BINDING_NAME_COMMENTATORFOLLOW5]  = "跟随队伍1的玩家5",
+[BINDING_NAME_COMMENTATORFOLLOW5SNAP]  = "对焦队伍1的玩家5",
+[BINDING_NAME_COMMENTATORFOLLOW6]  = "跟随队伍1的玩家6",
+[BINDING_NAME_COMMENTATORFOLLOW6SNAP]  = "对焦队伍1的玩家6",
+[BINDING_NAME_COMMENTATORFOLLOW7]  = "跟随队伍2的玩家1",
+[BINDING_NAME_COMMENTATORFOLLOW7SNAP]  = "对焦队伍2的玩家1",
+[BINDING_NAME_COMMENTATORFOLLOW8]  = "跟随队伍2的玩家2",
+[BINDING_NAME_COMMENTATORFOLLOW8SNAP]  = "对焦队伍2的玩家2",
+[BINDING_NAME_COMMENTATORFOLLOW9]  = "跟随队伍2的玩家3",
+[BINDING_NAME_COMMENTATORFOLLOW9SNAP]  = "对焦队伍2的玩家3",
+[BINDING_NAME_COMMENTATORLOOKAT1]  = "追踪队伍1的玩家1",
+[BINDING_NAME_COMMENTATORLOOKAT10]  = "追踪队伍2的玩家4",
+[BINDING_NAME_COMMENTATORLOOKAT11]  = "追踪队伍2的玩家5",
+[BINDING_NAME_COMMENTATORLOOKAT12]  = "追踪队伍2的玩家6",
+[BINDING_NAME_COMMENTATORLOOKAT2]  = "追踪队伍1的玩家2",
+[BINDING_NAME_COMMENTATORLOOKAT3]  = "追踪队伍1的玩家3",
+[BINDING_NAME_COMMENTATORLOOKAT4]  = "追踪队伍1的玩家4",
+[BINDING_NAME_COMMENTATORLOOKAT5]  = "追踪队伍1的玩家5",
+[BINDING_NAME_COMMENTATORLOOKAT6]  = "追踪队伍1的玩家6",
+[BINDING_NAME_COMMENTATORLOOKAT7]  = "追踪队伍2的玩家1",
+[BINDING_NAME_COMMENTATORLOOKAT8]  = "追踪队伍2的玩家2",
+[BINDING_NAME_COMMENTATORLOOKAT9]  = "追踪队伍2的玩家3",
+[BINDING_NAME_COMMENTATORLOOKATNONE]  = "停止跟随/追踪玩家",
+[BINDING_NAME_COMMENTATORMOVESPEEDDECREASE]  = "降低镜头机速度",
+[BINDING_NAME_COMMENTATORMOVESPEEDINCREASE]  = "提高镜头速度",
+[BINDING_NAME_COMMENTATORRESET]  = "重置解说员",
+[BINDING_NAME_COMMENTATORRESETZOOM]  = "Reset Zoom",
+[BINDING_NAME_COMMENTATORZOOMIN]  = "镜头推进",
+[BINDING_NAME_COMMENTATORZOOMOUT]  = "镜头拉远",
+[BINDING_NAME_CYCLEFOLLOWTRANSITONSPEED]  = "循环切换速度",
+[BINDING_NAME_DISMOUNT]  = "解散坐骑",
+[BINDING_NAME_EXTRAACTIONBUTTON1]  = "额外快捷键1",
+[BINDING_NAME_FLIPCAMERAYAW]  = "水平视角",
+[BINDING_NAME_FOCUSARENA1]  = "将竞技场敌人1设为焦点",
+[BINDING_NAME_FOCUSARENA2]  = "将竞技场敌人2设为焦点",
+[BINDING_NAME_FOCUSARENA3]  = "将竞技场敌人3设为焦点",
+[BINDING_NAME_FOCUSARENA4]  = "将竞技场敌人4设为焦点",
+[BINDING_NAME_FOCUSARENA5]  = "将竞技场敌人5设为焦点",
+[BINDING_NAME_FOCUSTARGET]  = "焦点目标",
+[BINDING_NAME_FOLLOWTARGET]  = "跟随目标",
+[BINDING_NAME_FORCEFOLLOWTRANSITON]  = "对焦以跟随目标",
+[BINDING_NAME_FRIENDNAMEPLATES]  = "显示友方姓名板",
+[BINDING_NAME_INTERACTMOUSEOVER]  = "与鼠标悬停处互动",
+[BINDING_NAME_INTERACTTARGET]  = "与目标互动",
+[BINDING_NAME_INVERTBINDINGMODE1]  = "动作条绑定模式变更",
+[BINDING_NAME_INVERTBINDINGMODE2]  = "目标绑定模式变更",
+[BINDING_NAME_INVERTBINDINGMODE3]  = "自定义绑定模式变更",
+[BINDING_NAME_ITEMCOMPARISONCYCLING]  = "物品比较循环",
+[BINDING_NAME_ITUNES_BACKTRACK]  = "iTunes上一首",
+[BINDING_NAME_ITUNES_NEXTTRACK]  = "iTunes下一首",
+[BINDING_NAME_ITUNES_PLAYPAUSE]  = "iTunes播放/暂停",
+[BINDING_NAME_ITUNES_VOLUMEDOWN]  = "iTunes音量降低",
+[BINDING_NAME_ITUNES_VOLUMEUP]  = "iTunes音量提高",
+[BINDING_NAME_JUMP]  = "跳跃",
+[BINDING_NAME_MASTERVOLUMEDOWN]  = "主音量缩小",
+[BINDING_NAME_MASTERVOLUMEUP]  = "主音量放大",
+[BINDING_NAME_MINIMAPZOOMIN]  = "放大地图",
+[BINDING_NAME_MINIMAPZOOMOUT]  = "缩小地图",
+[BINDING_NAME_MOVEANDSTEER]  = "移动控制",
+[BINDING_NAME_MOVEBACKWARD]  = "后退",
+[BINDING_NAME_MOVEFORWARD]  = "前进",
+[BINDING_NAME_MOVEVIEWIN]  = "视角拉近",
+[BINDING_NAME_MOVEVIEWOUT]  = "视角拉远",
+[BINDING_NAME_MOVIE_RECORDING_CANCEL]  = "取消录制/压缩",
+[BINDING_NAME_MOVIE_RECORDING_COMPRESS]  = "压缩视频",
+[BINDING_NAME_MOVIE_RECORDING_GUI]  = "显示/隐藏用户界面",
+[BINDING_NAME_MOVIE_RECORDING_STARTSTOP]  = "开始录制/停止录制",
+[BINDING_NAME_MULTIACTIONBAR1BUTTON1]  = "动作条2快捷键1",
+[BINDING_NAME_MULTIACTIONBAR1BUTTON10]  = "动作条2快捷键10",
+[BINDING_NAME_MULTIACTIONBAR1BUTTON11]  = "动作条2快捷键11",
+[BINDING_NAME_MULTIACTIONBAR1BUTTON12]  = "动作条2快捷键12",
+[BINDING_NAME_MULTIACTIONBAR1BUTTON2]  = "动作条2快捷键2",
+[BINDING_NAME_MULTIACTIONBAR1BUTTON3]  = "动作条2快捷键3",
+[BINDING_NAME_MULTIACTIONBAR1BUTTON4]  = "动作条2快捷键4",
+[BINDING_NAME_MULTIACTIONBAR1BUTTON5]  = "动作条2快捷键5",
+[BINDING_NAME_MULTIACTIONBAR1BUTTON6]  = "动作条2快捷键6",
+[BINDING_NAME_MULTIACTIONBAR1BUTTON7]  = "动作条2快捷键7",
+[BINDING_NAME_MULTIACTIONBAR1BUTTON8]  = "动作条2快捷键8",
+[BINDING_NAME_MULTIACTIONBAR1BUTTON9]  = "动作条2快捷键9",
+[BINDING_NAME_MULTIACTIONBAR2BUTTON1]  = "动作条3快捷键1",
+[BINDING_NAME_MULTIACTIONBAR2BUTTON10]  = "动作条3快捷键10",
+[BINDING_NAME_MULTIACTIONBAR2BUTTON11]  = "动作条3快捷键11",
+[BINDING_NAME_MULTIACTIONBAR2BUTTON12]  = "动作条3快捷键12",
+[BINDING_NAME_MULTIACTIONBAR2BUTTON2]  = "动作条3快捷键2",
+[BINDING_NAME_MULTIACTIONBAR2BUTTON3]  = "动作条3快捷键3",
+[BINDING_NAME_MULTIACTIONBAR2BUTTON4]  = "动作条3快捷键4",
+[BINDING_NAME_MULTIACTIONBAR2BUTTON5]  = "动作条3快捷键5",
+[BINDING_NAME_MULTIACTIONBAR2BUTTON6]  = "动作条3快捷键6",
+[BINDING_NAME_MULTIACTIONBAR2BUTTON7]  = "动作条3快捷键7",
+[BINDING_NAME_MULTIACTIONBAR2BUTTON8]  = "动作条3快捷键8",
+[BINDING_NAME_MULTIACTIONBAR2BUTTON9]  = "动作条3快捷键9",
+[BINDING_NAME_MULTIACTIONBAR3BUTTON1]  = "动作条4快捷键1",
+[BINDING_NAME_MULTIACTIONBAR3BUTTON10]  = "动作条4快捷键10",
+[BINDING_NAME_MULTIACTIONBAR3BUTTON11]  = "动作条4快捷键11",
+[BINDING_NAME_MULTIACTIONBAR3BUTTON12]  = "动作条4快捷键12",
+[BINDING_NAME_MULTIACTIONBAR3BUTTON2]  = "动作条4快捷键2",
+[BINDING_NAME_MULTIACTIONBAR3BUTTON3]  = "动作条4快捷键3",
+[BINDING_NAME_MULTIACTIONBAR3BUTTON4]  = "动作条4快捷键4",
+[BINDING_NAME_MULTIACTIONBAR3BUTTON5]  = "动作条4快捷键5",
+[BINDING_NAME_MULTIACTIONBAR3BUTTON6]  = "动作条4快捷键6",
+[BINDING_NAME_MULTIACTIONBAR3BUTTON7]  = "动作条4快捷键7",
+[BINDING_NAME_MULTIACTIONBAR3BUTTON8]  = "动作条4快捷键8",
+[BINDING_NAME_MULTIACTIONBAR3BUTTON9]  = "动作条4快捷键9",
+[BINDING_NAME_MULTIACTIONBAR4BUTTON1]  = "动作条5快捷键1",
+[BINDING_NAME_MULTIACTIONBAR4BUTTON10]  = "动作条5快捷键10",
+[BINDING_NAME_MULTIACTIONBAR4BUTTON11]  = "动作条5快捷键11",
+[BINDING_NAME_MULTIACTIONBAR4BUTTON12]  = "动作条5快捷键12",
+[BINDING_NAME_MULTIACTIONBAR4BUTTON2]  = "动作条5快捷键2",
+[BINDING_NAME_MULTIACTIONBAR4BUTTON3]  = "动作条5快捷键3",
+[BINDING_NAME_MULTIACTIONBAR4BUTTON4]  = "动作条5快捷键4",
+[BINDING_NAME_MULTIACTIONBAR4BUTTON5]  = "动作条5快捷键5",
+[BINDING_NAME_MULTIACTIONBAR4BUTTON6]  = "动作条5快捷键6",
+[BINDING_NAME_MULTIACTIONBAR4BUTTON7]  = "动作条5快捷键7",
+[BINDING_NAME_MULTIACTIONBAR4BUTTON8]  = "动作条5快捷键8",
+[BINDING_NAME_MULTIACTIONBAR4BUTTON9]  = "动作条5快捷键9",
+[BINDING_NAME_MULTIACTIONBAR5BUTTON1]  = "动作条6按键1",
+[BINDING_NAME_MULTIACTIONBAR5BUTTON10]  = "动作条6按键10",
+[BINDING_NAME_MULTIACTIONBAR5BUTTON11]  = "动作条6按键11",
+[BINDING_NAME_MULTIACTIONBAR5BUTTON12]  = "动作条6按键12",
+[BINDING_NAME_MULTIACTIONBAR5BUTTON2]  = "动作条6按键2",
+[BINDING_NAME_MULTIACTIONBAR5BUTTON3]  = "动作条6按键3",
+[BINDING_NAME_MULTIACTIONBAR5BUTTON4]  = "动作条6按键4",
+[BINDING_NAME_MULTIACTIONBAR5BUTTON5]  = "动作条6按键5",
+[BINDING_NAME_MULTIACTIONBAR5BUTTON6]  = "动作条6按键6",
+[BINDING_NAME_MULTIACTIONBAR5BUTTON7]  = "动作条6按键7",
+[BINDING_NAME_MULTIACTIONBAR5BUTTON8]  = "动作条6按键8",
+[BINDING_NAME_MULTIACTIONBAR5BUTTON9]  = "动作条6按键9",
+[BINDING_NAME_MULTIACTIONBAR6BUTTON1]  = "动作条7按键1",
+[BINDING_NAME_MULTIACTIONBAR6BUTTON10]  = "动作条7按键10",
+[BINDING_NAME_MULTIACTIONBAR6BUTTON11]  = "动作条7按键11",
+[BINDING_NAME_MULTIACTIONBAR6BUTTON12]  = "动作条7按键12",
+[BINDING_NAME_MULTIACTIONBAR6BUTTON2]  = "动作条7按键2",
+[BINDING_NAME_MULTIACTIONBAR6BUTTON3]  = "动作条7按键3",
+[BINDING_NAME_MULTIACTIONBAR6BUTTON4]  = "动作条7按键4",
+[BINDING_NAME_MULTIACTIONBAR6BUTTON5]  = "动作条7按键5",
+[BINDING_NAME_MULTIACTIONBAR6BUTTON6]  = "动作条7按键6",
+[BINDING_NAME_MULTIACTIONBAR6BUTTON7]  = "动作条7按键7",
+[BINDING_NAME_MULTIACTIONBAR6BUTTON8]  = "动作条7按键8",
+[BINDING_NAME_MULTIACTIONBAR6BUTTON9]  = "动作条7按键9",
+[BINDING_NAME_MULTIACTIONBAR7BUTTON1]  = "动作条8按键1",
+[BINDING_NAME_MULTIACTIONBAR7BUTTON10]  = "动作条8按键10",
+[BINDING_NAME_MULTIACTIONBAR7BUTTON11]  = "动作条8按键11",
+[BINDING_NAME_MULTIACTIONBAR7BUTTON12]  = "动作条8按键12",
+[BINDING_NAME_MULTIACTIONBAR7BUTTON2]  = "动作条8按键2",
+[BINDING_NAME_MULTIACTIONBAR7BUTTON3]  = "动作条8按键3",
+[BINDING_NAME_MULTIACTIONBAR7BUTTON4]  = "动作条8按键4",
+[BINDING_NAME_MULTIACTIONBAR7BUTTON5]  = "动作条8按键5",
+[BINDING_NAME_MULTIACTIONBAR7BUTTON6]  = "动作条8按键6",
+[BINDING_NAME_MULTIACTIONBAR7BUTTON7]  = "动作条8按键7",
+[BINDING_NAME_MULTIACTIONBAR7BUTTON8]  = "动作条8按键8",
+[BINDING_NAME_MULTIACTIONBAR7BUTTON9]  = "动作条8按键9",
+[BINDING_NAME_MULTICASTACTIONBUTTON1]  = "大地图腾",
+[BINDING_NAME_MULTICASTACTIONBUTTON10]  = "火焰图腾",
+[BINDING_NAME_MULTICASTACTIONBUTTON11]  = "水图腾",
+[BINDING_NAME_MULTICASTACTIONBUTTON12]  = "空气图腾",
+[BINDING_NAME_MULTICASTACTIONBUTTON2]  = "火焰图腾",
+[BINDING_NAME_MULTICASTACTIONBUTTON3]  = "水图腾",
+[BINDING_NAME_MULTICASTACTIONBUTTON4]  = "空气图腾",
+[BINDING_NAME_MULTICASTACTIONBUTTON5]  = "大地图腾",
+[BINDING_NAME_MULTICASTACTIONBUTTON6]  = "火焰图腾",
+[BINDING_NAME_MULTICASTACTIONBUTTON7]  = "水图腾",
+[BINDING_NAME_MULTICASTACTIONBUTTON8]  = "空气图腾",
+[BINDING_NAME_MULTICASTACTIONBUTTON9]  = "大地图腾",
+[BINDING_NAME_MULTICASTRECALLBUTTON1]  = "收回图腾",
+[BINDING_NAME_MULTICASTSUMMONBUTTON1]  = "元素的召唤",
+[BINDING_NAME_MULTICASTSUMMONBUTTON2]  = "先祖的召唤",
+[BINDING_NAME_MULTICASTSUMMONBUTTON3]  = "灵魂的召唤",
+[BINDING_NAME_NAMEPLATES]  = "显示敌方姓名板",
+[BINDING_NAME_NEXTACTIONPAGE]  = "下一动作条",
+[BINDING_NAME_NEXTVIEW]  = "下一个视角",
+[BINDING_NAME_OPENALLBAGS]  = "打开/关闭所有的背包",
+[BINDING_NAME_OPENCHAT]  = "打开对话框",
+[BINDING_NAME_OPENCHATSLASH]  = "打开带“/”的对话框",
+[BINDING_NAME_PETATTACK]  = "宠物攻击",
+[BINDING_NAME_PINGASSIST]  = "协助",
+[BINDING_NAME_PINGATTACK]  = "攻击",
+[BINDING_NAME_PINGONMYWAY]  = "正在赶来",
+[BINDING_NAME_PINGWARNING]  = "警告",
+[BINDING_NAME_PITCHDECREMENT]  = "减小倾角",
+[BINDING_NAME_PITCHDOWN]  = "向下倾斜",
+[BINDING_NAME_PITCHINCREMENT]  = "增大倾角",
+[BINDING_NAME_PITCHUP]  = "向上倾斜",
+[BINDING_NAME_PREVIOUSACTIONPAGE]  = "前一动作条",
+[BINDING_NAME_PREVVIEW]  = "前一个视角",
+[BINDING_NAME_PUSHTOTALK]  = "按键发言",
+[BINDING_NAME_RAIDTARGET1]  = "为目标指定星形",
+[BINDING_NAME_RAIDTARGET2]  = "为目标指定圆形",
+[BINDING_NAME_RAIDTARGET3]  = "为目标指定菱形",
+[BINDING_NAME_RAIDTARGET4]  = "为目标指定三角",
+[BINDING_NAME_RAIDTARGET5]  = "为目标指定月亮",
+[BINDING_NAME_RAIDTARGET6]  = "为目标指定方块",
+[BINDING_NAME_RAIDTARGET7]  = "为目标指定十字",
+[BINDING_NAME_RAIDTARGET8]  = "为目标指定骷髅",
+[BINDING_NAME_RAIDTARGETNONE]  = "清除队伍标记图标",
+[BINDING_NAME_REPLY]  = "回复对话",
+[BINDING_NAME_REPLY2]  = "再次密语",
+[BINDING_NAME_RESETVIEW1]  = "重置视角1",
+[BINDING_NAME_RESETVIEW2]  = "重置视角2",
+[BINDING_NAME_RESETVIEW3]  = "重置视角3",
+[BINDING_NAME_RESETVIEW4]  = "重置视角4",
+[BINDING_NAME_RESETVIEW5]  = "重置视角5",
+[BINDING_NAME_RESET_SCORE_COUNT]  = "重置比赛分数",
+[BINDING_NAME_SAVEVIEW1]  = "保存视角1",
+[BINDING_NAME_SAVEVIEW2]  = "保存视角2",
+[BINDING_NAME_SAVEVIEW3]  = "保存视角3",
+[BINDING_NAME_SAVEVIEW4]  = "保存视角4",
+[BINDING_NAME_SAVEVIEW5]  = "保存视角5",
+[BINDING_NAME_SCREENSHOT]  = "截图",
+[BINDING_NAME_SETVIEW1]  = "设置1号视角",
+[BINDING_NAME_SETVIEW2]  = "设置2号视角",
+[BINDING_NAME_SETVIEW3]  = "设置3号视角",
+[BINDING_NAME_SETVIEW4]  = "设置4号视角",
+[BINDING_NAME_SETVIEW5]  = "设置5号视角",
+[BINDING_NAME_SHAPESHIFTBUTTON1]  = "特殊快捷键1",
+[BINDING_NAME_SHAPESHIFTBUTTON10]  = "特殊快捷键10",
+[BINDING_NAME_SHAPESHIFTBUTTON2]  = "特殊快捷键2",
+[BINDING_NAME_SHAPESHIFTBUTTON3]  = "特殊快捷键3",
+[BINDING_NAME_SHAPESHIFTBUTTON4]  = "特殊快捷键4",
+[BINDING_NAME_SHAPESHIFTBUTTON5]  = "特殊快捷键5",
+[BINDING_NAME_SHAPESHIFTBUTTON6]  = "特殊快捷键6",
+[BINDING_NAME_SHAPESHIFTBUTTON7]  = "特殊快捷键7",
+[BINDING_NAME_SHAPESHIFTBUTTON8]  = "特殊快捷键8",
+[BINDING_NAME_SHAPESHIFTBUTTON9]  = "特殊快捷键9",
+[BINDING_NAME_SITORSTAND]  = "坐下/下降",
+[BINDING_NAME_STARTATTACK]  = "开始攻击",
+[BINDING_NAME_STARTAUTORUN]  = "开始自动奔跑",
+[BINDING_NAME_STOPATTACK]  = "停止攻击",
+[BINDING_NAME_STOPAUTORUN]  = "停止自动奔跑",
+[BINDING_NAME_STOPCASTING]  = "停止施法",
+[BINDING_NAME_STRAFELEFT]  = "向左平移",
+[BINDING_NAME_STRAFERIGHT]  = "向右平移",
+[BINDING_NAME_SWAPUNITFRAMES]  = "交换场地",
+[BINDING_NAME_SWINGCAMERA]  = "晃动镜头",
+[BINDING_NAME_SWINGCAMERAANDPLAYER]  = "晃动镜头和玩家",
+[BINDING_NAME_TARGETARENA1]  = "选中竞技场敌人1",
+[BINDING_NAME_TARGETARENA2]  = "选中竞技场敌人2",
+[BINDING_NAME_TARGETARENA3]  = "选中竞技场敌人3",
+[BINDING_NAME_TARGETARENA4]  = "选中竞技场敌人4",
+[BINDING_NAME_TARGETARENA5]  = "选中竞技场敌人5",
+[BINDING_NAME_TARGETENEMYDIRECTIONAL]  = "锁定前方敌人",
+[BINDING_NAME_TARGETFOCUS]  = "目标焦点",
+[BINDING_NAME_TARGETFRIENDDIRECTIONAL]  = "锁定前方友军",
+[BINDING_NAME_TARGETLASTHOSTILE]  = "选中上一个敌对目标",
+[BINDING_NAME_TARGETLASTTARGET]  = "选中上一个目标",
+[BINDING_NAME_TARGETMOUSEOVER]  = "选中鼠标悬停目标",
+[BINDING_NAME_TARGETNEARESTENEMY]  = "选中最近的敌人",
+[BINDING_NAME_TARGETNEARESTENEMYPLAYER]  = "选中最近的敌对玩家",
+[BINDING_NAME_TARGETNEARESTFRIEND]  = "选中最近的盟友",
+[BINDING_NAME_TARGETNEARESTFRIENDPLAYER]  = "选中最近的友方玩家",
+[BINDING_NAME_TARGETPARTYMEMBER1]  = "选中队友1",
+[BINDING_NAME_TARGETPARTYMEMBER2]  = "选中队友2",
+[BINDING_NAME_TARGETPARTYMEMBER3]  = "选中队友3",
+[BINDING_NAME_TARGETPARTYMEMBER4]  = "选中队友4",
+[BINDING_NAME_TARGETPARTYPET1]  = "选中队友宠物1",
+[BINDING_NAME_TARGETPARTYPET2]  = "选中队友宠物2",
+[BINDING_NAME_TARGETPARTYPET3]  = "选中队友宠物3",
+[BINDING_NAME_TARGETPARTYPET4]  = "选中队友宠物4",
+[BINDING_NAME_TARGETPET]  = "选中宠物",
+[BINDING_NAME_TARGETPREVIOUSENEMY]  = "选中前一个敌人",
+[BINDING_NAME_TARGETPREVIOUSENEMYPLAYER]  = "选中上一个敌对玩家",
+[BINDING_NAME_TARGETPREVIOUSFRIEND]  = "选中前一个盟友",
+[BINDING_NAME_TARGETPREVIOUSFRIENDPLAYER]  = "选中上一个友方玩家",
+[BINDING_NAME_TARGETSCANENEMY]  = "目标扫描敌人",
+[BINDING_NAME_TARGETSELF]  = "选中自己",
+[BINDING_NAME_TARGETTALKER]  = "选中当前发言者",
+[BINDING_NAME_TEAM_1_ADD_SCORE]  = "为队伍1加分",
+[BINDING_NAME_TEAM_1_REMOVE_SCORE]  = "为队伍1减分",
+[BINDING_NAME_TEAM_2_ADD_SCORE]  = "为队伍2加分",
+[BINDING_NAME_TEAM_2_REMOVE_SCORE]  = "为队伍2减分",
+[BINDING_NAME_TEXT_TO_SPEECH_STOP]  = "停止文本转语音回放",
+[BINDING_NAME_TOGGLEABILITYBOOK]  = "打开/关闭能力界面",
+[BINDING_NAME_TOGGLEACHIEVEMENT]  = "打开/关闭成就面板",
+[BINDING_NAME_TOGGLEACTIONBARLOCK]  = "打开/关闭动作条锁定",
+[BINDING_NAME_TOGGLEAUTORUN]  = "打开/关闭自动奔跑",
+[BINDING_NAME_TOGGLEAUTOSELFCAST]  = "打开/关闭自动自我施法",
+[BINDING_NAME_TOGGLEBACKPACK]  = "打开/关闭行囊",
+[BINDING_NAME_TOGGLEBAG1]  = "打开/关闭1号背包",
+[BINDING_NAME_TOGGLEBAG2]  = "打开/关闭2号背包",
+[BINDING_NAME_TOGGLEBAG3]  = "打开/关闭3号背包",
+[BINDING_NAME_TOGGLEBAG4]  = "打开/关闭4号背包",
+[BINDING_NAME_TOGGLEBAG5]  = "打开/关闭5号背包",
+[BINDING_NAME_TOGGLEBATTLEFIELDMINIMAP]  = "打开/关闭区域地图开关",
+[BINDING_NAME_TOGGLEBINDINGMODE1]  = "动作条绑定模式切换",
+[BINDING_NAME_TOGGLEBINDINGMODE2]  = "目标绑定模式切换",
+[BINDING_NAME_TOGGLEBINDINGMODE3]  = "自定义绑定模式切换",
+[BINDING_NAME_TOGGLECAMERACOLLISION]  = "开启/关闭镜头碰撞",
+[BINDING_NAME_TOGGLECHANNELPULLOUT]  = "打开/关闭频道拖出列表",
+[BINDING_NAME_TOGGLECHANNELS_UNUSED]  = "切换频道",
+[BINDING_NAME_TOGGLECHANNELTAB]  = "切换频道面板",
+[BINDING_NAME_TOGGLECHARACTER0]  = "打开/关闭角色界面",
+[BINDING_NAME_TOGGLECHARACTER1]  = "打开/关闭技能界面",
+[BINDING_NAME_TOGGLECHARACTER2]  = "打开/关闭声望界面",
+[BINDING_NAME_TOGGLECHARACTER3]  = "打开/关闭宠物面板",
+[BINDING_NAME_TOGGLECHARACTER4]  = "打开/关闭PvP面板",
+[BINDING_NAME_TOGGLECHATTAB]  = "打开/关闭聊天面板",
+[BINDING_NAME_TOGGLECOLLECTIONS]  = "打开/关闭藏品窗口",
+[BINDING_NAME_TOGGLECOLLECTIONSHEIRLOOM]  = "打开/关闭传家宝面板",
+[BINDING_NAME_TOGGLECOLLECTIONSMOUNTJOURNAL]  = "打开/关闭坐骑手册",
+[BINDING_NAME_TOGGLECOLLECTIONSPETJOURNAL]  = "打开/关闭宠物手册",
+[BINDING_NAME_TOGGLECOLLECTIONSTOYBOX]  = "打开/关闭玩具箱",
+[BINDING_NAME_TOGGLECOLLECTIONSWARDROBE]  = "显示/隐藏外观",
+[BINDING_NAME_TOGGLECOMBATLOG]  = "打开/关闭战斗日志",
+[BINDING_NAME_TOGGLECOMPANIONJOURNAL]  = "打开/关闭小伙伴手册",
+[BINDING_NAME_TOGGLECOREABILITIESBOOK]  = "打开/关闭核心技能",
+[BINDING_NAME_TOGGLECURRENCY]  = "打开/关闭货币页面",
+[BINDING_NAME_TOGGLEDUNGEONSANDRAIDS]  = "打开/关闭地下城查找器",
+[BINDING_NAME_TOGGLEENCOUNTERJOURNAL]  = "打开/关闭冒险指南",
+[BINDING_NAME_TOGGLEFPS]  = "打开/关闭帧数显示",
+[BINDING_NAME_TOGGLEFRIENDSTAB]  = "打开/关闭好友面板",
+[BINDING_NAME_TOGGLEGAMEMENU]  = "打开/关闭游戏菜单",
+[BINDING_NAME_TOGGLEGARRISONLANDINGPAGE]  = "打开/关闭要塞报告",
+[BINDING_NAME_TOGGLEGRAPHICSSETTINGS]  = "打开/关闭画质设定",
+[BINDING_NAME_TOGGLEGROUPFINDER]  = "打开/关闭队伍查找器",
+[BINDING_NAME_TOGGLEGUILDTAB]  = "打开/关闭公会和社区",
+[BINDING_NAME_TOGGLEIGNORETAB]  = "切换忽略面板",
+[BINDING_NAME_TOGGLEINSCRIPTION]  = "打开/关闭雕文面板",
+[BINDING_NAME_TOGGLEKEYRING]  = "打开/关闭钥匙链",
+[BINDING_NAME_TOGGLELFGPARENT]  = "打开/关闭地下城查找器",
+[BINDING_NAME_TOGGLELFRPARENT]  = "打开/关闭其他团队",
+[BINDING_NAME_TOGGLEMINIMAP]  = "打开/关闭地图",
+[BINDING_NAME_TOGGLEMINIMAPROTATION]  = "打开/关闭微缩地图旋转",
+[BINDING_NAME_TOGGLEMOUNTJOURNAL]  = "打开/关闭坐骑手册",
+[BINDING_NAME_TOGGLEMOUSE]  = "摇杆鼠标模式",
+[BINDING_NAME_TOGGLEMUSIC]  = "打开/关闭音乐",
+[BINDING_NAME_TOGGLEPETBOOK]  = "打开/关闭宠物法术书",
+[BINDING_NAME_TOGGLEPETJOURNAL]  = "打开/关闭宠物手册",
+[BINDING_NAME_TOGGLEPINGLISTENER]  = "信号",
+[BINDING_NAME_TOGGLEPROFESSIONBOOK]  = "打开/关闭专业技能书",
+[BINDING_NAME_TOGGLEPVP]  = "打开/关闭PvP面板",
+[BINDING_NAME_TOGGLEQUESTLOG]  = "打开/关闭任务日志",
+[BINDING_NAME_TOGGLEQUICKJOINTAB]  = "开启/关闭快速加入",
+[BINDING_NAME_TOGGLERAIDFINDER]  = "打开/关闭团队查找器",
+[BINDING_NAME_TOGGLERAIDTAB]  = "打开/关闭团队面板",
+[BINDING_NAME_TOGGLEREAGENTBAG1]  = "打开/关闭材料包",
+[BINDING_NAME_TOGGLERUN]  = "跑/走",
+[BINDING_NAME_TOGGLESELFHIGHLIGHT]  = "开启/关闭自身高亮",
+[BINDING_NAME_TOGGLESHEATH]  = "取出/收起武器",
+[BINDING_NAME_TOGGLESMOOTHFOLLOWTRANSITIONS]  = "开启/关闭平滑跟随切换",
+[BINDING_NAME_TOGGLESOCIAL]  = "打开/关闭社交界面",
+[BINDING_NAME_TOGGLESOUND]  = "打开/关闭声效",
+[BINDING_NAME_TOGGLESPELLBOOK]  = "打开/关闭法术书",
+[BINDING_NAME_TOGGLESTATISTICS]  = "打开/关闭统计数据面板",
+[BINDING_NAME_TOGGLETALENTS]  = "打开/关闭天赋面板",
+[BINDING_NAME_TOGGLETEXTTOSPEECH]  = "开启/关闭文字转语音选项",
+[BINDING_NAME_TOGGLETOYBOX]  = "打开/关闭玩具箱",
+[BINDING_NAME_TOGGLEUI]  = "打开/关闭用户界面",
+[BINDING_NAME_TOGGLEWHATHASCHANGEDBOOK]  = "打开/关闭“最新改动”",
+[BINDING_NAME_TOGGLEWHOTAB]  = "打开/关闭查询面板",
+[BINDING_NAME_TOGGLEWINDOWED]  = "打开/关闭窗口模式",
+[BINDING_NAME_TOGGLEWORLDMAP]  = "打开/关闭世界地图",
+[BINDING_NAME_TOGGLEWORLDMAPSIZE]  = "切换世界地图大小",
+[BINDING_NAME_TOGGLEWORLDSTATESCORES]  = "打开/关闭积分窗口",
+[BINDING_NAME_TOGGLE_CASTER_COOLDOWN_DISPLAY]  = "开启/关闭施法者冷却显示",
+[BINDING_NAME_TOGGLE_FRAME_LOCK]  = "开启/关闭默认用户界面",
+[BINDING_NAME_TOGGLE_NAMEPLATE_SIZE]  = "切换姓名板尺寸",
+[BINDING_NAME_TOGGLE_SMART_CAMERA]  = "开启/关闭智能镜头",
+[BINDING_NAME_TOGGLE_SMART_CAMERA_LOCK]  = "锁定智能镜头",
+[BINDING_NAME_TOGGLE_VOICE_PUSH_TO_TALK]  = "语音聊天：按键发言",
+[BINDING_NAME_TOGGLE_VOICE_SELF_DEAFEN]  = "语音聊天：开启/解除自我隔音",
+[BINDING_NAME_TOGGLE_VOICE_SELF_MUTE]  = "语音聊天：开启/解除自我禁音",
+[BINDING_NAME_TURNLEFT]  = "左转",
+[BINDING_NAME_TURNRIGHT]  = "右转",
+[BINDING_NAME_VEHICLEAIMDECREMENT]  = "减小仰角",
+[BINDING_NAME_VEHICLEAIMDOWN]  = "向下瞄准",
+[BINDING_NAME_VEHICLEAIMINCREMENT]  = "增大仰角",
+[BINDING_NAME_VEHICLEAIMUP]  = "向上瞄准",
+[BINDING_NAME_VEHICLECAMERAZOOMIN]  = "镜头拉近",
+[BINDING_NAME_VEHICLECAMERAZOOMOUT]  = "镜头拉远",
+[BINDING_NAME_VEHICLEEXIT]  = "离开载具",
+[BINDING_NAME_VEHICLENEXTSEAT]  = "后一座位",
+[BINDING_NAME_VEHICLEPREVSEAT]  = "前一座位",
+
+
+
+[OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN] = "在按下快捷键时施法，而不是在松开快捷键时施法。",
+[OPTION_TOOLTIP_ACTION_TARGETING] = "此瞄准系统可以以你观看的方向动态地瞄准敌人。可以和标准的瞄准系统一起使用。",
+[OPTION_TOOLTIP_ADJUST_COLORBLIND_STRENGTH] = "调整选择的色盲过滤器强度。",
+[OPTION_TOOLTIP_ADVANCED_COMBAT_LOGGING] = "在生成战斗日志的文本文档时加入额外的日志数据。启用该功能可能导致你在使用“战斗日志”聊天指令时出现额外的网络延迟。",
+[OPTION_TOOLTIP_ADVANCED_MSAA] = "设置多重采样抗锯齿，可设定色彩数值和采样景深。",
+[OPTION_TOOLTIP_ADVANCED_OBJECTIVES] = "使你可以对任务框体进行缩放、拖动、最小化和展开等操作。",
+[OPTION_TOOLTIP_ADVANCED_PPAA] = "设置后制抗锯齿模式。",
+[OPTION_TOOLTIP_ADV_FLY_CAMERA_PITCH_CHASE] = "使用向前移动和向后移动输入来控制倾角时，调整镜头倾斜的速度来跟随玩家。",
+[OPTION_TOOLTIP_ADV_FLY_MAXIMUM_PITCH] = "调整键盘输入的最高倾斜速度。",
+[OPTION_TOOLTIP_ADV_FLY_MAXIMUM_TURN] = "调整键盘输入的最高转向速度。",
+[OPTION_TOOLTIP_ADV_FLY_MINIMUM_PITCH] = "调整键盘输入的最低倾斜速度。",
+[OPTION_TOOLTIP_ADV_FLY_MINIMUM_TURN] = "调整键盘输入的最低转向速度。",
+[OPTION_TOOLTIP_ADV_FLY_PITCH_CONTROL] = "使用驭龙术时，辅助进行手部运动控制。\n\n|cffffffff后/上：|r使用驭龙术期间，向后移动的输入也会使倾角变高，向前移动的输入也会使倾角变低。\n\n|cffffffff前/上：|r使用驭龙术期间，向前移动的输入也会使倾角变高，向后移动的输入也会使倾角变低。",
+[OPTION_TOOLTIP_ADV_FLY_PITCH_CONTROL_GROUND_DEBOUNCE] = "开启后，使用向前移动和向后移动来控制倾角时，此设置会要求在地面和使用驭龙术之间进行转换时，重新输入这些指令。 ",
+[OPTION_TOOLTIP_AGGRO_WARNING_DISPLAY1] = "从不显示仇恨警报系统。",
+[OPTION_TOOLTIP_AGGRO_WARNING_DISPLAY2] = "仅当你在副本中时显示仇恨警报系统。",
+[OPTION_TOOLTIP_AGGRO_WARNING_DISPLAY3] = "仅当你在小队或团队中时显示仇恨警报系统。",
+[OPTION_TOOLTIP_AGGRO_WARNING_DISPLAY4] = "总是显示仇恨警报系统。",
+[OPTION_TOOLTIP_ALTERNATE_RESOURCE] = "总是显示副资源条上的数字。",
+[OPTION_TOOLTIP_ALTERNATE_SCREEN_EFFECTS] = "修改某些效果，比如屏幕变白，或者明亮的法术，来帮助减轻光敏问题",
+[OPTION_TOOLTIP_ALWAYS_SHOW_MULTIBARS] = "勾选此选项后，额外的动作条将总是被显示出来。",
+[OPTION_TOOLTIP_AMBIENCE_VOLUME] = "调整环境音效的音量。",
+[OPTION_TOOLTIP_ANIMATION] = "PLACE_HOLDER",
+[OPTION_TOOLTIP_ANISOTROPIC] = "提高材质的锐度，尤其是以倾斜视角观察的材质。",
+[OPTION_TOOLTIP_ANTIALIASING] = "抗锯齿技术可使参差不齐的边缘更加平滑，在低分辨率时效果更佳。",
+[OPTION_TOOLTIP_ASSIST_ATTACK] = "自动攻击使用\"/assist\"指令选定的目标。",
+[OPTION_TOOLTIP_AUDIO_CACHE_SIZE] = "变更留给音频的内存额度。",
+[OPTION_TOOLTIP_AUDIO_CHANNELS] = "调整有效软件伴音通道的数量。",
+[OPTION_TOOLTIP_AUDIO_LOCALE] = "选择您想要用音频播放的配音版本。",
+[OPTION_TOOLTIP_AUDIO_OUTPUT] = "选择游戏音频输出设备。",
+[OPTION_TOOLTIP_AUTO_ACCEPT_QUICK_JOIN] = "允许好友及公会成员立即加入你的队列，无需经过确认。",
+[OPTION_TOOLTIP_AUTO_DISMOUNT_FLYING] = "钩选此项之后，你的角色在施放法术前会自动解散飞行坐骑。",
+[OPTION_TOOLTIP_AUTO_FOLLOW_SPEED] = "调节在总是跟随和智能跟随模式下的镜头移动速度。",
+[OPTION_TOOLTIP_AUTO_JOIN_GUILD_CHANNEL] = "钩选这个选项可以让你自动加入公会招募频道（取决于你是否已经加入了某个公会）。",
+[OPTION_TOOLTIP_AUTO_LOOT_ALT_KEY] = "打开“自动拾取”选项之后，按ALT键可以拾取物品。未打开“自动拾取”选项则按住ALT键可以自动拾取物品。",
+[OPTION_TOOLTIP_AUTO_LOOT_CTRL_KEY] = "打开“自动拾取”选项之后，按CTRL键可以拾取物品。未打开“自动拾取”选项则按住CTRL键可以自动拾取物品。",
+[OPTION_TOOLTIP_AUTO_LOOT_DEFAULT] = "将自动拾取设置为点击一个可拾取物品的目标时的默认动作。（通过按住拾取键/自动拾取键，可以在钩选此项时手动拾取，或在未钩选此项时自动拾取。）",
+[OPTION_TOOLTIP_AUTO_LOOT_KEY_TEXT] = "用来自动拾取的按键",
+[OPTION_TOOLTIP_AUTO_LOOT_NONE_KEY] = "未绑定按键。",
+[OPTION_TOOLTIP_AUTO_LOOT_SHIFT_KEY] = "打开“自动拾取”选项之后，按SHIFT键可以拾取物品。未打开“自动拾取”选项则按住SHIFT键可以自动拾取物品。",
+[OPTION_TOOLTIP_AUTO_OPEN_LOOT_HISTORY] = "钩选此项后，在掉落拾取绑定物品时，将自动开启战利品掷骰窗口，向你展示你的队伍成员的掷骰情况。",
+[OPTION_TOOLTIP_AUTO_QUEST_PROGRESS] = "当你达到一项任务目标时，该任务会被自动追踪5分钟。",
+[OPTION_TOOLTIP_AUTO_QUEST_WATCH] = "在你接受任务并完成一个任务目标后自动追踪任务。",
+[OPTION_TOOLTIP_AUTO_RANGED_COMBAT] = "钩选之后，你的角色会自动在自动攻击和自动射击之间切换。",
+[OPTION_TOOLTIP_AUTO_SELF_CAST] = "开启此选项后，如果你的当前目标为非友方目标或没有目标，则可以对友方目标施放的法术会自动对你本人施放。",
+[OPTION_TOOLTIP_AUTO_SELF_CAST_ALT_KEY] = "按住ALT键以对自己施放有益法术，即便你当前选中的目标是敌对的，甚至没有目标。",
+[OPTION_TOOLTIP_AUTO_SELF_CAST_CTRL_KEY] = "按住CTRL键以对自己施放有益法术，即便你当前选中的目标是敌对的，甚至没有目标。",
+[OPTION_TOOLTIP_AUTO_SELF_CAST_KEY_TEXT] = "按住这个键之后施法目标会变成自己，即使你当前锁定的目标是某个敌对怪物或玩家。",
+[OPTION_TOOLTIP_AUTO_SELF_CAST_NONE_KEY] = "未绑定按键。",
+[OPTION_TOOLTIP_AUTO_SELF_CAST_SHIFT_KEY] = "按住SHIFT键以对自己施放有益法术，即便你当前选中的目标是敌对的，甚至没有目标。",
+[OPTION_TOOLTIP_BLOCK_CHAT_CHANNEL_INVITE] = "阻止所有的聊天频道邀请。",
+[OPTION_TOOLTIP_BLOCK_GUILD_INVITES] = "阻止所有的公会邀请。",
+[OPTION_TOOLTIP_BLOCK_TRADES] = "阻止所有的交易要求。",
+[OPTION_TOOLTIP_BRIGHTNESS] = "控制游戏画面的亮度。",
+[OPTION_TOOLTIP_CAMERA1] = "将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。（只调整水平角度）",
+[OPTION_TOOLTIP_CAMERA2] = "设定视角，使视角总是处于你的角色后方。",
+[OPTION_TOOLTIP_CAMERA3] = "设定视角，使其固定在一点，永远不自动调节。",
+[OPTION_TOOLTIP_CAMERA4] = "将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。",
+[OPTION_TOOLTIP_CAMERA_ALWAYS] = "设定视角，使视角总是处于你的角色后方。",
+[OPTION_TOOLTIP_CAMERA_FOV] = "调整镜头的视野范围",
+[OPTION_TOOLTIP_CAMERA_NEVER] = "设定视角，使其固定在一点，永远不自动调节。",
+[OPTION_TOOLTIP_CAMERA_SMART] = "将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。（只调整水平角度）",
+[OPTION_TOOLTIP_CAMERA_SMARTER] = "将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。",
+[OPTION_TOOLTIP_CENTER_SOURCE_EXCLUDE] = "控制哪些违规内容将被屏蔽",
+[OPTION_TOOLTIP_CHARACTER_SHADOWS] = "显示游戏中所有角色的影子。禁用此选项有时可以提高游戏运行速度。",
+[OPTION_TOOLTIP_CHAT_BUBBLES] = "在说话者头顶上显示文字泡泡。",
+[OPTION_TOOLTIP_CHAT_LOCKED] = "锁定所有聊天窗口，这样它们就不会被误修改了。",
+[OPTION_TOOLTIP_CHAT_MOUSE_WHEEL_SCROLL] = "勾选以使鼠标在悬停于聊天窗口时可使用滑轮滚动聊天文本。",
+[OPTION_TOOLTIP_CHAT_WHOLE_WINDOW_CLICKABLE] = "点击聊天框体的任意位置以关注该聊天。",
+[OPTION_TOOLTIP_CINEMATIC_SUBTITLES] = "开启过场动画的字幕。",
+[OPTION_TOOLTIP_CLEAR_AFK] = "移动或者说话时\n自动解除离开状态。",
+[OPTION_TOOLTIP_CLICKCAMERA_LOCKED] = "设置视角，使其在你使用鼠标点击移动的同时，视角保持与你行进方向的一致。",
+[OPTION_TOOLTIP_CLICKCAMERA_NEVER] = "设置视角，使其在使用鼠标点击移动的时候不改变视角。",
+[OPTION_TOOLTIP_CLICKCAMERA_SMART] = "设置视角，使其在你使用点击鼠标移动改变方向的时候稍作延时，然后跟随你的角色角色。（推荐模式）",
+[OPTION_TOOLTIP_CLICK_CAMERA1] = "设置视角，使其在你使用点击鼠标移动改变方向的时候稍作延时，然后跟随你的角色角色。（推荐模式）",
+[OPTION_TOOLTIP_CLICK_CAMERA2] = "设置视角，使其在你使用鼠标点击移动的同时，视角保持与你行进方向的一致。",
+[OPTION_TOOLTIP_CLICK_CAMERA3] = "设置视角，使其在使用鼠标点击移动的时候不改变视角。",
+[OPTION_TOOLTIP_CLICK_CAMERA_STYLE] = "决定点击移动方式的时候视角跟随方式。",
+[OPTION_TOOLTIP_CLICK_TO_MOVE] = "使用鼠标点击来把你的角色移动到指定的地点。",
+[OPTION_TOOLTIP_COLORBLIND_FILTER] = "根据特定色盲类型来调整游戏颜色。",
+[OPTION_TOOLTIP_COMBAT_TARGET_MODE] = "更改目标的伤害显示模式。",
+[OPTION_TOOLTIP_COMBAT_TARGET_MODE_NEW] = "使用该模式以提升游戏表现",
+[OPTION_TOOLTIP_COMBAT_TARGET_MODE_OLD] = "游戏表现极其迟缓，不推荐选择。",
+[OPTION_TOOLTIP_COMBAT_TEXT_MODE] = "设置战斗信息滚动的方向。",
+[OPTION_TOOLTIP_COMBAT_TEXT_SCROLL_DOWN] = "战斗记录向下滚动，而非向上滚动。",
+[OPTION_TOOLTIP_COMBAT_TEXT_SHOW_AURAS] = "当玩家获得或失去光环效果时显示信息。",
+[OPTION_TOOLTIP_COMBAT_TEXT_SHOW_AURA_FADE] = "当魔法效果从玩家身上消失时显示信息。",
+[OPTION_TOOLTIP_COMBAT_TEXT_SHOW_COMBAT_STATE] = "当你进入或脱离战斗时显示信息。",
+[OPTION_TOOLTIP_COMBAT_TEXT_SHOW_COMBO_POINTS] = "当你获得新的连击点时，显示连击点的数量。",
+[OPTION_TOOLTIP_COMBAT_TEXT_SHOW_DODGE_PARRY_MISS] = "当敌人的攻击未命中你，或者被你躲闪、招架时显示信息。",
+[OPTION_TOOLTIP_COMBAT_TEXT_SHOW_ENERGIZE] = "显示所有立即获取的法力值、怒气值、能量值和真气值。",
+[OPTION_TOOLTIP_COMBAT_TEXT_SHOW_FRIENDLY_NAMES] = "当一个友方施法者对你施放治疗法术时，显示他/她的名字。",
+[OPTION_TOOLTIP_COMBAT_TEXT_SHOW_HONOR_GAINED] = "显示你通过杀死其他玩家所得到的荣誉值。",
+[OPTION_TOOLTIP_COMBAT_TEXT_SHOW_LOW_HEALTH_MANA] = "当你的生命值或法力值低于20%的时候显示信息。",
+[OPTION_TOOLTIP_COMBAT_TEXT_SHOW_PERIODIC_ENERGIZE] = "显示所有周期性获得的法力值、怒气值和能量值。",
+[OPTION_TOOLTIP_COMBAT_TEXT_SHOW_REACTIVES] = "当特定的重要事件发生时显示警报。",
+[OPTION_TOOLTIP_COMBAT_TEXT_SHOW_REPUTATION] = "当玩家在某个阵营中的声望提高或降低时显示信息。",
+[OPTION_TOOLTIP_COMBAT_TEXT_SHOW_RESISTANCES] = "当你抵抗攻击或法术时显示信息。",
+[OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYAGGROHIGHLIGHT] = "如果玩家获得威胁值，显示红色外框",
+[OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYHEALPREDICTION] = "显示你的队伍成员即将获得的治疗效果",
+[OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYMAINTANKANDASSIST] = "高亮显示你队伍里的主坦克和副坦克",
+[OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYNONBOSSDEBUFFS] = "显示你的队伍成员的所有减益效果",
+[OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYONLYDISPELLABLEDEBUFFS] = "只显示你的队伍成员的可驱散的减益效果",
+[OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYONLYHEALERPOWERBARS] = "只显示治疗者能量条。非治疗者能量条会被隐藏。",
+[OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYPETS] = "显示你的团队或队伍成员召唤的宠物",
+[OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYPOWERBAR] = "显示你的队伍成员的能量条",
+[OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT] = "决定团队框架里显示的生命值文字类型。",
+[OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_HEALTH] = "显示剩余生命值的数字",
+[OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_LOSTHEALTH] = "只有生命值不是全满时才显示数字",
+[OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_NONE] = "不显示任何生命值文字",
+[OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_PERC] = "显示剩余生命值的百分比",
+[OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_USECLASSCOLORS] = "显示职业颜色。如果取消勾选，会使用默认的职责颜色。",
+[OPTION_TOOLTIP_COMPUTE_EFFECTS] = "控制基于计算的效果的质量，例如体积雾和部分粒子效果。基于计算的效果对型号较老的显卡的负担可能会偏重。",
+[OPTION_TOOLTIP_CONSOLIDATE_BUFFS] = "将一部分增益效果划分至一个增益效果盒。短时间增益效果在该盒中显示。持续时间很长的增益效果显示在该盒中，直到效果即将消失。",
+[OPTION_TOOLTIP_CONTRAST] = "控制游戏画面的对比度。",
+[OPTION_TOOLTIP_COUNTDOWN_FOR_COOLDOWNS] = "勾选此项后，动作条上的按钮将以倒计时数字的方式显示冷却时间。",
+[OPTION_TOOLTIP_DEATH_EFFECT] = "关闭此选项可以禁止鬼魂状态下的泛光效果，可略微提高运行速度。",
+[OPTION_TOOLTIP_DEPTH_EFFECTS] = "控制景深粒子的渲染效果。降低此项可以提高游戏运行性能。",
+[OPTION_TOOLTIP_DESKTOP_GAMMA] = "使用桌面伽马值设定。",
+[OPTION_TOOLTIP_DIALOG_VOLUME] = "调整对话音量。",
+[OPTION_TOOLTIP_DISABLE_AOE_LOOTING_DEFAULT] = "关闭后，你只能从点击的尸体上拾取战利品，而不是从附近所有可以拾取的尸体上拾取。取消勾选此选项后，你会从附近所有可以拾取的尸体上拾取战利品。",
+[OPTION_TOOLTIP_DISABLE_CHAT] = "关闭聊天。你将无法发送和接受信息。",
+[OPTION_TOOLTIP_DISPLAY_BORDERS] = "显示所有团队框体的边框。",
+[OPTION_TOOLTIP_DISPLAY_FREE_BAG_SLOTS] = "在背包图标上显示剩余背包空间。",
+[OPTION_TOOLTIP_DISPLAY_INCOMING_HEALS] = "显示当前正在施放中的治疗法术。",
+[OPTION_TOOLTIP_DISPLAY_MODE] = "让游戏在全屏模式或窗口模式运行。",
+[OPTION_TOOLTIP_DISPLAY_MT_AND_MA] = "为团队领袖设置的\"主坦克\"或\"主助理\"玩家显示特殊单位框架。",
+[OPTION_TOOLTIP_DISPLAY_ONLY_DISPELLABLE_DEBUFFS] = "只显示你可以从目标身上移除的负面效果。",
+[OPTION_TOOLTIP_DISPLAY_PERSONAL_RESOURCE] = "在你的角色下方添加生命值和资源。",
+[OPTION_TOOLTIP_DISPLAY_PERSONAL_RESOURCE_ON_ENEMY] = "特殊资源将默认显示在你的角色下方。钩选此项显示在敌人上方。",
+[OPTION_TOOLTIP_DISPLAY_POWER_BARS] = "在团队框架中显示法力值、能量值和怒气值等能量条",
+[OPTION_TOOLTIP_DISPLAY_RAID_AGGRO_HIGHLIGHT] = "高亮显示团队中已成为仇恨目标或即将成为仇恨目标的成员。",
+[OPTION_TOOLTIP_DISPLAY_RAID_PETS] = "在团队框架界面中显示团队成员的宠物",
+[OPTION_TOOLTIP_DYNAMIC_RENDER_SCALE] = "可以使渲染倍率动态改变，从而实现目标帧率。",
+[OPTION_TOOLTIP_EMPHASIZE_MY_SPELLS] = "你的法术视觉效果将比其他人施放的法术更加醒目",
+[OPTION_TOOLTIP_ENABLE_ALL_SHADERS] = "开启所有像素遮罩。",
+[OPTION_TOOLTIP_ENABLE_AMBIENCE] = "开启环境音效。",
+[OPTION_TOOLTIP_ENABLE_BGSOUND] = "开启此选项可以让《魔兽世界》的声音在游戏处于后台运行状态时继续播放。",
+[OPTION_TOOLTIP_ENABLE_DIALOG] = "开启或关闭所有对话。",
+[OPTION_TOOLTIP_ENABLE_EMOTE_SOUNDS] = "打开/关闭表情指令的音效。",
+[OPTION_TOOLTIP_ENABLE_ERROR_SPEECH] = "开启错误提示语音（比如“目标太远”）。",
+[OPTION_TOOLTIP_ENABLE_GROUP_SPEECH] = "开启队友语音。",
+[OPTION_TOOLTIP_ENABLE_HARDWARE] = "开启此选项以使用3D声音加速。可能会改变你的声音表现效果。",
+[OPTION_TOOLTIP_ENABLE_INTERACT] = "使你可以通过按键与NPC和物体进行交互",
+[OPTION_TOOLTIP_ENABLE_MICROPHONE] = "启用你的麦克风。",
+[OPTION_TOOLTIP_ENABLE_MOUSEOVER_CAST] = "启用后，鼠标悬停到一个单位框体并使用一个键盘快捷键施放法术时，会直接对该单位施法，无需将该单位设为目标。",
+[OPTION_TOOLTIP_ENABLE_MOUSEOVER_CAST_KEY_TEXT] = "按住这个键会激活鼠标悬停施法。",
+[OPTION_TOOLTIP_ENABLE_MUSIC] = "开启背景音乐。",
+[OPTION_TOOLTIP_ENABLE_MUSIC_LOOPING] = "循环播放背景音乐。",
+[OPTION_TOOLTIP_ENABLE_PET_BATTLE_MUSIC] = "在宠物对战期间启用特殊音乐。",
+[OPTION_TOOLTIP_ENABLE_PET_SOUNDS] = "打开或关闭宠物空闲和攻击音效。",
+[OPTION_TOOLTIP_ENABLE_PINGS] = "打开/关闭信号系统",
+[OPTION_TOOLTIP_ENABLE_PING_SOUNDS] = "打开/关闭信号指令的音效",
+[OPTION_TOOLTIP_ENABLE_QUEST_TEXT_CONTRAST] = "让任务文本更容易阅读",
+[OPTION_TOOLTIP_ENABLE_REMOTE_TEXT_TO_SPEECH] = "使用所选的人声来开启语音聊天窗口的打字转化为语音功能",
+[OPTION_TOOLTIP_ENABLE_REVERB] = "启用声音混响效果。会降低游戏运行速度。",
+[OPTION_TOOLTIP_ENABLE_SOFTWARE_HRTF] = "模拟真实世界的音效环境，距离越远，音频越低。",
+[OPTION_TOOLTIP_ENABLE_SOUND] = "开启或禁止所有声音。",
+[OPTION_TOOLTIP_ENABLE_SOUNDFX] = "开启或禁止游戏声音效果。",
+[OPTION_TOOLTIP_ENABLE_SOUND_AT_CHARACTER] = "将声源接收位置设定为来自玩家角色所在位置，而非镜头位置。",
+[OPTION_TOOLTIP_ENABLE_SPEECH_TO_TEXT_TRANSCRIPTION] = "可以在语音聊天频道开启语音识别功能，从而通过识别其他玩家说出的话来看到书面文字",
+[OPTION_TOOLTIP_ENABLE_STEREO_VIDEO] = "启用3D立体眼镜。",
+[OPTION_TOOLTIP_ENABLE_TEXT_TO_SPEECH] = "基于选择的项目，通过文字转语音系统来大声朗读聊天文字",
+[OPTION_TOOLTIP_ENABLE_VOICECHAT] = "语音聊天并未受到暴雪娱乐的监控，您的游戏体验可能会在与其他玩家进行互动时发生相应的改变。",
+[OPTION_TOOLTIP_ENVIRONMENT_DETAIL] = "控制你所能看见物体的远近。降低这个数值可以提高运行速度。",
+[OPTION_TOOLTIP_FARCLIP] = "视野距离控制了你能看得有多远。更远的视野距离需要更多的内存容量和更快的处理器。",
+[OPTION_TOOLTIP_FIX_LAG] = "启用此项可以降低用户界面延迟，但是也有可能明显降低画面帧数。",
+[OPTION_TOOLTIP_FLASH_LOW_HEALTH_WARNING] = "你的生命值过低时，屏幕将不会闪烁红光。",
+[OPTION_TOOLTIP_FOCUS_CAST_ALT_KEY] = "按住ALT键以对你的焦点目标施放需要指定目标的法术。",
+[OPTION_TOOLTIP_FOCUS_CAST_CTRL_KEY] = "按住CTRL键以对你的焦点目标施放需要指定目标的法术。",
+[OPTION_TOOLTIP_FOCUS_CAST_NONE_KEY] = "未绑定按键。",
+[OPTION_TOOLTIP_FOCUS_CAST_SHIFT_KEY] = "按住SHIFT键以对你的焦点目标施放需要指定目标的法术。",
+[OPTION_TOOLTIP_FOLLOW_TERRAIN] = "根据地形自动调节视角。如果你的角色在爬坡，视角会向上旋转；如果你的角色在往下走，那视角会向下旋转。",
+[OPTION_TOOLTIP_FULL_SCREEN_GLOW] = "开启全屏幕柔化和光影效果。关闭这个选项有时可以提高运行速度。",
+[OPTION_TOOLTIP_FULL_SIZE_FOCUS_FRAME] = "将焦点框体的尺寸扩大到与目标框架相同。",
+[OPTION_TOOLTIP_FX_VOLUME] = "调整音效的音量。",
+[OPTION_TOOLTIP_GAMEFIELD_DESELECT] = "钩选此框可以让你避免因为点击画面上的空白区域而取消对当前目标的选择。你只能通过按下ESC键或点击另一个目标来切换你所选择的目标。",
+[OPTION_TOOLTIP_GAMMA] = "控制游戏画面的伽马值。",
+[OPTION_TOOLTIP_GRAPHICS_CARD] = "选择你想使用的显卡。",
+[OPTION_TOOLTIP_GROUND_CLUTTER] = "调节地表景观物体（比如草和其他植被）的显示密度和距离。调低此项可以提高运行速度。",
+[OPTION_TOOLTIP_GROUND_DENSITY] = "调节地表景观物体（比如草和其他植被）的数量。调低此项可以提高运行速度。",
+[OPTION_TOOLTIP_GROUND_RADIUS] = "调节地表景观物体（比如草和其他植被）的显示范围。调低此项可以提高运行速度。",
+[OPTION_TOOLTIP_GUILDMEMBER_ALERT] = "当你的公会会员登录或者退出游戏时显示提示信息。",
+[OPTION_TOOLTIP_GXAPI] = "选择图形接口。",
+[OPTION_TOOLTIP_HARDWARE_CURSOR] = "启用此项以获得更灵敏的鼠标反应速度，除非你的鼠标指针出现问题。",
+[OPTION_TOOLTIP_HEAD_BOB] = "在第一人称视角时候，模拟头部晃动。",
+[OPTION_TOOLTIP_HIDE_ADVENTURE_JOURNAL_ALERTS] = "隐藏新冒险机会的提示",
+[OPTION_TOOLTIP_HIDE_OUTDOOR_WORLD_STATE] = "钩选此框将隐藏界面上的所有本区域范围内的目标指示。",
+[OPTION_TOOLTIP_HIDE_PARTY_INTERFACE] = "点击这里隐藏你的队员的头像和生命条。",
+[OPTION_TOOLTIP_INTERACT_ICONS] = "控制交互按键启用后NPC和物体上方出现的图标",
+[OPTION_TOOLTIP_INTERACT_ON_LEFT_CLICK] = "使用左键或右键点击与物体或友善NPC角色互动。",
+[OPTION_TOOLTIP_INVERT_MOUSE] = "鼠标移动方向与改变视角方向相反。",
+[OPTION_TOOLTIP_KEEP_GROUPS_TOGETHER] = "为团队中的每个小队显示单独的框架。",
+[OPTION_TOOLTIP_LIGHTING_QUALITY] = "控制光照渲染的方式和质量。降低此项可以大幅提高游戏运行速度。",
+[OPTION_TOOLTIP_LIQUID_DETAIL] = "控制液体的渲染质量。降低此项可以提高游戏运行性能。",
+[OPTION_TOOLTIP_LOCALE] = "选择你要使用的语言版本。",
+[OPTION_TOOLTIP_LOCK_ACTIONBAR] = "使玩家无法拖动动作条上的快捷技能图标。这项功能可以通过按键设置界面设置相应的快捷键。",
+[OPTION_TOOLTIP_LOCK_CURSOR] = "不让鼠标指针离开游戏窗口",
+[OPTION_TOOLTIP_LOG_PERIODIC_EFFECTS] = "显示周期性伤害效果数值，比如撕裂和暗言术：痛。",
+[OPTION_TOOLTIP_LONG_RANGE_NAMEPLATE] = "调整这个选项可以增加显示姓名板的范围。",
+[OPTION_TOOLTIP_LOOT_KEY_TEXT] = "用来手动拾取物品的按键",
+[OPTION_TOOLTIP_LOOT_UNDER_MOUSE] = "钩选此项后，拾取窗口将在当前鼠标位置打开。",
+[OPTION_TOOLTIP_LOSS_OF_CONTROL] = "当你的角色失控时，在屏幕中央显示一条警示信息。",
+[OPTION_TOOLTIP_LOW_LATENCY_MODE] = "允许游戏使用各种方式降低输入延迟",
+[OPTION_TOOLTIP_MAP_FADE] = "当你开始移动时，地图变为透明状态。",
+[OPTION_TOOLTIP_MAP_QUEST_DIFFICULTY] = "将任务名称按照任务难度以不同颜色显示在世界地图上。",
+[OPTION_TOOLTIP_MAP_TRACK_QUEST] = "从你的任务查看列表中添加或删除所选任务。|n你也可以按住SHIFT键点击某任务或其图标。",
+[OPTION_TOOLTIP_MASTER_VOLUME] = "调整主音量。",
+[OPTION_TOOLTIP_MAX_FOLLOW_DIST] = "调节镜头在角色身后的最大跟随距离。",
+[OPTION_TOOLTIP_MINIMUM_CHARACTER_NAME_SIZE] = "调整最小角色名尺寸。",
+[_G['OPTION_TOOLTIP_MOTION_SICKNESS_CHECKBOX']] = "开启晕动症设置可以降低镜头运动，保持角色在中间。",
+[OPTION_TOOLTIP_MOTION_SICKNESS_DRAGONRIDING] = "在巨龙群岛使用驭龙术时，可以帮助降低晕动症。\n\n|cffffffff地表变暗：|r玩家使用驭龙术时，屏幕外围变暗\n\n|cffffffff聚焦圆环：|r在屏幕中心添加聚焦圆环十字",
+[OPTION_TOOLTIP_MOUSEOVER_CAST_ALT_KEY] = "按住ALT键以对你的鼠标悬停目标施放需要指定目标的法术。",
+[OPTION_TOOLTIP_MOUSEOVER_CAST_CTRL_KEY] = "按住CTRL键以对你的鼠标悬停目标施放需要指定目标的法术。",
+[OPTION_TOOLTIP_MOUSEOVER_CAST_NONE_KEY] = "未设置按键。",
+[OPTION_TOOLTIP_MOUSEOVER_CAST_SHIFT_KEY] = "按住SHIFT键以对你的鼠标悬停目标施放需要指定目标的法术。",
+[OPTION_TOOLTIP_MOUSE_LOOK_SPEED] = "调节使用鼠标改变视角时的移动速度。",
+[OPTION_TOOLTIP_MOUSE_SENSITIVITY] = "调节鼠标指针移动速度。",
+[OPTION_TOOLTIP_MOUSE_SPEED] = "允许自定义鼠标灵敏度以覆盖操作系统设定的灵敏度。",
+[OPTION_TOOLTIP_MOVE_PAD] = "移动框是一个可以用鼠标点击来控制移动和跳跃的用户界面框体。",
+[OPTION_TOOLTIP_MULTISAMPLE_ALPHA_TEST] = "在开启MSAA时，测试计算采样频率，而非像素频率。",
+[OPTION_TOOLTIP_MULTISAMPLING] = "提高多重采样级别可以使模型边缘变得更平滑，但是会明显降低游戏运行速度。",
+[OPTION_TOOLTIP_MUSIC_VOLUME] = "调整背景音乐的音量。",
+[OPTION_TOOLTIP_NOTCH_MODE] = "控制刘海屏的界面重叠方式",
+[OPTION_TOOLTIP_OBJECTIVES_IGNORE_CURSOR] = "锁定目标框体，鼠标悬停在框体上时不会显示出框体来。",
+[OPTION_TOOLTIP_OBJECT_ALPHA] = "PLACE_HOLDER",
+[OPTION_TOOLTIP_OBJECT_NPC_OUTLINE] = "除任务目标外，鼠标悬停对象和目标也可以高亮显示轮廓线。",
+[OPTION_TOOLTIP_OBJECT_NPC_OUTLINE_NOT_ALLOWED] = "系统图形选项中已关闭轮廓线模式。",
+[OPTION_TOOLTIP_OBJECT_NPC_OUTLINE_NOT_SUPPORTED] = "本机的视频硬件不支持轮廓线模式。",
+[OPTION_TOOLTIP_OPTIMIZE_NETWORK_SPEED] = "开启该选项来优化网络使用情况，从而降低延迟。\n该选项将提高带宽利用率，但可能在特定环境下产生问题。关闭该选项可能会解决某些断线问题。",
+[OPTION_TOOLTIP_OUTLINE_MODE] = "控制是否显示所选择的轮廓线模式。打开界面显示面板可查看更多选项。",
+[OPTION_TOOLTIP_OVERRIDE_SCREEN_FLASH] = "改变全屏画面闪烁的颜色，将其渐变为黑色。",
+[OPTION_TOOLTIP_PARTICLE_DENSITY] = "控制法术、火焰等效果中使用的粒子数量。降低此项可以提高游戏运行速度。",
+[OPTION_TOOLTIP_PET_NAMEPLATES] = "打开/关闭你的宠物、图腾和守护者的名字显示。",
+[OPTION_TOOLTIP_PET_SPELL_DAMAGE] = "显示你的宠物造成的法术伤害。",
+[OPTION_TOOLTIP_PHONG_SHADING] = "开启这个选项可以平滑角色光线表现。",
+[OPTION_TOOLTIP_PICKUP_ACTION_ALT_KEY] = "使用“ALT”键从锁定的动作条中提取/拖动法术。",
+[OPTION_TOOLTIP_PICKUP_ACTION_CTRL_KEY] = "使用“CTRL”键从锁定的动作条中提取/拖动法术。",
+[OPTION_TOOLTIP_PICKUP_ACTION_NONE_KEY] = "未设置按键。",
+[OPTION_TOOLTIP_PICKUP_ACTION_SHIFT_KEY] = "使用“SHIFT”键从锁定的动作条中提取/拖动法术。",
+[OPTION_TOOLTIP_PING_MODE] = "决定通过哪种模式来与信号系统互动。",
+[OPTION_TOOLTIP_PING_MODE_CLICK_DRAG] = "按下信号快捷键时，点击以根据情境发送信号，或点击并拖拽以触发信号盘目录。",
+[OPTION_TOOLTIP_PING_MODE_KEY_DOWN] = "按下并放开信号快捷键以根据情境发送信号，或者按下并按住以触发信号盘目录。",
+[OPTION_TOOLTIP_PING_VOLUME] = "调整信号音量",
+[OPTION_TOOLTIP_PLAYER_DETAIL] = "调整玩家角色材质的分辨率。降低此项可以略微提高游戏运行速度。",
+[OPTION_TOOLTIP_PLAY_AGGRO_SOUNDS] = "启用当仇恨过高时的警报音效。",
+[OPTION_TOOLTIP_PRIMARY_MONITOR] = "使你可以更改显示游戏使用的主要显示器。",
+[OPTION_TOOLTIP_PROFANITY_FILTER] = "开启不良语句过滤。",
+[OPTION_TOOLTIP_PROFANITY_FILTER_WITH_WARNING] = "开启不良语言过滤器。\n\n|cffff0000警告：|r暴雪游戏服务不可用，本次设置改动也许不会被保存。",
+[OPTION_TOOLTIP_PROJECTED_TEXTURES] = "启用将贴图材质投射到环境中的功能。禁用此项可以提高游戏运行速度。",
+[OPTION_TOOLTIP_PUSHTOTALK_SOUND] = "当你按下发言按键时发出提示声音。",
+[OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYONLYHEALERPOWERBARS] = "只显示治疗者能量条。非治疗者能量条会隐藏。",
+[OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYPETS] = "显示PvP对手召唤的宠物。",
+[OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYPOWERBAR] = "显示PVP对手的能量条",
+[OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT] = "决定PvP框架里显示的生命值文字类型。",
+[OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_HEALTH] = "显示剩余生命值的数字",
+[OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_LOSTHEALTH] = "只有生命值不是全满时才显示数字",
+[OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_NONE] = "不显示任何生命值文字",
+[OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_PERC] = "显示剩余生命值的百分比",
+[OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_USECLASSCOLORS] = "显示职业颜色。如果取消勾选，会使用默认的颜色。",
+[OPTION_TOOLTIP_RAID_USE_CLASS_COLORS] = "以不同颜色显示不同职业的团队成员的生命槽。",
+[OPTION_TOOLTIP_REDUCED_LAG_TOLERANCE] = "更改这个数值以降低在公共冷却时间结束之前你能够排序施放下一个法术的时间。建议将这个数值设置为与你的延迟数值相近的值。",
+[OPTION_TOOLTIP_REFRESH_RATE] = "显示器上图形的刷新次数。如果刷新率太低，有些玩家会感觉到画面闪烁。",
+[OPTION_TOOLTIP_REMOVE_CHAT_DELAY] = "选择后当鼠标移动到聊天窗口之后窗口立即显示。",
+[OPTION_TOOLTIP_RENDER_SCALE] = "调节渲染3D世界的分辨率。把渲染倍数降低到100%以下可以降低GPU的负担，从而在一些情况下极大地提升帧率。超过100%的渲染倍数适用于超级采样抗锯齿（SSAA）。SSAA对于GPU的负担很重，只推荐你对其他抗锯齿选项都不满意的情况下使用。",
+[OPTION_TOOLTIP_REPLACE_MY_PLAYER_PORTRAIT] = "用你的职业图标替换你的玩家单位框体头像",
+[OPTION_TOOLTIP_REPLACE_OTHER_PLAYER_PORTRAITS] = "用职业图标替换其他玩家单位框体头像",
+[OPTION_TOOLTIP_RESAMPLE_QUALITY] = "在使用非100%的渲染倍数时，本项设置可调整向上倍数/向下倍数的品质。注意：点和FidelityFXSuper Resolution只能用于向上倍数。如果渲染倍数超过100%，则三线性会用于SSAA。",
+[OPTION_TOOLTIP_RESET_CHAT_POSITION] = "重置聊天窗口，令其回到默认位置。",
+[OPTION_TOOLTIP_RESOLUTION] = "设置游戏窗口的分辨率。",
+[OPTION_TOOLTIP_RESTRICT_CALENDAR_INVITES] = "只允许好友或公会成员的日历邀请。",
+[OPTION_TOOLTIP_REVERSE_CLEAN_UP_BAGS] = "钩选后，整理背包会将物品移动到你最右边的背包里。",
+[OPTION_TOOLTIP_REVERSE_NEW_LOOT] = "钩选后，新物品会出现在你最左边的背包里。",
+[OPTION_TOOLTIP_ROTATE_MINIMAP] = "选中此项以旋转微缩地图，而非旋转玩家指示箭头。",
+[OPTION_TOOLTIP_RT_SHADOW_QUALITY] = "用光线追踪技术提高阴影质量，使其具有更自然的柔和感，精度也大幅提升，还可以由额外的光源生成阴影。|n|n此功能需要：|n具有硬件光线追踪功能的显卡|nWindows 10的2020年5月10日的更新（版本2004）|n升级到最新的显卡驱动|nDirectX 12",
+[OPTION_TOOLTIP_SCROLL_ARC] = "战斗信息文字以弧线路径远离玩家。",
+[OPTION_TOOLTIP_SCROLL_DOWN] = "战斗信息文字向屏幕下方滚动。",
+[OPTION_TOOLTIP_SCROLL_UP] = "战斗信息文字向屏幕上方滚动。",
+[OPTION_TOOLTIP_SECURE_ABILITY_TOGGLE] = "钩选此项之后，你将不会因为在短时间内偶然多次点击快捷键而意外取消你的技能。",
+[OPTION_TOOLTIP_SELF_HIGHLIGHT] = "在团队副本和战场中高亮显示你的角色。",
+[OPTION_TOOLTIP_SELF_HIGHLIGHT_IN_BG] = "在战场中高亮显示你的角色。",
+[OPTION_TOOLTIP_SELF_HIGHLIGHT_IN_BG_COMBAT] = "仅在战斗中高亮显示你的角色。",
+[OPTION_TOOLTIP_SELF_HIGHLIGHT_IN_RAID] = "在团队副本中高亮显示你的角色。",
+[OPTION_TOOLTIP_SELF_HIGHLIGHT_IN_RAID_COMBAT] = "仅在战斗中高亮显示你的角色。",
+[OPTION_TOOLTIP_SHADOW_QUALITY] = "控制阴影渲染的方式和质量。降低此项可以大幅提高游戏运行速度。",
+[OPTION_TOOLTIP_SHARPNESS] = "调整FidelityFX Super Resolution的锐度效果的强度。0是满强度。",
+[OPTION_TOOLTIP_SHOW_ACCOUNT_ACHIEVEMENTS] = "打开本选项后，他人在“观察”你或使用英雄榜及手机应用程序查询时，将只能看到你的角色成就。",
+[OPTION_TOOLTIP_SHOW_ALL_ENEMY_DEBUFFS] = "显示敌对目标身上的所有负面状态，而不是只显示那些被判定与你有关的负面状态。",
+[OPTION_TOOLTIP_SHOW_ARENA_ENEMY_CASTBAR] = "显示对方的竞技场战队中的玩家正在施放的法术。",
+[OPTION_TOOLTIP_SHOW_ARENA_ENEMY_FRAMES] = "在竞技场中显示对手成员框体。",
+[OPTION_TOOLTIP_SHOW_ARENA_ENEMY_PETS] = "显示对方的竞技场战队中的宠物头像。",
+[OPTION_TOOLTIP_SHOW_BATTLENET_TOASTS] = "开启该选项以使来自暴雪游戏的系统信息以弹窗方式显示。",
+[OPTION_TOOLTIP_SHOW_BORDERS] = "显示团队框体的边框。",
+[OPTION_TOOLTIP_SHOW_BUFF_DURATION] = "显示/隐藏增益效果的持续时间。",
+[OPTION_TOOLTIP_SHOW_CASTABLE_BUFFS] = "只显示可以对友方目标施放的增益法术。",
+[OPTION_TOOLTIP_SHOW_CASTABLE_DEBUFFS] = "仅显示你对敌方目标施放的负面效果。",
+[OPTION_TOOLTIP_SHOW_CHAT_ICONS] = "设定是否在自动加入的聊天频道（如交易频道）中以图标形式显示图标链接。",
+[OPTION_TOOLTIP_SHOW_CLASS_COLOR_IN_V_KEY] = "在用以显示敌方玩家生命值的姓名板背景上标示出敌对玩家的职业颜色。",
+[OPTION_TOOLTIP_SHOW_CLOAK] = "取消这个选项来隐藏你的角色的披风。",
+[OPTION_TOOLTIP_SHOW_CLOCK] = "在微缩地图上显示时钟按钮。",
+[OPTION_TOOLTIP_SHOW_COMBAT_HEALING] = "显示你对目标的治疗量。",
+[OPTION_TOOLTIP_SHOW_COMBAT_HEALING_ABSORB_SELF] = "在你获得一层护盾时显示信息。",
+[OPTION_TOOLTIP_SHOW_COMBAT_HEALING_ABSORB_TARGET] = "显示你为目标增加的护盾吸收量。",
+[OPTION_TOOLTIP_SHOW_COMBAT_TEXT] = "钩选此项将在屏幕上直观显示额外的战斗信息。",
+[OPTION_TOOLTIP_SHOW_DAMAGE] = "在敌对生物身上显示所造成的伤害。",
+[OPTION_TOOLTIP_SHOW_DISPELLABLE_DEBUFFS] = "只显示友方目标身上可以驱散的负面效果。",
+[OPTION_TOOLTIP_SHOW_FULLSCREEN_STATUS] = "当你在使用全屏幕UI的情况下，并且在战斗中时，在屏幕边缘显示闪光效果。",
+[OPTION_TOOLTIP_SHOW_GUILD_NAMES] = "总是显示游戏世界中的玩家公会名字。",
+[OPTION_TOOLTIP_SHOW_HD_MODELS] = "勾选此项可以使用高清角色模型。",
+[OPTION_TOOLTIP_SHOW_HELM] = "取消这个选项来隐藏你的角色的头盔。",
+[OPTION_TOOLTIP_SHOW_IN_GAME_NAVIGATION] = "在世界中显示一个标记，标明当前追踪的任务、前往的地点的方向和距离。",
+[OPTION_TOOLTIP_SHOW_ITEM_LEVEL] = "在提示信息中显示特定物品的物品等级。",
+[OPTION_TOOLTIP_SHOW_LOOT_SPAM] = "不选中此项可以隐藏各人掷骰子的信息，只显示获胜者的掷骰子信息。",
+[OPTION_TOOLTIP_SHOW_LUA_ERRORS] = "显示与UI功能相关的错误信息。",
+[OPTION_TOOLTIP_SHOW_MULTIBAR1] = "默认居中并贴附在动作条1上",
+[OPTION_TOOLTIP_SHOW_MULTIBAR2] = "默认居中并贴附在动作条2上",
+[OPTION_TOOLTIP_SHOW_MULTIBAR3] = "默认在屏幕右侧",
+[OPTION_TOOLTIP_SHOW_MULTIBAR4] = "默认贴附在右侧动作条1的左边",
+[OPTION_TOOLTIP_SHOW_NAMEPLATE_LOSE_AGGRO_FLASH] = "你对敌人的威胁值降低时，其姓名板会闪烁。主要用于坦克。",
+[OPTION_TOOLTIP_SHOW_NEWBIE_TIPS] = "显示法术和界面的信息。",
+[OPTION_TOOLTIP_SHOW_NPC_NAMES] = "总是显示游戏世界中的NPC名字。",
+[OPTION_TOOLTIP_SHOW_NUMERIC_THREAT] = "钩选此项，以百分比形式显示威胁值。",
+[OPTION_TOOLTIP_SHOW_OTHER_TARGET_EFFECTS] = "显示其他玩家的目标身上的效果，比如沉默和诱捕。",
+[OPTION_TOOLTIP_SHOW_OWN_NAME] = "显示你的角色的名字。",
+[OPTION_TOOLTIP_SHOW_PARTY_BACKGROUND] = "在小队成员和敌方竞技场队员后面显示背景。",
+[OPTION_TOOLTIP_SHOW_PARTY_PETS] = "显示队友宠物的头像。",
+[OPTION_TOOLTIP_SHOW_PARTY_TEXT] = "总是以数字形式在队友的状态条上显示其生命值、法力值、怒气值或能量值。",
+[OPTION_TOOLTIP_SHOW_PETBATTLE_COMBAT] = "勾选此项将可在宠物对战中开启额外的战斗信息。",
+[OPTION_TOOLTIP_SHOW_PET_MELEE_DAMAGE] = "显示你的宠物造成的伤害。",
+[OPTION_TOOLTIP_SHOW_PINGS_IN_CHAT] = "打开/关闭信号聊天信息。",
+[OPTION_TOOLTIP_SHOW_PLAYER_NAMES] = "总是显示游戏世界中的玩家姓名。",
+[OPTION_TOOLTIP_SHOW_PLAYER_TITLES] = "总是显示游戏世界中的玩家头衔。",
+[OPTION_TOOLTIP_SHOW_POINTS_AS_AVG] = "在法术说明中显示平均数值或是最低/最高值（伤害、治疗等数值）",
+[OPTION_TOOLTIP_SHOW_QUEST_FADING] = "钩选此框以立刻显示所有任务文本。",
+[OPTION_TOOLTIP_SHOW_QUEST_OBJECTIVES_ON_MAP] = "启用后你可以在地图上看到特定任务目标的位置。",
+[OPTION_TOOLTIP_SHOW_RAID_RANGE] = "当团队成员距离太远时，通过使他们的生命条变淡来标示距离。",
+[OPTION_TOOLTIP_SHOW_TARGET_CASTBAR] = "显示你的当前目标正在施放的法术。",
+[OPTION_TOOLTIP_SHOW_TARGET_CASTBAR_IN_V_KEY] = "在你的当前目标姓名板被显示出来的情况下，在游戏界面中显示敌方施法条和生命值。",
+[OPTION_TOOLTIP_SHOW_TARGET_CASTBAR_IN_V_KEY_ONLY_ON_TARGET] = "只在你当前目标的姓名板上显示敌方施法条。",
+[OPTION_TOOLTIP_SHOW_TARGET_CASTBAR_IN_V_KEY_SPELL_NAME] = "在姓名板上的施法条上显示法术名。",
+[OPTION_TOOLTIP_SHOW_TARGET_EFFECTS] = "显示你的目标身上的效果，比如沉默和诱捕。",
+[OPTION_TOOLTIP_SHOW_TARGET_OF_TARGET] = "显示或隐藏你的目标所选定的目标。",
+[OPTION_TOOLTIP_SHOW_TIPOFTHEDAY] = "在游戏读取界面上显示或隐藏每日小窍门。",
+[OPTION_TOOLTIP_SHOW_TOAST_BROADCAST] = "实名好友或战网昵称好友更新通告时显示暴雪游戏信息。",
+[OPTION_TOOLTIP_SHOW_TOAST_CONVERSATION] = "加入实名好友或战网昵称好友对话时显示暴雪游戏信息。",
+[OPTION_TOOLTIP_SHOW_TOAST_FRIEND_REQUEST] = "收到实名好友或战网昵称好友请求时显示暴雪游戏信息。",
+[OPTION_TOOLTIP_SHOW_TOAST_OFFLINE] = "实名好友或战网昵称好友下线时显示暴雪游戏信息。",
+[OPTION_TOOLTIP_SHOW_TOAST_ONLINE] = "实名好友或战网昵称好友上线时显示暴雪游戏信息。",
+[OPTION_TOOLTIP_SHOW_TOAST_WINDOW] = "开启该选项将使暴雪游戏信息显示在一个浮动信息窗口中。",
+[OPTION_TOOLTIP_SHOW_TUTORIALS] = "显示介绍你如何进行魔兽世界游戏的教程。",
+[OPTION_TOOLTIP_SHOW_UNIT_NAMES] = "在游戏中显示单位名称。",
+[OPTION_TOOLTIP_SIMPLE_CHAT] = "自动设置无法修改设定的主对话窗口和战斗日志窗口。",
+[OPTION_TOOLTIP_SIMPLE_QUEST_WATCH_TEXT] = "自动管理目标追踪框体的尺寸和位置。",
+[OPTION_TOOLTIP_SMART_PIVOT] = "当镜头固定在地面上时，使你可以自由观察。",
+[OPTION_TOOLTIP_SOCIAL_ENABLE_TWITTER_FUNCTIONALITY] = "钩选此项将魔兽世界与推特关联。使用/分享指令发布推特信息。",
+[OPTION_TOOLTIP_SOUND_QUALITY] = "调整游戏声音的品质。\n降低此标准可以提高游戏运行速度。",
+[OPTION_TOOLTIP_SPAM_FILTER] = "打开或关闭聊天文字中的垃圾信息过滤功能。",
+[OPTION_TOOLTIP_SPELL_ALERT_OPACITY] = "设置屏幕中央显示的特定重要事件报警信息的不透明度。",
+[OPTION_TOOLTIP_SPELL_DENSITY] = "控制不重要的法术的可见度。",
+[OPTION_TOOLTIP_SPELL_DETAIL] = "调节法术效果的细节等级。调低此项可以提高运行速度。",
+[OPTION_TOOLTIP_SSAO] = "控制高级光照效果的渲染品质。降低此项可以大幅提高游戏运行速度。",
+[OPTION_TOOLTIP_STACK_RIGHT_BARS] = "将右侧动作条垂直连在一起，而不是并排连接。|n|n（只对大型显示器有效）",
+[OPTION_TOOLTIP_STATUS_BAR] = "总是用数字表示经验值、生命值、法力值、怒气值、能量值或快乐值。",
+[OPTION_TOOLTIP_STATUS_TEXT_DISPLAY] = "在状态栏中显示数值、百分比还是同时显示。",
+[OPTION_TOOLTIP_STATUS_TEXT_PARTY] = "总是在你的小队成员的生命条、法力条、怒气条或能量条上显示文字。",
+[OPTION_TOOLTIP_STATUS_TEXT_PERCENT] = "总是以百分比显示状态文字。",
+[OPTION_TOOLTIP_STATUS_TEXT_PET] = "总是在你的宠物的生命条、法力条、或集中条上显示文字。",
+[OPTION_TOOLTIP_STATUS_TEXT_PLAYER] = "总是在你的角色的生命条、法力条、怒气条或能量条上显示文字。",
+[OPTION_TOOLTIP_STATUS_TEXT_TARGET] = "总是在你的目标的生命条、法力条、怒气条、能量条或集中条上显示文字。",
+[OPTION_TOOLTIP_STEREO_HARDWARE_CURSOR] = "勾选此项可以提高游戏运行速度，但是将无法使用3D鼠标功能。",
+[OPTION_TOOLTIP_STOP_AUTO_ATTACK] = "当你切换目标时停止自动攻击。",
+[OPTION_TOOLTIP_SUNSHAFTS] = "控制体积光及眩光效果的渲染方式和质量。关闭该选项可以提高游戏运行速度。",
+[OPTION_TOOLTIP_TARGETOFTARGET1] = "当你在一个团队中时显示目标的目标。",
+[OPTION_TOOLTIP_TARGETOFTARGET2] = "当你在一个小队中时显示目标的目标。",
+[OPTION_TOOLTIP_TARGETOFTARGET3] = "当你独自冒险时显示目标的目标。",
+[OPTION_TOOLTIP_TARGETOFTARGET4] = "当你在一个团队或小队中时显示目标的目标。",
+[OPTION_TOOLTIP_TARGETOFTARGET5] = "总是显示目标的目标。",
+[OPTION_TOOLTIP_TARGETOFTARGET_ALWAYS] = "总是显示目标的目标。",
+[OPTION_TOOLTIP_TARGETOFTARGET_PARTY] = "当你在一个小队中时显示目标的目标。",
+[OPTION_TOOLTIP_TARGETOFTARGET_RAID] = "当你在团队中时显示目标的目标。",
+[OPTION_TOOLTIP_TARGETOFTARGET_RAID_AND_PARTY] = "当你在一个团队或小队中时显示目标的目标。",
+[OPTION_TOOLTIP_TARGETOFTARGET_SOLO] = "当你独自冒险时显示目标的目标。",
+[OPTION_TOOLTIP_TARGET_TOOLTIP] = "不将鼠标悬停在你的目标上而显示其提示信息",
+[OPTION_TOOLTIP_TERRAIN_HIGHLIGHTS] = "为地形使用镜面高光。禁用此项有时可以提高运行速度。",
+[OPTION_TOOLTIP_TERRAIN_TEXTURE] = "设置两种地貌的混合比率。",
+[OPTION_TOOLTIP_TEXTURE_DETAIL] = "调节所有材质的细节等级。降低此项可以略微提高运行速度。",
+[OPTION_TOOLTIP_TIMESTAMPS] = "选择聊天信息的时间戳格式。",
+[OPTION_TOOLTIP_TOAST_DURATION] = "调整浮动信息窗口的持续时间。",
+[OPTION_TOOLTIP_TRACK_QUEST_PROXIMITY] = "新近追踪的任务将根据目标追踪上显示的距离远近排序。",
+[OPTION_TOOLTIP_TRACK_QUEST_TOP] = "新近追踪的任务将被排在目标追踪的顶部。",
+[OPTION_TOOLTIP_TRILINEAR] = "开启高质量材质过滤。关闭此选项可以提高运行速度。",
+[OPTION_TOOLTIP_TRIPLE_BUFFER] = "三倍缓冲可以使画面帧数平均化，但也可能令较慢的GPU产生轻微的输入延迟。\n启用：三倍缓冲\n禁用：二倍缓冲",
+[OPTION_TOOLTIP_UI_SCALE] = "改变用户游戏界面尺寸。",
+[OPTION_TOOLTIP_UNIT_NAMEPLATES_ALLOW_OVERLAP] = "单位姓名板会因为视野而重叠在一起。关掉此选项可以使姓名板相互隔开。",
+[OPTION_TOOLTIP_UNIT_NAMEPLATES_AUTOMODE] = "在默认设置下，只有在战斗中才会显示姓名板。钩选此项后可始终显示所有姓名板。",
+[OPTION_TOOLTIP_UNIT_NAMEPLATES_MAKE_LARGER] = "使用大姓名板",
+[OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_ENEMIES] = "显示敌方单位姓名板",
+[OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_ENEMY_GUARDIANS] = "选中该选项以显示敌方守护者的姓名板。",
+[OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_ENEMY_MINIONS] = "选中此选项可以显示敌方宠物、护卫和图腾的姓名板。",
+[OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_ENEMY_MINUS] = "选中此选项可以显示杂兵类敌人的单位姓名板。",
+[OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_ENEMY_TOTEMS] = "选中此选项可以显示敌人图腾的姓名板",
+[OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_FRIENDLY_CLASS_COLORS] = "选中此选项可以按职业颜色显示友方单位姓名板",
+[OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_FRIENDLY_GUARDIANS] = "选中该选项以显示友方守护者的姓名板。",
+[OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_FRIENDLY_MINIONS] = "选中此选项可以显示友方宠物、护卫和图腾的姓名板。",
+[OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_FRIENDLY_TOTEMS] = "选中该选项以显示友方图腾的姓名板。",
+[OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_FRIENDS] = "显示友方玩家姓名板",
+[OPTION_TOOLTIP_UNIT_NAME_ENEMY] = "在游戏中显示敌方玩家的名字。",
+[OPTION_TOOLTIP_UNIT_NAME_ENEMY_GUARDIANS] = "在游戏中显示敌方守护者的名字。",
+[OPTION_TOOLTIP_UNIT_NAME_ENEMY_MINIONS] = "在游戏中显示敌方宠物、护卫和图腾的名字。",
+[OPTION_TOOLTIP_UNIT_NAME_ENEMY_TOTEMS] = "在游戏中显示敌方图腾的名字。",
+[OPTION_TOOLTIP_UNIT_NAME_FRIENDLY] = "在游戏中显示友方玩家的名字。",
+[OPTION_TOOLTIP_UNIT_NAME_FRIENDLY_GUARDIANS] = "在游戏中显示友方守护者的名字。",
+[OPTION_TOOLTIP_UNIT_NAME_FRIENDLY_MINIONS] = "在游戏中显示友方宠物、护卫和图腾的名字。",
+[OPTION_TOOLTIP_UNIT_NAME_FRIENDLY_TOTEMS] = "在游戏中显示友方图腾的名字。",
+[OPTION_TOOLTIP_UNIT_NAME_GUILD] = "在游戏中显示玩家的公会名。",
+[OPTION_TOOLTIP_UNIT_NAME_GUILD_TITLE] = "在游戏中显示玩家的公会称号。",
+[OPTION_TOOLTIP_UNIT_NAME_HIDE_MINUS] = "隐藏实力较弱的小型生物名称",
+[OPTION_TOOLTIP_UNIT_NAME_NONCOMBAT_CREATURE] = "在游戏中显示小动物和小伙伴的名字。",
+[OPTION_TOOLTIP_UNIT_NAME_NPC] = "在游戏中显示NPC的名字。",
+[OPTION_TOOLTIP_UNIT_NAME_OWN] = "在游戏中显示你的角色的名字。",
+[OPTION_TOOLTIP_UNIT_NAME_PLAYER_TITLE] = "在游戏中显示玩家的头衔。",
+[OPTION_TOOLTIP_USEIPV6] = "开启下一代互联网科技——IPv6。\n需要IPv6连接。如果在没有IPv6连接的情况下勾选该方框可能会导致你无法登录魔兽世界。",
+[OPTION_TOOLTIP_USE_COLORBLIND_MODE] = "在提示框以及其它一些界面中显示额外的信息。",
+[OPTION_TOOLTIP_USE_COMBINED_BAGS] = "查看你的背包时会显示为一个单一的物品栏窗口",
+[OPTION_TOOLTIP_USE_ENGLISH_AUDIO] = "勾选此项以覆盖你的语言设置并使用英文语音。",
+[OPTION_TOOLTIP_USE_RAID_STYLE_PARTY_FRAMES] = "按照团队框体的方式显示你的小队框体界面。这些框体遵循你的团队框体设置。",
+[OPTION_TOOLTIP_USE_REFRESH] = "改变显示器刷新率。更高的刷新率下，画面闪烁更少。",
+[OPTION_TOOLTIP_USE_RESOLUTION] = "改变游戏分辨率。降低分辨率可以提高游戏运行速度。",
+[OPTION_TOOLTIP_USE_UBERTOOLTIPS] = "开启屏幕右下角的具体信息提示。",
+[OPTION_TOOLTIP_USE_UISCALE] = "选择则可以使用用户界面比例调节，不选择的话就使用系统默认比例。",
+[OPTION_TOOLTIP_USE_WEATHER_SHADER] = "如果天气效果会导致你的计算机崩溃，就不要开启这一选项。",
+[OPTION_TOOLTIP_VERTEX_ANIMATION_SHADERS] = "开启顶点着色器加速动画。开启这个选项将最大化画面表现。",
+[OPTION_TOOLTIP_VERTICAL_SYNC] = "将你的游戏帧数与显示器刷新率同步。可以解决游戏中的图像无法正常显示的问题。",
+[OPTION_TOOLTIP_VOICE_ACTIVATION_SENSITIVITY] = "调节麦克风的敏感度。",
+[OPTION_TOOLTIP_VOICE_AMBIENCE] = "调整使用语音聊天时的环境音量。",
+[OPTION_TOOLTIP_VOICE_INPUT] = "选择你的麦克风，或者它所连接到的控制器。",
+[OPTION_TOOLTIP_VOICE_INPUT_VOLUME] = "调整你的语音音量。",
+[OPTION_TOOLTIP_VOICE_MUSIC] = "调节使用语音聊天时的游戏音乐音量。",
+[OPTION_TOOLTIP_VOICE_OUTPUT] = "选择语音聊天的输出设备。",
+[OPTION_TOOLTIP_VOICE_OUTPUT_VOLUME] = "调整其他人的语音音量。",
+[OPTION_TOOLTIP_VOICE_SOUND] = "调整使用语音聊天时的游戏音量。",
+[OPTION_TOOLTIP_VOICE_TYPE1] = "必须先按下指定的按键才能在语音聊天中发言。",
+[OPTION_TOOLTIP_VOICE_TYPE2] = "只需说话即可进行语音传输。",
+[OPTION_TOOLTIP_VRS_AGGRESSIVE] = "细节有微小损失",
+[OPTION_TOOLTIP_VRS_MODE] = "控制可变速率着色（VRS）功能的强度。VRS是一项GPU硬件功能，可在不大幅降低画面品质的前提下降低GPU的工作负荷。在支持此功能的硬件上开启此功能有可能提高帧率。",
+[OPTION_TOOLTIP_VRS_STANDARD] = "画面品质几乎没有损失",
+[OPTION_TOOLTIP_WATCH_FRAME_WIDTH] = "增加任务目标追踪栏的宽度。",
+[OPTION_TOOLTIP_WATER_COLLISION] = "设置视角，使其在你角色处于水面之上的时候镜头在水面之上，而当你在水下的时候，视角在水面之下。",
+[OPTION_TOOLTIP_WEATHER_DETAIL] = "调节天气效果的表现强度。调低此项可以提高运行速度。",
+[OPTION_TOOLTIP_WINDOWED_MAXIMIZED] = "钩选此项以最大化窗口并去除边框。",
+[OPTION_TOOLTIP_WINDOWED_MODE] = "钩选此框，在非全屏幕的窗口模式下游戏。\n\n在窗口模式下，游戏将使用桌面伽马值，并无法通过下面的滑杆调节。",
+[OPTION_TOOLTIP_WINDOW_LOCK] = "开启此选项后可以使游戏窗口无法被缩放。",
+[OPTION_TOOLTIP_WORLD_LOD] = "开启地形多边型细节动态缩减，打开此选项可以提高运行速度。",
+[OPTION_TOOLTIP_WORLD_PVP_DISPLAY1] = "当你在PvP区域中时显示世界PvP目标。",
+[OPTION_TOOLTIP_WORLD_PVP_DISPLAY2] = "当你在PvP地点附近时显示世界PvP目标。",
+[OPTION_TOOLTIP_WORLD_PVP_DISPLAY3] = "关闭世界PvP目标显示。",
+[OPTION_TOOLTIP_WORLD_PVP_DISPLAY_ALWAYS] = "当你在PvP区域中时显示世界PvP目标。",
+[OPTION_TOOLTIP_WORLD_PVP_DISPLAY_DYNAMIC] = "当你在PvP地点附近时显示世界PvP目标。",
+[OPTION_TOOLTIP_WORLD_PVP_DISPLAY_NEVER] = "关闭世界PvP目标显示。",
+[OPTION_TOOLTIP_WOW_MOUSE] = "启用此项以启用魔兽世界专用鼠标并对其进行额外的键位绑定。",
+[OPTION_TOOLTIP_XP_BAR] = "总是在你的经验条上显示文字。",
+[OPTION_TOOTIP_RETINA_CURSOR] = "打开此项可使用高分辨率鼠标指针。\n（主要针对极高分辨率/视网膜显示器）",
+}
+end
+
+
+
+
 
 
 
@@ -1456,18 +2113,173 @@ end
 
 
 local function Init()
-        --可能会出错
-        set(GameMenuFrame.Header.Text, '游戏菜单')
-        set(GameMenuButtonHelp, '帮助')
-        set(GameMenuButtonStore, '商店')
-        set(GameMenuButtonWhatsNew, '新内容')
-        set(GameMenuButtonSettings, '选项')
-        set(GameMenuButtonEditMode, '编辑模式')
-        set(GameMenuButtonMacros, '宏')
-        set(GameMenuButtonAddons, '插件')
-        set(GameMenuButtonLogout, '登出')
-        set(GameMenuButtonQuit, '退出游戏')
-        set(GameMenuButtonContinue, '返回游戏')
+
+    
+
+
+   
+    hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--列表 Blizzard_CategoryList.lua
+        local category = initializer.data.category
+        if category then
+            setLabel(self.Label, category:GetName())
+        end
+    end)
+    hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
+        setLabel(self.Label, initializer.data.label)
+    end)
+
+    --选项
+    hooksecurefunc(SettingsPanel.Container.SettingsList.ScrollBox, 'Update', function(frame)
+        if not frame:GetView() or not frame:IsVisible() then
+            return
+        end
+        Init_Option_Text()
+        --标提
+        setLabel(SettingsPanel.Container.SettingsList.Header.Title, SettingsPanel.Container.SettingsList.Header.Title:GetText())
+        for _, btn in pairs(frame:GetFrames() or {}) do
+            local lable
+            if btn.Button then--按钮
+                lable= btn.Button.Text or btn.Button
+                if lable then
+                    setLabel(lable, lable:GetText())
+                end
+            end
+            if btn.DropDown and btn.DropDown.Button and btn.DropDown.Button.SelectionDetails  then--下拉，菜单info= btn
+                lable= btn.DropDown.Button.SelectionDetails.SelectionName
+                if lable then
+                    setLabel(lable, lable:GetText())
+                end
+            end
+            lable= btn.Text or btn.Label or btn.Title
+            if lable then
+                setLabel(lable, lable:GetText())
+            elseif btn.Text and btn.data and btn.data.name and btn.data.name then
+                setLabel(btn.Text, btn.data.name)
+            end
+        end
+    end)
+    SettingsPanel:HookScript('OnHide', function() e.strOption={} optionTab=nil end)
+    hooksecurefunc('BindingButtonTemplate_SetupBindingButton', function(_, button)--BindingUtil.lua
+        Init_Option_Text()
+        local text= button:GetText()
+        if button:GetText()==GRAY_FONT_COLOR:WrapTextInColorCode(NOT_BOUND) then
+            set(button, GRAY_FONT_COLOR:WrapTextInColorCode('未设置'))
+        else
+            setLabel(button, text)
+        end
+    end)
+    hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)
+        Init_Option_Text()
+        setLabel(self.Label, self.Label:GetText())
+    end)
+    --[[SettingsPanel:HookScript('OnShow', Init_Option_Text)
+    SettingsPanel:HookScript('OnHide', function() e.strOption={} optionTab=nil end)
+
+   
+    hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--列表 Blizzard_CategoryList.lua
+        local category = initializer.data.category
+        if category then
+            setLabel(self.Label, category:GetName())
+        end
+    end)
+    hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
+        setLabel(self.Label, initializer.data.label)
+    end)
+
+    hooksecurefunc(SettingsListSectionHeaderMixin, 'Init', function(self, initializer)
+         Init_Option_Text()
+        local data = initializer:GetData();
+        setLabel(self.Title, data.name)
+    end)
+    hooksecurefunc(SettingsListSearchCategoryMixin, 'Init', function(self, initializer)
+        Init_Option_Text()
+       local data = initializer:GetData();
+       setLabel(self.Title, data.category:GetQualifiedName())
+       print(data.category:GetQualifiedName())
+   end)
+
+    hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
+        Init_Option_Text()
+        local setting = self:GetSetting();
+        setLabel(self.Text, setting.name)
+        
+    end)
+
+    hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self, initializer)
+        Init_Option_Text()
+        setLabel(self.Text, initializer.data.name)
+
+    end)
+    hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self, initializer)
+        Init_Option_Text()
+        setLabel(self.Text, initializer.data.setting.name)
+    end)
+    hooksecurefunc(SettingsButtonControlMixin, 'Init', function(self, initializer)
+        Init_Option_Text()
+        setLabel(self.Button, self.data.buttonText);
+    end)
+    hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self, initializer)
+        Init_Option_Text()
+        setLabel(self.Text, initializer.data.name)
+
+    end)
+    hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
+        Init_Option_Text()
+        setLabel(self.Text, initializer.data.name)
+
+        local cbSetting = initializer.data.cbSetting
+        setLabel(self.Text, cbSetting.name)
+        local cbLabel = initializer.data.cbLabel
+        local cbTooltip = initializer.data.cbTooltip
+        local sliderLabel = initializer.data.sliderLabel
+        local sliderTooltip = initializer.data.sliderTooltip
+    end)
+    hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
+        Init_Option_Text()
+        local cbSetting = initializer.data.cbSetting
+        setLabel(self.Text, cbSetting.name)
+        local cbLabel = initializer.data.cbLabel
+        local cbTooltip = initializer.data.cbTooltip
+        local setting = initializer.data.dropDownSetting
+        local options = initializer.data.dropDownOptions
+    end)
+    hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)
+        Init_Option_Text()
+        setLabel(self.Label, self.Label:GetText())
+    end)
+    hooksecurefunc('BindingButtonTemplate_SetupBindingButton', function(_, button)--BindingUtil.lua
+        Init_Option_Text()
+        local text= button:GetText()
+        if button:GetText()==GRAY_FONT_COLOR:WrapTextInColorCode(NOT_BOUND) then
+            set(button, GRAY_FONT_COLOR:WrapTextInColorCode('未设置'))
+        else
+            setLabel(button, text)
+        end
+    end)
+    
+    hooksecurefunc(SettingsListElementInitializer, 'Init', function(self, data)
+        print(self.Title, data.name)
+        setLabel(self.Title, data.name)
+    end)]]
+
+    --hooksecurefunc(SettingsPanelMixin, 'OnSearchTextChanged', function(self)
+
+
+
+
+
+
+    set(GameMenuFrame.Header.Text, '游戏菜单')
+    set(GameMenuButtonHelp, '帮助')
+    set(GameMenuButtonStore, '商店')
+    set(GameMenuButtonWhatsNew, '新内容')
+    set(GameMenuButtonSettings, '选项')
+    set(GameMenuButtonEditMode, '编辑模式')
+    set(GameMenuButtonMacros, '宏')
+    set(GameMenuButtonAddons, '插件')
+    set(GameMenuButtonLogout, '登出')
+    set(GameMenuButtonQuit, '退出游戏')
+    set(GameMenuButtonContinue, '返回游戏')
 
     --角色
     set(CharacterFrameTab1, '角色')
@@ -1621,59 +2433,348 @@ local function Init()
         set(LFGListFrame.CategorySelection.Label, '预创建队伍')
             set(LFGListFrame.EntryCreation.NameLabel, '名称')
             set(LFGListFrame.EntryCreation.DescriptionLabel, '详细信息')
-            hooksecurefunc('LFGListEntryCreation_SetPlaystyleLabelTextFromActivityInfo', function(self, activityInfo)--LFGList.lua
-                if(not activityInfo) then
-                    return
-                end
-                local labelText
-                if(activityInfo.isRatedPvpActivity) then
-                    labelText = '目标'--LFG_PLAYSTYLE_LABEL_PVP
-                elseif (activityInfo.isMythicPlusActivity) then
-                    labelText = '目标'--LFG_PLAYSTYLE_LABEL_PVE
-                else
-                    labelText = '游戏风格'--LFG_PLAYSTYLE_LABEL_PVE_MYTHICZERO
-                end
-                set(self.PlayStyleLabel, labelText)
-            end)
+
             set(LFGListFrame.EntryCreation.PlayStyleLabel, '目标')
             set(LFGListFrame.EntryCreation.MythicPlusRating.Label, '最低史诗钥石评分')
             set(LFGListFrame.EntryCreation.ItemLevel.Label, '最低物品等级')
             set(LFGListFrame.EntryCreation.PvpItemLevel.Label, '最低PvP物品等级')
             set(LFGListFrame.EntryCreation.VoiceChat.Label, '语音聊天')
-            hooksecurefunc('LFGListEntryCreation_Select', function(self)
-                local faction = UnitFactionGroup("player")
-                if faction=='Alliance' then
-                    set(self.CrossFactionGroup.Label, '仅限联盟')
-                elseif faction=='Horde' then
-                    set(self.CrossFactionGroup.Label, '仅限部落')
-                end
-            end)
+
             set(LFGListFrame.EntryCreation.PrivateGroup.Label, '个人')
-            hooksecurefunc('LFGListEntryCreation_SetEditMode', function(self)--LFGList.lua
-                if self.editMode then
-                    set(self.ListGroupButton, '编辑完毕')
-                else
-                    set(self.ListGroupButton, '列出队伍')
-                end
-            end)
+            LFGListFrame.EntryCreation.PrivateGroup.tooltip= '仅对已在队伍中的好友和公会成员可见。'
+
             set(LFGListFrame.ApplicationViewer.NameColumnHeader.Label, '名称', nil, true)
             set(LFGListFrame.ApplicationViewer.RoleColumnHeader.Label, '职责', nil, true)
             set(LFGListFrame.ApplicationViewer.ItemLevelColumnHeader.Label, '装等', nil, true)
             set(LFGApplicationViewerRatingColumnHeader.Label, '分数', nil, true)
+    set(LFGListApplicationDialog.Label, '选择你的角色')
+    set(LFGListApplicationDialogDescription.EditBox.Instructions, '给队长留言（可选）')
+    set(LFGListApplicationDialog.SignUpButton, '申请')
+    set(LFGListApplicationDialog.CancelButton, '取消')
+    LFGListApplicationDialog.DamagerButton.role='DAMAGER'
+    LFGListApplicationDialog.DamagerButton:HookScript('OnEnter', role_check_tooltips_enter)
+    LFGListApplicationDialog.HealerButton.role='HEALER'
+    LFGListApplicationDialog.HealerButton:HookScript('OnEnter', role_check_tooltips_enter)
+    LFGListApplicationDialog.TankButton.role='TANK'
+    LFGListApplicationDialog.TankButton:HookScript('OnEnter', role_check_tooltips_enter)
 
-            --hooksecurefunc('LFGListEntryCreation_Show', function()
+    local function GetFindGroupRestriction()
+        if ( C_SocialRestrictions.IsSilenced() ) then
+            return "SILENCED", RED_FONT_COLOR:WrapTextInColorCode('帐号禁言期间不能这样做')
+        elseif ( C_SocialRestrictions.IsSquelched() ) then
+            return "SQUELCHED", RED_FONT_COLOR:WrapTextInColorCode('我们已经暂时禁止了你的聊天和邮件权限。请参考您的邮件以获得更详细的信息。')
+        end
+        return nil, nil
+    end
+    local function GetStartGroupRestriction()
+        return GetFindGroupRestriction()
+    end
+    local function LFGListUtil_GetActiveQueueMessage(isApplication)--LFGList.lua
+        if ( not isApplication and select(2,C_LFGList.GetNumApplications()) > 0 ) then
+            return '你不能在拥有有效的预创建队伍申请时那样做。'
+        end
+        if ( isApplication and C_LFGList.HasActiveEntryInfo() ) then
+            return '你不能在你的队伍出现在预创建队伍列表中时那样做。'
+        end
+        for category=1, NUM_LE_LFG_CATEGORYS do
+            local mode = GetLFGMode(category)
+            if ( mode ) then
+                if ( mode == "lfgparty" ) then
+                    return '你不能在自动匹配队伍中那样做。'
+                elseif ( mode == "rolecheck" or (mode and not isApplication) ) then
+                    return '你不能在地下城、团队副本或场景战役队列中那样做。'
+                end
+            end
+        end
+        local inProgress, _, _, _, _, isBattleground = GetLFGRoleUpdate()
+        if ( inProgress ) then
+            return isBattleground and '你不能在战场或竞技场队列中那样做。' or '你不能在地下城、团队副本或场景战役队列中那样做。'
+        end
+        for i=1, GetMaxBattlefieldID() do
+            local status, _, _, _, _, _, _, _, _, _, _, isSoloQueue = GetBattlefieldStatus(i)
+            if ( status and status ~= "none" ) then
+                if not isSoloQueue or status == "active" then
+                    return '你不能在战场或竞技场队列中那样做，也不能在进入战场或竞技场后那样做。'
+                end
+            end
+        end
+    end
+    hooksecurefunc('LFGListCategorySelection_UpdateNavButtons', function(self)--LFGList.lua
+        if ( not self.selectedCategory ) then
+            self.FindGroupButton.tooltip = '做出选择。'
+            self.StartGroupButton.tooltip = '做出选择。'
+        end
+        if ( IsInGroup(LE_PARTY_CATEGORY_HOME) and not UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME) ) then
+            self.StartGroupButton.tooltip = '只有队长才能这么做。'
+        end
+        local messageStart = LFGListUtil_GetActiveQueueMessage(false)
+        if ( messageStart ) then
+            self.StartGroupButton.tooltip = messageStart
+        end
+        local findError, findErrorText = GetFindGroupRestriction()
+        if ( findError ~= nil ) then
+            self.FindGroupButton.tooltip = findErrorText
+            self.StartGroupButton.tooltip = findErrorText
+        end
+    end)
+
+    hooksecurefunc('LFGListNothingAvailable_Update', function(self)--LFGList.lua
+        if ( IsRestrictedAccount() ) then
+            set(self.Label, '免费试玩账号无法使用此功能。')
+        elseif ( C_LFGList.HasActivityList() ) then
+            set(self.Label, '你无法加入任何队伍。')
+        else
+            set(self.Label, '加载中…')
+        end
+    end)
+
+    hooksecurefunc('LFGListEntryCreation_Select', function(self, filters, categoryID, groupID, activityID)
+        filters, categoryID, groupID, activityID = LFGListUtil_AugmentWithBest(bit.bor(self.baseFilters or 0, filters or 0), categoryID, groupID, activityID);
+        local activityInfo = C_LFGList.GetActivityInfoTable(activityID);
+        if(not activityInfo) then
+            return;
+        end
+        local groupName = C_LFGList.GetActivityGroupInfo(groupID);
+        local englishFaction, localizedFaction  = UnitFactionGroup("player");
+        local faction= englishFaction=='Alliance' and '联盟'
+                    or (englishFaction=="Horde" and '部落')
+                    or (englishFaction=="Neutral" and '中立')
+                    or localizedFaction
+        set(self.CrossFactionGroup.Label, format('仅限%s', faction))
+        self.CrossFactionGroup.tooltip = format('只有%s玩家会看到你的队伍。|n|n这可能会减少你收到的申请人数量。', faction);
+        self.CrossFactionGroup.disableTooltip = format('这项活动不支持跨阵营队伍。|n|n你的队伍将只对%s玩家显示。', faction);
+        if ( activityInfo.ilvlSuggestion ~= 0 ) then
+            set(self.ItemLevel.EditBox.Instructions, format('推荐%d级', activityInfo.ilvlSuggestion))
+        else
+            set(self.ItemLevel.EditBox.Instructions, '物品等级')
+        end
+    end)
+
+    hooksecurefunc('LFGListEntryCreation_SetPlaystyleLabelTextFromActivityInfo', function(self, activityInfo)--LFGList.lua
+        if(not activityInfo) then
+            return
+        end
+        local labelText
+        if(activityInfo.isRatedPvpActivity) then
+            labelText = '目标'--LFG_PLAYSTYLE_LABEL_PVP
+        elseif (activityInfo.isMythicPlusActivity) then
+            labelText = '目标'--LFG_PLAYSTYLE_LABEL_PVE
+        else
+            labelText = '游戏风格'--LFG_PLAYSTYLE_LABEL_PVE_MYTHICZERO
+        end
+        set(self.PlayStyleLabel, labelText)
+    end)
+
+    hooksecurefunc('LFGListEntryCreation_UpdateValidState', function(self)
+        local errorText;
+        local activityInfo = C_LFGList.GetActivityInfoTable(self.selectedActivity)
+        local maxNumPlayers = activityInfo and  activityInfo.maxNumPlayers or 0;
+        local mythicPlusDisableActivity = not C_LFGList.IsPlayerAuthenticatedForLFG(self.selectedActivity) and (activityInfo.isMythicPlusActivity and not C_LFGList.GetKeystoneForActivity(self.selectedActivity));
+        if ( maxNumPlayers > 0 and GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) >= maxNumPlayers ) then
+            errorText = string.format('针对此项活动，你的队伍人数已满（%d）。', maxNumPlayers);
+        elseif (mythicPlusDisableActivity) then
+            errorText = '|cffff0000你只有给自己的账号添加战网安全令和短信安全保护功能后才能在没有钥石时发布一个史诗钥石队伍|r|n|cff1eff00<点击显示更多信息>|r';
+        elseif ( LFGListEntryCreation_GetSanitizedName(self) == "" ) then
+            errorText = '你必须为你的队伍输入一个名字。';
+        elseif  not self.ItemLevel.warningText
+            and not self.PvpItemLevel.warningText
+            and not self.MythicPlusRating.warningText
+            and not self.PVPRating.warningText
+        then
+            errorText = LFGListUtil_GetActiveQueueMessage(false);
+        end
+        if errorText then
+            self.ListGroupButton.errorText = errorText;
+        end
+    end)
+
+    local function LFGListUtil_GetQuestDescription(questID)
+        local descriptionFormat = '完成任务[%s]。';
+        if ( QuestUtils_IsQuestWorldQuest(questID) ) then
+            descriptionFormat = '完成世界任务[%s]。';
+        end
+        return descriptionFormat:format(QuestUtils_GetQuestName(questID));
+    end
+    hooksecurefunc('LFGListEntryCreation_SetEditMode', function(self)--LFGList.lua
+        local descInstructions = nil;
+        local isAccountSecured = C_LFGList.IsPlayerAuthenticatedForLFG(self:GetParent().selectedActivity);
+        if (not isAccountSecured) then
+            descInstructions = '给自己的账号添加安全令和和短信安全保护功能后才能解锁此栏';
+        end
+        if self.editMode then
+            local activeEntryInfo = C_LFGList.GetActiveEntryInfo();
+            assert(activeEntryInfo);
+            if ( activeEntryInfo.questID ) then
+                self.Description.EditBox.Instructions:SetText(LFGListUtil_GetQuestDescription(activeEntryInfo.questID));
+            else
+                self.Description.EditBox.Instructions:SetText(descInstructions or '关于你的队伍的更多细节（可选）');
+            end
+            set(self.ListGroupButton, '编辑完毕')
+        else
+            set(self.Description.EditBox.Instructions, descInstructions or '关于你的队伍的更多细节（可选）')
+            set(self.ListGroupButton, '列出队伍')
+        end
+    end)
+
+    hooksecurefunc('LFGListApplicationViewer_UpdateInfo', function(self)
+        local activeEntryInfo = C_LFGList.GetActiveEntryInfo();
+        assert(activeEntryInfo);
+        local activityInfo = C_LFGList.GetActivityInfoTable(activeEntryInfo.activityID);
+        if not activityInfo then
+            return;
+        end
+        local categoryInfo = C_LFGList.GetLfgCategoryInfo(activityInfo.categoryID);
+
+        if not categoryInfo then
+            return;
+        end
+        if activityInfo.isPvpActivity then
+            if activeEntryInfo.requiredItemLevel ~= 0 then
+                set(self.ItemLevel, format('PvP物品等级：%d', activeEntryInfo.requiredItemLevel))
+            end
+        else
+            if activeEntryInfo.requiredItemLevel ~= 0 then
+                set(self.ItemLevel, format('物品等级：|cffffffff%d|r', activeEntryInfo.requiredItemLevel))
+            end
+        end
+        if activeEntryInfo.privateGroup then
+            set(self.PrivateGroup, '个人')
+        end
+    end)
+
+    hooksecurefunc('LFGListApplicationViewer_UpdateAvailability', function(self)
+        if IsRestrictedAccount() then
+            self.EditButton.tooltip = '免费试玩账号无法使用此功能。';
+        end
+    end)
+
+    hooksecurefunc('LFGListApplicationViewer_UpdateApplicant', function(button, applicantID)
+        local applicantInfo = C_LFGList.GetApplicantInfo(applicantID) or {};
+        if not ( applicantInfo.applicantInfo or applicantInfo.applicationStatus == "applied" ) then
+            if ( applicantInfo.applicationStatus == "invited" ) then
+                set(button.Status, '已邀请');
+            elseif ( applicantInfo.applicationStatus == "failed" or applicantInfo.applicationStatus == "cancelled" ) then
+                set(button.Status, '|cffff0000已取消|r');
+            elseif ( applicantInfo.applicationStatus == "declined" or applicantInfo.applicationStatus == "declined_full" or applicantInfo.applicationStatus == "declined_delisted" ) then
+                set(button.Status, '已拒绝');
+            elseif ( applicantInfo.applicationStatus == "timedout" ) then
+                set(button.Status, '已过期');
+            elseif ( applicantInfo.applicationStatus == "inviteaccepted" ) then
+                set(button.Status, '已加入');
+            elseif ( applicantInfo.applicationStatus == "invitedeclined" ) then
+                set(button.Status, '拒绝邀请');
+            end
+        end
+    end)
+
+    hooksecurefunc('LFGListSearchPanel_UpdateButtonStatus', function(self)
+        local resultID = self.selectedResult;
+        local _, numActiveApplications = C_LFGList.GetNumApplications();
+        local messageApply = LFGListUtil_GetActiveQueueMessage(true);
+        local availTank, availHealer, availDPS = C_LFGList.GetAvailableRoles();
+        if not messageApply then
+            if ( not LFGListUtil_IsAppEmpowered() ) then
+                self.SignUpButton.tooltip = '你不是队长。';
+            elseif ( IsInGroup(LE_PARTY_CATEGORY_HOME) and C_LFGList.IsCurrentlyApplying() ) then
+                self.SignUpButton.tooltip = '你正在申请加入另一支队伍。';
+            elseif ( numActiveApplications >= MAX_LFG_LIST_APPLICATIONS ) then
+                self.SignUpButton.tooltip = string.format('你只能同时发出%d份有效申请。', MAX_LFG_LIST_APPLICATIONS);
+            elseif ( GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) > MAX_PARTY_MEMBERS + 1 ) then
+                self.SignUpButton.tooltip = '你的队伍中队员太多，无法申请。\n（最多不能超过5个）';
+            elseif ( not (availTank or availHealer or availDPS) ) then
+                self.SignUpButton.tooltip = '你必须有至少一项专精才能申请加入该队伍。';
+            elseif ( GroupHasOfflineMember(LE_PARTY_CATEGORY_HOME) ) then
+                self.SignUpButton.tooltip = '有一个或更多的队员处于离线状态。';
+            elseif not ( resultID ) then
+                self.SignUpButton.tooltip = '选择一个搜索结果。';
+            end
+        end
+        local isPartyLeader = UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME);
+        local canBrowseWhileQueued = C_LFGList.HasActiveEntryInfo() and isPartyLeader;
+        if ( IsInGroup(LE_PARTY_CATEGORY_HOME) and not isPartyLeader ) then
+            self.ScrollBox.StartGroupButton:Disable();
+            self.ScrollBox.StartGroupButton.tooltip = '只有队长才能这么做。';
+        else
+            local messageStart = LFGListUtil_GetActiveQueueMessage(false);
+            local startError, errorText = GetStartGroupRestriction();
+            if ( messageStart ) then
+                self.ScrollBox.StartGroupButton.tooltip = messageStart;
+            elseif ( startError ~= nil ) then
+                self.ScrollBox.StartGroupButton.tooltip = errorText;
+            elseif (canBrowseWhileQueued) then
+                self.ScrollBox.StartGroupButton.tooltip = '你不能在你的队伍出现在预创建队伍列表中时那样做。';
+            else
+            end
+        end
+    end)
+
+    hooksecurefunc('LFGListSearchEntry_Update', function(self)
+        if not C_LFGList.HasSearchResultInfo(self.resultID) then
+            return;
+        end
+        local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(self.resultID);
+        local isApplication = (appStatus ~= "none" or pendingStatus);
+        if not LFGListUtil_IsAppEmpowered() then
+            self.CancelButton.tooltip = '你不是队长。'
+            if ( pendingStatus == "applied" and C_LFGList.GetRoleCheckInfo() ) then
+                set(self.PendingLabel, '职责确认');
+            elseif ( pendingStatus == "cancelled" or appStatus == "cancelled" or appStatus == "failed" ) then
+                set(self.PendingLabel, '|cffff0000已取消|r');
+            elseif ( appStatus == "declined" or appStatus == "declined_full" or appStatus == "declined_delisted" ) then
+                set(self.PendingLabel, (appStatus == "declined_full") and ' "满"' or '已拒绝');
+            elseif ( appStatus == "timedout" ) then
+                set(self.PendingLabel, '已过期');
+            elseif ( appStatus == "invited" ) then
+                set(self.PendingLabel, '已邀请');
+            elseif ( appStatus == "inviteaccepted" ) then
+                set(self.PendingLabel, '已加入');
+            elseif ( appStatus == "invitedeclined" ) then
+                set(self.PendingLabel, '拒绝邀请');
+            elseif ( isApplication and pendingStatus ~= "applied" ) then
+                set(self.PendingLabel, '待定|cff40bf40-|r');
+            end
+            local searchResultInfo = C_LFGList.GetSearchResultInfo(self.resultID);
+            if e.strText[searchResultInfo.voiceChat] then
+                self.VoiceChat.tooltip = e.strText[searchResultInfo.voiceChat];
+            end
+        end
+    end)
+
+    hooksecurefunc('LFGListInviteDialog_UpdateOfflineNotice', function(self)
+        if ( GroupHasOfflineMember(LE_PARTY_CATEGORY_HOME) ) then
+            set(self.OfflineNotice, '有一名队伍成员处于离线状态，将无法收到邀请。');
+        else
+            set(self.OfflineNotice, '所有队伍成员都为在线状态。');
+        end
+    end)
+
+    hooksecurefunc('LFGListEntryCreation_Show', function(self, _, selectedCategory)
+        local categoryInfo = C_LFGList.GetLfgCategoryInfo(selectedCategory);
+        if e.strText[categoryInfo.name] then
+            set(self.Label, e.strText[categoryInfo.name])
+        end
+    end)
+
     set(LFGListFrame.ApplicationViewer.AutoAcceptButton.Label, '自动邀请')
     set(LFGListFrame.ApplicationViewer.BrowseGroupsButton, '浏览队伍')
     set(LFGListFrame.ApplicationViewer.RemoveEntryButton, '移除')
     set(LFGListFrame.ApplicationViewer.EditButton, '编辑')
     set(LFGListFrame.ApplicationViewer.UnempoweredCover.Label, '你的队伍正在组建中。')
-    --set(LFGListFrame.SearchPanel.SearchBox.Instructions, '')
+    set(LFGListFrame.SearchPanel.SearchBox.Instructions, '搜索')
     set(LFGListFrame.SearchPanel.FilterButton, '过滤器')
     set(LFGListFrame.SearchPanel.BackToGroupButton, '回到队伍')
     set(LFGListFrame.SearchPanel.SignUpButton, '申请')
     set(LFGListFrame.SearchPanel.BackButton, '后退')
     set(LFGListFrame.SearchPanel.ScrollBox.NoResultsFound, '未找到队伍。如果你找不到想要的队伍，可以自己创建一支。')
     set(LFGListFrame.EntryCreation.CancelButton, '后退')
+    set(LFGListFrame.EntryCreation.VoiceChat.EditBox.Instructions, '语音聊天程序')
+
+    set(LFGListCreationDescription.EditBox.Instructions, '关于你的队伍的更多细节（可选）')
+    set(LFGListFrame.EntryCreation.Name.Instructions, '你的队伍在列表中显示的描述性名称')
+    LFGListCreationDescription:HookScript('OnShow', function(self)--LFGListCreationDescriptionMixin
+        local isAccountSecured = C_LFGList.IsPlayerAuthenticatedForLFG(self:GetParent().selectedActivity);
+        self.EditBox.Instructions:SetText(isAccountSecured and '关于你的队伍的更多细节（可选）' or '给自己的账号添加安全令和和短信安全保护功能后才能解锁此栏');
+    end)
     hooksecurefunc('LFDQueueFrameFindGroupButton_Update', function()--LFDFrame.lua
         local mode = GetLFGMode(LE_LFG_CATEGORY_LFD)
         if ( mode == "queued" or mode == "rolecheck" or mode == "proposal" or mode == "suspended" ) then
@@ -1688,27 +2789,27 @@ local function Init()
         if C_PlayerInfo.IsPlayerNPERestricted() then
             if not LFDQueueCheckRoleSelectionValid(LFGRole_GetChecked(LFDQueueFrameRoleButtonTank), LFGRole_GetChecked(LFDQueueFrameRoleButtonHealer), LFGRole_GetChecked(LFDQueueFrameRoleButtonDPS)) then
                 -- the NPE restricted player needs to at least be a DPS role if nothing is selected
-                LFDQueueFrameRoleButtonDPS.checkButton:SetChecked(true);
-                LFDFrameRoleCheckButton_OnClick(LFDQueueFrameRoleButtonDPS.checkButton);
+                LFDQueueFrameRoleButtonDPS.checkButton:SetChecked(true)
+                LFDFrameRoleCheckButton_OnClick(LFDQueueFrameRoleButtonDPS.checkButton)
             end
         end
         if ( not LFDQueueCheckRoleSelectionValid( LFGRole_GetChecked(LFDQueueFrameRoleButtonTank),
                                                     LFGRole_GetChecked(LFDQueueFrameRoleButtonHealer),
                                                     LFGRole_GetChecked(LFDQueueFrameRoleButtonDPS)) ) then
-            LFDQueueFrameFindGroupButton.tooltip = '该角色在某些地下城不可用。';
-            return;
+            LFDQueueFrameFindGroupButton.tooltip = '该角色在某些地下城不可用。'
+            return
         end
         if not ( LFD_IsEmpowered() and mode ~= "proposal" and mode ~= "listed"  ) and ( IsInGroup(LE_PARTY_CATEGORY_HOME) and not UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME) ) then
-                LFDQueueFrameFindGroupButton.tooltip = '你现在不是队长';
+                LFDQueueFrameFindGroupButton.tooltip = '你现在不是队长'
         end
-        local lfgListDisabled;
+        local lfgListDisabled
         if ( C_LFGList.HasActiveEntryInfo() ) then
-            lfgListDisabled = '你不能在你的队伍出现在预创建队伍列表中时那样做。';
-        elseif(C_PartyInfo.IsCrossFactionParty()) then 
-            lfgListDisabled = '在跨阵营队伍中无法这么做。你可以参加非队列匹配模式的团队副本和地下城。';
+            lfgListDisabled = '你不能在你的队伍出现在预创建队伍列表中时那样做。'
+        elseif(C_PartyInfo.IsCrossFactionParty()) then
+            lfgListDisabled = '在跨阵营队伍中无法这么做。你可以参加非队列匹配模式的团队副本和地下城。'
         end
         if ( lfgListDisabled ) then
-            LFDQueueFrameFindGroupButton.tooltip = lfgListDisabled;
+            LFDQueueFrameFindGroupButton.tooltip = lfgListDisabled
         end
     end)
 
@@ -1938,16 +3039,24 @@ local function Init()
     set(LFGListInviteDialog.DeclineButton, '拒绝')
     set(LFGListInviteDialog.AcknowledgeButton, '确定')
 
-    set(LFGListCreationDescription.EditBox.Instructions, '关于你的队伍的更多细节（可选）')
+
     hooksecurefunc('LFGListSearchPanel_SetCategory', function(self, categoryID, filters)--LFGList.lua
-        local categoryInfo = C_LFGList.GetLfgCategoryInfo(categoryID) or {}
-        if categoryInfo.searchPromptOverride then
-            set(self.SearchBox.Instructions, e.strText[categoryInfo.searchPromptOverride])
-        else
-            set(self.SearchBox.Instructions,'过滤器')
-        end
+        local categoryInfo = C_LFGList.GetLfgCategoryInfo(categoryID) or {} --if categoryInfo.searchPromptOverride then set(self.SearchBox.Instructions, e.strText[categoryInfo.searchPromptOverride])
+        set(self.SearchBox.Instructions,'过滤器')
         local name = LFGListUtil_GetDecoratedCategoryName(categoryInfo.name, filters, false)
-        set(self.CategoryName, e.strText[name])
+        if name then
+            if e.strText[name] then
+                set(self.CategoryName, e.strText[name])
+            else
+                local t1, t2 = name:match('(.-) %- (.+)')
+                if t1 and t2 then
+                    local a1, b2= e.strText[t1], e.strText[t2]
+                    if a1 or b2 then
+                        set(self.CategoryName, (a1 or t1)..' - '..(b2 or t2))
+                    end
+                end
+            end
+        end
     end)
 
 
@@ -2012,9 +3121,9 @@ local function Init()
     --[[RolePoll.xml
     local function set_RolePoll_Tooltip(self)
         local desc= _G["ROLE_DESCRIPTION"..self:GetID()]
-        GameTooltip:SetText(e.str[desc] or desc, nil, nil, nil, nil, true);
+        GameTooltip:SetText(e.str[desc] or desc, nil, nil, nil, nil, true)
         if ( self.permDisabled ) then
-            GameTooltip:AddLine('|cnRED_FONT_COLOR:你的职业无法担任该职责。', nil, nil, nil, true);
+            GameTooltip:AddLine('|cnRED_FONT_COLOR:你的职业无法担任该职责。', nil, nil, nil, true)
         end
     end
     RolePollPopupRoleButtonTank.permDisabledTip= '你的职业无法担任该职责。'
@@ -2045,515 +3154,9 @@ local function Init()
 
 
 
-    SettingsPanel:HookScript('OnShow', function()    
-        e.strOption= {
-        [OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN] = "在按下快捷键时施法，而不是在松开快捷键时施法。",
-        [OPTION_TOOLTIP_ACTION_TARGETING] = "此瞄准系统可以以你观看的方向动态地瞄准敌人。可以和标准的瞄准系统一起使用。",
-        [OPTION_TOOLTIP_ADJUST_COLORBLIND_STRENGTH] = "调整选择的色盲过滤器强度。",
-        [OPTION_TOOLTIP_ADVANCED_COMBAT_LOGGING] = "在生成战斗日志的文本文档时加入额外的日志数据。启用该功能可能导致你在使用“战斗日志”聊天指令时出现额外的网络延迟。",
-        [OPTION_TOOLTIP_ADVANCED_MSAA] = "设置多重采样抗锯齿，可设定色彩数值和采样景深。",
-        [OPTION_TOOLTIP_ADVANCED_OBJECTIVES] = "使你可以对任务框体进行缩放、拖动、最小化和展开等操作。",
-        [OPTION_TOOLTIP_ADVANCED_PPAA] = "设置后制抗锯齿模式。",
-        [OPTION_TOOLTIP_ADV_FLY_CAMERA_PITCH_CHASE] = "使用向前移动和向后移动输入来控制倾角时，调整镜头倾斜的速度来跟随玩家。",
-        [OPTION_TOOLTIP_ADV_FLY_MAXIMUM_PITCH] = "调整键盘输入的最高倾斜速度。",
-        [OPTION_TOOLTIP_ADV_FLY_MAXIMUM_TURN] = "调整键盘输入的最高转向速度。",
-        [OPTION_TOOLTIP_ADV_FLY_MINIMUM_PITCH] = "调整键盘输入的最低倾斜速度。",
-        [OPTION_TOOLTIP_ADV_FLY_MINIMUM_TURN] = "调整键盘输入的最低转向速度。",
-        [OPTION_TOOLTIP_ADV_FLY_PITCH_CONTROL] = "使用驭龙术时，辅助进行手部运动控制。\n\n|cffffffff后/上：|r使用驭龙术期间，向后移动的输入也会使倾角变高，向前移动的输入也会使倾角变低。\n\n|cffffffff前/上：|r使用驭龙术期间，向前移动的输入也会使倾角变高，向后移动的输入也会使倾角变低。",
-        [OPTION_TOOLTIP_ADV_FLY_PITCH_CONTROL_GROUND_DEBOUNCE] = "开启后，使用向前移动和向后移动来控制倾角时，此设置会要求在地面和使用驭龙术之间进行转换时，重新输入这些指令。 ",
-        [OPTION_TOOLTIP_AGGRO_WARNING_DISPLAY1] = "从不显示仇恨警报系统。",
-        [OPTION_TOOLTIP_AGGRO_WARNING_DISPLAY2] = "仅当你在副本中时显示仇恨警报系统。",
-        [OPTION_TOOLTIP_AGGRO_WARNING_DISPLAY3] = "仅当你在小队或团队中时显示仇恨警报系统。",
-        [OPTION_TOOLTIP_AGGRO_WARNING_DISPLAY4] = "总是显示仇恨警报系统。",
-        [OPTION_TOOLTIP_ALTERNATE_RESOURCE] = "总是显示副资源条上的数字。",
-        [OPTION_TOOLTIP_ALTERNATE_SCREEN_EFFECTS] = "修改某些效果，比如屏幕变白，或者明亮的法术，来帮助减轻光敏问题",
-        [OPTION_TOOLTIP_ALWAYS_SHOW_MULTIBARS] = "勾选此选项后，额外的动作条将总是被显示出来。",
-        [OPTION_TOOLTIP_AMBIENCE_VOLUME] = "调整环境音效的音量。",
-        [OPTION_TOOLTIP_ANIMATION] = "PLACE_HOLDER",
-        [OPTION_TOOLTIP_ANISOTROPIC] = "提高材质的锐度，尤其是以倾斜视角观察的材质。",
-        [OPTION_TOOLTIP_ANTIALIASING] = "抗锯齿技术可使参差不齐的边缘更加平滑，在低分辨率时效果更佳。",
-        [OPTION_TOOLTIP_ASSIST_ATTACK] = "自动攻击使用\"/assist\"指令选定的目标。",
-        [OPTION_TOOLTIP_AUDIO_CACHE_SIZE] = "变更留给音频的内存额度。",
-        [OPTION_TOOLTIP_AUDIO_CHANNELS] = "调整有效软件伴音通道的数量。",
-        [OPTION_TOOLTIP_AUDIO_LOCALE] = "选择您想要用音频播放的配音版本。",
-        [OPTION_TOOLTIP_AUDIO_OUTPUT] = "选择游戏音频输出设备。",
-        [OPTION_TOOLTIP_AUTO_ACCEPT_QUICK_JOIN] = "允许好友及公会成员立即加入你的队列，无需经过确认。",
-        [OPTION_TOOLTIP_AUTO_DISMOUNT_FLYING] = "钩选此项之后，你的角色在施放法术前会自动解散飞行坐骑。",
-        [OPTION_TOOLTIP_AUTO_FOLLOW_SPEED] = "调节在总是跟随和智能跟随模式下的镜头移动速度。",
-        [OPTION_TOOLTIP_AUTO_JOIN_GUILD_CHANNEL] = "钩选这个选项可以让你自动加入公会招募频道（取决于你是否已经加入了某个公会）。",
-        [OPTION_TOOLTIP_AUTO_LOOT_ALT_KEY] = "打开“自动拾取”选项之后，按ALT键可以拾取物品。未打开“自动拾取”选项则按住ALT键可以自动拾取物品。",
-        [OPTION_TOOLTIP_AUTO_LOOT_CTRL_KEY] = "打开“自动拾取”选项之后，按CTRL键可以拾取物品。未打开“自动拾取”选项则按住CTRL键可以自动拾取物品。",
-        [OPTION_TOOLTIP_AUTO_LOOT_DEFAULT] = "将自动拾取设置为点击一个可拾取物品的目标时的默认动作。（通过按住拾取键/自动拾取键，可以在钩选此项时手动拾取，或在未钩选此项时自动拾取。）",
-        [OPTION_TOOLTIP_AUTO_LOOT_KEY_TEXT] = "用来自动拾取的按键",
-        [OPTION_TOOLTIP_AUTO_LOOT_NONE_KEY] = "未绑定按键。",
-        [OPTION_TOOLTIP_AUTO_LOOT_SHIFT_KEY] = "打开“自动拾取”选项之后，按SHIFT键可以拾取物品。未打开“自动拾取”选项则按住SHIFT键可以自动拾取物品。",
-        [OPTION_TOOLTIP_AUTO_OPEN_LOOT_HISTORY] = "钩选此项后，在掉落拾取绑定物品时，将自动开启战利品掷骰窗口，向你展示你的队伍成员的掷骰情况。",
-        [OPTION_TOOLTIP_AUTO_QUEST_PROGRESS] = "当你达到一项任务目标时，该任务会被自动追踪5分钟。",
-        [OPTION_TOOLTIP_AUTO_QUEST_WATCH] = "在你接受任务并完成一个任务目标后自动追踪任务。",
-        [OPTION_TOOLTIP_AUTO_RANGED_COMBAT] = "钩选之后，你的角色会自动在自动攻击和自动射击之间切换。",
-        [OPTION_TOOLTIP_AUTO_SELF_CAST] = "开启此选项后，如果你的当前目标为非友方目标或没有目标，则可以对友方目标施放的法术会自动对你本人施放。",
-        [OPTION_TOOLTIP_AUTO_SELF_CAST_ALT_KEY] = "按住ALT键以对自己施放有益法术，即便你当前选中的目标是敌对的，甚至没有目标。",
-        [OPTION_TOOLTIP_AUTO_SELF_CAST_CTRL_KEY] = "按住CTRL键以对自己施放有益法术，即便你当前选中的目标是敌对的，甚至没有目标。",
-        [OPTION_TOOLTIP_AUTO_SELF_CAST_KEY_TEXT] = "按住这个键之后施法目标会变成自己，即使你当前锁定的目标是某个敌对怪物或玩家。",
-        [OPTION_TOOLTIP_AUTO_SELF_CAST_NONE_KEY] = "未绑定按键。",
-        [OPTION_TOOLTIP_AUTO_SELF_CAST_SHIFT_KEY] = "按住SHIFT键以对自己施放有益法术，即便你当前选中的目标是敌对的，甚至没有目标。",
-        [OPTION_TOOLTIP_BLOCK_CHAT_CHANNEL_INVITE] = "阻止所有的聊天频道邀请。",
-        [OPTION_TOOLTIP_BLOCK_GUILD_INVITES] = "阻止所有的公会邀请。",
-        [OPTION_TOOLTIP_BLOCK_TRADES] = "阻止所有的交易要求。",
-        [OPTION_TOOLTIP_BRIGHTNESS] = "控制游戏画面的亮度。",
-        [OPTION_TOOLTIP_CAMERA1] = "将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。（只调整水平角度）",
-        [OPTION_TOOLTIP_CAMERA2] = "设定视角，使视角总是处于你的角色后方。",
-        [OPTION_TOOLTIP_CAMERA3] = "设定视角，使其固定在一点，永远不自动调节。",
-        [OPTION_TOOLTIP_CAMERA4] = "将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。",
-        [OPTION_TOOLTIP_CAMERA_ALWAYS] = "设定视角，使视角总是处于你的角色后方。",
-        [OPTION_TOOLTIP_CAMERA_FOV] = "调整镜头的视野范围",
-        [OPTION_TOOLTIP_CAMERA_NEVER] = "设定视角，使其固定在一点，永远不自动调节。",
-        [OPTION_TOOLTIP_CAMERA_SMART] = "将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。（只调整水平角度）",
-        [OPTION_TOOLTIP_CAMERA_SMARTER] = "将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。",
-        [OPTION_TOOLTIP_CENTER_SOURCE_EXCLUDE] = "控制哪些违规内容将被屏蔽",
-        [OPTION_TOOLTIP_CHARACTER_SHADOWS] = "显示游戏中所有角色的影子。禁用此选项有时可以提高游戏运行速度。",
-        [OPTION_TOOLTIP_CHAT_BUBBLES] = "在说话者头顶上显示文字泡泡。",
-        [OPTION_TOOLTIP_CHAT_LOCKED] = "锁定所有聊天窗口，这样它们就不会被误修改了。",
-        [OPTION_TOOLTIP_CHAT_MOUSE_WHEEL_SCROLL] = "勾选以使鼠标在悬停于聊天窗口时可使用滑轮滚动聊天文本。",
-        [OPTION_TOOLTIP_CHAT_WHOLE_WINDOW_CLICKABLE] = "点击聊天框体的任意位置以关注该聊天。",
-        [OPTION_TOOLTIP_CINEMATIC_SUBTITLES] = "开启过场动画的字幕。",
-        [OPTION_TOOLTIP_CLEAR_AFK] = "移动或者说话时\n自动解除离开状态。",
-        [OPTION_TOOLTIP_CLICKCAMERA_LOCKED] = "设置视角，使其在你使用鼠标点击移动的同时，视角保持与你行进方向的一致。",
-        [OPTION_TOOLTIP_CLICKCAMERA_NEVER] = "设置视角，使其在使用鼠标点击移动的时候不改变视角。",
-        [OPTION_TOOLTIP_CLICKCAMERA_SMART] = "设置视角，使其在你使用点击鼠标移动改变方向的时候稍作延时，然后跟随你的角色角色。（推荐模式）",
-        [OPTION_TOOLTIP_CLICK_CAMERA1] = "设置视角，使其在你使用点击鼠标移动改变方向的时候稍作延时，然后跟随你的角色角色。（推荐模式）",
-        [OPTION_TOOLTIP_CLICK_CAMERA2] = "设置视角，使其在你使用鼠标点击移动的同时，视角保持与你行进方向的一致。",
-        [OPTION_TOOLTIP_CLICK_CAMERA3] = "设置视角，使其在使用鼠标点击移动的时候不改变视角。",
-        [OPTION_TOOLTIP_CLICK_CAMERA_STYLE] = "决定点击移动方式的时候视角跟随方式。",
-        [OPTION_TOOLTIP_CLICK_TO_MOVE] = "使用鼠标点击来把你的角色移动到指定的地点。",
-        [OPTION_TOOLTIP_COLORBLIND_FILTER] = "根据特定色盲类型来调整游戏颜色。",
-        [OPTION_TOOLTIP_COMBAT_TARGET_MODE] = "更改目标的伤害显示模式。",
-        [OPTION_TOOLTIP_COMBAT_TARGET_MODE_NEW] = "使用该模式以提升游戏表现",
-        [OPTION_TOOLTIP_COMBAT_TARGET_MODE_OLD] = "游戏表现极其迟缓，不推荐选择。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_MODE] = "设置战斗信息滚动的方向。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_SCROLL_DOWN] = "战斗记录向下滚动，而非向上滚动。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_SHOW_AURAS] = "当玩家获得或失去光环效果时显示信息。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_SHOW_AURA_FADE] = "当魔法效果从玩家身上消失时显示信息。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_SHOW_COMBAT_STATE] = "当你进入或脱离战斗时显示信息。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_SHOW_COMBO_POINTS] = "当你获得新的连击点时，显示连击点的数量。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_SHOW_DODGE_PARRY_MISS] = "当敌人的攻击未命中你，或者被你躲闪、招架时显示信息。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_SHOW_ENERGIZE] = "显示所有立即获取的法力值、怒气值、能量值和真气值。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_SHOW_FRIENDLY_NAMES] = "当一个友方施法者对你施放治疗法术时，显示他/她的名字。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_SHOW_HONOR_GAINED] = "显示你通过杀死其他玩家所得到的荣誉值。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_SHOW_LOW_HEALTH_MANA] = "当你的生命值或法力值低于20%的时候显示信息。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_SHOW_PERIODIC_ENERGIZE] = "显示所有周期性获得的法力值、怒气值和能量值。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_SHOW_REACTIVES] = "当特定的重要事件发生时显示警报。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_SHOW_REPUTATION] = "当玩家在某个阵营中的声望提高或降低时显示信息。",
-        [OPTION_TOOLTIP_COMBAT_TEXT_SHOW_RESISTANCES] = "当你抵抗攻击或法术时显示信息。",
-        [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYAGGROHIGHLIGHT] = "如果玩家获得威胁值，显示红色外框",
-        [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYHEALPREDICTION] = "显示你的队伍成员即将获得的治疗效果",
-        [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYMAINTANKANDASSIST] = "高亮显示你队伍里的主坦克和副坦克",
-        [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYNONBOSSDEBUFFS] = "显示你的队伍成员的所有减益效果",
-        [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYONLYDISPELLABLEDEBUFFS] = "只显示你的队伍成员的可驱散的减益效果",
-        [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYONLYHEALERPOWERBARS] = "只显示治疗者能量条。非治疗者能量条会被隐藏。",
-        [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYPETS] = "显示你的团队或队伍成员召唤的宠物",
-        [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYPOWERBAR] = "显示你的队伍成员的能量条",
-        [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT] = "决定团队框架里显示的生命值文字类型。",
-        [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_HEALTH] = "显示剩余生命值的数字",
-        [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_LOSTHEALTH] = "只有生命值不是全满时才显示数字",
-        [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_NONE] = "不显示任何生命值文字",
-        [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_PERC] = "显示剩余生命值的百分比",
-        [OPTION_TOOLTIP_COMPACT_UNIT_FRAME_PROFILE_USECLASSCOLORS] = "显示职业颜色。如果取消勾选，会使用默认的职责颜色。",
-        [OPTION_TOOLTIP_COMPUTE_EFFECTS] = "控制基于计算的效果的质量，例如体积雾和部分粒子效果。基于计算的效果对型号较老的显卡的负担可能会偏重。",
-        [OPTION_TOOLTIP_CONSOLIDATE_BUFFS] = "将一部分增益效果划分至一个增益效果盒。短时间增益效果在该盒中显示。持续时间很长的增益效果显示在该盒中，直到效果即将消失。",
-        [OPTION_TOOLTIP_CONTRAST] = "控制游戏画面的对比度。",
-        [OPTION_TOOLTIP_COUNTDOWN_FOR_COOLDOWNS] = "勾选此项后，动作条上的按钮将以倒计时数字的方式显示冷却时间。",
-        [OPTION_TOOLTIP_DEATH_EFFECT] = "关闭此选项可以禁止鬼魂状态下的泛光效果，可略微提高运行速度。",
-        [OPTION_TOOLTIP_DEPTH_EFFECTS] = "控制景深粒子的渲染效果。降低此项可以提高游戏运行性能。",
-        [OPTION_TOOLTIP_DESKTOP_GAMMA] = "使用桌面伽马值设定。",
-        [OPTION_TOOLTIP_DIALOG_VOLUME] = "调整对话音量。",
-        [OPTION_TOOLTIP_DISABLE_AOE_LOOTING_DEFAULT] = "关闭后，你只能从点击的尸体上拾取战利品，而不是从附近所有可以拾取的尸体上拾取。取消勾选此选项后，你会从附近所有可以拾取的尸体上拾取战利品。",
-        [OPTION_TOOLTIP_DISABLE_CHAT] = "关闭聊天。你将无法发送和接受信息。",
-        [OPTION_TOOLTIP_DISPLAY_BORDERS] = "显示所有团队框体的边框。",
-        [OPTION_TOOLTIP_DISPLAY_FREE_BAG_SLOTS] = "在背包图标上显示剩余背包空间。",
-        [OPTION_TOOLTIP_DISPLAY_INCOMING_HEALS] = "显示当前正在施放中的治疗法术。",
-        [OPTION_TOOLTIP_DISPLAY_MODE] = "让游戏在全屏模式或窗口模式运行。",
-        [OPTION_TOOLTIP_DISPLAY_MT_AND_MA] = "为团队领袖设置的\"主坦克\"或\"主助理\"玩家显示特殊单位框架。",
-        [OPTION_TOOLTIP_DISPLAY_ONLY_DISPELLABLE_DEBUFFS] = "只显示你可以从目标身上移除的负面效果。",
-        [OPTION_TOOLTIP_DISPLAY_PERSONAL_RESOURCE] = "在你的角色下方添加生命值和资源。",
-        [OPTION_TOOLTIP_DISPLAY_PERSONAL_RESOURCE_ON_ENEMY] = "特殊资源将默认显示在你的角色下方。钩选此项显示在敌人上方。",
-        [OPTION_TOOLTIP_DISPLAY_POWER_BARS] = "在团队框架中显示法力值、能量值和怒气值等能量条",
-        [OPTION_TOOLTIP_DISPLAY_RAID_AGGRO_HIGHLIGHT] = "高亮显示团队中已成为仇恨目标或即将成为仇恨目标的成员。",
-        [OPTION_TOOLTIP_DISPLAY_RAID_PETS] = "在团队框架界面中显示团队成员的宠物",
-        [OPTION_TOOLTIP_DYNAMIC_RENDER_SCALE] = "可以使渲染倍率动态改变，从而实现目标帧率。",
-        [OPTION_TOOLTIP_EMPHASIZE_MY_SPELLS] = "你的法术视觉效果将比其他人施放的法术更加醒目",
-        [OPTION_TOOLTIP_ENABLE_ALL_SHADERS] = "开启所有像素遮罩。",
-        [OPTION_TOOLTIP_ENABLE_AMBIENCE] = "开启环境音效。",
-        [OPTION_TOOLTIP_ENABLE_BGSOUND] = "开启此选项可以让《魔兽世界》的声音在游戏处于后台运行状态时继续播放。",
-        [OPTION_TOOLTIP_ENABLE_DIALOG] = "开启或关闭所有对话。",
-        [OPTION_TOOLTIP_ENABLE_EMOTE_SOUNDS] = "打开/关闭表情指令的音效。",
-        [OPTION_TOOLTIP_ENABLE_ERROR_SPEECH] = "开启错误提示语音（比如“目标太远”）。",
-        [OPTION_TOOLTIP_ENABLE_GROUP_SPEECH] = "开启队友语音。",
-        [OPTION_TOOLTIP_ENABLE_HARDWARE] = "开启此选项以使用3D声音加速。可能会改变你的声音表现效果。",
-        [OPTION_TOOLTIP_ENABLE_INTERACT] = "使你可以通过按键与NPC和物体进行交互",
-        [OPTION_TOOLTIP_ENABLE_MICROPHONE] = "启用你的麦克风。",
-        [OPTION_TOOLTIP_ENABLE_MOUSEOVER_CAST] = "启用后，鼠标悬停到一个单位框体并使用一个键盘快捷键施放法术时，会直接对该单位施法，无需将该单位设为目标。",
-        [OPTION_TOOLTIP_ENABLE_MOUSEOVER_CAST_KEY_TEXT] = "按住这个键会激活鼠标悬停施法。",
-        [OPTION_TOOLTIP_ENABLE_MUSIC] = "开启背景音乐。",
-        [OPTION_TOOLTIP_ENABLE_MUSIC_LOOPING] = "循环播放背景音乐。",
-        [OPTION_TOOLTIP_ENABLE_PET_BATTLE_MUSIC] = "在宠物对战期间启用特殊音乐。",
-        [OPTION_TOOLTIP_ENABLE_PET_SOUNDS] = "打开或关闭宠物空闲和攻击音效。",
-        [OPTION_TOOLTIP_ENABLE_PINGS] = "打开/关闭信号系统",
-        [OPTION_TOOLTIP_ENABLE_PING_SOUNDS] = "打开/关闭信号指令的音效",
-        [OPTION_TOOLTIP_ENABLE_QUEST_TEXT_CONTRAST] = "让任务文本更容易阅读",
-        [OPTION_TOOLTIP_ENABLE_REMOTE_TEXT_TO_SPEECH] = "使用所选的人声来开启语音聊天窗口的打字转化为语音功能",
-        [OPTION_TOOLTIP_ENABLE_REVERB] = "启用声音混响效果。会降低游戏运行速度。",
-        [OPTION_TOOLTIP_ENABLE_SOFTWARE_HRTF] = "模拟真实世界的音效环境，距离越远，音频越低。",
-        [OPTION_TOOLTIP_ENABLE_SOUND] = "开启或禁止所有声音。",
-        [OPTION_TOOLTIP_ENABLE_SOUNDFX] = "开启或禁止游戏声音效果。",
-        [OPTION_TOOLTIP_ENABLE_SOUND_AT_CHARACTER] = "将声源接收位置设定为来自玩家角色所在位置，而非镜头位置。",
-        [OPTION_TOOLTIP_ENABLE_SPEECH_TO_TEXT_TRANSCRIPTION] = "可以在语音聊天频道开启语音识别功能，从而通过识别其他玩家说出的话来看到书面文字",
-        [OPTION_TOOLTIP_ENABLE_STEREO_VIDEO] = "启用3D立体眼镜。",
-        [OPTION_TOOLTIP_ENABLE_TEXT_TO_SPEECH] = "基于选择的项目，通过文字转语音系统来大声朗读聊天文字",
-        [OPTION_TOOLTIP_ENABLE_VOICECHAT] = "语音聊天并未受到暴雪娱乐的监控，您的游戏体验可能会在与其他玩家进行互动时发生相应的改变。",
-        [OPTION_TOOLTIP_ENVIRONMENT_DETAIL] = "控制你所能看见物体的远近。降低这个数值可以提高运行速度。",
-        [OPTION_TOOLTIP_FARCLIP] = "视野距离控制了你能看得有多远。更远的视野距离需要更多的内存容量和更快的处理器。",
-        [OPTION_TOOLTIP_FIX_LAG] = "启用此项可以降低用户界面延迟，但是也有可能明显降低画面帧数。",
-        [OPTION_TOOLTIP_FLASH_LOW_HEALTH_WARNING] = "你的生命值过低时，屏幕将不会闪烁红光。",
-        [OPTION_TOOLTIP_FOCUS_CAST_ALT_KEY] = "按住ALT键以对你的焦点目标施放需要指定目标的法术。",
-        [OPTION_TOOLTIP_FOCUS_CAST_CTRL_KEY] = "按住CTRL键以对你的焦点目标施放需要指定目标的法术。",
-        [OPTION_TOOLTIP_FOCUS_CAST_NONE_KEY] = "未绑定按键。",
-        [OPTION_TOOLTIP_FOCUS_CAST_SHIFT_KEY] = "按住SHIFT键以对你的焦点目标施放需要指定目标的法术。",
-        [OPTION_TOOLTIP_FOLLOW_TERRAIN] = "根据地形自动调节视角。如果你的角色在爬坡，视角会向上旋转；如果你的角色在往下走，那视角会向下旋转。",
-        [OPTION_TOOLTIP_FULL_SCREEN_GLOW] = "开启全屏幕柔化和光影效果。关闭这个选项有时可以提高运行速度。",
-        [OPTION_TOOLTIP_FULL_SIZE_FOCUS_FRAME] = "将焦点框体的尺寸扩大到与目标框架相同。",
-        [OPTION_TOOLTIP_FX_VOLUME] = "调整音效的音量。",
-        [OPTION_TOOLTIP_GAMEFIELD_DESELECT] = "钩选此框可以让你避免因为点击画面上的空白区域而取消对当前目标的选择。你只能通过按下ESC键或点击另一个目标来切换你所选择的目标。",
-        [OPTION_TOOLTIP_GAMMA] = "控制游戏画面的伽马值。",
-        [OPTION_TOOLTIP_GRAPHICS_CARD] = "选择你想使用的显卡。",
-        [OPTION_TOOLTIP_GROUND_CLUTTER] = "调节地表景观物体（比如草和其他植被）的显示密度和距离。调低此项可以提高运行速度。",
-        [OPTION_TOOLTIP_GROUND_DENSITY] = "调节地表景观物体（比如草和其他植被）的数量。调低此项可以提高运行速度。",
-        [OPTION_TOOLTIP_GROUND_RADIUS] = "调节地表景观物体（比如草和其他植被）的显示范围。调低此项可以提高运行速度。",
-        [OPTION_TOOLTIP_GUILDMEMBER_ALERT] = "当你的公会会员登录或者退出游戏时显示提示信息。",
-        [OPTION_TOOLTIP_GXAPI] = "选择图形接口。",
-        [OPTION_TOOLTIP_HARDWARE_CURSOR] = "启用此项以获得更灵敏的鼠标反应速度，除非你的鼠标指针出现问题。",
-        [OPTION_TOOLTIP_HEAD_BOB] = "在第一人称视角时候，模拟头部晃动。",
-        [OPTION_TOOLTIP_HIDE_ADVENTURE_JOURNAL_ALERTS] = "隐藏新冒险机会的提示",
-        [OPTION_TOOLTIP_HIDE_OUTDOOR_WORLD_STATE] = "钩选此框将隐藏界面上的所有本区域范围内的目标指示。",
-        [OPTION_TOOLTIP_HIDE_PARTY_INTERFACE] = "点击这里隐藏你的队员的头像和生命条。",
-        [OPTION_TOOLTIP_INTERACT_ICONS] = "控制交互按键启用后NPC和物体上方出现的图标",
-        [OPTION_TOOLTIP_INTERACT_ON_LEFT_CLICK] = "使用左键或右键点击与物体或友善NPC角色互动。",
-        [OPTION_TOOLTIP_INVERT_MOUSE] = "鼠标移动方向与改变视角方向相反。",
-        [OPTION_TOOLTIP_KEEP_GROUPS_TOGETHER] = "为团队中的每个小队显示单独的框架。",
-        [OPTION_TOOLTIP_LIGHTING_QUALITY] = "控制光照渲染的方式和质量。降低此项可以大幅提高游戏运行速度。",
-        [OPTION_TOOLTIP_LIQUID_DETAIL] = "控制液体的渲染质量。降低此项可以提高游戏运行性能。",
-        [OPTION_TOOLTIP_LOCALE] = "选择你要使用的语言版本。",
-        [OPTION_TOOLTIP_LOCK_ACTIONBAR] = "使玩家无法拖动动作条上的快捷技能图标。这项功能可以通过按键设置界面设置相应的快捷键。",
-        [OPTION_TOOLTIP_LOCK_CURSOR] = "不让鼠标指针离开游戏窗口",
-        [OPTION_TOOLTIP_LOG_PERIODIC_EFFECTS] = "显示周期性伤害效果数值，比如撕裂和暗言术：痛。",
-        [OPTION_TOOLTIP_LONG_RANGE_NAMEPLATE] = "调整这个选项可以增加显示姓名板的范围。",
-        [OPTION_TOOLTIP_LOOT_KEY_TEXT] = "用来手动拾取物品的按键",
-        [OPTION_TOOLTIP_LOOT_UNDER_MOUSE] = "钩选此项后，拾取窗口将在当前鼠标位置打开。",
-        [OPTION_TOOLTIP_LOSS_OF_CONTROL] = "当你的角色失控时，在屏幕中央显示一条警示信息。",
-        [OPTION_TOOLTIP_LOW_LATENCY_MODE] = "允许游戏使用各种方式降低输入延迟",
-        [OPTION_TOOLTIP_MAP_FADE] = "当你开始移动时，地图变为透明状态。",
-        [OPTION_TOOLTIP_MAP_QUEST_DIFFICULTY] = "将任务名称按照任务难度以不同颜色显示在世界地图上。",
-        [OPTION_TOOLTIP_MAP_TRACK_QUEST] = "从你的任务查看列表中添加或删除所选任务。|n你也可以按住SHIFT键点击某任务或其图标。",
-        [OPTION_TOOLTIP_MASTER_VOLUME] = "调整主音量。",
-        [OPTION_TOOLTIP_MAX_FOLLOW_DIST] = "调节镜头在角色身后的最大跟随距离。",
-        [OPTION_TOOLTIP_MINIMUM_CHARACTER_NAME_SIZE] = "调整最小角色名尺寸。",
-        [_G['OPTION_TOOLTIP_MOTION_SICKNESS_CHECKBOX']] = "开启晕动症设置可以降低镜头运动，保持角色在中间。",
-        [OPTION_TOOLTIP_MOTION_SICKNESS_DRAGONRIDING] = "在巨龙群岛使用驭龙术时，可以帮助降低晕动症。\n\n|cffffffff地表变暗：|r玩家使用驭龙术时，屏幕外围变暗\n\n|cffffffff聚焦圆环：|r在屏幕中心添加聚焦圆环十字",
-        [OPTION_TOOLTIP_MOUSEOVER_CAST_ALT_KEY] = "按住ALT键以对你的鼠标悬停目标施放需要指定目标的法术。",
-        [OPTION_TOOLTIP_MOUSEOVER_CAST_CTRL_KEY] = "按住CTRL键以对你的鼠标悬停目标施放需要指定目标的法术。",
-        [OPTION_TOOLTIP_MOUSEOVER_CAST_NONE_KEY] = "未设置按键。",
-        [OPTION_TOOLTIP_MOUSEOVER_CAST_SHIFT_KEY] = "按住SHIFT键以对你的鼠标悬停目标施放需要指定目标的法术。",
-        [OPTION_TOOLTIP_MOUSE_LOOK_SPEED] = "调节使用鼠标改变视角时的移动速度。",
-        [OPTION_TOOLTIP_MOUSE_SENSITIVITY] = "调节鼠标指针移动速度。",
-        [OPTION_TOOLTIP_MOUSE_SPEED] = "允许自定义鼠标灵敏度以覆盖操作系统设定的灵敏度。",
-        [OPTION_TOOLTIP_MOVE_PAD] = "移动框是一个可以用鼠标点击来控制移动和跳跃的用户界面框体。",
-        [OPTION_TOOLTIP_MULTISAMPLE_ALPHA_TEST] = "在开启MSAA时，测试计算采样频率，而非像素频率。",
-        [OPTION_TOOLTIP_MULTISAMPLING] = "提高多重采样级别可以使模型边缘变得更平滑，但是会明显降低游戏运行速度。",
-        [OPTION_TOOLTIP_MUSIC_VOLUME] = "调整背景音乐的音量。",
-        [OPTION_TOOLTIP_NOTCH_MODE] = "控制刘海屏的界面重叠方式",
-        [OPTION_TOOLTIP_OBJECTIVES_IGNORE_CURSOR] = "锁定目标框体，鼠标悬停在框体上时不会显示出框体来。",
-        [OPTION_TOOLTIP_OBJECT_ALPHA] = "PLACE_HOLDER",
-        [OPTION_TOOLTIP_OBJECT_NPC_OUTLINE] = "除任务目标外，鼠标悬停对象和目标也可以高亮显示轮廓线。",
-        [OPTION_TOOLTIP_OBJECT_NPC_OUTLINE_NOT_ALLOWED] = "系统图形选项中已关闭轮廓线模式。",
-        [OPTION_TOOLTIP_OBJECT_NPC_OUTLINE_NOT_SUPPORTED] = "本机的视频硬件不支持轮廓线模式。",
-        [OPTION_TOOLTIP_OPTIMIZE_NETWORK_SPEED] = "开启该选项来优化网络使用情况，从而降低延迟。\n该选项将提高带宽利用率，但可能在特定环境下产生问题。关闭该选项可能会解决某些断线问题。",
-        [OPTION_TOOLTIP_OUTLINE_MODE] = "控制是否显示所选择的轮廓线模式。打开界面显示面板可查看更多选项。",
-        [OPTION_TOOLTIP_OVERRIDE_SCREEN_FLASH] = "改变全屏画面闪烁的颜色，将其渐变为黑色。",
-        [OPTION_TOOLTIP_PARTICLE_DENSITY] = "控制法术、火焰等效果中使用的粒子数量。降低此项可以提高游戏运行速度。",
-        [OPTION_TOOLTIP_PET_NAMEPLATES] = "打开/关闭你的宠物、图腾和守护者的名字显示。",
-        [OPTION_TOOLTIP_PET_SPELL_DAMAGE] = "显示你的宠物造成的法术伤害。",
-        [OPTION_TOOLTIP_PHONG_SHADING] = "开启这个选项可以平滑角色光线表现。",
-        [OPTION_TOOLTIP_PICKUP_ACTION_ALT_KEY] = "使用“ALT”键从锁定的动作条中提取/拖动法术。",
-        [OPTION_TOOLTIP_PICKUP_ACTION_CTRL_KEY] = "使用“CTRL”键从锁定的动作条中提取/拖动法术。",
-        [OPTION_TOOLTIP_PICKUP_ACTION_NONE_KEY] = "未设置按键。",
-        [OPTION_TOOLTIP_PICKUP_ACTION_SHIFT_KEY] = "使用“SHIFT”键从锁定的动作条中提取/拖动法术。",
-        [OPTION_TOOLTIP_PING_MODE] = "决定通过哪种模式来与信号系统互动。",
-        [OPTION_TOOLTIP_PING_MODE_CLICK_DRAG] = "按下信号快捷键时，点击以根据情境发送信号，或点击并拖拽以触发信号盘目录。",
-        [OPTION_TOOLTIP_PING_MODE_KEY_DOWN] = "按下并放开信号快捷键以根据情境发送信号，或者按下并按住以触发信号盘目录。",
-        [OPTION_TOOLTIP_PING_VOLUME] = "调整信号音量",
-        [OPTION_TOOLTIP_PLAYER_DETAIL] = "调整玩家角色材质的分辨率。降低此项可以略微提高游戏运行速度。",
-        [OPTION_TOOLTIP_PLAY_AGGRO_SOUNDS] = "启用当仇恨过高时的警报音效。",
-        [OPTION_TOOLTIP_PRIMARY_MONITOR] = "使你可以更改显示游戏使用的主要显示器。",
-        [OPTION_TOOLTIP_PROFANITY_FILTER] = "开启不良语句过滤。",
-        [OPTION_TOOLTIP_PROFANITY_FILTER_WITH_WARNING] = "开启不良语言过滤器。\n\n|cffff0000警告：|r暴雪游戏服务不可用，本次设置改动也许不会被保存。",
-        [OPTION_TOOLTIP_PROJECTED_TEXTURES] = "启用将贴图材质投射到环境中的功能。禁用此项可以提高游戏运行速度。",
-        [OPTION_TOOLTIP_PUSHTOTALK_SOUND] = "当你按下发言按键时发出提示声音。",
-        [OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYONLYHEALERPOWERBARS] = "只显示治疗者能量条。非治疗者能量条会隐藏。",
-        [OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYPETS] = "显示PvP对手召唤的宠物。",
-        [OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_DISPLAYPOWERBAR] = "显示PVP对手的能量条",
-        [OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT] = "决定PvP框架里显示的生命值文字类型。",
-        [OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_HEALTH] = "显示剩余生命值的数字",
-        [OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_LOSTHEALTH] = "只有生命值不是全满时才显示数字",
-        [OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_NONE] = "不显示任何生命值文字",
-        [OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_HEALTHTEXT_PERC] = "显示剩余生命值的百分比",
-        [OPTION_TOOLTIP_PVP_COMPACT_UNIT_FRAME_PROFILE_USECLASSCOLORS] = "显示职业颜色。如果取消勾选，会使用默认的颜色。",
-        [OPTION_TOOLTIP_RAID_USE_CLASS_COLORS] = "以不同颜色显示不同职业的团队成员的生命槽。",
-        [OPTION_TOOLTIP_REDUCED_LAG_TOLERANCE] = "更改这个数值以降低在公共冷却时间结束之前你能够排序施放下一个法术的时间。建议将这个数值设置为与你的延迟数值相近的值。",
-        [OPTION_TOOLTIP_REFRESH_RATE] = "显示器上图形的刷新次数。如果刷新率太低，有些玩家会感觉到画面闪烁。",
-        [OPTION_TOOLTIP_REMOVE_CHAT_DELAY] = "选择后当鼠标移动到聊天窗口之后窗口立即显示。",
-        [OPTION_TOOLTIP_RENDER_SCALE] = "调节渲染3D世界的分辨率。把渲染倍数降低到100%以下可以降低GPU的负担，从而在一些情况下极大地提升帧率。超过100%的渲染倍数适用于超级采样抗锯齿（SSAA）。SSAA对于GPU的负担很重，只推荐你对其他抗锯齿选项都不满意的情况下使用。",
-        [OPTION_TOOLTIP_REPLACE_MY_PLAYER_PORTRAIT] = "用你的职业图标替换你的玩家单位框体头像",
-        [OPTION_TOOLTIP_REPLACE_OTHER_PLAYER_PORTRAITS] = "用职业图标替换其他玩家单位框体头像",
-        [OPTION_TOOLTIP_RESAMPLE_QUALITY] = "在使用非100%的渲染倍数时，本项设置可调整向上倍数/向下倍数的品质。注意：点和FidelityFXSuper Resolution只能用于向上倍数。如果渲染倍数超过100%，则三线性会用于SSAA。",
-        [OPTION_TOOLTIP_RESET_CHAT_POSITION] = "重置聊天窗口，令其回到默认位置。",
-        [OPTION_TOOLTIP_RESOLUTION] = "设置游戏窗口的分辨率。",
-        [OPTION_TOOLTIP_RESTRICT_CALENDAR_INVITES] = "只允许好友或公会成员的日历邀请。",
-        [OPTION_TOOLTIP_REVERSE_CLEAN_UP_BAGS] = "钩选后，整理背包会将物品移动到你最右边的背包里。",
-        [OPTION_TOOLTIP_REVERSE_NEW_LOOT] = "钩选后，新物品会出现在你最左边的背包里。",
-        [OPTION_TOOLTIP_ROTATE_MINIMAP] = "选中此项以旋转微缩地图，而非旋转玩家指示箭头。",
-        [OPTION_TOOLTIP_RT_SHADOW_QUALITY] = "用光线追踪技术提高阴影质量，使其具有更自然的柔和感，精度也大幅提升，还可以由额外的光源生成阴影。|n|n此功能需要：|n具有硬件光线追踪功能的显卡|nWindows 10的2020年5月10日的更新（版本2004）|n升级到最新的显卡驱动|nDirectX 12",
-        [OPTION_TOOLTIP_SCROLL_ARC] = "战斗信息文字以弧线路径远离玩家。",
-        [OPTION_TOOLTIP_SCROLL_DOWN] = "战斗信息文字向屏幕下方滚动。",
-        [OPTION_TOOLTIP_SCROLL_UP] = "战斗信息文字向屏幕上方滚动。",
-        [OPTION_TOOLTIP_SECURE_ABILITY_TOGGLE] = "钩选此项之后，你将不会因为在短时间内偶然多次点击快捷键而意外取消你的技能。",
-        [OPTION_TOOLTIP_SELF_HIGHLIGHT] = "在团队副本和战场中高亮显示你的角色。",
-        [OPTION_TOOLTIP_SELF_HIGHLIGHT_IN_BG] = "在战场中高亮显示你的角色。",
-        [OPTION_TOOLTIP_SELF_HIGHLIGHT_IN_BG_COMBAT] = "仅在战斗中高亮显示你的角色。",
-        [OPTION_TOOLTIP_SELF_HIGHLIGHT_IN_RAID] = "在团队副本中高亮显示你的角色。",
-        [OPTION_TOOLTIP_SELF_HIGHLIGHT_IN_RAID_COMBAT] = "仅在战斗中高亮显示你的角色。",
-        [OPTION_TOOLTIP_SHADOW_QUALITY] = "控制阴影渲染的方式和质量。降低此项可以大幅提高游戏运行速度。",
-        [OPTION_TOOLTIP_SHARPNESS] = "调整FidelityFX Super Resolution的锐度效果的强度。0是满强度。",
-        [OPTION_TOOLTIP_SHOW_ACCOUNT_ACHIEVEMENTS] = "打开本选项后，他人在“观察”你或使用英雄榜及手机应用程序查询时，将只能看到你的角色成就。",
-        [OPTION_TOOLTIP_SHOW_ALL_ENEMY_DEBUFFS] = "显示敌对目标身上的所有负面状态，而不是只显示那些被判定与你有关的负面状态。",
-        [OPTION_TOOLTIP_SHOW_ARENA_ENEMY_CASTBAR] = "显示对方的竞技场战队中的玩家正在施放的法术。",
-        [OPTION_TOOLTIP_SHOW_ARENA_ENEMY_FRAMES] = "在竞技场中显示对手成员框体。",
-        [OPTION_TOOLTIP_SHOW_ARENA_ENEMY_PETS] = "显示对方的竞技场战队中的宠物头像。",
-        [OPTION_TOOLTIP_SHOW_BATTLENET_TOASTS] = "开启该选项以使来自暴雪游戏的系统信息以弹窗方式显示。",
-        [OPTION_TOOLTIP_SHOW_BORDERS] = "显示团队框体的边框。",
-        [OPTION_TOOLTIP_SHOW_BUFF_DURATION] = "显示/隐藏增益效果的持续时间。",
-        [OPTION_TOOLTIP_SHOW_CASTABLE_BUFFS] = "只显示可以对友方目标施放的增益法术。",
-        [OPTION_TOOLTIP_SHOW_CASTABLE_DEBUFFS] = "仅显示你对敌方目标施放的负面效果。",
-        [OPTION_TOOLTIP_SHOW_CHAT_ICONS] = "设定是否在自动加入的聊天频道（如交易频道）中以图标形式显示图标链接。",
-        [OPTION_TOOLTIP_SHOW_CLASS_COLOR_IN_V_KEY] = "在用以显示敌方玩家生命值的姓名板背景上标示出敌对玩家的职业颜色。",
-        [OPTION_TOOLTIP_SHOW_CLOAK] = "取消这个选项来隐藏你的角色的披风。",
-        [OPTION_TOOLTIP_SHOW_CLOCK] = "在微缩地图上显示时钟按钮。",
-        [OPTION_TOOLTIP_SHOW_COMBAT_HEALING] = "显示你对目标的治疗量。",
-        [OPTION_TOOLTIP_SHOW_COMBAT_HEALING_ABSORB_SELF] = "在你获得一层护盾时显示信息。",
-        [OPTION_TOOLTIP_SHOW_COMBAT_HEALING_ABSORB_TARGET] = "显示你为目标增加的护盾吸收量。",
-        [OPTION_TOOLTIP_SHOW_COMBAT_TEXT] = "钩选此项将在屏幕上直观显示额外的战斗信息。",
-        [OPTION_TOOLTIP_SHOW_DAMAGE] = "在敌对生物身上显示所造成的伤害。",
-        [OPTION_TOOLTIP_SHOW_DISPELLABLE_DEBUFFS] = "只显示友方目标身上可以驱散的负面效果。",
-        [OPTION_TOOLTIP_SHOW_FULLSCREEN_STATUS] = "当你在使用全屏幕UI的情况下，并且在战斗中时，在屏幕边缘显示闪光效果。",
-        [OPTION_TOOLTIP_SHOW_GUILD_NAMES] = "总是显示游戏世界中的玩家公会名字。",
-        [OPTION_TOOLTIP_SHOW_HD_MODELS] = "勾选此项可以使用高清角色模型。",
-        [OPTION_TOOLTIP_SHOW_HELM] = "取消这个选项来隐藏你的角色的头盔。",
-        [OPTION_TOOLTIP_SHOW_IN_GAME_NAVIGATION] = "在世界中显示一个标记，标明当前追踪的任务、前往的地点的方向和距离。",
-        [OPTION_TOOLTIP_SHOW_ITEM_LEVEL] = "在提示信息中显示特定物品的物品等级。",
-        [OPTION_TOOLTIP_SHOW_LOOT_SPAM] = "不选中此项可以隐藏各人掷骰子的信息，只显示获胜者的掷骰子信息。",
-        [OPTION_TOOLTIP_SHOW_LUA_ERRORS] = "显示与UI功能相关的错误信息。",
-        [OPTION_TOOLTIP_SHOW_MULTIBAR1] = "默认居中并贴附在动作条1上",
-        [OPTION_TOOLTIP_SHOW_MULTIBAR2] = "默认居中并贴附在动作条2上",
-        [OPTION_TOOLTIP_SHOW_MULTIBAR3] = "默认在屏幕右侧",
-        [OPTION_TOOLTIP_SHOW_MULTIBAR4] = "默认贴附在右侧动作条1的左边",
-        [OPTION_TOOLTIP_SHOW_NAMEPLATE_LOSE_AGGRO_FLASH] = "你对敌人的威胁值降低时，其姓名板会闪烁。主要用于坦克。",
-        [OPTION_TOOLTIP_SHOW_NEWBIE_TIPS] = "显示法术和界面的信息。",
-        [OPTION_TOOLTIP_SHOW_NPC_NAMES] = "总是显示游戏世界中的NPC名字。",
-        [OPTION_TOOLTIP_SHOW_NUMERIC_THREAT] = "钩选此项，以百分比形式显示威胁值。",
-        [OPTION_TOOLTIP_SHOW_OTHER_TARGET_EFFECTS] = "显示其他玩家的目标身上的效果，比如沉默和诱捕。",
-        [OPTION_TOOLTIP_SHOW_OWN_NAME] = "显示你的角色的名字。",
-        [OPTION_TOOLTIP_SHOW_PARTY_BACKGROUND] = "在小队成员和敌方竞技场队员后面显示背景。",
-        [OPTION_TOOLTIP_SHOW_PARTY_PETS] = "显示队友宠物的头像。",
-        [OPTION_TOOLTIP_SHOW_PARTY_TEXT] = "总是以数字形式在队友的状态条上显示其生命值、法力值、怒气值或能量值。",
-        [OPTION_TOOLTIP_SHOW_PETBATTLE_COMBAT] = "勾选此项将可在宠物对战中开启额外的战斗信息。",
-        [OPTION_TOOLTIP_SHOW_PET_MELEE_DAMAGE] = "显示你的宠物造成的伤害。",
-        [OPTION_TOOLTIP_SHOW_PINGS_IN_CHAT] = "打开/关闭信号聊天信息。",
-        [OPTION_TOOLTIP_SHOW_PLAYER_NAMES] = "总是显示游戏世界中的玩家姓名。",
-        [OPTION_TOOLTIP_SHOW_PLAYER_TITLES] = "总是显示游戏世界中的玩家头衔。",
-        [OPTION_TOOLTIP_SHOW_POINTS_AS_AVG] = "在法术说明中显示平均数值或是最低/最高值（伤害、治疗等数值）",
-        [OPTION_TOOLTIP_SHOW_QUEST_FADING] = "钩选此框以立刻显示所有任务文本。",
-        [OPTION_TOOLTIP_SHOW_QUEST_OBJECTIVES_ON_MAP] = "启用后你可以在地图上看到特定任务目标的位置。",
-        [OPTION_TOOLTIP_SHOW_RAID_RANGE] = "当团队成员距离太远时，通过使他们的生命条变淡来标示距离。",
-        [OPTION_TOOLTIP_SHOW_TARGET_CASTBAR] = "显示你的当前目标正在施放的法术。",
-        [OPTION_TOOLTIP_SHOW_TARGET_CASTBAR_IN_V_KEY] = "在你的当前目标姓名板被显示出来的情况下，在游戏界面中显示敌方施法条和生命值。",
-        [OPTION_TOOLTIP_SHOW_TARGET_CASTBAR_IN_V_KEY_ONLY_ON_TARGET] = "只在你当前目标的姓名板上显示敌方施法条。",
-        [OPTION_TOOLTIP_SHOW_TARGET_CASTBAR_IN_V_KEY_SPELL_NAME] = "在姓名板上的施法条上显示法术名。",
-        [OPTION_TOOLTIP_SHOW_TARGET_EFFECTS] = "显示你的目标身上的效果，比如沉默和诱捕。",
-        [OPTION_TOOLTIP_SHOW_TARGET_OF_TARGET] = "显示或隐藏你的目标所选定的目标。",
-        [OPTION_TOOLTIP_SHOW_TIPOFTHEDAY] = "在游戏读取界面上显示或隐藏每日小窍门。",
-        [OPTION_TOOLTIP_SHOW_TOAST_BROADCAST] = "实名好友或战网昵称好友更新通告时显示暴雪游戏信息。",
-        [OPTION_TOOLTIP_SHOW_TOAST_CONVERSATION] = "加入实名好友或战网昵称好友对话时显示暴雪游戏信息。",
-        [OPTION_TOOLTIP_SHOW_TOAST_FRIEND_REQUEST] = "收到实名好友或战网昵称好友请求时显示暴雪游戏信息。",
-        [OPTION_TOOLTIP_SHOW_TOAST_OFFLINE] = "实名好友或战网昵称好友下线时显示暴雪游戏信息。",
-        [OPTION_TOOLTIP_SHOW_TOAST_ONLINE] = "实名好友或战网昵称好友上线时显示暴雪游戏信息。",
-        [OPTION_TOOLTIP_SHOW_TOAST_WINDOW] = "开启该选项将使暴雪游戏信息显示在一个浮动信息窗口中。",
-        [OPTION_TOOLTIP_SHOW_TUTORIALS] = "显示介绍你如何进行魔兽世界游戏的教程。",
-        [OPTION_TOOLTIP_SHOW_UNIT_NAMES] = "在游戏中显示单位名称。",
-        [OPTION_TOOLTIP_SIMPLE_CHAT] = "自动设置无法修改设定的主对话窗口和战斗日志窗口。",
-        [OPTION_TOOLTIP_SIMPLE_QUEST_WATCH_TEXT] = "自动管理目标追踪框体的尺寸和位置。",
-        [OPTION_TOOLTIP_SMART_PIVOT] = "当镜头固定在地面上时，使你可以自由观察。",
-        [OPTION_TOOLTIP_SOCIAL_ENABLE_TWITTER_FUNCTIONALITY] = "钩选此项将魔兽世界与推特关联。使用/分享指令发布推特信息。",
-        [OPTION_TOOLTIP_SOUND_QUALITY] = "调整游戏声音的品质。\n降低此标准可以提高游戏运行速度。",
-        [OPTION_TOOLTIP_SPAM_FILTER] = "打开或关闭聊天文字中的垃圾信息过滤功能。",
-        [OPTION_TOOLTIP_SPELL_ALERT_OPACITY] = "设置屏幕中央显示的特定重要事件报警信息的不透明度。",
-        [OPTION_TOOLTIP_SPELL_DENSITY] = "控制不重要的法术的可见度。",
-        [OPTION_TOOLTIP_SPELL_DETAIL] = "调节法术效果的细节等级。调低此项可以提高运行速度。",
-        [OPTION_TOOLTIP_SSAO] = "控制高级光照效果的渲染品质。降低此项可以大幅提高游戏运行速度。",
-        [OPTION_TOOLTIP_STACK_RIGHT_BARS] = "将右侧动作条垂直连在一起，而不是并排连接。|n|n（只对大型显示器有效）",
-        [OPTION_TOOLTIP_STATUS_BAR] = "总是用数字表示经验值、生命值、法力值、怒气值、能量值或快乐值。",
-        [OPTION_TOOLTIP_STATUS_TEXT_DISPLAY] = "在状态栏中显示数值、百分比还是同时显示。",
-        [OPTION_TOOLTIP_STATUS_TEXT_PARTY] = "总是在你的小队成员的生命条、法力条、怒气条或能量条上显示文字。",
-        [OPTION_TOOLTIP_STATUS_TEXT_PERCENT] = "总是以百分比显示状态文字。",
-        [OPTION_TOOLTIP_STATUS_TEXT_PET] = "总是在你的宠物的生命条、法力条、或集中条上显示文字。",
-        [OPTION_TOOLTIP_STATUS_TEXT_PLAYER] = "总是在你的角色的生命条、法力条、怒气条或能量条上显示文字。",
-        [OPTION_TOOLTIP_STATUS_TEXT_TARGET] = "总是在你的目标的生命条、法力条、怒气条、能量条或集中条上显示文字。",
-        [OPTION_TOOLTIP_STEREO_HARDWARE_CURSOR] = "勾选此项可以提高游戏运行速度，但是将无法使用3D鼠标功能。",
-        [OPTION_TOOLTIP_STOP_AUTO_ATTACK] = "当你切换目标时停止自动攻击。",
-        [OPTION_TOOLTIP_SUNSHAFTS] = "控制体积光及眩光效果的渲染方式和质量。关闭该选项可以提高游戏运行速度。",
-        [OPTION_TOOLTIP_TARGETOFTARGET1] = "当你在一个团队中时显示目标的目标。",
-        [OPTION_TOOLTIP_TARGETOFTARGET2] = "当你在一个小队中时显示目标的目标。",
-        [OPTION_TOOLTIP_TARGETOFTARGET3] = "当你独自冒险时显示目标的目标。",
-        [OPTION_TOOLTIP_TARGETOFTARGET4] = "当你在一个团队或小队中时显示目标的目标。",
-        [OPTION_TOOLTIP_TARGETOFTARGET5] = "总是显示目标的目标。",
-        [OPTION_TOOLTIP_TARGETOFTARGET_ALWAYS] = "总是显示目标的目标。",
-        [OPTION_TOOLTIP_TARGETOFTARGET_PARTY] = "当你在一个小队中时显示目标的目标。",
-        [OPTION_TOOLTIP_TARGETOFTARGET_RAID] = "当你在团队中时显示目标的目标。",
-        [OPTION_TOOLTIP_TARGETOFTARGET_RAID_AND_PARTY] = "当你在一个团队或小队中时显示目标的目标。",
-        [OPTION_TOOLTIP_TARGETOFTARGET_SOLO] = "当你独自冒险时显示目标的目标。",
-        [OPTION_TOOLTIP_TARGET_TOOLTIP] = "不将鼠标悬停在你的目标上而显示其提示信息",
-        [OPTION_TOOLTIP_TERRAIN_HIGHLIGHTS] = "为地形使用镜面高光。禁用此项有时可以提高运行速度。",
-        [OPTION_TOOLTIP_TERRAIN_TEXTURE] = "设置两种地貌的混合比率。",
-        [OPTION_TOOLTIP_TEXTURE_DETAIL] = "调节所有材质的细节等级。降低此项可以略微提高运行速度。",
-        [OPTION_TOOLTIP_TIMESTAMPS] = "选择聊天信息的时间戳格式。",
-        [OPTION_TOOLTIP_TOAST_DURATION] = "调整浮动信息窗口的持续时间。",
-        [OPTION_TOOLTIP_TRACK_QUEST_PROXIMITY] = "新近追踪的任务将根据目标追踪上显示的距离远近排序。",
-        [OPTION_TOOLTIP_TRACK_QUEST_TOP] = "新近追踪的任务将被排在目标追踪的顶部。",
-        [OPTION_TOOLTIP_TRILINEAR] = "开启高质量材质过滤。关闭此选项可以提高运行速度。",
-        [OPTION_TOOLTIP_TRIPLE_BUFFER] = "三倍缓冲可以使画面帧数平均化，但也可能令较慢的GPU产生轻微的输入延迟。\n启用：三倍缓冲\n禁用：二倍缓冲",
-        [OPTION_TOOLTIP_UI_SCALE] = "改变用户游戏界面尺寸。",
-        [OPTION_TOOLTIP_UNIT_NAMEPLATES_ALLOW_OVERLAP] = "单位姓名板会因为视野而重叠在一起。关掉此选项可以使姓名板相互隔开。",
-        [OPTION_TOOLTIP_UNIT_NAMEPLATES_AUTOMODE] = "在默认设置下，只有在战斗中才会显示姓名板。钩选此项后可始终显示所有姓名板。",
-        [OPTION_TOOLTIP_UNIT_NAMEPLATES_MAKE_LARGER] = "使用大姓名板",
-        [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_ENEMIES] = "显示敌方单位姓名板",
-        [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_ENEMY_GUARDIANS] = "选中该选项以显示敌方守护者的姓名板。",
-        [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_ENEMY_MINIONS] = "选中此选项可以显示敌方宠物、护卫和图腾的姓名板。",
-        [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_ENEMY_MINUS] = "选中此选项可以显示杂兵类敌人的单位姓名板。",
-        [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_ENEMY_TOTEMS] = "选中此选项可以显示敌人图腾的姓名板",
-        [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_FRIENDLY_CLASS_COLORS] = "选中此选项可以按职业颜色显示友方单位姓名板",
-        [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_FRIENDLY_GUARDIANS] = "选中该选项以显示友方守护者的姓名板。",
-        [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_FRIENDLY_MINIONS] = "选中此选项可以显示友方宠物、护卫和图腾的姓名板。",
-        [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_FRIENDLY_TOTEMS] = "选中该选项以显示友方图腾的姓名板。",
-        [OPTION_TOOLTIP_UNIT_NAMEPLATES_SHOW_FRIENDS] = "显示友方玩家姓名板",
-        [OPTION_TOOLTIP_UNIT_NAME_ENEMY] = "在游戏中显示敌方玩家的名字。",
-        [OPTION_TOOLTIP_UNIT_NAME_ENEMY_GUARDIANS] = "在游戏中显示敌方守护者的名字。",
-        [OPTION_TOOLTIP_UNIT_NAME_ENEMY_MINIONS] = "在游戏中显示敌方宠物、护卫和图腾的名字。",
-        [OPTION_TOOLTIP_UNIT_NAME_ENEMY_TOTEMS] = "在游戏中显示敌方图腾的名字。",
-        [OPTION_TOOLTIP_UNIT_NAME_FRIENDLY] = "在游戏中显示友方玩家的名字。",
-        [OPTION_TOOLTIP_UNIT_NAME_FRIENDLY_GUARDIANS] = "在游戏中显示友方守护者的名字。",
-        [OPTION_TOOLTIP_UNIT_NAME_FRIENDLY_MINIONS] = "在游戏中显示友方宠物、护卫和图腾的名字。",
-        [OPTION_TOOLTIP_UNIT_NAME_FRIENDLY_TOTEMS] = "在游戏中显示友方图腾的名字。",
-        [OPTION_TOOLTIP_UNIT_NAME_GUILD] = "在游戏中显示玩家的公会名。",
-        [OPTION_TOOLTIP_UNIT_NAME_GUILD_TITLE] = "在游戏中显示玩家的公会称号。",
-        [OPTION_TOOLTIP_UNIT_NAME_HIDE_MINUS] = "隐藏实力较弱的小型生物名称",
-        [OPTION_TOOLTIP_UNIT_NAME_NONCOMBAT_CREATURE] = "在游戏中显示小动物和小伙伴的名字。",
-        [OPTION_TOOLTIP_UNIT_NAME_NPC] = "在游戏中显示NPC的名字。",
-        [OPTION_TOOLTIP_UNIT_NAME_OWN] = "在游戏中显示你的角色的名字。",
-        [OPTION_TOOLTIP_UNIT_NAME_PLAYER_TITLE] = "在游戏中显示玩家的头衔。",
-        [OPTION_TOOLTIP_USEIPV6] = "开启下一代互联网科技——IPv6。\n需要IPv6连接。如果在没有IPv6连接的情况下勾选该方框可能会导致你无法登录魔兽世界。",
-        [OPTION_TOOLTIP_USE_COLORBLIND_MODE] = "在提示框以及其它一些界面中显示额外的信息。",
-        [OPTION_TOOLTIP_USE_COMBINED_BAGS] = "查看你的背包时会显示为一个单一的物品栏窗口",
-        [OPTION_TOOLTIP_USE_ENGLISH_AUDIO] = "勾选此项以覆盖你的语言设置并使用英文语音。",
-        [OPTION_TOOLTIP_USE_RAID_STYLE_PARTY_FRAMES] = "按照团队框体的方式显示你的小队框体界面。这些框体遵循你的团队框体设置。",
-        [OPTION_TOOLTIP_USE_REFRESH] = "改变显示器刷新率。更高的刷新率下，画面闪烁更少。",
-        [OPTION_TOOLTIP_USE_RESOLUTION] = "改变游戏分辨率。降低分辨率可以提高游戏运行速度。",
-        [OPTION_TOOLTIP_USE_UBERTOOLTIPS] = "开启屏幕右下角的具体信息提示。",
-        [OPTION_TOOLTIP_USE_UISCALE] = "选择则可以使用用户界面比例调节，不选择的话就使用系统默认比例。",
-        [OPTION_TOOLTIP_USE_WEATHER_SHADER] = "如果天气效果会导致你的计算机崩溃，就不要开启这一选项。",
-        [OPTION_TOOLTIP_VERTEX_ANIMATION_SHADERS] = "开启顶点着色器加速动画。开启这个选项将最大化画面表现。",
-        [OPTION_TOOLTIP_VERTICAL_SYNC] = "将你的游戏帧数与显示器刷新率同步。可以解决游戏中的图像无法正常显示的问题。",
-        [OPTION_TOOLTIP_VOICE_ACTIVATION_SENSITIVITY] = "调节麦克风的敏感度。",
-        [OPTION_TOOLTIP_VOICE_AMBIENCE] = "调整使用语音聊天时的环境音量。",
-        [OPTION_TOOLTIP_VOICE_INPUT] = "选择你的麦克风，或者它所连接到的控制器。",
-        [OPTION_TOOLTIP_VOICE_INPUT_VOLUME] = "调整你的语音音量。",
-        [OPTION_TOOLTIP_VOICE_MUSIC] = "调节使用语音聊天时的游戏音乐音量。",
-        [OPTION_TOOLTIP_VOICE_OUTPUT] = "选择语音聊天的输出设备。",
-        [OPTION_TOOLTIP_VOICE_OUTPUT_VOLUME] = "调整其他人的语音音量。",
-        [OPTION_TOOLTIP_VOICE_SOUND] = "调整使用语音聊天时的游戏音量。",
-        [OPTION_TOOLTIP_VOICE_TYPE1] = "必须先按下指定的按键才能在语音聊天中发言。",
-        [OPTION_TOOLTIP_VOICE_TYPE2] = "只需说话即可进行语音传输。",
-        [OPTION_TOOLTIP_VRS_AGGRESSIVE] = "细节有微小损失",
-        [OPTION_TOOLTIP_VRS_MODE] = "控制可变速率着色（VRS）功能的强度。VRS是一项GPU硬件功能，可在不大幅降低画面品质的前提下降低GPU的工作负荷。在支持此功能的硬件上开启此功能有可能提高帧率。",
-        [OPTION_TOOLTIP_VRS_STANDARD] = "画面品质几乎没有损失",
-        [OPTION_TOOLTIP_WATCH_FRAME_WIDTH] = "增加任务目标追踪栏的宽度。",
-        [OPTION_TOOLTIP_WATER_COLLISION] = "设置视角，使其在你角色处于水面之上的时候镜头在水面之上，而当你在水下的时候，视角在水面之下。",
-        [OPTION_TOOLTIP_WEATHER_DETAIL] = "调节天气效果的表现强度。调低此项可以提高运行速度。",
-        [OPTION_TOOLTIP_WINDOWED_MAXIMIZED] = "钩选此项以最大化窗口并去除边框。",
-        [OPTION_TOOLTIP_WINDOWED_MODE] = "钩选此框，在非全屏幕的窗口模式下游戏。\n\n在窗口模式下，游戏将使用桌面伽马值，并无法通过下面的滑杆调节。",
-        [OPTION_TOOLTIP_WINDOW_LOCK] = "开启此选项后可以使游戏窗口无法被缩放。",
-        [OPTION_TOOLTIP_WORLD_LOD] = "开启地形多边型细节动态缩减，打开此选项可以提高运行速度。",
-        [OPTION_TOOLTIP_WORLD_PVP_DISPLAY1] = "当你在PvP区域中时显示世界PvP目标。",
-        [OPTION_TOOLTIP_WORLD_PVP_DISPLAY2] = "当你在PvP地点附近时显示世界PvP目标。",
-        [OPTION_TOOLTIP_WORLD_PVP_DISPLAY3] = "关闭世界PvP目标显示。",
-        [OPTION_TOOLTIP_WORLD_PVP_DISPLAY_ALWAYS] = "当你在PvP区域中时显示世界PvP目标。",
-        [OPTION_TOOLTIP_WORLD_PVP_DISPLAY_DYNAMIC] = "当你在PvP地点附近时显示世界PvP目标。",
-        [OPTION_TOOLTIP_WORLD_PVP_DISPLAY_NEVER] = "关闭世界PvP目标显示。",
-        [OPTION_TOOLTIP_WOW_MOUSE] = "启用此项以启用魔兽世界专用鼠标并对其进行额外的键位绑定。",
-        [OPTION_TOOLTIP_XP_BAR] = "总是在你的经验条上显示文字。",
-        [OPTION_TOOTIP_RETINA_CURSOR] = "打开此项可使用高分辨率鼠标指针。\n（主要针对极高分辨率/视网膜显示器）",
-    }end)
-    SettingsPanel:HookScript('OnHide', function() e.strOption={} end)
+    
 
 
-
-
-
-    --选项
-    hooksecurefunc(SettingsPanel.Container.SettingsList.ScrollBox, 'Update', function(frame)
-        if not frame:GetView() or not frame:IsVisible() then
-            return
-        end
-        --标提
-        set(SettingsPanel.Container.SettingsList.Header.Title, e.strText[SettingsPanel.Container.SettingsList.Header.Title:GetText()])
-        for _, btn in pairs(frame:GetFrames() or {}) do
-            local lable
-            if btn.Button then--按钮
-                lable= btn.Button.Text or btn.Button
-                if lable then
-                    set(lable, e.strText[lable:GetText()])
-                end
-            end
-            if btn.DropDown and btn.DropDown.Button and btn.DropDown.Button.SelectionDetails  then--下拉，菜单info= btn
-                lable= btn.DropDown.Button.SelectionDetails.SelectionName
-                if lable then
-                    set(lable, e.strText[lable:GetText()])
-                end
-            end
-            lable= btn.Text or btn.Label or btn.Title
-            if lable then
-                set(lable, e.strText[lable:GetText()])
-            elseif btn.Text and btn.data and btn.data.name and e.strText[btn.data.name] then
-                set(btn.Text, e.strText[btn.data.name])
-            end
-        end
-    end)
-
-    hooksecurefunc('BindingButtonTemplate_SetupBindingButton', function(_, button)--BindingUtil.lua
-        local text= button:GetText()
-        if button:GetText()==GRAY_FONT_COLOR:WrapTextInColorCode(NOT_BOUND) then
-            set(button, GRAY_FONT_COLOR:WrapTextInColorCode('未设置'))
-        else
-            set(button, e.strText[text])
-        end
-    end)
 
 
     --快速快捷键模式
@@ -2569,19 +3172,6 @@ local function Init()
 
 
 
-    --列表 Blizzard_CategoryList.lua
-    hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--hooksecurefunc(SettingsPanel.CategoryList.ScrollBox, 'Update', function(frame)
-        local category = initializer.data.category
-        if category then
-            set(self.Label, e.strText[category:GetName()])
-        end
-    end)
-    hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
-        local text= e.strText[initializer.data.label]
-        if text then
-            self.Label:SetText(text)
-        end
-    end)
 
 
 
@@ -3581,7 +4171,7 @@ local function Init()
     set(EditModeSystemSettingsDialog.Buttons.RevertChangesButton, '撤销变更')
     hooksecurefunc(EditModeSystemSettingsDialog, 'UpdateExtraButtons', function(self,systemFrame)
         if systemFrame == self.attachedToSystem then
-            set(systemFrame.resetToDefaultPositionButton, '重设到默认位置')    
+            set(systemFrame.resetToDefaultPositionButton, '重设到默认位置')
         end
     end)
 
@@ -7092,6 +7682,9 @@ local function cancel_all()
     Init=function() end
     Init_Loaded= function() end
     Init_Set= function() end
+    Init_Option_Text= function() end
+    e.strOption= {}
+    e.strText= {}
 end
 
 

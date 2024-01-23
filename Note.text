@@ -365,13 +365,6 @@ SliceDemo.ResizeButton:SetPoint("BOTTOMRIGHT");
 
 
 
-
-
-
-
-
-
-
 BreakUpLargeNumbers()
 InClickBindingMode()
 
@@ -381,3 +374,17 @@ for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--NUM_
         C_Container.UseContainerItem(bag, slot)
     end
 end
+
+TextureUtil.lua
+local MicroLFGRoleIcons = {
+	["GUIDE"] = "UI-LFG-RoleIcon-Leader-Micro",
+	["TANK"] = "UI-LFG-RoleIcon-Tank-Micro",
+	["HEALER"] = "UI-LFG-RoleIcon-Healer-Micro",
+	["DAMAGER"] = "UI-LFG-RoleIcon-DPS-Micro",
+};
+LFG_LIST_GROUP_DATA_ATLASES = {
+	--Roles
+	TANK = GetMicroIconForRole("TANK"),
+	HEALER = GetMicroIconForRole("HEALER"),
+	DAMAGER = GetMicroIconForRole("DAMAGER"),
+};
