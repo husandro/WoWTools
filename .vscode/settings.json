@@ -7658,7 +7658,9 @@
         "SETTINGS_SEARCH_RESULTS",
         "CreateVerticalLayout",
         "SETTINGS_SEARCH_NOTHING_FOUND",
-        "SettingsListElementInitializer"
+        "SettingsListElementInitializer",
+        "SettingsAdvancedQualitySectionMixin",
+        "SettingsAdvancedSliderMixin"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

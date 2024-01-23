@@ -231,6 +231,8 @@ local function set_Menu(self)
     if self then
         set_Alpha_Frame_Texture(self, {notAlpha=true})
         set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
+        set_Alpha_Frame_Texture(self.DecrementButton, {notAlpha=true})
+        set_Alpha_Frame_Texture(self.IncrementButton, {notAlpha=true})
     end
 end
 
@@ -1159,11 +1161,8 @@ local function Init_All_Frame()
         set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
     end)
     hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
-        set_Alpha_Frame_Texture(self.Background, {alpha=min05})
-        
-    end)
-
-   
+        set_Alpha_Color(self.Background, nil, nil, min05)
+    end)   
     hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
         set_Alpha_Frame_Texture(self.CheckBox, {notAlpha=true})
     end)
@@ -1172,30 +1171,23 @@ local function Init_All_Frame()
         set_Slider(self.SliderWithSteppers)
     end)
     hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self, initializer)
-        set_Menu(DropDown.Button)
-    end)
-    hooksecurefunc(SettingsButtonControlMixin, 'Init', function(self, initializer)
-      
+        set_Menu(self.DropDown)
     end)
     hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self, initializer)
-       
+        set_Alpha_Frame_Texture(self.CheckBox, {notAlpha=true})
+        --set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
     end)
     hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
+        set_Alpha_Frame_Texture(self.CheckBox, {notAlpha=true})
         set_Slider(self.SliderWithSteppers)
     end)
-    end)
     hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
-       
+        set_Alpha_Frame_Texture(self.CheckBox, {notAlpha=true})
+        set_Menu(self.DropDown)
     end)
     hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)
-
-    end)
-    hooksecurefunc('BindingButtonTemplate_SetupBindingButton', function(_, button)--BindingUtil.lua
-       
-    end)
-    
-    hooksecurefunc(SettingsListElementInitializer, 'Init', function(self, data)
-       
+        set_Alpha_Frame_Texture(self.Button1, {notAlpha=true})
+        set_Alpha_Frame_Texture(self.Button2, {notAlpha=true})
     end)
 
     --StoreFrame

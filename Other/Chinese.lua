@@ -2175,6 +2175,15 @@ local function Init()
         Init_Option_Text()
         setLabel(self.Label)
     end)
+    --[[hooksecurefunc(SettingsAdvancedSliderMixin, 'OnLoad', function(self)
+        --info =self.SliderWithSteppers
+        --for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+        for _, lable in pairs(self.SliderWithSteppers.Labels or {}) do
+            setLabel(lable)
+            print(lable:GetText())
+        end
+        
+    end)]]
     --[[SettingsPanel:HookScript('OnShow', Init_Option_Text)
     SettingsPanel:HookScript('OnHide', function() e.strOption={} optionTab=nil end)
 
