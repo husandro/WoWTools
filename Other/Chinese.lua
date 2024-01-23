@@ -125,7 +125,10 @@ local function getText(text)
 end
 
 local function setLabel(lable, text)
-    set(lable, getText(text))
+    if lable then
+        text= text or lable:GetText()
+        set(lable, getText(text))
+    end
 end
 
 
@@ -2135,24 +2138,24 @@ local function Init()
         end
         Init_Option_Text()
         --标提
-        setLabel(SettingsPanel.Container.SettingsList.Header.Title, SettingsPanel.Container.SettingsList.Header.Title:GetText())
+        setLabel(SettingsPanel.Container.SettingsList.Header.Title)
         for _, btn in pairs(frame:GetFrames() or {}) do
             local lable
             if btn.Button then--按钮
                 lable= btn.Button.Text or btn.Button
                 if lable then
-                    setLabel(lable, lable:GetText())
+                    setLabel(lable)
                 end
             end
             if btn.DropDown and btn.DropDown.Button and btn.DropDown.Button.SelectionDetails  then--下拉，菜单info= btn
                 lable= btn.DropDown.Button.SelectionDetails.SelectionName
                 if lable then
-                    setLabel(lable, lable:GetText())
+                    setLabel(lable)
                 end
             end
             lable= btn.Text or btn.Label or btn.Title
             if lable then
-                setLabel(lable, lable:GetText())
+                setLabel(lable)
             elseif btn.Text and btn.data and btn.data.name and btn.data.name then
                 setLabel(btn.Text, btn.data.name)
             end
@@ -2162,7 +2165,7 @@ local function Init()
     hooksecurefunc('BindingButtonTemplate_SetupBindingButton', function(_, button)--BindingUtil.lua
         Init_Option_Text()
         local text= button:GetText()
-        if button:GetText()==GRAY_FONT_COLOR:WrapTextInColorCode(NOT_BOUND) then
+        if text==GRAY_FONT_COLOR:WrapTextInColorCode(NOT_BOUND) then
             set(button, GRAY_FONT_COLOR:WrapTextInColorCode('未设置'))
         else
             setLabel(button, text)
@@ -2170,7 +2173,7 @@ local function Init()
     end)
     hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)
         Init_Option_Text()
-        setLabel(self.Label, self.Label:GetText())
+        setLabel(self.Label)
     end)
     --[[SettingsPanel:HookScript('OnShow', Init_Option_Text)
     SettingsPanel:HookScript('OnHide', function() e.strOption={} optionTab=nil end)
