@@ -709,7 +709,7 @@ e.strText={
 [ROLE_DESCRIPTION_DAMAGER] = "表示你愿意担当对敌人输出伤害的职责。",
 [ROLE_DESCRIPTION_HEALER] = "表示你愿意在队友受到伤害时为他们提供治疗。",
 [ROLE_DESCRIPTION_TANK] = "表示你愿意通过使敌人攻击自己，保护队友不受攻击。",
-[MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS] = "动态飞行屏幕效果",
+[_G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS']] = "动态飞行屏幕效果",
 }end
 
 
