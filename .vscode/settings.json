@@ -7699,7 +7699,8 @@
         "DropDownList1Button1",
         "ButtonTrayUtil",
         "ResizeCheckButtonMixin",
-        "EditModeSystemSelectionDoubleLabelMixin"
+        "EditModeSystemSelectionDoubleLabelMixin",
+        "NARROW"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

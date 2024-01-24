@@ -126,7 +126,7 @@ local function getText(text)
 end
 
 local function setLabel(lable, text)
-    if lable then
+    if lable and lable.SetText then
         text= text or lable:GetText()
         set(lable, getText(text))
     end
@@ -2279,9 +2279,22 @@ e.strOption= {
 [HUD_EDIT_MODE_VEHICLE_LEAVE_BUTTON_LABEL] = "退出载具按钮",
 [HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL] = "载具座位",
 
+
+
+
+
+
+
+
+
 [format(HUD_EDIT_MODE_PRESET_LAYOUT, LAYOUT_STYLE_CLASSIC)] = "经典（预设）",
 [format(HUD_EDIT_MODE_PRESET_LAYOUT, LAYOUT_STYLE_MODERN)] = "现代（预设）",
+[format(HUD_EDIT_MODE_ACTION_BAR_LABEL, 1)]= '动作条 1',
+[format(HUD_EDIT_MODE_STATUS_TRACKING_BAR_LABEL, 1)]= '状态栏 1',
+[format(HUD_EDIT_MODE_STATUS_TRACKING_BAR_LABEL, 2)]= '状态栏 2',
 [HUD_EDIT_MODE_NEW_LAYOUT:format(CreateAtlasMarkup("editmode-new-layout-plus"))] = "|A:editmode-new-layout-plus:0:0|a |cnPURE_GREEN_COLOR:新布局|r",
+[NARROW] = "窄",
+[WIDE] = "宽",
 }
 
 end
@@ -4397,6 +4410,12 @@ local function Init()
     end)
     hooksecurefunc(EditModeSettingSliderMixin, 'SetupSetting', function(self, settingData)
         setLabel(self.Label, settingData.settingName)
+        if settingData.displayInfo.minText then
+            setLabel(self.Slider.MinText, settingData.displayInfo.minText);
+        end
+        if settingData.displayInfo.maxText then
+            setLabel(self.Slider.MaxText, settingData.displayInfo.maxText)
+        end
     end)
     EditModeManagerFrame.CloseButton:HookScript('OnEnter', function()--EditModeUnsavedChangesCheckerMixin:OnEnter()
         if EditModeManagerFrame:TryShowUnsavedChangesGlow() then
@@ -4407,7 +4426,6 @@ local function Init()
     hooksecurefunc(EditModeDropdownEntryMixin, 'OnEnter', function(self)
         if not self.isEnabled then
             local text= strEdit[self.disabledTooltip]
-            print(text, self.disabledTooltip)
             if text then
                 GameTooltip_ShowDisabledTooltip(GameTooltip, self, text);
             end
