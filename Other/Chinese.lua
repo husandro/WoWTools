@@ -10,6 +10,7 @@ local Save={
 }
 local panel= CreateFrame("Frame")
 
+local strEdit={}
 
 local function font(lable)
     if lable then
@@ -120,7 +121,7 @@ end
 
 local function getText(text)
     if text then
-        return e.strOption[text] or e.strText[text]
+        return e.strOption[text] or e.strText[text] or strEdit[text]
     end
 end
 
@@ -2099,9 +2100,107 @@ end
 
 
 
-
-
-
+local function Init_Edit_Mode_Text()
+strEdit={
+    [HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_COMBAT] = "战斗",
+    [HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_FRAMES] = "框体",
+    [HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC] = "其他",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_ALWAYS_SHOW_BUTTONS] = "总是显示按键",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_HIDE_BAR_ART] = "隐藏动作条装饰",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_HIDE_BAR_SCROLLING] = "隐藏动作条滚动条",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_PADDING] = "图标填充",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE] = "图标尺寸",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_COLUMNS] = "列数",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ICONS] = "图标数",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS] = "行数",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_ORIENTATION] = "方位",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_ORIENTATION_HORIZONTAL] = "水平",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_ORIENTATION_VERTICAL] = "垂直",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_SNAP_TO_RIGHT_SIDE] = "贴附到右侧",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING] = "动作条可见",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_ALWAYS] = "始终可见",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_HIDDEN] = "隐藏",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT] = "战斗中",
+    [HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT] = "脱离战斗",
+    [HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE] = "尺寸",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION] = "图标方向",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN] = "下",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT] = "左",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT] = "右",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP] = "上",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_LIMIT] = "图标限制",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_PADDING] = "图标填充",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_SIZE] = "图标尺寸",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP] = "图标收起",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_DOWN] = "下",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_LEFT] = "左",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_RIGHT] = "右",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP] = "上",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ORIENTATION] = "方位",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ORIENTATION_HORIZONTAL] = "水平",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ORIENTATION_VERTICAL] = "垂直",
+    [HUD_EDIT_MODE_SETTING_AURA_FRAME_SHOW_FULL] = "显示全部",
+    [HUD_EDIT_MODE_SETTING_BAGS_DIRECTION] = "方向",
+    [HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN] = "下",
+    [HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT] = "左",
+    [HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT] = "右",
+    [HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP] = "上",
+    [HUD_EDIT_MODE_SETTING_BAGS_ORIENTATION] = "方位",
+    [HUD_EDIT_MODE_SETTING_BAGS_ORIENTATION_HORIZONTAL] = "水平",
+    [HUD_EDIT_MODE_SETTING_BAGS_ORIENTATION_VERTICAL] = "垂直",
+    [HUD_EDIT_MODE_SETTING_BAGS_SIZE] = "尺寸",
+    [HUD_EDIT_MODE_SETTING_CAST_BAR_LOCK_TO_PLAYER_FRAME] = "锁定于玩家框体",
+    [HUD_EDIT_MODE_SETTING_CAST_BAR_SHOW_CAST_TIME] = "显示施法时间",
+    [HUD_EDIT_MODE_SETTING_CAST_BAR_SIZE] = "条尺寸",
+    [HUD_EDIT_MODE_SETTING_CHAT_FRAME_HEIGHT] = "高度",
+    [HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH] = "宽度",
+    [HUD_EDIT_MODE_SETTING_DURABILITY_FRAME_SIZE] = "尺寸",
+    [HUD_EDIT_MODE_SETTING_MICRO_MENU_EYE_SIZE] = "眼睛尺寸",
+    [HUD_EDIT_MODE_SETTING_MICRO_MENU_ORDER] = "订单",
+    [HUD_EDIT_MODE_SETTING_MICRO_MENU_ORDER_DEFAULT] = "默认",
+    [HUD_EDIT_MODE_SETTING_MICRO_MENU_ORDER_REVERSE] = "撤销",
+    [HUD_EDIT_MODE_SETTING_MICRO_MENU_ORIENTATION] = "方位",
+    [HUD_EDIT_MODE_SETTING_MICRO_MENU_ORIENTATION_HORIZONTAL] = "水平",
+    [HUD_EDIT_MODE_SETTING_MICRO_MENU_ORIENTATION_VERTICAL] = "垂直",
+    [HUD_EDIT_MODE_SETTING_MICRO_MENU_SIZE] = "菜单尺寸",
+    [HUD_EDIT_MODE_SETTING_MINIMAP_HEADER_UNDERNEATH] = "底部标题",
+    [HUD_EDIT_MODE_SETTING_MINIMAP_ROTATE_MINIMAP] = "旋转微缩地图",
+    [HUD_EDIT_MODE_SETTING_MINIMAP_SIZE] = "尺寸",
+    [HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT] = "高度",
+    [HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY] = "不透明度",
+    [HUD_EDIT_MODE_SETTING_TIMER_BARS_SIZE] = "尺寸",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_BUFFS_ON_TOP] = "增益效果在最上方",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_CAST_BAR_ON_SIDE] = "侧边施法条",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_CAST_BAR_UNDERNEATH] = "在下方显示施法条",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_COLUMN_SIZE] = "列尺寸",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_DISPLAY_BORDER] = "显示边框",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_FRAME_SIZE] = "框体尺寸",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS] = "队伍",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS_COMBINE_GROUPS_HORIZONTAL] = "合并队伍（水平）",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS_COMBINE_GROUPS_VERTICAL] = "合并队伍（垂直）",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS_SEPARATE_GROUPS_HORIZONTAL] = "分离队伍（水平）",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS_SEPARATE_GROUPS_VERTICAL] = "分离队伍（垂直）",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_HEIGHT] = "框体高度",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_KEEP_GROUPS_TOGETHER] = "保持小队相连",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_RAID_SIZE] = "团队规模",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_RAID_STYLE_PARTY_FRAMES] = "使用团队风格的小队框体界面",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_ROW_SIZE] = "行宽",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_CAST_TIME] = "显示施法时间",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND] = "显示背景",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY] = "排序",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_ALPHABETICAL] = "字母顺序",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP] = "队伍",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_ROLE] = "职责",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_USE_HORIZONTAL_GROUPS] = "使用水平布局",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_USE_LARGER_FRAME] = "使用更大的框体",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_VIEW_ARENA_SIZE] = "竞技场类型",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_VIEW_ARENA_SIZE_FIVE] = "5v5",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_VIEW_ARENA_SIZE_THREE] = "3v3",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_VIEW_ARENA_SIZE_TWO] = "2v2",
+    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_WIDTH] = "框体宽度",
+    [HUD_EDIT_MODE_SETTING_VEHICLE_SEAT_INDICATOR_SIZE] = "尺寸",
+}
+end
 
 
 
@@ -4182,6 +4281,39 @@ local function Init()
         self.settingsCheckButtons.StatusTrackingBar2:SetLabelText('状态栏 2')
     end)
 
+    
+
+    EditModeManagerFrame:HookScript('OnShow', Init_Edit_Mode_Text)
+    EditModeManagerFrame:HookScript('OnHide', function() strEdit={} end)
+    --EditModeTemplates.lua
+    hooksecurefunc(EditModeSettingCheckboxMixin, 'SetupSetting', function(self, settingData)
+        setLabel(self.Label, settingData.settingName)
+    end)
+    hooksecurefunc(EditModeSettingDropdownMixin, 'SetupSetting', function(self, settingData)
+        setLabel(self.Label, settingData.settingName)
+    end)
+    hooksecurefunc(EditModeSettingSliderMixin, 'SetupSetting', function(self, settingData)
+        setLabel(self.Label, settingData.settingName)
+    end)
+    EditModeManagerFrame.CloseButton:HookScript('OnEnter', function()--EditModeUnsavedChangesCheckerMixin:OnEnter()
+        if EditModeManagerFrame:TryShowUnsavedChangesGlow() then
+            GameTooltip_AddNormalLine(GameTooltip, '你有未保存的改动');
+            GameTooltip:Show();
+        end
+    end)
+    local maxLayoutsErrorText = format('最多允许%d种角色布局和%d种账号布局', Constants.EditModeConsts.EditModeMaxLayoutsPerType, Constants.EditModeConsts.EditModeMaxLayoutsPerType);
+    hooksecurefunc(EditModeDropdownEntryMixin, 'Init', function(self, text, onClick, disableOnMaxLayouts, disableOnActiveChanges, width, maxTextWidth, showArrow, isSubmenuButton, disabledText)
+        if disableOnMaxLayouts and EditModeManagerFrame:AreLayoutsFullyMaxed() then
+            self.disabledTooltip = maxLayoutsErrorText;
+        elseif disableOnActiveChanges and EditModeManagerFrame:HasActiveChanges()then
+            self.disabledTooltip = '你有未保存的改动';
+        end
+        if disabledText and not self.isEnabled then
+            text = disabledText;
+        end
+        setLabel(self.Text, text)
+    end)
+
     set(EditModeSystemSettingsDialog.Buttons.RevertChangesButton, '撤销变更')
     hooksecurefunc(EditModeSystemSettingsDialog, 'UpdateExtraButtons', function(self,systemFrame)
         if systemFrame == self.attachedToSystem then
@@ -4189,9 +4321,25 @@ local function Init()
         end
     end)
 
-    --hooksecurefunc(EditModeSystemSettingsDialog.Buttons, 'AddExtraButtons', function(self)
-        --set(self.resetToDefaultPositionButton, '重设到默认位置')
-    --end)
+    --[[hooksecurefunc(EditModeSystemMixin, 'AddExtraButtons', function(self, extraButtonPool)
+        set(self.resetToDefaultPositionButton, '重设到默认位置')
+    end)]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4476,6 +4624,25 @@ local function Init()
             set(self.StackItemCountText, format('总计%d', self.split))
         end
     end)
+
+    --LootFrame.lua
+    set(LootFrameTitleText, '物品')
+    hooksecurefunc(LootFrameItemElementMixin, 'Init', function(self)
+        local elementData = self:GetElementData() or {}
+        if elementData.quality then
+	        setLabel(self.QualityText, _G[format("ITEM_QUALITY%s_DESC", elementData.quality)])
+        end
+    end)
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1149,6 +1149,7 @@ local function Init_All_Frame()
     set_Alpha_Frame_Texture(ColorPickerFrame.Border, {alpha= min05})
 
     --编辑模式
+    set_Menu(EditModeManagerFrame.LayoutDropdown.DropDownMenu)
     set_ScrollBar(EditModeManagerFrame.AccountSettings.SettingsContainer)
     set_Alpha_Frame_Texture(EditModeManagerFrame.Border, {alpha=min05})
     set_Alpha_Frame_Texture(EditModeManagerFrame.AccountSettings.SettingsContainer.BorderArt, {alpha=min05})
@@ -2037,6 +2038,8 @@ local function Init_Event(arg1)
         set_NineSlice(PingSystemTutorial, true)
         set_NineSlice(PingSystemTutorialInset, nil, true)
         hide_Texture(PingSystemTutorialBg)
+        set_Alpha_Frame_Texture(SettingsPanel.GameTab, {notAlpha=true})
+        set_Alpha_Frame_Texture(SettingsPanel.AddOnsTab, {notAlpha=true})
 
 
 
