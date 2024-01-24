@@ -1,4 +1,4 @@
--- $Id: LibUIDropDownMenu.lua 127 2024-01-22 13:09:05Z arithmandar $
+-- $Id: LibUIDropDownMenu.lua 129 2024-01-23 15:53:42Z arithmandar $
 -- ----------------------------------------------------------------------------
 -- Localized Lua globals.
 -- ----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ local GameTooltip_SetTitle, GameTooltip_AddInstructionLine, GameTooltip_AddNorma
 
 -- ----------------------------------------------------------------------------
 local MAJOR_VERSION = "LibUIDropDownMenu-4.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 127 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 129 $"):match("%d+"))
 
 
 local LibStub = _G.LibStub
@@ -799,18 +799,16 @@ function lib:UIDropDownMenu_SetDisplayMode(frame, displayMode)
 		GetChild(frame, name, "Middle"):Hide();
 		GetChild(frame, name, "Right"):Hide();
 		local button = GetChild(frame, name, "Button");
-		if button then
-			local buttonName = button:GetName();
-			GetChild(button, buttonName, "NormalTexture"):SetTexture(nil);
-			GetChild(button, buttonName, "DisabledTexture"):SetTexture(nil);
-			GetChild(button, buttonName, "PushedTexture"):SetTexture(nil);
-			GetChild(button, buttonName, "HighlightTexture"):SetTexture(nil);
-			local text = GetChild(frame, name, "Text");
+		local buttonName = button:GetName();
+		GetChild(button, buttonName, "NormalTexture"):SetTexture(nil);
+		GetChild(button, buttonName, "DisabledTexture"):SetTexture(nil);
+		GetChild(button, buttonName, "PushedTexture"):SetTexture(nil);
+		GetChild(button, buttonName, "HighlightTexture"):SetTexture(nil);
+		local text = GetChild(frame, name, "Text");
 
-			button:ClearAllPoints();
-			button:SetPoint("LEFT", text, "LEFT", -9, 0);
-			button:SetPoint("RIGHT", text, "RIGHT", 6, 0);
-		end
+		button:ClearAllPoints();
+		button:SetPoint("LEFT", text, "LEFT", -9, 0);
+		button:SetPoint("RIGHT", text, "RIGHT", 6, 0);
 		frame.displayMode = "MENU";
 	end
 end
@@ -1319,7 +1317,7 @@ function lib:UIDropDownMenu_AddButton(info, level)
 		_G[listFrameName.."Button"..index.."UnCheck"]:Hide();
 	end
 	button.checked = info.checked;
-	if (WoWRetail) and button.NewFeature then
+	if (WoWRetail and button.NewFeature) then
 		button.NewFeature:SetShown(button.showNewLabel); -- Retail only?
 	end
 	
@@ -1489,16 +1487,14 @@ function lib:UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 				if not button.ignoreAsMenuSelection then
 					somethingChecked = true;
 					local icon = GetChild(frame, frame:GetName(), "Icon");
-					if icon then
-						if (button.iconOnly and icon and button.icon) then
-							lib:UIDropDownMenu_SetIconImage(icon, button.icon, button.iconInfo);
-						elseif ( useValue ) then
-							lib:UIDropDownMenu_SetText(frame, button.value);
-							icon:Hide();
-						else
-							lib:UIDropDownMenu_SetText(frame, button:GetText());
-							icon:Hide();
-						end
+					if (button.iconOnly and icon and button.icon) then
+						lib:UIDropDownMenu_SetIconImage(icon, button.icon, button.iconInfo);
+					elseif ( useValue ) then
+						lib:UIDropDownMenu_SetText(frame, button.value);
+						icon:Hide();
+					else
+						lib:UIDropDownMenu_SetText(frame, button:GetText());
+						icon:Hide();
 					end
 				end
 				button:LockHighlight();
@@ -1527,9 +1523,7 @@ function lib:UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 	if(somethingChecked == nil) then
 		lib:UIDropDownMenu_SetText(frame, VIDEO_QUALITY_LABEL6);
 		local icon = GetChild(frame, frame:GetName(), "Icon");
-		if icon then
-			icon:Hide();
-		end
+		icon:Hide();
 	end
 	if (not frame.noResize) then
 		for i=1, L_UIDROPDOWNMENU_MAXBUTTONS do
@@ -2025,18 +2019,16 @@ end
 function lib:UIDropDownMenu_JustifyText(frame, justification, customXOffset, customYOffset)
 	local frameName = frame:GetName();
 	local text = GetChild(frame, frameName, "Text");
-	if text then
-		text:ClearAllPoints();
-		if ( justification == "LEFT" ) then
-			text:SetPoint("LEFT", GetChild(frame, frameName, "Left"), "LEFT", customXOffset or 27, customYOffset or 2);
-			text:SetJustifyH("LEFT");
-		elseif ( justification == "RIGHT" ) then
-			text:SetPoint("RIGHT", GetChild(frame, frameName, "Right"), "RIGHT", customXOffset or -43, customYOffset or 2);
-			text:SetJustifyH("RIGHT");
-		elseif ( justification == "CENTER" ) then
-			text:SetPoint("CENTER", GetChild(frame, frameName, "Middle"), "CENTER", customXOffset or -5, customYOffset or 2);
-			text:SetJustifyH("CENTER");
-		end
+	text:ClearAllPoints();
+	if ( justification == "LEFT" ) then
+		text:SetPoint("LEFT", GetChild(frame, frameName, "Left"), "LEFT", customXOffset or 27, customYOffset or 2);
+		text:SetJustifyH("LEFT");
+	elseif ( justification == "RIGHT" ) then
+		text:SetPoint("RIGHT", GetChild(frame, frameName, "Right"), "RIGHT", customXOffset or -43, customYOffset or 2);
+		text:SetJustifyH("RIGHT");
+	elseif ( justification == "CENTER" ) then
+		text:SetPoint("CENTER", GetChild(frame, frameName, "Middle"), "CENTER", customXOffset or -5, customYOffset or 2);
+		text:SetJustifyH("CENTER");
 	end
 end
 
@@ -2108,7 +2100,7 @@ function lib:UIDropDownMenu_SetButtonClickable(level, id)
 end
 
 
-function lib:UIDropDownMenu_DisableDropDown(dropDown, _, disabledtooltip)
+function lib:UIDropDownMenu_DisableDropDown(dropDown)
 	lib:UIDropDownMenu_SetDropDownEnabled(dropDown, false, disabledtooltip);
 end
 
@@ -2116,7 +2108,7 @@ function lib:UIDropDownMenu_EnableDropDown(dropDown)
 	lib:UIDropDownMenu_SetDropDownEnabled(dropDown, true);
 end
 
-function lib:UIDropDownMenu_SetDropDownEnabled(dropDown, enabled, disabledTooltip)
+function lib:UIDropDownMenu_SetDropDownEnabled(dropDown, enabled, disabledtooltip)
 	local dropDownName = dropDown:GetName();
 	local label = GetChild(dropDown, dropDownName, "Label");
 	if label then
