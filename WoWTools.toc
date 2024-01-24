@@ -175,9 +175,6 @@ Other\HunterPet.lua
 Other\SpellFrame.lua
 
 
-##界面，中文化，欧服，专用
+##界面，中文化
 ##繁体，简体，中文， 不会载加
-##中文库， 大文件，需要大内存
-Other\zhCN.lua
-##主要汉化function
 Other\Chinese.lua
