@@ -714,6 +714,9 @@ e.strText={
 [ROLE_DESCRIPTION_HEALER] = "表示你愿意在队友受到伤害时为他们提供治疗。",
 [ROLE_DESCRIPTION_TANK] = "表示你愿意通过使敌人攻击自己，保护队友不受攻击。",
 [_G['MOTION_SICKNESS_DRAGONRIDING_SCREEN_EFFECTS']] = "动态飞行屏幕效果",
+
+
+[QUICK_KEYBIND_MODE] = "快速快捷键模式",
 }end
 
 
@@ -755,6 +758,12 @@ e.strText={
 
 
 local optionTab
+
+local function End_Option_Text()
+    e.strOption={}
+    optionTab=nil
+end
+
 local function Init_Option_Text()
 if optionTab then
     return
@@ -1134,7 +1143,7 @@ e.strOption= {
 
 [CHARACTER_SPECIFIC_KEYBINDINGS] = "角色专用按键设置",
 [CLICK_BIND_MODE] = "点击施法",
-[QUICK_KEYBIND_MODE] = "快速快捷键模式",
+
 
 [BINDING_HEADER_ACTIONBAR]  = "动作条",
 [BINDING_HEADER_ACTIONBAR2]  = "动作条2",
@@ -2066,7 +2075,215 @@ e.strOption= {
 [OPTION_TOOLTIP_WOW_MOUSE] = "启用此项以启用魔兽世界专用鼠标并对其进行额外的键位绑定。",
 [OPTION_TOOLTIP_XP_BAR] = "总是在你的经验条上显示文字。",
 [OPTION_TOOTIP_RETINA_CURSOR] = "打开此项可使用高分辨率鼠标指针。\n（主要针对极高分辨率/视网膜显示器）",
+
+
+
+
+[HUD_CLASS_TALENTS_EDIT_LOADOUT_DIALOG_EDIT_BOX_LABEL] = "名字",
+[HUD_CLASS_TALENTS_EDIT_LOADOUT_DIALOG_TITLE] = "配置设定",
+[HUD_CLASS_TALENTS_EDIT_LOADOUT_SHARED_ACTION_BARS_TEXT] = "使用共享的动作条",
+[HUD_CLASS_TALENTS_EDIT_LOADOUT_USES_SHARED_ACTION_BARS_TOOLTIP] = "默认条件下，每个配置都有自己保存的一套动作条。\n\n所有开启此选项的配置都会共享同样的动作条。",
+[HUD_CLASS_TALENTS_IMPORT_DIALOG_EDIT_BOX_LABEL] = "导入文本",
+[HUD_CLASS_TALENTS_IMPORT_DIALOG_NAME_LABEL] = "新配置名称",
+[HUD_CLASS_TALENTS_IMPORT_DIALOG_TITLE] = "导入配置",
+[HUD_CLASS_TALENTS_IMPORT_ERROR_IMPORT_STRING_AND_NAME] = "输入可用的配置代码",
+[HUD_CLASS_TALENTS_IMPORT_INSTRUCTIONS] = "在此粘贴配置代码",
+[HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON] = "导入",
+[HUD_CLASS_TALENTS_NEW_LOADOUT_DIALOG_EDIT_BOX_LABEL] = "名字",
+[HUD_CLASS_TALENTS_NEW_LOADOUT_DIALOG_TITLE] = "新配置",
+[HUD_ClASS_TALENTS_EDIT_LOADOUT_CONFIRM_DELETE] = "你确定要删除配置%s吗？",
+[HUD_ClASS_TALENTS_EDIT_LOADOUT_CONFIRM_SHARED_ACTION_BARS] = "此配置的动作条会被你共享的动作条替换。",
+[HUD_EDIT_MODE_ACTION_BAR_LABEL] = "动作条 %d",
+[HUD_EDIT_MODE_ACTION_BAR_SETTINGS] = "动作条设定",
+[HUD_EDIT_MODE_ARCHAEOLOGY_BAR_LABEL] = "考古条",
+[HUD_EDIT_MODE_ARENA_FRAMES_LABEL] = "竞技场框体",
+[HUD_EDIT_MODE_BAGS_LABEL] = "背包",
+[HUD_EDIT_MODE_BOSS_FRAMES_LABEL] = "首领框体",
+[HUD_EDIT_MODE_BUFFS_AND_DEBUFFS_LABEL] = "增益效果和负面效果",
+[HUD_EDIT_MODE_BUFF_FRAME_LABEL] = "增益效果框",
+[HUD_EDIT_MODE_CAST_BAR_LABEL] = "施法条",
+[HUD_EDIT_MODE_CHARACTER_LAYOUTS_HEADER] = "%s专用",
+[HUD_EDIT_MODE_CHARACTER_SPECIFIC_LAYOUT] = "角色专用布局",
+[HUD_EDIT_MODE_CHAT_FRAME_LABEL] = "聊天框体",
+[HUD_EDIT_MODE_COLLAPSE_OPTIONS] = "收起选项 |A:editmode-up-arrow:16:11:0:3|a",
+[HUD_EDIT_MODE_COPY_LAYOUT] = "复制布局",
+[HUD_EDIT_MODE_COPY_TO_CLIPBOARD] = "复制到剪贴板|cffffd100（可在网上分享）|r",
+[HUD_EDIT_MODE_COPY_TO_CLIPBOARD_NOTICE] = "编辑模式布局 “%s” 已复制到剪切板。",
+[HUD_EDIT_MODE_DEBUFF_FRAME_LABEL] = "减益效果框",
+[HUD_EDIT_MODE_DELETE_LAYOUT] = "删除布局",
+[HUD_EDIT_MODE_DELETE_LAYOUT_DIALOG_TITLE] = "你确定要删除布局|n%s吗？",
+[HUD_EDIT_MODE_DURABILITY_FRAME_LABEL] = "装备耐久度",
+[HUD_EDIT_MODE_ENABLE_ADVANCED_OPTIONS] = "高级选项",
+[HUD_EDIT_MODE_ENABLE_SNAP] = "贴附到界面元素上",
+[HUD_EDIT_MODE_ENCOUNTER_BAR_LABEL] = "战斗条",
+[HUD_EDIT_MODE_ERROR_COPY] = "|cnNORMAL_FONT_COLOR:Copy Layout|r|n必须保存或撤销激活的改动",
+[HUD_EDIT_MODE_ERROR_COPY_MAX_LAYOUTS] = "|cnNORMAL_FONT_COLOR:复制布局|r|n最多允许%d种角色布局和%d种账号布局",
+[HUD_EDIT_MODE_ERROR_DUPLICATE_NAME] = "该名称已被使用。",
+[HUD_EDIT_MODE_ERROR_ENTER_IMPORT_STRING_AND_NAME] = "在上面输入可用的导入文本和布局名称",
+[HUD_EDIT_MODE_ERROR_ENTER_NAME] = "输入布局的名称",
+[HUD_EDIT_MODE_ERROR_MAX_ACCOUNT_LAYOUTS] = "只允许有%d个账号通用的布局。勾选以保存一种角色专用的布局",
+[HUD_EDIT_MODE_ERROR_MAX_CHAR_LAYOUTS] = "只允许有%d个角色专用的布局。勾选以保存一种账号通用的布局",
+[HUD_EDIT_MODE_ERROR_MAX_LAYOUTS] = "最多允许%d种角色布局和%d种账号布局",
+[HUD_EDIT_MODE_ERROR_RENAME_OR_COPY] = "|cnNORMAL_FONT_COLOR:重命名/复制布局|r|n必须保存或撤销激活的改动",
+[HUD_EDIT_MODE_EXIT] = "退出",
+[HUD_EDIT_MODE_EXPAND_OPTIONS] = "展开选项 |A:editmode-down-arrow:16:11:0:-7|a",
+[HUD_EDIT_MODE_EXPERIENCE_BAR_LABEL] = "经验条",
+[HUD_EDIT_MODE_EXTRA_ABILITIES_LABEL] = "额外技能",
+[HUD_EDIT_MODE_FOCUS_FRAME_LABEL] = "焦点框体",
+[HUD_EDIT_MODE_GRID_SPACING] = "网格间距",
+[HUD_EDIT_MODE_GROUP_MANAGER] = "编辑",
+[HUD_EDIT_MODE_HUD_TOOLTIP_LABEL] = "HUD提示信息",
+[HUD_EDIT_MODE_IMPORT_LAYOUT] = "导入",
+[HUD_EDIT_MODE_IMPORT_LAYOUT_DIALOG_EDIT_BOX_LABEL] = "导入文本：",
+[HUD_EDIT_MODE_IMPORT_LAYOUT_DIALOG_TITLE] = "导入布局",
+[HUD_EDIT_MODE_IMPORT_LAYOUT_INSTRUCTIONS] = "在此粘贴布局代码",
+[HUD_EDIT_MODE_IMPORT_LAYOUT_LINK_DIALOG_EDIT_BOX_LABEL] = "新布局名称：",
+[HUD_EDIT_MODE_LAYOUT] = "布局：",
+[HUD_EDIT_MODE_LAYOUT_APPLIED] = "编辑模式布局 ‘%s’已应用",
+[HUD_EDIT_MODE_LOOT_FRAME_DISABLED_TOOLTIP] = "你必须关闭位于：界面 > 控制菜单中的“鼠标位置打开拾取窗口”选项，才能自定义拾取窗口布局。",
+[HUD_EDIT_MODE_LOOT_FRAME_LABEL] = "拾取窗口",
+[HUD_EDIT_MODE_MENU] = "编辑模式",
+[HUD_EDIT_MODE_MICRO_MENU_LABEL] = "菜单",
+[HUD_EDIT_MODE_MINIMAP_LABEL] = "小地图",
+[HUD_EDIT_MODE_NAME_LAYOUT_DIALOG_TITLE] = "给新布局起名",
+[HUD_EDIT_MODE_NEW_LAYOUT] = "%s |cnPURE_GREEN_COLOR:新布局|r",
+[HUD_EDIT_MODE_NEW_LAYOUT_DISABLED] = "%s 新布局",
+[HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL] = "目标追踪栏",
+[HUD_EDIT_MODE_PARTY_FRAMES_LABEL] = "小队框体",
+[HUD_EDIT_MODE_PET_ACTION_BAR_LABEL] = "宠物条",
+[HUD_EDIT_MODE_PET_FRAME_LABEL] = "宠物框体",
+[HUD_EDIT_MODE_PLAYER_FRAME_LABEL] = "玩家框体",
+[HUD_EDIT_MODE_POSSESS_ACTION_BAR_LABEL] = "附身条",
+[HUD_EDIT_MODE_POST_IN_CHAT] = "在聊天栏中发布",
+[HUD_EDIT_MODE_PRESET_LAYOUT] = "%s（预设）",
+[HUD_EDIT_MODE_PVP_FRAME_SETTINGS] = "竞技场对手框体设置",
+[HUD_EDIT_MODE_RAID_FRAMES_LABEL] = "团队框体",
+[HUD_EDIT_MODE_RAID_FRAME_SETTINGS] = "团队框体设置",
+[HUD_EDIT_MODE_RENAME_LAYOUT] = "更改名称",
+[HUD_EDIT_MODE_RENAME_LAYOUT_DIALOG_TITLE] = "为布局%s输入新名称",
+[HUD_EDIT_MODE_RENAME_OR_COPY_LAYOUT] = "重命名/复制布局",
+[HUD_EDIT_MODE_RESET_POSITION] = "重设到默认位置",
+[HUD_EDIT_MODE_REVERT_ALL_CHANGES] = "撤销所有变更",
+[HUD_EDIT_MODE_REVERT_CHANGES] = "撤销变更",
+[HUD_EDIT_MODE_SAVE_AND_EXIT] = "保存并退出",
+[HUD_EDIT_MODE_SAVE_AND_SWITCH] = "保存并切换",
+[HUD_EDIT_MODE_SAVE_LAYOUT] = "保存",
+[HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_COMBAT] = "战斗",
+[HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_FRAMES] = "框体",
+[HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC] = "其他",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_ALWAYS_SHOW_BUTTONS] = "总是显示按键",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_HIDE_BAR_ART] = "隐藏动作条装饰",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_HIDE_BAR_SCROLLING] = "隐藏动作条滚动条",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_PADDING] = "图标填充",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE] = "图标尺寸",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_COLUMNS] = "列数",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ICONS] = "图标数",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS] = "行数",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_ORIENTATION] = "方位",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_ORIENTATION_HORIZONTAL] = "水平",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_ORIENTATION_VERTICAL] = "垂直",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_SNAP_TO_RIGHT_SIDE] = "贴附到右侧",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING] = "动作条可见",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_ALWAYS] = "始终可见",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_HIDDEN] = "隐藏",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT] = "战斗中",
+[HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT] = "脱离战斗",
+[HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE] = "尺寸",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION] = "图标方向",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN] = "下",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT] = "左",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT] = "右",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP] = "上",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_LIMIT] = "图标限制",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_PADDING] = "图标填充",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_SIZE] = "图标尺寸",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP] = "图标收起",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_DOWN] = "下",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_LEFT] = "左",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_RIGHT] = "右",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP] = "上",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ORIENTATION] = "方位",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ORIENTATION_HORIZONTAL] = "水平",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_ORIENTATION_VERTICAL] = "垂直",
+[HUD_EDIT_MODE_SETTING_AURA_FRAME_SHOW_FULL] = "显示全部",
+[HUD_EDIT_MODE_SETTING_BAGS_DIRECTION] = "方向",
+[HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN] = "下",
+[HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT] = "左",
+[HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT] = "右",
+[HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP] = "上",
+[HUD_EDIT_MODE_SETTING_BAGS_ORIENTATION] = "方位",
+[HUD_EDIT_MODE_SETTING_BAGS_ORIENTATION_HORIZONTAL] = "水平",
+[HUD_EDIT_MODE_SETTING_BAGS_ORIENTATION_VERTICAL] = "垂直",
+[HUD_EDIT_MODE_SETTING_BAGS_SIZE] = "尺寸",
+[HUD_EDIT_MODE_SETTING_CAST_BAR_LOCK_TO_PLAYER_FRAME] = "锁定于玩家框体",
+[HUD_EDIT_MODE_SETTING_CAST_BAR_SHOW_CAST_TIME] = "显示施法时间",
+[HUD_EDIT_MODE_SETTING_CAST_BAR_SIZE] = "条尺寸",
+[HUD_EDIT_MODE_SETTING_CHAT_FRAME_HEIGHT] = "高度",
+[HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH] = "宽度",
+[HUD_EDIT_MODE_SETTING_DURABILITY_FRAME_SIZE] = "尺寸",
+[HUD_EDIT_MODE_SETTING_MICRO_MENU_EYE_SIZE] = "眼睛尺寸",
+[HUD_EDIT_MODE_SETTING_MICRO_MENU_ORDER] = "订单",
+[HUD_EDIT_MODE_SETTING_MICRO_MENU_ORDER_DEFAULT] = "默认",
+[HUD_EDIT_MODE_SETTING_MICRO_MENU_ORDER_REVERSE] = "撤销",
+[HUD_EDIT_MODE_SETTING_MICRO_MENU_ORIENTATION] = "方位",
+[HUD_EDIT_MODE_SETTING_MICRO_MENU_ORIENTATION_HORIZONTAL] = "水平",
+[HUD_EDIT_MODE_SETTING_MICRO_MENU_ORIENTATION_VERTICAL] = "垂直",
+[HUD_EDIT_MODE_SETTING_MICRO_MENU_SIZE] = "菜单尺寸",
+[HUD_EDIT_MODE_SETTING_MINIMAP_HEADER_UNDERNEATH] = "底部标题",
+[HUD_EDIT_MODE_SETTING_MINIMAP_ROTATE_MINIMAP] = "旋转微缩地图",
+[HUD_EDIT_MODE_SETTING_MINIMAP_SIZE] = "尺寸",
+[HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT] = "高度",
+[HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY] = "不透明度",
+[HUD_EDIT_MODE_SETTING_TIMER_BARS_SIZE] = "尺寸",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_BUFFS_ON_TOP] = "增益效果在最上方",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_CAST_BAR_ON_SIDE] = "侧边施法条",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_CAST_BAR_UNDERNEATH] = "在下方显示施法条",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_COLUMN_SIZE] = "列尺寸",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_DISPLAY_BORDER] = "显示边框",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_FRAME_SIZE] = "框体尺寸",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS] = "队伍",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS_COMBINE_GROUPS_HORIZONTAL] = "合并队伍（水平）",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS_COMBINE_GROUPS_VERTICAL] = "合并队伍（垂直）",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS_SEPARATE_GROUPS_HORIZONTAL] = "分离队伍（水平）",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS_SEPARATE_GROUPS_VERTICAL] = "分离队伍（垂直）",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_HEIGHT] = "框体高度",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_KEEP_GROUPS_TOGETHER] = "保持小队相连",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_RAID_SIZE] = "团队规模",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_RAID_STYLE_PARTY_FRAMES] = "使用团队风格的小队框体界面",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_ROW_SIZE] = "行宽",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_CAST_TIME] = "显示施法时间",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND] = "显示背景",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY] = "排序",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_ALPHABETICAL] = "字母顺序",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP] = "队伍",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_ROLE] = "职责",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_USE_HORIZONTAL_GROUPS] = "使用水平布局",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_USE_LARGER_FRAME] = "使用更大的框体",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_VIEW_ARENA_SIZE] = "竞技场类型",
+[HUD_EDIT_MODE_SETTING_UNIT_FRAME_WIDTH] = "框体宽度",
+[HUD_EDIT_MODE_SETTING_VEHICLE_SEAT_INDICATOR_SIZE] = "尺寸",
+[HUD_EDIT_MODE_SHARE_LAYOUT] = "分享",
+[HUD_EDIT_MODE_SHOW_GRID] = "显示网格",
+[HUD_EDIT_MODE_STANCE_BAR_LABEL] = "姿态条",
+[HUD_EDIT_MODE_STATUS_TRACKING_BAR_LABEL] = "状态栏 %d",
+[HUD_EDIT_MODE_SWITCH] = "切换",
+[HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL] = "对话特写头像",
+[HUD_EDIT_MODE_TARGET_AND_FOCUS] = "目标和焦点",
+[HUD_EDIT_MODE_TARGET_FRAME_LABEL] = "目标框体",
+[HUD_EDIT_MODE_TIMER_BARS_LABEL] = "时长条",
+[HUD_EDIT_MODE_TITLE] = "HUD编辑模式",
+[HUD_EDIT_MODE_UNSAVED_CHANGES] = "你有未保存的改动",
+[HUD_EDIT_MODE_UNSAVED_CHANGES_DIALOG_TITLE] = "所有未保存的改动都会丢失，你确定要继续吗？",
+[HUD_EDIT_MODE_UNSAVED_CHANGES_EXIT_DIALOG_TITLE] = "如果你现在退出，你会丢失所有未保存的改动。|n你想继续吗？",
+[HUD_EDIT_MODE_UNSAVED_CHANGES_LAYOUT_CHANGE_DIALOG_TITLE] = "如果你切换布局，你会丢失所有未保存的改动。|n你想继续吗？",
+[HUD_EDIT_MODE_VEHICLE_LEAVE_BUTTON_LABEL] = "退出载具按钮",
+[HUD_EDIT_MODE_VEHICLE_SEAT_INDICATOR_LABEL] = "载具座位",
+
+[format(HUD_EDIT_MODE_PRESET_LAYOUT, LAYOUT_STYLE_CLASSIC)] = "经典（预设）",
+[format(HUD_EDIT_MODE_PRESET_LAYOUT, LAYOUT_STYLE_MODERN)] = "现代（预设）",
+[HUD_EDIT_MODE_NEW_LAYOUT:format(CreateAtlasMarkup("editmode-new-layout-plus"))] = "|A:editmode-new-layout-plus:0:0|a |cnPURE_GREEN_COLOR:新布局|r",
 }
+
 end
 
 
@@ -2089,118 +2306,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-local function Init_Edit_Mode_Text()
-strEdit={
-    [HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_COMBAT] = "战斗",
-    [HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_FRAMES] = "框体",
-    [HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC] = "其他",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_ALWAYS_SHOW_BUTTONS] = "总是显示按键",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_HIDE_BAR_ART] = "隐藏动作条装饰",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_HIDE_BAR_SCROLLING] = "隐藏动作条滚动条",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_PADDING] = "图标填充",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE] = "图标尺寸",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_COLUMNS] = "列数",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ICONS] = "图标数",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS] = "行数",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_ORIENTATION] = "方位",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_ORIENTATION_HORIZONTAL] = "水平",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_ORIENTATION_VERTICAL] = "垂直",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_SNAP_TO_RIGHT_SIDE] = "贴附到右侧",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING] = "动作条可见",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_ALWAYS] = "始终可见",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_HIDDEN] = "隐藏",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT] = "战斗中",
-    [HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT] = "脱离战斗",
-    [HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE] = "尺寸",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION] = "图标方向",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN] = "下",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT] = "左",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT] = "右",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP] = "上",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_LIMIT] = "图标限制",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_PADDING] = "图标填充",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_SIZE] = "图标尺寸",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP] = "图标收起",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_DOWN] = "下",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_LEFT] = "左",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_RIGHT] = "右",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP] = "上",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ORIENTATION] = "方位",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ORIENTATION_HORIZONTAL] = "水平",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_ORIENTATION_VERTICAL] = "垂直",
-    [HUD_EDIT_MODE_SETTING_AURA_FRAME_SHOW_FULL] = "显示全部",
-    [HUD_EDIT_MODE_SETTING_BAGS_DIRECTION] = "方向",
-    [HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN] = "下",
-    [HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT] = "左",
-    [HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT] = "右",
-    [HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP] = "上",
-    [HUD_EDIT_MODE_SETTING_BAGS_ORIENTATION] = "方位",
-    [HUD_EDIT_MODE_SETTING_BAGS_ORIENTATION_HORIZONTAL] = "水平",
-    [HUD_EDIT_MODE_SETTING_BAGS_ORIENTATION_VERTICAL] = "垂直",
-    [HUD_EDIT_MODE_SETTING_BAGS_SIZE] = "尺寸",
-    [HUD_EDIT_MODE_SETTING_CAST_BAR_LOCK_TO_PLAYER_FRAME] = "锁定于玩家框体",
-    [HUD_EDIT_MODE_SETTING_CAST_BAR_SHOW_CAST_TIME] = "显示施法时间",
-    [HUD_EDIT_MODE_SETTING_CAST_BAR_SIZE] = "条尺寸",
-    [HUD_EDIT_MODE_SETTING_CHAT_FRAME_HEIGHT] = "高度",
-    [HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH] = "宽度",
-    [HUD_EDIT_MODE_SETTING_DURABILITY_FRAME_SIZE] = "尺寸",
-    [HUD_EDIT_MODE_SETTING_MICRO_MENU_EYE_SIZE] = "眼睛尺寸",
-    [HUD_EDIT_MODE_SETTING_MICRO_MENU_ORDER] = "订单",
-    [HUD_EDIT_MODE_SETTING_MICRO_MENU_ORDER_DEFAULT] = "默认",
-    [HUD_EDIT_MODE_SETTING_MICRO_MENU_ORDER_REVERSE] = "撤销",
-    [HUD_EDIT_MODE_SETTING_MICRO_MENU_ORIENTATION] = "方位",
-    [HUD_EDIT_MODE_SETTING_MICRO_MENU_ORIENTATION_HORIZONTAL] = "水平",
-    [HUD_EDIT_MODE_SETTING_MICRO_MENU_ORIENTATION_VERTICAL] = "垂直",
-    [HUD_EDIT_MODE_SETTING_MICRO_MENU_SIZE] = "菜单尺寸",
-    [HUD_EDIT_MODE_SETTING_MINIMAP_HEADER_UNDERNEATH] = "底部标题",
-    [HUD_EDIT_MODE_SETTING_MINIMAP_ROTATE_MINIMAP] = "旋转微缩地图",
-    [HUD_EDIT_MODE_SETTING_MINIMAP_SIZE] = "尺寸",
-    [HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_HEIGHT] = "高度",
-    [HUD_EDIT_MODE_SETTING_OBJECTIVE_TRACKER_OPACITY] = "不透明度",
-    [HUD_EDIT_MODE_SETTING_TIMER_BARS_SIZE] = "尺寸",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_BUFFS_ON_TOP] = "增益效果在最上方",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_CAST_BAR_ON_SIDE] = "侧边施法条",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_CAST_BAR_UNDERNEATH] = "在下方显示施法条",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_COLUMN_SIZE] = "列尺寸",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_DISPLAY_BORDER] = "显示边框",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_FRAME_SIZE] = "框体尺寸",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS] = "队伍",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS_COMBINE_GROUPS_HORIZONTAL] = "合并队伍（水平）",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS_COMBINE_GROUPS_VERTICAL] = "合并队伍（垂直）",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS_SEPARATE_GROUPS_HORIZONTAL] = "分离队伍（水平）",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS_SEPARATE_GROUPS_VERTICAL] = "分离队伍（垂直）",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_HEIGHT] = "框体高度",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_KEEP_GROUPS_TOGETHER] = "保持小队相连",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_RAID_SIZE] = "团队规模",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_RAID_STYLE_PARTY_FRAMES] = "使用团队风格的小队框体界面",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_ROW_SIZE] = "行宽",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_CAST_TIME] = "显示施法时间",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND] = "显示背景",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY] = "排序",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_ALPHABETICAL] = "字母顺序",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP] = "队伍",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_ROLE] = "职责",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_USE_HORIZONTAL_GROUPS] = "使用水平布局",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_USE_LARGER_FRAME] = "使用更大的框体",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_VIEW_ARENA_SIZE] = "竞技场类型",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_VIEW_ARENA_SIZE_FIVE] = "5v5",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_VIEW_ARENA_SIZE_THREE] = "3v3",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_VIEW_ARENA_SIZE_TWO] = "2v2",
-    [HUD_EDIT_MODE_SETTING_UNIT_FRAME_WIDTH] = "框体宽度",
-    [HUD_EDIT_MODE_SETTING_VEHICLE_SEAT_INDICATOR_SIZE] = "尺寸",
-}
-end
 
 
 
@@ -2216,10 +2321,10 @@ end
 
 local function Init()
 
-    
 
 
-   
+
+
     hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--列表 Blizzard_CategoryList.lua
         local category = initializer.data.category
         if category then
@@ -2260,7 +2365,8 @@ local function Init()
             end
         end
     end)
-    SettingsPanel:HookScript('OnHide', function() e.strOption={} optionTab=nil end)
+    SettingsPanel:HookScript('OnShow', Init_Option_Text)
+    SettingsPanel:HookScript('OnHide', End_Option_Text)
     hooksecurefunc('BindingButtonTemplate_SetupBindingButton', function(_, button)--BindingUtil.lua
         Init_Option_Text()
         local text= button:GetText()
@@ -2282,8 +2388,7 @@ local function Init()
             print(lable:GetText())
         end
         
-    end)]]
-    --[[SettingsPanel:HookScript('OnShow', Init_Option_Text)
+    end)
     SettingsPanel:HookScript('OnHide', function() e.strOption={} optionTab=nil end)
 
    
@@ -2298,44 +2403,44 @@ local function Init()
     end)
 
     hooksecurefunc(SettingsListSectionHeaderMixin, 'Init', function(self, initializer)
-         Init_Option_Text()
+        
         local data = initializer:GetData();
         setLabel(self.Title, data.name)
     end)
     hooksecurefunc(SettingsListSearchCategoryMixin, 'Init', function(self, initializer)
-        Init_Option_Text()
+
        local data = initializer:GetData();
        setLabel(self.Title, data.category:GetQualifiedName())
        print(data.category:GetQualifiedName())
    end)
 
     hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
-        Init_Option_Text()
+
         local setting = self:GetSetting();
         setLabel(self.Text, setting.name)
         
     end)
 
     hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self, initializer)
-        Init_Option_Text()
+
         setLabel(self.Text, initializer.data.name)
 
     end)
     hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self, initializer)
-        Init_Option_Text()
+      
         setLabel(self.Text, initializer.data.setting.name)
     end)
     hooksecurefunc(SettingsButtonControlMixin, 'Init', function(self, initializer)
-        Init_Option_Text()
+      
         setLabel(self.Button, self.data.buttonText);
     end)
     hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self, initializer)
-        Init_Option_Text()
+      
         setLabel(self.Text, initializer.data.name)
 
     end)
     hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
-        Init_Option_Text()
+     
         setLabel(self.Text, initializer.data.name)
 
         local cbSetting = initializer.data.cbSetting
@@ -2346,7 +2451,7 @@ local function Init()
         local sliderTooltip = initializer.data.sliderTooltip
     end)
     hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
-        Init_Option_Text()
+      
         local cbSetting = initializer.data.cbSetting
         setLabel(self.Text, cbSetting.name)
         local cbLabel = initializer.data.cbLabel
@@ -2355,11 +2460,11 @@ local function Init()
         local options = initializer.data.dropDownOptions
     end)
     hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)
-        Init_Option_Text()
+        
         setLabel(self.Label, self.Label:GetText())
     end)
     hooksecurefunc('BindingButtonTemplate_SetupBindingButton', function(_, button)--BindingUtil.lua
-        Init_Option_Text()
+       
         local text= button:GetText()
         if button:GetText()==GRAY_FONT_COLOR:WrapTextInColorCode(NOT_BOUND) then
             set(button, GRAY_FONT_COLOR:WrapTextInColorCode('未设置'))
@@ -2392,7 +2497,7 @@ local function Init()
     set(GameMenuButtonQuit, '退出游戏')
     set(GameMenuButtonContinue, '返回游戏')
 
-    
+
 
     --角色
     set(CharacterFrameTab1, '角色')
@@ -3267,7 +3372,7 @@ local function Init()
 
 
 
-    
+
 
 
 
@@ -4183,9 +4288,7 @@ local function Init()
 
     hooksecurefunc(EditModeSystemSettingsDialog, 'AttachToSystemFrame', function(self, systemFrame)
         local name= systemFrame:GetSystemName()
-        if name and e.strText[name] then
-            set(self.Title, e.strText[name])
-        end
+        setLabel(self.Title, name)
     end)
 
     set(EditModeNewLayoutDialog.Title, '给新布局起名')
@@ -4281,10 +4384,10 @@ local function Init()
         self.settingsCheckButtons.StatusTrackingBar2:SetLabelText('状态栏 2')
     end)
 
-    
 
-    EditModeManagerFrame:HookScript('OnShow', Init_Edit_Mode_Text)
-    EditModeManagerFrame:HookScript('OnHide', function() strEdit={} end)
+
+    EditModeManagerFrame:HookScript('OnShow', Init_Option_Text)
+    EditModeManagerFrame:HookScript('OnHide', End_Option_Text)
     --EditModeTemplates.lua
     hooksecurefunc(EditModeSettingCheckboxMixin, 'SetupSetting', function(self, settingData)
         setLabel(self.Label, settingData.settingName)
@@ -4301,8 +4404,17 @@ local function Init()
             GameTooltip:Show();
         end
     end)
+    hooksecurefunc(EditModeDropdownEntryMixin, 'OnEnter', function(self)
+        if not self.isEnabled then
+            local text= strEdit[self.disabledTooltip]
+            print(text, self.disabledTooltip)
+            if text then
+                GameTooltip_ShowDisabledTooltip(GameTooltip, self, text);
+            end
+        end
+    end)
     local maxLayoutsErrorText = format('最多允许%d种角色布局和%d种账号布局', Constants.EditModeConsts.EditModeMaxLayoutsPerType, Constants.EditModeConsts.EditModeMaxLayoutsPerType);
-    hooksecurefunc(EditModeDropdownEntryMixin, 'Init', function(self, text, onClick, disableOnMaxLayouts, disableOnActiveChanges, width, maxTextWidth, showArrow, isSubmenuButton, disabledText)
+    hooksecurefunc(EditModeDropdownEntryMixin, 'Init', function(self, text, _, disableOnMaxLayouts, disableOnActiveChanges, _, _, _, _, disabledText)
         if disableOnMaxLayouts and EditModeManagerFrame:AreLayoutsFullyMaxed() then
             self.disabledTooltip = maxLayoutsErrorText;
         elseif disableOnActiveChanges and EditModeManagerFrame:HasActiveChanges()then
@@ -4315,22 +4427,20 @@ local function Init()
     end)
 
     set(EditModeSystemSettingsDialog.Buttons.RevertChangesButton, '撤销变更')
-    hooksecurefunc(EditModeSystemSettingsDialog, 'UpdateExtraButtons', function(self,systemFrame)
+    hooksecurefunc(EditModeSystemSettingsDialog, 'UpdateExtraButtons', function(self, systemFrame)
         if systemFrame == self.attachedToSystem then
             set(systemFrame.resetToDefaultPositionButton, '重设到默认位置')
         end
     end)
-
-    --[[hooksecurefunc(EditModeSystemMixin, 'AddExtraButtons', function(self, extraButtonPool)
-        set(self.resetToDefaultPositionButton, '重设到默认位置')
-    end)]]
-
-
-
-
-
-
-
+    hooksecurefunc(EditModeSystemSettingsDialog, 'UpdateButtons', function(self, systemFrame)
+        if systemFrame == self.attachedToSystem then
+            if systemFrame.Selection then
+                setLabel(systemFrame.Selection.HorizontalLabel)
+                setLabel(systemFrame.Selection.Label)
+                setLabel(systemFrame.Selection.VerticalLabel)
+            end
+        end
+    end)
 
 
 
@@ -4338,6 +4448,15 @@ local function Init()
 
 
 
+
+    hooksecurefunc(ButtonTrayUtil, 'TestCheckBoxTraySetup', function(button, labelText, callback, customFont)--ButtonTrayUtil.lua
+        setLabel(button, labelText)
+    end)
+    hooksecurefunc(ResizeCheckButtonMixin, 'SetLabelText', function(self, labelText)
+        if self.Label ~= nil then
+            setLabel(self.Label, labelText)
+        end
+    end)
 
 
 
