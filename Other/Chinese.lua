@@ -8110,9 +8110,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 cancel_all()
             else
 
-                do
-                    Init_Set()
-                end
+                --do
+                    --Init_Set()
+                --end
 
                 Init()
 
