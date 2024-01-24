@@ -717,6 +717,17 @@ e.strText={
 
 
 [QUICK_KEYBIND_MODE] = "快速快捷键模式",
+
+[ALL_CLASSES] = "全职业",
+[CLASS] = "职业",
+[ALL_SPECS] = "全天赋",
+
+[NEW_CHAT_WINDOW] = "创建新窗口",
+[FONT_SIZE] = "字体大小",
+[BACKGROUND] = "底色",
+[FILTERS] = "过滤器",
+[CHAT_CONFIGURATION] = "设置",
+[DISPLAY] = "显示",
 }end
 
 
@@ -4774,11 +4785,72 @@ local function Init()
 
 
 
+    --SharedUIPanelTemplates.lua
+    hooksecurefunc(SliderControlFrameMixin, 'SetupSlider', function(self, _, _, _, _, label)
+        setLabel(self.Label, label)
+    end)
+
+    hooksecurefunc('SearchBoxTemplate_OnLoad', function(self)--SharedUIPanelTemplates.lua
+        set(self.Instructions, '搜索')
+    end)
+    hooksecurefunc('Main_HelpPlate_Button_ShowTooltip', function(self)
+        set(HelpPlateTooltip.Text, self.MainHelpPlateButtonTooltipText or '点击这里打开/关闭本窗口的帮助系统。');
+    end)
+    hooksecurefunc(SearchBoxListMixin, 'UpdateSearchPreview', function(self, finished, dbLoaded, numResults)
+        if finished and not self.searchButtons[numResults] then
+            set(self.showAllResults.text, format('显示全部%d个结果', numResults))
+        end
+    end)
+    hooksecurefunc(IconSelectorPopupFrameTemplateMixin, 'SetSelectedIconText', function(self)
+        if ( self:GetSelectedIndex() ) then
+            set(self.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconDescription, '点击在列表中浏览')
+        else
+            set(self.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconDescription, '此图标不在列表中')
+        end
+    end)
+    hooksecurefunc(LabeledEnumDropDownControlMixin, 'SetLabelText', function(self, text)
+	    setLabel(self.Label, text)
+    end)
 
 
+    --UIDropDownMenu.lua
+    local function GetChild(frame, name, key)
+        if (frame[key]) then
+            return frame[key];
+        elseif name then
+            return _G[name..key];
+        end
 
+        return nil;
+    end
+    hooksecurefunc('UIDropDownMenu_SetText', function(frame, text)
+        if text and frame then
+            local frameName = frame:GetName();
+            local col, text2= text:match('(|cff......)(.-)|r')
+            text= getText(text2 or text)
+            if text then
+                text= col and col..text..'|r' or text
+                set(GetChild(frame, frameName, "Text"), text)
+            end
+        end
+    end)
+    hooksecurefunc('UIDropDownMenu_AddButton', function(info, level)
+        level = level or 1
+        local listFrame = _G["DropDownList"..level];
+        listFrame = listFrame or _G["DropDownList"..level];
+        local listFrameName = listFrame:GetName();
+        local index = listFrame and (listFrame.numButtons) or 1;
+        local button = _G[listFrameName.."Button"..index];
 
-
+        if info.text and button then
+            local text= getText(info.text)
+            print(info.text, text, button)
+            if text then
+                text= info.colorCode and info.colorCode..text.."|r" or text
+                button:SetText(text)
+            end
+        end
+    end)
 
 
 
