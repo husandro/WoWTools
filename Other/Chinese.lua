@@ -3212,7 +3212,7 @@ local function Init()
 
 
     
-    local function set_pettips_func(self)
+    local function set_pettips_func(self)--FloatingPetBattleTooltip.xml
         local function set_pet_func(frame)
             setLabel(frame.BattlePet)
             setLabel(frame.PetType)

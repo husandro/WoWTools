@@ -17777,7 +17777,7 @@ local function Init()
     TOOLTIP_ARENA_POINTS = "竞技场点数是通过在竞技场战斗中获胜而赢得的。你可以消费这些点数来购买强大的奖励品！",
     TOOLTIP_AZERITE_ITEM_DISABLED = "艾泽拉斯之心在这里处于沉睡状态，与艾泽拉斯的生命之力隔绝了。",
     TOOLTIP_AZERITE_UNLOCK_LEVELS = "艾泽里特之力(0/%d)：",
-    TOOLTIP_BATTLE_PET = "战斗宠物",
+   
     TOOLTIP_BATTLE_PET_NAME = "战斗宠物：%s",
     TOOLTIP_HONOR_POINTS = "荣誉点数是通过在PvP战斗中消灭敌对阵营成员或完成PvP目标而获得的。荣誉点数可以提高你的荣誉等级，解锁奖励。",
     TOOLTIP_NOT_IN_MAGE_TOWER = "在法师塔时空漫游期间无法使用",
@@ -19964,6 +19964,7 @@ local function Init()
     ZOOM_OUT = "缩小",
     ZOOM_OUT_BUTTON_TEXT = "右键点击可以缩小地图",
     _RECORDING_WARNING_CORRUPTED = "视频文件无效。",
+    AUCTION_CATEGORY_BATTLE_PETS = "战斗宠物",
 }
 
 
@@ -19986,17 +19987,6 @@ for name, text in pairs(tab) do
     end
 end
 tab= nil
-
-e.strText[EXPANSION_NAME2] = "巫妖王之怒"
-e.strText[GLYPHS] = "雕文"
-e.strText[AUCTION_HOUSE_DROPDOWN_REMOVE_FAVORITE] = "从偏好中移除"
-e.strText[AUCTION_HOUSE_DROPDOWN_SET_FAVORITE] = "设置为偏好"
-e.strText[AUCTION_CATEGORY_BATTLE_PETS] = "战斗宠物"
-
-
-e.strText[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_ONLINE, FRIENDS_LIST_AVAILABLE)] = "|TInterface\\FriendsFrame\\StatusIcon-Online:16:16|t 有空"
-e.strText[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_AFK, FRIENDS_LIST_AWAY)] = "|TInterface\\FriendsFrame\\StatusIcon-Away:16:16|t 离开"
-e.strText[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_DND, FRIENDS_LIST_BUSY)] = "|TInterface\\FriendsFrame\\StatusIcon-DnD:16:16|t 忙碌"
 
 
 
@@ -20128,7 +20118,21 @@ e.strText[GetItemSubClassInfo(15, 3)] = "节日"
 e.strText[GetItemSubClassInfo(15, 5)] = "坐骑"
 e.strText[GetItemSubClassInfo(15, 6)] = "坐骑装备"
 e.strText[GetItemSubClassInfo(18, 0)] = "时光徽章"
+
+
+e.strText[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_ONLINE, FRIENDS_LIST_AVAILABLE)] = "|TInterface\\FriendsFrame\\StatusIcon-Online:16:16|t 有空"
+e.strText[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_AFK, FRIENDS_LIST_AWAY)] = "|TInterface\\FriendsFrame\\StatusIcon-Away:16:16|t 离开"
+e.strText[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_DND, FRIENDS_LIST_BUSY)] = "|TInterface\\FriendsFrame\\StatusIcon-DnD:16:16|t 忙碌"
+
+
 e.strText[SPLASH_BATTLEFORAZEROTH_8_1_0_2_RIGHT_TITLE] = "达萨罗之战"
+e.strText[EXPANSION_NAME2] = "巫妖王之怒"
+e.strText[GLYPHS] = "雕文"
+e.strText[AUCTION_HOUSE_DROPDOWN_REMOVE_FAVORITE] = "从偏好中移除"
+e.strText[AUCTION_HOUSE_DROPDOWN_SET_FAVORITE] = "设置为偏好"
+e.strText[TOOLTIP_BATTLE_PET] = "战斗宠物"
+
+
 end
 
 
