@@ -36,6 +36,18 @@ local function set(self, text, affer, setFont)
     end
 end
 
+local function getText(text)
+    if text then
+        return e.strOption[text] or e.strText[text] or strEdit[text]
+    end
+end
+
+local function setLabel(lable, text)
+    if lable and lable.SetText then
+        text= text or lable:GetText()
+        set(lable, getText(text))
+    end
+end
 
 local function dia(string, tab)
     if StaticPopupDialogs[string] then
@@ -48,15 +60,20 @@ local function dia(string, tab)
 end
 
 local function hookDia(string, text, func)
-    if StaticPopupDialogs[string] and StaticPopupDialogs[string][text] then
-        hooksecurefunc(StaticPopupDialogs[string], text, func)
+    if StaticPopupDialogs[string] then
+        if StaticPopupDialogs[string][text] then
+            hooksecurefunc(StaticPopupDialogs[string], text, func)
+        else
+            StaticPopupDialogs[string][text]=func
+        end
     end
 end
 
-local function reg(self, text)
-    if self and text then
-        for _, region in pairs({self:GetRegions()}) do
-            if region:GetObjectType()=='FontString' then
+local function reg(self, text, index)
+    if self and (text or index) then
+        for i, region in pairs({self:GetRegions()}) do
+            if region:GetObjectType()=='FontString' and (index==i or not index) then
+                text= text or getText(region:GetText())
                 set(region, text)
                 return
             end
@@ -119,18 +136,6 @@ local function role_tooltips(str)
     end
 end
 
-local function getText(text)
-    if text then
-        return e.strOption[text] or e.strText[text] or strEdit[text]
-    end
-end
-
-local function setLabel(lable, text)
-    if lable and lable.SetText then
-        text= text or lable:GetText()
-        set(lable, getText(text))
-    end
-end
 
 
 --[[local function set_button(btn)
@@ -357,9 +362,6 @@ e.strText={
 [KILLING_BLOW_TOOLTIP_TITLE] = "消灭",
 [EVENTS_LABEL] = "事件",
 
-[BATTLE_PET_SOURCE_5] = "宠物对战",
-[BATTLE_PET_SOURCE_7] = "世界事件",
-[BATTLE_PET_SOURCE_8] = "特殊",
 [GAMES] = "比赛",
 
 [EXPANSION_NAME0] = "经典旧世",
@@ -793,9 +795,9 @@ e.strText={
 [COMMUNITIES_INVITE_MANAGER_EXPIRES_NEVER] = "永不过期",
 [BATTLE_PET_UNFAVORITE] = "从偏好中移除",
 [BATTLE_PET_FAVORITE] = "设置为偏好",
-[AUCTION_HOUSE_FILTER_DROP_DOWN_LEVEL_RANGE] = "等级范围",
-[AUCTION_HOUSE_FILTER_CATEGORY_EQUIPMENT] = "装备",
-[AUCTION_HOUSE_FILTER_CATEGORY_RARITY] = "稀有程度",
+
+
+
 [WORLD_MAP_FILTER_TITLE] = "显示:",
 [SHOW_QUEST_OBJECTIVES_ON_MAP_TEXT] = "任务目标",
 [SHOW_DUNGEON_ENTRACES_ON_MAP_TEXT] = "地下城入口",
@@ -836,14 +838,14 @@ e.strText={
 [TALENT_FRAME_RESET_BUTTON_DROPDOWN_RIGHT] = "右侧天赋树",
 [TALENT_FRAME_RESET_BUTTON_DROPDOWN_TITLE] = "重置天赋",
 [REMOVE_WORLD_MARKERS] = "清除全部",
-[WORLD_MARKER1] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14|t |cff0070dd蓝色|r世界标记",
-[WORLD_MARKER2] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:14:14|t |cff1eff00绿色|r世界标记",
-[WORLD_MARKER3] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:14:14|t |cffa335ee紫色|r世界标记",
-[WORLD_MARKER4] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:14:14|t |cffff2020红色|r世界标记",
-[WORLD_MARKER5] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14|t |cffffff00黄色|r世界标记",
-[WORLD_MARKER6] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:14:14|t |cffff7f3f橙色|r世界标记",
-[WORLD_MARKER7] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14|t |cffaaaadd银色|r世界标记",
-[WORLD_MARKER8] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14|t |cffffffff白色|r世界标记",
+[WORLD_MARKER1] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:14:14|t|cff0070dd蓝色|r世界标记",
+[WORLD_MARKER2] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:14:14|t|cff1eff00绿色|r世界标记",
+[WORLD_MARKER3] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:14:14|t|cffa335ee紫色|r世界标记",
+[WORLD_MARKER4] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:14:14|t|cffff2020红色|r世界标记",
+[WORLD_MARKER5] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:14:14|t|cffffff00黄色|r世界标记",
+[WORLD_MARKER6] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:14:14|t|cffff7f3f橙色|r世界标记",
+[WORLD_MARKER7] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:14:14|t|cffaaaadd银色|r世界标记",
+[WORLD_MARKER8] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:14:14|t|cffffffff白色|r世界标记",
 [AVAILABLE] = "可用",
 [UNAVAILABLE] = "不可用",
 [USED] = "已经学会",
@@ -1098,7 +1100,74 @@ e.strText={
 [UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_PARTY] = "组队选项",
 [SET_ROLE] = "设置职责",
 [NO_ROLE] = "没有职责",
-}end
+[COMPARE_ACHIEVEMENTS] = "比较成就",
+[REPORT_PET_NAME] = "举报宠物名",
+FRIENDS_TEXTURE_ONLINE = "Interface\\FriendsFrame\\StatusIcon-Online";
+FRIENDS_TEXTURE_AFK = "Interface\\FriendsFrame\\StatusIcon-Away";
+FRIENDS_TEXTURE_DND = "Interface\\FriendsFrame\\StatusIcon-DnD";
+
+[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_ONLINE, FRIENDS_LIST_AVAILABLE)] = "|TInterface\\FriendsFrame\\StatusIcon-Online:16:16|t 有空",
+[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_AFK, FRIENDS_LIST_AWAY)] = "|TInterface\\FriendsFrame\\StatusIcon-Away:16:16|t 离开",
+[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_DND, FRIENDS_LIST_BUSY)] = "|TInterface\\FriendsFrame\\StatusIcon-DnD:16:16|t 忙碌",
+
+[LFG_TYPE_ANY_DUNGEON] = "任何地下城",
+[LFG_TYPE_ANY_HEROIC_DUNGEON] = "任何英雄地下城",
+[LFG_TYPE_BATTLEGROUND] = "战场",
+[LFG_TYPE_DAILY_DUNGEON] = "日常地下城",
+[LFG_TYPE_DAILY_HEROIC_DUNGEON] = "日常英雄地下城",
+[LFG_TYPE_DUNGEON] = "地下城",
+[LFG_TYPE_FOLLOWER_DUNGEON] = "追随者地下城",
+[LFG_TYPE_HEROIC_DUNGEON] = "英雄地下城",
+[LFG_TYPE_NONE] = "无",
+[LFG_TYPE_QUEST] = "任务（组队）",
+[LFG_TYPE_RAID] = "团队",
+[LFG_TYPE_RANDOM_DUNGEON] = "随机地下城",
+[LFG_TYPE_RANDOM_HEROIC_SCENARIO] = "随机英雄场景战役",
+[LFG_TYPE_RANDOM_SCENARIO] = "随机场景战役",
+[LFG_TYPE_RANDOM_TIMEWALKER_DUNGEON] = "随机时空漫游地下城",
+[LFG_TYPE_ZONE] = "地区",
+[SPECIFIC_DUNGEONS] = "指定地下城",
+
+[BATTLE_PET_SOURCE_1] = "掉落",
+[BATTLE_PET_SOURCE_10] = "游戏商城",
+[BATTLE_PET_SOURCE_11] = "发现",
+[BATTLE_PET_SOURCE_12] = "商栈",
+[BATTLE_PET_SOURCE_2] = "任务",
+[BATTLE_PET_SOURCE_3] = "商人",
+[BATTLE_PET_SOURCE_4] = "专业技能",
+[BATTLE_PET_SOURCE_5] = "宠物对战",
+[BATTLE_PET_SOURCE_6] = "成就",
+[BATTLE_PET_SOURCE_7] = "世界事件",
+[BATTLE_PET_SOURCE_8] = "特殊",
+[BATTLE_PET_SOURCE_9] = "集换卡牌游戏",
+
+[AUCTION_HOUSE_FILTER_CATEGORY_COLLECTIONS] = "藏品",
+[AUCTION_HOUSE_FILTER_CATEGORY_EQUIPMENT] = "装备",
+[AUCTION_HOUSE_FILTER_CATEGORY_RARITY] = "稀有程度",
+[AUCTION_HOUSE_FILTER_DROPDOWN_CUSTOM] = "自定义",
+[AUCTION_HOUSE_FILTER_DROPDOWN_NONE] = "无",
+[AUCTION_HOUSE_FILTER_DROP_DOWN_LEVEL_RANGE] = "等级范围",
+[AUCTION_HOUSE_FILTER_RUNECARVING] = "|cff00ccff符文铭刻|r",
+[AUCTION_HOUSE_FILTER_UNCOLLECTED_ONLY] = "只显示未获得的",
+[AUCTION_HOUSE_FILTER_UPGRADES_ONLY] = "只显示对我有提升的",
+[AUCTION_HOUSE_FILTER_USABLE_ONLY] = "只显示可用种类",
+
+[NAME] = "名称",
+[NOT_COLLECTED] = "未收集",
+[PET_FAMILIES] = "宠物类型",
+[SOURCES] = "来源",
+[LEVEL] = "等级",
+[TYPE] = "类型",
+[RAID_FRAME_SORT_LABEL] = "排序",
+[MOUNT_JOURNAL_FILTER_AQUATIC] = "水栖",
+[MOUNT_JOURNAL_FILTER_DRAGONRIDING] = "驭龙术",
+[MOUNT_JOURNAL_FILTER_FLYING] = "飞行",
+[MOUNT_JOURNAL_FILTER_GROUND] = "地面",
+[MOUNT_JOURNAL_FILTER_TYPE] = "类型",
+[MOUNT_JOURNAL_FILTER_UNUSABLE] = "无法使用",
+}
+
+end
 
 
 
@@ -3683,6 +3752,9 @@ local function Init()
 
 
 
+
+
+
     e.Cstr(nil, {changeFont= QuickKeybindFrame.OutputText, size=16})
     local function set_SetOutputText(self, text)
         if not text then
@@ -3740,6 +3812,8 @@ local function Init()
     end)
 
     set(FriendsFrameTab1, '好友')
+        reg(FriendsFrameBattlenetFrame.BroadcastFrame, '通告', 1)
+        set(FriendsFrameBattlenetFrame.BroadcastFrame.EditBox.PromptText, '通告')
         set(FriendsFrameBattlenetFrame.BroadcastFrame.UpdateButton, '更新')
         set(FriendsFrameBattlenetFrame.BroadcastFrame.CancelButton, '取消')
         set(FriendsFrameAddFriendButton, '添加好友')
@@ -4012,6 +4086,22 @@ local function Init()
             end
         end
     end)
+    --FriendsFrame.xml
+    set(BattleTagInviteFrame.InfoText, '当他们接受你的好友请求后，就会被加入你的好友名单。')
+    reg(BattleTagInviteFrame, '发送一个|cff82c5ff战网昵称|r请求给：', 1)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     hooksecurefunc('FCF_SetWindowName', function(frame, name)--FloatingChatFrame.lua
@@ -4434,6 +4524,9 @@ local function Init()
     set(QuestFrameCompleteButton, '继续')
     set(QuestFrameGoodbyeButton, '再见')
     set(QuestFrameDeclineButton, '拒绝')
+    set(QuestLogPopupDetailFrameAbandonButton, '放弃')
+    set(QuestLogPopupDetailFrameShareButton, '共享')
+    set(QuestLogPopupDetailFrame.ShowMapButton.Text, '显示地图')
 
     set(QuestMapFrame.DetailsFrame.BackButton, '返回')
     set(QuestMapFrame.DetailsFrame.AbandonButton, '放弃')
@@ -5549,6 +5642,16 @@ local function Init()
     dia("WEB_PROXY_FAILED", {text = '在配置浏览器时发生错误。请重启魔兽世界并再试一次。', button1 = '确定'})
     dia("WEB_ERROR", {text = '错误：%d|n浏览器无法完成你的请求。请重试。', button1 = '确定'})
     dia("CONFIRM_REMOVE_FRIEND", {button1 = '接受', button2 = '取消'})
+    hookDia("CONFIRM_REMOVE_FRIEND", 'OnShow', function(self)
+        local text= self.text:GetText() or ''
+        local name= text:match(e.Magic(BATTLETAG_REMOVE_FRIEND_CONFIRMATION))
+        local name2= text:match(e.Magic(REMOVE_FRIEND_CONFIRMATION))
+        if name then
+            set(self.text, format('你确定要将  |cnRED_FONT_COLOR:%s|r 移出|cff82c5ff战网昵称|r好友名单吗？', name))
+        elseif name2 then
+            set(self.text, format('你确定要将 |cnRED_FONT_COLOR:%s|r 移出|cnGREEN_FONT_COLOR:实名|r好友名单？', name2))
+        end
+    end)
     dia("PICKUP_MONEY", {text = '提取总额', button1 = '接受', button2 = '取消'})
     dia("CONFIRM_GUILD_CHARTER_PURCHASE", {text = '你会失去在上一个公会中的一级公会声望\n你是否要继续？', button1 = '是', button2 = '否'})
     dia("GUILD_DEMOTE_CONFIRM", {button1 = '是', button2 = '否'})
@@ -5766,9 +5869,10 @@ local function Init()
 
             if info.text and button then
                 local text= getText(info.text)
+                print(info.text, text)
                 if text then
                     text= info.colorCode and info.colorCode..text.."|r" or text
-                    button:SetText(text)
+                    set(button, text)
                 end
             end
         end)
@@ -7629,7 +7733,7 @@ local function Init_Loaded(arg1)
             elseif ConquestFrame.seasonState == 1 then--SEASON_STATE_OFFSEASON
                 PVEFrame:SetTitle('玩家VS玩家（休赛期）')
             else
-                local expName = _G["EXPANSION_NAME"..GetExpansionLevel()]
+                local expName = _G["EXPANSION_NAME"..e.ExpansionLevel]
                 PVEFrame:SetTitleFormatted('玩家VS玩家 '..(e.strText[expName] or expName)..' 第 %d 赛季', PVPUtil.GetCurrentSeasonNumber())
             end
         end)
@@ -7929,8 +8033,7 @@ local function Init_Loaded(arg1)
             if ( not currentDisplaySeason ) then
                 PVEFrame:SetTitle('史诗钥石地下城')
             else
-                local currExpID = GetExpansionLevel()
-                local expName = _G["EXPANSION_NAME"..currExpID]
+                local expName = _G["EXPANSION_NAME"..e.ExpansionLevel]
                 local title = format('史诗钥石地下城 %s 赛季 %d', e.strText[expName] or expName, currentDisplaySeason)
                 PVEFrame:SetTitle(title)
             end
@@ -8421,9 +8524,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 cancel_all()
             else
 
-                do
-                    Init_Set()
-                end
+                --do
+                    --Init_Set()
+                --end
 
                 Init()
 

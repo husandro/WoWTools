@@ -177,4 +177,6 @@ Other\SpellFrame.lua
 
 ##界面，中文化
 ##繁体，简体，中文， 不会载加
+
 Other\Chinese.lua
+Other\zhCN.lua

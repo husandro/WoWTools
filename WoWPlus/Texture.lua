@@ -691,12 +691,14 @@ local function Init_All_Frame()
 
      --好友列表
      set_NineSlice(FriendsFrame, true)
-
      set_Alpha_Color(FriendsFrameBg)
      set_NineSlice(FriendsFrameInset, true)
      set_Alpha_Color(FriendsFrameInset.Bg, nil, nil, min05)
      set_ScrollBar(FriendsListFrame)
      set_ScrollBar(IgnoreListFrame)
+     set_Menu(FriendsFrameStatusDropDown)
+     set_Alpha_Frame_Texture(FriendsFrameBattlenetFrame.BroadcastButton, {notAlpha=true})
+
      --好友列表，团队
      if RecruitAFriendFrame and RecruitAFriendFrame.RecruitList then
         set_ScrollBar(RecruitAFriendFrame.RecruitList)
@@ -753,6 +755,26 @@ local function Init_All_Frame()
      set_ScrollBar(QuestFrame)
      set_ScrollBar(QuestProgressScrollFrame)
      set_ScrollBar(QuestDetailScrollFrame)
+
+     set_NineSlice(QuestLogPopupDetailFrame, true)
+     set_Alpha_Color(QuestLogPopupDetailFrameBg)
+     hide_Frame_Texture(QuestLogPopupDetailFrameInset)
+     set_ScrollBar(QuestLogPopupDetailFrameScrollFrame)
+     set_NineSlice(QuestLogPopupDetailFrameInset, nil, true)
+
+     set_Alpha_Frame_Texture(QuestModelScene)
+     set_Alpha_Color(QuestNPCModelTextFrameBg, nil, nil, min05)
+     set_ScrollBar(QuestNPCModelTextScrollChildFrame)
+     --[[set_NineSlice(QuestLogPopupDetailFrame, true)
+     set_Alpha_Color(QuestLogPopupDetailFrameBg)
+     hide_Frame_Texture(QuestLogPopupDetailFrameInset)
+     set_ScrollBar(QuestLogPopupDetailFrameScrollFrame)
+     set_NineSlice(QuestLogPopupDetailFrameInset, nil, true)
+
+     set_Alpha_Color(QuestNPCModelTopBg)
+     hide_Texture(QuestNPCModelBg)
+     
+     set_Alpha_Color(QuestNPCModelTopBg)]]
 
      --信箱
           set_NineSlice(MailFrame, true)
@@ -1191,8 +1213,7 @@ local function Init_All_Frame()
         set_Alpha_Frame_Texture(self.Button2, {notAlpha=true})
     end)
 
-    --StoreFrame
-
+    --ReportFrame
     set_Alpha_Frame_Texture(ReportFrame)
     set_Alpha_Frame_Texture(ReportFrame.Border)
     hide_Texture(ReportFrame.BottomInset)
@@ -1200,6 +1221,8 @@ local function Init_All_Frame()
     set_Alpha_Frame_Texture(ReportFrame.CloseButton, {notAlpha=true})
     set_Menu(ReportFrame.ReportingMajorCategoryDropdown)
     set_ScrollBar(ReportFrame.Comment)
+
+    set_Alpha_Frame_Texture(BattleTagInviteFrame.Border, {notAlpha=true})
 end
 
 

@@ -720,6 +720,7 @@ local function Init_Move()
         OpacityFrame={save=true},
         ArcheologyDigsiteProgressBar= {notZoom=true},
         ReportFrame={save=true},
+        BattleTagInviteFrame= {save=true}
         --EditModeManagerFrame={save=true},
     }
     for k, v in pairs(FrameTab) do
