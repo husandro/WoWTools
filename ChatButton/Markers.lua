@@ -1103,7 +1103,7 @@ end
 
 
 local function Init_Ping()
-    if not Save.pingTime or not IsAddOnLoaded('Blizzard_PingUI') then
+    if not Save.pingTime or not C_AddOns.IsAddOnLoaded('Blizzard_PingUI') then
         return
     end
  --[[

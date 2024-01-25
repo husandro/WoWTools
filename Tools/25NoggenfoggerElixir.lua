@@ -23,7 +23,7 @@ local function setAura()--光环取消
         if not spellID then
             break
         elseif Save.aura[spellID] then
-            CancelUnitBuff("player", i)-- 'CANCELABLE')
+            CancelUnitBuff("player", i, nil)-- 'CANCELABLE')
             print(id, CANCEL, AURAS, GetSpellLink(spellID) or spellID)
             break
         end

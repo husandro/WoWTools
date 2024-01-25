@@ -4762,7 +4762,8 @@ local function Init()
 
     --BNet.lua
     hooksecurefunc(BNToastFrame, 'ShowToast', function(self)
-        local toastType, toastData = self.toastType or {}, self.toastData or {}
+        local toastType, toastData
+        toastType, toastData = self.toastType or {}, self.toastData or {}
         if ( toastType == 5 ) then
             set(self.DoubleLine, '你收到了一个新的好友请求。')
         elseif ( toastType == 4 ) then
