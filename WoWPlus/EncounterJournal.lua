@@ -22,7 +22,7 @@ local function getBossNameSort(name, worldBossID)--取得怪物名称, 短名称
             return '鲁克玛'
         end
     end
-    
+
     name=name:gsub('(,.+)','')
     name=name:gsub('(，.+)','')
     name=name:gsub('·.+','')

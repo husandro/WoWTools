@@ -935,7 +935,6 @@ e.strText={
 [CLUB_FINDER_APPLICANT_HISTORY] = "申请历史",
 [AUCTION_HOUSE_DROPDOWN_REMOVE_FAVORITE] = "从偏好中移除",
 [AUCTION_HOUSE_DROPDOWN_SET_FAVORITE] = "设置为偏好",
-
 [CLUB_FINDER_FOCUS_SOCIAL_LEVELING] = "社交和升级",
 [GUILD_INTEREST_DUNGEON] = "地下城",
 [GUILD_INTEREST_RAID] = "团队副本",
@@ -960,8 +959,145 @@ e.strText={
 [CLUB_FINDER_REQUEST_TO_JOIN] = "申请加入",
 [CLUB_FINDER_CANCEL_APPLICATION] = "取消申请",
 [CLUB_FINDER_REPORT_POSTING] = "举报信息",
+[BNET_REPORT_NAME] = "不当角色名",
+[REPORTING_MAJOR_CATEGORY_CHEATING] = "作弊",
+[REPORTING_MAJOR_CATEGORY_GAMEPLAY_SABOTAGE] = "破坏游戏体验",
+[REPORTING_MAJOR_CATEGORY_INAPPROPRIATE_COMMUNICATION] = "不当的交流",
+[REPORTING_MAJOR_CATEGORY_INAPPROPRIATE_NAME] = "不当角色名",
 
 
+
+
+
+
+
+[TRADE] = "交易",--UnitPopupSharedButtonMixins.lua
+[INSPECT] = "观察",
+[MOVE_TO_WHISPER_WINDOW] = "移至密语窗口",
+[DUEL] = "决斗",
+[PET_BATTLE_PVP_DUEL] = "宠物决斗",
+[REQUEST_INVITE] = "请求加入队伍",
+[PARTY_UNINVITE] = "移除",
+[REMOVE_FRIEND] = "删除好友",
+[SET_NOTE] = "设置备注",
+[VIEW_FRIENDS_OF_FRIENDS] = "查看好友",
+[SUGGEST_INVITE] = "提议邀请",
+[TARGET] = "目标",
+[VOTE_TO_KICK] = "投票踢人",
+[PARTY_PROMOTE] = "提升为队长",
+[PARTY_PROMOTE_GUIDE] = "提升为向导",
+[GUILD_PROMOTE] = "提升为会长",
+[GUILD_LEAVE] = "退出公会",
+[FOLLOW] = "跟随",
+[PET_ABANDON] = "放弃",
+[PET_SHOW_IN_JOURNAL] = "在手册中显示该宠物",
+[RESET_INSTANCES] = "重置所有副本",
+[RESET_CHALLENGE_MODE] = "重置史诗地下城",
+[CONVERT_TO_PARTY] = "转化为小队",
+[CONVERT_TO_RAID] = "转化为团队",
+[REPORT_CALENDAR] = "举报玩家",
+[REPORT_CHAT] = "举报玩家",
+[REPORT_CLUB_FINDER] = "举报玩家",
+[REPORT_CLUB_MEMBER] = "举报玩家",
+[REPORT_CRAFTER] = "举报制作者",
+[REPORT_FRIEND] = "举报玩家",
+[REPORT_GROUP_FINDER] = "举报玩家",
+[REPORT_GROUP_MEMBER] = "举报玩家",
+[REPORT_IN_WORLD_PLAYER] = "举报玩家",
+[REPORT_PLAYER] = "举报玩家",
+[REPORT_PLAYER_BUTTON_SHORT] = "举报玩家",
+[REPORT_PLAYER_FOR] = "举报玩家",
+[REPORT_PVP_SCOREBOARD] = "举报玩家",
+[REPORT_SPAM] = "举报玩家",
+[COPY_CHARACTER_NAME] = "复制角色名",
+[DUNGEON_DIFFICULTY] = "地下城难度",
+[DUNGEON_DIFFICULTY1] = "5人",
+[DUNGEON_DIFFICULTY2] = "5人（英雄）",
+[DUNGEON_DIFFICULTY3] = "史诗",
+[RAID_DIFFICULTY] = "团队副本难度",
+[RAID_DIFFICULTY1] = "10人",
+[RAID_DIFFICULTY2] = "25人",
+[RAID_DIFFICULTY3] = "10人（英雄）",
+[RAID_DIFFICULTY4] = "25人（英雄）",
+[PLAYER_DIFFICULTY1] = "普通",
+[PLAYER_DIFFICULTY2] = "英雄",
+[PLAYER_DIFFICULTY3] = "随机团队",
+[PLAYER_DIFFICULTY4] = "弹性团队",
+[PLAYER_DIFFICULTY5] = "挑战",
+[PLAYER_DIFFICULTY6] = "史诗",
+[ENABLE] = "启用",
+[DISABLE] = "禁用",
+[SELECT_LOOT_SPECIALIZATION] = "专精拾取",
+[SET_MAIN_ASSIST] = "提升为主助理",
+[SET_MAIN_TANK] = "提升为主坦克",
+[SET_RAID_ASSISTANT] = "提升为助理",
+[SET_RAID_LEADER] = "提升为团队领袖",
+[DEMOTE] = "降职",
+[REMOVE] = "移除",
+[PVP_REPORT_AFK] = "举报离开玩家",
+[RAF_SUMMON] = "召唤战友",
+[VEHICLE_LEAVE] = "离开",
+[SET_FOCUS] = "设置焦点",
+[CLEAR_FOCUS] = "清除焦点",
+[FULL_SIZE_FOCUS_FRAME_TEXT] = "扩大焦点框架",
+[LOCK_FOCUS_FRAME] = "锁定框体位置",
+[UNLOCK_FOCUS_FRAME] = "解锁框体",
+[MOVE_FRAME] = "移动框体",
+[BUFFS_ON_TOP] = "增益效果在最上方",
+[LOCK_FRAME] = "锁定框体",
+[PLAYER_FRAME_SHOW_CASTBARS] = "在下方显示施法条",
+[UNLOCK_FRAME] = "解锁框体",
+[RESET_POSITION] = "重置位置",
+[ADD_ANOTHER] = "添加其他好友",
+[ADD_BINDING] = "添加绑定",
+[ADD_CHARACTER_FRIEND] = "添加角色好友",
+[ADD_CHAT_CHANNEL] = "增加一个频道",
+[ADD_FAVORITE_STATUS] = "加为亲密好友",
+[ADD_FILTER] = "添加过滤",
+[ADD_FRIEND] = "添加好友",
+[ADD_RAID_MEMBER] = "添加成员",
+[SEND_BATTLETAG_REQUEST] = "添加战网昵称好友",
+[RAID_TARGET_ICON] = "队伍标记图标",
+[RAID_TARGET_1] = "星形",
+[RAID_TARGET_2] = "圆形",
+[RAID_TARGET_3] = "菱形",
+[RAID_TARGET_4] = "三角",
+[RAID_TARGET_5] = "月亮",
+[RAID_TARGET_6] = "方块",
+[RAID_TARGET_7] = "十字",
+[RAID_TARGET_8] = "骷髅",
+[MAKE_MODERATOR] = "指定管理员",
+[REMOVE_MODERATOR] = "移除管理员",
+[CHAT_OWNER] = "指定为所有者",
+[CHAT_KICK] = "踢出频道",
+[CHAT_BAN] = "禁止进入",
+[VOICE_CHAT] = "语音聊天",
+[VOICE_CHAT_SETTINGS] = "语音聊天设置",
+[COMMUNITY_MEMBER_LIST_DROP_DOWN_BATTLETAG_FRIEND] = "添加战网昵称好友",
+[COMMUNITY_MEMBER_LIST_DROP_DOWN_REMOVE] = "移出社区",
+[COMMUNITY_MEMBER_LIST_DROP_DOWN_SET_NOTE] = "设置成员备注",
+[COMMUNITY_MEMBER_LIST_DROP_DOWN_ROLES] = "职务",
+[COMMUNITY_MEMBER_ROLE_NAME_MEMBER] = "成员",
+[COMMUNITY_MEMBER_ROLE_NAME_INVITED] = "已邀请",
+[COMMUNITY_MEMBER_ROLE_NAME_LEADER] = "管理员",
+[COMMUNITY_MEMBER_ROLE_NAME_MEMBER] = "成员",
+[COMMUNITY_MEMBER_ROLE_NAME_MODERATOR] = "协管员",
+[COMMUNITY_MEMBER_ROLE_NAME_OWNER] = "拥有者",
+[COMMUNITIES_LIST_DROP_DOWN_FAVORITE] = "设置为偏好",
+[COMMUNITIES_LIST_DROP_DOWN_UNFAVORITE] = "从偏好中移除",
+[COMMUNITIES_LIST_DROP_DOWN_COMMUNITIES_SETTINGS] = "群组设置",
+[COMMUNITIES_LIST_DROP_DOWN_COMMUNITIES_NOTIFICATION_SETTINGS] = "通知设置",
+[COMMUNITY_MESSAGE_DROP_DOWN_DELETE] = "删除消息",
+[COMMUNITIES_LIST_DROP_DOWN_INVITE] = "邀请成员",
+[COMMUNITIES_LIST_DROP_DOWN_CLEAR_UNREAD_NOTIFICATIONS] = "清除聊天通知",
+[UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_INSTANCE] = "副本选项",
+[UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_INTERACT] = "交互",
+[UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LEGACY_RAID] = "旧版团队规模",
+[UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LOOT] = "拾取选项",
+[UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_OTHER] = "其他选项",
+[UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_PARTY] = "组队选项",
+[SET_ROLE] = "设置职责",
+[NO_ROLE] = "没有职责",
 }end
 
 
@@ -2578,11 +2714,6 @@ end
 
 
 local function Init()
-
-
-
-
-
     hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--列表 Blizzard_CategoryList.lua
         local category = initializer.data.category
         if category then
@@ -2638,105 +2769,6 @@ local function Init()
         Init_Option_Text()
         setLabel(self.Label)
     end)
-    --[[hooksecurefunc(SettingsAdvancedSliderMixin, 'OnLoad', function(self)
-        --info =self.SliderWithSteppers
-        --for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
-        for _, lable in pairs(self.SliderWithSteppers.Labels or {}) do
-            setLabel(lable)
-            print(lable:GetText())
-        end
-        
-    end)
-    SettingsPanel:HookScript('OnHide', function() e.strOption={} optionTab=nil end)
-
-   
-    hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--列表 Blizzard_CategoryList.lua
-        local category = initializer.data.category
-        if category then
-            setLabel(self.Label, category:GetName())
-        end
-    end)
-    hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
-        setLabel(self.Label, initializer.data.label)
-    end)
-
-    hooksecurefunc(SettingsListSectionHeaderMixin, 'Init', function(self, initializer)
-        
-        local data = initializer:GetData();
-        setLabel(self.Title, data.name)
-    end)
-    hooksecurefunc(SettingsListSearchCategoryMixin, 'Init', function(self, initializer)
-
-       local data = initializer:GetData();
-       setLabel(self.Title, data.category:GetQualifiedName())
-       print(data.category:GetQualifiedName())
-   end)
-
-    hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
-
-        local setting = self:GetSetting();
-        setLabel(self.Text, setting.name)
-        
-    end)
-
-    hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self, initializer)
-
-        setLabel(self.Text, initializer.data.name)
-
-    end)
-    hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self, initializer)
-      
-        setLabel(self.Text, initializer.data.setting.name)
-    end)
-    hooksecurefunc(SettingsButtonControlMixin, 'Init', function(self, initializer)
-      
-        setLabel(self.Button, self.data.buttonText);
-    end)
-    hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self, initializer)
-      
-        setLabel(self.Text, initializer.data.name)
-
-    end)
-    hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
-     
-        setLabel(self.Text, initializer.data.name)
-
-        local cbSetting = initializer.data.cbSetting
-        setLabel(self.Text, cbSetting.name)
-        local cbLabel = initializer.data.cbLabel
-        local cbTooltip = initializer.data.cbTooltip
-        local sliderLabel = initializer.data.sliderLabel
-        local sliderTooltip = initializer.data.sliderTooltip
-    end)
-    hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
-      
-        local cbSetting = initializer.data.cbSetting
-        setLabel(self.Text, cbSetting.name)
-        local cbLabel = initializer.data.cbLabel
-        local cbTooltip = initializer.data.cbTooltip
-        local setting = initializer.data.dropDownSetting
-        local options = initializer.data.dropDownOptions
-    end)
-    hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)
-        
-        setLabel(self.Label, self.Label:GetText())
-    end)
-    hooksecurefunc('BindingButtonTemplate_SetupBindingButton', function(_, button)--BindingUtil.lua
-       
-        local text= button:GetText()
-        if button:GetText()==GRAY_FONT_COLOR:WrapTextInColorCode(NOT_BOUND) then
-            set(button, GRAY_FONT_COLOR:WrapTextInColorCode('未设置'))
-        else
-            setLabel(button, text)
-        end
-    end)
-    
-    hooksecurefunc(SettingsListElementInitializer, 'Init', function(self, data)
-        print(self.Title, data.name)
-        setLabel(self.Title, data.name)
-    end)]]
-
-    --hooksecurefunc(SettingsPanelMixin, 'OnSearchTextChanged', function(self)
 
 
 
@@ -4482,6 +4514,49 @@ local function Init()
     --背包
     set(BagItemSearchBox.Instructions, '搜索')
 
+    --SharedReportFrame.xml
+    set(ReportFrame.TitleText, '《魔兽世界》客户支持')
+    hooksecurefunc(ReportFrame, 'InitiateReportInternal', function(self, reportInfo, playerName, playerLocation, isBnetReport, sendReportWithoutDialog)--SharedReportFrame.lua
+        local name
+        local guid= playerLocation and playerLocation.guid
+        if guid then
+            name= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true})
+        end
+        name= name and name~='' and name or playerName
+        set(self.ReportString, format('举报 %s', name))
+    end)
+    set(ReportFrame.ReportingMajorCategoryDropdown.Label, '选择理由')
+    
+    set(ReportFrame.MinorReportDescription, '提供详细信息（选择所有适合的项目）')
+    set(ReportFrame.Comment.EditBox.Instructions, '补充更多关于这次举报的细节（可选）')
+    hooksecurefunc(ReportingFrameMinorCategoryButtonMixin, 'SetupButton', function(self, minorCategory)
+        local tab={
+            [REPORTING_MINOR_CATEGORY_ADVERTISEMENT] = "广告",
+            [REPORTING_MINOR_CATEGORY_AFK] = "挂机/没反应",
+            [REPORTING_MINOR_CATEGORY_BLOCKING_PROG] = "阻挠队伍",
+            [REPORTING_MINOR_CATEGORY_BOOSTING] = "代练/代打",
+            [REPORTING_MINOR_CATEGORY_BOTTING] = "脚本",
+            [REPORTING_MINOR_CATEGORY_BTAG] = "战网昵称",
+            [REPORTING_MINOR_CATEGORY_CHARACTER_NAME] = "角色名称",
+            [REPORTING_MINOR_CATEGORY_CUSTOM_GAME_NAME] = "自定义游戏名称",
+            [REPORTING_MINOR_CATEGORY_DESCRIPTION] = "介绍",
+            [REPORTING_MINOR_CATEGORY_FEEDING] = "故意送人头",
+            [REPORTING_MINOR_CATEGORY_GROUP_NAME] = "群组名",
+            [REPORTING_MINOR_CATEGORY_GUILD_NAME] = "公会名称",
+            [REPORTING_MINOR_CATEGORY_HACKING] = "外挂",
+            [REPORTING_MINOR_CATEGORY_INAPPROPRIATE] = "不当行为",
+            [REPORTING_MINOR_CATEGORY_NAME] = "名字",
+            [REPORTING_MINOR_CATEGORY_SPAM] = "刷屏",
+            [REPORTING_MINOR_CATEGORY_TEXT_CHAT] = "文本聊天",
+            [REPORTING_MINOR_CATEGORY_VOICE_CHAT] = "语音聊天",
+        }
+        local categoryName = minorCategory and _G[C_ReportSystem.GetMinorCategoryString(minorCategory)];
+        set(self.Text, tab[categoryName])
+        tab=nil
+    end)
+    set(ReportFrame.ThankYouText, '感谢您的举报！')
+    set(ReportFrame.TitleText, '《魔兽世界》客户支持')
+    set(ReportFrame.ReportButton, '举报')
 
 
 
@@ -5048,44 +5123,7 @@ local function Init()
     end)
 
 
-    --UIDropDownMenu.lua
-    local function GetChild(frame, name, key)
-        if (frame[key]) then
-            return frame[key];
-        elseif name then
-            return _G[name..key];
-        end
-
-        return nil;
-    end
-    hooksecurefunc('UIDropDownMenu_SetText', function(frame, text)
-        if text and frame then
-            local frameName = frame:GetName();
-            local col, text2= text:match('(|cff......)(.-)|r')
-            text= getText(text2 or text)
-            if text then
-                text= col and col..text..'|r' or text
-                set(GetChild(frame, frameName, "Text"), text)
-            end
-        end
-    end)
-    hooksecurefunc('UIDropDownMenu_AddButton', function(info, level)
-        level = level or 1
-        local listFrame = _G["DropDownList"..level];
-        listFrame = listFrame or _G["DropDownList"..level];
-        local listFrameName = listFrame:GetName();
-        local index = listFrame and (listFrame.numButtons) or 1;
-        local button = _G[listFrameName.."Button"..index];
-
-        if info.text and button then
-            local text= getText(info.text)
-            print(info.text, text, button)
-            if text then
-                text= info.colorCode and info.colorCode..text.."|r" or text
-                button:SetText(text)
-            end
-        end
-    end)
+    
 
 
 
@@ -5695,6 +5733,44 @@ local function Init()
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip_SetTitle(GameTooltip, '插件')
             GameTooltip:Show()
+        end)
+
+        --UIDropDownMenu.lua
+        local function GetChild(frame, name, key)
+            if (frame[key]) then
+                return frame[key];
+            elseif name then
+                return _G[name..key];
+            end
+
+            return nil;
+        end
+        hooksecurefunc('UIDropDownMenu_SetText', function(frame, text)
+            if text and frame then
+                local frameName = frame:GetName();
+                local col, text2= text:match('(|cff......)(.-)|r')
+                text= getText(text2 or text)
+                if text then
+                    text= col and col..text..'|r' or text
+                    set(GetChild(frame, frameName, "Text"), text)
+                end
+            end
+        end)
+        hooksecurefunc('UIDropDownMenu_AddButton', function(info, level)
+            level = level or 1
+            local listFrame = _G["DropDownList"..level];
+            listFrame = listFrame or _G["DropDownList"..level];
+            local listFrameName = listFrame:GetName();
+            local index = listFrame and (listFrame.numButtons) or 1;
+            local button = _G[listFrameName.."Button"..index];
+
+            if info.text and button then
+                local text= getText(info.text)
+                if text then
+                    text= info.colorCode and info.colorCode..text.."|r" or text
+                    button:SetText(text)
+                end
+            end
         end)
     end)
 

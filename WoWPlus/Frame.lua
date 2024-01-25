@@ -719,6 +719,7 @@ local function Init_Move()
         [PartyFrame.Background]={frame=PartyFrame, notZoom=true},
         OpacityFrame={save=true},
         ArcheologyDigsiteProgressBar= {notZoom=true},
+        ReportFrame={save=true},
         --EditModeManagerFrame={save=true},
     }
     for k, v in pairs(FrameTab) do

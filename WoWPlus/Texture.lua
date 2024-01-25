@@ -1192,6 +1192,14 @@ local function Init_All_Frame()
     end)
 
     --StoreFrame
+
+    set_Alpha_Frame_Texture(ReportFrame)
+    set_Alpha_Frame_Texture(ReportFrame.Border)
+    hide_Texture(ReportFrame.BottomInset)
+    hide_Texture(ReportFrame.TopInset)
+    set_Alpha_Frame_Texture(ReportFrame.CloseButton, {notAlpha=true})
+    set_Menu(ReportFrame.ReportingMajorCategoryDropdown)
+    set_ScrollBar(ReportFrame.Comment)
 end
 
 
@@ -2533,7 +2541,7 @@ local function Init_HelpTip()
     if Save.disabledHelpTip then
         return
     end
-    hooksecurefunc(HelpTip, 'Show', function(self, parent, info, relativeRegion)--隐藏所有HelpTip HelpTip.lua
+    hooksecurefunc(HelpTip, 'Show', function(self, parent)--隐藏所有HelpTip HelpTip.lua
         self:HideAll(parent)
     end)
 
@@ -2549,6 +2557,17 @@ local function Init_HelpTip()
             C_Timer.After(2, function()
                 TutorialPointerFrame:Hide(ID-1)
                 print(id, addName, '|cffff00ff'..content)
+            end)
+        end
+    end)
+
+    hooksecurefunc(ReportFrame, 'UpdateThankYouMessage', function(self, showThankYouMessage)
+        if showThankYouMessage then
+            C_Timer.After(1, function()
+                if self:IsShown() then
+                    self:Hide()
+                    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '感谢您的举报！' or ERR_REPORT_SUBMITTED_SUCCESSFULLY)..'|r', e.onlyChinese and '关闭' or CLOSE)
+                end
             end)
         end
     end)
@@ -2576,8 +2595,6 @@ end
 
 
 local function Init()
-
-
     Init_All_Frame()
     Init_Class_Power(true)--职业
     Init_Chat_Bubbles()--聊天泡泡
