@@ -4,9 +4,21 @@ if LOCALE_zhCN or LOCALE_zhTW then
 end
 
 local function Init()
-    e.strText[BINDING_NAME_TOGGLEINSCRIPTION] = "打开/关闭雕文面板"
+  
+
+
+
+
+
+
+
+
+
 
     local tab={
+    BINDING_NAME_TOGGLEINSCRIPTION = "打开/关闭雕文面板",
+    ADD_FAVORITE_STATUS = "加为亲密好友",
+    REMOVE_FAVORITE_STATUS = "从亲密好友中移除",
     ABANDON_PET = "你是否决定永远地遗弃你的宠物？你将再也不能召唤它了。",
     ABANDON_QUEST = "放弃任务",
     ABANDON_QUEST_ABBREV = "放弃",
@@ -584,7 +596,7 @@ local function Init()
     ADD_CHANNEL = "输入频道名称",
     ADD_CHARACTER_FRIEND = "添加角色好友",
     ADD_CHAT_CHANNEL = "增加一个频道",
-    ADD_FAVORITE_STATUS = "加为亲密好友",
+    
     ADD_FILTER = "添加过滤",
     ADD_FRIEND = "添加好友",
     ADD_FRIEND_LABEL = "输入好友的角色名：",
@@ -989,8 +1001,7 @@ local function Init()
     AUCTION_HOUSE_DIALOG_PRICE_UNAVAILABLE = "该物品已不存在。",
     AUCTION_HOUSE_DIALOG_PRICE_UPDATED = "价格已更新为可用的最低价。",
     AUCTION_HOUSE_DIALOG_TOTAL_INCREASE = "|cffffd100总价提升:|r",
-    AUCTION_HOUSE_DROPDOWN_REMOVE_FAVORITE = "从偏好中移除",
-    AUCTION_HOUSE_DROPDOWN_SET_FAVORITE = "设置为偏好",
+
     AUCTION_HOUSE_DURATION_LABEL = "持续时间",
     AUCTION_HOUSE_EQUIPMENT_NAME_FORMAT = "%s（%s）",
     AUCTION_HOUSE_EQUIPMENT_RESULT_FORMAT = "%s（%s）",
@@ -7815,7 +7826,7 @@ local function Init()
     EXPANSION_FILTER_TEXT = "内容更新",
     EXPANSION_NAME0 = "经典旧世",
     EXPANSION_NAME1 = "燃烧的远征",
-    EXPANSION_NAME2 = "巫妖王之怒",
+
     EXPANSION_NAME3 = "大地的裂变",
     EXPANSION_NAME4 = "熊猫人之谜",
     EXPANSION_NAME5 = "德拉诺之王",
@@ -14610,7 +14621,7 @@ local function Init()
     REMOVE_AUTHENTICATOR_FROM_RANK = "你确定你想要解除会阶%s必须绑定电子密保的要求？只要有公会成员属于该会阶，你便不能重新将这个会阶设置为必须绑定电子密保。",
     REMOVE_BLOCK = "移除",
     REMOVE_CHAT_DELAY_TEXT = "移除聊天标签弹出延迟",
-    REMOVE_FAVORITE_STATUS = "从亲密好友中移除",
+    
     REMOVE_FOLLOWER = "移除",
     REMOVE_FRIEND = "删除好友",
     REMOVE_FRIEND_CONFIRMATION = "你确定要将%s移出实名好友名单？",
@@ -17010,7 +17021,7 @@ local function Init()
     SPLASH_BATTLEFORAZEROTH_8_1_0_2_FEATURE2_TITLE = "地下城更新",
     SPLASH_BATTLEFORAZEROTH_8_1_0_2_LABEL = "",
     SPLASH_BATTLEFORAZEROTH_8_1_0_2_RIGHT_DESC = "战火席卷了赞达拉，联盟和部落的军队将在全新团队副本中决一死战！",
-    SPLASH_BATTLEFORAZEROTH_8_1_0_2_RIGHT_TITLE = "达萨罗|n之战",
+
     SPLASH_BATTLEFORAZEROTH_8_1_0_FEATURE1_DESC = "掀开联盟与部落之战的全新篇章。",
     SPLASH_BATTLEFORAZEROTH_8_1_0_FEATURE1_TITLE = "阵营战役",
     SPLASH_BATTLEFORAZEROTH_8_1_0_FEATURE2_DESC = "保护友方大陆免遭敌军入侵。",
@@ -19976,9 +19987,11 @@ for name, text in pairs(tab) do
 end
 tab= nil
 
-
-
-
+e.strText[EXPANSION_NAME2] = "巫妖王之怒"
+e.strText[GLYPHS] = "雕文"
+e.strText[AUCTION_HOUSE_DROPDOWN_REMOVE_FAVORITE] = "从偏好中移除"
+e.strText[AUCTION_HOUSE_DROPDOWN_SET_FAVORITE] = "设置为偏好"
+e.strText[AUCTION_CATEGORY_BATTLE_PETS] = "战斗宠物"
 
 
 e.strText[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_ONLINE, FRIENDS_LIST_AVAILABLE)] = "|TInterface\\FriendsFrame\\StatusIcon-Online:16:16|t 有空"
@@ -20115,7 +20128,7 @@ e.strText[GetItemSubClassInfo(15, 3)] = "节日"
 e.strText[GetItemSubClassInfo(15, 5)] = "坐骑"
 e.strText[GetItemSubClassInfo(15, 6)] = "坐骑装备"
 e.strText[GetItemSubClassInfo(18, 0)] = "时光徽章"
-
+e.strText[SPLASH_BATTLEFORAZEROTH_8_1_0_2_RIGHT_TITLE] = "达萨罗之战"
 end
 
 

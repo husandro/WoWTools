@@ -10,7 +10,6 @@ local Save={
 }
 local panel= CreateFrame("Frame")
 
-local strEdit={}
 
 local function font(lable)
     if lable then
@@ -38,7 +37,7 @@ end
 
 local function getText(text)
     if text then
-        return e.strText[text] or e.strText[text] or strEdit[text]
+        return e.strText[text]
     end
 end
 
@@ -646,6 +645,8 @@ local function Init()
             elseif not ( resultID ) then
                 self.SignUpButton.tooltip = '选择一个搜索结果。';
             end
+        elseif self.SignUpButton.tooltip and e.strText[self.SignUpButton.tooltip] then
+            self.SignUpButton.tooltip= e.strText[self.SignUpButton.tooltip]
         end
         local isPartyLeader = UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME);
         local canBrowseWhileQueued = C_LFGList.HasActiveEntryInfo() and isPartyLeader;
@@ -661,9 +662,9 @@ local function Init()
                 self.ScrollBox.StartGroupButton.tooltip = errorText;
             elseif (canBrowseWhileQueued) then
                 self.ScrollBox.StartGroupButton.tooltip = '你不能在你的队伍出现在预创建队伍列表中时那样做。';
-            else
             end
         end
+        
     end)
 
     hooksecurefunc('LFGListSearchEntry_Update', function(self)
@@ -723,7 +724,13 @@ local function Init()
     set(LFGListFrame.SearchPanel.BackToGroupButton, '回到队伍')
     set(LFGListFrame.SearchPanel.SignUpButton, '申请')
     set(LFGListFrame.SearchPanel.BackButton, '后退')
-    set(LFGListFrame.SearchPanel.ScrollBox.NoResultsFound, '未找到队伍。如果你找不到想要的队伍，可以自己创建一支。')
+    set(LFGListFrame.SearchPanel.ScrollBox.StartGroupButton, '创建队伍')
+    hooksecurefunc('LFGListSearchPanel_UpdateResults', function(self)
+        if self.ScrollBox.NoResultsFound:IsShown() and self.totalResults == 0 then
+            set(self.ScrollBox.NoResultsFound, self.searchFailed and '搜索失败。请稍后再试。' or '未找到队伍。如果你找不到想要的队伍，可以自己创建一支。')
+        end
+    end)
+    
     set(LFGListFrame.EntryCreation.CancelButton, '后退')
     set(LFGListFrame.EntryCreation.VoiceChat.EditBox.Instructions, '语音聊天程序')
 
@@ -2195,7 +2202,7 @@ local function Init()
     end)
     hooksecurefunc(EditModeDropdownEntryMixin, 'OnEnter', function(self)
         if not self.isEnabled then
-            local text= strEdit[self.disabledTooltip]
+            local text= e.strText[self.disabledTooltip]
             if text then
                 GameTooltip_ShowDisabledTooltip(GameTooltip, self, text);
             end
@@ -3180,9 +3187,44 @@ local function Init()
 
 
 
+  
+    local function set_tooltip_func(self)
+        local function set_tooltip(frame)
+            local name= frame:GetName()
+            if name then
+                for i=1, frame:NumLines() or 0 do
+                    setLabel(_G[name.."TextLeft"..i])
+                    setLabel(_G[name.."TextRight"..i])
+                end
+            end
+        end
+        self:HookScript("OnShow", set_tooltip)
+        self:HookScript('OnUpdate', function(frame, elapsed)--GameTooltip.lua
+            self.elapsed= (self.elapsed or 0) +elapsed
+            if self.elapsed>TOOLTIP_UPDATE_TIME then
+                set_tooltip(frame)
+            end
+        end)
+    end
+    set_tooltip_func(GameTooltip)
+    set_tooltip_func(ItemRefTooltip)
+    set_tooltip_func(EmbeddedItemTooltip)
 
 
-
+    
+    local function set_pettips_func(self)
+        local function set_pet_func(frame)
+            setLabel(frame.BattlePet)
+            setLabel(frame.PetType)
+            local level = frame.Level:GetText():match('(%d+)')
+            if level then
+                set(frame.Level, format('等级 %s', level))
+            end
+        end
+        self:HookScript('OnShow', set_pet_func)
+    end
+    set_pettips_func(BattlePetTooltip)
+    set_pettips_func(FloatingBattlePetTooltip)
 
 
 
@@ -3233,12 +3275,52 @@ local function Init()
                 end
             end
         end)
-        hooksecurefunc('UIDropDownMenuButtonInvisibleButton_OnEnter', function(self)
-            print('UIDropDownMenuButtonInvisibleButton_OnEnter(self)')
-        end)
     end)
 
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
