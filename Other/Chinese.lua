@@ -5690,8 +5690,11 @@ local function Init_Loaded(arg1)
         set(ItemUpgradeFrame.MissingDescription, '许多可装备的物品都可以进行升级，从而提高其物品等级。不同来源的物品升级所需的货币也各不相同。')
         set(ItemUpgradeFrame.ItemInfo.UpgradeTo, '升级至：')
         set(ItemUpgradeFrame.UpgradeCostFrame.Label, '总花费：')
-        set(ItemUpgradeFrame.FrameErrorText, '该物品已经升到满级了')
-
+        hooksecurefunc(ItemUpgradeFrame, 'PopulatePreviewFrames', function(self)
+            if self.FrameErrorText:IsShown() then
+                setLabel(self.FrameErrorText)--该物品已经升到满级了
+            end
+        end)
 
     elseif arg1=='Blizzard_Settings' then--Blizzard_SettingsPanel.lua 
         local label2= e.Cstr(SettingsPanel.CategoryList)
