@@ -2,7 +2,6 @@ local id, e = ...
 --Blizzard_Deprecated/Deprecated_10_2_0.lua
 e.WoWDate={}
 e.strText={}
-e.strOption={}
 e.tips=GameTooltip
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
 e.call=securecall

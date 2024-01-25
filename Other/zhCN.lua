@@ -1,8 +1,10 @@
 local id, e = ...
+if LOCALE_zhCN or LOCALE_zhTW then
+    return
+end
 
 local function Init()
     local tab={
-    
     ABANDON_PET = "你是否决定永远地遗弃你的宠物？你将再也不能召唤它了。",
     ABANDON_QUEST = "放弃任务",
     ABANDON_QUEST_ABBREV = "放弃",
@@ -20431,5 +20433,37 @@ local function Init()
     ZOOM_OUT_BUTTON_TEXT = "右键点击可以缩小地图",
     _RECORDING_WARNING_CORRUPTED = "视频文件无效。",
 }
+
+for name, text in pairs(tab) do
+    name= _G[name]
+    if name then
+        e.strText[name]= text
+    end
 end
-Init()
+tab=nil
+end
+
+
+
+
+
+
+
+
+local panel= CreateFrame("Frame")
+
+--###########
+--加载保存数据
+--###########
+panel:RegisterEvent("ADDON_LOADED")
+panel:SetScript("OnEvent", function(_, event, arg1)
+    if event == "ADDON_LOADED" and arg1==id then
+        local Save= WoWToolsSave[BUG_CATEGORY15] or {}
+        if e.onlyChinese and not Save.disabled then
+            Init()
+        else
+            Init=function() end
+        end
+        panel:UnregisterAllEvents()
+    end
+end)

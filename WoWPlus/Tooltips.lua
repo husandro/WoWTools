@@ -2076,7 +2076,7 @@ local function Init()
                 if type(tooltip) == "function" then
                     GameTooltip_AddNormalLine(SettingsTooltip, tooltip())
                 else
-                    GameTooltip_AddNormalLine(SettingsTooltip, e.strOption[tooltip] or tooltip)
+                    GameTooltip_AddNormalLine(SettingsTooltip, e.strText[tooltip] or tooltip)
                 end
             end
             if variable then
@@ -2110,7 +2110,7 @@ local function Init()
                     if option.tooltip or option.disabled then
                         GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
                         if option.label then
-                            local optionLabel= e.strOption[option.label] or option.label
+                            local optionLabel= e.strText[option.label] or option.label
                             if option.disabled then
                                 optionLabel = DISABLED_FONT_COLOR:WrapTextInColorCode(optionLabel)
                             else
@@ -2118,7 +2118,7 @@ local function Init()
                             end
                             local optionTooltip= option.tooltip
                             if optionTooltip then
-                                optionTooltip= e.strOption[optionTooltip] or optionTooltip
+                                optionTooltip= e.strText[optionTooltip] or optionTooltip
                                 if option.disabled then
                                     optionTooltip = DISABLED_FONT_COLOR:WrapTextInColorCode(optionTooltip)
                                 elseif default and option.recommend then
@@ -2138,16 +2138,16 @@ local function Init()
                 end
                 if defaultOption and defaultOption.recommend and defaultOption.label then
                     GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
-                    local label= e.strOption[defaultOption.label] or defaultOption.label
+                    local label= e.strText[defaultOption.label] or defaultOption.label
                     GameTooltip_AddHighlightLine(SettingsTooltip, string.format("%s: %s", e.onlyChinese and '推荐' or VIDEO_OPTIONS_RECOMMENDED, GREEN_FONT_COLOR:WrapTextInColorCode(label)))
                 end
-                
+
                 if warningOption and warningOption.value == setting:GetValue() and warningOption.warning then
                     GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
-                    local warning= e.strOption[warningOption.warning] or warningOption.warning
+                    local warning= e.strText[warningOption.warning] or warningOption.warning
                     GameTooltip_AddNormalLine(SettingsTooltip, WARNING_FONT_COLOR:WrapTextInColorCode(warning))
                 end
-                
+
                 if setting:HasCommitFlag(Settings.CommitFlag.ClientRestart) then
                     GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
                     GameTooltip_AddErrorLine(SettingsTooltip, e.onlyChinese and '更改此选项需要重新启动客户端' or VIDEO_OPTIONS_NEED_CLIENTRESTART)
@@ -2156,7 +2156,7 @@ local function Init()
             return initTooltip
         end
 
-      
+
         hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
             --[[self.CheckBox.variable= initializer.data.setting.variable
             set_onenter(self.CheckBox)]]
@@ -2180,7 +2180,7 @@ local function Init()
             local options = initializer:GetOptions()
             local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
             self:SetTooltipFunc(initTooltip)
-                       
+
             initTooltip = GenerateClosure(CreateOptionsInitTooltip(setting, initializer:GetName(), initializer:GetTooltip(), options, setting.variable))
             self.DropDown.Button:SetTooltipFunc(initTooltip)
         end)
@@ -2242,7 +2242,7 @@ local function Init()
                 end
                 GameTooltip_AddNormalLine(SettingsTooltip, id..' '..addName, true)
             end
-            
+
             for index, button in ipairs(self.Buttons) do
                 button:SetTooltipFunc(GenerateClosure(InitializeKeyBindingButtonTooltip, index))
             end
