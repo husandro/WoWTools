@@ -3225,13 +3225,16 @@ local function Init()
             local button = _G[listFrameName.."Button"..index];
 
             if info.text and button then
-                local text= getText(info.text)
-                print(info.text, text)
+                local col, text2= info.text:match('(|cff......)(.-)|r')
+                local text= getText(text2 or info.text)
                 if text then
-                    text= info.colorCode and info.colorCode..text.."|r" or text
+                    text= (info.colorCode or col) and (info.colorCode or col)..text.."|r" or text
                     set(button, text)
                 end
             end
+        end)
+        hooksecurefunc('UIDropDownMenuButtonInvisibleButton_OnEnter', function(self)
+            print('UIDropDownMenuButtonInvisibleButton_OnEnter(self)')
         end)
     end)
 
