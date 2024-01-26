@@ -1537,7 +1537,6 @@ local function Init()
         PanelTemplates_TabResize(tab, 0)
 	end
     hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame, checkBoxTable, _, title)
-        print(id, addName, title)
         local checkBoxNameString = frame:GetName().."CheckBox";
         local checkBoxName, checkBox, check;
         local text;
@@ -1579,6 +1578,7 @@ local function Init()
     hooksecurefunc('ChatConfig_CreateTieredCheckboxes', function(frame, checkBoxTable)
         local checkBoxNameString = frame:GetName().."CheckBox";
         for index, value in ipairs(checkBoxTable) do
+            local checkBoxName = checkBoxNameString..index;
             local checkBox = _G[checkBoxNameString..index]
             if checkBox  then
                 local text
@@ -1591,14 +1591,15 @@ local function Init()
                 if ( value.subTypes ) then
                     local subCheckBoxNameString = checkBoxName.."_";
                     for k, v in ipairs(value.subTypes) do
+                        local subCheckBoxName = subCheckBoxNameString..k
                         local subCheckBox=_G[subCheckBoxNameString..k]
                         if e.strText[v.tooltip] then
                             subCheckBox.tooltip = e.strText[v.tooltip]
                         end
                         local subText
-                        if ( v.text ) then
+                        if (v.text ) then
                             subText = v.text;
-                        else
+                        elseif v.type then
                             subText = _G[v.type];
                         end
                         set(_G[subCheckBoxName.."Text"], e.strText[subText])
