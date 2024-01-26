@@ -941,7 +941,6 @@ local function Init()
     AUCTION_BROWSE_UNIT_PRICE_SORT = "单价",
     AUCTION_BUYOUT_ERROR = "一口价必须高于或等于竞标价格。",
     AUCTION_CATEGORY_ARMOR = "护甲",
-    AUCTION_CATEGORY_BATTLE_PETS = "战斗宠物",
     AUCTION_CATEGORY_CONSUMABLES = "消耗品",
     AUCTION_CATEGORY_CONTAINERS = "容器",
     AUCTION_CATEGORY_GEMS = "宝石",
@@ -19963,7 +19962,6 @@ local function Init()
     ZOOM_OUT = "缩小",
     ZOOM_OUT_BUTTON_TEXT = "右键点击可以缩小地图",
     _RECORDING_WARNING_CORRUPTED = "视频文件无效。",
-    AUCTION_CATEGORY_BATTLE_PETS = "战斗宠物",
 }
 
 

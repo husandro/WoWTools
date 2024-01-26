@@ -901,13 +901,10 @@ local function Init()
             print('LootItemExtended', itemLink, self.lootItem.Icon)
         end
     end)]]
-    
+
     hooksecurefunc(LootItemExtendedMixin, 'Init', function(self, itemLink2, originalQuantity, _, isCurrency)--ItemDisplay.lua
         local _, _, _, _, itemLink = ItemUtil.GetItemDetails(itemLink2, originalQuantity, isCurrency);
-        e.Set_Item_Stats(self, itemLink, {point= self.lootItem.Icon})
-        if e.Player.husandro then
-            print('LootItemExtendedMixin', itemLink, self.lootItem.Icon)
-        end
+        e.Set_Item_Stats(self, itemLink, {point= self.Icon})
     end)
 
     --hooksecurefunc('NewPetAlertFrameMixin', function(self, petID)

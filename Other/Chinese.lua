@@ -136,6 +136,43 @@ local function role_tooltips(str)
 end
 
 
+local function set_tooltip_func(self)
+    if not self or not self.NumLines then
+        return
+    end
+    local function set_tooltip(frame)
+        local name= frame:GetName()
+        if name then
+            for i=1, frame:NumLines() or 0 do
+                setLabel(_G[name.."TextLeft"..i])
+                setLabel(_G[name.."TextRight"..i])
+            end
+        end
+    end
+    self:HookScript("OnShow", set_tooltip)
+    self:HookScript('OnUpdate', function(frame, elapsed)--GameTooltip.lua
+        self.elapsed= (self.elapsed or 0) +elapsed
+        if self.elapsed>TOOLTIP_UPDATE_TIME then
+            set_tooltip(frame)
+        end
+    end)
+end
+
+local function set_pettips_func(self)--FloatingPetBattleTooltip.xml
+    if not self then
+        return
+    end
+    local function set_pet_func(frame)
+        setLabel(frame.BattlePet)
+        setLabel(frame.PetType)
+        local level = frame.Level:GetText():match('(%d+)')
+        if level then
+            set(frame.Level, format('等级 %s', level))
+        end
+    end
+    self:HookScript('OnShow', set_pet_func)
+end
+
 
 --[[local function set_button(btn)
     local label = btn and (btn.Text or btn.text)
@@ -486,20 +523,20 @@ local function Init()
     end)
 
     hooksecurefunc('LFGListEntryCreation_Select', function(self, filters, categoryID, groupID, activityID)
-        filters, categoryID, groupID, activityID = LFGListUtil_AugmentWithBest(bit.bor(self.baseFilters or 0, filters or 0), categoryID, groupID, activityID);
-        local activityInfo = C_LFGList.GetActivityInfoTable(activityID);
+        filters, categoryID, groupID, activityID = LFGListUtil_AugmentWithBest(bit.bor(self.baseFilters or 0, filters or 0), categoryID, groupID, activityID)
+        local activityInfo = C_LFGList.GetActivityInfoTable(activityID)
         if(not activityInfo) then
-            return;
+            return
         end
-        local groupName = C_LFGList.GetActivityGroupInfo(groupID);
-        local englishFaction, localizedFaction  = UnitFactionGroup("player");
+        local groupName = C_LFGList.GetActivityGroupInfo(groupID)
+        local englishFaction, localizedFaction  = UnitFactionGroup("player")
         local faction= englishFaction=='Alliance' and '联盟'
                     or (englishFaction=="Horde" and '部落')
                     or (englishFaction=="Neutral" and '中立')
                     or localizedFaction
         set(self.CrossFactionGroup.Label, format('仅限%s', faction))
-        self.CrossFactionGroup.tooltip = format('只有%s玩家会看到你的队伍。|n|n这可能会减少你收到的申请人数量。', faction);
-        self.CrossFactionGroup.disableTooltip = format('这项活动不支持跨阵营队伍。|n|n你的队伍将只对%s玩家显示。', faction);
+        self.CrossFactionGroup.tooltip = format('只有%s玩家会看到你的队伍。|n|n这可能会减少你收到的申请人数量。', faction)
+        self.CrossFactionGroup.disableTooltip = format('这项活动不支持跨阵营队伍。|n|n你的队伍将只对%s玩家显示。', faction)
         if ( activityInfo.ilvlSuggestion ~= 0 ) then
             set(self.ItemLevel.EditBox.Instructions, format('推荐%d级', activityInfo.ilvlSuggestion))
         else
@@ -523,48 +560,48 @@ local function Init()
     end)
 
     hooksecurefunc('LFGListEntryCreation_UpdateValidState', function(self)
-        local errorText;
+        local errorText
         local activityInfo = C_LFGList.GetActivityInfoTable(self.selectedActivity)
-        local maxNumPlayers = activityInfo and  activityInfo.maxNumPlayers or 0;
-        local mythicPlusDisableActivity = not C_LFGList.IsPlayerAuthenticatedForLFG(self.selectedActivity) and (activityInfo.isMythicPlusActivity and not C_LFGList.GetKeystoneForActivity(self.selectedActivity));
+        local maxNumPlayers = activityInfo and  activityInfo.maxNumPlayers or 0
+        local mythicPlusDisableActivity = not C_LFGList.IsPlayerAuthenticatedForLFG(self.selectedActivity) and (activityInfo.isMythicPlusActivity and not C_LFGList.GetKeystoneForActivity(self.selectedActivity))
         if ( maxNumPlayers > 0 and GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) >= maxNumPlayers ) then
-            errorText = string.format('针对此项活动，你的队伍人数已满（%d）。', maxNumPlayers);
+            errorText = string.format('针对此项活动，你的队伍人数已满（%d）。', maxNumPlayers)
         elseif (mythicPlusDisableActivity) then
-            errorText = '|cffff0000你只有给自己的账号添加战网安全令和短信安全保护功能后才能在没有钥石时发布一个史诗钥石队伍|r|n|cff1eff00<点击显示更多信息>|r';
+            errorText = '|cffff0000你只有给自己的账号添加战网安全令和短信安全保护功能后才能在没有钥石时发布一个史诗钥石队伍|r|n|cff1eff00<点击显示更多信息>|r'
         elseif ( LFGListEntryCreation_GetSanitizedName(self) == "" ) then
-            errorText = '你必须为你的队伍输入一个名字。';
+            errorText = '你必须为你的队伍输入一个名字。'
         elseif  not self.ItemLevel.warningText
             and not self.PvpItemLevel.warningText
             and not self.MythicPlusRating.warningText
             and not self.PVPRating.warningText
         then
-            errorText = LFGListUtil_GetActiveQueueMessage(false);
+            errorText = LFGListUtil_GetActiveQueueMessage(false)
         end
         if errorText then
-            self.ListGroupButton.errorText = errorText;
+            self.ListGroupButton.errorText = errorText
         end
     end)
 
     local function LFGListUtil_GetQuestDescription(questID)
-        local descriptionFormat = '完成任务[%s]。';
+        local descriptionFormat = '完成任务[%s]。'
         if ( QuestUtils_IsQuestWorldQuest(questID) ) then
-            descriptionFormat = '完成世界任务[%s]。';
+            descriptionFormat = '完成世界任务[%s]。'
         end
-        return descriptionFormat:format(QuestUtils_GetQuestName(questID));
+        return descriptionFormat:format(QuestUtils_GetQuestName(questID))
     end
     hooksecurefunc('LFGListEntryCreation_SetEditMode', function(self)--LFGList.lua
-        local descInstructions = nil;
-        local isAccountSecured = C_LFGList.IsPlayerAuthenticatedForLFG(self:GetParent().selectedActivity);
+        local descInstructions = nil
+        local isAccountSecured = C_LFGList.IsPlayerAuthenticatedForLFG(self:GetParent().selectedActivity)
         if (not isAccountSecured) then
-            descInstructions = '给自己的账号添加安全令和和短信安全保护功能后才能解锁此栏';
+            descInstructions = '给自己的账号添加安全令和和短信安全保护功能后才能解锁此栏'
         end
         if self.editMode then
-            local activeEntryInfo = C_LFGList.GetActiveEntryInfo();
-            assert(activeEntryInfo);
+            local activeEntryInfo = C_LFGList.GetActiveEntryInfo()
+            assert(activeEntryInfo)
             if ( activeEntryInfo.questID ) then
-                self.Description.EditBox.Instructions:SetText(LFGListUtil_GetQuestDescription(activeEntryInfo.questID));
+                self.Description.EditBox.Instructions:SetText(LFGListUtil_GetQuestDescription(activeEntryInfo.questID))
             else
-                self.Description.EditBox.Instructions:SetText(descInstructions or '关于你的队伍的更多细节（可选）');
+                self.Description.EditBox.Instructions:SetText(descInstructions or '关于你的队伍的更多细节（可选）')
             end
             set(self.ListGroupButton, '编辑完毕')
         else
@@ -574,16 +611,16 @@ local function Init()
     end)
 
     hooksecurefunc('LFGListApplicationViewer_UpdateInfo', function(self)
-        local activeEntryInfo = C_LFGList.GetActiveEntryInfo();
-        assert(activeEntryInfo);
-        local activityInfo = C_LFGList.GetActivityInfoTable(activeEntryInfo.activityID);
+        local activeEntryInfo = C_LFGList.GetActiveEntryInfo()
+        assert(activeEntryInfo)
+        local activityInfo = C_LFGList.GetActivityInfoTable(activeEntryInfo.activityID)
         if not activityInfo then
-            return;
+            return
         end
-        local categoryInfo = C_LFGList.GetLfgCategoryInfo(activityInfo.categoryID);
+        local categoryInfo = C_LFGList.GetLfgCategoryInfo(activityInfo.categoryID)
 
         if not categoryInfo then
-            return;
+            return
         end
         if activityInfo.isPvpActivity then
             if activeEntryInfo.requiredItemLevel ~= 0 then
@@ -601,114 +638,114 @@ local function Init()
 
     hooksecurefunc('LFGListApplicationViewer_UpdateAvailability', function(self)
         if IsRestrictedAccount() then
-            self.EditButton.tooltip = '免费试玩账号无法使用此功能。';
+            self.EditButton.tooltip = '免费试玩账号无法使用此功能。'
         end
     end)
 
     hooksecurefunc('LFGListApplicationViewer_UpdateApplicant', function(button, applicantID)
-        local applicantInfo = C_LFGList.GetApplicantInfo(applicantID) or {};
+        local applicantInfo = C_LFGList.GetApplicantInfo(applicantID) or {}
         if not ( applicantInfo.applicantInfo or applicantInfo.applicationStatus == "applied" ) then
             if ( applicantInfo.applicationStatus == "invited" ) then
-                set(button.Status, '已邀请');
+                set(button.Status, '已邀请')
             elseif ( applicantInfo.applicationStatus == "failed" or applicantInfo.applicationStatus == "cancelled" ) then
-                set(button.Status, '|cffff0000已取消|r');
+                set(button.Status, '|cffff0000已取消|r')
             elseif ( applicantInfo.applicationStatus == "declined" or applicantInfo.applicationStatus == "declined_full" or applicantInfo.applicationStatus == "declined_delisted" ) then
-                set(button.Status, '已拒绝');
+                set(button.Status, '已拒绝')
             elseif ( applicantInfo.applicationStatus == "timedout" ) then
-                set(button.Status, '已过期');
+                set(button.Status, '已过期')
             elseif ( applicantInfo.applicationStatus == "inviteaccepted" ) then
-                set(button.Status, '已加入');
+                set(button.Status, '已加入')
             elseif ( applicantInfo.applicationStatus == "invitedeclined" ) then
-                set(button.Status, '拒绝邀请');
+                set(button.Status, '拒绝邀请')
             end
         end
     end)
 
     hooksecurefunc('LFGListSearchPanel_UpdateButtonStatus', function(self)
-        local resultID = self.selectedResult;
-        local _, numActiveApplications = C_LFGList.GetNumApplications();
-        local messageApply = LFGListUtil_GetActiveQueueMessage(true);
-        local availTank, availHealer, availDPS = C_LFGList.GetAvailableRoles();
+        local resultID = self.selectedResult
+        local _, numActiveApplications = C_LFGList.GetNumApplications()
+        local messageApply = LFGListUtil_GetActiveQueueMessage(true)
+        local availTank, availHealer, availDPS = C_LFGList.GetAvailableRoles()
         if not messageApply then
             if ( not LFGListUtil_IsAppEmpowered() ) then
-                self.SignUpButton.tooltip = '你不是队长。';
+                self.SignUpButton.tooltip = '你不是队长。'
             elseif ( IsInGroup(LE_PARTY_CATEGORY_HOME) and C_LFGList.IsCurrentlyApplying() ) then
-                self.SignUpButton.tooltip = '你正在申请加入另一支队伍。';
+                self.SignUpButton.tooltip = '你正在申请加入另一支队伍。'
             elseif ( numActiveApplications >= MAX_LFG_LIST_APPLICATIONS ) then
-                self.SignUpButton.tooltip = string.format('你只能同时发出%d份有效申请。', MAX_LFG_LIST_APPLICATIONS);
+                self.SignUpButton.tooltip = string.format('你只能同时发出%d份有效申请。', MAX_LFG_LIST_APPLICATIONS)
             elseif ( GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) > MAX_PARTY_MEMBERS + 1 ) then
-                self.SignUpButton.tooltip = '你的队伍中队员太多，无法申请。\n（最多不能超过5个）';
+                self.SignUpButton.tooltip = '你的队伍中队员太多，无法申请。\n（最多不能超过5个）'
             elseif ( not (availTank or availHealer or availDPS) ) then
-                self.SignUpButton.tooltip = '你必须有至少一项专精才能申请加入该队伍。';
+                self.SignUpButton.tooltip = '你必须有至少一项专精才能申请加入该队伍。'
             elseif ( GroupHasOfflineMember(LE_PARTY_CATEGORY_HOME) ) then
-                self.SignUpButton.tooltip = '有一个或更多的队员处于离线状态。';
+                self.SignUpButton.tooltip = '有一个或更多的队员处于离线状态。'
             elseif not ( resultID ) then
-                self.SignUpButton.tooltip = '选择一个搜索结果。';
+                self.SignUpButton.tooltip = '选择一个搜索结果。'
             end
         elseif self.SignUpButton.tooltip and e.strText[self.SignUpButton.tooltip] then
             self.SignUpButton.tooltip= e.strText[self.SignUpButton.tooltip]
         end
-        local isPartyLeader = UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME);
-        local canBrowseWhileQueued = C_LFGList.HasActiveEntryInfo() and isPartyLeader;
+        local isPartyLeader = UnitIsGroupLeader("player", LE_PARTY_CATEGORY_HOME)
+        local canBrowseWhileQueued = C_LFGList.HasActiveEntryInfo() and isPartyLeader
         if ( IsInGroup(LE_PARTY_CATEGORY_HOME) and not isPartyLeader ) then
-            self.ScrollBox.StartGroupButton:Disable();
-            self.ScrollBox.StartGroupButton.tooltip = '只有队长才能这么做。';
+            self.ScrollBox.StartGroupButton:Disable()
+            self.ScrollBox.StartGroupButton.tooltip = '只有队长才能这么做。'
         else
-            local messageStart = LFGListUtil_GetActiveQueueMessage(false);
-            local startError, errorText = GetStartGroupRestriction();
+            local messageStart = LFGListUtil_GetActiveQueueMessage(false)
+            local startError, errorText = GetStartGroupRestriction()
             if ( messageStart ) then
-                self.ScrollBox.StartGroupButton.tooltip = messageStart;
+                self.ScrollBox.StartGroupButton.tooltip = messageStart
             elseif ( startError ~= nil ) then
-                self.ScrollBox.StartGroupButton.tooltip = errorText;
+                self.ScrollBox.StartGroupButton.tooltip = errorText
             elseif (canBrowseWhileQueued) then
-                self.ScrollBox.StartGroupButton.tooltip = '你不能在你的队伍出现在预创建队伍列表中时那样做。';
+                self.ScrollBox.StartGroupButton.tooltip = '你不能在你的队伍出现在预创建队伍列表中时那样做。'
             end
         end
-        
+
     end)
 
     hooksecurefunc('LFGListSearchEntry_Update', function(self)
         if not C_LFGList.HasSearchResultInfo(self.resultID) then
-            return;
+            return
         end
-        local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(self.resultID);
-        local isApplication = (appStatus ~= "none" or pendingStatus);
+        local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(self.resultID)
+        local isApplication = (appStatus ~= "none" or pendingStatus)
         if not LFGListUtil_IsAppEmpowered() then
             self.CancelButton.tooltip = '你不是队长。'
             if ( pendingStatus == "applied" and C_LFGList.GetRoleCheckInfo() ) then
-                set(self.PendingLabel, '职责确认');
+                set(self.PendingLabel, '职责确认')
             elseif ( pendingStatus == "cancelled" or appStatus == "cancelled" or appStatus == "failed" ) then
-                set(self.PendingLabel, '|cffff0000已取消|r');
+                set(self.PendingLabel, '|cffff0000已取消|r')
             elseif ( appStatus == "declined" or appStatus == "declined_full" or appStatus == "declined_delisted" ) then
-                set(self.PendingLabel, (appStatus == "declined_full") and ' "满"' or '已拒绝');
+                set(self.PendingLabel, (appStatus == "declined_full") and ' "满"' or '已拒绝')
             elseif ( appStatus == "timedout" ) then
-                set(self.PendingLabel, '已过期');
+                set(self.PendingLabel, '已过期')
             elseif ( appStatus == "invited" ) then
-                set(self.PendingLabel, '已邀请');
+                set(self.PendingLabel, '已邀请')
             elseif ( appStatus == "inviteaccepted" ) then
-                set(self.PendingLabel, '已加入');
+                set(self.PendingLabel, '已加入')
             elseif ( appStatus == "invitedeclined" ) then
-                set(self.PendingLabel, '拒绝邀请');
+                set(self.PendingLabel, '拒绝邀请')
             elseif ( isApplication and pendingStatus ~= "applied" ) then
-                set(self.PendingLabel, '待定|cff40bf40-|r');
+                set(self.PendingLabel, '待定|cff40bf40-|r')
             end
-            local searchResultInfo = C_LFGList.GetSearchResultInfo(self.resultID);
+            local searchResultInfo = C_LFGList.GetSearchResultInfo(self.resultID)
             if e.strText[searchResultInfo.voiceChat] then
-                self.VoiceChat.tooltip = e.strText[searchResultInfo.voiceChat];
+                self.VoiceChat.tooltip = e.strText[searchResultInfo.voiceChat]
             end
         end
     end)
 
     hooksecurefunc('LFGListInviteDialog_UpdateOfflineNotice', function(self)
         if ( GroupHasOfflineMember(LE_PARTY_CATEGORY_HOME) ) then
-            set(self.OfflineNotice, '有一名队伍成员处于离线状态，将无法收到邀请。');
+            set(self.OfflineNotice, '有一名队伍成员处于离线状态，将无法收到邀请。')
         else
-            set(self.OfflineNotice, '所有队伍成员都为在线状态。');
+            set(self.OfflineNotice, '所有队伍成员都为在线状态。')
         end
     end)
 
     hooksecurefunc('LFGListEntryCreation_Show', function(self, _, selectedCategory)
-        local categoryInfo = C_LFGList.GetLfgCategoryInfo(selectedCategory);
+        local categoryInfo = C_LFGList.GetLfgCategoryInfo(selectedCategory)
         if e.strText[categoryInfo.name] then
             set(self.Label, e.strText[categoryInfo.name])
         end
@@ -730,15 +767,15 @@ local function Init()
             set(self.ScrollBox.NoResultsFound, self.searchFailed and '搜索失败。请稍后再试。' or '未找到队伍。如果你找不到想要的队伍，可以自己创建一支。')
         end
     end)
-    
+
     set(LFGListFrame.EntryCreation.CancelButton, '后退')
     set(LFGListFrame.EntryCreation.VoiceChat.EditBox.Instructions, '语音聊天程序')
 
     set(LFGListCreationDescription.EditBox.Instructions, '关于你的队伍的更多细节（可选）')
     set(LFGListFrame.EntryCreation.Name.Instructions, '你的队伍在列表中显示的描述性名称')
     LFGListCreationDescription:HookScript('OnShow', function(self)--LFGListCreationDescriptionMixin
-        local isAccountSecured = C_LFGList.IsPlayerAuthenticatedForLFG(self:GetParent().selectedActivity);
-        self.EditBox.Instructions:SetText(isAccountSecured and '关于你的队伍的更多细节（可选）' or '给自己的账号添加安全令和和短信安全保护功能后才能解锁此栏');
+        local isAccountSecured = C_LFGList.IsPlayerAuthenticatedForLFG(self:GetParent().selectedActivity)
+        self.EditBox.Instructions:SetText(isAccountSecured and '关于你的队伍的更多细节（可选）' or '给自己的账号添加安全令和和短信安全保护功能后才能解锁此栏')
     end)
     hooksecurefunc('LFDQueueFrameFindGroupButton_Update', function()--LFDFrame.lua
         local mode = GetLFGMode(LE_LFG_CATEGORY_LFD)
@@ -1489,13 +1526,96 @@ local function Init()
 
 
 
+    COMBAT_CONFIG_TABS[1].text= '信息来源'--ChatConfigFrame.lua
+    COMBAT_CONFIG_TABS[2].text= '信息类型'
+    COMBAT_CONFIG_TABS[3].text= '颜色'
+    COMBAT_CONFIG_TABS[4].text= '格式'
+    COMBAT_CONFIG_TABS[5].text= '设置'
+    for index, value in ipairs(COMBAT_CONFIG_TABS) do--ChatConfigCombat_OnLoad()
+		local tab = _G[CHAT_CONFIG_COMBAT_TAB_NAME..index]
+		set(tab and tab.Text, value.text)
+        PanelTemplates_TabResize(tab, 0)
+	end
+    hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame, checkBoxTable, _, title)
+        print(id, addName, title)
+        local checkBoxNameString = frame:GetName().."CheckBox";
+        local checkBoxName, checkBox, check;
+        local text;
+        local checkBoxFontString;
+        if ( title ) then
+            set(_G[frame:GetName().."Title"], e.strText[title])
+        end
+        for index, value in ipairs(checkBoxTable) do
+            checkBoxName = checkBoxNameString..index;
+            checkBox = _G[checkBoxName];
+            if ( value.text ) then
+                text = value.text;
+                if type(text) == "function" then
+                    text = text();
+                end
+            else
+                text = _G[value.type];
+            end
+            text= e.strText[text]
+            if text then
+                checkBoxFontString = _G[checkBoxName.."CheckText"];
+                checkBoxFontString:SetText(text);
+                checkBox.BlankText:SetText(text);
+                check = _G[checkBoxName.."Check"];
+                check.tooltip = value.tooltip;
+                if ( value.maxWidth ) then
+                    if ( checkBoxFontString:GetWidth() > value.maxWidth ) then
+                        check.tooltip = text;
+                    end
+                end
+            end
+        end
+    end)
 
+    COMBAT_CONFIG_MESSAGESOURCES_BY[1].text = function () return ( UsesGUID("SOURCE") and '自定义单位' or '我') end
+    COMBAT_CONFIG_MESSAGESOURCES_TO[1].text = function () return ( UsesGUID("SOURCE") and '自定义单位' or '我') end
+
+
+    hooksecurefunc('ChatConfig_CreateTieredCheckboxes', function(frame, checkBoxTable)
+        local checkBoxNameString = frame:GetName().."CheckBox";
+        for index, value in ipairs(checkBoxTable) do
+            local checkBox = _G[checkBoxNameString..index]
+            if checkBox  then
+                local text
+                if ( value.text ) then
+                    text = value.text;
+                else
+                    text = _G[value.type];
+                end
+                set(_G[checkBoxName.."Text"], e.strText[text])
+                if ( value.subTypes ) then
+                    local subCheckBoxNameString = checkBoxName.."_";
+                    for k, v in ipairs(value.subTypes) do
+                        local subCheckBox=_G[subCheckBoxNameString..k]
+                        if e.strText[v.tooltip] then
+                            subCheckBox.tooltip = e.strText[v.tooltip]
+                        end
+                        local subText
+                        if ( v.text ) then
+                            subText = v.text;
+                        else
+                            subText = _G[v.type];
+                        end
+                        set(_G[subCheckBoxName.."Text"], e.strText[subText])
+                    end
+                end
+                if e.strText[value.tooltip] then
+                    checkBox.tooltip = e.strText[value.tooltip]
+                end
+            end
+        end
+    end)
 
 
     hooksecurefunc('FCF_SetWindowName', function(frame, name)--FloatingChatFrame.lua
         set(_G[frame:GetName().."Tab"], e.strText[name])
     end)
-    hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame, checkBoxTable, checkBoxTemplate, title)--ChatConfigFrame.lua
+    --[[hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame, checkBoxTable, checkBoxTemplate, title)--ChatConfigFrame.lua
         if title then
             if e.strText[title] then
                 set(_G[frame:GetName().."Title"], e.strText[title])
@@ -1516,7 +1636,7 @@ local function Init()
                 end
             end
         end
-    end)
+    end)]]
 
     for i=1, 7 do
         local btn=_G['ChatConfigCategoryFrameButton'..i]
@@ -2008,11 +2128,11 @@ local function Init()
         set(self.ReportString, format('举报 %s', name))
     end)
     set(ReportFrame.ReportingMajorCategoryDropdown.Label, '选择理由')
-    
+
     set(ReportFrame.MinorReportDescription, '提供详细信息（选择所有适合的项目）')
     set(ReportFrame.Comment.EditBox.Instructions, '补充更多关于这次举报的细节（可选）')
     hooksecurefunc(ReportingFrameMinorCategoryButtonMixin, 'SetupButton', function(self, minorCategory)
-        local categoryName = minorCategory and _G[C_ReportSystem.GetMinorCategoryString(minorCategory)];
+        local categoryName = minorCategory and _G[C_ReportSystem.GetMinorCategoryString(minorCategory)]
         setLabel(self.Text, categoryName)
     end)
     set(ReportFrame.ThankYouText, '感谢您的举报！')
@@ -2189,7 +2309,7 @@ local function Init()
     hooksecurefunc(EditModeSettingSliderMixin, 'SetupSetting', function(self, settingData)
         setLabel(self.Label, settingData.settingName)
         if settingData.displayInfo.minText then
-            setLabel(self.Slider.MinText, settingData.displayInfo.minText);
+            setLabel(self.Slider.MinText, settingData.displayInfo.minText)
         end
         if settingData.displayInfo.maxText then
             setLabel(self.Slider.MaxText, settingData.displayInfo.maxText)
@@ -2197,27 +2317,27 @@ local function Init()
     end)
     EditModeManagerFrame.CloseButton:HookScript('OnEnter', function()--EditModeUnsavedChangesCheckerMixin:OnEnter()
         if EditModeManagerFrame:TryShowUnsavedChangesGlow() then
-            GameTooltip_AddNormalLine(GameTooltip, '你有未保存的改动');
-            GameTooltip:Show();
+            GameTooltip_AddNormalLine(GameTooltip, '你有未保存的改动')
+            GameTooltip:Show()
         end
     end)
     hooksecurefunc(EditModeDropdownEntryMixin, 'OnEnter', function(self)
         if not self.isEnabled then
             local text= e.strText[self.disabledTooltip]
             if text then
-                GameTooltip_ShowDisabledTooltip(GameTooltip, self, text);
+                GameTooltip_ShowDisabledTooltip(GameTooltip, self, text)
             end
         end
     end)
-    local maxLayoutsErrorText = format('最多允许%d种角色布局和%d种账号布局', Constants.EditModeConsts.EditModeMaxLayoutsPerType, Constants.EditModeConsts.EditModeMaxLayoutsPerType);
+    local maxLayoutsErrorText = format('最多允许%d种角色布局和%d种账号布局', Constants.EditModeConsts.EditModeMaxLayoutsPerType, Constants.EditModeConsts.EditModeMaxLayoutsPerType)
     hooksecurefunc(EditModeDropdownEntryMixin, 'Init', function(self, text, _, disableOnMaxLayouts, disableOnActiveChanges, _, _, _, _, disabledText)
         if disableOnMaxLayouts and EditModeManagerFrame:AreLayoutsFullyMaxed() then
-            self.disabledTooltip = maxLayoutsErrorText;
+            self.disabledTooltip = maxLayoutsErrorText
         elseif disableOnActiveChanges and EditModeManagerFrame:HasActiveChanges()then
-            self.disabledTooltip = '你有未保存的改动';
+            self.disabledTooltip = '你有未保存的改动'
         end
         if disabledText and not self.isEnabled then
-            text = disabledText;
+            text = disabledText
         end
         setLabel(self.Text, text)
     end)
@@ -2562,7 +2682,7 @@ local function Init()
         set(self.Instructions, '搜索')
     end)
     hooksecurefunc('Main_HelpPlate_Button_ShowTooltip', function(self)
-        set(HelpPlateTooltip.Text, self.MainHelpPlateButtonTooltipText or '点击这里打开/关闭本窗口的帮助系统。');
+        set(HelpPlateTooltip.Text, self.MainHelpPlateButtonTooltipText or '点击这里打开/关闭本窗口的帮助系统。')
     end)
     hooksecurefunc(SearchBoxListMixin, 'UpdateSearchPreview', function(self, finished, dbLoaded, numResults)
         if finished and not self.searchButtons[numResults] then
@@ -2581,7 +2701,7 @@ local function Init()
     end)
 
 
-    
+
 
 
 
@@ -3188,42 +3308,14 @@ local function Init()
 
 
 
-  
-    local function set_tooltip_func(self)
-        local function set_tooltip(frame)
-            local name= frame:GetName()
-            if name then
-                for i=1, frame:NumLines() or 0 do
-                    setLabel(_G[name.."TextLeft"..i])
-                    setLabel(_G[name.."TextRight"..i])
-                end
-            end
-        end
-        self:HookScript("OnShow", set_tooltip)
-        self:HookScript('OnUpdate', function(frame, elapsed)--GameTooltip.lua
-            self.elapsed= (self.elapsed or 0) +elapsed
-            if self.elapsed>TOOLTIP_UPDATE_TIME then
-                set_tooltip(frame)
-            end
-        end)
-    end
+
+
     set_tooltip_func(GameTooltip)
     set_tooltip_func(ItemRefTooltip)
     set_tooltip_func(EmbeddedItemTooltip)
 
 
-    
-    local function set_pettips_func(self)--FloatingPetBattleTooltip.xml
-        local function set_pet_func(frame)
-            setLabel(frame.BattlePet)
-            setLabel(frame.PetType)
-            local level = frame.Level:GetText():match('(%d+)')
-            if level then
-                set(frame.Level, format('等级 %s', level))
-            end
-        end
-        self:HookScript('OnShow', set_pet_func)
-    end
+
     set_pettips_func(BattlePetTooltip)
     set_pettips_func(FloatingBattlePetTooltip)
 
@@ -3241,16 +3333,16 @@ local function Init()
         --UIDropDownMenu.lua
         local function GetChild(frame, name, key)
             if (frame[key]) then
-                return frame[key];
+                return frame[key]
             elseif name then
-                return _G[name..key];
+                return _G[name..key]
             end
 
-            return nil;
+            return nil
         end
         hooksecurefunc('UIDropDownMenu_SetText', function(frame, text)
             if text and frame then
-                local frameName = frame:GetName();
+                local frameName = frame:GetName()
                 local col, text2= text:match('(|cff......)(.-)|r')
                 text= getText(text2 or text)
                 if text then
@@ -3261,11 +3353,11 @@ local function Init()
         end)
         hooksecurefunc('UIDropDownMenu_AddButton', function(info, level)
             level = level or 1
-            local listFrame = _G["DropDownList"..level];
-            listFrame = listFrame or _G["DropDownList"..level];
-            local listFrameName = listFrame:GetName();
-            local index = listFrame and (listFrame.numButtons) or 1;
-            local button = _G[listFrameName.."Button"..index];
+            local listFrame = _G["DropDownList"..level]
+            listFrame = listFrame or _G["DropDownList"..level]
+            local listFrameName = listFrame:GetName()
+            local index = listFrame and (listFrame.numButtons) or 1
+            local button = _G[listFrameName.."Button"..index]
 
             if info.text and button then
                 local col, text2= info.text:match('(|cff......)(.-)|r')
@@ -5379,6 +5471,51 @@ local function Init_Loaded(arg1)
         end
 
         role_tooltips('HonorFrame')
+        set(ConquestJoinButton, '加入战斗')
+
+
+
+        local function conquestFrameButton_OnEnter(self)--hooksecurefunc('ConquestFrameButton_OnEnter', function(self)--Blizzard_PVPUI.lua
+            local tooltip = ConquestTooltip
+            local rating, seasonBest, weeklyBest, seasonPlayed, seasonWon, weeklyPlayed, weeklyWon, lastWeeksBest, hasWon, pvpTier, ranking, roundsSeasonPlayed, roundsSeasonWon, roundsWeeklyPlayed, roundsWeeklyWon = GetPersonalRatedInfo(self.bracketIndex)
+            tooltip.Title:SetText(e.strText[self.toolTipTitle] or self.toolTipTitle)
+            local isSoloShuffle = self.id == 1
+            local tierInfo = pvpTier and C_PvP.GetPvpTierInfo(pvpTier)
+            local tierName = tierInfo and tierInfo.pvpTierEnum and PVPUtil.GetTierName(tierInfo.pvpTierEnum)
+            local hasSpecRank = tierName and ranking and isSoloShuffle
+            tierName= e.strText[tierName]
+            if tierName then
+                if ranking and not hasSpecRank then
+                    tooltip.Tier:SetFormattedText(PVP_TIER_WITH_RANK_AND_RATING, tierName, ranking, rating)
+                else
+                    tooltip.Tier:SetFormattedText(PVP_TIER_WITH_RATING, tierName, rating)
+                end
+            end
+            local specName= PlayerUtil.GetSpecName()
+            set(tooltip.SpecRank, hasSpecRank and format('%s: 等级 #%d', e.strText[specName] or specName, ranking) or "")
+            set(tooltip.WeeklyBest, '最高等级：'..weeklyBest)
+            set(tooltip.WeeklyWon, isSoloShuffle and ('胜利回合：' .. roundsWeeklyWon) or ('赢得比赛：' .. weeklyWon))
+            set(tooltip.WeeklyPlayed, isSoloShuffle and ('已完成回合：' .. roundsWeeklyPlayed) or ('比赛场次：' .. weeklyPlayed))
+            set(tooltip.SeasonBest, '最高等级：'..seasonBest)
+            set(tooltip.SeasonWon, isSoloShuffle and ('胜利回合：' .. roundsSeasonWon) or ('赢得比赛：' .. seasonWon))
+            set(tooltip.SeasonPlayed, isSoloShuffle and ('已完成回合：' .. roundsSeasonPlayed) or ('比赛场次：' .. seasonPlayed))
+            local specStats = isSoloShuffle and C_PvP.GetPersonalRatedSoloShuffleSpecStats()
+            if specStats then
+                set(tooltip.WeeklyMostPlayedSpec, format('使用最多：%s (%d)', PlayerUtil.GetSpecNameBySpecID(specStats.weeklyMostPlayedSpecID), specStats.weeklyMostPlayedSpecRounds))
+                set(tooltip.SeasonMostPlayedSpec, format('使用最多：%s (%d)',PlayerUtil.GetSpecNameBySpecID(specStats.seasonMostPlayedSpecID), specStats.seasonMostPlayedSpecRounds))
+            end
+            set(self.modeDescription, e.strText[self.modeDescription])
+        end
+        if ConquestFrame.Arena2v2 then
+            ConquestFrame.Arena2v2:HookScript('OnEnter', conquestFrameButton_OnEnter)
+        end
+        if ConquestFrame.Arena3v3 then
+            ConquestFrame.Arena3v3:HookScript('OnEnter', conquestFrameButton_OnEnter)
+        end
+        if ConquestFrame.RatedBG then
+            ConquestFrame.RatedBG:HookScript('OnEnter', conquestFrameButton_OnEnter)
+        end
+
 --hooksecurefunc('HonorFrame_UpdateQueueButtons', function()
 
 
@@ -5762,9 +5899,20 @@ local function Init_Loaded(arg1)
     elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
         set(ItemSocketingSocketButton, '应用')
 
-    --[[elseif arg1=='Blizzard_CombatLog' then--聊天框，战斗记录
-        print(CombatLogQuickButtonFrameButton1, id, addName)
-        set(CombatLogQuickButtonFrameButton1, '我的动作')]]
+    elseif arg1=='Blizzard_CombatLog' then--聊天框，战斗记录
+        Blizzard_CombatLog_Filter_Defaults.filters[1].name= '我的动作'
+        Blizzard_CombatLog_Filter_Defaults.filters[1].quickButtonName= '我的动作'
+        Blizzard_CombatLog_Filter_Defaults.filters[1].tooltip = '显示你所进行的动作的信息。'
+        Blizzard_CombatLog_Filter_Defaults.filters[2].name= '我发生了什么？'
+        Blizzard_CombatLog_Filter_Defaults.filters[2].quickButtonName= '我发生了什么？'
+        Blizzard_CombatLog_Filter_Defaults.filters[2].tooltip = '显示我所接收的所有行为信息。'
+
+        Blizzard_CombatLog_Filters.filters[1].name= '我的动作'
+        Blizzard_CombatLog_Filters.filters[1].quickButtonName= '我的动作'
+        Blizzard_CombatLog_Filters.filters[1].tooltip = '显示你所进行的动作的信息。'
+        Blizzard_CombatLog_Filters.filters[2].name= '我发生了什么？'
+        Blizzard_CombatLog_Filters.filters[2].quickButtonName= '我发生了什么？'
+        Blizzard_CombatLog_Filters.filters[2].tooltip = '显示我所接收的所有行为信息。'
 
     elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面
         set(ItemUpgradeFrameTitleText, '物品升级')
@@ -5778,6 +5926,7 @@ local function Init_Loaded(arg1)
                 setLabel(self.FrameErrorText)--该物品已经升到满级了
             end
         end)
+
 
     elseif arg1=='Blizzard_Settings' then--Blizzard_SettingsPanel.lua 
         local label2= e.Cstr(SettingsPanel.CategoryList)
