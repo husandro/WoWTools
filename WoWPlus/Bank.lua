@@ -9,7 +9,9 @@ local Save={
     --pointReagentBank=｛｝--保存位置
     line=2,
     num=14,
+
     allBank=true,--转化为联合的大包
+    --notSearchItem=true,--OnEnter时，搜索物品
 
     --showIndex=true,--显示，索引
     --showBackground= true,--设置，背景
@@ -279,6 +281,7 @@ local function Init_All_Bank()
     SetAllBank:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
     SetAllBank:SetScript('OnEnter', SetAllBank.set_tooltips)
 
+    
     --索引，提示
     function SetAllBank:set_index_label(btn, index)
         if not btn.indexLable and Save.showIndex then
@@ -310,6 +313,7 @@ local function Init_All_Bank()
                     btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save.line)
                     last=btn
                 end
+                btn.index=i
                 self:set_index_label(btn, i)--索引，提示
                 table.insert(tab, btn)
             end
@@ -424,7 +428,7 @@ local function Init_All_Bank()
 
 
 
-    --隐藏，ITEMSLOTTEXT"物品栏位" BAGSLOTTEXT"背包栏位";
+    --隐藏，ITEMSLOTTEXT"物品栏位" BAGSLOTTEXT"背包栏位"
     for _, region in pairs({BankSlotsFrame:GetRegions()}) do
         if region:GetObjectType()=='FontString' then
             region:SetText('')
@@ -585,9 +589,9 @@ local function Init_Save_BankItem()
     end)
     function AllPlayerBankItem:save_button_info(button, isReagent)
         if button then
-            local container = button:GetParent():GetID();
-            local buttonID = button:GetID();
-            local info = C_Container.GetContainerItemInfo(container, buttonID);
+            local container = button:GetParent():GetID()
+            local buttonID = button:GetID()
+            local info = C_Container.GetContainerItemInfo(container, buttonID)
             if info and info.itemID then
                 local num=GetItemCount(info.itemID, true)- GetItemCount(info.itemID, nil)
                 e.WoWDate[e.Player.guid].Bank[info.itemID]={num=num, quality=info.quality, isReagent=isReagent}
@@ -643,6 +647,49 @@ end
 
 
 
+--#######
+--设置菜单
+--#######
+local function Init_Menu(_, level)
+    local info
+    info= {
+        text= e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED,
+        checked= Save.allBank,
+        keepShownOnClick=true,
+        func= function()
+            Save.allBank= not Save.allBank and true or nil
+            BankFrame.optionButton:set_atlas()
+            print(id, addName,'|cnGREEN_FONT_COLOR:', e.GetEnabeleDisable(Save.allBank),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    --[[info={
+        text= e.onlyChinese and '搜索' or SEARCH,
+        checked= not Save.notSearchItem,
+        tooltipOnButton=true,
+        tooltipTitle= 'OnEnter',
+        keepShownOnClick=true,
+        func= function()
+            Save.notSearchItem= not Save.notSearchItem and true or nil
+            print(id, addName,'|cnGREEN_FONT_COLOR:', e.GetEnabeleDisable(not Save.notSearchItem),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)]]
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={--重载
+        text= '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t'..(e.onlyChinese and '重新加载UI' or RELOADUI),
+        notCheckable=true,
+        tooltipOnButton=true,
+        tooltipTitle= SLASH_RELOAD1,-- '/reload',
+        colorCode='|cffff0000',
+        keepShownOnClick=true,
+        func=function()
+            e.Reload()
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+end
+
 
 
 
@@ -658,28 +705,14 @@ local function Init_Bank_Frame()
     function BankFrame.optionButton:set_atlas()
         self:SetNormalAtlas(Save.allBank and 'Warfronts-BaseMapIcons-Alliance-Workshop-Minimap' or 'Warfronts-BaseMapIcons-Empty-Workshop-Minimap')
     end
-    function BankFrame.optionButton:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED, e.GetEnabeleDisable(not Save.allBank)..e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(SLASH_RELOAD2, 'Alt+'..e.Icon.right)
-        e.tips:Show()
-        self:SetAlpha(1)
-    end
-    BankFrame.optionButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
-    BankFrame.optionButton:SetScript('OnEnter', BankFrame.optionButton.set_tooltips)
-    BankFrame.optionButton:SetScript('OnClick', function(self, d)
-        if not IsModifierKeyDown() then
-            Save.allBank = not Save.allBank and true or nil
-            print(id, addName,'|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            self:set_atlas()
-            self:set_tooltips()
-        elseif d=='RightButton' and IsAltKeyDown() then
-            e.Reload()
+    BankFrame.optionButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
+    BankFrame.optionButton:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
+    BankFrame.optionButton:SetScript('OnClick', function(self)
+        if not self.Menu then
+            self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+            e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
         end
+        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
     end)
     BankFrame.optionButton:SetAlpha(0.5)
     BankFrame.optionButton:set_atlas()

@@ -3668,7 +3668,6 @@ local function Init()
     COMBAT_GUILD_XP_GAIN = "公会经验",
     COMBAT_HONOR_GAIN = "荣誉",
     COMBAT_LABEL = "战斗",
-    COMBAT_LOG = "战斗记录",
     COMBAT_LOG_MENU_BOTH = "显示所有与%s有关的信息？",
     COMBAT_LOG_MENU_EVERYTHING = "全部显示",
     COMBAT_LOG_MENU_INCOMING = "%s发生了什么？",
@@ -20086,7 +20085,7 @@ e.strText[GetItemSubClassInfo(7, 4)] = "珠宝加工"
 e.strText[GetItemSubClassInfo(7, 1)] = "零件"
 e.strText[GetItemSubClassInfo(7, 10)] = "元素"
 e.strText[GetItemSubClassInfo(7, 18)] = "附加材料"
-e.strText[GetItemSubClassInfo(7, 19)] = "成器材料"
+e.strText[GetItemSubClassInfo(7, 19)] = "成品材料"
 e.strText[GetItemSubClassInfo(9, 1)] = "制皮"
 e.strText[GetItemSubClassInfo(9, 2)] = "裁缝"
 e.strText[GetItemSubClassInfo(9, 3)] = "工程"
@@ -20131,7 +20130,7 @@ e.strText[GLYPHS] = "雕文"
 e.strText[AUCTION_HOUSE_DROPDOWN_REMOVE_FAVORITE] = "从偏好中移除"
 e.strText[AUCTION_HOUSE_DROPDOWN_SET_FAVORITE] = "设置为偏好"
 e.strText[TOOLTIP_BATTLE_PET] = "战斗宠物"
-
+e.strText[COMBAT_LOG] = "战斗记录"
 
 end
 

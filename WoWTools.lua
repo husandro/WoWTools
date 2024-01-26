@@ -215,6 +215,56 @@ end
 
 
 
+function e.FindBagItem(find, tab)--查询，背包里物品
+    --itemName, itemLocation, itemName, itemLink, itemID, merchantIndex，BuybackIndex, guidBank, bag
+    if not ContainerFrameCombinedBags:IsShown() then
+        return
+    end
+    if not find then
+        C_Container.SetItemSearch('')
+    else
+        local itemName, itemLink
+        if tab.itemName then--名称
+            itemName= tab.itemName
+
+        elseif tab.itemLink then--itemLink
+            itemLink= tab.itemLink
+
+        elseif tab.itemID then--itemID
+            itemName= C_Item.GetItemNameByID(tab.itemLink or tab.itemID)
+
+        elseif tab.itemLocation and tab.itemLocation:IsValid() then--itemLocation
+            itemName= C_Item.GetItemName(tab.itemLocation)
+
+        elseif tab.merchantIndex then--商人
+            itemName=  GetMerchantItemInfo(tab.merchantIndex)
+
+        elseif tab.BuybackIndex then--商人，回购
+            itemName= GetBuybackItemInfo(tab.BuybackIndex)
+
+        elseif tab.itemKey then--itemKey
+            local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(tab.itemKey) or {}
+            itemName= itemKeyInfo.itemName
+
+        elseif tab.bag then--背包 {}
+            itemLink= C_Container.GetContainerItemLink(tab.bag.bag, tab.bag.slot)
+
+        elseif tab.guidBank then--公会银行 {}
+            itemLink= GetGuildBankItemLink(tab.guidBank.tab, tab.guidBank.slot)
+        elseif tab.lootIndex then
+            local _, lootName, _, currencyID= GetLootSlotInfo(tab.lootIndex)
+            itemName= not currencyID and lootName
+        end
+
+        if itemLink then
+            itemName= C_Item.GetItemNameByID(itemLink) or itemLink:match('|H.-%[(.-)]|h')
+        end
+        if itemName then
+            C_Container.SetItemSearch(itemName)
+        end
+    end
+end
+
 
 
 function e.MK(number, bit)

@@ -1683,6 +1683,7 @@ local function Init()
 
     --拾取
     set(GroupLootHistoryFrameTitleText, '战利品掷骰')
+    set(GroupLootHistoryFrame.NoInfoString, '地下城和团队副本的战利品掷骰在此显示')
 
     --邮箱 MailFrame.lua
     --MailFrame:HookScript('OnShow', function(self)

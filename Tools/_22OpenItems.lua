@@ -636,9 +636,9 @@ local function Init()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         if Bag.bag and Bag.slot then
-            local battlePetLink= C_Container.GetContainerItemLink(Bag.bag, Bag.slot)
-            if battlePetLink and battlePetLink:find('Hbattlepet:%d+') then
-                BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(battlePetLink))
+            local itemLink= C_Container.GetContainerItemLink(Bag.bag, Bag.slot)
+            if itemLink and itemLink:find('Hbattlepet:%d+') then
+                BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(itemLink))
             else
                 e.tips:SetBagItem(Bag.bag, Bag.slot)
                 if not UnitAffectingCombat('player') then
@@ -647,6 +647,7 @@ local function Init()
                 end
                 e.tips:Show()
             end
+            e.FindBagItem(true, {itemLink= itemLink})--查询，背包里物品
         else
             e.tips:AddDoubleLine(id, addName)
             e.tips:Show()
@@ -659,6 +660,7 @@ local function Init()
         BattlePetTooltip:Hide()
         ResetCursor()
         get_Items()
+        e.FindBagItem(false)--查询，背包里物品
     end)
     button:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink = GetCursorInfo()
