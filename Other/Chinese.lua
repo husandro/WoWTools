@@ -1433,7 +1433,7 @@ local function Init()
         set(WhoFrameColumnHeader1, '名称')
         set(WhoFrameColumnHeader4, '职业')
         hooksecurefunc('WhoList_Update', function()
-            local numWhos, totalCount = C_FriendList.GetNumWhoResults()
+            local _, totalCount = C_FriendList.GetNumWhoResults()
             local displayedText = ""
             if ( totalCount > MAX_WHOS_FROM_SERVER ) then
                 displayedText = format('（显示%d）', MAX_WHOS_FROM_SERVER)
@@ -1536,7 +1536,7 @@ local function Init()
             PanelTemplates_TabResize(tab, 0)
         end
     end)
- 
+
     hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame, checkBoxTable, _, title)
         local checkBoxNameString = frame:GetName().."CheckBox"
         local checkBoxName, checkBox, check
@@ -1688,10 +1688,10 @@ local function Init()
     CombatConfigFormattingItemNames.tooltip= '在物品名称外显示括号。'
     set(CombatConfigFormattingFullTextText, '使用详细模式')
     CombatConfigFormattingItemNames.tooltip= '整句显示战斗记录信息。'
-    
-    
-    
-    
+
+
+
+
 
     set(CombatConfigSettingsShowQuickButtonText, '显示快捷按钮')
     CombatConfigSettingsShowQuickButton.tooltip= '在聊天窗口中放置一个该过滤条件的快捷方式。'
@@ -1786,7 +1786,7 @@ local function Init()
     end)
 
     C_Timer.After(2, function()
-       
+
         reg(CombatConfigSettingsNameEditBox)--过滤名称
 
         set(ObjectiveTrackerFrame.HeaderMenu.Title, '追踪')
@@ -5964,19 +5964,32 @@ local function Init_Loaded(arg1)
         set(ItemSocketingSocketButton, '应用')
 
     elseif arg1=='Blizzard_CombatLog' then--聊天框，战斗记录
-        Blizzard_CombatLog_Filter_Defaults.filters[1].name= '我的动作'
-        Blizzard_CombatLog_Filter_Defaults.filters[1].quickButtonName= '我的动作'
-        Blizzard_CombatLog_Filter_Defaults.filters[1].tooltip = '显示你所进行的动作的信息。'
-        Blizzard_CombatLog_Filter_Defaults.filters[2].name= '我发生了什么？'
-        Blizzard_CombatLog_Filter_Defaults.filters[2].quickButtonName= '我发生了什么？'
-        Blizzard_CombatLog_Filter_Defaults.filters[2].tooltip = '显示我所接收的所有行为信息。'
-
-        Blizzard_CombatLog_Filters.filters[1].name= '我的动作'
-        Blizzard_CombatLog_Filters.filters[1].quickButtonName= '我的动作'
-        Blizzard_CombatLog_Filters.filters[1].tooltip = '显示你所进行的动作的信息。'
-        Blizzard_CombatLog_Filters.filters[2].name= '我发生了什么？'
-        Blizzard_CombatLog_Filters.filters[2].quickButtonName= '我发生了什么？'
-        Blizzard_CombatLog_Filters.filters[2].tooltip = '显示我所接收的所有行为信息。'
+        local function set_filter(self)
+            if not self then
+                return
+            end
+            for index, tab in pairs(self) do
+                if type(tab)=='table' then
+                    local name= tab.name
+                    local quickButtonName= tab.quickButtonName
+                    local tooltip= tab.tooltip
+                    name= name and e.strText[name]
+                    quickButtonName= quickButtonName and e.strText[quickButtonName]
+                    tooltip= tooltip and e.strText[tooltip]
+                    if name then
+                        self[index].name= name
+                    end
+                    if quickButtonName then
+                        self[index].quickButtonName= quickButtonName
+                    end
+                    if tooltip then
+                        self[index].tooltip= tooltip
+                    end
+                end
+            end
+        end
+        set_filter(Blizzard_CombatLog_Filter_Defaults.filters)
+        set_filter(Blizzard_CombatLog_Filters.filters )
 
     elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面
         set(ItemUpgradeFrameTitleText, '物品升级')
