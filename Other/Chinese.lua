@@ -69,11 +69,14 @@ local function hookDia(string, text, func)
 end
 
 local function reg(self, text, index)
-    if self and (text or index) then
-        for i, region in pairs({self:GetRegions()}) do
-            if region:GetObjectType()=='FontString' and (index==i or not index) then
-                text= text or getText(region:GetText())
-                set(region, text)
+    if not self then
+        return
+    end
+    for i, region in pairs({self:GetRegions()}) do
+        if region:GetObjectType()=='FontString' and (index==i or not index) then
+            text= index==i and text or getText(region:GetText())
+            set(region, text)
+            if index then
                 return
             end
         end
@@ -1518,56 +1521,76 @@ local function Init()
 
 
 
+    set(ChatConfigChannelSettingsLeftColorHeader, '颜色')
 
-
-
-
-
-
-    COMBAT_CONFIG_TABS[1].text= '来源'--ChatConfigFrame.lua
-    COMBAT_CONFIG_TABS[2].text= '类型'
+    COMBAT_CONFIG_TABS[1].text= '信息来源'
+    COMBAT_CONFIG_TABS[2].text= '信息类型'
     COMBAT_CONFIG_TABS[3].text= '颜色'
     COMBAT_CONFIG_TABS[4].text= '格式'
     COMBAT_CONFIG_TABS[5].text= '设置'
-
-    C_Timer.After(2, function()
+    --ChatConfigFrame.lua
+    ChatConfigCombatSettings:HookScript('OnShow', function()
         for index, value in ipairs(COMBAT_CONFIG_TABS) do--ChatConfigCombat_OnLoad()
             local tab = _G[CHAT_CONFIG_COMBAT_TAB_NAME..index]
-            set(tab and tab.Text, value.text)
+            set(tab.Text, value.text)
             PanelTemplates_TabResize(tab, 0)
         end
     end)
-    
+ 
     hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame, checkBoxTable, _, title)
-        local checkBoxNameString = frame:GetName().."CheckBox";
-        local checkBoxName, checkBox, check;
-        local text;
-        local checkBoxFontString;
+        local checkBoxNameString = frame:GetName().."CheckBox"
+        local checkBoxName, checkBox, check
+        local text
+        local checkBoxFontString
         if ( title ) then
             set(_G[frame:GetName().."Title"], e.strText[title])
         end
         for index, value in ipairs(checkBoxTable) do
-            checkBoxName = checkBoxNameString..index;
-            checkBox = _G[checkBoxName];
+            checkBoxName = checkBoxNameString..index
+            checkBox = _G[checkBoxName]
             if ( value.text ) then
-                text = value.text;
+                text = value.text
                 if type(text) == "function" then
-                    text = text();
+                    text = text()
                 end
             else
-                text = _G[value.type];
+                text = _G[value.type]
             end
             text= e.strText[text]
             if text then
-                checkBoxFontString = _G[checkBoxName.."CheckText"];
-                checkBoxFontString:SetText(text);
-                checkBox.BlankText:SetText(text);
-                check = _G[checkBoxName.."Check"];
-                check.tooltip = value.tooltip;
+                checkBoxFontString = _G[checkBoxName.."CheckText"]
+                set(checkBoxFontString, text)
+                set(checkBox.BlankText, text)
+                check = _G[checkBoxName.."Check"]
+                if value.tooltip and e.strText[value.tooltip] then
+                    check.tooltip = e.strText[value.tooltip]
+                end
                 if ( value.maxWidth ) then
                     if ( checkBoxFontString:GetWidth() > value.maxWidth ) then
-                        check.tooltip = text;
+                        check.tooltip = text
                     end
+                end
+            end
+        end
+    end)
+
+    hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)
+        if ( not FCF_GetCurrentChatFrame() ) then
+            return
+        end
+        local checkBoxTable = frame.checkBoxTable
+        local checkBoxNameString = frame:GetName().."CheckBox"
+        local checkBox, baseName
+        for index, value in ipairs(checkBoxTable) do
+            baseName = checkBoxNameString..index
+            checkBox = _G[baseName.."Check"]
+            if ( checkBox ) then
+                if value.tooltip and e.strText[value.tooltip] then
+                    checkBox.tooltip =  e.strText[value.tooltip]
+                end
+                if ( type(value.text) == "function" ) then	--Dynamic text, we should update it
+                    local text= value.text()
+                    setLabel(_G[checkBoxNameString..index.."CheckText"], text and e.strText[text])
                 end
             end
         end
@@ -1578,20 +1601,20 @@ local function Init()
 
 
     hooksecurefunc('ChatConfig_CreateTieredCheckboxes', function(frame, checkBoxTable)
-        local checkBoxNameString = frame:GetName().."CheckBox";
+        local checkBoxNameString = frame:GetName().."CheckBox"
         for index, value in ipairs(checkBoxTable) do
-            local checkBoxName = checkBoxNameString..index;
+            local checkBoxName = checkBoxNameString..index
             local checkBox = _G[checkBoxNameString..index]
             if checkBox  then
                 local text
                 if ( value.text ) then
-                    text = value.text;
+                    text = value.text
                 else
-                    text = _G[value.type];
+                    text = _G[value.type]
                 end
                 set(_G[checkBoxName.."Text"], e.strText[text])
                 if ( value.subTypes ) then
-                    local subCheckBoxNameString = checkBoxName.."_";
+                    local subCheckBoxNameString = checkBoxName.."_"
                     for k, v in ipairs(value.subTypes) do
                         local subCheckBoxName = subCheckBoxNameString..k
                         local subCheckBox=_G[subCheckBoxNameString..k]
@@ -1600,9 +1623,9 @@ local function Init()
                         end
                         local subText
                         if (v.text ) then
-                            subText = v.text;
+                            subText = v.text
                         elseif v.type then
-                            subText = _G[v.type];
+                            subText = _G[v.type]
                         end
                         set(_G[subCheckBoxName.."Text"], e.strText[subText])
                     end
@@ -1614,21 +1637,21 @@ local function Init()
         end
     end)
 
-    hooksecurefunc('ChatConfig_CreateColorSwatches', function(frame, swatchTable, swatchTemplate, title)
-        local nameString = frame:GetName().."Swatch";
+    hooksecurefunc('ChatConfig_CreateColorSwatches', function(frame, swatchTable, _, title)
+        local nameString = frame:GetName().."Swatch"
         local swatchName
-        local text;
-        frame.swatchTable = swatchTable;
+        local text
+        frame.swatchTable = swatchTable
         if ( title ) then
             setLabel(_G[frame:GetName().."Title"], title)
         end
         for index, value in ipairs(swatchTable) do
-            swatchName = nameString..index;
+            swatchName = nameString..index
             if ( _G[swatchName] ) then
                 if ( value.text ) then
-                    text = value.text;
+                    text = value.text
                 else
-                    text = _G[value.type];
+                    text = _G[value.type]
                 end
                 setLabel(_G[swatchName.."Text"], text)
             end
@@ -1636,42 +1659,45 @@ local function Init()
     end)
 
 
-    hooksecurefunc('CombatConfig_Colorize_Update', function()
-        if CHATCONFIG_SELECTED_FILTER.settings then
-            setLabel(CombatConfigColorsExampleString1)
-            setLabel(CombatConfigColorsExampleString2)
-        end
-    end)
-    hooksecurefunc('CombatConfig_Formatting_Update', function()
-        setLabel(CombatConfigFormattingExampleString1)
-        setLabel(CombatConfigFormattingExampleString2)
-    end)
-
     hooksecurefunc('FCF_SetWindowName', function(frame, name)--FloatingChatFrame.lua
         set(_G[frame:GetName().."Tab"], e.strText[name])
     end)
-    --[[hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame, checkBoxTable, checkBoxTemplate, title)--ChatConfigFrame.lua
-        if title then
-            if e.strText[title] then
-                set(_G[frame:GetName().."Title"], e.strText[title])
-            end
+
+    hooksecurefunc(ChatWindowTabMixin, 'SetChatWindowIndex', function(self, chatWindowIndex)
+        local text
+        if chatWindowIndex ~= VOICE_WINDOW_ID then
+            local chatTab = _G["ChatFrame"..chatWindowIndex.."Tab"]
+            text= e.strText[chatTab.Text:GetText()]
+        else
+            text= '文本转语音'
         end
-        local box = frame:GetName().."CheckBox"
-        for index in ipairs(checkBoxTable or {}) do
-            local label = _G[box..index.."CheckText"]
-            if label then
-                local text= label:GetText()
-                if e.strText[text] then
-                    set(label, e.strText[text])
-                else
-                    local num, name= text:match('(%d+%.)(.+)')
-                    if num and name and e.strText[name] then
-                        set(label, num..e.strText[name])
-                    end
-                end
-            end
-        end
-    end)]]
+        set(self.Text, text)
+    end)
+    set(CombatConfigColorsExampleTitle, '范例文字：')
+    set(CombatConfigFormattingExampleTitle, '范例文字：')
+    set(CombatConfigFormattingShowTimeStamp.Text, '显示时间戳')
+    CombatConfigFormattingShowTimeStamp.tooltip = '显示战斗记录信息的时间戳。'
+    set(CombatConfigFormattingShowBraces.Text, '显示括号')
+    CombatConfigFormattingShowBraces.tooltip = '在战斗记录信息中的超链接外显示括号。'
+    set(CombatConfigFormattingUnitNamesText, '单位名称')
+    CombatConfigFormattingUnitNames.tooltip = '在单位名称外显示括号。'
+
+    set(CombatConfigFormattingSpellNamesText, '法术名')
+    CombatConfigFormattingSpellNames.tooltip= '在法术名称外显示括号。'
+    set(CombatConfigFormattingItemNamesText, '物品名')
+    CombatConfigFormattingItemNames.tooltip= '在物品名称外显示括号。'
+    set(CombatConfigFormattingFullTextText, '使用详细模式')
+    CombatConfigFormattingItemNames.tooltip= '整句显示战斗记录信息。'
+    
+    
+    
+    
+
+    set(CombatConfigSettingsShowQuickButtonText, '显示快捷按钮')
+    CombatConfigSettingsShowQuickButton.tooltip= '在聊天窗口中放置一个该过滤条件的快捷方式。'
+    set(CombatConfigSettingsSoloText, '独身')
+    set(CombatConfigSettingsPartyText, '小队')
+    set(CombatConfigSettingsRaidText, '团队')
 
     for i=1, 7 do
         local btn=_G['ChatConfigCategoryFrameButton'..i]
@@ -1760,6 +1786,9 @@ local function Init()
     end)
 
     C_Timer.After(2, function()
+       
+        reg(CombatConfigSettingsNameEditBox)--过滤名称
+
         set(ObjectiveTrackerFrame.HeaderMenu.Title, '追踪')
         set(ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text, '战役')
         set(ObjectiveTrackerBlocksFrame.ProfessionHeader.Text, '专业')
