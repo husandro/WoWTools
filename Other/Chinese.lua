@@ -117,7 +117,7 @@ local function role_check_tooltips_enter(self)
     end
     GameTooltip:Show()
 end
-local function role_tooltips(str)
+--[[local function role_tooltips(str)
     local tank= _G[str..'RoleButtonTank'] or (_G[str] and _G[str].DPSIcon)
     local header= _G[str..'RoleButtonHealer']or (_G[str] and _G[str].HealerIcon)
     local dps= _G[str..'RoleButtonDPS']or (_G[str] and _G[str].TankIcon)
@@ -136,7 +136,7 @@ local function role_tooltips(str)
             GameTooltip:SetText('表示你拥有在副本中战斗的经验，并愿意指导团队攻克难关。', nil, nil, nil, nil, true)
         end)
     end
-end
+end]]
 
 
 local function set_tooltip_func(self)
@@ -147,8 +147,14 @@ local function set_tooltip_func(self)
         local name= frame:GetName()
         if name then
             for i=1, frame:NumLines() or 0 do
-                setLabel(_G[name.."TextLeft"..i])
-                setLabel(_G[name.."TextRight"..i])
+                local left= _G[name.."TextLeft"..i]
+                local right= _G[name.."TextRight"..i]
+                if left and left:IsShown() then
+                    set(left, getText(left:GetText()))
+                end
+                if right and right:IsShown() then
+                    set(right, getText(right:GetText()))
+                end
             end
         end
     end
@@ -1119,8 +1125,8 @@ local function Init()
         end
     end)
 
-    role_tooltips('LFDQueueFrame')
-    role_tooltips('RaidFinderQueueFrame')
+    --role_tooltips('LFDQueueFrame')
+    --role_tooltips('RaidFinderQueueFrame')
 
 
     --[[RolePoll.xml
@@ -3383,7 +3389,9 @@ local function Init()
     set_pettips_func(BattlePetTooltip)
     set_pettips_func(FloatingBattlePetTooltip)
 
-
+    hooksecurefunc(GameTooltip, 'SetText', function(...)
+        print(...)
+    end)
 
 
 
@@ -5534,7 +5542,7 @@ local function Init_Loaded(arg1)
             GameTooltip:Show()
         end
 
-        role_tooltips('HonorFrame')
+        --role_tooltips('HonorFrame')
         set(ConquestJoinButton, '加入战斗')
 
 
