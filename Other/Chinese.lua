@@ -1524,18 +1524,20 @@ local function Init()
 
 
 
-
-
-    COMBAT_CONFIG_TABS[1].text= '信息来源'--ChatConfigFrame.lua
-    COMBAT_CONFIG_TABS[2].text= '信息类型'
+    COMBAT_CONFIG_TABS[1].text= '来源'--ChatConfigFrame.lua
+    COMBAT_CONFIG_TABS[2].text= '类型'
     COMBAT_CONFIG_TABS[3].text= '颜色'
     COMBAT_CONFIG_TABS[4].text= '格式'
     COMBAT_CONFIG_TABS[5].text= '设置'
-    for index, value in ipairs(COMBAT_CONFIG_TABS) do--ChatConfigCombat_OnLoad()
-		local tab = _G[CHAT_CONFIG_COMBAT_TAB_NAME..index]
-		set(tab and tab.Text, value.text)
-        PanelTemplates_TabResize(tab, 0)
-	end
+
+    C_Timer.After(2, function()
+        for index, value in ipairs(COMBAT_CONFIG_TABS) do--ChatConfigCombat_OnLoad()
+            local tab = _G[CHAT_CONFIG_COMBAT_TAB_NAME..index]
+            set(tab and tab.Text, value.text)
+            PanelTemplates_TabResize(tab, 0)
+        end
+    end)
+    
     hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame, checkBoxTable, _, title)
         local checkBoxNameString = frame:GetName().."CheckBox";
         local checkBoxName, checkBox, check;
@@ -1612,6 +1614,38 @@ local function Init()
         end
     end)
 
+    hooksecurefunc('ChatConfig_CreateColorSwatches', function(frame, swatchTable, swatchTemplate, title)
+        local nameString = frame:GetName().."Swatch";
+        local swatchName
+        local text;
+        frame.swatchTable = swatchTable;
+        if ( title ) then
+            setLabel(_G[frame:GetName().."Title"], title)
+        end
+        for index, value in ipairs(swatchTable) do
+            swatchName = nameString..index;
+            if ( _G[swatchName] ) then
+                if ( value.text ) then
+                    text = value.text;
+                else
+                    text = _G[value.type];
+                end
+                setLabel(_G[swatchName.."Text"], text)
+            end
+        end
+    end)
+
+
+    hooksecurefunc('CombatConfig_Colorize_Update', function()
+        if CHATCONFIG_SELECTED_FILTER.settings then
+            setLabel(CombatConfigColorsExampleString1)
+            setLabel(CombatConfigColorsExampleString2)
+        end
+    end)
+    hooksecurefunc('CombatConfig_Formatting_Update', function()
+        setLabel(CombatConfigFormattingExampleString1)
+        setLabel(CombatConfigFormattingExampleString2)
+    end)
 
     hooksecurefunc('FCF_SetWindowName', function(frame, name)--FloatingChatFrame.lua
         set(_G[frame:GetName().."Tab"], e.strText[name])
