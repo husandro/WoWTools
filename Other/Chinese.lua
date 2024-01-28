@@ -3389,9 +3389,8 @@ local function Init()
     set_pettips_func(BattlePetTooltip)
     set_pettips_func(FloatingBattlePetTooltip)
 
-    hooksecurefunc(GameTooltip, 'SetText', function(...)
-        print(...)
-    end)
+    --hooksecurefunc(GameTooltip, 'SetText', function(self, text)
+        
 
 
 
