@@ -3,6 +3,8 @@ if LOCALE_zhCN or LOCALE_zhTW then
     return
 end
 
+
+
 local function Init()
   
 
@@ -20163,6 +20165,36 @@ fanc(2526, '冬裘熊怪', '冬裘熊怪使用的语言似乎没人能听懂。�
 fanc(2568, '格里梅罗格竞速者', '布里谷尔不会让随便什么人跟滑仔一起竞技。你能证明自己是个合格的蜗牛训练师吗？')
 
 fanc(470, '棘齿城')
+
+local  spellTab={
+    {818, '烹饪用火', '点起一堆营火，使附近所有冒险者的全能提高1，并可以在营火旁烹饪'},
+    {80451, '勘测', '在挖掘地点勘测古迹残片。每次勘测都会指引你靠近残片所在地点。'}
+}
+
+
+
+
+
+
+for _, info in pairs(spellTab) do
+    e.LoadDate({id=info[1], type='spell'})
+end
+C_Timer.After(2, function()
+    for _, info in pairs(spellinfo) do
+        if info[2] then
+            local name= GetSpellInfo(info[1])
+            if name then
+                e.strText[name]=  info[2]
+            end
+        end
+        if info[3] then
+            local des= GetSpellDescription(info[1])
+            if des  then
+                e.strText[des]= info[3]
+            end
+        end
+    end
+end)
 end
 
 

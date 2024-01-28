@@ -328,7 +328,6 @@ local function Init()
             if not factionID then
                 return
             end
-            print(name, e.strText[name], factionID)
 
             local factionStandingtext
             local isMajorFaction = factionID and C_Reputation.IsMajorFaction(factionID)
@@ -400,6 +399,22 @@ local function Init()
         SpellBookPageText:SetFormattedText('第%d页', currentPage)
     end)
 
+    hooksecurefunc('UpdateProfessionButton', function(self)
+        local parent = self:GetParent();
+        if not parent.professionInitialized then
+            return;
+        end
+        local spellIndex = self:GetID() + parent.spellOffset;
+        local spellName, _, spellID = GetSpellBookItemName(spellIndex, SpellBookFrame.bookType);
+        set(self.spellString, e.strText[spellName])
+        if spellID then
+            local spell = Spell:CreateFromSpellID(spellID);
+            spell:ContinueOnSpellLoad(function()
+                local text= spell:GetSpellSubtext()
+                set(self.subSpellString, e.strText[text] or text);
+            end);
+        end
+    end)
 
 
 
@@ -1706,7 +1721,9 @@ local function Init()
 
 
     hooksecurefunc('FCF_SetWindowName', function(frame, name)--FloatingChatFrame.lua
-        set(_G[frame:GetName().."Tab"], e.strText[name])
+        local tab = _G[frame:GetName().."Tab"]
+        set(tab, e.strText[name])
+        PanelTemplates_TabResize(tab, tab.sizePadding or 0);
     end)
 
     hooksecurefunc(ChatWindowTabMixin, 'SetChatWindowIndex', function(self, chatWindowIndex)
@@ -1719,6 +1736,8 @@ local function Init()
         end
         set(self.Text, text)
     end)
+   
+
     set(CombatConfigColorsExampleTitle, '范例文字：')
     set(CombatConfigFormattingExampleTitle, '范例文字：')
     set(CombatConfigFormattingShowTimeStamp.Text, '显示时间戳')
@@ -3449,6 +3468,26 @@ local function Init()
 
 
 
+
+    hooksecurefunc('VoiceTranscriptionFrame_UpdateEditBox', function(self)--VoiceChatTranscriptionFrame.lua
+        if  C_VoiceChat.IsMuted() then
+            set(prompt, '禁音 - 目前没有发送语音识别或文字转语音信息')
+        elseif C_VoiceChat.IsSpeakForMeActive() then
+            set(self.editBox.prompt, '输入文字后，文字转语音功能会为其他玩家朗读文字。')
+        end
+    end)
+
+
+
+
+    hooksecurefunc(UIErrorsFrame, 'AddMessage', function(self, msg, ...)
+        msg= e.strText[msg]
+        if msg then
+            self:AddMessage(msg, ...)
+        end
+    end)
+
+
     C_Timer.After(2, function()
         AddonCompartmentFrame:SetScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -3467,7 +3506,7 @@ local function Init()
             return nil
         end
         hooksecurefunc('UIDropDownMenu_SetText', function(frame, text)
-            if text and frame then
+            if text and frame and type(text)=='string' then
                 local frameName = frame:GetName()
                 local col, text2= text:match('(|cff......)(.-)|r')
                 text= getText(text2 or text)
@@ -3547,7 +3586,6 @@ local function Init()
                 end
             end
         end
-
     end)
 
 end
@@ -5217,6 +5255,8 @@ local function Init_Loaded(arg1)
         set(ClubFinderClubFocusDropdown.Label, '活动倾向')
 
         set(CommunitiesFrame.RecruitmentDialog.RecruitmentMessageFrame.Label, '招募信息')
+        set(CommunitiesFrame.RecruitmentDialog.RecruitmentMessageFrame.RecruitmentMessageInput.EditBox.Instructions, '在此介绍你的公会以及你们需要什么样的玩家。')
+        set(CommunitiesFrame.RecruitmentDialog.MinIlvlOnly.EditBox.Text, '物品等级')
         set(CommunitiesFrame.RecruitmentDialog.MaxLevelOnly.Label, '只限满级')
         set(CommunitiesFrame.RecruitmentDialog.MinIlvlOnly.Label, '最低物品等级')
         set(CommunitiesFrame.RecruitmentDialog.Accept, '接受')
