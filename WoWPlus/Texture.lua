@@ -1999,6 +1999,7 @@ local function Init_Event(arg1)
         end)
     elseif arg1=='Blizzard_MajorFactions' then--派系声望
         set_Alpha_Color(MajorFactionRenownFrame.Background)
+        
 
     elseif arg1=='Blizzard_Professions' then--专业, 初始化, 透明
         set_NineSlice(ProfessionsFrame, true)

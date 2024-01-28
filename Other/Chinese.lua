@@ -319,6 +319,44 @@ local function Init()
         set(ReputationDetailMainScreenCheckBoxText, '显示为经验条')
         set(ReputationDetailInactiveCheckBoxText, '隐藏')
         set(ReputationDetailAtWarCheckBoxText, '交战状态')
+        hooksecurefunc('ReputationFrame_InitReputationRow', function(factionRow, elementData)
+            local factionIndex = elementData.index
+            local name, description, standingID, _, _, _, _, _, _, _, _, _, _, factionID = GetFactionInfo(factionIndex)
+            name= name and e.strText[name]
+            local factionContainer = factionRow.Container
+            set(factionContainer.Name, name)
+            if not factionID then
+                return
+            end
+            print(name, e.strText[name], factionID)
+
+            local factionStandingtext
+            local isMajorFaction = factionID and C_Reputation.IsMajorFaction(factionID)
+            local repInfo = factionID and C_GossipInfo.GetFriendshipReputation(factionID)
+            if (repInfo and repInfo.friendshipFactionID > 0) then
+                factionStandingtext = e.strText[repInfo.reaction]
+
+            elseif ( isMajorFaction ) then
+                local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID) or {}
+                factionStandingtext = '名望'..majorFactionData.renownLevel
+            else
+                factionStandingtext = e.strText[GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex)]
+            end
+            if factionStandingtext then
+                set(factionContainer.ReputationBar.FactionStanding, factionStandingtext)
+                factionRow.standingText = factionStandingtext
+            end
+            if ( factionIndex == GetSelectedFaction() ) then
+                if ( ReputationDetailFrame:IsShown() ) then
+                    set(ReputationDetailFactionName, name)
+                    set(ReputationDetailFactionDescription, e.strText[description])
+                end
+            end
+        end)
+
+
+
+
     set(CharacterFrameTab3, '货币')
     CharacterFrameTab3:HookScript('OnEnter', function()
         GameTooltip:SetText(MicroButtonTooltipText('货币', "TOGGLECURRENCY"), 1.0,1.0,1.0 )
@@ -374,7 +412,9 @@ local function Init()
 
 
 
-
+    hooksecurefunc(DragonridingPanelSkillsButtonMixin, 'OnLoad', function(self)--Blizzard_DragonflightLandingPage.lua
+        setLabel(self)
+    end)
 
 
 
@@ -1753,6 +1793,8 @@ local function Init()
     set(TextToSpeechFrameAdjustRateSliderLabel, '调节讲话速度')
     set(TextToSpeechFrameAdjustVolumeSliderLabel, '音量')
     set(ChatConfigTextToSpeechMessageSettingsSubTitle, '对特定信息开启文字转语音')
+    set(TextToSpeechFrameAdjustRateSliderLow, '慢')
+    set(TextToSpeechFrameAdjustRateSliderHigh, '快')
 
     hooksecurefunc('TextToSpeechFrame_UpdateMessageCheckboxes', function(frame)--TextToSpeechFrame.lua
         local checkBoxNameString = frame:GetName().."CheckBox"
@@ -1855,8 +1897,7 @@ local function Init()
 
     --插件
     set(AddonListTitleText, '插件列表')
-    set(AddonListForceLoad, '加载过期插件')
-    reg(AddonListForceLoad, '加载过期插件')
+    reg(AddonListForceLoad, '加载过期插件', 1)
 
     set(AddonListEnableAllButton, '全部启用')
     set(AddonListDisableAllButton, '全部禁用')
@@ -1870,6 +1911,26 @@ local function Init()
         end
     end)
     set(AddonListCancelButton, '取消')
+    hooksecurefunc('AddonList_InitButton', function(entry, addonIndex)
+        local security = select(6, C_AddOns.GetAddOnInfo(addonIndex))
+        -- Get the character from the current list (nil is all characters)
+        local character = UIDropDownMenu_GetSelectedValue(AddonCharacterDropDown);
+        if ( character == true ) then
+            character = nil;
+        end
+        local loadable, reason = C_AddOns.IsAddOnLoadable(addonIndex, character);
+        local checkboxState = C_AddOns.GetAddOnEnableState(addonIndex, character);
+        if (checkboxState == Enum.AddOnEnableState.Some ) then
+            entry.Enabled.tooltip = '该插件只对某些角色启用。'
+        end
+        local text= e.strText[_G["ADDON_"..security]]
+        if text then
+            entry.Security.tooltip = text
+        end
+        if ( not loadable and reason ) then
+            set(entry.Status, e.strText[_G["ADDON_"..reason]])
+        end
+    end)
 
     --拾取
     set(GroupLootHistoryFrameTitleText, '战利品掷骰')
@@ -3374,12 +3435,6 @@ local function Init()
 
 
 
-
-
-
-
-
-
     set_tooltip_func(GameTooltip)
     set_tooltip_func(ItemRefTooltip)
     set_tooltip_func(EmbeddedItemTooltip)
@@ -3390,7 +3445,7 @@ local function Init()
     set_pettips_func(FloatingBattlePetTooltip)
 
     --hooksecurefunc(GameTooltip, 'SetText', function(self, text)
-        
+
 
 
 
@@ -3439,6 +3494,60 @@ local function Init()
                 end
             end
         end)
+
+
+        hooksecurefunc('UIMenu_AddButton', function(self, text)--UIMenu.lua
+            if ( self.numButtons > UIMENU_NUMBUTTONS ) then
+                return;
+            end
+            local button = _G[self:GetName().."Button"..self.numButtons];
+            if ( button and text ) then
+                set(button, e.strText[text])
+		        set(_G[button:GetName().."ShortcutText"], name)
+            end
+        end)
+
+        for i=1, 12 do
+            setLabel(_G['ChatMenuButton'..i])
+        end
+
+        if _G['VoiceMacroMenu'] then
+            local w= _G['VoiceMacroMenu']:GetWidth()
+            _G['VoiceMacroMenu']:SetWidth(w*1.6)
+            for i=1, 23 do
+                local btn= _G['VoiceMacroMenuButton'..i]
+                local name= btn and btn:GetText()
+                local text= name and e.strText[name]
+                if text then
+                    set(btn, text)
+                    local shortcutString = _G[btn:GetName().."ShortcutText"];
+                    if shortcutString then
+                        set(shortcutString, name)
+                        shortcutString:Show()
+                    end
+                    btn:SetWidth(w*1.4)
+                end
+            end
+        end
+        if _G['EmoteMenu'] then
+            local w= _G['EmoteMenu']:GetWidth()
+            _G['EmoteMenu']:SetWidth(w*1.6)
+            for i=1, 21 do
+                local btn= _G['EmoteMenuButton'..i]
+                local name= btn and btn:GetText()
+                local text= name and e.strText[name]
+                if text then
+                    set(btn, text)
+                    local shortcutString = _G[btn:GetName().."ShortcutText"];
+                    if shortcutString then
+                        set(shortcutString, name)
+                        shortcutString:Show()
+                    end
+                    btn:SetWidth(w*1.4)
+                end
+            end
+        end
+
     end)
 
 end
@@ -4934,8 +5043,92 @@ local function Init_Loaded(arg1)
         end)
 
 
+        --[[local function IsTimedActivity(activityData)
+            return activityData.eventStartTime and activityData.eventEndTime;
+        end
+        local function HasTimedActivityBegun(activityData)
+            if not IsTimedActivity(activityData) then
+                return false;
+            end
+            local currentTime = GetServerTime();
+            return currentTime > activityData.eventStartTime;
+        end
+        local function HasTimedActivityExpired(activityData)
+            if not IsTimedActivity(activityData) then
+                return false;
+            end
+            local currentTime = GetServerTime();
+            return currentTime > activityData.eventEndTime;
+        end
+        local function IsTimedActivityActive(activityData)
+            return HasTimedActivityBegun(activityData) and not HasTimedActivityExpired(activityData);
+        end
+        local function GetActivityTimeRemaining(activityData)
+            if not IsTimedActivityActive(activityData) then
+                return 0;
+            end
+            local currentTime = GetServerTime();
+            return activityData.eventEndTime - currentTime;
+        end
+        local function IsTimedActivityCloseToExpiring(activityData)
+            if not IsTimedActivityActive(activityData) then
+                return false;
+            end
+            local timeRemaining = GetActivityTimeRemaining(activityData);
+            local timeRemainingUnits = ConvertSecondsToUnits(timeRemaining);
+            local totalEventTime = activityData.eventEndTime - activityData.eventStartTime;
+            local totalEventTimeUnits = ConvertSecondsToUnits(totalEventTime);
+            if totalEventTimeUnits.days >= 7 then
+                return timeRemainingUnits.days <= 3;
+            else
+                return timeRemainingUnits.days <= 1;
+            end
+        end
+        local ActivityTimeRemainingFormatter = CreateFromMixins(SecondsFormatterMixin);
+        ActivityTimeRemainingFormatter:Init(0, SecondsFormatter.Abbreviation.None, false, true);
+        hooksecurefunc(MonthlyActivitiesButtonTextContainerMixin, 'UpdateConditionsText', function(self, data)--Blizzard_MonthlyActivities.lua
+            local conditionsText = "";
+            if not data.isChild then
+                if IsTimedActivity(data) then
+                    conditionsText = self:GetClockAtlasText(data);
+                    conditionsText= e.strText[conditionsText] or conditionsText
+                    if not data.completed and IsTimedActivityCloseToExpiring(data) then
+                        local timeRemainingText = ActivityTimeRemainingFormatter:Format(GetActivityTimeRemaining(data));
+                        conditionsText = conditionsText.." "..format('剩余时间：%s', timeRemainingText);
+                    else
+                        if data.eventName then
+                            conditionsText = conditionsText.." "..(e.strText[data.eventName] or data.eventName);
+                        end
+                        local eventStartTimeUnits = date("*t", data.eventStartTime);
+                        local eventStartDate = FormatShortDate(eventStartTimeUnits.day, eventStartTimeUnits.month);
+                        local eventEndTimeUnits = date("*t", data.eventEndTime);
+                        local eventEndDate = FormatShortDate(eventEndTimeUnits.day, eventEndTimeUnits.month);
+                        local durationText = format('(%s - %s)', eventStartDate, eventEndDate);
+                        conditionsText = conditionsText.." "..durationText;
+                    end
+                end
+                for _, condition in ipairs(data.conditions) do
+                    if conditionsText ~= "" then
+                        conditionsText = conditionsText..", ";
+                    end
+                    conditionsText = conditionsText..condition.text;
+                end
+            end
+            set(self.ConditionsText, conditionsText)
+        end)]]
 
-
+        hooksecurefunc(MonthlyActivitiesButtonTextContainerMixin, 'UpdateText', function(self, data)
+            if data.name then
+                local a,b= data.name:match('(.-): (.+)')
+                a= e.strText[a] or a
+                b= e.strText[b] or b
+                if a and b then
+                    set(self.NameText, (e.strText[a] or a)..': '..(e.strText[b] or b))
+                else
+                    set(self.NameText, e.strText[data.name])
+                end
+            end
+        end)
 
 
 
@@ -6042,14 +6235,14 @@ local function Init_Loaded(arg1)
             GameTooltip:AddDoubleLine( '服务器时间：', GameTime_GetGameTime(true), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
             GameTooltip:AddDoubleLine( '本地时间：', GameTime_GetLocalTime(true), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
         end)
-        hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
+        --[[hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
             if ( TimeManagerClockButton.alarmFiring ) then
                 GameTooltip:AddLine('点击这里关闭提醒。')
             else
                 GameTooltip:AddLine('点击这里显示时钟设置选项。')
             end
             GameTooltip:Show()
-        end)
+        end)]]
 
     elseif arg1=='Blizzard_ArchaeologyUI' then
         set(ArchaeologyFrameTitleText, '考古学')
@@ -6131,7 +6324,72 @@ local function Init_Loaded(arg1)
         dia("ITEM_INTERACTION_CONFIRMATION_DELAYED", {button2 = '取消'})
         dia("ITEM_INTERACTION_CONFIRMATION_DELAYED_WITH_CHARGE_INFO", {button2 = '取消'})
 
+    elseif arg1=='Blizzard_MajorFactions' then
 
+        hooksecurefunc(MajorFactionButtonUnlockedStateMixin, 'SetUpParagonRewardsTooltip', function(self)
+            local factionID = self:GetParent().factionID;
+            local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID) or {}
+            local currentValue, threshold, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
+
+            if tooLowLevelForParagon then
+                GameTooltip_SetTitle(GameTooltip, '你的等级太低，无法获得这个阵营的典范声望。', NORMAL_FONT_COLOR);
+            else
+                GameTooltip_SetTitle(GameTooltip, '最高名望等级', NORMAL_FONT_COLOR);
+                local description = format('继续获取%s的声望以赢取奖励。', e.strText[majorFactionData.name] or majorFactionData.name);
+                if hasRewardPending then
+                    local questIndex = C_QuestLog.GetLogIndexForQuestID(rewardQuestID);
+                    local text = GetQuestLogCompletionText(questIndex);
+                    if text and text ~= "" then
+                        description = e.strText[text] or text;
+                    end
+                end
+
+                GameTooltip_AddHighlightLine(GameTooltip, description);
+                if not hasRewardPending then
+                    local value = mod(currentValue, threshold);
+                    -- Show overflow if a reward is pending
+                    if hasRewardPending then
+                        value = value + threshold;
+                    end
+                    GameTooltip_ShowProgressBar(GameTooltip, 0, threshold, value, REPUTATION_PROGRESS_FORMAT:format(value, threshold));
+                end
+                GameTooltip_AddQuestRewardsToTooltip(GameTooltip, rewardQuestID);
+            end
+        end)
+        hooksecurefunc(MajorFactionButtonUnlockedStateMixin, 'SetUpRenownRewardsTooltip', function(self)
+            local majorFactionData = C_MajorFactions.GetMajorFactionData(self:GetParent().factionID) or {}
+            local tooltipTitle = e.strText[majorFactionData.name] or majorFactionData.name;
+            GameTooltip_SetTitle(GameTooltip, tooltipTitle, NORMAL_FONT_COLOR);
+            local factionID = self:GetParent().factionID;
+            if not C_MajorFactions.HasMaximumRenown(factionID) then
+                GameTooltip_AddNormalLine(GameTooltip, format('当前进度：|cffffffff%d/%d|r', majorFactionData.renownReputationEarned, majorFactionData.renownLevelThreshold));
+                GameTooltip_AddBlankLineToTooltip(GameTooltip);
+                local nextRenownRewards = C_MajorFactions.GetRenownRewardsForLevel(factionID, C_MajorFactions.GetCurrentRenownLevel(factionID) + 1);
+                if #nextRenownRewards > 0 then
+                    self:AddRenownRewardsToTooltip(nextRenownRewards);
+                end
+            end
+            GameTooltip_AddColoredLine(GameTooltip, '<点击查看名望>', GREEN_FONT_COLOR);
+        end)
+
+        hooksecurefunc(MajorFactionButtonUnlockedStateMixin, 'Refresh', function(self, majorFactionData)--Blizzard_MajorFactionsLandingTemplates.lua
+            set(self.Title, majorFactionData.name and e.strText[majorFactionData.name])
+            set(self.RenownLevel, format('%d级', majorFactionData.renownLevel or 0))
+        end)
+        hooksecurefunc(MajorFactionWatchFactionButtonMixin, 'OnLoad', function(self)
+            set(self.Label, '显示为经验条')
+        end)
+
+        --Blizzard_MajorFactionRenown.lua
+        hooksecurefunc(MajorFactionRenownFrame, 'SetUpMajorFactionData', function(self)
+            local majorFactionData = C_MajorFactions.GetMajorFactionData(self.majorFactionID) or {};
+            if majorFactionData.name and currentFactionID ~= self.majorFactionID then
+                set(self.TrackFrame.Title, e.strText[majorFactionData.name]);
+            end
+        end)
+
+
+    --elseif arg1=='Blizzard_CovenantRenown' then
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
         --dia("CALENDAR_ERROR", {button1 = '确定'})
