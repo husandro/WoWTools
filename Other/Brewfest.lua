@@ -42,7 +42,7 @@ function Init()
     button:SetScript('OnHide', function(self)
         local num= GetItemCount(37829, true)
         if self.item and self.item<num then
-            print(id, addName, select(2, GetItemInfo(37829)) or '|T133784:0|t', self.item)
+            print(id, e.cn(addName), select(2, GetItemInfo(37829)) or '|T133784:0|t', self.item)
         end
         self.item=nil
     end)
@@ -89,7 +89,7 @@ function Init()
 
         Save.scale=sacle
         self:set_Scale()
-        print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..sacle)
+        print(id, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..sacle)
     end)
 
     function button:set_Point()
@@ -202,7 +202,7 @@ function Init()
     button:SetScript('OnClick', function(_, d)
         if d=='LeftButton' and IsShiftKeyDown() then
             local macroId = CreateMacro('Ram', 236912, '/click ExtraActionButton1')
-            print(id, addName, e.onlyChinese and '创建宏' or CREATE_MACROS, 'Ram',
+            print(id, e.cn(addName), e.onlyChinese and '创建宏' or CREATE_MACROS, 'Ram',
                 macroId and '/click ExtraActionButton1' or (e.onlyChinese and '无法创建' or NONE)
             )
         end
@@ -259,7 +259,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         end
                         button:SetShown(true)
                     else
-                        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                     end
                 end,
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
@@ -269,7 +269,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         button:ClearAllPoints()
                         button:set_Point()
                     end
-                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
                 tooltip= e.onlyChinese and '节日: 美酒节（赛羊）' or CALENDAR_FILTER_HOLIDAYS,
                 layout= nil,

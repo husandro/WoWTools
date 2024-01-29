@@ -612,7 +612,7 @@ local function Init_Framerate_Plus()
         end
         Save.framerateSize=size
         self:set_size()
-        print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
+        print(id, e.cn(addName), e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
     end)
 
     function MoveFPSFrame:set_size()--修改大小
@@ -695,7 +695,7 @@ local function InitMenu(_, level, type)--主菜单
                     FramerateFrame:ClearAllPoints()
                     FramerateFrame:SetPoint('CENTER')
                 end
-                print(id,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(id,e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info,level)
@@ -801,7 +801,7 @@ local function InitMenu(_, level, type)--主菜单
             if Save.frameratePlus and not MoveFPSFrame then
                 Init_Framerate_Plus()--每秒帧数 Plus
             else
-                print(id, addName, e.GetEnabeleDisable(Save.frameratePlus) ,e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, e.cn(addName), e.GetEnabeleDisable(Save.frameratePlus) ,e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end
     }
@@ -812,7 +812,7 @@ local function InitMenu(_, level, type)--主菜单
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
-        text= id ..' '.. addName,
+        text= id ..' '.. e.cn(addName),
         isTitle=true,
         notCheckable=true,
     }
@@ -904,7 +904,7 @@ local function Init()
         end
         Save.size=size
         self:set_Label_Size_Color()
-        print(id, addName, e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
+        print(id, e.cn(addName), e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
     end)
 
     button:SetScript('OnClick', function(self, d)
@@ -1092,7 +1092,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     if not Save.disabled and not button then
                         Init()
                     else
-                        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                     end
                 end,
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
@@ -1103,7 +1103,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         button:ClearAllPoints()
                         button:set_point()--设置位置
                     end
-                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
                 tooltip= addName,
                 layout= nil,

@@ -700,13 +700,13 @@ local function Init()
                     Save.use[data.itemID]=num
                     Save.no[data.itemID]=nil
                     get_Items()--取得背包物品信息
-                    print(id, '|cnGREEN_FONT_COLOR:'..addName..'|r', num>1 and (e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r' or '', data.itemLink)
+                    print(id, '|cnGREEN_FONT_COLOR:'..e.cn(addName)..'|r', num>1 and (e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r' or '', data.itemLink)
                 end,
                 OnAlt = function(self2, data)
                     Save.no[data.itemID]=true
                     Save.use[data.itemID]=nil
                     get_Items()--取得背包物品信息
-                    print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r', data.itemLink)
+                    print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r', data.itemLink)
                 end,
                 EditBoxOnTextChanged=function(self2)
                    local num= self2:GetNumber()

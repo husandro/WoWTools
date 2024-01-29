@@ -75,7 +75,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         Save.disabled=true
                         panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
                     end
-                    print(id, addName, e.GetEnabeleDisable(Save.disabled))
+                    print(id, e.cn(addName), e.GetEnabeleDisable(Save.disabled))
                 end
             })
 
@@ -89,12 +89,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     Save.disabled=true
                     panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
                 end
-                print(id, addName, e.GetEnabeleDisable(Save.disabled))
+                print(id, e.cn(addName), e.GetEnabeleDisable(Save.disabled))
             end)
             sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(addName, e.onlyChinese and '说' or SAY, nil,nil,nil, 0,1,0)
+                e.tips:AddDoubleLine(e.cn(addName), e.onlyChinese and '说' or SAY, nil,nil,nil, 0,1,0)
                 e.tips:AddDoubleLine(e.onlyChinese and '仅限我' or LFG_LIST_CROSS_FACTION:format(COMBATLOG_FILTER_STRING_ME), e.onlyChinese and '仅限队伍' or LFG_LIST_CROSS_FACTION:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS))--仅限我, 仅限队伍
                 e.tips:Show()
             end)

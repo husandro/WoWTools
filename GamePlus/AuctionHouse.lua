@@ -89,7 +89,7 @@ local function Init_Sell()
         if IsControlKeyDown() and d=='RightButton' then
             Save.hideSellItem={}
             self:init_items()
-            print(id, addName, e.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
+            print(id, e.cn(addName), e.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
 
         elseif not IsModifierKeyDown() then
             Save.hideSellItemList= not Save.hideSellItemList and true or nil
@@ -1057,9 +1057,9 @@ local function Init_AllAuctions()
             if C_AuctionHouse.CanCancelAuction(auctionID) then
                 local cost= C_AuctionHouse.GetCancelCost(auctionID)
                 C_AuctionHouse.CancelAuction(auctionID)
-                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)..'|r', itemLink or '', cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
+                print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)..'|r', itemLink or '', cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
             else
-                print(id,addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '出错' or ERRORS)..'|r', itemLink or '')
+                print(id,e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '出错' or ERRORS)..'|r', itemLink or '')
             end
             AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton:OnClick()
             self:set_tooltips()
@@ -1079,7 +1079,7 @@ local function Init_AllAuctions()
                         local cost= C_AuctionHouse.GetCancelCost(self.rowData.auctionID)
                         local itemLink= Get_ItemLink_For_rowData(self.rowData)
                         C_AuctionHouse.CancelAuction(self.rowData.auctionID)
-                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)..'|r', itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
+                        print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)..'|r', itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
                     end
                 end)
                 btn.setOnDoubleClick=true
@@ -1240,11 +1240,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             e.AddPanel_Check({
                 name= '|A:Auctioneer:0:0|a'..(e.onlyChinese and '拍卖行' or addName),
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

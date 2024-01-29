@@ -165,7 +165,7 @@ local function Init_DressUpFrames()--试衣间, 外观列表
         sel:SetAlpha(0.3)
         sel:SetScript('OnMouseDown', function ()
             Save.hideDressUpOutfit= not Save.hideDressUpOutfit and true or nil
-            print(id, addName, e.onlyChinese and '外观列表' or DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.hideDressUpOutfit),e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+            print(id, e.cn(addName), e.onlyChinese and '外观列表' or DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.hideDressUpOutfit),e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
             sel:SetNormalAtlas(Save.hideDressUpOutfit and e.Icon.disabled or e.Icon.icon)
         end)
         sel:SetScript('OnEnter', function (self2)
@@ -733,7 +733,7 @@ local function get_Items_Colleced()
                         n=n+1
                     end
                     e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(id, addName, 1,1,1, 1,1,1)
+                    e.tips:AddDoubleLine(id, e.cn(addName), 1,1,1, 1,1,1)
                     e.tips:Show()
                 end
                 self2:SetAlpha(0.5)
@@ -1160,7 +1160,7 @@ local function Init_ToyBox()
     toyframe.sel:SetAlpha(0.5)
     toyframe.sel:SetScript('OnMouseDown',function (self2)
         Save.hideToyBox= not Save.hideToyBox and true or nil
-        print(id, addName, e.GetEnabeleDisable(not Save.hideToyBox), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.hideToyBox), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
         self2:SetNormalAtlas(Save.hideToyBox and e.Icon.disabled or e.Icon.icon)
     end)
     toyframe.sel:SetScript('OnEnter', function (self2)
@@ -1332,7 +1332,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
@@ -1340,7 +1340,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             local sel=e.AddPanel_Check('|A:UI-HUD-MicroMenu-Collections-Mouseover:0:0|a'..(e.onlyChinese and '收藏' or addName), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)]]
 
             if Save.disabled then

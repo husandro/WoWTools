@@ -818,9 +818,9 @@ local function set_Option()
         self2.Text:SetText(value)
         Save.scale= value
         if value==1 then
-            print(id,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '禁用' or DISABLE)
+            print(id,e.cn(addName),'|cnRED_FONT_COLOR:', e.onlyChinese and '禁用' or DISABLE)
         else
-            print(id,addName, '|cnGREEN_FONT_COLOR:', value)
+            print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:', value)
         end
         set_Scale_Frame()--缩放
     end})
@@ -1058,7 +1058,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         set_Option()
                         Init()
                     end
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), Save.disabled and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), Save.disabled and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
                 end,
                 clearfunc= function() Save=nil e.Reload() end}
             )

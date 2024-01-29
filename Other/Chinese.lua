@@ -6403,7 +6403,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     value= not Save.disabled,
                     func= function()
                         Save.disabled = not Save.disabled and true or nil
-                        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                     end
                 })
 

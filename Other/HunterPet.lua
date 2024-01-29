@@ -563,7 +563,7 @@ do
 end
         PetStable_Update= func
         self.num= self.num and self.num+1 or 1
-        print(id, addName, e.onlyChinese and '完成' or DONE, '|cnGREEN_FONT_COLOR:'..self.num)
+        print(id, e.cn(addName), e.onlyChinese and '完成' or DONE, '|cnGREEN_FONT_COLOR:'..self.num)
         IsInSearch=nil
         e.call('PetStable_Update')
         self:SetEnabled(true)
@@ -657,7 +657,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     value= not Save.disabled,
                     func= function()
                         Save.disabled = not Save.disabled and true or nil
-                        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                     end
                 })
 
@@ -665,7 +665,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     panel:UnregisterAllEvents()
                 else
                     if C_AddOns.IsAddOnLoaded("ImprovedStableFrame") then
-                        print(id, addName,
+                        print(id, e.cn(addName),
                             e.GetEnabeleDisable(false), 'Improved Stable Frame',
                             e.onlyChinese and '插件' or ADDONS
                         )

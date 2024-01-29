@@ -417,7 +417,6 @@ local function Init()
 	Frame.rgb2:SetScript('OnTextChanged', function(self, userInput)
 		if userInput then
 			local r, g, b, a= self:get_RGB()
-			print(r,g,b,a)
 			if r and g and b then
 				self.lable:SetFormattedText('r%.2f g%.2f b%.2f a%.2f', r,g,b,a)
 				self.lable:SetTextColor(r,g,b)
@@ -658,13 +657,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				checkValue= not Save.disabled,
 				checkFunc= function()
 					Save.disabled= not Save.disabled and true or nil
-                	print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                	print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 				end,
 				buttonText='|A:QuestArtifact:0:0|a'..(e.onlyChinese and '测试' or 'Test'),
 				buttonFunc= function()
 					e.ShowColorPicker(e.Player.r, e.Player.g, e.Player.b, 1, function()end)
                 end,
-				tooltip= addName,
+				tooltip= e.cn(addName),
 				layout= nil,
 				category= nil,
 			})
@@ -683,7 +682,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 					end
 					if Frame then
 						Frame:SetShown(not Save.hide)
-						print(id, addName, e.GetShowHide(not Save.hide))
+						print(id, e.cn(addName), e.GetShowHide(not Save.hide))
 					end
 				end)
 				check2:SetScript('OnEnter', function()
@@ -700,7 +699,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				check2.type2:SetChecked(Save.colorType)
 				check2.type2:SetScript('OnMouseDown', function()
 					Save.colorType= not Save.colorType and true or nil
-					print(id, addName, e.GetEnabeleDisable(Save.colorType), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+					print(id, e.cn(addName), e.GetEnabeleDisable(Save.colorType), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
 				end)
 				check2.type2:SetScript('OnEnter', function()
 					e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT");

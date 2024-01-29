@@ -48,7 +48,7 @@ local function Init()
         elseif d=='RightButton' and IsControlKeyDown() then--还原
             Save.Point=nil
             self:set_Point()
-            print(id ,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(id , e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
     button:SetScript("OnMouseUp", function() ResetCursor() end)
@@ -67,7 +67,7 @@ local function Init()
         sacle= sacle<0.4 and 0.4 or sacle
         self:SetScale(sacle)
         Save.scale=sacle
-        print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..sacle)
+        print(id, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..sacle)
     end)
     button:SetScript("OnLeave",function(self)
         ResetCursor()
@@ -115,7 +115,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 checkFunc= function()
                     Save.disabled= not Save.disabled and true or nil
                     button.disabled= Save.disabled
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
@@ -123,7 +123,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     if button and button.set_Point then
                         button:set_Point()
                     end
-                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
                 tooltip= addName,
                 layout= nil,
@@ -131,11 +131,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
             local initializer= e.AddPanel_Check({
                 name= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\greet:0|tEmoji',
-                tooltip= addName..', Emoji',
+                tooltip= e.cn(addName)..', Emoji',
                 value= Save.emoji,
                 func= function()
                     Save.emoji= not Save.emoji and true or nil
-                    print(id, addName, 'Emoji', e.GetEnabeleDisable(Save.emoji), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, e.cn(addName), 'Emoji', e.GetEnabeleDisable(Save.emoji), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)

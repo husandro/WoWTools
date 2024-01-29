@@ -116,7 +116,7 @@ local function Init()
         end
     end
     if not petGUID then--没找到时, 退出
-        print(id, addName, e.onlyChinese and '没发现宠物, 黛西' or SPELL_FAILED_ERROR)
+        print(id, e.cn(addName), e.onlyChinese and '没发现宠物, 黛西' or SPELL_FAILED_ERROR)
         panel:UnregisterAllEvents()
         return
     end

@@ -96,15 +96,15 @@ local function setAutoRepairAll()
             RepairAllItems(true);
             RepairSave.guild=RepairSave.guild+Co
             RepairSave.num=RepairSave.num+1
-            print(id, addName, GUILDCONTROL_OPTION15_TOOLTIP, GetCoinTextureString(Co))
+            print(id, e.cn(addName), GUILDCONTROL_OPTION15_TOOLTIP, GetCoinTextureString(Co))
         else
             if GetMoney()>=Co then
                 RepairAllItems();
                 RepairSave.player=RepairSave.player+Co
                 RepairSave.num=RepairSave.num+1
-                print(id, addName, '|cnGREEN_FONT_COLOR:'..REPAIR_COST..'|r', GetCoinTextureString(Co));
+                print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..REPAIR_COST..'|r', GetCoinTextureString(Co));
             else
-                print(id, addName, '|cnRED_FONT_COLOR:'..FAILED..'|r', REPAIR_COST, GetCoinTextureString(Co));
+                print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..FAILED..'|r', REPAIR_COST, GetCoinTextureString(Co));
             end
         end
     end
@@ -152,7 +152,7 @@ local function bossLoot(itemID, itemLink)--BOSS掉落
     then
         bossSave[itemLink]=true
         if not Save.notSellBoss then
-            print(addName, '|cnGREEN_FONT_COLOR:'.. (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB) , itemLink)
+            print(e.cn(addName), '|cnGREEN_FONT_COLOR:'.. (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB) , itemLink)
         end
     end
 end
@@ -284,7 +284,7 @@ local function setSellItems()
     end
     if num > 0 then
         print(
-            id, addName,
+            id, e.cn(addName),
             (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)..' |cnGREEN_FONT_COLOR:'..gruop..'|r'..(e.onlyChinese and '组' or AUCTION_PRICE_PER_STACK),
             '|cnGREEN_FONT_COLOR:'..num..'|r'..(e.onlyChinese and '件' or AUCTION_HOUSE_QUANTITY_LABEL),
             GetCoinTextureString(preceTotale)
@@ -378,7 +378,7 @@ local function set_Buy_Items()--购买物品
     end
     C_Timer.After(1.5, function()
         for itemLink2, num2 in pairs(Tab) do
-            print(addName, e.onlyChinese and '正在购买' or TUTORIAL_TITLE20, '|cnGREEN_FONT_COLOR:'..num2..'|r', itemLink2)
+            print(e.cn(addName), e.onlyChinese and '正在购买' or TUTORIAL_TITLE20, '|cnGREEN_FONT_COLOR:'..num2..'|r', itemLink2)
         end
     end)
 end
@@ -436,7 +436,7 @@ local function set_BuyBack_Items()
     end
     C_Timer.After(0.3, function()
         for itemLink, _ in pairs(tab) do
-            print(id, addName, BUYBACK, itemLink)
+            print(id, e.cn(addName), BUYBACK, itemLink)
         end
     end)
 end
@@ -583,7 +583,7 @@ local function Init_Frame_Plus()
         return
 
     elseif C_AddOns.IsAddOnLoaded("CompactVendor") then
-        print(id, addName, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '框体宽度' or COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH, 'x2'),
+        print(id, e.cn(addName), format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '框体宽度' or COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH, 'x2'),
             e.GetEnabeleDisable(false), 'CompactVendor',
             e.onlyChinese and '插件' or ADDONS
         )
@@ -789,7 +789,7 @@ local function Init_Menu(_, level, type)
                 info.checked=boolean
                 info.func=function()
                     Save.Sell[itemID]=nil
-                    print(id, addName, '|cnGREEN_FONT_COLOR:'..REMOVE..'|r'..AUCTION_HOUSE_SELL_TAB, itemLink)
+                    print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..REMOVE..'|r'..AUCTION_HOUSE_SELL_TAB, itemLink)
                 end
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
             end
@@ -905,7 +905,7 @@ local function Init_Menu(_, level, type)
             Save.notSellJunk= not Save.notSellJunk and true or nil
         end,
         tooltipOnButton=true,
-        tooltipTitle=id..' '.. addName,
+        tooltipTitle=id..' '.. e.cn(addName),
         tooltipText=format(e.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY, '|cff606060'..(e.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC)..'|r'),
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
@@ -1118,12 +1118,12 @@ local function Init_Button(frame)
         if infoType=='item' and itemID then
             if Save.Sell[itemID] then
                 Save.Sell[itemID]=nil
-                print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB, itemLink)
+                print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB, itemLink)
             else
                 Save.Sell[itemID]=true
                 Save.noSell[itemID]=nil
                 buySave[itemID]=nil
-                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB), itemLink )
+                print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB), itemLink )
                 C_Timer.After(0.2, function()
                     if MerchantFrame and MerchantFrame:IsShown() then --and MerchantFrame.selectedTab == 1 then
                         setSellItems()
@@ -1206,11 +1206,11 @@ local function Init_Button(frame)
         if (infoType=='item' or infoType=='merchant') and itemID then
             if Save.noSell[itemID] then
                 Save.noSell[itemID]=nil
-                print(id, addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '移除' or REMOVE, e.onlyChinese and '回购' or BUYBACK, itemLink)
+                print(id, e.cn(addName),'|cnRED_FONT_COLOR:', e.onlyChinese and '移除' or REMOVE, e.onlyChinese and '回购' or BUYBACK, itemLink)
             else
                 Save.noSell[itemID]=true
                 Save.Sell[itemID]=nil
-                print(id,addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '添加' or ADD, e.onlyChinese and '回购' or BUYBACK, itemLink )
+                print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:', e.onlyChinese and '添加' or ADD, e.onlyChinese and '回购' or BUYBACK, itemLink )
                 C_Timer.After(0.2, function()
                     if MerchantFrame and MerchantFrame:IsShown() then --and MerchantFrame.selectedTab == 1 then
                         set_BuyBack_Items()--购回物品
@@ -1466,7 +1466,7 @@ local function Init()
             if not UnitAffectingCombat('player') then
                 C_CVar.SetCVar("autoLootDefault", not C_CVar.GetCVarBool("autoLootDefault") and '1' or '0')
                 local value= C_CVar.GetCVarBool("autoLootDefault")
-                print(id, addName, not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(value))
+                print(id, e.cn(addName), not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(value))
                 if value and not IsModifierKeyDown() then
                     for i = GetNumLootItems(), 1, -1 do
                         LootSlot(i);
@@ -1558,7 +1558,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 
@@ -1623,7 +1623,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
         if arg1 then
             if IsShiftKeyDown() and Save.altDisabledAutoLoot and not UnitAffectingCombat('player') then
                 C_CVar.SetCVar("autoLootDefault", '0')
-                print(id, addName,'|cnGREEN_FONT_COLOR:Shift|r', e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+                print(id, e.cn(addName),'|cnGREEN_FONT_COLOR:Shift|r', e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
             else
                 for i = GetNumLootItems(), 1, -1 do
                     LootSlot(i);

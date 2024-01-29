@@ -76,7 +76,7 @@ local function set_Button_Init(self)
             if d=='RightButton' and IsShiftKeyDown() then
                 Save.noUseItems[self2.itemID]=true
                 local link= select(2, GetItemInfo(self2.itemID))
-                print(id, addName, e.onlyChinese and '禁用' or DISABLE, link or self2.itemID, '|cnRED_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, e.cn(addName), e.onlyChinese and '禁用' or DISABLE, link or self2.itemID, '|cnRED_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end)
     end
@@ -265,7 +265,7 @@ local function InitMenu(self, level, type)--主菜单
             func= function()
                 Save.noUseItems={}
                 set_Item_Button()
-                print(id, addName, CLEAR_ALL, DISABLE, ITEMS, DONE)
+                print(id, e.cn(addName), CLEAR_ALL, DISABLE, ITEMS, DONE)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -377,7 +377,7 @@ local function InitMenu(self, level, type)--主菜单
         func= function()
             Save.itemClass={}
             set_Item_Button()
-            print(id, addName, CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL), DONE)
+            print(id, e.cn(addName), CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL), DONE)
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)

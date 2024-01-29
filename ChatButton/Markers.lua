@@ -384,7 +384,7 @@ local function Init_Ready_Tips_Button()
             end
             Save.tipsTextSacle=sacle
             self:set_Scale()
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..sacle)
+            print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..sacle)
         end
     end)
 
@@ -399,7 +399,7 @@ local function Init_Ready_Tips_Button()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE,'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.tipsTextSacle or 1), 'Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(addName, e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)))
+        e.tips:AddDoubleLine(e.cn(addName), e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)))
         e.tips:Show()
         button:SetButtonState('PUSHED')
     end)
@@ -561,7 +561,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
         elseif d=='RightButton' and IsControlKeyDown() then
             Save.H = not Save.H and true or nil
-            print(id,addName,
+            print(id,e.cn(addName),
                 e.onlyChinese and '图标方向' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION..(Save.H and e.Icon.up2 or e.Icon.toLeft2),
                 e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
             )
@@ -585,7 +585,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     end)
     btn:SetScript('OnMouseWheel', function(_, d)--缩放
         if UnitAffectingCombat('player') then
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
         if IsAltKeyDown() then
@@ -600,7 +600,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             elseif sacle<0.6 then
                 sacle=0.6
             end
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..sacle)
+            print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..sacle)
             Frame:SetScale(sacle)
             Save.markersScale=sacle
         end
@@ -1188,7 +1188,7 @@ local function InitMenu(_, level, type)--主菜单
                 ReadyTipsButton:ClearAllPoints()
                 Save.groupReadyTipsPoint=nil
                 ReadyTipsButton:set_Point()--位置
-                print(id,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(id,e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1242,7 +1242,7 @@ local function InitMenu(_, level, type)--主菜单
             keepShownOnClick=true,
             func= function()
                 Save.pingTime= not Save.pingTime and true or nil
-                print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1272,7 +1272,7 @@ local function InitMenu(_, level, type)--主菜单
                     if Frame then
                         Frame:SetFrameStrata(arg1)
                     end
-                    print(id, addName, 'SetFrameStrata|cnGREEN_FONT_COLOR:', Save.FrameStrata)
+                    print(id, e.cn(addName), 'SetFrameStrata|cnGREEN_FONT_COLOR:', Save.FrameStrata)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1299,7 +1299,7 @@ local function InitMenu(_, level, type)--主菜单
                 Frame:ClearAllPoints()
                 Save.markersFramePoint=nil
                 Frame:Init_Set_Frame()--位置
-                print(id,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(id,e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1453,9 +1453,9 @@ local function Init()
     button:SetScript("OnClick", function(self, d)
         if d=='LeftButton' then
             if SetTankHealerFrame:set_TankHealer(true) then--设置队伍标记
-                print(id, addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER)
+                print(id, e.cn(addName), e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER)
             else
-                print(id, addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
+                print(id, e.cn(addName), e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
             end
         else
             if not self.Menu then

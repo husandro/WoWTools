@@ -1609,7 +1609,7 @@ local function Init_WeeklyRewardsFrame()
             else
                 text= self.Description:GetText()
             end
-            print(id, addName, '|n|cffff00ff', text or (e.onlyChinese and '关闭' or CLOSE))
+            print(id, e.cn(addName), '|n|cffff00ff', text or (e.onlyChinese and '关闭' or CLOSE))
             self:Hide()
         end)
     end
@@ -1642,7 +1642,7 @@ local function set_Week_Reward_Look_Specialization()
     if not C_WeeklyRewards.HasAvailableRewards() or WeekRewardLookFrame then
         return
     else
-        print(id, addName,'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
+        print(id, e.cn(addName),'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
     end
 
     WeekRewardLookFrame= CreateFrame("Frame")
@@ -1677,7 +1677,7 @@ local function set_Week_Reward_Look_Specialization()
             self.texture:SetAllPoints(self)
             self:SetScript('OnEnter', function(self2)
                 self2:set_Show(false)
-                print(id, addName, '|cffff00ff', e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
+                print(id, e.cn(addName), '|cffff00ff', e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
             end)
             local texture= self:CreateTexture(nil,'BORDER')
             texture:SetSize(60,60)
@@ -1780,7 +1780,7 @@ local function Init()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(id, addName, e.onlyChinese and '副本' or INSTANCE, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(id, e.cn(addName), e.onlyChinese and '副本' or INSTANCE, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         Save.insScale= scale==1 and nil or scale
         set_Update()
         self:set_Tooltips()
@@ -1825,7 +1825,7 @@ local function Init()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(id, addName, e.onlyChinese and '信息' or INFO,  e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(id, e.cn(addName), e.onlyChinese and '信息' or INFO,  e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         Save.tipsScale= scale==1 and nil or scale
         TipsFrame:SetScale(scale)
         self:set_Tooltips()
@@ -1867,7 +1867,7 @@ local function Init()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(id, addName, format(e.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
+        print(id, e.cn(addName), format(e.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
         Save.portScale= scale==1 and nil or scale
         set_Update()
         self:set_Tooltips()
@@ -2038,7 +2038,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

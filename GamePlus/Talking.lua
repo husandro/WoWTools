@@ -32,7 +32,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
                     setRegister()--设置事件
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled))
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled))
                 end
             })
 
@@ -95,7 +95,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
         if not Save.notPrint and (text or self.voHandle) then
-            print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r',id, addName, 'soundKitID', vo)
+            print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r',id, e.cn(addName), 'soundKitID', vo)
         end
     end
 end)

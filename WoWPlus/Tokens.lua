@@ -497,7 +497,7 @@ local function MenuList_Item(level)
 			func= function(_, arg1)
 				Save.item[arg1]= nil
 				Set_TrackButton_Text()
-				print(id, addName, e.onlyChinese and '移除' or REMOVE, select(2, GetItemInfo(itemID)) or ('itemID '..itemID))
+				print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, select(2, GetItemInfo(itemID)) or ('itemID '..itemID))
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -513,7 +513,7 @@ local function MenuList_Item(level)
 			if IsShiftKeyDown() then
 				Save.item= {}
 				Set_TrackButton_Text()
-				print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+				print(id, e.cn(addName), e.onlyChinese and '全部清除' or CLEAR_ALL)
 			end
 		end
 	}
@@ -672,7 +672,7 @@ local function Init_TrackButton()
 			Save.scaleTrackButton=n
 			self:set_Scale()
 			self:set_Tooltips()
-			print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
+			print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, n)
 		end
 	end)
 
@@ -680,7 +680,7 @@ local function Init_TrackButton()
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save.item[itemID]= not Save.item[itemID] and true or nil
-			print(id, addName, e.onlyChinese and '追踪' or TRACKING,
+			print(id, e.cn(addName), e.onlyChinese and '追踪' or TRACKING,
 					Save.item[itemID] and
 					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2)
 					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2),
@@ -709,7 +709,7 @@ local function Init_TrackButton()
 							Save.str= not Save.str and true or nil
 							TrackButton:set_Texture()
 							TrackButton.Frame:set_shown()
-							print(id, addName, e.GetShowHide(Save.str))
+							print(id, e.cn(addName), e.GetShowHide(Save.str))
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1065,7 +1065,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				func= function(_, arg1)
 					Save.tokens[arg1]=nil
 					e.call('TokenFrame_Update')
-					print(id, addName, e.onlyChinese and '移除' or REMOVE, C_CurrencyInfo.GetCurrencyLink(arg1) or arg1)
+					print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, C_CurrencyInfo.GetCurrencyLink(arg1) or arg1)
 				end
 			}
 			e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1081,7 +1081,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				if IsShiftKeyDown() then
 					Save.tokens= {}
 					e.call('TokenFrame_Update')
-					print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+					print(id, e.cn(addName), e.onlyChinese and '全部清除' or CLEAR_ALL)
 				end
 			end
 		}
@@ -1116,7 +1116,7 @@ local function InitMenu(_, level, menuList)--主菜单
 					TrackButton:ClearAllPoints()
 					TrackButton:set_Point()
 				end
-				print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+				print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1135,7 +1135,7 @@ local function InitMenu(_, level, menuList)--主菜单
 		func= function()
 			Save.Hide= not Save.Hide and true or nil
 			Init_TrackButton()
-			print(id, addName, e.onlyChinese and '追踪' or TRACKING, e.GetEnabeleDisable(not Save.Hide))
+			print(id, e.cn(addName), e.onlyChinese and '追踪' or TRACKING, e.GetEnabeleDisable(not Save.Hide))
 		end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1182,7 +1182,7 @@ local function InitMenu(_, level, menuList)--主菜单
 			Button:set_Event()--已达到资源上限
 			if not Save.hideCurrencyMax then
 				Button:currency_Max(true)--已达到资源上限
-				print(id, addName, 'Test', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
+				print(id, e.cn(addName), 'Test', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
 			end
 		end
     }
@@ -1253,7 +1253,7 @@ local function Init()
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save.item[itemID]= not Save.item[itemID] and true or nil
-			print(id, addName, e.onlyChinese and '追踪' or TRACKING,
+			print(id, e.cn(addName), e.onlyChinese and '追踪' or TRACKING,
 					Save.item[itemID] and
 					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2)
 					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2),
@@ -1434,7 +1434,7 @@ local function Init()
 			end
 		end
 		if text then
-			print(id, addName, text, '|r|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
+			print(id, e.cn(addName), text, '|r|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
 		end
 	end
 
@@ -1505,7 +1505,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 			--添加控制面板
 			e.AddPanel_Check({
 				name= '|A:bags-junkcoin:0:0|a'..(e.onlyChinese and '货币' or addName),
-				tooltip= addName,
+				tooltip= e.cn(addName),
 				value= not Save.disabled,
 				func= function()
 					Save.disabled= not Save.disabled and true or nil

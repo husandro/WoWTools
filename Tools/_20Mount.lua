@@ -408,17 +408,17 @@ local specialEffects
 local function setMountShow()--坐骑展示
     if UnitAffectingCombat('player') then
         specialEffects=nil
-        print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT)..'|r')
+        print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT)..'|r')
         return
     elseif specialEffects and not IsMounted() then
-        print(id, addName, e.onlyChinese and '/坐骑特效' or EMOTE171_CMD2,
+        print(id, e.cn(addName), e.onlyChinese and '/坐骑特效' or EMOTE171_CMD2,
         '|cnRED_FONT_COLOR:'..(e.onlyChinese and '需要要坐骑' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, MOUNT)))
         specialEffects=nil
         return
     end
 
 
-    print(id, addName, specialEffects and (e.onlyChinese and '/坐骑特效' or EMOTE171_CMD2) or (e.onlyChinese and '坐骑' or MOUNT), '3 '..(e.onlyChinese and '秒' or SECONDS))
+    print(id, e.cn(addName), specialEffects and (e.onlyChinese and '/坐骑特效' or EMOTE171_CMD2) or (e.onlyChinese and '坐骑' or MOUNT), '3 '..(e.onlyChinese and '秒' or SECONDS))
     if not button.showFrame then
         button.showFrame=CreateFrame('Frame')
         button.showFrame:HookScript('OnUpdate',function(self, elapsed)
@@ -599,7 +599,7 @@ local function Init_Dialogs()
         end,
         OnAccept = function(self4, data)
             local tab, text= get_UIMapIDs(self4.editBox:GetText())
-            print('|cnGREEN_FONT_COLOR:', data.name, data.spellID, data.mountID, ':|r|n|cffff00ff', text, '|n|r'..id, addName, 'Tools','...')
+            print('|cnGREEN_FONT_COLOR:', data.name, data.spellID, data.mountID, ':|r|n|cffff00ff', text, '|n|r'..id, e.cn(addName), 'Tools','...')
 
             Save.Mounts[FLOOR][data.spellID]= tab
             checkMount()--检测坐骑
@@ -785,7 +785,7 @@ local function InitMenu(_, level, type)--主菜单
             func=function()
                 Save.Point=nil
                 set_Button_Postion()--设置按钮位置
-                print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                 e.LibDD:CloseDropDownMenus()
             end,
             tooltipOnButton=true,
@@ -1149,7 +1149,7 @@ local function Init_Menu_Set_UI(self, level, menuList)--坐骑界面, 菜单
     e.LibDD:UIDropDownMenu_AddButton(info, level);
 
     info={
-        text=id..' '..addName,
+        text=id..' '..e.cn(addName),
         isTitle=true,
         notCheckable=true,
     }
@@ -1359,7 +1359,7 @@ local function Init()
             n= n>3 and 3 or n
             n= n<0.5 and 0.5 or n
             self:SetScale(n)
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
+            print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, n)
             Save.scale= n
         else
             if d==1 then--坐骑展示
@@ -1469,7 +1469,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
                 buttonFunc= function()
                     Save.Point=nil
                     set_Button_Postion()--设置按钮位置
-                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
                 tooltip= addName,
                 layout= nil,

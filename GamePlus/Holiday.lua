@@ -671,7 +671,7 @@ local function Init_TrackButton()
             elseif sacle<0.4 then
                 sacle=0.4
             end
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, sacle)
+            print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, sacle)
             Save.scale=sacle
             self:set_Scale()
             self:set_Tooltips()
@@ -998,7 +998,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 checkValue= not Save.disabled,
                 checkFunc= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end,
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
@@ -1007,7 +1007,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         TrackButton:ClearAllPoints()
                         TrackButton:set_Point()
                     end
-                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
                 tooltip= addName,
                 layout= nil,

@@ -159,7 +159,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
         LastText= e.Icon.clock2..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or AFK)..text..'|r'
         Save.afk.num= Save.afk.num + 1
         Save.afk.time= Save.afk.time + sec
-        print(id, addName, LastText)
+        print(id, e.cn(addName), LastText)
         OnAFKTime=nil
     end
 
@@ -172,7 +172,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
         if sec>10 then
             Save.bat.num= Save.bat.num + 1
             Save.bat.time= Save.bat.time + sec
-            --print(id, addName, LastText)
+            --print(id, e.cn( addName), LastText)
         end
         OnCombatTime=nil
         chatStarTime=nil
@@ -199,7 +199,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
         else
             LastText='|cnRED_FONT_COLOR:'..LastText..'|r'
         end
-        print(id, addName, e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE, LastText, Save.pet.win..'/'..Save.pet.num, (Save.pet.capture>0 and Save.pet.capture..' |T646379:0|t' or ''));
+        print(id, e.cn( addName), e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE, LastText, Save.pet.win..'/'..Save.pet.num, (Save.pet.capture>0 and Save.pet.capture..' |T646379:0|t' or ''));
 
         PetRound={}
         OnPetTime=nil
@@ -355,7 +355,7 @@ local function Init_TrackButton()--设置显示内容, 父框架TrackButton, 内
             sacle=sacle<0.4 and 0.4 or sacle
             Save.textScale=sacle
             self:set_text_scale()
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
+            print(id, e.cn( addName), e.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
         end
     end)
 
@@ -598,7 +598,7 @@ local function Init()
                                         num= s.editBox:GetText() or ''
                                         num= tonumber(num)
                                         Save.inCombatScale= num
-                                        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:', num)
+                                        print(id, e.cn( addName), e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:', num)
                                         button:set_Sacle_InCombat(true)
                                         C_Timer.After(3, function()
                                             button:set_Sacle_InCombat(UnitAffectingCombat('player'))
@@ -679,7 +679,7 @@ local function Init()
                                     if num>0 then
                                         e.Chat(e.SecondsToClock(num), nil, nil)
                                     else
-                                        print(id, addName, e.GetEnabeleDisable(false))
+                                        print(id, e.cn( addName), e.GetEnabeleDisable(false))
                                     end
                                     Save.SayTime= num
                                 end,

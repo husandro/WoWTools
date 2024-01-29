@@ -433,11 +433,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             e.AddPanel_Check({
                 name= '|A:Garr_Building-AddFollowerPlus:0:0|a'..(e.onlyChinese and '插件管理' or addName),
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 

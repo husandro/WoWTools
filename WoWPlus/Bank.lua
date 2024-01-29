@@ -77,7 +77,7 @@ local function Init_Bank_Plus()--增强，原生
             Save.pointReagentBank= nil
             self:show_hide()
             self:set_tooltips()
-            print(id, addName, e.onlyChinese and '还原位置' or RESET_POSITION)
+            print(id, e.cn(addName), e.onlyChinese and '还原位置' or RESET_POSITION)
         else
             Save.hideReagentBankFrame= not Save.hideReagentBankFrame and true or nil
             self:show_hide(Save.hideReagentBankFrame)
@@ -659,7 +659,7 @@ local function Init_Menu(_, level)
         func= function()
             Save.allBank= not Save.allBank and true or nil
             BankFrame.optionButton:set_atlas()
-            print(id, addName,'|cnGREEN_FONT_COLOR:', e.GetEnabeleDisable(Save.allBank),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, e.cn(addName),'|cnGREEN_FONT_COLOR:', e.GetEnabeleDisable(Save.allBank),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -671,7 +671,7 @@ local function Init_Menu(_, level)
         keepShownOnClick=true,
         func= function()
             Save.notSearchItem= not Save.notSearchItem and true or nil
-            print(id, addName,'|cnGREEN_FONT_COLOR:', e.GetEnabeleDisable(not Save.notSearchItem),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, e.cn(addName),'|cnGREEN_FONT_COLOR:', e.GetEnabeleDisable(not Save.notSearchItem),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)]]
@@ -794,7 +794,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
             --[[local initializer= e.AddPanel_Check({
@@ -802,7 +802,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 value= Save.allBank,
                 func= function()
                     Save.allBank = not Save.allBank and true or nil
-                    print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)]]

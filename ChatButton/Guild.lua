@@ -93,7 +93,7 @@ local function set_RequestToJoinFrame(self)
         and not IsModifierKeyDown()
         and not Save.notAutoRequestToJoinClub
     then
-        print(id, addName, '|cnGREEN_FONT_COLOR:'..self.Apply:GetText()..'|r', text2, '|cffff00ff'..(text or ''))
+        print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..self.Apply:GetText()..'|r', text2, '|cffff00ff'..(text or ''))
         self.Apply:Click()
     end
 end

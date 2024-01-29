@@ -78,7 +78,7 @@ function e.ReloadPanel(tab)
             StaticPopupDialogs[id..'restAllSetup'].OnAlt= function()
                 e.WoWDate=nil
                 e.Reload()
-                print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                print(id, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
             end
         end
         StaticPopup_Show(id..'restAllSetup')
@@ -739,7 +739,7 @@ local function Init()
                     local hex=e.RGB_to_HEX(setR, setG, setB, setA)--RGB转HEX
                     Save.useCustomColorTab={r=setR, g=setG, b=setB, a=setA, hex= '|c'..hex }
                     Set_Color()--自定义，颜色
-                    print(e.Player.useColor and e.Player.useColor.hex or '', id, addName,   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.Player.useColor and e.Player.useColor.hex or '', id, e.cn(addName),   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
                 e.ShowColorPicker(valueR, valueG, valueB, valueA, function()
                         setR, setG, setB, setA= e.Get_ColorFrame_RGBA()

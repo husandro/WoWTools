@@ -120,7 +120,7 @@ local function InitMenu(_, level, type)
                 keepShownOnClick=true,
                 func=function()
                     Save.Channels[channel]= not Save.Channels[channel] and true or nil
-                    print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, e.cn(addName), e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -132,7 +132,7 @@ local function InitMenu(_, level, type)
             keepShownOnClick=true,
             func=function()
                 Save.Channels={}
-                print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, e.cn(addName), e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -145,7 +145,7 @@ local function InitMenu(_, level, type)
                 for _, channel in pairs(Channels) do
                     Save.Channels[channel]=true
                 end
-                print(id, addName, e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, e.cn(addName), e.onlyChinese and '聊天频道' or CHAT_CHANNELS,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -284,7 +284,7 @@ local function Init()
         Save.Point={self:GetPoint(1)}
         Save.Point[2]=nil
         self:Raise()
-        print(id, addName, RESET_POSITION, 'Alt+'..e.Icon.right)
+        print(id, e.cn(addName), RESET_POSITION, 'Alt+'..e.Icon.right)
     end)
     button.btn:SetScript('OnMouseDown',function(self, d)
         local key=IsModifierKeyDown()
@@ -295,7 +295,7 @@ local function Init()
         elseif d=='RightButton' and not key then--移动光标
             SetCursor('UI_MOVE_CURSOR')
         elseif d=='LeftButton' then--提示信息
-            print(id, addName, NPE_MOVE..e.Icon.right)
+            print(id, e.cn(addName), NPE_MOVE..e.Icon.right)
         end
     end)
     button.btn:SetScript("OnMouseUp", function(_, d)
@@ -359,7 +359,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             sel:SetChecked(not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)]]
                 if WoWToolsChatButtonFrame.disabled or not WoWToolsChatButtonFrame.ShowEmojiButton then--禁用Chat Button
                     File=nil

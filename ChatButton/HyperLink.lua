@@ -568,7 +568,7 @@ local function setUseDisabled()
 end
 local function setFunc()--使用，禁用
     Save.disabed= not Save.disabed and true or nil
-    print(id, addName, e.GetEnabeleDisable(not Save.disabed))
+    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabed))
     setUseDisabled()
 end
 
@@ -580,7 +580,7 @@ end
 --###########
 --local Category, Layout
 local function Init_Panel()
-    --Category, Layout= e.AddPanel_Sub_Category({name= addName, frame= panel})
+    --Category, Layout= e.AddPanel_Sub_Category({name= e.cn(addName), frame= panel})
     e.AddPanel_Sub_Category({name=e.onlyChinese and '超链接图标' or addName, frame=panel})
 
     local Cedit= function(self)
@@ -630,7 +630,7 @@ local function Init_Panel()
                 end
             end)
         end
-        print(id, addName, e.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, e.cn(addName), e.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     local str2=e.Cstr(panel)--频道名称替换
@@ -667,7 +667,7 @@ local function Init_Panel()
                 end
             end)
         end
-        print(id, addName, e.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r',  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, e.cn(addName), e.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r',  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 end
 
@@ -765,7 +765,7 @@ local function set_Talking()
                     self.voHandle = voHandle;
                 end
                 if not Save.disabledTalkingPringText and text then
-                    print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r',id, addName, 'soundKitID', vo)
+                    print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r',id, e.cn(addName), 'soundKitID', vo)
                 end
             end
         end)
@@ -798,20 +798,20 @@ local function set_START_TIMER_Event()--事件, 声音
         panel:RegisterEvent('STOP_TIMER_OF_TYPE')
         if not C_CVar.GetCVarBool('Sound_EnableAllSound') then
             C_CVar.SetCVar('Sound_EnableAllSound', '1')
-            print(id, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableAllSound|r', e.onlyChinese and '开启声效' or ENABLE_SOUND)
+            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:CVar Sound_EnableAllSound|r', e.onlyChinese and '开启声效' or ENABLE_SOUND)
         end
         if C_CVar.GetCVar('Sound_MasterVolume')=='0' then
             C_CVar.SetCVar('Sound_MasterVolume', '1.0')
-            print(id, addName, '|cnGREEN_FONT_COLOR:CVar Sound_MasterVolume|r', e.onlyChinese and '主音量' or MASTER_VOLUME, '1')
+            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:CVar Sound_MasterVolume|r', e.onlyChinese and '主音量' or MASTER_VOLUME, '1')
         end
 
         if C_CVar.GetCVar('Sound_DialogVolume')=='0' then
             C_CVar.SetCVar('Sound_DialogVolume', '1.0')
-            print(id, addName, '|cnGREEN_FONT_COLOR:CVar Sound_DialogVolume|r',e.onlyChinese and '对话' or DIALOG_VOLUME, '1')
+            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:CVar Sound_DialogVolume|r',e.onlyChinese and '对话' or DIALOG_VOLUME, '1')
         end
         if not C_CVar.GetCVarBool('Sound_EnableDialog') then
             C_CVar.SetCVar('Sound_EnableDialog', '1')
-            print(id, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableDialog|r', e.onlyChinese and '启用对话' or ENABLE_DIALOG)
+            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:CVar Sound_EnableDialog|r', e.onlyChinese and '启用对话' or ENABLE_DIALOG)
         end
         if not button.setPlayerSoundTips then
             button.setPlayerSoundTips= button:CreateTexture(nil,'OVERLAY')
@@ -866,7 +866,7 @@ local function InitMenu(_, level, menuList)
                     OnAccept = function(self)
                         local text= self.editBox:GetText()
                         Save.guildWelcomeText= text
-                        print(id,addName, text)
+                        print(id,e.cn(addName), text)
                     end,
                     EditBoxOnTextChanged=function(self)
                         local text= self:GetText() or ''
@@ -1055,7 +1055,7 @@ local function InitMenu(_, level, menuList)
         keepShownOnClick=true,
         func=function()
             C_CVar.SetCVar("textToSpeech", not C_CVar.GetCVarBool('textToSpeech') and '1' or '0' )
-            print(id, addName, e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
+            print(id, e.cn(addName), e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool('textToSpeech')))
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1086,7 +1086,7 @@ local function InitMenu(_, level, menuList)
             end
             set_START_TIMER_Event()--事件, 声音
             set_Talking()--隐藏NPC发言
-            print(id, addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
+            print(id, e.cn(addName), e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1223,7 +1223,7 @@ local function Init()
         if status=="invited" then
             local info= C_LFGList.GetSearchResultInfo(self.resultID)
             if self.AcceptButton and self.AcceptButton:IsEnabled() and info then
-                print(id, addName,
+                print(id, e.cn(addName),
                     info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
                     info.leaderPvpRatingInfo and  info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r' or '',--PVP 分数
                     info.leaderName and (e.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(e.PlayerLink(info.leaderName)..' ') or '',--	%s邀请你加入
@@ -1309,7 +1309,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
             edit:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
                     --s:ClearFocus() s:GetParent():Hide()
-                    print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+                    print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
                 end
             end)
         end

@@ -235,7 +235,7 @@ local function InitMenu(_, level, type)--主菜单
                     OnAccept = function(self)
                         local num= self.editBox:GetNumber()
                         Save.myChatFilterNum= num
-                        print(id, addName, get_myChatFilter_Text())
+                        print(id, e.cn(addName), get_myChatFilter_Text())
                     end,
                     EditBoxOnTextChanged=function(self)
                         local num= self:GetNumber() or 0

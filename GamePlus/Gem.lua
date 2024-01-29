@@ -169,11 +169,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             e.AddPanel_Check({
                 name= '|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or addName),
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
             if Save.disabled then

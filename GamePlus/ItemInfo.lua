@@ -785,7 +785,7 @@ local function Init_Bag()
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
 
                 info={
-                    text= id..' '..addName,
+                    text= id..' '..e.cn(addName),
                     isTitle=true,
                     notCheckable=true,
                 }
@@ -1114,7 +1114,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         Save.disabled=true
                         panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
                     end
-                    print(id, addName, e.GetEnabeleDisable(Save.disabled))
+                    print(id, e.cn(addName), e.GetEnabeleDisable(Save.disabled))
                 end
             })
 

@@ -1699,7 +1699,7 @@ local function set_Panle_Setting()--设置 panel
             self.Text:SetText(value)
             Save.gsubText= value>0 and value or nil
             frame_Init(true)--初始，设置
-            print(id,addName, '|cnGREEN_FONT_COLOR:'..value..'|r', e.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO))
+            print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:'..value..'|r', e.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO))
         end,
         tips=nil
     })
@@ -1951,7 +1951,7 @@ local function Init()
     button:SetScript("OnClick", function(self, d)
         if d=='LeftButton' and not IsModifierKeyDown() then
             frame_Init(true)--初始， 或设置
-            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
+            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
 
         elseif d=='RightButton' and IsShiftKeyDown() then
             self:send_Att_Chat()--发送信息
@@ -1968,7 +1968,7 @@ local function Init()
                         keepShownOnClick=true,
                         func= function()
                             frame_Init(true)--初始， 或设置
-                            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
+                            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2249,7 +2249,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         set_ShowHide_Event()--显示，隐藏，事件
                         set_Panle_Setting()
                     else
-                        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                         frame_Init(true)--初始， 或设置
                     end
                 end,

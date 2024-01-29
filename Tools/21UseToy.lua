@@ -394,7 +394,7 @@ local function InitMenu(_, level, menuList)--主菜单
                         num2= num2+1
                     end
                 end
-                print(id, addName, e.onlyChinese and '未收集' or NOT_COLLECTED, '|cnRED_FONT_COLOR:#'..num2..'|r', e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+                print(id, e.cn(addName), e.onlyChinese and '未收集' or NOT_COLLECTED, '|cnRED_FONT_COLOR:#'..num2..'|r', e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
