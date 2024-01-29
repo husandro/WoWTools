@@ -2282,9 +2282,9 @@ local function set_Cursor_Tips(self)
     e.tips:SetUnit('player')
     e.tips:Show()
 end
+
 local function Init_Panel()
     e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
-
 
     local initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '跟随鼠标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FOLLOW, MOUSE_LABEL),
@@ -2595,6 +2595,177 @@ end
 
 
 
+local function Init_Event(arg1)
+    if arg1=='Blizzard_AchievementUI' then--成就ID
+        hooksecurefunc(AchievementTemplateMixin, 'Init', function(frame)
+            if frame.Shield and frame.id then
+                if not frame.AchievementIDLabel  then
+                    frame.AchievementIDLabel= e.Cstr(frame.Shield)
+                    frame.AchievementIDLabel:SetPoint('TOP', frame.Shield.Icon)
+                    frame.Shield:SetScript('OnEnter', function(self)
+                        local achievementID= self:GetParent().id
+                        if achievementID then
+                            e.tips:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
+                            e.tips:ClearLines()
+                            e.tips:SetAchievementByID(achievementID)
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
+                            e.tips:AddDoubleLine(id, addName)
+                            e.tips:Show()
+                        end
+                        self:SetAlpha(0.5)
+                    end)
+                    frame.Shield:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip_Hide() end)
+                    frame.Shield:SetScript('OnMouseUp', function(self) self:SetAlpha(0.5) end)
+                    frame.Shield:SetScript('OnMouseDown', function(self) self:SetAlpha(0.3) end)
+                    frame.Shield:SetScript('OnClick', function(self)
+                        local achievementID= self:GetParent().id
+                        local achievementLink = achievementID and GetAchievementLink(achievementID)
+                        if achievementLink then
+                            e.Chat(achievementLink)
+                        end
+                    end)
+                    frame.Shield:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+                end
+            end
+            if frame.AchievementIDLabel then
+                local text= frame.id
+                local flags= frame.id and select(9, GetAchievementInfo(frame.id))
+                if flags==0x20000 then
+                    text= e.Icon.net2..'|cff00ccff'..frame.id..'|r'
+                end
+                frame.AchievementIDLabel:SetText(text or '')
+            end
+        end)
+        hooksecurefunc('AchievementFrameComparison_UpdateDataProvider', function()--比较成就, Blizzard_AchievementUI.lua
+            for _, button in pairs(AchievementFrameComparison.AchievementContainer.ScrollBox:GetFrames()) do
+                if not button.OnEnter then
+                    button:SetScript('OnLeave', GameTooltip_Hide)
+                    button:SetScript('OnEnter', function(self3)
+                        if self3.id then
+                            e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
+                            e.tips:ClearLines()
+                            e.tips:SetAchievementByID(self3.id)
+                            e.tips:Show()
+                        end
+                    end)
+                    if button.Player and button.Player.Icon and not button.Player.idText then
+                        button.Player.idText= e.Cstr(button.Player)
+                        button.Player.idText:SetPoint('LEFT', button.Player.Icon, 'RIGHT', 0, 10)
+                    end
+                end
+                if button.Player and button.Player.idText then
+                    local flags= button.id and select(9, GetAchievementInfo(button.id))
+                    if flags==0x20000 then
+                        button.Player.idText:SetText(e.Icon.net2..'|cffff00ff'..button.id..'|r')
+                    else
+                        button.Player.idText:SetText(button.id or '')
+                    end
+                end
+            end
+        end)
+        hooksecurefunc('AchievementFrameComparison_SetUnit', function(unit)--比较成就
+            local text= e.GetPlayerInfo({unit=unit, reName=true, reRealm=true})--玩家信息图标
+            if text~='' then
+                AchievementFrameComparisonHeaderName:SetText(text)
+            end
+        end)
+        if AchievementFrameComparisonHeaderPortrait then
+            AchievementFrameComparisonHeader:EnableMouse(true)
+            AchievementFrameComparisonHeader:HookScript('OnLeave', GameTooltip_Hide)
+            AchievementFrameComparisonHeader:HookScript('OnEnter', function()
+                if AchievementFrameComparisonHeaderPortrait.unit then
+                    e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
+                    e.tips:ClearLines()
+                    e.tips:SetUnit(AchievementFrameComparisonHeaderPortrait.unit)
+                    e.tips:Show()
+                end
+            end)
+        end
+
+    elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
+        hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
+            func.Set_Spell(e.tips, 243819)
+            e.tips:Show()
+        end)
+
+    elseif arg1=='Blizzard_ChallengesUI' then--挑战, AffixID
+        hooksecurefunc(ChallengesKeystoneFrameAffixMixin,'OnEnter',function(self2)--Blizzard_ChallengesUI.lua
+            if self2.affixID then
+                if self2.affixID then
+                    local _, _, filedataid = C_ChallengeMode.GetAffixInfo(self2.affixID)
+                    e.tips:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
+                    e.tips:Show()
+                end
+            end
+        end)
+
+    elseif arg1=='Blizzard_OrderHallUI' then--要塞，技能树
+        hooksecurefunc(GarrisonTalentButtonMixin, 'OnEnter', function(self2)--Blizzard_OrderHallTalents.lua
+            local info=self2.talent--C_Garrison.GetTalentInfo(self.talent.id)
+            if not info or not info.id then
+                return
+            end
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine('talentID '..info.id, info.icon and '|T'..info.icon..':0|t'..info.icon)
+            if info.ability and info.ability.id and info.ability.id>0 then
+                e.tips:AddDoubleLine('ability '..info.ability.id, info.ability.icon and '|T'..info.ability.icon..':0|t'..info.ability.icon)
+            end
+            e.tips:Show()
+        end)
+        hooksecurefunc(GarrisonTalentButtonMixin, 'SetTalent', function(self2)--是否已激活, 和等级
+            local info= self2.talent
+            if not info or not info.id then
+                return
+            end
+
+            if info.researched and not self2.researchedTexture then
+                self2.researchedTexture= self2:CreateTexture(nil, 'OVERLAY')
+                local w,h= self2:GetSize()
+                self2.researchedTexture:SetSize(w/3, h/3)
+                self2.researchedTexture:SetPoint('BOTTOMRIGHT')
+                self2.researchedTexture:SetAtlas(e.Icon.select)
+            end
+            if self2.researchedTexture then
+                self2.researchedTexture:SetShown(info.researched)
+            end
+
+            local rank
+            if info.talentMaxRank and info.talentMaxRank>1 and info.talentRank~= info.talentMaxRank then
+                if not info.rankText then
+                    info.rankText= e.Cstr(self2)
+                    info.rankText:SetPoint('BOTTOMLEFT')
+                end
+                rank= '|cnGREEN_FONT_COLOR:'..(info.talentRank or 0)..'|r/'..info.talentMaxRank
+            end
+            if info.rankText then
+                info.rankText:SetText(rank or '')
+            end
+        end)
+
+    elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
+        hooksecurefunc(FlightMap_FlightPointPinMixin, 'OnMouseEnter', function(self2)
+            local info= self2.taxiNodeData
+            if info then
+                e.tips:AddDoubleLine('nodeID '..(info.nodeID or ''), 'slotIndex '..(info.slotIndex or ''))
+                e.tips:Show()
+            end
+        end)
+
+    elseif arg1=='Blizzard_Professions' then--专业
+        hooksecurefunc(Professions, 'SetupProfessionsCurrencyTooltip', function(currencyInfo)--lizzard_Professions.lua
+            if currencyInfo then
+                local nodeID = ProfessionsFrame.SpecPage:GetDetailedPanelNodeID()
+                local currencyTypesID = Professions.GetCurrencyTypesID(nodeID)
+                if currencyTypesID then
+                    GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                    func.Set_Currency(GameTooltip, currencyTypesID)--货币
+                    GameTooltip:AddDoubleLine('nodeID', '|cffffffff'..nodeID..'|r')
+                end
+            end
+        end)
+    end
+end
 
 
 
@@ -2611,6 +2782,8 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+local eventTab={}
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -2633,11 +2806,13 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             })
 
             if Save.disabled then
-                panel:UnregisterAllEvents()
+                panel:UnregisterEvent('ADDON_LOADED')
 
             else
-                Init_Panel()--设置 panel
                 Init()--初始
+                for _, evt in pairs(eventTab or {}) do
+                    Init_Event(evt)
+                end
                 if e.onlyChinese then
                     raiderioText= 'https://raider.io/cn/characters/%s/%s/%s'
                     if not LOCALE_zhCN then
@@ -2645,177 +2820,17 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     end
                 end
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            eventTab=nil
 
-        elseif arg1=='Blizzard_AchievementUI' then--成就ID
-            hooksecurefunc(AchievementTemplateMixin, 'Init', function(frame)
-                if frame.Shield and frame.id then
-                    if not frame.AchievementIDLabel  then
-                        frame.AchievementIDLabel= e.Cstr(frame.Shield)
-                        frame.AchievementIDLabel:SetPoint('TOP', frame.Shield.Icon)
-                        frame.Shield:SetScript('OnEnter', function(self)
-                            local achievementID= self:GetParent().id
-                            if achievementID then
-                                e.tips:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
-                                e.tips:ClearLines()
-                                e.tips:SetAchievementByID(achievementID)
-                                e.tips:AddLine(' ')
-                                e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
-                                e.tips:AddDoubleLine(id, addName)
-                                e.tips:Show()
-                            end
-                            self:SetAlpha(0.5)
-                        end)
-                        frame.Shield:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip_Hide() end)
-                        frame.Shield:SetScript('OnMouseUp', function(self) self:SetAlpha(0.5) end)
-                        frame.Shield:SetScript('OnMouseDown', function(self) self:SetAlpha(0.3) end)
-                        frame.Shield:SetScript('OnClick', function(self)
-                            local achievementID= self:GetParent().id
-                            local achievementLink = achievementID and GetAchievementLink(achievementID)
-                            if achievementLink then
-                                e.Chat(achievementLink)
-                            end
-                        end)
-                        frame.Shield:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-                    end
-                end
-                if frame.AchievementIDLabel then
-                    local text= frame.id
-                    local flags= frame.id and select(9, GetAchievementInfo(frame.id))
-                    if flags==0x20000 then
-                        text= e.Icon.net2..'|cff00ccff'..frame.id..'|r'
-                    end
-                    frame.AchievementIDLabel:SetText(text or '')
-                end
-            end)
-            hooksecurefunc('AchievementFrameComparison_UpdateDataProvider', function()--比较成就, Blizzard_AchievementUI.lua
-                for _, button in pairs(AchievementFrameComparison.AchievementContainer.ScrollBox:GetFrames()) do
-                    if not button.OnEnter then
-                        button:SetScript('OnLeave', GameTooltip_Hide)
-                        button:SetScript('OnEnter', function(self3)
-                            if self3.id then
-                                e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
-                                e.tips:ClearLines()
-                                e.tips:SetAchievementByID(self3.id)
-                                e.tips:Show()
-                            end
-                        end)
-                        if button.Player and button.Player.Icon and not button.Player.idText then
-                            button.Player.idText= e.Cstr(button.Player)
-                            button.Player.idText:SetPoint('LEFT', button.Player.Icon, 'RIGHT', 0, 10)
-                        end
-                    end
-                    if button.Player and button.Player.idText then
-                        local flags= button.id and select(9, GetAchievementInfo(button.id))
-                        if flags==0x20000 then
-                            button.Player.idText:SetText(e.Icon.net2..'|cffff00ff'..button.id..'|r')
-                        else
-                            button.Player.idText:SetText(button.id or '')
-                        end
-                    end
-                end
-            end)
-            hooksecurefunc('AchievementFrameComparison_SetUnit', function(unit)--比较成就
-                local text= e.GetPlayerInfo({unit=unit, reName=true, reRealm=true})--玩家信息图标
-                if text~='' then
-                    AchievementFrameComparisonHeaderName:SetText(text)
-                end
-            end)
-            if AchievementFrameComparisonHeaderPortrait then
-                local function func()
-                    if AchievementFrameComparisonHeaderPortrait.unit then
-                        e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
-                        e.tips:ClearLines()
-                        e.tips:SetUnit(AchievementFrameComparisonHeaderPortrait.unit)
-                        e.tips:Show()
-                    end
-                end
-                AchievementFrameComparisonHeader:EnableMouse(true)
-                AchievementFrameComparisonHeader:HookScript('OnLeave', GameTooltip_Hide)
-                AchievementFrameComparisonHeader:HookScript('OnEnter', func)
+        elseif arg1=='Blizzard_Settings' then
+            Init_Panel()
+
+        else
+            if eventTab then
+                table.insert(eventTab, arg1)
+            else
+                Init_Event(arg1)
             end
-
-        elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
-            hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
-                func.Set_Spell(e.tips, 243819)
-                e.tips:Show()
-            end)
-
-        elseif arg1=='Blizzard_ChallengesUI' then--挑战, AffixID
-            hooksecurefunc(ChallengesKeystoneFrameAffixMixin,'OnEnter',function(self2)--Blizzard_ChallengesUI.lua
-                if self2.affixID then
-                    if self2.affixID then
-                        local _, _, filedataid = C_ChallengeMode.GetAffixInfo(self2.affixID)
-                        e.tips:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
-                        e.tips:Show()
-                    end
-                end
-            end)
-
-        elseif arg1=='Blizzard_OrderHallUI' then--要塞，技能树
-            hooksecurefunc(GarrisonTalentButtonMixin, 'OnEnter', function(self2)--Blizzard_OrderHallTalents.lua
-                local info=self2.talent--C_Garrison.GetTalentInfo(self.talent.id)
-                if not info or not info.id then
-                    return
-                end
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine('talentID '..info.id, info.icon and '|T'..info.icon..':0|t'..info.icon)
-                if info.ability and info.ability.id and info.ability.id>0 then
-                    e.tips:AddDoubleLine('ability '..info.ability.id, info.ability.icon and '|T'..info.ability.icon..':0|t'..info.ability.icon)
-                end
-                e.tips:Show()
-            end)
-            hooksecurefunc(GarrisonTalentButtonMixin, 'SetTalent', function(self2)--是否已激活, 和等级
-                local info= self2.talent
-                if not info or not info.id then
-                    return
-                end
-
-                if info.researched and not self2.researchedTexture then
-                    self2.researchedTexture= self2:CreateTexture(nil, 'OVERLAY')
-                    local w,h= self2:GetSize()
-                    self2.researchedTexture:SetSize(w/3, h/3)
-                    self2.researchedTexture:SetPoint('BOTTOMRIGHT')
-                    self2.researchedTexture:SetAtlas(e.Icon.select)
-                end
-                if self2.researchedTexture then
-                    self2.researchedTexture:SetShown(info.researched)
-                end
-
-                local rank
-                if info.talentMaxRank and info.talentMaxRank>1 and info.talentRank~= info.talentMaxRank then
-                    if not info.rankText then
-                        info.rankText= e.Cstr(self2)
-                        info.rankText:SetPoint('BOTTOMLEFT')
-                    end
-                    rank= '|cnGREEN_FONT_COLOR:'..(info.talentRank or 0)..'|r/'..info.talentMaxRank
-                end
-                if info.rankText then
-                    info.rankText:SetText(rank or '')
-                end
-            end)
-
-        elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
-            hooksecurefunc(FlightMap_FlightPointPinMixin, 'OnMouseEnter', function(self2)
-                local info= self2.taxiNodeData
-                if info then
-                    e.tips:AddDoubleLine('nodeID '..(info.nodeID or ''), 'slotIndex '..(info.slotIndex or ''))
-                    e.tips:Show()
-                end
-            end)
-
-        elseif arg1=='Blizzard_Professions' then--专业
-            hooksecurefunc(Professions, 'SetupProfessionsCurrencyTooltip', function(currencyInfo)--lizzard_Professions.lua
-                if currencyInfo then
-                    local nodeID = ProfessionsFrame.SpecPage:GetDetailedPanelNodeID()
-                    local currencyTypesID = Professions.GetCurrencyTypesID(nodeID)
-                    if currencyTypesID then
-                        GameTooltip_AddBlankLineToTooltip(GameTooltip)
-                        func.Set_Currency(GameTooltip, currencyTypesID)--货币
-                        GameTooltip:AddDoubleLine('nodeID', '|cffffffff'..nodeID..'|r')
-                    end
-                end
-            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then

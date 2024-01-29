@@ -924,7 +924,7 @@ local function set_Frame(frame, rest)--设置, frame
 end
 
 local function frame_Init(rest)--初始， 或设置
-    if rest then
+    if rest or not Tabs then
         set_Tabs()
     end
 
@@ -1150,14 +1150,19 @@ end
 --设置 panel
 --##########
 local function set_Panle_Setting()--设置 panel
-    local last, check, findTank, findDps
+    if Save.disabled or panel.barGreenColor then
+        return
+    end
     --[[last=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
     last:SetPoint('TOPLEFT')
     last:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
     last:SetSize(120, 28)
     last:SetScript('OnMouseUp', e.Reload)]]
 
-
+    local last, check, findTank, findDps
+    if not Tabs then
+        set_Tabs()
+    end
     for index, info in pairs(Tabs) do
         if info.dps and not findDps then
             check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--四属性, 仅限DPS
@@ -2090,7 +2095,6 @@ local function Init()
         end)
 
         frame_Init(true)--初始， 或设置
-        set_Panle_Setting()--设置 panel
     end)
 
     --#############
@@ -2233,17 +2237,19 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
 
             e.ReloadPanel({panel=panel, addName=addName, restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
-            disabledfunc=function()
-                Save.disabled = not Save.disabled and true or nil
-                if not Save.disabled and not button then
-                    Init()
-                else
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-                    frame_Init(true)--初始， 或设置
-                end
-            end,
-            clearfunc= function() Save=nil e.Reload() end}
-        )
+                disabledfunc=function()
+                    Save.disabled = not Save.disabled and true or nil
+                    if not Save.disabled and not button then
+                        Init()
+                        set_ShowHide_Event()--显示，隐藏，事件
+                        set_Panle_Setting()
+                    else
+                        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                        frame_Init(true)--初始， 或设置
+                    end
+                end,
+                clearfunc= function() Save=nil e.Reload() end}
+            )
 
             if Save.disabled then
                 panel:UnregisterAllEvents()
@@ -2252,6 +2258,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 set_ShowHide_Event()--显示，隐藏，事件
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
+
+        elseif arg1=='Blizzard_Settings' then
+            set_Panle_Setting()
+            
         end
 
     elseif event == "PLAYER_LOGOUT" then

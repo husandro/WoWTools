@@ -4071,10 +4071,37 @@
         "TOOLTIP_BATTLE_PET",
         "GRAPHICS_HEADER",
         "ADDON_DISABLED",
-        "EMOTE67_CMD1"
+        "EMOTE67_CMD1",
+        "SPEED",
+        "LOCALE_zhCN",
+        "LOCALE_koKR",
+        "LOCALE_frFR",
+        "LOCALE_deDE",
+        "LOCALE_esMX",
+        "LOCALE_esES",
+        "LOCALE_zhTW",
+        "LOCALE_ruRU",
+        "LOCALE_ptBR",
+        "LOCALE_itIT",
+        "RematchLoadoutPanel",
+        "RematchPetPanel",
+        "RematchQueuePanel",
+        "RematchTeamPanel",
+        "RematchOptionPanel",
+        "PlayerFrameAlternateManaBarBorder",
+        "PlayerFrameAlternateManaBarLeftBorder",
+        "PlayerFrameAlternateManaBarRightBorder",
+        "GetMinimapShape",
+        "Bagnon"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
-        "undefined-field"
+        "undefined-field",
+        "param-type-mismatch",
+        "redundant-parameter",
+        "missing-parameter",
+        "deprecated",
+        "undefined-global",
+        "duplicate-set-field"
     ]
 }

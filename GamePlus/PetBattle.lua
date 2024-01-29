@@ -638,11 +638,11 @@ local function set_Button_setFrame_PetJournal()
     if not TrackButton then
         return
     end
-    TrackButton.btn= e.Cbtn(RematchJournal or PetJournal, {icon='hide', size={22, 22}})
+    TrackButton.btn= e.Cbtn(_G['RematchJournal'] or PetJournal, {icon='hide', size={22, 22}})
     if _G['MoveZoomInButtonPerCollectionsJournal'] then
         TrackButton.btn:SetPoint('LEFT', _G['MoveZoomInButtonPerCollectionsJournal'], 'RIGHT')
     else
-        TrackButton.btn:SetPoint('TOPLEFT', RematchJournal or PetJournal,'TOPRIGHT',3,-29)
+        TrackButton.btn:SetPoint('TOPLEFT', _G['RematchJournal'] or PetJournal,'TOPRIGHT',3,-29)
     end
     TrackButton.btn:SetAlpha(0.5)
     TrackButton.btn:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)

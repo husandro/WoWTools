@@ -9,7 +9,6 @@ e.call=securecall
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
 --e.onlyChinese= Save.onlyChinese or LOCALE_zhCN
-
 e.itemSlotTable={
     ['INVTYPE_HEAD']=1,
     ['INVTYPE_NECK']=2,

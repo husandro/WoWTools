@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field, assign-type-mismatch
 --@curseforge-project-slug: libdbicon-1-0@
 -----------------------------------------------------------------------
 -- LibDBIcon-1.0
@@ -14,6 +15,7 @@ local lib = LibStub:NewLibrary(DBICON10, DBICON10_MINOR)
 if not lib then return end
 
 lib.objects = lib.objects or {}
+---@diagnostic disable-next-line: assign-type-mismatch
 lib.callbackRegistered = lib.callbackRegistered or nil
 lib.callbacks = lib.callbacks or LibStub("CallbackHandler-1.0"):New(lib)
 lib.radius = lib.radius or 5

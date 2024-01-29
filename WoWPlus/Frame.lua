@@ -490,7 +490,7 @@ local function setAddLoad(arg1)
         --set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog)
         --set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
         --set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
-        
+
 
     elseif arg1=='Blizzard_Collections' then--收藏
         local checkbox = WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox
@@ -556,6 +556,15 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
         set_Move_Frame(ItemInteractionFrame)
+
+    elseif arg1=='Blizzard_Professions' then--专业, 10.1.5
+        InspectRecipeFrame:HookScript('OnShow', function(self2)
+            local name= self2:GetName()
+            if name and Save.scale[name] then
+                self2:SetScale(Save.scale[name])
+            end
+        end)
+        set_Move_Frame(ProfessionsFrame, {})
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
         set_Move_Frame(ProfessionsCustomerOrdersFrame, {save=true})
@@ -629,7 +638,7 @@ local function set_classPowerBar()
         PlayerFrame.classPowerBar,
         RuneFrame,
         MonkStaggerBar,
-        PlayerFrameAlternateManaBar,
+        _G['PlayerFrameAlternateManaBar'],
         EssencePlayerFrame,
         --MageArcaneChargesFrame,
         --TotemFrame,
@@ -983,12 +992,15 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
 
+local eventTab={}
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
             Save.scale= Save.scale or {}
+
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
                 tooltip= addName,
@@ -1000,24 +1012,25 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             })
 
-            if not Save.disabled then
-                Init_Options()--初始, 选项
-                Init_Move()--初始, 移动
-            else
+            if Save.disabled then
                 panel:UnregisterAllEvents()
-            end
-            panel:RegisterEvent("PLAYER_LOGOUT")
-
-        elseif arg1=='Blizzard_Professions' then--专业, 10.1.5
-            InspectRecipeFrame:HookScript('OnShow', function(self2)
-                local name= self2:GetName()
-                if name and Save.scale[name] then
-                    self2:SetScale(Save.scale[name])
+            else
+                Init_Move()--初始, 移动
+                for _, ent in pairs(eventTab or {}) do
+                    setAddLoad(ent)
                 end
-            end)
-            set_Move_Frame(ProfessionsFrame, {})
+            end
+            eventTab=nil
+
+        elseif arg1=='Blizzard_Settings' then
+            Init_Options()--初始, 选项
+
         else
-            setAddLoad(arg1)
+            if eventTab then
+                table.insert(eventTab, arg1)
+            else
+                setAddLoad(arg1)
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then

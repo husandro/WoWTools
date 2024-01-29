@@ -731,7 +731,7 @@ local function Init()
 
 
     e.AddPanel_DropDown({
-        SetValueFunc= function(_, _, value)
+        SetValueFunc= function(_, a, value)
             if value==2 then
                 local valueR, valueG, valueB, valueA= Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a
                 local setA, setR, setG, setB
@@ -860,7 +860,7 @@ local function Init()
 
 
 
-    local btn= e.Cbtn(SettingsPanel, {type=false, size={140, 25}})
+    local btn= e.Cbtn(SettingsPanel.AddOnsTab, {type=false, size={140, 25}})
     btn:SetPoint('RIGHT', SettingsPanel.ApplyButton, 'LEFT', -15,0)
     btn:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
     btn:SetScript("OnClick", e.Reload)

@@ -285,10 +285,6 @@ end
 --初始化, 隐藏材质
 --###############
 local function Init_All_Frame()
-    if Save.disabled then
-        return
-    end
-
     hide_Texture(GameMenuFrame.Header.RightBG)
     hide_Texture(GameMenuFrame.Header.CenterBG)
     hide_Texture(GameMenuFrame.Header.LeftBG)
@@ -1185,7 +1181,7 @@ local function Init_All_Frame()
     end)
     hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
         set_Alpha_Color(self.Background, nil, nil, min05)
-    end)   
+    end)
     hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
         set_Alpha_Frame_Texture(self.CheckBox, {notAlpha=true})
     end)
@@ -1440,7 +1436,7 @@ local function Init_Event(arg1)
         set_Menu(GuildControlUINavigationDropDown)
 
         set_Menu(CommunitiesFrame.GuildMemberListDropDownMenu)
-        
+
         set_Alpha_Frame_Texture(CommunitiesGuildLogFrame)
         set_NineSlice(CommunitiesGuildLogFrame.Container, true)
         set_ScrollBar(CommunitiesGuildLogFrame.Container.ScrollFrame)
@@ -1839,9 +1835,9 @@ local function Init_Event(arg1)
             set_Alpha_Frame_Texture(_G['CollectionsJournalTab'..i], {alpha=min05})
         end
 
-        if RematchJournal then
-            set_NineSlice(RematchJournal, true)
-            set_Alpha_Color(RematchJournalBg)
+        if _G['RematchJournal'] then
+            set_NineSlice(_G['RematchJournal'], true)
+            set_Alpha_Color(_G['RematchJournalBg'])
             set_Alpha_Color(RematchLoadoutPanel.Target.InsetBack)
             hide_Texture(RematchPetPanel.Top.InsetBack)
             set_Alpha_Color(RematchQueuePanel.List.Background.InsetBack)
@@ -1900,9 +1896,9 @@ local function Init_Event(arg1)
         set_Alpha_Color(ItemSocketingFrame['GoldBorder-TopLeft'])
         set_Alpha_Color(ItemSocketingFrame['GoldBorder-BottomRight'])
         set_Alpha_Color(ItemSocketingFrame['GoldBorder-TopRight'])
-        set_Alpha_Color(ItemSocketingScrollFrameMiddle)
-        set_Alpha_Color(ItemSocketingScrollFrameTop)
-        set_Alpha_Color(ItemSocketingScrollFrameBottom)
+        set_Alpha_Color(_G['ItemSocketingScrollFrameMiddle'])
+        set_Alpha_Color(_G['ItemSocketingScrollFrameTop'])
+        set_Alpha_Color(_G['ItemSocketingScrollFrameBottom'])
         set_ScrollBar(ItemSocketingScrollFrame)
 
         hide_Texture(ItemSocketingFrame.TopLeftNub)
@@ -1999,7 +1995,7 @@ local function Init_Event(arg1)
         end)
     elseif arg1=='Blizzard_MajorFactions' then--派系声望
         set_Alpha_Color(MajorFactionRenownFrame.Background)
-        
+
 
     elseif arg1=='Blizzard_Professions' then--专业, 初始化, 透明
         set_NineSlice(ProfessionsFrame, true)
@@ -2060,20 +2056,6 @@ local function Init_Event(arg1)
         --set_NineSlice(ClickBindingFrame.ScrollBoxBackground, nil, true)
 
         set_NineSlice(ClickBindingFrame.TutorialFrame, true)
-
-    elseif arg1=='Blizzard_Settings' then
-        set_Alpha_Frame_Texture(SettingsPanel.NineSlice, {alpha=min05})
-        set_Alpha_Color(SettingsPanel.Bg, nil, nil, min05)
-        set_ScrollBar(SettingsPanel.Container.SettingsList)
-        set_ScrollBar(SettingsPanel.CategoryList)
-
-        set_NineSlice(PingSystemTutorial, true)
-        set_NineSlice(PingSystemTutorialInset, nil, true)
-        hide_Texture(PingSystemTutorialBg)
-        set_Alpha_Frame_Texture(SettingsPanel.GameTab, {notAlpha=true})
-        set_Alpha_Frame_Texture(SettingsPanel.AddOnsTab, {notAlpha=true})
-
-
 
     elseif arg1=='Blizzard_ArchaeologyUI' then
         set_NineSlice(ArchaeologyFrame, true)
@@ -2606,7 +2588,139 @@ end
 
 
 
+local function Init_Options()
+    local Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
 
+    local initializer2= e.AddPanel_Check_Button({
+        checkName= e.onlyChinese and '材质' or TEXTURES_SUBHEADER,
+        checkValue= not Save.disabled,
+        checkFunc= function()
+            Save.disabled= not Save.disabled and true or nil
+            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+        buttonText= e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
+        buttonFunc= function()
+            e.OpenPanelOpting((e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR))
+        end,
+        tooltip= addName,
+        layout= Layout,
+        category= Category
+    })
+
+    local initializer= e.AddPanelSider({
+        name= e.onlyChinese and '透明度' or 'Alpha',
+        value= Save.alpha,
+        minValue= 0,
+        maxValue= 1,
+        setp= 0.1,
+        tooltip= addName,
+        category= Category,
+        func= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, 0, 1)
+            Save.alpha= value3
+            Init()
+            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+
+    initializer= e.AddPanel_Check({
+        name= e.onlyChinese and '主菜单' or MAINMENU_BUTTON,
+        tooltip= addName,
+        category= Category,
+        value= not Save.disabledMainMenu,
+        func= function()
+            Save.disabledMainMenu= not Save.disabledMainMenu and true or nil
+            Init_MainMenu()
+            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.disabledColor end)
+
+    e.AddPanel_Header(Layout, e.onlyChinese and '其它' or OTHER)
+
+    initializer2= e.AddPanel_Check({
+        name= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
+        tooltip= (e.onlyChinese and '在副本无效' or (INSTANCE..' ('..DISABLE..')'))
+                ..'|n|n'..((e.onlyChinese and '说' or SAY)..' CVar: chatBubbles '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubbles")))
+                ..'|n'..((e.onlyChinese and '小队' or SAY)..' CVar: chatBubblesParty '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubblesParty"))),
+        category= Category,
+        value= not Save.disabledChatBubble,
+        func= function()
+            Save.disabledChatBubble= not Save.disabledChatBubble and true or nil
+            Init_Chat_Bubbles()
+            if Save.disabledChatBubble and BubblesFrame then
+                print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        end
+    })
+    initializer= e.AddPanelSider({
+        name= e.onlyChinese and '透明度' or 'Alpha',
+        value= Save.chatBubbleAlpha,
+        minValue= 0,
+        maxValue= 1,
+        setp= 0.1,
+        tooltip= addName,
+        category= Category,
+        func= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, 0, 1)
+            Save.chatBubbleAlpha= value3
+            Init_Chat_Bubbles()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.disabledChatBubble end)
+
+    initializer= e.AddPanelSider({
+        name= e.onlyChinese and '缩放' or UI_SCALE,
+        value= Save.chatBubbleSacal,
+        minValue= 0.3,
+        maxValue= 1,
+        setp= 0.1,
+        tooltip= addName,
+        category= Category,
+        func= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, 0.3, 1)
+            Save.chatBubbleSacal= value3
+            Init_Chat_Bubbles()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.disabledChatBubble end)
+
+    e.AddPanel_Check_Sider({
+        checkName= (e.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
+        checkValue= Save.classPowerNum,
+        checkTooltip= addName,
+        checkFunc= function()
+            Save.classPowerNum= not Save.classPowerNum and true or false
+            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+        sliderValue= Save.classPowerNumSize,
+        sliderMinValue= 6,
+        sliderMaxValue= 64,
+        sliderStep= 1,
+        siderName= nil,
+        siderTooltip= nil,
+        siderFunc= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, 6, 64)
+            Save.classPowerNumSize= value3
+            Init_Class_Power()--职业
+            print(id, addName,'|cnGREEN_FONT_COLOR:'.. value3..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+        layout= Layout,
+        category= Category,
+    })
+
+    e.AddPanel_Check({
+        name= e.onlyChinese and '隐藏教程' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, SHOW_TUTORIALS ),
+        tooltip='HelpTip',
+        category= Category,
+        value= not Save.disabledHelpTip,
+        func= function()
+            Save.disabledHelpTip= not Save.disabledHelpTip and true or nil
+            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    })
+end
 
 
 
@@ -2650,7 +2764,8 @@ end
 --###########
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
+panel:RegisterEvent("PLAYER_LOGOUT")
+local eventTab={}
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
@@ -2658,145 +2773,46 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.classPowerNumSize= Save.classPowerNumSize or 12
             GetMinValueAlpha()--min03，透明度，最小值
 
-            local Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
-
-            local initializer2= e.AddPanel_Check_Button({
-                checkName= e.onlyChinese and '材质' or TEXTURES_SUBHEADER,
-                checkValue= not Save.disabled,
-                checkFunc= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end,
-                buttonText= e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
-                buttonFunc= function()
-                    e.OpenPanelOpting((e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR))
-                end,
-                tooltip= addName,
-                layout= Layout,
-                category= Category
-            })
-
-            local initializer= e.AddPanelSider({
-                name= e.onlyChinese and '透明度' or 'Alpha',
-                value= Save.alpha,
-                minValue= 0,
-                maxValue= 1,
-                setp= 0.1,
-                tooltip= addName,
-                category= Category,
-                func= function(_, _, value2)
-                    local value3= e.GetFormatter1to10(value2, 0, 1)
-                    Save.alpha= value3
-                    Init()
-                    print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
-
-            initializer= e.AddPanel_Check({
-                name= e.onlyChinese and '主菜单' or MAINMENU_BUTTON,
-                tooltip= addName,
-                category= Category,
-                value= not Save.disabledMainMenu,
-                func= function()
-                    Save.disabledMainMenu= not Save.disabledMainMenu and true or nil
-                    Init_MainMenu()
-                    print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabledColor end)
-
-            e.AddPanel_Header(Layout, e.onlyChinese and '其它' or OTHER)
-
-            initializer2= e.AddPanel_Check({
-                name= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
-                tooltip= (e.onlyChinese and '在副本无效' or (INSTANCE..' ('..DISABLE..')'))
-                        ..'|n|n'..((e.onlyChinese and '说' or SAY)..' CVar: chatBubbles '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubbles")))
-                        ..'|n'..((e.onlyChinese and '小队' or SAY)..' CVar: chatBubblesParty '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubblesParty"))),
-                category= Category,
-                value= not Save.disabledChatBubble,
-                func= function()
-                    Save.disabledChatBubble= not Save.disabledChatBubble and true or nil
-                    Init_Chat_Bubbles()
-                    if Save.disabledChatBubble and BubblesFrame then
-                        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                    end
-                end
-            })
-            initializer= e.AddPanelSider({
-                name= e.onlyChinese and '透明度' or 'Alpha',
-                value= Save.chatBubbleAlpha,
-                minValue= 0,
-                maxValue= 1,
-                setp= 0.1,
-                tooltip= addName,
-                category= Category,
-                func= function(_, _, value2)
-                    local value3= e.GetFormatter1to10(value2, 0, 1)
-                    Save.chatBubbleAlpha= value3
-                    Init_Chat_Bubbles()
-                end
-            })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabledChatBubble end)
-
-            initializer= e.AddPanelSider({
-                name= e.onlyChinese and '缩放' or UI_SCALE,
-                value= Save.chatBubbleSacal,
-                minValue= 0.3,
-                maxValue= 1,
-                setp= 0.1,
-                tooltip= addName,
-                category= Category,
-                func= function(_, _, value2)
-                    local value3= e.GetFormatter1to10(value2, 0.3, 1)
-                    Save.chatBubbleSacal= value3
-                    Init_Chat_Bubbles()
-                end
-            })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabledChatBubble end)
-
-            e.AddPanel_Check_Sider({
-                checkName= (e.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
-                checkValue= Save.classPowerNum,
-                checkTooltip= addName,
-                checkFunc= function()
-                    Save.classPowerNum= not Save.classPowerNum and true or false
-                    print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end,
-                sliderValue= Save.classPowerNumSize,
-                sliderMinValue= 6,
-                sliderMaxValue= 64,
-                sliderStep= 1,
-                siderName= nil,
-                siderTooltip= nil,
-                siderFunc= function(_, _, value2)
-                    local value3= e.GetFormatter1to10(value2, 6, 64)
-                    Save.classPowerNumSize= value3
-                    Init_Class_Power()--职业
-                    print(id, addName,'|cnGREEN_FONT_COLOR:'.. value3..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end,
-                layout= Layout,
-                category= Category,
-            })
-
-            e.AddPanel_Check({
-                name= e.onlyChinese and '隐藏教程' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, SHOW_TUTORIALS ),
-                tooltip='HelpTip',
-                category= Category,
-                value= not Save.disabledHelpTip,
-                func= function()
-                    Save.disabledHelpTip= not Save.disabledHelpTip and true or nil
-                    print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-
             if Save.disabled then
-                panel:UnregisterAllEvents()
+                e.AddPanel_Check({
+                    name= e.onlyChinese and '材质' or TEXTURES_SUBHEADER,
+                    tooltip= addName,
+                    category= Category,
+                    value= not Save.disabled,
+                    func= function()
+                        Save.disabled= not Save.disabled and true or nil
+                        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    end
+                })
+                panel:UnregisterEvent('ADDON_LOADED')
+            else
+                Init()
+                for _, ent in pairs(eventTab or {}) do
+                    Init_Event(ent)
+                end
             end
-            Init()
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            eventTab=nil
+
+        elseif arg1=='Blizzard_Settings' then
+            Init_Options()
+
+            set_Alpha_Frame_Texture(SettingsPanel.NineSlice, {alpha=min05})
+            set_Alpha_Color(SettingsPanel.Bg, nil, nil, min05)
+            set_ScrollBar(SettingsPanel.Container.SettingsList)
+            set_ScrollBar(SettingsPanel.CategoryList)
+    
+            set_NineSlice(PingSystemTutorial, true)
+            set_NineSlice(PingSystemTutorialInset, nil, true)
+            hide_Texture(PingSystemTutorialBg)
+            set_Alpha_Frame_Texture(SettingsPanel.GameTab, {notAlpha=true})
+            set_Alpha_Frame_Texture(SettingsPanel.AddOnsTab, {notAlpha=true})
+    
         else
-            Init_Event(arg1)
+            if eventTab then
+                table.insert(eventTab, arg1)
+            else
+                Init_Event(arg1)
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then

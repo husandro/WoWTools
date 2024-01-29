@@ -58,6 +58,7 @@ local Save= {
     x=0,
     y=0,
     scale=1.5,
+    elapsed=0.5,
     --top=true,--位于，目标血条，上方
 
     creature= true,--怪物数量
@@ -111,6 +112,7 @@ end]]
 
 
 
+
 local function set_Target_Texture(self)--设置，图片
     if self then
         local isAtlas, texture= e.IsAtlas(Save.targetTextureName)
@@ -135,10 +137,23 @@ local function set_Target_Size(self)--设置，大小
 end
 
 
-
-
-
-
+local function set_Scale_Frame()--缩放
+    if not targetFrame then
+        return
+    end
+    if targetFrame.Target and Save.scale~=1 then
+        targetFrame:SetScript('OnUpdate', function(self, elapsed)
+            self.elapsed= (self.elapsed or Save.elapsed) + elapsed
+            if self.elapsed> Save.elapsed then
+                self.elapsed=0
+                self:SetScale(self:GetScale()==1 and Save.scale or 1)
+            end
+        end)
+    else
+        targetFrame:SetScript('OnUpdate', nil)
+    end
+    targetFrame:SetScale(1)
+end
 
 
 
@@ -438,6 +453,7 @@ local function set_Created_Texture_Text()
 
     if targetFrame.Target then
         set_Target_Texture(targetFrame.Target)--设置，图片
+        set_Scale_Frame()--缩放
         set_Target_Color(targetFrame.Target, Save.targetInCombat and UnitAffectingCombat('player'))
         targetFrame.Target:SetShown(false)
     end
@@ -637,6 +653,10 @@ end
 --选项, 添加控制面板      
 --#################
 local function set_Option()
+    if panel.tipTargetTexture or Save.disabled then
+        return
+    end
+    
     local sel=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     sel:SetPoint('TOPLEFT', 0, -40)
     sel:SetChecked(Save.target)
@@ -647,23 +667,30 @@ local function set_Option()
     sel.Text:SetText(e.Icon.toRight2..(e.onlyChinese and '目标' or addName))
     sel.Text:SetTextColor( Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a)
     sel.Text:EnableMouse(true)
-    sel.Text:SetScript('OnMouseDown', function(self2)
-        local setR, setG, setB, setA
-        local R,G,B,A= Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a
-        local function func()
-            Save.targetColor={r=setR, g=setG, b=setB, a=setA}
-            self2:SetTextColor(setR, setG, setB, setA)
+    sel.Text:SetScript('OnMouseDown', function(self2, d)
+        if d=='LeftButton' then
+            local setR, setG, setB, setA
+            local R,G,B,A= Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a
+            local function func()
+                Save.targetColor={r=setR, g=setG, b=setB, a=setA}
+                self2:SetTextColor(setR, setG, setB, setA)
+                set_Target_Color(panel.tipTargetTexture, false)
+                set_All_Init()
+            end
+            e.ShowColorPicker(Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a, function()
+                    setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+                    func()
+                end, function()
+                    setR, setG, setB, setA= R,G,B,A
+                    func()
+                end
+            )
+        elseif d=='RightButton' then
+            Save.targetColor={r=1, g=1, b=1, a=1}
+            self2:SetTextColor(1, 1, 1, 1)
             set_Target_Color(panel.tipTargetTexture, false)
             set_All_Init()
         end
-        e.ShowColorPicker(Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a, function()
-                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
-                func()
-            end, function()
-                setR, setG, setB, setA= R,G,B,A
-                func()
-            end
-        )
     end)
     sel.Text:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
     sel.Text:SetScript('OnEnter', function(self2)
@@ -671,7 +698,7 @@ local function set_Option()
         e.tips:AddDoubleLine(e.onlyChinese and '显示敌方姓名板' or BINDING_NAME_NAMEPLATES, e.GetEnabeleDisable(C_CVar.GetCVarBool("nameplateShowEnemies")))
         e.tips:AddLine(' ')
         local r,g,b,a= Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a
-        e.tips:AddDoubleLine(e.Icon.toRight2, (e.onlyChinese and '颜色' or COLOR)..e.Icon.left, r,g,b, r,g,b)
+        e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COLOR)), (e.onlyChinese and '默认' or DEFAULT)..e.Icon.right, r,g,b, 1,1,1)
         e.tips:AddDoubleLine('r='..r..' g='..g..' b='..b, 'a='..a, r,g,b, r,g,b)
         e.tips:AddLine(' ')
         e.tips:Show()
@@ -680,7 +707,7 @@ local function set_Option()
 
     panel.tipTargetTexture= panel:CreateTexture()--目标，图片，提示
     panel.tipTargetTexture:SetPoint("TOP")
-    set_Target_Texture(panel.tipTargetTexture)--设置，图片
+    --set_Target_Texture(panel.tipTargetTexture)--设置，图片
     set_Target_Size(panel.tipTargetTexture)--设置，大小
     set_Target_Color(panel.tipTargetTexture, false)--设置，颜色
 
@@ -694,29 +721,36 @@ local function set_Option()
     combatCheck.Text:EnableMouse(true)
     combatCheck.Text:SetText(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
     combatCheck.Text:SetTextColor(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a)
-    combatCheck.Text:SetScript('OnMouseDown', function(self2)
-        local setR, setG, setB, setA
-        local R,G,B,A= Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a
-        local function func()
-            Save.targetInCombatColor={r=setR, g=setG, b=setB, a=setA}
-            self2:SetTextColor(setR, setG, setB, setA)
-            set_Target_Color(panel.tipTargetTexture, true)
+    combatCheck.Text:SetScript('OnMouseDown', function(self2, d)
+        if d=='LeftButton' then
+            local setR, setG, setB, setA
+            local R,G,B,A= Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a
+            local function func()
+                Save.targetInCombatColor={r=setR, g=setG, b=setB, a=setA}
+                self2:SetTextColor(setR, setG, setB, setA)
+                set_Target_Color(panel.tipTargetTexture, true)
+                set_All_Init()
+            end
+            e.ShowColorPicker(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a, function()
+                    setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+                    func()
+                end, function()
+                    setR, setG, setB, setA= R,G,B,A
+                    func()
+                end
+            )
+        elseif d=='RightButton' then
+            Save.targetInCombatColor={r=1, g=0, b=0, a=1}
+            self2:SetTextColor(1, 0, 0, 1)
+            set_Target_Color(panel.tipTargetTexture, false)
             set_All_Init()
         end
-        e.ShowColorPicker(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a, function()
-                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
-                func()
-            end, function()
-                setR, setG, setB, setA= R,G,B,A
-                func()
-            end
-        )
     end)
     combatCheck.Text:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
     combatCheck.Text:SetScript('OnEnter', function(self2)
         local r,g,b,a= Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:AddDoubleLine(e.Icon.toRight2..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), (e.onlyChinese and '颜色' or COLOR)..e.Icon.left, r,g,b, r,g,b)
+        e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COLOR)), (e.onlyChinese and '默认' or DEFAULT)..e.Icon.right, r,g,b, 1,1,1)
         e.tips:AddDoubleLine('r='..r..' g='..g..' b='..b, 'a='..a, r,g,b, r,g,b)
         e.tips:Show()
         self2:SetAlpha(0.3)
@@ -774,7 +808,7 @@ local function set_Option()
     end})
     sliderH:SetPoint("LEFT", sliderW, 'RIGHT',15,0)
 
-    
+
 
     local sliderScale = e.CSlider(panel, {min=0.4, max=2, value=Save.scale or 1, setp=0.1, w= 100,
     text= e.onlyChinese and '缩放' or UI_SCALE,
@@ -783,12 +817,28 @@ local function set_Option()
         self2:SetValue(value)
         self2.Text:SetText(value)
         Save.scale= value
+        if value==1 then
+            print(id,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '禁用' or DISABLE)
+        else
+            print(id,addName, '|cnGREEN_FONT_COLOR:', value)
+        end
+        set_Scale_Frame()--缩放
     end})
-    sliderScale:SetPoint("LEFT", sliderH, 'RIGHT', 15, 0)
+    sliderScale:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0,-16)
+
+    local sliderElapsed = e.CSlider(panel, {min=0.3, max=1.5, value=Save.elapsed or 0.5, setp=0.1, w= 100, color=true,
+    text= e.onlyChinese and '速度' or SPEED,
+    func=function(self2, value)
+        value= tonumber(format('%.1f', value))
+        self2:SetValue(value)
+        self2.Text:SetText(value)
+        Save.elapsed= value
+    end})
+    sliderElapsed:SetPoint("LEFT", sliderScale, 'RIGHT',15, 0)
 
 
     local menu = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
-    menu:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', -16,-16)
+    menu:SetPoint("TOPLEFT", sel, 'BOTTOMRIGHT', -16,-72)
     e.LibDD:UIDropDownMenu_SetWidth(menu, 410)
     e.LibDD:UIDropDownMenu_Initialize(menu, function(self, level)
         for name, _ in pairs(Save.targetTextureTab) do
@@ -879,7 +929,7 @@ local function set_Option()
         end
         e.tips:Show()
     end)
-    
+
 
 
 
@@ -996,6 +1046,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.targetColor= Save.targetColor or {r=1,g=1,b=1,a=1}
             Save.targetInCombatColor= Save.targetInCombatColor or {r=1, g=0, b=0, a=1}
             Save.scale= Save.scale or 1.5
+            Save.elapsed= Save.elapsed or 0.5
 
             --添加控制面板
             e.AddPanel_Sub_Category({name=e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName)..'|r', frame=panel})
@@ -1013,11 +1064,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             )
 
             if not Save.disabled then
-                --isAddOnPlater= C_AddOns.IsAddOnLoaded("Plater")
-                set_Option()
                 Init()
             end
-            panel:UnregisterEvent('ADDON_LOADED')
+        elseif arg1=='Blizzard_Settings' then
+            set_Option()
         end
 
     elseif event == "PLAYER_LOGOUT" then

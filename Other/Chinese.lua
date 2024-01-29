@@ -3471,7 +3471,7 @@ local function Init()
 
     hooksecurefunc('VoiceTranscriptionFrame_UpdateEditBox', function(self)--VoiceChatTranscriptionFrame.lua
         if  C_VoiceChat.IsMuted() then
-            set(prompt, '禁音 - 目前没有发送语音识别或文字转语音信息')
+            set(self.editBox.prompt, '禁音 - 目前没有发送语音识别或文字转语音信息')
         elseif C_VoiceChat.IsSpeakForMeActive() then
             set(self.editBox.prompt, '输入文字后，文字转语音功能会为其他玩家朗读文字。')
         end
@@ -3542,7 +3542,7 @@ local function Init()
             local button = _G[self:GetName().."Button"..self.numButtons];
             if ( button and text ) then
                 set(button, e.strText[text])
-		        set(_G[button:GetName().."ShortcutText"], name)
+		        set(_G[button:GetName().."ShortcutText"])
             end
         end)
 
@@ -5080,80 +5080,6 @@ local function Init_Loaded(arg1)
             end
         end)
 
-
-        --[[local function IsTimedActivity(activityData)
-            return activityData.eventStartTime and activityData.eventEndTime;
-        end
-        local function HasTimedActivityBegun(activityData)
-            if not IsTimedActivity(activityData) then
-                return false;
-            end
-            local currentTime = GetServerTime();
-            return currentTime > activityData.eventStartTime;
-        end
-        local function HasTimedActivityExpired(activityData)
-            if not IsTimedActivity(activityData) then
-                return false;
-            end
-            local currentTime = GetServerTime();
-            return currentTime > activityData.eventEndTime;
-        end
-        local function IsTimedActivityActive(activityData)
-            return HasTimedActivityBegun(activityData) and not HasTimedActivityExpired(activityData);
-        end
-        local function GetActivityTimeRemaining(activityData)
-            if not IsTimedActivityActive(activityData) then
-                return 0;
-            end
-            local currentTime = GetServerTime();
-            return activityData.eventEndTime - currentTime;
-        end
-        local function IsTimedActivityCloseToExpiring(activityData)
-            if not IsTimedActivityActive(activityData) then
-                return false;
-            end
-            local timeRemaining = GetActivityTimeRemaining(activityData);
-            local timeRemainingUnits = ConvertSecondsToUnits(timeRemaining);
-            local totalEventTime = activityData.eventEndTime - activityData.eventStartTime;
-            local totalEventTimeUnits = ConvertSecondsToUnits(totalEventTime);
-            if totalEventTimeUnits.days >= 7 then
-                return timeRemainingUnits.days <= 3;
-            else
-                return timeRemainingUnits.days <= 1;
-            end
-        end
-        local ActivityTimeRemainingFormatter = CreateFromMixins(SecondsFormatterMixin);
-        ActivityTimeRemainingFormatter:Init(0, SecondsFormatter.Abbreviation.None, false, true);
-        hooksecurefunc(MonthlyActivitiesButtonTextContainerMixin, 'UpdateConditionsText', function(self, data)--Blizzard_MonthlyActivities.lua
-            local conditionsText = "";
-            if not data.isChild then
-                if IsTimedActivity(data) then
-                    conditionsText = self:GetClockAtlasText(data);
-                    conditionsText= e.strText[conditionsText] or conditionsText
-                    if not data.completed and IsTimedActivityCloseToExpiring(data) then
-                        local timeRemainingText = ActivityTimeRemainingFormatter:Format(GetActivityTimeRemaining(data));
-                        conditionsText = conditionsText.." "..format('剩余时间：%s', timeRemainingText);
-                    else
-                        if data.eventName then
-                            conditionsText = conditionsText.." "..(e.strText[data.eventName] or data.eventName);
-                        end
-                        local eventStartTimeUnits = date("*t", data.eventStartTime);
-                        local eventStartDate = FormatShortDate(eventStartTimeUnits.day, eventStartTimeUnits.month);
-                        local eventEndTimeUnits = date("*t", data.eventEndTime);
-                        local eventEndDate = FormatShortDate(eventEndTimeUnits.day, eventEndTimeUnits.month);
-                        local durationText = format('(%s - %s)', eventStartDate, eventEndDate);
-                        conditionsText = conditionsText.." "..durationText;
-                    end
-                end
-                for _, condition in ipairs(data.conditions) do
-                    if conditionsText ~= "" then
-                        conditionsText = conditionsText..", ";
-                    end
-                    conditionsText = conditionsText..condition.text;
-                end
-            end
-            set(self.ConditionsText, conditionsText)
-        end)]]
 
         hooksecurefunc(MonthlyActivitiesButtonTextContainerMixin, 'UpdateText', function(self, data)
             if data.name then

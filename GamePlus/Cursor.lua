@@ -243,7 +243,10 @@ end
 
 --Curor, 添加控制面板
 local function Init_Cursor_Options()
-    local sliderMaxParticles = e.CSlider(panel, {min=50, max=4096, value=Save.maxParticles, setp=1,
+    if panel.sliderMaxParticles or Save.disabled then
+        return
+    end
+    panel.sliderMaxParticles = e.CSlider(panel, {min=50, max=4096, value=Save.maxParticles, setp=1,
     text=e.onlyChinese and '粒子密度' or PARTICLE_DENSITY,
     func=function(self, value)
         value= math.floor(value)
@@ -252,7 +255,7 @@ local function Init_Cursor_Options()
         Save.maxParticles= value
         print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end})
-    sliderMaxParticles:SetPoint("TOPLEFT", panel.cursorCheck, 'BOTTOMLEFT', 0, -20)
+    panel.sliderMaxParticles:SetPoint("TOPLEFT", panel.cursorCheck, 'BOTTOMLEFT', 0, -20)
 
     local sliderMinDistance = e.CSlider(panel, {min=1, max=10, value=Save.minDistance, setp=1, color=true,
     text=e.onlyChinese and '最小距离' or MINIMUM..TRACKER_SORT_PROXIMITY,
@@ -263,7 +266,7 @@ local function Init_Cursor_Options()
         Save.minDistance= value
         cursor_Init_And_Set()--初始，设置
     end})
-    sliderMinDistance:SetPoint("TOPLEFT", sliderMaxParticles, 'BOTTOMLEFT', 0, -20)
+    sliderMinDistance:SetPoint("TOPLEFT", panel.sliderMaxParticles, 'BOTTOMLEFT', 0, -20)
 
 
     local sliderSize = e.CSlider(panel, {min=8, max=128, value=Save.size, setp=1,
@@ -375,7 +378,7 @@ local function Init_Cursor_Options()
     set_panel_Texture()
 
     --下拉，菜单
-    local function Init_Menu(self, level, menuList)
+    local function Init_Menu(self, level)
         for index, texture in pairs(Save.Atlas) do
             local info={
                 text= texture,
@@ -464,7 +467,6 @@ local function Cursor_Init()
     cursorFrame= CreateFrame('Frame')
     cursorFrame.egim=0
     cursor_Init_And_Set()
-    Init_Cursor_Options()
     cursorFrame:SetScript('OnUpdate', set_Cursor_Update)
 
     set_Curor_Random_Event()--随机, 图片，事件
@@ -537,7 +539,10 @@ end
 --GCD, 添加控制面板
 --################
 local function Init_GCD_Options()
-    local sliderSize = e.CSlider(panel, {min=8, max=128, value=Save.gcdSize, setp=1,
+    if panel.sliderSize or Save.disabledGCD then
+        return
+    end
+    panel.sliderSize = e.CSlider(panel, {min=8, max=128, value=Save.gcdSize, setp=1,
     text=e.onlyChinese and '缩放' or UI_SCALE,
     func=function(self, value)
         value= math.floor(value)
@@ -546,7 +551,7 @@ local function Init_GCD_Options()
         Save.gcdSize= value
         show_GCD_Frame_Tips()--显示GCD图片
     end})
-    sliderSize:SetPoint("TOPLEFT", panel.gcdCheck, 'BOTTOMLEFT', 0, -20)
+    panel.sliderSize:SetPoint("TOPLEFT", panel.gcdCheck, 'BOTTOMLEFT', 0, -20)
 
     local alphaSlider = e.CSlider(panel, {min=0.1, max=1, value=Save.alpha, setp=0.1, color=true,
     text=e.onlyChinese and '透明度' or 'Alpha',
@@ -557,7 +562,7 @@ local function Init_GCD_Options()
         Save.gcdAlpha= value
         show_GCD_Frame_Tips()--显示GCD图片
     end})
-    alphaSlider:SetPoint("TOPLEFT", sliderSize, 'BOTTOMLEFT', 0, -20)
+    alphaSlider:SetPoint("TOPLEFT", panel.sliderSize, 'BOTTOMLEFT', 0, -20)
 
     local sliderX = e.CSlider(panel, {min=-100, max=100, value=Save.gcdX , setp=1,
     text='X',
@@ -730,52 +735,35 @@ local function GCD_Init()
     end)
 
     set_GCD()--设置 GCD
-    Init_GCD_Options()
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --######
 --初始化
 --######
-local function Init()
-    --panel.name = e.Icon.left..(e.onlyChinese and '鼠标' or MOUSE_LABEL)..'|r'
-    --panel.parent =id
-
-    e.AddPanel_Sub_Category({name=e.Icon.left..(e.onlyChinese and '鼠标' or MOUSE_LABEL)..'|r', frame=panel})
-
-    e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=nil, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
-        disabledfunc=nil,
-        clearfunc= function() Save=nil e.Reload() end}
-    )
-
-    --[[重新加载UI, 按钮
-    local reloadButton=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')
-    reloadButton:SetPoint('TOPLEFT')
-    reloadButton:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
-    reloadButton:SetSize(120, 28)
-    reloadButton:SetScript('OnMouseUp', e.Reload)]]
-
+local function Init_Options()
+    if (Save.disabled and Save.disabledGCD) or panel.Texture then
+        return
+    end
     --设置, 大图片
     panel.Texture= panel:CreateTexture()--大图片
     panel.Texture:SetPoint('TOPRIGHT', panel, 'TOP', -20, 10)
     panel.Texture:SetSize(80,80)
-
-    --[[重置, 按钮
-    local restButton= e.Cbtn(panel, {type=false, size={20,20}})
-    restButton:SetNormalAtlas('bags-button-autosort-up')
-    restButton:SetPoint("TOPRIGHT")
-    restButton:SetScript('OnMouseUp', function()
-        StaticPopupDialogs[id..addName..'restAllSetup']={
-            text =id..'  '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..'|r '..(e.onlyChinese and '保存' or SAVE)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI)..' /reload',
-            button1 = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET),
-            button2 = e.onlyChinese and '取消' or CANCEL,
-            whileDead=true,timeout=30,hideOnEscape = 1,
-            OnAccept=function()
-                Save=nil
-                e.Reload()
-            end,
-        }
-        StaticPopup_Show(id..addName..'restAllSetup')
-    end)]]
 
     local useClassColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--职业颜色
     local colorText= e.Cstr(panel, {color={r=Save.color.r, g=Save.color.g, b=Save.color.b, a=Save.color.a}})--nil, nil, nil, {Save.color.r, Save.color.g, Save.color.b, Save.color.a})--自定义,颜色
@@ -866,6 +854,7 @@ local function Init()
             set_Curor_Random_Event()--随机, 事件
         end
     end)
+    panel.randomTextureCheck:SetScript('OnLeave', GameTooltip_Hide)
     panel.randomTextureCheck:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
@@ -877,87 +866,14 @@ local function Init()
         e.tips:AddDoubleLine('GCD', e.GetEnabeleDisable(true))
         e.tips:Show()
     end)
-    panel.randomTextureCheck:SetScript('OnLeave', GameTooltip_Hide)
-
-    --[[战斗中， 随机，图片
-    local randomTextureInCombatCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--随机, 图片
-    randomTextureInCombatCheck:SetPoint("LEFT", panel.randomTextureCheck.text, 'RIGHT', 2,0)
-    randomTextureInCombatCheck.text:SetText(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-    randomTextureInCombatCheck:SetChecked(Save.randomTextureInCombat)
-    randomTextureInCombatCheck:SetScript('OnMouseDown', function()
-        Save.randomTextureInCombat= not Save.randomTextureInCombat and true or nil
-    end)
-    randomTextureInCombatCheck:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddLine((e.onlyChinese and '高' or HIGH )..' CPU')
-        e.tips:AddLine(format(e.onlyChinese and "仅限%s" or LFG_LIST_CROSS_FACTION, 'Cursor'))
-        e.tips:AddLine('GCD '..e.GetEnabeleDisable(true))
-        e.tips:Show()
-    end)
-    randomTextureInCombatCheck:SetScript('OnLeave', GameTooltip_Hide)
-]]
-
-    --Cursor, 启用/禁用
-    panel.cursorCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    panel.cursorCheck:SetChecked(not Save.disabled)
-    panel.cursorCheck:SetPoint("TOPLEFT", 0, -35)
-    panel.cursorCheck.text:SetText('1)'..(e.onlyChinese and '启用' or ENABLE).. ' Cursor')
-    panel.cursorCheck:SetScript('OnMouseDown', function()
-        Save.disabled = not Save.disabled and true or nil
-        if not Save.disabled and not cursorFrame then
-            Cursor_Init()
-        end
-        if cursorFrame then
-            set_Curor_Random_Event()--随机, 图片，事件
-            cursorFrame:SetShown(not Save.disabled)
-        end
-    end)
-    --[[panel.cursorCheck:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '友情提示:' or 'note: ', e.onlyChinese and '可能会出现' or ENABLE_ERROR_SPEECH)
-        e.tips:AddDoubleLine(e.onlyChinese and '物品升级界面' or (ITEM_UPGRADE..' UI'), e.onlyChinese and '错误' or ERRORS, 1,0,0,1,0,0)
-        e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
-        e.tips:Show()
-    end)
-    panel.cursorCheck:SetScript('OnLeave', GameTooltip_Hide)]]
-
-    --GCD, 启用/禁用
-    panel.gcdCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    panel.gcdCheck:SetChecked(not Save.disabledGCD)
-    panel.gcdCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -35)
-    panel.gcdCheck.text:SetText('2)'..(e.onlyChinese and '启用' or ENABLE).. ' GCD')
-    panel.gcdCheck:SetScript('OnMouseDown', function()
-        Save.disabledGCD = not Save.disabledGCD and true or nil
-        if not Save.disabledGCD and not gcdFrame then
-            GCD_Init()
-        end
-        if not Save.disabledGCD then
-            show_GCD_Frame_Tips()--显示GCD图片
-        else
-            set_GCD()--设置 GCD
-        end
-    end)
-    --[[panel.gcdCheck:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '友情提示:' or 'note: ', e.onlyChinese and '可能会出现' or ENABLE_ERROR_SPEECH)
-        e.tips:AddDoubleLine(e.onlyChinese and '物品升级界面' or (ITEM_UPGRADE..' UI'), e.onlyChinese and '错误' or ERRORS, 1,0,0,1,0,0)
-        e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.onlyChinese and '错误' or ERRORS, 1,0,0, 1,0,0)
-        e.tips:Show()
-    end)
-    panel.gcdCheck:SetScript('OnLeave', GameTooltip_Hide)]]
-
-
-
 end
 
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             if not WoWToolsSave[addName] then
@@ -981,19 +897,62 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.gcdY=0
             end
 
-            Init()
+            e.AddPanel_Sub_Category({name=e.Icon.left..(e.onlyChinese and '鼠标' or MOUSE_LABEL)..'|r', frame=panel})
+
+            e.ReloadPanel({panel=panel, addName= addName, restTips=true, checked=nil, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+                disabledfunc=nil,
+                clearfunc= function() Save=nil e.Reload() end}
+            )
+
+            --Cursor, 启用/禁用
+            panel.cursorCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            panel.cursorCheck:SetChecked(not Save.disabled)
+            panel.cursorCheck:SetPoint("TOPLEFT", 0, -35)
+            panel.cursorCheck.text:SetText('1)'..(e.onlyChinese and '启用' or ENABLE).. ' Cursor')
+            panel.cursorCheck:SetScript('OnMouseDown', function()
+                Save.disabled = not Save.disabled and true or nil
+                if not Save.disabled and not cursorFrame then
+                    Cursor_Init()
+                end
+                if cursorFrame then
+                    set_Curor_Random_Event()--随机, 图片，事件
+                    cursorFrame:SetShown(not Save.disabled)
+                end
+                Init_Options()
+                Init_Cursor_Options()
+            end)
+
+            --GCD, 启用/禁用
+            panel.gcdCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            panel.gcdCheck:SetChecked(not Save.disabledGCD)
+            panel.gcdCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -35)
+            panel.gcdCheck.text:SetText('2)'..(e.onlyChinese and '启用' or ENABLE).. ' GCD')
+            panel.gcdCheck:SetScript('OnMouseDown', function()
+                Save.disabledGCD = not Save.disabledGCD and true or nil
+                if not Save.disabledGCD and not gcdFrame then
+                    GCD_Init()
+                end
+                if not Save.disabledGCD then
+                    show_GCD_Frame_Tips()--显示GCD图片
+                else
+                    set_GCD()--设置 GCD
+                end
+                Init_Options()
+                Init_GCD_Options()
+            end)
 
             if not Save.disabled then
                 C_Timer.After(2, Cursor_Init)
-                --table.insert(e.Player.disabledLUA, addName..' CURSOR')--禁用插件, 给物品升级界面用
             end
-
             if not Save.disabledGCD then
                 C_Timer.After(2, GCD_Init)
-                --table.insert(e.Player.disabledLUA, addName..' GCD')--禁用插件, 给物品升级界面用
             end
-            panel:UnregisterEvent('ADDON_LOADED')
-            panel:RegisterEvent("PLAYER_LOGOUT")
+
+
+        elseif arg1=='Blizzard_Settings' then
+            Init_Options()
+            Init_Cursor_Options()
+            Init_GCD_Options()
         end
 
     elseif event == "PLAYER_LOGOUT" then
