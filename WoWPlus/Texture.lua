@@ -2587,10 +2587,8 @@ end
 
 
 
-
+local Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
 local function Init_Options()
-    local Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
-
     local initializer2= e.AddPanel_Check_Button({
         checkName= e.onlyChinese and '材质' or TEXTURES_SUBHEADER,
         checkValue= not Save.disabled,
@@ -2772,7 +2770,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.classPowerNumSize= Save.classPowerNumSize or 12
             GetMinValueAlpha()--min03，透明度，最小值
-
+            
+            Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
             if Save.disabled then
                 e.AddPanel_Check({
                     name= e.onlyChinese and '材质' or TEXTURES_SUBHEADER,

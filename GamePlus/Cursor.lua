@@ -957,10 +957,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            --[[if e.DisabledLua then--禁用插件, 给物品升级界面用
-                Save.disabled=true
-                Save.disabledGCD=true
-            end]]
             WoWToolsSave[addName]=Save
         end
     end

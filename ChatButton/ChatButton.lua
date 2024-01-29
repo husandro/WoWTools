@@ -13,7 +13,6 @@ local button
 --初始
 --####
 local function Init()
-    
     if Save.scale and Save.scale~=1 then--缩放
         button:SetScale(Save.scale)
     end
