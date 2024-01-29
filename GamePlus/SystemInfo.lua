@@ -1114,7 +1114,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
-                Init()
+                C_Timer.After(2, Init)
                 panel:UnregisterEvent('ADDON_LOADED')
             end
             panel:RegisterEvent("PLAYER_LOGOUT")

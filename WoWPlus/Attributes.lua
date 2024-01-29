@@ -50,6 +50,8 @@ local Save={
     --strupper
 }
 
+local RedColor--变小值
+local GreenColor--变大值
 --PaperDollFrame.lua
 
 local function get_PrimaryStat()--取得主属
@@ -169,9 +171,9 @@ local function set_Text_Value(frame, value, value2)
             frame.barTextureSpark:SetShown(false)
         else
             if frame.value< value then
-                frame.bar:SetStatusBarColor(panel.barGreenColor.r, panel.barGreenColor.g, panel.barGreenColor.b, panel.barGreenColor.a)
+                frame.bar:SetStatusBarColor(GreenColor.r, GreenColor.g, GreenColor.b, GreenColor.a)
             else
-                frame.bar:SetStatusBarColor(panel.barRedColor.r, panel.barRedColor.g, panel.barRedColor.b, panel.barRedColor.a)
+                frame.bar:SetStatusBarColor(RedColor.r, RedColor.g, RedColor.b, RedColor.a)
             end
             frame.bar:SetValue(value)
             if frame.useNumber then
@@ -1562,6 +1564,7 @@ local function set_Panle_Setting()--设置 panel
             local hex= e.RGB_to_HEX(setR, setG, setB,setA, self)--RGB转HEX
             hex= hex and '|c'..hex or '|cffff8200'
             Save.greenColor= hex
+            GreenColor= {r=setR or 1, g=setG or 0, setB=b or 0, a=setA or 1}
         end
         e.ShowColorPicker(self.r, self.g, self.b,self.a, function()
                 setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
@@ -1593,6 +1596,7 @@ local function set_Panle_Setting()--设置 panel
             local hex= e.RGB_to_HEX(setR, setG, setB,setA, self)--RGB转HEX
             hex= hex and '|c'..hex or '|cffff0000'
             Save.redColor= hex
+            RedColor= {r=setR or 1, g=setG or 0, setB=b or 0, a=setA or 1}
         end
         e.ShowColorPicker(self.r, self.g, self.b,self.a, function()
                 setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
@@ -2231,6 +2235,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.font= Save.font or {r=0, g=0, b=0, a=1, x=1, y=-1}--阴影
             Save.tab['STAUTS']= Save.tab['STAUTS'] or {}
             Save.tab['STAUTS'].bit= Save.tab['STAUTS'].bit or 3
+            
+            
 
             --添加控制面板
             e.AddPanel_Sub_Category({name='|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES), frame=panel})
@@ -2253,6 +2259,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
+                local r,g,b,a= e.HEX_to_RGB(Save.redColor)
+                RedColor= {r=r or 1, g=g or 0, b=b or 0, a=a or 1}
+                r,g,b,a= e.HEX_to_RGB(Save.greenColor)
+                GreenColor= {r=r or 0, g=g or 1, b=b or 0, a=a or 1}
                 Init()
                 set_ShowHide_Event()--显示，隐藏，事件
             end
