@@ -20172,17 +20172,32 @@ local  spellTab={
 }
 
 
+local curcurrencyTab={
+    {2796, '苏生奇梦', '苏生奇梦可以给复苏化生台充能，使其可以将难以置信的能量灌注到护甲里'},
+
+    {2707, '幼龙的酣梦纹章', '从巨龙时代第3赛季的某些户外活动、普通难度的阿梅达希尔以及6到10级的史诗钥石地下城获得'},
+    {2706, '雏龙的酣梦纹章', '从巨龙时代第3赛季的许多户外活动、随机难度的阿梅达希尔以及不高于5级的史诗钥石地下城获得。'},
+    {2708, '魔龙的酣梦纹章', '从巨龙时代第3赛季的英雄难度的阿梅达希尔以及11到15级的史诗钥石地下城获得'},
+    {2709, '守护巨龙的酣梦纹章', '从巨龙时代第3赛季的史诗难度的阿梅达希尔以及不低于16级的史诗钥石地下城获得。'},
+    {2594, '超因果箔片', '时光能量颗粒。灌注了足够的力量，所以化为了实体。提尔要塞水库的商人很珍视它。'},
+    {2657, '迷之碎片', '通过协助巨龙群岛的艾泽拉斯档案师获得。可以在索德拉苏斯的供给商阿丽丝塔处换取物品。'},
+    {2650, '翡翠露滴', '灌注了翡翠梦境的滋养特性的露水，可以让任何植物绽放。 用来让翡翠梦境的植物复苏。'},
+    {2777, '梦境注能', '用来抽出生物的酣梦精华。 中心营地的艾莉阿娜会对此感兴趣的。'},
+    {2245, '飞珑石', '通过完成世界任务、团队副本、地下城、竞技场比赛以及其他活动获得。用来给满级装备升级。'},
+    {2003, '巨龙群岛补给', '各类物资和建筑材料，可以帮助巨龙群岛的友善阵营对抗拜荒者。用来购买通过名望解锁的物品。'},
+    {2122, '风暴徽记', '标志着对平息了原始风暴的勇敢冒险者的认可。用来升级原始风暴装备。'},
+    {2118, '元素涌流', '被击败的敌人的精华，灌注了原始风暴的力量。 用来在瓦德拉肯的密斯莱莎处以及莫库特村的多个商人处采购物品。'},
+
+    {2123, '血腥硬币', '在巨龙群岛的血腥战斗中获得。'},
+    {1792, '荣誉点数', '用来购买非评级的PvP装备。'},
+    {1602, '征服点数', '从评级PvP活动获得。用来购买评级PvP装备。'},
+
+    {1166, '时空扭曲徽章', '在时空漫游地下城中获得，可以在主城的时空漫游商人处换取货物。'},
+    {515, '暗月奖券', '在暗月马戏团的游戏中获胜或完成工作人员交付的任务后获得。'},
+    {2032, '商贩标币', '商贩标币可以用来在商栈交易商品。'},
+}
 
 
-for _, info in pairs(fanctionTab) do
-    local name, description = GetFactionInfoByID(info[1])
-    if name then
-        e.strText[name] = info[2]
-    end
-    if description and info[3] then
-        e.strText[description]= info[3]
-    end
-end
 
 
 for _, info in pairs(spellTab) do
@@ -20203,7 +20218,28 @@ C_Timer.After(2, function()
             end
         end
     end
+    for _, info in pairs(fanctionTab) do
+        local name, description = GetFactionInfoByID(info[1])
+        if name then
+            e.strText[name] = info[2]
+        end
+        if description and info[3] then
+            e.strText[description]= info[3]
+        end
+    end
+    for _, curTab in pairs(curcurrencyTab) do
+        local info =C_CurrencyInfo.GetCurrencyInfo(curTab[1]) or {}
+        if info.name then
+            e.strText[info.name]= curTab[2]
+        end
+        if info.description and curTab[3] then
+            e.strText[info.description]= curTab[3]
+        end
+    end
+    
     spellTab=nil
+    fanctionTab=nil
+    curcurrencyTab=nil
 end)
 end
 

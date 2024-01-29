@@ -35,11 +35,11 @@ local TrackButton
 
 
 local function get_Faction_Info(index, factionID)
-	local name, standingID, barMin, barMax, barValue, isHeader, isCollapsed, hasRep, isChild, _
+	local name, standingID, barMin, barMax, barValue, isHeader,  hasRep,  _
 	if index then
-		name, _, standingID, barMin, barMax, barValue, _, _, isHeader, isCollapsed, hasRep, _, isChild, factionID= GetFactionInfo(index)
+		name, _, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID= GetFactionInfo(index)
 	else
-		name, _, standingID, barMin, barMax, barValue, _, _, isHeader, isCollapsed, hasRep, _, isChild, factionID= GetFactionInfoByID(factionID)
+		name, _, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID= GetFactionInfoByID(factionID)
 	end
 
 	if not factionID or not name or name==HIDE or (not hasRep and isHeader) then
@@ -107,7 +107,7 @@ local function get_Faction_Info(index, factionID)
 		if (isHeader and hasRep) or not isHeader then
 			if not isCapped then
 				local gender = e.Player.sex
-				factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
+				factionStandingtext = e.cn(GetText("FACTION_STANDING_LABEL"..standingID, gender))
 				if barValue and barMax then
 					if barMax==0 then
 						value= format('%i%%', (barMin-barValue)/barMin*100)
@@ -675,7 +675,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 	local frame = factionRow.Container
 	local factionBar = frame.ReputationBar;
 	--local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive
-	local _, _, standingID, _, _, _, _, _, isHeader, _, hasRep, isWatched, _, factionID= GetFactionInfo(factionIndex)
+	local name, _, standingID, _, _, _, _, _, isHeader, _, hasRep, isWatched, _, factionID= GetFactionInfo(factionIndex)
 	if (isHeader and not hasRep) or not factionID or Save.notPlus then
 		if frame.watchedIcon then--显示为经验条
 			frame.watchedIcon:SetShown(false)

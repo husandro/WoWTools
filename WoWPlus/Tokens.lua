@@ -111,8 +111,10 @@ local function Get_Item(itemID)
 		end
 
 		name= C_Item.GetItemNameByID(itemID)
+		
 		local nameText
 		if Save.nameShow then
+			name= e.cn(name)
 			nameText = (name and hex) and hex..name..'|r' or name
 		else
 			numText= hex and hex..numText or numText
@@ -149,7 +151,7 @@ local function Get_Currency(currencyID, index)--货币
 		return
     end
 
-    local name=  Save.nameShow and info.name or nil
+    local name=  Save.nameShow and e.cn(info.name) or nil
 	local num= e.MK(info.quantity, 3)
 
 	local weekMax= info.canEarnPerWeek--本周
@@ -243,7 +245,10 @@ end
 
 
 local function Set_TrackButton_Text()
-	if not TrackButton or not TrackButton:IsShown() then
+	if not TrackButton or not TrackButton:IsShown() or not Save.str then
+		if TrackButton then
+			TrackButton.Frame:set_shown()
+		end
 		return
 	end
 
@@ -580,7 +585,6 @@ local function Init_TrackButton()
 			)
 
 		self:SetShown(not hide)
-		--self.Frame:SetShown(not hide and Save.str)
 	end
 
 	function TrackButton:set_Scale()
@@ -612,7 +616,7 @@ local function Init_TrackButton()
 			e.tips:AddDoubleLine(id, addName)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.left)
-			e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+			e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..' '..e.GetShowHide(Save.str), e.Icon.right)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Atl+'..e.Icon.right)
 			e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
@@ -703,8 +707,8 @@ local function Init_TrackButton()
 						keepShownOnClick=true,
 						func= function()
 							Save.str= not Save.str and true or nil
-							TrackButton:set_Shown()
 							TrackButton:set_Texture()
+							TrackButton.Frame:set_shown()
 							print(id, addName, e.GetShowHide(Save.str))
 						end
 					}
@@ -813,7 +817,10 @@ local function Init_TrackButton()
 		end
 		Set_TrackButton_Text()
 	end)
-
+	function TrackButton.Frame:set_shown()
+		self:SetShown(Save.str)
+	end
+	TrackButton.Frame:set_shown()
 
 	TrackButton:set_Point()
 	TrackButton:set_Scale()
@@ -1003,6 +1010,10 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	if frame.Name then
 		local r, g, b= GetItemQualityColor(info and info.quality or 1)
 		frame.Name:SetTextColor(r or 1, g or 1, b or 1)
+		local name= e.strText[frame.Name:GetText()]--汉化
+		if name then
+			frame.Name:SetText(name)
+		end
 	end
 end
 
