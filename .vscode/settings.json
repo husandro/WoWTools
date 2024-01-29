@@ -4065,9 +4065,16 @@
         "ITEM_BNETACCOUNTBOUND",
         "ITEM_ACCOUNTBOUND",
         "UNLIMITED",
-        "WoWToolsChatButtonFrame"
+        "WoWToolsChatButtonFrame",
+        "SPLASH_BATTLEFORAZEROTH_8_1_0_2_RIGHT_TITLE",
+        "GLYPHS",
+        "TOOLTIP_BATTLE_PET",
+        "GRAPHICS_HEADER",
+        "ADDON_DISABLED",
+        "EMOTE67_CMD1"
     ],
     "Lua.diagnostics.disable": [
-        "inject-field"
+        "inject-field",
+        "undefined-field"
     ]
 }

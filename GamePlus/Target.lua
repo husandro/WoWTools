@@ -2,13 +2,12 @@ local id, e= ...
 local addName= TARGET
 local Save= {
     target= true,
-    targetTextureTab={        
-        ['Interface\\AddOns\\WeakAuras\\Media\\Textures\\targeting-mark.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Hunters_Mark.tga']='t',
-        --[[
+    targetTextureTab={
         ['common-icon-rotateright']='a',
         ['NPE_ArrowDown']='a',
         ['UI-HUD-MicroMenu-StreamDLYellow-Up']='a',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Hunters_Mark.tga']='t',
+        ['Interface\\AddOns\\WeakAuras\\Media\\Textures\\targeting-mark.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Reticule.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\RedArrow.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonReticule.tga']='t',
@@ -39,7 +38,6 @@ local Save= {
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_GreenTarget.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedTarget.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_WhiteTarget.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Hunters_Mark.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_Towards.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_Away.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_SelfTowards.tga']='t',
@@ -48,8 +46,7 @@ local Save= {
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FriendAway.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusTowards.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusAway.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\green_arrow_down_11384.tga']='t',]]
-        
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\green_arrow_down_11384.tga']='t',
     },
     targetTextureName='common-icon-rotateright',
 
@@ -60,6 +57,7 @@ local Save= {
     h=20,
     x=0,
     y=0,
+    scale=1.5,
     --top=true,--位于，目标血条，上方
 
     creature= true,--怪物数量
@@ -115,10 +113,11 @@ end]]
 
 local function set_Target_Texture(self)--设置，图片
     if self then
-        if Save.targetTextureTab[Save.targetTextureName]=='a' then
-            self:SetAtlas(Save.targetTextureName)
+        local isAtlas, texture= e.IsAtlas(Save.targetTextureName)
+        if isAtlas then
+            self:SetAtlas(texture)
         else
-            self:SetTexture(Save.targetTextureName)
+            self:SetTexture(texture or 0)
         end
     end
 end
@@ -436,7 +435,7 @@ local function set_Created_Texture_Text()
         targetFrame.Target= targetFrame:CreateTexture(nil, 'BACKGROUND')
         targetFrame.Target:SetAllPoints(targetFrame)
     end
-    
+
     if targetFrame.Target then
         set_Target_Texture(targetFrame.Target)--设置，图片
         set_Target_Color(targetFrame.Target, Save.targetInCombat and UnitAffectingCombat('player'))
@@ -723,6 +722,15 @@ local function set_Option()
         self2:SetAlpha(0.3)
     end)
 
+    local topCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    topCheck:SetPoint('LEFT', combatCheck.Text, 'RIGHT', 15,0)
+    topCheck:SetChecked(Save.top)
+    topCheck.Text:SetText('TOP')
+    topCheck:SetScript('OnClick', function()
+        Save.top= not Save.top and true or nil
+        set_All_Init()
+    end)
+
     local sliderX = e.CSlider(panel, {min=-250, max=250, value=Save.x, setp=1, w= 100,
     text= 'X',
     func=function(self2, value)
@@ -766,129 +774,121 @@ local function set_Option()
     end})
     sliderH:SetPoint("LEFT", sliderW, 'RIGHT',15,0)
 
-    local topCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    topCheck:SetPoint('LEFT', sliderH, 'RIGHT', 15,0)
-    topCheck:SetChecked(Save.top)
-    topCheck.Text:SetText('TOP')
-    topCheck:SetScript('OnClick', function()
-        Save.top= not Save.top and true or nil
-        set_All_Init()
-    end)
+    
+
+    local sliderScale = e.CSlider(panel, {min=0.4, max=2, value=Save.scale or 1, setp=0.1, w= 100,
+    text= e.onlyChinese and '缩放' or UI_SCALE,
+    func=function(self2, value)
+        value= tonumber(format('%.1f', value))
+        self2:SetValue(value)
+        self2.Text:SetText(value)
+        Save.scale= value
+    end})
+    sliderScale:SetPoint("LEFT", sliderH, 'RIGHT', 15, 0)
 
 
-    panel.targetTextureMenu = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
-    panel.targetTextureMenu.del= e.Cbtn(panel, {atlas='xmarksthespot', size={20,20}})--删除, 按钮
-    panel.targetTextureMenu.add= e.Cbtn(panel, {atlas=e.Icon.select, size={20,20}})--添加, 按钮
-    panel.targetTextureMenu.edit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
-    panel.targetTextureMenu.textureCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-
-    function panel.targetTextureMenu:Set_del_Shown()--是否显示，删除按钮
-        self.del:SetShown(Save.targetTextureName~='common-icon-rotateright')
-    end
-    panel.targetTextureMenu:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', -16,-16)
-    e.LibDD:UIDropDownMenu_SetWidth(panel.targetTextureMenu, 180)
-    e.LibDD:UIDropDownMenu_Initialize(panel.targetTextureMenu, function(_, level)
-        for name, type in pairs(Save.targetTextureTab) do
-            local info={
-                text= name,
-                icon= name,
-                tooltipOnButton=true,
-                tooltipTitle= type=='a' and 'Atls' or 'Texture',
-                arg1= name,
-                arg2= type,
-                checked= Save.targetTextureName==name,
-                func= function(_, arg1, arg2)
-                    Save.targetTextureName= arg1
-                    e.LibDD:UIDropDownMenu_SetText(panel.targetTextureMenu, arg1)
-                    panel.targetTextureMenu.textureCheck:SetChecked(arg2=='a')
-                    panel.targetTextureMenu.edit:SetText(arg1)
-                    --set_Target_Texture(panel.tipTargetTexture)--设置，图片
-                    set_All_Init()
-                    panel.targetTextureMenu:Set_del_Shown()--是否显示，删除按钮
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
+    local menu = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    menu:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', -16,-16)
+    e.LibDD:UIDropDownMenu_SetWidth(menu, 410)
+    e.LibDD:UIDropDownMenu_Initialize(menu, function(self, level)
+        for name, _ in pairs(Save.targetTextureTab) do
+            local isAtlas, texture= e.IsAtlas(name)
+            if texture then
+                local info={
+                    text= name,
+                    icon= name,
+                    tooltipOnButton=true,
+                    tooltipTitle= isAtlas and 'Atls' or 'Texture',
+                    arg1= name,
+                    arg2= isAtlas,
+                    checked= Save.targetTextureName==name,
+                    func= function(_, arg1)
+                        Save.targetTextureName= arg1
+                        e.LibDD:UIDropDownMenu_SetText(self, arg1)
+                        self.edit:SetText(arg1)
+                        set_All_Init()
+                    end
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+            end
         end
     end)
-    e.LibDD:UIDropDownMenu_SetText(panel.targetTextureMenu, Save.targetTextureName)
-    panel.targetTextureMenu:Set_del_Shown()--是否显示，删除按钮
-    panel.targetTextureMenu.Button:SetScript('OnClick', function(self)
+    e.LibDD:UIDropDownMenu_SetText(menu, Save.targetTextureName)
+    menu.Button:SetScript('OnClick', function(self)
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
     end)
 
-    --删除，图片
-    panel.targetTextureMenu.del:SetPoint('LEFT', panel.targetTextureMenu, 'RIGHT',-10,0)
-    panel.targetTextureMenu.del:SetScript('OnClick', function()
-        Save.targetTextureTab[Save.targetTextureName]= nil
-        Save.targetTextureName= 'common-icon-rotateright'
-        panel.targetTextureMenu.edit:SetText(Save.targetTextureName)
-        panel.tipTargetTexture:SetAtlas(Save.targetTextureName)
-        e.LibDD:UIDropDownMenu_SetText(panel.targetTextureMenu, Save.targetTextureName)
+    menu.edit= CreateFrame("EditBox", nil, menu, 'InputBoxTemplate')--EditBox
+    menu.edit:SetPoint("TOPLEFT", menu, 'BOTTOMLEFT',22,-2)
+	menu.edit:SetSize(420,22)
+	menu.edit:SetAutoFocus(false)
+    menu.edit:ClearFocus()
+    menu.edit.Label= e.Cstr(menu.edit)
+    menu.edit.Label:SetPoint('RIGHT', menu.edit, 'LEFT', -4, 0)
+    menu.edit:SetScript('OnShow', function(self)
+        self:SetText(Save.targetTextureName)
+    end)
+    menu.edit:SetScript('OnTextChanged', function(self)
+        local isAtlas, texture= e.IsAtlas(self:GetText())
+        if texture then
+            if isAtlas then
+                panel.tipTargetTexture:SetAtlas(texture)
+            else
+                panel.tipTargetTexture:SetTexture(texture)
+            end
+            self.Label:SetText(isAtlas and 'Atls' or 'Texture')
+        else
+            self.Label:SetText("")
+            panel.tipTargetTexture:SetTexture(0)
+        end
+        self.del:SetShown(texture and texture~='common-icon-rotateright')
+        self.add:SetShown(texture and not Save.targetTextureTab[texture])
     end)
 
-    panel.targetTextureMenu.edit:SetPoint("TOPLEFT", panel.targetTextureMenu, 'BOTTOMLEFT',22,-2)
-	panel.targetTextureMenu.edit:SetSize(192,20)
-	panel.targetTextureMenu.edit:SetAutoFocus(false)
-    panel.targetTextureMenu.edit:ClearFocus()
-    function panel.targetTextureMenu.edit:set_tips_Texture()
-        local text= self:GetText() or ''
-        local type= panel.targetTextureMenu.textureCheck:GetChecked() and 'a' or 't'
-        panel.targetTextureMenu.add:SetShown(text~='' and (not Save.targetTextureTab[text] or Save.targetTextureTab[text]~= type))
-        if text~='' then
-            if panel.targetTextureMenu.textureCheck:GetChecked() then
-                panel.tipTargetTexture:SetAtlas(text)
-            else
-                panel.tipTargetTexture:SetTexture(text)
-            end
-        end
-    end
-    panel.targetTextureMenu.edit:SetScript('OnTextChanged', function(self)
-        self:set_tips_Texture()
+    --删除，图片
+    menu.edit.del= e.Cbtn(menu.edit, {atlas='xmarksthespot', size={20,20}})
+    menu.edit.del:SetPoint('LEFT', menu, 'RIGHT',-10,0)
+    menu.edit.del:SetScript('OnClick', function(self)
+        Save.targetTextureTab[Save.targetTextureName]= nil
+        Save.targetTextureName= 'common-icon-rotateright'
+        self:GetParent():SetText(Save.targetTextureName)
+        e.LibDD:UIDropDownMenu_SetText(self:GetParent():GetParent(), Save.targetTextureName)
     end)
 
     --添加按钮
-    panel.targetTextureMenu.add:SetPoint('LEFT', panel.targetTextureMenu.edit, 'RIGHT', 5,0)
-
-    panel.targetTextureMenu.add:SetScript('OnClick', function(self)
-        local icon= panel.targetTextureMenu.edit:GetText()
-        if icon and icon~='' then
-            Save.targetTextureTab[icon]= panel.targetTextureMenu.textureCheck:GetChecked() and 'a' or 't'
-            panel.targetTextureMenu.edit:SetText('')
+    menu.edit.add= e.Cbtn(menu.edit, {atlas=e.Icon.select, size={20,20}})--添加, 按钮
+    menu.edit.add:SetPoint('LEFT', menu.edit, 'RIGHT', 5,0)
+    menu.edit.add:SetScript('OnClick', function(self)
+        local parent= self:GetParent()
+        local isAtlas, icon= parent:GetText()
+        if icon then
+            Save.targetTextureTab[icon]= isAtlas and 'a' or 't'
+            parent:SetText('')
         end
     end)
-    panel.targetTextureMenu.add:SetScript('OnEnter', function(self)
+    menu.edit.add:SetScript('OnLeave', GameTooltip_Hide)
+    menu.edit.add:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        local icon= panel.targetTextureMenu.edit:GetText()
-        local atlas= panel.targetTextureMenu.textureCheck:GetChecked()
-        e.tips:AddLine(atlas and '|A:'..icon..':0:0|a' or ('|T'..icon..':0|t'))
-        e.tips:AddDoubleLine(atlas and 'Atlas' or 'Texture', icon)
+        local atlas, icon= e.IsAtlas(menu.edit:GetText())
+        if icon then
+            e.tips:AddDoubleLine(atlas and '|A:'..icon..':0:0|a' or ('|T'..icon..':0|t'), e.onlyChinese and '添加' or ADD)
+            e.tips:AddDoubleLine(atlas and 'Atlas' or 'Texture', icon)
+        else
+            e.tips:AddLine(e.onlyChinese and '无' or NONE)
+        end
         e.tips:Show()
     end)
-    panel.targetTextureMenu.add:SetScript('OnLeave', GameTooltip_Hide)
-
     
-    panel.targetTextureMenu.textureCheck:SetPoint('LEFT', panel.targetTextureMenu.add, 'RIGHT')
-    panel.targetTextureMenu.textureCheck.Text:SetText('Atlas')
-    panel.targetTextureMenu.textureCheck:SetChecked(true)
-    panel.targetTextureMenu.textureCheck:SetScript('OnLeave', GameTooltip_Hide)
-    panel.targetTextureMenu.textureCheck:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine('Atls', self2:GetChecked() and e.Icon.select2 or ' ')
-        e.tips:AddDoubleLine('Texture', self2:GetChecked() and '' or e.Icon.select2)
-        e.tips:Show()
-    end)
-    panel.targetTextureMenu.textureCheck:SetScript('OnClick', function()
-        panel.targetTextureMenu.edit:set_tips_Texture()
-    end)
+
+
 
 
     local sel2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     sel2.Text:SetText(e.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r'
                 or (e.Player.col..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, TARGET)..'('..YOU..')|r |cnGREEN_FONT_COLOR:'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)..'('..YOU..')|r |cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)..'|r')
             )
-    sel2:SetPoint('TOPLEFT', panel.targetTextureMenu.edit, 'BOTTOMLEFT', -32, -60)
+    sel2:SetPoint('TOPLEFT', menu.edit, 'BOTTOMLEFT', -32, -60)
     sel2:SetChecked(Save.creature)
     sel2:SetScript('OnClick', function()
         Save.creature= not Save.creature and true or nil
@@ -995,6 +995,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.targetTextureName= Save.targetTextureName or 'common-icon-rotateright'
             Save.targetColor= Save.targetColor or {r=1,g=1,b=1,a=1}
             Save.targetInCombatColor= Save.targetInCombatColor or {r=1, g=0, b=0, a=1}
+            Save.scale= Save.scale or 1.5
 
             --添加控制面板
             e.AddPanel_Sub_Category({name=e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName)..'|r', frame=panel})

@@ -222,17 +222,17 @@ local function ShowFriendshipReputationTooltip(self)--ReputationFrame.lua
 		Set_SetOwner(self)
 		local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(repInfo.friendshipFactionID);
 		if ( rankInfo.maxLevel > 0 ) then
-			GameTooltip:SetText(repInfo.name.." ("..rankInfo.currentLevel.." / "..rankInfo.maxLevel..")", 1, 1, 1);
+			GameTooltip:SetText(e.cn(repInfo.name).." ("..rankInfo.currentLevel.." / "..rankInfo.maxLevel..")", 1, 1, 1);
 		else
-			GameTooltip:SetText(repInfo.name, 1, 1, 1);
+			GameTooltip:SetText(e.cn(repInfo.name), 1, 1, 1);
 		end
-		GameTooltip:AddLine(repInfo.text, nil, nil, nil, true);
+		GameTooltip:AddLine(e.cn(repInfo.text), nil, nil, nil, true);
 		if ( repInfo.nextThreshold ) then
 			local current = repInfo.standing - repInfo.reactionThreshold;
 			local max = repInfo.nextThreshold - repInfo.reactionThreshold;
-			GameTooltip:AddLine(repInfo.reaction.." ("..current.." / "..max..")" , 1, 1, 1, true);
+			GameTooltip:AddLine(e.cn(repInfo.reaction).." ("..current.." / "..max..")" , 1, 1, 1, true);
 		else
-			GameTooltip:AddLine(repInfo.reaction, 1, 1, 1, true);
+			GameTooltip:AddLine(e.cn(repInfo.reaction), 1, 1, 1, true);
 		end
 		GameTooltip:AddLine(' ')
 		GameTooltip:AddDoubleLine('friendshipID', self.factionID)
@@ -243,14 +243,14 @@ end
 --名望，提示
 local function ShowMajorFactionRenownTooltip(self)--ReputationFrame.lua
 	local function AddRenownRewardsToTooltip(renownRewards)
-		GameTooltip_AddHighlightLine(GameTooltip, MAJOR_FACTION_BUTTON_TOOLTIP_NEXT_REWARDS);
+		GameTooltip_AddHighlightLine(GameTooltip, e.onlyChinese and '接下来的奖励：' or MAJOR_FACTION_BUTTON_TOOLTIP_NEXT_REWARDS);
 		for i, rewardInfo in ipairs(renownRewards) do
 			local renownRewardString;
 			local icon, name = RenownRewardUtil.GetRenownRewardInfo(rewardInfo, GenerateClosure(self.ShowMajorFactionRenownTooltip, self));
 			if icon then
 				local file, width, height = icon, 16, 16;
 				local rewardTexture = CreateSimpleTextureMarkup(file, width, height);
-				renownRewardString = rewardTexture .. " " .. name;
+				renownRewardString = rewardTexture .. " " ..e.cn(name);
 			end
 			local wrapText = false;
 			GameTooltip_AddNormalLine(GameTooltip, renownRewardString, wrapText);
@@ -258,7 +258,7 @@ local function ShowMajorFactionRenownTooltip(self)--ReputationFrame.lua
 	end
 	Set_SetOwner(self)
 	local majorFactionData = C_MajorFactions.GetMajorFactionData(self.factionID) or {};
-	local tooltipTitle = majorFactionData.name;
+	local tooltipTitle = e.cn(majorFactionData.name)
 	GameTooltip_SetTitle(GameTooltip, tooltipTitle, NORMAL_FONT_COLOR);
 	GameTooltip_AddColoredLine(GameTooltip, (e.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..majorFactionData.renownLevel, BLUE_FONT_COLOR);
 	GameTooltip_AddBlankLineToTooltip(GameTooltip);
@@ -287,11 +287,11 @@ local function ShowFactionTooltip(self)--Tooltips.lua
 	local name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
 	if factionID then
 		Set_SetOwner(self)
-		e.tips:AddLine(name..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
-		e.tips:AddLine(description, nil,nil,nil, true)
+		e.tips:AddLine(e.cn(name)..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
+		e.tips:AddLine(e.cn(description), nil,nil,nil, true)
 		e.tips:AddLine(' ')
 		local gender = e.Player.sex
-		local factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
+		local factionStandingtext = e.cn(GetText("FACTION_STANDING_LABEL"..standingID, gender))
 		local barColor = FACTION_BAR_COLORS[standingID]
 		factionStandingtext=barColor:WrapTextInColorCode(factionStandingtext)--颜色
 		if barValue and barMax then
@@ -363,12 +363,12 @@ local function Set_TrackButton_Text()
 				else
 					if ( self.friendshipID ) then
 						ShowFriendshipReputationTooltip(self);--个人，声望，提示
-						
+
 					elseif self.factionID and C_Reputation.IsMajorFaction(self.factionID) and not C_MajorFactions.HasMaximumRenown(self.factionID) then
-						
+
 						ShowMajorFactionRenownTooltip(self);--名望，提示
 					else
-						
+
 						ShowFactionTooltip(self)--阵营声望，提示
 					end
 				end

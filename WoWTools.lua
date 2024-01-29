@@ -55,6 +55,7 @@ local function GetWeek()--周数
     return week
 end
 
+--取得中文
 function e.cn(text)
     return e.strText[text] or text
 end
@@ -154,6 +155,15 @@ e.Icon={
     star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
 
+function e.IsAtlas(texture)
+    texture= texture and texture:gsub(' ', '')
+    if texture and texture~='' then
+        local atlasInfo= C_Texture.GetAtlasInfo(texture) or {}
+        local isAtlas = (atlasInfo.file or atlasInfo.filename) and true or false
+        return isAtlas, texture
+    end
+    return nil
+end
 
 C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua    
     if success and texture then
