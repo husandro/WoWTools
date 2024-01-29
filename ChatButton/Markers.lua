@@ -532,7 +532,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     end
 
     function Frame:set_Tooltips_Point()
-        e.tips:SetOwner(Frame, "ANCHOR_RIGHT")
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
     end
 
 
@@ -572,7 +572,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     btn:SetScript('OnMouseUp', function(self) ResetCursor() self:set_Alpha(true) end)
     btn:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)
     btn:SetScript('OnEnter', function(self)
-        Frame:set_Tooltips_Point(self)
+        Frame:set_Tooltips_Point()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
@@ -691,7 +691,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
         btn:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
         btn:SetScript('OnEnter', function(self)
-            Frame:set_Tooltips_Point(self)
+            Frame:set_Tooltips_Point()
             e.tips:ClearLines()
             if self.action then
                 e.tips:AddLine(MicroButtonTooltipText(self.name, self.action), 1,1,1)
@@ -785,7 +785,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
     end)
     Frame.countdown:SetScript('OnEnter', function(self)
-        Frame:set_Tooltips_Point(self)
+        Frame:set_Tooltips_Point()
         e.tips:ClearLines()
         e.tips:AddLine(e.Icon.left..(e.onlyChinese and '/倒计时' or SLASH_COUNTDOWN2)..' '..(Save.countdown or 7))
         e.tips:AddLine(e.Icon.right..(e.Player.cn and '取消 取消 取消' or 'STOP STOP STOP'))
@@ -831,7 +831,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         DoReadyCheck()
     end)
     Frame.check:SetScript('OnEnter', function(self)
-        Frame:set_Tooltips_Point(self)
+        Frame:set_Tooltips_Point()
         e.tips:ClearLines()
         e.tips:AddLine(EMOTE127_CMD3)
         e.tips:Show()
@@ -918,7 +918,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 e.tips:Hide()
             end)
             btn:SetScript('OnEnter', function(self)
-                Frame:set_Tooltips_Point(self)
+                Frame:set_Tooltips_Point()
                 e.tips:ClearLines()
                 e.tips:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
                 e.tips:Show()
@@ -945,7 +945,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 self:set_Active()
             end)
             btn:SetScript('OnEnter', function(self)
-                Frame:set_Tooltips_Point(self)
+                Frame:set_Tooltips_Point()
                 e.tips:ClearLines()
                 local can= CanBeRaidTarget('target')
                 e.tips:AddLine(MicroButtonTooltipText(get_RaidTargetTexture(self.index), 'RAIDTARGET'..self.index))
@@ -1025,7 +1025,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         btn:SetAttribute("action2", "clear")
         btn:SetScript('OnLeave', function(self) e.tips:Hide() if self.index==0 then self:SetAlpha(0.5) end  end)
         btn:SetScript('OnEnter', function(self)
-            Frame:set_Tooltips_Point(self)
+            Frame:set_Tooltips_Point()
             e.tips:ClearLines()
             if self.index==0 then
                 e.tips:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)

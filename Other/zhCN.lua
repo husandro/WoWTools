@@ -20180,7 +20180,7 @@ for _, info in pairs(spellTab) do
     e.LoadDate({id=info[1], type='spell'})
 end
 C_Timer.After(2, function()
-    for _, info in pairs(spellinfo) do
+    for _, info in pairs(spellTab) do
         if info[2] then
             local name= GetSpellInfo(info[1])
             if name then

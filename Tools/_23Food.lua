@@ -17,7 +17,7 @@ local function setPanelPostion()--设置按钮位置
     if Save.point then
         button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     else
-        button:SetPoint('RIGHT', WoWToolsOpenItemsButton, 'LEFT')
+        button:SetPoint('RIGHT', _G['WoWToolsOpenItemsButton'], 'LEFT')
     end
 end
 
@@ -273,7 +273,7 @@ local function InitMenu(self, level, type)--主菜单
 
     elseif type=='WHO' then
         info= {
-            text= e.onlyChinese and '登录游戏时: 查找' or (LOGIN or SOCIAL_TWITTER_SIGN_IN)..GAME,
+            text= e.onlyChinese and '登录游戏时: 查找' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_SIGN_IN, GAME),
             keepShownOnClick=true,
             tooltipOnButton=true,
             tooltipTitle=AUTO_JOIN:gsub(JOIN,WHO),
@@ -302,7 +302,7 @@ local function InitMenu(self, level, type)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= e.onlyChinese and '仅当前版本物品' or LFG_LIST_CROSS_FACTION:format(REFORGE_CURRENT..(VERSION or GAME_VERSION_LABEL)),
+            text= e.onlyChinese and '仅当前版本物品' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL)),
             checked= Save.onlyMaxExpansion,
             keepShownOnClick=true,
             tooltipOnButton=true,

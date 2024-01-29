@@ -60,7 +60,7 @@ function panel:get_Use_Toy()
                         })
 
                         button:SetAttribute("type*", "item")
-                        button:SetPoint('BOTTOM', WoWToolsOpenItemsButton, 'TOP')--自定义位置
+                        button:SetPoint('BOTTOM', _G['WoWToolsOpenItemsButton'], 'TOP')--自定义位置
                         button:SetScript('OnLeave', GameTooltip_Hide)
                         button:SetScript('OnEnter', function(self2)
                             if self2.itemID then

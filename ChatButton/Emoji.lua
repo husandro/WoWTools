@@ -127,7 +127,7 @@ local function InitMenu(_, level, type)
         end
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
-            text= e.onlyChinese and '全选' or  MENU_EDIT_SELECT_ALL or ALL,--全选
+            text= e.onlyChinese and '全选' or ALL,--全选
             notCheckable=true,
             keepShownOnClick=true,
             func=function()

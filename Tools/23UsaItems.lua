@@ -751,13 +751,13 @@ local function Init()
             local itemEquipLoc= select(4, GetItemInfoInstant(itemLink))
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]
             local type = slot and 'equip' or 'item'
-            local text = slot and EQUIPSET_EQUIP or ITEMS
+            local text = slot and (e.onlyChinese and '装备' or EQUIPSET_EQUIP) or (e.onlyChinese and '物品' or ITEMS)
             local icon = C_Item.GetItemIconByID(itemLink)
             StaticPopup_Show(id..addName..'ADD', text , (icon and '|T'..icon..':0|t' or '')..itemLink, {type=type, name=itemLink, ID=itemID})
             ClearCursor()
 
         elseif infoType =='spell' and spellID then
-            local spellLink=GetSpellLink(spellID) or (SPELLS..' ID: '..spellID)
+            local spellLink=GetSpellLink(spellID) or ((e.onlyChinese and '法术' or SPELLS)..' ID: '..spellID)
             local icon=GetSpellTexture(spellID)
             StaticPopup_Show(id..addName..'ADD', SPELLS , (icon and '|T'..icon..':0|t' or '')..spellLink, {type='spell', name=spellLink, ID=spellID})
             ClearCursor()
@@ -766,9 +766,9 @@ local function Init()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName)
-            e.tips:AddDoubleLine(DRAG_MODEL, ADD)
+            e.tips:AddDoubleLine(e.onlyChinese and '拖曳' or DRAG_MODEL, e.onlyChinese and '添加' or ADD)
             e.tips:AddDoubleLine(SPELLS, ITEMS, 0,1,0, 0,1,0)
-            e.tips:AddDoubleLine(MAINMENU or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
         elseif d=='RightButton' then
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
