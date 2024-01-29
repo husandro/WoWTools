@@ -116,7 +116,6 @@ local function get_Faction_Info(index, factionID)
 					end
 					if Save.toRightTrackText then--向右平移 
 						factionStandingtext= factionStandingtext..' '..standingID..'/'..MAX_REPUTATION_REACTION
-
 					else
 						factionStandingtext= standingID..'/'..MAX_REPUTATION_REACTION..' '..factionStandingtext
 					end
@@ -153,13 +152,16 @@ local function get_Faction_Info(index, factionID)
 	end
 
 	local text
-
-
-	name= not Save.onlyIcon and (name:match('%- (.+)') or name) or nil--仅显示有图标
-
+	if Save.onlyIcon then--仅显示有图标
+		name=nil
+	else
+		name= e.cn(name)
+		name= name:match('%- (.+)') or name
+	end
 	if Save.toRightTrackText then--向右平移 
-		text= name and name..' ' or ''
+		text= name and e.cn(name)..' ' or ''
 		if factionStandingtext then--等级
+			factionStandingtext= e.cn(factionStandingtext)
 			factionStandingtext= barColor and barColor:WrapTextInColorCode(factionStandingtext) or factionStandingtext
 			text= text..factionStandingtext..' '
 		end

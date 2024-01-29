@@ -55,7 +55,9 @@ local function GetWeek()--周数
     return week
 end
 
-
+function e.cn(text)
+    return e.strText[text] or text
+end
 
 
 
