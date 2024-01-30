@@ -23,7 +23,7 @@ end
 
 
 local function set(self, text, affer, setFont)
-    if self and text and not self:IsForbidden() and self.SetText then--CanAccessObject(self) then
+    if self and text and (not self.IsForbidden or not self:IsForbidden()) and self.SetText then--CanAccessObject(self) then
         if setFont then
             font(self)
         end
@@ -5819,12 +5819,18 @@ local function Init_Loaded(arg1)
         end)
 
     elseif arg1=='Blizzard_PerksProgram' then--Blizzard_PerksProgramElements.lua
+        set_tooltip_func(PerksProgramTooltip)
+        set(PerksProgramFrame.ProductsFrame.PerksProgramFilter.FilterDropDownButton.ButtonText, '过滤器')
+
         dia("PERKS_PROGRAM_CONFIRM_PURCHASE", {text= '用%s%s 交易下列物品？', button1 = '购买', button2 = '取消'})
         dia("PERKS_PROGRAM_CONFIRM_REFUND", {text= '退还下列物品，获得退款%s%s？', button1 = '退款', button2 = '取消'})
         dia("PERKS_PROGRAM_SERVER_ERROR", {text= '商栈与服务器交换数据时出现困难，请稍后再试。', button1 = '确定'})
         dia("PERKS_PROGRAM_ITEM_PROCESSING_ERROR", {text= '正在处理一件物品。请稍后再试。。', button1 = '确定'})
         dia("PERKS_PROGRAM_CONFIRM_OVERRIDE_FROZEN_ITEM", {text= '你确定想替换当前的冻结物品吗？现在的冻结物品有可能已经下架了。', button1 = '确认', button2 = '取消'})
-
+        C_Timer.After(0.3, function()
+            set(PerksProgramFrame.FooterFrame.LeaveButton, format('%s 离开', CreateAtlasMarkup("perks-backarrow", 8, 13, 0, 0)))
+        end)
+        
     elseif arg1=='Blizzard_WeeklyRewards' then--Blizzard_WeeklyRewards.lua
         font(WeeklyRewardsFrame.HeaderFrame.Text)
         hooksecurefunc(WeeklyRewardsFrame, 'UpdateTitle', function(self)
@@ -6358,6 +6364,7 @@ local function Init_Loaded(arg1)
         end)
 
 
+        
     --elseif arg1=='Blizzard_CovenantRenown' then
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
