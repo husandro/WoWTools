@@ -336,7 +336,7 @@ local function Init_TrackButton()--设置显示内容, 父框架TrackButton, 内
         e.tips:AddLine(' ')
         set_Tooltips_Info()
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         button:SetButtonState('PUSHED')
     end)
@@ -531,7 +531,7 @@ local function Init()
                                     TrackButton:ClearAllPoints()
                                     TrackButton:set_Point()
                                 end
-                                print(id,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                                print(id,e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                             end
                         }
                         e.LibDD:UIDropDownMenu_AddButton(info, level)

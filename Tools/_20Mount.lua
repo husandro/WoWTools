@@ -1471,7 +1471,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
                     set_Button_Postion()--设置按钮位置
                     print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 layout= nil,
                 category= nil,
             })

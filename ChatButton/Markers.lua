@@ -574,7 +574,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     btn:SetScript('OnEnter', function(self)
         Frame:set_Tooltips_Point()
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'alt+'..e.Icon.right)
         e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff606060' or '')..(e.onlyChinese and '缩放' or  UI_SCALE), (Save.markersScale or 1)..' Alt+'..e.Icon.mid)

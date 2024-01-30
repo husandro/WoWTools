@@ -86,7 +86,7 @@ local function Init()
     for _, tab in pairs(FBList) do
         if IsSpellKnown(tab.spell) then--or not IsSpellKnown(tab.spell) then
             buttons[tab.spell]= e.Cbtn2({
-                name= id..addName,
+                name= id..e.cn(addName),
                 parent= e.toolsFrame,
                 click=true,-- right left
                 notSecureActionButton=nil,

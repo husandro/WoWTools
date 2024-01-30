@@ -150,7 +150,7 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
                 end
                 --e.tips:AddLine(type(self2.tooltip)=='function' and self2.tooltip() or self2.tooltip)
             end
-            e.tips:AddDoubleLine(id,addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
             button:SetButtonState('PUSHED')
         end)
@@ -593,7 +593,7 @@ local function Init_Framerate_Plus()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '字体大小' or FONT_SIZE, (Save.framerateSize or 12)..e.Icon.mid)
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         button:SetButtonState('PUSHED')
     end)
@@ -932,7 +932,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (Save.size or 12)..e.Icon.mid)
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         if self2.moveFPSFrame then
             self2.moveFPSFrame:SetButtonState('PUSHED')
@@ -981,7 +981,7 @@ local function Init()
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '选项' or SETTINGS_TITLE), e.Icon.mid)
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end)
 
@@ -1105,7 +1105,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     end
                     print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 layout= nil,
                 category= nil,
             })

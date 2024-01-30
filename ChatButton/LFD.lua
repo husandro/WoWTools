@@ -649,7 +649,7 @@ local function Init_tipsButton()
 
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         button:SetButtonState('PUSHED')
         Set_Queue_Status()--小眼睛, 更新信息
@@ -1075,7 +1075,7 @@ local function set_LFGPlus()--预创建队伍增强
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddLine(e.onlyChinese and '自动接受' or LFG_LIST_AUTO_ACCEPT)
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
             end)
             self.autoAcceptTexture:SetScript("OnLeave", GameTooltip_Hide)
@@ -1101,7 +1101,7 @@ local function set_LFGPlus()--预创建队伍增强
                         e.tips:SetOwner(self2, "ANCHOR_LEFT")
                         e.tips:ClearLines()
                         e.tips:AddDoubleLine(e.onlyChinese and '服务器' or 'Realm', '|cnGREEN_FONT_COLOR:'..self2.realm)
-                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:AddDoubleLine(id, e.cn(addName))
                         e.tips:Show()
                     end
             end)
@@ -1214,7 +1214,7 @@ local function set_LFGPlus()--预创建队伍增强
         end
         tooltip:AddLine(' ')
         tooltip:AddDoubleLine(e.onlyChinese and '申请' or SIGN_UP, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left, 0,1,0, 0,1,0)
-        tooltip:AddDoubleLine(id, addName)
+        tooltip:AddDoubleLine(id, e.cn(addName))
         tooltip:Show()
     end)
 end
@@ -1245,7 +1245,7 @@ local function set_button_LFGPlus_Texture()--预创建队伍增强
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(not e.onlyChinese and LFGLIST_NAME..' Plus'  or '预创建队伍增强', e.GetEnabeleDisable(Save.LFGPlus))
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
             self2:SetAlpha(1)
         end)
@@ -1632,7 +1632,7 @@ local function setIslandButton(self)--离开海岛按钮
             self.island:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:AddDoubleLine(e.onlyChinese and '海岛探险' or ISLANDS_HEADER, (wowSave[ISLANDS_HEADER] and wowSave[ISLANDS_HEADER] or 0)..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.onlyChinese and '离开海岛' or ISLAND_LEAVE, e.Icon.left)
@@ -2117,7 +2117,7 @@ local function Init()
                         end
                         e.tips:AddDoubleLine(SLASH_SMART_WHISPER2..' '..(self2.playerName or ''), (self2.itemLink or '')..self2.text)
                         e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:AddDoubleLine(id, e.cn(addName))
                         e.tips:Show()
                     end)
                     btn.chatTexure:SetScript('OnClick', function(self2)
@@ -2294,7 +2294,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 end
             end
             if find then
-                print(id, addName)
+                print(id, e.cn(addName))
             end
         end
         return
@@ -2399,7 +2399,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
             button.RoleInfo:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.onlyChinese and '全部清除' or CLEAR_ALL, e.Icon.left)
                 e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)

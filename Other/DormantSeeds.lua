@@ -33,7 +33,7 @@ local function Init()
     function Button:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
         for _, itemID in pairs(ItemTab) do
             local link= select(2, GetItemInfo(itemID)) or itemID
@@ -245,7 +245,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             --添加控制面板
             e.AddPanel_Check({
-                name= '|T656681:0|t'..addName,
+                name= '|T656681:0|t'..e.cn(addName),
                 tooltip= function()
                     e.tips:SetOwner(SettingsPanel, "ANCHOR_LEFT")
                     e.tips:ClearLines()

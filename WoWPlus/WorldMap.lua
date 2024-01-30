@@ -259,7 +259,7 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(not e.onlyChinese and LOOT_HISTORY_ALL_PASSED or "全部放弃", (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         self:SetAlpha(1)
     end)
@@ -279,7 +279,7 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
                         C_QuestLog.AbandonQuest()
                         n=n+1
                         if linkQuest then
-                            print(id, addName,  e.onlyChinese and '放弃|A:groupfinder-icon-redx:0:0|a' or (ABANDON_QUEST_ABBREV..'|A:groupfinder-icon-redx:0:0|a'), linkQuest, n..'|cnRED_FONT_COLOR:)')
+                            print(id, e.cn(addName),  e.onlyChinese and '放弃|A:groupfinder-icon-redx:0:0|a' or (ABANDON_QUEST_ABBREV..'|A:groupfinder-icon-redx:0:0|a'), linkQuest, n..'|cnRED_FONT_COLOR:)')
                         end
                     end
                     if IsModifierKeyDown() then
@@ -375,7 +375,7 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddLine('|A:questlog-questtypeicon-weekly:0:0|a'..(e.onlyChinese and '周长' or WEEKLY))
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         self:SetAlpha(1)
     end)
@@ -393,7 +393,7 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddLine('|A:AdventureMapIcon-DailyQuest:0:0|a'..(e.onlyChinese and '日常' or DAILY))
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         self:SetAlpha(1)
     end)
@@ -502,7 +502,7 @@ local function CursorPositionInt()
         end
         Save.PlayerXYSize=size
         e.Cstr(nil, {size=size, changeFont=self.Text, color=true})
-        print(id,addName, e.Player.L.size, size)
+        print(id,e.cn(addName), e.Player.L.size, size)
     end)
 
     PostionButton.Text=e.Cstr(PostionButton, {size=Save.PlayerXYSize, color=true})
@@ -643,7 +643,7 @@ local function Init_set_Map_ID()--显示地图ID
         Button:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.Player.L.layer, e.Player.Layer or (e.onlyChinese and '无' or NONE))--位面
 
@@ -695,7 +695,7 @@ local function Init_set_Map_ID()--显示地图ID
                 end
             end
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(addName, e.GetEnabeleDisable(not Save.hide)..e.Icon.left)
+            e.tips:AddDoubleLine(e.cn(addName), e.GetEnabeleDisable(not Save.hide)..e.Icon.left)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(addName2, e.GetEnabeleDisable(Save.PlayerXY)..e.Icon.right)
             local col= Save.PlayerXYPoint and '' or '|cff606060'
@@ -719,21 +719,21 @@ local function Init_set_Map_ID()--显示地图ID
                     PostionButton:ClearAllPoints()
                     PostionButton:set_Point()
                 end
-                print(id, addName, addName2, e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(id, e.cn(addName), addName2, e.onlyChinese and '重置位置' or RESET_POSITION)
 
             elseif d=="LeftButton" and not IsModifierKeyDown() then
                 Save.hide= not Save.hide and true or nil
                 self:set_Map_ID_Text()
                 setMapQuestList()--世界地图,任务, 加 - + 按钮
-                print(id, addName, e.GetShowHide(not Save.hide), e.onlyChinese and ' 刷新' or REFRESH)
+                print(id, e.cn(addName), e.GetShowHide(not Save.hide), e.onlyChinese and ' 刷新' or REFRESH)
                 self:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.map)
             elseif d=='RightButton' and not IsModifierKeyDown() then--实时玩家当前坐标
                 if Save.PlayerXY then
                     Save.PlayerXY=nil
-                    print(id, addName, addName2..":", e.GetEnabeleDisable(Save.PlayerXY), '|cnGREEN_FONT_COLOR:'..NEED..'/reload|r')
+                    print(id, e.cn(addName), addName2..":", e.GetEnabeleDisable(Save.PlayerXY), '|cnGREEN_FONT_COLOR:'..NEED..'/reload|r')
                 else
                     Save.PlayerXY=true
-                    print(id, addName, addName2..":", e.GetEnabeleDisable(Save.PlayerXY))
+                    print(id, e.cn(addName), addName2..":", e.GetEnabeleDisable(Save.PlayerXY))
                 end
                 CursorPositionInt()
             end
@@ -753,7 +753,7 @@ local function Init_set_Map_ID()--显示地图ID
         PlayerButton:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:AddLine(' ')
             local can
             can= C_Map.GetBestMapForUnit("player")
@@ -788,7 +788,7 @@ local function Init_set_Map_ID()--显示地图ID
         PlayerButton.edit:SetScript("OnKeyUp", function(s, key)
             if IsControlKeyDown() and key == "C" then
                 s:ClearFocus()
-                print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+                print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
             end
         end)
         PlayerButton.edit.Left:SetAlpha(0.5)
@@ -1002,11 +1002,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             e.AddPanel_Check({
                 name= e.Icon.map2..(e.onlyChinese and '地图' or addName),
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
@@ -1042,7 +1042,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine('|A:FlightMaster:0:0|a'..(e.onlyChinese and '飞行点名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MOUNT_JOURNAL_FILTER_FLYING, NAME)), e.GetShowHide(Save.showFlightMapPinName))
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
                 self:SetAlpha(1)
             end)

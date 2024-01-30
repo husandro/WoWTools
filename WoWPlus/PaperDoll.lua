@@ -60,7 +60,7 @@ local function LvTo()--总装等
                 e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
                 e.tips:AddLine(' ')
                 e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '物品等级：%d' or CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, self.avgItemLevel or ''))
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
                 self:SetAlpha(0.3)
             end)
@@ -81,7 +81,7 @@ local function LvTo()--总装等
                 e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
                 e.tips:AddLine(' ')
                 e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and 'PvP物品等级 %d' or ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT, self.avgItemLevel or '0'))
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
                 self:SetAlpha(0.3)
             end)
@@ -574,7 +574,7 @@ local function set_Slot_Num_Label(self, slot, isEquipped)--栏位
             e.tips:ClearLines()
             e.tips:AddDoubleLine((e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..(self2.name and _G[strupper(strsub(self2.name, 10))] or self2.name or ''), self2.slot)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
             self2:SetAlpha(1)
         end)
@@ -637,7 +637,7 @@ local function Title()--头衔数量
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(format(e.onlyChinese and '头衔：%s' or RENOWN_REWARD_TITLE_NAME_FORMAT, self2.num or ''), e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, 0,1,0, 0,1,0)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
                 self2:SetAlpha(0.3)
             end)
@@ -686,7 +686,7 @@ local function set_set_PaperDollSidebarTab3_Text_Tips(self)
             e.tips:AddLine(' ')
         end
         e.tips:AddDoubleLine(self2.tooltip, self2.tooltip2, 0,1,0,0,1,0)
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         self2:SetAlpha(0.3)
     end)
@@ -860,7 +860,7 @@ local function Init_TrackButton()--添加装备管理框
             n= n<0.4 and 0.4 or n
             Save.equipmentFrameScale=n
             self:set_scale()--缩放
-            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
+            print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
         end
     end)
     TrackButton:SetScript("OnEnter", function (self)
@@ -968,7 +968,7 @@ local function Init_TrackButton()--添加装备管理框
                     LvTo()--修改总装等
                 end)
             else
-                print(id, addName, RED_FONT_COLOR_CODE, e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT)
+                print(id, e.cn(addName), RED_FONT_COLOR_CODE, e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT)
             end
         end)
         btn:SetScript("OnEnter", function(frame)
@@ -988,7 +988,7 @@ local function Init_TrackButton()--添加装备管理框
                     end
                 end
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id,addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
                 --local name, iconFileID, _, isEquipped2, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
                 if panel.equipmentButton:IsVisible() then
@@ -1123,7 +1123,7 @@ local function GetDurationTotale()
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.onlyChinese and '耐久度' or DURABILITY, self2.value)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
             self2:SetAlpha(0.3)
         end)
@@ -1419,7 +1419,7 @@ local function Init_Server_equipmentButton_Lable()
                 e.tips:AddDoubleLine(e.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, profCap, 1,0,0, 1,0,0)
                 e.tips:AddLine(' ')
             end
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
             self:SetAlpha(0.3)
         end)
@@ -1442,14 +1442,14 @@ local function Init_Server_equipmentButton_Lable()
                 Save.equipment= not Save.equipment and true or nil
                 self2:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
                 Init_TrackButton()--添加装备管理框
-                print(id, addName, e.GetShowHide(Save.equipment))
+                print(id, e.cn(addName), e.GetShowHide(Save.equipment))
             elseif d=='RightButton' and IsControlKeyDown() then
                 Save.Equipment=nil
                 if TrackButton then
                     TrackButton:ClearAllPoints()
                     TrackButton:set_point()
                 end
-                print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         end)
         panel.equipmentButton:SetScript("OnEnter", function (self2)
@@ -1459,7 +1459,7 @@ local function Init_Server_equipmentButton_Lable()
             local col= not (self2.btn and Save.Equipment) and '|cff606060' or ''
             e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
             self2:SetAlpha(1)
             if self2.btn and self2.btn:IsShown() then
@@ -1531,7 +1531,7 @@ local function set_ChromieTime()--时空漫游战役, 提示
                 --e.tips:AddDoubleLine(' ', col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
             end
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
             self2:SetAlpha(1)
         end)
@@ -1584,7 +1584,7 @@ panel.Init_Show_Hide_Button= function(self, frame)
         end
         PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
 
-        --print(id, addName, e.GetShowHide(not Save.hide), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or (NEED..REFRESH)))
+        --print(id, e.cn(addName), e.GetShowHide(not Save.hide), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or (NEED..REFRESH)))
 
         Title()--头衔数量
         GetDurationTotale()--装备,总耐久度
@@ -1613,7 +1613,7 @@ panel.Init_Show_Hide_Button= function(self, frame)
         e.tips:ClearLines()
         e.tips:AddDoubleLine(not e.onlyChinese and SHOW..'/'..HIDE or '显示/隐藏', e.GetShowHide(not Save.hide))
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         self2:SetAlpha(1)
     end)
@@ -1810,7 +1810,7 @@ local function Init()
                 end
                 e.tips:AddDoubleLine('displayID', C_PlayerInfo.GetDisplayID())
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
                 self2:SetAlpha(0.3)
             end)
@@ -1836,7 +1836,7 @@ local function Init()
             btn.createButton:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(self.str,
                     C_EquipmentSet.GetEquipmentSetID(self.str)
@@ -1856,9 +1856,9 @@ local function Init()
                 end
                 C_EquipmentSet.CreateEquipmentSet(self.str)
                 if setID then
-                    print(id,addName, '|cffff00ff'..(e.onlyChinese and '修改' or EQUIPMENT_SET_EDIT)..'|r', self.str)
+                    print(id,e.cn(addName), '|cffff00ff'..(e.onlyChinese and '修改' or EQUIPMENT_SET_EDIT)..'|r', self.str)
                 else
-                    print(id,addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..'|r', self.str)
+                    print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..'|r', self.str)
                 end
             end)
         end
@@ -1873,7 +1873,7 @@ local function Init()
                 end
                 C_EquipmentSet.UseEquipmentSet(self.setID)
                 local name, iconFileID = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
-                print(id, addName, iconFileID and '|T'..iconFileID..':0|t|cnGREEN_FONT_COLOR:' or '', name)
+                print(id, e.cn(addName), iconFileID and '|T'..iconFileID..':0|t|cnGREEN_FONT_COLOR:' or '', name)
             end)
             btn.setScripOK=true
         end
@@ -1915,7 +1915,7 @@ local function add_Button_OpenOption(frame)
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end)
     btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -1963,11 +1963,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             e.AddPanel_Header(nil, 'WoW')
             e.AddPanel_Check({
                 name= (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..(e.onlyChinese and '角色' or addName),
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
             })
 
@@ -1975,7 +1975,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             local sel=e.AddPanel_Check((e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..(e.onlyChinese and '角色' or addName), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)]]
 
             if not Save.disabled then

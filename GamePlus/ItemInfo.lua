@@ -1018,7 +1018,7 @@ local function Init()
                                 if self.itemLink and e.tips:IsShown() then
                                     e.tips:AddLine(' ')
                                     e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
-                                    e.tips:AddDoubleLine(id, addName)
+                                    e.tips:AddDoubleLine(id, e.cn(addName))
                                     e.tips:Show()
                                 end
                             end)

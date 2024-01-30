@@ -444,7 +444,7 @@ local function Init_Menu(_, level, menuList)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
-        text= id..' '..addName,
+        text= id..' '..e.cn(addName),
         icon= 'UI-HUD-Minimap-Mail-Mouseover',
         notCheckable= true,
         isTitle=true,
@@ -557,7 +557,7 @@ local function Init_Button()
         e.tips:AddLine(e.onlyChinese and '目标' or TARGET)
         e.tips:AddDoubleLine(GetUnitName('target', true), e.GetPlayerInfo({unit='target', reName=true, reRealm=true}))
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end)
     button.GetTargetNameButton.set_GetTargetNameButton_Texture= function(self)
@@ -606,7 +606,7 @@ local function Init_Button()
             Save.lastSendPlayer=nil
             self2.Init_Player_List()--设置，历史记录，内容
             self2.set_showHidetips_Texture(self2)--隐藏，历史记录, 提示, 设置图片
-            print(id, addName, e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '全部清除' or CLEAR_ALL))
+            print(id, e.cn(addName), e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '全部清除' or CLEAR_ALL))
         end
     end)
     button.ClearPlayerButton:SetScript('OnMouseWheel', function(self2, d)
@@ -618,14 +618,14 @@ local function Init_Button()
                 num= num+ 0.05
             end
             num= num<0.5 and 0.5 or num>2 and 2 or num
-            print(id, addName,e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.scaleSendPlayerFrame or 1) )
+            print(id, e.cn(addName),e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.scaleSendPlayerFrame or 1) )
             Save.scaleSendPlayerFrame= num
             button.SendPlayerFrame:SetScale(num)
 
         elseif not IsModifierKeyDown() then--隐藏/显示
             Save.hideSendPlayerList= d==1 and true or nil
             button.SendPlayerFrame:SetShown(not Save.hideSendPlayerList and true or false)
-            print(id, addName, e.GetShowHide(not Save.hideSendPlayerList), '|cnGREEN_FONT_COLOR:'..#Save.lastSendPlayerList..' '..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER))
+            print(id, e.cn(addName), e.GetShowHide(not Save.hideSendPlayerList), '|cnGREEN_FONT_COLOR:'..#Save.lastSendPlayerList..' '..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER))
             self2.set_showHidetips_Texture(self2)--隐藏，历史记录, 提示, 设置图片
         end
     end)
@@ -644,7 +644,7 @@ local function Init_Button()
         e.tips:AddDoubleLine((e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER)..' '..(Save.hideSendPlayerList and '|A:AnimaChannel-Bar-Venthyr-Gem:0:0|a' or '|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a')..e.GetShowHide(not Save.hideSendPlayerList), e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleSendPlayerFrame or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         self2:SetAlpha(1)
         self2:GetParent().SendPlayerFrame:SetAlpha(0.5)
@@ -705,7 +705,7 @@ local function Init_Button()
                 elseif d=='RightButton' then--移除，单个，名字
                     for i, name in pairs(Save.lastSendPlayerList) do
                         if name==self2.name then
-                            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', get_Name_Info(name))
+                            print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', get_Name_Info(name))
                             table.remove(Save.lastSendPlayerList, i)
                             button.ClearPlayerButton.Init_Player_List()--设置，历史记录，内容
                             break
@@ -1071,7 +1071,7 @@ local function Init_Fast_Button()
                 num= num+ 0.05
             end
             num= num<0.5 and 0.5 or num>2 and 2 or num
-            print(id, addName,e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.scaleFastButton or 1) )
+            print(id, e.cn(addName),e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.scaleFastButton or 1) )
             Save.scaleFastButton= num
             self2.frame:SetScale(num)
         end
@@ -1085,7 +1085,7 @@ local function Init_Fast_Button()
         e.tips:AddDoubleLine((e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)..' '..e.GetYesNo(not Save.fastShow), 'Alt+'..e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleFastButton or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         self2.get_Send_Max_Item()--能发送，数量
         self2.set_Fast_Event(nil, true)--清除，注册，事件，显示/隐藏，设置数量
@@ -1298,7 +1298,7 @@ local function Init_Fast_Button()
                 elseif d=='RightButton' and IsAltKeyDown() then
                     Save.fast[self2.name]= e.GetUnitName(SendMailNameEditBox:GetText())--取得， SendMailNameEditBox， 名称
                     self2.set_Player_Lable(self2)--设置指定发送，玩家, 提示
-                    print(id, addName, self2.name, Save.fast[self2.name] or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))
+                    print(id, e.cn(addName), self2.name, Save.fast[self2.name] or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))
                 end
             end)
 
@@ -1580,7 +1580,7 @@ local function Init_InBox()
     local function eventEnter(self2, get)--enter 提示，删除，或退信，按钮
         e.tips:SetOwner(self2, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
         local packageIcon, stationeryIcon, _, _, _, _, _, itemCount = GetInboxHeaderInfo(self2.openMailID)
         local allCount=0
@@ -2097,7 +2097,7 @@ local function Init()--SendMailNameEditBox
         e.tips:ClearLines()
         e.tips:AddDoubleLine(not e.onlyChinese and SHOW..'/'..HIDE or '显示/隐藏')
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end)
     panel.showButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
@@ -2233,11 +2233,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             e.AddPanel_Check({
                 name= '|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or addName),
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

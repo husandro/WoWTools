@@ -232,7 +232,7 @@ local function Init_Menu(_, level, type)--主菜单
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level);
-    e.LibDD:UIDropDownMenu_AddButton({text=addName, isTitle=true, notCheckable=true}, level);
+    e.LibDD:UIDropDownMenu_AddButton({text=e.cn(addName), isTitle=true, notCheckable=true}, level);
     e.LibDD:UIDropDownMenu_AddButton({
         text= e.onlyChinese and '拖曳: 物品, 法术, 装备' or (DRAG_MODEL..', '..SPELLS..', '..ITEMS),
         isTitle=true,
@@ -765,7 +765,7 @@ local function Init()
         elseif d=='LeftButton' then
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:AddDoubleLine(e.onlyChinese and '拖曳' or DRAG_MODEL, e.onlyChinese and '添加' or ADD)
             e.tips:AddDoubleLine(SPELLS, ITEMS, 0,1,0, 0,1,0)
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)

@@ -505,7 +505,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                     if not self2.itemID then return end
                     e.tips:SetOwner(self2, "ANCHOR_LEFT");
 					e.tips:ClearLines();
-                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:AddDoubleLine(id, e.cn(addName))
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine('|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), not Save.notAutoBuy and buySave[self2.itemID] or (e.onlyChinese and '无' or NONE))
                     local all= GetItemCount(self2.itemID, true)
@@ -540,7 +540,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                             e.tips:ClearLines();
                             e.tips:SetSpellByID(self2.spellID)
                             e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine(id, addName)
+                            e.tips:AddDoubleLine(id, e.cn(addName))
                             e.tips:Show();
                         end
                         self2:SetAlpha(0.5)
@@ -1040,7 +1040,7 @@ local function Init_Menu(_, level, type)
         checked= not Save.notStackSplit,
         func=function ()
             Save.notStackSplit = not Save.notStackSplit and true or nil
-            print(id, addName , '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, e.cn(addName), '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
@@ -1050,7 +1050,7 @@ local function Init_Menu(_, level, type)
         checked= not Save.notPlus,
         func=function ()
             Save.notPlus = not Save.notPlus and true or nil
-            print(id, addName , '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, e.cn(addName), '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
@@ -1091,7 +1091,7 @@ local function Init_Button(frame)
     btn:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
         e.tips:ClearLines();
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType=='item' and itemID and itemLink then
@@ -1223,7 +1223,7 @@ local function Init_Button(frame)
     noSellButton:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT");
         e.tips:ClearLines();
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         local num=0
         for _, _  in pairs(Save.noSell) do
             num=num+1
@@ -1301,7 +1301,7 @@ local function set_StackSplitFrame_OpenStackSplitFrame(self)--, maxStack, parent
         self.restButton:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, 'ANCHOR_LEFT')
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine((e.onlyChinese and '堆叠数量' or AUCTION_STACK_SIZE)..' Plus', e.onlyChinese and '重置' or RESET, nil,nil,nil, 0,1,0)
             e.tips:Show()
@@ -1483,7 +1483,7 @@ local function Init()
             e.tips:AddDoubleLine((col or '')..(e.onlyChinese and '拾取时' or PROC_EVENT512_DESC:format(ITEM_LOOT)),
                 (col or '|cnGREEN_FONT_COLOR:')..'Shift|r '..(e.onlyChinese and '禁用' or DISABLE))
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
         end)
         check:SetScript('OnShow', function(self)
@@ -1554,7 +1554,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
             --添加控制面板
             local initializer2= e.AddPanel_Check({
                 name= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '商人' or addName),
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil

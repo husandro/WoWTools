@@ -155,7 +155,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         e.tips:AddDoubleLine(col..(e.onlyChinese and '放大' or ZOOM_IN), e.Icon.left)
         e.tips:AddDoubleLine(col..(e.onlyChinese and '缩小' or ZOOM_OUT), e.Icon.right)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end
     frame.ZoomInOutFrame:SetScript("OnEnter",function(self)
@@ -329,7 +329,7 @@ local function created_Move_Button(self, tab)--created_Move_Button(self, {frame=
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, tab.click=='R' and e.Icon.right or e.Icon.left)
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
         end)
 
@@ -416,7 +416,7 @@ local function setAddLoad(arg1)
         hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
             e.tips:AddLine(' ')
             e.tips:AddLine(e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE))
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
         end)
         TimeManagerClockButton:HookScript('OnLeave', TimeManagerClockButton_OnLeave)]]
@@ -908,12 +908,12 @@ local function Init_Options()
     --移动
     local initializer2= e.AddPanel_Check({
         name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(e.onlyChinese and '移动' or NPE_MOVE),
-        tooltip= addName,
+        tooltip= e.cn(addName),
         value= not Save.disabledMove,
         category= Category,
         func= function()
             Save.disabledMove= not Save.disabledMove and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabledMove), e.onlyChinese and '重新加载UI' or RELOADUI)
+            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledMove), e.onlyChinese and '重新加载UI' or RELOADUI)
         end
     })
 
@@ -934,7 +934,7 @@ local function Init_Options()
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 OnAccept=function()
                     Save.point={}
-                    print(id, addName, e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                    print(id, e.cn(addName), e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
                 end,
             }
             StaticPopup_Show(id..addName..'MoveZoomClearPoint')
@@ -946,7 +946,7 @@ local function Init_Options()
 
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '可以移到屏幕外' or 'Can be moved off screen',
-            tooltip= addName,
+            tooltip= e.cn(addName),
             value= Save.moveToScreenFuori,
             category= Category,
             func= function()
@@ -961,7 +961,7 @@ local function Init_Options()
         checkValue= not Save.disabledZoom,
         checkFunc= function()
             Save.disabledZoom= not Save.disabledZoom and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
 
         buttonText= (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
@@ -974,13 +974,13 @@ local function Init_Options()
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 OnAccept=function()
                     Save.scale={}
-                    print(id, addName, (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                    print(id, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
                 end,
             }
             StaticPopup_Show(id..addName..'MoveZoomClearZoom')
         end,
 
-        tooltip= addName,
+        tooltip= e.cn(addName),
         layout= Layout,
         category= Category
     })
@@ -1003,12 +1003,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 value= not Save.disabled,
                 category= Category,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

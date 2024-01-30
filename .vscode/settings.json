@@ -4102,6 +4102,7 @@
         "missing-parameter",
         "deprecated",
         "undefined-global",
-        "duplicate-set-field"
+        "duplicate-set-field",
+        "assign-type-mismatch"
     ]
 }

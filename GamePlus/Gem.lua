@@ -78,7 +78,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                     e.tips:ClearLines()
                     e.tips:SetBagItem(self.bag, self.slot)
                     e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:AddDoubleLine(id, e.cn(addName))
                     e.tips:Show()
                 end
             end)
@@ -233,7 +233,7 @@ for i=204000, 204030 do
                 e.tips:ClearLines()
                 e.tips:SetItemByID(self2.id)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
             end)
             texture:SetScript('OnLeave', GameTooltip_Hide)

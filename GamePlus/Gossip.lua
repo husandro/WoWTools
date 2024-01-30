@@ -750,7 +750,7 @@ local function Init_Gossip()
     GossipFrame.sel:SetScript('OnEnter',function (self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         if self.npc and self.name then
             e.tips:AddDoubleLine(self.name, 'NPC |cnGREEN_FONT_COLOR:'..self.npc..'|r')
         else
@@ -1586,7 +1586,7 @@ local function Init_Quest()
     QuestFrame.sel:SetScript('OnEnter',function (self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         if self.npc and self.name then
             e.tips:AddDoubleLine(self.name, 'NPC '..self.npc)
         else
@@ -1910,7 +1910,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                                 e.tips:SetSpellByID(optionInfo.spellID)
                             end
                             e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine(id, addName)
+                            e.tips:AddDoubleLine(id, e.cn(addName))
                             e.tips:Show()
                         end)
                         optionFrame.check.Text2=e.Cstr(optionFrame.check)

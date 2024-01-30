@@ -63,7 +63,7 @@ local function Init()
     for _, tab in pairs(Tab) do
         if IsSpellKnown(tab.spell) then
             local btn=e.Cbtn2({
-                name= id..addName,
+                name= id..e.cn(addName),
                 parent= e.toolsFrame,
                 click=true,-- right left
                 notSecureActionButton=nil,

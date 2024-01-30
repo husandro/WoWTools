@@ -125,7 +125,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                     print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 layout= nil,
                 category= nil,
             })
@@ -142,12 +142,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             --[[e.AddPanel_Check({
                 name= '|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS)),
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
                     button.disabled= Save.disabled
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
             })]]
 
@@ -164,7 +164,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     if button then
                         button:set_Point()
                     end
-                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                 end
             })
             initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)]]

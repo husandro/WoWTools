@@ -821,7 +821,7 @@ local function set_All_Text()--所有记录
             function ChallengesFrame.moveRightTipsButton:set_tooltips()
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:AddLine(' ')
                 e.tips:AddLine(e.onlyChinese and '移动' or BUTTON_LAG_MOVEMENT)
                 e.tips:AddDoubleLine('x: '..Save.rightX, 'Shift+'..e.Icon.mid)
@@ -1791,7 +1791,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, (e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..(e.onlyChinese and '信息' or INFO))
         e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.insScale or 1)..'|r'.. e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end
     check:SetScript("OnEnter",function(self)
@@ -1836,7 +1836,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left..(e.onlyChinese and '信息' or INFO))
         e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.tipsScale or 1)..'|r'.. e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end
     tipsButton:SetScript('OnEnter', function(self)
@@ -1896,7 +1896,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or e.GetShowHide(nil, true), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.portScale or 1)..'|r'.. e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end
     spellButton:SetScript('OnLeave', function(self)
@@ -1937,7 +1937,7 @@ local function Init()
             local text= ChallengesFrame.WeeklyInfo.Child.Description:GetText()
             if text==MYTHIC_PLUS_MISSING_KEYSTONE_MESSAGE then
                 ChallengesFrame.WeeklyInfo.Child.Description:SetText()
-                print(id, addName)
+                print(id, e.cn(addName))
                 print('|cffff00ff',text)
             end
         end
@@ -1973,7 +1973,7 @@ local function Init()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         self:SetAlpha(1)
     end)
@@ -2034,7 +2034,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             e.AddPanel_Check({
                 name= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(e.onlyChinese and '史诗钥石地下城' or addName),
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil

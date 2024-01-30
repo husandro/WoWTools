@@ -167,7 +167,7 @@ local function Init_Web_Link()
         OnShow = function(self, web)
             self.editBox:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
-                    print(id,addName,
+                    print(id,e.cn(addName),
                             '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
                             s:GetText()
                         )
@@ -1423,7 +1423,7 @@ local function set_CVar(reset, tips, notPrint)
                 if defaultValue~=value then
                     C_CVar.SetCVar(info.name, defaultValue)
                     if not notPrint then
-                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
+                        print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
                     end
                 end
             else
@@ -1431,7 +1431,7 @@ local function set_CVar(reset, tips, notPrint)
                 if value~=info.value then
                     C_CVar.SetCVar(info.name, info.value)
                     if not notPrint then
-                        print(id,addName, info.name, info.value..'('..value..')', info.msg)
+                        print(id,e.cn(addName), info.name, info.value..'('..value..')', info.msg)
                     end
                 end
             end
@@ -1470,7 +1470,7 @@ function func.Set_Flyout(self, flyoutID)--法术, 弹出框
     end
     self:AddLine(' ')
     self:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, numSlots..' '..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL))
-    self:AddDoubleLine(id, addName)
+    self:AddDoubleLine(id, e.cn(addName))
 end
 
 
@@ -2017,7 +2017,7 @@ local function Init()
             e.tips:ClearLines()
             GameTooltip_AddQuest(block.TrackedQuest or block, block.id)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
         end
     end)
@@ -2240,7 +2240,7 @@ local function Init()
                 if category then
                     GameTooltip_AddNormalLine(SettingsTooltip, category, true)
                 end
-                GameTooltip_AddNormalLine(SettingsTooltip, id..' '..addName, true)
+                GameTooltip_AddNormalLine(SettingsTooltip, id..' '..e.cn(addName), true)
             end
 
             for index, button in ipairs(self.Buttons) do
@@ -2288,7 +2288,7 @@ local function Init_Panel()
 
     local initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '跟随鼠标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FOLLOW, MOUSE_LABEL),
-        tooltip= addName,
+        tooltip= e.cn(addName),
         value= Save.setDefaultAnchor,
         category= Category,
         func= function()
@@ -2306,7 +2306,7 @@ local function Init_Panel()
             minValue= -240,
             maxValue= 240,
             setp= 1,
-            tooltip= addName,
+            tooltip= e.cn(addName),
             category= Category,
             func= function(_, _, value2)
                 local value3= e.GetFormatter1to10(value2, -200, 200)
@@ -2322,7 +2322,7 @@ local function Init_Panel()
             minValue= -240,
             maxValue= 240,
             setp= 1,
-            tooltip= addName,
+            tooltip= e.cn(addName),
             category= Category,
             func= function(_, _, value2)
                 local value3= e.GetFormatter1to10(value2, -200, 200)
@@ -2334,7 +2334,7 @@ local function Init_Panel()
 
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
-            tooltip= addName,
+            tooltip= e.cn(addName),
             value= Save.cursorRight,
             category= Category,
             func= function()
@@ -2346,7 +2346,7 @@ local function Init_Panel()
 
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
-            tooltip= addName,
+            tooltip= e.cn(addName),
             value= Save.inCombatDefaultAnchor,
             category= Category,
             func= function()
@@ -2361,7 +2361,7 @@ local function Init_Panel()
 
     initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '模型' or MODEL,
-        tooltip= addName,
+        tooltip= e.cn(addName),
         value= not Save.hideModel,
         category= Category,
         func= function()
@@ -2372,7 +2372,7 @@ local function Init_Panel()
 
     initializer= e.AddPanel_Check({
         name= e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
-        tooltip= addName,
+        tooltip= e.cn(addName),
         value= Save.modelLeft,
         category= Category,
         func= function()
@@ -2384,7 +2384,7 @@ local function Init_Panel()
 
     initializer= e.AddPanel_Check({
         name= (e.onlyChinese and '模型' or MODEL)..' ID',
-        tooltip= addName,
+        tooltip= e.cn(addName),
         value= Save.showModelFileID,
         category= Category,
         func= function()
@@ -2400,7 +2400,7 @@ local function Init_Panel()
         minValue= 40,
         maxValue= 300,
         setp= 1,
-        tooltip= addName,
+        tooltip= e.cn(addName),
         category= Category,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, 40, 300)
@@ -2416,7 +2416,7 @@ local function Init_Panel()
         minValue= -240,
         maxValue= 240,
         setp= 1,
-        tooltip= addName,
+        tooltip= e.cn(addName),
         category= Category,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, -200, 200)
@@ -2432,7 +2432,7 @@ local function Init_Panel()
         minValue= -240,
         maxValue= 240,
         setp= 1,
-        tooltip= addName,
+        tooltip= e.cn(addName),
         category= Category,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, -200, 200)
@@ -2448,7 +2448,7 @@ local function Init_Panel()
         minValue= -1,
         maxValue= 1,
         setp= 0.1,
-        tooltip= addName,
+        tooltip= e.cn(addName),
         category= Category,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, -1, 1)
@@ -2461,12 +2461,12 @@ local function Init_Panel()
 
     e.AddPanel_Check({
         name= e.onlyChinese and '生命值 ' or HEALTH,
-        tooltip= addName,
+        tooltip= e.cn(addName),
         value= not Save.hideHealth,
         category= Category,
         func= function()
             Save.hideHealth= not Save.hideHealth and true or nil
-            print(id, addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, e.cn(addName),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
     e.AddPanel_Check({
@@ -2544,7 +2544,7 @@ local function Init_Panel()
         category= Category,
         func= function()
             Save.ShowOptionsCVarTips= not Save.ShowOptionsCVarTips and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 end
@@ -2576,7 +2576,7 @@ end
             Save.WidgetSetID= num
             self2:ClearFocus()
             set_Cursor_Tips(self2)
-            print(id, addName, 'PlayerFrame WidgetSetID',
+            print(id, e.cn(addName), 'PlayerFrame WidgetSetID',
                 num==0 and e.GetEnabeleDisable(false) or num,
                 '|n|cnRED_FONT_COLOR:',
                 e.onlyChinese and '备注：如果出现错误，请关闭此功能（0）' or 'note: If you get error, please disable this (0)'
@@ -2610,7 +2610,7 @@ local function Init_Event(arg1)
                             e.tips:SetAchievementByID(achievementID)
                             e.tips:AddLine(' ')
                             e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
-                            e.tips:AddDoubleLine(id, addName)
+                            e.tips:AddDoubleLine(id, e.cn(addName))
                             e.tips:Show()
                         end
                         self:SetAlpha(0.5)
@@ -2796,12 +2796,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --Save.WidgetSetID = Save.WidgetSetID or 0
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 value= not Save.disabled,
                 category= Category,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

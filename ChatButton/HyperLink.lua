@@ -581,7 +581,7 @@ end
 --local Category, Layout
 local function Init_Panel()
     --Category, Layout= e.AddPanel_Sub_Category({name= e.cn(addName), frame= panel})
-    e.AddPanel_Sub_Category({name=e.onlyChinese and '超链接图标' or addName, frame=panel})
+    e.AddPanel_Sub_Category({name=e.onlyChinese and '超链接图标' or e.cn(addName), frame=panel})
 
     local Cedit= function(self)
         local frame= CreateFrame('Frame',nil, self, 'ScrollingEditBoxTemplate')--ScrollTemplates.lua
@@ -1285,7 +1285,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine('|cff00ff00FST|rACK', e.GetEnabeleDisable(true)..'/'..e.GetEnabeleDisable(false))
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
             end)
 

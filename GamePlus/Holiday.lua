@@ -416,7 +416,7 @@ local function Set_TrackButton_Text(monthOffset, day)
                     end
                 end
                 e.tips:AddDoubleLine('eventID', self.eventID)
-                e.tips:AddDoubleLine(id,addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
 				Set_TrackButton_Pushed(true, self.text)--TrackButton，提示
 			end)
@@ -564,7 +564,7 @@ local function Init_TrackButton()
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end
 
@@ -1009,7 +1009,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     end
                     print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 layout= nil,
                 category= nil,
             })

@@ -157,7 +157,7 @@ local function Init()
     function ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a/收起选项 |A:editmode-up-arrow:16:11:0:3|a' or (HUD_EDIT_MODE_EXPAND_OPTIONS..'/'..HUD_EDIT_MODE_COLLAPSE_OPTIONS), e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt+ '..e.Icon.mid)
@@ -469,7 +469,7 @@ local function Init()
             end
             e.tips:AddDoubleLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), e.onlyChinese and '双击'..e.Icon.left or (BUFFER_DOUBLE..e.Icon.left))
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
             self2:SetAlpha(1)
         end)
@@ -495,7 +495,7 @@ local function Init()
                             num=num+1
                         end
                     end
-                    print(id, addName, '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self2.tooltip, '|cffff00ff'..num)
+                    print(id, e.cn(addName), '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self2.tooltip, '|cffff00ff'..num)
                 end)
 
             elseif module== QUEST_TRACKER_MODULE or module== CAMPAIGN_QUEST_TRACKER_MODULE then--6 追踪任务 TRACK_QUEST
@@ -516,7 +516,7 @@ local function Init()
                             num=num+1
                         end
                     end
-                    print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, self2.tooltip, '|cffff00ff'..num)
+                    print(id, e.cn(addName), e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, self2.tooltip, '|cffff00ff'..num)
                 end)
 
             elseif module== ACHIEVEMENT_TRACKER_MODULE then--7 追踪成就 TRACKING
@@ -532,7 +532,7 @@ local function Init()
                     if num>0 and AchievementFrame then
                         e.call('AchievementFrameAchievements_ForceUpdate')--Blizzard_ObjectiveTracker
                     end
-                    print(id, addName, '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self2.tooltip, '|cffff00ff'..num)
+                    print(id, e.cn(addName), '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self2.tooltip, '|cffff00ff'..num)
                 end)
 
             elseif module== PROFESSION_RECIPE_TRACKER_MODULE then--8 追踪配方 PROFESSIONS_TRACK_RECIPE
@@ -553,7 +553,7 @@ local function Init()
                     end
                     clear_Recipe(true)
                     clear_Recipe(false)
-                    print(id, addName, '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self2.tooltip, '|cffff00ff'..num)
+                    print(id, e.cn(addName), '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self2.tooltip, '|cffff00ff'..num)
                 end)
 
             elseif module== MONTHLY_ACTIVITIES_TRACKER_MODULE then--9
@@ -568,7 +568,7 @@ local function Init()
                             num= num+1
                         end
                     end
-                    print(id, addName, '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self2.tooltip, '|cffff00ff'..num)
+                    print(id, e.cn(addName), '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self2.tooltip, '|cffff00ff'..num)
                 end)
             end
         end
@@ -606,11 +606,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             local initializer2= e.AddPanel_Check({
                 name= '|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL),
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
             local initializer= e.AddPanel_Check({
@@ -628,7 +628,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 value= Save.autoHide,
                 func= function()
                     Save.autoHide= not Save.autoHide and true or nil
-                    print(id, addName, e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
+                    print(id, e.cn(addName), e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
                         e.onlyChinese and '任务追踪栏' or QUEST_OBJECTIVES, e.GetEnabeleDisable(Save.autoHide)
                     )
                     if ObjectiveTrackerFrame.HeaderMenu.MinimizeButton.set_evnet then

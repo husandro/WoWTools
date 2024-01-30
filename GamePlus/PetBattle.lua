@@ -288,7 +288,7 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
         EnemyFrame:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(NPE_MOVE, e.Icon.left)
             e.tips:Show()
@@ -661,7 +661,7 @@ local function set_Button_setFrame_PetJournal()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '宠物类型' or PET_FAMILIES, e.Icon.left)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         self:SetAlpha(1)
     end)
@@ -765,7 +765,7 @@ local function add_Click_To_Move_Button()--点击移动，按钮
         function btn:set_Tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff606060' or '')..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")), e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
@@ -858,7 +858,7 @@ local function Init()
             e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '图标' or EMBLEM_SYMBOL), e.onlyChinese and '过滤器: 宠物类型' or FILTER..": "..PET_FAMILIES)
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end)
 
@@ -1001,7 +1001,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     end
                     print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 layout= nil,
                 category= nil,
             })

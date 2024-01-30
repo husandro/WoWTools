@@ -249,7 +249,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             e.AddPanel_Header(nil, e.onlyChinese and '其它' or OTHER)
             e.AddPanel_Check_Button({
-                checkName= '|T132248:0|t'..addName,
+                checkName= '|T132248:0|t'..e.cn(addName),
                 checkValue= not Save.disabled,
                 checkFunc= function()
                     Save.disabled= not Save.disabled and true or nil

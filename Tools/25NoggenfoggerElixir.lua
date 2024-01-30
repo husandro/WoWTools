@@ -207,7 +207,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
                 button= e.Cbtn2({
-                    name= id..addName,
+                    name= id..e.cn(addName),
                     parent= e.toolsFrame,
                     click=true,-- right left
                     notSecureActionButton=nil,

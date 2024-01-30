@@ -27,7 +27,7 @@ local function set_UpdateSpendText(btn)
                     e.tips:ClearLines();
                     e.tips:AddDoubleLine(e.onlyChinese and '最高等级' or TRADESKILL_RECIPE_LEVEL_TOOLTIP_HIGHEST_RANK, self.maxRanks)
                     e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(id, addName)
+                    e.tips:AddDoubleLine(id, e.cn(addName))
                     e.tips:Show();
                 end
             end)

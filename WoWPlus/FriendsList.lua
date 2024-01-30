@@ -70,7 +70,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
                         e.tips:ClearLines()
                         e.tips:AddDoubleLine(e.onlyChinese and '/密语' or SLASH_SMART_WHISPER2, self2.col..self2.name)
                         e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:AddDoubleLine(id, e.cn(addName))
                         e.tips:Show()
                     end)
                     nameObj:SetScript('OnMouseDown',function(self2)
@@ -167,7 +167,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
         if self.AcceptButton:IsEnabled() and not IsModifierKeyDown() then
             local tank2, healer2, dps2= self:GetSelectedRoles()
             self.AcceptButton:Click()
-            print(id, addName,
+            print(id, e.cn(addName),
                     tank2 and INLINE_TANK_ICON, healer2 and INLINE_HEALER_ICON, dps2 and INLINE_DAMAGER_ICON,
                     e.GetEnabeleDisable(false)..'Alt',
                     link
@@ -341,21 +341,21 @@ local function set_FriendsList_Init()--好友列表, 初始化
             if bnetAFK or bnetDND then
                 BNSetAFK(false)
                 BNSetDND(false)
-                print(id, addName, format(optionText, FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE))
+                print(id, e.cn(addName), format(optionText, FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE))
             end
             panel.btn:SetNormalTexture(FRIENDS_TEXTURE_ONLINE)
 
         elseif Save.Friends[e.Player.name_realm].Away then
             if not bnetAFK then
                 BNSetAFK(true)
-                print(id, addName, format(optionText, FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY))
+                print(id, e.cn(addName), format(optionText, FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY))
             end
             panel.btn:SetNormalTexture(FRIENDS_TEXTURE_AFK)
 
         elseif Save.Friends[e.Player.name_realm].DND then
             if not bnetDND then
                 BNSetDND(true)
-                print(id, addName, format(optionText, FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY))
+                print(id, e.cn(addName), format(optionText, FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY))
                 panel.btn:SetNormalTexture(FRIENDS_TEXTURE_DND)
             end
 
@@ -367,7 +367,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
     panel.btn:SetPoint('LEFT', FriendsFrameStatusDropDownButton, 'RIGHT',0,-2)
     panel.btn:SetScript('OnClick', function(self)
         if not BNConnected() then
-            print(id, addName, e.Icon.net2, e.onlyChinese and '断开战网' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))
+            print(id, e.cn(addName), e.Icon.net2, e.onlyChinese and '断开战网' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))
             return
         end
         if not self.menu then
@@ -430,7 +430,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     checked= Save.Friends[e.Player.name_realm].Availabel,
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '登入(游戏)' or (LOG_IN..' ('..GAME..')'),
-                    tooltipText=id..' '..addName,
+                    tooltipText=id..' '..e.cn(addName),
                     func=function()
                         Save.Friends[e.Player.name_realm].Availabel = not Save.Friends[e.Player.name_realm].Availabel and true or nil
                         Save.Friends[e.Player.name_realm].Away= nil
@@ -445,7 +445,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     checked= Save.Friends[e.Player.name_realm].Away,
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '登入(游戏)' or (LOG_IN..' ('..GAME..')'),
-                    tooltipText=id..' '..addName,
+                    tooltipText=id..' '..e.cn(addName),
                     func=function()
                         Save.Friends[e.Player.name_realm].Availabel = nil
                         Save.Friends[e.Player.name_realm].Away= not Save.Friends[e.Player.name_realm].Away and true or nil
@@ -460,7 +460,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     checked= Save.Friends[e.Player.name_realm].DND,
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '登入(游戏)' or (LOG_IN..' ('..GAME..')'),
-                    tooltipText=id..' '..addName,
+                    tooltipText=id..' '..e.cn(addName),
                     func=function()
                         Save.Friends[e.Player.name_realm].Availabel = nil
                         Save.Friends[e.Player.name_realm].Away=nil
@@ -509,7 +509,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     keepShownOnClick=true,
                     func= function()
                         Save.disabledFriendPlus= not Save.disabledFriendPlus and true or nil
-                        print(id, addName, e.GetEnabeleDisable(not Save.disabledFriendPlus), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+                        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledFriendPlus), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -778,7 +778,7 @@ local function set_WhoList_Update()--查询, 名单列表
                 e.tips:AddDoubleLine(self.col..(e.onlyChinese and '组队邀请' or GROUP_INVITE), (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
                 e.tips:AddDoubleLine(self.col..(e.onlyChinese and '添加好友' or ADD_FRIEND), 'Alt+'..e.Icon.left)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
             end)
             btn.setOnDoubleClick= true
@@ -893,11 +893,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             e.AddPanel_Check({
                 name= '|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '好友列表' or addName),
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
@@ -909,7 +909,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 else
                     Save.disabled=true
                 end
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)]]
 
             if Save.disabled then

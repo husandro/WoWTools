@@ -649,7 +649,7 @@ local function Init()
             end
             e.FindBagItem(true, {itemLink= itemLink})--查询，背包里物品
         else
-            e.tips:AddDoubleLine(id, addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
         end
     end

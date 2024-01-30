@@ -2562,7 +2562,7 @@ local function Init_HelpTip()
         if ID then
             C_Timer.After(2, function()
                 TutorialPointerFrame:Hide(ID-1)
-                print(id, addName, '|cffff00ff'..content)
+                print(id, e.cn(addName), '|cffff00ff'..content)
             end)
         end
     end)
@@ -2572,7 +2572,7 @@ local function Init_HelpTip()
             C_Timer.After(1, function()
                 if self:IsShown() then
                     self:Hide()
-                    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '感谢您的举报！' or ERR_REPORT_SUBMITTED_SUCCESSFULLY)..'|r', e.onlyChinese and '关闭' or CLOSE)
+                    print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '感谢您的举报！' or ERR_REPORT_SUBMITTED_SUCCESSFULLY)..'|r', e.onlyChinese and '关闭' or CLOSE)
                 end
             end)
         end
@@ -2594,13 +2594,13 @@ local function Init_Options()
         checkValue= not Save.disabled,
         checkFunc= function()
             Save.disabled= not Save.disabled and true or nil
-            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         buttonText= e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
         buttonFunc= function()
             e.OpenPanelOpting((e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR))
         end,
-        tooltip= addName,
+        tooltip= e.cn(addName),
         layout= Layout,
         category= Category
     })
@@ -2611,26 +2611,26 @@ local function Init_Options()
         minValue= 0,
         maxValue= 1,
         setp= 0.1,
-        tooltip= addName,
+        tooltip= e.cn(addName),
         category= Category,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, 0, 1)
             Save.alpha= value3
             Init()
-            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
     initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
 
     initializer= e.AddPanel_Check({
         name= e.onlyChinese and '主菜单' or MAINMENU_BUTTON,
-        tooltip= addName,
+        tooltip= e.cn(addName),
         category= Category,
         value= not Save.disabledMainMenu,
         func= function()
             Save.disabledMainMenu= not Save.disabledMainMenu and true or nil
             Init_MainMenu()
-            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
     initializer:SetParentInitializer(initializer2, function() return not Save.disabledColor end)
@@ -2648,7 +2648,7 @@ local function Init_Options()
             Save.disabledChatBubble= not Save.disabledChatBubble and true or nil
             Init_Chat_Bubbles()
             if Save.disabledChatBubble and BubblesFrame then
-                print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end
     })
@@ -2658,7 +2658,7 @@ local function Init_Options()
         minValue= 0,
         maxValue= 1,
         setp= 0.1,
-        tooltip= addName,
+        tooltip= e.cn(addName),
         category= Category,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, 0, 1)
@@ -2674,7 +2674,7 @@ local function Init_Options()
         minValue= 0.3,
         maxValue= 1,
         setp= 0.1,
-        tooltip= addName,
+        tooltip= e.cn(addName),
         category= Category,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, 0.3, 1)
@@ -2687,10 +2687,10 @@ local function Init_Options()
     e.AddPanel_Check_Sider({
         checkName= (e.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
         checkValue= Save.classPowerNum,
-        checkTooltip= addName,
+        checkTooltip= e.cn(addName),
         checkFunc= function()
             Save.classPowerNum= not Save.classPowerNum and true or false
-            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         sliderValue= Save.classPowerNumSize,
         sliderMinValue= 6,
@@ -2702,7 +2702,7 @@ local function Init_Options()
             local value3= e.GetFormatter1to10(value2, 6, 64)
             Save.classPowerNumSize= value3
             Init_Class_Power()--职业
-            print(id, addName,'|cnGREEN_FONT_COLOR:'.. value3..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, e.cn(addName),'|cnGREEN_FONT_COLOR:'.. value3..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         layout= Layout,
         category= Category,
@@ -2715,7 +2715,7 @@ local function Init_Options()
         value= not Save.disabledHelpTip,
         func= function()
             Save.disabledHelpTip= not Save.disabledHelpTip and true or nil
-            print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 end
@@ -2775,12 +2775,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if Save.disabled then
                 e.AddPanel_Check({
                     name= e.onlyChinese and '材质' or TEXTURES_SUBHEADER,
-                    tooltip= addName,
+                    tooltip= e.cn(addName),
                     category= Category,
                     value= not Save.disabled,
                     func= function()
                         Save.disabled= not Save.disabled and true or nil
-                        print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                     end
                 })
                 panel:UnregisterEvent('ADDON_LOADED')

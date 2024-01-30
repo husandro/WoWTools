@@ -2038,7 +2038,7 @@ local function Init()
         e.tips:AddDoubleLine(self:get_sendTextTips(), 'Shift+'..e.Icon.right)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         self.texture:SetAlpha(1)
         self.classPortrait:SetAlpha(1)
@@ -2176,7 +2176,7 @@ local function Init()
                         e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                         e.tips:ClearLines()
                         e.tips:AddDoubleLine(e.onlyChinese and '当前' or REFORGE_CURRENT, e.onlyChinese and '移动速度' or STAT_MOVEMENT_SPEED)
-                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:AddDoubleLine(id, e.cn(addName))
                         e.tips:Show()
                     end)
                     self.speedText:SetScript('OnMouseDown', function(self2)
@@ -2241,7 +2241,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             e.AddPanel_Sub_Category({name='|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES), frame=panel})
 
-            e.ReloadPanel({panel=panel, addName=addName, restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+            e.ReloadPanel({panel=panel, addName=e.cn(addName), restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=function()
                     Save.disabled = not Save.disabled and true or nil
                     if not Save.disabled and not button then

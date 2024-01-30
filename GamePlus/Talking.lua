@@ -38,7 +38,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             local initializer= e.AddPanel_Check({
                 name= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
-                tooltip= addName,
+                tooltip= e.cn(addName),
                 value= not Save.notPrint,
                 func= function()
                     Save.notPrint= not Save.notPrint and true or nil
@@ -53,7 +53,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled= not Save.disabled and true or nil
                 setRegister()--设置事件
-                print(id, addName, e.GetEnabeleDisable(not Save.disabled))
+                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled))
             end)
            sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_RIGHT")

@@ -313,11 +313,11 @@ end
 --[[
 local initializer2= e.AddPanel_Check({
     name= ,
-    tooltip= addName,
+    tooltip= e.cn(addName),
     category= Category,
     value= not Save.disabled,
     func= function()
-        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
 })
 local initializer= e.AddPanel_Check({
@@ -341,12 +341,12 @@ end
 --[[
  local initializer= e.AddPanel_Button({
     title= nil,
-    buttonText= addName,
+    buttonText= e.cn(addName),
     tooltip= nil,--需要 title
     layout= Layout,
-    addSearchTags= addName,
+    addSearchTags= e.cn(addName),
     func= function()
-        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
 })
 initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
@@ -370,7 +370,7 @@ end
 --[[
 e.AddPanel_DropDown({
     SetValueFunc= function(_, _, value)
-        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end,
     GetOptionsFunc= function()
         local container = Settings.CreateControlTextContainer()
@@ -379,7 +379,7 @@ e.AddPanel_DropDown({
     end,
     value=,
     name=,
-    tooltip= addName,
+    tooltip= e.cn(addName),
     category=Category
 })
 ]]
@@ -408,16 +408,16 @@ function e.AddPanel_Check_Button(tab)
 end
 --[[
 local initializer2= e.AddPanel_Check_Button({
-    checkName= addName,
+    checkName= e.cn(addName),
     checkValue= not Save.disabled,
     checkFunc= function()
-        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end,
     buttonText= '',
     buttonFunc= function()
-        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end,
-    tooltip= addName,
+    tooltip= e.cn(addName),
     layout= Layout,
     category= Category
 })
@@ -466,11 +466,11 @@ end
 
 --[[
 e.AddPanel_Check_Sider({
-    checkName= addName,
+    checkName= e.cn(addName),
     checkValue= not Save.disabled,
-    checkTooltip= addName,
+    checkTooltip= e.cn(addName),
     checkFunc= function()
-        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end,
     sliderValue= 0.5,
     sliderMinValue= 0,
@@ -480,7 +480,7 @@ e.AddPanel_Check_Sider({
     siderTooltip= nil,
     siderFunc= function(_, _, value2)
         local value3= e.GetFormatter1to10(value2, MinValue, MaxValue)
-        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end,
     layout= Layout,
     category= Category,
@@ -508,16 +508,16 @@ function e.AddPanelSider(tab)
 end
 --[[
 e.AddPanelSider({
-    name= addName,
+    name= e.cn(addName),
     value= 0,
     minValue= 0,
     maxValue= 1,
     setp= 1,
-    tooltip= addName,
+    tooltip= e.cn(addName),
     category= Category,
     func= function(_, _, value2)
         local value3= e.GetFormatter1to10(value2, minValue, maxValue)
-        print(id, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
 })
 ]]
@@ -768,7 +768,7 @@ local function Init()
         end,
         value= Save.useColor,
         name= (e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR),
-        tooltip= addName,
+        tooltip= e.cn(addName),
         category=Category
     })
 
@@ -870,7 +870,7 @@ local function Init()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(' ', '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1)
         e.tips:AddLine(" ")
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end)
 
