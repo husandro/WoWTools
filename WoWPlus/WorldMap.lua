@@ -202,28 +202,23 @@ end
 --任务日志
 --#######
 local function setMapQuestList()--世界地图,任务, 加 - + 按钮
-    if Save.hide or QuestScrollFrame.btnExpand then
-        if QuestScrollFrame.btnExpand then
-            QuestScrollFrame.btnExpand:SetShown(not Save.hide)
+
+    if Save.hide or QuestScrollFrame.btnCollapse then
+        if QuestScrollFrame.btnCollapse then
             QuestScrollFrame.btnCollapse:SetShown(not Save.hide)
-            QuestScrollFrame.btnDeleteAllQuest:SetShown(not Save.hide)
-            QuestScrollFrame.SearchBox:SetShown(not Save.hide)
-            QuestScrollFrame.SearchBox.week:SetShown(not Save.hide)
-            QuestScrollFrame.SearchBox.Daily:SetShown(not Save.hide)
         end
         return
     end
 
+
     QuestScrollFrame.btnCollapse= e.Cbtn(QuestScrollFrame, {size={22,22}, atlas='NPE_ArrowUp'})--campaign_headericon_closed
-    QuestScrollFrame.btnCollapse:SetPoint('TOPLEFT', QuestScrollFrame,'BOTTOMLEFT', 24,0)
-    QuestScrollFrame.btnCollapse:SetAlpha(0.5)
-    QuestScrollFrame.btnCollapse:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+    QuestScrollFrame.btnCollapse:SetPoint('TOPLEFT', WorldMapFrame.ScrollContainer.Child, 'BOTTOMRIGHT', 22, 0)
+    QuestScrollFrame.btnCollapse:SetScript('OnLeave', GameTooltip_Hide)
     QuestScrollFrame.btnCollapse:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddLine(not e.onlyChinese and HUD_EDIT_MODE_COLLAPSE_OPTIONS or "收起选项 |A:editmode-up-arrow:16:11:0:3|a")
         e.tips:Show()
-        self:SetAlpha(1)
     end)
     QuestScrollFrame.btnCollapse:SetScript("OnMouseDown", function()
         for i=1, C_QuestLog.GetNumQuestLogEntries() do
@@ -231,77 +226,31 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
         end
     end)
 
-    QuestScrollFrame.btnExpand= e.Cbtn(QuestScrollFrame, {size={22,22}, atlas='NPE_ArrowDown'})
-    QuestScrollFrame.btnExpand:SetPoint('LEFT', QuestScrollFrame.btnCollapse, 'RIGHT', 2, 0)
-    QuestScrollFrame.btnExpand:SetAlpha(0.5)
-    QuestScrollFrame.btnExpand:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
-    QuestScrollFrame.btnExpand:SetScript('OnEnter', function(self)
+    local btnExpand= e.Cbtn(QuestScrollFrame.btnCollapse, {size={22,22}, atlas='NPE_ArrowDown'})
+    btnExpand:SetPoint('LEFT', QuestScrollFrame.btnCollapse, 'RIGHT', 2, 0)
+    btnExpand:SetScript('OnLeave', GameTooltip_Hide)
+    btnExpand:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddLine(not e.onlyChinese and HUD_EDIT_MODE_EXPAND_OPTIONS or "展开选项 |A:editmode-down-arrow:16:11:0:-7|a")
         e.tips:Show()
-        self:SetAlpha(1)
     end)
-    QuestScrollFrame.btnExpand:SetScript("OnMouseDown", function()
+    btnExpand:SetScript("OnMouseDown", function()
         for i=1, C_QuestLog.GetNumQuestLogEntries() do
             ExpandQuestHeader(i)
         end
     end)
 
-    QuestScrollFrame.btnDeleteAllQuest=e.Cbtn(QuestScrollFrame,{size={18,18}, atlas='xmarksthespot'})
-    QuestScrollFrame.btnDeleteAllQuest:SetPoint('RIGHT', QuestScrollFrame.btnCollapse, 'LEFT', -2, 0)
-    QuestScrollFrame.btnDeleteAllQuest:SetAlpha(0.5)
-    QuestScrollFrame.btnDeleteAllQuest:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
-    QuestScrollFrame.btnDeleteAllQuest:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"), '|cnRED_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"))
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(not e.onlyChinese and LOOT_HISTORY_ALL_PASSED or "全部放弃", (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-        self:SetAlpha(1)
-    end)
-    QuestScrollFrame.btnDeleteAllQuest:SetScript("OnDoubleClick", function()
-        StaticPopupDialogs[id..addName.."ABANDON_QUEST"] = StaticPopupDialogs[id..addName.."ABANDON_QUEST"] or {
-            text= (e.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)..'|n|n|cnYELLOW_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"),
-            button1 = '|cnRED_FONT_COLOR:'..(not e.onlyChinese and ABANDON_QUEST_ABBREV or "放弃"),
-            button2 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL),
-            OnAccept = function(self)
-                local n=0
-                for index=1 , C_QuestLog.GetNumQuestLogEntries() do
-                    local questInfo=C_QuestLog.GetInfo(index)
-                    if questInfo and questInfo.questID and C_QuestLog.CanAbandonQuest(questInfo.questID) then
-                        local linkQuest=GetQuestLink(questInfo.questID)
-                        C_QuestLog.SetSelectedQuest(questInfo.questID)
-                        C_QuestLog.SetAbandonQuest();
-                        C_QuestLog.AbandonQuest()
-                        n=n+1
-                        if linkQuest then
-                            print(id, e.cn(addName),  e.onlyChinese and '放弃|A:groupfinder-icon-redx:0:0|a' or (ABANDON_QUEST_ABBREV..'|A:groupfinder-icon-redx:0:0|a'), linkQuest, n..'|cnRED_FONT_COLOR:)')
-                        end
-                    end
-                    if IsModifierKeyDown() then
-                        break
-                    end
-                end
-                PlaySound(SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST);
-            end,
-            whileDead=true, hideOnEscape=true, exclusive=true,
-            showAlert= true,
-        }
-        StaticPopup_Show(id..addName.."ABANDON_QUEST", '|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '|n|A:groupfinder-icon-redx:0:0|a所有任务' or ('|n|A:groupfinder-icon-redx:0:0|a'..ALL))..' |r#|cnGREEN_FONT_COLOR:'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r')
-    end)
 
-    QuestScrollFrame.SearchBox= CreateFrame('EditBox', nil, QuestScrollFrame, 'SearchBoxTemplate')
-    QuestScrollFrame.SearchBox:SetSize(174, 22)
-    QuestScrollFrame.SearchBox:SetPoint('LEFT', QuestScrollFrame.btnExpand, 'RIGHT')
-    QuestScrollFrame.SearchBox.Instructions:SetText(e.onlyChinese and '搜索' or SEARCH)
-    QuestScrollFrame.SearchBox.DAILY= e.onlyChinese and '日常' or DAILY:lower()
-    QuestScrollFrame.SearchBox.WEEKLY= e.onlyChinese and '周长' or WEEKLY:lower()
 
-    function QuestScrollFrame.SearchBox:set_search()
+    local search= CreateFrame('EditBox', nil, QuestScrollFrame.btnCollapse, 'SearchBoxTemplate')
+    search:SetSize(174, 22)
+    search:SetPoint('LEFT', btnExpand, 'RIGHT',2,0)
+    search.Instructions:SetText(e.onlyChinese and '搜索' or SEARCH)
+    search.DAILY= e.onlyChinese and '日常' or DAILY:lower()
+    search.WEEKLY= e.onlyChinese and '周长' or WEEKLY:lower()
+
+    function search:set_search()
         local text= self:GetText()
         text= text:trim():lower()
         if text=='' then
@@ -351,54 +300,85 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
         end
         QuestMapFrame.ignoreQuestLogUpdate = nil;
     end
-    QuestScrollFrame.SearchBox:HookScript("OnTextChanged",  QuestScrollFrame.SearchBox.set_search);
-    QuestScrollFrame.SearchBox:SetAlpha(0.3)
-    QuestScrollFrame.SearchBox:HookScript("OnEditFocusGained",  function(self)
-        self:SetAlpha(1)
-        self:set_search()
-    end)
+    search:HookScript("OnTextChanged",  search.set_search);
+    search:HookScript("OnEditFocusGained", search.set_search)--search:HookScript("OnEditFocusLost",  function(self)
 
-    QuestScrollFrame.SearchBox:HookScript("OnEditFocusLost",  function(self)
-        self:SetAlpha(0.3)
-    end)
-
-    QuestScrollFrame.SearchBox.week= e.Cbtn(QuestScrollFrame, {size={22,22}, atlas='questlog-questtypeicon-weekly'})
-    QuestScrollFrame.SearchBox.week:SetPoint('LEFT', QuestScrollFrame.SearchBox, 'RIGHT')
-    QuestScrollFrame.SearchBox.week:SetScript('OnClick', function(self)
-        local edit= self:GetParent().SearchBox
+    search.week= e.Cbtn(search, {size={22,22}, atlas='questlog-questtypeicon-weekly'})
+    search.week:SetPoint('LEFT', search, 'RIGHT')
+    search.week:SetScript('OnClick', function(self)
+        local edit= self:GetParent()
         edit:SetText('')
         edit:SetText(e.onlyChinese and '周长' or WEEKLY)
     end)
-    QuestScrollFrame.SearchBox.week:SetAlpha(0.5)
-    QuestScrollFrame.SearchBox.week:SetScript("OnLeave", function(self) GameTooltip_Hide() self:SetAlpha(0.5) end)
-    QuestScrollFrame.SearchBox.week:SetScript("OnEnter", function(self)
+    search.week:SetScript("OnLeave", GameTooltip_Hide)
+    search.week:SetScript("OnEnter", function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddLine('|A:questlog-questtypeicon-weekly:0:0|a'..(e.onlyChinese and '周长' or WEEKLY))
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
-        self:SetAlpha(1)
     end)
 
-    QuestScrollFrame.SearchBox.Daily= e.Cbtn(QuestScrollFrame, {size={22,22}, atlas='AdventureMapIcon-DailyQuest'})
-    QuestScrollFrame.SearchBox.Daily:SetPoint('LEFT', QuestScrollFrame.SearchBox.week, 'RIGHT')
-    QuestScrollFrame.SearchBox.Daily:SetScript('OnClick', function(self)
-        local edit= self:GetParent().SearchBox
+    search.Daily= e.Cbtn(search, {size={22,22}, atlas='AdventureMapIcon-DailyQuest'})
+    search.Daily:SetPoint('LEFT', search.week, 'RIGHT')
+    search.Daily:SetScript('OnClick', function(self)
+        local edit= self:GetParent()
         edit:SetText('')
         edit:SetText(e.onlyChinese and '日常' or DAILY)
     end)
-    QuestScrollFrame.SearchBox.Daily:SetAlpha(0.5)
-    QuestScrollFrame.SearchBox.Daily:SetScript("OnLeave", function(self) GameTooltip_Hide() self:SetAlpha(0.5) end)
-    QuestScrollFrame.SearchBox.Daily:SetScript("OnEnter", function(self)
+    search.Daily:SetScript("OnLeave", GameTooltip_Hide)
+    search.Daily:SetScript("OnEnter", function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddLine('|A:AdventureMapIcon-DailyQuest:0:0|a'..(e.onlyChinese and '日常' or DAILY))
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
-        self:SetAlpha(1)
     end)
 
-
+    local deleAllQuest=e.Cbtn(QuestScrollFrame.btnCollapse, {size={18,18}, atlas='xmarksthespot'})
+    deleAllQuest:SetPoint('RIGHT', QuestScrollFrame.btnCollapse, 'LEFT', -2, 0)
+    deleAllQuest:SetScript('OnLeave', GameTooltip_Hide)
+    deleAllQuest:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"), '|cnRED_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(not e.onlyChinese and LOOT_HISTORY_ALL_PASSED or "全部放弃", (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:Show()
+        self:SetAlpha(1)
+    end)
+    deleAllQuest:SetScript("OnDoubleClick", function()
+        StaticPopupDialogs[id..addName.."ABANDON_QUEST"] = StaticPopupDialogs[id..addName.."ABANDON_QUEST"] or {
+            text= (e.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)..'|n|n|cnYELLOW_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"),
+            button1 = '|cnRED_FONT_COLOR:'..(not e.onlyChinese and ABANDON_QUEST_ABBREV or "放弃"),
+            button2 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL),
+            OnAccept = function()
+                local n=0
+                for index=1 , C_QuestLog.GetNumQuestLogEntries() do
+                    local questInfo=C_QuestLog.GetInfo(index)
+                    if questInfo and questInfo.questID and C_QuestLog.CanAbandonQuest(questInfo.questID) then
+                        local linkQuest=GetQuestLink(questInfo.questID)
+                        C_QuestLog.SetSelectedQuest(questInfo.questID)
+                        C_QuestLog.SetAbandonQuest();
+                        C_QuestLog.AbandonQuest()
+                        n=n+1
+                        if linkQuest then
+                            print(id, e.cn(addName),  e.onlyChinese and '放弃|A:groupfinder-icon-redx:0:0|a' or (ABANDON_QUEST_ABBREV..'|A:groupfinder-icon-redx:0:0|a'), linkQuest, n..'|cnRED_FONT_COLOR:)')
+                        end
+                    end
+                    if IsModifierKeyDown() then
+                        break
+                    end
+                end
+                PlaySound(SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST);
+            end,
+            whileDead=true, hideOnEscape=true, exclusive=true,
+            showAlert= true,
+        }
+        StaticPopup_Show(id..addName.."ABANDON_QUEST", '|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '|n|A:groupfinder-icon-redx:0:0|a所有任务' or ('|n|A:groupfinder-icon-redx:0:0|a'..ALL))..' |r#|cnGREEN_FONT_COLOR:'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r')
+    end)
 end
 
 

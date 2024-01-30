@@ -83,7 +83,7 @@ local function reg(self, text, index)
     end
 end
 
-local function role_check_tooltips_enter(self)
+--[[local function role_check_tooltips_enter(self)
     local desc= _G["ROLE_DESCRIPTION_"..(self.role or '')]
     if not desc then
         return
@@ -106,7 +106,7 @@ local function role_check_tooltips_enter(self)
         GameTooltip:SetText('该职责不可用。', 1.0, 1.0, 1.0)
         local reasons = GetLFGInviteRoleRestrictions(roleID) or {}
         for i = 1, #reasons do
-            local text = _G["INSTANCE_UNAVAILABLE_SELF_"..(LFG_INSTANCE_INVALID_CODES[reasons[i]] or "OTHER")]
+            local text = _G["INSTANCE_UNAVAILABLE_SELF_"..(LFG_INSTANCE_INVALID_CODES[reasons[i] ] or "OTHER")]
             if( text ) then
                 GameTooltip:AddLine(e.strText[text] or text)
             end
@@ -116,7 +116,7 @@ local function role_check_tooltips_enter(self)
         GameTooltip:AddLine('该角色在你所选择的一个或更多地下城中不可用。在这些地下城中，你将作为可胜任的角色加入队列。', nil, nil, nil, true)
     end
     GameTooltip:Show()
-end
+end]]
 --[[local function role_tooltips(str)
     local tank= _G[str..'RoleButtonTank'] or (_G[str] and _G[str].DPSIcon)
     local header= _G[str..'RoleButtonHealer']or (_G[str] and _G[str].HealerIcon)
@@ -509,13 +509,13 @@ local function Init()
     set(LFGListApplicationDialogDescription.EditBox.Instructions, '给队长留言（可选）')
     set(LFGListApplicationDialog.SignUpButton, '申请')
     set(LFGListApplicationDialog.CancelButton, '取消')
-    LFGListApplicationDialog.DamagerButton.role='DAMAGER'
+    --[[LFGListApplicationDialog.DamagerButton.role='DAMAGER'
     LFGListApplicationDialog.DamagerButton:HookScript('OnEnter', role_check_tooltips_enter)
     LFGListApplicationDialog.HealerButton.role='HEALER'
     LFGListApplicationDialog.HealerButton:HookScript('OnEnter', role_check_tooltips_enter)
     LFGListApplicationDialog.TankButton.role='TANK'
     LFGListApplicationDialog.TankButton:HookScript('OnEnter', role_check_tooltips_enter)
-
+]]
     local function GetFindGroupRestriction()
         if ( C_SocialRestrictions.IsSilenced() ) then
             return "SILENCED", RED_FONT_COLOR:WrapTextInColorCode('帐号禁言期间不能这样做')
@@ -1559,6 +1559,9 @@ local function Init()
 
         set(RaidFrameConvertToRaidButton, '转化为团队')
         set(RaidFrameRaidDescription, '团队是超过5个人的队伍，这是为了击败高等级的特定挑战而准备的大型队伍模式。\n\n|cffffffff- 团队成员无法获得非团队任务所需的物品或者杀死怪物的纪录。\n\n- 在团队中，你通过杀死怪物获得的经验值相对普通小队要少。\n\n- 团队让你可以赢得用其它方法根本无法通过的挑战。|r')
+
+
+
     hooksecurefunc('FriendsFrame_UpdateQuickJoinTab', function(numGroups)--FriendsFrame.lua
         if numGroups then
             set(FriendsFrameTab4, '快速加入'.. (numGroups>0 and '|cnGREEN_FONT_COLOR:' or '')..numGroups)

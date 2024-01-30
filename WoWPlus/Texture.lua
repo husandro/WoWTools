@@ -236,7 +236,14 @@ local function set_Menu(self)
     end
 end
 
-
+local function set_Label(self, shadowOffset)
+    if self then
+        e.Set_Label_Texture_Color(self, {type='FontString', alpha=min05})--设置颜色
+        if shadowOffset then
+            self:SetShadowOffset(shadowOffset, -shadowOffset)
+        end
+    end
+end
 
 
 
@@ -2412,14 +2419,17 @@ local function Init_Main_Button()
             self.cooldown:SetCountdownFont('NumberFontNormal')
         end
     end
-    
-    hooksecurefunc(MainMenuBar, 'UpdateDividers', function(info)--主动作条
+
+    hooksecurefunc(MainMenuBar, 'UpdateDividers', function(self)--主动作条
         for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
             set_main_button(_G['ActionButton'..i])--主动作条
         end
+        --local dividersPool = self.isHorizontal and self.HorizontalDividersPool or self.VerticalDividersPool;
+        --for _ in pairs(MainMenuBar.actionButtons) do local divider = dividersPool:Acquire() --BUG
     end)
     for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
         set_main_button(_G['ActionButton'..i])--主动作条
+        set_Alpha_Color(_G['ActionButton'..i].SlotArt, nil, nil, min05)
         set_main_button(_G['MultiBarBottomLeftButton'..i])--作条2
         set_main_button(_G['MultiBarBottomRightButton'..i])--作条3
         set_main_button(_G['MultiBarLeftButton'..i])--作条4
@@ -2429,21 +2439,17 @@ local function Init_Main_Button()
             set_main_button(_G['MultiBar'..index..'Button'..i])--作条6, 7, 8
         end
     end
-end
---[[
-local function set_divider(dividersPool)
-    for _ in pairs(MainMenuBar.actionButtons) do
-        local divider = dividersPool:Acquire();
-        divider:Hide();
+    
+    set_Alpha_Frame_Texture(MainMenuBar.ActionBarPageNumber.UpButton, {alpha=min05})
+    set_Alpha_Frame_Texture(MainMenuBar.ActionBarPageNumber.DownButton, {alpha=min05})
+    set_Label(MainMenuBar.ActionBarPageNumber.Text, 1)
+
+    if MainMenuBar.EndCaps then
+        set_Alpha_Color(MainMenuBar.EndCaps.LeftEndCap, nil, nil, min05)
+        set_Alpha_Color(MainMenuBar.EndCaps.RightEndCap, nil, nil, min05)
     end
+    set_Alpha_Color(MainMenuBar.BorderArt, nil, nil, min05)
 end
-hooksecurefunc(MainMenuBar, 'UpdateDividers', function(self)
-    set_divider(self.isHorizontal and self.HorizontalDividersPool or self.VerticalDividersPool)
-end)
-set_divider(self.isHorizontal and self.HorizontalDividersPool or self.VerticalDividersPool)
-]]
-
-
 
 
 
@@ -2799,8 +2805,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Class_Power(true)--职业
                 Init_Chat_Bubbles()--聊天泡泡
                 Init_HelpTip()--隐藏教程
+                Init_Main_Button()
                 C_Timer.After(2, function()
-                    Init_Main_Button()
                     Init_Main_Menu(true)--主菜单, 颜色
                 end)
 
