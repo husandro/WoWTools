@@ -1307,6 +1307,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(CommunitiesFrame.MemberList.ColumnDisplay.Background)
         set_Alpha_Color(CommunitiesFrameCommunitiesList.Bg)
         set_Alpha_Color(CommunitiesFrameInset.Bg, nil, nil, min03)
+        set_NineSlice(CommunitiesFrameInset, nil, true)
         CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
         CommunitiesFrameGuildDetailsFrameInfo:DisableDrawLayer('BACKGROUND')
         CommunitiesFrameGuildDetailsFrameNews:DisableDrawLayer('BACKGROUND')
@@ -1356,6 +1357,7 @@ local function Init_Event(arg1)
         set_NineSlice(CommunitiesGuildLogFrame.Container, true)
         set_ScrollBar(CommunitiesGuildLogFrame.Container.ScrollFrame)
         set_Menu(CommunitiesFrame.CommunitiesListDropDownMenu)
+
 
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
         hide_Texture(HonorFrame.Inset.Bg)
