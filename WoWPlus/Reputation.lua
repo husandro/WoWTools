@@ -1196,7 +1196,7 @@ local function Init()
 		self.up:SetShown(not Save.notPlus)
 	end
 
-	Init_TrackButton()--监视, 文本
+	C_Timer.After(2, Init_TrackButton)--监视, 文本
 	hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
 	Button:set_Shown()
 

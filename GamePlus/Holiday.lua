@@ -243,7 +243,7 @@ local function Get_Button_Text(event)
 
     title= title:match(HEADER_COLON..'(.+)') or title
     title= not event.isValid and '|cff606060'..title..'|r' or title
-
+    title= e.cn(title)
     local msg
     if Save.left then
         msg= ((Save.showDate and event.eventTime) and event.eventTime..' ' or '')
