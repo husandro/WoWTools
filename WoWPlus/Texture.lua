@@ -1355,6 +1355,7 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(CommunitiesGuildLogFrame)
         set_NineSlice(CommunitiesGuildLogFrame.Container, true)
         set_ScrollBar(CommunitiesGuildLogFrame.Container.ScrollFrame)
+        set_Menu(CommunitiesFrame.CommunitiesListDropDownMenu)
 
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
         hide_Texture(HonorFrame.Inset.Bg)
