@@ -230,7 +230,7 @@ local function Init()
         if not info then
             return
         end
-        local color, m= e.GetQestColor('Legendary'), ''
+        local color
         if isQuestComplete then-- C_QuestLog.IsComplete(questID) then
             color= e.GetQestColor('Complete')
         elseif C_QuestLog.IsFailed(questID) then
@@ -268,7 +268,7 @@ local function Init()
         end
 
         if m~='' then
-            block.HeaderText:SetText(m..text)
+            block.HeaderText:SetText(m..e.cn(text))
         end
     end)
 

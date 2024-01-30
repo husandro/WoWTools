@@ -281,6 +281,28 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###############
 --初始化, 隐藏材质
 --###############
@@ -1039,44 +1061,6 @@ local function Init_All_Frame()
 
 
 
-
-    --######
-    --动作条
-    --######
-    local KEY_BUTTON_Tab={
-        [KEY_BUTTON1]= 'ML',--鼠标左键";
-        [KEY_BUTTON3]= 'MR',--鼠标中键";
-        [KEY_BUTTON2]= 'MM',--鼠标右键";
-        --[[[KEY_BUTTON10]= 'M10',--鼠标按键10";
-        [KEY_BUTTON11]= 'M11',--鼠标按键11";
-        [KEY_BUTTON12]= 'M12',--鼠标按键12";
-        [KEY_BUTTON13]= 'M13',--鼠标按键13";
-        [KEY_BUTTON14]= 'M14',--鼠标按键14";
-        [KEY_BUTTON15]= 'M15',--鼠标按键15";
-        [KEY_BUTTON16]= 'M16',--鼠标按键16";
-        [KEY_BUTTON17]= 'M17',--鼠标按键17";
-        [KEY_BUTTON18]= 'M18',--鼠标按键18";
-        [KEY_BUTTON19]= 'M19',--鼠标按键19";
-        [KEY_BUTTON20]= 'M20',--鼠标按键20";
-        [KEY_BUTTON21]= 'M21',--鼠标按键21";
-        [KEY_BUTTON22]= 'M22',--鼠标按键22";
-        [KEY_BUTTON23]= 'M23',--鼠标按键23";
-        [KEY_BUTTON24]= 'M24',--鼠标按键24";
-        [KEY_BUTTON25]= 'M25',--鼠标按键25";
-        [KEY_BUTTON26]= 'M26',--鼠标按键26";
-        [KEY_BUTTON27]= 'M27',--鼠标按键27";
-        [KEY_BUTTON28]= 'M28',--鼠标按键28";
-        [KEY_BUTTON29]= 'M29',--鼠标按键29";
-        [KEY_BUTTON30]= 'M30',--鼠标按键30";
-        [KEY_BUTTON31]= 'M31',--鼠标按键31";]]
-        [KEY_BUTTON4]= 'M4',--鼠标按键4";
-        [KEY_BUTTON5]= 'M5',--鼠标按键5";
-        [KEY_BUTTON6]= 'M6',--鼠标按键6";
-        [KEY_BUTTON7]= 'M7',--鼠标按键7";
-        [KEY_BUTTON8]= 'M8',--鼠标按键8";
-        [KEY_BUTTON9]= 'M9',--鼠标按键9";
-    }
-
     hooksecurefunc('CooldownFrame_Set', function(self, start, duration, enable)
         if enable and enable ~= 0 and start > 0 and duration > 0 then
             self:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
@@ -1085,82 +1069,6 @@ local function Init_All_Frame()
 
 
 
-
-
-    if MainMenuBar then--主动作条
-        hide_Texture(MainMenuBar.BorderArt)
-        hide_Texture(MainMenuBar.BorderArt.TopEdge)
-        hide_Texture(MainMenuBar.BorderArt.BottomEdge)
-        hide_Texture(MainMenuBar.BorderArt.LeftEdge)
-        hide_Texture(MainMenuBar.BorderArt.RightEdge)
-        hide_Texture(MainMenuBar.BorderArt.TopLeftCorner)
-        hide_Texture(MainMenuBar.BorderArt.BottomLeftCorner)
-        hide_Texture(MainMenuBar.BorderArt.TopRightCorner)
-        hide_Texture(MainMenuBar.BorderArt.BottomRightCorner)
-
-        hide_Texture(MainMenuBar.Background)
-        hooksecurefunc(MainMenuBar, 'UpdateEndCaps', function()
-            hide_Texture(MainMenuBar.EndCaps.LeftEndCap)
-            hide_Texture(MainMenuBar.EndCaps.RightEndCap)
-        end)
-    end
-    --[[local function set_divider(dividersPool)
-        for _ in pairs(MainMenuBar.actionButtons) do
-            local divider = dividersPool:Acquire();
-            divider:Hide();
-        end
-    end
-    set_divider(MainMenuBar.HorizontalDividersPool)
-    set_divider(MainMenuBar.VerticalDividersPool)
-    hooksecurefunc(MainMenuBar, 'UpdateDividers', function(self)
-        set_divider(self.isHorizontal and self.HorizontalDividersPool or self.VerticalDividersPool)
-    end)]]
-    C_Timer.After(2, function()
-        local function hideButtonTexture(self)
-            if self then
-                hide_Texture(self.SlotArt)
-                hide_Texture(self.SlotBackground)--背景，
-                hide_Texture(self.NormalTexture)--外框，方块
-                if self.RightDivider and self.BottomDivider then
-                    self.RightDivider:SetShown(false)--frame
-                    self.BottomDivider:SetShown(false)
-                    hide_Texture(self.RightDivider.TopEdge)
-                    hide_Texture(self.RightDivider.BottomEdge)
-                    hide_Texture(self.RightDivider.Center)
-                end
-                if self.HotKey then--快捷键
-                    self.HotKey:SetShadowOffset(1, -1)
-                    local text=self.HotKey:GetText()
-                    if text and text~='' and text~= RANGE_INDICATOR and #text>4 then
-                        for key, mouse in pairs(KEY_BUTTON_Tab) do
-                            if text:find(key) then
-                                self.HotKey:SetText(text:gsub(key, mouse))
-                            end
-                        end
-                    end
-                end
-                if self.Count then--数量
-                    self.Count:SetShadowOffset(1, -1)
-                end
-                if self.Name then--名称
-                    self.Name:SetShadowOffset(1, -1)
-                end
-                if self.cooldown then
-                    self.cooldown:SetCountdownFont('NumberFontNormal')
-                end
-            end
-        end
-        for i=1, 12 do
-            hideButtonTexture(_G['ActionButton'..i])--主动作条
-            hideButtonTexture(_G['MultiBarBottomLeftButton'..i])--作条2
-            hideButtonTexture(_G['MultiBarBottomRightButton'..i])--作条3
-            hideButtonTexture(_G['MultiBarLeftButton'..i])--作条4
-            hideButtonTexture(_G['MultiBarRightButton'..i])--作条5
-            for index=5, 7 do
-                hideButtonTexture(_G['MultiBar'..index..'Button'..i])--作条6, 7, 8
-            end
-        end
-    end)
 
     --颜色
     set_Alpha_Frame_Texture(ColorPickerFrame.Header, {alpha= min05})
@@ -2307,7 +2215,7 @@ local function set_BagTexture(self)
     end
 end
 
-local function Init_MainMenu(init)--主菜单
+local function Init_Main_Menu(init)--主菜单
     if init and Save.disabledMainMenu then
         return
     end
@@ -2436,6 +2344,104 @@ end
 
 
 
+
+
+
+--######
+--动作条
+--######
+local function Init_Main_Button()
+
+    local KEY_BUTTON_Tab={
+        [KEY_BUTTON1]= e.Icon.left,-- 'ML',--鼠标左键";
+        [KEY_BUTTON3]= e.Icon.mid, --'MR',--鼠标中键";
+        [KEY_BUTTON2]= e.Icon.right,--'MM',--鼠标右键";
+        --[[[KEY_BUTTON10]= 'M10',--鼠标按键10";
+        [KEY_BUTTON11]= 'M11',--鼠标按键11";
+        [KEY_BUTTON12]= 'M12',--鼠标按键12";
+        [KEY_BUTTON13]= 'M13',--鼠标按键13";
+        [KEY_BUTTON14]= 'M14',--鼠标按键14";
+        [KEY_BUTTON15]= 'M15',--鼠标按键15";
+        [KEY_BUTTON16]= 'M16',--鼠标按键16";
+        [KEY_BUTTON17]= 'M17',--鼠标按键17";
+        [KEY_BUTTON18]= 'M18',--鼠标按键18";
+        [KEY_BUTTON19]= 'M19',--鼠标按键19";
+        [KEY_BUTTON20]= 'M20',--鼠标按键20";
+        [KEY_BUTTON21]= 'M21',--鼠标按键21";
+        [KEY_BUTTON22]= 'M22',--鼠标按键22";
+        [KEY_BUTTON23]= 'M23',--鼠标按键23";
+        [KEY_BUTTON24]= 'M24',--鼠标按键24";
+        [KEY_BUTTON25]= 'M25',--鼠标按键25";
+        [KEY_BUTTON26]= 'M26',--鼠标按键26";
+        [KEY_BUTTON27]= 'M27',--鼠标按键27";
+        [KEY_BUTTON28]= 'M28',--鼠标按键28";
+        [KEY_BUTTON29]= 'M29',--鼠标按键29";
+        [KEY_BUTTON30]= 'M30',--鼠标按键30";
+        [KEY_BUTTON31]= 'M31',--鼠标按键31";]]
+        [KEY_BUTTON4]= 'M4',--鼠标按键4";
+        [KEY_BUTTON5]= 'M5',--鼠标按键5";
+        [KEY_BUTTON6]= 'M6',--鼠标按键6";
+        [KEY_BUTTON7]= 'M7',--鼠标按键7";
+        [KEY_BUTTON8]= 'M8',--鼠标按键8";
+        [KEY_BUTTON9]= 'M9',--鼠标按键9";
+    }
+    local function set_main_button(self)
+        if not self then
+            return
+        end
+        hide_Texture(self.NormalTexture)--外框，方块
+        hide_Texture(self.SlotBackground, true)--背景
+        if self.HotKey then--快捷键
+            self.HotKey:SetShadowOffset(1, -1)
+            local text=self.HotKey:GetText()
+            if text and text~='' and text~= RANGE_INDICATOR and #text>4 then
+                for key, mouse in pairs(KEY_BUTTON_Tab) do
+                    if text:find(key) then
+                        self.HotKey:SetText(text:gsub(key, mouse))
+                    end
+                end
+            end
+        end
+        if self.Count then--数量
+            self.Count:SetShadowOffset(1, -1)
+        end
+        if self.Name then--名称
+            self.Name:SetShadowOffset(1, -1)
+        end
+        if self.cooldown then
+            self.cooldown:SetCountdownFont('NumberFontNormal')
+        end
+    end
+    
+    hooksecurefunc(MainMenuBar, 'UpdateDividers', function(info)--主动作条
+        for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
+            set_main_button(_G['ActionButton'..i])--主动作条
+        end
+    end)
+    for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
+        set_main_button(_G['ActionButton'..i])--主动作条
+        set_main_button(_G['MultiBarBottomLeftButton'..i])--作条2
+        set_main_button(_G['MultiBarBottomRightButton'..i])--作条3
+        set_main_button(_G['MultiBarLeftButton'..i])--作条4
+        set_main_button(_G['MultiBarRightButton'..i])--作条5
+        set_main_button(_G['StanceButton'..i])
+        for index=5, 7 do
+            set_main_button(_G['MultiBar'..index..'Button'..i])--作条6, 7, 8
+        end
+    end
+end
+--[[
+local function set_divider(dividersPool)
+    for _ in pairs(MainMenuBar.actionButtons) do
+        local divider = dividersPool:Acquire();
+        divider:Hide();
+    end
+end
+hooksecurefunc(MainMenuBar, 'UpdateDividers', function(self)
+    set_divider(self.isHorizontal and self.HorizontalDividersPool or self.VerticalDividersPool)
+end)
+set_divider(self.isHorizontal and self.HorizontalDividersPool or self.VerticalDividersPool)
+]]
 
 
 
@@ -2587,6 +2593,19 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 local Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
 local function Init_Options()
     local initializer2= e.AddPanel_Check_Button({
@@ -2629,7 +2648,7 @@ local function Init_Options()
         value= not Save.disabledMainMenu,
         func= function()
             Save.disabledMainMenu= not Save.disabledMainMenu and true or nil
-            Init_MainMenu()
+            Init_Main_Menu()
             print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
@@ -2730,20 +2749,6 @@ end
 
 
 
-local function Init()
-    Init_All_Frame()
-    Init_Class_Power(true)--职业
-    Init_Chat_Bubbles()--聊天泡泡
-    Init_HelpTip()--隐藏教程
-    C_Timer.After(2, function()
-        Init_MainMenu(true)--主菜单, 颜色
-    end)
-end
-
-
-
-
-
 
 
 
@@ -2770,7 +2775,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.classPowerNumSize= Save.classPowerNumSize or 12
             GetMinValueAlpha()--min03，透明度，最小值
-            
+
             Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
             if Save.disabled then
                 e.AddPanel_Check({
@@ -2785,10 +2790,20 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 })
                 panel:UnregisterEvent('ADDON_LOADED')
             else
-                Init()
+
                 for _, ent in pairs(eventTab or {}) do
                     Init_Event(ent)
                 end
+
+                Init_All_Frame()
+                Init_Class_Power(true)--职业
+                Init_Chat_Bubbles()--聊天泡泡
+                Init_HelpTip()--隐藏教程
+                C_Timer.After(2, function()
+                    Init_Main_Button()
+                    Init_Main_Menu(true)--主菜单, 颜色
+                end)
+
             end
             eventTab=nil
 
@@ -2799,13 +2814,13 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             set_Alpha_Color(SettingsPanel.Bg, nil, nil, min05)
             set_ScrollBar(SettingsPanel.Container.SettingsList)
             set_ScrollBar(SettingsPanel.CategoryList)
-    
+
             set_NineSlice(PingSystemTutorial, true)
             set_NineSlice(PingSystemTutorialInset, nil, true)
             hide_Texture(PingSystemTutorialBg)
             set_Alpha_Frame_Texture(SettingsPanel.GameTab, {notAlpha=true})
             set_Alpha_Frame_Texture(SettingsPanel.AddOnsTab, {notAlpha=true})
-    
+
         else
             if eventTab then
                 table.insert(eventTab, arg1)
