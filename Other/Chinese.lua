@@ -5356,6 +5356,41 @@ local function Init_Loaded(arg1)
             end
         end)
 
+        hooksecurefunc(CommunitiesListEntryMixin, 'SetFindCommunity', function(self)
+            set(self.Name, '寻找社区')
+        end)
+            --set(ClubFinderFilterDropdown.Label, '过滤器')
+            --set(ClubFinderSortByDropdown.Label, '排序')
+            set(ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search, '搜索')
+            
+            hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame, 'UpdateType', function(self)-- ClubFinderGuildAndCommunityMixin:UpdateType()
+                if (self.isGuildType) then
+                    set(self.InsetFrame.GuildDescription, '公会是由许多关系紧密，想要一起享受游戏乐趣的玩家组成的群体。加入公会后，你可以享受许多福利，包括分享公会银行，以及公会聊天频道。\n\n使用此工具来寻找与你志同道合的公会吧。')
+                    if (#self.PendingGuildCards.CardList > 0) then
+                        self.ClubFinderPendingTab.tooltip = format('等待确认中（%d）', #self.PendingGuildCards.CardList);
+                    else
+                        self.ClubFinderPendingTab.tooltip = format('等待确认中（%d）', 0);
+                    end
+                else
+                    self.InsetFrame.GuildDescription:SetText('选择搜索条件，然后按下“搜索”');
+                    if (#self.PendingCommunityCards.CardList > 0) then
+                        self.ClubFinderPendingTab.tooltip = format('等待确认中（%d）', #self.PendingCommunityCards.CardList)
+                    else
+                        self.ClubFinderPendingTab.tooltip = '等待确认中（0）'
+                    end
+                end
+            end)
+            hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards, 'BuildCardList', function(self)
+                self:GetParent().InsetFrame.GuildDescription:SetText('未发现结果。请修改你的搜索条件。');
+            end)
+            set(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.GuildDescription, '公会是由许多关系紧密，想要一起享受游戏乐趣的玩家组成的群体。加入公会后，你可以享受许多福利，包括分享公会银行，以及公会聊天频道。|n|n使用此工具来寻找与你志同道合的公会吧。')
+        hooksecurefunc(CommunitiesListEntryMixin, 'SetAddCommunity', function(self)
+            set(self.Name, '加入或创建社区')
+        end)
+        hooksecurefunc(CommunitiesListEntryMixin, 'SetGuildFinder', function(self)
+            set(self.Name, '公会查找器')
+        end)
+
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set(GuildBankFrameTab1, '公会银行')
             set(GuildItemSearchBox.Instructions, '搜索')

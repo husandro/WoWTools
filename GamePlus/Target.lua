@@ -6,9 +6,9 @@ local Save= {
         ['common-icon-rotateright']='a',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Hunters_Mark.tga']='t',
 
-        --[[['NPE_ArrowDown']='a',
+        ['NPE_ArrowDown']='a',
         ['UI-HUD-MicroMenu-StreamDLYellow-Up']='a',
-        
+
         ['Interface\\AddOns\\WeakAuras\\Media\\Textures\\targeting-mark.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Reticule.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\RedArrow.tga']='t',
@@ -48,7 +48,7 @@ local Save= {
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FriendAway.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusTowards.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusAway.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\green_arrow_down_11384.tga']='t',]]
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\green_arrow_down_11384.tga']='t',
     },
     targetTextureName='common-icon-rotateright',
 
@@ -658,7 +658,7 @@ local function set_Option()
     if panel.tipTargetTexture or Save.disabled then
         return
     end
-    
+
     local sel=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     sel:SetPoint('TOPLEFT', 0, -40)
     sel:SetChecked(Save.target)
