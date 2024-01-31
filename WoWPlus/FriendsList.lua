@@ -622,7 +622,6 @@ button.subframes = subframes;
 ]]
 --local setRaidGroupFrameLabel
 local function set_RaidGroupFrame_Update()--团队, 模块
-    print(id,addName)
     if not IsInRaid() then
         if RaidFrame.groupInfoLable then
             RaidFrame.groupInfoLable:SetText('')
