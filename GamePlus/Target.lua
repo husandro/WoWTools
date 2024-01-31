@@ -384,7 +384,9 @@ local function set_Target()
     local plate = C_NamePlate.GetNamePlateForUnit("target")
     if plate and plate.UnitFrame then
         local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--C_AddOns.IsAddOnLoaded("Plater")
-        if not frame then
+        if Save.top then
+            frame= plate.UnitFrame.name or plate.UnitFrame.healthBar
+        else
             if plate.UnitFrame.RaidTargetFrame and plate.UnitFrame.RaidTargetFrame.RaidTargetIcon:IsShown() then
                 frame= plate.UnitFrame.RaidTargetFrame
             elseif plate.UnitFrame.ClassificationFrame and plate.UnitFrame.ClassificationFrame.classificationIndicator:IsShown() then
