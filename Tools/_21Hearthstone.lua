@@ -204,7 +204,7 @@ end
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, menuList)--主菜单
+local function InitMenu(_, level, menuList)--主菜单
     local info
     if menuList=='TOY' then
         for itemID, _ in pairs(Save.items) do
@@ -237,7 +237,7 @@ local function InitMenu(self, level, menuList)--主菜单
 
     elseif menuList=='BIND' then--炉石, 绑定位置, 截取名称SHORT
         info={
-            text=SHORT..NAME,
+            text=e.onlyChinese and '截取名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHORT, NAME),
             checked=Save.showBindNameShort,
             func=function()
                 Save.showBindNameShort= not Save.showBindNameShort and true or nil
@@ -247,7 +247,7 @@ local function InitMenu(self, level, menuList)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     else
        info={
-            text='|cnGREEN_FONT_COLOR:'..#button.items..'|r'.. addName,
+            text='|cnGREEN_FONT_COLOR:'..#button.items..'|r'.. e.cn(addName),
             notCheckable=true,
             menuList='TOY',
             hasArrow=true,
@@ -255,7 +255,7 @@ local function InitMenu(self, level, menuList)--主菜单
        }
        e.LibDD:UIDropDownMenu_AddButton(info, level)
        info={
-            text=TUTORIAL_TITLE31..NAME,
+            text= e.onlyChinese and '绑定' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TUTORIAL_TITLE31, NAME),
             checked=Save.showBindName,
             menuList='BIND',
             hasArrow=true,
