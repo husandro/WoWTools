@@ -1,3 +1,4 @@
+---@diagnostic disable: cast-local-type
 --[[
 Name: LibRangeCheck-2.0
 Author(s): mitch0
