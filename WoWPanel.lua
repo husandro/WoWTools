@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= 'Panel Settings'
 local Save={
-    onlyChinese= e.Player.husandro or LOCALE_zhCN,
+    onlyChinese= LOCALE_zhCN or e.Player.husandro,
     --useClassColor= e.Player.husandro,--使用,职业, 颜色
     --useCustomColor= nil,--使用, 自定义, 颜色
     useColor=1,
@@ -1016,7 +1016,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.useCustomColorTab= Save.useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
             Set_Color()--自定义，颜色
 
-            e.onlyChinese= Save.onlyChinese or LOCALE_zhCN
+            e.onlyChinese= LOCALE_zhCN or Save.onlyChinese
+            Save.onlyChinese= LOCALE_zhCN or Save.onlyChinese
 
             set_Local_Text()
             Init()
