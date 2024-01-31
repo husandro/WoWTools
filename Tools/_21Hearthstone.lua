@@ -255,7 +255,7 @@ local function InitMenu(_, level, menuList)--主菜单
        }
        e.LibDD:UIDropDownMenu_AddButton(info, level)
        info={
-            text= e.onlyChinese and '绑定' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TUTORIAL_TITLE31, NAME),
+            text= e.onlyChinese and '绑定位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TUTORIAL_TITLE31, NAME),
             checked=Save.showBindName,
             menuList='BIND',
             hasArrow=true,
