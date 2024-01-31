@@ -195,7 +195,7 @@ local function set_Creature_Num()--local distanceSquared, checkedDistance = Unit
         local u = nameplat.namePlateUnitToken or nameplat.UnitFrame and nameplat.UnitFrame.unit
         local t= u and u..'target'
         --local range= Save.creatureRange>0 and e.CheckRange(u, Save.creatureRange, '<=') or Save.creatureRange==0
-        
+
         if UnitExists(t) and UnitExists(u)
             and not UnitIsDeadOrGhost(u)
             and not UnitInParty(u)
@@ -332,25 +332,21 @@ local function set_questProgress_Text(plate, unit)
     end
 end
 
-local questChanging
-local function set_check_All_Plates()
-    local plates= C_NamePlate.GetNamePlates() or {}
-    if not Save.quest then--清除
-        for _, plate in pairs(plates) do
-            if plate.questProgress then
-                plate.questProgress:SetText('')
+
+
+local function set_check_allQust_Plates()
+    if not Save.quest or isIns then
+        for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
+            if plate.UnitFrame.questProgress then
+                plate.UnitFrame.questProgress:SetText('')
             end
         end
-        questChanging=nil
-    elseif not questChanging then--设置
-        questChanging=true
-        for _, plate in pairs(plates) do
+    else
+        for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
             set_questProgress_Text(plate, plate.namePlateUnitToken or plate.UnitFrame and plate.UnitFrame.unit)
         end
-        questChanging=nil
     end
 end
-
 
 
 
@@ -388,8 +384,7 @@ end
 --设置,指示目标,位置,显示,隐藏
 --##########################
 local function set_Target()
-    local plate= C_NamePlate.GetNamePlateForUnit("target", issecure())
-    print(C_NamePlate.GetNamePlateForUnit("target", issecure()), C_NamePlate.GetNamePlateForUnit("target"))
+    local plate= C_NamePlate.GetNamePlateForUnit("target",  issecure())
     if plate then
         local self = plate.UnitFrame
         local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--C_AddOns.IsAddOnLoaded("Plater")
@@ -408,9 +403,9 @@ local function set_Target()
             w= w+ Save.w
             h= h+ Save.h
             local n, p
-            if self.RaidTargetFrame.RaidTargetIcon:IsShown() then
+            if self.RaidTargetFrame.RaidTargetIcon:IsVisible() then
                 n= self.RaidTargetFrame.RaidTargetIcon:GetWidth()+ self.ClassificationFrame.classificationIndicator:GetWidth()
-            elseif self.ClassificationFrame.classificationIndicator:IsShown() then
+            elseif self.ClassificationFrame.classificationIndicator:IsVisible() then
                 n= self.ClassificationFrame.classificationIndicator:GetWidth()
             end
             if self.questProgress then
@@ -420,23 +415,20 @@ local function set_Target()
             targetFrame:SetSize(w+ n+ p, h)
             targetFrame:SetPoint('CENTER', self, Save.x+ (-n+p)/2, Save.y)
         else
-            if self.RaidTargetFrame.RaidTargetIcon:IsShown() then
+            if self.RaidTargetFrame.RaidTargetIcon:IsVisible() then
                 frame= self.RaidTargetFrame
-            elseif self.ClassificationFrame.classificationIndicator:IsShown() then
+            elseif self.ClassificationFrame.classificationIndicator:IsVisible() then
                 frame= self.ClassificationFrame.classificationIndicator
             else
                 frame= self.healthBar or self.name
             end
             targetFrame:SetPoint('RIGHT', frame or self, 'LEFT',Save.x, Save.y)
         end
-        --set_Creature_Num()
         targetFrame:SetShown(true)
     else
         targetFrame:SetShown(false)
     end
 end
-
-
 
 
 
@@ -550,9 +542,8 @@ end
 --事件
 --####
 local function set_Register_Event()
-    --isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
-    isIns=  C_PvP.IsBattleground()
-            or C_PvP.IsArena()
+    isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
+    isIns=  isPvPArena
             or (IsInInstance()
                 and (GetNumGroupMembers()>3 or C_ChallengeMode.IsChallengeModeActive())
             )
@@ -565,6 +556,7 @@ local function set_Register_Event()
         targetFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
         targetFrame:RegisterEvent('RAID_TARGET_UPDATE')
         targetFrame:RegisterUnitEvent('UNIT_FLAGS', 'target')
+        targetFrame:RegisterEvent('CVAR_UPDATE')
     end
 
     if Save.target and Save.targetInCombat then
@@ -575,6 +567,7 @@ local function set_Register_Event()
     if Save.creature then
         targetFrame:RegisterEvent('UNIT_TARGET')
     end
+
 
     if (not isIns and Save.quest) or Save.creature then
         targetFrame:RegisterEvent('NAME_PLATE_UNIT_ADDED')
@@ -590,10 +583,16 @@ local function set_Register_Event()
     end
 end
 
+
+
+
+
 local function set_All_Init()
+    do
+        set_Register_Event()
+    end
     set_Created_Texture_Text()
-    set_Register_Event()
-    set_check_All_Plates()
+    set_check_allQust_Plates()
 end
 
 
@@ -641,12 +640,18 @@ local function Init()
         end
     end)
     targetFrame:SetScript("OnEvent", function(_, event, arg1)
-        if event=='PLAYER_TARGET_CHANGED' or event=='PLAYER_ENTERING_WORLD' or event=='RAID_TARGET_UPDATE' or event=='UNIT_FLAGS' then
+        if event=='PLAYER_TARGET_CHANGED'
+            or event=='RAID_TARGET_UPDATE'
+            or event=='UNIT_FLAGS'
+        then
             C_Timer.After(0.15, set_Target)
 
-            if event=='PLAYER_ENTERING_WORLD' then
-                set_Register_Event()
-            end
+        elseif event=='CVAR_UPDATE' and (arg1=='nameplateShowAll' or arg1=='nameplateShowEnemies' or arg1=='nameplateShowFriends') then
+            set_check_allQust_Plates()
+            C_Timer.After(0.15, set_Target)
+
+        elseif event=='PLAYER_ENTERING_WORLD' then
+            set_All_Init()
 
         elseif event=='PLAYER_REGEN_DISABLED' then--颜色
             set_Target_Color(targetFrame.Texture, true)
@@ -655,17 +660,17 @@ local function Init()
             set_Target_Color(targetFrame.Texture, false)
 
         elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
-            C_Timer.After(2, set_check_All_Plates)
+            C_Timer.After(2, function() set_check_allQust_Plates() end)
 
         else
             if not isIns and arg1 then
                 if event=='NAME_PLATE_UNIT_ADDED' then
-                    set_questProgress_Text(C_NamePlate.GetNamePlateForUnit(arg1), arg1)
+                    set_questProgress_Text(C_NamePlate.GetNamePlateForUnit(arg1,  issecure()), arg1)
 
                 elseif event=='NAME_PLATE_UNIT_REMOVED' then
-                    local plate = C_NamePlate.GetNamePlateForUnit(arg1)
-                    if plate and plate.questProgress then
-                        plate.questProgress:SetText('')
+                    local plate = C_NamePlate.GetNamePlateForUnit(arg1,  issecure())
+                    if plate and plate.UnitFrame.questProgress then
+                        plate.UnitFrame.questProgress:SetText('')
                     end
                 end
             end

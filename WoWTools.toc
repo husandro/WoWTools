@@ -27,7 +27,8 @@ Libs\LibDBIcon-1.0.lua
 Libs\LibRangeCheck-2.0.lua
 Libs\LibUIDropDownMenu.lua
 
-##Libs\LibNameplateRegistry-1.0\LibNameplateRegistry-1.0.lua
+
+##Libs\LibNameplateRegistry-1.0.lua
 ##Libs\AceAddon-3.0\AceAddon-3.0.lua
 ##AceConsole-3.0, AceDB-3.0
 ##LibButtonGlow-1.0,
