@@ -773,20 +773,7 @@ local function Init()
     })
 
     if not LOCALE_zhCN then
-        if not e.onlyChinese then
-            e.AddPanel_Check({
-                name= 'Chinese',
-                tooltip= e.onlyChinese and '语言: 简体中文'
-                        or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
-                category=Category,
-                value= Save.onlyChinese,
-                func= function()
-                    e.onlyChinese= not e.onlyChinese and true or nil
-                    Save.onlyChinese = e.onlyChinese
-                    print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-        else
+        if e.Player.region==3 then
             e.AddPanel_Check_Button({
                 checkName= 'Chinese',
                 checkValue= Save.onlyChinese,
@@ -803,6 +790,20 @@ local function Init()
                     or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
                 layout= Layout,
                 category= Category
+            })
+
+        else
+            e.AddPanel_Check({
+                name= 'Chinese',
+                tooltip= e.onlyChinese and '语言: 简体中文'
+                        or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
+                category=Category,
+                value= Save.onlyChinese,
+                func= function()
+                    e.onlyChinese= not e.onlyChinese and true or nil
+                    Save.onlyChinese = e.onlyChinese
+                    print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
             })
         end
     end
