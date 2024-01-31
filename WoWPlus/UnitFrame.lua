@@ -1566,6 +1566,9 @@ local function Init_BossFrame()
 
     --设置位置
     local function set_TotButton_point()
+        if not EditModeManagerFrame:IsEditModeActive() then
+            return
+        end
         for i=1, MAX_BOSS_FRAMES do
             local frame= _G['Boss'..i..'TargetFrame']
             if frame.TotButton then
@@ -1578,13 +1581,8 @@ local function Init_BossFrame()
             end
         end
     end
-    hooksecurefunc(Boss1TargetFrameSpellBar,'AdjustPosition', function()
-        set_TotButton_point()
-    end)
-    hooksecurefunc(BossTargetFrameContainer, 'SetSmallSize', function()
-        set_TotButton_point()
-    end)
-
+    hooksecurefunc(Boss1TargetFrameSpellBar,'AdjustPosition', set_TotButton_point)
+    hooksecurefunc(BossTargetFrameContainer, 'SetSmallSize', set_TotButton_point)
 end
 
 
