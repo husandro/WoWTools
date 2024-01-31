@@ -65,8 +65,12 @@ local function set_Button_Init(self)
             e.tips:AddDoubleLine(e.onlyChinese and '禁用' or DISABLE, 'Shift+'..e.Icon.right)
         end
         e.tips:Show()
+        e.FindBagItem(true, {itemLID= self.itemID})--查询，背包里物品
     end)
-    self:SetScript("OnLeave",GameTooltip_Hide)
+    self:SetScript("OnLeave", function()
+        GameTooltip_Hide()
+        e.FindBagItem(false)
+    end)
 
     self:RegisterEvent('BAG_UPDATE')
     self:RegisterEvent('SPELL_UPDATE_COOLDOWN')

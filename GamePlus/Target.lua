@@ -388,11 +388,13 @@ end
 --设置,指示目标,位置,显示,隐藏
 --##########################
 local function set_Target()
-    local self = (C_NamePlate.GetNamePlateForUnit("target") or {}).UnitFrame
-    if self then
+    local plate= C_NamePlate.GetNamePlateForUnit("target", issecure())
+    print(C_NamePlate.GetNamePlateForUnit("target", issecure()), C_NamePlate.GetNamePlateForUnit("target"))
+    if plate then
+        local self = plate.UnitFrame
         local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--C_AddOns.IsAddOnLoaded("Plater")
         targetFrame:ClearAllPoints()
-        if Save.targetFramePoint=='LEFT' then
+        if Save.targetFramePoint=='TOP' then
             if self.SoftTargetFrame.Icon:IsShown() then
                 frame= self.SoftTargetFrame
             else
@@ -401,8 +403,7 @@ local function set_Target()
             targetFrame:SetPoint('BOTTOM', frame or self, 'TOP', Save.x, Save.y)
 
         elseif Save.targetFramePoint=='HEALTHBAR' then
-            frame= self.healthBar or self.name
-            frame= frame or self
+            frame= self.healthBar or self.name or self
             local w, h= frame:GetSize()
             w= w+ Save.w
             h= h+ Save.h
