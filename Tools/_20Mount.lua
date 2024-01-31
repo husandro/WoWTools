@@ -534,7 +534,7 @@ local function Init_Dialogs()
             self2.editBox:SetText("")
             e.call('ChatEdit_FocusActiveWindow')
         end,
-        OnAccept = function(self2, data)
+        OnAccept = function(self2)
             local text= self2.editBox:GetText()
             text=text:gsub(' ','')
             text=text:gsub('%[','')
@@ -547,7 +547,7 @@ local function Init_Dialogs()
             Save.KEY=nil
             setKEY()--设置捷键
         end,
-        EditBoxOnTextChanged=function(self2, data)
+        EditBoxOnTextChanged=function(self2)
             local text= self2:GetText()
             text=text:gsub(' ','')
             self2:GetParent().button1:SetEnabled(text~='')

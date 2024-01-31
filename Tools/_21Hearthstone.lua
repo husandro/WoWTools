@@ -247,7 +247,7 @@ local function InitMenu(self, level, menuList)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     else
        info={
-            text='|cnGREEN_FONT_COLOR:'..#button.items..'|r'.. e.cn(addName),
+            text='|cnGREEN_FONT_COLOR:'..#button.items..'|r'.. addName,
             notCheckable=true,
             menuList='TOY',
             hasArrow=true,
