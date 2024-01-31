@@ -380,19 +380,24 @@ end
 --##########################
 --设置,指示目标,位置,显示,隐藏
 --##########################
+
 local function set_Target()
-    local plate = C_NamePlate.GetNamePlateForUnit("target")
-    if plate and plate.UnitFrame then
+    local self = (C_NamePlate.GetNamePlateForUnit("target") or {}).UnitFrame
+    if self and self:IsShown() then
         local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--C_AddOns.IsAddOnLoaded("Plater")
         if Save.top then
-            frame= plate.UnitFrame.name or plate.UnitFrame.healthBar
+            if self.SoftTargetFrame and self.SoftTargetFrame.Icon:IsShown() then
+                frame= self.SoftTargetFrame
+            else
+                frame= self.name or self.healthBar
+            end
         else
-            if plate.UnitFrame.RaidTargetFrame and plate.UnitFrame.RaidTargetFrame.RaidTargetIcon:IsShown() then
-                frame= plate.UnitFrame.RaidTargetFrame
-            elseif plate.UnitFrame.ClassificationFrame and plate.UnitFrame.ClassificationFrame.classificationIndicator:IsShown() then
-                frame= plate.UnitFrame.ClassificationFrame.classificationIndicator
-            elseif plate.UnitFrame.healthBar then
-                frame= plate.UnitFrame.healthBar
+            if self.RaidTargetFrame and self.RaidTargetFrame.RaidTargetIcon:IsShown() then
+                frame= self.RaidTargetFrame
+            elseif self.ClassificationFrame and self.ClassificationFrame.classificationIndicator:IsShown() then
+                frame= self.ClassificationFrame.classificationIndicator
+            elseif self.healthBar then
+                frame= self.healthBar
             end
         end
 
@@ -406,8 +411,10 @@ local function set_Target()
            targetFrame.Target:SetShown(true)
         end
         set_Creature_Num()
+        targetFrame:SetShown(true)
+    else
+        targetFrame:SetShown(false)
     end
-    targetFrame:SetShown(plate and true or false)
 end
 
 
@@ -471,6 +478,7 @@ local function set_Created_Texture_Text()
         targetFrame.Creature:SetText('')
     end
    set_Target()
+
 end
 
 
@@ -594,7 +602,12 @@ local function Init()
     targetFrame= CreateFrame("Frame")
     set_All_Init()
 
-    targetFrame:SetScript("OnEvent", function(self, event, arg1)
+    hooksecurefunc(NamePlateDriverFrame, 'OnSoftTargetUpdate', function()
+        if Save.top then
+            set_Target()
+        end
+    end)
+    targetFrame:SetScript("OnEvent", function(_, event, arg1)
         if event=='PLAYER_TARGET_CHANGED' or event=='PLAYER_ENTERING_WORLD' or event=='RAID_TARGET_UPDATE' or event=='UNIT_FLAGS' then
             C_Timer.After(0.15, set_Target)
 

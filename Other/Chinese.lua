@@ -159,13 +159,17 @@ local function set_tooltip_func(self)
             end
         end
     end
-    self:HookScript("OnShow", set_tooltip)
-    self:HookScript('OnUpdate', function(frame, elapsed)--GameTooltip.lua
-        self.elapsed= (self.elapsed or 0) +elapsed
-        if self.elapsed>TOOLTIP_UPDATE_TIME then
-            set_tooltip(frame)
-        end
-    end)
+    if self.OnShow then
+        self:HookScript("OnShow", set_tooltip)
+    end
+    if self.OnUpdate then
+        self:HookScript('OnUpdate', function(frame, elapsed)--GameTooltip.lua
+            self.elapsed= (self.elapsed or TOOLTIP_UPDATE_TIME) +elapsed
+            if self.elapsed>TOOLTIP_UPDATE_TIME then
+                set_tooltip(frame)
+            end
+        end)
+    end
 end
 
 local function set_pettips_func(self)--FloatingPetBattleTooltip.xml
@@ -3461,7 +3465,7 @@ local function Init()
     set_tooltip_func(GameTooltip)
     set_tooltip_func(ItemRefTooltip)
     set_tooltip_func(EmbeddedItemTooltip)
-
+    --set_tooltip_func(NamePlateTooltip)
 
 
     set_pettips_func(BattlePetTooltip)
@@ -6001,8 +6005,20 @@ local function Init_Loaded(arg1)
         dia("COVENANT_MISSIONS_HEAL_CONFIRMATION", {text  = '你确定要彻底治愈这名追随者吗？', button1 = '确认', button2 = '取消'})
         dia("COVENANT_MISSIONS_HEAL_ALL_CONFIRMATION", {text  = '你确定要付出%s，治疗所有受伤的伙伴？', button1 = '治疗全部', button2 = '取消'})
 
-    --elseif arg1=='Blizzard_RuneforgeUI' then--Blizzard_RuneforgeCreateFrame.lua
-        --dia("CONFIRM_RUNEFORGE_LEGENDARY_CRAFT", {button1 = '是', button2 = '否'})
+    elseif arg1=='Blizzard_RuneforgeUI' then--Blizzard_RuneforgeCreateFrame.lua
+        dia("CONFIRM_RUNEFORGE_LEGENDARY_CRAFT", {button1 = '是', button2 = '否'})
+        hookDia("CONFIRM_RUNEFORGE_LEGENDARY_CRAFT", 'OnShow', function(self, data)
+            self.text:SetText(data.title);
+            local text= data and data.title or ''
+            local a= text:match(e.Magic(RUNEFORGE_LEGENDARY_UPGRADING_CONFIRMATION))
+            local b= text:match(e.Magic(RUNEFORGE_LEGENDARY_CRAFTING_CONFIRMATION))
+            if a then
+                set(self.text, format('你确定要花费%s给这件传说装备升级吗？', a))
+            elseif b then
+                set(self.text, format('你确定要花费%s打造这件传说装备吗？', b))
+            end
+        end)
+        set_tooltip_func(RuneforgeFrameResultTooltip)
 
     elseif arg1=='Blizzard_ClickBindingUI' then
         dia("CONFIRM_LOSE_UNSAVED_CLICK_BINDINGS", {text  = '你有未保存的点击施法按键绑定。如果你现在关闭，会丢失所有改动。', button1 = '确定', button2 = '取消'})
@@ -6399,7 +6415,8 @@ local function Init_Loaded(arg1)
             end
         end)
 
-
+    elseif arg1=='Blizzard_ItemSocketingUI' then--宝石
+        set_tooltip_func(ItemSocketingDescription)
         
     --elseif arg1=='Blizzard_CovenantRenown' then
     --elseif arg1=='Blizzard_Calendar' then
