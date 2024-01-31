@@ -921,6 +921,13 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
         elseif arg1=='Blizzard_RaidUI' then
             hooksecurefunc('RaidGroupFrame_Update', set_RaidGroupFrame_Update)--团队, 模块
+            RaidFrame:HookScript('OnUpdate', function(frame, elapsed)
+                frame.elapsed= (frame.elapsed or 3) +elapsed
+                if self2.elapsed>3 then
+                    self2.elapsed=0
+                    e.call('RaidGroupFrame_Update')
+                end
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then
