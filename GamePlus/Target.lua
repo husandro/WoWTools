@@ -389,7 +389,7 @@ end
 --##########################
 local function set_Target()
     local self = (C_NamePlate.GetNamePlateForUnit("target") or {}).UnitFrame
-    if self and self:IsShown() then
+    if self then
         local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--C_AddOns.IsAddOnLoaded("Plater")
         targetFrame:ClearAllPoints()
         if Save.targetFramePoint=='LEFT' then
@@ -635,7 +635,7 @@ local function Init()
     set_All_Init()
 
     hooksecurefunc(NamePlateDriverFrame, 'OnSoftTargetUpdate', function()
-        if Save.top then
+        if Save.targetFramePoint=='TOP' then
             set_Target()
         end
     end)
