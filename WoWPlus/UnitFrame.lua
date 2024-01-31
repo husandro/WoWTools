@@ -1444,7 +1444,15 @@ local function Init_BossFrame()
         --目标的目标，点击
         --##############
         frame.TotButton=e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})
-        frame.TotButton:SetPoint('TOPLEFT', frame.BossButton, 'TOPRIGHT', 4,0)
+        function frame.TotButton:set_point()
+            if Boss1TargetFrameSpellBar.castBarOnSide then
+                self:SetPoint('TOPLEFT', frame.TargetFrameContent.TargetFrameContentMain.ManaBar, 'BOTTOMLEFT')
+            else
+                self:SetPoint('RIGHT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'LEFT',-2,0)
+            end
+        end
+        frame.TotButton:set_point()
+        --frame.TotButton:SetPoint('TOPLEFT', frame.BossButton, 'TOPRIGHT', 4,0)
         frame.TotButton:SetAttribute('type', 'target')
         frame.TotButton:SetAttribute('unit', frame.unit..'target')
         frame.TotButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -1562,22 +1570,19 @@ local function Init_BossFrame()
             self.BossButton:set_event()
             self.TotButton.frame:set_event()
         end)
+
     end
 
     --设置位置
     local function set_TotButton_point()
-        if not EditModeManagerFrame:IsEditModeActive() then
+        if UnitAffectingCombat('player') then
             return
         end
         for i=1, MAX_BOSS_FRAMES do
             local frame= _G['Boss'..i..'TargetFrame']
             if frame.TotButton then
                 frame.TotButton:ClearAllPoints()
-                if Boss1TargetFrameSpellBar.castBarOnSide then
-                    frame.TotButton:SetPoint('TOPLEFT', frame.TargetFrameContent.TargetFrameContentMain.ManaBar, 'BOTTOMLEFT')
-                else
-                    frame.TotButton:SetPoint('RIGHT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'LEFT',-2,0)
-                end
+                frame.TotButton:set_point()
             end
         end
     end
