@@ -781,7 +781,7 @@ end
 
 function e.CheckRange(unit, range, operator)
     local min, max= LibRangeCheck:GetRange(unit, true);
-    if (operator == "<=") then
+    if (operator) then-- == "<=") then
         return (max or 999) <= range;
     else
         return (min or 0) >= range;

@@ -61,11 +61,13 @@ local Save= {
     y=0,
     scale=1.5,
     elapsed=0.5,
+    targetFramePoint='LEFT',--'TOP', 'HEALTHBAR','LEFT'
     --top=true,--位于，目标血条，上方
 
     creature= true,--怪物数量
     --creatureRange=40,
     creatureFontSize=10,
+    --creatureToUIParet=true,--放在UIPrent
 
     quest= true,
     --questShowAllFaction=nil,--显示， 所有玩家派系
@@ -84,6 +86,7 @@ local Save= {
 
 local panel= CreateFrame("Frame")
 local targetFrame
+local CreatureLabel
 local isPvPArena, isIns--, isPvPZone
 --local isAddOnPlater--C_AddOns.IsAddOnLoaded("Plater")
 --[[
@@ -143,7 +146,7 @@ local function set_Scale_Frame()--缩放
     if not targetFrame then
         return
     end
-    if targetFrame.Target and Save.scale~=1 then
+    if targetFrame.Texture and Save.scale~=1 then
         targetFrame:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= (self.elapsed or Save.elapsed) + elapsed
             if self.elapsed> Save.elapsed then
@@ -178,28 +181,27 @@ end
 --########################
 --怪物目标, 队员目标, 总怪物
 --########################
-local createRun
 local function set_Creature_Num()--local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
-    if not (Save.creature and targetFrame:IsShown()) or createRun then
-        if targetFrame.Creature then
-            targetFrame.Creature:SetText('')
+    if not (Save.creature) then
+        if CreatureLabel then
+            CreatureLabel:SetText('')
         end
         return
     end
-    createRun=true
+
     local k,T,F=0,0,0
     local nameplates= C_NamePlate.GetNamePlates() or {}
     for _, nameplat in pairs(nameplates) do
         local u = nameplat.namePlateUnitToken or nameplat.UnitFrame and nameplat.UnitFrame.unit
         local t= u and u..'target'
         --local range= Save.creatureRange>0 and e.CheckRange(u, Save.creatureRange, '<=') or Save.creatureRange==0
-        local range= e.CheckRange(u, 40, '<=')
+        
         if UnitExists(t) and UnitExists(u)
             and not UnitIsDeadOrGhost(u)
             and not UnitInParty(u)
             and not UnitIsUnit(u,'player')
             and (not isPvPArena or (isPvPArena and UnitIsPlayer(u)))
-            and range
+            and e.CheckRange(u, 40, true)
             then
             if UnitCanAttack('player',u) then
                 k=k+1
@@ -226,8 +228,7 @@ local function set_Creature_Num()--local distanceSquared, checkedDistance = Unit
             end
         end
     end
-    targetFrame.Creature:SetText(e.Player.col..(T==0 and '-' or  T)..'|r |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
-    createRun=nil
+    CreatureLabel:SetText(e.Player.col..(T==0 and '-' or  T)..'|r |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
 end
 
 
@@ -286,12 +287,14 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
             return '|A:VignetteEvent:18:18|a'
         end
         local tooltipData = C_TooltipInfo.GetUnit(unit)
-        for i = 4, #tooltipData.lines do
-            local line = tooltipData.lines[i]
-            TooltipUtil.SurfaceArgs(line)
-            local text= find_Text(line.leftText)
-            if text then
-                return text~=true and text
+        if tooltipData and tooltipData.lines then
+            for i = 4, #tooltipData.lines do
+                local line = tooltipData.lines[i]
+                TooltipUtil.SurfaceArgs(line)
+                local text= find_Text(line.leftText)
+                if text then
+                    return text~=true and text
+                end
             end
         end
 
@@ -312,16 +315,20 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
 end
 
 local function set_questProgress_Text(plate, unit)
-    if UnitExists(unit) and plate and plate.UnitFrame and Save.quest then
-        local text= Get_Quest_Progress(unit)
-        if text and not plate.questProgress then
-            local frame=  plate.UnitFrame and plate.UnitFrame.healthBar or plate
-            plate.questProgress= e.Cstr(frame, {size=14, color={r=0,g=1,b=0}})--14, nil, nil, {0,1,0}, nil,'LEFT')
-            plate.questProgress:SetPoint('LEFT', frame, 'RIGHT', 2,0)
+    local self= plate and plate.UnitFrame
+    if not self then
+        return
+    end
+    local text
+    if Save.quest then
+        text= Get_Quest_Progress(unit)
+        if text and not self.questProgress then
+            self.questProgress= e.Cstr(self, {size=14, color={r=0,g=1,b=0}})--14, nil, nil, {0,1,0}, nil,'LEFT')
+            self.questProgress:SetPoint('LEFT', self.healthBar or self, 'RIGHT', 2,0)
         end
-        if plate.questProgress then
-            plate.questProgress:SetText(text or '')
-        end
+    end
+    if self.questProgress then
+        self.questProgress:SetText(text or '')
     end
 end
 
@@ -380,37 +387,48 @@ end
 --##########################
 --设置,指示目标,位置,显示,隐藏
 --##########################
-
 local function set_Target()
     local self = (C_NamePlate.GetNamePlateForUnit("target") or {}).UnitFrame
     if self and self:IsShown() then
         local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--C_AddOns.IsAddOnLoaded("Plater")
-        if Save.top then
-            if self.SoftTargetFrame and self.SoftTargetFrame.Icon:IsShown() then
+        targetFrame:ClearAllPoints()
+        if Save.targetFramePoint=='LEFT' then
+            if self.SoftTargetFrame.Icon:IsShown() then
                 frame= self.SoftTargetFrame
             else
                 frame= self.name or self.healthBar
             end
-        else
-            if self.RaidTargetFrame and self.RaidTargetFrame.RaidTargetIcon:IsShown() then
-                frame= self.RaidTargetFrame
-            elseif self.ClassificationFrame and self.ClassificationFrame.classificationIndicator:IsShown() then
-                frame= self.ClassificationFrame.classificationIndicator
-            elseif self.healthBar then
-                frame= self.healthBar
-            end
-        end
+            targetFrame:SetPoint('BOTTOM', frame or self, 'TOP', Save.x, Save.y)
 
-        targetFrame:ClearAllPoints()
-        if Save.top then
-            targetFrame:SetPoint('BOTTOM', frame or plate, 'TOP', Save.x, Save.y)
+        elseif Save.targetFramePoint=='HEALTHBAR' then
+            frame= self.healthBar or self.name
+            frame= frame or self
+            local w, h= frame:GetSize()
+            w= w+ Save.w
+            h= h+ Save.h
+            local n, p
+            if self.RaidTargetFrame.RaidTargetIcon:IsShown() then
+                n= self.RaidTargetFrame.RaidTargetIcon:GetWidth()+ self.ClassificationFrame.classificationIndicator:GetWidth()
+            elseif self.ClassificationFrame.classificationIndicator:IsShown() then
+                n= self.ClassificationFrame.classificationIndicator:GetWidth()
+            end
+            if self.questProgress then
+                p= self.questProgress:GetWidth()
+            end
+            n, p= n or 0, p or 0
+            targetFrame:SetSize(w+ n+ p, h)
+            targetFrame:SetPoint('CENTER', self, Save.x+ (-n+p)/2, Save.y)
         else
-            targetFrame:SetPoint('RIGHT', frame or plate, 'LEFT',Save.x, Save.y)
+            if self.RaidTargetFrame.RaidTargetIcon:IsShown() then
+                frame= self.RaidTargetFrame
+            elseif self.ClassificationFrame.classificationIndicator:IsShown() then
+                frame= self.ClassificationFrame.classificationIndicator
+            else
+                frame= self.healthBar or self.name
+            end
+            targetFrame:SetPoint('RIGHT', frame or self, 'LEFT',Save.x, Save.y)
         end
-        if Save.target then
-           targetFrame.Target:SetShown(true)
-        end
-        set_Creature_Num()
+        --set_Creature_Num()
         targetFrame:SetShown(true)
     else
         targetFrame:SetShown(false)
@@ -456,29 +474,43 @@ end
 --设置 targetFrame Target Creature 属性
 --####################################
 local function set_Created_Texture_Text()
-    set_Target_Size(targetFrame)--设置，大小
-    if not targetFrame.Target and Save.target then
-        targetFrame.Target= targetFrame:CreateTexture(nil, 'BACKGROUND')
-        targetFrame.Target:SetAllPoints(targetFrame)
+    if  Save.targetFramePoint~='HEALTHBAR' then
+        set_Target_Size(targetFrame)--设置，大小
+    end
+    if not targetFrame.Texture and Save.target then
+        targetFrame.Texture= targetFrame:CreateTexture(nil, 'BACKGROUND')
+        targetFrame.Texture:SetAllPoints(targetFrame)
     end
 
-    if targetFrame.Target then
-        set_Target_Texture(targetFrame.Target)--设置，图片
+    if targetFrame.Texture then
+        set_Target_Texture(targetFrame.Texture)--设置，图片
         set_Scale_Frame()--缩放
-        set_Target_Color(targetFrame.Target, Save.targetInCombat and UnitAffectingCombat('player'))
-        targetFrame.Target:SetShown(false)
+        set_Target_Color(targetFrame.Texture, Save.targetInCombat and UnitAffectingCombat('player'))
+        targetFrame.Texture:SetShown(Save.target)
     end
 
-    if not targetFrame.Creature and Save.creature then
-        targetFrame.Creature= e.Cstr(targetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}, layer='BORDER', justifyH='RIGHT'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
-        targetFrame.Creature:SetPoint('RIGHT', -8, 0)
-        targetFrame.Creature:SetTextColor(1,1,1)
+    --怪物数量
+    if not CreatureLabel and Save.creature then
+        CreatureLabel= e.Cstr(targetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}, layer='BORDER'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
+        function CreatureLabel:set_point()
+            self:ClearAllPoints()
+            if Save.targetFramePoint=='LEFT' then
+                self:SetPoint('CENTER')
+                self:SetJustifyH('RIGHT')
+            else
+                self:SetPoint('BOTTOM', 0, 8)
+                self:SetJustifyH('CENTER')
+            end
+        end
+        CreatureLabel:SetTextColor(1,1,1)
+    elseif CreatureLabel then
+        e.Cstr(nil, {changeFont=CreatureLabel, size= Save.creatureFontSize})
     end
-    if targetFrame.Creature and not Save.creature then
-        targetFrame.Creature:SetText('')
+    CreatureLabel:set_point()
+    if CreatureLabel and not Save.creature then
+        CreatureLabel:SetText('')
     end
    set_Target()
-
 end
 
 
@@ -616,10 +648,10 @@ local function Init()
             end
 
         elseif event=='PLAYER_REGEN_DISABLED' then--颜色
-            set_Target_Color(targetFrame.Target, true)
+            set_Target_Color(targetFrame.Texture, true)
 
         elseif event=='PLAYER_REGEN_ENABLED' then
-            set_Target_Color(targetFrame.Target, false)
+            set_Target_Color(targetFrame.Texture, false)
 
         elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
             C_Timer.After(2, set_check_All_Plates)
@@ -773,13 +805,43 @@ local function set_Option()
         self2:SetAlpha(0.3)
     end)
 
-    local topCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    --[[local topCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     topCheck:SetPoint('LEFT', combatCheck.Text, 'RIGHT', 15,0)
     topCheck:SetChecked(Save.top)
     topCheck.Text:SetText('TOP')
     topCheck:SetScript('OnClick', function()
         Save.top= not Save.top and true or nil
         set_All_Init()
+    end)]]
+    local menuPoint = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    menuPoint:SetPoint("LEFT", combatCheck.Text, 'RIGHT', 15, 0)
+    e.LibDD:UIDropDownMenu_SetWidth(menuPoint, 100)
+    e.LibDD:UIDropDownMenu_Initialize(menuPoint, function(self, level)
+        local tab={
+            'TOP',
+            'HEALTHBAR',
+            'LEFT'
+        }
+        for _, name in pairs(tab) do
+            local info={
+                text= name,
+                checked= Save.targetFramePoint==name,
+                tooltipOnButton=true,
+                tooltipTitle= e.onlyChinese and '位置' or CHOOSE_LOCATION,
+                arg1= name,
+                func= function(_, arg1)
+                    Save.targetFramePoint= arg1
+                    e.LibDD:UIDropDownMenu_SetText(self, arg1)
+                    set_All_Init()
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+    end)
+    e.LibDD:UIDropDownMenu_SetText(menuPoint, Save.targetFramePoint)
+
+    menuPoint.Button:SetScript('OnClick', function(self)
+        e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
     end)
 
     local sliderX = e.CSlider(panel, {min=-250, max=250, value=Save.x, setp=1, w= 100,
@@ -809,8 +871,8 @@ local function set_Option()
         self2:SetValue(value)
         self2.Text:SetText(value)
         Save.w= value
-        set_Target_Size(targetFrame)--设置，大小
         set_Target_Size(panel.tipTargetTexture)--设置，大小
+        set_All_Init()
     end})
     sliderW:SetPoint("LEFT", sliderY, 'RIGHT',15,0)
     local sliderH = e.CSlider(panel, {min=10, max=100, value=Save.h, setp=1, w= 100, color=true,
@@ -980,7 +1042,6 @@ local function set_Option()
         self2:SetValue(value)
         self2.Text:SetText(value)
         Save.creatureFontSize= value
-        e.Cstr(nil, {changeFont=targetFrame.Creature, size=value})
         set_All_Init()
     end})
     sliderCreatureFontSize:SetPoint("LEFT", sel2.Text, 'RIGHT',15,0)
@@ -1064,6 +1125,13 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.targetInCombatColor= Save.targetInCombatColor or {r=1, g=0, b=0, a=1}
             Save.scale= Save.scale or 1.5
             Save.elapsed= Save.elapsed or 0.5
+
+            if Save.top then--1.4.10删除数据
+                Save.targetFramePoint= 'TOP'
+                Save.top=nil
+            else
+                Save.targetFramePoint= Save.targetFramePoint or 'LEFT'
+            end
 
             --添加控制面板
             e.AddPanel_Sub_Category({name=e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName)..'|r', frame=panel})
