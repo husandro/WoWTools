@@ -669,7 +669,7 @@ local function Init()
 
                 elseif event=='NAME_PLATE_UNIT_REMOVED' then
                     local plate = C_NamePlate.GetNamePlateForUnit(arg1,  issecure())
-                    if plate and plate.UnitFrame.questProgress then
+                    if plate and plate.UnitFrame and plate.UnitFrame.questProgress then
                         plate.UnitFrame.questProgress:SetText('')
                     end
                 end
