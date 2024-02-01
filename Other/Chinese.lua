@@ -3955,6 +3955,7 @@ local function Init_Loaded(arg1)
             end
         end
 
+        ClassTalentFrame.TalentsTab.UndoButton.tooltipText= '取消待定改动'
         --Blizzard_WarmodeButtonTemplate.lua
         ClassTalentFrame.TalentsTab.WarmodeButton:HookScript('OnEnter', function(self)
             --GameTooltip:SetOwner(self, "ANCHOR_LEFT", 14, 0)

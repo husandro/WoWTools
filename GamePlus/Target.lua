@@ -368,10 +368,8 @@ local function set_Target()
             end
             targetFrame:SetPoint('RIGHT', frame or self, 'LEFT',Save.x, Save.y)
         end
-        targetFrame:SetShown(true)
-    else
-        targetFrame:SetShown(false)
     end
+    targetFrame:SetShown(plate and true or false)
 end
 
 
