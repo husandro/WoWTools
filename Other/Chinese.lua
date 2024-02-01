@@ -3921,10 +3921,10 @@ local function Init_Loaded(arg1)
         ClassTalentFrame.TalentsTab.ApplyButton:HookScript('OnEnter', function()
         end)
         hooksecurefunc(ClassTalentFrame.TalentsTab.ClassCurrencyDisplay, 'SetPointTypeText', function(self, text)
-            set(self.CurrencyLabel, format('%s 可用点数', text))
+            set(self.CurrencyLabel, format('%s 可用点数', e.strText[ClassTalentFrame.TalentsTab:GetClassName()] or text))
         end)
         hooksecurefunc(ClassTalentFrame.TalentsTab.SpecCurrencyDisplay, 'SetPointTypeText', function(self, text)
-            set(self.CurrencyLabel, format('%s 可用点数', text))
+            set(self.CurrencyLabel, format('%s 可用点数', e.strText[ClassTalentFrame.TalentsTab:GetSpecName()] or text))
         end)
         ClassTalentFrame.TalentsTab.InspectCopyButton:SetTextToFit('复制配置代码')
 
@@ -3943,11 +3943,15 @@ local function Init_Loaded(arg1)
                 end
                 set(frame.SampleAbilityText, '典型技能')
                 if frame.specIndex then
-                    local specID, _, description, _, _, primaryStat = GetSpecializationInfo(frame.specIndex, false, false, nil, sex)
+                    local specID, name, description, _, _, primaryStat = GetSpecializationInfo(frame.specIndex, false, false, nil, sex)
                     if specID and primaryStat and primaryStat ~= 0 then
-                        set(frame.Description, description.."|n"..format('主要属性：%s', SPEC_STAT_STRINGS[primaryStat]))
+                        set(frame.Description, (e.cn(description) or '').."|n"..format('主要属性：%s', SPEC_STAT_STRINGS[primaryStat]))
+                    end
+                    if frame.SpecName then
+                        set(frame.SpecName, e.strText[name])
                     end
                 end
+                
             end
         end
 

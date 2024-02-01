@@ -2215,7 +2215,7 @@ local function Init()
             e.tips:AddDoubleLine('encounterID', e.onlyChinese and '无' or NONE)
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, 'Tools '..addName)
+        e.tips:AddDoubleLine(id, 'Tools '..e.cn(addName))
         e.tips:Show()
         self2:SetAlpha(1)
     end)

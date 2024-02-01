@@ -2604,6 +2604,13 @@ local function Init_HelpTip()
             end)
         end
     end)
+
+    C_Timer.After(2, function()
+        if SplashFrame and SplashFrame:IsShown() then
+            SplashFrame:Close();
+            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '隐藏' or HIDE)..'|r|n|cff00ff00', SplashFrame.Label and SplashFrame.Label:GetText() or '')
+        end
+    end)
 end
 
 

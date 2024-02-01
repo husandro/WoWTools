@@ -8,7 +8,7 @@ end
 
 
 local function Init()
-  
+
 
 
 
@@ -20197,6 +20197,22 @@ local curcurrencyTab={
     {2032, '商贩标币', '商贩标币可以用来在商栈交易商品。'},
 }
 
+local specTab={
+    {71, '武器'}, {72, '狂怒'}, {73, '防护'},
+    {65, '神圣'}, {66, '防护'}, {70, '惩戒'},
+    {250, '鲜血'}, {251, '冰霜'}, {252, '邪恶'},
+    {253, '野兽控制'}, {254, '射击'}, {255, '生存'},
+    {102, '平衡'}, {103, '野性'}, {104, '守护'}, {105, '恢复'},
+    {262, '元素'}, {263, '增强'}, {264, '恢复'},
+    {259, '奇袭'}, {260, '狂徒'}, {261, '敏锐'},
+    {268, '酒仙'}, {270, '织雾'}, {269, '踏风'},
+    {265, '痛苦'}, {266, '恶魔学识'}, {267, '毁灭'},
+    {62, '奥术'}, {63, '火焰'}, {64, '冰霜'},
+    {577, '浩劫'}, {581, '复仇'},
+    {256, '戒律'}, {257, '神圣'}, {258, '暗影'},
+    {1467, '湮灭'}, {1468, '恩护'}, {1473, '增辉'},
+    --{, ''}, {, ''}, {, ''},
+}
 
 
 
@@ -20236,7 +20252,17 @@ C_Timer.After(2, function()
             e.strText[info.description]= curTab[3]
         end
     end
-    
+    for _, info in pairs(specTab) do
+        local name, description= select(2, GetSpecializationInfoByID(info[1]))
+        if name and info[2] then
+            e.strText[name]= info[2]
+        end
+        if description and info[3] then
+            e.strText[description]= info[3]
+        end
+    end
+
+    specTab=nil
     spellTab=nil
     fanctionTab=nil
     curcurrencyTab=nil

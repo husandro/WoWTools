@@ -157,8 +157,8 @@ e.Icon={
 function e.IsAtlas(texture)
     texture= texture and texture:gsub(' ', '')
     if texture and texture~='' then
-        local atlasInfo= C_Texture.GetAtlasInfo(texture) or {}
-        local isAtlas = (atlasInfo.file or atlasInfo.filename) and true or false
+        local atlasInfo= C_Texture.GetAtlasInfo(texture)
+        local isAtlas = atlasInfo and true or false
         return isAtlas, texture
     end
     return nil

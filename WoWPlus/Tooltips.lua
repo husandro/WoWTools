@@ -2764,6 +2764,48 @@ local function Init_Event(arg1)
                 end
             end
         end)
+
+    elseif arg1=='Blizzard_ClassTalentUI' then--天赋
+        hooksecurefunc(ClassTalentFrame.SpecTab, 'UpdateSpecFrame', function(self)--ClassTalentSpecTabMixin
+            if not C_SpecializationInfo.IsInitialized() then
+                return;
+            end
+            for frame in self.SpecContentFramePool:EnumerateActive() do
+                if not frame.specIDLabel then
+                    frame.specIDLabel= e.Cstr(frame, {mouse=true, size=22})
+                    frame.specIDLabel:SetPoint('TOPLEFT', frame.RoleIcon, 'BOTTOMLEFT',4 ,-4)
+                    frame.specIDLabel:SetScript('OnLeave', function(s) s:SetAlpha(1) GameTooltip_Hide() end)
+                    frame.specIDLabel:SetScript('OnEnter', function(s)
+                        e.tips:SetOwner(s, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddDoubleLine(id, e.cn(addName))
+                        local specIndex= s:GetParent().specIndex
+                        if specIndex then
+                            local specID, name, _, icon= GetSpecializationInfo(specIndex)
+                            if specID then
+                                e.tips:AddLine(' ')
+                                e.tips:AddDoubleLine(name, e.strText[name])
+                                e.tips:AddDoubleLine((e.onlyChinese and '专精' or SPECIALIZATION)..' ID', specID)
+                                e.tips:AddDoubleLine((e.onlyChinese and '专精' or SPECIALIZATION)..' Index', specIndex)
+                                if icon then
+                                    e.tips:AddDoubleLine(icon and '|T'..icon..':0|t'..icon)
+                                end
+                            end
+                        end
+                        e.tips:Show()
+                        s:SetAlpha(0.5)
+                    end)
+                end
+                local text
+                if frame.specIndex then
+                    local specID, _, _, icon= GetSpecializationInfo(frame.specIndex)
+                    if specID then
+                        text= (icon and '|T'..icon..':0|t  ' or '')..specID
+                    end
+                end
+                frame.specIDLabel:SetText(text or '')
+            end
+        end)
     end
 end
 
