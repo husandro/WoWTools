@@ -1134,6 +1134,17 @@ local function Init_All_Frame()
     set_ScrollBar(ReportFrame.Comment)
 
     set_Alpha_Frame_Texture(BattleTagInviteFrame.Border, {notAlpha=true})
+
+    --就绪
+    set_NineSlice(ReadyCheckListenerFrame, true)
+    set_Alpha_Color(ReadyCheckListenerFrame.Bg, true)
+
+    --团队 RolePoll.lua
+    set_Alpha_Frame_Texture(RolePollPopup.Border, {notAlpha=true})
+
+    --对话框
+    set_Alpha_Frame_Texture(StaticPopup1.Border, {notAlpha=true})
+    
 end
 
 

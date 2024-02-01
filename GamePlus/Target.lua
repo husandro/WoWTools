@@ -2,54 +2,7 @@ local id, e= ...
 local addName= TARGET
 local Save= {
     target= true,
-    targetTextureTab={
-        ['common-icon-rotateright']='a',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Hunters_Mark.tga']='t',
-
-        ['NPE_ArrowDown']='a',
-        ['UI-HUD-MicroMenu-StreamDLYellow-Up']='a',
-
-        ['Interface\\AddOns\\WeakAuras\\Media\\Textures\\targeting-mark.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Reticule.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\RedArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonReticule.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonRedArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\RedChevronArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\PaleRedChevronArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\arrow_tip_green.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\arrow_tip_red.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\skull.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\circles_target.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\red_star.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\greenarrowtarget.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\BlueArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\bluearrow1.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\gearsofwar.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\malthael.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NewRedArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NewSkull.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\PurpleArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Shield.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonGreenArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_FelFlamingSkull.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedFlamingSkull.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_ShadowFlamingSkull.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_GreenGPS.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedGPS.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_WhiteGPS.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_GreenTarget.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedTarget.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_WhiteTarget.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_Towards.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_Away.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_SelfTowards.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_SelfAway.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FriendTowards.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FriendAway.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusTowards.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusAway.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\green_arrow_down_11384.tga']='t',
-    },
+    targetTextureNewTab={},
     targetTextureName='common-icon-rotateright',
 
     targetColor= {r=1,g=1,b=1,a=1},--颜色
@@ -118,16 +71,7 @@ end]]
 
 
 
-local function set_Target_Texture(self)--设置，图片
-    if self then
-        local isAtlas, texture= e.IsAtlas(Save.targetTextureName)
-        if isAtlas then
-            self:SetAtlas(texture)
-        else
-            self:SetTexture(texture or 0)
-        end
-    end
-end
+
 local function set_Target_Color(self, isInCombat)--设置，颜色
     if isInCombat then
         self:SetVertexColor(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a)
@@ -476,7 +420,12 @@ local function set_Created_Texture_Text()
     end
 
     if targetFrame.Texture then
-        set_Target_Texture(targetFrame.Texture)--设置，图片
+        local isAtlas, texture= e.IsAtlas(Save.targetTextureName)--设置，图片
+        if isAtlas then
+            targetFrame.Texture:SetAtlas(texture)
+        else
+            targetFrame.Texture:SetTexture(texture or 0)
+        end
         set_Scale_Frame()--缩放
         set_Target_Color(targetFrame.Texture, Save.targetInCombat and UnitAffectingCombat('player'))
         targetFrame.Texture:SetShown(Save.target)
@@ -498,12 +447,12 @@ local function set_Created_Texture_Text()
         CreatureLabel:SetTextColor(1,1,1)
     elseif CreatureLabel then
         e.Cstr(nil, {changeFont=CreatureLabel, size= Save.creatureFontSize})
+        CreatureLabel:set_point()
     end
-    CreatureLabel:set_point()
-    if CreatureLabel and not Save.creature then
-        CreatureLabel:SetText('')
-    end
+
    set_Target()
+   set_Creature_Num()
+   set_check_allQust_Plates()
 end
 
 
@@ -592,7 +541,6 @@ local function set_All_Init()
         set_Register_Event()
     end
     set_Created_Texture_Text()
-    set_check_allQust_Plates()
 end
 
 
@@ -923,17 +871,73 @@ local function set_Option()
 
 
     local menu = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
-    menu:SetPoint("TOPLEFT", sel, 'BOTTOMRIGHT', -16,-72)
+    menu:SetPoint("TOPLEFT", sel, 'BOTTOMRIGHT', -16,-82)
     e.LibDD:UIDropDownMenu_SetWidth(menu, 410)
     e.LibDD:UIDropDownMenu_Initialize(menu, function(self, level)
-        for name, _ in pairs(Save.targetTextureTab) do
+        local tab={
+            ['common-icon-rotateright']='a',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Hunters_Mark.tga']='t',
+            ['NPE_ArrowDown']='a',
+            ['UI-HUD-MicroMenu-StreamDLYellow-Up']='a',
+            ['Interface\\AddOns\\WeakAuras\\Media\\Textures\\targeting-mark.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Reticule.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\RedArrow.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonReticule.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonRedArrow.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\RedChevronArrow.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\PaleRedChevronArrow.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\arrow_tip_green.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\arrow_tip_red.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\skull.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\circles_target.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\red_star.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\greenarrowtarget.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\BlueArrow.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\bluearrow1.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\gearsofwar.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\malthael.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NewRedArrow.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NewSkull.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\PurpleArrow.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Shield.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonGreenArrow.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_FelFlamingSkull.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedFlamingSkull.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_ShadowFlamingSkull.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_GreenGPS.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedGPS.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_WhiteGPS.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_GreenTarget.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedTarget.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_WhiteTarget.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_Towards.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_Away.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_SelfTowards.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_SelfAway.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FriendTowards.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FriendAway.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusTowards.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusAway.tga']='t',
+            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\green_arrow_down_11384.tga']='t',
+        }
+        for name, _ in pairs(Save.targetTextureNewTab) do
+            if tab[name] then
+                Save.targetTextureNewTab[name]=nil
+            else
+                tab[name]= 'use'
+            end
+        end
+        for name, use in pairs(tab) do
             local isAtlas, texture= e.IsAtlas(name)
             if texture then
                 local info={
-                    text= name,
+                    
+                    text= name:match('.+\\(.+)%.') or name,
                     icon= name,
+                    colorCode= use=='use' and '|cff00ff00' or (isAtlas and '|cffff00ff') or nil,
                     tooltipOnButton=true,
                     tooltipTitle= isAtlas and 'Atls' or 'Texture',
+                    tooltipText= use=='use' and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '自定义' or CUSTOM) or nil,
                     arg1= name,
                     arg2= isAtlas,
                     checked= Save.targetTextureName==name,
@@ -964,30 +968,43 @@ local function set_Option()
         self:SetText(Save.targetTextureName)
     end)
     menu.edit:SetScript('OnTextChanged', function(self)
-        local isAtlas, texture= e.IsAtlas(self:GetText())
-        if texture then
-            if isAtlas then
-                panel.tipTargetTexture:SetAtlas(texture)
+        local name, isAtlas
+        name= self:GetText() or ''
+        name= name:gsub(' ', '')
+        name= name=='' and false or name
+        if name then
+            isAtlas, name= e.IsAtlas(name)
+            if name then
+                if isAtlas then
+                    panel.tipTargetTexture:SetAtlas(name)
+                else
+                    panel.tipTargetTexture:SetTexture(name)
+                end
+                self.Label:SetText(isAtlas and 'Atls' or 'Texture')
             else
-                panel.tipTargetTexture:SetTexture(texture)
+                panel.tipTargetTexture:SetTexture(0)
             end
-            self.Label:SetText(isAtlas and 'Atls' or 'Texture')
-        else
-            self.Label:SetText("")
-            panel.tipTargetTexture:SetTexture(0)
         end
-        self.del:SetShown(texture and texture~='common-icon-rotateright')
-        self.add:SetShown(texture and not Save.targetTextureTab[texture])
+        self.del:SetShown(name and Save.targetTextureNewTab[name])
+        self.add:SetShown(name and not Save.targetTextureNewTab[name])
     end)
 
     --删除，图片
     menu.edit.del= e.Cbtn(menu.edit, {atlas='xmarksthespot', size={20,20}})
     menu.edit.del:SetPoint('LEFT', menu, 'RIGHT',-10,0)
     menu.edit.del:SetScript('OnClick', function(self)
-        Save.targetTextureTab[Save.targetTextureName]= nil
-        Save.targetTextureName= 'common-icon-rotateright'
-        self:GetParent():SetText(Save.targetTextureName)
-        e.LibDD:UIDropDownMenu_SetText(self:GetParent():GetParent(), Save.targetTextureName)
+        local parent= self:GetParent()
+        local isAtals, name= e.IsAtlas(parent:GetText())
+        if name and Save.targetTextureNewTab[name] then
+            Save.targetTextureNewTab[name]= nil
+            print(id, e.cn(addName),
+                '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r',
+                (isAtals and '|A:'..name..':0:0|a' or ('|T'..name..':0|t'))..name
+            )
+            e.LibDD:UIDropDownMenu_SetText(menu, '')
+            parent:SetText("")
+            parent:SetText(name)
+        end
     end)
 
     --添加按钮
@@ -995,10 +1012,15 @@ local function set_Option()
     menu.edit.add:SetPoint('LEFT', menu.edit, 'RIGHT', 5,0)
     menu.edit.add:SetScript('OnClick', function(self)
         local parent= self:GetParent()
-        local isAtlas, icon= parent:GetText()
-        if icon then
-            Save.targetTextureTab[icon]= isAtlas and 'a' or 't'
+        local isAtlas, icon= e.IsAtlas(parent:GetText())
+        if icon and not Save.targetTextureNewTab[icon] then
+            Save.targetTextureNewTab[icon]= isAtlas and 'a' or 't'
             parent:SetText('')
+            print(id,
+                e.cn(addName),
+                '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r',
+                (isAtlas and '|A:'..icon..':0:0|a' or ('|T'..icon..':0|t'))..icon
+            )
         end
     end)
     menu.edit.add:SetScript('OnLeave', GameTooltip_Hide)
@@ -1120,12 +1142,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
-            Save.targetTextureTab= Save.targetTextureTab or {
-                ['common-icon-rotateright']='a',
-                ['NPE_ArrowDown']='a',
-                ['UI-HUD-MicroMenu-StreamDLYellow-Up']='a',
-                ['Interface\\AddOns\\WeakAuras\\Media\\Textures\\targeting-mark.tga']='t',
-            }
+
+            Save.targetTextureTab= nil
+            Save.targetTextureNewTab= Save.targetTextureNewTab or {}
+
             Save.targetTextureName= Save.targetTextureName or 'common-icon-rotateright'
             Save.targetColor= Save.targetColor or {r=1,g=1,b=1,a=1}
             Save.targetInCombatColor= Save.targetInCombatColor or {r=1, g=0, b=0, a=1}

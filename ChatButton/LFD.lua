@@ -2262,6 +2262,59 @@ local function Init()
         e.PlaySound()--播放, 声音
         e.Ccool(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
     end)
+
+
+
+    --RolePoll.lua
+    RolePollPopup:HookScript('OnShow', function(self)
+        e.PlaySound()--播放, 声音
+        
+        local canBeTank, canBeHealer, canBeDamager = UnitGetAvailableRoles("player");
+        local specID=GetSpecialization()--当前专精
+        local icon
+        local btn2
+        if specID then
+            local role = select(5, GetSpecializationInfo(specID))
+            if role=='DAMAGER' and canBeDamager then
+                btn2= RolePollPopupRoleButtonDPS
+                icon= e.Icon['DAMAGER']
+            elseif role=='TANK' and canBeTank then
+                btn2= RolePollPopupRoleButtonTank
+                icon= e.Icon['TANK']
+            elseif role=='HEALER' and canBeHealer then
+                btn2= RolePollPopupRoleButtonHealer
+                icon= e.Icon['HEALER']
+            end
+        end
+        if btn2 then
+            btn2.checkButton:SetChecked(true)
+            e.call('RolePollPopupRoleButtonCheckButton_OnClick', btn2.checkButton, btn2)
+            if Save.autoSetPvPRole then
+                e.Ccool(self, nil, sec, nil, true)--冷却条
+                self.aceTime=C_Timer.NewTimer(sec, function()
+                    if self.acceptButton:IsEnabled() then
+                        self.acceptButton:Click()
+                        print(id, addName, e.onlyChinese and '职责确认' or ROLE_POLL, icon or '')
+                    end
+                end)
+            end
+        end
+    end)
+
+    RolePollPopup:HookScript('OnUpdate', function(self)
+        if IsModifierKeyDown() then
+            if self.aceTime then
+                self.aceTime:Cancel()
+            end
+            e.Ccool(self)--冷却条
+        end
+    end)
+    RolePollPopup:HookScript('OnHide', function(self)
+        if self.aceTime then
+            self.aceTime:Cancel()
+        end
+        e.Ccool(self)--冷却条
+    end)
 end
 
 
@@ -2515,7 +2568,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
                     exit_Instance()
                 end)
                 StaticPopup_Show(addName..'ExitIns')
-                e.Ccool(StaticPopup1, nil, leaveSce, nil, true)--冷却条
+                e.Ccool(StaticPopup1, nil, leaveSce, nil, true, true)--冷却条
             --end
         end
 

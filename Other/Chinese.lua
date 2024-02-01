@@ -1967,7 +1967,6 @@ local function Init()
     --MailFrame:HookScript('OnShow', function(self)
     set(InboxTooMuchMailText, '你的收件箱已满。')
     set(MailFrameTrialError, '你需要升级你的账号才能开启这项功能。')
-
     hooksecurefunc('MailFrameTab_OnClick', function(self, tabID)
         tabID = tabID or self:GetID()
         if tabID == 1  then
@@ -3596,6 +3595,29 @@ local function Init()
         end
     end)
 
+
+    --团队
+    hooksecurefunc('CompactRaidFrameManager_UpdateLabel', function()
+        set(CompactRaidFrameManager.displayFrame.label, IsInRaid() and '团员' or '队员')
+    end)
+    hooksecurefunc(CompactRaidFrameManagerDisplayFrame.RestrictPingsButton, 'UpdateLabel', function(self)
+        set(self.Text, IsInRaid() and '只限助手发送信号' or '只限领袖发送信号')
+    end)
+    
+    set(CompactRaidFrameManagerDisplayFrameEditMode, '编辑')
+    set(CompactRaidFrameManagerDisplayFrameConvertToRaid, '转团')
+    hooksecurefunc('CompactRaidFrameManager_SetSetting', function(settingName, value)
+        if ( settingName == "IsShown" ) then
+            if EditModeManagerFrame:AreRaidFramesForcedShown() or (value and value ~= "0") then
+                set(CompactRaidFrameManagerDisplayFrameHiddenModeToggle, '隐藏')
+            else
+                set(CompactRaidFrameManagerDisplayFrameHiddenModeToggle, '显示')
+            end
+        end
+    end)
+
+    reg(RolePollPopup, '选择你的职责', 1)
+    set(RolePollPopupAcceptButtonText, '接受')
 end
 
 
