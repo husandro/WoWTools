@@ -448,9 +448,9 @@ local function Set_TrackButton_Text()
 			btn:SetAttribute('item',  tables.itemID and tables.name or nil )
 		end
 
-		if not itemButtonUse or (itemButtonUse and not bat) then
-			btn:SetShown(true)
-		end
+
+
+		btn:SetShown(true)
 
 		last= btn
 	end
@@ -1057,6 +1057,7 @@ end
 --主菜单
 --#####
 local function InitMenu(_, level, menuList)--主菜单
+	
 	local info
 	if menuList=='ITEMS' then
 		MenuList_Item(level)
