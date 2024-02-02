@@ -111,7 +111,7 @@ local function Get_Item(itemID)
 		end
 
 		name= C_Item.GetItemNameByID(itemID)
-		
+
 		local nameText
 		if Save.nameShow then
 			name= e.cn(name)
@@ -151,7 +151,9 @@ local function Get_Currency(currencyID, index)--货币
 		return
     end
 
+	local col= (ITEM_QUALITY_COLORS[info.quality] or {}).hex	
     local name=  Save.nameShow and e.cn(info.name) or nil
+	name = name and col..name..'|r' or name
 	local num= e.MK(info.quantity, 3)
 
 	local weekMax= info.canEarnPerWeek--本周
@@ -168,10 +170,12 @@ local function Get_Currency(currencyID, index)--货币
 		or weekMax
 		or earnedMax
 	then
-		--max= Save.toRightTrackText and e.Icon.toLeft2 or e.Icon.toRight2
 		max= '|A:QuestDaily-MainMap:0:0|a'--e.Icon.select2
 		num= '|cnRED_FONT_COLOR:'..num..'|r'
+	else
+		num= name and '|cffff7d00'..num..'|r' or (col and col..num..'|r') or num
 	end
+
 
 
 	local need
@@ -193,6 +197,8 @@ local function Get_Currency(currencyID, index)--货币
 			need= '|cnGREEN_FONT_COLOR:('..e.MK(info.maxQuantity- info.quantity, 0)..')|r'
 		end
 	end
+
+
 	if Save.toRightTrackText then
 		text=(name and name..' ' or '')
 			..(name and '|cffff7d00' or '')
@@ -344,6 +350,9 @@ local function Set_TrackButton_Text()
 			btn:SetScript('OnLeave', function(self)
 				e.tips:Hide()
 				Set_TrackButton_Pushed(false, self.text)--提示
+				if self.itemID then
+					e.FindBagItem(false)--查询，背包里物品
+				end
 			end)
 			btn:SetScript('OnEnter', function(self)
 				if Save.toRightTrackText then
@@ -360,6 +369,7 @@ local function Set_TrackButton_Text()
 						e.tips:AddDoubleLine(col..(e.onlyChinese and '使用物品' or USE_ITEM), e.Icon.left)
 					end
 					e.tips:AddDoubleLine(col..(e.onlyChinese and '拿取' or 'Pickup'), col..('Alt+'..e.Icon.left))
+					e.FindBagItem(true, {itemID=self.itemID})--查询，背包里物品
 				elseif self.index then
 					e.tips:SetCurrencyToken(self.index)
 				elseif self.currencyID then
@@ -1071,7 +1081,7 @@ local function InitMenu(_, level, menuList)--主菜单
 			e.LibDD:UIDropDownMenu_AddButton(info, level)
 		end
 		e.LibDD:UIDropDownMenu_AddSeparator(level)
-		
+
 		info={
 			text= e.onlyChinese and '添加' or ADD,
 			notCheckable=true,
