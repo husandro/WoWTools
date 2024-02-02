@@ -691,6 +691,17 @@ local function Init()
         if not categoryInfo then
             return
         end
+        set(self.EntryName, e.strText[activeEntryInfo.name])
+
+        local activityName= e.strText[self.DescriptionFrame.activityName]
+        if ( activeEntryInfo.comment == "" ) then
+            set(self.DescriptionFrame.Text, activityName)
+        else
+            local comment= e.strText[comment]
+            if comment or activityName then
+                set(self.DescriptionFrame.Text,  format("%s |cff888888- %s|r", activityName or self.DescriptionFrame.activityName, comment or self.DescriptionFrame.comment))
+            end
+        end
         if activityInfo.isPvpActivity then
             if activeEntryInfo.requiredItemLevel ~= 0 then
                 set(self.ItemLevel, format('PvP物品等级：%d', activeEntryInfo.requiredItemLevel))
@@ -1185,6 +1196,7 @@ local function Init()
         end
     end)
 
+    set(LFGListFrame.ApplicationViewer.ScrollBox.NoApplicants, '"你的队伍已经加入列表。|n申请者将出现在此处。')
     --role_tooltips('LFDQueueFrame')
     --role_tooltips('RaidFinderQueueFrame')
 
