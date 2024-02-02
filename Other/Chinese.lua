@@ -715,6 +715,9 @@ local function Init()
             set(self.PrivateGroup, '个人')
         end
     end)
+    LFGListFrame.ApplicationViewer.RefreshButton:HookScript('OnEnter', function()
+        GameTooltip:SetText('刷新', HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+    end)
 
     hooksecurefunc('LFGListApplicationViewer_UpdateAvailability', function(self)
         if IsRestrictedAccount() then
@@ -842,6 +845,9 @@ local function Init()
     set(LFGListFrame.SearchPanel.SignUpButton, '申请')
     set(LFGListFrame.SearchPanel.BackButton, '后退')
     set(LFGListFrame.SearchPanel.ScrollBox.StartGroupButton, '创建队伍')
+    LFGListFrame.SearchPanel.RefreshButton:HookScript('OnEnter', function()
+        GameTooltip:SetText('重新搜索', HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+    end)
     hooksecurefunc('LFGListSearchPanel_UpdateResults', function(self)
         if self.ScrollBox.NoResultsFound:IsShown() and self.totalResults == 0 then
             set(self.ScrollBox.NoResultsFound, self.searchFailed and '搜索失败。请稍后再试。' or '未找到队伍。如果你找不到想要的队伍，可以自己创建一支。')
