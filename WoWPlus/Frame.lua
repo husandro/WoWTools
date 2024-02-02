@@ -256,9 +256,6 @@ local function set_Frame_Drag(self)
                 Save.point[frameName]= nil
             end
         end
-        if not UnitAffectingCombat('player') and moveFrame.Raise then
-            moveFrame:Raise()
-        end
     end)
     self:HookScript("OnMouseUp", stop_Drag)--停止移动
     self:HookScript('OnHide', stop_Drag)--停止移动

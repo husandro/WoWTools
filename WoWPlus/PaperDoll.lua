@@ -825,7 +825,6 @@ local function Init_TrackButton()--添加装备管理框
         self:StopMovingOrSizing()
         Save.Equipment={self:GetPoint(1)}
         Save.Equipment[2]=nil
-        self:Raise()
     end)
     TrackButton:SetScript('OnMouseDown', function(_, d)
         if d=='RightButton' and IsAltKeyDown() then--移动图标

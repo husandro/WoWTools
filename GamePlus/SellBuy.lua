@@ -1085,7 +1085,6 @@ end
 
 local function Init_Button(frame)
     local btn=e.Cbtn(frame.TitleContainer, {size={20,20}, texture=236994})
-    btn:Raise()
     btn:SetAlpha(0.5)
     btn:SetPoint('RIGHT', frame.TitleContainer ,'RIGHT', -25, 0)
     btn:SetScript('OnEnter', function(self2)
@@ -1192,7 +1191,6 @@ local function Init_Button(frame)
     btn:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
 
     local noSellButton=e.Cbtn(frame.TitleContainer, {size={20,20}, atlas='common-icon-undo'})--nil, false)--购回
-    noSellButton:Raise()
     noSellButton:SetAlpha(0.5)
     noSellButton:SetPoint('RIGHT', btn, 'LEFT', -2, 0)
     noSellButton:SetScript('OnMouseUp', function()

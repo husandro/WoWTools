@@ -1496,7 +1496,6 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
                     showTexture=true,
                     sizi=nil,
                 })
-                button:Raise()
                 button:SetAttribute("type1", "spell")
                 button:SetAttribute("target-spell", "cursor")
                 button:SetAttribute("alt-type1", "spell")

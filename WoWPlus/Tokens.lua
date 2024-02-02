@@ -662,7 +662,6 @@ local function Init_TrackButton()
 		self:StopMovingOrSizing()
 		Save.point={self:GetPoint(1)}
 		Save.point[2]=nil
-		self:Raise()
 	end)
 	TrackButton:SetScript("OnMouseUp", ResetCursor)
 	TrackButton:SetScript("OnMouseDown", function(_, d)

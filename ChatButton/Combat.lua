@@ -310,7 +310,6 @@ local function Init_TrackButton()--设置显示内容, 父框架TrackButton, 内
         self:StopMovingOrSizing()
         Save.textFramePoint={self:GetPoint(1)}
         Save.textFramePoint[2]=nil
-        self:Raise()
     end)
 
     TrackButton:SetScript("OnMouseUp", ResetCursor)

@@ -1310,7 +1310,6 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame.moveFrame:SetScript("OnDragStop", function(self)
         local frame=self:GetParent()
         frame:StopMovingOrSizing()
-        frame:Raise()
     end)
     CompactPartyFrame.moveFrame:SetScript("OnMouseDown", function(_, d)
         if d=='RightButton' and not IsModifierKeyDown() then
@@ -1388,7 +1387,6 @@ local function Init_BossFrame()
         frame.BossButton= e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})--CreateFrame('Frame', nil, frame, 'SecureActionButtonTemplate')
 
         frame.BossButton:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
-        frame.BossButton:Raise()
 
         frame.BossButton:SetAttribute('type', 'target')
         frame.BossButton:SetAttribute('unit', frame.unit)

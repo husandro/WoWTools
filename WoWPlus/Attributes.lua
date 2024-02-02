@@ -2052,7 +2052,6 @@ local function Init()
     button.frame= CreateFrame("Frame",nil,button)
 
     button:set_Point()--设置, 位置
-    button:Raise()
     button:set_Show_Hide()--显示， 隐藏
 
 

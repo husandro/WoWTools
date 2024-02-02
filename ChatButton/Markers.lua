@@ -409,7 +409,6 @@ local function Init_Ready_Tips_Button()
 
     ReadyTipsButton:set_Point()
     ReadyTipsButton:set_Scale()
-    ReadyTipsButton:Raise()
     ReadyTipsButton:set_Event()
     ReadyTipsButton:set_Shown()
 end

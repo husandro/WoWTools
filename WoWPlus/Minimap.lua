@@ -1262,7 +1262,6 @@ local function Init_Set_Button()--小地图, 标记, 文本
         self:StopMovingOrSizing()
         Save.pointVigentteButton={self:GetPoint(1)}
         Save.pointVigentteButton[2]=nil
-        self:Raise()
     end)
 
 
@@ -1438,7 +1437,6 @@ local function Init_Set_Button()--小地图, 标记, 文本
 
     WorldMapFrame.setTrackingButton= e.Cbtn(WorldMapFrame, {size={20,20}, icon='hide'})
     WorldMapFrame.setTrackingButton:SetPoint('TOPRIGHT', WorldMapFramePortrait, 'BOTTOMRIGHT', 2, 10)
-    WorldMapFrame.setTrackingButton:Raise()
     WorldMapFrame.setTrackingButton:SetScript('OnClick', function(self)
         local frame= self:GetParent()
         local uiMapID= frame.mapID or frame:GetMapID("current")

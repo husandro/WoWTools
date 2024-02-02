@@ -805,7 +805,6 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 	if not frame.check then
 		frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
 		frame.check:SetPoint('LEFT',-4,0)
-		frame.check:Raise()
 		frame.check:SetScript('OnClick', function(self)
 			if self.factionID then
 				Save.factions[self.factionID ]= not Save.factions[self.factionID ] and self.factionIndex or nil

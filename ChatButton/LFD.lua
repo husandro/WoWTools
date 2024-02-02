@@ -716,7 +716,6 @@ local function Init_tipsButton()
 
     tipsButton:set_Point()
     tipsButton:set_Scale()--设置, 缩放
-    tipsButton:Raise()
     tipsButton:RegisterForDrag("RightButton")
     tipsButton:SetMovable(true)
     tipsButton:SetClampedToScreen(true)
@@ -1627,7 +1626,6 @@ local function setIslandButton(self)--离开海岛按钮
                     self2:StopMovingOrSizing()
                     Save.islandPoint={self2:GetPoint(1)}
                     Save.islandPoint[2]= nil
-                    self2:Raise()
             end)
             self.island:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -2447,7 +2445,6 @@ local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
                 self:StopMovingOrSizing()
                 Save.RoleInfoPoint={self:GetPoint(1)}
                 Save.RoleInfoPoint[2]=nil
-                self:Raise()
             end)
             button.RoleInfo:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")

@@ -624,7 +624,6 @@ local function Init_Gossip()
     GossipButton:set_Scale()
     GossipButton:set_Point()
     GossipButton:set_shown()
-    GossipButton:Raise()
 
     GossipButton:SetMovable(true)--移动
     GossipButton:SetClampedToScreen(true)
@@ -639,7 +638,6 @@ local function Init_Gossip()
         ResetCursor()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
-        self:Raise()
     end)
     GossipButton:SetScript('OnMouseUp', ResetCursor)
     GossipButton:SetScript('OnMouseDown', function(_, d)

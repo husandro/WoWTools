@@ -1007,7 +1007,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             else
                 btn:SetPoint('LEFT')
             end
-            btn:Raise()
             btn:SetAlpha(0.5)
             btn:SetScript('OnClick', function(self)
                 Save.showFlightMapPinName= not Save.showFlightMapPinName and true or nil

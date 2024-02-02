@@ -512,7 +512,6 @@ local function Init_TrackButton()
         self:StopMovingOrSizing()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
-        self:Raise()
     end)
 
     function TrackButton:set_Events()--设置事件

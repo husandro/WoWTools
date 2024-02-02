@@ -283,7 +283,6 @@ local function Init()
         self:StopMovingOrSizing()
         Save.Point={self:GetPoint(1)}
         Save.Point[2]=nil
-        self:Raise()
         print(id, e.cn(addName), RESET_POSITION, 'Alt+'..e.Icon.right)
     end)
     button.btn:SetScript('OnMouseDown',function(self, d)

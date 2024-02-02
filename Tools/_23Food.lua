@@ -471,7 +471,6 @@ local function Init()
         self:StopMovingOrSizing()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
-        self:Raise()
         e.LibDD:CloseDropDownMenus()
     end)
     button:SetScript("OnMouseDown", function(self,d)

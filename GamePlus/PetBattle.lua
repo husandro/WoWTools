@@ -273,7 +273,6 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
             Save.EnemyFramePoint={self2:GetPoint(1)}
             Save.EnemyFramePoint[2]=nil
             print(id, e.cn(addName),'Alt+' ..e.Icon.right,TRANSMOGRIFY_TOOLTIP_REVERT)
-            self2:Raise()
         end)
         EnemyFrame:SetScript('OnMouseDown', function(self2, d)
             if d=='RightButton' and IsAltKeyDown() then
@@ -735,7 +734,6 @@ local function add_Click_To_Move_Button()--点击移动，按钮
             alpha=1,
         })
         btn:SetPoint('RIGHT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'LEFT', 2,-8)
-        btn:Raise()
         btn:SetSize(20,20)
         btn:SetNormalAtlas('transmog-nav-slot-feet')
         btn:SetScript('OnClick', function(self, d)
@@ -818,7 +816,6 @@ local function Init()
         self:StopMovingOrSizing()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
-        self:Raise()
     end)
     TrackButton:SetScript("OnMouseUp", ResetCursor)
     TrackButton:SetScript("OnMouseDown", function(_, d)

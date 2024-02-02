@@ -881,7 +881,6 @@ local function Init()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
         ResetCursor()
-        self:Raise()
     end)
     button:SetScript("OnMouseUp", ResetCursor)
     button:SetScript('OnMouseDown', function(_, d)
