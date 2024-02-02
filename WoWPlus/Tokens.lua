@@ -301,7 +301,8 @@ local function Set_TrackButton_Text()
 			for _, tables in pairs(itemTab) do
 				table.insert(tab, tables)
 			end
-		elseif Save.itemButtonUse then
+		end
+		if Save.itemButtonUse then
 			TrackButton.Frame:RegisterEvent('PLAYER_REGEN_ENABLED')
 		end
 	end
@@ -448,9 +449,9 @@ local function Set_TrackButton_Text()
 			btn:SetAttribute('item',  tables.itemID and tables.name or nil )
 		end
 
-
-
-		btn:SetShown(true)
+		if itemButtonUse and not bat or not Save.itemButtonUse then
+			btn:SetShown(true)
+		end
 
 		last= btn
 	end

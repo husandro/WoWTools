@@ -827,7 +827,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     else
         Frame.check:SetPoint('RIGHT', Frame.countdown, 'LEFT')
     end
-    Frame.check:SetScript('OnMouseDown', function()
+    Frame.check:SetScript('OnClick', function()
         DoReadyCheck()
     end)
     Frame.check:SetScript('OnEnter', function(self)
