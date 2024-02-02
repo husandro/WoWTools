@@ -8,7 +8,12 @@ local Save={
 
     intShowSellItem= e.Player.husandro,--显示，转到出售物品
     isMaxSellItem= true,--出售物品时，使用，最大数量
-    hideSellItem={},--跳过，拍卖行物品
+    hideSellItem={
+        [201469]=true,--翡翠青苹果
+        [202071]=true,--元素微粒
+        [192658]=true,--高纤维树叶
+        [192615]=true,--幽光液体
+    },--跳过，拍卖行物品
     SellItemDefaultPrice={},--默认价格
 
     --拍卖，列表
