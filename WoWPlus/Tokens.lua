@@ -1059,8 +1059,8 @@ local function InitMenu(_, level, menuList)--主菜单
 				notCheckable=true,
 				tooltipOnButton=true,
 				tooltipTitle=e.onlyChinese and '移除' or REMOVE,
-				tooltipText=currencyID,
-				colorCode= not Save.indicato and '|cff606060' or nil,
+				tooltipText='ID '..currencyID,
+				colorCode= not Save.indicato and '|cff606060' or (currencyInfo and ITEM_QUALITY_COLORS[currencyInfo.quality]).hex or nil,
 				arg1= currencyID,
 				func= function(_, arg1)
 					Save.tokens[arg1]=nil
@@ -1072,20 +1072,24 @@ local function InitMenu(_, level, menuList)--主菜单
 		end
 		e.LibDD:UIDropDownMenu_AddSeparator(level)
 		
-		--[[info={
+		info={
 			text= e.onlyChinese and '添加' or ADD,
 			notCheckable=true,
+			tooltipOnButton=true,
+			tooltipTitle= e.onlyChinese and '自定义' or CUSTOM,
+			icon='communities-icon-addchannelplus',
 			func= function()
-				StaticPopupDialogs[id..addName..'AddTokensUse']={--快捷键,设置对话框
-					text= e.onlyChinese and '货币' or TOKENS,
-					whileDead=true, hideOnEscape=true, exclusive=true,
+				StaticPopupDialogs[id..addName..'AddTokensUse']= StaticPopupDialogs[id..addName..'AddTokensUse'] or {--快捷键,设置对话框
+					text=' |n ',-- e.onlyChinese and '货币' or TOKENS,
+					whileDead=true, hideOnEscape=true, exclusive=true, showAlert=true,
 					hasEditBox=true,
 					button1= e.onlyChinese and '添加' or ADD,
 					button2= e.onlyChinese and '取消' or CANCEL,
 					OnShow=function(s)
                         s.editBox:SetNumeric(true);
+						s.editBox:SetFocus()
                     end,
-					OnHide= function(s)
+					OnHide= function()
 						e.call('ChatEdit_FocusActiveWindow')
 					end,
 					OnAccept = function(s)
@@ -1093,23 +1097,28 @@ local function InitMenu(_, level, menuList)--主菜单
 						if n then
 							Save.tokens[n]=0
 							print(id, e.cn(addName), e.onlyChinese and '添加' or ADD,  C_CurrencyInfo.GetCurrencyLink(n))
+							e.call('TokenFrame_Update')
 						end
 					end,
 					EditBoxOnTextChanged=function(s)
 						local n= s:GetNumber()
 						local curInfo= n and C_CurrencyInfo.GetCurrencyInfo(n)
 						local text= e.onlyChinese and '货币' or TOKENS
+						local icon
 						if curInfo then
-							text=  C_CurrencyInfo.GetCurrencyLink(n) or curInfo.name or text
+							icon= curInfo.iconFileID
+							text= C_CurrencyInfo.GetCurrencyLink(n) or curInfo.name or text
+							print(Save.tokens[n])
 							if Save.tokens[n] then
-								text= text..'|cnRED_FONT_COLOR:'..(e.onlyChinese and ' 已存在|r' or ' Existed|r')
+								text= text..'|n'..(e.onlyChinese and '已存在|r' or ' Existed')
 							end
 						end
-						s:GetParent().Text:SetText(curInfo and  C_CurrencyInfo.GetCurrencyLink(n) or (e.onlyChinese and '货币' or TOKENS))
-						s.button1:SetEnabled(curInfo and curInfo.name and not Save.tokens[n])
+						local p= s:GetParent()
+						p.text:SetText(text)
+						p.button1:SetEnabled(curInfo and not Save.tokens[n])
+						p.AlertIcon:SetTexture(icon or 0)
 					end,
 					EditBoxOnEscapePressed = function(s)
-						s:SetAutoFocus(false)
 						s:ClearFocus()
 						s:GetParent():Hide()
 					end,
@@ -1117,7 +1126,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				StaticPopup_Show(id..addName..'AddTokensUse')
 			end
 		}
-		e.LibDD:UIDropDownMenu_AddButton(info, level)]]
+		e.LibDD:UIDropDownMenu_AddButton(info, level)
 
 		info={
 			text= e.onlyChinese and '全部清除' or CLEAR_ALL,

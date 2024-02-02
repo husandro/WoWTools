@@ -2772,8 +2772,18 @@ local function Init_Event(arg1)
             end
             for frame in self.SpecContentFramePool:EnumerateActive() do
                 if not frame.specIDLabel then
-                    frame.specIDLabel= e.Cstr(frame, {mouse=true, size=22})
-                    frame.specIDLabel:SetPoint('TOPLEFT', frame.RoleIcon, 'BOTTOMLEFT',4 ,-4)
+                    frame.specIcon= frame:CreateTexture(nil, 'BORDER')
+                    frame.specIcon:SetPoint('TOP', frame.RoleIcon, 'BOTTOM', -2, -4)
+                    frame.specIcon:SetSize(22,22)
+
+                    frame.specIconBorder= frame:CreateTexture(nil, 'ARTWORK')
+                    frame.specIconBorder:SetPoint('CENTER', frame.specIcon,1.2,-1.2)
+                    frame.specIconBorder:SetAtlas('bag-border')
+                    frame.specIconBorder:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+                    frame.specIconBorder:SetSize(32,32)
+
+                    frame.specIDLabel= e.Cstr(frame, {mouse=true, size=18, copyFont=frame.RoleName})
+                    frame.specIDLabel:SetPoint('LEFT', frame.specIcon, 'RIGHT', 12, 0)
                     frame.specIDLabel:SetScript('OnLeave', function(s) s:SetAlpha(1) GameTooltip_Hide() end)
                     frame.specIDLabel:SetScript('OnEnter', function(s)
                         e.tips:SetOwner(s, "ANCHOR_LEFT")
@@ -2796,14 +2806,12 @@ local function Init_Event(arg1)
                         s:SetAlpha(0.5)
                     end)
                 end
-                local text
+                local specID, icon, _
                 if frame.specIndex then
-                    local specID, _, _, icon= GetSpecializationInfo(frame.specIndex)
-                    if specID then
-                        text= (icon and '|T'..icon..':0|t  ' or '')..specID
-                    end
+                    specID, _, _, icon= GetSpecializationInfo(frame.specIndex)
                 end
-                frame.specIDLabel:SetText(text or '')
+                frame.specIDLabel:SetText(specID or '')
+                frame.specIcon:SetTexture(icon or 0)
             end
         end)
     end
