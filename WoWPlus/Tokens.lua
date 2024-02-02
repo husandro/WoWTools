@@ -314,6 +314,7 @@ local function Set_TrackButton_Text()
 		local itemButtonUse=(Save.itemButtonUse and tables.itemID) and true or nil--使用物品
 		if not btn then
 			btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide', type=itemButtonUse, pushe=itemButtonUse})
+			btn.itemButtonUse= itemButtonUse
 			if itemButtonUse then
 				btn.texture= btn:CreateTexture(nil,'BORDER')
 				btn.texture:SetSize(14,14)
@@ -449,7 +450,7 @@ local function Set_TrackButton_Text()
 			btn:SetAttribute('item',  tables.itemID and tables.name or nil )
 		end
 
-		if itemButtonUse and not bat or not itemButtonUse then
+		if btn.itemButtonUse and not bat or not btn.itemButtonUse then
 			btn:SetShown(true)
 		end
 
