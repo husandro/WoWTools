@@ -829,7 +829,9 @@ local function Init_TrackButton()
 		Set_TrackButton_Text()
 	end)
 	function TrackButton.Frame:set_shown()
-		self:SetShown(Save.str)
+		if Save.itemButtonUse and not UnitAffectingCombat('player') or not Save.itemButtonUse then
+			self:SetShown(Save.str)
+		end
 	end
 	TrackButton.Frame:set_shown()
 
