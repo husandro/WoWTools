@@ -30,7 +30,8 @@ local panel= CreateFrame("Frame")
 DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
 
 
-local set_LOOT_ITEM= LOOT_ITEM:gsub('%%s', '(.+)')--%s获得了战利品：%s。
+local LOOT_ITEM= e.Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
+
 
 local function SetChannels(link)
     local name=link:match('%[(.-)]')
@@ -63,7 +64,7 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
     local name= split and split:match('player:(.-):') or link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
     local server= name and name:match('%-(.+)')
     if name==e.Player.name_realm or name==e.Player.name then
-        return e.Icon.toRight2..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..e.Icon.toLeft2
+        return e.Icon.toRight2..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r'..e.Icon.toLeft2
     else
         local text= e.GetPlayerInfo({name=name})
         if server then
@@ -514,8 +515,8 @@ local function setAddMessageFunc(self, s, ...)
     if not Save.notShowPlayerInfo then--不处理，玩家信息
         s=s:gsub('|Hplayer:.-]|h', Realm)
 
-        if not showTimestamps and s:find(set_LOOT_ITEM) then--	%s获得了战利品：%s。
-            local unitName= s:match(set_LOOT_ITEM)
+        if not showTimestamps and s:find(LOOT_ITEM) then--	%s获得了战利品：%s。
+            local unitName= s:match(LOOT_ITEM)
             if unitName then
                 if unitName==e.Player.name then
                     s=s:gsub(unitName..'['..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
