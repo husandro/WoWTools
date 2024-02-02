@@ -448,9 +448,9 @@ local function Set_TrackButton_Text()
 			btn:SetAttribute('item',  tables.itemID and tables.name or nil )
 		end
 
-
-
-		btn:SetShown(true)
+		if not itemButtonUse or (itemButtonUse and not bat) then
+			btn:SetShown(true)
+		end
 
 		last= btn
 	end
@@ -715,6 +715,7 @@ local function Init_TrackButton()
 						tooltipTitle=e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE),
 						checked= Save.str,
 						keepShownOnClick=true,
+						disabled= Save.itemButtonUse and UnitAffectingCombat('player'),
 						func= function()
 							Save.str= not Save.str and true or nil
 							TrackButton:set_Texture()

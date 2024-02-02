@@ -2848,6 +2848,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             hide_Texture(PingSystemTutorialBg)
             set_Alpha_Frame_Texture(SettingsPanel.GameTab, {notAlpha=true})
             set_Alpha_Frame_Texture(SettingsPanel.AddOnsTab, {notAlpha=true})
+            
 
         else
             if eventTab then
