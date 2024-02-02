@@ -70,6 +70,9 @@ function func.Set_PlayerModel(self)
 end
 
 function func.Set_Init_Item(self, hide)--创建，设置，内容
+    if not self then
+        return
+    end
     if not self.textLeft then--左上角字符
         self.textLeft=e.Cstr(self, {size=16})
         self.textLeft:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
