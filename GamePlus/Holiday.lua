@@ -109,7 +109,7 @@ local CALENDAR_EVENTTYPE_TEXTURES = {
 
 
 local function Get_Button_Text(event)
-    local title = event.title
+    local title =event.title
 
     local icon,atlas
     local findQuest
@@ -240,10 +240,11 @@ local function Get_Button_Text(event)
             icon=event.iconTexture
         end
     end
-
+    title=e.cn(title)
     title= title:match(HEADER_COLON..'(.+)') or title
-    title= not event.isValid and '|cff606060'..title..'|r' or title
     title= e.cn(title)
+
+    title= not event.isValid and '|cff606060'..title..'|r' or title
     local msg
     if Save.left then
         msg= ((Save.showDate and event.eventTime) and event.eventTime..' ' or '')
@@ -393,7 +394,7 @@ local function Set_TrackButton_Text(monthOffset, day)
                         description = holidayInfo.description;
                         if (holidayInfo.startTime and holidayInfo.endTime) then
                             description=format(e.onlyChinese and '%1$s|n|n开始：%2$s %3$s|n结束：%4$s %5$s' or CALENDAR_HOLIDAYFRAME_BEGINSENDS,
-                                description,
+                                e.cn(description),
                                 FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month),
                                 GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true),
                                 FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month),
@@ -404,15 +405,18 @@ local function Set_TrackButton_Text(monthOffset, day)
                         local raidInfo = C_Calendar.GetRaidInfo(self.monthOffset, self.day, self.index);
                         if raidInfo and raidInfo.calendarType == "RAID_LOCKOUT" then
                             title = GetDungeonNameWithDifficulty(raidInfo.name, raidInfo.difficultyName);
-
-                            description= string.format(CALENDAR_RAID_LOCKOUT_DESCRIPTION, title,  GameTime_GetFormattedTime(raidInfo.time.hour, raidInfo.time.minute, true))
+                            description= format(e.onlyChinese and '你的%1$s副本将在%2$s解锁。' or CALENDAR_RAID_LOCKOUT_DESCRIPTION, e.cn(title),  GameTime_GetFormattedTime(raidInfo.time.hour, raidInfo.time.minute, true))
                         end
                     end
                     if title or description then
-                        e.tips:AddLine(title)
-                        e.tips:AddLine(' ')
-                        e.tips:AddLine(description, nil,nil,nil,true)
-                        e.tips:AddLine(' ')
+                        if title then
+                            e.tips:AddLine(e.cn(title))
+                        end
+                        if description then
+                            e.tips:AddLine(' ')                        
+                            e.tips:AddLine(description, nil,nil,nil,true)
+                            e.tips:AddLine(' ')
+                        end
                     end
                 end
                 e.tips:AddDoubleLine('eventID', self.eventID)

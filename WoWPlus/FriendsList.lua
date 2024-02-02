@@ -177,7 +177,11 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
 
     if QuickJoinToastButton.Toast then
         QuickJoinToastButton.Toast:ClearAllPoints()
-        QuickJoinToastButton.Toast:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT')
+        QuickJoinToastButton.Toast:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT', 29, 2)
+    end
+    if QuickJoinToastButton.Toast2 then
+        QuickJoinToastButton.Toast2:ClearAllPoints()
+        QuickJoinToastButton.Toast2:SetPoint('BOTTOMLEFT', QuickJoinToastButton.Toast or QuickJoinToastButton, 'TOPLEFT', 29 ,2)
     end
 end
 

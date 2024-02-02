@@ -56,7 +56,9 @@ end
 
 --取得中文
 function e.cn(text)
-    return e.strText[text] or text
+    if text then
+        return e.strText[text] or text
+    end
 end
 
 
@@ -144,9 +146,9 @@ e.Icon={
     quest='AutoQuest-Badge-Campaign',--任务
     guild2='|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a',--guild2='|A:communities-guildbanner-background:0:0|a',
 
-    TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',
-    HEALER='|A:UI-LFG-RoleIcon-Healer:0:0|a',
-    DAMAGER='|A:UI-LFG-RoleIcon-DPS:0:0|a',
+    TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',--INLINE_TANK_ICON
+    HEALER='|A:UI-LFG-RoleIcon-Healer:0:0|a',--INLINE_HEALER_ICON
+    DAMAGER='|A:UI-LFG-RoleIcon-DPS:0:0|a',--INLINE_DAMAGER_ICON
     NONE='|A:UI-LFG-RoleIcon-Pending:0:0|a',
     leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
 
@@ -422,7 +424,8 @@ end
 function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton', notWheel, setID, text
     tab=tab or {}
     local template= tab.type==false and 'UIPanelButtonTemplate' or tab.type==true and 'SecureActionButtonTemplate' or tab.type
-    --[[ SecureTemplates
+    --[[SharedUIPanelTemplates.xml
+    SecureTemplates
     SecureActionButtonTemplate	Button	Perform protected actions.
     SecureUnitButtonTemplate	Button	Unit frames.
     SecureAuraHeaderTemplate	Frame	Managing buffs and debuffs.

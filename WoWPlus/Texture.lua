@@ -975,11 +975,12 @@ local function Init_All_Frame()
      end)
 
      --社交，按钮
-
      set_Alpha_Color(QuickJoinToastButton.FriendsButton, nil, nil, min03)
      --set_Alpha_Color(QuickJoinToastButton.QueueButton, nil, nil, min03)
      set_Alpha_Frame_Texture(ChatFrameChannelButton, {alpha= min03})
      set_Alpha_Frame_Texture(ChatFrameMenuButton, {alpha= min03})
+     set_Alpha_Frame_Texture(TextToSpeechButton, {alpha=min03})
+
      --[[hooksecurefunc('ObjectiveTracker_UpdateOpacity', function()
          --for _, module in ipairs(ObjectiveTrackerBlocksFrame.MODULES) do
            --  set_Alpha_Color(module.Header.Background)
@@ -2848,7 +2849,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             hide_Texture(PingSystemTutorialBg)
             set_Alpha_Frame_Texture(SettingsPanel.GameTab, {notAlpha=true})
             set_Alpha_Frame_Texture(SettingsPanel.AddOnsTab, {notAlpha=true})
-            
 
         else
             if eventTab then

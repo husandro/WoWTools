@@ -405,19 +405,19 @@ local function Init()
     end)
 
     hooksecurefunc('UpdateProfessionButton', function(self)
-        local parent = self:GetParent();
+        local parent = self:GetParent()
         if not parent.professionInitialized then
-            return;
+            return
         end
-        local spellIndex = self:GetID() + parent.spellOffset;
-        local spellName, _, spellID = GetSpellBookItemName(spellIndex, SpellBookFrame.bookType);
+        local spellIndex = self:GetID() + parent.spellOffset
+        local spellName, _, spellID = GetSpellBookItemName(spellIndex, SpellBookFrame.bookType)
         set(self.spellString, e.strText[spellName])
         if spellID then
-            local spell = Spell:CreateFromSpellID(spellID);
+            local spell = Spell:CreateFromSpellID(spellID)
             spell:ContinueOnSpellLoad(function()
                 local text= spell:GetSpellSubtext()
-                set(self.subSpellString, e.strText[text] or text);
-            end);
+                set(self.subSpellString, e.strText[text] or text)
+            end)
         end
     end)
 
@@ -597,7 +597,7 @@ local function Init()
         if(not activityInfo) then
             return
         end
-        local groupName = C_LFGList.GetActivityGroupInfo(groupID)
+        --local groupName = C_LFGList.GetActivityGroupInfo(groupID)
         local englishFaction, localizedFaction  = UnitFactionGroup("player")
         local faction= englishFaction=='Alliance' and '联盟'
                     or (englishFaction=="Horde" and '部落')
@@ -1731,7 +1731,7 @@ local function Init()
     hooksecurefunc('FCF_SetWindowName', function(frame, name)--FloatingChatFrame.lua
         local tab = _G[frame:GetName().."Tab"]
         set(tab, e.strText[name])
-        PanelTemplates_TabResize(tab, tab.sizePadding or 0);
+        PanelTemplates_TabResize(tab, tab.sizePadding or 0)
     end)
 
     hooksecurefunc(ChatWindowTabMixin, 'SetChatWindowIndex', function(self, chatWindowIndex)
@@ -1744,7 +1744,7 @@ local function Init()
         end
         set(self.Text, text)
     end)
-   
+
 
     set(CombatConfigColorsExampleTitle, '范例文字：')
     set(CombatConfigFormattingExampleTitle, '范例文字：')
@@ -1822,6 +1822,11 @@ local function Init()
     set(ChatConfigTextToSpeechMessageSettingsSubTitle, '对特定信息开启文字转语音')
     set(TextToSpeechFrameAdjustRateSliderLow, '慢')
     set(TextToSpeechFrameAdjustRateSliderHigh, '快')
+
+    TextToSpeechButton:HookScript('OnEnter', function()--TextToSpeech.lua
+        GameTooltip_SetTitle(GameTooltip, '文字转语音选项')
+        GameTooltip:Show()
+    end)
 
     hooksecurefunc('TextToSpeechFrame_UpdateMessageCheckboxes', function(frame)--TextToSpeechFrame.lua
         local checkBoxNameString = frame:GetName().."CheckBox"
@@ -1941,12 +1946,12 @@ local function Init()
     hooksecurefunc('AddonList_InitButton', function(entry, addonIndex)
         local security = select(6, C_AddOns.GetAddOnInfo(addonIndex))
         -- Get the character from the current list (nil is all characters)
-        local character = UIDropDownMenu_GetSelectedValue(AddonCharacterDropDown);
+        local character = UIDropDownMenu_GetSelectedValue(AddonCharacterDropDown)
         if ( character == true ) then
-            character = nil;
+            character = nil
         end
-        local loadable, reason = C_AddOns.IsAddOnLoadable(addonIndex, character);
-        local checkboxState = C_AddOns.GetAddOnEnableState(addonIndex, character);
+        local loadable, reason = C_AddOns.IsAddOnLoadable(addonIndex, character)
+        local checkboxState = C_AddOns.GetAddOnEnableState(addonIndex, character)
         if (checkboxState == Enum.AddOnEnableState.Some ) then
             entry.Enabled.tooltip = '该插件只对某些角色启用。'
         end
@@ -3544,9 +3549,9 @@ local function Init()
 
         hooksecurefunc('UIMenu_AddButton', function(self, text)--UIMenu.lua
             if ( self.numButtons > UIMENU_NUMBUTTONS ) then
-                return;
+                return
             end
-            local button = _G[self:GetName().."Button"..self.numButtons];
+            local button = _G[self:GetName().."Button"..self.numButtons]
             if ( button and text ) then
                 set(button, e.strText[text])
 		        set(_G[button:GetName().."ShortcutText"])
@@ -3566,7 +3571,7 @@ local function Init()
                 local text= name and e.strText[name]
                 if text then
                     set(btn, text)
-                    local shortcutString = _G[btn:GetName().."ShortcutText"];
+                    local shortcutString = _G[btn:GetName().."ShortcutText"]
                     if shortcutString then
                         set(shortcutString, name)
                         shortcutString:Show()
@@ -3584,7 +3589,7 @@ local function Init()
                 local text= name and e.strText[name]
                 if text then
                     set(btn, text)
-                    local shortcutString = _G[btn:GetName().."ShortcutText"];
+                    local shortcutString = _G[btn:GetName().."ShortcutText"]
                     if shortcutString then
                         set(shortcutString, name)
                         shortcutString:Show()
@@ -3603,7 +3608,7 @@ local function Init()
     hooksecurefunc(CompactRaidFrameManagerDisplayFrame.RestrictPingsButton, 'UpdateLabel', function(self)
         set(self.Text, IsInRaid() and '只限助手发送信号' or '只限领袖发送信号')
     end)
-    
+
     set(CompactRaidFrameManagerDisplayFrameEditMode, '编辑')
     set(CompactRaidFrameManagerDisplayFrameConvertToRaid, '转团')
     hooksecurefunc('CompactRaidFrameManager_SetSetting', function(settingName, value)
@@ -3951,7 +3956,7 @@ local function Init_Loaded(arg1)
                         set(frame.SpecName, e.strText[name])
                     end
                 end
-                
+
             end
         end
 
@@ -5394,17 +5399,17 @@ local function Init_Loaded(arg1)
             --set(ClubFinderFilterDropdown.Label, '过滤器')
             --set(ClubFinderSortByDropdown.Label, '排序')
             set(ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search, '搜索')
-            
+
             hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame, 'UpdateType', function(self)-- ClubFinderGuildAndCommunityMixin:UpdateType()
                 if (self.isGuildType) then
                     set(self.InsetFrame.GuildDescription, '公会是由许多关系紧密，想要一起享受游戏乐趣的玩家组成的群体。加入公会后，你可以享受许多福利，包括分享公会银行，以及公会聊天频道。\n\n使用此工具来寻找与你志同道合的公会吧。')
                     if (#self.PendingGuildCards.CardList > 0) then
-                        self.ClubFinderPendingTab.tooltip = format('等待确认中（%d）', #self.PendingGuildCards.CardList);
+                        self.ClubFinderPendingTab.tooltip = format('等待确认中（%d）', #self.PendingGuildCards.CardList)
                     else
-                        self.ClubFinderPendingTab.tooltip = format('等待确认中（%d）', 0);
+                        self.ClubFinderPendingTab.tooltip = format('等待确认中（%d）', 0)
                     end
                 else
-                    self.InsetFrame.GuildDescription:SetText('选择搜索条件，然后按下“搜索”');
+                    self.InsetFrame.GuildDescription:SetText('选择搜索条件，然后按下“搜索”')
                     if (#self.PendingCommunityCards.CardList > 0) then
                         self.ClubFinderPendingTab.tooltip = format('等待确认中（%d）', #self.PendingCommunityCards.CardList)
                     else
@@ -5413,7 +5418,7 @@ local function Init_Loaded(arg1)
                 end
             end)
             hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards, 'BuildCardList', function(self)
-                self:GetParent().InsetFrame.GuildDescription:SetText('未发现结果。请修改你的搜索条件。');
+                self:GetParent().InsetFrame.GuildDescription:SetText('未发现结果。请修改你的搜索条件。')
             end)
             set(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.GuildDescription, '公会是由许多关系紧密，想要一起享受游戏乐趣的玩家组成的群体。加入公会后，你可以享受许多福利，包括分享公会银行，以及公会聊天频道。|n|n使用此工具来寻找与你志同道合的公会吧。')
         hooksecurefunc(CommunitiesListEntryMixin, 'SetAddCommunity', function(self)
@@ -5897,7 +5902,7 @@ local function Init_Loaded(arg1)
         C_Timer.After(0.3, function()
             set(PerksProgramFrame.FooterFrame.LeaveButton, format('%s 离开', CreateAtlasMarkup("perks-backarrow", 8, 13, 0, 0)))
         end)
-        
+
     elseif arg1=='Blizzard_WeeklyRewards' then--Blizzard_WeeklyRewards.lua
         font(WeeklyRewardsFrame.HeaderFrame.Text)
         hooksecurefunc(WeeklyRewardsFrame, 'UpdateTitle', function(self)
@@ -6035,7 +6040,7 @@ local function Init_Loaded(arg1)
     elseif arg1=='Blizzard_RuneforgeUI' then--Blizzard_RuneforgeCreateFrame.lua
         dia("CONFIRM_RUNEFORGE_LEGENDARY_CRAFT", {button1 = '是', button2 = '否'})
         hookDia("CONFIRM_RUNEFORGE_LEGENDARY_CRAFT", 'OnShow', function(self, data)
-            self.text:SetText(data.title);
+            self.text:SetText(data.title)
             local text= data and data.title or ''
             local a= text:match(e.Magic(RUNEFORGE_LEGENDARY_UPGRADING_CONFIRMATION))
             local b= text:match(e.Magic(RUNEFORGE_LEGENDARY_CRAFTING_CONFIRMATION))
@@ -6381,49 +6386,49 @@ local function Init_Loaded(arg1)
     elseif arg1=='Blizzard_MajorFactions' then
 
         hooksecurefunc(MajorFactionButtonUnlockedStateMixin, 'SetUpParagonRewardsTooltip', function(self)
-            local factionID = self:GetParent().factionID;
+            local factionID = self:GetParent().factionID
             local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID) or {}
-            local currentValue, threshold, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
+            local currentValue, threshold, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
 
             if tooLowLevelForParagon then
-                GameTooltip_SetTitle(GameTooltip, '你的等级太低，无法获得这个阵营的典范声望。', NORMAL_FONT_COLOR);
+                GameTooltip_SetTitle(GameTooltip, '你的等级太低，无法获得这个阵营的典范声望。', NORMAL_FONT_COLOR)
             else
-                GameTooltip_SetTitle(GameTooltip, '最高名望等级', NORMAL_FONT_COLOR);
-                local description = format('继续获取%s的声望以赢取奖励。', e.strText[majorFactionData.name] or majorFactionData.name);
+                GameTooltip_SetTitle(GameTooltip, '最高名望等级', NORMAL_FONT_COLOR)
+                local description = format('继续获取%s的声望以赢取奖励。', e.strText[majorFactionData.name] or majorFactionData.name)
                 if hasRewardPending then
-                    local questIndex = C_QuestLog.GetLogIndexForQuestID(rewardQuestID);
-                    local text = GetQuestLogCompletionText(questIndex);
+                    local questIndex = C_QuestLog.GetLogIndexForQuestID(rewardQuestID)
+                    local text = GetQuestLogCompletionText(questIndex)
                     if text and text ~= "" then
-                        description = e.strText[text] or text;
+                        description = e.strText[text] or text
                     end
                 end
 
-                GameTooltip_AddHighlightLine(GameTooltip, description);
+                GameTooltip_AddHighlightLine(GameTooltip, description)
                 if not hasRewardPending then
-                    local value = mod(currentValue, threshold);
+                    local value = mod(currentValue, threshold)
                     -- Show overflow if a reward is pending
                     if hasRewardPending then
-                        value = value + threshold;
+                        value = value + threshold
                     end
-                    GameTooltip_ShowProgressBar(GameTooltip, 0, threshold, value, REPUTATION_PROGRESS_FORMAT:format(value, threshold));
+                    GameTooltip_ShowProgressBar(GameTooltip, 0, threshold, value, REPUTATION_PROGRESS_FORMAT:format(value, threshold))
                 end
-                GameTooltip_AddQuestRewardsToTooltip(GameTooltip, rewardQuestID);
+                GameTooltip_AddQuestRewardsToTooltip(GameTooltip, rewardQuestID)
             end
         end)
         hooksecurefunc(MajorFactionButtonUnlockedStateMixin, 'SetUpRenownRewardsTooltip', function(self)
             local majorFactionData = C_MajorFactions.GetMajorFactionData(self:GetParent().factionID) or {}
-            local tooltipTitle = e.strText[majorFactionData.name] or majorFactionData.name;
-            GameTooltip_SetTitle(GameTooltip, tooltipTitle, NORMAL_FONT_COLOR);
-            local factionID = self:GetParent().factionID;
+            local tooltipTitle = e.strText[majorFactionData.name] or majorFactionData.name
+            GameTooltip_SetTitle(GameTooltip, tooltipTitle, NORMAL_FONT_COLOR)
+            local factionID = self:GetParent().factionID
             if not C_MajorFactions.HasMaximumRenown(factionID) then
-                GameTooltip_AddNormalLine(GameTooltip, format('当前进度：|cffffffff%d/%d|r', majorFactionData.renownReputationEarned, majorFactionData.renownLevelThreshold));
-                GameTooltip_AddBlankLineToTooltip(GameTooltip);
-                local nextRenownRewards = C_MajorFactions.GetRenownRewardsForLevel(factionID, C_MajorFactions.GetCurrentRenownLevel(factionID) + 1);
+                GameTooltip_AddNormalLine(GameTooltip, format('当前进度：|cffffffff%d/%d|r', majorFactionData.renownReputationEarned, majorFactionData.renownLevelThreshold))
+                GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                local nextRenownRewards = C_MajorFactions.GetRenownRewardsForLevel(factionID, C_MajorFactions.GetCurrentRenownLevel(factionID) + 1)
                 if #nextRenownRewards > 0 then
-                    self:AddRenownRewardsToTooltip(nextRenownRewards);
+                    self:AddRenownRewardsToTooltip(nextRenownRewards)
                 end
             end
-            GameTooltip_AddColoredLine(GameTooltip, '<点击查看名望>', GREEN_FONT_COLOR);
+            GameTooltip_AddColoredLine(GameTooltip, '<点击查看名望>', GREEN_FONT_COLOR)
         end)
 
         hooksecurefunc(MajorFactionButtonUnlockedStateMixin, 'Refresh', function(self, majorFactionData)--Blizzard_MajorFactionsLandingTemplates.lua
@@ -6436,15 +6441,15 @@ local function Init_Loaded(arg1)
 
         --Blizzard_MajorFactionRenown.lua
         hooksecurefunc(MajorFactionRenownFrame, 'SetUpMajorFactionData', function(self)
-            local majorFactionData = C_MajorFactions.GetMajorFactionData(self.majorFactionID) or {};
+            local majorFactionData = C_MajorFactions.GetMajorFactionData(self.majorFactionID) or {}
             if majorFactionData.name and currentFactionID ~= self.majorFactionID then
-                set(self.TrackFrame.Title, e.strText[majorFactionData.name]);
+                set(self.TrackFrame.Title, e.strText[majorFactionData.name])
             end
         end)
 
     elseif arg1=='Blizzard_ItemSocketingUI' then--宝石
         set_tooltip_func(ItemSocketingDescription)
-        
+
     --elseif arg1=='Blizzard_CovenantRenown' then
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})

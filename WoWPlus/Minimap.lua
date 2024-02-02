@@ -218,7 +218,7 @@ local function get_Quest_Text(questID)
                 local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
                 local secText= e.SecondsToClock(secondsLeft, true)
                 text= text and text..'|n' or ''
-                text= questName
+                text= e.cn(questName)
                     ..(secText and ' |cffffffff'..secText..'|r' or '')
             end
         end
@@ -310,7 +310,7 @@ local function Get_widgetSetID_Text(widgetSetID, all)
                     end
                 end
                 barText= barText and '|cffffffff'..barText..'|r ' or ''
-
+                info.text= e.cn(info.text)
                 local text3= info.text:gsub('^|n', '')
                 text3= text3:gsub('|n', '|n       ')
                 text3= text3:gsub(':%d+|t', ':0|t')
@@ -360,7 +360,7 @@ local function Get_areaPoiID_Text(uiMapID, areaPoiID, all)
         end
 
         if text and (time or all) then
-            local name= poiInfo.name
+            local name= e.cn(poiInfo.name)
             local atlas=  poiInfo.atlasName
             if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
                 local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
@@ -435,7 +435,7 @@ local function get_vignette_Text()
                     info.rewardQuestID=nil
                 end
                 local text
-                local name= info.name
+                local name= e.cn(info.name)
                 if info.widgetSetID then
                     text= Get_widgetSetID_Text(info.widgetSetID, true)
                 end
@@ -503,7 +503,7 @@ local function set_OnEnter_btn_tips(self)
             local waitingForData, titleAdded = false, false;
 
             if vignetteInfo.type == Enum.VignetteType.Normal or vignetteInfo.type == Enum.VignetteType.Treasure then
-                GameTooltip_SetTitle(GameTooltip, vignetteInfo.name);
+                GameTooltip_SetTitle(GameTooltip, e.cn(vignetteInfo.name));
                 titleAdded = true
 
             elseif vignetteInfo.type == Enum.VignetteType.PvPBounty then
@@ -514,8 +514,8 @@ local function set_OnEnter_btn_tips(self)
                 if race and class and name then
                     local classInfo = C_CreatureInfo.GetClassInfo(class) or {};
                     local factionInfo = C_CreatureInfo.GetFactionInfo(race) or {};
-                    GameTooltip_SetTitle(GameTooltip, name, GetClassColorObj(classInfo.classFile));
-                    GameTooltip_AddColoredLine(GameTooltip, factionInfo.name, GetFactionColor(factionInfo.groupTag));
+                    GameTooltip_SetTitle(GameTooltip, e.cn(name), GetClassColorObj(classInfo.classFile));
+                    GameTooltip_AddColoredLine(GameTooltip, e.cn(factionInfo.name), GetFactionColor(factionInfo.groupTag));
                     if vignetteInfo.rewardQuestID then
                         GameTooltip_AddQuestRewardsToTooltip(GameTooltip, vignetteInfo.rewardQuestID, TOOLTIP_QUEST_REWARDS_STYLE_PVP_BOUNTY);
                     end
@@ -525,7 +525,7 @@ local function set_OnEnter_btn_tips(self)
 
             elseif vignetteInfo.type == Enum.VignetteType.Torghast then
                 SharedTooltip_SetBackdropStyle(GameTooltip, GAME_TOOLTIP_BACKDROP_STYLE_RUNEFORGE_LEGENDARY);
-                GameTooltip_SetTitle(GameTooltip, vignetteInfo.name);
+                GameTooltip_SetTitle(GameTooltip, e.cn(vignetteInfo.name));
                 titleAdded = true
             end
 
@@ -535,7 +535,7 @@ local function set_OnEnter_btn_tips(self)
                     verticalPadding = -overflow;
                 end
             elseif waitingForData then
-                GameTooltip_SetTitle(GameTooltip, RETRIEVING_DATA);
+                GameTooltip_SetTitle(GameTooltip, e.onlyChinese and '获取数据' or RETRIEVING_DATA);
             end
             if verticalPadding then
                 GameTooltip:SetPadding(0, verticalPadding);
@@ -559,12 +559,12 @@ local function set_OnEnter_btn_tips(self)
             local verticalPadding = nil;
 
             if hasName then
-                GameTooltip_SetTitle(GameTooltip, poiInfo.name, HIGHLIGHT_FONT_COLOR);
+                GameTooltip_SetTitle(GameTooltip, e.cn(poiInfo.name), HIGHLIGHT_FONT_COLOR);
                 addedTooltipLine = true;
             end
 
             if hasDescription then
-                GameTooltip_AddNormalLine(GameTooltip, poiInfo.description);
+                GameTooltip_AddNormalLine(GameTooltip, e.cn(poiInfo.description));
                 addedTooltipLine = true;
             end
 
@@ -572,7 +572,7 @@ local function set_OnEnter_btn_tips(self)
                 local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(self.areaPoiID);
                 if secondsLeft and secondsLeft > 0 then
                     local timeString = SecondsToTime(secondsLeft);
-                    GameTooltip_AddNormalLine(GameTooltip, BONUS_OBJECTIVE_TIME_LEFT:format(timeString));
+                    GameTooltip_AddNormalLine(GameTooltip, format(e.onlyChinese and '剩余时间：%s' or BONUS_OBJECTIVE_TIME_LEFT, timeString));
                     addedTooltipLine = true;
                 end
             end
@@ -612,7 +612,7 @@ local function set_OnEnter_btn_tips(self)
     end
     if widgetSetID then
         local info= self.uiMapID and C_Map.GetMapInfo(self.uiMapID) or {}
-        e.tips:AddDoubleLine('widgetSetID |cnGREEN_FONT_COLOR:'..widgetSetID, info.name)
+        e.tips:AddDoubleLine('widgetSetID |cnGREEN_FONT_COLOR:'..widgetSetID, e.cn(info.name))
     end
     if self.rewardQuestID then
         e.tips:AddLine('rewardQuestID |cnGREEN_FONT_COLOR:'..self.rewardQuestID)
@@ -2376,7 +2376,7 @@ end
 --####
 local function Init()
     Init_InstanceDifficulty()--副本，难图，指示
-    Init_Set_Button()--小地图, 标记, 文本
+    C_Timer.After(2, Init_Set_Button)--小地图, 标记, 文本
     Init_M_Portal_Room_Labels()--挑战专送门标签
 
 

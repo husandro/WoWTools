@@ -101,7 +101,9 @@ local function get_Queued_List(type, reTips, reRole)--排队情况
                     boss=' '..kill..'/'..numEncounters
                     if kill==numEncounters then boss=RED_FONT_COLOR_CODE..boss..'|r' end
                     local mapName=select(19, GetLFGDungeonInfo(dungeonID))
-                    if mapName then name=name.. '('..mapName..')' end
+                    if mapName then
+                        name= e.cn(name).. '('..e.cn(mapName)..')'
+                    end
                 end
                 m=(m and m..'|n  ' or '  ')
                     ..num..')|r '

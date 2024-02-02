@@ -449,7 +449,7 @@ local function Set_TrackButton_Text()
 			btn:SetAttribute('item',  tables.itemID and tables.name or nil )
 		end
 
-		if itemButtonUse and not bat or not Save.itemButtonUse then
+		if itemButtonUse and not bat or not itemButtonUse then
 			btn:SetShown(true)
 		end
 
