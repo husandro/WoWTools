@@ -926,6 +926,10 @@ local function Init_All_Frame()
      set_Menu(AddonCharacterDropDown)
 
      --场景 Blizzard_ScenarioObjectiveTracker.lua
+     hooksecurefunc('Scenario_ChallengeMode_ShowBlock', function()--Blizzard_ScenarioObjectiveTracker.lua
+        set_Alpha_Frame_Texture(ScenarioChallengeModeBlock, {alpha=min05})
+     end)
+     set_Alpha_Color(ScenarioStageBlock.NormalBG, nil, nil, min05)
      --[[if ObjectiveTrackerBlocksFrame then
          set_Alpha_Color(ObjectiveTrackerBlocksFrame.ScenarioHeader.Background)
          set_Alpha_Color(ObjectiveTrackerBlocksFrame.AchievementHeader.Background)

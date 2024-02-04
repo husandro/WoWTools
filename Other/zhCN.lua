@@ -20269,6 +20269,12 @@ local raceTab={
 }
 
 
+local affixTab= {
+    {9, '残暴', '首领的生命值提高30%，首领及其爪牙造成的伤害最多提高15%。'},
+    {10, '强韧', '非首领敌人的生命值提高20%，造成的伤害最高提高30%。'}
+}
+
+
 for _, info in pairs(spellTab) do
     e.LoadDate({id=info[1], type='spell'})
 end
@@ -20350,13 +20356,22 @@ C_Timer.After(2, function()
             end    
         end
     end
+    for _, info in pairs(affixTab) do
+        local name, description = C_ChallengeMode.GetAffixInfo(info[1])
+        if name then
+            e.strText[name]= info[2]
+        end
+        if info[3] and description then
+            e.strText[description]= info[3]
+        end
+    end
 
     specTab=nil
     spellTab=nil
     fanctionTab=nil
     curcurrencyTab=nil
     raceTab=nil
-    instanceTab=nil
+    affixTab=nil
 end)
 end
 

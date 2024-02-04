@@ -464,7 +464,9 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     check:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN, e.onlyChinese and '说' or SAY)
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN, '|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY))
         e.tips:Show()
         self2:SetAlpha(1)
     end)
@@ -473,9 +475,19 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
         if not Save.slotKeystoneSay or not C_ChallengeMode.HasSlottedKeystone() or not self2.inseSayTips then
             return
         end
-        local mapID, affixes, powerLevel = C_ChallengeMode.GetSlottedKeystoneInfo()
-        local name,_, timeLimit= C_ChallengeMode.GetMapUIInfo(mapID)
-        local m=name..'('.. powerLevel..'): '
+        local mapChallengeModeID, affixes, powerLevel = C_ChallengeMode.GetSlottedKeystoneInfo()
+        if not mapChallengeModeID then
+            return
+        end
+        local name,_, timeLimit= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
+        if not name then
+            return
+        end
+        local journalInstanceID= e.ChallengesData[mapChallengeModeID] and e.ChallengesData[mapChallengeModeID].ins
+        if journalInstanceID then
+            name = select(8, EJ_GetInstanceInfo(journalInstanceID)) or name
+        end
+        local m= name..'('.. powerLevel..'): '
         for _,v in pairs(affixes or {}) do
             local name2=C_ChallengeMode.GetAffixInfo(v)
             if name2 then
@@ -516,11 +528,11 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     end)
     self.countdown2:SetScript('OnLeave', GameTooltip_Hide)
     self.countdown2:SetScript('OnEnter', function(frame)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:SetOwner(frame, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
-        e.tips:AddLine(e.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!')
+        e.tips:AddDoubleLine(' ', '|A:transmog-icon-chat:0:0|a'..(e.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!'))
         e.tips:Show()
     end)
 end
@@ -553,6 +565,7 @@ end
 --建立 Affix 按钮
 local function Affix_CreateButton(self, affixID)--Blizzard_ScenarioObjectiveTracker.lua
     local btn= e.Cbtn(self, {size={22,22}, pushe=true, icon='hide'})
+    btn.affixInfo= affixID
     btn:SetSize(24, 24)
     btn.Border= btn:CreateTexture(nil, "BORDER")
     btn.Border:SetAllPoints()
@@ -561,14 +574,15 @@ local function Affix_CreateButton(self, affixID)--Blizzard_ScenarioObjectiveTrac
     btn.Portrait:SetAllPoints(btn.Border)
     local _, _, filedataid = C_ChallengeMode.GetAffixInfo(affixID);
 	SetPortraitToTexture(btn.Portrait, filedataid)--btn.SetUp = ScenarioChallengeModeAffixMixin.SetUp
-    btn:SetScript("OnEnter", function(self2)--btn:SetScript("OnEnter", ScenarioChallengeModeAffixMixin.OnEnter)
+    btn:SetScript("OnEnter", ChallengesKeystoneFrameAffixMixin.OnEnter)
+    --[[btn:SetScript("OnEnter", function(self2)
         GameTooltip:SetOwner(self2, "ANCHOR_LEFT");
 		local name, description = C_ChallengeMode.GetAffixInfo(self2.affixID);
 		GameTooltip:SetText(name, 1, 1, 1, 1, true);
 		GameTooltip:AddLine(description, nil, nil, nil, true);
         GameTooltip:AddDoubleLine('affixID', self2.affixID)
 		GameTooltip:Show();
-    end)
+    end)]]
     btn:SetScript("OnLeave", GameTooltip_Hide)
 	btn.affixID = affixID;
     return btn

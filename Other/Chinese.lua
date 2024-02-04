@@ -716,7 +716,7 @@ local function Init()
         end
     end)
     LFGListFrame.ApplicationViewer.RefreshButton:HookScript('OnEnter', function()
-        GameTooltip:SetText('刷新', HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+        GameTooltip:SetText('刷新', HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
     end)
 
     hooksecurefunc('LFGListApplicationViewer_UpdateAvailability', function(self)
@@ -846,7 +846,7 @@ local function Init()
     set(LFGListFrame.SearchPanel.BackButton, '后退')
     set(LFGListFrame.SearchPanel.ScrollBox.StartGroupButton, '创建队伍')
     LFGListFrame.SearchPanel.RefreshButton:HookScript('OnEnter', function()
-        GameTooltip:SetText('重新搜索', HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+        GameTooltip:SetText('重新搜索', HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
     end)
     hooksecurefunc('LFGListSearchPanel_UpdateResults', function(self)
         if self.ScrollBox.NoResultsFound:IsShown() and self.totalResults == 0 then
@@ -1881,37 +1881,194 @@ local function Init()
     hooksecurefunc(ObjectiveTrackerBlocksFrame.QuestHeader, 'UpdateHeader', function(self)
         set(self.Text, '任务')
     end)
-    C_Timer.After(2, function()
-        SCENARIO_CONTENT_TRACKER_MODULE:SetHeader(ObjectiveTrackerFrame.BlocksFrame.ScenarioHeader, '场景战役', nil)--lizzard_ScenarioObjectiveTracker.lua
-            hooksecurefunc('ScenarioBlocksFrame_SetupStageBlock', function(scenarioCompleted)
-                if not ScenarioStageBlock.WidgetContainer:IsShown() then
-                    if ( scenarioCompleted ) then
-                        local scenarioType = select(10, C_Scenario.GetInfo());
-                        local dungeonDisplay = (scenarioType == LE_SCENARIO_TYPE_USE_DUNGEON_DISPLAY);
-                        if( dungeonDisplay ) then
-                            set(ScenarioStageBlock.CompleteLabel, '地下城完成！');
-                        else
-                            set(ScenarioStageBlock.CompleteLabel, '完成！');
-                        end
+    
+    ScenarioChallengeModeBlock.DeathCount:HookScript('OnEnter', function(self)--ScenarioChallengeDeathCountMixin
+        GameTooltip:SetText(format('%d次死亡', self.count), 1, 1, 1)
+        GameTooltip:AddLine(format('时间损失：|cffffffff%s|r', SecondsToClock(self.timeLost)))
+        GameTooltip:Show()
+    end)
+    
+    ScenarioChallengeModeBlock.TimesUpLootStatus:HookScript('OnEnter', function(self)--Scenario_ChallengeMode_TimesUpLootStatus_OnEnter
+        GameTooltip:SetText('时间结束', 1, 1, 1);
+        local line;
+        if (self:GetParent().wasDepleted) then
+            if (UnitIsGroupLeader("player")) then
+                line = '你的钥石无法升级，且你在完成此地下城后将无法获得战利品宝箱。你可以右键点击头像并选择“重置史诗地下城”来重新开始挑战。';
+            else
+                line = '你的钥石无法升级，且你在完成此地下城后将无法获得战利品宝箱。小队队长可以右键点击头像并选择“重置史诗地下城”来重新开始挑战。';
+            end
+        else
+            line = '你的钥石无法升级。但你完成此地下城后仍可获得战利品宝箱';
+        end
+        GameTooltip:AddLine(line, nil, nil, nil, true);
+        GameTooltip:Show();
+    end)
+    hooksecurefunc('ScenarioBlocksFrame_SetupStageBlock', function(scenarioCompleted)
+        if not ScenarioStageBlock.WidgetContainer:IsShown() then
+            if ( scenarioCompleted ) then
+                local scenarioType = select(10, C_Scenario.GetInfo())
+                local dungeonDisplay = (scenarioType == LE_SCENARIO_TYPE_USE_DUNGEON_DISPLAY)
+                if( dungeonDisplay ) then
+                    set(ScenarioStageBlock.CompleteLabel, '地下城完成！')
+                else
+                    set(ScenarioStageBlock.CompleteLabel, '完成！')
+                end
+            else
+                set(ScenarioStageBlock.CompleteLabel, '阶段完成')
+            end
+        end
+    end)
+    hooksecurefunc('Scenario_ChallengeMode_ShowBlock', function()
+        local level= C_ChallengeMode.GetActiveKeystoneInfo()
+        if level then
+            set(ScenarioChallengeModeBlock.Level, format('%d级', level))
+        end
+    end)
+    SCENARIO_CONTENT_TRACKER_MODULE:SetHeader(ObjectiveTrackerFrame.BlocksFrame.ScenarioHeader, '场景战役', nil)--lizzard_ScenarioObjectiveTracker.lua
+    hooksecurefunc(SCENARIO_CONTENT_TRACKER_MODULE, 'Update', function()
+        local scenarioName, currentStage, numStages, flags, _, _, _, xp, money, scenarioType, _, textureKit = C_Scenario.GetInfo();
+        local rewardsFrame = ObjectiveTrackerScenarioRewardsFrame;
+        local shouldShowMawBuffs = ShouldShowMawBuffs();
+        local isInScenario = numStages > 0;
+        if ( not isInScenario and (not shouldShowMawBuffs or IsOnGroundFloorInJailersTower()) ) then
+            ScenarioBlocksFrame_Hide();
+            self:EndLayout();
+            return;
+        end
+        local BlocksFrame = SCENARIO_TRACKER_MODULE.BlocksFrame;
+        local objectiveBlock = SCENARIO_TRACKER_MODULE:GetBlock();
+        local stageBlock = ScenarioStageBlock;
+
+        -- if sliding, ignore updates unless the stage changed
+        if ( BlocksFrame.slidingAction ) then
+            if ( BlocksFrame.currentStage == currentStage ) then
+                ObjectiveTracker_AddBlock(BlocksFrame);
+                BlocksFrame:Show();
+                self:EndLayout();
+                return;
+            else
+                ObjectiveTracker_EndSlideBlock(BlocksFrame);
+            end
+        end
+
+        BlocksFrame.maxHeight = SCENARIO_CONTENT_TRACKER_MODULE.BlocksFrame.maxHeight;
+        BlocksFrame.currentBlock = nil;
+        BlocksFrame.contentsHeight = 0;
+        SCENARIO_TRACKER_MODULE.contentsHeight = 0;
+
+        local stageName, stageDescription, numCriteria, _, _, _, _, numSpells, spellInfo, weightedProgress, _, widgetSetID = C_Scenario.GetStepInfo();
+        local inChallengeMode = (scenarioType == LE_SCENARIO_TYPE_CHALLENGE_MODE);
+        local inProvingGrounds = (scenarioType == LE_SCENARIO_TYPE_PROVING_GROUNDS);
+        local dungeonDisplay = (scenarioType == LE_SCENARIO_TYPE_USE_DUNGEON_DISPLAY);
+        local inWarfront = (scenarioType == LE_SCENARIO_TYPE_WARFRONT);
+        local scenariocompleted = currentStage > numStages;
+
+        if ( not isInScenario ) then
+            stageBlock:Hide();
+        elseif ( scenariocompleted ) then
+            ObjectiveTracker_AddBlock(stageBlock);
+            ScenarioBlocksFrame_SetupStageBlock(scenariocompleted);
+            stageBlock:Show();
+        elseif ( inChallengeMode ) then
+            if ( ScenarioChallengeModeBlock.timerID ) then
+                ObjectiveTracker_AddBlock(ScenarioChallengeModeBlock);
+            end
+            stageBlock:Hide();
+        elseif ( ScenarioProvingGroundsBlock.timerID ) then
+            ObjectiveTracker_AddBlock(ScenarioProvingGroundsBlock);
+            stageBlock:Hide();
+        else
+            -- add the stage block
+            ObjectiveTracker_AddBlock(stageBlock);
+            stageBlock:Show();
+            -- update if stage changed
+            if ( BlocksFrame.currentStage ~= currentStage or BlocksFrame.scenarioName ~= scenarioName or BlocksFrame.stageName ~= stageName) then
+                SCENARIO_TRACKER_MODULE:FreeUnusedLines(objectiveBlock);
+                if ( bit.band(flags, SCENARIO_FLAG_SUPRESS_STAGE_TEXT) == SCENARIO_FLAG_SUPRESS_STAGE_TEXT ) then
+                    stageBlock.Stage:SetText(stageName);
+                    stageBlock.Stage:SetSize( 172, 36 );
+                    stageBlock.Stage:SetPoint("TOPLEFT", 15, -18);
+                    stageBlock.FinalBG:Hide();
+                    stageBlock.Name:SetText("");
+                else
+                    if ( currentStage == numStages ) then
+                        stageBlock.Stage:SetText(SCENARIO_STAGE_FINAL);
+                        stageBlock.FinalBG:Show();
                     else
-                        set(ScenarioStageBlock.CompleteLabel, '阶段完成');
+                        stageBlock.Stage:SetFormattedText(SCENARIO_STAGE, currentStage);
+                        stageBlock.FinalBG:Hide();
+                    end
+                    stageBlock.Stage:SetSize( 172, 18 );
+                    stageBlock.Name:SetText(stageName);
+                    if ( stageBlock.Name:GetStringWidth() > stageBlock.Name:GetWrappedWidth() ) then
+                        stageBlock.Stage:SetPoint("TOPLEFT", 15, -10);
+                    else
+                        stageBlock.Stage:SetPoint("TOPLEFT", 15, -18);
                     end
                 end
-            end)
-            hooksecurefunc('Scenario_ChallengeMode_ShowBlock', function(timerID, elapsedTime, timeLimit)
-                local level= C_ChallengeMode.GetActiveKeystoneInfo();
-                if level then
-	                set(ScenarioChallengeModeBlock.Level, format('%d级', level))
+                if (not stageBlock.appliedAlready) then
+                    -- Ugly hack to get around :IsTruncated failing if used during load
+                    C_Timer.After(1, function() stageBlock.Stage:ScaleTextToFit(); end);
+                    stageBlock.appliedAlready = true;
                 end
-            end)
-            hooksecurefunc( ScenarioChallengeModeAffixMixin, 'OnEnter', function(self)
-                if (self.affixID) then
-                    local name, description = C_ChallengeMode.GetAffixInfo(self.affixID);
-                    GameTooltip:SetText(e.cn(name), 1, 1, 1, 1, true);
-                    GameTooltip:AddLine(e.cn(description), nil, nil, nil, true);
-                    GameTooltip:Show();
+                ScenarioStage_CustomizeBlock(stageBlock, scenarioType, widgetSetID, textureKit);
+            end
+
+            if inWarfront and not GetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_WARFRONT_RESOURCES) then
+                local helpTipInfo = {
+                    text = WARFRONT_TUTORIAL_RESOURCES,
+                    buttonStyle = HelpTip.ButtonStyle.Close,
+                    cvarBitfield = "closedInfoFrames",
+                    bitfieldFlag = LE_FRAME_TUTORIAL_WARFRONT_RESOURCES,
+                    targetPoint = HelpTip.Point.LeftEdgeCenter,
+                    offsetX = -4,
+                    offsetY = 4,
+                };
+                HelpTip:Show(BlocksFrame, helpTipInfo, stageBlock);
+            end
+        end
+        BlocksFrame.scenarioName = scenarioName;
+        BlocksFrame.currentStage = currentStage;
+        BlocksFrame.stageName = stageName;
+
+        if ( isInScenario ) then
+            if ( not ScenarioProvingGroundsBlock.timerID and not scenariocompleted ) then
+                if (weightedProgress) then
+                    --self:UpdateWeightedProgressCriteria(stageDescription, stageBlock, objectiveBlock, BlocksFrame);
+                else
+                    --self:UpdateCriteria(numCriteria, objectiveBlock);
+                    --self:AddSpells(objectiveBlock, spellInfo);
+                    --objectiveBlock:SetHeight(objectiveBlock.height);
                 end
-            end)
+            end
+        end
+
+        -- add the scenario block
+        if ( BlocksFrame.currentBlock ) then
+            if ( inChallengeMode ) then-- header
+                set(SCENARIO_CONTENT_TRACKER_MODULE.Header.Text, e.strText[BlocksFrame.scenarioName]);
+            elseif ( inProvingGrounds or ScenarioProvingGroundsBlock.timerID ) then
+                set(SCENARIO_CONTENT_TRACKER_MODULE.Header.Text, '试炼场');
+            elseif( dungeonDisplay ) then
+                set(SCENARIO_CONTENT_TRACKER_MODULE.Header.Text, '地下城')
+            elseif ( shouldShowMawBuffs and not IsInJailersTower() ) then
+                set(SCENARIO_CONTENT_TRACKER_MODULE.Header.Text, e.strText[GetZoneText()]);
+            else
+                set(SCENARIO_CONTENT_TRACKER_MODULE.Header.Text, e.strText[BlocksFrame.scenarioName])
+            end
+        end
+    end)
+    --[[hooksecurefunc(ScenarioChallengeModeAffixMixin, 'OnEnter', function(self)
+        if (self.affixID) then
+            local name, description = C_ChallengeMode.GetAffixInfo(self.affixID)
+            GameTooltip:SetText(e.cn(name), 1, 1, 1, 1, true)
+            GameTooltip:AddLine(e.cn(description), nil, nil, nil, true)
+            GameTooltip:Show()
+        end
+    end)]]
+    C_Timer.After(2, function()
+        
+          
 
         set(ObjectiveTrackerFrame.HeaderMenu.Title, '追踪')
         set(ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text, '战役')
@@ -3665,6 +3822,31 @@ local function Init()
 
     reg(RolePollPopup, '选择你的职责', 1)
     set(RolePollPopupAcceptButtonText, '接受')
+
+    --HelpTipTemplateMixin:ApplyText()
+    hooksecurefunc(HelpTipTemplateMixin, 'ApplyText', function(frame)
+        local text= e.strText[frame.info.text]
+        if text then
+            frame.info.text= text
+            set(frame.Text, text)
+        end
+    end)
+    
+    --[[hooksecurefunc('HelpPlate_Button_OnShow', function(self)
+        local text= e.strText[self.toolTipText]
+        if text then
+            self.toolTipText= text
+            set(HelpPlateTooltip.Text, text)
+            HelpPlateTooltip:Show();
+        end
+    end)]]
+    hooksecurefunc('HelpPlate_Button_OnEnter', function(self)
+        local text= e.strText[self.toolTipText]
+        if text then
+            self.toolTipText= text
+            set(HelpPlateTooltip.Text, text)
+        end
+    end)
 end
 
 
@@ -5872,13 +6054,13 @@ local function Init_Loaded(arg1)
 
 
         hooksecurefunc('LFGInvitePopup_Update', function(inviter, _, _, _, _, isQuestSessionActive)
-            local titleMarkup = isQuestSessionActive and CreateAtlasMarkup("QuestSharing-QuestLog-Replay", 19, 16) or "";
+            local titleMarkup = isQuestSessionActive and CreateAtlasMarkup("QuestSharing-QuestLog-Replay", 19, 16) or ""
             local playerName= e.GetPlayerInfo({name=inviter, reName=true, reRealm=true})
             playerName= playerName=='' and inviter or playerName
-            LFGInvitePopupText:SetFormattedText(titleMarkup ..'%s邀请你加入队伍', inviter);
+            LFGInvitePopupText:SetFormattedText(titleMarkup ..'%s邀请你加入队伍', inviter)
 
             if tankButton.disabledTooltip and e.strText[tankButton.disabledTooltip] then
-                tankButton.disabledTooltip = e.strText[tankButton.disabledTooltip];
+                tankButton.disabledTooltip = e.strText[tankButton.disabledTooltip]
             end
 
             local text
@@ -6057,28 +6239,28 @@ local function Init_Loaded(arg1)
         CHALLENGE_MODE_EXTRA_AFFIX_INFO["dmg"].desc = '敌人的伤害值提高%d%%'
         CHALLENGE_MODE_EXTRA_AFFIX_INFO["health"].name= '额外生命值'
         CHALLENGE_MODE_EXTRA_AFFIX_INFO["health"].desc = '敌人的生命值提高%d%%'
-        hooksecurefunc(ChallengesKeystoneFrameAffixMixin, 'OnEnter', function(self)
+        --[[hooksecurefunc(ChallengesKeystoneFrameAffixMixin, 'OnEnter', function(self)
             if (self.affixID or self.info) then
-                local name, description;
+                local name, description
                 if (self.info) then
-                    local tbl = CHALLENGE_MODE_EXTRA_AFFIX_INFO[self.info.key];
-                    name = tbl.name;
-                    description = string.format(tbl.desc, self.info.pct);
+                    local tbl = CHALLENGE_MODE_EXTRA_AFFIX_INFO[self.info.key]
+                    name = tbl.name
+                    description = string.format(tbl.desc, self.info.pct)
                 else
-                    name, description = C_ChallengeMode.GetAffixInfo(self.affixID);
+                    name, description = C_ChallengeMode.GetAffixInfo(self.affixID)
                     name= e.cn(name)
                     description= e.cn(description)
                 end
-                GameTooltip:SetText(name, 1, 1, 1, 1, true);
-                GameTooltip:AddLine(description, nil, nil, nil, true);
-                GameTooltip:Show();
+                GameTooltip:SetText(name, 1, 1, 1, 1, true)
+                GameTooltip:AddLine(description, nil, nil, nil, true)
+                GameTooltip:Show()
             end
-        end)
+        end)]]
     
         set(ChallengesKeystoneFrame.StartButton, '激活')
         set(ChallengesKeystoneFrame.Instructions, '插入史诗钥石')
             hooksecurefunc(ChallengesKeystoneFrame, 'OnKeystoneSlotted', function(self)
-                local mapID, _, powerLevel= C_ChallengeMode.GetSlottedKeystoneInfo();
+                local mapID, _, powerLevel= C_ChallengeMode.GetSlottedKeystoneInfo()
                 if mapID ~= nil then
                     local name= C_ChallengeMode.GetMapUIInfo(mapID)
                     set(self.DungeonName, e.strText[name])

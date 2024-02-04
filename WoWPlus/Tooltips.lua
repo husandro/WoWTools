@@ -1916,13 +1916,25 @@ local function Init()
     --#############
     --挑战, AffixID
     --Blizzard_ScenarioObjectiveTracker.lua
-    if ScenarioChallengeModeAffixMixin then
-        hooksecurefunc( ScenarioChallengeModeAffixMixin, 'OnEnter', function(self)
+    hooksecurefunc(ScenarioChallengeModeAffixMixin, 'OnEnter', function(self)
+        if self.affixID then
+            local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID);
+            GameTooltip:SetText(e.cn(name), 1, 1, 1, 1, true);
+            GameTooltip:AddLine(e.cn(description), nil, nil, nil, true);
+            GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
+            func.Set_Web_Link({frame=GameTooltip, type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
+            GameTooltip:Show()
+        end
+    end)
+    if ScenarioChallengeModeBlock and ScenarioChallengeModeBlock.Affixes and ScenarioChallengeModeBlock.Affixes[1] then
+        ScenarioChallengeModeBlock.Affixes[1]:HookScript('OnEnter', function(self)
             if self.affixID then
-                local name, _, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
-                e.tips:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
-                func.Set_Web_Link({frame=self, type='affixes', id=self.affixID, name=name, col=col, isPetUI=false})--取得网页，数据链接
-                e.tips:Show()
+                local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID);
+                GameTooltip:SetText(e.cn(name), 1, 1, 1, 1, true);
+                GameTooltip:AddLine(e.cn(description), nil, nil, nil, true);
+                GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
+                func.Set_Web_Link({frame=GameTooltip, type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
+                GameTooltip:Show()
             end
         end)
     end
@@ -2692,12 +2704,24 @@ local function Init_Event(arg1)
         end)
 
     elseif arg1=='Blizzard_ChallengesUI' then--挑战, AffixID
-        hooksecurefunc(ChallengesKeystoneFrameAffixMixin,'OnEnter',function(self)--Blizzard_ChallengesUI.lua
+        hooksecurefunc(ChallengesKeystoneFrameAffixMixin, 'OnEnter',function(self)
             if self.affixID then
-                local name, _, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
-                e.tips:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
+                local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
+                if (self.affixID or self.info) then
+                    if (self.info) then
+                        local tbl = CHALLENGE_MODE_EXTRA_AFFIX_INFO[self.info.key];
+                        name = tbl.name;
+                        description = string.format(tbl.desc, self.info.pct);
+                    else
+                        name= e.cn(name)
+                        description= e.cn(description)
+                    end
+                    GameTooltip:SetText(name, 1, 1, 1, 1, true);
+                    GameTooltip:AddLine(description, nil, nil, nil, true);
+                end
+                GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
                 func.Set_Web_Link({frame=GameTooltip, type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
-                e.tips:Show()
+                GameTooltip:Show()
             end
         end)
 
