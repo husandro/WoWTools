@@ -5839,6 +5839,28 @@ local function Init_Loaded(arg1)
             ConquestFrame.RatedBG:HookScript('OnEnter', conquestFrameButton_OnEnter)
         end
 
+
+        hooksecurefunc('LFGInvitePopup_Update', function(inviter, _, _, _, _, isQuestSessionActive)
+            local titleMarkup = isQuestSessionActive and CreateAtlasMarkup("QuestSharing-QuestLog-Replay", 19, 16) or "";
+            local playerName= e.GetPlayerInfo({name=inviter, reName=true, reRealm=true})
+            playerName= playerName=='' and inviter or playerName
+            LFGInvitePopupText:SetFormattedText(titleMarkup ..'%s邀请你加入队伍', inviter);
+
+            if tankButton.disabledTooltip and e.strText[tankButton.disabledTooltip] then
+                tankButton.disabledTooltip = e.strText[tankButton.disabledTooltip];
+            end
+
+            local text
+            if WillAcceptInviteRemoveQueues() then
+                text= '加入该队伍会将你从激活的队列中移除。'
+            end
+            if isQuestSessionActive then
+                text= (text and text..'|n|n' or '')..'接受此邀请会激活小队同步。任务会与小队进行同步。'
+            end
+            if text then
+                LFGInvitePopup.QueueWarningText:SetText(warningText)
+            end
+        end)
 --hooksecurefunc('HonorFrame_UpdateQueueButtons', function()
 
 

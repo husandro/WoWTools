@@ -4103,6 +4103,7 @@
         "deprecated",
         "undefined-global",
         "duplicate-set-field",
-        "assign-type-mismatch"
+        "assign-type-mismatch",
+        "redefined-local"
     ]
 }

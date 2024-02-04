@@ -1210,7 +1210,7 @@ function func.Set_Unit(self)--设置单位提示信息
                 end
             else
                 text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false})  or '')
-                        ..(e.cn(raceName) or '')
+                        ..(e.strText[raceFile] or raceName or '')
                         ..' '..(e.Class(nil, classFilename) or '')
                         ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:'..(e.onlyChinese and 'PvP' or TRANSMOG_SET_PVP)..'|r)' or ('('..(e.onlyChinese and 'PvE' or TRANSMOG_SET_PVE)..')'))
             end

@@ -20239,7 +20239,35 @@ for _, info in pairs(classTab) do
     end
 end]]
 
-
+local raceTab={
+    [1] = "人类",
+    [2] = "兽人",
+    [3] = "矮人",
+    [4] = "暗夜精灵",
+    [5] = "亡灵",
+    [6] = "牛头人",
+    [7] = "侏儒",
+    [8] = "巨魔",
+    [9] = "地精",
+    [10] = "血精灵",
+    [11] = "德莱尼",
+    [22] = "狼人",
+    [24] = "熊猫人",
+    [25] = "熊猫人",
+    [26] = "熊猫人",
+    [27] = "夜之子",
+    [28] = "至高岭牛头人",
+    [29] = "虚空精灵",
+    [30] = "光铸德莱尼",
+    [31] = "赞达拉巨魔",
+    [32] ="库尔提拉斯人",
+    [34] = "黑铁矮人",
+    [35] = "狐人",
+    [36] = "玛格汉兽人",
+    [37] = "机械侏儒",
+    [52] = "龙希尔",
+    [70] = "龙希尔",
+}
 
 
 for _, info in pairs(spellTab) do
@@ -20287,15 +20315,18 @@ C_Timer.After(2, function()
             e.strText[description]= info[3]
         end
     end
+    for raceID, name in pairs(raceTab) do
+        local info = C_CreatureInfo.GetRaceInfo(raceID) or {}
+        if info.clientFileString then
+            e.strText[info.clientFileString]= name
+        end
+    end
 
     specTab=nil
     spellTab=nil
     fanctionTab=nil
     curcurrencyTab=nil
-    --classTab=nil
-
-
-
+    raceTab=nil
 end)
 end
 
