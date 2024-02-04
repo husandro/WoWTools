@@ -1879,20 +1879,47 @@ local function Init()
     set(CreateChannelPopup.CancelButton, '取消')
 
     hooksecurefunc(ObjectiveTrackerBlocksFrame.QuestHeader, 'UpdateHeader', function(self)
-        --if C_QuestSession.HasJoined() then self.Text:SetText('任务场景')
-        self.Text:SetText('任务')
+        set(self.Text, '任务')
     end)
-
     C_Timer.After(2, function()
-
-        reg(CombatConfigSettingsNameEditBox)--过滤名称
+        SCENARIO_CONTENT_TRACKER_MODULE:SetHeader(ObjectiveTrackerFrame.BlocksFrame.ScenarioHeader, '场景战役', nil)--lizzard_ScenarioObjectiveTracker.lua
+            hooksecurefunc('ScenarioBlocksFrame_SetupStageBlock', function(scenarioCompleted)
+                if not ScenarioStageBlock.WidgetContainer:IsShown() then
+                    if ( scenarioCompleted ) then
+                        local scenarioType = select(10, C_Scenario.GetInfo());
+                        local dungeonDisplay = (scenarioType == LE_SCENARIO_TYPE_USE_DUNGEON_DISPLAY);
+                        if( dungeonDisplay ) then
+                            set(ScenarioStageBlock.CompleteLabel, '地下城完成！');
+                        else
+                            set(ScenarioStageBlock.CompleteLabel, '完成！');
+                        end
+                    else
+                        set(ScenarioStageBlock.CompleteLabel, '阶段完成');
+                    end
+                end
+            end)
+            hooksecurefunc('Scenario_ChallengeMode_ShowBlock', function(timerID, elapsedTime, timeLimit)
+                local level= C_ChallengeMode.GetActiveKeystoneInfo();
+                if level then
+	                set(ScenarioChallengeModeBlock.Level, format('%d级', level))
+                end
+            end)
+            hooksecurefunc( ScenarioChallengeModeAffixMixin, 'OnEnter', function(self)
+                if (self.affixID) then
+                    local name, description = C_ChallengeMode.GetAffixInfo(self.affixID);
+                    GameTooltip:SetText(e.cn(name), 1, 1, 1, 1, true);
+                    GameTooltip:AddLine(e.cn(description), nil, nil, nil, true);
+                    GameTooltip:Show();
+                end
+            end)
 
         set(ObjectiveTrackerFrame.HeaderMenu.Title, '追踪')
         set(ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text, '战役')
         set(ObjectiveTrackerBlocksFrame.ProfessionHeader.Text, '专业')
         set(ObjectiveTrackerBlocksFrame.MonthlyActivitiesHeader.Text, '旅行者日志')
         set(ObjectiveTrackerBlocksFrame.AchievementHeader.Text, '成就')
-        --set(ObjectiveTrackerBlocksFrame.QuestHeader.Text, '任务')
+
+        reg(CombatConfigSettingsNameEditBox)--过滤名称
     end)
 
     --银行
@@ -2130,10 +2157,7 @@ local function Init()
     set(ConsortiumMailFrame.CommissionPaidDisplay.CommissionPaidText, '已支付佣金：')
 
     hooksecurefunc('GuildChallengeAlertFrame_SetUp', function(frame, challengeType)--AlertFrameSystems.lua
-        local text= e.strText[_G["GUILD_CHALLENGE_TYPE"..challengeType]]
-        if text then
-            frame.Type:SetText(text)
-        end
+        set(frame.Type, e.strText[_G["GUILD_CHALLENGE_TYPE"..challengeType]])
     end)
 
     hooksecurefunc('AchievementAlertFrame_SetUp', function(frame, achievementID, alreadyEarned)
@@ -5152,7 +5176,14 @@ local function Init_Loaded(arg1)
             end
         end)
 
-
+        hooksecurefunc('EncounterJournal_ListInstances', function()
+            for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames()) do--ScrollBox.lua
+              setLabel(button.name)
+              if button.tooltiptext and e.strText[button.tooltiptext] then
+                button.tooltiptext= e.strText[button.tooltiptext]
+              end
+            end
+        end)
 
 
 
@@ -6020,6 +6051,56 @@ local function Init_Loaded(arg1)
             GameTooltip_AddNormalLine(GameTooltip, '基于你在每个地下城的最佳成绩得出的总体评分。你可以通过更迅速地完成地下城或者完成更高难度的地下城来提高你的评分。|n|n提升你的史诗地下城评分后，你就能把你的地下城装备升级到最高等级。|n|cff1eff00<Shift+点击以链接到聊天栏>|r')
             GameTooltip:Show()
         end)
+
+
+        CHALLENGE_MODE_EXTRA_AFFIX_INFO["dmg"].name= '额外伤害'
+        CHALLENGE_MODE_EXTRA_AFFIX_INFO["dmg"].desc = '敌人的伤害值提高%d%%'
+        CHALLENGE_MODE_EXTRA_AFFIX_INFO["health"].name= '额外生命值'
+        CHALLENGE_MODE_EXTRA_AFFIX_INFO["health"].desc = '敌人的生命值提高%d%%'
+        hooksecurefunc(ChallengesKeystoneFrameAffixMixin, 'OnEnter', function(self)
+            if (self.affixID or self.info) then
+                local name, description;
+                if (self.info) then
+                    local tbl = CHALLENGE_MODE_EXTRA_AFFIX_INFO[self.info.key];
+                    name = tbl.name;
+                    description = string.format(tbl.desc, self.info.pct);
+                else
+                    name, description = C_ChallengeMode.GetAffixInfo(self.affixID);
+                    name= e.cn(name)
+                    description= e.cn(description)
+                end
+                GameTooltip:SetText(name, 1, 1, 1, 1, true);
+                GameTooltip:AddLine(description, nil, nil, nil, true);
+                GameTooltip:Show();
+            end
+        end)
+    
+        set(ChallengesKeystoneFrame.StartButton, '激活')
+        set(ChallengesKeystoneFrame.Instructions, '插入史诗钥石')
+            hooksecurefunc(ChallengesKeystoneFrame, 'OnKeystoneSlotted', function(self)
+                local mapID, _, powerLevel= C_ChallengeMode.GetSlottedKeystoneInfo();
+                if mapID ~= nil then
+                    local name= C_ChallengeMode.GetMapUIInfo(mapID)
+                    set(self.DungeonName, e.strText[name])
+                    set(self.PowerLevel, format('%d级', powerLevel))
+                end
+            end)
+
+        set(ChallengesFrame.SeasonChangeNoticeFrame.NewSeason, '全新赛季！')
+        set(ChallengesFrame.SeasonChangeNoticeFrame.SeasonDescription, '地下城奖励的物品等级已经提升！')
+        set(ChallengesFrame.SeasonChangeNoticeFrame.SeasonDescription2, '史诗地下城的敌人变得更强了！')
+
+        set(ChallengesFrame.SeasonChangeNoticeFrame.Leave, '离开')
+
+
+
+
+
+
+
+
+
+
 
     elseif arg1=='Blizzard_PlayerChoice' then
         dia("CONFIRM_PLAYER_CHOICE", {button1 = '确定', button2 = '取消'})

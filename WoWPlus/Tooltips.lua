@@ -39,7 +39,7 @@ local func={
     --func.GetItemInfoFromHyperlink(link)--LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
     --func.Set_Init_Item(self, hide)--创建，设置，内容
     --func.Set_Item_Model(self, tab)--设置, 3D模型{unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=, col=}
-    --func.Set_Web_Link(tab)
+    --e.Set_Web_Link(tab)
     --func.Set_Unit(self, unit)--设置单位提示信息
     --func.set_All_Aura(self, data)--Aura
     --func.set_Buff(type, self, ...)
@@ -181,13 +181,13 @@ local function Init_Web_Link()
             end)
             self.editBox:SetMaxLetters(0)
             self.editBox:SetWidth(self:GetWidth())
-            self.button1:SetText(e.onlyChinese and '关闭' or CLOSE)
+            self.editBox:SetFocus()
         end,
         OnHide= function(self)
             self.editBox:SetScript("OnKeyUp", nil)
             self.editBox:SetScript("OnCursorChanged", nil)
             self.editBox:SetText("")
-            e.call('ChatEdit_FocusActiveWindow')
+            self.editBox:ClearFocus()
         end,
         EditBoxOnTextChanged= function (self, web)
             self:SetText(web)
@@ -1917,10 +1917,11 @@ local function Init()
     --挑战, AffixID
     --Blizzard_ScenarioObjectiveTracker.lua
     if ScenarioChallengeModeAffixMixin then
-        hooksecurefunc( ScenarioChallengeModeAffixMixin, 'OnEnter', function(self2)
-            if self2.affixID then
-                local _, _, filedataid = C_ChallengeMode.GetAffixInfo(self2.affixID)
+        hooksecurefunc( ScenarioChallengeModeAffixMixin, 'OnEnter', function(self)
+            if self.affixID then
+                local name, _, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
                 e.tips:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
+                func.Set_Web_Link({frame=self, type='affixes', id=self.affixID, name=name, col=col, isPetUI=false})--取得网页，数据链接
                 e.tips:Show()
             end
         end)
@@ -2691,13 +2692,12 @@ local function Init_Event(arg1)
         end)
 
     elseif arg1=='Blizzard_ChallengesUI' then--挑战, AffixID
-        hooksecurefunc(ChallengesKeystoneFrameAffixMixin,'OnEnter',function(self2)--Blizzard_ChallengesUI.lua
-            if self2.affixID then
-                if self2.affixID then
-                    local _, _, filedataid = C_ChallengeMode.GetAffixInfo(self2.affixID)
-                    e.tips:AddDoubleLine('affixID '..self2.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
-                    e.tips:Show()
-                end
+        hooksecurefunc(ChallengesKeystoneFrameAffixMixin,'OnEnter',function(self)--Blizzard_ChallengesUI.lua
+            if self.affixID then
+                local name, _, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
+                e.tips:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
+                func.Set_Web_Link({frame=GameTooltip, type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
+                e.tips:Show()
             end
         end)
 

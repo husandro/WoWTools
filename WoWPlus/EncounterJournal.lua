@@ -688,7 +688,7 @@ local function Init_EncounterJournal()--冒险指南界面
             return
         end
 
-        for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames()) do--ScrollBox.lua
+        for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames() or {}) do--ScrollBox.lua
             if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
                 local textKill= encounterJournal_ListInstances_set_Instance(button)--界面,击杀,数据
                 if not button.tipsText and textKill then
@@ -707,7 +707,7 @@ local function Init_EncounterJournal()--冒险指南界面
 
                 for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do--挑战地图 mapChallengeModeID
                     local name=C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
-                    if name==instanceName or name:find(instanceName) then
+                    if name==instanceName or name:find(instanceName) or (button.tooltipTitle and name:find(button.tooltipTitle)) then
                         button.mapChallengeModeID= mapChallengeModeID--挑战,地图ID
                         local nu, all, leavel, runScore= 0, 0, 0, 0
                         local infoChalleng=C_MythicPlus.GetRunHistory(true, true) or {}--挑战,全部, 次数

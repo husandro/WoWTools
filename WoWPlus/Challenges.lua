@@ -48,13 +48,22 @@ local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrent
 }
 
 
-local SpellTabs={
-    --spell= 传送门法术ID 
-    --ins= 副本ID journalInstanceID
-    --map= 跳战副本ID mapChallengeID
-
-    [463]= {spell=424197, ins=1209, name='陨落'},--永恒黎明：迦拉克隆的陨落 Dawn of the Infinite: Galakrond's Fall
-    [464]= {spell=424197, ins=1209, name='崛起'},--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise
+e.ChallengesData={
+    --[[
+    [跳战副本ID mapChallengeID]= {
+        spell= 传送门法术ID ,
+        sepllName= 法术名称,
+        spellDes= 法术描述，
+        ins= 副本ID journalInstanceID,
+        name= 挑战地图名称，
+        insName=副本名称,
+        insDesc=副本描述,
+        spellName=法术名称,
+        spellDesc=法术描述
+    }
+]]
+    [463]= {spell=424197, ins=1209, name='陨落', insName= '永恒黎明'},--永恒黎明：迦拉克隆的陨落 Dawn of the Infinite: Galakrond's Fall
+    [464]= {spell=424197, ins=1209, name='崛起', },--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise
     [248]= {spell=424167, ins=1021, name='庄园'},--维克雷斯庄园 Waycrest Manor (Battle for Azeroth)
     [244]= {spell=424187, ins=1176, name='阿塔达萨'},--阿塔达萨 Atal'Dazar (Battle for Azeroth)
     [198]= {spell=424163, ins=762, name='黑心林地'},--黑心林地 Darkheart Thicket (Legion)
@@ -62,7 +71,7 @@ local SpellTabs={
     [168]= {spell=159901, ins=556, name='永茂林地'},--永茂林地 The Everbloom (Warlords of Draenor)
     [456]= {spell=424142, ins=65, name='潮汐王座'},--潮汐王座 Throne of the Tides (Cataclysm)
 }
-for _, tab in pairs(SpellTabs) do
+for _, tab in pairs(e.ChallengesData) do
     e.LoadDate({id=tab.spell, type='spell'})
 end
 
@@ -505,6 +514,15 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
         C_PartyInfo.DoCountdown(0)
         e.Chat(e.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!', nil, nil)
     end)
+    self.countdown2:SetScript('OnLeave', GameTooltip_Hide)
+    self.countdown2:SetScript('OnEnter', function(frame)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine(' ')
+        e.tips:AddLine(e.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!')
+        e.tips:Show()
+    end)
 end
 
 
@@ -750,8 +768,8 @@ local function All_Player_Info()--所以角色信息
                     if e.onlyChinese then--取得中文，副本名称
                         local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
                         mapID= mapID and tonumber(mapID)
-                        if mapID and name and SpellTabs[mapID] and SpellTabs[mapID].name then
-                            link= link:gsub(name, SpellTabs[mapID].name)
+                        if mapID and name and e.ChallengesData[mapID] and e.ChallengesData[mapID].name then
+                            link= link:gsub(name, e.ChallengesData[mapID].name)
                         end
                     end
                     local nameLable= e.Cstr(btn, {color= classColor})--名字
@@ -896,7 +914,7 @@ local function set_All_Text()--所有记录
                 local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(tab.mapID)
                 if name then
                     if e.onlyChinese and not LOCALE_zhCN then
-                        name= SpellTabs[tab.mapID] and SpellTabs[tab.mapID].name or name
+                        name= e.ChallengesData[tab.mapID] and e.ChallengesData[tab.mapID].name or name
                     end
                     local text= (texture and '|T'..texture..':0|t' or '').. name..' ('..tab.level..') '
                     local text2= tab.c..'/'..tab.t
@@ -969,7 +987,7 @@ local function set_All_Text()--所有记录
         local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(tab.mapID)
         if name then
             if e.onlyChinese then
-                name= SpellTabs[tab.mapID] and SpellTabs[tab.mapID].name or name
+                name= e.ChallengesData[tab.mapID] and e.ChallengesData[tab.mapID].name or name
             end
             weekText= weekText and weekText..'|n' or ''
             local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
@@ -1109,8 +1127,8 @@ local function set_All_Text()--所有记录
                 --  ( ) . % + - * ? [ ^ $
                 local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
                 mapID= mapID and tonumber(mapID)
-                if mapID and name and SpellTabs[mapID] and SpellTabs[mapID].name then
-                    link= link:gsub(name, SpellTabs[mapID].name)
+                if mapID and name and e.ChallengesData[mapID] and e.ChallengesData[mapID].name then
+                    link= link:gsub(name, e.ChallengesData[mapID].name)
                 end
             end
 
@@ -1176,7 +1194,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
         local frame = self.DungeonIcons[i]
         if frame and frame.mapID then
             if not frame.setTips then
-                local insTab=SpellTabs[frame.mapID] or {}
+                local insTab=e.ChallengesData[frame.mapID] or {}
                 frame.spellID, frame.journalInstanceID= insTab.spell, insTab.ins
                 frame:HookScript('OnEnter', function(self2)--提示
                     if not self2.mapID or Save.hideIns then
@@ -1301,8 +1319,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 end
                 frame.nameLable.name= nameText
                 --  ( ) . % + - * ? [ ^ $
-                if (e.onlyChinese or LOCALE_zhCN) and SpellTabs[frame.mapID] then
-                    nameText= SpellTabs[frame.mapID].name
+                if (e.onlyChinese or LOCALE_zhCN) and e.ChallengesData[frame.mapID] then
+                    nameText= e.ChallengesData[frame.mapID].name
                 else
                     nameText=nameText:match('%((.+)%)') or nameText
                     nameText=nameText:match('%（(.+)%）') or nameText
@@ -1881,7 +1899,7 @@ local function Init()
             e.tips:AddDoubleLine('note:','If you get error, please disable this')
         end
         e.tips:AddLine(' ')
-        for _, tab in pairs(SpellTabs) do
+        for _, tab in pairs(e.ChallengesData) do
             local spellLink= GetSpellLink(tab.spell) or GetSpellInfo(tab.spell) or ('ID'.. tab.spell)
             local icon= GetSpellTexture(tab.spell)
             e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '')..spellLink,
