@@ -20215,6 +20215,32 @@ local specTab={
 }
 
 
+--[[local classTab={--Constants.lua
+    {"WARRIOR", '战士', 1},
+    {"PALADIN", '圣骑士', 2},
+    {"HUNTER", '猎人', 3},
+    {"ROGUE", '潜行者', 4},
+    {"PRIEST", '牧师', 5},
+	{"DEATHKNIGHT", '死亡骑士', 6},
+    {"SHAMAN", '萨满', 7},
+    {"MAGE", '法师', 8},
+    {"WARLOCK", '术士', 9},
+	{"MONK", '武僧', 10},
+    {"DRUID", '德鲁伊', 11},
+	{"DEMONHUNTER", '恶魔猎手', 12},
+	{"EVOKER", '唤魔师', 13},
+}
+for _, info in pairs(classTab) do
+    local className, classFile = GetClassInfo(info[3])
+    if className and classFile then
+        LOCALIZED_CLASS_NAMES_MALE[classFile] = info[2]
+        LOCALIZED_CLASS_NAMES_FEMALE[classFile] = info[2]
+        e.strText[className]= info[2]
+    end
+end]]
+
+
+
 
 for _, info in pairs(spellTab) do
     e.LoadDate({id=info[1], type='spell'})
@@ -20266,6 +20292,10 @@ C_Timer.After(2, function()
     spellTab=nil
     fanctionTab=nil
     curcurrencyTab=nil
+    --classTab=nil
+
+
+
 end)
 end
 

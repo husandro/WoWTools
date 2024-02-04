@@ -664,7 +664,7 @@ local function Init_Panel()
                     name=e.Magic(name)
                     Save.channels[name]=name2
                     n=n+1
-                    print(n..')'..CHANNELS..': ',name, REPLACE, name2)
+                    print(n..')'..(e.onlyChinese and '频道' or CHANNELS)..': ',name, e.onlyChinese and '替换' or REPLACE, name2)
                 end
             end)
         end
