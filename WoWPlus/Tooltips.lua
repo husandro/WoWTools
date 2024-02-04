@@ -1190,7 +1190,7 @@ function func.Set_Unit(self)--设置单位提示信息
                 text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r) '
             end
 
-            local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
+            info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
             if info and info.currentSeasonScore and info.currentSeasonScore>0 then
                 text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false}) or '')
                         ..' '..e.Class(nil, classFilename)
@@ -1210,7 +1210,7 @@ function func.Set_Unit(self)--设置单位提示信息
                 end
             else
                 text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false})  or '')
-                        ..(raceName or '')
+                        ..(e.cn(raceName) or '')
                         ..' '..(e.Class(nil, classFilename) or '')
                         ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:'..(e.onlyChinese and 'PvP' or TRANSMOG_SET_PVP)..'|r)' or ('('..(e.onlyChinese and 'PvE' or TRANSMOG_SET_PVE)..')'))
             end
