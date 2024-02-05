@@ -49,7 +49,7 @@ local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrent
 
 
 local SpellTabs={
-    [463]= {spell=424197, ins=1209, name='陨落'},--永恒黎明：迦拉克隆的陨落 Dawn of the Infinite: Galakrond's Fall
+    [463]= {spell=424197, ins=1209, name='陨落', insName='永恒黎明'},--永恒黎明：迦拉克隆的陨落 Dawn of the Infinite: Galakrond's Fall
     [464]= {spell=424197, ins=1209, name='崛起' },--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise
     [248]= {spell=424167, ins=1021, name='庄园'},--维克雷斯庄园 Waycrest Manor (Battle for Azeroth)
     [244]= {spell=424187, ins=1176, name='阿塔达萨'},--阿塔达萨 Atal'Dazar (Battle for Azeroth)
@@ -2003,6 +2003,8 @@ local function Init()
         init_Blizzard_ChallengesUI()
     end
 
+    
+
 end
 
 
@@ -2048,6 +2050,40 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.rightX= Save.rightX or 2--右边，提示，位置
             Save.rightY= Save.rightY or -22
+
+            local cinese= WoWToolsSave[BUG_CATEGORY15] and WoWToolsSave[BUG_CATEGORY15].disabled
+            print(cinese, id,addName)
+            if e.onlyChinese and not cinese and not (LOCALE_zhCN or LOCALE_zhTW) then
+                for mapChallengeModeID, info in pairs(SpellTabs) do
+                    if info.name then
+                        local name= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
+                        if name then
+                            e.strText[name]= info.name
+                        end
+                    end
+                    if info.insName and info.ins then
+                        local name, description= EJ_GetInstanceInfo(info.ins)
+                        if name then
+                            e.strText[name]= info.insName
+                        end
+                        if info.insDesc and description then
+                            e.strText[description]= info.insDesc
+                        end
+                    end
+                    if info.spell then
+                        if info.spellName then
+                            local name= GetSpellInfo(info.spell)
+                            e.strText[name]= info.spellName
+                        end
+                        if info.spellDesc then
+                            local desc = GetSpellDescription(info.spell)
+                            if desc then
+                                e.strText[desc]= info.spellDesc
+                            end
+                        end
+                    end
+                end
+            end
 
             --添加控制面板
             e.AddPanel_Check({

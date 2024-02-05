@@ -20346,35 +20346,8 @@ C_Timer.After(2, function()
             e.strText[info.clientFileString]= name
         end
     end
-    --[[for mapChallengeModeID, info in pairs(e.ChallengesData or {}) do
-        if info.name then
-            local name= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
-            if name then
-                e.strText[name]= info.name
-            end
-         end
-        if info.insName and info.ins then
-            local name, description= EJ_GetInstanceInfo(info.ins)
-            if name then
-                e.strText[name]= info.insName
-            end
-            if info.insDesc and description then
-                e.strText[description]= info.insDesc
-            end
-        end
-        if info.spell then
-            if info.spellName then
-                local name= GetSpellInfo(info.spell)
-                e.strText[name]= info.spellName
-            end
-            if info.spellDesc then
-                local desc = GetSpellDescription(info.spell)
-                if desc then
-                    e.strText[desc]= info.spellDesc
-                end
-            end
-        end
-    end]]
+    
+    
     for _, info in pairs(affixTab) do
         local name, description = C_ChallengeMode.GetAffixInfo(info[1])
         if name then
