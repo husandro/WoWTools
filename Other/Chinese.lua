@@ -1889,19 +1889,19 @@ local function Init()
     end)
     
     ScenarioChallengeModeBlock.TimesUpLootStatus:HookScript('OnEnter', function(self)--Scenario_ChallengeMode_TimesUpLootStatus_OnEnter
-        GameTooltip:SetText('时间结束', 1, 1, 1);
-        local line;
+        GameTooltip:SetText('时间结束', 1, 1, 1)
+        local line
         if (self:GetParent().wasDepleted) then
             if (UnitIsGroupLeader("player")) then
-                line = '你的钥石无法升级，且你在完成此地下城后将无法获得战利品宝箱。你可以右键点击头像并选择“重置史诗地下城”来重新开始挑战。';
+                line = '你的钥石无法升级，且你在完成此地下城后将无法获得战利品宝箱。你可以右键点击头像并选择“重置史诗地下城”来重新开始挑战。'
             else
-                line = '你的钥石无法升级，且你在完成此地下城后将无法获得战利品宝箱。小队队长可以右键点击头像并选择“重置史诗地下城”来重新开始挑战。';
+                line = '你的钥石无法升级，且你在完成此地下城后将无法获得战利品宝箱。小队队长可以右键点击头像并选择“重置史诗地下城”来重新开始挑战。'
             end
         else
-            line = '你的钥石无法升级。但你完成此地下城后仍可获得战利品宝箱';
+            line = '你的钥石无法升级。但你完成此地下城后仍可获得战利品宝箱'
         end
-        GameTooltip:AddLine(line, nil, nil, nil, true);
-        GameTooltip:Show();
+        GameTooltip:AddLine(line, nil, nil, nil, true)
+        GameTooltip:Show()
     end)
     hooksecurefunc('ScenarioBlocksFrame_SetupStageBlock', function(scenarioCompleted)
         if not ScenarioStageBlock.WidgetContainer:IsShown() then
@@ -1926,133 +1926,45 @@ local function Init()
     end)
     SCENARIO_CONTENT_TRACKER_MODULE:SetHeader(ObjectiveTrackerFrame.BlocksFrame.ScenarioHeader, '场景战役', nil)--lizzard_ScenarioObjectiveTracker.lua
     hooksecurefunc(SCENARIO_CONTENT_TRACKER_MODULE, 'Update', function()
-        local scenarioName, currentStage, numStages, flags, _, _, _, xp, money, scenarioType, _, textureKit = C_Scenario.GetInfo();
-        local rewardsFrame = ObjectiveTrackerScenarioRewardsFrame;
-        local shouldShowMawBuffs = ShouldShowMawBuffs();
-        local isInScenario = numStages > 0;
+        local scenarioName, currentStage, numStages, flags, _, _, _, _, _, scenarioType= C_Scenario.GetInfo()
+        local shouldShowMawBuffs = ShouldShowMawBuffs()
+        local isInScenario = numStages > 0
         if ( not isInScenario and (not shouldShowMawBuffs or IsOnGroundFloorInJailersTower()) ) then
-            ScenarioBlocksFrame_Hide();
-            self:EndLayout();
-            return;
+            return
         end
-        local BlocksFrame = SCENARIO_TRACKER_MODULE.BlocksFrame;
-        local objectiveBlock = SCENARIO_TRACKER_MODULE:GetBlock();
-        local stageBlock = ScenarioStageBlock;
-
-        -- if sliding, ignore updates unless the stage changed
-        if ( BlocksFrame.slidingAction ) then
-            if ( BlocksFrame.currentStage == currentStage ) then
-                ObjectiveTracker_AddBlock(BlocksFrame);
-                BlocksFrame:Show();
-                self:EndLayout();
-                return;
-            else
-                ObjectiveTracker_EndSlideBlock(BlocksFrame);
-            end
-        end
-
-        BlocksFrame.maxHeight = SCENARIO_CONTENT_TRACKER_MODULE.BlocksFrame.maxHeight;
-        BlocksFrame.currentBlock = nil;
-        BlocksFrame.contentsHeight = 0;
-        SCENARIO_TRACKER_MODULE.contentsHeight = 0;
-
-        local stageName, stageDescription, numCriteria, _, _, _, _, numSpells, spellInfo, weightedProgress, _, widgetSetID = C_Scenario.GetStepInfo();
-        local inChallengeMode = (scenarioType == LE_SCENARIO_TYPE_CHALLENGE_MODE);
-        local inProvingGrounds = (scenarioType == LE_SCENARIO_TYPE_PROVING_GROUNDS);
-        local dungeonDisplay = (scenarioType == LE_SCENARIO_TYPE_USE_DUNGEON_DISPLAY);
-        local inWarfront = (scenarioType == LE_SCENARIO_TYPE_WARFRONT);
-        local scenariocompleted = currentStage > numStages;
-
+        local BlocksFrame = SCENARIO_TRACKER_MODULE.BlocksFrame
+        local stageBlock = ScenarioStageBlock
+        local stageName = C_Scenario.GetStepInfo()
+        local inChallengeMode = (scenarioType == LE_SCENARIO_TYPE_CHALLENGE_MODE)
+        local inProvingGrounds = (scenarioType == LE_SCENARIO_TYPE_PROVING_GROUNDS)
+        local dungeonDisplay = (scenarioType == LE_SCENARIO_TYPE_USE_DUNGEON_DISPLAY)
         if ( not isInScenario ) then
-            stageBlock:Hide();
         elseif ( scenariocompleted ) then
-            ObjectiveTracker_AddBlock(stageBlock);
-            ScenarioBlocksFrame_SetupStageBlock(scenariocompleted);
-            stageBlock:Show();
         elseif ( inChallengeMode ) then
-            if ( ScenarioChallengeModeBlock.timerID ) then
-                ObjectiveTracker_AddBlock(ScenarioChallengeModeBlock);
-            end
-            stageBlock:Hide();
         elseif ( ScenarioProvingGroundsBlock.timerID ) then
-            ObjectiveTracker_AddBlock(ScenarioProvingGroundsBlock);
-            stageBlock:Hide();
         else
-            -- add the stage block
-            ObjectiveTracker_AddBlock(stageBlock);
-            stageBlock:Show();
-            -- update if stage changed
             if ( BlocksFrame.currentStage ~= currentStage or BlocksFrame.scenarioName ~= scenarioName or BlocksFrame.stageName ~= stageName) then
-                SCENARIO_TRACKER_MODULE:FreeUnusedLines(objectiveBlock);
                 if ( bit.band(flags, SCENARIO_FLAG_SUPRESS_STAGE_TEXT) == SCENARIO_FLAG_SUPRESS_STAGE_TEXT ) then
-                    stageBlock.Stage:SetText(stageName);
-                    stageBlock.Stage:SetSize( 172, 36 );
-                    stageBlock.Stage:SetPoint("TOPLEFT", 15, -18);
-                    stageBlock.FinalBG:Hide();
-                    stageBlock.Name:SetText("");
+                    set(stageBlock.Stage, e.strText[stageName])
                 else
                     if ( currentStage == numStages ) then
-                        stageBlock.Stage:SetText(SCENARIO_STAGE_FINAL);
-                        stageBlock.FinalBG:Show();
+                        set(stageBlock.Stage, '最终阶段')
                     else
-                        stageBlock.Stage:SetFormattedText(SCENARIO_STAGE, currentStage);
-                        stageBlock.FinalBG:Hide();
+                        set(stageBlock.Stage, format('阶段%d', currentStage))
                     end
-                    stageBlock.Stage:SetSize( 172, 18 );
-                    stageBlock.Name:SetText(stageName);
-                    if ( stageBlock.Name:GetStringWidth() > stageBlock.Name:GetWrappedWidth() ) then
-                        stageBlock.Stage:SetPoint("TOPLEFT", 15, -10);
-                    else
-                        stageBlock.Stage:SetPoint("TOPLEFT", 15, -18);
-                    end
-                end
-                if (not stageBlock.appliedAlready) then
-                    -- Ugly hack to get around :IsTruncated failing if used during load
-                    C_Timer.After(1, function() stageBlock.Stage:ScaleTextToFit(); end);
-                    stageBlock.appliedAlready = true;
-                end
-                ScenarioStage_CustomizeBlock(stageBlock, scenarioType, widgetSetID, textureKit);
-            end
-
-            if inWarfront and not GetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_WARFRONT_RESOURCES) then
-                local helpTipInfo = {
-                    text = WARFRONT_TUTORIAL_RESOURCES,
-                    buttonStyle = HelpTip.ButtonStyle.Close,
-                    cvarBitfield = "closedInfoFrames",
-                    bitfieldFlag = LE_FRAME_TUTORIAL_WARFRONT_RESOURCES,
-                    targetPoint = HelpTip.Point.LeftEdgeCenter,
-                    offsetX = -4,
-                    offsetY = 4,
-                };
-                HelpTip:Show(BlocksFrame, helpTipInfo, stageBlock);
-            end
-        end
-        BlocksFrame.scenarioName = scenarioName;
-        BlocksFrame.currentStage = currentStage;
-        BlocksFrame.stageName = stageName;
-
-        if ( isInScenario ) then
-            if ( not ScenarioProvingGroundsBlock.timerID and not scenariocompleted ) then
-                if (weightedProgress) then
-                    --self:UpdateWeightedProgressCriteria(stageDescription, stageBlock, objectiveBlock, BlocksFrame);
-                else
-                    --self:UpdateCriteria(numCriteria, objectiveBlock);
-                    --self:AddSpells(objectiveBlock, spellInfo);
-                    --objectiveBlock:SetHeight(objectiveBlock.height);
+                    set(stageBlock.Name, e.strText[stageName])
                 end
             end
         end
-
-        -- add the scenario block
         if ( BlocksFrame.currentBlock ) then
             if ( inChallengeMode ) then-- header
-                set(SCENARIO_CONTENT_TRACKER_MODULE.Header.Text, e.strText[BlocksFrame.scenarioName]);
+                set(SCENARIO_CONTENT_TRACKER_MODULE.Header.Text, e.strText[BlocksFrame.scenarioName])
             elseif ( inProvingGrounds or ScenarioProvingGroundsBlock.timerID ) then
-                set(SCENARIO_CONTENT_TRACKER_MODULE.Header.Text, '试炼场');
+                set(SCENARIO_CONTENT_TRACKER_MODULE.Header.Text, '试炼场')
             elseif( dungeonDisplay ) then
                 set(SCENARIO_CONTENT_TRACKER_MODULE.Header.Text, '地下城')
             elseif ( shouldShowMawBuffs and not IsInJailersTower() ) then
-                set(SCENARIO_CONTENT_TRACKER_MODULE.Header.Text, e.strText[GetZoneText()]);
+                set(SCENARIO_CONTENT_TRACKER_MODULE.Header.Text, e.strText[GetZoneText()])
             else
                 set(SCENARIO_CONTENT_TRACKER_MODULE.Header.Text, e.strText[BlocksFrame.scenarioName])
             end
@@ -3837,7 +3749,7 @@ local function Init()
         if text then
             self.toolTipText= text
             set(HelpPlateTooltip.Text, text)
-            HelpPlateTooltip:Show();
+            HelpPlateTooltip:Show()
         end
     end)]]
     hooksecurefunc('HelpPlate_Button_OnEnter', function(self)
