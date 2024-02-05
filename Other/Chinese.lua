@@ -2927,9 +2927,12 @@ local function Init()
             EJMicroButton.newbieText = '查看各个地下城及团队副本首领的资料，包括他们的技能和收藏的宝物。'
         end
     end)
+    if not (EncounterJournal and EncounterJournal:IsShown() ) and not AdventureGuideUtil.IsAvailable() then
+        EJMicroButton.disabledTooltip = Kiosk.IsEnabled() and (e.onlyChinese and '该系统目前已被禁用。' or ERR_SYSTEM_DISABLED) or (e.onlyChinese and '该功能尚不可用。' or FEATURE_NOT_YET_AVAILABLE)
+    end
     hooksecurefunc(EJMicroButton, 'UpdateDisplay', function(self)
         if not ( EncounterJournal and EncounterJournal:IsShown() ) and not AdventureGuideUtil.IsAvailable() then
-            self.disabledTooltip = Kiosk.IsEnabled() and ERR_SYSTEM_DISABLED or FEATURE_NOT_YET_AVAILABLE
+            self.disabledTooltip = Kiosk.IsEnabled() and (e.onlyChinese and '该系统目前已被禁用。' or ERR_SYSTEM_DISABLED) or (e.onlyChinese and '该功能尚不可用。' or FEATURE_NOT_YET_AVAILABLE)
         end
     end)
 

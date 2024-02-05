@@ -163,7 +163,7 @@ local raiderioText
 local RegionName
 local function Init_Web_Link()
     StaticPopupDialogs["WowheadQuickLinkUrl"] = {
-        text= id..' '..addName..'|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..BROWSER_COPY_LINK,
+        text= id..' '..e.cn(addName)..'|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
         button1 = e.onlyChinese and '关闭' or CLOSE,
         OnShow = function(self, web)
             self.editBox:SetScript("OnKeyUp", function(s, key)
@@ -209,7 +209,7 @@ local function Init_Web_Link()
         whileDead=true, hideOnEscape=true, exclusive=true,
     }
 
-    if LOCALE_zhCN or LOCALE_zhTW then--https://www.wowhead.com/cn/pet-ability=509/汹涌
+    if LOCALE_zhCN or LOCALE_zhTW or e.onlyChinese then--https://www.wowhead.com/cn/pet-ability=509/汹涌
         wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
         raiderioText= 'https://raider.io/cn/characters/%s/%s/%s'
     elseif LOCALE_deDE then

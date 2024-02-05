@@ -2052,7 +2052,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.rightY= Save.rightY or -22
 
             local cinese= WoWToolsSave[BUG_CATEGORY15] and WoWToolsSave[BUG_CATEGORY15].disabled
-            print(cinese, id,addName)
             if e.onlyChinese and not cinese and not (LOCALE_zhCN or LOCALE_zhTW) then
                 for mapChallengeModeID, info in pairs(SpellTabs) do
                     if info.name then
