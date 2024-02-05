@@ -133,7 +133,7 @@ Tools\24Daisy.lua
 ##诺格弗格药剂 Noggenfogger Elixir
 Tools\25NoggenfoggerElixir.lua
 ##法师传送门
-Tools\27MagePortal.lua
+Tools\26MagePortal.lua
 
 
 

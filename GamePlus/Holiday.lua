@@ -413,7 +413,7 @@ local function Set_TrackButton_Text(monthOffset, day)
                             e.tips:AddLine(e.cn(title))
                         end
                         if description then
-                            e.tips:AddLine(' ')
+                            e.tips:AddLine(' ')                        
                             e.tips:AddLine(description, nil,nil,nil,true)
                             e.tips:AddLine(' ')
                         end
@@ -989,7 +989,6 @@ end
 
 
 
-C_Calendar.OpenCalendar()
 
 panel:RegisterEvent('ADDON_LOADED')
 panel:SetScript("OnEvent", function(_, event, arg1)
@@ -1022,21 +1021,20 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 e.call('Calendar_LoadUI')--C_AddOns.LoadAddOn("Blizzard_Calendar")
-
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Calendar' then
-            C_Calendar.OpenCalendar()
-            e.call('Calendar_Toggle')
             C_Timer.After(2, function()
-                if CalendarFrame:IsShown() then
-                    e.call('Calendar_Toggle')
-                end
-                Init_Blizzard_Calendar()--初始，插件
-                Init_TrackButton()
+                e.call('Calendar_Toggle')
+                C_Timer.After(2, function()
+                    if CalendarFrame:IsShown() then
+                        e.call('Calendar_Toggle')
+                    end
+                    Init_Blizzard_Calendar()--初始，插件
+                    Init_TrackButton()
+                end)
             end)
-
         end
 
     elseif event == "PLAYER_LOGOUT" then
