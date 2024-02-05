@@ -3814,8 +3814,36 @@ local function Init()
             set(HelpPlateTooltip.Text, text)
         end
     end)
-end
 
+
+    --GossipFrameShared.lua
+    hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, optionInfo)
+        local name= e.strText[optionInfo.name]
+        if name then
+            if (FlagsUtil.IsSet(optionInfo.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)) then
+                set(self, foramt('|cnPURE_BLUE_COLOR:（任务）|r%s', name))
+            else
+                set(self, name);
+            end
+        end
+    end)
+    local function UpdateTitleForQuest(self, _, titleText, isIgnored, isTrivial)--GossipSharedQuestButtonMixin:UpdateTitleForQuest 
+        if ( isIgnored ) then
+            set(self, format('|cff000000%s（忽略）|r', e.strText[titleText] or titleText))
+        elseif ( isTrivial ) then
+            set(self, foramt('|cff000000%s （低等级）|r', e.strText[titleText] or titleText))
+        elseif e.strText[titleText] then
+            set(self, foramt('|cff000000%s|r', e.strText[titleText]))
+        end
+    end
+    hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(_, questInfo)
+        UpdateTitleForQuest(questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial);
+    end)
+    hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(_, questInfo)
+        UpdateTitleForQuest(questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial);
+    end)
+
+end
 
 
 

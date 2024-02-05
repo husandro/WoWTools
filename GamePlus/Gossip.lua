@@ -853,7 +853,7 @@ local function Init_Gossip()
 
         elseif Save.quest and  (quest or name:find('0000FF') or  name:find(QUESTS_LABEL) or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST)) then--任务
             if quest then
-                name=GOSSIP_QUEST_OPTION_PREPEND:format(info.name)
+                name= forame(e.onlyChinese and '|cnPURE_BLUE_COLOR:（任务）|r%s' or GOSSIP_QUEST_OPTION_PREPEND, info.name)
             end
             C_GossipInfo.SelectOption(index)
             find=true
@@ -909,7 +909,6 @@ local function Init_Gossip()
                 C_GossipInfo.SelectOption(index)
                 find=true
             end
-
         end
 
         if find then

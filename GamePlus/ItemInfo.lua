@@ -267,7 +267,11 @@ local function Set_Item_Info(self, tab)
 
                         end
                     elseif dateInfo.red then
-                        topRightText= '|cnRED_FONT_COLOR:'..strlower(e.WA_Utf8Sub(dateInfo.red, 2,3, true)) ..'|r'
+                        if dateInfo.red~= USED then
+                            topRightText= '|cnRED_FONT_COLOR:'..strlower(e.WA_Utf8Sub(dateInfo.red, 2,3, true)) ..'|r'
+                        else
+                            topRightText= e.WA_Utf8Sub(itemSubType, 2, 3, true)
+                        end
                     end
                 end
                 if dateInfo.text[pvpItemStr] then--PvP装备
@@ -326,7 +330,7 @@ local function Set_Item_Info(self, tab)
                                         ..'|r' ..(topLeftText or '')
                             --topLeftText= itemLevel ..(topLeftText or '')
                         end
-                    elseif itemMinLevel and itemMinLevel<=e.Player.level then--不可使用
+                    elseif itemMinLevel and itemMinLevel<=e.Player.level and itemQuality~=7 then--不可使用
                         topLeftText=e.Icon.O2
                     end
                 end
@@ -365,6 +369,7 @@ local function Set_Item_Info(self, tab)
             topRightText= e.onlyChinese and '任务' or e.WA_Utf8Sub(itemSubType, 2,3, true)
 
         elseif itemQuality==7 or itemQuality==8 then--7传家宝，8 WoWToken
+
             topRightText=e.Icon.wow2
             if classID==0 and subclassID==8 and GetItemSpell(itemLink) then--传家宝，升级，物品
                 local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={useStr}, wow=true, red=true})--物品提示，信息
