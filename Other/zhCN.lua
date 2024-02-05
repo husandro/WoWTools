@@ -20,7 +20,7 @@ local function Init()
 
 
     local tab={
-        ["BINDING_NAME_TOGGLEINSCRIPTION"] = "打开/关闭雕文面板",
+    ["BINDING_NAME_TOGGLEINSCRIPTION"] = "打开/关闭雕文面板",
     ["ADD_FAVORITE_STATUS"] = "加为亲密好友",
     ["REMOVE_FAVORITE_STATUS"] = "从亲密好友中移除",
     ["ABANDON_PET"] = "你是否决定永远地遗弃你的宠物？你将再也不能召唤它了。",
@@ -20167,7 +20167,15 @@ local fanctionTab={
 
 local  spellTab={
     {818, '烹饪用火', '点起一堆营火，使附近所有冒险者的全能提高1，并可以在营火旁烹饪'},
-    {80451, '勘测', '在挖掘地点勘测古迹残片。每次勘测都会指引你靠近残片所在地点。'}
+    {80451, '勘测', '在挖掘地点勘测古迹残片。每次勘测都会指引你靠近残片所在地点。'},
+
+    {424153, '上古恐惧之路', '传送到|cnGREEN_FONT_COLOR:黑鸦堡垒|r的入口'},
+    {424142, '猎潮者之路', '传送到潮|cnGREEN_FONT_COLOR:汐王座|r的入口。'},
+    {424187, '鎏金皇陵之路', '传送到|cnGREEN_FONT_COLOR:阿塔达萨|r的入口。'},
+    {424163, '梦魇之王之路', '传送到|cnGREEN_FONT_COLOR:黑心林地|r的入口。'},
+    {159901, '青翠之路', '传送至|cnGREEN_FONT_COLOR:永茂林地|r入口处。'},
+    {424167, '巫心灾厄之路', '传送到|cnGREEN_FONT_COLOR:维克雷斯庄园|r的入口。'},
+    {424197, '扭曲之光之路', '传送到|cnGREEN_FONT_COLOR:永恒黎明|r的入口。'},
 }
 
 
@@ -20285,6 +20293,7 @@ local affixTab= {
 }
 
 
+
 for _, info in pairs(spellTab) do
     e.LoadDate({id=info[1], type='spell'})
 end
@@ -20299,7 +20308,7 @@ C_Timer.After(2, function()
         end
         if info[3] then
             local des= GetSpellDescription(info[1])
-            if des  then
+            if des then
                 e.strText[des]= info[3]
             end
         end
@@ -20363,7 +20372,7 @@ C_Timer.After(2, function()
                 if desc then
                     e.strText[desc]= info.spellDesc
                 end
-            end    
+            end
         end
     end
     for _, info in pairs(affixTab) do

@@ -1881,13 +1881,13 @@ local function Init()
     hooksecurefunc(ObjectiveTrackerBlocksFrame.QuestHeader, 'UpdateHeader', function(self)
         set(self.Text, '任务')
     end)
-    
+
     ScenarioChallengeModeBlock.DeathCount:HookScript('OnEnter', function(self)--ScenarioChallengeDeathCountMixin
         GameTooltip:SetText(format('%d次死亡', self.count), 1, 1, 1)
         GameTooltip:AddLine(format('时间损失：|cffffffff%s|r', SecondsToClock(self.timeLost)))
         GameTooltip:Show()
     end)
-    
+
     ScenarioChallengeModeBlock.TimesUpLootStatus:HookScript('OnEnter', function(self)--Scenario_ChallengeMode_TimesUpLootStatus_OnEnter
         GameTooltip:SetText('时间结束', 1, 1, 1)
         local line
@@ -1924,7 +1924,7 @@ local function Init()
             set(ScenarioChallengeModeBlock.Level, format('%d级', level))
         end
     end)
-    SCENARIO_CONTENT_TRACKER_MODULE:SetHeader(ObjectiveTrackerFrame.BlocksFrame.ScenarioHeader, '场景战役', nil)--lizzard_ScenarioObjectiveTracker.lua
+    SCENARIO_CONTENT_TRACKER_MODULE:SetHeader(ObjectiveTrackerFrame.BlocksFrame.ScenarioHeader, '场景战役', nil)--Blizzard_ScenarioObjectiveTracker.lua
     hooksecurefunc(SCENARIO_CONTENT_TRACKER_MODULE, 'Update', function()
         local scenarioName, currentStage, numStages, flags, _, _, _, _, _, scenarioType= C_Scenario.GetInfo()
         local shouldShowMawBuffs = ShouldShowMawBuffs()
@@ -1979,9 +1979,9 @@ local function Init()
         end
     end)]]
     C_Timer.After(2, function()
-        
-          
 
+
+        setLabel(SCENARIO_CONTENT_TRACKER_MODULE.Header.Text)
         set(ObjectiveTrackerFrame.HeaderMenu.Title, '追踪')
         set(ObjectiveTrackerBlocksFrame.CampaignQuestHeader.Text, '战役')
         set(ObjectiveTrackerBlocksFrame.ProfessionHeader.Text, '专业')
@@ -2914,6 +2914,7 @@ local function Init()
 
 
     --MovieFrame.xml
+    reg(MovieFrame.CloseDialog, '你确定想要跳过这段过场动画吗？', 1)
     set(MovieFrame.CloseDialog.ConfirmButton, '是')
     set(MovieFrame.CloseDialog.ResumeButton, '否')
 
@@ -3743,7 +3744,7 @@ local function Init()
             set(frame.Text, text)
         end
     end)
-    
+
     --[[hooksecurefunc('HelpPlate_Button_OnShow', function(self)
         local text= e.strText[self.toolTipText]
         if text then
@@ -6151,24 +6152,6 @@ local function Init_Loaded(arg1)
         CHALLENGE_MODE_EXTRA_AFFIX_INFO["dmg"].desc = '敌人的伤害值提高%d%%'
         CHALLENGE_MODE_EXTRA_AFFIX_INFO["health"].name= '额外生命值'
         CHALLENGE_MODE_EXTRA_AFFIX_INFO["health"].desc = '敌人的生命值提高%d%%'
-        --[[hooksecurefunc(ChallengesKeystoneFrameAffixMixin, 'OnEnter', function(self)
-            if (self.affixID or self.info) then
-                local name, description
-                if (self.info) then
-                    local tbl = CHALLENGE_MODE_EXTRA_AFFIX_INFO[self.info.key]
-                    name = tbl.name
-                    description = string.format(tbl.desc, self.info.pct)
-                else
-                    name, description = C_ChallengeMode.GetAffixInfo(self.affixID)
-                    name= e.cn(name)
-                    description= e.cn(description)
-                end
-                GameTooltip:SetText(name, 1, 1, 1, 1, true)
-                GameTooltip:AddLine(description, nil, nil, nil, true)
-                GameTooltip:Show()
-            end
-        end)]]
-    
         set(ChallengesKeystoneFrame.StartButton, '激活')
         set(ChallengesKeystoneFrame.Instructions, '插入史诗钥石')
             hooksecurefunc(ChallengesKeystoneFrame, 'OnKeystoneSlotted', function(self)

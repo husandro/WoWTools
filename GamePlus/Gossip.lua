@@ -96,7 +96,7 @@ local function select_Reward(questID)--自动:选择奖励
                         e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
                         e.tips:AddDoubleLine('questID: |cnGREEN_FONT_COLOR:'..self.questID..'|r', self.index)
-                        e.tips:AddDoubleLine(id, QUESTS_LABEL)
+                        e.tips:AddDoubleLine(id, e.onlyChinese and '任务' or QUESTS_LABEL)
                         e.tips:Show()
                     end
                 end)
@@ -950,7 +950,7 @@ local function Init_Gossip()
             self.sel:SetScript("OnEnter", function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(id, QUESTS_LABEL)
+                e.tips:AddDoubleLine(id, e.onlyChinese and '任务' or QUESTS_LABEL)
                 e.tips:AddDoubleLine(' ')
                 if self2.id and self2.text then
                     e.tips:AddDoubleLine(self2.text, 'ID |cnGREEN_FONT_COLOR:'..self2.id..'|r')
