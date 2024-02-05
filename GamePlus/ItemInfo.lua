@@ -343,10 +343,11 @@ local function Set_Item_Info(self, tab)
                 bottomRightText, isCollected= e.GetItemCollected(itemLink, nil, true)--幻化
                 if itemQuality==0 and isCollected then
                     topRightText= '|A:Coin-Silver:0:0|a'
-                elseif not isCollected and itemSubType then
-                    topRightText= e.WA_Utf8Sub(itemSubType, 2, 3, true)
+                --elseif not isCollected and itemSubType then
+                   
                 end
             end
+            topRightText= topRightText or e.WA_Utf8Sub(itemSubType, 2, 3, true)
 
         elseif battlePetSpeciesID or classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
             local speciesID = battlePetSpeciesID or itemLink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物
