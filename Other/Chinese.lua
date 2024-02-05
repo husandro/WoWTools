@@ -2351,8 +2351,32 @@ local function Init()
     end)
     set(WorldMapFrameHomeButtonText, '世界', nil, true)
 
-
-
+    --[[
+        self:AddOverlayFrame("WorldMapFloorNavigationFrameTemplate", "FRAME", "TOPLEFT", self:GetCanvasContainer(), "TOPLEFT", -15, 2);
+        self:AddOverlayFrame("WorldMapTrackingOptionsButtonTemplate", "DROPDOWNTOGGLEBUTTON", "TOPRIGHT", self:GetCanvasContainer(), "TOPRIGHT", -4, -2);
+        self:AddOverlayFrame("WorldMapTrackingPinButtonTemplate", "BUTTON", "TOPRIGHT", self:GetCanvasContainer(), "TOPRIGHT", -36, -2);
+        self:AddOverlayFrame("WorldMapBountyBoardTemplate", "FRAME", nil, self:GetCanvasContainer());
+        self:AddOverlayFrame("WorldMapActionButtonTemplate", "FRAME", nil, self:GetCanvasContainer());
+        self:AddOverlayFrame("WorldMapZoneTimerTemplate", "FRAME", "BOTTOM", self:GetCanvasContainer(), "BOTTOM", 0, 20);
+        self:AddOverlayFrame("WorldMapThreatFrameTemplate", "FRAME", "BOTTOMLEFT", self:GetCanvasContainer(), "BOTTOMLEFT", 0, 0);
+        self:AddOverlayFrame("WorldMapActivityTrackerTemplate", "BUTTON", "BO
+    ]]
+    local pingButton= WorldMapFrame.overlayFrames[3]
+    if pingButton then
+        pingButton:HookScript('OnEnter', function(self)--WorldMapTrackingPinButtonMixin:OnEnter()
+            GameTooltip_SetTitle(GameTooltip, '地图标记');
+            local mapID = self:GetParent():GetMapID();
+            if C_Map.CanSetUserWaypointOnMap(mapID) then
+                GameTooltip_AddNormalLine(GameTooltip, '在地图上放置一个位置标记，此标记可以追踪，也可以分享给其他玩家。');
+                GameTooltip_AddBlankLineToTooltip(GameTooltip);
+                GameTooltip_AddInstructionLine(GameTooltip, '点击这个按钮，然后在地图上点击来放置一个标记，或者直接<按住Ctrl点击地图>。');
+            else
+                GameTooltip_AddErrorLine(GameTooltip, '你不能在这张地图上放置标记。');
+            end
+            GameTooltip:Show();
+        end)
+    end
+    
     --小地图
     MinimapCluster.ZoneTextButton.tooltipText = MicroButtonTooltipText('世界地图', "TOGGLEWORLDMAP")
     MinimapCluster.ZoneTextButton:HookScript('OnEvent', function(self)
