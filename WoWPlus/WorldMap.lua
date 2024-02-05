@@ -212,7 +212,7 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
 
 
     QuestScrollFrame.btnCollapse= e.Cbtn(QuestScrollFrame, {size={22,22}, atlas='NPE_ArrowUp'})--campaign_headericon_closed
-    QuestScrollFrame.btnCollapse:SetPoint('TOPLEFT', WorldMapFrame.ScrollContainer.Child, 'BOTTOMRIGHT', 22, 0)
+    QuestScrollFrame.btnCollapse:SetPoint('TOPRIGHT', WorldMapFrame, 'BOTTOMRIGHT', -275, 0)
     QuestScrollFrame.btnCollapse:SetScript('OnLeave', GameTooltip_Hide)
     QuestScrollFrame.btnCollapse:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -249,6 +249,7 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
     search.Instructions:SetText(e.onlyChinese and '搜索' or SEARCH)
     search.DAILY= e.onlyChinese and '日常' or DAILY:lower()
     search.WEEKLY= e.onlyChinese and '周长' or WEEKLY:lower()
+    search.REFORGE_CURRENT = e.onlyChinese and "当前" or REFORGE_CURRENT:lower()
 
     function search:set_search()
         local text= self:GetText()
@@ -273,6 +274,7 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
                 or (info.level and info.level==num)
                 or (text==self.DAILY and info.frequency==Enum.QuestFrequency.Daily)
                 or (text==self.WEEKLY and info.frequency==Enum.QuestFrequency.Weekly)
+                or (text==self.REFORGE_CURRENT and info.questID and C_QuestLog.IsOnMap(info.questID))
             then
                 find=true
             elseif name:find(text) then
@@ -314,7 +316,7 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
     search.week:SetScript("OnEnter", function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddLine('|A:questlog-questtypeicon-weekly:0:0|a'..(e.onlyChinese and '周长' or WEEKLY))
+        e.tips:AddDoubleLine(' ', '|A:questlog-questtypeicon-weekly:0:0|a'..(e.onlyChinese and '周长' or WEEKLY))
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end)
@@ -330,7 +332,23 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
     search.Daily:SetScript("OnEnter", function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddLine('|A:AdventureMapIcon-DailyQuest:0:0|a'..(e.onlyChinese and '日常' or DAILY))
+        e.tips:AddDoubleLine(' ', '|A:AdventureMapIcon-DailyQuest:0:0|a'..(e.onlyChinese and '日常' or DAILY))
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:Show()
+    end)
+
+    search.cur= e.Cbtn(search, {size={22,22}, atlas='poi-islands-table'})
+    search.cur:SetPoint('LEFT', search.Daily, 'RIGHT')
+    search.cur:SetScript('OnClick', function(self)
+        local edit= self:GetParent()
+        edit:SetText('')
+        edit:SetText(e.onlyChinese and '当前' or REFORGE_CURRENT)
+    end)
+    search.cur:SetScript("OnLeave", GameTooltip_Hide)
+    search.cur:SetScript("OnEnter", function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(' ', '|A:poi-islands-table:0:0|a'..(e.onlyChinese and '当前地图' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP)))
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end)

@@ -2361,6 +2361,14 @@ local function Init()
         self:AddOverlayFrame("WorldMapThreatFrameTemplate", "FRAME", "BOTTOMLEFT", self:GetCanvasContainer(), "BOTTOMLEFT", 0, 0);
         self:AddOverlayFrame("WorldMapActivityTrackerTemplate", "BUTTON", "BO
     ]]
+    --WorldMapMixin:AddOverlayFrames()
+    local optionButton=WorldMapFrame.overlayFrames[2]
+    if optionButton then
+        optionButton:HookScript('OnEnter', function()
+            GameTooltip_SetTitle(GameTooltip, '地图筛选');
+	        GameTooltip:Show();
+        end)
+    end
     local pingButton= WorldMapFrame.overlayFrames[3]
     if pingButton then
         pingButton:HookScript('OnEnter', function(self)--WorldMapTrackingPinButtonMixin:OnEnter()
@@ -2376,7 +2384,13 @@ local function Init()
             GameTooltip:Show();
         end)
     end
-    
+    --[[local threatButton=  WorldMapFrame.overlayFrames[7]
+    if threatButton then
+        GameTooltip_SetTitle(GameTooltip, '恩佐斯突袭');
+        GameTooltip_AddColoredLine(GameTooltip, '点击浏览被恩佐斯的军队突袭的地区。', GREEN_FONT_COLOR);
+        GameTooltip:Show();
+    end]]
+
     --小地图
     MinimapCluster.ZoneTextButton.tooltipText = MicroButtonTooltipText('世界地图', "TOGGLEWORLDMAP")
     MinimapCluster.ZoneTextButton:HookScript('OnEvent', function(self)
