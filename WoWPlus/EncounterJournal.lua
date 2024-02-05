@@ -708,11 +708,10 @@ local function Init_EncounterJournal()--冒险指南界面
                 for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do--挑战地图 mapChallengeModeID
                     e.LoadDate({type='mapChallengeModeID',mapChallengeModeID })
                     local name= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
-                    if name==instanceName or name:find(instanceName) or (button.tooltipTitle and name:find(button.tooltipTitle)) then
+                    if name==instanceName or name:find(instanceName) then
                         button.mapChallengeModeID= mapChallengeModeID--挑战,地图ID
                         local nu, all, leavel, runScore= 0, 0, 0, 0
-                        local infoChalleng=C_MythicPlus.GetRunHistory(true, true) or {}--挑战,全部, 次数
-                        for _,v in pairs(infoChalleng) do
+                        for _,v in pairs(C_MythicPlus.GetRunHistory(true, true) or {}) do--挑战,全部, 次数
                             if v.mapChallengeModeID==mapChallengeModeID then
                                 if v.completed then
                                     nu=nu+1
