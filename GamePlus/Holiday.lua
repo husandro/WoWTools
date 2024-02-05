@@ -1021,16 +1021,18 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 panel:UnregisterAllEvents()
             else
                 e.call('Calendar_LoadUI')--C_AddOns.LoadAddOn("Blizzard_Calendar")
+                
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Calendar' then
+            C_Calendar.OpenCalendar()--
             C_Timer.After(2, function()
-                e.call('Calendar_Toggle')
+                --e.call('Calendar_Toggle')
                 C_Timer.After(2, function()
-                    if CalendarFrame:IsShown() then
-                        e.call('Calendar_Toggle')
-                    end
+                    --if CalendarFrame:IsShown() then
+                        --e.call('Calendar_Toggle')
+                    --end
                     Init_Blizzard_Calendar()--初始，插件
                     Init_TrackButton()
                 end)

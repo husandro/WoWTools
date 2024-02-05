@@ -20346,7 +20346,7 @@ C_Timer.After(2, function()
             e.strText[info.clientFileString]= name
         end
     end
-    for mapChallengeModeID, info in pairs(e.ChallengesData or {}) do
+    --[[for mapChallengeModeID, info in pairs(e.ChallengesData or {}) do
         if info.name then
             local name= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
             if name then
@@ -20374,7 +20374,7 @@ C_Timer.After(2, function()
                 end
             end
         end
-    end
+    end]]
     for _, info in pairs(affixTab) do
         local name, description = C_ChallengeMode.GetAffixInfo(info[1])
         if name then

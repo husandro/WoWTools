@@ -337,7 +337,7 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
         e.tips:Show()
     end)
 
-    search.cur= e.Cbtn(search, {size={22,22}, atlas='poi-islands-table'})
+    search.cur= e.Cbtn(search, {size={22,22}, atlas='Adventures-Target-Indicator'})
     search.cur:SetPoint('LEFT', search.Daily, 'RIGHT')
     search.cur:SetScript('OnClick', function(self)
         local edit= self:GetParent()
@@ -348,7 +348,7 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
     search.cur:SetScript("OnEnter", function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(' ', '|A:poi-islands-table:0:0|a'..(e.onlyChinese and '当前地图' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP)))
+        e.tips:AddDoubleLine(' ', '|A:Adventures-Target-Indicator:0:0|a'..(e.onlyChinese and '当前地图' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP)))
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end)

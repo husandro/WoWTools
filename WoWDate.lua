@@ -501,8 +501,8 @@ local function Get_Info_Challenge()--挑战
     C_MythicPlus.RequestCurrentAffixes()
     C_MythicPlus.RequestMapInfo()
     C_MythicPlus.RequestRewards()
-    for _, mapID in pairs(C_ChallengeMode.GetMapTable() or {}) do
-        C_ChallengeMode.RequestLeaders(mapID)
+    for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do
+        e.LoadDate({type='mapChallengeModeID',mapChallengeModeID })
     end
 --[[
     C_MythicPlus.GetRunHistory(false, true)--本周记录      
@@ -610,9 +610,10 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
             if IsInGuild() then--请求，公会名单
                 C_GuildInfo.GuildRoster()
             end
-
+            C_PerksProgram.RequestPendingChestRewards()
 
             C_Timer.After(2, function()
+                C_Calendar.OpenCalendar()
                 e.GetNotifyInspect(nil, 'player')--取得,自已, 装等
                 e.GetGroupGuidDate()--队伍数据收集
 

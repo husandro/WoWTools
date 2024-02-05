@@ -201,6 +201,8 @@ function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, u
         if itemID and not C_Item.IsItemDataCachedByID(itemID) then
             C_Item.RequestLoadItemDataByID(itemID)
         end
+    elseif tab.type=='mapChallengeModeID' then
+        C_ChallengeMode.RequestLeaders(tab.id)
     end
 end
 

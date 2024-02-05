@@ -874,6 +874,8 @@ local function set_Option()
     e.LibDD:UIDropDownMenu_Initialize(menu, function(self, level)
         local tab={
             ['common-icon-rotateright']='a',
+            ['Adventures-Target-Indicator']='a',
+            ['Adventures-Target-Indicator-desat']='a',
             ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Hunters_Mark.tga']='t',
             ['NPE_ArrowDown']='a',
             ['UI-HUD-MicroMenu-StreamDLYellow-Up']='a',

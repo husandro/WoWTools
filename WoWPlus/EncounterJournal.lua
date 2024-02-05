@@ -22,7 +22,7 @@ local function getBossNameSort(name, worldBossID)--取得怪物名称, 短名称
             return '鲁克玛'
         end
     end
-
+    name= e.cn(name)
     name=name:gsub('(,.+)','')
     name=name:gsub('(，.+)','')
     name=name:gsub('·.+','')
@@ -74,7 +74,7 @@ end
 
 
 --界面,击杀,数据
-local function encounterJournal_ListInstances_set_Instance(self,showTips)
+local function encounterJournal_ListInstances_set_Instance(self, showTips)
     local text,find
     local instanceID= self.instanceID or self.journalInstanceID
     if not instanceID then
@@ -701,12 +701,13 @@ local function Init_EncounterJournal()--冒险指南界面
                 end
 
 
-                local instanceName=button.name:GetText()
+                local instanceName= button.tooltipTitle or button.name:GetText()
                 button.mapChallengeModeID=nil
                 local challengeText, challengeText2
 
                 for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do--挑战地图 mapChallengeModeID
-                    local name=C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
+                    e.LoadDate({type='mapChallengeModeID',mapChallengeModeID })
+                    local name= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
                     if name==instanceName or name:find(instanceName) or (button.tooltipTitle and name:find(button.tooltipTitle)) then
                         button.mapChallengeModeID= mapChallengeModeID--挑战,地图ID
                         local nu, all, leavel, runScore= 0, 0, 0, 0
@@ -764,20 +765,24 @@ local function Init_EncounterJournal()--冒险指南界面
                     button.challengeText2= e.Cstr(button, {size=e.onlyChinese and 12 or 10})
                     button.challengeText2:SetPoint('BOTTOMLEFT', button.challengeText, 'BOTTOMRIGHT')
 
-                    button:SetScript('OnEnter', function(self3)
-                        if Save.hideEncounterJournal then
+                    button:HookScript('OnEnter', function(frame)
+                        if Save.hideEncounterJournal or not frame.instanceID then
                             return
                         end
-                        e.tips:SetOwner(self3, "ANCHOR_RIGHT");
+                        local name, _, _, _, loreImage, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(frame.instanceID)
+                        e.tips:SetOwner(frame, "ANCHOR_RIGHT");
                         e.tips:ClearLines();
-                        local texture=self3.bgImage:GetTexture()
-                        e.tips:AddLine(self3.name:GetText())
-                        e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self3.instanceID, texture and '|T'..texture..':0|t'..texture)
-                        if self3.mapChallengeModeID then
-                            e.tips:AddLine('mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. self3.mapChallengeModeID)
+                        e.tips:AddLine(name)
+                        e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..frame.instanceID, loreImage and '|T'..loreImage..':0|t'..loreImage)
+                        e.tips:AddDoubleLine(
+                            dungeonAreaMapID and 'dungeonAreaMapID |cnGREEN_FONT_COLOR:'..dungeonAreaMapID,
+                            mapID and 'mapID |cnGREEN_FONT_COLOR:'..mapID
+                        )
+                        if frame.mapChallengeModeID then
+                            e.tips:AddLine( 'mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. frame.mapChallengeModeID)
                         end
                         e.tips:AddLine(' ')
-                        if encounterJournal_ListInstances_set_Instance(self3, true) then--界面,击杀,数据
+                        if encounterJournal_ListInstances_set_Instance(frame, true) then--界面,击杀,数据
                             e.tips:AddLine(' ')
                         end
                         e.tips:AddDoubleLine(id, e.cn(addName))

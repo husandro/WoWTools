@@ -1149,7 +1149,17 @@ local function Init_All_Frame()
 
     --对话框
     set_Alpha_Frame_Texture(StaticPopup1.Border, {notAlpha=true})
-    
+
+    --ItemTextFrame
+    set_NineSlice(ItemTextFrame, true)
+    hide_Texture(ItemTextFrameBg)
+    hide_Frame_Texture(ItemTextFrameInset)
+    set_Alpha_Color(ItemTextMaterialTopLeft, nil, nil, min05)
+    set_Alpha_Color(ItemTextMaterialTopRight, nil, nil, min05)
+    set_Alpha_Color(ItemTextMaterialBotLeft, nil, nil, min05)
+    set_Alpha_Color(ItemTextMaterialBotRight, nil, nil, min05)
+    set_ScrollBar(ItemTextScrollFrame)
+    set_NineSlice(ItemTextFrameInset, true)
 end
 
 

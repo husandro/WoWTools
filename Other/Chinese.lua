@@ -1017,9 +1017,10 @@ local function Init()
     --LFGList.lua
     dia("LFG_LIST_INVITING_CONVERT_TO_RAID", {text = '邀请这名玩家或队伍会将你的小队转化为团队。', button1 = '邀请', button2 = '取消'})
 
-    hooksecurefunc('LFGDungeonReadyDialog_UpdateInstanceInfo', function(_, completedEncounters, totalEncounters)
+    hooksecurefunc('LFGDungeonReadyDialog_UpdateInstanceInfo', function(name, completedEncounters, totalEncounters)
+        set(LFGDungeonReadyDialogInstanceInfoFrame.name, e.strText[name])
         if ( totalEncounters > 0 ) then
-            LFGDungeonReadyDialogInstanceInfoFrame.statusText:SetFormattedText('已消灭|cnGREEN_FONT_COLOR:%d/%d|r个首领', completedEncounters, totalEncounters)
+            set(LFGDungeonReadyDialogInstanceInfoFrame.statusText, format('已消灭|cnGREEN_FONT_COLOR:%d/%d|r个首领', completedEncounters, totalEncounters))
         end
     end)
     LFGDungeonReadyDialogInstanceInfoFrame:HookScript('OnEnter', function()--LFGDungeonReadyDialogInstanceInfo_OnEnter
@@ -1032,9 +1033,9 @@ local function Init()
         for i=1, numBosses do
             local bossName, _, isKilled = GetLFGProposalEncounter(i)
             if ( isKilled ) then
-                GameTooltip:AddDoubleLine(e.Icon.X2.. bossName, '|cnRED_FONT_COLOR:已消灭')
+                GameTooltip:AddDoubleLine(e.Icon.X2.. e.cn(bossName), '|cnRED_FONT_COLOR:已消灭')
             else
-                GameTooltip:AddDoubleLine(e.Icon.select2..bossName, '|cnGREEN_FONT_COLOR:可消灭')
+                GameTooltip:AddDoubleLine(e.Icon.select2..e.cn(bossName), '|cnGREEN_FONT_COLOR:可消灭')
             end
         end
         GameTooltip:Show()
@@ -1053,32 +1054,32 @@ local function Init()
 
         local leaveText = '离开队列'
         if ( subtypeID == LFG_SUBTYPEID_RAID or subtypeID == LFG_SUBTYPEID_FLEXRAID ) then
-            LFGDungeonReadyDialog.enterButton:SetText('进入')
+            set(LFGDungeonReadyDialog.enterButton, '进入')
         elseif ( subtypeID == LFG_SUBTYPEID_SCENARIO ) then
             if ( numMembers > 1 ) then
-                LFGDungeonReadyDialog.enterButton:SetText('进入')
+                set(LFGDungeonReadyDialog.enterButton, '进入')
             else
-                LFGDungeonReadyDialog.enterButton:SetText('接受')
+                set(LFGDungeonReadyDialog.enterButton, '接受')
                 leaveText = '取消'
             end
         else
             LFGDungeonReadyDialog.enterButton:SetText('进入')
         end
-        LFGDungeonReadyDialog.leaveButton:SetText(leaveText)
+        set(LFGDungeonReadyDialog.leaveButton, leaveText)
 
         if not hasResponded then
             local LFGDungeonReadyDialog = LFGDungeonReadyDialog
             if ( typeID == TYPEID_RANDOM_DUNGEON and subtypeID ~= LFG_SUBTYPEID_SCENARIO ) then
-                LFGDungeonReadyDialog.label:SetText('你的随机地下城小队已经整装待发！')
+                set(LFGDungeonReadyDialog.label, '你的随机地下城小队已经整装待发！')
             else
                  if ( numMembers > 1 ) then
-                    LFGDungeonReadyDialog.label:SetText('已经建好了一个队伍，准备前往：')
+                    set(LFGDungeonReadyDialog.label, '已经建好了一个队伍，准备前往：')
                 else
-                    LFGDungeonReadyDialog.label:SetText('已经建好了一个副本，准备前往：')
+                    set(LFGDungeonReadyDialog.label, '已经建好了一个副本，准备前往：')
                 end
             end
             if ( subtypeID ~= LFG_SUBTYPEID_SCENARIO and subtypeID ~= LFG_SUBTYPEID_FLEXRAID  and e.strText[_G[role]]) then
-                LFGDungeonReadyDialogRoleLabel:SetText(e.strText[_G[role]])
+                set(LFGDungeonReadyDialogRoleLabel, e.strText[_G[role]])
             end
         end
     end)
@@ -2384,12 +2385,24 @@ local function Init()
             GameTooltip:Show();
         end)
     end
-    --[[local threatButton=  WorldMapFrame.overlayFrames[7]
+    local threatButton=  WorldMapFrame.overlayFrames[7]
     if threatButton then
         GameTooltip_SetTitle(GameTooltip, '恩佐斯突袭');
         GameTooltip_AddColoredLine(GameTooltip, '点击浏览被恩佐斯的军队突袭的地区。', GREEN_FONT_COLOR);
         GameTooltip:Show();
-    end]]
+    end
+    hooksecurefunc(WorldMapTrackingPinButtonMixin, 'OnEnter', function(self)
+        GameTooltip_SetTitle(GameTooltip, '地图标记');
+        local mapID = self:GetParent():GetMapID();
+        if C_Map.CanSetUserWaypointOnMap(mapID) then
+            GameTooltip_AddNormalLine(GameTooltip, '在地图上放置一个位置标记，此标记可以追踪，也可以分享给其他玩家。');
+            GameTooltip_AddBlankLineToTooltip(GameTooltip);
+            GameTooltip_AddInstructionLine(GameTooltip, '点击这个按钮，然后在地图上点击来放置一个标记，或者直接<按住Ctrl点击地图>。');
+        else
+            GameTooltip_AddErrorLine(GameTooltip, '你不能在这张地图上放置标记。');
+        end
+        GameTooltip:Show();
+    end)
 
     --小地图
     MinimapCluster.ZoneTextButton.tooltipText = MicroButtonTooltipText('世界地图', "TOGGLEWORLDMAP")
