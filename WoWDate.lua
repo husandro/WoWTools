@@ -610,7 +610,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
             if IsInGuild() then--请求，公会名单
                 C_GuildInfo.GuildRoster()
             end
-            C_PerksProgram.RequestPendingChestRewards()
+            --C_PerksProgram.RequestPendingChestRewards()
 
             C_Timer.After(2, function()
                 C_Calendar.OpenCalendar()

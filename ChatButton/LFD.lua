@@ -1697,10 +1697,12 @@ local function setHoliday()--节日, 提示, button.texture
                             if texture then
                                 if rewardType == "currency" then
                                     texturePath= texture
-                                    find=true
-                                    break
+                                    --find=true
+                                    --break
                                 elseif rewardType=='item' then
                                     texturePath= texture
+                                    find=true
+                                    break
                                 elseif isBonusReward and not texturePath then
                                     texturePath= texture
                                 end
