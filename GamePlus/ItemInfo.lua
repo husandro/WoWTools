@@ -358,6 +358,16 @@ local function Set_Item_Info(self, tab)
             end]]
             if isCollected==false then
                 topRightText= topRightText or e.WA_Utf8Sub(itemSubType, 2, 3, true)
+                if itemQuality and itemQuality<=1 then
+                    if itemMinLevel and itemMinLevel<=e.Player.level then
+                        isRedItem=true
+                    else
+                        local dateInfo= e.GetTooltipData({
+                            bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
+                            onlyRed=true, text={red=true}})--物品提示，信息
+                        isRedItem= dateInfo.red
+                    end
+                end
                 if topRightText and isRedItem then
                     topRightText= '|cnRED_FONT_COLOR:'..topRightText..'|r'
                 end
