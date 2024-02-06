@@ -213,19 +213,22 @@ local function Set_Item_Info(self, tab)
                 topRightText='|A:worldquest-icon-fishing:0:0|a'
 
         elseif classID==2 or classID==4 then--装备
-            local isWoWItem
+            local isRedItem
             if itemQuality and itemQuality>1 then
                 local upItemLevel= 0
-                local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
-                                                text={equipStr, pvpItemStr, upgradeStr, classStr, itemLevelStr, 'Set di equipaggiamenti(.-)'}, wow=true, red=true})--物品提示，信息
+                local dateInfo= e.GetTooltipData({
+                    bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
+                    text={equipStr, pvpItemStr, upgradeStr, classStr, itemLevelStr, 'Set di equipaggiamenti(.-)'}, wow=true, red=true})--物品提示，信息
+                --isWoWItem= dateInfo.wow
+                isRedItem= dateInfo.red
                 if dateInfo.text[itemLevelStr] then--物品等级：%d
                     itemLevel= tonumber(dateInfo.text[itemLevelStr]) or itemLevel
                 end
                 if dateInfo.text[equipStr] then--套装名称，                
                     local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
-                    bottomLeftText= e.WA_Utf8Sub(text,3,3, true)
+                    bottomLeftText= '|cff00ccff'..(e.WA_Utf8Sub(text,3,4, true) or '')..'|r'
+                    
                 elseif dateInfo.wow then--战网
-                    isWoWItem=true
                     bottomLeftText= e.Icon.wow2
                     if subclassID==0 then
                         if itemLevel and itemLevel>1 then
@@ -265,7 +268,8 @@ local function Set_Item_Info(self, tab)
                     else
                         if dateInfo.red then
                             if dateInfo.red~= USED then
-                                topRightText= '|cnRED_FONT_COLOR:'..strlower(e.WA_Utf8Sub(dateInfo.red, 2,3, true)) ..'|r'
+                                local redText= dateInfo.red:match('%d+') or dateInfo.red
+                                topRightText= '|cnRED_FONT_COLOR:'..strlower(e.WA_Utf8Sub(redText, 2,3, true)) ..'|r'
                             end
                         end
                         topRightText= topRightText or e.WA_Utf8Sub(itemSubType, 2, 3, true)
@@ -334,21 +338,33 @@ local function Set_Item_Info(self, tab)
                         end
                     elseif itemMinLevel and itemMinLevel<=e.Player.level and itemQuality~=7 then--不可使用
                         topLeftText=e.Icon.O2
+                        isRedItem=true
                     end
                 end
                 --[[if (containerInfo and not containerInfo.isBound) or tab.guidBank then--没有锁定
                     topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,2,3, true) or '|A:'..e.Icon.unlocked..':0:0|a'
                 end]]
             end
-            if (containerInfo and not containerInfo.isBound or not containerInfo) or isWoWItem then
-                local isCollected
-                bottomRightText, isCollected= e.GetItemCollected(itemLink, nil, true)--幻化
+
+            
+            local collectedIcon, isCollected= e.GetItemCollected(itemLink, nil, true)--幻化
+            bottomRightText= not isCollected and collectedIcon or bottomRightText
+            --[[if containerInfo and not containerInfo.isBound or not containerInfo) or (isWoWItem and subclassID~=0)) and topRightText then
                 if itemQuality==0 and isCollected then
                     topRightText= '|A:Coin-Silver:0:0|a'
                 elseif not isCollected and itemSubType then
                     topRightText= e.WA_Utf8Sub(itemSubType, 2, 3, true)
                 end
+            end]]
+            if isCollected==false then
+                topRightText= topRightText or e.WA_Utf8Sub(itemSubType, 2, 3, true)
+                if topRightText and isRedItem then
+                    topRightText= '|cnRED_FONT_COLOR:'..topRightText..'|r'
+                end
+            elseif containerInfo and itemQuality==0 then
+                topRightText= '|A:Coin-Silver:0:0|a'
             end
+            
             --topRightText= topRightText or  e.WA_Utf8Sub(itemSubType, 2, 3, true)
 
         elseif battlePetSpeciesID or classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
