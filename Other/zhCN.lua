@@ -20016,10 +20016,7 @@ e.strText[GetItemSubClassInfo(2, 18)]= "弩"
 e.strText[GetItemSubClassInfo(2, 3)]= "枪械"
 e.strText[GetItemSubClassInfo(2, 16)]= "投掷武器"
 e.strText[GetItemSubClassInfo(2, 20)]= "鱼竿"
-e.strText[GetItemSubClassInfo(4, 4)]= "板甲"
-e.strText[GetItemSubClassInfo(4, 3)]= "锁甲"
 
-e.strText[GetItemSubClassInfo(4, 1)]= "布甲"
 e.strText[GetItemSubClassInfo(1, 0)]= "容器"
 e.strText[GetItemSubClassInfo(1, 2)]= "草药"
 e.strText[GetItemSubClassInfo(1, 3)]= "附魔"
@@ -20120,7 +20117,10 @@ e.strText[GetItemSubClassInfo(15, 5)] = "坐骑"
 e.strText[GetItemSubClassInfo(15, 6)] = "坐骑装备"
 e.strText[GetItemSubClassInfo(18, 0)] = "时光徽章"
 
+e.strText[GetItemSubClassInfo(4, 4)]= "板甲"
+e.strText[GetItemSubClassInfo(4, 3)]= "锁甲"
 e.strText[GetItemSubClassInfo(4, 2)]= "皮甲"
+e.strText[GetItemSubClassInfo(4, 1)]= "布甲"
 
 e.strText[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_ONLINE, FRIENDS_LIST_AVAILABLE)] = "|TInterface\\FriendsFrame\\StatusIcon-Online:16:16|t 有空"
 e.strText[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_AFK, FRIENDS_LIST_AWAY)] = "|TInterface\\FriendsFrame\\StatusIcon-Away:16:16|t 离开"
@@ -20178,6 +20178,93 @@ local  spellTab={
     {424167, '巫心灾厄之路', '传送到|cnGREEN_FONT_COLOR:维克雷斯庄园|r的入口。'},
     {424197, '扭曲之光之路', '传送到|cnGREEN_FONT_COLOR:永恒黎明|r的入口。'},
 }
+if e.Player.class=='HUNTER' then
+    table.insert(spellTab, {1462, '野兽知识', '收集目标野兽的相关资料，显示其饮食习惯、技能、专精、能否被驯服，以及是否属于奇珍异兽。'})
+    table.insert(spellTab, {2641, '解散宠物', '暂时解散你的宠物。之后你可以重新召唤它。'})
+    table.insert(spellTab, {6991, '喂养宠物', '使用指定的食物为你的宠物喂食，立即为其恢复50%的总生命值。无法在战斗中使用。|n|n你可以使用野兽知识技能，确认自己的宠物喜欢吃哪种食物。'})
+    table.insert(spellTab, {136, '治疗宠物', '在10 sec内为你的宠物恢复50%的最大生命值。|n[|cff00ccff荒野医疗|r]: 每次使用治疗宠物进行治疗时，都有25%的几率为你的宠物净化一个有害的魔法效果。'})
+    table.insert(spellTab, {982, '复活宠物', '复活你的宠物，并为其恢复100%的基础生命值'})
+    table.insert(spellTab, {1515, '驯服野兽', '尝试驯服一只野兽，使其成为你的伙伴。一旦你因为任何原因而失去了它的注意力，驯服过程就将失败。|n|n你必须解散任何当前激活的野兽伙伴并且有一个空的召唤宠物空格才能驯服新宠物。只有野兽控制专精的猎人才能驯服奇珍异兽。'})
+
+elseif e.Player.class=='MAGE' then
+    if e.Player.faction=='Horde' then--部落
+        table.insert(spellTab, {3567, '传送-奥格瑞玛', '将你传送到|cff00ccff奥格瑞玛|r。'})
+        table.insert(spellTab, {11417, '传送门-奥格瑞玛', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff奥格瑞玛|r。'})
+        table.insert(spellTab, {3563, '传送-幽暗城', '将你传送到幽暗城'})
+        table.insert(spellTab, {11418,'传送门-幽暗城', '制造一个传送门，将使用传送门的队伍成员传送到幽暗城。'})
+        table.insert(spellTab, {3566, '传送-雷霆崖', '将你传送到雷霆崖'})
+        table.insert(spellTab, {11420, '传送门-雷霆崖', '制造一个传送门，将使用传送门的队伍成员传送到雷霆崖。'})
+        table.insert(spellTab, {32272, '传送-银月城', '将你传送到银月城。'})
+        table.insert(spellTab, {32267, '传送门-银月城', '制造一个传送门，将使用传送门的队伍成员传送到银月城。'})
+        table.insert(spellTab, {49358, '传送-斯通纳德', '将你传送到斯通纳德。'})
+        table.insert(spellTab, {49358, '传送-斯通纳德', '将你传送到斯通纳德。'})
+        table.insert(spellTab, {49361, '传送门-斯通纳德', '制造一个传送门，将使用传送门的队伍成员传送到斯通纳德。'})
+        table.insert(spellTab, {35715, '传送-沙塔斯', '将你传送到沙塔斯。'})
+        table.insert(spellTab, {35717, '传送门-沙塔斯', '制造一个传送门，将使用传送门的队伍成员传送到沙塔斯城。'})
+        table.insert(spellTab, {53140, '传送-达拉然-诺森德', '将你传送到诺森德的达拉然。'})
+        table.insert(spellTab, {53142, '传送门-达拉然-诺森德', '制造一个传送门，将使用传送门的队伍成员传送到达拉然。'})
+        table.insert(spellTab, {88344, '传送-托尔巴拉德', '将你传送到托尔巴拉德。'})
+        table.insert(spellTab, {88346, '传送门-托尔巴拉德', '制造一个传送门，将使用传送门的队伍成员传送到托尔巴拉德。'})
+        table.insert(spellTab, {132627, '传送-锦绣谷', '将你传送到锦绣谷。'})
+        table.insert(spellTab, {132626, '传送门-锦绣谷', '制造一个传送门，将使用传送门的队伍成员传送到锦绣谷城。'})
+        table.insert(spellTab, {176242, '传送-战争之矛', '将你传送至战争之矛。'})
+        table.insert(spellTab, {176244, '传送门-战争之矛', '制造一个传送门，将使用传送门的队伍成员传送到战争之矛。'})
+        
+        table.insert(spellTab, {281404, '传送-达萨罗', '将你传送到达萨罗。'})
+        table.insert(spellTab, {281402, '传送门-达萨罗', '制造一个传送门，将使用传送门的队伍成员传送到达萨罗。'})
+        
+        
+        
+    elseif e.Player.faction=='Alliance' then
+
+    end
+    table.insert(spellTab, {224869, '传送-达拉然-破碎群岛', '将你传送至破碎群岛的达拉然。'})
+    table.insert(spellTab, {224871, '传送门-达拉然-破碎群岛', '制造一个传送门，将使用传送门的队伍成员传送到破碎群岛的达拉然。'})
+    table.insert(spellTab, {344587, '传送-奥利波斯', '将你传送至奥利波斯。'})
+    table.insert(spellTab, {344597, '传送门-奥利波斯', '制造一个传送门，将使用传送门的队伍成员传送到奥利波斯。'})
+    table.insert(spellTab, {395277, '传送-瓦德拉肯', '将你传送到瓦德拉肯。'})
+    table.insert(spellTab, {395289, '传送门-瓦德拉肯', '制造一个传送门，将使用传送门的队伍成员传送到瓦德拉肯。'})
+    table.insert(spellTab, {120145, '远古传送-达拉然', '将你传送到达拉然。'})
+    table.insert(spellTab, {193759, '传送-守护者圣殿', '将你传送至守护者圣殿。'})
+        --[[
+
+
+          {spell=3561, spell2=10059,  name='暴风城', luce=true,},
+            {spell=3562, spell2=11416, name='铁炉堡'},
+            {spell=3565, spell2=11419, name='达纳苏斯'},
+            {spell=32271, spell2=32266, name='埃索达'},
+            {spell=49359, spell2=49360, name='塞拉摩'},
+            {spell=33690, spell2=33691, name='沙塔斯'},
+            {spell=53140, spell2=53142, name='诺森德'},
+            {spell=88342, spell2=88345, name='托尔巴拉德'},
+            {spell=132621, spell2=132620, name='锦绣谷'},
+            {spell=176248, spell2=176246, name='暴风之盾'},
+            {spell=281403, spell2=281400, name='伯拉勒斯'},
+
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+        table.insert(spellTab, {', ''})
+
+    ]]
+end
 
 
 local curcurrencyTab={

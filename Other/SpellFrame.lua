@@ -56,11 +56,11 @@ local function Init()
     end
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)
             if self.spellID then
-                local spellName = GetSpellInfo(self.spellID);
-                local petName = select(2, GetCallPetSpellInfo(self.spellID));
-                if petName=='' then petName=nil end
-
-                local text=petName or spellName;
+                local text
+                text= select(2, GetCallPetSpellInfo(self.spellID))
+                text= text~='' and text or nil
+                text= text or GetSpellInfo(self.spellID)
+                text= e.cn(text)
                 if text then
                     if not self.Text then
                         self.Text=e.Cstr(self);
