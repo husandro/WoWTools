@@ -273,7 +273,7 @@ local function Set_Item_Info(self, tab)
                 end
 
                 if itemMinLevel>e.Player.level then--低装等
-                    bottomLeftText= (bottomLeftText or '')..'|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
+                    bottomLeftText= '|cnRED_FONT_COLOR:'..(bottomLeftText or itemMinLevel)..'|r'
                 end
                 if dateInfo.text[pvpItemStr] then--PvP装备
                     rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
