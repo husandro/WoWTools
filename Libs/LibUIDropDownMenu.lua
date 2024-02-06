@@ -1,4 +1,4 @@
--- $Id: LibUIDropDownMenu.lua 133 2024-01-30 13:04:40Z arithmandar $
+-- $Id: LibUIDropDownMenu.lua 135 2024-02-05 16:50:14Z arithmandar $
 -- ----------------------------------------------------------------------------
 -- Localized Lua globals.
 -- ----------------------------------------------------------------------------
@@ -18,7 +18,7 @@ local GameTooltip_SetTitle, GameTooltip_AddInstructionLine, GameTooltip_AddNorma
 
 -- ----------------------------------------------------------------------------
 local MAJOR_VERSION = "LibUIDropDownMenu-4.0"
-local MINOR_VERSION = 90000 + tonumber(("$Rev: 133 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Rev: 135 $"):match("%d+"))
 
 
 local LibStub = _G.LibStub
@@ -820,18 +820,16 @@ function lib:UIDropDownMenu_SetDisplayMode(frame, displayMode)
 		GetChild(frame, name, "Middle"):Hide();
 		GetChild(frame, name, "Right"):Hide();
 		local button = GetChild(frame, name, "Button");
-		if button then
-			local buttonName = button:GetName();
-			GetChild(button, buttonName, "NormalTexture"):SetTexture(nil);
-			GetChild(button, buttonName, "DisabledTexture"):SetTexture(nil);
-			GetChild(button, buttonName, "PushedTexture"):SetTexture(nil);
-			GetChild(button, buttonName, "HighlightTexture"):SetTexture(nil);
-			local text = GetChild(frame, name, "Text");
+		local buttonName = button:GetName();
+		GetChild(button, buttonName, "NormalTexture"):SetTexture(nil);
+		GetChild(button, buttonName, "DisabledTexture"):SetTexture(nil);
+		GetChild(button, buttonName, "PushedTexture"):SetTexture(nil);
+		GetChild(button, buttonName, "HighlightTexture"):SetTexture(nil);
+		local text = GetChild(frame, name, "Text");
 
-			button:ClearAllPoints();
-			button:SetPoint("LEFT", text, "LEFT", -9, 0);
-			button:SetPoint("RIGHT", text, "RIGHT", 6, 0);
-		end
+		button:ClearAllPoints();
+		button:SetPoint("LEFT", text, "LEFT", -9, 0);
+		button:SetPoint("RIGHT", text, "RIGHT", 6, 0);
 		frame.displayMode = "MENU";
 	end
 end
@@ -1511,16 +1509,14 @@ function lib:UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 				if not button.ignoreAsMenuSelection then
 					somethingChecked = true;
 					local icon = GetChild(frame, frame:GetName(), "Icon");
-					if icon then
-						if (button.iconOnly and icon and button.icon) then
-							lib:UIDropDownMenu_SetIconImage(icon, button.icon, button.iconInfo);
-						elseif ( useValue ) then
-							lib:UIDropDownMenu_SetText(frame, button.value);
-							icon:Hide();
-						else
-							lib:UIDropDownMenu_SetText(frame, button:GetText());
-							icon:Hide();
-						end
+					if (button.iconOnly and icon and button.icon) then
+						lib:UIDropDownMenu_SetIconImage(icon, button.icon, button.iconInfo);
+					elseif ( useValue ) then
+						lib:UIDropDownMenu_SetText(frame, button.value);
+						icon:Hide();
+					else
+						lib:UIDropDownMenu_SetText(frame, button:GetText());
+						icon:Hide();
 					end
 				end
 				button:LockHighlight();
@@ -1549,7 +1545,7 @@ function lib:UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 	if(somethingChecked == nil) then
 		lib:UIDropDownMenu_SetText(frame, VIDEO_QUALITY_LABEL6);
 		local icon = GetChild(frame, frame:GetName(), "Icon");
-		if icon then icon:Hide() end;
+		icon:Hide();
 	end
 	if (not frame.noResize) then
 		for i=1, L_UIDROPDOWNMENU_MAXBUTTONS do
@@ -2045,18 +2041,16 @@ end
 function lib:UIDropDownMenu_JustifyText(frame, justification, customXOffset, customYOffset)
 	local frameName = frame:GetName();
 	local text = GetChild(frame, frameName, "Text");
-	if text then
-		text:ClearAllPoints();
-		if ( justification == "LEFT" ) then
-			text:SetPoint("LEFT", GetChild(frame, frameName, "Left"), "LEFT", customXOffset or 27, customYOffset or 2);
-			text:SetJustifyH("LEFT");
-		elseif ( justification == "RIGHT" ) then
-			text:SetPoint("RIGHT", GetChild(frame, frameName, "Right"), "RIGHT", customXOffset or -43, customYOffset or 2);
-			text:SetJustifyH("RIGHT");
-		elseif ( justification == "CENTER" ) then
-			text:SetPoint("CENTER", GetChild(frame, frameName, "Middle"), "CENTER", customXOffset or -5, customYOffset or 2);
-			text:SetJustifyH("CENTER");
-		end
+	text:ClearAllPoints();
+	if ( justification == "LEFT" ) then
+		text:SetPoint("LEFT", GetChild(frame, frameName, "Left"), "LEFT", customXOffset or 27, customYOffset or 2);
+		text:SetJustifyH("LEFT");
+	elseif ( justification == "RIGHT" ) then
+		text:SetPoint("RIGHT", GetChild(frame, frameName, "Right"), "RIGHT", customXOffset or -43, customYOffset or 2);
+		text:SetJustifyH("RIGHT");
+	elseif ( justification == "CENTER" ) then
+		text:SetPoint("CENTER", GetChild(frame, frameName, "Middle"), "CENTER", customXOffset or -5, customYOffset or 2);
+		text:SetJustifyH("CENTER");
 	end
 end
 
@@ -2090,8 +2084,11 @@ function lib:UIDropDownMenuButton_OpenColorPicker(self, button)
 		button = self;
 	end
 	L_UIDROPDOWNMENU_MENU_VALUE = button.value;
---	lib:OpenColorPicker(button); 
-	ColorPickerFrame:SetupColorPickerAndShow(button);
+	if (WoWRetail) then
+		ColorPickerFrame:SetupColorPickerAndShow(button);
+	else
+		lib:OpenColorPicker(button); 
+	end
 end
 
 function lib:UIDropDownMenu_DisableButton(level, id)
@@ -2200,24 +2197,29 @@ function lib:UIDropDownMenu_GetValue(id)
 end
 
 function lib:OpenColorPicker(info)
-	ColorPickerFrame:SetupColorPickerAndShow(info);
---[[
-	ColorPickerFrame.func = info.swatchFunc;
-	ColorPickerFrame.hasOpacity = info.hasOpacity;
-	ColorPickerFrame.opacityFunc = info.opacityFunc;
-	ColorPickerFrame.opacity = info.opacity;
-	ColorPickerFrame.previousValues = {r = info.r, g = info.g, b = info.b, opacity = info.opacity};
-	ColorPickerFrame.cancelFunc = info.cancelFunc;
-	ColorPickerFrame.extraInfo = info.extraInfo;
-	-- This must come last, since it triggers a call to ColorPickerFrame.func()
-	ColorPickerFrame:SetColorRGB(info.r, info.g, info.b);
-	ShowUIPanel(ColorPickerFrame);
-]]
+	if (WoWRetail) then
+		ColorPickerFrame:SetupColorPickerAndShow(info);
+	else
+		ColorPickerFrame.func = info.swatchFunc;
+		ColorPickerFrame.hasOpacity = info.hasOpacity;
+		ColorPickerFrame.opacityFunc = info.opacityFunc;
+		ColorPickerFrame.opacity = info.opacity;
+		ColorPickerFrame.previousValues = {r = info.r, g = info.g, b = info.b, opacity = info.opacity};
+		ColorPickerFrame.cancelFunc = info.cancelFunc;
+		ColorPickerFrame.extraInfo = info.extraInfo;
+		-- This must come last, since it triggers a call to ColorPickerFrame.func()
+		ColorPickerFrame:SetColorRGB(info.r, info.g, info.b);
+		ShowUIPanel(ColorPickerFrame);
+	end
 end
 
 function lib:ColorPicker_GetPreviousValues()
---	return ColorPickerFrame.previousValues.r, ColorPickerFrame.previousValues.g, ColorPickerFrame.previousValues.b;
-	ColorPickerFrame:GetPreviousValues();
+	if (WoWRetail) then
+		local r, g, b = ColorPickerFrame:GetPreviousValues();
+		return r, g, b;
+	else
+		return ColorPickerFrame.previousValues.r, ColorPickerFrame.previousValues.g, ColorPickerFrame.previousValues.b;
+	end
 end
 
 -- //////////////////////////////////////////////////////////////
