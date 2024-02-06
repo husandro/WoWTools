@@ -20018,7 +20018,7 @@ e.strText[GetItemSubClassInfo(2, 16)]= "投掷武器"
 e.strText[GetItemSubClassInfo(2, 20)]= "鱼竿"
 e.strText[GetItemSubClassInfo(4, 4)]= "板甲"
 e.strText[GetItemSubClassInfo(4, 3)]= "锁甲"
-e.strText[GetItemSubClassInfo(4, 2)]= "皮甲"
+
 e.strText[GetItemSubClassInfo(4, 1)]= "布甲"
 e.strText[GetItemSubClassInfo(1, 0)]= "容器"
 e.strText[GetItemSubClassInfo(1, 2)]= "草药"
@@ -20120,6 +20120,7 @@ e.strText[GetItemSubClassInfo(15, 5)] = "坐骑"
 e.strText[GetItemSubClassInfo(15, 6)] = "坐骑装备"
 e.strText[GetItemSubClassInfo(18, 0)] = "时光徽章"
 
+e.strText[GetItemSubClassInfo(4, 2)]= "皮甲"
 
 e.strText[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_ONLINE, FRIENDS_LIST_AVAILABLE)] = "|TInterface\\FriendsFrame\\StatusIcon-Online:16:16|t 有空"
 e.strText[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_AFK, FRIENDS_LIST_AWAY)] = "|TInterface\\FriendsFrame\\StatusIcon-Away:16:16|t 离开"
