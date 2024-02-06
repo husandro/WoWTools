@@ -363,7 +363,7 @@ local function Set_Item_Info(self, tab)
                     else
                         local dateInfo= e.GetTooltipData({
                             bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
-                            onlyRed=true, text={red=true}})--物品提示，信息
+                            onlyRed=true, red=true})--物品提示，信息
                         isRedItem= dateInfo.red
                     end
                 end

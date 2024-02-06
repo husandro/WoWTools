@@ -746,10 +746,10 @@ local function get_Items_Colleced()
         for _, info in pairs(tab) do
             collected = collected + info.Collected
             all = all + info.All
-            local name= info.Name
-            if not info.Name then
-                name = info.index==28 and (e.onlyChinese and '武器附魔' or WEAPON_ENCHANTMENT) or C_TransmogCollection.GetCategoryInfo(info.index) or ''
-            end
+            local name = info.index==28 and (e.onlyChinese and '武器附魔' or WEAPON_ENCHANTMENT)
+                    or e.cn(info.Name)
+                    or e.cn(C_TransmogCollection.GetCategoryInfo(info.index))
+                    or ''
             local icon= info.Icon or slots[info.index]
             table.insert(tip, {
                 name=(icon or '')..(info.Collected==info.All and '|cnGREEN_FONT_COLOR:'..name..'|r' or (name..format(' %i%%', info.Collected/info.All*100))),
