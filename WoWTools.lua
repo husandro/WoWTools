@@ -628,7 +628,7 @@ function e.WA_Utf8Sub(input, size, letterSize, lower)
     if type(input) ~= "string" then
       return output or ''
     end
-    input= e.strText[input] or input
+    input= e.cn(input)
     local i = 1
     if letterSize and input:find('%w')  then--英文
         size=letterSize
@@ -2317,11 +2317,7 @@ end
 --e.GetTooltipData({bag={bag=nil, slot=nil}, guidBank={tab=nil, slot=nil}, merchant={slot, buyBack=true}, inventory=nil, hyperLink=nil, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息
 function e.GetTooltipData(tab)
     local tooltipData
-    if tab.hyperLink then
-        tooltipData=  C_TooltipInfo.GetHyperlink(tab.hyperLink)
-    elseif tab.itemID and C_Heirloom.IsItemHeirloom(tab.itemID) then
-        tooltipData= C_TooltipInfo.GetHeirloomByItemID(tab.itemID)
-    elseif tab.bag then
+    if tab.bag then
         tooltipData= C_TooltipInfo.GetBagItem(tab.bag.bag, tab.bag.slot)
     elseif tab.guidBank then-- guidBank then
         tooltipData= C_TooltipInfo.GetGuildBankItem(tab.guidBank.tab, tab.guidBank.slot)
@@ -2333,6 +2329,10 @@ function e.GetTooltipData(tab)
         end
     elseif tab.inventory then
         tooltipData= C_TooltipInfo.GetInventoryItem('player', tab.inventory)
+    elseif tab.hyperLink then
+        tooltipData=  C_TooltipInfo.GetHyperlink(tab.hyperLink)
+    elseif tab.itemID and C_Heirloom.IsItemHeirloom(tab.itemID) then
+        tooltipData= C_TooltipInfo.GetHeirloomByItemID(tab.itemID)
     end
     local data={
         red=false,

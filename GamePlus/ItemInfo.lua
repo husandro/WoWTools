@@ -5,7 +5,8 @@ local panel= CreateFrame("Frame")
 
 local chargesStr= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local keyStr= format(CHALLENGE_MODE_KEYSTONE_NAME,'(.+) ')--钥石
-local equipStr= format(EQUIPMENT_SETS, '(.+)')
+local equipStr= EQUIPMENT_SETS--:gsub('|cFFFFFFFF', ''):gsub('|r', '')
+equipStr= e.Magic(equipStr)
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 --local upgradeStr2= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT_STRING:gsub('%%s %%s/%%s','(.+)' ) --"升级：%s %s/%s"
@@ -212,22 +213,19 @@ local function Set_Item_Info(self, tab)
                 topRightText='|A:worldquest-icon-fishing:0:0|a'
 
         elseif classID==2 or classID==4 then--装备
+            local isWoWItem
             if itemQuality and itemQuality>1 then
                 local upItemLevel= 0
                 local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
-                                                text={equipStr, pvpItemStr, upgradeStr, classStr, itemLevelStr}, wow=true, red=true})--物品提示，信息
-                if dateInfo.text[itemLevelStr] then--传家宝
-                    itemLevel= tonumber(dateInfo.text[itemLevelStr]) or 0
+                                                text={equipStr, pvpItemStr, upgradeStr, classStr, itemLevelStr, 'Set di equipaggiamenti(.-)'}, wow=true, red=true})--物品提示，信息
+                if dateInfo.text[itemLevelStr] then--物品等级：%d
+                    itemLevel= tonumber(dateInfo.text[itemLevelStr]) or itemLevel
                 end
-
-                if dateInfo.text[equipStr] then--套装名称，
+                if dateInfo.text[equipStr] then--套装名称，                
                     local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
                     bottomLeftText= e.WA_Utf8Sub(text,3,3, true)
-
-                elseif itemMinLevel>e.Player.level then--低装等
-                    bottomLeftText='|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
-
                 elseif dateInfo.wow then--战网
+                    isWoWItem=true
                     bottomLeftText= e.Icon.wow2
                     if subclassID==0 then
                         if itemLevel and itemLevel>1 then
@@ -239,7 +237,6 @@ local function Set_Item_Info(self, tab)
                                 bottomLeftText= bottomLeftText..e.Icon.O2
                             end
                         end
-
                         if dateInfo.text[classStr] then
                             local text=''
                             local n=1
@@ -264,15 +261,19 @@ local function Set_Item_Info(self, tab)
                             end
                             --rightText= dateInfo.red and e.Icon.X2 or e.Icon.select2
                             topLeftText= text
-
                         end
-                    elseif dateInfo.red then
-                        if dateInfo.red~= USED then
-                            topRightText= '|cnRED_FONT_COLOR:'..strlower(e.WA_Utf8Sub(dateInfo.red, 2,3, true)) ..'|r'
-                        else
-                            topRightText= e.WA_Utf8Sub(itemSubType, 2, 3, true)
+                    else
+                        if dateInfo.red then
+                            if dateInfo.red~= USED then
+                                topRightText= '|cnRED_FONT_COLOR:'..strlower(e.WA_Utf8Sub(dateInfo.red, 2,3, true)) ..'|r'
+                            end
                         end
+                        topRightText= topRightText or e.WA_Utf8Sub(itemSubType, 2, 3, true)
                     end
+                end
+
+                if itemMinLevel>e.Player.level then--低装等
+                    bottomLeftText= (bottomLeftText or '')..'|cnRED_FONT_COLOR:'..itemMinLevel..'|r'
                 end
                 if dateInfo.text[pvpItemStr] then--PvP装备
                     rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
@@ -280,6 +281,7 @@ local function Set_Item_Info(self, tab)
                 if dateInfo.text[upgradeStr] then--"升级：%s/%s"
                     local min, max= dateInfo.text[upgradeStr]:match('(%d+)/(%d+)')
                     local upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
+
                     upText= upText and strlower(e.WA_Utf8Sub(upText, 1,3, true)) or ''
                     if min and max then
                         if min==max then
@@ -338,16 +340,16 @@ local function Set_Item_Info(self, tab)
                     topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,2,3, true) or '|A:'..e.Icon.unlocked..':0:0|a'
                 end]]
             end
-            if containerInfo and not containerInfo.isBound or not containerInfo then
+            if (containerInfo and not containerInfo.isBound or not containerInfo) or isWoWItem then
                 local isCollected
                 bottomRightText, isCollected= e.GetItemCollected(itemLink, nil, true)--幻化
                 if itemQuality==0 and isCollected then
                     topRightText= '|A:Coin-Silver:0:0|a'
-                --elseif not isCollected and itemSubType then
-                   
+                elseif not isCollected and itemSubType then
+                    topRightText= e.WA_Utf8Sub(itemSubType, 2, 3, true)
                 end
             end
-            topRightText= topRightText or e.WA_Utf8Sub(itemSubType, 2, 3, true)
+            --topRightText= topRightText or  e.WA_Utf8Sub(itemSubType, 2, 3, true)
 
         elseif battlePetSpeciesID or classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
             local speciesID = battlePetSpeciesID or itemLink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物
