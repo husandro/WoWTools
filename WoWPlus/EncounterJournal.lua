@@ -876,7 +876,7 @@ local function Init_EncounterJournal()--冒险指南界面
                             icon2='|T'..icon2..':0|t'
                             specA = specA..((class and class~=classFile) and '  ' or '')..icon2
                             class=classFile
-                            tips= tips..'|n'..icon2..name
+                            tips= tips..'|n'..icon2..e.cn(name)
                         end
                     end
                     if specA~='' then
@@ -913,7 +913,7 @@ local function Init_EncounterJournal()--冒险指南界面
             if classText then
                 local className= UnitClass('player')
                 if className and not classText:find(className) or (not className and dateInfo.red) then
-                    classText =  '|cffffffff'..classText..'|r'
+                    classText =  '|cffffffff'..e.cn(classText)..'|r'
                 end
             end
 
@@ -1521,7 +1521,7 @@ local function Init()
             local name, _, _, _, _, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self3.journalInstanceID)
             e.tips:SetOwner(self3, "ANCHOR_RIGHT");
             e.tips:ClearLines();
-            e.tips:AddDoubleLine(name, mapID and 'mapID '..mapID or '')
+            e.tips:AddDoubleLine(e.cn(name), mapID and 'mapID '..mapID or '')
             e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self3.journalInstanceID, (dungeonAreaMapID and dungeonAreaMapID>0) and 'dungeonAreaMapID '..dungeonAreaMapID or '')
             e.tips:AddLine(' ')
             if encounterJournal_ListInstances_set_Instance(self3, true) then

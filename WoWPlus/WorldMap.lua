@@ -12,7 +12,7 @@ local PostionButton--实时玩家， 当前坐标
 local PlayerButton--世界地图， 当前坐标
 
 local function create_Wolor_Font(self, size)
-    local font= e.Cstr(self, {size=size, justifyH='CENTER', color=false, fontName='WorldMapTextFont'})
+    local font= e.Cstr(self, {size=size, justifyH='CENTER', color=false, fontName='WorldMapTextFont'})--WorldMapTextFont
     return font
 end
 
@@ -962,7 +962,7 @@ local function Init()
                 self.Text= create_Wolor_Font(self, 10)
                 self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
             end
-            text= self.name
+            text= e.cn(self.name)
         end
         if self.Text then
             self.Text:SetText(text or '')

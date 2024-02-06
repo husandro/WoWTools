@@ -109,8 +109,7 @@ local CALENDAR_EVENTTYPE_TEXTURES = {
 
 
 local function Get_Button_Text(event)
-    local title =event.title
-
+    local title = e.cn(event.title)
     local icon,atlas
     local findQuest
     local text
@@ -240,10 +239,7 @@ local function Get_Button_Text(event)
             icon=event.iconTexture
         end
     end
-    title=e.cn(title)
-    title= title:match(HEADER_COLON..'(.+)') or title
-    title= e.cn(title)
-
+    title= e.cn(title:match(HEADER_COLON..'(.+)') or title)
     title= not event.isValid and '|cff606060'..title..'|r' or title
     local msg
     if Save.left then

@@ -2558,18 +2558,19 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             --local isCompleteScenario= scenarioInfo and scenarioInfo.isComplete
             --local lfgComplete=  IsLFGComplete()
             --if isCompleteScenario or lfgComplete then
-                e.PlaySound()--播放, 声音
-
-                local leaveSce= 30
-                if Save.autoROLL and event=='LOOT_CLOSED' then
-                    leaveSce= sec
+                if not StaticPopup_Visible(addName..'ExitIns') then
+                    e.PlaySound()--播放, 声音
+                    local leaveSce= 30
+                    if Save.autoROLL and event=='LOOT_CLOSED' then
+                        leaveSce= sec
+                    end
+                    ExitIns=true
+                    C_Timer.After(leaveSce, function()
+                        exit_Instance()
+                    end)
+                    StaticPopup_Show(addName..'ExitIns')
+                    e.Ccool(StaticPopup1, nil, leaveSce, nil, true, true)--冷却条
                 end
-                ExitIns=true
-                C_Timer.After(leaveSce, function()
-                    exit_Instance()
-                end)
-                StaticPopup_Show(addName..'ExitIns')
-                e.Ccool(StaticPopup1, nil, leaveSce, nil, true, true)--冷却条
             --end
         end
 

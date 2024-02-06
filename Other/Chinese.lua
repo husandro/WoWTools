@@ -5281,6 +5281,7 @@ local function Init_Loaded(arg1)
         end)
         if EncounterJournalMonthlyActivitiesFrame and EncounterJournalMonthlyActivitiesFrame.HeaderContainer then
             set(EncounterJournalMonthlyActivitiesFrame.HeaderContainer.Title, '旅行者日志')
+            set(EncounterJournalMonthlyActivitiesFrame.BarComplete.AllRewardsCollectedText, '你已经收集完了本月的所有奖励')
         end
 
         set(EncounterJournalEncounterFrameInfoFilterToggle.Text, '过滤器')
@@ -5340,6 +5341,86 @@ local function Init_Loaded(arg1)
         end)
 
 
+--[[
+local function IsTimedActivity(activityData)
+	return activityData.eventStartTime and activityData.eventEndTime;
+end
+local function HasTimedActivityBegun(activityData)
+	if not IsTimedActivity(activityData) then
+		return false;
+	end
+	local currentTime = GetServerTime();
+	return currentTime > activityData.eventStartTime;
+end
+local function HasTimedActivityExpired(activityData)
+	if not IsTimedActivity(activityData) then
+		return false;
+	end
+	local currentTime = GetServerTime();
+	return currentTime > activityData.eventEndTime;
+end
+local function IsTimedActivityActive(activityData)
+	return HasTimedActivityBegun(activityData) and not HasTimedActivityExpired(activityData);
+end
+local function GetActivityTimeRemaining(activityData)
+	if not IsTimedActivityActive(activityData) then
+		return 0;
+	end
+	local currentTime = GetServerTime();
+	return activityData.eventEndTime - currentTime;
+end
+local function IsTimedActivityCloseToExpiring(activityData)
+	if not IsTimedActivityActive(activityData) then
+		return false;
+	end
+	local timeRemaining = GetActivityTimeRemaining(activityData);
+	local timeRemainingUnits = ConvertSecondsToUnits(timeRemaining);
+
+	local totalEventTime = activityData.eventEndTime - activityData.eventStartTime;
+	local totalEventTimeUnits = ConvertSecondsToUnits(totalEventTime);
+	if totalEventTimeUnits.days >= 7 then
+		return timeRemainingUnits.days <= 3;
+	else
+		return timeRemainingUnits.days <= 1;
+	end
+end
+local ActivityTimeRemainingFormatter = CreateFromMixins(SecondsFormatterMixin);
+ActivityTimeRemainingFormatter:Init(0, SecondsFormatter.Abbreviation.None, false, true);
+function ActivityTimeRemainingFormatter:GetMinInterval(seconds)
+	return SecondsFormatter.Interval.Hours;
+end
+hooksecurefunc(MonthlyActivitiesButtonTextContainerMixin, 'UpdateConditionsText', function(self, data)
+    local conditionsText = "";
+    if not data.isChild then
+        if IsTimedActivity(data) then
+            conditionsText = e.cn(self:GetClockAtlasText(data))
+            if not data.completed and IsTimedActivityCloseToExpiring(data) then
+                local timeRemainingText = ActivityTimeRemainingFormatter:Format(GetActivityTimeRemaining(data));
+                conditionsText = conditionsText.." "..format('剩余时间：%s', timeRemainingText);
+            else
+                if data.eventName then
+                    conditionsText = conditionsText.." "..e.cn(data.eventName)
+                end
+                local eventStartTimeUnits = date("*t", data.eventStartTime);
+                local eventStartDate = FormatShortDate(eventStartTimeUnits.day, eventStartTimeUnits.month);
+                local eventEndTimeUnits = date("*t", data.eventEndTime);
+                local eventEndDate = FormatShortDate(eventEndTimeUnits.day, eventEndTimeUnits.month);
+                local durationText = format('(%s - %s)', eventStartDate, eventEndDate);
+                conditionsText = conditionsText.." "..durationText;
+            end
+        end
+        for _, condition in ipairs(data.conditions) do
+            if conditionsText ~= "" then
+                conditionsText = conditionsText..", ";
+            end
+            conditionsText = conditionsText..condition.text;
+        end
+    end
+    set(self.ConditionsText, conditionsText)
+end)
+]]
+
+
         hooksecurefunc(MonthlyActivitiesButtonTextContainerMixin, 'UpdateText', function(self, data)
             if data.name then
                 local a,b= data.name:match('(.-): (.+)')
@@ -5352,9 +5433,15 @@ local function Init_Loaded(arg1)
                 end
             end
         end)
+        hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.FilterList.ScrollBox, 'Update', function(self)
+            for _, btn in pairs(self:GetFrames() or {}) do
+                setLabel(btn.Label)
+            end
+        end)
+
 
         hooksecurefunc('EncounterJournal_ListInstances', function()
-            for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames()) do--ScrollBox.lua
+            for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames()) do
               setLabel(button.name)
               if button.tooltiptext and e.strText[button.tooltiptext] then
                 button.tooltiptext= e.strText[button.tooltiptext]
@@ -5364,6 +5451,24 @@ local function Init_Loaded(arg1)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
 
 
 
@@ -5568,6 +5673,23 @@ local function Init_Loaded(arg1)
         set(ClubFinderGuildFinderFrame.InsetFrame.PendingCommunityCards, 'BuildCardList', function(self)
             set(self:GetParent().InsetFrame.GuildDescription, '未发现结果。请修改你的搜索条件。')
         end)
+        hooksecurefunc(ClubFinderGuildFinderFrame, 'UpdateType', function(self)-- ClubFinderGuildAndCommunityMixin:UpdateType()
+            if (self.isGuildType) then
+                set(self.InsetFrame.GuildDescription, '公会是由许多关系紧密，想要一起享受游戏乐趣的玩家组成的群体。加入公会后，你可以享受许多福利，包括分享公会银行，以及公会聊天频道。\n\n使用此工具来寻找与你志同道合的公会吧。')
+                if (#self.PendingGuildCards.CardList > 0) then
+                    self.ClubFinderPendingTab.tooltip = format('等待确认中（%d）', #self.PendingGuildCards.CardList)
+                else
+                    self.ClubFinderPendingTab.tooltip = format('等待确认中（%d）', 0)
+                end
+            else
+                self.InsetFrame.GuildDescription:SetText('选择搜索条件，然后按下“搜索”')
+                if (#self.PendingCommunityCards.CardList > 0) then
+                    self.ClubFinderPendingTab.tooltip = format('等待确认中（%d）', #self.PendingCommunityCards.CardList)
+                else
+                    self.ClubFinderPendingTab.tooltip = '等待确认中（0）'
+                end
+            end
+        end)
 
         CommunitiesSettingsDialog:HookScript('OnShow', function(self)
             if self:GetClubType() == Enum.ClubType.BattleNet then
@@ -5624,8 +5746,9 @@ local function Init_Loaded(arg1)
         end)
             --set(ClubFinderFilterDropdown.Label, '过滤器')
             --set(ClubFinderSortByDropdown.Label, '排序')
+            set(ClubFinderSizeDropdown.Label)
             set(ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search, '搜索')
-
+            set(ClubFinderGuildFinderFrame.OptionsList.Search, '搜索')
             hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame, 'UpdateType', function(self)-- ClubFinderGuildAndCommunityMixin:UpdateType()
                 if (self.isGuildType) then
                     set(self.InsetFrame.GuildDescription, '公会是由许多关系紧密，想要一起享受游戏乐趣的玩家组成的群体。加入公会后，你可以享受许多福利，包括分享公会银行，以及公会聊天频道。\n\n使用此工具来寻找与你志同道合的公会吧。')
@@ -5647,6 +5770,23 @@ local function Init_Loaded(arg1)
                 self:GetParent().InsetFrame.GuildDescription:SetText('未发现结果。请修改你的搜索条件。')
             end)
             set(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.GuildDescription, '公会是由许多关系紧密，想要一起享受游戏乐趣的玩家组成的群体。加入公会后，你可以享受许多福利，包括分享公会银行，以及公会聊天频道。|n|n使用此工具来寻找与你志同道合的公会吧。')
+            --set(ClubFinderGuildFinderFrame.InsetFrame.GuildDescription, '公会是由许多关系紧密，想要一起享受游戏乐趣的玩家组成的群体。加入公会后，你可以享受许多福利，包括分享公会银行，以及公会聊天频道。|n|n使用此工具来寻找与你志同道合的公会吧。')
+
+            hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame, 'GetDisplayModeBasedOnSelectedTab', function(self)
+                if (self.isGuildType) then
+                    set(self.InsetFrame.GuildDescription, '公会是由许多关系紧密，想要一起享受游戏乐趣的玩家组成的群体。加入公会后，你可以享受许多福利，包括分享公会银行，以及公会聊天频道。\n\n使用此工具来寻找与你志同道合的公会吧。');
+                else
+                    set(self.InsetFrame.GuildDescription, '选择搜索条件，然后按下“搜索”');
+                end
+            end)
+            ClubFinderGuildFinderFrame.InsetFrame:HookScript('OnShow', function(self)--ClubFinder.xml
+                local disabledReason = C_ClubFinder.GetClubFinderDisableReason();
+                if disabledReason == Enum.ClubFinderDisableReason.Muted then
+                    self.ErrorDescription:SetText(RED_FONT_COLOR:WrapTextInColorCode('因为你的战网账号的家长监控设定或者隐私设定，此功能处于关闭状态'));
+                elseif disabledReason == Enum.ClubFinderDisableReason.Silenced then
+                    self.ErrorDescription:SetText(RED_FONT_COLOR:WrapTextInColorCode('由于您的角色在游戏中存在发布不当内容的行为，导致您的账号受到了禁言处罚。被禁言期间，您无法使用此功能。'));
+                end
+            end)
         hooksecurefunc(CommunitiesListEntryMixin, 'SetAddCommunity', function(self)
             set(self.Name, '加入或创建社区')
         end)
@@ -5654,6 +5794,15 @@ local function Init_Loaded(arg1)
             set(self.Name, '公会查找器')
         end)
 
+        set(CommunitiesFrame.ClubFinderInvitationFrame.WarningDialog.Accept, '接受')
+        set(CommunitiesFrame.ClubFinderInvitationFrame.WarningDialog.Cancel, '取消')
+        CommunitiesFrame.ClubFinderInvitationFrame.WarningDialog:HookScript('OnShow', function(self)
+            if (IsInGuild()) then
+                self.DialogLabel:SetText('加入此公会时，你会|cnRED_FONT_COLOR:离开当前的公会|r。');
+            else
+                self.DialogLabel:SetText('你只能加入一个公会。|n加入此公会时，|cnRED_FONT_COLOR:其他公会邀请会被移除。|r');
+            end
+        end)
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set(GuildBankFrameTab1, '公会银行')
             set(GuildItemSearchBox.Instructions, '搜索')

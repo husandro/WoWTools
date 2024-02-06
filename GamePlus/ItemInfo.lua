@@ -5,8 +5,7 @@ local panel= CreateFrame("Frame")
 
 local chargesStr= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local keyStr= format(CHALLENGE_MODE_KEYSTONE_NAME,'(.+) ')--钥石
-local equipStr= EQUIPMENT_SETS--:gsub('|cFFFFFFFF', ''):gsub('|r', '')
-equipStr= e.Magic(equipStr)
+local equipStr= e.Magic(EQUIPMENT_SETS)--:gsub('|cFFFFFFFF', ''):gsub('|r', ''))
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 --local upgradeStr2= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT_STRING:gsub('%%s %%s/%%s','(.+)' ) --"升级：%s %s/%s"
@@ -383,7 +382,7 @@ local function Set_Item_Info(self, tab)
                 topLeftText= select(3, e.GetPetCollectedNum(speciesID)) or topLeftText--宠物, 收集数量
                 local petType= select(3, C_PetJournal.GetPetInfoBySpeciesID(speciesID))
                 if petType then
-                    topRightText='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':0|t'
+                    topRightText='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':24|t'
                 end
             end
 
