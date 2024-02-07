@@ -20208,14 +20208,31 @@ elseif e.Player.class=='MAGE' then
         table.insert(spellTab, {132626, '传送门-锦绣谷', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff锦绣谷|r。'})
         table.insert(spellTab, {176242, '传送-战争之矛', '将你传送至|cff00ccff战争之矛。'})
         table.insert(spellTab, {176244, '传送门-战争之矛', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff战争之矛|r。'})
-        
         table.insert(spellTab, {281404, '传送-达萨罗', '将你传送|cff00ccff到达萨罗|r。'})
         table.insert(spellTab, {281402, '传送门-达萨罗', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff达萨罗|r。'})
-        
-        
-        
     elseif e.Player.faction=='Alliance' then
-
+        table.insert(spellTab, {3561, '传送-暴风城', '将你传送到|cff00ccff暴风城|r。'})
+        table.insert(spellTab, {10059, '传送门-暴风城', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff暴风城|r。'})
+        table.insert(spellTab, {3562, '传送-铁炉堡', '将你传送到|cff00ccff铁炉堡|r。'})
+        table.insert(spellTab, {11416, '传送门-铁炉堡', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff铁炉堡|r。'})
+        table.insert(spellTab, {3565, '传送-达纳苏斯', '将你传送到|cff00ccff达纳苏斯|r。'})
+        table.insert(spellTab, {11419, '传送门-达纳苏斯', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff达纳苏斯|r。'})
+        table.insert(spellTab, {32271, '传送-埃索达', '将你传送到|cff00ccff埃索达|r。'})
+        table.insert(spellTab, {32266, '传送门-埃索达', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff埃索达|r。'})
+        table.insert(spellTab, {49359, '传送-塞拉摩', '将你传送到|cff00ccff塞拉摩|r。'})
+        table.insert(spellTab, {49360, '传送门-塞拉摩', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff塞拉摩|r。'})
+        table.insert(spellTab, {33690, '传送-沙塔斯', '将你传送到|cff00ccff沙塔斯|r。'})
+        table.insert(spellTab, {33691, '传送门-沙塔斯', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff沙塔斯城|r。'})
+        table.insert(spellTab, {53140, '传送-达拉然-诺森德', '将你传送到|cff00ccff诺森德的达拉然|r。'})
+        table.insert(spellTab, {53142, '传送门-达拉然-诺森德', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff达拉然|r。'})
+        table.insert(spellTab, {88342, '传送-托尔巴拉德', '将你传送到|cff00ccff托尔巴拉德|r。'})
+        table.insert(spellTab, {88345, '传送门-托尔巴拉德', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff托尔巴拉德|r。'})
+        table.insert(spellTab, {132621, '传送-锦绣谷', '将你传送到|cff00ccff锦绣谷|r。'})
+        table.insert(spellTab, {132620, '传送门-锦绣谷', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff锦绣谷城|r。'})
+        table.insert(spellTab, {176248, '传送-暴风之盾', '将你传送到|cff00ccff暴风之盾|r。'})
+        table.insert(spellTab, {176246, '传送门-暴风之盾', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff暴风之盾|r。'})
+        table.insert(spellTab, {281403, '传送-伯拉勒斯', '将你传送到|cff00ccff伯拉勒斯|r。'})
+        table.insert(spellTab, {281400, '传送门-伯拉勒斯', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff伯拉勒斯|r。'})
     end
     table.insert(spellTab, {224869, '传送-达拉然-破碎群岛', '将你传送至破碎群岛的|cff00ccff达拉然|r。'})
     table.insert(spellTab, {224871, '传送门-达拉然-破碎群岛', '制造一个传送门，将使用传送门的队伍成员传送到破碎群岛的|cff00ccff达拉然|r。'})
@@ -20225,44 +20242,6 @@ elseif e.Player.class=='MAGE' then
     table.insert(spellTab, {395289, '传送门-瓦德拉肯', '制造一个传送门，将使用传送门的队伍成员传送到|cff00ccff瓦德拉肯|r。'})
     table.insert(spellTab, {120145, '远古传送-达拉然', '将你传送到|cff00ccff达拉然|r。'})
     table.insert(spellTab, {193759, '传送-守护者圣殿', '将你传送至|cff00ccff守护者圣殿|r。'})
-        --[[
-
-
-          {spell=3561, spell2=10059,  name='暴风城', luce=true,},
-            {spell=3562, spell2=11416, name='铁炉堡'},
-            {spell=3565, spell2=11419, name='达纳苏斯'},
-            {spell=32271, spell2=32266, name='埃索达'},
-            {spell=49359, spell2=49360, name='塞拉摩'},
-            {spell=33690, spell2=33691, name='沙塔斯'},
-            {spell=53140, spell2=53142, name='诺森德'},
-            {spell=88342, spell2=88345, name='托尔巴拉德'},
-            {spell=132621, spell2=132620, name='锦绣谷'},
-            {spell=176248, spell2=176246, name='暴风之盾'},
-            {spell=281403, spell2=281400, name='伯拉勒斯'},
-
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-        table.insert(spellTab, {', ''})
-
-    ]]
 end
 
 
