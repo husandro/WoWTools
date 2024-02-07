@@ -92,95 +92,6 @@ end
 
 
 
---###############
---试衣间, 外观列表
---DressUpFrames.lua
-local function Init_DressUpFrames()--试衣间, 外观列表
-    hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'SetDetails', function(self, transmogID, icon, name, useSmallIcon, slotState, isHiddenVisual)
-        local link
-        if not Save.hideDressUpOutfit and transmogID then
-            if self.item then
-                link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(self.transmogID));
-            else
-                link = select(2, C_TransmogCollection.GetIllusionStrings(self.transmogID));
-            end
-        end
-        if link and not self.btn then
-            self.btn=e.Cbtn(self, {icon=true, size={20,20}})
-            self.btn:SetPoint('RIGHT')
-            self.btn:SetAlpha(0.3)
-            self.btn:SetScript('OnEnter', function(self2, d)
-                if self2.link and self2.link:find('item') then
-                    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                    e.tips:ClearLines()
-                    e.tips:SetHyperlink(self2.link)
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(e.onlyChinese and '链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
-                    e.tips:AddDoubleLine(e.onlyChinese and '外观' or WARDROBE, e.Icon.right)
-                    e.tips:Show()
-                end
-            end)
-            self.btn:SetScript('OnLeave', function ()
-                e.tips:Hide()
-            end)
-            self.btn:SetScript('OnMouseDown', function (self2, d)
-                if self2.link then
-                    if d=='LeftButton' then
-                        e.Chat(self2.link, nil, true)
-                        --local chat=SELECTED_DOCK_FRAME
-                        --ChatFrame_OpenChat(chat.editBox:GetText()..self2.link, chat)
-                    elseif d=='RightButton' then
-                        if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
-                            C_AddOns.LoadAddOn('Blizzard_Collections')
-                        end
-                        local wcFrame= WardrobeCollectionFrame
-                        if not CollectionsJournal:IsVisible() or not wcFrame:IsVisible() then
-                        ToggleCollectionsJournal(5)
-                        end
-                        if wcFrame.activeFrame ~= wcFrame.ItemsCollectionFrame then
-                            wcFrame:ClickTab(wcFrame.ItemsTab);
-                        end
-                        if self2.transmogLocation then
-                            WardrobeCollectionFrame.ItemsCollectionFrame:SetActiveSlot(self2.transmogLocation)
-                        end
-                        WardrobeCollectionFrameSearchBox:SetText(self2.name or '')
-                    end
-                end
-            end)
-        end
-        if self.btn then
-            self.btn.link=link
-            self.btn.name=name
-            self.btn.transmogLocation=self.transmogLocation
-            if icon then
-                self.btn:SetNormalTexture(icon)
-            end
-            self.btn:SetShown(link and true or false)
-        end
-    end)
-
-    if DressUpFrame and DressUpFrame.OutfitDetailsPanel then
-        local sel= e.Cbtn(DressUpFrame.OutfitDetailsPanel, {icon=Save.hideDressUpOutfit, size={16,16}})
-        sel:SetPoint('BOTTOMRIGHT', -5, 10)
-        sel:SetAlpha(0.3)
-        sel:SetScript('OnMouseDown', function ()
-            Save.hideDressUpOutfit= not Save.hideDressUpOutfit and true or nil
-            print(id, e.cn(addName), e.onlyChinese and '外观列表' or DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.hideDressUpOutfit),e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
-            sel:SetNormalAtlas(Save.hideDressUpOutfit and e.Icon.disabled or e.Icon.icon)
-        end)
-        sel:SetScript('OnEnter', function (self2)
-            e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, e.cn(addName))
-            e.tips:AddDoubleLine(e.onlyChinese and '外观列表' or DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.hideDressUpOutfit)..e.Icon.left)
-            e.tips:Show()
-        end)
-        sel:SetScript('OnLeave', function ()
-            e.tips:Hide()
-        end)
-    end
-end
-
 
 
 
@@ -1313,6 +1224,182 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+local function Init()
+    --试衣间, 外观列表
+    --DressUpFrames.lua
+    hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'SetDetails', function(frame)
+        if frame.setEnter then
+            return
+        end
+        frame.setEnter=true
+        frame.Icon:EnableMouse(true)
+        function frame:get_item_link()
+            local link
+            if self.transmogID then
+                if self.item then
+                    link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(self.transmogID));
+                else
+                    link = select(2, C_TransmogCollection.GetIllusionStrings(self.transmogID));
+                end
+            end
+            return link
+        end
+        frame.Icon:SetScript("OnMouseUp", function(self) self:SetAlpha(0.5) end)
+        frame.Icon:SetScript("OnMouseDown", function(self, d)
+            local p= self:GetParent()
+            local link= p:get_item_link()
+            if d=='LeftButton' then
+                e.Chat(link, nil, true)
+            elseif d=='RightButton' then
+                if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
+                    C_AddOns.LoadAddOn('Blizzard_Collections')
+                end
+                local wcFrame= WardrobeCollectionFrame
+                if not CollectionsJournal:IsVisible() or not wcFrame:IsVisible() then
+                    ToggleCollectionsJournal(5)
+                end
+                if wcFrame.activeFrame ~= wcFrame.ItemsCollectionFrame then
+                    wcFrame:ClickTab(wcFrame.ItemsTab);
+                end
+                if p.transmogLocation then
+                    WardrobeCollectionFrame.ItemsCollectionFrame:SetActiveSlot(p.transmogLocation)
+                end
+                WardrobeCollectionFrameSearchBox:SetText(p.name or '')
+            end
+            self:SetAlpha(0.3)
+        end)
+        frame.Icon:SetScript("OnLeave", function(self) GameTooltip_Hide() self:SetAlpha(1) end)
+        frame.Icon:SetScript("OnEnter", function(self)
+            local p= self:GetParent()
+            local link= p:get_item_link()
+            if not link then
+                return
+            end
+            e.tips:SetOwner(self, "ANCHOR_RIGHT")
+            e.tips:ClearLines()
+           
+                e.tips:SetHyperlink(link)
+           
+            if link or p.name then
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.onlyChinese and '链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
+                e.tips:AddDoubleLine(e.onlyChinese and '搜索' or SEARCH, e.Icon.right)
+            end
+            e.tips:Show()
+            self:SetAlpha(0.5)
+        end)
+    end)
+end
+--[[
+        local link
+        if not Save.hideDressUpOutfit and transmogID then
+            if self.item then
+                link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(self.transmogID));
+            else
+                link = select(2, C_TransmogCollection.GetIllusionStrings(self.transmogID));
+            end
+        end
+        if link and not self.btn then
+            self.btn=e.Cbtn(self, {icon=true, size={20,20}})
+            self.btn:SetPoint('RIGHT')
+            self.btn:SetAlpha(0.3)
+            self.btn:SetScript('OnEnter', function(self2, d)
+                if self2.link and self2.link:find('item') then
+                    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+                    e.tips:ClearLines()
+                    e.tips:SetHyperlink(self2.link)
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(e.onlyChinese and '链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
+                    e.tips:AddDoubleLine(e.onlyChinese and '外观' or WARDROBE, e.Icon.right)
+                    e.tips:Show()
+                end
+            end)
+            self.btn:SetScript('OnLeave', function ()
+                e.tips:Hide()
+            end)
+            self.btn:SetScript('OnMouseDown', function (self2, d)
+                if self2.link then
+                    if d=='LeftButton' then
+                        e.Chat(self2.link, nil, true)
+                        --local chat=SELECTED_DOCK_FRAME
+                        --ChatFrame_OpenChat(chat.editBox:GetText()..self2.link, chat)
+                    elseif d=='RightButton' then
+                        if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
+                            C_AddOns.LoadAddOn('Blizzard_Collections')
+                        end
+                        local wcFrame= WardrobeCollectionFrame
+                        if not CollectionsJournal:IsVisible() or not wcFrame:IsVisible() then
+                        ToggleCollectionsJournal(5)
+                        end
+                        if wcFrame.activeFrame ~= wcFrame.ItemsCollectionFrame then
+                            wcFrame:ClickTab(wcFrame.ItemsTab);
+                        end
+                        if self2.transmogLocation then
+                            WardrobeCollectionFrame.ItemsCollectionFrame:SetActiveSlot(self2.transmogLocation)
+                        end
+                        WardrobeCollectionFrameSearchBox:SetText(self2.name or '')
+                    end
+                end
+            end)
+        end
+        if self.btn then
+            self.btn.link=link
+            self.btn.name=name
+            self.btn.transmogLocation=self.transmogLocation
+            if icon then
+                self.btn:SetNormalTexture(icon)
+            end
+            self.btn:SetShown(link and true or false)
+        end
+        local name= e.strText[self.name]
+        if name then
+            self.Name:SetText(name)
+        end
+    end)
+
+    if DressUpFrame and DressUpFrame.OutfitDetailsPanel then
+        local sel= e.Cbtn(DressUpFrame.OutfitDetailsPanel, {icon=Save.hideDressUpOutfit, size={16,16}})
+        sel:SetPoint('BOTTOMRIGHT', -5, 10)
+        sel:SetAlpha(0.3)
+        sel:SetScript('OnMouseDown', function ()
+            Save.hideDressUpOutfit= not Save.hideDressUpOutfit and true or nil
+            print(id, e.cn(addName), e.onlyChinese and '外观列表' or DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.hideDressUpOutfit),e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+            sel:SetNormalAtlas(Save.hideDressUpOutfit and e.Icon.disabled or e.Icon.icon)
+        end)
+        sel:SetScript('OnEnter', function (self2)
+            e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(e.onlyChinese and '外观列表' or DRESSING_ROOM_APPEARANCE_LIST, e.GetShowHide(not Save.hideDressUpOutfit)..e.Icon.left)
+            e.tips:Show()
+        end)
+        sel:SetScript('OnLeave', function ()
+            e.tips:Hide()
+        end)
+    end]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("TRANSMOGRIFY_ITEM_UPDATE")
 panel:RegisterEvent("TRANSMOG_SETS_UPDATE_FAVORITE")
@@ -1346,7 +1433,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
-                Init_DressUpFrames()--试衣间, 外观列表
+                Init()--试衣间, 外观列表
                 C_Timer.After(2, function()
                     Set_Sets_Colleced()--收集所有角色套装数据
                     get_Items_Colleced()--物品, 幻化, 界面

@@ -2353,55 +2353,55 @@ local function Init()
     set(WorldMapFrameHomeButtonText, '世界', nil, true)
 
     --[[
-        self:AddOverlayFrame("WorldMapFloorNavigationFrameTemplate", "FRAME", "TOPLEFT", self:GetCanvasContainer(), "TOPLEFT", -15, 2);
-        self:AddOverlayFrame("WorldMapTrackingOptionsButtonTemplate", "DROPDOWNTOGGLEBUTTON", "TOPRIGHT", self:GetCanvasContainer(), "TOPRIGHT", -4, -2);
-        self:AddOverlayFrame("WorldMapTrackingPinButtonTemplate", "BUTTON", "TOPRIGHT", self:GetCanvasContainer(), "TOPRIGHT", -36, -2);
-        self:AddOverlayFrame("WorldMapBountyBoardTemplate", "FRAME", nil, self:GetCanvasContainer());
-        self:AddOverlayFrame("WorldMapActionButtonTemplate", "FRAME", nil, self:GetCanvasContainer());
-        self:AddOverlayFrame("WorldMapZoneTimerTemplate", "FRAME", "BOTTOM", self:GetCanvasContainer(), "BOTTOM", 0, 20);
-        self:AddOverlayFrame("WorldMapThreatFrameTemplate", "FRAME", "BOTTOMLEFT", self:GetCanvasContainer(), "BOTTOMLEFT", 0, 0);
+        self:AddOverlayFrame("WorldMapFloorNavigationFrameTemplate", "FRAME", "TOPLEFT", self:GetCanvasContainer(), "TOPLEFT", -15, 2)
+        self:AddOverlayFrame("WorldMapTrackingOptionsButtonTemplate", "DROPDOWNTOGGLEBUTTON", "TOPRIGHT", self:GetCanvasContainer(), "TOPRIGHT", -4, -2)
+        self:AddOverlayFrame("WorldMapTrackingPinButtonTemplate", "BUTTON", "TOPRIGHT", self:GetCanvasContainer(), "TOPRIGHT", -36, -2)
+        self:AddOverlayFrame("WorldMapBountyBoardTemplate", "FRAME", nil, self:GetCanvasContainer())
+        self:AddOverlayFrame("WorldMapActionButtonTemplate", "FRAME", nil, self:GetCanvasContainer())
+        self:AddOverlayFrame("WorldMapZoneTimerTemplate", "FRAME", "BOTTOM", self:GetCanvasContainer(), "BOTTOM", 0, 20)
+        self:AddOverlayFrame("WorldMapThreatFrameTemplate", "FRAME", "BOTTOMLEFT", self:GetCanvasContainer(), "BOTTOMLEFT", 0, 0)
         self:AddOverlayFrame("WorldMapActivityTrackerTemplate", "BUTTON", "BO
     ]]
     --WorldMapMixin:AddOverlayFrames()
     local optionButton=WorldMapFrame.overlayFrames[2]
     if optionButton then
         optionButton:HookScript('OnEnter', function()
-            GameTooltip_SetTitle(GameTooltip, '地图筛选');
-	        GameTooltip:Show();
+            GameTooltip_SetTitle(GameTooltip, '地图筛选')
+	        GameTooltip:Show()
         end)
     end
     local pingButton= WorldMapFrame.overlayFrames[3]
     if pingButton then
         pingButton:HookScript('OnEnter', function(self)--WorldMapTrackingPinButtonMixin:OnEnter()
-            GameTooltip_SetTitle(GameTooltip, '地图标记');
-            local mapID = self:GetParent():GetMapID();
+            GameTooltip_SetTitle(GameTooltip, '地图标记')
+            local mapID = self:GetParent():GetMapID()
             if C_Map.CanSetUserWaypointOnMap(mapID) then
-                GameTooltip_AddNormalLine(GameTooltip, '在地图上放置一个位置标记，此标记可以追踪，也可以分享给其他玩家。');
-                GameTooltip_AddBlankLineToTooltip(GameTooltip);
-                GameTooltip_AddInstructionLine(GameTooltip, '点击这个按钮，然后在地图上点击来放置一个标记，或者直接<按住Ctrl点击地图>。');
+                GameTooltip_AddNormalLine(GameTooltip, '在地图上放置一个位置标记，此标记可以追踪，也可以分享给其他玩家。')
+                GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                GameTooltip_AddInstructionLine(GameTooltip, '点击这个按钮，然后在地图上点击来放置一个标记，或者直接<按住Ctrl点击地图>。')
             else
-                GameTooltip_AddErrorLine(GameTooltip, '你不能在这张地图上放置标记。');
+                GameTooltip_AddErrorLine(GameTooltip, '你不能在这张地图上放置标记。')
             end
-            GameTooltip:Show();
+            GameTooltip:Show()
         end)
     end
     local threatButton=  WorldMapFrame.overlayFrames[7]
     if threatButton then
-        GameTooltip_SetTitle(GameTooltip, '恩佐斯突袭');
-        GameTooltip_AddColoredLine(GameTooltip, '点击浏览被恩佐斯的军队突袭的地区。', GREEN_FONT_COLOR);
-        GameTooltip:Show();
+        GameTooltip_SetTitle(GameTooltip, '恩佐斯突袭')
+        GameTooltip_AddColoredLine(GameTooltip, '点击浏览被恩佐斯的军队突袭的地区。', GREEN_FONT_COLOR)
+        GameTooltip:Show()
     end
     hooksecurefunc(WorldMapTrackingPinButtonMixin, 'OnEnter', function(self)
-        GameTooltip_SetTitle(GameTooltip, '地图标记');
-        local mapID = self:GetParent():GetMapID();
+        GameTooltip_SetTitle(GameTooltip, '地图标记')
+        local mapID = self:GetParent():GetMapID()
         if C_Map.CanSetUserWaypointOnMap(mapID) then
-            GameTooltip_AddNormalLine(GameTooltip, '在地图上放置一个位置标记，此标记可以追踪，也可以分享给其他玩家。');
-            GameTooltip_AddBlankLineToTooltip(GameTooltip);
-            GameTooltip_AddInstructionLine(GameTooltip, '点击这个按钮，然后在地图上点击来放置一个标记，或者直接<按住Ctrl点击地图>。');
+            GameTooltip_AddNormalLine(GameTooltip, '在地图上放置一个位置标记，此标记可以追踪，也可以分享给其他玩家。')
+            GameTooltip_AddBlankLineToTooltip(GameTooltip)
+            GameTooltip_AddInstructionLine(GameTooltip, '点击这个按钮，然后在地图上点击来放置一个标记，或者直接<按住Ctrl点击地图>。')
         else
-            GameTooltip_AddErrorLine(GameTooltip, '你不能在这张地图上放置标记。');
+            GameTooltip_AddErrorLine(GameTooltip, '你不能在这张地图上放置标记。')
         end
-        GameTooltip:Show();
+        GameTooltip:Show()
     end)
 
     --小地图
@@ -3823,7 +3823,7 @@ local function Init()
             if (FlagsUtil.IsSet(optionInfo.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)) then
                 set(self, foramt('|cnPURE_BLUE_COLOR:（任务）|r%s', name))
             else
-                set(self, name);
+                set(self, name)
             end
         end
     end)
@@ -3837,12 +3837,100 @@ local function Init()
         end
     end
     hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(_, questInfo)
-        UpdateTitleForQuest(questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial);
+        UpdateTitleForQuest(questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial)
     end)
     hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(_, questInfo)
-        UpdateTitleForQuest(questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial);
+        UpdateTitleForQuest(questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial)
     end)
 
+    --试衣间
+    set(DressUpFrameTitleText, '试衣间')
+    set(DressUpFrameOutfitDropDown.SaveButton, '保存')
+    set(DressUpFrame.LinkButton, '外观方案链接')
+    set(DressUpFrameResetButton, '重置')
+    set(DressUpFrameCancelButton, '关闭')
+    DressUpFrame.ToggleOutfitDetailsButton:HookScript('OnEnter', function()
+        GameTooltip_SetTitle(GameTooltip, '外观列表')
+		GameTooltip:Show()
+    end)
+
+    --local TRANSMOGRIFY_TOOLTIP_APPEARANCE_KNOWN_CHECKMARK = "|A:common-icon-checkmark:16:16:0:-1|a 你已经收藏过此外观了"
+    hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'OnEnter', function(self)--DressUpFrames.lua
+        if not self.transmogID or (self.item and not self.item:IsItemDataCached()) then
+            return
+        end
+        local name= e.strText[self.name] or ' '
+        if self.isHiddenVisual then
+            GameTooltip_AddColoredLine(GameTooltip, name, NORMAL_FONT_COLOR)
+        elseif not self.item then
+            -- illusion
+            GameTooltip_AddColoredLine(GameTooltip,name, NORMAL_FONT_COLOR)
+            if self.slotState == 3 then
+                GameTooltip_AddColoredLine(GameTooltip, '你尚未收藏过此外观', LIGHTBLUE_FONT_COLOR)
+            else
+                GameTooltip_AddColoredLine(GameTooltip, "|cnGREEN_FONT_COLOR:|A:common-icon-checkmark:16:16:0:-1|a 你已经收藏过此外观了", GREEN_FONT_COLOR)
+            end
+        elseif self.slotState == 1 then
+            local hasData, canCollect = C_TransmogCollection.AccountCanCollectSource(self.transmogID)
+            if not canCollect and (self.slotID == INVSLOT_MAINHAND or self.slotID == INVSLOT_OFFHAND) then
+                local pairedTransmogID = C_TransmogCollection.GetPairedArtifactAppearance(self.transmogID)
+                if pairedTransmogID then
+                    hasData, canCollect = C_TransmogCollection.AccountCanCollectSource(pairedTransmogID)
+                    if not hasData then
+                        return
+                    end
+                end
+            end
+            if canCollect then
+                local nameColor = self.item:GetItemQualityColor().color
+                GameTooltip_AddColoredLine(GameTooltip,name, nameColor)
+                local slotName = TransmogUtil.GetSlotName(self.slotID)
+                GameTooltip_AddColoredLine(GameTooltip, e.cn(_G[slotName]), HIGHLIGHT_FONT_COLOR)
+                GameTooltip_AddErrorLine(GameTooltip, '你的角色无法使用此外观。')
+            else
+                local hideVendorPrice = true
+                GameTooltip:SetHyperlink(self.item:GetItemLink(), nil, nil, hideVendorPrice)
+                GameTooltip_AddErrorLine(GameTooltip, '该物品无法在幻化时使用，但可以视为装备穿戴。')
+            end
+        elseif self.slotState == 3 then
+            if not C_TransmogCollection.PlayerKnowsSource(self.transmogID) then
+                local nameColor = self.item:GetItemQualityColor().color
+                GameTooltip_AddColoredLine(GameTooltip, name, nameColor)
+                local slotName = TransmogUtil.GetSlotName(self.slotID)
+                GameTooltip_AddColoredLine(GameTooltip, e.cn(_G[slotName]), HIGHLIGHT_FONT_COLOR)
+                GameTooltip_AddColoredLine(GameTooltip, '|cnRED_FONT_COLOR:你尚未收藏过此外观', LIGHTBLUE_FONT_COLOR)
+            end
+        else
+            local nameColor = self.item:GetItemQualityColor().color
+            GameTooltip_AddColoredLine(GameTooltip, name, nameColor)
+            local slotName = TransmogUtil.GetSlotName(self.slotID)
+            GameTooltip_AddColoredLine(GameTooltip, e.cn(_G[slotName]), HIGHLIGHT_FONT_COLOR)
+            GameTooltip_AddColoredLine(GameTooltip, '|cnGREEN_FONT_COLOR:|A:common-icon-checkmark:16:16:0:-1|a 你已经收藏过此外观了', GREEN_FONT_COLOR)
+        end
+        GameTooltip:Show()
+    end)
+
+    hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'SetAppearance', function(self, slotID, transmogID, isSecondary)
+        local itemID = C_TransmogCollection.GetSourceItemID(transmogID);
+        if not itemID and not isSecondary then
+            local slotName = e.strText[_G[TransmogUtil.GetSlotName(slotID)]]
+            if slotName then
+                set(self.Name, format('(%s)', slotName))
+            end
+        end
+    end)
+    hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'RefreshAppearanceTooltip', function(self)
+        GameTooltip_AddColoredLine(GameTooltip, '|cnRED_FONT_COLOR:你尚未收藏过此外观', LIGHTBLUE_FONT_COLOR);
+        GameTooltip:Show();
+    end)
+    hooksecurefunc(WardrobeOutfitFrame, 'Update', function(self)
+        if self.Buttons then
+            local btn=self.Buttons[#self.Buttons]
+            if btn then
+                set(btn, GREEN_FONT_COLOR_CODE..'新外观方案'..FONT_COLOR_CODE_CLOSE)
+            end
+        end
+    end)
 end
 
 
@@ -5343,77 +5431,77 @@ local function Init_Loaded(arg1)
 
 --[[
 local function IsTimedActivity(activityData)
-	return activityData.eventStartTime and activityData.eventEndTime;
+	return activityData.eventStartTime and activityData.eventEndTime
 end
 local function HasTimedActivityBegun(activityData)
 	if not IsTimedActivity(activityData) then
-		return false;
+		return false
 	end
-	local currentTime = GetServerTime();
-	return currentTime > activityData.eventStartTime;
+	local currentTime = GetServerTime()
+	return currentTime > activityData.eventStartTime
 end
 local function HasTimedActivityExpired(activityData)
 	if not IsTimedActivity(activityData) then
-		return false;
+		return false
 	end
-	local currentTime = GetServerTime();
-	return currentTime > activityData.eventEndTime;
+	local currentTime = GetServerTime()
+	return currentTime > activityData.eventEndTime
 end
 local function IsTimedActivityActive(activityData)
-	return HasTimedActivityBegun(activityData) and not HasTimedActivityExpired(activityData);
+	return HasTimedActivityBegun(activityData) and not HasTimedActivityExpired(activityData)
 end
 local function GetActivityTimeRemaining(activityData)
 	if not IsTimedActivityActive(activityData) then
-		return 0;
+		return 0
 	end
-	local currentTime = GetServerTime();
-	return activityData.eventEndTime - currentTime;
+	local currentTime = GetServerTime()
+	return activityData.eventEndTime - currentTime
 end
 local function IsTimedActivityCloseToExpiring(activityData)
 	if not IsTimedActivityActive(activityData) then
-		return false;
+		return false
 	end
-	local timeRemaining = GetActivityTimeRemaining(activityData);
-	local timeRemainingUnits = ConvertSecondsToUnits(timeRemaining);
+	local timeRemaining = GetActivityTimeRemaining(activityData)
+	local timeRemainingUnits = ConvertSecondsToUnits(timeRemaining)
 
-	local totalEventTime = activityData.eventEndTime - activityData.eventStartTime;
-	local totalEventTimeUnits = ConvertSecondsToUnits(totalEventTime);
+	local totalEventTime = activityData.eventEndTime - activityData.eventStartTime
+	local totalEventTimeUnits = ConvertSecondsToUnits(totalEventTime)
 	if totalEventTimeUnits.days >= 7 then
-		return timeRemainingUnits.days <= 3;
+		return timeRemainingUnits.days <= 3
 	else
-		return timeRemainingUnits.days <= 1;
+		return timeRemainingUnits.days <= 1
 	end
 end
-local ActivityTimeRemainingFormatter = CreateFromMixins(SecondsFormatterMixin);
-ActivityTimeRemainingFormatter:Init(0, SecondsFormatter.Abbreviation.None, false, true);
+local ActivityTimeRemainingFormatter = CreateFromMixins(SecondsFormatterMixin)
+ActivityTimeRemainingFormatter:Init(0, SecondsFormatter.Abbreviation.None, false, true)
 function ActivityTimeRemainingFormatter:GetMinInterval(seconds)
-	return SecondsFormatter.Interval.Hours;
+	return SecondsFormatter.Interval.Hours
 end
 hooksecurefunc(MonthlyActivitiesButtonTextContainerMixin, 'UpdateConditionsText', function(self, data)
-    local conditionsText = "";
+    local conditionsText = ""
     if not data.isChild then
         if IsTimedActivity(data) then
             conditionsText = e.cn(self:GetClockAtlasText(data))
             if not data.completed and IsTimedActivityCloseToExpiring(data) then
-                local timeRemainingText = ActivityTimeRemainingFormatter:Format(GetActivityTimeRemaining(data));
-                conditionsText = conditionsText.." "..format('剩余时间：%s', timeRemainingText);
+                local timeRemainingText = ActivityTimeRemainingFormatter:Format(GetActivityTimeRemaining(data))
+                conditionsText = conditionsText.." "..format('剩余时间：%s', timeRemainingText)
             else
                 if data.eventName then
                     conditionsText = conditionsText.." "..e.cn(data.eventName)
                 end
-                local eventStartTimeUnits = date("*t", data.eventStartTime);
-                local eventStartDate = FormatShortDate(eventStartTimeUnits.day, eventStartTimeUnits.month);
-                local eventEndTimeUnits = date("*t", data.eventEndTime);
-                local eventEndDate = FormatShortDate(eventEndTimeUnits.day, eventEndTimeUnits.month);
-                local durationText = format('(%s - %s)', eventStartDate, eventEndDate);
-                conditionsText = conditionsText.." "..durationText;
+                local eventStartTimeUnits = date("*t", data.eventStartTime)
+                local eventStartDate = FormatShortDate(eventStartTimeUnits.day, eventStartTimeUnits.month)
+                local eventEndTimeUnits = date("*t", data.eventEndTime)
+                local eventEndDate = FormatShortDate(eventEndTimeUnits.day, eventEndTimeUnits.month)
+                local durationText = format('(%s - %s)', eventStartDate, eventEndDate)
+                conditionsText = conditionsText.." "..durationText
             end
         end
         for _, condition in ipairs(data.conditions) do
             if conditionsText ~= "" then
-                conditionsText = conditionsText..", ";
+                conditionsText = conditionsText..", "
             end
-            conditionsText = conditionsText..condition.text;
+            conditionsText = conditionsText..condition.text
         end
     end
     set(self.ConditionsText, conditionsText)
@@ -5774,17 +5862,17 @@ end)
 
             hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame, 'GetDisplayModeBasedOnSelectedTab', function(self)
                 if (self.isGuildType) then
-                    set(self.InsetFrame.GuildDescription, '公会是由许多关系紧密，想要一起享受游戏乐趣的玩家组成的群体。加入公会后，你可以享受许多福利，包括分享公会银行，以及公会聊天频道。\n\n使用此工具来寻找与你志同道合的公会吧。');
+                    set(self.InsetFrame.GuildDescription, '公会是由许多关系紧密，想要一起享受游戏乐趣的玩家组成的群体。加入公会后，你可以享受许多福利，包括分享公会银行，以及公会聊天频道。\n\n使用此工具来寻找与你志同道合的公会吧。')
                 else
-                    set(self.InsetFrame.GuildDescription, '选择搜索条件，然后按下“搜索”');
+                    set(self.InsetFrame.GuildDescription, '选择搜索条件，然后按下“搜索”')
                 end
             end)
             ClubFinderGuildFinderFrame.InsetFrame:HookScript('OnShow', function(self)--ClubFinder.xml
-                local disabledReason = C_ClubFinder.GetClubFinderDisableReason();
+                local disabledReason = C_ClubFinder.GetClubFinderDisableReason()
                 if disabledReason == Enum.ClubFinderDisableReason.Muted then
-                    self.ErrorDescription:SetText(RED_FONT_COLOR:WrapTextInColorCode('因为你的战网账号的家长监控设定或者隐私设定，此功能处于关闭状态'));
+                    self.ErrorDescription:SetText(RED_FONT_COLOR:WrapTextInColorCode('因为你的战网账号的家长监控设定或者隐私设定，此功能处于关闭状态'))
                 elseif disabledReason == Enum.ClubFinderDisableReason.Silenced then
-                    self.ErrorDescription:SetText(RED_FONT_COLOR:WrapTextInColorCode('由于您的角色在游戏中存在发布不当内容的行为，导致您的账号受到了禁言处罚。被禁言期间，您无法使用此功能。'));
+                    self.ErrorDescription:SetText(RED_FONT_COLOR:WrapTextInColorCode('由于您的角色在游戏中存在发布不当内容的行为，导致您的账号受到了禁言处罚。被禁言期间，您无法使用此功能。'))
                 end
             end)
         hooksecurefunc(CommunitiesListEntryMixin, 'SetAddCommunity', function(self)
@@ -5798,9 +5886,9 @@ end)
         set(CommunitiesFrame.ClubFinderInvitationFrame.WarningDialog.Cancel, '取消')
         CommunitiesFrame.ClubFinderInvitationFrame.WarningDialog:HookScript('OnShow', function(self)
             if (IsInGuild()) then
-                self.DialogLabel:SetText('加入此公会时，你会|cnRED_FONT_COLOR:离开当前的公会|r。');
+                self.DialogLabel:SetText('加入此公会时，你会|cnRED_FONT_COLOR:离开当前的公会|r。')
             else
-                self.DialogLabel:SetText('你只能加入一个公会。|n加入此公会时，|cnRED_FONT_COLOR:其他公会邀请会被移除。|r');
+                self.DialogLabel:SetText('你只能加入一个公会。|n加入此公会时，|cnRED_FONT_COLOR:其他公会邀请会被移除。|r')
             end
         end)
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行

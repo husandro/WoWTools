@@ -1160,6 +1160,16 @@ local function Init_All_Frame()
     set_Alpha_Color(ItemTextMaterialBotRight, nil, nil, min05)
     set_ScrollBar(ItemTextScrollFrame)
     set_NineSlice(ItemTextFrameInset, true)
+
+    --试衣间
+    set_NineSlice(DressUpFrame, true)
+    set_Alpha_Color(DressUpFrameBg)
+    hide_Texture(DressUpFrameInset.Bg)
+    set_Alpha_Frame_Texture(DressUpFrameInset)
+    set_Alpha_Color(DressUpFrame.ModelBackground, nil, nil, min05)
+    set_Alpha_Frame_Texture(DressUpFrame.OutfitDetailsPanel, {alpha=min03})
+    hide_Texture(DressUpFrame.OutfitDetailsPanel.BlackBackground)
+    set_Menu(DressUpFrameOutfitDropDown)
 end
 
 

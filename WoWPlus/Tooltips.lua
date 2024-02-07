@@ -1939,6 +1939,15 @@ local function Init()
         end)
     end
 
+    --试衣间
+    --DressUpFrames.lua
+    hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'OnEnter', function(self)
+        if self.transmogID then
+            e.tips:AddDoubleLine('transmogID', self.transmogID)
+        end
+    end)
+
+
     local function create_Quest_Label(self)--添加任务ID
         if not self.questIDLabel then
             self.questIDLabel= e.Cstr(self, {mouse=true})
