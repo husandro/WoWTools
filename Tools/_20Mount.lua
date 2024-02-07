@@ -804,7 +804,7 @@ local function InitMenu(_, level, type)--主菜单
 
     elseif type==ITEMS then--物品, 二级菜单
         for itemID, _ in pairs(Save.Mounts[ITEMS]) do
-            local text=C_Item.GetItemNameByID(itemID) or ('itemID: '..itemID)
+            local text= e.cn(C_Item.GetItemNameByID(itemID)) or ('itemID: '..itemID)
             local icon= C_Item.GetItemIconByID(itemID)
             if icon then
                 text= '|T'..icon..':0|t'..text
@@ -840,7 +840,7 @@ local function InitMenu(_, level, type)--主菜单
     elseif type==SPELLS then--法术, 二级菜单
         for spellID, _ in pairs(Save.Mounts[SPELLS]) do
             local name, _, icon = GetSpellInfo(spellID)
-            local text= (icon and '|T'..icon..':0|t' or '').. (name or ('spellID: '..spellID))
+            local text= (icon and '|T'..icon..':0|t' or '').. (e.cn(name) or ('spellID: '..spellID))
             local known= spellID and IsSpellKnown(spellID)
             text= text..(known and e.Icon.select2 or e.Icon.O2)
             info={
@@ -917,7 +917,7 @@ local function InitMenu(_, level, type)--主菜单
             end
 
             info={
-                text=name or ('spellID '..spellID),
+                text=e.cn(name) or ('spellID '..spellID),
                 icon=icon,
                 notCheckable=true,
                 keepShownOnClick=true,
@@ -933,7 +933,7 @@ local function InitMenu(_, level, type)--主菜单
                 for uiMapID, _ in pairs(Save.Mounts[FLOOR][spellID]) do
                     local mapInfo = C_Map.GetMapInfo(uiMapID)
                     text= text and text..'|n' or ''
-                    text= text..uiMapID..' '..(mapInfo and mapInfo.name or (e.onlyChinese and '无' or NONE))
+                    text= text..uiMapID..' '..(mapInfo and e.cn(mapInfo.name) or (e.onlyChinese and '无' or NONE))
                 end
                 info.tooltipText= text
             end
@@ -1079,14 +1079,14 @@ local function Init_Menu_Set_UI(self, level, menuList)--坐骑界面, 菜单
     if not mountID then
         return
     end
-    local name, _, icon, isActive, isUsable, sourceType, isFavorite, isFactionSpecific, faction, shouldHideOnChar, isCollected, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)
+    local name, _, icon, _, _, _, _, isFactionSpecific, faction, shouldHideOnChar, isCollected, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)
     local info
     for _, type in pairs(MountType) do
         if type=='Shift' or type==FLOOR then
             e.LibDD:UIDropDownMenu_AddSeparator(level)
         end
         info={
-            text= (e.onlyChinese and '设置' or SETTINGS)..' '..type..' #'..getTableNum(type),
+            text= (e.onlyChinese and '设置' or SETTINGS)..' '..e.cn(type)..' #'..getTableNum(type),
             checked= Save.Mounts[type][spellID] and true or nil,
             arg1={type= type, spellID= spellID, name= name, mountID= mountID},
             colorCode= (
@@ -1101,8 +1101,8 @@ local function Init_Menu_Set_UI(self, level, menuList)--坐骑界面, 菜单
             info.func= function(_, tab)
                 StaticPopup_Show(
                     id..addName..'FLOOR',
-                    (tab.icon and '|T'..tab.icon..':0|t' or '').. (tab.name or ('spellID: '..tab.spellID)),
-                    (Save.Mounts[FLOOR][tab.spellID] and (e.onlyChinese and '已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW))..'|n|n uiMapID: '..(C_Map.GetBestMapForUnit("player") or ''),
+                    (tab.icon and '|T'..tab.icon..':0|t' or '').. (e.cn(tab.name) or ('spellID: '..tab.spellID)),
+                    (Save.Mounts[FLOOR][tab.spellID] and (e.onlyChinese and '已存在' or format(ERR_ZONE_EXPLORED, PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW))..'|n|n uiMapID: '..(C_Map.GetBestMapForUnit("player") or ''),
                     tab
                 )
             end
@@ -1111,7 +1111,7 @@ local function Init_Menu_Set_UI(self, level, menuList)--坐骑界面, 菜单
                 for uiMapID,_ in pairs(Save.Mounts[type][spellID]) do
                     local mapInfo= uiMapID and C_Map.GetMapInfo(uiMapID)
                     text= text and text..'|n' or ''
-                    text= text..'uiMapID '..uiMapID..' '..(mapInfo and mapInfo.name or (e.onlyChinese and '无' or NONE))
+                    text= text..'uiMapID '..uiMapID..' '..(mapInfo and e.cn(mapInfo.name) or (e.onlyChinese and '无' or NONE))
                 end
                 if text then
                     info.tooltipOnButton=true
@@ -1133,7 +1133,7 @@ local function Init_Menu_Set_UI(self, level, menuList)--坐骑界面, 菜单
                 checkMount()--检测坐骑
                 setClickAtt()--设置属性
                 setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
-                MountJournal_UpdateMountList()
+                e.call('MountJournal_UpdateMountList')
             end
         end
         e.LibDD:UIDropDownMenu_AddButton(info, level);
@@ -1141,7 +1141,7 @@ local function Init_Menu_Set_UI(self, level, menuList)--坐骑界面, 菜单
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
-        text=name,
+        text=e.cn(name),
         icon=icon,
         isTitle=true,
         notCheckable=true,
@@ -1188,11 +1188,11 @@ local function setMountJournal_InitMountButton(self, elementData)--Blizzard_Moun
                 end
                 text=text..'|cnGREEN_FONT_COLOR:'..num..'|r'
             end
-            text= text..type
+            text= text..e.cn(type)
         end
     end
     if text and not self.text then--提示， 文本
-        self.text=e.Cstr(self, {copyFont=self.name, justifyH='RIGHT'})--nil, self.name, nil,nil,nil,'RIGHT')
+        self.text=e.Cstr(self, {justifyH='RIGHT'})--nil, self.name, nil,nil,nil,'RIGHT')
         self.text:SetPoint('RIGHT')
         self.text:SetFontObject('GameFontNormal')
         self.text:SetAlpha(0.3)

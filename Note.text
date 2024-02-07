@@ -389,7 +389,9 @@ LFG_LIST_GROUP_DATA_ATLASES = {
 	DAMAGER = GetMicroIconForRole("DAMAGER"),
 };
 
-
+if (UIDropDownMenu_GetCurrentDropDown() == MountJournal.mountOptionsMenu) then
+	HideDropDownMenu(1);
+end
 
 hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--列表 Blizzard_CategoryList.lua
 hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)

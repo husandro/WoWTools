@@ -633,7 +633,7 @@ local function set_memberFrame(memberFrame)
 
     --外框
     memberFrame.Texture:SetVertexColor(r, g, b)
-
+    memberFrame.PortraitMask:SetVertexColor(r, g, b)
     --目标的目标
     local btn= memberFrame.potFrame
     if not btn then

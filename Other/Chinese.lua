@@ -84,6 +84,21 @@ local function reg(self, text, index)
     end
 end
 
+local function hookButton(self, setFont)
+    local label= self.text or self.Text or self.Label
+    if not self or not self.SetText or not label or not label.GetText then
+        return
+    end
+    if setFont then
+        font(label)
+    end
+    set(label, e.strText[label:GetText()])
+    hooksecurefunc(self, 'SetText', function(frame, name)
+        if name and name~='' then
+            set(frame.text or frame.Text or frame.Label, e.strText[name])
+        end
+    end)
+end
 --[[local function role_check_tooltips_enter(self)
     local desc= _G["ROLE_DESCRIPTION_"..(self.role or '')]
     if not desc then
@@ -2350,7 +2365,7 @@ local function Init()
             self.BorderFrame:SetTitle('地图和任务日志')
         end
     end)
-    set(WorldMapFrameHomeButtonText, '世界', nil, true)
+    --set(WorldMapFrameHomeButtonText, '世界', nil, true)
 
     --[[
         self:AddOverlayFrame("WorldMapFloorNavigationFrameTemplate", "FRAME", "TOPLEFT", self:GetCanvasContainer(), "TOPLEFT", -15, 2)
@@ -2960,10 +2975,22 @@ local function Init()
 
 
     --NavigationBar.lua
+    hooksecurefunc('NavBar_AddButton', function(self, buttonData)
+        local navButton = self.navList[#self.navList]
+        local name= e.strText[buttonData.name]
+        if name then
+            set(navButton.text, name, nil, true);
+            local buttonExtraWidth;
+            if ( buttonData.listFunc and not self.oldStyle ) then
+                buttonExtraWidth = 53;
+            else
+                buttonExtraWidth = 30;
+            end
+            navButton:SetWidth(navButton.text:GetStringWidth() + buttonExtraWidth)
+        end
+    end)
     hooksecurefunc('NavBar_Initialize', function(_, _, homeData, homeButton)
-        local name= homeData and homeData.name or HOME
-        name = name==HOME and '首页' or e.strText[name]
-        set(homeButton.Text or homeButton.text, name, nil, true)
+        set(homeButton.text, e.strText[homeData.name] or '首页', nil, true)
     end)
 
 
@@ -5211,11 +5238,18 @@ local function Init_Loaded(arg1)
                     set(self.SlotLabel, '使用坐骑装备来强化你的坐骑。')
                 end
             end)
-            hooksecurefunc('MountJournal_UpdateMountDisplay', function()
+            hooksecurefunc('MountJournal_UpdateMountDisplay', function(forceSceneChange)
                 if ( MountJournal.selectedMountID ) then
-                    if (  C_MountJournal.NeedsFanfare(MountJournal.selectedMountID) ) then
+                    local creatureName, spellID= C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID);
+                    if ( MountJournal.MountDisplay.lastDisplayed ~= spellID or forceSceneChange ) then
+                        local _, descriptionText, sourceText = C_MountJournal.GetMountInfoExtraByID(MountJournal.selectedMountID);
+                        set(MountJournal.MountDisplay.InfoButton.Name, e.strText[creatureName])
+                        set(MountJournal.MountDisplay.InfoButton.Source, e.strText[sourceText]);
+                        set(MountJournal.MountDisplay.InfoButton.Lore, e.strText[descriptionText])
+                    end
+                    if C_MountJournal.NeedsFanfare(MountJournal.selectedMountID) then
                         set(MountJournal.MountButton, '打开')
-                    elseif ( select(4, C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID)) ) then
+                    elseif select(4, C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID)) then
                         set(MountJournal.MountButton, '解散坐骑')
                     else
                         set(MountJournal.MountButton, '召唤坐骑')
@@ -5230,6 +5264,13 @@ local function Init_Loaded(arg1)
                     GameTooltip_AddNormalLine(GameTooltip, '召唤或解散你选定的坐骑。', true)
                 end
                 GameTooltip:Show()
+            end)
+            hooksecurefunc('MountJournal_InitMountButton', function(button, elementData)
+                local creatureName= C_MountJournal.GetDisplayedMountInfo(elementData.index);
+                set(button.name, e.strText[creatureName]);
+                if button.DragonRidingLabel:IsShown() then
+                    set(button.DragonRidingLabel, '驭龙术')
+                end
             end)
 
         set(CollectionsJournalTab2, '宠物手册')
@@ -5537,6 +5578,105 @@ end)
             end
         end)
 
+        hooksecurefunc(EncounterJournalItemMixin,'Init', function(self)--Blizzard_EncounterJournal.lua
+            local itemInfo = C_EncounterJournal.GetLootInfoByIndex(self.index);
+            if ( itemInfo and itemInfo.name ) then
+                local name= e.strText[itemInfo.name]
+                if name then
+                    set(self.name, WrapTextInColorCode(name, itemInfo.itemQuality));
+                end
+                local slot= e.strText[itemInfo.slot]
+                if slot then
+                    if itemInfo.handError then
+                        set(self.slot, INVALID_EQUIPMENT_COLOR:WrapTextInColorCode(slot));
+                    else
+                        set(self.slot, slot);
+                    end
+                end
+                local armorType= e.strText[itemInfo.armorType]
+                if armorType then
+                    if itemInfo.weaponTypeError then
+                        set(self.armorType, INVALID_EQUIPMENT_COLOR:WrapTextInColorCode(armorType));
+                    else
+                        set(self.armorType, armorType);
+                    end
+                end
+        
+                local numEncounters = EJ_GetNumEncountersForLootByIndex(self.index);
+                if ( numEncounters == 1 ) then
+                    set(self.boss, format('首领：%s', EJ_GetEncounterInfo(itemInfo.encounterID)));
+                elseif ( numEncounters == 2) then
+                    local itemInfoSecond = C_EncounterJournal.GetLootInfoByIndex(self.index, 2);
+                    local secondEncounterID = itemInfoSecond and itemInfoSecond.encounterID;
+                    if ( itemInfo.encounterID and secondEncounterID ) then
+                        set(self.boss:SetFormattedText('首领：%s，%s', e.cn(EJ_GetEncounterInfo(itemInfo.encounterID)), e.cn(EJ_GetEncounterInfo(secondEncounterID))))
+                    end
+                elseif ( numEncounters > 2 ) then
+                    set(self.boss:SetFormattedText('首领：%s及其他', e.cn(EJ_GetEncounterInfo(itemInfo.encounterID))))
+                end
+            else
+                self.name:SetText('正在获取物品信息');
+            end
+        end)
+
+        hooksecurefunc(EncounterJournalItemHeaderMixin, 'Init', function(self, elementData)
+            set(self.name, e.strText[elementData.text])
+        end)
+
+        hooksecurefunc(EncounterBossButtonMixin, 'Init', function(self, elementData)
+            set(self, e.strText[elementData.name])
+        end)
+
+        hooksecurefunc('EncounterJournal_UpdateFilterString', function(self)
+            local name
+            local classID, specID = EJ_GetLootFilter()
+            if (specID > 0) then
+                local _
+                _, name = GetSpecializationInfoByID(specID, UnitSex("player"))
+            elseif (classID > 0) then
+                local classInfo = C_CreatureInfo.GetClassInfo(classID);
+                if classInfo then
+                    name = classInfo.className;
+                end
+            end
+            name= e.cn(name)
+            if name then
+                set(EncounterJournal.encounter.info.LootContainer.classClearFilter.text, format('职业筛选：%s', name))
+            end
+        end)
+
+      
+        if EncounterJournal.encounter.info then
+            local btnTab={
+                --"overviewTab",
+                "lootTab",
+                "bossTab",
+                "modelTab";
+            }
+            for _, str in pairs (btnTab) do
+                local button= EncounterJournal.encounter.info[str]
+                if button then
+                    local tooltip= e.strText[button.tooltip]
+                    if tooltip then
+                        button.tooltip= tooltip
+                    end
+                end
+            end
+        end
+        hooksecurefunc('EncounterJournal_DisplayInstance', function()
+            local self= EncounterJournal.encounter;
+            local instanceName, description = EJ_GetInstanceInfo();
+            set(self.instance.title, e.strText[instanceName])
+            set(self.info.instanceTitle, e.strText[instanceName])
+            set(self.instance.LoreScrollingFont, e.strText[description])
+            local tooltip= e.strText[self.info['overviewTab'].tooltip]
+            if tooltip then
+                self.info['overviewTab'].tooltip= tooltip
+            end
+        end)
+
+        hookButton(EncounterJournalEncounterFrameInfoSlotFilterToggle)
+        hookButton(EncounterJournalEncounterFrameInfoDifficulty)
 
 
 
@@ -5545,6 +5685,7 @@ end)
 
 
 
+        
 
 
 

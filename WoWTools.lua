@@ -3,7 +3,6 @@ local id, e = ...
 e.WoWDate={}
 e.strText={}
 e.tips=GameTooltip
-e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
 e.call=securecall
 --securecallfunction
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
@@ -61,7 +60,13 @@ function e.cn(text)
     end
 end
 
-
+--关闭，当前菜单
+e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
+function e.HideMenu(menu, index)
+    if (e.LibDD:UIDropDownMenu_GetCurrentDropDown() == menu) then
+        e.LibDD:HideDropDownMenu(index or 1);
+    end
+end
 
 local battleTag= select(2, BNGetInfo())
 local baseClass= UnitClassBase('player')

@@ -25,6 +25,7 @@ local Save= {
     quest= true,
     --questShowAllFaction=nil,--显示， 所有玩家派系
     questShowPlayerClass=true,--显示，玩家职业
+    --questShowInstance=true,--在副本显示
 }
 
 
@@ -491,7 +492,7 @@ end
 local function set_Register_Event()
     isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
     isIns=  isPvPArena
-            or (IsInInstance()
+            or (not Save.questShowInstance and IsInInstance()
                 and (GetNumGroupMembers()>3 or C_ChallengeMode.IsChallengeModeActive())
             )
 
@@ -609,10 +610,11 @@ local function Init()
             C_Timer.After(2, function() set_check_allQust_Plates() end)
 
         else
-            if not isIns and arg1 then
+            if arg1 then
                 if event=='NAME_PLATE_UNIT_ADDED' then
-                    set_questProgress_Text(C_NamePlate.GetNamePlateForUnit(arg1,  issecure()), arg1)
-
+                    if not isIns then
+                        set_questProgress_Text(C_NamePlate.GetNamePlateForUnit(arg1,  issecure()), arg1)
+                    end
                 elseif event=='NAME_PLATE_UNIT_REMOVED' then
                     local plate = C_NamePlate.GetNamePlateForUnit(arg1,  issecure())
                     if plate and plate.UnitFrame and plate.UnitFrame.questProgress then
@@ -954,6 +956,7 @@ local function set_Option()
     end)
     e.LibDD:UIDropDownMenu_SetText(menu, Save.targetTextureName)
     menu.Button:SetScript('OnClick', function(self)
+        e.HideMenu(self:GetParent())
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
     end)
 
@@ -1098,6 +1101,15 @@ local function set_Option()
     classCheck:SetChecked(Save.questShowPlayerClass)
     classCheck:SetScript('OnClick', function()
         Save.questShowPlayerClass= not Save.questShowPlayerClass and true or nil
+        set_All_Init()
+    end)
+
+    local instanceCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    instanceCheck.Text:SetText(e.onlyChinese and '在副本里显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, INSTANCE))
+    instanceCheck:SetPoint('TOPLEFT', questCheck, 'BOTTOMRIGHT')
+    instanceCheck:SetChecked(Save.questShowInstance)
+    instanceCheck:SetScript('OnClick', function()
+        Save.questShowInstance= not Save.questShowInstance and true or nil
         set_All_Init()
     end)
 end
