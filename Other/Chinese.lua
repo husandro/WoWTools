@@ -3916,6 +3916,7 @@ local function Init()
             if text then
                 local col, text2= text:match('(|cff......)(.-)|r')
                 local str1, str2= text:match('(.-) %((.-)%)')
+                local str3= text:match('%((.+)%)')
                 text= e.strText[text2 or text]
                 if text then
                     return col and col..text..'|r' or text
@@ -3925,7 +3926,9 @@ local function Init()
                     str2= str2:gsub('|r', '')
                     if e.strText[str1] or e.strText[str2] then
                         return (e.strText[str1] or str1)..(col2 or '')..' ('..(e.strText[str2] or str2)..')'..(col2 and '|r' or '')
-                    end    
+                    end
+                elseif e.strText[str3] then
+                    return '('..e.strText[str3]..')'
                 end
             end
         end

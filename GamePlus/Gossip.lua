@@ -261,9 +261,9 @@ local function Init_Menu_Gossip(_, level, type)
             local name= GetSpellLink(spellID) or ('spellID '..spellID)
             rarity= rarity+1
             local hex= select(4, GetItemQualityColor(rarity))
-            local quality=(hex and '|c'..hex or '')..(_G['ITEM_QUALITY'..rarity..'_DESC'] or rarity)
+            local quality=(hex and '|c'..hex or '')..(e.cn(_G['ITEM_QUALITY'..rarity..'_DESC']) or rarity)
             info={
-                text=(icon and '|T'..icon..':0|t' or '').. name..' '.. quality,
+                text=(icon and '|T'..icon..':0|t' or '')..name..' '.. quality,
                 tooltipOnButton=true,
                 tooltipTitle= e.Icon.left.. (e.onlyChinese and '移除' or REMOVE),
                 tooltipText= 'spellID '..spellID,
@@ -1221,7 +1221,7 @@ local function InitMenu_Quest(_, level, type)
         text= e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
         checked= Save.showAllQuestNum,
         tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '所有' or ALL,
+        tooltipTitle= e.onlyChinese and '显示所有数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, ALL),
         tooltipText= e.onlyChinese and '在副本中禁用|n任务>0' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AGGRO_WARNING_IN_INSTANCE, DISABLE)..'|n'..QUESTS_LABEL..' >0'),
         keepShownOnClick=true,
         func= function()

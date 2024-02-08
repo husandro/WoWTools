@@ -124,7 +124,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
         function btn.hearthstone:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id,'|T134414:0|t'..addName)
+            e.tips:AddDoubleLine(id,'|T134414:0|t'..(e.onlyChinese and '随机炉石' or addName))
             e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             e.tips:AddLine(' ')
             local itemID=self:get_itemID()
@@ -247,7 +247,7 @@ local function InitMenu(_, level, menuList)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     else
        info={
-            text='|cnGREEN_FONT_COLOR:'..#button.items..'|r'.. e.cn(addName),
+            text='|cnGREEN_FONT_COLOR:'..#button.items..'|r'.. (e.onlyChinese and '随机炉石' or addName),
             notCheckable=true,
             menuList='TOY',
             hasArrow=true,
