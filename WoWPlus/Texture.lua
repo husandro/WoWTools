@@ -476,7 +476,7 @@ local function Init_All_Frame()
      hide_Texture(CharacterModelFrameBackgroundOverlay)
 
      hide_Frame_Texture(GearManagerPopupFrame.BorderBox)
-     set_Alpha_Color(GearManagerPopupFrame.BG, nil, nil, min05)
+     set_Alpha_Color(GearManagerPopupFrame.BG, nil, nil, min03)
      set_ScrollBar(GearManagerPopupFrame.IconSelector)
      set_SearchBox(GearManagerPopupFrame.BorderBox.IconSelectorEditBox)
      set_Menu(GearManagerPopupFrame.BorderBox.IconTypeDropDown.DropDownMenu)
