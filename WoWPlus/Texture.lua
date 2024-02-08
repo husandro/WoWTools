@@ -475,6 +475,12 @@ local function Init_All_Frame()
      hide_Texture(CharacterModelFrameBackgroundBotRight)
      hide_Texture(CharacterModelFrameBackgroundOverlay)
 
+     hide_Frame_Texture(GearManagerPopupFrame.BorderBox)
+     set_Alpha_Color(GearManagerPopupFrame.BG, nil, nil, min05)
+     set_ScrollBar(GearManagerPopupFrame.IconSelector)
+     set_SearchBox(GearManagerPopupFrame.BorderBox.IconSelectorEditBox)
+     set_Menu(GearManagerPopupFrame.BorderBox.IconTypeDropDown.DropDownMenu)
+
      --法术书
      set_NineSlice(SpellBookFrame, true)
      set_NineSlice(SpellBookFrameInset)

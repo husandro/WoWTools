@@ -348,6 +348,11 @@ local function Init()
                 set(GearManagerPopupFrame.BorderBox.IconSelectionText, '选择一个图标：')
                 set(GearManagerPopupFrame.BorderBox.OkayButton, '确认')
                 set(GearManagerPopupFrame.BorderBox.CancelButton, '取消')
+                hooksecurefunc('PaperDollEquipmentManagerPane_InitButton', function(button, elementData)
+                    if elementData.addSetButton then
+                        set(button.text, '新的方案');
+                    end
+                end)
     set(CharacterFrameTab2, '声望')
     CharacterFrameTab2:HookScript('OnEnter', function()
         GameTooltip:SetText(MicroButtonTooltipText('声望', "TOGGLECHARACTER2"), 1.0,1.0,1.0 )
