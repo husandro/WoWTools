@@ -20398,14 +20398,9 @@ C_Timer.After(2, function()
         end
     end
     for _, info in pairs(specTab) do
-        local name, description, icon, role, classFile= select(2, GetSpecializationInfoByID(info[1]))
+        local name, description, _, role= select(2, GetSpecializationInfoByID(info[1]))
         if name and info[2] then
-            local col= RAID_CLASS_COLORS[classFile]
-            local text= col and col:WrapTextInColorCode(info[2]) or info[2]
-            text= e.Icon[role] and e.Icon[role]..text or text
-            text=(icon and '|T'..icon..':0|t' or '')..text or text
-            e.strText[name]= text
-
+            e.strText[name]= (e.Icon[role] or '')..info[2]
         end
         if description and info[3] then
             e.strText[description]= info[3]
