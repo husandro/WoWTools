@@ -36,16 +36,10 @@ local function set(self, text, affer, setFont)
     end
 end
 
-local function getText(text)
-    if text then
-        return e.strText[text]
-    end
-end
 
 local function setLabel(lable, text)
     if lable and lable.SetText then
-        text= text or lable:GetText()
-        set(lable, getText(text))
+        set(lable, e.strText[text or lable:GetText()])
     end
 end
 
@@ -75,7 +69,7 @@ local function reg(self, text, index)
     end
     for i, region in pairs({self:GetRegions()}) do
         if region:GetObjectType()=='FontString' and (index==i or not index) then
-            text= index==i and text or getText(region:GetText())
+            text= index==i and text or e.strText[region:GetText()]
             set(region, text)
             if index then
                 return
@@ -99,6 +93,28 @@ local function hookButton(self, setFont)
         end
     end)
 end
+
+
+local function set_tooltip(self)
+    if self then
+        local tooltip= e.strText[self.tooltip]
+        if tooltip then
+            self.tooltip = tooltip;
+        end
+        local tooltipText= self.tooltipText and e.strText[self.tooltipText]
+        if tooltipText then
+            self.tooltipText = tooltipText;
+        end
+    end
+end
+local function model(frame)
+    set_tooltip(frame.zoomInButton)
+    set_tooltip(frame.zoomOutButton)
+    set_tooltip(frame.rotateLeftButton)
+    set_tooltip(frame.rotateRightButton)
+    set_tooltip(frame.resetButton)
+end
+
 --[[local function role_check_tooltips_enter(self)
     local desc= _G["ROLE_DESCRIPTION_"..(self.role or '')]
     if not desc then
@@ -166,10 +182,10 @@ local function set_tooltip_func(self)
                 local left= _G[name.."TextLeft"..i]
                 local right= _G[name.."TextRight"..i]
                 if left and left:IsShown() then
-                    set(left, getText(left:GetText()))
+                    set(left, e.strText[left:GetText()])
                 end
                 if right and right:IsShown() then
-                    set(right, getText(right:GetText()))
+                    set(right, e.strText[right:GetText()])
                 end
             end
         end
@@ -3684,7 +3700,7 @@ local function Init()
 
 
 
-
+    --UIErrorsFrame
     hooksecurefunc(UIErrorsFrame, 'AddMessage', function(self, msg, ...)
         msg= e.strText[msg]
         if msg then
@@ -3693,108 +3709,7 @@ local function Init()
     end)
 
 
-    C_Timer.After(2, function()
-        AddonCompartmentFrame:SetScript("OnEnter", function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-            GameTooltip_SetTitle(GameTooltip, '插件')
-            GameTooltip:Show()
-        end)
-
-        --UIDropDownMenu.lua
-        local function GetChild(frame, name, key)
-            if (frame[key]) then
-                return frame[key]
-            elseif name then
-                return _G[name..key]
-            end
-
-            return nil
-        end
-        hooksecurefunc('UIDropDownMenu_SetText', function(frame, text)
-            if text and frame and type(text)=='string' then
-                local frameName = frame:GetName()
-                local col, text2= text:match('(|cff......)(.-)|r')
-                text= getText(text2 or text)
-                if text then
-                    text= col and col..text..'|r' or text
-                    set(GetChild(frame, frameName, "Text"), text)
-                end
-            end
-        end)
-        hooksecurefunc('UIDropDownMenu_AddButton', function(info, level)
-            level = level or 1
-            local listFrame = _G["DropDownList"..level]
-            listFrame = listFrame or _G["DropDownList"..level]
-            local listFrameName = listFrame:GetName()
-            local index = listFrame and (listFrame.numButtons) or 1
-            local button = _G[listFrameName.."Button"..index]
-
-            if info.text and button then
-                local col, text2= info.text:match('(|cff......)(.-)|r')
-                local text= getText(text2 or info.text)
-                if text then
-                    text= (info.colorCode or col) and (info.colorCode or col)..text.."|r" or text
-                    set(button, text)
-                end
-            end
-        end)
-
-
-        hooksecurefunc('UIMenu_AddButton', function(self, text)--UIMenu.lua
-            if ( self.numButtons > UIMENU_NUMBUTTONS ) then
-                return
-            end
-            local button = _G[self:GetName().."Button"..self.numButtons]
-            if ( button and text ) then
-                set(button, e.strText[text])
-		        set(_G[button:GetName().."ShortcutText"])
-            end
-        end)
-
-        for i=1, 12 do
-            setLabel(_G['ChatMenuButton'..i])
-        end
-
-        if _G['VoiceMacroMenu'] then
-            local w= _G['VoiceMacroMenu']:GetWidth()
-            _G['VoiceMacroMenu']:SetWidth(w*1.6)
-            for i=1, 23 do
-                local btn= _G['VoiceMacroMenuButton'..i]
-                local name= btn and btn:GetText()
-                local text= name and e.strText[name]
-                if text then
-                    set(btn, text)
-                    local shortcutString = _G[btn:GetName().."ShortcutText"]
-                    if shortcutString then
-                        set(shortcutString, name)
-                        shortcutString:Show()
-                    end
-                    btn:SetWidth(w*1.4)
-                end
-            end
-        end
-        if _G['EmoteMenu'] then
-            local w= _G['EmoteMenu']:GetWidth()
-            _G['EmoteMenu']:SetWidth(w*1.6)
-            for i=1, 21 do
-                local btn= _G['EmoteMenuButton'..i]
-                local name= btn and btn:GetText()
-                local text= name and e.strText[name]
-                if text then
-                    set(btn, text)
-                    local shortcutString = _G[btn:GetName().."ShortcutText"]
-                    if shortcutString then
-                        set(shortcutString, name)
-                        shortcutString:Show()
-                    end
-                    btn:SetWidth(w*1.4)
-                end
-            end
-        end
-    end)
-
-
-    --团队
+        --团队
     hooksecurefunc('CompactRaidFrameManager_UpdateLabel', function()
         set(CompactRaidFrameManager.displayFrame.label, IsInRaid() and '团员' or '队员')
     end)
@@ -3955,6 +3870,139 @@ local function Init()
             local btn=self.Buttons[#self.Buttons]
             if btn then
                 set(btn, GREEN_FONT_COLOR_CODE..'新外观方案'..FONT_COLOR_CODE_CLOSE)
+            end
+        end
+    end)
+
+
+    --PlayerCastingBarFrame
+    hooksecurefunc(PlayerCastingBarFrame, 'HandleInterruptOrSpellFailed', function(self, empoweredInterrupt, event, ...)
+        if self.barType == "interrupted" and self.Text then
+            set(self.Text, event == "UNIT_SPELLCAST_FAILED" and '失败' or '被打断')
+        end
+    end)
+    PlayerCastingBarFrame:HookScript('OnEvent', function(self, event)
+        if event== "UNIT_SPELLCAST_START" or event== "UNIT_SPELLCAST_CHANNEL_START" or event== "UNIT_SPELLCAST_EMPOWER_START" then
+            set(self.Text)
+        end
+    end)
+
+
+    C_Timer.After(2, function()
+        model(CharacterModelScene.ControlFrame)
+        model(WardrobeTransmogFrame.ModelScene.ControlFrame)
+        model(PetStableModelScene)
+
+        AddonCompartmentFrame:SetScript("OnEnter", function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip_SetTitle(GameTooltip, '插件')
+            GameTooltip:Show()
+        end)
+
+        --UIDropDownMenu.lua
+        local function GetChild(frame, name, key)
+            if (frame[key]) then
+                return frame[key]
+            elseif name then
+                return _G[name..key]
+            end
+
+            return nil
+        end
+        local function get_menu_text(text)--( ) . % + - * ? [ ^ $
+            if text then
+                local col, text2= text:match('(|cff......)(.-)|r')
+                local str1, str2= text:match('(.-) %((.-)%)')
+                text= e.strText[text2 or text]
+                if text then
+                    return col and col..text..'|r' or text
+                elseif str1 and str2 then
+                    local name, col2 =str1:match('(.-)(|cff......)')
+                    str1= name or str1
+                    str2= str2:gsub('|r', '')
+                    if e.strText[str1] or e.strText[str2] then
+                        return (e.strText[str1] or str1)..(col2 or '')..' ('..(e.strText[str2] or str2)..')'..(col2 and '|r' or '')
+                    end    
+                end
+            end
+        end
+        hooksecurefunc('UIDropDownMenu_SetText', function(frame, name)
+            if frame then
+                local text
+                if type(name)=='string' then
+                    text= name
+                elseif type(text)=='function' then
+                    text= name()
+                end
+                text= get_menu_text(text)
+                if text then
+                    set(GetChild(frame, frame:GetName(), "Text"), text)
+                end
+            end
+        end)
+        hooksecurefunc('UIDropDownMenu_AddButton', function(info, level)
+            level = level or 1
+            local listFrame = _G["DropDownList"..level]
+            listFrame = listFrame or _G["DropDownList"..level]
+            local listFrameName = listFrame:GetName()
+            local index = listFrame and (listFrame.numButtons) or 1
+            local button = _G[listFrameName.."Button"..index]
+            local text= get_menu_text(info.text)
+            if text then
+                set(button, info.colorCode and info.colorCode..text.."|r" or text)
+            end
+        end)
+
+
+        hooksecurefunc('UIMenu_AddButton', function(self, text)--UIMenu.lua
+            if ( self.numButtons > UIMENU_NUMBUTTONS ) then
+                return
+            end
+            local button = _G[self:GetName().."Button"..self.numButtons]
+            if ( button and text ) then
+                set(button, e.strText[text])
+		        set(_G[button:GetName().."ShortcutText"])
+            end
+        end)
+
+        for i=1, 12 do
+            setLabel(_G['ChatMenuButton'..i])
+        end
+
+        if _G['VoiceMacroMenu'] then
+            local w= _G['VoiceMacroMenu']:GetWidth()
+            _G['VoiceMacroMenu']:SetWidth(w*1.6)
+            for i=1, 23 do
+                local btn= _G['VoiceMacroMenuButton'..i]
+                local name= btn and btn:GetText()
+                local text= name and e.strText[name]
+                if text then
+                    set(btn, text)
+                    local shortcutString = _G[btn:GetName().."ShortcutText"]
+                    if shortcutString then
+                        set(shortcutString, name)
+                        shortcutString:Show()
+                    end
+                    btn:SetWidth(w*1.4)
+                end
+            end
+        end
+        if _G['EmoteMenu'] then
+            local w= _G['EmoteMenu']:GetWidth()
+            _G['EmoteMenu']:SetWidth(w*1.6)
+            for i=1, 21 do
+                local btn= _G['EmoteMenuButton'..i]
+                local name= btn and btn:GetText()
+                local text= name and e.strText[name]
+                if text then
+                    set(btn, text)
+                    local shortcutString = _G[btn:GetName().."ShortcutText"]
+                    if shortcutString then
+                        set(shortcutString, name)
+                        shortcutString:Show()
+                    end
+                    btn:SetWidth(w*1.4)
+                end
             end
         end
     end)
@@ -5350,6 +5398,9 @@ local function Init_Loaded(arg1)
         set(WardrobeOutfitEditFrame.AcceptButton, '接受')
         set(WardrobeOutfitEditFrame.CancelButton, '取消')
         set(WardrobeOutfitEditFrame.DeleteButton, '删除外观方案')
+        WardrobeTransmogFrame.ModelScene.ClearAllPendingButton:HookScript('OnEnter', function()
+            GameTooltip:SetText('取消所有的待定改动')
+        end)
 
 
 
@@ -6642,6 +6693,52 @@ end)
     elseif arg1=='Blizzard_PlayerChoice' then
         dia("CONFIRM_PLAYER_CHOICE", {button1 = '确定', button2 = '取消'})
         dia("CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING", {button1 = '接受', button2 = '拒绝'})
+        hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'SetupHeader', function (self)
+            if self.Header:IsShown() then
+                set(self.Header.Text, e.strText[self.optionInfo.header]);
+            end
+        end)
+        local rarityToString ={
+            [Enum.PlayerChoiceRarity.Common] = "|cffffffff普通|r|n|n",
+            [Enum.PlayerChoiceRarity.Uncommon] = "|cff1eff00优秀|r|n|n",
+            [Enum.PlayerChoiceRarity.Rare] = "|cff0070dd精良|r|n|n",
+            [Enum.PlayerChoiceRarity.Epic] = "|cffa335ee史诗|r|n|n",
+        }
+        hooksecurefunc(PlayerChoiceFrame, 'SetupOptions', function(self)----Blizzard_PlayerChoice.lua
+            for optionFrame in self.optionPools:EnumerateActiveByTemplate(self.optionFrameTemplate) do
+                set(optionFrame.OptionText, (rarityToString[optionFrame.optionInfo.rarity] or "")..e.cn(optionFrame.optionInfo.description))
+            end
+        end)
+        hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'OnEnter', function(self)
+            if not self.optionInfo.spellID then
+                local header= e.cn(self.optionInfo.header)
+                if self.optionInfo.rarityColor then
+                    header= self.optionInfo.rarityColor:WrapTextInColorCode(header)
+                end
+                GameTooltip_SetTitle(GameTooltip, header)
+                if self.optionInfo.rarity and self.optionInfo.rarityColor then
+                    local rarityStringIndex = self.optionInfo.rarity + 1;
+                    GameTooltip_AddColoredLine(GameTooltip, e.cn(_G["ITEM_QUALITY"..rarityStringIndex.."_DESC"]), self.optionInfo.rarityColor);
+                end
+                GameTooltip_AddNormalLine(GameTooltip, e.cn(self.optionInfo.description));
+                GameTooltip:Show()
+            end
+        end)
+
+        hooksecurefunc(GenericPlayerChoiceToggleButton, 'UpdateButtonState', function(self)
+            if self:IsShown() then
+                local choiceFrameShown = PlayerChoiceFrame:IsShown();
+                local choiceInfo = C_PlayerChoice.GetCurrentPlayerChoiceInfo() or {}
+                set(self.Text, choiceFrameShown and '隐藏' or e.strText[choiceInfo.pendingChoiceText])
+            end
+        end)--PlayerChoiceToggleButtonMixin
+
+
+
+
+
+
+
 
     elseif arg1=='Blizzard_GarrisonTemplates' then--Blizzard_GarrisonSharedTemplates.lua
         dia("CONFIRM_FOLLOWER_UPGRADE", {button1 = '是', button2 = '否'})
@@ -7107,6 +7204,8 @@ end)
 
     elseif arg1=='Blizzard_ItemSocketingUI' then--宝石
         set_tooltip_func(ItemSocketingDescription)
+
+    
 
     --elseif arg1=='Blizzard_CovenantRenown' then
     --elseif arg1=='Blizzard_Calendar' then

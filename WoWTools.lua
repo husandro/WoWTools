@@ -177,7 +177,6 @@ C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, fun
         e.Icon.wow= texture
         e.Icon.net2= e.Icon.wow2
     end
-    print(BNet_GetClientEmbeddedTexture(texture, 64, 64, 0))
 end)
 --[[if C_Texture.IsTitleIconTextureReady(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Small) then
     C_Texture.GetTitleIconTexture('CLNT', Enum.TitleIconVersion.Small, function(success, texture)

@@ -1883,66 +1883,69 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 local tab={}
                 local soloOption = (#self2.choiceInfo.options == 1)
                 for optionFrame in self2.optionPools:EnumerateActiveByTemplate(self2.optionFrameTemplate) do
-                    local enabled= not optionFrame.optionInfo.disabledOption and optionFrame.optionInfo.spellID and optionFrame.optionInfo.spellID>0
-                    if not optionFrame.check and enabled then
-                        optionFrame.check= CreateFrame("CheckButton", nil, optionFrame, "InterfaceOptionsCheckButtonTemplate")
-                        optionFrame.check:SetPoint('BOTTOM' ,0, -40)
-                        optionFrame.check:SetScript('OnClick', function(self3)
-                            local optionInfo= self3:GetParent().optionInfo
-                            if optionInfo and optionInfo.spellID then
-                                Save.choice[optionInfo.spellID]= not Save.choice[optionInfo.spellID] and (optionInfo.rarity or 0) or nil
-                                if Save.choice[optionInfo.spellID] then
-                                    GossipButton:Send_Player_Choice_Response(optionInfo)
+                    if optionFrame.optionInfo then
+                        local enabled= not optionFrame.optionInfo.disabledOption and optionFrame.optionInfo.spellID and optionFrame.optionInfo.spellID>0
+                        if not optionFrame.check and enabled then
+                            optionFrame.check= CreateFrame("CheckButton", nil, optionFrame, "InterfaceOptionsCheckButtonTemplate")
+                            optionFrame.check:SetPoint('BOTTOM' ,0, -40)
+                            optionFrame.check:SetScript('OnClick', function(self3)
+                                local optionInfo= self3:GetParent().optionInfo
+                                if optionInfo and optionInfo.spellID then
+                                    Save.choice[optionInfo.spellID]= not Save.choice[optionInfo.spellID] and (optionInfo.rarity or 0) or nil
+                                    if Save.choice[optionInfo.spellID] then
+                                        GossipButton:Send_Player_Choice_Response(optionInfo)
+                                    end
+                                else
+                                    print(id, e.cn(addName),'|cnRED_FONT_COLOR:', not e.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误')
                                 end
-                            else
-                                print(id, e.cn(addName),'|cnRED_FONT_COLOR:', not e.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误')
-                            end
-                        end)
-                        optionFrame.check:SetScript('OnLeave', GameTooltip_Hide)
-                        optionFrame.check:SetScript('OnEnter', function(self3)
-                            local optionInfo= self3:GetParent().optionInfo
-                            e.tips:SetOwner(self3:GetParent(), "ANCHOR_BOTTOMRIGHT")
-                            e.tips:ClearLines()
-                            if optionInfo and optionInfo.spellID then
-                                e.tips:SetSpellByID(optionInfo.spellID)
-                            end
-                            e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine(id, e.cn(addName))
-                            e.tips:Show()
-                        end)
-                        optionFrame.check.Text2=e.Cstr(optionFrame.check)
-                        optionFrame.check.Text2:SetPoint('RIGHT', optionFrame.check, 'LEFT')
-                        optionFrame.check.Text2:SetTextColor(0,1,0)
-                        optionFrame.check:SetScript('OnUpdate', function(self3, elapsed)
-                            self3.elapsed = (self3.elapsed or 1) + elapsed
-                            if self3.elapsed>=1 then
-                                local text, count
-                                local aura= self3.spellID and C_UnitAuras.GetPlayerAuraBySpellID(self3.spellID)
-                                if aura then
-                                    local value= aura.expirationTime-aura.duration
-                                    local time= GetTime()
-                                    time= time < value and time + 86400 or time
-                                    time= time - value
-                                    text= e.SecondsToClock(aura.duration- time)
-                                    count= select(3, e.WA_GetUnitBuff('player', self3.spellID, 'HELPFUL'))
-                                    count= count and count>1 and count or nil
+                            end)
+                            optionFrame.check:SetScript('OnLeave', GameTooltip_Hide)
+                            optionFrame.check:SetScript('OnEnter', function(self3)
+                                local optionInfo= self3:GetParent().optionInfo
+                                e.tips:SetOwner(self3:GetParent(), "ANCHOR_BOTTOMRIGHT")
+                                e.tips:ClearLines()
+                                if optionInfo and optionInfo.spellID then
+                                    e.tips:SetSpellByID(optionInfo.spellID)
                                 end
-                                self3.Text:SetText(text or '')
-                                self3.Text2:SetText(count or '')
-                                self3.elapsed=0
-                            end
-                        end)
-                    end
-                    if optionFrame.check then
-                        optionFrame.check.elapsed=1.1
-                        optionFrame.check.spellID= optionFrame.optionInfo.spellID
-                        optionFrame.check:SetShown(enabled)
-                        if enabled then
-                            local saveChecked= Save.choice[optionFrame.optionInfo.spellID]
-                            optionFrame.check:SetChecked(saveChecked)
-                            if saveChecked or (soloOption and Save.unique) then
-                                optionFrame.optionInfo.rarity = optionFrame.optionInfo.rarity or 0
-                                table.insert(tab, optionFrame.optionInfo)
+                                e.tips:AddLine(' ')
+                                e.tips:AddDoubleLine(id, e.cn(addName))
+                                e.tips:Show()
+                            end)
+                            optionFrame.check.Text2=e.Cstr(optionFrame.check)
+                            optionFrame.check.Text2:SetPoint('RIGHT', optionFrame.check, 'LEFT')
+                            optionFrame.check.Text2:SetTextColor(0,1,0)
+                            optionFrame.check:SetScript('OnUpdate', function(self3, elapsed)
+                                self3.elapsed = (self3.elapsed or 1) + elapsed
+                                if self3.elapsed>=1 then
+                                    local text, count
+                                    local aura= self3.spellID and C_UnitAuras.GetPlayerAuraBySpellID(self3.spellID)
+                                    if aura then
+                                        local value= aura.expirationTime-aura.duration
+                                        local time= GetTime()
+                                        time= time < value and time + 86400 or time
+                                        time= time - value
+                                        text= e.SecondsToClock(aura.duration- time)
+                                        count= select(3, e.WA_GetUnitBuff('player', self3.spellID, 'HELPFUL'))
+                                        count= count and count>1 and count or nil
+                                    end
+                                    self3.Text:SetText(text or '')
+                                    self3.Text2:SetText(count or '')
+                                    self3.elapsed=0
+                                end
+                            end)
+                        end
+                    
+                        if optionFrame.check then
+                            optionFrame.check.elapsed=1.1
+                            optionFrame.check.spellID= optionFrame.optionInfo.spellID
+                            optionFrame.check:SetShown(enabled)
+                            if enabled then
+                                local saveChecked= Save.choice[optionFrame.optionInfo.spellID]
+                                optionFrame.check:SetChecked(saveChecked)
+                                if saveChecked or (soloOption and Save.unique) then
+                                    optionFrame.optionInfo.rarity = optionFrame.optionInfo.rarity or 0
+                                    table.insert(tab, optionFrame.optionInfo)
+                                end
                             end
                         end
                     end

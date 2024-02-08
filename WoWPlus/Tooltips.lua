@@ -2848,6 +2848,14 @@ local function Init_Event(arg1)
                 frame.specIcon:SetTexture(icon or 0)
             end
         end)
+    elseif arg1=='Blizzard_PlayerChoice' then
+        hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'OnEnter', function(self)
+            if self.optionInfo and self.optionInfo.spellID then
+                GameTooltip:ClearLines()
+                GameTooltip:SetSpellByID(self.optionInfo.spellID)
+                GameTooltip:Show()
+            end
+        end)
     end
 
     

@@ -67,13 +67,17 @@ local slots = {--wowSaveItems
     '|A:ElementalStorm-Lesser-Earth:0:0|a',--29'军团再临"神器
 }
 
+--CollectionsJournal.TitleContainer
 
 local function Create_Enable_Button(frame, value)
     local btn= e.Cbtn(frame, {size={20,20}, icon=value})--, pushe=true})
-    btn:SetPoint('RIGHT', CollectionsJournalCloseButton, 'LEFT', -2,0)
+    if frame==WardrobeCollectionFrame.ItemsCollectionFrame then
+        btn:SetPoint('BOTTOMRIGHT', -20, 28)
+    else
+        btn:SetPoint('RIGHT', CollectionsJournalCloseButton, 'LEFT', -2,0)
+        btn:SetFrameLevel(CollectionsJournalCloseButton:GetFrameLevel()+1)
+    end
     btn:SetAlpha(0.5)
-    --btn:SetFrameStrata(CollectionsJournalCloseButton:GetFrameStrata())
-    btn:SetFrameLevel(CollectionsJournalCloseButton:GetFrameLevel()+1)
     return btn
 end
 

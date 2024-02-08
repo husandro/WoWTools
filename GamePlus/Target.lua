@@ -204,9 +204,9 @@ end
 --#########
 --任务，数量
 --#########
-local THREAT_TOOLTIP_str= THREAT_TOOLTIP:gsub('%%d', '%%d+')--"%d%% 威胁"
-local function find_Text(text)
-    if text and not text:find(THREAT_TOOLTIP_str) then
+local THREAT_TOOLTIP= e.Magic(THREAT_TOOLTIP)--:gsub('%%d', '%%d+')--"%d%% 威胁"
+local function find_Text(text)    
+    if text and not text:find(THREAT_TOOLTIP) then
         if text:find('(%d+/%d+)') then
             local min, max= text:match('(%d+)/(%d+)')
             min, max= tonumber(min), tonumber(max)
