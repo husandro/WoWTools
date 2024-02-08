@@ -177,14 +177,19 @@ C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, fun
         e.Icon.wow= texture
         e.Icon.net2= e.Icon.wow2
     end
+    print(BNet_GetClientEmbeddedTexture(texture, 64, 64, 0))
 end)
-
---[[C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Small, function(success, texture)
-    if success and texture then
-        e.Icon.net2= '|T'..texture..':0|t'
-    end
-end)]]
-
+C_Timer.After(4, function()
+if C_Texture.IsTitleIconTextureReady(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Small) then
+    C_Texture.GetTitleIconTexture('CLNT', Enum.TitleIconVersion.Small, function(success, texture)
+        
+        print(success, texture)
+        if success and texture then
+            e.Icon.net2= '|T'..texture..':0|t'
+        end
+    end)
+end
+end)
 function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, uiMapID
     if not tab.id then
         return
