@@ -107,12 +107,15 @@ local function set_tooltip(self)
         end
     end
 end
-local function model(frame)
-    set_tooltip(frame.zoomInButton)
-    set_tooltip(frame.zoomOutButton)
-    set_tooltip(frame.rotateLeftButton)
-    set_tooltip(frame.rotateRightButton)
-    set_tooltip(frame.resetButton)
+local function model(self)
+    local frame= self and self.ControlFrame
+    if frame then
+        set_tooltip(frame.zoomInButton)
+        set_tooltip(frame.zoomOutButton)
+        set_tooltip(frame.rotateLeftButton)
+        set_tooltip(frame.rotateRightButton)
+        set_tooltip(frame.resetButton)
+    end
 end
 
 --[[local function role_check_tooltips_enter(self)
@@ -3889,8 +3892,8 @@ local function Init()
 
 
     C_Timer.After(2, function()
-        model(CharacterModelScene.ControlFrame)
-        model(WardrobeTransmogFrame.ModelScene.ControlFrame)
+        model(CharacterModelScene)
+        model(WardrobeTransmogFrame.ModelScene)
         model(PetStableModelScene)
 
         AddonCompartmentFrame:SetScript("OnEnter", function(self)
@@ -6710,7 +6713,7 @@ end)
             end
         end)
         hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'OnEnter', function(self)
-            if not self.optionInfo.spellID then
+            if self.optionInfo and not self.optionInfo.spellID then
                 local header= e.cn(self.optionInfo.header)
                 if self.optionInfo.rarityColor then
                     header= self.optionInfo.rarityColor:WrapTextInColorCode(header)
@@ -6725,13 +6728,13 @@ end)
             end
         end)
 
-        hooksecurefunc(GenericPlayerChoiceToggleButton, 'UpdateButtonState', function(self)
+        hooksecurefunc(GenericPlayerChoiceToggleButton, 'UpdateButtonState', function(self)--PlayerChoiceToggleButtonMixin
             if self:IsShown() then
                 local choiceFrameShown = PlayerChoiceFrame:IsShown();
                 local choiceInfo = C_PlayerChoice.GetCurrentPlayerChoiceInfo() or {}
                 set(self.Text, choiceFrameShown and '隐藏' or e.strText[choiceInfo.pendingChoiceText])
             end
-        end)--PlayerChoiceToggleButtonMixin
+        end)
 
 
 
