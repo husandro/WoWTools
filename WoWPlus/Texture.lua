@@ -969,7 +969,7 @@ local function Init_All_Frame()
      set_Button_Alpha(MinimapCluster.Tracking.Button, {alpha= min03})
 
      --小队，背景
-     set_Alpha_Frame_Texture(PartyFrame.Background, {})
+     set_Alpha_Frame_Texture(PartyFrame.Background, {alpha= min03})
 
      --任务，追踪柆
      hooksecurefunc('ObjectiveTracker_Initialize', function(self)

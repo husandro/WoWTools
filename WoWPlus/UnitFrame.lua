@@ -1069,6 +1069,7 @@ end
 
 
 local function Init_PartyFrame()--PartyFrame.lua
+    PartyFrame.Background:SetWidth(122)--144
     for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
         set_memberFrame(memberFrame)
         memberFrame.Texture:SetAtlas('UI-HUD-UnitFrame-Party-PortraitOn-Status')--PartyFrameTemplates.xml
