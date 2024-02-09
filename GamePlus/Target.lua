@@ -1164,12 +1164,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.scale= Save.scale or 1.5
             Save.elapsed= Save.elapsed or 0.5
 
-            if Save.top then--1.4.10删除数据
-                Save.targetFramePoint= 'TOP'
-                Save.top=nil
-            else
-                Save.targetFramePoint= Save.targetFramePoint or 'LEFT'
-            end
+            Save.targetFramePoint= Save.targetFramePoint or 'LEFT'
 
             --添加控制面板
             e.AddPanel_Sub_Category({name=e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName)..'|r', frame=panel})

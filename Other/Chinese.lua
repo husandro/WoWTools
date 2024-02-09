@@ -1,5 +1,6 @@
 local id, e= ...
 --1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5Chin e.Player.region~=3 
+
 if e.Player.region~=3 then-- or LOCALE_zhCN or LOCALE_zhTW then
     return
 end
@@ -24,7 +25,7 @@ end
 
 
 local function set(self, text, affer, setFont)
-    if self and text and (not self.IsForbidden or not self:IsForbidden()) and self.SetText then--CanAccessObject(self) then
+    if self and text and text~='' and (not self.IsForbidden or not self:IsForbidden()) and self.SetText then--CanAccessObject(self) then
         if setFont then
             font(self)
         end
@@ -95,9 +96,9 @@ local function hookButton(self, setFont)
 end
 
 
-local function set_tooltip(self)
+local function set_model_tooltip(self)
     if self then
-        local tooltip= e.strText[self.tooltip]
+        local tooltip= self.tooltip and e.strText[self.tooltip]
         if tooltip then
             self.tooltip = tooltip;
         end
@@ -105,16 +106,26 @@ local function set_tooltip(self)
         if tooltipText then
             self.tooltipText = tooltipText;
         end
+        local simpleTooltipLine= self.simpleTooltipLine and e.strText[self.simpleTooltipLine]
+        if simpleTooltipLine then
+            self.simpleTooltipLine= simpleTooltipLine
+        end
     end
 end
 local function model(self)
     local frame= self and self.ControlFrame
     if frame then
-        set_tooltip(frame.zoomInButton)
-        set_tooltip(frame.zoomOutButton)
-        set_tooltip(frame.rotateLeftButton)
-        set_tooltip(frame.rotateRightButton)
-        set_tooltip(frame.resetButton)
+        set_model_tooltip(frame.zoomInButton)
+        set_model_tooltip(frame.zoomOutButton)
+        set_model_tooltip(frame.rotateLeftButton)
+        set_model_tooltip(frame.rotateRightButton)
+        set_model_tooltip(frame.resetButton)
+
+        set_model_tooltip(frame.ResetCameraButton)
+        set_model_tooltip(frame.ZoomOutButton)
+        set_model_tooltip(frame.ZoomInButton)
+        set_model_tooltip(frame.RotateLeftButton)
+        set_model_tooltip(frame.RotateRightButton)
     end
 end
 
@@ -173,37 +184,125 @@ end]]
     end
 end]]
 
+--[[if e.Player.husandro then
+    e.strText['Mito']= '史诗'
+    e.strText['Essenza Incandescente']= '耀辉精华'
+    e.strText['Velocità di Casa']= '思乡之速'
+end]]
 
-local function set_tooltip_func(self)
-    if not self or not self.NumLines then
-        return
-    end
-    local function set_tooltip(frame)
-        local name= frame:GetName()
-        if name then
-            for i=1, frame:NumLines() or 0 do
-                local left= _G[name.."TextLeft"..i]
-                local right= _G[name.."TextRight"..i]
-                if left and left:IsShown() then
-                    set(left, e.strText[left:GetText()])
+--( ) . % + - * ? [ ^ $
+local ITEM_UPGRADE_TOOLTIP_FORMAT_STRING= ITEM_UPGRADE_TOOLTIP_FORMAT_STRING:gsub(': (.+)', '(.+)')
+local ENCHANTED_TOOLTIP_LINE = ENCHANTED_TOOLTIP_LINE:gsub('%%s', '(.+)')--附魔：%s
+local COVENANT_RENOWN_TOAST_REWARD_COMBINER= COVENANT_RENOWN_TOAST_REWARD_COMBINER:gsub('%%s', '(.+)')--%s 和 %s
+local EQUIPMENT_SETS= EQUIPMENT_SETS:match('(.-):')..'(.+)'
+local function get_gameTooltip_text(self)
+    local text= self and self:IsShown() and self:GetText()
+    if text and text~='' then
+        local text2= e.strText[text]
+        if not text2 then
+            local up= text:match(ITEM_UPGRADE_TOOLTIP_FORMAT_STRING)---"升级：%s %d/%d
+            local set= text:match(EQUIPMENT_SETS)--"装备配置方案：|cFFFFFFFF%s|r"
+            local ench= text:match(ENCHANTED_TOOLTIP_LINE)
+            local gem1, gem2= text:match(COVENANT_RENOWN_TOAST_REWARD_COMBINER)
+            local str1, str2= text:match('(.-): (.+)')
+            local str3= text:match('%d+ (.+)')
+            local str4= text:match('|c........(.-)|r')
+            
+            if up then
+                local t= up:match(': (.-) %d')
+                if t and e.strText[t] then
+                    
+                    text2= '升级'..up:gsub(t, e.strText[t])
+                else
+                    text2= '升级'..up
                 end
-                if right and right:IsShown() then
-                    set(right, e.strText[right:GetText()])
+                
+            elseif set then
+                text2= '装备配置方案'..set
+
+            elseif ench then--附魔：%s
+                local col, str4=  ench:match('(|.-:)(.-)|r')
+                local t= ench:match('(.-) |A') or ench:match('(.-)')
+                if t then
+                    local num= t:match('%d+ (.+)')
+                    if num and e.strText[num] then
+                        ench= ench:gsub(num, e.strText[num])
+                    elseif e.strText[t] then
+                        ench= ench:gsub(t, e.strText[t])
+                    end
+                    text2= '附魔：'..e.cn(ench)
+                elseif col and str4 then
+                    text2='附魔：'..col..e.cn(str4)..'|r'
+                else
+                    text2='附魔：'..e.cn(ench)
                 end
+            elseif gem1 and gem2 then
+                local find
+                local t1= gem1:match('%d+ (.+)')
+                if t1 then
+                    local s1= e.strText[t1:match(".+ (.+)")] or e.strText[t1]
+                    if s1 then
+                        gem1= gem1:gsub(t1, s1)
+                        find=true
+                    end
+                end
+                local t2= gem2:match('%d+ (.+) |A') or gem2:match('%d+ (.+)')--无法找到
+                if t2 then
+                    local s1= e.strText[t2] or e.strText[t2:match(".+ (.+)")]
+                    if s1 then
+                        gem2= gem2:gsub(t2, s1)
+                        find=true
+                    end
+                end
+                if find then
+                    text2= gem1..' 和 '..gem2
+                end
+
+            elseif e.strText[str1] then
+                if str2 then
+                    str2= e.strText[str2] or str2
+                    local t= str2:match(' (.-) %d')
+                    if t and e.strText[t] then
+                        str2= str2:gsub(t, e.strText[t])
+                    end
+                end
+                text2= e.strText[str1]..': '..(str2 or '')
+
+            elseif str3 then
+                if e.strText[str3] then--+75 Maestria
+                    text2= text:gsub(str3, e.strText[str3])
+                else
+
+                    local t= e.strText[str3:match(".+ (.+) |A")] or e.strText[str3:match(".+ (.+)")]--+75 Indice di Maestria(大写m)
+                    if t then
+                        text2= text:gsub(str3, t)
+                    end
+                end
+            elseif e.strText[str4] then
+                text2= text:gsub(str4, e.strText[str4])
             end
         end
+        if text2 then
+            self:SetText(text2)
+            self:SetTextColor(self:GetTextColor())
+        end
     end
-    if self.OnShow then
-        self:HookScript("OnShow", set_tooltip)
+end
+local function set_gameTooltip_text(frame)
+    local name= frame:GetName() or 'GameTooltip'
+    for i=1, frame:NumLines() or 0 do
+        get_gameTooltip_text(_G[name.."TextLeft"..i])
+        get_gameTooltip_text(_G[name.."TextRight"..i])
     end
-    if self.OnUpdate then
-        self:HookScript('OnUpdate', function(frame, elapsed)--GameTooltip.lua
-            self.elapsed= (self.elapsed or TOOLTIP_UPDATE_TIME) +elapsed
-            if self.elapsed>TOOLTIP_UPDATE_TIME then
-                set_tooltip(frame)
-            end
-        end)
-    end
+end
+local function set_GameTooltip_func(self)
+    self:HookScript('OnShow', set_gameTooltip_text)
+    self:HookScript('OnUpdate', function(frame, elapsed)
+        frame.elapsed= (frame.elapsed or TOOLTIP_UPDATE_TIME) +elapsed
+        if frame.elapsed>TOOLTIP_UPDATE_TIME then
+            set_gameTooltip_text(frame)
+        end
+    end)
 end
 
 local function set_pettips_func(self)--FloatingPetBattleTooltip.xml
@@ -3678,15 +3777,10 @@ local function Init()
 
 
 
-
-
-
-
-
-    set_tooltip_func(GameTooltip)
-    set_tooltip_func(ItemRefTooltip)
-    set_tooltip_func(EmbeddedItemTooltip)
-    --set_tooltip_func(NamePlateTooltip)
+    set_GameTooltip_func(GameTooltip)
+    set_GameTooltip_func(ItemRefTooltip)
+    --set_GameTooltip_func(EmbeddedItemTooltip)
+    --set_GameTooltip_func(NamePlateTooltip)
 
 
     set_pettips_func(BattlePetTooltip)
@@ -3900,6 +3994,7 @@ local function Init()
         model(CharacterModelScene)
         model(WardrobeTransmogFrame.ModelScene)
         model(PetStableModelScene)
+
 
         AddonCompartmentFrame:SetScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -5663,7 +5758,7 @@ end)
                         set(self.armorType, armorType);
                     end
                 end
-        
+
                 local numEncounters = EJ_GetNumEncountersForLootByIndex(self.index);
                 if ( numEncounters == 1 ) then
                     set(self.boss, format('首领：%s', EJ_GetEncounterInfo(itemInfo.encounterID)));
@@ -5707,7 +5802,7 @@ end)
             end
         end)
 
-      
+
         if EncounterJournal.encounter.info then
             local btnTab={
                 --"overviewTab",
@@ -5747,7 +5842,6 @@ end)
 
 
 
-        
 
 
 
@@ -5759,7 +5853,8 @@ end)
 
 
 
-        
+
+
 
 
 
@@ -6579,7 +6674,7 @@ end)
         end)
 
     elseif arg1=='Blizzard_PerksProgram' then--Blizzard_PerksProgramElements.lua
-        set_tooltip_func(PerksProgramTooltip)
+        set_GameTooltip_func(PerksProgramTooltip)
         set(PerksProgramFrame.ProductsFrame.PerksProgramFilter.FilterDropDownButton.ButtonText, '过滤器')
 
         dia("PERKS_PROGRAM_CONFIRM_PURCHASE", {text= '用%s%s 交易下列物品？', button1 = '购买', button2 = '取消'})
@@ -6816,7 +6911,7 @@ end)
                 set(self.text, format('你确定要花费%s打造这件传说装备吗？', b))
             end
         end)
-        set_tooltip_func(RuneforgeFrameResultTooltip)
+        --set_GameTooltip_func(RuneforgeFrameResultTooltip)
 
     elseif arg1=='Blizzard_ClickBindingUI' then
         dia("CONFIRM_LOSE_UNSAVED_CLICK_BINDINGS", {text  = '你有未保存的点击施法按键绑定。如果你现在关闭，会丢失所有改动。', button1 = '确定', button2 = '取消'})
@@ -6987,6 +7082,7 @@ end)
 
     elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
         set(ItemSocketingSocketButton, '应用')
+        set_GameTooltip_func(ItemSocketingDescription)
 
     elseif arg1=='Blizzard_CombatLog' then--聊天框，战斗记录
         local function set_filter(self)
@@ -7213,11 +7309,10 @@ end)
             end
         end)
 
-    elseif arg1=='Blizzard_ItemSocketingUI' then--宝石
-        set_tooltip_func(ItemSocketingDescription)
 
-    
 
+    elseif arg1=='Blizzard_CharacterCustomize' then--飞龙，制定界面
+        CharCustomizeFrame.RandomizeAppearanceButton.simpleTooltipLine= '随机外观'
     --elseif arg1=='Blizzard_CovenantRenown' then
     --elseif arg1=='Blizzard_Calendar' then
         --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})

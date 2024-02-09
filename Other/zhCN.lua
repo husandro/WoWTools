@@ -1,5 +1,5 @@
 local id, e = ...
-if LOCALE_zhCN or LOCALE_zhTW then
+if e.Player.region~=3 then
     return
 end
 
@@ -20430,8 +20430,6 @@ C_Timer.After(2, function()
     affixTab=nil
 end)
 end
-
-
 
 
 
