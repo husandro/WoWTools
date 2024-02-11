@@ -1915,7 +1915,7 @@ local function Loot_Plus()
                 btn.itemSubTypeLabel:SetText("")
             end
             btn:SetAlpha(1)
-            btn.WinningRollInfo.Check:SetAlpha(1)
+            --btn.WinningRollInfo.Check:SetAlpha(1)
             e.Set_Item_Stats(btn.Item)
             return
         end
