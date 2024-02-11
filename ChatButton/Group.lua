@@ -17,6 +17,11 @@ local roleAtlas={
     NONE='socialqueuing-icon-group',
 }
 
+local SLASH_PARTY1= SLASH_PARTY1
+local SLASH_RAID1= SLASH_RAID1
+local SLASH_INSTANCE_CHAT1= SLASH_INSTANCE_CHAT1
+local SLASH_RAID_WARNING1= SLASH_RAID_WARNING1
+
 local function setType(text)--使用,提示
     if not button.typeText then
         button.typeText=e.Cstr(button,{size=10, color=true})-- 10, nil, nil, true)
@@ -262,13 +267,14 @@ local function InitMenu(_, level, type)--主菜单
 end
 
 local function show_Group_Info_Toolstip()--玩家,信息, 提示
-    local co=GetNumGroupMembers()
+    local raid= IsInRaid()
+    local co= raid and MAX_RAID_MEMBERS or GetNumGroupMembers()
     if not IsInGroup() or co<2 then
         return
     end
 
     local UnitTab={}--取得装等
-    local raid=IsInRaid()
+    
     local u= raid and 'raid' or 'party'
     local tabT, tabN, tabDPS, totaleHP = {}, {}, {}, 0
     local uiMapID= select(2, e.GetUnitMapName('player'))
@@ -281,40 +287,42 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         end
 
         local guid= UnitGUID(unit)
-        if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLeve) then
-            table.insert(UnitTab, unit)
-        end
+        if guid and UnitExists(unit) then
+            if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLeve) then
+                table.insert(UnitTab, unit)
+            end
 
-        local maxHP= UnitHealthMax(unit)
-        local role
-        if raid then
-            local role2,_, combatRole= select(10, GetRaidRosterInfo(i))
-            role= role2 or combatRole
-            role= role== 'MAINTANK' and 'TANK' or role
-        else
-            role= UnitGroupRolesAssigned(unit)
-        end
+            local maxHP= UnitHealthMax(unit)
+            local role
+            if raid then
+                local role2,_, combatRole= select(10, GetRaidRosterInfo(i))
+                role= role2 or combatRole
+                role= role== 'MAINTANK' and 'TANK' or role
+            else
+                role= UnitGroupRolesAssigned(unit)
+            end
 
-        if guid and maxHP and role then
-            info.name= (e.PlayerOnlineInfo(unit) or '')..e.GetPlayerInfo({unit=unit, guid=guid, reName=true, reRealm=true})..(e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLeve or '')
-            info.maxHP= maxHP
-            info.col= select(4, e.GetUnitColor(unit))
-            if uiMapID then--不在同地图
-                local text, mapID=e.GetUnitMapName(unit)
-                if text and mapID and mapID~=uiMapID then
-                    info.name= info.name..e.Icon.map2..'|cnRED_FONT_COLOR:'..text..'|r'
+            if maxHP and role then
+                info.name= (e.PlayerOnlineInfo(unit) or '')..e.GetPlayerInfo({unit=unit, guid=guid, reName=true, reRealm=true})..(e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLeve or '')
+                info.maxHP= maxHP
+                info.col= select(4, e.GetUnitColor(unit))
+                if uiMapID then--不在同地图
+                    local text, mapID=e.GetUnitMapName(unit)
+                    if text and mapID and mapID~=uiMapID then
+                        info.name= info.name..e.Icon.map2..'|cnRED_FONT_COLOR:'..text..'|r'
+                    end
                 end
-            end
 
-            if role=='TANK' then
-                table.insert(tabT, info)
-            elseif role=='HEALER' then
-                table.insert(tabN, info)
-            elseif role=='DAMAGER' then
-                table.insert(tabDPS, info)
-            end
+                if role=='TANK' then
+                    table.insert(tabT, info)
+                elseif role=='HEALER' then
+                    table.insert(tabN, info)
+                elseif role=='DAMAGER' then
+                    table.insert(tabDPS, info)
+                end
 
-            totaleHP= totaleHP+ maxHP
+                totaleHP= totaleHP+ maxHP
+            end
         end
     end
 

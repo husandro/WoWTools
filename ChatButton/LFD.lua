@@ -1904,7 +1904,6 @@ end
 --历史, 拾取框
 --LootHistory.lua
 local function Loot_Plus()
-    
     local function set_LootFrame_btn(btn)
         if not btn then
             return
@@ -1934,10 +1933,22 @@ local function Loot_Plus()
 
             function btn.chatTexure:get_text()
                 local p= self:GetParent().dropInfo
+                local nu=''
+                if IsInRaid() then
+                    for i=1, MAX_RAID_MEMBERS do
+                        local name, _, subgroup= GetRaidRosterInfo(i)
+                        if name==e.Player.name then
+                            if subgroup then
+                                nu= ' '..subgroup..GROUP
+                            end
+                            break
+                        end
+                    end
+                end
                 return (not p or p.playerRollState==Enum.EncounterLootDropRollState.Greed) and ''
-                        or (e.Player.region==1 or e.Player.region==3) and ' {rt1}need{rt1}, please!'
-                        or (e.Player.region==5 and ' 您好，我很{rt1}需求{rt1}这个，能让让吗？谢谢')
-                        or (' '..NEED..'{rt1}, '..VOICEMACRO_16_Dw_0)
+                        or ((e.Player.region==1 or e.Player.region==3) and ' need, please{rt1}'..nu)
+                        or (e.Player.region==5 and ' 您好，我很需求这个，能让让吗？谢谢{rt1}'..nu)
+                        or (' '..NEED..', '..VOICEMACRO_LABEL_THANKYOU3..'{rt1}'..nu)
             end
             function btn.chatTexure:get_playername()
                 local info= self:get_playerinfo()

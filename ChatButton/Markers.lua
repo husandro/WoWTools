@@ -127,16 +127,14 @@ local function Init_set_Tank_Healer()
             return
         end
         local tank, healer
-        local members=GetNumGroupMembers()
-
         if IsInRaid() then
             local tab={}--设置团队标记
-            for index=1, members do-- MAX_RAID_MEMBERS do
+            for index=1, MAX_RAID_MEMBERS do-- GetNumGroupMembers
                 local online, _, role, _, combatRole = select(8, GetRaidRosterInfo(index))
                 local unit= 'raid'..index
-                if (role=='TANK' or  combatRole=='TANK') and online then
+                if (role=='TANK' or combatRole=='TANK') and online then
                     table.insert(tab, {
-                        unit='raid'..index,
+                        unit=unit,
                         hp=UnitHealthMax(unit)
                     })
                 else
@@ -157,9 +155,9 @@ local function Init_set_Tank_Healer()
             end
 
         else--设置队伍标记
-            for index=1, members do
-                local unit= index<members and 'party'..index or 'player'
-                if UnitIsConnected(unit) then
+            for index=1, MAX_PARTY_MEMBERS+1 do
+                local unit= index < MAX_PARTY_MEMBERS and 'party'..index or 'player'
+                if UnitExitst(unit) and UnitIsConnected(unit) then
                     local role=  UnitGroupRolesAssigned(unit)
                     if role=='TANK' then
                         if not tank then
