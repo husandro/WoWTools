@@ -1926,7 +1926,7 @@ local function Loot_Plus()
             btn.chatTexure:SetPoint('BOTTOMRIGHT', btn, 6, 4)
             function btn.chatTexure:get_text()--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
                 local p= self:GetParent().dropInfo or {}
-                return  p.playerRollState~=Enum.EncounterLootDropRollState.Greed and ''
+                return  p.playerRollState==Enum.EncounterLootDropRollState.Greed and ''
                     or (e.Player.region==1 or e.Player.region==3) and ' {rt1}need{rt1}, please!'
                     or (e.Player.region==5 and ' 您好，我很{rt1}需求{rt1}这个，能让让吗？谢谢')
                     or (' '..NEED..'{rt1}, '..VOICEMACRO_16_Dw_0)
@@ -2059,7 +2059,7 @@ local function Loot_Plus()
             e.tips:AddDoubleLine('encounterName', info.encounterName)
             e.tips:AddDoubleLine('encounterID', info.encounterID)
             e.tips:AddDoubleLine('startTime', e.SecondsToClock(info.startTime))
-            e.tips:AddDoubleLine('duration', info.duration and SecondsToTime(info.duration))
+            e.tips:AddDoubleLine('duration', info.duration and SecondsToTime(info.duration/100))
         else
             e.tips:AddDoubleLine('encounterID', e.onlyChinese and '无' or NONE)
         end
@@ -2068,8 +2068,6 @@ local function Loot_Plus()
         e.tips:Show()
         self2:SetAlpha(1)
     end)
-
-
 
     --[[hooksecurefunc(GroupLootHistoryFrame, 'UpdateTimer', function(self)
         if self.Timer and self.Timer:IsShown() then

@@ -834,9 +834,9 @@ local function Init_All_Frame()
      set_Alpha_Color(SendStationeryBackgroundLeft)
      set_Alpha_Color(SendStationeryBackgroundRight)
 
-     set_Alpha_Color(SendMailMoneyBgMiddle)
-     set_Alpha_Color(SendMailMoneyBgRight)
-     set_Alpha_Color(SendMailMoneyBgLeft)
+     --set_Alpha_Color(SendMailMoneyBgMiddle)
+     --set_Alpha_Color(SendMailMoneyBgRight)
+     --set_Alpha_Color(SendMailMoneyBgLeft)
      hide_Texture(SendMailMoneyInset.Bg)
      set_NineSlice(MailFrameInset, true)
      set_ScrollBar(SendMailScrollFrame)
@@ -846,13 +846,12 @@ local function Init_All_Frame()
      --拾取, 历史
      set_NineSlice(GroupLootHistoryFrame, true)
      set_Alpha_Color(GroupLootHistoryFrameBg)
-
      set_ScrollBar(GroupLootHistoryFrame)
-
      set_Alpha_Color(GroupLootHistoryFrameMiddle)
      set_Alpha_Color(GroupLootHistoryFrameLeft)
      set_Alpha_Color(GroupLootHistoryFrameRight)
-
+     set_Menu(GroupLootHistoryFrame.EncounterDropDown)
+     set_Alpha_Frame_Texture(GroupLootHistoryFrame.ResizeButton)
 
 
 
