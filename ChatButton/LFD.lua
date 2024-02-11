@@ -2123,9 +2123,6 @@ local function Loot_Plus()
     end)
     
     ]]
-    if e.Player.husandro then
-        GroupLootHistoryFrame:Show()
-    end
 end
 
 
