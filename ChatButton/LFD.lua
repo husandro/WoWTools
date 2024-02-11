@@ -1942,7 +1942,7 @@ local function Loot_Plus()
             function btn.chatTexure:get_playername()
                 local info= self:get_playerinfo()
                 local playerName= info.playerName
-                if playerName and info.playerGUID then
+                if playerName and info.playerGUID and not playerName:find('%-') then
                     local realm= select(7,GetPlayerInfoByGUID(info.playerGUID))
                     if realm and realm~='' and realm~=e.Player.realm then
                         playerName= playerName..'-'..realm
