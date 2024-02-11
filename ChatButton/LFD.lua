@@ -1904,72 +1904,73 @@ end
 --历史, 拾取框
 --LootHistory.lua
 local function Loot_Plus()
-    hooksecurefunc(LootHistoryElementMixin, 'Init', function(btn)
-
-        if not btn.dropInfo or Save.disabledLootPlus then
+    
+    local function set_LootFrame_btn(btn)
+        if not btn then
+            return
+        elseif not btn.dropInfo or Save.disabledLootPlus then
             if btn.chatTexure then
                 btn.chatTexure:SetShown(false)
             end
             if btn.itemSubTypeLabel then
                 btn.itemSubTypeLabel:SetText("")
             end
+            btn:SetAlpha(1)
+            btn.WinningRollInfo.Check:SetAlpha(1)
             e.Set_Item_Stats(btn.Item)
             return
         end
 
-        local notGreed= btn.dropInfo.playerRollState ~= Enum.EncounterLootDropRollState.Greed
 
-        --local info=e.GetTooltipData({hyperLink= btn.dropInfo.itemHyperlink, text={}, red=true, onlyRed=true})--物品提示，信息
 
         if not btn.chatTexure then
-            btn.chatTexure= e.Cbtn(btn, {size={14,14}, atlas='transmog-icon-chat'})
+            btn.chatTexure= e.Cbtn(btn, {size={18,18}, atlas='transmog-icon-chat'})
             btn.chatTexure:SetPoint('BOTTOMRIGHT', btn, 6, 4)
-            function btn.chatTexure:get_text()--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-                local p= self:GetParent().dropInfo or {}
-                return  p.playerRollState==Enum.EncounterLootDropRollState.Greed and ''
-                    or (e.Player.region==1 or e.Player.region==3) and ' {rt1}need{rt1}, please!'
-                    or (e.Player.region==5 and ' 您好，我很{rt1}需求{rt1}这个，能让让吗？谢谢')
-                    or (' '..NEED..'{rt1}, '..VOICEMACRO_16_Dw_0)
+            btn.chatTexure:SetScript('OnLeave', GameTooltip_Hide)
+            function btn.chatTexure:get_playerinfo()
+                local p=self:GetParent().dropInfo or {}
+                return p.winner or p.currentLeader or {}
             end
 
+            function btn.chatTexure:get_text()
+                local p= self:GetParent().dropInfo
+                return (not p or p.playerRollState==Enum.EncounterLootDropRollState.Greed) and ''
+                        or (e.Player.region==1 or e.Player.region==3) and ' {rt1}need{rt1}, please!'
+                        or (e.Player.region==5 and ' 您好，我很{rt1}需求{rt1}这个，能让让吗？谢谢')
+                        or (' '..NEED..'{rt1}, '..VOICEMACRO_16_Dw_0)
+            end
             function btn.chatTexure:get_playername()
-                local dropInfo= self:GetParent().dropInfo
-                if not dropInfo or not dropInfo.currentLeader or not dropInfo.currentLeader.playerName then
-                    return
-                end
-                local name= dropInfo.currentLeader.playerName
-                if dropInfo.currentLeader.playerGUID and name and name~='' then
-                    local realm= select(7,GetPlayerInfoByGUID(btn.dropInfo.currentLeader.playerGUID))
+                local info= self:get_playerinfo()
+                local playerName= info.playerName
+                if playerName and info.playerGUID then
+                    local realm= select(7,GetPlayerInfoByGUID(info.playerGUID))
                     if realm and realm~='' and realm~=e.Player.realm then
-                        name= name..'-'..realm
+                        playerName= playerName..'-'..realm
                     end
                 end
-                return name
+                return playerName
             end
-            btn.chatTexure:SetScript('OnLeave', GameTooltip_Hide)
             btn.chatTexure:SetScript('OnEnter', function(self)
                 local p= self:GetParent()
                 e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
-
                 if p.dropInfo.startTime then
                     local startTime= '|cnRED_FONT_COLOR:'..(e.GetTimeInfo(p.dropInfo.startTime/1000, false, nil) or '')
                     local duration= p.dropInfo.duration and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '持续时间：%s' or PROFESSIONS_CRAFTING_FORM_CRAFTER_DURATION_REMAINING, SecondsToTime(p.dropInfo.duration/100))
                     e.tips:AddDoubleLine(startTime, duration)
                     e.tips:AddLine(' ')
                 end
-                local item= p.dropInfo.itemHyperlink
-                e.tips:AddDoubleLine(SLASH_SMART_WHISPER2..' '..(self:get_playername() or ''), item and item..self:get_text() or ' ')
+                e.tips:AddDoubleLine(SLASH_SMART_WHISPER2..' '..(self:get_playername() or ''), (p.dropInfo.itemHyperlink or '')..(self:get_text() or ''))
                 e.tips:AddLine(' ')
-                if GroupLootHistoryFrame.selectedEncounterID then                    
+                if GroupLootHistoryFrame.selectedEncounterID then
                     e.tips:AddDoubleLine('EncounterID', GroupLootHistoryFrame.selectedEncounterID)
                 end
                 e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
             end)
             btn.chatTexure:SetScript('OnClick', function(self)
-                local p=self:GetParent()
-                e.Say(nil, self:get_playername(), nil, p.dropInfo.itemHyperlink and p.dropInfo.itemHyperlink..self:get_text() or '')
+                local p=self:GetParent().dropInfo or {}
+                e.Say(nil, self:get_playername(), nil, (p.itemHyperlink or '').. (self:get_text() or ''))
 
             end)
 
@@ -1979,15 +1980,20 @@ local function Loot_Plus()
                 btn.WinningRollInfo.Check.move=true
             end
         end
-        btn.chatTexure:SetShown(not btn.dropInfo.currentLeader.isSelf)
-        btn.chatTexure:SetAlpha(notGreed and 1 or 0.1)
-        btn.WinningRollInfo.Check:SetAlpha(notGreed and 1 or 0.3)
 
-        if btn.dropInfo.winner and btn.dropInfo.currentLeader and notGreed then--修改，名字
-            if btn.dropInfo.currentLeader.isSelf then
+        local notGreed= btn.dropInfo.playerRollState ~= Enum.EncounterLootDropRollState.Greed
+        local winInfo= btn.chatTexure:get_playerinfo()
+        btn.chatTexure:SetShown(not winInfo.isSelf and winInfo.isSelf~=nil)
+        --btn.chatTexure:SetAlpha(notGreed and 1 or 0.3)
+        --btn.WinningRollInfo.Check:SetAlpha(notGreed and 1 or 0.3)
+        btn:SetAlpha(winInfo.isSelf and 0.3 or (not notGreed and 0.5) or 1)
+
+
+        if winInfo and notGreed then--修改，名字
+            if winInfo.isSelf then
                 btn.WinningRollInfo.WinningRoll:SetText(e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r')
-            elseif btn.dropInfo.currentLeader.playerGUID then
-                local name= e.GetPlayerInfo({guid=btn.dropInfo.currentLeader.playerGUID, reName=true})
+            elseif winInfo.playerGUID then
+                local name= e.GetPlayerInfo({guid=winInfo.playerGUID, reName=true})
                 if name and name~='' then
                     btn.WinningRollInfo.WinningRoll:SetText(name)
                 end
@@ -2016,13 +2022,14 @@ local function Loot_Plus()
         if btn.itemSubTypeLabel then
             btn.itemSubTypeLabel:SetText(text or '')
         end
-    end)
-    --[[hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
+    end
+    hooksecurefunc(LootHistoryElementMixin, 'Init', set_LootFrame_btn)
+    hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
         for _, btn in pairs(self:GetFrames()) do
             set_LootFrame_btn(btn)
         end
     end)
-    hooksecurefunc(GroupLootHistoryFrame , 'OpenToEncounter', function(self, encounterID)
+    --[[hooksecurefunc(GroupLootHistoryFrame , 'OpenToEncounter', function(self, encounterID)
         for _, btn in pairs(self.ScrollBox:GetFrames()) do
             set_LootFrame_btn(btn)
         end
@@ -2071,8 +2078,22 @@ local function Loot_Plus()
         e.tips:Show()
         self2:SetAlpha(1)
     end)
-
-    --[[hooksecurefunc(GroupLootHistoryFrame, 'UpdateTimer', function(self)
+--[[
+    GroupLootHistoryFrame:SetResizable(true)
+    GroupLootHistoryFrame.ResizeButton2= CreateFrame('Button', nil, GroupLootHistoryFrame)
+    GroupLootHistoryFrame.ResizeButton2:SetSize(12, 32)
+    GroupLootHistoryFrame.ResizeButton2:SetFrameLevel(600)
+    GroupLootHistoryFrame.ResizeButton2:SetFrameStrata("HIGH")
+    GroupLootHistoryFrame.ResizeButton2:SetNormalAtlas('lootroll-resizehandle')
+    GroupLootHistoryFrame.ResizeButton2:SetPoint("RIGHT", GroupLootHistoryFrame, "LEFT")
+    GroupLootHistoryFrame.ResizeButton2:SetScript("OnMouseDown", function(self)
+		local alwaysStartFromMouse = true;
+		self:GetParent():StartSizing("LEFT", alwaysStartFromMouse);
+	end);
+	GroupLootHistoryFrame.ResizeButton2:SetScript("OnMouseUp", function(self)
+		self:GetParent():StopMovingOrSizing();
+	end);
+    hooksecurefunc(GroupLootHistoryFrame, 'UpdateTimer', function(self)
         if self.Timer and self.Timer:IsShown() then
             local text
             if self.encounterInfo and self.encounterInfo.startTime and self.encounterInfo.duration then
@@ -2088,13 +2109,31 @@ local function Loot_Plus()
                 self.TimerLabel:SetText(text or '')
             end
         end
-    end)]]
+    end)
+    
+    ]]
+    if e.Player.husandro then
+        GroupLootHistoryFrame:Show()
+    end
 end
 
 
-
-
-
+--[[
+local frame= GroupLootHistoryFrame
+frame.ResizeButton2= CreateFrame('Button', nil, frame)
+frame.ResizeButton2:SetSize(12, 32)
+frame.ResizeButton2:SetFrameLevel(600)
+frame.ResizeButton2:SetFrameStrata("HIGH")
+frame.ResizeButton2:SetNormalAtlas('lootroll-resizehandle')
+frame.ResizeButton2:SetPoint("BOTTOMRIGHT", frame)
+frame:SetResizable(true)
+frame.ResizeButton2:SetScript("OnMouseDown", function(self)
+    local alwaysStartFromMouse = true;
+    self:GetParent():StartSizing("BOTTOMRIGHT", alwaysStartFromMouse);
+end);
+frame.ResizeButton2:SetScript("OnMouseUp", function(self)
+    self:GetParent():StopMovingOrSizing();
+end);]]
 
 
 

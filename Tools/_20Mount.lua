@@ -328,7 +328,7 @@ local function setClickAtt()--设置 Click属性
     end
     local spellID= IsIndoors() and button.spellID--进入战斗, 室内
                     or getRandomRoll(FLOOR)--区域
-                    or (IsAdvancedFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))
+                    or (IsAdvancedFlyableArea() and IsFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))
                     or ((XD and IsUsableSpell(783)) and 783)
                     or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
                     or (IsFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域

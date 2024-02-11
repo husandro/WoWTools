@@ -851,7 +851,7 @@ local function Init_All_Frame()
      set_Alpha_Color(GroupLootHistoryFrameLeft)
      set_Alpha_Color(GroupLootHistoryFrameRight)
      set_Menu(GroupLootHistoryFrame.EncounterDropDown)
-     set_Alpha_Frame_Texture(GroupLootHistoryFrame.ResizeButton)
+     set_Alpha_Frame_Texture(GroupLootHistoryFrame.ResizeButton, {alpha=min05})
 
 
 

@@ -222,11 +222,14 @@ local function get_gameTooltip_text(self)
 
             elseif ench then--附魔：%s
                 local col, str4=  ench:match('(|.-:)(.-)|r')
-                local t= ench:match('(.-) |A') or ench:match('(.-)')
+                local t= ench:match('(.+) |A') or ench:match(' (.+)')
                 if t then
                     local num= t:match('%d+ (.+)')
-                    if num and e.strText[num] then
-                        ench= ench:gsub(num, e.strText[num])
+                    if num then
+                        t= e.strText[num] or e.strText[num:match(".+ (.+)")]
+                        if t then
+                            ench= ench:gsub(num, t)
+                        end
                     elseif e.strText[t] then
                         ench= ench:gsub(t, e.strText[t])
                     end
@@ -2488,7 +2491,7 @@ local function Init()
             self.BorderFrame:SetTitle('地图和任务日志')
         end
     end)
-    --set(WorldMapFrameHomeButtonText, '世界', nil, true)
+    set(WorldMapFrameHomeButtonText, '世界', nil, true)
 
     --[[
         self:AddOverlayFrame("WorldMapFloorNavigationFrameTemplate", "FRAME", "TOPLEFT", self:GetCanvasContainer(), "TOPLEFT", -15, 2)
