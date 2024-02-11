@@ -217,6 +217,8 @@ local function get_InviteButton_Frame(index)
     end
     return frame
 end
+
+
 local function set_tipsFrame_Tips(text, LFGListTab)
     tipsButton.text:SetText(text or '')
     tipsButton:SetShown(text and true or false)
@@ -302,7 +304,7 @@ local function Set_Queue_Status()--小眼睛, 信息
         if status and mapName then
             pvp= pvp and pvp..'|n' or ''
             pvp= pvp..'   '..i..') '
-                ..mapName..(queueType and ' ('..queueType..')')
+                ..e.cn(mapName)..(queueType and ' ('..queueType..')')
                 ..(status~='queued' and ' '..get_Status_Text(status) or '')
                 ..(teamSize and teamSize>0 and ' '..teamSize or '')
                 ..(suspendedQueue and ('|cnRED_FONT_COLOR: ['..(e.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..']|r') or '')
@@ -1759,99 +1761,342 @@ end
 --#######
 --自动ROLL
 --GroupLootFrame.lua --frame.rollTime  frame.Timer
-local function set_RollOnLoot(rollID, rollType, link)
-    RollOnLoot(rollID, rollType)
-    link= link or GetLootRollItemLink(rollID)
-    C_Timer.After(2, function()
-        print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:',
-            rollType==1 and (e.onlyChinese and '需求' or NEED)..'|A:lootroll-toast-icon-need-up:0:0|a'
-            or ((e.onlyChinese and '贪婪' or GREED)..'|A:lootroll-toast-icon-transmog-up:0:0|a'),
-            link)
-    end)
-end
-local function set_Timer_Text(frame)--提示，剩余时间
-    if frame and frame.Timer and not frame.Timer.Text and frame:IsShown() then
-        frame.Timer.Text= e.Cstr(frame.Timer)
-        frame.Timer.Text:SetPoint('RIGHT')
-        frame.Timer:HookScript("OnUpdate", function(self2)
-            self2.Text:SetText(e.SecondsToClock(self2:GetValue()))
+local function Roll_Plus()
+    local function set_RollOnLoot(rollID, rollType, link)
+        RollOnLoot(rollID, rollType)
+        link= link or GetLootRollItemLink(rollID)
+        C_Timer.After(2, function()
+            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:',
+                rollType==1 and (e.onlyChinese and '需求' or NEED)..'|A:lootroll-toast-icon-need-up:0:0|a'
+                or ((e.onlyChinese and '贪婪' or GREED)..'|A:lootroll-toast-icon-transmog-up:0:0|a'),
+                link)
         end)
     end
-end
-local function set_ROLL_Check(frame)
-    local rollID= frame and frame.rollID
-    if not Save.autoROLL or not rollID then
+    local function set_Timer_Text(frame)--提示，剩余时间
+        if frame and frame.Timer and not frame.Timer.Text and frame:IsShown() then
+            frame.Timer.Text= e.Cstr(frame.Timer)
+            frame.Timer.Text:SetPoint('RIGHT')
+            frame.Timer:HookScript("OnUpdate", function(self2)
+                self2.Text:SetText(e.SecondsToClock(self2:GetValue()))
+            end)
+        end
+    end
+    local function set_ROLL_Check(frame)
+        local rollID= frame and frame.rollID
+        if not Save.autoROLL or not rollID then
+            set_Timer_Text(frame)--提示，剩余时间
+            return
+        end
+
+        local _, _, _, quality, _, canNeed, canGreed, canDisenchant, reasonNeed, reasonGreed, reasonDisenchant, deSkillRequired, canTransmog = GetLootRollItemInfo(rollID)
+
+        local link = GetLootRollItemLink(rollID)
+
+        if not canNeed or (IsInLFGDungeon() and quality and quality>=4) or not link then
+            set_RollOnLoot(rollID, canNeed and 1 or 2, link)
+            return
+        end
+
+        if canTransmog and not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
+            local sourceID=select(2,C_TransmogCollection.GetItemInfo(link))
+            if sourceID then
+                local hasItemData, canCollect =  C_TransmogCollection.PlayerCanCollectSource(sourceID)
+                if hasItemData and canCollect then
+                    local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
+                    if sourceInfo and not sourceInfo.isCollected then
+                        set_RollOnLoot(rollID, 1, link)
+                        return
+                    end
+                end
+            end
+        end
+
+        local itemID, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(link)
+        local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
+        if slot then
+            local slotLink=GetInventoryItemLink('player', slot)
+            if slotLink then
+                local slotItemLevel= GetDetailedItemLevelInfo(slotLink) or 0
+                local itemLevel= GetDetailedItemLevelInfo(link)
+                if itemLevel then
+                    local num=itemLevel-slotItemLevel
+                    if num>0 then
+                        set_RollOnLoot(rollID, 1, link)
+                        return
+                    end
+                end
+            --else--没有装备
+                --set_RollOnLoot(rollID, 1, link)
+                --return
+            end
+
+        elseif classID==15 and subclassID==2 then--宠物物品
+            set_RollOnLoot(rollID, 1, link)
+            return
+
+        elseif classID==15 and  subclassID==5 then--坐骑
+            local mountID = C_MountJournal.GetMountFromItem(itemID)
+            if mountID then
+                local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
+                if not isCollected then
+                    set_RollOnLoot(rollID, 1, link)
+                    return
+                end
+            end
+
+        elseif C_ToyBox.GetToyInfo(itemID) and not PlayerHasToy(itemID) then--玩具 
+            set_RollOnLoot(rollID, 1, link)
+            return
+
+        elseif classID==0 or subclassID==0 then
+            set_RollOnLoot(rollID, 1, link)
+            return
+        end
+
         set_Timer_Text(frame)--提示，剩余时间
-        return
     end
 
-    local _, _, _, quality, _, canNeed, canGreed, canDisenchant, reasonNeed, reasonGreed, reasonDisenchant, deSkillRequired, canTransmog = GetLootRollItemInfo(rollID)
+    hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)
+        set_ROLL_Check(frame)
+    end)
 
-    local link = GetLootRollItemLink(rollID)
-
-    if not canNeed or (IsInLFGDungeon() and quality and quality>=4) or not link then
-        set_RollOnLoot(rollID, canNeed and 1 or 2, link)
-        return
-    end
-
-    if canTransmog and not C_TransmogCollection.PlayerHasTransmogByItemInfo(link) then--幻化
-        local sourceID=select(2,C_TransmogCollection.GetItemInfo(link))
-        if sourceID then
-            local hasItemData, canCollect =  C_TransmogCollection.PlayerCanCollectSource(sourceID)
-            if hasItemData and canCollect then
-                local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
-                if sourceInfo and not sourceInfo.isCollected then
-                    set_RollOnLoot(rollID, 1, link)
-                    return
-                end
+    hooksecurefunc('GroupLootContainer_Update', function(self)
+        for i=1, self.maxIndex do
+            local frame = self.rollFrames[i];
+            if frame and frame:IsShown()  then
+                set_ROLL_Check(frame)
             end
         end
-    end
+    end)
 
-    local itemID, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(link)
-    local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
-    if slot then
-        local slotLink=GetInventoryItemLink('player', slot)
-        if slotLink then
-            local slotItemLevel= GetDetailedItemLevelInfo(slotLink) or 0
-            local itemLevel= GetDetailedItemLevelInfo(link)
-            if itemLevel then
-                local num=itemLevel-slotItemLevel
-                if num>0 then
-                    set_RollOnLoot(rollID, 1, link)
-                    return
-                end
-            end
-        --else--没有装备
-            --set_RollOnLoot(rollID, 1, link)
-            --return
-        end
-
-    elseif classID==15 and subclassID==2 then--宠物物品
-        set_RollOnLoot(rollID, 1, link)
-        return
-
-    elseif classID==15 and  subclassID==5 then--坐骑
-        local mountID = C_MountJournal.GetMountFromItem(itemID)
-        if mountID then
-            local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
-            if not isCollected then
-                set_RollOnLoot(rollID, 1, link)
-                return
-            end
-        end
-
-    elseif C_ToyBox.GetToyInfo(itemID) and not PlayerHasToy(itemID) then--玩具 
-        set_RollOnLoot(rollID, 1, link)
-        return
-
-    elseif classID==0 or subclassID==0 then
-        set_RollOnLoot(rollID, 1, link)
-        return
-    end
-
-    set_Timer_Text(frame)--提示，剩余时间
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--###########
+--历史, 拾取框
+--LootHistory.lua
+local function Loot_Plus()
+    hooksecurefunc(LootHistoryElementMixin, 'Init', function(btn)
+
+        if not btn.dropInfo or Save.disabledLootPlus then
+            if btn.chatTexure then
+                btn.chatTexure:SetShown(false)
+            end
+            if btn.itemSubTypeLabel then
+                btn.itemSubTypeLabel:SetText("")
+            end
+            e.Set_Item_Stats(btn.Item)
+            return
+        end
+
+        local notGreed= btn.dropInfo.playerRollState ~= Enum.EncounterLootDropRollState.Greed
+
+        --local info=e.GetTooltipData({hyperLink= btn.dropInfo.itemHyperlink, text={}, red=true, onlyRed=true})--物品提示，信息
+
+        if not btn.chatTexure then
+            btn.chatTexure= e.Cbtn(btn, {size={14,14}, atlas='transmog-icon-chat'})
+            btn.chatTexure:SetPoint('BOTTOMRIGHT', btn, 6, 4)
+            function btn.chatTexure:get_text()--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+                local p= self:GetParent().dropInfo or {}
+                return  p.playerRollState~=Enum.EncounterLootDropRollState.Greed and ''
+                    or (e.Player.region==1 or e.Player.region==3) and ' {rt1}need{rt1}, please!'
+                    or (e.Player.region==5 and ' 您好，我很{rt1}需求{rt1}这个，能让让吗？谢谢')
+                    or (' '..NEED..'{rt1}, '..VOICEMACRO_16_Dw_0)
+            end
+
+            function btn.chatTexure:get_playername()
+                local dropInfo= self:GetParent().dropInfo
+                if not dropInfo or not dropInfo.currentLeader or not dropInfo.currentLeader.playerName then
+                    return
+                end
+                local name= dropInfo.currentLeader.playerName
+                if dropInfo.currentLeader.playerGUID and name and name~='' then
+                    local realm= select(7,GetPlayerInfoByGUID(btn.dropInfo.currentLeader.playerGUID))
+                    if realm and realm~='' and realm~=e.Player.realm then
+                        name= name..'-'..realm
+                    end
+                end
+                return name
+            end
+            btn.chatTexure:SetScript('OnLeave', GameTooltip_Hide)
+            btn.chatTexure:SetScript('OnEnter', function(self)
+                local p= self:GetParent()
+                e.tips:SetOwner(self, "ANCHOR_RIGHT")
+                e.tips:ClearLines()
+
+                if p.dropInfo.startTime then
+                    local startTime= '|cnRED_FONT_COLOR:'..(e.GetTimeInfo(p.dropInfo.startTime/1000, false, nil) or '')
+                    local duration= p.dropInfo.duration and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '持续时间：%s' or PROFESSIONS_CRAFTING_FORM_CRAFTER_DURATION_REMAINING, SecondsToTime(p.dropInfo.duration/100))
+                    e.tips:AddDoubleLine(startTime, duration)
+                    e.tips:AddLine(' ')
+                end
+                local item= p.dropInfo.itemHyperlink
+                e.tips:AddDoubleLine(SLASH_SMART_WHISPER2..' '..(self:get_playername() or ''), item and item..self:get_text() or ' ')
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:Show()
+            end)
+            btn.chatTexure:SetScript('OnClick', function(self)
+                local p=self:GetParent()
+                e.Say(nil, self:get_playername(), nil, p.dropInfo.itemHyperlink and p.dropInfo.itemHyperlink..self:get_text() or '')
+
+            end)
+
+            if btn.WinningRollInfo and btn.WinningRollInfo.Check and not btn.WinningRollInfo.Check.move then--移动, √图标
+                btn.WinningRollInfo.Check:ClearAllPoints()
+                btn.WinningRollInfo.Check:SetPoint('BOTTOMRIGHT', btn, 8, -2)
+                btn.WinningRollInfo.Check.move=true
+            end
+        end
+        btn.chatTexure:SetShown(not btn.dropInfo.currentLeader.isSelf)
+        btn.chatTexure:SetAlpha(notGreed and 1 or 0.1)
+        btn.WinningRollInfo.Check:SetAlpha(notGreed and 1 or 0.3)
+
+        if btn.dropInfo.winner and btn.dropInfo.currentLeader and notGreed then--修改，名字
+            if btn.dropInfo.currentLeader.isSelf then
+                btn.WinningRollInfo.WinningRoll:SetText(e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r')
+            elseif btn.dropInfo.currentLeader.playerGUID then
+                local name= e.GetPlayerInfo({guid=btn.dropInfo.currentLeader.playerGUID, reName=true})
+                if name and name~='' then
+                    btn.WinningRollInfo.WinningRoll:SetText(name)
+                end
+            end
+        end
+
+        e.Set_Item_Stats(btn.Item, notGreed and btn.dropInfo.itemHyperlink, {point= btn.Item and btn.Item.IconBorder})--设置，物品，4个次属性，套装，装等
+
+        local text
+        if not btn.itemSubTypeLabel then
+            btn.itemSubTypeLabel= e.Cstr(btn, {color=true})
+            btn.itemSubTypeLabel:SetPoint('BOTTOMLEFT', btn.Item.IconBorder, 'BOTTOMRIGHT',4,-8)
+        end
+        if btn.dropInfo.itemHyperlink and notGreed then
+            local _, _, itemSubType2, itemEquipLoc, _, _, subclassID = GetItemInfoInstant(btn.dropInfo.itemHyperlink)--提示,装备,子类型
+            local collected, _, isSelfCollected= e.GetItemCollected(btn.dropInfo.itemHyperlink, nil, false)--物品是否收集
+            text= subclassID==0 and itemEquipLoc and e.cn(_G[itemEquipLoc]) or e.cn(itemSubType2)
+            if isSelfCollected and collected then
+                text= text..' '..collected
+            end
+
+            if btn.dropInfo.startTime and notGreed then
+                text= text..' |cnRED_FONT_COLOR:'..e.GetTimeInfo(btn.dropInfo.startTime/1000, true, nil)..'|r'
+            end
+        end
+        if btn.itemSubTypeLabel then
+            btn.itemSubTypeLabel:SetText(text or '')
+        end
+    end)
+    --[[hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
+        for _, btn in pairs(self:GetFrames()) do
+            set_LootFrame_btn(btn)
+        end
+    end)
+    hooksecurefunc(GroupLootHistoryFrame , 'OpenToEncounter', function(self, encounterID)
+        for _, btn in pairs(self.ScrollBox:GetFrames()) do
+            set_LootFrame_btn(btn)
+        end
+    end)]]
+
+    local btn= e.Cbtn(GroupLootHistoryFrame.TitleContainer, {size={18,18}, icon='hide'})
+    if _G['MoveZoomInButtonPerGroupLootHistoryFrame'] then
+        btn:SetPoint('RIGHT', _G['MoveZoomInButtonPerGroupLootHistoryFrame'], 'LEFT')
+    else
+        btn:SetPoint('LEFT')
+    end
+    function btn:Set_Atlas()
+        if Save.disabledLootPlus then
+            self:SetNormalAtlas(e.Icon.disabled)
+        else
+            self:SetNormalAtlas('communities-icon-notification')
+        end
+    end
+    btn:Set_Atlas()
+    btn:SetScript('OnClick', function(self2)
+        Save.disabledLootPlus= not Save.disabledLootPlus and true or nil
+        self2:Set_Atlas()
+        if GroupLootHistoryFrame.selectedEncounterID then
+            GroupLootHistoryFrame:DoFullRefresh()
+        end
+    end)
+    btn:SetAlpha(0.5)
+    btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
+    btn:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '战利品 Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOOT, 'Plus'), e.GetEnabeleDisable(not Save.disabledLootPlus))
+        e.tips:AddLine(' ')
+        local  encounterID= GroupLootHistoryFrame.selectedEncounterID
+        local info= encounterID and C_LootHistory.GetInfoForEncounter(encounterID)
+        if info then
+            e.tips:AddDoubleLine('encounterName', info.encounterName)
+            e.tips:AddDoubleLine('encounterID', info.encounterID)
+            e.tips:AddDoubleLine('startTime', e.SecondsToClock(info.startTime))
+            e.tips:AddDoubleLine('duration', info.duration and SecondsToTime(info.duration))
+        else
+            e.tips:AddDoubleLine('encounterID', e.onlyChinese and '无' or NONE)
+        end
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, 'Tools '..e.cn(addName))
+        e.tips:Show()
+        self2:SetAlpha(1)
+    end)
+
+
+
+    --[[hooksecurefunc(GroupLootHistoryFrame, 'UpdateTimer', function(self)
+        if self.Timer and self.Timer:IsShown() then
+            local text
+            if self.encounterInfo and self.encounterInfo.startTime and self.encounterInfo.duration then
+                if not self.TimerLabel then
+                    self.TimerLabel= e.Cstr(self.Timer)
+                    self.TimerLabel:SetPoint('RIGHT')
+                end
+                local info= self.encounterInfo--C_LootHistory.GetInfoForEncounter(encounterID)
+                text= (info.encounterInfo.duration- GetTime()-info.startTime)
+                time= text and e.SecondsToClock(text) or ''
+            end
+            if self.TimerLabel then
+                self.TimerLabel:SetText(text or '')
+            end
+        end
+    end)]]
+end
+
+
+
+
+
+
+
+
 
 
 
@@ -1966,6 +2211,9 @@ local function Init()
         e.Ccool(self, nil, 38, nil, true, true)
     end)--自动进入FB
 
+
+
+
     Init_tipsButton()--建立，小眼睛, 更新信息
     hooksecurefunc(QueueStatusFrame, 'Update', Set_Queue_Status)--小眼睛, 更新信息, QueueStatusFrame.lua
 
@@ -1974,7 +2222,12 @@ local function Init()
         set_LFGPlus()--预创建队伍增强
     end
 
-    local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--检测是否选定角色pve
+    Loot_Plus()--历史, 拾取框
+
+    Roll_Plus()--自动 ROLL
+
+
+    local _, isTank, isHealer, isDPS = GetLFGRoles()--检测是否选定角色pve
     if  not isTank and not isHealer and not isDPS then
         isTank, isHealer, isDPS=true, true, true
         local sid=GetSpecialization()
@@ -1988,7 +2241,7 @@ local function Init()
                 isTank, isHealer, isDPS=false, false ,true
             end
         end
-        SetLFGRoles(isLeader, isTank, isHealer, isDPS)
+        SetLFGRoles(true, isTank, isHealer, isDPS)
     end
     local function set_PvPRoles()--检测是否选定角色pvp
         local tank, healer, dps = GetPVPRoles()
@@ -2065,10 +2318,10 @@ local function Init()
             if bossName then
                 text= (text and text..'|n' or '')..i..') '
                 if ( isKilled ) then
-                    text= text..e.Icon.X2..'|cnRED_FONT_COLOR:'..bossName..' '..(e.onlyChinese and '已消灭' or BOSS_DEAD);
+                    text= text..e.Icon.X2..'|cnRED_FONT_COLOR:'..e.cn(bossName)..' '..(e.onlyChinese and '已消灭' or BOSS_DEAD);
                     dead= dead+1
                 else
-                    text= text..e.Icon.select2..'|cnGREEN_FONT_COLOR:'..bossName..' '..(e.onlyChinese and '可消灭' or BOSS_ALIVE);
+                    text= text..e.Icon.select2..'|cnGREEN_FONT_COLOR:'..e.cn(bossName)..' '..(e.onlyChinese and '可消灭' or BOSS_ALIVE);
                 end
                 text= text..'|r'
             end
@@ -2087,174 +2340,9 @@ local function Init()
 
     C_Timer.After(2, setHoliday)--节日, 提示, button.texture
 
-    --###########
-    --历史, 拾取框
-    --LootHistory.lua
-    local function set_LootFrame_btn(btn)
-        local playerName, itemSubType
-        local itemLink= not Save.disabledLootPlus and btn.dropInfo and btn.dropInfo.itemHyperlink
 
-        local info=e.GetTooltipData({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=itemLink, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=true, onlyRed=true})--物品提示，信息
 
-        e.Set_Item_Stats(btn.Item, not info.red and itemLink, {point= btn.Item and btn.Item.IconBorder})--设置，物品，4个次属性，套装，装等
 
-        if itemLink and not info.red then
-            if btn.dropInfo.currentLeader and not btn.dropInfo.currentLeader.isSelf then--建立,一个密语图标
-                playerName= btn.dropInfo.currentLeader.playerName
-                if not btn.chatTexure then
-                    btn.chatTexure= e.Cbtn(btn, {size={14,14}, atlas='transmog-icon-chat'})
-                    btn.chatTexure:SetPoint('BOTTOMRIGHT', btn.NameFrame, 6, 4)
-                    --1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-                    btn.chatTexure.text= (e.Player.region==1 or e.Player.region==3) and ' need, please!{rt1}' or (' '..NEED..', '..VOICEMACRO_16_Dw_0..'{rt1}')
-                    btn.chatTexure:SetScript('OnLeave', GameTooltip_Hide)
-                    btn.chatTexure:SetScript('OnEnter', function(self2)
-                        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                        e.tips:ClearLines()
-                        if self2.startTime then
-                            local start= e.GetTimeInfo(self2.startTime/1000, false, nil)
-                            e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(start or ''),
-                                self2.duration and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '持续时间：%s' or PROFESSIONS_CRAFTING_FORM_CRAFTER_DURATION_REMAINING, SecondsToTime(self2.duration/100))
-                            )
-                            e.tips:AddLine(' ')
-                        end
-                        e.tips:AddDoubleLine(SLASH_SMART_WHISPER2..' '..(self2.playerName or ''), (self2.itemLink or '')..self2.text)
-                        e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(id, e.cn(addName))
-                        e.tips:Show()
-                    end)
-                    btn.chatTexure:SetScript('OnClick', function(self2)
-                        if self2.playerName then
-                            e.Say(type, self2.playerName, nil, (self2.itemLink or '')..self2.text)
-                        end
-                    end)
-                end
-            end
-
-            local _, _, itemSubType2, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(itemLink)--提示,装备,子类型
-            if classID==2 or classID==4 then
-                itemSubType= subclassID==0 and itemEquipLoc and _G[itemEquipLoc] or itemSubType2
-                if not btn.itemSubTypeLabel then
-                    btn.itemSubTypeLabel= e.Cstr(btn)
-                    btn.itemSubTypeLabel:SetPoint('BOTTOMLEFT', btn.Item.IconBorder, 'BOTTOMRIGHT',4,-8)
-                end
-            end
-
-            local collected, _, isSelfCollected= e.GetItemCollected(itemLink, nil, false)--物品是否收集
-            if collected and isSelfCollected then
-                itemSubType= itemSubType and itemSubType..' '..collected..' ' or collected
-            end
-
-            local start= e.GetTimeInfo(btn.dropInfo.startTime/1000, true, nil)
-            if start then
-                start= '|cnRED_FONT_COLOR:'..start..'|r'
-                itemSubType= itemSubType and itemSubType..' '..start..' ' or start
-            end
-        end
-        if btn.chatTexure then
-            btn.chatTexure.playerName=playerName
-            btn.chatTexure.itemLink= itemLink
-            btn.chatTexure.duration= btn.dropInfo and btn.dropInfo.duration
-            btn.chatTexure.startTime= btn.dropInfo and btn.dropInfo.startTime
-            btn.chatTexure:SetShown(playerName and true or false)
-        end
-        if btn.itemSubTypeLabel then
-            btn.itemSubTypeLabel:SetText(itemSubType or '')
-        end
-
-        if btn.WinningRollInfo and btn.WinningRollInfo.Check and not btn.WinningRollInfo.Check.move then--移动, √图标
-            btn.WinningRollInfo.Check:ClearAllPoints()
-            btn.WinningRollInfo.Check:SetPoint('BOTTOMRIGHT', btn.NameFrame, 8, 0)
-            btn.WinningRollInfo.Check.move=true
-        end
-    end
-    hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
-        for _, btn in pairs(self:GetFrames()) do
-            set_LootFrame_btn(btn)
-        end
-    end)
-    hooksecurefunc(GroupLootHistoryFrame , 'OpenToEncounter', function(self, encounterID)
-        for _, btn in pairs(self.ScrollBox:GetFrames()) do
-            set_LootFrame_btn(btn)
-        end
-    end)
-
-    local btn= e.Cbtn(GroupLootHistoryFrame.TitleContainer, {size={18,18}, icon='hide'})
-    if _G['MoveZoomInButtonPerGroupLootHistoryFrame'] then
-        btn:SetPoint('RIGHT', _G['MoveZoomInButtonPerGroupLootHistoryFrame'], 'LEFT')
-    else
-        btn:SetPoint('LEFT')
-    end
-    function btn:Set_Atlas()
-        if Save.disabledLootPlus then
-            self:SetNormalAtlas(e.Icon.disabled)
-        else
-            self:SetNormalAtlas('communities-icon-notification')
-        end
-    end
-    btn:Set_Atlas()
-    btn:SetScript('OnClick', function(self2)
-        Save.disabledLootPlus= not Save.disabledLootPlus and true or nil
-        self2:Set_Atlas()
-        if GroupLootHistoryFrame.selectedEncounterID then
-            GroupLootHistoryFrame:DoFullRefresh()
-        end
-    end)
-    btn:SetAlpha(0.5)
-    btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
-    btn:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '战利品 Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOOT, 'Plus'), e.GetEnabeleDisable(not Save.disabledLootPlus))
-        e.tips:AddLine(' ')
-        local  encounterID= GroupLootHistoryFrame.selectedEncounterID
-        local info= encounterID and C_LootHistory.GetInfoForEncounter(encounterID)
-        if info then
-            e.tips:AddDoubleLine('encounterName', info.encounterName)
-            e.tips:AddDoubleLine('encounterID', info.encounterID)
-            e.tips:AddDoubleLine('startTime', e.SecondsToClock(info.startTime))
-            e.tips:AddDoubleLine('duration', info.duration and SecondsToTime(info.duration))
-        else
-            e.tips:AddDoubleLine('encounterID', e.onlyChinese and '无' or NONE)
-        end
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, 'Tools '..e.cn(addName))
-        e.tips:Show()
-        self2:SetAlpha(1)
-    end)
-
-    --[[hooksecurefunc(GroupLootHistoryFrame, 'UpdateTimer', function(self)
-        if self.Timer and self.Timer:IsShown() then
-            local text
-            if self.encounterInfo and self.encounterInfo.startTime and self.encounterInfo.duration then
-                if not self.TimerLabel then
-                    self.TimerLabel= e.Cstr(self.Timer)
-                    self.TimerLabel:SetPoint('RIGHT')
-                end
-                local info= self.encounterInfo--C_LootHistory.GetInfoForEncounter(encounterID)
-                text= (info.encounterInfo.duration- GetTime()-info.startTime)
-                time= text and e.SecondsToClock(text) or ''
-            end
-            if self.TimerLabel then
-                self.TimerLabel:SetText(text or '')
-            end
-        end
-    end)]]
-
-    --#########
-    --自动 ROLL
-    --#########
-    hooksecurefunc('GroupLootContainer_AddFrame', function(_, frame)
-        set_ROLL_Check(frame)
-    end)
-
-    hooksecurefunc('GroupLootContainer_Update', function(self)
-        for i=1, self.maxIndex do
-            local frame = self.rollFrames[i];
-            if frame and frame:IsShown()  then
-                set_ROLL_Check(frame)
-            end
-        end
-    end)
 
     PVPTimerFrame:HookScript('OnShow', function(self2)
         e.PlaySound()--播放, 声音
@@ -2270,7 +2358,7 @@ local function Init()
     --RolePoll.lua
     RolePollPopup:HookScript('OnShow', function(self)
         e.PlaySound()--播放, 声音
-        
+
         local canBeTank, canBeHealer, canBeDamager = UnitGetAvailableRoles("player");
         local specID=GetSpecialization()--当前专精
         local icon
@@ -2321,8 +2409,31 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--#############
+--职责确认，信息
+--#############
 local RoleC
-local function get_Role_Info(env, Name, isT, isH, isD)--职责确认，信息
+local function get_Role_Info(env, Name, isT, isH, isD)
     if env=='LFG_ROLE_CHECK_DECLINED' then
         if button.RoleInfo then
             button.RoleInfo.text:SetText('')

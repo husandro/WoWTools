@@ -425,8 +425,14 @@ PlayerUtil.CanUseClassTalents()
 PlayerUtil.HasFriendlyReaction(unit)
 
 
+local item = Item:CreateFromItemLink(dropInfo.itemHyperlink);
+local itemQuality = item:GetItemQuality();
+local qualityColor = ITEM_QUALITY_COLORS[itemQuality].color;
 
-
+self.ItemName:SetText(item:GetItemName());
+self.ItemName:SetVertexColor(qualityColor:GetRGB());
+SetItemButtonQuality(self.Item, itemQuality, dropInfo.itemHyperlink);
+self.Item.icon:SetTexture(item:GetItemIcon());
 
 
 
