@@ -642,6 +642,63 @@ local function Title()--头衔数量
                 self2:SetAlpha(0.3)
             end)
         end
+--[[
+        PaperDollFrame.TitleManagerPane.tipsButton= e.Cstr(PaperDollFrame.TitleManagerPane, {size={18, 18}, atlas=e.Icon.icon})
+        PaperDollFrame.TitleManagerPane.tipsButton:SetPoint('TOPRIGHT')
+        PaperDollFrame.TitleManagerPane.tipsButton:SetScript('OnClick', function(self)
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")--菜单框架
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level, menuList)--主菜单
+                    local titleCount= 0
+                    local notKnown= 0
+                    local tab, info={}, nil
+                    for i = 1, GetNumTitles() do
+                        if not IsTitleKnown(i) then
+                            local tempName, playerTitle = GetTitleName(i);
+                            if ( tempName and playerTitle ) then
+                                titleCount = titleCount + 1;
+                                if not IsTitleKnown(i) then
+                                    notKnown= notKnown+1
+                                    if i<51 then
+                                        info= {
+                                            text= (i<10 and ' ' or '').. i..')'..tempName,
+                                            notCheckable=true,
+                                            arg1=tempName,
+                                            func= function(_, text)
+                                                if not e.call('ChatEdit_InsertLink', text) then
+                                                    e.call('ChatFrame_OpenChat', text)
+                                                end
+                                            end
+                                        }
+                                        e.LibDD:UIDropDownMenu_AddSeparator(level)
+                                    else
+                                        table.insert(tab, {index, tempName})
+                                    end
+                                end
+                            end
+                        end
+                    end
+
+                    local n=1
+                    for i=51, #tab, 50 do
+                        info= {
+                            text= (i<10 and ' ' or '').. i..')'..tempName,
+                            notCheckable=true,
+                            arg1=tempName,
+                            func= function(_, text)
+                                if not e.call('ChatEdit_InsertLink', text) then
+                                    e.call('ChatFrame_OpenChat', text)
+                                end
+                            end
+                        }
+                        e.LibDD:UIDropDownMenu_AddSeparator(level)
+                        n=n+1 
+                    end
+
+                end, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
+        end)]]
     end
     if PaperDollSidebarTab2.titleNumeri then
         PaperDollSidebarTab2.titleNumeri.num= nu
