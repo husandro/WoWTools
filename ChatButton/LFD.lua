@@ -2089,6 +2089,7 @@ local function Loot_Plus()
         e.tips:Show()
         self2:SetAlpha(1)
     end)
+end
 --[[
     GroupLootHistoryFrame:SetResizable(true)
     GroupLootHistoryFrame.ResizeButton2= CreateFrame('Button', nil, GroupLootHistoryFrame)
@@ -2123,7 +2124,6 @@ local function Loot_Plus()
     end)
     
     ]]
-end
 
 
 --[[
