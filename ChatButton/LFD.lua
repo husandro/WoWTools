@@ -1961,6 +1961,9 @@ local function Loot_Plus()
                 local item= p.dropInfo.itemHyperlink
                 e.tips:AddDoubleLine(SLASH_SMART_WHISPER2..' '..(self:get_playername() or ''), item and item..self:get_text() or ' ')
                 e.tips:AddLine(' ')
+                if GroupLootHistoryFrame.selectedEncounterID then                    
+                    e.tips:AddDoubleLine('EncounterID', GroupLootHistoryFrame.selectedEncounterID)
+                end
                 e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
             end)
