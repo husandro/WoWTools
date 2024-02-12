@@ -1150,7 +1150,7 @@ local function set_Option()
 
 
     local unitIsMeCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    unitIsMeCheck.Text:SetText(e.onlyChinese and '目标的目标' or SHOW_TARGET_OF_TARGET_TEXT)
+    unitIsMeCheck.Text:SetText(e.onlyChinese and '目标是'..e.Player.col..'你|r' or 'Target is '..e.Player.col..'You|r')
     unitIsMeCheck:SetPoint('TOP', sel2, 'BOTTOM', 0, -24)
     unitIsMeCheck:SetChecked(Save.unitIsMe)
     unitIsMeCheck:SetScript('OnClick', function()
