@@ -28,7 +28,7 @@ local Save= {
     unitIsMePoint='TOPLEFT',
     unitIsMeX=0,
     unitIsMeY=-2,
-
+    unitIsMeColor={r=1,g=1,b=1,a=1},
     quest= true,
     --questShowAllFaction=nil,--显示， 所有玩家派系
     questShowPlayerClass=true,--显示，玩家职业
@@ -144,10 +144,12 @@ end
 
 
 local function set_Target_Color(self, isInCombat)--设置，颜色
-    if isInCombat then
-        self:SetVertexColor(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a)
-    else
-        self:SetVertexColor(Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a)
+    if self then
+        if isInCombat then
+            self:SetVertexColor(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a)
+        else
+            self:SetVertexColor(Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a)
+        end
     end
 end
 local function set_Target_Size(self)--设置，大小
@@ -293,6 +295,7 @@ local function set_unitIsMe_Texture(plate)--设置，参数
     else
         plate.UnitFrame.UnitIsMe:SetTexture(texture)
     end
+    plate.UnitFrame.UnitIsMe:SetVertexColor(Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a)
     plate.UnitFrame.UnitIsMe:SetSize(Save.unitIsMeSize, Save.unitIsMeSize)
 end
 local function set_Unit_Is_Me(plate)
@@ -629,7 +632,7 @@ local function set_Register_Event()
         targetFrame:RegisterEvent('CVAR_UPDATE')
     end
 
-    if Save.target and Save.targetInCombat then
+    if (Save.target and Save.targetInCombat) or Save.unitIsMe then
         targetFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
         targetFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
     end
@@ -720,40 +723,43 @@ local function Init()
             if arg1=='nameplateShowAll' or arg1=='nameplateShowEnemies' or arg1=='nameplateShowFriends' then
                 set_check_allQust_Plates()
                 C_Timer.After(0.15, set_Target)
-                Init_Unit_Is_Me()
+                if Save.unitIsMe then
+                    Init_Unit_Is_Me()
+                end
             end
 
         elseif event=='PLAYER_ENTERING_WORLD' then
             set_All_Init()
 
-        elseif event=='PLAYER_REGEN_DISABLED' then--颜色
-            set_Target_Color(targetFrame.Texture, true)
-
-        elseif event=='PLAYER_REGEN_ENABLED' then
-            set_Target_Color(targetFrame.Texture, false)
+        elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then--颜色
+            set_Target_Color(targetFrame.Texture, event=='PLAYER_REGEN_DISABLED')
+            if Save.unitIsMe then
+                for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
+                    set_Unit_Is_Me(plate)
+                end
+            end
 
         elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
             C_Timer.After(2, function() set_check_allQust_Plates() end)
 
-        else--UNIT_TARGET NAME_PLATE_UNIT_ADDED NAME_PLATE_UNIT_REMOVED
-            if arg1 then
-                local plate = C_NamePlate.GetNamePlateForUnit(arg1,  issecure())
-                if event=='NAME_PLATE_UNIT_ADDED'  then
-                    if not isIns then
-                        set_questProgress_Text(plate)--任务
-                    end
-
-                elseif event=='NAME_PLATE_UNIT_REMOVED' then
-                    if plate and plate.UnitFrame then
-                        if plate.UnitFrame.questProgress then--任务
-                            plate.UnitFrame.questProgress:SetText('')
-                        end
-                    end
+        elseif arg1 then--UNIT_TARGET NAME_PLATE_UNIT_ADDED NAME_PLATE_UNIT_REMOVED 
+            local plate = C_NamePlate.GetNamePlateForUnit(arg1,  issecure())-- or {}
+           
+            if event=='NAME_PLATE_UNIT_ADDED'  then
+                if not isIns then
+                    set_questProgress_Text(plate)--任务
                 end
 
-                if Save.unitIsMe then
-                    set_Unit_Is_Me(plate)--提示，目标是你
+            elseif event=='NAME_PLATE_UNIT_REMOVED' then
+                if plate and plate.UnitFrame then
+                    if plate.UnitFrame.questProgress then--任务
+                        plate.UnitFrame.questProgress:SetText('')
+                    end
                 end
+            end
+
+            if Save.unitIsMe then
+                set_Unit_Is_Me(plate)--提示，目标是你
             end
 
             if Save.creature then
@@ -1162,13 +1168,14 @@ local function set_Option()
     menuUnitIsMePoint:SetPoint("LEFT", unitIsMeCheck.Text, 'RIGHT', 15, 0)
     e.LibDD:UIDropDownMenu_SetWidth(menuUnitIsMePoint, 100)
     e.LibDD:UIDropDownMenu_Initialize(menuUnitIsMePoint, function(self, level)
+        local info
         local tab={
             'TOPLEFT',
             'TOP',
             'TOPRIGHT'
         }
         for _, name in pairs(tab) do
-            local info={
+            info={
                 text= name,
                 checked= Save.unitIsMePoint==name,
                 tooltipOnButton=true,
@@ -1182,6 +1189,24 @@ local function set_Option()
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
+
+        --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text=e.onlyChinese and '颜色' or COLOR,
+            notCheckable=true,
+            icon= Save.unitIsMeTextrue,
+            r= Save.unitIsMeColor.r or 1,
+            g= Save.unitIsMeColor.g or 1,
+            b= Save.unitIsMeColor.b or 1,
+            a= Save.unitIsMeColor.a or 1,
+            hasColorSwatch=true,
+            swatchFunc= function(...)
+                print(ColorPickerFrame:GetColorRGB())
+            end,
+            cancelFunc= function(s)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)]]
     end)
     e.LibDD:UIDropDownMenu_SetText(menuUnitIsMePoint, Save.unitIsMePoint)
     menuUnitIsMePoint.Button:SetScript('OnClick', function(self)
@@ -1216,6 +1241,7 @@ local function set_Option()
                         Save.unitIsMeTextrue= arg1
                         self:get_icon()
                         set_All_Init()
+                        self.color:set_texture()
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1227,6 +1253,49 @@ local function set_Option()
         e.HideMenu(self:GetParent())
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
     end)
+
+    menuUnitIsMe.color= e.Cbtn(panel, {size={32,32}, type='ColorSwatchTemplate', icon='hide'})--CreateFrame('Button', nil, panel, 'ColorSwatchTemplate')
+    menuUnitIsMe.color.InnerBorder:ClearAllPoints()
+    menuUnitIsMe.color.InnerBorder:SetAllPoints(menuUnitIsMe.color)
+    menuUnitIsMe.color.Color:ClearAllPoints()
+    menuUnitIsMe.color.Color:SetAllPoints(menuUnitIsMe.color)
+    menuUnitIsMe.color:SetPoint('LEFT', menuUnitIsMe, 'RIGHT', 2,0)
+    --menuUnitIsMe.color:SetSize(32,32)
+    function menuUnitIsMe.color:set_texture()
+        local isAtlas, texture= e.IsAtlas(Save.unitIsMeTextrue)
+        if isAtlas then
+            self.Color:SetAtlas(texture)
+        else
+            self.Color:SetTexture(texture)
+        end
+    end
+    function menuUnitIsMe.color:set_color()
+        self.Color:SetVertexColor(Save.unitIsMeColor.r or 1, Save.unitIsMeColor.g or 1, Save.unitIsMeColor.b or 1, Save.unitIsMeColor.a or 1)
+    end
+    menuUnitIsMe.color:set_texture()
+    menuUnitIsMe.color:set_color()
+    menuUnitIsMe.color:SetScript('OnClick', function(self)
+        local r,g,b,a= Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a
+        local info={
+            r= r,
+            g= g,
+            b= b,
+            a= a,
+            swatchFunc = function()
+                Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a= ColorPickerFrame:GetColorRGB()
+                self:set_color()
+                set_All_Init()
+            end,
+            cancelFunc = function()
+                Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a= r, g, b, a
+                self:set_color()
+                set_All_Init()
+            end
+        }
+        --info.extraInfo = nil;
+        ColorPickerFrame:SetupColorPickerAndShow(info);
+    end)
+    
 
     local unitIsMeX = e.CSlider(panel, {min=-250, max=250, value=Save.unitIsMeX, setp=1, w= 100,
     text= 'X',
@@ -1360,6 +1429,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.unitIsMePoint= Save.unitIsMePoint or 'TOPLEFT'
             Save.unitIsMeX= Save.unitIsMeX or 0
             Save.unitIsMeY= Save.unitIsMeY or -2
+            Save.unitIsMeColor= Save.unitIsMeColor or {r=1,g=1,b=1,a=1}
 
             Save.scale= Save.scale or 1.5
             Save.elapsed= Save.elapsed or 0.5
