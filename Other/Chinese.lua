@@ -100,11 +100,11 @@ local function set_model_tooltip(self)
     if self then
         local tooltip= self.tooltip and e.strText[self.tooltip]
         if tooltip then
-            self.tooltip = tooltip;
+            self.tooltip = tooltip
         end
         local tooltipText= self.tooltipText and e.strText[self.tooltipText]
         if tooltipText then
-            self.tooltipText = tooltipText;
+            self.tooltipText = tooltipText
         end
         local simpleTooltipLine= self.simpleTooltipLine and e.strText[self.simpleTooltipLine]
         if simpleTooltipLine then
@@ -207,16 +207,16 @@ local function get_gameTooltip_text(self)
             local str1, str2= text:match('(.-): (.+)')
             local str3= text:match('%d+ (.+)')
             local str4= text:match('|c........(.-)|r')
-            
+
             if up then
                 local t= up:match(': (.-) %d')
                 if t and e.strText[t] then
-                    
+
                     text2= '升级'..up:gsub(t, e.strText[t])
                 else
                     text2= '升级'..up
                 end
-                
+
             elseif set then
                 text2= '装备配置方案'..set
 
@@ -452,7 +452,7 @@ local function Init()
                 set(GearManagerPopupFrame.BorderBox.CancelButton, '取消')
                 hooksecurefunc('PaperDollEquipmentManagerPane_InitButton', function(button, elementData)
                     if elementData.addSetButton then
-                        set(button.text, '新的方案');
+                        set(button.text, '新的方案')
                     end
                 end)
     set(CharacterFrameTab2, '声望')
@@ -3105,12 +3105,12 @@ local function Init()
         local navButton = self.navList[#self.navList]
         local name= e.strText[buttonData.name]
         if name then
-            set(navButton.text, name, nil, true);
-            local buttonExtraWidth;
+            set(navButton.text, name, nil, true)
+            local buttonExtraWidth
             if ( buttonData.listFunc and not self.oldStyle ) then
-                buttonExtraWidth = 53;
+                buttonExtraWidth = 53
             else
-                buttonExtraWidth = 30;
+                buttonExtraWidth = 30
             end
             navButton:SetWidth(navButton.text:GetStringWidth() + buttonExtraWidth)
         end
@@ -3958,7 +3958,7 @@ local function Init()
     end)
 
     hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'SetAppearance', function(self, slotID, transmogID, isSecondary)
-        local itemID = C_TransmogCollection.GetSourceItemID(transmogID);
+        local itemID = C_TransmogCollection.GetSourceItemID(transmogID)
         if not itemID and not isSecondary then
             local slotName = e.strText[_G[TransmogUtil.GetSlotName(slotID)]]
             if slotName then
@@ -3967,8 +3967,8 @@ local function Init()
         end
     end)
     hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'RefreshAppearanceTooltip', function(self)
-        GameTooltip_AddColoredLine(GameTooltip, '|cnRED_FONT_COLOR:你尚未收藏过此外观', LIGHTBLUE_FONT_COLOR);
-        GameTooltip:Show();
+        GameTooltip_AddColoredLine(GameTooltip, '|cnRED_FONT_COLOR:你尚未收藏过此外观', LIGHTBLUE_FONT_COLOR)
+        GameTooltip:Show()
     end)
     hooksecurefunc(WardrobeOutfitFrame, 'Update', function(self)
         if self.Buttons then
@@ -4115,6 +4115,116 @@ local function Init()
             end
         end
     end)
+
+    --EventToastManager.lua EventToastManagerFrame
+    --没有全部测试
+    hooksecurefunc(EventToastScenarioBaseToastMixin, 'Setup', function(self, toastInfo)
+        set(self.Title, e.strText[toastInfo.title])
+        set(self.SubTitle, e.strText[toastInfo.subtitle])
+        set(self.Description, e.strText[toastInfo.instructionText])
+    end)
+    hooksecurefunc(EventToastScenarioExpandToastMixin, 'Setup', function(self, toastInfo)
+        set(self.Description, '左键点击以查看详情')
+    end)
+    hooksecurefunc(EventToastScenarioExpandToastMixin, 'OnAnimFinished', function(self)
+        set(self.Description, '左键点击以查看详情')
+    end)
+    hooksecurefunc(EventToastScenarioExpandToastMixin, 'OnClick', function(self, button, ...)
+        if (button == "LeftButton") then
+            if(not self.expanded) then
+                set(self.Description, '左键点击以查看详情')
+            else
+                set(self.Description, '左键点击以隐藏详情')
+            end
+        end
+    end)
+    hooksecurefunc(EventToastWeeklyRewardToastMixin, 'Setup', function(self, toastInfo)
+        set(self.Contents.Title, e.strText[toastInfo.title])
+	    set(self.Contents.SubTitle, e.strText[toastInfo.subtitle])
+    end)
+    hooksecurefunc(EventToastWithIconBaseMixin, 'Setup', function(self, toastInfo)
+        set(self.Title, e.strText[toastInfo.title])
+        set(self.SubTitle, e.strText[toastInfo.subtitle])
+        if not self.isSideDisplayToast then
+            set(self.InstructionalText, e.strText[toastInfo.instructionText])
+        end
+    end)
+    hooksecurefunc(EventToastWithIconWithRarityMixin, 'Setup', function(self, toastInfo)
+        if (toastInfo.qualityString) then
+            set(self.RarityValue, e.strText[toastInfo.qualityString])
+        end
+    end)
+    hooksecurefunc(EventToastChallengeModeToastMixin, 'Setup', function(self, toastInfo)
+        set(self.Title, e.strText[toastInfo.title]);
+        if (toastInfo.time) then
+            if e.strText[toastInfo.subtitle] then
+                set(self.SubTitle, format(e.strText[toastInfo.subtitle], SecondsToClock(toastInfo.time/1000, true)))
+            end
+        else
+            set(self.SubTitle, e.strText[toastInfo.subtitle])
+        end
+    end)
+    hooksecurefunc(EventToastManagerNormalTitleAndSubtitleMixin, 'Setup', function(self, toastInfo)
+        set(self.Title, e.strText[toastInfo.title]);
+        set(self.SubTitle, e.strText[toastInfo.subtitle]);
+    end)
+    hooksecurefunc(EventToastManagerNormalSingleLineMixin, 'Setup', function(self, toastInfo)
+        set(self.Title, e.strText[toastInfo.title]);
+    end)
+    hooksecurefunc(EventToastManagerNormalBlockTextMixin, 'Setup', function(self, toastInfo)
+	    set(self.Title, e.strText[toastInfo.title]);
+    end)
+
+
+    --ZoneText.lua
+    hooksecurefunc('ZoneText_OnEvent', function(self, event, ...)
+        local showZoneText = false
+        local zoneText = GetZoneText()
+        if ( (zoneText ~= self.zoneText) or (event == "ZONE_CHANGED_NEW_AREA") ) then
+            set(ZoneTextString, e.strText[zoneText])
+            showZoneText = true
+        end
+        local subzoneText = GetSubZoneText()
+        if ( subzoneText == "" and not showZoneText) then
+            subzoneText = zoneText
+        end
+        if ( subzoneText == zoneText ) then
+            if ( not self:IsShown() ) then
+                set(SubZoneTextString, e.strText[subzoneText])
+            end
+        else
+            set(SubZoneTextString, e.strText[subzoneText])
+        end
+    end)
+    set(SubZoneTextString, e.strText[GetSubZoneText()])
+    hooksecurefunc('SetZoneText', function()
+        local pvpType, isSubZonePvP, factionName = GetZonePVPInfo()
+        local pvpTextString = PVPInfoTextString
+        if ( isSubZonePvP ) then
+            pvpTextString = PVPArenaTextString
+        end
+        if ( pvpType == "sanctuary" ) then
+            set(pvpTextString, '（安全区域）')
+        elseif ( pvpType == "arena" ) then
+            set(pvpTextString, '（PvP区域）')
+        elseif ( pvpType == "friendly" or  pvpType == "hostile" ) then
+            if (factionName and factionName ~= "") then
+                set(pvpTextString, format('（%s领地）', e.cn(factionName)))
+            end
+        elseif ( pvpType == "contested" ) then
+            set(pvpTextString, '（争夺中的领土）')
+        elseif ( pvpType == "combat" ) then
+            set(PVPArenaTextString, '（战斗区域）')
+        end
+    end)
+    hooksecurefunc('AutoFollowStatus_OnEvent', function(self, event, ...)
+        if ( event == "AUTOFOLLOW_BEGIN" ) then
+            set(AutoFollowStatusText, format('正在跟随%s', self.unit))
+        end
+        if ( event == "AUTOFOLLOW_END" ) then
+            set(AutoFollowStatusText, format('已停止跟随%s。', self.unit))
+        end
+	end)
 end
 
 
@@ -4359,9 +4469,9 @@ local function Init_Loaded(arg1)
         hookDia("CANCEL_AUCTION", 'OnShow', function(self)
             local cancelCost = C_AuctionHouse.GetCancelCost(self.data.auctionID)
             if cancelCost > 0 then
-                self.text:SetText('取消拍卖会没收你所有的保证金和：')
+                set(self.text, e.strText['取消拍卖会没收你所有的保证金和：'])
             else
-                self.text:SetText('取消拍卖将使你失去保证金。')
+                set(self.text, e.strText['取消拍卖将使你失去保证金。'])
             end
         end)
 
@@ -5397,11 +5507,11 @@ local function Init_Loaded(arg1)
             end)
             hooksecurefunc('MountJournal_UpdateMountDisplay', function(forceSceneChange)
                 if ( MountJournal.selectedMountID ) then
-                    local creatureName, spellID= C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID);
+                    local creatureName, spellID= C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID)
                     if ( MountJournal.MountDisplay.lastDisplayed ~= spellID or forceSceneChange ) then
-                        local _, descriptionText, sourceText = C_MountJournal.GetMountInfoExtraByID(MountJournal.selectedMountID);
+                        local _, descriptionText, sourceText = C_MountJournal.GetMountInfoExtraByID(MountJournal.selectedMountID)
                         set(MountJournal.MountDisplay.InfoButton.Name, e.strText[creatureName])
-                        set(MountJournal.MountDisplay.InfoButton.Source, e.strText[sourceText]);
+                        set(MountJournal.MountDisplay.InfoButton.Source, e.strText[sourceText])
                         set(MountJournal.MountDisplay.InfoButton.Lore, e.strText[descriptionText])
                     end
                     if C_MountJournal.NeedsFanfare(MountJournal.selectedMountID) then
@@ -5423,8 +5533,8 @@ local function Init_Loaded(arg1)
                 GameTooltip:Show()
             end)
             hooksecurefunc('MountJournal_InitMountButton', function(button, elementData)
-                local creatureName= C_MountJournal.GetDisplayedMountInfo(elementData.index);
-                set(button.name, e.strText[creatureName]);
+                local creatureName= C_MountJournal.GetDisplayedMountInfo(elementData.index)
+                set(button.name, e.strText[creatureName])
                 if button.DragonRidingLabel:IsShown() then
                     set(button.DragonRidingLabel, '驭龙术')
                 end
@@ -5739,35 +5849,35 @@ end)
         end)
 
         hooksecurefunc(EncounterJournalItemMixin,'Init', function(self)--Blizzard_EncounterJournal.lua
-            local itemInfo = C_EncounterJournal.GetLootInfoByIndex(self.index);
+            local itemInfo = C_EncounterJournal.GetLootInfoByIndex(self.index)
             if ( itemInfo and itemInfo.name ) then
                 local name= e.strText[itemInfo.name]
                 if name then
-                    set(self.name, WrapTextInColorCode(name, itemInfo.itemQuality));
+                    set(self.name, WrapTextInColorCode(name, itemInfo.itemQuality))
                 end
                 local slot= e.strText[itemInfo.slot]
                 if slot then
                     if itemInfo.handError then
-                        set(self.slot, INVALID_EQUIPMENT_COLOR:WrapTextInColorCode(slot));
+                        set(self.slot, INVALID_EQUIPMENT_COLOR:WrapTextInColorCode(slot))
                     else
-                        set(self.slot, slot);
+                        set(self.slot, slot)
                     end
                 end
                 local armorType= e.strText[itemInfo.armorType]
                 if armorType then
                     if itemInfo.weaponTypeError then
-                        set(self.armorType, INVALID_EQUIPMENT_COLOR:WrapTextInColorCode(armorType));
+                        set(self.armorType, INVALID_EQUIPMENT_COLOR:WrapTextInColorCode(armorType))
                     else
-                        set(self.armorType, armorType);
+                        set(self.armorType, armorType)
                     end
                 end
 
-                local numEncounters = EJ_GetNumEncountersForLootByIndex(self.index);
+                local numEncounters = EJ_GetNumEncountersForLootByIndex(self.index)
                 if ( numEncounters == 1 ) then
-                    set(self.boss, format('首领：%s', EJ_GetEncounterInfo(itemInfo.encounterID)));
+                    set(self.boss, format('首领：%s', EJ_GetEncounterInfo(itemInfo.encounterID)))
                 elseif ( numEncounters == 2) then
-                    local itemInfoSecond = C_EncounterJournal.GetLootInfoByIndex(self.index, 2);
-                    local secondEncounterID = itemInfoSecond and itemInfoSecond.encounterID;
+                    local itemInfoSecond = C_EncounterJournal.GetLootInfoByIndex(self.index, 2)
+                    local secondEncounterID = itemInfoSecond and itemInfoSecond.encounterID
                     if ( itemInfo.encounterID and secondEncounterID ) then
                         set(self.boss:SetFormattedText('首领：%s，%s', e.cn(EJ_GetEncounterInfo(itemInfo.encounterID)), e.cn(EJ_GetEncounterInfo(secondEncounterID))))
                     end
@@ -5775,7 +5885,7 @@ end)
                     set(self.boss:SetFormattedText('首领：%s及其他', e.cn(EJ_GetEncounterInfo(itemInfo.encounterID))))
                 end
             else
-                self.name:SetText('正在获取物品信息');
+                self.name:SetText('正在获取物品信息')
             end
         end)
 
@@ -5794,9 +5904,9 @@ end)
                 local _
                 _, name = GetSpecializationInfoByID(specID, UnitSex("player"))
             elseif (classID > 0) then
-                local classInfo = C_CreatureInfo.GetClassInfo(classID);
+                local classInfo = C_CreatureInfo.GetClassInfo(classID)
                 if classInfo then
-                    name = classInfo.className;
+                    name = classInfo.className
                 end
             end
             name= e.cn(name)
@@ -5811,7 +5921,7 @@ end)
                 --"overviewTab",
                 "lootTab",
                 "bossTab",
-                "modelTab";
+                "modelTab"
             }
             for _, str in pairs (btnTab) do
                 local button= EncounterJournal.encounter.info[str]
@@ -5824,8 +5934,8 @@ end)
             end
         end
         hooksecurefunc('EncounterJournal_DisplayInstance', function()
-            local self= EncounterJournal.encounter;
-            local instanceName, description = EJ_GetInstanceInfo();
+            local self= EncounterJournal.encounter
+            local instanceName, description = EJ_GetInstanceInfo()
             set(self.instance.title, e.strText[instanceName])
             set(self.info.instanceTitle, e.strText[instanceName])
             set(self.instance.LoreScrollingFont, e.strText[description])
@@ -6804,7 +6914,7 @@ end)
         dia("CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING", {button1 = '接受', button2 = '拒绝'})
         hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'SetupHeader', function (self)
             if self.Header:IsShown() then
-                set(self.Header.Text, e.strText[self.optionInfo.header]);
+                set(self.Header.Text, e.strText[self.optionInfo.header])
             end
         end)
         local rarityToString ={
@@ -6826,17 +6936,17 @@ end)
                 end
                 GameTooltip_SetTitle(GameTooltip, header)
                 if self.optionInfo.rarity and self.optionInfo.rarityColor then
-                    local rarityStringIndex = self.optionInfo.rarity + 1;
-                    GameTooltip_AddColoredLine(GameTooltip, e.cn(_G["ITEM_QUALITY"..rarityStringIndex.."_DESC"]), self.optionInfo.rarityColor);
+                    local rarityStringIndex = self.optionInfo.rarity + 1
+                    GameTooltip_AddColoredLine(GameTooltip, e.cn(_G["ITEM_QUALITY"..rarityStringIndex.."_DESC"]), self.optionInfo.rarityColor)
                 end
-                GameTooltip_AddNormalLine(GameTooltip, e.cn(self.optionInfo.description));
+                GameTooltip_AddNormalLine(GameTooltip, e.cn(self.optionInfo.description))
                 GameTooltip:Show()
             end
         end)
 
         hooksecurefunc(GenericPlayerChoiceToggleButton, 'UpdateButtonState', function(self)--PlayerChoiceToggleButtonMixin
             if self:IsShown() then
-                local choiceFrameShown = PlayerChoiceFrame:IsShown();
+                local choiceFrameShown = PlayerChoiceFrame:IsShown()
                 local choiceInfo = C_PlayerChoice.GetCurrentPlayerChoiceInfo() or {}
                 set(self.Text, choiceFrameShown and '隐藏' or e.strText[choiceInfo.pendingChoiceText])
             end

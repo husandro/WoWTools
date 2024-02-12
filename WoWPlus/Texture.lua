@@ -2878,7 +2878,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             hide_Texture(PingSystemTutorialBg)
             set_Alpha_Frame_Texture(SettingsPanel.GameTab, {notAlpha=true})
             set_Alpha_Frame_Texture(SettingsPanel.AddOnsTab, {notAlpha=true})
-
+            set_SearchBox(SettingsPanel.SearchBox)
+            set_Alpha_Frame_Texture(SettingsPanel, {index=1})
         else
             if eventTab then
                 table.insert(eventTab, arg1)
