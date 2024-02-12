@@ -591,6 +591,7 @@ local function Init()
     GroupFinderFrame:HookScript('OnShow', function()
         PVEFrame:SetTitle('地下城和团队副本')
     end)
+    
 
     set(PVEFrameTab1, '地下城和团队副本')
     set(PVEFrameTab2, 'PvP')
@@ -600,6 +601,17 @@ local function Init()
         set(LFDQueueFrameTypeDropDownName, '类型：')
         set(LFDQueueFrameRandomScrollFrameChildFrameTitle, '')
     set(GroupFinderFrame.groupButton2.name, '团队查找器')
+        --[[hooksecurefunc('GroupFinderFrame_EvaluateButtonVisibility', function(self)
+            if self.groupButton1.tooltip and e.strText[self.groupButton1.tooltip] then
+                self.groupButton1.tooltip = e.strText[self.groupButton1.tooltip]
+            end
+            if self.groupButton2.tooltip and e.strText[self.groupButton2.tooltip] then
+                self.groupButton2.tooltip = e.strText[self.groupButton2.tooltip]
+            end
+            if self.groupButton3.tooltip and e.strText[self.groupButton3.tooltip] then
+                self.groupButton3.tooltip = e.strText[self.groupButton4.tooltip]
+            end
+        end)]]
         set(RaidFinderQueueFrameSelectionDropDownName, '团队')
             hooksecurefunc('RaidFinderFrameFindRaidButton_Update', function()--RaidFinder.lua
                 local mode = GetLFGMode(LE_LFG_CATEGORY_RF, RaidFinderQueueFrame.raid)
@@ -614,6 +626,7 @@ local function Init()
                     end
                 end
             end)
+
     set(GroupFinderFrame.groupButton3.name, '预创建队伍')
         set(LFGListFrame.CategorySelection.Label, '预创建队伍')
         hooksecurefunc('LFGListCategorySelection_AddButton', function(self, btnIndex, categoryID, filters)--LFGList.lua
@@ -3782,7 +3795,7 @@ local function Init()
 
     set_GameTooltip_func(GameTooltip)
     set_GameTooltip_func(ItemRefTooltip)
-    --set_GameTooltip_func(EmbeddedItemTooltip)
+    set_GameTooltip_func(EmbeddedItemTooltip)
     --set_GameTooltip_func(NamePlateTooltip)
 
 
