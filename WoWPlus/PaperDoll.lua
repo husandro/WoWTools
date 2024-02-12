@@ -615,95 +615,118 @@ end
 
 
 
-local function Title()--头衔数量
-    if not PaperDollSidebarTab2 or not PAPERDOLL_SIDEBARS[2].IsActive() then
+local function Init_Title()--头衔数量
+    local btn= PaperDollFrame.TitleManagerPane.tipsButton
+    if not PAPERDOLL_SIDEBARS[2].IsActive() or Save.hide then
+        if btn then
+            btn.titleNumeri:SetText("")
+            btn:SetShown(false)
+        end
         return
     end
-    local nu
-    if not Save.hide then
-        local to=GetKnownTitles() or {}
-        nu= #to-1
-        nu= nu>0 and nu or nil
-        if not PaperDollSidebarTab2.titleNumeri then
-            PaperDollSidebarTab2.titleNumeri= e.Cstr(PaperDollSidebarTab2, {justifyH='CENTER', mouse=true})
-            PaperDollSidebarTab2.titleNumeri:SetPoint('BOTTOM')
-            PaperDollSidebarTab2.titleNumeri:EnableMouse(true)
-            PaperDollSidebarTab2.titleNumeri:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
-            PaperDollSidebarTab2.titleNumeri:SetScript('OnMouseDown', function(self)
-                e.call(PaperDollFrame_SetSidebar, PaperDollSidebarTab2, 2)--PaperDollFrame.lua
-            end)
-            PaperDollSidebarTab2.titleNumeri:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(format(e.onlyChinese and '头衔：%s' or RENOWN_REWARD_TITLE_NAME_FORMAT, self2.num or ''), e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, 0,1,0, 0,1,0)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, e.cn(addName))
-                e.tips:Show()
-                self2:SetAlpha(0.3)
-            end)
-        end
---[[
-        PaperDollFrame.TitleManagerPane.tipsButton= e.Cstr(PaperDollFrame.TitleManagerPane, {size={18, 18}, atlas=e.Icon.icon})
-        PaperDollFrame.TitleManagerPane.tipsButton:SetPoint('TOPRIGHT')
-        PaperDollFrame.TitleManagerPane.tipsButton:SetScript('OnClick', function(self)
-            if not self.Menu then
-                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")--菜单框架
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level, menuList)--主菜单
-                    local titleCount= 0
-                    local notKnown= 0
-                    local tab, info={}, nil
-                    for i = 1, GetNumTitles() do
+
+    if not btn then
+        btn= e.Cbtn(PaperDollFrame.TitleManagerPane, {size={32, 32}, icon='hide'})--, atlas=e.Icon.icon})
+        btn.Text= e.Cstr(btn)
+        btn.Text:SetPoint('CENTER')
+        btn:SetFrameLevel(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrameLevel()+1)
+        btn:SetPoint('TOPRIGHT')
+        function btn:get_tab()
+            local tab={}
+            for i = 1, GetNumTitles() do
+                if not IsTitleKnown(i) then
+                    local name, playerTitle = GetTitleName(i);
+                    if name and playerTitle then
                         if not IsTitleKnown(i) then
-                            local tempName, playerTitle = GetTitleName(i);
-                            if ( tempName and playerTitle ) then
-                                titleCount = titleCount + 1;
-                                if not IsTitleKnown(i) then
-                                    notKnown= notKnown+1
-                                    if i<51 then
-                                        info= {
-                                            text= (i<10 and ' ' or '').. i..')'..tempName,
-                                            notCheckable=true,
-                                            arg1=tempName,
-                                            func= function(_, text)
-                                                if not e.call('ChatEdit_InsertLink', text) then
-                                                    e.call('ChatFrame_OpenChat', text)
-                                                end
-                                            end
-                                        }
-                                        e.LibDD:UIDropDownMenu_AddSeparator(level)
-                                    else
-                                        table.insert(tab, {index, tempName})
-                                    end
-                                end
-                            end
+                            table.insert(tab, {index=i, name=name})
                         end
                     end
-
-                    local n=1
-                    for i=51, #tab, 50 do
-                        info= {
-                            text= (i<10 and ' ' or '').. i..')'..tempName,
-                            notCheckable=true,
-                            arg1=tempName,
-                            func= function(_, text)
-                                if not e.call('ChatEdit_InsertLink', text) then
-                                    e.call('ChatFrame_OpenChat', text)
-                                end
+                end
+            end
+            return tab
+        end
+        btn:SetScript('OnClick', function(self)
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")--菜单框架
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(frame, level, menuList)--主菜单
+                    local info
+                    local tab= frame:GetParent():get_tab()
+                    if menuList then
+                        for i= menuList, menuList+50 do
+                            if tab[i] then
+                                local index= tab[i].index
+                                local name= tab[i].name
+                                info= {
+                                    text= (index<10 and ' ' or '').. index..')'..e.Icon.left..name,
+                                    tooltipOnButton=true,
+                                    tooltipTitle= 'titleID '..index,
+                                    notCheckable=true,
+                                    arg1=name,
+                                    func= function(_, name)
+                                        if not e.call('ChatEdit_InsertLink', name) then
+                                            e.call('ChatFrame_OpenChat', name)
+                                        end
+                                    end
+                                }
+                                e.LibDD:UIDropDownMenu_AddButton(info, level)
+                            else
+                                break
                             end
-                        }
-                        e.LibDD:UIDropDownMenu_AddSeparator(level)
-                        n=n+1 
+                        end
+                        return
                     end
 
+                    for i=1, #tab, 50 do
+                        info= {
+                            text= i,
+                            notCheckable=true,
+                            menuList=i,
+                            hasArrow=true
+                        }
+                        e.LibDD:UIDropDownMenu_AddButton(info, level)
+                    end
+                    e.LibDD:UIDropDownMenu_AddSeparator(level)
+
+                    info= {
+                        text= #tab==0 and (e.onlyChinese and '全部已收集' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  ALL, COLLECTED))
+                            or (#tab.. ' '..(e.onlyChinese and '未收集' or  NOT_COLLECTED)),
+                        isTitle=true,
+                        notCheckable=true,
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+                    info= {
+                        text= id..' '..e.cn(addName),
+                        isTitle=true,
+                        notCheckable=true,
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
                 end, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
-        end)]]
+        end)
+        PaperDollFrame.TitleManagerPane.tipsButton= btn
     end
-    if PaperDollSidebarTab2.titleNumeri then
-        PaperDollSidebarTab2.titleNumeri.num= nu
-        PaperDollSidebarTab2.titleNumeri:SetText(nu or '')
+    btn.Text:SetText(#btn:get_tab())
+    btn:SetShown(true)
+
+    if not btn.titleNumeri then
+        btn.titleNumeri= e.Cstr(PaperDollSidebarTab2, {justifyH='CENTER', mouse=true})
+        btn.titleNumeri:SetPoint('BOTTOM')
+        btn.titleNumeri:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+        btn.titleNumeri:SetScript('OnMouseDown', function()
+            e.call('PaperDollFrame_SetSidebar', _G['PaperDollSidebarTab2'], 2)--PaperDollFrame.lua
+        end)
+        btn.titleNumeri:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(format(e.onlyChinese and '头衔：%s' or RENOWN_REWARD_TITLE_NAME_FORMAT,  '|cnGREEN_FONT_COLOR:'..(#GetKnownTitles()-1)..'|r'), e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:Show()
+            self2:SetAlpha(0.3)
+        end)
     end
+    btn.titleNumeri:SetText(#GetKnownTitles()-1)
 end
 
 
@@ -1642,7 +1665,7 @@ panel.Init_Show_Hide_Button= function(self, frame)
 
         --print(id, e.cn(addName), e.GetShowHide(not Save.hide), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or (NEED..REFRESH)))
 
-        Title()--头衔数量
+        Init_Title()--头衔数量
         GetDurationTotale()--装备,总耐久度
         LvTo()--总装等
         set_PaperDollSidebarTab3_Text()--标签, 内容,提示
@@ -1704,7 +1727,7 @@ local function Init()
     GetDurationTotale()--装备,总耐久度
 
     hooksecurefunc('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
-        Title()--总装等
+        Init_Title()--总装等
         set_PaperDollSidebarTab3_Text()
     end)
 
