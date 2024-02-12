@@ -569,7 +569,7 @@ local function set_Created_Texture_Text()
         targetFrame.Texture:SetShown(Save.target)
     end
 
-    
+
    set_Target()
    Init_Creature_Num()
    set_check_allQust_Plates()
@@ -1260,7 +1260,7 @@ local function set_Option()
     end})
     unitIsMeSize:SetPoint("LEFT", unitIsMeY, 'RIGHT',15,0)
 
-    
+
 
 
 
@@ -1353,7 +1353,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.targetTextureName= Save.targetTextureName or 'common-icon-rotateright'
             Save.targetColor= Save.targetColor or {r=1,g=1,b=1,a=1}
             Save.targetInCombatColor= Save.targetInCombatColor or {r=1, g=0, b=0, a=1}
-            
+
             Save.unitIsMe= Save.unitIsMe==nil and true or Save.unitIsMe
             Save.unitIsMeTextrue= Save.unitIsMeTextrue or 'auctionhouse-icon-favorite'
             Save.unitIsMeSize= Save.unitIsMeSize or 12
