@@ -1025,7 +1025,10 @@ function func.Set_HealthBar_Unit(frame, unit)
     frame.textRight:SetTextColor(r or 1, g or 1, b or 1)
 end
 
-local function Int_Health_Bar_Unit()
+
+
+
+local function Int_Health_Bar_Unit()--hooksecurefunc(GameTooltipStatusBar, 'UpdateUnitHealth', function(self)
     if Save.hideHealth then
         return
     end
