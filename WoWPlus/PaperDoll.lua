@@ -1596,7 +1596,7 @@ local function set_ChromieTime()--时空漫游战役, 提示
             e.tips:ClearLines()
             local expansionID = UnitChromieTimeID('player')--时空漫游战役 PartyUtil.lua
             local option = C_ChromieTime.GetChromieTimeExpansionOption(expansionID);
-            local expansion = option and option.name or (e.onlyChinese and '无' or NONE)
+            local expansion = option and e.cn(option.name) or (e.onlyChinese and '无' or NONE)
             if option and option.previewAtlas then
                 expansion= '|A:'..option.previewAtlas..':0:0|a'..expansion
             end
