@@ -626,7 +626,7 @@ local function Init_Title()--头衔数量
     end
 
     if not btn then
-        btn= e.Cbtn(PaperDollFrame.TitleManagerPane, {size={32, 32}, icon='hide'})--, atlas=e.Icon.icon})
+        btn= e.Cbtn(PaperDollFrame.TitleManagerPane, {size={28, 28}, icon='hide'})--, atlas=e.Icon.icon})
         btn.Text= e.Cstr(btn)
         btn.Text:SetPoint('CENTER')
         btn:SetFrameLevel(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrameLevel()+1)
@@ -651,15 +651,17 @@ local function Init_Title()--头衔数量
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(frame, level, menuList)--主菜单
                     local info
                     local tab= frame:GetParent():get_tab()
+                    local n=30
                     if menuList then
-                        for i= menuList, menuList+50 do
+                        for i= menuList, menuList+n-1 do
                             if tab[i] then
                                 local index= tab[i].index
                                 local name= tab[i].name
                                 info= {
-                                    text= (index<10 and ' ' or '').. index..')'..e.Icon.left..name,
+                                    text= (index<10 and ' ' or '').. index..')'..e.Icon.left..e.cn(name),
                                     tooltipOnButton=true,
                                     tooltipTitle= 'titleID '..index,
+                                    tooltipText=name,
                                     notCheckable=true,
                                     arg1=name,
                                     func= function(_, name)
@@ -676,7 +678,7 @@ local function Init_Title()--头衔数量
                         return
                     end
 
-                    for i=1, #tab, 50 do
+                    for i=1, #tab, n do
                         info= {
                             text= i,
                             notCheckable=true,
@@ -716,14 +718,15 @@ local function Init_Title()--头衔数量
         btn.titleNumeri:SetScript('OnMouseDown', function()
             e.call('PaperDollFrame_SetSidebar', _G['PaperDollSidebarTab2'], 2)--PaperDollFrame.lua
         end)
-        btn.titleNumeri:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        btn.titleNumeri:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(format(e.onlyChinese and '头衔：%s' or RENOWN_REWARD_TITLE_NAME_FORMAT,  '|cnGREEN_FONT_COLOR:'..(#GetKnownTitles()-1)..'|r'), e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
+            e.tips:AddDoubleLine(format(e.onlyChinese and '头衔：%s' or RENOWN_REWARD_TITLE_NAME_FORMAT,  '|cnGREEN_FONT_COLOR:'..(#GetKnownTitles()-1)..'|r'), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '未收集' or  NOT_COLLECTED))
+            e.tips:AddDoubleLine(#PaperDollFrame.TitleManagerPane.tipsButton:get_tab(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or  NOT_COLLECTED))
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
-            self2:SetAlpha(0.3)
+            self:SetAlpha(0.3)
         end)
     end
     btn.titleNumeri:SetText(#GetKnownTitles()-1)
