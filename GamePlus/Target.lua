@@ -22,6 +22,13 @@ local Save= {
     creatureFontSize=10,
     --creatureToUIParet=true,--放在UIPrent
 
+    unitIsMe=true,--提示， 目标是你
+    unitIsMeTextrue= 'auctionhouse-icon-favorite',
+    unitIsMeSize=12,
+    unitIsMePoint='TOPLEFT',
+    unitIsMeX=0,
+    unitIsMeY=-2,
+
     quest= true,
     --questShowAllFaction=nil,--显示， 所有玩家派系
     questShowPlayerClass=true,--显示，玩家职业
@@ -62,9 +69,72 @@ end]]
 
 
 
+local function get_texture_tab()
+    local tab={
+        ['auctionhouse-icon-favorite']='a',
+        ['common-icon-rotateright']='a',
+        ['Adventures-Target-Indicator']='a',
+        ['Adventures-Target-Indicator-desat']='a',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Hunters_Mark.tga']='t',
+        ['NPE_ArrowDown']='a',
+        ['UI-HUD-MicroMenu-StreamDLYellow-Up']='a',
+        ['Interface\\AddOns\\WeakAuras\\Media\\Textures\\targeting-mark.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Reticule.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\RedArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonReticule.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonRedArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\RedChevronArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\PaleRedChevronArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\arrow_tip_green.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\arrow_tip_red.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\skull.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\circles_target.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\red_star.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\greenarrowtarget.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\BlueArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\bluearrow1.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\gearsofwar.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\malthael.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NewRedArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NewSkull.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\PurpleArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Shield.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonGreenArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_FelFlamingSkull.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedFlamingSkull.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_ShadowFlamingSkull.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_GreenGPS.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedGPS.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_WhiteGPS.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_GreenTarget.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedTarget.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_WhiteTarget.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_Towards.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_Away.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_SelfTowards.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_SelfAway.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FriendTowards.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FriendAway.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusTowards.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusAway.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\green_arrow_down_11384.tga']='t',
+    }
+    for name, _ in pairs(Save.targetTextureNewTab) do
+        if tab[name] then
+            Save.targetTextureNewTab[name]=nil
+        else
+            tab[name]= 'use'
+        end
+    end
+    return tab
+end
 
 
-
+local function get_plate_unit(plate)
+    if plate then
+        return  plate.UnitFrame and plate.UnitFrame.unit or plate.namePlateUnitToken
+    end
+end
 
 
 
@@ -127,20 +197,11 @@ end
 --怪物目标, 队员目标, 总怪物
 --########################
 local function set_Creature_Num()--local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
-    if not (Save.creature) then
-        if CreatureLabel then
-            CreatureLabel:SetText('')
-        end
-        return
-    end
-
     local k,T,F=0,0,0
-    local nameplates= C_NamePlate.GetNamePlates() or {}
-    for _, nameplat in pairs(nameplates) do
-        local u = nameplat.namePlateUnitToken or nameplat.UnitFrame and nameplat.UnitFrame.unit
+    for _, nameplat in pairs(C_NamePlate.GetNamePlates() or {}) do
+        local u = get_plate_unit(nameplat)
         local t= u and u..'target'
         --local range= Save.creatureRange>0 and e.CheckRange(u, Save.creatureRange, '<=') or Save.creatureRange==0
-
         if UnitExists(t) and UnitExists(u)
             and not UnitIsDeadOrGhost(u)
             and not UnitInParty(u)
@@ -176,6 +237,33 @@ local function set_Creature_Num()--local distanceSquared, checkedDistance = Unit
     CreatureLabel:SetText(e.Player.col..(T==0 and '-' or  T)..'|r |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
 end
 
+local function Init_Creature_Num()
+    if Save.creature then
+        --怪物数量
+        if not CreatureLabel then
+            CreatureLabel= e.Cstr(targetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}, layer='BORDER'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
+            function CreatureLabel:set_point()
+                self:ClearAllPoints()
+                if Save.targetFramePoint=='LEFT' then
+                    self:SetPoint('CENTER')
+                    self:SetJustifyH('RIGHT')
+                else
+                    self:SetPoint('BOTTOM', 0, 8)
+                    self:SetJustifyH('CENTER')
+                end
+            end
+            CreatureLabel:SetTextColor(1,1,1)
+        elseif CreatureLabel then
+            e.Cstr(nil, {changeFont=CreatureLabel, size= Save.creatureFontSize})
+            CreatureLabel:set_point()
+        end
+        set_Creature_Num()
+    else
+        if CreatureLabel then
+            CreatureLabel:SetText('')
+        end
+    end
+end
 
 
 
@@ -186,6 +274,56 @@ end
 
 
 
+
+
+--#############
+--提示，目标是我
+--#############
+local function set_unitIsMe_Texture(plate)--设置，参数
+    if Save.unitIsMePoint=='TOP' then
+        plate.UnitFrame.UnitIsMe:SetPoint("BOTTOM", plate.UnitFrame.healthBar, 'TOP', Save.unitIsMeX,Save.unitIsMeY)
+    elseif Save.unitIsMePoint=='TOPRIGHT' then
+        plate.UnitFrame.UnitIsMe:SetPoint("BOTTOMRIGHT", plate.UnitFrame.healthBar, 'TOPRIGHT', Save.unitIsMeX,Save.unitIsMeY)
+    else--TOPLEFT
+        plate.UnitFrame.UnitIsMe:SetPoint("BOTTOMLEFT", plate.UnitFrame.healthBar, 'TOPLEFT', Save.unitIsMeX,Save.unitIsMeY)
+    end
+    local isAtlas, texture= e.IsAtlas(Save.unitIsMeTextrue)
+    if isAtlas or not texture then
+        plate.UnitFrame.UnitIsMe:SetAtlas(texture or 'auctionhouse-icon-favorite')
+    else
+        plate.UnitFrame.UnitIsMe:SetTexture(texture)
+    end
+    plate.UnitFrame.UnitIsMe:SetSize(Save.unitIsMeSize, Save.unitIsMeSize)
+end
+local function set_Unit_Is_Me(plate)
+    if plate and plate.UnitFrame then
+        local isMe= UnitIsUnit(plate.UnitFrame.unit and plate.UnitFrame.unit..'target', 'player')
+        if isMe and not plate.UnitFrame.UnitIsMe then
+            plate.UnitFrame.UnitIsMe= plate.UnitFrame:CreateTexture(nil, 'OVERLAY')
+            set_unitIsMe_Texture(plate)--设置，参数
+        end
+        if plate.UnitFrame.UnitIsMe then
+            plate.UnitFrame.UnitIsMe:SetShown(isMe)
+        end
+    end
+end
+local function Init_Unit_Is_Me()
+    for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
+        if plate.UnitFrame then
+            if Save.unitIsMe then--启用
+                if plate.UnitFrame.UnitIsMe then--修改
+                    plate.UnitFrame.UnitIsMe:ClearAllPoints()
+                    set_unitIsMe_Texture(plate)--设置，参数
+                end
+                set_Unit_Is_Me(plate)--设置
+            else
+                if plate.UnitFrame.UnitIsMe then
+                    plate.UnitFrame.UnitIsMe:SetShown(false)
+                end
+            end
+        end
+    end
+end
 
 
 
@@ -205,7 +343,7 @@ end
 --任务，数量
 --#########
 local THREAT_TOOLTIP= e.Magic(THREAT_TOOLTIP)--:gsub('%%d', '%%d+')--"%d%% 威胁"
-local function find_Text(text)    
+local function find_Text(text)
     if text and not text:find(THREAT_TOOLTIP) then
         if text:find('(%d+/%d+)') then
             local min, max= text:match('(%d+)/(%d+)')
@@ -259,9 +397,10 @@ local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line a
     end
 end
 
-local function set_questProgress_Text(plate, unit)
+local function set_questProgress_Text(plate)
     local self= plate and plate.UnitFrame
-    if not self then
+    local unit= get_plate_unit(plate)
+    if not self or not unit then
         return
     end
     local text
@@ -288,7 +427,7 @@ local function set_check_allQust_Plates()
         end
     else
         for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
-            set_questProgress_Text(plate, plate.namePlateUnitToken or plate.UnitFrame and plate.UnitFrame.unit)
+            set_questProgress_Text(plate)
         end
     end
 end
@@ -430,28 +569,11 @@ local function set_Created_Texture_Text()
         targetFrame.Texture:SetShown(Save.target)
     end
 
-    --怪物数量
-    if not CreatureLabel and Save.creature then
-        CreatureLabel= e.Cstr(targetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}, layer='BORDER'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
-        function CreatureLabel:set_point()
-            self:ClearAllPoints()
-            if Save.targetFramePoint=='LEFT' then
-                self:SetPoint('CENTER')
-                self:SetJustifyH('RIGHT')
-            else
-                self:SetPoint('BOTTOM', 0, 8)
-                self:SetJustifyH('CENTER')
-            end
-        end
-        CreatureLabel:SetTextColor(1,1,1)
-    elseif CreatureLabel then
-        e.Cstr(nil, {changeFont=CreatureLabel, size= Save.creatureFontSize})
-        CreatureLabel:set_point()
-    end
-
+    
    set_Target()
-   set_Creature_Num()
+   Init_Creature_Num()
    set_check_allQust_Plates()
+   Init_Unit_Is_Me()
 end
 
 
@@ -512,14 +634,14 @@ local function set_Register_Event()
         targetFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
     end
 
-    if Save.creature then
+    if Save.creature or Save.unitIsMe then
         targetFrame:RegisterEvent('UNIT_TARGET')
     end
 
-
-    if (not isIns and Save.quest) or Save.creature then
+    if (not isIns and Save.quest) or Save.creature or Save.unitIsMe then
         targetFrame:RegisterEvent('NAME_PLATE_UNIT_ADDED')
         targetFrame:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
+        --targetFrame:RegisterEvent('NAME_PLATE_CREATED')
     end
 
     if not isIns and Save.quest  then
@@ -586,6 +708,7 @@ local function Init()
             set_Target()
         end
     end)
+
     targetFrame:SetScript("OnEvent", function(_, event, arg1)
         if event=='PLAYER_TARGET_CHANGED'
             or event=='RAID_TARGET_UPDATE'
@@ -593,9 +716,12 @@ local function Init()
         then
             C_Timer.After(0.15, set_Target)
 
-        elseif event=='CVAR_UPDATE' and (arg1=='nameplateShowAll' or arg1=='nameplateShowEnemies' or arg1=='nameplateShowFriends') then
-            set_check_allQust_Plates()
-            C_Timer.After(0.15, set_Target)
+        elseif event=='CVAR_UPDATE' then
+            if arg1=='nameplateShowAll' or arg1=='nameplateShowEnemies' or arg1=='nameplateShowFriends' then
+                set_check_allQust_Plates()
+                C_Timer.After(0.15, set_Target)
+                Init_Unit_Is_Me()
+            end
 
         elseif event=='PLAYER_ENTERING_WORLD' then
             set_All_Init()
@@ -609,20 +735,30 @@ local function Init()
         elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
             C_Timer.After(2, function() set_check_allQust_Plates() end)
 
-        else
+        else--UNIT_TARGET NAME_PLATE_UNIT_ADDED NAME_PLATE_UNIT_REMOVED
             if arg1 then
-                if event=='NAME_PLATE_UNIT_ADDED' then
+                local plate = C_NamePlate.GetNamePlateForUnit(arg1,  issecure())
+                if event=='NAME_PLATE_UNIT_ADDED'  then
                     if not isIns then
-                        set_questProgress_Text(C_NamePlate.GetNamePlateForUnit(arg1,  issecure()), arg1)
+                        set_questProgress_Text(plate)--任务
                     end
+
                 elseif event=='NAME_PLATE_UNIT_REMOVED' then
-                    local plate = C_NamePlate.GetNamePlateForUnit(arg1,  issecure())
-                    if plate and plate.UnitFrame and plate.UnitFrame.questProgress then
-                        plate.UnitFrame.questProgress:SetText('')
+                    if plate and plate.UnitFrame then
+                        if plate.UnitFrame.questProgress then--任务
+                            plate.UnitFrame.questProgress:SetText('')
+                        end
                     end
                 end
+
+                if Save.unitIsMe then
+                    set_Unit_Is_Me(plate)--提示，目标是你
+                end
             end
-            set_Creature_Num()
+
+            if Save.creature then
+                set_Creature_Num()
+            end
         end
     end)
 end
@@ -793,7 +929,6 @@ local function set_Option()
         end
     end)
     e.LibDD:UIDropDownMenu_SetText(menuPoint, Save.targetFramePoint)
-
     menuPoint.Button:SetScript('OnClick', function(self)
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
     end)
@@ -874,66 +1009,10 @@ local function set_Option()
     menu:SetPoint("TOPLEFT", sel, 'BOTTOMRIGHT', -16,-82)
     e.LibDD:UIDropDownMenu_SetWidth(menu, 410)
     e.LibDD:UIDropDownMenu_Initialize(menu, function(self, level)
-        local tab={
-            ['common-icon-rotateright']='a',
-            ['Adventures-Target-Indicator']='a',
-            ['Adventures-Target-Indicator-desat']='a',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Hunters_Mark.tga']='t',
-            ['NPE_ArrowDown']='a',
-            ['UI-HUD-MicroMenu-StreamDLYellow-Up']='a',
-            ['Interface\\AddOns\\WeakAuras\\Media\\Textures\\targeting-mark.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Reticule.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\RedArrow.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonReticule.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonRedArrow.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\RedChevronArrow.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\PaleRedChevronArrow.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\arrow_tip_green.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\arrow_tip_red.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\skull.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\circles_target.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\red_star.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\greenarrowtarget.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\BlueArrow.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\bluearrow1.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\gearsofwar.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\malthael.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NewRedArrow.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NewSkull.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\PurpleArrow.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Shield.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonGreenArrow.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_FelFlamingSkull.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedFlamingSkull.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_ShadowFlamingSkull.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_GreenGPS.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedGPS.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_WhiteGPS.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_GreenTarget.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedTarget.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_WhiteTarget.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_Towards.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_Away.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_SelfTowards.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_SelfAway.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FriendTowards.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FriendAway.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusTowards.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusAway.tga']='t',
-            ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\green_arrow_down_11384.tga']='t',
-        }
-        for name, _ in pairs(Save.targetTextureNewTab) do
-            if tab[name] then
-                Save.targetTextureNewTab[name]=nil
-            else
-                tab[name]= 'use'
-            end
-        end
-        for name, use in pairs(tab) do
+        for name, use in pairs(get_texture_tab()) do
             local isAtlas, texture= e.IsAtlas(name)
             if texture then
                 local info={
-                    
                     text= name:match('.+\\(.+)%.') or name,
                     icon= name,
                     colorCode= use=='use' and '|cff00ff00' or (isAtlas and '|cffff00ff') or nil,
@@ -1048,23 +1127,12 @@ local function set_Option()
     sel2.Text:SetText(e.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r'
                 or (e.Player.col..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, TARGET)..'('..YOU..')|r |cnGREEN_FONT_COLOR:'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)..'('..YOU..')|r |cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)..'|r')
             )
-    sel2:SetPoint('TOPLEFT', menu.edit, 'BOTTOMLEFT', -32, -60)
+    sel2:SetPoint('TOPLEFT', menu.edit, 'BOTTOMLEFT', -32, -32)
     sel2:SetChecked(Save.creature)
     sel2:SetScript('OnClick', function()
         Save.creature= not Save.creature and true or nil
         set_All_Init()
     end)
-
-    --[[local sliderRange = e.CSlider(panel, {min=0, max=60, value=Save.creatureRange, setp=1, w= 100 ,
-    text=format(e.onlyChinese and '码' or IN_GAME_NAVIGATION_RANGE, ''),
-    func=function(self2, value)
-        value= math.floor(value)
-        self2:SetValue(value)
-        self2.Text:SetText(value)
-        Save.creatureRange= value
-        set_All_Init()
-    end})
-    sliderRange:SetPoint("TOPLEFT", sel2.Text, 'BOTTOMLEFT',0, -16)]]
 
     local sliderCreatureFontSize = e.CSlider(panel, {min=8, max=32, value=Save.creatureFontSize, setp=1, w=100, color=true,
     text= e.Player.L.size,
@@ -1077,9 +1145,133 @@ local function set_Option()
     end})
     sliderCreatureFontSize:SetPoint("LEFT", sel2.Text, 'RIGHT',15,0)
 
+
+
+
+
+    local unitIsMeCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    unitIsMeCheck.Text:SetText(e.onlyChinese and '目标的目标' or SHOW_TARGET_OF_TARGET_TEXT)
+    unitIsMeCheck:SetPoint('TOP', sel2, 'BOTTOM', 0, -24)
+    unitIsMeCheck:SetChecked(Save.unitIsMe)
+    unitIsMeCheck:SetScript('OnClick', function()
+        Save.unitIsMe= not Save.unitIsMe and true or false
+        set_All_Init()
+    end)
+
+    local menuUnitIsMePoint = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    menuUnitIsMePoint:SetPoint("LEFT", unitIsMeCheck.Text, 'RIGHT', 15, 0)
+    e.LibDD:UIDropDownMenu_SetWidth(menuUnitIsMePoint, 100)
+    e.LibDD:UIDropDownMenu_Initialize(menuUnitIsMePoint, function(self, level)
+        local tab={
+            'TOPLEFT',
+            'TOP',
+            'TOPRIGHT'
+        }
+        for _, name in pairs(tab) do
+            local info={
+                text= name,
+                checked= Save.unitIsMePoint==name,
+                tooltipOnButton=true,
+                tooltipTitle= e.onlyChinese and '位置' or CHOOSE_LOCATION,
+                arg1= name,
+                func= function(_, arg1)
+                    Save.unitIsMePoint= arg1
+                    e.LibDD:UIDropDownMenu_SetText(self, arg1)
+                    set_All_Init()
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+    end)
+    e.LibDD:UIDropDownMenu_SetText(menuUnitIsMePoint, Save.unitIsMePoint)
+    menuUnitIsMePoint.Button:SetScript('OnClick', function(self)
+        e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
+    end)
+
+    local menuUnitIsMe = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    menuUnitIsMe:SetPoint("LEFT", menuUnitIsMePoint, 'RIGHT', 2,0)
+    function menuUnitIsMe:get_icon()
+        local isAtlas, texture= e.IsAtlas(Save.unitIsMeTextrue)
+        if isAtlas or not texture then
+            e.LibDD:UIDropDownMenu_SetText(self, '|A:'..(texture or 'auctionhouse-icon-favorite')..':0:0|a')
+        else
+            e.LibDD:UIDropDownMenu_SetText(self, '|T'.. texture..':0|t')
+        end
+    end
+    e.LibDD:UIDropDownMenu_SetWidth(menuUnitIsMe, 100)
+    e.LibDD:UIDropDownMenu_Initialize(menuUnitIsMe, function(self, level)
+        for name, use in pairs(get_texture_tab()) do
+            local isAtlas, texture= e.IsAtlas(name)
+            if texture then
+                local info={
+                    text= isAtlas and '|cffff00ffAtlas|r' or '',
+                    icon= name,
+                    colorCode= use=='use' and '|cff00ff00' or (isAtlas and '|cffff00ff') or nil,
+                    tooltipOnButton=true,
+                    tooltipTitle= isAtlas and 'Atls' or 'Texture',
+                    tooltipText= (name:match('.+\\(.+)%.') or name)..(use=='use' and '|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '自定义' or CUSTOM)..'|r' or ''),
+                    arg1= name,
+                    checked= Save.unitIsMeTextrue==name,
+                    func= function(_, arg1)
+                        Save.unitIsMeTextrue= arg1
+                        self:get_icon()
+                        set_All_Init()
+                    end
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+            end
+        end
+    end)
+    menuUnitIsMe:get_icon()
+    menuUnitIsMe.Button:SetScript('OnClick', function(self)
+        e.HideMenu(self:GetParent())
+        e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
+    end)
+
+    local unitIsMeX = e.CSlider(panel, {min=-250, max=250, value=Save.unitIsMeX, setp=1, w= 100,
+    text= 'X',
+    func=function(self2, value)
+        value= math.floor(value)
+        self2:SetValue(value)
+        self2.Text:SetText(value)
+        Save.unitIsMeX= value
+        set_All_Init()
+    end})
+    unitIsMeX:SetPoint("TOPLEFT", unitIsMeCheck, 'BOTTOMRIGHT',0, -12)
+    local unitIsMeY = e.CSlider(panel, {min=-250, max=250, value=Save.unitIsMeY, setp=1, w= 100, color=true,
+    text= 'Y',
+    func=function(self2, value)
+        value= math.floor(value)
+        self2:SetValue(value)
+        self2.Text:SetText(value)
+        Save.unitIsMeY= value
+        set_All_Init()
+    end})
+    unitIsMeY:SetPoint("LEFT", unitIsMeX, 'RIGHT',15,0)
+
+    local unitIsMeSize = e.CSlider(panel, {min=2, max=64, value=Save.unitIsMeSize, setp=1, w= 100, color=false,
+    text= e.onlyChinese and '大小' or 'size',
+    func=function(self2, value)
+        value= math.floor(value)
+        self2:SetValue(value)
+        self2.Text:SetText(value)
+        Save.unitIsMeSize= value
+        set_All_Init()
+    end})
+    unitIsMeSize:SetPoint("LEFT", unitIsMeY, 'RIGHT',15,0)
+
+    
+
+
+
+
+
+
+
+
     local questCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     questCheck.Text:SetText(e.onlyChinese and '任务进度' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, PVP_PROGRESS_REWARDS_HEADER)))
-    questCheck:SetPoint('TOPLEFT', sel2, 'BOTTOMLEFT',0,-86)
+    questCheck:SetPoint('TOPLEFT', unitIsMeCheck, 'BOTTOMLEFT',0,-64)
     questCheck:SetChecked(Save.quest)
     questCheck:SetScript('OnClick', function()
         Save.quest= not Save.quest and true or nil
@@ -1161,6 +1353,14 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.targetTextureName= Save.targetTextureName or 'common-icon-rotateright'
             Save.targetColor= Save.targetColor or {r=1,g=1,b=1,a=1}
             Save.targetInCombatColor= Save.targetInCombatColor or {r=1, g=0, b=0, a=1}
+            
+            Save.unitIsMe= Save.unitIsMe==nil and true or Save.unitIsMe
+            Save.unitIsMeTextrue= Save.unitIsMeTextrue or 'auctionhouse-icon-favorite'
+            Save.unitIsMeSize= Save.unitIsMeSize or 12
+            Save.unitIsMePoint= Save.unitIsMePoint or 'TOPLEFT'
+            Save.unitIsMeX= Save.unitIsMeX or 0
+            Save.unitIsMeY= Save.unitIsMeY or -2
+
             Save.scale= Save.scale or 1.5
             Save.elapsed= Save.elapsed or 0.5
 
