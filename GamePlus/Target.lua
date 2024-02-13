@@ -19,8 +19,8 @@ local Save= {
 
     creature= true,--怪物数量
     creatureFontSize=10,
-    --questShowInstance=true,
     --creatureToUIParet=true,--放在UIPrent
+    --creaturePoint={},--位置
 
     unitIsMe=true,--提示， 目标是你
     unitIsMeTextrue= 'auctionhouse-icon-favorite',
@@ -55,7 +55,6 @@ local NumFrame
 
 local CreatureLabel
 
-local isPvPArena, isIns--, isPvPZone
 --local isAddOnPlater--C_AddOns.IsAddOnLoaded("Plater")
 --[[
 local function get_isAddOnPlater(unit)
@@ -207,24 +206,26 @@ end
 --########################
 local function set_Creature_Num()--local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
     local k,T,F=0,0,0
-    for _, nameplat in pairs(C_NamePlate.GetNamePlates() or {}) do
-        local u = get_plate_unit(nameplat)
-        local t= u and u..'target'
-        --local range= Save.creatureRange>0 and e.CheckRange(u, Save.creatureRange, '<=') or Save.creatureRange==0
-        if UnitExists(t) and UnitExists(u)
-            and not UnitIsDeadOrGhost(u)
-            and not UnitInParty(u)
-            and not UnitIsUnit(u,'player')
-            and (not isPvPArena or (isPvPArena and UnitIsPlayer(u)))
-            and e.CheckRange(u, 40, true)
-            then
-            if UnitCanAttack('player',u) then
-                k=k+1
-                if UnitIsUnit(t,'player') then
-                    T=T+1
+    for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
+        local u = plate and plate.UnitFrame and plate.UnitFrame.unit
+        if u then
+            local t= u and u..'target'
+            --local range= Save.creatureRange>0 and e.CheckRange(u, Save.creatureRange, '<=') or Save.creatureRange==0
+            if UnitExists(t) and UnitExists(u)
+                and not UnitIsDeadOrGhost(u)
+                and not UnitInParty(u)
+                and not UnitIsUnit(u,'player')
+                and (not isPvPArena or (isPvPArena and UnitIsPlayer(u)))
+                and e.CheckRange(u, 40, true)
+                then
+                if UnitCanAttack('player',u) then
+                    k=k+1
+                    if UnitIsUnit(t,'player') then
+                        T=T+1
+                    end
+                elseif UnitIsUnit(t,'player') then
+                    F=F+1
                 end
-            elseif UnitIsUnit(t,'player') then
-                F=F+1
             end
         end
     end
@@ -246,32 +247,51 @@ local function set_Creature_Num()--local distanceSquared, checkedDistance = Unit
     CreatureLabel:SetText(e.Player.col..(T==0 and '-' or  T)..'|r |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
 end
 
-local function Init_Creature_Num()
-    if Save.creature then
-        --怪物数量
-        if not CreatureLabel then
-            CreatureLabel= e.Cstr(TargetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}, layer='BORDER'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
-            function CreatureLabel:set_point()
-                self:ClearAllPoints()
+local function Init_Num()
+    if not Save.creature then
+        if NumFrame then
+            NumFrame.Text:SetText("")
+            NumFrame:UnregisterAllEvents()
+        end
+        return
+    end
+    --怪物数量
+    if not NumFrame then
+        if Save.creatureToUIParet or not TargetFrame then
+            NumFrame= e.Cbtn(nil, {size={18, 4}, icon='hide'})
+            if Save.creaturePoint then
+                NumFrame:SetPoint(Save.creaturePoint[1], UIParent, Save.creaturePoint[3], Save.creaturePoint[4], Save.creaturePoint[5])
+            elseif e.Player.husandro then
+                NumFrame:SetPoint('BOTTOM', _G['PlayerFrame'], 'TOP', 0,24)
+            else
+                NumFrame:SetPoint('CENTER', -50, 20)
+            end
+            NumFrame.Text= e.Cstr(NumFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}, layer='BORDER'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
+            NumFrame.Text:SetPoint('LEFT', NumFrame, 'RIGHT')
+        else
+            NumFrame= CreateFrame('Frame')
+            NumFrame.Text= e.Cstr(TargetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
+            function NumFrame:set_text_point()
+                self.Text:ClearAllPoints()
                 if Save.TargetFramePoint=='LEFT' then
-                    self:SetPoint('CENTER')
-                    self:SetJustifyH('RIGHT')
+                    self.Text:SetPoint('CENTER')
+                    self.Text:SetJustifyH('RIGHT')
                 else
-                    self:SetPoint('BOTTOM', 0, 8)
-                    self:SetJustifyH('CENTER')
+                    self.Text:SetPoint('BOTTOM', 0, 8)
+                    self.Text:SetJustifyH('CENTER')
                 end
             end
-            CreatureLabel:SetTextColor(1,1,1)
-        elseif CreatureLabel then
-            e.Cstr(nil, {changeFont=CreatureLabel, size= Save.creatureFontSize})
-            CreatureLabel:set_point()
         end
-        set_Creature_Num()
-    else
-        if CreatureLabel then
-            CreatureLabel:SetText('')
+
+        
+    elseif NumFrame then
+        e.Cstr(nil, {changeFont=NumFrame.Text, size= Save.creatureFontSize})
+        if NumFrame.set_text_point then
+            NumFrame:set_text_point()
         end
     end
+    set_Creature_Num()
+    
 end
 
 
@@ -312,9 +332,6 @@ local function Init_Quest()
         end
         return
     end
-
-
-
     if not QuestFrame then
         QuestFrame= CreateFrame('Frame')
         QuestFrame.THREAT_TOOLTIP= e.Magic(THREAT_TOOLTIP)--:gsub('%%d', '%%d+')--"%d%% 威胁"
@@ -336,7 +353,6 @@ local function Init_Quest()
                 end
             end
         end
-
         --GameTooltip.lua --local questID= line and line.id
         function QuestFrame:get_unit_text(unit)--取得，内容
             if not UnitIsPlayer(unit) then
@@ -355,8 +371,7 @@ local function Init_Quest()
                         end
                     end
                 end
-
-            elseif not (UnitInParty(unit) or UnitIsUnit('player', unit)) then--if not isIns and isPvPZone and not UnitInParty(unit) then
+            elseif not (UnitInParty(unit) or UnitIsUnit('player', unit)) then
                 local wow= e.GetFriend(nil, UnitGUID(unit), nil)--检测, 是否好友
                 local faction= e.GetUnitFaction(unit, nil, Save.questShowAllFaction)--检查, 是否同一阵营
                 local text
@@ -369,7 +384,6 @@ local function Init_Quest()
                 return text
             end
         end
-
         function QuestFrame:set_quest_text(plate, unit)--设置，内容
             local plate= unit and C_NamePlate.GetNamePlateForUnit(unit) or plate
             local frame= plate and plate.UnitFrame
@@ -385,17 +399,14 @@ local function Init_Quest()
                 frame.questProgress:SetText(text or '')
             end
         end
-        function QuestFrame:hide_plate(plate, unit)--移除，内容
-            plate= unit and C_NamePlate.GetNamePlateForUnit(unit) or plate
-            if plate and plate.UnitFrame then
-                if plate.UnitFrame.questProgress then--任务
-                    plate.UnitFrame.questProgress:SetText('')
-                end
+        function QuestFrame:hide_plate(plate)--移除，内容
+            if plate and plate.UnitFrame and plate.UnitFrame.questProgress then--任务
+                plate.UnitFrame.questProgress:SetText('')
             end
         end
         function QuestFrame:rest_all()--移除，所有内容
             for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
-                QuestFrame:hide_plate(plate, nil)
+                QuestFrame:hide_plate(plate)
             end
         end
         function QuestFrame:check_all()--检查，所有
@@ -403,9 +414,8 @@ local function Init_Quest()
                 self:set_quest_text(plate, nil)
             end
         end
-
         function QuestFrame:set_event()--注册，事件
-            QuestFrame:UnregisterAllEvents()
+            self:UnregisterAllEvents()
             self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
             local isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()--在PVP副中
@@ -429,7 +439,6 @@ local function Init_Quest()
                 self:rest_all()
             end
         end
-
         QuestFrame:SetScript("OnEvent", function(self, event, arg1)
             if event=='PLAYER_ENTERING_WORLD' then
                 self:set_event()--注册，事件
@@ -442,7 +451,6 @@ local function Init_Quest()
             end
         end)
     end
-
     QuestFrame:set_event()--注册，事件
 end
 
@@ -524,8 +532,7 @@ local function Init_Unit_Is_Me()
                 end
             end
         end
-        function IsMeFrame:hide_plate(plate, unit)--隐藏，Plate
-            local plate= unit and C_NamePlate.GetNamePlateForUnit(unit) or plate
+        function IsMeFrame:hide_plate(plate)--隐藏，Plate
             if plate and plate.UnitFrame and plate.UnitFrame.UnitIsMe then
                 plate.UnitFrame.UnitIsMe:SetShown(false)
             end
@@ -784,7 +791,7 @@ local function set_All_Init()
 
 
    set_Target()
-   Init_Creature_Num()
+   Init_Num()
    Init_Quest()
    Init_Unit_Is_Me()
 end
@@ -827,10 +834,10 @@ end
 local function Init()
     hooksecurefunc(NamePlateBaseMixin, 'OnRemoved', function(plate)--移除所有
         if IsMeFrame then
-            IsMeFrame:hide_plate(plate, nil)
+            IsMeFrame:hide_plate(plate)
         end
         if QuestFrame then
-            QuestFrame:hide_plate(plate, nil)
+            QuestFrame:hide_plate(plate)
         end
     end)
 
