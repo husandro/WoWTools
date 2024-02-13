@@ -112,6 +112,7 @@ local function Init()
     end)
     Button:SetScript('OnEnter', function(self)
         self:set_Tooltips()
+        self:set_button()
         --self.texture:SetAlpha(1)
     end)
 

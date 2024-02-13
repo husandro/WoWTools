@@ -18,8 +18,8 @@ local Save= {
     --top=true,--位于，目标血条，上方
 
     creature= true,--怪物数量
-    --creatureRange=40,
     creatureFontSize=10,
+    --questShowInstance=true,
     --creatureToUIParet=true,--放在UIPrent
 
     unitIsMe=true,--提示， 目标是你
@@ -29,6 +29,7 @@ local Save= {
     unitIsMeX=0,
     unitIsMeY=-2,
     unitIsMeColor={r=1,g=1,b=1,a=1},
+
     quest= true,
     --questShowAllFaction=nil,--显示， 所有玩家派系
     questShowPlayerClass=true,--显示，玩家职业
@@ -206,7 +207,7 @@ end
 --########################
 local function set_Creature_Num()--local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
     local k,T,F=0,0,0
-    for _, nameplat in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
+    for _, nameplat in pairs(C_NamePlate.GetNamePlates() or {}) do
         local u = get_plate_unit(nameplat)
         local t= u and u..'target'
         --local range= Save.creatureRange>0 and e.CheckRange(u, Save.creatureRange, '<=') or Save.creatureRange==0
@@ -300,6 +301,175 @@ end
 
 
 
+--#########
+--任务，数量
+--#########
+local function Init_Quest()
+    if not Save.quest then
+        if QuestFrame then
+            QuestFrame:UnregisterAllEvents()
+            QuestFrame:rest_all()
+        end
+        return
+    end
+
+
+
+    if not QuestFrame then
+        QuestFrame= CreateFrame('Frame')
+        QuestFrame.THREAT_TOOLTIP= e.Magic(THREAT_TOOLTIP)--:gsub('%%d', '%%d+')--"%d%% 威胁"
+        function QuestFrame:find_text(text)
+            if text and not text:find(self.THREAT_TOOLTIP) then
+                if text:find('(%d+/%d+)') then
+                    local min, max= text:match('(%d+)/(%d+)')
+                    min, max= tonumber(min), tonumber(max)
+                    if min and max and max> min then
+                        return max- min
+                    end
+                    return true
+                elseif text:find('[%d%.]+%%') then
+                    local value= text:match('([%d%.]+%%)')
+                    if value and value~='100%' then
+                        return value
+                    end
+                    return true
+                end
+            end
+        end
+
+        --GameTooltip.lua --local questID= line and line.id
+        function QuestFrame:get_unit_text(unit)--取得，内容
+            if not UnitIsPlayer(unit) then
+                local type = UnitClassification(unit)
+                if type=='rareelite' or type=='rare' or type=='worldboss' then--or type=='elite'
+                    return '|A:VignetteEvent:18:18|a'
+                end
+                local tooltipData = C_TooltipInfo.GetUnit(unit)
+                if tooltipData and tooltipData.lines then
+                    for i = 4, #tooltipData.lines do
+                        local line = tooltipData.lines[i]
+                        TooltipUtil.SurfaceArgs(line)
+                        local text= self:find_text(line.leftText)
+                        if text then
+                            return text~=true and text
+                        end
+                    end
+                end
+
+            elseif not (UnitInParty(unit) or UnitIsUnit('player', unit)) then--if not isIns and isPvPZone and not UnitInParty(unit) then
+                local wow= e.GetFriend(nil, UnitGUID(unit), nil)--检测, 是否好友
+                local faction= e.GetUnitFaction(unit, nil, Save.questShowAllFaction)--检查, 是否同一阵营
+                local text
+                if Save.questShowPlayerClass then
+                    text= e.Class(unit)
+                end
+                if wow or faction then
+                    text= (text or '')..(wow or '')..(faction or '')
+                end
+                return text
+            end
+        end
+
+        function QuestFrame:set_quest_text(plate, unit)--设置，内容
+            local plate= unit and C_NamePlate.GetNamePlateForUnit(unit) or plate
+            local frame= plate and plate.UnitFrame
+            if not frame then
+                return
+            end
+            local text= self:get_unit_text(frame.unit or unit)
+            if text and not frame.questProgress then
+                frame.questProgress= e.Cstr(frame, {size=14, color={r=0,g=1,b=0}})--14, nil, nil, {0,1,0}, nil,'LEFT')
+                frame.questProgress:SetPoint('LEFT', frame.healthBar or frame, 'RIGHT', 2,0)
+            end
+            if frame.questProgress then
+                frame.questProgress:SetText(text or '')
+            end
+        end
+        function QuestFrame:hide_plate(plate, unit)--移除，内容
+            plate= unit and C_NamePlate.GetNamePlateForUnit(unit) or plate
+            if plate and plate.UnitFrame then
+                if plate.UnitFrame.questProgress then--任务
+                    plate.UnitFrame.questProgress:SetText('')
+                end
+            end
+        end
+        function QuestFrame:rest_all()--移除，所有内容
+            for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
+                QuestFrame:hide_plate(plate, nil)
+            end
+        end
+        function QuestFrame:check_all()--检查，所有
+            for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
+                self:set_quest_text(plate, nil)
+            end
+        end
+
+        function QuestFrame:set_event()--注册，事件
+            QuestFrame:UnregisterAllEvents()
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+            local isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()--在PVP副中
+            local isIns= isPvPArena
+                    or (not Save.questShowInstance and IsInInstance()
+                        and (GetNumGroupMembers()>3 or C_ChallengeMode.IsChallengeModeActive())
+                    )
+            if not isIns then
+                local eventTab= {
+                    'UNIT_QUEST_LOG_CHANGED',
+                    'SCENARIO_UPDATE',
+                    'SCENARIO_CRITERIA_UPDATE',
+                    'SCENARIO_COMPLETED',
+                    'QUEST_POI_UPDATE',
+                    'NAME_PLATE_UNIT_ADDED',
+                    --'NAME_PLATE_UNIT_REMOVED',
+                }
+                FrameUtil.RegisterFrameForEvents(self, eventTab)
+                self:check_all()
+            else
+                self:rest_all()
+            end
+        end
+
+        QuestFrame:SetScript("OnEvent", function(self, event, arg1)
+            if event=='PLAYER_ENTERING_WORLD' then
+                self:set_event()--注册，事件
+
+            elseif event=='NAME_PLATE_UNIT_ADDED'  then
+                self:set_quest_text(nil, arg1)--任务
+
+            else--event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
+                C_Timer.After(2, function() self:check_all() end)
+            end
+        end)
+    end
+
+    QuestFrame:set_event()--注册，事件
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -315,7 +485,7 @@ local function Init_Unit_Is_Me()
     end
     if not Save.unitIsMe then
         if IsMeFrame then
-            for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
+            for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
                 IsMeFrame:hide_plate(plate)
             end
         end
@@ -343,7 +513,7 @@ local function Init_Unit_Is_Me()
             self.UnitIsMe:SetSize(Save.unitIsMeSize, Save.unitIsMeSize)
         end
         function IsMeFrame:set_plate(plate, unit)--设置, Plate
-            plate= unit and C_NamePlate.GetNamePlateForUnit(unit,  issecure()) or plate
+            plate= unit and C_NamePlate.GetNamePlateForUnit(unit) or plate
             if plate and plate.UnitFrame then
                 local isMe= plate.UnitFrame.unit and UnitIsUnit((plate.UnitFrame.unit or '')..'target', 'player')
                 if isMe and not plate.UnitFrame.UnitIsMe then
@@ -355,19 +525,16 @@ local function Init_Unit_Is_Me()
             end
         end
         function IsMeFrame:hide_plate(plate, unit)--隐藏，Plate
-            local plate= unit and C_NamePlate.GetNamePlateForUnit(unit,  issecure()) or plate
+            local plate= unit and C_NamePlate.GetNamePlateForUnit(unit) or plate
             if plate and plate.UnitFrame and plate.UnitFrame.UnitIsMe then
                 plate.UnitFrame.UnitIsMe:SetShown(false)
             end
         end
         function IsMeFrame:init_all()--检查，所有
-            for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
+            for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
                 self:set_plate(plate, nil)--设置
             end
         end
-        hooksecurefunc(NamePlateBaseMixin, 'OnRemoved', function(plate)
-            IsMeFrame:hide_plate(plate, nil)
-        end)
         hooksecurefunc(NamePlateBaseMixin, 'OnAdded', function(plate)
             IsMeFrame:set_plate(plate, nil)
         end)
@@ -399,7 +566,7 @@ local function Init_Unit_Is_Me()
        -- 'CVAR_UPDATE',
     }
     FrameUtil.RegisterFrameForEvents(IsMeFrame, eventTab)
-    for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
+    for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
         if plate.UnitFrame then
             if plate.UnitFrame.UnitIsMe then--修改
                 plate.UnitFrame.UnitIsMe:ClearAllPoints()
@@ -431,100 +598,6 @@ end
 
 
 
-
-
---#########
---任务，数量
---#########
-local THREAT_TOOLTIP= e.Magic(THREAT_TOOLTIP)--:gsub('%%d', '%%d+')--"%d%% 威胁"
-local function find_Text(text)
-    if text and not text:find(THREAT_TOOLTIP) then
-        if text:find('(%d+/%d+)') then
-            local min, max= text:match('(%d+)/(%d+)')
-            min, max= tonumber(min), tonumber(max)
-            if min and max and max> min then
-                return max- min
-            end
-            return true
-        elseif text:find('[%d%.]+%%') then
-            local value= text:match('([%d%.]+%%)')
-            if value and value~='100%' then
-                return value
-            end
-            return true
-        end
-    end
-end
-
-
-local function Get_Quest_Progress(unit)--GameTooltip.lua --local questID= line and line.id
-    if not UnitIsPlayer(unit) then
-        local type = UnitClassification(unit)
-        if type=='rareelite' or type=='rare' or type=='worldboss' then--or type=='elite'
-            return '|A:VignetteEvent:18:18|a'
-        end
-        local tooltipData = C_TooltipInfo.GetUnit(unit)
-        if tooltipData and tooltipData.lines then
-            for i = 4, #tooltipData.lines do
-                local line = tooltipData.lines[i]
-                TooltipUtil.SurfaceArgs(line)
-                local text= find_Text(line.leftText)
-                if text then
-                    return text~=true and text
-                end
-            end
-        end
-
-    elseif not (UnitInParty(unit) or UnitIsUnit('player', unit)) then--if not isIns and isPvPZone and not UnitInParty(unit) then
-        local wow= e.GetFriend(nil, UnitGUID(unit), nil)--检测, 是否好友
-        local faction= e.GetUnitFaction(unit, nil, Save.questShowAllFaction)--检查, 是否同一阵营
-        local text
-        if Save.questShowPlayerClass then
-            text= e.Class(unit)
-        end
-        if wow or faction then
-            text= (text or '')..(wow or '')..(faction or '')
-        end
-        return text
-    --[[else
-        return e.Class(unit)--职业图标]]
-    end
-end
-
-local function set_questProgress_Text(plate)
-    local self= plate and plate.UnitFrame
-    local unit= get_plate_unit(plate)
-    if not self or not unit then
-        return
-    end
-    local text
-    if Save.quest then
-        text= Get_Quest_Progress(unit)
-        if text and not self.questProgress then
-            self.questProgress= e.Cstr(self, {size=14, color={r=0,g=1,b=0}})--14, nil, nil, {0,1,0}, nil,'LEFT')
-            self.questProgress:SetPoint('LEFT', self.healthBar or self, 'RIGHT', 2,0)
-        end
-    end
-    if self.questProgress then
-        self.questProgress:SetText(text or '')
-    end
-end
-
-
-
-local function set_check_allQust_Plates()
-    if not Save.quest or isIns then
-        for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
-            if plate.UnitFrame.questProgress then
-                plate.UnitFrame.questProgress:SetText('')
-            end
-        end
-    else
-        for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
-            set_questProgress_Text(plate)
-        end
-    end
-end
 
 
 
@@ -562,7 +635,7 @@ end
 --设置,指示目标,位置,显示,隐藏
 --##########################
 local function set_Target()
-    local plate= C_NamePlate.GetNamePlateForUnit("target",  issecure())
+    local plate= C_NamePlate.GetNamePlateForUnit("target")
     if plate then
         local self = plate.UnitFrame
         local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--C_AddOns.IsAddOnLoaded("Plater")
@@ -668,13 +741,6 @@ end
 
 
 local function set_All_Init()
-    isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
-    isIns=  isPvPArena
-            or (not Save.questShowInstance and IsInInstance()
-                and (GetNumGroupMembers()>3 or C_ChallengeMode.IsChallengeModeActive())
-            )
-
-
     TargetFrame:UnregisterAllEvents()
     TargetFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
 
@@ -694,19 +760,7 @@ local function set_All_Init()
         TargetFrame:RegisterEvent('UNIT_TARGET')
     end
 
-    if (not isIns and Save.quest) or Save.creature  then
-        TargetFrame:RegisterEvent('NAME_PLATE_UNIT_ADDED')
-        TargetFrame:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
-        --TargetFrame:RegisterEvent('NAME_PLATE_CREATED')
-    end
 
-    if not isIns and Save.quest  then
-        TargetFrame:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
-        TargetFrame:RegisterEvent('SCENARIO_UPDATE')
-        TargetFrame:RegisterEvent('SCENARIO_CRITERIA_UPDATE')
-        TargetFrame:RegisterEvent('SCENARIO_COMPLETED')
-        TargetFrame:RegisterEvent('QUEST_POI_UPDATE')
-    end
 
     if  Save.TargetFramePoint~='HEALTHBAR' then
         set_Target_Size(TargetFrame)--设置，大小
@@ -731,7 +785,7 @@ local function set_All_Init()
 
    set_Target()
    Init_Creature_Num()
-   set_check_allQust_Plates()
+   Init_Quest()
    Init_Unit_Is_Me()
 end
 
@@ -771,12 +825,16 @@ end
 --初始
 --####
 local function Init()
+    hooksecurefunc(NamePlateBaseMixin, 'OnRemoved', function(plate)--移除所有
+        if IsMeFrame then
+            IsMeFrame:hide_plate(plate, nil)
+        end
+        if QuestFrame then
+            QuestFrame:hide_plate(plate, nil)
+        end
+    end)
 
     TargetFrame= CreateFrame("Frame")
-    QuestFrame= CreateFrame("Frame")
-
-    NumFrame= CreateFrame('Frame')
-
     set_All_Init()
 
     hooksecurefunc(NamePlateDriverFrame, 'OnSoftTargetUpdate', function()
@@ -794,7 +852,6 @@ local function Init()
 
         elseif event=='CVAR_UPDATE' then
             if arg1=='nameplateShowAll' or arg1=='nameplateShowEnemies' or arg1=='nameplateShowFriends' then
-                set_check_allQust_Plates()
                 C_Timer.After(0.15, set_Target)
             end
 
@@ -804,26 +861,9 @@ local function Init()
         elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then--颜色
             set_Target_Color(TargetFrame.Texture, event=='PLAYER_REGEN_DISABLED')
 
-        elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
-            C_Timer.After(2, function() set_check_allQust_Plates() end)
-
-        elseif arg1 then--UNIT_TARGET NAME_PLATE_UNIT_ADDED NAME_PLATE_UNIT_REMOVED 
-            local plate = C_NamePlate.GetNamePlateForUnit(arg1,  issecure())-- or {}
-
-            if event=='NAME_PLATE_UNIT_ADDED'  then
-                if not isIns then
-                    set_questProgress_Text(plate)--任务
-                end
-
-            elseif event=='NAME_PLATE_UNIT_REMOVED' then
-                if plate and plate.UnitFrame then
-                    if plate.UnitFrame.questProgress then--任务
-                        plate.UnitFrame.questProgress:SetText('')
-                    end
-                end
-            end
 
 
+        else
             if Save.creature then
                 set_Creature_Num()
             end
