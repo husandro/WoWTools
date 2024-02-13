@@ -53,7 +53,7 @@ local QuestFrame
 local IsMeFrame
 local NumFrame
 
-local CreatureLabel
+--local CreatureLabel
 
 --local isAddOnPlater--C_AddOns.IsAddOnLoaded("Plater")
 --[[
@@ -244,7 +244,7 @@ local function set_Creature_Num()--local distanceSquared, checkedDistance = Unit
             end
         end
     end
-    CreatureLabel:SetText(e.Player.col..(T==0 and '-' or  T)..'|r |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
+    NumFrame.Text:SetText(e.Player.col..(T==0 and '-' or  T)..'|r |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
 end
 
 local function Init_Num()
@@ -871,7 +871,7 @@ local function Init()
 
 
         else
-            if Save.creature then
+            if NumFrame then
                 set_Creature_Num()
             end
         end
