@@ -35,7 +35,7 @@ GetClassColoredTextForUnit(unit, text)
 FrameUtil.RegisterFrameForEvents(self, table)
 FrameUtil.RegisterFrameForUnitEvents(frame, events, ...)
 FrameUtil.UnregisterFrameForEvents(self, table)
-
+issecure()
 
 Region:SetVertexColor(colorR, colorG, colorB [, a])
 ... = securecall(func or functionName, ...)

@@ -14,7 +14,7 @@ local Save= {
     y=0,
     scale=1.5,
     elapsed=0.5,
-    targetFramePoint='LEFT',--'TOP', 'HEALTHBAR','LEFT'
+    TargetFramePoint='LEFT',--'TOP', 'HEALTHBAR','LEFT'
     --top=true,--位于，目标血条，上方
 
     creature= true,--怪物数量
@@ -46,8 +46,14 @@ local Save= {
 
 
 local panel= CreateFrame("Frame")
-local targetFrame
+
+local TargetFrame
+local QuestFrame
+local IsMeFrame
+local NumFrame
+
 local CreatureLabel
+
 local isPvPArena, isIns--, isPvPZone
 --local isAddOnPlater--C_AddOns.IsAddOnLoaded("Plater")
 --[[
@@ -160,11 +166,11 @@ end
 
 
 local function set_Scale_Frame()--缩放
-    if not targetFrame then
+    if not TargetFrame then
         return
     end
-    if targetFrame.Texture and Save.scale~=1 then
-        targetFrame:SetScript('OnUpdate', function(self, elapsed)
+    if TargetFrame.Texture and Save.scale~=1 then
+        TargetFrame:SetScript('OnUpdate', function(self, elapsed)
             self.elapsed= (self.elapsed or Save.elapsed) + elapsed
             if self.elapsed> Save.elapsed then
                 self.elapsed=0
@@ -172,9 +178,9 @@ local function set_Scale_Frame()--缩放
             end
         end)
     else
-        targetFrame:SetScript('OnUpdate', nil)
+        TargetFrame:SetScript('OnUpdate', nil)
     end
-    targetFrame:SetScale(1)
+    TargetFrame:SetScale(1)
 end
 
 
@@ -200,7 +206,7 @@ end
 --########################
 local function set_Creature_Num()--local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
     local k,T,F=0,0,0
-    for _, nameplat in pairs(C_NamePlate.GetNamePlates() or {}) do
+    for _, nameplat in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
         local u = get_plate_unit(nameplat)
         local t= u and u..'target'
         --local range= Save.creatureRange>0 and e.CheckRange(u, Save.creatureRange, '<=') or Save.creatureRange==0
@@ -243,10 +249,10 @@ local function Init_Creature_Num()
     if Save.creature then
         --怪物数量
         if not CreatureLabel then
-            CreatureLabel= e.Cstr(targetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}, layer='BORDER'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
+            CreatureLabel= e.Cstr(TargetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}, layer='BORDER'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
             function CreatureLabel:set_point()
                 self:ClearAllPoints()
-                if Save.targetFramePoint=='LEFT' then
+                if Save.TargetFramePoint=='LEFT' then
                     self:SetPoint('CENTER')
                     self:SetJustifyH('RIGHT')
                 else
@@ -278,55 +284,140 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#############
 --提示，目标是我
 --#############
-local function set_unitIsMe_Texture(plate)--设置，参数
-    if Save.unitIsMePoint=='TOP' then
-        plate.UnitFrame.UnitIsMe:SetPoint("BOTTOM", plate.UnitFrame.healthBar, 'TOP', Save.unitIsMeX,Save.unitIsMeY)
-    elseif Save.unitIsMePoint=='TOPRIGHT' then
-        plate.UnitFrame.UnitIsMe:SetPoint("BOTTOMRIGHT", plate.UnitFrame.healthBar, 'TOPRIGHT', Save.unitIsMeX,Save.unitIsMeY)
-    else--TOPLEFT
-        plate.UnitFrame.UnitIsMe:SetPoint("BOTTOMLEFT", plate.UnitFrame.healthBar, 'TOPLEFT', Save.unitIsMeX,Save.unitIsMeY)
-    end
-    local isAtlas, texture= e.IsAtlas(Save.unitIsMeTextrue)
-    if isAtlas or not texture then
-        plate.UnitFrame.UnitIsMe:SetAtlas(texture or 'auctionhouse-icon-favorite')
-    else
-        plate.UnitFrame.UnitIsMe:SetTexture(texture)
-    end
-    plate.UnitFrame.UnitIsMe:SetVertexColor(Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a)
-    plate.UnitFrame.UnitIsMe:SetSize(Save.unitIsMeSize, Save.unitIsMeSize)
-end
-local function set_Unit_Is_Me(plate)
-    if plate and plate.UnitFrame then
-        local isMe= UnitIsUnit(plate.UnitFrame.unit and plate.UnitFrame.unit..'target', 'player')
-        if isMe and not plate.UnitFrame.UnitIsMe then
-            plate.UnitFrame.UnitIsMe= plate.UnitFrame:CreateTexture(nil, 'OVERLAY')
-            set_unitIsMe_Texture(plate)--设置，参数
-        end
-        if plate.UnitFrame.UnitIsMe then
-            plate.UnitFrame.UnitIsMe:SetShown(isMe)
-        end
-    end
-end
 local function Init_Unit_Is_Me()
-    for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
-        if plate.UnitFrame then
-            if Save.unitIsMe then--启用
-                if plate.UnitFrame.UnitIsMe then--修改
-                    plate.UnitFrame.UnitIsMe:ClearAllPoints()
-                    set_unitIsMe_Texture(plate)--设置，参数
-                end
-                set_Unit_Is_Me(plate)--设置
+    if IsMeFrame then
+        IsMeFrame:UnregisterAllEvents()
+    end
+    if not Save.unitIsMe then
+        if IsMeFrame then
+            for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
+                IsMeFrame:hide_plate(plate)
+            end
+        end
+        return
+    end
+    if not IsMeFrame then
+        IsMeFrame= CreateFrame('Frame')
+        function IsMeFrame:set_texture(plate)--设置，参数
+            local self= plate.UnitFrame
+            self.UnitIsMe= self:CreateTexture(nil, 'OVERLAY')
+            if Save.unitIsMePoint=='TOP' then
+                self.UnitIsMe:SetPoint("BOTTOM", self.healthBar, 'TOP', Save.unitIsMeX,Save.unitIsMeY)
+            elseif Save.unitIsMePoint=='TOPRIGHT' then
+                self.UnitIsMe:SetPoint("BOTTOMRIGHT", self.healthBar, 'TOPRIGHT', Save.unitIsMeX,Save.unitIsMeY)
+            else--TOPLEFT
+                self.UnitIsMe:SetPoint("BOTTOMLEFT", self.healthBar, 'TOPLEFT', Save.unitIsMeX,Save.unitIsMeY)
+            end
+            local isAtlas, texture= e.IsAtlas(Save.unitIsMeTextrue)
+            if isAtlas or not texture then
+                self.UnitIsMe:SetAtlas(texture or 'auctionhouse-icon-favorite')
             else
+                self.UnitIsMe:SetTexture(texture)
+            end
+            self.UnitIsMe:SetVertexColor(Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a)
+            self.UnitIsMe:SetSize(Save.unitIsMeSize, Save.unitIsMeSize)
+        end
+        function IsMeFrame:set_plate(plate, unit)--设置, Plate
+            plate= unit and C_NamePlate.GetNamePlateForUnit(unit,  issecure()) or plate
+            if plate and plate.UnitFrame then
+                local isMe= plate.UnitFrame.unit and UnitIsUnit((plate.UnitFrame.unit or '')..'target', 'player')
+                if isMe and not plate.UnitFrame.UnitIsMe then
+                    self:set_texture(plate)--设置，参数
+                end
                 if plate.UnitFrame.UnitIsMe then
-                    plate.UnitFrame.UnitIsMe:SetShown(false)
+                    plate.UnitFrame.UnitIsMe:SetShown(isMe)
                 end
             end
         end
+        function IsMeFrame:hide_plate(plate, unit)--隐藏，Plate
+            local plate= unit and C_NamePlate.GetNamePlateForUnit(unit,  issecure()) or plate
+            if plate and plate.UnitFrame and plate.UnitFrame.UnitIsMe then
+                plate.UnitFrame.UnitIsMe:SetShown(false)
+            end
+        end
+        function IsMeFrame:init_all()--检查，所有
+            for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
+                self:set_plate(plate, nil)--设置
+            end
+        end
+        hooksecurefunc(NamePlateBaseMixin, 'OnRemoved', function(plate)
+            IsMeFrame:hide_plate(plate, nil)
+        end)
+        hooksecurefunc(NamePlateBaseMixin, 'OnAdded', function(plate)
+            IsMeFrame:set_plate(plate, nil)
+        end)
+        hooksecurefunc(NamePlateBaseMixin, 'OnOptionsUpdated', function(plate)
+            IsMeFrame:set_plate(plate, nil)
+        end)
+        IsMeFrame:SetScript('OnEvent', function(self, event, arg1)
+            if event=='PLAYER_REGEN_DISABLED' then--颜色
+               self:init_all()
+
+            elseif arg1 then
+                if arg1=='player' or arg1=='pet' then
+                    self:init_all()
+                else--if UnitIsEnemy(arg1, 'player') then
+                    self:set_plate(nil, arg1)
+                end
+            end
+        end)
+    end
+    local eventTab= {
+        'PLAYER_REGEN_DISABLED',
+        'UNIT_TARGET',
+        'UNIT_SPELLCAST_CHANNEL_START',
+        --'PLAYER_REGEN_ENABLED',
+        --'NAME_PLATE_UNIT_ADDED',
+        --'NAME_PLATE_UNIT_REMOVED',
+        --'FORBIDDEN_NAME_PLATE_UNIT_ADDED',
+        --'FORBIDDEN_NAME_PLATE_UNIT_REMOVED',
+       -- 'CVAR_UPDATE',
+    }
+    FrameUtil.RegisterFrameForEvents(IsMeFrame, eventTab)
+    for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
+        if plate.UnitFrame then
+            if plate.UnitFrame.UnitIsMe then--修改
+                plate.UnitFrame.UnitIsMe:ClearAllPoints()
+                self:set_texture(plate)--设置，参数
+            end
+            self:set_plate(plate)--设置
+        end
     end
 end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -475,16 +566,16 @@ local function set_Target()
     if plate then
         local self = plate.UnitFrame
         local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--C_AddOns.IsAddOnLoaded("Plater")
-        targetFrame:ClearAllPoints()
-        if Save.targetFramePoint=='TOP' then
+        TargetFrame:ClearAllPoints()
+        if Save.TargetFramePoint=='TOP' then
             if self.SoftTargetFrame.Icon:IsShown() then
                 frame= self.SoftTargetFrame
             else
                 frame= self.name or self.healthBar
             end
-            targetFrame:SetPoint('BOTTOM', frame or self, 'TOP', Save.x, Save.y)
+            TargetFrame:SetPoint('BOTTOM', frame or self, 'TOP', Save.x, Save.y)
 
-        elseif Save.targetFramePoint=='HEALTHBAR' then
+        elseif Save.TargetFramePoint=='HEALTHBAR' then
             frame= self.healthBar or self.name or self
             local w, h= frame:GetSize()
             w= w+ Save.w
@@ -499,8 +590,8 @@ local function set_Target()
                 p= self.questProgress:GetWidth()
             end
             n, p= n or 0, p or 0
-            targetFrame:SetSize(w+ n+ p, h)
-            targetFrame:SetPoint('CENTER', self, Save.x+ (-n+p)/2, Save.y)
+            TargetFrame:SetSize(w+ n+ p, h)
+            TargetFrame:SetPoint('CENTER', self, Save.x+ (-n+p)/2, Save.y)
         else
             if self.RaidTargetFrame.RaidTargetIcon:IsVisible() then
                 frame= self.RaidTargetFrame
@@ -509,10 +600,10 @@ local function set_Target()
             else
                 frame= self.healthBar or self.name
             end
-            targetFrame:SetPoint('RIGHT', frame or self, 'LEFT',Save.x, Save.y)
+            TargetFrame:SetPoint('RIGHT', frame or self, 'LEFT',Save.x, Save.y)
         end
     end
-    targetFrame:SetShown(plate and true or false)
+    TargetFrame:SetShown(plate and true or false)
 end
 
 
@@ -548,28 +639,93 @@ end
 
 
 
---####################################
---设置 targetFrame Target Creature 属性
---####################################
-local function set_Created_Texture_Text()
-    if  Save.targetFramePoint~='HEALTHBAR' then
-        set_Target_Size(targetFrame)--设置，大小
-    end
-    if not targetFrame.Texture and Save.target then
-        targetFrame.Texture= targetFrame:CreateTexture(nil, 'BACKGROUND')
-        targetFrame.Texture:SetAllPoints(targetFrame)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function set_All_Init()
+    isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
+    isIns=  isPvPArena
+            or (not Save.questShowInstance and IsInInstance()
+                and (GetNumGroupMembers()>3 or C_ChallengeMode.IsChallengeModeActive())
+            )
+
+
+    TargetFrame:UnregisterAllEvents()
+    TargetFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+    if Save.target or Save.creature then
+        TargetFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
+        TargetFrame:RegisterEvent('RAID_TARGET_UPDATE')
+        TargetFrame:RegisterUnitEvent('UNIT_FLAGS', 'target')
+        TargetFrame:RegisterEvent('CVAR_UPDATE')
     end
 
-    if targetFrame.Texture then
+    if (Save.target and Save.targetInCombat) then
+        TargetFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
+        TargetFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
+    end
+
+    if Save.creature then
+        TargetFrame:RegisterEvent('UNIT_TARGET')
+    end
+
+    if (not isIns and Save.quest) or Save.creature  then
+        TargetFrame:RegisterEvent('NAME_PLATE_UNIT_ADDED')
+        TargetFrame:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
+        --TargetFrame:RegisterEvent('NAME_PLATE_CREATED')
+    end
+
+    if not isIns and Save.quest  then
+        TargetFrame:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
+        TargetFrame:RegisterEvent('SCENARIO_UPDATE')
+        TargetFrame:RegisterEvent('SCENARIO_CRITERIA_UPDATE')
+        TargetFrame:RegisterEvent('SCENARIO_COMPLETED')
+        TargetFrame:RegisterEvent('QUEST_POI_UPDATE')
+    end
+
+    if  Save.TargetFramePoint~='HEALTHBAR' then
+        set_Target_Size(TargetFrame)--设置，大小
+    end
+    if not TargetFrame.Texture and Save.target then
+        TargetFrame.Texture= TargetFrame:CreateTexture(nil, 'BACKGROUND')
+        TargetFrame.Texture:SetAllPoints(TargetFrame)
+    end
+
+    if TargetFrame.Texture then
         local isAtlas, texture= e.IsAtlas(Save.targetTextureName)--设置，图片
         if isAtlas then
-            targetFrame.Texture:SetAtlas(texture)
+            TargetFrame.Texture:SetAtlas(texture)
         else
-            targetFrame.Texture:SetTexture(texture or 0)
+            TargetFrame.Texture:SetTexture(texture or 0)
         end
         set_Scale_Frame()--缩放
-        set_Target_Color(targetFrame.Texture, Save.targetInCombat and UnitAffectingCombat('player'))
-        targetFrame.Texture:SetShown(Save.target)
+        set_Target_Color(TargetFrame.Texture, Save.targetInCombat and UnitAffectingCombat('player'))
+        TargetFrame.Texture:SetShown(Save.target)
     end
 
 
@@ -612,107 +768,24 @@ end
 
 
 --####
---事件
---####
-local function set_Register_Event()
-    isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
-    isIns=  isPvPArena
-            or (not Save.questShowInstance and IsInInstance()
-                and (GetNumGroupMembers()>3 or C_ChallengeMode.IsChallengeModeActive())
-            )
-
-
-    targetFrame:UnregisterAllEvents()
-    targetFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-
-    if Save.target or Save.creature then
-        targetFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
-        targetFrame:RegisterEvent('RAID_TARGET_UPDATE')
-        targetFrame:RegisterUnitEvent('UNIT_FLAGS', 'target')
-        targetFrame:RegisterEvent('CVAR_UPDATE')
-    end
-
-    if (Save.target and Save.targetInCombat) or Save.unitIsMe then
-        targetFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
-        targetFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
-    end
-
-    if Save.creature or Save.unitIsMe then
-        targetFrame:RegisterEvent('UNIT_TARGET')
-    end
-
-    if (not isIns and Save.quest) or Save.creature or Save.unitIsMe then
-        targetFrame:RegisterEvent('NAME_PLATE_UNIT_ADDED')
-        targetFrame:RegisterEvent('NAME_PLATE_UNIT_REMOVED')
-        --targetFrame:RegisterEvent('NAME_PLATE_CREATED')
-    end
-
-    if not isIns and Save.quest  then
-        targetFrame:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
-        targetFrame:RegisterEvent('SCENARIO_UPDATE')
-        targetFrame:RegisterEvent('SCENARIO_CRITERIA_UPDATE')
-        targetFrame:RegisterEvent('SCENARIO_COMPLETED')
-        targetFrame:RegisterEvent('QUEST_POI_UPDATE')
-    end
-end
-
-
-
-
-
-local function set_All_Init()
-    do
-        set_Register_Event()
-    end
-    set_Created_Texture_Text()
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---####
 --初始
 --####
 local function Init()
-    targetFrame= CreateFrame("Frame")
+
+    TargetFrame= CreateFrame("Frame")
+    QuestFrame= CreateFrame("Frame")
+
+    NumFrame= CreateFrame('Frame')
+
     set_All_Init()
 
     hooksecurefunc(NamePlateDriverFrame, 'OnSoftTargetUpdate', function()
-        if Save.targetFramePoint=='TOP' then
+        if Save.TargetFramePoint=='TOP' then
             set_Target()
         end
     end)
 
-    targetFrame:SetScript("OnEvent", function(_, event, arg1)
+    TargetFrame:SetScript("OnEvent", function(_, event, arg1)
         if event=='PLAYER_TARGET_CHANGED'
             or event=='RAID_TARGET_UPDATE'
             or event=='UNIT_FLAGS'
@@ -723,28 +796,20 @@ local function Init()
             if arg1=='nameplateShowAll' or arg1=='nameplateShowEnemies' or arg1=='nameplateShowFriends' then
                 set_check_allQust_Plates()
                 C_Timer.After(0.15, set_Target)
-                if Save.unitIsMe then
-                    Init_Unit_Is_Me()
-                end
             end
 
         elseif event=='PLAYER_ENTERING_WORLD' then
             set_All_Init()
 
         elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then--颜色
-            set_Target_Color(targetFrame.Texture, event=='PLAYER_REGEN_DISABLED')
-            if Save.unitIsMe then
-                for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
-                    set_Unit_Is_Me(plate)
-                end
-            end
+            set_Target_Color(TargetFrame.Texture, event=='PLAYER_REGEN_DISABLED')
 
         elseif event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
             C_Timer.After(2, function() set_check_allQust_Plates() end)
 
         elseif arg1 then--UNIT_TARGET NAME_PLATE_UNIT_ADDED NAME_PLATE_UNIT_REMOVED 
             local plate = C_NamePlate.GetNamePlateForUnit(arg1,  issecure())-- or {}
-           
+
             if event=='NAME_PLATE_UNIT_ADDED'  then
                 if not isIns then
                     set_questProgress_Text(plate)--任务
@@ -758,9 +823,6 @@ local function Init()
                 end
             end
 
-            if Save.unitIsMe then
-                set_Unit_Is_Me(plate)--提示，目标是你
-            end
 
             if Save.creature then
                 set_Creature_Num()
@@ -921,12 +983,12 @@ local function set_Option()
         for _, name in pairs(tab) do
             local info={
                 text= name,
-                checked= Save.targetFramePoint==name,
+                checked= Save.TargetFramePoint==name,
                 tooltipOnButton=true,
                 tooltipTitle= e.onlyChinese and '位置' or CHOOSE_LOCATION,
                 arg1= name,
                 func= function(_, arg1)
-                    Save.targetFramePoint= arg1
+                    Save.TargetFramePoint= arg1
                     e.LibDD:UIDropDownMenu_SetText(self, arg1)
                     set_All_Init()
                 end
@@ -934,7 +996,7 @@ local function set_Option()
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
     end)
-    e.LibDD:UIDropDownMenu_SetText(menuPoint, Save.targetFramePoint)
+    e.LibDD:UIDropDownMenu_SetText(menuPoint, Save.TargetFramePoint)
     menuPoint.Button:SetScript('OnClick', function(self)
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
     end)
@@ -1161,6 +1223,7 @@ local function set_Option()
     unitIsMeCheck:SetChecked(Save.unitIsMe)
     unitIsMeCheck:SetScript('OnClick', function()
         Save.unitIsMe= not Save.unitIsMe and true or false
+        print(id, e.cn(addName), e.GetEnabeleDisable(Save.unitIsMe), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         set_All_Init()
     end)
 
@@ -1295,7 +1358,7 @@ local function set_Option()
         --info.extraInfo = nil;
         ColorPickerFrame:SetupColorPickerAndShow(info);
     end)
-    
+
 
     local unitIsMeX = e.CSlider(panel, {min=-250, max=250, value=Save.unitIsMeX, setp=1, w= 100,
     text= 'X',
@@ -1434,7 +1497,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.scale= Save.scale or 1.5
             Save.elapsed= Save.elapsed or 0.5
 
-            Save.targetFramePoint= Save.targetFramePoint or 'LEFT'
+            Save.TargetFramePoint= Save.TargetFramePoint or 'LEFT'
 
             --添加控制面板
             e.AddPanel_Sub_Category({name=e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName)..'|r', frame=panel})
@@ -1442,7 +1505,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             e.ReloadPanel({panel=panel, addName= e.cn(addName), restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=function()
                     Save.disabled= not Save.disabled and true or nil
-                    if not targetFrame and not Save.disabled  then
+                    if not TargetFrame and not Save.disabled  then
                         set_Option()
                         Init()
                     end
