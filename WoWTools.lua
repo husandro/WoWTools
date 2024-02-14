@@ -2491,28 +2491,24 @@ end
 
 function e.Get_ColorFrame_RGBA()--取得, ColorFrame, 颜色
     local r,g,b= ColorPickerFrame:GetColorRGB()
-    local a
+    local a= ColorPickerFrame.hasOpacity and ColorPickerFrame:GetColorAlpha()
     r= r and tonumber(format('%.2f', r)) or 1
     g= g and tonumber(format('%.2f', g)) or 1
     b= b and tonumber(format('%.2f', b)) or 1
-    if ColorPickerFrame.hasOpacity then
-        a= ColorPickerFrame:GetColorAlpha()
-        a= a and tonumber(format('%.2f', a)) or 1
-    end
-	return r, g, b, a
+    a= a and tonumber(format('%.2f', a)) or 1
+	return r, g, b, a, {r=r, g=g, b=b, a=a}
 end
 
-function e.ShowColorPicker(valueR, valueG, valueB, valueA, func, cancelFunc)
+function e.ShowColorPicker(valueR, valueG, valueB, valueA, swatchFunc, cancelFunc)
     ColorPickerFrame:SetupColorPickerAndShow({--ColorPickerFrame.lua
-        r=valueR,
-        g=valueG,
-        b=valueB,
+        r=valueR or 1,
+        g=valueG or 1,
+        b=valueB or 1,
         hasOpacity=valueA and true or false,
-        swatchFunc=func,
-        cancelFunc=cancelFunc,
-        opacity=valueA,
+        swatchFunc= swatchFunc or function()end,
+        cancelFunc= cancelFunc or function()end,
+        opacity=valueA or 1,
     })
-
 end
     --[[self.swatchFunc = info.swatchFunc;
     self.hasOpacity = info.hasOpacity;

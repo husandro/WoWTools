@@ -284,7 +284,7 @@ local function Init_Num()
             end
         end
 
-        
+
     elseif NumFrame then
         e.Cstr(nil, {changeFont=NumFrame.Text, size= Save.creatureFontSize})
         if NumFrame.set_text_point then
@@ -292,7 +292,7 @@ local function Init_Num()
         end
     end
     set_Creature_Num()
-    
+
 end
 
 
@@ -1047,7 +1047,7 @@ local function set_Option()
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
-       
+
     end)
     e.LibDD:UIDropDownMenu_SetText(menuPoint, Save.TargetFramePoint)
     menuPoint.Button:SetScript('OnClick', function(self)
@@ -1375,7 +1375,7 @@ local function set_Option()
             end
         end
     end)
-    
+
     menuUnitIsMe.Button:SetScript('OnClick', function(self)
         e.LibDD:CloseDropDownMenus(1)
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
@@ -1390,7 +1390,7 @@ local function set_Option()
             self.Icon:SetTexture(texture)
             e.LibDD:UIDropDownMenu_SetText(self, texture:match('.+\\(.+)%.') or texture)
         end
-        self.Icon:SetVertexColor(Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a or 1)
+        self.Icon:SetVertexColor(Save.unitIsMeColor.r or 1, Save.unitIsMeColor.g or 1, Save.unitIsMeColor.b or 1, Save.unitIsMeColor.a or 1)
     end
     menuUnitIsMe:set_icon()
     menuUnitIsMe.Icon:ClearAllPoints()
@@ -1399,79 +1399,39 @@ local function set_Option()
     menuUnitIsMe.Icon:Show()
     menuUnitIsMe.Icon:EnableMouse(true)
     menuUnitIsMe.Icon:SetScript("OnLeave", function(self) self:SetAlpha(1) GameTooltip_Hide() end)
-    menuUnitIsMe.Icon:SetScript('OnEnter', function(self) 
+    menuUnitIsMe.Icon:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR))
-        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR)),
+                            'r'..Save.unitIsMeColor.r..' g'..Save.unitIsMeColor.g..' b'..Save.unitIsMeColor.b..' a'..Save.unitIsMeColor.a)
+        e.tips:AddDoubleLine(e.Icon.right..(e.onlyChinese and '默认' or DEFAULT), 'r1 g1 b1 a1' )
         e.tips:Show()
         self:SetAlpha(0.7)
     end)
-    menuUnitIsMe.Icon:SetScript('OnMouseDown', function(self)
-        local r,g,b,a= Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a
-        local info={
-            r= r or 1,
-            g= g or 1,
-            b= b or 1,
-            opacity= a or 1,
-            hasOpacity=true,
-            swatchFunc = function()
-                Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a=  e.Get_ColorFrame_RGBA()--取得, ColorFrame, 颜色
-                self:GetParent():set_icon()
-                set_All_Init()
-            end,
-            cancelFunc = function()
-                Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a= r, g, b, a
-                self:GetParent():set_icon()
-                set_All_Init()
-            end
-        }
-        ColorPickerFrame:SetupColorPickerAndShow(info);
-        self:SetAlpha(1)
-    end)
-
-    --[[menuUnitIsMe.color= e.Cbtn(panel, {size={32,32}, type='ColorSwatchTemplate', icon='hide'})--CreateFrame('Button', nil, panel, 'ColorSwatchTemplate')
-    menuUnitIsMe.color.InnerBorder:ClearAllPoints()
-    menuUnitIsMe.color.InnerBorder:SetAllPoints(menuUnitIsMe.color)
-    menuUnitIsMe.color.Color:ClearAllPoints()
-    menuUnitIsMe.color.Color:SetAllPoints(menuUnitIsMe.color)
-    menuUnitIsMe.color:SetPoint('LEFT', menuUnitIsMe, 'RIGHT', 2,0)
-    --menuUnitIsMe.color:SetSize(32,32)
-    function menuUnitIsMe.color:set_texture()
-        local isAtlas, texture= e.IsAtlas(Save.unitIsMeTextrue)
-        if isAtlas then
-            self.Color:SetAtlas(texture)
+    menuUnitIsMe.Icon:SetScript('OnMouseDown', function(self, d)
+        if d=='RightButton' then
+            Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a= 1,1,1,1
+            self:GetParent():set_icon()
+            set_All_Init()
+            print(id, e.cn(addName), e.onlyChinese and '默认' or DEFAULT)
         else
-            self.Color:SetTexture(texture)
+            local r,g,b,a= Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a
+            e.ShowColorPicker(r,g,b,a,
+                function()
+                    Save.unitIsMeColor=  select(5, e.Get_ColorFrame_RGBA())--取得, ColorFrame, 颜色
+                    self:GetParent():set_icon()
+                    set_All_Init()
+                end, function()
+                    Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a= r, g, b, a
+                    self:GetParent():set_icon()
+                    set_All_Init()
+                end
+            )
+            self:SetAlpha(1)
         end
-    end
-    function menuUnitIsMe.color:set_color()
-        self.Color:SetVertexColor(Save.unitIsMeColor.r or 1, Save.unitIsMeColor.g or 1, Save.unitIsMeColor.b or 1, Save.unitIsMeColor.a or 1)
-    end
-    menuUnitIsMe.color:set_texture()
-    menuUnitIsMe.color:set_color()
-    menuUnitIsMe.color:SetScript('OnClick', function(self)
-        local r,g,b,a= Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a
-        local info={
-            r= r,
-            g= g,
-            b= b,
-            a= a,
-            swatchFunc = function()
-                Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a= ColorPickerFrame:GetColorRGB()
-                self:set_color()
-                set_All_Init()
-            end,
-            cancelFunc = function()
-                Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a= r, g, b, a
-                self:set_color()
-                set_All_Init()
-            end
-        }
-        --info.extraInfo = nil;
-        ColorPickerFrame:SetupColorPickerAndShow(info);
-    end)]]
+    end)
 
 
     local unitIsMeX = e.CSlider(panel, {min=-250, max=250, value=Save.unitIsMeX, setp=1, w= 100,
@@ -1505,10 +1465,6 @@ local function set_Option()
         set_All_Init()
     end})
     unitIsMeSize:SetPoint("LEFT", unitIsMeY, 'RIGHT',15,0)
-
-
-
-
 
 
 
@@ -1614,7 +1570,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.TargetFramePoint= Save.TargetFramePoint or 'LEFT'
 
             --添加控制面板
-            e.AddPanel_Sub_Category({name=e.Icon.toRight2..(e.onlyChinese and '目标指示' or addName)..'|r', frame=panel})
+            e.AddPanel_Sub_Category({name=e.Icon.toRight2..(e.onlyChinese and '目标' or addName)..'|r', frame=panel})
 
             e.ReloadPanel({panel=panel, addName= e.cn(addName), restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=function()
