@@ -3424,11 +3424,10 @@ local function Init()
 			self.text:SetText('你死亡了。要释放灵魂到最近的墓地吗？')
 		end
 	end)
-    hookDia("DEATH", 'OnUpdate', function(self)--, elapsed)
+    hookDia("DEATH", 'OnUpdate', function(self)
 		if ( IsFalling() and not IsOutOfBounds()) then
 			return
 		end
-
 		local b1_enabled = self.button1:IsEnabled()
 		local encounterSupressRelease = IsEncounterSuppressingRelease()
 		if ( encounterSupressRelease ) then
@@ -3450,6 +3449,17 @@ local function Init()
 				else
 					self.text:SetText('现在无法释放。')
 				end
+			end
+		end
+        local option1, option2 = GetSelfResurrectDialogOptions();
+		if ( option1 ) then
+			if ( option1.name ) then
+				set(self.button2, e.strText[option1.name])
+			end
+		end
+		if ( option2 ) then
+			if ( option2.name ) then
+				set(self.button3, e.strText[option2.name])
 			end
 		end
 	end)
