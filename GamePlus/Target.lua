@@ -19,7 +19,8 @@ local Save= {
 
     creature= true,--怪物数量
     creatureFontSize=10,
-    --creatureToUIParet=true,--放在UIPrent
+    --creatureNotParentTarget=true,--自定义位置
+    --creatureUIParent=true,--放在UIPrent
     --creaturePoint={},--位置
 
     unitIsMe=true,--提示， 目标是你
@@ -248,7 +249,7 @@ local function Init_Num()
     end
     --怪物数量
     if not NumFrame then
-        if Save.creatureToUIParet or not TargetFrame then
+        if Save.creatureUIParent or not TargetFrame then
             NumFrame= e.Cbtn(nil, {size={18, 4}, icon='hide'})
             if Save.creaturePoint then
                 NumFrame:SetPoint(Save.creaturePoint[1], UIParent, Save.creaturePoint[3], Save.creaturePoint[4], Save.creaturePoint[5])
@@ -913,7 +914,7 @@ local function set_Option()
         Save.target= not Save.target and true or nil
         set_All_Init()
     end)
-    sel.Text:SetText(e.Icon.toRight2..(e.onlyChinese and '目标' or addName))
+    sel.Text:SetText('1) '..e.Icon.toRight2..(e.onlyChinese and '目标' or addName))
     sel.Text:SetTextColor( Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a)
     sel.Text:EnableMouse(true)
     sel.Text:SetScript('OnMouseDown', function(self2, d)
@@ -1228,22 +1229,44 @@ local function set_Option()
 
 
 
-    local sel2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    sel2.Text:SetText(e.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r'
-                or (e.Player.col..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, TARGET)..'('..YOU..')|r |cnGREEN_FONT_COLOR:'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)..'('..YOU..')|r |cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)..'|r')
-            )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    local sel2= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    sel2.Text:SetText('2) '..(e.onlyChinese and '怪物数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)))
     sel2:SetPoint('TOPLEFT', menu.edit, 'BOTTOMLEFT', -32, -32)
     sel2:SetChecked(Save.creature)
     sel2:SetScript('OnLeave', GameTooltip_Hide)
     sel2:SetScript('OnEnter', function(self)
-        
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        if e.onlyChinese then
+            e.tips:AddLine(e.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r')
+        else
+            e.tips:AddLine(e.Player.col..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, TARGET)..'('..YOU..')|r |cnGREEN_FONT_COLOR:'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)..'('..YOU..')|r |cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)..'|r')
+        end
+        e.tips:Show()
     end)
     sel2:SetScript('OnClick', function()
         Save.creature= not Save.creature and true or nil
         set_All_Init()
     end)
 
-    local sliderCreatureFontSize = e.CSlider(panel, {min=8, max=32, value=Save.creatureFontSize, setp=1, w=100, color=true,
+    local numSize = e.CSlider(panel, {min=8, max=32, value=Save.creatureFontSize, setp=1, w=100, color=true,
     text= e.Player.L.size,
     func=function(self2, value)--字体大小
         value= math.floor(value)
@@ -1252,7 +1275,37 @@ local function set_Option()
         Save.creatureFontSize= value
         set_All_Init()
     end})
-    sliderCreatureFontSize:SetPoint("LEFT", sel2.Text, 'RIGHT',15,0)
+    numSize:SetPoint("LEFT", sel2.Text, 'RIGHT',15,0)
+
+    local numPostionCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    numPostionCheck.Text:SetText(e.onlyChinese and '自定义位置' or SPELL_TARGET_CENTER_LOC)
+    numPostionCheck:SetPoint('LEFT', numSize, 'RIGHT', 10,0)
+    numPostionCheck:SetChecked(Save.creatureUIParent)
+    numPostionCheck:SetScript('OnClick', function()
+        Save.creatureUIParent= not Save.creatureUIParent and true or nil
+        set_All_Init()
+        if not Save.creatureUIParent and not Save.target then
+            print('|cnRED_FONT_COLOR:'..(e.onlyChinese and '需要启用‘1) '..e.Icon.toRight2..'目标’' or 'Need to enable the \"1) '..e.Icon.toRight2..addName..'\"'))
+        end
+        print(id, e.cn(addName), e.GetEnabeleDisable(Save.creatureUIParent), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1260,7 +1313,7 @@ local function set_Option()
 
 
     local unitIsMeCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    unitIsMeCheck.Text:SetText(e.onlyChinese and '目标是'..e.Player.col..'你|r' or 'Target is '..e.Player.col..'You|r')
+    unitIsMeCheck.Text:SetText('3) '..(e.onlyChinese and '目标是'..e.Player.col..'你|r' or 'Target is '..e.Player.col..'You|r'))
     unitIsMeCheck:SetPoint('TOP', sel2, 'BOTTOM', 0, -24)
     unitIsMeCheck:SetChecked(Save.unitIsMe)
     unitIsMeCheck:SetScript('OnClick', function()
@@ -1459,8 +1512,22 @@ local function set_Option()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     local questCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    questCheck.Text:SetText(e.onlyChinese and '任务进度' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, PVP_PROGRESS_REWARDS_HEADER)))
+    questCheck.Text:SetText('4) '..(e.onlyChinese and '任务进度' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, PVP_PROGRESS_REWARDS_HEADER))))
     questCheck:SetPoint('TOPLEFT', unitIsMeCheck, 'BOTTOMLEFT',0,-64)
     questCheck:SetChecked(Save.quest)
     questCheck:SetScript('OnClick', function()
