@@ -150,33 +150,149 @@ local function set_Target_Color(self, isInCombat)--设置，颜色
         end
     end
 end
-local function set_Target_Size(self)--设置，大小
-    if self then
-        self:SetSize(Save.w, Save.h)
+
+
+
+
+
+
+
+
+
+
+--##########################
+--设置,指示目标,位置,显示,隐藏
+--##########################
+function Init_Target()
+    if TargetFrame then
+        TargetFrame:UnregisterAllEvents()
+    end    
+    if not Save.target then
+        if TargetFrame then
+            TargetFrame:SetShown(false)
+        end    
     end
-end
 
-
-local function set_Scale_Frame()--缩放
     if not TargetFrame then
-        return
-    end
-    if TargetFrame.Texture and Save.scale~=1 then
-        TargetFrame:SetScript('OnUpdate', function(self, elapsed)
-            self.elapsed= (self.elapsed or Save.elapsed) + elapsed
-            if self.elapsed> Save.elapsed then
-                self.elapsed=0
-                self:SetScale(self:GetScale()==1 and Save.scale or 1)
+        TargetFrame= CreateFrame("Frame")
+        TargetFrame.Texture= TargetFrame:CreateTexture(nil, 'BACKGROUND')
+        TargetFrame.Texture:SetAllPoints(TargetFrame)
+        function TargetFrame:set_color(isInCombat)
+            if isInCombat then
+                self.Texture:SetVertexColor(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a)
+            else
+                self.Texture:SetVertexColor(Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a)
+            end
+        end
+        function TargetFrame:set_texture()
+            self:SetSize(Save.w, Save.h)--设置大小
+            local isAtlas, texture= e.IsAtlas(Save.targetTextureName)--设置，图片
+            if isAtlas then
+                self.Texture:SetAtlas(texture)
+            else
+                self.Texture:SetTexture(texture or 0)
+            end
+            
+            if Save.scale~=1 then
+                self:SetScript('OnUpdate', function(frame, elapsed)
+                    frame.elapsed= (frame.elapsed or Save.elapsed) + elapsed
+                    if frame.elapsed> Save.elapsed then
+                        frame.elapsed=0
+                        frame:SetScale(frame:GetScale()==1 and Save.scale or 1)
+                    end
+                end)
+            else
+                self:SetScript('OnUpdate', nil)
+            end
+            self:SetScale(1)--缩放
+            self:set_color(Save.targetInCombat and UnitAffectingCombat('player') or false)
+            self:set_target()
+        end
+        
+        function TargetFrame:set_target()
+            local plate= C_NamePlate.GetNamePlateForUnit("target")
+            if not plate or not plate.UnitFrame then
+                self:SetShown(false)
+                return
+            end
+            
+            local UnitFrame = plate.UnitFrame
+            local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--C_AddOns.IsAddOnLoaded("Plater")
+            self:ClearAllPoints()
+            if Save.TargetFramePoint=='TOP' then
+                if UnitFrame.SoftTargetFrame.Icon:IsShown() then
+                    frame= UnitFrame.SoftTargetFrame
+                else
+                    frame= UnitFrame.name or UnitFrame.healthBar
+                end
+                self:SetPoint('BOTTOM', frame or UnitFrame, 'TOP', Save.x, Save.y)
+
+            elseif Save.TargetFramePoint=='HEALTHBAR' then
+                frame= UnitFrame.healthBar or UnitFrame.name or UnitFrame
+                local w, h= frame:GetSize()
+                w= w+ Save.w
+                h= h+ Save.h
+                local n, p
+                if UnitFrame.RaidTargetFrame.RaidTargetIcon:IsVisible() then
+                    n= UnitFrame.RaidTargetFrame.RaidTargetIcon:GetWidth()+ UnitFrame.ClassificationFrame.classificationIndicator:GetWidth()
+                elseif UnitFrame.ClassificationFrame.classificationIndicator:IsVisible() then
+                    n= UnitFrame.ClassificationFrame.classificationIndicator:GetWidth()
+                end
+                if UnitFrame.questProgress then
+                    p= UnitFrame.questProgress:GetWidth()
+                end
+                n, p= n or 0, p or 0
+                self:SetSize(w+ n+ p, h)
+                self:SetPoint('CENTER', UnitFrame, Save.x+ (-n+p)/2, Save.y)
+            else
+                if UnitFrame.RaidTargetFrame.RaidTargetIcon:IsVisible() then
+                    frame= UnitFrame.RaidTargetFrame
+                elseif UnitFrame.ClassificationFrame.classificationIndicator:IsVisible() then
+                    frame= UnitFrame.ClassificationFrame.classificationIndicator
+                else
+                    frame= UnitFrame.healthBar or UnitFrame.name
+                end
+                self:SetPoint('RIGHT', frame or UnitFrame, 'LEFT',Save.x, Save.y)
+            end
+            self:SetShown(true)
+        end
+
+        hooksecurefunc(NamePlateDriverFrame, 'OnSoftTargetUpdate', function()
+            if Save.TargetFramePoint=='TOP' then
+                TargetFrame:set_target()
             end
         end)
-    else
-        TargetFrame:SetScript('OnUpdate', nil)
+
+        TargetFrame:SetScript("OnEvent", function(self, event, arg1)
+            if event=='PLAYER_TARGET_CHANGED'
+                or event=='RAID_TARGET_UPDATE'
+                or event=='UNIT_FLAGS'
+                or event=='PLAYER_ENTERING_WORLD'
+                or (event=='CVAR_UPDATE'
+                    and (arg1=='nameplateShowAll' or arg1=='nameplateShowEnemies' or arg1=='nameplateShowFriends')
+                )
+            then
+                C_Timer.After(0.15, function() self:set_target() end)
+
+            elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then--颜色
+                self:set_color(event=='PLAYER_REGEN_DISABLED')
+
+            end
+        end)
     end
-    TargetFrame:SetScale(1)
+    TargetFrame:SetShown(false)
+
+    TargetFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    TargetFrame:RegisterEvent('CVAR_UPDATE')
+    TargetFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
+    TargetFrame:RegisterEvent('RAID_TARGET_UPDATE')
+    TargetFrame:RegisterUnitEvent('UNIT_FLAGS', 'target')
+    if Save.targetInCombat then
+        TargetFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
+        TargetFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
+    end
+    TargetFrame:set_texture()
 end
-
-
-
 
 
 
@@ -719,53 +835,7 @@ end
 
 
 
---##########################
---设置,指示目标,位置,显示,隐藏
---##########################
-local function set_Target()
-    local plate= C_NamePlate.GetNamePlateForUnit("target")
-    if plate then
-        local self = plate.UnitFrame
-        local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--C_AddOns.IsAddOnLoaded("Plater")
-        TargetFrame:ClearAllPoints()
-        if Save.TargetFramePoint=='TOP' then
-            if self.SoftTargetFrame.Icon:IsShown() then
-                frame= self.SoftTargetFrame
-            else
-                frame= self.name or self.healthBar
-            end
-            TargetFrame:SetPoint('BOTTOM', frame or self, 'TOP', Save.x, Save.y)
 
-        elseif Save.TargetFramePoint=='HEALTHBAR' then
-            frame= self.healthBar or self.name or self
-            local w, h= frame:GetSize()
-            w= w+ Save.w
-            h= h+ Save.h
-            local n, p
-            if self.RaidTargetFrame.RaidTargetIcon:IsVisible() then
-                n= self.RaidTargetFrame.RaidTargetIcon:GetWidth()+ self.ClassificationFrame.classificationIndicator:GetWidth()
-            elseif self.ClassificationFrame.classificationIndicator:IsVisible() then
-                n= self.ClassificationFrame.classificationIndicator:GetWidth()
-            end
-            if self.questProgress then
-                p= self.questProgress:GetWidth()
-            end
-            n, p= n or 0, p or 0
-            TargetFrame:SetSize(w+ n+ p, h)
-            TargetFrame:SetPoint('CENTER', self, Save.x+ (-n+p)/2, Save.y)
-        else
-            if self.RaidTargetFrame.RaidTargetIcon:IsVisible() then
-                frame= self.RaidTargetFrame
-            elseif self.ClassificationFrame.classificationIndicator:IsVisible() then
-                frame= self.ClassificationFrame.classificationIndicator
-            else
-                frame= self.healthBar or self.name
-            end
-            TargetFrame:SetPoint('RIGHT', frame or self, 'LEFT',Save.x, Save.y)
-        end
-    end
-    TargetFrame:SetShown(plate and true or false)
-end
 
 
 
@@ -829,49 +899,10 @@ end
 
 
 local function set_All_Init()
-    TargetFrame:UnregisterAllEvents()
-    TargetFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-
-    if Save.target or Save.creature then
-        TargetFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
-        TargetFrame:RegisterEvent('RAID_TARGET_UPDATE')
-        TargetFrame:RegisterUnitEvent('UNIT_FLAGS', 'target')
-        TargetFrame:RegisterEvent('CVAR_UPDATE')
-    end
-
-    if (Save.target and Save.targetInCombat) then
-        TargetFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
-        TargetFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
-    end
-
-    if Save.creature then
-        TargetFrame:RegisterEvent('UNIT_TARGET')
-    end
+ 
 
 
-
-    if  Save.TargetFramePoint~='HEALTHBAR' then
-        set_Target_Size(TargetFrame)--设置，大小
-    end
-    if not TargetFrame.Texture and Save.target then
-        TargetFrame.Texture= TargetFrame:CreateTexture(nil, 'BACKGROUND')
-        TargetFrame.Texture:SetAllPoints(TargetFrame)
-    end
-
-    if TargetFrame.Texture then
-        local isAtlas, texture= e.IsAtlas(Save.targetTextureName)--设置，图片
-        if isAtlas then
-            TargetFrame.Texture:SetAtlas(texture)
-        else
-            TargetFrame.Texture:SetTexture(texture or 0)
-        end
-        set_Scale_Frame()--缩放
-        set_Target_Color(TargetFrame.Texture, Save.targetInCombat and UnitAffectingCombat('player'))
-        TargetFrame.Texture:SetShown(Save.target)
-    end
-
-
-   set_Target()
+   Init_Target()
    Init_Num()
    Init_Quest()
    Init_Unit_Is_Me()
@@ -922,35 +953,9 @@ local function Init()
         end
     end)
 
-    TargetFrame= CreateFrame("Frame")
+    
     set_All_Init()
 
-    hooksecurefunc(NamePlateDriverFrame, 'OnSoftTargetUpdate', function()
-        if Save.TargetFramePoint=='TOP' then
-            set_Target()
-        end
-    end)
-
-    TargetFrame:SetScript("OnEvent", function(_, event, arg1)
-        if event=='PLAYER_TARGET_CHANGED'
-            or event=='RAID_TARGET_UPDATE'
-            or event=='UNIT_FLAGS'
-        then
-            C_Timer.After(0.15, set_Target)
-
-        elseif event=='CVAR_UPDATE' then
-            if arg1=='nameplateShowAll' or arg1=='nameplateShowEnemies' or arg1=='nameplateShowFriends' then
-                C_Timer.After(0.15, set_Target)
-            end
-
-        elseif event=='PLAYER_ENTERING_WORLD' then
-            set_All_Init()
-
-        elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then--颜色
-            set_Target_Color(TargetFrame.Texture, event=='PLAYER_REGEN_DISABLED')
-
-        end
-    end)
 end
 
 
@@ -1037,7 +1042,7 @@ local function set_Option()
     panel.tipTargetTexture= panel:CreateTexture()--目标，图片，提示
     panel.tipTargetTexture:SetPoint("TOP")
     --set_Target_Texture(panel.tipTargetTexture)--设置，图片
-    set_Target_Size(panel.tipTargetTexture)--设置，大小
+    panel.tipTargetTexture:SetSize(Save.w, Save.h)--设置，大小
     set_Target_Color(panel.tipTargetTexture, false)--设置，颜色
 
     local combatCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
@@ -1145,7 +1150,7 @@ local function set_Option()
         self2:SetValue(value)
         self2.Text:SetText(value)
         Save.w= value
-        set_Target_Size(panel.tipTargetTexture)--设置，大小
+        panel.tipTargetTexture:SetSize(Save.w, Save.h)--设置，大小
         set_All_Init()
     end})
     sliderW:SetPoint("LEFT", sliderY, 'RIGHT',15,0)
@@ -1156,7 +1161,7 @@ local function set_Option()
         self2:SetValue(value)
         self2.Text:SetText(value)
         Save.h= value
-        set_Target_Size(panel.tipTargetTexture)--设置，大小
+        panel.tipTargetTexture:SetSize(Save.w, Save.h)--设置，大小
         set_All_Init()
     end})
     sliderH:SetPoint("LEFT", sliderW, 'RIGHT',15,0)
@@ -1175,7 +1180,7 @@ local function set_Option()
         else
             print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:', value)
         end
-        set_Scale_Frame()--缩放
+        set_All_Init()
     end})
     sliderScale:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0,-16)
 
