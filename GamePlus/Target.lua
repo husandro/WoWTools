@@ -35,7 +35,7 @@ local Save= {
     quest= true,
     --questShowAllFaction=nil,--显示， 所有玩家派系
     questShowPlayerClass=true,--显示，玩家职业
-    --questShowInstance=true,--在副本显示
+    questShowInstance=e.Player.husandro,--在副本显示
 }
 
 
