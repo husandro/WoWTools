@@ -233,6 +233,7 @@ local function set_Menu(self)
         set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
         set_Alpha_Frame_Texture(self.DecrementButton, {notAlpha=true})
         set_Alpha_Frame_Texture(self.IncrementButton, {notAlpha=true})
+        e.Set_Label_Texture_Color(self.Text, {type='FontString'})
     end
 end
 
