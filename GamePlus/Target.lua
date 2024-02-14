@@ -196,8 +196,6 @@ end
 --########################
 --怪物目标, 队员目标, 总怪物
 --########################
-
-
 local function Init_Num()
     if NumFrame then
         NumFrame:UnregisterAllEvents()
