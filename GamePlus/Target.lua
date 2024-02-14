@@ -26,6 +26,7 @@ local Save= {
     unitIsMeTextrue= 'auctionhouse-icon-favorite',
     unitIsMeSize=12,
     unitIsMePoint='TOPLEFT',
+    unitIsMeParent='healthBar',--name
     unitIsMeX=0,
     unitIsMeY=-2,
     unitIsMeColor={r=1,g=1,b=1,a=1},
@@ -501,23 +502,30 @@ local function Init_Unit_Is_Me()
     if not IsMeFrame then
         IsMeFrame= CreateFrame('Frame')
         function IsMeFrame:set_texture(plate)--设置，参数
-            local self= plate.UnitFrame
-            self.UnitIsMe= self:CreateTexture(nil, 'OVERLAY')
+            local frame= plate.UnitFrame
+            if not frame.UnitIsMe then
+                frame.UnitIsMe= frame:CreateTexture(nil, 'OVERLAY')
+            end
+            local parent= Save.unitIsMeParent=='name' and frame.name or frame.healthBar
             if Save.unitIsMePoint=='TOP' then
-                self.UnitIsMe:SetPoint("BOTTOM", self.healthBar, 'TOP', Save.unitIsMeX,Save.unitIsMeY)
+                frame.UnitIsMe:SetPoint("BOTTOM", parent, 'TOP', Save.unitIsMeX,Save.unitIsMeY)
             elseif Save.unitIsMePoint=='TOPRIGHT' then
-                self.UnitIsMe:SetPoint("BOTTOMRIGHT", self.healthBar, 'TOPRIGHT', Save.unitIsMeX,Save.unitIsMeY)
+                frame.UnitIsMe:SetPoint("BOTTOMRIGHT", parent, 'TOPRIGHT', Save.unitIsMeX,Save.unitIsMeY)
+            elseif Save.unitIsMePoint=='LEFT' then
+                frame.UnitIsMe:SetPoint("RIGHT", parent, 'LEFT', Save.unitIsMeX,Save.unitIsMeY)
+            elseif Save.unitIsMePoint=='RIGHT' then
+                frame.UnitIsMe:SetPoint("LEFT", parent, 'RIGHT', Save.unitIsMeX,Save.unitIsMeY)
             else--TOPLEFT
-                self.UnitIsMe:SetPoint("BOTTOMLEFT", self.healthBar, 'TOPLEFT', Save.unitIsMeX,Save.unitIsMeY)
+                frame.UnitIsMe:SetPoint("BOTTOMLEFT", parent, 'TOPLEFT', Save.unitIsMeX,Save.unitIsMeY)
             end
             local isAtlas, texture= e.IsAtlas(Save.unitIsMeTextrue)
             if isAtlas or not texture then
-                self.UnitIsMe:SetAtlas(texture or 'auctionhouse-icon-favorite')
+                frame.UnitIsMe:SetAtlas(texture or 'auctionhouse-icon-favorite')
             else
-                self.UnitIsMe:SetTexture(texture)
+                frame.UnitIsMe:SetTexture(texture)
             end
-            self.UnitIsMe:SetVertexColor(Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a)
-            self.UnitIsMe:SetSize(Save.unitIsMeSize, Save.unitIsMeSize)
+            frame.UnitIsMe:SetVertexColor(Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a)
+            frame.UnitIsMe:SetSize(Save.unitIsMeSize, Save.unitIsMeSize)
         end
         function IsMeFrame:set_plate(plate, unit)--设置, Plate
             plate= unit and C_NamePlate.GetNamePlateForUnit(unit) or plate
@@ -1039,6 +1047,7 @@ local function set_Option()
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
+       
     end)
     e.LibDD:UIDropDownMenu_SetText(menuPoint, Save.TargetFramePoint)
     menuPoint.Button:SetScript('OnClick', function(self)
@@ -1280,7 +1289,9 @@ local function set_Option()
         local tab={
             'TOPLEFT',
             'TOP',
-            'TOPRIGHT'
+            'TOPRIGHT',
+            'LEFT',
+            'RIGHT',
         }
         for _, name in pairs(tab) do
             info={
@@ -1297,7 +1308,23 @@ local function set_Option()
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
-
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        tab={
+            {'health', e.onlyChinese and '生命条' or 'HealthBar'},
+            {'name', e.onlyChinese and '名称' or NAME},
+        }
+        for _, tab2 in pairs(tab) do
+            local info={
+                text= tab2[2],
+                checked= Save.unitIsMeParent==tab2[1],
+                arg1= tab2[1],
+                func= function(_, arg1)
+                    Save.unitIsMeParent= arg1
+                    set_All_Init()
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
         --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text=e.onlyChinese and '颜色' or COLOR,
@@ -1323,9 +1350,7 @@ local function set_Option()
     end)
 
     local menuUnitIsMe = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
-   
     menuUnitIsMe:SetPoint("LEFT", menuUnitIsMePoint, 'RIGHT', 2,0)
-   
     e.LibDD:UIDropDownMenu_SetWidth(menuUnitIsMe, 100)
     e.LibDD:UIDropDownMenu_Initialize(menuUnitIsMe, function(self, level)
         for name, use in pairs(get_texture_tab()) do
@@ -1365,7 +1390,8 @@ local function set_Option()
             self.Icon:SetTexture(texture)
             e.LibDD:UIDropDownMenu_SetText(self, texture:match('.+\\(.+)%.') or texture)
         end
-        self.Icon:SetVertexColor(Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a)
+        self.Icon:SetVertexColor(Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a or 1)
+        --self.Icon:SetAlpha(Save.unitIsMeColor.a or 1)
     end
     menuUnitIsMe:set_icon()
     menuUnitIsMe.Icon:ClearAllPoints()
@@ -1375,7 +1401,7 @@ local function set_Option()
     menuUnitIsMe.Icon:EnableMouse(true)
     menuUnitIsMe.Icon:SetScript("OnLeave", function(self) self:SetAlpha(1) GameTooltip_Hide() end)
     menuUnitIsMe.Icon:SetScript('OnEnter', function(self) 
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddLine(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR))
         e.tips:AddLine(' ')
@@ -1386,10 +1412,11 @@ local function set_Option()
     menuUnitIsMe.Icon:SetScript('OnMouseDown', function(self)
         local r,g,b,a= Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a
         local info={
-            r= r,
-            g= g,
-            b= b,
-            a= a,
+            r= r or 1,
+            g= g or 1,
+            b= b or 1,
+            opacity= a or 1,
+            hasOpacity=true,
             swatchFunc = function()
                 Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a= ColorPickerFrame:GetColorRGB()
                 self:GetParent():set_icon()
