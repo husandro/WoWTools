@@ -160,23 +160,24 @@ end
 
 
 
---##########################
---设置,指示目标,位置,显示,隐藏
---##########################
+--#######
+--指示目标
+--#######
 function Init_Target()
     if TargetFrame then
         TargetFrame:UnregisterAllEvents()
-    end    
+    end
     if not Save.target then
         if TargetFrame then
             TargetFrame:SetShown(false)
-        end    
+        end
     end
 
     if not TargetFrame then
         TargetFrame= CreateFrame("Frame")
         TargetFrame.Texture= TargetFrame:CreateTexture(nil, 'BACKGROUND')
         TargetFrame.Texture:SetAllPoints(TargetFrame)
+
         function TargetFrame:set_color(isInCombat)
             if isInCombat then
                 self.Texture:SetVertexColor(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a)
@@ -192,7 +193,7 @@ function Init_Target()
             else
                 self.Texture:SetTexture(texture or 0)
             end
-            
+
             if Save.scale~=1 then
                 self:SetScript('OnUpdate', function(frame, elapsed)
                     frame.elapsed= (frame.elapsed or Save.elapsed) + elapsed
@@ -208,14 +209,14 @@ function Init_Target()
             self:set_color(Save.targetInCombat and UnitAffectingCombat('player') or false)
             self:set_target()
         end
-        
+
         function TargetFrame:set_target()
             local plate= C_NamePlate.GetNamePlateForUnit("target")
             if not plate or not plate.UnitFrame then
                 self:SetShown(false)
                 return
             end
-            
+
             local UnitFrame = plate.UnitFrame
             local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--C_AddOns.IsAddOnLoaded("Plater")
             self:ClearAllPoints()
@@ -293,6 +294,14 @@ function Init_Target()
     end
     TargetFrame:set_texture()
 end
+
+
+
+
+
+
+
+
 
 
 
@@ -467,9 +476,6 @@ local function Init_Num()
 
     elseif NumFrame then
         e.Cstr(nil, {changeFont=NumFrame.Text, size= Save.creatureFontSize})
-        if NumFrame.set_text_point then
-            NumFrame:set_text_point()
-        end
     end
 
     local eventTab= {
@@ -481,8 +487,10 @@ local function Init_Num()
         --'FORBIDDEN_NAME_PLATE_UNIT_REMOVED',
     }
     FrameUtil.RegisterFrameForEvents(NumFrame, eventTab)
+    if NumFrame.set_text_point then
+        NumFrame:set_text_point()
+    end
     NumFrame:set_text()
-   
 end
 
 
@@ -899,7 +907,7 @@ end
 
 
 local function set_All_Init()
- 
+
 
 
    Init_Target()
@@ -953,7 +961,7 @@ local function Init()
         end
     end)
 
-    
+
     set_All_Init()
 
 end
