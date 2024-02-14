@@ -1460,7 +1460,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
         EncounterJournalNavBar:DisableDrawLayer('BACKGROUND')
 
-        set_Alpha_Color(EncounterJournalInstanceSelectTierDropDown)
+        set_Menu(EncounterJournalInstanceSelectTierDropDown)
 
 
         C_Timer.After(0.3, function()
