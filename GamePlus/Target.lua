@@ -1015,14 +1015,7 @@ local function set_Option()
         self2:SetAlpha(0.3)
     end)
 
-    --[[local topCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    topCheck:SetPoint('LEFT', combatCheck.Text, 'RIGHT', 15,0)
-    topCheck:SetChecked(Save.top)
-    topCheck.Text:SetText('TOP')
-    topCheck:SetScript('OnClick', function()
-        Save.top= not Save.top and true or nil
-        set_All_Init()
-    end)]]
+
     local menuPoint = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
     menuPoint:SetPoint("LEFT", combatCheck.Text, 'RIGHT', 15, 0)
     e.LibDD:UIDropDownMenu_SetWidth(menuPoint, 100)
