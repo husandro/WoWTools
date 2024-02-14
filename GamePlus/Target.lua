@@ -137,16 +137,6 @@ local function get_texture_tab()
 end
 
 
-local function get_plate_unit(plate)
-    if plate then
-        return  plate.UnitFrame and plate.UnitFrame.unit or plate.namePlateUnitToken
-    end
-end
-
-
-
-
-
 
 
 
@@ -1244,6 +1234,10 @@ local function set_Option()
             )
     sel2:SetPoint('TOPLEFT', menu.edit, 'BOTTOMLEFT', -32, -32)
     sel2:SetChecked(Save.creature)
+    sel2:SetScript('OnLeave', GameTooltip_Hide)
+    sel2:SetScript('OnEnter', function(self)
+        
+    end)
     sel2:SetScript('OnClick', function()
         Save.creature= not Save.creature and true or nil
         set_All_Init()
@@ -1259,6 +1253,7 @@ local function set_Option()
         set_All_Init()
     end})
     sliderCreatureFontSize:SetPoint("LEFT", sel2.Text, 'RIGHT',15,0)
+
 
 
 
