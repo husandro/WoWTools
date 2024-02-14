@@ -62,11 +62,12 @@ end
 
 --关闭，当前菜单
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
-function e.HideMenu(menu, index)
-    if (e.LibDD:UIDropDownMenu_GetCurrentDropDown() == menu) then
+--[[function e.HideMenu(index)
+    e.LibDD:CloseDropDownMenus(index or 1)
+  if (e.LibDD:UIDropDownMenu_GetCurrentDropDown() == menu) then
         e.LibDD:HideDropDownMenu(index or 1);
     end
-end
+end]]
 
 local battleTag= select(2, BNGetInfo())
 local baseClass= UnitClassBase('player')

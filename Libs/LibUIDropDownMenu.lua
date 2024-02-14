@@ -1513,10 +1513,14 @@ function lib:UIDropDownMenu_Refresh(frame, useValue, dropdownLevel)
 						lib:UIDropDownMenu_SetIconImage(icon, button.icon, button.iconInfo);
 					elseif ( useValue ) then
 						lib:UIDropDownMenu_SetText(frame, button.value);
-						icon:Hide();
+						if icon then
+							icon:Hide();
+						end
 					else
 						lib:UIDropDownMenu_SetText(frame, button:GetText());
-						icon:Hide();
+						if icon then
+							icon:Hide();
+						end
 					end
 				end
 				button:LockHighlight();

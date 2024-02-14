@@ -353,8 +353,7 @@ local function Init_Quest()
                 end
             end
         end
-        --GameTooltip.lua --local questID= line and line.id
-        function QuestFrame:get_unit_text(unit)--取得，内容
+        function QuestFrame:get_unit_text(unit)--取得，内容 GameTooltip.lua --local questID= line and line.id
             if not UnitIsPlayer(unit) then
                 local type = UnitClassification(unit)
                 if type=='rareelite' or type=='rare' or type=='worldboss' then--or type=='elite'
@@ -573,13 +572,13 @@ local function Init_Unit_Is_Me()
        -- 'CVAR_UPDATE',
     }
     FrameUtil.RegisterFrameForEvents(IsMeFrame, eventTab)
-    for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
+    for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do--初始，数据
         if plate.UnitFrame then
             if plate.UnitFrame.UnitIsMe then--修改
                 plate.UnitFrame.UnitIsMe:ClearAllPoints()
-                self:set_texture(plate)--设置，参数
+                IsMeFrame:set_texture(plate)--设置，参数
             end
-            self:set_plate(plate)--设置
+            IsMeFrame:set_plate(plate)--设置
         end
     end
 end
@@ -868,8 +867,6 @@ local function Init()
         elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then--颜色
             set_Target_Color(TargetFrame.Texture, event=='PLAYER_REGEN_DISABLED')
 
-
-
         else
             if NumFrame then
                 set_Creature_Num()
@@ -1045,6 +1042,7 @@ local function set_Option()
     end)
     e.LibDD:UIDropDownMenu_SetText(menuPoint, Save.TargetFramePoint)
     menuPoint.Button:SetScript('OnClick', function(self)
+        e.LibDD:CloseDropDownMenus(1)
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
     end)
 
@@ -1150,7 +1148,7 @@ local function set_Option()
     end)
     e.LibDD:UIDropDownMenu_SetText(menu, Save.targetTextureName)
     menu.Button:SetScript('OnClick', function(self)
-        e.HideMenu(self:GetParent())
+        e.LibDD:CloseDropDownMenus(1)
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
     end)
 
@@ -1320,19 +1318,14 @@ local function set_Option()
     end)
     e.LibDD:UIDropDownMenu_SetText(menuUnitIsMePoint, Save.unitIsMePoint)
     menuUnitIsMePoint.Button:SetScript('OnClick', function(self)
+        e.LibDD:CloseDropDownMenus(1)
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
     end)
 
     local menuUnitIsMe = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+   
     menuUnitIsMe:SetPoint("LEFT", menuUnitIsMePoint, 'RIGHT', 2,0)
-    function menuUnitIsMe:get_icon()
-        local isAtlas, texture= e.IsAtlas(Save.unitIsMeTextrue)
-        if isAtlas or not texture then
-            e.LibDD:UIDropDownMenu_SetText(self, '|A:'..(texture or 'auctionhouse-icon-favorite')..':0:0|a')
-        else
-            e.LibDD:UIDropDownMenu_SetText(self, '|T'.. texture..':0|t')
-        end
-    end
+   
     e.LibDD:UIDropDownMenu_SetWidth(menuUnitIsMe, 100)
     e.LibDD:UIDropDownMenu_Initialize(menuUnitIsMe, function(self, level)
         for name, use in pairs(get_texture_tab()) do
@@ -1349,22 +1342,70 @@ local function set_Option()
                     checked= Save.unitIsMeTextrue==name,
                     func= function(_, arg1)
                         Save.unitIsMeTextrue= arg1
-                        self:get_icon()
+                        self:set_icon()
                         set_All_Init()
-                        self.color:set_texture()
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
             end
         end
     end)
-    menuUnitIsMe:get_icon()
+    
     menuUnitIsMe.Button:SetScript('OnClick', function(self)
-        e.HideMenu(self:GetParent())
+        e.LibDD:CloseDropDownMenus(1)
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
     end)
 
-    menuUnitIsMe.color= e.Cbtn(panel, {size={32,32}, type='ColorSwatchTemplate', icon='hide'})--CreateFrame('Button', nil, panel, 'ColorSwatchTemplate')
+    function menuUnitIsMe:set_icon()
+        local isAtlas, texture= e.IsAtlas(Save.unitIsMeTextrue)
+        if isAtlas or not texture then
+            e.LibDD:UIDropDownMenu_SetText(self, texture or 'auctionhouse-icon-favorite')
+            self.Icon:SetAtlas(texture or auctionhouse-icon-favorite)
+        else
+            self.Icon:SetTexture(texture)
+            e.LibDD:UIDropDownMenu_SetText(self, texture:match('.+\\(.+)%.') or texture)
+        end
+        self.Icon:SetVertexColor(Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a)
+    end
+    menuUnitIsMe:set_icon()
+    menuUnitIsMe.Icon:ClearAllPoints()
+    menuUnitIsMe.Icon:SetPoint('Left', menuUnitIsMe, 'RIGHT', -15, 4)
+    menuUnitIsMe.Icon:SetSize(32,32)
+    menuUnitIsMe.Icon:Show()
+    menuUnitIsMe.Icon:EnableMouse(true)
+    menuUnitIsMe.Icon:SetScript("OnLeave", function(self) self:SetAlpha(1) GameTooltip_Hide() end)
+    menuUnitIsMe.Icon:SetScript('OnEnter', function(self) 
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, addName)
+        e.tips:Show()
+        self:SetAlpha(0.7)
+    end)
+    menuUnitIsMe.Icon:SetScript('OnMouseDown', function(self)
+        local r,g,b,a= Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a
+        local info={
+            r= r,
+            g= g,
+            b= b,
+            a= a,
+            swatchFunc = function()
+                Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a= ColorPickerFrame:GetColorRGB()
+                self:GetParent():set_icon()
+                set_All_Init()
+            end,
+            cancelFunc = function()
+                Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a= r, g, b, a
+                self:GetParent():set_icon()
+                set_All_Init()
+            end
+        }
+        ColorPickerFrame:SetupColorPickerAndShow(info);
+        self:SetAlpha(1)
+    end)
+
+    --[[menuUnitIsMe.color= e.Cbtn(panel, {size={32,32}, type='ColorSwatchTemplate', icon='hide'})--CreateFrame('Button', nil, panel, 'ColorSwatchTemplate')
     menuUnitIsMe.color.InnerBorder:ClearAllPoints()
     menuUnitIsMe.color.InnerBorder:SetAllPoints(menuUnitIsMe.color)
     menuUnitIsMe.color.Color:ClearAllPoints()
@@ -1404,7 +1445,7 @@ local function set_Option()
         }
         --info.extraInfo = nil;
         ColorPickerFrame:SetupColorPickerAndShow(info);
-    end)
+    end)]]
 
 
     local unitIsMeX = e.CSlider(panel, {min=-250, max=250, value=Save.unitIsMeX, setp=1, w= 100,

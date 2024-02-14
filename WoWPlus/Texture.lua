@@ -1175,6 +1175,13 @@ local function Init_All_Frame()
     set_Alpha_Frame_Texture(DressUpFrame.OutfitDetailsPanel, {alpha=min03})
     hide_Texture(DressUpFrame.OutfitDetailsPanel.BlackBackground)
     set_Menu(DressUpFrameOutfitDropDown)
+
+    --插件，UIDropDownMenu
+    if e.LibDD and e.LibDD.UIDropDownMenu_SetWidth then
+        hooksecurefunc(e.LibDD, 'UIDropDownMenu_SetWidth', function(_, menu)
+            set_Menu(menu)
+        end)
+    end
 end
 
 
