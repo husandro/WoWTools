@@ -1391,7 +1391,6 @@ local function set_Option()
             e.LibDD:UIDropDownMenu_SetText(self, texture:match('.+\\(.+)%.') or texture)
         end
         self.Icon:SetVertexColor(Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a or 1)
-        --self.Icon:SetAlpha(Save.unitIsMeColor.a or 1)
     end
     menuUnitIsMe:set_icon()
     menuUnitIsMe.Icon:ClearAllPoints()
@@ -1418,7 +1417,7 @@ local function set_Option()
             opacity= a or 1,
             hasOpacity=true,
             swatchFunc = function()
-                Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a= ColorPickerFrame:GetColorRGB()
+                Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a=  e.Get_ColorFrame_RGBA()--取得, ColorFrame, 颜色
                 self:GetParent():set_icon()
                 set_All_Init()
             end,

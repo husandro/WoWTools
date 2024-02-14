@@ -2490,30 +2490,30 @@ function e.HEX_to_RGB(hexColor, self)--HEX转RGB -- ColorUtil.lua
 end
 
 function e.Get_ColorFrame_RGBA()--取得, ColorFrame, 颜色
-	local r, g, b = ColorPickerFrame:GetColorRGB()
+    local r,g,b= ColorPickerFrame:GetColorRGB()
     local a
-    if OpacitySliderFrame then
-        a= OpacitySliderFrame:IsShown() and OpacitySliderFrame:GetValue() or 0
-        a= tonumber(format('%.2f', 1-a))
-    elseif ColorPickerFrame.hasOpacity then
-        a= ColorPickerFrame:GetColorAlpha() or 1
-        a= tonumber(format('%.2f', a))
+    r= r and tonumber(format('%.2f', r)) or 1
+    g= g and tonumber(format('%.2f', g)) or 1
+    b= b and tonumber(format('%.2f', b)) or 1
+    if ColorPickerFrame.hasOpacity then
+        a= ColorPickerFrame:GetColorAlpha()
+        a= a and tonumber(format('%.2f', a)) or 1
     end
-	return r, g, b, a or 1
+	return r, g, b, a
 end
 
 function e.ShowColorPicker(valueR, valueG, valueB, valueA, func, cancelFunc)
-    if ColorPickerFrame.SetupColorPickerAndShow then
-        ColorPickerFrame:SetupColorPickerAndShow({--ColorPickerFrame.lua
-            r=valueR,
-            g=valueG,
-            b=valueB,
-            hasOpacity=valueA and true or false,
-            swatchFunc=func,
-            cancelFunc=cancelFunc,
-            opacity=valueA,
-        })
+    ColorPickerFrame:SetupColorPickerAndShow({--ColorPickerFrame.lua
+        r=valueR,
+        g=valueG,
+        b=valueB,
+        hasOpacity=valueA and true or false,
+        swatchFunc=func,
+        cancelFunc=cancelFunc,
+        opacity=valueA,
+    })
 
+end
     --[[self.swatchFunc = info.swatchFunc;
     self.hasOpacity = info.hasOpacity;
     self.opacityFunc = info.opacityFunc;
@@ -2521,7 +2521,7 @@ function e.ShowColorPicker(valueR, valueG, valueB, valueA, func, cancelFunc)
     self.previousValues = {r = info.r, g = info.g, b = info.b, a = info.opacity};
     self.cancelFunc = info.cancelFunc;
     self.extraInfo = info.extraInfo;]]
-    else
+    --[[else
         ColorPickerFrame:SetShown(false); -- Need to run the OnShow handler.
         valueR= valueR or 1
         valueG= valueG or 0.8
@@ -2542,8 +2542,7 @@ function e.ShowColorPicker(valueR, valueG, valueB, valueA, func, cancelFunc)
 
         ColorPickerFrame.opacity = 1- valueA;
         ColorPickerFrame:SetShown(true)
-    end
-end
+    end]]
 
 
 
