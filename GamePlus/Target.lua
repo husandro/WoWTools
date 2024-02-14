@@ -270,7 +270,7 @@ local function Init_Num()
                 elseif d==-1 then
                     n=n-1
                 end
-                n= n>32 and 32 or n
+                n= n>72 and 72 or n
                 n= n<8 and 8 or n
                 Save.creatureFontSize=n
                 e.Cstr(nil, {changeFont=self.Text, size=n})
@@ -1347,7 +1347,7 @@ local function set_Option()
         set_All_Init()
     end)
 
-    local numSize = e.CSlider(panel, {min=8, max=32, value=Save.creatureFontSize, setp=1, w=100, color=true,
+    local numSize = e.CSlider(panel, {min=8, max=72, value=Save.creatureFontSize, setp=1, w=100, color=true,
     text= e.Player.L.size,
     func=function(self2, value)--字体大小
         value= math.floor(value)
