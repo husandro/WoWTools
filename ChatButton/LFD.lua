@@ -177,7 +177,9 @@ local function get_InviteButton_Frame(index)
         frame.InviteButton= e.Cbtn(frame, {size={size,size}, atlas= e.Icon.select})
         frame.InviteButton:SetPoint('LEFT', frame.ChatButton, 'RIGHT')
         frame.InviteButton:SetScript('OnClick', function(self2)
-            if ( not IsInRaid(LE_PARTY_CATEGORY_HOME) and GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + self2:GetParent().numMembers + C_LFGList.GetNumInvitedApplicantMembers() > MAX_PARTY_MEMBERS + 1 ) then
+            if ( not IsInRaid(LE_PARTY_CATEGORY_HOME)
+                and (GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + self2:GetParent().numMembers + C_LFGList.GetNumInvitedApplicantMembers()) > (MAX_PARTY_MEMBERS + 1) )
+            then
                 local dialog = StaticPopup_Show("LFG_LIST_INVITING_CONVERT_TO_RAID")
                 if ( dialog ) then
                     dialog.data = self2:GetParent().applicantID;

@@ -196,70 +196,106 @@ end
 --########################
 --怪物目标, 队员目标, 总怪物
 --########################
-local function set_Creature_Num()--local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
-    local k,T,F=0,0,0
-    for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
-        local u = plate and plate.UnitFrame and plate.UnitFrame.unit
-        if u then
-            local t= u and u..'target'
-            --local range= Save.creatureRange>0 and e.CheckRange(u, Save.creatureRange, '<=') or Save.creatureRange==0
-            if UnitExists(t) and UnitExists(u)
-                and not UnitIsDeadOrGhost(u)
-                and not UnitInParty(u)
-                and not UnitIsUnit(u,'player')
-                and (not isPvPArena or (isPvPArena and UnitIsPlayer(u)))
-                and e.CheckRange(u, 40, true)
-                then
-                if UnitCanAttack('player',u) then
-                    k=k+1
-                    if UnitIsUnit(t,'player') then
-                        T=T+1
-                    end
-                elseif UnitIsUnit(t,'player') then
-                    F=F+1
-                end
-            end
-        end
-    end
-    if IsInGroup() then
-        local raid=IsInRaid()
-        for i=1, GetNumGroupMembers() do
-            local u
-            if raid then--团                         
-                u='raid'..i
-            else--队里
-                u='party'..i
-            end
-            local t=u..'-target'
-            if UnitExists(u) and not UnitIsDeadOrGhost(u) and UnitIsUnit(t, 'player') and not UnitIsUnit(u, 'player') then
-                F=F+1
-            end
-        end
-    end
-    NumFrame.Text:SetText(e.Player.col..(T==0 and '-' or  T)..'|r |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
-end
+
 
 local function Init_Num()
+    if NumFrame then
+        NumFrame:UnregisterAllEvents()
+    end
     if not Save.creature then
         if NumFrame then
             NumFrame.Text:SetText("")
-            NumFrame:UnregisterAllEvents()
         end
         return
     end
     --怪物数量
     if not NumFrame then
         if Save.creatureUIParent or not TargetFrame then
-            NumFrame= e.Cbtn(nil, {size={18, 4}, icon='hide'})
-            if Save.creaturePoint then
-                NumFrame:SetPoint(Save.creaturePoint[1], UIParent, Save.creaturePoint[3], Save.creaturePoint[4], Save.creaturePoint[5])
-            elseif e.Player.husandro then
-                NumFrame:SetPoint('BOTTOM', _G['PlayerFrame'], 'TOP', 0,24)
-            else
-                NumFrame:SetPoint('CENTER', -50, 20)
-            end
-            NumFrame.Text= e.Cstr(NumFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}, layer='BORDER'})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
+            NumFrame= e.Cbtn(nil, {size={18, 18}, icon='hide'})
+
+            NumFrame.Text= e.Cstr(NumFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})
+            NumFrame.Text:SetScript('OnLeave', function(self) self:GetParent():SetButtonState('NORMAL') end)
+            NumFrame.Text:SetScript('OnEnter', function(self) self:GetParent():SetButtonState('PUSHED') end)
             NumFrame.Text:SetPoint('LEFT', NumFrame, 'RIGHT')
+
+            function NumFrame:set_point()
+                self:ClearAllPoints()
+                if Save.creaturePoint then
+                    self:SetPoint(Save.creaturePoint[1], UIParent, Save.creaturePoint[3], Save.creaturePoint[4], Save.creaturePoint[5])
+                elseif e.Player.husandro then
+                    self:SetPoint('BOTTOM', _G['PlayerFrame'], 'TOP', 0,24)
+                else
+                    self:SetPoint('CENTER', -50, 20)
+                end
+            end
+            NumFrame:set_point()
+
+            NumFrame:RegisterForDrag("RightButton")
+            NumFrame:SetMovable(true)
+            NumFrame:SetClampedToScreen(true)
+
+            NumFrame:SetScript("OnMouseUp", ResetCursor)
+            NumFrame:SetScript("OnMouseDown", function(_, d)
+                if IsAltKeyDown() and d=='RightButton' then--移动光标
+                    SetCursor('UI_MOVE_CURSOR')
+                end
+            end)
+            NumFrame:SetScript("OnDragStart", function(self)
+                if IsAltKeyDown() then
+                    self:StartMoving()
+                end
+            end)
+            NumFrame:SetScript("OnDragStop", function(self)
+                ResetCursor()
+                self:StopMovingOrSizing()
+                Save.creaturePoint={self:GetPoint(1)}
+                Save.creaturePoint[2]=nil
+            end)
+            NumFrame:SetScript("OnClick", function(self, d)
+                if d=='RightButton' and IsControlKeyDown() then--还原
+                    Save.creaturePoint=nil
+                    self:set_point()
+                    print(id , e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+                elseif d=='RightButton' and IsAltKeyDown() then
+                    SetCursor('UI_MOVE_CURSOR')
+                end
+            end)
+            NumFrame:SetScript('OnMouseWheel', function(self, d)--缩放
+                if not IsAltKeyDown() then
+                    return
+                end
+                local n=Save.creatureFontSize or 10
+                if d==1 then
+                    n=n+1
+                elseif d==-1 then
+                    n=n-1
+                end
+                n= n>32 and 32 or n
+                n= n<8 and 8 or n
+                Save.creatureFontSize=n
+                e.Cstr(nil, {changeFont=self.Text, size=n})
+                self:set_tooltip()
+                print(id, e.cn(addName), (e.onlyChinese and '字体大小' or FONT_SIZE), '|cnGREEN_FONT_COLOR:'..Save.creatureFontSize)
+            end)
+
+            function NumFrame:set_tooltip()
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:AddLine(' ')
+                if e.onlyChinese then
+                    e.tips:AddLine(e.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r')
+                else
+                    e.tips:AddLine(e.Player.col..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, TARGET)..'('..YOU..')|r |cnGREEN_FONT_COLOR:'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)..'('..YOU..')|r |cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)..'|r')
+                end
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+                e.tips:AddDoubleLine(e.onlyChinese and '重置位置' or RESET_POSITION, 'Ctrl+'..e.Icon.right)
+                e.tips:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..'|cnGREEN_FONT_COLOR:'..Save.creatureFontSize, 'Alt+'..e.Icon.mid)
+                e.tips:Show()
+            end
+            NumFrame:SetScript('OnLeave', GameTooltip_Hide)
+            NumFrame:SetScript("OnEnter", NumFrame.set_tooltip)
         else
             NumFrame= CreateFrame('Frame')
             NumFrame.Text= e.Cstr(TargetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
@@ -274,7 +310,46 @@ local function Init_Num()
                 end
             end
         end
-
+        function NumFrame:set_pvp()
+            self.isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
+        end
+        function NumFrame:set_text()--local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
+            local k,T,F=0,0,0
+            for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
+                local unit = plate.UnitFrame and plate.UnitFrame.unit
+                if UnitCanAttack('player', unit)
+                    and (self.isPvPArena and UnitIsPlayer(unit) or not self.isPvPArena)
+                    and e.CheckRange(unit, 40, true)
+                then
+                    k=k+1
+                    if UnitIsUnit(unit..'target','player') then
+                        T=T+1
+                    end
+                end
+            end
+            if IsInRaid() then
+                for i=1, MAX_RAID_MEMBERS do
+                    local unit='raid'..i..'target'
+                    if UnitIsUnit(unit, 'player') and not UnitIsUnit(unit, 'player') then
+                        F=F+1
+                    end
+                end
+            elseif IsInGroup() then
+                for i=1, MAX_PARTY_MEMBERS do
+                    if UnitIsUnit('party'..i..'target', 'player') then
+                        F=F+1
+                    end
+                end
+            end
+            NumFrame.Text:SetText(e.Player.col..(T==0 and '-' or  T)..'|r |cff00ff00'..(F==0 and '-' or F)..'|r '..(k==0 and '-' or k))
+        end
+        NumFrame:SetScript('OnEvent', function(self, event)
+            if event=='PLAYER_ENTERING_WORLD' then
+                self:set_pvp()
+            end
+            self:set_text()
+        end)
+        NumFrame:set_pvp()
 
     elseif NumFrame then
         e.Cstr(nil, {changeFont=NumFrame.Text, size= Save.creatureFontSize})
@@ -282,8 +357,18 @@ local function Init_Num()
             NumFrame:set_text_point()
         end
     end
-    set_Creature_Num()
 
+    local eventTab= {
+        'NAME_PLATE_UNIT_ADDED',
+        'NAME_PLATE_UNIT_REMOVED',
+        'UNIT_TARGET',
+        'PLAYER_ENTERING_WORLD'
+        --'FORBIDDEN_NAME_PLATE_UNIT_ADDED',
+        --'FORBIDDEN_NAME_PLATE_UNIT_REMOVED',
+    }
+    FrameUtil.RegisterFrameForEvents(NumFrame, eventTab)
+    NumFrame:set_text()
+   
 end
 
 
@@ -866,10 +951,6 @@ local function Init()
         elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then--颜色
             set_Target_Color(TargetFrame.Texture, event=='PLAYER_REGEN_DISABLED')
 
-        else
-            if NumFrame then
-                set_Creature_Num()
-            end
         end
     end)
 end
@@ -1289,7 +1370,7 @@ local function set_Option()
         end
         print(id, e.cn(addName), e.GetEnabeleDisable(Save.creatureUIParent), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
-       
+
 
 
 

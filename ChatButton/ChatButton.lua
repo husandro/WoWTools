@@ -41,6 +41,7 @@ local function Init()
         Save.Point={self:GetPoint(1)}
         Save.Point[2]=nil
     end)
+    button:SetScript("OnMouseUp", ResetCursor)
     button:SetScript("OnMouseDown", function(self, d)
         if IsAltKeyDown() then--移动光标
             SetCursor('UI_MOVE_CURSOR')
@@ -51,7 +52,6 @@ local function Init()
             print(id , e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
-    button:SetScript("OnMouseUp", function() ResetCursor() end)
 
     button:SetScript('OnMouseWheel', function(self, d)--缩放
         if not IsAltKeyDown() then
@@ -152,7 +152,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })]]
 
 
-           
+
 
             --[[initializer= e.AddPanel_Button({
                 title= nil,
