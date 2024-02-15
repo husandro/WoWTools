@@ -200,6 +200,30 @@ local function Init()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     --###############
     --插件，快捷，选中
     --###############
@@ -388,7 +412,44 @@ local function Init()
             e.call('AddonList_Update')
         end
     end)
+
+
+
+    AddonList:SetResizable(true)
+    AddonList:SetResizeBounds(430,115)
+    AddonList.ScrollBox:ClearAllPoints()
+    AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
+    AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
+    AddonList.ResizeButton= CreateFrame('Button', nil, AddonList)
+    --AddonList.ResizeButton:SetFrameStrata('HIGH')
+    --AddonList.ResizeButton:SetFrameLevel('600')
+    AddonList.ResizeButton:SetSize(32, 8)
+    AddonList.ResizeButton:SetNormalAtlas('lootroll-resizehandle')
+    AddonList.ResizeButton:SetPoint('TOP', AddonList, 'BOTTOM')
+    AddonList.ResizeButton:SetScript("OnMouseDown", function(self)
+		local alwaysStartFromMouse = true;
+		self:GetParent():StartSizing("BOTTOMRIGHT", alwaysStartFromMouse);
+	end);
+	AddonList.ResizeButton:SetScript("OnMouseUp", function(self)
+		self:GetParent():StopMovingOrSizing();
+        print(self:GetParent():GetSize())
+	end);
+
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
