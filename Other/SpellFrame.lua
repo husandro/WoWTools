@@ -37,8 +37,6 @@ local function set_UpdateSpendText(btn)
         btn.maxText.maxRanks= info and info.maxRanks
         btn.maxText:SetText(text or '')
     end
-
-
 end
 
 
@@ -89,8 +87,6 @@ local function Init()
     --#############
     --法术按键, 颜色
     --#############
-    
-
     hooksecurefunc('ActionButton_UpdateRangeIndicator', function(frame, checksRange, inRange)--ActionButton.lua
         if not frame.setHooksecurefunc and frame.UpdateUsable then
             hooksecurefunc(frame, 'UpdateUsable', function(self, _, isUsable)
@@ -175,7 +171,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             e.AddPanel_Check({
                 name= '|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(e.onlyChinese and '法术Frame' or addName),
-                tooltip= e.onlyChinese and '法术距离, 颜色|n法术弹出框, 名称|n...'
+                tooltip= e.onlyChinese and '法术距离, 颜色|n法术弹出框'
                         or (
                             format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, TRACKER_SORT_PROXIMITY)..': '.. COLOR
                             ..'|n'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Flyout')..': '..LFG_LIST_TITLE

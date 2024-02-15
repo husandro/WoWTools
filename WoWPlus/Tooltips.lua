@@ -2053,14 +2053,17 @@ local function Init()
             hooksecurefunc(_G['OverrideActionBarButton'..i], 'SetTooltip', function(self)
                 if self.action then
                     local actionType, ID, subType = GetActionInfo(self.action)
-                    if actionType=='spell' and ID then
-                        func.Set_Spell(e.tips, ID)--法术
-                        e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType or nil)
-                        e.tips:Show()
-
-                    elseif actionType=='item' and ID then
-                        func.Set_Item(e.tip, nil, itemID)
-                        e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType or nil)
+                    if actionType and ID then
+                        if actionType=='spell' or actionType =="companion" then
+                            func.Set_Spell(e.tips, ID)--法术
+                            e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType)
+                        elseif actionType=='item' and ID then
+                            func.Set_Item(e.tip, nil, itemID)
+                            e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType)
+                        else
+                            e.tips:AddDoubleLine('action '..self.action, 'ID '..ID)
+                            e.tips:AddDoubleLine(actionType and 'actionType '..actionType, subType and 'subType '..subType)
+                        end
                         e.tips:Show()
                     end
                 end
@@ -2853,6 +2856,7 @@ local function Init_Event(arg1)
                 frame.specIcon:SetTexture(icon or 0)
             end
         end)
+        
     elseif arg1=='Blizzard_PlayerChoice' then
         hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'OnEnter', function(self)
             if self.optionInfo and self.optionInfo.spellID then
