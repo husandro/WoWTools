@@ -3424,6 +3424,17 @@ local function Init()
 			self.text:SetText('你死亡了。要释放灵魂到最近的墓地吗？')
 		end
 	end)
+    local function GetSelfResurrectDialogOptions()
+        local resOptions = GetSortedSelfResurrectOptions();
+        if ( resOptions ) then
+            if ( IsEncounterLimitingResurrections() ) then
+                return resOptions[1], resOptions[2];
+            else
+                return resOptions[1];
+            end
+        end
+    end
+    
     hookDia("DEATH", 'OnUpdate', function(self)
 		if ( IsFalling() and not IsOutOfBounds()) then
 			return
@@ -3451,7 +3462,15 @@ local function Init()
 				end
 			end
 		end
-        local option1, option2 = GetSelfResurrectDialogOptions();
+        local option1, option2
+        local resOptions = GetSortedSelfResurrectOptions();
+        if ( resOptions ) then
+            if ( IsEncounterLimitingResurrections() ) then
+                option1, option2= resOptions[1], resOptions[2];
+            else
+                option1=resOptions[1];
+            end
+        end
 		if ( option1 ) then
 			if ( option1.name ) then
 				set(self.button2, e.strText[option1.name])
