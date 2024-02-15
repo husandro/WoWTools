@@ -421,18 +421,17 @@ local function Init()
     AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
     AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
     AddonList.ResizeButton= CreateFrame('Button', nil, AddonList)
-    --AddonList.ResizeButton:SetFrameStrata('HIGH')
-    --AddonList.ResizeButton:SetFrameLevel('600')
     AddonList.ResizeButton:SetSize(32, 8)
     AddonList.ResizeButton:SetNormalAtlas('lootroll-resizehandle')
-    AddonList.ResizeButton:SetPoint('TOP', AddonList, 'BOTTOM')
+    AddonList.ResizeButton:SetPoint('TOP', AddonList, 'BOTTOM', 0 ,2)
     AddonList.ResizeButton:SetScript("OnMouseDown", function(self)
-		local alwaysStartFromMouse = true;
-		self:GetParent():StartSizing("BOTTOMRIGHT", alwaysStartFromMouse);
-	end);
+		local alwaysStartFromMouse = true
+		self:GetParent():StartSizing("BOTTOMRIGHT", alwaysStartFromMouse)
+        SetCursor('UI_MOVE_CURSOR')
+	end)
 	AddonList.ResizeButton:SetScript("OnMouseUp", function(self)
-		self:GetParent():StopMovingOrSizing();
-        print(self:GetParent():GetSize())
+		self:GetParent():StopMovingOrSizing()
+        ResetCursor()
 	end);
 
 end
