@@ -28,7 +28,7 @@ local func={
     --func.Set_Spell(self, spellID)--法术
     --func.Set_Mount(self, mountID)--坐骑
     --func.Set_Pet(self, speciesID, setSearchText)--宠物
-    --func.Set_Item(self, itemLink, itemID)--设置,物品信息
+    --func.Set_Item(self, itemLink, itemID)--物品信息
     --func.Set_Currency(self, currencyID)--货币
     --func.Set_Achievement(self, achievementID)--成就
     --func.Set_Quest(self, questID, info)--任务
@@ -2054,10 +2054,12 @@ local function Init()
                 if self.action then
                     local actionType, ID, subType = GetActionInfo(self.action)
                     if actionType=='spell' and ID then
+                        func.Set_Spell(e.tips, ID)--法术
                         e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType or nil)
                         e.tips:Show()
 
                     elseif actionType=='item' and ID then
+                        func.Set_Item(e.tip, nil, itemID)
                         e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType or nil)
                         e.tips:Show()
                     end
