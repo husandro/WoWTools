@@ -9,7 +9,7 @@ local Save={
         scale={--缩放
             ['UIWidgetPowerBarContainerFrame']= 0.85,
         },
-        --disabledResizable=true, 禁用，设置大小
+        
 }
 local addName= 'Frame'
 local panel= CreateFrame("Frame")
@@ -46,6 +46,153 @@ end
 
 
 
+
+
+
+
+function GetScaleDistance(SOS) -- distance from cursor to TopLeft :)
+	local left, top = SOS.left, SOS.top
+	local scale = SOS.EFscale
+
+	local x, y = GetCursorPosition()
+	x = x/scale - left
+	y = top - y/scale
+
+	return sqrt(x*x+y*y)
+end
+
+
+local function Init_Scale_Size(frame, tab)
+    local name= frame:GetName() or tab.name
+    if not name or Save.disabledZoom or frame.ZoomInOutFrame then
+        return
+    end
+    tab= tab or {}
+   
+    local btn= CreateFrame('Button', nil, frame, 'PanelResizeButtonTemplate')
+    local setSize= (tab.setSize or tab.func) and true or nil
+    if setSize then
+        frame:SetResizable(true)    
+        btn:Init(frame, tab.minW or 430, tab.minH or 115, tab.maxW , tab.maxH, tab.rotationDegrees)
+        btn.setSize= true
+        if tab.func then
+            tab.func()
+        end
+    end
+    --[[btn= CreateFrame('Button', nil, frame)
+    btn:SetNormalAtlas('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up')
+    btn:SetHighlightAtlas('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight')
+    btn:SetPushedAtlas('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down')]]
+    
+    e.Set_Label_Texture_Color(btn:GetNormalTexture(), {alpha=1})--设置颜色
+    e.Set_Label_Texture_Color(btn:GetPushedTexture(), {alpha=1})--设置颜色
+    e.Set_Label_Texture_Color(btn:GetHighlightTexture(), {alpha=1})--设置颜色
+    
+    btn:SetAlpha(0.5)
+    btn:SetSize(18, 18)
+    btn:SetPoint('BOTTOMRIGHT', frame, 6,-6)
+    btn:SetClampedToScreen(true)
+    btn:SetScript('OnLeave', function(self) GameTooltip_Hide() ResetCursor() self:SetAlpha(0.5) end)
+    function btn:set_tooltip()
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..format('%.2f', self.target:GetScale()), e.Icon.left)
+        if self.setSize then
+            e.tips:AddDoubleLine((e.onlyChinese and '最小' or MINIMUM)..' |cnGREEN_FONT_COLOR:'..format('%i', self.target:GetWidth())..' |rx|cnGREEN_FONT_COLOR: '..format('%i', self.target:GetHeight())..'|r', e.Icon.right)
+        end
+        e.tips:Show()
+    end
+    btn:SetScript('OnEnter', function(self)
+        self:set_tooltip()
+        SetCursor("UI_RESIZE_CURSOR")
+        self:SetAlpha(1)
+    end)
+
+    
+    btn.target= frame
+    btn.name= name
+    btn.SOS = { --Scaler Original State
+        dist = 0,
+        x = 0,
+        y = 0,
+        left = 0,
+        top = 0,
+        scale = Save.scale[name] or 1,
+    }
+    if btn.SOS.scale~=1 then
+        btn:SetScale(btn.SOS.scale)
+    end
+    btn:SetScript("OnMouseUp", function(self, d)
+        if d=='LeftButton' then
+            Save.scale[self.name]= self.target:GetScale()
+            GameTooltip_Hide()
+            
+        elseif d=='RightButton' then
+            self.isActive = false;
+            local target = self.target;
+            local continueResizeStop = true;
+            if target.onResizeStopCallback then
+                continueResizeStop = target.onResizeStopCallback(self);
+            end
+            if continueResizeStop then
+                target:StopMovingOrSizing();
+            end
+            if self.resizeStoppedCallback ~= nil then
+                self.resizeStoppedCallback(self.target);
+            end
+        end
+        self:SetScript("OnUpdate", nil)
+    end)
+    btn:SetScript("OnMouseDown",function(self, d)
+        if d=='LeftButton' then
+            local target= self.target
+            self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
+            self.SOS.scale = target:GetScale()
+            self.SOS.x, self.SOS.y = self.SOS.left, self.SOS.top-(UIParent:GetHeight()/self.SOS.scale)
+            self.SOS.EFscale = target:GetEffectiveScale()
+            self.SOS.dist = GetScaleDistance(self.SOS)
+            
+            self:SetScript("OnUpdate", function(frame)
+                local SOS= frame.SOS
+                local distance= GetScaleDistance(SOS)
+                local scale = distance/SOS.dist*SOS.scale
+                if scale < 0.4 then -- clamp min and max scale
+                    scale = 0.4
+                elseif scale > 2.5 then
+                    scale = 2.5
+                end
+                scale= tonumber(format('%.2f', scale))
+                local target= frame.target
+                target:SetScale(scale)
+
+                local s = SOS.scale/target:GetScale()
+                local x = SOS.x*s
+                local y = SOS.y*s
+                target:ClearAllPoints()
+                target:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
+                frame:set_tooltip()
+            end)
+        
+        elseif d=='RightButton' then
+            if self.setSize then
+                self.isActive = true;
+                local target = self.target;
+                local continueResizeStart = true;
+                if target.onResizeStartCallback then
+                    continueResizeStart = target.onResizeStartCallback(self);
+                end
+                if continueResizeStart then
+                    local alwaysStartFromMouse = true;
+                    self.target:StartSizing("BOTTOMRIGHT", alwaysStartFromMouse);
+                end
+                self:SetScript('OnUpdate', self.set_tooltip)
+            end
+        end
+    end)
+    frame.ZoomInOutFrame= btn
+end
 
 
 
@@ -151,7 +298,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         e.tips:AddLine(self.ScaleName)
         e.tips:AddLine(' ')
         local col= UnitAffectingCombat('player') and '|cff606060:' or ''
-        e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE).. ' |cnGREEN_FONT_COLOR:'..(Save.scale[self.ScaleName] or 1), e.Icon.mid)
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE).. ' |cnGREEN_FONT_COLOR:'..(format('%.2f', Save.scale[self.ScaleName] or 1)), e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(col..(e.onlyChinese and '放大' or ZOOM_IN), e.Icon.left)
         e.tips:AddDoubleLine(col..(e.onlyChinese and '缩小' or ZOOM_OUT), e.Icon.right)
@@ -273,14 +420,14 @@ end
 --移动
 --####
 --set_Move_Frame(frame, {frame=nil, click=nil, save=nil, show=nil, zeroAlpha=nil, notZoom=true, point='left'})    
-local set_Move_Frame=function(self, tab)
+local function set_Move_Frame(self, tab)
     if not self then
         return
     end
     tab= tab or {}
     if not Save.disabledMove then
         tab.name= tab.name or (tab.frame and tab.frame:GetName()) or (self and self:GetName()) or nil
-        if tab.name and not self.FrameName then
+        if tab.name and not self.MoveFrame then
             self.SavePoint= ((tab.save and tab.name) or Save.SavePoint) and true or false--是否保存
             self.ClickTypeMove= tab.click--点击,或右击
             self.MoveFrame= tab.frame--要移动的Frame
@@ -305,7 +452,11 @@ local set_Move_Frame=function(self, tab)
         end
         set_Frame_Point(self, tab.name)--设置, 移动, 位置
     end
-    set_Zoom_Frame(self, tab)
+    if tab.frame then
+        set_Zoom_Frame(frame, tab)
+    else
+        Init_Scale_Size(self, tab)
+    end
 end
 
 
@@ -313,131 +464,97 @@ end
 --创建, 一个移动按钮
 --#################
 local function created_Move_Button(self, tab)--created_Move_Button(self, {frame=nil, save=true, zeroAlpha=nil, notZoom=nil})
-    if not self or Save.disabledMove then
+    if not self or Save.disabledMove or self.moveButton then
         return
     end
-    if not self.moveButton then
-        self.moveButton= e.Cbtn(self, {texture='Interface\\Cursor\\UI-Cursor-Move', size={22,22}})
-        self.moveButton:SetPoint('BOTTOM', self, 'TOP')
-        self.moveButton:SetFrameLevel(self:GetFrameLevel()+5)
-        self.moveButton.alpha= tab.zeroAlpha and 0 or 0.2
-        self.moveButton:SetAlpha(self.moveButton.alpha)
-        self.moveButton:SetScript("OnEnter",function(self2)
-            self2:SetAlpha(1)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, tab.click=='R' and e.Icon.right or e.Icon.left)
-            e.tips:AddDoubleLine(id, e.cn(addName))
-            e.tips:Show()
-        end)
-
-        tab.frame=self
-        set_Move_Frame(self.moveButton, tab)
-
-        self.moveButton:SetScript("OnLeave", function(self2)
-            ResetCursor()
-            e.tips:Hide()
-            self2:SetAlpha(self2.alpha)
-        end)
-    else
-        set_Frame_Point(self)--设置, 移动, 位置)
-    end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function set_Resizable(frame, tab)
-    if not frame or Save.disabledResizable then
-        return
-    end
-    tab= tab or {}
-    local minWidth=  tab.minW or 430
-    local minHeight= tab.minH or 115
-    local maxWidth= tab.maxW or nil
-    local maxHeight= tab.maxH or nil
-    local rotationDegrees= tab.rotationDegrees
-    frame:SetResizable(true)
-    local btn= CreateFrame('Button', nil, frame, 'PanelResizeButtonTemplate')
-    btn:SetSize(18, 18)
-    btn:Init(frame, minWidth, minHeight, maxWidth, maxHeight, rotationDegrees)
-    btn:SetPoint('BOTTOMRIGHT', frame, 4,-4)
-    btn:SetClampedToScreen(true)
-    e.Set_Label_Texture_Color(btn:GetNormalTexture(), {alpha=1})--设置颜色
-    e.Set_Label_Texture_Color(btn:GetPushedTexture(), {alpha=1})--设置颜色
-    e.Set_Label_Texture_Color(btn:GetHighlightTexture(), {alpha=1})--设置颜色
-    btn:HookScript('OnLeave', GameTooltip_Hide)
-    btn:HookScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    
+    self.moveButton= e.Cbtn(self, {texture='Interface\\Cursor\\UI-Cursor-Move', size={22,22}})
+    self.moveButton:SetPoint('BOTTOM', self, 'TOP')
+    self.moveButton:SetFrameLevel(self:GetFrameLevel()+5)
+    self.moveButton.alpha= tab.zeroAlpha and 0 or 0.2
+    self.moveButton:SetAlpha(self.moveButton.alpha)
+    self.moveButton:SetScript("OnEnter",function(self2)
+        self2:SetAlpha(1)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, tab.click=='R' and e.Icon.right or e.Icon.left)
         e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '最小' or MINIMUM, (self.minWidth or 0)..' x '..(self.minHeight or 0))
         e.tips:Show()
     end)
-    --[[
-    tab= tab or {}
-    local w= tab.w or 32
-    local h= tab.h or 8
-    local notAlpha= tab.notAlpha
-    local point= tab.point
-    local minW= tab.minW or 430
-    local minH= tab.minH or 115
-    local bottom= tab.bottom
-    frame:SetResizable(true)
-    frame:SetResizeBounds(minW, minH)
-    local btn= CreateFrame('Button', nil, frame, 'PanelResizeButtonTemplate')
 
-    
-    btn:SetSize(w, h)
-    e.Set_Label_Texture_Color(btn:GetNormalTexture(), {alpha=1})--设置颜色
-    if bottom then
-        --btn:SetNormalAtlas('lootroll-resizehandle')
-    else
-        --btn:SetNormalAtlas('Tooltip-Azerite-NineSlice-CornerBottomRight')
-    end
-    if point then
-        btn:SetScript(point[1], point[2], point[3], point[4], point[5])
-    else
-        if bottom then
-            btn:SetPoint('TOP', frame, 'BOTTOM', 0 ,2)
-        else
-            btn:SetPoint('BOTTOMRIGHT', frame)
-        end
-    end
-    if not notAlpha then
-        btn:SetAlpha(0.5)
-        btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
-        btn:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
-    end
-    if bottom then
-        btn:SetScript("OnMouseDown", function(self)
-            local alwaysStartFromMouse = true
-            self:GetParent():StartSizing("BOTTOM", alwaysStartFromMouse)
-            SetCursor('UI_MOVE_CURSOR')
-        end)
-    else
-        btn:SetScript("OnMouseDown", function(self)
-            local alwaysStartFromMouse = true
-            self:GetParent():StartSizing("BOTTOMRIGHT", alwaysStartFromMouse)
-            SetCursor('UI_MOVE_CURSOR')
-        end)
-    end
-	btn:SetScript("OnMouseUp", function(self)
-		self:GetParent():StopMovingOrSizing()
+    tab.frame=self
+    set_Move_Frame(self.moveButton, tab)
+
+    self.moveButton:SetScript("OnLeave", function(self2)
         ResetCursor()
-	end);]]
+        e.tips:Hide()
+        self2:SetAlpha(self2.alpha)
+    end)
+
+    set_Frame_Point(self)--设置, 移动, 位置)
+
 end
+
+
+
+
+
+
+
+
+
+--[[
+tab= tab or {}
+local w= tab.w or 32
+local h= tab.h or 8
+local notAlpha= tab.notAlpha
+local point= tab.point
+local minW= tab.minW or 430
+local minH= tab.minH or 115
+local bottom= tab.bottom
+frame:SetResizable(true)
+frame:SetResizeBounds(minW, minH)
+local btn= CreateFrame('Button', nil, frame, 'PanelResizeButtonTemplate')
+
+
+btn:SetSize(w, h)
+e.Set_Label_Texture_Color(btn:GetNormalTexture(), {alpha=1})--设置颜色
+if bottom then
+    --btn:SetNormalAtlas('lootroll-resizehandle')
+else
+    --btn:SetNormalAtlas('Tooltip-Azerite-NineSlice-CornerBottomRight')
+end
+if point then
+    btn:SetScript(point[1], point[2], point[3], point[4], point[5])
+else
+    if bottom then
+        btn:SetPoint('TOP', frame, 'BOTTOM', 0 ,2)
+    else
+        btn:SetPoint('BOTTOMRIGHT', frame)
+    end
+end
+if not notAlpha then
+    btn:SetAlpha(0.5)
+    btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
+    btn:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
+end
+if bottom then
+    btn:SetScript("OnMouseDown", function(self)
+        local alwaysStartFromMouse = true
+        self:GetParent():StartSizing("BOTTOM", alwaysStartFromMouse)
+        SetCursor('UI_MOVE_CURSOR')
+    end)
+else
+    btn:SetScript("OnMouseDown", function(self)
+        local alwaysStartFromMouse = true
+        self:GetParent():StartSizing("BOTTOMRIGHT", alwaysStartFromMouse)
+        SetCursor('UI_MOVE_CURSOR')
+    end)
+end
+btn:SetScript("OnMouseUp", function(self)
+    self:GetParent():StopMovingOrSizing()
+    ResetCursor()
+end);]]
 
 
 
@@ -762,59 +879,58 @@ end
 --初始,移动
 --########
 local function Init_Move()
-
     local FrameTab={
         --AddonList={},--插件
         --GameMenuFrame={},--菜单
         --ProfessionsFrame={},--专业 10.1.5出错
-        InspectRecipeFrame={},
+        --InspectRecipeFrame={},
 
-        CharacterFrame={},--角色
-        ReputationDetailFrame={save=true},--声望描述q
-        TokenFramePopup={save=true},--货币设置
-        SpellBookFrame={},--法术书
-        PVEFrame={},--地下城和团队副本
-        HelpFrame={},--客服支持
-        MacroFrame={},--宏
+        --CharacterFrame={},--角色
+        --ReputationDetailFrame={},--声望描述q
+        --TokenFramePopup={},--货币设置
+        --SpellBookFrame={},--法术书
+        --PVEFrame={},--地下城和团队副本
+        --HelpFrame={},--客服支持
+        --MacroFrame={},--宏
         ExtraActionButton1={click='R',  },--额外技能
-        ChatConfigFrame={save=true},--聊天设置
-        SettingsPanel={},--选项
+        --ChatConfigFrame={save=true},--聊天设置
+        --SettingsPanel={},--选项
 
-        FriendsFrame={},--好友列表
+        --FriendsFrame={},--好友列表
         --RaidInfoFrame={frame=FriendsFrame},--再次打开，错误
-        RecruitAFriendRewardsFrame={},--招募，奖励
+        --RecruitAFriendRewardsFrame={},--招募，奖励
         --RecruitAFriendRecruitmentFrame={},--招募，链接，再次打开，错误
 
-        GossipFrame={},
-        QuestFrame={},
-        PetStableFrame={},--猎人，宠物
-        BankFrame={save=true},--银行
-        MerchantFrame={},--货物
+        --GossipFrame={},
+        --QuestFrame={},
+        --PetStableFrame={},--猎人，宠物
+        --BankFrame={save=true},--银行
+        --MerchantFrame={},--货物
 
-        WorldMapFrame={},--世界地图
+      
         MapQuestInfoRewardsFrame={frame= WorldMapFrame},
 
         ContainerFrameCombinedBags={save=true},--{notZoom=true},--包
-        VehicleSeatIndicator={},--车辆，指示
-        ExpansionLandingPage={},--要塞
+        --VehicleSeatIndicator={},--车辆，指示
+        --ExpansionLandingPage={},--要塞
 
-        PlayerPowerBarAlt={},--UnitPowerBarAlt.lua
-        MailFrame={},
+        --PlayerPowerBarAlt={},--UnitPowerBarAlt.lua
+        --MailFrame={},
         SendMailFrame={frame= MailFrame},
-        OpenMailFrame={},
+        --OpenMailFrame={},
         MirrorTimer1={save=true},
 
-        GroupLootHistoryFrame={},
+        --GroupLootHistoryFrame={},
 
-        ChannelFrame={},--聊天设置
-        CreateChannelPopup={},
+        --ChannelFrame={},--聊天设置
+        --CreateChannelPopup={},
         ColorPickerFrame={save=true, click='R'},--颜色选择器
 
         [PartyFrame.Background]={frame=PartyFrame, notZoom=true},
         OpacityFrame={save=true},
         ArcheologyDigsiteProgressBar= {notZoom=true},
-        ReportFrame={save=true},
-        BattleTagInviteFrame= {save=true}
+        --ReportFrame={save=true},
+        --BattleTagInviteFrame= {save=true}
         --EditModeManagerFrame={save=true},
     }
     for k, v in pairs(FrameTab) do
@@ -825,12 +941,7 @@ local function Init_Move()
             end
         end
     end
-    for text, _ in pairs(UIPanelWindows) do
-       local frame=_G[text]
-       if frame and not FrameTab[frame] then
-            set_Move_Frame(_G[text])
-       end
-    end
+
 
 
     --好友列表
@@ -858,23 +969,21 @@ local function Init_Move()
             end
         end
     end
-
-    hooksecurefunc('UpdateContainerFrameAnchors', function()--ContainerFrame.lua
-        for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
-            local name= frame and frame:GetName()
-            if name then
-                if frame.ZoomInOutFrame and Save.scale[name] and Save.scale[name]~=1 then--缩放
-                    frame:SetScale(Save.scale[name])
-                end
-                if (frame==ContainerFrameCombinedBags or frame==ContainerFrame1) then--位置
-                    set_Frame_Point(frame, name)--设置, 移动, 位置
-                elseif frame==ContainerFrame1 then
-                    set_Frame_Point(frame, name)--设置, 移动, 位置
+    if not Save.disabledZoom and not Save.disabledMove then
+        hooksecurefunc('UpdateContainerFrameAnchors', function()--ContainerFrame.lua
+            for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
+                local name= frame:GetName()
+                if name then
+                    if not Save.disabledZoom and Save.scale[name] and Save.scale[name]~=1 then--缩放
+                        frame:SetScale(Save.scale[name])
+                    end
+                    if (frame==ContainerFrameCombinedBags or frame==ContainerFrame1) then--位置
+                        set_Frame_Point(frame, name)--设置, 移动, 位置
+                    end
                 end
             end
-        end
-    end)
-
+        end)
+    end
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
         created_Move_Button(UIWidgetPowerBarContainerFrame, {})
@@ -968,11 +1077,27 @@ local function Init_Move()
     end)
 
     --插件
-    set_Move_Frame(AddonList, {})
-    set_Resizable(AddonList, {w=32, h=32})
-    AddonList.ScrollBox:ClearAllPoints()
-    AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
-    AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
+    set_Move_Frame(AddonList, {func=function()
+        AddonList.ScrollBox:ClearAllPoints()
+        AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
+        AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
+    end})
+
+    --世界地图
+    set_Move_Frame(WorldMapFrame, {notZoom=true})
+    if not C_AddOns.IsAddOnLoaded('Mapster') then
+        set_Move_Frame(WorldMapFrame, {func=function()
+           
+        end})
+    end
+
+
+    for text, _ in pairs(UIPanelWindows) do
+        local frame=_G[text]
+        if frame and not frame.ResizeButton then
+             set_Move_Frame(_G[text])
+        end
+     end
 end
 
 
@@ -1077,7 +1202,7 @@ local function Init_Options()
         category= Category
     })
     --窗口大小
-    e.AddPanel_Check({
+    --[[e.AddPanel_Check({
         name= '|TInterface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up:0|t'..(e.onlyChinese and '窗口大小' or 'Window Size'),
         tooltip= e.cn(addName),
         value= not Save.disabledResizable,
@@ -1086,7 +1211,7 @@ local function Init_Options()
             Save.disabledResizable= not Save.disabledResizable and true or nil
             print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledResizable), e.onlyChinese and '重新加载UI' or RELOADUI)
         end
-    })
+    })]]
     
 end
 
@@ -1139,7 +1264,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[NPE_MOVE..'Frame']=nil--清除上版本内容
             WoWToolsSave[addName]=Save
         end
 

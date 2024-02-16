@@ -4,7 +4,7 @@ local panel=e.Cbtn(AddonList, {type=false, size={80,22}})
 
 local Save={
         buttons={
-            [DEFAULT]={
+            [BASE_SETTINGS_TAB]={
                 ['WeakAuras']=true,
                 ['WeakAurasOptions']=true,
                 ['BugSack']=true,
