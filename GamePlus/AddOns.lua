@@ -425,9 +425,9 @@ local function Init()
     AddonList.ResizeButton:SetNormalAtlas('lootroll-resizehandle')
     AddonList.ResizeButton:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
     AddonList.ResizeButton:SetPoint('TOP', AddonList, 'BOTTOM', 0 ,2)
-    AddonList.ResizeButton:SetAlpha(0.5)
+    --[[AddonList.ResizeButton:SetAlpha(0.5)
     AddonList.ResizeButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
-    AddonList.ResizeButton:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
+    AddonList.ResizeButton:SetScript('OnEnter', function(self) self:SetAlpha(1) end)]]
     AddonList.ResizeButton:SetScript("OnMouseDown", function(self)
 		local alwaysStartFromMouse = true
 		self:GetParent():StartSizing("BOTTOMRIGHT", alwaysStartFromMouse)
