@@ -1076,6 +1076,18 @@ local function Init_Options()
         layout= Layout,
         category= Category
     })
+    --窗口大小
+    e.AddPanel_Check({
+        name= '|TInterface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up:0|t'..(e.onlyChinese and '窗口大小' or 'Window Size'),
+        tooltip= e.cn(addName),
+        value= not Save.disabledResizable,
+        category= Category,
+        func= function()
+            Save.disabledResizable= not Save.disabledResizable and true or nil
+            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledResizable), e.onlyChinese and '重新加载UI' or RELOADUI)
+        end
+    })
+    
 end
 
 
