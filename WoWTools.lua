@@ -351,7 +351,7 @@ function e.Set_Label_Texture_Color(self, tab)--设置颜色
         local type= tab.type or type(self)-- FontString Texture String
         local alpha= tab.alpha
         local col= tab.color or e.Player.useColor
-
+        
         local r,g,b,a= col.r, col.g, col.b, alpha or col.a or 1
         if type=='FontString' or type=='EditBox' then
             self:SetTextColor(r, g, b, a)
@@ -367,6 +367,8 @@ function e.Set_Label_Texture_Color(self, tab)--设置颜色
             local hex= tab.color and tab.color.hex or e.Player.useColor.hex
             return hex..self
         end
+    elseif type=='String' then
+        return self
     end
 end
 
@@ -481,6 +483,7 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, butto
     end
     return btn, template
 end
+
 
 
 function e.Cedit(tab)--frame, name, size={}

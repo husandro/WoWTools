@@ -9,6 +9,7 @@ local Save={
         scale={--缩放
             ['UIWidgetPowerBarContainerFrame']= 0.85,
         },
+        --disabledResizable=true, 禁用，设置大小
 }
 local addName= 'Frame'
 local panel= CreateFrame("Frame")
@@ -356,6 +357,86 @@ end
 
 
 
+local function set_Resizable(frame, tab)
+    if not frame or Save.disabledResizable then
+        return
+    end
+    tab= tab or {}
+    local minWidth=  tab.minW or 430
+    local minHeight= tab.minH or 115
+    local maxWidth= tab.maxW or nil
+    local maxHeight= tab.maxH or nil
+    local rotationDegrees= tab.rotationDegrees
+    frame:SetResizable(true)
+    local btn= CreateFrame('Button', nil, frame, 'PanelResizeButtonTemplate')
+    btn:SetSize(18, 18)
+    btn:Init(frame, minWidth, minHeight, maxWidth, maxHeight, rotationDegrees)
+    btn:SetPoint('BOTTOMRIGHT', frame, 4,-4)
+    btn:SetClampedToScreen(true)
+    e.Set_Label_Texture_Color(btn:GetNormalTexture(), {alpha=1})--设置颜色
+    e.Set_Label_Texture_Color(btn:GetPushedTexture(), {alpha=1})--设置颜色
+    e.Set_Label_Texture_Color(btn:GetHighlightTexture(), {alpha=1})--设置颜色
+    btn:HookScript('OnLeave', GameTooltip_Hide)
+    btn:HookScript('OnEnter', function(self) self:SetAlpha(1) end)
+    --[[
+    tab= tab or {}
+    local w= tab.w or 32
+    local h= tab.h or 8
+    local notAlpha= tab.notAlpha
+    local point= tab.point
+    local minW= tab.minW or 430
+    local minH= tab.minH or 115
+    local bottom= tab.bottom
+    frame:SetResizable(true)
+    frame:SetResizeBounds(minW, minH)
+    local btn= CreateFrame('Button', nil, frame, 'PanelResizeButtonTemplate')
+
+    
+    btn:SetSize(w, h)
+    e.Set_Label_Texture_Color(btn:GetNormalTexture(), {alpha=1})--设置颜色
+    if bottom then
+        --btn:SetNormalAtlas('lootroll-resizehandle')
+    else
+        --btn:SetNormalAtlas('Tooltip-Azerite-NineSlice-CornerBottomRight')
+    end
+    if point then
+        btn:SetScript(point[1], point[2], point[3], point[4], point[5])
+    else
+        if bottom then
+            btn:SetPoint('TOP', frame, 'BOTTOM', 0 ,2)
+        else
+            btn:SetPoint('BOTTOMRIGHT', frame)
+        end
+    end
+    if not notAlpha then
+        btn:SetAlpha(0.5)
+        btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
+        btn:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
+    end
+    if bottom then
+        btn:SetScript("OnMouseDown", function(self)
+            local alwaysStartFromMouse = true
+            self:GetParent():StartSizing("BOTTOM", alwaysStartFromMouse)
+            SetCursor('UI_MOVE_CURSOR')
+        end)
+    else
+        btn:SetScript("OnMouseDown", function(self)
+            local alwaysStartFromMouse = true
+            self:GetParent():StartSizing("BOTTOMRIGHT", alwaysStartFromMouse)
+            SetCursor('UI_MOVE_CURSOR')
+        end)
+    end
+	btn:SetScript("OnMouseUp", function(self)
+		self:GetParent():StopMovingOrSizing()
+        ResetCursor()
+	end);]]
+end
+
+
+
+
+
+
 
 
 
@@ -676,7 +757,7 @@ end
 local function Init_Move()
 
     local FrameTab={
-        AddonList={},--插件
+        --AddonList={},--插件
         --GameMenuFrame={},--菜单
         --ProfessionsFrame={},--专业 10.1.5出错
         InspectRecipeFrame={},
@@ -878,6 +959,13 @@ local function Init_Move()
             created_Move_Button(QueueStatusButton, {save=true, notZoom=true, show=true})--小眼睛, 
        end)
     end)
+
+    --插件
+    set_Move_Frame(AddonList, {})
+    set_Resizable(AddonList, {w=32, h=32})
+    AddonList.ScrollBox:ClearAllPoints()
+    AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
+    AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
 end
 
 

@@ -1,7 +1,6 @@
 local id, e= ...
 --1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5Chin e.Player.region~=3 
-
-if e.Player.region~=3 then-- or LOCALE_zhCN or LOCALE_zhTW then
+if e.Player.region~=3 and LOCALE_zhCN then-- or LOCALE_zhCN or LOCALE_zhTW then
     return
 end
 

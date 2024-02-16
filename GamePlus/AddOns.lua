@@ -4,7 +4,7 @@ local panel=e.Cbtn(AddonList, {type=false, size={80,22}})
 
 local Save={
         buttons={
-            [BASE_SETTINGS_TAB]={
+            [DEFAULT]={
                 ['WeakAuras']=true,
                 ['WeakAurasOptions']=true,
                 ['BugSack']=true,
@@ -415,29 +415,6 @@ local function Init()
 
 
 
-    AddonList:SetResizable(true)
-    AddonList:SetResizeBounds(430,115)
-    AddonList.ScrollBox:ClearAllPoints()
-    AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
-    AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
-    AddonList.ResizeButton= CreateFrame('Button', nil, AddonList)
-    AddonList.ResizeButton:SetSize(32, 8)
-    AddonList.ResizeButton:SetNormalAtlas('lootroll-resizehandle')
-    AddonList.ResizeButton:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-    AddonList.ResizeButton:SetPoint('TOP', AddonList, 'BOTTOM', 0 ,2)
-    --[[AddonList.ResizeButton:SetAlpha(0.5)
-    AddonList.ResizeButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
-    AddonList.ResizeButton:SetScript('OnEnter', function(self) self:SetAlpha(1) end)]]
-    AddonList.ResizeButton:SetScript("OnMouseDown", function(self)
-		local alwaysStartFromMouse = true
-		self:GetParent():StartSizing("BOTTOMRIGHT", alwaysStartFromMouse)
-        SetCursor('UI_MOVE_CURSOR')
-	end)
-	AddonList.ResizeButton:SetScript("OnMouseUp", function(self)
-		self:GetParent():StopMovingOrSizing()
-        ResetCursor()
-	end);
-
 end
 
 
@@ -488,7 +465,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     [id]=true,
                 }
                 Save.fast={
-                    ['Auctionator']=18,
                     ['TextureAtlasViewer']=78,
                     ['WoWeuCN_Tooltips']=96,
                 }
