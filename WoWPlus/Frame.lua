@@ -377,7 +377,14 @@ local function set_Resizable(frame, tab)
     e.Set_Label_Texture_Color(btn:GetPushedTexture(), {alpha=1})--设置颜色
     e.Set_Label_Texture_Color(btn:GetHighlightTexture(), {alpha=1})--设置颜色
     btn:HookScript('OnLeave', GameTooltip_Hide)
-    btn:HookScript('OnEnter', function(self) self:SetAlpha(1) end)
+    btn:HookScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '最小' or MINIMUM, (self.minWidth or 0)..' x '..(self.minHeight or 0))
+        e.tips:Show()
+    end)
     --[[
     tab= tab or {}
     local w= tab.w or 32
