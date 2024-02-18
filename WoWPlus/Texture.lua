@@ -524,6 +524,11 @@ local function Init_All_Frame()
      hide_Texture(WorldMapFrame.BorderFrame.InsetBorderTop)
      WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
      set_ScrollBar(QuestMapDetailsScrollFrame)
+    hooksecurefunc(WorldMapFrame, 'SynchronizeDisplayState', function(self)--最大化时，隐藏背景
+        if self:IsMaximized() then
+            self.BlackoutFrame:Hide()
+        end
+    end)
 
 
      set_Alpha_Color(QuestMapFrame.VerticalSeparator)

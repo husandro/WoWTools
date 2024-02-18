@@ -24,27 +24,6 @@ local panel= CreateFrame("Frame")
 
 
 
---###############
---设置, 移动, 位置
---###############
-local function set_Frame_Point(self, name)--设置, 移动, 位置
-    if not Save.disabledMove and self then
-        name= name or self.FrameName or self:GetName()
-        if name and name~='SettingsPanel' then
-            local p= Save.point[name]
-            if p and p[1] and p[3] and p[4] and p[5] then
-                local frame= self.MoveFrame or self
-                frame:ClearAllPoints()
-                frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
-            end
-        end
-    end
-end
-
-
-
-
-
 
 
 
@@ -54,21 +33,19 @@ end
 function GetScaleDistance(SOS) -- distance from cursor to TopLeft :)
 	local left, top = SOS.left, SOS.top
 	local scale = SOS.EFscale
-
 	local x, y = GetCursorPosition()
 	x = x/scale - left
 	y = top - y/scale
-
 	return sqrt(x*x+y*y)
 end
 
 
 local function Init_Scale_Size(frame, tab)
-    local name= frame:GetName() or tab.name
-    if not name or Save.disabledZoom or frame.ZoomInOutFrame then
+    local name= tab.name or frame:GetName()
+    if not name or Save.disabledZoom or tab.notZoom or frame.ResizeButton then
         return
     end
-    tab= tab or {}
+    
     local setSize= tab.setSize
     local minW= tab.minW or 430--最小窗口， 宽
     local minH= tab.minH or 115--最小窗口，高
@@ -78,13 +55,13 @@ local function Init_Scale_Size(frame, tab)
     local initFunc= tab.initFunc--初始
     local updateFunc= tab.updateFunc--setSize时, OnUpdate
     local restFunc= tab.restFunc
-    
-    local btn= CreateFrame('Button', nil, frame, 'PanelResizeButtonTemplate')
+    local btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')
+    frame.ResizeButton= btn
     btn.setSize= setSize
     btn.restFunc= restFunc
     if setSize then
         frame:SetResizable(true)
-        btn:Init(frame, minW or 430, minH or 115, maxW , maxH, rotationDegrees)
+        btn:Init(frame, minW or 115, minH or 115, maxW , maxH, rotationDegrees)
         if initFunc then
             initFunc()
         end
@@ -113,6 +90,7 @@ local function Init_Scale_Size(frame, tab)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine(self.name)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..format('%.2f', self.target:GetScale()), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, 'Alt+'..e.Icon.left)
@@ -140,9 +118,10 @@ local function Init_Scale_Size(frame, tab)
         y = 0,
         left = 0,
         top = 0,
-        scale = Save.scale[name] or 1,
+        scale = 1,
     }
-    if btn.SOS.scale~=1 then
+    
+    if Save.scale[name] and Save.scale[name]~=1 then
         frame:SetScale(btn.SOS.scale)
     end
     btn:SetScript("OnMouseUp", function(self, d)
@@ -229,8 +208,152 @@ local function Init_Scale_Size(frame, tab)
             end
         end
     end)
-    frame.ZoomInOutFrame= btn
+
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--###############
+--设置, 移动, 位置
+--###############
+local function set_Frame_Point(self, name)--设置, 移动, 位置
+    if Save.SavePoint and self and not self.notSave then
+        name= name or self.FrameName or self:GetName()
+        if name and name~='SettingsPanel' then
+            local p= Save.point[name]
+            if p and p[1] and p[3] and p[4] and p[5] then
+                local frame= self.targetMoveFrame or self
+                frame:ClearAllPoints()
+                frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+            end
+        end
+    end
+end
+
+
+
+
+
+--####
+--移动
+--####
+--set_Move_Frame(frame, {frame=nil, click=nil, save=nil, show=nil, zeroAlpha=nil, notZoom=true, point='left'})    
+local function set_Move_Frame(self, tab)
+    tab= tab or {}
+    local name= tab.name or (tab.frame and tab.frame:GetName()) or (self and self:GetName())
+    tab.name= name
+    if not self and not name then
+        return
+    end
+    if not tab.frame then
+        Init_Scale_Size(self, tab)
+    end
+    
+    if Save.disabledMove or tab.notMove or self.setMoveFrame then
+        return
+    end
+
+    local click= tab.click
+    local frame= tab.frame
+    self.targetMoveFrame= tab.frame--要移动的Frame
+    self.setMoveFrame=true
+    self.typeClick= click
+    self.notSave= tab.notSave
+    
+    if Save.moveToScreenFuori then
+        self:SetClampedToScreen(false)
+    end
+    
+    self:SetMovable(true)
+    if frame then
+        if Save.moveToScreenFuori then
+            frame:SetClampedToScreen(false)
+        end
+        frame:SetMovable(true)
+    end
+
+    if click=='RightButton' then
+        self:RegisterForDrag("RightButton")
+    elseif self.click=='LeftButton' then
+        self:RegisterForDrag("LeftButton")
+    else
+        self:RegisterForDrag("LeftButton", "RightButton")
+    end
+    
+
+    self:HookScript("OnDragStart", function(s)
+        s= s.targetMoveFrame or s
+        s:StartMoving()
+    end)
+    self:HookScript("OnDragStop", function(s)
+        local s2= s.targetMoveFrame or s
+        s2:StopMovingOrSizing()
+        ResetCursor()
+        if not Save.SavePoint or s.notSave then
+            return
+        end
+        local frameName= s2:GetName()
+        if frameName then
+            Save.point[frameName]= {s2:GetPoint(1)}
+            Save.point[frameName][2]= nil
+        end
+    end)
+    self:HookScript("OnMouseUp", ResetCursor)--停止移动
+    --self:HookScript('OnHide', stop_Drag)--停止移动
+    self:HookScript("OnMouseDown", function(s, d)--设置, 光标
+        if d~='RightButton' and d~='LeftButton' then
+            return
+        end
+        if d== s.typeClick or not s.typeClick then
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+    self:HookScript("OnLeave", ResetCursor)
+
+            --[[if tab.show or Save.SavePoint then
+                self:HookScript("OnShow", set_Frame_Point)--设置, 移动, 位置
+            end]]
+
+            
+        set_Frame_Point(self, tab.name)--设置, 移动, 位置
+   
+end
+
+
+
+
+
+
+
+
 
 
 
@@ -247,51 +370,47 @@ end
 --####
 local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)--放大
     frame= tab.frame or frame
-    if not tab.name then
-        tab.name= frame and frame:GetName()
-    end
-
-    if not frame or frame.ZoomInOutFrame or tab.notZoom or Save.disabledZoom or not tab.name or _G['MoveZoomInButtonPer'..tab.name] then
+    if not frame or frame.ResizeButton or tab.notZoom or Save.disabledZoom then --or not tab.name or _G['MoveZoomInButtonPer'..tab.name] or _G['WoWToolsResizeButton'..tab.name] then
         return
     end
 
-    frame.ZoomInOutFrame= e.Cbtn(frame.Header
+    frame.ResizeButton= e.Cbtn(frame.Header
                         or frame.TitleContainer
                         or frame.SpellButtonContainer
                         or frame.BorderFrame and frame.BorderFrame.TitleContainer
-                        or frame
-        , {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}, name='MoveZoomInButtonPer'..tab.name})
-    e.Set_Label_Texture_Color(frame.ZoomInOutFrame, {type='Button'})
-    --frame.ZoomInOutFrame:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+                        or frame,
+        {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}, name='MoveZoomInButtonPer'..tab.name})
+    e.Set_Label_Texture_Color(frame.ResizeButton, {type='Button'})
+    --frame.ResizeButton:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
-    frame.ZoomInOutFrame.ScaleName= tab.name
-    frame.ZoomInOutFrame.ZoomFrame= frame
-    frame.ZoomInOutFrame.alpha= tab.zeroAlpha and 0 or 0.2
-    frame.ZoomInOutFrame:SetFrameLevel(frame.ZoomInOutFrame:GetFrameLevel() +5)
+    frame.ResizeButton.ScaleName= tab.name
+    frame.ResizeButton.target= frame
+    frame.ResizeButton.alpha= tab.zeroAlpha and 0 or 0.2
+    frame.ResizeButton:SetFrameLevel(frame.ResizeButton:GetFrameLevel() +5)
 
     if frame.moveButton then
-        frame.ZoomInOutFrame:SetPoint('RIGHT', frame.moveButton, 'LEFT')
+        frame.ResizeButton:SetPoint('RIGHT', frame.moveButton, 'LEFT')
 
     elseif tab.point=='left' then
-        frame.ZoomInOutFrame:SetPoint('RIGHT', frame, 'LEFT')
+        frame.ResizeButton:SetPoint('RIGHT', frame, 'LEFT')
 
     elseif frame.Header then
-        frame.ZoomInOutFrame:SetPoint('LEFT')
+        frame.ResizeButton:SetPoint('LEFT')
 
     elseif frame.TitleContainer then
-        frame.ZoomInOutFrame:SetPoint('LEFT', 35,-2)
+        frame.ResizeButton:SetPoint('LEFT', 35,-2)
 
     elseif frame.SpellButtonContainer then
-        frame.ZoomInOutFrame:SetPoint('BOTTOM', frame.SpellButtonContainer, 'TOP', -20,0)
+        frame.ResizeButton:SetPoint('BOTTOM', frame.SpellButtonContainer, 'TOP', -20,0)
 
     elseif frame.BorderFrame and frame.BorderFrame.TitleContainer then
-        frame.ZoomInOutFrame:SetPoint('LEFT', 35,-2)
+        frame.ResizeButton:SetPoint('LEFT', 35,-2)
 
     else
-        frame.ZoomInOutFrame:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
+        frame.ResizeButton:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT')
     end
 
-    frame.ZoomInOutFrame:SetScript('OnClick', function(self, d)
+    frame.ResizeButton:SetScript('OnClick', function(self, d)
         if UnitAffectingCombat('player') then
             return
         end
@@ -304,11 +423,11 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         n= n>3 and 3 or n
         n= n< 0.5 and 0.5 or n
         Save.scale[self.ScaleName]= n
-        self.ZoomFrame:SetScale(n)
+        self.target:SetScale(n)
         self:set_Tooltips()
     end)
 
-    frame.ZoomInOutFrame:SetScript('OnMouseWheel', function(self,d)
+    frame.ResizeButton:SetScript('OnMouseWheel', function(self,d)
         if UnitAffectingCombat('player') then
             return
         end
@@ -321,16 +440,16 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         n= n>4 and 4 or n
         n= n< 0.4 and 0.4 or n
         Save.scale[self.ScaleName]= n
-        self.ZoomFrame:SetScale(n)
+        self.target:SetScale(n)
         self:set_Tooltips()
     end)
 
-    frame.ZoomInOutFrame:SetAlpha(frame.ZoomInOutFrame.alpha)
-    frame.ZoomInOutFrame:SetScript("OnLeave", function(self)
+    frame.ResizeButton:SetAlpha(frame.ResizeButton.alpha)
+    frame.ResizeButton:SetScript("OnLeave", function(self)
         e.tips:Hide()
         self:SetAlpha(self.alpha)
     end)
-    function frame.ZoomInOutFrame:set_Tooltips()
+    function frame.ResizeButton:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddLine(self.ScaleName)
@@ -344,7 +463,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end
-    frame.ZoomInOutFrame:SetScript("OnEnter",function(self)
+    frame.ResizeButton:SetScript("OnEnter",function(self)
         self:set_Tooltips()
         self:SetAlpha(1)
     end)
@@ -354,149 +473,19 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
     end
     if tab.zeroAlpha then
         frame:HookScript('OnEnter', function(self)
-            self.ZoomInOutFrame:SetAlpha(1)
+            self.ResizeButton:SetAlpha(1)
             if self.moveButton then
                 self.moveButton:SetAlpha(1)
             end
         end)
         frame:HookScript('OnLeave', function(self)
-            self.ZoomInOutFrame:SetAlpha(0)
+            self.ResizeButton:SetAlpha(0)
             if self.moveButton then
                 self.moveButton:SetAlpha(0)
             end
         end)
     end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---############
---设置Frame属性
---############
-local function stop_Drag(self)--停止移动
-    if self.MoveFrame and self.MoveFrame:IsMovable() then
-        self.MoveFrame:StopMovingOrSizing()
-    end
-    if self and self:IsMovable() then
-        self:StopMovingOrSizing()
-    end
-    ResetCursor()--还原，光标
-end
-local function set_SetClampedToScreen(self)--设置，可能，移动，属性
-    if self then
-        if Save.moveToScreenFuori then
-            self:SetClampedToScreen(false)
-        else
-            self:SetClampedToScreen(self.SavePoint and true or false)
-        end
-        self:SetMovable(true)
-    end--self:EnableMouse(true)
-end
-local function set_Frame_Drag(self)
-    set_SetClampedToScreen(self)
-    set_SetClampedToScreen(self.MoveFrame)
-    if self.ClickTypeMove=='R' then
-        self:RegisterForDrag("RightButton")
-    elseif self.ClickTypeMove=='L' then
-        self:RegisterForDrag("LeftButton")
-    else
-        self:RegisterForDrag("LeftButton", "RightButton")
-    end
-
-
-    self:HookScript("OnDragStart", function(self2, d)--开始移动
-        if not self.ClickTypeMove or (self.ClickTypeMove=='R' and d=='RightButton') or (self.ClickTypeMove=='L' and d=='LeftButton') then
-            local frame= self2.MoveFrame or self2
-            if not frame:IsMovable()  then
-                frame:SetMovable(true)
-            end
-            frame:StartMoving()
-        end
-    end)
-    self:HookScript("OnDragStop", function(self2)
-        stop_Drag(self2)--停止移动
-        local moveFrame= self2.MoveFrame or self2
-        local frameName= self2.FrameName or moveFrame:GetName()
-        if frameName and frameName~='SettingsPanel' then
-            if self2.SavePoint then--保存点
-                Save.point[frameName]= {moveFrame:GetPoint(1)}
-                Save.point[frameName][2]= nil
-            else
-                Save.point[frameName]= nil
-            end
-        end
-    end)
-    self:HookScript("OnMouseUp", stop_Drag)--停止移动
-    self:HookScript('OnHide', stop_Drag)--停止移动
-    self:HookScript("OnMouseDown", function(self2, d)--设置, 光标
-        if not self2.ClickTypeMove or (self2.ClickTypeMove=='R' and d=='RightButton') or (self2.ClickTypeMove=='L' and d=='LeftButton') then
-            SetCursor('UI_MOVE_CURSOR')
-        end
-    end)
-end
-
-
-
---####
---移动
---####
---set_Move_Frame(frame, {frame=nil, click=nil, save=nil, show=nil, zeroAlpha=nil, notZoom=true, point='left'})    
-local function set_Move_Frame(self, tab)
-    if not self then
-        return
-    end
-    tab= tab or {}
-    if not Save.disabledMove then
-        tab.name= tab.name or (tab.frame and tab.frame:GetName()) or (self and self:GetName()) or nil
-        if tab.name and not self.MoveFrame then
-            self.SavePoint= ((tab.save and tab.name) or Save.SavePoint) and true or false--是否保存
-            self.ClickTypeMove= tab.click--点击,或右击
-            self.MoveFrame= tab.frame--要移动的Frame
-            self.FrameName= tab.name
-
-            set_Frame_Drag(self)--设置Frame,移动属性
-
-            local header= self.Header or self.HeaderFrame or self.TitleContainer or self.TitleButton
-            if header then
-                header.SavePoint= self.SavePoint
-                header.ClickTypeMove= self.ClickTypeMove
-                header.MoveFrame= self
-                header.FrameName=tab.name
-                set_Frame_Drag(header)--设置Frame,移动属性
-            end
-
-            --[[if tab.show or Save.SavePoint then
-                self:HookScript("OnShow", set_Frame_Point)--设置, 移动, 位置
-            end]]
-
-            self:HookScript("OnLeave", ResetCursor)
-        end
-        set_Frame_Point(self, tab.name)--设置, 移动, 位置
-    end
-    if tab.frame then
-        set_Zoom_Frame(frame, tab)
-    else
-        Init_Scale_Size(self, tab)
-    end
-end
-
 
 --#################
 --创建, 一个移动按钮
@@ -515,14 +504,14 @@ local function created_Move_Button(self, tab)--created_Move_Button(self, {frame=
         self2:SetAlpha(1)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, tab.click=='R' and e.Icon.right or e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, tab.click=='RightButton' and e.Icon.right or e.Icon.left)
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end)
 
     tab.frame=self
     set_Move_Frame(self.moveButton, tab)
-
+    set_Zoom_Frame(self, tab)
     self.moveButton:SetScript("OnLeave", function(self2)
         ResetCursor()
         e.tips:Hide()
@@ -535,64 +524,6 @@ end
 
 
 
-
-
-
-
-
-
---[[
-tab= tab or {}
-local w= tab.w or 32
-local h= tab.h or 8
-local notAlpha= tab.notAlpha
-local point= tab.point
-local minW= tab.minW or 430
-local minH= tab.minH or 115
-local bottom= tab.bottom
-frame:SetResizable(true)
-frame:SetResizeBounds(minW, minH)
-local btn= CreateFrame('Button', nil, frame, 'PanelResizeButtonTemplate')
-
-
-btn:SetSize(w, h)
-e.Set_Label_Texture_Color(btn:GetNormalTexture(), {alpha=1})--设置颜色
-if bottom then
-    --btn:SetNormalAtlas('lootroll-resizehandle')
-else
-    --btn:SetNormalAtlas('Tooltip-Azerite-NineSlice-CornerBottomRight')
-end
-if point then
-    btn:SetScript(point[1], point[2], point[3], point[4], point[5])
-else
-    if bottom then
-        btn:SetPoint('TOP', frame, 'BOTTOM', 0 ,2)
-    else
-        btn:SetPoint('BOTTOMRIGHT', frame)
-    end
-end
-if not notAlpha then
-    btn:SetAlpha(0.5)
-    btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
-    btn:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
-end
-if bottom then
-    btn:SetScript("OnMouseDown", function(self)
-        local alwaysStartFromMouse = true
-        self:GetParent():StartSizing("BOTTOM", alwaysStartFromMouse)
-        SetCursor('UI_MOVE_CURSOR')
-    end)
-else
-    btn:SetScript("OnMouseDown", function(self)
-        local alwaysStartFromMouse = true
-        self:GetParent():StartSizing("BOTTOMRIGHT", alwaysStartFromMouse)
-        SetCursor('UI_MOVE_CURSOR')
-    end)
-end
-btn:SetScript("OnMouseUp", function(self)
-    self:GetParent():StopMovingOrSizing()
-    ResetCursor()
-end);]]
 
 
 
@@ -676,7 +607,7 @@ local function setAddLoad(arg1)
             if frame.TalentsTab and frame.TalentsTab.ButtonsParent then
                 set_Move_Frame(frame.TalentsTab.ButtonsParent, {save=true, frame=frame})--里面, 背景
             end
-            if frame.ZoomInOutFrame then
+            if frame.ResizeButton then
                 --设置,大小
                 --Blizzard_SharedTalentFrame.lua
                 hooksecurefunc(TalentFrameBaseMixin, 'OnShow', function (self)
@@ -874,6 +805,87 @@ end
 --职业，能量条
 --###########
 local function set_classPowerBar()
+   
+    if not C_AddOns.IsAddOnLoaded('Mapster') then
+        local minimizedWidth= WorldMapFrame.minimizedWidth or 702
+        local minimizedHeight= WorldMapFrame.minimizedHeight or 534
+        local function set_min_max_value(size)
+            local self= WorldMapFrame
+            local isMax= self:IsMaximized()
+            if isMax then
+                self.minimizedWidth= minimizedWidth
+                self.minimizedHeight= minimizedHeight
+                self.BorderFrame.MaximizeMinimizeFrame:Maximize()
+            elseif size then
+                self.minimizedWidth= size[1]-(self.questLogWidth or 290)
+                self.minimizedHeight= size[2]
+                self.BorderFrame.MaximizeMinimizeFrame:Minimize()
+            end
+            self.ResizeButton:SetShown(not isMax)
+        end
+        set_Move_Frame(WorldMapFrame, {setSize=true, initFunc=function()
+            QuestMapFrame.Background:ClearAllPoints()
+            QuestMapFrame.Background:SetAllPoints(QuestMapFrame)
+            QuestMapFrame.DetailsFrame:ClearAllPoints()
+            QuestMapFrame.DetailsFrame:SetPoint('TOPLEFT', 0, -42)
+            QuestMapFrame.DetailsFrame:SetPoint('BOTTOMRIGHT', -26, 0)
+            QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOMRIGHT', 26, 0)
+            set_Move_Frame(MapQuestInfoRewardsFrame, {frame= WorldMapFrame})
+            set_Move_Frame(QuestMapFrame, {frame= WorldMapFrame})
+            set_Move_Frame(QuestMapFrame.DetailsFrame, {frame= WorldMapFrame})
+            hooksecurefunc(WorldMapFrame, 'Minimize', function(self)
+                if self:IsMaximized() then
+                    return
+                end
+                local size= Save.size[WorldMapFrame:GetName()]
+                if size then
+                    self:SetSize(size[1], size[2])
+                end
+                set_min_max_value(size)
+                local name= self:GetName()
+                local scale= Save.scale[name] or 1
+                if scale~=1 then
+                    self:SetScale(scale)
+                end
+            end)
+            hooksecurefunc(WorldMapFrame, 'Maximize', function(self)
+                if not self:IsMaximized() then
+                    return
+                end
+                set_min_max_value()
+                local name= self:GetName()
+                local scale= Save.scale[name] or 1
+                if scale~=1 then
+                    self:SetScale(1)
+                end
+            end)
+        end, updateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
+            set_min_max_value({WorldMapFrame:GetSize()})
+        end, restFunc= function()
+            WorldMapFrame.minimizedWidth= minimizedWidth
+            WorldMapFrame.minimizedHeight= minimizedHeight
+            WorldMapFrame:SetSize(minimizedWidth+ (WorldMapFrame.questLogWidth or 290), minimizedHeight)
+            WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
+        end})
+    end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     local tab={
         PlayerFrame.classPowerBar,
         RuneFrame,
@@ -919,7 +931,7 @@ end
 local function Init_Move()
     local FrameTab={
         --AddonList={},--插件
-        --GameMenuFrame={},--菜单
+        GameMenuFrame={notSave=true},--菜单
         --ProfessionsFrame={},--专业 10.1.5出错
         --InspectRecipeFrame={},
 
@@ -930,7 +942,7 @@ local function Init_Move()
         --PVEFrame={},--地下城和团队副本
         --HelpFrame={},--客服支持
         --MacroFrame={},--宏
-        ExtraActionButton1={click='R',  },--额外技能
+        ExtraActionButton1={click='RightButton',  },--额外技能
         --ChatConfigFrame={save=true},--聊天设置
         --SettingsPanel={},--选项
 
@@ -962,7 +974,7 @@ local function Init_Move()
 
         --ChannelFrame={},--聊天设置
         --CreateChannelPopup={},
-        ColorPickerFrame={save=true, click='R'},--颜色选择器
+        ColorPickerFrame={save=true, click='RightButton'},--颜色选择器
 
         [PartyFrame.Background]={frame=PartyFrame, notZoom=true},
         OpacityFrame={save=true},
@@ -1034,18 +1046,18 @@ local function Init_Move()
             end
             return false
         end
-        if UIWidgetPowerBarContainerFrame.ZoomInOutFrame or UIWidgetPowerBarContainerFrame.moveButton then--and frame.ZoomOut then
+        if UIWidgetPowerBarContainerFrame.ResizeButton or UIWidgetPowerBarContainerFrame.moveButton then--and frame.ZoomOut then
             local show= UIWidgetPowerBarContainerFrame:Get_WidgetIsShown()
             if UIWidgetPowerBarContainerFrame.moveButton then
                 UIWidgetPowerBarContainerFrame.moveButton:SetShown(show)
             end
-            if UIWidgetPowerBarContainerFrame.ZoomInOutFrame then
-                UIWidgetPowerBarContainerFrame.ZoomInOutFrame:SetShown(show)
+            if UIWidgetPowerBarContainerFrame.ResizeButton then
+                UIWidgetPowerBarContainerFrame.ResizeButton:SetShown(show)
             end
             hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self)
                 local isShow= self:Get_WidgetIsShown()
-                if self.ZoomInOutFrame then
-                    self.ZoomInOutFrame:SetShown(isShow)
+                if self.ResizeButton then
+                    self.ResizeButton:SetShown(isShow)
                 end
                 if self.moveButton then
                     self.moveButton:SetShown(isShow)
@@ -1053,16 +1065,16 @@ local function Init_Move()
             end)
             hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self)--Blizzard_UIWidgetManager.lua frame.ZoomOut:SetShown(find)
                 local isShow= self:Get_WidgetIsShown()
-                if self.ZoomInOutFrame then
-                    self.ZoomInOutFrame:SetShown(isShow)
+                if self.ResizeButton then
+                    self.ResizeButton:SetShown(isShow)
                 end
                 if self.moveButton then
                     self.moveButton:SetShown(isShow)
                 end
             end)
             hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveAllWidgets', function(self)
-                if self.ZoomInOutFrame then
-                    self.ZoomInOutFrame:SetShown(false)
+                if self.ResizeButton then
+                    self.ResizeButton:SetShown(false)
                 end
                 if self.moveButton then
                     self.moveButton:SetShown(false)
@@ -1115,89 +1127,24 @@ local function Init_Move()
     end)
 
     --插件
-    set_Move_Frame(AddonList, {setSize=true, func=function()
+    set_Move_Frame(AddonList, {setSize=true, initFunc=function()
         AddonList.ScrollBox:ClearAllPoints()
         AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
         AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
+    end, restFunc= function()
+        AddonList:SetSize("500", "478")
     end})
     --FriendsFrame={},--好友列表
 
-    --世界地图
-    hooksecurefunc(WorldMapFrame, 'SynchronizeDisplayState', function(self)--最大化时，隐藏背景
-        if self:IsMaximized() then
-            self.BlackoutFrame:Hide()
-        end
-    end)
-    if not C_AddOns.IsAddOnLoaded('Mapster') then
-        --size= 992 534
-        local minimizedWidth= WorldMapFrame.minimizedWidth-- = 702;
-        local minimizedHeight= WorldMapFrame.minimizedHeight-- = 534;
-        local function set_min_max_value(size)
-            local self= WorldMapFrame
-            local isMax= self:IsMaximized()
-            if isMax then
-                self.minimizedWidth= minimizedWidth
-                self.minimizedHeight= minimizedHeight
-                self.BorderFrame.MaximizeMinimizeFrame:Maximize()
-            elseif size then
-                self.minimizedWidth= size[1]-(self.questLogWidth or 290)-(30*2)-67*2
-                self.minimizedHeight= size[2]-67-30*2
-                self.BorderFrame.MaximizeMinimizeFrame:Minimize()
-            end
-            self.ZoomInOutFrame:SetShown(not isMax)
-        end
-        set_Move_Frame(WorldMapFrame, {setSize=true, initFunc=function()
-            QuestMapFrame.Background:ClearAllPoints()
-            QuestMapFrame.Background:SetAllPoints(QuestMapFrame)
-            QuestMapFrame.DetailsFrame:ClearAllPoints()
-            QuestMapFrame.DetailsFrame:SetPoint('TOPLEFT', 0, -42)
-            QuestMapFrame.DetailsFrame:SetPoint('BOTTOMRIGHT', -26, 0)
-            QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOMRIGHT', 26, 0)
-            set_Move_Frame(MapQuestInfoRewardsFrame, {frame= WorldMapFrame})
-            set_Move_Frame(QuestMapFrame, {frame= WorldMapFrame})
-            set_Move_Frame(QuestMapFrame.DetailsFrame, {frame= WorldMapFrame})
-            hooksecurefunc(WorldMapFrame, 'Minimize', function(self)
-                if not self:IsMaximized() then
-                    local size= Save.size[WorldMapFrame:GetName()]
-                    if size then
-                        self:SetSize(size[1], size[2])
-                    end
-                    set_min_max_value(size)
-                end
-            end)
-            hooksecurefunc(WorldMapFrame, 'Maximize', function(self)
-                if self:IsMaximized() then
-                    set_min_max_value()
-                end
-            end) 
-        end, updateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
-            set_min_max_value({WorldMapFrame:GetSize()})
-        end, restFunc= function()
-            WorldMapFrame.minimizedWidth= minimizedWidth
-            WorldMapFrame.minimizedHeight= minimizedHeight
-            WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
-            local parentWidth, parentHeight = self:GetParent():GetSize();
-            local SCREEN_BORDER_PIXELS = 30;
-            parentWidth = parentWidth - SCREEN_BORDER_PIXELS;
-
-            local spacerFrameHeight = TITLE_CANVAS_SPACER_FRAME_HEIGHT;
-            local unclampedWidth = ((parentHeight - spacerFrameHeight) * self.minimizedWidth) / (self.minimizedHeight - spacerFrameHeight);
-            local clampedWidth = math.min(parentWidth, unclampedWidth);
-
-            local unclampedHeight = parentHeight;
-            local clampHeight = ((parentHeight - spacerFrameHeight) * (clampedWidth / unclampedWidth)) + spacerFrameHeight;
-            WorldMapFrame:SetSize(math.floor(clampedWidth), math.floor(clampHeight));
-            WorldMapFrame:mUpdateMaximizedSize()
-        end})
-    end
     
+
 
     for text, _ in pairs(UIPanelWindows) do
         local frame=_G[text]
-        if frame and not frame.ResizeButton then
-             set_Move_Frame(_G[text])
+        if frame and (not frame.ResizeButton and not frame.targetMoveFrame) then
+            set_Move_Frame(_G[text])
         end
-     end
+    end
 end
 
 
