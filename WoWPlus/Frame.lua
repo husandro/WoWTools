@@ -1106,28 +1106,57 @@ local function Init_Move()
     --FriendsFrame={},--好友列表
 
     --世界地图
-    --self.minimizedWidth = 702;
-	--self.minimizedHeight = 534;
-	--self.questLogWidth = 290;
-    set_Move_Frame(WorldMapFrame, {notZoom=C_AddOns.IsAddOnLoaded('Mapster'), setSize=true, func=function()
-        local size= Save.size[WorldMapFrame:GetName()]
-        if size then
-            WorldMapFrame.minimizedWidth, WorldMapFrame.minimizedHeight= size[1]-(WorldMapFrame.questLogWidth or 290)-30, size[2]-67
+    local minimizedWidth= WorldMapFrame.minimizedWidth-- = 702;
+	local minimizedHeight= WorldMapFrame.minimizedHeight-- = 534;
+    local function set_min_max_value(size)
+        local self= WorldMapFrame
+        local isMax= self:IsMaximized()
+        if isMax then
+            self.minimizedWidth= minimizedWidth
+            self.minimizedHeight= minimizedHeight
+            self.BorderFrame.MaximizeMinimizeFrame:Maximize()
+        elseif size then
+            self.minimizedWidth= size[1]-(self.questLogWidth or 290)-(30*2)-67*2
+            self.minimizedHeight= size[2]-67-30*2
+            self.BorderFrame.MaximizeMinimizeFrame:Minimize()
         end
+        self.ZoomInOutFrame:SetShown(not isMax)
+    end
+
+    hooksecurefunc(WorldMapFrame, 'SynchronizeDisplayState', function(self)--最大化时，隐藏背景
+        if self:IsMaximized() then
+            self.BlackoutFrame:Hide()
+        end
+    end)
+    set_Move_Frame(WorldMapFrame, {notZoom=C_AddOns.IsAddOnLoaded('Mapster'), setSize=true, func=function()
         QuestMapFrame.Background:ClearAllPoints()
         QuestMapFrame.Background:SetAllPoints(QuestMapFrame)
         QuestMapFrame.DetailsFrame:ClearAllPoints()
-        QuestMapFrame.DetailsFrame:SetPoint('TOPLEFT', 0, -42)--<Anchor point="TOPRIGHT" x="-26" y="-42"/>)
+        QuestMapFrame.DetailsFrame:SetPoint('TOPLEFT', 0, -42)
         QuestMapFrame.DetailsFrame:SetPoint('BOTTOMRIGHT', -26, 0)
         QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOMRIGHT', 26, 0)
         set_Move_Frame(MapQuestInfoRewardsFrame, {frame= WorldMapFrame})
         set_Move_Frame(QuestMapFrame, {frame= WorldMapFrame})
         set_Move_Frame(QuestMapFrame.DetailsFrame, {frame= WorldMapFrame})
+        hooksecurefunc(WorldMapFrame, 'Minimize', function(self)
+            if not self:IsMaximized() then
+                local size= Save.size[WorldMapFrame:GetName()]
+                if size then
+                    self:SetSize(size[1], size[2])
+                end
+                set_min_max_value(size)
+                self:SetSize(size[1], size[2])
+            end
+        end)
+        hooksecurefunc(WorldMapFrame, 'Maximize', function(self)
+            if self:IsMaximized() then
+                set_min_max_value()
+            end
+        end)
+        
     end, updateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
-        local size= {WorldMapFrame:GetSize()}
-        WorldMapFrame.minimizedWidth, WorldMapFrame.minimizedHeight= size[1]-(WorldMapFrame.questLogWidth or 290)-30, size[2]-67
-        --WorldMapFrame.minimizedWidth, WorldMapFrame.minimizedHeight= WorldMapFrame:GetSize()
-        --WorldMapFrame.minimizedWidth, WorldMapFrame.minimizedHeight= w-(WorldMapFrame.questLogWidth or 290)+30, h
+        set_min_max_value({WorldMapFrame:GetSize()})
+        --[[
         local miniWorldMap = GetCVarBool("miniWorldMap");
         local maximized = WorldMapFrame:IsMaximized();
         if miniWorldMap ~= maximized then
@@ -1138,7 +1167,7 @@ local function Init_Move()
             end
         end
         --WorldMapFrame:OnShow()
-        --WorldMapFrame:SetMapID(MapUtil.GetDisplayableMapForPlayer())
+        --WorldMapFrame:SetMapID(MapUtil.GetDisplayableMapForPlayer())]]
     end})
     
 
