@@ -75,20 +75,21 @@ local function Init_Scale_Size(frame, tab)
     local maxW= tab.maxW--最大，可无
     local maxH= tab.maxH--最大，可无
     local rotationDegrees= tab.rotationDegrees--旋转度数
-    local func= tab.func--初始
+    local initFunc= tab.initFunc--初始
     local updateFunc= tab.updateFunc--setSize时, OnUpdate
-    local size= tab.size--{w, h}原窗口大小，必需
-
+    local restFunc= tab.restFunc
+    
     local btn= CreateFrame('Button', nil, frame, 'PanelResizeButtonTemplate')
     btn.setSize= setSize
-    btn.size= size
+    btn.restFunc= restFunc
     if setSize then
         frame:SetResizable(true)
         btn:Init(frame, minW or 430, minH or 115, maxW , maxH, rotationDegrees)
-        if func then
-            func()
+        if initFunc then
+            initFunc()
         end
         btn.updateFunc= updateFunc
+        btn.restFunc= restFunc
         local size= Save.size[name]
         if size then
             frame:SetSize(size[1], size[2])
@@ -114,8 +115,13 @@ local function Init_Scale_Size(frame, tab)
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..format('%.2f', self.target:GetScale()), e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, 'Alt+'..e.Icon.left)
         if self.setSize then
+            e.tips:AddLine(' ')
             e.tips:AddDoubleLine((e.onlyChinese and '最小' or MINIMUM)..' |cnGREEN_FONT_COLOR:'..format('%i', self.target:GetWidth())..' |rx|cnGREEN_FONT_COLOR: '..format('%i', self.target:GetHeight())..'|r', e.Icon.right)
+            if self.restFunc then
+                e.tips:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, 'Alt+'..e.Icon.right)
+            end
         end
         e.tips:Show()
     end
@@ -163,36 +169,47 @@ local function Init_Scale_Size(frame, tab)
     end)
     btn:SetScript("OnMouseDown",function(self, d)
         if d=='LeftButton' then
-            local target= self.target
-            self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
-            self.SOS.scale = target:GetScale()
-            self.SOS.x, self.SOS.y = self.SOS.left, self.SOS.top-(UIParent:GetHeight()/self.SOS.scale)
-            self.SOS.EFscale = target:GetEffectiveScale()
-            self.SOS.dist = GetScaleDistance(self.SOS)
+            if IsAltKeyDown() then
+                self.target:SetScale(1)
+            else
+                local target= self.target
+                self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
+                self.SOS.scale = target:GetScale()
+                self.SOS.x, self.SOS.y = self.SOS.left, self.SOS.top-(UIParent:GetHeight()/self.SOS.scale)
+                self.SOS.EFscale = target:GetEffectiveScale()
+                self.SOS.dist = GetScaleDistance(self.SOS)
 
-            self:SetScript("OnUpdate", function(frame)
-                local SOS= frame.SOS
-                local distance= GetScaleDistance(SOS)
-                local scale = distance/SOS.dist*SOS.scale
-                if scale < 0.4 then -- clamp min and max scale
-                    scale = 0.4
-                elseif scale > 2.5 then
-                    scale = 2.5
-                end
-                scale= tonumber(format('%.2f', scale))
-                local target= frame.target
-                target:SetScale(scale)
+                self:SetScript("OnUpdate", function(frame)
+                    local SOS= frame.SOS
+                    local distance= GetScaleDistance(SOS)
+                    local scale = distance/SOS.dist*SOS.scale
+                    if scale < 0.4 then -- clamp min and max scale
+                        scale = 0.4
+                    elseif scale > 2.5 then
+                        scale = 2.5
+                    end
+                    scale= tonumber(format('%.2f', scale))
+                    local target= frame.target
+                    target:SetScale(scale)
 
-                local s = SOS.scale/target:GetScale()
-                local x = SOS.x*s
-                local y = SOS.y*s
-                target:ClearAllPoints()
-                target:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
-                frame:set_tooltip()
-            end)
+                    local s = SOS.scale/target:GetScale()
+                    local x = SOS.x*s
+                    local y = SOS.y*s
+                    target:ClearAllPoints()
+                    target:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
+                    frame:set_tooltip()
+                end)
+            end
 
         elseif d=='RightButton' then
-            if self.setSize then
+            if not self.setSize then
+                return
+            end
+            if IsAltKeyDown() then
+                if self.restFunc then
+                    self.restFunc()
+                end
+            else
                 self.isActive = true;
                 local target = self.target;
                 local continueResizeStart = true;
@@ -1106,69 +1123,73 @@ local function Init_Move()
     --FriendsFrame={},--好友列表
 
     --世界地图
-    local minimizedWidth= WorldMapFrame.minimizedWidth-- = 702;
-	local minimizedHeight= WorldMapFrame.minimizedHeight-- = 534;
-    local function set_min_max_value(size)
-        local self= WorldMapFrame
-        local isMax= self:IsMaximized()
-        if isMax then
-            self.minimizedWidth= minimizedWidth
-            self.minimizedHeight= minimizedHeight
-            self.BorderFrame.MaximizeMinimizeFrame:Maximize()
-        elseif size then
-            self.minimizedWidth= size[1]-(self.questLogWidth or 290)-(30*2)-67*2
-            self.minimizedHeight= size[2]-67-30*2
-            self.BorderFrame.MaximizeMinimizeFrame:Minimize()
-        end
-        self.ZoomInOutFrame:SetShown(not isMax)
-    end
-
     hooksecurefunc(WorldMapFrame, 'SynchronizeDisplayState', function(self)--最大化时，隐藏背景
         if self:IsMaximized() then
             self.BlackoutFrame:Hide()
         end
     end)
-    set_Move_Frame(WorldMapFrame, {notZoom=C_AddOns.IsAddOnLoaded('Mapster'), setSize=true, func=function()
-        QuestMapFrame.Background:ClearAllPoints()
-        QuestMapFrame.Background:SetAllPoints(QuestMapFrame)
-        QuestMapFrame.DetailsFrame:ClearAllPoints()
-        QuestMapFrame.DetailsFrame:SetPoint('TOPLEFT', 0, -42)
-        QuestMapFrame.DetailsFrame:SetPoint('BOTTOMRIGHT', -26, 0)
-        QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOMRIGHT', 26, 0)
-        set_Move_Frame(MapQuestInfoRewardsFrame, {frame= WorldMapFrame})
-        set_Move_Frame(QuestMapFrame, {frame= WorldMapFrame})
-        set_Move_Frame(QuestMapFrame.DetailsFrame, {frame= WorldMapFrame})
-        hooksecurefunc(WorldMapFrame, 'Minimize', function(self)
-            if not self:IsMaximized() then
-                local size= Save.size[WorldMapFrame:GetName()]
-                if size then
-                    self:SetSize(size[1], size[2])
-                end
-                set_min_max_value(size)
-                self:SetSize(size[1], size[2])
+    if not C_AddOns.IsAddOnLoaded('Mapster') then
+        --size= 992 534
+        local minimizedWidth= WorldMapFrame.minimizedWidth-- = 702;
+        local minimizedHeight= WorldMapFrame.minimizedHeight-- = 534;
+        local function set_min_max_value(size)
+            local self= WorldMapFrame
+            local isMax= self:IsMaximized()
+            if isMax then
+                self.minimizedWidth= minimizedWidth
+                self.minimizedHeight= minimizedHeight
+                self.BorderFrame.MaximizeMinimizeFrame:Maximize()
+            elseif size then
+                self.minimizedWidth= size[1]-(self.questLogWidth or 290)-(30*2)-67*2
+                self.minimizedHeight= size[2]-67-30*2
+                self.BorderFrame.MaximizeMinimizeFrame:Minimize()
             end
-        end)
-        hooksecurefunc(WorldMapFrame, 'Maximize', function(self)
-            if self:IsMaximized() then
-                set_min_max_value()
-            end
-        end)
-        
-    end, updateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
-        set_min_max_value({WorldMapFrame:GetSize()})
-        --[[
-        local miniWorldMap = GetCVarBool("miniWorldMap");
-        local maximized = WorldMapFrame:IsMaximized();
-        if miniWorldMap ~= maximized then
-            if miniWorldMap then
-                WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize();
-            else
-                WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Maximize();
-            end
+            self.ZoomInOutFrame:SetShown(not isMax)
         end
-        --WorldMapFrame:OnShow()
-        --WorldMapFrame:SetMapID(MapUtil.GetDisplayableMapForPlayer())]]
-    end})
+        set_Move_Frame(WorldMapFrame, {setSize=true, initFunc=function()
+            QuestMapFrame.Background:ClearAllPoints()
+            QuestMapFrame.Background:SetAllPoints(QuestMapFrame)
+            QuestMapFrame.DetailsFrame:ClearAllPoints()
+            QuestMapFrame.DetailsFrame:SetPoint('TOPLEFT', 0, -42)
+            QuestMapFrame.DetailsFrame:SetPoint('BOTTOMRIGHT', -26, 0)
+            QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOMRIGHT', 26, 0)
+            set_Move_Frame(MapQuestInfoRewardsFrame, {frame= WorldMapFrame})
+            set_Move_Frame(QuestMapFrame, {frame= WorldMapFrame})
+            set_Move_Frame(QuestMapFrame.DetailsFrame, {frame= WorldMapFrame})
+            hooksecurefunc(WorldMapFrame, 'Minimize', function(self)
+                if not self:IsMaximized() then
+                    local size= Save.size[WorldMapFrame:GetName()]
+                    if size then
+                        self:SetSize(size[1], size[2])
+                    end
+                    set_min_max_value(size)
+                end
+            end)
+            hooksecurefunc(WorldMapFrame, 'Maximize', function(self)
+                if self:IsMaximized() then
+                    set_min_max_value()
+                end
+            end) 
+        end, updateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
+            set_min_max_value({WorldMapFrame:GetSize()})
+        end, restFunc= function()
+            WorldMapFrame.minimizedWidth= minimizedWidth
+            WorldMapFrame.minimizedHeight= minimizedHeight
+            WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
+            local parentWidth, parentHeight = self:GetParent():GetSize();
+            local SCREEN_BORDER_PIXELS = 30;
+            parentWidth = parentWidth - SCREEN_BORDER_PIXELS;
+
+            local spacerFrameHeight = TITLE_CANVAS_SPACER_FRAME_HEIGHT;
+            local unclampedWidth = ((parentHeight - spacerFrameHeight) * self.minimizedWidth) / (self.minimizedHeight - spacerFrameHeight);
+            local clampedWidth = math.min(parentWidth, unclampedWidth);
+
+            local unclampedHeight = parentHeight;
+            local clampHeight = ((parentHeight - spacerFrameHeight) * (clampedWidth / unclampedWidth)) + spacerFrameHeight;
+            WorldMapFrame:SetSize(math.floor(clampedWidth), math.floor(clampHeight));
+            WorldMapFrame:mUpdateMaximizedSize()
+        end})
+    end
     
 
     for text, _ in pairs(UIPanelWindows) do
