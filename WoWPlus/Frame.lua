@@ -40,14 +40,14 @@ function GetScaleDistance(SOS) -- distance from cursor to TopLeft :)
 end
 
 
-local function Init_Scale_Size(frame, tab)
-    local name= tab.name or frame:GetName()
-    if not name or Save.disabledZoom or tab.notZoom or frame.ResizeButton then
+local function Set_Scale_Size(frame, tab)
+    local name= tab.name
+    if not name or Save.disabledZoom or tab.notZoom or frame.ResizeButton or tab.frame then
         return
     end
     
     local setSize= tab.setSize
-    local minW= tab.minW or 430--最小窗口， 宽
+    local minW= tab.minW or 115--最小窗口， 宽
     local minH= tab.minH or 115--最小窗口，高
     local maxW= tab.maxW--最大，可无
     local maxH= tab.maxH--最大，可无
@@ -61,7 +61,7 @@ local function Init_Scale_Size(frame, tab)
     btn.restFunc= restFunc
     if setSize then
         frame:SetResizable(true)
-        btn:Init(frame, minW or 115, minH or 115, maxW , maxH, rotationDegrees)
+        btn:Init(frame, minW, minH, maxW , maxH, rotationDegrees)
         if initFunc then
             initFunc()
         end
@@ -77,9 +77,7 @@ local function Init_Scale_Size(frame, tab)
     btn:SetHighlightAtlas('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight')
     btn:SetPushedAtlas('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down')]]
 
-    e.Set_Label_Texture_Color(btn:GetNormalTexture(), {alpha=1})--设置颜色
-    e.Set_Label_Texture_Color(btn:GetPushedTexture(), {alpha=1})--设置颜色
-    e.Set_Label_Texture_Color(btn:GetHighlightTexture(), {alpha=1})--设置颜色
+    e.Set_Label_Texture_Color(btn, {type='Button', alpha=1})--设置颜色
 
     btn:SetAlpha(0.5)
     btn:SetSize(16, 16)
@@ -121,8 +119,10 @@ local function Init_Scale_Size(frame, tab)
         scale = 1,
     }
     
-    if Save.scale[name] and Save.scale[name]~=1 then
-        frame:SetScale(btn.SOS.scale)
+    local scale= Save.scale[name]
+    if scale and scale~=1 then
+        print(scale, name)
+        frame:SetScale(scale)
     end
     btn:SetScript("OnMouseUp", function(self, d)
         if d=='LeftButton' then
@@ -273,9 +273,8 @@ local function set_Move_Frame(self, tab)
     if not self and not name then
         return
     end
-    if not tab.frame then
-        Init_Scale_Size(self, tab)
-    end
+    
+    Set_Scale_Size(self, tab)
     
     if Save.disabledMove or tab.notMove or self.setMoveFrame then
         return
@@ -288,15 +287,15 @@ local function set_Move_Frame(self, tab)
     self.typeClick= click
     self.notSave= tab.notSave
     
-    if Save.moveToScreenFuori then
-        self:SetClampedToScreen(false)
-    end
     
+    if not Save.moveToScreenFuori and Save.SavePoint then
+        self:SetClampedToScreen(true)
+        if frame then
+            frame:SetClampedToScreen(true)
+        end
+    end
     self:SetMovable(true)
     if frame then
-        if Save.moveToScreenFuori then
-            frame:SetClampedToScreen(false)
-        end
         frame:SetMovable(true)
     end
 
@@ -369,21 +368,14 @@ end
 --缩放
 --####
 local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)--放大
-    frame= tab.frame or frame
-    if not frame or frame.ResizeButton or tab.notZoom or Save.disabledZoom then --or not tab.name or _G['MoveZoomInButtonPer'..tab.name] or _G['WoWToolsResizeButton'..tab.name] then
+    if frame.ResizeButton or tab.notZoom or Save.disabledZoom then --or not tab.name or _G['MoveZoomInButtonPer'..tab.name] or _G['WoWToolsResizeButton'..tab.name] then
         return
     end
 
-    frame.ResizeButton= e.Cbtn(frame.Header
-                        or frame.TitleContainer
-                        or frame.SpellButtonContainer
-                        or frame.BorderFrame and frame.BorderFrame.TitleContainer
-                        or frame,
-        {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}, name='MoveZoomInButtonPer'..tab.name})
+    frame.ResizeButton= e.Cbtn(frame, {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}, name='MoveZoomInButtonPer'..tab.name})
     e.Set_Label_Texture_Color(frame.ResizeButton, {type='Button'})
-    --frame.ResizeButton:GetNormalTexture():SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
 
-    frame.ResizeButton.ScaleName= tab.name
+    frame.ResizeButton.name= tab.name
     frame.ResizeButton.target= frame
     frame.ResizeButton.alpha= tab.zeroAlpha and 0 or 0.2
     frame.ResizeButton:SetFrameLevel(frame.ResizeButton:GetFrameLevel() +5)
@@ -414,7 +406,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         if UnitAffectingCombat('player') then
             return
         end
-        local n= Save.scale[self.ScaleName] or 1
+        local n= Save.scale[self.name] or 1
         if d=='LeftButton' then
             n= n+ 0.05
         elseif d=='RightButton' then
@@ -422,7 +414,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         end
         n= n>3 and 3 or n
         n= n< 0.5 and 0.5 or n
-        Save.scale[self.ScaleName]= n
+        Save.scale[self.name]= n
         self.target:SetScale(n)
         self:set_Tooltips()
     end)
@@ -431,7 +423,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         if UnitAffectingCombat('player') then
             return
         end
-        local n= Save.scale[self.ScaleName] or 1
+        local n= Save.scale[self.name] or 1
         if d==-1 then
             n= n+ 0.05
         elseif d==1 then
@@ -439,7 +431,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         end
         n= n>4 and 4 or n
         n= n< 0.4 and 0.4 or n
-        Save.scale[self.ScaleName]= n
+        Save.scale[self.name]= n
         self.target:SetScale(n)
         self:set_Tooltips()
     end)
@@ -452,15 +444,14 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
     function frame.ResizeButton:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine(self.ScaleName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine(self.name)
         e.tips:AddLine(' ')
         local col= UnitAffectingCombat('player') and '|cff606060:' or ''
-        e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE).. ' |cnGREEN_FONT_COLOR:'..(format('%.2f', Save.scale[self.ScaleName] or 1)), e.Icon.mid)
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE).. ' |cnGREEN_FONT_COLOR:'..(format('%.2f', Save.scale[self.name] or 1)), e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(col..(e.onlyChinese and '放大' or ZOOM_IN), e.Icon.left)
         e.tips:AddDoubleLine(col..(e.onlyChinese and '缩小' or ZOOM_OUT), e.Icon.right)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end
     frame.ResizeButton:SetScript("OnEnter",function(self)
@@ -490,36 +481,36 @@ end
 --#################
 --创建, 一个移动按钮
 --#################
-local function created_Move_Button(self, tab)--created_Move_Button(self, {frame=nil, save=true, zeroAlpha=nil, notZoom=nil})
-    if not self or Save.disabledMove or self.moveButton then
+local function created_Move_Button(frame, tab)--created_Move_Button(frame, {frame=nil, save=true, zeroAlpha=nil, notZoom=nil})
+    tab= tab or {}
+    tab.name= tab.name or (frame and frame:GetName())
+    if not frame or not tab.name then
         return
     end
-
-    self.moveButton= e.Cbtn(self, {texture='Interface\\Cursor\\UI-Cursor-Move', size={22,22}})
-    self.moveButton:SetPoint('BOTTOM', self, 'TOP')
-    self.moveButton:SetFrameLevel(self:GetFrameLevel()+5)
-    self.moveButton.alpha= tab.zeroAlpha and 0 or 0.2
-    self.moveButton:SetAlpha(self.moveButton.alpha)
-    self.moveButton:SetScript("OnEnter",function(self2)
-        self2:SetAlpha(1)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, tab.click=='RightButton' and e.Icon.right or e.Icon.left)
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-    end)
-
-    tab.frame=self
-    set_Move_Frame(self.moveButton, tab)
-    set_Zoom_Frame(self, tab)
-    self.moveButton:SetScript("OnLeave", function(self2)
-        ResetCursor()
-        e.tips:Hide()
-        self2:SetAlpha(self2.alpha)
-    end)
-
-    set_Frame_Point(self)--设置, 移动, 位置)
-
+    if not Save.disabledMove and not frame.moveButton then
+        frame.moveButton= e.Cbtn(frame, {texture='Interface\\Cursor\\UI-Cursor-Move', size={22,22}})
+        frame.moveButton:SetPoint('BOTTOM', frame, 'TOP')
+        frame.moveButton:SetFrameLevel(frame:GetFrameLevel()+5)
+        frame.moveButton.alpha= tab.zeroAlpha and 0 or 0.2
+        frame.moveButton:SetAlpha(frame.moveButton.alpha)
+        frame.moveButton:SetScript("OnEnter",function(self)
+            self:SetAlpha(1)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, tab.click=='RightButton' and e.Icon.right or e.Icon.left)
+            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:Show()
+        end)
+        tab.frame=frame
+        set_Move_Frame(frame.moveButton, tab)
+        frame.moveButton:SetScript("OnLeave", function(self)
+            ResetCursor()
+            e.tips:Hide()
+            self:SetAlpha(self.alpha)
+        end)
+        set_Frame_Point(frame)--设置, 移动, 位置)
+    end
+    set_Zoom_Frame(frame, tab)
 end
 
 
@@ -805,7 +796,64 @@ end
 --职业，能量条
 --###########
 local function set_classPowerBar()
-   
+    local tab={
+        PlayerFrame.classPowerBar,
+        RuneFrame,
+        MonkStaggerBar,
+        _G['PlayerFrameAlternateManaBar'],
+        EssencePlayerFrame,
+        --MageArcaneChargesFrame,
+        --TotemFrame,
+    }
+
+    for _, self in pairs(tab) do
+        if self and self:IsShown() then
+            if self.FrameName then
+                set_Frame_Point(self)
+            else
+                set_Move_Frame(self, {
+                    save=true,
+                    zeroAlpha=true,
+                    point= e.Player.class=='EVOKER' and 'left' or nil,
+                })
+            end
+        end
+    end
+
+
+    if TotemFrame and TotemFrame:IsShown() and TotemFrame.totemPool and TotemFrame.totemPool.activeObjects then
+        for btn, _ in pairs(TotemFrame.totemPool.activeObjects) do
+            if btn:IsShown() then
+                if btn.FrameName then
+                    set_Frame_Point(btn)
+                else
+                    set_Move_Frame(btn, {frame=TotemFrame, save=true, zeroAlpha=true})
+                end
+            end
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Add_Size()--自定义，大小
+    --世界地图
     if not C_AddOns.IsAddOnLoaded('Mapster') then
         local minimizedWidth= WorldMapFrame.minimizedWidth or 702
         local minimizedHeight= WorldMapFrame.minimizedHeight or 534
@@ -871,64 +919,47 @@ local function set_classPowerBar()
 
 
 
+    --插件
+    set_Move_Frame(AddonList, {setSize=true, initFunc=function()
+        AddonList.ScrollBox:ClearAllPoints()
+        AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
+        AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
+    end, restFunc= function()
+        AddonList:SetSize("500", "478")
+    end})
+
+   
+
+    --FriendsFrame={},--好友列表
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-    local tab={
-        PlayerFrame.classPowerBar,
-        RuneFrame,
-        MonkStaggerBar,
-        _G['PlayerFrameAlternateManaBar'],
-        EssencePlayerFrame,
-        --MageArcaneChargesFrame,
-        --TotemFrame,
-    }
-
-    for _, self in pairs(tab) do
-        if self and self:IsShown() then
-            if self.FrameName then
-                set_Frame_Point(self)
-            else
-                set_Move_Frame(self, {
-                    save=true,
-                    zeroAlpha=true,
-                    point= e.Player.class=='EVOKER' and 'left' or nil,
-                })
-            end
-        end
-    end
-
-
-    if TotemFrame and TotemFrame:IsShown() and TotemFrame.totemPool and TotemFrame.totemPool.activeObjects then
-        for btn, _ in pairs(TotemFrame.totemPool.activeObjects) do
-            if btn:IsShown() then
-                if btn.FrameName then
-                    set_Frame_Point(btn)
-                else
-                    set_Move_Frame(btn, {frame=TotemFrame, save=true, zeroAlpha=true})
-                end
-            end
-        end
-    end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --########
 --初始,移动
 --########
 local function Init_Move()
+    Init_Add_Size()--自定义，大小
+
     local FrameTab={
         --AddonList={},--插件
         GameMenuFrame={notSave=true},--菜单
@@ -1126,15 +1157,6 @@ local function Init_Move()
        end)
     end)
 
-    --插件
-    set_Move_Frame(AddonList, {setSize=true, initFunc=function()
-        AddonList.ScrollBox:ClearAllPoints()
-        AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
-        AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
-    end, restFunc= function()
-        AddonList:SetSize("500", "478")
-    end})
-    --FriendsFrame={},--好友列表
 
     
 

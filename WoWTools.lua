@@ -363,6 +363,15 @@ function e.Set_Label_Texture_Color(self, tab)--设置颜色
             if texture then
                 texture:SetVertexColor(r, g, b, a)
             end
+            texture= self:GetPushedTexture()
+            if texture then
+                texture:SetVertexColor(r, g, b, a)
+            end
+            texture= self:GetHighlightTexture()
+            if texture then
+                texture:SetVertexColor(r, g, b, a)
+            end
+
         elseif type=='String' then
             local hex= tab.color and tab.color.hex or e.Player.useColor.hex
             return hex..self

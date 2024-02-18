@@ -120,21 +120,6 @@ local function set_Alpha_Frame_Texture(frame, tab)
 end
 
 
---设置，按钮
-local function set_Button_Alpha(btn, tab)
-    if not btn or not e.Player.useColor then
-        return
-    end
-    local texture= btn:GetNormalTexture()
-    if texture then
-        tab = tab or {}
-        if e.Player.useColor then
-            local col= tab.color or e.Player.useColor
-            texture:SetVertexColor(col.r, col.g, col.b, 1)
-        end
-        texture:SetAlpha(tab.alpha or Save.alpha)
-    end
-end
 
 
 local function set_SearchBox(frame)
@@ -246,6 +231,18 @@ local function set_Label(self, shadowOffset)
     end
 end
 
+--设置，按钮
+local function set_Button(btn, tab)
+    if not btn then
+        return
+    end
+    tab= tab or {}
+    if tab.all then
+        e.Set_Label_Texture_Color(btn, {type='Button', alpha=tab.alpha})
+    else
+        e.Set_Label_Texture_Color(btn:GetNormalTexture(), {type='Texture', alpha=tab.alpha})
+    end
+end
 
 
 
@@ -977,7 +974,7 @@ local function Init_All_Frame()
      set_Alpha_Frame_Texture(MinimapCluster.BorderTop)
      set_Alpha_Frame_Texture(GameTimeFrame)
      hide_Texture(MinimapCluster.Tracking.Background)
-     set_Button_Alpha(MinimapCluster.Tracking.Button, {alpha= min03})
+     set_Button(MinimapCluster.Tracking.Button, {alpha= min03, all=false})
 
      --小队，背景
     set_Alpha_Frame_Texture(PartyFrame.Background, {alpha= min03})
@@ -989,7 +986,8 @@ local function Init_All_Frame()
          end
      end)
 
-     --社交，按钮
+     --社交，按钮     
+     
      set_Alpha_Color(QuickJoinToastButton.FriendsButton, nil, nil, min03)
      --set_Alpha_Color(QuickJoinToastButton.QueueButton, nil, nil, min03)
      set_Alpha_Frame_Texture(ChatFrameChannelButton, {alpha= min03})
@@ -2679,6 +2677,7 @@ end
 
 local Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
 local function Init_Options()
+    e.AddPanel_Header(Layout, e.onlyChinese and '材质' or TEXTURES_SUBHEADER)
     local initializer2= e.AddPanel_Check_Button({
         checkName= e.onlyChinese and '材质' or TEXTURES_SUBHEADER,
         checkValue= not Save.disabled,
@@ -2847,18 +2846,20 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.classPowerNumSize= Save.classPowerNumSize or 12
             GetMinValueAlpha()--min03，透明度，最小值
 
-            Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
+            --Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
+            
+            e.AddPanel_Check({
+                name= e.onlyChinese and '启用' or ENABLE,
+                tooltip= e.cn(addName),
+                category= Category,
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+            
             if Save.disabled then
-                e.AddPanel_Check({
-                    name= e.onlyChinese and '材质' or TEXTURES_SUBHEADER,
-                    tooltip= e.cn(addName),
-                    category= Category,
-                    value= not Save.disabled,
-                    func= function()
-                        Save.disabled= not Save.disabled and true or nil
-                        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                    end
-                })
                 panel:UnregisterEvent('ADDON_LOADED')
             else
 
