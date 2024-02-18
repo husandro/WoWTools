@@ -121,7 +121,6 @@ local function Set_Scale_Size(frame, tab)
     
     local scale= Save.scale[name]
     if scale and scale~=1 then
-        print(scale, name)
         frame:SetScale(scale)
     end
     btn:SetScript("OnMouseUp", function(self, d)
