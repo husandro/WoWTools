@@ -9,7 +9,8 @@ local Save={
         scale={--缩放
             ['UIWidgetPowerBarContainerFrame']= 0.85,
         },
-        
+        size={},
+
 }
 local addName= 'Frame'
 local panel= CreateFrame("Frame")
@@ -68,28 +69,42 @@ local function Init_Scale_Size(frame, tab)
         return
     end
     tab= tab or {}
-   
+    local setSize= tab.setSize
+    local minW= tab.minW or 430--最小窗口， 宽
+    local minH= tab.minH or 115--最小窗口，高
+    local maxW= tab.maxW--最大，可无
+    local maxH= tab.maxH--最大，可无
+    local rotationDegrees= tab.rotationDegrees--旋转度数
+    local func= tab.func--初始
+    local updateFunc= tab.updateFunc--setSize时, OnUpdate
+    local size= tab.size--{w, h}原窗口大小，必需
+
     local btn= CreateFrame('Button', nil, frame, 'PanelResizeButtonTemplate')
-    local setSize= (tab.setSize or tab.func) and true or nil
+    btn.setSize= setSize
+    btn.size= size
     if setSize then
-        frame:SetResizable(true)    
-        btn:Init(frame, tab.minW or 430, tab.minH or 115, tab.maxW , tab.maxH, tab.rotationDegrees)
-        btn.setSize= true
-        if tab.func then
-            tab.func()
+        frame:SetResizable(true)
+        btn:Init(frame, minW or 430, minH or 115, maxW , maxH, rotationDegrees)
+        if func then
+            func()
+        end
+        btn.updateFunc= updateFunc
+        local size= Save.size[name]
+        if size then
+            frame:SetSize(size[1], size[2])
         end
     end
     --[[btn= CreateFrame('Button', nil, frame)
     btn:SetNormalAtlas('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up')
     btn:SetHighlightAtlas('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight')
     btn:SetPushedAtlas('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down')]]
-    
+
     e.Set_Label_Texture_Color(btn:GetNormalTexture(), {alpha=1})--设置颜色
     e.Set_Label_Texture_Color(btn:GetPushedTexture(), {alpha=1})--设置颜色
     e.Set_Label_Texture_Color(btn:GetHighlightTexture(), {alpha=1})--设置颜色
-    
+
     btn:SetAlpha(0.5)
-    btn:SetSize(18, 18)
+    btn:SetSize(16, 16)
     btn:SetPoint('BOTTOMRIGHT', frame, 6,-6)
     btn:SetClampedToScreen(true)
     btn:SetScript('OnLeave', function(self) GameTooltip_Hide() ResetCursor() self:SetAlpha(0.5) end)
@@ -110,7 +125,7 @@ local function Init_Scale_Size(frame, tab)
         self:SetAlpha(1)
     end)
 
-    
+
     btn.target= frame
     btn.name= name
     btn.SOS = { --Scaler Original State
@@ -122,13 +137,13 @@ local function Init_Scale_Size(frame, tab)
         scale = Save.scale[name] or 1,
     }
     if btn.SOS.scale~=1 then
-        btn:SetScale(btn.SOS.scale)
+        frame:SetScale(btn.SOS.scale)
     end
     btn:SetScript("OnMouseUp", function(self, d)
         if d=='LeftButton' then
             Save.scale[self.name]= self.target:GetScale()
             GameTooltip_Hide()
-            
+
         elseif d=='RightButton' then
             self.isActive = false;
             local target = self.target;
@@ -142,6 +157,7 @@ local function Init_Scale_Size(frame, tab)
             if self.resizeStoppedCallback ~= nil then
                 self.resizeStoppedCallback(self.target);
             end
+            Save.size[self.name]= {self.target:GetSize()}
         end
         self:SetScript("OnUpdate", nil)
     end)
@@ -153,7 +169,7 @@ local function Init_Scale_Size(frame, tab)
             self.SOS.x, self.SOS.y = self.SOS.left, self.SOS.top-(UIParent:GetHeight()/self.SOS.scale)
             self.SOS.EFscale = target:GetEffectiveScale()
             self.SOS.dist = GetScaleDistance(self.SOS)
-            
+
             self:SetScript("OnUpdate", function(frame)
                 local SOS= frame.SOS
                 local distance= GetScaleDistance(SOS)
@@ -174,7 +190,7 @@ local function Init_Scale_Size(frame, tab)
                 target:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
                 frame:set_tooltip()
             end)
-        
+
         elseif d=='RightButton' then
             if self.setSize then
                 self.isActive = true;
@@ -187,7 +203,12 @@ local function Init_Scale_Size(frame, tab)
                     local alwaysStartFromMouse = true;
                     self.target:StartSizing("BOTTOMRIGHT", alwaysStartFromMouse);
                 end
-                self:SetScript('OnUpdate', self.set_tooltip)
+                self:SetScript('OnUpdate', function(frame)
+                    frame:set_tooltip()
+                    if frame.updateFunc then
+                        frame.updateFunc()
+                    end
+                end)
             end
         end
     end)
@@ -467,7 +488,7 @@ local function created_Move_Button(self, tab)--created_Move_Button(self, {frame=
     if not self or Save.disabledMove or self.moveButton then
         return
     end
-    
+
     self.moveButton= e.Cbtn(self, {texture='Interface\\Cursor\\UI-Cursor-Move', size={22,22}})
     self.moveButton:SetPoint('BOTTOM', self, 'TOP')
     self.moveButton:SetFrameLevel(self:GetFrameLevel()+5)
@@ -896,7 +917,7 @@ local function Init_Move()
         --ChatConfigFrame={save=true},--聊天设置
         --SettingsPanel={},--选项
 
-        --FriendsFrame={},--好友列表
+
         --RaidInfoFrame={frame=FriendsFrame},--再次打开，错误
         --RecruitAFriendRewardsFrame={},--招募，奖励
         --RecruitAFriendRecruitmentFrame={},--招募，链接，再次打开，错误
@@ -907,8 +928,8 @@ local function Init_Move()
         --BankFrame={save=true},--银行
         --MerchantFrame={},--货物
 
-      
-        MapQuestInfoRewardsFrame={frame= WorldMapFrame},
+
+
 
         ContainerFrameCombinedBags={save=true},--{notZoom=true},--包
         --VehicleSeatIndicator={},--车辆，指示
@@ -1077,20 +1098,49 @@ local function Init_Move()
     end)
 
     --插件
-    set_Move_Frame(AddonList, {func=function()
+    set_Move_Frame(AddonList, {setSize=true, func=function()
         AddonList.ScrollBox:ClearAllPoints()
         AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
         AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
     end})
+    --FriendsFrame={},--好友列表
 
     --世界地图
-    set_Move_Frame(WorldMapFrame, {notZoom=true})
-    if not C_AddOns.IsAddOnLoaded('Mapster') then
-        set_Move_Frame(WorldMapFrame, {func=function()
-           
-        end})
-    end
-
+    --self.minimizedWidth = 702;
+	--self.minimizedHeight = 534;
+	--self.questLogWidth = 290;
+    set_Move_Frame(WorldMapFrame, {notZoom=C_AddOns.IsAddOnLoaded('Mapster'), setSize=true, func=function()
+        local size= Save.size[WorldMapFrame:GetName()]
+        if size then
+            WorldMapFrame.minimizedWidth, WorldMapFrame.minimizedHeight= size[1]-(WorldMapFrame.questLogWidth or 290)-30, size[2]-67
+        end
+        QuestMapFrame.Background:ClearAllPoints()
+        QuestMapFrame.Background:SetAllPoints(QuestMapFrame)
+        QuestMapFrame.DetailsFrame:ClearAllPoints()
+        QuestMapFrame.DetailsFrame:SetPoint('TOPLEFT', 0, -42)--<Anchor point="TOPRIGHT" x="-26" y="-42"/>)
+        QuestMapFrame.DetailsFrame:SetPoint('BOTTOMRIGHT', -26, 0)
+        QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOMRIGHT', 26, 0)
+        set_Move_Frame(MapQuestInfoRewardsFrame, {frame= WorldMapFrame})
+        set_Move_Frame(QuestMapFrame, {frame= WorldMapFrame})
+        set_Move_Frame(QuestMapFrame.DetailsFrame, {frame= WorldMapFrame})
+    end, updateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
+        local size= {WorldMapFrame:GetSize()}
+        WorldMapFrame.minimizedWidth, WorldMapFrame.minimizedHeight= size[1]-(WorldMapFrame.questLogWidth or 290)-30, size[2]-67
+        --WorldMapFrame.minimizedWidth, WorldMapFrame.minimizedHeight= WorldMapFrame:GetSize()
+        --WorldMapFrame.minimizedWidth, WorldMapFrame.minimizedHeight= w-(WorldMapFrame.questLogWidth or 290)+30, h
+        local miniWorldMap = GetCVarBool("miniWorldMap");
+        local maximized = WorldMapFrame:IsMaximized();
+        if miniWorldMap ~= maximized then
+            if miniWorldMap then
+                WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize();
+            else
+                WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Maximize();
+            end
+        end
+        --WorldMapFrame:OnShow()
+        --WorldMapFrame:SetMapID(MapUtil.GetDisplayableMapForPlayer())
+    end})
+    
 
     for text, _ in pairs(UIPanelWindows) do
         local frame=_G[text]
@@ -1212,7 +1262,7 @@ local function Init_Options()
             print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledResizable), e.onlyChinese and '重新加载UI' or RELOADUI)
         end
     })]]
-    
+
 end
 
 
@@ -1229,6 +1279,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
             Save.scale= Save.scale or {}
+            Save.size= Save.size or {}
 
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,

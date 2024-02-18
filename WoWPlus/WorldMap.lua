@@ -246,6 +246,8 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
     local search= CreateFrame('EditBox', nil, QuestScrollFrame.btnCollapse, 'SearchBoxTemplate')
     search:SetSize(174, 22)
     search:SetPoint('LEFT', btnExpand, 'RIGHT',2,0)
+    search:SetAutoFocus(false)
+    search:ClearFocus()
     search.Instructions:SetText(e.onlyChinese and '搜索' or SEARCH)
     search.DAILY= e.onlyChinese and '日常' or DAILY:lower()
     search.WEEKLY= e.onlyChinese and '周长' or WEEKLY:lower()
