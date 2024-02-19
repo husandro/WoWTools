@@ -10,6 +10,7 @@ local Save={
             ['UIWidgetPowerBarContainerFrame']= 0.85,
         },
         size={},
+        width={},
 
 }
 local addName= 'Frame'
@@ -268,8 +269,6 @@ end
 
 
 
-
-
 --###############
 --设置, 移动, 位置
 --###############
@@ -357,7 +356,7 @@ local function set_Move_Frame(self, tab)
             Save.point[frameName][2]= nil
         end
     end)
-    
+
     --self:HookScript('OnHide', stop_Drag)--停止移动
     self:HookScript("OnMouseDown", function(s, d)--设置, 光标
         if d~='RightButton' and d~='LeftButton' then
@@ -892,12 +891,60 @@ end
 local function Init_Add_Size()--自定义，大小
     --世界地图
     if not C_AddOns.IsAddOnLoaded('Mapster') then
-        --[[WorldMapFrame.questLogWidth = 400
-        QuestMapFrame:SetWidth(WorldMapFrame.questLogWidth)
-        WorldMapFrame:Minimize()]]
+        --[[if not Save.disabledZoom then
+            if QuestScrollFrame then
+                QuestScrollFrame:ClearAllPoints()
+                QuestScrollFrame:SetPoint('TOPLEFT')
+                QuestScrollFrame:SetPoint('BOTTOMRIGHT')
+            end
+            if QuestScrollFrame.DetailFrame.TopDetail then
+                QuestScrollFrame.DetailFrame.TopDetail:ClearAllPoints()
+                QuestScrollFrame.DetailFrame.TopDetail:SetPoint('TOPLEFT', 0, 9)
+                QuestScrollFrame.DetailFrame.TopDetail:SetPoint('TOPRIGHT', 0,-15)
+            end
+            
+
+            local btn= e.Cbtn(QuestMapFrame, {size={18,18}, icon=true})
+            btn:SetFrameStrata(WorldMapFrame.BorderFrame.TitleContainer:GetFrameStrata())
+            btn:SetFrameLevel(WorldMapFrame.BorderFrame.TitleContainer:GetFrameLevel()+1)
+            btn:SetPoint('BOTTOMRIGHT', 12, 6)
+            btn:SetAlpha(0.3)
+            btn.value= WorldMapFrame.questLogWidth or 290
+            function btn:initFunc()
+                local w=Save.width['QuestMapFrame']
+                if w then
+                    local p= self:GetParent()
+                    p:SetWidth(w)
+                    WorldMapFrame.questLogWidth=w
+                    if not WorldMapFrame:IsMaximized() and WorldMapFrame:IsShown() then
+                        WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
+                    end
+                end
+            end
+            btn:initFunc()
+            btn:SetScript('OnClick', function(self)
+                local w= self.value
+                local w2= Save.width['QuestMapFrame']
+                if not self.slider then
+                    self.slider= e.CSlider(self, {min=w/2, max=w*2, value=w2 or w, setp=1, color=true,
+                    text= 'QuestMapFrame',
+                    func=function(frame, value)
+                        value= math.modf(value)
+                        value= value==0 and 0 or value
+                        frame:SetValue(value)
+                        frame.Text:SetText(value)
+                        Save.width['QuestMapFrame']= value
+                        frame:GetParent():initFunc()
+                    end})
+                    self.slider:SetPoint('BOTTOMRIGHT', WorldMapFrame.BorderFrame.TitleContainer, 'TOPRIGHT', -23, 2)
+                else
+                    self.slider:SetShown(not self.slider:IsShown() and true or false)
+                end
+            end)
+        end]]
+
         local minimizedWidth= WorldMapFrame.minimizedWidth or 702
         local minimizedHeight= WorldMapFrame.minimizedHeight or 534
-
         local function set_min_max_value(size)
             local self= WorldMapFrame
             local isMax= self:IsMaximized()
@@ -966,8 +1013,43 @@ local function Init_Add_Size()--自定义，大小
         AddonList:SetSize("500", "478")
     end})
 
-    --CharacterFrame={},--角色
 
+    set_Move_Frame(CharacterFrame, {minW=338, minH=424, setSize=true, initFunc=function()
+        PaperDollFrame.TitleManagerPane:ClearAllPoints()
+        PaperDollFrame.TitleManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
+        PaperDollFrame.TitleManagerPane:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -4, 4)
+        PaperDollFrame.TitleManagerPane.ScrollBox:ClearAllPoints()
+        PaperDollFrame.TitleManagerPane.ScrollBox:SetPoint('TOPLEFT',4,-4)
+        PaperDollFrame.TitleManagerPane.ScrollBox:SetPoint('BOTTOMRIGHT', -18,0)
+
+        PaperDollFrame.EquipmentManagerPane:ClearAllPoints()
+        PaperDollFrame.EquipmentManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
+        PaperDollFrame.EquipmentManagerPane:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -4, 4)
+        PaperDollFrame.EquipmentManagerPane.ScrollBox:ClearAllPoints()
+        PaperDollFrame.EquipmentManagerPane.ScrollBox:SetPoint('TOPLEFT',4, -28)
+        PaperDollFrame.EquipmentManagerPane.ScrollBox:SetPoint('BOTTOMRIGHT', -18,-28)
+
+        --CharacterFrameInset:ClearAllPoints()
+        --CharacterFrameInset:SetPoint('')
+        CharacterStatsPane.ClassBackground:ClearAllPoints()
+        CharacterStatsPane.ClassBackground:SetPoint('TOPLEFT')
+        CharacterStatsPane.ClassBackground:SetPoint('BOTTOMRIGHT')
+        hooksecurefunc('CharacterFrame_Collapse', function()
+            print('CharacterFrame_Collapse', CharacterFrame:GetSize())
+        end)
+        hooksecurefunc('CharacterFrame_Expand', function()
+            print('CharacterFrame_Expand', CharacterFrame:GetSize())
+        end)
+        --CharacterFrameInset:ClearAllPoints()
+        --CharacterFrameInset:SetPoint('TOPLEFT')
+        --CharacterFrameInset:SetPoint('BOTTOMRIGHT')
+        --ReputationFrame:ClearAllPoints()
+        --ReputationFrame:SetPoint('TOPLEFT')
+        --ReputationFrame:SetPoint('BOTTOMRIGHT')
+    end,
+
+    })--角色
+    CharacterFrame:Show()
     --FriendsFrame={},--好友列表
 
 
@@ -1337,6 +1419,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.scale= Save.scale or {}
             Save.size= Save.size or {}
+            Save.width= Save.width or {}
 
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
