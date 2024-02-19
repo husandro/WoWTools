@@ -93,14 +93,13 @@ local function Set_Scale_Size(frame, tab)
         if parent then
             e.tips:AddDoubleLine(parent:GetName() or 'Parent', format('%.2f', parent:GetScale()))
         end
-        e.tips:AddDoubleLine(self.name, format('%s %.2f', e.onlyChinese and '有效' or 'Effective', self.target:GetEffectiveScale()))
-        local EFscale= tonumber(format('%.2f', self.target:GetEffectiveScale()))
+        e.tips:AddDoubleLine(self.name, format('%s %.2f', e.onlyChinese and '实际' or 'Effective', self.target:GetEffectiveScale()))
         local scale= tonumber(format('%.2f', self.target:GetScale()))
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(scale or 1), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, 'Alt+'..e.Icon.left)
         if self.setSize then
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine((e.onlyChinese and '最小' or MINIMUM)..' |cnGREEN_FONT_COLOR:'..format('%i', self.target:GetWidth())..' |rx|cnGREEN_FONT_COLOR: '..format('%i', self.target:GetHeight())..'|r', e.Icon.right)
+            e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..' |cnGREEN_FONT_COLOR:'..format('%i', self.target:GetWidth())..' |rx|cnGREEN_FONT_COLOR: '..format('%i', self.target:GetHeight())..'|r', e.Icon.right)
             if self.restFunc then
                 e.tips:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, 'Alt+'..e.Icon.right)
             end
@@ -126,16 +125,12 @@ local function Set_Scale_Size(frame, tab)
     }
 
     local scale= Save.scale[name]
-    if scale and scale~=1 then
+    if scale then
         frame:SetScale(scale)
     end
     btn:SetScript("OnMouseUp", function(self, d)
         if d=='LeftButton' then
-            Save.scale[self.name]= self.target:GetEffectiveScale()
-            print(self:GetScale() * self:GetParent():GetScale(),self:GetParent():GetScale())
-            print(Save.scale[self.name], self.target:GetScale(), self.target:GetEffectiveScale())
-            GameTooltip_Hide()
-
+            Save.scale[self.name]= self.target:GetScale()
         elseif d=='RightButton' then
             self.isActive = false;
             local target = self.target;
