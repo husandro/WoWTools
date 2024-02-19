@@ -3240,6 +3240,12 @@ local function Init()
     --Blizzard_Dialogs.lua
     dia('CONFIRM_RESET_TO_DEFAULT_KEYBINDINGS', {text = '确定将所有快捷键设置为默认值吗？', button1 = '确定', button2 = '取消'})
     dia('GAME_SETTINGS_TIMED_CONFIRMATION', {button1 = '确定', button2 = '取消'})
+    hookDia('GAME_SETTINGS_TIMED_CONFIRMATION', 'OnUpdate', function(self, elapsed)
+        local duration = self.duration - elapsed
+        local time = math.max(duration + 1, 1)
+        set(self.text, format('接受新选项？\n\n|cnGREEN_FONT_COLOR:%d|r 秒后|cnGREEN_FONT_COLOR:恢复。|r', time))
+        StaticPopup_Resize(self, "GAME_SETTINGS_TIMED_CONFIRMATION")
+    end)
     dia('GAME_SETTINGS_CONFIRM_DISCARD', {text= '你尚有还未应用的设置。\n你确定要退出吗？', button1 = '退出', button2 = '应用并退出', button3 = '取消'})
     dia('GAME_SETTINGS_APPLY_DEFAULTS', {text= '你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？', button1 = '所有设置', button2 = '这些设置', button3 = '取消'})
 
@@ -3424,12 +3430,12 @@ local function Init()
 		end
 	end)
     local function GetSelfResurrectDialogOptions()
-        local resOptions = GetSortedSelfResurrectOptions();
+        local resOptions = GetSortedSelfResurrectOptions()
         if ( resOptions ) then
             if ( IsEncounterLimitingResurrections() ) then
-                return resOptions[1], resOptions[2];
+                return resOptions[1], resOptions[2]
             else
-                return resOptions[1];
+                return resOptions[1]
             end
         end
     end
@@ -3462,12 +3468,12 @@ local function Init()
 			end
 		end
         local option1, option2
-        local resOptions = GetSortedSelfResurrectOptions();
+        local resOptions = GetSortedSelfResurrectOptions()
         if ( resOptions ) then
             if ( IsEncounterLimitingResurrections() ) then
-                option1, option2= resOptions[1], resOptions[2];
+                option1, option2= resOptions[1], resOptions[2]
             else
-                option1=resOptions[1];
+                option1=resOptions[1]
             end
         end
 		if ( option1 ) then
@@ -4196,7 +4202,7 @@ local function Init()
         end
     end)
     hooksecurefunc(EventToastChallengeModeToastMixin, 'Setup', function(self, toastInfo)
-        set(self.Title, e.strText[toastInfo.title]);
+        set(self.Title, e.strText[toastInfo.title])
         if (toastInfo.time) then
             if e.strText[toastInfo.subtitle] then
                 set(self.SubTitle, format(e.strText[toastInfo.subtitle], SecondsToClock(toastInfo.time/1000, true)))
@@ -4206,14 +4212,14 @@ local function Init()
         end
     end)
     hooksecurefunc(EventToastManagerNormalTitleAndSubtitleMixin, 'Setup', function(self, toastInfo)
-        set(self.Title, e.strText[toastInfo.title]);
-        set(self.SubTitle, e.strText[toastInfo.subtitle]);
+        set(self.Title, e.strText[toastInfo.title])
+        set(self.SubTitle, e.strText[toastInfo.subtitle])
     end)
     hooksecurefunc(EventToastManagerNormalSingleLineMixin, 'Setup', function(self, toastInfo)
-        set(self.Title, e.strText[toastInfo.title]);
+        set(self.Title, e.strText[toastInfo.title])
     end)
     hooksecurefunc(EventToastManagerNormalBlockTextMixin, 'Setup', function(self, toastInfo)
-	    set(self.Title, e.strText[toastInfo.title]);
+	    set(self.Title, e.strText[toastInfo.title])
     end)
 
 

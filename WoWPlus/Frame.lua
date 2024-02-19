@@ -45,7 +45,7 @@ local function Set_Scale_Size(frame, tab)
     if not name or Save.disabledZoom or tab.notZoom or frame.ResizeButton or tab.frame then
         return
     end
-    
+
     local setSize= tab.setSize
     local minW= tab.minW or 115--最小窗口， 宽
     local minH= tab.minH or 115--最小窗口，高
@@ -88,9 +88,15 @@ local function Set_Scale_Size(frame, tab)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:AddLine(self.name)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..format('%.2f', self.target:GetScale()), e.Icon.left)
+        local parent= self.target:GetParent()
+        if parent then
+            e.tips:AddDoubleLine(parent:GetName() or 'Parent', format('%.2f', parent:GetScale()))
+        end
+        e.tips:AddDoubleLine(self.name, format('%s %.2f', e.onlyChinese and '有效' or 'Effective', self.target:GetEffectiveScale()))
+        local EFscale= tonumber(format('%.2f', self.target:GetEffectiveScale()))
+        local scale= tonumber(format('%.2f', self.target:GetScale()))
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(scale or 1), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, 'Alt+'..e.Icon.left)
         if self.setSize then
             e.tips:AddLine(' ')
@@ -118,14 +124,16 @@ local function Set_Scale_Size(frame, tab)
         top = 0,
         scale = 1,
     }
-    
+
     local scale= Save.scale[name]
     if scale and scale~=1 then
         frame:SetScale(scale)
     end
     btn:SetScript("OnMouseUp", function(self, d)
         if d=='LeftButton' then
-            Save.scale[self.name]= self.target:GetScale()
+            Save.scale[self.name]= self.target:GetEffectiveScale()
+            print(self:GetScale() * self:GetParent():GetScale(),self:GetParent():GetScale())
+            print(Save.scale[self.name], self.target:GetScale(), self.target:GetEffectiveScale())
             GameTooltip_Hide()
 
         elseif d=='RightButton' then
@@ -156,7 +164,6 @@ local function Set_Scale_Size(frame, tab)
                 self.SOS.x, self.SOS.y = self.SOS.left, self.SOS.top-(UIParent:GetHeight()/self.SOS.scale)
                 self.SOS.EFscale = target:GetEffectiveScale()
                 self.SOS.dist = GetScaleDistance(self.SOS)
-
                 self:SetScript("OnUpdate", function(frame)
                     local SOS= frame.SOS
                     local distance= GetScaleDistance(SOS)
@@ -272,9 +279,9 @@ local function set_Move_Frame(self, tab)
     if not self and not name then
         return
     end
-    
+
     Set_Scale_Size(self, tab)
-    
+
     if Save.disabledMove or tab.notMove or self.setMoveFrame then
         return
     end
@@ -285,8 +292,8 @@ local function set_Move_Frame(self, tab)
     self.setMoveFrame=true
     self.typeClick= click
     self.notSave= tab.notSave
-    
-    
+
+
     if not Save.moveToScreenFuori and Save.SavePoint then
         self:SetClampedToScreen(true)
         if frame then
@@ -305,7 +312,7 @@ local function set_Move_Frame(self, tab)
     else
         self:RegisterForDrag("LeftButton", "RightButton")
     end
-    
+
 
     self:HookScript("OnDragStart", function(s)
         s= s.targetMoveFrame or s
@@ -340,9 +347,9 @@ local function set_Move_Frame(self, tab)
                 self:HookScript("OnShow", set_Frame_Point)--设置, 移动, 位置
             end]]
 
-            
+
         set_Frame_Point(self, tab.name)--设置, 移动, 位置
-   
+
 end
 
 
@@ -927,7 +934,7 @@ local function Init_Add_Size()--自定义，大小
         AddonList:SetSize("500", "478")
     end})
 
-   
+
 
     --FriendsFrame={},--好友列表
 
@@ -1157,7 +1164,7 @@ local function Init_Move()
     end)
 
 
-    
+
 
 
     for text, _ in pairs(UIPanelWindows) do
