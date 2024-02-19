@@ -96,12 +96,17 @@ local function Set_Scale_Size(frame, tab)
         e.tips:AddDoubleLine(self.name, format('%s %.2f', e.onlyChinese and '实际' or 'Effective', self.target:GetEffectiveScale()))
         local scale= tonumber(format('%.2f', self.target:GetScale()))
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(scale or 1), e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, 'Alt+'..e.Icon.left)
+        local col= Save.scale[name] and '' or '|cff606060'
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '默认' or DEFAULT), col..'Alt+'..e.Icon.left)
+
         if self.setSize then
+            col= Save.size[name] and '' or '|cff606060'
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..' |cnGREEN_FONT_COLOR:'..format('%i', self.target:GetWidth())..' |rx|cnGREEN_FONT_COLOR: '..format('%i', self.target:GetHeight())..'|r', e.Icon.right)
             if self.restFunc then
-                e.tips:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, 'Alt+'..e.Icon.right)
+                e.tips:AddDoubleLine(col..(e.onlyChinese and '默认' or DEFAULT), col..'Alt+'..e.Icon.right)
+            else
+                e.tips:AddDoubleLine(col..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), col..'Alt+'..e.Icon.right)
             end
         end
         e.tips:Show()
@@ -152,6 +157,7 @@ local function Set_Scale_Size(frame, tab)
         if d=='LeftButton' then
             if IsAltKeyDown() then
                 self.target:SetScale(1)
+                self.scale[name]=nil
             else
                 local target= self.target
                 self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
@@ -186,6 +192,7 @@ local function Set_Scale_Size(frame, tab)
                 return
             end
             if IsAltKeyDown() then
+                Save.size[name]=nil
                 if self.restFunc then
                     self.restFunc()
                 end
@@ -536,12 +543,12 @@ end
 
 
 
-local combatCollectionsJournal--藏品
+--[[local combatCollectionsJournal--藏品
 local function set_Move_CollectionJournal()--藏品
     set_Move_Frame(CollectionsJournal)--藏品
     --set_Move_Frame(RematchJournal, {frame=CollectionsJournal})--藏品
     set_Move_Frame(WardrobeFrame)--幻化
-end
+end]]
 
 
 
@@ -660,12 +667,16 @@ local function setAddLoad(arg1)
         checkbox.Label:ClearAllPoints()
         checkbox.Label:SetPoint("LEFT", checkbox, "RIGHT", 2, 1)
         checkbox.Label:SetPoint("RIGHT", checkbox, "RIGHT", 160, 1)
-        if not UnitAffectingCombat('player') then
+        set_Move_Frame(CollectionsJournal)--藏品
+        --set_Move_Frame(RematchJournal, {frame=CollectionsJournal})--藏品
+        set_Move_Frame(WardrobeFrame)--幻化
+
+        --[[if not UnitAffectingCombat('player') then
             set_Move_CollectionJournal()--藏品
         else
             combatCollectionsJournal=true
             panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-        end
+        end]]
 
     elseif arg1=='Blizzard_Calendar' then--日历
         set_Move_Frame(CalendarFrame)
@@ -1338,11 +1349,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event=='PLAYER_REGEN_ENABLED' then
+    --[[elseif event=='PLAYER_REGEN_ENABLED' then
         if combatCollectionsJournal then
             set_Move_CollectionJournal()--藏品
         end
-        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
+        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')]]
 
     elseif event=='UNIT_DISPLAYPOWER' or event=='PLAYER_TALENT_UPDATE' then
         C_Timer.After(0.5, set_classPowerBar)
