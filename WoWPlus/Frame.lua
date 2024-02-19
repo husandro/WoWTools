@@ -55,13 +55,20 @@ local function Set_Scale_Size(frame, tab)
     local initFunc= tab.initFunc--初始
     local updateFunc= tab.updateFunc--setSize时, OnUpdate
     local restFunc= tab.restFunc
-    local btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')
+    local btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
     frame.ResizeButton= btn
     btn.setSize= setSize
     btn.restFunc= restFunc
     if setSize then
         frame:SetResizable(true)
         btn:Init(frame, minW, minH, maxW , maxH, rotationDegrees)
+        --[[
+            self.target = target;
+            self.minWidth = minWidth;
+            self.minHeight = minHeight;
+            self.maxWidth = maxWidth;
+            self.maxHeight = maxHeight;
+        ]]
         if initFunc then
             initFunc()
         end
@@ -94,20 +101,31 @@ local function Set_Scale_Size(frame, tab)
             e.tips:AddDoubleLine(parent:GetName() or 'Parent', format('%.2f', parent:GetScale()))
         end
         e.tips:AddDoubleLine(self.name, format('%s %.2f', e.onlyChinese and '实际' or 'Effective', self.target:GetEffectiveScale()))
-        local scale= tonumber(format('%.2f', self.target:GetScale()))
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(scale or 1), e.Icon.left)
-        local col= Save.scale[name] and '' or '|cff606060'
+
+        local scale
+        scale= tonumber(format('%.2f', self.target:GetScale() or 1))
+        scale= ((scale<=0.4 or scale>=2.5) and ' |cnRED_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..scale, e.Icon.left)
+
+        local col= Save.scale[self.name] and '' or '|cff606060'
         e.tips:AddDoubleLine(col..(e.onlyChinese and '默认' or DEFAULT), col..'Alt+'..e.Icon.left)
 
         if self.setSize then
-            col= Save.size[name] and '' or '|cff606060'
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..' |cnGREEN_FONT_COLOR:'..format('%i', self.target:GetWidth())..' |rx|cnGREEN_FONT_COLOR: '..format('%i', self.target:GetHeight())..'|r', e.Icon.right)
-            if self.restFunc then
-                e.tips:AddDoubleLine(col..(e.onlyChinese and '默认' or DEFAULT), col..'Alt+'..e.Icon.right)
-            else
-                e.tips:AddDoubleLine(col..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), col..'Alt+'..e.Icon.right)
-            end
+            local w, h
+            w= math.modf(self.target:GetWidth())
+            w= format('%s%d|r', ((self.minWidth and self.minWidth>=w) or (self.maxWidth and self.maxWidth<=w)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', w)
+
+            h= math.modf(self.target:GetHeight())
+            h= format('%s%d|r', ((self.minHeight and self.minHeight>=h) or (self.maxHeight and self.maxHeight<=h)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', h)
+
+            e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..format('%s |cffffffffx|r %s', w,h), e.Icon.right)
+
+            col= Save.size[self.name] and '' or '|cff606060'
+            e.tips:AddDoubleLine(
+                col..(self.restFunc and (e.onlyChinese and '默认' or DEFAULT) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)),
+                col..'Alt+'..e.Icon.right
+            )
         end
         e.tips:Show()
     end
@@ -134,6 +152,9 @@ local function Set_Scale_Size(frame, tab)
         frame:SetScale(scale)
     end
     btn:SetScript("OnMouseUp", function(self, d)
+        if IsModifierKeyDown() then
+            return
+        end
         if d=='LeftButton' then
             Save.scale[self.name]= self.target:GetScale()
         elseif d=='RightButton' then
@@ -157,7 +178,7 @@ local function Set_Scale_Size(frame, tab)
         if d=='LeftButton' then
             if IsAltKeyDown() then
                 self.target:SetScale(1)
-                self.scale[name]=nil
+                Save.scale[self.name]=nil
             else
                 local target= self.target
                 self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
@@ -273,14 +294,19 @@ end
 --####
 --移动
 --####
---set_Move_Frame(frame, {frame=nil, click=nil, save=nil, show=nil, zeroAlpha=nil, notZoom=true, point='left'})    
 local function set_Move_Frame(self, tab)
     tab= tab or {}
-    local name= tab.name or (tab.frame and tab.frame:GetName()) or (self and self:GetName())
-    tab.name= name
-    if not self and not name then
+
+    local frame= tab.frame
+    local name= tab.name or (frame and frame:GetName()) or (self and self:GetName())
+    local click= tab.click
+    local frame= tab.frame
+    local notSave= tab.notSave
+
+    if not self or not name or self.setMoveFrame then
         return
     end
+    tab.name= name
 
     Set_Scale_Size(self, tab)
 
@@ -288,12 +314,10 @@ local function set_Move_Frame(self, tab)
         return
     end
 
-    local click= tab.click
-    local frame= tab.frame
     self.targetMoveFrame= tab.frame--要移动的Frame
     self.setMoveFrame=true
     self.typeClick= click
-    self.notSave= tab.notSave
+    self.notSave= notSave
 
 
     if not Save.moveToScreenFuori and Save.SavePoint then
@@ -309,7 +333,7 @@ local function set_Move_Frame(self, tab)
 
     if click=='RightButton' then
         self:RegisterForDrag("RightButton")
-    elseif self.click=='LeftButton' then
+    elseif click=='LeftButton' then
         self:RegisterForDrag("LeftButton")
     else
         self:RegisterForDrag("LeftButton", "RightButton")
@@ -333,7 +357,7 @@ local function set_Move_Frame(self, tab)
             Save.point[frameName][2]= nil
         end
     end)
-    self:HookScript("OnMouseUp", ResetCursor)--停止移动
+    
     --self:HookScript('OnHide', stop_Drag)--停止移动
     self:HookScript("OnMouseDown", function(s, d)--设置, 光标
         if d~='RightButton' and d~='LeftButton' then
@@ -343,6 +367,7 @@ local function set_Move_Frame(self, tab)
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
+    self:HookScript("OnMouseUp", ResetCursor)--停止移动
     self:HookScript("OnLeave", ResetCursor)
 
             --[[if tab.show or Save.SavePoint then
@@ -867,8 +892,12 @@ end
 local function Init_Add_Size()--自定义，大小
     --世界地图
     if not C_AddOns.IsAddOnLoaded('Mapster') then
+        --[[WorldMapFrame.questLogWidth = 400
+        QuestMapFrame:SetWidth(WorldMapFrame.questLogWidth)
+        WorldMapFrame:Minimize()]]
         local minimizedWidth= WorldMapFrame.minimizedWidth or 702
         local minimizedHeight= WorldMapFrame.minimizedHeight or 534
+
         local function set_min_max_value(size)
             local self= WorldMapFrame
             local isMax= self:IsMaximized()
@@ -883,7 +912,7 @@ local function Init_Add_Size()--自定义，大小
             end
             self.ResizeButton:SetShown(not isMax)
         end
-        set_Move_Frame(WorldMapFrame, {setSize=true, initFunc=function()
+        set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, initFunc=function()
             QuestMapFrame.Background:ClearAllPoints()
             QuestMapFrame.Background:SetAllPoints(QuestMapFrame)
             QuestMapFrame.DetailsFrame:ClearAllPoints()
@@ -897,26 +926,23 @@ local function Init_Add_Size()--自定义，大小
                 if self:IsMaximized() then
                     return
                 end
-                local size= Save.size[WorldMapFrame:GetName()]
+                local name= self:GetName()
+                local size= Save.size[name]
                 if size then
                     self:SetSize(size[1], size[2])
+                    set_min_max_value(size)
                 end
-                set_min_max_value(size)
-                local name= self:GetName()
-                local scale= Save.scale[name] or 1
-                if scale~=1 then
+                local scale= Save.scale[name]
+                if scale then
                     self:SetScale(scale)
                 end
             end)
             hooksecurefunc(WorldMapFrame, 'Maximize', function(self)
-                if not self:IsMaximized() then
-                    return
-                end
-                set_min_max_value()
-                local name= self:GetName()
-                local scale= Save.scale[name] or 1
-                if scale~=1 then
-                    self:SetScale(1)
+                if self:IsMaximized() then
+                    set_min_max_value()
+                    if Save.scale[self:GetName()] then
+                        self:SetScale(1)
+                    end
                 end
             end)
         end, updateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
@@ -932,7 +958,7 @@ local function Init_Add_Size()--自定义，大小
 
 
     --插件
-    set_Move_Frame(AddonList, {setSize=true, initFunc=function()
+    set_Move_Frame(AddonList, {minW=440, minH=120, maxW=510, setSize=true, initFunc=function()
         AddonList.ScrollBox:ClearAllPoints()
         AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
         AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
@@ -940,7 +966,7 @@ local function Init_Add_Size()--自定义，大小
         AddonList:SetSize("500", "478")
     end})
 
-
+    --CharacterFrame={},--角色
 
     --FriendsFrame={},--好友列表
 
