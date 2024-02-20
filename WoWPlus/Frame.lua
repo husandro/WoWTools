@@ -50,8 +50,8 @@ local function Set_Scale_Size(frame, tab)
     end
 
     local setSize= tab.setSize
-    local minW= tab.minW or 115--最小窗口， 宽
-    local minH= tab.minH or 115--最小窗口，高
+    local minW= tab.minW or frame:GetWidth() or 220--最小窗口， 宽
+    local minH= tab.minH or frame:GetHeight() or 115--最小窗口，高
     local maxW= tab.maxW--最大，可无
     local maxH= tab.maxH--最大，可无
     local rotationDegrees= tab.rotationDegrees--旋转度数
@@ -168,13 +168,13 @@ local function Set_Scale_Size(frame, tab)
         frame:SetScale(scale)
     end
     btn:SetScript("OnMouseUp", function(self, d)
+        self.isActive= false
         if IsModifierKeyDown() then
             return
         end
         if d=='LeftButton' then
             Save.scale[self.name]= self.target:GetScale()
         elseif d=='RightButton' and self.setSize then
-            self.isActive = false;
             local target = self.target;
             local continueResizeStop = true;
             if target.onResizeStopCallback then
@@ -192,6 +192,9 @@ local function Set_Scale_Size(frame, tab)
         self:SetScript("OnUpdate", nil)
     end)
     btn:SetScript("OnMouseDown",function(self, d)
+        if self.isActive then
+            return
+        end
         if IsControlKeyDown() then
             if self.setSize or self.disabledSize then
                 Save.disabledSize[self.name]= not Save.disabledSize[self.name] and true or nil
@@ -202,6 +205,7 @@ local function Set_Scale_Size(frame, tab)
                 self.target:SetScale(1)
                 Save.scale[self.name]=nil
             else
+                self.isActive= true
                 local target= self.target
                 self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
                 self.SOS.scale = target:GetScale()
@@ -700,7 +704,9 @@ local function setAddLoad(arg1)
         set_Move_Frame(BlackMarketFrame)
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
-        set_Move_Frame(CommunitiesFrame)
+        set_Move_Frame(CommunitiesFrame, {setSize=true, 
+
+        })
         set_Move_Frame(CommunitiesFrame.RecruitmentDialog)
         --set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog)
         --set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
@@ -1134,7 +1140,8 @@ local function Init_Add_Size()--自定义，大小
                 CharacterFrame:SetSize(size[1], size[2])
             end
             if CharacterFrame.ResizeButton then
-                CharacterFrame.ResizeButton.minWidth= PANEL_DEFAULT_WIDTH
+                CharacterFrame.ResizeButton.minWidth= 270
+                CharacterFrame.ResizeButton.minHeight= 115
             end
         end)
         hooksecurefunc('CharacterFrame_Expand', function()--显示角色，界面
@@ -1147,6 +1154,7 @@ local function Init_Add_Size()--自定义，大小
             end
             if CharacterFrame.ResizeButton then
                 CharacterFrame.ResizeButton.minWidth= CHARACTERFRAME_EXPANDED_WIDTH
+                CharacterFrame.ResizeButton.minHeight= 424
             end
         end)
         end, updateFunc=function()
@@ -1164,11 +1172,11 @@ local function Init_Add_Size()--自定义，大小
             end
         end, restFunc=function(self)
             if self.Expanded then
-                self:SetSize(CHARACTERFRAME_EXPANDED_WIDTH, 338)
                 Save.size['CharacterFrameExpanded']=nil
+                self:SetSize(CHARACTERFRAME_EXPANDED_WIDTH, 424)
             else
-                self:SetSize(PANEL_DEFAULT_WIDTH, 338)
                 Save.size['CharacterFrameCollapse']=nil
+                self:SetSize(PANEL_DEFAULT_WIDTH, 424)
             end
         end, getSizeRestTooltipColor=function(self)
             return ((self.Expanded and Save.size['CharacterFrameExpanded']) or (not self.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
