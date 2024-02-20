@@ -1851,6 +1851,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Communities' then--公会和社区
+            --申请，加入
             local function set_ClubFinderRequestToJoin(self)
                 local specID = PlayerUtil.GetCurrentSpecID()
                 if not self.info or not Save.gossip or not self.SpecsPool or not specID then
