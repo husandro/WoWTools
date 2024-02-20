@@ -714,14 +714,13 @@ local function setAddLoad(arg1)
         end)
         set_Move_Frame(CommunitiesFrame, {setSize=true, initFunc=function()
             hooksecurefunc(CommunitiesFrame, 'UpdateMaximizeMinimizeButton', function(self)
-                local btn=self.ResizeButton
-                if not btn then
+                if not self.ResizeButton then
                     return
                 end
                 local displayMode = self:GetDisplayMode();
                 if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-                    btn.minWidth= 290
-                    btn.minHeight= 115
+                    self.ResizeButton.minWidth= 290
+                    self.ResizeButton.minHeight= 115
                     local size= Save.size['CommunitiesFrameMINIMIZED']
                     if size then
                         self:SetSize(size[1], size[2])
@@ -731,8 +730,8 @@ local function setAddLoad(arg1)
                     if size then
                         self:SetSize(size[1], size[2])
                     end
-                    btn.minWidth= 814
-                    btn.minHeight= 426
+                    self.ResizeButton.minWidth= 814
+                    self.ResizeButton.minHeight= 426
                 end
             end)
         end, resizeStoppedCallback=function(self)
