@@ -590,7 +590,7 @@ local function Init()
     GroupFinderFrame:HookScript('OnShow', function()
         PVEFrame:SetTitle('地下城和团队副本')
     end)
-    
+
 
     set(PVEFrameTab1, '地下城和团队副本')
     set(PVEFrameTab2, 'PvP')
@@ -3439,7 +3439,7 @@ local function Init()
             end
         end
     end
-    
+
     hookDia("DEATH", 'OnUpdate', function(self)
 		if ( IsFalling() and not IsOutOfBounds()) then
 			return
@@ -6349,6 +6349,67 @@ end)
                 self.DialogLabel:SetText('你只能加入一个公会。|n加入此公会时，|cnRED_FONT_COLOR:其他公会邀请会被移除。|r')
             end
         end)
+
+        local function set_ClubFinderRequestToJoin(self)
+            if (not self.info) then
+                return;
+            end
+            set(self.ClubName, e.strText[self.info.name])
+            local comment= e.strText[self.info.comment]
+            if comment then
+                set(self.ClubDescription, comment:gsub("\n",""))
+            end
+            local specIds = ClubFinderGetPlayerSpecIds() or {}
+            local matchingSpecNames = { }
+            for check in pairs(self.SpecsPool.activeObjects or {}) do
+                setLabel(check.SpecName)
+            end
+           --[[ for i, specId in ipairs(specIds) do
+               -- info=self.SpecsPool.activeObjects[i]
+                --for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+                local specButton = self.SpecsPool.activeObjects[i]--self.SpecsPool:Acquire();
+
+                if specButton then
+                    local name = select(2, GetSpecializationInfoForSpecID(specId))
+                    set(specButton.SpecName, e.strText[name])
+                    print(specButton.SpecName:GetText())
+                end
+                if (self.card.recruitingSpecIds[specId]) then
+                    table.insert(matchingSpecNames, e.cn(name))
+                end
+            end
+            local classDisplayName = UnitClass("player");
+            classDisplayName= e.cn(classDisplayName)
+            if(isRecruitingAllSpecs) then
+                if(self.info.isGuild) then
+                    set(self.RecruitingSpecDescriptions, '此公会正在招募所有的专精类型。');
+                else
+                    set(self.RecruitingSpecDescriptions, '此社区正在招募所有的专精类型。');
+                end
+            elseif (#matchingSpecNames == 1) then
+                set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s %s。你玩的是哪个专精？', matchingSpecNames[1], classDisplayName))
+            elseif (#matchingSpecNames == 2) then
+                set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s和%s %s。你玩的是哪个专精？', matchingSpecNames[1], matchingSpecNames[2], classDisplayName));
+            elseif (#matchingSpecNames == 3) then
+                set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s、%s和%s %s。你玩的是哪个专精？', matchingSpecNames[1], matchingSpecNames[2], matchingSpecNames[3], classDisplayName));
+            elseif (#matchingSpecNames == 4) then
+                set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s、%s、%s和%s %s。你玩的是哪个专精？', matchingSpecNames[1], matchingSpecNames[2], matchingSpecNames[3], matchingSpecNames[4], classDisplayName));
+            end]]
+        end
+        hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
+        hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
+        --CommunitiesFrame.ClubFinderInvitationFrame.InsetFrame.GuildDescription
+
+
+
+
+
+
+
+
+
+
+
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set(GuildBankFrameTab1, '公会银行')
             set(GuildItemSearchBox.Instructions, '搜索')

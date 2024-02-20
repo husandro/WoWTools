@@ -356,6 +356,7 @@ local function Init()
 
         if not self.check then
             self.check=CreateFrame("CheckButton", nil, self, "InterfaceOptionsCheckButtonTemplate")
+            self.check:SetSize(22,22)
             self.check:SetCheckedTexture(e.Icon.icon)
             self.check:SetPoint('RIGHT', self)
             self.check:SetScript('OnClick', function(self2)

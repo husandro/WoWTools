@@ -100,7 +100,7 @@ local function Set_Scale_Size(frame, tab)
     btn:SetSize(16, 16)
     btn:SetPoint('BOTTOMRIGHT', frame, 6,-6)
     btn:SetClampedToScreen(true)
-    btn:SetScript('OnLeave', function(self) GameTooltip_Hide() ResetCursor()  end)
+    btn:SetScript('OnLeave', function() GameTooltip_Hide() ResetCursor()  end)
     function btn:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
@@ -173,7 +173,7 @@ local function Set_Scale_Size(frame, tab)
         end
         if d=='LeftButton' then
             Save.scale[self.name]= self.target:GetScale()
-        elseif d=='RightButton' then
+        elseif d=='RightButton' and self.setSize then
             self.isActive = false;
             local target = self.target;
             local continueResizeStop = true;
@@ -195,7 +195,6 @@ local function Set_Scale_Size(frame, tab)
         if IsControlKeyDown() then
             if self.setSize or self.disabledSize then
                 Save.disabledSize[self.name]= not Save.disabledSize[self.name] and true or nil
-                print(Save.disabledSize[self.name],name)
                 print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledSize[self.name]), self.name, e.onlyChinese and '大小' or 'Size', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
             end
         elseif d=='LeftButton' then
@@ -1026,16 +1025,42 @@ local function Init_Add_Size()--自定义，大小
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     --插件
-    set_Move_Frame(AddonList, {minW=440, minH=120, setSize=true, initFunc=function()
+    set_Move_Frame(AddonList, {minW=430, minH=120, setSize=true, initFunc=function()
         AddonList.ScrollBox:ClearAllPoints()
         AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
         AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
+        hooksecurefunc('AddonList_InitButton', function(entry)
+            entry.Title:SetPoint('RIGHT', -220, 0 )
+        end)
+        --e.call(AddonList_Update)
     end, restFunc= function()
         AddonList:SetSize("500", "478")
     end})
 
-    AddonList:Show()
+
+
+    --[[set_Move_Frame(EditModeManagerFrame, {setSize=true, initFunc=function()
+        EditModeManagerFrame.AccountSettings.SettingsContainer:SetPoint('TOPLEFT')
+        EditModeManagerFrame.AccountSettings.SettingsContainer:SetPoint('BOTTOMRIGHT')
+    end})]]
+    --AddonList:Show()
 
 
 

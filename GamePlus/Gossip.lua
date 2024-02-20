@@ -1849,6 +1849,50 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 
+        elseif arg1=='Blizzard_Communities' then--公会和社区
+            local function set_ClubFinderRequestToJoin(self)
+                local specID = PlayerUtil.GetCurrentSpecID()
+                if not self.info or not Save.gossip or not self.SpecsPool or not specID then
+                    return;
+                end
+                local specName
+                for btn in pairs(self.SpecsPool.activeObjects or {}) do
+                   if btn.specID==specID then
+                        btn.CheckBox:Click()
+                        specName= btn.SpecName:GetText()
+                        break
+                   end
+                end
+                local level= UnitLevel('player')
+                local avgItemLevel,_, avgItemLevelPvp= GetAverageItemLevel()
+                local score= C_ChallengeMode.GetOverallDungeonScore() or 0
+                local keyStoneLevel= C_MythicPlus.GetOwnedKeystoneLevel() or 0
+                local achievement= GetTotalAchievementPoints() or 0
+                local text= 'Level '..(level and format('%i', level) or '')..'|n'
+                    ..'Item Level '..(avgItemLevel and format('%i', avgItemLevel) or '')..'|n'
+                    ..(avgItemLevel and avgItemLevelPvp and avgItemLevelPvp- avgItemLevel>20 and 'Item PvP '..format('%i', avgItemLevel)..'|n' or '')
+                if score>1000 then
+                    text= text..'Keystone '..score..(keyStoneLevel and keyStoneLevel>10 and ' ('..keyStoneLevel..')' or '')
+                    text= text..'|n'
+                end
+                if achievement>10000 then
+                    text= text..'Achievement '..achievement..'|n'
+                end
+                self.MessageFrame.MessageScroll.EditBox:SetText(text)
+                if IsModifierKeyDown() then
+                    return
+                end
+                if self.Apply:IsEnabled() then
+                    self.Apply:Click()
+                    print(
+                        id,addName,'|cnGREEN_FONT_COLOR:', self.Apply:GetText(),'|n|cffff00ff',
+                        (self.info.emblemInfo and '|T'..self.info.emblemInfo..':0|t' or '')..(self.info.name or '')..(self.info.numActiveMembers and  '|cff00ccff ('..self.info.numActiveMembers..')|r' or ''), '|n',
+                        '|cnGREEN_FONT_COLOR:'..text, specName,'|n', '|cffff7f00', self.info.comment)
+                end
+            end
+            hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
+            hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
+
         elseif arg1=='Blizzard_PlayerChoice' then
             --#########
             --命运, 字符
