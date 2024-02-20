@@ -55,11 +55,15 @@ local function Set_Scale_Size(frame, tab)
     local rotationDegrees= tab.rotationDegrees--旋转度数
     local initFunc= tab.initFunc--初始
     local updateFunc= tab.updateFunc--setSize时, OnUpdate
-    local restFunc= tab.restFunc
+    local restFunc= tab.restFunc--清除，数据
+    local resizeStoppedCallback= tab.resizeStoppedCallback--保存，内容
+    local getSizeRestTooltipColor= tab.getSizeRestTooltipColor--重置，提示SIZE，颜色
+
     local btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
     frame.ResizeButton= btn
     btn.setSize= setSize
     btn.restFunc= restFunc
+    btn.resizeStoppedCallback= resizeStoppedCallback
     if setSize then
         frame:SetResizable(true)
         btn:Init(frame, minW, minH, maxW , maxH, rotationDegrees)
@@ -75,6 +79,7 @@ local function Set_Scale_Size(frame, tab)
         end
         btn.updateFunc= updateFunc
         btn.restFunc= restFunc
+        btn.getSizeRestTooltipColor= getSizeRestTooltipColor
         local size= Save.size[name]
         if size then
             frame:SetSize(size[1], size[2])
@@ -122,7 +127,10 @@ local function Set_Scale_Size(frame, tab)
 
             e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..format('%s |cffffffffx|r %s', w,h), e.Icon.right)
 
-            col= Save.size[self.name] and '' or '|cff606060'
+            local col= Save.size[self.name] and '' or '|cff606060'
+            if self.getSizeRestTooltipColor then
+                col=self.getSizeRestTooltipColor(self.target) or col
+            end
             e.tips:AddDoubleLine(
                 col..(self.restFunc and (e.onlyChinese and '默认' or DEFAULT) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)),
                 col..'Alt+'..e.Icon.right
@@ -170,8 +178,9 @@ local function Set_Scale_Size(frame, tab)
             end
             if self.resizeStoppedCallback ~= nil then
                 self.resizeStoppedCallback(self.target);
+            else
+                Save.size[self.name]= {self.target:GetSize()}
             end
-            Save.size[self.name]= {self.target:GetSize()}
         end
         self:SetScript("OnUpdate", nil)
     end)
@@ -216,7 +225,7 @@ local function Set_Scale_Size(frame, tab)
             if IsAltKeyDown() then
                 Save.size[name]=nil
                 if self.restFunc then
-                    self.restFunc()
+                    self.restFunc(self.target)
                 end
             else
                 self.isActive = true;
@@ -232,7 +241,7 @@ local function Set_Scale_Size(frame, tab)
                 self:SetScript('OnUpdate', function(frame)
                     frame:set_tooltip()
                     if frame.updateFunc then
-                        frame.updateFunc()
+                        frame.updateFunc(frame.target)
                     end
                 end)
             end
@@ -1014,6 +1023,24 @@ local function Init_Add_Size()--自定义，大小
     end})
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --角色
     set_Move_Frame(CharacterFrame, {minW=338, minH=424, setSize=true, initFunc=function()
         PaperDollFrame.TitleManagerPane:ClearAllPoints()
         PaperDollFrame.TitleManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
@@ -1035,7 +1062,7 @@ local function Init_Add_Size()--自定义，大小
 
         CharacterModelFrameBackgroundOverlay:ClearAllPoints()
         CharacterModelFrameBackgroundOverlay:SetAllPoints(CharacterModelScene)
-        
+
         CharacterModelFrameBackgroundTopLeft:ClearAllPoints()
         CharacterModelFrameBackgroundTopLeft:SetPoint('TOPLEFT')
         CharacterModelFrameBackgroundTopLeft:SetPoint('BOTTOMRIGHT',-19, 128)
@@ -1052,13 +1079,6 @@ local function Init_Add_Size()--自定义，大小
         CharacterModelFrameBackgroundBotRight:SetPoint('TOPLEFT', CharacterModelFrameBackgroundBotLeft, 'TOPRIGHT')
         CharacterModelFrameBackgroundBotRight:SetPoint('BOTTOMRIGHT')
 
-        --[[hide_Texture(CharacterModelFrameBackgroundTopLeft)--角色3D背景
-        hide_Texture(CharacterModelFrameBackgroundTopRight)
-        hide_Texture(CharacterModelFrameBackgroundBotLeft)
-        hide_Texture(CharacterModelFrameBackgroundBotRight)
-        hide_Texture(CharacterModelFrameBackgroundOverlay)]]
-
-
         CharacterStatsPane.ClassBackground:ClearAllPoints()
         CharacterStatsPane.ClassBackground:SetAllPoints(CharacterStatsPane)
 
@@ -1072,19 +1092,26 @@ local function Init_Add_Size()--自定义，大小
             CharacterFrameInset:ClearAllPoints()
             CharacterFrameInset:SetPoint('TOPLEFT', 4, -60)
             CharacterFrameInset:SetPoint('BOTTOMRIGHT',-4, 4)
+            local size= Save.size['CharacterFrameCollapse']
+            if size then
+                CharacterFrame:SetSize(size[1], size[2])
+            end
+            if CharacterFrame.ResizeButton then
+                CharacterFrame.ResizeButton.minWidth= PANEL_DEFAULT_WIDTH
+            end
         end)
         hooksecurefunc('CharacterFrame_Expand', function()--显示角色，界面
             CharacterFrameInset:ClearAllPoints()
             CharacterFrameInset:SetPoint('TOPLEFT', 4, -60)
             CharacterFrameInset:SetPoint('BOTTOMRIGHT', -221, 4)
-            
+            local size= Save.size['CharacterFrameExpanded']
+            if size then
+                CharacterFrame:SetSize(size[1], size[2])
+            end
+            if CharacterFrame.ResizeButton then
+                CharacterFrame.ResizeButton.minWidth= CHARACTERFRAME_EXPANDED_WIDTH
+            end
         end)
-        --CharacterFrameInset:ClearAllPoints()
-        --CharacterFrameInset:SetPoint('TOPLEFT')
-        --CharacterFrameInset:SetPoint('BOTTOMRIGHT')
-        --ReputationFrame:ClearAllPoints()
-        --ReputationFrame:SetPoint('TOPLEFT')
-        --ReputationFrame:SetPoint('BOTTOMRIGHT')
     end, updateFunc=function()
         if PaperDollFrame.EquipmentManagerPane:IsVisible() then
             e.call('PaperDollEquipmentManagerPane_Update')
@@ -1092,8 +1119,24 @@ local function Init_Add_Size()--自定义，大小
         if PaperDollFrame.TitleManagerPane:IsVisible() then
             e.call('PaperDollTitlesPane_Update')
         end
+    end, resizeStoppedCallback=function(self)
+        if CharacterFrame.Expanded then
+            Save.size['CharacterFrameExpanded']={self:GetSize()}
+        else
+            Save.size['CharacterFrameCollapse']={self:GetSize()}
+        end
+    end, restFunc=function(self)
+        if self.Expanded then
+            self:SetSize(CHARACTERFRAME_EXPANDED_WIDTH, 338)
+            Save.size['CharacterFrameExpanded']=nil
+        else
+            self:SetSize(PANEL_DEFAULT_WIDTH, 338)
+            Save.size['CharacterFrameCollapse']=nil
+        end
+    end, getSizeRestTooltipColorFunc=function(self)
+        return ((self.Expanded and Save.size['CharacterFrameExpanded']) or (not self.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
     end
-    })--角色
+    })
     CharacterFrame:Show()
     --FriendsFrame={},--好友列表
 
