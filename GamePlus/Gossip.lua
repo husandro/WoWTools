@@ -1886,7 +1886,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     self.Apply:Click()
                     print(
                         id,addName,'|cnGREEN_FONT_COLOR:', self.Apply:GetText(),'|n|cffff00ff',
-                        (self.info.emblemInfo and '|T'..self.info.emblemInfo..':0|t' or '')..(self.info.name or '')..(self.info.numActiveMembers and  '|cff00ccff ('..self.info.numActiveMembers..')|r' or ''), '|n',
+                        (self.info.emblemInfo and '|T'..self.info.emblemInfo..':0|t' or '')..(self.info.name or '')..(self.info.numActiveMembers and  '|cff00ccff (|A:groupfinder-waitdot:0:0|a'..self.info.numActiveMembers..')|r' or ''), '|n',
                         '|cnGREEN_FONT_COLOR:'..text, specName,'|n', '|cffff7f00', self.info.comment)
                 end
             end
