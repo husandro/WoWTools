@@ -10,7 +10,9 @@ local Save={
             ['UIWidgetPowerBarContainerFrame']= 0.85,
         },
         size={},
-        width={},
+        disabledSize={['CharacterFrame']= true},
+        --width={},
+        
 
 }
 local addName= 'Frame'
@@ -58,13 +60,15 @@ local function Set_Scale_Size(frame, tab)
     local restFunc= tab.restFunc--清除，数据
     local resizeStoppedCallback= tab.resizeStoppedCallback--保存，内容
     local getSizeRestTooltipColor= tab.getSizeRestTooltipColor--重置，提示SIZE，颜色
+    local disabledSize= Save.disabledSize[name]
 
     local btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
-    frame.ResizeButton= btn
-    btn.setSize= setSize
+    frame.ResizeButton= btn    
+    btn.disabledSize= disabledSize
+    btn.setSize= setSize and not disabledSize
     btn.restFunc= restFunc
     btn.resizeStoppedCallback= resizeStoppedCallback
-    if setSize then
+    if btn.setSize then
         frame:SetResizable(true)
         btn:Init(frame, minW, minH, maxW , maxH, rotationDegrees)
         --[[
@@ -92,11 +96,11 @@ local function Set_Scale_Size(frame, tab)
 
     e.Set_Label_Texture_Color(btn, {type='Button', alpha=1})--设置颜色
 
-    btn:SetAlpha(0.5)
+    --btn:SetAlpha(0.5)
     btn:SetSize(16, 16)
     btn:SetPoint('BOTTOMRIGHT', frame, 6,-6)
     btn:SetClampedToScreen(true)
-    btn:SetScript('OnLeave', function(self) GameTooltip_Hide() ResetCursor() self:SetAlpha(0.5) end)
+    btn:SetScript('OnLeave', function(self) GameTooltip_Hide() ResetCursor()  end)
     function btn:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
@@ -116,7 +120,10 @@ local function Set_Scale_Size(frame, tab)
         local col= Save.scale[self.name] and '' or '|cff606060'
         e.tips:AddDoubleLine(col..(e.onlyChinese and '默认' or DEFAULT), col..'Alt+'..e.Icon.left)
 
-        if self.setSize then
+        if self.disabledSize then
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..': '..e.GetEnabeleDisable(false), 'Ctrl+'..e.Icon.left)
+        elseif self.setSize then
             e.tips:AddLine(' ')
             local w, h
             w= math.modf(self.target:GetWidth())
@@ -125,7 +132,7 @@ local function Set_Scale_Size(frame, tab)
             h= math.modf(self.target:GetHeight())
             h= format('%s%d|r', ((self.minHeight and self.minHeight>=h) or (self.maxHeight and self.maxHeight<=h)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', h)
 
-            e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..format('%s |cffffffffx|r %s', w,h), e.Icon.right)
+            e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..format(' %s |cffffffffx|r %s', w, h), e.Icon.right)
 
             local col= Save.size[self.name] and '' or '|cff606060'
             if self.getSizeRestTooltipColor then
@@ -135,13 +142,13 @@ local function Set_Scale_Size(frame, tab)
                 col..(self.restFunc and (e.onlyChinese and '默认' or DEFAULT) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)),
                 col..'Alt+'..e.Icon.right
             )
+            e.tips:AddDoubleLine(e.GetEnabeleDisable(true), 'Ctrl+'..e.Icon.left)
         end
         e.tips:Show()
     end
     btn:SetScript('OnEnter', function(self)
         self:set_tooltip()
         SetCursor("UI_RESIZE_CURSOR")
-        self:SetAlpha(1)
     end)
 
 
@@ -185,7 +192,13 @@ local function Set_Scale_Size(frame, tab)
         self:SetScript("OnUpdate", nil)
     end)
     btn:SetScript("OnMouseDown",function(self, d)
-        if d=='LeftButton' then
+        if IsControlKeyDown() then
+            if self.setSize or self.disabledSize then
+                Save.disabledSize[self.name]= not Save.disabledSize[self.name] and true or nil
+                print(Save.disabledSize[self.name],name)
+                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledSize[self.name]), self.name, e.onlyChinese and '大小' or 'Size', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+            end
+        elseif d=='LeftButton' then
             if IsAltKeyDown() then
                 self.target:SetScale(1)
                 Save.scale[self.name]=nil
@@ -1084,13 +1097,12 @@ local function Init_Add_Size()--自定义，大小
 
         CharacterMainHandSlot:ClearAllPoints()
         CharacterMainHandSlot:SetPoint('BOTTOMRIGHT', CharacterFrameInset, 'BOTTOM', -2.5, 16)
-        --CharacterStatsPane.ClassBackground:SetPoint('BOTTOMRIGHT')
+        CharacterFrameInset:ClearAllPoints()
+        CharacterFrameInset:SetPoint('TOPLEFT', 4, -60)
         --PANEL_DEFAULT_WIDTH 338
         --CHARACTERFRAME_EXPANDED_WIDTH 540
         --CharacterStatsPane width 197
         hooksecurefunc('CharacterFrame_Collapse', function()
-            CharacterFrameInset:ClearAllPoints()
-            CharacterFrameInset:SetPoint('TOPLEFT', 4, -60)
             CharacterFrameInset:SetPoint('BOTTOMRIGHT',-4, 4)
             local size= Save.size['CharacterFrameCollapse']
             if size then
@@ -1101,12 +1113,12 @@ local function Init_Add_Size()--自定义，大小
             end
         end)
         hooksecurefunc('CharacterFrame_Expand', function()--显示角色，界面
-            CharacterFrameInset:ClearAllPoints()
-            CharacterFrameInset:SetPoint('TOPLEFT', 4, -60)
             CharacterFrameInset:SetPoint('BOTTOMRIGHT', -221, 4)
             local size= Save.size['CharacterFrameExpanded']
             if size then
                 CharacterFrame:SetSize(size[1], size[2])
+            elseif Save.size['CharacterFrameCollapse'] then
+                CharacterFrame:SetHeight(424)
             end
             if CharacterFrame.ResizeButton then
                 CharacterFrame.ResizeButton.minWidth= CHARACTERFRAME_EXPANDED_WIDTH
@@ -1133,7 +1145,7 @@ local function Init_Add_Size()--自定义，大小
             self:SetSize(PANEL_DEFAULT_WIDTH, 338)
             Save.size['CharacterFrameCollapse']=nil
         end
-    end, getSizeRestTooltipColorFunc=function(self)
+    end, getSizeRestTooltipColor=function(self)
         return ((self.Expanded and Save.size['CharacterFrameExpanded']) or (not self.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
     end
     })
@@ -1450,7 +1462,7 @@ local function Init_Options()
         initializer:SetParentInitializer(initializer2, function() return not Save.disabledMove end)
 
     --缩放
-    e.AddPanel_Check_Button({
+    initializer2= e.AddPanel_Check_Button({
         checkName= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
         checkValue= not Save.disabledZoom,
         checkFunc= function()
@@ -1462,13 +1474,19 @@ local function Init_Options()
         buttonFunc= function()
             StaticPopupDialogs[id..addName..'MoveZoomClearZoom']= {
                 text =id..' '..addName..'|n|n'
-                ..('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE)),
-                button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+                ..('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)),
+                button1 = '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
                 button2 = e.onlyChinese and '取消' or CANCEL,
+                button3=  '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '大小' or 'Size'),
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 OnAccept=function()
                     Save.scale={}
                     print(id, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                end,
+                OnAlt=function()
+                    Save.size={}
+                    Save.disabledSize={}
+                    print(id, e.cn(addName), e.onlyChinese and '大小' or 'Size', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
                 end,
             }
             StaticPopup_Show(id..addName..'MoveZoomClearZoom')
@@ -1478,6 +1496,7 @@ local function Init_Options()
         layout= Layout,
         category= Category
     })
+
     --窗口大小
     --[[e.AddPanel_Check({
         name= '|TInterface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up:0|t'..(e.onlyChinese and '窗口大小' or 'Window Size'),
@@ -1507,8 +1526,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.scale= Save.scale or {}
             Save.size= Save.size or {}
-            Save.width= Save.width or {}
-
+            Save.disabledSize= Save.disabledSize or {}
+            --Save.width= Save.width or {}
+            
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
                 tooltip= e.cn(addName),
