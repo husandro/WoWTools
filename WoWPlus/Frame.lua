@@ -1015,8 +1015,6 @@ local function Init_Add_Size()--自定义，大小
 
 
     set_Move_Frame(CharacterFrame, {minW=338, minH=424, setSize=true, initFunc=function()
-        
-
         PaperDollFrame.TitleManagerPane:ClearAllPoints()
         PaperDollFrame.TitleManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
         PaperDollFrame.TitleManagerPane:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -4, 4)
@@ -1033,9 +1031,39 @@ local function Init_Add_Size()--自定义，大小
 
         CharacterModelScene:ClearAllPoints()
         CharacterModelScene:SetPoint('TOPLEFT', 52, -66)
-        CharacterModelScene:SetPoint('BOTTOMRIGHT', CharacterFrameInset, -48, 32)
+        CharacterModelScene:SetPoint('BOTTOMRIGHT', CharacterFrameInset, -50, 34)
+
+        CharacterModelFrameBackgroundOverlay:ClearAllPoints()
+        CharacterModelFrameBackgroundOverlay:SetAllPoints(CharacterModelScene)
+        
+        CharacterModelFrameBackgroundTopLeft:ClearAllPoints()
+        CharacterModelFrameBackgroundTopLeft:SetPoint('TOPLEFT')
+        CharacterModelFrameBackgroundTopLeft:SetPoint('BOTTOMRIGHT',-19, 128)
+
+        CharacterModelFrameBackgroundTopRight:ClearAllPoints()
+        CharacterModelFrameBackgroundTopRight:SetPoint('TOPLEFT', CharacterModelFrameBackgroundTopLeft, 'TOPRIGHT')
+        CharacterModelFrameBackgroundTopRight:SetPoint('BOTTOMRIGHT', 0, 128)
+
+        CharacterModelFrameBackgroundBotLeft:ClearAllPoints()
+        CharacterModelFrameBackgroundBotLeft:SetPoint('TOPLEFT', CharacterModelFrameBackgroundTopLeft, 'BOTTOMLEFT')
+        CharacterModelFrameBackgroundBotLeft:SetPoint('BOTTOMRIGHT', -19, 0)
+
+        CharacterModelFrameBackgroundBotRight:ClearAllPoints()
+        CharacterModelFrameBackgroundBotRight:SetPoint('TOPLEFT', CharacterModelFrameBackgroundBotLeft, 'TOPRIGHT')
+        CharacterModelFrameBackgroundBotRight:SetPoint('BOTTOMRIGHT')
+
+        --[[hide_Texture(CharacterModelFrameBackgroundTopLeft)--角色3D背景
+        hide_Texture(CharacterModelFrameBackgroundTopRight)
+        hide_Texture(CharacterModelFrameBackgroundBotLeft)
+        hide_Texture(CharacterModelFrameBackgroundBotRight)
+        hide_Texture(CharacterModelFrameBackgroundOverlay)]]
+
+
         CharacterStatsPane.ClassBackground:ClearAllPoints()
         CharacterStatsPane.ClassBackground:SetAllPoints(CharacterStatsPane)
+
+        CharacterMainHandSlot:ClearAllPoints()
+        CharacterMainHandSlot:SetPoint('BOTTOMRIGHT', CharacterFrameInset, 'BOTTOM', -2.5, 16)
         --CharacterStatsPane.ClassBackground:SetPoint('BOTTOMRIGHT')
         --PANEL_DEFAULT_WIDTH 338
         --CHARACTERFRAME_EXPANDED_WIDTH 540
