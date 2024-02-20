@@ -719,7 +719,7 @@ local function Init_Gossip()
     end)
 
 
-    --"%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。";
+    --"%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。"
     if Save.gossip then
         StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= 0.3
     end
@@ -1391,9 +1391,9 @@ local function Init_Quest()
 
     function QuestButton:questInfo_GetQuestID()--取得， 任务ID, QuestInfo.lua
         if QuestInfoFrame.questLog then
-            return C_QuestLog.GetSelectedQuest();
+            return C_QuestLog.GetSelectedQuest()
         else
-            return GetQuestID();
+            return GetQuestID()
         end
     end
 
@@ -1806,6 +1806,7 @@ end
 --加载保存数据
 --###########
 local SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING= SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED"  then
@@ -1853,7 +1854,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             local function set_ClubFinderRequestToJoin(self)
                 local specID = PlayerUtil.GetCurrentSpecID()
                 if not self.info or not Save.gossip or not self.SpecsPool or not specID then
-                    return;
+                    return
                 end
                 local specName
                 for btn in pairs(self.SpecsPool.activeObjects or {}) do
@@ -1863,20 +1864,32 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         break
                    end
                 end
-                local level= UnitLevel('player')
-                local avgItemLevel,_, avgItemLevelPvp= GetAverageItemLevel()
-                local score= C_ChallengeMode.GetOverallDungeonScore() or 0
-                local keyStoneLevel= C_MythicPlus.GetOwnedKeystoneLevel() or 0
-                local achievement= GetTotalAchievementPoints() or 0
-                local text= 'Level '..(level and format('%i', level) or '')..'|n'
-                    ..'Item Level '..(avgItemLevel and format('%i', avgItemLevel) or '')..'|n'
-                    ..(avgItemLevel and avgItemLevelPvp and avgItemLevelPvp- avgItemLevel>20 and 'Item PvP '..format('%i', avgItemLevel)..'|n' or '')
-                if score>1000 then
-                    text= text..'Keystone '..score..(keyStoneLevel and keyStoneLevel>10 and ' ('..keyStoneLevel..')' or '')
-                    text= text..'|n'
-                end
-                if achievement>10000 then
-                    text= text..'Achievement '..achievement..'|n'
+                local level= UnitLevel('player') or MAX_PLAYER_LEVEL
+                local text
+                if level< MAX_PLAYER_LEVEL then
+                    text= 'Level '..(level and format('%i', level) or '')
+                else
+                    local avgItemLevel,_, avgItemLevelPvp= GetAverageItemLevel()
+                    local score= C_ChallengeMode.GetOverallDungeonScore() or 0
+                    local keyStoneLevel= C_MythicPlus.GetOwnedKeystoneLevel() or 0
+                    local achievement= GetTotalAchievementPoints() or 0
+
+                    text= 'Item Level '..(avgItemLevel and format('%i', avgItemLevel) or '')..'|n'--等级
+                        ..(avgItemLevel and avgItemLevelPvp and avgItemLevelPvp- avgItemLevel>20 and 'Item PvP '..format('%i', avgItemLevel)..'|n' or '')
+                    if score>1000 then--挑战
+                        text= text..'Keystone '..score..(keyStoneLevel and keyStoneLevel>10 and ' ('..keyStoneLevel..')' or '')
+                        text= text..'|n'
+                    end
+                    if achievement>10000 then--成就
+                        text= text..'Achievement '..achievement..'|n'
+                    end
+                    local CONQUEST_SIZE_STRINGS = {'Solo', '2v2', '3v3', '10v10'}--PVP
+                    for i=1, 4 do
+                        local rating= GetPersonalRatedInfo(i)
+                        if rating and rating>500 then
+                            text= text..CONQUEST_SIZE_STRINGS[i]..' '..rating..'|n'
+                        end
+                    end
                 end
                 self.MessageFrame.MessageScroll.EditBox:SetText(text)
                 if IsModifierKeyDown() then
@@ -1913,7 +1926,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         '|n',
                         '|T'..(optionInfo.choiceArtID or 0)..':0|t'..optionInfo.rarityColor:WrapTextInColorCode(optionInfo.description or '')
                     )
-                    PlayerChoiceFrame:OnSelectionMade();
+                    PlayerChoiceFrame:OnSelectionMade()
                     C_PlayerChoice.OnUIClosed()
                     for optionFrame in PlayerChoiceFrame.optionPools:EnumerateActiveByTemplate(PlayerChoiceFrame.optionFrameTemplate) do
                         optionFrame:SetShown(false)
@@ -2067,10 +2080,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                                     and s:IsEnabled()
                                     and s:IsShown()
                                 then
-                                    C_PlayerChoice.SendPlayerChoiceResponse(info.buttons[2].id);--Blizzard_PlayerChoiceOptionBase.lua
+                                    C_PlayerChoice.SendPlayerChoiceResponse(info.buttons[2].id)--Blizzard_PlayerChoiceOptionBase.lua
                                     n=n+1
                                     print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '|cnRED_FONT_COLOR:Alt' )
-                                    --self.parentOption:OnSelected();
+                                    --self.parentOption:OnSelected()
                                 elseif s.time then
                                    s.time:Cancel()
                                    print(id,e.cn(addName),'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1, '|r'..n)

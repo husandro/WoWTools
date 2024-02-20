@@ -4272,6 +4272,28 @@ local function Init()
             set(AutoFollowStatusText, format('已停止跟随%s。', self.unit))
         end
 	end)
+
+    --Constants.lua
+    -- LFG
+    for index, en in pairs(LFG_CATEGORY_NAMES) do
+        local cn= e.strText[en]
+        if cn then
+            LFG_CATEGORY_NAMES[index]= cn
+        end
+    end
+    -- PVP
+    for index, en in pairs(CONQUEST_SIZE_STRINGS) do
+        local cn= e.strText[en]
+        if cn then
+            CONQUEST_SIZE_STRINGS[index]= cn
+        end
+    end
+    for index, en in pairs(CONQUEST_TYPE_STRINGS) do
+        local cn= e.strText[en]
+        if cn then
+            CONQUEST_SIZE_SCONQUEST_TYPE_STRINGSTRINGS[index]= cn
+        end
+end
 end
 
 
@@ -6354,32 +6376,21 @@ end)
             if (not self.info) then
                 return;
             end
-            set(self.ClubName, e.strText[self.info.name])
-            local comment= e.strText[self.info.comment]
-            if comment then
-                set(self.ClubDescription, comment:gsub("\n",""))
-            end
-            local specIds = ClubFinderGetPlayerSpecIds() or {}
-            local matchingSpecNames = { }
             for check in pairs(self.SpecsPool.activeObjects or {}) do
                 setLabel(check.SpecName)
             end
-           --[[ for i, specId in ipairs(specIds) do
-               -- info=self.SpecsPool.activeObjects[i]
-                --for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
-                local specButton = self.SpecsPool.activeObjects[i]--self.SpecsPool:Acquire();
-
-                if specButton then
-                    local name = select(2, GetSpecializationInfoForSpecID(specId))
-                    set(specButton.SpecName, e.strText[name])
-                    print(specButton.SpecName:GetText())
-                end
+          
+            local specIds = ClubFinderGetPlayerSpecIds();
+            local matchingSpecNames = { };
+            for i, specId in ipairs(specIds) do
+                local _, name = GetSpecializationInfoForSpecID(specId);
                 if (self.card.recruitingSpecIds[specId]) then
-                    table.insert(matchingSpecNames, e.cn(name))
+                    table.insert(matchingSpecNames, e.cn(name));
                 end
             end
             local classDisplayName = UnitClass("player");
             classDisplayName= e.cn(classDisplayName)
+            local isRecruitingAllSpecs = #self.info.recruitingSpecIds == 0 or #self.info.recruitingSpecIds == CLUB_FINDER_MAX_NUM_SPECIALIZATIONS;
             if(isRecruitingAllSpecs) then
                 if(self.info.isGuild) then
                     set(self.RecruitingSpecDescriptions, '此公会正在招募所有的专精类型。');
@@ -6391,14 +6402,28 @@ end)
             elseif (#matchingSpecNames == 2) then
                 set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s和%s %s。你玩的是哪个专精？', matchingSpecNames[1], matchingSpecNames[2], classDisplayName));
             elseif (#matchingSpecNames == 3) then
-                set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s、%s和%s %s。你玩的是哪个专精？', matchingSpecNames[1], matchingSpecNames[2], matchingSpecNames[3], classDisplayName));
+                set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s %s和%s %s。你玩的是哪个专精？', matchingSpecNames[1], matchingSpecNames[2], matchingSpecNames[3], classDisplayName));
             elseif (#matchingSpecNames == 4) then
-                set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s、%s、%s和%s %s。你玩的是哪个专精？', matchingSpecNames[1], matchingSpecNames[2], matchingSpecNames[3], matchingSpecNames[4], classDisplayName));
-            end]]
+                set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s %s %s和%s %s。你玩的是哪个专精？', matchingSpecNames[1], matchingSpecNames[2], matchingSpecNames[3], matchingSpecNames[4], classDisplayName));
+            end
         end
         hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
         hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
-        --CommunitiesFrame.ClubFinderInvitationFrame.InsetFrame.GuildDescription
+        set(ClubFinderGuildFinderFrame.RequestToJoinFrame.Apply, '申请')
+        set(ClubFinderGuildFinderFrame.RequestToJoinFrame.Cancel, '取消')
+        set(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame.Apply, '申请')
+        set(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame.Cancel, '取消')
+        set(ClubFinderGuildFinderFrame.RequestToJoinFrame.DialogLabel, '申请加入')
+        set(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame.DialogLabel, '申请加入')
+        
+
+        hooksecurefunc(ClubsFinderJoinClubWarningMixin, 'OnShow', function(self)--没测试
+            if (IsInGuild()) then
+                set(self.DialogLabel, '加入此公会时，你会离开当前的公会。')
+            else
+                set(self.DialogLabel, '你只能加入一个公会。加入此公会时，其他公会邀请会被移除。')
+            end
+        end)
 
 
 
