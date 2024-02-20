@@ -1027,7 +1027,7 @@ local function Init_Add_Size()--自定义，大小
 
 
     --插件
-    set_Move_Frame(AddonList, {minW=440, minH=120, maxW=510, setSize=true, initFunc=function()
+    set_Move_Frame(AddonList, {minW=440, minH=120, setSize=true, initFunc=function()
         AddonList.ScrollBox:ClearAllPoints()
         AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
         AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
@@ -1035,7 +1035,7 @@ local function Init_Add_Size()--自定义，大小
         AddonList:SetSize("500", "478")
     end})
 
-
+    AddonList:Show()
 
 
 
@@ -1124,32 +1124,31 @@ local function Init_Add_Size()--自定义，大小
                 CharacterFrame.ResizeButton.minWidth= CHARACTERFRAME_EXPANDED_WIDTH
             end
         end)
-    end, updateFunc=function()
-        if PaperDollFrame.EquipmentManagerPane:IsVisible() then
-            e.call('PaperDollEquipmentManagerPane_Update')
+        end, updateFunc=function()
+            if PaperDollFrame.EquipmentManagerPane:IsVisible() then
+                e.call('PaperDollEquipmentManagerPane_Update')
+            end
+            if PaperDollFrame.TitleManagerPane:IsVisible() then
+                e.call('PaperDollTitlesPane_Update')
+            end
+        end, resizeStoppedCallback=function(self)
+            if CharacterFrame.Expanded then
+                Save.size['CharacterFrameExpanded']={self:GetSize()}
+            else
+                Save.size['CharacterFrameCollapse']={self:GetSize()}
+            end
+        end, restFunc=function(self)
+            if self.Expanded then
+                self:SetSize(CHARACTERFRAME_EXPANDED_WIDTH, 338)
+                Save.size['CharacterFrameExpanded']=nil
+            else
+                self:SetSize(PANEL_DEFAULT_WIDTH, 338)
+                Save.size['CharacterFrameCollapse']=nil
+            end
+        end, getSizeRestTooltipColor=function(self)
+            return ((self.Expanded and Save.size['CharacterFrameExpanded']) or (not self.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
         end
-        if PaperDollFrame.TitleManagerPane:IsVisible() then
-            e.call('PaperDollTitlesPane_Update')
-        end
-    end, resizeStoppedCallback=function(self)
-        if CharacterFrame.Expanded then
-            Save.size['CharacterFrameExpanded']={self:GetSize()}
-        else
-            Save.size['CharacterFrameCollapse']={self:GetSize()}
-        end
-    end, restFunc=function(self)
-        if self.Expanded then
-            self:SetSize(CHARACTERFRAME_EXPANDED_WIDTH, 338)
-            Save.size['CharacterFrameExpanded']=nil
-        else
-            self:SetSize(PANEL_DEFAULT_WIDTH, 338)
-            Save.size['CharacterFrameCollapse']=nil
-        end
-    end, getSizeRestTooltipColor=function(self)
-        return ((self.Expanded and Save.size['CharacterFrameExpanded']) or (not self.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
-    end
     })
-    CharacterFrame:Show()
     --FriendsFrame={},--好友列表
 
 
