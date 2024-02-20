@@ -729,7 +729,7 @@ local function setAddLoad(arg1)
                 else
                     local size= Save.size['CommunitiesFrameNormal']
                     if size then
-                        btn:SetSize(size[1], size[2])
+                        self:SetSize(size[1], size[2])
                     end
                     btn.minWidth= 814
                     btn.minHeight= 426
