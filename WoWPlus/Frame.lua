@@ -704,8 +704,66 @@ local function setAddLoad(arg1)
         set_Move_Frame(BlackMarketFrame)
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
-        set_Move_Frame(CommunitiesFrame, {setSize=true, 
-
+        --communitiesFrame:SetSize(814, 426);
+        --communitiesFrame:SetSize(322, 406);
+        hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'SetOnMaximizedCallback', function()
+            print('max')
+        end)
+        hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'SetOnMinimizedCallback', function()
+            print('min')
+        end)
+        set_Move_Frame(CommunitiesFrame, {setSize=true, initFunc=function()
+            hooksecurefunc(CommunitiesFrame, 'UpdateMaximizeMinimizeButton', function(self)
+                local btn=self.ResizeButton
+                if not btn then
+                    return
+                end
+                local displayMode = self:GetDisplayMode();
+                if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
+                    btn.minWidth= 290
+                    btn.minHeight= 115
+                    local size= Save.size['CommunitiesFrameMINIMIZED']
+                    if size then
+                        self:SetSize(size[1], size[2])
+                    end
+                else
+                    local size= Save.size['CommunitiesFrameNormal']
+                    if size then
+                        btn:SetSize(size[1], size[2])
+                    end
+                    btn.minWidth= 814
+                    btn.minHeight= 426
+                end
+            end)
+        end, resizeStoppedCallback=function(self)
+            local displayMode = self:GetDisplayMode();
+            if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
+                Save.size['CommunitiesFrameMINIMIZED']= {self:GetSize()}
+            else
+                Save.size['CommunitiesFrameNormal']= {self:GetSize()}
+            end
+        end, restFunc= function(self)
+            local displayMode = self:GetDisplayMode();
+            if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
+                if Save.size['CommunitiesFrameMINIMIZED'] then
+                    Save.size['CommunitiesFrameMINIMIZED']=nil
+                    self:SetSize(322, 406)
+                end
+            elseif Save.size['CommunitiesFrameNormal'] then
+                Save.size['CommunitiesFrameNormal']= nil
+                self:SetSize(814, 426)
+            end
+        end, getSizeRestTooltipColor=function(self)
+            local displayMode = self:GetDisplayMode();
+            if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
+                if Save.size['CommunitiesFrameMINIMIZED'] then
+                    return ''
+                end
+            elseif Save.size['CommunitiesFrameNormal'] then
+                return ''
+            end
+            return '|cff606060'
+        end,
         })
         set_Move_Frame(CommunitiesFrame.RecruitmentDialog)
         --set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog)
