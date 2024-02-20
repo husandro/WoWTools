@@ -706,12 +706,7 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_Communities' then--公会和社区
         --communitiesFrame:SetSize(814, 426);
         --communitiesFrame:SetSize(322, 406);
-        hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'SetOnMaximizedCallback', function()
-            print('max')
-        end)
-        hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'SetOnMinimizedCallback', function()
-            print('min')
-        end)
+
         set_Move_Frame(CommunitiesFrame, {setSize=true, initFunc=function()
             hooksecurefunc(CommunitiesFrame, 'UpdateMaximizeMinimizeButton', function(self)
                 if not self.ResizeButton then
