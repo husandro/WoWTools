@@ -630,7 +630,7 @@ local function Init_Title()--头衔数量
         btn.Text= e.Cstr(btn)
         btn.Text:SetPoint('CENTER')
         btn:SetFrameLevel(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrameLevel()+1)
-        btn:SetPoint('TOPRIGHT')
+        btn:SetPoint('TOPRIGHT', -6,8)
         function btn:get_tab()
             local tab={}
             for i = 1, GetNumTitles() do

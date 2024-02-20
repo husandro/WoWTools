@@ -1015,30 +1015,41 @@ local function Init_Add_Size()--自定义，大小
 
 
     set_Move_Frame(CharacterFrame, {minW=338, minH=424, setSize=true, initFunc=function()
+        
+
         PaperDollFrame.TitleManagerPane:ClearAllPoints()
         PaperDollFrame.TitleManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
         PaperDollFrame.TitleManagerPane:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -4, 4)
         PaperDollFrame.TitleManagerPane.ScrollBox:ClearAllPoints()
-        PaperDollFrame.TitleManagerPane.ScrollBox:SetPoint('TOPLEFT',4,-4)
-        PaperDollFrame.TitleManagerPane.ScrollBox:SetPoint('BOTTOMRIGHT', -18,0)
+        PaperDollFrame.TitleManagerPane.ScrollBox:SetPoint('TOPLEFT',CharacterFrameInsetRight,4,-4)
+        PaperDollFrame.TitleManagerPane.ScrollBox:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -22,0)
 
         PaperDollFrame.EquipmentManagerPane:ClearAllPoints()
         PaperDollFrame.EquipmentManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
         PaperDollFrame.EquipmentManagerPane:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -4, 4)
         PaperDollFrame.EquipmentManagerPane.ScrollBox:ClearAllPoints()
-        PaperDollFrame.EquipmentManagerPane.ScrollBox:SetPoint('TOPLEFT',4, -28)
-        PaperDollFrame.EquipmentManagerPane.ScrollBox:SetPoint('BOTTOMRIGHT', -18,-28)
+        PaperDollFrame.EquipmentManagerPane.ScrollBox:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -28)
+        PaperDollFrame.EquipmentManagerPane.ScrollBox:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -22,0)
 
-        --CharacterFrameInset:ClearAllPoints()
-        --CharacterFrameInset:SetPoint('')
+        CharacterModelScene:ClearAllPoints()
+        CharacterModelScene:SetPoint('TOPLEFT', 52, -66)
+        CharacterModelScene:SetPoint('BOTTOMRIGHT', CharacterFrameInset, -48, 32)
         CharacterStatsPane.ClassBackground:ClearAllPoints()
-        CharacterStatsPane.ClassBackground:SetPoint('TOPLEFT')
-        CharacterStatsPane.ClassBackground:SetPoint('BOTTOMRIGHT')
+        CharacterStatsPane.ClassBackground:SetAllPoints(CharacterStatsPane)
+        --CharacterStatsPane.ClassBackground:SetPoint('BOTTOMRIGHT')
+        --PANEL_DEFAULT_WIDTH 338
+        --CHARACTERFRAME_EXPANDED_WIDTH 540
+        --CharacterStatsPane width 197
         hooksecurefunc('CharacterFrame_Collapse', function()
-            print('CharacterFrame_Collapse', CharacterFrame:GetSize())
+            CharacterFrameInset:ClearAllPoints()
+            CharacterFrameInset:SetPoint('TOPLEFT', 4, -60)
+            CharacterFrameInset:SetPoint('BOTTOMRIGHT',-4, 4)
         end)
-        hooksecurefunc('CharacterFrame_Expand', function()
-            print('CharacterFrame_Expand', CharacterFrame:GetSize())
+        hooksecurefunc('CharacterFrame_Expand', function()--显示角色，界面
+            CharacterFrameInset:ClearAllPoints()
+            CharacterFrameInset:SetPoint('TOPLEFT', 4, -60)
+            CharacterFrameInset:SetPoint('BOTTOMRIGHT', -221, 4)
+            
         end)
         --CharacterFrameInset:ClearAllPoints()
         --CharacterFrameInset:SetPoint('TOPLEFT')
@@ -1046,8 +1057,14 @@ local function Init_Add_Size()--自定义，大小
         --ReputationFrame:ClearAllPoints()
         --ReputationFrame:SetPoint('TOPLEFT')
         --ReputationFrame:SetPoint('BOTTOMRIGHT')
-    end,
-
+    end, updateFunc=function()
+        if PaperDollFrame.EquipmentManagerPane:IsVisible() then
+            e.call('PaperDollEquipmentManagerPane_Update')
+        end
+        if PaperDollFrame.TitleManagerPane:IsVisible() then
+            e.call('PaperDollTitlesPane_Update')
+        end
+    end
     })--角色
     CharacterFrame:Show()
     --FriendsFrame={},--好友列表
