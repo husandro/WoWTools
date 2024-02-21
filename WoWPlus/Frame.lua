@@ -1348,20 +1348,6 @@ local function Init_Add_Size()--自定义，大小
     end})
     
     --任务
-    local function QuestInfo_ShowDescriptionText()
-        local questDescription;
-        if ( QuestInfoFrame.questLog ) then
-            questDescription = GetQuestLogQuestText();
-        else
-            questDescription = GetQuestText();
-        end
-        QuestInfoDescriptionText:SetText(questDescription);
-        QuestInfoDescriptionText:SetWidth(QuestInfoDescriptionText:GetParent():GetWidth()-56);
-        return QuestInfoDescriptionText;
-    end
-    QUEST_TEMPLATE_DETAIL.elements[4]= QuestInfo_ShowDescriptionText
-    QUEST_TEMPLATE_LOG.elements[28]=QuestInfo_ShowDescriptionText
-    QUEST_TEMPLATE_MAP_DETAILS.elements[28]=QuestInfo_ShowDescriptionText
     set_Move_Frame(QuestFrame, {minW=164, minH=128, setSize=true, initFunc=function()
         local tab={
             'Detail',
