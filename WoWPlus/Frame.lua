@@ -204,6 +204,8 @@ local function Set_Scale_Size(frame, tab)
             if IsAltKeyDown() then--清除，缩放，数据
                 self.target:SetScale(1)
                 Save.scale[self.name]=nil
+                e.call('UpdateUIPanelPositions', self.target)
+                
             elseif not IsModifierKeyDown() then--开始，设置，缩放
                 self.isActive= true
                 local target= self.target
@@ -242,6 +244,7 @@ local function Set_Scale_Size(frame, tab)
                 Save.size[name]=nil
                 if self.restFunc then--还原
                     self.restFunc(self.target)
+                    e.call('UpdateUIPanelPositions', self.target)
                 end
             elseif not IsModifierKeyDown() then--开始，设置，大小
                 self.isActive = true;
