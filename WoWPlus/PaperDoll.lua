@@ -1874,33 +1874,16 @@ local function Init()
                 if Save.hide or not info then
                     return
                 end
-                C_PlayerInfo.GetDisplayID()
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine('name', info.name)
-                e.tips:AddDoubleLine('fileName', info.fileName)
-                e.tips:AddDoubleLine('createScreenIconAtlas', (info.createScreenIconAtlas and '|A:'..info.createScreenIconAtlas..':0:0|a' or '')..(info.createScreenIconAtlas or ''))
-                e.tips:AddDoubleLine('sex', info.sex)
-                if info.alternateFormRaceData then
-                    e.tips:AddLine(' ')
-                    --e.tips:AddLine('alternateFormRaceData')
-                    e.tips:AddDoubleLine('raceID', info.alternateFormRaceData.raceID)
-                    e.tips:AddDoubleLine('name', info.alternateFormRaceData.name)
-                    e.tips:AddDoubleLine('fileName', info.alternateFormRaceData.fileName)
-                    e.tips:AddDoubleLine('createScreenIconAtlas', info.alternateFormRaceData.createScreenIconAtlas)
-                    e.tips:AddLine(' ')
-                end
-                e.tips:AddDoubleLine('displayID', C_PlayerInfo.GetDisplayID())
-                e.tips:AddLine(' ')
-                for _, localeInfo in pairs(GetAvailableLocaleInfo() or {}) do--有效，语言
-                    if LocaleUtil.ContainInstructionForLocale(localeInfo.localeName) then
-                        local info= Mixin({}, LocaleUtil.CreateTextureInfoForInstructions(localeInfo.localeName))
-                        for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
-                        e.tips:AddDoubleLine(localeInfo.localeId.. ') '..localeInfo.localeName,  LocaleUtil.ContainInstructionForLocale(localeInfo.localeName))
-                    end
-                end
+                e.tips:AddLine('name |cnGREEN_FONT_COLOR:'..info.name)
+                e.tips:AddLine('fileName |cnGREEN_FONT_COLOR:'..info.fileName)
+                e.tips:AddLine('sex |cnGREEN_FONT_COLOR:'..info.sex)
+                e.tips:AddLine('displayID |cnGREEN_FONT_COLOR:'..C_PlayerInfo.GetDisplayID())
+                e.tips:AddDoubleLine((info.createScreenIconAtlas and '|A:'..info.createScreenIconAtlas..':0:0|a' or '')..'createScreenIconAtlas', info.createScreenIconAtlas)
+                e.tips:AddDoubleLine('GUID', UnitGUID('player'))
                 e.tips:Show()
                 self2:SetAlpha(0.3)
             end)
