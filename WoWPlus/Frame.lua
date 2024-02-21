@@ -778,7 +778,14 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
         --set_Move_Frame(AchievementFrame.Header, {frame=AchievementFrame})
-        set_Move_Frame(AchievementFrame)
+        print(AchievementFrame:GetSize())
+        set_Move_Frame(AchievementFrame, {minW=768, maxW=768, minH=500, setSize=true, initFunc=function()
+            AchievementFrameCategories:ClearAllPoints()
+            AchievementFrameCategories:SetPoint('TOPLEFT', 21, -19)
+            AchievementFrameCategories:SetPoint('BOTTOMLEFT', 175, 19)
+        end, restFunc=function(self)
+                self:SetSize(768, 500)
+        end})
         set_Move_Frame(AchievementFrameComparisonHeader, {frame=AchievementFrame})
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
