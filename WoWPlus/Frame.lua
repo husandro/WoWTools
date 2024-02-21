@@ -142,7 +142,7 @@ local function Set_Scale_Size(frame, tab)
                 col..(self.restFunc and (e.onlyChinese and '默认' or DEFAULT) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)),
                 col..'Alt+'..e.Icon.right
             )
-            e.tips:AddDoubleLine(e.GetEnabeleDisable(true), 'Ctrl+'..e.Icon.left)
+            e.tips:AddDoubleLine(e.GetEnabeleDisable(true), 'Ctrl+'..e.Icon.right)
         end
         e.tips:Show()
     end
@@ -168,10 +168,10 @@ local function Set_Scale_Size(frame, tab)
         frame:SetScale(scale)
     end
     btn:SetScript("OnMouseUp", function(self, d)
-        self.isActive= false
-        if IsModifierKeyDown() then
+        if IsModifierKeyDown() or not self.isActive then
             return
         end
+        self.isActive= false
         if d=='LeftButton' then
             Save.scale[self.name]= self.target:GetScale()
         elseif d=='RightButton' and self.setSize then
@@ -196,15 +196,15 @@ local function Set_Scale_Size(frame, tab)
             return
         end
         if IsControlKeyDown() then
-            if self.setSize or self.disabledSize then
+            if (self.setSize or self.disabledSize) and d=='RightButton' then--禁用，启用，大小，功能
                 Save.disabledSize[self.name]= not Save.disabledSize[self.name] and true or nil
                 print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledSize[self.name]), self.name, e.onlyChinese and '大小' or 'Size', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
             end
         elseif d=='LeftButton' then
-            if IsAltKeyDown() then
+            if IsAltKeyDown() then--清除，缩放，数据
                 self.target:SetScale(1)
                 Save.scale[self.name]=nil
-            else
+            elseif not IsModifierKeyDown() then--开始，设置，缩放
                 self.isActive= true
                 local target= self.target
                 self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
@@ -238,12 +238,12 @@ local function Set_Scale_Size(frame, tab)
             if not self.setSize then
                 return
             end
-            if IsAltKeyDown() then
+            if IsAltKeyDown() then--清除，大小，数据
                 Save.size[name]=nil
-                if self.restFunc then
+                if self.restFunc then--还原
                     self.restFunc(self.target)
                 end
-            else
+            elseif not IsModifierKeyDown() then--开始，设置，大小
                 self.isActive = true;
                 local target = self.target;
                 local continueResizeStart = true;
