@@ -629,84 +629,21 @@ end]]
 
 
 local function setAddLoad(arg1)
-    if arg1=='Blizzard_TimeManager' then--小时图，时间
-        set_Move_Frame(TimeManagerFrame, {save=true})
-        --[[set_Move_Frame(TimeManagerClockButton, {save=true, click="R", notZoom=true})
-        hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
-            e.tips:AddLine(' ')
-            e.tips:AddLine(e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE))
-            e.tips:AddDoubleLine(id, e.cn(addName))
-            e.tips:Show()
-        end)
-        TimeManagerClockButton:HookScript('OnLeave', TimeManagerClockButton_OnLeave)]]
-
-    elseif arg1=='Blizzard_AchievementUI' then--成就
-        --set_Move_Frame(AchievementFrame.Header, {frame=AchievementFrame})
-        set_Move_Frame(AchievementFrame)
-        set_Move_Frame(AchievementFrameComparisonHeader, {frame=AchievementFrame})
-
-    elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
-        set_Move_Frame(EncounterJournal)
-
-    elseif arg1=='Blizzard_ClassTalentUI' then--天赋
-        local frame=ClassTalentFrame
-        if frame then
-            set_Move_Frame(frame, {save=true})
-            if frame.TalentsTab and frame.TalentsTab.ButtonsParent then
-                set_Move_Frame(frame.TalentsTab.ButtonsParent, {save=true, frame=frame})--里面, 背景
-            end
-            if frame.ResizeButton then
-                --设置,大小
-                --Blizzard_SharedTalentFrame.lua
-                hooksecurefunc(TalentFrameBaseMixin, 'OnShow', function (self)
-                    local name= ClassTalentFrame:GetName()
-                    if name then
-                        if Save.scale[name] and Save.scale[name]~= ClassTalentFrame:GetScale() then
-                            ClassTalentFrame:SetScale(Save.scale[name])
-                        end
-                    end
-                end)
-            end
-
-            --####################
-            --专精 UpdateSpecFrame
-            --Blizzard_ClassTalentSpecTab.lua
-            if frame.SpecTab and frame.SpecTab.SpecContentFramePool then
-                for specContentFrame in frame.SpecTab.SpecContentFramePool:EnumerateActive() do
-                    set_Move_Frame(specContentFrame, {frame= frame, save=true})
-                end
-            end
-            hooksecurefunc(frame.SpecTab, 'UpdateSpecContents', function()--Blizzard_ClassTalentSpecTab.lua
-                local name= ClassTalentFrame:GetName()
-                if name then
-                    if Save.scale[name] and Save.scale[name]~= ClassTalentFrame:GetScale() then
-                        ClassTalentFrame:SetScale(Save.scale[name])
-                    end
+    if arg1=='Blizzard_TrainerUI' then--专业训练师
+        set_Move_Frame(ClassTrainerFrame, {minW=328, minH=197, setSize=true, initFunc=function()
+            ClassTrainerFrameSkillStepButton:SetPoint('RIGHT', -12, 0)
+            ClassTrainerFrameBottomInset:SetPoint('BOTTOMRIGHT', -4, 28)
+            hooksecurefunc('ClassTrainerFrame_Update', function()--Blizzard_TrainerUI.lua
+                if ClassTrainerFrame.bottomInset:IsShown() then
+                    ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)
                 end
             end)
-        end
-
-    elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
-        set_Move_Frame(AuctionHouseFrame, {save=true})
-
-        set_Move_Frame(AuctionHouseFrame.ItemSellFrame, {frame=AuctionHouseFrame})
-        set_Move_Frame(AuctionHouseFrame.ItemSellFrame.Overlay, {frame=AuctionHouseFrame})
-        set_Move_Frame(AuctionHouseFrame.ItemSellFrame.ItemDisplay, {frame=AuctionHouseFrame})
-
-        set_Move_Frame(AuctionHouseFrame.CommoditiesSellFrame, {frame=AuctionHouseFrame})
-        set_Move_Frame(AuctionHouseFrame.CommoditiesSellFrame.Overlay, {frame=AuctionHouseFrame})
-        set_Move_Frame(AuctionHouseFrame.CommoditiesSellFrame.ItemDisplay, {frame=AuctionHouseFrame})
-
-        set_Move_Frame(AuctionHouseFrame.ItemBuyFrame.ItemDisplay, {frame=AuctionHouseFrame, save=true})
-        set_Move_Frame(AuctionHouseFrameAuctionsFrame.ItemDisplay, {frame=AuctionHouseFrame, save=true})
-
-    elseif arg1=='Blizzard_BlackMarketUI' then--黑市
-        set_Move_Frame(BlackMarketFrame)
-
-
-
-
-
+            ClassTrainerFrame.ScrollBox:ClearAllPoints()
+            --ClassTrainerFrame.ScrollBox:SetPoint('TOPLEFT')
+            --ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT')
+        end, restFunc=function(self)
+            self:SetSize(338, 424)
+        end})
 
 
 
@@ -811,9 +748,104 @@ local function setAddLoad(arg1)
         end,
         })
         set_Move_Frame(CommunitiesFrame.RecruitmentDialog)
-        --set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog)
-        --set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
-        --set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
+        set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog)
+        set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
+        set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
+
+
+
+
+
+
+
+
+
+
+
+    elseif arg1=='Blizzard_TimeManager' then--小时图，时间
+        set_Move_Frame(TimeManagerFrame, {save=true})
+        --[[set_Move_Frame(TimeManagerClockButton, {save=true, click="R", notZoom=true})
+        hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
+            e.tips:AddLine(' ')
+            e.tips:AddLine(e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE))
+            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:Show()
+        end)
+        TimeManagerClockButton:HookScript('OnLeave', TimeManagerClockButton_OnLeave)]]
+
+    elseif arg1=='Blizzard_AchievementUI' then--成就
+        --set_Move_Frame(AchievementFrame.Header, {frame=AchievementFrame})
+        set_Move_Frame(AchievementFrame)
+        set_Move_Frame(AchievementFrameComparisonHeader, {frame=AchievementFrame})
+
+    elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
+        set_Move_Frame(EncounterJournal)
+
+    elseif arg1=='Blizzard_ClassTalentUI' then--天赋
+        local frame=ClassTalentFrame
+        if frame then
+            set_Move_Frame(frame, {save=true})
+            if frame.TalentsTab and frame.TalentsTab.ButtonsParent then
+                set_Move_Frame(frame.TalentsTab.ButtonsParent, {save=true, frame=frame})--里面, 背景
+            end
+            if frame.ResizeButton then
+                --设置,大小
+                --Blizzard_SharedTalentFrame.lua
+                hooksecurefunc(TalentFrameBaseMixin, 'OnShow', function (self)
+                    local name= ClassTalentFrame:GetName()
+                    if name then
+                        if Save.scale[name] and Save.scale[name]~= ClassTalentFrame:GetScale() then
+                            ClassTalentFrame:SetScale(Save.scale[name])
+                        end
+                    end
+                end)
+            end
+
+            --####################
+            --专精 UpdateSpecFrame
+            --Blizzard_ClassTalentSpecTab.lua
+            if frame.SpecTab and frame.SpecTab.SpecContentFramePool then
+                for specContentFrame in frame.SpecTab.SpecContentFramePool:EnumerateActive() do
+                    set_Move_Frame(specContentFrame, {frame= frame, save=true})
+                end
+            end
+            hooksecurefunc(frame.SpecTab, 'UpdateSpecContents', function()--Blizzard_ClassTalentSpecTab.lua
+                local name= ClassTalentFrame:GetName()
+                if name then
+                    if Save.scale[name] and Save.scale[name]~= ClassTalentFrame:GetScale() then
+                        ClassTalentFrame:SetScale(Save.scale[name])
+                    end
+                end
+            end)
+        end
+
+    elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
+        set_Move_Frame(AuctionHouseFrame, {save=true})
+
+        set_Move_Frame(AuctionHouseFrame.ItemSellFrame, {frame=AuctionHouseFrame})
+        set_Move_Frame(AuctionHouseFrame.ItemSellFrame.Overlay, {frame=AuctionHouseFrame})
+        set_Move_Frame(AuctionHouseFrame.ItemSellFrame.ItemDisplay, {frame=AuctionHouseFrame})
+
+        set_Move_Frame(AuctionHouseFrame.CommoditiesSellFrame, {frame=AuctionHouseFrame})
+        set_Move_Frame(AuctionHouseFrame.CommoditiesSellFrame.Overlay, {frame=AuctionHouseFrame})
+        set_Move_Frame(AuctionHouseFrame.CommoditiesSellFrame.ItemDisplay, {frame=AuctionHouseFrame})
+
+        set_Move_Frame(AuctionHouseFrame.ItemBuyFrame.ItemDisplay, {frame=AuctionHouseFrame, save=true})
+        set_Move_Frame(AuctionHouseFrameAuctionsFrame.ItemDisplay, {frame=AuctionHouseFrame, save=true})
+
+    elseif arg1=='Blizzard_BlackMarketUI' then--黑市
+        set_Move_Frame(BlackMarketFrame)
+
+
+
+
+
+
+
+
+
+
+    
 
 
 
@@ -917,8 +949,6 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_ChromieTimeUI' then--时光漫游
         set_Move_Frame(ChromieTimeFrame)
 
-    elseif arg1=='Blizzard_TrainerUI' then--专业训练师
-        set_Move_Frame(ClassTrainerFrame)
 
     elseif arg1=='Blizzard_BFAMissionUI' then--侦查地图
         set_Move_Frame(BFAMissionFrame)

@@ -1219,13 +1219,15 @@ end
 --#########
 local function Init_Event(arg1)
     if arg1=='Blizzard_TrainerUI' then--专业训练师
+        set_Alpha_Frame_Texture(ClassTrainerFrame, {alpha=min05})
+        set_ScrollBar(ClassTrainerFrame)
         set_NineSlice(ClassTrainerFrame, true)
+
         hide_Texture(ClassTrainerFrameInset.Bg)
-        hide_Texture(ClassTrainerFrameBg)
+        set_NineSlice(ClassTrainerFrameInset, true)
 
         hide_Texture(ClassTrainerFrameBottomInset.Bg)
-        --set_Menu(ClassTrainerFrameFilterDropDown)
-        set_ScrollBar(ClassTrainerFrame)
+        set_NineSlice(ClassTrainerFrameBottomInset, true)
 
     elseif arg1=='Blizzard_TimeManager' then--小时图，时间
         set_NineSlice(TimeManagerFrame, true)
