@@ -703,12 +703,21 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_BlackMarketUI' then--黑市
         set_Move_Frame(BlackMarketFrame)
 
+
+
+
+
+
+
+
+
+
     elseif arg1=='Blizzard_Communities' then--公会和社区
         --communitiesFrame:SetSize(814, 426);
         --communitiesFrame:SetSize(322, 406);
-
         set_Move_Frame(CommunitiesFrame, {setSize=true, initFunc=function()
-            hooksecurefunc(CommunitiesFrame, 'UpdateMaximizeMinimizeButton', function(self)
+            local function set_size(frame)
+                local self= frame:GetParent()
                 if not self.ResizeButton then
                     return
                 end
@@ -728,7 +737,31 @@ local function setAddLoad(arg1)
                     self.ResizeButton.minWidth= 814
                     self.ResizeButton.minHeight= 426
                 end
-            end)
+            end
+            hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Minimize', set_size)--maximizedCallback
+            hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Maximize', set_size)
+            --hooksecurefunc(CommunitiesFrame, 'ValidateDisplayMode', function(self)
+            --[[hooksecurefunc(CommunitiesFrame, 'UpdateMaximizeMinimizeButton', function(self)
+                if not self.ResizeButton then
+                    return
+                end
+                local displayMode = self:GetDisplayMode();
+                if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
+                    self.ResizeButton.minWidth= 290
+                    self.ResizeButton.minHeight= 115
+                    local size= Save.size['CommunitiesFrameMINIMIZED']
+                    if size then
+                        self:SetSize(size[1], size[2])
+                    end
+                else
+                    local size= Save.size['CommunitiesFrameNormal']
+                    if size then
+                        self:SetSize(size[1], size[2])
+                    end
+                    self.ResizeButton.minWidth= 814
+                    self.ResizeButton.minHeight= 426
+                end
+            end)]]
         end, resizeStoppedCallback=function(self)
             local displayMode = self:GetDisplayMode();
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
@@ -763,6 +796,19 @@ local function setAddLoad(arg1)
         --set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog)
         --set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
         --set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     elseif arg1=='Blizzard_Collections' then--收藏
