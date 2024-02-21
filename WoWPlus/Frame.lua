@@ -50,8 +50,8 @@ local function Set_Scale_Size(frame, tab)
     end
 
     local setSize= tab.setSize
-    local minW= tab.minW or (e.Player.husandro and 220 or frame:GetWidth())--最小窗口， 宽
-    local minH= tab.minH or (e.Player.husandro and 115 or frame:GetHeight())--最小窗口，高
+    local minW= tab.minW or (e.Player.husandro and 115 or frame:GetWidth()/2)--最小窗口， 宽
+    local minH= tab.minH or (e.Player.husandro and 115 or frame:GetHeight()/2)--最小窗口，高
     local maxW= tab.maxW--最大，可无
     local maxH= tab.maxH--最大，可无
     local rotationDegrees= tab.rotationDegrees--旋转度数
@@ -1333,13 +1333,57 @@ local function Init_Add_Size()--自定义，大小
     })
     --FriendsFrame={},--好友列表
 
-
-
-
-    set_Move_Frame(GossipFrame, {setSize=true
-
-    })
-
+    --对话
+    set_Move_Frame(GossipFrame, {minW=220, minH=220, setSize=true, initFunc=function()
+        GossipFrame.GreetingPanel:SetPoint('BOTTOMRIGHT')
+        GossipFrame.GreetingPanel.ScrollBox:SetPoint('BOTTOMRIGHT', -28,28)
+        GossipFrame.Background:SetPoint('BOTTOMRIGHT', -28,28)
+        GreetingText:SetWidth(GreetingText:GetParent():GetWidth()-56)
+    end, restFunc=function(self)
+        self:SetSize(384, 512)
+    end})
+    
+    --任务
+    local function QuestInfo_ShowDescriptionText()
+        local questDescription;
+        if ( QuestInfoFrame.questLog ) then
+            questDescription = GetQuestLogQuestText();
+        else
+            questDescription = GetQuestText();
+        end
+        QuestInfoDescriptionText:SetText(questDescription);
+        QuestInfoDescriptionText:SetWidth(QuestInfoDescriptionText:GetParent():GetWidth()-56);
+        return QuestInfoDescriptionText;
+    end
+    QUEST_TEMPLATE_DETAIL.elements[4]= QuestInfo_ShowDescriptionText
+    QUEST_TEMPLATE_LOG.elements[28]=QuestInfo_ShowDescriptionText
+    QUEST_TEMPLATE_MAP_DETAILS.elements[28]=QuestInfo_ShowDescriptionText
+    set_Move_Frame(QuestFrame, {minW=164, minH=128, setSize=true, initFunc=function()
+        local tab={
+            'Detail',
+            'Greeting',
+            'Progress',
+            'Reward',
+        }
+        for _, name in pairs(tab) do
+            local frame= _G['QuestFrame'..name..'Panel']
+            if frame then
+                frame:SetPoint('BOTTOMRIGHT')
+                if frame.Bg then
+                    frame.Bg:SetPoint('BOTTOMRIGHT', -28,28)
+                end
+                if frame.SealMaterialBG then
+                    frame.SealMaterialBG:SetPoint('BOTTOMRIGHT', -28,28)
+                end
+            end
+            frame= _G['Quest'..name..'ScrollFrame']
+            if frame then
+                frame:SetPoint('BOTTOMRIGHT', -28,28)
+            end
+        end
+    end, restFunc= function(self)
+        self:SetSize(338, 496)
+    end})
 end
 
 
