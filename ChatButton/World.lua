@@ -121,8 +121,10 @@ local function addMenu(name, channelNumber, level)--添加菜单
     local check=Check(name)
     local text=name
     local clubId=name:match('Community:(%d+)');
+    if clubId then
+        e.LoadDate({id=clubId, type='club'})
+    end
     local communityName, communityTexture
-    
     local clubInfo= clubId and C_Club.GetClubInfo(clubId)--社区名称
     if clubInfo and (clubInfo.shortName or clubInfo.name) then
         text='|cnGREEN_FONT_COLOR:'..(clubInfo.shortName or clubInfo.name)..'|r'

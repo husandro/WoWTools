@@ -740,7 +740,46 @@ local function setAddLoad(arg1)
             end
             hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Minimize', set_size)--maximizedCallback
             hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Maximize', set_size)
-            
+            hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBox, 'Update', function(frame)
+                for _, btn in pairs(frame:GetFrames() or {}) do
+                    --info=btn.cardInfo
+                    --for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+                    btn.Name:ClearAllPoints()
+                    btn.Name:SetPoint('TOPLEFT', btn.LogoBorder, 'TOPRIGHT', 12,0)
+                    btn.Description:ClearAllPoints()
+                    btn.Description:SetPoint('LEFT', btn.LogoBorder, 'RIGHT', 12,0)
+                    btn.Description:SetPoint('RIGHT', btn.RequestJoin, 'LEFT', -26,0)
+                    btn.Background:SetPoint('RIGHT', -12,0)--移动背景
+                    local cardInfo= btn.cardInfo-- or {}-- clubFinderGUID, isCrossFaction, clubId, 
+                                                                        
+                    if not btn.corssFactionTexture and cardInfo.isCrossFaction then--跨阵营
+                        btn.corssFactionTexture= btn:CreateTexture(nil, 'OVERLAY')
+                        btn.corssFactionTexture:SetSize(18,18)
+                        btn.corssFactionTexture:SetAtlas('CrossedFlags')
+                        btn.corssFactionTexture:SetPoint('LEFT', btn.MemberIcon, 'RIGHT', 4, 0)
+                    end
+                    if btn.corssFactionTexture then
+                        btn.corssFactionTexture:SetShown(true)--not cardInfo.isCrossFaction)
+                    end
+
+                    
+                    local autoAccept--自动，批准, 无效
+                    local clubStatus= cardInfo.clubFinderGUID and C_ClubFinder.GetPlayerClubApplicationStatus(cardInfo.clubFinderGUID)
+                    btn:SetAlpha(btn.RequestJoin:IsShown() and 1 or 0.3)
+                    if clubStatus then
+                        autoAccept= clubStatus== Enum.PlayerClubRequestStatus.AutoApproved--2
+                    end
+                    if not btn.autoAcceptTexture and autoAccept then
+                        btn.autoAcceptTexture= btn:CreateTexture(nil, 'OVERLAY')
+                        btn.autoAcceptTexture:SetSize(18,18)
+                        btn.autoAcceptTexture:SetAtlas(e.Icon.select)
+                        btn.autoAcceptTexture:SetPoint('LEFT', btn.MemberIcon, 'RIGHT', 24, 0)
+                    end
+                    if btn.autoAcceptTexture then
+                        btn.autoAcceptTexture:SetShown(autoAccept)
+                    end
+                end
+            end)
         end, resizeStoppedCallback=function(self)
             local displayMode = self:GetDisplayMode();
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then

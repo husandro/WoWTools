@@ -211,6 +211,8 @@ function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, u
         end
     elseif tab.type=='mapChallengeModeID' then
         C_ChallengeMode.RequestLeaders(tab.id)
+    elseif tab.typ=='club' then
+        C_Club.RequestTickets(tab.id)
     end
 end
 

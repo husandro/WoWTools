@@ -85,7 +85,7 @@ end
 
 --透明度, 颜色, frame, 子材质
 local function set_Alpha_Frame_Texture(frame, tab)
-    if not frame then
+    if not frame or not frame.GetRegions then
         return
     end
     tab=tab or {}
@@ -987,7 +987,7 @@ local function Init_All_Frame()
      end)
 
      --社交，按钮     
-     
+
      set_Alpha_Color(QuickJoinToastButton.FriendsButton, nil, nil, min03)
      --set_Alpha_Color(QuickJoinToastButton.QueueButton, nil, nil, min03)
      set_Alpha_Frame_Texture(ChatFrameChannelButton, {alpha= min03})
@@ -1181,11 +1181,15 @@ local function Init_All_Frame()
     set_Menu(DressUpFrameOutfitDropDown)
 
     --插件，UIDropDownMenu
-    if e.LibDD and e.LibDD.UIDropDownMenu_SetWidth then
-        hooksecurefunc(e.LibDD, 'UIDropDownMenu_SetWidth', function(_, menu)
+    if e.LibDD then
+        hooksecurefunc(e.LibDD, 'UIDropDownMenu_Initialize', function(_, menu)
             set_Menu(menu)
         end)
     end
+
+    hooksecurefunc('UIDropDownMenu_Initialize', function(menu)
+        set_Menu(menu)
+    end)
 end
 
 
@@ -1220,7 +1224,7 @@ local function Init_Event(arg1)
         hide_Texture(ClassTrainerFrameBg)
 
         hide_Texture(ClassTrainerFrameBottomInset.Bg)
-        set_Menu(ClassTrainerFrameFilterDropDown)
+        --set_Menu(ClassTrainerFrameFilterDropDown)
         set_ScrollBar(ClassTrainerFrame)
 
     elseif arg1=='Blizzard_TimeManager' then--小时图，时间
@@ -1387,7 +1391,7 @@ local function Init_Event(arg1)
         hide_Frame_Texture(CommunitiesFrame.RosterTab, {index=1})
         hide_Frame_Texture(CommunitiesFrame.GuildBenefitsTab, {index=1})
         hide_Frame_Texture(CommunitiesFrame.GuildInfoTab, {index=1})
-        set_Menu(CommunitiesFrame.StreamDropDownMenu)
+        --set_Menu(CommunitiesFrame.StreamDropDownMenu)
         set_Alpha_Frame_Texture(CommunitiesFrame.AddToChatButton, {notAlpha=true})
 
         hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
@@ -1398,18 +1402,23 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(CommunitiesFrame.NotificationSettingsDialog.Selector)
         set_ScrollBar(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
         set_Alpha_Color(CommunitiesFrame.NotificationSettingsDialog.BG, {notAlpha=true})
-        set_Menu(CommunitiesFrame.NotificationSettingsDialog.CommunitiesListDropDownMenu)
+        --set_Menu(CommunitiesFrame.NotificationSettingsDialog.CommunitiesListDropDownMenu)
 
         set_Alpha_Frame_Texture(GuildControlUI)
         set_Alpha_Frame_Texture(GuildControlUIHbar)
-        set_Menu(GuildControlUINavigationDropDown)
+        --set_Menu(GuildControlUINavigationDropDown)
 
-        set_Menu(CommunitiesFrame.GuildMemberListDropDownMenu)
+        --set_Menu(CommunitiesFrame.GuildMemberListDropDownMenu)
 
         set_Alpha_Frame_Texture(CommunitiesGuildLogFrame)
         set_NineSlice(CommunitiesGuildLogFrame.Container, true)
         set_ScrollBar(CommunitiesGuildLogFrame.Container.ScrollFrame)
-        set_Menu(CommunitiesFrame.CommunitiesListDropDownMenu)
+        --set_Menu(CommunitiesFrame.CommunitiesListDropDownMenu)
+
+        --set_Menu(ClubFinderFilterDropdown)
+        --set_Menu(ClubFinderSortByDropdownButton)
+        --set_Menu(ClubFinderLookingForDropdown)
+        --set_Menu(ClubFinderLanguageDropdown)
 
 
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
@@ -1436,7 +1445,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(ConquestFrame.RatedBGTexture)
         PVPQueueFrame.HonorInset:DisableDrawLayer('BACKGROUND')
         set_Alpha_Color(PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay.Background)
-        set_Menu(HonorFrameTypeDropDown)
+        --set_Menu(HonorFrameTypeDropDown)
         hide_Texture(ConquestFrame.RatedBGTexture)
         set_ScrollBar(LFDQueueFrameSpecific)
 
@@ -1464,7 +1473,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
         EncounterJournalNavBar:DisableDrawLayer('BACKGROUND')
 
-        set_Menu(EncounterJournalInstanceSelectTierDropDown)
+        --set_Menu(EncounterJournalInstanceSelectTierDropDown)
 
 
         C_Timer.After(0.3, function()
@@ -1479,7 +1488,7 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(EncounterJournalDungeonTab, {alpha=min05})
         set_Alpha_Frame_Texture(EncounterJournalRaidTab, {alpha=min05})
         set_Alpha_Frame_Texture(EncounterJournalLootJournalTab, {alpha=min05})
-        set_Menu(EncounterJournalLootJournalViewDropDown)
+        --set_Menu(EncounterJournalLootJournalViewDropDown)
 
 
         set_ScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
@@ -1573,7 +1582,7 @@ local function Init_Event(arg1)
         set_SearchBox(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.InputBox)
         set_SearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox)
         set_SearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.SilverBox)
-        set_Menu(AuctionHouseFrame.CommoditiesSellFrame.DurationDropDown.DropDown)
+        --set_Menu(AuctionHouseFrame.CommoditiesSellFrame.DurationDropDown.DropDown)
         set_Alpha_Color(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabMiddle, nil, nil, min05)
         set_Alpha_Color(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabLeft, nil, nil, min05)
         set_Alpha_Color(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabRight, nil, nil, min05)
@@ -1585,7 +1594,7 @@ local function Init_Event(arg1)
         set_SearchBox(AuctionHouseFrame.ItemSellFrame.QuantityInput.InputBox)
         set_SearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox)
         set_SearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.SilverBox)
-        set_Menu(AuctionHouseFrame.ItemSellFrame.DurationDropDown.DropDown)
+        --set_Menu(AuctionHouseFrame.ItemSellFrame.DurationDropDown.DropDown)
         set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabMiddle, nil, nil, min05)
         set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabLeft, nil, nil, min05)
         set_Alpha_Color(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabRight, nil, nil, min05)
@@ -1708,7 +1717,7 @@ local function Init_Event(arg1)
         ToyBox.progressBar:DisableDrawLayer('BACKGROUND')
 
 
-        set_Menu(HeirloomsJournalClassDropDown)
+        --set_Menu(HeirloomsJournalClassDropDown)
         hide_Texture(HeirloomsJournal.iconsFrame.BackgroundTile)
         hide_Texture(HeirloomsJournal.iconsFrame.Bg)
         set_SearchBox(HeirloomsJournalSearchBox)
@@ -1786,7 +1795,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(WardrobeTransmogFrame.Inset.BG)
         hide_Texture(WardrobeCollectionFrame.SetsTransmogFrame.BackgroundTile)
         set_Alpha_Color(WardrobeCollectionFrame.SetsTransmogFrame.Bg)
-        set_Menu(WardrobeOutfitDropDown)
+        --set_Menu(WardrobeOutfitDropDown)
 
         set_Alpha_Color(WardrobeTransmogFrame.MoneyMiddle)
         set_Alpha_Color(WardrobeTransmogFrame.MoneyLeft)
@@ -1800,7 +1809,7 @@ local function Init_Event(arg1)
             end
         end
         WardrobeCollectionFrame.progressBar:DisableDrawLayer('BACKGROUND')
-        set_Menu(WardrobeCollectionFrameWeaponDropDown)
+        --set_Menu(WardrobeCollectionFrameWeaponDropDown)
 
         for i=1, 7 do
             set_Alpha_Frame_Texture(_G['CollectionsJournalTab'..i], {alpha=min05})
@@ -1841,7 +1850,7 @@ local function Init_Event(arg1)
             end
         end
         set_Alpha_Color(CalendarCreateEventFrame.Border.Bg)
-
+        --set_Menu(CalendarFilterFrame)
 
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
         set_NineSlice(FlightMapFrame.BorderFrame, true)
@@ -2495,7 +2504,7 @@ local function Init_Main_Button()
             set_main_button(_G['MultiBar'..index..'Button'..i])--作条6, 7, 8
         end
     end
-    
+
     set_Alpha_Frame_Texture(MainMenuBar.ActionBarPageNumber.UpButton, {alpha=min05})
     set_Alpha_Frame_Texture(MainMenuBar.ActionBarPageNumber.DownButton, {alpha=min05})
     set_Label(MainMenuBar.ActionBarPageNumber.Text, 1)
@@ -2847,7 +2856,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             GetMinValueAlpha()--min03，透明度，最小值
 
             --Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
-            
+
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
                 tooltip= e.cn(addName),
@@ -2858,7 +2867,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
-            
+
             if Save.disabled then
                 panel:UnregisterEvent('ADDON_LOADED')
             else
