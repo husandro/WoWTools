@@ -50,8 +50,8 @@ local function Set_Scale_Size(frame, tab)
     end
 
     local setSize= tab.setSize
-    local minW= tab.minW or frame:GetWidth() or 220--最小窗口， 宽
-    local minH= tab.minH or frame:GetHeight() or 115--最小窗口，高
+    local minW= tab.minW or (e.Player.husandro and 220 or frame:GetWidth())--最小窗口， 宽
+    local minH= tab.minH or (e.Player.husandro and 115 or frame:GetHeight())--最小窗口，高
     local maxW= tab.maxW--最大，可无
     local maxH= tab.maxH--最大，可无
     local rotationDegrees= tab.rotationDegrees--旋转度数
@@ -205,7 +205,7 @@ local function Set_Scale_Size(frame, tab)
                 self.target:SetScale(1)
                 Save.scale[self.name]=nil
                 e.call('UpdateUIPanelPositions', self.target)
-                
+
             elseif not IsModifierKeyDown() then--开始，设置，缩放
                 self.isActive= true
                 local target= self.target
@@ -1336,6 +1336,9 @@ local function Init_Add_Size()--自定义，大小
 
 
 
+    set_Move_Frame(GossipFrame, {setSize=true
+
+    })
 
 end
 
