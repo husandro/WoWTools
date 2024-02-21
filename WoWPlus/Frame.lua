@@ -740,28 +740,7 @@ local function setAddLoad(arg1)
             end
             hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Minimize', set_size)--maximizedCallback
             hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Maximize', set_size)
-            --hooksecurefunc(CommunitiesFrame, 'ValidateDisplayMode', function(self)
-            --[[hooksecurefunc(CommunitiesFrame, 'UpdateMaximizeMinimizeButton', function(self)
-                if not self.ResizeButton then
-                    return
-                end
-                local displayMode = self:GetDisplayMode();
-                if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-                    self.ResizeButton.minWidth= 290
-                    self.ResizeButton.minHeight= 115
-                    local size= Save.size['CommunitiesFrameMINIMIZED']
-                    if size then
-                        self:SetSize(size[1], size[2])
-                    end
-                else
-                    local size= Save.size['CommunitiesFrameNormal']
-                    if size then
-                        self:SetSize(size[1], size[2])
-                    end
-                    self.ResizeButton.minWidth= 814
-                    self.ResizeButton.minHeight= 426
-                end
-            end)]]
+            
         end, resizeStoppedCallback=function(self)
             local displayMode = self:GetDisplayMode();
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then

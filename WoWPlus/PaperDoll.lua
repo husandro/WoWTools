@@ -1877,6 +1877,8 @@ local function Init()
                 C_PlayerInfo.GetDisplayID()
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
+                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:AddLine(' ')
                 e.tips:AddDoubleLine('name', info.name)
                 e.tips:AddDoubleLine('fileName', info.fileName)
                 e.tips:AddDoubleLine('createScreenIconAtlas', (info.createScreenIconAtlas and '|A:'..info.createScreenIconAtlas..':0:0|a' or '')..(info.createScreenIconAtlas or ''))
@@ -1892,7 +1894,13 @@ local function Init()
                 end
                 e.tips:AddDoubleLine('displayID', C_PlayerInfo.GetDisplayID())
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, e.cn(addName))
+                for _, localeInfo in pairs(GetAvailableLocaleInfo() or {}) do--有效，语言
+                    if LocaleUtil.ContainInstructionForLocale(localeInfo.localeName) then
+                        local info= Mixin({}, LocaleUtil.CreateTextureInfoForInstructions(localeInfo.localeName))
+                        for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+                        e.tips:AddDoubleLine(localeInfo.localeId.. ') '..localeInfo.localeName,  LocaleUtil.ContainInstructionForLocale(localeInfo.localeName))
+                    end
+                end
                 e.tips:Show()
                 self2:SetAlpha(0.3)
             end)

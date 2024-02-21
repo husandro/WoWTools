@@ -713,7 +713,7 @@ local function Init_Gossip()
                     StaticPopup1:Hide()
                 end
                 print(id, e.cn(addName), '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', arg2 or ''))
-                
+
             end
         end
     end)
@@ -1851,7 +1851,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Communities' then--公会和社区
-            --申请，加入
+            --自动，申请，加入
             local function set_ClubFinderRequestToJoin(self)
                 local specID = PlayerUtil.GetCurrentSpecID()
                 if not self.info or not Save.gossip or not self.SpecsPool or not specID then
@@ -1906,6 +1906,22 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end
             hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
             hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
+            ClubFinderCommunityAndGuildFinderFrame.CommunityCards:HookScript('OnShow', function(self)
+                if Save.gossip or not IsModifierKeyDown() then
+                    local btn= self:GetParent().OptionsList.Search
+                    if btn and btn:IsEnabled() then
+                        btn:Click()
+                    end
+                end
+            end)
+            ClubFinderGuildFinderFrame.GuildCards:HookScript('OnShow', function(self)
+                if Save.gossip or not IsModifierKeyDown() then
+                    local btn= self:GetParent().OptionsList.Search
+                    if btn and btn:IsEnabled() then
+                        btn:Click()
+                    end
+                end
+            end)
 
         elseif arg1=='Blizzard_PlayerChoice' then
             --#########
@@ -1992,7 +2008,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                                 end
                             end)
                         end
-                    
+
                         if optionFrame.check then
                             optionFrame.check.elapsed=1.1
                             optionFrame.check.spellID= optionFrame.optionInfo.spellID
