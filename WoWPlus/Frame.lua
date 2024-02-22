@@ -49,25 +49,30 @@ local function Set_Scale_Size(frame, tab)
         return
     end
 
-    local setSize= tab.setSize
+    --设置缩放
+    btn.scaleStoppedFunc= tab.scaleStoppedFunc--保存，缩放内容
+    btn.scaleRestFunc= tab.scaleRestFunc--清除，数据
+
+    --设置，大小
     local minW= tab.minW or (e.Player.husandro and 115 or frame:GetWidth()/2)--最小窗口， 宽
     local minH= tab.minH or (e.Player.husandro and 115 or frame:GetHeight()/2)--最小窗口，高
     local maxW= tab.maxW--最大，可无
     local maxH= tab.maxH--最大，可无
     local rotationDegrees= tab.rotationDegrees--旋转度数
     local initFunc= tab.initFunc--初始
-    local updateFunc= tab.updateFunc--setSize时, OnUpdate
-    local restFunc= tab.restFunc--清除，数据
-    local resizeStoppedCallback= tab.resizeStoppedCallback--保存，内容
-    local getSizeRestTooltipColor= tab.getSizeRestTooltipColor--重置，提示SIZE，颜色
-    local disabledSize= Save.disabledSize[name]
+    btn.sizeRestFunc= tab.sizeRestFunc--清除，数据
+    btn.sizeUpdateFunc= tab.sizeUpdateFunc--setSize时, OnUpdate
+    btn.sizeRestTooltipColorFunc= tab.sizeRestTooltipColorFunc--重置，提示SIZE，颜色
+    btn.sizeStoppedFunc= tab.sizeStoppedFunc--保存，大小，内容
 
+
+    local setSize= tab.setSize
+    local disabledSize= Save.disabledSize[name]
     local btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
     frame.ResizeButton= btn
     btn.disabledSize= disabledSize
     btn.setSize= setSize and not disabledSize
-    btn.restFunc= restFunc
-    btn.resizeStoppedCallback= resizeStoppedCallback
+
     if btn.setSize then
         frame:SetResizable(true)
         btn:Init(frame, minW, minH, maxW , maxH, rotationDegrees)
@@ -81,9 +86,9 @@ local function Set_Scale_Size(frame, tab)
         if initFunc then
             initFunc()
         end
-        btn.updateFunc= updateFunc
-        btn.restFunc= restFunc
-        btn.getSizeRestTooltipColor= getSizeRestTooltipColor
+        btn.sizeUpdateFunc= sizeUpdateFunc
+        btn.sizeRestFunc= sizeRestFunc
+        btn.sizeRestTooltipColorFunc= sizeRestTooltipColorFunc
         local size= Save.size[name]
         if size then
             frame:SetSize(size[1], size[2])
@@ -135,11 +140,11 @@ local function Set_Scale_Size(frame, tab)
             e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..format(' %s |cffffffffx|r %s', w, h), e.Icon.right)
 
             local col= Save.size[self.name] and '' or '|cff606060'
-            if self.getSizeRestTooltipColor then
-                col=self.getSizeRestTooltipColor(self.target) or col
+            if self.sizeRestTooltipColorFunc then
+                col=self.sizeRestTooltipColorFunc(self.target) or col
             end
             e.tips:AddDoubleLine(
-                col..(self.restFunc and (e.onlyChinese and '默认' or DEFAULT) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)),
+                col..(self.sizeRestFunc and (e.onlyChinese and '默认' or DEFAULT) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)),
                 col..'Alt+'..e.Icon.right
             )
             e.tips:AddDoubleLine(e.GetEnabeleDisable(true), 'Ctrl+'..e.Icon.right)
@@ -168,13 +173,18 @@ local function Set_Scale_Size(frame, tab)
         frame:SetScale(scale)
     end
     btn:SetScript("OnMouseUp", function(self, d)
-        if IsModifierKeyDown() or not self.isActive then
+        if IsModifierKeyDown() and not self.isActive then
             return
         end
         self.isActive= false
-        if d=='LeftButton' then
-            Save.scale[self.name]= self.target:GetScale()
-        elseif d=='RightButton' and self.setSize then
+        if d=='LeftButton' then--保存，缩放
+            if self.scaleStoppedFunc then
+                self.scaleStoppedFunc(target)
+            else
+                Save.scale[self.name]= self.target:GetScale()
+            end
+
+        elseif d=='RightButton' and self.setSize then--保存，大小
             local target = self.target;
             local continueResizeStop = true;
             if target.onResizeStopCallback then
@@ -183,8 +193,8 @@ local function Set_Scale_Size(frame, tab)
             if continueResizeStop then
                 target:StopMovingOrSizing();
             end
-            if self.resizeStoppedCallback ~= nil then
-                self.resizeStoppedCallback(self.target);
+            if self.sizeStoppedFunc ~= nil then
+                self.sizeStoppedFunc(self.target);
             else
                 Save.size[self.name]= {self.target:GetSize()}
             end
@@ -204,6 +214,9 @@ local function Set_Scale_Size(frame, tab)
             if IsAltKeyDown() then--清除，缩放，数据
                 self.target:SetScale(1)
                 Save.scale[self.name]=nil
+                if self.scaleRestFunc then
+                    self.scaleRestFunc(self.target)
+                end
                 e.call('UpdateUIPanelPositions', self.target)
 
             elseif not IsModifierKeyDown() then--开始，设置，缩放
@@ -241,11 +254,12 @@ local function Set_Scale_Size(frame, tab)
                 return
             end
             if IsAltKeyDown() then--清除，大小，数据
-                Save.size[name]=nil
-                if self.restFunc then--还原
-                    self.restFunc(self.target)
-                    e.call('UpdateUIPanelPositions', self.target)
+                Save.size[self.name]=nil
+                if self.sizeRestFunc then--还原
+                    self.sizeRestFunc(self.target)
                 end
+                e.call('UpdateUIPanelPositions', self.target)
+
             elseif not IsModifierKeyDown() then--开始，设置，大小
                 self.isActive = true;
                 local target = self.target;
@@ -259,8 +273,8 @@ local function Set_Scale_Size(frame, tab)
                 end
                 self:SetScript('OnUpdate', function(frame)
                     frame:set_tooltip()
-                    if frame.updateFunc then
-                        frame.updateFunc(frame.target)
+                    if frame.sizeUpdateFunc then
+                        frame.sizeUpdateFunc(frame.target)
                     end
                 end)
             end
@@ -644,7 +658,7 @@ local function setAddLoad(arg1)
             ClassTrainerFrame.ScrollBox:ClearAllPoints()
             --ClassTrainerFrame.ScrollBox:SetPoint('TOPLEFT')
             --ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT')
-        end, restFunc=function(self)
+        end, sizeRestFunc=function(self)
             self:SetSize(338, 424)
         end})
 
@@ -718,14 +732,14 @@ local function setAddLoad(arg1)
                     end
                 end
             end)
-        end, resizeStoppedCallback=function(self)
+        end, sizeStoppedFunc=function(self)
             local displayMode = self:GetDisplayMode();
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                 Save.size['CommunitiesFrameMINIMIZED']= {self:GetSize()}
             else
                 Save.size['CommunitiesFrameNormal']= {self:GetSize()}
             end
-        end, restFunc= function(self)
+        end, sizeRestFunc= function(self)
             local displayMode = self:GetDisplayMode();
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                 if Save.size['CommunitiesFrameMINIMIZED'] then
@@ -736,7 +750,7 @@ local function setAddLoad(arg1)
                 Save.size['CommunitiesFrameNormal']= nil
                 self:SetSize(814, 426)
             end
-        end, getSizeRestTooltipColor=function(self)
+        end, sizeRestTooltipColorFunc=function(self)
             local displayMode = self:GetDisplayMode();
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                 if Save.size['CommunitiesFrameMINIMIZED'] then
@@ -762,7 +776,7 @@ local function setAddLoad(arg1)
             AchievementFrameCategories:SetPoint('TOPLEFT', 21, -19)
             AchievementFrameCategories:SetPoint('BOTTOMLEFT', 175, 19)
             AchievementFrameMetalBorderRight:ClearAllPoints()
-        end, restFunc=function(self)
+        end, sizeRestFunc=function(self)
             self:SetSize(768, 500)
         end})
         set_Move_Frame(AchievementFrameComparisonHeader, {frame=AchievementFrame})
@@ -801,7 +815,7 @@ local function setAddLoad(arg1)
             EncounterJournalEncounterFrameInfoDetailsScrollFrame:SetPoint('TOP', 0, -43)
             EncounterJournalEncounterFrameInfoModelFrame:ClearAllPoints()
             EncounterJournalEncounterFrameInfoModelFrame:SetPoint('RIGHT', 0, 0)
-        end, restFunc=function(self)
+        end, sizeRestFunc=function(self)
             self:SetSize(800, 496)
         end})
 
@@ -858,7 +872,7 @@ local function setAddLoad(arg1)
             AuctionHouseFrame.ItemBuyFrame.ItemList.Background:SetPoint('BOTTOMRIGHT')
             AuctionHouseFrame.ItemBuyFrame.ItemDisplay:SetPoint('RIGHT',-3, 0)
             AuctionHouseFrame.ItemBuyFrame.ItemDisplay.Background:SetPoint('RIGHT')
-            
+
             hooksecurefunc(AuctionHouseFrame,'SetDisplayMode', function(self, mode)
                 local btn= self.ResizeButton
                 local size= Save.size[self:GetName()]
@@ -879,7 +893,7 @@ local function setAddLoad(arg1)
                     btn.maxHeight = nil
                 end
             end)
-        end, restFunc=function(self)
+        end, sizeRestFunc=function(self)
             self:SetSize(800, 538)
         end})
 
@@ -998,7 +1012,47 @@ local function setAddLoad(arg1)
                 self2:SetScale(Save.scale[name])
             end
         end)
-        set_Move_Frame(ProfessionsFrame, {})
+
+        set_Move_Frame(ProfessionsFrame, {setSize=true, initFunc=function()
+            hooksecurefunc(ProfessionsFrame.CraftingPage, 'SetMaximized', function()--<Size x="793" y="553"/>
+                local self= ProfessionsFrame
+                local name= self:GetName()
+                local scale=Save.scale[name..'Normal']
+                if scale then
+                    self:SetScale(scale)
+                end
+            end)
+            hooksecurefunc(ProfessionsFrame.CraftingPage, 'SetMinimized', function()
+                local self= ProfessionsFrame
+                local name= self:GetName()
+                local scale=Save.scale[name..'Mini']
+                if scale then
+                    self:SetScale(scale)
+                end
+            end)
+
+            --ProfessionsFrame.CraftingPage.SchematicForm:SetPoint('BOTTOMRIGHT')
+        end, scaleStoppedFunc=function(self)
+            local name= self:GetName()
+            if ProfessionsUtil.IsCraftingMinimized() then
+                Save.scale[name..'Mini']= self:GetScale()
+            else
+                Save.scale[name..'Normal']= self:GetScale()
+            end
+        end, scaleRestFunc=function(self)
+            local name= self:GetName()
+            if ProfessionsUtil.IsCraftingMinimized() then
+                Save.scale[name..'Mini']= nil
+            else
+                Save.scale[name..'Normal']= nil
+            end
+        end, sizeRestFunc=function(self)
+            if ProfessionsUtil.IsCraftingMinimized() then
+                self:SetSize(404, 658)
+            else
+                self:SetSize(942, 658)
+            end
+        end})
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
         set_Move_Frame(ProfessionsCustomerOrdersFrame, {save=true})
@@ -1219,7 +1273,7 @@ local function Init_Move()
                 if scale then
                     self:SetScale(scale)
                 end
-                
+
                 self.ResizeButton:SetShown(true)
             end)
             hooksecurefunc(WorldMapFrame, 'Maximize', function(self)
@@ -1229,10 +1283,10 @@ local function Init_Move()
                 end
                 self.ResizeButton:SetShown(false)
             end)
-            
-        end, updateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
+
+        end, sizeUpdateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
             set_min_max_value({WorldMapFrame:GetSize()})
-        end, restFunc= function()
+        end, sizeRestFunc= function()
             WorldMapFrame.minimizedWidth= minimizedWidth
             WorldMapFrame.minimizedHeight= minimizedHeight
             WorldMapFrame:SetSize(minimizedWidth+ (WorldMapFrame.questLogWidth or 290), minimizedHeight)
@@ -1266,7 +1320,7 @@ local function Init_Move()
             entry.Title:SetPoint('RIGHT', -220, 0 )
         end)
         --e.call(AddonList_Update)
-    end, restFunc= function()
+    end, sizeRestFunc= function()
         AddonList:SetSize("500", "478")
     end})
 
@@ -1367,20 +1421,20 @@ local function Init_Move()
                 CharacterFrame.ResizeButton.minHeight= 424
             end
         end)
-        end, updateFunc=function()
+        end, sizeUpdateFunc=function()
             if PaperDollFrame.EquipmentManagerPane:IsVisible() then
                 e.call('PaperDollEquipmentManagerPane_Update')
             end
             if PaperDollFrame.TitleManagerPane:IsVisible() then
                 e.call('PaperDollTitlesPane_Update')
             end
-        end, resizeStoppedCallback=function(self)
+        end, sizeStoppedFunc=function(self)
             if CharacterFrame.Expanded then
                 Save.size['CharacterFrameExpanded']={self:GetSize()}
             else
                 Save.size['CharacterFrameCollapse']={self:GetSize()}
             end
-        end, restFunc=function(self)
+        end, sizeRestFunc=function(self)
             if self.Expanded then
                 Save.size['CharacterFrameExpanded']=nil
                 self:SetSize(CHARACTERFRAME_EXPANDED_WIDTH, 424)
@@ -1388,7 +1442,7 @@ local function Init_Move()
                 Save.size['CharacterFrameCollapse']=nil
                 self:SetSize(PANEL_DEFAULT_WIDTH, 424)
             end
-        end, getSizeRestTooltipColor=function(self)
+        end, sizeRestTooltipColorFunc=function(self)
             return ((self.Expanded and Save.size['CharacterFrameExpanded']) or (not self.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
         end
     })
@@ -1498,7 +1552,7 @@ local function Init_Move()
         --ExpansionLandingPage={},--要塞
 
         --PlayerPowerBarAlt={},--UnitPowerBarAlt.lua
-        
+
         --OpenMailFrame={},
         MirrorTimer1={save=true},
 

@@ -2018,6 +2018,9 @@ local function Init_Event(arg1)
 
         set_NineSlice(ProfessionsFrame.CraftingPage.CraftingOutputLog, true)
         set_ScrollBar(ProfessionsFrame.CraftingPage.CraftingOutputLog)
+        set_ScrollBar(ProfessionsFrame.CraftingPage.RecipeList)
+
+        set_NineSlice(ProfessionsFrame.CraftingPage.SchematicForm, true)
 
     elseif arg1=='Blizzard_ClickBindingUI' then--点击，施法
         set_NineSlice(ClickBindingFrame, true)
