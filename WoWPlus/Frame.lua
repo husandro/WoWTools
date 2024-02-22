@@ -122,7 +122,7 @@ local function Set_Scale_Size(frame, tab)
 
         if self.disabledSize then
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..': '..e.GetEnabeleDisable(false), 'Ctrl+'..e.Icon.left)
+            e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..': '..e.GetEnabeleDisable(false), 'Ctrl+'..e.Icon.right)
         elseif self.setSize then
             e.tips:AddLine(' ')
             local w, h
