@@ -787,6 +787,8 @@ local function setAddLoad(arg1)
                 self:SetSize(768, 500)
         end})
         set_Move_Frame(AchievementFrameComparisonHeader, {frame=AchievementFrame})
+        set_Move_Frame(AchievementFrame.Header, {frame=AchievementFrame})
+        
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         set_Move_Frame(EncounterJournal)

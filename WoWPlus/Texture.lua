@@ -1291,6 +1291,7 @@ local function Init_Event(arg1)
 
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
+        --[[
         set_Alpha_Color(AchievementFrame.Header.PointBorder)
         hide_Texture(AchievementFrameSummary.Background)
         hide_Texture(AchievementFrameCategoriesBG)
@@ -1327,6 +1328,8 @@ local function Init_Event(arg1)
         set_Alpha_Color(AchievementFrameWoodBorderBottomRight)
         set_Alpha_Color(AchievementFrameWoodBorderTopLeft)
         set_Alpha_Color(AchievementFrameWoodBorderTopRight)
+        
+        --AchievementFrameMetalBorderLeft
 
         hide_Texture(AchievementFrameSummaryCategoriesStatusBarFillBar)
         for i=1, 10 do
@@ -1350,7 +1353,17 @@ local function Init_Event(arg1)
         set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=min05})
 
         set_NineSlice(AchievementFrameCategories)
-        hide_Texture(AchievementFrame.BackgroundBlackCover)
+        hide_Texture(AchievementFrame.BackgroundBlackCover)]]
+        hide_Frame_Texture(AchievementFrame)
+        hide_Frame_Texture(AchievementFrame.Header)
+        hide_Frame_Texture(AchievementFrameSummary)
+        set_NineSlice(AchievementFrameCategories, true)
+        set_ScrollBar(AchievementFrameCategories)
+        set_ScrollBar(AchievementFrameAchievements)
+        set_ScrollBar(AchievementFrameStats)
+        set_SearchBox(AchievementFrame.SearchBox)
+        set_Alpha_Color(AchievementFrameStatsBG, nil, nil, min05)
+
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
         set_NineSlice(CommunitiesFrame, true)
