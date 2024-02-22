@@ -1436,6 +1436,32 @@ local function Init_Move()
         self:SetSize(338, 496)
     end})
 
+
+
+
+
+
+
+
+
+    --邮箱，信件
+    set_Move_Frame(MailFrame)--[[, {setSize=true, initFunc=function()
+        InboxFrame:SetPoint('BOTTOMRIGHT')
+        InboxPrevPageButton:ClearAllPoints()
+        InboxPrevPageButton:SetPoint('BOTTOMLEFT', 4, 4)
+        OpenAllMail:ClearAllPoints()
+        OpenAllMail:SetPoint('BOTTOM', 0, 4)
+        InboxNextPageButton:ClearAllPoints()
+        InboxNextPageButton:SetPoint('BOTTOMRIGHT', -4, 4)
+    end})]]
+    set_Move_Frame(SendMailFrame, {frame=MailFrame})
+
+
+
+
+
+
+
     local FrameTab={
         --AddonList={},--插件
         GameMenuFrame={notSave=true},--菜单
@@ -1472,8 +1498,7 @@ local function Init_Move()
         --ExpansionLandingPage={},--要塞
 
         --PlayerPowerBarAlt={},--UnitPowerBarAlt.lua
-        --MailFrame={},
-        SendMailFrame={frame= MailFrame},
+        
         --OpenMailFrame={},
         MirrorTimer1={save=true},
 
