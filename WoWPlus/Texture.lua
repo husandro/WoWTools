@@ -2021,8 +2021,8 @@ local function Init_Event(arg1)
         set_ScrollBar(ProfessionsFrame.CraftingPage.RecipeList)
 
         set_NineSlice(ProfessionsFrame.CraftingPage.SchematicForm, true)
-        set_Alpha_Color(ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground, nil, nil, min05)
-        
+        hide_Texture(ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground, nil, nil, min05)
+
     elseif arg1=='Blizzard_ClickBindingUI' then--点击，施法
         set_NineSlice(ClickBindingFrame, true)
         set_ScrollBar(ClickBindingFrame)

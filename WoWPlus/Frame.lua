@@ -1026,7 +1026,7 @@ local function setAddLoad(arg1)
                     if not size and Save.size[name..'Normal'] then
                         self:SetHeight(658)
                     end
-                    ProfessionsFrame.CraftingPage.SchematicForm:SetPoint('BOTTOMRIGHT',0 ,8)
+                    ProfessionsFrame.CraftingPage.SchematicForm:SetPoint('BOTTOMRIGHT', 0,18)
                 else
                     scale= Save.scale[name..'Normal']
                     size= Save.size[name..'Normal']
@@ -1054,6 +1054,8 @@ local function setAddLoad(arg1)
             ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:ClearAllPoints()
             ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:SetAllPoints(ProfessionsFrame.CraftingPage.SchematicForm)
             
+            
+
         end, scaleStoppedFunc=function(self)
             local name= self:GetName()
             if ProfessionsUtil.IsCraftingMinimized() then
