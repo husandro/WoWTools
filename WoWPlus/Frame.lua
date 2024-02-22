@@ -1026,7 +1026,7 @@ local function setAddLoad(arg1)
                     if not size and Save.size[name..'Normal'] then
                         self:SetHeight(658)
                     end
-                    --ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:SetPoint('BOTTOMRIGHT')
+                    ProfessionsFrame.CraftingPage.SchematicForm:SetPoint('BOTTOMRIGHT',0 ,8)
                 else
                     scale= Save.scale[name..'Normal']
                     size= Save.size[name..'Normal']
@@ -1035,6 +1035,7 @@ local function setAddLoad(arg1)
                     end
                     ProfessionsFrame.CraftingPage.SchematicForm:SetPoint('BOTTOMRIGHT')
                 end
+                
                 if scale then
                     self:SetScale(scale)
                 end
