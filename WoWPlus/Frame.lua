@@ -12,7 +12,7 @@ local Save={
         size={},
         disabledSize={['CharacterFrame']= true},
         --width={},
-        
+
 
 }
 local addName= 'Frame'
@@ -63,7 +63,7 @@ local function Set_Scale_Size(frame, tab)
     local disabledSize= Save.disabledSize[name]
 
     local btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
-    frame.ResizeButton= btn    
+    frame.ResizeButton= btn
     btn.disabledSize= disabledSize
     btn.setSize= setSize and not disabledSize
     btn.restFunc= restFunc
@@ -682,8 +682,6 @@ local function setAddLoad(arg1)
             hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Maximize', set_size)
             hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBox, 'Update', function(frame)
                 for _, btn in pairs(frame:GetFrames() or {}) do
-                    --info=btn.cardInfo
-                    --for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
                     btn.Name:ClearAllPoints()
                     btn.Name:SetPoint('TOPLEFT', btn.LogoBorder, 'TOPRIGHT', 12,0)
                     btn.Description:ClearAllPoints()
@@ -691,7 +689,7 @@ local function setAddLoad(arg1)
                     btn.Description:SetPoint('RIGHT', btn.RequestJoin, 'LEFT', -26,0)
                     btn.Background:SetPoint('RIGHT', -12,0)--移动背景
                     local cardInfo= btn.cardInfo-- or {}-- clubFinderGUID, isCrossFaction, clubId, 
-                                                                        
+
                     if not btn.corssFactionTexture and cardInfo.isCrossFaction then--跨阵营
                         btn.corssFactionTexture= btn:CreateTexture(nil, 'OVERLAY')
                         btn.corssFactionTexture:SetSize(18,18)
@@ -702,7 +700,7 @@ local function setAddLoad(arg1)
                         btn.corssFactionTexture:SetShown(true)--not cardInfo.isCrossFaction)
                     end
 
-                    
+
                     local autoAccept--自动，批准, 无效
                     local clubStatus= cardInfo.clubFinderGUID and C_ClubFinder.GetPlayerClubApplicationStatus(cardInfo.clubFinderGUID)
                     btn:SetAlpha(btn.RequestJoin:IsShown() and 1 or 0.3)
@@ -755,43 +753,57 @@ local function setAddLoad(arg1)
         set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
         set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
 
-
-
-
-
-
-
-
-
-
-
     elseif arg1=='Blizzard_TimeManager' then--小时图，时间
         set_Move_Frame(TimeManagerFrame, {save=true})
-        --[[set_Move_Frame(TimeManagerClockButton, {save=true, click="R", notZoom=true})
-        hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
-            e.tips:AddLine(' ')
-            e.tips:AddLine(e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE))
-            e.tips:AddDoubleLine(id, e.cn(addName))
-            e.tips:Show()
-        end)
-        TimeManagerClockButton:HookScript('OnLeave', TimeManagerClockButton_OnLeave)]]
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
-        --set_Move_Frame(AchievementFrame.Header, {frame=AchievementFrame})
-        print(AchievementFrame:GetSize())
         set_Move_Frame(AchievementFrame, {minW=768, maxW=768, minH=500, setSize=true, initFunc=function()
             AchievementFrameCategories:ClearAllPoints()
             AchievementFrameCategories:SetPoint('TOPLEFT', 21, -19)
             AchievementFrameCategories:SetPoint('BOTTOMLEFT', 175, 19)
+            AchievementFrameMetalBorderRight:ClearAllPoints()
         end, restFunc=function(self)
-                self:SetSize(768, 500)
+            self:SetSize(768, 500)
         end})
         set_Move_Frame(AchievementFrameComparisonHeader, {frame=AchievementFrame})
         set_Move_Frame(AchievementFrame.Header, {frame=AchievementFrame})
-        
+
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
-        set_Move_Frame(EncounterJournal)
+        set_Move_Frame(EncounterJournal, {minW=800, minH=496, maxW=800, setSize=true, initFunc=function()
+            EncounterJournalMonthlyActivitiesFrame.FilterList:SetPoint('BOTTOMLEFT', 225, 5)-- Blizzard_MonthlyActivities.xml
+            EncounterJournalMonthlyActivitiesFrame.ScrollBox:SetPoint('BOTTOMLEFT', EncounterJournalMonthlyActivitiesFrame.FilterList, 'BOTTOMRIGHT')
+            EncounterJournalInstanceSelectBG:SetPoint('BOTTOMRIGHT', 0,2)
+            EncounterJournalInstanceSelect.ScrollBox:SetPoint('BOTTOMLEFT', -3, 15)
+            EncounterJournal.LootJournalItems.ItemSetsFrame:SetPoint('TOPRIGHT', -22, -10)
+            for _, region in pairs({EncounterJournal.LootJournalItems:GetRegions()}) do
+                if region:GetObjectType()=='Texture' then
+                    region:SetPoint('BOTTOM')
+                    break
+                end
+            end
+            EncounterJournal.LootJournal.ScrollBox:SetPoint('TOPLEFT', 20, -51)
+            for _, region in pairs({EncounterJournal.LootJournal:GetRegions()}) do
+                if region:GetObjectType()=='Texture' then
+                    region:SetPoint('BOTTOM')
+                    break
+                end
+            end
+            EncounterJournalEncounterFrameInfo:SetPoint('TOP')
+            EncounterJournalEncounterFrameInfo.BossesScrollBox:SetPoint('TOP', 0, -43)
+            EncounterJournalEncounterFrameInstanceFrame:SetPoint('TOP')
+            EncounterJournalEncounterFrameInfoBG:SetPoint('TOP')
+            EncounterJournalEncounterFrameInstanceFrameMapButton:ClearAllPoints()
+            EncounterJournalEncounterFrameInstanceFrameMapButton:SetPoint('TOPLEFT', 33, -275)
+            EncounterJournalEncounterFrameInstanceFrame.LoreScrollingFont:SetPoint('TOPRIGHT', -35, -330)
+            EncounterJournalEncounterFrameInfoOverviewScrollFrame:SetPoint('TOP',0,-43)
+            EncounterJournalEncounterFrameInfo.LootContainer:SetPoint('TOP', 0, -43)
+            EncounterJournalEncounterFrameInfoDetailsScrollFrame:SetPoint('TOP', 0, -43)
+            EncounterJournalEncounterFrameInfoModelFrame:ClearAllPoints()
+            EncounterJournalEncounterFrameInfoModelFrame:SetPoint('RIGHT', 0, 0)
+        end, restFunc=function(self)
+            self:SetSize(800, 496)
+        end})
 
     elseif arg1=='Blizzard_ClassTalentUI' then--天赋
         local frame=ClassTalentFrame
@@ -857,7 +869,7 @@ local function setAddLoad(arg1)
 
 
 
-    
+
 
 
 
@@ -1355,7 +1367,7 @@ local function Init_Add_Size()--自定义，大小
     end, restFunc=function(self)
         self:SetSize(384, 512)
     end})
-    
+
     --任务
     set_Move_Frame(QuestFrame, {minW=164, minH=128, setSize=true, initFunc=function()
         local tab={
@@ -1755,7 +1767,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.size= Save.size or {}
             Save.disabledSize= Save.disabledSize or {}
             --Save.width= Save.width or {}
-            
+
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
                 tooltip= e.cn(addName),

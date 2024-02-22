@@ -1291,79 +1291,33 @@ local function Init_Event(arg1)
 
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
-        --[[
-        set_Alpha_Color(AchievementFrame.Header.PointBorder)
-        hide_Texture(AchievementFrameSummary.Background)
-        hide_Texture(AchievementFrameCategoriesBG)
-        hide_Texture(AchievementFrameAchievements.Background)
-
-        hide_Texture(AchievementFrameWaterMark)
-        hide_Texture(AchievementFrameGuildEmblemRight)
-
-        hide_Texture(AchievementFrame.BottomRightCorner)
-        hide_Texture(AchievementFrame.BottomLeftCorner)
-        hide_Texture(AchievementFrame.TopLeftCorner)
-        hide_Texture(AchievementFrame.TopRightCorner)
-
-        hide_Texture(AchievementFrame.BottomEdge)
-        hide_Texture(AchievementFrame.TopEdge)
-        hide_Texture(AchievementFrame.LeftEdge)
-        hide_Texture(AchievementFrame.RightEdge)
-        hide_Texture(AchievementFrame.Header.Right)
-        hide_Texture(AchievementFrame.Header.Left)
-
-        set_SearchBox(AchievementFrame.SearchBox)
-
-        set_Alpha_Color(AchievementFrame.Background)
-        set_Alpha_Color(AchievementFrameMetalBorderBottomLeft)
-        set_Alpha_Color(AchievementFrameMetalBorderBottom)
-        set_Alpha_Color(AchievementFrameMetalBorderBottomRight)
-        set_Alpha_Color(AchievementFrameMetalBorderRight)
-        set_Alpha_Color(AchievementFrameMetalBorderLeft)
-        set_Alpha_Color(AchievementFrameMetalBorderTopLeft)
-        set_Alpha_Color(AchievementFrameMetalBorderTop)
-        set_Alpha_Color(AchievementFrameMetalBorderTopRight)
-
-        set_Alpha_Color(AchievementFrameWoodBorderBottomLeft)
-        set_Alpha_Color(AchievementFrameWoodBorderBottomRight)
-        set_Alpha_Color(AchievementFrameWoodBorderTopLeft)
-        set_Alpha_Color(AchievementFrameWoodBorderTopRight)
-        
-        --AchievementFrameMetalBorderLeft
-
-        hide_Texture(AchievementFrameSummaryCategoriesStatusBarFillBar)
-        for i=1, 10 do
-            hide_Texture(_G['AchievementFrameCategoriesCategory'..i..'Bar'])
-        end
-        if AchievementFrameStatsBG then
-            AchievementFrameStatsBG:Hide()
-        end
-        set_Alpha_Color(AchievementFrame.Header.LeftDDLInset)
-        set_Alpha_Color(AchievementFrame.Header.RightDDLInset)
-        hooksecurefunc(AchievementTemplateMixin, 'Init', function(self)
-            if self.Icon then
-                hide_Texture(self.Icon.frame)
-            end
-        end)
-        set_ScrollBar(AchievementFrameAchievements)
-        set_ScrollBar(AchievementFrameStats)
-        set_ScrollBar(AchievementFrameCategories)
-        set_Alpha_Frame_Texture(AchievementFrameTab1, {alpha=min05})
-        set_Alpha_Frame_Texture(AchievementFrameTab2, {alpha=min05})
-        set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=min05})
-
-        set_NineSlice(AchievementFrameCategories)
-        hide_Texture(AchievementFrame.BackgroundBlackCover)]]
         hide_Frame_Texture(AchievementFrame)
         hide_Frame_Texture(AchievementFrame.Header)
         hide_Frame_Texture(AchievementFrameSummary)
         set_NineSlice(AchievementFrameCategories, true)
         set_ScrollBar(AchievementFrameCategories)
+
         set_ScrollBar(AchievementFrameAchievements)
+        hide_Frame_Texture(AchievementFrameAchievements)
+
         set_ScrollBar(AchievementFrameStats)
         set_SearchBox(AchievementFrame.SearchBox)
         set_Alpha_Color(AchievementFrameStatsBG, nil, nil, min05)
+        set_Alpha_Frame_Texture(AchievementFrameTab1, {alpha=min05})
+        set_Alpha_Frame_Texture(AchievementFrameTab2, {alpha=min05})
+        set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=min05})
+        hide_Texture(AchievementFrameSummaryCategoriesStatusBarFillBar)
 
+        set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillRight)
+        set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillMiddle)
+        set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillLeft)
+        for i=1, 10 do
+            hide_Texture(_G['AchievementFrameCategoriesCategory'..i..'Bar'])
+            set_Alpha_Color(_G['AchievementFrameSummaryCategoriesCategory'..i..'Right'])
+            set_Alpha_Color(_G['AchievementFrameSummaryCategoriesCategory'..i..'Middle'])
+            set_Alpha_Color(_G['AchievementFrameSummaryCategoriesCategory'..i..'Left'])
+
+        end
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
         set_NineSlice(CommunitiesFrame, true)
@@ -1471,7 +1425,6 @@ local function Init_Event(arg1)
         hide_Texture(EncounterJournalBg)
         set_Alpha_Color(EncounterJournalInset.Bg, nil, nil, min03)
         set_NineSlice(EncounterJournalInset, nil, true)
-        set_Alpha_Color(EncounterJournalInstanceSelectBG)
         set_ScrollBar(EncounterJournalInstanceSelect)
         set_SearchBox(EncounterJournalSearchBox)
         set_ScrollBar(EncounterJournal.LootJournalItems.ItemSetsFrame)
@@ -1483,19 +1436,23 @@ local function Init_Event(arg1)
         hide_Texture(EncounterJournalNavBarInsetLeftBorder)
         hide_Texture(EncounterJournalNavBarInsetBotRightCorner)
         hide_Texture(EncounterJournalNavBarInsetBotLeftCorner)
-
-
+        
+        set_Alpha_Color(EncounterJournalInstanceSelectBG)
         set_Alpha_Color(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
         EncounterJournalNavBar:DisableDrawLayer('BACKGROUND')
 
         --set_Menu(EncounterJournalInstanceSelectTierDropDown)
+        set_ScrollBar(EncounterJournalEncounterFrameInfoOverviewScrollFrame)
 
 
         C_Timer.After(0.3, function()
             if EncounterJournalMonthlyActivitiesFrame then
-                set_Alpha_Color(EncounterJournalMonthlyActivitiesFrame.Bg)
+                hide_Texture(EncounterJournalMonthlyActivitiesFrame.Bg)
+                hide_Texture(EncounterJournalMonthlyActivitiesFrame.ShadowRight)
+                set_ScrollBar(EncounterJournalMonthlyActivitiesFrame)
             end
-            set_ScrollBar(EncounterJournalMonthlyActivitiesFrame)
+            
+            
         end)
 
         set_Alpha_Frame_Texture(EncounterJournalSuggestTab, {alpha=min05})
@@ -1509,6 +1466,7 @@ local function Init_Event(arg1)
         set_ScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
         set_ScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
         set_ScrollBar(EncounterJournal.LootJournal)
+     
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set_Alpha_Color(GuildBankFrame.BlackBG)
