@@ -844,7 +844,44 @@ local function setAddLoad(arg1)
         end
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
-        set_Move_Frame(AuctionHouseFrame, {save=true})
+        set_Move_Frame(AuctionHouseFrame, {setSize=true, initFunc=function()
+            AuctionHouseFrame.CategoriesList:SetPoint('BOTTOM', AuctionHouseFrame.MoneyFrameBorder.MoneyFrame, 'TOP',0,2)
+            AuctionHouseFrame.BrowseResultsFrame.ItemList.Background:SetPoint('BOTTOMRIGHT')
+            AuctionHouseFrameAuctionsFrame.SummaryList.Background:SetPoint('BOTTOM')
+            AuctionHouseFrameAuctionsFrame.AllAuctionsList.Background:SetPoint('BOTTOMRIGHT')
+            AuctionHouseFrameAuctionsFrame.BidsList.Background:SetPoint('BOTTOMRIGHT')
+            AuctionHouseFrame.WoWTokenResults.BuyoutLabel:ClearAllPoints()
+            AuctionHouseFrame.WoWTokenResults.BuyoutLabel:SetPoint('BOTTOM', AuctionHouseFrame.WoWTokenResults.Buyout, 'TOP', 0, 32)
+            AuctionHouseFrame.WoWTokenResults.Background:SetPoint('BOTTOMRIGHT')
+            AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.Background:SetPoint('BOTTOM')
+            AuctionHouseFrame.CommoditiesBuyFrame.ItemList.Background:SetPoint('BOTTOMRIGHT')
+            AuctionHouseFrame.ItemBuyFrame.ItemList.Background:SetPoint('BOTTOMRIGHT')
+            AuctionHouseFrame.ItemBuyFrame.ItemDisplay:SetPoint('RIGHT',-3, 0)
+            AuctionHouseFrame.ItemBuyFrame.ItemDisplay.Background:SetPoint('RIGHT')
+            
+            hooksecurefunc(AuctionHouseFrame,'SetDisplayMode', function(self, mode)
+                local btn= self.ResizeButton
+                local size= Save.size[self:GetName()]
+                if not btn or not size then
+                    return
+                end
+                if mode==AuctionHouseFrameDisplayMode.ItemSell or mode==AuctionHouseFrameDisplayMode.CommoditiesSell then
+                    self:SetSize(800, 538)
+                    btn.minWidth = 800;
+                    btn.minHeight = 538
+                    btn.maxWidth = 800
+                    btn.maxHeight = 538
+                else
+                    self:SetSize(size[1], size[2])
+                    btn.minWidth = 600;
+                    btn.minHeight = 320
+                    btn.maxWidth = nil
+                    btn.maxHeight = nil
+                end
+            end)
+        end, restFunc=function(self)
+            self:SetSize(800, 538)
+        end})
 
         set_Move_Frame(AuctionHouseFrame.ItemSellFrame, {frame=AuctionHouseFrame})
         set_Move_Frame(AuctionHouseFrame.ItemSellFrame.Overlay, {frame=AuctionHouseFrame})
@@ -1146,8 +1183,8 @@ end
 --初始,移动
 --########
 local function Init_Move()
-        local minimizedWidth= WorldMapFrame.minimizedWidth or 702
-        local minimizedHeight= WorldMapFrame.minimizedHeight or 534
+    local minimizedWidth= WorldMapFrame.minimizedWidth or 702
+    local minimizedHeight= WorldMapFrame.minimizedHeight or 534
         local function set_min_max_value(size)
             local self= WorldMapFrame
             local isMax= self:IsMaximized()
@@ -1160,7 +1197,6 @@ local function Init_Move()
                 self.minimizedHeight= size[2]
                 self.BorderFrame.MaximizeMinimizeFrame:Minimize()
             end
-            self.ResizeButton:SetShown(not isMax)
         end
         set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, initFunc=function()
             QuestMapFrame.Background:ClearAllPoints()
@@ -1173,9 +1209,6 @@ local function Init_Move()
             set_Move_Frame(QuestMapFrame, {frame= WorldMapFrame})
             set_Move_Frame(QuestMapFrame.DetailsFrame, {frame= WorldMapFrame})
             hooksecurefunc(WorldMapFrame, 'Minimize', function(self)
-                if self:IsMaximized() then
-                    return
-                end
                 local name= self:GetName()
                 local size= Save.size[name]
                 if size then
@@ -1186,15 +1219,17 @@ local function Init_Move()
                 if scale then
                     self:SetScale(scale)
                 end
+                
+                self.ResizeButton:SetShown(true)
             end)
             hooksecurefunc(WorldMapFrame, 'Maximize', function(self)
-                if self:IsMaximized() then
-                    set_min_max_value()
-                    if Save.scale[self:GetName()] then
-                        self:SetScale(1)
-                    end
+                set_min_max_value()
+                if Save.scale[self:GetName()] then
+                    self:SetScale(1)
                 end
+                self.ResizeButton:SetShown(false)
             end)
+            
         end, updateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
             set_min_max_value({WorldMapFrame:GetSize()})
         end, restFunc= function()

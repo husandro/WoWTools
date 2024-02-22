@@ -145,14 +145,14 @@ local setNineSliceTabs={
     'Background',
     'Bg',
 }
-local function set_NineSlice(frame, min, hide)
+local function set_NineSlice(frame, min, hide, notAlpha)
     if not frame or not frame.NineSlice then
         return
     end
     local alpha= min and min03 or nil
     for _, text in pairs(setNineSliceTabs) do
         if not hide then
-            set_Alpha_Color(frame.NineSlice[text], nil, nil, alpha)
+            set_Alpha_Color(frame.NineSlice[text], notAlpha, nil, alpha)
         else
             hide_Texture(frame.NineSlice[text])
         end
@@ -1185,10 +1185,28 @@ local function Init_All_Frame()
         hooksecurefunc(e.LibDD, 'UIDropDownMenu_Initialize', function(_, menu)
             set_Menu(menu)
         end)
+        hooksecurefunc(e.LibDD, 'ToggleDropDownMenu', function(_, level)
+            local nine= _G['L_DropDownList'..(level or '')..'MenuBackdrop']
+            if nine and nine.NineSlice then
+                set_Alpha_Color(nine.NineSlice.TopEdge, true)
+                set_Alpha_Color(nine.NineSlice.BottomEdge, true)
+                set_Alpha_Color(nine.NineSlice.LeftEdge, true)
+                set_Alpha_Color(nine.NineSlice.RightEdge, true)
+            end
+        end)
     end
 
     hooksecurefunc('UIDropDownMenu_Initialize', function(menu)
         set_Menu(menu)
+    end)
+    hooksecurefunc('ToggleDropDownMenu', function(level)
+        local nine= _G['DropDownList'..(level or '')..'MenuBackdrop']
+        if nine and nine.NineSlice then
+            set_Alpha_Color(nine.NineSlice.TopEdge, true)
+            set_Alpha_Color(nine.NineSlice.BottomEdge, true)
+            set_Alpha_Color(nine.NineSlice.LeftEdge, true)
+            set_Alpha_Color(nine.NineSlice.RightEdge, true)
+        end
     end)
 end
 
