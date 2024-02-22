@@ -1085,9 +1085,12 @@ end
 
 
 
-local function Init_Add_Size()--自定义，大小
+
+
+
+
     --世界地图
-    if not C_AddOns.IsAddOnLoaded('Mapster') then
+    --if not C_AddOns.IsAddOnLoaded('Mapster') then
         --[[if not Save.disabledZoom then
             if QuestScrollFrame then
                 QuestScrollFrame:ClearAllPoints()
@@ -1139,7 +1142,10 @@ local function Init_Add_Size()--自定义，大小
                 end
             end)
         end]]
-
+--########
+--初始,移动
+--########
+local function Init_Move()
         local minimizedWidth= WorldMapFrame.minimizedWidth or 702
         local minimizedHeight= WorldMapFrame.minimizedHeight or 534
         local function set_min_max_value(size)
@@ -1197,7 +1203,6 @@ local function Init_Add_Size()--自定义，大小
             WorldMapFrame:SetSize(minimizedWidth+ (WorldMapFrame.questLogWidth or 290), minimizedHeight)
             WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
         end})
-    end
 
 
 
@@ -1395,29 +1400,6 @@ local function Init_Add_Size()--自定义，大小
     end, restFunc= function(self)
         self:SetSize(338, 496)
     end})
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---########
---初始,移动
---########
-local function Init_Move()
-    Init_Add_Size()--自定义，大小
 
     local FrameTab={
         --AddonList={},--插件
