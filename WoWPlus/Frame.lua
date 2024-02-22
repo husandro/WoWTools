@@ -1013,26 +1013,35 @@ local function setAddLoad(arg1)
         end)
         set_Move_Frame(InspectRecipeFrame)
 
-        local function set_ProfessionsFrame_size_scale(self)
-            local name= self:GetName()
-            local scale, size
-            if ProfessionsUtil.IsCraftingMinimized() then
-                scale= Save.scale[name..'Mini']
-                size= Save.size[name..'Mini']
-            else
-                scale= Save.scale[name..'Normal']
-                size= Save.size[name..'Normal']
-            end
-            if scale then
-                self:SetScale(scale)
-            end
-            if size then
-                self:SetSize(size[1], size[2])
-            end
-        end
+       
         
 --ProfessionsUtil.SetCraftingMinimized(false);
         set_Move_Frame(ProfessionsFrame, {setSize=true, initFunc=function()
+            local function set_ProfessionsFrame_size_scale(self)
+                local name= self:GetName()
+                local scale, size
+                if ProfessionsUtil.IsCraftingMinimized() then
+                    scale= Save.scale[name..'Mini']
+                    size= Save.size[name..'Mini']
+                    if not size and Save.size[name..'Normal'] then
+                        self:SetHeight(658)
+                    end
+                    --ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:SetPoint('BOTTOMRIGHT')
+                else
+                    scale= Save.scale[name..'Normal']
+                    size= Save.size[name..'Normal']
+                    if not size and Save.size[name..'Mini'] then
+                        self:SetHeight(658)
+                    end
+                    ProfessionsFrame.CraftingPage.SchematicForm:SetPoint('BOTTOMRIGHT')
+                end
+                if scale then
+                    self:SetScale(scale)
+                end
+                if size then
+                    self:SetSize(size[1], size[2])
+                end
+            end
             ProfessionsFrame:HookScript('OnShow', function(self)
                 C_Timer.After(0.3, function()
                     set_ProfessionsFrame_size_scale(self)
@@ -1040,8 +1049,10 @@ local function setAddLoad(arg1)
             end)
           --hooksecurefunc(ProfessionsFrame, 'Update', set_ProfessionsFrame_size_scale)--多次刷新，不要用
             hooksecurefunc(ProfessionsFrame, 'ApplyDesiredWidth', set_ProfessionsFrame_size_scale)
-            --ProfessionsFrame.CraftingPage.SchematicForm:SetPoint('BOTTOMRIGHT')
-
+            --hooksecurefunc(ProfessionsFrame.CraftingPage, 'SetMinimized', function(self)
+            ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:ClearAllPoints()
+            ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:SetAllPoints(ProfessionsFrame.CraftingPage.SchematicForm)
+            
         end, scaleStoppedFunc=function(self)
             local name= self:GetName()
             if ProfessionsUtil.IsCraftingMinimized() then
