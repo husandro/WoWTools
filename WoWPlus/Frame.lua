@@ -48,32 +48,30 @@ local function Set_Scale_Size(frame, tab)
     if not name or Save.disabledZoom or tab.notZoom or frame.ResizeButton or tab.frame then
         return
     end
+    local btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
+    frame.ResizeButton= btn
 
     --设置缩放
     btn.scaleStoppedFunc= tab.scaleStoppedFunc--保存，缩放内容
     btn.scaleRestFunc= tab.scaleRestFunc--清除，数据
 
-    --设置，大小
-    local minW= tab.minW or (e.Player.husandro and 115 or frame:GetWidth()/2)--最小窗口， 宽
-    local minH= tab.minH or (e.Player.husandro and 115 or frame:GetHeight()/2)--最小窗口，高
-    local maxW= tab.maxW--最大，可无
-    local maxH= tab.maxH--最大，可无
-    local rotationDegrees= tab.rotationDegrees--旋转度数
-    local initFunc= tab.initFunc--初始
-    btn.sizeRestFunc= tab.sizeRestFunc--清除，数据
-    btn.sizeUpdateFunc= tab.sizeUpdateFunc--setSize时, OnUpdate
-    btn.sizeRestTooltipColorFunc= tab.sizeRestTooltipColorFunc--重置，提示SIZE，颜色
-    btn.sizeStoppedFunc= tab.sizeStoppedFunc--保存，大小，内容
-
-
     local setSize= tab.setSize
     local disabledSize= Save.disabledSize[name]
-    local btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
-    frame.ResizeButton= btn
-    btn.disabledSize= disabledSize
-    btn.setSize= setSize and not disabledSize
+    btn.disabledSize= disabledSize--禁用，大小功能
+    btn.setSize= setSize and not disabledSize--是否有，设置大小，功能
 
     if btn.setSize then
+        local minW= tab.minW or (e.Player.husandro and 115 or frame:GetWidth()/2)--最小窗口， 宽
+        local minH= tab.minH or (e.Player.husandro and 115 or frame:GetHeight()/2)--最小窗口，高
+        local maxW= tab.maxW--最大，可无
+        local maxH= tab.maxH--最大，可无
+        local rotationDegrees= tab.rotationDegrees--旋转度数
+        local initFunc= tab.initFunc--初始
+        btn.sizeRestFunc= tab.sizeRestFunc--清除，数据
+        btn.sizeUpdateFunc= tab.sizeUpdateFunc--setSize时, OnUpdate
+        btn.sizeRestTooltipColorFunc= tab.sizeRestTooltipColorFunc--重置，提示SIZE，颜色
+        btn.sizeStoppedFunc= tab.sizeStoppedFunc--保存，大小，内容
+        
         frame:SetResizable(true)
         btn:Init(frame, minW, minH, maxW , maxH, rotationDegrees)
         --[[
@@ -83,12 +81,12 @@ local function Set_Scale_Size(frame, tab)
             self.maxWidth = maxWidth;
             self.maxHeight = maxHeight;
         ]]
+            --设置，大小
+     
+
         if initFunc then
             initFunc()
         end
-        btn.sizeUpdateFunc= sizeUpdateFunc
-        btn.sizeRestFunc= sizeRestFunc
-        btn.sizeRestTooltipColorFunc= sizeRestTooltipColorFunc
         local size= Save.size[name]
         if size then
             frame:SetSize(size[1], size[2])
@@ -139,10 +137,11 @@ local function Set_Scale_Size(frame, tab)
 
             e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..format(' %s |cffffffffx|r %s', w, h), e.Icon.right)
 
-            local col= Save.size[self.name] and '' or '|cff606060'
+            local col
             if self.sizeRestTooltipColorFunc then
-                col=self.sizeRestTooltipColorFunc(self.target) or col
+                col=self.sizeRestTooltipColorFunc(self.target)
             end
+            col=col or (Save.size[self.name] and '' or '|cff606060')
             e.tips:AddDoubleLine(
                 col..(self.sizeRestFunc and (e.onlyChinese and '默认' or DEFAULT) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)),
                 col..'Alt+'..e.Icon.right
@@ -173,13 +172,13 @@ local function Set_Scale_Size(frame, tab)
         frame:SetScale(scale)
     end
     btn:SetScript("OnMouseUp", function(self, d)
-        if IsModifierKeyDown() and not self.isActive then
+        if not self.isActive then
             return
         end
-        self.isActive= false
+        self.isActive= nil
         if d=='LeftButton' then--保存，缩放
             if self.scaleStoppedFunc then
-                self.scaleStoppedFunc(target)
+                self.scaleStoppedFunc(self.target)
             else
                 Save.scale[self.name]= self.target:GetScale()
             end
@@ -1012,26 +1011,37 @@ local function setAddLoad(arg1)
                 self2:SetScale(Save.scale[name])
             end
         end)
+        set_Move_Frame(InspectRecipeFrame)
 
+        local function set_ProfessionsFrame_size_scale(self)
+            local name= self:GetName()
+            local scale, size
+            if ProfessionsUtil.IsCraftingMinimized() then
+                scale= Save.scale[name..'Mini']
+                size= Save.size[name..'Mini']
+            else
+                scale= Save.scale[name..'Normal']
+                size= Save.size[name..'Normal']
+            end
+            if scale then
+                self:SetScale(scale)
+            end
+            if size then
+                self:SetSize(size[1], size[2])
+            end
+        end
+        
+--ProfessionsUtil.SetCraftingMinimized(false);
         set_Move_Frame(ProfessionsFrame, {setSize=true, initFunc=function()
-            hooksecurefunc(ProfessionsFrame.CraftingPage, 'SetMaximized', function()--<Size x="793" y="553"/>
-                local self= ProfessionsFrame
-                local name= self:GetName()
-                local scale=Save.scale[name..'Normal']
-                if scale then
-                    self:SetScale(scale)
-                end
+            ProfessionsFrame:HookScript('OnShow', function(self)
+                C_Timer.After(0.3, function()
+                    set_ProfessionsFrame_size_scale(self)
+                end)
             end)
-            hooksecurefunc(ProfessionsFrame.CraftingPage, 'SetMinimized', function()
-                local self= ProfessionsFrame
-                local name= self:GetName()
-                local scale=Save.scale[name..'Mini']
-                if scale then
-                    self:SetScale(scale)
-                end
-            end)
-
+          --hooksecurefunc(ProfessionsFrame, 'Update', set_ProfessionsFrame_size_scale)--多次刷新，不要用
+            hooksecurefunc(ProfessionsFrame, 'ApplyDesiredWidth', set_ProfessionsFrame_size_scale)
             --ProfessionsFrame.CraftingPage.SchematicForm:SetPoint('BOTTOMRIGHT')
+
         end, scaleStoppedFunc=function(self)
             local name= self:GetName()
             if ProfessionsUtil.IsCraftingMinimized() then
@@ -1046,11 +1056,28 @@ local function setAddLoad(arg1)
             else
                 Save.scale[name..'Normal']= nil
             end
+        end, sizeRestTooltipColorFunc= function(self)
+            local name= self:GetName()
+            if ProfessionsUtil.IsCraftingMinimized() then
+                return Save.size[name..'Mini'] and '' or '|cff606060'
+            else
+                return Save.size[name..'Normal'] and '' or '|cff606060'
+            end
+        end, sizeStoppedFunc=function(self)
+            local name= self:GetName()
+            if ProfessionsUtil.IsCraftingMinimized() then
+                Save.size[name..'Mini']= {self:GetSize()}
+            else
+                Save.size[name..'Normal']= {self:GetSize()}
+            end
         end, sizeRestFunc=function(self)
+            local name= self:GetName()
             if ProfessionsUtil.IsCraftingMinimized() then
                 self:SetSize(404, 658)
+                Save.size[name..'Mini']=nil
             else
                 self:SetSize(942, 658)
+                Save.size[name..'Normal']=nil
             end
         end})
 
