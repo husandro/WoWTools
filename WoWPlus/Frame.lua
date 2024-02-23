@@ -1011,14 +1011,10 @@ local function setAddLoad(arg1)
                 self2:SetScale(Save.scale[name])
             end
         end)]]
-        set_Move_Frame(InspectRecipeFrame)
+        --set_Move_Frame(InspectRecipeFrame)
             --ProfessionsFrame.CraftingPage        
             --ProfessionsFrame.SpecPage
             --ProfessionsFrame.OrdersPage
-
-
-            
-
         set_Move_Frame(ProfessionsFrame, {setSize=true, initFunc=function()--ProfessionsUtil.SetCraftingMinimized(false)
             ProfessionsFrame.CraftingPage.P_GetDesiredPageWidth= ProfessionsFrame.CraftingPage.GetDesiredPageWidth
             function ProfessionsFrame.CraftingPage:GetDesiredPageWidth()--Blizzard_ProfessionsCrafting.lua
@@ -1040,7 +1036,7 @@ local function setAddLoad(arg1)
                 end
                 self.SchematicForm:SetPoint('BOTTOMRIGHT')
                 if size then
-                    frame:SetHeight(size[2])
+                    frame:Size(size[1], size[2])
                     return size[1]
                 else
                     return self:P_GetDesiredPageWidth()--404
@@ -1056,7 +1052,7 @@ local function setAddLoad(arg1)
                     frame:SetScale(scale)
                 end
                 if size then
-                    frame:SetHeight(size[2])
+                    frame:Size(size[1], size[2])
                     return size[1]
                 else
                     return self:P_GetDesiredPageWidth()-- 1105
@@ -1072,7 +1068,7 @@ local function setAddLoad(arg1)
                     frame:SetScale(scale)
                 end
                 if size then
-                    frame:SetHeight(size[2])
+                    frame:Size(size[1], size[2])
                     return size[1]
                 else
                     return self:P_GetDesiredPageWidth()--1144
