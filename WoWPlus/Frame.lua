@@ -1028,10 +1028,9 @@ local function setAddLoad(arg1)
                 if ProfessionsUtil.IsCraftingMinimized() then
                     scale= Save.scale[name..'Mini']
                     size= Save.size[name..'Mini']
-                    if size then
-                        self.SchematicForm.Details:ClearAllPoints()
-                        self.SchematicForm.Details:SetPoint('BOTTOM', 0, 33)
-                    end
+                    self.SchematicForm.Details:ClearAllPoints()
+                    self.SchematicForm.Details:SetPoint('BOTTOM', 0, 33)
+                    
                 else
                     scale= Save.scale[name..'Normal']
                     size= Save.size[name..'Normal']
@@ -1039,8 +1038,8 @@ local function setAddLoad(arg1)
                 if scale then
                     frame:SetScale(scale)
                 end
+                self.SchematicForm:SetPoint('BOTTOMRIGHT')
                 if size then
-                    self.SchematicForm:SetPoint('BOTTOMRIGHT')
                     frame:SetHeight(size[2])
                     return size[1]
                 else
@@ -1079,9 +1078,29 @@ local function setAddLoad(arg1)
                     return self:P_GetDesiredPageWidth()--1144
                 end
             end
-            ProfessionsFrame.CraftingPage:SetScript('OnShow', function()
-                
-            end)
+            
+            local function set_on_show(self)
+                C_Timer.After(0.3, function()
+                    local size, scale
+                    local name= self:GetName()
+                    if ProfessionsUtil.IsCraftingMinimized() then
+                        scale= Save.scale[name..'Mini']
+                        size= Save.size[name..'Mini']
+                    elseif self.TabSystem.selectedTabID==1 then
+                        scale= Save.scale[name..'Normal']
+                        size= Save.size[name..'Normal']
+                    end
+                    if scale then
+                        self:SetScale(scale)
+                    end
+                    if size then
+                        self:SetSize(size[1], size[2])
+                    end
+                end)
+            end
+            ProfessionsFrame:HookScript('OnShow', set_on_show)
+            hooksecurefunc(ProfessionsFrame, 'ApplyDesiredWidth', set_on_show)
+            --ProfessionsFrame.CraftingPage:SetScript('OnShow', function()
             ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:ClearAllPoints()
             ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:SetAllPoints(ProfessionsFrame.CraftingPage.SchematicForm)
             if ProfessionsFrame.SpecPage.TreeView then
