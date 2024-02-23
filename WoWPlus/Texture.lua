@@ -1454,7 +1454,7 @@ local function Init_Event(arg1)
         hide_Texture(EncounterJournalNavBarInsetLeftBorder)
         hide_Texture(EncounterJournalNavBarInsetBotRightCorner)
         hide_Texture(EncounterJournalNavBarInsetBotLeftCorner)
-        
+
         set_Alpha_Color(EncounterJournalInstanceSelectBG)
         set_Alpha_Color(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
         EncounterJournalNavBar:DisableDrawLayer('BACKGROUND')
@@ -1469,8 +1469,8 @@ local function Init_Event(arg1)
                 hide_Texture(EncounterJournalMonthlyActivitiesFrame.ShadowRight)
                 set_ScrollBar(EncounterJournalMonthlyActivitiesFrame)
             end
-            
-            
+
+
         end)
 
         set_Alpha_Frame_Texture(EncounterJournalSuggestTab, {alpha=min05})
@@ -1484,7 +1484,7 @@ local function Init_Event(arg1)
         set_ScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
         set_ScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
         set_ScrollBar(EncounterJournal.LootJournal)
-     
+
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         set_Alpha_Color(GuildBankFrame.BlackBG)
@@ -2022,7 +2022,10 @@ local function Init_Event(arg1)
 
         set_NineSlice(ProfessionsFrame.CraftingPage.SchematicForm, true)
         set_Alpha_Color(ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground, nil, nil, 0)
-        
+
+        set_ScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList)
+        set_ScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList)
+
     elseif arg1=='Blizzard_ClickBindingUI' then--点击，施法
         set_NineSlice(ClickBindingFrame, true)
         set_ScrollBar(ClickBindingFrame)

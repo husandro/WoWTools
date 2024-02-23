@@ -71,7 +71,7 @@ local function Set_Scale_Size(frame, tab)
         btn.sizeUpdateFunc= tab.sizeUpdateFunc--setSize时, OnUpdate
         btn.sizeRestTooltipColorFunc= tab.sizeRestTooltipColorFunc--重置，提示SIZE，颜色
         btn.sizeStoppedFunc= tab.sizeStoppedFunc--保存，大小，内容
-        
+
         frame:SetResizable(true)
         btn:Init(frame, minW, minH, maxW , maxH, rotationDegrees)
         --[[
@@ -82,7 +82,7 @@ local function Set_Scale_Size(frame, tab)
             self.maxHeight = maxHeight;
         ]]
             --设置，大小
-     
+
 
         if initFunc then
             initFunc()
@@ -1024,8 +1024,6 @@ local function setAddLoad(arg1)
                 if ProfessionsUtil.IsCraftingMinimized() then
                     scale= Save.scale[name..'Mini']
                     size= Save.size[name..'Mini']
-                    self.SchematicForm.Details:ClearAllPoints()
-                    self.SchematicForm.Details:SetPoint('BOTTOM', 0, 33)
                     
                 else
                     scale= Save.scale[name..'Normal']
@@ -1034,9 +1032,8 @@ local function setAddLoad(arg1)
                 if scale then
                     frame:SetScale(scale)
                 end
-                self.SchematicForm:SetPoint('BOTTOMRIGHT')
                 if size then
-                    frame:Size(size[1], size[2])
+                    frame:SetSize(size[1], size[2])
                     return size[1]
                 else
                     return self:P_GetDesiredPageWidth()--404
@@ -1052,7 +1049,7 @@ local function setAddLoad(arg1)
                     frame:SetScale(scale)
                 end
                 if size then
-                    frame:Size(size[1], size[2])
+                    frame:SetSize(size[1], size[2])
                     return size[1]
                 else
                     return self:P_GetDesiredPageWidth()-- 1105
@@ -1068,13 +1065,12 @@ local function setAddLoad(arg1)
                     frame:SetScale(scale)
                 end
                 if size then
-                    frame:Size(size[1], size[2])
+                    frame:SetSize(size[1], size[2])
                     return size[1]
                 else
                     return self:P_GetDesiredPageWidth()--1144
                 end
             end
-            
             local function set_on_show(self)
                 C_Timer.After(0.3, function()
                     local size, scale
@@ -1082,16 +1078,23 @@ local function setAddLoad(arg1)
                     if ProfessionsUtil.IsCraftingMinimized() then
                         scale= Save.scale[name..'Mini']
                         size= Save.size[name..'Mini']
-
+                        self.ResizeButton.minWidth= 404
+                        self.ResizeButton.minHeight= 650
                     elseif self.TabSystem.selectedTabID==1 then
                         scale= Save.scale[name..'Normal']
                         size= Save.size[name..'Normal']
+                        self.ResizeButton.minWidth= 937
+                        self.ResizeButton.minHeight= 580
                     elseif self.TabSystem.selectedTabID==2 then
                         scale= Save.scale[name..'Spec']
                         size= Save.size[name..'Spec']
+                        self.ResizeButton.minWidth= 1144
+                        self.ResizeButton.minHeight= 658
                     elseif self.TabSystem.selectedTabID==3 then
                         scale= Save.scale[name..'Order']
                         size= Save.size[name..'Order']
+                        self.ResizeButton.minWidth= 1105
+                        self.ResizeButton.minHeight= 240
                     end
                     if scale then
                         self:SetScale(scale)
@@ -1109,26 +1112,55 @@ local function setAddLoad(arg1)
                end)
             end
             hooksecurefunc(ProfessionsFrame, 'ApplyDesiredWidth', set_on_show)
-            --ProfessionsFrame.CraftingPage:SetScript('OnShow', function()
+            
+            --655 553
+            local function set_craftingpage_position(self)
+                self.SchematicForm:ClearAllPoints()
+                self.SchematicForm:SetPoint('TOPRIGHT', -5, -72)
+                self.SchematicForm:SetPoint('BOTTOMRIGHT', 670, 5)
+                --self.SchematicForm:SetSize(665, 553)
+                
+                self.RecipeList:ClearAllPoints()
+                self.RecipeList:SetPoint('TOPLEFT', 5, -72)
+                self.RecipeList:SetPoint('BOTTOMLEFT', 5, 5)
+                self.RecipeList:SetPoint('TOPRIGHT', self.SchematicForm, 'TOPLEFT', -2,0)
+            end
+
+            set_craftingpage_position(ProfessionsFrame.CraftingPage)
+            function ProfessionsFrame.CraftingPage:SetMaximized()
+                set_craftingpage_position(self)
+                self:Refresh(self.professionInfo);
+               
+                --[[self.SchematicForm:ClearAllPoints();
+                self.SchematicForm:SetPoint("TOPLEFT", self.RecipeList, "TOPRIGHT", 2, 0);
+                self.SchematicForm:SetMaximized();]]
+            end
+            --[[hooksecurefunc(ProfessionsFrame.CraftingPage, 'SetMaximized', function(self)--Blizzard_ProfessionsCrafting.lua
+                set_craftingpage_position(self)
+            end)]]
+            hooksecurefunc(ProfessionsFrame.CraftingPage, 'SetMinimized', function(self)
+                self.SchematicForm.Details:ClearAllPoints()
+                self.SchematicForm.Details:SetPoint('BOTTOM', 0, 33)
+                self.SchematicForm:SetPoint('BOTTOMRIGHT')
+            end)
             ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:ClearAllPoints()
             ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:SetAllPoints(ProfessionsFrame.CraftingPage.SchematicForm)
-            if ProfessionsFrame.SpecPage.TreeView then
-                ProfessionsFrame.SpecPage.TreeView:ClearAllPoints()
-                ProfessionsFrame.SpecPage.TreeView:SetPoint('TOPLEFT', 2, -85)
-                ProfessionsFrame.SpecPage.TreeView:SetPoint('BOTTOM', 0, 50)
-                ProfessionsFrame.SpecPage.DetailedView:ClearAllPoints()
-                ProfessionsFrame.SpecPage.DetailedView:SetPoint('TOPLEFT', ProfessionsFrame.SpecPage.TreeView, 'TOPRIGHT', -40, 0)
-                ProfessionsFrame.SpecPage.DetailedView:SetPoint('BOTTOMRIGHT', 0, 50)
 
-                ProfessionsFrame.SpecPage.PanelFooter:ClearAllPoints()
-                ProfessionsFrame.SpecPage.PanelFooter:SetPoint('BOTTOMLEFT', 0, 4) 
-                ProfessionsFrame.SpecPage.PanelFooter:SetPoint('BOTTOMRIGHT')
-                for _, region in pairs({ProfessionsFrame.SpecPage.PanelFooter:GetRegions()}) do
-                    if region:GetObjectType()=='Texture' then
-                        region:ClearAllPoints()
-                        region:SetAllPoints(ProfessionsFrame.SpecPage.PanelFooter)
-                        break
-                    end
+            ProfessionsFrame.SpecPage.TreeView:ClearAllPoints()
+            ProfessionsFrame.SpecPage.TreeView:SetPoint('TOPLEFT', 2, -85)
+            ProfessionsFrame.SpecPage.TreeView:SetPoint('BOTTOM', 0, 50)
+            ProfessionsFrame.SpecPage.DetailedView:ClearAllPoints()
+            ProfessionsFrame.SpecPage.DetailedView:SetPoint('TOPLEFT', ProfessionsFrame.SpecPage.TreeView, 'TOPRIGHT', -40, 0)
+            ProfessionsFrame.SpecPage.DetailedView:SetPoint('BOTTOMRIGHT', 0, 50)
+
+            ProfessionsFrame.SpecPage.PanelFooter:ClearAllPoints()
+            ProfessionsFrame.SpecPage.PanelFooter:SetPoint('BOTTOMLEFT', 0, 4)
+            ProfessionsFrame.SpecPage.PanelFooter:SetPoint('BOTTOMRIGHT')
+            for _, region in pairs({ProfessionsFrame.SpecPage.PanelFooter:GetRegions()}) do
+                if region:GetObjectType()=='Texture' then
+                    region:ClearAllPoints()
+                    region:SetAllPoints(ProfessionsFrame.SpecPage.PanelFooter)
+                    break
                 end
             end
         end, scaleStoppedFunc=function(self)
@@ -1147,7 +1179,7 @@ local function setAddLoad(arg1)
             local name= self:GetName()
             if ProfessionsUtil.IsCraftingMinimized() then
                 Save.scale[name..'Mini']= nil
-            elseif self.TabSystem.selectedTabID==2 then                
+            elseif self.TabSystem.selectedTabID==2 then
                 Save.scale[name..'Spec']= nil
             elseif self.TabSystem.selectedTabID==3 then
                 Save.scale[name..'Order']= nil
@@ -1176,6 +1208,7 @@ local function setAddLoad(arg1)
                 Save.size[name..'Order']= size
             else
                 Save.size[name..'Normal']= size
+                self:Refresh(self.professionInfo);
             end
         end, sizeRestFunc=function(self)
             local name= self:GetName()
@@ -1191,6 +1224,7 @@ local function setAddLoad(arg1)
             else
                 self:SetSize(942, 658)
                 Save.size[name..'Normal']=nil
+                self:Refresh(self.professionInfo)
             end
         end})
 
