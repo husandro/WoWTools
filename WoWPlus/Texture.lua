@@ -1616,8 +1616,8 @@ local function Init_Event(arg1)
         set_Alpha_Color(ProfessionsCustomerOrdersFrameMiddleRight)
         set_Alpha_Color(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList.Background)
 
-        set_Alpha_Color(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground.Background)
-        set_Alpha_Color(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground.Background)
+        --set_Alpha_Color(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground.Background)
+        --set_Alpha_Color(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground.Background)
 
         hide_Texture(ProfessionsCustomerOrdersFrame.MoneyFrameInset.Bg)
         set_Alpha_Color(ProfessionsCustomerOrdersFrameLeft)

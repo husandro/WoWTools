@@ -1238,8 +1238,78 @@ local function setAddLoad(arg1)
         end})
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
-        set_Move_Frame(ProfessionsCustomerOrdersFrame, {save=true})
-        set_Move_Frame(ProfessionsCustomerOrdersFrame.Form, {frame=ProfessionsCustomerOrdersFrame, save=true})
+        set_Move_Frame(ProfessionsCustomerOrdersFrame, {setSize=true, minW=825, minH=200, initFunc=function()
+            ProfessionsCustomerOrdersFrame.BrowseOrders:ClearAllPoints()
+            ProfessionsCustomerOrdersFrame.BrowseOrders:SetPoint('TOPLEFT')
+            ProfessionsCustomerOrdersFrame.BrowseOrders:SetPoint('BOTTOMRIGHT')
+            ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList:ClearAllPoints()
+            ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList:SetPoint('TOPRIGHT', 0, -72)
+            ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList:SetWidth(660)
+            ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList:SetPoint('BOTTOM', 0, 29)
+            ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList:ClearAllPoints()
+            ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList:SetPoint('TOPLEFT', 0, -72)
+            ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList:SetPoint('BOTTOMRIGHT', ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList, 'BOTTOMLEFT', 4, 0)
+            ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList.ScrollBox:SetPoint('RIGHT', -12,0)
+            ProfessionsCustomerOrdersFrame.MyOrdersPage:ClearAllPoints()
+            ProfessionsCustomerOrdersFrame.MyOrdersPage:SetPoint('TOPLEFT')
+            ProfessionsCustomerOrdersFrame.MyOrdersPage:SetPoint('BOTTOMRIGHT')
+            hooksecurefunc(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList.ScrollBox, 'Update', function(self)
+                for _, btn in pairs(self:GetFrames() or {}) do
+                    btn.HighlightTexture:SetPoint('RIGHT')
+                    btn.NormalTexture:SetPoint('RIGHT')
+                    btn.SelectedTexture:SetPoint('RIGHT')
+                end
+            end)
+
+            ProfessionsCustomerOrdersFrame.Form:HookScript('OnHide', function(self)
+                local frame= self:GetParent()
+                if frame.ResizeButton.disabledSize then
+                    return
+                end
+                frame.ResizeButton.setSize=true
+                local name= frame:GetName()
+                local scale= Save.scale[name]
+                if scale then
+                    frame:SetScale(scale)
+                end
+                local size= Save.size[name]
+                if size then
+                    frame:SetSize(size[1], size[2])
+                end
+            end)
+            ProfessionsCustomerOrdersFrame.Form:HookScript('OnShow', function(self)
+                local frame= self:GetParent()
+                if frame.ResizeButton.disabledSize then
+                    return
+                end
+                frame.ResizeButton.setSize= false
+                local name= frame:GetName()
+                local scale= Save.scale[name..'From']
+                if scale then
+                    frame:SetScale(scale)
+                end
+                if Save.size[name] then
+                    frame:SetSize(825, 568)
+                end
+            end)
+        end, scaleStoppedFunc=function(self)
+            local name= self:GetName()
+            if self.Form:IsShown() then
+                Save.scale[name..'From']= self:GetScale()
+            else
+                Save.scale[name]= self:GetScale()
+            end
+        end, scaleRestFunc=function(self)
+            local name= self:GetName()
+            if self.Form:IsShown() then
+                Save.scale[name..'From']= nil
+            else
+                Save.scale[name]= nil
+            end
+        end, sizeRestFunc=function(self)
+            self:SetSize(825, 568)
+        end})
+        set_Move_Frame(ProfessionsCustomerOrdersFrame.Form, {frame=ProfessionsCustomerOrdersFrame})
 
     elseif arg1=='Blizzard_VoidStorageUI' then--虚空，仓库
          set_Move_Frame(VoidStorageFrame)
@@ -1641,7 +1711,7 @@ local function Init_Move()
             self.GreetingText:SetWidth(self:GetWidth()-22)
         end)
         --hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, optionInfo)
-    end, restFunc=function(self)
+    end, sizeRestFunc=function(self)
         self:SetSize(384, 512)
     end})
 
@@ -1669,7 +1739,7 @@ local function Init_Move()
                 frame:SetPoint('BOTTOMRIGHT', -28,28)
             end
         end
-    end, restFunc= function(self)
+    end, sizeRestFunc= function(self)
         self:SetSize(338, 496)
     end})
 
