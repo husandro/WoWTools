@@ -1086,9 +1086,16 @@ local function setAddLoad(arg1)
                     if ProfessionsUtil.IsCraftingMinimized() then
                         scale= Save.scale[name..'Mini']
                         size= Save.size[name..'Mini']
+
                     elseif self.TabSystem.selectedTabID==1 then
                         scale= Save.scale[name..'Normal']
                         size= Save.size[name..'Normal']
+                    elseif self.TabSystem.selectedTabID==2 then
+                        scale= Save.scale[name..'Spec']
+                        size= Save.size[name..'Spec']
+                    elseif self.TabSystem.selectedTabID==3 then
+                        scale= Save.scale[name..'Order']
+                        size= Save.size[name..'Order']
                     end
                     if scale then
                         self:SetScale(scale)
@@ -1099,6 +1106,12 @@ local function setAddLoad(arg1)
                 end)
             end
             ProfessionsFrame:HookScript('OnShow', set_on_show)
+            for _, tabID in pairs(ProfessionsFrame:GetTabSet() or {}) do
+                local btn= ProfessionsFrame:GetTabButton(tabID)
+                btn:HookScript('OnClick', function()
+                    set_on_show(ProfessionsFrame)
+               end)
+            end
             hooksecurefunc(ProfessionsFrame, 'ApplyDesiredWidth', set_on_show)
             --ProfessionsFrame.CraftingPage:SetScript('OnShow', function()
             ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:ClearAllPoints()
