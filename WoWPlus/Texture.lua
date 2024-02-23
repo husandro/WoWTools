@@ -1849,6 +1849,10 @@ local function Init_Event(arg1)
         set_SearchBox(CalendarCreateEventInviteEdit)
         set_Alpha_Color(CalendarCreateEventFrameButtonBackground, true)
         set_Alpha_Color(CalendarCreateEventCreateButtonBorder, true)
+        set_Alpha_Frame_Texture(CalendarCreateEventFrame.Header, {notAlpha=true})
+
+        set_Alpha_Frame_Texture(CalendarViewHolidayFrame.Header, {notAlpha=true})
+        set_Alpha_Frame_Texture(CalendarViewHolidayFrame.Border, {notAlpha=true})
         --set_Menu(CalendarFilterFrame)
 
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
