@@ -1709,7 +1709,11 @@ local function Init_Move()
             return ((self.Expanded and Save.size['CharacterFrameExpanded']) or (not self.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
         end
     })
-    --FriendsFrame={},--好友列表
+    set_Move_Frame(FriendsFrame, {setSize=true, minW=338, minH=424, initFunc=function()
+            FriendsListFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -24, 30)
+        end, sizeRestFunc=function(self)
+        self:SetSize(338, 424)
+    end})--好友列表
 
     --对话
     set_Move_Frame(GossipFrame, {minW=220, minH=220, setSize=true, initFunc=function()
@@ -1784,54 +1788,13 @@ local function Init_Move()
     local FrameTab={
         --AddonList={},--插件
         GameMenuFrame={notSave=true},--菜单
-        --ProfessionsFrame={},--专业 10.1.5出错
-        --InspectRecipeFrame={},
-
-        --CharacterFrame={},--角色
-        --ReputationDetailFrame={},--声望描述q
-        --TokenFramePopup={},--货币设置
-        --SpellBookFrame={},--法术书
-        --PVEFrame={},--地下城和团队副本
-        --HelpFrame={},--客服支持
-        --MacroFrame={},--宏
         ExtraActionButton1={click='RightButton',  },--额外技能
-        --ChatConfigFrame={save=true},--聊天设置
-        --SettingsPanel={},--选项
-
-
-        --RaidInfoFrame={frame=FriendsFrame},--再次打开，错误
-        --RecruitAFriendRewardsFrame={},--招募，奖励
-        --RecruitAFriendRecruitmentFrame={},--招募，链接，再次打开，错误
-
-        --GossipFrame={},
-        --QuestFrame={},
-        --PetStableFrame={},--猎人，宠物
-        --BankFrame={save=true},--银行
-        --MerchantFrame={},--货物
-
-
-
-
-        ContainerFrameCombinedBags={save=true},--{notZoom=true},--包
-        --VehicleSeatIndicator={},--车辆，指示
-        --ExpansionLandingPage={},--要塞
-
-        --PlayerPowerBarAlt={},--UnitPowerBarAlt.lua
-
-        --OpenMailFrame={},
-        MirrorTimer1={save=true},
-
-        --GroupLootHistoryFrame={},
-
-        --CreateChannelPopup={},
-        ColorPickerFrame={save=true, click='RightButton'},--颜色选择器
-
+        ContainerFrameCombinedBags={},
+        MirrorTimer1={},
+        ColorPickerFrame={click='RightButton'},--颜色选择器
         [PartyFrame.Background]={frame=PartyFrame, notZoom=true},
-        OpacityFrame={save=true},
+        OpacityFrame={},
         ArcheologyDigsiteProgressBar= {notZoom=true},
-        --ReportFrame={save=true},
-        --BattleTagInviteFrame= {save=true}
-        --EditModeManagerFrame={save=true},
     }
     for k, v in pairs(FrameTab) do
         if v then
