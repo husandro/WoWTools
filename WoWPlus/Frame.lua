@@ -1753,8 +1753,10 @@ local function Init_Move()
         self:SetSize(338, 496)
     end})
 
-
-
+--聊天设置
+    set_Move_Frame(ChannelFrame, {minW=402, minH=200, setSize=true, sizeRestFunc=function(self)
+        self:SetSize(402, 423)
+    end})
 
 
 
@@ -1821,7 +1823,6 @@ local function Init_Move()
 
         --GroupLootHistoryFrame={},
 
-        --ChannelFrame={},--聊天设置
         --CreateChannelPopup={},
         ColorPickerFrame={save=true, click='RightButton'},--颜色选择器
 
