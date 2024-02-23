@@ -1083,8 +1083,11 @@ local function setAddLoad(arg1)
                     elseif self.TabSystem.selectedTabID==1 then
                         scale= Save.scale[name..'Normal']
                         size= Save.size[name..'Normal']
-                        self.ResizeButton.minWidth= 937
+                        self.ResizeButton.minWidth= 830
                         self.ResizeButton.minHeight= 580
+                        if size then
+                            self:Refresh()
+                        end
                     elseif self.TabSystem.selectedTabID==2 then
                         scale= Save.scale[name..'Spec']
                         size= Save.size[name..'Spec']
@@ -1093,8 +1096,11 @@ local function setAddLoad(arg1)
                     elseif self.TabSystem.selectedTabID==3 then
                         scale= Save.scale[name..'Order']
                         size= Save.size[name..'Order']
-                        self.ResizeButton.minWidth= 1105
+                        self.ResizeButton.minWidth= 1050
                         self.ResizeButton.minHeight= 240
+                        if size then
+                            self:Refresh()
+                        end
                     end
                     if scale then
                         self:SetScale(scale)
@@ -1117,32 +1123,26 @@ local function setAddLoad(arg1)
             local function set_craftingpage_position(self)
                 self.SchematicForm:ClearAllPoints()
                 self.SchematicForm:SetPoint('TOPRIGHT', -5, -72)
-                self.SchematicForm:SetPoint('BOTTOMRIGHT', 670, 5)
-                --self.SchematicForm:SetSize(665, 553)
-                
+                self.SchematicForm:SetPoint('BOTTOMRIGHT', 670, 5)                
                 self.RecipeList:ClearAllPoints()
                 self.RecipeList:SetPoint('TOPLEFT', 5, -72)
                 self.RecipeList:SetPoint('BOTTOMLEFT', 5, 5)
-                self.RecipeList:SetPoint('TOPRIGHT', self.SchematicForm, 'TOPLEFT', -2,0)
+                self.RecipeList:SetPoint('TOPRIGHT', self.SchematicForm, 'TOPLEFT')
             end
 
             set_craftingpage_position(ProfessionsFrame.CraftingPage)
             function ProfessionsFrame.CraftingPage:SetMaximized()
                 set_craftingpage_position(self)
                 self:Refresh(self.professionInfo);
-               
-                --[[self.SchematicForm:ClearAllPoints();
-                self.SchematicForm:SetPoint("TOPLEFT", self.RecipeList, "TOPRIGHT", 2, 0);
-                self.SchematicForm:SetMaximized();]]
             end
-            --[[hooksecurefunc(ProfessionsFrame.CraftingPage, 'SetMaximized', function(self)--Blizzard_ProfessionsCrafting.lua
-                set_craftingpage_position(self)
-            end)]]
             hooksecurefunc(ProfessionsFrame.CraftingPage, 'SetMinimized', function(self)
                 self.SchematicForm.Details:ClearAllPoints()
                 self.SchematicForm.Details:SetPoint('BOTTOM', 0, 33)
                 self.SchematicForm:SetPoint('BOTTOMRIGHT')
             end)
+            ProfessionsFrame.CraftingPage.RankBar:ClearAllPoints()
+            ProfessionsFrame.CraftingPage.RankBar:SetPoint('RIGHT', ProfessionsFrame.CraftingPage.Prof1Gear1Slot, 'LEFT', -36, 0)
+            
             ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:ClearAllPoints()
             ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:SetAllPoints(ProfessionsFrame.CraftingPage.SchematicForm)
 
@@ -1156,6 +1156,14 @@ local function setAddLoad(arg1)
             ProfessionsFrame.SpecPage.PanelFooter:ClearAllPoints()
             ProfessionsFrame.SpecPage.PanelFooter:SetPoint('BOTTOMLEFT', 0, 4)
             ProfessionsFrame.SpecPage.PanelFooter:SetPoint('BOTTOMRIGHT')
+
+            ProfessionsFrame.OrdersPage.BrowseFrame.OrderList:ClearAllPoints()
+            ProfessionsFrame.OrdersPage.BrowseFrame.OrderList:SetPoint('TOPRIGHT', 0, -92)
+            ProfessionsFrame.OrdersPage.BrowseFrame.OrderList:SetWidth(800)
+            ProfessionsFrame.OrdersPage.BrowseFrame.OrderList:SetPoint('BOTTOM', 0, 5)
+            ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList:ClearAllPoints()
+            ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList:SetPoint('TOPLEFT', 5, -92)
+            ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList:SetPoint('BOTTOMRIGHT', ProfessionsFrame.OrdersPage.BrowseFrame.OrderList, 'BOTTOMLEFT')
             for _, region in pairs({ProfessionsFrame.SpecPage.PanelFooter:GetRegions()}) do
                 if region:GetObjectType()=='Texture' then
                     region:ClearAllPoints()
@@ -1206,9 +1214,10 @@ local function setAddLoad(arg1)
                 Save.size[name..'Spec']= size
             elseif self.TabSystem.selectedTabID==3 then
                 Save.size[name..'Order']= size
+                self:Refresh();
             else
                 Save.size[name..'Normal']= size
-                self:Refresh(self.professionInfo);
+                self:Refresh();
             end
         end, sizeRestFunc=function(self)
             local name= self:GetName()
