@@ -1834,13 +1834,20 @@ local function Init_Event(arg1)
         set_Alpha_Color(CalendarFrameBottomRightTexture)
         set_Alpha_Color(CalendarFrameBottomMiddleTexture)
         set_Alpha_Color(CalendarFrameBottomLeftTexture)
-        for i= 1, 42 do
+        --[[for i= 1, 42 do
             local frame= _G['CalendarDayButton'..i]
             if frame then
                 frame:DisableDrawLayer('BACKGROUND')
             end
-        end
+        end]]
         set_Alpha_Color(CalendarCreateEventFrame.Border.Bg)
+        set_Alpha_Frame_Texture(CalendarCreateEventFrame.Border, {notAlpha=true})
+        set_SearchBox(CalendarCreateEventTitleEdit)
+        set_NineSlice(CalendarCreateEventDescriptionContainer, nil, nil, true)
+        set_NineSlice(CalendarCreateEventInviteList, nil, nil, true)
+        set_Alpha_Color(CalendarCreateEventDivider, true)
+        set_SearchBox(CalendarCreateEventInviteEdit)
+        set_Alpha_Color(CalendarCreateEventFrameButtonBackground, true)
         --set_Menu(CalendarFilterFrame)
 
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
