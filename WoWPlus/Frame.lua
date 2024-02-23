@@ -753,10 +753,8 @@ local function setAddLoad(arg1)
         end, sizeRestFunc= function(self)
             local displayMode = self:GetDisplayMode();
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-                if Save.size['CommunitiesFrameMINIMIZED'] then
-                    Save.size['CommunitiesFrameMINIMIZED']=nil
-                    self:SetSize(322, 406)
-                end
+                Save.size['CommunitiesFrameMINIMIZED']=nil
+                self:SetSize(322, 406)
             elseif Save.size['CommunitiesFrameNormal'] then
                 Save.size['CommunitiesFrameNormal']= nil
                 self:SetSize(814, 426)
