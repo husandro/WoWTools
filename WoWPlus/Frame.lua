@@ -671,24 +671,24 @@ local function setAddLoad(arg1)
         set_Move_Frame(CommunitiesFrame, {setSize=true, initFunc=function()
             local function set_size(frame)
                 local self= frame:GetParent()
-                if not self.ResizeButton then
-                    return
-                end
+                local size, scale
                 local displayMode = self:GetDisplayMode();
                 if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                     self.ResizeButton.minWidth= 290
                     self.ResizeButton.minHeight= 115
-                    local size= Save.size['CommunitiesFrameMINIMIZED']
-                    if size then
-                        self:SetSize(size[1], size[2])
-                    end
+                    size= Save.size['CommunitiesFrameMINIMIZED']
+                    scale= Save.scale['CommunitiesFrameMINIMIZED']
                 else
-                    local size= Save.size['CommunitiesFrameNormal']
-                    if size then
-                        self:SetSize(size[1], size[2])
-                    end
+                    size= Save.size['CommunitiesFrameNormal']
+                    scale= Save.scale['CommunitiesFrameNormal']
                     self.ResizeButton.minWidth= 814
                     self.ResizeButton.minHeight= 426
+                end
+                if size then
+                    self:SetSize(size[1], size[2])
+                end
+                if scale then
+                    self:SetScale(scale)
                 end
             end
             hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Minimize', set_size)--maximizedCallback
@@ -712,8 +712,6 @@ local function setAddLoad(arg1)
                     if btn.corssFactionTexture then
                         btn.corssFactionTexture:SetShown(true)--not cardInfo.isCrossFaction)
                     end
-
-
                     local autoAccept--自动，批准, 无效
                     local clubStatus= cardInfo.clubFinderGUID and C_ClubFinder.GetPlayerClubApplicationStatus(cardInfo.clubFinderGUID)
                     btn:SetAlpha(btn.RequestJoin:IsShown() and 1 or 0.3)
@@ -731,6 +729,20 @@ local function setAddLoad(arg1)
                     end
                 end
             end)
+        end, scaleStoppedFunc= function(self)
+            local displayMode = self:GetDisplayMode();
+            if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
+                Save.scale['CommunitiesFrameMINIMIZED']= self:GetScale()
+            else
+                Save.scale['CommunitiesFrameNormal']= self:GetScale()
+            end
+        end, scaleRestFunc=function(self)
+            local displayMode = self:GetDisplayMode();
+            if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
+                Save.scale['CommunitiesFrameMINIMIZED']= nil
+            else
+                Save.scale['CommunitiesFrameNormal']= nil
+            end
         end, sizeStoppedFunc=function(self)
             local displayMode = self:GetDisplayMode();
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
@@ -1024,7 +1036,7 @@ local function setAddLoad(arg1)
                 if ProfessionsUtil.IsCraftingMinimized() then
                     scale= Save.scale[name..'Mini']
                     size= Save.size[name..'Mini']
-                    
+
                 else
                     scale= Save.scale[name..'Normal']
                     size= Save.size[name..'Normal']
@@ -1118,12 +1130,12 @@ local function setAddLoad(arg1)
                end)
             end
             hooksecurefunc(ProfessionsFrame, 'ApplyDesiredWidth', set_on_show)
-            
+
             --655 553
             local function set_craftingpage_position(self)
                 self.SchematicForm:ClearAllPoints()
                 self.SchematicForm:SetPoint('TOPRIGHT', -5, -72)
-                self.SchematicForm:SetPoint('BOTTOMRIGHT', 670, 5)                
+                self.SchematicForm:SetPoint('BOTTOMRIGHT', 670, 5)
                 self.RecipeList:ClearAllPoints()
                 self.RecipeList:SetPoint('TOPLEFT', 5, -72)
                 self.RecipeList:SetPoint('BOTTOMLEFT', 5, 5)
@@ -1142,7 +1154,7 @@ local function setAddLoad(arg1)
             end)
             ProfessionsFrame.CraftingPage.RankBar:ClearAllPoints()
             ProfessionsFrame.CraftingPage.RankBar:SetPoint('RIGHT', ProfessionsFrame.CraftingPage.Prof1Gear1Slot, 'LEFT', -36, 0)
-            
+
             ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:ClearAllPoints()
             ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground:SetAllPoints(ProfessionsFrame.CraftingPage.SchematicForm)
 
