@@ -647,7 +647,7 @@ local function setAddLoad(arg1)
             ClassTrainerFrameSkillStepButton:SetPoint('RIGHT', -12, 0)
             ClassTrainerFrameBottomInset:SetPoint('BOTTOMRIGHT', -4, 28)
             hooksecurefunc('ClassTrainerFrame_Update', function()--Blizzard_TrainerUI.lua
-                ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)       
+                ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)
             end)
             btn.target.ScrollBox:ClearAllPoints()
         end, sizeRestFunc=function(self)
@@ -1586,7 +1586,7 @@ btn:SetScript('OnClick', function(self)
     end
 end)]]
 
-    
+
 
 
 
@@ -1712,38 +1712,41 @@ end)]]
             CharacterFrame.ResizeButton.minWidth= CHARACTERFRAME_EXPANDED_WIDTH
             CharacterFrame.ResizeButton.minHeight= 424
         end)
-        end, sizeUpdateFunc=function()
-            if PaperDollFrame.EquipmentManagerPane:IsVisible() then
-                e.call('PaperDollEquipmentManagerPane_Update')
-            end
-            if PaperDollFrame.TitleManagerPane:IsVisible() then
-                e.call('PaperDollTitlesPane_Update')
-            end
-        end, sizeStoppedFunc=function(btn)
-            local self= btn.target
-            if CharacterFrame.Expanded then
-                Save.size['CharacterFrameExpanded']={self:GetSize()}
-            else
-                Save.size['CharacterFrameCollapse']={self:GetSize()}
-            end
-        end, sizeRestFunc=function(btn)
-            local self= btn.target
-            if self.Expanded then
-                Save.size['CharacterFrameExpanded']=nil
-                self:SetSize(CHARACTERFRAME_EXPANDED_WIDTH, 424)
-            else
-                Save.size['CharacterFrameCollapse']=nil
-                self:SetSize(PANEL_DEFAULT_WIDTH, 424)
-            end
-        end, sizeRestTooltipColorFunc=function(self)
-            return ((self.target.Expanded and Save.size['CharacterFrameExpanded']) or (not self.target.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
+        set_Move_Frame(ReputationFrame, {frame=CharacterFrame})
+        set_Move_Frame(TokenFrame, {frame=CharacterFrame})
+    end, sizeUpdateFunc=function()
+        if PaperDollFrame.EquipmentManagerPane:IsVisible() then
+            e.call('PaperDollEquipmentManagerPane_Update')
         end
-    })
+        if PaperDollFrame.TitleManagerPane:IsVisible() then
+            e.call('PaperDollTitlesPane_Update')
+        end
+    end, sizeStoppedFunc=function(btn)
+        local self= btn.target
+        if CharacterFrame.Expanded then
+            Save.size['CharacterFrameExpanded']={self:GetSize()}
+        else
+            Save.size['CharacterFrameCollapse']={self:GetSize()}
+        end
+    end, sizeRestFunc=function(btn)
+        local self= btn.target
+        if self.Expanded then
+            Save.size['CharacterFrameExpanded']=nil
+            self:SetSize(CHARACTERFRAME_EXPANDED_WIDTH, 424)
+        else
+            Save.size['CharacterFrameCollapse']=nil
+            self:SetSize(PANEL_DEFAULT_WIDTH, 424)
+        end
+    end, sizeRestTooltipColorFunc=function(self)
+        return ((self.target.Expanded and Save.size['CharacterFrameExpanded']) or (not self.target.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
+    end})
+
+    --好友列表
     set_Move_Frame(FriendsFrame, {setSize=true, minW=338, minH=424, initFunc=function(self)
             FriendsListFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -24, 30)
         end, sizeRestFunc=function(self)
             self.target:SetSize(338, 424)
-    end})--好友列表
+    end})
 
     --对话
     set_Move_Frame(GossipFrame, {minW=220, minH=220, setSize=true, initFunc=function(self)
