@@ -1698,10 +1698,8 @@ end)]]
             if size then
                 CharacterFrame:SetSize(size[1], size[2])
             end
-            if CharacterFrame.ResizeButton then
-                CharacterFrame.ResizeButton.minWidth= 270
-                CharacterFrame.ResizeButton.minHeight= 115
-            end
+            CharacterFrame.ResizeButton.minWidth= 270
+            CharacterFrame.ResizeButton.minHeight= 115
         end)
         hooksecurefunc('CharacterFrame_Expand', function()--显示角色，界面
             CharacterFrameInset:SetPoint('BOTTOMRIGHT', -221, 4)
@@ -1711,10 +1709,8 @@ end)]]
             elseif Save.size['CharacterFrameCollapse'] then
                 CharacterFrame:SetHeight(424)
             end
-            if CharacterFrame.ResizeButton then
-                CharacterFrame.ResizeButton.minWidth= CHARACTERFRAME_EXPANDED_WIDTH
-                CharacterFrame.ResizeButton.minHeight= 424
-            end
+            CharacterFrame.ResizeButton.minWidth= CHARACTERFRAME_EXPANDED_WIDTH
+            CharacterFrame.ResizeButton.minHeight= 424
         end)
         end, sizeUpdateFunc=function()
             if PaperDollFrame.EquipmentManagerPane:IsVisible() then
@@ -1724,11 +1720,11 @@ end)]]
                 e.call('PaperDollTitlesPane_Update')
             end
         end, sizeStoppedFunc=function(btn)
-            local self= btn.self
+            local self= btn.target
             if CharacterFrame.Expanded then
-                Save.size['CharacterFrameExpanded']={self.target:GetSize()}
+                Save.size['CharacterFrameExpanded']={self:GetSize()}
             else
-                Save.size['CharacterFrameCollapse']={self.target:GetSize()}
+                Save.size['CharacterFrameCollapse']={self:GetSize()}
             end
         end, sizeRestFunc=function(btn)
             local self= btn.target
