@@ -359,7 +359,7 @@ local function set_Move_Frame(self, tab)
     local name= tab.name or (frame and frame:GetName()) or (self and self:GetName())
     local click= tab.click
     local frame= tab.frame
-    local notSave= tab.notSave
+    local notSave= tab.notSave or not Save.SavePoint
 
     if not self or not name or self.setMoveFrame then
         return
@@ -376,8 +376,6 @@ local function set_Move_Frame(self, tab)
     self.setMoveFrame=true
     self.typeClick= click
     self.notSave= notSave
-
-
     if not Save.moveToScreenFuori and Save.SavePoint then
         self:SetClampedToScreen(true)
         if frame then
@@ -388,7 +386,6 @@ local function set_Move_Frame(self, tab)
     if frame then
         frame:SetMovable(true)
     end
-
     if click=='RightButton' then
         self:RegisterForDrag("RightButton")
     elseif click=='LeftButton' then
@@ -396,8 +393,6 @@ local function set_Move_Frame(self, tab)
     else
         self:RegisterForDrag("LeftButton", "RightButton")
     end
-
-
     self:HookScript("OnDragStart", function(s)
         s= s.targetMoveFrame or s
         s:StartMoving()
@@ -406,7 +401,7 @@ local function set_Move_Frame(self, tab)
         local s2= s.targetMoveFrame or s
         s2:StopMovingOrSizing()
         ResetCursor()
-        if not Save.SavePoint or s.notSave then
+        if s.notSave then
             return
         end
         local frameName= s2:GetName()
@@ -415,8 +410,6 @@ local function set_Move_Frame(self, tab)
             Save.point[frameName][2]= nil
         end
     end)
-
-    --self:HookScript('OnHide', stop_Drag)--停止移动
     self:HookScript("OnMouseDown", function(s, d)--设置, 光标
         if d~='RightButton' and d~='LeftButton' then
             return
@@ -427,14 +420,7 @@ local function set_Move_Frame(self, tab)
     end)
     self:HookScript("OnMouseUp", ResetCursor)--停止移动
     self:HookScript("OnLeave", ResetCursor)
-
-            --[[if tab.show or Save.SavePoint then
-                self:HookScript("OnShow", set_Frame_Point)--设置, 移动, 位置
-            end]]
-
-
-        set_Frame_Point(self, tab.name)--设置, 移动, 位置
-
+    set_Frame_Point(self, tab.name)--设置, 移动, 位置
 end
 
 
@@ -904,6 +890,7 @@ local function setAddLoad(arg1)
                 if not size then
                     return
                 end
+                local btn= self.ResizeButton
                 if mode==AuctionHouseFrameDisplayMode.ItemSell or mode==AuctionHouseFrameDisplayMode.CommoditiesSell then
                     self:SetSize(800, 538)
                     btn.minWidth = 800
@@ -918,8 +905,8 @@ local function setAddLoad(arg1)
                     btn.maxHeight = nil
                 end
             end)
-        end, sizeRestFunc=function(self)
-            self.target:SetSize(800, 538)
+        end, sizeRestFunc=function(btn)
+            btn.target:SetSize(800, 538)
         end})
 
         set_Move_Frame(AuctionHouseFrame.ItemSellFrame, {frame=AuctionHouseFrame})
@@ -1837,25 +1824,7 @@ end)]]
 
 
 
-    local FrameTab={
-        --AddonList={},--插件
-        GameMenuFrame={notSave=true},--菜单
-        ExtraActionButton1={click='RightButton',  },--额外技能
-        ContainerFrameCombinedBags={},
-        MirrorTimer1={},
-        ColorPickerFrame={click='RightButton'},--颜色选择器
-        [PartyFrame.Background]={frame=PartyFrame, notZoom=true},
-        OpacityFrame={},
-        ArcheologyDigsiteProgressBar= {notZoom=true},
-    }
-    for k, v in pairs(FrameTab) do
-        if v then
-            local f= _G[k]
-            if f then
-                set_Move_Frame(f, v)
-            end
-        end
-    end
+ 
 
 
 
@@ -1993,7 +1962,26 @@ end)]]
 
 
 
-
+    local FrameTab={
+        --AddonList={},--插件
+        GameMenuFrame={notSave=true},--菜单
+        SettingsPanel={notSave=true},
+        ExtraActionButton1={click='RightButton', notSave=true},--额外技能
+        ContainerFrameCombinedBags={},
+        MirrorTimer1={notSave=true},
+        ColorPickerFrame={click='RightButton'},--颜色选择器
+        [PartyFrame.Background]={frame=PartyFrame, notZoom=true},
+        OpacityFrame={notSave=true},
+        ArcheologyDigsiteProgressBar= {notZoom=true},
+    }
+    for k, v in pairs(FrameTab) do
+        if v then
+            local f= _G[k]
+            if f then
+                set_Move_Frame(f, v)
+            end
+        end
+    end
 
     for text, _ in pairs(UIPanelWindows) do
         local frame=_G[text]
