@@ -75,17 +75,17 @@ local function Set_Scale_Size(frame, tab)
         frame:SetResizable(true)
         btn:Init(frame, minW, minH, maxW , maxH, rotationDegrees)
         --[[
-            self.target = target;
-            self.minWidth = minWidth;
-            self.minHeight = minHeight;
-            self.maxWidth = maxWidth;
-            self.maxHeight = maxHeight;
+            self.target = target
+            self.minWidth = minWidth
+            self.minHeight = minHeight
+            self.maxWidth = maxWidth
+            self.maxHeight = maxHeight
         ]]
             --设置，大小
 
 
         if initFunc then
-            initFunc()
+            initFunc(btn)
         end
         local size= Save.size[name]
         if size then
@@ -139,7 +139,7 @@ local function Set_Scale_Size(frame, tab)
 
             local col
             if self.sizeRestTooltipColorFunc then
-                col=self.sizeRestTooltipColorFunc(self.target)
+                col=self.sizeRestTooltipColorFunc(self)
             end
             col=col or (Save.size[self.name] and '' or '|cff606060')
             e.tips:AddDoubleLine(
@@ -178,22 +178,22 @@ local function Set_Scale_Size(frame, tab)
         self.isActive= nil
         if d=='LeftButton' then--保存，缩放
             if self.scaleStoppedFunc then
-                self.scaleStoppedFunc(self.target)
+                self.scaleStoppedFunc(self)
             else
                 Save.scale[self.name]= self.target:GetScale()
             end
 
         elseif d=='RightButton' and self.setSize then--保存，大小
-            local target = self.target;
-            local continueResizeStop = true;
+            local target = self.target
+            local continueResizeStop = true
             if target.onResizeStopCallback then
-                continueResizeStop = target.onResizeStopCallback(self);
+                continueResizeStop = target.onResizeStopCallback(self)
             end
             if continueResizeStop then
-                target:StopMovingOrSizing();
+                target:StopMovingOrSizing()
             end
             if self.sizeStoppedFunc ~= nil then
-                self.sizeStoppedFunc(self.target);
+                self.sizeStoppedFunc(self)
             else
                 Save.size[self.name]= {self.target:GetSize()}
             end
@@ -214,7 +214,7 @@ local function Set_Scale_Size(frame, tab)
                 self.target:SetScale(1)
                 Save.scale[self.name]=nil
                 if self.scaleRestFunc then
-                    self.scaleRestFunc(self.target)
+                    self.scaleRestFunc(self)
                 end
                 e.call('UpdateUIPanelPositions', self.target)
 
@@ -255,25 +255,25 @@ local function Set_Scale_Size(frame, tab)
             if IsAltKeyDown() then--清除，大小，数据
                 Save.size[self.name]=nil
                 if self.sizeRestFunc then--还原
-                    self.sizeRestFunc(self.target)
+                    self.sizeRestFunc(self)
                 end
                 e.call('UpdateUIPanelPositions', self.target)
 
             elseif not IsModifierKeyDown() then--开始，设置，大小
-                self.isActive = true;
-                local target = self.target;
-                local continueResizeStart = true;
+                self.isActive = true
+                local target = self.target
+                local continueResizeStart = true
                 if target.onResizeStartCallback then
-                    continueResizeStart = target.onResizeStartCallback(self);
+                    continueResizeStart = target.onResizeStartCallback(self)
                 end
                 if continueResizeStart then
-                    local alwaysStartFromMouse = true;
-                    self.target:StartSizing("BOTTOMRIGHT", alwaysStartFromMouse);
+                    local alwaysStartFromMouse = true
+                    self.target:StartSizing("BOTTOMRIGHT", alwaysStartFromMouse)
                 end
                 self:SetScript('OnUpdate', function(frame)
                     frame:set_tooltip()
                     if frame.sizeUpdateFunc then
-                        frame.sizeUpdateFunc(frame.target)
+                        frame.sizeUpdateFunc(frame)
                     end
                 end)
             end
@@ -646,7 +646,7 @@ end]]
 
 local function setAddLoad(arg1)
     if arg1=='Blizzard_TrainerUI' then--专业训练师
-        set_Move_Frame(ClassTrainerFrame, {minW=328, minH=197, setSize=true, initFunc=function()
+        set_Move_Frame(ClassTrainerFrame, {minW=328, minH=197, setSize=true, initFunc=function(btn)
             ClassTrainerFrameSkillStepButton:SetPoint('RIGHT', -12, 0)
             ClassTrainerFrameBottomInset:SetPoint('BOTTOMRIGHT', -4, 28)
             hooksecurefunc('ClassTrainerFrame_Update', function()--Blizzard_TrainerUI.lua
@@ -654,11 +654,9 @@ local function setAddLoad(arg1)
                     ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)
                 end
             end)
-            ClassTrainerFrame.ScrollBox:ClearAllPoints()
-            --ClassTrainerFrame.ScrollBox:SetPoint('TOPLEFT')
-            --ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT')
+            btn.target.ScrollBox:ClearAllPoints()
         end, sizeRestFunc=function(self)
-            self:SetSize(338, 424)
+            self.target:SetSize(338, 424)
         end})
 
 
@@ -666,8 +664,8 @@ local function setAddLoad(arg1)
 
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
-        --communitiesFrame:SetSize(814, 426);
-        --communitiesFrame:SetSize(322, 406);
+        --communitiesFrame:SetSize(814, 426)
+        --communitiesFrame:SetSize(322, 406)
         set_Move_Frame(CommunitiesFrame, {setSize=true, initFunc=function()
             local function set_size(frame)
                 local self= frame:GetParent()
@@ -729,29 +727,32 @@ local function setAddLoad(arg1)
                     end
                 end
             end)
-        end, scaleStoppedFunc= function(self)
-            local displayMode = self:GetDisplayMode();
+        end, scaleStoppedFunc= function(btn)
+            local self= btn.target
+            local displayMode = self:GetDisplayMode()
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                 Save.scale['CommunitiesFrameMINIMIZED']= self:GetScale()
             else
                 Save.scale['CommunitiesFrameNormal']= self:GetScale()
             end
-        end, scaleRestFunc=function(self)
-            local displayMode = self:GetDisplayMode();
+        end, scaleRestFunc=function(btn)
+            local displayMode = btn.target:GetDisplayMode()
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                 Save.scale['CommunitiesFrameMINIMIZED']= nil
             else
                 Save.scale['CommunitiesFrameNormal']= nil
             end
-        end, sizeStoppedFunc=function(self)
-            local displayMode = self:GetDisplayMode();
+        end, sizeStoppedFunc=function(btn)
+            local self= btn.target
+            local displayMode = self:GetDisplayMode()
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                 Save.size['CommunitiesFrameMINIMIZED']= {self:GetSize()}
             else
                 Save.size['CommunitiesFrameNormal']= {self:GetSize()}
             end
-        end, sizeRestFunc= function(self)
-            local displayMode = self:GetDisplayMode();
+        end, sizeRestFunc=function(btn)
+            local self= btn.target
+            local displayMode = self:GetDisplayMode()
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                 Save.size['CommunitiesFrameMINIMIZED']=nil
                 self:SetSize(322, 406)
@@ -759,8 +760,8 @@ local function setAddLoad(arg1)
                 Save.size['CommunitiesFrameNormal']= nil
                 self:SetSize(814, 426)
             end
-        end, sizeRestTooltipColorFunc=function(self)
-            local displayMode = self:GetDisplayMode();
+        end, sizeRestTooltipColorFunc=function(btn)
+            local displayMode = btn.target:GetDisplayMode()
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                 if Save.size['CommunitiesFrameMINIMIZED'] then
                     return ''
@@ -786,7 +787,7 @@ local function setAddLoad(arg1)
             AchievementFrameCategories:SetPoint('BOTTOMLEFT', 175, 19)
             AchievementFrameMetalBorderRight:ClearAllPoints()
         end, sizeRestFunc=function(self)
-            self:SetSize(768, 500)
+            self.target:SetSize(768, 500)
         end})
         set_Move_Frame(AchievementFrameComparisonHeader, {frame=AchievementFrame})
         set_Move_Frame(AchievementFrame.Header, {frame=AchievementFrame})
@@ -825,7 +826,7 @@ local function setAddLoad(arg1)
             EncounterJournalEncounterFrameInfoModelFrame:ClearAllPoints()
             EncounterJournalEncounterFrameInfoModelFrame:SetPoint('RIGHT', 0, 0)
         end, sizeRestFunc=function(self)
-            self:SetSize(800, 496)
+            self.target:SetSize(800, 496)
         end})
 
     elseif arg1=='Blizzard_ClassTalentUI' then--天赋
@@ -890,20 +891,20 @@ local function setAddLoad(arg1)
                 end
                 if mode==AuctionHouseFrameDisplayMode.ItemSell or mode==AuctionHouseFrameDisplayMode.CommoditiesSell then
                     self:SetSize(800, 538)
-                    btn.minWidth = 800;
+                    btn.minWidth = 800
                     btn.minHeight = 538
                     btn.maxWidth = 800
                     btn.maxHeight = 538
                 else
                     self:SetSize(size[1], size[2])
-                    btn.minWidth = 600;
+                    btn.minWidth = 600
                     btn.minHeight = 320
                     btn.maxWidth = nil
                     btn.maxHeight = nil
                 end
             end)
         end, sizeRestFunc=function(self)
-            self:SetSize(800, 538)
+            self.target:SetSize(800, 538)
         end})
 
         set_Move_Frame(AuctionHouseFrame.ItemSellFrame, {frame=AuctionHouseFrame})
@@ -1143,7 +1144,7 @@ local function setAddLoad(arg1)
             set_craftingpage_position(ProfessionsFrame.CraftingPage)
             function ProfessionsFrame.CraftingPage:SetMaximized()
                 set_craftingpage_position(self)
-                self:Refresh(self.professionInfo);
+                self:Refresh(self.professionInfo)
             end
             hooksecurefunc(ProfessionsFrame.CraftingPage, 'SetMinimized', function(self)
                 self.SchematicForm.Details:ClearAllPoints()
@@ -1181,9 +1182,10 @@ local function setAddLoad(arg1)
                     break
                 end
             end
-        end, scaleStoppedFunc=function(self)
+        end, scaleStoppedFunc=function(btn)
+            local self= btn.target
             local sacle= self:GetScale()
-            local name= self:GetName()
+            local name= btn.name
             if ProfessionsUtil.IsCraftingMinimized() then
                 Save.scale[name..'Mini']= sacle
             elseif self.TabSystem.selectedTabID==2 then
@@ -1193,8 +1195,9 @@ local function setAddLoad(arg1)
             else
                 Save.scale[name..'Normal']= sacle
             end
-        end, scaleRestFunc=function(self)
-            local name= self:GetName()
+        end, scaleRestFunc=function(btn)
+            local self= btn.target
+            local name= btn.name
             if ProfessionsUtil.IsCraftingMinimized() then
                 Save.scale[name..'Mini']= nil
             elseif self.TabSystem.selectedTabID==2 then
@@ -1204,19 +1207,20 @@ local function setAddLoad(arg1)
             else
                 Save.scale[name..'Normal']= nil
             end
-        end, sizeRestTooltipColorFunc= function(self)
-            local name= self:GetName()
+        end, sizeRestTooltipColorFunc= function(btn)
+            local name= btn.name
             if ProfessionsUtil.IsCraftingMinimized() then
                 return Save.size[name..'Mini'] and '' or '|cff606060'
-            elseif self.TabSystem.selectedTabID==2 then
+            elseif btn.target.TabSystem.selectedTabID==2 then
                 return Save.size[name..'Spec'] and '' or '|cff606060'
-            elseif self.TabSystem.selectedTabID==3 then
+            elseif btn.target.TabSystem.selectedTabID==3 then
                 return Save.size[name..'Order'] and '' or '|cff606060'
             else
                 return Save.size[name..'Normal'] and '' or '|cff606060'
             end
-        end, sizeStoppedFunc=function(self)
-            local name= self:GetName()
+        end, sizeStoppedFunc=function(btn)
+            local self= btn.target
+            local name= btn.name
             local size= {self:GetSize()}
             if ProfessionsUtil.IsCraftingMinimized() then
                 Save.size[name..'Mini']= size
@@ -1224,13 +1228,14 @@ local function setAddLoad(arg1)
                 Save.size[name..'Spec']= size
             elseif self.TabSystem.selectedTabID==3 then
                 Save.size[name..'Order']= size
-                self:Refresh();
+                self:Refresh()
             else
                 Save.size[name..'Normal']= size
-                self:Refresh();
+                self:Refresh()
             end
-        end, sizeRestFunc=function(self)
-            local name= self:GetName()
+        end, sizeRestFunc=function(btn)
+            local self= btn.target
+            local name= btn.name
             if ProfessionsUtil.IsCraftingMinimized() then
                 self:SetSize(404, 658)
                 Save.size[name..'Mini']=nil
@@ -1302,22 +1307,23 @@ local function setAddLoad(arg1)
                     frame:SetSize(825, 568)
                 end
             end)
-        end, scaleStoppedFunc=function(self)
-            local name= self:GetName()
+        end, scaleStoppedFunc=function(btn)
+            local self= btn.target
+            local name= btn.name
             if self.Form:IsShown() then
                 Save.scale[name..'From']= self:GetScale()
             else
                 Save.scale[name]= self:GetScale()
             end
-        end, scaleRestFunc=function(self)
-            local name= self:GetName()
+        end, scaleRestFunc=function(btn)
+            local name= btn.name
             if self.Form:IsShown() then
                 Save.scale[name..'From']= nil
             else
                 Save.scale[name]= nil
             end
         end, sizeRestFunc=function(self)
-            self:SetSize(825, 568)
+            self.target:SetSize(825, 568)
         end})
         set_Move_Frame(ProfessionsCustomerOrdersFrame.Form, {frame=ProfessionsCustomerOrdersFrame})
 
@@ -1338,7 +1344,8 @@ local function setAddLoad(arg1)
         set_Move_Frame(MajorFactionRenownFrame)
 
     elseif arg1=='Blizzard_DebugTools' then--FSTACK
-        set_Move_Frame(TableAttributeDisplay)
+        set_Move_Frame(TableAttributeDisplay, {minW=500, minH=400, setSize=true, initFunc=function()
+        end})
 
     elseif arg1=='Blizzard_EventTrace' then--ETRACE
         set_Move_Frame(EventTrace, {notZoom=true, save=true})
@@ -1445,116 +1452,160 @@ end
 
     --世界地图
     --if not C_AddOns.IsAddOnLoaded('Mapster') then
-        --[[if not Save.disabledZoom then
-            if QuestScrollFrame then
-                QuestScrollFrame:ClearAllPoints()
-                QuestScrollFrame:SetPoint('TOPLEFT')
-                QuestScrollFrame:SetPoint('BOTTOMRIGHT')
-            end
-            if QuestScrollFrame.DetailFrame.TopDetail then
-                QuestScrollFrame.DetailFrame.TopDetail:ClearAllPoints()
-                QuestScrollFrame.DetailFrame.TopDetail:SetPoint('TOPLEFT', 0, 9)
-                QuestScrollFrame.DetailFrame.TopDetail:SetPoint('TOPRIGHT', 0,-15)
-            end
-            
 
-            local btn= e.Cbtn(QuestMapFrame, {size={18,18}, icon=true})
-            btn:SetFrameStrata(WorldMapFrame.BorderFrame.TitleContainer:GetFrameStrata())
-            btn:SetFrameLevel(WorldMapFrame.BorderFrame.TitleContainer:GetFrameLevel()+1)
-            btn:SetPoint('BOTTOMRIGHT', 12, 6)
-            btn:SetAlpha(0.3)
-            btn.value= WorldMapFrame.questLogWidth or 290
-            function btn:initFunc()
-                local w=Save.width['QuestMapFrame']
-                if w then
-                    local p= self:GetParent()
-                    p:SetWidth(w)
-                    WorldMapFrame.questLogWidth=w
-                    if not WorldMapFrame:IsMaximized() and WorldMapFrame:IsShown() then
-                        WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
-                    end
-                end
-            end
-            btn:initFunc()
-            btn:SetScript('OnClick', function(self)
-                local w= self.value
-                local w2= Save.width['QuestMapFrame']
-                if not self.slider then
-                    self.slider= e.CSlider(self, {min=w/2, max=w*2, value=w2 or w, setp=1, color=true,
-                    text= 'QuestMapFrame',
-                    func=function(frame, value)
-                        value= math.modf(value)
-                        value= value==0 and 0 or value
-                        frame:SetValue(value)
-                        frame.Text:SetText(value)
-                        Save.width['QuestMapFrame']= value
-                        frame:GetParent():initFunc()
-                    end})
-                    self.slider:SetPoint('BOTTOMRIGHT', WorldMapFrame.BorderFrame.TitleContainer, 'TOPRIGHT', -23, 2)
-                else
-                    self.slider:SetShown(not self.slider:IsShown() and true or false)
-                end
-            end)
-        end]]
+    --QuestScrollFrame
+    --[[QuestMapFrame.DetailsFrame:ClearAllPoints()
+    QuestMapFrame.DetailsFrame:SetPoint('TOPLEFT')
+    QuestMapFrame.DetailsFrame:SetPoint('BOTTOMRIGHT')
+
+    QuestMapFrame.DetailsFrame.SealMaterialBG:SetPoint('BOTTOMRIGHT')
+    QuestMapFrame.QuestsFrame:ClearAllPoints()--QuestScrollFrame
+    QuestMapFrame.QuestsFrame:SetPoint('TOPLEFT')
+    QuestMapFrame.QuestsFrame:SetPoint('BOTTOMRIGHT')]]
+
+    --<ScrollFrame parentKey="QuestsFrame" name="QuestScrollFrame" inherits="ScrollFrameTemplate">
+    --QuestMapDetailsScrollFrame:SetPoint('RIGHT')
+    --QuestScrollFrame:ClearAllPoints()
+    --QuestScrollFrame:SetAllPoints(QuestMapFrame)
+
+
+
+    --WorldMapFrame.BorderFrame:SetPoint('RIGHT')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --########
 --初始,移动
 --########
 local function Init_Move()
     local minimizedWidth= WorldMapFrame.minimizedWidth or 702
     local minimizedHeight= WorldMapFrame.minimizedHeight or 534
-        local function set_min_max_value(size)
-            local self= WorldMapFrame
-            local isMax= self:IsMaximized()
-            if isMax then
-                self.minimizedWidth= minimizedWidth
-                self.minimizedHeight= minimizedHeight
-                self.BorderFrame.MaximizeMinimizeFrame:Maximize()
-            elseif size then
-                self.minimizedWidth= size[1]-(self.questLogWidth or 290)
-                self.minimizedHeight= size[2]
-                self.BorderFrame.MaximizeMinimizeFrame:Minimize()
+    local function set_min_max_value(size)
+        local self= WorldMapFrame
+        local isMax= self:IsMaximized()
+        if isMax then
+            self.minimizedWidth= minimizedWidth
+            self.minimizedHeight= minimizedHeight
+            self.BorderFrame.MaximizeMinimizeFrame:Maximize()
+        elseif size then
+            self.minimizedWidth= size[1]-(self.questLogWidth or 290)
+            self.minimizedHeight= size[2]
+            self.BorderFrame.MaximizeMinimizeFrame:Minimize()
+        end
+    end
+    set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, initFunc=function()
+        WorldMapFrame:HookScript('OnShow', function(self)
+            local scale= Save.scale[self:GetName()]
+            if scale then
+                self:SetScale(scale)
+            end
+        end)
+        hooksecurefunc(WorldMapFrame, 'Minimize', function(self)
+            local name= self:GetName()
+            local size= Save.size[name]
+            if size then
+                self:SetSize(size[1], size[2])
+                set_min_max_value(size)
+            end
+            local scale= Save.scale[name]
+            if scale then
+                self:SetScale(scale)
+            end
+            self.ResizeButton:SetShown(true)
+        end)
+        hooksecurefunc(WorldMapFrame, 'Maximize', function(self)
+            set_min_max_value()
+            if Save.scale[self:GetName()] then
+                self:SetScale(1)
+            end
+            self.ResizeButton:SetShown(false)
+        end)
+        QuestMapFrame.Background:ClearAllPoints()
+        QuestMapFrame.Background:SetAllPoints(QuestMapFrame)
+        QuestMapFrame.DetailsFrame:ClearAllPoints()
+        QuestMapFrame.DetailsFrame:SetPoint('TOPLEFT', 0, -42)
+        QuestMapFrame.DetailsFrame:SetPoint('BOTTOMRIGHT', -26, 0)
+        QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOMRIGHT', 26, 0)
+        set_Move_Frame(MapQuestInfoRewardsFrame, {frame= WorldMapFrame})
+        set_Move_Frame(QuestMapFrame, {frame= WorldMapFrame})
+        set_Move_Frame(QuestMapFrame.DetailsFrame, {frame= WorldMapFrame})
+        set_Move_Frame(QuestMapFrame.DetailsFrame.RewardsFrame, {frame= WorldMapFrame})
+        set_Move_Frame(QuestMapDetailsScrollFrame, {frame= WorldMapFrame})
+
+
+
+
+        --移动宽度，设置
+        --ScrollFrame parentKey="QuestsFrame" name="QuestScrollFrame" inherits="ScrollFrameTemplate">
+        QuestScrollFrame.Contents:SetPoint('BOTTOMRIGHT')
+
+        QuestScrollFrame.DetailFrame.TopDetail:ClearAllPoints()
+        QuestScrollFrame.DetailFrame.TopDetail:SetPoint('TOPLEFT', 0, 9)
+        QuestScrollFrame.DetailFrame.TopDetail:SetPoint('TOPRIGHT', 0,-15)
+
+        QuestScrollFrame.DetailFrame.BottomDetail:ClearAllPoints()
+        QuestScrollFrame.DetailFrame.BottomDetail:SetPoint('BOTTOMLEFT', 0, 18)
+        QuestScrollFrame.DetailFrame.BottomDetail:SetPoint('BOTTOMRIGHT')
+
+        QuestMapFrame.DetailsFrame.RewardsFrame:SetPoint('RIGHT')
+
+        local btn= e.Cbtn(QuestMapFrame, {size={18,18}, icon=true})
+        btn:SetPoint('LEFT', QuestMapFrame, 'RIGHT')
+        btn.value= WorldMapFrame.questLogWidth or 290
+        function btn:initFunc()
+            local w= Save.size['questLogWidth']
+            if w then
+                local p= self:GetParent()
+                p:SetWidth(w)
+                WorldMapFrame.questLogWidth=w
+                minimizedWidth= w
+                if not WorldMapFrame:IsMaximized() and WorldMapFrame:IsShown() then
+                    WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
+                end
             end
         end
-        set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, initFunc=function()
-            QuestMapFrame.Background:ClearAllPoints()
-            QuestMapFrame.Background:SetAllPoints(QuestMapFrame)
-            QuestMapFrame.DetailsFrame:ClearAllPoints()
-            QuestMapFrame.DetailsFrame:SetPoint('TOPLEFT', 0, -42)
-            QuestMapFrame.DetailsFrame:SetPoint('BOTTOMRIGHT', -26, 0)
-            QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOMRIGHT', 26, 0)
-            set_Move_Frame(MapQuestInfoRewardsFrame, {frame= WorldMapFrame})
-            set_Move_Frame(QuestMapFrame, {frame= WorldMapFrame})
-            set_Move_Frame(QuestMapFrame.DetailsFrame, {frame= WorldMapFrame})
-            hooksecurefunc(WorldMapFrame, 'Minimize', function(self)
-                local name= self:GetName()
-                local size= Save.size[name]
-                if size then
-                    self:SetSize(size[1], size[2])
-                    set_min_max_value(size)
-                end
-                local scale= Save.scale[name]
-                if scale then
-                    self:SetScale(scale)
-                end
+        btn:initFunc()
+        btn:SetScript('OnClick', function(self)
+            local w= self.value
+            local w2= Save.size['questLogWidth']
+            if not self.slider then
+                self.slider= e.CSlider(self, {min=w/2, max=w*2, value=w2 or w, setp=1, color=true,
+                text= 'QuestMapFrame',
+                func=function(frame, value)
+                    value= math.modf(value)
+                    value= value==0 and 0 or value
+                    frame:SetValue(value)
+                    frame.Text:SetText(value)
+                    Save.size['questLogWidth']= value
+                    frame:GetParent():initFunc()
+                end})
+                self.slider:SetPoint('LEFT', self, 'RIGHT')
+                --self.slider:SetPoint('BOTTOMRIGHT', WorldMapFrame.BorderFrame.TitleContainer, 'TOPRIGHT', -23, 2)
+            else
+                self.slider:SetShown(not self.slider:IsShown() and true or false)
+            end
+        end)
 
-                self.ResizeButton:SetShown(true)
-            end)
-            hooksecurefunc(WorldMapFrame, 'Maximize', function(self)
-                set_min_max_value()
-                if Save.scale[self:GetName()] then
-                    self:SetScale(1)
-                end
-                self.ResizeButton:SetShown(false)
-            end)
-
-        end, sizeUpdateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
-            set_min_max_value({WorldMapFrame:GetSize()})
-        end, sizeRestFunc= function()
-            WorldMapFrame.minimizedWidth= minimizedWidth
-            WorldMapFrame.minimizedHeight= minimizedHeight
-            WorldMapFrame:SetSize(minimizedWidth+ (WorldMapFrame.questLogWidth or 290), minimizedHeight)
-            WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
-        end})
+    end, sizeUpdateFunc= function(btn)--WorldMapMixin:UpdateMaximizedSize()
+        set_min_max_value({btn.target:GetSize()})
+    end, sizeRestFunc= function(self)
+        local target=self.target
+        target.minimizedWidth= minimizedWidth
+        target.minimizedHeight= minimizedHeight
+        target:SetSize(minimizedWidth+ (WorldMapFrame.questLogWidth or 290), minimizedHeight)
+        target.BorderFrame.MaximizeMinimizeFrame:Minimize()
+    end})
 
 
 
@@ -1583,8 +1634,8 @@ local function Init_Move()
             entry.Title:SetPoint('RIGHT', -220, 0 )
         end)
         --e.call(AddonList_Update)
-    end, sizeRestFunc= function()
-        AddonList:SetSize("500", "478")
+    end, sizeRestFunc=function(self)
+        self.target:SetSize("500", "478")
     end})
 
 
@@ -1684,18 +1735,18 @@ local function Init_Move()
                 CharacterFrame.ResizeButton.minHeight= 424
             end
         end)
-        end, sizeUpdateFunc=function()
-            if PaperDollFrame.EquipmentManagerPane:IsVisible() then
+        end, sizeUpdateFunc=function(btn)
+            if btn.EquipmentManagerPane:IsVisible() then
                 e.call('PaperDollEquipmentManagerPane_Update')
             end
-            if PaperDollFrame.TitleManagerPane:IsVisible() then
+            if btn.TitleManagerPane:IsVisible() then
                 e.call('PaperDollTitlesPane_Update')
             end
         end, sizeStoppedFunc=function(self)
             if CharacterFrame.Expanded then
-                Save.size['CharacterFrameExpanded']={self:GetSize()}
+                Save.size['CharacterFrameExpanded']={self.target:GetSize()}
             else
-                Save.size['CharacterFrameCollapse']={self:GetSize()}
+                Save.size['CharacterFrameCollapse']={self.target:GetSize()}
             end
         end, sizeRestFunc=function(self)
             if self.Expanded then
@@ -1706,27 +1757,27 @@ local function Init_Move()
                 self:SetSize(PANEL_DEFAULT_WIDTH, 424)
             end
         end, sizeRestTooltipColorFunc=function(self)
-            return ((self.Expanded and Save.size['CharacterFrameExpanded']) or (not self.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
+            return ((self.target.Expanded and Save.size['CharacterFrameExpanded']) or (not self.target.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
         end
     })
-    set_Move_Frame(FriendsFrame, {setSize=true, minW=338, minH=424, initFunc=function()
+    set_Move_Frame(FriendsFrame, {setSize=true, minW=338, minH=424, initFunc=function(self)
             FriendsListFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -24, 30)
         end, sizeRestFunc=function(self)
-        self:SetSize(338, 424)
+            self.target:SetSize(338, 424)
     end})--好友列表
 
     --对话
-    set_Move_Frame(GossipFrame, {minW=220, minH=220, setSize=true, initFunc=function()
-        GossipFrame.GreetingPanel:SetPoint('BOTTOMRIGHT')
-        GossipFrame.GreetingPanel.ScrollBox:SetPoint('BOTTOMRIGHT', -28,28)
-        GossipFrame.Background:SetPoint('BOTTOMRIGHT', -28,28)
+    set_Move_Frame(GossipFrame, {minW=220, minH=220, setSize=true, initFunc=function(self)
+        self.target.GreetingPanel:SetPoint('BOTTOMRIGHT')
+        self.target.GreetingPanel.ScrollBox:SetPoint('BOTTOMRIGHT', -28,28)
+        self.target.Background:SetPoint('BOTTOMRIGHT', -28,28)
         --GreetingText:SetWidth(GreetingText:GetParent():GetWidth()-56)
         hooksecurefunc(GossipGreetingTextMixin, 'Setup', function(self)
             self.GreetingText:SetWidth(self:GetWidth()-22)
         end)
         --hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, optionInfo)
     end, sizeRestFunc=function(self)
-        self:SetSize(384, 512)
+        self.target:SetSize(384, 512)
     end})
 
     --任务
@@ -1753,13 +1804,13 @@ local function Init_Move()
                 frame:SetPoint('BOTTOMRIGHT', -28,28)
             end
         end
-    end, sizeRestFunc= function(self)
-        self:SetSize(338, 496)
+    end, sizeRestFunc=function(self)
+        self.target:SetSize(338, 496)
     end})
 
 --聊天设置
     set_Move_Frame(ChannelFrame, {minW=402, minH=200, setSize=true, sizeRestFunc=function(self)
-        self:SetSize(402, 423)
+        self.target:SetSize(402, 423)
     end})
 
 
