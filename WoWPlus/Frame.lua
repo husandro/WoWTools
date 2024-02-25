@@ -81,9 +81,6 @@ local function Set_Scale_Size(frame, tab)
             self.maxWidth = maxWidth
             self.maxHeight = maxHeight
         ]]
-            --设置，大小
-
-
         if initFunc then
             initFunc(btn)
         end
