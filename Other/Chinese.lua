@@ -4293,7 +4293,8 @@ local function Init()
         if cn then
             CONQUEST_SIZE_SCONQUEST_TYPE_STRINGSTRINGS[index]= cn
         end
-end
+    end
+
 end
 
 
@@ -7559,10 +7560,11 @@ end)
 
     elseif arg1=='Blizzard_CharacterCustomize' then--飞龙，制定界面
         CharCustomizeFrame.RandomizeAppearanceButton.simpleTooltipLine= '随机外观'
-    --elseif arg1=='Blizzard_CovenantRenown' then
-    --elseif arg1=='Blizzard_Calendar' then
-        --dia("CALENDAR_DELETE_EVENT", {button1 = '确定', button2 = '取消'})
-        --dia("CALENDAR_ERROR", {button1 = '确定'})
+
+    elseif arg1=='Blizzard_DebugTools' then--FSTACK
+        set(TableAttributeDisplay.VisibilityButton.Label, '显示')
+        set(TableAttributeDisplay.HighlightButton.Label, '高亮')
+        set(TableAttributeDisplay.DynamicUpdateButton.Label, '动态更新')
     end
 end
 

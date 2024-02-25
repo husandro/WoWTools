@@ -1345,9 +1345,26 @@ local function setAddLoad(arg1)
         set_Move_Frame(MajorFactionRenownFrame)
 
     elseif arg1=='Blizzard_DebugTools' then--FSTACK
-        set_Move_Frame(TableAttributeDisplay, {minW=500, minH=400, setSize=true, initFunc=function()
+        set_Move_Frame(TableAttributeDisplay, {minW=476, minH=150, setSize=true, initFunc=function()
+            TableAttributeDisplay.LinesScrollFrame:ClearAllPoints()
+            TableAttributeDisplay.LinesScrollFrame:SetPoint('TOPLEFT', 6, -62)
+            TableAttributeDisplay.LinesScrollFrame:SetPoint('BOTTOMRIGHT', -36, 22)
+            TableAttributeDisplay.FilterBox:SetPoint('RIGHT', -14,0)
+        end, sizeUpdateFunc=function(btn)
+            btn.target:UpdateLines()--RefreshAllData()
+        end, sizeRestFunc=function(btn)
+            btn.target:SetSize(500, 400)
         end})
-
+        --[[TableAttributeDisplay.LinesScrollFrame.LinesContainer.2253d228e50.ValueButton.Text
+hooksecurefunc(TableAttributeLineReferenceMixin, 'Initialize', function(self)
+    local frame= self:GetParent():GetParent():GetParent()
+    local btn= frame.ResizeButton
+    if not btn or btn.setSize then
+        return
+    end
+    self:GetParent():GetParent():SetPoint('RIGHT')
+    --self.ValueButton:SetWidth(frame:GetWidth()-120)
+end)]]
     elseif arg1=='Blizzard_EventTrace' then--ETRACE
         set_Move_Frame(EventTrace, {notZoom=true, save=true})
 
