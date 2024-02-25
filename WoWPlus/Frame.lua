@@ -1447,30 +1447,6 @@ end
 
 
 
-    --世界地图
-    --if not C_AddOns.IsAddOnLoaded('Mapster') then
-
-    --QuestScrollFrame
-    --[[QuestMapFrame.DetailsFrame:ClearAllPoints()
-    QuestMapFrame.DetailsFrame:SetPoint('TOPLEFT')
-    QuestMapFrame.DetailsFrame:SetPoint('BOTTOMRIGHT')
-
-    QuestMapFrame.DetailsFrame.SealMaterialBG:SetPoint('BOTTOMRIGHT')
-    QuestMapFrame.QuestsFrame:ClearAllPoints()--QuestScrollFrame
-    QuestMapFrame.QuestsFrame:SetPoint('TOPLEFT')
-    QuestMapFrame.QuestsFrame:SetPoint('BOTTOMRIGHT')]]
-
-    --<ScrollFrame parentKey="QuestsFrame" name="QuestScrollFrame" inherits="ScrollFrameTemplate">
-    --QuestMapDetailsScrollFrame:SetPoint('RIGHT')
-    --QuestScrollFrame:ClearAllPoints()
-    --QuestScrollFrame:SetAllPoints(QuestMapFrame)
-
-
-
-    --WorldMapFrame.BorderFrame:SetPoint('RIGHT')
-
-
-
 
 
 
@@ -1486,6 +1462,7 @@ end
 --初始,移动
 --########
 local function Init_Move()
+    --世界地图
     local minimizedWidth= WorldMapFrame.minimizedWidth or 702
     local minimizedHeight= WorldMapFrame.minimizedHeight or 534
     local function set_min_max_value(size)
@@ -1496,9 +1473,15 @@ local function Init_Move()
             self.minimizedHeight= minimizedHeight
             self.BorderFrame.MaximizeMinimizeFrame:Maximize()
         elseif size then
-            self.minimizedWidth= size[1]-(self.questLogWidth or 290)
+            local w= size[1]-(self.questLogWidth or 290)
+            self.minimizedWidth= w
             self.minimizedHeight= size[2]
             self.BorderFrame.MaximizeMinimizeFrame:Minimize()
+            --[[QUEST_TEMPLATE_LOG.contentWidth= w--285
+            QUEST_TEMPLATE_DETAIL.contentWidth= w-10
+            QUEST_TEMPLATE_REWARD.contentWidth= w
+            QUEST_TEMPLATE_MAP_DETAILS.contentWidth= w-41
+            QUEST_TEMPLATE_MAP_REWARDS.contentWidth= w-41]]
         end
     end
     set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, initFunc=function()
@@ -1532,68 +1515,14 @@ local function Init_Move()
         QuestMapFrame.Background:SetAllPoints(QuestMapFrame)
         QuestMapFrame.DetailsFrame:ClearAllPoints()
         QuestMapFrame.DetailsFrame:SetPoint('TOPLEFT', 0, -42)
-        QuestMapFrame.DetailsFrame:SetPoint('BOTTOMRIGHT', -26, 0)
-        QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOMRIGHT', 26, 0)
+        QuestMapFrame.DetailsFrame:SetPoint('BOTTOMRIGHT')
+        QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOMRIGHT')
+        QuestMapFrame.DetailsFrame.SealMaterialBG:SetPoint('BOTTOMRIGHT', QuestMapFrame.DetailsFrame.RewardsFrame, 'TOPRIGHT', 0, -6)
         set_Move_Frame(MapQuestInfoRewardsFrame, {frame= WorldMapFrame})
         set_Move_Frame(QuestMapFrame, {frame= WorldMapFrame})
         set_Move_Frame(QuestMapFrame.DetailsFrame, {frame= WorldMapFrame})
         set_Move_Frame(QuestMapFrame.DetailsFrame.RewardsFrame, {frame= WorldMapFrame})
         set_Move_Frame(QuestMapDetailsScrollFrame, {frame= WorldMapFrame})
-
-
-
-
-        --移动宽度，设置
-        --ScrollFrame parentKey="QuestsFrame" name="QuestScrollFrame" inherits="ScrollFrameTemplate">
-        QuestScrollFrame.Contents:SetPoint('BOTTOMRIGHT')
-
-        QuestScrollFrame.DetailFrame.TopDetail:ClearAllPoints()
-        QuestScrollFrame.DetailFrame.TopDetail:SetPoint('TOPLEFT', 0, 9)
-        QuestScrollFrame.DetailFrame.TopDetail:SetPoint('TOPRIGHT', 0,-15)
-
-        QuestScrollFrame.DetailFrame.BottomDetail:ClearAllPoints()
-        QuestScrollFrame.DetailFrame.BottomDetail:SetPoint('BOTTOMLEFT', 0, 18)
-        QuestScrollFrame.DetailFrame.BottomDetail:SetPoint('BOTTOMRIGHT')
-
-        QuestMapFrame.DetailsFrame.RewardsFrame:SetPoint('RIGHT')
-
-        local btn= e.Cbtn(QuestMapFrame, {size={18,18}, icon=true})
-        btn:SetPoint('LEFT', QuestMapFrame, 'RIGHT')
-        btn.value= WorldMapFrame.questLogWidth or 290
-        function btn:initFunc()
-            local w= Save.size['questLogWidth']
-            if w then
-                local p= self:GetParent()
-                p:SetWidth(w)
-                WorldMapFrame.questLogWidth=w
-                minimizedWidth= w
-                if not WorldMapFrame:IsMaximized() and WorldMapFrame:IsShown() then
-                    WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
-                end
-            end
-        end
-        btn:initFunc()
-        btn:SetScript('OnClick', function(self)
-            local w= self.value
-            local w2= Save.size['questLogWidth']
-            if not self.slider then
-                self.slider= e.CSlider(self, {min=w/2, max=w*2, value=w2 or w, setp=1, color=true,
-                text= 'QuestMapFrame',
-                func=function(frame, value)
-                    value= math.modf(value)
-                    value= value==0 and 0 or value
-                    frame:SetValue(value)
-                    frame.Text:SetText(value)
-                    Save.size['questLogWidth']= value
-                    frame:GetParent():initFunc()
-                end})
-                self.slider:SetPoint('LEFT', self, 'RIGHT')
-                --self.slider:SetPoint('BOTTOMRIGHT', WorldMapFrame.BorderFrame.TitleContainer, 'TOPRIGHT', -23, 2)
-            else
-                self.slider:SetShown(not self.slider:IsShown() and true or false)
-            end
-        end)
-
     end, sizeUpdateFunc= function(btn)--WorldMapMixin:UpdateMaximizedSize()
         set_min_max_value({btn.target:GetSize()})
     end, sizeRestFunc= function(self)
@@ -1603,6 +1532,63 @@ local function Init_Move()
         target:SetSize(minimizedWidth+ (WorldMapFrame.questLogWidth or 290), minimizedHeight)
         target.BorderFrame.MaximizeMinimizeFrame:Minimize()
     end})
+--[[移动,宽度，设置
+--ScrollFrame parentKey="QuestsFrame" name="QuestScrollFrame" inherits="ScrollFrameTemplate">
+--QuestScrollFrame.Contents:SetPoint('BOTTOMRIGHT')
+QuestScrollFrame.Contents:SetPoint('BOTTOMRIGHT')
+QuestMapFrame.DetailsFrame.RewardsFrame.RewardsScrollFrame.Contents:SetPoint('BOTTOMRIGHT')
+QuestMapFrame.DetailsFrame.ScrollFrame.Contents:SetPoint('BOTTOMRIGHT')
+
+QuestScrollFrame.DetailFrame.TopDetail:ClearAllPoints()
+QuestScrollFrame.DetailFrame.TopDetail:SetPoint('TOPLEFT', 0, 9)
+QuestScrollFrame.DetailFrame.TopDetail:SetPoint('TOPRIGHT', 0,-15)
+
+QuestScrollFrame.DetailFrame.BottomDetail:ClearAllPoints()
+QuestScrollFrame.DetailFrame.BottomDetail:SetPoint('BOTTOMLEFT', 0, 18)
+QuestScrollFrame.DetailFrame.BottomDetail:SetPoint('BOTTOMRIGHT')
+
+QuestMapFrame.DetailsFrame.RewardsFrame:SetPoint('RIGHT')
+
+QuestMapDetailsScrollFrame.Contents:SetPoint('RIGHT')
+
+local btn= e.Cbtn(QuestMapFrame, {size={18,18}, icon=true})
+btn:SetPoint('LEFT', QuestMapFrame, 'RIGHT')
+btn.value= WorldMapFrame.questLogWidth or 290
+function btn:initFunc()
+    local w= Save.size['questLogWidth']
+    if w then
+        local p= self:GetParent()
+        p:SetWidth(w)
+        WorldMapFrame.questLogWidth=w
+        minimizedWidth= w
+        if not WorldMapFrame:IsMaximized() and WorldMapFrame:IsShown() then
+            WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
+        end
+    end
+end
+btn:initFunc()
+btn:SetScript('OnClick', function(self)
+    local w= self.value
+    local w2= Save.size['questLogWidth']
+    if not self.slider then
+        self.slider= e.CSlider(self, {min=w/2, max=w*2, value=w2 or w, setp=1, color=true,
+        text= 'QuestMapFrame',
+        func=function(frame, value)
+            value= math.modf(value)
+            value= value==0 and 0 or value
+            frame:SetValue(value)
+            frame.Text:SetText(value)
+            Save.size['questLogWidth']= value
+            frame:GetParent():initFunc()
+        end})
+        self.slider:SetPoint('LEFT', self, 'RIGHT')
+        --self.slider:SetPoint('BOTTOMRIGHT', WorldMapFrame.BorderFrame.TitleContainer, 'TOPRIGHT', -23, 2)
+    else
+        self.slider:SetShown(not self.slider:IsShown() and true or false)
+    end
+end)]]
+
+    
 
 
 
