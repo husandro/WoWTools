@@ -1794,7 +1794,7 @@ end)]]
     end})
 
 --聊天设置
-    set_Move_Frame(ChannelFrame, {minW=402, minH=200, setSize=true, sizeRestFunc=function(self)
+    set_Move_Frame(ChannelFrame, {minW=402, minH=200, maxW=402, setSize=true, sizeRestFunc=function(self)
         self.target:SetSize(402, 423)
     end})
 

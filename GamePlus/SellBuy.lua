@@ -723,9 +723,9 @@ local function Init_Frame_Plus()
     hooksecurefunc('MerchantFrame_UpdateCurrencies', function()
         MerchantExtraCurrencyInset:SetShown(false)
         MerchantExtraCurrencyBg:SetShown(false)
+        MerchantMoneyInset:SetShown(false)
     end)
-    MerchantMoneyInset:SetShown(false)
-
+    
     --移动，回购买，图标
     if MerchantBuyBackItemItemButton and MerchantBuyBackItemItemButton.UndoFrame and MerchantBuyBackItemItemButton.UndoFrame.Arrow then
         MerchantBuyBackItemItemButton.UndoFrame.Arrow:ClearAllPoints()

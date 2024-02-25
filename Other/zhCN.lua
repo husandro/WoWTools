@@ -20400,7 +20400,7 @@ C_Timer.After(2, function()
     for _, info in pairs(specTab) do
         local name, description, _, role= select(2, GetSpecializationInfoByID(info[1]))
         if name and info[2] then
-            e.strText[name]= (e.Icon[role] or '')..info[2]
+            e.strText[name]= info[2]..(e.Icon[role] or '')
         end
         if description and info[3] then
             e.strText[description]= info[3]
