@@ -10,7 +10,7 @@ local Save={
             ['UIWidgetPowerBarContainerFrame']= 0.85,
         },
         size={},
-        disabledSize={['CharacterFrame']= true},
+        disabledSize={},--['CharacterFrame']= true
         --width={},
 
 
@@ -1718,20 +1718,22 @@ end)]]
                 CharacterFrame.ResizeButton.minHeight= 424
             end
         end)
-        end, sizeUpdateFunc=function(btn)
-            if btn.EquipmentManagerPane:IsVisible() then
+        end, sizeUpdateFunc=function()
+            if PaperDollFrame.EquipmentManagerPane:IsVisible() then
                 e.call('PaperDollEquipmentManagerPane_Update')
             end
-            if btn.TitleManagerPane:IsVisible() then
+            if PaperDollFrame.TitleManagerPane:IsVisible() then
                 e.call('PaperDollTitlesPane_Update')
             end
-        end, sizeStoppedFunc=function(self)
+        end, sizeStoppedFunc=function(btn)
+            local self= btn.self
             if CharacterFrame.Expanded then
                 Save.size['CharacterFrameExpanded']={self.target:GetSize()}
             else
                 Save.size['CharacterFrameCollapse']={self.target:GetSize()}
             end
-        end, sizeRestFunc=function(self)
+        end, sizeRestFunc=function(btn)
+            local self= btn.target
             if self.Expanded then
                 Save.size['CharacterFrameExpanded']=nil
                 self:SetSize(CHARACTERFRAME_EXPANDED_WIDTH, 424)
