@@ -60,6 +60,8 @@ local function Set_Scale_Size(frame, tab)
     btn.disabledSize= disabledSize--禁用，大小功能
     btn.setSize= setSize and not disabledSize--是否有，设置大小，功能
 
+    local onShowFunc= tab.onShowFunc-- true, function
+
     if btn.setSize then
         local minW= tab.minW or (e.Player.husandro and 115 or frame:GetWidth()/2)--最小窗口， 宽
         local minH= tab.minH or (e.Player.husandro and 115 or frame:GetHeight()/2)--最小窗口，高
@@ -277,6 +279,25 @@ local function Set_Scale_Size(frame, tab)
         end
     end)
 
+    if onShowFunc then
+        if onShowFunc==true then
+            frame:HookScript('OnShow', function(self)
+                local name= self:GetName()
+                local scale= Save.scale[name]
+                if scale then
+                    self:SetScale(scale)
+                end
+                if self.ResizeButton.setSize then
+                    local size= Save.size[name]
+                    if size then
+                        self:SetSize(size[1], size[2])
+                    end
+                end
+            end)
+        else
+            frame:HookScript('OnShow', onShowFunc)
+        end
+    end
 end
 
 
@@ -878,10 +899,9 @@ local function setAddLoad(arg1)
             AuctionHouseFrame.ItemBuyFrame.ItemDisplay:SetPoint('RIGHT',-3, 0)
             AuctionHouseFrame.ItemBuyFrame.ItemDisplay.Background:SetPoint('RIGHT')
 
-            hooksecurefunc(AuctionHouseFrame,'SetDisplayMode', function(self, mode)
-                local btn= self.ResizeButton
+            hooksecurefunc(AuctionHouseFrame, 'SetDisplayMode', function(self, mode)
                 local size= Save.size[self:GetName()]
-                if not btn or not size then
+                if not size then
                     return
                 end
                 if mode==AuctionHouseFrameDisplayMode.ItemSell or mode==AuctionHouseFrameDisplayMode.CommoditiesSell then
@@ -1248,7 +1268,7 @@ local function setAddLoad(arg1)
         end})
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
-        set_Move_Frame(ProfessionsCustomerOrdersFrame, {setSize=true, minW=825, minH=200, initFunc=function()
+        set_Move_Frame(ProfessionsCustomerOrdersFrame, {setSize=true, minW=825, minH=200, onShowFunc=true, initFunc=function()
             ProfessionsCustomerOrdersFrame.BrowseOrders:ClearAllPoints()
             ProfessionsCustomerOrdersFrame.BrowseOrders:SetPoint('TOPLEFT')
             ProfessionsCustomerOrdersFrame.BrowseOrders:SetPoint('BOTTOMRIGHT')
@@ -1270,7 +1290,6 @@ local function setAddLoad(arg1)
                     btn.SelectedTexture:SetPoint('RIGHT')
                 end
             end)
-
             ProfessionsCustomerOrdersFrame.Form:HookScript('OnHide', function(self)
                 local frame= self:GetParent()
                 if frame.ResizeButton.disabledSize then
@@ -1312,13 +1331,13 @@ local function setAddLoad(arg1)
             end
         end, scaleRestFunc=function(btn)
             local name= btn.name
-            if self.Form:IsShown() then
+            if btn.target.Form:IsShown() then
                 Save.scale[name..'From']= nil
             else
                 Save.scale[name]= nil
             end
-        end, sizeRestFunc=function(self)
-            self.target:SetSize(825, 568)
+        end, sizeRestFunc=function(btn)
+            btn.target:SetSize(825, 568)
         end})
         set_Move_Frame(ProfessionsCustomerOrdersFrame.Form, {frame=ProfessionsCustomerOrdersFrame})
 
@@ -1482,13 +1501,13 @@ local function Init_Move()
             QUEST_TEMPLATE_MAP_REWARDS.contentWidth= w-41]]
         end
     end
-    set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, initFunc=function()
-        WorldMapFrame:HookScript('OnShow', function(self)
+    set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, onShowFunc=true, initFunc=function()
+        --[[WorldMapFrame:HookScript('OnShow', function(self)
             local scale= Save.scale[self:GetName()]
             if scale then
                 self:SetScale(scale)
             end
-        end)
+        end)]]
         hooksecurefunc(WorldMapFrame, 'Minimize', function(self)
             local name= self:GetName()
             local size= Save.size[name]
