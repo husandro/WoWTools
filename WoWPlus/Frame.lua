@@ -1824,7 +1824,7 @@ end)]]
 
 
 
- 
+
 
 
 
@@ -1961,27 +1961,15 @@ end)]]
     end)
 
 
+    set_Move_Frame(GameMenuFrame, {notSave=true})--菜单
+    set_Move_Frame(SettingsPanel, {notSave=true})
+    set_Move_Frame(ExtraActionButton1, {click='RightButton', notSave=true})--额外技能
 
-    local FrameTab={
-        --AddonList={},--插件
-        GameMenuFrame={notSave=true},--菜单
-        SettingsPanel={notSave=true},
-        ExtraActionButton1={click='RightButton', notSave=true},--额外技能
-        ContainerFrameCombinedBags={},
-        MirrorTimer1={notSave=true},
-        ColorPickerFrame={click='RightButton'},--颜色选择器
-        [PartyFrame.Background]={frame=PartyFrame, notZoom=true},
-        OpacityFrame={notSave=true},
-        ArcheologyDigsiteProgressBar= {notZoom=true},
-    }
-    for k, v in pairs(FrameTab) do
-        if v then
-            local f= _G[k]
-            if f then
-                set_Move_Frame(f, v)
-            end
-        end
-    end
+    set_Move_Frame(MirrorTimer1, {notSave=true})
+    set_Move_Frame(ColorPickerFrame, {click='RightButton'})--颜色选择器
+    set_Move_Frame(PartyFrame.Background, {frame=PartyFrame, notZoom=true, notSave=true})
+    --set_Move_Frame(OpacityFrame, {notSave=true})
+    set_Move_Frame(ArcheologyDigsiteProgressBar)
 
     for text, _ in pairs(UIPanelWindows) do
         local frame=_G[text]
