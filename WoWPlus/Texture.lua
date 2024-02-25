@@ -1948,11 +1948,18 @@ local function Init_Event(arg1)
         set_Alpha_Color(ItemUpgradeFrameLeft)
 
     elseif arg1=='Blizzard_MacroUI' then--宏
+        set_Alpha_Frame_Texture(MacroFrame, {notAlpha=true})
+        set_NineSlice(MacroFrameInset, true)
         set_NineSlice(MacroFrame, true)
         hide_Texture(MacroFrameBg)
         set_Alpha_Color(MacroFrameInset.Bg)
-        set_ScrollBar(MacroFrame.MacroSelector)
+        set_Alpha_Color(MacroHorizontalBarLeft, true)
+        set_Alpha_Color(MacroHorizontalBarRight, true)
         hide_Texture(MacroFrameSelectedMacroBackground)
+        set_ScrollBar(MacroFrame.MacroSelector)
+        set_ScrollBar(MacroFrame.NoteEditBox)
+        set_ScrollBar(MacroFrameScrollFrame)
+
     elseif arg1=='Blizzard_GarrisonUI' then--要塞
         set_NineSlice(GarrisonCapacitiveDisplayFrame, true)
         if GarrisonCapacitiveDisplayFrame then--要塞订单
