@@ -537,11 +537,10 @@ local function Init_ProfessionsFrame()
     hooksecurefunc(ProfessionsRecipeListRecipeMixin, 'Init', function(self, node)
         local elementData = node:GetData();
         local recipeInfo = Professions.GetHighestLearnedRecipe(elementData.recipeInfo) or elementData.recipeInfo
-
         local icon = recipeInfo and recipeInfo.icon
         if icon and not self.texture then
-            self.texture= self:CreateTexture()
-            self.texture:SetPoint('RIGHT')
+            self.texture= self:CreateTexture(nil, 'OVERLAY')
+            self.texture:SetPoint('RIGHT',2,0)
             self.texture:SetSize(22,22)
         end
 

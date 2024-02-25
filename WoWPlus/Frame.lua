@@ -647,9 +647,7 @@ local function setAddLoad(arg1)
             ClassTrainerFrameSkillStepButton:SetPoint('RIGHT', -12, 0)
             ClassTrainerFrameBottomInset:SetPoint('BOTTOMRIGHT', -4, 28)
             hooksecurefunc('ClassTrainerFrame_Update', function()--Blizzard_TrainerUI.lua
-                if ClassTrainerFrame.bottomInset:IsShown() then
-                    ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)
-                end
+                ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)       
             end)
             btn.target.ScrollBox:ClearAllPoints()
         end, sizeRestFunc=function(self)
