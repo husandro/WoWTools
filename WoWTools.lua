@@ -652,7 +652,7 @@ function e.WA_Utf8Sub(input, size, letterSize, lower)
     end
     input= e.cn(input)
     local i = 1
-    if letterSize and input:find('%w')  then--英文
+    if letterSize and not e.strText[input] and input:find('%w') then--英文
         size=letterSize
     end
 
