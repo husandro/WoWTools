@@ -1277,8 +1277,8 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_DebugTools' then--FSTACK Blizzard_DebugTools.lua
-            local btn= e.Cbtn(TableAttributeDisplay, {icon='hide', size={35,35}})
-            btn:SetPoint("BOTTOMRIGHT", TableAttributeDisplay.TitleButton, 'TOPRIGHT',0,2)
+            local btn= e.Cbtn(TableAttributeDisplay, {icon='hide', size={28,28}})
+            btn:SetPoint("BOTTOMRIGHT", TableAttributeDisplay, 'TOPRIGHT')
             btn:SetNormalAtlas(e.Icon.icon)
             btn:SetScript('OnClick', FrameStackTooltip_ToggleDefaults)
             btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -1292,7 +1292,8 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
 
             local edit= CreateFrame("EditBox", nil, TableAttributeDisplay, 'InputBoxTemplate')
             edit:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
-            edit:SetSize(390, 20)
+            edit:SetPoint('TOPLEFT', TableAttributeDisplay, 'TOPLEFT', 10, 24 )
+            --edit:SetSize(390, 20)
             edit:SetAutoFocus(false)
             edit:ClearFocus()
             edit:SetScript('OnUpdate', function(self2, elapsed)
@@ -1310,7 +1311,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
             edit:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
                     --s:ClearFocus() s:GetParent():Hide()
-                    print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+                    print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
                 end
             end)
         end

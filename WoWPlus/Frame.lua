@@ -1350,21 +1350,36 @@ local function setAddLoad(arg1)
             TableAttributeDisplay.LinesScrollFrame:SetPoint('TOPLEFT', 6, -62)
             TableAttributeDisplay.LinesScrollFrame:SetPoint('BOTTOMRIGHT', -36, 22)
             TableAttributeDisplay.FilterBox:SetPoint('RIGHT', -14,0)
+            TableAttributeDisplay.TitleButton.Text:SetPoint('RIGHT')
+            hooksecurefunc(TableAttributeLineReferenceMixin, 'Initialize', function(self, _, _, attributeData)
+                local frame= self:GetParent():GetParent():GetParent()
+                local btn= frame.ResizeButton
+                if not btn or not btn.setSize then
+                    return
+                end
+                local w= frame:GetWidth()-200
+                self.ValueButton:SetWidth(w)
+                self.ValueButton.Text:SetWidth(w)
+                --self.ValueButton.Text:SetText(attributeData.displayValue);
+            end)
+            hooksecurefunc(TableAttributeDisplay, 'UpdateLines', function(self)
+                if not self.dataProviders then
+                    return;
+                end
+                for _, line in ipairs(self.lines) do
+                    if line.ValueButton then
+                        local w= frame:GetWidth()-200
+                        line.ValueButton:SetWidth(w)
+                        line.ValueButton.Text:SetWidth(w)
+                    end
+                end
+            end)
         end, sizeUpdateFunc=function(btn)
             btn.target:UpdateLines()--RefreshAllData()
         end, sizeRestFunc=function(btn)
             btn.target:SetSize(500, 400)
         end})
-        --[[TableAttributeDisplay.LinesScrollFrame.LinesContainer.2253d228e50.ValueButton.Text
-hooksecurefunc(TableAttributeLineReferenceMixin, 'Initialize', function(self)
-    local frame= self:GetParent():GetParent():GetParent()
-    local btn= frame.ResizeButton
-    if not btn or btn.setSize then
-        return
-    end
-    self:GetParent():GetParent():SetPoint('RIGHT')
-    --self.ValueButton:SetWidth(frame:GetWidth()-120)
-end)]]
+
     elseif arg1=='Blizzard_EventTrace' then--ETRACE
         set_Move_Frame(EventTrace, {notZoom=true, save=true})
 
