@@ -1825,10 +1825,16 @@ end)]]
     --好友列表
     set_Move_Frame(FriendsFrame, {setSize=true, minW=338, minH=424, initFunc=function(self)
             FriendsListFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -24, 30)
+            WhoFrameColumnHeader1:SetWidth(200)
+            hooksecurefunc(WhoFrame.ScrollBox, 'Update', function(self)
+                for _, btn in pairs(self:GetFrames() or {}) do
+                    btn:SetPoint('RIGHT')
+                end
+            end)
         end, sizeRestFunc=function(self)
             self.target:SetSize(338, 424)
     end})
-
+    
     --对话
     set_Move_Frame(GossipFrame, {minW=220, minH=220, setSize=true, initFunc=function(self)
         self.target.GreetingPanel:SetPoint('BOTTOMRIGHT')
