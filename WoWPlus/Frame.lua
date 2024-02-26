@@ -1927,7 +1927,7 @@ end)]]
             else
                 btn.setSize= false
             end
-            PVEFrame:SetHeight(428)
+            PVEFrame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
         end)
     end, sizeUpdateFunc=function(btn)
         if PVEFrame.activeTabIndex==3 then
