@@ -1011,9 +1011,45 @@ local function setAddLoad(arg1)
             set_Move_Frame(InspectFrame)
         end
 
-    elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插件, 界面
-        set_Move_Frame(ChallengesKeystoneFrame, {save=true})
+    elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
+        if not Save.disabledZoom then
+            PVPUIFrame:SetPoint('BOTTOMRIGHT')
+            LFGListPVPStub:SetPoint('BOTTOMRIGHT')
+            LFGListFrame.ApplicationViewer.InfoBackground:SetPoint('RIGHT', -2,0)
+            hooksecurefunc('PVPQueueFrame_ShowFrame', function()
+                local btn= PVEFrame.ResizeButton
+                if btn.disabledSize then
+                    return
+                end
+                if PVPQueueFrame.selection==LFGListPVPStub then
+                    btn.setSize= true
+                    local size= Save.size['PVEFrame_PVP']
+                    if size then
+                        PVEFrame:SetSize(size[1], size[2])
+                        return
+                    end
+                else
+                    btn.setSize= false
+                end
+                PVEFrame:SetHeight(428)
+            end)
+        end
 
+    elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插件, 界面
+        set_Move_Frame(ChallengesKeystoneFrame)
+
+        if not Save.disabledZoom then
+
+            ChallengesFrame.WeeklyInfo:SetPoint('BOTTOMRIGHT')
+            ChallengesFrame.WeeklyInfo.Child:SetPoint('BOTTOMRIGHT')
+            ChallengesFrame.WeeklyInfo.Child.RuneBG:SetPoint('BOTTOMRIGHT')
+            for _, region in pairs({ChallengesFrame:GetRegions()}) do
+                if region:GetObjectType()=='Texture' then
+                    region:SetPoint('BOTTOMRIGHT')
+                end
+            end
+        end
+    
     elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
         set_Move_Frame(ItemInteractionFrame)
 
@@ -1391,8 +1427,6 @@ local function setAddLoad(arg1)
         set_Move_Frame(ArchaeologyFrame)
     end
 end
-
-
 
 
 
@@ -1851,6 +1885,81 @@ end)]]
 
 
 
+    --[[if PVEFrame.activeTabIndex==1 then
+    elseif PVEFrame.activeTabIndex==2 then
+    elseif PVEFrame.activeTabIndex==3 then
+        
+    end]]
+
+
+
+    --地下城和团队副本
+
+    set_Move_Frame(PVEFrame, {setSize=true, minW=563, minH=428, initFunc=function()
+        --btn.PVE_FRAME_BASE_WIDTH= PVE_FRAME_BASE_WIDTH
+        LFGListPVEStub:SetPoint('BOTTOMRIGHT')
+        LFGListFrame.CategorySelection.Inset.CustomBG:SetPoint('BOTTOMRIGHT')
+        hooksecurefunc('PVEFrame_ShowFrame', function()
+            local self= PVEFrame
+            if self.activeTabIndex~=3 or self.ResizeButton.disabledSize then
+                return
+            end
+            local size= Save.size['PVEFrame_KEY']
+            self.ResizeButton.setSize= true
+            if size then
+                self:SetSize(size[1], size[2])
+            else
+                self:SetHeight(428)
+            end
+        end)
+        hooksecurefunc('GroupFinderFrame_SelectGroupButton', function(index)
+            local btn= PVEFrame.ResizeButton
+            if btn.disabledSize then
+                return
+            end
+            if index==3 then
+                btn.setSize= true
+                local size= Save.size['PVEFrame_PVE']
+                if size then
+                    PVEFrame:SetSize(size[1], size[2])
+                    return
+                end
+            else
+                btn.setSize= false
+            end
+            PVEFrame:SetHeight(428)
+        end)
+    end, sizeUpdateFunc=function(btn)
+        if PVEFrame.activeTabIndex==3 then
+            e.call(ChallengesFrame.Update, ChallengesFrame)
+        end
+    end, sizeStoppedFunc=function(btn)
+        if PVEFrame.activeTabIndex==1 then
+            Save.size['PVEFrame_PVE']= {btn.target:GetSize()}
+        elseif PVEFrame.activeTabIndex==2 then
+            if PVPQueueFrame.selection==LFGListPVPStub then
+                Save.size['PVEFrame_PVP']= {btn.target:GetSize()}
+            end
+        elseif PVEFrame.activeTabIndex==3 then
+            Save.size['PVEFrame_KEY']= {btn.target:GetSize()}
+        end
+
+    end, sizeRestFunc=function(btn)
+        if PVEFrame.activeTabIndex==1 then
+           -- PVE_FRAME_BASE_WIDTH= btn.PVE_FRAME_BASE_WIDTH
+            Save.size['PVEFrame_PVE']=nil
+            btn.target:SetSize(PVE_FRAME_BASE_WIDTH, 428)
+        elseif PVEFrame.activeTabIndex==2 then--Blizzard_PVPUI.lua
+            Save.size['PVEFrame_PVP']=nil
+            local width = PVE_FRAME_BASE_WIDTH;
+	        width = width + PVPQueueFrame.HonorInset:Update();
+            btn.target:SetSize(width, 428)
+        elseif PVEFrame.activeTabIndex==3 then
+            Save.size['PVEFrame_KEY']=nil
+            btn.target:SetSize(PVE_FRAME_BASE_WIDTH, 428)
+            e.call(ChallengesFrame.Update, ChallengesFrame)
+        end
+    end})
 
 
 
