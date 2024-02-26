@@ -1047,6 +1047,19 @@ local function setAddLoad(arg1)
                     region:SetPoint('BOTTOMRIGHT')
                 end
             end
+            ChallengesFrame:HookScript('OnShow', function()
+                local self= PVEFrame
+                if self.ResizeButton.disabledSize then
+                    return
+                end
+                local size= Save.size['PVEFrame_KEY']
+                self.ResizeButton.setSize= true
+                if size then
+                    self:SetSize(size[1], size[2])
+                else
+                    self:SetSize(PVE_FRAME_BASE_WIDTH, 428)
+                end
+            end)
         end
 
     elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
@@ -1898,19 +1911,7 @@ end)]]
         --btn.PVE_FRAME_BASE_WIDTH= PVE_FRAME_BASE_WIDTH
         LFGListPVEStub:SetPoint('BOTTOMRIGHT')
         LFGListFrame.CategorySelection.Inset.CustomBG:SetPoint('BOTTOMRIGHT')
-        hooksecurefunc('PVEFrame_ShowFrame', function()
-            local self= PVEFrame
-            if self.activeTabIndex~=3 or self.ResizeButton.disabledSize then
-                return
-            end
-            local size= Save.size['PVEFrame_KEY']
-            self.ResizeButton.setSize= true
-            if size then
-                self:SetSize(size[1], size[2])
-            else
-                self:SetHeight(428)
-            end
-        end)
+        --hooksecurefunc('PVEFrame_ShowFrame', function()self.activeTabIndex~=3
         hooksecurefunc('GroupFinderFrame_SelectGroupButton', function(index)
             local btn= PVEFrame.ResizeButton
             if btn.disabledSize then
