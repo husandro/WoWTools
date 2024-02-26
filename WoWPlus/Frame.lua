@@ -1354,13 +1354,11 @@ local function setAddLoad(arg1)
             hooksecurefunc(TableAttributeLineReferenceMixin, 'Initialize', function(self, _, _, attributeData)
                 local frame= self:GetParent():GetParent():GetParent()
                 local btn= frame.ResizeButton
-                if not btn or not btn.setSize then
-                    return
+                if btn and btn.setSize then
+                    local w= frame:GetWidth()-200
+                    self.ValueButton:SetWidth(w)
+                    self.ValueButton.Text:SetWidth(w)
                 end
-                local w= frame:GetWidth()-200
-                self.ValueButton:SetWidth(w)
-                self.ValueButton.Text:SetWidth(w)
-                --self.ValueButton.Text:SetText(attributeData.displayValue);
             end)
             hooksecurefunc(TableAttributeDisplay, 'UpdateLines', function(self)
                 if self.dataProviders then
