@@ -1039,7 +1039,6 @@ local function setAddLoad(arg1)
         set_Move_Frame(ChallengesKeystoneFrame)
 
         if not Save.disabledZoom then
-
             ChallengesFrame.WeeklyInfo:SetPoint('BOTTOMRIGHT')
             ChallengesFrame.WeeklyInfo.Child:SetPoint('BOTTOMRIGHT')
             ChallengesFrame.WeeklyInfo.Child.RuneBG:SetPoint('BOTTOMRIGHT')
@@ -1049,7 +1048,7 @@ local function setAddLoad(arg1)
                 end
             end
         end
-    
+
     elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
         set_Move_Frame(ItemInteractionFrame)
 
