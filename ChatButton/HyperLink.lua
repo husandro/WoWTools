@@ -1278,7 +1278,8 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
 
         elseif arg1=='Blizzard_DebugTools' then--FSTACK Blizzard_DebugTools.lua
             local btn= e.Cbtn(TableAttributeDisplay, {icon='hide', size={28,28}})
-            btn:SetPoint("BOTTOMRIGHT", TableAttributeDisplay, 'TOPRIGHT')
+            --btn:SetPoint("BOTTOMRIGHT", TableAttributeDisplay, 'TOPRIGHT', 0, -4)
+            btn:SetPoint('BOTTOM', TableAttributeDisplay.CloseButton, 'TOP')
             btn:SetNormalAtlas(e.Icon.icon)
             btn:SetScript('OnClick', FrameStackTooltip_ToggleDefaults)
             btn:SetScript('OnLeave', GameTooltip_Hide)

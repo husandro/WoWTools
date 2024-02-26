@@ -1349,7 +1349,7 @@ local function setAddLoad(arg1)
             TableAttributeDisplay.LinesScrollFrame:ClearAllPoints()
             TableAttributeDisplay.LinesScrollFrame:SetPoint('TOPLEFT', 6, -62)
             TableAttributeDisplay.LinesScrollFrame:SetPoint('BOTTOMRIGHT', -36, 22)
-            TableAttributeDisplay.FilterBox:SetPoint('RIGHT', -14,0)
+            TableAttributeDisplay.FilterBox:SetPoint('RIGHT', -26,0)
             TableAttributeDisplay.TitleButton.Text:SetPoint('RIGHT')
             hooksecurefunc(TableAttributeLineReferenceMixin, 'Initialize', function(self, _, _, attributeData)
                 local frame= self:GetParent():GetParent():GetParent()
@@ -1363,14 +1363,13 @@ local function setAddLoad(arg1)
                 --self.ValueButton.Text:SetText(attributeData.displayValue);
             end)
             hooksecurefunc(TableAttributeDisplay, 'UpdateLines', function(self)
-                if not self.dataProviders then
-                    return;
-                end
-                for _, line in ipairs(self.lines) do
-                    if line.ValueButton then
-                        local w= frame:GetWidth()-200
-                        line.ValueButton:SetWidth(w)
-                        line.ValueButton.Text:SetWidth(w)
+                if self.dataProviders then
+                    for _, line in ipairs(self.lines) do
+                        if line.ValueButton then
+                            local w= self:GetWidth()-200
+                            line.ValueButton:SetWidth(w)
+                            line.ValueButton.Text:SetWidth(w)
+                        end
                     end
                 end
             end)
