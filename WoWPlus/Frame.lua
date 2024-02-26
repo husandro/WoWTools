@@ -2112,9 +2112,13 @@ end)]]
     set_Move_Frame(MirrorTimer1, {notSave=true})
     set_Move_Frame(ColorPickerFrame, {click='RightButton'})--颜色选择器
     set_Move_Frame(PartyFrame.Background, {frame=PartyFrame, notZoom=true, notSave=true})
-    --set_Move_Frame(OpacityFrame, {notSave=true})
-    set_Move_Frame(ArcheologyDigsiteProgressBar)
-
+    set_Move_Frame(OpacityFrame)
+    set_Move_Frame(ArcheologyDigsiteProgressBar, {notZoom=true})
+    set_Move_Frame(VehicleSeatIndicator)
+    set_Move_Frame(ExpansionLandingPage)
+    set_Move_Frame(PlayerPowerBarAlt)
+    set_Move_Frame(CreateChannelPopup)
+    set_Move_Frame(BattleTagInviteFrame)
     for text, _ in pairs(UIPanelWindows) do
         local frame=_G[text]
         if frame and (not frame.ResizeButton and not frame.targetMoveFrame) then
