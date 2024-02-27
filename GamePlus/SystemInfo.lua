@@ -207,8 +207,8 @@ local function set_Money()
     if money>=10000 then
         if Save.parent then
             Labels.money:SetText(e.MK(money/1e4, Save.moneyBit or 0))
-        else
-            Labels.money:SetText('|TInterface/moneyframe/ui-goldicon:0|t'..e.MK(money/1e4, Save.moneyBit or 0)..' ')
+        else--Coin-Gold Interface/moneyframe/ui-goldicon
+            Labels.money:SetText('|A:Coin-Gold:8:8|a'..e.MK(money/1e4, Save.moneyBit or 0)..' ')
         end
     else
         Labels.money:SetText(GetMoneyString(money,true))
@@ -254,14 +254,8 @@ end
 --设置装等,耐久度,事件
 --##################
 local function set_Durabiliy()
-    --[[local du, value= e.GetDurabiliy(not Save.parent)
-    if not Save.parent then
-        du= du..' '
-    end
-    Labels.durabiliy:SetText(du or '')]]
-    local value= select(2, e.GetDurabiliy(not Save.parent))
-    local du=math.modf(value)
-    Labels.durabiliy:SetText(Save.parent and du..' ' or du or '')
+    local text, value= e.GetDurabiliy(not Save.parent)
+    Labels.durabiliy:SetText(Save.parent and text..' ' or text)
     e.Set_HelpTips({frame=button, topoint=Labels.durabiliy, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<=40})--设置，提示
 end
 
@@ -275,7 +269,7 @@ local function set_EquipmentLevel()--装等
             red= true
         end
         if not Save.parent then
-            text= (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..text..' '
+            text= (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:8:8|a' or '|A:charactercreate-gendericon-female-selected:8:8|a')..text..' '
         end
     end
     Labels.equipmentLevel:SetText(text or '')
@@ -717,7 +711,7 @@ local function InitMenu(_, level, type)--主菜单
 
     local text2, tab2= get_Mony_Tips()
     info={
-        text= (e.onlyChinese and '钱' or MONEY),
+        text= '|A:Coin-Gold:8:8|a'..(e.onlyChinese and '钱' or MONEY),
         checked=Save.money,
         menuList='wowMony',
         hasArrow=true,
@@ -737,7 +731,7 @@ local function InitMenu(_, level, type)--主菜单
 
 
     info={
-        text= (e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED),
+        text= '|A:activities-complete-diamond:0:0|a'..(e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED),
         checked=Save.perksPoints,
         func= function()
             Save.perksPoints= not Save.perksPoints and true or nil
@@ -749,7 +743,7 @@ local function InitMenu(_, level, type)--主菜单
 
 
     info={
-        text= (e.onlyChinese and '耐久度' or DURABILITY),
+        text= '|A:Warfronts-BaseMapIcons-Alliance-Armory-Minimap:0:0|a'..(e.onlyChinese and '耐久度' or DURABILITY),
         checked= Save.durabiliy,
         func= function()
             Save.durabiliy = not Save.durabiliy and true or false
@@ -760,7 +754,7 @@ local function InitMenu(_, level, type)--主菜单
     e.LibDD:UIDropDownMenu_AddButton(info,level)
 
     info={
-        text= (e.onlyChinese and '装备等级' or EQUIPSET_EQUIP..LEVEL),
+        text= (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..(e.onlyChinese and '装备等级' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EQUIPSET_EQUIP, LEVEL)),
         checked=Save.equipmetLevel,
         func= function()
             Save.equipmetLevel= not Save.equipmetLevel and true or nil
@@ -808,9 +802,15 @@ local function InitMenu(_, level, type)--主菜单
     e.LibDD:UIDropDownMenu_AddButton(info,level)
 
 
-
-
     e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
+        text= '|A:mechagon-projects:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
+        notCheckable=true,
+        func= function()
+            e.OpenPanelOpting('|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '系统信息' or addName))
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info,level)
     info={
         text= id ..' '.. e.cn(addName),
         isTitle=true,
@@ -888,7 +888,20 @@ local function Init()
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
-
+    function button:set_tooltip()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '每秒帧数' or FRAMERATE_FREQUENCY, format("%.1f", GetFramerate())..e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (Save.size or 12)..e.Icon.mid)
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:Show()
+        if self.moveFPSFrame then
+            self.moveFPSFrame:SetButtonState('PUSHED')
+        end
+        self.texture:SetAlpha(1)
+    end
     button:SetScript('OnMouseWheel',function(self, d)
         if IsModifierKeyDown() then
             return
@@ -903,7 +916,7 @@ local function Init()
         end
         Save.size=size
         self:set_Label_Size_Color()
-        print(id, e.cn(addName), e.onlyChinese and '字体大小' or FONT_SIZE,'|cnGREEN_FONT_COLOR:'..size)
+        self:set_tooltip()
     end)
 
     button:SetScript('OnClick', function(self, d)
@@ -924,20 +937,7 @@ local function Init()
         end
         self2.texture:SetAlpha(0.3)
     end)
-    button:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '每秒帧数' or FRAMERATE_FREQUENCY, format("%.1f", GetFramerate())..e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, (Save.size or 12)..e.Icon.mid)
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-        if self2.moveFPSFrame then
-            self2.moveFPSFrame:SetButtonState('PUSHED')
-        end
-        self2.texture:SetAlpha(1)
-    end)
+    button:SetScript('OnEnter', button.set_tooltip)
 
 
     --设置位置
@@ -1034,6 +1034,51 @@ local function Init()
             e.tips:AddLine(id..'  '..addName)
             e.tips:Show()
         end
+    end)
+    CharacterMicroButton:HookScript('OnEnter', function()
+        e.tips:AddLine(' ')
+        local text=  e.GetDurabiliy(true, true)
+        e.tips:AddLine(' ')
+        e.tips:AddLine('|A:Warfronts-BaseMapIcons-Alliance-Armory-Minimap:0:0|a'..(e.onlyChinese and '耐久度' or DURABILITY)..' '..text)
+        
+        local item, cur, pvp= GetAverageItemLevel()
+        cur= cur or 0
+        item= item or 0
+        pvp= pvp or 0
+        e.tips:AddDoubleLine(
+            (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
+            ..(e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)..(cur==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur) or format(' |cnRED_FONT_COLOR:%.2f|r/%.2f', cur, item)),
+            format('%.02f', pvp)..' PvP|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a')
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:Show()
+    end)
+    TalentMicroButton:HookScript('OnEnter', function(self)
+        e.tips:AddLine(' ')
+        local a, b
+        local index= GetSpecialization()--当前专精
+        local specID
+        if index then
+            local ID, _, _, icon, role = GetSpecializationInfo(index)
+            specID= ID
+            if icon then
+                a= (e.Icon[role] or '')..'|T'..icon..':0|t'
+            end
+        end
+        local lootSpecID = GetLootSpecialization()
+        if lootSpecID or specID then
+            lootSpecID= lootSpecID==0 and specID or lootSpecID
+            local icon, role = select(4, GetSpecializationInfoByID(lootSpecID))
+            if icon then
+                b= '|T'..icon..':0|t'..(e.Icon[role] or '')
+            end
+        end
+        a= a or ''
+        b= b or a or ''
+        e.tips:AddDoubleLine((e.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION)..a, (lootSpecID==specID and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..b..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:Show()
     end)
 end
 

@@ -1852,8 +1852,7 @@ function e.QuestLogQuests_GetBestTagID(questID, info, tagInfo, isComplete)--Ques
     return atlas, color
 end
 
-local DIFFICULTY_NAMES =
-{
+--[[local DIFFICULTY_NAMES = {
 	[DifficultyUtil.ID.DungeonNormal] = PLAYER_DIFFICULTY1,
 	[DifficultyUtil.ID.DungeonHeroic] = PLAYER_DIFFICULTY2,
 	[DifficultyUtil.ID.Raid10Normal] = PLAYER_DIFFICULTY1,
@@ -1871,7 +1870,7 @@ local DIFFICULTY_NAMES =
 	[DifficultyUtil.ID.DungeonTimewalker] = PLAYER_DIFFICULTY_TIMEWALKER,
 	[DifficultyUtil.ID.RaidTimewalker] = PLAYER_DIFFICULTY_TIMEWALKER,
 	[DifficultyUtil.ID.Raid40] = PLAYER_DIFFICULTY1,
-}
+}]]
 
 --副本，难道，颜色
 function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
