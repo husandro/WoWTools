@@ -13,6 +13,8 @@ local Save={
     --framerateSize=12,
     --frameratePlus=true,--为FramerateText 帧数, 建立一个按钮, 移动, 大小
     --framerateLogIn=false,--进入游戏时,显示系统FPS
+
+    --disabledMicroMenuPlus=true,--OnEnter Plus
 }
 
 local panel= CreateFrame("Frame")
@@ -90,10 +92,10 @@ end
 
 
 
+--[[
 
-
-local function create_Set_lable(self, text)--建立,或设置,Labels
-    local down
+local function create_Sete_lable(self, text)--建立,或设置,Labels
+    --local down
     local label= Labels[text] or e.Cstr(self, {size=Save.size, color=true})
     if Save.parent then
         if text=='money' then
@@ -123,7 +125,7 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
             end
             down= function() ToggleEncounterJournal() end
         end
-    end
+    end]]
 --[[
         elseif text=='durabiliy' then
             label.tooltip= e.onlyChinese and '耐久度' or DURABILITY
@@ -132,7 +134,7 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
             label.tooltip= e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL
             down= function() ToggleCharacter("PaperDollFrame"); end
         end
-]]
+
     if down  then
         label:SetScript('OnLeave', function(self2)
             button:SetButtonState('NORMAL')
@@ -163,7 +165,7 @@ local function create_Set_lable(self, text)--建立,或设置,Labels
     end
     return label
 end
-
+]]
 
 
 
@@ -217,7 +219,7 @@ end
 local function set_Money_Event()
     if Save.money then
         panel:RegisterEvent('PLAYER_MONEY')
-        Labels.money= Labels.money or create_Set_lable(button, 'money')--建立,或设置,Labels
+        Labels.money= Labels.money or e.Cstr(button, {size=Save.size, color=true})--建立,或设置,Labels
         set_Money()
     else
         panel:UnregisterEvent('PLAYER_MONEY')
@@ -286,7 +288,7 @@ local function set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
     end
 
     if Save.equipmetLevel then
-        Labels.equipmentLevel= Labels.equipmentLevel or create_Set_lable(button, 'equipmentLevel')--建立,或设置,Labels
+        Labels.equipmentLevel= Labels.equipmentLevel or e.Cstr(button, {size=Save.size, color=true})--建立,或设置,Labels create_Set_lable(button, 'equipmentLevel')--建立,或设置,Labels
         C_Timer.After(2, set_EquipmentLevel) --角色图标显示装等  
     else
         if Labels.equipmentLevel then
@@ -296,7 +298,7 @@ local function set_Durabiliy_EquipLevel_Event()--设置装等,耐久度,事件
 
     if Save.durabiliy then
         panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-        Labels.durabiliy= Labels.durabiliy or create_Set_lable(button, 'durabiliy')--建立,或设置,Labels
+        Labels.durabiliy= Labels.durabiliy or e.Cstr(button, {size=Save.size, color=true})--建立,或设置,Labels create_Set_lable(button, 'durabiliy')--建立,或设置,Labels
         set_Durabiliy()
     else
         panel:UnregisterEvent("UPDATE_INVENTORY_DURABILITY")
@@ -360,8 +362,8 @@ local function set_Fps_Ms_Show_Hide()--设置, fps, ms, 数值
         end
     else
         if not Save.hideFpsMs and not Labels.fps then
-            Labels.fps= create_Set_lable(button, 'fps')--建立,或设置,Labels
-            Labels.ms= create_Set_lable(button, 'ms')--建立,或设置,Labels
+            Labels.fps= e.Cstr(button, {size=Save.size, color=true})--建立,或设置,Labels  create_Set_lable(button, 'fps')--建立,或设置,Labels
+            Labels.ms= e.Cstr(button, {size=Save.size, color=true})--建立,或设置,Labels create_Set_lable(button, 'ms')--建立,或设置,Labels
             panel:HookScript("OnUpdate", set_Fps_Ms)
         end
     end
@@ -433,7 +435,7 @@ local function set_perksActivitiesLastPoints_CVar()--贸易站, 点数  MonthlyA
 end
 local function set_perksActivitiesLastPoints_Event()
     if Save.perksPoints and not ( IsTrialAccount() or IsVeteranTrialAccount()) then
-        Labels.perksPoints= Labels.perksPoints or create_Set_lable(button, 'perksPoints')--建立,或设置,Labels
+        Labels.perksPoints= Labels.perksPoints or e.Cstr(button, {size=Save.size, color=true})--建立,或设置,Labels create_Set_lable(button, 'perksPoints')--建立,或设置,Labels
         panel:RegisterEvent('CVAR_UPDATE')
         panel:RegisterEvent('PERKS_ACTIVITY_COMPLETED')
         panel:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -641,6 +643,171 @@ end
 
 
 
+--MicroMenu Plus
+local function Init_MicroMenu_Plus()
+    if Save.disabledMicroMenuPlus then
+        return
+    end
+    --#########
+    --添加版本号
+    --MainMenuBar.lua
+    hooksecurefunc('MainMenuBarPerformanceBarFrame_OnEnter', function()
+        if not e.tips:IsShown() then
+            return
+        end
+        e.tips:AddLine(' ')
+        local version, build, date, tocversion, localizedVersion, buildType = GetBuildInfo()
+        e.tips:AddLine(version..' '..build.. ' '..date.. ' '..tocversion..(buildType and ' '..buildType or ''), 1,0,1)
+        if localizedVersion and localizedVersion~='' then
+            e.tips:AddLine((e.onlyChinese and '本地' or REFORGE_CURRENT)..localizedVersion, 1,0,0)
+        end
+        e.tips:AddLine('realmID '..(GetRealmID() or '')..' '..(GetNormalizedRealmName() or ''), 1,0.82,0)
+        e.tips:AddLine('regionID '..e.Player.region..' '..GetCurrentRegionName(), 1,0.82,0)
+
+        local info=C_BattleNet.GetGameAccountInfoByGUID(e.Player.guid)
+        if info and info.wowProjectID then
+            local region=''
+            if info.regionID and info.regionID~=e.Player.region then
+                region=' regionID'..(e.onlyChinese and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..info.regionID..'|r'
+            end
+            e.tips:AddLine('isInCurrentRegion '..e.GetYesNo(info.isInCurrentRegion)..region, 1,1,1)
+        end
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine((e.onlyChinese and '选项' or SETTINGS_TITLE), e.Icon.mid)
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:Show()
+    end)
+
+    --主菜单, 打开插件选项
+    MainMenuMicroButton:EnableMouseWheel(true)
+    MainMenuMicroButton:HookScript('OnMouseWheel', function()
+        e.call('InterfaceOptionsFrame_OpenToCategory', id)
+    end)
+
+    --提示，背包，总数
+    MainMenuBarBackpackButton:HookScript('OnEnter', function()
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+        e.tips:AddLine(' ')
+        local text2, tab2= get_Mony_Tips()
+        e.tips:AddLine(text2)
+        
+        for _, tab in pairs(tab2) do
+            e.tips:AddDoubleLine(tab.text, tab.col..tab.money)
+        end
+        
+        e.tips:AddLine(' ')
+
+        local num= 0
+        local tab={}
+        for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
+            local freeSlots, bagFamily = C_Container.GetContainerNumFreeSlots(i)
+            local numSlots= C_Container.GetContainerNumSlots(i) or 0
+            if bagFamily == 0 and numSlots>0 and freeSlots then
+                num= num + numSlots
+                local icon
+                if i== BACKPACK_CONTAINER then
+                    icon= e.Icon.bag2
+                else
+                    local inventoryID = C_Container.ContainerIDToInventoryID(i)
+                    local texture = inventoryID and GetInventoryItemTexture('player', inventoryID)
+                    if texture then
+                        icon= '|T'..texture..':0|t'
+                    end
+                end
+                table.insert(tab, (freeSlots==0 and '|cnRED_FONT_COLOR:' or '')..(i+1)..') '..numSlots..(icon or '')..(freeSlots>0 and '|cnGREEN_FONT_COLOR:' or '')..freeSlots)
+            end
+        end
+        
+        e.tips:AddLine(num..' '..(e.onlyChinese and '总计' or TOTAL))
+        for _, text in pairs(tab) do
+            e.tips:AddLine(text)
+        end
+        e.tips:AddLine(' ')
+        e.tips:AddLine(id..'  '..addName)
+            
+        
+        e.tips:Show()
+    end)
+
+    --角色
+    CharacterMicroButton:HookScript('OnEnter', function()
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+        e.tips:AddLine(' ')
+        local text=  e.GetDurabiliy(true, true)
+        e.tips:AddLine(' ')
+        e.tips:AddLine('|A:Warfronts-BaseMapIcons-Alliance-Armory-Minimap:0:0|a'..(e.onlyChinese and '耐久度' or DURABILITY)..' '..text)
+        local item, cur, pvp= GetAverageItemLevel()
+        cur= cur or 0
+        item= item or 0
+        pvp= pvp or 0
+        e.tips:AddDoubleLine(
+            (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
+            ..(e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)..(cur==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur) or format(' |cnRED_FONT_COLOR:%.2f|r/%.2f', cur, item)),
+            format('%.02f', pvp)..' PvP|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a')
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:Show()
+    end)
+
+    --天赋
+    TalentMicroButton:HookScript('OnEnter', function()
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+        e.tips:AddLine(' ')
+        local a, b
+        local index= GetSpecialization()--当前专精
+        local specID
+        if index then
+            local ID, _, _, icon, role = GetSpecializationInfo(index)
+            specID= ID
+            if icon then
+                a= (e.Icon[role] or '')..'|T'..icon..':0|t'
+            end
+        end
+        local lootSpecID = GetLootSpecialization()
+        if lootSpecID or specID then
+            lootSpecID= lootSpecID==0 and specID or lootSpecID
+            local icon, role = select(4, GetSpecializationInfoByID(lootSpecID))
+            if icon then
+                b= '|T'..icon..':0|t'..(e.Icon[role] or '')
+            end
+        end
+        a= a or ''
+        b= b or a or ''
+        e.tips:AddDoubleLine((e.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION)..a, (lootSpecID==specID and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..b..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:Show()
+    end)
+
+    EJMicroButton:HookScript('OnEnter', function()
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+        local info=C_CurrencyInfo.GetCurrencyInfo(2032)
+        local str=''
+        if info and info.quantity and info.iconFileID then
+            str= '|T'..info.iconFileID..':0|t'..info.quantity..'|n'
+        end
+        e.tips:AddDoubleLine(str..(e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED), Labels.perksPoints.value)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:Show()
+    end)
+end
+
+
+
+
+
+
+
+
 
 
 
@@ -768,13 +935,15 @@ local function InitMenu(_, level, type)--主菜单
     info={
         text= (e.onlyChinese and '框架' or DEBUG_FRAMESTACK)..' MicroMenu',
         checked= Save.parent,
+        tooltipOnButton=true,
+        tooltipTitle= 'SetParent(MicroMenu)',
         colorCode= not StoreMicroButton:IsVisible() and '|cnRED_FONT_COLOR:',
         func= function()
             Save.parent= not Save.parent and true or nil
             set_Label_Point(true)--设置parent
-            for str, label in pairs(Labels) do
+            --[[for str, label in pairs(Labels) do
                 create_Set_lable(label, str)
-            end
+            end]]
             set_Money()--设置, 钱
             set_EquipmentLevel()--装等
             set_perksActivitiesLastPoints_CVar()--贸易站, 点数
@@ -782,6 +951,8 @@ local function InitMenu(_, level, type)--主菜单
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info,level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= (e.onlyChinese and '每秒帧数:' or FRAMERATE_LABEL)..' Plus',
         checked= Save.frameratePlus,
@@ -801,6 +972,17 @@ local function InitMenu(_, level, type)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info,level)
 
+    info={
+        text= 'MicroMenu Plus',
+        checked= not Save.disabledMicroMenuPlus,
+        tooltipOnButton=true,
+        tooltipTitle= 'OnEnter',
+        func= function()
+            Save.disabledMicroMenuPlus= not Save.disabledMicroMenuPlus and true or nil
+            print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info,level)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
@@ -957,37 +1139,9 @@ local function Init()
     button:set_Label_Size_Color()
 
 
-    --#########
-    --添加版本号
-    --MainMenuBar.lua
-    hooksecurefunc('MainMenuBarPerformanceBarFrame_OnEnter', function()
-        e.tips:AddLine(' ')
-        local version, build, date, tocversion, localizedVersion, buildType = GetBuildInfo()
-        e.tips:AddLine(version..' '..build.. ' '..date.. ' '..tocversion..(buildType and ' '..buildType or ''), 1,0,1)
-        if localizedVersion and localizedVersion~='' then
-            e.tips:AddLine((e.onlyChinese and '本地' or REFORGE_CURRENT)..localizedVersion, 1,0,0)
-        end
-        e.tips:AddLine('realmID '..(GetRealmID() or '')..' '..(GetNormalizedRealmName() or ''), 1,0.82,0)
-        e.tips:AddLine('regionID '..e.Player.region..' '..GetCurrentRegionName(), 1,0.82,0)
 
-        local info=C_BattleNet.GetGameAccountInfoByGUID(e.Player.guid)
-        if info and info.wowProjectID then
-            local region=''
-            if info.regionID and info.regionID~=e.Player.region then
-                region=' regionID'..(e.onlyChinese and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..info.regionID..'|r'
-            end
-            e.tips:AddLine('isInCurrentRegion '..e.GetYesNo(info.isInCurrentRegion)..region, 1,1,1)
-        end
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '选项' or SETTINGS_TITLE), e.Icon.mid)
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-    end)
+    Init_MicroMenu_Plus()--MicroMenu Plus
 
-    MainMenuMicroButton:EnableMouseWheel(true)--主菜单, 打开插件选项
-    MainMenuMicroButton:HookScript('OnMouseWheel', function()
-        e.call('InterfaceOptionsFrame_OpenToCategory', id)
-    end)
 
     C_Timer.After(2, function()
         set_Money_Event()--设置,钱,事件
@@ -1002,84 +1156,11 @@ local function Init()
         end
     end)
 
-    --提示，背包，总数
-    MainMenuBarBackpackButton:HookScript('OnEnter', function()
-        local num= 0
-        local tab={}
-        for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
-            local freeSlots, bagFamily = C_Container.GetContainerNumFreeSlots(i)
-            local numSlots= C_Container.GetContainerNumSlots(i) or 0
-            if bagFamily == 0 and numSlots>0 and freeSlots then
-                num= num + numSlots
-                local icon
-                if i== BACKPACK_CONTAINER then
-                    icon= e.Icon.bag2
-                else
-                    local inventoryID = C_Container.ContainerIDToInventoryID(i)
-                    local texture = inventoryID and GetInventoryItemTexture('player', inventoryID)
-                    if texture then
-                        icon= '|T'..texture..':0|t'
-                    end
-                end
-                table.insert(tab, (freeSlots==0 and '|cnRED_FONT_COLOR:' or '')..(i+1)..') '..numSlots..(icon or '')..(freeSlots>0 and '|cnGREEN_FONT_COLOR:' or '')..freeSlots)
-            end
-        end
-        if num>0 then
-            e.tips:AddLine(num..' '..(e.onlyChinese and '总计' or TOTAL))
-            e.tips:AddLine(' ')
-            for _, text in pairs(tab) do
-                e.tips:AddLine(text)
-            end
-            e.tips:AddLine(' ')
-            e.tips:AddLine(id..'  '..addName)
-            e.tips:Show()
-        end
-    end)
-    CharacterMicroButton:HookScript('OnEnter', function()
-        e.tips:AddLine(' ')
-        local text=  e.GetDurabiliy(true, true)
-        e.tips:AddLine(' ')
-        e.tips:AddLine('|A:Warfronts-BaseMapIcons-Alliance-Armory-Minimap:0:0|a'..(e.onlyChinese and '耐久度' or DURABILITY)..' '..text)
-        
-        local item, cur, pvp= GetAverageItemLevel()
-        cur= cur or 0
-        item= item or 0
-        pvp= pvp or 0
-        e.tips:AddDoubleLine(
-            (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
-            ..(e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)..(cur==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur) or format(' |cnRED_FONT_COLOR:%.2f|r/%.2f', cur, item)),
-            format('%.02f', pvp)..' PvP|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a')
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-    end)
-    TalentMicroButton:HookScript('OnEnter', function(self)
-        e.tips:AddLine(' ')
-        local a, b
-        local index= GetSpecialization()--当前专精
-        local specID
-        if index then
-            local ID, _, _, icon, role = GetSpecializationInfo(index)
-            specID= ID
-            if icon then
-                a= (e.Icon[role] or '')..'|T'..icon..':0|t'
-            end
-        end
-        local lootSpecID = GetLootSpecialization()
-        if lootSpecID or specID then
-            lootSpecID= lootSpecID==0 and specID or lootSpecID
-            local icon, role = select(4, GetSpecializationInfoByID(lootSpecID))
-            if icon then
-                b= '|T'..icon..':0|t'..(e.Icon[role] or '')
-            end
-        end
-        a= a or ''
-        b= b or a or ''
-        e.tips:AddDoubleLine((e.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION)..a, (lootSpecID==specID and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..b..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION))
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-    end)
+
+
+
+
+
 end
 
 
