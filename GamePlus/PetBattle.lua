@@ -1015,7 +1015,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             })
 
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabled and TrackButton end)
+            initializer:SetParentInitializer(initializer2, function() if not Save.disabled and TrackButton then return true else return false end end)
 
             initializer= e.AddPanel_Check({
                 name= '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button')),
@@ -1026,7 +1026,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     add_Click_To_Move_Button()
                 end
             })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+            initializer:SetParentInitializer(initializer2, function() if Save.disabled then return false else return true end end)
 
 
             if Save.disabled then

@@ -2345,7 +2345,7 @@ local function Init_Panel()
                 set_Cursor_Tips()
             end
         })
-        initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
+        initializer:SetParentInitializer(initializer2, function() if Save.setDefaultAnchor then return true else return false end end)
 
         initializer= e.AddPanelSider({
             name= 'Y',
@@ -2361,7 +2361,7 @@ local function Init_Panel()
                 set_Cursor_Tips()
             end
         })
-        initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
+        initializer:SetParentInitializer(initializer2, function() if Save.setDefaultAnchor then return true else return false end end)
 
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
@@ -2373,7 +2373,7 @@ local function Init_Panel()
                 set_Cursor_Tips()
             end
         })
-        initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
+        initializer:SetParentInitializer(initializer2, function() if Save.setDefaultAnchor then return true else return false end end)
 
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
@@ -2385,7 +2385,7 @@ local function Init_Panel()
                 set_Cursor_Tips()
             end
         })
-        initializer:SetParentInitializer(initializer2, function() return Save.setDefaultAnchor end)
+        initializer:SetParentInitializer(initializer2, function() if Save.setDefaultAnchor then return true else return false end end)
 
 
     e.AddPanel_Header(Layout, e.onlyChinese and '设置' or SETTINGS)
@@ -2411,7 +2411,7 @@ local function Init_Panel()
             set_Cursor_Tips()
         end
     })
-    initializer:SetParentInitializer(initializer2, function() return not Save.hideModel end)
+    initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
 
     initializer= e.AddPanel_Check({
         name= (e.onlyChinese and '模型' or MODEL)..' ID',
@@ -2423,7 +2423,7 @@ local function Init_Panel()
             set_Cursor_Tips()
         end
     })
-    initializer:SetParentInitializer(initializer2, function() return not Save.hideModel end)
+    initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
 
     initializer= e.AddPanelSider({
         name= e.Player.L.size,
@@ -2439,7 +2439,7 @@ local function Init_Panel()
             set_Cursor_Tips()
         end
     })
-    initializer:SetParentInitializer(initializer2, function() return not Save.hideModel end)
+    initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
 
     initializer= e.AddPanelSider({
         name= 'X',
@@ -2455,7 +2455,7 @@ local function Init_Panel()
             set_Cursor_Tips()
         end
     })
-    initializer:SetParentInitializer(initializer2, function() return not Save.hideModel end)
+    initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
 
     initializer= e.AddPanelSider({
         name= 'Y',
@@ -2471,7 +2471,7 @@ local function Init_Panel()
             set_Cursor_Tips()
         end
     })
-    initializer:SetParentInitializer(initializer2, function() return not Save.hideModel end)
+    initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
 
     initializer= e.AddPanelSider({
         name= e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION,
@@ -2487,7 +2487,7 @@ local function Init_Panel()
             set_Cursor_Tips()
         end
     })
-    initializer:SetParentInitializer(initializer2, function() return not Save.hideModel end)
+    initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
 
 
     e.AddPanel_Check({

@@ -114,7 +114,7 @@ local function Set_Scale_Size(frame, tab)
         if parent then
             e.tips:AddDoubleLine(parent:GetName() or 'Parent', format('%.2f', parent:GetScale()))
         end
-        e.tips:AddDoubleLine(self.name, format('%s %.2f', e.onlyChinese and '实际' or 'Effective', self.target:GetEffectiveScale()))
+        e.tips:AddDoubleLine('|cffff00ff'..self.name, format('%s %.2f', e.onlyChinese and '实际' or 'Effective', self.target:GetEffectiveScale()))
 
         local scale
         scale= tonumber(format('%.2f', self.target:GetScale() or 1))
@@ -133,10 +133,11 @@ local function Set_Scale_Size(frame, tab)
             end
         end
 
-        e.tips:AddLine(' ')
         if self.disabledSize then
+            e.tips:AddLine(' ')
             e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..': '..e.GetEnabeleDisable(false), 'Ctrl+'..e.Icon.right)
         elseif self.setSize then
+            e.tips:AddLine(' ')
             local w, h
             w= math.modf(self.target:GetWidth())
             w= format('%s%d|r', ((self.minWidth and self.minWidth>=w) or (self.maxWidth and self.maxWidth<=w)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', w)
@@ -157,6 +158,9 @@ local function Set_Scale_Size(frame, tab)
             )
             e.tips:AddDoubleLine(e.GetEnabeleDisable(true), 'Ctrl+'..e.Icon.right)
         end
+
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, 'Shift+'..e.Icon.left)
         e.tips:Show()
     end
     btn:SetScript('OnEnter', function(self)
@@ -214,11 +218,15 @@ local function Set_Scale_Size(frame, tab)
         if self.isActive then
             return
         end
-        if IsControlKeyDown() then
+        if IsShiftKeyDown() then
+            e.OpenPanelOpting()
+
+        elseif IsControlKeyDown() then
             if (self.setSize or self.disabledSize) and d=='RightButton' then--禁用，启用，大小，功能
                 Save.disabledSize[self.name]= not Save.disabledSize[self.name] and true or nil
                 print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledSize[self.name]), self.name, e.onlyChinese and '大小' or 'Size', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
             end
+
         elseif d=='LeftButton' then
             if IsAltKeyDown() then--清除，缩放，数据
                 self.target:SetScale(1)
@@ -327,12 +335,10 @@ local function Set_Scale_Size(frame, tab)
                 self:SetScript('OnShow', function(frame)
                     frame:RegisterEvent('PLAYER_STARTED_MOVING')
                     frame:RegisterEvent('PLAYER_STOPPED_MOVING')
-                    print('show')
                 end)
                 self:SetScript('OnHide', function(frame)
                     frame:UnregisterAllEvents()
                     frame.target:SetAlpha(1)
-                    print('hide')
                 end)
             else
                 self:UnregisterAllEvents()
@@ -393,7 +399,7 @@ end
 local function set_Frame_Point(self, name)--设置, 移动, 位置
     if Save.SavePoint and self and not self.notSave then
         name= name or self.FrameName or self:GetName()
-        if name and name~='SettingsPanel' then
+        if name then
             local p= Save.point[name]
             if p and p[1] and p[3] and p[4] and p[5] then
                 local frame= self.targetMoveFrame or self
@@ -460,14 +466,12 @@ local function set_Move_Frame(self, tab)
         local s2= s.targetMoveFrame or s
         s2:StopMovingOrSizing()
         ResetCursor()
-        if s.notSave then
+        local frameName= s2:GetName()
+        if s.notSave or not frameName then
             return
         end
-        local frameName= s2:GetName()
-        if frameName then
-            Save.point[frameName]= {s2:GetPoint(1)}
-            Save.point[frameName][2]= nil
-        end
+        Save.point[frameName]= {s2:GetPoint(1)}
+        Save.point[frameName][2]= nil
     end)
     self:HookScript("OnMouseDown", function(s, d)--设置, 光标
         if d~='RightButton' and d~='LeftButton' then
@@ -1936,15 +1940,24 @@ end)]]
         self.target:SetSize(338, 496)
     end})
 
---聊天设置
-    set_Move_Frame(ChannelFrame, {minW=402, minH=200, maxW=402, setSize=true, sizeRestFunc=function(self)
+    --聊天设置
+    set_Move_Frame(ChannelFrame, {minW=402, minH=200, maxW=402, setSize=true,  sizeRestFunc=function(self)
         self.target:SetSize(402, 423)
     end})
 
 
 
 
-
+    set_Move_Frame(SettingsPanel, {notSave=true, setSize=true, minW=800, minH=200, initFunc=function(btn)
+        for _, region in pairs({btn.target:GetRegions()}) do
+            if region:GetObjectType()=='Texture' then
+                region:SetPoint('BOTTOMRIGHT', -12, 38)
+                print(_, region)
+            end
+        end
+    end, sizeRestFunc=function(self)
+        self.target:SetSize(920, 724)
+    end})
 
     --邮箱，信件
     set_Move_Frame(MailFrame)--[[, {setSize=true, initFunc=function()
@@ -2165,7 +2178,6 @@ end)]]
 
 
     set_Move_Frame(GameMenuFrame, {notSave=true})--菜单
-    set_Move_Frame(SettingsPanel, {notSave=true})
     set_Move_Frame(ExtraActionButton1, {click='RightButton', notSave=true})--额外技能
     set_Move_Frame(ContainerFrameCombinedBags)
     set_Move_Frame(MirrorTimer1, {notSave=true})
@@ -2256,7 +2268,7 @@ local function Init_Options()
                 Save.moveToScreenFuori= not Save.moveToScreenFuori and true or nil
             end
         })
-        initializer:SetParentInitializer(initializer2, function() return not Save.disabledMove end)
+        initializer:SetParentInitializer(initializer2, function() if Save.disabledMove then return false else return true end end)
 
     --缩放
     initializer2= e.AddPanel_Check_Button({
@@ -2313,7 +2325,7 @@ local function Init_Options()
         layout= Layout,
         category= Category,
     })
-    initializer:SetParentInitializer(initializer2, function() return not Save.disabledZoom end)
+    initializer:SetParentInitializer(initializer2, function() if Save.disabledZoom then return false else return true end end)
     --窗口大小
     --[[e.AddPanel_Check({
         name= '|TInterface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up:0|t'..(e.onlyChinese and '窗口大小' or 'Window Size'),

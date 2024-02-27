@@ -635,7 +635,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     end
                 end
             })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+            initializer:SetParentInitializer(initializer2, function() if Save.disabled then return false else return true end end)
             initializer= e.AddPanel_Check({
                 name= e.onlyChinese and '战斗中隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, HIDE),
                 value= Save.inCombatHide,
@@ -646,7 +646,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     end
                 end
             })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+            initializer:SetParentInitializer(initializer2, function() if Save.disabled then return false else return true end end)
 
 
             if not Save.disabled then

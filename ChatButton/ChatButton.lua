@@ -138,7 +138,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(id, e.cn(addName), 'Emoji', e.GetEnabeleDisable(Save.emoji), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+            initializer:SetParentInitializer(initializer2, function() if Save.disabled then return false else return true end end)
 
             --[[e.AddPanel_Check({
                 name= '|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS)),

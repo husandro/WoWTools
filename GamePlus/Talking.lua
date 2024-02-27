@@ -44,7 +44,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Save.notPrint= not Save.notPrint and true or nil
                 end
             })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+            initializer:SetParentInitializer(initializer2, function() if Save.disabled then return false else return true end end)
 
 
  --[[

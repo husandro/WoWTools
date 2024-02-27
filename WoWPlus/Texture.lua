@@ -1105,7 +1105,7 @@ local function Init_All_Frame()
     set_Alpha_Frame_Texture(BNToastFrame, {alpha=min05})
 
 
-    hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--列表 Blizzard_CategoryList.lua
+    --[[hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--列表 Blizzard_CategoryList.lua
         set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
     end)
     hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
@@ -1136,7 +1136,7 @@ local function Init_All_Frame()
     hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)
         set_Alpha_Frame_Texture(self.Button1, {notAlpha=true})
         set_Alpha_Frame_Texture(self.Button2, {notAlpha=true})
-    end)
+    end)]]
 
     --ReportFrame
     set_Alpha_Frame_Texture(ReportFrame)
@@ -2735,7 +2735,7 @@ local function Init_Options()
             print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
-    initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+    initializer:SetParentInitializer(initializer2, function() if Save.disabled then return false else return true end end)
 
     initializer= e.AddPanel_Check({
         name= e.onlyChinese and '主菜单' or MAINMENU_BUTTON,
@@ -2748,7 +2748,7 @@ local function Init_Options()
             print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
-    initializer:SetParentInitializer(initializer2, function() return not Save.disabledColor end)
+    initializer:SetParentInitializer(initializer2, function() if Save.disabledColor then return false else return true end end)
 
     e.AddPanel_Header(Layout, e.onlyChinese and '其它' or OTHER)
 
@@ -2781,7 +2781,7 @@ local function Init_Options()
             Init_Chat_Bubbles()
         end
     })
-    initializer:SetParentInitializer(initializer2, function() return not Save.disabledChatBubble end)
+    initializer:SetParentInitializer(initializer2, function() if Save.disabledChatBubble then return false else return true end end)
 
     initializer= e.AddPanelSider({
         name= e.onlyChinese and '缩放' or UI_SCALE,
@@ -2797,7 +2797,7 @@ local function Init_Options()
             Init_Chat_Bubbles()
         end
     })
-    initializer:SetParentInitializer(initializer2, function() return not Save.disabledChatBubble end)
+    initializer:SetParentInitializer(initializer2, function() if Save.disabledChatBubble then return false else return true end end)
 
     e.AddPanel_Check_Sider({
         checkName= (e.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',

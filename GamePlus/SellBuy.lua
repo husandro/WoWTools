@@ -1569,7 +1569,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
                     Save.altDisabledAutoLoot= not Save.altDisabledAutoLoot and true or nil
                 end
             })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
+            initializer:SetParentInitializer(initializer2, function() if Save.disabled then return false else return true end end)
 
 
             if Save.disabled then
