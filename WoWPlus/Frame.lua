@@ -1,19 +1,20 @@
 local id, e = ...
 local Save={
-        --disabledMove=true,--禁用移动
-        point={},--移动
-        SavePoint= e.Player.husandro,--保存窗口,位置
-        moveToScreenFuori=e.Player.husandro,--可以移到屏幕外
+    --disabledMove=true,--禁用移动
+    point={},--移动
+    SavePoint= e.Player.husandro,--保存窗口,位置
+    moveToScreenFuori=e.Player.husandro,--可以移到屏幕外
 
-        --disabledZoom=true,--禁用缩放
-        scale={--缩放
-            ['UIWidgetPowerBarContainerFrame']= 0.85,
-        },
-        size={},
-        disabledSize={},--['CharacterFrame']= true
-        --width={},
+    --disabledZoom=true,--禁用缩放
+    scale={--缩放
+        ['UIWidgetPowerBarContainerFrame']= 0.85,
+    },
+    size={},
+    disabledSize={},--['CharacterFrame']= true
 
-
+    --notAlpha=true,--是否设置，移动时，设置透明度
+    alpha=0.5,
+    disabledAlpha={},
 }
 local addName= 'Frame'
 local panel= CreateFrame("Frame")
@@ -61,6 +62,7 @@ local function Set_Scale_Size(frame, tab)
     btn.setSize= setSize and not disabledSize--是否有，设置大小，功能
 
     local onShowFunc= tab.onShowFunc-- true, function
+    btn.notAlpha= tab.notAlpha--是否设置，移动时，设置透明度
 
     if btn.setSize then
         local minW= tab.minW or (e.Player.husandro and 115 or frame:GetWidth()/2)--最小窗口， 宽
@@ -122,11 +124,15 @@ local function Set_Scale_Size(frame, tab)
         local col= Save.scale[self.name] and '' or '|cff606060'
         e.tips:AddDoubleLine(col..(e.onlyChinese and '默认' or DEFAULT), col..'Alt+'..e.Icon.left)
 
-        if self.disabledSize then
+        if not self.notAlpha then
             e.tips:AddLine(' ')
+            e.tips:AddDoubleLine((e.onlyChinese and '透明度 ' or 'Alpha ')..(Save.disabledAlpha[self.name] and e.GetEnabeleDisable(false) or ('|cnGREEN_FONT_COLOR:'..Save.alpha)), e.Icon.mid)
+        end
+
+        e.tips:AddLine(' ')
+        if self.disabledSize then
             e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..': '..e.GetEnabeleDisable(false), 'Ctrl+'..e.Icon.right)
         elseif self.setSize then
-            e.tips:AddLine(' ')
             local w, h
             w= math.modf(self.target:GetWidth())
             w= format('%s%d|r', ((self.minWidth and self.minWidth>=w) or (self.maxWidth and self.maxWidth<=w)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', w)
@@ -170,6 +176,14 @@ local function Set_Scale_Size(frame, tab)
     if scale then
         frame:SetScale(scale)
     end
+    btn:SetScript('OnMouseWheel', function(self, d)--是否设置，移动时，设置透明度
+        Save.disabledAlpha[self.name]= d==1 and true or nil
+        print(id, e.cn(addName), e.GetEnabeleDisable(Save.disabledAlpha),
+            '|cffff00ff'..self.name..'|r', 
+            e.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame'),
+            '|cffff7f00'..Save.alpha
+        )
+    end)
     btn:SetScript("OnMouseUp", function(self, d)
         if not self.isActive then
             return
@@ -297,6 +311,40 @@ local function Set_Scale_Size(frame, tab)
         else
             frame:HookScript('OnShow', onShowFunc)
         end
+    end
+
+    if not Save.notAlpha and not btn.notAlpha then--移动时，设置透明度
+        btn:SetScript('OnEvent', function(self, event)
+            if event=='PLAYER_STARTED_MOVING' then
+                self.target:SetAlpha(Save.alpha)
+            else
+                self.target:SetAlpha(1)
+            end
+        end)
+        function btn:set_event()
+            if not Save.disabledAlpha[self.name] then
+                if self:IsShown() then
+                    self.target:RegisterEvent('PLAYER_STARTED_MOVING')
+                    self.target:RegisterEvent('PLAYER_STOPPED_MOVING')
+                end
+                self:SetScript('OnShow', function(frame)
+                    frame:RegisterEvent('PLAYER_STARTED_MOVING')
+                    frame:RegisterEvent('PLAYER_STOPPED_MOVING')
+                    print('show')
+                end)
+                self:SetScript('OnHide', function(frame)
+                    frame:UnregisterAllEvents()
+                    frame.target:SetAlpha(1)
+                    print('hide')
+                end)
+            else
+                self:UnregisterAllEvents()
+                self:SetScript('OnShow', nil)
+                self:SetScript('OnHide', nil)
+                self.target:SetAlpha(1)
+            end
+        end
+        btn:set_event()
     end
 end
 
@@ -1563,7 +1611,7 @@ local function Init_Move()
             QUEST_TEMPLATE_MAP_REWARDS.contentWidth= w-41]]
         end
     end
-    set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, onShowFunc=true, initFunc=function()
+    set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, onShowFunc=true, notAlpha=true, initFunc=function()
         --[[WorldMapFrame:HookScript('OnShow', function(self)
             local scale= Save.scale[self:GetName()]
             if scale then
@@ -2235,6 +2283,26 @@ local function Init_Options()
         category= Category
     })
 
+    initializer= e.AddPanel_Check_Sider({
+        checkName= e.onlyChinese and '移动时Frame透明' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame'),
+        checkValue= not Save.notAlpha,
+        checkTooltip= e.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame'),
+        checkFunc= function()
+            print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+        sliderValue= Save.alpha or 0.5,
+        sliderMinValue= 0,
+        sliderMaxValue= 1,
+        sliderStep= 0.1,
+        siderName= nil,
+        siderTooltip= nil,
+        siderFunc= function(_, _, value2)
+            Save.alpha= e.GetFormatter1to10(value2, 0, 0.9)
+        end,
+        layout= Layout,
+        category= Category,
+    })
+    initializer:SetParentInitializer(initializer2, function() return not Save.disabledZoom end)
     --窗口大小
     --[[e.AddPanel_Check({
         name= '|TInterface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up:0|t'..(e.onlyChinese and '窗口大小' or 'Window Size'),
@@ -2265,7 +2333,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.scale= Save.scale or {}
             Save.size= Save.size or {}
             Save.disabledSize= Save.disabledSize or {}
-            --Save.width= Save.width or {}
+            Save.disabledAlpha= Save.disabledAlpha or {}
+            Save.alpha= Save.alpha or 0.5
 
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
