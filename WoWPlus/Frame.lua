@@ -126,7 +126,11 @@ local function Set_Scale_Size(frame, tab)
 
         if not self.notAlpha then
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine((e.onlyChinese and '透明度 ' or 'Alpha ')..(Save.disabledAlpha[self.name] and e.GetEnabeleDisable(false) or ('|cnGREEN_FONT_COLOR:'..Save.alpha)), e.Icon.mid)
+            if not Save.disabledAlpha[self.name] then
+                e.tips:AddDoubleLine((e.onlyChinese and '透明度 ' or 'Alpha ')..'|cnGREEN_FONT_COLOR:'..Save.alpha, e.Icon.mid)
+            else
+                e.tips:AddDoubleLine('|cff606060'..(e.onlyChinese and '透明度 禁用' or ('Alpha '..DISABLE)), e.Icon.mid)
+            end
         end
 
         e.tips:AddLine(' ')
@@ -176,14 +180,7 @@ local function Set_Scale_Size(frame, tab)
     if scale then
         frame:SetScale(scale)
     end
-    btn:SetScript('OnMouseWheel', function(self, d)--是否设置，移动时，设置透明度
-        Save.disabledAlpha[self.name]= d==1 and true or nil
-        print(id, e.cn(addName), e.GetEnabeleDisable(Save.disabledAlpha),
-            '|cffff00ff'..self.name..'|r', 
-            e.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame'),
-            '|cffff7f00'..Save.alpha
-        )
-    end)
+   
     btn:SetScript("OnMouseUp", function(self, d)
         if not self.isActive then
             return
@@ -324,8 +321,8 @@ local function Set_Scale_Size(frame, tab)
         function btn:set_event()
             if not Save.disabledAlpha[self.name] then
                 if self:IsShown() then
-                    self.target:RegisterEvent('PLAYER_STARTED_MOVING')
-                    self.target:RegisterEvent('PLAYER_STOPPED_MOVING')
+                    self:RegisterEvent('PLAYER_STARTED_MOVING')
+                    self:RegisterEvent('PLAYER_STOPPED_MOVING')
                 end
                 self:SetScript('OnShow', function(frame)
                     frame:RegisterEvent('PLAYER_STARTED_MOVING')
@@ -345,6 +342,20 @@ local function Set_Scale_Size(frame, tab)
             end
         end
         btn:set_event()
+        btn:SetScript('OnMouseWheel', function(self, d)--是否设置，移动时，设置透明度
+            if d==1 then
+                Save.disabledAlpha[self.name]= true
+            else
+                Save.disabledAlpha[self.name]= nil
+            end
+            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledAlpha[self.name]),
+                '|cffff00ff'..self.name..'|r|n', 
+                e.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame'),
+                '|cffff7f00'..Save.alpha
+            )
+            self:set_event()
+            self:set_tooltip()
+        end)
     end
 end
 
