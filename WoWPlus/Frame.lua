@@ -1952,7 +1952,6 @@ end)]]
         for _, region in pairs({btn.target:GetRegions()}) do
             if region:GetObjectType()=='Texture' then
                 region:SetPoint('BOTTOMRIGHT', -12, 38)
-                print(_, region)
             end
         end
     end, sizeRestFunc=function(self)
@@ -2320,7 +2319,7 @@ local function Init_Options()
         siderName= nil,
         siderTooltip= nil,
         siderFunc= function(_, _, value2)
-            Save.alpha= e.GetFormatter1to10(value2, 0, 0.9)
+            Save.alpha= e.GetFormatter1to10(value2, 0, 1)
         end,
         layout= Layout,
         category= Category,

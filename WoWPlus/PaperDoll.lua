@@ -1195,23 +1195,25 @@ local function GetDurationTotale()
         if panel.durabilityText then
             panel.durabilityText:SetText('')
         end
+        return
     end
     if not panel.durabilityText then
-        panel.durabilityText= e.Cstr(panel, {copyFont=CharacterLevelText, mouse=true})
-        panel.durabilityText:SetPoint('LEFT', panel.serverText, 'RIGHT')
+        panel.durabilityText= e.Cstr(PaperDollItemsFrame, {copyFont=CharacterLevelText, mouse=true})
+        panel.durabilityText:SetPoint('RIGHT', CharacterLevelText, 'LEFT', -2,0)
         panel.durabilityText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
-        panel.durabilityText:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        panel.durabilityText:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '耐久度' or DURABILITY, self2.value)
-            e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddLine(' ')
+            local value=  e.GetDurabiliy(true, true)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '耐久度' or DURABILITY, value)
             e.tips:Show()
-            self2:SetAlpha(0.3)
+            self:SetAlpha(0.3)
         end)
     end
-    local du= e.GetDurabiliy()--耐久度
-    panel.durabilityText.value=du
+    local du= e.GetDurabiliy(true)--耐久度
     panel.durabilityText:SetText(du or '')
 end
 
@@ -1348,7 +1350,7 @@ end
 --#########
 local function Init_Target_InspectUI()
     local self= InspectPaperDollFrame
-    panel.Init_Show_Hide_Button(InspectFrame, _G['MoveZoomInButtonPerInspectFrame'])
+    panel.Init_Show_Hide_Button(InspectFrame)
 
     if not self.initButton and not Save.hide then
         if self.ViewButton then
@@ -1466,10 +1468,19 @@ end
 --显示服务器名称，装备管理框
 --########################
 local function Init_Server_equipmentButton_Lable()
+    if Save.hide then
+        if  panel.serverText then
+            panel.serverText:SetText('')
+        end
+        if panel.equipmentButton then
+            panel.equipmentButton:SetShown(false)
+        end
+        return
+    end
    if not panel.serverText then
-        panel.serverText= e.Cstr(PaperDollItemsFrame,{color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true})--显示服务器名称
-        panel.serverText:SetPoint('RIGHT', CharacterLevelText, 'LEFT',-30,0)
-        panel.serverText:SetScript("OnLeave",function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+        panel.serverText= e.Cstr(PaperDollItemsFrame,{color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true, justifyH='RIGHT'})--显示服务器名称
+        panel.serverText:SetPoint('RIGHT', panel.durabilityText or CharacterLevelText, 'LEFT',-2,0)
+        panel.serverText:SetScript("OnLeave",function(self) e.tips:Hide() self:SetAlpha(1) end)
         panel.serverText:SetScript("OnEnter",function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -1506,15 +1517,11 @@ local function Init_Server_equipmentButton_Lable()
             self:SetAlpha(0.3)
         end)
     end
-    local text
-    if not Save.hide then
-        local ser=GetAutoCompleteRealms() or {}
-        local server= e.Get_Region(e.Player.realm, nil, nil)
-        text= (#ser>1 and '|cnGREEN_FONT_COLOR:'..#ser..' ' or '')..e.Player.col..e.Player.realm..'|r'..(server and ' '..server.col or '')
-    end
-    if panel.serverText then
-        panel.serverText:SetText(text or '')
-    end
+    local ser=GetAutoCompleteRealms() or {}
+    local server= e.Get_Region(e.Player.realm, nil, nil)
+    local text= (#ser>1 and '|cnGREEN_FONT_COLOR:'..#ser..' ' or '')..e.Player.col..e.Player.realm..'|r'..(server and ' '..server.col or '')
+    panel.serverText:SetText(text or '')
+
     if not panel.equipmentButton then
         panel.equipmentButton = e.Cbtn(PaperDollItemsFrame, {size={18,18}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
         panel.equipmentButton:SetPoint('TOPRIGHT',-2,-40)
@@ -1556,8 +1563,7 @@ local function Init_Server_equipmentButton_Lable()
             self2:SetAlpha(0.5)
         end)
     end
-    panel.equipmentButton:SetShown(not Save.hide and true or false)
-
+    panel.equipmentButton:SetShown(true)
 end
 
 
@@ -1584,8 +1590,8 @@ local function set_ChromieTime()--时空漫游战役, 提示
     if canEnter and not Save.hide and not panel.ChromieTime then
         panel.ChromieTime= e.Cbtn(PaperDollItemsFrame, {size={18,18}, atlas='ChromieTime-32x32'})
         panel.ChromieTime:SetAlpha(0.5)
-        if _G['MoveZoomInButtonPerCharacterFrame'] or PaperDollItemsFrame.ShowHideButton then
-            panel.ChromieTime:SetPoint('LEFT', _G['MoveZoomInButtonPerCharacterFrame'] or PaperDollItemsFrame.ShowHideButton, 'RIGHT')
+        if PaperDollItemsFrame.ShowHideButton then
+            panel.ChromieTime:SetPoint('LEFT', PaperDollItemsFrame.ShowHideButton, 'RIGHT')
             panel.ChromieTime:SetFrameLevel(CharacterFrame.TitleContainer:GetFrameLevel()+1)
         else
             panel.ChromieTime:SetPoint('BOTTOMLEFT', PaperDollItemsFrame, 5, 10)
@@ -1643,7 +1649,7 @@ end
 --###############
 --显示，隐藏，按钮
 --###############
-panel.Init_Show_Hide_Button= function(self, frame)
+panel.Init_Show_Hide_Button= function(self)
     if not self or self.ShowHideButton then
         return
     end
@@ -1661,18 +1667,12 @@ panel.Init_Show_Hide_Button= function(self, frame)
     btn:SetAlpha(0.5)
     btn:SetScript('OnClick', function()
         Save.hide= not Save.hide and true or nil
-        if InspectFrame and InspectFrame.ShowHideButton then
-            InspectFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
-        end
-        PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
 
-        --print(id, e.cn(addName), e.GetShowHide(not Save.hide), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or (NEED..REFRESH)))
-
-        Init_Title()--头衔数量
         GetDurationTotale()--装备,总耐久度
+        Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
+        Init_Title()--头衔数量
         LvTo()--总装等
         set_PaperDollSidebarTab3_Text()--标签, 内容,提示
-        Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
         set_ChromieTime()--时空漫游战役, 提示
         Init_TrackButton()--添加装备管理框
         e.call('PaperDollFrame_SetLevel')
@@ -1687,8 +1687,11 @@ panel.Init_Show_Hide_Button= function(self, frame)
             if InspectLevelText then
                 e.Cstr(nil, {changeFont= InspectLevelText, size= not Save.hide and 20 or 12})
             end
+            if InspectFrame.ShowHideButton then
+                InspectFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+            end
         end
-    end)
+        PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)    end)
     btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
     btn:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -1723,11 +1726,10 @@ end
 --初始化
 --#####
 local function Init()
-    panel.Init_Show_Hide_Button(PaperDollItemsFrame, _G['MoveZoomInButtonPerCharacterFrame'])--初始，显示/隐藏，按钮
+    panel.Init_Show_Hide_Button(PaperDollItemsFrame)--初始，显示/隐藏，按钮
+    GetDurationTotale()--装备,总耐久度
     Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
     set_ChromieTime()--时空漫游战役, 提示
-
-    GetDurationTotale()--装备,总耐久度
 
     hooksecurefunc('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
         Init_Title()--总装等

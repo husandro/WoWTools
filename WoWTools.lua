@@ -122,8 +122,8 @@ e.Icon={
     map='poi-islands-table',
     map2='|A:poi-islands-table:0:0|a',
     wow=136235,
-    wow2='|T136235:0|t',--'|A:Icon-WoW:0:0|a',--136235
-    net2= BNet_GetClientEmbeddedTexture(-2, 32, 32),
+    wow2= BNet_GetClientEmbeddedTexture(-2, 32, 32) or '|T136235:0|t',--'|A:Icon-WoW:0:0|a',--136235
+    net2= '|A:gmchat-icon-blizz:0:0|a',-- BNet_GetClientEmbeddedTexture(-2, 32, 32),
     horde= 'charcreatetest-logo-horde',
     alliance='charcreatetest-logo-alliance',
     horde2='|A:charcreatetest-logo-horde:0:0|a',
@@ -161,7 +161,6 @@ e.Icon={
     info2='|A:questlegendary:0:0|a',--黄色!
     star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
-
 function e.IsAtlas(texture)
     texture= texture and texture:gsub(' ', '')
     if texture and texture~='' then
@@ -174,8 +173,6 @@ end
 
 C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua    
     if success and texture then
-        e.Icon.wow2= '|T'..texture..':0|t'
-        e.Icon.wow= texture
         e.Icon.net2= e.Icon.wow2
     end
 end)
@@ -353,7 +350,7 @@ function e.Set_Label_Texture_Color(self, tab)--设置颜色
         local type= tab.type or type(self)-- FontString Texture String
         local alpha= tab.alpha
         local col= tab.color or e.Player.useColor
-        
+
         local r,g,b,a= col.r, col.g, col.b, alpha or col.a or 1
         if type=='FontString' or type=='EditBox' then
             self:SetTextColor(r, g, b, a)
@@ -2063,9 +2060,90 @@ function e.ToolsSetButtonPoint(self, line, unoLine)--设置位置
     e.toolsFrame.index=e.toolsFrame.index+1
 end
 
-
-
-function e.GetDurabiliy(reTexture)--耐久度
+--耐久度
+local function get_durabiliy_color(cur, max)
+    if not cur or not max or max<=0 then
+        return '', 100, ''
+    end
+    local value= cur/max*100
+    local text= format('%i%%', value)
+    local icon
+    if value<=0 then
+        text= '|cff9e9e9e'..text..'|r'
+        icon= '|A:Warfronts-BaseMapIcons-Empty-Armory-Minimap:0:0|a'
+    elseif value<30 then
+        text= '|cnRED_FONT_COLOR:'..text..'|r'
+        icon= '|A:Warfronts-BaseMapIcons-Horde-Heroes-Minimap:0:0|a'
+    elseif value<60 then
+        text= '|cnYELLOW_FONT_COLOR:'..text..'|r'
+        icon= '|A:Warfronts-BaseMapIcons-Horde-ConstructionHeroes-Minimap:0:0|a'
+    elseif value<90 then
+        text= '|cnGREEN_FONT_COLOR:'..text..'|r'
+        icon= '|A:Warfronts-BaseMapIcons-Alliance-ConstructionHeroes-Minimap:0:0|a'
+    else
+        text= '|cffff7f00'..text..'|r'
+        icon= '|A:Warfronts-BaseMapIcons-Alliance-Armory-Minimap:0:0|a'
+    end
+    return text, value, icon
+end
+local function set_onenter_durabiliy()
+    local tabSlot={
+        {1, 10},
+        {2, 6},
+        {3, 7},
+        {15, 8},
+        {5, 11},
+        {0, 12},
+        {0, 13},
+        {9, 14},
+        {16, 17},
+    }
+    local slotName={--InventorySlotId
+        [1]= 'HEADSLOT',
+        [2]= 'NECKSLOT',
+        [3]= 'SHOULDERSLOT',
+        [4]= 'SHIRTSLOT',
+        [5]= 'CHESTSLOT',
+        [6]= 'WAISTSLOT',
+        [7]= 'LEGSSLOT',
+        [8]= 'FEETSLOT',
+        [9]= 'WRISTSLOT',
+        [10]= 'HANDSSLOT',
+        [11]= 'FINGER0SLOT',
+        [12]= 'FINGER1SLOT',
+        [13]= 'TRINKET0SLOT',
+        [14]= 'TRINKET1SLOT',
+        [15]= 'BACKSLOT',
+        [16]= 'MAINHANDSLOT',
+        [17]= 'SECONDARYHANDSLOT',
+    }
+    for index, tab in pairs(tabSlot) do
+        local a = tab[1]>0 and GetInventoryItemTexture('player', tab[1])
+        a = a and '|T'..a..':0|t'
+        local b = GetInventoryItemTexture('player', tab[2])
+        b = b and '|T'..b..':0|t'
+        if a then
+            local cur, max = GetInventoryItemDurability(tab[1])
+            if cur and max and max>0 then
+                local text, _, icon= get_durabiliy_color(cur, max)
+                a= a..icon..text..' '..max..'/|cffffffff'..cur..'|r'
+            end
+        elseif tab[1]>0 then
+            a= '|T'..select(2, GetInventorySlotInfo(slotName[tab[1]]))..':0|t'
+        end
+        if b then
+            local cur, max = GetInventoryItemDurability(tab[2])
+            if cur and max and max>0 then
+                local text, _, icon= get_durabiliy_color(cur, max)
+                b= '|cffffffff'..cur..'|r/'..max..' '..text..icon..b
+            end
+        end
+        b= b or ('|T'..select(2, GetInventorySlotInfo(slotName[tab[2]]))..':0|t')
+        local s= index==9 and '    ' or ''
+        e.tips:AddDoubleLine(s..(a or ' '), b..s)
+    end
+end
+function e.GetDurabiliy(reTexture, onEnter)--耐久度
     local cur, max= 0, 0
     for i= 1, 18 do
         local cur2, max2 = GetInventoryItemDurability(i)
@@ -2074,25 +2152,12 @@ function e.GetDurabiliy(reTexture)--耐久度
             max= max +max2
         end
     end
-    local text, value= '', 100
-    if max>0 and cur<=max then
-        if cur==max then
-            text='100%'
-        else
-            value=cur/max*100
-            if value<30 then
-                text= format('|cnRED_FONT_COLOR:%i%%|r', value)---0.5)
-            elseif value<=60 then
-                text= format('|cnYELLOW_FONT_COLOR:%i%%|r', value)---0.5)
-            elseif value<=90 then
-                text= format('|cnGREEN_FONT_COLOR:%i%%|r', value)---0.5)
-            else
-                text= format('%i%%', value)---0.5)
-            end
-        end
+    if onEnter then
+        set_onenter_durabiliy()
     end
+    local text, value, icon= get_durabiliy_color(cur, max)
     if reTexture then
-        text= '|T132281:0|t'..text
+        text= icon..text
     end
     return text, value
 end
