@@ -903,7 +903,10 @@ function e.Get_Week_Rewards_Text(type)--得到，周奖励，信息
             text= (text and text..'/' or '')..info.level
         end
     end
-    return text~='0/0/0' and text or nil
+    if text=='0/0/0' then
+        text= nil
+    end
+    return text
 end
 
 
@@ -984,6 +987,28 @@ function e.Get_Weekly_Rewards_Activities(settings)
                 end
             end
         end
+        local CONQUEST_SIZE_STRINGS = {'', '2v2', '3v3', '10v10'}--PVP
+        for i = 2, 4 do
+            local rating, seasonBest, weeklyBest, seasonPlayed, seasonWon, weeklyPlayed, weeklyWon, lastWeeksBest, hasWon, pvpTier, ranking, roundsSeasonPlayed, roundsSeasonWon, roundsWeeklyPlayed, roundsWeeklyWon = GetPersonalRatedInfo(1);
+			local tierInfo = pvpTier and C_PvP.GetPvpTierInfo(pvpTier);
+			if tierInfo and rating then
+                seasonBest= seasonBest or 0
+                seasonPlayed= seasonPlayed or 0
+                seasonWon= seasonWon or 0
+                local text=''
+                if seasonPlayed>0 then
+                    local best=''
+                    if seasonBest>0 and seasonBest~=rating then
+                        best= '|cff9e9e9e'..seasonBest..'|r '
+                    end
+                    text= ' ('..best..'|cnGREEN_FONT_COLOR:'..seasonWon..'|r/'..seasonPlayed..')'
+                end
+                text= (tierInfo.tierIconID and '|T'..tierInfo.tierIconID..':0|t' or '')..CONQUEST_SIZE_STRINGS[i]..(rating==0 and ' |cff9e9e9e' or ' |cffffffff')..rating..'|r' ..text
+                e.tips:AddLine(text)
+                print(text)
+            end
+        end
+
         return
     end
 
@@ -1205,8 +1230,6 @@ function e.ItemCurrencyLabel(settings)
             end
         end
     end
-    R=nil
-    itemS=nil
 end
 
 

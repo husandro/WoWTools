@@ -397,24 +397,18 @@ end
 --###########
 --贸易站, 点数
 --Blizzard_EncounterJournal/Blizzard_MonthlyActivities.lua
-local function set_perksActivitiesLastPoints_CVar()--贸易站, 点数  MonthlyActivitiesFrameMixin:UpdateActivities(retainScrollPosition, activitiesInfo)
-    --local value= GetCVar("perksActivitiesLastPoints")
-    local text
-
+local function Get_Perks_Info()
     local activitiesInfo = C_PerksActivities.GetPerksActivitiesInfo()
     if not activitiesInfo then
         return
     end
-
     local thresholdMax = 0;
 	for _, thresholdInfo in pairs(activitiesInfo.thresholds) do
 		if thresholdInfo.requiredContributionAmount > thresholdMax then
 			thresholdMax = thresholdInfo.requiredContributionAmount;
 		end
 	end
-    if thresholdMax == 0 then
-		thresholdMax = 1000
-	end
+    thresholdMax= thresholdMax == 0 and 1000 or thresholdMax
 
     local earnedThresholdAmount = 0;
 	for _, activity in pairs(activitiesInfo.activities) do
@@ -423,18 +417,26 @@ local function set_perksActivitiesLastPoints_CVar()--贸易站, 点数  MonthlyA
 		end
 	end
 	earnedThresholdAmount = math.min(earnedThresholdAmount, thresholdMax);
-    if earnedThresholdAmount== thresholdMax then
-        text= e.Icon.select2
-    else
-        text= e.MK(thresholdMax- earnedThresholdAmount, 1)
-    end
 
-    if not Save.parent then
-        text= '|A:activities-complete-diamond:0:0|a'..text..' '
-    end
+    return earnedThresholdAmount, thresholdMax, C_CurrencyInfo.GetCurrencyInfo(2032), activitiesInfo
+end
 
+local function set_perksActivitiesLastPoints_CVar()--贸易站, 点数  MonthlyActivitiesFrameMixin:UpdateActivities(retainScrollPosition, activitiesInfo)
+    --local value= GetCVar("perksActivitiesLastPoints")
+    local text
+    local cur, max, info= Get_Perks_Info()
+    if cur then
+        info =info or {}
+        if cur== max then
+            text= (info.quantity and '|cnGREEN_FONT_COLOR:'..e.MK(info.quantity, 1)..'|r' or '')
+        else
+            text= format('%i%%', cur/max*100)
+        end
+        if not Save.parent then
+            text=(info.iconFileID  and '|T'..info.iconFileID..':0|t' or '|A:activities-complete-diamond:0:0|a')..text..' '
+        end
+    end
     Labels.perksPoints:SetText(text or '')
-    Labels.perksPoints.value= earnedThresholdAmount..'/'..thresholdMax
 end
 local function set_perksActivitiesLastPoints_Event()
     if Save.perksPoints and not ( IsTrialAccount() or IsVeteranTrialAccount()) then
@@ -670,7 +672,7 @@ local function Init_MicroMenu_Plus()
     end
 
 
-    
+
     --角色
     CharacterMicroButton:HookScript('OnEnter', function()
         if KeybindFrames_InQuickKeybindMode() then
@@ -734,29 +736,56 @@ local function Init_MicroMenu_Plus()
         button:set_alpha(false)
     end)
 
+
+
     
+    LFDMicroButton:HookScript('OnEnter', function()
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+        e.tips:AddLine(' ')
+        e.Get_Weekly_Rewards_Activities({showTooltip=true})--周奖励，提示
+        e.tips:Show()
+        button:set_alpha(true)
+    end)
+    LFDMicroButton:HookScript('OnLeave', function()
+        button:set_alpha(false)
+    end)
+
+
+
+
+
+
+
     EJMicroButton:HookScript('OnEnter', function()
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
-        local info=C_CurrencyInfo.GetCurrencyInfo(2032)
-        local str=''
-        if info and info.quantity and info.iconFileID then
-            str= '|T'..info.iconFileID..':0|t'..info.quantity..'|n'
+
+       
+
+        local cur, max, info= Get_Perks_Info()
+        if cur then
+            info= info or {}
+            e.tips:AddLine(' ')
+            if info.quantity then
+                e.tips:AddDoubleLine((info.iconFileID  and '|T'..info.iconFileID..':0|t' or '|A:activities-complete-diamond:0:0|a')..info.quantity, info.name)
+            end
+            e.tips:AddDoubleLine((cur==max and '|cnGREEN_FONT_COLOR:' or '|cffff00ff')..cur..'|r/'..max..format(' %i%%', cur/max*100), e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, e.cn(addName))
         end
-        e.tips:AddDoubleLine(str..(e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED), Labels.perksPoints.value)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         button:set_alpha(true)
     end)
     EJMicroButton:HookScript('OnLeave', function()
         button:set_alpha(false)
     end)
-    
+
     --添加版本号 MainMenuBar.lua
     hooksecurefunc('MainMenuBarPerformanceBarFrame_OnEnter', function()
-        if not e.tips:IsShown() then
+        if not MainMenuMicroButton.hover or KeybindFrames_InQuickKeybindMode() then
             return
         end
         e.tips:AddLine(' ')
@@ -802,11 +831,11 @@ local function Init_MicroMenu_Plus()
         e.tips:AddLine(' ')
         local text2, tab2= get_Mony_Tips()
         e.tips:AddLine(text2)
-        
+
         for _, tab in pairs(tab2) do
             e.tips:AddDoubleLine(tab.text, tab.col..tab.money)
         end
-        
+
         e.tips:AddLine(' ')
 
         local num= 0
@@ -829,15 +858,15 @@ local function Init_MicroMenu_Plus()
                 table.insert(tab, (freeSlots==0 and '|cnRED_FONT_COLOR:' or '')..(i+1)..') '..numSlots..(icon or '')..(freeSlots>0 and '|cnGREEN_FONT_COLOR:' or '')..freeSlots)
             end
         end
-        
+
         e.tips:AddLine(num..' '..(e.onlyChinese and '总计' or TOTAL))
         for _, text in pairs(tab) do
             e.tips:AddLine(text)
         end
         e.tips:AddLine(' ')
         e.tips:AddLine(id..'  '..addName)
-            
-        
+
+
         e.tips:Show()
         button:set_alpha(true)
     end)
@@ -1103,7 +1132,7 @@ local function Init()
     button.texture= button:CreateTexture()
     button.texture:SetAllPoints(button)
     button.texture:SetAtlas(e.Icon.icon)
-    
+
     e.Set_Label_Texture_Color(button.texture, {type='Texture', alpha=0.5})--设置颜色
     function button:set_alpha(show)
         if show then
