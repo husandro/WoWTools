@@ -298,7 +298,7 @@ end
 
 
 
-e.GetItemWoWNum= function(itemID)--e.GetItemWoWNum()--取得WOW物品数量
+function e.GetItemWoWNum(itemID)--e.GetItemWoWNum()--取得WOW物品数量
     local all,numPlayer=0,0
     for guid, info in pairs(e.WoWDate) do
         if guid and info then --and guid~=e.Player.guid then
