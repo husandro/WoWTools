@@ -19,6 +19,7 @@ local Save={
 
 local panel= CreateFrame("Frame")
 local Labels
+local Frames
 local button
 local MoveFPSFrame--为FramerateText 帧数, 建立一个按钮, 移动, 大小
 
@@ -71,108 +72,6 @@ local function get_Mony_Tips()
             --table.insert(tab, {text= all,
     return all, tab
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---[[
-
-local function create_Sete_lable(self, text)--建立,或设置,Labels
-    --local down
-    local label= Labels[text] or e.Cstr(self, {size=Save.size, color=true})
-    if Save.parent then
-        if text=='money' then
-            label.tooltip= function()
-                local text2, tab2= get_Mony_Tips()
-                e.tips:AddLine(text2)
-                e.tips:AddLine(' ')
-                local find
-                for _, tab in pairs(tab2) do
-                    e.tips:AddDoubleLine(tab.text, tab.col..tab.money)
-                    find=true
-                end
-                if find then
-                    e.tips:AddLine(' ')
-                end
-            end
-            down= ToggleAllBags
-
-        elseif text=='perksPoints' then
-            label.tooltip= function()
-                local info=C_CurrencyInfo.GetCurrencyInfo(2032)
-                local str=''
-                if info and info.quantity and info.iconFileID then
-                    str= '|T'..info.iconFileID..':0|t'..info.quantity..'|n'
-                end
-                e.tips:AddDoubleLine(str..(e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED), Labels.perksPoints.value)
-            end
-            down= function() ToggleEncounterJournal() end
-        end
-    end]]
---[[
-        elseif text=='durabiliy' then
-            label.tooltip= e.onlyChinese and '耐久度' or DURABILITY
-            down= function() ToggleCharacter("PaperDollFrame"); end
-        elseif text=='equipmentLevel' then
-            label.tooltip= e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL
-            down= function() ToggleCharacter("PaperDollFrame"); end
-        end
-
-    if down  then
-        label:SetScript('OnLeave', function(self2)
-            button:SetButtonState('NORMAL')
-            e.tips:Hide()
-        end)
-        label:EnableMouse(true)
-        label:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            if self2.tooltip then
-                if type(self2.tooltip)=='function' then
-                    self2:tooltip()
-                else
-                    e.tips:AddLine(self2.tooltip)
-                end
-                --e.tips:AddLine(type(self2.tooltip)=='function' and self2.tooltip() or self2.tooltip)
-            end
-            e.tips:AddDoubleLine(id, e.cn(addName))
-            e.tips:Show()
-            button:SetButtonState('PUSHED')
-        end)
-        label:SetScript('OnMouseDown', down)
-    else
-        label:EnableMouse(false)
-        label:SetScript('OnEnter', nil)
-        label:SetScript('OnLeave', nil)
-        label:SetScript('OnMouseDown', nil)
-    end
-    return label
-end
-]]
-
-
-
-
-
-
-
 
 
 
@@ -443,12 +342,14 @@ local function set_perksActivitiesLastPoints_Event()
         Labels.perksPoints= Labels.perksPoints or e.Cstr(button, {size=Save.size, color=true})--建立,或设置,Labels create_Set_lable(button, 'perksPoints')--建立,或设置,Labels
         panel:RegisterEvent('CVAR_UPDATE')
         panel:RegisterEvent('PERKS_ACTIVITY_COMPLETED')
-        panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+        panel:RegisterEvent('PERKS_ACTIVITIES_UPDATED')
+        --panel:RegisterEvent('PLAYER_ENTERING_WORLD')
         set_perksActivitiesLastPoints_CVar()
     else
         panel:UnregisterEvent('CVAR_UPDATE')
         panel:UnregisterEvent('PERKS_ACTIVITY_COMPLETED')
-        panel:UnregisterEvent('PLAYER_ENTERING_WORLD')
+        panel:UnregisterEvent('PERKS_ACTIVITIES_UPDATED')
+        --panel:UnregisterEvent('PLAYER_ENTERING_WORLD')
         if Labels.perksPoints then
             Labels.perksPoints:SetText('')
         end
@@ -468,7 +369,24 @@ end
 
 
 
+ --公会
+ local function Init_Guild()
+    if not Save.parent then
+        return
+    end
 
+    local guildFrame= CreateFrame("Frame")
+    guildFrame:RegisterEvent('GUILD_ROSTER_UPDATE')
+    guildFrame:RegisterEvent('PLAYER_GUILD_UPDATE')
+    Labels.guild= e.Cstr(GuildMicroButton, {size=Save.size, color=true})
+    Labels.guild:SetPoint('TOP', 0, -3)
+    function Labels.guild:set_text()
+        local num = select(2, GetNumGuildMembers()) or 0
+        self:SetText(num>0 and num or '')
+    end
+    guildFrame:SetScript('OnEvent', Labels.guild.set_text)
+    Labels.guild:set_text()
+end
 
 
 
@@ -495,6 +413,7 @@ local function set_Label_Point(clear)--设置 Label Poinst
         'perksPoints',
         'durabiliy',
         'equipmentLevel',
+        --'guild',
     }
     local last
     for _, text in pairs(tab) do
@@ -534,6 +453,16 @@ local function set_Label_Point(clear)--设置 Label Poinst
                 last= label
             end
         end
+    end
+
+    if Labels.guild then
+        if not Save.parent then
+            Labels.guild:SetText('')
+        else
+            Labels.guild:set_text()
+        end
+    else
+        Init_Guild()
     end
 end
 
@@ -673,6 +602,7 @@ local function Init_MicroMenu_Plus()
 
 
 
+
     --角色
     CharacterMicroButton:HookScript('OnEnter', function()
         if KeybindFrames_InQuickKeybindMode() then
@@ -736,9 +666,10 @@ local function Init_MicroMenu_Plus()
         button:set_alpha(false)
     end)
 
+   
 
 
-    
+    --冒险指南
     LFDMicroButton:HookScript('OnEnter', function()
         if KeybindFrames_InQuickKeybindMode() then
             return
@@ -1126,6 +1057,8 @@ end
 --初始化
 --######
 local function Init()
+    Frames={}
+
     Labels={}
 
     button=e.Cbtn(nil, {icon='hide',size={12,12}})
@@ -1245,6 +1178,7 @@ local function Init()
         set_perksActivitiesLastPoints_Event()--贸易站, 点数
         set_Label_Point()--设置 Label Poinst
         Init_Framerate_Plus()--每秒帧数 Plus
+        Init_Guild()--公会
         if Save.parent and Labels.ms then
             MainMenuMicroButton.MainMenuBarPerformanceBar:ClearAllPoints()
             MainMenuMicroButton.MainMenuBarPerformanceBar:SetPoint('BOTTOM',0,-6)
@@ -1365,8 +1299,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1=='perksActivitiesLastPoints' then
             set_perksActivitiesLastPoints_CVar()--贸易站, 点数
         end
-    elseif event=='PERKS_ACTIVITY_COMPLETED' or event=='PLAYER_ENTERING_WORLD' then
+
+    elseif event=='PERKS_ACTIVITY_COMPLETED' or event=='PERKS_ACTIVITIES_UPDATED' then
         C_Timer.After(2, set_perksActivitiesLastPoints_CVar)--贸易站, 点数
+
+    elseif event=='GUILD_ROSTER_UPDATE' or event=='PLAYER_GUILD_UPDATE' then
+
     end
 end)
 

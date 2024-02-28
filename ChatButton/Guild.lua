@@ -260,6 +260,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
                 panel:RegisterEvent('PLAYER_LOGOUT')
                 panel:RegisterEvent('GUILD_ROSTER_UPDATE')
+                panel:RegisterEvent('PLAYER_GUILD_UPDATE')
             end
 
         elseif arg1=='Blizzard_Communities' then
@@ -275,7 +276,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event=='GUILD_ROSTER_UPDATE' then
+    elseif event=='GUILD_ROSTER_UPDATE' or event=='PLAYER_GUILD_UPDATE' then
         set_Guild_Members()--在线人数
 
     elseif event=='CHAT_MSG_SYSTEM' then
