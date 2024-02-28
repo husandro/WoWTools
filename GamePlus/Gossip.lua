@@ -1885,7 +1885,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         text= text..'Achievement '..achievement..'|n'
                     end
                     local CONQUEST_SIZE_STRINGS = {'Solo', '2v2', '3v3', '10v10'}--PVP
-                    for i=1, 4 do
+                    for i=2, 4 do
                         local rating= GetPersonalRatedInfo(i)
                         if rating and rating>500 then
                             text= text..CONQUEST_SIZE_STRINGS[i]..' '..rating..'|n'

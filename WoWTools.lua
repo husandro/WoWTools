@@ -1005,7 +1005,6 @@ function e.Get_Weekly_Rewards_Activities(settings)
                 end
                 text= (tierInfo.tierIconID and '|T'..tierInfo.tierIconID..':0|t' or '')..CONQUEST_SIZE_STRINGS[i]..(rating==0 and ' |cff9e9e9e' or ' |cffffffff')..rating..'|r' ..text
                 e.tips:AddLine(text)
-                print(text)
             end
         end
 
