@@ -257,8 +257,11 @@ end
 --##################
 local function set_Durabiliy()
     local text, value= e.GetDurabiliy(not Save.parent)
-    Labels.durabiliy:SetText(Save.parent and text..' ' or text)
-    e.Set_HelpTips({frame=button, topoint=Labels.durabiliy, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<=40})--设置，提示
+    if Save.parent then
+        text= text:gsub('%%', '')..' '
+    end
+    Labels.durabiliy:SetText(text)
+    e.Set_HelpTips({frame=button, topoint=Labels.durabiliy, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<=30})--设置，提示
 end
 
 local function set_EquipmentLevel()--装等
@@ -643,14 +646,115 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --MicroMenu Plus
 local function Init_MicroMenu_Plus()
     if Save.disabledMicroMenuPlus then
         return
     end
-    --#########
-    --添加版本号
-    --MainMenuBar.lua
+
+
+    
+    --角色
+    CharacterMicroButton:HookScript('OnEnter', function()
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+        e.tips:AddLine(' ')
+        local text=  e.GetDurabiliy(true, true)
+        e.tips:AddLine(' ')
+        e.tips:AddLine('|A:Warfronts-BaseMapIcons-Alliance-Armory-Minimap:0:0|a'..(e.onlyChinese and '耐久度' or DURABILITY)..' '..text)
+        local item, cur, pvp= GetAverageItemLevel()
+        cur= cur or 0
+        item= item or 0
+        pvp= pvp or 0
+        e.tips:AddDoubleLine(
+            (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
+            ..(e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)..(cur==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur) or format(' |cnRED_FONT_COLOR:%.2f|r/%.2f', cur, item)),
+            format('%.02f', pvp)..' PvP|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a')
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:Show()
+        button:set_alpha(true)
+    end)
+    CharacterMicroButton:HookScript('OnLeave', function()
+        button:set_alpha(false)
+    end)
+
+
+    --天赋
+    TalentMicroButton:HookScript('OnEnter', function()
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+        e.tips:AddLine(' ')
+        local a, b
+        local index= GetSpecialization()--当前专精
+        local specID
+        if index then
+            local ID, _, _, icon, role = GetSpecializationInfo(index)
+            specID= ID
+            if icon then
+                a= (e.Icon[role] or '')..'|T'..icon..':0|t'
+            end
+        end
+        local lootSpecID = GetLootSpecialization()
+        if lootSpecID or specID then
+            lootSpecID= lootSpecID==0 and specID or lootSpecID
+            local icon, role = select(4, GetSpecializationInfoByID(lootSpecID))
+            if icon then
+                b= '|T'..icon..':0|t'..(e.Icon[role] or '')
+            end
+        end
+        a= a or ''
+        b= b or a or ''
+        e.tips:AddDoubleLine((e.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION)..a, (lootSpecID==specID and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..b..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:Show()
+        button:set_alpha(true)
+    end)
+    TalentMicroButton:HookScript('OnLeave', function()
+        button:set_alpha(false)
+    end)
+
+    
+    EJMicroButton:HookScript('OnEnter', function()
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+        local info=C_CurrencyInfo.GetCurrencyInfo(2032)
+        local str=''
+        if info and info.quantity and info.iconFileID then
+            str= '|T'..info.iconFileID..':0|t'..info.quantity..'|n'
+        end
+        e.tips:AddDoubleLine(str..(e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED), Labels.perksPoints.value)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:Show()
+        button:set_alpha(true)
+    end)
+    EJMicroButton:HookScript('OnLeave', function()
+        button:set_alpha(false)
+    end)
+    
+    --添加版本号 MainMenuBar.lua
     hooksecurefunc('MainMenuBarPerformanceBarFrame_OnEnter', function()
         if not e.tips:IsShown() then
             return
@@ -676,13 +780,19 @@ local function Init_MicroMenu_Plus()
         e.tips:AddDoubleLine((e.onlyChinese and '选项' or SETTINGS_TITLE), e.Icon.mid)
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
+        button:set_alpha(true)
     end)
-
-    --主菜单, 打开插件选项
-    MainMenuMicroButton:EnableMouseWheel(true)
+    MainMenuMicroButton:HookScript('OnLeave', function()
+        button:set_alpha(false)
+    end)
+    MainMenuMicroButton:EnableMouseWheel(true)--主菜单, 打开插件选项
     MainMenuMicroButton:HookScript('OnMouseWheel', function()
         e.call('InterfaceOptionsFrame_OpenToCategory', id)
     end)
+
+
+
+
 
     --提示，背包，总数
     MainMenuBarBackpackButton:HookScript('OnEnter', function()
@@ -729,77 +839,25 @@ local function Init_MicroMenu_Plus()
             
         
         e.tips:Show()
+        button:set_alpha(true)
+    end)
+    MainMenuBarBackpackButton:HookScript('OnLeave', function()
+        button:set_alpha(false)
     end)
 
-    --角色
-    CharacterMicroButton:HookScript('OnEnter', function()
-        if KeybindFrames_InQuickKeybindMode() then
-            return
-        end
-        e.tips:AddLine(' ')
-        local text=  e.GetDurabiliy(true, true)
-        e.tips:AddLine(' ')
-        e.tips:AddLine('|A:Warfronts-BaseMapIcons-Alliance-Armory-Minimap:0:0|a'..(e.onlyChinese and '耐久度' or DURABILITY)..' '..text)
-        local item, cur, pvp= GetAverageItemLevel()
-        cur= cur or 0
-        item= item or 0
-        pvp= pvp or 0
-        e.tips:AddDoubleLine(
-            (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
-            ..(e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)..(cur==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur) or format(' |cnRED_FONT_COLOR:%.2f|r/%.2f', cur, item)),
-            format('%.02f', pvp)..' PvP|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a')
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-    end)
-
-    --天赋
-    TalentMicroButton:HookScript('OnEnter', function()
-        if KeybindFrames_InQuickKeybindMode() then
-            return
-        end
-        e.tips:AddLine(' ')
-        local a, b
-        local index= GetSpecialization()--当前专精
-        local specID
-        if index then
-            local ID, _, _, icon, role = GetSpecializationInfo(index)
-            specID= ID
-            if icon then
-                a= (e.Icon[role] or '')..'|T'..icon..':0|t'
-            end
-        end
-        local lootSpecID = GetLootSpecialization()
-        if lootSpecID or specID then
-            lootSpecID= lootSpecID==0 and specID or lootSpecID
-            local icon, role = select(4, GetSpecializationInfoByID(lootSpecID))
-            if icon then
-                b= '|T'..icon..':0|t'..(e.Icon[role] or '')
-            end
-        end
-        a= a or ''
-        b= b or a or ''
-        e.tips:AddDoubleLine((e.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION)..a, (lootSpecID==specID and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..b..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION))
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-    end)
-
-    EJMicroButton:HookScript('OnEnter', function()
-        if KeybindFrames_InQuickKeybindMode() then
-            return
-        end
-        local info=C_CurrencyInfo.GetCurrencyInfo(2032)
-        local str=''
-        if info and info.quantity and info.iconFileID then
-            str= '|T'..info.iconFileID..':0|t'..info.quantity..'|n'
-        end
-        e.tips:AddDoubleLine(str..(e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED), Labels.perksPoints.value)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-    end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1045,9 +1103,17 @@ local function Init()
     button.texture= button:CreateTexture()
     button.texture:SetAllPoints(button)
     button.texture:SetAtlas(e.Icon.icon)
-    e.Set_Label_Texture_Color(button.texture, {type='Texture', alpha=0.3})--设置颜色
-
-
+    
+    e.Set_Label_Texture_Color(button.texture, {type='Texture', alpha=0.5})--设置颜色
+    function button:set_alpha(show)
+        if show then
+            self.texture:SetAlpha(1)
+            self:SetButtonState('PUSHED')
+        else
+            self:SetButtonState('NORMAL')
+            self.texture:SetAlpha(0.5)
+        end
+    end
     button:SetFrameStrata('HIGH')
     button:SetMovable(true)
     button:RegisterForDrag("RightButton");
@@ -1082,7 +1148,7 @@ local function Init()
         if self.moveFPSFrame then
             self.moveFPSFrame:SetButtonState('PUSHED')
         end
-        self.texture:SetAlpha(1)
+        self:set_alpha(true)
     end
     button:SetScript('OnMouseWheel',function(self, d)
         if IsModifierKeyDown() then
@@ -1112,12 +1178,12 @@ local function Init()
             FramerateFrame:Toggle()
         end
     end)
-    button:SetScript('OnLeave', function(self2)
+    button:SetScript('OnLeave', function(self)
         e.tips:Hide()
-        if self2.moveFPSFrame then
-            self2.moveFPSFrame:SetButtonState('NORMAL')
+        if self.moveFPSFrame then
+            self.moveFPSFrame:SetButtonState('NORMAL')
         end
-        self2.texture:SetAlpha(0.3)
+        self:set_alpha(false)
     end)
     button:SetScript('OnEnter', button.set_tooltip)
 
