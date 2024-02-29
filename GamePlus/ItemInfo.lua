@@ -830,13 +830,7 @@ local function Init_Bag()
     end)
     btn:SetScript('OnEnter', function(self2) self2:SetAlpha(1) end)
     btn:SetScript('OnLeave', function(self2) self2:SetAlpha(0.5) end)
-    if not MainMenuBarBackpackButton.OnClick then
-        MainMenuBarBackpackButton:HookScript('OnClick', function(_, d)
-            if d=='RightButton' then
-                ToggleAllBags()
-            end
-        end)
-    end
+    
 end
 
 
@@ -956,40 +950,12 @@ local function Init()
     end
 
 
-    --收起，背包小按钮
-    if C_CVar.GetCVarBool("expandBagBar") and C_CVar.GetCVarBool("combinedBags") then--MainMenuBarBagButtons.lua
-        C_CVar.SetCVar("expandBagBar", '0')
-    end
+ 
 
 
 
 
-    --背包, 数量
-    --MainMenuBarBagButtons.lua
-    if MainMenuBarBackpackButton then
-        if MainMenuBarBackpackButtonCount then
-            MainMenuBarBackpackButtonCount:SetShadowOffset(1, -1)
-        end
-        e.Set_Label_Texture_Color(MainMenuBarBackpackButtonCount, {type='FontString'})--设置颜色
-        hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
-            local freeSlots=self.freeSlots
-            if freeSlots then
-                if freeSlots==0 then
-                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(1,0,0,1)
-                    freeSlots= '|cnRED_FONT_COLOR:'..freeSlots..'|r'
-                elseif freeSlots<=5 then
-                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,1,0,1)
-                    freeSlots= '|cnGREEN_FONT_COLOR:'..freeSlots..'|r'
-                else
-                    MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
-                end
-                self.Count:SetText(freeSlots)
-            else
-                MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
-            end
-        end)
-    end
-
+   
 
 
 

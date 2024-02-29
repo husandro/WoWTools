@@ -60,7 +60,7 @@ local function Init_Character()
         end
         e.tips:AddLine(' ')
         local text= e.GetDurabiliy(true, true)
-        
+
         e.tips:AddLine(' ')
         e.tips:AddLine((e.onlyChinese and '耐久度a' or DURABILITY)..text)
         local item, cur, pvp= GetAverageItemLevel()
@@ -303,25 +303,25 @@ local function Init_Guild()
         local clubs= C_Club.GetSubscribedClubs() or {}
         if IsInGuild() then
             e.tips:AddLine(' ')
-            local all, online, app = GetNumGuildMembers()            
+            local all, online, app = GetNumGuildMembers()
             local guildName, guildRankName, _, realm = GetGuildInfo('player')
             e.tips:AddDoubleLine(guildName..(realm and realm~=e.Player.realm and '-'..realm or '')..' ('..all..')', guildRankName)
-            e.tips:AddDoubleLine(e.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON, (online>1 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..'|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(online-1)..'|r/|A:UI-ChatIcon-App:0:0|a'..(app-1))
             local day= GetGuildRosterMOTD()--今天信息
             if day and day~='' then
                 e.tips:AddLine('|cffff00ff'..day..'|r', nil,nil, nil, true)
             end
+            e.tips:AddDoubleLine(e.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON, (online>1 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..'|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(online-1)..'|r/|A:UI-ChatIcon-App:0:0|a'..(app-1))
             if #clubs>0 then
                 e.tips:AddLine(' ')
             end
         end
-        local guildClubId= C_Club.GetGuildClubId()        
+        local guildClubId= C_Club.GetGuildClubId()
         for _, tab in pairs(clubs) do
             local members= C_Club.GetClubMembers(tab.clubId) or {}
             local online= 0
-            for _, memberID in pairs(members) do
+            for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
                 local info = C_Club.GetMemberInfo(tab.clubId, memberID) or {}
-                if not info.isSelf and info.zone then
+                if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
                     online= online+1
                 end
             end
@@ -494,7 +494,7 @@ local function Init_Store()
     frame.Text:SetPoint('TOP', StoreMicroButton, 0,  -3)
     frame.Text2= e.Cstr(StoreMicroButton,  {size=Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', StoreMicroButton, 0, 3)
-    
+
     StoreMicroButton.Text2= frame.Text2
 
     function frame:settings()
@@ -515,10 +515,10 @@ local function Init_Store()
             return
         end
         C_WowTokenPublic.UpdateMarketPrice()
-        local price= C_WowTokenPublic.GetCurrentMarketPrice()        
+        local price= C_WowTokenPublic.GetCurrentMarketPrice()
         if price and price>0 then
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('|A:token-choice-wow:0:0|a'..e.MK(price/10000,3), GetCoinTextureString(price) )
+            e.tips:AddDoubleLine('|A:token-choice-wow:0:0|a'..e.MK(price/10000,4), GetCoinTextureString(price) )
             e.tips:AddLine(' ')
         end
         local bagAll,bankAll,numPlayer=0,0,0--帐号数据
@@ -590,7 +590,7 @@ local function Init_Help()
             self.elapsed = 0
             local latencyHome, latencyWorld= select(3, GetNetStats())--ms
             local ms= math.max(latencyHome, latencyWorld) or 0
-            local fps= math.modf(GetFramerate() or 0)            
+            local fps= math.modf(GetFramerate() or 0)
             self.Text:SetText(fps<10 and '|cnGREEN_FONT_COLOR:'..fps..'|r' or fps<20 and '|cnYELLOW_FONT_COLOR:'..fps..'|r' or fps)
             self.Text2:SetText(ms>400 and '|cnRED_FONT_COLOR:'..ms..'|r' or ms>120 and ('|cnYELLOW_FONT_COLOR:'..ms..'|r') or ms)
         end
@@ -753,8 +753,139 @@ end
 
 
 
+--提示，背包，总数
+local function Init_Bag()
+
+    local frame= CreateFrame("Frame")
+    table.insert(Frames, frame)
+
+    frame.Text= e.Cstr(MainMenuBarBackpackButton,  {size=Save.size, color=true})
+    frame.Text:SetPoint('TOP', MainMenuBarBackpackButton, 0, -6)
+
+    function frame:settings()
+        local money=0
+        if Save.moneyWoW then
+            for _, info in pairs(e.WoWDate or {}) do
+                if info.Money then
+                    money= money+ info.Money
+                end
+            end
+        else
+            money= GetMoney()
+        end
+        if money>=10000 then
+            self.Text:SetText(e.MK(money/1e4, 0))
+        else
+            self.Text:SetText(GetMoneyString(money,true))
+        end
+    end
+    frame:RegisterEvent('PLAYER_MONEY')
+    frame:SetScript('OnEvent', frame.settings)
+    C_Timer.After(2, function() frame:settings() end)
 
 
+
+
+
+    MainMenuBarBackpackButton:HookScript('OnEnter', function()
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+        e.tips:AddLine(' ')
+
+        local numPlayer, allMoney= 0, 0
+        local tab={}
+        for guid, infoMoney in pairs(e.WoWDate or {}) do
+            if infoMoney.Money then
+                local nameText= e.GetPlayerInfo({guid=guid, faction=infoMoney.faction, reName=true, reRealm=true})
+                local moneyText= GetCoinTextureString(infoMoney.Money)
+                local class= select(2, GetPlayerInfoByGUID(guid))
+                local col= '|c'..select(4, GetClassColor(class))
+                numPlayer=numPlayer+1
+                allMoney= allMoney + infoMoney.Money
+                table.insert(tab, {text=nameText, money=moneyText, col=col, index=infoMoney.Money})
+            end
+        end
+        table.sort(tab, function(a,b) return a.index< b.index end)
+        e.tips:AddDoubleLine(
+            (e.onlyChinese and '总计' or TOTAL)
+            ..' |cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney))..'|r',
+            '|cnGREEN_FONT_COLOR:'..numPlayer..'|r '..(e.onlyChinese and '角色' or CHARACTER)
+        )
+
+        for _, tab in pairs(tab) do
+            e.tips:AddDoubleLine(tab.text, tab.col..tab.money)
+        end
+
+        e.tips:AddLine(' ')
+
+        local num, use= 0, 0
+        tab={}
+        for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
+            local freeSlots, bagFamily = C_Container.GetContainerNumFreeSlots(i)
+            local numSlots= C_Container.GetContainerNumSlots(i) or 0
+            if bagFamily == 0 and numSlots>0 and freeSlots then
+                num= num + numSlots
+                use= use+ freeSlots
+                local icon
+                if i== BACKPACK_CONTAINER then
+                    icon= e.Icon.bag2
+                else
+                    local inventoryID = C_Container.ContainerIDToInventoryID(i)
+                    local texture = inventoryID and GetInventoryItemTexture('player', inventoryID)
+                    if texture then
+                        icon= '|T'..texture..':0|t'
+                    end
+                end
+                table.insert(tab, {index='|cffff00ff'..(i+1)..'|r', icon=icon, all=numSlots, num= freeSlots>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '|cnRED_FONT_COLOR:'..num..'|r'})
+            end
+        end
+
+        e.tips:AddLine((e.onlyChinese and '总计' or TOTAL)..' '.. (use>0 and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..use..'|r/'..num)
+        for i=1, #tab, 2 do
+            local a= tab[i]
+            local b= tab[i+1]
+            e.tips:AddDoubleLine(a.index..') '..a.all..a.icon..a.num, b and (b.num..b.icon..b.all..' ('..b.index))
+        end
+        e.tips:Show()
+    end)
+
+
+    MainMenuBarBackpackButtonCount:SetShadowOffset(1, -1)
+    e.Set_Label_Texture_Color(MainMenuBarBackpackButtonCount, {type='FontString'})--设置颜色
+
+    hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
+        local freeSlots=self.freeSlots
+        if freeSlots then
+            if freeSlots==0 then
+                MainMenuBarBackpackButtonIconTexture:SetColorTexture(1,0,0,1)
+                freeSlots= '|cnRED_FONT_COLOR:'..freeSlots..'|r'
+            elseif freeSlots<=5 then
+                MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,1,0,1)
+                freeSlots= '|cnGREEN_FONT_COLOR:'..freeSlots..'|r'
+            else
+                MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
+            end
+            self.Count:SetText(freeSlots)
+        else
+            MainMenuBarBackpackButtonIconTexture:SetColorTexture(0,0,0,0)
+        end
+    end)
+
+       --收起，背包小按钮
+    if C_CVar.GetCVarBool("expandBagBar") and C_CVar.GetCVarBool("combinedBags") then--MainMenuBarBagButtons.lua
+        C_CVar.SetCVar("expandBagBar", '0')
+    end
+
+    --if not MainMenuBarBackpackButton.OnClick then
+    MainMenuBarBackpackButton:HookScript('OnClick', function(_, d)
+        if d=='RightButton' then
+            ToggleAllBags()
+        end
+    end)
+
+    
+end
 
 
 
@@ -778,8 +909,8 @@ local function Init_Plus()
         Init_EJ() --冒险指南
         Init_Store()--商店
         Init_Help()--帮助
-
-        Init_Framerate_Plus()--系统，fts        
+        Init_Bag()--背包
+        Init_Framerate_Plus()--系统，fts
     else
         for _, frame in pairs(Frames) do
             if frame.Text then
