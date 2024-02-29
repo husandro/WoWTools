@@ -1,6 +1,3 @@
-if not IsInGuild() then
-    return
-end
 
 local id, e = ...
 local Save={}
@@ -134,7 +131,7 @@ end
 --#####
 --主菜单
 --#####
-local function InitMenu(self, level, type)--主菜单    
+local function InitMenu(_, level)--主菜单    
     local info
     local find
     local map=e.GetUnitMapName('paleyr')
@@ -151,6 +148,7 @@ local function InitMenu(self, level, type)--主菜单
             info={
                 text=text,
                 notCheckable=true,
+                colorCode= not IsInGuild() and '|cff606060' or nil,
                 tooltipOnButton=true,
                 tooltipTitle=publicNote or '',
                 tooltipText=officerNote or '',
@@ -249,18 +247,18 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterUnitEvent('PLAYER_GUILD_UPDATE', "player")
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
-
                 Init()
-                panel:RegisterEvent('PLAYER_LOGOUT')
-                panel:RegisterEvent('GUILD_ROSTER_UPDATE')
-                panel:RegisterEvent('PLAYER_GUILD_UPDATE')
+                self:RegisterEvent('PLAYER_LOGOUT')
+                self:RegisterEvent('GUILD_ROSTER_UPDATE')
+                self:RegisterEvent('PLAYER_GUILD_UPDATE')
+                --panel:RegisterUnitEvent('PLAYER_GUILD_UPDATE', "player")
             end
 
         elseif arg1=='Blizzard_Communities' then

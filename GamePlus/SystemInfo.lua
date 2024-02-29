@@ -62,7 +62,7 @@ local function Init_Character()
         local text= e.GetDurabiliy(true, true)
         
         e.tips:AddLine(' ')
-        e.tips:AddLine((e.onlyChinese and '耐久度' or DURABILITY)..text)
+        e.tips:AddLine((e.onlyChinese and '耐久度a' or DURABILITY)..text)
         local item, cur, pvp= GetAverageItemLevel()
         cur= cur or 0
         item= item or 0
@@ -284,26 +284,31 @@ local function Init_Guild()
 
     frame.Text= e.Cstr(GuildMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', GuildMicroButton, 0,  -3)
-    frame.Text2= e.Cstr(GuildMicroButton,  {size=Save.size, color=true})
-    frame.Text2:SetPoint('BOTTOM', GuildMicroButton, 0, 3)
+    --frame.Text2= e.Cstr(GuildMicroButton,  {size=Save.size, color=true})
+    --frame.Text2:SetPoint('BOTTOM', GuildMicroButton, 0, 3)
 
     function frame:settings()
-        local to, cu= GetAverageItemLevel()--装等
-       
+        local online = select(2, GetNumGuildMembers())
+        self.Text:SetText((online and online>1) and online-1 or '')
     end
-    frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+    frame:RegisterEvent('GUILD_ROSTER_UPDATE')
+    frame:RegisterEvent('PLAYER_GUILD_UPDATE')
     frame:SetScript('OnEvent', frame.settings)
     C_Timer.After(2, function() frame:settings() end)
 
-    CharacterMicroButton:HookScript('OnEnter', function()
+    GuildMicroButton:HookScript('OnEnter', function()
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
-        e.tips:AddLine(' ')
-       
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
+        local all, online, app = GetNumGuildMembers()
+        if all and all>0 then
+            local guildName, description, standingID, barMin, barMax, barValue = GetGuildFactionInfo()
+            e.tips:AddLine(guildName)
+            e.tips:AddLine(description, nil,nil,nil, true)
+            e.tips:AddLine(' ')
+
+            e.tips:Show()
+        end
     end)
 end
 
