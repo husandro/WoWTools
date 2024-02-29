@@ -257,8 +257,9 @@ Settings.RegisterAddOnCategory(Category)
 Settings.SetKeybindingsCategory(Category)
 
 --打开，选项
-function e.OpenPanelOpting(name)
-    Settings.OpenToCategory(Category:GetID(), name)
+function e.OpenPanelOpting(name, category)
+    category= category or Category
+    Settings.OpenToCategory(category:GetID(), name)
 end
     --[[
     if subCategoryName and Category:HasSubcategories() then

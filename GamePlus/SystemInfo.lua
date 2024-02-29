@@ -3,6 +3,9 @@ local addName= HUD_EDIT_MODE_MICRO_MENU_LABEL..' Plus'
 local Save={
     plus=true,
     size=10,
+
+    --frameratePlus=true,--系统 fps plus
+    --framerateLogIn=true,--自动，打开
 }
 
 local Frames
@@ -62,7 +65,18 @@ local function Init_Character()
         local text= e.GetDurabiliy(true, true)
 
         e.tips:AddLine(' ')
-        e.tips:AddLine((e.onlyChinese and '耐久度a' or DURABILITY)..text)
+
+        local euip
+        for index, setID in pairs(C_EquipmentSet.GetEquipmentSetIDs() or {}) do
+            local name, texture, _, isEquipped= C_EquipmentSet.GetEquipmentSetInfo(setID)
+            if isEquipped and name then
+                euip= '|cffff00ff'..name..'|r'..(texture and '|T'..texture..':0|t' or '')
+                break
+            end
+        end
+
+        e.tips:AddDoubleLine((e.onlyChinese and '耐久度' or DURABILITY)..text, euip)
+
         local item, cur, pvp= GetAverageItemLevel()
         cur= cur or 0
         item= item or 0
@@ -200,11 +214,10 @@ local function Init_Achievement()
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
-        local guid= GetTotalAchievementPoints(true) or 0
-        local point= GetTotalAchievementPoints() or 0
         e.tips:AddLine(' ')
-        e.tips:AddLine(point..' '..(e.onlyChinese and '成就点数' or ACHIEVEMENT_POINTS))
-        if guid>0 then
+        e.tips:AddLine((GetTotalAchievementPoints() or 0)..' '..(e.onlyChinese and '成就点数' or ACHIEVEMENT_POINTS))
+        if IsInGuild() then
+            local guid= GetTotalAchievementPoints(true) or 0
             e.tips:AddLine(guid..' '..(e.onlyChinese and '公会成就' or GUILD_ACHIEVEMENTS_TITLE))
         end
         e.tips:Show()
@@ -629,116 +642,10 @@ local function Init_Help()
     MainMenuMicroButton:HookScript('OnMouseWheel', function()
         e.OpenPanelOpting('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName))
     end)
-   -- MainMenuMicroButton.MainMenuBarPerformanceBar:ClearAllPoints()
-    --MainMenuMicroButton.MainMenuBarPerformanceBar:SetPoint('BOTTOM')
 end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---每秒帧数 Plus
---############
-local FramerateButton
-local function Init_Framerate_Plus()
-    if not Save.frameratePlus or FramerateButton then
-        return
-    end
-    FramerateButton= e.Cbtn(FramerateFrame, {size={14,14}, icon='hide'})
-    FramerateButton:SetPoint('RIGHT',FramerateFrame.FramerateText)
-
-    FramerateButton:SetMovable(true)
-    FramerateButton:RegisterForDrag("RightButton");
-    FramerateButton:SetClampedToScreen(true)
-    FramerateButton:SetScript("OnDragStart", function(_, d)
-        if d=='RightButton' then
-            SetCursor('UI_MOVE_CURSOR')
-            local frame= FramerateFrame
-            if not frame:IsMovable()  then
-                frame:SetMovable(true)
-            end
-            frame:StartMoving()
-        end
-    end)
-    FramerateButton:SetScript("OnDragStop", function()
-        FramerateFrame:StopMovingOrSizing()
-        Save.frameratePoint={FramerateFrame:GetPoint(1)}
-        Save.frameratePoint[2]=nil
-        ResetCursor()
-    end)
-    FramerateButton:SetScript("OnMouseUp", ResetCursor)
-    FramerateButton:SetScript('OnMouseDown', function(_, d)
-        if d=='RightButton' then--移动光标
-            SetCursor('UI_MOVE_CURSOR')
-        end
-    end)
-
-
-    function FramerateButton:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(MicroButtonTooltipText(FRAMERATE_LABEL, "TOGGLEFPS"))
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '字体大小' or FONT_SIZE, (Save.framerateSize or 12)..e.Icon.mid)
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-    end
-    FramerateButton:SetScript('OnLeave', GameTooltip_Hide)
-    FramerateButton:SetScript('OnEnter', FramerateButton.set_tooltips)
-
-    FramerateButton:SetScript('OnMouseWheel',function(self, d)
-        if IsModifierKeyDown() then
-            return
-        end
-        local size=Save.framerateSize or 12
-        if d==1 then
-            size=size+1
-            size = size>72 and 72 or size
-        elseif d==-1 then
-            size=size-1
-            size= size<6 and 6 or size
-        end
-        Save.framerateSize=size
-        self:set_size()
-        self:set_tooltips()
-    end)
-
-    function FramerateButton:set_size()--修改大小
-        e.Cstr(nil, {size=Save.framerateSize or 12, changeFont=FramerateFrame.FramerateText, color=true})--Save.size, nil , Labels.fpsms, true)    
-    end
-    FramerateButton:set_size()
-
-    FramerateFrame.Label:SetText('')--去掉FPS
-    FramerateFrame.Label:SetShown(false)
-    FramerateFrame:SetMovable(true)
-    FramerateFrame:SetClampedToScreen(true)
-    FramerateFrame:HookScript('OnShow', function(self)
-        if Save.frameratePoint and FramerateFrame then
-            self:ClearAllPoints()
-            self:SetPoint(Save.frameratePoint[1], UIParent, Save.frameratePoint[3], Save.frameratePoint[4], Save.frameratePoint[5])
-        end
-    end)
-    FramerateFrame:SetFrameStrata('HIGH')
-
-    if Save.framerateLogIn and not FramerateFrame:IsShown() then--自动，打开
-        FramerateFrame:Toggle()
-    end
-end
 
 
 
@@ -931,7 +838,7 @@ local function Init_Plus()
         Init_Store()--商店
         Init_Help()--帮助
         Init_Bag()--背包
-        Init_Framerate_Plus()--系统，fts
+        
     else
         for _, frame in pairs(Frames) do
             if frame.Text then
@@ -949,6 +856,107 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--每秒帧数 Plus
+--############
+local FramerateButton
+local function Init_Framerate_Plus()
+    if not Save.frameratePlus or FramerateButton then
+        return
+    end
+    FramerateButton= e.Cbtn(FramerateFrame, {size={14,14}, icon='hide'})
+    FramerateButton:SetPoint('RIGHT',FramerateFrame.FramerateText)
+
+    FramerateButton:SetMovable(true)
+    FramerateButton:RegisterForDrag("RightButton");
+    FramerateButton:SetClampedToScreen(true)
+    FramerateButton:SetScript("OnDragStart", function(_, d)
+        if d=='RightButton' then
+            SetCursor('UI_MOVE_CURSOR')
+            local frame= FramerateFrame
+            if not frame:IsMovable()  then
+                frame:SetMovable(true)
+            end
+            frame:StartMoving()
+        end
+    end)
+    FramerateButton:SetScript("OnDragStop", function()
+        FramerateFrame:StopMovingOrSizing()
+        Save.frameratePoint={FramerateFrame:GetPoint(1)}
+        Save.frameratePoint[2]=nil
+        ResetCursor()
+    end)
+    FramerateButton:SetScript("OnMouseUp", ResetCursor)
+    FramerateButton:SetScript('OnMouseDown', function(_, d)
+        if d=='RightButton' then--移动光标
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+
+
+    function FramerateButton:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(MicroButtonTooltipText(FRAMERATE_LABEL, "TOGGLEFPS"))
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '字体大小' or FONT_SIZE, (Save.framerateSize or 12)..e.Icon.mid)
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:Show()
+    end
+    FramerateButton:SetScript('OnLeave', GameTooltip_Hide)
+    FramerateButton:SetScript('OnEnter', FramerateButton.set_tooltips)
+
+    FramerateButton:SetScript('OnMouseWheel',function(self, d)
+        if IsModifierKeyDown() then
+            return
+        end
+        local size=Save.framerateSize or 12
+        if d==1 then
+            size=size+1
+            size = size>72 and 72 or size
+        elseif d==-1 then
+            size=size-1
+            size= size<6 and 6 or size
+        end
+        Save.framerateSize=size
+        self:set_size()
+        self:set_tooltips()
+    end)
+
+    function FramerateButton:set_size()--修改大小
+        e.Cstr(nil, {size=Save.framerateSize or 12, changeFont=FramerateFrame.FramerateText, color=true})--Save.size, nil , Labels.fpsms, true)    
+    end
+    FramerateButton:set_size()
+
+    FramerateFrame.Label:SetText('')--去掉FPS
+    FramerateFrame.Label:SetShown(false)
+    FramerateFrame:SetMovable(true)
+    FramerateFrame:SetClampedToScreen(true)
+    FramerateFrame:HookScript('OnShow', function(self)
+        if Save.frameratePoint and FramerateFrame then
+            self:ClearAllPoints()
+            self:SetPoint(Save.frameratePoint[1], UIParent, Save.frameratePoint[3], Save.frameratePoint[4], Save.frameratePoint[5])
+        end
+    end)
+    FramerateFrame:SetFrameStrata('HIGH')
+
+    if Save.framerateLogIn and not FramerateFrame:IsShown() then--自动，打开
+        FramerateFrame:Toggle()
+    end
+end
 
 
 
@@ -1009,7 +1017,7 @@ local function Init_Options()--初始, 选项
     e.AddPanel_Header(Layout, e.onlyChinese and '系统' or SYSTEM)
     initializer2= e.AddPanel_Check({
         name= (e.onlyChinese and '每秒帧数:' or FRAMERATE_LABEL)..' Plus',
-        tooltip= e.cn(addName),
+        tooltip= MicroButtonTooltipText(FRAMERATE_LABEL, "TOGGLEFPS"),
         value= Save.frameratePlus,
         category= Category,
         func= function()
@@ -1022,7 +1030,7 @@ local function Init_Options()--初始, 选项
     })
     initializer= e.AddPanel_Check({
         name= (e.onlyChinese and '登入' or LOG_IN)..' WoW: '..(e.onlyChinese and '显示' or SHOW),
-        tooltip= e.cn(addName),
+        tooltip=  MicroButtonTooltipText(FRAMERATE_LABEL, "TOGGLEFPS"),
         value= Save.framerateLogIn,
         category= Category,
         func= function()
@@ -1064,7 +1072,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
             WoWToolsSave[SYSTEM_MESSAGES]= nil--清除，旧版本数据
             Init_Plus()
-
+            Init_Framerate_Plus()--系统，fts
         elseif arg1=='Blizzard_Settings' then
             Init_Options()--初始, 选项
         end

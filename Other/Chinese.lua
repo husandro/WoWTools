@@ -196,7 +196,7 @@ local COVENANT_RENOWN_TOAST_REWARD_COMBINER= COVENANT_RENOWN_TOAST_REWARD_COMBIN
 local EQUIPMENT_SETS= EQUIPMENT_SETS:match('(.-):')..'(.+)'
 local function get_gameTooltip_text(self)
     local text= self and self:IsShown() and self:GetText()
-    if text and text~='' then
+    if text and text~='' and not text:find('|') then
         local text2= e.strText[text]
         if not text2 then
             local up= text:match(ITEM_UPGRADE_TOOLTIP_FORMAT_STRING)---"升级：%s %d/%d
