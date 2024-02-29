@@ -65,7 +65,7 @@ e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
 --[[function e.HideMenu(index)
     e.LibDD:CloseDropDownMenus(index or 1)
   if (e.LibDD:UIDropDownMenu_GetCurrentDropDown() == menu) then
-        e.LibDD:HideDropDownMenu(index or 1);
+        e.LibDD:HideDropDownMenu(index or 1)
     end
 end]]
 
@@ -535,7 +535,7 @@ function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
         self.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
         self.cooldown:SetHideCountdownNumbers(HideCountdownNumbers)--隐藏数字
         self.cooldown:SetReverse(Reverse)--控制冷却动画的方向
-        self.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge");
+        self.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
         if SwipeTexture then
             self.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')--圆框架
         end
@@ -695,11 +695,11 @@ end]]
 
 function e.SecondsToClock(seconds, displayZeroHours)--TimeUtil.lua
     if seconds and seconds>=0 then
-        local units = ConvertSecondsToUnits(seconds);
+        local units = ConvertSecondsToUnits(seconds)
         if units.hours > 0 or displayZeroHours then
-            return format('%.2d:%.2d:%.2d', units.hours, units.minutes, units.seconds);
+            return format('%.2d:%.2d:%.2d', units.hours, units.minutes, units.seconds)
         else
-            return format('%.2d:%.2d', units.minutes, units.seconds);
+            return format('%.2d:%.2d', units.minutes, units.seconds)
         end
     end
 end
@@ -755,7 +755,7 @@ function e.Say(type, name, wow, text)
         if wow then
             ChatFrame_SendBNetTell(name..msg..(text or ''))
         else
-            ChatFrame_OpenChat("/w " ..name..msg..(text or ''), chat);
+            ChatFrame_OpenChat("/w " ..name..msg..(text or ''), chat)
         end
     elseif type then
         ChatFrame_OpenChat(type..msg..(text or ''), chat)
@@ -800,15 +800,15 @@ end
 
 local LibRangeCheck = LibStub("LibRangeCheck-2.0", true)
 function e.GetRange(unit, checkVisible)--WA Prototypes.lua
-    return LibRangeCheck:GetRange(unit, checkVisible);
+    return LibRangeCheck:GetRange(unit, checkVisible)
 end
 
 function e.CheckRange(unit, range, operator)
-    local min, max= LibRangeCheck:GetRange(unit, true);
+    local min, max= LibRangeCheck:GetRange(unit, true)
     if (operator) then-- == "<=") then
-        return (max or 999) <= range;
+        return (max or 999) <= range
     else
-        return (min or 0) >= range;
+        return (min or 0) >= range
     end
 end
 
@@ -824,7 +824,7 @@ function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', si
             tab.frame.HelpTips:SetNormalAtlas(tab.atlas or e.Icon.toRight)
         end
         if tab.color then
-            SetItemButtonNormalTextureVertexColor(tab.frame.HelpTips, tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1);
+            SetItemButtonNormalTextureVertexColor(tab.frame.HelpTips, tab.color.r, tab.color.g, tab.color.b, tab.color.a or 1)
         end
         function tab.frame.HelpTips:set_hide()
             self.time=nil
@@ -989,8 +989,8 @@ function e.Get_Weekly_Rewards_Activities(settings)
         end
         local CONQUEST_SIZE_STRINGS = {'', '2v2', '3v3', '10v10'}--PVP
         for i = 2, 4 do
-            local rating, seasonBest, weeklyBest, seasonPlayed, seasonWon, weeklyPlayed, weeklyWon, lastWeeksBest, hasWon, pvpTier, ranking, roundsSeasonPlayed, roundsSeasonWon, roundsWeeklyPlayed, roundsWeeklyWon = GetPersonalRatedInfo(1);
-			local tierInfo = pvpTier and C_PvP.GetPvpTierInfo(pvpTier);
+            local rating, seasonBest, weeklyBest, seasonPlayed, seasonWon, weeklyPlayed, weeklyWon, lastWeeksBest, hasWon, pvpTier, ranking, roundsSeasonPlayed, roundsSeasonWon, roundsWeeklyPlayed, roundsWeeklyWon = GetPersonalRatedInfo(1)
+			local tierInfo = pvpTier and C_PvP.GetPvpTierInfo(pvpTier)
 			if tierInfo and rating then
                 seasonBest= seasonBest or 0
                 seasonPlayed= seasonPlayed or 0
@@ -1234,7 +1234,7 @@ end
 
 
 --显示, 宝石, 属性
-local AndStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s";
+local AndStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s"
 function e.Get_Gem_Stats(tab, itemLink, self)
     local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+%d+ .+)', }})--物品提示，信息
     local text= dateInfo.text['(%+%d+ .+)']
@@ -1691,7 +1691,7 @@ function e.GetNpcID(unit)--NPC ID
     if UnitExists(unit) then
         local guid=UnitGUID(unit)
         if guid then
-            return select(6,  strsplit("-", guid));
+            return select(6,  strsplit("-", guid))
         end
     end
 end
@@ -1811,7 +1811,7 @@ function e.QuestLogQuests_GetBestTagID(questID, info, tagInfo, isComplete)--Ques
        info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
     end
 
-    tagInfo =  tagInfo or C_QuestLog.GetQuestTagInfo(questID) or {};
+    tagInfo =  tagInfo or C_QuestLog.GetQuestTagInfo(questID) or {}
     if not questID or not info then
         return
     end
@@ -1834,7 +1834,7 @@ function e.QuestLogQuests_GetBestTagID(questID, info, tagInfo, isComplete)--Ques
         tagID, color, atlas= nil, e.GetQestColor('Week'), '|A:Professions-Icon-Quality-Mixed-Small:0:0|a'
 
     elseif info.isCalling then
-        local secondsRemaining = C_TaskQuest.GetQuestTimeLeftSeconds(questID);
+        local secondsRemaining = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
         if secondsRemaining then
             if secondsRemaining < 3600 then -- 1 hour
                 tagID, color, atlas= "EXPIRING_SOON", e.GetQestColor('Calling'), nil
@@ -1844,7 +1844,7 @@ function e.QuestLogQuests_GetBestTagID(questID, info, tagInfo, isComplete)--Ques
         end
 
     elseif tagInfo.tagID == Enum.QuestTag.Account then
-        local factionGroup = GetQuestFactionGroup(questID);
+        local factionGroup = GetQuestFactionGroup(questID)
         if factionGroup==LE_QUEST_FACTION_HORDE then--部落
             tagID, color, atlas= 'HORDE', e.GetQestColor('Horde'), nil
         elseif factionGroup==LE_QUEST_FACTION_ALLIANCE then
@@ -2007,7 +2007,7 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
             [169]='普通',--Path of Ascension: Loyalty	scenario	
             [170]='普通',--Path of Ascension: Wisdom	scenario	
             [171]='普通',--Path of Ascension: Humility	scenario
-            [205]='追随',--Seguace (5) LFG_TYPE_FOLLOWER_DUNGEON = "追随者地下城";
+            [205]='追随',--Seguace (5) LFG_TYPE_FOLLOWER_DUNGEON = "追随者地下城"
         }
         name= type[difficultyID]
         if name then
@@ -2084,8 +2084,8 @@ function e.Cbtn2(tab)
 
     button.mask= button:CreateMaskTexture()
     button.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-    button.mask:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4);
-    button.mask:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -6, 6);
+    button.mask:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4)
+    button.mask:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -6, 6)
 
     button.background=button:CreateTexture(nil,'BACKGROUND')
     button.background:SetAllPoints(button)
@@ -2096,8 +2096,8 @@ function e.Cbtn2(tab)
 
     if not tab.notTexture then
         button.texture=button:CreateTexture(nil, 'BORDER')
-        button.texture:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4);
-        button.texture:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -6, 6);
+        button.texture:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4)
+        button.texture:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -6, 6)
         button.texture:AddMaskTexture(button.mask)
         button.texture:SetShown(tab.showTexture)
     end
@@ -2255,26 +2255,26 @@ function e.GetTimeInfo(value, chat, time, expirationTime)
     if value and value>0 then
         time= time or GetTime()
         time= time < value and time + 86400 or time
-        time= time - value;
+        time= time - value
         if chat then
-            return e.SecondsToClock(time), time;
+            return e.SecondsToClock(time), time
         else
-            return SecondsToTime(time), time;
+            return SecondsToTime(time), time
         end
     elseif expirationTime and expirationTime>0 then
         time= time or GetTime()
         expirationTime= time > expirationTime and expirationTime + 86400 or expirationTime
-        time= expirationTime- time;
+        time= expirationTime- time
         if chat then
-            return e.SecondsToClock(time), time;
+            return e.SecondsToClock(time), time
         else
-            return SecondsToTime(time), time;
+            return SecondsToTime(time), time
         end
     else
         if chat then
-            return e.SecondsToClock(0), 0;
+            return e.SecondsToClock(0), 0
         else
-            return SecondsToTime(0), 0;
+            return SecondsToTime(0), 0
         end
     end
 end
@@ -2389,7 +2389,7 @@ end
 function e.GetPetStrongWeakHints(petType)
     local strongTexture,weakHintsTexture, stringIndex, weakHintsIndex
     for i=1, C_PetJournal.GetNumPetTypes() do
-        local modifier = C_PetBattles.GetAttackModifier(petType, i);
+        local modifier = C_PetBattles.GetAttackModifier(petType, i)
         if ( modifier > 1 ) then
             strongTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i]--"Interface\\PetBattles\\PetIcon-"..PET_TYPE_SUFFIX[i]
             weakHintsIndex=i
@@ -2662,15 +2662,15 @@ function e.ShowColorPicker(valueR, valueG, valueB, valueA, swatchFunc, cancelFun
         opacity=valueA or 1,
     })
 end
-    --[[self.swatchFunc = info.swatchFunc;
-    self.hasOpacity = info.hasOpacity;
-    self.opacityFunc = info.opacityFunc;
-    self.opacity = info.opacity;
-    self.previousValues = {r = info.r, g = info.g, b = info.b, a = info.opacity};
-    self.cancelFunc = info.cancelFunc;
-    self.extraInfo = info.extraInfo;]]
+    --[[self.swatchFunc = info.swatchFunc
+    self.hasOpacity = info.hasOpacity
+    self.opacityFunc = info.opacityFunc
+    self.opacity = info.opacity
+    self.previousValues = {r = info.r, g = info.g, b = info.b, a = info.opacity}
+    self.cancelFunc = info.cancelFunc
+    self.extraInfo = info.extraInfo]]
     --[[else
-        ColorPickerFrame:SetShown(false); -- Need to run the OnShow handler.
+        ColorPickerFrame:SetShown(false) -- Need to run the OnShow handler.
         valueR= valueR or 1
         valueG= valueG or 0.8
         valueB= valueB or 0
@@ -2688,7 +2688,7 @@ end
         end
         ColorPickerFrame.hasOpacity= true
 
-        ColorPickerFrame.opacity = 1- valueA;
+        ColorPickerFrame.opacity = 1- valueA
         ColorPickerFrame:SetShown(true)
     end]]
 
