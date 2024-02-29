@@ -246,7 +246,19 @@ end
 
 
 
-
+local function set_BagTexture_Button(self)
+    if not self.hasItem then
+        hide_Texture(self.icon)
+        hide_Texture(self.ItemSlotBackground)
+        set_Alpha_Color(self.NormalTexture, true)
+    end
+    self.NormalTexture:SetAlpha(not self.hasItem and 0.3 or 1)
+end
+local function set_BagTexture(self)
+    for _, itemButton in self:EnumerateValidItems() do
+        set_BagTexture_Button(itemButton)
+    end
+end
 
 
 
@@ -698,7 +710,58 @@ local function Init_All_Frame()
              set_NineSlice(frame, true)
          end
      end
+     for i=1,  NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES do--10.25 出现错误
+        local frame= _G['ContainerFrame'..i]
+        if frame and frame.Bg and frame.Bg:GetObjectType()=='Frame' then
+            frame.Bg:SetFrameStrata('BACKGROUND')
+        end
+    end
 
+    hooksecurefunc('ContainerFrame_GenerateFrame',function()--ContainerFrame.lua 背包里，颜色
+        for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
+            if not frame.SetBagAlpha then
+                set_BagTexture(frame)
+                hooksecurefunc(frame, 'UpdateItems', set_BagTexture)
+                frame:SetTitle('')--名称
+                hooksecurefunc(frame, 'UpdateName', function(self2) self2:SetTitle('') end)
+                frame.SetBagAlpha=true
+            end
+        end
+    end)
+
+    if CharacterReagentBag0Slot then
+        set_Alpha_Color(CharacterReagentBag0SlotNormalTexture, nil, nil, min03)--外框
+
+        local function set_Reagent_Bag_Alpha(show)
+            if show then
+                CharacterReagentBag0SlotIconTexture:SetVertexColor(1,1,1,1)
+            else
+                set_Alpha_Color(CharacterReagentBag0SlotIconTexture, nil, nil, min03)
+            end
+        end
+        set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
+        CharacterReagentBag0Slot:HookScript('OnLeave', function()
+            if not Save.disabledMainMenu then
+                set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
+            end
+        end)
+        CharacterReagentBag0Slot:HookScript('OnEnter', function()
+            set_Reagent_Bag_Alpha(true)
+        end)
+        hooksecurefunc(MainMenuBarBagManager, 'ToggleExpandBar', function()
+            set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
+        end)
+    end
+
+
+    hooksecurefunc('PaperDollItemSlotButton_Update', function(self)--PaperDollFrame.lua 主菜单，包
+        local bagID= self:GetID()
+        if bagID>30 then
+            set_Alpha_Color(self:GetNormalTexture())
+            set_Alpha_Color(self.icon)
+            self:SetAlpha(GetInventoryItemTexture("player", bagID)~=nil and 1 or 0.1)
+        end
+    end)
 
      hide_Frame_Texture(CharacterHeadSlot)--1
      hide_Frame_Texture(CharacterNeckSlot)--2
@@ -2290,20 +2353,6 @@ end
 --##################
 --主菜单，颜色，透明度
 --##################
-local function set_BagTexture_Button(self)
-    if not self.hasItem then
-        hide_Texture(self.icon)
-        hide_Texture(self.ItemSlotBackground)
-        set_Alpha_Color(self.NormalTexture, true)
-    end
-    self.NormalTexture:SetAlpha(not self.hasItem and 0.3 or 1)
-end
-local function set_BagTexture(self)
-    for _, itemButton in self:EnumerateValidItems() do
-        set_BagTexture_Button(itemButton)
-    end
-end
-
 local function Init_Main_Menu(init)--主菜单
     if init and Save.disabledMainMenu then
         return
@@ -2363,61 +2412,6 @@ local function Init_Main_Menu(init)--主菜单
         end
     end
 
-
-    for i=1,  NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES do--10.25 出现错误
-        local frame= _G['ContainerFrame'..i]
-        if frame and frame.Bg and frame.Bg:GetObjectType()=='Frame' then
-            frame.Bg:SetFrameStrata('BACKGROUND')
-        end
-    end
-
-    if init then
-         --材料包
-        if CharacterReagentBag0Slot then
-            set_Alpha_Color(CharacterReagentBag0SlotNormalTexture, nil, nil, min03)--外框
-
-            local function set_Reagent_Bag_Alpha(show)
-                if show then
-                    CharacterReagentBag0SlotIconTexture:SetVertexColor(1,1,1,1)
-                else
-                    set_Alpha_Color(CharacterReagentBag0SlotIconTexture, nil, nil, min03)
-                end
-            end
-            set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
-            CharacterReagentBag0Slot:HookScript('OnLeave', function()
-                if not Save.disabledMainMenu then
-                    set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
-                end
-            end)
-            CharacterReagentBag0Slot:HookScript('OnEnter', function()
-                set_Reagent_Bag_Alpha(true)
-            end)
-            hooksecurefunc(MainMenuBarBagManager, 'ToggleExpandBar', function()
-                set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
-            end)
-        end
-
-        hooksecurefunc('ContainerFrame_GenerateFrame',function()--ContainerFrame.lua 背包里，颜色
-            for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
-                if not frame.SetBagAlpha then
-                    set_BagTexture(frame)
-                    hooksecurefunc(frame, 'UpdateItems', set_BagTexture)
-                    frame:SetTitle('')--名称
-                    hooksecurefunc(frame, 'UpdateName', function(self2) self2:SetTitle('') end)
-                    frame.SetBagAlpha=true
-                end
-            end
-        end)
-
-        hooksecurefunc('PaperDollItemSlotButton_Update', function(self)--PaperDollFrame.lua 主菜单，包
-            local bagID= self:GetID()
-            if bagID>30 then
-                set_Alpha_Color(self:GetNormalTexture())
-                set_Alpha_Color(self.icon)
-                self:SetAlpha(GetInventoryItemTexture("player", bagID)~=nil and 1 or 0.1)
-            end
-        end)
-    end
     --EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.MicroMenu][3].minValue=50--EditModeSettingDisplayInfo.lua
 end
 
