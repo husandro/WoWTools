@@ -203,7 +203,7 @@ local function Init_Achievement()
     function frame:settings()
         local num
         num= GetTotalAchievementPoints() or 0
-        num = num==0 and '' or e.MK(num,1)
+        num = num==0 and '' or e.MK(num, 1)
         self.Text:SetText(num)
     end
     frame:RegisterEvent('ACHIEVEMENT_EARNED')
@@ -297,15 +297,39 @@ local function Init_Guild()
 
     frame.Text= e.Cstr(GuildMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', GuildMicroButton, 0,  -3)
-    --frame.Text2= e.Cstr(GuildMicroButton,  {size=Save.size, color=true})
-    --frame.Text2:SetPoint('BOTTOM', GuildMicroButton, 0, 3)
+    frame.Text2= e.Cstr(GuildMicroButton,  {size=Save.size, color=true})
+    frame.Text2:SetPoint('BOTTOM', GuildMicroButton, 0, 3)
 
     function frame:settings()
         local online = select(2, GetNumGuildMembers())
         self.Text:SetText((online and online>1) and online-1 or '')
+
+        online=0
+        local guildClubId= C_Club.GetGuildClubId()
+        for _, tab in pairs(C_Club.GetSubscribedClubs() or {}) do
+            local members= C_Club.GetClubMembers(tab.clubId) or {}
+            if tab.clubId~=guildClubId then
+                for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
+                    local info = C_Club.GetMemberInfo(tab.clubId, memberID) or {}
+                    if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
+                        online= online+1
+                    end
+                end
+            end
+        end
+        self.Text2:SetText(online>0 and online or '')
     end
-    frame:RegisterEvent('GUILD_ROSTER_UPDATE')
-    frame:RegisterEvent('PLAYER_GUILD_UPDATE')
+    local COMMUNITIES_LIST_EVENTS = {
+        "CLUB_ADDED",
+        "CLUB_REMOVED",
+        "CLUB_UPDATED",
+        "CLUB_INVITATION_ADDED_FOR_SELF",
+        "CLUB_INVITATION_REMOVED_FOR_SELF",
+        "GUILD_ROSTER_UPDATE",
+        "CLUB_STREAMS_LOADED",
+        "PLAYER_GUILD_UPDATE",
+    };
+    FrameUtil.RegisterFrameForEvents(frame, COMMUNITIES_LIST_EVENTS)
     frame:SetScript('OnEvent', frame.settings)
     C_Timer.After(2, function() frame:settings() end)
 
@@ -366,12 +390,31 @@ end
 
 --地下城查找器
 local function Init_LFD()
-    LFDMicroButton:HookScript('OnEnter', function()
+    local frame= CreateFrame('Frame')
+    table.insert(Frames, frame)
+
+    frame.Text= e.Cstr(LFDMicroButton,  {size=Save.size, color=true})
+    frame.Text:SetPoint('TOP', LFDMicroButton, 0,  -3)
+
+    function frame:settings()
+        local lv= C_MythicPlus.GetOwnedKeystoneLevel() or 0
+        self.Text:SetText(lv>0 and lv or '')
+    end
+    frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    frame:SetScript('OnEvent', frame.settings)
+
+    LFDMicroButton.setTextFrame= frame
+    LFDMicroButton:HookScript('OnEnter', function(self)
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
+        self.setTextFrame:settings()
         e.tips:AddLine(' ')
         e.Get_Weekly_Rewards_Activities({showTooltip=true})--周奖励，提示
+        local link=  e.WoWDate[e.Player.guid].Keystone.link
+        if link then
+            e.tips:AddLine('|T4352494:0|t'..link)
+        end
         e.tips:Show()
     end)
 end
@@ -838,7 +881,7 @@ local function Init_Plus()
         Init_Store()--商店
         Init_Help()--帮助
         Init_Bag()--背包
-        
+
     else
         for _, frame in pairs(Frames) do
             if frame.Text then
