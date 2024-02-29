@@ -753,9 +753,14 @@ end
 
 
 
+
+
+
+
+
+
 --提示，背包，总数
 local function Init_Bag()
-
     local frame= CreateFrame("Frame")
     table.insert(Frames, frame)
 
@@ -782,9 +787,6 @@ local function Init_Bag()
     frame:RegisterEvent('PLAYER_MONEY')
     frame:SetScript('OnEvent', frame.settings)
     C_Timer.After(2, function() frame:settings() end)
-
-
-
 
 
     MainMenuBarBackpackButton:HookScript('OnEnter', function()
@@ -872,7 +874,7 @@ local function Init_Bag()
         end
     end)
 
-       --收起，背包小按钮
+    --收起，背包小按钮
     if C_CVar.GetCVarBool("expandBagBar") and C_CVar.GetCVarBool("combinedBags") then--MainMenuBarBagButtons.lua
         C_CVar.SetCVar("expandBagBar", '0')
     end
@@ -883,9 +885,28 @@ local function Init_Bag()
             ToggleAllBags()
         end
     end)
-
-    
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -921,23 +942,6 @@ local function Init_Plus()
             end
         end
     end
-
-    --[[local tab= {
-        'CharacterMicroButton',--菜单
-        'SpellbookMicroButton',
-        'TalentMicroButton',
-        'AchievementMicroButton',
-        'QuestLogMicroButton',
-        'GuildMicroButton',
-        'LFDMicroButton',
-        'EJMicroButton',
-        'CollectionsMicroButton',
-        'MainMenuMicroButton',
-        'HelpMicroButton',
-        'StoreMicroButton',
-        'MainMenuBarBackpackButton',--背包
-        --'CharacterReagentBag0Slot',--材料包
-    }]]
 end
 
 
@@ -969,21 +973,8 @@ end
 --###########
 --添加控制面板
 --###########
-
 local function Init_Options()--初始, 选项
     local Category, Layout= e.AddPanel_Sub_Category({name= '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '菜单 Plus' or addName)})
-    --[[e.AddPanel_Check({
-        name= e.onlyChinese and '启用' or ENABLE,
-        tooltip= e.cn(addName),
-        value= not Save.disabled,
-        category= Category,
-        func= function()
-            Save.disabled= not Save.disabled and true or nil
-            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    })
-
-    e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)]]
 
     local initializer2= e.AddPanel_Check({
         name= 'Plus',
@@ -1072,9 +1063,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
             WoWToolsSave[SYSTEM_MESSAGES]= nil--清除，旧版本数据
-
-
-
             Init_Plus()
 
         elseif arg1=='Blizzard_Settings' then
