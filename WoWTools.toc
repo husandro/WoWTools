@@ -103,8 +103,8 @@ GamePlus\Gem.lua
 GamePlus\Target.lua
 ##颜色选择器，增强
 GamePlus\Color.lua
-##fps ms
-GamePlus\SystemInfo.lua
+##主菜单，增强
+GamePlus\MainMenu.lua
 ##鼠标 Mouse https://wago.io/CVmKEpl6E
 GamePlus\Cursor.lua
 ##宏增强

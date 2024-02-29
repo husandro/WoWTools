@@ -3,7 +3,7 @@ local addName= HUD_EDIT_MODE_MICRO_MENU_LABEL..' Plus'
 local Save={
     plus=true,
     size=10,
-
+    mainMenuAlpha=0.5,
     --frameratePlus=true,--系统 fps plus
     --framerateLogIn=true,--自动，打开
 }
