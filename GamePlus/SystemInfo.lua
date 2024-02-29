@@ -367,10 +367,10 @@ local function Init_Help()
     local frame= CreateFrame("Frame")
     table.insert(Frames, frame)
 
-    frame.Text= e.Cstr(CharacterMicroButton,  {size=Save.size, color=true})
-    frame.Text:SetPoint('TOP', CharacterMicroButton, 0,  -3)
-    frame.Text2= e.Cstr(CharacterMicroButton,  {size=Save.size, color=true})
-    frame.Text2:SetPoint('BOTTOM', CharacterMicroButton, 0, 3)
+    frame.Text= e.Cstr(HelpMicroButton,  {size=Save.size, color=true})
+    frame.Text:SetPoint('TOP', HelpMicroButton, 0,  -3)
+    frame.Text2= e.Cstr(HelpMicroButton,  {size=Save.size, color=true})
+    frame.Text2:SetPoint('BOTTOM', HelpMicroButton, 0, 3)
 
     function frame:settings()
         local to, cu= GetAverageItemLevel()--装等
