@@ -300,15 +300,35 @@ local function Init_Guild()
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
-        local all, online, app = GetNumGuildMembers()
-        if all and all>0 then
-            local guildName, description, standingID, barMin, barMax, barValue = GetGuildFactionInfo()
-            e.tips:AddLine(guildName)
-            e.tips:AddLine(description, nil,nil,nil, true)
+        local clubs= C_Club.GetSubscribedClubs() or {}
+        if IsInGuild() then
             e.tips:AddLine(' ')
-
-            e.tips:Show()
+            local all, online, app = GetNumGuildMembers()            
+            local guildName, guildRankName, _, realm = GetGuildInfo('player')
+            e.tips:AddDoubleLine(guildName..(realm and realm~=e.Player.realm and '-'..realm or '')..' ('..all..')', guildRankName)
+            e.tips:AddDoubleLine(e.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON, (online>1 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..'|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(online-1)..'|r/|A:UI-ChatIcon-App:0:0|a'..(app-1))
+            local day= GetGuildRosterMOTD()--今天信息
+            if day and day~='' then
+                e.tips:AddLine('|cffff00ff'..day..'|r', nil,nil, nil, true)
+            end
+            if #clubs>0 then
+                e.tips:AddLine(' ')
+            end
         end
+        local guildClubId= C_Club.GetGuildClubId()        
+        for _, tab in pairs(clubs) do
+            local members= C_Club.GetClubMembers(tab.clubId) or {}
+            local online= 0
+            for _, memberID in pairs(members) do
+                local info = C_Club.GetMemberInfo(tab.clubId, memberID) or {}
+                if not info.isSelf and info.zone then
+                    online= online+1
+                end
+            end
+            local icon=(tab.clubId==guildClubId) and e.Icon.star2 or '|T'..tab.avatarId..':0|t'
+            e.tips:AddDoubleLine(icon..tab.name, (online>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..online..'|r'..icon)--..tab.memberCount
+        end
+        e.tips:Show()
     end)
 end
 
