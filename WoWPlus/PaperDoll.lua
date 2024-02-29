@@ -1209,7 +1209,6 @@ local function GetDurationTotale()
             local text=  e.GetDurabiliy(true, true)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '耐久度' or DURABILITY, text)
-            
             e.tips:Show()
             self:SetAlpha(0.3)
         end)

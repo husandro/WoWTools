@@ -122,7 +122,7 @@ e.Icon={
     map='poi-islands-table',
     map2='|A:poi-islands-table:0:0|a',
     wow=136235,
-    wow2= BNet_GetClientEmbeddedTexture(-2, 32, 32) or '|T136235:0|t',--'|A:Icon-WoW:0:0|a',--136235
+    wow2= '|T136235:0|t',--'|A:Icon-WoW:0:0|a',--136235  BNet_GetClientEmbeddedTexture(-2, 32, 32)
     net2= '|A:gmchat-icon-blizz:0:0|a',-- BNet_GetClientEmbeddedTexture(-2, 32, 32),
     horde= 'charcreatetest-logo-horde',
     alliance='charcreatetest-logo-alliance',
@@ -173,18 +173,16 @@ end
 
 C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua    
     if success and texture then
-        e.Icon.net2= e.Icon.wow2
+        e.Icon.wow=texture
+        e.Icon.wow2= '|T'..texture..':0|t'
     end
 end)
---[[if C_Texture.IsTitleIconTextureReady(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Small) then
-    C_Texture.GetTitleIconTexture('CLNT', Enum.TitleIconVersion.Small, function(success, texture)
-        
-        print(success, texture)
-        if success and texture then
-            e.Icon.net2= '|T'..texture..':0|t'
-        end
-    end)
-end]]
+C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Medium, function(success, texture)
+    if success and texture then
+        e.Icon.net2= '|T'..texture..':0|t'
+    end
+end)
+
 function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, uiMapID
     if not tab.id then
         return
@@ -815,7 +813,7 @@ end
 --设置，提示
 function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=, y=-10, hideTime=3})
     if tab.show and not tab.frame.HelpTips then
-        tab.frame.HelpTips= e.Cbtn(tab.frame, {layer='OVERLAY',size=tab.size and {tab.size[1], tab.size[2]} or {40,40}})-- button:CreateTexture(nil, 'OVERLAY')
+        tab.frame.HelpTips= e.Cbtn(tab.frame, {icon='hide', layer='OVERLAY',size=tab.size and {tab.size[1], tab.size[2]} or {40,40}})-- button:CreateTexture(nil, 'OVERLAY')
         if tab.point=='right' then
             tab.frame.HelpTips:SetPoint('BOTTOMLEFT', tab.topoint or tab.frame, 'BOTTOMRIGHT',0, tab.y or -10)
             tab.frame.HelpTips:SetNormalAtlas(tab.atlas or e.Icon.toLeft)
@@ -1906,8 +1904,8 @@ function e.GetQuestAllTooltip()--所有，任务，提示
     end
     local num= select(2, C_QuestLog.GetNumQuestLogEntries())
     local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
-    e.tips:AddDoubleLine(e.GetQestColor('Day').hex..(e.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..e.Icon.select2, (e.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..e.MK(#all, 3))
-    e.tips:AddDoubleLine(e.Player.col..(e.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/38', '('..C_QuestLog.GetMaxNumQuestsCanAccept()..')')
+    e.tips:AddDoubleLine((e.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..e.MK(#all, 3), e.GetQestColor('Day').hex..(e.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..e.Icon.select2)
+    e.tips:AddLine(e.Player.col..(e.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/'..(C_QuestLog.GetMaxNumQuestsCanAccept() or 38))
     e.tips:AddLine(' ')
     e.tips:AddLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '当前地图' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP))..': '..inMapNum)
     e.tips:AddLine(' ')

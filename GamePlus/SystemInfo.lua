@@ -20,8 +20,8 @@ local Frames
 
 
 
---装等, 耐久度 CharacterMicroButton
-local function Init_Durabiliy()
+--角色 CharacterMicroButton
+local function Init_Character()
     local frame= CreateFrame("Frame")
     table.insert(Frames, frame)
 
@@ -32,45 +32,46 @@ local function Init_Durabiliy()
 
     function frame:settings()
         local to, cu= GetAverageItemLevel()--装等
-        local text, red
+        local text
         if to and cu and to>0 then
             text=math.modf(cu)
             if to-cu>10 then
                 text='|cnRED_FONT_COLOR:'..text..'|r'
-                red= true
+                if IsInsane() and not C_PvP.IsArena() and not C_PvP.IsBattleground() then
+                    e.Set_HelpTips({frame=self, topoint=self.Text, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=true})--设置，提示
+                end
             end
         end
         self.Text:SetText(text or '')
-        if e.Player.levelMax then
-            e.Set_HelpTips({frame=self, topoint=self.Text, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=red and not C_PvP.IsArena() and not C_PvP.IsBattleground()})--设置，提示
-        end
 
         local text, value= e.GetDurabiliy(false, false)--耐久度
         self.Text2:SetText(text:gsub('%%', ''))
-        e.Set_HelpTips({frame=self, topoint=self.Text2, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<30})--设置，提示
+        e.Set_HelpTips({frame=CharacterMicroButton, topoint=self.text2, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<30})--设置，提示
     end
     frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
     frame:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
+    frame:RegisterEvent('PLAYER_ENTERING_WORLD')
     frame:SetScript('OnEvent', frame.settings)
-    C_Timer.After(2, function() frame:settings() end)
+    --C_Timer.After(2, function() frame:settings() end)
 
     CharacterMicroButton:HookScript('OnEnter', function()
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
+        e.tips:AddLine(' ')
+        local text= e.GetDurabiliy(true, true)
+        
+        e.tips:AddLine(' ')
+        e.tips:AddLine((e.onlyChinese and '耐久度' or DURABILITY)..text)
         local item, cur, pvp= GetAverageItemLevel()
         cur= cur or 0
         item= item or 0
         pvp= pvp or 0
         e.tips:AddDoubleLine(
-            (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
-            ..(e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)..(cur==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur) or format(' |cnRED_FONT_COLOR:%.2f|r/%.2f', cur, item)),
+            (e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)
+            ..(e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
+            ..(cur==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur) or format(' |cnRED_FONT_COLOR:%.2f|r/%.2f', cur, item)),
             format('%.02f', pvp)..' PvP|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a')
-        e.tips:AddLine(' ')
-        local text=  e.GetDurabiliy(true, true)
-        e.tips:AddLine('|A:Warfronts-BaseMapIcons-Alliance-Armory-Minimap:0:0|a'..(e.onlyChinese and '耐久度' or DURABILITY)..' '..text)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end)
 end
@@ -162,6 +163,7 @@ local function Init_Talent()
         end
         a= a or ''
         b= b or a or ''
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION)..a, (lootSpecID==specID and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..b..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION))
         e.tips:Show()
     end)
@@ -200,6 +202,7 @@ local function Init_Achievement()
         end
         local guid= GetTotalAchievementPoints(true) or 0
         local point= GetTotalAchievementPoints() or 0
+        e.tips:AddLine(' ')
         e.tips:AddLine(point..' '..(e.onlyChinese and '成就点数' or ACHIEVEMENT_POINTS))
         if guid>0 then
             e.tips:AddLine(guid..' '..(e.onlyChinese and '公会成就' or GUILD_ACHIEVEMENTS_TITLE))
@@ -256,7 +259,50 @@ local function Init_Quest()
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
+        e.tips:AddLine(' ')
         e.GetQuestAllTooltip()--所有，任务，提示
+        e.tips:Show()
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+--公会 GuildMicroButton
+local function Init_Guild()
+    local frame= CreateFrame("Frame")
+    table.insert(Frames, frame)
+
+    frame.Text= e.Cstr(GuildMicroButton,  {size=Save.size, color=true})
+    frame.Text:SetPoint('TOP', GuildMicroButton, 0,  -3)
+    frame.Text2= e.Cstr(GuildMicroButton,  {size=Save.size, color=true})
+    frame.Text2:SetPoint('BOTTOM', GuildMicroButton, 0, 3)
+
+    function frame:settings()
+        local to, cu= GetAverageItemLevel()--装等
+       
+    end
+    frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
+    frame:SetScript('OnEvent', frame.settings)
+    C_Timer.After(2, function() frame:settings() end)
+
+    CharacterMicroButton:HookScript('OnEnter', function()
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+        e.tips:AddLine(' ')
+       
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end)
 end
@@ -279,6 +325,8 @@ end
 
 
 
+
+--地下城查找器
 local function Init_LFD()
     LFDMicroButton:HookScript('OnEnter', function()
         if KeybindFrames_InQuickKeybindMode() then
@@ -354,7 +402,7 @@ end
         if cur then
             info =info or {}
             if cur== max then
-                text= (info.quantity and '|cnGREEN_FONT_COLOR:'..e.MK(info.quantity, 1)..'|r' or '')
+                text= (info.quantity and e.MK(info.quantity, 1) or e.Icon.select2)
             else
                 text= format('%i%%', cur/max*100)
             end
@@ -419,12 +467,16 @@ local function Init_Store()
 
     frame.Text= e.Cstr(StoreMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', StoreMicroButton, 0,  -3)
+    frame.Text2= e.Cstr(StoreMicroButton,  {size=Save.size, color=true})
+    frame.Text2:SetPoint('BOTTOM', StoreMicroButton, 0, 3)
+    
+    StoreMicroButton.Text2= frame.Text2
 
     function frame:settings()
         local text
         local price= C_WowTokenPublic.GetCurrentMarketPrice() or 0
         if price>0 then
-            text= e.MK(price/10000, 1)
+            text= e.MK(price/10000, 0)
         end
         self.Text:SetText(text or '')
     end
@@ -433,19 +485,44 @@ local function Init_Store()
     C_WowTokenPublic.UpdateMarketPrice()
     C_Timer.After(2, function() frame:settings() end)
 
-    QuestLogMicroButton:HookScript('OnEnter', function()
+    StoreMicroButton:HookScript('OnEnter', function(self)
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
         C_WowTokenPublic.UpdateMarketPrice()
-        local price= C_WowTokenPublic.GetCurrentMarketPrice()
+        local price= C_WowTokenPublic.GetCurrentMarketPrice()        
         if price and price>0 then
-            local all, numPlayer= e.GetItemWoWNum(122284)--取得WOW物品数量
-            GameTooltipTextRight1:SetText(col..all..(numPlayer>1 and '('..numPlayer..')' or '')..'|A:token-choice-wow:0:0|a'..e.MK(price/10000,3)..'|r|A:Front-Gold-Icon:0:0|a')
-            GameTooltipTextRight1:SetShown(true)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine('|A:token-choice-wow:0:0|a'..e.MK(price/10000,3), GetCoinTextureString(price) )
+            e.tips:AddLine(' ')
         end
+        local bagAll,bankAll,numPlayer=0,0,0--帐号数据
+        for guid, info in pairs(e.WoWDate or {}) do
+            local tab=info.Item[122284]
+            if tab and guid then
+                e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
+                bagAll=bagAll +tab.bag
+                bankAll=bankAll +tab.bank
+                numPlayer=numPlayer +1
+            end
+        end
+        local all= bagAll+ bankAll
+        e.tips:AddDoubleLine('|A:groupfinder-waitdot:0:0|a'..numPlayer, '|T1120721:0|t'..all)
         e.tips:Show()
+        self.Text2:SetText(all>0 and all or '')
     end)
+
+    local all=0
+    for guid, info in pairs(e.WoWDate or {}) do
+        local tab=info.Item[122284]
+        if tab and guid then
+            e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
+            all= all +tab.bag +tab.bank
+        end
+    end
+    if all>0 then
+        frame.Text2:SetText(all)
+    end
 end
 
 
@@ -467,7 +544,7 @@ end
 
 
 
-
+--帮助
 local function Init_Help()
     local frame= CreateFrame("Frame")
     table.insert(Frames, frame)
@@ -488,9 +565,9 @@ local function Init_Help()
             self.elapsed = 0
             local latencyHome, latencyWorld= select(3, GetNetStats())--ms
             local ms= math.max(latencyHome, latencyWorld) or 0
-            local fps= math.modf(GetFramerate() or 0)
-            self.Text:SetText(ms>400 and '|cnRED_FONT_COLOR:'..ms..'|r' or ms>120 and ('|cnYELLOW_FONT_COLOR:'..ms..'|r') or ms)
-            self.Text2:SetText(fps<10 and '|cnGREEN_FONT_COLOR:'..fps..'|r' or fps<20 and '|cnYELLOW_FONT_COLOR:'..fps..'|r' or fps)
+            local fps= math.modf(GetFramerate() or 0)            
+            self.Text:SetText(fps<10 and '|cnGREEN_FONT_COLOR:'..fps..'|r' or fps<20 and '|cnYELLOW_FONT_COLOR:'..fps..'|r' or fps)
+            self.Text2:SetText(ms>400 and '|cnRED_FONT_COLOR:'..ms..'|r' or ms>120 and ('|cnYELLOW_FONT_COLOR:'..ms..'|r') or ms)
         end
     end)
 
@@ -667,15 +744,17 @@ local function Init_Plus()
     end
     if not Frames then
         Frames={}
-        Init_Durabiliy()--装等, 耐久度
+        Init_Character()--角色
         Init_Talent()--天赋
         Init_Achievement()--成就
         Init_Quest()--任务
-        Init_LFD()
-        Init_EJ()
-        Init_Store()
-        Init_Help()
-        Init_Framerate_Plus()
+        Init_Guild()--公会
+        Init_LFD()--地下城查找器
+        Init_EJ() --冒险指南
+        Init_Store()--商店
+        Init_Help()--帮助
+
+        Init_Framerate_Plus()--系统，fts        
     else
         for _, frame in pairs(Frames) do
             if frame.Text then
