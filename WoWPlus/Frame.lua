@@ -1634,6 +1634,7 @@ end
 local function Init_Move()
     set_Move_Alpha(MicroMenu)--主菜单
     set_Move_Alpha(BagsBar)--背包
+    set_Move_Alpha(ObjectiveTrackerFrame)
 
     --世界地图
     local minimizedWidth= WorldMapFrame.minimizedWidth or 702
@@ -2208,7 +2209,7 @@ end)]]
 
 
     set_Move_Frame(GameMenuFrame, {notSave=true})--菜单
-    set_Move_Frame(ExtraActionButton1, {click='RightButton', notSave=true})--额外技能
+    set_Move_Frame(ExtraActionButton1, {click='RightButton', notSave=true, notAlpha=true})--额外技能
     set_Move_Frame(ContainerFrameCombinedBags)
     set_Move_Frame(MirrorTimer1, {notSave=true})
     set_Move_Frame(ColorPickerFrame, {click='RightButton'})--颜色选择器
