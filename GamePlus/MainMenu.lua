@@ -365,7 +365,8 @@ local function Init_Guild()
                 end
             end
             local icon=(tab.clubId==guildClubId) and e.Icon.star2 or '|T'..tab.avatarId..':0|t'
-            e.tips:AddDoubleLine(icon..tab.name, (online>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..online..'|r'..icon)--..tab.memberCount
+            local col= online>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060'
+            e.tips:AddDoubleLine(icon..col..tab.name, col..online..icon)--..tab.memberCount
         end
         e.tips:Show()
     end)
