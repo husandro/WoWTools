@@ -126,12 +126,14 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     end)
 
     --玩家, 治疗，爆击，数字
-    if PlayerHitIndicator then
-        e.Set_Label_Texture_Color(PlayerHitIndicator, {type='FontString'})--设置颜色
-        PlayerHitIndicator:ClearAllPoints()
-        PlayerHitIndicator:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT')
+    if PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator then
+        local label= PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator.HitText
+        if label then
+            e.Set_Label_Texture_Color(label, {type='FontString'})--设置颜色
+            label:ClearAllPoints()
+            label:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT')
+        end
     end
-
     --宠物
     if PetHitIndicator then
         PetHitIndicator:ClearAllPoints()
@@ -144,8 +146,11 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     --移动zzZZ, 睡着
     playerFrameTargetContextual.PlayerRestLoop.RestTexture:SetPoint('TOPRIGHT', PlayerFrame.portrait, 14, 38)
 
-
-
+    C_Timer.After(4, function()
+    local t= PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator
+    t:Show()
+    t.HitText:SetText('aaaaa')
+end)
 
 
 

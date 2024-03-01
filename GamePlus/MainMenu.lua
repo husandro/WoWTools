@@ -349,7 +349,8 @@ local function Init_Guild()
             if day and day~='' then
                 e.tips:AddLine('|cffff00ff'..day..'|r', nil,nil, nil, true)
             end
-            e.tips:AddDoubleLine(e.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON, (online>1 and '|cnGREEN_FONT_COLOR:' or '|cff606060')..'|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(online-1)..'|r/|A:UI-ChatIcon-App:0:0|a'..(app-1))
+            local col= online>1 and '|cnGREEN_FONT_COLOR:' or '|cff606060'
+            e.tips:AddDoubleLine(col..(e.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON), col..'|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(online-1)..'|r/|A:UI-ChatIcon-App:0:0|a'..(app-1))
             if #clubs>0 then
                 e.tips:AddLine(' ')
             end
