@@ -3,7 +3,9 @@ local addName= HUD_EDIT_MODE_MICRO_MENU_LABEL..' Plus'
 local Save={
     plus=true,
     size=10,
-    mainMenuAlpha=0.5,
+    enabledMainMenuAlpha= true,
+    mainMenuAlphaValue=0.5,
+
     --frameratePlus=true,--系统 fps plus
     --framerateLogIn=true,--自动，打开
 }
@@ -861,6 +863,146 @@ end
 
 
 
+--菜单，透明度
+local function Init_MainMenu(init)
+    if not Save.enabledMainMenuAlpha then
+        return
+    end
+    local tab = {
+        'CharacterMicroButton',--菜单
+        'SpellbookMicroButton',
+        'TalentMicroButton',
+        'AchievementMicroButton',
+        'QuestLogMicroButton',
+        'GuildMicroButton',
+        'LFDMicroButton',
+        'EJMicroButton',
+        'CollectionsMicroButton',
+        'MainMenuMicroButton',
+        'HelpMicroButton',
+        'StoreMicroButton',
+        'MainMenuBarBackpackButton',--背包
+    }
+    local function set_OnLeave(self)
+        local texture= self.Portrait or self:GetNormalTexture()
+        if texture then
+            texture:SetAlpha(Save.mainMenuAlphaValue)
+        end
+        if self.Background then
+            self.Background:SetAlpha(Save.mainMenuAlphaValue)
+        end
+    end
+
+    for _, text in pairs(tab) do
+        local btn= _G[text]
+        if btn then
+            if init then
+                btn:HookScript('OnEnter', function(self)
+                    local texture= self.Portrait or self:GetNormalTexture()
+                    if texture then
+                        texture:SetAlpha(1)
+                        texture:SetVertexColor(1,1,1,1)
+                    end
+                    if self.Background then
+                        self.Background:SetAlpha(1)
+                    end
+                end)
+                btn:HookScript('OnLeave', set_OnLeave)
+            end
+            set_OnLeave(btn)
+        end
+    end
+
+    tab={
+        'CharacterBag0Slot',
+        'CharacterBag1Slot',
+        'CharacterBag2Slot',
+        'CharacterBag3Slot',
+        'CharacterReagentBag0Slot',
+    }
+    local function set_Bag_OnLeave(self)
+        local name= self:GetName()
+        if name then
+            local texture= _G[name..'IconTexture']
+            if texture then
+                texture:SetAlpha(Save.mainMenuAlphaValue)
+            end
+            texture=_G[name..'NormalTexture']
+            if texture then
+                texture:SetAlpha(Save.mainMenuAlphaValue)
+            end
+        end
+    end
+    for _, text in pairs(tab) do
+        local btn= _G[text]
+        if btn then
+            if init then
+                btn:HookScript('OnEnter', function(self)
+                    local name= self:GetName()
+                    if name then
+                        local texture= _G[name..'IconTexture']
+                        if texture then
+                            texture:SetAlpha(1)
+                        end
+                        texture=_G[name..'NormalTexture']
+                        if texture then
+                            texture:SetAlpha(1)
+                        end
+                    end
+                end)
+                btn:HookScript('OnLeave', set_Bag_OnLeave)
+            end
+            set_Bag_OnLeave(btn)
+        end
+    end
+
+    --[[CharacterReagentBag0SlotNormalTexture:SetAlpha(Save.mainMenuAlphaValue)--外框 hooksecurefunc(MainMenuBarBagManager, 'ToggleExpandBar', function()
+    if init then
+        CharacterReagentBag0Slot:HookScript('OnLeave', function(self)--GetCVarBool("expandBagBar")
+            CharacterReagentBag0SlotIconTexture:SetAlpha(Save.mainMenuAlphaValue)
+        end)
+        CharacterReagentBag0Slot:HookScript('OnEnter', function(self)
+            CharacterReagentBag0SlotIconTexture:SetAlpha(1)
+        end)
+    end]]
+    --[[
+        set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
+    end)]]
+
+    --[[if init then
+        hooksecurefunc('PaperDollItemSlotButton_Update', function(self)--PaperDollFrame.lua 主菜单，包
+            local bagID= self:GetID()
+            if bagID>30 then
+                --set_Alpha_Color(self:GetNormalTexture())
+                --set_Alpha_Color(self.icon)
+                self:SetAlpha(GetInventoryItemTexture("player", bagID)~=nil and 1 or 0.1)
+            end
+        end)
+    end]]
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -882,7 +1024,7 @@ local function Init_Plus()
         Init_Store()--商店
         Init_Help()--帮助
         Init_Bag()--背包
-
+        Init_MainMenu(true)--菜单，透明度
     else
         for _, frame in pairs(Frames) do
             if frame.Text then
@@ -1055,6 +1197,30 @@ local function Init_Options()--初始, 选项
             Save.size=value3
             Init_Plus()
         end
+    })
+    initializer:SetParentInitializer(initializer2, function() if Save.plus then return true else return false end end)
+
+    initializer= e.AddPanel_Check_Sider({
+        checkName= e.onlyChinese and '透明度' or 'Alpha',
+        checkValue= Save.enabledMainMenuAlpha,
+        checkTooltip= e.cn(addName),
+        checkFunc= function()
+            Save.enabledMainMenuAlpha= not Save.enabledMainMenuAlpha and true or nil
+            print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+        sliderValue= Save.mainMenuAlphaValue,
+        sliderMinValue= 0.1,
+        sliderMaxValue= 1,
+        sliderStep= 0.1,
+        siderName= nil,
+        siderTooltip= nil,
+        siderFunc= function(_, _, value2)
+            local value3= e.GetFormatter1to10(value2, 0.1, 1)
+            Save.mainMenuAlphaValue= value3
+            Init_MainMenu()
+        end,
+        layout= Layout,
+        category= Category,
     })
     initializer:SetParentInitializer(initializer2, function() if Save.plus then return true else return false end end)
 

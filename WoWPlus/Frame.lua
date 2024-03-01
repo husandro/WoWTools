@@ -378,8 +378,36 @@ end
 
 
 
-
-
+--Frame 移动时，设置透明度
+local function set_Move_Alpha(frame)
+    if not frame or not Save.scale or Save.notAlpha or frame.ResizeButton then
+        return
+    end
+    frame.ResizeButton= CreateFrame("Frame", nil, frame)
+    frame.ResizeButton:SetScript('OnEvent', function(self, event)
+        local target= self:GetParent()
+        if event=='PLAYER_STARTED_MOVING' then
+            target:SetAlpha(Save.alpha)
+        else
+            target:SetAlpha(1)
+        end
+    end)
+    function frame.ResizeButton:set_event()
+        if self:IsShown() then
+            self:RegisterEvent('PLAYER_STARTED_MOVING')
+            self:RegisterEvent('PLAYER_STOPPED_MOVING')
+        end
+        self:SetScript('OnShow', function(frame)
+            frame:RegisterEvent('PLAYER_STARTED_MOVING')
+            frame:RegisterEvent('PLAYER_STOPPED_MOVING')
+        end)
+        self:SetScript('OnHide', function(frame)
+            frame:UnregisterAllEvents()
+            frame:GetParent():SetAlpha(1)
+        end)
+    end
+    frame.ResizeButton:set_event()
+end
 
 
 
@@ -1604,6 +1632,9 @@ end
 --初始,移动
 --########
 local function Init_Move()
+    set_Move_Alpha(MicroMenu)--主菜单
+    set_Move_Alpha(BagsBar)--背包
+
     --世界地图
     local minimizedWidth= WorldMapFrame.minimizedWidth or 702
     local minimizedHeight= WorldMapFrame.minimizedHeight or 534

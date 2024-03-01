@@ -728,40 +728,20 @@ local function Init_All_Frame()
             end
         end
     end)
-
-    if CharacterReagentBag0Slot then
-        set_Alpha_Color(CharacterReagentBag0SlotNormalTexture, nil, nil, min03)--外框
-
-        local function set_Reagent_Bag_Alpha(show)
-            if show then
-                CharacterReagentBag0SlotIconTexture:SetVertexColor(1,1,1,1)
-            else
-                set_Alpha_Color(CharacterReagentBag0SlotIconTexture, nil, nil, min03)
-            end
+    
+    local tab={
+        'CharacterBag0Slot',
+        'CharacterBag1Slot',
+        'CharacterBag2Slot',
+        'CharacterBag3Slot',
+        'CharacterReagentBag0Slot',
+    }
+    for _, text in pairs(tab) do
+        if _G[text] then
+            set_Alpha_Color(_G[text]:GetNormalTexture(), true)
         end
-        set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
-        CharacterReagentBag0Slot:HookScript('OnLeave', function()
-            if not Save.disabledMainMenu then
-                set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
-            end
-        end)
-        CharacterReagentBag0Slot:HookScript('OnEnter', function()
-            set_Reagent_Bag_Alpha(true)
-        end)
-        hooksecurefunc(MainMenuBarBagManager, 'ToggleExpandBar', function()
-            set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
-        end)
     end
 
-
-    hooksecurefunc('PaperDollItemSlotButton_Update', function(self)--PaperDollFrame.lua 主菜单，包
-        local bagID= self:GetID()
-        if bagID>30 then
-            set_Alpha_Color(self:GetNormalTexture())
-            set_Alpha_Color(self.icon)
-            self:SetAlpha(GetInventoryItemTexture("player", bagID)~=nil and 1 or 0.1)
-        end
-    end)
 
      hide_Frame_Texture(CharacterHeadSlot)--1
      hide_Frame_Texture(CharacterNeckSlot)--2
@@ -2350,76 +2330,6 @@ end
 
 
 
---##################
---主菜单，颜色，透明度
---##################
-local function Init_Main_Menu(init)--主菜单
-    if init and Save.disabledMainMenu then
-        return
-    end
-    local buttons = {
-        'CharacterMicroButton',--菜单
-        'SpellbookMicroButton',
-        'TalentMicroButton',
-        'AchievementMicroButton',
-        'QuestLogMicroButton',
-        'GuildMicroButton',
-        'LFDMicroButton',
-        'EJMicroButton',
-        'CollectionsMicroButton',
-        'MainMenuMicroButton',
-        'HelpMicroButton',
-        'StoreMicroButton',
-        'MainMenuBarBackpackButton',--背包
-        --'CharacterReagentBag0Slot',--材料包
-    }
-    for _, frame in pairs(buttons) do
-        local self= _G[frame]
-        if self then
-            if not Save.disabledMainMenu then
-                if init then
-                    self:HookScript('OnEnter', function(self2)
-                        local texture= self2.Portrait or self2:GetNormalTexture()
-                        if texture then
-                            texture:SetAlpha(1)
-                            texture:SetVertexColor(1,1,1,1)
-                        end
-                        if self.Background then
-                            self.Background:SetAlpha(1)
-                        end
-                    end)
-                    self:HookScript('OnLeave', function(self2)
-                        if not Save.disabledMainMenu then
-                            set_Alpha_Color(self2.Portrait or self2:GetNormalTexture(), nil, nil, min03)
-                            if self.Background then
-                                self.Background:SetAlpha(0.5)
-                            end
-                        end
-                    end)
-                end
-                set_Alpha_Color(self.Portrait or self:GetNormalTexture(), nil, nil, min03)
-
-            else
-                local texture= self.Portrait or self:GetNormalTexture()
-                if texture then
-                    texture:SetAlpha(1)
-                    texture:SetVertexColor(1,1,1,1)
-                end
-            end
-            if self.Background then
-                self.Background:SetAlpha(0.5)
-            end
-        end
-    end
-
-    --EditModeSettingDisplayInfoManager.systemSettingDisplayInfo[Enum.EditModeSystem.MicroMenu][3].minValue=50--EditModeSettingDisplayInfo.lua
-end
-
-
-
-
-
-
 
 
 
@@ -2731,19 +2641,6 @@ local function Init_Options()
     })
     initializer:SetParentInitializer(initializer2, function() if Save.disabled then return false else return true end end)
 
-    initializer= e.AddPanel_Check({
-        name= e.onlyChinese and '主菜单' or MAINMENU_BUTTON,
-        tooltip= e.cn(addName),
-        category= Category,
-        value= not Save.disabledMainMenu,
-        func= function()
-            Save.disabledMainMenu= not Save.disabledMainMenu and true or nil
-            Init_Main_Menu()
-            print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save.disabledColor then return false else return true end end)
-
     e.AddPanel_Header(Layout, e.onlyChinese and '其它' or OTHER)
 
     initializer2= e.AddPanel_Check({
@@ -2892,9 +2789,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Chat_Bubbles()--聊天泡泡
                 Init_HelpTip()--隐藏教程
                 Init_Main_Button()
-                C_Timer.After(2, function()
+                --[[C_Timer.After(2, function()
                     Init_Main_Menu(true)--主菜单, 颜色
-                end)
+                end)]]
 
             end
             eventTab=nil
