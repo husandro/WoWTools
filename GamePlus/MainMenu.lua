@@ -53,10 +53,12 @@ local function Init_Character()
         self.Text2:SetText(text:gsub('%%', ''))
         e.Set_HelpTips({frame=CharacterMicroButton, topoint=self.text2, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<30})--设置，提示
     end
+
+    frame:RegisterEvent('EQUIPMENT_SWAP_FINISHED')    
     frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
     frame:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
     frame:RegisterEvent('PLAYER_ENTERING_WORLD')
-    frame:SetScript('OnEvent', frame.settings)
+    frame:SetScript('OnEvent', function(self) C_Timer.After(0.6, function() self:settings() end) end)
     --C_Timer.After(2, function() frame:settings() end)
 
     CharacterMicroButton:HookScript('OnEnter', function()
@@ -69,7 +71,7 @@ local function Init_Character()
         e.tips:AddLine(' ')
 
         local euip
-        for index, setID in pairs(C_EquipmentSet.GetEquipmentSetIDs() or {}) do
+        for _, setID in pairs(C_EquipmentSet.GetEquipmentSetIDs() or {}) do
             local name, texture, _, isEquipped= C_EquipmentSet.GetEquipmentSetInfo(setID)
             if isEquipped and name then
                 euip= '|cffff00ff'..name..'|r'..(texture and '|T'..texture..':0|t' or '')
@@ -302,6 +304,8 @@ local function Init_Guild()
     frame.Text2= e.Cstr(GuildMicroButton,  {size=Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', GuildMicroButton, 0, 3)
 
+    GuildMicroButton.Text2= frame.Text2
+
     function frame:settings()
         local online = select(2, GetNumGuildMembers())
         self.Text:SetText((online and online>1) and online-1 or '')
@@ -335,7 +339,7 @@ local function Init_Guild()
     frame:SetScript('OnEvent', frame.settings)
     C_Timer.After(2, function() frame:settings() end)
 
-    GuildMicroButton:HookScript('OnEnter', function()
+    GuildMicroButton:HookScript('OnEnter', function(self)
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
@@ -356,6 +360,7 @@ local function Init_Guild()
             end
         end
         local guildClubId= C_Club.GetGuildClubId()
+        local all=0
         for _, tab in pairs(clubs) do
             local members= C_Club.GetClubMembers(tab.clubId) or {}
             local online= 0
@@ -363,6 +368,7 @@ local function Init_Guild()
                 local info = C_Club.GetMemberInfo(tab.clubId, memberID) or {}
                 if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
                     online= online+1
+                    all= all+1
                 end
             end
             local icon=(tab.clubId==guildClubId) and e.Icon.star2 or '|T'..tab.avatarId..':0|t'
@@ -370,6 +376,7 @@ local function Init_Guild()
             e.tips:AddDoubleLine(icon..col..tab.name, col..online..icon)--..tab.memberCount
         end
         e.tips:Show()
+        self.Text2:SetText(all>0 and all or '')
     end)
 end
 
