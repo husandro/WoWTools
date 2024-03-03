@@ -361,11 +361,11 @@ local function Init()
 
 
 
-    hooksecurefunc('PetStable_UpdateSlot', function(btn)--, petSlot)--宠物，类型，已激MODEL
+    hooksecurefunc('PetStable_UpdateSlot', function(btn, petSlot)--宠物，类型，已激MODEL
         if btn.set_settings then
             btn:set_settings()
         end
-    end)--宠物，类型，已激MODEL
+    end)
 
 
     e.Set_Label_Texture_Color(PetStableFrameTitleText, {type='FontString'})--标题, 颜色

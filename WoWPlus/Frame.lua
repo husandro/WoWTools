@@ -1918,7 +1918,7 @@ end)]]
     end})
 
     --好友列表
-    set_Move_Frame(FriendsFrame, {setSize=true, minW=338, minH=424, initFunc=function(self)
+    set_Move_Frame(FriendsFrame, {setSize=true, minW=338, minH=424, initFunc=function(btn)
             FriendsListFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -24, 30)
             WhoFrameColumnHeader1:SetWidth(200)
             hooksecurefunc(WhoFrame.ScrollBox, 'Update', function(self)
@@ -1926,6 +1926,44 @@ end)]]
                     btn:SetPoint('RIGHT')
                 end
             end)
+            function btn:set_RaidFrame_Button_size()
+                if UnitAffectingCombat('player') then
+                    return
+                end
+                local w= FriendsFrame:GetWidth()/2-8
+                for i=1, 8 do
+                    local frame= _G['RaidGroup'..i]
+                    if frame then
+                        frame:SetWidth(w)
+                        for _, r in pairs({frame:GetRegions()}) do
+                            if r:GetObjectType()=='Texture' then
+                                r:SetWidth(w+4)
+                            end
+                        end
+                    end
+                    for b=1, 5 do
+                        local btn= _G['RaidGroup'..i..'Slot'..b]
+                        if btn then
+                            btn:SetWidth(w)
+                        end
+                    end
+                end
+                for i=1, 40 do
+                    local btn= _G['RaidGroupButton'..i]
+                    if btn then
+                        btn:SetWidth(w)
+                    end
+                    local name= _G['RaidGroupButton'..i..'Name']
+                    if name then--11+23+50 
+                        name:SetWidth(w-114)
+                    end
+                end
+            end
+            RaidFrame:HookScript('OnShow', btn.set_RaidFrame_Button_size)
+        end, sizeUpdateFunc=function(btn)
+            if RaidFrame:IsShown() then
+                btn:set_RaidFrame_Button_size()
+            end
         end, sizeRestFunc=function(self)
             self.target:SetSize(338, 424)
     end})
