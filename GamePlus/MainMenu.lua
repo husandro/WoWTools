@@ -54,7 +54,7 @@ local function Init_Character()
         e.Set_HelpTips({frame=CharacterMicroButton, topoint=self.text2, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<30})--设置，提示
     end
 
-    frame:RegisterEvent('EQUIPMENT_SWAP_FINISHED')    
+    frame:RegisterEvent('EQUIPMENT_SWAP_FINISHED')
     frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
     frame:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
     frame:RegisterEvent('PLAYER_ENTERING_WORLD')

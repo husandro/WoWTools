@@ -453,6 +453,7 @@ local function set_Move_Frame(self, tab)
     local click= tab.click
     local frame= tab.frame
     local notSave= tab.notSave or not Save.SavePoint
+    local notFuori= tab.notFuori
 
     if not self or not name or self.setMoveFrame then
         return
@@ -469,7 +470,8 @@ local function set_Move_Frame(self, tab)
     self.setMoveFrame=true
     self.typeClick= click
     self.notSave= notSave
-    if not Save.moveToScreenFuori and Save.SavePoint then
+
+    if not Save.moveToScreenFuori and Save.SavePoint or notFuori then
         self:SetClampedToScreen(true)
         if frame then
             frame:SetClampedToScreen(true)
@@ -2247,7 +2249,7 @@ end)]]
 
 
     set_Move_Frame(GameMenuFrame, {notSave=true})--菜单
-    set_Move_Frame(ExtraActionButton1, {click='RightButton', notSave=true, notAlpha=true})--额外技能
+    set_Move_Frame(ExtraActionButton1, {click='RightButton', notSave=true, notAlpha=true, notFuori=true})--额外技能
     set_Move_Frame(ContainerFrameCombinedBags)
     set_Move_Frame(MirrorTimer1, {notSave=true})
     set_Move_Frame(ColorPickerFrame, {click='RightButton'})--颜色选择器
