@@ -301,7 +301,7 @@ local function UI_Party_Info(self)--队友位置
     if not self.partyLable then
         self.partyLable=e.Cstr(self.keyFrame)--队伍信息
         --self.party:SetPoint('BOTTOMLEFT', _G['MoveZoomInButtonPerChallengesKeystoneFrame'] or self, 'TOPLEFT')
-        self.partyLable:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT')
+        self.partyLable:SetPoint('TOPLEFT', self, 'TOPRIGHT')
     end
     self.partyLable:SetText(text or '')
     e.GetNotifyInspect(UnitTab)--取得装等
