@@ -1964,6 +1964,8 @@ end)]]
             RaidFrame:HookScript('OnShow', btn.set_RaidFrame_Button_size)
 
             RecruitAFriendFrame.RecruitList.ScrollBox:SetPoint('BOTTOMRIGHT', -20,0)
+            RecruitAFriendFrame.RewardClaiming.Background:SetPoint('LEFT')
+            RecruitAFriendFrame.RewardClaiming.Background:SetPoint('RIGHT')
         end, sizeUpdateFunc=function(btn)
             if RaidFrame:IsShown() then
                 btn:set_RaidFrame_Button_size()
