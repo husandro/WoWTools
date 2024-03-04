@@ -2077,6 +2077,8 @@ end)]]
                 btn.setSize= false
             end
             PVEFrame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
+            --LFGListFrame.ApplicationViewer.InfoBackground
+            LFGListFrame.ApplicationViewer:SetPoint('RIGHT')
         end)
     end, sizeUpdateFunc=function(btn)
         if PVEFrame.activeTabIndex==3 then
