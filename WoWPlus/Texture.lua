@@ -829,14 +829,20 @@ local function Init_All_Frame()
      end
 
 
-     --聊天设置
-     set_NineSlice(ChannelFrame, true)
+     --聊天设置     
      set_Alpha_Color(ChannelFrameBg)
+
      hide_Texture(ChannelFrameInset.Bg)
      hide_Texture(ChannelFrame.RightInset.Bg)
      hide_Texture(ChannelFrame.LeftInset.Bg)
+     
      set_ScrollBar(ChannelFrame.ChannelRoster)
      set_ScrollBar(ChannelFrame.ChannelList)
+
+     set_NineSlice(ChannelFrame)
+     set_NineSlice(ChannelFrameInset)
+     set_NineSlice(ChannelFrame.RightInset)
+     set_NineSlice(ChannelFrame.LeftInset)
 
 
      --任务
