@@ -1962,6 +1962,8 @@ end)]]
                 end
             end
             RaidFrame:HookScript('OnShow', btn.set_RaidFrame_Button_size)
+
+            RecruitAFriendFrame.RecruitList.ScrollBox:SetPoint('BOTTOMRIGHT', -20,0)
         end, sizeUpdateFunc=function(btn)
             if RaidFrame:IsShown() then
                 btn:set_RaidFrame_Button_size()
@@ -2077,10 +2079,10 @@ end)]]
                 btn.setSize= false
             end
             PVEFrame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
-            --LFGListFrame.ApplicationViewer.InfoBackground
-            LFGListFrame.ApplicationViewer:SetPoint('RIGHT')
+            --LFGListFrame.ApplicationViewer:SetPoint('RIGHT', -20, 0)
+            LFGListFrame.ApplicationViewer.InfoBackground:SetPoint('RIGHT', -20, 0)
         end)
-    end, sizeUpdateFunc=function(btn)
+    end, sizeUpdateFunc=function()
         if PVEFrame.activeTabIndex==3 then
             e.call(ChallengesFrame.Update, ChallengesFrame)
         end
@@ -2115,10 +2117,6 @@ end)]]
 
 
 
-
-
-    --好友列表
-    --set_Move_Frame(AddFriendFrame)
 
 
     created_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer})

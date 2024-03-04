@@ -771,7 +771,9 @@ local function Init_EncounterJournal()--冒险指南界面
                         local name, _, _, _, loreImage, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(frame.instanceID)
                         e.tips:SetOwner(frame, "ANCHOR_RIGHT");
                         e.tips:ClearLines();
-                        e.tips:AddLine(name)
+                        if name then
+                            e.tips:AddLine(name..' ')
+                        end
                         e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..frame.instanceID, loreImage and '|T'..loreImage..':0|t'..loreImage)
                         e.tips:AddDoubleLine(
                             dungeonAreaMapID and 'dungeonAreaMapID |cnGREEN_FONT_COLOR:'..dungeonAreaMapID,

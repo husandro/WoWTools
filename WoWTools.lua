@@ -177,7 +177,7 @@ C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, fun
         e.Icon.wow2= '|T'..texture..':0|t'
     end
 end)
-C_Texture.GetTitleIconTexture(BNET_CLIENT_CLNT, Enum.TitleIconVersion.Medium, function(success, texture)
+C_Texture.GetTitleIconTexture('BSAp', Enum.TitleIconVersion.Small, function(success, texture)
     if success and texture then
         e.Icon.net2= '|T'..texture..':0|t'
     end

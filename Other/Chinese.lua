@@ -7565,6 +7565,17 @@ end)
         set(TableAttributeDisplay.VisibilityButton.Label, '显示')
         set(TableAttributeDisplay.HighlightButton.Label, '高亮')
         set(TableAttributeDisplay.DynamicUpdateButton.Label, '动态更新')
+
+    elseif arg1=='Blizzard_Calendar' then--日历
+        set(CalendarFilterFrameText, '过滤器')
+        hooksecurefunc('CalendarFrame_Update', function()
+            for i= 1, 7 do
+                setLabel(_G['CalendarWeekday'..i..'Name'])
+            end
+        end)
+        hooksecurefunc('CalendarFrame_UpdateTitle', function()
+            setLabel(CalendarMonthName)
+        end)
     end
 end
 

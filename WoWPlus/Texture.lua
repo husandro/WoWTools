@@ -212,15 +212,6 @@ local function set_Slider(frame)
     e.Set_Label_Texture_Color(left, {type='Texture'})
 end
 
-local function set_Menu(self)
-    if self then
-        set_Alpha_Frame_Texture(self, {notAlpha=true})
-        set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
-        set_Alpha_Frame_Texture(self.DecrementButton, {notAlpha=true})
-        set_Alpha_Frame_Texture(self.IncrementButton, {notAlpha=true})
-        e.Set_Label_Texture_Color(self.Text, {type='FontString'})
-    end
-end
 
 local function set_Label(self, shadowOffset)
     if self then
@@ -245,6 +236,23 @@ local function set_Button(btn, tab)
 end
 
 
+local function set_Menu(self, tab)
+    if not self then
+        return
+    end
+    tab = tab or {}
+    set_Alpha_Frame_Texture(self, {notAlpha=true})
+    local btn= self.Button or tab.button
+    if btn then
+        e.Set_Label_Texture_Color(btn:GetNormalTexture(), {type='Texture', alpha=min05 or Save.alpha})
+    end
+    --set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
+    set_Alpha_Frame_Texture(self.DecrementButton, {notAlpha=true})
+    set_Alpha_Frame_Texture(self.IncrementButton, {notAlpha=true})
+    e.Set_Label_Texture_Color(self.Text, {type='FontString'})
+end
+
+
 
 local function set_BagTexture_Button(self)
     if not self.hasItem then
@@ -254,12 +262,12 @@ local function set_BagTexture_Button(self)
     end
     self.NormalTexture:SetAlpha(not self.hasItem and 0.3 or 1)
 end
+
 local function set_BagTexture(self)
     for _, itemButton in self:EnumerateValidItems() do
         set_BagTexture_Button(itemButton)
     end
 end
-
 
 
 
@@ -581,7 +589,8 @@ local function Init_All_Frame()
      set_Alpha_Color(LFGListFrameBottomRight)
 
      set_ScrollBar(LFGListFrame.ApplicationViewer)
-
+     set_NineSlice(LFGListFrame.ApplicationViewer.Inset)
+    
      set_Alpha_Color(RaidFinderQueueFrameBackground)
      set_Menu(RaidFinderQueueFrameSelectionDropDown)
      hide_Texture(RaidFinderFrameRoleBackground)
@@ -776,10 +785,15 @@ local function Init_All_Frame()
      set_Menu(FriendsFrameStatusDropDown)
      set_Alpha_Frame_Texture(FriendsFrameBattlenetFrame.BroadcastButton, {notAlpha=true})
 
-     --好友列表，团队
+     --好友列表，召募
      if RecruitAFriendFrame and RecruitAFriendFrame.RecruitList then
         set_ScrollBar(RecruitAFriendFrame.RecruitList)
         set_Alpha_Color(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
+        set_NineSlice(RecruitAFriendFrame.RewardClaiming.Inset)
+        set_NineSlice(RecruitAFriendFrame.RecruitList.ScrollFrameInset)
+        hide_Texture(RecruitAFriendFrame.RecruitList.Header.Background)
+        set_Alpha_Color(RecruitAFriendFrame.RewardClaiming.Inset.Bg)
+        
      end
      if RaidInfoFrame then--团队信息
         hide_Texture(RaidInfoDetailHeader)
@@ -968,6 +982,8 @@ local function Init_All_Frame()
             end
         end
     end)
+
+    set_SearchBox(ChatFrame1EditBox)
 
      --插件，管理
      set_NineSlice(AddonList,true)
@@ -1896,7 +1912,9 @@ local function Init_Event(arg1)
 
         set_Alpha_Frame_Texture(CalendarViewHolidayFrame.Header, {notAlpha=true})
         set_Alpha_Frame_Texture(CalendarViewHolidayFrame.Border, {notAlpha=true})
-        --set_Menu(CalendarFilterFrame)
+        set_Menu(CalendarFilterFrame, {button=CalendarFilterButton})
+        set_Alpha_Color(CalendarMonthBackground)
+        set_Alpha_Color(CalendarYearBackground)
 
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
         set_NineSlice(FlightMapFrame.BorderFrame, true)

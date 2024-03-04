@@ -528,6 +528,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
         if Save.disabledFriendPlus then
             return
         end
+       
         if self.buttonType == FRIENDS_BUTTON_TYPE_WOW then
             local info = C_FriendList.GetFriendInfoByIndex(self.id)
             if not info or not info.guid then
@@ -547,7 +548,6 @@ local function set_FriendsList_Init()--好友列表, 初始化
             if accountInfo.note and accountInfo.note:gsub(' ','')~='' then--备注，提示
                 self.name:SetText(accountInfo.accountName..' ('..accountInfo.note..')')
             end
-
             if not accountInfo.gameAccountInfo.isInCurrentRegion then--不在，当前地区
                 if accountInfo.gameAccountInfo.regionID and regionNames[accountInfo.gameAccountInfo.regionID] then
                     self.info:SetText('|cnRED_FONT_COLOR:'..regionNames[accountInfo.gameAccountInfo.regionID])

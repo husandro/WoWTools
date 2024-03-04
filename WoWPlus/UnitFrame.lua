@@ -943,7 +943,7 @@ local function set_memberFrame(memberFrame)
                     text= e.MK(distanceSquared, 0)
                 end
                 if mapInfo and mapInfo.name then
-                    text= (text and text..' ' or '')..mapInfo.name
+                    text= (text and text..' ' or '')..e.cn(mapInfo.name)
                     local mapID2= C_Map.GetBestMapForUnit('player')
                     if mapID2== mapID then
                         text= e.Icon.select2..text

@@ -264,11 +264,14 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
 end
 
 local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使用, 属性
+    if Save.hide then
+        link= nil
+    end
     local enchant, use, pvpItem, upgradeItem, createItem
     local unit = (not isPaperDollItemSlot and InspectFrame) and InspectFrame.unit or 'player'
     local isLeftSlot= is_Left_Slot(slot)
 
-    if link and not Save.hide and not IsCorruptedItem(link) then
+    if link and not IsCorruptedItem(link) then
         local dateInfo= e.GetTooltipData({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr,ITEM_CREATED_BY_Str}, onlyText=true})--物品提示，信息
         enchant, use, pvpItem, upgradeItem, createItem= dateInfo.text[enchantStr], dateInfo.red, dateInfo.text[pvpItemStr], dateInfo.text[upgradeStr], dateInfo.text[ITEM_CREATED_BY_Str]
     end
@@ -303,7 +306,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
     set_no_Enchant(self, slot, enchant and true or false, isPaperDollItemSlot)--附魔，按钮
 
     use=  link and select(2, GetItemSpell(link))--物品是否可使用
-    if use and not self.use then
+    if use and not self.use  then
         local h=self:GetHeight()/3
         self.use= self:CreateTexture()
         self.use:SetSize(h,h)
@@ -505,7 +508,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
     end
 
     local du, min, max
-    if link and not Save.hide then
+    if link then
         min, max=GetInventoryItemDurability(slot)
         if min and max and max>0 then
             du=min/max*100

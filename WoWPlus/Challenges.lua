@@ -1311,10 +1311,12 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     frame.nameLable:SetPoint('BOTTOM', frame, 'TOP', 0, 3)
                     frame.nameLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                     frame.nameLable:SetScript('OnEnter', function(self2)
-                        e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
-                        e.tips:ClearLines()
-                        e.tips:AddLine(self2.name)
-                        e.tips:Show()
+                        if self2.name then
+                            e.tips:SetOwner(self2:GetParent(), "ANCHOR_LEFT")
+                            e.tips:ClearLines()
+                            e.tips:AddLine(self2.name..' ')
+                            e.tips:Show()
+                        end
                         self2:SetAlpha(0.5)
                     end)
                 end
