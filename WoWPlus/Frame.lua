@@ -12,7 +12,7 @@ local Save={
     size={},
     disabledSize={},--['CharacterFrame']= true
 
-    --notAlpha=true,--是否设置，移动时，设置透明度
+    --notMoveAlpha=true,--是否设置，移动时，设置透明度
     alpha=0.5,
     disabledAlpha={},
 }
@@ -58,11 +58,13 @@ local function Set_Scale_Size(frame, tab)
 
     local setSize= tab.setSize
     local disabledSize= Save.disabledSize[name]
+    btn.restPointFunc= tab.restPointFunc--还原，（清除，位置，数据）
+    btn.hideButton= tab.hideButton--设置透明度为0，移到frame设置为1，
     btn.disabledSize= disabledSize--禁用，大小功能
-    btn.setSize= setSize and not disabledSize--是否有，设置大小，功能
+    btn.setSize= setSize and not disabledSize--是否有，设置大小，功能    
 
     local onShowFunc= tab.onShowFunc-- true, function
-    btn.notAlpha= tab.notAlpha--是否设置，移动时，设置透明度
+    btn.notMoveAlpha= tab.notMoveAlpha--是否设置，移动时，设置透明度
 
     if btn.setSize then
         local minW= tab.minW or (e.Player.husandro and 115 or frame:GetWidth()/2)--最小窗口， 宽
@@ -71,10 +73,13 @@ local function Set_Scale_Size(frame, tab)
         local maxH= tab.maxH--最大，可无
         local rotationDegrees= tab.rotationDegrees--旋转度数
         local initFunc= tab.initFunc--初始
+
         btn.sizeRestFunc= tab.sizeRestFunc--清除，数据
         btn.sizeUpdateFunc= tab.sizeUpdateFunc--setSize时, OnUpdate
         btn.sizeRestTooltipColorFunc= tab.sizeRestTooltipColorFunc--重置，提示SIZE，颜色
         btn.sizeStoppedFunc= tab.sizeStoppedFunc--保存，大小，内容
+
+
 
         frame:SetResizable(true)
         btn:Init(frame, minW, minH, maxW , maxH, rotationDegrees)
@@ -100,11 +105,11 @@ local function Set_Scale_Size(frame, tab)
 
     e.Set_Label_Texture_Color(btn, {type='Button', alpha=1})--设置颜色
 
-    --btn:SetAlpha(0.5)
+
     btn:SetSize(16, 16)
     btn:SetPoint('BOTTOMRIGHT', frame, 6,-6)
     btn:SetClampedToScreen(true)
-    btn:SetScript('OnLeave', function() GameTooltip_Hide() ResetCursor()  end)
+
     function btn:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
@@ -124,7 +129,7 @@ local function Set_Scale_Size(frame, tab)
         local col= Save.scale[self.name] and '' or '|cff606060'
         e.tips:AddDoubleLine(col..(e.onlyChinese and '默认' or DEFAULT), col..'Alt+'..e.Icon.left)
 
-        if not self.notAlpha then
+        if not self.notMoveAlpha then
             e.tips:AddLine(' ')
             if not Save.disabledAlpha[self.name] then
                 e.tips:AddDoubleLine((e.onlyChinese and '透明度 ' or 'Alpha ')..'|cnGREEN_FONT_COLOR:'..Save.alpha, e.Icon.mid)
@@ -158,14 +163,36 @@ local function Set_Scale_Size(frame, tab)
             )
             e.tips:AddDoubleLine(e.GetEnabeleDisable(true), 'Ctrl+'..e.Icon.right)
         end
-
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, 'Shift+'..e.Icon.left)
+        if self.target.setMoveFrame and not self.target.notSave then
+            local col= Save.point[self.name] and '' or '|cff606060'
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(col..(e.onlyChinese and '清除位置' or (SLASH_STOPWATCH_PARAM_STOP2..CHOOSE_LOCATION:gsub(CHOOSE , ''))), col..'Shift+'..e.Icon.left)
+        else
+            e.tips:AddLine(' ')
+        end
+        e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, 'Shift+'..e.Icon.right)
         e.tips:Show()
     end
+
+    if tab.hideButton then
+        btn:SetAlpha(0)
+        frame:HookScript('OnEnter', function(self)
+            self.ResizeButton:SetAlpha(1)
+        end)
+        frame:HookScript('OnLeave', function(self)
+            self.ResizeButton:SetAlpha(0)
+        end)
+        btn:GetNormalTexture():SetVertexColor(0,1,0)
+    end
+    btn:SetScript('OnLeave', function(self)
+        GameTooltip_Hide()
+        ResetCursor()
+        if self.hideButton then self:SetAlpha(0) end
+    end)
     btn:SetScript('OnEnter', function(self)
         self:set_tooltip()
         SetCursor("UI_RESIZE_CURSOR")
+        if self.hideButton then self:SetAlpha(1) end
     end)
 
 
@@ -184,7 +211,7 @@ local function Set_Scale_Size(frame, tab)
     if scale then
         frame:SetScale(scale)
     end
-   
+
     btn:SetScript("OnMouseUp", function(self, d)
         if not self.isActive then
             return
@@ -219,7 +246,19 @@ local function Set_Scale_Size(frame, tab)
             return
         end
         if IsShiftKeyDown() then
-            e.OpenPanelOpting()
+            if d=='RightButton' then
+                e.OpenPanelOpting()--打开，选项
+
+            elseif d=='LeftButton' then
+                if self.target.setMoveFrame and not self.target.notSave then--清除，位置，数据
+                    Save.point[self.name]=nil
+                    if self.restPointFunc then
+                        self.restPointFunc(self)
+                    else
+                        e.call('UpdateUIPanelPositions', self.target)
+                    end
+                end
+            end
 
         elseif IsControlKeyDown() then
             if (self.setSize or self.disabledSize) and d=='RightButton' then--禁用，启用，大小，功能
@@ -296,6 +335,8 @@ local function Set_Scale_Size(frame, tab)
                 end)
             end
         end
+
+        self:set_tooltip()
     end)
 
     if onShowFunc then
@@ -318,7 +359,7 @@ local function Set_Scale_Size(frame, tab)
         end
     end
 
-    if not Save.notAlpha and not btn.notAlpha then--移动时，设置透明度
+    if not Save.notMoveAlpha and not btn.notMoveAlpha then--移动时，设置透明度
         btn:SetScript('OnEvent', function(self, event)
             if event=='PLAYER_STARTED_MOVING' then
                 self.target:SetAlpha(Save.alpha)
@@ -355,7 +396,7 @@ local function Set_Scale_Size(frame, tab)
                 Save.disabledAlpha[self.name]= nil
             end
             print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledAlpha[self.name]),
-                '|cffff00ff'..self.name..'|r|n', 
+                '|cffff00ff'..self.name..'|r|n',
                 e.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame'),
                 '|cffff7f00'..Save.alpha
             )
@@ -380,7 +421,7 @@ end
 
 --Frame 移动时，设置透明度
 local function set_Move_Alpha(frame)
-    if not frame or not Save.scale or Save.notAlpha or frame.ResizeButton then
+    if not frame or not Save.scale or Save.notMoveAlpha or frame.ResizeButton then
         return
     end
     frame.ResizeButton= CreateFrame("Frame", nil, frame)
@@ -425,7 +466,7 @@ end
 --设置, 移动, 位置
 --###############
 local function set_Frame_Point(self, name)--设置, 移动, 位置
-    if Save.SavePoint and self and not self.notSave then
+    if self and (Save.SavePoint  or not self.notSave) then
         name= name or self.FrameName or self:GetName()
         if name then
             local p= Save.point[name]
@@ -452,7 +493,7 @@ local function set_Move_Frame(self, tab)
     local name= tab.name or (frame and frame:GetName()) or (self and self:GetName())
     local click= tab.click
     local frame= tab.frame
-    local notSave= tab.notSave or not Save.SavePoint
+    local notSave= ((tab.notSave or not Save.SavePoint) and not tab.save) and true or nil
     local notFuori= tab.notFuori
 
     if not self or not name or self.setMoveFrame then
@@ -513,7 +554,7 @@ local function set_Move_Frame(self, tab)
     end)
     self:HookScript("OnMouseUp", ResetCursor)--停止移动
     self:HookScript("OnLeave", ResetCursor)
-    set_Frame_Point(self, tab.name)--设置, 移动, 位置
+    set_Frame_Point(self, name)--设置, 移动, 位置
 end
 
 
@@ -1597,7 +1638,104 @@ local function set_classPowerBar()
     end
 end
 
+local function Init_Class()--职业，能量条
+    --[[hooksecurefunc('PlayerFrame_ToPlayerArt', function()
+        C_Timer.After(0.5, set_classPowerBar)
+    end)
 
+    --职业，能量条
+    if TotemFrame then
+        TotemFrame:HookScript('OnEvent', function()
+            set_classPowerBar()
+        end)
+    end
+    panel:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
+    panel:RegisterEvent('PLAYER_TALENT_UPDATE')]]
+
+    local frame--PlayerFrame.classPowerBar
+    if e.Player.class=='MAGE' then--法师
+        frame= MageArcaneChargesFrame
+
+    elseif e.Player.class=='MONK' then--MonkHarmonyBarFrame
+        frame= MonkHarmonyBarFrame
+
+    elseif e.Player.class=='DEATHKNIGHT' then--RuneFrame        
+        frame= RuneFrame
+
+    elseif e.Player.class=='EVOKER' then
+        frame= EssencePlayerFrame
+
+    elseif e.Player.class=='PALADIN' then--QS 
+        frame= PaladinPowerBarFrame
+
+    elseif e.Player.class=='DRUID' then--XD
+        frame= DruidComboPointBarFrame
+
+    elseif e.Player.class=='ROGUE' then--DZ
+        frame= RogueComboPointBarFrame
+
+    elseif e.Player.class=='SHAMAN' then--SM
+        frame= TotemFrame
+        if not Save.disabledMove then
+            hooksecurefunc(TotemFrame, 'Update', function(self)
+                for btn, _ in pairs(self.totemPool.activeObjects) do
+                    if not btn.setMoveFrame then
+                        set_Move_Frame(btn, {frame=self, save=true, zeroAlpha=true})
+                        btn:HookScript('OnLeave', function() if TotemFrame.ResizeButton then TotemFrame.ResizeButton:SetAlpha(0) end end)
+                        btn:HookScript('OnEnter', function() if TotemFrame.ResizeButton then TotemFrame.ResizeButton:SetAlpha(1) end end)
+                    end
+                end
+            end)
+        end
+
+    elseif  e.Player.class=='WARLOCK' then--SS
+        frame= WarlockPowerFrame
+    end
+    if not frame then
+        return
+    end
+    do
+        set_Move_Frame(frame, {notFuori=true, save=true, hideButton=true,  notMoveAlpha=true, restPointFunc=function(btn)
+            Save.scale[btn.name]=nil
+            if not UnitAffectingCombat('player') then
+                btn.target:SetScale(1)
+                e.call(PlayerFrame_UpdateArt, PlayerFrame)
+            end
+        end})
+    end
+    if frame.setMoveFrame then
+        if Save.point[frame:GetName()] then
+            frame:SetParent(UIParent)
+        end
+        hooksecurefunc('PlayerFrame_ToPlayerArt', function()
+            C_Timer.After(0.5, function() set_Frame_Point(frame) end)
+        end)
+        if frame.Setup then
+            hooksecurefunc(frame, 'Setup', function(self)
+                if self:IsShown() then
+                    set_Frame_Point(self)
+                end
+            end)
+        end
+
+        local f= CreateFrame('Frame')
+        f:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
+        f:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
+        f.frame= frame
+        f:SetScript('OnEvent', function(self)
+            if self.frame:IsShown() then
+                set_Frame_Point(self.frame)
+            end
+        end)
+    end
+    --[[set_Move_Frame(PlayerFrameBottomManagedFramesContainer, {notFuori=true, save=true, hideButton=true,  notMoveAlpha=true, restPointFunc=function(btn) Save.scale[btn.name]=nil btn.target:SetScale(1) e.call(PlayerFrame_UpdateArt, PlayerFrame) end})    
+    if not Save.disabledMove then
+        hooksecurefunc('PlayerFrame_ToPlayerArt', function(self)
+            set_Frame_Point(PlayerFrameBottomManagedFramesContainer)
+        end)
+    end]]
+
+end
 
 
 
@@ -1660,7 +1798,7 @@ local function Init_Move()
             QUEST_TEMPLATE_MAP_REWARDS.contentWidth= w-41]]
         end
     end
-    set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, onShowFunc=true, notAlpha=true, initFunc=function()
+    set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, onShowFunc=true, notMoveAlpha=true, initFunc=function()
         --[[WorldMapFrame:HookScript('OnShow', function(self)
             local scale= Save.scale[self:GetName()]
             if scale then
@@ -1973,7 +2111,7 @@ end)]]
         end, sizeRestFunc=function(self)
             self.target:SetSize(338, 424)
     end})
-    
+
     --对话
     set_Move_Frame(GossipFrame, {minW=220, minH=220, setSize=true, initFunc=function(self)
         self.target.GreetingPanel:SetPoint('BOTTOMRIGHT')
@@ -2206,9 +2344,7 @@ end)]]
         end
     end
 
-    hooksecurefunc('PlayerFrame_ToPlayerArt', function()
-        C_Timer.After(0.5, set_classPowerBar)
-    end)
+
 
     set_Move_Frame(LootFrame, {save=false})--物品拾取
 
@@ -2230,28 +2366,20 @@ end)]]
     end)
     --end
 
-    --职业，能量条
-    if TotemFrame then
-        TotemFrame:HookScript('OnEvent', function()
-            set_classPowerBar()
-        end)
-    end
-    panel:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
-    panel:RegisterEvent('PLAYER_TALENT_UPDATE')
 
     C_Timer.After(2, function()
         created_Move_Button(QueueStatusButton, {save=true, notZoom=true, show=true})--小眼睛, 
-
         --编辑模式
         hooksecurefunc(EditModeManagerFrame, 'ExitEditMode', function()
-            set_classPowerBar()--职业，能量条
+            --set_classPowerBar()--职业，能量条
             created_Move_Button(QueueStatusButton, {save=true, notZoom=true, show=true})--小眼睛, 
        end)
     end)
 
+    Init_Class()--职业，能量条
 
     set_Move_Frame(GameMenuFrame, {notSave=true})--菜单
-    set_Move_Frame(ExtraActionButton1, {click='RightButton', notSave=true, notAlpha=true, notFuori=true})--额外技能
+    set_Move_Frame(ExtraActionButton1, {click='RightButton', notSave=true, notMoveAlpha=true, notFuori=true})--额外技能
     set_Move_Frame(ContainerFrameCombinedBags)
     set_Move_Frame(MirrorTimer1, {notSave=true})
     set_Move_Frame(ColorPickerFrame, {click='RightButton'})--颜色选择器
@@ -2316,7 +2444,7 @@ local function Init_Options()
         buttonFunc= function()
             StaticPopupDialogs[id..addName..'MoveZoomClearPoint']= {
                 text =id..' '..addName..'|n|n'
-                ..(e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
+                ..(e.onlyChinese and '保存位置' or (SAVE..CHOOSE_LOCATION:gsub(CHOOSE , ''))),
                 button1 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
                 button2 = e.onlyChinese and '取消' or CANCEL,
                 whileDead=true, hideOnEscape=true, exclusive=true,
@@ -2381,9 +2509,10 @@ local function Init_Options()
 
     initializer= e.AddPanel_Check_Sider({
         checkName= e.onlyChinese and '移动时Frame透明' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame'),
-        checkValue= not Save.notAlpha,
+        checkValue= not Save.notMoveAlpha,
         checkTooltip= e.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame'),
         checkFunc= function()
+            Save.notMoveAlpha= not Save.notMoveAlpha and true or nil
             print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         sliderValue= Save.alpha or 0.5,
@@ -2475,8 +2604,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         end
         panel:UnregisterEvent('PLAYER_REGEN_ENABLED')]]
 
-    elseif event=='UNIT_DISPLAYPOWER' or event=='PLAYER_TALENT_UPDATE' then
-        C_Timer.After(0.5, set_classPowerBar)
+    --elseif event=='UNIT_DISPLAYPOWER' or event=='PLAYER_TALENT_UPDATE' then
+        --C_Timer.After(0.5, set_classPowerBar)
     end
 
 end)

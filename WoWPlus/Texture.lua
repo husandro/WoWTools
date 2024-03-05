@@ -2322,10 +2322,17 @@ local function Init_Class_Power(init)--职业
         C_Timer.After(2, function()
             if EssencePlayerFrame and EssencePlayerFrame.classResourceButtonTable then--EssenceFramePlayer.lua
                 for _, btn in pairs(EssencePlayerFrame.classResourceButtonTable) do
-                    set_Alpha_Color(btn.EssenceFillDone.EssenceIcon, true)
+                    --set_Alpha_Color(btn.EssenceFillDone.EssenceIcon, true)
                     set_Alpha_Color(btn.EssenceFillDone.CircBGActive, true)
                     set_Num_Texture(btn, nil, false)
                 end
+            end
+        end)
+
+    elseif e.Player.class=='SHAMAN' then--SM
+        hooksecurefunc(TotemFrame, 'Update', function()
+            for btn, _ in pairs(TotemFrame.totemPool.activeObjects) do
+                set_Alpha_Color(btn.Border, true)
             end
         end)
     end
