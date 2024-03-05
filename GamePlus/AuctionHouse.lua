@@ -686,13 +686,15 @@ local function Init_Sell()
 
 
     --单价，倍数
-    AuctionHouseFrame.CommoditiesSellFrame.percentLabel= e.Cstr(AuctionHouseFrame.CommoditiesSellFrame, {size=16})--单价，提示
-    AuctionHouseFrame.CommoditiesSellFrame.percentLabel:SetPoint('BOTTOM', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'TOP')
+    AuctionHouseFrame.CommoditiesSellFrame.percentLabel= e.Cstr(AuctionHouseFrame.CommoditiesSellFrame, {size=22, justifyH='RIGHT'})--单价，提示
+    AuctionHouseFrame.CommoditiesSellFrame.percentLabel:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.CommoditiesSellList, 'TOP', -50,0)
+    --AuctionHouseFrame.CommoditiesSellFrame.percentLabel:SetPoint('BOTTOM', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'TOP') 
     AuctionHouseFrame.CommoditiesSellFrame.vendorPriceLabel= e.Cstr(AuctionHouseFrame.CommoditiesSellFrame, {size=12})--单价，提示
     AuctionHouseFrame.CommoditiesSellFrame.vendorPriceLabel:SetPoint('TOPRIGHT', AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox, 'BOTTOMRIGHT',0,4)
 
-    AuctionHouseFrame.ItemSellFrame.percentLabel= e.Cstr(AuctionHouseFrame.ItemSellFrame, {size=16})--单价，提示
-    AuctionHouseFrame.ItemSellFrame.percentLabel:SetPoint('BOTTOM', AuctionHouseFrame.ItemSellFrame.PostButton, 'TOP')
+    AuctionHouseFrame.ItemSellFrame.percentLabel= e.Cstr(AuctionHouseFrame.ItemSellFrame, {size=22, justifyH='RIGHT'})--单价，提示
+    AuctionHouseFrame.ItemSellFrame.percentLabel:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'TOP', -50,0)
+    --AuctionHouseFrame.ItemSellFrame.percentLabel:SetPoint('BOTTOM', AuctionHouseFrame.ItemSellFrame.PostButton, 'TOP')
     AuctionHouseFrame.ItemSellFrame.vendorPriceLabel= e.Cstr(AuctionHouseFrame.ItemSellFrame, {size=12})--单价，提示
     AuctionHouseFrame.ItemSellFrame.vendorPriceLabel:SetPoint('TOPRIGHT', AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox, 'BOTTOMRIGHT',0,4)
 
@@ -959,10 +961,13 @@ local function Init_Sell()
 
     --可购买数量：
     AuctionHouseFrame.CommoditiesSellList.RefreshFrame.TotalQuantity:ClearAllPoints()
-    AuctionHouseFrame.CommoditiesSellList.RefreshFrame.TotalQuantity:SetPoint('TOP', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'BOTTOM', 0, -2)
+    AuctionHouseFrame.CommoditiesSellList.RefreshFrame.TotalQuantity:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.CommoditiesSellList, 'TOPRIGHT', -25, 0)
+    --AuctionHouseFrame.CommoditiesSellList.RefreshFrame.TotalQuantity:SetPoint('TOP', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'BOTTOM', 0, -2)    
 
     AuctionHouseFrame.ItemSellList.RefreshFrame.TotalQuantity:ClearAllPoints()
-    AuctionHouseFrame.ItemSellList.RefreshFrame.TotalQuantity:SetPoint('TOP', AuctionHouseFrame.ItemSellFrame.PostButton, 'BOTTOM', 0, -2)
+    AuctionHouseFrame.ItemSellList.RefreshFrame.TotalQuantity:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'TOPRIGHT', -25, 0)
+    --AuctionHouseFrame.ItemSellList.RefreshFrame.TotalQuantity:SetPoint('TOP', AuctionHouseFrame.ItemSellFrame.PostButton, 'BOTTOM', 0, -2)
+
 
 
 end
