@@ -1599,59 +1599,7 @@ end
 --###########
 --职业，能量条
 --###########
-local function set_classPowerBar()
-    local tab={
-        PlayerFrame.classPowerBar,
-        RuneFrame,
-        MonkStaggerBar,
-        _G['PlayerFrameAlternateManaBar'],
-        EssencePlayerFrame,
-        --MageArcaneChargesFrame,
-        --TotemFrame,
-    }
-
-    for _, self in pairs(tab) do
-        if self and self:IsShown() then
-            if self.FrameName then
-                set_Frame_Point(self)
-            else
-                set_Move_Frame(self, {
-                    save=true,
-                    zeroAlpha=true,
-                    point= e.Player.class=='EVOKER' and 'left' or nil,
-                })
-            end
-        end
-    end
-
-
-    if TotemFrame and TotemFrame:IsShown() and TotemFrame.totemPool and TotemFrame.totemPool.activeObjects then
-        for btn, _ in pairs(TotemFrame.totemPool.activeObjects) do
-            if btn:IsShown() then
-                if btn.FrameName then
-                    set_Frame_Point(btn)
-                else
-                    set_Move_Frame(btn, {frame=TotemFrame, save=true, zeroAlpha=true})
-                end
-            end
-        end
-    end
-end
-
 local function Init_Class()--职业，能量条
-    --[[hooksecurefunc('PlayerFrame_ToPlayerArt', function()
-        C_Timer.After(0.5, set_classPowerBar)
-    end)
-
-    --职业，能量条
-    if TotemFrame then
-        TotemFrame:HookScript('OnEvent', function()
-            set_classPowerBar()
-        end)
-    end
-    panel:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
-    panel:RegisterEvent('PLAYER_TALENT_UPDATE')]]
-
     local frame--PlayerFrame.classPowerBar
     if e.Player.class=='MAGE' then--法师
         frame= MageArcaneChargesFrame
@@ -1728,13 +1676,6 @@ local function Init_Class()--职业，能量条
             end
         end)
     end
-    --[[set_Move_Frame(PlayerFrameBottomManagedFramesContainer, {notFuori=true, save=true, hideButton=true,  notMoveAlpha=true, restPointFunc=function(btn) Save.scale[btn.name]=nil btn.target:SetScale(1) e.call(PlayerFrame_UpdateArt, PlayerFrame) end})    
-    if not Save.disabledMove then
-        hooksecurefunc('PlayerFrame_ToPlayerArt', function(self)
-            set_Frame_Point(PlayerFrameBottomManagedFramesContainer)
-        end)
-    end]]
-
 end
 
 
