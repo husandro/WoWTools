@@ -1561,6 +1561,9 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_EventTrace' then--ETRACE
         EventTrace.Log.Bar.SearchBox:SetPoint('LEFT', EventTrace.Log.Bar.Label, 'RIGHT')
+        EventTrace.Log.Bar.SearchBox:SetScript('OnEditFocusGained', function(self)
+            self:HighlightText()
+        end)
         set_Move_Frame(EventTrace)
 
     elseif arg1=='Blizzard_DeathRecap' then--死亡
