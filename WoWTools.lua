@@ -1304,19 +1304,15 @@ function e.Get_Item_Stats(link)--物品，次属性，表
         num= num +1
     end
     if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '闪' or e.WA_Utf8Sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1, 2, true), value=info['ITEM_MOD_CR_AVOIDANCE_SHORT'], index=2})
+        table.insert(tab, {text=e.onlyChinese and '闪' or e.WA_Utf8Sub(STAT_AVOIDANCE, 1, 2, true), value=info['ITEM_MOD_CR_AVOIDANCE_SHORT'], index=2})
         num= num +1
     end
     if num<4 and info['ITEM_MOD_CR_LIFESTEAL_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '吸' or e.WA_Utf8Sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1, 2, true), value=info['ITEM_MOD_CR_LIFESTEAL_SHORT'] or 1, index=2})
+        table.insert(tab, {text=e.onlyChinese and '吸' or e.WA_Utf8Sub(STAT_LIFESTEAL, 1, 2, true), value=info['ITEM_MOD_CR_LIFESTEAL_SHORT'] or 1, index=2})
         num= num +1
     end
-    --[[if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '溅' or e.WA_Utf8Sub(ITEM_MOD_CR_MULTISTRIKE_SHORT, 1,2,true), value=info['ITEM_MOD_CR_MULTISTRIKE_SHORT'] or 1, index=2})
-        num= num +1
-    end]]
     if num<4 and info['ITEM_MOD_CR_SPEED_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '速' or e.WA_Utf8Sub(ITEM_MOD_CR_SPEED_SHORT, 1,2,true), value=info['ITEM_MOD_CR_SPEED_SHORT'] or 1, index=2})
+        table.insert(tab, {text=e.onlyChinese and '速' or e.WA_Utf8Sub(SPEED, 1,2,true), value=info['ITEM_MOD_CR_SPEED_SHORT'] or 1, index=2})
         num= num +1
     end
     return tab

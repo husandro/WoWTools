@@ -6375,37 +6375,37 @@ end)
 
         local function set_ClubFinderRequestToJoin(self)
             if (not self.info) then
-                return;
+                return
             end
             for check in pairs(self.SpecsPool.activeObjects or {}) do
                 setLabel(check.SpecName)
             end
           
-            local specIds = ClubFinderGetPlayerSpecIds();
-            local matchingSpecNames = { };
+            local specIds = ClubFinderGetPlayerSpecIds()
+            local matchingSpecNames = { }
             for i, specId in ipairs(specIds) do
-                local _, name = GetSpecializationInfoForSpecID(specId);
+                local _, name = GetSpecializationInfoForSpecID(specId)
                 if (self.card.recruitingSpecIds[specId]) then
-                    table.insert(matchingSpecNames, e.cn(name));
+                    table.insert(matchingSpecNames, e.cn(name))
                 end
             end
-            local classDisplayName = UnitClass("player");
+            local classDisplayName = UnitClass("player")
             classDisplayName= e.cn(classDisplayName)
-            local isRecruitingAllSpecs = #self.info.recruitingSpecIds == 0 or #self.info.recruitingSpecIds == CLUB_FINDER_MAX_NUM_SPECIALIZATIONS;
+            local isRecruitingAllSpecs = #self.info.recruitingSpecIds == 0 or #self.info.recruitingSpecIds == CLUB_FINDER_MAX_NUM_SPECIALIZATIONS
             if(isRecruitingAllSpecs) then
                 if(self.info.isGuild) then
-                    set(self.RecruitingSpecDescriptions, '此公会正在招募所有的专精类型。');
+                    set(self.RecruitingSpecDescriptions, '此公会正在招募所有的专精类型。')
                 else
-                    set(self.RecruitingSpecDescriptions, '此社区正在招募所有的专精类型。');
+                    set(self.RecruitingSpecDescriptions, '此社区正在招募所有的专精类型。')
                 end
             elseif (#matchingSpecNames == 1) then
                 set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s %s。你玩的是哪个专精？', matchingSpecNames[1], classDisplayName))
             elseif (#matchingSpecNames == 2) then
-                set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s和%s %s。你玩的是哪个专精？', matchingSpecNames[1], matchingSpecNames[2], classDisplayName));
+                set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s和%s %s。你玩的是哪个专精？', matchingSpecNames[1], matchingSpecNames[2], classDisplayName))
             elseif (#matchingSpecNames == 3) then
-                set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s %s和%s %s。你玩的是哪个专精？', matchingSpecNames[1], matchingSpecNames[2], matchingSpecNames[3], classDisplayName));
+                set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s %s和%s %s。你玩的是哪个专精？', matchingSpecNames[1], matchingSpecNames[2], matchingSpecNames[3], classDisplayName))
             elseif (#matchingSpecNames == 4) then
-                set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s %s %s和%s %s。你玩的是哪个专精？', matchingSpecNames[1], matchingSpecNames[2], matchingSpecNames[3], matchingSpecNames[4], classDisplayName));
+                set(self.RecruitingSpecDescriptions, format('此公会正在寻找%s %s %s和%s %s。你玩的是哪个专精？', matchingSpecNames[1], matchingSpecNames[2], matchingSpecNames[3], matchingSpecNames[4], classDisplayName))
             end
         end
         hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
@@ -7576,6 +7576,30 @@ end)
         hooksecurefunc('CalendarFrame_UpdateTitle', function()
             setLabel(CalendarMonthName)
         end)
+
+    elseif arg1=='Blizzard_EventTrace' then--ETRACE
+        set(EventTraceTitleText, '事件记录')
+
+        set(EventTrace.SubtitleBar.ViewLog.Label, '查看日志')
+        set(EventTrace.SubtitleBar.ViewFilter.Label, '过滤器')
+        set(EventTrace.Log.Bar.Label, '记录')
+        set(EventTrace, 'DisplayEvents', function(self)
+            set(self.Log.Bar.Label, '记录')
+        end)
+        set(EventTrace, 'OnSearchDataProviderChanged', function(self)
+            set(self.Log.Bar.Label, format('结果：%d', self.searchDataProvider:GetSize() or 0))
+        end)
+        set(EventTrace.Log.Bar.DiscardAllButton.Label, '全部清除')
+        set(EventTrace.Log.Bar.PlaybackButton.Label, EventTrace:IsLoggingPaused() and '|cnRED_FONT_COLOR:开始' or '|cnGREEN_FONT_COLOR:暂停')
+        hooksecurefunc(EventTrace, 'UpdatePlaybackButton', function(self)
+            set(self.Log.Bar.PlaybackButton.Label, self:IsLoggingPaused() and '|cnRED_FONT_COLOR:开始' or '|cnGREEN_FONT_COLOR:暂停')
+        end)
+        set(EventTrace.Log.Bar.MarkButton.Label, '标记')
+
+        set(EventTrace.Filter.Bar.Label, '过滤')
+        set(EventTrace.Filter.Bar.DiscardAllButton.Label, '全部删除')
+        set(EventTrace.Filter.Bar.UncheckAllButton.Label, '全部取消')
+        set(EventTrace.Filter.Bar.CheckAllButton.Label, '全部选取')
     end
 end
 

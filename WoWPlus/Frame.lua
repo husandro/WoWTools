@@ -1560,7 +1560,8 @@ local function setAddLoad(arg1)
         end})
 
     elseif arg1=='Blizzard_EventTrace' then--ETRACE
-        set_Move_Frame(EventTrace, {notZoom=true, save=true})
+        EventTrace.Log.Bar.SearchBox:SetPoint('LEFT', EventTrace.Log.Bar.Label, 'RIGHT')
+        set_Move_Frame(EventTrace)
 
     elseif arg1=='Blizzard_DeathRecap' then--死亡
         set_Move_Frame(DeathRecapFrame, {save=true})
