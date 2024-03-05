@@ -1329,7 +1329,7 @@ local function set_Option()
         end
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         tab={
-            {'health', e.onlyChinese and '生命条' or 'HealthBar'},
+            {'healthBar', e.onlyChinese and '生命条' or 'HealthBar'},
             {'name', e.onlyChinese and '名称' or NAME},
         }
         for _, tab2 in pairs(tab) do
