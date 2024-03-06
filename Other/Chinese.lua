@@ -5501,16 +5501,12 @@ local function Init_Loaded(arg1)
 
         end)
 
-        --[[hooksecurefunc(Professions, 'SetupProfessionsCurrencyTooltip', function(currencyInfo, currencyCount)--lizzard_Professions.lua
-            if currencyInfo and currencyInfo.name then
-                GameTooltip:SetText('|cffffffff'..currencyInfo.name..'|r')
-                GameTooltip_AddNormalLine(GameTooltip, currencyInfo.description)
-                GameTooltip_AddBlankLineToTooltip(GameTooltip)
-
-                local count = currencyCount or currencyInfo.quantity
-                GameTooltip_AddHighlightLine(GameTooltip, format('|cnNORMAL_FONT_COLOR:总计：|r %d', count))
-            end
-        end)]]
+        hooksecurefunc(ProfessionsRecipeListRecipeMixin, 'Init', function(self)
+            setLabel(self.Label)
+        end)
+        hooksecurefunc(ProfessionsRecipeListCategoryMixin, 'Init', function(self, node)
+            setLabel(self.Label)
+        end)
 
         --Blizzard_ProfessionsSpecializations.lua
         dia("PROFESSIONS_SPECIALIZATION_CONFIRM_PURCHASE_TAB", {button1 = '是', button2 = '取消'})

@@ -1951,60 +1951,67 @@ local function Init()
     end)
 
 
-    local function create_Quest_Label(self)--添加任务ID
-        if not self.questIDLabel then
-            self.questIDLabel= e.Cstr(self, {mouse=true})
-            self.questIDLabel:SetAlpha(0.3)
-            self.questIDLabel:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.3) end)
-            self.questIDLabel:SetScript('OnEnter', function(self2)
-                if self2.questID then
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    GameTooltip_AddQuest(self2, self2.questID)
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(id, addName..e.Icon.left)
-                    e.tips:Show()
-                    self2:SetAlpha(1)
-                end
-            end)
-            self.questIDLabel:SetScript('OnMouseDown', function(self2)
-                if self2.questID then
-                    local info = C_QuestLog.GetQuestTagInfo(self2.questID)
-                    StaticPopup_Show("WowheadQuickLinkUrl",
-                    'WoWHead',
-                    nil,
-                    format(wowheadText, 'quest', self2.questID, info and info.tagName or '')
-                )
-                end
-            end)
-        end
-        return self.questIDLabel
-    end
-    hooksecurefunc('QuestMapFrame_ShowQuestDetails', function(questID)
-        local label= QuestMapFrame.DetailsFrame.questIDLabel
-        if not label then
-            label= create_Quest_Label(QuestMapFrame.DetailsFrame)
-            if C_AddOns.IsAddOnLoaded('WoWeuCN_Quests') then
-                label:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 25, 28)
-            else
-                label:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 20, 10)
+
+
+    
+    --添加任务ID
+    local function create_Quest_Label(frame)
+        frame.questIDLabel= e.Cstr(frame, {mouse=true, justifyH='RIGHT'})
+        frame.questIDLabel:SetAlpha(0.3)
+        frame.questIDLabel:SetScript('OnLeave', function(self) GameTooltip_Hide() self:SetAlpha(0.3) end)
+        frame.questIDLabel:SetScript('OnEnter', function(self)
+            if self.questID then
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                GameTooltip_AddQuest(self, self.questID)
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(id, addName..e.Icon.left)
+                e.tips:Show()
+                self:SetAlpha(1)
             end
-        end
-        label:SetText(questID or '')
-        label.questID= questID
+        end)
+        frame.questIDLabel:SetScript('OnMouseDown', function(self)
+            if self.questID then
+                local info = C_QuestLog.GetQuestTagInfo(self.questID)
+                StaticPopup_Show("WowheadQuickLinkUrl",
+                'WoWHead',
+                nil,
+                format(wowheadText, 'quest', self.questID, info and info.tagName or '')
+            )
+            end
+        end)
+    end
+    create_Quest_Label(QuestMapFrame.DetailsFrame)
+    if C_AddOns.IsAddOnLoaded('WoWeuCN_Quests') then
+        QuestMapFrame.DetailsFrame.questIDLabel:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', -2, 30)
+    else
+        QuestMapFrame.DetailsFrame.questIDLabel:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', -2, 10)
+    end
+
+    create_Quest_Label(QuestFrame)
+    if C_AddOns.IsAddOnLoaded('WoWeuCN_Quests') then
+        QuestFrame.questIDLabel:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 25, 28)
+    else
+        QuestFrame.questIDLabel:SetPoint('TOPRIGHT', self, -30,-35)
+    end
+
+    hooksecurefunc('QuestMapFrame_ShowQuestDetails', function(questID)
+        QuestMapFrame.DetailsFrame.questIDLabel:SetText(questID or '')
+        QuestMapFrame.DetailsFrame.questIDLabel.questID= questID
     end)
     QuestFrame:HookScript('OnShow', function(self)
         local questID= QuestInfoFrame.questLog and  C_QuestLog.GetSelectedQuest() or GetQuestID()
-        local label= self.questIDLabel
-        if not label then
-            label= create_Quest_Label(self)
-            label:SetPoint('TOPRIGHT', self, -30,-35)
-        end
-        label:SetText(questID or '')
-        label.questID= questID
+        self.questIDLabel:SetText(questID or '')
+        self.questIDLabel.questID= questID
     end)
 
-    hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)--任务日志 显示ID
+
+
+
+
+
+    --任务日志 显示ID
+    hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)
         local info= self.questLogIndex and C_QuestLog.GetInfo(self.questLogIndex)
         if not info or not info.questID or not HaveQuestData(info.questID) then
             return
@@ -2034,6 +2041,11 @@ local function Init()
 
         e.tips:Show()
     end)
+
+
+
+
+
 
 
     --追踪栏
@@ -2856,7 +2868,7 @@ local function Init_Event(arg1)
                 frame.specIcon:SetTexture(icon or 0)
             end
         end)
-        
+
     elseif arg1=='Blizzard_PlayerChoice' then
         hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'OnEnter', function(self)
             if self.optionInfo and self.optionInfo.spellID then
@@ -2867,7 +2879,7 @@ local function Init_Event(arg1)
         end)
     end
 
-    
+
 end
 
 

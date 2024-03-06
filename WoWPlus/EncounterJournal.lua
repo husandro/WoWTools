@@ -670,7 +670,7 @@ local function Init_EncounterJournal()--冒险指南界面
     --Blizzard_EncounterJournal.lua
     hooksecurefunc('EncounterJournal_ListInstances', function()
         if Save.hideEncounterJournal then
-            for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames()) do
+            for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames() or {}) do
                 if button then
                     if button.tipsText then
                         button.tipsText:SetText('')

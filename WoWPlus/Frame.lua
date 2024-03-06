@@ -25,6 +25,51 @@ local panel= CreateFrame("Frame")
 
 
 
+--Frame 移动时，设置透明度
+local function set_Move_Alpha(frame)
+    local name= frame:GetName()
+    if not frame or Save.disabledZoom or Save.notMoveAlpha or not name then
+        return
+    end
+    local btn= frame.ResizeButton
+    if not btn then
+        btn= CreateFrame("Frame", nil, frame)
+        btn.name= name
+        frame.ResizeButton= btn
+    end
+    btn:SetScript('OnEvent', function(self, event)
+        local target= self:GetParent()
+        if event=='PLAYER_STARTED_MOVING' then
+            target:SetAlpha(Save.alpha)
+        else
+            target:SetAlpha(1)
+        end
+    end)
+    function btn:set_move_event()
+        if Save.disabledAlpha[self.name] or Save.alpha==1 then
+            self:UnregisterAllEvents()
+            self:SetScript('OnShow', nil)
+            self:SetScript('OnHide', nil)
+            self:GetParent():SetAlpha(1)
+        else
+            if self:IsShown() then
+                self:RegisterEvent('PLAYER_STARTED_MOVING')
+                self:RegisterEvent('PLAYER_STOPPED_MOVING')
+            end
+            self:SetScript('OnShow', function(f)
+                f:RegisterEvent('PLAYER_STARTED_MOVING')
+                f:RegisterEvent('PLAYER_STOPPED_MOVING')
+            end)
+            self:SetScript('OnHide', function(f)
+                f:UnregisterAllEvents()
+                f:GetParent():SetAlpha(1)
+            end)
+        end
+    end
+    btn:set_move_event()
+end
+
+
 
 
 
@@ -44,13 +89,16 @@ function GetScaleDistance(SOS) -- distance from cursor to TopLeft :)
 end
 
 
-local function Set_Scale_Size(frame, tab)
-    local name= tab.name
+local function set_Scale_Size(frame, tab)
+    local name= tab.name or frame:GetName()
     if not name or Save.disabledZoom or tab.notZoom or frame.ResizeButton or tab.frame then
         return
     end
     local btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
     frame.ResizeButton= btn
+
+    btn.target= frame
+    btn.name= name
 
     --设置缩放
     btn.scaleStoppedFunc= tab.scaleStoppedFunc--保存，缩放内容
@@ -62,6 +110,7 @@ local function Set_Scale_Size(frame, tab)
     btn.hideButton= tab.hideButton--设置透明度为0，移到frame设置为1，
     btn.disabledSize= disabledSize--禁用，大小功能
     btn.setSize= setSize and not disabledSize--是否有，设置大小，功能    
+    btn.notInCombat= tab.notInCombat--战斗中，禁止操作
 
     local onShowFunc= tab.onShowFunc-- true, function
     btn.notMoveAlpha= tab.notMoveAlpha--是否设置，移动时，设置透明度
@@ -114,7 +163,15 @@ local function Set_Scale_Size(frame, tab)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:AddLine(' ')
+
+        if self.notInCombat and UnitAffectingCombat('player') then
+            e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), e.GetEnabeleDisable(false))
+            e.tips:Show()
+            return
+        else
+            e.tips:AddLine(' ')
+        end
+
         local parent= self.target:GetParent()
         if parent then
             e.tips:AddDoubleLine(parent:GetName() or 'Parent', format('%.2f', parent:GetScale()))
@@ -129,12 +186,12 @@ local function Set_Scale_Size(frame, tab)
         local col= Save.scale[self.name] and '' or '|cff606060'
         e.tips:AddDoubleLine(col..(e.onlyChinese and '默认' or DEFAULT), col..'Alt+'..e.Icon.left)
 
-        if not self.notMoveAlpha then
+        if self.set_move_event then--Frame 移动时，设置透明度
             e.tips:AddLine(' ')
             if not Save.disabledAlpha[self.name] then
-                e.tips:AddDoubleLine((e.onlyChinese and '透明度 ' or 'Alpha ')..'|cnGREEN_FONT_COLOR:'..Save.alpha, e.Icon.mid)
+                e.tips:AddDoubleLine((e.onlyChinese and '移动时透明度 ' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame'))..'|cnGREEN_FONT_COLOR:'..Save.alpha, e.Icon.mid)
             else
-                e.tips:AddDoubleLine('|cff606060'..(e.onlyChinese and '透明度 禁用' or ('Alpha '..DISABLE)), e.Icon.mid)
+                e.tips:AddDoubleLine('|cff606060'..((e.onlyChinese and '移动时透明度 禁用' or (MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame')..' '..DISABLE))), e.Icon.mid)
             end
         end
 
@@ -196,8 +253,7 @@ local function Set_Scale_Size(frame, tab)
     end)
 
 
-    btn.target= frame
-    btn.name= name
+
     btn.SOS = { --Scaler Original State
         dist = 0,
         x = 0,
@@ -213,7 +269,7 @@ local function Set_Scale_Size(frame, tab)
     end
 
     btn:SetScript("OnMouseUp", function(self, d)
-        if not self.isActive then
+        if not self.isActive or (self.notInCombat and UnitAffectingCombat('player')) then
             return
         end
         self.isActive= nil
@@ -242,7 +298,7 @@ local function Set_Scale_Size(frame, tab)
         self:SetScript("OnUpdate", nil)
     end)
     btn:SetScript("OnMouseDown",function(self, d)
-        if self.isActive then
+        if self.isActive or (self.notInCombat and UnitAffectingCombat('player')) then
             return
         end
         if IsShiftKeyDown() then
@@ -359,50 +415,32 @@ local function Set_Scale_Size(frame, tab)
         end
     end
 
-    if not Save.notMoveAlpha and not btn.notMoveAlpha then--移动时，设置透明度
-        btn:SetScript('OnEvent', function(self, event)
-            if event=='PLAYER_STARTED_MOVING' then
-                self.target:SetAlpha(Save.alpha)
-            else
-                self.target:SetAlpha(1)
-            end
-        end)
-        function btn:set_event()
-            if not Save.disabledAlpha[self.name] then
-                if self:IsShown() then
-                    self:RegisterEvent('PLAYER_STARTED_MOVING')
-                    self:RegisterEvent('PLAYER_STOPPED_MOVING')
+    if not btn.notMoveAlpha then--移动时，设置透明度
+        do
+            set_Move_Alpha(frame)
+        end
+        if btn.set_move_event then
+            btn:SetScript('OnMouseWheel', function(self, d)--是否设置，移动时，设置透明度
+                if self.notInCombat and UnitAffectingCombat('player') then
+                    return
                 end
-                self:SetScript('OnShow', function(frame)
-                    frame:RegisterEvent('PLAYER_STARTED_MOVING')
-                    frame:RegisterEvent('PLAYER_STOPPED_MOVING')
-                end)
-                self:SetScript('OnHide', function(frame)
-                    frame:UnregisterAllEvents()
-                    frame.target:SetAlpha(1)
-                end)
-            else
-                self:UnregisterAllEvents()
-                self:SetScript('OnShow', nil)
-                self:SetScript('OnHide', nil)
-                self.target:SetAlpha(1)
-            end
+                local col
+                if d==1 then
+                    Save.disabledAlpha[self.name]= true
+                    col= '|cff606060'
+                else
+                    Save.disabledAlpha[self.name]= nil
+                    col= '|cnGREEN_FONT_COLOR:'
+                end
+                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledAlpha[self.name]),
+                    '|cffff00ff'..self.name..'|r|n',
+                    col..(e.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame')),
+                    Save.alpha
+                )
+                self:set_move_event()
+                self:set_tooltip()
+            end)
         end
-        btn:set_event()
-        btn:SetScript('OnMouseWheel', function(self, d)--是否设置，移动时，设置透明度
-            if d==1 then
-                Save.disabledAlpha[self.name]= true
-            else
-                Save.disabledAlpha[self.name]= nil
-            end
-            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledAlpha[self.name]),
-                '|cffff00ff'..self.name..'|r|n',
-                e.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame'),
-                '|cffff7f00'..Save.alpha
-            )
-            self:set_event()
-            self:set_tooltip()
-        end)
     end
 end
 
@@ -418,37 +456,6 @@ end
 
 
 
-
---Frame 移动时，设置透明度
-local function set_Move_Alpha(frame)
-    if not frame or not Save.scale or Save.notMoveAlpha or frame.ResizeButton then
-        return
-    end
-    frame.ResizeButton= CreateFrame("Frame", nil, frame)
-    frame.ResizeButton:SetScript('OnEvent', function(self, event)
-        local target= self:GetParent()
-        if event=='PLAYER_STARTED_MOVING' then
-            target:SetAlpha(Save.alpha)
-        else
-            target:SetAlpha(1)
-        end
-    end)
-    function frame.ResizeButton:set_event()
-        if self:IsShown() then
-            self:RegisterEvent('PLAYER_STARTED_MOVING')
-            self:RegisterEvent('PLAYER_STOPPED_MOVING')
-        end
-        self:SetScript('OnShow', function(frame)
-            frame:RegisterEvent('PLAYER_STARTED_MOVING')
-            frame:RegisterEvent('PLAYER_STOPPED_MOVING')
-        end)
-        self:SetScript('OnHide', function(frame)
-            frame:UnregisterAllEvents()
-            frame:GetParent():SetAlpha(1)
-        end)
-    end
-    frame.ResizeButton:set_event()
-end
 
 
 
@@ -501,7 +508,7 @@ local function set_Move_Frame(self, tab)
     end
     tab.name= name
 
-    Set_Scale_Size(self, tab)
+    set_Scale_Size(self, tab)
 
     if Save.disabledMove or tab.notMove or self.setMoveFrame then
         return
@@ -2003,7 +2010,7 @@ end)]]
     end})
 
     --好友列表
-    set_Move_Frame(FriendsFrame, {setSize=true, minW=338, minH=424, initFunc=function(btn)
+    set_Move_Frame(FriendsFrame, {notInCombat=true, setSize=true, minW=338, minH=424, initFunc=function(btn)
             FriendsListFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -24, 30)
             WhoFrameColumnHeader1:SetWidth(200)
             hooksecurefunc(WhoFrame.ScrollBox, 'Update', function(self)
@@ -2049,6 +2056,9 @@ end)]]
             RecruitAFriendFrame.RecruitList.ScrollBox:SetPoint('BOTTOMRIGHT', -20,0)
             RecruitAFriendFrame.RewardClaiming.Background:SetPoint('LEFT')
             RecruitAFriendFrame.RewardClaiming.Background:SetPoint('RIGHT')
+
+            set_Scale_Size(RaidInfoFrame, {setSize=true, notMoveAlpha=true})
+            set_Move_Frame(RaidInfoFrame, {frame=FriendsFrame})
         end, sizeUpdateFunc=function(btn)
             if RaidFrame:IsShown() then
                 btn:set_RaidFrame_Button_size()
@@ -2056,6 +2066,7 @@ end)]]
         end, sizeRestFunc=function(self)
             self.target:SetSize(338, 424)
     end})
+
 
     --对话
     set_Move_Frame(GossipFrame, {minW=220, minH=220, setSize=true, initFunc=function(self)
