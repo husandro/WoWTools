@@ -274,7 +274,6 @@ end
 
 
 local function Init()
-    
     hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--列表 Blizzard_CategoryList.lua
         local category = initializer.data.category
         if category then
@@ -1833,6 +1832,7 @@ local function Init()
 
 
 
+
     set(CombatConfigSettingsShowQuickButtonText, '显示快捷按钮')
     CombatConfigSettingsShowQuickButton.tooltip= '在聊天窗口中放置一个该过滤条件的快捷方式。'
     set(CombatConfigSettingsSoloText, '独身')
@@ -1973,7 +1973,8 @@ local function Init()
             set(ScenarioChallengeModeBlock.Level, format('%d级', level))
         end
     end)
-    SCENARIO_CONTENT_TRACKER_MODULE:SetHeader(ObjectiveTrackerFrame.BlocksFrame.ScenarioHeader, '场景战役', nil)--Blizzard_ScenarioObjectiveTracker.lua
+    --出现Bug SCENARIO_CONTENT_TRACKER_MODULE:SetHeader(ObjectiveTrackerFrame.BlocksFrame.ScenarioHeader, '场景战役', nil)
+    --Blizzard_ScenarioObjectiveTracker.lua
     hooksecurefunc(SCENARIO_CONTENT_TRACKER_MODULE, 'Update', function()
         local scenarioName, currentStage, numStages, flags, _, _, _, _, _, scenarioType= C_Scenario.GetInfo()
         local shouldShowMawBuffs = ShouldShowMawBuffs()
