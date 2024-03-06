@@ -128,68 +128,6 @@ local function model(self)
     end
 end
 
---[[local function role_check_tooltips_enter(self)
-    local desc= _G["ROLE_DESCRIPTION_"..(self.role or '')]
-    if not desc then
-        return
-    end
-    GameTooltip:SetText(e.strText[desc] or desc, nil, nil, nil, nil, true)
-    if ( self.permDisabled ) then
-        if self.permDisabledTip then
-            GameTooltip:AddLine('|cnRED_FONT_COLOR: '..(
-                self.permDisabledTip==YOUR_CLASS_MAY_NOT_PERFORM_ROLE and '你的职业无法担任该职责。'
-                or self.permDisabledTip
-            ), nil, nil, nil, true)
-        end
-    elseif self.disabledTooltip and not self:IsEnabled()  then
-        GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(
-            self.disabledTooltip==BLIZZARD_STORE_ERROR_PARENTAL_CONTROLS and '家长监控已禁用了该功能。'
-            or self.disabledTooltip
-        ), nil, nil, nil, true)
-    elseif ( not self:IsEnabled() ) then
-        local roleID = self:GetID()
-        GameTooltip:SetText('该职责不可用。', 1.0, 1.0, 1.0)
-        local reasons = GetLFGInviteRoleRestrictions(roleID) or {}
-        for i = 1, #reasons do
-            local text = _G["INSTANCE_UNAVAILABLE_SELF_"..(LFG_INSTANCE_INVALID_CODES[reasons[i] ] or "OTHER")]
-            if( text ) then
-                GameTooltip:AddLine(e.strText[text] or text)
-            end
-        end
-    elseif self.alert and self.alert:IsShown() then
-        GameTooltip:SetText('该角色在某些地下城不可用。', 1.0, 1.0, 1.0, true)
-        GameTooltip:AddLine('该角色在你所选择的一个或更多地下城中不可用。在这些地下城中，你将作为可胜任的角色加入队列。', nil, nil, nil, true)
-    end
-    GameTooltip:Show()
-end]]
---[[local function role_tooltips(str)
-    local tank= _G[str..'RoleButtonTank'] or (_G[str] and _G[str].DPSIcon)
-    local header= _G[str..'RoleButtonHealer']or (_G[str] and _G[str].HealerIcon)
-    local dps= _G[str..'RoleButtonDPS']or (_G[str] and _G[str].TankIcon)
-    local leader= _G[str..'RoleButtonLeader']
-    if tank then
-        tank:HookScript('OnEnter', role_check_tooltips_enter)
-    end
-    if header then
-        header:HookScript('OnEnter', role_check_tooltips_enter)
-    end
-    if dps then
-        dps:HookScript('OnEnter', role_check_tooltips_enter)
-    end
-    if leader then
-        leader:HookScript('OnEnter', function()
-            GameTooltip:SetText('表示你拥有在副本中战斗的经验，并愿意指导团队攻克难关。', nil, nil, nil, nil, true)
-        end)
-    end
-end]]
-
---[[if e.Player.husandro then
-    e.strText['Mito']= '史诗'
-    e.strText['Essenza Incandescente']= '耀辉精华'
-    e.strText['Velocità di Casa']= '思乡之速'
-end]]
-
---( ) . % + - * ? [ ^ $
 local ITEM_UPGRADE_TOOLTIP_FORMAT_STRING= ITEM_UPGRADE_TOOLTIP_FORMAT_STRING:gsub(': (.+)', '(.+)')
 local ENCHANTED_TOOLTIP_LINE = ENCHANTED_TOOLTIP_LINE:gsub('%%s', '(.+)')--附魔：%s
 local COVENANT_RENOWN_TOAST_REWARD_COMBINER= COVENANT_RENOWN_TOAST_REWARD_COMBINER:gsub('%%s', '(.+)')--%s 和 %s
@@ -323,24 +261,6 @@ local function set_pettips_func(self)--FloatingPetBattleTooltip.xml
 end
 
 
---[[local function set_button(btn)
-    local label = btn and (btn.Text or btn.text)
-    if label then
-        local text= label:GetText() or ''
-        local col, name= text:match('(|cff......)(.-)|r')
-        name= name or text
-        if name and name~='' then
-            name= e.strText[name]
-            if name then
-                set(label, (col or '')..name)
-            end
-        end
-    end
-end]]
-
-
-
-
 
 
 
@@ -354,6 +274,7 @@ end]]
 
 
 local function Init()
+    
     hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--列表 Blizzard_CategoryList.lua
         local category = initializer.data.category
         if category then
@@ -600,17 +521,6 @@ local function Init()
         set(LFDQueueFrameTypeDropDownName, '类型：')
         set(LFDQueueFrameRandomScrollFrameChildFrameTitle, '')
     set(GroupFinderFrame.groupButton2.name, '团队查找器')
-        --[[hooksecurefunc('GroupFinderFrame_EvaluateButtonVisibility', function(self)
-            if self.groupButton1.tooltip and e.strText[self.groupButton1.tooltip] then
-                self.groupButton1.tooltip = e.strText[self.groupButton1.tooltip]
-            end
-            if self.groupButton2.tooltip and e.strText[self.groupButton2.tooltip] then
-                self.groupButton2.tooltip = e.strText[self.groupButton2.tooltip]
-            end
-            if self.groupButton3.tooltip and e.strText[self.groupButton3.tooltip] then
-                self.groupButton3.tooltip = e.strText[self.groupButton4.tooltip]
-            end
-        end)]]
         set(RaidFinderQueueFrameSelectionDropDownName, '团队')
             hooksecurefunc('RaidFinderFrameFindRaidButton_Update', function()--RaidFinder.lua
                 local mode = GetLFGMode(LE_LFG_CATEGORY_RF, RaidFinderQueueFrame.raid)
@@ -667,13 +577,6 @@ local function Init()
     set(LFGListApplicationDialogDescription.EditBox.Instructions, '给队长留言（可选）')
     set(LFGListApplicationDialog.SignUpButton, '申请')
     set(LFGListApplicationDialog.CancelButton, '取消')
-    --[[LFGListApplicationDialog.DamagerButton.role='DAMAGER'
-    LFGListApplicationDialog.DamagerButton:HookScript('OnEnter', role_check_tooltips_enter)
-    LFGListApplicationDialog.HealerButton.role='HEALER'
-    LFGListApplicationDialog.HealerButton:HookScript('OnEnter', role_check_tooltips_enter)
-    LFGListApplicationDialog.TankButton.role='TANK'
-    LFGListApplicationDialog.TankButton:HookScript('OnEnter', role_check_tooltips_enter)
-]]
     local function GetFindGroupRestriction()
         if ( C_SocialRestrictions.IsSilenced() ) then
             return "SILENCED", RED_FONT_COLOR:WrapTextInColorCode('帐号禁言期间不能这样做')
@@ -1231,8 +1134,9 @@ local function Init()
                     set(LFGDungeonReadyDialog.label, '已经建好了一个副本，准备前往：')
                 end
             end
-            if ( subtypeID ~= LFG_SUBTYPEID_SCENARIO and subtypeID ~= LFG_SUBTYPEID_FLEXRAID  and e.strText[_G[role]]) then
-                set(LFGDungeonReadyDialogRoleLabel, e.strText[_G[role]])
+            role= _G[role]
+            if ( subtypeID ~= LFG_SUBTYPEID_SCENARIO and subtypeID ~= LFG_SUBTYPEID_FLEXRAID  and e.strText[role]) then
+                set(LFGDungeonReadyDialogRoleLabel, e.strText[role])
             end
         end
     end)
@@ -1357,26 +1261,6 @@ local function Init()
     end)
 
     set(LFGListFrame.ApplicationViewer.ScrollBox.NoApplicants, '"你的队伍已经加入列表。|n申请者将出现在此处。')
-    --role_tooltips('LFDQueueFrame')
-    --role_tooltips('RaidFinderQueueFrame')
-
-
-    --[[RolePoll.xml
-    local function set_RolePoll_Tooltip(self)
-        local desc= _G["ROLE_DESCRIPTION"..self:GetID()]
-        GameTooltip:SetText(e.str[desc] or desc, nil, nil, nil, nil, true)
-        if ( self.permDisabled ) then
-            GameTooltip:AddLine('|cnRED_FONT_COLOR:你的职业无法担任该职责。', nil, nil, nil, true)
-        end
-    end
-    RolePollPopupRoleButtonTank.permDisabledTip= '你的职业无法担任该职责。'
-    RolePollPopupRoleButtonHealer.permDisabledTip= '你的职业无法担任该职责。'
-    RolePollPopupRoleButtonDPS.permDisabledTip= '你的职业无法担任该职责。'
-    set(RolePollPopupAcceptButton, '接受')
-    RolePollPopupRoleButtonTank:HookScript('OnEnter', set_RolePoll_Tooltip)
-    RolePollPopupRoleButtonHealer:HookScript('OnEnter', set_RolePoll_Tooltip)
-    RolePollPopupRoleButtonDPS:HookScript('OnEnter', set_RolePoll_Tooltip)]]
-
 
 
 
@@ -1407,7 +1291,6 @@ local function Init()
     set(QuickKeybindFrame.Header.Text, '快速快捷键模式')
     set(QuickKeybindFrame.InstructionText, '你处于快速快捷键模式。将鼠标移到一个按钮上并按下你想要的按键，即可设置那个按钮的快捷键。')
     set(QuickKeybindFrame.CancelDescriptionText, '取消会使你离开快速快捷键模式。')
-    --set(QuickKeybindFrameText, '')
     set(QuickKeybindFrame.OkayButton, '确定')
     set(QuickKeybindFrame.DefaultsButton, '恢复默认设置')
     set(QuickKeybindFrame.CancelButton, '取消')
@@ -2136,14 +2019,6 @@ local function Init()
             end
         end
     end)
-    --[[hooksecurefunc(ScenarioChallengeModeAffixMixin, 'OnEnter', function(self)
-        if (self.affixID) then
-            local name, description = C_ChallengeMode.GetAffixInfo(self.affixID)
-            GameTooltip:SetText(e.cn(name), 1, 1, 1, 1, true)
-            GameTooltip:AddLine(e.cn(description), nil, nil, nil, true)
-            GameTooltip:Show()
-        end
-    end)]]
     C_Timer.After(2, function()
 
 
@@ -2235,12 +2110,15 @@ local function Init()
         if (checkboxState == Enum.AddOnEnableState.Some ) then
             entry.Enabled.tooltip = '该插件只对某些角色启用。'
         end
-        local text= e.strText[_G["ADDON_"..security]]
-        if text then
-            entry.Security.tooltip = text
-        end
-        if ( not loadable and reason ) then
-            set(entry.Status, e.strText[_G["ADDON_"..reason]])
+        local name= _G["ADDON_"..security]
+        if name then
+            local text= e.strText[name]
+            if text then
+                entry.Security.tooltip = text
+            end
+            if ( not loadable and reason ) then
+                set(entry.Status, e.strText[name])
+            end
         end
     end)
 
@@ -2392,7 +2270,10 @@ local function Init()
     set(ConsortiumMailFrame.CommissionPaidDisplay.CommissionPaidText, '已支付佣金：')
 
     hooksecurefunc('GuildChallengeAlertFrame_SetUp', function(frame, challengeType)--AlertFrameSystems.lua
-        set(frame.Type, e.strText[_G["GUILD_CHALLENGE_TYPE"..challengeType]])
+        local name= _G["GUILD_CHALLENGE_TYPE"..challengeType]
+        if name then
+            set(frame.Type, e.strText[name])
+        end
     end)
 
     hooksecurefunc('AchievementAlertFrame_SetUp', function(frame, achievementID, alreadyEarned)
@@ -2517,17 +2398,6 @@ local function Init()
     end)
     set(WorldMapFrameHomeButtonText, '世界', nil, true)
 
-    --[[
-        self:AddOverlayFrame("WorldMapFloorNavigationFrameTemplate", "FRAME", "TOPLEFT", self:GetCanvasContainer(), "TOPLEFT", -15, 2)
-        self:AddOverlayFrame("WorldMapTrackingOptionsButtonTemplate", "DROPDOWNTOGGLEBUTTON", "TOPRIGHT", self:GetCanvasContainer(), "TOPRIGHT", -4, -2)
-        self:AddOverlayFrame("WorldMapTrackingPinButtonTemplate", "BUTTON", "TOPRIGHT", self:GetCanvasContainer(), "TOPRIGHT", -36, -2)
-        self:AddOverlayFrame("WorldMapBountyBoardTemplate", "FRAME", nil, self:GetCanvasContainer())
-        self:AddOverlayFrame("WorldMapActionButtonTemplate", "FRAME", nil, self:GetCanvasContainer())
-        self:AddOverlayFrame("WorldMapZoneTimerTemplate", "FRAME", "BOTTOM", self:GetCanvasContainer(), "BOTTOM", 0, 20)
-        self:AddOverlayFrame("WorldMapThreatFrameTemplate", "FRAME", "BOTTOMLEFT", self:GetCanvasContainer(), "BOTTOMLEFT", 0, 0)
-        self:AddOverlayFrame("WorldMapActivityTrackerTemplate", "BUTTON", "BO
-    ]]
-    --WorldMapMixin:AddOverlayFrames()
     local optionButton=WorldMapFrame.overlayFrames[2]
     if optionButton then
         optionButton:HookScript('OnEnter', function()
@@ -2598,9 +2468,6 @@ local function Init()
         GameTooltip:SetText(headerText)
         GameTooltip:Show()
     end)
-    MinimapCluster.IndicatorFrame.MailFrame:HookScript('OnEnter', function()
-    end)
-
 
     --背包
     set(BagItemSearchBox.Instructions, '搜索')
@@ -2627,10 +2494,6 @@ local function Init()
     set(ReportFrame.ThankYouText, '感谢您的举报！')
     set(ReportFrame.TitleText, '《魔兽世界》客户支持')
     set(ReportFrame.ReportButton, '举报')
-
-
-
-
 
 
 
@@ -3905,14 +3768,6 @@ local function Init()
         end
     end)
 
-    --[[hooksecurefunc('HelpPlate_Button_OnShow', function(self)
-        local text= e.strText[self.toolTipText]
-        if text then
-            self.toolTipText= text
-            set(HelpPlateTooltip.Text, text)
-            HelpPlateTooltip:Show()
-        end
-    end)]]
     hooksecurefunc('HelpPlate_Button_OnEnter', function(self)
         local text= e.strText[self.toolTipText]
         if text then
@@ -4019,7 +3874,8 @@ local function Init()
     hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'SetAppearance', function(self, slotID, transmogID, isSecondary)
         local itemID = C_TransmogCollection.GetSourceItemID(transmogID)
         if not itemID and not isSecondary then
-            local slotName = e.strText[_G[TransmogUtil.GetSlotName(slotID)]]
+            local name= _G[TransmogUtil.GetSlotName(slotID)]
+            local slotName = e.strText[name]
             if slotName then
                 set(self.Name, format('(%s)', slotName))
             end
@@ -5813,91 +5669,12 @@ local function Init_Loaded(arg1)
         hooksecurefunc('EncounterJournal_ToggleHeaders', function()
             for _, infoHeader in pairs(EncounterJournal.encounter.usedHeaders or {}) do
                 if infoHeader.myID and  infoHeader.button then
-                    --local sectionInfo = C_EncounterJournal.GetSectionInfo(infoHeader.myID)
                     EncounterJournal_SetupIconFlags(infoHeader.myID, infoHeader.button)
                 end
             end
         end)
 
 
---[[
-local function IsTimedActivity(activityData)
-	return activityData.eventStartTime and activityData.eventEndTime
-end
-local function HasTimedActivityBegun(activityData)
-	if not IsTimedActivity(activityData) then
-		return false
-	end
-	local currentTime = GetServerTime()
-	return currentTime > activityData.eventStartTime
-end
-local function HasTimedActivityExpired(activityData)
-	if not IsTimedActivity(activityData) then
-		return false
-	end
-	local currentTime = GetServerTime()
-	return currentTime > activityData.eventEndTime
-end
-local function IsTimedActivityActive(activityData)
-	return HasTimedActivityBegun(activityData) and not HasTimedActivityExpired(activityData)
-end
-local function GetActivityTimeRemaining(activityData)
-	if not IsTimedActivityActive(activityData) then
-		return 0
-	end
-	local currentTime = GetServerTime()
-	return activityData.eventEndTime - currentTime
-end
-local function IsTimedActivityCloseToExpiring(activityData)
-	if not IsTimedActivityActive(activityData) then
-		return false
-	end
-	local timeRemaining = GetActivityTimeRemaining(activityData)
-	local timeRemainingUnits = ConvertSecondsToUnits(timeRemaining)
-
-	local totalEventTime = activityData.eventEndTime - activityData.eventStartTime
-	local totalEventTimeUnits = ConvertSecondsToUnits(totalEventTime)
-	if totalEventTimeUnits.days >= 7 then
-		return timeRemainingUnits.days <= 3
-	else
-		return timeRemainingUnits.days <= 1
-	end
-end
-local ActivityTimeRemainingFormatter = CreateFromMixins(SecondsFormatterMixin)
-ActivityTimeRemainingFormatter:Init(0, SecondsFormatter.Abbreviation.None, false, true)
-function ActivityTimeRemainingFormatter:GetMinInterval(seconds)
-	return SecondsFormatter.Interval.Hours
-end
-hooksecurefunc(MonthlyActivitiesButtonTextContainerMixin, 'UpdateConditionsText', function(self, data)
-    local conditionsText = ""
-    if not data.isChild then
-        if IsTimedActivity(data) then
-            conditionsText = e.cn(self:GetClockAtlasText(data))
-            if not data.completed and IsTimedActivityCloseToExpiring(data) then
-                local timeRemainingText = ActivityTimeRemainingFormatter:Format(GetActivityTimeRemaining(data))
-                conditionsText = conditionsText.." "..format('剩余时间：%s', timeRemainingText)
-            else
-                if data.eventName then
-                    conditionsText = conditionsText.." "..e.cn(data.eventName)
-                end
-                local eventStartTimeUnits = date("*t", data.eventStartTime)
-                local eventStartDate = FormatShortDate(eventStartTimeUnits.day, eventStartTimeUnits.month)
-                local eventEndTimeUnits = date("*t", data.eventEndTime)
-                local eventEndDate = FormatShortDate(eventEndTimeUnits.day, eventEndTimeUnits.month)
-                local durationText = format('(%s - %s)', eventStartDate, eventEndDate)
-                conditionsText = conditionsText.." "..durationText
-            end
-        end
-        for _, condition in ipairs(data.conditions) do
-            if conditionsText ~= "" then
-                conditionsText = conditionsText..", "
-            end
-            conditionsText = conditionsText..condition.text
-        end
-    end
-    set(self.ConditionsText, conditionsText)
-end)
-]]
 
 
         hooksecurefunc(MonthlyActivitiesButtonTextContainerMixin, 'UpdateText', function(self, data)
@@ -7413,14 +7190,6 @@ end)
             GameTooltip:AddDoubleLine( '服务器时间：', GameTime_GetGameTime(true), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
             GameTooltip:AddDoubleLine( '本地时间：', GameTime_GetLocalTime(true), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
         end)
-        --[[hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
-            if ( TimeManagerClockButton.alarmFiring ) then
-                GameTooltip:AddLine('点击这里关闭提醒。')
-            else
-                GameTooltip:AddLine('点击这里显示时钟设置选项。')
-            end
-            GameTooltip:Show()
-        end)]]
 
     elseif arg1=='Blizzard_ArchaeologyUI' then
         set(ArchaeologyFrameTitleText, '考古学')
@@ -7436,11 +7205,6 @@ end)
         set(ArchaeologyFrame.backButton, '后退')
         set(ArchaeologyFrameArtifactPageSolveFrameSolveButton, '解密')
 
-        --[[
-            self.summaryPage.UpdateFrame = ArchaeologyFrame_UpdateSummary
-            self.completedPage.UpdateFrame = ArchaeologyFrame_UpdateComplete
-            self.artifactPage.UpdateFrame = ArchaeologyFrame_CurrentArtifactUpdate
-        ]]
         hooksecurefunc(ArchaeologyFrame.summaryPage, 'UpdateFrame', function(self)
             set(self.pageText, format('第%d页', self.currentPage))
         end)
