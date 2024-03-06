@@ -528,7 +528,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
         if Save.disabledFriendPlus then
             return
         end
-       
+
         if self.buttonType == FRIENDS_BUTTON_TYPE_WOW then
             local info = C_FriendList.GetFriendInfoByIndex(self.id)
             if not info or not info.guid then
@@ -862,14 +862,44 @@ local function Init()--FriendsFrame.lua
     hooksecurefunc('WhoList_Update', set_WhoList_Update)
     hooksecurefunc(WhoFrame.ScrollBox, 'SetScrollTargetOffset', set_WhoList_Update)
 
-    --团队，团队信息
-    --增加长度
-    if RaidInfoFrame then--RaidFrame.xml
-        RaidInfoFrame:ClearAllPoints()
-        RaidInfoFrame:SetPoint('TOPLEFT', RaidFrame, 'TOPRIGHT', 0, 28)
-        RaidInfoFrame:SetSize(345, 485)--<Size x="345" y="250"/>
-        RaidInfoFrame.ScrollBox:SetHeight(390)
-    end
+    --团队，团队信息 RaidFrame.xml
+    hooksecurefunc('RaidInfoFrame_InitButton', function(btn, elementData)
+        if not btn:IsVisible() then
+            return
+        end
+        local index = elementData.index;
+        local text
+        if elementData.isInstance then
+            local _, _, _, _, locked, extended, _, _, _, _, numEncounters, encounterProgress = GetSavedInstanceInfo(index)
+            if numEncounters and encounterProgress then
+                local num
+                num= numEncounters- encounterProgress
+                num= num<0 and 0 or num
+                if not (extended or locked) then
+                    text= '|cff606060'..num..'/'..numEncounters..'|r'
+                elseif num==0 then
+                    text= '|cnRED_FONT_COLOR:'..num..'/'..numEncounters..'|r'
+                else
+                    text= '|cnGREEN_FONT_COLOR:'..num..'|r/'..numEncounters
+                end
+                if extended or locked then
+                    local t=''
+                    for j=1,numEncounters do
+                        local isKilled = select(3, GetSavedInstanceEncounterInfo(index,j))
+                        t= t..(isKilled and e.Icon.X2 or e.Icon.select2)
+                    end
+                    text= t..' '..text
+                end
+            end
+        end
+        if text and not btn.tipsLabel then
+            btn.tipsLabel= e.Cstr(btn, {justifyH='RIGHT'})
+            btn.tipsLabel:SetPoint('BOTTOMRIGHT')
+        end
+        if btn.tipsLabel then
+            btn.tipsLabel:SetText(text or '')
+        end
+    end)
 end
 
 

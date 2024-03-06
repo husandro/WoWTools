@@ -1699,20 +1699,20 @@ local function Init()
                 end
             end)
             hooksecurefunc('RaidInfoFrame_InitButton', function(button, elementData)--RaidFrame.lua
-                local function InitButton(extended, locked, name, difficulty)
+                local function InitButton(extended, locked, name, difficulty, difficultyId)
+                    name= e.strText[name]
                     if extended or locked then
-                        if e.strText[name] then
-                            set(button.name, e.strText[name])
-                        end
+                        set(button.name, name)
                     else
                         button.reset:SetFormattedText("|cff808080%s|r", '已过期')
-                        if e.strText[name] then
-                            button.name:SetFormattedText("|cff808080%s|r", e.strText[name])
+                        if name then
+                            button.name:SetFormattedText("|cff808080%s|r", name)
                         end
                     end
-                    if e.strText[difficulty] then
-                        button.difficulty:SetText(e.strText[difficulty])
-                    end
+
+                    local difficultyText= difficultyId and e.GetDifficultyColor(difficulty, difficultyId) or e.strText[difficulty]
+                    set(button.difficulty, difficultyText)
+                    
                     if button.extended:IsShown() then
                         set(button.extended, '|cff00ff00已延长|r')
                     end
@@ -1720,12 +1720,23 @@ local function Init()
 
                 local index = elementData.index
                 if elementData.isInstance then
-                    local name, _, _, _, locked, extended, _, _, _, difficultyName = GetSavedInstanceInfo(index)
-                    InitButton(extended, locked, name, difficultyName)
+                    local name, _, _, difficultyId, locked, extended, _, _, _, difficultyName = GetSavedInstanceInfo(index)
+                    InitButton(extended, locked, name, difficultyName, difficultyId)
                 else
                     local name = GetSavedWorldBossInfo(index)
                     local locked = true
                     local extended = false
+                    if index==1 then--Sha della Rabbia
+                        e.strText[name]= '怒之煞'
+                    elseif index==2 then --Galeone
+                        e.strText[name]= '炮舰'
+                    elseif index==3 then--Nalak
+                        e.strText[name]= '纳拉克'
+                    elseif index==4 then --Undasta
+                        e.strText[name]= '乌达斯塔'
+                    elseif index==9 then--Rukhmar
+                        e.strText[name]= '鲁克玛'
+                    end
                     InitButton(extended, locked, name, RAID_INFO_WORLD_BOSS)
                 end
             end)
@@ -1733,6 +1744,7 @@ local function Init()
                 self:GetParent():GetTitleText():SetText('团队')
             end)
             set(RaidInfoCancelButton, '关闭')
+            
 
         set(RaidFrameConvertToRaidButton, '转化为团队')
         set(RaidFrameRaidDescription, '团队是超过5个人的队伍，这是为了击败高等级的特定挑战而准备的大型队伍模式。\n\n|cffffffff- 团队成员无法获得非团队任务所需的物品或者杀死怪物的纪录。\n\n- 在团队中，你通过杀死怪物获得的经验值相对普通小队要少。\n\n- 团队让你可以赢得用其它方法根本无法通过的挑战。|r')

@@ -2056,17 +2056,43 @@ end)]]
             RecruitAFriendFrame.RecruitList.ScrollBox:SetPoint('BOTTOMRIGHT', -20,0)
             RecruitAFriendFrame.RewardClaiming.Background:SetPoint('LEFT')
             RecruitAFriendFrame.RewardClaiming.Background:SetPoint('RIGHT')
-
-            set_Scale_Size(RaidInfoFrame, {setSize=true, notMoveAlpha=true})
-            set_Move_Frame(RaidInfoFrame, {frame=FriendsFrame})
         end, sizeUpdateFunc=function(btn)
             if RaidFrame:IsShown() then
                 btn:set_RaidFrame_Button_size()
             end
         end, sizeRestFunc=function(self)
             self.target:SetSize(338, 424)
-    end})
-
+        end
+    })
+    set_Move_Frame(RaidInfoFrame, {setSize=true, minW=345, minH=125, notMoveAlpha=true, initFunc=function(btn)
+            btn.target.ScrollBox:SetPoint('BOTTOMRIGHT',-35, 38)
+            RaidInfoDetailFooter:SetPoint('RIGHT', -12, 0)
+            RaidInfoInstanceLabel:SetWidth(200)
+            hooksecurefunc('RaidInfoFrame_InitButton', function(btn, elementData)
+                if not btn:IsVisible() then
+                    return
+                end
+                btn.name:SetPoint('RIGHT', btn.reset, 'LEFT')
+            end)
+            RaidInfoIDLabel:ClearAllPoints()
+            RaidInfoIDLabel:SetPoint('TOPRIGHT', -13, -31)
+            --<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="13" y="-31"/>
+            RaidInfoInstanceLabel:ClearAllPoints()
+            RaidInfoInstanceLabel:SetPoint('TOPLEFT', 13, -31)
+            RaidInfoInstanceLabel:SetPoint('BOTTOMRIGHT', RaidInfoIDLabel, 'BOTTOMLEFT', 1,0)
+                
+            
+            function btn:set_point()
+                self.target:ClearAllPoints()
+                self.target:SetPoint("TOPLEFT", RaidFrame, "TOPRIGHT", 0 ,-28)
+            end
+        end, sizeRestFunc=function(btn)
+            btn.target:SetSize(345, 250)
+            btn:set_point()
+        end, restPointFunc=function(btn)
+            btn:set_point()
+        end
+    })
 
     --对话
     set_Move_Frame(GossipFrame, {minW=220, minH=220, setSize=true, initFunc=function(self)

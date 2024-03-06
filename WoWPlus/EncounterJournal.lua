@@ -9,7 +9,7 @@ local Button
 local AllTipsFrame--冒险指南,右边,显示所数据
 
 local function getBossNameSort(name, worldBossID)--取得怪物名称, 短名称
-    if e.onlyChinese and not LOCALE_zhCN and not LOCALE_zhTW and worldBossID then
+    --[[if e.onlyChinese and not LOCALE_zhCN and not LOCALE_zhTW and worldBossID then
         if worldBossID==1 then--Sha della Rabbia
             return '怒之煞'
         elseif worldBossID==2 then --Galeone
@@ -21,7 +21,7 @@ local function getBossNameSort(name, worldBossID)--取得怪物名称, 短名称
         elseif worldBossID==9 then--Rukhmar
             return '鲁克玛'
         end
-    end
+    end]]
     name= e.cn(name)
     name=name:gsub('(,.+)','')
     name=name:gsub('(，.+)','')
