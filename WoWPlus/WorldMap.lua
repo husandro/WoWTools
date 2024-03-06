@@ -862,11 +862,12 @@ local function set_Widget_Text_OnUpDate(self, elapsed)
     end
 end
 
-local str_INSTANCE_DIFFICULTY_FORMAT='('..e.Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
+local INSTANCE_DIFFICULTY_FORMAT='('..e.Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
 local function set_AreaPOIPinMixin_OnAcquired(frame)
     frame.updateWidgetID=nil
     frame.updateAreaPoiID=nil
     frame:SetScript('OnUpdate', nil)
+    
     if not frame.Text and not Save.hide and (frame.name or frame.widgetSetID or frame.areaPoiID) then
         frame.Text= create_Wolor_Font(frame, 10)
         frame.Text:SetPoint('TOP', frame, 'BOTTOM', 0, 3)
@@ -876,7 +877,7 @@ local function set_AreaPOIPinMixin_OnAcquired(frame)
         if frame and frame.Text then
             local text--地图，地名，名称
             if not Save.hide and frame.name then
-                text= frame.name:match(str_INSTANCE_DIFFICULTY_FORMAT) or frame.name
+                text= frame.name:match(INSTANCE_DIFFICULTY_FORMAT) or frame.name
             end
             frame.Text:SetText(text or '')
         end
@@ -1020,7 +1021,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
 
         elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
-            --hooksecurefunc(FlightPointPinMixin, 'OnAcquired', set_AreaPOIPinMixin_OnAcquired)--世界地图，飞行点，加名称
             local btn= e.Cbtn(FlightMapFrame.BorderFrame.TitleContainer, {size={20,20}, icon=Save.showFlightMapPinName})
             if _G['MoveZoomInButtonPerFlightMapFrame'] then
                 btn:SetPoint('RIGHT', _G['MoveZoomInButtonPerFlightMapFrame'], 'LEFT')

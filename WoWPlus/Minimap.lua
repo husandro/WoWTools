@@ -1435,11 +1435,18 @@ local function Init_Set_Button()--小地图, 标记, 文本
         self.setTracking=true
     end)
 
-    WorldMapFrame.setTrackingButton= e.Cbtn(WorldMapFrame, {size={20,20}, icon='hide'})
-    WorldMapFrame.setTrackingButton:SetPoint('TOPRIGHT', WorldMapFramePortrait, 'BOTTOMRIGHT', 2, 10)
-    WorldMapFrame.setTrackingButton:SetScript('OnClick', function(self)
-        local frame= self:GetParent()
-        local uiMapID= frame.mapID or frame:GetMapID("current")
+    local SetTrackingButton= e.Cbtn(WorldMapFrame, {size={20,20}, icon='hide'})
+    function SetTrackingButton:set_texture()
+        local uiMapID= WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
+        if not uiMapID then
+            self:SetNormalTexture(0)
+        else
+            self:SetNormalAtlas(Save.uiMapIDs[uiMapID] and e.Icon.select or 'VignetteKillElite')
+        end
+    end
+    SetTrackingButton:SetPoint('TOPRIGHT', WorldMapFramePortrait, 'BOTTOMRIGHT', 2, 10)
+    SetTrackingButton:SetScript('OnClick', function(self)
+        local uiMapID= WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
         if uiMapID then
             Save.uiMapIDs[uiMapID]= not Save.uiMapIDs[uiMapID] and true or nil
             local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
@@ -1447,16 +1454,13 @@ local function Init_Set_Button()--小地图, 标记, 文本
                 name,
                 Save.uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
             )
-            frame:Set_TrackingButton_Texture()
+            self:set_texture()
         end
     end)
-    WorldMapFrame.setTrackingButton:SetScript('OnShow', function(self)
-        self:GetParent():Set_TrackingButton_Texture()
-    end)
-    WorldMapFrame.setTrackingButton:SetScript('OnLeave', GameTooltip_Hide)
-    WorldMapFrame.setTrackingButton:SetScript('OnEnter', function(self)
-        local frame= self:GetParent()
-        local uiMapID= frame.mapID or frame:GetMapID("current")
+    SetTrackingButton:SetScript('OnShow', SetTrackingButton.set_texture)
+    SetTrackingButton:SetScript('OnLeave', GameTooltip_Hide)
+    SetTrackingButton:SetScript('OnEnter', function(self)
+        local uiMapID= WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
         if uiMapID then
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -1465,21 +1469,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             e.tips:Show()
         end
     end)
-    function WorldMapFrame:Set_TrackingButton_Texture()
-        local uiMapID= self.mapID or self:GetMapID("current")
-        if not uiMapID then
-            self.setTrackingButton:SetNormalTexture(0)
-        else
-            local atlas
-            if Save.uiMapIDs[uiMapID] then
-                atlas= e.Icon.select
-            else
-                atlas='VignetteKillElite'
-            end
-            self.setTrackingButton:SetNormalAtlas(atlas)
-        end
-    end
-    hooksecurefunc(WorldMapFrame, 'OnMapChanged', WorldMapFrame.Set_TrackingButton_Texture)--uiMapIDs, 添加，移除 --Blizzard_WorldMap.lua
+    hooksecurefunc(WorldMapFrame, 'OnMapChanged', function() SetTrackingButton:set_texture() end)--uiMapIDs, 添加，移除 --Blizzard_WorldMap.lua
 end
 
 

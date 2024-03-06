@@ -2064,7 +2064,7 @@ end)]]
             self.target:SetSize(338, 424)
         end
     })
-    set_Move_Frame(RaidInfoFrame, {setSize=true, minW=345, minH=125, notMoveAlpha=true, initFunc=function(btn)
+    set_Move_Frame(RaidInfoFrame, {setSize=true, minW=345, minH=128, notMoveAlpha=true, initFunc=function(btn)
             btn.target.ScrollBox:SetPoint('BOTTOMRIGHT',-35, 38)
             RaidInfoDetailFooter:SetPoint('RIGHT', -12, 0)
             RaidInfoInstanceLabel:SetWidth(200)
@@ -2076,12 +2076,9 @@ end)]]
             end)
             RaidInfoIDLabel:ClearAllPoints()
             RaidInfoIDLabel:SetPoint('TOPRIGHT', -13, -31)
-            --<Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="13" y="-31"/>
             RaidInfoInstanceLabel:ClearAllPoints()
             RaidInfoInstanceLabel:SetPoint('TOPLEFT', 13, -31)
             RaidInfoInstanceLabel:SetPoint('BOTTOMRIGHT', RaidInfoIDLabel, 'BOTTOMLEFT', 1,0)
-                
-            
             function btn:set_point()
                 self.target:ClearAllPoints()
                 self.target:SetPoint("TOPLEFT", RaidFrame, "TOPRIGHT", 0 ,-28)

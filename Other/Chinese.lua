@@ -4040,7 +4040,7 @@ local function Init()
 
 
     --PlayerCastingBarFrame
-    hooksecurefunc(PlayerCastingBarFrame, 'HandleInterruptOrSpellFailed', function(self, empoweredInterrupt, event, ...)
+    hooksecurefunc(PlayerCastingBarFrame, 'HandleInterruptOrSpellFailed', function(self, _, event, ...)
         if self.barType == "interrupted" and self.Text then
             set(self.Text, event == "UNIT_SPELLCAST_FAILED" and '失败' or '被打断')
         end
@@ -4054,7 +4054,9 @@ local function Init()
 
     C_Timer.After(2, function()
         model(CharacterModelScene)
-        model(WardrobeTransmogFrame.ModelScene)
+        if WardrobeTransmogFrame then
+            model(WardrobeTransmogFrame.ModelScene)
+        end
         model(PetStableModelScene)
 
 
