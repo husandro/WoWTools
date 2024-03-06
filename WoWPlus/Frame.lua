@@ -538,6 +538,9 @@ local function set_Move_Frame(self, tab)
     end
     self:HookScript("OnDragStart", function(s)
         s= s.targetMoveFrame or s
+        if not s:IsMovable() then
+            s:SetMovable(true)
+        end
         s:StartMoving()
     end)
     self:HookScript("OnDragStop", function(s)
@@ -2365,7 +2368,7 @@ end)]]
     set_Move_Frame(PartyFrame.Background, {frame=PartyFrame, notZoom=true, notSave=true})
     set_Move_Frame(OpacityFrame)
     set_Move_Frame(ArcheologyDigsiteProgressBar, {notZoom=true})
-    set_Move_Frame(VehicleSeatIndicator)
+    set_Move_Frame(VehicleSeatIndicator, {notZoom=true, notSave=true})
     set_Move_Frame(ExpansionLandingPage)
     set_Move_Frame(PlayerPowerBarAlt)
     set_Move_Frame(CreateChannelPopup)

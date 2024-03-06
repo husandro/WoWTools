@@ -103,7 +103,7 @@ local function Set_Item_Info(self, tab)
 
         local _, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, _, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
 
-        itemLevel= itemLevel or itemLevel2 or GetDetailedItemLevelInfo(itemLink) or 1
+        itemLevel= itemLevel or GetDetailedItemLevelInfo(itemLink) or itemLevel2
         itemQuality= itemQuality or itemQuality2
 
         setIDItem= setID and true or nil--套装
