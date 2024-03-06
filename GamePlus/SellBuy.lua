@@ -155,7 +155,6 @@ local function bossLoot(itemID, itemLink)--BOSS掉落
     and itemLevel and itemLevel>1 and avgItemLevel-itemLevel>=15
     and not Save.noSell[itemID]
     then
-        print(itemLevel, itemLink)
         bossSave[itemID]= itemLevel
         if not Save.notSellBoss then
             print(e.cn(addName), '|cnGREEN_FONT_COLOR:'.. (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB) , itemLink)
@@ -444,7 +443,7 @@ local function set_BuyBack_Items()
     end
     C_Timer.After(0.3, function()
         for itemLink, _ in pairs(tab) do
-            print(id, e.cn(addName), BUYBACK, itemLink)
+            print(id, e.cn(addName), e.onlyChinese and '购回' or BUYBACK, itemLink)
         end
     end)
 end
