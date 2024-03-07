@@ -237,7 +237,10 @@ end
 
 function e.FindBagItem(find, tab)--查询，背包里物品
     --itemName, itemLocation, itemName, itemLink, itemID, merchantIndex，BuybackIndex, guidBank, bag
-    if not ContainerFrameCombinedBags:IsShown() then
+    --if not ContainerFrameCombinedBags:IsShown() then
+        --return
+    --end    
+    if not IsBagOpen(Enum.BagIndex.Backpack) and not IsBagOpen(NUM_TOTAL_EQUIPPED_BAG_SLOTS) then
         return
     end
     if not find then

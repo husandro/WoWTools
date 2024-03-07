@@ -218,8 +218,10 @@ end
  MicroButtonTooltipText('法术书和专业', "TOGGLESPELLBOOK")
  GetBindingText
 
- 
+
+SharedUIPanelTemplates.xml
 UICheckButtonTemplate
+InterfaceOptionsCheckButtonTemplate
 local myCheckButton = CreateFrame("CheckButton", nil, UIParent, "ChatConfigCheckButtonTemplate")
 myCheckButton:SetPoint("TOPLEFT", 200, -65)
 myCheckButton.Text:SetText("CheckBox Name")
@@ -227,6 +229,14 @@ myCheckButton.tooltip = "This is where you place MouseOver Text."
 myCheckButton:HookScript("OnClick", function()
         --do stuff
 end)
+<CheckButton name="UICheckButtonArtTemplate" virtual="true">
+<NormalTexture file="Interface\Buttons\UI-CheckBox-Up"/>
+<PushedTexture file="Interface\Buttons\UI-CheckBox-Down"/>
+<HighlightTexture file="Interface\Buttons\UI-CheckBox-Highlight" alphaMode="ADD"/>
+<CheckedTexture file="Interface\Buttons\UI-CheckBox-Check"/>
+<DisabledCheckedTexture file="Interface\Buttons\UI-CheckBox-Check-Disabled"/>
+</CheckButton>
+
 
 function IsRetail()
     return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
