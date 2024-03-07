@@ -894,7 +894,7 @@ local function Init()--FriendsFrame.lua
         end
         if text and not btn.tipsLabel then
             btn.tipsLabel= e.Cstr(btn, {justifyH='RIGHT'})
-            btn.tipsLabel:SetPoint('BOTTOMRIGHT')
+            btn.tipsLabel:SetPoint('BOTTOMRIGHT', -52,1)
         end
         if btn.tipsLabel then
             btn.tipsLabel:SetText(text or '')

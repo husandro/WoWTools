@@ -100,7 +100,7 @@ local function setAutoRepairAll()
             RepairAllItems(true);
             RepairSave.guild=RepairSave.guild+Co
             RepairSave.num=RepairSave.num+1
-            print(id, e.cn(addName), '|cffff00ff'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', GetCoinTextureString(Co))
+            print(id, e.cn(addName), '|cffff00ff'..(e.onlyChinese and '可用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', GetCoinTextureString(Co))
         else
             if GetMoney()>=Co then
                 RepairAllItems();
@@ -193,9 +193,10 @@ function e.CheckItemSell(itemID, itemLink, quality)
     if Save.Sell[itemID] and not Save.notSellCustom then
         return e.onlyChinese and '自定义' or CUSTOM
     end
-    if not Save.notSellBoss and itemLink and bossSave[itemID] then
-        local itemLeve= GetDetailedItemLevelInfo(itemLink) or select(4, GetItemInfo(itemLink))
-        if bossSave[itemID]== itemLeve  then
+    local level= bossSave[itemID]
+    if level and not Save.notSellBoss and itemLink  then
+        local itemLevel= GetDetailedItemLevelInfo(itemLink) or select(4, GetItemInfo(itemLink))
+        if level== itemLevel  then
             return e.onlyChinese and '首领' or BOSS
         end
     end
@@ -471,10 +472,42 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --商人Pluse. 设置, 提示, 信息
 --#########################
 local function Set_Merchant_Info()--设置, 提示, 信息
-    if not MerchantFrame:IsShown() then
+    if not MerchantFrame:IsShown() or Save.notPlus then
         return
     end
 
@@ -578,18 +611,9 @@ end
 
 
 
-
-
-
-
-
 --商人 Pluse, 加宽，物品，信息
---##########################
-local function Init_Frame_Plus()
-    if Save.notPlus then
-        return
-
-    elseif C_AddOns.IsAddOnLoaded("CompactVendor") then
+local function Init_WidthX2()
+    if C_AddOns.IsAddOnLoaded("CompactVendor") then
         print(id, e.cn(addName), format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '框体宽度' or COMPACT_UNIT_FRAME_PROFILE_FRAMEWIDTH, 'x2'),
             e.GetEnabeleDisable(false), 'CompactVendor',
             e.onlyChinese and '插件' or ADDONS
@@ -664,8 +688,123 @@ local function Init_Frame_Plus()
         btn.itemBG:SetSize(100,43)
         btn.itemBG:SetPoint('TOPRIGHT',-7,-2)
     end
+end
 
 
+
+
+
+
+
+
+
+--堆叠,数量,框架 StackSplitFrame.lua
+local function Init_StackSplitFrame()
+    local f= StackSplitFrame
+    frame.restButton=e.Cbtn(frame, {size={22,22}})--重置
+    frame.restButton:SetPoint('TOP')
+    frame.restButton:SetNormalAtlas('characterundelete-RestoreButton')
+    frame.restButton:SetScript('OnMouseDown', function(self)
+        local f= self:GetParent()
+        f.split= f.minSplit
+        f.LeftButton:SetEnabled(false)
+        f.RightButton:SetEnabled(true)
+        f:UpdateStackText()
+        f:UpdateStackSplitFrame(f.maxStack)
+    end)
+    frame.restButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, 'ANCHOR_LEFT')
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine(e.onlyChinese and '重置' or RESET)
+        e.tips:Show()
+    end)
+    frame.restButton:SetScript('OnLeave', GameTooltip_Hide)
+
+    frame.MaxButton=e.Cbtn(frame, {icon='hide', size={40,20}})
+    frame.MaxButton:SetNormalFontObject('NumberFontNormalYellow')
+    frame.MaxButton:SetPoint('LEFT', frame.restButton, 'RIGHT')
+    frame.MaxButton:SetScript('OnMouseDown', function(self)
+        local f= self:GetParent()
+        f.split=f.maxStack
+        f:UpdateStackText()
+        f:UpdateStackSplitFrame(f.maxStack)
+    end)
+
+    frame.MetaButton=e.Cbtn(frame, {icon='hide', size={40,20}})
+    frame.MetaButton:SetNormalFontObject('NumberFontNormalYellow')
+    frame.MetaButton:SetPoint('RIGHT', frame.restButton, 'LEFT')
+    frame.MetaButton:SetScript('OnMouseDown', function(self)
+        local f= self:GetParent()
+        f.split=floor(f.maxStack/2)
+        f:UpdateStackText()
+        f:UpdateStackSplitFrame(f.maxStack)
+    end)
+
+    frame.editBox=CreateFrame('EditBox', nil, frame)--输入框
+    frame.editBox:SetSize(100, 23)
+    frame.editBox:SetPoint('TOPLEFT', 38, -18)
+    frame.editBox:SetTextColor(0,1,0)
+    frame.editBox:SetAutoFocus(false)
+    frame.editBox:ClearFocus()
+    frame.editBox:SetFontObject("ChatFontNormal")
+    frame.editBox:SetMultiLine(false)
+    frame.editBox:SetNumeric(true)
+    frame.editBox:SetScript('OnEditFocusLost', function(self) self:SetText('') end)
+    frame.editBox:SetScript("OnEscapePressed",function(self) self:ClearFocus() end)
+    frame.editBox:SetScript('OnEnterPressed', function(self) self:ClearFocus() end)
+    frame.editBox:SetScript('OnTextChanged',function(self, userInput)
+        if not userInput then
+            return
+        end
+        local f= self:GetParent()
+        local num=self:GetNumber()
+        if f.isMultiStack then
+            num= floor(num/f.minSplit) * f.minSplit
+        end
+        num= num<f.minSplit and f.minSplit or num
+        num= num>f.maxStack and f.maxStack or num
+        f.RightButton:SetEnabled(num<f.maxStack)
+        f.LeftButton:SetEnabled(num==f.minSplit)
+        f.split=num
+        f:UpdateStackText()
+        f:UpdateStackSplitFrame(f.maxStack)
+    end)
+    frame:HookScript('OnMouseWheel', function(self, d)
+        local minSplit= self.minSplit or 1
+        local maxStack= self.maxStack or 1
+        local num= self.split or 1
+        num= d==1 and num+ minSplit or num
+        num= d==-1 and num- minSplit or num
+        num= num< minSplit and minSplit or num
+        num= num> maxStack and maxStack or num
+        self.split= num
+        self:UpdateStackText()
+        self:UpdateStackSplitFrame(self.maxStack);
+    end)
+
+    hooksecurefunc(StackSplitFrame, 'OpenStackSplitFrame', function(self)
+        self.MaxButton:SetText(self.maxStack)
+        self.MetaButton:SetText(floor(self.maxStack/2))
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+--商人 Plus
+local function Init_Plus()
+    if Save.notPlus then
+        return
+    end
+    Init_StackSplitFrame()-- 堆叠,数量,框架
+    Init_WidthX2()--加宽，框架x2
 
 
     --回购，数量，提示
@@ -681,10 +820,6 @@ local function Init_Frame_Plus()
         end
         self.numLable:SetText(num)
     end
-
-
-
-
 
     --卖
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
@@ -704,10 +839,6 @@ local function Init_Frame_Plus()
         Set_Merchant_Info()--设置, 提示, 信息
         MerchantFrameTab2:set_buyback_num()--回购，数量，提示
     end)
-
-
-
-
 
     --回购
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
@@ -739,6 +870,29 @@ local function Init_Frame_Plus()
         MerchantBuyBackItemItemButton.UndoFrame.Arrow:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,-4)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1045,17 +1199,6 @@ local function Init_Menu(_, level, type)
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
 
-    --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info= {--显示数物品,拥有数量,在商人界面
-        text= e.onlyChinese and '显示数量'..e.Icon.bank2 or (SHOW..e.Icon.bank2..AUCTION_HOUSE_QUANTITY_LABEL),
-        checked= not Save.notShowBagNum,
-        func=function ()
-            Save.notShowBagNum= not Save.notShowBagNum and true or nil
-            Set_Merchant_Info()--设置, 提示, 信息
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info)]]
-
 
     info={--删除字符
         text= e.onlyChinese and '自动输入DELETE' or (RUNECARVER_SCRAPPING_CONFIRMATION_TEXT..': '..DELETE_ITEM_CONFIRM_STRING),
@@ -1068,18 +1211,9 @@ local function Init_Menu(_, level, type)
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
 
-    info= {--堆叠数量
-        text= (e.onlyChinese and '堆叠数量' or AUCTION_STACK_SIZE).. ' Plus',
-        checked= not Save.notStackSplit,
-        func=function ()
-            Save.notStackSplit = not Save.notStackSplit and true or nil
-            print(id, e.cn(addName), '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info)
 
     info= {--商人 Pluse
-        text= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, (e.onlyChinese and '商人' or MERCHANT ), 'Plus'),
+        text= e.onlyChinese and '商人 Plus' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MERCHANT, 'Plus'),
         checked= not Save.notPlus,
         func=function ()
             Save.notPlus = not Save.notPlus and true or nil
@@ -1319,102 +1453,6 @@ end
 
 
 
---StackSplitFrame.lua 堆叠,数量,框架
---#################################
-local function set_StackSplitFrame_OpenStackSplitFrame(self)--, maxStack, parent, anchor, anchorTo, stackCount)
-    if Save.notStackSplit then
-        if self.restButton then
-            self.restButton:SetShown(false)
-        end
-        return
-    end
-    if not self.restButton then
-        self.restButton=e.Cbtn(self, {size={22,22}})--重置
-        self.restButton:SetPoint('TOP')
-        self.restButton:SetNormalAtlas('characterundelete-RestoreButton')
-        self.restButton:SetScript('OnMouseDown', function()
-            self.split=self.minSplit
-            self.LeftButton:SetEnabled(false)
-            self.RightButton:SetEnabled(true)
-            StackSplitFrame:UpdateStackText()
-            StackSplitFrame:UpdateStackSplitFrame(StackSplitFrame.maxStack)
-        end)
-        self.restButton:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, 'ANCHOR_LEFT')
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, e.cn(addName))
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine((e.onlyChinese and '堆叠数量' or AUCTION_STACK_SIZE)..' Plus', e.onlyChinese and '重置' or RESET, nil,nil,nil, 0,1,0)
-            e.tips:Show()
-        end)
-        self.restButton:SetScript('OnLeave', GameTooltip_Hide)
-
-        self.MaxButton=e.Cbtn(self, {icon='hide', size={40,20}})
-        self.MaxButton:SetNormalFontObject('NumberFontNormalYellow')
-        self.MaxButton:SetPoint('LEFT', self.restButton, 'RIGHT')
-        self.MaxButton:SetScript('OnMouseDown', function(self2)
-            self.split=self.maxStack
-            StackSplitFrame:UpdateStackText()
-            StackSplitFrame:UpdateStackSplitFrame(StackSplitFrame.maxStack)
-        end)
-
-        self.MetaButton=e.Cbtn(self, {icon='hide', size={40,20}})
-        self.MetaButton:SetNormalFontObject('NumberFontNormalYellow')
-        self.MetaButton:SetPoint('RIGHT', self.restButton, 'LEFT')
-        self.MetaButton:SetScript('OnMouseDown', function(self2)
-            self.split=floor(self.maxStack/2)
-            StackSplitFrame:UpdateStackText()
-            StackSplitFrame:UpdateStackSplitFrame(StackSplitFrame.maxStack)
-        end)
-
-        self.editBox=CreateFrame('EditBox', nil, self)--输入框
-        self.editBox:SetSize(100, 23)
-        self.editBox:SetPoint('TOPLEFT', 38, -18)
-        self.editBox:SetTextColor(0,1,0)
-        self.editBox:SetAutoFocus(false)
-        self.editBox:ClearFocus()
-        self.editBox:SetFontObject("ChatFontNormal")
-        self.editBox:SetMultiLine(false)
-        self.editBox:SetNumeric(true)
-        self.editBox:SetScript('OnEditFocusLost', function(self2) self2:SetText('') end)
-        self.editBox:SetScript("OnEscapePressed",function(self2) self2:ClearFocus() end)
-        self.editBox:SetScript('OnEnterPressed', function(self2) self2:ClearFocus() end)
-        self.editBox:SetScript('OnTextChanged',function(self2, userInput)
-            if not userInput then
-                return
-            end
-            local num=self2:GetNumber()
-            if self.isMultiStack then
-                num=floor(num/self.minSplit) * self.minSplit
-            end
-            num= num<self.minSplit and self.minSplit or num
-            num= num>self.maxStack and self.maxStack or num
-            self.RightButton:SetEnabled(num<self.maxStack)
-            self.LeftButton:SetEnabled(num==self.minSplit)
-            self.split=num
-            StackSplitFrame:UpdateStackText()
-            StackSplitFrame:UpdateStackSplitFrame(StackSplitFrame.maxStack)
-        end)
-        self:HookScript('OnMouseWheel', function(frame, d)
-            local minSplit= self.minSplit or 1
-            local maxStack= self.maxStack or 1
-            local num= frame.split or 1
-            num= d==1 and num+ minSplit or num
-            num= d==-1 and num- minSplit or num
-            num= num< minSplit and minSplit or num
-            num= num> maxStack and maxStack or num
-            --frame.split= math.modf(num/minSplit)
-            frame.split= num
-            frame:UpdateStackText()
-            frame:UpdateStackSplitFrame(self.maxStack);
-        end)
-    end
-
-    self.MaxButton:SetText(self.maxStack)
-    self.MetaButton:SetText(floor(self.maxStack/2))
-
-    self:SetShown(true)
-end
 
 
 
@@ -1487,7 +1525,7 @@ local function Init()
 
 
 
-    hooksecurefunc(StackSplitFrame, 'OpenStackSplitFrame',set_StackSplitFrame_OpenStackSplitFrame)--StackSplitFrame.lua 堆叠,数量,框架
+    Init_Plus()
 
 
 
@@ -1533,7 +1571,7 @@ local function Init()
     end)
 
 
-    Init_Frame_Plus()--加宽，框架x2
+
 
     MerchantRepairAllButton.autoRepairCheck=CreateFrame("CheckButton", nil, MerchantRepairAllButton, "InterfaceOptionsCheckButtonTemplate")
     MerchantRepairAllButton.autoRepairCheck:SetChecked(not Save.notAutoRepairAll)
@@ -1571,6 +1609,27 @@ local function Init()
     end)
     MerchantRepairAllButton.autoRepairCheck:SetScript('OnLeave', GameTooltip_Hide)
     MerchantRepairAllButton.autoRepairCheck:SetScript('OnEnter', MerchantRepairAllButton.autoRepairCheck.set_tooltip)
+
+
+
+
+    MerchantSellAllJunkButton.autoSellCheck=CreateFrame("CheckButton", nil, MerchantRepairAllButton, "InterfaceOptionsCheckButtonTemplate")
+    MerchantSellAllJunkButton.autoSellCheck:SetChecked(not Save.notAutoRepairAll)
+    MerchantSellAllJunkButton.autoSellCheck:SetPoint('BOTTOMRIGHT', MerchantRepairAllButton, 8,-8)
+    function MerchantSellAllJunkButton.autoSellCheck:set_tooltip()
+        e.tips:SetOwner(self, "ANCHOR_LEFT");
+        e.tips:ClearLines();
+        e.tips:AddDoubleLine(id, e.cn(addName))
+
+        e.tips:Show()
+    end
+    MerchantSellAllJunkButton.autoSellCheck:SetScript('OnClick', function(self)
+        Save.notAutoRepairAll= not Save.notAutoRepairAll and true or nil
+        set_Durabiliy_Value_Text()
+        self:set_tooltip()
+    end)
+    MerchantSellAllJunkButton.autoSellCheck:SetScript('OnLeave', GameTooltip_Hide)
+    MerchantSellAllJunkButton.autoSellCheck:SetScript('OnEnter', MerchantSellAllJunkButton.autoSellCheck.set_tooltip)
 end
 
 
