@@ -655,70 +655,77 @@ local function Init_WidthX2()
         BUYBACK_ITEMS_PER_PAGE = 12
         MAX_MERCHANT_CURRENCIES = 6
     ]]
-    MerchantItem11:ClearAllPoints()
+    --[[MerchantItem11:ClearAllPoints()
     MerchantItem11:SetPoint("TOPLEFT", MerchantItem2, "TOPRIGHT", 8, 0)
     MerchantItem12:ClearAllPoints()
 	MerchantItem12:SetPoint("TOPLEFT", MerchantItem11, "TOPRIGHT", 8, 0)
 
 
     MerchantItem11:SetShown(true)
-    MerchantItem12:SetShown(true)
+    MerchantItem12:SetShown(true)]]
 
-    MerchantSellAllJunkButton:ClearAllPoints()
-    MerchantSellAllJunkButton:SetPoint('RIGHT', MerchantBuyBackItemItemButtonNormalTexture, 'LEFT',2,0)
+    --MerchantSellAllJunkButton:ClearAllPoints()
+    --MerchantSellAllJunkButton:SetPoint('RIGHT', MerchantBuyBackItemItemButtonNormalTexture, 'LEFT',2,0)
 
     --新建，按钮
-    for i = 13, 22 do
-        local btn= _G['MerchantItem'..i] or CreateFrame('Frame', 'MerchantItem'.. i, MerchantFrame, 'MerchantItemTemplate')
-        btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-2)], 'BOTTOMLEFT', 0, -8)
-    end
+    local function create_ItemButton()
+        for i = 13, MERCHANT_ITEMS_PER_PAGE do
+            local btn= _G['MerchantItem'..i] or CreateFrame('Frame', 'MerchantItem'.. i, MerchantFrame, 'MerchantItemTemplate')
+            btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-2)], 'BOTTOMLEFT', 0, -8)
+        end
+        
+        for i=1, MERCHANT_ITEMS_PER_PAGE do--建立，索引，文本
+            local btn= _G['MerchantItem'..i]
+            if btn and not btn.IndexLable then
+                btn.IndexLable= e.Cstr(btn)
+                btn.IndexLable:SetPoint('TOPRIGHT', _G['MerchantItem'..i], -1, 4)
+                btn.IndexLable:SetAlpha(0.3)
+                btn.IndexLable.index=i
+                function btn:set_index_text(hide)
+                    local itemButton= _G["MerchantItem"..self.IndexLable.index.."ItemButton"]
+                    self.IndexLable:SetText(not hide and itemButton and itemButton.hasItem and itemButton:GetID() or '')
+                end
 
+                --建立，物品，背景
+                btn.itemBG= btn:CreateTexture(nil, 'BACKGROUND')
+                btn.itemBG:SetAtlas('ChallengeMode-guild-background')
+                btn.itemBG:SetSize(100,43)
+                btn.itemBG:SetPoint('TOPRIGHT',-7,-2)
 
-    --建立，索引，文本
-    for i=1, MERCHANT_ITEMS_PER_PAGE do
-        local btn= _G['MerchantItem'..i]
-        if btn then
-            btn.IndexLable= e.Cstr(btn)
-            btn.IndexLable:SetPoint('TOPRIGHT', _G['MerchantItem'..i], -1, 4)
-            btn.IndexLable:SetAlpha(0.3)
-            btn.IndexLable.index=i
-            function btn:set_index_text(hide)
-                local itemButton= _G["MerchantItem"..self.IndexLable.index.."ItemButton"]
-                self.IndexLable:SetText(not hide and itemButton and itemButton.hasItem and itemButton:GetID() or '')
-            end
-
-            --建立，物品，背景
-            btn.itemBG= btn:CreateTexture(nil, 'BACKGROUND')
-            btn.itemBG:SetAtlas('ChallengeMode-guild-background')
-            btn.itemBG:SetSize(100,43)
-            btn.itemBG:SetPoint('TOPRIGHT',-7,-2)
-
-            local b= _G['MerchantItem'..i..'ItemButton']
-            if b then
-                b:HookScript('OnEnter', function(self)
-                    if MerchantFrame.selectedTab == 1 then
-                        if self.hasItem then
-                            e.FindBagItem(true, {itemName=self.name})
+                local b= _G['MerchantItem'..i..'ItemButton']
+                if b then
+                    b:HookScript('OnEnter', function(self)
+                        if MerchantFrame.selectedTab == 1 then
+                            if self.hasItem then
+                                e.FindBagItem(true, {itemName=self.name})
+                            end
+                        elseif MerchantFrame.selectedTab == 2 then
+                            e.FindBagItem(true, {BuybackIndex=self:GetID()})
                         end
-                    elseif MerchantFrame.selectedTab == 2 then
-                        e.FindBagItem(true, {BuybackIndex=self:GetID()})
-                    end
-                end)
-                b:HookScript('OnLeave', function(self)
-                    if MerchantFrame.selectedTab == 1 then
-                        if self.hasItem then
-                            e.FindBagItem(false)
+                    end)
+                    b:HookScript('OnLeave', function(self)
+                        if MerchantFrame.selectedTab == 1 then
+                            if self.hasItem then
+                                e.FindBagItem(false)
+                            end
+                        elseif MerchantFrame.selectedTab == 2 then
+                            local name= GetBuybackItemInfo(self:GetID())
+                            if name then
+                                e.FindBagItem(false)
+                            end
                         end
-                    elseif MerchantFrame.selectedTab == 2 then
-                        local name= GetBuybackItemInfo(self:GetID())
-                        if name then
-                            e.FindBagItem(false)
-                        end
-                    end
-                end)
+                    end)
+                end
             end
         end
+        local index= MERCHANT_ITEMS_PER_PAGE+1
+        while _G['MerchantItem'..index] do
+            _G['MerchantItem'..index]:SetShown(false)
+            index= index+1
+        end
     end
+    create_ItemButton()
+    
 
     --回购，数量，提示
     MerchantFrameTab2.numLable= e.Cstr(MerchantFrameTab2)
@@ -779,6 +786,46 @@ local function Init_WidthX2()
         Set_Merchant_Info()--设置, 提示, 信息
         MerchantFrameTab2:set_buyback_num()--回购，数量，提示
     end)
+
+    --重新设置，按钮
+    hooksecurefunc('MerchantFrame_UpdateRepairButtons', function()
+        MerchantRepairItemButton:ClearAllPoints()--单个，修理
+        MerchantRepairItemButton:SetPoint('BOTTOMLEFT', MerchantFrame, 12, 33)
+
+        MerchantRepairAllButton:ClearAllPoints()--全部，修理
+        MerchantRepairAllButton:SetPoint('BOTTOMLEFT', MerchantFrame, 12+(36+12)*1, 33)
+
+        MerchantGuildBankRepairButton:ClearAllPoints()--公会，修理
+        MerchantGuildBankRepairButton:SetPoint('BOTTOMLEFT', MerchantFrame, 12+(36+12)*2, 33)
+
+        MerchantSellAllJunkButton:ClearAllPoints()--出售垃圾，修理
+        MerchantSellAllJunkButton:SetPoint('BOTTOMLEFT', MerchantFrame, 12+(36+12)*3, 33)
+    end)
+    MerchantBuyBackItem:ClearAllPoints()--回购
+    MerchantBuyBackItem:SetPoint('BOTTOMLEFT', MerchantFrame, 12+(36+12)*4, 33)
+
+    --[[if not e.Player.husandro then
+        return
+    end
+
+    local btn= MerchantFrame.ResizeButton
+    if btn then
+        MerchantFrame:SetResizable(true)
+        btn.setSize=true
+        btn.minW=336
+        btn.minH=440
+        btn.sizeUpdateFunc= function()
+            
+        end
+        btn.sizeRestFunc= function()
+            MerchantFrame:SetWidth(MerchantFrame.width)
+            MERCHANT_ITEMS_PER_PAGE= 12
+            MerchantItem11:SetShown(false)
+            MerchantItem12:SetShown(false)
+            create_ItemButton()
+        end
+        
+    end]]
 end
 
 
@@ -1703,7 +1750,7 @@ local function Init()
         Set_AutoSell_Items()
         self:set_tooltip()
     end)
-    
+
     MerchantSellAllJunkButton.autoSellJunk:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
     MerchantSellAllJunkButton.autoSellJunk:SetScript('OnEnter', MerchantSellAllJunkButton.autoSellJunk.set_tooltip)
 end

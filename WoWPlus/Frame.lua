@@ -1731,6 +1731,11 @@ local function Init_Move()
     set_Move_Alpha(BagsBar)--背包
     set_Move_Alpha(ObjectiveTrackerFrame)
 
+    --set_Move_Frame(MerchantFrame, {setSize=true, minW=336, minH=440, initFunc=function()
+    --end, sizeRestFunc=function()
+
+    --end})
+
     --世界地图
     local minimizedWidth= WorldMapFrame.minimizedWidth or 702
     local minimizedHeight= WorldMapFrame.minimizedHeight or 534
@@ -2169,17 +2174,7 @@ end)]]
 
 
 
-
-    --[[if PVEFrame.activeTabIndex==1 then
-    elseif PVEFrame.activeTabIndex==2 then
-    elseif PVEFrame.activeTabIndex==3 then
-        
-    end]]
-
-
-
     --地下城和团队副本
-
     set_Move_Frame(PVEFrame, {setSize=true, minW=563, minH=428, initFunc=function()
         --btn.PVE_FRAME_BASE_WIDTH= PVE_FRAME_BASE_WIDTH
         LFGListPVEStub:SetPoint('BOTTOMRIGHT')
