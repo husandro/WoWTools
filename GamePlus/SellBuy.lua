@@ -1441,6 +1441,11 @@ local function Init_Buy_Items_Button()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
+        
+        local num= self:set_text()--回购，数量，提示
+    
+        e.tips:AddDoubleLine('|T236994:0|t|cffff00ff'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), '|cnGREEN_FONT_COLOR: #'..num..'|r')
+
         e.tips:AddLine(' ')
         local infoType, itemIDorIndex, itemLink = GetCursorInfo()
         if infoType=='item' and itemIDorIndex and itemLink then
@@ -1710,6 +1715,7 @@ local function Init_Buyback_Button()
                         '|T'..(buybackTexture or 0)..':0|t'..(GetMerchantItemLink(num) or buybackName),
                         '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.left
                     )
+                    e.tips:AddLine(' ')
                     if buybackTexture then
                         self:SetNormalTexture(buybackTexture)
                     end
