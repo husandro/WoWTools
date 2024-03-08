@@ -701,7 +701,7 @@ local function Init_WidthX2()
             itemButton.link = nil
             itemButton.texture = nil
 			_G["MerchantItem"..index.."Name"]:SetText("")
-            
+
             index= index+1
         end
     end
@@ -1094,16 +1094,16 @@ local function Init_Menu(_, level, type)
             tooltipOnButton=true,
             tooltipTitle= '|cff9d9d9d'..(e.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC),
             keepShownOnClick=true,
-            func=function ()
+            func= function()
                 Save.sellJunkMago= not Save.sellJunkMago and true or nil
-                Set_AutoSell_Items()--出售物品
+                MerchantSellAllJunkButton.autoSellJunk:settings()
             end,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
         return
 
     elseif type=='CUSTOM' then--二级菜单, 自定义出售
-        for itemID, boolean in pairs(Save.Sell) do
+        for itemID, _ in pairs(Save.Sell) do
             if itemID  then
                 e.LoadDate({id=itemID, type='item'})
                 local itemLink= select(2, GetItemInfo(itemID))
@@ -1111,7 +1111,9 @@ local function Init_Menu(_, level, type)
                 info= {
                     text= itemLink,
                     icon= C_Item.GetItemIconByID(itemID),
-                    checked=boolean,
+                    notCheckable=true,
+                    tooltipOnButton=true,
+                    tooltipTitle=e.onlyChinese and '移除' or REMOVE,
                     arg1= itemID,
                     arg2= itemLink,
                     func=function(_, arg1, arg2)
@@ -1142,6 +1144,8 @@ local function Init_Menu(_, level, type)
                 text= itemLink..'('..itemLevel..')',
                 notCheckable=true,
                 icon= C_Item.GetItemIconByID(itemID),
+                tooltipOnButton=true,
+                tooltipTitle=e.onlyChinese and '移除' or REMOVE,
                 arg1= itemID,
                 arg2= itemLink,
                 func=function(_, arg1, arg2)
@@ -1183,7 +1187,9 @@ local function Init_Menu(_, level, type)
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
                     text='|cnGREEN_FONT_COLOR:'..num..'|r '..itemLink..' '..'|cnYELLOW_FONT_COLOR:'..bag..e.Icon.bag2..bank..e.Icon.bank2..'|r',
-                    checked= true,
+                    notCheckable=true,
+                    tooltipOnButton=true,
+                    tooltipTitle=e.onlyChinese and '移除' or REMOVE,
                     icon= C_Item.GetItemIconByID(itemID),
                     arg1= itemID,
                     arg2= itemLink,
@@ -1220,7 +1226,9 @@ local function Init_Menu(_, level, type)
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
                     text=itemLink..' '..'|cnYELLOW_FONT_COLOR:'..bag..e.Icon.bag2..bank..e.Icon.bank2..'|r',
-                    checked= true,
+                    notCheckable=true,
+                    tooltipOnButton=true,
+                    tooltipTitle=e.onlyChinese and '移除' or REMOVE,
                     icon= C_Item.GetItemIconByID(itemID),
                     arg1= itemID,
                     arg2= itemLink,
@@ -1252,10 +1260,9 @@ local function Init_Menu(_, level, type)
         menuList= 'SELLJUNK',
         hasArrow= true,
         keepShownOnClick=true,
-        func=function ()
+        func= function()
             Save.notSellJunk= not Save.notSellJunk and true or nil
-            Set_AutoSell_Items()--出售物品
-            MerchantSellAllJunkButton.autoSellJunk:SetChecked(not Save.notSellJunk)
+            MerchantSellAllJunkButton.autoSellJunk:settings()
         end,
         tooltipOnButton=true,
         tooltipTitle=id..' '.. e.cn(addName),
@@ -1360,7 +1367,7 @@ local function Init_Menu(_, level, type)
             MerchantRepairAllButton.autoRepairCheck:SetChecked(not Save.notAutoRepairAll)
         end,
         tooltipOnButton=true,
-        tooltipTitle= (e.onlyChinese and '金币记录' or GUILD_BANK_MONEY_LOG).. ' '..RepairSave.date,
+        tooltipTitle= '|cffff00ff'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER).. '|r '..RepairSave.date,
         tooltipText=text,
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
@@ -1777,7 +1784,7 @@ local function Init()
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddDoubleLine(e.onlyChinese and '自动修理所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REPAIR_ALL_ITEMS), e.GetEnabeleDisable(not Save.notAutoRepairAll))
         e.tips:AddLine(' ')
-        e.tips:AddLine('|cffff00ff'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER))
+        e.tips:AddDoubleLine('|cffff00ff'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER), RepairSave.date)
         e.tips:AddDoubleLine(e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR, (RepairSave.num or 0)..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
         local guild= RepairSave.guild or 0
         local player= RepairSave.player or 0
@@ -1810,10 +1817,16 @@ local function Init()
 
 
     MerchantSellAllJunkButton.autoSellJunk=CreateFrame("CheckButton", nil, MerchantSellAllJunkButton, "InterfaceOptionsCheckButtonTemplate")
+
     MerchantSellAllJunkButton.autoSellJunk:SetSize(18,18)
-    MerchantSellAllJunkButton.autoSellJunk:SetChecked(not Save.notSellJunk)
-    --MerchantSellAllJunkButton.autoSellJunk:SetAlpha(0.3)
+   
     MerchantSellAllJunkButton.autoSellJunk:SetPoint('BOTTOMLEFT', MerchantSellAllJunkButton, -4,-5)
+
+    MerchantSellAllJunkButton.autoSellJunk.Texture= MerchantSellAllJunkButton:CreateTexture(nil, 'OVERLAY')
+    MerchantSellAllJunkButton.autoSellJunk.Texture:SetSize(14,14)
+    MerchantSellAllJunkButton.autoSellJunk.Texture:SetTexture(132288)
+    MerchantSellAllJunkButton.autoSellJunk.Texture:SetPoint('TOPLEFT', -2, 2)
+
     function MerchantSellAllJunkButton.autoSellJunk:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -1826,14 +1839,19 @@ local function Init()
         end
         e.tips:Show()
     end
+    function MerchantSellAllJunkButton.autoSellJunk:settings()
+        self.Texture:SetShown(Save.sellJunkMago and not Save.notSellJunk)
+        self:SetChecked(not Save.notSellJunk)
+        Set_AutoSell_Items()
+    end
     MerchantSellAllJunkButton.autoSellJunk:SetScript('OnClick', function(self)
         Save.notSellJunk= not Save.notSellJunk and true or nil
-        Set_AutoSell_Items()
+        self:settings()
         self:set_tooltip()
     end)
-
     MerchantSellAllJunkButton.autoSellJunk:SetScript('OnLeave', GameTooltip_Hide)--self:SetAlpha(0.3)
     MerchantSellAllJunkButton.autoSellJunk:SetScript('OnEnter', MerchantSellAllJunkButton.autoSellJunk.set_tooltip)
+    MerchantSellAllJunkButton.autoSellJunk:settings()
 end
 
 
