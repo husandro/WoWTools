@@ -837,10 +837,10 @@ local function Init_Auto_Repair()
         'UPDATE_INVENTORY_DURABILITY',
     }
     MerchantFrame:HookScript('OnShow', function()
-        FrameUtil.RegisterFrameForEvents(AutoRepairCheck, AutoRepairCheck.evets)
+        FrameUtil.RegisterFrameForEvents(AutoRepairCheck, AutoRepairCheck.events)
     end)
     MerchantFrame:HookScript('OnHide', function()
-        FrameUtil.UnregisterFrameForEvents(AutoRepairCheck, AutoRepairCheck.evets)
+        FrameUtil.UnregisterFrameForEvents(AutoRepairCheck, AutoRepairCheck.events)
     end)
     AutoRepairCheck:SetScript('OnEvent', function(self, event)
         if event=='MERCHANT_SHOW' then
@@ -893,6 +893,7 @@ local function Init_Auto_Sell_Junk()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine('|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus')
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '自动出售垃圾' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SELL_ALL_JUNK_ITEMS_EXCLUDE_HEADER), e.GetEnabeleDisable(not Save.notSellJunk))
         if not Save.notSellJunk then
@@ -991,21 +992,22 @@ end
 
 --自动拾取 Plus
 local function Init_Loot_Plus()
-    if not Save.notAutoLootPlus then
+    if Save.notAutoLootPlus then
         return
     end
     local check=CreateFrame("CheckButton", nil, LootFrame.TitleContainer, "InterfaceOptionsCheckButtonTemplate")
     check:SetPoint('TOPLEFT',-27,2)
 
     check:SetScript('OnClick', function()
-        if not UnitAffectingCombat('player') then
-            C_CVar.SetCVar("autoLootDefault", not C_CVar.GetCVarBool("autoLootDefault") and '1' or '0')
-            local value= C_CVar.GetCVarBool("autoLootDefault")
-            print(id, e.cn(addName), '|cffff00ffPlus|r', not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(value))
-            if value and not IsModifierKeyDown() then
-                for i = GetNumLootItems(), 1, -1 do
-                    LootSlot(i)
-                end
+        if UnitAffectingCombat('player') then
+            return
+        end
+        C_CVar.SetCVar("autoLootDefault", not C_CVar.GetCVarBool("autoLootDefault") and '1' or '0')
+        local value= C_CVar.GetCVarBool("autoLootDefault")
+        print(id, e.cn(addName), '|cffff00ff|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r|n', not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(value))
+        if value and not IsModifierKeyDown() then
+            for i = GetNumLootItems(), 1, -1 do
+                LootSlot(i)
             end
         end
     end)
@@ -1013,13 +1015,13 @@ local function Init_Loot_Plus()
     check:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine('|cffff00ff|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r')
         e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))        
         local col= UnitAffectingCombat('player') and '|cff606060'
         e.tips:AddDoubleLine((col or '')..(e.onlyChinese and '拾取时' or PROC_EVENT512_DESC:format(ITEM_LOOT)),
             (col or '|cnGREEN_FONT_COLOR:')..'Shift|r '..(e.onlyChinese and '禁用' or DISABLE))
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end)
     check:SetScript('OnShow', function(self)
@@ -1029,10 +1031,10 @@ local function Init_Loot_Plus()
 
     check:RegisterEvent('LOOT_READY')
     check:SetScript('OnEvent', function()
-        if IsShiftKeyDown() and Save.altDisabledAutoLoot and not UnitAffectingCombat('player') then
+        if IsShiftKeyDown() and not UnitAffectingCombat('player') then
             C_CVar.SetCVar("autoLootDefault", '0')
-            print(id, e.cn(addName),'|cffff00ffPlus|r','|cnGREEN_FONT_COLOR:Shift|r', e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
-        else
+            print(id, e.cn(addName),'|cffff00ff|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r','|cnGREEN_FONT_COLOR:Shift|r', e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+        elseif C_CVar.GetCVarBool("autoLootDefault") then
             for i = GetNumLootItems(), 1, -1 do
                 LootSlot(i)
             end
@@ -1300,6 +1302,7 @@ local function Init_Menu(_, level, type)
         text= '    |A:common-icon-undo:0:0|a'..(e.onlyChinese and '回购' or BUYBACK)..'|cnGREEN_FONT_COLOR: #'..num..'|r',
         notCheckable=true,
         menuList='BUYBACK',
+        keepShownOnClick=true,
         hasArrow=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
@@ -1344,6 +1347,7 @@ local function Init_Menu(_, level, type)
         func=function()
             Save.notAutoRepairAll= not Save.notAutoRepairAll and true or nil
             AutoRepairCheck:set_repair_all()
+            AutoRepairCheck:SetChecked(not Save.notAutoRepairAll)
         end,
         tooltipOnButton=true,
         tooltipTitle= '|cffff00ff'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER).. '|r '..RepairSave.date,
@@ -1365,8 +1369,9 @@ local function Init_Menu(_, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info)
 
     info={
-        text= (e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus',
+        text= '|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus',
         checked= not Save.notAutoLootPlus,
+        keepShownOnClick=true,
         tooltipOnButton=true,
         tooltipTitle=(not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT..', '..REFORGE_CURRENT or '自动拾取, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")),
         tooltipText= (not e.onlyChinese and HUD_EDIT_MODE_LOOT_FRAME_LABEL..'Shift: '..DISABLE or '拾取窗口 Shift: 禁用')..'|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '不在战斗中' or 'not in combat'),
