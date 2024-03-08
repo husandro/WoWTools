@@ -1119,7 +1119,7 @@ local function Init_All_Frame()
          end
 
          --商人, SellBuy.lua
-         for i=1, MERCHANT_ITEMS_PER_PAGE do--math.max(MERCHANT_ITEMS_PER_PAGE, BUYBACK_ITEMS_PER_PAGE) do --MERCHANT_ITEMS_PER_PAGE = 10; BUYBACK_ITEMS_PER_PAGE = 12;
+         for i=1, math.max(MERCHANT_ITEMS_PER_PAGE, BUYBACK_ITEMS_PER_PAGE) do --MERCHANT_ITEMS_PER_PAGE = 10; BUYBACK_ITEMS_PER_PAGE = 12;
              set_Alpha_Color(_G['MerchantItem'..i..'SlotTexture'])
          end
          hide_Texture(MerchantBuyBackItemSlotTexture)

@@ -589,6 +589,9 @@ end
 
 
 local function setMerchantInfo()--商人设置
+    if not MerchantFrame:IsShown() then
+        return
+    end
     local selectedTab= MerchantFrame.selectedTab
     local page= selectedTab == 1 and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
     for i=1, page do

@@ -2051,6 +2051,9 @@ local function Init()
         MerchantFrame:SetTitle('从商人处购回')
     end)
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
+        if not MerchantFrame:IsShown() then
+            return
+        end
         MerchantPageText:SetFormattedText('页数 %s/%s', MerchantFrame.page, math.ceil(GetMerchantNumItems() / MERCHANT_ITEMS_PER_PAGE))
     end)
 
