@@ -793,20 +793,20 @@ local function Init_WidthX2()
     --重新设置，按钮
     hooksecurefunc('MerchantFrame_UpdateRepairButtons', function()
         MerchantRepairItemButton:ClearAllPoints()--单个，修理
-        MerchantRepairItemButton:SetPoint('BOTTOMRIGHT', MerchantFrame, -283, 33)
+        MerchantRepairItemButton:SetPoint('BOTTOMRIGHT', MerchantFrame, -289, 33)
 
 
         MerchantRepairAllButton:ClearAllPoints()--全部，修理
-        MerchantRepairAllButton:SetPoint('BOTTOMRIGHT', MerchantFrame, -235, 33)
+        MerchantRepairAllButton:SetPoint('BOTTOMRIGHT', MerchantFrame, -241, 33)
 
         MerchantGuildBankRepairButton:ClearAllPoints()--公会，修理
-        MerchantGuildBankRepairButton:SetPoint('BOTTOMRIGHT', MerchantFrame, -187, 33)
+        MerchantGuildBankRepairButton:SetPoint('BOTTOMRIGHT', MerchantFrame, -193, 33)
 
         MerchantSellAllJunkButton:ClearAllPoints()--出售垃圾，修理
-        MerchantSellAllJunkButton:SetPoint('BOTTOMRIGHT', MerchantFrame, -139, 33)--36
+        MerchantSellAllJunkButton:SetPoint('BOTTOMRIGHT', MerchantFrame, -145, 33)--36
     end)
     MerchantBuyBackItem:ClearAllPoints()--回购
-    MerchantBuyBackItem:SetPoint('BOTTOMRIGHT', MerchantFrame, -12, 33)--115
+    MerchantBuyBackItem:SetPoint('BOTTOMRIGHT', MerchantFrame, -16, 33)--115
 
     MerchantNextPageButton:ClearAllPoints()--下一页
     MerchantNextPageButton:SetPoint('RIGHT', MerchantFrameLootFilter, 'LEFT', 20, 2)
@@ -824,7 +824,9 @@ local function Init_WidthX2()
     MerchantPageText:ClearAllPoints()--上页数
     MerchantPageText:SetPoint('RIGHT', MerchantPrevPageButton, 'LEFT', 0, 0)
     MerchantPageText:SetJustifyH('RIGHT')
-
+    
+    MerchantFrameBottomLeftBorder:ClearAllPoints()
+    MerchantFrameBottomLeftBorder:SetPoint('BOTTOMRIGHT', 0, 26)
 
     local btn= MerchantFrame.ResizeButton
     if btn then
