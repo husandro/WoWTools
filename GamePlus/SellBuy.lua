@@ -394,11 +394,6 @@ end
 
 
 
-
-
-
-
-
 --商人 Plus, 加宽，物品，信息
 local function Create_ItemButton()
     for i= 1, max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do--建立，索引，文本
@@ -616,6 +611,21 @@ local function Init_WidthX2()
         end)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1307,12 +1317,7 @@ local function Init_Menu(_, level, type)
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
 
-    num=0
-    for _, boolean in pairs(buySave) do
-        if boolean then
-            num=num+1
-        end
-    end
+    num= BuyItemButton:set_text()--回购，数量，提示
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={--购买物品
         text= '|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..'|cnGREEN_FONT_COLOR: #'..num..'|r',
@@ -1325,6 +1330,7 @@ local function Init_Menu(_, level, type)
                 Save.notAutoBuy=true
             end
             Set_Merchant_Info()--设置, 提示, 信息
+            BuyItemButton:set_text()--回购，数量，提示
         end,
         menuList='BUY',
         hasArrow=true,
@@ -1355,7 +1361,18 @@ local function Init_Menu(_, level, type)
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
 
+    info= {--商人 Plus
+        text= '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '商人 Plus' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MERCHANT, 'Plus')),
+        checked= not Save.notPlus,
+        keepShownOnClick=true,
+        func=function ()
+            Save.notPlus = not Save.notPlus and true or nil
+            print(id, e.cn(addName), '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info)
 
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={--删除字符
         text= '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '自动输入DELETE' or (RUNECARVER_SCRAPPING_CONFIRMATION_TEXT..': '..DELETE_ITEM_CONFIRM_STRING)),
         checked= not Save.notDELETE,
@@ -1382,23 +1399,8 @@ local function Init_Menu(_, level, type)
 
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
-
-
-
-    info= {--商人 Plus
-        text= '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '商人 Plus' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MERCHANT, 'Plus')),
-        checked= not Save.notPlus,
-        keepShownOnClick=true,
-        func=function ()
-            Save.notPlus = not Save.notPlus and true or nil
-            print(id, e.cn(addName), '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info)
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
-        text= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
+        text= '    |A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
         notCheckable=true,
         func= function()
             e.OpenPanelOpting('|A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '商人' or addName))
@@ -1428,7 +1430,7 @@ end
 
 
 --购买物品
-local function Init_Sell_Button()
+local function Init_Buy_Items_Button()
     BuyItemButton=e.Cbtn(MerchantBuyBackItem, {size={22,22}, icon='hide'})
     BuyItemButton:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,-4)
     function BuyItemButton:set_texture()
@@ -1492,6 +1494,7 @@ local function Init_Sell_Button()
                 AutoSellJunkCheck:set_sell_junk()--出售物品
             end
             ClearCursor()
+            BuyItemButton:set_text()--回购，数量，提示
         elseif infoType=='merchant' and itemID then--购买物品
             local index=itemID
             itemID= GetMerchantItemID(index)
@@ -1520,6 +1523,7 @@ local function Init_Sell_Button()
                             print(PURCHASE, '|cnGREEN_FONT_COLOR:'..num..'|r', itemLink)
                             BuyItemButton:set_buy_item()--购买物品
                         end
+                        BuyItemButton:set_text()--回购，数量，提示
                         Set_Merchant_Info()--设置, 提示, 信息
                     end,
                     OnShow=function(s)
@@ -1624,6 +1628,18 @@ local function Init_Sell_Button()
     end
     BuyItemButton:RegisterEvent('MERCHANT_SHOW')
     BuyItemButton:SetScript('OnEvent', BuyItemButton.set_buy_item)--购买物品
+
+    BuyItemButton.Text= e.Cstr(BuyItemButton, {justifyH='CENTER'})
+    BuyItemButton.Text:SetPoint('CENTER', 2, 0)
+    function BuyItemButton:set_text()--回购，数量，提示
+        local num= 0
+        for _ in pairs(buySave) do
+            num= num +1
+        end
+        self.Text:SetText(not Save.notAutoBuy and num or '')
+        return num
+    end
+    BuyItemButton:set_text()--回购，数量，提示
 end
 
 
@@ -1838,7 +1854,7 @@ local function Init()
     Init_Auto_Repair()--自动修理
     Init_Auto_Sell_Junk()--自动出售
     Init_Plus()--商人 Plus
-    Init_Sell_Button()--购买物品
+    Init_Buy_Items_Button()--购买物品
     Init_Buyback_Button()--回购物品
     --######
     --DELETE
