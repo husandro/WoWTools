@@ -653,7 +653,7 @@ local function Init_WidthX2()
 
     local function create_ItemButton()
         for i= 1, max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do--建立，索引，文本
-            local btn= _G['MerchantItem'..i] or CreateFrame('Frame', 'MerchantItem'..i, MerchantFrame, 'MerchantItemTemplate')
+            local btn= _G['MerchantItem'..i] or CreateFrame('Frame', 'MerchantItem'..i, MerchantFrame, 'MerchantItemTemplate', i)
             if not btn.IndexLable then
                 btn.IndexLable= e.Cstr(btn)
                 btn.IndexLable:SetPoint('TOPRIGHT', btn, -1, 4)
@@ -665,6 +665,7 @@ local function Init_WidthX2()
                 btn.itemBG:SetAtlas('ChallengeMode-guild-background')
                 btn.itemBG:SetSize(100,43)
                 btn.itemBG:SetPoint('TOPRIGHT',-7,-2)
+                btn.itemBG:Hide()
 
                 btn.ItemButton:HookScript('OnEnter', function(self)
                     if MerchantFrame.selectedTab == 1 then
@@ -692,6 +693,15 @@ local function Init_WidthX2()
         local index= MERCHANT_ITEMS_PER_PAGE+1
         while _G['MerchantItem'..index] do
             _G['MerchantItem'..index]:SetShown(false)
+            local itemButton = _G["MerchantItem"..index.."ItemButton"]
+            itemButton.price = nil
+			itemButton.hasItem = nil
+			itemButton.name = nil
+			itemButton.extendedCost = nil
+            itemButton.link = nil
+            itemButton.texture = nil
+			_G["MerchantItem"..index.."Name"]:SetText("")
+            
             index= index+1
         end
     end
@@ -742,8 +752,8 @@ local function Init_WidthX2()
             create_ItemButton()
             e.call('MerchantFrame_UpdateMerchantInfo')
         end
-        btn:HookScript('OnMouseUp', function(_, d)
-            if d~='RightButton' then
+        btn:HookScript('OnMouseUp', function(self, d)
+            if d~='RightButton' or not self.setSize then
                 return
             end
             Save.MERCHANT_ITEMS_PER_PAGE= MERCHANT_ITEMS_PER_PAGE
@@ -1237,7 +1247,7 @@ local function Init_Menu(_, level, type)
 
     local num
     info ={--出售垃圾
-        text= e.onlyChinese and '自动出售垃圾' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SELL_ALL_JUNK_ITEMS_EXCLUDE_HEADER),
+        text= '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '自动出售垃圾' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SELL_ALL_JUNK_ITEMS_EXCLUDE_HEADER))..(Save.sellJunkMago and '|T132288:0|t' or ''),
         checked= not Save.notSellJunk,
         menuList= 'SELLJUNK',
         hasArrow= true,
@@ -1260,7 +1270,7 @@ local function Init_Menu(_, level, type)
         end
     end
     info = {
-        text= (e.onlyChinese and '出售自定义' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB, CUSTOM))..'|cnRED_FONT_COLOR: #'..num..'|r',
+        text= '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '出售自定义' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB, CUSTOM))..'|cnRED_FONT_COLOR: #'..num..'|r',
         checked= not Save.notSellCustom,
         func=function ()
             Save.notSellCustom= not Save.notSellCustom and true or nil
@@ -1279,7 +1289,7 @@ local function Init_Menu(_, level, type)
     local avgItemLevel= GetAverageItemLevel() or 30
     avgItemLevel= avgItemLevel<30 and 30 or avgItemLevel
     info = {--出售BOSS掉落
-        text= (e.onlyChinese and '出售首领掉落' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB,TRANSMOG_SOURCE_1))..'|cnRED_FONT_COLOR: #'..num..'|r',
+        text= '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '出售首领掉落' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB,TRANSMOG_SOURCE_1))..'|cnRED_FONT_COLOR: #'..num..'|r',
         tooltipOnButton=true,
         tooltipTitle= (e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)..' < ' ..math.ceil(avgItemLevel),
         checked= not Save.notSellBoss,
@@ -1357,7 +1367,7 @@ local function Init_Menu(_, level, type)
 
 
     info={--删除字符
-        text= e.onlyChinese and '自动输入DELETE' or (RUNECARVER_SCRAPPING_CONFIRMATION_TEXT..': '..DELETE_ITEM_CONFIRM_STRING),
+        text= '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '自动输入DELETE' or (RUNECARVER_SCRAPPING_CONFIRMATION_TEXT..': '..DELETE_ITEM_CONFIRM_STRING)),
         checked= not Save.notDELETE,
         keepShownOnClick=true,
         func=function ()
@@ -1370,7 +1380,7 @@ local function Init_Menu(_, level, type)
 
 
     info= {--商人 Plus
-        text= e.onlyChinese and '商人 Plus' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MERCHANT, 'Plus'),
+        text= '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '商人 Plus' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MERCHANT, 'Plus')),
         checked= not Save.notPlus,
         keepShownOnClick=true,
         func=function ()
