@@ -707,59 +707,7 @@ local function Init_WidthX2()
     end
     create_ItemButton()
 
-    local btn= MerchantFrame.ResizeButton
-    if btn then
-        btn.setSize=true
-        MerchantFrame:SetResizable(true)
-        btn:Init(MerchantFrame, 329, 402, nil, nil, nil)
-        btn.target= MerchantFrame
-        btn.sizeUpdateFunc= function()
-            local w, h= MerchantFrame:GetSize()
-            Save.numLine= max(5, math.floor((h-144)/52))
-            MERCHANT_ITEMS_PER_PAGE= max(10, max(2, math.floor(((w-8)/161)))* Save.numLine)
-            do
-                create_ItemButton()
-            end
 
-            for i = 1, max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do
-                local btn= _G['MerchantItem'..i]
-                if i<=MERCHANT_ITEMS_PER_PAGE then
-                    btn:SetShown(true)
-                    if i>1 then
-                        btn:ClearAllPoints()
-                        btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
-                    end
-                    if not btn.ItemButton.hasItem then
-                        local name, texture= GetMerchantItemInfo(i)
-                        _G["MerchantItem"..i.."Name"]:SetText(name or '')
-                        SetItemButtonTexture(btn.ItemButton, texture or 0)
-                    end
-                else
-                    btn:Hide()
-                end
-            end
-            local line= Save.numLine
-            for i= line+1, MERCHANT_ITEMS_PER_PAGE, line do
-                local btn= _G['MerchantItem'..i]
-                btn:ClearAllPoints()
-                btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-line)], 'TOPRIGHT', 8, 0)
-            end
-
-        end
-        btn.sizeRestFunc= function()
-            MERCHANT_ITEMS_PER_PAGE= 10
-            Save.numLine= 5
-            create_ItemButton()
-            e.call('MerchantFrame_UpdateMerchantInfo')
-        end
-        btn:HookScript('OnMouseUp', function(self, d)
-            if d~='RightButton' or not self.setSize then
-                return
-            end
-            Save.MERCHANT_ITEMS_PER_PAGE= MERCHANT_ITEMS_PER_PAGE
-            e.call('MerchantFrame_UpdateMerchantInfo')
-        end)
-    end
 
     --回购，数量，提示
     MerchantFrameTab2.numLable= e.Cstr(MerchantFrameTab2)
@@ -842,19 +790,6 @@ local function Init_WidthX2()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     --重新设置，按钮
     hooksecurefunc('MerchantFrame_UpdateRepairButtons', function()
         MerchantRepairItemButton:ClearAllPoints()--单个，修理
@@ -873,41 +808,77 @@ local function Init_WidthX2()
     MerchantBuyBackItem:ClearAllPoints()--回购
     MerchantBuyBackItem:SetPoint('BOTTOMRIGHT', MerchantFrame, -12, 33)--115
 
-    --[[hooksecurefunc('MerchantFrame_UpdateRepairButtons', function()
-        MerchantRepairItemButton:ClearAllPoints()--单个，修理
-        MerchantRepairItemButton:SetPoint('BOTTOMLEFT', MerchantFrame, 12, 33)
-
-        MerchantRepairAllButton:ClearAllPoints()--全部，修理
-        MerchantRepairAllButton:SetPoint('BOTTOMLEFT', MerchantFrame, 12+(36+12)*1, 33)
-
-        MerchantGuildBankRepairButton:ClearAllPoints()--公会，修理
-        MerchantGuildBankRepairButton:SetPoint('BOTTOMLEFT', MerchantFrame, 12+(36+12)*2, 33)
-
-        MerchantSellAllJunkButton:ClearAllPoints()--出售垃圾，修理
-        MerchantSellAllJunkButton:SetPoint('BOTTOMLEFT', MerchantFrame, 12+(36+12)*3, 33)
-    end)
-    MerchantBuyBackItem:ClearAllPoints()--回购
-    MerchantBuyBackItem:SetPoint('BOTTOMLEFT', MerchantFrame, 12+(36+12)*4, 33)]]
-
-    --下一页
-    MerchantNextPageButton:ClearAllPoints()
+    MerchantNextPageButton:ClearAllPoints()--下一页
     MerchantNextPageButton:SetPoint('RIGHT', MerchantFrameLootFilter, 'LEFT', 20, 2)
     MerchantNextPageButton:SetFrameStrata('HIGH')
     local label, texture= MerchantNextPageButton:GetRegions()
     if texture and texture:GetObjectType()=='Texture' then texture:Hide() texture:SetTexture(0) end
     if label and label:GetObjectType()=='FontString' then label:Hide() label:SetText('') end
 
-
-    --上一页
-    MerchantPrevPageButton:ClearAllPoints()
+    MerchantPrevPageButton:ClearAllPoints()--上一页
     MerchantPrevPageButton:SetPoint('RIGHT', MerchantNextPageButton, 'LEFT', 8,0)
     label, texture= MerchantPrevPageButton:GetRegions()
     if texture and texture:GetObjectType()=='Texture' then texture:Hide() texture:SetTexture(0) end
     if label and label:GetObjectType()=='FontString' then label:Hide() label:SetText('') end
-        --页数
-    MerchantPageText:ClearAllPoints()
+
+    MerchantPageText:ClearAllPoints()--上页数
     MerchantPageText:SetPoint('RIGHT', MerchantPrevPageButton, 'LEFT', 0, 0)
     MerchantPageText:SetJustifyH('RIGHT')
+
+
+    local btn= MerchantFrame.ResizeButton
+    if btn then
+        btn.setSize=true
+        MerchantFrame:SetResizable(true)
+        btn:Init(MerchantFrame, 329, 402, nil, nil, nil)
+        btn.target= MerchantFrame
+        btn.sizeUpdateFunc= function()
+            local w, h= MerchantFrame:GetSize()
+            Save.numLine= max(5, math.floor((h-144)/52))
+            MERCHANT_ITEMS_PER_PAGE= max(10, max(2, math.floor(((w-8)/161)))* Save.numLine)
+            do
+                create_ItemButton()
+            end
+
+            for i = 1, max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do
+                local btn= _G['MerchantItem'..i]
+                if i<=MERCHANT_ITEMS_PER_PAGE then
+                    btn:SetShown(true)
+                    if i>1 then
+                        btn:ClearAllPoints()
+                        btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
+                    end
+                    if not btn.ItemButton.hasItem then
+                        local name, texture= GetMerchantItemInfo(i)
+                        _G["MerchantItem"..i.."Name"]:SetText(name or '')
+                        SetItemButtonTexture(btn.ItemButton, texture or 0)
+                    end
+                else
+                    btn:Hide()
+                end
+            end
+            local line= Save.numLine
+            for i= line+1, MERCHANT_ITEMS_PER_PAGE, line do
+                local btn= _G['MerchantItem'..i]
+                btn:ClearAllPoints()
+                btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-line)], 'TOPRIGHT', 8, 0)
+            end
+
+        end
+        btn.sizeRestFunc= function()
+            MERCHANT_ITEMS_PER_PAGE= 10
+            Save.numLine= 5
+            create_ItemButton()
+            e.call('MerchantFrame_UpdateMerchantInfo')
+        end
+        btn:HookScript('OnMouseUp', function(self, d)
+            if d~='RightButton' or not self.setSize then
+                return
+            end
+            Save.MERCHANT_ITEMS_PER_PAGE= MERCHANT_ITEMS_PER_PAGE
+            e.call('MerchantFrame_UpdateMerchantInfo')
+        end)
+    end
 end
 
 
@@ -1819,7 +1790,7 @@ local function Init()
     MerchantSellAllJunkButton.autoSellJunk=CreateFrame("CheckButton", nil, MerchantSellAllJunkButton, "InterfaceOptionsCheckButtonTemplate")
 
     MerchantSellAllJunkButton.autoSellJunk:SetSize(18,18)
-   
+
     MerchantSellAllJunkButton.autoSellJunk:SetPoint('BOTTOMLEFT', MerchantSellAllJunkButton, -4,-5)
 
     MerchantSellAllJunkButton.autoSellJunk.Texture= MerchantSellAllJunkButton:CreateTexture(nil, 'OVERLAY')
