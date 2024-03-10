@@ -329,7 +329,7 @@ end
 
 
 
-function func.Set_Mount(self, mountID)--坐骑
+function func.Set_Mount(self, mountID, type)--坐骑
     if mountID==268435455 then
         func.Set_Spell(self, 150544)--法术
         return
@@ -363,16 +363,19 @@ function func.Set_Mount(self, mountID)--坐骑
     func.Set_Item_Model(self, {creatureDisplayID=creatureDisplayInfoID, animID=animID})--设置, 3D模型
 
     self.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
-    
+
     local can= isCollected and isUsable and not isActive and not UnitCastingInfo('player')
-    if can and IsShiftKeyDown() then
+    if can and IsAltKeyDown() then
         C_MountJournal.SummonByID(mountID)
-        print(id, addName, spellID and GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Shift+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
+        print(id, addName, spellID and GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
     end
     local col= can and '|cnGREEN_FONT_COLOR:' or '|cff606060'
-    e.tips:AddDoubleLine(col..(e.onlyChinese and '召唤坐骑' or MOUNT), col..'Shift+         ')
-    
-    func.Set_Web_Link({frame=self, type='spell', id=spellID, name=creatureName, col=nil, isPetUI=false})--取得网页，数据链接
+    e.tips:AddDoubleLine(col..(e.onlyChinese and '召唤坐骑' or MOUNT), col..'Alt+')
+
+    if type and MountJournal and MountJournal:IsVisible() and creatureName then
+        MountJournalSearchBox:SetText(creatureName)
+    end
+    func.Set_Web_Link({frame=self, type='spell', id=spellID, name=creatureName, col=nil, isPetUI=false})--取得网页，数据链接    
 end
 
 
@@ -585,7 +588,7 @@ function func.Set_Item(self, itemLink, itemID)
         local mountID = C_MountJournal.GetMountFromItem(itemID)--坐骑物品
         local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(itemID))
         if mountID then
-            func.Set_Mount(self, mountID)--坐骑
+            func.Set_Mount(self, mountID, 'item')--坐骑
         elseif speciesID then
             func.Set_Pet(self, speciesID, true)--宠物
         else
@@ -880,7 +883,8 @@ function func.set_All_Aura(self, data)--Aura
         self:AddDoubleLine((e.onlyChinese and '光环' or AURAS)..' '..spellID, '|T'..icon..':0|t'..icon)
         local mountID = C_MountJournal.GetMountFromSpell(spellID)
         if mountID then
-            func.Set_Mount(self, mountID)
+            func.Set_Mount(self, mountID, 'aura')
+            
         else
             func.Set_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
         end

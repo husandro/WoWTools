@@ -99,7 +99,14 @@ e.LoadDate({id=34090, type= 'spell'})
 e.LoadDate({id=34090, type= 'spell'})
 
 
-
+local MountType={
+    MOUNT_JOURNAL_FILTER_GROUND,
+    MOUNT_JOURNAL_FILTER_AQUATIC,
+    MOUNT_JOURNAL_FILTER_FLYING,
+    MOUNT_JOURNAL_FILTER_DRAGONRIDING,
+    'Shift', 'Alt', 'Ctrl',
+    FLOOR,
+}
 
 
 
@@ -216,14 +223,7 @@ local function checkItem()--检测物品
     end
 end
 
-local MountType={
-    MOUNT_JOURNAL_FILTER_GROUND,
-    MOUNT_JOURNAL_FILTER_AQUATIC,
-    MOUNT_JOURNAL_FILTER_FLYING,
-    MOUNT_JOURNAL_FILTER_DRAGONRIDING,
-    'Shift', 'Alt', 'Ctrl',
-    FLOOR,
-}
+
 MountTab={}--MountTab[MountType]={}
 
 local function checkMount()--检测坐骑
@@ -1072,7 +1072,7 @@ end
 --#############################
 --坐骑界面, 添加菜单, 设置提示内容
 --#############################
-local function Init_Menu_Set_UI(self, level, menuList)--坐骑界面, 菜单
+local function Init_Menu_Set_UI(self, level)--坐骑界面, 菜单
     local frame= self:GetParent()
     local spellID= frame.spellID
     local mountID = frame.mountID
@@ -1168,69 +1168,150 @@ end
 
 
 
+--初始，坐骑界面
+local function Init_MountJournal()
 
-local function setMountJournal_InitMountButton(self, elementData)--Blizzard_MountCollection.lua
-    if not self or not self.spellID then
-        if self and self.btn then
-            self.btn:SetShown(false)
+    hooksecurefunc('MountJournal_InitMountButton',function(self)--Blizzard_MountCollection.lua
+        if not self or not self.spellID then
+            if self and self.btn then
+                self.btn:SetShown(false)
+            end
+            return
         end
-        return
-    end
-    local text
-    for _, type in pairs(MountType) do
-        local ID=Save.Mounts[type][self.spellID]
-        if ID then
-            text= text and text..'|n' or ''
-            if type==FLOOR then
-                local num=0
-                for _, _ in pairs(ID) do
-                    num=num+1
+        local text
+        for _, type in pairs(MountType) do
+            local ID=Save.Mounts[type][self.spellID]
+            if ID then
+                text= text and text..'|n' or ''
+                if type==FLOOR then
+                    local num=0
+                    for _, _ in pairs(ID) do
+                        num=num+1
+                    end
+                    text=text..'|cnGREEN_FONT_COLOR:'..num..'|r'
                 end
-                text=text..'|cnGREEN_FONT_COLOR:'..num..'|r'
+                text= text..e.cn(type)
             end
-            text= text..e.cn(type)
         end
-    end
-    if text and not self.text then--提示， 文本
-        self.text=e.Cstr(self, {justifyH='RIGHT'})--nil, self.name, nil,nil,nil,'RIGHT')
-        self.text:SetPoint('RIGHT')
-        self.text:SetFontObject('GameFontNormal')
-        self.text:SetAlpha(0.3)
-    end
-    if self.text then
-        self.text:SetText(text or '')
-    end
-    if not self.btn then--建立，图标，菜单
-        self.btn=e.Cbtn(self, {icon=true, size={18,18}})
-        self.btn:SetPoint('BOTTOMRIGHT')
-        self.btn:SetAlpha(0.3)
-        self.btn:SetScript('OnEnter', function(self2)
-            self2:SetAlpha(1)
-        end)
-        self.btn:SetScript('OnLeave', function(self2) self2:SetAlpha(0.3) end)
-        self.btn:SetScript('OnClick', function(self2)
-            if not self2.Menu then
-                self2.Menu=CreateFrame("Frame", nil, self2, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self2.Menu, Init_Menu_Set_UI, 'MENU')
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self2.Menu, self2, 10, 0)
-        end)
-    end
-    self.btn.mountID= self.mountID
-    self.btn.spellID= self.spellID
-    self.btn:SetShown(true)
+        if text and not self.text then--提示， 文本
+            self.text=e.Cstr(self, {justifyH='RIGHT'})--nil, self.name, nil,nil,nil,'RIGHT')
+            self.text:SetPoint('RIGHT')
+            self.text:SetFontObject('GameFontNormal')
+            self.text:SetAlpha(0.3)
+        end
+        if self.text then
+            self.text:SetText(text or '')
+        end
+        if not self.btn then--建立，图标，菜单
+            self.btn=e.Cbtn(self, {icon=true, size={18,18}})
+            self.btn:SetPoint('BOTTOMRIGHT')
+            self.btn:SetAlpha(0.3)
+            self.btn:SetScript('OnEnter', function(self2)
+                self2:SetAlpha(1)
+            end)
+            self.btn:SetScript('OnLeave', function(self2) self2:SetAlpha(0.3) end)
+            self.btn:SetScript('OnClick', function(self2)
+                if not self2.Menu then
+                    self2.Menu=CreateFrame("Frame", nil, self2, "UIDropDownMenuTemplate")
+                    e.LibDD:UIDropDownMenu_Initialize(self2.Menu, Init_Menu_Set_UI, 'MENU')
+                end
+                e.LibDD:ToggleDropDownMenu(1, nil, self2.Menu, self2, 10, 0)
+            end)
+        end
+        self.btn.mountID= self.mountID
+        self.btn.spellID= self.spellID
+        self.btn:SetShown(true)
 
-    if not MountJournal.MountDisplay.tipsMenu then
-        MountJournal.MountDisplay.tipsMenu= e.Cbtn(MountJournal.MountDisplay, {icon=true, size={22,22}})
-        MountJournal.MountDisplay.tipsMenu:SetPoint('LEFT')
-        MountJournal.MountDisplay.tipsMenu:SetAlpha(0.3)
-        MountJournal.MountDisplay.tipsMenu:SetScript('OnEnter', function(self2)
-            e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self2, 15, 0)
-            self2:SetAlpha(1)
-        end)
-        MountJournal.MountDisplay.tipsMenu:SetScript('OnLeave', function(self2) self2:SetAlpha(0.3) end)
+        if not MountJournal.MountDisplay.tipsMenu then
+            MountJournal.MountDisplay.tipsMenu= e.Cbtn(MountJournal.MountDisplay, {icon=true, size={22,22}})
+            MountJournal.MountDisplay.tipsMenu:SetPoint('LEFT')
+            MountJournal.MountDisplay.tipsMenu:SetAlpha(0.3)
+            MountJournal.MountDisplay.tipsMenu:SetScript('OnEnter', function(self2)
+                e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self2, 15, 0)
+                self2:SetAlpha(1)
+            end)
+            MountJournal.MountDisplay.tipsMenu:SetScript('OnLeave', function(self2) self2:SetAlpha(0.3) end)
+        end
+    end)
+
+
+    local btn= CreateFrame('DropDownToggleButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'UIResettableDropdownButtonTemplate')--SharedUIPanelTemplates.lua
+    btn:SetPoint('BOTTOM', MountJournalFilterButton, 'TOP')
+    btn.MountJournal_FullUpdate= MountJournal_FullUpdate
+    function btn.resetFunction()
+        MountJournal_FullUpdate= _G['MountJournalFilterButtonWoWTools'].MountJournal_FullUpdate
+        _G['MountJournalFilterButtonWoWTools']:SetText("")
+        e.call('MountJournalFilterDropdown_ResetFilters')
+        --e.call('MountJournal_FullUpdate', MountJournal)
     end
+
+    btn:SetScript('OnClick', function(frame)
+        if not frame.Menu then
+            frame.Menu= CreateFrame('Frame', nil, frame, 'UIDropDownMenuTemplate')
+            e.LibDD:UIDropDownMenu_Initialize(frame.Menu, function(self, level)
+                local parent= self:GetParent()
+                for _, t in pairs(MountType) do
+                    local name= e.cn(t)
+                    local info={
+                        text= name,
+                        checked= parent:GetText()==name,
+                        tooltipOnButton=true,
+                        tooltipTitle=id..' Tools',
+                        arg1= t,
+                        func= function(_, arg1)
+                            e.call('MountJournalFilterDropdown_ResetFilters')
+                            e.call('MountJournal_SetUnusableFilter',true)
+                            MountJournal_FullUpdate= function()
+                                if (MountJournal:IsVisible()) then
+                                    local newDataProvider = CreateDataProvider();
+                                    for index = 1, C_MountJournal.GetNumDisplayedMounts()  do
+                                        local _, spellID, _, _, _, _, _, _, _, _, _, mountID   = C_MountJournal.GetDisplayedMountInfo(index)
+                                        if mountID and spellID and Save.Mounts[arg1][spellID] then
+                                            newDataProvider:Insert({index = index, mountID = mountID})
+                                        end
+                                    end
+                                    MountJournal.ScrollBox:SetDataProvider(newDataProvider, ScrollBoxConstants.RetainScrollPosition);
+
+                                    if (not MountJournal.selectedSpellID) then
+                                        MountJournal_Select(self.dragonridingHelpTipMountIndex or 1);
+                                    end
+
+                                    MountJournal_UpdateMountDisplay();
+                                end
+                            end
+                            e.call('MountJournal_FullUpdate')
+                            
+                            parent.ResetButton:SetShown(true)
+                            parent:SetText(e.cn(arg1))
+                        end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+                end
+                e.LibDD:UIDropDownMenu_AddSeparator(level)
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text= 'Tools '..e.cn(addName),
+                    notCheckable=true,
+                    isTitle=true,
+                }, level)
+            end, 'MENU')
+        end
+        e.LibDD:ToggleDropDownMenu(1, nil, frame.Menu, frame, 74, 15)
+    end)
+
+    MountJournal.MountCount:ClearAllPoints()
+    MountJournal.MountCount:SetPoint('BOTTOMLEFT', MountJournalSearchBox, 'TOPLEFT')
+    MountJournal.MountCount:SetPoint('RIGHT', MountJournalFilterButton, 'LEFT', -2, 0)
+    MountJournalFilterButton.ResetButton:HookScript('OnClick', function()
+        if _G['MountJournalFilterButtonWoWTools'].ResetButton:IsShow() then
+            _G['MountJournalFilterButtonWoWTools'].ResetButton:Click()
+        end
+    end)
+    
 end
+
+
+
+
 
 
 
@@ -1554,7 +1635,8 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Collections' then
-            hooksecurefunc('MountJournal_InitMountButton',setMountJournal_InitMountButton)
+            Init_MountJournal()
+
             --hooksecurefunc('MountJournal_ShowMountDropdown',setMountJournal_ShowMountDropdown)
         end
 
