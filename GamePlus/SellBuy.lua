@@ -686,6 +686,7 @@ local function Init_Auto_Repair()
                 end
             end
         end
+        e.call('MerchantFrame_Update')
     end
     AutoRepairCheck:RegisterEvent('MERCHANT_SHOW')
     AutoRepairCheck.events={
