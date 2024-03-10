@@ -675,18 +675,20 @@ local function Init_Auto_Repair()
                 RepairSave.guild=RepairSave.guild+Co
                 RepairSave.num=RepairSave.num+1
                 print(id, e.cn(addName), '|cffff00ff'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', GetCoinTextureString(Co))
+                e.call('MerchantFrame_Update')
             else
                 if GetMoney()>=Co then
                     RepairAllItems()
                     RepairSave.player=RepairSave.player+Co
                     RepairSave.num=RepairSave.num+1
                     print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '修理花费：' or REPAIR_COST)..'|r', GetCoinTextureString(Co))
+                    e.call('MerchantFrame_Update')
                 else
                     print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '失败' or FAILED)..'|r', e.onlyChinese and '修理花费：' or REPAIR_COST, GetCoinTextureString(Co))
                 end
             end
         end
-        e.call('MerchantFrame_Update')
+        
     end
     AutoRepairCheck:RegisterEvent('MERCHANT_SHOW')
     AutoRepairCheck.events={
