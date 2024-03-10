@@ -364,15 +364,14 @@ function func.Set_Mount(self, mountID)--坐骑
 
     self.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
     
-    if spellID then
-        local can= isCollected and isUsable and not isActive
-        if can and IsShiftKeyDown() then
-            C_MountJournal.SummonByID(mountID)
-            print(id, addName, GetSpellLink(spellID),  '|cnGREEN_FONT_COLOR:Shift+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
-        end
-        local col= can and '|cnGREEN_FONT_COLOR:' or '|cff606060'
-        e.tips:AddDoubleLine(col..(e.onlyChinese and '召唤坐骑' or MOUNT), col..'Shift+         ')
+    local can= isCollected and isUsable and not isActive and not UnitCastingInfo('player')
+    if can and IsShiftKeyDown() then
+        C_MountJournal.SummonByID(mountID)
+        print(id, addName, spellID and GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Shift+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
     end
+    local col= can and '|cnGREEN_FONT_COLOR:' or '|cff606060'
+    e.tips:AddDoubleLine(col..(e.onlyChinese and '召唤坐骑' or MOUNT), col..'Shift+         ')
+    
     func.Set_Web_Link({frame=self, type='spell', id=spellID, name=creatureName, col=nil, isPetUI=false})--取得网页，数据链接
 end
 
