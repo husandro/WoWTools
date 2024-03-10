@@ -104,16 +104,23 @@ local function bossLoot(itemID, itemLink)--BOSS掉落
     end
     local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, subclassID, bindType = GetItemInfo(itemLink)
     itemLevel= GetDetailedItemLevelInfo(itemLink) or itemLevel
+    local other= classID==15 and subclassID==0
     if itemEquipLoc--绑定
     and itemQuality and itemQuality==4--最高史诗
-    and (classID==2 or classID==3 or classID==4)--2武器 3宝石 4盔甲
+    and (classID==2 or classID==3 or classID==4 or other)--2武器 3宝石 4盔甲
     and bindType == LE_ITEM_BIND_ON_ACQUIRE--1     LE_ITEM_BIND_ON_ACQUIRE    拾取绑定
     and itemLevel and itemLevel>1 and avgItemLevel-itemLevel>=15
     and not Save.noSell[itemID]
     then
+        if other then
+            local dateInfo= e.GetTooltipData({hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
+            if not dateInfo.red then
+                return
+            end
+        end
         bossSave[itemID]= itemLevel
         if not Save.notSellBoss then
-            print(e.cn(addName), '|cnGREEN_FONT_COLOR:'.. (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB) , itemLink)
+            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'.. (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB) , itemLink)
         end
     end
 end
@@ -927,7 +934,7 @@ local function Init_Auto_Sell_Junk()
 
 
     function AutoSellJunkCheck:set_sell_junk()--出售物品
-        if IsModifierKeyDown() or not C_MerchantFrame.IsSellAllJunkEnabled() or UnitAffectingCombat('player') then
+        if IsModifierKeyDown() or not C_MerchantFrame.IsSellAllJunkEnabled() or UnitAffectingCombat('player') or not MerchantFrame:IsShown() then
             return
         end
         local num, gruop, preceTotale= 0, 0, 0
@@ -1521,11 +1528,11 @@ local function Init_Buy_Items_Button()
                         local num= s.editBox:GetNumber()
                         if num==0 then
                             buySave[itemID]=nil
-                            print('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r', itemLink)
+                            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r', itemLink)
                         else
                             buySave[itemID]=num
                             Save.Sell[itemID]=nil
-                            print(PURCHASE, '|cnGREEN_FONT_COLOR:'..num..'|r', itemLink)
+                            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购买' or PURCHASE)..'|rx|cffff00ff'..num..'|r', itemLink)
                             BuyItemButton:set_buy_item()--购买物品
                         end
                         BuyItemButton:set_text()--回购，数量，提示
