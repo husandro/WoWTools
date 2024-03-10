@@ -1280,7 +1280,7 @@ local function Init_MountJournal()
                                 end
                             end
                             e.call('MountJournal_FullUpdate')
-                            
+
                             parent.ResetButton:SetShown(true)
                             parent:SetText(e.cn(arg1))
                         end
@@ -1295,6 +1295,7 @@ local function Init_MountJournal()
                 }, level)
             end, 'MENU')
         end
+        e.LibDD:CloseDropDownMenus()
         e.LibDD:ToggleDropDownMenu(1, nil, frame.Menu, frame, 74, 15)
     end)
 
@@ -1302,11 +1303,10 @@ local function Init_MountJournal()
     MountJournal.MountCount:SetPoint('BOTTOMLEFT', MountJournalSearchBox, 'TOPLEFT')
     MountJournal.MountCount:SetPoint('RIGHT', MountJournalFilterButton, 'LEFT', -2, 0)
     MountJournalFilterButton.ResetButton:HookScript('OnClick', function()
-        if _G['MountJournalFilterButtonWoWTools'].ResetButton:IsShow() then
+        if _G['MountJournalFilterButtonWoWTools'].ResetButton:IsShown() then
             _G['MountJournalFilterButtonWoWTools'].ResetButton:Click()
         end
     end)
-    
 end
 
 
