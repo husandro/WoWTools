@@ -308,7 +308,9 @@ function e.MK(number, bit)
         text= 'k'
     end
     if bit==0 then
-        return format('%i', number)..text
+        number= math.modf(number)
+        number= number==0 and 0 or number
+        return number..text--format('%i', number)..text
     else
         local num, point= math.modf(number)
         if point==0 then

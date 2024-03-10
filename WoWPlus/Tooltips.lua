@@ -336,7 +336,7 @@ function func.Set_Mount(self, mountID)--坐骑
     end
     self:AddLine(' ')
     --local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, isFiltered, isCollected, mountID, isForDragonriding = C_MountJournal.GetDisplayedMountInfo(elementData.index)
-    local creatureName, spellID, _, _, _, _, _, isFactionSpecific, faction, _, isCollected, _, isForDragonriding =C_MountJournal.GetMountInfoByID(mountID)
+    local creatureName, spellID, _,isActive, isUsable, _, _, isFactionSpecific, faction, _, isCollected, _, isForDragonriding =C_MountJournal.GetMountInfoByID(mountID)
     local spell
     if spellID then
         local icon= select(3, GetSpellInfo(spellID))
@@ -363,7 +363,16 @@ function func.Set_Mount(self, mountID)--坐骑
     func.Set_Item_Model(self, {creatureDisplayID=creatureDisplayInfoID, animID=animID})--设置, 3D模型
 
     self.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
-
+    
+    if spellID then
+        local can= isCollected and isUsable and not isActive
+        if can and IsShiftKeyDown() then
+            C_MountJournal.SummonByID(mountID)
+            print(id, addName, GetSpellLink(spellID),  '|cnGREEN_FONT_COLOR:Shift+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
+        end
+        local col= can and '|cnGREEN_FONT_COLOR:' or '|cff606060'
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '召唤坐骑' or MOUNT), col..'Shift+         ')
+    end
     func.Set_Web_Link({frame=self, type='spell', id=spellID, name=creatureName, col=nil, isPetUI=false})--取得网页，数据链接
 end
 
@@ -1953,7 +1962,7 @@ local function Init()
 
 
 
-    
+
     --添加任务ID
     local function create_Quest_Label(frame)
         frame.questIDLabel= e.Cstr(frame, {mouse=true, justifyH='RIGHT'})
