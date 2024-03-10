@@ -722,8 +722,8 @@ local function Init_Auto_Repair()
     --提示，可修理，件数
     MerchantRepairItemButton.Text=e.Cstr(MerchantRepairItemButton)
     MerchantRepairItemButton.Text:SetPoint('TOPLEFT', 1, -1)
-    MerchantRepairItemButton:SetScript('OnEnter', function()--替换，源FUNC
-        GameTooltip:SetOwner(MerchantFrame, "ANCHOR_BOTTOMRIGHT");
+    MerchantRepairItemButton:SetScript('OnEnter', function(self)--替换，源FUNC
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
 		GameTooltip:SetText(e.onlyChinese and '修理一件物品' or REPAIR_AN_ITEM)
         GameTooltip:AddLine(' ')
         e.GetDurabiliy_OnEnter()
@@ -734,7 +734,7 @@ local function Init_Auto_Repair()
             ToggleCharacter("PaperDollFrame")
         end
     end)
-    
+
     --显示耐久度
     AutoRepairCheck.Text:ClearAllPoints()
     AutoRepairCheck.Text:SetPoint('BOTTOM', MerchantRepairAllButton, 'TOP', 0, 0)
@@ -762,7 +762,21 @@ local function Init_Auto_Repair()
         end
     end)
 
-    
+    MerchantRepairAllButton:SetScript('OnEnter', function(self)--替换，源FUNC
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM");
+        local repairAllCost, canRepair = GetRepairAllCost();
+        if ( canRepair and (repairAllCost > 0) ) then
+            GameTooltip:SetText(e.onlyChinese and '修理所有物品' or REPAIR_ALL_ITEMS)
+            SetTooltipMoney(GameTooltip, repairAllCost);
+            local personalMoney = GetMoney();
+            if(repairAllCost > personalMoney) then
+                GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '没有足够的资金来修理所有物品' or GUILDBANK_REPAIR_INSUFFICIENT_FUNDS))
+            end
+        end
+        GameTooltip:AddLine(' ')
+        e.GetDurabiliy_OnEnter()
+        GameTooltip:Show()
+    end)
 end
 
 

@@ -2242,7 +2242,8 @@ function e.GetDurabiliy_OnEnter()
             break
         end
     end
-    e.tips:AddDoubleLine((e.onlyChinese and '耐久度' or DURABILITY).. math.modf(cur2/max2*100)..'%', '|A:SpellIcon-256x256-Repair:0:0|a'..(num>0 and '|cnRED_FONT_COLOR:' or '|cff606060')..num..'|r '..(e.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip)
+
+    e.tips:AddDoubleLine((e.onlyChinese and '耐久度' or DURABILITY)..' ('..math.modf(cur2/max2*100)..'%)', '('..(num>0 and '|cnRED_FONT_COLOR:' or '|cff606060')..num..'|r) '..(e.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip)
 
 end
 function e.GetDurabiliy(reTexture)--耐久度
