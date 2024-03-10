@@ -1300,7 +1300,7 @@ local function Init_MountJournal()
     end)
 
     MountJournal.MountCount:ClearAllPoints()
-    MountJournal.MountCount:SetPoint('BOTTOMLEFT', MountJournalSearchBox, 'TOPLEFT',-2, 0)
+    MountJournal.MountCount:SetPoint('BOTTOMLEFT', MountJournalSearchBox, 'TOPLEFT',-3, 0)
     MountJournal.MountCount:SetPoint('RIGHT', MountJournalFilterButton, 'LEFT', -2, 0)
     MountJournalFilterButton.ResetButton:HookScript('OnClick', function()
         if _G['MountJournalFilterButtonWoWTools'].ResetButton:IsShown() then
