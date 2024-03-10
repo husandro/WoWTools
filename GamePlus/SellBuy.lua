@@ -127,7 +127,7 @@ end
 --商人Plus. 设置, 提示, 信息
 --#########################
 local function Set_Merchant_Info()--设置, 提示, 信息
-    if not MerchantFrame:IsShown() or Save.notPlus then
+    if not MerchantFrame:IsVisible() or Save.notPlus then
         return
     end
     local selectedTab= MerchantFrame.selectedTab
@@ -758,7 +758,7 @@ local function Init_Auto_Repair()
             end
             MerchantRepairItemButton.Text:SetText((num==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:')..num)
 
-            AutoRepairCheck.Text:SetText(e.GetDurabiliy())--显示耐久度
+            AutoRepairCheck.Text:SetText(e.GetDurabiliy(true))--显示耐久度
         end
     end)
 

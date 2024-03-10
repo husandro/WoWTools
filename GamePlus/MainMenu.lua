@@ -67,16 +67,6 @@ local function Init_Character()
         end
         e.tips:AddLine(' ')
         e.GetDurabiliy_OnEnter()
-        e.tips:AddLine(' ')
-        local item, cur, pvp= GetAverageItemLevel()
-        cur= cur or 0
-        item= item or 0
-        pvp= pvp or 0
-        e.tips:AddDoubleLine(
-            (e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)
-            ..(e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
-            ..(cur==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur) or format(' |cnRED_FONT_COLOR:%.2f|r/%.2f', cur, item)),
-            format('%.02f', pvp)..' PvP|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a')
         e.tips:Show()
     end)
 end

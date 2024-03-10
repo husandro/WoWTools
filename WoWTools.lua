@@ -2245,6 +2245,16 @@ function e.GetDurabiliy_OnEnter()
 
     e.tips:AddDoubleLine((e.onlyChinese and '耐久度' or DURABILITY)..' ('..math.modf(cur2/max2*100)..'%)', '('..(num>0 and '|cnRED_FONT_COLOR:' or '|cff606060')..num..'|r) '..(e.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip)
 
+    local item, cur, pvp= GetAverageItemLevel()
+    cur= cur or 0
+    item= item or 0
+    pvp= pvp or 0
+    e.tips:AddDoubleLine(
+        (e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)
+        ..(e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
+        ..(cur==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur) or format(' |cnRED_FONT_COLOR:%.2f|r/%.2f', cur, item)),
+        format('%.02f', pvp)..' PvP|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a')
+
 end
 function e.GetDurabiliy(reTexture)--耐久度
     local cur, max= 0, 0
