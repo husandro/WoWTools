@@ -1747,7 +1747,7 @@ local function Init_Move()
             self.minimizedHeight= minimizedHeight
             self.BorderFrame.MaximizeMinimizeFrame:Maximize()
         elseif size then
-            local w= size[1]-(self.questLogWidth or 290)
+            local w= size[1]-(self.questLogWidth or 0)
             self.minimizedWidth= w
             self.minimizedHeight= size[2]
             self.BorderFrame.MaximizeMinimizeFrame:Minimize()
@@ -1758,7 +1758,7 @@ local function Init_Move()
             QUEST_TEMPLATE_MAP_REWARDS.contentWidth= w-41]]
         end
     end
-    set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, onShowFunc=true, notMoveAlpha=true, initFunc=function()
+    set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 0)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, onShowFunc=true, notMoveAlpha=true, initFunc=function()
         --[[WorldMapFrame:HookScript('OnShow', function(self)
             local scale= Save.scale[self:GetName()]
             if scale then
