@@ -49,7 +49,7 @@ local function Init_Character()
         end
         self.Text:SetText(text or '')
 
-        local text, value= e.GetDurabiliy(false, false)--耐久度
+        local text, value= e.GetDurabiliy(false)--耐久度
         self.Text2:SetText(text:gsub('%%', ''))
         e.Set_HelpTips({frame=CharacterMicroButton, topoint=self.text2, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<30})--设置，提示
     end
@@ -66,21 +66,8 @@ local function Init_Character()
             return
         end
         e.tips:AddLine(' ')
-        local text= e.GetDurabiliy(true, true)
-
+        e.GetDurabiliy_OnEnter()
         e.tips:AddLine(' ')
-
-        local euip
-        for _, setID in pairs(C_EquipmentSet.GetEquipmentSetIDs() or {}) do
-            local name, texture, _, isEquipped= C_EquipmentSet.GetEquipmentSetInfo(setID)
-            if isEquipped and name then
-                euip= '|cffff00ff'..name..'|r'..(texture and '|T'..texture..':0|t' or '')
-                break
-            end
-        end
-
-        e.tips:AddDoubleLine((e.onlyChinese and '耐久度' or DURABILITY)..text, euip)
-
         local item, cur, pvp= GetAverageItemLevel()
         cur= cur or 0
         item= item or 0

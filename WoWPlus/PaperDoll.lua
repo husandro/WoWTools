@@ -1209,15 +1209,12 @@ local function GetDurationTotale()
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:AddLine(' ')
-            local text=  e.GetDurabiliy(true, true)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '耐久度' or DURABILITY, text)
+            e.GetDurabiliy_OnEnter()
             e.tips:Show()
             self:SetAlpha(0.3)
         end)
     end
-    local du= e.GetDurabiliy(true)--耐久度
-    panel.durabilityText:SetText(du or '')
+    panel.durabilityText:SetText(e.GetDurabiliy(true))
 end
 
 

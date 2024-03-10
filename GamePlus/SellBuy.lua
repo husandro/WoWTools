@@ -64,88 +64,6 @@ local BuybackButton--回购物品
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---#######
---出售物品
---#######
---local avgItemLevel--装等
-local function bossLoot(itemID, itemLink)--BOSS掉落
-    local avgItemLevel= GetAverageItemLevel() or 30
-    if not itemID or not itemLink or not avgItemLevel then
-        return
-    end
-    local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, subclassID, bindType = GetItemInfo(itemLink)
-    itemLevel= GetDetailedItemLevelInfo(itemLink) or itemLevel
-    local other= classID==15 and subclassID==0
-    if itemEquipLoc--绑定
-    and itemQuality and itemQuality==4--最高史诗
-    and (classID==2 or classID==3 or classID==4 or other)--2武器 3宝石 4盔甲
-    and bindType == LE_ITEM_BIND_ON_ACQUIRE--1     LE_ITEM_BIND_ON_ACQUIRE    拾取绑定
-    and itemLevel and itemLevel>1 and avgItemLevel-itemLevel>=15
-    and not Save.noSell[itemID]
-    then
-        if other then
-            local dateInfo= e.GetTooltipData({hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
-            if not dateInfo.red then
-                return
-            end
-        end
-        bossSave[itemID]= itemLevel
-        if not Save.notSellBoss then
-            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'.. (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB) , itemLink)
-        end
-    end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --####################
 --检测是否是出售物品
 --为 ItemInfo.lua, 用
@@ -183,103 +101,6 @@ function e.CheckItemSell(itemID, itemLink, quality)
         end
     end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -395,6 +216,29 @@ local function Set_Merchant_Info()--设置, 提示, 信息
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -815,11 +659,7 @@ local function Init_Auto_Repair()
 
 
 
-    AutoRepairCheck.Text:ClearAllPoints()
-    AutoRepairCheck.Text:ClearAllPoints(TOPLEFT, MerchantRepairAllButton)
-    function AutoRepairCheck:set_text()--显示耐久度
-        self.Text:SetText(e.GetDurabiliy())
-    end
+
 
 
 
@@ -863,8 +703,66 @@ local function Init_Auto_Repair()
         if event=='MERCHANT_SHOW' then
             self:set_repair_all()
         end
-        self:set_text()--显示耐久度
     end)
+
+    --显示，公会修理，信息
+    MerchantGuildBankRepairButton.Text= e.Cstr(MerchantGuildBankRepairButton, {justifyH='RIGHT'})
+    MerchantGuildBankRepairButton.Text:SetPoint('TOPLEFT', 1, -1)
+    hooksecurefunc('MerchantFrame_UpdateGuildBankRepair', function()
+        local repairAllCost = GetRepairAllCost();
+        if not CanGuildBankRepair() then
+            MerchantGuildBankRepairButton.Text:SetText(e.Icon.O2)
+        else
+            local co = GetGuildBankMoney() or 0
+            local col= co==0 and '|cff606060' or (repairAllCost> co and '|cnRED_FONT_COLOR:') or '|cnGREEN_FONT_COLOR:'
+            MerchantGuildBankRepairButton.Text:SetText(col..(e.MK(co/10000, 0)))
+        end
+    end)
+
+    --提示，可修理，件数
+    MerchantRepairItemButton.Text=e.Cstr(MerchantRepairItemButton)
+    MerchantRepairItemButton.Text:SetPoint('TOPLEFT', 1, -1)
+    MerchantRepairItemButton:SetScript('OnEnter', function()--替换，源FUNC
+        GameTooltip:SetOwner(MerchantFrame, "ANCHOR_BOTTOMRIGHT");
+		GameTooltip:SetText(e.onlyChinese and '修理一件物品' or REPAIR_AN_ITEM)
+        GameTooltip:AddLine(' ')
+        e.GetDurabiliy_OnEnter()
+        GameTooltip:Show()
+    end)
+    MerchantRepairItemButton:HookScript('OnClick', function()
+        if not PaperDollFrame:IsVisible() then
+            ToggleCharacter("PaperDollFrame")
+        end
+    end)
+    
+    --显示耐久度
+    AutoRepairCheck.Text:ClearAllPoints()
+    AutoRepairCheck.Text:SetPoint('BOTTOM', MerchantRepairAllButton, 'TOP', 0, 0)
+    AutoRepairCheck.Text:SetShadowOffset(1, -1)
+
+    --显示，修理，金钱
+    MerchantRepairAllButton.Text2=e.Cstr(MerchantRepairAllButton)
+    MerchantRepairAllButton.Text2:SetPoint('TOPLEFT', MerchantRepairAllButton, 1, -1)
+    hooksecurefunc('MerchantFrame_UpdateRepairButtons', function()
+        if MerchantRepairAllButton:IsShown() then
+            local co = GetRepairAllCost()--显示，修理所有，金钱
+            local col= co==0 and '|cff606060' or (co<= GetMoney() and '|cnGREEN_FONT_COLOR:') or '|cnRED_FONT_COLOR:'
+            MerchantRepairAllButton.Text2:SetText(col..e.MK(co/10000, 0))
+
+            local num=0--提示，可修理，件数
+            for i= 1, 18 do
+                local cur2, max2 = GetInventoryItemDurability(i)
+                if cur2 and max2 and max2>cur2 and max2>0 then
+                    num= num+1
+                end
+            end
+            MerchantRepairItemButton.Text:SetText((num==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:')..num)
+
+            AutoRepairCheck.Text:SetText(e.GetDurabiliy())--显示耐久度
+        end
+    end)
+
+    
 end
 
 
@@ -934,7 +832,7 @@ local function Init_Auto_Sell_Junk()
 
 
     function AutoSellJunkCheck:set_sell_junk()--出售物品
-        if IsModifierKeyDown() or not C_MerchantFrame.IsSellAllJunkEnabled() or UnitAffectingCombat('player') or not MerchantFrame:IsShown() then
+        if IsModifierKeyDown() or not C_MerchantFrame.IsSellAllJunkEnabled() or UnitAffectingCombat('player') then
             return
         end
         local num, gruop, preceTotale= 0, 0, 0
@@ -982,7 +880,24 @@ local function Init_Auto_Sell_Junk()
     end
     AutoSellJunkCheck:RegisterEvent('MERCHANT_SHOW')
     AutoSellJunkCheck:SetScript('OnEvent', AutoSellJunkCheck.set_sell_junk)
-    AutoSellJunkCheck:settings()
+
+    AutoSellJunkCheck.Texture:SetShown(Save.sellJunkMago and not Save.notSellJunk)
+    AutoSellJunkCheck:SetChecked(not Save.notSellJunk)
+
+    --提示，垃圾，数量
+    MerchantSellAllJunkButton:HookScript('OnEnter', function()
+        e.tips:AddDoubleLine(e.onlyChinese and '垃圾' or BAG_FILTER_JUNK , '|cnGREEN_FONT_COLOR:'..(C_MerchantFrame.GetNumJunkItems() or 0))
+        e.tips:Show()
+    end)
+    MerchantSellAllJunkButton.Text= e.Cstr(MerchantSellAllJunkButton, {justifyH='RIGHT'})
+    MerchantSellAllJunkButton.Text:SetPoint('TOPRIGHT',-2, -2)
+    hooksecurefunc('MerchantFrame_Update', function()
+        if not MerchantSellAllJunkButton:IsVisible() then
+            return
+        end
+        local num= C_MerchantFrame.GetNumJunkItems() or 0
+        MerchantSellAllJunkButton.Text:SetText((num==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:')..num)
+    end)
 end
 
 
@@ -1983,8 +1898,29 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
 
     elseif event=='ENCOUNTER_LOOT_RECEIVED' then--买出BOOS装备
         if IsInInstance() and arg5 and arg5:find(e.Player.name) then
-            bossLoot(arg2, arg3)
+            local itemID, itemLink= arg2, arg3
+            local avgItemLevel= GetAverageItemLevel() or 30
+            local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, subclassID, bindType = GetItemInfo(itemLink)
+            itemLevel= GetDetailedItemLevelInfo(itemLink) or itemLevel
+            local other= classID==15 and subclassID==0
+            if itemEquipLoc--绑定
+            and itemQuality and itemQuality==4--最高史诗
+            and (classID==2 or classID==3 or classID==4 or other)--2武器 3宝石 4盔甲
+            and bindType == LE_ITEM_BIND_ON_ACQUIRE--1     LE_ITEM_BIND_ON_ACQUIRE    拾取绑定
+            and itemLevel and itemLevel>1 and avgItemLevel-itemLevel>=15
+            and not Save.noSell[itemID]
+            then
+                if other then
+                    local dateInfo= e.GetTooltipData({hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
+                    if not dateInfo.red then
+                        return
+                    end
+                end
+                bossSave[itemID]= itemLevel
+                if not Save.notSellBoss then
+                    print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'.. (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB) , itemLink)
+                end
+            end
         end
-
     end
 end)

@@ -2156,15 +2156,16 @@ local function get_durabiliy_color(cur, max)
     end
     return text, value, icon
 end
-local function set_onenter_durabiliy()
+
+function e.GetDurabiliy_OnEnter()
     local tabSlot={
         {1, 10},
         {2, 6},
         {3, 7},
         {15, 8},
         {5, 11},
-        {0, 12},
-        {0, 13},
+        {4, 12},
+        {19, 13},
         {9, 14},
         {16, 17},
     }
@@ -2186,34 +2187,65 @@ local function set_onenter_durabiliy()
         [15]= 'BACKSLOT',
         [16]= 'MAINHANDSLOT',
         [17]= 'SECONDARYHANDSLOT',
+        [19]= 'TABARDSLOT',
     }
+    local num, cur2, max2= 0, 0, 0
+    local isRepair, cur, max, text, _, icon
+
     for index, tab in pairs(tabSlot) do
-        local a = tab[1]>0 and GetInventoryItemTexture('player', tab[1])
+        
+        local a = GetInventoryItemTexture('player', tab[1])
         a = a and '|T'..a..':0|t'
         local b = GetInventoryItemTexture('player', tab[2])
         b = b and '|T'..b..':0|t'
-        if a then
-            local cur, max = GetInventoryItemDurability(tab[1])
-            if cur and max and max>0 then
-                local text, _, icon= get_durabiliy_color(cur, max)
-                a= a..icon..text..' '..max..'/|cffffffff'..cur..'|r'
-            end
-        elseif tab[1]>0 then
+
+        if not a or tab[1]==4 or tab[1]==19 then
             a= '|T'..select(2, GetInventorySlotInfo(slotName[tab[1]]))..':0|t'
+        elseif a then
+            cur, max = GetInventoryItemDurability(tab[1])
+            if cur and max and max>0 then
+                isRepair= cur<max
+                text, _, icon= get_durabiliy_color(cur, max)
+                a= a..icon..text..' '..max..'/'..(isRepair and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..cur..'|r'
+                if isRepair then
+                    num= num+1
+                    a=a..'|A:SpellIcon-256x256-Repair:0:0|a'
+                end
+                cur2= cur2+cur
+                max2= max2+max
+            end
         end
         if b then
-            local cur, max = GetInventoryItemDurability(tab[2])
+            cur, max = GetInventoryItemDurability(tab[2])
             if cur and max and max>0 then
-                local text, _, icon= get_durabiliy_color(cur, max)
-                b= '|cffffffff'..cur..'|r/'..max..' '..text..icon..b
+                isRepair= cur<max
+                text, _, icon= get_durabiliy_color(cur, max)
+                b= (isRepair and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..cur..'|r/'..max..' '..text..icon..b
+                if isRepair then
+                    num= num+1
+                    b='|A:SpellIcon-256x256-Repair:0:0|a'..b
+                end
+                cur2= cur2+cur
+                max2= max2+max
             end
         end
         b= b or ('|T'..select(2, GetInventorySlotInfo(slotName[tab[2]]))..':0|t')
         local s= index==9 and '    ' or ''
         e.tips:AddDoubleLine(s..(a or ' '), b..s)
     end
+
+    local euip=''--装备管理
+    for _, setID in pairs(C_EquipmentSet.GetEquipmentSetIDs() or {}) do
+        local name, texture, _, isEquipped= C_EquipmentSet.GetEquipmentSetInfo(setID)
+        if isEquipped and name then
+            euip= ' |cffff00ff'..name..'|r'..(texture and '|T'..texture..':0|t' or '')
+            break
+        end
+    end
+    e.tips:AddDoubleLine((e.onlyChinese and '耐久度' or DURABILITY).. math.modf(cur2/max2*100)..'%', '|A:SpellIcon-256x256-Repair:0:0|a'..(num>0 and '|cnRED_FONT_COLOR:' or '|cff606060')..num..'|r '..(e.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip)
+
 end
-function e.GetDurabiliy(reTexture, onEnter)--耐久度
+function e.GetDurabiliy(reTexture)--耐久度
     local cur, max= 0, 0
     for i= 1, 18 do
         local cur2, max2 = GetInventoryItemDurability(i)
@@ -2221,9 +2253,6 @@ function e.GetDurabiliy(reTexture, onEnter)--耐久度
             cur= cur +cur2
             max= max +max2
         end
-    end
-    if onEnter then
-        set_onenter_durabiliy()
     end
     local text, value, icon= get_durabiliy_color(cur, max)
     if reTexture then

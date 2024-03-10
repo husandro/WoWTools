@@ -1126,7 +1126,11 @@ local function Init_All_Frame()
 
      set_Alpha_Color(StackSplitFrame.SingleItemSplitBackground, true)
      set_Alpha_Color(StackSplitFrame.MultiItemSplitBackground, true)
-
+     hide_Frame_Texture(MerchantRepairItemButton, {index=1})
+     hide_Frame_Texture(MerchantRepairAllButton, {index=1})
+     hide_Frame_Texture(MerchantGuildBankRepairButton, {index=1})
+     hide_Frame_Texture(MerchantSellAllJunkButton, {index=1})
+     
 
     --考古学 ArchaeologyProgressBar.xml
     if ArcheologyDigsiteProgressBar then
