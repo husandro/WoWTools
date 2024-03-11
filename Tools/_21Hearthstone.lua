@@ -35,7 +35,7 @@ for itemID, _ in pairs(Save.items) do
     e.LoadDate({id=itemID, type='item'})
 end
 
-
+local panel= CreateFrame("Frame")
 
 
 
@@ -68,6 +68,7 @@ end
 
 local function setAtt()--设置属性
     if UnitAffectingCombat('player') then
+        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
         return
     end
     local icon
@@ -323,42 +324,6 @@ local function setBagHearthstone()
     end
 end
 
-local function showTips(self)--显示提示
-    if self.itemID then
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:SetToyByItemID(self.itemID)
-        e.tips:AddLine(' ')
-        for type, itemID in pairs(ModifiedTab) do
-            if PlayerHasToy(itemID) or GetItemCount(itemID)>0 then
-                local name = C_Item.GetItemNameByID(itemID..'') or ('itemID: '..itemID)
-                local icon = C_Item.GetItemIconByID(itemID..'')
-                name= (icon and '|T'..icon..':0|t' or '')..name
-                local startTime, duration, enable = GetItemCooldown(itemID)
-                if duration>4 then
-                    local t=GetTime()
-                    if startTime>t then t=t+86400 end
-                    t=t-startTime
-                    t=duration-t
-                    name= name..'|cnRED_FONT_COLOR: '..SecondsToTime(t)..'|r'
-                end
-                e.tips:AddDoubleLine(name, type..'+'..e.Icon.left)
-            end
-        end
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        e.tips:Show()
-        if e.tips.textLeft then
-            local text=GetBindLocation()--显示,绑定位置
-            if text then
-                e.tips.textLeft:SetText(e.Player.col..text)
-            end
-        end
-    else
-        e.tips:Hide()
-    end
-end
-
 
 
 
@@ -402,11 +367,56 @@ local function Init()
         button:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or select(2,  C_ToyBox.GetToyInfo(itemID)) or itemID)
     end
 
+    function button:set_tooltips()
+        if self.itemID then
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:SetToyByItemID(self.itemID)
+            e.tips:AddLine(' ')
+            for type, itemID in pairs(ModifiedTab) do
+                if PlayerHasToy(itemID) or GetItemCount(itemID)>0 then
+                    local name = C_Item.GetItemNameByID(itemID..'') or ('itemID: '..itemID)
+                    local icon = C_Item.GetItemIconByID(itemID..'')
+                    name= (icon and '|T'..icon..':0|t' or '')..name
+                    local startTime, duration, enable = GetItemCooldown(itemID)
+                    if duration>4 then
+                        local t=GetTime()
+                        if startTime>t then t=t+86400 end
+                        t=t-startTime
+                        t=duration-t
+                        name= name..'|cnRED_FONT_COLOR: '..SecondsToTime(t)..'|r'
+                    end
+                    e.tips:AddDoubleLine(name, type..'+'..e.Icon.left)
+                end
+            end
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:Show()
+            if e.tips.textLeft then
+                local text=GetBindLocation()--显示,绑定位置
+                if text then
+                    e.tips.textLeft:SetText(e.Player.col..text)
+                end
+            end
+        else
+            e.tips:Hide()
+        end
+    end
+
+
     button:SetScript("OnEnter",function(self)
-        showTips(self)--显示提示
+        self:SetScript('OnUpdate', function (self, elapsed)
+            self.elapsed = (self.elapsed or 0.3) + elapsed
+            if self.elapsed > 0.3 then
+                self.elapsed = 0
+                self:set_tooltips()
+            end
+        end)
     end)
-    button:SetScript("OnLeave",function()
-        e.tips:Hide()
+    button:SetScript("OnLeave",function(self)
+        GameTooltip_Hide()
+        self:SetScript('OnUpdate',nil)
+        self.elapsed=nil
     end)
     button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
@@ -422,9 +432,7 @@ local function Init()
         ResetCursor()
     end)
 
-    button:SetScript('OnMouseWheel',function(self,d)
-        setAtt()--设置属性
-    end)
+    button:SetScript('OnMouseWheel', setAtt)--设置属性
 
     getToy()--生成, 有效表格
     setAtt()--设置属性
@@ -465,8 +473,16 @@ end
 --###########
 --加载保存数据
 --###########
-local panel= CreateFrame("Frame")
+
 panel:RegisterEvent("ADDON_LOADED")
+
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('NEW_TOY_ADDED')
+panel:RegisterEvent('TOYS_UPDATED')
+panel:RegisterEvent('BAG_UPDATE_DELAYED')
+panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
+panel:RegisterEvent('HEARTHSTONE_BOUND')
+
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -491,23 +507,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 button:SetPoint('RIGHT', WoWToolsMountButton, 'LEFT')
                 button.items={}--存放有效
 
-                panel:RegisterEvent("PLAYER_LOGOUT")
-                panel:RegisterEvent('NEW_TOY_ADDED')
-                panel:RegisterEvent('TOYS_UPDATED')
-                panel:RegisterEvent('BAG_UPDATE_DELAYED')
-                panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
-                panel:RegisterEvent('HEARTHSTONE_BOUND')
 
                 if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
                     C_AddOns.LoadAddOn('Blizzard_Collections')
                 end
                 Init()--初始
             else
-                panel:UnregisterEvent('ADDON_LOADED')
+                self:UnregisterAllEvents()
+                self:RegisterEvent("PLAYER_LOGOUT")
             end
 
         elseif arg1=='Blizzard_Collections' then
-            --hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
             hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
         end
 
@@ -531,6 +541,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='HEARTHSTONE_BOUND' then
         set_BindLocation()--显示, 炉石, 绑定位置
+
+    elseif event=='PLAYER_REGEN_ENABLED' then
+            setAtt()
+            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
 
     end
 end)

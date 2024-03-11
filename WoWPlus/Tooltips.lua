@@ -1627,7 +1627,7 @@ local function Init()
 
     e.tips:HookScript("OnHide", function(self)--隐藏
         func.Set_Init_Item(self, true)
-    end)
+    end)   
     ItemRefTooltip:HookScript("OnHide", function (self)--隐藏
         func.Set_Init_Item(self, true)
         if ItemRefTooltip.wowhead then

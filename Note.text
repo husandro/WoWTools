@@ -457,3 +457,25 @@ for _, localeInfo in pairs(locales) do
 	end
 end
 
+local f = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
+f:SetPoint("CENTER", 0, 50)
+f:SetSize(132, 50)
+f:SetBackdrop({
+	bgFile = "Interface/Tooltips/UI-Tooltip-Background",
+	edgeFile = "Interface/Tooltips/UI-Tooltip-Border",
+	edgeSize = 16,
+	insets = { left = 4, right = 4, top = 4, bottom = 4 },
+})
+f:SetBackdropColor(0, 0, 0, .5)
+f.glide = f:CreateFontString(nil, nil, "GameTooltipText")
+f.glide:SetPoint("TOPLEFT", 10, -12)
+f.movespeed = f:CreateFontString(nil, nil, "GameTooltipText")
+f.movespeed:SetPoint("TOPLEFT", f.glide, "BOTTOMLEFT")
+
+C_Timer.NewTicker(.1, function()
+	local isGliding, canGlide, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
+	local base = isGliding and forwardSpeed or GetUnitSpeed("player")
+	local movespeed = Round(base / BASE_MOVEMENT_SPEED * 100)
+	f.glide:SetText(format("Gliding speed: |cff71d5ff%d%%|r", forwardSpeed))
+	f.movespeed:SetText(format("Move speed: |cffffff00%d%%|r", movespeed))
+end)

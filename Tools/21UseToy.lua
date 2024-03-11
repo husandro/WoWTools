@@ -538,58 +538,6 @@ end
 --####
 --初始
 --####
-local function showTips(self)--显示提示
-    if self.itemID then
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:SetToyByItemID(self.itemID)
-        e.tips:AddLine(' ')
-        for type, itemID in pairs(ModifiedTab) do
-            if PlayerHasToy(itemID) then
-                local name = C_Item.GetItemNameByID(itemID..'') or ('itemID: '..itemID)
-                local icon = C_Item.GetItemIconByID(itemID..'')
-                name= (icon and '|T'..icon..':0|t' or '')..name
-                local cd
-                local startTime, duration, enable = GetItemCooldown(itemID)
-                if duration>0 and enable==1 then
-                    local t=GetTime()
-                    if startTime>t then t=t+86400 end
-                    t=t-startTime
-                    t=duration-t
-                    cd= '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
-                elseif enable==0 then
-                    cd= '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
-                end
-
-                e.tips:AddDoubleLine(name..(cd or ''), type..'+'..e.Icon.left)
-            end
-        end
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        e.tips:Show()
-    else
-        e.tips:Hide()
-    end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 local function set_Button_Event(isShown)
     if isShown then
         panel:RegisterUnitEvent('UNIT_SPELLCAST_SUCCEEDED', 'player')
@@ -651,18 +599,61 @@ local function Init()
         button:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID..'') or itemID)
     end
 
-    button:SetScript("OnEnter", showTips)
-    button:SetScript("OnLeave",GameTooltip_Hide)
+    function button:set_tooltips()--显示提示
+        if self.itemID then
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:SetToyByItemID(self.itemID)
+            e.tips:AddLine(' ')
+            for type, itemID in pairs(ModifiedTab) do
+                if PlayerHasToy(itemID) then
+                    local name = C_Item.GetItemNameByID(itemID..'') or ('itemID: '..itemID)
+                    local icon = C_Item.GetItemIconByID(itemID..'')
+                    name= (icon and '|T'..icon..':0|t' or '')..name
+                    local cd
+                    local startTime, duration, enable = GetItemCooldown(itemID)
+                    if duration>0 and enable==1 then
+                        local t=GetTime()
+                        if startTime>t then t=t+86400 end
+                        t=t-startTime
+                        t=duration-t
+                        cd= '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
+                    elseif enable==0 then
+                        cd= '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
+                    end    
+                    e.tips:AddDoubleLine(name..(cd or ''), type..'+'..e.Icon.left)
+                end
+            end
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:Show()
+        else
+            e.tips:Hide()
+        end
+    end
+    
+    button:SetScript("OnLeave", function(self)
+        GameTooltip_Hide()
+        self:SetScript('OnUpdate',nil)
+        self.elapsed=nil
+    end)
+    button:SetScript("OnEnter", function(self)
+        self:SetScript('OnUpdate', function (self, elapsed)
+            self.elapsed = (self.elapsed or 0.3) + elapsed
+            if self.elapsed > 0.3 then
+                self.elapsed = 0
+                self:set_tooltips()
+            end
+        end)
+    end)
+    
     button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
         end
     end)
 
-    button:SetScript('OnMouseWheel',function(self,d)
-        setAtt()--设置属性
-        showTips(self)--显示提示
-    end)
+    button:SetScript('OnMouseWheel', setAtt)--设置属性
 
     button:SetScript("OnShow", function()
         set_Button_Event(true)

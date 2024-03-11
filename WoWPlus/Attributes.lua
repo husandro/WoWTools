@@ -1338,6 +1338,7 @@ local function set_Panle_Setting()--设置 panel
             dragonriding.text:SetFormattedText('|A:dragonriding_vigor_decor:0:0|a%s', e.onlyChinese and '驭龙术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
             dragonriding:SetScript('OnClick',function()
                 Save.disabledDragonridingSpeed= not Save.disabledDragonridingSpeed and true or nil
+                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledDragonridingSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)
 
             --载具，速度
@@ -1347,6 +1348,7 @@ local function set_Panle_Setting()--设置 panel
             vehicleSpeedCheck.text:SetFormattedText(e.onlyChinese and '%s载具' or UNITNAME_SUMMON_TITLE9, '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t')
             vehicleSpeedCheck:SetScript('OnClick',function()
                 Save.disabledVehicleSpeed= not Save.disabledVehicleSpeed and true or nil
+                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledVehicleSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)
 
 
@@ -1821,6 +1823,169 @@ end
 
 
 
+--驭龙术UI，速度
+local function Init_Dragonriding_Speed()
+    if Save.disabledDragonridingSpeed then
+        return
+    end
+    if UIWidgetPowerBarContainerFrame.moveButton then
+        UIWidgetPowerBarContainerFrame.moveButton:ClearAllPoints()
+        UIWidgetPowerBarContainerFrame.moveButton:SetPoint('BOTTOM', UIWidgetPowerBarContainerFrame, 'TOP', -25, 10)
+    end
+    local function set_Speed(frame)
+        if not frame then
+            return
+        end
+        if not frame.speedBar then
+            frame.speedBar= CreateFrame('StatusBar', nil, frame)
+            frame.speedBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Mana-Status')
+            frame.speedBar:SetStatusBarColor(e.Player.r, e.Player.g, e.Player.b)
+            frame.speedBar:SetPoint('BOTTOM', frame, 'TOP')
+            frame.speedBar:SetMinMaxValues(0, 100)
+            frame.speedBar:SetSize(240,10)
+
+            local texture= frame.speedBar:CreateTexture(nil,'BACKGROUND')
+            texture:SetAllPoints(frame.speedBar)
+            texture:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Mana-Mask')
+            texture:SetAlpha(0.3)
+
+            texture= frame.speedBar:CreateTexture(nil,'OVERLAY')
+            texture:SetAtlas('worldstate-capturebar-divider-safedangerous-embercourt')
+            texture:SetSize(3, 6)
+            texture:SetPoint('LEFT', 180, 0)
+            texture:SetVertexColor(1, 0, 1)
+
+            texture= frame.speedBar:CreateTexture(nil,'OVERLAY')
+            texture:SetAtlas('worldstate-capturebar-divider-safedangerous-embercourt')
+            texture:SetSize(3, 6)
+            texture:SetPoint('LEFT', 120, 0)
+            texture:SetVertexColor(0, 1, 0)
+            
+            texture= frame.speedBar:CreateTexture(nil,'OVERLAY')
+            texture:SetAtlas('worldstate-capturebar-divider-safedangerous-embercourt')
+            texture:SetSize(3, 6)
+            texture:SetPoint('LEFT', 60, 0)
+            texture:SetVertexColor(0.93, 0.82, 0.00)
+
+
+            frame.speedBar.Text= e.Cstr(frame.speedBar, {size=16, color= true})
+            frame.speedBar.Text:SetPoint('BOTTOM', frame.speedBar, 'TOP', 0,1)
+
+            frame.speedBar:SetScript('OnUpdate', function(self, elapsed)
+                self.elapsed= (self.elapsed or 0.3)+ elapsed
+                if self.elapsed>0.3 then
+                    self.elapsed=0
+                    local isGliding, canGlide, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
+                    local base = isGliding and forwardSpeed or GetUnitSpeed("player") or 0
+                    if base>0 then
+                        self.Text:SetText(math.modf(base / BASE_MOVEMENT_SPEED * 100))
+                        local r,g,b=1,1,1-- e.Player.r, e.Player.g, e.Player.b
+                        if isGliding then
+                            if forwardSpeed==100 then
+                                r,g,b= 0.64, 0.21, 0.93
+                            elseif forwardSpeed>90 then
+                                r,g,b= 1, 0, 1
+                            elseif forwardSpeed>60 then
+                                r,g,b= 0, 1, 0
+                            elseif forwardSpeed >30 then
+                                r,g,b= 0.93, 0.82, 0.00
+                            else
+                                r,g,b= 1, 0, 0
+                            end
+                        end
+                        self:SetStatusBarColor(r,g,b)
+                    else
+                        self.Text:SetText('')
+                    end
+                    self:SetValue(base)
+                    if not canGlide then
+                        self:Hide()
+                    end
+                end
+            end)
+        end
+        if frame.speedBar then
+            frame.speedBar:SetAlpha(not Save.disabledDragonridingSpeed and 1 or 0)
+        end
+    end
+    local tab= UIWidgetPowerBarContainerFrame.widgetFrames or {}
+    for widgetID, frame in pairs(tab) do
+        if widgetID==4460 and frame then
+            set_Speed(frame)
+            break
+        end
+    end
+    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(_, widgetID)--RemoveWidget Blizzard_UIWidgetManager.lua
+        if widgetID==4460 and UIWidgetPowerBarContainerFrame.widgetFrames[widgetID] then
+            set_Speed(UIWidgetPowerBarContainerFrame.widgetFrames[widgetID])
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--载具，移动，速度
+local function Init_Vehicle_Speed()
+    if Save.disabledVehicleSpeed then
+        return
+    end
+    local vehicleTabs={
+        'MainMenuBarVehicleLeaveButton',--没有车辆，界面
+        'OverrideActionBarLeaveFrameLeaveButton',--有车辆，界面
+        'MainMenuBarVehicleLeaveButton',--Taxi, 移动, 速度
+    }
+    for _, name in pairs(vehicleTabs) do
+        local frame= _G[name]
+        if frame then
+            frame.speedText= e.Cstr(frame, {mouse=true})
+            frame.speedText:SetPoint('TOP')
+            frame.speedText:SetScript('OnLeave', GameTooltip_Hide)
+            frame.speedText:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(e.onlyChinese and '当前' or REFORGE_CURRENT, e.onlyChinese and '移动速度' or STAT_MOVEMENT_SPEED)
+                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:Show()
+            end)
+            frame.speedText:SetScript('OnMouseDown', function(self)
+                local frame= self:GetParent()
+                if frame.OnClicked then
+                    frame.OnClicked(frame)
+                end
+            end)
+            frame:HookScript('OnUpdate', function(self, elapsed)
+                self.elapsed= (self.elapsed or 0.3) + elapsed
+                if self.elapsed>0.3 then
+                    self.elapsed= 0
+                    local unit= PlayerFrame.displayedUnit or PlayerFrame.unit or 'player'
+                    local speed= GetUnitSpeed(unit) or 0
+                    self.speedText:SetText(math.modf(speed* 100 / BASE_MOVEMENT_SPEED))
+                end
+            end)
+        end
+    end
+end
+
+
+
+
+
+
+
+
 
 
 
@@ -1836,6 +2001,9 @@ end
 --初始
 --####
 local function Init()
+    Init_Dragonriding_Speed()--驭龙术UI，速度
+    Init_Vehicle_Speed()--载具，移动，速度
+
     button= e.Cbtn(nil, {icon='hide', size={22,22}, pushe=true})
 
     button.texture= button:CreateTexture(nil, 'BORDER')
@@ -2099,121 +2267,21 @@ local function Init()
 
         frame_Init(true)--初始， 或设置
     end)
-
-    --#############
-    --驭龙术UI，速度
-    --#############
-    local function set_Speed(self2)
-        if not self2.speedBar and not Save.disabledDragonridingSpeed then
-            self2.speedBar= CreateFrame('StatusBar', nil, self2)
-            self2.speedBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
-            self2.speedBar:SetStatusBarColor(e.Player.r, e.Player.g, e.Player.b)
-            self2.speedBar:SetPoint('BOTTOM', self2, 'TOP')
-            self2.speedBar:SetMinMaxValues(0, 100)--100*100/BASE_MOVEMENT_SPEED
-            self2.speedBar:SetSize(200, 6)
-            local texture= self2.speedBar:CreateTexture(nil,'BACKGROUND')
-            texture:SetAllPoints(self2.speedBar)
-            texture:SetAtlas('_islands-queue-progressbar-background')
-            texture:SetAlpha(0.3)
-
-            self2.speedBar.Text= e.Cstr(self2.speedBar, {size=16, color= true})
-            self2.speedBar.Text:SetPoint('BOTTOM', self2, 'TOP',0, 16)
-            self2.speedBar:SetScript('OnUpdate', function(self3, elapsed)
-                self3.elapsed= (self3.elapsed or 0.3)+ elapsed
-                if self3.elapsed>0.3 then
-                    self3.elapsed=0
-                    local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
-                    local base = isGliding and forwardSpeed or GetUnitSpeed("player") or 0
-                    if base>0 then
-                        --local movespeed = Round(base / BASE_MOVEMENT_SPEED * 100)
-                        self3.Text:SetFormattedText('%i',base / BASE_MOVEMENT_SPEED * 100)
-                    else
-                        self3.Text:SetText('')
-                    end
-                    self3:SetValue(base)
-                end
-            end)
-        end
-        if self2.speedBar then
-            self2.speedBar:SetAlpha(not Save.disabledDragonridingSpeed and 1 or 0)
-        end
-    end
-    local tab= UIWidgetPowerBarContainerFrame.widgetFrames or {}
-    for widgetID, frame in pairs(tab) do
-        if widgetID==4460 and frame then
-            set_Speed(frame)
-            break
-        end
-    end
-    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(_, widgetID)--RemoveWidget Blizzard_UIWidgetManager.lua
-        if widgetID==4460 and UIWidgetPowerBarContainerFrame.widgetFrames[widgetID] then
-            set_Speed(UIWidgetPowerBarContainerFrame.widgetFrames[widgetID])
-        end
-    end)
-
-    --###############
-    --载具，移动，速度
-    --##############
-    local function get_UnitSpeed(self, elapsed)
-        self.elapsed= (self.elapsed or 0.3) + elapsed
-        if self.elapsed>0.3 then
-            local unit, speed
-            if not Save.disabledVehicleSpeed then
-                if UnitExists('vehicle') then
-                    unit= 'vehicle'
-                elseif UnitExists(PlayerFrame.unit) then
-                    unit= PlayerFrame.unit
-                end
-            end
-            if unit then
-                speed= GetUnitSpeed(unit)--PlayerFrame.unit
-                if speed and not self.speedText then
-                    self.speedText= e.Cstr(self, {mouse=true})
-                    self.speedText:SetPoint('TOP')
-                    self.speedText:SetScript('OnLeave', GameTooltip_Hide)
-                    self.speedText:SetScript('OnEnter', function(self2)
-                        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                        e.tips:ClearLines()
-                        e.tips:AddDoubleLine(e.onlyChinese and '当前' or REFORGE_CURRENT, e.onlyChinese and '移动速度' or STAT_MOVEMENT_SPEED)
-                        e.tips:AddDoubleLine(id, e.cn(addName))
-                        e.tips:Show()
-                    end)
-                    self.speedText:SetScript('OnMouseDown', function(self2)
-                        local frame= self2:GetParent()
-                        if frame.OnClicked then
-                            frame.OnClicked(frame)
-                        end
-                    end)
-                end
-            end
-            if self.speedText then
-                if not speed or speed==0 then
-                    self.speedText:SetText('')
-                else
-                    self.speedText:SetFormattedText('%.0f', speed * 100 / BASE_MOVEMENT_SPEED)
-                end
-            end
-            self.elapsed= 0
-        end
-    end
-    local function hide_SpeedText(self)
-        if self.speedText then
-            self.elapsed= nil
-            self.speedText:SetText('')
-        end
-    end
-    local vehicleTabs={
-        'MainMenuBarVehicleLeaveButton',--没有车辆，界面
-        'OverrideActionBarLeaveFrameLeaveButton',--有车辆，界面
-        'MainMenuBarVehicleLeaveButton',--Taxi, 移动, 速度
-    }
-    for _, btn in pairs(vehicleTabs) do
-        if _G[btn] then
-            _G[btn]:HookScript('OnUpdate', get_UnitSpeed)
-            _G[btn]:HookScript('OnHide', hide_SpeedText)
-        end
-    end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2234,8 +2302,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.font= Save.font or {r=0, g=0, b=0, a=1, x=1, y=-1}--阴影
             Save.tab['STAUTS']= Save.tab['STAUTS'] or {}
             Save.tab['STAUTS'].bit= Save.tab['STAUTS'].bit or 3
-            
-            
+
+
 
             --添加控制面板
             e.AddPanel_Sub_Category({name='|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES), frame=panel})

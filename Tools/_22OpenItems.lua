@@ -626,19 +626,14 @@ local function Init()
 
     get_Items()--设置属性
 
-    function button:set_tooltips()
-        if e.tips:IsShown() then
-            e.tips:Hide()
-        end
-        if (BattlePetTooltip) then
-            BattlePetTooltip:Hide();
-        end
+    function button:set_tooltips()        
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         if Bag.bag and Bag.slot then
             local itemLink= C_Container.GetContainerItemLink(Bag.bag, Bag.slot)
             if itemLink and itemLink:find('Hbattlepet:%d+') then
                 BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(itemLink))
+                e.tips:Hide()
             else
                 e.tips:SetBagItem(Bag.bag, Bag.slot)
                 if not UnitAffectingCombat('player') then
@@ -646,21 +641,37 @@ local function Init()
                     e.tips:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE))
                 end
                 e.tips:Show()
+                if (BattlePetTooltip) then
+                    BattlePetTooltip:Hide()
+                end
             end
             e.FindBagItem(true, {itemLink= itemLink})--查询，背包里物品
         else
             e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
+            if (BattlePetTooltip) then
+                BattlePetTooltip:Hide()
+            end
         end
     end
 
-    button:SetScript("OnEnter",  button.set_tooltips)--显示提示
-    button:SetScript("OnLeave",function()
-        e.tips:Hide()
-        BattlePetTooltip:Hide()
+
+    button:SetScript("OnEnter",  function(self)        
+        self:SetScript('OnUpdate', function (self, elapsed)
+            self.elapsed = (self.elapsed or 0.3) + elapsed
+            if self.elapsed > 0.3 then
+                self.elapsed = 0
+                self:set_tooltips()
+            end
+        end)
+    end)
+    button:SetScript("OnLeave",function(self)
+        GameTooltip_Hide()
         ResetCursor()
         get_Items()
         e.FindBagItem(false)--查询，背包里物品
+        self:SetScript('OnUpdate',nil)
+        self.elapsed=nil
     end)
     button:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink = GetCursorInfo()

@@ -322,7 +322,7 @@ local mapIDs={
 
 local function setClickAtt()--设置 Click属性
     local inCombat=UnitAffectingCombat('player')
-    if inCombat or UnitIsDeadOrGhost('player') then
+    if inCombat or UnitIsDeadOrGhost('player') or not button:CanChangeAttribute() then
         button.Combat=true
         return
     end
@@ -629,6 +629,20 @@ local function Init_Dialogs()
         end,
     }
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --##################
 --打开界面, 收藏, 坐骑
@@ -1170,7 +1184,6 @@ end
 
 --初始，坐骑界面
 local function Init_MountJournal()
-
     hooksecurefunc('MountJournal_InitMountButton',function(self)--Blizzard_MountCollection.lua
         if not self or not self.spellID then
             if self and self.btn then
@@ -1380,6 +1393,7 @@ local function Init()
         Save.Point[2]=nil
         e.LibDD:CloseDropDownMenus()
     end)
+
     button:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
         if infoType == "item" and itemID then
@@ -1451,10 +1465,7 @@ local function Init()
         end
     end)
 
-    button:SetScript('OnEnter', function(self)
-        if not UnitAffectingCombat('player') then
-            e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
-        end
+    function button:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
 
@@ -1487,13 +1498,30 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
-    end)
+    end
+
     button:SetScript("OnLeave",function(self)
         e.tips:Hide()
         setClickAtt()--设置属性
         ResetCursor()
         self.border:SetAtlas('bag-reagent-border')
+        self:SetScript('OnUpdate',nil)
+        self.elapsed=nil
     end)
+    
+    button:SetScript('OnEnter', function(self)
+        if not UnitAffectingCombat('player') then
+            e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
+        end
+        self:SetScript('OnUpdate', function (self, elapsed)
+            self.elapsed = (self.elapsed or 0.3) + elapsed
+            if self.elapsed > 0.3 then
+                self.elapsed = 0
+                self:set_tooltips()
+            end
+        end)
+    end)
+
 
     if Save.scale and Save.scale~=1 then
         button:SetScale(Save.scale)

@@ -4104,6 +4104,7 @@
         "undefined-global",
         "duplicate-set-field",
         "assign-type-mismatch",
-        "redefined-local"
+        "redefined-local",
+        "trailing-space"
     ]
 }

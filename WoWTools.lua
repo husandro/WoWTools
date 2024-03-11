@@ -645,7 +645,58 @@ function e.WA_GetUnitDebuff(unit, spell, filter, spellTab)
     end
 end
 
-function e.WA_Utf8Sub(input, size, letterSize, lower)
+
+function e.WA_Utf8Sub(text, size, letterSize, lower)
+    if not text or text=='' then
+        return text
+    end
+    local le = strlenutf8(text)
+    local le2= strlen(text)
+
+    text= e.cn(text)
+
+    if le==le2 and text:find('%w') then
+        text= text:sub(1, letterSize or size)
+        return lower and strlower(text) or text
+    else
+        local i, output = 1, ''
+        while (size > 0) do
+            local byte = text:byte(i)
+            if not byte then
+              return output
+            end
+            if byte < 128 then--ASCII byte
+              output = output .. text:sub(i, i)
+              size = size - 1
+            elseif byte < 192 then--Continuation bytes
+              output = output .. text:sub(i, i)
+            elseif byte < 244 then--Start bytes
+              output = output .. text:sub(i, i)
+              size = size - 1
+            end
+            i = i + 1
+        end
+        while (true) do
+            local byte = text:byte(i)
+            if byte and byte >= 128 and byte < 192 then
+                output = output .. text:sub(i, i)
+            else
+                break
+            end
+            i = i + 1
+        end
+        return lower and strlower(output) or output
+    end
+end
+--[[function ChatFrame_TruncateToMaxLength(text, maxLength)
+	local length = strlenutf8(text);
+	if ( length > maxLength ) then
+		return text:sub(1, maxLength - 2).."...";
+	end
+
+	return text;
+end]]
+--[[function e.WA_Utf8Sub(input, size, letterSize, lower)
     local output = ""
     if type(input) ~= "string" then
       return output or ''
@@ -685,7 +736,7 @@ function e.WA_Utf8Sub(input, size, letterSize, lower)
       i = i + 1
     end
     return lower and strlower(output) or output
-end
+end]]
 --[[
 e.HEX=function(r, g, b, a)
     a=a or 1
@@ -2195,7 +2246,7 @@ function e.GetDurabiliy_OnEnter()
     local isRepair, cur, max, text, _, icon
 
     for index, tab in pairs(tabSlot) do
-        
+
         local a = GetInventoryItemTexture('player', tab[1])
         a = a and '|T'..a..':0|t'
         local b = GetInventoryItemTexture('player', tab[2])

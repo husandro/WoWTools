@@ -52,7 +52,7 @@ local function set_Move_Alpha(frame)
             self:SetScript('OnHide', nil)
             self:GetParent():SetAlpha(1)
         else
-            if self:IsShown() then
+            if self:IsVisible() then
                 self:RegisterEvent('PLAYER_STARTED_MOVING')
                 self:RegisterEvent('PLAYER_STOPPED_MOVING')
             end
@@ -698,6 +698,25 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         end)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#################
 --创建, 一个移动按钮
@@ -2303,49 +2322,32 @@ end)]]
     end
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
-        created_Move_Button(UIWidgetPowerBarContainerFrame, {})
-
-        function UIWidgetPowerBarContainerFrame:Get_WidgetIsShown()
+        created_Move_Button(UIWidgetPowerBarContainerFrame)
+        --[[function UIWidgetPowerBarContainerFrame:Get_WidgetIsShown()
             for _, frame in pairs(self.widgetFrames or {}) do
                 if frame then
                     return true
                 end
             end
             return false
-        end
-        if UIWidgetPowerBarContainerFrame.ResizeButton or UIWidgetPowerBarContainerFrame.moveButton then--and frame.ZoomOut then
-            local show= UIWidgetPowerBarContainerFrame:Get_WidgetIsShown()
-            if UIWidgetPowerBarContainerFrame.moveButton then
-                UIWidgetPowerBarContainerFrame.moveButton:SetShown(show)
-            end
-            if UIWidgetPowerBarContainerFrame.ResizeButton then
-                UIWidgetPowerBarContainerFrame.ResizeButton:SetShown(show)
-            end
-            hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self)
-                local isShow= self:Get_WidgetIsShown()
-                if self.ResizeButton then
-                    self.ResizeButton:SetShown(isShow)
+        end]]
+        if UIWidgetPowerBarContainerFrame.moveButton then
+            UIWidgetPowerBarContainerFrame.moveButton:SetShown(function()
+                for _, frame in pairs(self.widgetFrames or {}) do
+                    if frame then
+                        return true
+                    end
                 end
-                if self.moveButton then
-                    self.moveButton:SetShown(isShow)
-                end
+                return false
             end)
-            hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self)--Blizzard_UIWidgetManager.lua frame.ZoomOut:SetShown(find)
-                local isShow= self:Get_WidgetIsShown()
-                if self.ResizeButton then
-                    self.ResizeButton:SetShown(isShow)
-                end
-                if self.moveButton then
-                    self.moveButton:SetShown(isShow)
-                end
+            hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self)
+                self.moveButton:SetShown(self and true or false)
+            end)
+            hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self)
+                self.moveButton:SetShown(false)
             end)
             hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveAllWidgets', function(self)
-                if self.ResizeButton then
-                    self.ResizeButton:SetShown(false)
-                end
-                if self.moveButton then
-                    self.moveButton:SetShown(false)
-                end
+               self.moveButton:SetShown(false)
             end)
         end
     end
