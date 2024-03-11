@@ -1764,7 +1764,8 @@ local function Init_Event(arg1)
         set_NineSlice(PetJournalRightInset, nil, true)
         local frame=_G['RematchFrame']
         if frame then
-            hide_Texture(frame.Bg)            
+            hide_Texture(frame.Bg)
+            hide_Texture(frame.OptionsPanel.List.Back)
         end
 
 
