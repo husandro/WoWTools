@@ -1165,8 +1165,8 @@ local function setAddLoad(arg1)
                     self.TeamsPanel:ClearAllPoints()
                     self.TeamsPanel:SetAllPoints(OptionsPanel)
 
-                    self.RematchFrame.TargetsPanel:ClearAllPoints()
-                    self.RematchFrame.TargetsPanel:SetAllPoints(OptionsPanel)
+                    self.TargetsPanel:ClearAllPoints()
+                    self.TargetsPanel:SetAllPoints(OptionsPanel)
 
                     self.QueuePanel.TargetsPanel:ClearAllPoints()
                     self.QueuePanel.TargetsPanel:SetAllPoints(OptionsPanel)
