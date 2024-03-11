@@ -427,7 +427,7 @@ local function Init()
     button:SetScript("OnMouseUp", function(self, d)
         if d=='LeftButton' and not IsModifierKeyDown() then
             setAtt()--设置属性
-            showTips(self)--显示提示
+            self.elapsed=nil
         end
         ResetCursor()
     end)
