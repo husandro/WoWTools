@@ -1097,10 +1097,39 @@ local function setAddLoad(arg1)
         checkbox.Label:ClearAllPoints()
         checkbox.Label:SetPoint("LEFT", checkbox, "RIGHT", 2, 1)
         checkbox.Label:SetPoint("RIGHT", checkbox, "RIGHT", 160, 1)
-        set_Move_Frame(CollectionsJournal)--藏品
-        --set_Move_Frame(RematchJournal, {frame=CollectionsJournal})--藏品
+        set_Move_Frame(CollectionsJournal, {setSize=true, minW=703, minH=606, initFunc=function()
+            MountJournal.RightInset:ClearAllPoints()
+            MountJournal.RightInset:SetWidth(400)
+            MountJournal.RightInset:SetPoint('TOPRIGHT', -6, -60)
+            MountJournal.RightInset:SetPoint('BOTTOM', 0, 26)
+            MountJournal.LeftInset:SetPoint('RIGHT', MountJournal.RightInset, 'LEFT', -24, 0)
+            MountJournal.BottomLeftInset:SetPoint('TOPRIGHT', MountJournal.LeftInset, 'BOTTOMRIGHT', 0, -10)
+            for _, region in pairs({MountJournal.BottomLeftInset:GetRegions()}) do
+                region:SetPoint('RIGHT')
+            end            
+            
+            PetJournalRightInset:ClearAllPoints()
+            PetJournalRightInset:SetPoint('TOPRIGHT', PetJournalPetCardInset, 'BOTTOMRIGHT', 0, -22)
+            PetJournalRightInset:SetSize(411,171)
+            PetJournalLeftInset:SetPoint('RIGHT', PetJournalRightInset, 'LEFT', -24, 0)
+            PetJournalLoadoutBorder:ClearAllPoints()
+            PetJournalLoadoutBorder:SetPoint('TOP', PetJournalRightInset)            
+            
+            
+            WardrobeCollectionFrame.SetsCollectionFrame.RightInset:ClearAllPoints()
+            WardrobeCollectionFrame.SetsCollectionFrame.RightInset:SetWidth(410)
+            WardrobeCollectionFrame.SetsCollectionFrame.RightInset:SetPoint('TOPRIGHT', 2, 0)
+            WardrobeCollectionFrame.SetsCollectionFrame.RightInset:SetPoint('BOTTOM')
+            WardrobeCollectionFrame.SetsCollectionFrame.ListContainer:SetPoint('RIGHT', WardrobeCollectionFrame.SetsCollectionFrame.RightInset, 'LEFT', -24, 0)
+            WardrobeCollectionFrame.SetsCollectionFrame.ListContainer:SetPoint('BOTTOM')
+            WardrobeCollectionFrame.SetsCollectionFrame.LeftInset:SetPoint('RIGHT', WardrobeCollectionFrame.SetsCollectionFrame.ListContainer)
+
+        end, sizeRestFunc=function(btn)
+            btn.target:SetSize(703, 606)
+        end})--藏品
         set_Move_Frame(WardrobeFrame)--幻化
 
+--set_Move_Frame(RematchJournal, {frame=CollectionsJournal})--藏品
         --[[if not UnitAffectingCombat('player') then
             set_Move_CollectionJournal()--藏品
         else

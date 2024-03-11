@@ -1259,8 +1259,6 @@ local function Init_MountJournal()
                         tooltipTitle=id..' Tools',
                         arg1= t,
                         func= function(_, arg1)
-                            e.call('MountJournalFilterDropdown_ResetFilters')
-                            e.call('MountJournal_SetUnusableFilter',true)
                             MountJournal_FullUpdate= function()
                                 if (MountJournal:IsVisible()) then
                                     local newDataProvider = CreateDataProvider();
@@ -1271,15 +1269,15 @@ local function Init_MountJournal()
                                         end
                                     end
                                     MountJournal.ScrollBox:SetDataProvider(newDataProvider, ScrollBoxConstants.RetainScrollPosition);
-
                                     if (not MountJournal.selectedSpellID) then
                                         MountJournal_Select(self.dragonridingHelpTipMountIndex or 1);
                                     end
-
-                                    MountJournal_UpdateMountDisplay();
+                                    MountJournal_UpdateMountDisplay()
                                 end
                             end
-                            e.call('MountJournal_FullUpdate')
+                            e.call('MountJournalFilterDropdown_ResetFilters')
+                            e.call('MountJournal_SetUnusableFilter',true)
+                            --e.call('MountJournal_FullUpdate')
 
                             parent.ResetButton:SetShown(true)
                             parent:SetText(e.cn(arg1))
