@@ -1163,13 +1163,17 @@ local function setAddLoad(arg1)
                     self.OptionsPanel:SetPoint('BOTTOMRIGHT', -4, 38)
 
                     self.TeamsPanel:ClearAllPoints()
-                    self.TeamsPanel:SetAllPoints(OptionsPanel)
+                    self.TeamsPanel:SetPoint('TOPLEFT', self.LoadedTargetPanel, 'TOPRIGHT')
+                    self.TeamsPanel:SetPoint('BOTTOMRIGHT', -4, 38)
 
                     self.TargetsPanel:ClearAllPoints()
-                    self.TargetsPanel:SetAllPoints(OptionsPanel)
+                    self.TargetsPanel:SetPoint('TOPLEFT', self.LoadedTargetPanel, 'TOPRIGHT')
+                    self.TargetsPanel:SetPoint('BOTTOMRIGHT', -4, 38)
 
                     self.QueuePanel:ClearAllPoints()
-                    self.QueuePanel:SetAllPoints(OptionsPanel)
+                    self.QueuePanel:SetPoint('TOPLEFT', self.LoadedTargetPanel, 'TOPRIGHT')
+                    self.QueuePanel:SetPoint('BOTTOMRIGHT', -4, 38)
+
                 end
                 _G['RematchFrame']:HookScript('OnShow', rematch)
                 hooksecurefunc(_G['RematchFrame'].PanelTabs, 'TabOnClick', rematch)
