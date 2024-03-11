@@ -1762,6 +1762,10 @@ local function Init_Event(arg1)
         set_NineSlice(PetJournalLeftInset, nil, true)
         set_NineSlice(PetJournalPetCardInset, nil, true)
         set_NineSlice(PetJournalRightInset, nil, true)
+        local frame=_G['RematchFrame']
+        if frame then
+            hide_Texture(frame.Bg)            
+        end
 
 
         hide_Texture(ToyBox.iconsFrame.BackgroundTile)

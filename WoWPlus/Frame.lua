@@ -775,14 +775,6 @@ end
 
 
 
---[[local combatCollectionsJournal--藏品
-local function set_Move_CollectionJournal()--藏品
-    set_Move_Frame(CollectionsJournal)--藏品
-    --set_Move_Frame(RematchJournal, {frame=CollectionsJournal})--藏品
-    set_Move_Frame(WardrobeFrame)--幻化
-end]]
-
-
 
 
 
@@ -1142,7 +1134,47 @@ local function setAddLoad(arg1)
             WardrobeCollectionFrame.SetsCollectionFrame.ListContainer:SetPoint('RIGHT', WardrobeCollectionFrame.SetsCollectionFrame.RightInset, 'LEFT', -24, 0)
             WardrobeCollectionFrame.SetsCollectionFrame.ListContainer:SetPoint('BOTTOM')
             WardrobeCollectionFrame.SetsCollectionFrame.LeftInset:SetPoint('RIGHT', WardrobeCollectionFrame.SetsCollectionFrame.ListContainer)
+            
+            if _G['RematchFrame'] and e.Player.husandro then
+                local function rematch()
+                    local self= _G['RematchFrame']
+                    self:ClearAllPoints()
+                    self:SetAllPoints(CollectionsJournal)
 
+                    self.Canvas:ClearAllPoints()
+                    self.Canvas:SetPoint('TOPLEFT', 2, -60)
+                    self.Canvas:SetPoint('BOTTOMRIGHT', -2, 34)
+
+                    self.LoadedTargetPanel:ClearAllPoints()
+                    self.LoadedTargetPanel:SetPoint('TOP', self.ToolBar, 'BOTTOM')
+                    self.LoadedTargetPanel:SetSize(277, 75)                    
+
+                    self.LoadoutPanel:ClearAllPoints()
+                    self.LoadoutPanel:SetPoint('TOP', self.LoadedTargetPanel, 'BOTTOM')
+                    self.LoadoutPanel:SetWidth(277)
+                    self.LoadoutPanel:SetPoint('BOTTOM')
+
+                    self.PetsPanel:ClearAllPoints()
+                    self.PetsPanel:SetPoint('TOPLEFT', self.ToolBar, 'BOTTOMLEFT')
+                    self.PetsPanel:SetPoint('BOTTOMRIGHT', self.LoadoutPanel, 'BOTTOMLEFT',0,38)
+
+                    self.OptionsPanel:ClearAllPoints()
+                    self.OptionsPanel:SetPoint('TOPLEFT', self.LoadedTargetPanel, 'TOPRIGHT')
+                    self.OptionsPanel:SetPoint('BOTTOMRIGHT', -4, 38)
+
+                    self.TeamsPanel:ClearAllPoints()
+                    self.TeamsPanel:SetAllPoints(OptionsPanel)
+
+                    self.RematchFrame.TargetsPanel:ClearAllPoints()
+                    self.RematchFrame.TargetsPanel:SetAllPoints(OptionsPanel)
+
+                    self.QueuePanel.TargetsPanel:ClearAllPoints()
+                    self.QueuePanel.TargetsPanel:SetAllPoints(OptionsPanel)
+                end
+                _G['RematchFrame']:HookScript('OnShow', rematch)
+                hooksecurefunc(_G['RematchFrame'].PanelTabs, 'TabOnClick', rematch)
+            end
+            
         end, sizeRestFunc=function(btn)
             btn.target:SetSize(703, 606)
         end})--藏品
