@@ -2,7 +2,7 @@ local id, e = ...
 local addName= COLLECTIONS
 local panel=CreateFrame("Frame")
 local Save={
-    
+
     --hideSets= true,--套装, 幻化, 界面
     --hideHeirloom= true,--传家宝
     --hideItems= true,--物品, 幻化, 界面
@@ -66,25 +66,6 @@ local slots = {--wowSaveItems
     '|A:transmog-nav-slot-enchant:0:0|a',--28 e.onlyChinese and '武器附魔' or WEAPON_ENCHANTMENT,
     '|A:ElementalStorm-Lesser-Earth:0:0|a',--29'军团再临"神器
 }
-
---CollectionsJournal.TitleContainer
-
-local function Create_Enable_Button(frame, value)
-    local btn= e.Cbtn(frame, {size={20,20}, icon=value})--, pushe=true})
-    if frame==WardrobeCollectionFrame.ItemsCollectionFrame then
-        btn:SetPoint('BOTTOMRIGHT', -20, 28)
-    else
-        btn:SetPoint('RIGHT', CollectionsJournalCloseButton, 'LEFT', -2,0)
-        btn:SetFrameLevel(CollectionsJournalCloseButton:GetFrameLevel()+1)
-    end
-    btn:SetAlpha(0.5)
-    return btn
-end
-
-
-
-
-
 
 
 
@@ -225,7 +206,7 @@ end
 
 
 local function Init_Wardrobe_Sets()
-    SetsDataProvider = CreateFromMixins(WardrobeSetsDataProviderMixin);
+    SetsDataProvider = CreateFromMixins(WardrobeSetsDataProviderMixin)
 
     PlayerAllCollectedLabled= e.Cstr(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})--所有玩家，收集情况
     --PlayerAllCollectedLabled:SetPoint('BOTTOMLEFT', 10, 8)
@@ -305,7 +286,7 @@ local function Init_Wardrobe_Sets()
         local tipsText= (displayData.name or btn.Name:GetText())..(displayData.label and displayData.name~= displayData.label and '|n'..displayData.label or '')
         tipsText= tipsText and tipsText..'|n' or ''
 
-	    local variantSets = SetsDataProvider:GetVariantSets(setID);
+	    local variantSets = SetsDataProvider:GetVariantSets(setID)
         if #variantSets==0 then
             table.insert(variantSets, C_TransmogSets.GetSetInfo(setID))
         end
@@ -403,7 +384,7 @@ local function Init_Wardrobe_Sets()
             local btn=itemFrame['btn'..i]
             if not btn then
                 btn=e.Cbtn(itemFrame, {icon=true, size={26,10}})
-                btn:SetNormalAtlas('adventure-missionend-line');
+                btn:SetNormalAtlas('adventure-missionend-line')
                 itemFrame['btn'..i]=btn
                 if i==1 then
                     btn:SetPoint('BOTTOM', itemFrame, 'TOP', 0 ,1)
@@ -448,8 +429,11 @@ local function Init_Wardrobe_Sets()
 
 
 
-    local check = Create_Enable_Button(WardrobeCollectionFrame.SetsCollectionFrame, not Save.hideSets)--e.Cbtn( WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {icon=not Save.hideSets, size={18,18}})--隐藏选项
 
+    local check= e.Cbtn(WardrobeCollectionFrame.SetsCollectionFrame, {size={20,20}, icon=not Save.hideSets, pushe=true})
+    check:SetPoint('RIGHT', CollectionsJournalCloseButton, 'LEFT', -2,0)
+    check:SetFrameLevel(CollectionsJournalCloseButton:GetFrameLevel()+1)
+    check:SetAlpha(0.5)
     function check:set_All_Sets()--所以有套装情况
         if Save.hideSets then
             if AllSetsLable then--所有套装，数量
@@ -566,12 +550,12 @@ local function get_Items_Colleced()
     for i=1, 29 do
         if i==28 then
             local visualsList=C_TransmogCollection.GetIllusions() or {}
-            local totale = #visualsList;
+            local totale = #visualsList
             if totale>0 then
-                local collected = 0;
+                local collected = 0
                 for _, illusion in ipairs(visualsList) do
                     if ( illusion.isCollected ) then
-                        collected = collected + 1;
+                        collected = collected + 1
                     end
                 end
                 table.insert(List, {
@@ -707,7 +691,9 @@ end
 
 
 local function Init_Wardrober_Items()--物品, 幻化, 界面
-    local check= Create_Enable_Button(WardrobeCollectionFrame.ItemsCollectionFrame, not Save.hideItems)
+    local check= e.Cbtn(WardrobeCollectionFrame.ItemsCollectionFrame, {size={20,20}, icon=not Save.hideItems, pushe=true})
+    check:SetPoint('BOTTOMRIGHT', -20, 28)
+    check:SetAlpha(0.5)
     check:SetScript('OnClick',function (self)
         Save.hideItems= not Save.hideItems and true or nil
         self:SetNormalAtlas(Save.hideItems and e.Icon.disabled or e.Icon.icon)
@@ -740,9 +726,9 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
             end
         end
     end
-    hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateItems', function(self)--WardrobeItemsCollectionMixin:UpdateItems() Blizzard_Wardrobe.lua local indexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE;
+    hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateItems', function(self)--WardrobeItemsCollectionMixin:UpdateItems() Blizzard_Wardrobe.lua local indexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE
         for i= 1, self.PAGE_SIZE do
-            local model = self.Models[i];
+            local model = self.Models[i]
             if model and model:IsShown() then
                 model.itemButton=model.itemButton or {}
                 local itemLinks={}
@@ -914,9 +900,9 @@ local function Init_Heirloom()
             end
             return
         end
-        local _, _, isPvP, _, upgradeLevel = C_Heirloom.GetHeirloomInfo(button.itemID);
+        local _, _, isPvP, _, upgradeLevel = C_Heirloom.GetHeirloomInfo(button.itemID)
 
-        local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(button.itemID) or 0;
+        local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(button.itemID) or 0
         local level= maxUp-(upgradeLevel or 0)
         local has = C_Heirloom.PlayerHasHeirloom(button.itemID)
         if has then--需要升级数
@@ -1000,7 +986,9 @@ local function Init_Heirloom()
     end)
 
 
-    local check= Create_Enable_Button(HeirloomsJournal, not Save.hideHeirloom)
+    local check= e.Cbtn(HeirloomsJournal, {size={22,22}, icon= not Save.hideHeirloom})
+    check:SetPoint('BOTTOMRIGHT', -40, 18)
+    check:SetAlpha(0.5)
     function check:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -1014,9 +1002,66 @@ local function Init_Heirloom()
         self:SetNormalAtlas(Save.hideHeirloom and e.Icon.disabled or e.Icon.icon)
         HeirloomsJournal:FullRefreshIfVisible()
         self:set_tooltips()
+        self.filterButton:SetShown(not Save.hideHeirloom)
     end)
     check:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
     check:SetScript('OnEnter', check.set_tooltips)
+
+    local last
+    for i = 1, GetNumClasses() do
+        local classFile, classID= select(2, GetClassInfo(i))
+        local atlas= e.Class(nil, classFile, true)
+        if atlas and classID then
+            local btn= e.Cbtn(last or HeirloomsJournal, {size={22,22}, atlas=atlas})
+            if not last then
+                btn:SetPoint('BOTTOMRIGHT', HeirloomsJournal, -60, 18)
+                check.filterButton= btn
+                btn:SetShown(not Save.hideHeirloom)
+            else
+                btn:SetPoint('RIGHT', last, 'LEFT')
+            end
+            btn.classID= classID
+            btn:SetScript('OnClick', function(self)
+                HeirloomsJournal:SetClassAndSpecFilters(self.classID, 0)
+            end)
+            last= btn
+        end
+    end
+
+    last= nil
+    local classID= select(2, UnitClassBase('player'))
+    for i = 1, GetNumSpecializationsForClassID(classID) or 0 do
+        local specID, _, _, icon = GetSpecializationInfoForClassID(classID, i, e.Player.sex)
+        if specID and icon then
+            local btn= e.Cbtn2({parent=last or check.filterButton, notSecureActionButton=true, size=26, showTexture=true})
+            btn.texture:SetTexture(icon)
+            if not last then
+                btn:SetPoint('BOTTOM', check.filterButton,'TOP')
+                btn:SetShown(not Save.hideHeirloom)
+            else
+                btn:SetPoint('RIGHT', last, 'LEFT')
+            end
+            btn.specID= specID
+            btn.classID= classID
+            btn:SetScript('OnClick', function(self)
+                HeirloomsJournal:SetClassAndSpecFilters(self.classID, self.specID)
+            end)
+            last= btn
+        end
+    end
+    --[[
+        local sex = UnitSex("player")
+        for i = 1, GetNumSpecializationsForClassID(classID) do
+            local specID, specName = GetSpecializationInfoForClassID(classID, i, sex)
+            info.leftPadding = 10
+            info.text = specName
+            info.checked = filterSpecID == specID
+            info.arg1 = classID
+            info.arg2 = specID
+            info.func = SetClassAndSpecFilters
+            UIDropDownMenu_AddButton(info, level)
+        end
+    ]]
 end
 
 
@@ -1181,7 +1226,7 @@ local function Init_Mount()
         local numMounts = C_MountJournal.GetNumMounts() or 0
         if numMounts>1 then
             local mountIDs = C_MountJournal.GetMountIDs() or {}
-            MountJournal.MountCount.Count:SetText(MountJournal.numOwned..'/'..#mountIDs);
+            MountJournal.MountCount.Count:SetText(MountJournal.numOwned..'/'..#mountIDs)
         end
     end)
 end
@@ -1205,7 +1250,7 @@ end
 local function Init_Pet()
     --增加，总数
     hooksecurefunc('PetJournal_UpdatePetList', function()
-        local numPets, numOwned = C_PetJournal.GetNumPets();
+        local numPets, numOwned = C_PetJournal.GetNumPets()
 	    PetJournal.PetCount.Count:SetText(numOwned..'/'..numPets)
     end)
 end
@@ -1246,9 +1291,9 @@ local function Init()
             local link
             if self.transmogID then
                 if self.item then
-                    link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(self.transmogID));
+                    link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(self.transmogID))
                 else
-                    link = select(2, C_TransmogCollection.GetIllusionStrings(self.transmogID));
+                    link = select(2, C_TransmogCollection.GetIllusionStrings(self.transmogID))
                 end
             end
             return link
@@ -1268,7 +1313,7 @@ local function Init()
                     ToggleCollectionsJournal(5)
                 end
                 if wcFrame.activeFrame ~= wcFrame.ItemsCollectionFrame then
-                    wcFrame:ClickTab(wcFrame.ItemsTab);
+                    wcFrame:ClickTab(wcFrame.ItemsTab)
                 end
                 if p.transmogLocation then
                     WardrobeCollectionFrame.ItemsCollectionFrame:SetActiveSlot(p.transmogLocation)
