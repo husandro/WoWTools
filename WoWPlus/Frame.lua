@@ -1106,16 +1106,16 @@ local function setAddLoad(arg1)
             MountJournal.BottomLeftInset:SetPoint('TOPRIGHT', MountJournal.LeftInset, 'BOTTOMRIGHT', 0, -10)
             for _, region in pairs({MountJournal.BottomLeftInset:GetRegions()}) do
                 region:SetPoint('RIGHT')
-            end            
-            
+            end
+
             PetJournalRightInset:ClearAllPoints()
             PetJournalRightInset:SetPoint('TOPRIGHT', PetJournalPetCardInset, 'BOTTOMRIGHT', 0, -22)
             PetJournalRightInset:SetSize(411,171)
             PetJournalLeftInset:SetPoint('RIGHT', PetJournalRightInset, 'LEFT', -24, 0)
             PetJournalLoadoutBorder:ClearAllPoints()
-            PetJournalLoadoutBorder:SetPoint('TOP', PetJournalRightInset)            
-            
-            
+            PetJournalLoadoutBorder:SetPoint('TOP', PetJournalRightInset)
+
+
             WardrobeCollectionFrame.SetsCollectionFrame.RightInset:ClearAllPoints()
             WardrobeCollectionFrame.SetsCollectionFrame.RightInset:SetWidth(410)
             WardrobeCollectionFrame.SetsCollectionFrame.RightInset:SetPoint('TOPRIGHT', 2, 0)
