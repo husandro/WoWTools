@@ -1174,6 +1174,8 @@ local function setAddLoad(arg1)
                     self.QueuePanel:SetPoint('TOPLEFT', self.LoadedTargetPanel, 'TOPRIGHT')
                     self.QueuePanel:SetPoint('BOTTOMRIGHT', -4, 38)
 
+                    
+
                 end
                 _G['RematchFrame']:HookScript('OnShow', rematch)
                 hooksecurefunc(_G['RematchFrame'].PanelTabs, 'TabOnClick', rematch)
