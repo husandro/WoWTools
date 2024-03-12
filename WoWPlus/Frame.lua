@@ -1197,13 +1197,20 @@ local function setAddLoad(arg1)
                 end
             end)
         end, scaleRestFunc=function()
-            WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()            
+            WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
         end, scaleUpdateFunc=function()
             WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
         end, sizeRestFunc=function(btn)
             btn.target:SetSize(703, 606)
         end})--藏品
-        set_Move_Frame(WardrobeFrame)--幻化
+
+        set_Move_Frame(WardrobeFrame, {scaleUpdateFunc=function()
+            WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
+            WardrobeCollectionFrame.SetsTransmogFrame:RefreshCameras()
+        end, scaleRestFunc=function()
+            WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
+            WardrobeCollectionFrame.SetsTransmogFrame:RefreshCameras()
+        end})--幻化
        
 
 
