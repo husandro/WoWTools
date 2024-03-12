@@ -1125,9 +1125,12 @@ local function setAddLoad(arg1)
             frame.ModelR1C1:ClearAllPoints()
             frame.ModelR1C1:SetPoint("TOPLEFT", 10, -10);
 
+            local find
             for i= numMode+1, num, 1 do--创建，MODEL
                 local model= CreateFrame('DressUpModel', nil, frame, 'WardrobeSetsTransmogModelTemplate')
+                model:OnLoad()
                 table.insert(frame.Models, model)
+                find=true
             end
 
             for i=2, num do--设置位置
@@ -1147,6 +1150,10 @@ local function setAddLoad(arg1)
                 frame.Models[i]:SetShown(false)
             end
 
+            if find then
+                local RESET_SELECTION = true;
+                frame:Refresh(RESET_SELECTION);
+            end
         end
         local function init_items_colllection(restButton)
             if not restButton or not restButton.setSize then
@@ -1301,7 +1308,7 @@ local function setAddLoad(arg1)
             WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame:ClearAllPoints()
             WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame:SetPoint('BOTTOM', 0, 2)
             WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame:ClearAllPoints()
-            WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame:SetPoint('BOTTOM', 0, 2)
+            WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame:SetPoint('TOP', WardrobeCollectionFrame.SetsTransmogFrame, 'BOTTOM', 0, -2)
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:ClearAllPoints()--两侧肩膀使用不同的幻化外观
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetPoint('RIGHT', WardrobeTransmogFrame.ShoulderButton, 'LEFT', -6, 0)
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:ClearAllPoints()
