@@ -3897,7 +3897,7 @@ local function Init()
             end
         end
     end)
-
+    
 
     --PlayerCastingBarFrame
     hooksecurefunc(PlayerCastingBarFrame, 'HandleInterruptOrSpellFailed', function(self, _, event, ...)
@@ -5541,6 +5541,8 @@ local function Init_Loaded(arg1)
                 hooksecurefunc(WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame, 'Update', function(self)--Blizzard_CollectionTemplates.lua
                     self.PageText:SetFormattedText('%d/%d页', self.currentPage, self.maxPages)
                 end)
+        
+            set(WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label, '两侧肩膀使用不同的幻化外观')
 
         dia("BATTLE_PET_RENAME", {text = '重命名', button1 = '接受', button2 = '取消', button3 = '默认'})
         dia("BATTLE_PET_PUT_IN_CAGE", {text = '把这只宠物放入笼中？', button1 = '确定', button2 = '取消'})

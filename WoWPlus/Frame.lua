@@ -1204,14 +1204,95 @@ local function setAddLoad(arg1)
             btn.target:SetSize(703, 606)
         end})--藏品
 
-        set_Move_Frame(WardrobeFrame, {scaleUpdateFunc=function()
+        
+        set_Move_Frame(WardrobeFrame, {setSize=true, minW=965, minH=606, initFunc=function(btn)
+            function WardrobeCollectionFrame:init_items_colllection(restButton)
+                local frame= self.ItemsCollectionFrame
+    
+                local numLine_W= restButton.PAGE_LINE_W or 6--行，数量
+                local numLine_H= restButton.PAGE_LINE_H or 3--列，数量
+                local num= numLine_W * numLine_H--总数
+    
+                local numMode= #frame.Models--已存，数量
+    
+                for i= numMode+1, num, 1 do--创建，MODEL
+                    local model= CreateFrame('DressUpModel', nil, frame, 'WardrobeItemsModelTemplate')
+                    table.insert(frame.Models, model)
+                end
+    
+                for i=2, num do--设置位置
+                    local model= frame.Models[i]
+                    model:ClearAllPoints()
+                    model:SetPoint('LEFT', frame.Models[i-1], 'RIGHT', 16, 0)
+                    model:SetShown(true)
+                end           
+                for i= numLine_W+1, num, numLine_W do
+                    local model= frame.Models[i]
+                    model:ClearAllPoints()
+                    model:SetPoint('TOP', frame.Models[i-numLine_W], 'BOTTOM', 0, -16)
+                end
+    
+                frame.PAGE_SIZE= num--设置，总数
+                for i= num+1, #frame.Models, 1 do
+                    frame.Models[i]:SetShown(false)
+                end
+            end
+
+            btn.PAGE_LINE_W=Save.WardrobeTransmogFrame_PAGE_LINE_W
+            btn.PAGE_LINE_H=Save.WardrobeTransmogFrame_PAGE_LINE_H
+            hooksecurefunc(WardrobeCollectionFrame, 'SetContainer', function(self, parent)            
+                if parent==CollectionsJournal then
+
+                elseif parent==WardrobeFrame then
+                    self:SetPoint('BOTTOMLEFT', 290,0)
+                    self.ItemsCollectionFrame.ModelR1C1:SetPoint("TOPLEFT", 50, -71);
+                    self:init_items_colllection(parent.ResizeButton)
+                end
+            end)
+    
+
+            --[[WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:ClearAllPoints()
+            WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetPoint('RIGHT', WardrobeTransmogFrame.ShoulderButton, 'LEFT', -2, 0)
+            WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:ClearAllPoints()
+            WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:SetPoint('RIGHT', WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox, 'LEFT')]]
+            WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:ClearAllPoints()
+            WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetPoint('TOPLEFT', WardrobeCollectionFrame.ItemsCollectionFrame, 15, -30)
+            
+            
+
+            WardrobeTransmogFrame:ClearAllPoints()
+            WardrobeTransmogFrame:SetPoint('LEFT')
+            WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame:ClearAllPoints()
+            WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame:SetPoint('TOP', 0, -20)
+        end, sizeUpdateFunc=function(btn)
+            local w, h= btn.target:GetSize()--78, 104
+            local w2= math.modf((w- 965)/(78+16)) or 0
+            local h2= math.modf((h- 606)/(104+16)) or 0
+            btn.PAGE_LINE_W= 6+ w2
+            btn.PAGE_LINE_H= 3+ h2
+           -- btn.target:SetSize(965+w2*78, 606+h2*104)
+            WardrobeCollectionFrame:init_items_colllection(btn)
+            
+            
+            --WardrobeCollectionFrame.ItemsCollectionFrame:ResetPage()            
+            --WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
+        end, sizeStoppedFunc=function(btn)
+            Save.WardrobeTransmogFrame_PAGE_LINE_W=btn.PAGE_LINE_W
+            Save.WardrobeTransmogFrame_PAGE_LINE_H=btn.PAGE_LINE_H
+
+        end, sizeRestFunc=function(btn)
+            WardrobeFrame:SetSize(965, 606)--<Size x="965" y="606"/>
+            btn.PAGE_LINE_W=nil
+            btn.PAGE_LINE_H=nil
+            WardrobeCollectionFrame:init_items_colllection(btn)
+
+        end, scaleUpdateFunc=function()
             WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
             WardrobeCollectionFrame.SetsTransmogFrame:RefreshCameras()
         end, scaleRestFunc=function()
             WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
             WardrobeCollectionFrame.SetsTransmogFrame:RefreshCameras()
         end})--幻化
-       
 
 
 
