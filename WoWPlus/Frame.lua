@@ -1244,24 +1244,17 @@ local function setAddLoad(arg1)
                 if parent==CollectionsJournal then
 
                 elseif parent==WardrobeFrame then
-                    self:SetPoint('BOTTOMLEFT', 290,0)
+                    self:SetPoint('BOTTOMLEFT', 300,0)
                     self.ItemsCollectionFrame.ModelR1C1:SetPoint("TOPLEFT", 50, -71);
                     self:init_items_colllection(parent.ResizeButton)
                 end
             end)
     
-
-            --[[WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:ClearAllPoints()
-            WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetPoint('RIGHT', WardrobeTransmogFrame.ShoulderButton, 'LEFT', -2, 0)
-            WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:ClearAllPoints()
-            WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:SetPoint('RIGHT', WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox, 'LEFT')]]
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:ClearAllPoints()
-            WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetPoint('TOPLEFT', WardrobeCollectionFrame.ItemsCollectionFrame, 15, -30)
-            
-            
+            WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetPoint('TOPLEFT', WardrobeCollectionFrame.ItemsCollectionFrame, 15, -23)
 
             WardrobeTransmogFrame:ClearAllPoints()
-            WardrobeTransmogFrame:SetPoint('LEFT')
+            WardrobeTransmogFrame:SetPoint('LEFT', 2, -28)
             WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame:ClearAllPoints()
             WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame:SetPoint('TOP', 0, -20)
         end, sizeUpdateFunc=function(btn)
