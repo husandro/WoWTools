@@ -102,6 +102,7 @@ local function set_Scale_Size(frame, tab)
 
     --设置缩放
     btn.scaleStoppedFunc= tab.scaleStoppedFunc--保存，缩放内容
+    btn.scaleUpdateFunc= tab.scaleUpdateFunc
     btn.scaleRestFunc= tab.scaleRestFunc--清除，数据
 
     local setSize= tab.setSize
@@ -122,6 +123,9 @@ local function set_Scale_Size(frame, tab)
         local maxH= tab.maxH--最大，可无
         local rotationDegrees= tab.rotationDegrees--旋转度数
         local initFunc= tab.initFunc--初始
+
+    
+
 
         btn.sizeRestFunc= tab.sizeRestFunc--清除，数据
         btn.sizeUpdateFunc= tab.sizeUpdateFunc--setSize时, OnUpdate
@@ -268,7 +272,7 @@ local function set_Scale_Size(frame, tab)
         frame:SetScale(scale)
     end
 
-    btn:SetScript("OnMouseUp", function(self, d)
+    btn:SetScript("OnMouseUp", function(self, d)        
         if not self.isActive or (self.notInCombat and UnitAffectingCombat('player')) then
             return
         end
@@ -358,6 +362,9 @@ local function set_Scale_Size(frame, tab)
                     target:ClearAllPoints()
                     target:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
                     frame:set_tooltip()
+                    if frame.scaleUpdateFunc then
+                        frame.scaleUpdateFunc(frame)
+                    end
                 end)
             end
 
@@ -1189,9 +1196,10 @@ local function setAddLoad(arg1)
                     set_Move_Frame(frame, {frame=CollectionsJournal})
                 end
             end)
-
-           
-            
+        end, scaleRestFunc=function()
+            WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()            
+        end, scaleUpdateFunc=function()
+            WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
         end, sizeRestFunc=function(btn)
             btn.target:SetSize(703, 606)
         end})--藏品
