@@ -601,7 +601,7 @@ local function get_Items_Colleced()
     end
 
     --设置内容
-    local last, initStr
+    local last--, initStr
     local totaleCollected, totaleAll, totaleClass = 0, 0, 0--总数
     for class, tab in pairs (wowSaveItems) do
 
@@ -609,10 +609,12 @@ local function get_Items_Colleced()
         if not label then
             label=e.Cstr(Frame, {mouse=true, })
             if not last then
-                initStr=label--总数字符用
-                label:SetPoint('BOTTOMRIGHT', 5, 80)
+                --initStr=label--总数字符用
+                --label:SetPoint('BOTTOMRIGHT', 5, 80)
+                label:SetPoint('TOPLEFT', Frame, 'TOPRIGHT', 8, 0)
             else
-                label:SetPoint('BOTTOMRIGHT', last, 'TOPRIGHT', 0, 2)
+                label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-2)
+                --label:SetPoint('BOTTOMRIGHT', last, 'TOPRIGHT', 0, 2)
             end
             label:SetScript('OnEnter', function(self2)--鼠标提示
                 if self2.tip then
@@ -663,7 +665,8 @@ local function get_Items_Colleced()
         local collectedText, allText = e.MK(collected,3), e.MK(all,3)
 
         local col='|c'..select(4,GetClassColor(class))
-        label:SetText(col..collectedText..' '..per..'|A:classicon-'..class..':0:0|a|r')
+        --label:SetText(col..collectedText..' '..per..'|A:classicon-'..class..':0:0|a|r')
+        label:SetText('|A:classicon-'..class..':0:0|a'..col..per..' '..collectedText)
 
         table.insert(tip,1,{})
         table.insert(tip, 1, {
@@ -677,22 +680,25 @@ local function get_Items_Colleced()
     end
 
     local str= Frame[addName..'All']--总数字符
-    if not str and initStr then
+    if not str and last then
         str=e.Cstr(Frame)
-        str:SetPoint('TOPRIGHT', initStr, 'BOTTOMRIGHT', 0, -10)
+        str:SetPoint('TOPLEFT', last, 'BOTTOMLEFT', 0, -2)
         str:SetJustifyH('RIGHT')
         Frame[addName..'All']=str
     end
     if str and totaleAll>0 then
-        str:SetText(totaleClass..(e.onlyChinese and '职业' or CLASS)..format('  %i%%  ', totaleCollected/totaleAll*100)..e.MK(totaleCollected, 3)..'/'..e.MK(totaleAll,3)..e.Icon.wow2)
+        --str:SetText(totaleClass..(e.onlyChinese and '职业' or CLASS)..format('  %i%%  ', totaleCollected/totaleAll*100)..e.MK(totaleCollected, 3)..'/'..e.MK(totaleAll,3)..e.Icon.wow2)
+        str:SetText(e.Icon.wow2..format('%i%% %s/%s ', totaleCollected/totaleAll*100, e.MK(totaleCollected, 3), e.MK(totaleAll,3))..(e.onlyChinese and '职业' or CLASS)..' '..totaleClass)
     end
 end
 
 
 
 local function Init_Wardrober_Items()--物品, 幻化, 界面
-    local check= e.Cbtn(WardrobeCollectionFrame.ItemsCollectionFrame, {size={20,20}, icon=not Save.hideItems, pushe=true})
-    check:SetPoint('BOTTOMRIGHT', -20, 28)
+    local check= e.Cbtn(WardrobeCollectionFrame.ItemsCollectionFrame, {size={20,20}, icon=not Save.hideItems})    
+    check:SetPoint('RIGHT', CollectionsJournalCloseButton, 'LEFT', -2, 0)
+    check:SetFrameStrata(CollectionsJournal.TitleContainer:GetFrameStrata())
+    check:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
     check:SetAlpha(0.5)
     check:SetScript('OnClick',function (self)
         Save.hideItems= not Save.hideItems and true or nil
@@ -732,7 +738,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
             if model and model:IsShown() then
                 model.itemButton=model.itemButton or {}
                 local itemLinks={}
-                if not Save.hideItems then
+                if not Save.hideItems and self.transmogLocation then
                     local findLinks={}
                     if self.transmogLocation:IsIllusion() then--WardrobeItemsModelMixin:OnMouseDown(button)
                         local link =  get_Link_Item_Type_Source(model.visualInfo.sourceID, 'illusion')--select(2, C_TransmogCollection.GetIllusionStrings(model.visualInfo.sourceID))
