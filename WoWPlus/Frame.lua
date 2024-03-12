@@ -1125,12 +1125,10 @@ local function setAddLoad(arg1)
             frame.ModelR1C1:ClearAllPoints()
             frame.ModelR1C1:SetPoint("TOPLEFT", 10, -10);
 
-            local find
             for i= numMode+1, num, 1 do--创建，MODEL
                 local model= CreateFrame('DressUpModel', nil, frame, 'WardrobeSetsTransmogModelTemplate')
                 model:OnLoad()
                 table.insert(frame.Models, model)
-                find=true
             end
 
             for i=2, num do--设置位置
@@ -1148,11 +1146,6 @@ local function setAddLoad(arg1)
             frame.PAGE_SIZE= num--设置，总数
             for i= num+1, #frame.Models, 1 do
                 frame.Models[i]:SetShown(false)
-            end
-
-            if find then
-                local RESET_SELECTION = true;
-                frame:Refresh(RESET_SELECTION);
             end
         end
         local function init_items_colllection(restButton)
