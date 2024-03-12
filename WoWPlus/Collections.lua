@@ -583,7 +583,7 @@ local function get_Items_Colleced()
     wowSaveItems[e.Player.class]=List
 
 
-    local Frame= WardrobeCollectionFrame and WardrobeCollectionFrame.ItemsCollectionFrame
+    local Frame= WardrobeCollectionFrame.ItemsCollectionFrame.wowToolsItemsButton
     if not Frame or not Frame:IsShown() then
         return
     elseif Save.hideItems then--禁用
@@ -608,14 +608,7 @@ local function get_Items_Colleced()
         local label=Frame[addName..class]
         if not label then
             label=e.Cstr(Frame, {mouse=true, })
-            if not last then
-                --initStr=label--总数字符用
-                --label:SetPoint('BOTTOMRIGHT', 5, 80)
-                label:SetPoint('TOPLEFT', Frame, 'TOPRIGHT', 8, 0)
-            else
-                label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-2)
-                --label:SetPoint('BOTTOMRIGHT', last, 'TOPRIGHT', 0, 2)
-            end
+            label:SetPoint('TOPLEFT', last or Frame, 'BOTTOMLEFT', last and 0 or 4,-2)            
             label:SetScript('OnEnter', function(self2)--鼠标提示
                 if self2.tip then
                     e.tips:SetOwner(self2, "ANCHOR_RIGHT")
@@ -682,7 +675,7 @@ local function get_Items_Colleced()
     local str= Frame[addName..'All']--总数字符
     if not str and last then
         str=e.Cstr(Frame)
-        str:SetPoint('TOPLEFT', last, 'BOTTOMLEFT', 0, -2)
+        str:SetPoint('TOPLEFT', last, 'BOTTOMLEFT', 0, -20)
         str:SetJustifyH('RIGHT')
         Frame[addName..'All']=str
     end
@@ -696,10 +689,12 @@ end
 
 local function Init_Wardrober_Items()--物品, 幻化, 界面
     local check= e.Cbtn(WardrobeCollectionFrame.ItemsCollectionFrame, {size={20,20}, icon=not Save.hideItems})    
-    check:SetPoint('RIGHT', CollectionsJournalCloseButton, 'LEFT', -2, 0)
+    --check:SetPoint('RIGHT', CollectionsJournalCloseButton, 'LEFT', -2, 0)
     check:SetFrameStrata(CollectionsJournal.TitleContainer:GetFrameStrata())
     check:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
-    check:SetAlpha(0.5)
+    --check:SetPoint('BOTTOMRIGHT', 4, -4)
+    check:SetPoint('TOPLEFT', WardrobeCollectionFrame.ItemsCollectionFrame, 'TOPRIGHT', 4, 40)
+
     check:SetScript('OnClick',function (self)
         Save.hideItems= not Save.hideItems and true or nil
         self:SetNormalAtlas(Save.hideItems and e.Icon.disabled or e.Icon.icon)
@@ -713,14 +708,12 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
         e.tips:AddDoubleLine(e.onlyChinese and '物品' or ITEMS, e.GetEnabeleDisable(Save.hideItems)..e.Icon.left)
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
-        self:SetAlpha(1)
     end
     check:SetScript('OnEnter', check.set_tooltips)
     check:SetScript('OnLeave', function(self)
         e.tips:Hide()
-        self:SetAlpha(0.5)
     end)
-
+    WardrobeCollectionFrame.ItemsCollectionFrame.wowToolsItemsButton= check
 
 
     local function get_Link_Item_Type_Source(sourceID, type)

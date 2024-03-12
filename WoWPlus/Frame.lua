@@ -1256,11 +1256,9 @@ local function setAddLoad(arg1)
         end})--藏品
 
         
-        set_Move_Frame(WardrobeFrame, {setSize=true, minW=965, minH=606, initFunc=function(btn)
-            
+        set_Move_Frame(WardrobeFrame, {setSize=true, minW=965, minH=606, initFunc=function(btn)            
             btn.PAGE_LINE_W=Save.WardrobeTransmogFrame_PAGE_LINE_W
             btn.PAGE_LINE_H=Save.WardrobeTransmogFrame_PAGE_LINE_H
-            
 
             WardrobeTransmogFrame:ClearAllPoints()
             WardrobeTransmogFrame:SetPoint('LEFT', 2, -28)
@@ -1280,6 +1278,7 @@ local function setAddLoad(arg1)
         end, sizeStoppedFunc=function(btn)
             Save.WardrobeTransmogFrame_PAGE_LINE_W= btn.PAGE_LINE_W
             Save.WardrobeTransmogFrame_PAGE_LINE_H= btn.PAGE_LINE_H
+
             Save.size[btn.name]= {btn.target:GetSize()}
         end, sizeRestFunc=function(btn)
             WardrobeFrame:SetSize(965, 606)--<Size x="965" y="606"/>
