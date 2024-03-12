@@ -1111,6 +1111,43 @@ local function setAddLoad(arg1)
 
 
     elseif arg1=='Blizzard_Collections' then--收藏
+        local function init_sets_collenction()
+            local frame= WardrobeCollectionFrame.SetsTransmogFrame--.ModelR1C1
+            if WardrobeCollectionFrame:GetParent()~=WardrobeFrame then
+                return
+            end
+            local w, h= WardrobeCollectionFrame.ItemsCollectionFrame:GetSize()--129 186
+            local numLine_W= max(math.modf((w-30)/(129+10)), 4)--行，数量
+            local numLine_H= max(math.modf(h/(186+10)), 2)--列，数量
+            local num= numLine_W * numLine_H--总数
+            local numMode= #frame.Models--已存，数量
+
+            frame.ModelR1C1:ClearAllPoints()
+            frame.ModelR1C1:SetPoint("TOPLEFT", 10, -10);
+
+            for i= numMode+1, num, 1 do--创建，MODEL
+                local model= CreateFrame('DressUpModel', nil, frame, 'WardrobeSetsTransmogModelTemplate')
+                table.insert(frame.Models, model)
+            end
+
+            for i=2, num do--设置位置
+                local model= frame.Models[i]
+                model:ClearAllPoints()
+                model:SetPoint('LEFT', frame.Models[i-1], 'RIGHT', 16, 0)
+                model:SetShown(true)
+            end           
+            for i= numLine_W+1, num, numLine_W do
+                local model= frame.Models[i]
+                model:ClearAllPoints()
+                model:SetPoint('TOP', frame.Models[i-numLine_W], 'BOTTOM', 0, -10)
+            end
+
+            frame.PAGE_SIZE= num--设置，总数
+            for i= num+1, #frame.Models, 1 do
+                frame.Models[i]:SetShown(false)
+            end
+
+        end
         local function init_items_colllection(restButton)
             if not restButton or not restButton.setSize then
                 return
@@ -1144,13 +1181,11 @@ local function setAddLoad(arg1)
             for i= num+1, #frame.Models, 1 do
                 frame.Models[i]:SetShown(false)
             end
+            init_sets_collenction()
         end
 
 
         set_Move_Frame(CollectionsJournal, {setSize=true, minW=703, minH=606, initFunc=function(btn)
-                   
-           
-
             MountJournal.RightInset:ClearAllPoints()
             MountJournal.RightInset:SetWidth(400)
             MountJournal.RightInset:SetPoint('TOPRIGHT', -6, -60)
@@ -1249,6 +1284,7 @@ local function setAddLoad(arg1)
             btn.PAGE_LINE_W=nil
             btn.PAGE_LINE_H=nil
             init_items_colllection(btn)
+            
         end, scaleRestFunc=function()
             WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
         end, scaleUpdateFunc=function()
@@ -1262,8 +1298,10 @@ local function setAddLoad(arg1)
 
             WardrobeTransmogFrame:ClearAllPoints()
             WardrobeTransmogFrame:SetPoint('LEFT', 2, -28)
-            WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame:ClearAllPoints()
-            WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame:SetPoint('BOTTOM', 0, 2)
+            WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame:ClearAllPoints()
+            WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame:SetPoint('BOTTOM', 0, 2)
+            WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame:ClearAllPoints()
+            WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame:SetPoint('BOTTOM', 0, 2)
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:ClearAllPoints()--两侧肩膀使用不同的幻化外观
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetPoint('RIGHT', WardrobeTransmogFrame.ShoulderButton, 'LEFT', -6, 0)
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:ClearAllPoints()
@@ -1278,7 +1316,6 @@ local function setAddLoad(arg1)
         end, sizeStoppedFunc=function(btn)
             Save.WardrobeTransmogFrame_PAGE_LINE_W= btn.PAGE_LINE_W
             Save.WardrobeTransmogFrame_PAGE_LINE_H= btn.PAGE_LINE_H
-
             Save.size[btn.name]= {btn.target:GetSize()}
         end, sizeRestFunc=function(btn)
             WardrobeFrame:SetSize(965, 606)--<Size x="965" y="606"/>
@@ -1310,6 +1347,26 @@ local function setAddLoad(arg1)
                 init_items_colllection(parent.ResizeButton)                    
             end
         end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
