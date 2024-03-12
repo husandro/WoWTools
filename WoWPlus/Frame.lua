@@ -1118,6 +1118,7 @@ local function setAddLoad(arg1)
             for _, region in pairs({MountJournal.BottomLeftInset:GetRegions()}) do
                 region:SetPoint('RIGHT')
             end
+            MountJournalSearchBox:SetPoint('RIGHT', MountJournalFilterButton, 'LEFT', -2, 0)
 
             PetJournalRightInset:ClearAllPoints()
             PetJournalRightInset:SetPoint('TOPRIGHT', PetJournalPetCardInset, 'BOTTOMRIGHT', 0, -22)
@@ -1125,6 +1126,7 @@ local function setAddLoad(arg1)
             PetJournalLeftInset:SetPoint('RIGHT', PetJournalRightInset, 'LEFT', -24, 0)
             PetJournalLoadoutBorder:ClearAllPoints()
             PetJournalLoadoutBorder:SetPoint('TOP', PetJournalRightInset)
+            PetJournalSearchBox:SetPoint('LEFT', PetJournalFilterButton, 'RIGHT',-2, 0)
 
 
             WardrobeCollectionFrame.SetsCollectionFrame.RightInset:ClearAllPoints()
@@ -1135,7 +1137,7 @@ local function setAddLoad(arg1)
             WardrobeCollectionFrame.SetsCollectionFrame.ListContainer:SetPoint('BOTTOM')
             WardrobeCollectionFrame.SetsCollectionFrame.LeftInset:SetPoint('RIGHT', WardrobeCollectionFrame.SetsCollectionFrame.ListContainer)
             
-            if _G['RematchFrame'] and e.Player.husandro then
+            if _G['RematchFrame'] then
                 local function rematch()
                     local self= _G['RematchFrame']
                     self:ClearAllPoints()
@@ -1147,10 +1149,9 @@ local function setAddLoad(arg1)
 
                     self.LoadedTargetPanel:ClearAllPoints()
                     self.LoadedTargetPanel:SetPoint('TOP', self.ToolBar, 'BOTTOM')
-                    self.LoadedTargetPanel:SetSize(277, 75)                    
-
+                    self.LoadedTargetPanel:SetSize(277, 75)
                     self.LoadoutPanel:ClearAllPoints()
-                    self.LoadoutPanel:SetPoint('TOP', self.LoadedTargetPanel, 'BOTTOM')
+                    self.LoadoutPanel:SetPoint('TOP', self.LoadedTeamPanel, 'BOTTOM')
                     self.LoadoutPanel:SetWidth(277)
                     self.LoadoutPanel:SetPoint('BOTTOM')
 
@@ -1173,26 +1174,37 @@ local function setAddLoad(arg1)
                     self.QueuePanel:ClearAllPoints()
                     self.QueuePanel:SetPoint('TOPLEFT', self.LoadedTargetPanel, 'TOPRIGHT')
                     self.QueuePanel:SetPoint('BOTTOMRIGHT', -4, 38)
-
-                    
-
+                    self.QueuePanel.List.Help:ClearAllPoints()
+                    self.QueuePanel.List.Help:SetPoint('TOPLEFT', 8, 22)
+                    self.QueuePanel.List.Help:SetPoint('BOTTOMRIGHT', -22, 22)                    
                 end
                 _G['RematchFrame']:HookScript('OnShow', rematch)
                 hooksecurefunc(_G['RematchFrame'].PanelTabs, 'TabOnClick', rematch)
+                set_Move_Frame(_G['RematchFrame'].TeamsPanel.List.ScrollBox, {frame=CollectionsJournal})
+                set_Move_Frame(_G['RematchFrame'].QueuePanel.List.ScrollBox, {frame=CollectionsJournal})
             end
+            C_Timer.After(2, function()
+                local frame= _G['ManuscriptsJournal']
+                if frame then                    
+                    set_Move_Frame(frame, {frame=CollectionsJournal})
+                end
+            end)
+
+           
             
         end, sizeRestFunc=function(btn)
             btn.target:SetSize(703, 606)
         end})--藏品
         set_Move_Frame(WardrobeFrame)--幻化
+       
 
---set_Move_Frame(RematchJournal, {frame=CollectionsJournal})--藏品
-        --[[if not UnitAffectingCombat('player') then
-            set_Move_CollectionJournal()--藏品
-        else
-            combatCollectionsJournal=true
-            panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-        end]]
+
+
+
+
+
+
+
 
     elseif arg1=='Blizzard_Calendar' then--日历
         set_Move_Frame(CalendarFrame)

@@ -1766,6 +1766,10 @@ local function Init_Event(arg1)
         if frame then
             hide_Texture(frame.Bg)
             hide_Texture(frame.OptionsPanel.List.Back)
+            hide_Texture(frame.QueuePanel.List.Back)
+            hide_Texture(frame.TargetsPanel.List.Back)
+            hide_Texture(frame.TeamsPanel.List.Back)
+            hide_Texture(frame.ToolBar.Bg)
         end
 
 
@@ -1779,6 +1783,8 @@ local function Init_Event(arg1)
 
         set_NineSlice(ToyBox.iconsFrame, nil, true)
         ToyBox.progressBar:DisableDrawLayer('BACKGROUND')
+
+        --frame= _G['ManuscriptsJournal']
 
 
         --set_Menu(HeirloomsJournalClassDropDown)
