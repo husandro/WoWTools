@@ -542,6 +542,7 @@ end
 
 
 
+
 --###############
 --物品, 幻化, 界面
 --###############
@@ -856,6 +857,61 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--设置，目标为模型
+local function Init_Wardrobe_Transmog()
+    --local check = CreateFrame("CheckButton", nil, WardrobeTransmogFrame.ModelScene, "InterfaceOptionsCheckButtonTemplate")
+    local check= CreateFrame('Frame', nil, WardrobeTransmogFrame.ModelScene)
+    check:SetPoint('TOPLEFT')
+    check:SetSize(1,1)
+    check:SetScript('OnShow', function(self)
+        self:RegisterEvent('PLAYER_TARGET_CHANGED')        
+    end)
+    check:SetScript('OnHide', check.UnregisterAllEvents)
+    function check:set_target()
+        if Save.hideItems or not UnitExists('target') or not UnitIsPlayer('target') then
+            return
+        end
+        local frame= WardrobeTransmogFrame
+        --[[if frame.ModelScene.previousActor then
+            frame.ModelScene.previousActor:ClearModel();
+            frame.ModelScene.previousActor = nil;
+        end]]
+        local actor = frame.ModelScene:GetPlayerActor();
+        if actor then
+            local sheatheWeapons = false;
+            local autoDress = true;
+            local hideWeapons = false;
+            local useNativeForm = true;
+            local _, raceFilename = UnitRace("target");
+            if(raceFilename == "Dracthyr" or raceFilename == "Worgen") then
+                useNativeForm = not frame.inAlternateForm;
+            end
+            actor:SetModelByUnit("target", sheatheWeapons, autoDress, hideWeapons, useNativeForm);
+            frame.ModelScene.previousActor = actor
+        end
+        frame:Update()
+    end
+    check:SetScript("OnEvent", check.set_target)
+    hooksecurefunc(WardrobeTransmogFrame, 'RefreshPlayerModel', function()
+        check:set_target()
+    end)
+end
 
 
 
@@ -1397,6 +1453,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Init_Heirloom()--传家宝
             Init_Wardrober_Items()--物品, 幻化, 界面
             Init_Wardrobe_Sets()--套装, 幻化, 界面
+            Init_Wardrobe_Transmog()--设置，目标为模型
+            
+            
+
+
             Init_Mount()--坐骑, 界面
             Init_Pet()
         end
