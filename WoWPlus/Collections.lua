@@ -911,7 +911,7 @@ local function Init_Wardrobe_Transmog()
                                 tooltipTitle= 'setID '..tab.setID,
                                 keepShownOnClick=true,
                                 arg2= tab.collected,
-                                func= function(_, arg1)
+                                func= function(_, arg1, arg2)
                                     if arg2 then
                                         WardrobeCollectionFrame.SetsTransmogFrame.selectedSetID= arg1
                                         WardrobeCollectionFrame.SetsTransmogFrame:LoadSet(arg1)
