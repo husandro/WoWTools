@@ -1154,6 +1154,9 @@ local function setAddLoad(arg1)
                 return
             end
             local frame= WardrobeCollectionFrame.ItemsCollectionFrame
+            local w, h= WardrobeCollectionFrame.ItemsCollectionFrame:GetSize()--78, 104
+            local w2= math.modf((w-30)/(78+10))
+            local h2= math.modf(h/(104+10))
 
             local numLine_W= restButton.PAGE_LINE_W or 6--行，数量
             local numLine_H= restButton.PAGE_LINE_H or 3--列，数量
@@ -1337,6 +1340,8 @@ local function setAddLoad(arg1)
             Save.WardrobeTransmogFrame_PAGE_LINE_W= nil
             Save.WardrobeTransmogFrame_PAGE_LINE_H= nil
             init_items_colllection(btn)
+
+            
         end, scaleUpdateFunc=function()
             WardrobeCollectionFrame:RefreshCameras()
         end, scaleRestFunc=function()
