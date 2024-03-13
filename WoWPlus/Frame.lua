@@ -1111,6 +1111,21 @@ local function setAddLoad(arg1)
 
 
     elseif arg1=='Blizzard_Collections' then--收藏
+        local function update_frame()
+            local self= WardrobeCollectionFrame
+            -- WardrobeCollectionFrame.ItemsCollectionFrame.GetActiveCategory
+            if self:IsShown() then                
+                if self.SetsTransmogFrame:IsShown() then
+                    self.SetsTransmogFrame:ResetPage()--WardrobeSetsTransmogMixin
+                    self:RefreshCameras()
+                elseif self.ItemsCollectionFrame:IsShown() then       
+                    self.ItemsCollectionFrame:UpdateItems()
+                    self.ItemsCollectionFrame:ResetPage()
+                    self:RefreshCameras()
+                end
+                
+            end
+        end
         local function init_sets_collenction()
             local self= WardrobeCollectionFrame
             local frame= self.SetsTransmogFrame--.ModelR1C1
@@ -1283,6 +1298,7 @@ local function setAddLoad(arg1)
             Save.CollectionsJournal_PAGE_LINE_W= btn.PAGE_LINE_W
             Save.CollectionsJournal_PAGE_LINE_H= btn.PAGE_LINE_H
             Save.size[btn.name]= {btn.target:GetSize()}
+            update_frame()
         end, sizeRestFunc=function(btn)            
             btn.target:SetSize(703, 606)
             btn.PAGE_LINE_W=nil
@@ -1291,15 +1307,10 @@ local function setAddLoad(arg1)
             Save.CollectionsJournal_PAGE_LINE_H= nil
             Save.size[btn.name]=nil
             init_items_colllection(btn)
-            
+            update_frame()
         end, scaleRestFunc=function()
-            if WardrobeCollectionFrame.ItemsCollectionFrame:IsShown() then
-                WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
-            end
+            update_frame()
         end, scaleUpdateFunc=function()
-            if WardrobeCollectionFrame.ItemsCollectionFrame:IsShown() then
-                WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
-            end
         end})--藏品
 
         
@@ -1324,28 +1335,18 @@ local function setAddLoad(arg1)
             btn.PAGE_LINE_W= w2
             btn.PAGE_LINE_H= h2
             init_items_colllection(btn)
-            local self= WardrobeCollectionFrame            
-            if self.activeFrame== self.SetsTransmogFrame then
-                self.SetsTransmogFrame:Refresh()--WardrobeSetsTransmogMixin
-            end
         end, sizeStoppedFunc=function(btn)
             Save.WardrobeTransmogFrame_PAGE_LINE_W= btn.PAGE_LINE_W
             Save.WardrobeTransmogFrame_PAGE_LINE_H= btn.PAGE_LINE_H
             Save.size[btn.name]= {btn.target:GetSize()}
         end, sizeRestFunc=function(btn)
             WardrobeFrame:SetSize(965, 606)--<Size x="965" y="606"/>
-            btn.PAGE_LINE_W=nil
-            btn.PAGE_LINE_H=nil
             Save.size[btn.name]=nil
-            Save.WardrobeTransmogFrame_PAGE_LINE_W= nil
-            Save.WardrobeTransmogFrame_PAGE_LINE_H= nil
             init_items_colllection(btn)
-
-            
+            update_frame()
         end, scaleUpdateFunc=function()
-            WardrobeCollectionFrame:RefreshCameras()
         end, scaleRestFunc=function()
-            WardrobeCollectionFrame:RefreshCameras()
+            update_frame()
         end})--幻化
 
 
