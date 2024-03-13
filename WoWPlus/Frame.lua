@@ -1113,7 +1113,6 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_Collections' then--收藏
         local function update_frame()
             local self= WardrobeCollectionFrame
-            -- WardrobeCollectionFrame.ItemsCollectionFrame.GetActiveCategory
             if self:IsShown() then                
                 if self.SetsTransmogFrame:IsShown() then
                     self.SetsTransmogFrame:ResetPage()--WardrobeSetsTransmogMixin

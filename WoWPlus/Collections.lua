@@ -317,7 +317,7 @@ local function Init_Wardrobe_Sets()
                                 --..(info.setID==btn.setID and ' '..e.Icon.toLeft2 or '')
                     tipsText= tipsText..'|n'..(isCollected and '|cnGREEN_FONT_COLOR:'..tip..'|r' or tip)
                 end
-                patch= patch or (info.patchID and 'v.'..info.patchID)
+                patch= patch or (info.patchID and 'v'..(info.patchID/10000))
                 version= version or (info.expansionID and _G['EXPANSION_NAME'..info.expansionID])
                 version= e.strText[version] or version
             end
@@ -546,6 +546,7 @@ end
 --###############
 --物品, 幻化, 界面
 --###############
+local SetItemsButton
 local function get_Items_Colleced()
     local List={}--保存数据
     for i=1, 29 do
@@ -584,7 +585,7 @@ local function get_Items_Colleced()
     wowSaveItems[e.Player.class]=List
 
 
-    local Frame= WardrobeCollectionFrame and WardrobeCollectionFrame.ItemsCollectionFrame.wowToolsItemsButton
+    local Frame= SetItemsButton
     if not Frame or not Frame:IsShown() then
         return
     elseif Save.hideItems then--禁用
@@ -689,32 +690,29 @@ end
 
 
 local function Init_Wardrober_Items()--物品, 幻化, 界面
-    local check= e.Cbtn(WardrobeCollectionFrame.ItemsCollectionFrame, {size={20,20}, icon=not Save.hideItems})    
-    --check:SetPoint('RIGHT', CollectionsJournalCloseButton, 'LEFT', -2, 0)
-    check:SetFrameStrata(CollectionsJournal.TitleContainer:GetFrameStrata())
-    check:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
-    --check:SetPoint('BOTTOMRIGHT', 4, -4)
-    check:SetPoint('TOPLEFT', WardrobeCollectionFrame.ItemsCollectionFrame, 'TOPRIGHT', 4, 40)
+    SetItemsButton= e.Cbtn(WardrobeCollectionFrame.ItemsCollectionFrame, {size={20,20}, icon=not Save.hideItems}) 
+    SetItemsButton:SetFrameStrata(CollectionsJournal.TitleContainer:GetFrameStrata())
+    SetItemsButton:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
+    SetItemsButton:SetPoint('TOPLEFT', WardrobeCollectionFrame.ItemsCollectionFrame, 'TOPRIGHT', 4, 40)
 
-    check:SetScript('OnClick',function (self)
+    SetItemsButton:SetScript('OnClick',function (self)
         Save.hideItems= not Save.hideItems and true or nil
         self:SetNormalAtlas(Save.hideItems and e.Icon.disabled or e.Icon.icon)
         get_Items_Colleced()
         WardrobeCollectionFrame.ItemsCollectionFrame:UpdateItems()
         self:set_tooltips()
     end)
-    function check:set_tooltips()
+    function SetItemsButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '物品' or ITEMS, e.GetEnabeleDisable(Save.hideItems)..e.Icon.left)
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end
-    check:SetScript('OnEnter', check.set_tooltips)
-    check:SetScript('OnLeave', function(self)
+    SetItemsButton:SetScript('OnEnter', SetItemsButton.set_tooltips)
+    SetItemsButton:SetScript('OnLeave', function(self)
         e.tips:Hide()
     end)
-    WardrobeCollectionFrame.ItemsCollectionFrame.wowToolsItemsButton= check
 
 
     local function get_Link_Item_Type_Source(sourceID, type)
@@ -874,24 +872,100 @@ end
 
 
 --设置，目标为模型
-local function Init_Wardrobe_Transmog()
+local function Init_Wardrobe_Transmog()   
+    if not e.Player.husandro then
+        return
+    end 
     --local check = CreateFrame("CheckButton", nil, WardrobeTransmogFrame.ModelScene, "InterfaceOptionsCheckButtonTemplate")
-    local check= CreateFrame('Frame', nil, WardrobeTransmogFrame.ModelScene)
-    check:SetPoint('TOPLEFT')
-    check:SetSize(1,1)
-    check:SetScript('OnShow', function(self)
-        self:RegisterEvent('PLAYER_TARGET_CHANGED')        
+    --local check= CreateFrame('Frame', nil, WardrobeTransmogFrame.ModelScene)
+    local check= e.Cbtn(WardrobeTransmogFrame.ModelScene, {size={22, 22}, icon= not Save.hideTransmog})
+
+
+    check:SetPoint('TOP',WardrobeTransmogFrame.ModelScene.ClearAllPendingButton, 'BOTTOM', 0, -2)    
+    function check:set_event()
+        if self:IsShown() and not Save.hideTransmog then
+            self:RegisterEvent('PLAYER_TARGET_CHANGED')
+        else
+            self:UnregisterAllEvents()
+        end
+    end
+    check:SetScript('OnShow', check.set_event)
+    check:SetScript('OnHide', check.set_event)
+    check:SetScript('OnClick', function(self)
+        if not self.Menu then
+            self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+            e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level, menuList)
+                local info
+
+                if menuList then
+                    local variantSets = SetsDataProvider:GetVariantSets(menuList) or {}
+                        if #variantSets==0 then
+                            table.insert(variantSets, C_TransmogSets.GetSetInfo(menuList))
+                        end
+                    for _, tab in pairs(variantSets) do                        
+                        if tab.setID then
+                            local num = GetSetsCollectedNum(setID)
+                            info={
+                                text= e.cn(tab.name)..(num and ' '..num or ''),
+                                notCheckable=true,
+                                colorCode= tab.collected and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:',
+                                arg1= tab.setID,
+                                tooltipOnButton=true,
+                                tooltipTitle= 'setID '..tab.setID,
+                                keepShownOnClick=true,
+                                arg2= tab.collected,
+                                func= function(_, arg1)
+                                    if arg2 then
+                                        WardrobeCollectionFrame.SetsTransmogFrame.selectedSetID= arg1
+                                        WardrobeCollectionFrame.SetsTransmogFrame:LoadSet(arg1)
+                                    end
+                                end
+                            }
+                            e.LibDD:UIDropDownMenu_AddButton(info, level)
+                        end
+                    end
+                    SetsDataProvider:ClearSets()
+                    return
+                end
+                for _, tab in pairs(C_TransmogSets.GetBaseSets() or {}) do
+                    if tab.setID then
+                        local variantSets = SetsDataProvider:GetVariantSets(tab.setID) or {}
+                        local only= #variantSets>0
+                        if not only then
+                            variantSets= C_TransmogSets.GetSetInfo(tab.setID)
+                        end
+                        
+                        info={
+                            text= e.cn(tab.name),
+                            notCheckable=true,
+                            colorCode= tab.collected and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:',
+                            tooltipOnButton=true,
+                            tooltipTitle= 'setID '..tab.setID,
+                            keepShownOnClick=true,
+                            arg1=tab.setID,
+                            hasArrow=only and true or false,
+                            menuList= only and tab.setID or nil,
+                            arg2= tab.collected,
+                            func= function(_, arg1, arg2)
+                                if arg2 then
+                                    WardrobeCollectionFrame.SetsTransmogFrame.selectedSetID= arg1
+                                    WardrobeCollectionFrame.SetsTransmogFrame:LoadSet(arg1)
+                                end
+                            end
+                        }
+                        e.LibDD:UIDropDownMenu_AddButton(info, level)
+                    end
+                end
+            end, 'MENU')
+        end
+        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
     end)
-    check:SetScript('OnHide', check.UnregisterAllEvents)
+
     function check:set_target()
         if Save.hideItems or not UnitExists('target') or not UnitIsPlayer('target') then
             return
         end
         local frame= WardrobeTransmogFrame
-        --[[if frame.ModelScene.previousActor then
-            frame.ModelScene.previousActor:ClearModel();
-            frame.ModelScene.previousActor = nil;
-        end]]
         local actor = frame.ModelScene:GetPlayerActor();
         if actor then
             local sheatheWeapons = false;
@@ -908,9 +982,9 @@ local function Init_Wardrobe_Transmog()
         frame:Update()
     end
     check:SetScript("OnEvent", check.set_target)
-    hooksecurefunc(WardrobeTransmogFrame, 'RefreshPlayerModel', function()
-        check:set_target()
-    end)
+    hooksecurefunc(WardrobeTransmogFrame, 'RefreshPlayerModel', check.set_target)
+    
+    SetItemsButton.TransmogButton= check
 end
 
 
