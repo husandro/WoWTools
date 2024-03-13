@@ -1870,6 +1870,18 @@ local function Init_Event(arg1)
         set_Alpha_Color(WardrobeTransmogFrame.MoneyMiddle)
         set_Alpha_Color(WardrobeTransmogFrame.MoneyLeft)
         set_Alpha_Color(WardrobeTransmogFrame.MoneyRight)
+
+        hooksecurefunc(WardrobeCollectionFrame, 'SetTab', function(self)
+            local frame= self.activeFrame
+            if frame and frame==self.SetsTransmogFrame then            
+                for i=1, frame.PAGE_SIZE or 8 do
+                    local btn= frame.Models[i]
+                    if btn then
+                        btn:DisableDrawLayer('BACKGROUND')
+                    end
+                end
+            end
+        end)
         for v=1,4 do
             for h= 1, 2 do
                 local button= WardrobeCollectionFrame.SetsTransmogFrame['ModelR'..h..'C'..v]

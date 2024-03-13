@@ -1130,7 +1130,7 @@ local function setAddLoad(arg1)
 
 
 
-        local function init_sets_collenction(restButton, set)
+        local function init_sets_collenction(restButton, set)--套装
             local self= WardrobeCollectionFrame            
             if self:GetParent()~=WardrobeFrame then
                 return
@@ -1182,25 +1182,24 @@ local function setAddLoad(arg1)
             end
         end
 
-        local function init_items_colllection(restButton, set)
+        local function init_items_colllection(restButton, set)--物品
             if not restButton or not restButton.setSize then
                 return
             end
             local cols, rows
-            local frame= WardrobeCollectionFrame.ItemsCollectionFrame
-
-            
+            local frame= WardrobeCollectionFrame.ItemsCollectionFrame            
             frame.PagingFrame:SetPoint('BOTTOM', 0, 2)
-
             frame.ModelR1C1:ClearAllPoints()
             frame.PagingFrame:ClearAllPoints()
             if Save.size[restButton.name] or set then--78, 104                
                 cols= max(math.modf((frame:GetWidth()-40)/(78+10)), frame.NUM_COLS or 6)--行，数量
-                rows= max(math.modf((frame:GetHeight()-40)/(104+10)), frame.NUM_ROWS or 3)--列，数量
-                frame.ModelR1C1:SetPoint("TOPLEFT", frame, 10, -10);
+                rows= max(math.modf((frame:GetHeight()-60)/(104+10)), frame.NUM_ROWS or 3)--列，数量
+                
                 if WardrobeCollectionFrame:GetParent()==WardrobeFrame then
+                    frame.ModelR1C1:SetPoint("TOPLEFT", frame, 10, -10)    
                     frame.PagingFrame:SetPoint('TOP', frame, 'BOTTOM', 0, -2)
                 else
+                    frame.ModelR1C1:SetPoint("TOPLEFT", frame, 10, -60)
                     frame.PagingFrame:SetPoint('BOTTOM', 0, 2)
                 end
             else
@@ -1344,8 +1343,6 @@ local function setAddLoad(arg1)
         set_Move_Frame(WardrobeFrame, {setSize=true, minW=965, minH=606, initFunc=function(btn)            
             WardrobeTransmogFrame:ClearAllPoints()
             WardrobeTransmogFrame:SetPoint('LEFT', 2, -28)
-            
-            
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:ClearAllPoints()--两侧肩膀使用不同的幻化外观
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetPoint('RIGHT', WardrobeTransmogFrame.ShoulderButton, 'LEFT', -6, 0)
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:ClearAllPoints()
@@ -1374,11 +1371,7 @@ local function setAddLoad(arg1)
                 return
             end
             if parent==CollectionsJournal then
-                if Save.size[btn.name] then
-                    self.ItemsCollectionFrame.ModelR1C1:SetPoint("TOPLEFT", 8, -60)
-                end
-               
-
+                
             elseif parent==WardrobeFrame then
                 self:SetPoint('BOTTOMLEFT', 300,0)
             end
