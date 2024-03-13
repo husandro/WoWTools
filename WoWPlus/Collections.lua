@@ -873,9 +873,6 @@ end
 
 --设置，目标为模型
 local function Init_Wardrobe_Transmog()   
-    if not e.Player.husandro then
-        return
-    end 
     --local check = CreateFrame("CheckButton", nil, WardrobeTransmogFrame.ModelScene, "InterfaceOptionsCheckButtonTemplate")
     --local check= CreateFrame('Frame', nil, WardrobeTransmogFrame.ModelScene)
     local check= e.Cbtn(WardrobeTransmogFrame.ModelScene, {size={22, 22}, icon= not Save.hideTransmog})
