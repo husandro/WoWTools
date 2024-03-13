@@ -1119,6 +1119,7 @@ local function setAddLoad(arg1)
                     self.SetsTransmogFrame:ResetPage()--WardrobeSetsTransmogMixin
                     self:RefreshCameras()
                 elseif self.ItemsCollectionFrame:IsShown() then       
+                    self.ItemsCollectionFrame:RefreshVisualsList()
                     self.ItemsCollectionFrame:UpdateItems()
                     self.ItemsCollectionFrame:ResetPage()
                     self:RefreshCameras()
@@ -1126,22 +1127,38 @@ local function setAddLoad(arg1)
                 
             end
         end
-        local function init_sets_collenction()
-            local self= WardrobeCollectionFrame
-            local frame= self.SetsTransmogFrame--.ModelR1C1
+
+
+
+        local function init_sets_collenction(restButton, set)
+            local self= WardrobeCollectionFrame            
             if self:GetParent()~=WardrobeFrame then
                 return
             end
-            local w, h= WardrobeCollectionFrame.ItemsCollectionFrame:GetSize()--129 186
-            local numLine_W= max(math.modf((w-30)/(129+10)), 4)--行，数量
-            local numLine_H= max(math.modf(h/(186+10)), 2)--列，数量
-            local num= numLine_W * numLine_H--总数
-            local numMode= #frame.Models--已存，数量
+
+            local cols, rows
+            local frame= self.SetsTransmogFrame
 
             frame.ModelR1C1:ClearAllPoints()
-            frame.ModelR1C1:SetPoint("TOPLEFT", 10, -10);
+            frame.PagingFrame:ClearAllPoints()
+            if Save.size[restButton.name] or set then--129 186
+                cols= max(math.modf((frame:GetWidth()-40)/(129+10)), frame.NUM_COLS or 4)--行，数量
+                rows= max(math.modf((frame:GetHeight()-10)/(186+10)), frame.NUM_ROWS or 2)--列，数量
 
-            for i= numMode+1, num, 1 do--创建，MODEL
+                frame.ModelR1C1:SetPoint("TOPLEFT", frame, 10, -10);
+                
+                frame.PagingFrame:SetPoint('TOP', WardrobeCollectionFrame.SetsTransmogFrame, 'BOTTOM', 0, -2)
+            else
+                cols= frame.NUM_COLS or 4
+                rows= frame.NUM_ROWS or 2
+                frame.ModelR1C1:SetPoint("TOPLEFT", frame, 50, -75)
+                frame.PagingFrame:SetPoint('BOTTOM', 0, 30)
+            end
+
+            local num= cols * rows--总数
+            local numModel= #frame.Models--已存，数量
+
+            for i= numModel+1, num, 1 do--创建，MODEL
                 local model= CreateFrame('DressUpModel', nil, frame, 'WardrobeSetsTransmogModelTemplate')
                 model:OnLoad()
                 table.insert(frame.Models, model)
@@ -1150,13 +1167,13 @@ local function setAddLoad(arg1)
             for i=2, num do--设置位置
                 local model= frame.Models[i]
                 model:ClearAllPoints()
-                model:SetPoint('LEFT', frame.Models[i-1], 'RIGHT', 16, 0)
+                model:SetPoint('LEFT', frame.Models[i-1], 'RIGHT', 10, 0)
                 model:SetShown(true)
             end           
-            for i= numLine_W+1, num, numLine_W do
+            for i= cols+1, num, cols do
                 local model= frame.Models[i]
                 model:ClearAllPoints()
-                model:SetPoint('TOP', frame.Models[i-numLine_W], 'BOTTOM', 0, -10)
+                model:SetPoint('TOP', frame.Models[i-cols], 'BOTTOM', 0, -10)
             end
 
             frame.PAGE_SIZE= num--设置，总数
@@ -1164,22 +1181,45 @@ local function setAddLoad(arg1)
                 frame.Models[i]:SetShown(false)
             end
         end
-        local function init_items_colllection(restButton)
+
+        local function init_items_colllection(restButton, set)
             if not restButton or not restButton.setSize then
                 return
             end
+            local cols, rows
             local frame= WardrobeCollectionFrame.ItemsCollectionFrame
-            local w, h= WardrobeCollectionFrame.ItemsCollectionFrame:GetSize()--78, 104
-            local w2= math.modf((w-30)/(78+10))
-            local h2= math.modf(h/(104+10))
 
-            local numLine_W= restButton.PAGE_LINE_W or 6--行，数量
-            local numLine_H= restButton.PAGE_LINE_H or 3--列，数量
-            local num= numLine_W * numLine_H--总数
+            
+            frame.PagingFrame:SetPoint('BOTTOM', 0, 2)
 
-            local numMode= #frame.Models--已存，数量
+            frame.ModelR1C1:ClearAllPoints()
+            frame.PagingFrame:ClearAllPoints()
+            if Save.size[restButton.name] or set then--78, 104                
+                cols= max(math.modf((frame:GetWidth()-40)/(78+10)), frame.NUM_COLS or 6)--行，数量
+                rows= max(math.modf((frame:GetHeight()-40)/(104+10)), frame.NUM_ROWS or 3)--列，数量
+                frame.ModelR1C1:SetPoint("TOPLEFT", frame, 10, -10);
+                if WardrobeCollectionFrame:GetParent()==WardrobeFrame then
+                    frame.PagingFrame:SetPoint('TOP', frame, 'BOTTOM', 0, -2)
+                else
+                    frame.PagingFrame:SetPoint('BOTTOM', 0, 2)
+                end
+            else
+                cols= frame.NUM_COLS or 6
+                rows= frame.NUM_ROWS or 3
+                if WardrobeCollectionFrame:GetParent()==WardrobeFrame then
+                    frame.ModelR1C1:SetPoint("TOPLEFT", frame, 50, -85)
+                    frame.PagingFrame:SetPoint('BOTTOM', 0, 50)
+                else
+                    frame.ModelR1C1:SetPoint("TOPLEFT", frame, 71, -110)
+                    frame.PagingFrame:SetPoint('BOTTOM', 0, 35)
+                end
+                
+            end
 
-            for i= numMode+1, num, 1 do--创建，MODEL
+            local num= cols * rows--总数
+            local numModel= #frame.Models--已存，数量
+
+            for i= numModel+1, num, 1 do--创建，MODEL
                 local model= CreateFrame('DressUpModel', nil, frame, 'WardrobeItemsModelTemplate')
                 table.insert(frame.Models, model)
             end
@@ -1190,17 +1230,17 @@ local function setAddLoad(arg1)
                 model:SetPoint('LEFT', frame.Models[i-1], 'RIGHT', 16, 0)
                 model:SetShown(true)
             end           
-            for i= numLine_W+1, num, numLine_W do
+            for i= cols+1, num, cols do
                 local model= frame.Models[i]
                 model:ClearAllPoints()
-                model:SetPoint('TOP', frame.Models[i-numLine_W], 'BOTTOM', 0, -10)
+                model:SetPoint('TOP', frame.Models[i-cols], 'BOTTOM', 0, -10)
             end
 
             frame.PAGE_SIZE= num--设置，总数
             for i= num+1, #frame.Models, 1 do
                 frame.Models[i]:SetShown(false)
             end
-            init_sets_collenction()
+            init_sets_collenction(restButton, set)
         end
 
 
@@ -1285,26 +1325,13 @@ local function setAddLoad(arg1)
                     set_Move_Frame(frame, {frame=CollectionsJournal})
                 end
             end)
-            btn.PAGE_LINE_W=Save.CollectionsJournal_PAGE_LINE_W
-            btn.PAGE_LINE_H=Save.CollectionsJournal_PAGE_LINE_H
         end, sizeUpdateFunc=function(btn)
-            local w, h= WardrobeCollectionFrame.ItemsCollectionFrame:GetSize()--78, 104
-            local w2= math.modf((w-30)/(78+10))
-            local h2= math.modf(h/(104+10))
-            btn.PAGE_LINE_W= w2
-            btn.PAGE_LINE_H= h2
-            init_items_colllection(btn)
+            init_items_colllection(btn, true)
         end, sizeStoppedFunc=function(btn)
-            Save.CollectionsJournal_PAGE_LINE_W= btn.PAGE_LINE_W
-            Save.CollectionsJournal_PAGE_LINE_H= btn.PAGE_LINE_H
             Save.size[btn.name]= {btn.target:GetSize()}
             update_frame()
         end, sizeRestFunc=function(btn)            
             btn.target:SetSize(703, 606)
-            btn.PAGE_LINE_W=nil
-            btn.PAGE_LINE_H=nil
-            Save.CollectionsJournal_PAGE_LINE_W= nil
-            Save.CollectionsJournal_PAGE_LINE_H= nil
             Save.size[btn.name]=nil
             init_items_colllection(btn)
             update_frame()
@@ -1315,56 +1342,47 @@ local function setAddLoad(arg1)
 
         
         set_Move_Frame(WardrobeFrame, {setSize=true, minW=965, minH=606, initFunc=function(btn)            
-            btn.PAGE_LINE_W=Save.WardrobeTransmogFrame_PAGE_LINE_W
-            btn.PAGE_LINE_H=Save.WardrobeTransmogFrame_PAGE_LINE_H
-
             WardrobeTransmogFrame:ClearAllPoints()
             WardrobeTransmogFrame:SetPoint('LEFT', 2, -28)
-            WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame:ClearAllPoints()
-            WardrobeCollectionFrame.ItemsCollectionFrame.PagingFrame:SetPoint('BOTTOM', 0, 2)
-            WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame:ClearAllPoints()
-            WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame:SetPoint('TOP', WardrobeCollectionFrame.SetsTransmogFrame, 'BOTTOM', 0, -2)
+            
+            
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:ClearAllPoints()--两侧肩膀使用不同的幻化外观
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetPoint('RIGHT', WardrobeTransmogFrame.ShoulderButton, 'LEFT', -6, 0)
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:ClearAllPoints()
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:SetPoint('RIGHT', WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox, 'LEFT')
-        end, sizeUpdateFunc=function(btn)
-            local w, h= WardrobeCollectionFrame.ItemsCollectionFrame:GetSize()--78, 104
-            local w2= math.modf((w-30)/(78+10))
-            local h2= math.modf(h/(104+10))
-            btn.PAGE_LINE_W= w2
-            btn.PAGE_LINE_H= h2
-            init_items_colllection(btn)
+        end, sizeUpdateFunc=function(btn)            
+            init_items_colllection(btn, true)
+
         end, sizeStoppedFunc=function(btn)
-            Save.WardrobeTransmogFrame_PAGE_LINE_W= btn.PAGE_LINE_W
-            Save.WardrobeTransmogFrame_PAGE_LINE_H= btn.PAGE_LINE_H
             Save.size[btn.name]= {btn.target:GetSize()}
+            update_frame()
         end, sizeRestFunc=function(btn)
-            WardrobeFrame:SetSize(965, 606)--<Size x="965" y="606"/>
+            WardrobeFrame:SetSize(965, 606)
             Save.size[btn.name]=nil
             init_items_colllection(btn)
-            update_frame()
         end, scaleUpdateFunc=function()
         end, scaleRestFunc=function()
             update_frame()
         end})--幻化
 
 
+        
         hooksecurefunc(WardrobeCollectionFrame, 'SetContainer', function(self, parent)
-            if not parent.ResizeButton or not parent.ResizeButton.setSize then
+            
+            local btn=parent.ResizeButton
+            if not btn or not btn.setSize then
                 return
             end
             if parent==CollectionsJournal then
-                self.ItemsCollectionFrame.ModelR1C1:SetPoint("TOPLEFT", 8, -60)
-                init_items_colllection(parent.ResizeButton)
+                if Save.size[btn.name] then
+                    self.ItemsCollectionFrame.ModelR1C1:SetPoint("TOPLEFT", 8, -60)
+                end
+               
 
             elseif parent==WardrobeFrame then
-                --if Save.SavePoint['WardrobeFrame'] then
                 self:SetPoint('BOTTOMLEFT', 300,0)
-                self.ItemsCollectionFrame.ModelR1C1:ClearAllPoints()
-                self.ItemsCollectionFrame.ModelR1C1:SetPoint("TOPLEFT", 10, -10);
-                init_items_colllection(parent.ResizeButton)                    
             end
+            init_items_colllection(btn)
         end)
 
 
