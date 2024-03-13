@@ -1112,8 +1112,9 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_Collections' then--收藏
         local function init_sets_collenction()
-            local frame= WardrobeCollectionFrame.SetsTransmogFrame--.ModelR1C1
-            if WardrobeCollectionFrame:GetParent()~=WardrobeFrame then
+            local self= WardrobeCollectionFrame
+            local frame= self.SetsTransmogFrame--.ModelR1C1
+            if self:GetParent()~=WardrobeFrame then
                 return
             end
             local w, h= WardrobeCollectionFrame.ItemsCollectionFrame:GetSize()--129 186
@@ -1146,6 +1147,10 @@ local function setAddLoad(arg1)
             frame.PAGE_SIZE= num--设置，总数
             for i= num+1, #frame.Models, 1 do
                 frame.Models[i]:SetShown(false)
+            end
+
+            if self.activeFrame== self.SetsTransmogFrame then
+                
             end
         end
         local function init_items_colllection(restButton)
@@ -1286,9 +1291,13 @@ local function setAddLoad(arg1)
             init_items_colllection(btn)
             
         end, scaleRestFunc=function()
-            WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
+            if WardrobeCollectionFrame.ItemsCollectionFrame:IsShown() then
+                WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
+            end
         end, scaleUpdateFunc=function()
-            WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
+            if WardrobeCollectionFrame.ItemsCollectionFrame:IsShown() then
+                WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
+            end
         end})--藏品
 
         
@@ -1322,9 +1331,14 @@ local function setAddLoad(arg1)
             btn.PAGE_LINE_W=nil
             btn.PAGE_LINE_H=nil
             init_items_colllection(btn)
-        end, scaleUpdateFunc=function()
-            WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
-            WardrobeCollectionFrame.SetsTransmogFrame:RefreshCameras()
+        end, scaleUpdateFunc=function(btn)
+            local self= WardrobeCollectionFrame
+            if self.activeFrame== self.ItemsCollectionFrame then--self.SetsTransmogFrame then
+                self.ItemsCollectionFrame:RefreshCameras()
+            else
+                self.SetsTransmogFrame:RefreshCameras()
+            end
+            
         end, scaleRestFunc=function()
             WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
             WardrobeCollectionFrame.SetsTransmogFrame:RefreshCameras()

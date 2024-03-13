@@ -583,7 +583,7 @@ local function get_Items_Colleced()
     wowSaveItems[e.Player.class]=List
 
 
-    local Frame= WardrobeCollectionFrame.ItemsCollectionFrame.wowToolsItemsButton
+    local Frame= WardrobeCollectionFrame and WardrobeCollectionFrame.ItemsCollectionFrame.wowToolsItemsButton
     if not Frame or not Frame:IsShown() then
         return
     elseif Save.hideItems then--禁用
