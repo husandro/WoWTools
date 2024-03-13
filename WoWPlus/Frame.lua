@@ -1148,8 +1148,6 @@ local function setAddLoad(arg1)
             for i= num+1, #frame.Models, 1 do
                 frame.Models[i]:SetShown(false)
             end
-
-          
         end
         local function init_items_colllection(restButton)
             if not restButton or not restButton.setSize then
@@ -1286,6 +1284,9 @@ local function setAddLoad(arg1)
             btn.target:SetSize(703, 606)
             btn.PAGE_LINE_W=nil
             btn.PAGE_LINE_H=nil
+            Save.CollectionsJournal_PAGE_LINE_W= nil
+            Save.CollectionsJournal_PAGE_LINE_H= nil
+            Save.size[btn.name]=nil
             init_items_colllection(btn)
             
         end, scaleRestFunc=function()
@@ -1320,11 +1321,9 @@ local function setAddLoad(arg1)
             btn.PAGE_LINE_W= w2
             btn.PAGE_LINE_H= h2
             init_items_colllection(btn)
-
-            local self= WardrobeCollectionFrame
+            local self= WardrobeCollectionFrame            
             if self.activeFrame== self.SetsTransmogFrame then
-                C_TransmogSets.SetDefaultBaseSetsFilters()
-                print(id,addName)
+                self.SetsTransmogFrame:Refresh()--WardrobeSetsTransmogMixin
             end
         end, sizeStoppedFunc=function(btn)
             Save.WardrobeTransmogFrame_PAGE_LINE_W= btn.PAGE_LINE_W
@@ -1334,15 +1333,14 @@ local function setAddLoad(arg1)
             WardrobeFrame:SetSize(965, 606)--<Size x="965" y="606"/>
             btn.PAGE_LINE_W=nil
             btn.PAGE_LINE_H=nil
+            Save.size[btn.name]=nil
+            Save.WardrobeTransmogFrame_PAGE_LINE_W= nil
+            Save.WardrobeTransmogFrame_PAGE_LINE_H= nil
             init_items_colllection(btn)
-        end, scaleUpdateFunc=function(btn)
-            local self= WardrobeCollectionFrame
-            if self.activeFrame== self.ItemsCollectionFrame then--self.SetsTransmogFrame then
-                self.ItemsCollectionFrame:RefreshCameras()
-            end              
+        end, scaleUpdateFunc=function()
+            WardrobeCollectionFrame:RefreshCameras()
         end, scaleRestFunc=function()
-            WardrobeCollectionFrame.ItemsCollectionFrame:RefreshCameras()
-            WardrobeCollectionFrame.SetsTransmogFrame:RefreshCameras()
+            WardrobeCollectionFrame:RefreshCameras()
         end})--幻化
 
 
