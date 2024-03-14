@@ -1061,7 +1061,7 @@ local function Init_Wardrober()
                 end
 
             elseif ( transmogLocation:IsAppearance() ) then
-                local useLastWeaponCategory = transmogLocation:IsEitherHand() and
+                local useLastWeaponCategory = self.transmogLocation:IsEitherHand() and
                                                 self.lastWeaponCategory and
                                                 self:IsValidWeaponCategoryForSlot(self.lastWeaponCategory);
                 if ( useLastWeaponCategory ) then
@@ -1097,15 +1097,7 @@ local function Init_Wardrober()
             if collected>0 and not btn.Text then
                 btn.Text= e.Cstr(btn, {justifyH='CENTER', mouse=true})
                 btn.Text:SetPoint('BOTTOMRIGHT')
-                btn:HookScript('OnEnter', function(self)
-                    if not Save.hideItems then
-                        e.tips:AddDoubleLine('slotID |cffffffff'..self.transmogLocation:GetSlotID(),  '|cffffffff'..self.slot)
-                        if self.Text.category then
-                            e.tips:AddLine('category |cffffffff'..self.Text.category)
-                        end
-                        e.tips:Show()
-                    end
-                end)
+                
             end            
             if btn.Text then
                 btn.Text.category= category
@@ -1113,6 +1105,20 @@ local function Init_Wardrober()
             end
         end
     end)
+
+    for _, btn in pairs(WardrobeCollectionFrame.ItemsCollectionFrame.SlotsFrame.Buttons) do
+        btn:HookScript('OnEnter', function(self)
+            if not Save.hideItems then
+                e.tips:AddDoubleLine('slotID |cffffffff'..self.transmogLocation:GetSlotID(),  '|cffffffff'..self.slot)
+                if self.Text and self.Text.category then
+                    e.tips:AddLine('category |cffffffff'..self.Text.category)
+                end
+                e.tips:Show()
+            end
+        end)
+    end
+
+    --hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'SetActiveCategory', function()(category)
 end
 
 
