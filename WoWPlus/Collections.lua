@@ -1044,6 +1044,75 @@ local function Init_Wardrober()
 
     --设置，目标为模型
     Init_Wardrober_Transmog()
+
+    hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateSlotButtons', function(self)
+        for _, btn in pairs(self.SlotsFrame.Buttons) do            
+            local collected= 0
+            local transmogLocation= btn.transmogLocation
+            local category
+            local slotID= btn.transmogLocation:GetSlotID()
+            if ( transmogLocation:IsIllusion() ) then
+                if slotID~=17 then
+                    for _, illusion in ipairs(C_TransmogCollection.GetIllusions() or {}) do
+                        if ( illusion.isCollected ) then
+                            collected = collected + 1
+                        end
+                    end
+                end
+
+            elseif ( transmogLocation:IsAppearance() ) then
+                local useLastWeaponCategory = transmogLocation:IsEitherHand() and
+                                                self.lastWeaponCategory and
+                                                self:IsValidWeaponCategoryForSlot(self.lastWeaponCategory);
+                if ( useLastWeaponCategory ) then
+                    category = self.lastWeaponCategory;
+                else
+                    local appliedSourceID, appliedVisualID, selectedSourceID, selectedVisualID = self:GetActiveSlotInfo();
+                    if ( selectedSourceID ~= Constants.Transmog.NoTransmogID ) then
+                        category = C_TransmogCollection.GetAppearanceSourceInfo(selectedSourceID);
+                        if category and not self:IsValidWeaponCategoryForSlot(category) then
+                            category = nil;
+                        end
+                    end
+                end
+                if ( not category ) then
+                    if ( transmogLocation:IsEitherHand() ) then
+                        -- find the first valid weapon category
+                        for categoryID = FIRST_TRANSMOG_COLLECTION_WEAPON_TYPE, LAST_TRANSMOG_COLLECTION_WEAPON_TYPE do
+                            if ( self:IsValidWeaponCategoryForSlot(categoryID) ) then
+                                category = categoryID;
+                                break;
+                            end
+                        end
+                    else
+                        category = transmogLocation:GetArmorCategoryID();
+                    end
+                end
+            end
+
+            if category then
+                collected= C_TransmogCollection.GetCategoryCollectedCount(category) or 0
+            end
+            
+            if collected>0 and not btn.Text then
+                btn.Text= e.Cstr(btn, {justifyH='CENTER', mouse=true})
+                btn.Text:SetPoint('BOTTOMRIGHT')
+                btn:HookScript('OnEnter', function(self)
+                    if not Save.hideItems then
+                        e.tips:AddDoubleLine('slotID |cffffffff'..self.transmogLocation:GetSlotID(),  '|cffffffff'..self.slot)
+                        if self.Text.category then
+                            e.tips:AddLine('category |cffffffff'..self.Text.category)
+                        end
+                        e.tips:Show()
+                    end
+                end)
+            end            
+            if btn.Text then
+                btn.Text.category= category
+                btn.Text:SetText(collected>0 and e.MK(collected, 3) or '')
+            end
+        end
+    end)
 end
 
 
