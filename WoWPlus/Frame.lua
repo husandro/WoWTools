@@ -1356,7 +1356,8 @@ local function setAddLoad(arg1)
             WardrobeFrame:SetSize(965, 606)
             Save.size[btn.name]=nil
             init_items_colllection(btn)
-        end, scaleUpdateFunc=function()
+        end, scaleStoppedFunc=function()
+            update_frame()
         end, scaleRestFunc=function()
             update_frame()
         end})--幻化
@@ -1364,7 +1365,6 @@ local function setAddLoad(arg1)
 
         
         hooksecurefunc(WardrobeCollectionFrame, 'SetContainer', function(self, parent)
-            
             local btn=parent.ResizeButton
             if not btn or not btn.setSize then
                 return

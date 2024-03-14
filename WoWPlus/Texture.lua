@@ -2602,7 +2602,7 @@ local function Init_HelpTip()
     if Save.disabledHelpTip then
         return
     end
-    hooksecurefunc(HelpTip, 'Show', function(self, parent)--隐藏所有HelpTip HelpTip.lua
+    hooksecurefunc(HelpTip, 'Show', function(self, parent)--隐藏所有HelpTip HelpTip.lua        
         self:HideAll(parent)
     end)
 
