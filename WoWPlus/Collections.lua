@@ -1400,12 +1400,11 @@ local function Init_Heirloom()
 
     local check= e.Cbtn(HeirloomsJournal, {size={22,22}, icon= not Save.hideHeirloom})
     check:SetPoint('BOTTOMRIGHT', -40, 18)
-    check:SetAlpha(0.5)
     function check:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '传家宝' or HEIRLOOMS, e.GetEnabeleDisable(Save.hideHeirloom)..e.Icon.left)
         e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.onlyChinese and '传家宝' or HEIRLOOMS, e.GetEnabeleDisable(Save.hideHeirloom)..e.Icon.left)
         e.tips:Show()
         self:SetAlpha(1)
     end
