@@ -6,6 +6,8 @@ local Save={
     --hideHeirloom= true,--传家宝
     --hideItems= true,--物品, 幻化, 界面
     --hideToyBox= true,--玩具
+
+    --Wardrober_Items_Labels_Scale,
 }
 
 
@@ -444,7 +446,7 @@ end
 --物品
 local function Init_Wardrober_Items()--物品, 幻化, 界面
     local btn= e.Cbtn(WardrobeCollectionFrame.ItemsCollectionFrame, {size={20,20}, icon='hide'})
-    btn:SetPoint('TOPLEFT', WardrobeCollectionFrame.ItemsCollectionFrame, 'TOPRIGHT', 4, 40)
+    btn:SetPoint('TOPLEFT', WardrobeCollectionFrame.ItemsCollectionFrame, 'TOPRIGHT', 8, 60)
 
     function btn:set_texture()
         self:SetNormalAtlas(Save.hideItems and e.Icon.disabled or e.Icon.icon)
@@ -452,9 +454,16 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
     function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '物品' or ITEMS, e.GetEnabeleDisable(Save.hideItems)..e.Icon.left)
         e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.onlyChinese and '物品' or ITEMS, e.GetEnabeleDisable(Save.hideItems)..e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.Wardrober_Items_Labels_Scale or 1), e.Icon.mid)
         e.tips:Show()
+    end
+    function btn:set_label_scale()--缩放
+        for _, label in pairs(self.itemsLabel) do
+            label:SetScale(Save.Wardrober_Items_Labels_Scale or 1)
+        end
     end
 
     btn:SetScript('OnClick',function(self)
@@ -467,6 +476,16 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
 
     btn:SetScript('OnEnter', btn.set_tooltips)
     btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnMouseWheel', function(self, d)--缩放
+        local n= Save.Wardrober_Items_Labels_Scale or 1
+        n= d==1 and n+ 0.1 or n
+        n= d==-1 and n-0.1 or n
+        n= n<0.4 and 0.4 or n
+        n= n>4 and 4 or n
+        Save.Wardrober_Items_Labels_Scale=n
+        self:set_label_scale()
+        self:set_tooltips()
+    end)
 
     btn.itemsLabel={}
     function btn:set_all_date_text()--设置内容
@@ -477,7 +496,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
             return
         end
         
-        local last
+        local last=self
         local totaleCollected, totaleAll, totaleClass = 0, 0, 0--总数
         local classCollected, classAll= 0, 0--本职业，总数
         for class, tab in pairs (wowSaveItems) do
@@ -485,7 +504,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
             if not label then
                 label=e.Cstr(self, {mouse=true, })
                 label.class= class
-                label:SetPoint('TOPLEFT', last or self, 'BOTTOMLEFT', last and 0 or 4,-2)
+                label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT', 0, last~=self and 0 or -12)
                 function label:get_class_color()
                     return '|c'..select(4, GetClassColor(self.class)), '|A:classicon-'..self.class..':0:0|a'
                 end
@@ -513,12 +532,17 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                             end
                             break
                         end
-                    end
-                   
+                    end                   
                     e.tips:Show()
                     frame:SetAlpha(0.5)
-                end)                
+                end)
+                label:SetScript('OnMouseDown', function(frame)
+                    local la= frame:GetParent().itemsLabel.classList
+                    la.class= frame.class
+                    la:set_class_text()
+                end)
                 self.itemsLabel[class]=label
+                last=label
             end
 
           
@@ -533,8 +557,6 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
 
             local col, classIcon= label:get_class_color()
             label:SetText(col..classIcon..format('%i%% ', collected/all*100)..e.MK(collected,3)..'/'..e.MK(all,3))
-            
-            last=label
 
             if class== e.Player.class then
                 classCollected, classAll= collected, all--本职业，总数
@@ -542,21 +564,61 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
         end
 
         local str= self.itemsLabel.all--总数字符
-        if not str and last then
+        if not str then
             str=e.Cstr(self)
             str:SetPoint('TOPLEFT', last, 'BOTTOMLEFT', 0, -12)
             str:SetJustifyH('RIGHT')
             self.itemsLabel.all=str
+            last= str
+        end    
+        local text
+        if totaleClass>1 then
+            text= e.Icon.wow2..format('%i%% %s/%s ', totaleCollected/totaleAll*100, e.MK(totaleCollected, 3), e.MK(totaleAll,3))..(e.onlyChinese and '职业' or CLASS)..' '..totaleClass
         end
-        if str and totaleAll>0 then
-            str:SetText(e.Icon.wow2..format('%i%% %s/%s ', totaleCollected/totaleAll*100, e.MK(totaleCollected, 3), e.MK(totaleAll,3))..(e.onlyChinese and '职业' or CLASS)..' '..totaleClass)
-        end
+        str:SetText(text or '')        
 
-        str= self.itemsLabel.allTabLabel--WardrobeCollectionFrameTab1 上，显示数量
+        str= self.itemsLabel.classList--职业，列表
+        if not str then
+            str= e.Cstr(self)
+            self.itemsLabel.classList= str
+            str:SetPoint('TOPLEFT', last, 'BOTTOMLEFT', 0, -12)            
+            function str:set_class_text()
+                local text=''
+                for class, tab3 in pairs (wowSaveItems) do
+                    if class==self.class then
+                        for index, info in pairs(tab3 or {}) do
+                            local name = info.index==28 and (e.onlyChinese and '武器附魔' or WEAPON_ENCHANTMENT)
+                                    or e.cn(C_TransmogCollection.GetCategoryInfo(info.index))
+                                    or ''
+                            local icon= SlotsIcon[info.index] or ''
+                            local collected, all =  info.Collected or 0, info.All or 0
+                            name= icon..(collected==all and '|cnGREEN_FONT_COLOR:' or '')..name..format(' %i%%', collected/all*100)
+                            local num= (collected==all and '|cnGREEN_FONT_COLOR:' or '')..collected..'/'.. all
+                            local col= select(2, math.modf(index/2))==0 and '|cffff7f00' or '|cffffffff'
+                            text= text..col..name..' '..num..'|r|n'
+                        end
+                        break
+                    end
+                end
+                if self.class~=e.Player.class then
+                    local color= C_ClassColor.GetClassColor(self.class)
+                    local className= e.cn(LOCALIZED_CLASS_NAMES_MALE[self.class])
+                    if colr and className then
+                        className= color:WrapTextInColorCode(className)
+                    end
+                    text= (e.Class(nil, self.class, false) or '')..(className or '')..'|n'..text
+                end
+                self:SetText(text)
+            end
+        end
+        str.class=e.Player.class
+        str:set_class_text()
+
+        str= self.itemsLabel.allTabl--WardrobeCollectionFrameTab1 上，显示数量
         if not str then
             str= e.Cstr(WardrobeCollectionFrameTab1, {justifyH='RIGHT'})
             str:SetPoint('BOTTOMRIGHT', WardrobeCollectionFrameTab1.Text, 'TOPRIGHT', 2, 8)
-            self.itemsLabel.allTabLabel=str
+            self.itemsLabel.allTab=str
            
         end
         str:SetText(classCollected>1 and format('%d %i%%', classCollected, classCollected/classAll*100) or '')
@@ -571,6 +633,9 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
     end)
 
     btn:set_texture()
+    if Save.Wardrober_Items_Labels_Scale and Save.Wardrober_Items_Labels_Scale~= 1 then
+        btn:set_label_scale()
+    end
 end
 
 
