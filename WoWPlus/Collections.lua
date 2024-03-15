@@ -1469,8 +1469,8 @@ local function Init_Heirloom()
                 btn= self:cereate_button(classID, specID, icon, nil)                
                 if i==1 then
                     local texture= btn:CreateTexture()
-                    texture:SetPoint('RIGHT', btn, 'LEFT')
-                    texture:SetSize(20,20)
+                    texture:SetPoint('RIGHT', btn, 'LEFT',4,0)
+                    texture:SetSize(10, 10)
                     texture:SetAtlas('common-icon-rotateleft')
                 end
                 self.specButton[i]= btn
