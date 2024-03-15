@@ -1405,9 +1405,7 @@ local function Init_Heirloom()
         self:SetNormalAtlas(Save.hideHeirloom and e.Icon.disabled or e.Icon.icon)     
     end
     function check:set_filter_shown()
-        if self.buttons[1] then
-            self.buttons[1]:SetShown(not Save.hideHeirloom)
-        end
+        self.frame:SetShown(not Save.hideHeirloom)
     end
     function check:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -1424,15 +1422,109 @@ local function Init_Heirloom()
         self:set_filter_shown()
         HeirloomsJournal:FullRefreshIfVisible()
     end)
-    check:SetPoint('BOTTOMRIGHT', -50, 18)
+    --check:SetPoint('BOTTOMRIGHT', -50, 18)
+    check:SetPoint('TOPLEFT', HeirloomsJournal.iconsFrame, 'TOPRIGHT', 8, 0)
     check:SetScript('OnLeave', GameTooltip_Hide)
     check:SetScript('OnEnter', check.set_tooltips)
     
+    
     --过滤，按钮
+    check.frame= CreateFrame('Frame', nil, check)
+    check.frame:SetPoint('TOPLEFT', check, 'BOTTOMLEFT',0 -46)
+    check.frame:SetSize(26, 1)
+    check.classButton={}
+    check.specButton={}
+    
+    function check:cereate_button(classID, specID, texture, atlas)
+        local btn= e.Cbtn2({parent=check.frame, notSecureActionButton=true, size=26, showTexture=true})
+        function btn:set_select(class, spec)
+            if class==self.classID and spec==self.specID then
+                self:LockHighlight()
+            else
+                self:UnlockHighlight()
+            end
+        end
+        btn:SetScript('OnClick', function(self)
+            HeirloomsJournal:SetClassAndSpecFilters(self.classID, self.specID)
+            if self.set_spec then
+                self:set_spec()
+            end
+        end)
+        if texture then
+            btn.texture:SetTexture(texture)
+        else
+            btn.texture:SetAtlas(atlas)
+        end
+        btn.classID= classID
+        btn.specID= specID
+        return btn
+    end
+
+    function check:init_spce(classID, check)
+        local num= GetNumSpecializationsForClassID(classID) or 0
+        for i = 1, num, 1 do
+            local specID, _, _, icon = GetSpecializationInfoForClassID(classID, i, e.Player.sex)
+            local btn= self.specButton[i]
+            if not btn then
+                btn= self:cereate_button(classID, specID, icon, nil)                
+                if i==1 then
+                    local texture= btn:CreateTexture()
+                    texture:SetPoint('RIGHT', btn, 'LEFT')
+                    texture:SetSize(20,20)
+                    texture:SetAtlas('common-icon-rotateleft')
+                end
+                self.specButton[i]= btn
+            else
+                btn.classID= classID
+                btn.specID= specID
+                btn.texture:SetTexture(icon)
+            end
+            btn:ClearAllPoints()
+            if i==1 then
+                btn:SetPoint('TOPLEFT', self.classButton[classID], 'TOPRIGHT')
+            else
+                btn:SetPoint('TOP', self.specButton[i-1], 'BOTTOM')
+            end
+            btn:SetShown(true)
+            if check then--初始，选取
+                btn:set_select(classID, specID)
+            end
+        end
+        for i=num+1, #self.specButton, 1 do
+            self.specButton[i]:SetShown(false)
+        end
+    end
+
+    function check:chek_select(Class, Spec)
+        for _, btn in pairs(self.classButton) do
+            btn:set_select(Class, Spec)
+        end
+        for _, btn in pairs(self.specButton) do
+            btn:set_select(Class, Spec)
+        end
+    end
+    
+    for i = 1, GetNumClasses() do--设置，职业
+        local classFile, classID= select(2, GetClassInfo(i))
+        local atlas= e.Class(nil, classFile, true)
+        if atlas then
+            local btn= check:cereate_button(classID, 0, nil, atlas)
+            check.classButton[i]=btn
+            btn:SetPoint('TOPLEFT', check.classButton[i-1] or check.frame, 'BOTTOMLEFT')
+            function btn:set_spec()
+                self:GetParent():GetParent():init_spce(self.classID)
+            end
+            --btn:SetScript('OnClick', btn.set_spec)
+            if classFile==e.Player.class then
+                btn:set_spec()
+            end
+            
+        end
+    end
+--[[
+
     local tab={}
-    local curClass= select(2, UnitClassBase('player'))
-    local curSpec
-    local curSpecIndex= GetSpecialization()
+    
     for i = 1, GetNumSpecializationsForClassID(curClass) or 0 do
         local specID, _, _, icon = GetSpecializationInfoForClassID(curClass, i, e.Player.sex)
         table.insert(tab, {
@@ -1455,8 +1547,7 @@ local function Init_Heirloom()
             })
         end
     end
-
-    check.buttons={}    
+   
     for index, info in pairs(tab) do
         local btn= e.Cbtn2({parent= check.buttons[1] or check, notSecureActionButton=true, size=26, showTexture=true})
         btn:SetPoint('RIGHT', index>1 and check.buttons[#check.buttons] or check, 'LEFT')
@@ -1479,18 +1570,11 @@ local function Init_Heirloom()
         btn.specID= info.specID
         btn:set_select(curClass, curSpec)
         table.insert(check.buttons, btn)
-    end
-    
-    HeirloomsJournal.WoWTools= check
-    hooksecurefunc(HeirloomsJournal, 'SetClassAndSpecFilters', function(self, Class, Spec)
-        for _, btn in pairs(self.WoWTools.buttons) do
-           btn:set_select(Class, Spec)
-        end
-    end)
-
-    --[[if curClass and curSpec then--选定当前专精
-        HeirloomsJournal:SetClassAndSpecFilters(curClass, curSpec)
     end]]
+    HeirloomsJournal.WoWtoolsButton= check
+    hooksecurefunc(HeirloomsJournal, 'SetClassAndSpecFilters', function(self, Class, Spec)        
+        self.WoWtoolsButton:chek_select(Class, Spec)
+    end)
 
     check:set_alpha()
     check:set_texture()
