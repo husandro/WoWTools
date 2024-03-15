@@ -1430,13 +1430,13 @@ local function Init_Heirloom()
     
     --过滤，按钮
     check.frame= CreateFrame('Frame', nil, check)
-    check.frame:SetPoint('TOPLEFT', check, 'BOTTOMLEFT',0 -46)
+    check.frame:SetPoint('TOPLEFT', check, 'BOTTOMLEFT',0 -80)
     check.frame:SetSize(26, 1)
     check.classButton={}
     check.specButton={}
     
     function check:cereate_button(classID, specID, texture, atlas)
-        local btn= e.Cbtn2({parent=check.frame, notSecureActionButton=true, size=26, showTexture=true})
+        local btn= e.Cbtn2({parent=self.frame, notSecureActionButton=true, size=26, showTexture=true})
         function btn:set_select(class, spec)
             if class==self.classID and spec==self.specID then
                 self:LockHighlight()
@@ -1469,7 +1469,7 @@ local function Init_Heirloom()
                 btn= self:cereate_button(classID, specID, icon, nil)                
                 if i==1 then
                     local texture= btn:CreateTexture()
-                    texture:SetPoint('RIGHT', btn, 'LEFT',4,0)
+                    texture:SetPoint('RIGHT', btn, 'LEFT')
                     texture:SetSize(10, 10)
                     texture:SetAtlas('common-icon-rotateleft')
                 end
@@ -1481,7 +1481,7 @@ local function Init_Heirloom()
             end
             btn:ClearAllPoints()
             if i==1 then
-                btn:SetPoint('TOPLEFT', self.classButton[classID], 'TOPRIGHT')
+                btn:SetPoint('TOPLEFT', self.classButton[classID], 'TOPRIGHT', 5,0)
             else
                 btn:SetPoint('TOP', self.specButton[i-1], 'BOTTOM')
             end
