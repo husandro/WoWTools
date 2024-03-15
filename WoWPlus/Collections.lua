@@ -732,7 +732,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                 local tab= slotID==16 and {12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 29} or {18, 19}
                 local n=1
                 for _, category in pairs(tab) do
-                    local collected= C_TransmogCollection.GetCategoryCollectedCount(category) or 0
+                local collected= C_TransmogCollection.GetCategoryCollectedCount(category) or 0
                     local all= C_TransmogCollection.GetCategoryTotal(category) or 0
                     if all>0 then
                         local col= collected==all and '|cnGREEN_FONT_COLOR:' or (select(2, math.modf(n/2))==0 and '|cffff7f00' or '|cffffffff')
@@ -743,7 +743,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                     end
                 end
             elseif self.Text and self.Text.category then
-                e.tips:AddLine('category '..cateself.Text.categorygory)
+                e.tips:AddLine('category '..cateself.Text.category)
                 local collected= C_TransmogCollection.GetCategoryCollectedCount(self.Text.category) or 0
                 local all= C_TransmogCollection.GetCategoryTotal(self.Text.category) or 0
                 local icon= SlotsIcon[self.Text.category] or ''
@@ -777,7 +777,9 @@ end
 
 
 
---外观，物品，提示 WardrobeCollectionFrame.ItemsCollectionFrame
+
+
+--外观，物品，提示，索引 WardrobeCollectionFrame.ItemsCollectionFrame
 local function get_Link_Item_Type_Source(sourceID, type)
     if sourceID then
         if type=='item' then
@@ -787,7 +789,8 @@ local function get_Link_Item_Type_Source(sourceID, type)
         end
     end
 end
-local function set_Items_Tooltips(self)
+local function set_Items_Tooltips(self)--UpdateItems    
+    local idexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE    
     for i= 1, self.PAGE_SIZE do
         local model = self.Models[i]
         if model and model:IsShown() then
@@ -844,7 +847,8 @@ local function set_Items_Tooltips(self)
                                         e.tips:AddDoubleLine(info.icon and '|T'..info.icon..':0|t'..info.icon or '', 'isHideVisual '..(info.isHideVisual and 'true' or 'false'))
                                         e.tips:AddDoubleLine(info.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'),
                                                             info.isUsable and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '可用' or AVAILABLE)..'|r' or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '不可用' or UNAVAILABLE)..'|r'))
-                                        e.tips:AddLine(' ')
+                                        e.tips:AddLine(' '
+                                    )
                                     end
                                 else
                                     e.tips:SetHyperlink(link2)
@@ -900,6 +904,19 @@ local function set_Items_Tooltips(self)
             end
             for index= #itemLinks+1, #model.itemButton do
                 model.itemButton[index]:SetShown(false)
+            end
+
+            local idex--索引
+            if not Save.hideItems then
+                idex= i + idexOffset
+                if not model.Text then
+                    model.Text= e.Cstr(model)
+                    model.Text:SetPoint('TOPRIGHT')
+                    model.Text:SetAlpha(0.3)
+                end
+            end
+            if model.Text then
+                model.Text:SetText(idex or '')
             end
         end
     end
@@ -1057,6 +1074,10 @@ end
 
 
 
+
+
+
+
 --套装，列表
 local function Init_Wardrober_ListContainer()
     hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(btn, displayData)
@@ -1189,11 +1210,7 @@ local function Init_Wardrober_ListContainer()
             WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.tipsLabel:SetText("")
         end
     end)
-
-
 end
-
-
 
 
 
@@ -1208,9 +1225,10 @@ end
 local function Init_Wardrober()
     --物品, 幻化, 界面
     Init_Wardrober_Items()
-    --外观，物品，提示
 
+    --外观，物品，提示, 索引
     hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateItems', set_Items_Tooltips)
+
     --套装, 幻化, 界面
     Init_Wardrober_Sets()
 
@@ -1226,9 +1244,6 @@ local function Init_Wardrober()
     --设置，目标为模型
     Init_Wardrober_Transmog()
 
-    
-
-    --hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'SetActiveCategory', function()(category)
 end
 
 
