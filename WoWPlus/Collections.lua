@@ -397,7 +397,7 @@ local function Init_Wardrober_Sets()
             for _, info in pairs(wowSaveSets) do
                 if info.class==e.Player.class then
                     if info.coll and info.all and info.all> 0  then
-                        text= format('%d %i%%', info.coll, info.coll/info.all*100)
+                        text= format('%d %i%%', info.coll/info.all*100, info.coll)
                     end
                     break
                 end
@@ -406,16 +406,12 @@ local function Init_Wardrober_Sets()
         self.tabAllLabel:SetText(text or '')
     end
 
-
     WardrobeCollectionFrame:HookScript('OnShow', function()
         Save_Sets_Colleced()--保存，套装，数据
         btn:set_tab_all_text()
     end)
 
-
     btn:set_texture()
-
-    
 end
 
 
@@ -430,8 +426,27 @@ end
 
 
 
-
-
+--幻化，套装，索引 WardrobeCollectionFrame.SetsTransmogFrame
+local function set_Sets_Tooltips(self)--UpdateSets
+    local idexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE    
+    for i= 1, self.PAGE_SIZE do
+        local model = self.Models[i]
+        if model and model:IsShown() then
+            local idex--索引
+            if not Save.hideItems then
+                idex= i + idexOffset
+                if not model.Text then
+                    model.Text= e.Cstr(model)
+                    model.Text:SetPoint('TOPRIGHT',1,0)
+                    model.Text:SetAlpha(0.5)
+                end
+            end
+            if model.Text then
+                model.Text:SetText(idex or '')
+            end
+        end
+    end
+end
 
 
 
@@ -611,7 +626,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                     if colr and className then
                         className= color:WrapTextInColorCode(className)
                     end
-                    text= (e.Class(nil, self.class, false) or '')..(className or '')..'|n'..text
+                    text= e.Icon.toRight2..(e.Class(nil, self.class, false) or '')..(className or '')..e.Icon.toLeft2..'|n'..text
                 end
                 self:SetText(text)
             end
@@ -743,7 +758,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                     end
                 end
             elseif self.Text and self.Text.category then
-                e.tips:AddLine('category '..cateself.Text.category)
+                e.tips:AddLine('category '..self.Text.category)
                 local collected= C_TransmogCollection.GetCategoryCollectedCount(self.Text.category) or 0
                 local all= C_TransmogCollection.GetCategoryTotal(self.Text.category) or 0
                 local icon= SlotsIcon[self.Text.category] or ''
@@ -911,8 +926,8 @@ local function set_Items_Tooltips(self)--UpdateItems
                 idex= i + idexOffset
                 if not model.Text then
                     model.Text= e.Cstr(model)
-                    model.Text:SetPoint('TOPRIGHT')
-                    model.Text:SetAlpha(0.3)
+                    model.Text:SetPoint('TOPRIGHT', 3, 2)
+                    model.Text:SetAlpha(0.5)
                 end
             end
             if model.Text then
@@ -1232,18 +1247,17 @@ local function Init_Wardrober()
     --套装, 幻化, 界面
     Init_Wardrober_Sets()
 
-    --套装,物品,Link
+    --幻化，套装，索引
+    hooksecurefunc(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', set_Sets_Tooltips)
+
+    --套装,物品, Link
     hooksecurefunc(WardrobeCollectionFrame.SetsCollectionFrame, 'SetItemFrameQuality', Init_Wardrobe_DetailsFrame)
 
     --套装，列表
     Init_Wardrober_ListContainer()
 
-    --套装,物品,Link
-    hooksecurefunc(WardrobeCollectionFrame.SetsCollectionFrame, 'SetItemFrameQuality', Init_Wardrobe_DetailsFrame)
-
     --设置，目标为模型
     Init_Wardrober_Transmog()
-
 end
 
 
@@ -1388,7 +1402,7 @@ local function Init_Heirloom()
     check:SetPoint('BOTTOMRIGHT', -40, 18)
     check:SetAlpha(0.5)
     function check:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '传家宝' or HEIRLOOMS, e.GetEnabeleDisable(Save.hideHeirloom)..e.Icon.left)
         e.tips:AddDoubleLine(id, e.cn(addName))
@@ -1431,11 +1445,10 @@ local function Init_Heirloom()
     for i = 1, GetNumSpecializationsForClassID(classID) or 0 do
         local specID, _, _, icon = GetSpecializationInfoForClassID(classID, i, e.Player.sex)
         if specID and icon then
-            local btn= e.Cbtn2({parent=last or check.filterButton, notSecureActionButton=true, size=26, showTexture=true})
+            local btn= e.Cbtn2({parent=check.filterButton, notSecureActionButton=true, size=26, showTexture=true})
             btn.texture:SetTexture(icon)
             if not last then
                 btn:SetPoint('BOTTOM', check.filterButton,'TOP')
-                btn:SetShown(not Save.hideHeirloom)
             else
                 btn:SetPoint('RIGHT', last, 'LEFT')
             end
@@ -1447,19 +1460,6 @@ local function Init_Heirloom()
             last= btn
         end
     end
-    --[[
-        local sex = UnitSex("player")
-        for i = 1, GetNumSpecializationsForClassID(classID) do
-            local specID, specName = GetSpecializationInfoForClassID(classID, i, sex)
-            info.leftPadding = 10
-            info.text = specName
-            info.checked = filterSpecID == specID
-            info.arg1 = classID
-            info.arg2 = specID
-            info.func = SetClassAndSpecFilters
-            UIDropDownMenu_AddButton(info, level)
-        end
-    ]]
 end
 
 

@@ -1864,6 +1864,7 @@ local function Init_Event(arg1)
         hide_Texture(WardrobeTransmogFrame.Inset.Bg)
         set_Alpha_Color(WardrobeTransmogFrame.Inset.BG)
         hide_Texture(WardrobeCollectionFrame.SetsTransmogFrame.BackgroundTile)
+        set_NineSlice(WardrobeCollectionFrame.SetsTransmogFrame, nil, true)
         set_Alpha_Color(WardrobeCollectionFrame.SetsTransmogFrame.Bg)
         --set_Menu(WardrobeOutfitDropDown)
 

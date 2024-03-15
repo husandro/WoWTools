@@ -95,6 +95,7 @@ local function set_Scale_Size(frame, tab)
         return
     end
     local btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
+    btn:SetFrameLevel(9999)
     frame.ResizeButton= btn
 
     btn.target= frame
@@ -1141,11 +1142,9 @@ local function setAddLoad(arg1)
             frame.ModelR1C1:ClearAllPoints()
             frame.PagingFrame:ClearAllPoints()
             if Save.size[restButton.name] or set then--129 186
-                cols= max(math.modf((frame:GetWidth()-40)/(129+10)), frame.NUM_COLS or 4)--行，数量
-                rows= max(math.modf((frame:GetHeight()-10)/(186+10)), frame.NUM_ROWS or 2)--列，数量
-
-                frame.ModelR1C1:SetPoint("TOPLEFT", frame, 10, -10);
-                
+                cols= max(math.modf(frame:GetWidth()/(129+10)), frame.NUM_COLS or 4)--行，数量
+                rows= max(math.modf(frame:GetHeight()/(186+10)), frame.NUM_ROWS or 2)--列，数量
+                frame.ModelR1C1:SetPoint("TOPLEFT", frame, 6, -6)                
                 frame.PagingFrame:SetPoint('TOP', WardrobeCollectionFrame.SetsTransmogFrame, 'BOTTOM', 0, -2)
             else
                 cols= frame.NUM_COLS or 4
@@ -1159,7 +1158,7 @@ local function setAddLoad(arg1)
 
             for i= numModel+1, num, 1 do--创建，MODEL
                 local model= CreateFrame('DressUpModel', nil, frame, 'WardrobeSetsTransmogModelTemplate')
-                model:OnLoad()
+                --model:OnLoad()
                 table.insert(frame.Models, model)
             end
 
@@ -1185,21 +1184,23 @@ local function setAddLoad(arg1)
             if not restButton or not restButton.setSize then
                 return
             end
-            local cols, rows
             local frame= WardrobeCollectionFrame.ItemsCollectionFrame            
             frame.PagingFrame:SetPoint('BOTTOM', 0, 2)
             frame.ModelR1C1:ClearAllPoints()
             frame.PagingFrame:ClearAllPoints()
-            if Save.size[restButton.name] or set then--78, 104                
-                cols= max(math.modf((frame:GetWidth()-40)/(78+10)), frame.NUM_COLS or 6)--行，数量
-                rows= max(math.modf((frame:GetHeight()-60)/(104+10)), frame.NUM_ROWS or 3)--列，数量
-                
+            local cols, rows
+            local w, h= frame.ModelR1C1:GetSize()--78, 104
+            if Save.size[restButton.name] or set then
                 if WardrobeCollectionFrame:GetParent()==WardrobeFrame then
-                    frame.ModelR1C1:SetPoint("TOPLEFT", frame, 10, -10)    
+                    frame.ModelR1C1:SetPoint("TOPLEFT", frame, 6, -6)    
                     frame.PagingFrame:SetPoint('TOP', frame, 'BOTTOM', 0, -2)
+                    cols= math.modf((frame:GetWidth()-36)/(w+10))
+                    rows= math.modf((frame:GetHeight())/(h+10))                   
                 else
-                    frame.ModelR1C1:SetPoint("TOPLEFT", frame, 10, -60)
+                    frame.ModelR1C1:SetPoint("TOPLEFT", frame, 6, -60)
                     frame.PagingFrame:SetPoint('BOTTOM', 0, 2)
+                    cols= math.modf((frame:GetWidth()-46)/(w+10))--行，数量
+                    rows= math.modf((frame:GetHeight()-86)/(h+10))--列，数量
                 end
             else
                 cols= frame.NUM_COLS or 6
@@ -1210,9 +1211,11 @@ local function setAddLoad(arg1)
                 else
                     frame.ModelR1C1:SetPoint("TOPLEFT", frame, 71, -110)
                     frame.PagingFrame:SetPoint('BOTTOM', 0, 35)
-                end
-                
+                end                
             end
+
+            cols= max(cols, 6)--行，数量
+            rows= max(rows, 3)--列，数量
 
             local num= cols * rows--总数
             local numModel= #frame.Models--已存，数量
