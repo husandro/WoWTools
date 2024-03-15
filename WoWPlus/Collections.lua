@@ -73,7 +73,7 @@ function Save_Items_Date()
             end
         else
             local all=C_TransmogCollection.GetCategoryTotal(i) or 0
-            if C_TransmogCollection.GetCategoryInfo(i) and all>0 then
+            if  all>0 then--C_TransmogCollection.GetCategoryInfo(i) and
                 table.insert(List, {
                     index=i,
                     Collected=C_TransmogCollection.GetCategoryCollectedCount(i),
@@ -457,7 +457,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddDoubleLine(e.onlyChinese and '物品' or ITEMS, e.GetEnabeleDisable(Save.hideItems)..e.Icon.left)
         e.tips:AddLine(' ')
-        e.tips:AddLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.Wardrober_Items_Labels_Scale or 1), e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.Wardrober_Items_Labels_Scale or 1), e.Icon.mid)
         e.tips:Show()
     end
     function btn:set_label_scale()--缩放
@@ -488,6 +488,36 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
     end)
 
     btn.itemsLabel={}
+    function btn:get_class_list(findClass)--查询，职业，列表
+        local tab2={}
+        for class, tab in pairs (wowSaveItems) do
+            if class==findClass then
+               for index, info in pairs(tab or {}) do
+                    local name = info.index==28 and (e.onlyChinese and '武器附魔' or WEAPON_ENCHANTMENT)
+                            or e.cn(C_TransmogCollection.GetCategoryInfo(info.index))
+                            or ''
+                    local collected, all =  info.Collected or 0, info.All or 0                    
+                    local num= collected..'/'.. all
+                    local per= format('%i%%', collected/all*100)
+                    if collected==all then
+                        name= '|cnGREEN_FONT_COLOR:'..name..'|r'
+                        num= '|cnGREEN_FONT_COLOR:'..num..'|r'
+                        per= '|cnGREEN_FONT_COLOR:'..per..'|r'
+                    end
+                    table.insert(tab2, {
+                        icon = SlotsIcon[info.index] or '',
+                        name= name,
+                        num= num,
+                        per= per,
+                        col= select(2, math.modf(index/2))==0 and '|cffff7f00' or '|cffffffff',
+                    })  
+                end
+                break
+                
+            end
+        end
+        return tab2    
+    end
     function btn:set_all_date_text()--设置内容
         if Save.hideItems then--禁用
             for _, label in pairs(self.itemsLabel) do
@@ -517,22 +547,10 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                     e.tips:AddDoubleLine(classIcon..col..id, col..e.cn(addName)..classIcon)
                     e.tips:AddLine(' ')
 
-                    for class, tab3 in pairs (wowSaveItems) do
-                        if class==frame.class then
-                           for index, info in pairs(tab3 or {}) do
-                                local name = info.index==28 and (e.onlyChinese and '武器附魔' or WEAPON_ENCHANTMENT)
-                                        or e.cn(C_TransmogCollection.GetCategoryInfo(info.index))
-                                        or ''
-                                local icon= SlotsIcon[info.index] or ''
-                                local collected, all =  info.Collected or 0, info.All or 0
-                                name= icon..(collected==all and '|cnGREEN_FONT_COLOR:' or '')..name..format(' %i%%', collected/all*100)
-                                local num= (collected==all and '|cnGREEN_FONT_COLOR:' or '')..collected..'/'.. all..icon
-                                col= select(2, math.modf(index/2))==0 and '|cffff7f00' or '|cffffffff'
-                                e.tips:AddDoubleLine(col..name, col..num)
-                            end
-                            break
-                        end
-                    end                   
+                    for index, info in pairs(frame:GetParent():get_class_list(frame.class)) do
+                        e.tips:AddDoubleLine(info.col..info.icon..info.name..' '..info.per, info.col..info.num..info.icon..' ('..index..(index<10 and ' ' or ''))
+                    end
+                    
                     e.tips:Show()
                     frame:SetAlpha(0.5)
                 end)
@@ -584,21 +602,8 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
             str:SetPoint('TOPLEFT', last, 'BOTTOMLEFT', 0, -12)            
             function str:set_class_text()
                 local text=''
-                for class, tab3 in pairs (wowSaveItems) do
-                    if class==self.class then
-                        for index, info in pairs(tab3 or {}) do
-                            local name = info.index==28 and (e.onlyChinese and '武器附魔' or WEAPON_ENCHANTMENT)
-                                    or e.cn(C_TransmogCollection.GetCategoryInfo(info.index))
-                                    or ''
-                            local icon= SlotsIcon[info.index] or ''
-                            local collected, all =  info.Collected or 0, info.All or 0
-                            name= icon..(collected==all and '|cnGREEN_FONT_COLOR:' or '')..name..format(' %i%%', collected/all*100)
-                            local num= (collected==all and '|cnGREEN_FONT_COLOR:' or '')..collected..'/'.. all
-                            local col= select(2, math.modf(index/2))==0 and '|cffff7f00' or '|cffffffff'
-                            text= text..col..name..' '..num..'|r|n'
-                        end
-                        break
-                    end
+                for _, info in pairs(self:GetParent():get_class_list(self.class)) do
+                    text= text..info.col..info.icon..info.name..' '..info.per..' '..info.num..'|r|n'
                 end
                 if self.class~=e.Player.class then
                     local color= C_ClassColor.GetClassColor(self.class)
@@ -618,8 +623,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
         if not str then
             str= e.Cstr(WardrobeCollectionFrameTab1, {justifyH='RIGHT'})
             str:SetPoint('BOTTOMRIGHT', WardrobeCollectionFrameTab1.Text, 'TOPRIGHT', 2, 8)
-            self.itemsLabel.allTab=str
-           
+            self.itemsLabel.allTab=str           
         end
         str:SetText(classCollected>1 and format('%d %i%%', classCollected, classCollected/classAll*100) or '')
     end
@@ -635,6 +639,118 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
     btn:set_texture()
     if Save.Wardrober_Items_Labels_Scale and Save.Wardrober_Items_Labels_Scale~= 1 then
         btn:set_label_scale()
+    end
+
+    --部位，已收集， 提示
+    hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateSlotButtons', function(self)
+        for _, btn in pairs(self.SlotsFrame.Buttons) do            
+            local collected= 0
+            local category
+            if not Save.hideItems then                
+                local transmogLocation= btn.transmogLocation
+                local slotID= transmogLocation:GetSlotID()
+                if ( transmogLocation:IsIllusion() ) then--武器，附魔
+                    if slotID~=17 then
+                        for _, illusion in ipairs(C_TransmogCollection.GetIllusions() or {}) do
+                            if ( illusion.isCollected ) then
+                                collected = collected + 1
+                            end
+                        end
+                    end
+                elseif slotID==16 or slotID==17 then--武器, 副手
+                    local tab= slotID==16 and {12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 29} or {18, 19}
+                    for _, category2 in pairs(tab) do
+                        collected= collected+ (C_TransmogCollection.GetCategoryCollectedCount(category2) or 0)                        
+                    end
+                elseif ( transmogLocation:IsAppearance() ) then
+                    local useLastWeaponCategory = self.transmogLocation:IsEitherHand() and
+                                                    self.lastWeaponCategory and
+                                                    self:IsValidWeaponCategoryForSlot(self.lastWeaponCategory);
+                    if ( useLastWeaponCategory ) then
+                        category = self.lastWeaponCategory;
+                    else
+                        local appliedSourceID, appliedVisualID, selectedSourceID, selectedVisualID = self:GetActiveSlotInfo();
+                        if ( selectedSourceID ~= Constants.Transmog.NoTransmogID ) then
+                            category = C_TransmogCollection.GetAppearanceSourceInfo(selectedSourceID);
+                            if category and not self:IsValidWeaponCategoryForSlot(category) then
+                                category = nil;
+                            end
+                        end
+                    end
+                    if ( not category ) then
+                        if ( transmogLocation:IsEitherHand() ) then
+                            -- find the first valid weapon category
+                            for categoryID = FIRST_TRANSMOG_COLLECTION_WEAPON_TYPE, LAST_TRANSMOG_COLLECTION_WEAPON_TYPE do
+                                if ( self:IsValidWeaponCategoryForSlot(categoryID) ) then
+                                    category = categoryID;
+                                    break;
+                                end
+                            end
+                        else
+                            category = transmogLocation:GetArmorCategoryID();
+                        end
+                    end
+                    if category then
+                        collected= C_TransmogCollection.GetCategoryCollectedCount(category) or 0
+                    end
+                end
+            end
+            if collected>0 and not btn.Text then
+                btn.Text= e.Cstr(btn, {justifyH='CENTER', mouse=true})
+                btn.Text:SetPoint('BOTTOMRIGHT')
+                btn.Text.category= category
+            end
+            if btn.Text then                
+                btn.Text:SetText(collected>0 and e.MK(collected, 3) or '')
+            end
+        end
+    end)
+
+    for _, btn in pairs(WardrobeCollectionFrame.ItemsCollectionFrame.SlotsFrame.Buttons) do
+        btn:HookScript('OnEnter', function(self)
+            if Save.hideItems then
+                return
+            end
+            local slotID= self.transmogLocation:GetSlotID()
+            e.tips:AddLine('slotID '..slotID..' '..self.slot)
+            if self.transmogLocation:IsIllusion() then--武器，附魔            
+                local collected, all= 0, 0
+                for _, illusion in ipairs(C_TransmogCollection.GetIllusions() or {}) do
+                    if ( illusion.isCollected ) then
+                        collected = collected + 1
+                    end
+                    all= all+ 1
+                end
+                if all>0 then                    
+                    e.tips:AddLine(
+                        (collected==all and '|cnGREEN_FONT_COLOR:' or '')
+                        ..format('|A:transmog-nav-slot-enchant:0:0|a%i%%  %d/%d', collected/all*100, collected, all)
+                    )
+                end
+                
+            elseif slotID==16 or slotID==17 then--武器, 副手
+                local tab= slotID==16 and {12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 29} or {18, 19}
+                local n=1
+                for _, category in pairs(tab) do
+                    local collected= C_TransmogCollection.GetCategoryCollectedCount(category) or 0
+                    local all= C_TransmogCollection.GetCategoryTotal(category) or 0
+                    if all>0 then
+                        local col= collected==all and '|cnGREEN_FONT_COLOR:' or (select(2, math.modf(n/2))==0 and '|cffff7f00' or '|cffffffff')
+                        local icon= SlotsIcon[category] or ''
+                        local name= e.cn(C_TransmogCollection.GetCategoryInfo(category)) or ''
+                        e.tips:AddLine(format('%s%s%s %i%%  %s/%s', col, icon, name, collected/all*100, e.MK(collected, 3), e.MK(all, 3)))    
+                        n=n+1
+                    end
+                end
+            elseif self.Text and self.Text.category then
+                e.tips:AddLine('category '..cateself.Text.categorygory)
+                local collected= C_TransmogCollection.GetCategoryCollectedCount(self.Text.category) or 0
+                local all= C_TransmogCollection.GetCategoryTotal(self.Text.category) or 0
+                local icon= SlotsIcon[self.Text.category] or ''
+                e.tips:AddLine(format('%s%i%%  %s/%s', icon, collected/all*100, e.MK(collected, 3), e.MK(all, 3)))
+            end
+            e.tips:Show()
+        end)
     end
 end
 
@@ -1110,78 +1226,7 @@ local function Init_Wardrober()
     --设置，目标为模型
     Init_Wardrober_Transmog()
 
-    hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateSlotButtons', function(self)
-        for _, btn in pairs(self.SlotsFrame.Buttons) do            
-            local collected= 0
-            local transmogLocation= btn.transmogLocation
-            local category
-            local slotID= btn.transmogLocation:GetSlotID()
-            if ( transmogLocation:IsIllusion() ) then
-                if slotID~=17 then
-                    for _, illusion in ipairs(C_TransmogCollection.GetIllusions() or {}) do
-                        if ( illusion.isCollected ) then
-                            collected = collected + 1
-                        end
-                    end
-                end
-
-            elseif ( transmogLocation:IsAppearance() ) then
-                local useLastWeaponCategory = self.transmogLocation:IsEitherHand() and
-                                                self.lastWeaponCategory and
-                                                self:IsValidWeaponCategoryForSlot(self.lastWeaponCategory);
-                if ( useLastWeaponCategory ) then
-                    category = self.lastWeaponCategory;
-                else
-                    local appliedSourceID, appliedVisualID, selectedSourceID, selectedVisualID = self:GetActiveSlotInfo();
-                    if ( selectedSourceID ~= Constants.Transmog.NoTransmogID ) then
-                        category = C_TransmogCollection.GetAppearanceSourceInfo(selectedSourceID);
-                        if category and not self:IsValidWeaponCategoryForSlot(category) then
-                            category = nil;
-                        end
-                    end
-                end
-                if ( not category ) then
-                    if ( transmogLocation:IsEitherHand() ) then
-                        -- find the first valid weapon category
-                        for categoryID = FIRST_TRANSMOG_COLLECTION_WEAPON_TYPE, LAST_TRANSMOG_COLLECTION_WEAPON_TYPE do
-                            if ( self:IsValidWeaponCategoryForSlot(categoryID) ) then
-                                category = categoryID;
-                                break;
-                            end
-                        end
-                    else
-                        category = transmogLocation:GetArmorCategoryID();
-                    end
-                end
-            end
-
-            if category then
-                collected= C_TransmogCollection.GetCategoryCollectedCount(category) or 0
-            end
-            
-            if collected>0 and not btn.Text then
-                btn.Text= e.Cstr(btn, {justifyH='CENTER', mouse=true})
-                btn.Text:SetPoint('BOTTOMRIGHT')
-                
-            end            
-            if btn.Text then
-                btn.Text.category= category
-                btn.Text:SetText(collected>0 and e.MK(collected, 3) or '')
-            end
-        end
-    end)
-
-    for _, btn in pairs(WardrobeCollectionFrame.ItemsCollectionFrame.SlotsFrame.Buttons) do
-        btn:HookScript('OnEnter', function(self)
-            if not Save.hideItems then
-                e.tips:AddDoubleLine('slotID |cffffffff'..self.transmogLocation:GetSlotID(),  '|cffffffff'..self.slot)
-                if self.Text and self.Text.category then
-                    e.tips:AddLine('category |cffffffff'..self.Text.category)
-                end
-                e.tips:Show()
-            end
-        end)
-    end
+    
 
     --hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'SetActiveCategory', function()(category)
 end
