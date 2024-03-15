@@ -1397,67 +1397,104 @@ local function Init_Heirloom()
         e.Set_Item_Stats(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture, itemID=button.itemID, hideSet=true, hideLevel=not has, hideStats=not has})--设置，物品，4个次属性，套装，装等，
     end)
 
-
-    local check= e.Cbtn(HeirloomsJournal, {size={22,22}, icon= not Save.hideHeirloom})
-    check:SetPoint('BOTTOMRIGHT', -40, 18)
+    local check= e.Cbtn(HeirloomsJournal, {size={22,22}, icon='hide'})    
+    function check:set_alpha()
+        self:SetAlpha(Save.hideHeirloom and 0.3 or 1)
+    end
+    function check:set_texture()
+        self:SetNormalAtlas(Save.hideHeirloom and e.Icon.disabled or e.Icon.icon)     
+    end
+    function check:set_filter_shown()
+        if self.buttons[1] then
+            self.buttons[1]:SetShown(not Save.hideHeirloom)
+        end
+    end
     function check:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:AddDoubleLine(e.onlyChinese and '传家宝' or HEIRLOOMS, e.GetEnabeleDisable(Save.hideHeirloom)..e.Icon.left)
+        e.tips:AddDoubleLine((e.onlyChinese and '传家宝' or HEIRLOOMS).. ' '..e.GetEnabeleDisable(not Save.hideHeirloom), e.Icon.left)
         e.tips:Show()
     end
     check:SetScript('OnClick',function (self)
         Save.hideHeirloom= not Save.hideHeirloom and true or nil
-        self:SetNormalAtlas(Save.hideHeirloom and e.Icon.disabled or e.Icon.icon)
         self:set_tooltips()
-        self.filterButton:SetShown(not Save.hideHeirloom)
+        self:set_alpha()
+        self:set_texture()
+        self:set_filter_shown()
         HeirloomsJournal:FullRefreshIfVisible()
     end)
-    check:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+    check:SetPoint('BOTTOMRIGHT', -50, 18)
+    check:SetScript('OnLeave', GameTooltip_Hide)
     check:SetScript('OnEnter', check.set_tooltips)
-
-    local last
+    
+    --过滤，按钮
+    local tab={}
+    local curClass= select(2, UnitClassBase('player'))
+    local curSpec
+    local curSpecIndex= GetSpecialization()
+    for i = 1, GetNumSpecializationsForClassID(curClass) or 0 do
+        local specID, _, _, icon = GetSpecializationInfoForClassID(curClass, i, e.Player.sex)
+        table.insert(tab, {
+            classID= curClass,
+            specID= specID,
+            texture= icon,
+        })
+        if i==curSpecIndex then
+            curSpec= specID
+        end
+    end
     for i = 1, GetNumClasses() do
-        local classFile, classID= select(2, GetClassInfo(i))
+        local classFile, class= select(2, GetClassInfo(i))
         local atlas= e.Class(nil, classFile, true)
-        if atlas and classID then
-            local btn= e.Cbtn(last or HeirloomsJournal, {size={22,22}, atlas=atlas})
-            if not last then
-                btn:SetPoint('BOTTOMRIGHT', HeirloomsJournal, -60, 18)
-                check.filterButton= btn
-                btn:SetShown(not Save.hideHeirloom)
-            else
-                btn:SetPoint('RIGHT', last, 'LEFT')
-            end
-            btn.classID= classID
-            btn:SetScript('OnClick', function(self)
-                HeirloomsJournal:SetClassAndSpecFilters(self.classID, 0)
-            end)
-            last= btn
+        if atlas then
+            table.insert(tab, {
+                classID= class,
+                specID= 0,
+                atlas= atlas,
+            })
         end
     end
 
-    last= nil
-    local classID= select(2, UnitClassBase('player'))
-    for i = 1, GetNumSpecializationsForClassID(classID) or 0 do
-        local specID, _, _, icon = GetSpecializationInfoForClassID(classID, i, e.Player.sex)
-        if specID and icon then
-            local btn= e.Cbtn2({parent=check.filterButton, notSecureActionButton=true, size=26, showTexture=true})
-            btn.texture:SetTexture(icon)
-            if not last then
-                btn:SetPoint('BOTTOM', check.filterButton,'TOP')
+    check.buttons={}    
+    for index, info in pairs(tab) do
+        local btn= e.Cbtn2({parent= check.buttons[1] or check, notSecureActionButton=true, size=26, showTexture=true})
+        btn:SetPoint('RIGHT', index>1 and check.buttons[#check.buttons] or check, 'LEFT')
+        function btn:set_select(classID, specID)
+            if classID==self.classID and specID==self.specID then
+                self:LockHighlight()
             else
-                btn:SetPoint('RIGHT', last, 'LEFT')
+                self:UnlockHighlight()
             end
-            btn.specID= specID
-            btn.classID= classID
-            btn:SetScript('OnClick', function(self)
-                HeirloomsJournal:SetClassAndSpecFilters(self.classID, self.specID)
-            end)
-            last= btn
         end
+        btn:SetScript('OnClick', function(self)
+            HeirloomsJournal:SetClassAndSpecFilters(self.classID, self.specID)
+        end)        
+        if info.texture then
+            btn.texture:SetTexture(info.texture)
+        else
+            btn.texture:SetAtlas(info.atlas)
+        end
+        btn.classID= info.classID
+        btn.specID= info.specID
+        btn:set_select(curClass, curSpec)
+        table.insert(check.buttons, btn)
     end
+    
+    HeirloomsJournal.WoWTools= check
+    hooksecurefunc(HeirloomsJournal, 'SetClassAndSpecFilters', function(self, Class, Spec)
+        for _, btn in pairs(self.WoWTools.buttons) do
+           btn:set_select(Class, Spec)
+        end
+    end)
+
+    --[[if curClass and curSpec then--选定当前专精
+        HeirloomsJournal:SetClassAndSpecFilters(curClass, curSpec)
+    end]]
+
+    check:set_alpha()
+    check:set_texture()
+    check:set_filter_shown()
 end
 
 
