@@ -969,7 +969,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	local info, currencyID = Get_For_index_To_currencyID(nil, frame.index)
 	if not frame.isHeader and info and currencyID  and not frame.check then
 		frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
-		frame.check:SetPoint('LEFT', -3,0)
+		frame.check:SetPoint('LEFT', -4,0)
 		frame.check:SetScript('OnClick', function(self)
 			if self.currencyID then
 				Save.tokens[self.currencyID]= not Save.tokens[self.currencyID] and self.index or nil
@@ -990,10 +990,11 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		end)
 		frame.check:SetScript('OnLeave', GameTooltip_Hide)
 		frame.check:SetSize(15,15)
-		frame.check:SetCheckedTexture(e.Icon.icon)
+		
 	end
 
 	if frame.check then
+		frame.check:SetCheckedTexture(info and info.iconFileID or e.Icon.icon)
 		frame.check.currencyID= currencyID
 		frame.check.index= frame.index
 		frame.check:SetShown(not frame.isHeader)

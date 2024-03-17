@@ -634,17 +634,12 @@ end
 
 --宠物手册，增加按钮
 local function set_Button_setFrame_PetJournal()
-    if not TrackButton then
+    if not TrackButton or not PetJournal or TrackButton.btn then
         return
     end
-    TrackButton.btn= e.Cbtn(_G['RematchJournal'] or PetJournal, {icon='hide', size={22, 22}})
-    if _G['MoveZoomInButtonPerCollectionsJournal'] then
-        TrackButton.btn:SetPoint('LEFT', _G['MoveZoomInButtonPerCollectionsJournal'], 'RIGHT')
-    else
-        TrackButton.btn:SetPoint('TOPLEFT', _G['RematchJournal'] or PetJournal,'TOPRIGHT',3,-29)
-    end
-    TrackButton.btn:SetAlpha(0.5)
-    TrackButton.btn:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
+    TrackButton.btn= e.Cbtn(PetJournal, {icon='hide', size={22, 22}})
+    TrackButton.btn:SetPoint('RIGHT', CollectionsJournalCloseButton, 'LEFT', -2, 0)
+    TrackButton.btn:SetFrameLevel(CollectionsJournalCloseButton:GetFrameLevel()+1)
     TrackButton.btn:SetScript('OnClick', function(self)
         if TrackButton.setFrame then
             set_Pet_Type(not TrackButton:IsShown() and true or false)
@@ -662,13 +657,17 @@ local function set_Button_setFrame_PetJournal()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
-        self:SetAlpha(1)
+        TrackButton:SetButtonState('PUSHED')
     end)
-    TrackButton.btn:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+    TrackButton.btn:SetScript('OnLeave', function()
+        e.tips:Hide()        
+        TrackButton:SetButtonState('NORMAL')
+    end)
     function TrackButton.btn:set_texture()
         local show= TrackButton:IsShown()
         self:SetNormalAtlas(show and e.Icon.icon or 'talents-button-reset')
     end
+    TrackButton.btn:set_texture()
 end
 
 
@@ -844,7 +843,12 @@ local function Init()
         --SetCollectionsJournalShown(true, 2)--UIParent.lua
     end)
 
-    TrackButton:SetScript('OnLeave', GameTooltip_Hide)
+    TrackButton:SetScript('OnLeave', function(self)
+        GameTooltip_Hide()
+        if self.btn then
+            self.btn:SetButtonState('NORMAL')
+        end
+    end)
     TrackButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -857,6 +861,9 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
+        if self.btn then
+            self.btn:SetButtonState('NORPUSHEDMAL')
+        end
     end)
 
 
@@ -940,6 +947,8 @@ local function Init()
     end)]]
 
     add_Click_To_Move_Button()--点击移动，按钮
+
+    set_Button_setFrame_PetJournal()--宠物手册，增加按钮
 end
 
 

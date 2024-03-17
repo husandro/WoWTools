@@ -1291,7 +1291,7 @@ end
 
 
 --#####
---传家宝
+--传家宝, 按钮，提示
 --Blizzard_HeirloomCollection.lua
 local function Init_Heirloom()
     hooksecurefunc(HeirloomsJournal, 'UpdateButton', function(_, button)
@@ -1398,6 +1398,14 @@ local function Init_Heirloom()
         e.Set_Item_Stats(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture, itemID=button.itemID, hideSet=true, hideLevel=not has, hideStats=not has})--设置，物品，4个次属性，套装，装等，
     end)
 
+
+
+
+
+
+
+
+
     local check= e.Cbtn(HeirloomsJournal, {size={22,22}, icon='hide'})    
     function check:set_alpha()
         self:SetAlpha(Save.hideHeirloom and 0.3 or 1)
@@ -1412,6 +1420,10 @@ local function Init_Heirloom()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
+        if UnitAffectingCombat('player') then
+            e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
+        end
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '传家宝' or HEIRLOOMS).. ' '..e.GetEnabeleDisable(not Save.hideHeirloom), e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.Heirlooms_Class_Scale or 0), e.Icon.mid)
         e.tips:AddLine(' ')
@@ -1473,6 +1485,17 @@ local function Init_Heirloom()
         btn:SetScript('OnClick', function(self)
             HeirloomsJournal:SetClassAndSpecFilters(self.classID, self.specID)
         end)
+        btn:SetScript('OnLeave', Gametooltip_Hide)
+        btn:SetScript('OnEnter', function(self)
+            if UnitAffectingCombat('player') then
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:AddLine(' ')
+                e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
+                e.tips:Show()
+            end
+        end)
         if texture then
             btn.texture:SetTexture(texture)
         else
@@ -1527,18 +1550,16 @@ local function Init_Heirloom()
 
     for i = 1, GetNumClasses() do--设置，职业
         local classFile, classID= select(2, GetClassInfo(i))
-        local atlas= e.Class(nil, classFile, true)
+        local atlas
+        if classFile==e.Player.class then
+            atlas= 'auctionhouse-icon-favorite'
+        else
+            atlas= e.Class(nil, classFile, true)
+        end
         if atlas then
             local btn= check:cereate_button(classID, 0, nil, atlas)
             check.classButton[i]=btn
-            btn:SetPoint('TOPLEFT', check.classButton[i-1] or check.frame, 'BOTTOMLEFT')
-            if classFile==e.Player.class then
-                
-                --local specID= PlayerUtil.GetCurrentSpecID() or 0
-                local specID= GetSpecializationInfo(GetSpecialization() or 0) or 0
-                
-                
-            end
+            btn:SetPoint('TOPLEFT', check.classButton[i-1] or check.frame, 'BOTTOMLEFT')            
         end
     end
 
