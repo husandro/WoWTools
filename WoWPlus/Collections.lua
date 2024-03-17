@@ -7,7 +7,8 @@ local Save={
     --hideItems= true,--物品, 幻化, 界面
     --hideToyBox= true,--玩具
 
-    --Wardrober_Items_Labels_Scale,
+    --Heirlooms_Class_Scale=1,
+    --Wardrober_Items_Labels_Scale=1,
 }
 
 
@@ -1411,18 +1412,39 @@ local function Init_Heirloom()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:AddDoubleLine((e.onlyChinese and '传家宝' or HEIRLOOMS).. ' '..e.GetEnabeleDisable(not Save.hideHeirloom), e.Icon.left)
+        e.tips:AddDoubleLine((e.onlyChinese and '传家宝' or HEIRLOOMS).. ' '..e.GetEnabeleDisable(not Save.hideHeirloom), e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.Heirlooms_Class_Scale or 0), e.Icon.mid)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '全职业' or ALL_CLASSES, e.Icon.left)
         e.tips:Show()
     end
-    check:SetScript('OnClick',function (self)
-        Save.hideHeirloom= not Save.hideHeirloom and true or nil
-        self:set_tooltips()
-        self:set_alpha()
-        self:set_texture()
-        self:set_filter_shown()
-        HeirloomsJournal:FullRefreshIfVisible()
+    check:SetScript('OnClick',function (self, d)
+        if d=='RightButton' then
+            Save.hideHeirloom= not Save.hideHeirloom and true or nil
+            self:set_tooltips()
+            self:set_alpha()
+            self:set_texture()
+            self:set_filter_shown()
+            HeirloomsJournal:FullRefreshIfVisible()
+        else
+            HeirloomsJournal:SetClassAndSpecFilters(0, 0)            
+        end
     end)
-    --check:SetPoint('BOTTOMRIGHT', -50, 18)
+    check:SetScript("OnMouseWheel", function(self, d)
+        local n
+        n= Save.Heirlooms_Class_Scale or 1
+        n= d==1 and n-0.1 or n
+        n= d==-1 and n+0.1 or n
+        n= n<0.4 and 0.4 or n
+        n= n>4 and 4 or n
+        if n==1 then
+            n=nil
+        end
+        Save.Heirlooms_Class_Scale=n
+        self:set_frame_scale()
+        self:set_tooltips()
+    end)
+
     check:SetPoint('TOPLEFT', HeirloomsJournal.iconsFrame, 'TOPRIGHT', 8, 0)
     check:SetScript('OnLeave', GameTooltip_Hide)
     check:SetScript('OnEnter', check.set_tooltips)
@@ -1432,6 +1454,10 @@ local function Init_Heirloom()
     check.frame= CreateFrame('Frame', nil, check)
     check.frame:SetPoint('TOPLEFT', check, 'BOTTOMLEFT',0 -80)
     check.frame:SetSize(26, 1)
+    function check:set_frame_scale()
+        self.frame:SetScale(Save.Heirlooms_Class_Scale or 1)
+    end
+
     check.classButton={}
     check.specButton={}
     
@@ -1442,13 +1468,10 @@ local function Init_Heirloom()
                 self:LockHighlight()
             else
                 self:UnlockHighlight()
-            end
+            end           
         end
         btn:SetScript('OnClick', function(self)
             HeirloomsJournal:SetClassAndSpecFilters(self.classID, self.specID)
-            if self.set_spec then
-                self:set_spec()
-            end
         end)
         if texture then
             btn.texture:SetTexture(texture)
@@ -1460,13 +1483,18 @@ local function Init_Heirloom()
         return btn
     end
 
-    function check:init_spce(classID, initCheck)
-        local num= GetNumSpecializationsForClassID(classID) or 0
+    function check:init_spce(classID, spec)
+        classID= classID or 0
+        spec= spec or 0
+        local num= classID>0 and GetNumSpecializationsForClassID(classID) or 0
         for i = 1, num, 1 do
-            local specID, _, _, icon = GetSpecializationInfoForClassID(classID, i, e.Player.sex)
+            local specID, _, _, icon, role = GetSpecializationInfoForClassID(classID, i, e.Player.sex)
             local btn= self.specButton[i]
             if not btn then
                 btn= self:cereate_button(classID, specID, icon, nil)
+                btn.roleTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
+                btn.roleTexture:SetSize(15,15)
+                btn.roleTexture:SetPoint('LEFT', btn, 'RIGHT', -4, 0)                
                 if i==1 then
                     local texture= btn:CreateTexture()
                     texture:SetPoint('RIGHT', btn, 'LEFT')
@@ -1479,6 +1507,9 @@ local function Init_Heirloom()
                 btn.specID= specID
                 btn.texture:SetTexture(icon)
             end
+            role= role=='DAMAGER' and 'DPS' or role
+            btn.roleTexture:SetAtlas('UI-LFG-RoleIcon-'..role..'-Micro')
+
             btn:ClearAllPoints()
             if i==1 then
                 btn:SetPoint('TOPLEFT', self.classButton[classID], 'TOPRIGHT', 7 ,0)
@@ -1486,24 +1517,14 @@ local function Init_Heirloom()
                 btn:SetPoint('TOP', self.specButton[i-1], 'BOTTOM')
             end
             btn:SetShown(true)
-            if initCheck and i==GetSpecialization() then--初始，选取
-                btn:set_select(classID, specID)
-            end
+            btn:set_select(classID, spec)
         end
         for i=num+1, #self.specButton, 1 do
             self.specButton[i]:SetShown(false)
         end
     end
 
-    function check:chek_select(Class, Spec)
-        for _, btn in pairs(self.classButton) do
-            btn:set_select(Class, Spec)
-        end
-        for _, btn in pairs(self.specButton) do
-            btn:set_select(Class, Spec)
-        end
-    end
-    
+
     for i = 1, GetNumClasses() do--设置，职业
         local classFile, classID= select(2, GetClassInfo(i))
         local atlas= e.Class(nil, classFile, true)
@@ -1511,22 +1532,36 @@ local function Init_Heirloom()
             local btn= check:cereate_button(classID, 0, nil, atlas)
             check.classButton[i]=btn
             btn:SetPoint('TOPLEFT', check.classButton[i-1] or check.frame, 'BOTTOMLEFT')
-            function btn:set_spec(init)
-                self:GetParent():GetParent():init_spce(self.classID, init)
-            end
             if classFile==e.Player.class then
-                btn:set_spec(true)
+                
+                --local specID= PlayerUtil.GetCurrentSpecID() or 0
+                local specID= GetSpecializationInfo(GetSpecialization() or 0) or 0
+                
+                
             end
         end
     end
-    HeirloomsJournal.WoWtoolsButton= check
-    hooksecurefunc(HeirloomsJournal, 'SetClassAndSpecFilters', function(self, Class, Spec)        
-        self.WoWtoolsButton:chek_select(Class, Spec)
-    end)
 
+    C_Timer.After(2, function()
+        check:init_spce(select(2, UnitClassBase('player')), PlayerUtil.GetCurrentSpecID() or 0)
+    end)
+    
+    function check:chek_select(Class, Spec)
+        for _, btn in pairs(self.classButton) do
+            btn:set_select(Class, Spec)
+        end        
+        self:init_spce(Class, Spec)
+    end
+
+    
+    hooksecurefunc(HeirloomsJournal, 'SetClassAndSpecFilters', function(_, Class, Spec)        
+        check:chek_select(Class, Spec)
+    end)
+    
     check:set_alpha()
     check:set_texture()
     check:set_filter_shown()
+    check:set_frame_scale()
 end
 
 

@@ -2119,6 +2119,7 @@ function e.Cbtn2(tab)
     })
 ]]
     local btn= CreateFrame("Button", tab.name, tab.parent or UIParent, not tab.notSecureActionButton and "SecureActionButtonTemplate" or nil)
+    
     btn:SetSize(tab.size or 30, tab.size or 30)
     if tab.click==true then
         btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
