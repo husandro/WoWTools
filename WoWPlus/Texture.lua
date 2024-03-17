@@ -1733,6 +1733,7 @@ local function Init_Event(arg1)
         set_NineSlice(MountJournal.RightInset, nil, true)
         set_NineSlice(MountJournal.LeftInset, nil, true)
         set_Alpha_Frame_Texture(MountJournalFilterButton, {alpha=min03})
+        C_Timer.After(0.5, function() set_Menu(MountJournalFilterButtonWoWTools) end)
 
         set_Alpha_Color(PetJournalPetCardBG, nil, nil, min03)
         set_Alpha_Color(PetJournalPetCardInset.Bg)
