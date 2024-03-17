@@ -1087,14 +1087,24 @@ end
 --坐骑界面, 添加菜单, 设置提示内容
 --#############################
 local function Init_Menu_Set_UI(self, level)--坐骑界面, 菜单
+    local info
+    if UnitAffectingCombat('player') then
+        info={
+            text= e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT,
+            notCheckable=true,
+            isTitle=true,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        return
+    end
+
     local frame= self:GetParent()
     local spellID= frame.spellID
     local mountID = frame.mountID
     if not mountID then
         return
     end
-    local name, _, icon, _, _, _, _, isFactionSpecific, faction, shouldHideOnChar, isCollected, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)
-    local info
+    local name, _, icon, _, _, _, _, isFactionSpecific, faction, shouldHideOnChar, isCollected, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)    
     for _, type in pairs(MountType) do
         if type=='Shift' or type==FLOOR then
             e.LibDD:UIDropDownMenu_AddSeparator(level)

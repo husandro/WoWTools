@@ -158,11 +158,14 @@ end
 
 
 
---#############
---玩具界面, 菜单
---#############
-local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
-    if not btn.toy then
+
+--玩具界面, 菜单, --标记, 是否已选取
+function Init_SetButtonOption()
+    hooksecurefunc('ToySpellButton_UpdateButton', function(btn)
+        if btn.toy then
+            btn.toy:set_alpha()
+            return
+        end    
         btn.toy= e.Cbtn(btn,{size={16,16}, texture=133567})
         btn.toy:SetPoint('TOPLEFT',btn.name,'BOTTOMLEFT', 16,0)
         function btn.toy:get_itemID()
@@ -196,15 +199,15 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
                 getToy()--生成, 有效表格
                 setAtt()--设置属性
                 self:set_tooltips()
-                e.call('ToySpellButton_UpdateButton', self:GetParent())
+                self:set_alpha()                
             else
                 e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self, 15, 0)
             end
         end)
         btn.toy:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha() end)
         btn.toy:SetScript('OnEnter', btn.toy.set_tooltips)
-    end
-    btn.toy:set_alpha()
+        
+    end)
 end
 
 
@@ -736,8 +739,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end
 
         elseif arg1=='Blizzard_Collections' then
-            --hooksecurefunc('ToyBox_ShowToyDropdown', setToyBox_ShowToyDropdown)
-            hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
+            Init_SetButtonOption()
         end
 
     elseif event == "PLAYER_LOGOUT" then

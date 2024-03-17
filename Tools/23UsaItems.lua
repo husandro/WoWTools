@@ -504,7 +504,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
                     table.insert(Save.item, itemID)
                 end
                 self:set_tooltips()
-                e.call('ToySpellButton_UpdateButton', frame)
+                self:set_alpha()
             else
                 e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self, 15, 0)
             end

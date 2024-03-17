@@ -146,7 +146,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
                 getToy()--生成, 有效表格
                 setAtt()--设置属性
                 self:set_tooltips()
-                e.call('ToySpellButton_UpdateButton', self:GetParent())
+                self:set_alpha()
             else
                 e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self, 15, 0)
             end
