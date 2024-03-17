@@ -2305,7 +2305,15 @@ function e.GetDurabiliy_OnEnter()
         end
     end
 
-    e.tips:AddDoubleLine((e.onlyChinese and '耐久度' or DURABILITY)..' ('..math.modf(cur2/max2*100)..'%)', '('..(num>0 and '|cnRED_FONT_COLOR:' or '|cff606060')..num..'|r) '..(e.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip)
+    local co = GetRepairAllCost()--显示，修理所有，金钱
+    local coText=''
+    if co>0 then
+        coText= ' |cnRED_FONT_COLOR:'..GetMoneyString(co)..'|r'
+    end
+    e.tips:AddDoubleLine(
+        (e.onlyChinese and '耐久度' or DURABILITY)..' ('..math.modf(cur2/max2*100)..'%)'..coText,
+         '('..(num>0 and '|cnRED_FONT_COLOR:' or '|cff606060')..num..'|r) '..(e.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip
+    )
 
     local item, cur, pvp= GetAverageItemLevel()
     cur= cur or 0

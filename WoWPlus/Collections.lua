@@ -73,7 +73,7 @@ function Save_Items_Date()
                 })
             end
         else
-            local all=C_TransmogCollection.GetCategoryTotal(i) or 0
+            local all= C_TransmogCollection.GetCategoryTotal(i) or 0
             if  all>0 then--C_TransmogCollection.GetCategoryInfo(i) and
                 table.insert(List, {
                     index=i,
