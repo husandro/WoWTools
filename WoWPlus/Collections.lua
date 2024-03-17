@@ -1436,7 +1436,7 @@ local function Init_Heirloom()
     check.specButton={}
     
     function check:cereate_button(classID, specID, texture, atlas)
-        local btn= e.Cbtn2({parent=self.frame, notSecureActionButton=true, size=26, showTexture=true})
+        local btn= e.Cbtn2({parent=self.frame, notSecureActionButton=true, size=26, showTexture=true, click=true})
         function btn:set_select(class, spec)
             if class==self.classID and spec==self.specID then
                 self:LockHighlight()
@@ -1460,13 +1460,13 @@ local function Init_Heirloom()
         return btn
     end
 
-    function check:init_spce(classID, check)
+    function check:init_spce(classID, initCheck)
         local num= GetNumSpecializationsForClassID(classID) or 0
         for i = 1, num, 1 do
             local specID, _, _, icon = GetSpecializationInfoForClassID(classID, i, e.Player.sex)
             local btn= self.specButton[i]
             if not btn then
-                btn= self:cereate_button(classID, specID, icon, nil)                
+                btn= self:cereate_button(classID, specID, icon, nil)
                 if i==1 then
                     local texture= btn:CreateTexture()
                     texture:SetPoint('RIGHT', btn, 'LEFT')
@@ -1481,12 +1481,12 @@ local function Init_Heirloom()
             end
             btn:ClearAllPoints()
             if i==1 then
-                btn:SetPoint('TOPLEFT', self.classButton[classID], 'TOPRIGHT', 5,0)
+                btn:SetPoint('TOPLEFT', self.classButton[classID], 'TOPRIGHT', 7 ,0)
             else
                 btn:SetPoint('TOP', self.specButton[i-1], 'BOTTOM')
             end
             btn:SetShown(true)
-            if check then--初始，选取
+            if initCheck and i==GetSpecialization() then--初始，选取
                 btn:set_select(classID, specID)
             end
         end
@@ -1511,66 +1511,14 @@ local function Init_Heirloom()
             local btn= check:cereate_button(classID, 0, nil, atlas)
             check.classButton[i]=btn
             btn:SetPoint('TOPLEFT', check.classButton[i-1] or check.frame, 'BOTTOMLEFT')
-            function btn:set_spec()
-                self:GetParent():GetParent():init_spce(self.classID)
+            function btn:set_spec(init)
+                self:GetParent():GetParent():init_spce(self.classID, init)
             end
-            --btn:SetScript('OnClick', btn.set_spec)
             if classFile==e.Player.class then
-                btn:set_spec()
-            end
-            
-        end
-    end
---[[
-
-    local tab={}
-    
-    for i = 1, GetNumSpecializationsForClassID(curClass) or 0 do
-        local specID, _, _, icon = GetSpecializationInfoForClassID(curClass, i, e.Player.sex)
-        table.insert(tab, {
-            classID= curClass,
-            specID= specID,
-            texture= icon,
-        })
-        if i==curSpecIndex then
-            curSpec= specID
-        end
-    end
-    for i = 1, GetNumClasses() do
-        local classFile, class= select(2, GetClassInfo(i))
-        local atlas= e.Class(nil, classFile, true)
-        if atlas then
-            table.insert(tab, {
-                classID= class,
-                specID= 0,
-                atlas= atlas,
-            })
-        end
-    end
-   
-    for index, info in pairs(tab) do
-        local btn= e.Cbtn2({parent= check.buttons[1] or check, notSecureActionButton=true, size=26, showTexture=true})
-        btn:SetPoint('RIGHT', index>1 and check.buttons[#check.buttons] or check, 'LEFT')
-        function btn:set_select(classID, specID)
-            if classID==self.classID and specID==self.specID then
-                self:LockHighlight()
-            else
-                self:UnlockHighlight()
+                btn:set_spec(true)
             end
         end
-        btn:SetScript('OnClick', function(self)
-            HeirloomsJournal:SetClassAndSpecFilters(self.classID, self.specID)
-        end)        
-        if info.texture then
-            btn.texture:SetTexture(info.texture)
-        else
-            btn.texture:SetAtlas(info.atlas)
-        end
-        btn.classID= info.classID
-        btn.specID= info.specID
-        btn:set_select(curClass, curSpec)
-        table.insert(check.buttons, btn)
-    end]]
+    end
     HeirloomsJournal.WoWtoolsButton= check
     hooksecurefunc(HeirloomsJournal, 'SetClassAndSpecFilters', function(self, Class, Spec)        
         self.WoWtoolsButton:chek_select(Class, Spec)

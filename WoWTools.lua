@@ -139,7 +139,7 @@ e.Icon={
     bank2='|A:Banker:0:0|a',
     bag='bag-main',
     bag2='|A:bag-main:0:0|a',
-    bagEmpty='bag-reagent-border-empty',
+    --bagEmpty='bag-reagent-border-empty',
 
     up2='|A:bags-greenarrow:0:0|a',--绿色向上, 红色向上 UI-HUD-Minimap-Arrow-Corpse， 金色 UI-HUD-Minimap-Arrow-Guard
     down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下
@@ -2115,49 +2115,57 @@ function e.Cbtn2(tab)
         showTexture=true,
         size=nil,
         alpha=1,
-        
+        color={},
     })
 ]]
-    local button= CreateFrame("Button", tab.name, tab.parent or UIParent, not tab.notSecureActionButton and "SecureActionButtonTemplate" or nil)
-    button:SetSize(tab.size or 30, tab.size or 30)
+    local btn= CreateFrame("Button", tab.name, tab.parent or UIParent, not tab.notSecureActionButton and "SecureActionButtonTemplate" or nil)
+    btn:SetSize(tab.size or 30, tab.size or 30)
     if tab.click==true then
-        button:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+        btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     elseif tab.click=='right' then
-        button:RegisterForClicks(e.RightButtonDown)
+        btn:RegisterForClicks(e.RightButtonDown)
     elseif tab.click=='left' then
-        button:RegisterForClicks(e.LeftButtonDown)
+        btn:RegisterForClicks(e.LeftButtonDown)
     end
-    button:EnableMouseWheel(true)
+    btn:EnableMouseWheel(true)
 
-    button:SetHighlightAtlas('bag-border')
-    button:SetPushedAtlas('bag-border-highlight')
+    
+    btn:SetPushedAtlas('bag-border-highlight')
+    btn:SetHighlightAtlas('bag-border')
+    
 
-    button.mask= button:CreateMaskTexture()
-    button.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-    button.mask:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4)
-    button.mask:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -6, 6)
+    btn.mask= btn:CreateMaskTexture()
+    btn.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
+    btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
+    btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
 
-    button.background=button:CreateTexture(nil,'BACKGROUND')
-    button.background:SetAllPoints(button)
-    button.background:SetAtlas(e.Icon.bagEmpty)
-    button.background:SetAlpha(tab.alpha or 0.5)
-
-    button.background:AddMaskTexture(button.mask)
+    btn.background= btn:CreateTexture(nil, 'BACKGROUND')
+    btn.background:SetAllPoints(btn)
+    btn.background:SetAtlas('bag-reagent-border-empty')
+    btn.background:SetAlpha(tab.alpha or 0.5)
+    btn.background:AddMaskTexture(btn.mask)
+   
 
     if not tab.notTexture then
-        button.texture=button:CreateTexture(nil, 'BORDER')
-        button.texture:SetPoint("TOPLEFT", button, "TOPLEFT", 4, -4)
-        button.texture:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -6, 6)
-        button.texture:AddMaskTexture(button.mask)
-        button.texture:SetShown(tab.showTexture)
+        btn.texture=btn:CreateTexture(nil, 'BORDER')
+        btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
+        btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
+        btn.texture:AddMaskTexture(btn.mask)
+        btn.texture:SetShown(tab.showTexture)
     end
-    button.border=button:CreateTexture(nil, 'ARTWORK')
-    button.border:SetAllPoints(button)
-    button.border:SetAtlas('bag-reagent-border')
+    btn.border=btn:CreateTexture(nil, 'ARTWORK')
+    btn.border:SetAllPoints(btn)
+    
+    btn.border:SetAtlas('bag-reagent-border')
+   
+    if btn.color then        
+        btn.border:SetVertexColor(tab.color.r, tab.color.g, tab.color.b, tab.alpha)
+    else        
+        e.Set_Label_Texture_Color(btn.border, {type='Texture', alpha=tab.alpha or 0.5})
+    end
+    
 
-    e.Set_Label_Texture_Color(button.border, {type='Texture', alpha=0.5})
-
-    return button
+    return btn
 end
 
 e.toolsFrame=CreateFrame('Frame')--TOOLS 框架
