@@ -1523,11 +1523,17 @@ local function Init()
         if not UnitAffectingCombat('player') then
             e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
         end
+        self:set_tooltips()
         self:SetScript('OnUpdate', function (self, elapsed)
             self.elapsed = (self.elapsed or 0.3) + elapsed
-            if self.elapsed > 0.3 then
+            if self.elapsed > 0.3 and self.typeID then
                 self.elapsed = 0
-                self:set_tooltips()
+                if GameTooltip:IsOwned(self) then
+                    local typeID= self.typeSpell and select(2, e.tips:GetSpell()) or select(2, e.tips:GetItem())
+                    if typeID and typeID~=self.typeID then
+                        self:set_tooltips()
+                    end
+                end
             end
         end)
     end)

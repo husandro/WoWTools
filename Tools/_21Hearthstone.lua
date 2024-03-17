@@ -126,7 +126,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
         function btn.hearthstone:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id,'|T134414:0|t'..(e.onlyChinese and '随机炉石' or addName))
+            e.tips:AddDoubleLine(id,'Tools |T134414:0|t'..(e.onlyChinese and '随机炉石' or addName))
             e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             e.tips:AddLine(' ')
             local itemID=self:get_itemID()
@@ -406,11 +406,15 @@ local function Init()
 
 
     button:SetScript("OnEnter",function(self)
+        
+        self:set_tooltips()
         self:SetScript('OnUpdate', function (self, elapsed)
             self.elapsed = (self.elapsed or 0.3) + elapsed
-            if self.elapsed > 0.3 then
+            if self.elapsed > 0.3 and self.itemID then
                 self.elapsed = 0
-                self:set_tooltips()
+                if GameTooltip:IsOwned(self) and select(2, e.tips:GetItem())~=self.itemID then
+                    self:set_tooltips()
+                end
             end
         end)
     end)
@@ -418,6 +422,7 @@ local function Init()
         GameTooltip_Hide()
         self:SetScript('OnUpdate',nil)
         self.elapsed=nil
+        setAtt()
     end)
     button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
@@ -427,7 +432,6 @@ local function Init()
 
     button:SetScript("OnMouseUp", function(self, d)
         if d=='LeftButton' and not IsModifierKeyDown() then
-            setAtt()--设置属性
             self.elapsed=nil
         end
         ResetCursor()
@@ -435,12 +439,12 @@ local function Init()
 
     button:SetScript('OnMouseWheel', setAtt)--设置属性
 
-    getToy()--生成, 有效表格
-    setAtt()--设置属性
+   
     setBagHearthstone()--设置Shift, Ctrl, Alt 提示
 
     C_Timer.After(2, function()
-        setAtt()--设置属性
+        --getToy()--生成, 有效表格
+        --setAtt()--设置属性
         set_BindLocation()--显示, 炉石, 绑定位置
         e.SetItemSpellCool({frame=button, item=button.itemID})--主图标冷却
     end)
@@ -483,6 +487,7 @@ panel:RegisterEvent('TOYS_UPDATED')
 panel:RegisterEvent('BAG_UPDATE_DELAYED')
 panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
 panel:RegisterEvent('HEARTHSTONE_BOUND')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -508,10 +513,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 button:SetPoint('RIGHT', WoWToolsMountButton, 'LEFT')
                 button.items={}--存放有效
 
-
                 if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
                     C_AddOns.LoadAddOn('Blizzard_Collections')
                 end
+
+                getToy()--生成, 有效表格
+                setAtt()--设置属性
+
                 Init()--初始
             else
                 self:UnregisterAllEvents()
@@ -527,7 +535,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName..'Tools']=Save
         end
 
-    elseif event=='TOYS_UPDATED' or event=='NEW_TOY_ADDED' then
+    elseif event=='TOYS_UPDATED' or event=='NEW_TOY_ADDED' or 'PLAYER_ENTERING_WORLD' then
         getToy()--生成, 有效表格
         setAtt()--设置属性
 
@@ -544,8 +552,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         set_BindLocation()--显示, 炉石, 绑定位置
 
     elseif event=='PLAYER_REGEN_ENABLED' then
-            setAtt()
-            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+        setAtt()
+        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
 
     end
 end)

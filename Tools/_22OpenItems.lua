@@ -129,9 +129,18 @@ local Bag= {}
 local isInRun, Combat
 
 
+
+
+
 if e.Player.class=='ROGUE' then
     e.LoadDate({id=1804, type='spell'})--开锁 Pick Lock
 end
+
+
+
+
+
+
 
 --QUEST_REPUTATION_REWARD_TOOLTIP = "在%2$s中的声望提高%1$d点";
 local function setCooldown()--冷却条
@@ -147,6 +156,16 @@ local function setCooldown()--冷却条
         e.Ccool(button, start, duration, nil, true,nil, true)
     end
 end
+
+
+
+
+
+
+
+
+
+
 
 local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
     if UnitAffectingCombat('player') or not UnitIsConnected('player') or UnitInVehicle('player') then
@@ -177,6 +196,16 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
     Combat=nil
     isInRun=nil
 end
+
+
+
+
+
+
+
+
+
+
 
 local equipItem--是装备时, 打开角色界面
 local function get_Items()--取得背包物品信息
@@ -307,6 +336,20 @@ local function get_Items()--取得背包物品信息
     end
     setAtt()
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function setDisableCursorItem()--禁用当物品
     if UnitAffectingCombat('player') then
@@ -656,12 +699,18 @@ local function Init()
     end
 
 
-    button:SetScript("OnEnter",  function(self)        
+    button:SetScript("OnEnter",  function(self)
+        self:set_tooltips()
         self:SetScript('OnUpdate', function (self, elapsed)
             self.elapsed = (self.elapsed or 0.3) + elapsed
             if self.elapsed > 0.3 then
                 self.elapsed = 0
-                self:set_tooltips()
+                if Bag.bag and Bag.slot and GameTooltip:IsOwned(self) then
+                    local itemID= C_Container.GetContainerItemID(Bag.bag, Bag.slot)
+                    if itemID~=select(2, e.tips:GetItem()) then
+                        self:set_tooltips()
+                    end
+                end                
             end
         end)
     end)
@@ -818,6 +867,23 @@ function panel:set_Events()--注册， 事件
         get_Items()
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --###########
 --加载保存数据

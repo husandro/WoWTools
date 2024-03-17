@@ -35,7 +35,43 @@ local QuestButton
 
 
 
-
+local GossipIcon = {--https://wago.io/hR_KBVGdK
+    [38054] = 236722,
+    [38055] = 236781,
+    [38056] = 236817,
+    [38057] = 236795,
+    [38058] = 236834,
+    [42586] = 1060981,
+    [42587] = 1060985,
+    [42588] = 1048304,
+    [42589] = 1032150,
+    [42590] = 1046803,
+    [42591] = 1031536,
+    [44982] = 1405803,
+    [44983] = 1405806,
+    [44987] = 2000841,
+    [46325] = 1408998,
+    [46326] = 1409010,
+    [46327] = 1409000,
+    [46328] = 1409001,
+    [46329] = 1409002,
+    [51934] = 3847780,
+    [51935] = 3551337,
+    [51936] = 3551338,
+    [51937] = 3551336,
+    [51938] = 3551339,
+    [51939] = 3257863,
+    [51941] = 4066373,
+    [51942] = 4226233,
+    [63907] = 'lootroll-icon-need',
+    [63911]  = 4672500,
+    [63910]  = 4672498,
+    [63909]  = 4672495,
+    [63908]  = 4672499,
+    [108016] = 4672496,
+    [109715] = 5140838,
+    [114080] = 5390645,
+}
 
 
 
@@ -791,6 +827,15 @@ local function Init_Gossip()
             return
         end
 
+        local icon= GossipIcon[info.gossipOptionID]
+        if icon then
+            if type(icon)=='number' then
+                self.Icon:SetTexture(icon)
+            else
+                self.Icon:SetAtlas(icon)
+            end
+        end
+
         if not self.sel then
             self.sel=CreateFrame("CheckButton", nil, self, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
             self.sel:SetPoint("RIGHT", -2, 0)
@@ -807,7 +852,7 @@ local function Init_Gossip()
                 if self2.id and self2.text then
                     e.tips:AddDoubleLine((self2.icon and '|T'..self2.icon..':0|t' or '')..self2.text, 'gossipOption: |cnGREEN_FONT_COLOR:'..self2.id..'|r')
                 else
-                    e.tips:AddDoubleLine(NONE, 'gossipOptionID',1,0,0)
+                    e.tips:AddDoubleLine(e.onlyChinese and '无' or NONE, 'gossipOptionID',1,0,0)
                 end
                 e.tips:Show()
             end)

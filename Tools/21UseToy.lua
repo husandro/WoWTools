@@ -178,7 +178,7 @@ function Init_SetButtonOption()
         function btn.toy:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id,'|T133567:0|t'..addName)
+            e.tips:AddDoubleLine(id,'Tools |T133567:0|t'..(e.onlyChinese and '随机玩具' or addName))
             e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             e.tips:AddLine(' ')
             local itemID=self:get_itemID()
@@ -641,11 +641,14 @@ local function Init()
         self.elapsed=nil
     end)
     button:SetScript("OnEnter", function(self)
+        self:set_tooltips()
         self:SetScript('OnUpdate', function (self, elapsed)
             self.elapsed = (self.elapsed or 0.3) + elapsed
-            if self.elapsed > 0.3 then
+            if self.elapsed > 0.3 and self.itemID then
                 self.elapsed = 0
-                self:set_tooltips()
+                if GameTooltip:IsOwned(self) and select(2, e.tips:GetItem())~=self.itemID then
+                    self:set_tooltips()
+                end
             end
         end)
     end)

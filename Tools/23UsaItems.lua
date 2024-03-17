@@ -1,5 +1,6 @@
 local id, e = ...
-local addName=USE_ITEM
+local addName= USE_ITEM
+local addName2
 
 local panel= CreateFrame("Frame")
 local button
@@ -18,7 +19,7 @@ local Save= {
             128353,--[海军上将的罗盘]
             167075,--[超级安全传送器：麦卡贡]
             168222,--[加密的黑市电台]
-            184504,184501, 184503, 184502, 184500, 64457,--[侍神者的袖珍传送门：奥利波斯]
+            184504, 184501, 184503, 184502, 184500, 64457,--[侍神者的袖珍传送门：奥利波斯]
             198156,--龙洞发生器
             172924,--[虫洞发生器：暗影界]
             168807,--[虫洞发生器：库尔提拉斯]
@@ -232,7 +233,7 @@ local function Init_Menu(_, level, type)--主菜单
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level);
-    e.LibDD:UIDropDownMenu_AddButton({text=e.cn(addName), isTitle=true, notCheckable=true}, level);
+    e.LibDD:UIDropDownMenu_AddButton({text=addName2, isTitle=true, notCheckable=true}, level);
     e.LibDD:UIDropDownMenu_AddButton({
         text= e.onlyChinese and '拖曳: 物品, 法术, 装备' or (DRAG_MODEL..', '..SPELLS..', '..ITEMS),
         isTitle=true,
@@ -478,7 +479,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
         function btn.useItem:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id,'Tools |A:soulbinds_tree_conduit_icon_utility:0:0|a'..addName)
+            e.tips:AddDoubleLine(id, addName2)
             e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             e.tips:AddLine(' ')
             local itemID=self:get_itemID()
@@ -537,7 +538,7 @@ local function set_Use_Spell_Button(btn, spellID)
         function btn.useSpell:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id,'Tools |A:soulbinds_tree_conduit_icon_utility:0:0|a'..addName)
+            e.tips:AddDoubleLine(id, addName2)
             e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             e.tips:AddLine(' ')
             if self.spellID then
@@ -609,7 +610,7 @@ local function Init()
     --添加, 对话框
     --###########
     StaticPopupDialogs[id..addName..'REMOVE']={
-        text=id..' '..addName..'|n|n%s',
+        text=id..' '..addName2..'|n|n%s',
         whileDead=true, hideOnEscape=true, exclusive=true,
         button1='|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r',
         button2=e.onlyChinese and '取消' or CANCEL,
@@ -620,16 +621,16 @@ local function Init()
             else
                 if Save[data.type][data.index] and Save[data.type][data.index]==data.ID then
                     table.remove(Save[data.type], data.index)
-                    print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'..(e.onlyChinese and '完成' or COMPLETE), data.name, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD..'|r')
+                    print(id, addName2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'..(e.onlyChinese and '完成' or COMPLETE), data.name, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD..'|r')
                 else
-                    print(id, e.cn(addName),'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '错误' or ERROR_CAPS)..'|r', e.onlyChinese and '未发现物品' or	BROWSE_NO_RESULTS, data.name)
+                    print(id, addName2,'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '错误' or ERROR_CAPS)..'|r', e.onlyChinese and '未发现物品' or	BROWSE_NO_RESULTS, data.name)
                 end
             end
         end,
     }
 
     StaticPopupDialogs[id..addName..'RESETALL']={--重置所有
-        text=id..' '..addName..'|n|n'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI),
+        text=id..' '..addName2..'|n|n'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI),
         whileDead=true, hideOnEscape=true, exclusive=true,
         button1= e.onlyChinese and '重置' or RESET,
         button2= e.onlyChinese and '取消' or CANCEL,
@@ -640,7 +641,7 @@ local function Init()
     }
 
     StaticPopupDialogs[id..addName..'ADD']={--添加, 移除
-        text=id..' '..addName..'|n|n%s: %s',
+        text=id..' '..addName2..'|n|n%s: %s',
         whileDead=true, hideOnEscape=true, exclusive=true,
         button1= e.onlyChinese and '添加' or ADD,
         button2= e.onlyChinese and '取消' or CANCEL,
@@ -653,11 +654,11 @@ local function Init()
         end,
         OnAccept = function(_, data)
             table.insert(Save[data.type], data.ID)
-            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, addName2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         OnAlt = function(_, data)
             table.remove(Save[data.type], data.index)
-            print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, addName2, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }
 
@@ -766,7 +767,7 @@ local function Init()
         elseif d=='LeftButton' then
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(id, addName2)
             e.tips:AddDoubleLine(e.onlyChinese and '拖曳' or DRAG_MODEL, e.onlyChinese and '添加' or ADD)
             e.tips:AddDoubleLine(SPELLS, ITEMS, 0,1,0, 0,1,0)
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
@@ -866,6 +867,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end
 
             Save= WoWToolsSave[addName..'Tools'] or Save
+            addName2= 'Tools |A:soulbinds_tree_conduit_icon_utility:0:0|a'..(e.onlyChinese and '使用物品' or addName)
 
             if not e.toolsFrame.disabled then
                 for _, ID in pairs(Save.item) do
