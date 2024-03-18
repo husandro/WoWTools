@@ -2446,7 +2446,7 @@ local function Init_Options()--初始, 选项
         end,
         clearfunc= function() Save=nil e.Reload() end}
     )
-    
+
 if not e.Player.husandro then
     return
 end
@@ -2491,7 +2491,7 @@ end
     menu.ID:HookScript("OnTextChanged", function(self)
         local p=self:GetParent()
         local num= self:GetNumber() or 0
-        p.Add:SetEnabled(num>0)
+        p.Add:SetShown(num>0)
     end)
 
     menu.Name= CreateFrame("EditBox", nil, menu, 'SearchBoxTemplate')
