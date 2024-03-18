@@ -20,10 +20,16 @@ local Save={
         --scale=1,
         --point=nil,
 
+        --not_Gossip_Text_Icon=true,--自定义，对话，文本
+        GossipTextIcon_Player={--玩家，自定义，对话，文本
+            [55193]={atlas='communities-icon-invitemail', name='邮件'}
+        },
+        Gossip_Text_Icon_Size=30,
+
 }
 
 
-local panel= CreateFrame("Frame")
+
 local GossipButton
 local QuestButton
 
@@ -35,43 +41,139 @@ local QuestButton
 
 
 
-local GossipIcon = {--https://wago.io/hR_KBVGdK
-    [38054] = 236722,
-    [38055] = 236781,
-    [38056] = 236817,
-    [38057] = 236795,
-    [38058] = 236834,
-    [42586] = 1060981,
-    [42587] = 1060985,
-    [42588] = 1048304,
-    [42589] = 1032150,
-    [42590] = 1046803,
-    [42591] = 1031536,
-    [44982] = 1405803,
-    [44983] = 1405806,
-    [44987] = 2000841,
-    [46325] = 1408998,
-    [46326] = 1409010,
-    [46327] = 1409000,
-    [46328] = 1409001,
-    [46329] = 1409002,
-    [51934] = 3847780,
-    [51935] = 3551337,
-    [51936] = 3551338,
-    [51937] = 3551336,
-    [51938] = 3551339,
-    [51939] = 3257863,
-    [51941] = 4066373,
-    [51942] = 4226233,
-    [63907] = 'lootroll-icon-need',
-    [63911]  = 4672500,
-    [63910]  = 4672498,
-    [63909]  = 4672495,
-    [63908]  = 4672499,
-    [108016] = 4672496,
-    [109715] = 5140838,
-    [114080] = 5390645,
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local GossipTextIcon={}--自定义，对话，文本
+local function Init_Gossip_Text()
+    GossipTextIcon={}
+    if Save.not_Gossip_Text_Icon then
+        return
+    end
+    local find--工程
+    for index, type in pairs({GetProfessions()}) do
+        if index>2 or find then
+            break
+        else
+            local spelloffset = select(6, GetProfessionInfo(type))
+            local spellID= select(7, GetSpellInfo(spelloffset+ 1, 'spell'))
+            if spellID==158739 then
+                find=true            
+            end
+        end
+    end
+    if find then
+        local tabs = {--https://wago.io/hR_KBVGdK
+            [38054] = {texture=236722, cn='北风苔原', en='Borean Tundra', tw='北風凍原', de='Boreanische Tundra', es='Tundra Boreal', fr='Toundra Boréenne', it='Tundra Boreale', pt='Tundra Boreana', ru='Борейская тундра', ko='북풍의 땅'},--npc 35646
+            [38055] = {texture=236781, cn='嚎风峡湾', en='Howling Fjord', tw='凜風峽灣', de='Der Heulende Fjord', es='Fiordo Aquilonal', fr='Fjord Hurlant', it='Fiordo Echeggiante', pt='Fiorde Uivante', ru='Ревущий фьорд', ko='울부짖는 협만'},
+            [38056] = {texture=236817, cn='索拉查盆地', en='Sholazar Basin', tw='休拉薩盆地', de='Sholazarbecken', es='Cuenca de Sholazar', fr='Bassin de Sholazar', it='Bacino di Sholazar', pt='Bacia Sholazar', ru='Низина Шолазар', ko='숄라자르 분지'},
+            [38057] = {texture=236795, cn='冰冠冰川', en='Icecrown', tw='寒冰皇冠', de='Eiskrone', es='Corona de Hielo', fr='La Couronne de glace', it='Corona di Ghiaccio', pt='Coroa de Gelo', ru='Ледяная Корона', ko='얼음왕관'},
+            [38058] = {texture=236834, cn='风暴峭壁', en='The Storm Peaks', tw='風暴群山', de='Die Sturmgipfel', es='Las Cumbres Tormentosas', fr='Les pics Foudroyés', it='Cime Tempestose', pt='Picos Tempestuosos', ru='Грозовая гряда', ko='폭풍우 봉우리'},
+
+            [42586] = {texture=1060981, cn='阿兰卡峰林', en='Spires of Arak', tw='阿拉卡山', de='Spitzen von Arak', es='Cumbres de Arak', fr='Flèches d’Arak', it='Guglie di Arakk', pt='Agulhas de Arak', ru='Пики Арака', ko='아라크 첨탑'},--81205
+            [42587] = {texture=1060985, cn='塔拉多', en='Talador', tw='塔拉多爾', de='Talador', es='Talador', fr='Talador', it='Talador', pt='Talador', ru='Таладор', ko='탈라도르'},
+            [42588] = {texture=1048304, cn='影月谷', en='Shadowmoon Valley', tw='影月谷', de='Schattenmondtal', es='Valle Sombraluna', fr='Vallée d’Ombrelune', it='Valle di Torvaluna', pt='Vale da Lua Negra', ru='Долина Призрачной Луны', ko='어둠달 골짜기'},
+            [42589] = {texture=1032150, cn='纳格兰', en='Nagrand', tw='納葛蘭', de='Nagrand', es='', fr='Nagrand', it='Nagrand', pt='Nagrand', ru='Награнд', ko='나그란드'},
+            [42590] = {texture=1046803, cn='戈尔隆德', en='Gorgrond', tw='格古隆德', de='Gorgrond', es='Gorgrond', fr='Gorgrond', it='Gorgrond', pt='Gorgrond', ru='Горгронд', ko='고르그론드'},
+            [42591] = {texture=1031536, cn='霜火岭', en='Frostfire Ridge', tw='霜火峰', de='Frostfeuergrat', es='Cresta Fuego Glacial', fr='Crête de Givrefeu', it='Landa di Fuocogelo', pt='Serra Fogofrio', ru='Хребет Ледяного Огня', ko='서리불꽃 마루'},
+
+            [44982] = {texture=1405803, cn='自动铁锤', en='Auto-Hammer', tw='自動鐵錘', de='Automatikhammer', es='Martillo automático', fr='Auto-marteau', it='Automartello', pt='Martelo Automático', ru='Автоматический молот', ko='자동 망치'},--101462
+            [44983] = {texture=1405806, cn='故障检测晶塔', en='Failure Detection Pylon', tw='故障檢測塔', de='Fehlschlagdetektorpylon', es='Pilón detector de errores', fr='Pylône de détection des échecs', it='Pilone d\'Individuazione Fallimenti', pt='Pilar Detector de Falhas', ru='Пилон для обнаружения проблем', ko='고장 감지 변환기'},    
+            [44984] = {texture=134279, cn='烟火', en='Fireworks', tw='煙火', de='Feuerwerk', es='Fuegos artificiales', fr='Feux d’artifice', it='Fuochi d\'Artificio', pt='Fogos de Artifício', ru='Фейерверк', ko='불꽃놀이'},
+            [44985] = {texture=351502, cn='点心桌', en='Snack Table', tw='小吃桌', de='Snacktisch', es='Mesa de merienda', fr='Table de collation', it='Tavolo per snack', pt='Mesa de lanche', ru='Пищевой', ko='스낵 테이블'},
+            [44986] = {texture=134144, cn='布林顿6000', en='Blingtron 6000', tw='布靈頓 6000', de='Blingtron 6000', es='Joyatrón 6000', fr='Bling-o-tron 6000', it='Orotron 6000', pt='Blingtron 6000', ru='Блескотрон-6000', ko='블링트론 6000'},
+            [44987] = {texture=2000841, cn='虫洞', en='Wormhole', tw='蟲洞', de='Wurmloch', es='Agujero de gusano', fr='Tunnel spatiotemporel', it='Tunnel Spaziotemporale', pt='Buraco de Minhoca', ru='Червоточина', ko='웜홀'},
+
+            [46325] = {texture= 1408998, cn='阿苏纳', en='Azsuna', tw='艾蘇納', de='Azsuna', es='Azsuna', fr='Azsuna', it='Azsuna', pt='Азсуна', ru='Азсуна', ko='아즈스나'},
+            [46326] = {texture= 1409010, cn='瓦尔莎拉', en='Val\'sharah', tw='維爾薩拉', de='Val\'sharah', es='Val\'sharah', fr='Val\'sharah', it='Val\'sharah', pt='Val\'sharah', ru='Валь\'шара', ko='발샤라'},
+            [46327] = {texture= 1409000, cn='至高岭', en='Highmountain', tw='高嶺', de='Der Hochberg', es='Monte Alto', fr='Haut-Roc', it='Alto Monte', pt='Alta Montanha', ru='Крутогорье', ko='높은산'},
+            [46328] = {texture= 1409001, cn='风暴峡湾', en='Stormheim', tw='斯鐸海姆', de='Sturmheim', es='Tormenheim', fr='Tornheim', it='Stromheim', pt='Trommheim', ru='Штормхейм', ko='스톰하임'},
+            [46329] = {texture= 1409002, cn='苏拉玛', en='Suramar', tw='蘇拉瑪爾', de='Suramar', es='Suramar', fr='Suramar', it='Suramar', pt='Suramar', ru='Сурамар', ko='수라마르'},
+
+            [51934] = {texture= 3847780, cn='奥利波斯', en='Oribos', tw='奧睿博司', de='Oribos', es='Oribos', fr='Oribos', it='Oribos', pt='Oribos', ru='Орибос', ko='오리보스'},
+            [51935] = {texture= 3551337, cn='晋升堡垒', en='Bastion', tw='昇靈堡', de='Bastion', es='Bastión', fr='Le Bastion', it='Bastione', pt='Bastião', ru='Бастион', ko='승천의 보루'},
+            [51936] = {texture= 3551338, cn='玛卓克萨斯', en='Maldraxxus', tw='瑪卓薩斯', de='Maldraxxus', es='Maldraxxus', fr='Maldraxxus', it='Maldraxxus', pt='Maldraxxus', ru='말드락서스', ko='말드락서스'},
+            [51937] = {texture= 3551336, cn='炽蓝仙野', en='Ardenweald', tw='亞登曠野', de='', es='Ardenweald', fr='Sylvarden', it='Selvarden', pt='Ardena', ru='Арденвельд', ko='몽환숲'},
+            [51938] = {texture= 3551339, cn='雷文德斯', mapID=1525},
+            [51939] = {texture= 3257863, cn='噬渊', en='The Maw', tw='淵喉', de='Der Schlund', es='Las Fauces', fr='Antre', it='La Fauce', pt='A Gorja', ru='Утроба', ko='나락'},
+            [51941] = {texture= 4066373, cn='刻希亚', en='Korthia', tw='科西亞', de='Korthia', es='Korthia', fr='Korthia', it='Korthia', pt='Korthia', ru='Кортия', ko='코르시아'},
+            [51942] = {texture= 4226233, cn='扎雷殁提斯', mapID=1970},
+
+            [63907] = {atlas= 'lootroll-icon-need', cn='随机', en='Random', tw='隨機', de='Zufällig', es='Aleatorio', fr='Aléatoire', it='Casuale', pt='Aleatório', ru='Случайность', ko='무작위로'},
+            [63911]  = {texture= 4672500, cn='觉醒海岸', mapID=2022},
+            [63910]  = {texture= 4672498, cn='欧恩哈拉平原', mapID=2023},
+            [63909]  = {texture= 4672495, cn='碧蓝林海', mapID=2024},
+            [63908]  = {texture= 4672499, cn='索德拉苏斯', mapID=2025},
+            [108016] = {texture= 4672496, cn='禁忌离岛', mapID=2151},
+            [109715] = {texture= 5140838, cn='查拉雷克洞窟', mapID=2133},
+            [114080] = {texture= 5390645, cn='翡翠梦境', mapID=2200},
+        }
+        for gossipID, tab in pairs(tabs) do
+            local name
+            if e.onlyChinese then
+                name= tab.cn
+            elseif tab.mapID then
+                local info = C_Map.GetMapInfo(tab.mapID) or {}
+                name= info.name
+            else
+                name=(LOCALE_enUS and tab.en)
+                    or (LOCALE_koKR and tab.ko)
+                    or (LOCALE_frFR and tab.fr)
+                    or (LOCALE_deDE and tab.de)
+                    or (LOCALE_esES and tab.es)
+                    or (LOCALE_zhTW and tab.tw) 
+                    or (LOCALE_esMX and tab.es)
+                    or (LOCALE_ruRU and tab.ru)
+                    or (LOCALE_ptBR and tab.pt)
+                    or (LOCALE_itIT and tab.it)
+            end
+            if name=='' or name==false then
+                name= nil
+            end
+            if name or (texture or atlas) then
+                GossipTextIcon[gossipID]= {texture=tab.texture, atlas=tab.atlas, name=name}
+            end
+        end
+        tabs=nil
+    end
+end
+
+--自定义，对话，文本
+local function Set_Gossip_Text(self, gossipOptionID)
+    if Save.not_Gossip_Text_Icon then
+        return
+    end
+    local zoneInfo= Save.GossipTextIcon_Player[gossipOptionID] or GossipTextIcon[gossipOptionID]    
+    if not zoneInfo then
+        return
+    end    
+    local name= (not zoneInfo.name or zoneInfo.name=='') and self:GetText() or zoneInfo.name or ''
+    local size= Save.Gossip_Text_Icon_Size or 30
+    if zoneInfo.texture then
+        name= format('|T%s:%d|t%s', zoneInfo.texture, size, name)
+    elseif zoneInfo.atlas then
+        name= format('|A:%s:%d:%d|a%s', zoneInfo.atlas, size, size, name)
+    end
+    self:SetText(name)    
+end
+
+
+
+
 
 
 
@@ -200,6 +302,23 @@ local function select_Reward(questID)--自动:选择奖励
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -512,6 +631,74 @@ local function Init_Menu_Gossip(_, level, type)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+    elseif type=='Gossip_Text_Icon_Options_SYSTEMP' then--自带，自定义，对话，文本， 3级菜单
+        for gossipID, tab in pairs(GossipTextIcon) do
+            info={
+                text=gossipID..' '..(tab.name or ''),
+                icon= tab.texture or tab.atlas,
+                notCheckable=true,
+                keepShownOnClick=true,               
+            }   
+            e.LibDD:UIDropDownMenu_AddButton(info, level) 
+        end
+
+    elseif type=='Gossip_Text_Icon_Options' then--自定义，对话，文本，2级菜单
+        local num=0        
+        for _ in pairs(Save.GossipTextIcon_Player) do
+            num= num+1
+        end
+        info={
+            text=(e.onlyChinese and '自定义' or CUSTOM)..'|cnGREEN_FONT_COLOR:'..num,
+            notCheckable=true,
+            keepShownOnClick=true,
+            func= function()
+            end
+        }        
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        num=0        
+        for _ in pairs(GossipTextIcon) do
+            num= num+1
+        end
+        info={
+            text='SYSTEM #|cnGREEN_FONT_COLOR:'..num,
+            colorCode= num==0 and '|cff606060' or nil,
+            notCheckable=true,
+            hasArrow= num>0,
+            menuList= 'Gossip_Text_Icon_Options_SYSTEMP',
+            keepShownOnClick=true,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        info={
+            text=(e.onlyChinese and '图标大小' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE)..' |cnGREEN_FONT_COLOR:'..(Save.Gossip_Text_Icon_Size or 30),
+            notCheckable=true,
+            func= function()
+                if not GossipButton.slider then
+                    GossipButton.slider= e.CSlider(self, {min=8, max=72, value=Save.Gossip_Text_Icon_Size or 30, setp=1, color=true,
+                    text= e.onlyChinese and '图标大小' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
+                    func=function(frame, value)
+                        value= math.modf(value)
+                        value= value==0 and 0 or value
+                        frame:SetValue(value)
+                        frame.Text:SetText(value)
+                        Save.Gossip_Text_Icon_Size= value
+                        print(id, addName, '|T236722:'..value..'|t', value)
+                    end})
+                    GossipButton.slider:SetPoint('BOTTOM', GossipButton, 'TOP')
+                    GossipButton.slider.CLOSE= e.Cbtn(GossipButton.slider,{size={18,18}, atlas='Radial_Wheel_Icon_Close'})
+                    GossipButton.slider.CLOSE:SetPoint('RIGHT', GossipButton.slider, 'LEFT')
+                    GossipButton.slider.CLOSE:SetScript('OnClick', function(self)
+                        self:GetParent():Hide()
+                    end)
+                else
+                    GossipButton.slider:SetShown(not GossipButton.slider:IsShown() and true or false)
+                end
+                
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
     if type then
@@ -537,6 +724,21 @@ local function Init_Menu_Gossip(_, level, type)
         keepShownOnClick=true,
         func= function()
             Save.unique= not Save.unique and true or nil
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text=e.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE),
+        tooltipOnButton=true,
+        tooltipTitle=e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
+        checked= not Save.not_Gossip_Text_Icon,
+        keepShownOnClick=true,
+        hasArrow=true,
+        menuList='Gossip_Text_Icon_Options',
+        func= function()
+           Save.not_Gossip_Text_Icon= not Save.not_Gossip_Text_Icon and true or nil
+           Init_Gossip_Text()
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -612,6 +814,14 @@ end
 
 
 
+
+
+
+
+
+
+
+
 --###########
 --对话，初始化
 --###########
@@ -649,6 +859,7 @@ local function Init_Gossip()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..e.GetEnabeleDisable(not Save.gossip), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.mid)
         e.tips:Show()
         self.texture:SetAlpha(1)
     end
@@ -695,6 +906,8 @@ local function Init_Gossip()
             self:set_Scale()
             self:tooltip_Show()
             print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, n)
+        elseif not IsModifierKeyDown() then
+            e.OpenPanelOpting(addName)
         end
     end)
     GossipButton:SetScript('OnClick', function(self, d)
@@ -821,20 +1034,25 @@ local function Init_Gossip()
 
 
 
-    --自定义闲话选项, 按钮 GossipFrameShared.lua
+
+
+
+
+
+
+
+
+
+
+
+    --自定义闲话选项, 按钮 GossipFrameShared.lua https://wago.io/MK7OiGqCu https://wago.io/hR_KBVGdK
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
         if not info or not info.gossipOptionID then
             return
         end
 
-        local icon= GossipIcon[info.gossipOptionID]
-        if icon then
-            if type(icon)=='number' then
-                self.Icon:SetTexture(icon)
-            else
-                self.Icon:SetAtlas(icon)
-            end
-        end
+        Set_Gossip_Text(self, info.gossipOptionID)--自定义，对话，文本
+      
 
         if not self.sel then
             self.sel=CreateFrame("CheckButton", nil, self, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
@@ -1128,10 +1346,25 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --任务，主菜单
 --###########
-
 local function InitMenu_Quest(_, level, type)
     local info
     --local uiMapID = (WorldMapFrame:IsShown() and (WorldMapFrame.mapID or WorldMapFrame:GetMapID("current"))) or C_Map.GetBestMapForUnit('player')
@@ -1505,6 +1738,7 @@ local function Init_Quest()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.quest),e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.mid)
         e.tips:Show()
         self.texture:SetAlpha(1)
         self:set_Only_Show_Zone_Quest()
@@ -1590,6 +1824,9 @@ local function Init_Quest()
             e.LibDD:ToggleDropDownMenu(1, nil, self.MenuQest, self, 15, 0)
         end
     end)
+    QuestButton:SetScript('OnMouseWheel', function()
+        e.OpenPanelOpting(addName)
+    end)
 
     QuestButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)
     QuestButton:SetScript('OnEnter', QuestButton.tooltip_Show)
@@ -1603,23 +1840,6 @@ local function Init_Quest()
 
     QuestButton.Text=e.Cstr(QuestButton, {justifyH='RIGHT', color=true, size= size-2})--任务数量
     QuestButton.Text:SetPoint('RIGHT', QuestButton, 'LEFT', 0, 1)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1858,11 +2078,468 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--公会和社区 Blizzard_Communities
+local function Init_Blizzard_Communities()
+    --自动，申请，加入
+    local function set_ClubFinderRequestToJoin(self)
+        local specID = PlayerUtil.GetCurrentSpecID()
+        if not self.info or not Save.gossip or not self.SpecsPool or not specID then
+            return
+        end
+        local specName
+        for btn in pairs(self.SpecsPool.activeObjects or {}) do
+        if btn.specID==specID then
+                btn.CheckBox:Click()
+                specName= btn.SpecName:GetText()
+                break
+        end
+        end
+        local level= UnitLevel('player') or MAX_PLAYER_LEVEL
+        local text
+        if level< MAX_PLAYER_LEVEL then
+            text= 'Level '..(level and format('%i', level) or '')
+        else
+            local avgItemLevel,_, avgItemLevelPvp= GetAverageItemLevel()
+            local score= C_ChallengeMode.GetOverallDungeonScore() or 0
+            local keyStoneLevel= C_MythicPlus.GetOwnedKeystoneLevel() or 0
+            local achievement= GetTotalAchievementPoints() or 0
+
+            text= 'Item Level '..(avgItemLevel and format('%i', avgItemLevel) or '')..'|n'--等级
+                ..(avgItemLevel and avgItemLevelPvp and avgItemLevelPvp- avgItemLevel>20 and 'Item PvP '..format('%i', avgItemLevel)..'|n' or '')
+            if score>1000 then--挑战
+                text= text..'Keystone '..score..(keyStoneLevel and keyStoneLevel>10 and ' ('..keyStoneLevel..')' or '')
+                text= text..'|n'
+            end
+            if achievement>10000 then--成就
+                text= text..'Achievement '..achievement..'|n'
+            end
+            local CONQUEST_SIZE_STRINGS = {'Solo', '2v2', '3v3', '10v10'}--PVP
+            for i=1, 4 do
+                local rating= GetPersonalRatedInfo(i)
+                if rating and rating>500 then
+                    text= text..CONQUEST_SIZE_STRINGS[i]..' '..rating..'|n'
+                end
+            end
+        end
+        self.MessageFrame.MessageScroll.EditBox:SetText(text)
+        if IsModifierKeyDown() then
+            return
+        end
+        if self.Apply:IsEnabled() then
+            self.Apply:Click()
+            print(
+                id,addName,'|cnGREEN_FONT_COLOR:', self.Apply:GetText(),'|n|cffff00ff',
+                (self.info.emblemInfo and '|T'..self.info.emblemInfo..':0|t' or '')..(self.info.name or '')..(self.info.numActiveMembers and  '|cff00ccff (|A:groupfinder-waitdot:0:0|a'..self.info.numActiveMembers..')|r' or ''), '|n',
+                '|cnGREEN_FONT_COLOR:'..text, specName,'|n', '|cffff7f00', self.info.comment)
+        end
+    end
+    hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
+    hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
+    ClubFinderCommunityAndGuildFinderFrame.CommunityCards:HookScript('OnShow', function(self)
+        if Save.gossip or not IsModifierKeyDown() then
+            local btn= self:GetParent().OptionsList.Search
+            if btn and btn:IsEnabled() then
+                btn:Click()
+            end
+        end
+    end)
+    ClubFinderGuildFinderFrame.GuildCards:HookScript('OnShow', function(self)
+        if Save.gossip or not IsModifierKeyDown() then
+            local btn= self:GetParent().OptionsList.Search
+            if btn and btn:IsEnabled() then
+                btn:Click()
+            end
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING= SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING
+--Blizzard_PlayerChoice
+local function Init_Blizzard_PlayerChoice()
+    --命运, 字符
+    hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"],"OnShow",function(s)
+        if Save.gossip and s.editBox then
+            s.editBox:SetText(SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING)
+        end
+    end)
+
+    
+    --自动选择奖励 Blizzard_PlayerChoice.lua
+    local function Send_Player_Choice_Response(optionInfo)
+        if optionInfo then
+            C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
+            print(id, e.cn(addName), (optionInfo.spellID and GetSpellLink(optionInfo.spellID) or ''),
+                '|n',
+                '|T'..(optionInfo.choiceArtID or 0)..':0|t'..optionInfo.rarityColor:WrapTextInColorCode(optionInfo.description or '')
+            )
+            PlayerChoiceFrame:OnSelectionMade()
+            C_PlayerChoice.OnUIClosed()
+            for optionFrame in PlayerChoiceFrame.optionPools:EnumerateActiveByTemplate(PlayerChoiceFrame.optionFrameTemplate) do
+                optionFrame:SetShown(false)
+            end
+        end
+    end
+    hooksecurefunc(PlayerChoiceFrame, 'SetupOptions', function(self2)
+        if IsModifierKeyDown() or not Save.gossip then
+            return
+        end
+        local tab={}
+        local soloOption = (#self2.choiceInfo.options == 1)
+        for optionFrame in self2.optionPools:EnumerateActiveByTemplate(self2.optionFrameTemplate) do
+            if optionFrame.optionInfo then
+                local enabled= not optionFrame.optionInfo.disabledOption and optionFrame.optionInfo.spellID and optionFrame.optionInfo.spellID>0
+                if not optionFrame.check and enabled then
+                    optionFrame.check= CreateFrame("CheckButton", nil, optionFrame, "InterfaceOptionsCheckButtonTemplate")
+                    optionFrame.check:SetPoint('BOTTOM' ,0, -40)
+                    optionFrame.check:SetScript('OnClick', function(self3)
+                        local optionInfo= self3:GetParent().optionInfo
+                        if optionInfo and optionInfo.spellID then
+                            Save.choice[optionInfo.spellID]= not Save.choice[optionInfo.spellID] and (optionInfo.rarity or 0) or nil
+                            if Save.choice[optionInfo.spellID] then
+                                Send_Player_Choice_Response(optionInfo)
+                            end
+                        else
+                            print(id, e.cn(addName),'|cnRED_FONT_COLOR:', not e.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误')
+                        end
+                    end)
+                    optionFrame.check:SetScript('OnLeave', GameTooltip_Hide)
+                    optionFrame.check:SetScript('OnEnter', function(self3)
+                        local optionInfo= self3:GetParent().optionInfo
+                        e.tips:SetOwner(self3:GetParent(), "ANCHOR_BOTTOMRIGHT")
+                        e.tips:ClearLines()
+                        if optionInfo and optionInfo.spellID then
+                            e.tips:SetSpellByID(optionInfo.spellID)
+                        end
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine(id, e.cn(addName))
+                        e.tips:Show()
+                    end)
+                    optionFrame.check.Text2=e.Cstr(optionFrame.check)
+                    optionFrame.check.Text2:SetPoint('RIGHT', optionFrame.check, 'LEFT')
+                    optionFrame.check.Text2:SetTextColor(0,1,0)
+                    optionFrame.check:SetScript('OnUpdate', function(self3, elapsed)
+                        self3.elapsed = (self3.elapsed or 1) + elapsed
+                        if self3.elapsed>=1 then
+                            local text, count
+                            local aura= self3.spellID and C_UnitAuras.GetPlayerAuraBySpellID(self3.spellID)
+                            if aura then
+                                local value= aura.expirationTime-aura.duration
+                                local time= GetTime()
+                                time= time < value and time + 86400 or time
+                                time= time - value
+                                text= e.SecondsToClock(aura.duration- time)
+                                count= select(3, e.WA_GetUnitBuff('player', self3.spellID, 'HELPFUL'))
+                                count= count and count>1 and count or nil
+                            end
+                            self3.Text:SetText(text or '')
+                            self3.Text2:SetText(count or '')
+                            self3.elapsed=0
+                        end
+                    end)
+                end
+
+                if optionFrame.check then
+                    optionFrame.check.elapsed=1.1
+                    optionFrame.check.spellID= optionFrame.optionInfo.spellID
+                    optionFrame.check:SetShown(enabled)
+                    if enabled then
+                        local saveChecked= Save.choice[optionFrame.optionInfo.spellID]
+                        optionFrame.check:SetChecked(saveChecked)
+                        if saveChecked or (soloOption and Save.unique) then
+                            optionFrame.optionInfo.rarity = optionFrame.optionInfo.rarity or 0
+                            table.insert(tab, optionFrame.optionInfo)
+                        end
+                    end
+                end
+            end
+        end
+        if #tab>0 then
+            table.sort(tab, function(a,b)
+                if a.rarity== b.rarity then
+                    return a.spellID> b.spellID
+                else
+                    return a.rarity> b.rarity
+                end
+            end)
+            Send_Player_Choice_Response(tab[1])
+        end
+    end)
+
+    hooksecurefunc(PlayerChoiceNormalOptionTemplateMixin,'SetupButtons', function(frame)
+        local info2= frame.optionInfo or {}
+        if not info2.disabledOption and info2.buttons
+            and info2.buttons[2] and info2.buttons[2].id
+        then
+            if not PlayerChoiceFrame.allButton then
+                PlayerChoiceFrame.allButton= e.Cbtn(PlayerChoiceFrame, {size={60,22}, type=false, icon='hide'})
+                PlayerChoiceFrame.allButton:SetPoint('BOTTOMRIGHT')
+                PlayerChoiceFrame.allButton:SetFrameStrata('DIALOG')
+                PlayerChoiceFrame.allButton:SetScript('OnLeave', GameTooltip_Hide)
+                PlayerChoiceFrame.allButton:SetScript('OnEnter', function(s)
+                    e.tips:SetOwner(s, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(id , e.cn(addName))
+                    e.tips:AddLine(' ')
+                    e.tips:AddLine(s.tips or (e.onlyChinese and '使用' or USE))
+                    e.tips:AddDoubleLine(' ', format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, 44)..e.Icon.left)
+                    e.tips:AddDoubleLine(' ', format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, 100)..e.Icon.right)
+                    e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1), 'Alt')
+                    e.tips:Show()
+                end)
+                PlayerChoiceFrame.allButton:SetScript('OnHide', function(s)
+                    if s.time and not s.time:IsCancelled() then
+                        s.time:Cancel()
+                    end
+                end)
+                function PlayerChoiceFrame.allButton:set_text()
+                    self:SetText(
+                        (not self.time or self.time:IsCancelled()) and (e.onlyChinese and '全部' or ALL)
+                        or (e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
+                    )
+                end
+                PlayerChoiceFrame.allButton:SetScript('OnClick', function(s, d)
+                    if s.time and not s.time:IsCancelled() then
+                        s.time:Cancel()
+                        s:set_text()
+                        print(id,e.cn(addName),'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
+                        return
+                    else
+                        s:set_text()
+                    end
+                    local n= 0
+                    local all= d=='LeftButton' and 43 or 100
+
+                    if s.buttonID then
+                        C_PlayerChoice.SendPlayerChoiceResponse(s.buttonID)
+                    end
+                    s.time=C_Timer.NewTicker(0.65, function()
+                        local choiceInfo = C_PlayerChoice.GetCurrentPlayerChoiceInfo() or {}
+                        local info= choiceInfo.options and choiceInfo.options[1] or {}
+                        if info
+                            and not info.disabledOption
+                            and info.buttons
+                            and info.buttons[2]
+
+                            and info.buttons[2].id
+                            and not info.buttons[2].disabled
+                            and not IsModifierKeyDown()
+                            and s:IsEnabled()
+                            and s:IsShown()
+                        then
+                            C_PlayerChoice.SendPlayerChoiceResponse(info.buttons[2].id)--Blizzard_PlayerChoiceOptionBase.lua
+                            n=n+1
+                            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '|cnRED_FONT_COLOR:Alt' )
+                            --self.parentOption:OnSelected()
+                        elseif s.time then
+                        s.time:Cancel()
+                        print(id,e.cn(addName),'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1, '|r'..n)
+                        end
+                        s:set_text()
+                    end, all)
+                end)
+            end
+            PlayerChoiceFrame.allButton.buttonID= info2.buttons[2].id
+            PlayerChoiceFrame.allButton.tips=info2.buttons[2].text
+            PlayerChoiceFrame.allButton.disabled= info2.buttons[2].disabled
+            PlayerChoiceFrame.allButton:SetEnabled(not info2.buttons[2].disabled and true or false)
+            PlayerChoiceFrame.allButton:set_text()
+            PlayerChoiceFrame.allButton:SetShown(true)
+        elseif PlayerChoiceFrame.allButton then
+            PlayerChoiceFrame.allButton:SetShown(false)
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+--其它， 自动， 选择
+local function Init_Gossip_Other_Auto_Select()
+    local frame= CreateFrame("Frame")
+    frame:RegisterEvent('ADDON_LOADED')
+    frame:SetScript('OnEvent', function(_, _, arg1)
+        if arg1=='Blizzard_Communities' then
+            Init_Blizzard_Communities()
+
+        elseif arg1=='Blizzard_PlayerChoice' then
+            Init_Blizzard_PlayerChoice()
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--添加控制面板
+local function Init_Options()--初始, 选项
+    local frame= CreateFrame('Frame')    
+    e.AddPanel_Sub_Category({name='|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName), frame=frame})
+    e.ReloadPanel({panel=frame, addName=e.cn(addName), restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+        disabledfunc=function()
+            Save.disabled= not Save.disabled and true or nil
+            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+        end,
+        clearfunc= function() Save=nil e.Reload() end}
+    )
+    
+if not e.Player.husandro then
+    return
+end
+    
+    local menu = CreateFrame("FRAME", nil, frame, "UIDropDownMenuTemplate")--下拉，菜单
+    menu:SetPoint("TOPLEFT", frame, 'TOPLEFT', 2, -32)
+    e.LibDD:UIDropDownMenu_SetWidth(menu, 260)
+    e.LibDD:UIDropDownMenu_Initialize(menu, function(self, level)
+        local info
+        local find
+        for gossipID, tab in pairs(Save.GossipTextIcon_Player) do
+            info={
+                text=gossipID..' '..(tab.name or ''),
+                icon= tab.texture or tab.atlas,
+                arg1= gossipID,
+                arg2= tab or {},
+                func= function(_, arg1, arg2)
+                    self.ID:SetNumber(arg1)
+                    self.Name:SetText(arg2.name or '')
+                    self.Icon:SetText(arg2.texture or arg2.atlas)
+                end
+            }   
+            e.LibDD:UIDropDownMenu_AddButton(info, level) 
+            find=true
+        end
+        if not find then
+            e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level) 
+        end
+    end)
+    menu.Button:SetScript('OnClick', function(self)
+        local pa= self:GetParent()
+        e.LibDD:ToggleDropDownMenu(1, nil, pa, pa, 15,0) 
+    end)
+
+    menu.ID= CreateFrame("EditBox", nil, menu, 'SearchBoxTemplate')
+    menu.ID:SetNumeric(true)
+    menu.ID:SetPoint('TOPLEFT', menu, 'BOTTOMLEFT', 20,0)
+    menu.ID:SetSize(250, 22)
+    menu.ID:SetAutoFocus(false)
+    menu.ID:ClearFocus()
+    menu.ID.Instructions:SetText('gossipOptionID '..(e.onlyChinese and '数字' or 'Numeri'))
+    menu.ID:HookScript("OnTextChanged", function(self)
+        local p=self:GetParent()
+        local num= self:GetNumber() or 0
+        p.Add:SetEnabled(num>0)
+    end)
+
+    menu.Name= CreateFrame("EditBox", nil, menu, 'SearchBoxTemplate')
+    menu.Name:SetPoint('TOPLEFT', menu.ID, 'BOTTOMLEFT')
+    menu.Name:SetSize(250, 22)
+    menu.Name:SetAutoFocus(false)
+    menu.Name:ClearFocus()
+    menu.Name.Instructions:SetText(e.onlyChinese and '替换文本', format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REPLACE, LOCALE_TEXT_LABEL))
+
+    menu.Icon= CreateFrame("EditBox", nil, menu, 'SearchBoxTemplate')
+    menu.Icon:SetPoint('TOPLEFT', menu.Name, 'BOTTOMLEFT')
+    menu.Icon:SetSize(250, 22)
+    menu.Icon:SetAutoFocus(false)
+    menu.Icon:ClearFocus()
+    menu.Icon.Instructions:SetText((e.onlyChinese and '图标' or EMBLEM_SYMBOL)..' Texture or Atlas')
+    menu.Icon:HookScript("OnTextChanged", function(self)
+        local p=self:GetParent()
+        local isAtlas, texture= e.IsAtlas(self:GetText() or '')
+        if isAtlas then
+            p.Texture:SetAtlas(texture)
+        else
+            p.Texture:SetTexture(texture or 0)
+        end
+    end)
+    menu.Texture= frame:CreateTexture()
+    menu.Texture:SetSize(80,80)
+    menu.Texture:SetPoint('BOTTOMLEFT', menu, 'BOTTOMRIGHT')
+    menu.Texture:SetTexture(e.Icon.icon)
+    menu.Texture:SetVertexColor(1,1,1,1)    
+
+    menu.Add= e.Cbtn(menu, {size={20,20}, atlas='common-icon-checkmark'})
+    menu.Add:SetPoint('LEFT', menu.ID, 'RIGHT', 2, 0)
+end
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
-local SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING= SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING
-
+local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED"  then
@@ -1874,10 +2551,32 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.choice= Save.choice or {}
             Save.NPC= Save.NPC or {}
             Save.movie= Save.movie or {}
+            Save.GossipTextIcon_Player= Save.GossipTextIcon_Player or {}
 
             --添加控制面板
             e.AddPanel_Header(nil, 'Plus')
-            e.AddPanel_Check_Button({
+            if not Save.disabled then
+                Init_Gossip_Text()--自定义，对话，文本
+                Init_Gossip()--对话，初始化
+                Init_Quest()--任务，初始化
+                Init_Gossip_Other_Auto_Select()
+            else
+                panel:UnregisterAllEvents()
+            end
+            panel:RegisterEvent("PLAYER_LOGOUT")
+        
+        elseif arg1=='Blizzard_Settings' then
+            Init_Options()--初始, 选项
+        end
+
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave[addName]=Save
+        end
+    end
+end)
+
+            --[[e.AddPanel_Check_Button({
                 checkName= '|A:CampaignAvailableQuestIcon:0:0|a'..(e.onlyChinese and '对话和任务' or addName),
                 checkValue= not Save.disabled,
                 checkFunc= function()
@@ -1896,292 +2595,4 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 tooltip= e.cn(addName),
                 layout= nil,
                 category= nil,
-            })
-
-            if not Save.disabled then
-                Init_Gossip()--对话，初始化
-                Init_Quest()--任务，初始化
-            else
-                panel:UnregisterAllEvents()
-            end
-            panel:RegisterEvent("PLAYER_LOGOUT")
-
-        elseif arg1=='Blizzard_Communities' then--公会和社区
-            --自动，申请，加入
-            local function set_ClubFinderRequestToJoin(self)
-                local specID = PlayerUtil.GetCurrentSpecID()
-                if not self.info or not Save.gossip or not self.SpecsPool or not specID then
-                    return
-                end
-                local specName
-                for btn in pairs(self.SpecsPool.activeObjects or {}) do
-                   if btn.specID==specID then
-                        btn.CheckBox:Click()
-                        specName= btn.SpecName:GetText()
-                        break
-                   end
-                end
-                local level= UnitLevel('player') or MAX_PLAYER_LEVEL
-                local text
-                if level< MAX_PLAYER_LEVEL then
-                    text= 'Level '..(level and format('%i', level) or '')
-                else
-                    local avgItemLevel,_, avgItemLevelPvp= GetAverageItemLevel()
-                    local score= C_ChallengeMode.GetOverallDungeonScore() or 0
-                    local keyStoneLevel= C_MythicPlus.GetOwnedKeystoneLevel() or 0
-                    local achievement= GetTotalAchievementPoints() or 0
-
-                    text= 'Item Level '..(avgItemLevel and format('%i', avgItemLevel) or '')..'|n'--等级
-                        ..(avgItemLevel and avgItemLevelPvp and avgItemLevelPvp- avgItemLevel>20 and 'Item PvP '..format('%i', avgItemLevel)..'|n' or '')
-                    if score>1000 then--挑战
-                        text= text..'Keystone '..score..(keyStoneLevel and keyStoneLevel>10 and ' ('..keyStoneLevel..')' or '')
-                        text= text..'|n'
-                    end
-                    if achievement>10000 then--成就
-                        text= text..'Achievement '..achievement..'|n'
-                    end
-                    local CONQUEST_SIZE_STRINGS = {'Solo', '2v2', '3v3', '10v10'}--PVP
-                    for i=1, 4 do
-                        local rating= GetPersonalRatedInfo(i)
-                        if rating and rating>500 then
-                            text= text..CONQUEST_SIZE_STRINGS[i]..' '..rating..'|n'
-                        end
-                    end
-                end
-                self.MessageFrame.MessageScroll.EditBox:SetText(text)
-                if IsModifierKeyDown() then
-                    return
-                end
-                if self.Apply:IsEnabled() then
-                    self.Apply:Click()
-                    print(
-                        id,addName,'|cnGREEN_FONT_COLOR:', self.Apply:GetText(),'|n|cffff00ff',
-                        (self.info.emblemInfo and '|T'..self.info.emblemInfo..':0|t' or '')..(self.info.name or '')..(self.info.numActiveMembers and  '|cff00ccff (|A:groupfinder-waitdot:0:0|a'..self.info.numActiveMembers..')|r' or ''), '|n',
-                        '|cnGREEN_FONT_COLOR:'..text, specName,'|n', '|cffff7f00', self.info.comment)
-                end
-            end
-            hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
-            hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
-            ClubFinderCommunityAndGuildFinderFrame.CommunityCards:HookScript('OnShow', function(self)
-                if Save.gossip or not IsModifierKeyDown() then
-                    local btn= self:GetParent().OptionsList.Search
-                    if btn and btn:IsEnabled() then
-                        btn:Click()
-                    end
-                end
-            end)
-            ClubFinderGuildFinderFrame.GuildCards:HookScript('OnShow', function(self)
-                if Save.gossip or not IsModifierKeyDown() then
-                    local btn= self:GetParent().OptionsList.Search
-                    if btn and btn:IsEnabled() then
-                        btn:Click()
-                    end
-                end
-            end)
-
-        elseif arg1=='Blizzard_PlayerChoice' then
-            --#########
-            --命运, 字符
-            --#########
-            hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"],"OnShow",function(s)
-                if Save.gossip and s.editBox then
-                    s.editBox:SetText(SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING)
-                end
-            end)
-
-            --###########
-            --自动选择奖励
-            --Blizzard_PlayerChoice.lua
-            function GossipButton:Send_Player_Choice_Response(optionInfo)
-                if optionInfo then
-                    C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
-                    print(id, e.cn(addName), (optionInfo.spellID and GetSpellLink(optionInfo.spellID) or ''),
-                        '|n',
-                        '|T'..(optionInfo.choiceArtID or 0)..':0|t'..optionInfo.rarityColor:WrapTextInColorCode(optionInfo.description or '')
-                    )
-                    PlayerChoiceFrame:OnSelectionMade()
-                    C_PlayerChoice.OnUIClosed()
-                    for optionFrame in PlayerChoiceFrame.optionPools:EnumerateActiveByTemplate(PlayerChoiceFrame.optionFrameTemplate) do
-                        optionFrame:SetShown(false)
-                    end
-                end
-            end
-            hooksecurefunc(PlayerChoiceFrame, 'SetupOptions', function(self2)
-                if IsModifierKeyDown() or not Save.gossip then
-                    return
-                end
-                local tab={}
-                local soloOption = (#self2.choiceInfo.options == 1)
-                for optionFrame in self2.optionPools:EnumerateActiveByTemplate(self2.optionFrameTemplate) do
-                    if optionFrame.optionInfo then
-                        local enabled= not optionFrame.optionInfo.disabledOption and optionFrame.optionInfo.spellID and optionFrame.optionInfo.spellID>0
-                        if not optionFrame.check and enabled then
-                            optionFrame.check= CreateFrame("CheckButton", nil, optionFrame, "InterfaceOptionsCheckButtonTemplate")
-                            optionFrame.check:SetPoint('BOTTOM' ,0, -40)
-                            optionFrame.check:SetScript('OnClick', function(self3)
-                                local optionInfo= self3:GetParent().optionInfo
-                                if optionInfo and optionInfo.spellID then
-                                    Save.choice[optionInfo.spellID]= not Save.choice[optionInfo.spellID] and (optionInfo.rarity or 0) or nil
-                                    if Save.choice[optionInfo.spellID] then
-                                        GossipButton:Send_Player_Choice_Response(optionInfo)
-                                    end
-                                else
-                                    print(id, e.cn(addName),'|cnRED_FONT_COLOR:', not e.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误')
-                                end
-                            end)
-                            optionFrame.check:SetScript('OnLeave', GameTooltip_Hide)
-                            optionFrame.check:SetScript('OnEnter', function(self3)
-                                local optionInfo= self3:GetParent().optionInfo
-                                e.tips:SetOwner(self3:GetParent(), "ANCHOR_BOTTOMRIGHT")
-                                e.tips:ClearLines()
-                                if optionInfo and optionInfo.spellID then
-                                    e.tips:SetSpellByID(optionInfo.spellID)
-                                end
-                                e.tips:AddLine(' ')
-                                e.tips:AddDoubleLine(id, e.cn(addName))
-                                e.tips:Show()
-                            end)
-                            optionFrame.check.Text2=e.Cstr(optionFrame.check)
-                            optionFrame.check.Text2:SetPoint('RIGHT', optionFrame.check, 'LEFT')
-                            optionFrame.check.Text2:SetTextColor(0,1,0)
-                            optionFrame.check:SetScript('OnUpdate', function(self3, elapsed)
-                                self3.elapsed = (self3.elapsed or 1) + elapsed
-                                if self3.elapsed>=1 then
-                                    local text, count
-                                    local aura= self3.spellID and C_UnitAuras.GetPlayerAuraBySpellID(self3.spellID)
-                                    if aura then
-                                        local value= aura.expirationTime-aura.duration
-                                        local time= GetTime()
-                                        time= time < value and time + 86400 or time
-                                        time= time - value
-                                        text= e.SecondsToClock(aura.duration- time)
-                                        count= select(3, e.WA_GetUnitBuff('player', self3.spellID, 'HELPFUL'))
-                                        count= count and count>1 and count or nil
-                                    end
-                                    self3.Text:SetText(text or '')
-                                    self3.Text2:SetText(count or '')
-                                    self3.elapsed=0
-                                end
-                            end)
-                        end
-
-                        if optionFrame.check then
-                            optionFrame.check.elapsed=1.1
-                            optionFrame.check.spellID= optionFrame.optionInfo.spellID
-                            optionFrame.check:SetShown(enabled)
-                            if enabled then
-                                local saveChecked= Save.choice[optionFrame.optionInfo.spellID]
-                                optionFrame.check:SetChecked(saveChecked)
-                                if saveChecked or (soloOption and Save.unique) then
-                                    optionFrame.optionInfo.rarity = optionFrame.optionInfo.rarity or 0
-                                    table.insert(tab, optionFrame.optionInfo)
-                                end
-                            end
-                        end
-                    end
-                end
-                if #tab>0 then
-                    table.sort(tab, function(a,b)
-                        if a.rarity== b.rarity then
-                            return a.spellID> b.spellID
-                        else
-                            return a.rarity> b.rarity
-                        end
-                    end)
-                    GossipButton:Send_Player_Choice_Response(tab[1])
-                end
-            end)
-
-            hooksecurefunc(PlayerChoiceNormalOptionTemplateMixin,'SetupButtons', function(frame)
-                local info2= frame.optionInfo or {}
-                if not info2.disabledOption and info2.buttons
-                    and info2.buttons[2] and info2.buttons[2].id
-                then
-                    if not PlayerChoiceFrame.allButton then
-                        PlayerChoiceFrame.allButton= e.Cbtn(PlayerChoiceFrame, {size={60,22}, type=false, icon='hide'})
-                        PlayerChoiceFrame.allButton:SetPoint('BOTTOMRIGHT')
-                        PlayerChoiceFrame.allButton:SetFrameStrata('DIALOG')
-                        PlayerChoiceFrame.allButton:SetScript('OnLeave', GameTooltip_Hide)
-                        PlayerChoiceFrame.allButton:SetScript('OnEnter', function(s)
-                            e.tips:SetOwner(s, "ANCHOR_LEFT")
-                            e.tips:ClearLines()
-                            e.tips:AddDoubleLine(id , e.cn(addName))
-                            e.tips:AddLine(' ')
-                            e.tips:AddLine(s.tips or (e.onlyChinese and '使用' or USE))
-                            e.tips:AddDoubleLine(' ', format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, 44)..e.Icon.left)
-                            e.tips:AddDoubleLine(' ', format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, 100)..e.Icon.right)
-                            e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1), 'Alt')
-                            e.tips:Show()
-                        end)
-                        PlayerChoiceFrame.allButton:SetScript('OnHide', function(s)
-                            if s.time and not s.time:IsCancelled() then
-                                s.time:Cancel()
-                            end
-                        end)
-                        function PlayerChoiceFrame.allButton:set_text()
-                            self:SetText(
-                                (not self.time or self.time:IsCancelled()) and (e.onlyChinese and '全部' or ALL)
-                                or (e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
-                            )
-                        end
-                        PlayerChoiceFrame.allButton:SetScript('OnClick', function(s, d)
-                            if s.time and not s.time:IsCancelled() then
-                                s.time:Cancel()
-                                s:set_text()
-                                print(id,e.cn(addName),'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
-                                return
-                            else
-                                s:set_text()
-                            end
-                            local n= 0
-                            local all= d=='LeftButton' and 43 or 100
-
-                            if s.buttonID then
-                                C_PlayerChoice.SendPlayerChoiceResponse(s.buttonID)
-                            end
-                            s.time=C_Timer.NewTicker(0.65, function()
-                                local choiceInfo = C_PlayerChoice.GetCurrentPlayerChoiceInfo() or {}
-                                local info= choiceInfo.options and choiceInfo.options[1] or {}
-                                if info
-                                    and not info.disabledOption
-                                    and info.buttons
-                                    and info.buttons[2]
-
-                                    and info.buttons[2].id
-                                    and not info.buttons[2].disabled
-                                    and not IsModifierKeyDown()
-                                    and s:IsEnabled()
-                                    and s:IsShown()
-                                then
-                                    C_PlayerChoice.SendPlayerChoiceResponse(info.buttons[2].id)--Blizzard_PlayerChoiceOptionBase.lua
-                                    n=n+1
-                                    print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '|cnRED_FONT_COLOR:Alt' )
-                                    --self.parentOption:OnSelected()
-                                elseif s.time then
-                                   s.time:Cancel()
-                                   print(id,e.cn(addName),'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1, '|r'..n)
-                                end
-                                s:set_text()
-                            end, all)
-                        end)
-                    end
-                    PlayerChoiceFrame.allButton.buttonID= info2.buttons[2].id
-                    PlayerChoiceFrame.allButton.tips=info2.buttons[2].text
-                    PlayerChoiceFrame.allButton.disabled= info2.buttons[2].disabled
-                    PlayerChoiceFrame.allButton:SetEnabled(not info2.buttons[2].disabled and true or false)
-                    PlayerChoiceFrame.allButton:set_text()
-                    PlayerChoiceFrame.allButton:SetShown(true)
-                elseif PlayerChoiceFrame.allButton then
-                    PlayerChoiceFrame.allButton:SetShown(false)
-                end
-            end)
-
-        end
-
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
-        end
-    end
-end)
+            })]]

@@ -1151,7 +1151,7 @@ end
 --##########
 --设置 panel
 --##########
-local function set_Panle_Setting()--设置 panel
+local function Init_Options()--设置 panel
     if Save.disabled or panel.barGreenColor then
         return
     end
@@ -2314,7 +2314,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     if not Save.disabled and not button then
                         Init()
                         set_ShowHide_Event()--显示，隐藏，事件
-                        set_Panle_Setting()
+                        Init_Options()
                     else
                         print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                         frame_Init(true)--初始， 或设置
@@ -2336,7 +2336,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Settings' then
-            set_Panle_Setting()
+            Init_Options()
 
         end
 

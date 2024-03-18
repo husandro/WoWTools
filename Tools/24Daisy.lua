@@ -1,19 +1,24 @@
 local id, e = ...
-local Save={}
 local addName='DaisyTools'
-local panel= CreateFrame('Frame')
+local Save={
+
+}
+
+
 local button
+
 local petName, petGUID
 local speciesID=2780
+
+local Pets={
+    [2780] = {name='黛西', emote='BECKON'},
+}
 
 local function setTargetChaged()
     if Save.notGuLai then
         return
     end
     if UnitIsBattlePetCompanion('target') and C_PetJournal.GetSummonedPetGUID()==petGUID then
-    --and UnitIsBattlePetCompanion('target')
-    --UnitIsBattlePet('target')
-    --and not IsMounted()
         DoEmote('BECKON')--beckon
     end
 end
@@ -21,6 +26,7 @@ end
 local function setGuLaiTip()--设置 是否使用 /招手
     button.texture:SetDesaturated(Save.notGuLai)
 end
+
 local function setAutoSummonTips()--设置, 自动召唤
     if Save.autoSummon then
         button.border:SetAtlas('bag-border')
@@ -28,9 +34,10 @@ local function setAutoSummonTips()--设置, 自动召唤
         button.border:SetAtlas('bag-reagent-border')
     end
 end
+
 local function getSummoned()--是否已召唤, 或有BUFF(在背上)
     local summonedPetGUID = C_PetJournal.GetSummonedPetGUID()
-    local find=summonedPetGUID==petGUID
+    local find= summonedPetGUID==petGUID
     local summoned= summonedPetGUID and true or false
     if not find then
         if e.WA_GetUnitBuff('player', 311796, 'PLAYER') then
@@ -65,42 +72,18 @@ local function setSummonedPetGUID()--召唤信息
     end
 end
 
---#####
---主菜单
---#####
-local function InitMenu(self, level)--主菜单
-    local info={
-        text= e.onlyChinese and '使用 /招手' or (USE..' '..EMOTE102_CMD1),
-        checked=not Save.notGuLai,
-        keepShownOnClick=true,
-        func=function()
-            if Save.notGuLai then
-                Save.notGuLai=nil
-                setTargetChaged()
-            else
-                Save.notGuLai=true
-            end
-            setGuLaiTip()--设置 是否使用 /招手
-        end,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    info={--自动召唤
-        text= e.onlyChinese and '自动召唤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SUMMONS),
-        checked=Save.autoSummon,
-        keepShownOnClick=true,
-        func=function()
-            if Save.autoSummon then
-                Save.autoSummon=nil
-            else
-                Save.autoSummon=true
-                setSummonedPetGUID()
-            end
-            setAutoSummonTips()--设置, 自动召唤
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-end
+
+
+
+
+
+
+
+
+
+
+
 
 --####
 --初始
@@ -115,11 +98,12 @@ local function Init()
             button.texture:SetTexture(speciesIcon)
         end
     end
-    if not petGUID then--没找到时, 退出
-        print(id, e.cn(addName), e.onlyChinese and '没发现宠物, 黛西' or SPELL_FAILED_ERROR)
+
+    --[[if not petGUID then--没找到时, 退出
+        print(id, e.cn(addName), e.onlyChinese and '没发现宠物, 黛西' or TAXI_PATH_UNREACHABLE)
         panel:UnregisterAllEvents()
         return
-    end
+    end]]
 
     e.ToolsSetButtonPoint(button)--设置位置
 
@@ -136,7 +120,35 @@ local function Init()
     button:SetScript('OnMouseWheel', function(self)
         if not self.Menu then
             self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-            e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+            e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)--主菜单
+                local info={
+                    text= e.onlyChinese and '使用 /招手' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, USE, EMOTE102_CMD1),
+                    checked=not Save.notGuLai,
+                    keepShownOnClick=true,
+                    func=function()
+                        if Save.notGuLai then
+                            Save.notGuLai=nil
+                            setTargetChaged()
+                        else
+                            Save.notGuLai=true
+                        end
+                        setGuLaiTip()--设置 是否使用 /招手
+                    end,
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+            
+                info={--自动召唤
+                    text= e.onlyChinese and '自动召唤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SUMMONS),
+                    checked=Save.autoSummon,
+                    keepShownOnClick=true,
+                    func=function()
+                        Save.autoSummon= not Save.autoSummon and true or nil
+                        setSummonedPetGUID()
+                        setAutoSummonTips()--设置, 自动召唤
+                    end
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+            end, 'MENU')
         end
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
    end)
@@ -160,11 +172,28 @@ local function Init()
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave[addName..'Tools'] or Save
@@ -206,7 +235,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-
             WoWToolsSave[addName..'Tools']=Save
         end
 

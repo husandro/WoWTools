@@ -1226,6 +1226,7 @@ local function Init_All_Frame()
 
     --对话框
     set_Alpha_Frame_Texture(StaticPopup1.Border, {notAlpha=true})
+    set_Alpha_Color(StaticPopup1.Border.Bg, true)
 
     --ItemTextFrame
     set_NineSlice(ItemTextFrame, true)
