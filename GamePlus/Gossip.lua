@@ -24,7 +24,7 @@ local Save={
         Gossip_Text_Icon_Player={--玩家，自定义，对话，文本
             [55193]={icon='communities-icon-invitemail', name=(e.Player.husandro and '打开邮件' or OPENMAIL), hex='ffff00ff'}
         },
-        Gossip_Text_Icon_Size=30,
+        Gossip_Text_Icon_Size=22,
 
 }
 
@@ -167,15 +167,12 @@ local function Set_Gossip_Text(self, gossipOptionID)
         return
     end
     local name= (not zoneInfo.name or zoneInfo.name=='') and self:GetText() or zoneInfo.name or ''
-    local size= Save.Gossip_Text_Icon_Size or 30
-
-
     if zoneInfo.icon then
         local isAtlas, texture= e.IsAtlas(zoneInfo.icon)
         if isAtlas then
-            name= format('|A:%s:%d:%d|a%s', texture, size, size, name)
+            name= format('|A:%s:%d:%d|a%s', texture, Save.Gossip_Text_Icon_Size, Save.Gossip_Text_Icon_Size, name)
         else
-            name= format('|T%s:%d|t%s', texture, size, name)
+            name= format('|T%s:%d|t%s', texture, Save.Gossip_Text_Icon_Size, name)
         end
     end
     if zoneInfo.col then
@@ -2456,7 +2453,7 @@ local function Init_Options()--初始, 选项
         return texture, isAtlas
     end
     function menu:set_texture_size()--图片，大小
-        self.Texture:SetSize(Save.Gossip_Text_Icon_Size or 30, Save.Gossip_Text_Icon_Size or 30)
+        self.Texture:SetSize(Save.Gossip_Text_Icon_Size, Save.Gossip_Text_Icon_Size)
     end
     function menu:set_numlabel_text()--自定义，数量
         local n= 0
@@ -2742,7 +2739,7 @@ local function Init_Options()--初始, 选项
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
     end)
 
-    menu.Size= e.CSlider(menu, {min=8, max=72, value=Save.Gossip_Text_Icon_Size or 30, setp=1, color=false, w=255,
+    menu.Size= e.CSlider(menu, {min=8, max=72, value=Save.Gossip_Text_Icon_Size, setp=1, color=false, w=255,
         text= e.onlyChinese and '图标大小' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
         func=function(frame, value)
             value= math.modf(value)
@@ -2785,7 +2782,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.choice= Save.choice or {}
             Save.NPC= Save.NPC or {}
             Save.movie= Save.movie or {}
+            
             Save.Gossip_Text_Icon_Player= Save.Gossip_Text_Icon_Player or {[55193]={icon='communities-icon-invitemail', name=(e.Player.husandro and '打开邮件' or OPENMAIL), hex='ffff00ff'}}
+            Save.Gossip_Text_Icon_Size= Save.Gossip_Text_Icon_Size or 22
 
             --添加控制面板
             e.AddPanel_Header(nil, 'Plus')
