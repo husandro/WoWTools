@@ -380,7 +380,7 @@ local function Init()
     end
 
     button.texture:SetAtlas('socialqueuing-icon-group')
-    button:SetScript('OnClick', function(self, d)
+    button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' and button.type then
             e.Say(button.type)
         else

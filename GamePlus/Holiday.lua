@@ -566,9 +566,11 @@ local function Init_TrackButton()
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end
-
-    TrackButton:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
+    TrackButton:SetScript('OnMouseUp', ResetCursor)
+    TrackButton:SetScript('OnMouseDown', function(self, d)
+        if d=='RightButton' and IsAltKeyDown() then
+            SetCursor('UI_MOVE_CURSOR')
+        elseif d=='LeftButton' then
             Calendar_Toggle()
 
         elseif d=='RightButton' then
@@ -651,12 +653,7 @@ local function Init_TrackButton()
         end
     end)
 
-    TrackButton:SetScript('OnMouseUp', ResetCursor)
-    TrackButton:SetScript('OnMouseDown', function(_, d)
-        if d=='RightButton' and IsAltKeyDown() then
-            SetCursor('UI_MOVE_CURSOR')
-        end
-    end)
+  
     TrackButton:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             local sacle=Save.scale or 1
@@ -864,7 +861,7 @@ local function Init_Blizzard_Calendar()
                 e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
             end
         end)
-        self.menu.Button:SetScript('OnClick', function(self2)
+        self.menu.Button:SetScript('OnMouseDown', function(self2)
             e.LibDD:ToggleDropDownMenu(1, nil, self2:GetParent(), self2, 15, 0)
         end)
 
@@ -916,7 +913,7 @@ local function Init_Blizzard_Calendar()
                 e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
             end
         end)
-        menu2.Button:SetScript('OnClick', function(self2)
+        menu2.Button:SetScript('OnMouseDown', function(self2)
             e.LibDD:ToggleDropDownMenu(1, nil, self2:GetParent(), self2, 15, 0)
         end)
 
@@ -963,7 +960,7 @@ local function Init_Blizzard_Calendar()
                 e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
             end
         end)
-        last.Button:SetScript('OnClick', function(self2)
+        last.Button:SetScript('OnMouseDown', function(self2)
             e.LibDD:CloseDropDownMenus()
             e.LibDD:ToggleDropDownMenu(1, nil, self2:GetParent(), self2, 15, 0)
         end)

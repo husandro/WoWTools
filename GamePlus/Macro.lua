@@ -530,7 +530,7 @@ local function Init_Create_Button()
     end
     MacroFrame.newButton:SetScript('OnEnter', MacroFrame.newButton.set_Tooltips)
 
-    MacroFrame.newButton:SetScript('OnClick', function(self, d)--MacroPopupFrameMixin:OkayButton_OnClick()
+    MacroFrame.newButton:SetScript('OnMouseDown', function(self, d)--MacroPopupFrameMixin:OkayButton_OnClick()
         if UnitAffectingCombat('player') then
             return
         end
@@ -795,7 +795,7 @@ local function Init_List_Button()
                 texture:SetSize(28,28)
                 texture:SetAlpha(0.7)
             end
-            btn:SetScript('OnClick', function(self)
+            btn:SetScript('OnMouseDown', function(self)
                 e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
                     local _, _, offset, numSlots = GetSpellTabInfo(self.index)
                     local num=0
@@ -851,7 +851,7 @@ local function Init_List_Button()
     --PVP， 天赋，法术
     local pvpButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas='pvptalents-warmode-swords'})--pvptalents-warmode-swords-disabled
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
-    pvpButton:SetScript('OnClick', function(self)
+    pvpButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
             local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1)
             if slotInfo and  slotInfo.availableTalentIDs then
@@ -898,7 +898,7 @@ local function Init_List_Button()
     --角色，装备
     local equipButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas=e.GetUnitRaceInfo({unit='player', reAtlas=true})})--atlas=e.Player.sex==2 and 'charactercreate-gendericon-male-selected' or 'charactercreate-gendericon-female-selected'})--pvptalents-warmode-swords-disabled
     equipButton:SetPoint('LEFT', pvpButton, 'RIGHT')
-    equipButton:SetScript('OnClick', function(self)
+    equipButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
             for slot=1,22 do
                 local textureName = GetInventoryItemTexture("player", slot)
@@ -957,7 +957,7 @@ local function Init_List_Button()
     --常用，宏
     local starButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas='PetJournal-FavoritesIcon'})
     starButton:SetPoint('LEFT', equipButton, 'RIGHT')
-    starButton:SetScript('OnClick', function(self)
+    starButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level, menuList)
             local macroList={
                 {text='ping', icon='Ping_Map_Whole_Assist', macro=SLASH_PING1,
@@ -1136,7 +1136,7 @@ local function Init_List_Button()
     --谈话
     local spellchButton= e.Cbtn(MacroFrameSelectedMacroButton, {size={22,22}, atlas='communities-icon-chat'})
     spellchButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'BOTTOMLEFT',-6,-1)
-    spellchButton:SetScript('OnClick', function(self)
+    spellchButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
             Chat_Init_menu(TextEmoteSpeechList, level)
         end, 'MENU')
@@ -1145,7 +1145,7 @@ local function Init_List_Button()
     --表情
     local emoteButton= e.Cbtn(MacroFrameSelectedMacroButton, {size={22,22}, texture='Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet'})
     emoteButton:SetPoint('LEFT', spellchButton, 'RIGHT')
-    emoteButton:SetScript('OnClick', function(self)
+    emoteButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
             Chat_Init_menu(EmoteList, level)
         end, 'MENU')
@@ -1228,7 +1228,7 @@ local function Init_Select_Macro_Button()
 
     --选定宏，点击，弹出菜单，自定图标
     MacroFrameSelectedMacroButton:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    MacroFrameSelectedMacroButton:HookScript('OnClick', function(self)
+    MacroFrameSelectedMacroButton:HookScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
             if UnitAffectingCombat('player') then
                 e.LibDD:UIDropDownMenu_AddButton({

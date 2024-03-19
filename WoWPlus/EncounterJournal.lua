@@ -1172,7 +1172,7 @@ local function Init_EncounterJournal()--冒险指南界面
             button.LootButton= e.Cbtn(button, {size={20,20}, icon='hide'})
             button.LootButton:SetPoint('LEFT', button, 'RIGHT')
             button.LootButton:SetNormalAtlas(e.Icon.icon)
-            button.LootButton:SetScript('OnClick', function(self)
+            button.LootButton:SetScript('OnMouseDown', function(self)
                 local menu= EncounterJournal.encounter.LootSpecMenu
                 if not menu then
                     menu= CreateFrame("Frame", nil, EncounterJournal.encounter, "UIDropDownMenuTemplate")

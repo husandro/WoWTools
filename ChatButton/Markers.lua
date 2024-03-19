@@ -1447,7 +1447,7 @@ local function Init()
     setReadyTexureTips()--自动就绪, 主图标, 提示
     Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
 
-    button:SetScript("OnClick", function(self, d)
+    button:SetScript("OnMouseDown", function(self, d)
         if d=='LeftButton' then
             if SetTankHealerFrame:set_TankHealer(true) then--设置队伍标记
                 print(id, e.cn(addName), e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER)

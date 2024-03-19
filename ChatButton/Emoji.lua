@@ -242,7 +242,7 @@ local function Init()
         end
     end)
     button:SetScript('OnLeave', function(self) self.btn:SetButtonState('NORMAL') end)
-    button:SetScript('OnClick', function(self, d)
+    button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             self.btn:SetShown(not button.btn:IsShown())
             if self.btn:IsShown() then

@@ -1266,25 +1266,24 @@ local function Init_Set_Button()--小地图, 标记, 文本
         Save.pointVigentteButton[2]=nil
     end)
 
-
-    Button:SetScript('OnClick', function(self, d)--显示，隐藏
-        local key= IsModifierKeyDown()
-        if d=='LeftButton' and not key then
-            Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or nil
-            self:set_Shown()
-            self:set_Texture()
-
-        elseif d=='RightButton' and not key then
-            self:show_menu()
-        end
-    end)
-
     Button:SetScript('OnMouseUp', ResetCursor)
-    Button:SetScript('OnMouseDown', function(_, d)
+    Button:SetScript('OnMouseDown', function(self, d)--显示，隐藏
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
+        else
+            local key= IsModifierKeyDown()
+            if d=='LeftButton' and not key then
+                Save.vigentteButtonShowText= not Save.vigentteButtonShowText and true or nil
+                self:set_Shown()
+                self:set_Texture()
+
+            elseif d=='RightButton' and not key then
+                self:show_menu()
+            end
         end
     end)
+
+  
 
     function Button:show_menu(frame)
         if not self.menu then

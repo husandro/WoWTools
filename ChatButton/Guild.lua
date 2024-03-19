@@ -201,7 +201,7 @@ local function Init()
 
     e.Set_Label_Texture_Color(button.texture, {type='Texture'})--设置颜色
 
-    button:SetScript('OnClick', function(self, d)
+    button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             e.Say('/g')
         else

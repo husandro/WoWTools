@@ -494,7 +494,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
             self:SetAlpha(1)
         end
 
-        btn.useItem:SetScript('OnClick', function(self, d)
+        btn.useItem:SetScript('OnMouseDown', function(self, d)
             if d=='LeftButton' then
                 local frame=self:GetParent()
                 local itemID= frame and frame.itemID
@@ -554,7 +554,7 @@ local function set_Use_Spell_Button(btn, spellID)
         end
         btn.useSpell:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha()  end)
         btn.useSpell:SetScript('OnEnter', btn.useSpell.set_tooltips)
-        btn.useSpell:SetScript('OnClick', function(self, d)
+        btn.useSpell:SetScript('OnMouseDown', function(self, d)
             if d=='LeftButton' then
                 if self.spellID then
                     local findIndex= find_Type('spell', self.spellID)

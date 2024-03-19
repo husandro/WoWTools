@@ -500,15 +500,14 @@ local function Init_TrackButton()
 		Save.point[2]=nil
 	end)
 	TrackButton:SetScript("OnMouseUp", ResetCursor)
-	TrackButton:SetScript("OnMouseDown", function(_, d)
+
+	TrackButton:SetScript("OnMouseDown", function(self, d)
 		if d=='RightButton' and IsAltKeyDown() then
 			SetCursor('UI_MOVE_CURSOR')
-		end
-	end)
 
-	TrackButton:SetScript("OnClick", function(self, d)
-		if d=='LeftButton' and not IsModifierKeyDown() then--右击, 移动
+		elseif d=='LeftButton' and not IsModifierKeyDown() then--右击, 移动
 			ToggleCharacter("ReputationFrame")
+
 		elseif d=='RightButton' and not IsModifierKeyDown() then
 			if not self.Menu then
 				self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
@@ -1143,7 +1142,7 @@ end
 local function Init()
 	Button= e.Cbtn(ReputationFrame, {atlas='auctionhouse-icon-favorite',size={18, 18}})
 	Button:SetPoint("LEFT", ReputationFrameStandingLabel, 'RIGHT',5,0)
-	Button:SetScript("OnClick", function(self)
+	Button:SetScript("OnMouseDown", function(self)
 		if not self.Menu then
 			self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
     		e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')

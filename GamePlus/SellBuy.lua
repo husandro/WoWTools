@@ -1424,7 +1424,7 @@ local function Init_Buy_Items_Button()
     BuyItemButton:SetScript('OnLeave', function(self) GameTooltip_Hide() self:set_texture() end)
     BuyItemButton:SetScript('OnEnter', BuyItemButton.set_tooltip)
     BuyItemButton:SetScript('OnMouseUp', BuyItemButton.set_texture)
-    BuyItemButton:SetScript('OnClick', function(self, d)
+    BuyItemButton:SetScript('OnMouseDown', function(self, d)
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType=='item' and itemID then
             if Save.Sell[itemID] then
@@ -1665,7 +1665,7 @@ local function Init_Buyback_Button()
         end
         e.tips:Show()
     end
-    BuybackButton:SetScript('OnClick', function(self, d)
+    BuybackButton:SetScript('OnMouseDown', function(self, d)
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType=='merchant' and itemID then--购买物品
             itemLink= GetMerchantItemLink(itemID)

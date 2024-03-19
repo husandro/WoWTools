@@ -665,11 +665,6 @@ local function Init_TrackButton()
 		Save.point[2]=nil
 	end)
 	TrackButton:SetScript("OnMouseUp", ResetCursor)
-	TrackButton:SetScript("OnMouseDown", function(_, d)
-		if d=='RightButton' and IsAltKeyDown() then--右击,移动
-			SetCursor('UI_MOVE_CURSOR')
-		end
-	end)
 	TrackButton:SetScript("OnMouseWheel", function(self, d)
 		if IsAltKeyDown() then
 			local n= Save.scaleTrackButton or 1
@@ -686,8 +681,12 @@ local function Init_TrackButton()
 			print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, n)
 		end
 	end)
-
-	TrackButton:SetScript("OnClick", function(self, d)
+	TrackButton:SetScript("OnMouseDown", function(self, d)
+		if d=='RightButton' and IsAltKeyDown() then--右击,移动
+			SetCursor('UI_MOVE_CURSOR')
+			return
+		end
+	
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save.item[itemID]= not Save.item[itemID] and true or nil
@@ -1375,11 +1374,11 @@ local function Init()
 	end
 
 
-	Button:SetScript('OnClick', click)
+	Button:SetScript('OnMouseDown', click)
 	Button:SetScript('OnEnter', enter)
 	Button:SetScript('OnLeave', leave)
 
-	Button.bagButton:SetScript('OnClick', click)
+	Button.bagButton:SetScript('OnMouseDown', click)
 	Button.bagButton:SetScript('OnEnter', enter)
 	Button.bagButton:SetScript('OnLeave',leave)
 	Button.bagButton:HookScript('OnEnter', function(self2) self2:SetAlpha(1) end)

@@ -595,8 +595,7 @@ end
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
     end)
-   menu.Button:SetScript('OnClick', function(self)
-        e.LibDD:CloseDropDownMenus()
+   menu.Button:SetScript('OnMouseDown', function(self)
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
     end)
 

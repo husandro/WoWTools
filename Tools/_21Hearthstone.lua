@@ -139,7 +139,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
             e.tips:Show()
             self:SetAlpha(1)
         end
-        btn.hearthstone:SetScript('OnClick', function(self, d)
+        btn.hearthstone:SetScript('OnMouseDown', function(self, d)
             if d=='LeftButton' then
                 local itemID=self:get_itemID()
                 Save.items[itemID]= not Save.items[itemID] and true or nil

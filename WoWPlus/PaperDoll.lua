@@ -648,7 +648,7 @@ local function Init_Title()--头衔数量
             end
             return tab
         end
-        btn:SetScript('OnClick', function(self)
+        btn:SetScript('OnMouseDown', function(self)
             if not self.Menu then
                 self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")--菜单框架
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(frame, level, menuList)--主菜单

@@ -369,7 +369,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
     end
     set_Status()
     panel.btn:SetPoint('LEFT', FriendsFrameStatusDropDownButton, 'RIGHT',0,-2)
-    panel.btn:SetScript('OnClick', function(self)
+    panel.btn:SetScript('OnMouseDown', function(self)
         if not BNConnected() then
             print(id, e.cn(addName), e.Icon.net2, e.onlyChinese and '断开战网' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))
             return

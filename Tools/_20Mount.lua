@@ -1233,7 +1233,7 @@ local function Init_MountJournal()
                 self2:SetAlpha(1)
             end)
             self.btn:SetScript('OnLeave', function(self2) self2:SetAlpha(0.3) end)
-            self.btn:SetScript('OnClick', function(self2)
+            self.btn:SetScript('OnMouseDown', function(self2)
                 if not self2.Menu then
                     self2.Menu=CreateFrame("Frame", nil, self2, "UIDropDownMenuTemplate")
                     e.LibDD:UIDropDownMenu_Initialize(self2.Menu, Init_Menu_Set_UI, 'MENU')
@@ -1268,7 +1268,7 @@ local function Init_MountJournal()
         --e.call('MountJournal_FullUpdate', MountJournal)
     end
 
-    btn:SetScript('OnClick', function(frame)
+    btn:SetScript('OnMouseDown', function(frame)
         if not frame.Menu then
             frame.Menu= CreateFrame('Frame', nil, frame, 'UIDropDownMenuTemplate')
             e.LibDD:UIDropDownMenu_Initialize(frame.Menu, function(self, level)

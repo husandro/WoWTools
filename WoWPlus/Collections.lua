@@ -971,7 +971,7 @@ local function Init_Wardrober_Transmog()
     end
     check:SetScript('OnShow', check.set_event)
     check:SetScript('OnHide', check.set_event)
-    check:SetScript('OnClick', function(self)
+    check:SetScript('OnMouseDown', function(self)
         if not self.Menu then
             self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
             e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level, menuList)

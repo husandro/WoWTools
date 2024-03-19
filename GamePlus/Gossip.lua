@@ -900,11 +900,6 @@ local function Init_Gossip()
         Save.point[2]=nil
     end)
     GossipButton:SetScript('OnMouseUp', ResetCursor)
-    GossipButton:SetScript('OnMouseDown', function(_, d)
-        if d=='RightButton' and IsAltKeyDown() then--移动
-            SetCursor('UI_MOVE_CURSOR')
-        end
-    end)
     GossipButton:SetScript('OnMouseWheel', function(self, d)
         if IsAltKeyDown() then
             local n= Save.scale or 1
@@ -923,18 +918,22 @@ local function Init_Gossip()
             e.OpenPanelOpting(addName)
         end
     end)
-    GossipButton:SetScript('OnClick', function(self, d)
-        local key=IsModifierKeyDown()
-        if d=='LeftButton' and not key then--禁用，启用
-            Save.gossip= not Save.gossip and true or nil
-            self:set_Texture()--设置，图片
-            self:tooltip_Show()
-        elseif d=='RightButton' and not key then--菜单
-            if not self.MenuGossip then
-                self.MenuGossip=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.MenuGossip, Init_Menu_Gossip, 'MENU')
+    GossipButton:SetScript('OnMouseDown', function(self, d)
+        if d=='RightButton' and IsAltKeyDown() then--移动
+            SetCursor('UI_MOVE_CURSOR')
+        else
+            local key=IsModifierKeyDown()
+            if d=='LeftButton' and not key then--禁用，启用
+                Save.gossip= not Save.gossip and true or nil
+                self:set_Texture()--设置，图片
+                self:tooltip_Show()
+            elseif d=='RightButton' and not key then--菜单
+                if not self.MenuGossip then
+                    self.MenuGossip=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+                    e.LibDD:UIDropDownMenu_Initialize(self.MenuGossip, Init_Menu_Gossip, 'MENU')
+                end
+                e.LibDD:ToggleDropDownMenu(1, nil, self.MenuGossip, self, 15, 0)
             end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.MenuGossip, self, 15, 0)
         end
     end)
 
@@ -1824,7 +1823,7 @@ local function Init_Quest()
         end
     end)
 
-    QuestButton:SetScript('OnClick', function(self, d)
+    QuestButton:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             Save.quest= not Save.quest and true or nil
             self:set_Texture()--设置，图片
@@ -2492,7 +2491,7 @@ local function Init_Options()--初始, 选项
             e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level) 
         end
     end)
-    menu.Button:SetScript('OnClick', function(self)
+    menu.Button:SetScript('OnMouseDown', function(self)
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15,0) 
     end)
     menu.Text:SetTextColor(1,1,1,1)
@@ -2591,7 +2590,7 @@ local function Init_Options()--初始, 选项
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id , e.cn(addName))
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '设置颜色', format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COLOR), e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COLOR), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, e.Icon.right)
         e.tips:Show()
     end)

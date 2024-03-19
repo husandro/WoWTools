@@ -493,7 +493,7 @@ local function Init_Button()
     button:SetPoint('LEFT',   _G['Postal_BlackBookButton'] or SendMailNameEditBox, 'RIGHT', 2, 0)--C_AddOns.IsAddOnLoaded('Postal')
     end
     button:SetFrameStrata('HIGH')
-    button:SetScript('OnClick', function(self2)
+    button:SetScript('OnMouseDown', function(self2)
         if not self2.Menu then
             self2.Menu= CreateFrame("Frame", nil, self2, "UIDropDownMenuTemplate")
             e.LibDD:UIDropDownMenu_Initialize(self2.Menu, Init_Menu, 'MENU')
@@ -1049,7 +1049,7 @@ local function Init_Fast_Button()
     else
         button.FastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT',0, -2)
     end
-    button.FastButton:SetScript('OnClick', function(self2, d)
+    button.FastButton:SetScript('OnMouseDown', function(self2, d)
         if IsAltKeyDown() and d=='LeftButton' then--展开/缩起
             Save.fastShow= not Save.fastShow and true or nil
             self2.frame:SetShown(Save.fastShow)

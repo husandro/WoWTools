@@ -1062,7 +1062,7 @@ local function Init()
 
     set_SummonTips()--召唤，提示
 
-    button:SetScript('OnClick', function(self, d)
+    button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             InvUnitFunc()--邀请，周围玩家
         else

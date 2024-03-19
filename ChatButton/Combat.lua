@@ -488,7 +488,7 @@ local function Init()
         button:set_texture_Desaturated()
         Init_TrackButton()
     end
-    button:SetScript('OnClick', function(self, d)
+    button:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' then
             if not self.Menu then
                 self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")--菜单框架

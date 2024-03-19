@@ -2219,7 +2219,7 @@ local function Init()
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    button:SetScript('OnClick', function(self, d)
+    button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' and (self.dungeonID or self.RaidID) then
             if self.dungeonID then
                 e.call('LFDQueueFrame_SetType', self.dungeonID)

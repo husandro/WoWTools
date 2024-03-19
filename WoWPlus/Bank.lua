@@ -707,7 +707,7 @@ local function Init_Bank_Frame()
     end
     BankFrame.optionButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
     BankFrame.optionButton:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
-    BankFrame.optionButton:SetScript('OnClick', function(self)
+    BankFrame.optionButton:SetScript('OnMouseDown', function(self)
         if not self.Menu then
             self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
             e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')

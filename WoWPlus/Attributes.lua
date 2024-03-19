@@ -2110,14 +2110,11 @@ local function Init()
         Save.point[2]=nil
     end)
     button:SetScript("OnMouseUp", ResetCursor)
-    button:SetScript('OnMouseDown', function(_, d)
+    button:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
-        end
-    end)
 
-    button:SetScript("OnClick", function(self, d)
-        if d=='LeftButton' and not IsModifierKeyDown() then
+        elseif d=='LeftButton' and not IsModifierKeyDown() then
             frame_Init(true)--初始， 或设置
             print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
 

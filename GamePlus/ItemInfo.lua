@@ -768,7 +768,7 @@ local function Init_Bag()
         btn:SetPoint('LEFT')
     end
     btn:SetAlpha(0.5)
-    btn:SetScript('OnClick', function(self, d)
+    btn:SetScript('OnMouseDown', function(self, d)
         if not self.Menu then
             self.Menu= CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")--菜单列表
             e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(self2, level, type)
