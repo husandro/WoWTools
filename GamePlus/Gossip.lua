@@ -2497,7 +2497,7 @@ local function Init_Options()--初始, 选项
     menu:set_numlabel_text()
 
     menu.Texture= frame:CreateTexture()
-    menu.Texture:SetPoint('BOTTOM', menu, 'TOP', 0,-2)
+    menu.Texture:SetPoint('BOTTOM', menu, 'TOP')
     menu:set_texture_size()
 
     menu.TipsLabel= e.Cstr(menu, {justifyH='RIGHT'})
@@ -2783,7 +2783,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.NPC= Save.NPC or {}
             Save.movie= Save.movie or {}
             
-            Save.Gossip_Text_Icon_Player= Save.Gossip_Text_Icon_Player or {[55193]={icon='communities-icon-invitemail', name=(e.Player.husandro and '打开邮件' or OPENMAIL), hex='ffff00ff'}}
+            Save.Gossip_Text_Icon_Player= Save.Gossip_Text_Icon_Player or {}
             Save.Gossip_Text_Icon_Size= Save.Gossip_Text_Icon_Size or 22
 
             --添加控制面板
