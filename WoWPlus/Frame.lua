@@ -2028,10 +2028,7 @@ local function Init_Move()
     set_Move_Alpha(BagsBar)--背包
     set_Move_Alpha(ObjectiveTrackerFrame)
 
-    --set_Move_Frame(MerchantFrame, {setSize=true, minW=336, minH=440, initFunc=function()
-    --end, sizeRestFunc=function()
-
-    --end})
+   
 
     --世界地图
     local minimizedWidth= WorldMapFrame.minimizedWidth or 702
@@ -2615,13 +2612,22 @@ end)]]
         self:SetClampedToScreen(false)
     end)
 
-    --if Save.SavePoint then--在指定位置,显示
+    
     hooksecurefunc('UpdateUIPanelPositions',function(currentFrame)
         if not UnitAffectingCombat('player') then
             set_Frame_Point(currentFrame)
         end
     end)
-    --end
+    
+
+    --要塞，图标
+    if ExpansionLandingPageMinimapButton then
+        ExpansionLandingPageMinimapButton:SetFrameStrata('TOOLTIP')
+        set_Move_Frame(ExpansionLandingPageMinimapButton, {hideButton=true, click='RightButton'})
+        C_Timer.After(8, function()--盟约图标停止闪烁
+            ExpansionLandingPageMinimapButton.MinimapLoopPulseAnim:Stop()
+        end)
+    end
 
 
     C_Timer.After(2, function()

@@ -35,6 +35,8 @@ local Save={
        --showStopwatchFrame=true,--加载游戏时，显示秒表
        --StopwatchFrameScale=1,--缩放
 
+       hideExpansionLandingPageMinimapButton= e.Player.husandro,--隐藏，图标
+
 }
 
 for questID, _ in pairs(Save.questIDs or {}) do
@@ -1856,6 +1858,21 @@ local function Init_Menu(_, level, menuList)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+    info={
+        text= '|A:dragonflight-landingbutton-up:0:0|a'..(e.onlyChinese and '要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL)),
+        tooltipOnButton= true,
+        tooltipTitle= e.GetShowHide(nil, true),
+        checked= not Save.hideExpansionLandingPageMinimapButton,
+        keepShownOnClick=true,
+        func= function()
+            Save.hideExpansionLandingPageMinimapButton= not Save.hideExpansionLandingPageMinimapButton and true or nil
+            if ExpansionLandingPageMinimapButton then
+                ExpansionLandingPageMinimapButton:SetShown(not Save.hideExpansionLandingPageMinimapButton)
+            end
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
@@ -1874,8 +1891,8 @@ local function Init_Menu(_, level, menuList)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    if C_MythicPlus.GetCurrentSeason()==11 then
 
+    if C_MythicPlus.GetCurrentSeason()==11 then
         info={
             text= e.onlyChinese and '挑战传送门标签' or 'M+ Portal Room Labels',
             tooltipOnButton=true,
@@ -1951,7 +1968,7 @@ local function click_Func(self, d)
     elseif d=='LeftButton' and not key then
             local expButton=ExpansionLandingPageMinimapButton
             if expButton and expButton.ToggleLandingPage and expButton.title then
-                expButton.ToggleLandingPage(expButton)--Minimap.lua
+                expButton:ToggleLandingPage()--Minimap.lua
             else
                 e.OpenPanelOpting('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName))
                 --Settings.OpenToCategory(id)
@@ -1969,7 +1986,7 @@ end
 local function enter_Func(self)
     local expButton=ExpansionLandingPageMinimapButton
     if expButton and expButton.OnEnter and expButton.title then--Minimap.lua
-        expButton.OnEnter(expButton)
+        expButton:OnEnter()
         e.tips:AddLine(' ')
     else
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -1979,9 +1996,9 @@ local function enter_Func(self)
     e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.right)
 
     if self and type(self)=='table' then
-        if expButton and expButton:IsShown() then
+        --[[if expButton and expButton:IsShown() and Save.hideExpansionLandingPageMinimapButton then
             expButton:SetShown(false)
-        end
+        end]]
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.right)
     end
     e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left)
@@ -2374,6 +2391,7 @@ local function Init()
     --########
     --盟约图标
     --########
+    
     local libDataBroker = LibStub:GetLibrary("LibDataBroker-1.1", true)
     local libDBIcon = LibStub("LibDBIcon-1.0", true)
     if libDataBroker and libDBIcon then
@@ -2407,9 +2425,13 @@ local function Init()
         })
 
         if ExpansionLandingPageMinimapButton then
-            ExpansionLandingPageMinimapButton:SetShown(false)
+            if Save.hideExpansionLandingPageMinimapButton then
+                ExpansionLandingPageMinimapButton:SetShown(false)
+            end
             ExpansionLandingPageMinimapButton:HookScript('OnShow', function(self)
-                self:SetShown(false)
+                if Save.hideExpansionLandingPageMinimapButton then
+                   self:SetShown(false)
+                end
             end)
         end
     end
