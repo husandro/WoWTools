@@ -163,7 +163,7 @@ local function set_Scale_Size(frame, tab)
 
     btn:SetSize(16, 16)
     if setResizeButtonPoint then
-        btn:SetPoint(setResizeButtonPoint[1], setResizeButtonPoint[2] or frame, setResizeButtonPoint[3], setResizeButtonPoint[4], setResizeButtonPoint[5])
+        btn:SetPoint(setResizeButtonPoint[1] or 'BOTTOMRIGHT', setResizeButtonPoint[2] or frame, setResizeButtonPoint[3] or 'BOTTOMRIGHT', setResizeButtonPoint[4] or 0, setResizeButtonPoint[5] or 0)
     else
         btn:SetPoint('BOTTOMRIGHT', frame, 6,-6)
     end
@@ -2629,7 +2629,7 @@ end)]]
     if ExpansionLandingPageMinimapButton then
         ExpansionLandingPageMinimapButton:SetFrameStrata('TOOLTIP')
         set_Move_Frame(ExpansionLandingPageMinimapButton, {hideButton=true, click='RightButton', setResizeButtonPoint={
-            'BOTTOMRIGHT', nil, 'BOTTOMRIGHT', -5,5
+            nil, nil, nil, -4,4
         }})
         C_Timer.After(8, function()--盟约图标停止闪烁
             ExpansionLandingPageMinimapButton.MinimapLoopPulseAnim:Stop()
