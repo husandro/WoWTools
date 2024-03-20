@@ -66,7 +66,8 @@ function panel:get_Use_Toy()
                             if self2.itemID then
                                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                                 e.tips:ClearLines()
-                                e.tips:SetToyByItemID(self2.itemID)
+                                e.tips:SetItemByID(self2.itemID)
+                                --e.tips:SetToyByItemID(self2.itemID)
                                 e.tips:AddLine(' ')
                                 if e.onlyChinese then
                                     e.tips:AddLine('|cnRED_FONT_COLOR:使用, 请勿太快')

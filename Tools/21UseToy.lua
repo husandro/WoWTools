@@ -606,7 +606,8 @@ local function Init()
         if self.itemID then
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:SetToyByItemID(self.itemID)
+            e.tips:SetItemByID(self.itemID)
+            --e.tips:SetToyByItemID(self.itemID)
             e.tips:AddLine(' ')
             for type, itemID in pairs(ModifiedTab) do
                 if PlayerHasToy(itemID) then
