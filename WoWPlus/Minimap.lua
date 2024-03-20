@@ -37,6 +37,8 @@ local Save={
 
        hideExpansionLandingPageMinimapButton= e.Player.husandro,--隐藏，图标
 
+       moving_over_Icon_show_menu=e.Player.husandro--移过图标时，显示菜单
+       
 }
 
 for questID, _ in pairs(Save.questIDs or {}) do
@@ -1718,16 +1720,137 @@ end
 
 
 
+--[[
 
 
 
+local function MRBP_GetGarrisonTypeUnlockQuestInfo(garrTypeID, tagName)
+	local reqMessageTemplate = Completa \"%s\" per sbloccare il contenuto  --> same as Companion App text
+	local questData = MRBP_COMMAND_TABLE_UNLOCK_QUESTS[garrTypeID][tagName]
+	local questID = questData[1]
+	local questFallbackName = questData[2]  --> quest name in English
+	local questName = QuestUtils_GetQuestName(questID)
+
+	local questInfo = {}
+	questInfo["questID"] = questID
+	questInfo["questName"] = strlen(questName) > 0 and questName or questFallbackName
+	questInfo["requirementText"] = reqMessageTemplate:format(questInfo.questName)
+
+	return questInfo
+end
 
 
-
-
-
-
-
+--MissionReportButtonPlus 插件，来原数据
+local MRBP_GARRISON_TYPE_INFOS = {
+    ----- Warlords of Draenor -----
+    [util.expansion.data.WarlordsOfDraenor.garrisonTypeID] = {
+        ["tagName"] = e.Player.faction,--playerInfo.factionGroup,
+        ["title"] = e.onlyChinese and '要塞报告' or GARRISON_LANDING_PAGE_TITLE,
+        ["description"] = e.onlyChinese and '点击显示要塞报告' or MINIMAP_GARRISON_LANDING_PAGE_TOOLTIP,
+        ["minimapIcon"] = string.format("GarrLanding-MinimapIcon-%s-Up", playerInfo.factionGroup),
+        -- ["banner"] = "accountupgradebanner-wod",  -- 199x117  			--> TODO - Use with new frame
+        ["msg"] = {  --> menu entry tooltip messages
+            ["missionsTitle"] = e.onlyChinese and '要塞任务' or GARRISON_MISSIONS_TITLE,
+            ["missionsReadyCount"] = e.onlyChinese and '准备接收：%d/%d' or GARRISON_LANDING_COMPLETED,  --> "%d/%d Ready for pickup"
+            ["missionsEmptyProgress"] = e.onlyChinese and '你没有正在进行中的任务。' or GARRISON_EMPTY_IN_PROGRESS_LIST,
+            ["missionsComplete"] = GarrisonFollowerOptions[Enum.GarrisonFollowerType.FollowerType_6_0_GarrisonFollower].strings.LANDING_COMPLETE or '???',
+            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(Enum.GarrisonType.Type_6_0_Garrison, playerInfo.factionGroup).requirementText,
+        },
+        ["expansion"] = util.expansion.data.WarlordsOfDraenor,
+        ["continents"] = {572},  --> Draenor
+        -- No bounties in Draenor; only available since Legion.
+    },
+    ----- Legion -----
+    [util.expansion.data.Legion.garrisonTypeID] = {
+        ["tagName"] = playerInfo.className,
+        ["title"] = ORDER_HALL_LANDING_PAGE_TITLE,
+        ["description"] = MINIMAP_ORDER_HALL_LANDING_PAGE_TOOLTIP,
+        ["minimapIcon"] = playerInfo.className == "EVOKER" and "UF-Essence-Icon-Active" or  -- "legionmission-landingbutton-demonhunter-up" or
+                          string.format("legionmission-landingbutton-%s-up", playerInfo.className),
+        -- ["banner"] = "accountupgradebanner-legion",  -- 199x117  		--> TODO - Use with new frame
+        ["msg"] = {
+            ["missionsTitle"] = GARRISON_MISSIONS,
+            ["missionsReadyCount"] = GARRISON_LANDING_COMPLETED,
+            ["missionsEmptyProgress"] = GARRISON_EMPTY_IN_PROGRESS_LIST,
+            ["missionsComplete"] = GarrisonFollowerOptions[Enum.GarrisonFollowerType.FollowerType_7_0_GarrisonFollower].strings.LANDING_COMPLETE,
+            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.Legion.garrisonTypeID, playerInfo.className).requirementText,
+        },
+        ["expansion"] = util.expansion.data.Legion,
+        ["continents"] = {619, 905},  --> Broken Isles + Argus
+        ["bountyBoard"] = {
+            ["title"] = BOUNTY_BOARD_LOCKED_TITLE,
+            ["noBountiesMessage"] = BOUNTY_BOARD_NO_BOUNTIES_DAYS_1,
+            ["bounties"] = util.quest.GetBountiesForMapID(650),  --> any child zone from "continents" in Legion seems to work
+            ["areBountiesUnlocked"] = MapUtil.MapHasUnlockedBounties(650),
+        },
+    },
+    ----- Battle for Azeroth -----
+    [util.expansion.data.BattleForAzeroth.garrisonTypeID] = {
+        ["tagName"] = playerInfo.factionGroup,
+        ["title"] = GARRISON_TYPE_8_0_LANDING_PAGE_TITLE,
+        ["description"] = GARRISON_TYPE_8_0_LANDING_PAGE_TOOLTIP,
+        ["minimapIcon"] = string.format("bfa-landingbutton-%s-up", playerInfo.factionGroup),
+        -- ["banner"] = "accountupgradebanner-bfa",  -- 199x133  			--> TODO - Use with new frame
+        ["msg"] = {
+            ["missionsTitle"] = GARRISON_MISSIONS,
+            ["missionsReadyCount"] = GARRISON_LANDING_COMPLETED,
+            ["missionsEmptyProgress"] = GARRISON_EMPTY_IN_PROGRESS_LIST,
+            ["missionsComplete"] = GarrisonFollowerOptions[Enum.GarrisonFollowerType.FollowerType_8_0_GarrisonFollower].strings.LANDING_COMPLETE,
+            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.BattleForAzeroth.garrisonTypeID, playerInfo.factionGroup).requirementText,
+        },
+        ["expansion"] = util.expansion.data.BattleForAzeroth,
+        ["continents"] = {875, 876},  -- Zandalar, Kul Tiras
+        ["poiZones"] = {1355, 62, 14, 81, 1527},  -- Nazjatar, Darkshore, Arathi Highlands, Silithus, Uldum
+        --> Note: Uldum and Vale of Eternal Blossoms are covered as world map threats.
+        ["bountyBoard"] = {
+            ["title"] = BOUNTY_BOARD_LOCKED_TITLE,
+            ["noBountiesMessage"] = BOUNTY_BOARD_NO_BOUNTIES_DAYS_1,
+            ["bounties"] = util.quest.GetBountiesForMapID(875),  --> or any child zone from "continents" seems to work as well.
+            ["areBountiesUnlocked"] = MapUtil.MapHasUnlockedBounties(875),  --> checking only Zandalar should be enough
+        },
+    },
+    ----- Shadowlands -----
+    [util.expansion.data.Shadowlands.garrisonTypeID] = {
+        ["tagName"] = playerInfo.covenantID,
+        ["title"] = GARRISON_TYPE_9_0_LANDING_PAGE_TITLE,
+        ["description"] = GARRISON_TYPE_9_0_LANDING_PAGE_TOOLTIP,
+        ["minimapIcon"] = string.format("shadowlands-landingbutton-%s-up", playerInfo.covenantTex),
+        -- ["minimapIcon"] = string.format("SanctumUpgrades-%s-32x32", playerInfo.covenantTex),
+        -- ["banner"] = "accountupgradebanner-shadowlands",  -- 199x133  	--> TODO - Use with new frame
+        ["msg"] = {
+            ["missionsTitle"] = COVENANT_MISSIONS_TITLE,
+            ["missionsReadyCount"] = GARRISON_LANDING_COMPLETED,
+            ["missionsEmptyProgress"] = COVENANT_MISSIONS_EMPTY_IN_PROGRESS,
+            ["missionsComplete"] = GarrisonFollowerOptions[Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower].strings.LANDING_COMPLETE,
+            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.Shadowlands.garrisonTypeID, playerInfo.covenantID).requirementText,
+        },
+        ["expansion"] = util.expansion.data.Shadowlands,
+        ["continents"] = {1550},  --> Shadowlands
+        ["bountyBoard"] = {
+            ["title"] = CALLINGS_QUESTS,
+            ["noBountiesMessage"] = BOUNTY_BOARD_NO_CALLINGS_DAYS_1,
+            ["bounties"] = {},  --> Shadowlands callings will be added later via the event handler.
+            ["areBountiesUnlocked"] = C_CovenantCallings.AreCallingsUnlocked(),
+        },
+    },
+    ----- Dragonflight -----
+    [util.expansion.data.Dragonflight.garrisonTypeID] = {
+        -- ["tagName"] = playerInfo.className == "EVOKER" and "alt" or playerInfo.factionGroup,
+        ["tagName"] = playerInfo.factionGroup,
+        ["title"] = DRAGONFLIGHT_LANDING_PAGE_TITLE,
+        ["description"] = DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,
+        ["minimapIcon"] = "dragonflight-landingbutton-up",
+        -- ["banner"] = "accountupgradebanner-dragonflight",  -- 199x133  	--> TODO - Use with new frame
+        ["msg"] = {
+            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.Dragonflight.garrisonTypeID, playerInfo.factionGroup).requirementText,
+        },
+         ["expansion"] = util.expansion.data.Dragonflight,
+        ["continents"] = {1978},  --> Dragon Isles
+        --> Note: The bounty board in Dragonflight is only used for filtering world quests and switching to them. It
+        -- doesn't show any bounty details anymore. Instead you get rewards for each new major faction renown level.
+    },
+};
+]]
 
 
 
@@ -1777,101 +1900,143 @@ local function Init_Menu(_, level, menuList)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
-
     if menuList then
         return
     end
 
-    info={
-        text= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT),
-        checked= C_CVar.GetCVarBool("minimapTrackingShowAll"),
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '显示: 追踪' or SHOW..': '..TRACKING,
-        tooltipText= id..' '..addName..'|n|nCVar minimapTrackingShowAll',
-        keepShownOnClick=true,
-        func= function()
-            C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' )
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    --elseif menuList=='OPTIONS' then
 
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text= '|A:UI-HUD-Minimap-Zoom-Out:0:0|a'..(e.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT),
-        checked= Save.ZoomOut,
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '更新地区时' or UPDATE..ZONE,
-        tooltipText= id..' '..e.cn(addName),
-        keepShownOnClick=true,
-        func= function()
-            Save.ZoomOut= not Save.ZoomOut and true or nil
-            set_ZoomOut()--更新地区时,缩小化地图
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text= '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '信息' or INFO),--当前缩放，显示数值
-        checked= Save.ZoomOutInfo,
-        tooltipOnButton=true,
-        tooltipTitle=(e.onlyChinese and '镜头视野范围' or CAMERA_FOV)..': '..format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)),
-        keepShownOnClick=true,
-        func= function()
-            Save.ZoomOutInfo= not Save.ZoomOutInfo and true or nil
-            set_Event_MINIMAP_UPDATE_ZOOM()
-            if Save.ZoomOutInfo then
-                set_MINIMAP_UPDATE_ZOOM()
+        info={
+            text= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT),
+            checked= C_CVar.GetCVarBool("minimapTrackingShowAll"),
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '显示: 追踪' or SHOW..': '..TRACKING,
+            tooltipText= id..' '..addName..'|n|nCVar minimapTrackingShowAll',
+            keepShownOnClick=true,
+            func= function()
+                C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' )
             end
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    local tab={
-        DifficultyUtil.ID.Raid40,
-        DifficultyUtil.ID.RaidLFR,
-        DifficultyUtil.ID.DungeonNormal,
-        DifficultyUtil.ID.DungeonHeroic,
-        DifficultyUtil.ID.DungeonMythic,
-        DifficultyUtil.ID.DungeonChallenge,
-        DifficultyUtil.ID.RaidTimewalker,
-        25,
-        205,
-    }
-    local tips=''
-    for _, ID in pairs(tab) do
-        local text= e.GetDifficultyColor(nil, ID)
-        tips= tips..'|n'..text
-    end
-
-    info={
-        text= '|A:DungeonSkull:0:0|a'..(e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY),
-        tooltipOnButton= true,
-        tooltipTitle= e.onlyChinese and '颜色' or COLOR,
-        tooltipText= tips,
-        checked= not Save.disabledInstanceDifficulty,
-        keepShownOnClick=true,
-        func= function()
-            Save.disabledInstanceDifficulty= not Save.disabledInstanceDifficulty and true or nil
-            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledInstanceDifficulty), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text= '|A:dragonflight-landingbutton-up:0:0|a'..(e.onlyChinese and '要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL)),
-        tooltipOnButton= true,
-        tooltipTitle= e.GetShowHide(nil, true),
-        checked= not Save.hideExpansionLandingPageMinimapButton,
-        keepShownOnClick=true,
-        func= function()
-            Save.hideExpansionLandingPageMinimapButton= not Save.hideExpansionLandingPageMinimapButton and true or nil
-            if ExpansionLandingPageMinimapButton then
-                ExpansionLandingPageMinimapButton:SetShown(not Save.hideExpansionLandingPageMinimapButton)
+        --e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= '|A:UI-HUD-Minimap-Zoom-Out:0:0|a'..(e.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT),
+            checked= Save.ZoomOut,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '更新地区时' or UPDATE..ZONE,
+            tooltipText= id..' '..e.cn(addName),
+            keepShownOnClick=true,
+            func= function()
+                Save.ZoomOut= not Save.ZoomOut and true or nil
+                set_ZoomOut()--更新地区时,缩小化地图
             end
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+        info={
+            text= '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '信息' or INFO),--当前缩放，显示数值
+            checked= Save.ZoomOutInfo,
+            tooltipOnButton=true,
+            tooltipTitle=(e.onlyChinese and '镜头视野范围' or CAMERA_FOV)..': '..format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)),
+            keepShownOnClick=true,
+            func= function()
+                Save.ZoomOutInfo= not Save.ZoomOutInfo and true or nil
+                set_Event_MINIMAP_UPDATE_ZOOM()
+                if Save.ZoomOutInfo then
+                    set_MINIMAP_UPDATE_ZOOM()
+                end
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        local tab={
+            DifficultyUtil.ID.Raid40,
+            DifficultyUtil.ID.RaidLFR,
+            DifficultyUtil.ID.DungeonNormal,
+            DifficultyUtil.ID.DungeonHeroic,
+            DifficultyUtil.ID.DungeonMythic,
+            DifficultyUtil.ID.DungeonChallenge,
+            DifficultyUtil.ID.RaidTimewalker,
+            25,
+            205,
+        }
+        local tips=''
+        for _, ID in pairs(tab) do
+            local text= e.GetDifficultyColor(nil, ID)
+            tips= tips..'|n'..text
+        end
+
+        info={
+            text= '|A:DungeonSkull:0:0|a'..(e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY),
+            tooltipOnButton= true,
+            tooltipTitle= e.onlyChinese and '颜色' or COLOR,
+            tooltipText= tips,
+            checked= not Save.disabledInstanceDifficulty,
+            keepShownOnClick=true,
+            func= function()
+                Save.disabledInstanceDifficulty= not Save.disabledInstanceDifficulty and true or nil
+                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledInstanceDifficulty), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        info={
+            text= '|A:dragonflight-landingbutton-up:0:0|a'..(e.onlyChinese and '要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL)),
+            tooltipOnButton= true,
+            tooltipTitle= e.GetShowHide(nil, true),
+            checked= not Save.hideExpansionLandingPageMinimapButton,
+            keepShownOnClick=true,
+            func= function()
+                Save.hideExpansionLandingPageMinimapButton= not Save.hideExpansionLandingPageMinimapButton and true or nil
+                if ExpansionLandingPageMinimapButton then
+                    ExpansionLandingPageMinimapButton:SetShown(not Save.hideExpansionLandingPageMinimapButton)
+                end
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    
+        if C_MythicPlus.GetCurrentSeason()==11 then
+            info={
+                text= e.onlyChinese and '挑战传送门标签' or 'M+ Portal Room Labels',
+                tooltipOnButton=true,
+                --tooltipTitle= EJ_GetInstanceInfo(2678),
+                checked= not Save.hideMPortalRoomLabels,
+                keepShownOnClick=true,
+                func= function()
+                    Save.hideMPortalRoomLabels= not Save.hideMPortalRoomLabels and true or nil
+                    Init_M_Portal_Room_Labels()
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+
+        info={
+            text= '|A:characterupdate_clock-icon:0:0|a'..(e.onlyChinese and '时钟' or TIMEMANAGER_TITLE)..' Plus',
+            checked= not Save.disabledClockPlus,
+            hasArrow=true,
+            menuList='ResetTimeManagerClockButton',
+            func= function()
+                Save.disabledClockPlus= not Save.disabledClockPlus and true or nil
+                print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text='|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '显示菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, HUD_EDIT_MODE_MICRO_MENU_LABEL)),
+            checked= Save.moving_over_Icon_show_menu,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '移过图标时，显示菜单' or 'Show menu when moving over icon',
+            func= function()
+                Save.moving_over_Icon_show_menu= not Save.moving_over_Icon_show_menu and true or nil
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+   
+
+    
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
@@ -1890,34 +2055,15 @@ local function Init_Menu(_, level, menuList)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-
-    if C_MythicPlus.GetCurrentSeason()==11 then
-        info={
-            text= e.onlyChinese and '挑战传送门标签' or 'M+ Portal Room Labels',
-            tooltipOnButton=true,
-            --tooltipTitle= EJ_GetInstanceInfo(2678),
-            checked= not Save.hideMPortalRoomLabels,
-            keepShownOnClick=true,
-            func= function()
-                Save.hideMPortalRoomLabels= not Save.hideMPortalRoomLabels and true or nil
-                Init_M_Portal_Room_Labels()
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-    end
-
-    info={
-        text= (e.onlyChinese and '时钟' or TIMEMANAGER_TITLE)..' Plus',
-        checked= not Save.disabledClockPlus,
+    --[[info= {
+        text= '    |A:mechagon-projects:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
+        notCheckable=true,
+        keepShownOnClick=true,
+        menuList='OPTIONS',
         hasArrow=true,
-        menuList='ResetTimeManagerClockButton',
-        func= function()
-            Save.disabledClockPlus= not Save.disabledClockPlus and true or nil
-            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
     }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-    --TimeManagerClockTicker
+    e.LibDD:UIDropDownMenu_AddButton(info, level)]]
+    
 end
 
 
@@ -1995,9 +2141,6 @@ local function enter_Func(self)
     e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.right)
 
     if self and type(self)=='table' then
-        --[[if expButton and expButton:IsShown() and Save.hideExpansionLandingPageMinimapButton then
-            expButton:SetShown(false)
-        end]]
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.right)
     end
     e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left)
@@ -2420,7 +2563,16 @@ local function Init()
         Save.miniMapPoint= Save.miniMapPoint or {}
         Set_MinMap_Icon({name= id, texture= [[Interface\AddOns\WoWTools\Sesource\Texture\WoWtools.tga]],--texture= -18,--136235,
             func= click_Func,
-            enter= enter_Func,
+            enter= function(self)
+                if Save.moving_over_Icon_show_menu then
+                    if not self.menu then
+                        self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+                        e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
+                    end
+                    e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
+                end
+                enter_Func(self)
+            end,
         })
 
         if ExpansionLandingPageMinimapButton then

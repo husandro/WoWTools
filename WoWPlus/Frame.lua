@@ -100,6 +100,7 @@ local function set_Scale_Size(frame, tab)
 
     btn.target= frame
     btn.name= name
+    local setResizeButtonPoint= tab.setResizeButtonPoint--设置，按钮，位置
 
     --设置缩放
     btn.scaleStoppedFunc= tab.scaleStoppedFunc--保存，缩放内容
@@ -161,7 +162,11 @@ local function set_Scale_Size(frame, tab)
 
 
     btn:SetSize(16, 16)
-    btn:SetPoint('BOTTOMRIGHT', frame, 6,-6)
+    if setResizeButtonPoint then
+        btn:SetPoint(setResizeButtonPoint[1], setResizeButtonPoint[2] or frame, setResizeButtonPoint[3], setResizeButtonPoint[4], setResizeButtonPoint[5])
+    else
+        btn:SetPoint('BOTTOMRIGHT', frame, 6,-6)
+    end
     btn:SetClampedToScreen(true)
 
     function btn:set_tooltip()
@@ -2623,7 +2628,9 @@ end)]]
     --要塞，图标
     if ExpansionLandingPageMinimapButton then
         ExpansionLandingPageMinimapButton:SetFrameStrata('TOOLTIP')
-        set_Move_Frame(ExpansionLandingPageMinimapButton, {hideButton=true, click='RightButton'})
+        set_Move_Frame(ExpansionLandingPageMinimapButton, {hideButton=true, click='RightButton', setResizeButtonPoint={
+            'BOTTOMRIGHT', nil, 'BOTTOMRIGHT', -5,5
+        }})
         C_Timer.After(8, function()--盟约图标停止闪烁
             ExpansionLandingPageMinimapButton.MinimapLoopPulseAnim:Stop()
         end)
