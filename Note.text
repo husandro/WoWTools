@@ -479,3 +479,5 @@ C_Timer.NewTicker(.1, function()
 	f.glide:SetText(format("Gliding speed: |cff71d5ff%d%%|r", forwardSpeed))
 	f.movespeed:SetText(format("Move speed: |cffffff00%d%%|r", movespeed))
 end)
+
+IsPublicBuild()

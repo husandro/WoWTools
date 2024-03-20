@@ -2024,7 +2024,7 @@ end
 --初始,移动
 --########
 local function Init_Move()
-    set_Move_Alpha(MicroMenu)--主菜单
+    --set_Move_Alpha(MicroMenu)--主菜单
     set_Move_Alpha(BagsBar)--背包
     set_Move_Alpha(ObjectiveTrackerFrame)
 

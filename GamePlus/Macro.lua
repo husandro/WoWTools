@@ -906,7 +906,7 @@ local function Init_List_Button()
                     local itemLink = GetInventoryItemLink('player', slot)
                     local name = itemLink and C_Item.GetItemNameByID(itemLink)
                     if name then
-                        local spellName, spellID= GetItemSpell(itemLink)
+                        local spellName, spellID= C_Item.GetItemSpell(itemLink)
                         local spellTexture
 
                         if spellID then

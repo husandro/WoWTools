@@ -305,7 +305,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
 
     set_no_Enchant(self, slot, enchant and true or false, isPaperDollItemSlot)--附魔，按钮
 
-    use=  link and select(2, GetItemSpell(link))--物品是否可使用
+    use=  link and select(2, C_Item.GetItemSpell(link))--物品是否可使用
     if use and not self.use  then
         local h=self:GetHeight()/3
         self.use= self:CreateTexture()

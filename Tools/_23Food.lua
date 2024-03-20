@@ -92,7 +92,7 @@ local function find_Item_Type(class, subclass)
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
-            if info and info.hyperlink and info.itemID and GetItemSpell(info.itemID) then
+            if info and info.hyperlink and info.itemID and C_Item.GetItemSpell(info.itemID) then
                 local classID, subClassID, _, expacID = select(12, GetItemInfo(info.hyperlink))
                 if classID==class and subClassID==subclass and (Save.onlyMaxExpansion and (info.itemID==113509 or e.ExpansionLevel==expacID) or not Save.onlyMaxExpansion) then
                     e.LoadDate({id=info.itemID, type='item'})

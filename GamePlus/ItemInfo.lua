@@ -399,7 +399,7 @@ local function Set_Item_Info(self, tab)
         elseif itemQuality==7 or itemQuality==8 then--7传家宝，8 WoWToken
 
             topRightText=e.Icon.wow2
-            if classID==0 and subclassID==8 and GetItemSpell(itemLink) then--传家宝，升级，物品
+            if classID==0 and subclassID==8 and C_Item.GetItemSpell(itemLink) then--传家宝，升级，物品
                 local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={useStr}, wow=true, red=true})--物品提示，信息
                 if dateInfo.text[useStr] and dateInfo.text[useStr]:find(UPGRADE) then--UPGRADE = "升级";
                     local weapon= dateInfo.text[useStr]:find(WEAPON)--WEAPON = "武器";
@@ -437,7 +437,7 @@ local function Set_Item_Info(self, tab)
             end
         end
 
-        if not topRightText and GetItemSpell(itemID) then
+        if not topRightText and C_Item.GetItemSpell(itemID) then
             topRightText= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'
         end
         if (tab.bag and tab.bag.bag <= NUM_BAG_SLOTS+1 and tab.bag.bag>=0) or not tab.bag then

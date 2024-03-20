@@ -602,7 +602,7 @@ function func.Set_Item(self, itemLink, itemID)
         end
     end
 
-    local spellName, spellID = GetItemSpell(itemLink)--物品法术
+    local spellName, spellID = C_Item.GetItemSpell(itemLink)--物品法术
     if spellName and spellID then
         local spellTexture=GetSpellTexture(spellID)
         self:AddDoubleLine((itemName~=spellName and col..'['..spellName..']|r' or '')..(e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')

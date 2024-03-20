@@ -295,7 +295,7 @@ local function setTextrue()--设置图标
     if IsMounted() then
         icon=136116
     elseif icon then
-        local spellID= button.spellAtt or button.itemID and select(2, GetItemSpell(button.itemID))
+        local spellID= button.spellAtt or button.itemID and select(2, C_Item.GetItemSpell(button.itemID))
         local aura = spellID and C_UnitAuras.GetPlayerAuraBySpellID(spellID)
         if aura and aura.spellId then
             icon=136116

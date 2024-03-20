@@ -964,7 +964,7 @@ local function Init_EncounterJournal()--冒险指南界面
 
         local spellID--物品法术，提示
         if (btn.link or btn.itemID) and not Save.hideEncounterJournal then
-            spellID= select(2, GetItemSpell(btn.link or btn.itemID))
+            spellID= select(2, C_Item.GetItemSpell(btn.link or btn.itemID))
             if spellID and not btn.spellTexture then
                 btn.spellTexture= btn:CreateTexture(nil, 'OVERLAY')
                 btn.spellTexture:SetSize(16,16)
