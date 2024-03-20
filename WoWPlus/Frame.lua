@@ -126,7 +126,7 @@ local function set_Scale_Size(frame, tab)
         local rotationDegrees= tab.rotationDegrees--旋转度数
         local initFunc= tab.initFunc--初始
 
-    
+
 
 
         btn.sizeRestFunc= tab.sizeRestFunc--清除，数据
@@ -278,7 +278,7 @@ local function set_Scale_Size(frame, tab)
         frame:SetScale(scale)
     end
 
-    btn:SetScript("OnMouseUp", function(self, d)        
+    btn:SetScript("OnMouseUp", function(self, d)
         if not self.isActive or (self.notInCombat and UnitAffectingCombat('player')) then
             return
         end
@@ -1119,24 +1119,24 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_Collections' then--收藏
         local function update_frame()
             local self= WardrobeCollectionFrame
-            if self:IsShown() then                
+            if self:IsShown() then
                 if self.SetsTransmogFrame:IsShown() then
                     self.SetsTransmogFrame:ResetPage()--WardrobeSetsTransmogMixin
                     self:RefreshCameras()
-                elseif self.ItemsCollectionFrame:IsShown() then       
+                elseif self.ItemsCollectionFrame:IsShown() then
                     self.ItemsCollectionFrame:RefreshVisualsList()
                     self.ItemsCollectionFrame:UpdateItems()
                     self.ItemsCollectionFrame:ResetPage()
                     self:RefreshCameras()
                 end
-                
+
             end
         end
 
 
 
         local function init_sets_collenction(restButton, set)--套装
-            local self= WardrobeCollectionFrame            
+            local self= WardrobeCollectionFrame
             if self:GetParent()~=WardrobeFrame then
                 return
             end
@@ -1149,7 +1149,7 @@ local function setAddLoad(arg1)
             if Save.size[restButton.name] or set then--129 186
                 cols= max(math.modf(frame:GetWidth()/(129+10)), frame.NUM_COLS or 4)--行，数量
                 rows= max(math.modf(frame:GetHeight()/(186+10)), frame.NUM_ROWS or 2)--列，数量
-                frame.ModelR1C1:SetPoint("TOPLEFT", frame, 6, -6)                
+                frame.ModelR1C1:SetPoint("TOPLEFT", frame, 6, -6)
                 frame.PagingFrame:SetPoint('TOP', WardrobeCollectionFrame.SetsTransmogFrame, 'BOTTOM', 0, -2)
             else
                 cols= frame.NUM_COLS or 4
@@ -1172,7 +1172,7 @@ local function setAddLoad(arg1)
                 model:ClearAllPoints()
                 model:SetPoint('LEFT', frame.Models[i-1], 'RIGHT', 10, 0)
                 model:SetShown(true)
-            end           
+            end
             for i= cols+1, num, cols do
                 local model= frame.Models[i]
                 model:ClearAllPoints()
@@ -1189,7 +1189,7 @@ local function setAddLoad(arg1)
             if not restButton or not restButton.setSize then
                 return
             end
-            local frame= WardrobeCollectionFrame.ItemsCollectionFrame            
+            local frame= WardrobeCollectionFrame.ItemsCollectionFrame
             frame.PagingFrame:SetPoint('BOTTOM', 0, 2)
             frame.ModelR1C1:ClearAllPoints()
             frame.PagingFrame:ClearAllPoints()
@@ -1197,10 +1197,10 @@ local function setAddLoad(arg1)
             local w, h= frame.ModelR1C1:GetSize()--78, 104
             if Save.size[restButton.name] or set then
                 if WardrobeCollectionFrame:GetParent()==WardrobeFrame then
-                    frame.ModelR1C1:SetPoint("TOPLEFT", frame, 6, -6)    
+                    frame.ModelR1C1:SetPoint("TOPLEFT", frame, 6, -6)
                     frame.PagingFrame:SetPoint('TOP', frame, 'BOTTOM', 0, -2)
                     cols= math.modf((frame:GetWidth()-36)/(w+10))
-                    rows= math.modf((frame:GetHeight())/(h+10))                   
+                    rows= math.modf((frame:GetHeight())/(h+10))
                 else
                     frame.ModelR1C1:SetPoint("TOPLEFT", frame, 6, -60)
                     frame.PagingFrame:SetPoint('BOTTOM', 0, 2)
@@ -1216,7 +1216,7 @@ local function setAddLoad(arg1)
                 else
                     frame.ModelR1C1:SetPoint("TOPLEFT", frame, 71, -110)
                     frame.PagingFrame:SetPoint('BOTTOM', 0, 35)
-                end                
+                end
             end
 
             cols= max(cols, 6)--行，数量
@@ -1235,7 +1235,7 @@ local function setAddLoad(arg1)
                 model:ClearAllPoints()
                 model:SetPoint('LEFT', frame.Models[i-1], 'RIGHT', 16, 0)
                 model:SetShown(true)
-            end           
+            end
             for i= cols+1, num, cols do
                 local model= frame.Models[i]
                 model:ClearAllPoints()
@@ -1278,7 +1278,7 @@ local function setAddLoad(arg1)
             WardrobeCollectionFrame.SetsCollectionFrame.ListContainer:SetPoint('RIGHT', WardrobeCollectionFrame.SetsCollectionFrame.RightInset, 'LEFT', -24, 0)
             WardrobeCollectionFrame.SetsCollectionFrame.ListContainer:SetPoint('BOTTOM')
             WardrobeCollectionFrame.SetsCollectionFrame.LeftInset:SetPoint('RIGHT', WardrobeCollectionFrame.SetsCollectionFrame.ListContainer)
-            
+
             if _G['RematchFrame'] then
                 local function rematch()
                     local self= _G['RematchFrame']
@@ -1318,7 +1318,7 @@ local function setAddLoad(arg1)
                     self.QueuePanel:SetPoint('BOTTOMRIGHT', -4, 38)
                     self.QueuePanel.List.Help:ClearAllPoints()
                     self.QueuePanel.List.Help:SetPoint('TOPLEFT', 8, 22)
-                    self.QueuePanel.List.Help:SetPoint('BOTTOMRIGHT', -22, 22)                    
+                    self.QueuePanel.List.Help:SetPoint('BOTTOMRIGHT', -22, 22)
                 end
                 _G['RematchFrame']:HookScript('OnShow', rematch)
                 hooksecurefunc(_G['RematchFrame'].PanelTabs, 'TabOnClick', rematch)
@@ -1327,7 +1327,7 @@ local function setAddLoad(arg1)
             end
             C_Timer.After(2, function()
                 local frame= _G['ManuscriptsJournal']
-                if frame then                    
+                if frame then
                     set_Move_Frame(frame, {frame=CollectionsJournal})
                 end
             end)
@@ -1336,7 +1336,7 @@ local function setAddLoad(arg1)
         end, sizeStoppedFunc=function(btn)
             Save.size[btn.name]= {btn.target:GetSize()}
             update_frame()
-        end, sizeRestFunc=function(btn)            
+        end, sizeRestFunc=function(btn)
             btn.target:SetSize(703, 606)
             Save.size[btn.name]=nil
             init_items_colllection(btn)
@@ -1346,15 +1346,15 @@ local function setAddLoad(arg1)
         end, scaleUpdateFunc=function()
         end})--藏品
 
-        
-        set_Move_Frame(WardrobeFrame, {setSize=true, minW=965, minH=606, initFunc=function(btn)            
+
+        set_Move_Frame(WardrobeFrame, {setSize=true, minW=965, minH=606, initFunc=function(btn)
             WardrobeTransmogFrame:ClearAllPoints()
             WardrobeTransmogFrame:SetPoint('LEFT', 2, -28)
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:ClearAllPoints()--两侧肩膀使用不同的幻化外观
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:SetPoint('RIGHT', WardrobeTransmogFrame.ShoulderButton, 'LEFT', -6, 0)
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:ClearAllPoints()
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:SetPoint('RIGHT', WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox, 'LEFT')
-        end, sizeUpdateFunc=function(btn)            
+        end, sizeUpdateFunc=function(btn)
             init_items_colllection(btn, true)
 
         end, sizeStoppedFunc=function(btn)
@@ -1371,14 +1371,14 @@ local function setAddLoad(arg1)
         end})--幻化
 
 
-        
+
         hooksecurefunc(WardrobeCollectionFrame, 'SetContainer', function(self, parent)
             local btn=parent.ResizeButton
             if not btn or not btn.setSize then
                 return
             end
             if parent==CollectionsJournal then
-                
+
             elseif parent==WardrobeFrame then
                 self:SetPoint('BOTTOMLEFT', 300,0)
             end
@@ -2033,7 +2033,7 @@ local function Init_Move()
     set_Move_Alpha(BagsBar)--背包
     set_Move_Alpha(ObjectiveTrackerFrame)
 
-   
+
 
     --世界地图
     local minimizedWidth= WorldMapFrame.minimizedWidth or 702
@@ -2617,22 +2617,24 @@ end)]]
         self:SetClampedToScreen(false)
     end)
 
-    
+
     hooksecurefunc('UpdateUIPanelPositions',function(currentFrame)
         if not UnitAffectingCombat('player') then
             set_Frame_Point(currentFrame)
         end
     end)
-    
+
 
     --要塞，图标
     if ExpansionLandingPageMinimapButton then
         ExpansionLandingPageMinimapButton:SetFrameStrata('TOOLTIP')
-        set_Move_Frame(ExpansionLandingPageMinimapButton, {hideButton=true, click='RightButton', setResizeButtonPoint={
-            nil, nil, nil, -4,4
-        }})
-        C_Timer.After(8, function()--盟约图标停止闪烁
-            ExpansionLandingPageMinimapButton.MinimapLoopPulseAnim:Stop()
+        C_Timer.After(2, function()
+            set_Move_Frame(ExpansionLandingPageMinimapButton, {hideButton=true, click='RightButton', setResizeButtonPoint={
+                nil, nil, nil, -4,4
+            }})
+            C_Timer.After(8, function()--盟约图标停止闪烁
+                ExpansionLandingPageMinimapButton.MinimapLoopPulseAnim:Stop()
+            end)
         end)
     end
 

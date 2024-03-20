@@ -38,7 +38,7 @@ local Save={
        hideExpansionLandingPageMinimapButton= e.Player.husandro,--隐藏，图标
 
        moving_over_Icon_show_menu=e.Player.husandro--移过图标时，显示菜单
-       
+
 }
 
 for questID, _ in pairs(Save.questIDs or {}) do
@@ -868,6 +868,22 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Button_Menu(_, level, menuList)--菜单
     local info
     if menuList=='CurrentVignette' then--当前 Vingnette
@@ -1170,6 +1186,16 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
 local function Init_Set_Button()--小地图, 标记, 文本
     if not Save.vigentteButton or Button then
         if Button then
@@ -1285,7 +1311,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         end
     end)
 
-  
+
 
     function Button:show_menu(frame)
         if not self.menu then
@@ -1716,16 +1742,154 @@ end
 
 
 
-
-
-
-
 --[[
+local util={expansion={}}
 
 
+util.expansion.data = {
+	-- ["Classic"] = {
+	-- 	["ID"] = LE_EXPANSION_CLASSIC,  -- 0
+	-- 	["name"] = EXPANSION_NAME0,
+	-- },
+	-- ["BurningCrusade"] = {
+	-- 	["ID"] = LE_EXPANSION_BURNING_CRUSADE,  -- 1
+	-- 	["name"] = EXPANSION_NAME1,
+	-- },
+	-- ["WrathOfTheLichKing"] = {
+	-- 	["ID"] = LE_EXPANSION_WRATH_OF_THE_LICH_KING,  -- 2
+	-- 	["name"] = EXPANSION_NAME2,
+	-- },
+	-- ["Cataclysm"] = {
+	-- 	["ID"] = LE_EXPANSION_CATACLYSM,  -- 3
+	-- 	["name"] = EXPANSION_NAME3,
+	-- },
+	-- ["MistsOfPandaria"] = {
+	-- 	["ID"] = LE_EXPANSION_MISTS_OF_PANDARIA,  -- 4
+	-- 	["name"] = EXPANSION_NAME4,
+	-- },
+	["WarlordsOfDraenor"] = {
+		["ID"] = LE_EXPANSION_WARLORDS_OF_DRAENOR,  -- 5
+		["name"] = EXPANSION_NAME5,
+		["garrisonTypeID"] = Enum.GarrisonType.Type_6_0_Garrison,
+		["continents"] = {572}  --> Draenor
+		-- **Note:** No bounties in Draenor; only available since Legion.
+	},
+	["Legion"] = {
+		["ID"] = LE_EXPANSION_LEGION,  -- 6
+		["name"] = EXPANSION_NAME6,
+		["garrisonTypeID"] = Enum.GarrisonType.Type_7_0_Garrison,
+		["continents"] = {619, 905},  --> Broken Isles + Argus
+	},
+	["BattleForAzeroth"] = {
+		["ID"] = LE_EXPANSION_BATTLE_FOR_AZEROTH,  -- 7
+		["name"] = EXPANSION_NAME7,
+		["garrisonTypeID"] = Enum.GarrisonType.Type_8_0_Garrison,
+		["continents"] = {875, 876},  -- Zandalar, Kul Tiras
+		["poiZones"] = {1355, 62, 14, 81},  -- Nazjatar, Darkshore, Arathi Highlands, Silithus
+	},
+	["Shadowlands"] = {
+		["ID"] = LE_EXPANSION_SHADOWLANDS,  -- 8
+		["name"] = EXPANSION_NAME8,
+		["garrisonTypeID"] = Enum.GarrisonType.Type_9_0_Garrison,
+		["continents"] = {1550},  --> Shadowlands
+	},
+	["Dragonflight"] = {
+		["ID"] = LE_EXPANSION_DRAGONFLIGHT,  -- 9
+		["name"] = EXPANSION_NAME9,
+		["garrisonTypeID"] = Enum.ExpansionLandingPageType.Dragonflight,
+		["continents"] = {1978},  --> Dragon Isles
+	},
+};
+
+
+local MRBP_COMMAND_TABLE_UNLOCK_QUESTS = {
+	[util.expansion.data.WarlordsOfDraenor.garrisonTypeID] = {
+		-- REF.: <https://www.wowhead.com/guides/garrisons/quests-to-unlock-a-level-1-and-level-2-garrison>
+		["Horde"] = {34775, "Mission Probable"},  --> wowhead
+		["Alliance"] = {34692, "Delegating on Draenor"},  --> Companion App
+	},
+	[util.expansion.data.Legion.garrisonTypeID] = {
+		["WARRIOR"] = {40585, "Thus Begins the War"},
+		["PALADIN"] = {39696, "Rise, Champions"},
+		["HUNTER"] = {42519, "Rise, Champions"},
+		["ROGUE"] = {42139, "Rise, Champions"},
+		["PRIEST"] = {43270, "Rise, Champions"},
+		["DEATHKNIGHT"] = {43264, "Rise, Champions"},
+		["SHAMAN"] = {42383, "Rise, Champions"},
+		["MAGE"] = {42663, "Rise, Champions"},
+		["WARLOCK"] = {42608, "Rise, Champions"},
+		["MONK"] = {42187, "Rise, Champions"},
+		["DRUID"] = {42583, "Rise, Champions"},
+		["DEMONHUNTER"] = {42670, "Rise, Champions"},
+		["EVOKER"] = {0, "???"},  --> not available for Legion ???
+	},
+	[util.expansion.data.BattleForAzeroth.garrisonTypeID] = {
+		["Horde"] = {51771, "War of Shadows"},
+		["Alliance"] = {51715, "War of Shadows"},
+	},
+	[util.expansion.data.Shadowlands.garrisonTypeID] = {
+		[Enum.CovenantType.Kyrian] = {57878, "Choosing Your Purpose"},
+		[Enum.CovenantType.Venthyr] = {57878, "Choosing Your Purpose"}, 	--> optional: 59319, "Advancing Our Efforts"
+		[Enum.CovenantType.NightFae] = {57878, "Choosing Your Purpose"},	--> optional: 61552, "The Hunt Watches"
+		[Enum.CovenantType.Necrolord] = {57878, "Choosing Your Purpose"},
+		["alt"] = {62000, "Choosing Your Purpose"},  --> when skipping story mode
+	},
+	[util.expansion.data.Dragonflight.garrisonTypeID] = {
+		["Horde"] ={65444, "To the Dragon Isles!"},
+		["Alliance"] = {67700, "To the Dragon Isles!"},
+		-- ["alt"] = {68798, "Dragon Glyphs and You"},
+	},
+}
+
+local function get_covenanti_ID()
+    return C_Covenants.GetActiveCovenantID() or Enum.CovenantType.Kyrian
+end
+local function get_covenanti_Texture()
+    local info= C_Covenants.GetCovenantData(get_covenanti_ID()) or {}
+    return info.textureKit or Enum.CovenantType.Kyrian
+end
+
+local MRBP_COMMAND_TABLE_UNLOCK_QUESTS = {
+	[util.expansion.data.WarlordsOfDraenor.garrisonTypeID] = {
+		-- REF.: <https://www.wowhead.com/guides/garrisons/quests-to-unlock-a-level-1-and-level-2-garrison>
+		["Horde"] = {34775, "Mission Probable"},  --> wowhead
+		["Alliance"] = {34692, "Delegating on Draenor"},  --> Companion App
+	},
+	[util.expansion.data.Legion.garrisonTypeID] = {
+		["WARRIOR"] = {40585, "Thus Begins the War"},
+		["PALADIN"] = {39696, "Rise, Champions"},
+		["HUNTER"] = {42519, "Rise, Champions"},
+		["ROGUE"] = {42139, "Rise, Champions"},
+		["PRIEST"] = {43270, "Rise, Champions"},
+		["DEATHKNIGHT"] = {43264, "Rise, Champions"},
+		["SHAMAN"] = {42383, "Rise, Champions"},
+		["MAGE"] = {42663, "Rise, Champions"},
+		["WARLOCK"] = {42608, "Rise, Champions"},
+		["MONK"] = {42187, "Rise, Champions"},
+		["DRUID"] = {42583, "Rise, Champions"},
+		["DEMONHUNTER"] = {42670, "Rise, Champions"},
+		["EVOKER"] = {0, "???"},  --> not available for Legion ???
+	},
+	[util.expansion.data.BattleForAzeroth.garrisonTypeID] = {
+		["Horde"] = {51771, "War of Shadows"},
+		["Alliance"] = {51715, "War of Shadows"},
+	},
+	[util.expansion.data.Shadowlands.garrisonTypeID] = {
+		[Enum.CovenantType.Kyrian] = {57878, "Choosing Your Purpose"},
+		[Enum.CovenantType.Venthyr] = {57878, "Choosing Your Purpose"}, 	--> optional: 59319, "Advancing Our Efforts"
+		[Enum.CovenantType.NightFae] = {57878, "Choosing Your Purpose"},	--> optional: 61552, "The Hunt Watches"
+		[Enum.CovenantType.Necrolord] = {57878, "Choosing Your Purpose"},
+		["alt"] = {62000, "Choosing Your Purpose"},  --> when skipping story mode
+	},
+	[util.expansion.data.Dragonflight.garrisonTypeID] = {
+		["Horde"] ={65444, "To the Dragon Isles!"},
+		["Alliance"] = {67700, "To the Dragon Isles!"},
+		-- ["alt"] = {68798, "Dragon Glyphs and You"},
+	},
+}
 
 local function MRBP_GetGarrisonTypeUnlockQuestInfo(garrTypeID, tagName)
-	local reqMessageTemplate = Completa \"%s\" per sbloccare il contenuto  --> same as Companion App text
+	local reqMessageTemplate = 'Completa \"%s\" per sbloccare il contenuto'  --> same as Companion App text
 	local questData = MRBP_COMMAND_TABLE_UNLOCK_QUESTS[garrTypeID][tagName]
 	local questID = questData[1]
 	local questFallbackName = questData[2]  --> quest name in English
@@ -1744,17 +1908,17 @@ end
 local MRBP_GARRISON_TYPE_INFOS = {
     ----- Warlords of Draenor -----
     [util.expansion.data.WarlordsOfDraenor.garrisonTypeID] = {
-        ["tagName"] = e.Player.faction,--playerInfo.factionGroup,
+        ["tagName"] = e.Player.faction,--e.Player.faction,
         ["title"] = e.onlyChinese and '要塞报告' or GARRISON_LANDING_PAGE_TITLE,
         ["description"] = e.onlyChinese and '点击显示要塞报告' or MINIMAP_GARRISON_LANDING_PAGE_TOOLTIP,
-        ["minimapIcon"] = string.format("GarrLanding-MinimapIcon-%s-Up", playerInfo.factionGroup),
+        ["minimapIcon"] = string.format("GarrLanding-MinimapIcon-%s-Up", e.Player.faction),
         -- ["banner"] = "accountupgradebanner-wod",  -- 199x117  			--> TODO - Use with new frame
         ["msg"] = {  --> menu entry tooltip messages
             ["missionsTitle"] = e.onlyChinese and '要塞任务' or GARRISON_MISSIONS_TITLE,
             ["missionsReadyCount"] = e.onlyChinese and '准备接收：%d/%d' or GARRISON_LANDING_COMPLETED,  --> "%d/%d Ready for pickup"
             ["missionsEmptyProgress"] = e.onlyChinese and '你没有正在进行中的任务。' or GARRISON_EMPTY_IN_PROGRESS_LIST,
             ["missionsComplete"] = GarrisonFollowerOptions[Enum.GarrisonFollowerType.FollowerType_6_0_GarrisonFollower].strings.LANDING_COMPLETE or '???',
-            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(Enum.GarrisonType.Type_6_0_Garrison, playerInfo.factionGroup).requirementText,
+            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(Enum.GarrisonType.Type_6_0_Garrison, e.Player.faction).requirementText,
         },
         ["expansion"] = util.expansion.data.WarlordsOfDraenor,
         ["continents"] = {572},  --> Draenor
@@ -1762,41 +1926,41 @@ local MRBP_GARRISON_TYPE_INFOS = {
     },
     ----- Legion -----
     [util.expansion.data.Legion.garrisonTypeID] = {
-        ["tagName"] = playerInfo.className,
+        ["tagName"] =e.Player.class,
         ["title"] = ORDER_HALL_LANDING_PAGE_TITLE,
         ["description"] = MINIMAP_ORDER_HALL_LANDING_PAGE_TOOLTIP,
-        ["minimapIcon"] = playerInfo.className == "EVOKER" and "UF-Essence-Icon-Active" or  -- "legionmission-landingbutton-demonhunter-up" or
-                          string.format("legionmission-landingbutton-%s-up", playerInfo.className),
+        ["minimapIcon"] =e.Player.class == "EVOKER" and "UF-Essence-Icon-Active" or  -- "legionmission-landingbutton-demonhunter-up" or
+                          string.format("legionmission-landingbutton-%s-up",e.Player.class),
         -- ["banner"] = "accountupgradebanner-legion",  -- 199x117  		--> TODO - Use with new frame
         ["msg"] = {
             ["missionsTitle"] = GARRISON_MISSIONS,
             ["missionsReadyCount"] = GARRISON_LANDING_COMPLETED,
             ["missionsEmptyProgress"] = GARRISON_EMPTY_IN_PROGRESS_LIST,
             ["missionsComplete"] = GarrisonFollowerOptions[Enum.GarrisonFollowerType.FollowerType_7_0_GarrisonFollower].strings.LANDING_COMPLETE,
-            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.Legion.garrisonTypeID, playerInfo.className).requirementText,
+            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.Legion.garrisonTypeID,e.Player.class).requirementText,
         },
         ["expansion"] = util.expansion.data.Legion,
         ["continents"] = {619, 905},  --> Broken Isles + Argus
         ["bountyBoard"] = {
             ["title"] = BOUNTY_BOARD_LOCKED_TITLE,
             ["noBountiesMessage"] = BOUNTY_BOARD_NO_BOUNTIES_DAYS_1,
-            ["bounties"] = util.quest.GetBountiesForMapID(650),  --> any child zone from "continents" in Legion seems to work
+            ["bounties"] = C_QuestLog.GetBountiesForMapID(650),  --> any child zone from "continents" in Legion seems to work
             ["areBountiesUnlocked"] = MapUtil.MapHasUnlockedBounties(650),
         },
     },
     ----- Battle for Azeroth -----
     [util.expansion.data.BattleForAzeroth.garrisonTypeID] = {
-        ["tagName"] = playerInfo.factionGroup,
+        ["tagName"] = e.Player.faction,
         ["title"] = GARRISON_TYPE_8_0_LANDING_PAGE_TITLE,
         ["description"] = GARRISON_TYPE_8_0_LANDING_PAGE_TOOLTIP,
-        ["minimapIcon"] = string.format("bfa-landingbutton-%s-up", playerInfo.factionGroup),
+        ["minimapIcon"] = string.format("bfa-landingbutton-%s-up", e.Player.faction),
         -- ["banner"] = "accountupgradebanner-bfa",  -- 199x133  			--> TODO - Use with new frame
         ["msg"] = {
             ["missionsTitle"] = GARRISON_MISSIONS,
             ["missionsReadyCount"] = GARRISON_LANDING_COMPLETED,
             ["missionsEmptyProgress"] = GARRISON_EMPTY_IN_PROGRESS_LIST,
             ["missionsComplete"] = GarrisonFollowerOptions[Enum.GarrisonFollowerType.FollowerType_8_0_GarrisonFollower].strings.LANDING_COMPLETE,
-            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.BattleForAzeroth.garrisonTypeID, playerInfo.factionGroup).requirementText,
+            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.BattleForAzeroth.garrisonTypeID, e.Player.faction).requirementText,
         },
         ["expansion"] = util.expansion.data.BattleForAzeroth,
         ["continents"] = {875, 876},  -- Zandalar, Kul Tiras
@@ -1805,16 +1969,16 @@ local MRBP_GARRISON_TYPE_INFOS = {
         ["bountyBoard"] = {
             ["title"] = BOUNTY_BOARD_LOCKED_TITLE,
             ["noBountiesMessage"] = BOUNTY_BOARD_NO_BOUNTIES_DAYS_1,
-            ["bounties"] = util.quest.GetBountiesForMapID(875),  --> or any child zone from "continents" seems to work as well.
+            ["bounties"] = C_QuestLog.GetBountiesForMapID(875),  --> or any child zone from "continents" seems to work as well.
             ["areBountiesUnlocked"] = MapUtil.MapHasUnlockedBounties(875),  --> checking only Zandalar should be enough
         },
     },
     ----- Shadowlands -----
     [util.expansion.data.Shadowlands.garrisonTypeID] = {
-        ["tagName"] = playerInfo.covenantID,
+        ["tagName"] = get_covenanti_ID(),--playerInfo.covenantID,
         ["title"] = GARRISON_TYPE_9_0_LANDING_PAGE_TITLE,
         ["description"] = GARRISON_TYPE_9_0_LANDING_PAGE_TOOLTIP,
-        ["minimapIcon"] = string.format("shadowlands-landingbutton-%s-up", playerInfo.covenantTex),
+        ["minimapIcon"] = string.format("shadowlands-landingbutton-%s-up", get_covenanti_Texture()),
         -- ["minimapIcon"] = string.format("SanctumUpgrades-%s-32x32", playerInfo.covenantTex),
         -- ["banner"] = "accountupgradebanner-shadowlands",  -- 199x133  	--> TODO - Use with new frame
         ["msg"] = {
@@ -1822,7 +1986,7 @@ local MRBP_GARRISON_TYPE_INFOS = {
             ["missionsReadyCount"] = GARRISON_LANDING_COMPLETED,
             ["missionsEmptyProgress"] = COVENANT_MISSIONS_EMPTY_IN_PROGRESS,
             ["missionsComplete"] = GarrisonFollowerOptions[Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower].strings.LANDING_COMPLETE,
-            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.Shadowlands.garrisonTypeID, playerInfo.covenantID).requirementText,
+            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.Shadowlands.garrisonTypeID, get_covenanti_ID()).requirementText,
         },
         ["expansion"] = util.expansion.data.Shadowlands,
         ["continents"] = {1550},  --> Shadowlands
@@ -1835,14 +1999,14 @@ local MRBP_GARRISON_TYPE_INFOS = {
     },
     ----- Dragonflight -----
     [util.expansion.data.Dragonflight.garrisonTypeID] = {
-        -- ["tagName"] = playerInfo.className == "EVOKER" and "alt" or playerInfo.factionGroup,
-        ["tagName"] = playerInfo.factionGroup,
+        -- ["tagName"] =e.Player.class == "EVOKER" and "alt" or e.Player.faction,
+        ["tagName"] = e.Player.faction,
         ["title"] = DRAGONFLIGHT_LANDING_PAGE_TITLE,
         ["description"] = DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,
         ["minimapIcon"] = "dragonflight-landingbutton-up",
         -- ["banner"] = "accountupgradebanner-dragonflight",  -- 199x133  	--> TODO - Use with new frame
         ["msg"] = {
-            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.Dragonflight.garrisonTypeID, playerInfo.factionGroup).requirementText,
+            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.Dragonflight.garrisonTypeID, e.Player.faction).requirementText,
         },
          ["expansion"] = util.expansion.data.Dragonflight,
         ["continents"] = {1978},  --> Dragon Isles
@@ -1853,6 +2017,40 @@ local MRBP_GARRISON_TYPE_INFOS = {
 ]]
 
 
+local function get_covenanti_ID()
+    return C_Covenants.GetActiveCovenantID() or 0
+end
+local function get_covenanti_Texture()
+    local info= C_Covenants.GetCovenantData(get_covenanti_ID()) or {}
+    return info.textureKit
+end
+
+local function get_quest_completed(followerType)
+    local num, all, text= 0, 0, ''
+    --local followerOptions= GarrisonFollowerOptions[followerType]
+    local missions = C_Garrison.GetInProgressMissions(followerType);
+    if missions then
+        for _, mission in ipairs(missions) do
+            if (mission.isComplete == nil) then
+                mission.isComplete = mission.timeLeftSeconds == 0;
+            end
+            if mission.isComplete then
+                num = num + 1;
+            end
+            all = all + 1;
+        end
+    end
+    if all==num and all>0 then
+        text= format('|cffff00ff%d/%d|r', num, all)..e.Icon.select2
+    elseif all==0 then
+        text= format('|cff606060%d/%d|r', num, all)
+    elseif num==0 then
+        text= format('|cff606060%d|r/%d', num, all)
+    else
+        text= format('|cnGREEN_FONT_COLOR:%d|r/%d', num, all)
+    end
+    return text
+end
 
 
 
@@ -1900,6 +2098,7 @@ local function Init_Menu(_, level, menuList)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
+
     if menuList then
         return
     end
@@ -1986,19 +2185,26 @@ local function Init_Menu(_, level, menuList)
             tooltipOnButton= true,
             tooltipTitle= e.GetShowHide(nil, true),
             checked= not Save.hideExpansionLandingPageMinimapButton,
+            colorCode= not ExpansionLandingPageMinimapButton and '|cff606060' or nil,
             keepShownOnClick=true,
             func= function()
                 Save.hideExpansionLandingPageMinimapButton= not Save.hideExpansionLandingPageMinimapButton and true or nil
                 if ExpansionLandingPageMinimapButton then
-                    ExpansionLandingPageMinimapButton:SetShown(not Save.hideExpansionLandingPageMinimapButton)
+                    --ExpansionLandingPageMinimapButton:SetShown(not Save.hideExpansionLandingPageMinimapButton)
+                    if Save.hideExpansionLandingPageMinimapButton then
+                        ExpansionLandingPageMinimapButton:SetShown(false)
+                    else
+                        ExpansionLandingPageMinimapButton.mode=nil
+                        ExpansionLandingPageMinimapButton:RefreshButton()
+                    end
                 end
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-    
+
         if C_MythicPlus.GetCurrentSeason()==11 then
             info={
-                text= e.onlyChinese and '挑战传送门标签' or 'M+ Portal Room Labels',
+                text= '|A:WarlockPortalAlliance:0:0|a'..(e.onlyChinese and '挑战传送门标签' or 'M+ Portal Room Labels'),
                 tooltipOnButton=true,
                 --tooltipTitle= EJ_GetInstanceInfo(2678),
                 checked= not Save.hideMPortalRoomLabels,
@@ -2034,7 +2240,57 @@ local function Init_Menu(_, level, menuList)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-   
+   -- end
+
+    --[[if menuList then
+        return
+    end]]
+--if e.Player.husandro then
+    
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    local bat= UnitAffectingCombat('player')
+    
+    local has= C_Garrison.HasGarrison(Enum.GarrisonType.Type_6_0_Garrison)--GarrisonBaseUtils.lua
+    info= {
+        text=format("|A:GarrLanding-MinimapIcon-%s-Up:0:0|a%s", e.Player.faction, e.onlyChinese and '要塞' or GARRISON_LOCATION_TOOLTIP)
+            .. (has and ' '..get_quest_completed(Enum.GarrisonFollowerType.FollowerType_6_0_GarrisonFollower)..format(' |A:Islands-%sBoat:0:0|a', e.Player.faction)..get_quest_completed(Enum.GarrisonFollowerType.FollowerType_6_0_Boat) or ''),
+        checked= GarrisonLandingPage and GarrisonLandingPage:IsShown(),
+        disabled= not has or bat,
+        keepShownOnClick=true,
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '点击显示要塞报告' or MINIMAP_GARRISON_LANDING_PAGE_TOOLTIP,
+        func= function()
+            if GarrisonLandingPage and GarrisonLandingPage:IsShown() then
+                GarrisonLandingPage:Hide()
+            else
+                ShowGarrisonLandingPage(Enum.GarrisonType.Type_6_0_Garrison)
+            end
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    --职业大厅 7.0
+    has= C_Garrison.HasGarrison(Enum.GarrisonType.Type_7_0_Garrison)
+    --[[local texture= e.Player.class == "EVOKER" and "UF-Essence-Icon-Active" or  -- "legionmission-landingbutton-demonhunter-up" or
+                string.format("legionmission-landingbutton-%s-up", e.Player.class)]]
+    info= {
+        text=format('|A:%s:0:0|a%s%s', e.Player.class == "EVOKER" and "UF-Essence-Icon-Active" or string.format("legionmission-landingbutton-%s-up", e.Player.class), e.onlyChinese and '职业大厅' or ORDERHALL_MISSION_REPORT:match('(.-)%\n') or ORDER_HALL_LANDING_PAGE_TITLE, 
+            has and ' '..get_quest_completed(Enum.GarrisonFollowerType.FollowerType_7_0_GarrisonFollower) or ''),
+        checked= GarrisonLandingPage and GarrisonLandingPage:IsShown(),
+        disabled= not has or bat,
+        keepShownOnClick=true,
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '点击显示职业大厅报告' or MINIMAP_ORDER_HALL_LANDING_PAGE_TOOLTIP,
+        func= function()
+            if GarrisonLandingPage and GarrisonLandingPage:IsShown() then
+                GarrisonLandingPage:Hide()
+            else
+                ShowGarrisonLandingPage(Enum.GarrisonType.Type_7_0_Garrison)
+            end
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     
     e.LibDD:UIDropDownMenu_AddSeparator(level)
@@ -2063,11 +2319,7 @@ local function Init_Menu(_, level, menuList)
         hasArrow=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)]]
-    
 end
-
-
-
 
 
 
@@ -2128,6 +2380,9 @@ local function click_Func(self, d)
         end
     end
 end
+
+
+
 local function enter_Func(self)
     local expButton=ExpansionLandingPageMinimapButton
     if expButton and expButton.OnEnter and expButton.title then--Minimap.lua
@@ -2141,7 +2396,11 @@ local function enter_Func(self)
     e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.right)
 
     if self and type(self)=='table' then
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.right)
+        if _G['LibDBIcon10_WoWTools'] then
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
+        else
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.right)
+        end
     end
     e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left)
 
@@ -2218,7 +2477,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
     e.Cstr(nil,{size=14, copyFont=btn.Guild.Instance.Text, changeFont= btn.Instance.Text})--字体，大小
     btn.Guild.Instance.Text:SetShadowOffset(1,-1)
 
-    
+
     --MinimapCluster:HookScript('OnEvent', function(self)--Minimap.luab
     hooksecurefunc(btn, 'Update', function(self)--InstanceDifficulty.lua
         local isChallengeMode= self.ChallengeMode:IsShown()
@@ -2533,7 +2792,7 @@ local function Init()
     --########
     --盟约图标
     --########
-    
+
     local libDataBroker = LibStub:GetLibrary("LibDataBroker-1.1", true)
     local libDBIcon = LibStub("LibDBIcon-1.0", true)
     if libDataBroker and libDBIcon then
@@ -2561,6 +2820,7 @@ local function Init()
             return libDBIcon
         end
         Save.miniMapPoint= Save.miniMapPoint or {}
+
         Set_MinMap_Icon({name= id, texture= [[Interface\AddOns\WoWTools\Sesource\Texture\WoWtools.tga]],--texture= -18,--136235,
             func= click_Func,
             enter= function(self)
@@ -2569,11 +2829,21 @@ local function Init()
                         self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                         e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
                     end
-                    e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
+                    e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
                 end
                 enter_Func(self)
             end,
         })
+        local btn= _G['LibDBIcon10_WoWTools']
+        if btn then
+            btn:EnableMouseWheel(true)
+            btn:SetScript('OnMouseWheel', function(self, d)
+                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
+            end)
+        end
+
+
 
         if ExpansionLandingPageMinimapButton then
             if Save.hideExpansionLandingPageMinimapButton then

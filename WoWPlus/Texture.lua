@@ -2608,8 +2608,18 @@ local function Init_HelpTip()
     if Save.disabledHelpTip then
         return
     end
-    hooksecurefunc(HelpTip, 'Show', function(self, parent)--隐藏所有HelpTip HelpTip.lua        
-        self:HideAll(parent)
+    hooksecurefunc(HelpTip, 'Show', function(self, parent)--隐藏所有HelpTip HelpTip.lua
+        local find
+        for frame in self.framePool:EnumerateActive() do
+            local btn= frame.OkayButton:IsShown() and frame.OkayButton or (frame.CloseButton:IsShown() and frame.CloseButton)
+            if btn then
+                find=true
+                btn:Click()
+            end
+        end
+        if not find then
+            self:HideAll(parent)
+        end
     end)
 
     C_CVar.SetCVar("showNPETutorials",'0')
