@@ -2097,13 +2097,13 @@ local function Init_Menu(_, level, menuList)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-    end
+    --[[end
 
     if menuList then
         return
-    end
+    end]]
 
-    --elseif menuList=='OPTIONS' then
+    elseif menuList=='OPTIONS' then
 
         info={
             text= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT),
@@ -2240,11 +2240,11 @@ local function Init_Menu(_, level, menuList)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-   -- end
+    end
 
-    --[[if menuList then
+    if menuList then
         return
-    end]]
+    end
 --if e.Player.husandro then
     
 
@@ -2311,14 +2311,14 @@ local function Init_Menu(_, level, menuList)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    --[[info= {
+    info= {
         text= '    |A:mechagon-projects:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
         notCheckable=true,
         keepShownOnClick=true,
         menuList='OPTIONS',
         hasArrow=true,
     }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)]]
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
 
 
