@@ -2458,7 +2458,7 @@ local function Init()
             GameTooltip:SetText('缩小')
         end
     end)
-    MinimapCluster.Tracking.Button:HookScript('OnEnter', function()
+    MinimapCluster.TrackingFrame.Button:HookScript('OnEnter', function()
         GameTooltip:SetText('追踪', 1, 1, 1)
 	    GameTooltip:AddLine('点击以开启或关闭追踪类型。', nil, nil, nil, true)
         GameTooltip:Show()

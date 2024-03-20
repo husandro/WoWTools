@@ -1035,11 +1035,14 @@ local function Init_All_Frame()
      hide_Texture(PlayerFrameAlternateManaBarRightBorder)
 
      --小地图
-     set_Alpha_Color(MinimapCompassTexture)
-     set_Alpha_Frame_Texture(MinimapCluster.BorderTop)
+     set_Alpha_Color(MinimapCompassTexture)     
      set_Alpha_Frame_Texture(GameTimeFrame)
-     hide_Texture(MinimapCluster.Tracking.Background)
-     set_Button(MinimapCluster.Tracking.Button, {alpha= min03, all=false})
+     if MinimapCluster and MinimapCluster.TrackingFrame then
+        --set_Button(MinimapCluster.TrackingFrame.Button)
+        --hide_Texture(MinimapCluster.TrackingFrame.Button)
+        set_Button(MinimapCluster.TrackingFrame.Button, {alpha= min03, all=false})
+        set_Alpha_Frame_Texture(MinimapCluster.BorderTop)
+     end
 
      --小队，背景
     set_Alpha_Frame_Texture(PartyFrame.Background, {alpha= min03})
