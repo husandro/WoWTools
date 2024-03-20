@@ -884,7 +884,7 @@ function func.set_All_Aura(self, data)--Aura
         local mountID = C_MountJournal.GetMountFromSpell(spellID)
         if mountID then
             func.Set_Mount(self, mountID, 'aura')
-            
+
         else
             func.Set_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
         end
@@ -1627,7 +1627,7 @@ local function Init()
 
     e.tips:HookScript("OnHide", function(self)--隐藏
         func.Set_Init_Item(self, true)
-    end)   
+    end)
     ItemRefTooltip:HookScript("OnHide", function (self)--隐藏
         func.Set_Init_Item(self, true)
         if ItemRefTooltip.wowhead then
