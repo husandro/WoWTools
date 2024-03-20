@@ -2248,7 +2248,7 @@ local function Init_Menu(_, level, menuList)
 --if e.Player.husandro then
     
 
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    --e.LibDD:UIDropDownMenu_AddSeparator(level)
     local bat= UnitAffectingCombat('player')
     
     local has= C_Garrison.HasGarrison(Enum.GarrisonType.Type_6_0_Garrison)--GarrisonBaseUtils.lua
@@ -2311,6 +2311,7 @@ local function Init_Menu(_, level, menuList)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info= {
         text= '    |A:mechagon-projects:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
         notCheckable=true,
