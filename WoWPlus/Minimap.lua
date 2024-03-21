@@ -2105,9 +2105,15 @@ local function Init_Garrison(level)
             end
         end
         local atlas= type(info.atlas)=='function' and info.atlas() or info.atlas
+        local checked
+        if info.checked then
+            checked= info.checked
+        else
+            checked= GarrisonLandingPage and GarrisonLandingPage:IsShown() and GarrisonLandingPage.garrTypeID==info.garrisonType
+        end
         e.LibDD:UIDropDownMenu_AddButton({
             text= format('|A:%s:0:0|a%s%s%s', atlas, info.name, num, num2),
-            checked=info.checked or (GarrisonLandingPage and GarrisonLandingPage:IsShown() and GarrisonLandingPage.garrTypeID==info.garrisonType),
+            checked=checked,
             disabled= not has or bat,
             keepShownOnClick=true,
             tooltipOnButton=true,
@@ -2131,6 +2137,14 @@ end
 
 
 
+
+
+
+
+
+
+
+
 --#########
 --初始，菜单
 --#########
@@ -2141,6 +2155,7 @@ local function Init_Menu(_, level, menuList)
             text= e.onlyChinese and '重置位置' or RESET_POSITION,
             notCheckable=true,
             disabled= not Button,
+            keepShownOnClick=true,
             colorCode= not Save.pointVigentteButton and '|cff606060' or '',
             func= function()
                 Save.pointVigentteButton=nil
@@ -2155,6 +2170,7 @@ local function Init_Menu(_, level, menuList)
         info={
             text= e.onlyChinese and '重置位置' or RESET_POSITION,
             notCheckable=true,
+            keepShownOnClick=true,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '时钟' or TIMEMANAGER_TITLE,
             disabled= not Save.TimeManagerClockButtonScale and not Save.TimeManagerClockButtonPoint,
@@ -2263,8 +2279,7 @@ local function Init_Menu(_, level, menuList)
             keepShownOnClick=true,
             func= function()
                 Save.hideExpansionLandingPageMinimapButton= not Save.hideExpansionLandingPageMinimapButton and true or nil
-                if ExpansionLandingPageMinimapButton then
-                    --ExpansionLandingPageMinimapButton:SetShown(not Save.hideExpansionLandingPageMinimapButton)
+                if ExpansionLandingPageMinimapButton then                    
                     if Save.hideExpansionLandingPageMinimapButton then
                         ExpansionLandingPageMinimapButton:SetShown(false)
                     else
@@ -2280,7 +2295,6 @@ local function Init_Menu(_, level, menuList)
             info={
                 text= '|A:WarlockPortalAlliance:0:0|a'..(e.onlyChinese and '挑战传送门标签' or 'M+ Portal Room Labels'),
                 tooltipOnButton=true,
-                --tooltipTitle= EJ_GetInstanceInfo(2678),
                 checked= not Save.hideMPortalRoomLabels,
                 keepShownOnClick=true,
                 func= function()
@@ -2294,6 +2308,7 @@ local function Init_Menu(_, level, menuList)
         info={
             text= '|A:characterupdate_clock-icon:0:0|a'..(e.onlyChinese and '时钟' or TIMEMANAGER_TITLE)..' Plus',
             checked= not Save.disabledClockPlus,
+            keepShownOnClick=true,
             hasArrow=true,
             menuList='ResetTimeManagerClockButton',
             func= function()
@@ -2307,6 +2322,7 @@ local function Init_Menu(_, level, menuList)
         info={
             text='|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '显示菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, HUD_EDIT_MODE_MICRO_MENU_LABEL)),
             checked= Save.moving_over_Icon_show_menu,
+            keepShownOnClick=true,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '移过图标时，显示菜单' or 'Show menu when moving over icon',
             func= function()
@@ -2855,7 +2871,7 @@ local function Init()
         Set_MinMap_Icon({name= id, texture= [[Interface\AddOns\WoWTools\Sesource\Texture\WoWtools.tga]],--texture= -18,--136235,
             func= click_Func,
             enter= function(self)
-                if Save.moving_over_Icon_show_menu then
+                if Save.moving_over_Icon_show_menu and not UnitAffectingCombat('player') then
                     if not self.menu then
                         self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                         e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')

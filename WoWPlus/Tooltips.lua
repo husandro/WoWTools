@@ -488,6 +488,7 @@ function func.Set_Item(self, itemLink, itemID)
     if not itemLink and not itemID then
         return
     end
+
     local itemName, _, itemQuality, itemLevel, _, itemType, itemSubType, _, itemEquipLoc, itemTexture, _, classID, subclassID, bindType, expacID = GetItemInfo(itemLink or itemID)
     itemID= itemID or GetItemInfoInstant(itemLink or itemID) or func.GetItemInfoFromHyperlink(itemLink)
     --local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(itemLink)
@@ -602,15 +603,16 @@ function func.Set_Item(self, itemLink, itemID)
         end
     end
 
-    --[[local spellName, spellID = C_Item.GetItemSpell(itemLink)--物品法术
+    local spellName, spellID = C_Item.GetItemSpell(itemID)--物品法术
     if spellName and spellID then
         local spellTexture= GetSpellTexture(spellID)
         self:AddDoubleLine((itemName~=spellName and col..'['..spellName..']|r' or '')..(e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
-    end]]
+    end
 
-    local wowNum= 0--WoW 数量
-    local bag= C_Item.GetItemCount(itemLink)--物品数量
-    local bank= C_Item.GetItemCount(itemLink, true, false, true) - bag
+    local wowNum= 0--WoW 数量    
+    local bag= C_Item.GetItemCount(itemID, false, false, false)--物品数量
+    local bank= C_Item.GetItemCount(itemID, true, false, true) - bag
+
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         for guid, info in pairs(e.WoWDate or {}) do
             if guid and guid~=e.Player.guid and info.Keystone.link then
