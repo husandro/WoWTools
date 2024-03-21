@@ -3783,29 +3783,34 @@ local function Init()
 
     --GossipFrameShared.lua
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, optionInfo)
-        local name= e.strText[optionInfo.name]
-        if name then
-            if (FlagsUtil.IsSet(optionInfo.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)) then
-                set(self, foramt('|cnPURE_BLUE_COLOR:（任务）|r%s', name))
-            else
-                set(self, name)
+        if optionInfo then
+            local name= e.strText[optionInfo.name]
+            if name then
+                if (FlagsUtil.IsSet(optionInfo.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)) then
+                    set(self, foramt('|cnPURE_BLUE_COLOR:（任务）|r%s', name))
+                else
+                    set(self, name)
+                end
             end
         end
     end)
-    local function UpdateTitleForQuest(self, _, titleText, isIgnored, isTrivial)--GossipSharedQuestButtonMixin:UpdateTitleForQuest 
-        if ( isIgnored ) then
-            set(self, format('|cff000000%s（忽略）|r', e.strText[titleText] or titleText))
-        elseif ( isTrivial ) then
-            set(self, foramt('|cff000000%s （低等级）|r', e.strText[titleText] or titleText))
-        elseif e.strText[titleText] then
-            set(self, foramt('|cff000000%s|r', e.strText[titleText]))
+    local function UpdateTitleForQuest(self, info)--GossipSharedQuestButtonMixin:UpdateTitleForQuest 
+        if info and info.title then
+            local title= e.cn(info.title)
+            if info.isIgnored then
+                set(self, format('|cff000000%s（忽略）|r', title))
+            elseif info.isTrivial then
+                set(self, format('|cff000000%s （低等级）|r', title))
+            else
+                set(self, e.strText[titleText])
+            end
         end
     end
-    hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(_, questInfo)
-        UpdateTitleForQuest(questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial)
+    hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, questInfo)
+        UpdateTitleForQuest(self, questInfo)
     end)
-    hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(_, questInfo)
-        UpdateTitleForQuest(questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial)
+    hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, questInfo)
+        UpdateTitleForQuest(self, questInfo)
     end)
 
     --试衣间

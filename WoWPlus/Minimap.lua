@@ -2060,7 +2060,7 @@ local function Init_Garrison(level)
         {name=  e.onlyChinese and '盟约圣所' or GARRISON_TYPE_9_0_LANDING_PAGE_TITLE,
         garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
         garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
-        checked= C_Covenants.GetActiveCovenantID()>0,
+        disabled= C_Covenants.GetActiveCovenantID()==0,
         atlas= function()
             local info= C_Covenants.GetCovenantData(C_Covenants.GetActiveCovenantID() or 0) or {}
             return info.textureKit or ''
@@ -2104,17 +2104,18 @@ local function Init_Garrison(level)
                 num2= format(' |A:%s:0:0|a%s', info.atlas2 or '',  Get_Garrison_List_Num(info.garrFollowerTypeID2))
             end
         end
-        local atlas= type(info.atlas)=='function' and info.atlas() or info.atlas
-        local checked
-        if info.checked then
-            checked= info.checked
+        local atlas= type(info.atlas)=='function' and info.atlas() or info.atlas        
+        local disabled
+        if info.disabled then
+            disabled= info.disabled
         else
-            checked= GarrisonLandingPage and GarrisonLandingPage:IsShown() and GarrisonLandingPage.garrTypeID==info.garrisonType
+            disabled= not has
         end
+        disabled= disabled or bat
         e.LibDD:UIDropDownMenu_AddButton({
             text= format('|A:%s:0:0|a%s%s%s', atlas, info.name, num, num2),
-            checked=checked,
-            disabled= not has or bat,
+            checked= GarrisonLandingPage and GarrisonLandingPage:IsShown() and GarrisonLandingPage.garrTypeID==info.garrisonType,
+            disabled= disabled,
             keepShownOnClick=true,
             tooltipOnButton=true,
             tooltipTitle= info.tooltip,
