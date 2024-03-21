@@ -441,7 +441,7 @@ local function Set_Item_Info(self, tab)
             topRightText= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'
         end
         if (tab.bag and tab.bag.bag <= NUM_BAG_SLOTS+1 and tab.bag.bag>=0) or not tab.bag then
-            local num=GetItemCount(itemLink, true)-GetItemCount(itemLink)--银行数量
+            local num=C_Item.GetItemCount(itemLink, true, false, true)-C_Item.GetItemCount(itemLink)--银行数量
             if num>0  then
                 leftText= '+'..e.MK(num, 0)
             end
@@ -989,7 +989,7 @@ local function Init()
                         if currencyName then
                             num= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink).quantity
                         else
-                            num= GetItemCount(itemLink, true)
+                            num= C_Item.GetItemCount(itemLink, true, false, true)
                         end
                         if itemValue and num then
                             if num>=itemValue then

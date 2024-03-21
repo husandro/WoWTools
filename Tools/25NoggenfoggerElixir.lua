@@ -1,4 +1,4 @@
-if GetItemCount(8529)==0 then--没有时,不加载
+if C_Item.GetItemCount(8529)==0 then--没有时,不加载
     return
 end
 
@@ -31,7 +31,7 @@ local function setAura()--光环取消
 end
 
 local function setCount()--设置数量
-    local num = GetItemCount(button.itemID,nil,true,true)
+    local num = C_Item.GetItemCount(button.itemID, false, true, true)
     if num~=1 and not button.count then
         button.count=e.Cstr(button, {size=10, color=true})--10,nil,nil,true)
         button.count:SetPoint('TOPRIGHT',-2,-2)

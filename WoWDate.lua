@@ -247,10 +247,10 @@ local function Set_Bag(bagID)
                     e.WoWDate[e.Player.guid].Keystone.itemLink[itemLink]=true
                 end
             else
-                local bag=GetItemCount(itemID)--物品ID
+                local bag=C_Item.GetItemCount(itemID)--物品ID
                 e.WoWDate[e.Player.guid].Item[itemID]={
                     bag=bag,
-                    bank=GetItemCount(itemID,true)-bag,
+                    bank=C_Item.GetItemCount(itemID,true)-bag,
                 }
             end
         end
@@ -270,10 +270,10 @@ local function Update_Bag_Items()
                     e.WoWDate[e.Player.guid].Keystone.link= C_Container.GetContainerItemLink(bagID, slotID)
 
                 else
-                    local bag=GetItemCount(itemID)--物品ID
+                    local bag=C_Item.GetItemCount(itemID)--物品ID
                     e.WoWDate[e.Player.guid].Item[itemID]={
                         bag=bag,
-                        bank=GetItemCount(itemID,true)-bag,
+                        bank=C_Item.GetItemCount(itemID, true, false, true)-bag,
                     }
                 end
             end
@@ -744,10 +744,10 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
                         e.WoWDate[e.Player.guid].Keystone.link= C_Container.GetContainerItemLink(bagID, slotID)
 
                     else
-                        local bag=GetItemCount(itemID)--物品ID
+                        local bag=C_Item.GetItemCount(itemID)--物品ID
                         e.WoWDate[e.Player.guid].Item[itemID]={
                             bag=bag,
-                            bank=GetItemCount(itemID,true)-bag,
+                            bank=C_Item.GetItemCount(itemID,true)-bag,
                         }
                     end
                 end

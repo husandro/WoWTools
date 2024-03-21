@@ -41,7 +41,7 @@ local function Init()
             icon= C_Item.GetItemIconByID(itemID)
             icon= icon and '|T'..icon..':0|t' or ''
             local num
-            num= GetItemCount(itemID)
+            num= C_Item.GetItemCount(itemID)
             num= num>0 and '|cnGREEN_FONT_COLOR:'..num or ('|cnRED_FONT_COLOR:'..num)
             e.tips:AddDoubleLine(icon..link, num)
         end
@@ -189,7 +189,7 @@ local function Init()
         end
         local index=1
         for _, itemID in pairs(ItemTab) do
-            local num= GetItemCount(itemID)
+            local num= C_Item.GetItemCount(itemID)
             if num>0 then
                 local btn= self.btn[index]
                 if not btn then
@@ -214,7 +214,7 @@ local function Init()
                     btn:SetAttribute('item*', name)
                     btn:SetItem(itemID)
                 end
-                btn:SetItemButtonCount(GetItemCount(itemID))
+                btn:SetItemButtonCount(C_Item.GetItemCount(itemID))
                 index= index+1
             end
         end

@@ -182,7 +182,7 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
         end
 
         button.texture:SetTexture(icon)
-        num = GetItemCount(itemID)
+        num = C_Item.GetItemCount(itemID)
         num= num~=1 and num or ''
         button:SetShown(true)
         --button:SetAttribute("type", "macro")

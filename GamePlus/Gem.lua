@@ -97,7 +97,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
         btn.slot= items[index].slot
 
         btn:SetItem(info.hyperlink)
-        btn:SetItemButtonCount(GetItemCount(info.hyperlink))
+        btn:SetItemButtonCount(C_Item.GetItemCount(info.hyperlink))
         btn:SetAlpha(info.isLocked and 0.3 or 1)
         btn:SetShown(true)
 

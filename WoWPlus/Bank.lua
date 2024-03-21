@@ -593,7 +593,7 @@ local function Init_Save_BankItem()
             local buttonID = button:GetID()
             local info = C_Container.GetContainerItemInfo(container, buttonID)
             if info and info.itemID then
-                local num=GetItemCount(info.itemID, true)- GetItemCount(info.itemID, nil)
+                local num=C_Item.GetItemCount(info.itemID, true)- C_Item.GetItemCount(info.itemID, nil)
                 e.WoWDate[e.Player.guid].Bank[info.itemID]={num=num, quality=info.quality, isReagent=isReagent}
             end
         end

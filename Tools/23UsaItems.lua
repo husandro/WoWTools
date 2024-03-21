@@ -69,7 +69,7 @@ local function get_Find(ID, spell)
             return true
         end
     else
-        if GetItemCount(ID)>0 or (PlayerHasToy(ID) and C_ToyBox.IsToyUsable(ID)) then
+        if C_Item.GetItemCount(ID)>0 or (PlayerHasToy(ID) and C_ToyBox.IsToyUsable(ID)) then
             return true
         end
     end
@@ -140,7 +140,7 @@ local function Init_Menu(_, level, type)--主菜单
                 keepShownOnClick=true,
             }
 
-            if (type=='spell' and not IsSpellKnown(ID)) or ((type=='item' or type=='equip') and GetItemCount(ID)==0 and not PlayerHasToy(ID)) then
+            if (type=='spell' and not IsSpellKnown(ID)) or ((type=='item' or type=='equip') and C_Item.GetItemCount(ID)==0 and not PlayerHasToy(ID)) then
                 info.text= e.Icon.O2..info.text
                 info.colorCode='|cff606060'
             end
@@ -307,7 +307,7 @@ local function set_Equip_Slot(self)--装备
 end
 
 local function set_Item_Count(self)--数量
-    local num = GetItemCount(self.itemID,nil,true,true)
+    local num = C_Item.GetItemCount(self.itemID, false, true, true)
     if not PlayerHasToy(self.itemID) then
         if num~=1 and not self.count then
             self.count=e.Cstr(self, {size=10, color=true})--10,nil,nil,true)
@@ -693,7 +693,7 @@ local function Init()
 
     for _, itemID in pairs(Save.equip) do
         local name ,icon
-        if GetItemCount(itemID)>0 then
+        if C_Item.GetItemCount(itemID)>0 then
             name = C_Item.GetItemNameByID(itemID)
             local itemEquipLoc, icon2 = select(4, GetItemInfoInstant(itemID))
             icon =icon2 or C_Item.GetItemIconByID(itemID)

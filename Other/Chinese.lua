@@ -7312,9 +7312,9 @@ local function Init_Loaded(arg1)
             if not C_MajorFactions.HasMaximumRenown(factionID) then
                 GameTooltip_AddNormalLine(GameTooltip, format('当前进度：|cffffffff%d/%d|r', majorFactionData.renownReputationEarned, majorFactionData.renownLevelThreshold))
                 GameTooltip_AddBlankLineToTooltip(GameTooltip)
-                local nextRenownRewards = C_MajorFactions.GetRenownRewardsForLevel(factionID, C_MajorFactions.GetCurrentRenownLevel(factionID) + 1)
+                local nextRenownRewards = C_MajorFactions.GetRenownRewardsForLevel(factionID, C_MajorFactions.GetCurrentRenownLevel(factionID) + 1) or {}
                 if #nextRenownRewards > 0 then
-                    self:AddRenownRewardsToTooltip(nextRenownRewards)
+                    RenownRewardUtil.AddRenownRewardsToTooltip(GameTooltip, nextRenownRewards, GenerateClosure(self.ShowMajorFactionRenownTooltip, self))
                 end
             end
             GameTooltip_AddColoredLine(GameTooltip, '<点击查看名望>', GREEN_FONT_COLOR)

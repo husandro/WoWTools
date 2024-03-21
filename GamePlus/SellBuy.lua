@@ -151,7 +151,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
             num=(not Save.notAutoBuy and itemID) and buySave[itemID]--自动购买， 数量
             num= num and num..'|T236994:0|t'
             --包里，银行，总数
-            local bag=itemID and GetItemCount(itemID,true)
+            local bag=itemID and C_Item.GetItemCount(itemID, true, false, true)
             if bag and bag>0 then
                 num=(num and num..'|n' or '')..bag..e.Icon.bank2
             end
@@ -167,8 +167,8 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                     e.tips:AddDoubleLine(id, e.cn(addName))
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine('|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), not Save.notAutoBuy and buySave[self.itemID] or (e.onlyChinese and '无' or NONE))
-                    local all= GetItemCount(self.itemID, true)
-                    local bag2= GetItemCount(self.itemID)
+                    local all= C_Item.GetItemCount(self.itemID, true, false, true)
+                    local bag2= C_Item.GetItemCount(self.itemID)
                     e.tips:AddDoubleLine(e.Icon.bank2..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL), all..'= '.. e.Icon.bag2.. bag2..'+ '..e.Icon.bank2..(all-bag))
 					e.tips:Show()
                 end)
@@ -1112,8 +1112,8 @@ local function Init_Menu(_, level, type)
         for itemID, num in pairs(buySave) do
             if itemID and num then
                 e.LoadDate({id=itemID, type='item'})
-                local bag=GetItemCount(itemID)
-                local bank=GetItemCount(itemID, true)-bag
+                local bag=C_Item.GetItemCount(itemID)
+                local bank=C_Item.GetItemCount(itemID, true, false, true)-bag
                 local itemLink= select(2, GetItemInfo(itemID))
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
@@ -1151,8 +1151,8 @@ local function Init_Menu(_, level, type)
         for itemID, _ in pairs(Save.noSell) do
             if itemID then
                 e.LoadDate({id=itemID, type='item'})
-                local bag=GetItemCount(itemID)
-                local bank=GetItemCount(itemID, true)-bag
+                local bag=C_Item.GetItemCount(itemID)
+                local bank=C_Item.GetItemCount(itemID, true, false, true)-bag
                 local itemLink= select(2, GetItemInfo(itemID))
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
@@ -1509,7 +1509,7 @@ local function Init_Buy_Items_Button()
             local itemID=GetMerchantItemID(index)
             local num= itemID and buySave[itemID]
             if itemID and num then
-                local buyNum=num-GetItemCount(itemID, true)
+                local buyNum=num-C_Item.GetItemCount(itemID, true, false, true)
                 if buyNum>0 then
                     local maxStack = GetMerchantItemMaxStack(index)
                     local _, _, price, stackCount, _, _, _, extendedCost = GetMerchantItemInfo(index)
@@ -1522,7 +1522,7 @@ local function Init_Buy_Items_Button()
                             local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i)
                             if itemLink and itemValue and itemValue>0 then
                                 if not currencyName then
-                                    local myCount = GetItemCount(itemLink, false, false, true)
+                                    local myCount = C_Item.GetItemCount(itemLink, false, false, true)
                                     local value= floor(myCount / (itemValue / stackCount))
                                     canAfford=not canAfford and value or min(canAfford, value)
                                 elseif currencyName then

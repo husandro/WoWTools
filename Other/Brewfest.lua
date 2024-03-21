@@ -37,10 +37,10 @@ function Init()
     button.leftTexture:SetShown(false)
 
     button:SetScript('OnShow', function(self)
-        self.item= GetItemCount(37829, true)
+        self.item= C_Item.GetItemCount(37829, true, false, true)
     end)
     button:SetScript('OnHide', function(self)
-        local num= GetItemCount(37829, true)
+        local num= C_Item.GetItemCount(37829, true, false, true)
         if self.item and self.item<num then
             print(id, e.cn(addName), select(2, GetItemInfo(37829)) or '|T133784:0|t', self.item)
         end
@@ -129,9 +129,9 @@ function Init()
     end
 
     function button:set_ItmeNum()
-        local num = GetItemCount(37829, true)
+        local num = C_Item.GetItemCount(37829, true, false, true)
         self.itemText:SetText(num>0 and '|T133784:0|t'..num or '')
-        self.leftTexture:SetShown(GetItemCount(33797)>0 and true or false)
+        self.leftTexture:SetShown(C_Item.GetItemCount(33797)>0 and true or false)
         num= num- (self.item or num)
         self.rightText:SetText(num>0 and '|T133784:0|t'..num or '')
     end

@@ -113,7 +113,7 @@ local function Get_QuestReward_Texture(questID)
     if numQuestChoices>0 then
         bestQuality= -1
         for i = 1, numQuestChoices do
-            local _, texture, _, quality= GetQuestLogChoiceInfo(i, questID);
+            local _, texture, _, quality= GetQuestLogChoiceInfo(i, questID)
             if quality > bestQuality then
                 itemTexture= texture or itemTexture
             end
@@ -125,7 +125,7 @@ local function Get_QuestReward_Texture(questID)
     if numQuestRewards>0 then
         bestQuality = -1
         for i = 1, numQuestRewards do
-            local _, texture, _, quality= GetQuestLogRewardInfo(i, questID);
+            local _, texture, _, quality= GetQuestLogRewardInfo(i, questID)
             if quality > bestQuality then
                 itemTexture= texture
             end
@@ -303,14 +303,14 @@ local function Get_widgetSetID_Text(widgetSetID, all)
                         barText= FormatFraction(info.barValue, info.barMax)--5
 
                     elseif info.barValueTextType == Enum.StatusBarValueTextType.ValueOverMaxNormalized then
-                        barText= FormatFraction(info.barValue - info.barMin, info.barMax - info.barMin);
+                        barText= FormatFraction(info.barValue - info.barMin, info.barMax - info.barMin)
 
                     elseif info.barValueTextType == Enum.StatusBarValueTextType.Percentage then--1
-                        local barPercent = PercentageBetween(info.barValue, info.barMin, info.barMax);
-                        barText= FormatPercentage(barPercent, true);
+                        local barPercent = PercentageBetween(info.barValue, info.barMin, info.barMax)
+                        barText= FormatPercentage(barPercent, true)
 
                     elseif info.barValueTextType == Enum.StatusBarValueTextType.Time then
-                        barText = SecondsToTime(info.barValue, false, true, nil, true);
+                        barText = SecondsToTime(info.barValue, false, true, nil, true)
                     end
                 end
                 barText= barText and '|cffffffff'..barText..'|r ' or ''
@@ -503,46 +503,46 @@ local function set_OnEnter_btn_tips(self)
     elseif self.vignetteGUID then--vigentte
         local vignetteInfo = C_VignetteInfo.GetVignetteInfo(self.vignetteGUID)
         if vignetteInfo then
-            local verticalPadding = nil;
-            local waitingForData, titleAdded = false, false;
+            local verticalPadding = nil
+            local waitingForData, titleAdded = false, false
 
             if vignetteInfo.type == Enum.VignetteType.Normal or vignetteInfo.type == Enum.VignetteType.Treasure then
-                GameTooltip_SetTitle(GameTooltip, e.cn(vignetteInfo.name));
+                GameTooltip_SetTitle(GameTooltip, e.cn(vignetteInfo.name))
                 titleAdded = true
 
             elseif vignetteInfo.type == Enum.VignetteType.PvPBounty then
                 local player = PlayerLocation:CreateFromGUID(vignetteInfo.objectGUID)
-                local class = select(3, C_PlayerInfo.GetClass(player));
-                local race = C_PlayerInfo.GetRace(player);
-                local name = C_PlayerInfo.GetName(player);
+                local class = select(3, C_PlayerInfo.GetClass(player))
+                local race = C_PlayerInfo.GetRace(player)
+                local name = C_PlayerInfo.GetName(player)
                 if race and class and name then
-                    local classInfo = C_CreatureInfo.GetClassInfo(class) or {};
-                    local factionInfo = C_CreatureInfo.GetFactionInfo(race) or {};
-                    GameTooltip_SetTitle(GameTooltip, e.cn(name), GetClassColorObj(classInfo.classFile));
-                    GameTooltip_AddColoredLine(GameTooltip, e.cn(factionInfo.name), GetFactionColor(factionInfo.groupTag));
+                    local classInfo = C_CreatureInfo.GetClassInfo(class) or {}
+                    local factionInfo = C_CreatureInfo.GetFactionInfo(race) or {}
+                    GameTooltip_SetTitle(GameTooltip, e.cn(name), GetClassColorObj(classInfo.classFile))
+                    GameTooltip_AddColoredLine(GameTooltip, e.cn(factionInfo.name), GetFactionColor(factionInfo.groupTag))
                     if vignetteInfo.rewardQuestID then
-                        GameTooltip_AddQuestRewardsToTooltip(GameTooltip, vignetteInfo.rewardQuestID, TOOLTIP_QUEST_REWARDS_STYLE_PVP_BOUNTY);
+                        GameTooltip_AddQuestRewardsToTooltip(GameTooltip, vignetteInfo.rewardQuestID, TOOLTIP_QUEST_REWARDS_STYLE_PVP_BOUNTY)
                     end
                     titleAdded=true
                 end
-                waitingForData = not titleAdded;
+                waitingForData = not titleAdded
 
             elseif vignetteInfo.type == Enum.VignetteType.Torghast then
-                SharedTooltip_SetBackdropStyle(GameTooltip, GAME_TOOLTIP_BACKDROP_STYLE_RUNEFORGE_LEGENDARY);
-                GameTooltip_SetTitle(GameTooltip, e.cn(vignetteInfo.name));
+                SharedTooltip_SetBackdropStyle(GameTooltip, GAME_TOOLTIP_BACKDROP_STYLE_RUNEFORGE_LEGENDARY)
+                GameTooltip_SetTitle(GameTooltip, e.cn(vignetteInfo.name))
                 titleAdded = true
             end
 
             if not waitingForData and vignetteInfo.widgetSetID then
-                local overflow = GameTooltip_AddWidgetSet(GameTooltip, vignetteInfo.widgetSetID, titleAdded and vignetteInfo.addPaddingAboveWidgets and 10);
+                local overflow = GameTooltip_AddWidgetSet(GameTooltip, vignetteInfo.widgetSetID, titleAdded and vignetteInfo.addPaddingAboveWidgets and 10)
                 if overflow then
-                    verticalPadding = -overflow;
+                    verticalPadding = -overflow
                 end
             elseif waitingForData then
-                GameTooltip_SetTitle(GameTooltip, e.onlyChinese and '获取数据' or RETRIEVING_DATA);
+                GameTooltip_SetTitle(GameTooltip, e.onlyChinese and '获取数据' or RETRIEVING_DATA)
             end
             if verticalPadding then
-                GameTooltip:SetPadding(0, verticalPadding);
+                GameTooltip:SetPadding(0, verticalPadding)
             end
             widgetSetID= vignetteInfo.widgetSetID
             vignetteID= vignetteInfo.vignetteID
@@ -550,59 +550,59 @@ local function set_OnEnter_btn_tips(self)
 
     elseif self.uiMapID and self.areaPoiID then--areaPoi AreaPOIPinMixin:TryShowTooltip()
         local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(self.uiMapID, self.areaPoiID) or {}
-        local hasName = poiInfo.name ~= "";
-        local hasDescription = poiInfo.description and poiInfo.description ~= "";
-        local isTimed, hideTimer = C_AreaPoiInfo.IsAreaPOITimed(self.areaPoiID);
-        local showTimer = isTimed and not hideTimer;
-        local hasWidgetSet = poiInfo.widgetSetID ~= nil;
+        local hasName = poiInfo.name ~= ""
+        local hasDescription = poiInfo.description and poiInfo.description ~= ""
+        local isTimed, hideTimer = C_AreaPoiInfo.IsAreaPOITimed(self.areaPoiID)
+        local showTimer = isTimed and not hideTimer
+        local hasWidgetSet = poiInfo.widgetSetID ~= nil
 
-        local hasTooltip = hasDescription or showTimer or hasWidgetSet;
+        local hasTooltip = hasDescription or showTimer or hasWidgetSet
 	    local addedTooltipLine = false
 
         if hasTooltip then
-            local verticalPadding = nil;
+            local verticalPadding = nil
 
             if hasName then
-                GameTooltip_SetTitle(GameTooltip, e.cn(poiInfo.name), HIGHLIGHT_FONT_COLOR);
-                addedTooltipLine = true;
+                GameTooltip_SetTitle(GameTooltip, e.cn(poiInfo.name), HIGHLIGHT_FONT_COLOR)
+                addedTooltipLine = true
             end
 
             if hasDescription then
-                GameTooltip_AddNormalLine(GameTooltip, e.cn(poiInfo.description));
-                addedTooltipLine = true;
+                GameTooltip_AddNormalLine(GameTooltip, e.cn(poiInfo.description))
+                addedTooltipLine = true
             end
 
             if showTimer then
-                local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(self.areaPoiID);
+                local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(self.areaPoiID)
                 if secondsLeft and secondsLeft > 0 then
-                    local timeString = SecondsToTime(secondsLeft);
-                    GameTooltip_AddNormalLine(GameTooltip, format(e.onlyChinese and '剩余时间：%s' or BONUS_OBJECTIVE_TIME_LEFT, timeString));
-                    addedTooltipLine = true;
+                    local timeString = SecondsToTime(secondsLeft)
+                    GameTooltip_AddNormalLine(GameTooltip, format(e.onlyChinese and '剩余时间：%s' or BONUS_OBJECTIVE_TIME_LEFT, timeString))
+                    addedTooltipLine = true
                 end
             end
 
             --[[if poiInfo.textureKit == "OribosGreatVault" then
-                GameTooltip_AddBlankLineToTooltip(GameTooltip);
-                GameTooltip_AddInstructionLine(GameTooltip, ORIBOS_GREAT_VAULT_POI_TOOLTIP_INSTRUCTIONS);
-                addedTooltipLine = true;
+                GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                GameTooltip_AddInstructionLine(GameTooltip, ORIBOS_GREAT_VAULT_POI_TOOLTIP_INSTRUCTIONS)
+                addedTooltipLine = true
             end]]
 
             if hasWidgetSet then
-                local overflow = GameTooltip_AddWidgetSet(GameTooltip, poiInfo.widgetSetID, addedTooltipLine and poiInfo.addPaddingAboveWidgets and 10);
+                local overflow = GameTooltip_AddWidgetSet(GameTooltip, poiInfo.widgetSetID, addedTooltipLine and poiInfo.addPaddingAboveWidgets and 10)
                 if overflow then
-                    verticalPadding = -overflow;
+                    verticalPadding = -overflow
                 end
             end
 
             if poiInfo.uiTextureKit then
-                local backdropStyle = GAME_TOOLTIP_TEXTUREKIT_BACKDROP_STYLES[poiInfo.uiTextureKit];
+                local backdropStyle = GAME_TOOLTIP_TEXTUREKIT_BACKDROP_STYLES[poiInfo.uiTextureKit]
                 if (backdropStyle) then
-                    SharedTooltip_SetBackdropStyle(GameTooltip, backdropStyle);
+                    SharedTooltip_SetBackdropStyle(GameTooltip, backdropStyle)
                 end
             end
             -- need to set padding after Show or else there will be a flicker
             if verticalPadding then
-                GameTooltip:SetPadding(0, verticalPadding);
+                GameTooltip:SetPadding(0, verticalPadding)
             end
             widgetSetID= poiInfo.widgetSetID
         end
@@ -1772,7 +1772,7 @@ util.expansion.data = {
 		["name"] = EXPANSION_NAME5,
 		["garrisonTypeID"] = Enum.GarrisonType.Type_6_0_Garrison,
 		["continents"] = {572}  --> Draenor
-		-- **Note:** No bounties in Draenor; only available since Legion.
+		-- **Note:** No bounties in Draenor only available since Legion.
 	},
 	["Legion"] = {
 		["ID"] = LE_EXPANSION_LEGION,  -- 6
@@ -1799,7 +1799,7 @@ util.expansion.data = {
 		["garrisonTypeID"] = Enum.ExpansionLandingPageType.Dragonflight,
 		["continents"] = {1978},  --> Dragon Isles
 	},
-};
+}
 
 
 local MRBP_COMMAND_TABLE_UNLOCK_QUESTS = {
@@ -1922,7 +1922,7 @@ local MRBP_GARRISON_TYPE_INFOS = {
         },
         ["expansion"] = util.expansion.data.WarlordsOfDraenor,
         ["continents"] = {572},  --> Draenor
-        -- No bounties in Draenor; only available since Legion.
+        -- No bounties in Draenor only available since Legion.
     },
     ----- Legion -----
     [util.expansion.data.Legion.garrisonTypeID] = {
@@ -2013,44 +2013,118 @@ local MRBP_GARRISON_TYPE_INFOS = {
         --> Note: The bounty board in Dragonflight is only used for filtering world quests and switching to them. It
         -- doesn't show any bounty details anymore. Instead you get rewards for each new major faction renown level.
     },
-};
+}
 ]]
 
 
-local function get_covenanti_ID()
-    return C_Covenants.GetActiveCovenantID() or 0
-end
-local function get_covenanti_Texture()
-    local info= C_Covenants.GetCovenantData(get_covenanti_ID()) or {}
-    return info.textureKit
-end
 
-local function get_quest_completed(followerType)
+
+
+
+
+
+
+
+
+
+local function Get_Garrison_List_Num(followerType)--要塞,任务，列表
     local num, all, text= 0, 0, ''
-    --local followerOptions= GarrisonFollowerOptions[followerType]
-    local missions = C_Garrison.GetInProgressMissions(followerType);
-    if missions then
-        for _, mission in ipairs(missions) do
-            if (mission.isComplete == nil) then
-                mission.isComplete = mission.timeLeftSeconds == 0;
-            end
-            if mission.isComplete then
-                num = num + 1;
-            end
-            all = all + 1;
+    local missions = followerType and C_Garrison.GetInProgressMissions(followerType) or {}--GarrisonBaseUtils.lua
+    for _, mission in ipairs(missions) do
+        if (mission.isComplete == nil) then
+            mission.isComplete = mission.timeLeftSeconds == 0
         end
+        if mission.isComplete then
+            num = num + 1
+        end
+        all = all + 1
     end
-    if all==num and all>0 then
-        text= format('|cffff00ff%d/%d|r', num, all)..e.Icon.select2
-    elseif all==0 then
+    if all==0 then
         text= format('|cff606060%d/%d|r', num, all)
     elseif num==0 then
         text= format('|cff606060%d|r/%d', num, all)
+    elseif all==num then
+        text= format('|cffff00ff%d/%d|r', num, all)..e.Icon.select2
     else
         text= format('|cnGREEN_FONT_COLOR:%d|r/%d', num, all)
     end
     return text
 end
+
+
+
+
+--要塞报告
+local function Init_Garrison(level)
+    local GarrisonList={
+        {name=  e.onlyChinese and '盟约圣所' or GARRISON_TYPE_9_0_LANDING_PAGE_TITLE,
+        garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
+        garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
+        checked= C_Covenants.GetActiveCovenantID()>0,
+        atlas= function()
+            local info= C_Covenants.GetCovenantData(C_Covenants.GetActiveCovenantID() or 0) or {}
+            return info.textureKit or ''
+        end,
+        tooltip= e.onlyChinese and '点击显示圣所报告' or GARRISON_TYPE_9_0_LANDING_PAGE_TOOLTIP,
+        },
+
+        --[[{name=  e.onlyChinese and '任务' or GARRISON_TYPE_8_0_LANDING_PAGE_TITLE,
+        garrisonType= Enum.GarrisonType.Type_8_0_Garrison,
+        garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_8_0_GarrisonFollower,
+        atlas= string.format("bfa-landingbutton-%s-up", e.Player.faction),
+        tooltip= e.onlyChinese and '点击显示任务报告' or GARRISON_TYPE_8_0_LANDING_PAGE_TOOLTIP,
+        },]]
+
+        {name=  e.onlyChinese and '职业大厅' or ORDERHALL_MISSION_REPORT:match('(.-)%\n') or ORDER_HALL_LANDING_PAGE_TITLE,
+        garrisonType= Enum.GarrisonType.Type_7_0_Garrison,
+        garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_7_0_GarrisonFollower,
+        frame='OrderHallMissionFrame',
+        atlas= e.Class('player', nil, true),--职业图标 -- e.Player.class == "EVOKER" and "UF-Essence-Icon-Active" or string.format("legionmission-landingbutton-%s-up", e.Player.class),
+        tooltip= e.onlyChinese and '点击显示职业大厅报告' or MINIMAP_ORDER_HALL_LANDING_PAGE_TOOLTIP,
+        },
+
+        {name= e.onlyChinese and '要塞' or GARRISON_LOCATION_TOOLTIP,
+        garrisonType= Enum.GarrisonType.Type_6_0_Garrison,
+        garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_6_0_GarrisonFollower,
+        garrFollowerTypeID2=Enum.GarrisonFollowerType.FollowerType_6_0_Boat,
+        atlas= format("GarrLanding-MinimapIcon-%s-Up", e.Player.faction),
+        atlas2= format('Islands-%sBoat', e.Player.faction),
+        tooltip= e.onlyChinese and '点击显示要塞报告' or MINIMAP_GARRISON_LANDING_PAGE_TOOLTIP,
+        },
+    }
+
+
+    local bat= UnitAffectingCombat('player')
+    for _, info in pairs(GarrisonList) do
+        local has= C_Garrison.HasGarrison(info.garrisonType)
+        local num, num2= '', ''
+        if has then
+            num= ' '..Get_Garrison_List_Num(info.garrFollowerTypeID)
+            if info.garrFollowerTypeID2 then
+                num2= format(' |A:%s:0:0|a%s', info.atlas2 or '',  Get_Garrison_List_Num(info.garrFollowerTypeID2))
+            end
+        end
+        local atlas= type(info.atlas)=='function' and info.atlas() or info.atlas
+        e.LibDD:UIDropDownMenu_AddButton({
+            text= format('|A:%s:0:0|a%s%s%s', atlas, info.name, num, num2),
+            checked=info.checked or (GarrisonLandingPage and GarrisonLandingPage:IsShown() and GarrisonLandingPage.garrTypeID==info.garrisonType),
+            disabled= not has or bat,
+            keepShownOnClick=true,
+            tooltipOnButton=true,
+            tooltipTitle= info.tooltip,
+            arg1= info.garrisonType,
+            func= info.func or function(_, garrisonType)
+                if GarrisonLandingPage and GarrisonLandingPage:IsShown() and GarrisonLandingPage.garrTypeID==garrisonType then
+                    GarrisonLandingPage:Hide()
+                else
+                    ShowGarrisonLandingPage(garrisonType)
+                end
+            end
+        }, level)
+    end
+end
+
+
 
 
 
@@ -2245,54 +2319,10 @@ local function Init_Menu(_, level, menuList)
     if menuList then
         return
     end
---if e.Player.husandro then
-    
 
+    Init_Garrison(level)--要塞报告
     --e.LibDD:UIDropDownMenu_AddSeparator(level)
-    local bat= UnitAffectingCombat('player')
-    
-    local has= C_Garrison.HasGarrison(Enum.GarrisonType.Type_6_0_Garrison)--GarrisonBaseUtils.lua
-    info= {
-        text=format("|A:GarrLanding-MinimapIcon-%s-Up:0:0|a%s", e.Player.faction, e.onlyChinese and '要塞' or GARRISON_LOCATION_TOOLTIP)
-            .. (has and ' '..get_quest_completed(Enum.GarrisonFollowerType.FollowerType_6_0_GarrisonFollower)..format(' |A:Islands-%sBoat:0:0|a', e.Player.faction)..get_quest_completed(Enum.GarrisonFollowerType.FollowerType_6_0_Boat) or ''),
-        checked= GarrisonLandingPage and GarrisonLandingPage:IsShown(),
-        disabled= not has or bat,
-        keepShownOnClick=true,
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '点击显示要塞报告' or MINIMAP_GARRISON_LANDING_PAGE_TOOLTIP,
-        func= function()
-            if GarrisonLandingPage and GarrisonLandingPage:IsShown() then
-                GarrisonLandingPage:Hide()
-            else
-                ShowGarrisonLandingPage(Enum.GarrisonType.Type_6_0_Garrison)
-            end
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    --职业大厅 7.0
-    has= C_Garrison.HasGarrison(Enum.GarrisonType.Type_7_0_Garrison)
-    --[[local texture= e.Player.class == "EVOKER" and "UF-Essence-Icon-Active" or  -- "legionmission-landingbutton-demonhunter-up" or
-                string.format("legionmission-landingbutton-%s-up", e.Player.class)]]
-    info= {
-        text=format('|A:%s:0:0|a%s%s', e.Player.class == "EVOKER" and "UF-Essence-Icon-Active" or string.format("legionmission-landingbutton-%s-up", e.Player.class), e.onlyChinese and '职业大厅' or ORDERHALL_MISSION_REPORT:match('(.-)%\n') or ORDER_HALL_LANDING_PAGE_TITLE, 
-            has and ' '..get_quest_completed(Enum.GarrisonFollowerType.FollowerType_7_0_GarrisonFollower) or ''),
-        checked= GarrisonLandingPage and GarrisonLandingPage:IsShown(),
-        disabled= not has or bat,
-        keepShownOnClick=true,
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '点击显示职业大厅报告' or MINIMAP_ORDER_HALL_LANDING_PAGE_TOOLTIP,
-        func= function()
-            if GarrisonLandingPage and GarrisonLandingPage:IsShown() then
-                GarrisonLandingPage:Hide()
-            else
-                ShowGarrisonLandingPage(Enum.GarrisonType.Type_7_0_Garrison)
-            end
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
@@ -2528,7 +2558,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
             DifficultyUtil.ID.DungeonChallenge,
             DifficultyUtil.ID.RaidTimewalker,
             25,
-            205,--Seguace (5)LFG_TYPE_FOLLOWER_DUNGEON = "追随者地下城";
+            205,--Seguace (5)LFG_TYPE_FOLLOWER_DUNGEON = "追随者地下城"
         }
         for _, ID in pairs(tab) do
             local text= e.GetDifficultyColor(nil, ID)
@@ -2656,8 +2686,8 @@ local function Blizzard_TimeManager()
         set_Server_Timer()
     end)
     check:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT");
-        e.tips:ClearLines();
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine((e.onlyChinese and '时钟' or TIMEMANAGER_TITLE)..' Plus')
         e.tips:Show()
@@ -2867,28 +2897,28 @@ end
     panel.Texture:SetSize(16,16)
 
 
-local ATLAS_WITH_TEXTURE_KIT_PREFIX = "%s-%s";
+local ATLAS_WITH_TEXTURE_KIT_PREFIX = "%s-%s"
 hooksecurefunc(MinimapMixin , 'SetTexture', function(poiInfo)
     print(poiInfo.atlasName, poiInfo.textureIndex)
-    local atlasName = poiInfo.atlasName;
+    local atlasName = poiInfo.atlasName
 	if atlasName then
 		if poiInfo.textureKit then
-			atlasName = ATLAS_WITH_TEXTURE_KIT_PREFIX:format(poiInfo.textureKit, atlasName);
+			atlasName = ATLAS_WITH_TEXTURE_KIT_PREFIX:format(poiInfo.textureKit, atlasName)
 		end
-        local sizeX, sizeY = panel.Texture:GetSize();
-		panel.Texture:SetAtlas(atlasName, true);
-		panel:SetSize(sizeX, sizeY);
+        local sizeX, sizeY = panel.Texture:GetSize()
+		panel.Texture:SetAtlas(atlasName, true)
+		panel:SetSize(sizeX, sizeY)
 
-		panel.Texture:SetTexCoord(0, 1, 0, 1);
+		panel.Texture:SetTexCoord(0, 1, 0, 1)
 	else
 		
-		panel.Texture:SetWidth(16);
-		panel.Texture:SetHeight(16);
-		panel.Texture:SetTexture("Interface/Minimap/POIIcons");
+		panel.Texture:SetWidth(16)
+		panel.Texture:SetHeight(16)
+		panel.Texture:SetTexture("Interface/Minimap/POIIcons")
 	
 
-		local x1, x2, y1, y2 = C_Minimap.GetPOITextureCoords(poiInfo.textureIndex);
-		panel.Texture:SetTexCoord(x1, x2, y1, y2);
+		local x1, x2, y1, y2 = C_Minimap.GetPOITextureCoords(poiInfo.textureIndex)
+		panel.Texture:SetTexCoord(x1, x2, y1, y2)
 		
 	end
     print('SetTexture')

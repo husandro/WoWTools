@@ -85,8 +85,8 @@ end
 local function Get_Item(itemID)
 	local text, name
 	local icon= C_Item.GetItemIconByID(itemID)
-	local num= GetItemCount(itemID , true, nil, true)
-	local bag= GetItemCount(itemID)
+	local num= C_Item.GetItemCount(itemID , true, false, true)
+	local bag= C_Item.GetItemCount(itemID)
 	local itemQuality
 	if icon and num>0 then
 
@@ -366,7 +366,7 @@ local function Set_TrackButton_Text()
 				if self.itemID then
 					e.tips:SetItemByID(self.itemID)
 					e.tips:AddLine(' ')
-					local col= GetItemCount(self.itemID)==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:'
+					local col= C_Item.GetItemCount(self.itemID)==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:'
 					if self.itemButtonUse then
 						e.tips:AddDoubleLine(col..(e.onlyChinese and '使用物品' or USE_ITEM), e.Icon.left)
 					end
@@ -383,7 +383,7 @@ local function Set_TrackButton_Text()
 				Set_TrackButton_Pushed(true, self.text)--提示
 			end)
 			btn:SetScript("OnMouseDown", function(self)
-				if not self.itemID or not IsAltKeyDown() or GetItemCount(self.itemID)==0 then return end
+				if not self.itemID or not IsAltKeyDown() or C_Item.GetItemCount(self.itemID)==0 then return end
 				for bag= Enum.BagIndex.Backpack, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
 					for slot=1, C_Container.GetContainerNumSlots(bag) do
 						if C_Container.GetContainerItemID(bag, slot)== self.itemID then

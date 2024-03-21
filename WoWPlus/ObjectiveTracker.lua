@@ -22,7 +22,7 @@ local ModulTab={--Blizzard_ObjectiveTracker.lua
 
 local function ItemNum(button)--增加物品数量
     if button.itemLink then
-        local nu=GetItemCount(button.itemLink, true, true,true)
+        local nu=C_Item.GetItemCount(button.itemLink, true, true,true)
         if nu>1 then
             if not button.num then
                 button.num=e.Cstr(button)

@@ -609,8 +609,8 @@ function func.Set_Item(self, itemLink, itemID)
     end]]
 
     local wowNum= 0--WoW 数量
-    local bag= GetItemCount(itemLink)--物品数量
-    local bank= GetItemCount(itemLink,true) - bag
+    local bag= C_Item.GetItemCount(itemLink)--物品数量
+    local bank= C_Item.GetItemCount(itemLink, true, false, true) - bag
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         for guid, info in pairs(e.WoWDate or {}) do
             if guid and guid~=e.Player.guid and info.Keystone.link then

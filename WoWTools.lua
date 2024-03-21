@@ -1218,7 +1218,7 @@ function e.ItemCurrencyLabel(settings)
             end
         elseif tab.type=='item' and tab.id then
             e.LoadDate({id=tab.id, type='item'})
-            local num= GetItemCount(tab.id, true)
+            local num= C_Item.GetItemCount(tab.id, true, false, true)
             local itemQuality= C_Item.GetItemQualityByID(tab.id)
             if (showAll or tab.show or num>0) and itemQuality>=1 then
                 e.LoadDate({id=tab.id, type='item'})
@@ -2516,9 +2516,9 @@ function e.GetPet9Item(itemID, find)--宠物兑换, wow9.0
         else
             return '|T3856129:0|t'..(C_PetJournal.GetNumCollectedInfo(3106) or 0)
                 ..' = '
-                ..'|T134357:0|t'..GetItemCount(11406, true)
-                ..'|T132540:0|t'..GetItemCount(11944, true)
-                ..'|T133053:0|t'..GetItemCount(25402, true)
+                ..'|T134357:0|t'..C_Item.GetItemCount(11406, true)
+                ..'|T132540:0|t'..C_Item.GetItemCount(11944, true)
+                ..'|T133053:0|t'..C_Item.GetItemCount(25402, true)
         end
 
     elseif itemID==3300 or itemID==3670 or itemID==6150 then--[绿松石珠蜒]
@@ -2527,9 +2527,9 @@ function e.GetPet9Item(itemID, find)--宠物兑换, wow9.0
         else
             return '|T3856129:0|t'..(C_PetJournal.GetNumCollectedInfo(3105) or 0)
                     ..' = '
-                    ..'|T132936:0|t'..GetItemCount(3300, true)
-                    ..'|T133718:0|t'..GetItemCount(3670, true)
-                    ..'|T133676:0|t'..GetItemCount(6150, true)
+                    ..'|T132936:0|t'..C_Item.GetItemCount(3300, true)
+                    ..'|T133718:0|t'..C_Item.GetItemCount(3670, true)
+                    ..'|T133676:0|t'..C_Item.GetItemCount(6150, true)
         end
 
     elseif itemID==36812 or itemID==62072 or itemID==67410 then--[红宝石珠蜒]
@@ -2538,9 +2538,9 @@ function e.GetPet9Item(itemID, find)--宠物兑换, wow9.0
         else
             return '|T3856131:0|t'..(C_PetJournal.GetNumCollectedInfo(3104) or 0)
                     ..' = '
-                    ..'|T134063:0|t'..GetItemCount(36812, true)
-                    ..'|T135148:0|t'..GetItemCount(62072, true)
-                    ..'|T135239:0|t'..GetItemCount(67410, true)
+                    ..'|T134063:0|t'..C_Item.GetItemCount(36812, true)
+                    ..'|T135148:0|t'..C_Item.GetItemCount(62072, true)
+                    ..'|T135239:0|t'..C_Item.GetItemCount(67410, true)
         end
     end
 end

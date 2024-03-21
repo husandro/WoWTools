@@ -62,7 +62,7 @@ local function getToy()--生成, 有效表格
             table.insert(button.items, itemID)
         end
     end
-    if not find and GetItemCount(6948)~=0 then
+    if not find and C_Item.GetItemCount(6948)~=0 then
         button.items={6948}
     end
 end
@@ -298,7 +298,7 @@ end
 local function setBagHearthstone()
     for type, itemID in pairs(ModifiedTab) do
         local find
-        if PlayerHasToy(itemID) or GetItemCount(itemID)>=0 then
+        if PlayerHasToy(itemID) or C_Item.GetItemCount(itemID)>=0 then
             local _, duration, enable = GetItemCooldown(itemID)
             find= duration<2 and enable==1
         end
@@ -376,7 +376,7 @@ local function Init()
             --e.tips:SetToyByItemID(self.itemID)
             e.tips:AddLine(' ')
             for type, itemID in pairs(ModifiedTab) do
-                if PlayerHasToy(itemID) or GetItemCount(itemID)>0 then
+                if PlayerHasToy(itemID) or C_Item.GetItemCount(itemID)>0 then
                     local name = C_Item.GetItemNameByID(itemID..'') or ('itemID: '..itemID)
                     local icon = C_Item.GetItemIconByID(itemID..'')
                     name= (icon and '|T'..icon..':0|t' or '')..name

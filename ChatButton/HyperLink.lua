@@ -157,7 +157,7 @@ local function Item(link)--物品超链接
     elseif C_ToyBox.GetToyInfo(itemID) then--玩具
         t= PlayerHasToy(itemID) and t..e.Icon.select2 or t..e.Icon.info2
     end
-    local bag= GetItemCount(link, true)--数量
+    local bag= C_Item.GetItemCount(link, true, false, true)--数量
     if bag and bag>0 then
         t=t..e.Icon.bag2..e.MK(bag, 3)
     end

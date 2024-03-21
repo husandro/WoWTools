@@ -216,7 +216,7 @@ end
 local function checkItem()--检测物品
     button.itemID=nil
     for itemID, _ in pairs(Save.Mounts[ITEMS]) do
-        if GetItemCount(itemID , nil, true, true)>0 then
+        if C_Item.GetItemCount(itemID , false, true, true)>0 then
             button.itemID=itemID
             break
         end
@@ -823,7 +823,7 @@ local function InitMenu(_, level, type)--主菜单
             if icon then
                 text= '|T'..icon..':0|t'..text
             end
-            local num=GetItemCount(itemID , nil, true, true)
+            local num=C_Item.GetItemCount(itemID , false, true, true)
             text= text..(num==0 and ' #|cnRED_FONT_COLOR:' or  ' #|cnGREEN_FONT_COLOR:')..num..'|r'
             local col= '|cffff8200'
             local itemQuality= select(3, GetItemInfo(itemID))

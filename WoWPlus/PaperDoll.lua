@@ -151,7 +151,7 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增�
                 e.tips:Show()
         end)
         self.engineering:SetScript("OnMouseUp", function()
-            local n=GetItemCount(90146, true)
+            local n=C_Item.GetItemCount(90146, true)
                 if n==0 then
                     print(select(2, GetItemInfo(90146)) or (e.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
                 end

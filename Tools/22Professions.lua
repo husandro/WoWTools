@@ -483,7 +483,7 @@ local function Init_ProfessionsFrame()
     hooksecurefunc(Professions,'SetupOutputIconCommon', function(outputIcon, quantityMin, quantityMax, icon, itemIDOrLink, quality)
         local num
         if itemIDOrLink and not Save.disabled then
-            num= GetItemCount(itemIDOrLink, true)
+            num= C_Item.GetItemCount(itemIDOrLink, true, false, true)
             local itemID= GetItemInfoInstant(itemIDOrLink)
             if itemID then
                 local all= 0--帐号数据
@@ -726,12 +726,12 @@ local function Init_Archaeology()
                     local num
                     if self.itemID then
                         self:SetItem(self.itemID)
-                        num= GetItemCount(self.itemID, true, nil, true)
+                        num= C_Item.GetItemCount(self.itemID, true, false, true)
                         self:SetItemButtonCount(num)
                         self:SetAlpha(num==0 and 0.3 or 1)
                     end
                     self.btn2:SetItem(87399)
-                    num= GetItemCount(87399, true, nil, true)
+                    num= C_Item.GetItemCount(87399, true, false, true)
                     self.btn2:SetItemButtonCount(num)
                     self.btn2:SetAlpha(num==0 and 0.3 or 1)
                 end
