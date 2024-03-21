@@ -1815,12 +1815,11 @@ local function Init_MajorFactionRenownFrame()
     end
     MajorFactionRenownFrame.WoWToolsFaction= e.Cbtn(MajorFactionRenownFrame, {size={22,22}, icon='hide'})
     MajorFactionRenownFrame.WoWToolsFaction:SetScript('OnClick', function(self)
-        Sav.hide_MajorFactionRenownFrame_Button= not Save.hide_MajorFactionRenownFrame_Button and true or nil
+        Save.hide_MajorFactionRenownFrame_Button= not Save.hide_MajorFactionRenownFrame_Button and true or nil
         self:set_faction()
     end)
     MajorFactionRenownFrame.WoWToolsFaction.btn={}
     function MajorFactionRenownFrame.WoWToolsFaction:set_faction()
-        print(id)
         if Save.hide_MajorFactionRenownFrame_Button then
             for btn in pairs(self.btn) do
                 btn:SetShown(false)
@@ -1852,8 +1851,14 @@ local function Init_MajorFactionRenownFrame()
                     n= n+1
                     btn.factionID= factionID
                     btn:SetNormalAtlas('majorfaction-celebration-'..(info.textureKit or 'toastbg'))                    
+                    btn:SetShown(true)
+                end                
+            end
+            for i=n+1, #self.btn do
+                local btn= self.btn[i]
+                if btn then
+                    btn:SetShown(false)
                 end
-                
             end
         end
     end
