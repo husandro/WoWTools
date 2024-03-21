@@ -266,6 +266,14 @@ local function Init()
             block.r, block.g, block.b= color.r, color.g, color.b
             set_Color(block, questID)
         end
+        if C_QuestInfoSystem.HasQuestRewardSpells(questID) then
+            for _, spellID in pairs(C_QuestInfoSystem.GetQuestRewardSpells(questID) or {}) do
+                local texture= GetSpellTexture(spellID)
+                if texture then
+                    m= format('%s|T%d:0|t', m, texture)
+                end
+            end
+        end
 
         if m~='' then
             block.HeaderText:SetText(m..e.cn(text))
