@@ -188,24 +188,30 @@ function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, u
         return
     end
     if tab.type=='quest' then
-            C_QuestLog.RequestLoadQuestByID(tab.id)
-            if not HaveQuestRewardData(tab.id) then
-                C_TaskQuest.RequestPreloadRewardData(tab.id)
-            end
+        C_QuestLog.RequestLoadQuestByID(tab.id)
+        if not HaveQuestRewardData(tab.id) then
+            C_TaskQuest.RequestPreloadRewardData(tab.id)
+        end
+
     elseif tab.type=='spell' then
         local spellID= tab.id
         if type(tab.id)=='string' then
             spellID= select(7, GetSpellInfo(tab.id))
         end
-        if spellID and not C_Spell.IsSpellDataCached(spellID) then C_Spell.RequestLoadSpellData(spellID) end
+        if spellID and not C_Spell.IsSpellDataCached(spellID) then
+            C_Spell.RequestLoadSpellData(spellID)
+        end
+
     elseif tab.type=='item' then
         local itemID= tab.id
         itemID= itemID or (tab.itemLink and tab.itemLink:match('|Hitem:(%d+):'))
         if itemID and not C_Item.IsItemDataCachedByID(itemID) then
             C_Item.RequestLoadItemDataByID(itemID)
         end
+
     elseif tab.type=='mapChallengeModeID' then
         C_ChallengeMode.RequestLeaders(tab.id)
+
     elseif tab.typ=='club' then
         C_Club.RequestTickets(tab.id)
     end
@@ -2119,7 +2125,7 @@ function e.Cbtn2(tab)
     })
 ]]
     local btn= CreateFrame("Button", tab.name, tab.parent or UIParent, not tab.notSecureActionButton and "SecureActionButtonTemplate" or nil)
-    
+
     btn:SetSize(tab.size or 30, tab.size or 30)
     if tab.click==true then
         btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
@@ -2130,10 +2136,10 @@ function e.Cbtn2(tab)
     end
     btn:EnableMouseWheel(true)
 
-    
+
     btn:SetPushedAtlas('bag-border-highlight')
     btn:SetHighlightAtlas('bag-border')
-    
+
 
     btn.mask= btn:CreateMaskTexture()
     btn.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
@@ -2145,7 +2151,7 @@ function e.Cbtn2(tab)
     btn.background:SetAtlas('bag-reagent-border-empty')
     btn.background:SetAlpha(tab.alpha or 0.5)
     btn.background:AddMaskTexture(btn.mask)
-   
+
 
     if not tab.notTexture then
         btn.texture=btn:CreateTexture(nil, 'BORDER')
@@ -2156,15 +2162,15 @@ function e.Cbtn2(tab)
     end
     btn.border=btn:CreateTexture(nil, 'ARTWORK')
     btn.border:SetAllPoints(btn)
-    
+
     btn.border:SetAtlas('bag-reagent-border')
-   
-    if btn.color then        
+
+    if btn.color then
         btn.border:SetVertexColor(tab.color.r, tab.color.g, tab.color.b, tab.alpha)
-    else        
+    else
         e.Set_Label_Texture_Color(btn.border, {type='Texture', alpha=tab.alpha or 0.5})
     end
-    
+
 
     return btn
 end

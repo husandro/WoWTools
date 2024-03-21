@@ -674,7 +674,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 	local frame = factionRow.Container
 	local factionBar = frame.ReputationBar;
 	--local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive
-	local name, _, standingID, _, _, _, _, _, isHeader, _, hasRep, isWatched, _, factionID= GetFactionInfo(factionIndex)
+	local _, _, standingID, _, _, _, _, _, isHeader, _, hasRep, isWatched, _, factionID= GetFactionInfo(factionIndex)
 	if (isHeader and not hasRep) or not factionID or Save.notPlus then
 		if frame.watchedIcon then--显示为经验条
 			frame.watchedIcon:SetShown(false)
@@ -1253,6 +1253,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 		if arg1==id then
             Save= WoWToolsSave[addName] or Save
 			Save.factions= Save.factions or {}
+			
 
 			--添加控制面板
             e.AddPanel_Check({

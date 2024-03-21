@@ -37,9 +37,32 @@ local Save={
 
        hideExpansionLandingPageMinimapButton= e.Player.husandro,--隐藏，图标
 
-       moving_over_Icon_show_menu=e.Player.husandro--移过图标时，显示菜单
+       moving_over_Icon_show_menu=e.Player.husandro,--移过图标时，显示菜单
+       MajorFaction={},--保存，派系声望
 
+       --hide_MajorFactionRenownFrame_Button=true,--隐藏，派系声望，列表，图标
 }
+
+
+
+local LocalMajorFaction={--派系声望
+    [2593]=true,--'桶腿船团'
+    [2503]=true,-- '马鲁克半人马'
+    [2574]=true,--'梦境守望者'
+    [2564]=true,-- '峈姆鼹鼠人'
+    [2511]=true,--'伊斯卡拉海象人
+    [2510]=true,--'瓦德拉肯联军
+    [2507]=true,--'龙鳞探险队'
+}
+
+hooksecurefunc('ReputationFrame_InitReputationRow', function(factionRow)
+    if factionRow.factionID and C_Reputation.IsMajorFaction(factionRow.factionID) and not MajorFaction[factionRow.factionID] then
+        Save.MajorFaction[factionRow.factionID]=true
+    end
+end)
+
+
+
 
 for questID, _ in pairs(Save.questIDs or {}) do
     e.LoadDate({id= questID, type=='quest'})
@@ -47,8 +70,6 @@ end
 
 local panel= CreateFrame("Frame")
 local Button
-
-
 
 
 --[[if e.Player.husandro then
@@ -1750,6 +1771,106 @@ end
 
 
 
+--派系声望
+local function Set_Faction_Menu(factionID)
+    local data = C_MajorFactions.GetMajorFactionData(factionID or 0)
+    if data and data.name then
+        local level
+        level= data.renownLevel or 0
+        if C_MajorFactions.HasMaximumRenown(factionID) then
+            level= format('|cnGREEN_FONT_COLOR:%d|r', level)
+        else
+            local levels = C_MajorFactions.GetRenownLevels(factionID)
+            if levels then
+                level= format('%d/%d', level, #levels)
+            else
+                level= format('%d', level)
+            end
+        end
+        return {
+            text=format('|A:majorfactions_icons_%s512:0:0|a%s %s %s',
+                        data.textureKit or '',
+                        e.cn(data.name) or (e.onlyChinese and '主要阵营' or MAJOR_FACTION_LIST_TITLE),
+                        C_MajorFactions.HasMaximumRenown(factionID) and '|cnGREEN_FONT_COLOR:' or '',
+                        level),
+            checked= MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==factionID,
+            keepShownOnClick=true,
+            colorCode= (not data.isUnlocked and data.renownLevel==0) and '|cff606060' or nil,
+            arg1=factionID,
+            func= function(_, arg1)
+                if MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==arg1 then
+                    MajorFactionRenownFrame:Hide()
+                else
+                    ToggleMajorFactionRenown(arg1)
+                end
+            end
+        }
+    end
+end
+
+--派系，列表 MajorFactionRenownFrame
+local function Init_MajorFactionRenownFrame()    
+    if not MajorFactionRenownFrame then
+        return
+    end
+    MajorFactionRenownFrame.WoWToolsFaction= e.Cbtn(MajorFactionRenownFrame, {size={22,22}, icon='hide'})
+    MajorFactionRenownFrame.WoWToolsFaction:SetScript('OnClick', function(self)
+        Sav.hide_MajorFactionRenownFrame_Button= not Save.hide_MajorFactionRenownFrame_Button and true or nil
+        self:set_faction()
+    end)
+    MajorFactionRenownFrame.WoWToolsFaction.btn={}
+    function MajorFactionRenownFrame.WoWToolsFaction:set_faction()
+        print(id)
+        if Save.hide_MajorFactionRenownFrame_Button then
+            for btn in pairs(self.btn) do
+                btn:SetShown(false)
+            end
+        else
+            local tab={}
+            for factionID in pairs(LocalMajorFaction) do
+                table.insert(tab, factionID)
+            end
+            for factionID in pairs(Save.MajorFaction) do
+                table.insert(tab, factionID)
+            end
+            table.sort(tab, function(a,b) return a>b end)
+            local n=1
+            for _, factionID in pairs(tab) do
+                local info=C_MajorFactions.GetMajorFactionData(factionID or 0)
+                if info then
+                    local btn= self.btn[n]
+                    if not btn then
+                        btn= e.Cbtn(self, {size={235/2, 110/2}, icon='hide'})
+                        btn:SetPoint('TOPLEFT', self.btn[n-1] or self, 'BOTTOMLEFT')
+                        btn:SetScript('OnClick', function(frame)
+                            if MajorFactionRenownFrame.majorFactionID~=frame.factionID then
+                                ToggleMajorFactionRenown(frame.factionID)
+                            end
+                        end)
+                        self.btn[n]= btn
+                    end
+                    n= n+1
+                    btn.factionID= factionID
+                    btn:SetNormalAtlas('majorfaction-celebration-'..(info.textureKit or 'toastbg'))                    
+                end
+                
+            end
+        end
+    end
+    function MajorFactionRenownFrame.WoWToolsFaction:set_texture()
+        self:SetNormalAtlas(Save.hide_MajorFactionRenownFrame_Button and 'talents-button-reset' or e.Icon.icon)
+    end
+    MajorFactionRenownFrame.WoWToolsFaction:SetPoint('TOPLEFT', MajorFactionRenownFrame, 'TOPRIGHT')
+    MajorFactionRenownFrame.WoWToolsFaction:set_texture()
+
+
+    MajorFactionRenownFrame:HookScript('OnShow', function(self)
+        self.WoWToolsFaction:set_faction()
+    end)
+    
+
+end
+
 
 
 
@@ -1785,9 +1906,25 @@ local function Get_Garrison_List_Num(followerType)
     end
     return text
 end
+
 --要塞报告 GarrisonBaseUtils.lua
-local function Init_Garrison(level)
+local function Init_Garrison_Menu(level)
     local GarrisonList={
+        {name=  e.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE,
+        garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
+        garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
+        disabled=not C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(LE_EXPANSION_DRAGONFLIGHT),
+        atlas= 'dragonflight-landingbutton-up',
+        tooltip= e.onlyChinese and '点击显示巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,
+        func= function()
+            GenericTraitUI_LoadUI();
+            --if GenericTraitFrame:GetConfigID()~= C_Traits.GetConfigIDBySystemID(systemID) then
+            local DRAGONRIDING_TRAIT_SYSTEM_ID = 1;
+            GenericTraitFrame:SetSystemID(DRAGONRIDING_TRAIT_SYSTEM_ID)
+            ToggleFrame(GenericTraitFrame);
+        end,
+        },
+
         {name=  e.onlyChinese and '盟约圣所' or GARRISON_TYPE_9_0_LANDING_PAGE_TITLE,
         garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
         garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
@@ -1861,6 +1998,7 @@ local function Init_Garrison(level)
         }, level)
     end
 end
+
 
 
 
@@ -2063,14 +2201,47 @@ local function Init_Menu(_, level, menuList)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif menuList=='FACTION' then--派系声望
+        local tab={}
+        for factionID in pairs(LocalMajorFaction) do
+            table.insert(tab, factionID)
+        end
+        for factionID in pairs(Save.MajorFaction) do
+            table.insert(tab, factionID)
+        end
+        table.sort(tab, function(a,b) return a>b end)
+
+        for _, factionID in pairs(tab) do
+            info= Set_Faction_Menu(factionID)
+            if info then
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+            end
+        end
     end
 
     if menuList then
         return
     end
 
-    Init_Garrison(level)--要塞报告
-    --e.LibDD:UIDropDownMenu_AddSeparator(level)
+    Init_Garrison_Menu(level)--要塞报告
+
+    --派系声望
+    local factionID=0
+    for faction in pairs(LocalMajorFaction) do
+        factionID= faction> factionID and faction or factionID
+    end
+    for faction in pairs(Save.MajorFaction) do
+        factionID= faction> factionID and faction or factionID
+    end
+    info= Set_Faction_Menu(factionID)
+    if info then
+        info.hasArrow=true
+        info.keepShownOnClick=true
+        info.menuList='FACTION'
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    end
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
@@ -2566,13 +2737,10 @@ local function Init()
     Init_InstanceDifficulty()--副本，难图，指示
     C_Timer.After(2, Init_Set_Button)--小地图, 标记, 文本
     Init_M_Portal_Room_Labels()--挑战专送门标签
+    C_Timer.After(2, Init_MajorFactionRenownFrame)--派系声望
 
 
-
-    --########
-    --盟约图标
-    --########
-
+    --图标
     local libDataBroker = LibStub:GetLibrary("LibDataBroker-1.1", true)
     local libDBIcon = LibStub("LibDBIcon-1.0", true)
     if libDataBroker and libDBIcon then
@@ -2701,6 +2869,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.uiMapIDs= Save.uiMapIDs or {}
             Save.questIDs= Save.questIDs or {}
             Save.areaPoiIDs= Save.areaPoiIDs or {}
+            Save.MajorFaction= Save.MajorFaction or {}--保存，派系声望
 
             addName2= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)
 
