@@ -2630,7 +2630,7 @@ end)]]
         ExpansionLandingPageMinimapButton:SetFrameStrata('TOOLTIP')
         C_Timer.After(2, function()
             set_Move_Frame(ExpansionLandingPageMinimapButton, {hideButton=true, click='RightButton', setResizeButtonPoint={
-                nil, nil, nil, -4,4
+                nil, nil, nil, -2, 2
             }})
             C_Timer.After(8, function()--盟约图标停止闪烁
                 ExpansionLandingPageMinimapButton.MinimapLoopPulseAnim:Stop()

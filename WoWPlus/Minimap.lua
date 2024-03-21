@@ -1742,279 +1742,6 @@ end
 
 
 
---[[
-local util={expansion={}}
-
-
-util.expansion.data = {
-	-- ["Classic"] = {
-	-- 	["ID"] = LE_EXPANSION_CLASSIC,  -- 0
-	-- 	["name"] = EXPANSION_NAME0,
-	-- },
-	-- ["BurningCrusade"] = {
-	-- 	["ID"] = LE_EXPANSION_BURNING_CRUSADE,  -- 1
-	-- 	["name"] = EXPANSION_NAME1,
-	-- },
-	-- ["WrathOfTheLichKing"] = {
-	-- 	["ID"] = LE_EXPANSION_WRATH_OF_THE_LICH_KING,  -- 2
-	-- 	["name"] = EXPANSION_NAME2,
-	-- },
-	-- ["Cataclysm"] = {
-	-- 	["ID"] = LE_EXPANSION_CATACLYSM,  -- 3
-	-- 	["name"] = EXPANSION_NAME3,
-	-- },
-	-- ["MistsOfPandaria"] = {
-	-- 	["ID"] = LE_EXPANSION_MISTS_OF_PANDARIA,  -- 4
-	-- 	["name"] = EXPANSION_NAME4,
-	-- },
-	["WarlordsOfDraenor"] = {
-		["ID"] = LE_EXPANSION_WARLORDS_OF_DRAENOR,  -- 5
-		["name"] = EXPANSION_NAME5,
-		["garrisonTypeID"] = Enum.GarrisonType.Type_6_0_Garrison,
-		["continents"] = {572}  --> Draenor
-		-- **Note:** No bounties in Draenor only available since Legion.
-	},
-	["Legion"] = {
-		["ID"] = LE_EXPANSION_LEGION,  -- 6
-		["name"] = EXPANSION_NAME6,
-		["garrisonTypeID"] = Enum.GarrisonType.Type_7_0_Garrison,
-		["continents"] = {619, 905},  --> Broken Isles + Argus
-	},
-	["BattleForAzeroth"] = {
-		["ID"] = LE_EXPANSION_BATTLE_FOR_AZEROTH,  -- 7
-		["name"] = EXPANSION_NAME7,
-		["garrisonTypeID"] = Enum.GarrisonType.Type_8_0_Garrison,
-		["continents"] = {875, 876},  -- Zandalar, Kul Tiras
-		["poiZones"] = {1355, 62, 14, 81},  -- Nazjatar, Darkshore, Arathi Highlands, Silithus
-	},
-	["Shadowlands"] = {
-		["ID"] = LE_EXPANSION_SHADOWLANDS,  -- 8
-		["name"] = EXPANSION_NAME8,
-		["garrisonTypeID"] = Enum.GarrisonType.Type_9_0_Garrison,
-		["continents"] = {1550},  --> Shadowlands
-	},
-	["Dragonflight"] = {
-		["ID"] = LE_EXPANSION_DRAGONFLIGHT,  -- 9
-		["name"] = EXPANSION_NAME9,
-		["garrisonTypeID"] = Enum.ExpansionLandingPageType.Dragonflight,
-		["continents"] = {1978},  --> Dragon Isles
-	},
-}
-
-
-local MRBP_COMMAND_TABLE_UNLOCK_QUESTS = {
-	[util.expansion.data.WarlordsOfDraenor.garrisonTypeID] = {
-		-- REF.: <https://www.wowhead.com/guides/garrisons/quests-to-unlock-a-level-1-and-level-2-garrison>
-		["Horde"] = {34775, "Mission Probable"},  --> wowhead
-		["Alliance"] = {34692, "Delegating on Draenor"},  --> Companion App
-	},
-	[util.expansion.data.Legion.garrisonTypeID] = {
-		["WARRIOR"] = {40585, "Thus Begins the War"},
-		["PALADIN"] = {39696, "Rise, Champions"},
-		["HUNTER"] = {42519, "Rise, Champions"},
-		["ROGUE"] = {42139, "Rise, Champions"},
-		["PRIEST"] = {43270, "Rise, Champions"},
-		["DEATHKNIGHT"] = {43264, "Rise, Champions"},
-		["SHAMAN"] = {42383, "Rise, Champions"},
-		["MAGE"] = {42663, "Rise, Champions"},
-		["WARLOCK"] = {42608, "Rise, Champions"},
-		["MONK"] = {42187, "Rise, Champions"},
-		["DRUID"] = {42583, "Rise, Champions"},
-		["DEMONHUNTER"] = {42670, "Rise, Champions"},
-		["EVOKER"] = {0, "???"},  --> not available for Legion ???
-	},
-	[util.expansion.data.BattleForAzeroth.garrisonTypeID] = {
-		["Horde"] = {51771, "War of Shadows"},
-		["Alliance"] = {51715, "War of Shadows"},
-	},
-	[util.expansion.data.Shadowlands.garrisonTypeID] = {
-		[Enum.CovenantType.Kyrian] = {57878, "Choosing Your Purpose"},
-		[Enum.CovenantType.Venthyr] = {57878, "Choosing Your Purpose"}, 	--> optional: 59319, "Advancing Our Efforts"
-		[Enum.CovenantType.NightFae] = {57878, "Choosing Your Purpose"},	--> optional: 61552, "The Hunt Watches"
-		[Enum.CovenantType.Necrolord] = {57878, "Choosing Your Purpose"},
-		["alt"] = {62000, "Choosing Your Purpose"},  --> when skipping story mode
-	},
-	[util.expansion.data.Dragonflight.garrisonTypeID] = {
-		["Horde"] ={65444, "To the Dragon Isles!"},
-		["Alliance"] = {67700, "To the Dragon Isles!"},
-		-- ["alt"] = {68798, "Dragon Glyphs and You"},
-	},
-}
-
-local function get_covenanti_ID()
-    return C_Covenants.GetActiveCovenantID() or Enum.CovenantType.Kyrian
-end
-local function get_covenanti_Texture()
-    local info= C_Covenants.GetCovenantData(get_covenanti_ID()) or {}
-    return info.textureKit or Enum.CovenantType.Kyrian
-end
-
-local MRBP_COMMAND_TABLE_UNLOCK_QUESTS = {
-	[util.expansion.data.WarlordsOfDraenor.garrisonTypeID] = {
-		-- REF.: <https://www.wowhead.com/guides/garrisons/quests-to-unlock-a-level-1-and-level-2-garrison>
-		["Horde"] = {34775, "Mission Probable"},  --> wowhead
-		["Alliance"] = {34692, "Delegating on Draenor"},  --> Companion App
-	},
-	[util.expansion.data.Legion.garrisonTypeID] = {
-		["WARRIOR"] = {40585, "Thus Begins the War"},
-		["PALADIN"] = {39696, "Rise, Champions"},
-		["HUNTER"] = {42519, "Rise, Champions"},
-		["ROGUE"] = {42139, "Rise, Champions"},
-		["PRIEST"] = {43270, "Rise, Champions"},
-		["DEATHKNIGHT"] = {43264, "Rise, Champions"},
-		["SHAMAN"] = {42383, "Rise, Champions"},
-		["MAGE"] = {42663, "Rise, Champions"},
-		["WARLOCK"] = {42608, "Rise, Champions"},
-		["MONK"] = {42187, "Rise, Champions"},
-		["DRUID"] = {42583, "Rise, Champions"},
-		["DEMONHUNTER"] = {42670, "Rise, Champions"},
-		["EVOKER"] = {0, "???"},  --> not available for Legion ???
-	},
-	[util.expansion.data.BattleForAzeroth.garrisonTypeID] = {
-		["Horde"] = {51771, "War of Shadows"},
-		["Alliance"] = {51715, "War of Shadows"},
-	},
-	[util.expansion.data.Shadowlands.garrisonTypeID] = {
-		[Enum.CovenantType.Kyrian] = {57878, "Choosing Your Purpose"},
-		[Enum.CovenantType.Venthyr] = {57878, "Choosing Your Purpose"}, 	--> optional: 59319, "Advancing Our Efforts"
-		[Enum.CovenantType.NightFae] = {57878, "Choosing Your Purpose"},	--> optional: 61552, "The Hunt Watches"
-		[Enum.CovenantType.Necrolord] = {57878, "Choosing Your Purpose"},
-		["alt"] = {62000, "Choosing Your Purpose"},  --> when skipping story mode
-	},
-	[util.expansion.data.Dragonflight.garrisonTypeID] = {
-		["Horde"] ={65444, "To the Dragon Isles!"},
-		["Alliance"] = {67700, "To the Dragon Isles!"},
-		-- ["alt"] = {68798, "Dragon Glyphs and You"},
-	},
-}
-
-local function MRBP_GetGarrisonTypeUnlockQuestInfo(garrTypeID, tagName)
-	local reqMessageTemplate = 'Completa \"%s\" per sbloccare il contenuto'  --> same as Companion App text
-	local questData = MRBP_COMMAND_TABLE_UNLOCK_QUESTS[garrTypeID][tagName]
-	local questID = questData[1]
-	local questFallbackName = questData[2]  --> quest name in English
-	local questName = QuestUtils_GetQuestName(questID)
-
-	local questInfo = {}
-	questInfo["questID"] = questID
-	questInfo["questName"] = strlen(questName) > 0 and questName or questFallbackName
-	questInfo["requirementText"] = reqMessageTemplate:format(questInfo.questName)
-
-	return questInfo
-end
-
-
---MissionReportButtonPlus 插件，来原数据
-local MRBP_GARRISON_TYPE_INFOS = {
-    ----- Warlords of Draenor -----
-    [util.expansion.data.WarlordsOfDraenor.garrisonTypeID] = {
-        ["tagName"] = e.Player.faction,--e.Player.faction,
-        ["title"] = e.onlyChinese and '要塞报告' or GARRISON_LANDING_PAGE_TITLE,
-        ["description"] = e.onlyChinese and '点击显示要塞报告' or MINIMAP_GARRISON_LANDING_PAGE_TOOLTIP,
-        ["minimapIcon"] = string.format("GarrLanding-MinimapIcon-%s-Up", e.Player.faction),
-        -- ["banner"] = "accountupgradebanner-wod",  -- 199x117  			--> TODO - Use with new frame
-        ["msg"] = {  --> menu entry tooltip messages
-            ["missionsTitle"] = e.onlyChinese and '要塞任务' or GARRISON_MISSIONS_TITLE,
-            ["missionsReadyCount"] = e.onlyChinese and '准备接收：%d/%d' or GARRISON_LANDING_COMPLETED,  --> "%d/%d Ready for pickup"
-            ["missionsEmptyProgress"] = e.onlyChinese and '你没有正在进行中的任务。' or GARRISON_EMPTY_IN_PROGRESS_LIST,
-            ["missionsComplete"] = GarrisonFollowerOptions[Enum.GarrisonFollowerType.FollowerType_6_0_GarrisonFollower].strings.LANDING_COMPLETE or '???',
-            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(Enum.GarrisonType.Type_6_0_Garrison, e.Player.faction).requirementText,
-        },
-        ["expansion"] = util.expansion.data.WarlordsOfDraenor,
-        ["continents"] = {572},  --> Draenor
-        -- No bounties in Draenor only available since Legion.
-    },
-    ----- Legion -----
-    [util.expansion.data.Legion.garrisonTypeID] = {
-        ["tagName"] =e.Player.class,
-        ["title"] = ORDER_HALL_LANDING_PAGE_TITLE,
-        ["description"] = MINIMAP_ORDER_HALL_LANDING_PAGE_TOOLTIP,
-        ["minimapIcon"] =e.Player.class == "EVOKER" and "UF-Essence-Icon-Active" or  -- "legionmission-landingbutton-demonhunter-up" or
-                          string.format("legionmission-landingbutton-%s-up",e.Player.class),
-        -- ["banner"] = "accountupgradebanner-legion",  -- 199x117  		--> TODO - Use with new frame
-        ["msg"] = {
-            ["missionsTitle"] = GARRISON_MISSIONS,
-            ["missionsReadyCount"] = GARRISON_LANDING_COMPLETED,
-            ["missionsEmptyProgress"] = GARRISON_EMPTY_IN_PROGRESS_LIST,
-            ["missionsComplete"] = GarrisonFollowerOptions[Enum.GarrisonFollowerType.FollowerType_7_0_GarrisonFollower].strings.LANDING_COMPLETE,
-            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.Legion.garrisonTypeID,e.Player.class).requirementText,
-        },
-        ["expansion"] = util.expansion.data.Legion,
-        ["continents"] = {619, 905},  --> Broken Isles + Argus
-        ["bountyBoard"] = {
-            ["title"] = BOUNTY_BOARD_LOCKED_TITLE,
-            ["noBountiesMessage"] = BOUNTY_BOARD_NO_BOUNTIES_DAYS_1,
-            ["bounties"] = C_QuestLog.GetBountiesForMapID(650),  --> any child zone from "continents" in Legion seems to work
-            ["areBountiesUnlocked"] = MapUtil.MapHasUnlockedBounties(650),
-        },
-    },
-    ----- Battle for Azeroth -----
-    [util.expansion.data.BattleForAzeroth.garrisonTypeID] = {
-        ["tagName"] = e.Player.faction,
-        ["title"] = GARRISON_TYPE_8_0_LANDING_PAGE_TITLE,
-        ["description"] = GARRISON_TYPE_8_0_LANDING_PAGE_TOOLTIP,
-        ["minimapIcon"] = string.format("bfa-landingbutton-%s-up", e.Player.faction),
-        -- ["banner"] = "accountupgradebanner-bfa",  -- 199x133  			--> TODO - Use with new frame
-        ["msg"] = {
-            ["missionsTitle"] = GARRISON_MISSIONS,
-            ["missionsReadyCount"] = GARRISON_LANDING_COMPLETED,
-            ["missionsEmptyProgress"] = GARRISON_EMPTY_IN_PROGRESS_LIST,
-            ["missionsComplete"] = GarrisonFollowerOptions[Enum.GarrisonFollowerType.FollowerType_8_0_GarrisonFollower].strings.LANDING_COMPLETE,
-            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.BattleForAzeroth.garrisonTypeID, e.Player.faction).requirementText,
-        },
-        ["expansion"] = util.expansion.data.BattleForAzeroth,
-        ["continents"] = {875, 876},  -- Zandalar, Kul Tiras
-        ["poiZones"] = {1355, 62, 14, 81, 1527},  -- Nazjatar, Darkshore, Arathi Highlands, Silithus, Uldum
-        --> Note: Uldum and Vale of Eternal Blossoms are covered as world map threats.
-        ["bountyBoard"] = {
-            ["title"] = BOUNTY_BOARD_LOCKED_TITLE,
-            ["noBountiesMessage"] = BOUNTY_BOARD_NO_BOUNTIES_DAYS_1,
-            ["bounties"] = C_QuestLog.GetBountiesForMapID(875),  --> or any child zone from "continents" seems to work as well.
-            ["areBountiesUnlocked"] = MapUtil.MapHasUnlockedBounties(875),  --> checking only Zandalar should be enough
-        },
-    },
-    ----- Shadowlands -----
-    [util.expansion.data.Shadowlands.garrisonTypeID] = {
-        ["tagName"] = get_covenanti_ID(),--playerInfo.covenantID,
-        ["title"] = GARRISON_TYPE_9_0_LANDING_PAGE_TITLE,
-        ["description"] = GARRISON_TYPE_9_0_LANDING_PAGE_TOOLTIP,
-        ["minimapIcon"] = string.format("shadowlands-landingbutton-%s-up", get_covenanti_Texture()),
-        -- ["minimapIcon"] = string.format("SanctumUpgrades-%s-32x32", playerInfo.covenantTex),
-        -- ["banner"] = "accountupgradebanner-shadowlands",  -- 199x133  	--> TODO - Use with new frame
-        ["msg"] = {
-            ["missionsTitle"] = COVENANT_MISSIONS_TITLE,
-            ["missionsReadyCount"] = GARRISON_LANDING_COMPLETED,
-            ["missionsEmptyProgress"] = COVENANT_MISSIONS_EMPTY_IN_PROGRESS,
-            ["missionsComplete"] = GarrisonFollowerOptions[Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower].strings.LANDING_COMPLETE,
-            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.Shadowlands.garrisonTypeID, get_covenanti_ID()).requirementText,
-        },
-        ["expansion"] = util.expansion.data.Shadowlands,
-        ["continents"] = {1550},  --> Shadowlands
-        ["bountyBoard"] = {
-            ["title"] = CALLINGS_QUESTS,
-            ["noBountiesMessage"] = BOUNTY_BOARD_NO_CALLINGS_DAYS_1,
-            ["bounties"] = {},  --> Shadowlands callings will be added later via the event handler.
-            ["areBountiesUnlocked"] = C_CovenantCallings.AreCallingsUnlocked(),
-        },
-    },
-    ----- Dragonflight -----
-    [util.expansion.data.Dragonflight.garrisonTypeID] = {
-        -- ["tagName"] =e.Player.class == "EVOKER" and "alt" or e.Player.faction,
-        ["tagName"] = e.Player.faction,
-        ["title"] = DRAGONFLIGHT_LANDING_PAGE_TITLE,
-        ["description"] = DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,
-        ["minimapIcon"] = "dragonflight-landingbutton-up",
-        -- ["banner"] = "accountupgradebanner-dragonflight",  -- 199x133  	--> TODO - Use with new frame
-        ["msg"] = {
-            ["requirementText"] = MRBP_GetGarrisonTypeUnlockQuestInfo(util.expansion.data.Dragonflight.garrisonTypeID, e.Player.faction).requirementText,
-        },
-         ["expansion"] = util.expansion.data.Dragonflight,
-        ["continents"] = {1978},  --> Dragon Isles
-        --> Note: The bounty board in Dragonflight is only used for filtering world quests and switching to them. It
-        -- doesn't show any bounty details anymore. Instead you get rewards for each new major faction renown level.
-    },
-}
-]]
 
 
 
@@ -2027,7 +1754,15 @@ local MRBP_GARRISON_TYPE_INFOS = {
 
 
 
-local function Get_Garrison_List_Num(followerType)--要塞,任务，列表
+
+
+
+
+
+
+
+--要塞,任务，列表
+local function Get_Garrison_List_Num(followerType)
     local num, all, text= 0, 0, ''
     local missions = followerType and C_Garrison.GetInProgressMissions(followerType) or {}--GarrisonBaseUtils.lua
     for _, mission in ipairs(missions) do
@@ -2050,11 +1785,7 @@ local function Get_Garrison_List_Num(followerType)--要塞,任务，列表
     end
     return text
 end
-
-
-
-
---要塞报告
+--要塞报告 GarrisonBaseUtils.lua
 local function Init_Garrison(level)
     local GarrisonList={
         {name=  e.onlyChinese and '盟约圣所' or GARRISON_TYPE_9_0_LANDING_PAGE_TITLE,
@@ -2104,7 +1835,7 @@ local function Init_Garrison(level)
                 num2= format(' |A:%s:0:0|a%s', info.atlas2 or '',  Get_Garrison_List_Num(info.garrFollowerTypeID2))
             end
         end
-        local atlas= type(info.atlas)=='function' and info.atlas() or info.atlas        
+        local atlas= type(info.atlas)=='function' and info.atlas() or info.atlas
         local disabled
         if info.disabled then
             disabled= info.disabled
@@ -2280,7 +2011,7 @@ local function Init_Menu(_, level, menuList)
             keepShownOnClick=true,
             func= function()
                 Save.hideExpansionLandingPageMinimapButton= not Save.hideExpansionLandingPageMinimapButton and true or nil
-                if ExpansionLandingPageMinimapButton then                    
+                if ExpansionLandingPageMinimapButton then
                     if Save.hideExpansionLandingPageMinimapButton then
                         ExpansionLandingPageMinimapButton:SetShown(false)
                     else
@@ -2445,7 +2176,7 @@ local function enter_Func(self)
     e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.right)
 
     if self and type(self)=='table' then
-        if _G['LibDBIcon10_WoWTools'] then
+        if _G['LibDBIcon10_WoWTools'] and _G['LibDBIcon10_WoWTools']:IsMouseWheelEnabled() then
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
         else
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.right)
@@ -2887,8 +2618,11 @@ local function Init()
         if btn then
             btn:EnableMouseWheel(true)
             btn:SetScript('OnMouseWheel', function(self, d)
-                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
+                if not self.menu then
+                    self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+                    e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
+                end
+                e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
             end)
         end
 
