@@ -1817,11 +1817,12 @@ local function Init_MajorFactionRenownFrame()
     MajorFactionRenownFrame.WoWToolsFaction:SetScript('OnClick', function(self)
         Save.hide_MajorFactionRenownFrame_Button= not Save.hide_MajorFactionRenownFrame_Button and true or nil
         self:set_faction()
+        self:set_texture()
     end)
     MajorFactionRenownFrame.WoWToolsFaction.btn={}
     function MajorFactionRenownFrame.WoWToolsFaction:set_faction()
         if Save.hide_MajorFactionRenownFrame_Button then
-            for btn in pairs(self.btn) do
+            for _, btn in pairs(self.btn) do
                 btn:SetShown(false)
             end
         else
