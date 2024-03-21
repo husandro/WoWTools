@@ -2325,6 +2325,7 @@ local function Init_Menu(_, level, menuList)
             keepShownOnClick=true,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '移过图标时，显示菜单' or 'Show menu when moving over icon',
+            tooltipText= e.onlyChinese and '不在战斗中' or 'Leaving Combat',
             func= function()
                 Save.moving_over_Icon_show_menu= not Save.moving_over_Icon_show_menu and true or nil
             end
