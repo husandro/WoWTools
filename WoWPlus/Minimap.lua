@@ -1756,6 +1756,128 @@ end
 
 
 
+ --盟约 9.0
+
+ local mainTextureKitRegions = {
+	["Background"] = "CovenantSanctum-Renown-Background-%s",
+	["TitleDivider"] = "CovenantSanctum-Renown-Title-Divider-%s",
+	["Divider"] = "CovenantSanctum-Renown-Divider-%s",
+	["Anima"] = "CovenantSanctum-Renown-Anima-%s",
+	["FinalToastSlabTexture"] = "CovenantSanctum-Renown-FinalToast-%s",
+	["SelectedLevelGlow"] = "CovenantSanctum-Renown-Next-Glow-%s",
+}
+local function SetupTextureKit(frame, regions, covenantData)
+	SetupTextureKitOnRegions(covenantData.textureKit, frame, regions, TextureKitConstants.SetVisibility, TextureKitConstants.UseAtlasSize);
+end
+
+local function Set_Covenant_Button(self, covenantID, activityID)
+    local btn= self['covenant'..covenantID]
+    if not btn then
+        local info = C_Covenants.GetCovenantData(covenantID) or {}
+        btn=e.Cbtn(self.frame or self, {size={22,22}, atlas=format('SanctumUpgrades-%s-32x32', info.textureKit)})
+        btn:SetHighlightAtlas('ChromieTime-Button-HighlightForge-ColorSwatchHighlight')
+        if covenantID==1 then
+            btn:SetPoint('BOTTOMLEFT', self.frame and self:GetParent() or self, 'TOPLEFT', 0, 5)
+        else
+            btn:SetPoint('LEFT', self['covenant'..(covenantID-1)], 'RIGHT')
+        end
+        btn:SetScript('OnClick', function(frame)
+            if not CovenantRenownFrame or not CovenantRenownFrame:IsShown() then
+                do
+                    ToggleCovenantRenown()
+                end
+            end
+            
+            --CovenantRenownMixin:SetUpCovenantData()
+            local covenantData = C_Covenants.GetCovenantData(frame.covenantID) or {}
+            local textureKit = covenantData.textureKit;
+            NineSliceUtil.ApplyUniqueCornersLayout(CovenantRenownFrame.NineSlice, textureKit);
+            NineSliceUtil.DisableSharpening(CovenantRenownFrame.NineSlice);
+            local atlas = "CovenantSanctum-RenownLevel-Border-%s";
+            CovenantRenownFrame.HeaderFrame.Background:SetAtlas(atlas:format(textureKit), TextureKitConstants.UseAtlasSize);
+            UIPanelCloseButton_SetBorderAtlas(CovenantRenownFrame.CloseButton, "UI-Frame-%s-ExitButtonBorder", -1, 1, textureKit);
+            SetupTextureKit(CovenantRenownFrame, mainTextureKitRegions, covenantData);
+            local renownLevelsInfo = C_CovenantSanctumUI.GetRenownLevels(frame.covenantID) or {}
+            for i, levelInfo in ipairs(renownLevelsInfo) do
+                levelInfo.textureKit = textureKit;
+                levelInfo.rewardInfo = C_CovenantSanctumUI.GetRenownRewardsForLevel(frame.covenantID, i);
+            end
+            CovenantRenownFrame.TrackFrame:Init(renownLevelsInfo);
+            CovenantRenownFrame.maxLevel = renownLevelsInfo[#renownLevelsInfo].level;
+
+            --CovenantRenownMixin:GetLevels()
+            local renownLevel = C_CovenantSanctumUI.GetRenownLevel();
+            self.actualLevel = renownLevel;
+            local cvarName = "lastRenownForCovenant"..frame.covenantID
+            local lastRenownLevel = tonumber(GetCVar(cvarName)) or 1;
+            if lastRenownLevel < renownLevel then
+                renownLevel = lastRenownLevel;
+            end
+            self.displayLevel = renownLevel;
+
+            CovenantRenownFrame:Refresh(true)
+
+            C_CovenantSanctumUI.RequestCatchUpState();
+        end)
+        btn.covenantID= covenantID
+        self['covenant'..covenantID]=btn
+        btn.Text=e.Cstr(btn, {color={r=1,g=1,b=1}})
+        btn.Text:SetPoint('CENTER')
+    end
+
+    local level=0
+    local isMaxLevel
+    if covenantID==activityID then
+        btn:LockHighlight()
+        level= C_CovenantSanctumUI.GetRenownLevel()
+        isMaxLevel= C_CovenantSanctumUI.HasMaximumRenown()
+    else
+        btn:UnlockHighlight()
+        local tab = C_CovenantSanctumUI.GetRenownLevels(covenantID) or {}
+        local num= #tab
+        for i=num, 1, -1 do
+            if not tab[i].locked then
+                level= tab[i].level
+                isMaxLevel= i==num
+                break
+            end
+        end
+    end
+    btn.Text:SetText(isMaxLevel and format('|cnGREEN_FONT_COLOR:%d|r', level) or level)
+    btn.renownLevel= level
+    return btn
+ end
+
+
+
+
+ --盟约 9.0
+ local function Init_Blizzard_CovenantRenown()
+
+
+    CovenantRenownFrame:HookScript('OnShow', function(self)
+        local activityID = C_Covenants.GetActiveCovenantID() or 0
+        if activityID>0 then
+            for i=1, 4 do
+                if Save.hide_MajorFactionRenownFrame_Button then
+                    local btn= self['covenant'..i]
+                    if btn then
+                        btn:SetShown(false)
+                    end
+                else
+                    local btn=Set_Covenant_Button(CovenantRenownFrame, i, activityID)
+                    btn:SetShown(true)
+                end
+            end
+        end
+    end)
+end
+
+
+
+
+
+
 
 
 
@@ -1839,69 +1961,67 @@ local function Init_MajorFactionRenownFrame()
         self:set_faction()
         self:set_texture()
     end)
+    MajorFactionRenownFrame.WoWToolsFaction.frame=CreateFrame('Frame', nil, MajorFactionRenownFrame.WoWToolsFaction)
     MajorFactionRenownFrame.WoWToolsFaction.btn={}
     function MajorFactionRenownFrame.WoWToolsFaction:set_faction()
+        self:SetNormalAtlas(Save.hide_MajorFactionRenownFrame_Button and 'talents-button-reset' or e.Icon.icon)
         if Save.hide_MajorFactionRenownFrame_Button then
-            for _, btn in pairs(self.btn) do
-                btn:SetShown(false)
-            end
-        else
-            local selectFactionID= MajorFactionRenownFrame:GetCurrentFactionID()
-            local tab= Get_Major_Faction_List()--取得，所有，派系声望
-            local n=1
-            for _, factionID in pairs(tab) do
-                local info=C_MajorFactions.GetMajorFactionData(factionID or 0)
-                if info then
-                    local btn= self.btn[n]
-                    if not btn then
-                        btn= e.Cbtn(self, {size={235/2.5, 110/2.5}, icon='hide'})
-                        btn:SetPoint('TOPLEFT', self.btn[n-1] or self, 'BOTTOMLEFT')
-                        btn:SetHighlightAtlas('ChromieTime-Button-Highlight')
-                        btn:SetScript('OnLeave', GameTooltip_Hide)
-                        btn:SetScript('OnEnter', ReputationBarMixin.ShowMajorFactionRenownTooltip)
-                        btn:SetScript('OnClick', function(frame)
-                            if MajorFactionRenownFrame:GetCurrentFactionID()~=frame.factionID then
-                                ToggleMajorFactionRenown(frame.factionID)
-                            end
-                        end)
-                        btn.Text= e.Cstr(btn)
-                        btn.Text:SetPoint('BOTTOM')
-                        self.btn[n]= btn
-                    end
-                    n= n+1
-                    btn.factionID= factionID
-                    btn:SetNormalAtlas('majorfaction-celebration-'..(info.textureKit or 'toastbg'))
-                    btn:SetPushedAtlas('MajorFactions_Icons_'..(info.textureKit or '')..'512')
-                    if selectFactionID==factionID then--选中
-                        btn:LockHighlight()
-                    else
-                        btn:UnlockHighlight()
-                    end
-                    btn.Text:SetText(Get_Majoor_Faction_Level(factionID, info.renownLevel))--等级
-                    btn:SetShown(true)
+            self.frame:SetShown(false)
+            return
+        end
+        self.frame:SetShown(true)
+
+        --所有，派系声望
+        local selectFactionID= MajorFactionRenownFrame:GetCurrentFactionID()
+        local tab= Get_Major_Faction_List()--取得，所有，派系声望
+        local n=1
+        for _, factionID in pairs(tab) do
+            local info=C_MajorFactions.GetMajorFactionData(factionID or 0)
+            if info then
+                local btn= self.btn[n]
+                if not btn then
+                    btn= e.Cbtn(self.frame, {size={235/2.5, 110/2.5}, icon='hide'})
+                    btn:SetPoint('TOPLEFT', self.btn[n-1] or self, 'BOTTOMLEFT')
+                    btn:SetHighlightAtlas('ChromieTime-Button-Highlight')
+                    btn:SetScript('OnLeave', GameTooltip_Hide)
+                    btn:SetScript('OnEnter', ReputationBarMixin.ShowMajorFactionRenownTooltip)
+                    btn:SetScript('OnClick', function(frame)
+                        if MajorFactionRenownFrame:GetCurrentFactionID()~=frame.factionID then
+                            ToggleMajorFactionRenown(frame.factionID)
+                        end
+                    end)
+                    btn.Text= e.Cstr(btn)
+                    btn.Text:SetPoint('BOTTOM')
+                    self.btn[n]= btn
                 end
-            end
-            for i=n+1, #self.btn do
-                local btn= self.btn[i]
-                if btn then
-                    btn:SetShown(false)
+                n= n+1
+                btn.factionID= factionID
+                btn:SetNormalAtlas('majorfaction-celebration-'..(info.textureKit or 'toastbg'))
+                btn:SetPushedAtlas('MajorFactions_Icons_'..(info.textureKit or '')..'512')
+                if selectFactionID==factionID then--选中
+                    btn:LockHighlight()
+                else
+                    btn:UnlockHighlight()
                 end
+                btn.Text:SetText(Get_Majoor_Faction_Level(factionID, info.renownLevel))--等级
             end
         end
-    end
-    function MajorFactionRenownFrame.WoWToolsFaction:set_texture()
-        self:SetNormalAtlas(Save.hide_MajorFactionRenownFrame_Button and 'talents-button-reset' or e.Icon.icon)
+
+        --盟约
+        local activityID = C_Covenants.GetActiveCovenantID() or 0
+        if activityID>0 then
+            for i=1, 4 do
+                Set_Covenant_Button(self, i, activityID)
+            end
+        end
+
     end
 
-    MajorFactionRenownFrame.WoWToolsFaction:set_texture()
 
     hooksecurefunc(MajorFactionRenownFrame, 'Refresh', function(self, majorFactionID)
         self.WoWToolsFaction:set_faction()
     end)
 end
-
-
-
 
 
 
@@ -2940,6 +3060,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
         elseif arg1=='Blizzard_MajorFactions' then
             Init_MajorFactionRenownFrame()
+
+        elseif arg1=='Blizzard_CovenantRenown' then
+            Init_Blizzard_CovenantRenown()
+
         end
 
     elseif event == "PLAYER_LOGOUT" then

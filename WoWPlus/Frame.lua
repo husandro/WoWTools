@@ -1887,6 +1887,9 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_ArchaeologyUI' then
         set_Move_Frame(ArchaeologyFrame)
+        
+    elseif arg1=='Blizzard_CovenantRenown' then
+        set_Move_Frame(CovenantRenownFrame)
     end
 end
 
