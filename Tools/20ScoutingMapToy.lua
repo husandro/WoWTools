@@ -112,12 +112,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             if not e.toolsFrame.disabled then
-                if not C_AddOns.IsAddOnLoaded('Blizzard_AchievementUI') then
+                AchievementFrame_LoadUI()
+                CollectionsJournal_LoadUI()
+                --[[if not C_AddOns.IsAddOnLoaded('Blizzard_AchievementUI') then
                     C_AddOns.LoadAddOn("Blizzard_AchievementUI")
                 end
                 if not C_AddOns.IsAddOnLoaded('Blizzard_ToyBox') then
                     C_AddOns.LoadAddOn("Blizzard_ToyBox")
-                end
+                end]]
 
                 C_Timer.After(2, function()
                     ToggleAchievementFrame()

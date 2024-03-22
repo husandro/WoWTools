@@ -187,9 +187,10 @@ local function EncounterJournal_Set_All_Info_Text()
         AllTipsFrame.weekLable= e.Cstr(AllTipsFrame, {mouse=true})
         AllTipsFrame.weekLable:SetPoint('TOPLEFT', AllTipsFrame.label, 'BOTTOMLEFT', 0, -12)
         AllTipsFrame.weekLable:SetScript('OnMouseDown', function(self)
-            if not C_AddOns.IsAddOnLoaded("Blizzard_WeeklyRewards") then
+            WeeklyRewards_LoadUI()
+            --[[if not C_AddOns.IsAddOnLoaded("Blizzard_WeeklyRewards") then
                 C_AddOns.LoadAddOn("Blizzard_WeeklyRewards")
-            end--周奖励面板
+            end]]--周奖励面板
             WeeklyRewards_ShowUI()--WeeklyReward.lua
             self:SetAlpha(1)
         end)

@@ -1787,7 +1787,7 @@ local function Set_Covenant_Button(self, covenantID, activityID)
                     ToggleCovenantRenown()
                 end
             end
-            
+
             --CovenantRenownMixin:SetUpCovenantData()
             local covenantData = C_Covenants.GetCovenantData(frame.covenantID) or {}
             local textureKit = covenantData.textureKit;
@@ -1959,7 +1959,6 @@ local function Init_MajorFactionRenownFrame()
     MajorFactionRenownFrame.WoWToolsFaction:SetScript('OnClick', function(self)
         Save.hide_MajorFactionRenownFrame_Button= not Save.hide_MajorFactionRenownFrame_Button and true or nil
         self:set_faction()
-        self:set_texture()
     end)
     MajorFactionRenownFrame.WoWToolsFaction.frame=CreateFrame('Frame', nil, MajorFactionRenownFrame.WoWToolsFaction)
     MajorFactionRenownFrame.WoWToolsFaction.btn={}
@@ -2071,20 +2070,16 @@ end
 --要塞报告 GarrisonBaseUtils.lua
 local function Init_Garrison_Menu(level)
     local GarrisonList={
-        {name=  e.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE,
+        --[[{name=  e.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE,
         garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
         garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
         disabled=not C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(LE_EXPANSION_DRAGONFLIGHT),
         atlas= 'dragonflight-landingbutton-up',
         tooltip= e.onlyChinese and '点击显示巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,
         func= function()
-            GenericTraitUI_LoadUI();
-            --if GenericTraitFrame:GetConfigID()~= C_Traits.GetConfigIDBySystemID(systemID) then
-            local DRAGONRIDING_TRAIT_SYSTEM_ID = 1;
-            GenericTraitFrame:SetSystemID(DRAGONRIDING_TRAIT_SYSTEM_ID)
-            ToggleFrame(GenericTraitFrame);
+            ToggleExpansionLandingPage()
         end,
-        },
+        },]]
 
         {name=  e.onlyChinese and '盟约圣所' or GARRISON_TYPE_9_0_LANDING_PAGE_TITLE,
         garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
@@ -2375,6 +2370,19 @@ local function Init_Menu(_, level, menuList)
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
             end
         end
+        local covenantID= C_Covenants.GetActiveCovenantID() or 0
+        local data = C_Covenants.GetCovenantData(covenantID) or {}
+        if data and not C_CovenantSanctumUI.HasMaximumRenown(covenantID) then
+            local tabs= C_CovenantSanctumUI.GetRenownLevels(covenantID) or {}
+            info={
+                text= format('|A:SanctumUpgrades-%s-32x32:0:0|a%s %d/%d', data.textureKit, e.cn(data.name), C_CovenantSanctumUI.GetRenownLevel() or 1, #tabs),
+                checked= CovenantRenownFrame and CovenantRenownFrame:IsShown(),
+                func= function()
+                    ToggleCovenantRenown()
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
     end
 
     if menuList then
@@ -2466,9 +2474,10 @@ local function click_Func(self, d)
         e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
 
     elseif IsShiftKeyDown() then
-        if not C_AddOns.IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
+        WeeklyRewards_LoadUI()
+        --[[if not C_AddOns.IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
             C_AddOns.LoadAddOn("Blizzard_WeeklyRewards")
-        end
+        end]]
         WeeklyRewards_ShowUI()--WeeklyReward.lua
 
     elseif d=='LeftButton' and not key then

@@ -110,7 +110,7 @@ local function Save_Sets_Colleced()
 
     local numCollected, numTotal = C_TransmogSets.GetBaseSetsCounts()
     local coll, all= 0, 0
-    
+
     for _, set in pairs(C_TransmogSets.GetBaseSets() or {}) do
         local variantSets = SetsDataProvider:GetVariantSets(set.setID) or {}
         if #variantSets==0 then
@@ -122,7 +122,7 @@ local function Save_Sets_Colleced()
         end
         SetsDataProvider:ClearSets()
     end
-    
+
     for index, info in pairs(wowSaveSets) do
         if info.class==e.Player.class then
             wowSaveSets[index]={
@@ -139,7 +139,7 @@ end
 
 local function GetSetsCollectedNum(setID)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
     local info= setID and C_TransmogSets.GetSetPrimaryAppearances(setID) or {}
-    local numCollected, numAll=0,0    
+    local numCollected, numAll=0,0
     for _,v in pairs(info) do
         numAll=numAll+1
         if v.collected then
@@ -290,7 +290,7 @@ end
 local function Init_Wardrober_Sets()
     local btn= e.Cbtn(WardrobeCollectionFrame.SetsCollectionFrame, {size={20,20}, icon=not Save.hideSets})
     btn:SetPoint('TOPLEFT', WardrobeCollectionFrame.ItemsCollectionFrame, 'TOPRIGHT', 4, 40)
-   
+
     --所有套装，数量
     btn.allSetsLabel= e.Cstr(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14, justifyH='RIGHT'})--所有套装，数量
     btn.allSetsLabel:SetPoint('BOTTOMRIGHT', -6, 8)
@@ -328,22 +328,22 @@ local function Init_Wardrober_Sets()
     --所有玩家，收集情况
     btn.allPlayerLabel= e.Cstr(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})--所有玩家，收集情况
     btn.allPlayerLabel:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT', 4, -2)
-    function btn:set_all_player_text()        
+    function btn:set_all_player_text()
         if Save.hideSets then
             self.allPlayerLabel:SetText('')
             return
         end
-    
+
         local coll, all, numClass= 0, 0, 0
         local m=''
         for _, info in pairs(wowSaveSets) do
-            if info.numCollected and info.numTotal and info.numTotal > 0 then    
+            if info.numCollected and info.numTotal and info.numTotal > 0 then
                 local t='|A:classicon-'..info.class..':0:0|a'
                 if info.coll and info.all and info.all>0 then
                     coll= coll+ info.coll
                     all= all+ info.all
                     t= t..format('%i%%', info.coll/info.all*100)..' '..info.coll..'/'.. info.all..'  '
-                end    
+                end
                 t=t..'('..info.numCollected..'/'..info.numTotal..')'
                 m=m..'|c'..select(4,GetClassColor(info.class))..t..'|r'..'|n'
                 numClass= numClass+1
@@ -353,7 +353,7 @@ local function Init_Wardrober_Sets()
             m=m..'|n'
                 ..(e.onlyChinese and '已收集 ' or TRANSMOG_COLLECTED)..format('%i%% %d/%d ', coll/all*100, coll, all)
                 ..(e.onlyChinese and '职业' or CLASS)..' '..numClass
-        end    
+        end
         self.allPlayerLabel:SetText(m)--所有玩家，收集情况
     end
 
@@ -394,7 +394,7 @@ local function Init_Wardrober_Sets()
     btn.tabAllLabel:SetPoint('BOTTOMLEFT', WardrobeCollectionFrameTab2.Text, 'TOPLEFT', 2, 8)
     function btn:set_tab_all_text()
         local text
-        if not Save.hideSets then            
+        if not Save.hideSets then
             for _, info in pairs(wowSaveSets) do
                 if info.class==e.Player.class then
                     if info.coll and info.all and info.all> 0  then
@@ -429,7 +429,7 @@ end
 
 --幻化，套装，索引 WardrobeCollectionFrame.SetsTransmogFrame
 local function set_Sets_Tooltips(self)--UpdateSets
-    local idexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE    
+    local idexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE
     for i= 1, self.PAGE_SIZE do
         local model = self.Models[i]
         if model and model:IsShown() then
@@ -512,7 +512,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                     local name = info.index==28 and (e.onlyChinese and '武器附魔' or WEAPON_ENCHANTMENT)
                             or e.cn(C_TransmogCollection.GetCategoryInfo(info.index))
                             or ''
-                    local collected, all =  info.Collected or 0, info.All or 0                    
+                    local collected, all =  info.Collected or 0, info.All or 0
                     local num= collected..'/'.. all
                     local per= format('%i%%', collected/all*100)
                     if collected==all then
@@ -526,13 +526,13 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                         num= num,
                         per= per,
                         col= select(2, math.modf(index/2))==0 and '|cffff7f00' or '|cffffffff',
-                    })  
+                    })
                 end
                 break
-                
+
             end
         end
-        return tab2    
+        return tab2
     end
     function btn:set_all_date_text()--设置内容
         if Save.hideItems then--禁用
@@ -541,12 +541,12 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
             end
             return
         end
-        
+
         local last=self
         local totaleCollected, totaleAll, totaleClass = 0, 0, 0--总数
         local classCollected, classAll= 0, 0--本职业，总数
         for class, tab in pairs (wowSaveItems) do
-            local label= self.itemsLabel[class]            
+            local label= self.itemsLabel[class]
             if not label then
                 label=e.Cstr(self, {mouse=true, })
                 label.class= class
@@ -566,7 +566,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                     for index, info in pairs(frame:GetParent():get_class_list(frame.class)) do
                         e.tips:AddDoubleLine(info.col..info.icon..info.name..' '..info.per, info.col..info.num..info.icon..' ('..index..(index<10 and ' ' or ''))
                     end
-                    
+
                     e.tips:Show()
                     frame:SetAlpha(0.5)
                 end)
@@ -579,12 +579,12 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                 last=label
             end
 
-          
+
             local collected, all = 0, 0
             for _, info in pairs(tab) do
                 collected = collected + (info.Collected or 0)
                 all = all + (info.All or 0)
-            end            
+            end
             totaleClass= totaleClass +1
             totaleCollected= totaleCollected+ collected
             totaleAll= totaleAll+ all
@@ -604,18 +604,18 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
             str:SetJustifyH('RIGHT')
             self.itemsLabel.all=str
             last= str
-        end    
+        end
         local text
         if totaleClass>1 then
             text= e.Icon.wow2..format('%i%% %s/%s ', totaleCollected/totaleAll*100, e.MK(totaleCollected, 3), e.MK(totaleAll,3))..(e.onlyChinese and '职业' or CLASS)..' '..totaleClass
         end
-        str:SetText(text or '')        
+        str:SetText(text or '')
 
         str= self.itemsLabel.classList--职业，列表
         if not str then
             str= e.Cstr(self)
             self.itemsLabel.classList= str
-            str:SetPoint('TOPLEFT', last, 'BOTTOMLEFT', 0, -12)            
+            str:SetPoint('TOPLEFT', last, 'BOTTOMLEFT', 0, -12)
             function str:set_class_text()
                 local text=''
                 for _, info in pairs(self:GetParent():get_class_list(self.class)) do
@@ -639,11 +639,11 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
         if not str then
             str= e.Cstr(WardrobeCollectionFrameTab1, {justifyH='RIGHT'})
             str:SetPoint('BOTTOMRIGHT', WardrobeCollectionFrameTab1.Text, 'TOPRIGHT', 2, 8)
-            self.itemsLabel.allTab=str           
+            self.itemsLabel.allTab=str
         end
         str:SetText(classCollected>1 and format('%d %i%%', classCollected, classCollected/classAll*100) or '')
     end
-    
+
     WardrobeCollectionFrame.InfoButton:ClearAllPoints()--移动，帮助，按钮
     WardrobeCollectionFrame.InfoButton:SetPoint('BOTTOMLEFT', CollectionsJournal.NineSlice.TopLeftCorner, -10, -15)
 
@@ -659,10 +659,10 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
 
     --部位，已收集， 提示
     hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateSlotButtons', function(self)
-        for _, btn in pairs(self.SlotsFrame.Buttons) do            
+        for _, btn in pairs(self.SlotsFrame.Buttons) do
             local collected= 0
             local category
-            if not Save.hideItems then                
+            if not Save.hideItems then
                 local transmogLocation= btn.transmogLocation
                 local slotID= transmogLocation:GetSlotID()
                 if ( transmogLocation:IsIllusion() ) then--武器，附魔
@@ -676,7 +676,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                 elseif slotID==16 or slotID==17 then--武器, 副手
                     local tab= slotID==16 and {12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 29} or {18, 19}
                     for _, category2 in pairs(tab) do
-                        collected= collected+ (C_TransmogCollection.GetCategoryCollectedCount(category2) or 0)                        
+                        collected= collected+ (C_TransmogCollection.GetCategoryCollectedCount(category2) or 0)
                     end
                 elseif ( transmogLocation:IsAppearance() ) then
                     local useLastWeaponCategory = self.transmogLocation:IsEitherHand() and
@@ -716,7 +716,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                 btn.Text:SetPoint('BOTTOMRIGHT')
                 btn.Text.category= category
             end
-            if btn.Text then                
+            if btn.Text then
                 btn.Text:SetText(collected>0 and e.MK(collected, 3) or '')
             end
         end
@@ -737,13 +737,13 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                     end
                     all= all+ 1
                 end
-                if all>0 then                    
+                if all>0 then
                     e.tips:AddLine(
                         (collected==all and '|cnGREEN_FONT_COLOR:' or '')
                         ..format('|A:transmog-nav-slot-enchant:0:0|a%i%%  %d/%d', collected/all*100, collected, all)
                     )
                 end
-                
+
             elseif slotID==16 or slotID==17 then--武器, 副手
                 local tab= slotID==16 and {12, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 25, 26, 27, 29} or {18, 19}
                 local n=1
@@ -754,7 +754,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                         local col= collected==all and '|cnGREEN_FONT_COLOR:' or (select(2, math.modf(n/2))==0 and '|cffff7f00' or '|cffffffff')
                         local icon= SlotsIcon[category] or ''
                         local name= e.cn(C_TransmogCollection.GetCategoryInfo(category)) or ''
-                        e.tips:AddLine(format('%s%s%s %i%%  %s/%s', col, icon, name, collected/all*100, e.MK(collected, 3), e.MK(all, 3)))    
+                        e.tips:AddLine(format('%s%s%s %i%%  %s/%s', col, icon, name, collected/all*100, e.MK(collected, 3), e.MK(all, 3)))
                         n=n+1
                     end
                 end
@@ -806,7 +806,7 @@ local function get_Link_Item_Type_Source(sourceID, type)
     end
 end
 local function set_Items_Tooltips(self)--UpdateItems    
-    local idexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE    
+    local idexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE
     for i= 1, self.PAGE_SIZE do
         local model = self.Models[i]
         if model and model:IsShown() then
@@ -954,12 +954,12 @@ end
 
 
 --设置，目标为模型
-local function Init_Wardrober_Transmog()   
+local function Init_Wardrober_Transmog()
     local check= e.Cbtn(WardrobeTransmogFrame.ModelScene, {size={22, 22}, icon='hide'})
     check.Text= e.Cstr(check)
     check.Text:SetPoint('CENTER')
 
-    check:SetPoint('TOP',WardrobeTransmogFrame.ModelScene.ClearAllPendingButton, 'BOTTOM', 0, -2)    
+    check:SetPoint('TOP',WardrobeTransmogFrame.ModelScene.ClearAllPendingButton, 'BOTTOM', 0, -2)
 
     function check:set_event()
         if self:IsShown() and not Save.hideTransmog then
@@ -982,7 +982,7 @@ local function Init_Wardrober_Transmog()
                     if #variantSets==0 then
                         table.insert(variantSets, C_TransmogSets.GetSetInfo(menuList))
                     end
-                    for _, tab in pairs(variantSets) do                        
+                    for _, tab in pairs(variantSets) do
                         if tab.setID then
                             local num= not tab.collected and select(4, GetSetsCollectedNum(tab.setID))
                             info={
@@ -1011,7 +1011,7 @@ local function Init_Wardrober_Transmog()
                     if tab.setID and tab.collected then
                         local variantSets = SetsDataProvider:GetVariantSets(tab.setID) or {}
                         local num= #variantSets
-                        if  #variantSets==1 then                            
+                        if  #variantSets==1 then
                             variantSets= C_TransmogSets.GetSetInfo(tab.setID)
                             num=1
                         end
@@ -1033,8 +1033,8 @@ local function Init_Wardrober_Transmog()
                                 --end
                             end
                         }
-                        e.LibDD:UIDropDownMenu_AddButton(info, level)                        
-                        
+                        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
                     end
                 end
                 SetsDataProvider:ClearSets()
@@ -1406,12 +1406,12 @@ local function Init_Heirloom()
 
 
 
-    local check= e.Cbtn(HeirloomsJournal, {size={22,22}, icon='hide'})    
+    local check= e.Cbtn(HeirloomsJournal, {size={22,22}, icon='hide'})
     function check:set_alpha()
         self:SetAlpha(Save.hideHeirloom and 0.3 or 1)
     end
     function check:set_texture()
-        self:SetNormalAtlas(Save.hideHeirloom and e.Icon.disabled or e.Icon.icon)     
+        self:SetNormalAtlas(Save.hideHeirloom and e.Icon.disabled or e.Icon.icon)
     end
     function check:set_filter_shown()
         self.frame:SetShown(not Save.hideHeirloom)
@@ -1439,7 +1439,7 @@ local function Init_Heirloom()
             self:set_filter_shown()
             HeirloomsJournal:FullRefreshIfVisible()
         else
-            HeirloomsJournal:SetClassAndSpecFilters(0, 0)            
+            HeirloomsJournal:SetClassAndSpecFilters(0, 0)
         end
     end)
     check:SetScript("OnMouseWheel", function(self, d)
@@ -1460,8 +1460,8 @@ local function Init_Heirloom()
     check:SetPoint('TOPLEFT', HeirloomsJournal.iconsFrame, 'TOPRIGHT', 8, 0)
     check:SetScript('OnLeave', GameTooltip_Hide)
     check:SetScript('OnEnter', check.set_tooltips)
-    
-    
+
+
     --过滤，按钮
     check.frame= CreateFrame('Frame', nil, check)
     check.frame:SetPoint('TOPLEFT', check, 'BOTTOMLEFT',0 -80)
@@ -1472,7 +1472,7 @@ local function Init_Heirloom()
 
     check.classButton={}
     check.specButton={}
-    
+
     function check:cereate_button(classID, specID, texture, atlas)
         local btn= e.Cbtn2({parent=self.frame, notSecureActionButton=true, size=26, showTexture=true, click=true})
         function btn:set_select(class, spec)
@@ -1480,7 +1480,7 @@ local function Init_Heirloom()
                 self:LockHighlight()
             else
                 self:UnlockHighlight()
-            end           
+            end
         end
         btn:SetScript('OnClick', function(self)
             HeirloomsJournal:SetClassAndSpecFilters(self.classID, self.specID)
@@ -1517,7 +1517,7 @@ local function Init_Heirloom()
                 btn= self:cereate_button(classID, specID, icon, nil)
                 btn.roleTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
                 btn.roleTexture:SetSize(15,15)
-                btn.roleTexture:SetPoint('LEFT', btn, 'RIGHT', -4, 0)                
+                btn.roleTexture:SetPoint('LEFT', btn, 'RIGHT', -4, 0)
                 if i==1 then
                     local texture= btn:CreateTexture()
                     texture:SetPoint('RIGHT', btn, 'LEFT')
@@ -1559,26 +1559,26 @@ local function Init_Heirloom()
         if atlas then
             local btn= check:cereate_button(classID, 0, nil, atlas)
             check.classButton[i]=btn
-            btn:SetPoint('TOPLEFT', check.classButton[i-1] or check.frame, 'BOTTOMLEFT')            
+            btn:SetPoint('TOPLEFT', check.classButton[i-1] or check.frame, 'BOTTOMLEFT')
         end
     end
 
     C_Timer.After(2, function()
         check:init_spce(select(2, UnitClassBase('player')), PlayerUtil.GetCurrentSpecID() or 0)
     end)
-    
+
     function check:chek_select(Class, Spec)
         for _, btn in pairs(self.classButton) do
             btn:set_select(Class, Spec)
-        end        
+        end
         self:init_spce(Class, Spec)
     end
 
-    
-    hooksecurefunc(HeirloomsJournal, 'SetClassAndSpecFilters', function(_, Class, Spec)        
+
+    hooksecurefunc(HeirloomsJournal, 'SetClassAndSpecFilters', function(_, Class, Spec)
         check:chek_select(Class, Spec)
     end)
-    
+
     check:set_alpha()
     check:set_texture()
     check:set_filter_shown()
@@ -1826,9 +1826,10 @@ local function Init()
             if d=='LeftButton' then
                 e.Chat(link, nil, true)
             elseif d=='RightButton' then
-                if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
+                --[[if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
                     C_AddOns.LoadAddOn('Blizzard_Collections')
-                end
+                end]]
+                CollectionsJournal_LoadUI()
                 local wcFrame= WardrobeCollectionFrame
                 if not CollectionsJournal:IsVisible() or not wcFrame:IsVisible() then
                     ToggleCollectionsJournal(5)
@@ -1903,10 +1904,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
             if Save.disabled then
                 panel:ADDON_LOADED()
-            else                
-                if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
+            else
+                --[[if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
                     C_AddOns.LoadAddOn('Blizzard_Collections')
-                end
+                end]]
+                CollectionsJournal_LoadUI()
                 Init()--试衣间, 外观列表
             end
 
