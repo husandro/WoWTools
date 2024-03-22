@@ -38,8 +38,6 @@ local Save={
        hideExpansionLandingPageMinimapButton= e.Player.husandro,--隐藏，图标
 
        moving_over_Icon_show_menu=e.Player.husandro,--移过图标时，显示菜单
-      -- MajorFaction={},--保存，派系声望
-
        --hide_MajorFactionRenownFrame_Button=true,--隐藏，派系声望，列表，图标
 }
 
@@ -53,9 +51,8 @@ local Save={
     [2511]=true,--'伊斯卡拉海象人
     [2510]=true,--'瓦德拉肯联军
     [2507]=true,--'龙鳞探险队'
-}]]
-
---[[hooksecurefunc('ReputationFrame_InitReputationRow', function(factionRow)
+}
+hooksecurefunc('ReputationFrame_InitReputationRow', function(factionRow)
     if factionRow.factionID and C_Reputation.IsMajorFaction(factionRow.factionID) and not MajorFaction[factionRow.factionID] then
         Save.MajorFaction[factionRow.factionID]=true
     end
@@ -71,12 +68,6 @@ end
 local panel= CreateFrame("Frame")
 local Button
 
-
---[[if e.Player.husandro then
-    hooksecurefunc(BaseMapPoiPinMixin, 'SetTexture', function(poiInfo)
-        print(id, e.cn(addName))
-    end)
-end]]
 
 
 
@@ -97,16 +88,6 @@ local barColor = {
 	[6] = RARE_BLUE_COLOR,
 }
 
---[[local barColorFromTintValue = {
-	[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.White] = WHITE_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Red] = RED_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Yellow] = YELLOW_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Orange] = ORANGE_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Purple] = EPIC_PURPLE_COLOR,
-	[Enum.StatusBarColorTintValue.Green] = GREEN_FONT_COLOR,
-	[Enum.StatusBarColorTintValue.Blue] = RARE_BLUE_COLOR,
-}]]
 local function get_AreaPOIInfo_Name(poiInfo)
     return (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
 end
@@ -125,8 +106,7 @@ end
 
 
 
---任务奖励
---QuestUtils_AddQuestRewardsToTooltip(tooltip, questID, style)
+--任务奖励 QuestUtils_AddQuestRewardsToTooltip(tooltip, questID, style)
 local function Get_QuestReward_Texture(questID)
     local itemTexture, bestQuality
 
@@ -1771,55 +1751,65 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+--取得，等级，派系声望
+local function Get_Majoor_Faction_Level(factionID, level)
+    local text=''
+    level= level or 0
+    if C_MajorFactions.HasMaximumRenown(factionID) then
+        text= format('|cnGREEN_FONT_COLOR:%d|r', level)
+    else
+        local levels = C_MajorFactions.GetRenownLevels(factionID)
+        if levels then
+            text= format('%d/%d', level, #levels)
+        else
+            text= format('%d', level)
+        end
+    end
+    return text
+end
+
+
 --取得，所有，派系声望
 local function Get_Major_Faction_List()
     local tab={}
     for i= LE_EXPANSION_DRAGONFLIGHT, e.ExpansionLevel, 1 do
-        print(C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(i), i)
-        if C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(i) then
-            for _, factionID in pairs(C_MajorFactions.GetMajorFactionIDs(i) or {}) do
-                table.insert(tab, factionID)
-                print(factionID)
-            end
+        for _, factionID in pairs(C_MajorFactions.GetMajorFactionIDs(i) or {}) do--if C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(i) then
+            table.insert(tab, factionID)
         end
     end
-    --{ Name = "WORLD_STATE_RENOWN_CAP_10_0", Type = "number", Value = 19735 },
-    --{ Name = "WORLD_STATE_RAPID_RENOWN_CAP_10_0", Type = "number", Value = 20851 },
-    --{ Name = "PLUNDERSTORM_MAJOR_FACTION_ID", Type = "number", Value = 2593 },
-    for _, factionID in pairs(Constants.MajorFactionsConsts or {}) do
+    for _, factionID in pairs(Constants.MajorFactionsConsts or {}) do--MajorFactionsConstantsDocumentation.lu
         table.insert(tab, factionID)
     end
-    
     table.sort(tab, function(a,b) return a>b end)
     return tab
 end
 
 
---派系声望, 菜单
+--菜单, 派系声望
 local function Set_Faction_Menu(factionID)
     local data = C_MajorFactions.GetMajorFactionData(factionID or 0)
     if data and data.name then
-        local level
-        level= data.renownLevel or 0
-        if C_MajorFactions.HasMaximumRenown(factionID) then
-            level= format('|cnGREEN_FONT_COLOR:%d|r', level)
-        else
-            local levels = C_MajorFactions.GetRenownLevels(factionID)
-            if levels then
-                level= format('%d/%d', level, #levels)
-            else
-                level= format('%d', level)
-            end
-        end
         return {
             text=format('|A:majorfactions_icons_%s512:0:0|a%s %s %s',
                         data.textureKit or '',
                         e.cn(data.name) or (e.onlyChinese and '主要阵营' or MAJOR_FACTION_LIST_TITLE),
                         C_MajorFactions.HasMaximumRenown(factionID) and '|cnGREEN_FONT_COLOR:' or '',
-                        level),
+                        Get_Majoor_Faction_Level(factionID, data.renownLevel)),
             checked= MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==factionID,
             keepShownOnClick=true,
             colorCode= (not data.isUnlocked and data.renownLevel==0) and '|cff606060' or nil,
+            tooltipOnButton=true,
+            tooltipTitle='FactionID '..factionID,
             arg1=factionID,
             func= function(_, arg1)
                 if MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==arg1 then
@@ -1837,6 +1827,13 @@ local function Init_MajorFactionRenownFrame()
     MajorFactionRenownFrame.WoWToolsFaction= e.Cbtn(MajorFactionRenownFrame, {size={22,22}, icon='hide'})
     MajorFactionRenownFrame.WoWToolsFaction:SetFrameStrata('HIGH')
     MajorFactionRenownFrame.WoWToolsFaction:SetPoint('LEFT', MajorFactionRenownFrame.CloseButton, 'RIGHT', 4, 0)
+    MajorFactionRenownFrame.WoWToolsFaction:SetScript('OnLeave', GameTooltip_Hide)
+    MajorFactionRenownFrame.WoWToolsFaction:SetScript('OnEnter', function()
+        e.tips:SetOwner(MinimapCluster, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:Show()
+    end)
     MajorFactionRenownFrame.WoWToolsFaction:SetScript('OnClick', function(self)
         Save.hide_MajorFactionRenownFrame_Button= not Save.hide_MajorFactionRenownFrame_Button and true or nil
         self:set_faction()
@@ -1849,22 +1846,8 @@ local function Init_MajorFactionRenownFrame()
                 btn:SetShown(false)
             end
         else
+            local selectFactionID= MajorFactionRenownFrame:GetCurrentFactionID()
             local tab= Get_Major_Faction_List()--取得，所有，派系声望
-            --[[for factionID in pairs(LocalMajorFaction) do
-                table.insert(tab, factionID)
-            end
-            for factionID in pairs(Save.MajorFaction) do
-                table.insert(tab, factionID)
-            end
-            table.sort(tab, function(a,b) return a>b end)]]
-            for i= LE_EXPANSION_DRAGONFLIGHT, e.ExpansionLevel, 1 do
-                if C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(LE_EXPANSION_DRAGONFLIGHT) then
-                    for _, faction in pairs(C_MajorFactions.GetMajorFactionIDs(i) or {}) do
-
-                    end
-                end
-            end
-
             local n=1
             for _, factionID in pairs(tab) do
                 local info=C_MajorFactions.GetMajorFactionData(factionID or 0)
@@ -1873,16 +1856,28 @@ local function Init_MajorFactionRenownFrame()
                     if not btn then
                         btn= e.Cbtn(self, {size={235/2.5, 110/2.5}, icon='hide'})
                         btn:SetPoint('TOPLEFT', self.btn[n-1] or self, 'BOTTOMLEFT')
+                        btn:SetHighlightAtlas('ChromieTime-Button-Highlight')
+                        btn:SetScript('OnLeave', GameTooltip_Hide)
+                        btn:SetScript('OnEnter', ReputationBarMixin.ShowMajorFactionRenownTooltip)
                         btn:SetScript('OnClick', function(frame)
                             if MajorFactionRenownFrame:GetCurrentFactionID()~=frame.factionID then
                                 ToggleMajorFactionRenown(frame.factionID)
                             end
                         end)
+                        btn.Text= e.Cstr(btn)
+                        btn.Text:SetPoint('BOTTOM')
                         self.btn[n]= btn
                     end
                     n= n+1
                     btn.factionID= factionID
                     btn:SetNormalAtlas('majorfaction-celebration-'..(info.textureKit or 'toastbg'))
+                    btn:SetPushedAtlas('MajorFactions_Icons_'..(info.textureKit or '')..'512')
+                    if selectFactionID==factionID then--选中
+                        btn:LockHighlight()
+                    else
+                        btn:UnlockHighlight()
+                    end
+                    btn.Text:SetText(Get_Majoor_Faction_Level(factionID, info.renownLevel))--等级
                     btn:SetShown(true)
                 end
             end
@@ -1897,17 +1892,25 @@ local function Init_MajorFactionRenownFrame()
     function MajorFactionRenownFrame.WoWToolsFaction:set_texture()
         self:SetNormalAtlas(Save.hide_MajorFactionRenownFrame_Button and 'talents-button-reset' or e.Icon.icon)
     end
-    
+
     MajorFactionRenownFrame.WoWToolsFaction:set_texture()
 
-hooksecurefunc(MajorFactionRenownFrame, 'Refresh', function(self, majorFactionID)
-    print(id,addName)
-    --MajorFactionRenownFrame:HookScript('OnShow', function(self)
+    hooksecurefunc(MajorFactionRenownFrame, 'Refresh', function(self, majorFactionID)
         self.WoWToolsFaction:set_faction()
     end)
-
-
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2036,6 +2039,10 @@ local function Init_Garrison_Menu(level)
         }, level)
     end
 end
+
+
+
+
 
 
 
@@ -2241,20 +2248,6 @@ local function Init_Menu(_, level, menuList)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     elseif menuList=='FACTION' then--派系声望
-        --[[local tab={}
-        for factionID in pairs(LocalMajorFaction) do
-            table.insert(tab, factionID)
-        end
-        for factionID in pairs(Save.MajorFaction) do
-            table.insert(tab, factionID)
-        end
-        table.sort(tab, function(a,b) return a>b end)
-        for _, factionID in pairs(tab) do
-            info= Set_Faction_Menu(factionID)
-            if info then
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-            end
-        end]]
         local major= Get_Major_Faction_List()
         for i=2, #major do
             info= Set_Faction_Menu(major[i])
@@ -2270,30 +2263,23 @@ local function Init_Menu(_, level, menuList)
 
     Init_Garrison_Menu(level)--要塞报告
 
-    
-    --[[local factionID=0
-    for faction in pairs(LocalMajorFaction) do
-        factionID= faction> factionID and faction or factionID
-    end
-    for faction in pairs(Save.MajorFaction) do
-        factionID= faction> factionID and faction or factionID
-    end
-    info= Set_Faction_Menu(factionID)]]
 
     --派系声望
-    local majo= Get_Major_Faction_List()
-    for _, factionID in pairs(majo) do
+    local major= Get_Major_Faction_List()
+    for _, factionID in pairs(major) do
         info= Set_Faction_Menu(factionID)
         if info then
             e.LibDD:UIDropDownMenu_AddSeparator(level)
-            info.hasArrow=majo>0
+            if #major>1 then
+                info.hasArrow= true
+            end
             info.keepShownOnClick=true
             info.menuList='FACTION'
             e.LibDD:UIDropDownMenu_AddButton(info, level)
             break
         end
     end
-        
+
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
@@ -2921,7 +2907,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.uiMapIDs= Save.uiMapIDs or {}
             Save.questIDs= Save.questIDs or {}
             Save.areaPoiIDs= Save.areaPoiIDs or {}
-            --Save.MajorFaction= Save.MajorFaction or {}--保存，派系声望
 
             addName2= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)
 
