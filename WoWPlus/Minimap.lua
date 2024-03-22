@@ -1809,11 +1809,9 @@ local function Set_Faction_Menu(factionID)
 end
 
 --派系，列表 MajorFactionRenownFrame
-local function Init_MajorFactionRenownFrame()    
-    if not MajorFactionRenownFrame then
-        return
-    end
+local function Init_MajorFactionRenownFrame()
     MajorFactionRenownFrame.WoWToolsFaction= e.Cbtn(MajorFactionRenownFrame, {size={22,22}, icon='hide'})
+    MajorFactionRenownFrame.WoWToolsFaction:SetFrameStrata('HIGH')
     MajorFactionRenownFrame.WoWToolsFaction:SetScript('OnClick', function(self)
         Save.hide_MajorFactionRenownFrame_Button= not Save.hide_MajorFactionRenownFrame_Button and true or nil
         self:set_faction()
@@ -1851,9 +1849,9 @@ local function Init_MajorFactionRenownFrame()
                     end
                     n= n+1
                     btn.factionID= factionID
-                    btn:SetNormalAtlas('majorfaction-celebration-'..(info.textureKit or 'toastbg'))                    
+                    btn:SetNormalAtlas('majorfaction-celebration-'..(info.textureKit or 'toastbg'))
                     btn:SetShown(true)
-                end                
+                end
             end
             for i=n+1, #self.btn do
                 local btn= self.btn[i]
@@ -1873,7 +1871,7 @@ local function Init_MajorFactionRenownFrame()
     MajorFactionRenownFrame:HookScript('OnShow', function(self)
         self.WoWToolsFaction:set_faction()
     end)
-    
+
 
 end
 
@@ -2743,7 +2741,7 @@ local function Init()
     Init_InstanceDifficulty()--副本，难图，指示
     C_Timer.After(2, Init_Set_Button)--小地图, 标记, 文本
     Init_M_Portal_Room_Labels()--挑战专送门标签
-    C_Timer.After(2, Init_MajorFactionRenownFrame)--派系声望
+
 
 
     --图标
@@ -2904,9 +2902,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_TimeManager' then
-
             Blizzard_TimeManager()--秒表
         --elseif arg1=='Blizzard_ExpansionLandingPage' then
+
+        elseif arg1=='Blizzard_MajorFactions' then
+            Init_MajorFactionRenownFrame()
         end
 
     elseif event == "PLAYER_LOGOUT" then
