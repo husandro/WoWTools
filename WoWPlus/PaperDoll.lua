@@ -1795,12 +1795,16 @@ local function Init_Status_Label()
     hooksecurefunc('PaperDollFrame_SetArmor', function(frame, unit)--护甲
         if create_status_label(frame) then
             local effectiveArmor = select(2, UnitArmor(unit))
-            local armorReduction
-            armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel(unit)) or 0
+            local text
+            local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel(unit)) or 0
             if armorReduction>0 then
-                armorReduction = format('%0.2f%%', armorReduction)
+                text = format('%0.2f%%', armorReduction)
+                local armorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor);
+                if armorReductionAgainstTarget and armorReduction~=armorReductionAgainstTarget then
+                    text = format('%s/%0.2f%%', text, armorReductionAgainstTarget)
+                end
             end
-            frame.numLabel:SetText(armorReduction or '')
+            frame.numLabel:SetText(text or '')
         end
     end)
     hooksecurefunc('PaperDollFrame_SetAvoidance', function(frame)--闪避
