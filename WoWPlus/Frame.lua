@@ -238,6 +238,11 @@ local function set_Scale_Size(frame, tab)
             e.tips:AddLine(' ')
         end
         e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, 'Shift+'..e.Icon.right)
+
+        if self.notInCombat then
+            e.tips:AddLine(' ')
+            e.tips:AddLine(e.onlyChinese and '请不要在战斗中操作' or 'Please don\'t do it in combat')
+        end
         e.tips:Show()
     end
 
@@ -2369,9 +2374,14 @@ end)]]
         end, sizeUpdateFunc=function(btn)
             if RaidFrame:IsShown() then
                 btn:set_RaidFrame_Button_size()
+                e.call('RaidGroupFrame_Update')
             end
-        end, sizeRestFunc=function(self)
-            self.target:SetSize(338, 424)
+        end, sizeRestFunc=function(btn)
+            btn.target:SetSize(338, 424)
+            if RaidFrame:IsShown() then
+                btn:set_RaidFrame_Button_size()
+                e.call('RaidGroupFrame_Update')
+            end
         end
     })
     set_Move_Frame(RaidInfoFrame, {setSize=true, minW=345, minH=128, notMoveAlpha=true, initFunc=function(btn)

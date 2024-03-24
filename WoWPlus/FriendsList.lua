@@ -634,6 +634,7 @@ local function set_RaidGroupFrame_Update()--团队, 模块
     end
     local itemLevel, itemNum, afkNum, deadNum, notOnlineNum= 0,0,0,0,0
     local getItemLevelTab={}--取得装等
+    local setSize= WhoFrame:GetWidth()> 350
     for i=1, MAX_RAID_MEMBERS do
         local button = _G["RaidGroupButton"..i]
         if button and button.subframes then
@@ -666,7 +667,7 @@ local function set_RaidGroupFrame_Update()--团队, 模块
 
                     text= text or e.PlayerOnlineInfo(unit)--状态
 
-                    if not text then--处理名字
+                    if not text and not setSize then--处理名字
                         text= name:gsub('(%-.+)','')--名称
                         text= e.WA_Utf8Sub(text, 3, 7)
                     end

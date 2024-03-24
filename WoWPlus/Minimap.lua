@@ -1962,7 +1962,7 @@ local function Set_Faction_Menu(factionID)
                         Get_Major_Faction_Level(factionID, data.renownLevel)),
             checked= MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==factionID,
             keepShownOnClick=true,
-            colorCode= (not data.isUnlocked and data.renownLevel==0) and '|cff606060' or nil,
+            colorCode= UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' or ((not data.isUnlocked and data.renownLevel==0) and '|cff606060') or nil,
             tooltipOnButton=true,
             tooltipTitle='FactionID '..factionID,
             arg1=factionID,
@@ -2075,10 +2075,9 @@ local function Init_MajorFactionRenownFrame()
 
     MajorFactionRenownFrame.WoWToolsFaction:set_scale()
     MajorFactionRenownFrame.WoWToolsFaction:set_texture()
-    MajorFactionRenownFrame.WoWToolsFaction.HeaderText= e.Cstr(MajorFactionRenownFrame.WoWToolsFaction.frame, {color={r=1, g=1, b=1}, copyFont=MajorFactionRenownFrame.HeaderFrame.Level, justifyH='LEFT'})
-    --MajorFactionRenownFrame.WoWToolsFaction.HeaderText:SetPoint('BOTTOM', MajorFactionRenownFrame.TrackFrame.Title, 'TOP')
+    MajorFactionRenownFrame.WoWToolsFaction.HeaderText= e.Cstr(MajorFactionRenownFrame.WoWToolsFaction.frame, {color={r=1, g=1, b=1}, copyFont=MajorFactionRenownFrame.HeaderFrame.Level, justifyH='LEFT', size=14})
     MajorFactionRenownFrame.WoWToolsFaction.HeaderText:SetPoint('BOTTOMLEFT', MajorFactionRenownFrame.HeaderFrame.Level, 'BOTTOMRIGHT', 16, -4)
-    
+
     function MajorFactionRenownFrame.WoWToolsFaction.HeaderText:set_text()
         local text=''
         if not Save.hide_MajorFactionRenownFrame_Button then
