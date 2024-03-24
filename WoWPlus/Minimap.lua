@@ -39,6 +39,7 @@ local Save={
 
        moving_over_Icon_show_menu=e.Player.husandro,--移过图标时，显示菜单
        --hide_MajorFactionRenownFrame_Button=true,--隐藏，派系声望，列表，图标
+       --MajorFactionRenownFrame_Button_Scale=1,--缩放
 }
 
 
@@ -1756,8 +1757,16 @@ end
 
 
 
- --盟约 9.0
 
+
+
+
+
+
+
+
+
+ --盟约 9.0
  local mainTextureKitRegions = {
 	["Background"] = "CovenantSanctum-Renown-Background-%s",
 	["TitleDivider"] = "CovenantSanctum-Renown-Title-Divider-%s",
@@ -1774,7 +1783,7 @@ local function Set_Covenant_Button(self, covenantID, activityID)
     local btn= self['covenant'..covenantID]
     if not btn then
         local info = C_Covenants.GetCovenantData(covenantID) or {}
-        btn=e.Cbtn(self.frame or self, {size={22,22}, atlas=format('SanctumUpgrades-%s-32x32', info.textureKit)})
+        btn=e.Cbtn(self.frame or self, {size={32,32}, atlas=format('SanctumUpgrades-%s-32x32', info.textureKit)})
         btn:SetHighlightAtlas('ChromieTime-Button-HighlightForge-ColorSwatchHighlight')
         if covenantID==1 then
             btn:SetPoint('BOTTOMLEFT', self.frame and self:GetParent() or self, 'TOPLEFT', 0, 5)
@@ -1853,8 +1862,6 @@ local function Set_Covenant_Button(self, covenantID, activityID)
 
  --盟约 9.0
  local function Init_Blizzard_CovenantRenown()
-
-
     CovenantRenownFrame:HookScript('OnShow', function(self)
         local activityID = C_Covenants.GetActiveCovenantID() or 0
         if activityID>0 then
@@ -1883,18 +1890,44 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 --取得，等级，派系声望
-local function Get_Majoor_Faction_Level(factionID, level)
+local function Get_Major_Faction_Level(factionID, level)
     local text=''
     level= level or 0
     if C_MajorFactions.HasMaximumRenown(factionID) then
-        text= format('|cnGREEN_FONT_COLOR:%d|r', level)
+        if C_Reputation.IsFactionParagon(factionID) then--奖励
+            local currentValue, threshold, _, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
+            if not tooLowLevelForParagon and currentValue and threshold then
+                local completed= math.modf(currentValue/threshold)--完成次数
+                currentValue= completed>0 and currentValue - threshold * completed or currentValue
+                text= format('%i%%|A:GarrMission-%sChest:0:0|a%s%d', currentValue/threshold*100, e.Player.faction, hasRewardPending and e.Icon.select2 or '', completed)
+
+            end
+        end
+        text= text or format('|cnGREEN_FONT_COLOR:%d|r|A:common-icon-checkmark:0:0|a', level)
     else
         local levels = C_MajorFactions.GetRenownLevels(factionID)
         if levels then
             text= format('%d/%d', level, #levels)
         else
             text= format('%d', level)
+        end
+        local info = C_MajorFactions.GetMajorFactionData(factionID)
+        if info then
+            text= format('%s %i%%', text, info.renownReputationEarned/info.renownLevelThreshold*100)
         end
     end
     return text
@@ -1922,11 +1955,11 @@ local function Set_Faction_Menu(factionID)
     local data = C_MajorFactions.GetMajorFactionData(factionID or 0)
     if data and data.name then
         return {
-            text=format('|A:majorfactions_icons_%s512:0:0|a%s %s %s',
+            text=format('|A:majorfactions_icons_%s512:0:0|a%s %s',
                         data.textureKit or '',
                         e.cn(data.name) or (e.onlyChinese and '主要阵营' or MAJOR_FACTION_LIST_TITLE),
-                        C_MajorFactions.HasMaximumRenown(factionID) and '|cnGREEN_FONT_COLOR:' or '',
-                        Get_Majoor_Faction_Level(factionID, data.renownLevel)),
+                        --C_MajorFactions.HasMaximumRenown(factionID) and '|cnGREEN_FONT_COLOR:' or '',
+                        Get_Major_Faction_Level(factionID, data.renownLevel)),
             checked= MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==factionID,
             keepShownOnClick=true,
             colorCode= (not data.isUnlocked and data.renownLevel==0) and '|cff606060' or nil,
@@ -1947,23 +1980,46 @@ end
 --派系，列表 MajorFactionRenownFrame
 local function Init_MajorFactionRenownFrame()
     MajorFactionRenownFrame.WoWToolsFaction= e.Cbtn(MajorFactionRenownFrame, {size={22,22}, icon='hide'})
+    function MajorFactionRenownFrame.WoWToolsFaction:set_scale()
+        self.frame:SetScale(Save.MajorFactionRenownFrame_Button_Scale or 1)
+    end
+    function MajorFactionRenownFrame.WoWToolsFaction:set_texture()
+        self:SetNormalAtlas(Save.hide_MajorFactionRenownFrame_Button and 'talents-button-reset' or e.Icon.icon)
+    end
+    function MajorFactionRenownFrame.WoWToolsFaction:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.GetShowHide(not Save.hide_MajorFactionRenownFrame_Button), e.Icon.left)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.MajorFactionRenownFrame_Button_Scale or 1), e.Icon.mid)
+        e.tips:Show()
+    end
     MajorFactionRenownFrame.WoWToolsFaction:SetFrameStrata('HIGH')
     MajorFactionRenownFrame.WoWToolsFaction:SetPoint('LEFT', MajorFactionRenownFrame.CloseButton, 'RIGHT', 4, 0)
     MajorFactionRenownFrame.WoWToolsFaction:SetScript('OnLeave', GameTooltip_Hide)
-    MajorFactionRenownFrame.WoWToolsFaction:SetScript('OnEnter', function()
-        e.tips:SetOwner(MinimapCluster, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-    end)
+    MajorFactionRenownFrame.WoWToolsFaction:SetScript('OnEnter', MajorFactionRenownFrame.WoWToolsFaction.set_tooltips)
     MajorFactionRenownFrame.WoWToolsFaction:SetScript('OnClick', function(self)
         Save.hide_MajorFactionRenownFrame_Button= not Save.hide_MajorFactionRenownFrame_Button and true or nil
         self:set_faction()
+        self:set_texture()
+        self:set_tooltips()
     end)
+    MajorFactionRenownFrame.WoWToolsFaction:SetScript('OnMouseWheel', function(self, d)
+        local n= Save.MajorFactionRenownFrame_Button_Scale or 1
+        n= d==1 and n-0.1 or n
+        n= d==-1 and n+0.1 or n
+        n= n>4 and 4 or n
+        n= n<0.4 and 0.4 or n
+        Save.MajorFactionRenownFrame_Button_Scale=n
+        self:set_scale()
+        self:set_tooltips()
+    end)
+
+
     MajorFactionRenownFrame.WoWToolsFaction.frame=CreateFrame('Frame', nil, MajorFactionRenownFrame.WoWToolsFaction)
     MajorFactionRenownFrame.WoWToolsFaction.btn={}
     function MajorFactionRenownFrame.WoWToolsFaction:set_faction()
-        self:SetNormalAtlas(Save.hide_MajorFactionRenownFrame_Button and 'talents-button-reset' or e.Icon.icon)
         if Save.hide_MajorFactionRenownFrame_Button then
             self.frame:SetShown(false)
             return
@@ -1990,7 +2046,7 @@ local function Init_MajorFactionRenownFrame()
                         end
                     end)
                     btn.Text= e.Cstr(btn)
-                    btn.Text:SetPoint('BOTTOM')
+                    btn.Text:SetPoint('BOTTOMLEFT', btn, 'BOTTOM')
                     self.btn[n]= btn
                 end
                 n= n+1
@@ -2002,7 +2058,7 @@ local function Init_MajorFactionRenownFrame()
                 else
                     btn:UnlockHighlight()
                 end
-                btn.Text:SetText(Get_Majoor_Faction_Level(factionID, info.renownLevel))--等级
+                btn.Text:SetText(Get_Major_Faction_Level(factionID, info.renownLevel))--等级
             end
         end
 
@@ -2017,8 +2073,24 @@ local function Init_MajorFactionRenownFrame()
     end
 
 
-    hooksecurefunc(MajorFactionRenownFrame, 'Refresh', function(self, majorFactionID)
+    MajorFactionRenownFrame.WoWToolsFaction:set_scale()
+    MajorFactionRenownFrame.WoWToolsFaction:set_texture()
+    MajorFactionRenownFrame.WoWToolsFaction.HeaderText= e.Cstr(MajorFactionRenownFrame.WoWToolsFaction.frame, {color={r=1, g=1, b=1}})
+    MajorFactionRenownFrame.WoWToolsFaction.HeaderText:SetPoint('BOTTOM', MajorFactionRenownFrame.TrackFrame.Title, 'TOP')
+    function MajorFactionRenownFrame.WoWToolsFaction.HeaderText:set_text()
+        local text=''
+        if not Save.hide_MajorFactionRenownFrame_Button then
+            local factionID= MajorFactionRenownFrame:GetCurrentFactionID()
+            local info=C_MajorFactions.GetMajorFactionData(factionID or 0)
+            if info then
+                text= Get_Major_Faction_Level(factionID, info.renownLevel)
+            end
+        end
+        self:SetText(text)
+    end
+    hooksecurefunc(MajorFactionRenownFrame, 'Refresh', function(self)
         self.WoWToolsFaction:set_faction()
+        self.WoWToolsFaction.HeaderText:set_text(majorFactionID)
     end)
 end
 

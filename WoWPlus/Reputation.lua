@@ -88,11 +88,11 @@ local function get_Faction_Info(index, factionID)
 						factionStandingtext= factionStandingtext..'/'..#levels
 					end
 				end
-				if Save.toRightTrackText then--向右平移 
+				--if Save.toRightTrackText then--向右平移 
 					value= format('%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
-				else
-					value= format('%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
-				end
+				--else
+					--value= format('%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
+				--end
 				barColor= GREEN_FONT_COLOR
 			end
 		else
@@ -129,7 +129,7 @@ local function get_Faction_Info(index, factionID)
 		end
 	end
 
-	local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励			
+	local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励
 	local hasRewardPending
 	if isParagon then--奖励
 		local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
