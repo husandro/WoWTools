@@ -6,7 +6,7 @@ local Save={
     --Equipment=nil--装备管理, 位置保存
     equipmentFrameScale=1.1,--装备管理, 缩放
     --hide=true,--隐藏CreateTexture
-    itemLevelBit=3,--物品等级，位数
+    itemLevelBit= 3,--物品等级，位数
 }
 
 
@@ -2255,7 +2255,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1 == id then
             Save= WoWToolsSave[addName] or Save
-            Save.itemLevelBit= Save.itemLevelBit or 3
+            Save.itemLevelBit= Save.itemLevelBit or 0
 
             --添加控制面板
             e.AddPanel_Header(nil, 'WoW')
