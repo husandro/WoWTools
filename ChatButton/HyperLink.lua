@@ -22,8 +22,10 @@ local Save={
 
     setPlayerSound= e.Player.husandro,--播放, 声音
 
-    --disabledNPCTalking=true,--禁用，隐藏NPC发言
+    --disabledNPCTalking=true,--禁用，隐藏NPC发言    
     --disabledTalkingPringText=true,--禁用，隐藏NPC发言，文本
+
+    --not_Add_Reload_Button=true,--添加 RELOAD 按钮
 }
 local button
 local panel= CreateFrame("Frame")
@@ -739,6 +741,56 @@ end
 
 
 
+--添加 RELOAD 按钮
+local function Init_Add_Reload_Button()
+    if Save.not_Add_Reload_Button or GameMenuFrame.reload then
+        if GameMenuFrame.reload then
+            GameMenuFrame.reload:SetShown(not Save.not_Add_Reload_Button)
+            SettingsPanel.AddOnsTab.reload:SetShown(not Save.not_Add_Reload_Button)
+        end
+        return
+    end
+    for _, frame in pairs({GameMenuFrame, SettingsPanel.AddOnsTab}) do
+        frame.reload= CreateFrame('Button', nil, frame, 'GameMenuButtonTemplate')
+        frame.reload:SetFormattedText('|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t%s',e.onlyChinese and '重新加载UI' or RELOADUI)
+
+        frame.reload:SetScript('OnLeave', GameTooltip_Hide)
+        frame.reload:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(id, 'Tools '..e.cn(addName))
+            e.tips:AddDoubleLine(e.onlyChinese and '重新加载UI' or RELOADUI, '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1)
+            e.tips:Show()
+        end)
+        frame.reload:SetScript('OnClick', e.Reload)
+    end
+
+    GameMenuFrame.reload:SetPoint('TOP', GameMenuButtonContinue, 'BOTTOM')
+    hooksecurefunc('GameMenuFrame_UpdateVisibleButtons', function(self)
+        if not Save.not_Add_Reload_Button then
+            self:SetHeight(self:GetHeight()+20)
+        end
+    end)
+
+    SettingsPanel.AddOnsTab.reload:SetPoint('RIGHT', SettingsPanel.ApplyButton, 'LEFT', -15,0)
+    e.Cstr(nil, {changeFont= SettingsPanel.OutputText, size=14})
+    SettingsPanel.OutputText:ClearAllPoints()
+    SettingsPanel.OutputText:SetPoint('BOTTOMLEFT', 20, 18)
+
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
 
 --##########
 --隐藏NPC发言
@@ -773,11 +825,6 @@ local function set_Talking()
     end
     panel.talkingFrame:RegisterEvent('TALKINGHEAD_REQUESTED')
 end
-
-
-
-
-
 
 
 
@@ -1029,6 +1076,19 @@ local function InitMenu(_, level, menuList)
             end,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif menuList=='RELOAD_BUTTON' then
+        info= {
+            text= e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button'),
+            checked= not Save.not_Add_Reload_Button,
+            tooltipOnButton=true,
+            tooltipTitle=e.onlyChinese and '主菜单|n选项' or format('%s|n%s', MAINMENU_BUTTON, OPTIONS),
+            func= function()
+                Save.not_Add_Reload_Button= not Save.not_Add_Reload_Button and true or nil
+                Init_Add_Reload_Button()
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 
     if menuList then
@@ -1151,9 +1211,9 @@ local function InitMenu(_, level, menuList)
         tooltipTitle= SLASH_RELOAD1,-- '/reload',
         colorCode='|cffff0000',
         keepShownOnClick=true,
-        func=function()
-            e.Reload()
-        end
+        hasArrow=true,
+        menuList='RELOAD_BUTTON',
+        func= e.Reload,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
@@ -1241,6 +1301,9 @@ local function Init()
 
     Init_Panel()--设置控制面板
     set_Talking()--隐藏NPC发言
+
+    Init_Add_Reload_Button()--添加 RELOAD 按钮
+
 end
 
 

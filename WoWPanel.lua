@@ -862,23 +862,7 @@ local function Init()
 
 
 
-    local btn= e.Cbtn(SettingsPanel.AddOnsTab, {type=false, size={140, 25}})
-    btn:SetPoint('RIGHT', SettingsPanel.ApplyButton, 'LEFT', -15,0)
-    btn:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
-    btn:SetScript("OnClick", e.Reload)
-    btn:SetScript('OnLeave', GameTooltip_Hide)
-    btn:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(' ', '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1)
-        e.tips:AddLine(" ")
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-    end)
-
-    e.Cstr(nil, {changeFont= SettingsPanel.OutputText, size=14})
-    SettingsPanel.OutputText:ClearAllPoints()
-    SettingsPanel.OutputText:SetPoint('BOTTOMLEFT', 20, 18)
+ 
 end
 
 

@@ -2075,8 +2075,10 @@ local function Init_MajorFactionRenownFrame()
 
     MajorFactionRenownFrame.WoWToolsFaction:set_scale()
     MajorFactionRenownFrame.WoWToolsFaction:set_texture()
-    MajorFactionRenownFrame.WoWToolsFaction.HeaderText= e.Cstr(MajorFactionRenownFrame.WoWToolsFaction.frame, {color={r=1, g=1, b=1}})
-    MajorFactionRenownFrame.WoWToolsFaction.HeaderText:SetPoint('BOTTOM', MajorFactionRenownFrame.TrackFrame.Title, 'TOP')
+    MajorFactionRenownFrame.WoWToolsFaction.HeaderText= e.Cstr(MajorFactionRenownFrame.WoWToolsFaction.frame, {color={r=1, g=1, b=1}, copyFont=MajorFactionRenownFrame.HeaderFrame.Level, justifyH='LEFT'})
+    --MajorFactionRenownFrame.WoWToolsFaction.HeaderText:SetPoint('BOTTOM', MajorFactionRenownFrame.TrackFrame.Title, 'TOP')
+    MajorFactionRenownFrame.WoWToolsFaction.HeaderText:SetPoint('BOTTOMLEFT', MajorFactionRenownFrame.HeaderFrame.Level, 'BOTTOMRIGHT', 16, -4)
+    
     function MajorFactionRenownFrame.WoWToolsFaction.HeaderText:set_text()
         local text=''
         if not Save.hide_MajorFactionRenownFrame_Button then
@@ -2446,9 +2448,11 @@ local function Init_Menu(_, level, menuList)
         local data = C_Covenants.GetCovenantData(covenantID) or {}
         if data and not C_CovenantSanctumUI.HasMaximumRenown(covenantID) then
             local tabs= C_CovenantSanctumUI.GetRenownLevels(covenantID) or {}
+            e.LibDD:UIDropDownMenu_AddSeparator(level)
             info={
                 text= format('|A:SanctumUpgrades-%s-32x32:0:0|a%s %d/%d', data.textureKit, e.cn(data.name), C_CovenantSanctumUI.GetRenownLevel() or 1, #tabs),
                 checked= CovenantRenownFrame and CovenantRenownFrame:IsShown(),
+                keepShownOnClick=true,
                 func= function()
                     ToggleCovenantRenown()
                 end
