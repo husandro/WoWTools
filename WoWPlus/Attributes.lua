@@ -145,7 +145,12 @@ local function set_Text_Value(frame, value, value2)
             text= ''
         else
             if frame.useNumber then
-                text= e.MK(value, frame.bit)..( value2 and '/'..e.MK(value2, frame.bit) or '')
+                if frame.bit==0 then
+                    text= BreakUpLargeNumbers(value)..(value2 and '/'..BreakUpLargeNumbers(value) or '')
+                else
+                    text= e.MK(value, frame.bit)..( value2 and '/'..e.MK(value2, frame.bit) or '')
+                end
+                
             else
                 if value2 then
                     text= format('%.'..frame.bit..'f/%.'..frame.bit..'f%%', value, value2)

@@ -1650,11 +1650,29 @@ end
 
 
 --属性，增强
-local function create_status_label(frame)
+local function status_set_rating(frame, rating)
+    local num= GetCombatRating(rating)
+    if num == 0 then
+        frame.numLabel:SetText('')
+    else
+        local extraChance = GetCombatRatingBonus(rating) or 0
+        local extra=''
+        if extraChance>0 then
+            extra= format('|cnGREEN_FONT_COLOR:+%.2f%%|r', extraChance)
+        elseif extraChance<0 then
+            extra= format('|cnRED_FONT_COLOR:%.2f%%|r', extraChance)
+        end
+        frame.numLabel:SetFormattedText('%d%s', BreakUpLargeNumbers(num), extra)
+    end
+end
+local function create_status_label(frame, rating)
     if not Save.hide and Save.itemLevelBit>0 and frame:IsShown() then
         if not frame.numLabel then
             frame.numLabel=e.Cstr(frame, {color={r=1,g=1,b=1}})
             frame.numLabel:SetPoint('BOTTOMLEFT', frame.Label, 'BOTTOMRIGHT', 4, 0)
+        end
+        if rating then
+            status_set_rating(frame, rating)
         end
         return true
     elseif frame.numLabel then
@@ -1665,9 +1683,15 @@ end
 local function Init_Status_Label()
     hooksecurefunc('PaperDollFrame_SetItemLevel', function(statFrame)--物品等级，小数点
         if statFrame:IsShown() and not Save.hide and Save.itemLevelBit>0 then
-            local num= select(2, GetAverageItemLevel())
+            local avgItemLevel, avgItemLevelEquipped, avgItemLevelPvP = GetAverageItemLevel()
+	        local minItemLevel = C_PaperDollInfo.GetMinItemLevel()
+	        local displayItemLevel = math.max(minItemLevel or 0, avgItemLevelEquipped)
+            local pvp=''
+            if ( avgItemLevel ~= avgItemLevelPvP ) then
+                pvp= format('/|cffff7f00%i|r', avgItemLevelPvP)
+            end
             if statFrame.numericValue ~= num then
-                statFrame.Value:SetFormattedText('%.0'..Save.itemLevelBit..'f', num)
+                statFrame.Value:SetFormattedText('%.0'..Save.itemLevelBit..'f%s', displayItemLevel, pvp)
             end
         end
     end)
@@ -1680,33 +1704,49 @@ local function Init_Status_Label()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '小数点 ' or 'bit ')..(Save.itemLevelBit==0 and (e.onlyChinese and '禁用' or DISABLE) or ('|cnGREEN_FONT_COLOR:'..Save.itemLevelBit)), '-1'..e.Icon.left)
-        e.tips:AddDoubleLine(' ', '+1'..e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '小数点 ' or 'bit ')..(Save.itemLevelBit==0 and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r' or ('|cnGREEN_FONT_COLOR:'..Save.itemLevelBit)), '-1'..e.Icon.left)
+        e.tips:AddDoubleLine('0 '..(e.onlyChinese and '禁用' or DISABLE), '+1'..e.Icon.right)
         e.tips:Show()
-        self:SetAlpha(0.7)
     end
     CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnLeave', function(self)
         self:SetAlpha(1)
         GameTooltip_Hide()
     end)
-    CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnEnter', CharacterStatsPane.ItemLevelFrame.Value.set_tooltips)
+    CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnEnter', function(self)
+        self:set_tooltips()
+        self:SetAlpha(0.7)
+    end)
+    CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnMouseUp', function(self)
+        self:SetAlpha(0.7)
+    end)
     CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnMouseDown', function(self, d)
         local n= Save.itemLevelBit or 3
         n= d=='LeftButton' and n-1 or n
         n= d=='RightButton' and n+1 or n
-        n= n>6 and 6 or n
+        n= n>4 and 4 or n
         n= n<0 and 0 or n
         Save.itemLevelBit=n
         e.call('PaperDollFrame_UpdateStats')
         self:set_tooltips()
+        self:SetAlpha(0.3)
     end)
 
-
-    hooksecurefunc('PaperDollFrame_SetMastery', function(frame)--精通
+    hooksecurefunc('PaperDollFrame_SetStat', function(frame, unit, statIndex)--主属性
         if create_status_label(frame) then
-            frame.numLabel:SetText(BreakUpLargeNumbers(GetCombatRating(CR_MASTERY)))
+            local tooltipText
+            local _, _, posBuff, negBuff = UnitStat(unit, statIndex)
+            if posBuff ~= 0 or negBuff ~= 0 then
+                if ( posBuff > 0 ) then
+                    tooltipText = GREEN_FONT_COLOR_CODE.."+"..BreakUpLargeNumbers(posBuff)..FONT_COLOR_CODE_CLOSE
+                end
+                if ( negBuff < 0 ) then
+                    tooltipText = (tooltipText or '')..RED_FONT_COLOR_CODE.." -"..BreakUpLargeNumbers(negBuff)..FONT_COLOR_CODE_CLOSE
+                end
+            end
+            frame.numLabel:SetText(tooltipText or '')
         end
     end)
+
     hooksecurefunc('PaperDollFrame_SetCritChance', function(frame)--爆击
         if create_status_label(frame) then
             local rating, spellCrit, rangedCrit, meleeCrit
@@ -1726,34 +1766,74 @@ local function Init_Status_Label()
             else
                 rating = CR_CRIT_MELEE
             end
-            local extraCritRating = GetCombatRating(rating)
-            frame.numLabel:SetText(BreakUpLargeNumbers(extraCritRating))
+            status_set_rating(frame, rating)
         end
     end)
     hooksecurefunc('PaperDollFrame_SetHaste', function(frame)--急速
-        if create_status_label(frame) then
-            frame.numLabel:SetText(BreakUpLargeNumbers(GetCombatRating(CR_HASTE_MELEE)))
-        end
+        create_status_label(frame, CR_HASTE_MELEE)
+    end)
+    hooksecurefunc('PaperDollFrame_SetMastery', function(frame)--精通
+        create_status_label(frame, CR_MASTERY)
     end)
     hooksecurefunc('PaperDollFrame_SetVersatility', function(frame)--全能
         if create_status_label(frame) then
-            frame.numLabel:SetText(BreakUpLargeNumbers(GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)))
+            local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)
+            local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
+            local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN)
+            frame.numLabel:SetFormattedText('%s |cffff00ff%.2f%%|r/|cffc69b6d%.2f%%|r', BreakUpLargeNumbers(versatility), versatilityDamageBonus, versatilityDamageTakenReduction)
         end
+      
     end)
-    hooksecurefunc('PaperDollFrame_SetAvoidance', function(frame)--闪
-        if create_status_label(frame) then
-            frame.numLabel:SetText(BreakUpLargeNumbers(GetCombatRating(CR_AVOIDANCE)))
-        end
-    end)
+
     hooksecurefunc('PaperDollFrame_SetLifesteal', function(frame)--吸
-        if create_status_label(frame) then
-            local num= GetCombatRating(CR_LIFESTEAL) or 0
-            frame.numLabel:SetText(num>0 and BreakUpLargeNumbers(num) or '')
-        end
+        create_status_label(frame, CR_LIFESTEAL)
     end)
     hooksecurefunc('PaperDollFrame_SetSpeed', function(frame)--速度
+        create_status_label(frame, CR_SPEED)        
+    end)
+
+    hooksecurefunc('PaperDollFrame_SetArmor', function(frame, unit)--护甲
         if create_status_label(frame) then
-            frame.numLabel:SetText(BreakUpLargeNumbers(GetCombatRating(CR_SPEED)))
+            local effectiveArmor = select(2, UnitArmor(unit))
+            local armorReduction
+            armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel(unit)) or 0
+            if armorReduction>0 then
+                armorReduction = format('%0.2f%%', armorReduction)
+            end
+            frame.numLabel:SetText(armorReduction or '')
+        end
+    end)
+    hooksecurefunc('PaperDollFrame_SetAvoidance', function(frame)--闪避
+        create_status_label(frame, CR_AVOIDANCE)
+    end)
+    hooksecurefunc('PaperDollFrame_SetDodge', function(frame)--躲闪
+        create_status_label(frame, CR_DODGE)
+    end)
+    hooksecurefunc('PaperDollFrame_SetParry', function(frame)--招架
+        create_status_label(frame, CR_PARRY)
+    end)
+    hooksecurefunc('PaperDollFrame_SetBlock', function(frame, unit)--格挡
+        if create_status_label(frame) then--, CR_BLOCK)
+            local shieldBlockArmor = GetShieldBlock();
+            local blockArmorReduction = PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel(unit));
+            local blockArmorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(shieldBlockArmor);
+            local text
+            if blockArmorReduction>0 then
+                text= format('%0.2f%%', blockArmorReduction);
+                if blockArmorReductionAgainstTarget and blockArmorReduction~= blockArmorReductionAgainstTarget then
+                    text=format('%s/%0.2f%%', text, blockArmorReductionAgainstTarget);
+                end
+            end
+            frame.numLabel:SetText(text or '')
+        end
+    end)
+    hooksecurefunc('PaperDollFrame_SetResilience', function(frame)--韧性
+        create_status_label(frame, COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)
+    end)
+   
+    hooksecurefunc('PaperDollFrame_SetLabelAndText', function(statFrame, _, text, isPercentage, numericValue)
+        if (isPercentage or (type(text)=='string' and text:find('%%'))) and not Save.hide and Save.itemLevelBit>0 and select(2, math.modf(numericValue))>0 then
+            statFrame.Value:SetFormattedText('%.0'..Save.itemLevelBit..'f%%', numericValue)
         end
     end)
 end
