@@ -586,7 +586,7 @@ local function Init_Panel()
     --Category, Layout= e.AddPanel_Sub_Category({name= e.cn(addName), frame= panel})
     e.AddPanel_Sub_Category({name=e.onlyChinese and '超链接图标' or e.cn(addName), frame=panel})
 
-    local Cedit= function(self)
+    local function Cedit(self)
         local frame= CreateFrame('Frame',nil, self, 'ScrollingEditBoxTemplate')--ScrollTemplates.lua
         frame:SetPoint('CENTER')
         frame:SetSize(500,250)
@@ -1299,11 +1299,10 @@ local function Init()
         end
     end)
 
-    Init_Panel()--设置控制面板
+
     set_Talking()--隐藏NPC发言
 
     Init_Add_Reload_Button()--添加 RELOAD 按钮
-
 end
 
 
@@ -1318,6 +1317,7 @@ end
 --###########
 --加载保存数据
 --###########
+panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
@@ -1329,19 +1329,20 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                 Save.groupWelcomeText= Save.groupWelcomeText or (e.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
                 Save.guildWelcomeText= Save.guildWelcomeText or (e.Player.cn and '宝贝，欢迎你加入' or EMOTE103_CMD1:gsub('/',''))
 
-
-
                 Init()
                 panel:RegisterEvent('CVAR_UPDATE')
             else
-                panel:UnregisterEvent('ADDON_LOADED')
                 DEFAULT_CHAT_FRAME.ADD= nil
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+
+        elseif arg1=='Blizzard_Settings' then
+            Init_Panel()--设置控制面板
 
         elseif arg1=='Blizzard_DebugTools' then--FSTACK Blizzard_DebugTools.lua
+            if WoWToolsChatButtonFrame.disabled then
+                return
+            end
             local btn= e.Cbtn(TableAttributeDisplay, {icon='hide', size={28,28}})
-            --btn:SetPoint("BOTTOMRIGHT", TableAttributeDisplay, 'TOPRIGHT', 0, -4)
             btn:SetPoint('BOTTOM', TableAttributeDisplay.CloseButton, 'TOP')
             btn:SetNormalAtlas(e.Icon.icon)
             btn:SetScript('OnClick', FrameStackTooltip_ToggleDefaults)
@@ -1357,7 +1358,6 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
             local edit= CreateFrame("EditBox", nil, TableAttributeDisplay, 'InputBoxTemplate')
             edit:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
             edit:SetPoint('TOPLEFT', TableAttributeDisplay, 'TOPLEFT', 10, 24 )
-            --edit:SetSize(390, 20)
             edit:SetAutoFocus(false)
             edit:ClearFocus()
             edit:SetScript('OnUpdate', function(self2, elapsed)
@@ -1374,7 +1374,6 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
             end)
             edit:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
-                    --s:ClearFocus() s:GetParent():Hide()
                     print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
                 end
             end)

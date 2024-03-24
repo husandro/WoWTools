@@ -54,7 +54,7 @@ local function get_Faction_Info(index, factionID)
 
 	if repInfo and repInfo.friendshipFactionID> 0 then--个人声望
 		if repInfo.nextThreshold then
-			factionStandingtext = repInfo.reaction
+			factionStandingtext = e.cn(repInfo.reaction)
 			local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
 			if rankInfo and rankInfo.maxLevel>0  and rankInfo.currentLevel~=rankInfo.maxLevel then
 				if Save.toRightTrackText then--向右平移 
@@ -70,7 +70,7 @@ local function get_Faction_Info(index, factionID)
 			friendshipID= repInfo.friendshipFactionID
 		else
 			if factionID then-- 隐藏最高级, 且没有奖励声望
-				value= '|cff606060'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
+				value= '|cff606060'..(e.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
 			end
 			isCapped=true
 		end
@@ -106,8 +106,7 @@ local function get_Faction_Info(index, factionID)
 	else
 		if (isHeader and hasRep) or not isHeader then
 			if not isCapped then
-				local gender = e.Player.sex
-				factionStandingtext = e.cn(GetText("FACTION_STANDING_LABEL"..standingID, gender))
+				factionStandingtext = e.cn(GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex))
 				if barValue and barMax then
 					if barMax==0 then
 						value= format('%i%%', (barMin-barValue)/barMin*100)
@@ -158,10 +157,10 @@ local function get_Faction_Info(index, factionID)
 		name= e.cn(name)
 		name= name:match('%- (.+)') or name
 	end
+	
 	if Save.toRightTrackText then--向右平移 
 		text= name and e.cn(name)..' ' or ''
 		if factionStandingtext then--等级
-			factionStandingtext= e.cn(factionStandingtext)
 			factionStandingtext= barColor and barColor:WrapTextInColorCode(factionStandingtext) or factionStandingtext
 			text= text..factionStandingtext..' '
 		end
@@ -852,13 +851,14 @@ end
 --#############
 --声望更新, 提示
 --#############
-local factionStr=FACTION_STANDING_INCREASED:gsub("%%s", "(.-)")--你在%s中的声望值提高了%d点。
+local factionStr= FACTION_STANDING_INCREASED:gsub("%%s", "(.-)")--你在%s中的声望值提高了%d点。
 factionStr = factionStr:gsub("%%d", ".-")
 local function FactionUpdate(_, _, text, ...)
 	local name=text and text:match(factionStr)
 	if not name then
 		return
 	end
+
 	for i=1, GetNumFactions() do
 		local name2, _, standingID, barMin, barMax, barValue, _, _, _, _, _, _, _, factionID = GetFactionInfo(i)
 		if name2==name and factionID then
@@ -884,29 +884,28 @@ local function FactionUpdate(_, _, text, ...)
 				local info = C_MajorFactions.GetMajorFactionData(factionID);
 				if isCapped then
 					barColor = FACTION_ORANGE_COLOR
-					value= VIDEO_OPTIONS_ULTRA_HIGH
+					value= e.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH
 				else
 					barColor = GREEN_FONT_COLOR
 					if info then
 						if info.name and info.name~=name then
 							factionStandingtext=name
 						end
-						value= RENOWN_LEVEL_LABEL..' '..info.renownLevel.. (' %i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100)--名望 RENOWN_LEVEL_LABEL
+						value= (e.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..info.renownLevel.. (' %i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100)--名望 RENOWN_LEVEL_LABEL
 					end
 				end
 				if info and info.textureKit then
 					icon='|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
 				end
 			else
-				local gender = e.Player.sex
-				factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, gender)
+				factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex)
 				if isCapped then
 					barColor = FACTION_ORANGE_COLOR
 				elseif barValue and barMax then
 					if barMax==0 then
-						value=('%i%%'):format( (barMin-barValue)/barMin*100)
+						value=format('%i%%', (barMin-barValue)/barMin*100)
 					else
-						value=('%i%%'):format(barValue/barMax*100)
+						value=format('%i%%', barValue/barMax*100)
 					end
 				end
 			end
@@ -922,7 +921,7 @@ local function FactionUpdate(_, _, text, ...)
 					value= '|cnGREEN_FONT_COLOR:'..format('%i%%',currentValue/threshold*100)..'|r'..(completed>0 and ' '..(e.onlyChinese and '奖励' or QUEST_REWARDS)..'|cnGREEN_FONT_COLOR: '..completed..' |r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1) or '')
 				end
 			end
-			local m= factionStandingtext and factionStandingtext or ''
+			local m= e.cn(factionStandingtext) or ''
 			if barColor then
 				m= barColor:WrapTextInColorCode(m)
 			end

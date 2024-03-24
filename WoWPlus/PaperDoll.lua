@@ -4,8 +4,9 @@ local Save={
     --EquipmentH=true, --装备管理, true横, false坚
     equipment= e.Player.husandro,--装备管理, 开关,
     --Equipment=nil--装备管理, 位置保存
-    equipmentFrameScale=1.1--装备管理, 缩放
+    equipmentFrameScale=1.1,--装备管理, 缩放
     --hide=true,--隐藏CreateTexture
+    itemLevelBit=3,--物品等级，位数
 }
 
 
@@ -24,7 +25,7 @@ local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在
 local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
-local ITEM_CREATED_BY_Str= ITEM_CREATED_BY:gsub('%%s','(.+)')--"|cff00ff00<由%s制造>|r";
+local ITEM_CREATED_BY_Str= ITEM_CREATED_BY:gsub('%%s','(.+)')--"|cff00ff00<由%s制造>|r"
 
 local function is_Left_Slot(slot)--左边插曹
     return slot==1 or slot==2 or slot==3 or slot==15 or slot==5 or slot==4 or slot==19 or slot==9 or slot==17 or slot==18
@@ -638,7 +639,7 @@ local function Init_Title()--头衔数量
             local tab={}
             for i = 1, GetNumTitles() do
                 if not IsTitleKnown(i) then
-                    local name, playerTitle = GetTitleName(i);
+                    local name, playerTitle = GetTitleName(i)
                     if name and playerTitle then
                         if not IsTitleKnown(i) then
                             table.insert(tab, {index=i, name=name})
@@ -1601,7 +1602,7 @@ local function set_ChromieTime()--时空漫游战役, 提示
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
             local expansionID = UnitChromieTimeID('player')--时空漫游战役 PartyUtil.lua
-            local option = C_ChromieTime.GetChromieTimeExpansionOption(expansionID);
+            local option = C_ChromieTime.GetChromieTimeExpansionOption(expansionID)
             local expansion = option and e.cn(option.name) or (e.onlyChinese and '无' or NONE)
             if option and option.previewAtlas then
                 expansion= '|A:'..option.previewAtlas..':0:0|a'..expansion
@@ -1628,6 +1629,138 @@ local function set_ChromieTime()--时空漫游战役, 提示
         panel.ChromieTime:SetShown(canEnter and not Save.hide)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--属性，增强
+local function create_status_label(frame)
+    if not Save.hide and Save.itemLevelBit>0 and frame:IsShown() then
+        if not frame.numLabel then
+            frame.numLabel=e.Cstr(frame, {color={r=1,g=1,b=1}})
+            frame.numLabel:SetPoint('BOTTOMLEFT', frame.Label, 'BOTTOMRIGHT', 4, 0)
+        end
+        return true
+    elseif frame.numLabel then
+        frame.numLabel:SetText("")
+    end
+end
+
+local function Init_Status_Label()
+    hooksecurefunc('PaperDollFrame_SetItemLevel', function(statFrame)--物品等级，小数点
+        if statFrame:IsShown() and not Save.hide and Save.itemLevelBit>0 then
+            local num= select(2, GetAverageItemLevel())
+            if statFrame.numericValue ~= num then
+                statFrame.Value:SetFormattedText('%.0'..Save.itemLevelBit..'f', num)
+            end
+        end
+    end)
+    CharacterStatsPane.ItemLevelFrame.Value:EnableMouse(true)
+    function CharacterStatsPane.ItemLevelFrame.Value:set_tooltips()
+        if Save.hide then
+            return
+        end
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine((e.onlyChinese and '小数点 ' or 'bit ')..(Save.itemLevelBit==0 and (e.onlyChinese and '禁用' or DISABLE) or ('|cnGREEN_FONT_COLOR:'..Save.itemLevelBit)), '-1'..e.Icon.left)
+        e.tips:AddDoubleLine(' ', '+1'..e.Icon.right)
+        e.tips:Show()
+        self:SetAlpha(0.7)
+    end
+    CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+        GameTooltip_Hide()
+    end)
+    CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnEnter', CharacterStatsPane.ItemLevelFrame.Value.set_tooltips)
+    CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnMouseDown', function(self, d)
+        local n= Save.itemLevelBit or 3
+        n= d=='LeftButton' and n-1 or n
+        n= d=='RightButton' and n+1 or n
+        n= n>6 and 6 or n
+        n= n<0 and 0 or n
+        Save.itemLevelBit=n
+        e.call('PaperDollFrame_UpdateStats')
+        self:set_tooltips()
+    end)
+
+
+    hooksecurefunc('PaperDollFrame_SetMastery', function(frame)--精通
+        if create_status_label(frame) then
+            frame.numLabel:SetText(BreakUpLargeNumbers(GetCombatRating(CR_MASTERY)))
+        end
+    end)
+    hooksecurefunc('PaperDollFrame_SetCritChance', function(frame)--爆击
+        if create_status_label(frame) then
+            local rating, spellCrit, rangedCrit, meleeCrit
+            local holySchool = 2
+            local minCrit = GetSpellCritChance(holySchool)
+            for i=(holySchool+1), MAX_SPELL_SCHOOLS do
+                spellCrit = GetSpellCritChance(i)
+                minCrit = min(minCrit, spellCrit)
+            end
+            spellCrit = minCrit
+            rangedCrit = GetRangedCritChance()
+            meleeCrit = GetCritChance()
+            if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
+                rating = CR_CRIT_SPELL
+            elseif (rangedCrit >= meleeCrit) then
+                rating = CR_CRIT_RANGED
+            else
+                rating = CR_CRIT_MELEE
+            end
+            local extraCritRating = GetCombatRating(rating)
+            frame.numLabel:SetText(BreakUpLargeNumbers(extraCritRating))
+        end
+    end)
+    hooksecurefunc('PaperDollFrame_SetHaste', function(frame)--急速
+        if create_status_label(frame) then
+            frame.numLabel:SetText(BreakUpLargeNumbers(GetCombatRating(CR_HASTE_MELEE)))
+        end
+    end)
+    hooksecurefunc('PaperDollFrame_SetVersatility', function(frame)--全能
+        if create_status_label(frame) then
+            frame.numLabel:SetText(BreakUpLargeNumbers(GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)))
+        end
+    end)
+    hooksecurefunc('PaperDollFrame_SetAvoidance', function(frame)--闪
+        if create_status_label(frame) then
+            frame.numLabel:SetText(BreakUpLargeNumbers(GetCombatRating(CR_AVOIDANCE)))
+        end
+    end)
+    hooksecurefunc('PaperDollFrame_SetLifesteal', function(frame)--吸
+        if create_status_label(frame) then
+            local num= GetCombatRating(CR_LIFESTEAL) or 0
+            frame.numLabel:SetText(num>0 and BreakUpLargeNumbers(num) or '')
+        end
+    end)
+    hooksecurefunc('PaperDollFrame_SetSpeed', function(frame)--速度
+        if create_status_label(frame) then
+            frame.numLabel:SetText(BreakUpLargeNumbers(GetCombatRating(CR_SPEED)))
+        end
+    end)
+end
+
+
+
+
 
 
 
@@ -1812,16 +1945,16 @@ local function Init()
             if button and button:IsShown() then
                 local itemLink, slot
                 if button.location and type(button.location)=='number' then--角色, 界面
-                    local location = button.location;
+                    local location = button.location
                     slot= itemButton:GetID()
                     if location < EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
-                        local player, bank, bags, voidStorage, slot2, bag, tab, voidSlot = EquipmentManager_UnpackLocation(location);
+                        local player, bank, bags, voidStorage, slot2, bag, tab, voidSlot = EquipmentManager_UnpackLocation(location)
                         if ( voidStorage and voidSlot ) then
                             itemLink = GetVoidItemHyperlinkString(voidSlot)
                         elseif ( not bags and slot2) then
-                            itemLink =GetInventoryItemLink("player",slot2);
+                            itemLink =GetInventoryItemLink("player",slot2)
                         elseif bag and slot2 then
-                            itemLink = C_Container.GetContainerItemLink(bag, slot2);
+                            itemLink = C_Container.GetContainerItemLink(bag, slot2)
                         end
                     end
                 else--其它
@@ -1857,11 +1990,11 @@ local function Init()
         local race= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=true})
         local class= e.Class('player', nil, true)
         local level
-        level= UnitLevel("player");
-        local effectiveLevel = UnitEffectiveLevel("player");
+        level= UnitLevel("player")
+        local effectiveLevel = UnitEffectiveLevel("player")
 
         if ( effectiveLevel ~= level ) then
-            level = EFFECTIVE_LEVEL_FORMAT:format('|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r', level);
+            level = EFFECTIVE_LEVEL_FORMAT:format('|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r', level)
         end
         local faction= e.Player.faction=='Alliance' and '|A:charcreatetest-logo-alliance:26:26|a' or e.Player.faction=='Horde' and '|A:charcreatetest-logo-horde:26:26|a' or ''
         CharacterLevelText:SetText('  '..faction..(race and '|A:'..race..':26:26|a' or '')..(class and '|A:'..class..':26:26|a  ' or '')..level)
@@ -1954,6 +2087,10 @@ local function Init()
         end
     end)
 
+
+
+
+    Init_Status_Label()--属性，增强
     C_Timer.After(2, Init_TrackButton)--装备管理框
     --set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
 end
@@ -2034,6 +2171,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1 == id then
             Save= WoWToolsSave[addName] or Save
+            Save.itemLevelBit= Save.itemLevelBit or 3
 
             --添加控制面板
             e.AddPanel_Header(nil, 'WoW')
