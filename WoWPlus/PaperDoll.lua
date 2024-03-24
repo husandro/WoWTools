@@ -2255,7 +2255,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1 == id then
             Save= WoWToolsSave[addName] or Save
-            Save.itemLevelBit= Save.itemLevelBit or 0
+            Save.itemLevelBit= Save.itemLevelBit or 3
 
             --添加控制面板
             e.AddPanel_Header(nil, 'WoW')
