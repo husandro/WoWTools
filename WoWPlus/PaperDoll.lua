@@ -2095,7 +2095,7 @@ local function Init_Status_Menu()
             index= tonumber(index)
             local tabs= self:find_stat(stat, index, false)
             if tabs then
-                info={                    
+                info={
                     text=format('%s %s', e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE), tabs.hideAt==0 and '|A:Ping_Map_Whole_OnMyWay:0:0|a' or tabs.hideAt or ''),
                     checked=tabs.hideAt,
                     arg1=stat,
@@ -2113,14 +2113,54 @@ local function Init_Status_Menu()
                             print(id, e.cn(addName), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1))
                     end
                 }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+                local tank, dps, n
+                for _, num in pairs(tabs.roles or {}) do
+                    if num== Enum.LFGRole.Healer then
+                        n=true
+                    elseif num== Enum.LFGRole.Tank then
+                        tank=true
+                    elseif num== Enum.LFGRole.Damage then
+                        dps=true
+                    end
+                end
+                info={
+                    text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.Icon.TANK),
+                    checked= tank,
+                    arg1=stat,
+                    arg2=index,
+                    func= function()
+                    end
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+                info={
+                    text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.Icon.HEALER),
+                    checked= n,
+                    arg1=stat,
+                    arg2=index,
+                    func= function()
+                    end
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+                info={
+                    text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.Icon.DAMAGER),
+                    checked= dps,
+                    arg1=stat,
+                    arg2=index,
+                    func= function()
+                    end
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+
             else
                 info={
                     text=format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, stat),
                     notCheckable=true,
                     isTitle=true,
                 }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
             end
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
+
         end
         if menuList then
             return
@@ -2175,8 +2215,21 @@ local function Init_Status_Menu()
                 local name= tab.name or e.cn(_G[stat] or _G['STAT_'..stat]) or stat
                 tab.name= tab.name or name
                 local findTab= self:find_stat(stat, index, false)
+                local role, autoHide='', ''
+                if findTab then
+                    for _, num in pairs(findTab.roles or {}) do
+                        if num== Enum.LFGRole.Healer then
+                            role= role..e.Icon.HEALER
+                        elseif num== Enum.LFGRole.Tank then
+                            role= role..e.Icon.TANK
+                        elseif num== Enum.LFGRole.Damage then
+                            role= role..e.Icon.DAMAGER
+                        end
+                    end
+                    autoHide= format('%s', findTab.hideAt==0 and '|A:Ping_Map_Whole_OnMyWay:0:0|a' or (findTab.hideAt and '|cnGREEN_FONT_COLOR:'..findTab.hideAt..'|r') or '')
+                end
                 info={
-                    text=name.. (format('%s', findTab and (findTab.hideAt==0 and '|A:Ping_Map_Whole_OnMyWay:0:0|a' or findTab.hideAt) or '')),
+                    text=name..autoHide..role,
                     keepShownOnClick=true,
                     checked= findTab and true or false,
                     menuList=findTab and stat..index or nil,
@@ -2189,7 +2242,7 @@ local function Init_Status_Menu()
                             self:add_stat(arg1)
                         else
                             self:remove_stat(arg1)
-                            
+
                         end
                         Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
                     end
@@ -2293,7 +2346,7 @@ local function Init_Status_Plus()
     StatusPlusButton:SetScript('OnEnter', StatusPlusButton.set_tooltips)
 
     StatusPlusButton.Menu= CreateFrame("Frame", nil, frame, "UIDropDownMenuTemplate")
-    
+
 
     StatusPlusButton:SetScript("OnClick", function(frame, d)
         e.LibDD:ToggleDropDownMenu(1, nil, frame.Menu, frame, 15,0)--主菜单
@@ -2316,7 +2369,7 @@ local function Init_Status_Plus()
     end
 
     if Save.PAPERDOLL_STATCATEGORIES then--加载，数据
-        PAPERDOLL_STATCATEGORIES= Save.PAPERDOLL_STATCATEGORIES 
+        PAPERDOLL_STATCATEGORIES= Save.PAPERDOLL_STATCATEGORIES
     end
     Init_Status_Menu()
     Init_Status_Func()
